@@ -1,12 +1,11 @@
-//#![feature(generic_const_exprs)]
-// Struct BigUInt: the base struct of all cryptography class for Little Endian
-// Version:				0.8
-// Author:				PARK Youngho (2022-05-24)
-// Next Modifier(s):    PARK Youngho (2022-05-24)
-//                      Somebody Else (YYYY-MM-DD)
+// Struct BigUInt: the base struct of all cryptography struct for Little Endian
+// Version:				0.1.0.0
+// Author:				PARK Youngho
+//
 
-use std::mem::size_of;
-use std::f64::consts;
+#![warn(missing_docs)]
+#![warn(missing_doc_code_examples)]
+use std::mem::{ size_of, transmute_copy, zeroed };
 use std::ops::*;
 use std::cmp::{PartialEq, PartialOrd, Ordering};
 
@@ -108,21 +107,49 @@ where T: Uint
     flag: u8,
 }
 
-impl<T, const N: usize> Large_Integer<T, N> for BigUInt<T, N>
-where T: Uint + Add<Output = T> + Sub<Output = T> + Mul<Output = T> + Div<Output = T>
-        + Shl<usize, Output = T> + Shr<usize, Output = T>
-        + BitAndAssign + BitOr<Output = T> + BitOrAssign + BitXorAssign + Not<Output = T>
+impl<T, const N: usize> BigUInt<T, N>
+where T: Uint + Add + Sub + Mul + Div
+        + Shl + ShlAssign + Shr + ShrAssign
+        + BitAnd + BitAndAssign + BitOr + BitOrAssign
+        + BitXorAssign + Not,
+    Self: Sized + Clone
+        + Add<Output = Self> + Sub<Output = Self> + Mul<Output = Self> + Div<Output = Self>
+        + Shl<i32, Output = Self> + ShlAssign<i32>
+        + Shr<i32, Output = Self> + ShrAssign<i32>
+        + BitAnd<Self, Output = Self> + BitAndAssign + BitOr<Output = Self> + BitOrAssign
+        + BitXorAssign + Not<Output = Self>
 {
-    fn new() -> Self    { Self { number: [T::zero(); N], flag: 0, } }
+    /// Constructs a new BigUInt<T, N>.
+    /// The constructed object will be initialized with 0.
+    /// # Examples
+    /// ```
+    /// use Cryptocol::cryptocol::BigUInt;
+    /// let bi = BigUInt<u64,16>::new();
+    /// ```
+    fn new() -> Self
+    {
+        Self { number: [T::zero(); N], flag: 0, }   // unsafe { zeroed::<Self>() }
+    }
 
+    /// Constructs a new BigUInt<T, N> from an array of type T with N elements.
+    /// # Examples
+    /// ```
+    /// use Cryptocol::cryptocol::BigUInt;
+    /// let bi = BigUInt<u8,32>::from_array(&[1;32]);
+    /// ```
     fn from_array(val: &[T; N]) -> Self
     {
         let mut s = Self::new();
-        for n in 0..N
-            { s.number[n] = val[n]; }
+        s.set_number(val);
         s
     }
 
+    /// Constructs a new BigUInt<T, N> from an unsigned integer such as u8, u16, u32, u64, u128 and usize.
+    /// # Examples
+    /// ```
+    /// use Cryptocol::cryptocol::BigUInt;
+    /// let bi = BigUInt<u8,32>::from_uint(1004);
+    /// ```
     fn from_uint<V: Copy>(val: V) -> Self
     {
         union U<VV: Copy, TT: Copy>
@@ -132,26 +159,35 @@ where T: Uint + Add<Output = T> + Sub<Output = T> + Mul<Output = T> + Div<Output
             t: TT,
         }
 
+        let TSIZE = size_of::<T>();
         let mut s = Self::new();
         let mut tu: U<V, T> = U { ulonger: ULonger::new() };
         tu.v = val;
-        if size_of::<T>() >= size_of::<V>()
+        if TSIZE >= size_of::<V>()
         {
             unsafe { s.set_num(0, tu.t); }
         }
         else
         {
-            for i in 0..(size_of::<V>()/size_of::<T>())
+            for i in 0..(size_of::<V>()/TSIZE)
             {
                 unsafe {
                     s.set_num(i, tu.t);
-                    tu.ulonger.ulonger >>= size_of::<T>() * 8;
+                    tu.ulonger.ulonger >>= TSIZE * 8;
                 }
             }
         }
         return s;
     }
 
+    /// Constructs a new BigUInt<T, N> from a string with radix.
+    /// The constructed object will be wrapped in Some(BigUInt<T, N>) if it is successfully created. Otherwise, this method returns None.
+    /// The radix can be from 2 up to 62 (= 10 + 26 + 26). The radix 1 or more than 62 is not available, so that this method will return None. If the radix is more than 10 and less than 37, the digit bigger than 9 will be expressed with alphabets. The avaiable alphabets are case-insensitive. For example, the digit whose value is 10, 11, 15, 16, 35 and 36 are A or a, B or b, F or f, G or g, Y or y, and Z or z, respectively. However, if the radix is more than 36 and less than 62, the digit bigger than 9 will be expressed with alphabets. The avaiable alphabets are case-sensitive, so A is different from a. For instance, the digit whose value is 10, 11, 35, 36, 37, 38, 60 and 61 are A, B, Y, Z, a, b, y and z, respectively.
+    /// # Examples
+    /// ```
+    /// use Cryptocol::cryptocol::BigUInt;
+    /// let bi = BigUInt<u8,32>::from_string_with_radix("A16F", 16);
+    /// ```
     fn from_string_with_radix(txt: &str, radix: usize) -> Option<Self>
     {
         if (radix < 2) || (radix > 10 + 26 + 26)
@@ -203,12 +239,17 @@ where T: Uint + Add<Output = T> + Sub<Output = T> + Mul<Output = T> + Div<Output
         Some(bignum)
     }
 
+    fn from_string(txt: &str) -> Option<Self>
+    {
+        Self::from_string_with_radix(txt, 10)
+    }
+    
     fn to_string_with_radix(&self, radix: usize) -> String
     {
         let mut txt = String::new();
         let zero = Self::new();
         let divisor = Self::from_uint(radix);
-        let mut dividend = *self;
+        let mut dividend = self.clone();
         while dividend != zero
         {
             let remainder = dividend % divisor;
@@ -221,10 +262,61 @@ where T: Uint + Add<Output = T> + Sub<Output = T> + Mul<Output = T> + Div<Output
         }
         if txt.len() == 0
             { txt.push('0'); }
-        let mut numStr = String::new();
+        let mut num_str = String::new();
         while let Some(ch) = txt.pop()
-            { numStr.push(ch); }
-        numStr
+            { num_str.push(ch); }
+        num_str
+    }
+}
+impl<T, const N: usize> Large_Integer<T, N> for BigUInt<T, N>
+where T: Uint + Add + Sub + Mul + Div
+        + Shl + ShlAssign + Shr + ShrAssign
+        + BitAnd + BitAndAssign + BitOr + BitOrAssign
+        + BitXorAssign + Not,
+    Self: Sized + Clone
+        + Add<Output = Self> + Sub<Output = Self> + Mul<Output = Self> + Div<Output = Self>
+        + Shl<i32, Output = Self> + ShlAssign<i32>
+        + Shr<i32, Output = Self> + ShrAssign<i32>
+        + BitAnd<Self, Output = Self> + BitAndAssign + BitOr<Output = Self> + BitOrAssign
+        + BitXorAssign + Not<Output = Self>
+{
+    fn times(&mut self, rhs: T)
+    {
+        let zero = T::zero();
+        let one = T::one();
+        if rhs == zero
+        {
+            self.set_zero();
+            return;
+        }
+
+        let adder = self.clone();
+        let TSIZE = size_of::<T>();
+        let mut bit_check = one;
+        bit_check <<= T::num((TSIZE - 1).into_u128());
+        while (bit_check != zero) && (bit_check & rhs == zero)
+            { bit_check >>= one; }
+
+        bit_check >>= one;
+        while bit_check != zero
+        {
+            *self <<= 1;
+            if bit_check & rhs != zero
+                { *self += adder; }
+            bit_check >>= one;
+        }
+    }
+
+    fn quotient(&mut self, rhs: T)
+    {
+        let bi = Self::from_uint(rhs);
+        *self /= bi;
+    }
+
+    fn remainder(&mut self, rhs: T)
+    {
+        let bi = Self::from_uint(rhs);
+        *self %= bi;
     }
 
     fn add_uint(&self, rhs: T) -> Self
@@ -264,8 +356,61 @@ where T: Uint + Add<Output = T> + Sub<Output = T> + Mul<Output = T> + Div<Output
 
     fn get_num(&self, i: usize) -> T    { self.number[i] }
     fn set_num(&mut self, i: usize, val: T) { self.number[i] = val; }
-    fn set_zero(&mut self)  { for it in &mut self.number { *it = T::zero(); } }
-    fn set_max(&mut self)   { for it in &mut self.number { *it = T::Max(); } }
+    fn set_number(&mut self, val: &[T; N])
+    {
+        self.number.copy_from_slice(val);
+    }
+    
+    fn set_zero(&mut self)
+    {
+        for it in &mut self.number
+            { *it = T::zero(); }
+    }
+
+    fn is_zero(&self) -> bool
+    {
+        for it in &self.number
+        {
+            if *it != T::zero()
+                { return false; }
+        }
+        true
+    }
+
+    fn set_max(&mut self)
+    {
+        for it in &mut self.number
+            { *it = T::Max(); }
+    }
+
+    fn is_max(&self) -> bool
+    {
+        for it in &self.number
+        {
+            if *it != T::Max()
+                { return false; }
+        }
+        true
+    }
+
+    fn set_uint(&mut self, val: T)
+    {
+        self.set_zero();
+        self.number[0] = val;
+    }
+
+    fn is_uint(&self, val: T) -> bool
+    {
+        if self.number[0] != val
+            { return false; }
+        for i in 1..N
+        {
+            if self.number[i] != T::zero()
+                { return false; }
+        }
+        true
+    }
+
     fn set_flag_bit(&mut self, flag_bits: u8)   { self.flag |= flag_bits }
     fn reset_flag_bit(&mut self, flag_bits: u8) { self.flag &= !flag_bits }
     fn is_flag_bit_on(&self, flag_bits: u8) -> bool { (self.flag & flag_bits) != 0 }
@@ -273,7 +418,7 @@ where T: Uint + Add<Output = T> + Sub<Output = T> + Mul<Output = T> + Div<Output
 
 impl<T, const N: usize> Add for BigUInt<T, N>
 where T: Uint + Add<Output = T> + Sub<Output = T> + Mul<Output = T> + Div<Output = T>
-        + Shl<usize, Output = T> + Shr<usize, Output = T>
+        + Shl<Output = T> + Shr<Output = T>
         + BitAndAssign + BitOr<Output = T> + BitOrAssign + BitXorAssign + Not<Output = T>
 {
     type Output = Self;
@@ -287,7 +432,7 @@ where T: Uint + Add<Output = T> + Sub<Output = T> + Mul<Output = T> + Div<Output
 
 impl<T, const N: usize> AddAssign for BigUInt<T, N>
 where T: Uint + Add<Output = T> + Sub<Output = T> + Mul<Output = T> + Div<Output = T>
-        + Shl<usize, Output = T> + Shr<usize, Output = T>
+        + Shl<Output = T> + Shr<Output = T>
         + BitAndAssign + BitOr<Output = T> + BitOrAssign + BitXorAssign + Not<Output = T>
 {
     fn add_assign(&mut self, rhs: Self)
@@ -321,7 +466,7 @@ where T: Uint + Add<Output = T> + Sub<Output = T> + Mul<Output = T> + Div<Output
 
 impl<T, const N: usize> Sub for BigUInt<T, N>
 where T: Uint + Add<Output = T> + Sub<Output = T> + Mul<Output = T> + Div<Output = T>
-        + Shl<usize, Output = T> + Shr<usize, Output = T>
+        + Shl<Output = T> + Shr<Output = T>
         + BitAndAssign + BitOr<Output = T> + BitOrAssign + BitXorAssign + Not<Output = T>
 {
     type Output = Self;
@@ -335,7 +480,7 @@ where T: Uint + Add<Output = T> + Sub<Output = T> + Mul<Output = T> + Div<Output
 
 impl<T, const N: usize> SubAssign for BigUInt<T, N>
 where T: Uint + Add<Output = T> + Sub<Output = T> + Mul<Output = T> + Div<Output = T>
-        + Shl<usize, Output = T> + Shr<usize, Output = T>
+        + Shl<Output = T> + Shr<Output = T>
         + BitAndAssign + BitOr<Output = T> + BitOrAssign + BitXorAssign + Not<Output = T>
 {
     fn sub_assign(&mut self, rhs: Self)
@@ -370,27 +515,30 @@ where T: Uint + Add<Output = T> + Sub<Output = T> + Mul<Output = T> + Div<Output
 }
 
 impl<T, const N: usize> Mul for BigUInt<T, N>
-where T: Uint + Add<Output = T> + Sub<Output = T> + Mul<Output = T> + Div<Output = T>
-        + Shl<usize, Output = T> + Shr<usize, Output = T>
-        + BitAndAssign + BitOr<Output = T> + BitOrAssign + BitXorAssign + Not<Output = T>
+where T: Uint + Add + Sub + Mul + Div
+        + Shl + Shr
+        + BitAndAssign + BitOr<Output = T> + BitOrAssign + BitXorAssign + Not<Output = T>,
+    Self: Large_Integer<T, N>
 {
     type Output = Self;
     fn mul(self, rhs: Self) -> Self
     {
+        let TSIZE = size_of::<T>();
         let mut res = Self::new();
         let mut b_carry = false;
-        if size_of::<T>() == size_of::<u_max>()
+        if TSIZE == size_of::<u_max>()
         {
             union U<V: Uint>
             {
                 full: V,
                 half: [u_half; 2],
             }
-
+            let mut mul: U<T> = U { full: T::zero() };
+            let mut sum: U<T> = U { full: T::zero() };
             for i in 0..N*2
             {
-                let mut mul: U<T> = U { full: T::zero() };
-                let mut sum: U<T> = U { full: T::zero() };
+                mul.full = T::zero();
+                sum.full = T::zero();
                 for j in 0..N*2
                 {
                     if N * 2 <= i + j
@@ -433,7 +581,7 @@ where T: Uint + Add<Output = T> + Sub<Output = T> + Mul<Output = T> + Div<Output
             if b_carry
                 { res.set_untrustable(); }
         }
-        else if size_of::<T>() == size_of::<u64>()
+        else if TSIZE == size_of::<u64>()
         {
             union U<F: Uint>
             {
@@ -441,17 +589,19 @@ where T: Uint + Add<Output = T> + Sub<Output = T> + Mul<Output = T> + Div<Output
                 full: [F; 2],
             }
 
+            let mut mul: U<T> = U { wider: 0 };
+            let mut sum: U<T> = U { wider: 0 };
             for i in 0..N
             {
-                let mut mul: U<T> = U { wider: 0 };
-                let mut sum: U<T> = U { wider: 0 };
+                mul.wider = 0;
+                mul.wider = 0;
                 for j in 0..N
                 {
                     if i + j >= N
                         { break; }
                     unsafe { 
-                    mul.wider = self.number[j].into_u128() * rhs.number[i].into_u128() + mul.full[1].into_u128();
-                    sum.wider = res.number[i+j].into_u128() + mul.full[0].into_u128() + sum.full[1].into_u128();
+                    mul.wider = self.number[j].into_u128().wrapping_mul(rhs.number[i].into_u128()).wrapping_add(mul.full[1].into_u128());
+                    sum.wider = res.number[i+j].into_u128().wrapping_add(mul.full[0].into_u128()).wrapping_add(sum.full[1].into_u128());
                     res.number[i+j] = sum.full[0];
                     if i + j == N - 1
                         { b_carry = b_carry || (sum.full[1] != T::zero()) || (mul.full[1] != T::zero()); }
@@ -461,25 +611,26 @@ where T: Uint + Add<Output = T> + Sub<Output = T> + Mul<Output = T> + Div<Output
             if b_carry
                 { res.set_untrustable(); }
         }
-        else //if size_of::<T>() <= size_of::<u32>()
+        else //if TSIZE <= size_of::<u32>()
         {
             union U<F: Uint>
             {
                 wider: u64,
                 full: [F; 2],
             }
-
+            let mut mul: U<T> = U { wider: 0 };
+            let mut sum: U<T> = U { wider: 0 };
             for i in 0..N
             {
-                let mut mul: U<T> = U { wider: 0 };
-                let mut sum: U<T> = U { wider: 0 };
+                mul.wider = 0;
+                mul.wider = 0;
                 for j in 0..N
                 {
                     if i + j >= N
                         { break; }
                     unsafe {
-                    mul.wider = self.number[j].into_u64() * rhs.number[i].into_u64() + mul.full[1].into_u64();
-                    sum.wider = res.number[i+j].into_u64() + mul.full[0].into_u64() + sum.full[1].into_u64();
+                    mul.wider = self.number[j].into_u64().wrapping_mul(rhs.number[i].into_u64()).wrapping_add(mul.full[1].into_u64());
+                    sum.wider = res.number[i+j].into_u64().wrapping_add(mul.full[0].into_u64()).wrapping_add(sum.full[1].into_u64());
                     res.number[i+j] = sum.full[0];
                     if i + j == N - 1
                         { b_carry = b_carry || (sum.full[1] != T::zero()) || (mul.full[1] != T::zero()); }
@@ -495,7 +646,7 @@ where T: Uint + Add<Output = T> + Sub<Output = T> + Mul<Output = T> + Div<Output
 
 impl<T, const N: usize> MulAssign for BigUInt<T, N>
 where T: Uint + Add<Output = T> + Sub<Output = T> + Mul<Output = T> + Div<Output = T>
-        + Shl<usize, Output = T> + Shr<usize, Output = T>
+        + Shl<Output = T> + Shr<Output = T>
         + BitAndAssign + BitOr<Output = T> + BitOrAssign + BitXorAssign + Not<Output = T>
 {
     fn mul_assign(&mut self, rhs: Self) { *self = *self * rhs; }
@@ -503,14 +654,14 @@ where T: Uint + Add<Output = T> + Sub<Output = T> + Mul<Output = T> + Div<Output
 
 impl<T, const N: usize> Div for BigUInt<T, N>
 where T: Uint + Add<Output = T> + Sub<Output = T> + Mul<Output = T> + Div<Output = T>
-        + Shl<usize, Output = T> + Shr<usize, Output = T>
+        + Shl<Output = T> + Shr<Output = T>
         + BitAndAssign + BitOr<Output = T> + BitOrAssign + BitXorAssign + Not<Output = T>
 {
     type Output = Self;
     fn div(self, rhs: Self) -> Self
     {
         let mut quotient = Self::new();
-        if rhs == Self::new()
+        if rhs.is_zero()
         {
             quotient.set_divided_by_zero();
             quotient.set_max();
@@ -518,10 +669,12 @@ where T: Uint + Add<Output = T> + Sub<Output = T> + Mul<Output = T> + Div<Output
         }
 
         let mut dividend = self.clone();
+        let mut subquotient = Self::new();
+        let mut subdividend: BigUInt<T, N>;
         while dividend >= rhs
         {
-            let mut subquotient = Self::from_uint(1);
-            let mut subdividend = dividend >> 1;
+            subquotient.set_uint(T::one());
+            subdividend = dividend >> 1;
             while subdividend > rhs
             {
                 subquotient <<= 1;
@@ -536,7 +689,7 @@ where T: Uint + Add<Output = T> + Sub<Output = T> + Mul<Output = T> + Div<Output
 
 impl<T, const N: usize> DivAssign for BigUInt<T, N>
 where T: Uint + Add<Output = T> + Sub<Output = T> + Mul<Output = T> + Div<Output = T>
-        + Shl<usize, Output = T> + Shr<usize, Output = T>
+        + Shl<Output = T> + Shr<Output = T>
         + BitAndAssign + BitOr<Output = T> + BitOrAssign + BitXorAssign + Not<Output = T>
 {
     fn div_assign(&mut self, rhs: Self) { *self = *self / rhs; }
@@ -544,7 +697,7 @@ where T: Uint + Add<Output = T> + Sub<Output = T> + Mul<Output = T> + Div<Output
 
 impl<T, const N: usize> Rem for BigUInt<T, N>
 where T: Uint + Add<Output = T> + Sub<Output = T> + Mul<Output = T> + Div<Output = T>
-        + Shl<usize, Output = T> + Shr<usize, Output = T>
+        + Shl<Output = T> + Shr<Output = T>
         + BitAndAssign + BitOr<Output = T> + BitOrAssign + BitXorAssign + Not<Output = T>
 {
     type Output = Self;
@@ -558,35 +711,38 @@ where T: Uint + Add<Output = T> + Sub<Output = T> + Mul<Output = T> + Div<Output
 
 impl<T, const N: usize> RemAssign for BigUInt<T, N>
 where T: Uint + Add<Output = T> + Sub<Output = T> + Mul<Output = T> + Div<Output = T>
-        + Shl<usize, Output = T> + Shr<usize, Output = T>
+        + Shl<Output = T> + Shr<Output = T>
         + BitAndAssign + BitOr<Output = T> + BitOrAssign + BitXorAssign + Not<Output = T>
 {
     fn rem_assign(&mut self, rhs: Self)
     {
-        if rhs == Self::new()
+        if rhs.is_zero()
         {
             self.set_divided_by_zero();
             self.set_zero();
             return;
         }
+        let mut	rhs_acc = Self::new();
+        let mut self_acc = Self::new();
         while *self >= rhs
         {
-            let mut	accumulation = rhs.clone();
-            let mut newAcc = *self >> 1;
-            while accumulation <= newAcc
-                { accumulation <<= 1; }
-            *self -= accumulation;
+            rhs_acc.set_number(&rhs.number);
+            self_acc.set_number(&self.number);
+            self_acc >>= 1;
+            while rhs_acc <= self_acc
+                { rhs_acc <<= 1; }
+            *self -= rhs_acc;
         }
     }
 }
 
-impl<T, const N: usize> Shl<i64> for BigUInt<T, N>
+impl<T, const N: usize> Shl<i32> for BigUInt<T, N>
 where T: Uint + Add<Output = T> + Sub<Output = T> + Mul<Output = T> + Div<Output = T>
-        + Shl<usize, Output = T> + Shr<usize, Output = T>
+        + Shl<Output = T> + Shr<Output = T>
         + BitAndAssign + BitOr<Output = T> + BitOrAssign + BitXorAssign + Not<Output = T>
 {
     type Output = Self;
-    fn shl(self, rhs: i64) -> Self
+    fn shl(self, rhs: i32) -> Self
     {
         let mut s = self.clone();
         s <<= rhs;
@@ -594,52 +750,59 @@ where T: Uint + Add<Output = T> + Sub<Output = T> + Mul<Output = T> + Div<Output
     }
 }
 
-impl<T, const N: usize> ShlAssign<i64> for BigUInt<T, N>
+impl<T, const N: usize> ShlAssign<i32> for BigUInt<T, N>
 where T: Uint + Add<Output = T> + Sub<Output = T> + Mul<Output = T> + Div<Output = T>
-        + Shl<usize, Output = T> + Shr<usize, Output = T>
+        + Shl<Output = T> + Shr<Output = T>
         + BitAndAssign + BitOr<Output = T> + BitOrAssign + BitXorAssign + Not<Output = T>
 {
-    fn shl_assign(&mut self, rhs: i64)
+    fn shl_assign(&mut self, rhs: i32)
     {
         if rhs < 0
         {
 		    *self >>= -rhs;
             return;
         }
-        let chunk_num = rhs as usize / (8 * size_of::<T>()) as usize;
-        let piece_num = rhs as usize % (8 * size_of::<T>()) as usize;
+        let TSIZE: usize = size_of::<T>();
+        let chunk_num = rhs as usize / (8 * TSIZE) as usize;
+        let piece_num = rhs as usize % (8 * TSIZE) as usize;
 
         if chunk_num > 0
         {
-            let mut i = N - 1;
-            let mut j = N - 1 - chunk_num;
-            while i >= chunk_num
+            for i in N-chunk_num..N
             {
-                self.number[i] = self.number[j];
-                i-=1;
-                j-=1;
+                if self.number[i] > T::zero()
+                {
+                    self.set_overflow();
+                    break;
+                }
             }
+            self.number.copy_within(0..N-chunk_num, chunk_num);
             for idx in 0..chunk_num
                 { self.number[idx] = T::zero(); }
         }
+        if piece_num == 0
+            { return; }
+        if !self.is_overflow() && ((self.number[N-1] >> T::num((TSIZE - piece_num).into_u128())) != T::zero())
+            { self.set_overflow(); }
+
         let mut num: T;
         let mut carry = T::zero();
-        for idx in 0..N
+        for idx in chunk_num..N
         {
-            num = (self.number[idx] << piece_num) | carry;
-            carry = self.number[idx] >> (8 * size_of::<T>() - piece_num);
+            num = (self.number[idx] << T::num(piece_num.into_u128())) | carry;
+            carry = self.number[idx] >> T::num((8 * TSIZE - piece_num).into_u128());
             self.number[idx] = num;
         }
     }
 }
 
-impl<T, const N: usize> Shr<i64> for BigUInt<T, N>
+impl<T, const N: usize> Shr<i32> for BigUInt<T, N>
 where T: Uint + Add<Output = T> + Sub<Output = T> + Mul<Output = T> + Div<Output = T>
-        + Shl<usize, Output = T> + Shr<usize, Output = T>
+        + Shl<Output = T> + Shr<Output = T>
         + BitAndAssign + BitOr<Output = T> + BitOrAssign + BitXorAssign + Not<Output = T>
 {
     type Output = Self;
-    fn shr(self, rhs: i64) -> Self
+    fn shr(self, rhs: i32) -> Self
     {
         let mut s = self.clone();
         s >>= rhs;
@@ -647,21 +810,21 @@ where T: Uint + Add<Output = T> + Sub<Output = T> + Mul<Output = T> + Div<Output
     }
 }
 
-impl<T, const N: usize> ShrAssign<i64> for BigUInt<T, N>
+impl<T, const N: usize> ShrAssign<i32> for BigUInt<T, N>
 where T: Uint + Add<Output = T> + Sub<Output = T> + Mul<Output = T> + Div<Output = T>
-        + Shl<usize, Output = T> + Shr<usize, Output = T>
+        + Shl<Output = T> + Shr<Output = T>
         + BitAndAssign + BitOr<Output = T> + BitOrAssign + BitXorAssign + Not<Output = T>
 {
-    fn shr_assign(&mut self, rhs: i64)
+    fn shr_assign(&mut self, rhs: i32)
     {
         if rhs < 0
         {
 		    *self <<= -rhs;
             return;
         }
-        let chunk_num = rhs as usize / (8 * size_of::<T>()) as usize;
-        let piece_num = rhs as usize % (8 * size_of::<T>()) as usize;
-
+        let TSIZE: usize = size_of::<T>();
+        let chunk_num = rhs as usize / (8 * TSIZE) as usize;
+        let piece_num = rhs as usize % (8 * TSIZE) as usize;
         if chunk_num > 0
         {
             for i in 0..chunk_num
@@ -672,25 +835,24 @@ where T: Uint + Add<Output = T> + Sub<Output = T> + Mul<Output = T> + Div<Output
                     break;
                 }
             }
-
-            let mut j = chunk_num;
-            for i in 0..(N-chunk_num)
-            {
-                self.number[i] = self.number[j];
-                j += 1;
-            }
-            for i in (N-chunk_num)..N
-                { self.number[i] = T::zero(); }
+            self.number.copy_within(chunk_num..N, 0);
+            for idx in N-chunk_num..N
+                { self.number[idx] = T::zero(); }
         }
+        if piece_num == 0
+            { return; }
+        if !self.is_underflow() && ((self.number[0] << T::num((TSIZE - piece_num).into_u128())) != T::zero())
+            { self.set_underflow(); }
+
         let mut num: T;
         let mut carry = T::zero();
-        let mut idx = N - 1;
+        let mut idx = N - 1 - chunk_num;
         loop
         {
-            num = (self.number[idx] >> piece_num) | carry;
-            carry = self.number[idx] << (8 * size_of::<T>() - piece_num);
+            num = (self.number[idx] >> T::num(piece_num.into_u128())) | carry;
+            carry = self.number[idx] << T::num((8 * TSIZE - piece_num).into_u128());
             self.number[idx] = num;
-            if (idx == 0)
+            if idx == 0
                 { break; }
             idx -= 1;
         }

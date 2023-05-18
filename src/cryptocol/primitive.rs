@@ -1,6 +1,7 @@
+#![warn(missing_docs)]
+#![warn(missing_doc_code_examples)]
+
 use std::fmt::Debug;
-use std::mem::size_of;
-use std::f64::consts;
 use std::ops::*;
 use std::cmp::{Eq, Ord};
 
@@ -33,7 +34,8 @@ pub trait Numeric: Copy + Eq + Ord + Debug + Add + AddAssign + Sub + SubAssign +
 }
 
 pub trait Uint: Copy + Eq + Ord + Debug
-                 + Add + AddAssign + Sub + SubAssign + Mul + MulAssign + Div + DivAssign
+            + Add + AddAssign + Sub + SubAssign + Mul + MulAssign + Div + DivAssign
+            + Shl + ShlAssign + Shr + ShrAssign
 {
     fn wrapping_add(self, rhs: Self) -> Self;
     fn wrapping_sub(self, rhs: Self) -> Self;
@@ -848,7 +850,12 @@ impl ShrAssign<usize> for USize
 
 pub trait Large_Integer<T, const N: usize>
 where T: Uint,
-    Self: Sized + Clone + AddAssign + SubAssign + MulAssign + DivAssign + RemAssign
+    Self: Sized + Clone
+        + Add<Output = Self> + Sub<Output = Self> + Mul<Output = Self> + Div<Output = Self>
+        + Shl<i32, Output = Self> + ShlAssign<i32>
+        + Shr<i32, Output = Self> + ShrAssign<i32>
+        + BitAnd<Self, Output = Self> + BitAndAssign + BitOr<Output = Self> + BitOrAssign
+        + BitXorAssign + Not<Output = Self>
 {
     const OVERFLOW: u8  = 0b0000_0001;
     const UNDERFLOW: u8 = 0b0000_0010;
@@ -860,23 +867,28 @@ where T: Uint,
     fn from_uint<V: Copy>(val: V) -> Self;
     fn from_string_with_radix(txt: &str, radix: usize) -> Option<Self>;
     fn to_string_with_radix(&self, radix: usize) -> String;
+
+    fn times(&mut self, rhs: T);
+    fn quotient(&mut self, rhs: T);
+    fn remainder(&mut self, rhs: T);
     fn add_uint(&self, rhs: T) -> Self;
     fn sub_uint(&self, rhs: T) -> Self;
     fn mul_uint(&self, rhs: T) -> Self;
     fn div_uint(&self, rhs: T) -> Self;
     fn rem_uint(&self, rhs: T) -> Self;
+//    fn div_assign_fully(&self, quotient: &mut Self, remainder: &mut Self, dividend: &Self, divisor: &Self);
     fn get_num(&self, i: usize) -> T;
     fn set_num(&mut self, i: usize, val: T);
+    fn set_number(&mut self, val: &[T; N]);
     fn set_zero(&mut self);
+    fn is_zero(&self) -> bool;
     fn set_max(&mut self);
+    fn is_max(&self) -> bool;
+    fn set_uint(&mut self, val: T);
+    fn is_uint(&self, val: T) -> bool;
     fn set_flag_bit(&mut self, flag_bits: u8);
     fn reset_flag_bit(&mut self, flag_bits: u8);
     fn is_flag_bit_on(&self, flag_bits: u8) -> bool;
-
-    fn from_string(txt: &str) -> Option<Self>
-    {
-        Self::from_string_with_radix(txt, 10)
-    }
 
     fn accumulate(&mut self, rhs: T)
     {
@@ -888,24 +900,6 @@ where T: Uint,
     {
         let bi = Self::from_uint(rhs);
         *self -= bi;
-    }
-
-    fn times(&mut self, rhs: T)
-    {
-        let bi = Self::from_uint(rhs);
-        *self *= bi;
-    }
-
-    fn quotient(&mut self, rhs: T)
-    {
-        let bi = Self::from_uint(rhs);
-        *self /= bi;
-    }
-
-    fn remainder(&mut self, rhs: T)
-    {
-        let bi = Self::from_uint(rhs);
-        *self %= bi;
     }
 
     fn to_string(&self) -> String   { self.to_string_with_radix(10) }
