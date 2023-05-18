@@ -848,6 +848,9 @@ impl ShrAssign<usize> for USize
 }
 */
 
+
+
+/*
 pub trait Large_Integer<T, const N: usize>
 where T: Uint,
     Self: Sized + Clone
@@ -919,3 +922,4 @@ where T: Uint,
     fn reset_divided_by_zero(&mut self) { self.reset_inifinity(); }
     fn is_divided_by_zero(&self) -> bool { self.is_inifinity() }
 }
+*/

@@ -101,24 +101,36 @@ type U2048 = u16384;
 
 #[derive(Debug, Copy, Clone)]
 pub struct BigUInt<T, const N: usize>
-where T: Uint
+where T: Uint + Add<Output=T> + AddAssign + Sub<Output=T> + SubAssign + Mul<Output=T> + MulAssign + Div<Output=T> + DivAssign
+        + Shl<Output=T> + ShlAssign + Shr<Output=T> + ShrAssign
+        + BitAnd<Output=T> + BitAndAssign + BitOr<Output=T> + BitOrAssign + BitXor<Output=T> + BitXorAssign + Not<Output=T>
+        + PartialEq + PartialOrd
 {
     number: [T; N],
     flag: u8,
 }
 
 impl<T, const N: usize> BigUInt<T, N>
-where T: Uint + Add + Sub + Mul + Div
-        + Shl + ShlAssign + Shr + ShrAssign
-        + BitAnd + BitAndAssign + BitOr + BitOrAssign
-        + BitXorAssign + Not,
+where T: Uint + Add<Output=T> + AddAssign + Sub<Output=T> + SubAssign + Mul<Output=T> + MulAssign + Div<Output=T> + DivAssign
+        + Shl<Output=T> + ShlAssign + Shr<Output=T> + ShrAssign
+        + BitAnd<Output=T> + BitAndAssign + BitOr<Output=T> + BitOrAssign + BitXor<Output=T> + BitXorAssign + Not<Output=T>
+        + PartialEq + PartialOrd,
     Self: Sized + Clone
-        + Add<Output = Self> + Sub<Output = Self> + Mul<Output = Self> + Div<Output = Self>
+        + Add<Output = Self> + AddAssign + Sub<Output = Self> + SubAssign
+        + Mul<Output = Self> + MulAssign + Div<Output = Self> + DivAssign
+        + Rem<Output = Self> + RemAssign
         + Shl<i32, Output = Self> + ShlAssign<i32>
         + Shr<i32, Output = Self> + ShrAssign<i32>
         + BitAnd<Self, Output = Self> + BitAndAssign + BitOr<Output = Self> + BitOrAssign
         + BitXorAssign + Not<Output = Self>
 {
+
+    const OVERFLOW: u8  = 0b0000_0001;
+    const UNDERFLOW: u8 = 0b0000_0010;
+    const INFINITY: u8  = 0b0000_0100;
+    const DIVIDED_BY_ZERO: u8 = Self::INFINITY;
+
+
     /// Constructs a new BigUInt<T, N>.
     /// The constructed object will be initialized with 0.
     /// # Examples
@@ -126,7 +138,7 @@ where T: Uint + Add + Sub + Mul + Div
     /// use Cryptocol::cryptocol::BigUInt;
     /// let bi = BigUInt<u64,16>::new();
     /// ```
-    fn new() -> Self
+    pub fn new() -> Self
     {
         Self { number: [T::zero(); N], flag: 0, }   // unsafe { zeroed::<Self>() }
     }
@@ -137,7 +149,7 @@ where T: Uint + Add + Sub + Mul + Div
     /// use Cryptocol::cryptocol::BigUInt;
     /// let bi = BigUInt<u8,32>::from_array(&[1;32]);
     /// ```
-    fn from_array(val: &[T; N]) -> Self
+    pub fn from_array(val: &[T; N]) -> Self
     {
         let mut s = Self::new();
         s.set_number(val);
@@ -150,7 +162,7 @@ where T: Uint + Add + Sub + Mul + Div
     /// use Cryptocol::cryptocol::BigUInt;
     /// let bi = BigUInt<u8,32>::from_uint(1004);
     /// ```
-    fn from_uint<V: Copy>(val: V) -> Self
+    pub fn from_uint<V: Copy>(val: V) -> Self
     {
         union U<VV: Copy, TT: Copy>
         {
@@ -188,7 +200,7 @@ where T: Uint + Add + Sub + Mul + Div
     /// use Cryptocol::cryptocol::BigUInt;
     /// let bi = BigUInt<u8,32>::from_string_with_radix("A16F", 16);
     /// ```
-    fn from_string_with_radix(txt: &str, radix: usize) -> Option<Self>
+    pub fn from_string_with_radix(txt: &str, radix: usize) -> Option<Self>
     {
         if (radix < 2) || (radix > 10 + 26 + 26)
             { return None; }
@@ -239,12 +251,12 @@ where T: Uint + Add + Sub + Mul + Div
         Some(bignum)
     }
 
-    fn from_string(txt: &str) -> Option<Self>
+    pub fn from_string(txt: &str) -> Option<Self>
     {
         Self::from_string_with_radix(txt, 10)
     }
     
-    fn to_string_with_radix(&self, radix: usize) -> String
+    pub fn to_string_with_radix(&self, radix: usize) -> String
     {
         let mut txt = String::new();
         let zero = Self::new();
@@ -267,20 +279,10 @@ where T: Uint + Add + Sub + Mul + Div
             { num_str.push(ch); }
         num_str
     }
-}
-impl<T, const N: usize> Large_Integer<T, N> for BigUInt<T, N>
-where T: Uint + Add + Sub + Mul + Div
-        + Shl + ShlAssign + Shr + ShrAssign
-        + BitAnd + BitAndAssign + BitOr + BitOrAssign
-        + BitXorAssign + Not,
-    Self: Sized + Clone
-        + Add<Output = Self> + Sub<Output = Self> + Mul<Output = Self> + Div<Output = Self>
-        + Shl<i32, Output = Self> + ShlAssign<i32>
-        + Shr<i32, Output = Self> + ShrAssign<i32>
-        + BitAnd<Self, Output = Self> + BitAndAssign + BitOr<Output = Self> + BitOrAssign
-        + BitXorAssign + Not<Output = Self>
-{
-    fn times(&mut self, rhs: T)
+
+
+
+    pub fn times(&mut self, rhs: T)
     {
         let zero = T::zero();
         let one = T::one();
@@ -294,7 +296,7 @@ where T: Uint + Add + Sub + Mul + Div
         let TSIZE = size_of::<T>();
         let mut bit_check = one;
         bit_check <<= T::num((TSIZE - 1).into_u128());
-        while (bit_check != zero) && (bit_check & rhs == zero)
+        while (bit_check != zero) && ((bit_check & rhs) == zero)
             { bit_check >>= one; }
 
         bit_check >>= one;
@@ -307,67 +309,67 @@ where T: Uint + Add + Sub + Mul + Div
         }
     }
 
-    fn quotient(&mut self, rhs: T)
+    pub fn quotient(&mut self, rhs: T)
     {
         let bi = Self::from_uint(rhs);
         *self /= bi;
     }
 
-    fn remainder(&mut self, rhs: T)
+    pub fn remainder(&mut self, rhs: T)
     {
         let bi = Self::from_uint(rhs);
         *self %= bi;
     }
 
-    fn add_uint(&self, rhs: T) -> Self
+    pub fn add_uint(&self, rhs: T) -> Self
     {
         let mut bi = self.clone();
         bi.accumulate(rhs);
         bi
     }
 
-    fn sub_uint(&self, rhs: T) -> Self
+    pub fn sub_uint(&self, rhs: T) -> Self
     {
         let mut bi = self.clone();
         bi.dissipate(rhs);
         bi
     }
 
-    fn mul_uint(&self, rhs: T) -> Self
+    pub fn mul_uint(&self, rhs: T) -> Self
     {
         let mut bi = self.clone();
         bi.times(rhs);
         bi
     }
 
-    fn div_uint(&self, rhs: T) -> Self
+    pub fn div_uint(&self, rhs: T) -> Self
     {
         let mut bi = self.clone();
         bi.quotient(rhs);
         bi
     }
 
-    fn rem_uint(&self, rhs: T) -> Self
+    pub fn rem_uint(&self, rhs: T) -> Self
     {
         let mut bi = self.clone();
         bi.remainder(rhs);
         bi
     }
 
-    fn get_num(&self, i: usize) -> T    { self.number[i] }
-    fn set_num(&mut self, i: usize, val: T) { self.number[i] = val; }
-    fn set_number(&mut self, val: &[T; N])
+    pub fn get_num(&self, i: usize) -> T    { self.number[i] }
+    pub fn set_num(&mut self, i: usize, val: T) { self.number[i] = val; }
+    pub fn set_number(&mut self, val: &[T; N])
     {
         self.number.copy_from_slice(val);
     }
     
-    fn set_zero(&mut self)
+    pub fn set_zero(&mut self)
     {
         for it in &mut self.number
             { *it = T::zero(); }
     }
 
-    fn is_zero(&self) -> bool
+    pub fn is_zero(&self) -> bool
     {
         for it in &self.number
         {
@@ -377,13 +379,13 @@ where T: Uint + Add + Sub + Mul + Div
         true
     }
 
-    fn set_max(&mut self)
+    pub fn set_max(&mut self)
     {
         for it in &mut self.number
             { *it = T::Max(); }
     }
 
-    fn is_max(&self) -> bool
+    pub fn is_max(&self) -> bool
     {
         for it in &self.number
         {
@@ -393,13 +395,13 @@ where T: Uint + Add + Sub + Mul + Div
         true
     }
 
-    fn set_uint(&mut self, val: T)
+    pub fn set_uint(&mut self, val: T)
     {
         self.set_zero();
         self.number[0] = val;
     }
 
-    fn is_uint(&self, val: T) -> bool
+    pub fn is_uint(&self, val: T) -> bool
     {
         if self.number[0] != val
             { return false; }
@@ -414,12 +416,67 @@ where T: Uint + Add + Sub + Mul + Div
     fn set_flag_bit(&mut self, flag_bits: u8)   { self.flag |= flag_bits }
     fn reset_flag_bit(&mut self, flag_bits: u8) { self.flag &= !flag_bits }
     fn is_flag_bit_on(&self, flag_bits: u8) -> bool { (self.flag & flag_bits) != 0 }
+
+
+
+
+
+
+    pub fn accumulate(&mut self, rhs: T)
+    {
+        let bi = Self::from_uint(rhs);
+        *self += bi;
+    }
+
+    pub fn dissipate(&mut self, rhs: T)
+    {
+        let bi = Self::from_uint(rhs);
+        *self -= bi;
+    }
+
+    pub fn to_string(&self) -> String   { self.to_string_with_radix(10) }
+    pub fn set_overflow(&mut self)      { self.set_flag_bit(Self::OVERFLOW); }
+    pub fn reset_overflow(&mut self)    { self.reset_flag_bit(Self::OVERFLOW); }
+    pub fn is_overflow(&self) -> bool   { self.is_flag_bit_on(Self::OVERFLOW) }
+    pub fn set_underflow(&mut self)     { self.set_flag_bit(Self::UNDERFLOW) }
+    pub fn reset_underflow(&mut self)   { self.reset_flag_bit(Self::UNDERFLOW) }
+    pub fn is_underflow(&self) -> bool  { self.is_flag_bit_on(Self::UNDERFLOW) }
+    pub fn set_inifinity(&mut self)     { self.set_flag_bit(Self::INFINITY); }
+    pub fn reset_inifinity(&mut self)   { self.reset_flag_bit(Self::INFINITY); }
+    pub fn is_inifinity(&self) -> bool  { self.is_flag_bit_on(Self::INFINITY) }
+    pub fn set_untrustable(&mut self)   { self.set_flag_bit(Self::OVERFLOW | Self::UNDERFLOW); }
+    pub fn reset_untrustable(&mut self) { self.reset_flag_bit(Self::OVERFLOW | Self::UNDERFLOW); }
+    pub fn is_untrustable(&self) -> bool { self.is_flag_bit_on(Self::OVERFLOW | Self::UNDERFLOW) }
+    pub fn set_divided_by_zero(&mut self)   { self.set_inifinity(); }
+    pub fn reset_divided_by_zero(&mut self) { self.reset_inifinity(); }
+    pub fn is_divided_by_zero(&self) -> bool { self.is_inifinity() }
 }
 
+
+/*
+impl<T, const N: usize> Large_Integer<T, N> for BigUInt<T, N>
+where T: Uint + Add + Sub + Mul + Div
+        + Shl<Output=T> + ShlAssign + Shr<Output=T> + ShrAssign
+        + BitAnd + BitAndAssign + BitOr + BitOrAssign
+        + BitXorAssign + Not,
+    Self: Sized + Clone
+        + Add<Output = Self> + Sub<Output = Self> + Mul<Output = Self> + Div<Output = Self>
+        + Shl<i32, Output = Self> + ShlAssign<i32>
+        + Shr<i32, Output = Self> + ShrAssign<i32>
+        + BitAnd<Self, Output = Self> + BitAndAssign + BitOr<Output = Self> + BitOrAssign
+        + BitXorAssign + Not<Output = Self>
+{
+
+}
+*/
+
+
+
 impl<T, const N: usize> Add for BigUInt<T, N>
-where T: Uint + Add<Output = T> + Sub<Output = T> + Mul<Output = T> + Div<Output = T>
-        + Shl<Output = T> + Shr<Output = T>
-        + BitAndAssign + BitOr<Output = T> + BitOrAssign + BitXorAssign + Not<Output = T>
+where T: Uint + Add<Output=T> + AddAssign + Sub<Output=T> + SubAssign + Mul<Output=T> + MulAssign + Div<Output=T> + DivAssign
+        + Shl<Output=T> + ShlAssign + Shr<Output=T> + ShrAssign
+        + BitAnd<Output=T> + BitAndAssign + BitOr<Output=T> + BitOrAssign + BitXor<Output=T> + BitXorAssign + Not<Output=T>
+        + PartialEq + PartialOrd
 {
     type Output = Self;
     fn add(self, rhs: Self) -> Self
@@ -431,9 +488,10 @@ where T: Uint + Add<Output = T> + Sub<Output = T> + Mul<Output = T> + Div<Output
 }
 
 impl<T, const N: usize> AddAssign for BigUInt<T, N>
-where T: Uint + Add<Output = T> + Sub<Output = T> + Mul<Output = T> + Div<Output = T>
-        + Shl<Output = T> + Shr<Output = T>
-        + BitAndAssign + BitOr<Output = T> + BitOrAssign + BitXorAssign + Not<Output = T>
+where T: Uint + Add<Output=T> + AddAssign + Sub<Output=T> + SubAssign + Mul<Output=T> + MulAssign + Div<Output=T> + DivAssign
+        + Shl<Output=T> + ShlAssign + Shr<Output=T> + ShrAssign
+        + BitAnd<Output=T> + BitAndAssign + BitOr<Output=T> + BitOrAssign + BitXor<Output=T> + BitXorAssign + Not<Output=T>
+        + PartialEq + PartialOrd
 {
     fn add_assign(&mut self, rhs: Self)
     {
@@ -465,9 +523,10 @@ where T: Uint + Add<Output = T> + Sub<Output = T> + Mul<Output = T> + Div<Output
 }
 
 impl<T, const N: usize> Sub for BigUInt<T, N>
-where T: Uint + Add<Output = T> + Sub<Output = T> + Mul<Output = T> + Div<Output = T>
-        + Shl<Output = T> + Shr<Output = T>
-        + BitAndAssign + BitOr<Output = T> + BitOrAssign + BitXorAssign + Not<Output = T>
+where T: Uint + Add<Output=T> + AddAssign + Sub<Output=T> + SubAssign + Mul<Output=T> + MulAssign + Div<Output=T> + DivAssign
+        + Shl<Output=T> + ShlAssign + Shr<Output=T> + ShrAssign
+        + BitAnd<Output=T> + BitAndAssign + BitOr<Output=T> + BitOrAssign + BitXor<Output=T> + BitXorAssign + Not<Output=T>
+        + PartialEq + PartialOrd
 {
     type Output = Self;
     fn sub(self, rhs: Self) -> Self
@@ -479,9 +538,10 @@ where T: Uint + Add<Output = T> + Sub<Output = T> + Mul<Output = T> + Div<Output
 }
 
 impl<T, const N: usize> SubAssign for BigUInt<T, N>
-where T: Uint + Add<Output = T> + Sub<Output = T> + Mul<Output = T> + Div<Output = T>
-        + Shl<Output = T> + Shr<Output = T>
-        + BitAndAssign + BitOr<Output = T> + BitOrAssign + BitXorAssign + Not<Output = T>
+where T: Uint + Add<Output=T> + AddAssign + Sub<Output=T> + SubAssign + Mul<Output=T> + MulAssign + Div<Output=T> + DivAssign
+        + Shl<Output=T> + ShlAssign + Shr<Output=T> + ShrAssign
+        + BitAnd<Output=T> + BitAndAssign + BitOr<Output=T> + BitOrAssign + BitXor<Output=T> + BitXorAssign + Not<Output=T>
+        + PartialEq + PartialOrd
 {
     fn sub_assign(&mut self, rhs: Self)
     {
@@ -515,10 +575,10 @@ where T: Uint + Add<Output = T> + Sub<Output = T> + Mul<Output = T> + Div<Output
 }
 
 impl<T, const N: usize> Mul for BigUInt<T, N>
-where T: Uint + Add + Sub + Mul + Div
-        + Shl + Shr
-        + BitAndAssign + BitOr<Output = T> + BitOrAssign + BitXorAssign + Not<Output = T>,
-    Self: Large_Integer<T, N>
+where T: Uint + Add<Output=T> + AddAssign + Sub<Output=T> + SubAssign + Mul<Output=T> + MulAssign + Div<Output=T> + DivAssign
+        + Shl<Output=T> + ShlAssign + Shr<Output=T> + ShrAssign
+        + BitAnd<Output=T> + BitAndAssign + BitOr<Output=T> + BitOrAssign + BitXor<Output=T> + BitXorAssign + Not<Output=T>
+        + PartialEq + PartialOrd
 {
     type Output = Self;
     fn mul(self, rhs: Self) -> Self
@@ -645,17 +705,19 @@ where T: Uint + Add + Sub + Mul + Div
 }
 
 impl<T, const N: usize> MulAssign for BigUInt<T, N>
-where T: Uint + Add<Output = T> + Sub<Output = T> + Mul<Output = T> + Div<Output = T>
-        + Shl<Output = T> + Shr<Output = T>
-        + BitAndAssign + BitOr<Output = T> + BitOrAssign + BitXorAssign + Not<Output = T>
+where T: Uint + Add<Output=T> + AddAssign + Sub<Output=T> + SubAssign + Mul<Output=T> + MulAssign + Div<Output=T> + DivAssign
+        + Shl<Output=T> + ShlAssign + Shr<Output=T> + ShrAssign
+        + BitAnd<Output=T> + BitAndAssign + BitOr<Output=T> + BitOrAssign + BitXor<Output=T> + BitXorAssign + Not<Output=T>
+        + PartialEq + PartialOrd
 {
     fn mul_assign(&mut self, rhs: Self) { *self = *self * rhs; }
 }
 
 impl<T, const N: usize> Div for BigUInt<T, N>
-where T: Uint + Add<Output = T> + Sub<Output = T> + Mul<Output = T> + Div<Output = T>
-        + Shl<Output = T> + Shr<Output = T>
-        + BitAndAssign + BitOr<Output = T> + BitOrAssign + BitXorAssign + Not<Output = T>
+where T: Uint + Add<Output=T> + AddAssign + Sub<Output=T> + SubAssign + Mul<Output=T> + MulAssign + Div<Output=T> + DivAssign
+        + Shl<Output=T> + ShlAssign + Shr<Output=T> + ShrAssign
+        + BitAnd<Output=T> + BitAndAssign + BitOr<Output=T> + BitOrAssign + BitXor<Output=T> + BitXorAssign + Not<Output=T>
+        + PartialEq + PartialOrd
 {
     type Output = Self;
     fn div(self, rhs: Self) -> Self
@@ -688,17 +750,19 @@ where T: Uint + Add<Output = T> + Sub<Output = T> + Mul<Output = T> + Div<Output
 }
 
 impl<T, const N: usize> DivAssign for BigUInt<T, N>
-where T: Uint + Add<Output = T> + Sub<Output = T> + Mul<Output = T> + Div<Output = T>
-        + Shl<Output = T> + Shr<Output = T>
-        + BitAndAssign + BitOr<Output = T> + BitOrAssign + BitXorAssign + Not<Output = T>
+where T: Uint + Add<Output=T> + AddAssign + Sub<Output=T> + SubAssign + Mul<Output=T> + MulAssign + Div<Output=T> + DivAssign
+        + Shl<Output=T> + ShlAssign + Shr<Output=T> + ShrAssign
+        + BitAnd<Output=T> + BitAndAssign + BitOr<Output=T> + BitOrAssign + BitXor<Output=T> + BitXorAssign + Not<Output=T>
+        + PartialEq + PartialOrd
 {
     fn div_assign(&mut self, rhs: Self) { *self = *self / rhs; }
 }
 
 impl<T, const N: usize> Rem for BigUInt<T, N>
-where T: Uint + Add<Output = T> + Sub<Output = T> + Mul<Output = T> + Div<Output = T>
-        + Shl<Output = T> + Shr<Output = T>
-        + BitAndAssign + BitOr<Output = T> + BitOrAssign + BitXorAssign + Not<Output = T>
+where T: Uint + Add<Output=T> + AddAssign + Sub<Output=T> + SubAssign + Mul<Output=T> + MulAssign + Div<Output=T> + DivAssign
+        + Shl<Output=T> + ShlAssign + Shr<Output=T> + ShrAssign
+        + BitAnd<Output=T> + BitAndAssign + BitOr<Output=T> + BitOrAssign + BitXor<Output=T> + BitXorAssign + Not<Output=T>
+        + PartialEq + PartialOrd
 {
     type Output = Self;
     fn rem(self, rhs: Self) -> Self
@@ -710,9 +774,10 @@ where T: Uint + Add<Output = T> + Sub<Output = T> + Mul<Output = T> + Div<Output
 }
 
 impl<T, const N: usize> RemAssign for BigUInt<T, N>
-where T: Uint + Add<Output = T> + Sub<Output = T> + Mul<Output = T> + Div<Output = T>
-        + Shl<Output = T> + Shr<Output = T>
-        + BitAndAssign + BitOr<Output = T> + BitOrAssign + BitXorAssign + Not<Output = T>
+where T: Uint + Add<Output=T> + AddAssign + Sub<Output=T> + SubAssign + Mul<Output=T> + MulAssign + Div<Output=T> + DivAssign
+        + Shl<Output=T> + ShlAssign + Shr<Output=T> + ShrAssign
+        + BitAnd<Output=T> + BitAndAssign + BitOr<Output=T> + BitOrAssign + BitXor<Output=T> + BitXorAssign + Not<Output=T>
+        + PartialEq + PartialOrd
 {
     fn rem_assign(&mut self, rhs: Self)
     {
@@ -737,9 +802,10 @@ where T: Uint + Add<Output = T> + Sub<Output = T> + Mul<Output = T> + Div<Output
 }
 
 impl<T, const N: usize> Shl<i32> for BigUInt<T, N>
-where T: Uint + Add<Output = T> + Sub<Output = T> + Mul<Output = T> + Div<Output = T>
-        + Shl<Output = T> + Shr<Output = T>
-        + BitAndAssign + BitOr<Output = T> + BitOrAssign + BitXorAssign + Not<Output = T>
+where T: Uint + Add<Output=T> + AddAssign + Sub<Output=T> + SubAssign + Mul<Output=T> + MulAssign + Div<Output=T> + DivAssign
+        + Shl<Output=T> + ShlAssign + Shr<Output=T> + ShrAssign
+        + BitAnd<Output=T> + BitAndAssign + BitOr<Output=T> + BitOrAssign + BitXor<Output=T> + BitXorAssign + Not<Output=T>
+        + PartialEq + PartialOrd
 {
     type Output = Self;
     fn shl(self, rhs: i32) -> Self
@@ -751,9 +817,10 @@ where T: Uint + Add<Output = T> + Sub<Output = T> + Mul<Output = T> + Div<Output
 }
 
 impl<T, const N: usize> ShlAssign<i32> for BigUInt<T, N>
-where T: Uint + Add<Output = T> + Sub<Output = T> + Mul<Output = T> + Div<Output = T>
-        + Shl<Output = T> + Shr<Output = T>
-        + BitAndAssign + BitOr<Output = T> + BitOrAssign + BitXorAssign + Not<Output = T>
+where T: Uint + Add<Output=T> + AddAssign + Sub<Output=T> + SubAssign + Mul<Output=T> + MulAssign + Div<Output=T> + DivAssign
+        + Shl<Output=T> + ShlAssign + Shr<Output=T> + ShrAssign
+        + BitAnd<Output=T> + BitAndAssign + BitOr<Output=T> + BitOrAssign + BitXor<Output=T> + BitXorAssign + Not<Output=T>
+        + PartialEq + PartialOrd
 {
     fn shl_assign(&mut self, rhs: i32)
     {
@@ -797,9 +864,10 @@ where T: Uint + Add<Output = T> + Sub<Output = T> + Mul<Output = T> + Div<Output
 }
 
 impl<T, const N: usize> Shr<i32> for BigUInt<T, N>
-where T: Uint + Add<Output = T> + Sub<Output = T> + Mul<Output = T> + Div<Output = T>
-        + Shl<Output = T> + Shr<Output = T>
-        + BitAndAssign + BitOr<Output = T> + BitOrAssign + BitXorAssign + Not<Output = T>
+where T: Uint + Add<Output=T> + AddAssign + Sub<Output=T> + SubAssign + Mul<Output=T> + MulAssign + Div<Output=T> + DivAssign
+        + Shl<Output=T> + ShlAssign + Shr<Output=T> + ShrAssign
+        + BitAnd<Output=T> + BitAndAssign + BitOr<Output=T> + BitOrAssign + BitXor<Output=T> + BitXorAssign + Not<Output=T>
+        + PartialEq + PartialOrd
 {
     type Output = Self;
     fn shr(self, rhs: i32) -> Self
@@ -811,9 +879,10 @@ where T: Uint + Add<Output = T> + Sub<Output = T> + Mul<Output = T> + Div<Output
 }
 
 impl<T, const N: usize> ShrAssign<i32> for BigUInt<T, N>
-where T: Uint + Add<Output = T> + Sub<Output = T> + Mul<Output = T> + Div<Output = T>
-        + Shl<Output = T> + Shr<Output = T>
-        + BitAndAssign + BitOr<Output = T> + BitOrAssign + BitXorAssign + Not<Output = T>
+where T: Uint + Add<Output=T> + AddAssign + Sub<Output=T> + SubAssign + Mul<Output=T> + MulAssign + Div<Output=T> + DivAssign
+        + Shl<Output=T> + ShlAssign + Shr<Output=T> + ShrAssign
+        + BitAnd<Output=T> + BitAndAssign + BitOr<Output=T> + BitOrAssign + BitXor<Output=T> + BitXorAssign + Not<Output=T>
+        + PartialEq + PartialOrd
 {
     fn shr_assign(&mut self, rhs: i32)
     {
@@ -860,7 +929,10 @@ where T: Uint + Add<Output = T> + Sub<Output = T> + Mul<Output = T> + Div<Output
 }
 
 impl<T, const N: usize> BitAnd for BigUInt<T, N>
-where T: Uint + BitAndAssign
+where T: Uint + Add<Output=T> + AddAssign + Sub<Output=T> + SubAssign + Mul<Output=T> + MulAssign + Div<Output=T> + DivAssign
+        + Shl<Output=T> + ShlAssign + Shr<Output=T> + ShrAssign
+        + BitAnd<Output=T> + BitAndAssign + BitOr<Output=T> + BitOrAssign + BitXor<Output=T> + BitXorAssign + Not<Output=T>
+        + PartialEq + PartialOrd
 {
     type Output = Self;
     fn bitand(self, rhs: Self) -> Self
@@ -872,7 +944,10 @@ where T: Uint + BitAndAssign
 }
 
 impl<T, const N: usize> BitAndAssign for BigUInt<T, N>
-where T: Uint + BitAndAssign
+where T: Uint + Add<Output=T> + AddAssign + Sub<Output=T> + SubAssign + Mul<Output=T> + MulAssign + Div<Output=T> + DivAssign
+        + Shl<Output=T> + ShlAssign + Shr<Output=T> + ShrAssign
+        + BitAnd<Output=T> + BitAndAssign + BitOr<Output=T> + BitOrAssign + BitXor<Output=T> + BitXorAssign + Not<Output=T>
+        + PartialEq + PartialOrd
 {
     fn bitand_assign(&mut self, rhs: Self)
     {
@@ -882,7 +957,10 @@ where T: Uint + BitAndAssign
 }
 
 impl<T, const N: usize> BitOr for BigUInt<T, N>
-where T: Uint + BitOrAssign
+where T: Uint + Add<Output=T> + AddAssign + Sub<Output=T> + SubAssign + Mul<Output=T> + MulAssign + Div<Output=T> + DivAssign
+        + Shl<Output=T> + ShlAssign + Shr<Output=T> + ShrAssign
+        + BitAnd<Output=T> + BitAndAssign + BitOr<Output=T> + BitOrAssign + BitXor<Output=T> + BitXorAssign + Not<Output=T>
+        + PartialEq + PartialOrd
 {
     type Output = Self;
     fn bitor(self, rhs: Self) -> Self
@@ -894,7 +972,10 @@ where T: Uint + BitOrAssign
 }
 
 impl<T, const N: usize> BitOrAssign for BigUInt<T, N>
-where T: Uint + BitOrAssign
+where T: Uint + Add<Output=T> + AddAssign + Sub<Output=T> + SubAssign + Mul<Output=T> + MulAssign + Div<Output=T> + DivAssign
+        + Shl<Output=T> + ShlAssign + Shr<Output=T> + ShrAssign
+        + BitAnd<Output=T> + BitAndAssign + BitOr<Output=T> + BitOrAssign + BitXor<Output=T> + BitXorAssign + Not<Output=T>
+        + PartialEq + PartialOrd
 {
     fn bitor_assign(&mut self, rhs: Self)
     {
@@ -904,7 +985,10 @@ where T: Uint + BitOrAssign
 }
 
 impl<T, const N: usize> BitXor for BigUInt<T, N>
-where T: Uint + BitXorAssign
+where T: Uint + Add<Output=T> + AddAssign + Sub<Output=T> + SubAssign + Mul<Output=T> + MulAssign + Div<Output=T> + DivAssign
+        + Shl<Output=T> + ShlAssign + Shr<Output=T> + ShrAssign
+        + BitAnd<Output=T> + BitAndAssign + BitOr<Output=T> + BitOrAssign + BitXor<Output=T> + BitXorAssign + Not<Output=T>
+        + PartialEq + PartialOrd
 {
     type Output = Self;
     fn bitxor(self, rhs: Self) -> Self
@@ -916,7 +1000,10 @@ where T: Uint + BitXorAssign
 }
 
 impl<T, const N: usize> BitXorAssign for BigUInt<T, N>
-where T: Uint + BitXorAssign
+where T: Uint + Add<Output=T> + AddAssign + Sub<Output=T> + SubAssign + Mul<Output=T> + MulAssign + Div<Output=T> + DivAssign
+        + Shl<Output=T> + ShlAssign + Shr<Output=T> + ShrAssign
+        + BitAnd<Output=T> + BitAndAssign + BitOr<Output=T> + BitOrAssign + BitXor<Output=T> + BitXorAssign + Not<Output=T>
+        + PartialEq + PartialOrd
 {
     fn bitxor_assign(&mut self, rhs: Self)
     {
@@ -926,7 +1013,10 @@ where T: Uint + BitXorAssign
 }
 
 impl<T, const N: usize> Not for BigUInt<T, N>
-where T: Uint + Not<Output = T>
+where T: Uint + Add<Output=T> + AddAssign + Sub<Output=T> + SubAssign + Mul<Output=T> + MulAssign + Div<Output=T> + DivAssign
+        + Shl<Output=T> + ShlAssign + Shr<Output=T> + ShrAssign
+        + BitAnd<Output=T> + BitAndAssign + BitOr<Output=T> + BitOrAssign + BitXor<Output=T> + BitXorAssign + Not<Output=T>
+        + PartialEq + PartialOrd
 {
     type Output = Self;
     fn not(self) -> Self
@@ -939,7 +1029,10 @@ where T: Uint + Not<Output = T>
 }
 
 impl<T, const N: usize> PartialEq for BigUInt<T, N>
-where T: Uint
+where T: Uint + Add<Output=T> + AddAssign + Sub<Output=T> + SubAssign + Mul<Output=T> + MulAssign + Div<Output=T> + DivAssign
+        + Shl<Output=T> + ShlAssign + Shr<Output=T> + ShrAssign
+        + BitAnd<Output=T> + BitAndAssign + BitOr<Output=T> + BitOrAssign + BitXor<Output=T> + BitXorAssign + Not<Output=T>
+        + PartialEq + PartialOrd
 {
     fn eq(&self, other: &Self) -> bool
     {
@@ -955,7 +1048,10 @@ where T: Uint
 }
 
 impl<T, const N: usize> PartialOrd for BigUInt<T, N>
-where T: Uint
+where T: Uint + Add<Output=T> + AddAssign + Sub<Output=T> + SubAssign + Mul<Output=T> + MulAssign + Div<Output=T> + DivAssign
+        + Shl<Output=T> + ShlAssign + Shr<Output=T> + ShrAssign
+        + BitAnd<Output=T> + BitAndAssign + BitOr<Output=T> + BitOrAssign + BitXor<Output=T> + BitXorAssign + Not<Output=T>
+        + PartialEq + PartialOrd
 {
     fn partial_cmp(&self, other: &Self) -> Option<Ordering>
     {
