@@ -237,7 +237,7 @@ where T: Uint + Add<Output=T> + AddAssign + Sub<Output=T> + SubAssign + Mul<Outp
                             else
                                 { c as usize - 'a' as usize + 10 }
                         }
-                        else    // radix <= 10 + 26 + 26
+                        else    // if radix <= 10 + 26 + 26
                         {
                             if c as usize <= '9' as usize
                                 { c as usize - '0' as usize }
@@ -246,8 +246,8 @@ where T: Uint + Add<Output=T> + AddAssign + Sub<Output=T> + SubAssign + Mul<Outp
                             else
                                 { c as usize - 'a' as usize + 10 + 26 }
                         };
-            bignum *= Self::from_uint(radix);
-            bignum += Self::from_uint(num);
+            bignum.times(T::num(radix as u128));
+            bignum.accumulate(T::num(num as u128));
         }
         Some(bignum)
     }
@@ -261,17 +261,16 @@ where T: Uint + Add<Output=T> + AddAssign + Sub<Output=T> + SubAssign + Mul<Outp
     {
         let mut txt = String::new();
         let zero = Self::new();
-        let divisor = Self::from_uint(radix);
         let mut dividend = self.clone();
+        let mut remainder;
         while dividend != zero
         {
-            let remainder = dividend % divisor;
-            let r = remainder.number[0].into_u32() as u8;
-            let c: char = if r < 10     { ('0' as u8 + r) as char }
-                    else if r < 10 + 26 { ('A' as u8 + r - 10 ) as char }
-                    else                { ('a' as u8 + r - 10 - 26) as char};  // r < 10 + 26 + 26
+            (dividend, remainder) = dividend.divide_fully(Self::from_uint(radix as u128));
+            let r = remainder.get_num(0).into_u32();
+            let c: char = if r < 10     { ('0' as u32 + r) as u8 as char }
+                    else if r < 10 + 26 { ('A' as u32 - 10 + r) as u8 as char }
+                    else                { ('a' as u32 - 10 - 26 + r) as u8 as char};  // r < 10 + 26 + 26
             txt.push(c);
-            dividend /= divisor;
         }
         if txt.len() == 0
             { txt.push('0'); }
@@ -281,7 +280,90 @@ where T: Uint + Add<Output=T> + AddAssign + Sub<Output=T> + SubAssign + Mul<Outp
         num_str
     }
 
+    pub fn divide_fully(&mut self, rhs: Self) -> (Self, Self)
+    {
+        let mut quotient = Self::new();
+        if rhs.is_zero()
+        {
+            quotient.set_divided_by_zero();
+            quotient.set_overflow();
+            quotient.set_max();
+            let mut remainder = Self::new();
+            remainder.set_divided_by_zero();
+            return (quotient, remainder);
+        }
+        if *self < rhs
+        {
+            return (quotient, self.clone());
+        }
+        else if *self == rhs
+        {
+            quotient.set_uint(T::one());
+            return (quotient, Self::new());
+        }
 
+        let mut adder = Self::from_uint(1);
+        let mut res;
+        loop
+        {
+            adder.set_uint(T::one());
+            res = (quotient + adder) * rhs;
+            while (*self >= res) && !res.is_overflow()
+            {
+                adder <<= 1;
+                res = (quotient + adder) * rhs;
+            }
+            adder >>= 1;
+            if adder.is_zero()
+                { break; }
+            else
+                { quotient += adder; }
+        }
+        (quotient, *self - quotient * rhs)
+    }
+
+    pub fn divide_by_uint_fully(&mut self, rhs: T) -> (Self, T)
+    {
+        let zero = T::zero();
+        let one = T::one();
+        let mut quotient = Self::new();
+        if rhs == zero
+        {
+            quotient.set_divided_by_zero();
+            quotient.set_overflow();
+            quotient.set_max();
+            let remainder = zero;
+            return (quotient, remainder);
+        }
+        if self.lt_uint(rhs)
+        {
+            return (quotient, self.get_num(0));
+        }
+        else if self.eq_uint(rhs)
+        {
+            quotient.set_uint(T::one());
+            return (quotient, zero);
+        }
+
+        let mut adder = one;
+        let mut res;
+        loop
+        {
+            adder = one;
+            res = quotient.add_uint(adder).mul_uint(rhs);
+            while (*self >= res) && !res.is_overflow()
+            {
+                adder <<= one;
+                res = quotient.add_uint(adder).mul_uint(rhs);
+            }
+            adder >>= one;
+            if adder == zero
+                { break; }
+            else
+                { quotient.accumulate(adder); }
+        }
+        (quotient, (*self - quotient.mul_uint(rhs)).get_num(0))
+    }
 
     pub fn times(&mut self, rhs: T)
     {
@@ -356,6 +438,38 @@ where T: Uint + Add<Output=T> + AddAssign + Sub<Output=T> + SubAssign + Mul<Outp
         bi.remainder(rhs);
         bi
     }
+
+    fn partial_cmp_uint(&self, other: T) -> Option<Ordering>
+    {
+        if self.number[0] > other
+        {
+            return Some(Ordering::Greater);
+        }
+        else if self.number[0] < other
+        {
+            for idx in 1..N
+            {
+                if self.number[idx] != T::zero()
+                    { return Some(Ordering::Greater); }
+            }
+            return Some(Ordering::Less);
+        }
+        else    // if self.number[0] == other
+        {
+            for idx in 1..N
+            {
+                if self.number[idx] != T::zero()
+                    { return Some(Ordering::Greater); }
+            }
+        }
+        Some(Ordering::Equal)
+    }
+
+    pub fn lt_uint(&self, other: T) -> bool  { self.partial_cmp_uint(other).unwrap().is_lt() }
+    pub fn gt_uint(&self, other: T) -> bool  { self.partial_cmp_uint(other).unwrap().is_gt() }
+    pub fn le_uint(&self, other: T) -> bool  { self.partial_cmp_uint(other).unwrap().is_le() }
+    pub fn ge_uint(&self, other: T) -> bool  { self.partial_cmp_uint(other).unwrap().is_ge() }
+    pub fn eq_uint(&self, other: T) -> bool  { self.partial_cmp_uint(other).unwrap().is_eq() }
 
     pub fn get_num(&self, i: usize) -> T    { self.number[i] }
     pub fn set_num(&mut self, i: usize, val: T) { self.number[i] = val; }

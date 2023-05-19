@@ -8,21 +8,22 @@ const N: usize = 16;
 fn main()
 {
     type BI = BigUInt::<T, N>;
- //   let mut a = BI::from_string("1000").unwrap();
- //   let b = BI::from_string("3").unwrap();
+    let mut a = BI::from_string("1000").unwrap();
+    let b = BI::from_string("3").unwrap();
     let mut bi = BI::from_array(&[1;N]);
     let bj = BI::from_array(&[1;N]);
     let bb = BI::from_string_with_radix("0000_0000_0000_0001__0000_0000_0000_0001__0000_0000_0000_0001__0000_0000_0000_0001__0000_0000_0000_0001__0000_0000_0000_0001__0000_0000_0000_0001__0000_0000_0000_0001__0000_0000_0000_0001__0000_0000_0000_0001__0000_0000_0000_0001__0000_0000_0000_0001__0000_0000_0000_0001__0000_0000_0000_0001__0000_0000_0000_0001__0000_0000_0000_0001__0000_0000_0000_0001__0000_0000_0000_0001__0000_0000_0000_0001__0000_0000_0000_0001__0000_0000_0000_0001__0000_0000_0000_0001__0000_0000_0000_0001__0000_0000_0000_0001__0000_0000_0000_0001__0000_0000_0000_0001__0000_0000_0000_0001__0000_0000_0000_0001__0000_0000_0000_0001__0000_0000_0000_0001__0000_0000_0000_0001__0000_0000_0000_0001__", 16).unwrap();
-//    println!("a  = {}", a.to_string());
-//    a.times(123);
-//    println!("a x 123 = {}", a.to_string());
+    println!("a  = {:?}", a);
+    a.times(123);
+    println!("{}", a.to_string());
     bi *= bb;
     let mut c = bi;
-//    println!("{} X {} = {}", bi.to_string(), bb.to_string(), c.to_string());
+    println!("c = {}", c.to_string());
+/*    println!("{} X {} = {}", bi.to_string(), bb.to_string(), c.to_string());
     println!("c = {:?}", c);
     c = bj * bb;
     println!("c = {:?}", c);
-//    println!("bi = {:?}", bi);
-//    println!("bb = {:?}", bb);
-//    println!("bb = {}", bi.to_string());
+    println!("bi = {:?}", bi);
+    println!("bb = {:?}", bb);
+    println!("bb = {}", bi.to_string()); */
 }
