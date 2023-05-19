@@ -1,3 +1,4 @@
+//
 // Struct BigUInt: the base struct of all cryptography struct for Little Endian
 // Version:				0.1.0.0
 // Author:				PARK Youngho
@@ -583,124 +584,9 @@ where T: Uint + Add<Output=T> + AddAssign + Sub<Output=T> + SubAssign + Mul<Outp
     type Output = Self;
     fn mul(self, rhs: Self) -> Self
     {
-        let TSIZE = size_of::<T>();
-        let mut res = Self::new();
-        let mut b_carry = false;
-        if TSIZE == size_of::<u_max>()
-        {
-            union U<V: Uint>
-            {
-                full: V,
-                half: [u_half; 2],
-            }
-            let mut mul: U<T> = U { full: T::zero() };
-            let mut sum: U<T> = U { full: T::zero() };
-            for i in 0..N*2
-            {
-                mul.full = T::zero();
-                sum.full = T::zero();
-                for j in 0..N*2
-                {
-                    if N * 2 <= i + j
-                        { break; }
-
-                    let me_half: U<T> = U { full: self.number[j/2] };
-                    let mut me_h: U<T> = U { full: T::zero() };
-                    unsafe { me_h.half[0] = me_half.half[j%2]; }
-
-                    //let number_half: U<T> = U { full: rhs.number[i/2] };
-                    let mut number_h: U<T> = U { full: T::zero() };
-                    unsafe { number_h.half[0] = number_h.half[i%2]; }
-
-                    let mut mul_h: U<T> = U { full: T::zero() };
-                    unsafe { mul_h.half[0] = mul.half[1]; }
-
-                    unsafe { mul.full = me_h.full * number_h.full + mul_h.full; }
-
-                    let mut out_half: U<T> = U { full: self.number[(i+j)/2] };
-                    let mut out_h: U<T> = U { full: T::zero() };
-                    unsafe { out_h.half[0] = out_half.half[(i+j)%2]; }
-
-                    mul_h.full = T::zero();
-                    unsafe { mul_h.half[0] = mul.half[0]; }
-
-                    let mut sum_h: U<T> = U { full: T::zero() };
-                    unsafe { sum_h.half[0] = sum.half[1]; }
-
-                    unsafe { sum.full = out_h.full + mul_h.full + sum_h.full; }
-
-                    out_half.full = self.number[(i+j)/2];
-                    unsafe { out_half.half[(i+j)%2] = sum.half[0]; }
-
-                    if N * 2 - 2 <= i + j 
-                        { unsafe { b_carry = b_carry || out_half.full.into_bool(); } }
-                    else 
-                        { unsafe { res.number[(i+j)/2] = out_half.full; } }
-                }
-            }
-            if b_carry
-                { res.set_untrustable(); }
-        }
-        else if TSIZE == size_of::<u64>()
-        {
-            union U<F: Uint>
-            {
-                wider: u128,
-                full: [F; 2],
-            }
-
-            let mut mul: U<T> = U { wider: 0 };
-            let mut sum: U<T> = U { wider: 0 };
-            for i in 0..N
-            {
-                mul.wider = 0;
-                mul.wider = 0;
-                for j in 0..N
-                {
-                    if i + j >= N
-                        { break; }
-                    unsafe { 
-                    mul.wider = self.number[j].into_u128().wrapping_mul(rhs.number[i].into_u128()).wrapping_add(mul.full[1].into_u128());
-                    sum.wider = res.number[i+j].into_u128().wrapping_add(mul.full[0].into_u128()).wrapping_add(sum.full[1].into_u128());
-                    res.number[i+j] = sum.full[0];
-                    if i + j == N - 1
-                        { b_carry = b_carry || (sum.full[1] != T::zero()) || (mul.full[1] != T::zero()); }
-                    }
-                }
-            }
-            if b_carry
-                { res.set_untrustable(); }
-        }
-        else //if TSIZE <= size_of::<u32>()
-        {
-            union U<F: Uint>
-            {
-                wider: u64,
-                full: [F; 2],
-            }
-            let mut mul: U<T> = U { wider: 0 };
-            let mut sum: U<T> = U { wider: 0 };
-            for i in 0..N
-            {
-                mul.wider = 0;
-                mul.wider = 0;
-                for j in 0..N
-                {
-                    if i + j >= N
-                        { break; }
-                    unsafe {
-                    mul.wider = self.number[j].into_u64().wrapping_mul(rhs.number[i].into_u64()).wrapping_add(mul.full[1].into_u64());
-                    sum.wider = res.number[i+j].into_u64().wrapping_add(mul.full[0].into_u64()).wrapping_add(sum.full[1].into_u64());
-                    res.number[i+j] = sum.full[0];
-                    if i + j == N - 1
-                        { b_carry = b_carry || (sum.full[1] != T::zero()) || (mul.full[1] != T::zero()); }
-                    }
-                }
-            }
-            if b_carry
-                { res.set_untrustable(); }
-        }
-        res
+        let mut s = self.clone();
+        s *= rhs;
+        s
     }
 }
 
@@ -710,7 +596,55 @@ where T: Uint + Add<Output=T> + AddAssign + Sub<Output=T> + SubAssign + Mul<Outp
         + BitAnd<Output=T> + BitAndAssign + BitOr<Output=T> + BitOrAssign + BitXor<Output=T> + BitXorAssign + Not<Output=T>
         + PartialEq + PartialOrd
 {
-    fn mul_assign(&mut self, rhs: Self) { *self = *self * rhs; }
+    fn mul_assign(&mut self, rhs: Self)
+    {
+        if rhs.is_zero()
+        {
+            self.set_zero();
+            return;
+        }
+
+        let zero = T::zero();
+        let one = T::one();
+        let adder = self.clone();
+        let TSIZE = size_of::<T>();
+        let mut multiply_first = |num: T| {
+            let mut bit_check = one;
+            bit_check <<= T::num((TSIZE - 1).into_u128());
+            while bit_check == zero
+                { bit_check >>= one; }
+            while bit_check != zero
+            {
+                *self <<= 1;
+                if bit_check & num != zero
+                    { *self += adder; }
+                bit_check >>= one;
+            }
+        };
+
+        let mut n = N - 1;
+        while rhs.number[n] == zero
+            { n = n.wrapping_sub(1); }
+        multiply_first(rhs.number[n]);
+        n = n.wrapping_sub(1);
+
+        let mut multiply = |num: T| {
+            let mut bit_check = one;
+            bit_check <<= T::num((TSIZE - 1).into_u128());
+            while bit_check != zero
+            {
+                *self <<= 1;
+                if bit_check & num != zero
+                    { *self += adder; }
+                bit_check >>= one;
+            }
+        };
+        while n < N
+        {
+            multiply(rhs.number[n]);
+            n = n.wrapping_sub(1);
+        }
+    }
 }
 
 impl<T, const N: usize> Div for BigUInt<T, N>
