@@ -133,22 +133,35 @@ where T: Uint + Add<Output=T> + AddAssign + Sub<Output=T> + SubAssign + Mul<Outp
 
 
     /// Constructs a new BigUInt<T, N>.
-    /// The constructed object will be initialized with 0.
+    /// All the attributes of te constructed object will be initialized with 0.
     /// # Examples
     /// ```
     /// use Cryptocol::cryptocol::BigUInt;
-    /// let bi = BigUInt<u64,16>::new();
+    /// let big_int = BigUInt<u64,16>::new();
     /// ```
     pub fn new() -> Self
     {
         Self { number: [T::zero(); N], flag: 0, }   // unsafe { zeroed::<Self>() }
     }
 
+    /// Constructs a new BigUInt<T, N> which has the value of zero.
+    /// This function calls BigUInt<T, N>::new(), so it is virtually exactly the same as the function BigUInt<T, N>::new(). Your source code will be better readable if you use BigUInt<T, N>::zero() instead of BigUInt<T, N>::new() especially when you create the big number zero.
+    ///
+    /// # Examples
+    /// ```
+    /// use Cryptocol::cryptocol::BigUInt;
+    /// let zero = BigUInt<u64,16>::zero();
+    /// ```
+    pub fn zero() -> Self
+    {
+        Self::new()   // unsafe { zeroed::<Self>() }
+    }
+
     /// Constructs a new BigUInt<T, N> from an array of type T with N elements.
     /// # Examples
     /// ```
     /// use Cryptocol::cryptocol::BigUInt;
-    /// let bi = BigUInt<u8,32>::from_array(&[1;32]);
+    /// let big_num = BigUInt<u8,32>::from_array(&[1;32]);
     /// ```
     pub fn from_array(val: &[T; N]) -> Self
     {
@@ -256,11 +269,29 @@ where T: Uint + Add<Output=T> + AddAssign + Sub<Output=T> + SubAssign + Mul<Outp
     {
         Self::from_string_with_radix(txt, 10)
     }
+
+    fn make_check_bits(bit_pos: usize) -> Self
+    {
+        let mut check_bits = Self::new();
+        check_bits.turn_check_bits(bit_pos);
+        check_bits
+    }
     
+    fn turn_check_bits(&mut self, bit_pos: usize)
+    {
+        let TSIZE: usize = size_of::<T>();
+        let chunk_num = bit_pos / (8 * TSIZE);
+        let piece_num = bit_pos % (8 * TSIZE);
+        let mut val = T::one();
+        val <<= T::num(piece_num as u128);
+        self.set_zero();
+        self.set_num(chunk_num, val);
+    }
+
     pub fn to_string_with_radix(&self, radix: usize) -> String
     {
         let mut txt = String::new();
-        let zero = Self::new();
+        let zero = Self::zero();
         let mut dividend = self.clone();
         let mut remainder;
         while dividend != zero
@@ -299,27 +330,99 @@ where T: Uint + Add<Output=T> + AddAssign + Sub<Output=T> + SubAssign + Mul<Outp
         else if *self == rhs
         {
             quotient.set_uint(T::one());
-            return (quotient, Self::new());
+            return (quotient, Self::zero());
         }
 
-        let mut adder = Self::from_uint(1);
+        let TSIZE: usize = size_of::<T>();
+        let mut adder = Self::zero();
         let mut res;
+        let mut sum;
+        let mut highest = N * TSIZE * 8;
+        let mut high = highest;
+        let mut low = 0;
+        let mut mid = (high + low) >> 1;
         loop
         {
-            adder.set_uint(T::one());
-            res = (quotient + adder) * rhs;
-            while (*self >= res) && !res.is_overflow()
+            high = highest;
+            low = 0;
+            if high == 0
             {
-                adder <<= 1;
-                res = (quotient + adder) * rhs;
+                return (quotient, *self - quotient * rhs);
             }
-            adder >>= 1;
-            if adder.is_zero()
-                { break; }
-            else
-                { quotient += adder; }
+            else    // if high > 0
+            {
+                loop
+                {
+                    mid = (high + low) >> 1;
+                    adder.turn_check_bits(mid);
+                    sum = quotient + adder;
+                    res = sum * rhs;
+                    if *self > res
+                    {
+                        if mid == low
+                        { 
+                            quotient = sum;
+                            highest = mid;
+                            break;
+                        }
+                        low = mid;
+                    }
+                    else if res > *self
+                    {
+                        if mid == low
+                        { 
+                            highest = mid;
+                            break;
+                        }
+                        high = mid;
+                    }
+                    else    // if res == *self
+                        { return (quotient + adder, Self::zero()); }
+                }
+            }
         }
-        (quotient, *self - quotient * rhs)
+/*
+        let mut search = || -> Option<(Self, Self)> {
+            while high > low
+            {
+                mid = (high + low) >> 1;
+                adder.turn_check_bits(mid);
+                sum = quotient + adder;
+                res = sum * rhs;
+                if res < *self
+                    { low = mid + 1; }
+                else if res > *self
+                    { high = mid - 1; }
+                else    // if res == *self
+                    { return Some((sum, Self::new())); }
+            }
+            if mid > high   // It means "when res > *self".
+            {
+                adder.turn_check_bits(low);
+                quotient += adder;
+            }
+            else    // if mid < low // It means that when *self > res
+            {
+                adder.turn_check_bits(high);
+                sum = quotient + adder;
+                res = sum * rhs;
+                if res < *self
+                    { quotient += adder; }
+                else    // if res > *self
+                {
+                    adder.turn_check_bits(mid);
+                    sum = quotient + adder;
+                    res = sum * rhs;
+                    if res < *self
+                        { quotient += adder; }
+                    else if high == 0
+                        { return Some((sum, sum - rhs)); }
+                }
+            }
+            highest = if mid > low {low} else {mid};
+            None
+        };
+*/
     }
 
     pub fn divide_by_uint_fully(&mut self, rhs: T) -> (Self, T)
@@ -725,8 +828,9 @@ where T: Uint + Add<Output=T> + AddAssign + Sub<Output=T> + SubAssign + Mul<Outp
         let mut multiply_first = |num: T| {
             let mut bit_check = one;
             bit_check <<= T::num((TSIZE - 1).into_u128());
-            while bit_check == zero
+            while bit_check & num == zero
                 { bit_check >>= one; }
+            bit_check >>= one;
             while bit_check != zero
             {
                 *self <<= 1;
