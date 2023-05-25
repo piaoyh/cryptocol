@@ -125,7 +125,6 @@ where T: Uint + Add<Output=T> + AddAssign + Sub<Output=T> + SubAssign + Mul<Outp
         + BitAnd<Self, Output = Self> + BitAndAssign + BitOr<Output = Self> + BitOrAssign
         + BitXorAssign + Not<Output = Self>
 {
-
     const OVERFLOW: u8  = 0b0000_0001;
     const UNDERFLOW: u8 = 0b0000_0010;
     const INFINITY: u8  = 0b0000_0100;
@@ -311,7 +310,7 @@ where T: Uint + Add<Output=T> + AddAssign + Sub<Output=T> + SubAssign + Mul<Outp
         num_str
     }
 
-    pub fn divide_fully(&mut self, rhs: Self) -> (Self, Self)
+    pub fn divide_fully(&self, rhs: Self) -> (Self, Self)
     {
         let mut quotient = Self::new();
         if rhs.is_zero()
@@ -381,91 +380,77 @@ where T: Uint + Add<Output=T> + AddAssign + Sub<Output=T> + SubAssign + Mul<Outp
                 }
             }
         }
-/*
-        let mut search = || -> Option<(Self, Self)> {
-            while high > low
-            {
-                mid = (high + low) >> 1;
-                adder.turn_check_bits(mid);
-                sum = quotient + adder;
-                res = sum * rhs;
-                if res < *self
-                    { low = mid + 1; }
-                else if res > *self
-                    { high = mid - 1; }
-                else    // if res == *self
-                    { return Some((sum, Self::new())); }
-            }
-            if mid > high   // It means "when res > *self".
-            {
-                adder.turn_check_bits(low);
-                quotient += adder;
-            }
-            else    // if mid < low // It means that when *self > res
-            {
-                adder.turn_check_bits(high);
-                sum = quotient + adder;
-                res = sum * rhs;
-                if res < *self
-                    { quotient += adder; }
-                else    // if res > *self
-                {
-                    adder.turn_check_bits(mid);
-                    sum = quotient + adder;
-                    res = sum * rhs;
-                    if res < *self
-                        { quotient += adder; }
-                    else if high == 0
-                        { return Some((sum, sum - rhs)); }
-                }
-            }
-            highest = if mid > low {low} else {mid};
-            None
-        };
-*/
     }
 
     pub fn divide_by_uint_fully(&mut self, rhs: T) -> (Self, T)
     {
-        let zero = T::zero();
-        let one = T::one();
         let mut quotient = Self::new();
-        if rhs == zero
+        if rhs == T::zero()
         {
             quotient.set_divided_by_zero();
             quotient.set_overflow();
             quotient.set_max();
-            let remainder = zero;
+            let mut remainder = T::zero();
             return (quotient, remainder);
         }
         if self.lt_uint(rhs)
         {
-            return (quotient, self.get_num(0));
+            return (quotient, rhs);
         }
         else if self.eq_uint(rhs)
         {
             quotient.set_uint(T::one());
-            return (quotient, zero);
+            return (quotient, T::zero());
         }
 
-        let mut adder = one;
+        let TSIZE: usize = size_of::<T>();
+        let mut adder = Self::zero();
         let mut res;
+        let mut sum;
+        let mut highest = N * TSIZE * 8;
+        let mut high = highest;
+        let mut low = 0;
+        let mut mid = (high + low) >> 1;
         loop
         {
-            adder = one;
-            res = quotient.add_uint(adder).mul_uint(rhs);
-            while (*self >= res) && !res.is_overflow()
+            high = highest;
+            low = 0;
+            if high == 0
             {
-                adder <<= one;
-                res = quotient.add_uint(adder).mul_uint(rhs);
+                return (quotient, (*self - quotient.mul_uint(rhs)).number[0]);
             }
-            adder >>= one;
-            if adder == zero
-                { break; }
-            else
-                { quotient.accumulate(adder); }
+            else    // if high > 0
+            {
+                loop
+                {
+                    mid = (high + low) >> 1;
+                    adder.turn_check_bits(mid);
+                    sum = quotient + adder;
+                    res = sum.mul_uint(rhs);
+                    if *self > res
+                    {
+                        if mid == low
+                        { 
+                            quotient = sum;
+                            highest = mid;
+                            break;
+                        }
+                        low = mid;
+                    }
+                    else if res > *self
+                    {
+                        if mid == low
+                        { 
+                            highest = mid;
+                            break;
+                        }
+                        high = mid;
+                    }
+                    else    // if res == *self
+                        { return (quotient + adder, T::zero()); }
+                }
+            }
         }
-        (quotient, (*self - quotient.mul_uint(rhs)).get_num(0))
     }
 
     pub fn times(&mut self, rhs: T)
@@ -642,14 +627,58 @@ where T: Uint + Add<Output=T> + AddAssign + Sub<Output=T> + SubAssign + Mul<Outp
 
     pub fn accumulate(&mut self, rhs: T)
     {
-        let bi = Self::from_uint(rhs);
-        *self += bi;
+        let zero = T::zero();
+        let one = T::one();
+        let mut midres = self.number[0].wrapping_add(rhs);
+        let mut	carry = if midres < self.number[0] { one } else { zero };
+        self.number[0] = midres;
+        for i in 1..N
+        {
+            midres = self.number[i].wrapping_add(carry);
+            carry = if (midres < carry) { one } else { zero };
+            self.number[i] = midres;
+            if carry == zero
+                { break; }
+        }
+        if carry != T::zero()
+        {
+            if !self.is_untrustable()
+            {
+                if self.is_underflow()
+                    { self.reset_underflow(); }
+                else if self.is_overflow()
+                    { self.set_untrustable(); }
+                else
+                    { self.set_overflow(); }
+            }
+        }
     }
 
     pub fn dissipate(&mut self, rhs: T)
     {
-        let bi = Self::from_uint(rhs);
-        *self -= bi;
+        let zero = T::zero();
+        let one = T::one();
+        let mut midres = self.number[0].wrapping_sub(rhs);
+        let mut	carry= if midres > self.number[0] { one } else { zero };
+        self.number[0] = midres;
+        for i in 1..N
+        {
+            midres = self.number[i].wrapping_sub(carry);
+            carry = if midres > self.number[i] { one } else { zero };
+            self.number[i] = midres;
+        }
+        if carry != zero
+        {
+            if !self.is_untrustable()
+            {
+                if self.is_overflow()
+                    { self.reset_overflow(); }
+                else if self.is_underflow()
+                    { self.set_untrustable(); }
+                else
+                    { self.set_underflow(); }
+            }
+        }
     }
 
     pub fn to_string(&self) -> String   { self.to_string_with_radix(10) }
@@ -874,29 +903,7 @@ where T: Uint + Add<Output=T> + AddAssign + Sub<Output=T> + SubAssign + Mul<Outp
     type Output = Self;
     fn div(self, rhs: Self) -> Self
     {
-        let mut quotient = Self::new();
-        if rhs.is_zero()
-        {
-            quotient.set_divided_by_zero();
-            quotient.set_max();
-            return quotient;
-        }
-
-        let mut dividend = self.clone();
-        let mut subquotient = Self::new();
-        let mut subdividend: BigUInt<T, N>;
-        while dividend >= rhs
-        {
-            subquotient.set_uint(T::one());
-            subdividend = dividend >> 1;
-            while subdividend > rhs
-            {
-                subquotient <<= 1;
-                subdividend >>= 1;
-            }
-            dividend -= subquotient * rhs;
-            quotient += subquotient;
-        }
+        let (quotient, _) = self.divide_fully(rhs);
         quotient
     }
 }
@@ -919,9 +926,8 @@ where T: Uint + Add<Output=T> + AddAssign + Sub<Output=T> + SubAssign + Mul<Outp
     type Output = Self;
     fn rem(self, rhs: Self) -> Self
     {
-        let mut s = self.clone();
-        s %= rhs;
-        s
+        let (_, remainder) = self.divide_fully(rhs);
+        remainder
     }
 }
 
@@ -931,26 +937,7 @@ where T: Uint + Add<Output=T> + AddAssign + Sub<Output=T> + SubAssign + Mul<Outp
         + BitAnd<Output=T> + BitAndAssign + BitOr<Output=T> + BitOrAssign + BitXor<Output=T> + BitXorAssign + Not<Output=T>
         + PartialEq + PartialOrd
 {
-    fn rem_assign(&mut self, rhs: Self)
-    {
-        if rhs.is_zero()
-        {
-            self.set_divided_by_zero();
-            self.set_zero();
-            return;
-        }
-        let mut	rhs_acc = Self::new();
-        let mut self_acc = Self::new();
-        while *self >= rhs
-        {
-            rhs_acc.set_number(&rhs.number);
-            self_acc.set_number(&self.number);
-            self_acc >>= 1;
-            while rhs_acc <= self_acc
-                { rhs_acc <<= 1; }
-            *self -= rhs_acc;
-        }
-    }
+    fn rem_assign(&mut self, rhs: Self) { *self = *self % rhs; }
 }
 
 impl<T, const N: usize> Shl<i32> for BigUInt<T, N>
