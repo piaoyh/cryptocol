@@ -135,7 +135,7 @@ where T: Uint + Add<Output=T> + AddAssign + Sub<Output=T> + SubAssign + Mul<Outp
     /// All the attributes of te constructed object will be initialized with 0.
     /// # Examples
     /// ```
-    /// use Cryptocol::cryptocol::BigUInt;
+    /// use Cryptocol::number::BigUInt;
     /// let big_int = BigUInt<u64,16>::new();
     /// ```
     pub fn new() -> Self
@@ -148,7 +148,7 @@ where T: Uint + Add<Output=T> + AddAssign + Sub<Output=T> + SubAssign + Mul<Outp
     ///
     /// # Examples
     /// ```
-    /// use Cryptocol::cryptocol::BigUInt;
+    /// use Cryptocol::number::BigUInt;
     /// let zero = BigUInt<u64,16>::zero();
     /// ```
     pub fn zero() -> Self
@@ -159,7 +159,7 @@ where T: Uint + Add<Output=T> + AddAssign + Sub<Output=T> + SubAssign + Mul<Outp
     /// Constructs a new BigUInt<T, N> from an array of type T with N elements.
     /// # Examples
     /// ```
-    /// use Cryptocol::cryptocol::BigUInt;
+    /// use Cryptocol::number::BigUInt;
     /// let big_num = BigUInt<u8,32>::from_array(&[1;32]);
     /// ```
     pub fn from_array(val: &[T; N]) -> Self
@@ -172,7 +172,7 @@ where T: Uint + Add<Output=T> + AddAssign + Sub<Output=T> + SubAssign + Mul<Outp
     /// Constructs a new BigUInt<T, N> from an unsigned integer such as u8, u16, u32, u64, u128 and usize.
     /// # Examples
     /// ```
-    /// use Cryptocol::cryptocol::BigUInt;
+    /// use Cryptocol::number::BigUInt;
     /// let bi = BigUInt<u8,32>::from_uint(1004);
     /// ```
     pub fn from_uint<V: Copy>(val: V) -> Self
@@ -210,7 +210,7 @@ where T: Uint + Add<Output=T> + AddAssign + Sub<Output=T> + SubAssign + Mul<Outp
     /// The radix can be from 2 up to 62 (= 10 + 26 + 26). The radix 1 or more than 62 is not available, so that this method will return None. If the radix is more than 10 and less than 37, the digit bigger than 9 will be expressed with alphabets. The avaiable alphabets are case-insensitive. For example, the digit whose value is 10, 11, 15, 16, 35 and 36 are A or a, B or b, F or f, G or g, Y or y, and Z or z, respectively. However, if the radix is more than 36 and less than 62, the digit bigger than 9 will be expressed with alphabets. The avaiable alphabets are case-sensitive, so A is different from a. For instance, the digit whose value is 10, 11, 35, 36, 37, 38, 60 and 61 are A, B, Y, Z, a, b, y and z, respectively.
     /// # Examples
     /// ```
-    /// use Cryptocol::cryptocol::BigUInt;
+    /// use Cryptocol::number::BigUInt;
     /// let bi = BigUInt<u8,32>::from_string_with_radix("A16F", 16);
     /// ```
     pub fn from_string_with_radix(txt: &str, radix: usize) -> Option<Self>
@@ -310,6 +310,15 @@ where T: Uint + Add<Output=T> + AddAssign + Sub<Output=T> + SubAssign + Mul<Outp
         num_str
     }
 
+    /// Divide BigUInt<T, N> by BigUInt<T, N> so as to get quotient and remainder
+    /// It returns tuple of quotient and remainder, where quotient and remainder are Self. If rhs is zero, the divided_by_zero and overflow flags of quotient and the divided_by_zero flag of remainder will be set, and the quotient and the remainder will be max value and zero, respectively.
+    /// # Examples
+    /// ```
+    /// use Cryptocol::number::BigUInt;
+    /// let dividend = u1024::from_string("1234567890157589425462369896");
+    /// let divisor = u1024::from_string("1234567890");
+    /// let (quotient, remainder) = dividend.divide_fully(divisor);
+    /// ```
     pub fn divide_fully(&self, rhs: Self) -> (Self, Self)
     {
         let mut quotient = Self::new();
@@ -382,6 +391,15 @@ where T: Uint + Add<Output=T> + AddAssign + Sub<Output=T> + SubAssign + Mul<Outp
         }
     }
 
+    /// Divide BigUInt<T, N> by T so as to get quotient and remainder
+    /// It returns tuple of quotient and remainder. quotient is Self and remainder is T. If rhs is zero, the divided_by_zero and overflow flags of quotient will be set, and the quotient and the remainder will be max value and zero, respectively.
+    /// # Examples
+    /// ```
+    /// use Cryptocol::number::BigUInt;
+    /// let dividend = u1024::from_string("1234567890157589425462369896");
+    /// let divisor = T::num(87_u128);
+    /// let (quotient, remainder) = dividend.divide_by_uint_fully(divisor);
+    /// ```
     pub fn divide_by_uint_fully(&mut self, rhs: T) -> (Self, T)
     {
         let mut quotient = Self::new();
@@ -390,7 +408,7 @@ where T: Uint + Add<Output=T> + AddAssign + Sub<Output=T> + SubAssign + Mul<Outp
             quotient.set_divided_by_zero();
             quotient.set_overflow();
             quotient.set_max();
-            let mut remainder = T::zero();
+            let remainder = T::zero();
             return (quotient, remainder);
         }
         if self.lt_uint(rhs)
@@ -876,6 +894,11 @@ where T: Uint + Add<Output=T> + AddAssign + Sub<Output=T> + SubAssign + Mul<Outp
         n = n.wrapping_sub(1);
 
         let mut multiply = |num: T| {
+            if num == T::zero()
+            {
+                *self <<= TSIZE as i32;
+                return;
+            }
             let mut bit_check = one;
             bit_check <<= T::num((TSIZE - 1).into_u128());
             while bit_check != zero
