@@ -1,14 +1,19 @@
+// Copyright 2023 PARK Youngho.
 //
-// Struct BigUInt: the base struct of all cryptography struct for Little Endian
-// Version:				0.1.0.0
-// Author:				PARK Youngho
-//
+// Licensed under the Apache License, Version 2.0 <LICENSE-APACHE or
+// https://www.apache.org/licenses/LICENSE-2.0> or the MIT license
+// <LICENSE-MIT or https://opensource.org/licenses/MIT>, at your option.
+// This file may not be copied, modified, or distributed
+// except according to those terms.
+
+//! A struct that represents a big number which is an unsigned big integer.
 
 #![warn(missing_docs)]
 #![warn(missing_doc_code_examples)]
+use std::fmt::{ self, Display, Formatter };
 use std::mem::{ size_of, transmute_copy, zeroed };
 use std::ops::*;
-use std::cmp::{PartialEq, PartialOrd, Ordering};
+use std::cmp::{ PartialEq, PartialOrd, Ordering };
 
 use super::primitive::*;
 
@@ -99,7 +104,47 @@ type U896 = u7168;
 type U1024 = u8192;
 type U2048 = u16384;
 
-
+/// A struct that represents a big number which is an unsigned big integer.
+/// 
+/// The struct `BigUInt<T, const N: usize>` is a generic struct.
+/// - It has an array of type T with N elements and a flag of type u8
+///   as its fields.
+/// - The generic data type T is supposed to be a primitive unsigned integer
+///   type such as u8, u16, u32, u64, u128 and usize.
+/// - If you give signed integer such as i8, i16, i32, i64, i128 and isize
+///   for type T, its behavior is not determined.
+/// - If you give usize for type T, the size of the type usize depends on CPU.
+/// - For example, if you give u64 for type T and 16 for N,
+///   the `BigUInt<u64, 16>` is a 1024-bit unsigned integer.
+/// - For example, if you give u32 for type T and 32 for N,
+///   the `BigUInt<u32, 32>` is a 1024-bit unsigned integer too.
+/// - Both `BigUInt<u64, 16>` and `BigUInt<u32, 32>` are the same length
+///   unsigned integer but their performance will be different depending on CPU.
+/// - flag contains OVERFLOW (0b0000_0001), UNDERFLOW (0b0000_0010),
+///   INFINITY (0b0000_0100), and DIVIDED_BY_ZERO (== INFINITY)
+/// 
+/// # Examples
+/// 
+/// ```
+/// use Cryptoology::number::*;
+/// type BI = BigUInt::<u64, 16>;
+/// type AI = BigUInt::<usize, 16>;
+/// let bi = BI::from_array(&[1;N]);
+/// let bb = BI::from_string_with_radix("0000_0000_0000_0001__0000_0000_0000_0001__0000_0000_0000_0001__0000_0000_0000_0001__0000_0000_0000_0001__0000_0000_0000_0001__0000_0000_0000_0001__0000_0000_0000_0001__0000_0000_0000_0001__0000_0000_0000_0001__0000_0000_0000_0001__0000_0000_0000_0001__0000_0000_0000_0001__0000_0000_0000_0001__0000_0000_0000_0001__0000_0000_0000_0001__0000_0000_0000_0001__0000_0000_0000_0001__0000_0000_0000_0001__0000_0000_0000_0001__0000_0000_0000_0001__0000_0000_0000_0001__0000_0000_0000_0001__0000_0000_0000_0001__0000_0000_0000_0001__0000_0000_0000_0001__0000_0000_0000_0001__0000_0000_0000_0001__0000_0000_0000_0001__0000_0000_0000_0001__0000_0000_0000_0001__0000_0000_0000_0001__", 16).unwrap();
+/// let b = BI::from_string("1234567891234567879123456789111111111222222222333333333444444444555555555666666666777777777888888888999999999000000000").unwrap();
+/// println!("bi = {:?}", bi);
+/// println!("bi = {}", bi.to_string_with_radix(16));
+/// println!("bb = {:?}", bb);
+/// println!("bb = {}", bb.to_string_with_radix(16));
+/// println!("b = {}", b);
+/// println!("b * bb = {}", b * bb);
+/// println!("bb / b = {}", bb / b);
+/// println!("bb % b = {}", bb % b);
+/// println!("b + 1 = {}", b.add_uint(1));
+/// println!("b - 1 = {}", b.sub_uint(1));
+/// let a = AI::from_string("123654789147258369").unwrap();
+/// println!("a = {}", a.to_strin());
+/// ```
 #[derive(Debug, Copy, Clone)]
 pub struct BigUInt<T, const N: usize>
 where T: Uint + Add<Output=T> + AddAssign + Sub<Output=T> + SubAssign + Mul<Output=T> + MulAssign + Div<Output=T> + DivAssign
@@ -124,6 +169,7 @@ where T: Uint + Add<Output=T> + AddAssign + Sub<Output=T> + SubAssign + Mul<Outp
         + Shr<i32, Output = Self> + ShrAssign<i32>
         + BitAnd<Self, Output = Self> + BitAndAssign + BitOr<Output = Self> + BitOrAssign
         + BitXorAssign + Not<Output = Self>
+        + Display
 {
     const OVERFLOW: u8  = 0b0000_0001;
     const UNDERFLOW: u8 = 0b0000_0010;
@@ -725,11 +771,14 @@ where T: Uint + Add + Sub + Mul + Div
         + BitAnd + BitAndAssign + BitOr + BitOrAssign
         + BitXorAssign + Not,
     Self: Sized + Clone
-        + Add<Output = Self> + Sub<Output = Self> + Mul<Output = Self> + Div<Output = Self>
+        + Add<Output = Self> + AddAssign + Sub<Output = Self> + SubAssign
+        + Mul<Output = Self> + MulAssign + Div<Output = Self> + DivAssign
+        + Rem<Output = Self> + RemAssign
         + Shl<i32, Output = Self> + ShlAssign<i32>
         + Shr<i32, Output = Self> + ShrAssign<i32>
         + BitAnd<Self, Output = Self> + BitAndAssign + BitOr<Output = Self> + BitOrAssign
         + BitXorAssign + Not<Output = Self>
+        + Display
 {
 
 }
@@ -1233,3 +1282,17 @@ where T: Uint + Add<Output=T> + AddAssign + Sub<Output=T> + SubAssign + Mul<Outp
     fn ge(&self, other: &Self) -> bool  { self.partial_cmp(&other).unwrap().is_ge() }
 }
 
+impl<T, const N: usize> Display for BigUInt<T, N>
+where T: Uint + Add<Output=T> + AddAssign + Sub<Output=T> + SubAssign + Mul<Output=T> + MulAssign + Div<Output=T> + DivAssign
+        + Shl<Output=T> + ShlAssign + Shr<Output=T> + ShrAssign
+        + BitAnd<Output=T> + BitAndAssign + BitOr<Output=T> + BitOrAssign + BitXor<Output=T> + BitXorAssign + Not<Output=T>
+        + PartialEq + PartialOrd
+{
+    // `f` is a buffer, this method must write the formatted string into it
+    fn fmt(&self, f: &mut Formatter) -> fmt::Result
+    {
+        // `write!` is like `format!`, but it will write the formatted string
+        // into a buffer (the first argument)
+        write!(f, "{}", self.to_string())
+    }
+}
