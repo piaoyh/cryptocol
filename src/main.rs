@@ -7,6 +7,8 @@ const N: usize = 16;
 
 fn main()
 {
+    let zero = BigUInt::<u64, 16>::zero();
+    assert_eq!(zero, BigUInt::<u64, 16>::from_uint(0));
     type BI = BigUInt::<T, N>;
     type AI = BigUInt::<usize, N>;
     let bi = BI::from_array(&[1;N]);
@@ -24,4 +26,6 @@ fn main()
     println!("b - 1 = {}", b.sub_uint(1));
     let a = AI::from_string("123654789147258369").unwrap();
     println!("a = {}", a);
+    let cc = BigUInt::<u8,32>::from_uint(1004);
+    assert_eq!(cc.into_u32(), 1004);
 }

@@ -11,7 +11,7 @@
 #![warn(missing_docs)]
 #![warn(missing_doc_code_examples)]
 use std::fmt::{ self, Display, Formatter };
-use std::mem::{ size_of, transmute_copy, zeroed };
+use std::mem::{ size_of, transmute_copy, zeroed, transmute };
 use std::ops::*;
 use std::cmp::{ PartialEq, PartialOrd, Ordering };
 
@@ -182,7 +182,8 @@ where T: Uint + Add<Output=T> + AddAssign + Sub<Output=T> + SubAssign + Mul<Outp
     /// # Examples
     /// ```
     /// use Cryptocol::number::BigUInt;
-    /// let big_int = BigUInt<u64,16>::new();
+    /// let big_int = BigUInt::<u64,16>::new();
+    /// assert_eq!(big_int, BigUInt::<u64,16>::from_uint(0));
     /// ```
     pub fn new() -> Self
     {
@@ -195,7 +196,8 @@ where T: Uint + Add<Output=T> + AddAssign + Sub<Output=T> + SubAssign + Mul<Outp
     /// # Examples
     /// ```
     /// use Cryptocol::number::BigUInt;
-    /// let zero = BigUInt<u64,16>::zero();
+    /// let zero = BigUInt::<u64,16>::zero();
+    /// assert_eq!(zero, BigUInt::<u64,16>::from_uint(0));
     /// ```
     pub fn zero() -> Self
     {
@@ -206,7 +208,8 @@ where T: Uint + Add<Output=T> + AddAssign + Sub<Output=T> + SubAssign + Mul<Outp
     /// # Examples
     /// ```
     /// use Cryptocol::number::BigUInt;
-    /// let big_num = BigUInt<u8,32>::from_array(&[1;32]);
+    /// let big_num = BigUInt::<u8,32>::from_array(&[1;32]);
+    /// assert_eq!(big_num, BigUInt::<u8,32>::from_string_with_radix("0000_0000_0000_0001__0000_0000_0000_0001__0000_0000_0000_0001__0000_0000_0000_0001__0000_0000_0000_0001__0000_0000_0000_0001__0000_0000_0000_0001__0000_0000_0000_0001__0000_0000_0000_0001__0000_0000_0000_0001__0000_0000_0000_0001__0000_0000_0000_0001__0000_0000_0000_0001__0000_0000_0000_0001__0000_0000_0000_0001__0000_0000_0000_0001__0000_0000_0000_0001__0000_0000_0000_0001__0000_0000_0000_0001__0000_0000_0000_0001__0000_0000_0000_0001__0000_0000_0000_0001__0000_0000_0000_0001__0000_0000_0000_0001__0000_0000_0000_0001__0000_0000_0000_0001__0000_0000_0000_0001__0000_0000_0000_0001__0000_0000_0000_0001__0000_0000_0000_0001__0000_0000_0000_0001__0000_0000_0000_0001__", 16).unwrap(););
     /// ```
     pub fn from_array(val: &[T; N]) -> Self
     {
@@ -219,7 +222,8 @@ where T: Uint + Add<Output=T> + AddAssign + Sub<Output=T> + SubAssign + Mul<Outp
     /// # Examples
     /// ```
     /// use Cryptocol::number::BigUInt;
-    /// let bi = BigUInt<u8,32>::from_uint(1004);
+    /// let cc = BigUInt::<u8,32>::from_uint(1004);
+    /// assert_eq!(cc.into_u32(), 1004);
     /// ```
     pub fn from_uint<V: Copy>(val: V) -> Self
     {
@@ -744,6 +748,126 @@ where T: Uint + Add<Output=T> + AddAssign + Sub<Output=T> + SubAssign + Mul<Outp
             }
         }
     }
+
+    pub fn into_u128(&self) -> u128
+    {
+        let mut num = ULonger { ulonger: 0 };
+        match size_of::<T>()
+        {
+            1 => {
+                unsafe { num.byte[0] = self.number[0].into_u8(); }
+                unsafe { if N > 1 { num.byte[1] = self.number[1].into_u8() } }
+                unsafe { if N > 2 { num.byte[2] = self.number[2].into_u8() } }
+                unsafe { if N > 3 { num.byte[3] = self.number[3].into_u8() } }
+                unsafe { if N > 4 { num.byte[4] = self.number[4].into_u8() } }
+                unsafe { if N > 5 { num.byte[5] = self.number[5].into_u8() } }
+                unsafe { if N > 6 { num.byte[6] = self.number[6].into_u8() } }
+                unsafe { if N > 7 { num.byte[7] = self.number[7].into_u8() } }
+                unsafe { if N > 8 { num.byte[8] = self.number[8].into_u8() } }
+                unsafe { if N > 9 { num.byte[9] = self.number[9].into_u8() } }
+                unsafe { if N > 10 { num.byte[10] = self.number[10].into_u8() } }
+                unsafe { if N > 11 { num.byte[11] = self.number[11].into_u8() } }
+                unsafe { if N > 12 { num.byte[12] = self.number[12].into_u8() } }
+                unsafe { if N > 13 { num.byte[13] = self.number[13].into_u8() } }
+                unsafe { if N > 14 { num.byte[14] = self.number[14].into_u8() } }
+                unsafe { if N > 15 { num.byte[15] = self.number[15].into_u8() } }
+                },
+            2 => {
+                unsafe { num.ushort[0] = self.number[0].into_u16(); }
+                unsafe { if N > 1 { num.ushort[1] = self.number[1].into_u16() } }
+                unsafe { if N > 2 { num.ushort[2] = self.number[2].into_u16() } }
+                unsafe { if N > 3 { num.ushort[3] = self.number[3].into_u16() } }
+                unsafe { if N > 4 { num.ushort[4] = self.number[4].into_u16() } }
+                unsafe { if N > 5 { num.ushort[5] = self.number[5].into_u16() } }
+                unsafe { if N > 6 { num.ushort[6] = self.number[6].into_u16() } }
+                unsafe { if N > 7 { num.ushort[7] = self.number[7].into_u16() } }
+                },
+            4 => {
+                unsafe { num.uint[0] = self.number[0].into_u32(); }
+                unsafe { if N > 2 { num.uint[1] = self.number[1].into_u32(); } }
+                unsafe { if N > 3 { num.uint[2] = self.number[2].into_u32(); } }
+                unsafe { if N > 4 { num.uint[3] = self.number[3].into_u32(); } }
+                },
+            8 => { 
+                unsafe { num.ulong[0] = self.number[0].into_u64(); }
+                unsafe { if N > 1 { num.ulong[1] = self.number[1].into_u64(); } }
+                },
+            _ => { return self.number[0].into_u128(); },
+        }
+        unsafe { num.ulonger }
+    }
+
+    pub fn into_u64(&self) -> u64
+    {
+        let mut num = ULonger { ulonger: 0 };
+        match size_of::<T>()
+        {
+            1 => {
+                unsafe { num.byte[0] = self.number[0].into_u8(); }
+                unsafe { if N > 1 { num.byte[1] = self.number[1].into_u8() } }
+                unsafe { if N > 2 { num.byte[2] = self.number[2].into_u8() } }
+                unsafe { if N > 3 { num.byte[3] = self.number[3].into_u8() } }
+                unsafe { if N > 4 { num.byte[4] = self.number[4].into_u8() } }
+                unsafe { if N > 5 { num.byte[5] = self.number[5].into_u8() } }
+                unsafe { if N > 6 { num.byte[6] = self.number[6].into_u8() } }
+                unsafe { if N > 7 { num.byte[7] = self.number[7].into_u8() } }
+                },
+            2 => {
+                unsafe { num.ushort[0] = self.number[0].into_u16(); }
+                unsafe { if N > 1 { num.ushort[1] = self.number[1].into_u16() } }
+                unsafe { if N > 2 { num.ushort[2] = self.number[2].into_u16() } }
+                unsafe { if N > 3 { num.ushort[3] = self.number[3].into_u16() } }
+                },
+            4 => {
+                unsafe { num.uint[0] = self.number[0].into_u32(); }
+                unsafe { if N > 1 { num.uint[1] = self.number[1].into_u32(); } }
+                },
+            8 => { return self.number[0].into_u64(); },
+            _ => { num.ulonger = self.number[0].into_u128(); },
+        }
+        unsafe { num.ulong[0] }
+    }
+
+    pub fn into_u32(&self) -> u32
+    {
+        let mut num = ULonger { ulonger: 0 };
+        match size_of::<T>()
+        {
+            1 => {
+                unsafe { num.byte[0] = self.number[0].into_u8(); }
+                unsafe { if N > 1 { num.byte[1] = self.number[1].into_u8() } }
+                unsafe { if N > 2 { num.byte[2] = self.number[2].into_u8() } }
+                unsafe { if N > 3 { num.byte[3] = self.number[3].into_u8() } }
+                },
+            2 => {
+                unsafe { num.ushort[0] = self.number[0].into_u16(); }
+                unsafe { if N > 1 { num.ushort[1] = self.number[1].into_u16() } }
+                },
+            4 => { return self.number[0].into_u32(); },
+            8 => { unsafe { num.ulong[0] = self.number[0].into_u64(); } },
+            _ => { num.ulonger = self.number[0].into_u128(); },
+        }
+        unsafe { num.uint[0] }
+    }
+
+    pub fn into_u16(&self) -> u16
+    {
+        let mut num = ULonger { ulonger: 0 };
+        match size_of::<T>()
+        {
+            1 => {
+                unsafe { num.byte[0] = self.number[0].into_u8(); }
+                unsafe { if N > 1 { num.byte[1] = self.number[1].into_u8() } }
+                },
+            2 => { return self.number[0].into_u16(); },
+            4 => { unsafe { num.uint[0] = self.number[0].into_u32(); } },
+            8 => { unsafe { num.ulong[0] = self.number[0].into_u64(); } },
+            _ => { num.ulonger = self.number[0].into_u128(); },
+        }
+        unsafe { num.ushort[0] }
+    }
+
+    pub fn into_u8(&self) -> u8         { self.number[0].into_u8() }
 
     pub fn to_string(&self) -> String   { self.to_string_with_radix(10) }
     pub fn set_overflow(&mut self)      { self.set_flag_bit(Self::OVERFLOW); }
