@@ -2,30 +2,18 @@ mod number;
 
 use number::*;
 
-type T = u64;
+type T = u16;
 const N: usize = 16;
+type BI = BigUInt::<T, N>;
+type AI = BigUInt::<usize, N>;
 
 fn main()
 {
-    let zero = BigUInt::<u64, 16>::zero();
-    assert_eq!(zero, BigUInt::<u64, 16>::from_uint(0));
-    type BI = BigUInt::<T, N>;
-    type AI = BigUInt::<usize, N>;
-    let bi = BI::from_array(&[1;N]);
-    let bb = BI::from_string_with_radix("0000_0000_0000_0001__0000_0000_0000_0001__0000_0000_0000_0001__0000_0000_0000_0001__0000_0000_0000_0001__0000_0000_0000_0001__0000_0000_0000_0001__0000_0000_0000_0001__0000_0000_0000_0001__0000_0000_0000_0001__0000_0000_0000_0001__0000_0000_0000_0001__0000_0000_0000_0001__0000_0000_0000_0001__0000_0000_0000_0001__0000_0000_0000_0001__0000_0000_0000_0001__0000_0000_0000_0001__0000_0000_0000_0001__0000_0000_0000_0001__0000_0000_0000_0001__0000_0000_0000_0001__0000_0000_0000_0001__0000_0000_0000_0001__0000_0000_0000_0001__0000_0000_0000_0001__0000_0000_0000_0001__0000_0000_0000_0001__0000_0000_0000_0001__0000_0000_0000_0001__0000_0000_0000_0001__0000_0000_0000_0001__", 16).unwrap();
-    let b = BI::from_string("1234567891234567879123456789111111111222222222333333333444444444555555555666666666777777777888888888999999999000000000").unwrap();
-    println!("bi = {:?}", bi);
-    println!("bi = {}", bi.to_string_with_radix(16));
-    println!("bb = {:?}", bb);
-    println!("bb = {}", bb.to_string_with_radix(16));
-    println!("b = {}", b);
-    println!("b * bb = {}", b * bb);
-    println!("bb / b = {}", bb / b);
-    println!("bb % b = {}", bb % b);
-    println!("b + 1 = {}", b.add_uint(1));
-    println!("b - 1 = {}", b.sub_uint(1));
-    let a = AI::from_string("123654789147258369").unwrap();
+    let a = BI::from_string_with_radix("123456789", 10).unwrap();
+    let b = BI::from_string_with_radix("2", 10).unwrap();
+    let c = a / b;
     println!("a = {}", a);
-    let cc = BigUInt::<u8,32>::from_uint(1004);
-    assert_eq!(cc.into_u32(), 1004);
+    println!("b = {}", b);
+    println!("c = {}", c);
+    println!("a << 1 = {}",  a << 1);
 }
