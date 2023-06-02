@@ -80,17 +80,66 @@ type u7168_with_u8 = BigUInt<u8, 896>;
 type u8192_with_u8 = BigUInt<u8, 1024>;
 type u16384_with_u8 = BigUInt<u8, 2048>;
 
-type u256 = u256_with_u64;
-type u512 = u512_with_u64;
-type u1024 = u1024_with_u64;
-type u2048 = u2048_with_u64;
-type u3072 = u3072_with_u64;
-type u4096 = u4096_with_u64;
-type u5120 = u5120_with_u64;
-type u6144 = u6144_with_u64;
-type u7168 = u7168_with_u64;
-type u8192 = u8192_with_u64;
-type u16384 = u16384_with_u64;
+#[cfg(target_pointer_width = "128")] type u256 = u256_with_u128;
+#[cfg(target_pointer_width = "128")] type u512 = u512_with_u128;
+#[cfg(target_pointer_width = "128")] type u1024 = u1024_with_u128;
+#[cfg(target_pointer_width = "128")] type u2048 = u2048_with_u128;
+#[cfg(target_pointer_width = "128")] type u3072 = u3072_with_u128;
+#[cfg(target_pointer_width = "128")] type u4096 = u4096_with_u128;
+#[cfg(target_pointer_width = "128")] type u5120 = u5120_with_u128;
+#[cfg(target_pointer_width = "128")] type u6144 = u6144_with_u128;
+#[cfg(target_pointer_width = "128")] type u7168 = u7168_with_u128;
+#[cfg(target_pointer_width = "128")] type u8192 = u8192_with_u128;
+#[cfg(target_pointer_width = "128")] type u16384 = u16384_with_u128;
+
+#[cfg(target_pointer_width = "64")] type u256 = u256_with_u64;
+#[cfg(target_pointer_width = "64")] type u512 = u512_with_u64;
+#[cfg(target_pointer_width = "64")] type u1024 = u1024_with_u64;
+#[cfg(target_pointer_width = "64")] type u2048 = u2048_with_u64;
+#[cfg(target_pointer_width = "64")] type u3072 = u3072_with_u64;
+#[cfg(target_pointer_width = "64")] type u4096 = u4096_with_u64;
+#[cfg(target_pointer_width = "64")] type u5120 = u5120_with_u64;
+#[cfg(target_pointer_width = "64")] type u6144 = u6144_with_u64;
+#[cfg(target_pointer_width = "64")] type u7168 = u7168_with_u64;
+#[cfg(target_pointer_width = "64")] type u8192 = u8192_with_u64;
+#[cfg(target_pointer_width = "64")] type u16384 = u16384_with_u64;
+
+#[cfg(target_pointer_width = "32")] type u256 = u256_with_u32;
+#[cfg(target_pointer_width = "32")] type u512 = u512_with_u32;
+#[cfg(target_pointer_width = "32")] type u1024 = u1024_with_u32;
+#[cfg(target_pointer_width = "32")] type u2048 = u2048_with_u32;
+#[cfg(target_pointer_width = "32")] type u3072 = u3072_with_u32;
+#[cfg(target_pointer_width = "32")] type u4096 = u4096_with_u32;
+#[cfg(target_pointer_width = "32")] type u5120 = u5120_with_u32;
+#[cfg(target_pointer_width = "32")] type u6144 = u6144_with_u32;
+#[cfg(target_pointer_width = "32")] type u7168 = u7168_with_u32;
+#[cfg(target_pointer_width = "32")] type u8192 = u8192_with_u32;
+#[cfg(target_pointer_width = "32")] type u16384 = u16384_with_u32;
+
+#[cfg(target_pointer_width = "16")] type u256 = u256_with_u16;
+#[cfg(target_pointer_width = "16")] type u512 = u512_with_u16;
+#[cfg(target_pointer_width = "16")] type u1024 = u1024_with_u16;
+#[cfg(target_pointer_width = "16")] type u2048 = u2048_with_u16;
+#[cfg(target_pointer_width = "16")] type u3072 = u3072_with_u16;
+#[cfg(target_pointer_width = "16")] type u4096 = u4096_with_u16;
+#[cfg(target_pointer_width = "16")] type u5120 = u5120_with_u16;
+#[cfg(target_pointer_width = "16")] type u6144 = u6144_with_u16;
+#[cfg(target_pointer_width = "16")] type u7168 = u7168_with_u16;
+#[cfg(target_pointer_width = "16")] type u8192 = u8192_with_u16;
+#[cfg(target_pointer_width = "16")] type u16384 = u16384_with_u16;
+
+#[cfg(target_pointer_width = "8")] type u256 = u256_with_u8;
+#[cfg(target_pointer_width = "8")] type u512 = u512_with_u8;
+#[cfg(target_pointer_width = "8")] type u1024 = u1024_with_u8;
+#[cfg(target_pointer_width = "8")] type u2048 = u2048_with_u8;
+#[cfg(target_pointer_width = "8")] type u3072 = u3072_with_u8;
+#[cfg(target_pointer_width = "8")] type u4096 = u4096_with_u8;
+#[cfg(target_pointer_width = "8")] type u5120 = u5120_with_u8;
+#[cfg(target_pointer_width = "8")] type u6144 = u6144_with_u8;
+#[cfg(target_pointer_width = "8")] type u7168 = u7168_with_u8;
+#[cfg(target_pointer_width = "8")] type u8192 = u8192_with_u8;
+#[cfg(target_pointer_width = "8")] type u16384 = u16384_with_u8;
+
 
 type U32 = u256;
 type U64 = u512;

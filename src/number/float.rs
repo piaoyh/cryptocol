@@ -33,6 +33,7 @@ pub trait Float: Copy + Debug
     fn zero() -> Self;
     fn Max() -> Self;
     fn Min() -> Self;
+    fn num(n: f64) -> Self;
 }
 
 impl Float for f32
@@ -43,6 +44,7 @@ impl Float for f32
     fn zero() -> Self           { 0.0 }
     fn Max() -> Self            { Self::MAX }
     fn Min() -> Self            { Self::MIN }
+    fn num(n: f64) -> Self      { n as Self }
 }
 
 impl Float for f64
@@ -53,4 +55,5 @@ impl Float for f64
     fn zero() -> Self           { 0.0 }
     fn Max() -> Self            { Self::MAX }
     fn Min() -> Self            { Self::MIN }
+    fn num(n: f64) -> Self      { n as Self }
 }

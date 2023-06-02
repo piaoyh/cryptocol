@@ -39,6 +39,7 @@ pub trait Int: Copy + Debug
     fn into_i32(self) -> i32;
     fn into_i16(self) -> i16;
     fn into_i8(self) -> i8;
+    fn into_isize(self) -> isize;
     fn into_bool(self) -> bool;
     fn zero() -> Self;
     fn one() -> Self;
@@ -46,7 +47,6 @@ pub trait Int: Copy + Debug
     fn Min() -> Self;
     fn num(n: i128) -> Self;
 }
-
 
 impl Int for i8
 {
@@ -61,6 +61,7 @@ impl Int for i8
     fn into_i32(self) -> i32    { self as i32 }
     fn into_i16(self) -> i16    { self as i16 }
     fn into_i8(self) -> i8      { self as i8 }
+    fn into_isize(self) -> isize { self as isize }
     fn into_bool(self) -> bool  { self != 0 }
     fn zero() -> Self           { 0 }
     fn one() -> Self            { 1 }
@@ -82,6 +83,7 @@ impl Int for i16
     fn into_i32(self) -> i32    { self as i32 }
     fn into_i16(self) -> i16    { self as i16 }
     fn into_i8(self) -> i8      { self as i8 }
+    fn into_isize(self) -> isize { self as isize }
     fn into_bool(self) -> bool  { self != 0 }
     fn zero() -> Self           { 0 }
     fn one() -> Self            { 1 }
@@ -103,6 +105,7 @@ impl Int for i32
     fn into_i32(self) -> i32    { self as i32 }
     fn into_i16(self) -> i16    { self as i16 }
     fn into_i8(self) -> i8      { self as i8 }
+    fn into_isize(self) -> isize { self as isize }
     fn into_bool(self) -> bool  { self != 0 }
     fn zero() -> Self           { 0 }
     fn one() -> Self            { 1 }
@@ -124,6 +127,7 @@ impl Int for i64
     fn into_i32(self) -> i32    { self as i32 }
     fn into_i16(self) -> i16    { self as i16 }
     fn into_i8(self) -> i8      { self as i8 }
+    fn into_isize(self) -> isize { self as isize }
     fn into_bool(self) -> bool  { self != 0 }
     fn zero() -> Self           { 0 }
     fn one() -> Self            { 1 }
@@ -145,6 +149,7 @@ impl Int for i128
     fn into_i32(self) -> i32    { self as i32 }
     fn into_i16(self) -> i16    { self as i16 }
     fn into_i8(self) -> i8      { self as i8 }
+    fn into_isize(self) -> isize { self as isize }
     fn into_bool(self) -> bool  { self != 0 }
     fn zero() -> Self           { 0 }
     fn one() -> Self            { 1 }
@@ -166,6 +171,7 @@ impl Int for isize
     fn into_i32(self) -> i32    { self as i32 }
     fn into_i16(self) -> i16    { self as i16 }
     fn into_i8(self) -> i8      { self as i8 }
+    fn into_isize(self) -> isize { self as isize }
     fn into_bool(self) -> bool  { self != 0 }
     fn zero() -> Self           { 0 }
     fn one() -> Self            { 1 }

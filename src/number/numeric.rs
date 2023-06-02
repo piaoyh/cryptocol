@@ -36,8 +36,17 @@ pub trait Numeric: Copy + Debug
     fn into_f64(self) -> f64;
     fn into_f32(self) -> f32;
     fn into_u128(self) -> u128;
-    fn into_i128(self) -> i128;
+    fn into_u64(self) -> u64;
+    fn into_u32(self) -> u32;
+    fn into_u16(self) -> u16;
+    fn into_u8(self) -> u8;
     fn into_usize(self) -> usize;
+    fn into_i128(self) -> i128;
+    fn into_i64(self) -> i64;
+    fn into_i32(self) -> i32;
+    fn into_i16(self) -> i16;
+    fn into_i8(self) -> i8;
+    fn into_isize(self) -> isize;
     fn into_bool(self) -> bool;
     fn zero() -> Self;
     fn one() -> Self;
@@ -55,8 +64,17 @@ impl Numeric for u8
     fn into_f64(self) -> f64    { self as f64 }
     fn into_f32(self) -> f32    { self as f32 }
     fn into_u128(self) -> u128  { self as u128 }
-    fn into_i128(self) -> i128  { self as i128 }
+    fn into_u64(self) -> u64    { self as u64 }
+    fn into_u32(self) -> u32    { self as u32 }
+    fn into_u16(self) -> u16    { self as u16 }
+    fn into_u8(self) -> u8      { self as u8 }
     fn into_usize(self) -> usize { self as usize }
+    fn into_i128(self) -> i128  { self as i128 }
+    fn into_i64(self) -> i64    { self as i64 }
+    fn into_i32(self) -> i32    { self as i32 }
+    fn into_i16(self) -> i16    { self as i16 }
+    fn into_i8(self) -> i8      { self as i8 }
+    fn into_isize(self) -> isize { self as isize }
     fn into_bool(self) -> bool  { self != 0 }
     fn zero() -> Self           { 0 }
     fn one() -> Self            { 1 }
@@ -74,8 +92,17 @@ impl Numeric for u16
     fn into_f64(self) -> f64    { self as f64 }
     fn into_f32(self) -> f32    { self as f32 }
     fn into_u128(self) -> u128  { self as u128 }
-    fn into_i128(self) -> i128  { self as i128 }
+    fn into_u64(self) -> u64    { self as u64 }
+    fn into_u32(self) -> u32    { self as u32 }
+    fn into_u16(self) -> u16    { self as u16 }
+    fn into_u8(self) -> u8      { self as u8 }
     fn into_usize(self) -> usize { self as usize }
+    fn into_i128(self) -> i128  { self as i128 }
+    fn into_i64(self) -> i64    { self as i64 }
+    fn into_i32(self) -> i32    { self as i32 }
+    fn into_i16(self) -> i16    { self as i16 }
+    fn into_i8(self) -> i8      { self as i8 }
+    fn into_isize(self) -> isize { self as isize }
     fn into_bool(self) -> bool  { self != 0 }
     fn zero() -> Self           { 0 }
     fn one() -> Self            { 1 }
@@ -93,8 +120,17 @@ impl Numeric for u32
     fn into_f64(self) -> f64    { self as f64 }
     fn into_f32(self) -> f32    { self as f32 }
     fn into_u128(self) -> u128  { self as u128 }
-    fn into_i128(self) -> i128  { self as i128 }
+    fn into_u64(self) -> u64    { self as u64 }
+    fn into_u32(self) -> u32    { self as u32 }
+    fn into_u16(self) -> u16    { self as u16 }
+    fn into_u8(self) -> u8      { self as u8 }
     fn into_usize(self) -> usize { self as usize }
+    fn into_i128(self) -> i128  { self as i128 }
+    fn into_i64(self) -> i64    { self as i64 }
+    fn into_i32(self) -> i32    { self as i32 }
+    fn into_i16(self) -> i16    { self as i16 }
+    fn into_i8(self) -> i8      { self as i8 }
+    fn into_isize(self) -> isize { self as isize }
     fn into_bool(self) -> bool  { self != 0 }
     fn zero() -> Self           { 0 }
     fn one() -> Self            { 1 }
@@ -112,8 +148,17 @@ impl Numeric for u64
     fn into_f64(self) -> f64    { self as f64 }
     fn into_f32(self) -> f32    { self as f32 }
     fn into_u128(self) -> u128  { self as u128 }
-    fn into_i128(self) -> i128  { self as i128 }
+    fn into_u64(self) -> u64    { self as u64 }
+    fn into_u32(self) -> u32    { self as u32 }
+    fn into_u16(self) -> u16    { self as u16 }
+    fn into_u8(self) -> u8      { self as u8 }
     fn into_usize(self) -> usize { self as usize }
+    fn into_i128(self) -> i128  { self as i128 }
+    fn into_i64(self) -> i64    { self as i64 }
+    fn into_i32(self) -> i32    { self as i32 }
+    fn into_i16(self) -> i16    { self as i16 }
+    fn into_i8(self) -> i8      { self as i8 }
+    fn into_isize(self) -> isize { self as isize }
     fn into_bool(self) -> bool  { self != 0 }
     fn zero() -> Self           { 0 }
     fn one() -> Self            { 1 }
@@ -131,8 +176,45 @@ impl Numeric for u128
     fn into_f64(self) -> f64    { self as f64 }
     fn into_f32(self) -> f32    { self as f32 }
     fn into_u128(self) -> u128  { self as u128 }
-    fn into_i128(self) -> i128  { self as i128 }
+    fn into_u64(self) -> u64    { self as u64 }
+    fn into_u32(self) -> u32    { self as u32 }
+    fn into_u16(self) -> u16    { self as u16 }
+    fn into_u8(self) -> u8      { self as u8 }
     fn into_usize(self) -> usize { self as usize }
+    fn into_i128(self) -> i128  { self as i128 }
+    fn into_i64(self) -> i64    { self as i64 }
+    fn into_i32(self) -> i32    { self as i32 }
+    fn into_i16(self) -> i16    { self as i16 }
+    fn into_i8(self) -> i8      { self as i8 }
+    fn into_isize(self) -> isize { self as isize }
+    fn into_bool(self) -> bool  { self != 0 }
+    fn zero() -> Self           { 0 }
+    fn one() -> Self            { 1 }
+    fn Max() -> Self            { Self::MAX }
+    fn Min() -> Self            { Self::MIN }
+    fn num(n: i128) -> Self     { n as Self }
+}
+
+impl Numeric for usize
+{
+    fn wrapping_add(self, rhs: Self) -> Self    { self.wrapping_add(rhs) }
+    fn wrapping_sub(self, rhs: Self) -> Self    { self.wrapping_sub(rhs) }
+    fn wrapping_mul(self, rhs: Self) -> Self    { self.wrapping_mul(rhs) }
+    fn wrapping_div(self, rhs: Self) -> Self    { self.wrapping_div(rhs) }
+    fn into_f64(self) -> f64    { self as f64 }
+    fn into_f32(self) -> f32    { self as f32 }
+    fn into_u128(self) -> u128  { self as u128 }
+    fn into_u64(self) -> u64    { self as u64 }
+    fn into_u32(self) -> u32    { self as u32 }
+    fn into_u16(self) -> u16    { self as u16 }
+    fn into_u8(self) -> u8      { self as u8 }
+    fn into_usize(self) -> usize { self as usize }
+    fn into_i128(self) -> i128  { self as i128 }
+    fn into_i64(self) -> i64    { self as i64 }
+    fn into_i32(self) -> i32    { self as i32 }
+    fn into_i16(self) -> i16    { self as i16 }
+    fn into_i8(self) -> i8      { self as i8 }
+    fn into_isize(self) -> isize { self as isize }
     fn into_bool(self) -> bool  { self != 0 }
     fn zero() -> Self           { 0 }
     fn one() -> Self            { 1 }
@@ -150,8 +232,17 @@ impl Numeric for i8
     fn into_f64(self) -> f64    { self as f64 }
     fn into_f32(self) -> f32    { self as f32 }
     fn into_u128(self) -> u128  { self as u128 }
-    fn into_i128(self) -> i128  { self as i128 }
+    fn into_u64(self) -> u64    { self as u64 }
+    fn into_u32(self) -> u32    { self as u32 }
+    fn into_u16(self) -> u16    { self as u16 }
+    fn into_u8(self) -> u8      { self as u8 }
     fn into_usize(self) -> usize { self as usize }
+    fn into_i128(self) -> i128  { self as i128 }
+    fn into_i64(self) -> i64    { self as i64 }
+    fn into_i32(self) -> i32    { self as i32 }
+    fn into_i16(self) -> i16    { self as i16 }
+    fn into_i8(self) -> i8      { self as i8 }
+    fn into_isize(self) -> isize { self as isize }
     fn into_bool(self) -> bool  { self != 0 }
     fn zero() -> Self           { 0 }
     fn one() -> Self            { 1 }
@@ -169,8 +260,17 @@ impl Numeric for i16
     fn into_f64(self) -> f64    { self as f64 }
     fn into_f32(self) -> f32    { self as f32 }
     fn into_u128(self) -> u128  { self as u128 }
-    fn into_i128(self) -> i128  { self as i128 }
+    fn into_u64(self) -> u64    { self as u64 }
+    fn into_u32(self) -> u32    { self as u32 }
+    fn into_u16(self) -> u16    { self as u16 }
+    fn into_u8(self) -> u8      { self as u8 }
     fn into_usize(self) -> usize { self as usize }
+    fn into_i128(self) -> i128  { self as i128 }
+    fn into_i64(self) -> i64    { self as i64 }
+    fn into_i32(self) -> i32    { self as i32 }
+    fn into_i16(self) -> i16    { self as i16 }
+    fn into_i8(self) -> i8      { self as i8 }
+    fn into_isize(self) -> isize { self as isize }
     fn into_bool(self) -> bool  { self != 0 }
     fn zero() -> Self           { 0 }
     fn one() -> Self            { 1 }
@@ -188,8 +288,17 @@ impl Numeric for i32
     fn into_f64(self) -> f64    { self as f64 }
     fn into_f32(self) -> f32    { self as f32 }
     fn into_u128(self) -> u128  { self as u128 }
-    fn into_i128(self) -> i128  { self as i128 }
+    fn into_u64(self) -> u64    { self as u64 }
+    fn into_u32(self) -> u32    { self as u32 }
+    fn into_u16(self) -> u16    { self as u16 }
+    fn into_u8(self) -> u8      { self as u8 }
     fn into_usize(self) -> usize { self as usize }
+    fn into_i128(self) -> i128  { self as i128 }
+    fn into_i64(self) -> i64    { self as i64 }
+    fn into_i32(self) -> i32    { self as i32 }
+    fn into_i16(self) -> i16    { self as i16 }
+    fn into_i8(self) -> i8      { self as i8 }
+    fn into_isize(self) -> isize { self as isize }
     fn into_bool(self) -> bool  { self != 0 }
     fn zero() -> Self           { 0 }
     fn one() -> Self            { 1 }
@@ -207,8 +316,17 @@ impl Numeric for i64
     fn into_f64(self) -> f64    { self as f64 }
     fn into_f32(self) -> f32    { self as f32 }
     fn into_u128(self) -> u128  { self as u128 }
-    fn into_i128(self) -> i128  { self as i128 }
+    fn into_u64(self) -> u64    { self as u64 }
+    fn into_u32(self) -> u32    { self as u32 }
+    fn into_u16(self) -> u16    { self as u16 }
+    fn into_u8(self) -> u8      { self as u8 }
     fn into_usize(self) -> usize { self as usize }
+    fn into_i128(self) -> i128  { self as i128 }
+    fn into_i64(self) -> i64    { self as i64 }
+    fn into_i32(self) -> i32    { self as i32 }
+    fn into_i16(self) -> i16    { self as i16 }
+    fn into_i8(self) -> i8      { self as i8 }
+    fn into_isize(self) -> isize { self as isize }
     fn into_bool(self) -> bool  { self != 0 }
     fn zero() -> Self           { 0 }
     fn one() -> Self            { 1 }
@@ -226,8 +344,45 @@ impl Numeric for i128
     fn into_f64(self) -> f64    { self as f64 }
     fn into_f32(self) -> f32    { self as f32 }
     fn into_u128(self) -> u128  { self as u128 }
-    fn into_i128(self) -> i128  { self as i128 }
+    fn into_u64(self) -> u64    { self as u64 }
+    fn into_u32(self) -> u32    { self as u32 }
+    fn into_u16(self) -> u16    { self as u16 }
+    fn into_u8(self) -> u8      { self as u8 }
     fn into_usize(self) -> usize { self as usize }
+    fn into_i128(self) -> i128  { self as i128 }
+    fn into_i64(self) -> i64    { self as i64 }
+    fn into_i32(self) -> i32    { self as i32 }
+    fn into_i16(self) -> i16    { self as i16 }
+    fn into_i8(self) -> i8      { self as i8 }
+    fn into_isize(self) -> isize { self as isize }
+    fn into_bool(self) -> bool  { self != 0 }
+    fn zero() -> Self           { 0 }
+    fn one() -> Self            { 1 }
+    fn Max() -> Self            { Self::MAX }
+    fn Min() -> Self            { Self::MIN }
+    fn num(n: i128) -> Self     { n as Self }
+}
+
+impl Numeric for isize
+{
+    fn wrapping_add(self, rhs: Self) -> Self    { self.wrapping_add(rhs) }
+    fn wrapping_sub(self, rhs: Self) -> Self    { self.wrapping_sub(rhs) }
+    fn wrapping_mul(self, rhs: Self) -> Self    { self.wrapping_mul(rhs) }
+    fn wrapping_div(self, rhs: Self) -> Self    { self.wrapping_div(rhs) }
+    fn into_f64(self) -> f64    { self as f64 }
+    fn into_f32(self) -> f32    { self as f32 }
+    fn into_u128(self) -> u128  { self as u128 }
+    fn into_u64(self) -> u64    { self as u64 }
+    fn into_u32(self) -> u32    { self as u32 }
+    fn into_u16(self) -> u16    { self as u16 }
+    fn into_u8(self) -> u8      { self as u8 }
+    fn into_usize(self) -> usize { self as usize }
+    fn into_i128(self) -> i128  { self as i128 }
+    fn into_i64(self) -> i64    { self as i64 }
+    fn into_i32(self) -> i32    { self as i32 }
+    fn into_i16(self) -> i16    { self as i16 }
+    fn into_i8(self) -> i8      { self as i8 }
+    fn into_isize(self) -> isize { self as isize }
     fn into_bool(self) -> bool  { self != 0 }
     fn zero() -> Self           { 0 }
     fn one() -> Self            { 1 }
