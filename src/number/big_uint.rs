@@ -15,7 +15,7 @@ use std::mem::{ size_of, transmute_copy, zeroed, transmute };
 use std::ops::*;
 use std::cmp::{ PartialEq, PartialOrd, Ordering };
 
-use super::Uint::*;
+use super::uint::*;
 
 type u_max = u128;
 type u_half = u64;

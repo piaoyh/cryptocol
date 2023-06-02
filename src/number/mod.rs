@@ -22,10 +22,10 @@
 //! 
 
 pub mod huge_number;
-pub mod Uint;
+pub mod uint;
 pub mod big_uint;
 
 pub use huge_number::*;
-pub use Uint::*;
+pub use uint::*;
 pub use big_uint::*;
 
