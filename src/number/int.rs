@@ -6,6 +6,8 @@
 // This file may not be copied, modified, or distributed
 // except according to those terms.
 
+//! Trait Int for generic type of primitive signed integral data types
+//! for all modules of the crate Cryptocol.
 
 #![warn(missing_docs)]
 #![warn(missing_doc_code_examples)]
@@ -14,14 +16,14 @@ use std::fmt::Debug;
 use std::ops::*;
 use std::cmp::{Eq, Ord};
 
-/// Trait Int is for generic type of primitive data types
+/// For generic type of primitive signed integral data types
 /// for all modules of the crate Cryptocol.
 ///  
-/// Here, the generic type of primitive data types includes: i8, i16, i32, i64,
-/// i128, and isize. You will hardly use the trait Int unless you improve the
-/// crate Cryptocol or create addional libraries that works with the crate
-/// Cryptocol. But, if you only use the crate Cryptocol, you can forget
-/// about this trait Int.
+/// Here, the generic type of primitive signed integral data types includes:
+/// i8, i16, i32, i64, i128, and isize. You will hardly use the trait Int unless
+/// you improve the crate Cryptocol or create addional libraries that works with
+/// the crate Cryptocol. But, if you only use the crate Cryptocol, you can
+/// forget about this trait Int.
 /// 
 pub trait Int: Copy + Debug
             + Add + AddAssign + Sub + SubAssign + Mul + MulAssign + Div + DivAssign

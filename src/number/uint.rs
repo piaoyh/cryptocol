@@ -6,6 +6,8 @@
 // This file may not be copied, modified, or distributed
 // except according to those terms.
 
+//! For generic type of primitive unsigned integral data types
+//! for all modules of the crate Cryptocol.
 
 #![warn(missing_docs)]
 #![warn(missing_doc_code_examples)]
@@ -14,15 +16,15 @@ use std::fmt::Debug;
 use std::ops::*;
 use std::cmp::{Eq, Ord};
 
-/// Trait Uint is for generic type of primitive data types
+/// Trait Uint is for generic type of primitive unsigned integral data types
 /// for all modules of the crate Cryptocol.
 ///  
-/// Here, the generic type of primitive data types includes: u8, u16, u32, u64,
-/// u128 and usize. You will hardly use the trait Uint unless you improve the
-/// crate Cryptocol or create addional libraries that works with the crate
-/// Cryptocol. But, if you only use the crate Cryptocol, you can forget
-/// about this trait Uint.
-/// 
+/// Here, the generic type of primitive unsigned integral data types includes:
+/// u8, u16, u32, u64, u128 and usize. You will hardly use the trait Uint unless
+/// you improve the crate Cryptocol or create addional libraries that works with
+/// the crate Cryptocol. But, if you only use the crate Cryptocol, you can
+/// forget about this trait Uint.
+///
 pub trait Uint: Copy + Debug
             + Add + AddAssign + Sub + SubAssign + Mul + MulAssign + Div + DivAssign
             + Shl + ShlAssign + Shr + ShrAssign

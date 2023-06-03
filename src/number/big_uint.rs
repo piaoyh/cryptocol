@@ -6,7 +6,7 @@
 // This file may not be copied, modified, or distributed
 // except according to those terms.
 
-//! A struct that represents a big number which is an unsigned big integer.
+//! A big unsigned integer with user-defined fixed size.
 
 #![warn(missing_docs)]
 #![warn(missing_doc_code_examples)]
@@ -153,23 +153,30 @@ type U896 = u7168;
 type U1024 = u8192;
 type U2048 = u16384;
 
-/// A struct that represents a big number which is an unsigned big integer.
+/// A struct that represents a big unsigned integer with user-defined fixed size.
 /// 
-/// The struct `BigUInt<T, const N: usize>` is a generic struct.
-/// - It has an array of type T with N elements and a flag of type u8
-///   as its fields.
-/// - The generic data type T is supposed to be a primitive unsigned integer
-///   type such as u8, u16, u32, u64, u128 and usize.
-/// - If you give signed integer such as i8, i16, i32, i64, i128 and isize
-///   for type T, its behavior is not determined.
-/// - If you give usize for type T, the size of the type usize depends on CPU.
-/// - For example, if you give u64 for type T and 16 for N,
-///   the `BigUInt<u64, 16>` is a 1024-bit unsigned integer.
-/// - For example, if you give u32 for type T and 32 for N,
-///   the `BigUInt<u32, 32>` is a 1024-bit unsigned integer too.
-/// - Both `BigUInt<u64, 16>` and `BigUInt<u32, 32>` are the same length
-///   unsigned integer but their performance will be different depending on CPU.
-/// - flag contains OVERFLOW (0b0000_0001), UNDERFLOW (0b0000_0010),
+/// The struct `BigUInt<T, const N: usize>` is a generic struct for which you
+/// can decide the type of elements and its number. It is Little Endian.
+/// - It consists of an array of type T with N elements and flags of type u8.
+/// - The generic data type T is supposed to be a _primitive unsigned integer_
+///   type such as u8, u16, u32, u64, u128 and usize. So, you are supposed to
+///   choose one of u8, u16, u32, u64, u128 and usize. You cannot give a _signed
+///   integer_ such as i8, i16, i32, i64, i128 and isize. If you give a signed
+///   integer for generic type T, you will get errors when you compile it.
+///   Of course, you can give the data type other than u8, u16, u32, u64, u128
+///   and usize if the data type that you give has the UInt trait. Then, you
+///   have to define all the behaviors.
+/// - If you give usize for the generic type T, the size of the type usize
+///   depends on operating system. If your operating system is for 64-bit
+///   machine, usize will be the same size of u64 while your operating system
+///   is for 32-bit machine, usize will be the same size of u32.
+/// - The same sized BigUInt can be made in several ways.
+///   For example, a 1024-bit unsigned integer can be implemented with
+///   either `BigUInt<u128, 8>`, `BigUInt<u64, 16>`, `BigUInt<u32, 32>`,
+///   `BigUInt<u16, 64>`, or `BigUInt<u8, 128>`. They are all 1024-bit
+///   unsigned integers, but their performance will be different from 
+///   one another depending on CPU.
+/// - flags are OVERFLOW (0b0000_0001), UNDERFLOW (0b0000_0010),
 ///   INFINITY (0b0000_0100), and DIVIDED_BY_ZERO (== INFINITY)
 /// 
 /// # Examples
@@ -255,6 +262,7 @@ where T: Uint + Add<Output=T> + AddAssign + Sub<Output=T> + SubAssign + Mul<Outp
     /// let zero = BigUInt::<u64,16>::zero();
     /// assert_eq!(zero, BigUInt::<u64,16>::from_uint(0));
     /// ```
+    #[inline]
     pub fn zero() -> Self
     {
         Self::new()   // unsafe { zeroed::<Self>() }
@@ -405,13 +413,52 @@ where T: Uint + Add<Output=T> + AddAssign + Sub<Output=T> + SubAssign + Mul<Outp
         Self::from_string_with_radix(txt, 10)
     }
 
+    /// Constructs a new BigUInt<T, N> from another kind of BigUInt<U, M>.
+    /// It copies not only long bit integer but also current flags from another
+    /// kind of BigUInt<U, M>.
+    /// NOTICE: If the total size of input BigUInt is different from that of output,
+    /// this function will panic.
+    /// 
+    /// # Example
+    /// 
+    /// ```
+    /// use std::mem::size_of;
+    /// 
+    /// type T = u16;
+    /// const N: usize = 16;
+    /// const M: usize = size_of::<T>() * N;
+    /// type BI = BigUInt::<T, N>;
+    /// type AI = BigUInt::<u8, M>;
+    /// let a = AI::from_string("123456789123456789123456789123456789123456789123456789").unwrap();
+    /// let b = BI::from_biguint(&a);
+    /// println!("a = {}", a);
+    /// println!("b = {}", b);
+    /// ```
+    pub fn from_biguint<U, const M: usize>(biguint: &BigUInt<U, M>) -> Self
+    where U: Uint + Add<Output=U> + AddAssign + Sub<Output=U> + SubAssign
+            + Mul<Output=U> + MulAssign + Div<Output=U> + DivAssign
+            + Shl<Output=U> + ShlAssign + Shr<Output=U> + ShrAssign
+            + BitAnd<Output=U> + BitAndAssign + BitOr<Output=U> + BitOrAssign
+            + BitXor<Output=U> + BitXorAssign + Not<Output=U>
+            + PartialEq + PartialOrd
+            + Display
+    {
+        if Self::in_bytes() != size_of::<U>() * M
+            { panic!("The integer length is different from each other."); }
+        let mut me = Self::new();
+        me.number.copy_from_slice(unsafe { transmute::<&[U;M], &[T;N]>(&biguint.number) });
+        me
+    }
+
     fn make_check_bits(bit_pos: usize) -> Self
     {
         let mut check_bits = Self::new();
         check_bits.turn_check_bits(bit_pos);
         check_bits
     }
-    
+
+    pub fn in_bytes() -> usize { size_of::<T>() * N }
+
     fn turn_check_bits(&mut self, bit_pos: usize)
     {
         let TSIZE_BIT = size_of::<T>() * 8;

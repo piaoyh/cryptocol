@@ -1,19 +1,18 @@
 mod number;
 
 use number::*;
+use std::mem::size_of;
 
 type T = u16;
 const N: usize = 16;
+const M: usize = size_of::<T>() * N;
 type BI = BigUInt::<T, N>;
-type AI = BigUInt::<usize, N>;
+type AI = BigUInt::<u8, M>;
 
 fn main()
 {
-    let a = BI::from_string_with_radix("123456789", 10).unwrap();
-    let b = BI::from_string_with_radix("2", 10).unwrap();
-    let c = a / b;
+    let a = AI::from_string("123456789123456789123456789123456789123456789123456789").unwrap();
+    let b = BI::from_biguint(&a);
     println!("a = {}", a);
     println!("b = {}", b);
-    println!("c = {}", c);
-    println!("a << 1 = {}",  a << 1);
 }
