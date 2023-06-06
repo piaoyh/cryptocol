@@ -11,7 +11,8 @@
 
 //! Cryptocol crate provides libraries for cryptograph.
 //! 
-//! 
+//! This crate is for Little Endian. Little Endian CPU is far more popular
+//! than Big Endian CPU.
 //! 
 
 #![doc(

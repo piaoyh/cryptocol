@@ -17,7 +17,8 @@
 //! 
 //! In some areas such as cryptography, however, it is required to calculate
 //! 1024-bit or even longer bit integers especially for RSA cryptographic
-//! alogorithm. Then, we need some libraries to calculate such big numbers.
+//! alogorithm. Then, we need special algorithms to calculate such big numbers.
+//! This is the library for such special purposes.
 //! 
 //! # Three kinds of long bit integers
 //! This module provides three kinds of long bit integers: BigUInt, BigInt,
