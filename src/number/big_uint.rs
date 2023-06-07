@@ -1397,6 +1397,8 @@ where T: Uint + Add<Output=T> + AddAssign + Sub<Output=T> + SubAssign
         + PartialEq + PartialOrd
         + Display + ToString
 {
+    /// for Little endian 
+    #[cfg(target_endian = "little")]
     fn shl_assign(&mut self, rhs: i32)
     {
         if rhs < 0
@@ -1439,6 +1441,51 @@ where T: Uint + Add<Output=T> + AddAssign + Sub<Output=T> + SubAssign
         if carry != zero
             { self.set_overflow(); }
     }
+
+    /// for Big endian 
+    #[cfg(target_endian = "big")]
+    fn shl_assign(&mut self, rhs: i32)
+    {
+        if rhs < 0
+        {
+            *self >>= -rhs;
+            return;
+        }
+        let TSIZE_BIT = size_of::<T>() * 8;
+        let chunk_num = rhs as usize / TSIZE_BIT as usize;
+        let piece_num = rhs as usize % TSIZE_BIT as usize;
+        let zero = T::zero();
+        self.flag = 0;
+        if chunk_num > 0
+        {
+            for i in 0..N-chunk_num
+            {
+                if self.number[i] > zero
+                {
+                    self.set_overflow();
+                    break;
+                }
+            }
+            self.number.copy_within(chunk_num..N, 0);
+            for idx in N-chunk_num..N
+                { self.number[idx] = zero; }
+        }
+        if piece_num == 0
+            { return; }
+        if (self.number[0] >> T::num((TSIZE_BIT - piece_num).into_u128())) != zero
+            { self.set_overflow(); }
+
+        let mut num: T;
+        let mut carry = zero;
+        for idx in 0..N-chunk_num
+        {
+            num = (self.number[idx] << T::num(piece_num.into_u128())) | carry;
+            carry = self.number[idx] >> T::num((TSIZE_BIT - piece_num).into_u128());
+            self.number[idx] = num;
+        }
+        if carry != zero
+            { self.set_overflow(); }
+    }
 }
 
 impl<T, const N: usize> Shr<i32> for BigUInt<T, N>
@@ -1468,6 +1515,8 @@ where T: Uint + Add<Output=T> + AddAssign + Sub<Output=T> + SubAssign
         + PartialEq + PartialOrd
         + Display + ToString
 {
+    /// for Little endian 
+    #[cfg(target_endian = "little")]
     fn shr_assign(&mut self, rhs: i32)
     {
         if rhs < 0
@@ -1510,6 +1559,57 @@ where T: Uint + Add<Output=T> + AddAssign + Sub<Output=T> + SubAssign
             if idx == 0
                 { break; }
             idx -= 1;
+        }
+        if carry != zero
+            { self.set_underflow(); }
+    }
+
+    /// for Big endian 
+    #[cfg(target_endian = "big")]
+    fn shr_assign(&mut self, rhs: i32)
+    {
+        use std::slice::Chunks;
+
+        if rhs < 0
+        {
+		    *self <<= -rhs;
+            return;
+        }
+        let TSIZE_BIT = size_of::<T>() * 8;
+        let chunk_num = rhs as usize / TSIZE_BIT as usize;
+        let piece_num = rhs as usize % TSIZE_BIT as usize;
+        let zero = T::zero();
+        self.flag = 0;
+        if chunk_num > 0
+        {
+            for i in N-chunk_num..N
+            {
+                if self.number[i] > zero
+                {
+                    self.set_underflow();
+                    break;
+                }
+            }
+            self.number.copy_within(0..N-chunk_num, chunk_num);
+            for idx in 0..chunk_num
+                { self.number[idx] = zero; }
+        }
+        if piece_num == 0
+            { return; }
+        if (self.number[N-1] << T::num((TSIZE_BIT - piece_num).into_u128())) != zero
+            { self.set_underflow(); }
+
+        let mut num: T;
+        let mut carry = T::zero();
+        let mut idx = 0;
+        loop
+        {
+            num = (self.number[idx] >> T::num(piece_num.into_u128())) | carry;
+            carry = self.number[idx] << T::num((TSIZE_BIT - piece_num).into_u128());
+            self.number[idx] = num;
+            if idx == N - 1 - chunk_num
+                { break; }
+            idx += 1;
         }
         if carry != zero
             { self.set_underflow(); }
