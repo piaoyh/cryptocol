@@ -300,6 +300,8 @@ where T: Uint + Add<Output=T> + AddAssign + Sub<Output=T> + SubAssign
     /// let cc = BigUInt::<u8,32>::from_uint(1004);
     /// assert_eq!(cc.into_u32(), 1004);
     /// ```
+    /// 
+    #[cfg(target_endian = "little")]
     pub fn from_uint<V: Copy>(val: V) -> Self
     {
         union U<VV: Copy, TT: Copy>
@@ -324,6 +326,47 @@ where T: Uint + Add<Output=T> + AddAssign + Sub<Output=T> + SubAssign
             {
                 unsafe { s.set_num(i, tu.t); }
                 unsafe { tu.ulonger.ulonger >>= TSIZE_BIT; }
+            }
+        }
+        return s;
+    }
+
+    /// Constructs a new BigUInt<T, N> from an unsigned integer
+    /// such as u8, u16, u32, u64, u128 and usize.
+    /// 
+    /// # Examples
+    /// 
+    /// ```
+    /// use Cryptocol::number::BigUInt;
+    /// let cc = BigUInt::<u8,32>::from_uint(1004);
+    /// assert_eq!(cc.into_u32(), 1004);
+    /// ```
+    /// 
+    #[cfg(target_endian = "big")]
+    pub fn from_uint<V: Copy>(val: V) -> Self
+    {
+        union U<VV: Copy, TT: Copy>
+        {
+            ulonger: ULonger,
+            v: VV,
+            t: TT,
+        }
+
+        let TSIZE = size_of::<T>();
+        let mut s = Self::new();
+        let mut tu: U<V, T> = U { ulonger: ULonger::new() };
+        tu.v = val;
+        if TSIZE >= size_of::<V>()
+        {
+            unsafe { s.set_num(N-1, tu.t); }
+        }
+        else
+        {
+            let TSIZE_BIT = TSIZE * 8;
+            for i in (N - size_of::<V>()/TSIZE)..N
+            {
+                unsafe { s.set_num(i, tu.t); }
+                unsafe { tu.ulonger.ulonger <<= TSIZE_BIT; }
             }
         }
         return s;
@@ -447,6 +490,58 @@ where T: Uint + Add<Output=T> + AddAssign + Sub<Output=T> + SubAssign
     /// println!("a = {}", a);
     /// println!("b = {}", b);
     /// ```
+    /// 
+    #[cfg(target_endian = "little")]
+    pub fn from_biguint<U, const M: usize>(biguint: &BigUInt<U, M>) -> Self
+    where U: Uint + Add<Output=U> + AddAssign + Sub<Output=U> + SubAssign
+            + Mul<Output=U> + MulAssign + Div<Output=U> + DivAssign
+            + Shl<Output=U> + ShlAssign + Shr<Output=U> + ShrAssign
+            + BitAnd<Output=U> + BitAndAssign + BitOr<Output=U> + BitOrAssign
+            + BitXor<Output=U> + BitXorAssign + Not<Output=U>
+            + PartialEq + PartialOrd
+            + Display + ToString
+    {
+        let my_size = Self::in_bytes();
+        let src_size = BigUInt::<U, M>::in_bytes();
+        let mut me = Self::zero();
+        if my_size <= src_size
+        {
+            let src = unsafe { transmute::<&[U;M], &[T;N]>(&biguint.number) };
+            me.number.copy_from_slice(src);
+        }
+        else //if my_size > src_size
+        {
+            
+            let src = biguint.into_biguint::<T,N>();
+            me.number.copy_from_slice(&src.number);
+        }
+        me
+    }
+
+    /// Constructs a new BigUInt<T, N> from another kind of BigUInt<U, M>.
+    /// It copies not only long bit integer but also current flags from another
+    /// kind of BigUInt<U, M>.
+    /// 
+    /// NOTICE: If the total size of input BigUInt is different from that of output,
+    /// this function will panic.
+    /// 
+    /// # Example
+    /// 
+    /// ```
+    /// use std::mem::size_of;
+    /// 
+    /// type T = u16;
+    /// const N: usize = 16;
+    /// const M: usize = size_of::<T>() * N;
+    /// type BI = BigUInt::<T, N>;
+    /// type AI = BigUInt::<u8, M>;
+    /// let a = AI::from_string("123456789123456789123456789123456789123456789123456789").unwrap();
+    /// let b = BI::from_biguint(&a);
+    /// println!("a = {}", a);
+    /// println!("b = {}", b);
+    /// ```
+    /// 
+    #[cfg(target_endian = "big")]
     pub fn from_biguint<U, const M: usize>(biguint: &BigUInt<U, M>) -> Self
     where U: Uint + Add<Output=U> + AddAssign + Sub<Output=U> + SubAssign
             + Mul<Output=U> + MulAssign + Div<Output=U> + DivAssign
@@ -459,10 +554,14 @@ where T: Uint + Add<Output=T> + AddAssign + Sub<Output=T> + SubAssign
         let mut me = Self::zero();
         let my_size = Self::in_bytes();
         let src_size = BigUInt::<U, M>::in_bytes();
-        if my_size <= src_size
+        if my_size == src_size
         {
             let src = unsafe { transmute::<&[U;M], &[T;N]>(&biguint.number) };
             me.number.copy_from_slice(src);
+        }
+        else if my_size <= src_size
+        {
+
         }
         else //if my_size > src_size
         {
