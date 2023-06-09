@@ -472,9 +472,6 @@ where T: Uint + Add<Output=T> + AddAssign + Sub<Output=T> + SubAssign
     /// It copies not only long bit integer but also current flags from another
     /// kind of BigUInt<U, M>.
     /// 
-    /// NOTICE: If the total size of input BigUInt is different from that of output,
-    /// this function will panic.
-    /// 
     /// # Example
     /// 
     /// ```
@@ -503,27 +500,32 @@ where T: Uint + Add<Output=T> + AddAssign + Sub<Output=T> + SubAssign
     {
         let my_size = Self::in_bytes();
         let src_size = BigUInt::<U, M>::in_bytes();
-        let mut me = Self::zero();
         if my_size <= src_size
         {
+            let mut me = Self::new();
             let src = unsafe { transmute::<&[U;M], &[T;N]>(&biguint.number) };
             me.number.copy_from_slice(src);
+            me
         }
         else //if my_size > src_size
         {
-            
-            let src = biguint.into_biguint::<T,N>();
-            me.number.copy_from_slice(&src.number);
+            union Common
+            {
+                des: [T; N],
+                src: [U; M],
+            }
+            let mut common: Common;
+            for i in 0..N
+                { common.des[i] = T::zero(); }
+            for i in 0..M
+                { common.src[i] = biguint.number[i]; }
+            Self::from_array(common.des)
         }
-        me
     }
 
     /// Constructs a new BigUInt<T, N> from another kind of BigUInt<U, M>.
     /// It copies not only long bit integer but also current flags from another
-    /// kind of BigUInt<U, M>.
-    /// 
-    /// NOTICE: If the total size of input BigUInt is different from that of output,
-    /// this function will panic.
+    /// kind of BigUInt<U, M>. It is experimental for Big Endian CPU.
     /// 
     /// # Example
     /// 
@@ -551,30 +553,38 @@ where T: Uint + Add<Output=T> + AddAssign + Sub<Output=T> + SubAssign
             + PartialEq + PartialOrd
             + Display + ToString
     {
-        let mut me = Self::zero();
         let my_size = Self::in_bytes();
         let src_size = BigUInt::<U, M>::in_bytes();
         if my_size == src_size
         {
+            let mut me = Self::new();
             let src = unsafe { transmute::<&[U;M], &[T;N]>(&biguint.number) };
             me.number.copy_from_slice(src);
+            me
         }
-        else if my_size <= src_size
+        else
         {
-
+            union Common
+            {
+                des: [T; N],
+                src: [U; M],
+            }
+            let mut common: Common;
+            common.src.copy_from_slice(&biguint.number);
+            if src_size > my_size
+                { common.src <<= ((src_size - des_size) * 8); }
+            else
+                { common.des >>= ((des_size - src_size) * 8); }
+            Self::from_array(common.des)
         }
-        else //if my_size > src_size
-        {
-            let src = unsafe { transmute::<&[U;M], &[T;N]>(&biguint.number) };
-            for i in 0..N
-                { me.number[i] = src[i]; }
-        }
-        me
     }
 
+    /// Constucts a new BigUInt<T, N> which has the value zero
+    /// and sets only the bit specified by bit_pos to be 1.
+    /// 
     fn make_check_bits(bit_pos: usize) -> Self
     {
-        let mut check_bits = Self::new();
+        let mut check_bits = Self::zero();
         check_bits.turn_check_bits(bit_pos);
         check_bits
     }
