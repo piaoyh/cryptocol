@@ -591,6 +591,9 @@ where T: Uint + Add<Output=T> + AddAssign + Sub<Output=T> + SubAssign
 
     pub fn in_bytes() -> usize { size_of::<T>() * N }
 
+    /// Sets only the bit specified by bit_pos to be 1.
+    /// 
+    #[cfg(target_endian = "little")]
     fn turn_check_bits(&mut self, bit_pos: usize)
     {
         let TSIZE_BIT = size_of::<T>() * 8;
@@ -602,6 +605,22 @@ where T: Uint + Add<Output=T> + AddAssign + Sub<Output=T> + SubAssign
         self.set_num(chunk_num, val);
     }
 
+    /// Sets only the bit specified by bit_pos to be 1.
+    /// 
+    #[cfg(target_endian = "big")]
+    fn turn_check_bits(&mut self, bit_pos: usize)
+    {
+        let TSIZE_BIT = size_of::<T>() * 8;
+        let chunk_num = N - 1 - bit_pos / TSIZE_BIT;
+        let piece_num = bit_pos % TSIZE_BIT;
+        let mut val = T::one();
+        val <<= T::num(piece_num as u128);
+        self.set_zero();
+        self.set_num(chunk_num, val);
+    }
+
+    /// Reads the value of BigUInt<T, N> and write it into String
+    /// with a certain radix.
     pub fn to_string_with_radix(&self, radix: usize) -> String
     {
         let mut txt = String::new();
@@ -626,8 +645,6 @@ where T: Uint + Add<Output=T> + AddAssign + Sub<Output=T> + SubAssign
             { num_str.push(ch); }
         num_str
     }
-
-    //fn to_string(&self) -> String   { self.to_string_with_radix(10) }
 
     /// Divide BigUInt<T, N> by BigUInt<T, N> so as to get quotient and
     /// remainder It returns tuple of quotient and remainder, where quotient
