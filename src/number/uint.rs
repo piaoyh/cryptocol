@@ -12,9 +12,10 @@
 #![warn(missing_docs)]
 #![warn(missing_doc_code_examples)]
 
-use std::fmt::Debug;
+use std::fmt::{ Debug, Display };
+use std::mem::size_of;
 use std::ops::*;
-use std::cmp::{Eq, Ord};
+use std::cmp::{ Eq, Ord };
 
 /// Trait Uint is for generic type of primitive unsigned integral data types
 /// for all modules of the crate Cryptocol.
@@ -296,6 +297,216 @@ impl USize
     pub fn new_with(size: usize) -> Self   { Self { size } }
 }
 
+/// union array for transforming from one type into anther type
+pub union Share<D, S>
+where D: Uint + Add<Output=D> + AddAssign + Sub<Output=D> + SubAssign
+        + Mul<Output=D> + MulAssign + Div<Output=D> + DivAssign
+        + Shl<Output=D> + ShlAssign + Shr<Output=D> + ShrAssign
+        + BitAnd<Output=D> + BitAndAssign + BitOr<Output=D> + BitOrAssign
+        + BitXor<Output=D> + BitXorAssign + Not<Output=D>
+        + PartialEq + PartialOrd
+        + Display + ToString,
+      S: Uint + Add<Output=S> + AddAssign + Sub<Output=S> + SubAssign
+        + Mul<Output=S> + MulAssign + Div<Output=S> + DivAssign
+        + Shl<Output=S> + ShlAssign + Shr<Output=S> + ShrAssign
+        + BitAnd<Output=S> + BitAndAssign + BitOr<Output=S> + BitOrAssign
+        + BitXor<Output=S> + BitXorAssign + Not<Output=S>
+        + PartialEq + PartialOrd
+        + Display + ToString
+{
+    pub des: D,
+    pub src: S,
+}
+
+impl<D, S> Share<D, S>
+where D: Uint + Add<Output=D> + AddAssign + Sub<Output=D> + SubAssign
+        + Mul<Output=D> + MulAssign + Div<Output=D> + DivAssign
+        + Shl<Output=D> + ShlAssign + Shr<Output=D> + ShrAssign
+        + BitAnd<Output=D> + BitAndAssign + BitOr<Output=D> + BitOrAssign
+        + BitXor<Output=D> + BitXorAssign + Not<Output=D>
+        + PartialEq + PartialOrd
+        + Display + ToString,
+      S: Uint + Add<Output=S> + AddAssign + Sub<Output=S> + SubAssign
+        + Mul<Output=S> + MulAssign + Div<Output=S> + DivAssign
+        + Shl<Output=S> + ShlAssign + Shr<Output=S> + ShrAssign
+        + BitAnd<Output=S> + BitAndAssign + BitOr<Output=S> + BitOrAssign
+        + BitXor<Output=S> + BitXorAssign + Not<Output=S>
+        + PartialEq + PartialOrd
+        + Display + ToString
+{
+    pub fn new() -> Self
+    {
+        if size_of::<D>() >= size_of::<S>()
+            { Self { des: D::zero() } }
+        else
+            { Self { src: S::zero() } }
+    }
+
+    pub fn from_src(src: S) -> Self
+    {
+        let mut me = Share::<D, S>::new();
+        unsafe { me.src = src; }
+        me
+    }
+
+    #[cfg(target_endian = "little")]
+    pub fn into_des(&mut self, pos: usize) -> Option<D>
+    {
+        let bit_pos = pos * size_of::<D>() * 8;
+        unsafe { self.src >>= S::num(bit_pos as u128); }
+        if (bit_pos > 0) && self.is_src_zero()
+            { None }
+        else
+            { unsafe { Some(self.des) } }
+    }
+
+    #[cfg(target_endian = "big")]
+    pub fn into_des1(&mut self, pos: usize) -> Option<D>
+    {
+        let des_size = size_of::<D>();
+        let src_size = size_of::<S>();
+        let bit_pos = pos * size_of::<D>() * 8;
+        unsafe { self.src <<= S::num(bit_pos as u128); }
+        if des_size > src_size
+            { unsafe { self.des >>= D::num((des_size - src_size).into_u128() * 8); } }
+        else if src_size > des_size
+            { unsafe { self.src <<= S::num((src_size - des_size).into_u128() * 8); } }
+        Some( unsafe { self.des } )
+    }
+
+    pub fn is_src_zero(&self) -> bool    { unsafe { self.src == S::zero() } }
+}
+
+/// union array for transforming from one type into anther type
+pub union Common<D, const N: usize, S, const M: usize>
+where D: Uint + Add<Output=D> + AddAssign + Sub<Output=D> + SubAssign
+        + Mul<Output=D> + MulAssign + Div<Output=D> + DivAssign
+        + Shl<Output=D> + ShlAssign + Shr<Output=D> + ShrAssign
+        + BitAnd<Output=D> + BitAndAssign + BitOr<Output=D> + BitOrAssign
+        + BitXor<Output=D> + BitXorAssign + Not<Output=D>
+        + PartialEq + PartialOrd
+        + Display + ToString,
+      S: Uint + Add<Output=S> + AddAssign + Sub<Output=S> + SubAssign
+        + Mul<Output=S> + MulAssign + Div<Output=S> + DivAssign
+        + Shl<Output=S> + ShlAssign + Shr<Output=S> + ShrAssign
+        + BitAnd<Output=S> + BitAndAssign + BitOr<Output=S> + BitOrAssign
+        + BitXor<Output=S> + BitXorAssign + Not<Output=S>
+        + PartialEq + PartialOrd
+        + Display + ToString
+{
+    pub des: [D; N],
+    pub src: [S; M],
+}
+
+impl<D, const N: usize, S, const M: usize> Common<D, N, S, M>
+where D: Uint + Add<Output=D> + AddAssign + Sub<Output=D> + SubAssign
+        + Mul<Output=D> + MulAssign + Div<Output=D> + DivAssign
+        + Shl<Output=D> + ShlAssign + Shr<Output=D> + ShrAssign
+        + BitAnd<Output=D> + BitAndAssign + BitOr<Output=D> + BitOrAssign
+        + BitXor<Output=D> + BitXorAssign + Not<Output=D>
+        + PartialEq + PartialOrd
+        + Display + ToString,
+      S: Uint + Add<Output=S> + AddAssign + Sub<Output=S> + SubAssign
+        + Mul<Output=S> + MulAssign + Div<Output=S> + DivAssign
+        + Shl<Output=S> + ShlAssign + Shr<Output=S> + ShrAssign
+        + BitAnd<Output=S> + BitAndAssign + BitOr<Output=S> + BitOrAssign
+        + BitXor<Output=S> + BitXorAssign + Not<Output=S>
+        + PartialEq + PartialOrd
+        + Display + ToString
+{
+    pub fn new() -> Self
+    {
+        if Self::size_of_des() >= Self::size_of_src()
+            { Self { des: [D::zero(); N] } }
+        else
+            { Self { src: [S::zero(); M] } }
+    }
+
+    pub fn from_src(src: &[S; M]) -> Self
+    {
+        let mut me = Common::<D, N, S, M>::new();
+        unsafe { me.src.copy_from_slice(src); }
+        me
+    }
+
+    #[cfg(target_endian = "little")]
+    #[inline]
+    pub fn into_des(&mut self, des: &mut [D; N])
+    {
+        unsafe { des.copy_from_slice(&self.des); }
+    }
+
+    #[cfg(target_endian = "big")]
+    pub fn into_des(&mut self, des: &mut [D; N])
+    {
+        let des_size = Self::size_of_des();
+        let src_size = Self::size_of_src();
+        if src_size > des_size
+            { self.shl_assign_src((src_size - des_size) * 8); }
+        else
+            { self.shr_assign_des((des_size - src_size) * 8); }
+        des.copy_from_slice(&self.des);
+    }
+
+    #[cfg(target_endian = "big")]
+    fn shl_assign_src(&mut self, rhs: usize)
+    {
+        let TSIZE_BIT = size_of::<D>() * 8;
+        let chunk_num = rhs as usize / TSIZE_BIT as usize;
+        let piece_num = rhs as usize % TSIZE_BIT as usize;
+        let zero = S::zero();
+        if chunk_num > 0
+        {
+            self.src.copy_within(chunk_num..N, 0);
+            for idx in N-chunk_num..N
+                { self.src[idx] = zero; }
+        }
+        if piece_num == 0
+            { return; }
+
+        let mut num: S;
+        let mut carry = zero;
+        for idx in 0..N-chunk_num
+        {
+            num = (self.src[idx] << S::num(piece_num.into_u128())) | carry;
+            carry = self.src[idx] >> S::num((TSIZE_BIT - piece_num).into_u128());
+            self.src[idx] = num;
+        }
+    }
+
+    #[cfg(target_endian = "big")]
+    fn shr_assign_des(&mut self, rhs: usize)
+    {
+        let TSIZE_BIT = size_of::<T>() * 8;
+        let chunk_num = rhs as usize / TSIZE_BIT as usize;
+        let piece_num = rhs as usize % TSIZE_BIT as usize;
+        let zero = D::zero();
+        if chunk_num > 0
+        {
+            self.des.copy_within(0..N-chunk_num, chunk_num);
+            for idx in 0..chunk_num
+                { self.des[idx] = zero; }
+        }
+        if piece_num == 0
+            { return; }
+
+        let mut num: D;
+        let mut carry = D::zero();
+        let mut idx = 0;
+        loop
+        {
+            num = (self.des[idx] >> D::num(piece_num.into_u128())) | carry;
+            carry = self.des[idx] << D::num((TSIZE_BIT - piece_num).into_u128());
+            self.des[idx] = num;
+            if idx == N - 1 - chunk_num
+                { break; }
+            idx += 1;
+        }
+    }
+
+    pub fn size_of_des() -> usize   { size_of::<D>() * N }
+    pub fn size_of_src() -> usize   { size_of::<S>() * M }
+}
 /*
 impl Shr<usize> for USize
 {

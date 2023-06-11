@@ -23,8 +23,8 @@ fn main()
     unsafe { println!("n = {}", num.ulonger); }
     println!("b = {:?}", b);
     unsafe { println!("{} : {} - {}", num.ulonger, num.ulonger / 10, num.ulonger % 10); }
-    let (q, r) = b.divide_fully(BI::from_uint(10));
+    let (q, r) = b.divide_fully(BI::from_uint(10u32));
     println!("{} : {} - {}", b, q, r);
-    let (q, r) = a.divide_fully(AI::from_uint(10));
+    let (q, r) = a.divide_fully(AI::from_uint(10u32));
     println!("{} : {} - {}", a, q, r);
 }

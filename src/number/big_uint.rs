@@ -302,33 +302,34 @@ where T: Uint + Add<Output=T> + AddAssign + Sub<Output=T> + SubAssign
     /// ```
     /// 
     #[cfg(target_endian = "little")]
-    pub fn from_uint<V: Copy>(val: V) -> Self
+    pub fn from_uint<S>(val: S) -> Self
+    where S: Uint + Add<Output=S> + AddAssign + Sub<Output=S> + SubAssign
+            + Mul<Output=S> + MulAssign + Div<Output=S> + DivAssign
+            + Shl<Output=S> + ShlAssign + Shr<Output=S> + ShrAssign
+            + BitAnd<Output=S> + BitAndAssign + BitOr<Output=S> + BitOrAssign
+            + BitXor<Output=S> + BitXorAssign + Not<Output=S>
+            + PartialEq + PartialOrd
+            + Display + ToString
     {
-        union U<VV: Copy, TT: Copy>
-        {
-            ulonger: ULonger,
-            v: VV,
-            t: TT,
-        }
-
         let TSIZE = size_of::<T>();
-        let mut s = Self::new();
-        let mut tu: U<V, T> = U { ulonger: ULonger::new() };
-        tu.v = val;
-        if TSIZE >= size_of::<V>()
+        let SSIZE = size_of::<S>();
+        let mut me = Self::new();
+        let mut share = Share::<T, S>::from_src(val);
+        
+        if TSIZE >= SSIZE
         {
-            unsafe { s.set_num(0, tu.t); }
+            unsafe { me.set_num(0, share.des); }
         }
         else
         {
             let TSIZE_BIT = TSIZE * 8;
-            for i in 0..(size_of::<V>()/TSIZE)
+            for i in 0..SSIZE/TSIZE
             {
-                unsafe { s.set_num(i, tu.t); }
-                unsafe { tu.ulonger.ulonger >>= TSIZE_BIT; }
+                unsafe { me.set_num(i, share.des); }
+                unsafe { share.src >>= S::num(TSIZE_BIT as u128); }
             }
         }
-        return s;
+        return me;
     }
 
     /// Constructs a new BigUInt<T, N> from an unsigned integer
@@ -343,33 +344,47 @@ where T: Uint + Add<Output=T> + AddAssign + Sub<Output=T> + SubAssign
     /// ```
     /// 
     #[cfg(target_endian = "big")]
-    pub fn from_uint<V: Copy>(val: V) -> Self
+    pub fn from_uint<S>(val: S) -> Self
+    where S: Uint + Add<Output=S> + AddAssign + Sub<Output=S> + SubAssign
+            + Mul<Output=S> + MulAssign + Div<Output=S> + DivAssign
+            + Shl<Output=S> + ShlAssign + Shr<Output=S> + ShrAssign
+            + BitAnd<Output=S> + BitAndAssign + BitOr<Output=S> + BitOrAssign
+            + BitXor<Output=S> + BitXorAssign + Not<Output=S>
+            + PartialEq + PartialOrd
+            + Display + ToString
     {
-        union U<VV: Copy, TT: Copy>
-        {
-            ulonger: ULonger,
-            v: VV,
-            t: TT,
-        }
-
         let TSIZE = size_of::<T>();
-        let mut s = Self::new();
-        let mut tu: U<V, T> = U { ulonger: ULonger::new() };
-        tu.v = val;
-        if TSIZE >= size_of::<V>()
+        let SSIZE = size_of::<S>();
+        let mut me = Self::new();
+        let mut share = Share::<T, S>::from_src(val);
+        
+        if TSIZE >= SSIZE
         {
-            unsafe { s.set_num(N-1, tu.t); }
+            unsafe { me.set_num(N-1, share.des); }
         }
         else
         {
             let TSIZE_BIT = TSIZE * 8;
-            for i in (N - size_of::<V>()/TSIZE)..N
+            let LEN = SSIZE/TSIZE;
+            if LEN <= N
             {
-                unsafe { s.set_num(i, tu.t); }
-                unsafe { tu.ulonger.ulonger <<= TSIZE_BIT; }
+                for i in 0..LEN
+                {
+                    unsafe { me.set_num(N - LEN + i, share.des); }
+                    unsafe { share.src <<= S::num(TSIZE_BIT as u128); }
+                }    
+            }
+            else
+            {
+                unsafe { share.src <<= S::num(((LEN - N) * TSIZE_BIT) as u128); }
+                for i in 0..N
+                {
+                    unsafe { me.set_num(i, share.des); }
+                    unsafe { share.src <<= S::num(TSIZE_BIT as u128); }
+                } 
             }
         }
-        return s;
+        return me;
     }
 
     /// Constructs a new BigUInt<T, N> from a string with radix.
@@ -509,17 +524,8 @@ where T: Uint + Add<Output=T> + AddAssign + Sub<Output=T> + SubAssign
         }
         else //if my_size > src_size
         {
-            union Common
-            {
-                des: [T; N],
-                src: [U; M],
-            }
-            let mut common: Common;
-            for i in 0..N
-                { common.des[i] = T::zero(); }
-            for i in 0..M
-                { common.src[i] = biguint.number[i]; }
-            Self::from_array(common.des)
+            let common = Common::<T, N, U, M>::from_src(&biguint.number);
+            unsafe { Self::from_array(&common.des) }
         }
     }
 
@@ -555,28 +561,18 @@ where T: Uint + Add<Output=T> + AddAssign + Sub<Output=T> + SubAssign
     {
         let my_size = Self::in_bytes();
         let src_size = BigUInt::<U, M>::in_bytes();
+        let mut me = Self::new();
         if my_size == src_size
         {
-            let mut me = Self::new();
             let src = unsafe { transmute::<&[U;M], &[T;N]>(&biguint.number) };
             me.number.copy_from_slice(src);
-            me
         }
         else
         {
-            union Common
-            {
-                des: [T; N],
-                src: [U; M],
-            }
-            let mut common: Common;
-            common.src.copy_from_slice(&biguint.number);
-            if src_size > my_size
-                { common.src <<= ((src_size - des_size) * 8); }
-            else
-                { common.des >>= ((des_size - src_size) * 8); }
-            Self::from_array(common.des)
+            let mut common = Common::<T, N, U, M>::from_src(&biguint.number);
+            common.into_des(&mut me.number);
         }
+        me
     }
 
     /// Constucts a new BigUInt<T, N> which has the value zero
