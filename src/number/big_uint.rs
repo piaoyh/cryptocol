@@ -17,8 +17,6 @@ use std::cmp::{ PartialEq, PartialOrd, Ordering };
 
 use super::uint::*;
 
-type u_max = u128;
-type u_half = u64;
 
 type u256_with_u128 = BigUInt<u128, 2>;
 type u512_with_u128 = BigUInt<u128, 4>;
@@ -32,6 +30,7 @@ type u7168_with_u128 = BigUInt<u128, 56>;
 type u8192_with_u128 = BigUInt<u128, 64>;
 type u16384_with_u128 = BigUInt<u128, 128>;
 
+/// u256_with_u64 is BigUInt made with four `u64`s
 type u256_with_u64 = BigUInt<u64, 4>;
 type u512_with_u64 = BigUInt<u64, 8>;
 type u1024_with_u64 = BigUInt<u64, 16>;
@@ -333,7 +332,8 @@ where T: Uint + Add<Output=T> + AddAssign + Sub<Output=T> + SubAssign
     }
 
     /// Constructs a new BigUInt<T, N> from an unsigned integer
-    /// such as u8, u16, u32, u64, u128 and usize.
+    /// such as u8, u16, u32, u64, u128 and usize. The BigEndian version
+    /// is experimental.
     /// 
     /// # Examples
     /// 
@@ -1278,6 +1278,9 @@ where T: Uint + Add<Output=T> + AddAssign + Sub<Output=T> + SubAssign
         + PartialEq + PartialOrd
         + Display + ToString
 {
+    /// Adds and assign the result to it.
+    /// 
+    #[cfg(target_endian = "little")]
     fn add_assign(&mut self, rhs: Self)
     {
         let zero = T::zero();
@@ -1293,6 +1296,31 @@ where T: Uint + Add<Output=T> + AddAssign + Sub<Output=T> + SubAssign
             carry = if c || (midres < carry) { T::one() } else { zero };
             self.number[i] = midres;
         }
+        if carry != zero
+            { self.set_overflow(); }
+    }
+
+    #[cfg(target_endian = "big")]
+    fn add_assign(&mut self, rhs: Self)
+    {
+        let zero = T::zero();
+        let mut	carry: T = zero;
+        let mut midres: T;
+        let mut c: bool;
+
+        let mut i = N - 1;
+        loop
+        {
+            midres = self.number[i].wrapping_add(rhs.number[i]);
+            c = midres < self.number[i];
+            midres = midres.wrapping_add(carry);
+            carry = if c || (midres < carry) { T::one() } else { zero };
+            self.number[i] = midres;
+            if i == 0
+                { break; }
+            i -= 1;
+        }
+
         if carry != zero
             { self.set_overflow(); }
     }
@@ -1325,6 +1353,9 @@ where T: Uint + Add<Output=T> + AddAssign + Sub<Output=T> + SubAssign
         + PartialEq + PartialOrd
         + Display + ToString
 {
+    /// Subtracts and assign the result to it.
+    /// 
+    #[cfg(target_endian = "little")]
     fn sub_assign(&mut self, rhs: Self)
     {
         let zero = T::zero();
@@ -1341,6 +1372,33 @@ where T: Uint + Add<Output=T> + AddAssign + Sub<Output=T> + SubAssign
             midres = midres.wrapping_sub(carry);
             carry = if c || (midres > cc) { T::one() } else { zero };
             self.number[i] = midres;
+        }
+        if carry != zero
+            { self.set_underflow(); }
+    }
+
+    /// Subtracts and assign the result to it.
+    /// 
+    #[cfg(target_endian = "big")]
+    fn sub_assign(&mut self, rhs: Self)
+    {
+        let zero = T::zero();
+        let mut	carry: T = zero;
+        let mut midres: T;
+        let mut c: bool;
+        let mut cc: T;
+        let mut i = N;
+        loop
+        {
+            i -= 1;
+            midres = self.number[i].wrapping_sub(rhs.number[i]);
+            c = midres > self.number[i];
+            cc = midres;
+            midres = midres.wrapping_sub(carry);
+            carry = if c || (midres > cc) { T::one() } else { zero };
+            self.number[i] = midres;
+            if i == 0
+                { break; }
         }
         if carry != zero
             { self.set_underflow(); }
@@ -1374,6 +1432,9 @@ where T: Uint + Add<Output=T> + AddAssign + Sub<Output=T> + SubAssign
         + PartialEq + PartialOrd
         + Display + ToString
 {
+    /// Multiplies and assign the result to it.
+    /// 
+    #[cfg(target_endian = "little")]
     fn mul_assign(&mut self, rhs: Self)
     {
         if rhs.is_zero()
@@ -1408,7 +1469,74 @@ where T: Uint + Add<Output=T> + AddAssign + Sub<Output=T> + SubAssign
         while rhs.number[n] == zero
             { n -= 1; }
         multiply_first(rhs.number[n]);
-        n = n.wrapping_sub(1);
+        if n == 0
+            { return; }
+        n -= 1;
+
+        let mut multiply = |num: T| {
+            if num == T::zero()
+            {
+                *self <<= TSIZE_BIT as i32;
+                return;
+            }
+            let mut bit_check = one;
+            bit_check <<= T::num((TSIZE_BIT - 1).into_u128());
+            while bit_check != zero
+            {
+                *self <<= 1;
+                if bit_check & num != zero
+                    { *self += adder; }
+                bit_check >>= one;
+            }
+        };
+
+        loop
+        {
+            multiply(rhs.number[n]);
+            if n == 0
+                { break; }
+            n = n.wrapping_sub(1);
+        }
+    }
+
+    /// Multiplies and assign the result to it.
+    /// 
+    #[cfg(target_endian = "big")]
+    fn mul_assign(&mut self, rhs: Self)
+    {
+        if rhs.is_zero()
+        {
+            self.set_zero();
+            return;
+        }
+        if self.is_zero()
+            { return; }
+
+        let zero = T::zero();
+        let one = T::one();
+        let adder = self.clone();
+        let TSIZE_BIT = size_of::<T>() * 8;
+        let mut multiply_first = |num: T| {
+            let mut bit_check = one;
+            bit_check <<= T::num((TSIZE_BIT - 1).into_u128());
+            while (bit_check != zero) && (bit_check & num == zero)
+                { bit_check >>= one; }
+
+            self.set_zero();
+            while bit_check != zero
+            {
+                *self <<= 1;
+                if bit_check & num != zero
+                    { *self += adder; }
+                bit_check >>= one;
+            }
+        };
+
+        let mut n = 0;
+        while rhs.number[n] == zero
+            { n += 1; }
+        multiply_first(rhs.number[n]);
+        n += 1;
 
         let mut multiply = |num: T| {
             if num == T::zero()
@@ -1429,7 +1557,7 @@ where T: Uint + Add<Output=T> + AddAssign + Sub<Output=T> + SubAssign
         while n < N
         {
             multiply(rhs.number[n]);
-            n = n.wrapping_sub(1);
+            n += 1;
         }
     }
 }
@@ -1599,11 +1727,15 @@ where T: Uint + Add<Output=T> + AddAssign + Sub<Output=T> + SubAssign
 
         let mut num: T;
         let mut carry = zero;
-        for idx in 0..N-chunk_num
+        let mut idx = N - 1 - chunk_num;
+        loop
         {
             num = (self.number[idx] << T::num(piece_num.into_u128())) | carry;
             carry = self.number[idx] >> T::num((TSIZE_BIT - piece_num).into_u128());
             self.number[idx] = num;
+            if idx == 0
+                { break; }
+            idx -= 1;
         }
         if carry != zero
             { self.set_overflow(); }
@@ -1724,14 +1856,11 @@ where T: Uint + Add<Output=T> + AddAssign + Sub<Output=T> + SubAssign
         let mut num: T;
         let mut carry = T::zero();
         let mut idx = 0;
-        loop
+        for idx in 0..N-chunk_num
         {
             num = (self.number[idx] >> T::num(piece_num.into_u128())) | carry;
             carry = self.number[idx] << T::num((TSIZE_BIT - piece_num).into_u128());
             self.number[idx] = num;
-            if idx == N - 1 - chunk_num
-                { break; }
-            idx += 1;
         }
         if carry != zero
             { self.set_underflow(); }
@@ -1890,13 +2019,33 @@ where T: Uint + Add<Output=T> + AddAssign + Sub<Output=T> + SubAssign
         + PartialEq + PartialOrd
         + Display + ToString
 {
+    /// for little endian 
+    #[cfg(target_endian = "little")]
     fn partial_cmp(&self, other: &Self) -> Option<Ordering>
     {
-        for idx in 1..=N
+        let mut idx = N - 1;
+        loop
         {
-            if self.number[N-idx] > other.number[N-idx]
+            if self.number[idx] > other.number[idx]
                 { return Some(Ordering::Greater); }
-            else if self.number[N-idx] < other.number[N-idx]
+            else if self.number[idx] < other.number[idx]
+                { return Some(Ordering::Less); }
+            if idx == 0
+                { break; }
+            idx -= 1;
+        }
+        Some(Ordering::Equal)
+    }
+
+    /// for Big endian 
+    #[cfg(target_endian = "big")]
+    fn partial_cmp(&self, other: &Self) -> Option<Ordering>
+    {
+        for idx in 0..N
+        {
+            if self.number[idx] > other.number[idx]
+                { return Some(Ordering::Greater); }
+            else if self.number[idx] < other.number[idx]
                 { return Some(Ordering::Less); }
         }
         Some(Ordering::Equal)
