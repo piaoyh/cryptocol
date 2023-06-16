@@ -8,8 +8,8 @@
 
 //! A big unsigned integer with user-defined fixed size.
 
-#![warn(missing_docs)]
-#![warn(missing_doc_code_examples)]
+//#![warn(missing_docs)]
+//#![warn(missing_doc_code_examples)]
 use std::fmt::{ self, Display, Formatter };
 use std::mem::{ size_of, transmute_copy, zeroed, transmute };
 use std::ops::*;
@@ -18,139 +18,380 @@ use std::cmp::{ PartialEq, PartialOrd, Ordering };
 use super::uint::*;
 
 
-type u256_with_u128 = BigUInt<u128, 2>;
-type u512_with_u128 = BigUInt<u128, 4>;
-type u1024_with_u128 = BigUInt<u128, 8>;
-type u2048_with_u128 = BigUInt<u128, 16>;
-type u3072_with_u128 = BigUInt<u128, 24>;
-type u4096_with_u128 = BigUInt<u128, 32>;
-type u5120_with_u128 = BigUInt<u128, 40>;
-type u6144_with_u128 = BigUInt<u128, 48>;
-type u7168_with_u128 = BigUInt<u128, 56>;
-type u8192_with_u128 = BigUInt<u128, 64>;
-type u16384_with_u128 = BigUInt<u128, 128>;
+/// 256-bit unsigned integer implemented by `BigUInt<u128, 2>` made with two `u128`s
+pub type u256_with_u128 = BigUInt<u128, 2>;
 
-/// u256_with_u64 is BigUInt made with four `u64`s
-type u256_with_u64 = BigUInt<u64, 4>;
-type u512_with_u64 = BigUInt<u64, 8>;
-type u1024_with_u64 = BigUInt<u64, 16>;
-type u2048_with_u64 = BigUInt<u64, 32>;
-type u3072_with_u64 = BigUInt<u64, 48>;
-type u4096_with_u64 = BigUInt<u64, 64>;
-type u5120_with_u64 = BigUInt<u64, 80>;
-type u6144_with_u64 = BigUInt<u64, 96>;
-type u7168_with_u64 = BigUInt<u64, 112>;
-type u8192_with_u64 = BigUInt<u64, 128>;
-type u16384_with_u64 = BigUInt<u64, 256>;
+/// 512-bit unsigned integer implemented by `BigUInt<u128, 4>` made with four `u128`s
+pub type u512_with_u128 = BigUInt<u128, 4>;
 
-type u256_with_u32 = BigUInt<u32, 8>;
-type u512_with_u32 = BigUInt<u32, 16>;
-type u1024_with_u32 = BigUInt<u32, 32>;
-type u2048_with_u32 = BigUInt<u32, 64>;
-type u3072_with_u32 = BigUInt<u32, 96>;
-type u4096_with_u32 = BigUInt<u32, 128>;
-type u5120_with_u32 = BigUInt<u32, 160>;
-type u6144_with_u32 = BigUInt<u32, 192>;
-type u7168_with_u32 = BigUInt<u32, 224>;
-type u8192_with_u32 = BigUInt<u32, 256>;
-type u16384_with_u32 = BigUInt<u32, 512>;
+/// 1024-bit unsigned integer implemented by `BigUInt<u128, 8>` made with eight `u128`s
+pub type u1024_with_u128 = BigUInt<u128, 8>;
 
-type u256_with_u16 = BigUInt<u16, 16>;
-type u512_with_u16 = BigUInt<u16, 32>;
-type u1024_with_u16 = BigUInt<u16, 64>;
-type u2048_with_u16 = BigUInt<u16, 128>;
-type u3072_with_u16 = BigUInt<u16, 192>;
-type u4096_with_u16 = BigUInt<u16, 256>;
-type u5120_with_u16 = BigUInt<u16, 320>;
-type u6144_with_u16 = BigUInt<u16, 384>;
-type u7168_with_u16 = BigUInt<u16, 448>;
-type u8192_with_u16 = BigUInt<u16, 512>;
-type u16384_with_u16 = BigUInt<u16, 1024>;
+/// 2048-bit unsigned integer implemented by `BigUInt<u128, 4>` made with sixteen `u128`s
+pub type u2048_with_u128 = BigUInt<u128, 16>;
 
-type u256_with_u8 = BigUInt<u8, 32>;
-type u512_with_u8 = BigUInt<u8, 64>;
-type u1024_with_u8 = BigUInt<u8, 128>;
-type u2048_with_u8 = BigUInt<u8, 256>;
-type u3072_with_u8 = BigUInt<u8, 384>;
-type u4096_with_u8 = BigUInt<u8, 512>;
-type u5120_with_u8 = BigUInt<u8, 640>;
-type u6144_with_u8 = BigUInt<u8, 768>;
-type u7168_with_u8 = BigUInt<u8, 896>;
-type u8192_with_u8 = BigUInt<u8, 1024>;
-type u16384_with_u8 = BigUInt<u8, 2048>;
+/// 3072-bit unsigned integer implemented by `BigUInt<u128, 4>` made with twenty-four `u128`s
+pub type u3072_with_u128 = BigUInt<u128, 24>;
 
-#[cfg(target_pointer_width = "128")] type u256 = u256_with_u128;
-#[cfg(target_pointer_width = "128")] type u512 = u512_with_u128;
-#[cfg(target_pointer_width = "128")] type u1024 = u1024_with_u128;
-#[cfg(target_pointer_width = "128")] type u2048 = u2048_with_u128;
-#[cfg(target_pointer_width = "128")] type u3072 = u3072_with_u128;
-#[cfg(target_pointer_width = "128")] type u4096 = u4096_with_u128;
-#[cfg(target_pointer_width = "128")] type u5120 = u5120_with_u128;
-#[cfg(target_pointer_width = "128")] type u6144 = u6144_with_u128;
-#[cfg(target_pointer_width = "128")] type u7168 = u7168_with_u128;
-#[cfg(target_pointer_width = "128")] type u8192 = u8192_with_u128;
-#[cfg(target_pointer_width = "128")] type u16384 = u16384_with_u128;
+/// 4096-bit unsigned integer implemented by `BigUInt<u128, 4>` made with thirty-two `u128`s
+pub type u4096_with_u128 = BigUInt<u128, 32>;
 
-#[cfg(target_pointer_width = "64")] type u256 = u256_with_u64;
-#[cfg(target_pointer_width = "64")] type u512 = u512_with_u64;
-#[cfg(target_pointer_width = "64")] type u1024 = u1024_with_u64;
-#[cfg(target_pointer_width = "64")] type u2048 = u2048_with_u64;
-#[cfg(target_pointer_width = "64")] type u3072 = u3072_with_u64;
-#[cfg(target_pointer_width = "64")] type u4096 = u4096_with_u64;
-#[cfg(target_pointer_width = "64")] type u5120 = u5120_with_u64;
-#[cfg(target_pointer_width = "64")] type u6144 = u6144_with_u64;
-#[cfg(target_pointer_width = "64")] type u7168 = u7168_with_u64;
-#[cfg(target_pointer_width = "64")] type u8192 = u8192_with_u64;
-#[cfg(target_pointer_width = "64")] type u16384 = u16384_with_u64;
+/// 5120-bit unsigned integer implemented by `BigUInt<u128, 4>` made with forty `u128`s
+pub type u5120_with_u128 = BigUInt<u128, 40>;
 
-#[cfg(target_pointer_width = "32")] type u256 = u256_with_u32;
-#[cfg(target_pointer_width = "32")] type u512 = u512_with_u32;
-#[cfg(target_pointer_width = "32")] type u1024 = u1024_with_u32;
-#[cfg(target_pointer_width = "32")] type u2048 = u2048_with_u32;
-#[cfg(target_pointer_width = "32")] type u3072 = u3072_with_u32;
-#[cfg(target_pointer_width = "32")] type u4096 = u4096_with_u32;
-#[cfg(target_pointer_width = "32")] type u5120 = u5120_with_u32;
-#[cfg(target_pointer_width = "32")] type u6144 = u6144_with_u32;
-#[cfg(target_pointer_width = "32")] type u7168 = u7168_with_u32;
-#[cfg(target_pointer_width = "32")] type u8192 = u8192_with_u32;
-#[cfg(target_pointer_width = "32")] type u16384 = u16384_with_u32;
+/// 6144-bit unsigned integer implemented by `BigUInt<u128, 4>` made with fory-eight `u128`s
+pub type u6144_with_u128 = BigUInt<u128, 48>;
 
-#[cfg(target_pointer_width = "16")] type u256 = u256_with_u16;
-#[cfg(target_pointer_width = "16")] type u512 = u512_with_u16;
-#[cfg(target_pointer_width = "16")] type u1024 = u1024_with_u16;
-#[cfg(target_pointer_width = "16")] type u2048 = u2048_with_u16;
-#[cfg(target_pointer_width = "16")] type u3072 = u3072_with_u16;
-#[cfg(target_pointer_width = "16")] type u4096 = u4096_with_u16;
-#[cfg(target_pointer_width = "16")] type u5120 = u5120_with_u16;
-#[cfg(target_pointer_width = "16")] type u6144 = u6144_with_u16;
-#[cfg(target_pointer_width = "16")] type u7168 = u7168_with_u16;
-#[cfg(target_pointer_width = "16")] type u8192 = u8192_with_u16;
-#[cfg(target_pointer_width = "16")] type u16384 = u16384_with_u16;
+/// 7168-bit unsigned integer implemented by `BigUInt<u128, 4>` made with fifty-six `u128`s
+pub type u7168_with_u128 = BigUInt<u128, 56>;
 
-#[cfg(target_pointer_width = "8")] type u256 = u256_with_u8;
-#[cfg(target_pointer_width = "8")] type u512 = u512_with_u8;
-#[cfg(target_pointer_width = "8")] type u1024 = u1024_with_u8;
-#[cfg(target_pointer_width = "8")] type u2048 = u2048_with_u8;
-#[cfg(target_pointer_width = "8")] type u3072 = u3072_with_u8;
-#[cfg(target_pointer_width = "8")] type u4096 = u4096_with_u8;
-#[cfg(target_pointer_width = "8")] type u5120 = u5120_with_u8;
-#[cfg(target_pointer_width = "8")] type u6144 = u6144_with_u8;
-#[cfg(target_pointer_width = "8")] type u7168 = u7168_with_u8;
-#[cfg(target_pointer_width = "8")] type u8192 = u8192_with_u8;
-#[cfg(target_pointer_width = "8")] type u16384 = u16384_with_u8;
+/// 8192-bit unsigned integer implemented by `BigUInt<u128, 4>` made with sixty-four `u128`s
+pub type u8192_with_u128 = BigUInt<u128, 64>;
+
+/// 16384-bit unsigned integer implemented by `BigUInt<u128, 4>` made with one hundred twenty-eight `u128`s
+pub type u16384_with_u128 = BigUInt<u128, 128>;
 
 
-type U32 = u256;
-type U64 = u512;
-type U128 = u1024;
-type U256 = u2048;
-type U384 = u3072;
-type U512 = u4096;
-type U640 = u5120;
-type U768 = u6144;
-type U896 = u7168;
-type U1024 = u8192;
-type U2048 = u16384;
+
+/// 256-bit unsigned integer implemented by `BigUInt<u64, 4>` made with four `u64`s
+pub type u256_with_u64 = BigUInt<u64, 4>;
+
+/// 512-bit unsigned integer implemented by `BigUInt<u64, 8>` made with eight `u64`s
+pub type u512_with_u64 = BigUInt<u64, 8>;
+
+/// 1024-bit unsigned integer implemented by `BigUInt<u64, 16>` made with sixteen `u64`s
+pub type u1024_with_u64 = BigUInt<u64, 16>;
+
+/// 2048-bit unsigned integer implemented by `BigUInt<u64, 32>` made with thirty-two `u64`s
+pub type u2048_with_u64 = BigUInt<u64, 32>;
+
+/// 3072-bit unsigned integer implemented by `BigUInt<u64, 48>` made with fourty-eight `u64`s
+pub type u3072_with_u64 = BigUInt<u64, 48>;
+
+/// 4096-bit unsigned integer implemented by `BigUInt<u64, 64>` made with sixty-four `u64`s
+pub type u4096_with_u64 = BigUInt<u64, 64>;
+
+/// 5120-bit unsigned integer implemented by `BigUInt<u64, 80>` made with eighty `u64`s
+pub type u5120_with_u64 = BigUInt<u64, 80>;
+
+/// 6144-bit unsigned integer implemented by `BigUInt<u64, 96>` made with ninety-six `u64`s
+pub type u6144_with_u64 = BigUInt<u64, 96>;
+
+/// 7168-bit unsigned integer implemented by BigUInt<u64, 112> made with one hundred twelve `u64`s
+pub type u7168_with_u64 = BigUInt<u64, 112>;
+
+/// 8192-bit unsigned integer implemented by `BigUInt<u64, 128>` made with two hundred twenty-eight `u64`s
+pub type u8192_with_u64 = BigUInt<u64, 128>;
+
+/// 16384-bit unsigned integer implemented by `BigUInt<u64, 256>` made with two hundred fifty-six `u64`s
+pub type u16384_with_u64 = BigUInt<u64, 256>;
+
+
+/// 256-bit unsigned integer implemented by `BigUInt<u32, 8>` made with eight `u32`s
+pub type u256_with_u32 = BigUInt<u32, 8>;
+
+/// 512-bit unsigned integer implemented by `BigUInt<u32, 8>` made with sixteen `u32`s
+pub type u512_with_u32 = BigUInt<u32, 16>;
+
+/// 1024-bit unsigned integer implemented by `BigUInt<u32, 8>` made with thirty-two `u32`s
+pub type u1024_with_u32 = BigUInt<u32, 32>;
+
+/// 2048-bit unsigned integer implemented by `BigUInt<u32, 8>` made with sixty-four `u32`s
+pub type u2048_with_u32 = BigUInt<u32, 64>;
+
+/// 3072-bit unsigned integer implemented by `BigUInt<u32, 8>` made with ninety-six `u32`s
+pub type u3072_with_u32 = BigUInt<u32, 96>;
+
+/// 4096-bit unsigned integer implemented by `BigUInt<u32, 8>` made with one hundred twenty-eight `u32`s
+pub type u4096_with_u32 = BigUInt<u32, 128>;
+
+/// 5120-bit unsigned integer implemented by `BigUInt<u32, 8>` made with one hundred sixty `u32`s
+pub type u5120_with_u32 = BigUInt<u32, 160>;
+
+/// 6144-bit unsigned integer implemented by `BigUInt<u32, 8>` made with one hundred ninety-two `u32`s
+pub type u6144_with_u32 = BigUInt<u32, 192>;
+
+/// 7168-bit unsigned integer implemented by `BigUInt<u32, 8>` made with two hundred twenty-four `u32`s
+pub type u7168_with_u32 = BigUInt<u32, 224>;
+
+/// 8192-bit unsigned integer implemented by `BigUInt<u32, 8>` made with two hundred fifty-six `u32`s
+pub type u8192_with_u32 = BigUInt<u32, 256>;
+
+/// 16384-bit unsigned integer implemented by `BigUInt<u32, 8>` made with five hundred twelve `u32`s
+pub type u16384_with_u32 = BigUInt<u32, 512>;
+
+
+/// 256-bit unsigned integer implemented by `BigUInt<u16, 16>` made with sixteen `u16`s
+pub type u256_with_u16 = BigUInt<u16, 16>;
+
+/// 512-bit unsigned integer implemented by `BigUInt<u16, 32>` made with thirty-two `u16`s
+pub type u512_with_u16 = BigUInt<u16, 32>;
+
+/// 1024-bit unsigned integer implemented by `BigUInt<u16, 64>` made with sixty-four `u16`s
+pub type u1024_with_u16 = BigUInt<u16, 64>;
+
+/// 2048-bit unsigned integer implemented by `BigUInt<u16, 128>` made with one hundred twenty-eight `u16`s
+pub type u2048_with_u16 = BigUInt<u16, 128>;
+
+/// 3072-bit unsigned integer implemented by `BigUInt<u16, 192>` made with one hundred ninety-two `u16`s
+pub type u3072_with_u16 = BigUInt<u16, 192>;
+
+/// 4096-bit unsigned integer implemented by `BigUInt<u16, 256>` made with two hundred fifty-six `u16`s
+pub type u4096_with_u16 = BigUInt<u16, 256>;
+
+/// 5120-bit unsigned integer implemented by `BigUInt<u16, 320>` made with three hundred twenty `u16`s
+pub type u5120_with_u16 = BigUInt<u16, 320>;
+
+/// 6144-bit unsigned integer implemented by `BigUInt<u16, 384>` made with three hundred eighty-four `u16`s
+pub type u6144_with_u16 = BigUInt<u16, 384>;
+
+/// 7168-bit unsigned integer implemented by `BigUInt<u16, 448>` made with four hundred forty-eight `u16`s
+pub type u7168_with_u16 = BigUInt<u16, 448>;
+
+/// 8192-bit unsigned integer implemented by `BigUInt<u16, 512>` made with five hundred twelve `u16`s
+pub type u8192_with_u16 = BigUInt<u16, 512>;
+
+/// 16384-bit unsigned integer implemented by `BigUInt<u16, 1024>` made with one thousand twenty-four `u16`s
+pub type u16384_with_u16 = BigUInt<u16, 1024>;
+
+
+/// 256-bit unsigned integer implemented by `BigUInt<u8, 32>` made with thirty-two `u8`s
+pub type u256_with_u8 = BigUInt<u8, 32>;
+
+/// 512-bit unsigned integer implemented by `BigUInt<u8, 64>` made with sixty-four `u8`s
+pub type u512_with_u8 = BigUInt<u8, 64>;
+
+/// 1024-bit unsigned integer implemented by `BigUInt<u8, 128>` made with one hundred twenty-eight `u8`s
+pub type u1024_with_u8 = BigUInt<u8, 128>;
+
+/// 2048-bit unsigned integer implemented by `BigUInt<u8, 256>` made with two hundred fifty-six `u8`s
+pub type u2048_with_u8 = BigUInt<u8, 256>;
+
+/// 3072-bit unsigned integer implemented by `BigUInt<u8, 384>` made with three hundred eighty-four `u8`s
+pub type u3072_with_u8 = BigUInt<u8, 384>;
+
+/// 4096-bit unsigned integer implemented by `BigUInt<u8, 512>` made with five hundred twelve `u8`s
+pub type u4096_with_u8 = BigUInt<u8, 512>;
+
+/// 5120-bit unsigned integer implemented by `BigUInt<u8, 640>` made with six hundred forty-eight `u8`s
+pub type u5120_with_u8 = BigUInt<u8, 640>;
+
+/// 6144-bit unsigned integer implemented by `BigUInt<u8, 768>` made with seven hundred sixty-eight `u8`s
+pub type u6144_with_u8 = BigUInt<u8, 768>;
+
+/// 7168-bit unsigned integer implemented by `BigUInt<u8, 896>` made with eight hundred ninety-six `u8`s
+pub type u7168_with_u8 = BigUInt<u8, 896>;
+
+/// 8192-bit unsigned integer implemented by `BigUInt<u8, 1024>` made with one thousand twenty-four `u8`s
+pub type u8192_with_u8 = BigUInt<u8, 1024>;
+
+/// 16384-bit unsigned integer implemented by `BigUInt<u8, 2048>` made with two thousand forty-eight `u8`s
+pub type u16384_with_u8 = BigUInt<u8, 2048>;
+
+
+/// 256-bit unsigned integer for 128-bit machines, Synonym of `u256_with_u128`
+#[cfg(target_pointer_width = "128")] pub type u256 = u256_with_u128;
+
+/// 512-bit unsigned integer for 128-bit machines, Synonym of `u512_with_u128`
+#[cfg(target_pointer_width = "128")] pub type u512 = u512_with_u128;
+
+/// 1024-bit unsigned integer for 128-bit machines, Synonym of `u1024_with_u128`
+#[cfg(target_pointer_width = "128")] pub type u1024 = u1024_with_u128;
+
+/// 2048-bit unsigned integer for 128-bit machines, Synonym of `u2048_with_u128`
+#[cfg(target_pointer_width = "128")] pub type u2048 = u2048_with_u128;
+
+/// 3072-bit unsigned integer for 128-bit machines, Synonym of `u3072_with_u128`
+#[cfg(target_pointer_width = "128")] pub type u3072 = u3072_with_u128;
+
+/// 4096-bit unsigned integer for 128-bit machines, Synonym of `u4096_with_u128`
+#[cfg(target_pointer_width = "128")] pub type u4096 = u4096_with_u128;
+
+/// 5120-bit unsigned integer for 128-bit machines, Synonym of `u5120_with_u128`
+#[cfg(target_pointer_width = "128")] pub type u5120 = u5120_with_u128;
+
+/// 6144-bit unsigned integer for 128-bit machines, Synonym of `u6144_with_u128`
+#[cfg(target_pointer_width = "128")] pub type u6144 = u6144_with_u128;
+
+/// 7168-bit unsigned integer for 128-bit machines, Synonym of `u7168_with_u128`
+#[cfg(target_pointer_width = "128")] pub type u7168 = u7168_with_u128;
+
+/// 8192-bit unsigned integer for 128-bit machines, Synonym of `u8192_with_u128`
+#[cfg(target_pointer_width = "128")] pub type u8192 = u8192_with_u128;
+
+/// 16384-bit unsigned integer for 128-bit machines, Synonym of `u16384_with_u128`
+#[cfg(target_pointer_width = "128")] pub type u16384 = u16384_with_u128;
+
+
+/// 256-bit unsigned integer for 64-bit machines, Synonym of `u256_with_u64`
+#[cfg(target_pointer_width = "64")] pub type u256 = u256_with_u64;
+
+/// 512-bit unsigned integer for 64-bit machines, Synonym of `u512_with_u64`
+#[cfg(target_pointer_width = "64")] pub type u512 = u512_with_u64;
+
+/// 1024-bit unsigned integer for 64-bit machines, Synonym of `u1024_with_u64`
+#[cfg(target_pointer_width = "64")] pub type u1024 = u1024_with_u64;
+
+/// 2048-bit unsigned integer for 64-bit machines, Synonym of `u2048_with_u64`
+#[cfg(target_pointer_width = "64")] pub type u2048 = u2048_with_u64;
+
+/// 3072-bit unsigned integer for 64-bit machines, Synonym of `u3072_with_u64`
+#[cfg(target_pointer_width = "64")] pub type u3072 = u3072_with_u64;
+
+/// 4096-bit unsigned integer for 64-bit machines, Synonym of `u4096_with_u64`
+#[cfg(target_pointer_width = "64")] pub type u4096 = u4096_with_u64;
+
+/// 5120-bit unsigned integer for 64-bit machines, Synonym of `u5120_with_u64`
+#[cfg(target_pointer_width = "64")] pub type u5120 = u5120_with_u64;
+
+/// 6144-bit unsigned integer for 64-bit machines, Synonym of `u6144_with_u64`
+#[cfg(target_pointer_width = "64")] pub type u6144 = u6144_with_u64;
+
+/// 7168-bit unsigned integer for 64-bit machines, Synonym of `u7168_with_u64`
+#[cfg(target_pointer_width = "64")] pub type u7168 = u7168_with_u64;
+
+/// 8192-bit unsigned integer for 64-bit machines, Synonym of `u8192_with_u64`
+#[cfg(target_pointer_width = "64")] pub type u8192 = u8192_with_u64;
+
+/// 16384-bit unsigned integer for 64-bit machines, Synonym of `u16384_with_u64`
+#[cfg(target_pointer_width = "64")] pub type u16384 = u16384_with_u64;
+
+
+/// 256-bit unsigned integer for 32-bit machines, Synonym of `u256_with_u32`
+#[cfg(target_pointer_width = "32")] pub type u256 = u256_with_u32;
+
+/// 512-bit unsigned integer for 32-bit machines, Synonym of `u512_with_u32`
+#[cfg(target_pointer_width = "32")] pub type u512 = u512_with_u32;
+
+/// 1024-bit unsigned integer for 32-bit machines, Synonym of `u1024_with_u32`
+#[cfg(target_pointer_width = "32")] pub type u1024 = u1024_with_u32;
+
+/// 2048-bit unsigned integer for 32-bit machines, Synonym of `u2048_with_u32`
+#[cfg(target_pointer_width = "32")] pub type u2048 = u2048_with_u32;
+
+/// 3072-bit unsigned integer for 32-bit machines, Synonym of `u3072_with_u32`
+#[cfg(target_pointer_width = "32")] pub type u3072 = u3072_with_u32;
+
+/// 4096-bit unsigned integer for 32-bit machines, Synonym of `u4096_with_u32`
+#[cfg(target_pointer_width = "32")] pub type u4096 = u4096_with_u32;
+
+/// 5120-bit unsigned integer for 32-bit machines, Synonym of `u5120_with_u32`
+#[cfg(target_pointer_width = "32")] pub type u5120 = u5120_with_u32;
+
+/// 6144-bit unsigned integer for 32-bit machines, Synonym of `u6144_with_u32`
+#[cfg(target_pointer_width = "32")] pub type u6144 = u6144_with_u32;
+
+/// 7168-bit unsigned integer for 32-bit machines, Synonym of `u7168_with_u32`
+#[cfg(target_pointer_width = "32")] pub type u7168 = u7168_with_u32;
+
+/// 8192-bit unsigned integer for 32-bit machines, Synonym of `u8192_with_u32`
+#[cfg(target_pointer_width = "32")] pub type u8192 = u8192_with_u32;
+
+/// 16384-bit unsigned integer for 32-bit machines, Synonym of `u16384_with_u32`
+#[cfg(target_pointer_width = "32")] pub type u16384 = u16384_with_u32;
+
+
+/// 256-bit unsigned integer for 16-bit machines, Synonym of `u256_with_u16`
+#[cfg(target_pointer_width = "16")] pub type u256 = u256_with_u16;
+
+/// 512-bit unsigned integer for 16-bit machines, Synonym of `u512_with_u16`
+#[cfg(target_pointer_width = "16")] pub type u512 = u512_with_u16;
+
+/// 1024-bit unsigned integer for 16-bit machines, Synonym of `u1024_with_u16`
+#[cfg(target_pointer_width = "16")] pub type u1024 = u1024_with_u16;
+
+/// 2048-bit unsigned integer for 16-bit machines, Synonym of `u2048_with_u16`
+#[cfg(target_pointer_width = "16")] pub type u2048 = u2048_with_u16;
+
+/// 3072-bit unsigned integer for 16-bit machines, Synonym of `u3072_with_u16`
+#[cfg(target_pointer_width = "16")] pub type u3072 = u3072_with_u16;
+
+/// 4096-bit unsigned integer for 16-bit machines, Synonym of `u4096_with_u16`
+#[cfg(target_pointer_width = "16")] pub type u4096 = u4096_with_u16;
+
+/// 5120-bit unsigned integer for 16-bit machines, Synonym of `u5120_with_u16`
+#[cfg(target_pointer_width = "16")] pub type u5120 = u5120_with_u16;
+
+/// 6144-bit unsigned integer for 16-bit machines, Synonym of `u6144_with_u16`
+#[cfg(target_pointer_width = "16")] pub type u6144 = u6144_with_u16;
+
+/// 7168-bit unsigned integer for 16-bit machines, Synonym of `u7168_with_u16`
+#[cfg(target_pointer_width = "16")] pub type u7168 = u7168_with_u16;
+
+/// 8192-bit unsigned integer for 16-bit machines, Synonym of `u8192_with_u16`
+#[cfg(target_pointer_width = "16")] pub type u8192 = u8192_with_u16;
+
+/// 16384-bit unsigned integer for 16-bit machines, Synonym of `u16384_with_u16`
+#[cfg(target_pointer_width = "16")] pub type u16384 = u16384_with_u16;
+
+
+/// 256-bit unsigned integer for 8-bit machines, Synonym of `u256_with_u8`
+#[cfg(target_pointer_width = "8")] pub type u256 = u256_with_u8;
+
+/// 512-bit unsigned integer for 8-bit machines, Synonym of `u512_with_u8`
+#[cfg(target_pointer_width = "8")] pub type u512 = u512_with_u8;
+
+/// 1024-bit unsigned integer for 8-bit machines, Synonym of `u1024_with_u8`
+#[cfg(target_pointer_width = "8")] pub type u1024 = u1024_with_u8;
+
+/// 2048-bit unsigned integer for 8-bit machines, Synonym of `u2048_with_u8`
+#[cfg(target_pointer_width = "8")] pub type u2048 = u2048_with_u8;
+
+/// 3072-bit unsigned integer for 8-bit machines, Synonym of `u3072_with_u8`
+#[cfg(target_pointer_width = "8")] pub type u3072 = u3072_with_u8;
+
+/// 4096-bit unsigned integer for 8-bit machines, Synonym of `u4096_with_u8`
+#[cfg(target_pointer_width = "8")] pub type u4096 = u4096_with_u8;
+
+/// 5120-bit unsigned integer for 8-bit machines, Synonym of `u5120_with_u8`
+#[cfg(target_pointer_width = "8")] pub type u5120 = u5120_with_u8;
+
+/// 6144-bit unsigned integer for 8-bit machines, Synonym of `u6144_with_u8`
+#[cfg(target_pointer_width = "8")] pub type u6144 = u6144_with_u8;
+
+/// 7168-bit unsigned integer for 8-bit machines, Synonym of `u7168_with_u8`
+#[cfg(target_pointer_width = "8")] pub type u7168 = u7168_with_u8;
+
+/// 8192-bit unsigned integer for 8-bit machines, Synonym of `u8192_with_u8`
+#[cfg(target_pointer_width = "8")] pub type u8192 = u8192_with_u8;
+
+/// 16384-bit unsigned integer for 8-bit machines, Synonym of `u16384_with_u8`
+#[cfg(target_pointer_width = "8")] pub type u16384 = u16384_with_u8;
+
+
+/// 32-byte unsigned integer, Synonym of `u256`
+pub type U32 = u256;
+
+/// 64-byte unsigned integer, Synonym of `u512`
+pub type U64 = u512;
+
+/// 128-byte unsigned integer, Synonym of `u1024`
+pub type U128 = u1024;
+
+/// 256-byte unsigned integer, Synonym of `u2048`
+pub type U256 = u2048;
+
+/// 384-byte unsigned integer, Synonym of `u3072`
+pub type U384 = u3072;
+
+/// 512-byte unsigned integer, Synonym of `u4096`
+pub type U512 = u4096;
+
+/// 640-byte unsigned integer, Synonym of `u5120`
+pub type U640 = u5120;
+
+/// 760-byte unsigned integer, Synonym of `u6144`
+pub type U768 = u6144;
+
+/// 896-byte unsigned integer, Synonym of `u7168`
+pub type U896 = u7168;
+
+/// 1024-byte unsigned integer, Synonym of `u8192`
+pub type U1024 = u8192;
+
+/// 2048-byte unsigned integer, Synonym of `u16384`
+pub type U2048 = u16384;
+
 
 /// A struct that represents a big unsigned integer with user-defined fixed size.
 /// 
@@ -333,7 +574,7 @@ where T: Uint + Add<Output=T> + AddAssign + Sub<Output=T> + SubAssign
 
     /// Constructs a new BigUInt<T, N> from an unsigned integer
     /// such as u8, u16, u32, u64, u128 and usize. The BigEndian version
-    /// is experimental.
+    /// is so experimental that you may not want to use it for serious purpose.
     /// 
     /// # Examples
     /// 
@@ -362,7 +603,7 @@ where T: Uint + Add<Output=T> + AddAssign + Sub<Output=T> + SubAssign
         {
             unsafe { me.set_num(N-1, share.des); }
         }
-        else
+        else    // if TSIZE < SSIZE
         {
             let TSIZE_BIT = TSIZE * 8;
             let LEN = SSIZE/TSIZE;
@@ -374,7 +615,7 @@ where T: Uint + Add<Output=T> + AddAssign + Sub<Output=T> + SubAssign
                     unsafe { share.src <<= S::num(TSIZE_BIT as u128); }
                 }    
             }
-            else
+            else    // if LEN > N
             {
                 unsafe { share.src <<= S::num(((LEN - N) * TSIZE_BIT) as u128); }
                 for i in 0..N
@@ -478,6 +719,7 @@ where T: Uint + Add<Output=T> + AddAssign + Sub<Output=T> + SubAssign
     /// use Cryptocol::number::BigUInt;
     /// let bi = BigUInt<u8,32>::from_string_with_radix("A16F", 16);
     /// ```
+    #[inline]
     pub fn from_string(txt: &str) -> Option<Self>
     {
         Self::from_string_with_radix(txt, 10)
@@ -531,7 +773,8 @@ where T: Uint + Add<Output=T> + AddAssign + Sub<Output=T> + SubAssign
 
     /// Constructs a new BigUInt<T, N> from another kind of BigUInt<U, M>.
     /// It copies not only long bit integer but also current flags from another
-    /// kind of BigUInt<U, M>. It is experimental for Big Endian CPU.
+    /// kind of BigUInt<U, M>. It is so experimental for Big Endian CPU that you
+    /// may not want to use it for serious purpose.
     /// 
     /// # Example
     /// 
@@ -585,6 +828,7 @@ where T: Uint + Add<Output=T> + AddAssign + Sub<Output=T> + SubAssign
         check_bits
     }
 
+    #[inline]
     pub fn in_bytes() -> usize { size_of::<T>() * N }
 
     /// Sets only the bit specified by bit_pos to be 1.
@@ -601,7 +845,9 @@ where T: Uint + Add<Output=T> + AddAssign + Sub<Output=T> + SubAssign
         self.set_num(chunk_num, val);
     }
 
-    /// Sets only the bit specified by bit_pos to be 1.
+    /// Sets only the bit specified by bit_pos to be 1. It is so experimental
+    /// for Big Endian CPU that you may be discouraged to use it for serious
+    /// purpose.
     /// 
     #[cfg(target_endian = "big")]
     fn turn_check_bits(&mut self, bit_pos: usize)
@@ -1192,6 +1438,9 @@ where T: Uint + Add<Output=T> + AddAssign + Sub<Output=T> + SubAssign
         unsafe { num.uint[0] }
     }
 
+    /// little endian
+    /// 
+    #[cfg(target_endian = "little")]
     pub fn into_u16(&self) -> u16
     {
         let mut num = ULonger { ulonger: 0 };
@@ -1209,7 +1458,35 @@ where T: Uint + Add<Output=T> + AddAssign + Sub<Output=T> + SubAssign
         unsafe { num.ushort[0] }
     }
 
+    /// big endian
+    /// 
+    #[cfg(target_endian = "big")]
+    pub fn into_u16(&self) -> u16
+    {
+        let mut num = ULonger { ulonger: 0 };
+        match size_of::<T>()
+        {
+            1 => {
+                unsafe { num.byte[15] = self.number[N-1].into_u8(); }
+                unsafe { if N > 1 { num.byte[14] = self.number[N-2].into_u8() } }
+                },
+            2 => { return self.number[N-1].into_u16(); },
+            4 => { unsafe { num.uint[3] = self.number[N-1].into_u32(); } },
+            8 => { unsafe { num.ulong[1] = self.number[N-1].into_u64(); } },
+            _ => { num.ulonger = self.number[N-1].into_u128(); },
+        }
+        unsafe { num.ushort[7] }
+    }
+
+    /// little endian
+    /// 
+    #[cfg(target_endian = "little")]
     pub fn into_u8(&self) -> u8         { self.number[0].into_u8() }
+
+    /// big endian
+    /// 
+    #[cfg(target_endian = "big")]
+    pub fn into_u8(&self) -> u8         { self.number[N-1].into_u8() }
 
     pub fn set_overflow(&mut self)      { self.set_flag_bit(Self::OVERFLOW); }
     pub fn reset_overflow(&mut self)    { self.reset_flag_bit(Self::OVERFLOW); }

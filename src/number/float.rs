@@ -7,17 +7,17 @@
 // except according to those terms.
 
 //! For generic type of primitive floating point data types
-//! for all modules of the crate Cryptocol.
+//! for the counter part of uint and int.
 
-#![warn(missing_docs)]
-#![warn(missing_doc_code_examples)]
+//#![warn(missing_docs)]
+//#![warn(missing_doc_code_examples)]
 
 use std::fmt::Debug;
 use std::ops::*;
 use std::cmp::{Eq, Ord};
 
 /// Trait Float is for generic type of primitive floating point data types
-/// for all modules of the crate Cryptocol.
+/// for the counter part of uint and int.
 /// 
 /// Here, the generic type of primitive floating point data types includes:
 /// f32 and f64. You will hardly use the trait Float unless you improve the

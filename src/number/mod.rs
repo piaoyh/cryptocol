@@ -27,6 +27,21 @@
 //! - `BigInt` --- a big _signed_ integer with user-defined _fixed_ size.
 //! - `LargeInt` --- a big _signed_ integer with _variable_ size.
 //! 
+//! # Predefined big unsigned integer data types
+//! There are provided predefined data types: `u256`, `u512`, `u1024`, `u2048`,
+//! `u3072`, `u4096`, `u5120`, `u6144`, `u7168`, `u8192`, and `u16384`.
+//! And their synonyms are also provided such as `U32` (= `u256`),
+//! `U64` (= `u512`), `U128` (= `u1024`), `U256` (= `u2048`),
+//! `U384` (= `u3072`), `U512` (= `u4096`), `U640` (= `u5120`),
+//! `U768` (= `u6144`), `U896` (= `u7168`), `U1024` (= `u8192`),
+//! and `U2048` (= `u16384`). You can further define more data types.
+//! 
+//! `u256` for 64-bit machines is `BigUInt<u64, 4>` for example
+//! while `u256` for 32-bit machines is `BigUInt<u32, 8>` for example.
+//! 
+//! # QUICK START
+//! 
+//! 
 
 pub mod huge_number;
 pub mod uint;

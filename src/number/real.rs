@@ -7,7 +7,7 @@
 // except according to those terms.
 
 //! For generic type of primitive number data types
-//! for all modules of the crate Cryptocol.
+//! for the counter part of uint and int.
 
 #![warn(missing_docs)]
 #![warn(missing_doc_code_examples)]
@@ -17,11 +17,11 @@ use std::ops::*;
 use std::cmp::{Eq, Ord};
 
 /// Trait Real is for generic type of primitive number data types
-/// for all modules of the crate Cryptocol.
+/// for the counter part of uint and int.
 /// 
 /// Trait Real is trait Float + trait Numeric. Here, the generic type of
 /// primitive number data types includes: u8, u16, u32, u64, u128, usize, i8,
-/// i16, i32, i64,i128, isize, f32 and f64. You will hardly use the trait Real
+/// i16, i32, i64, i128, isize, f32 and f64. You will hardly use the trait Real
 /// unless you improve the crate Cryptocol or create addional libraries that
 /// works with the crate Cryptocol. But, if you only use the crate Cryptocol,
 /// you can forget about this trait Real.

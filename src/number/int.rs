@@ -7,7 +7,7 @@
 // except according to those terms.
 
 //! Trait Int for generic type of primitive signed integral data types
-//! for all modules of the crate Cryptocol.
+//! for the counter part of uint.
 
 #![warn(missing_docs)]
 #![warn(missing_doc_code_examples)]
@@ -17,7 +17,7 @@ use std::ops::*;
 use std::cmp::{Eq, Ord};
 
 /// For generic type of primitive signed integral data types
-/// for all modules of the crate Cryptocol.
+/// for the counter part of uint.
 ///  
 /// Here, the generic type of primitive signed integral data types includes:
 /// i8, i16, i32, i64, i128, and isize. You will hardly use the trait Int unless
