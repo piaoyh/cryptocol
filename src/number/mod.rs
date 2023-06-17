@@ -44,6 +44,8 @@
 //! 
 
 pub mod huge_number;
+pub mod big_number;
+pub mod big_unsigned_int;
 pub mod uint;
 pub mod int;
 pub mod numeric;
@@ -52,6 +54,8 @@ pub mod real;
 pub mod big_uint;
 
 pub use huge_number::*;
+pub use big_number::*;
+pub use big_unsigned_int::*;
 pub use uint::*;
 pub use int::*;
 pub use numeric::*;

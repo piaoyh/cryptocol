@@ -10,12 +10,14 @@
 
 //#![warn(missing_docs)]
 //#![warn(missing_doc_code_examples)]
-use std::fmt::{ self, Display, Formatter };
-use std::mem::{ size_of, transmute_copy, zeroed, transmute };
+use std::fmt::{ self, Display, Formatter, Debug };
+use std::mem::{ size_of, transmute, transmute_copy, zeroed };
 use std::ops::*;
 use std::cmp::{ PartialEq, PartialOrd, Ordering };
 
 use super::uint::*;
+use super::BigNumber;
+use super::BigUnsignedInt;
 
 
 /// 256-bit unsigned integer implemented by `BigUInt<u128, 2>` made with two `u128`s
@@ -189,7 +191,7 @@ pub type u8192_with_u8 = BigUInt<u8, 1024>;
 pub type u16384_with_u8 = BigUInt<u8, 2048>;
 
 
-/// 256-bit unsigned integer for 128-bit machines, Synonym of `u256_with_u128`
+/// 256-bit unsigned integer, Synonym of `u256_with_u128`
 #[cfg(target_pointer_width = "128")] pub type u256 = u256_with_u128;
 
 /// 512-bit unsigned integer for 128-bit machines, Synonym of `u512_with_u128`
@@ -445,27 +447,27 @@ pub type U2048 = u16384;
 /// ```
 #[derive(Debug, Copy, Clone)]
 pub struct BigUInt<T, const N: usize>
-where T: Uint + Add<Output=T> + AddAssign + Sub<Output=T> + SubAssign
+where T: Uint + Display + Debug + ToString
+        + Add<Output=T> + AddAssign + Sub<Output=T> + SubAssign
         + Mul<Output=T> + MulAssign + Div<Output=T> + DivAssign
         + Shl<Output=T> + ShlAssign + Shr<Output=T> + ShrAssign
         + BitAnd<Output=T> + BitAndAssign + BitOr<Output=T> + BitOrAssign
         + BitXor<Output=T> + BitXorAssign + Not<Output=T>
         + PartialEq + PartialOrd
-        + Display + ToString
 {
     number: [T; N],
     flag: u8,
 }
 
 impl<T, const N: usize> BigUInt<T, N>
-where T: Uint + Add<Output=T> + AddAssign + Sub<Output=T> + SubAssign
+where T: Uint + Display + ToString
+        + Add<Output=T> + AddAssign + Sub<Output=T> + SubAssign
         + Mul<Output=T> + MulAssign + Div<Output=T> + DivAssign
         + Shl<Output=T> + ShlAssign + Shr<Output=T> + ShrAssign
         + BitAnd<Output=T> + BitAndAssign + BitOr<Output=T> + BitOrAssign
         + BitXor<Output=T> + BitXorAssign + Not<Output=T>
-        + PartialEq + PartialOrd
-        + Display + ToString,
-    Self: Sized + Clone
+        + PartialEq + PartialOrd,
+    Self: Sized + Clone + Copy + Display + Debug + ToString 
         + Add<Output = Self> + AddAssign + Sub<Output = Self> + SubAssign
         + Mul<Output = Self> + MulAssign + Div<Output = Self> + DivAssign
         + Rem<Output = Self> + RemAssign
@@ -473,13 +475,8 @@ where T: Uint + Add<Output=T> + AddAssign + Sub<Output=T> + SubAssign
         + Shr<i32, Output = Self> + ShrAssign<i32>
         + BitAnd<Self, Output = Self> + BitAndAssign + BitOr<Output = Self> + BitOrAssign
         + BitXorAssign + Not<Output = Self>
-        + Display + ToString
+        + BigNumber<T, N> + BigUnsignedInt<T, N>
 {
-    const OVERFLOW: u8          = 0b0000_0001;
-    const UNDERFLOW: u8         = 0b0000_0010;
-    const INFINITY: u8          = 0b0000_0100;
-    const DIVIDED_BY_ZERO: u8   = 0b0000_1000;
-
     /// Constructs a new BigUInt<T, N>.
     /// All the attributes of te constructed object will be initialized with 0.
     /// 
@@ -828,9 +825,6 @@ where T: Uint + Add<Output=T> + AddAssign + Sub<Output=T> + SubAssign
         check_bits
     }
 
-    #[inline]
-    pub fn in_bytes() -> usize { size_of::<T>() * N }
-
     /// Sets only the bit specified by bit_pos to be 1.
     /// 
     #[cfg(target_endian = "little")]
@@ -860,10 +854,317 @@ where T: Uint + Add<Output=T> + AddAssign + Sub<Output=T> + SubAssign
         self.set_zero();
         self.set_num(chunk_num, val);
     }
+}
 
+
+impl<T, const N: usize> BigUnsignedInt<T, N> for BigUInt<T, N>
+where T: Uint + Add<Output=T> + AddAssign + Sub<Output=T> + SubAssign
+        + Mul<Output=T> + MulAssign + Div<Output=T> + DivAssign
+        + Shl<Output=T> + ShlAssign + Shr<Output=T> + ShrAssign
+        + BitAnd<Output=T> + BitAndAssign + BitOr<Output=T> + BitOrAssign
+        + BitXor<Output=T> + BitXorAssign + Not<Output=T>
+        + PartialEq + PartialOrd
+        + Display + ToString,
+    Self: Sized + Clone + Copy
+        + Add<Output = Self> + AddAssign + Sub<Output = Self> + SubAssign
+        + Mul<Output = Self> + MulAssign + Div<Output = Self> + DivAssign
+        + Rem<Output = Self> + RemAssign
+        + Shl<i32, Output = Self> + ShlAssign<i32>
+        + Shr<i32, Output = Self> + ShrAssign<i32>
+        + BitAnd<Self, Output = Self> + BitAndAssign + BitOr<Output = Self> + BitOrAssign
+        + BitXorAssign + Not<Output = Self>
+        + Display + ToString
+{
+    fn set_max(&mut self)
+    {
+        for i in 0..N
+            { self.set_num(i, T::Max()); }
+    }
+
+    fn is_max(&self) -> bool
+    {
+        for i in 0..N
+        {
+            if self.get_num(i) != T::Max()
+                { return false; }
+        }
+        true
+    }
+
+
+    #[cfg(target_endian = "little")]
+    fn set_uint(&mut self, val: T)
+    {
+        self.set_zero();
+        self.set_num(0, val);
+    }
+
+    #[cfg(target_endian = "big")]
+    fn set_uint(&mut self, val: T)
+    {
+        self.set_zero();
+        self.set_num(N-1, val);
+    }
+
+    #[cfg(target_endian = "little")]
+    fn is_uint(&self, val: T) -> bool
+    {
+        if self.get_num(0) != val
+        {
+            false
+        }
+        else
+        {
+            for i in 1..N
+            {
+                if self.get_num(i) != T::zero()
+                    { return false; }
+            }
+            true
+        }
+    }
+
+    #[cfg(target_endian = "big")]
+    fn is_uint(&self, val: T) -> bool
+    {
+        if self.get_num(N-1) != val
+        {
+            false
+        }
+        else
+        {
+            for i in 0..N-1
+            {
+                if self.get_num(i) != T::zero()
+                    { return false; }
+            }
+            true
+        }
+    }
+
+    fn add_uint(&self, rhs: T) -> Self
+    {
+        let mut bi = self.clone();
+        bi.accumulate(rhs);
+        bi
+    }
+
+    fn sub_uint(&self, rhs: T) -> Self
+    {
+        let mut bi = self.clone();
+        bi.dissipate(rhs);
+        bi
+    }
+
+    fn mul_uint(&self, rhs: T) -> Self
+    {
+        let mut bi = self.clone();
+        bi.times(rhs);
+        bi
+    }
+
+    fn div_uint(&self, rhs: T) -> Self
+    {
+        let mut bi = self.clone();
+        bi.quotient(rhs);
+        bi
+    }
+
+    fn rem_uint(&self, rhs: T) -> Self
+    {
+        let mut bi = self.clone();
+        bi.remainder(rhs);
+        bi
+    }
+
+    fn into_biguint<U, const M: usize>(&self) -> BigUInt<U, M>
+    where U: Uint + Add<Output=U> + AddAssign + Sub<Output=U> + SubAssign
+            + Mul<Output=U> + MulAssign + Div<Output=U> + DivAssign
+            + Shl<Output=U> + ShlAssign + Shr<Output=U> + ShrAssign
+            + BitAnd<Output=U> + BitAndAssign + BitOr<Output=U> + BitOrAssign
+            + BitXor<Output=U> + BitXorAssign + Not<Output=U>
+            + PartialEq + PartialOrd
+            + Display + ToString
+    {
+        BigUInt::<U, M>::from_biguint(&self)
+    }
+
+    fn into_u128(&self) -> u128
+    {
+        let mut num = ULonger { ulonger: 0 };
+        match size_of::<T>()
+        {
+            1 => {
+                unsafe { num.byte[0] = self.number[0].into_u8(); }
+                unsafe { if N > 1 { num.byte[1] = self.number[1].into_u8() } }
+                unsafe { if N > 2 { num.byte[2] = self.number[2].into_u8() } }
+                unsafe { if N > 3 { num.byte[3] = self.number[3].into_u8() } }
+                unsafe { if N > 4 { num.byte[4] = self.number[4].into_u8() } }
+                unsafe { if N > 5 { num.byte[5] = self.number[5].into_u8() } }
+                unsafe { if N > 6 { num.byte[6] = self.number[6].into_u8() } }
+                unsafe { if N > 7 { num.byte[7] = self.number[7].into_u8() } }
+                unsafe { if N > 8 { num.byte[8] = self.number[8].into_u8() } }
+                unsafe { if N > 9 { num.byte[9] = self.number[9].into_u8() } }
+                unsafe { if N > 10 { num.byte[10] = self.number[10].into_u8() } }
+                unsafe { if N > 11 { num.byte[11] = self.number[11].into_u8() } }
+                unsafe { if N > 12 { num.byte[12] = self.number[12].into_u8() } }
+                unsafe { if N > 13 { num.byte[13] = self.number[13].into_u8() } }
+                unsafe { if N > 14 { num.byte[14] = self.number[14].into_u8() } }
+                unsafe { if N > 15 { num.byte[15] = self.number[15].into_u8() } }
+                },
+            2 => {
+                unsafe { num.ushort[0] = self.number[0].into_u16(); }
+                unsafe { if N > 1 { num.ushort[1] = self.number[1].into_u16() } }
+                unsafe { if N > 2 { num.ushort[2] = self.number[2].into_u16() } }
+                unsafe { if N > 3 { num.ushort[3] = self.number[3].into_u16() } }
+                unsafe { if N > 4 { num.ushort[4] = self.number[4].into_u16() } }
+                unsafe { if N > 5 { num.ushort[5] = self.number[5].into_u16() } }
+                unsafe { if N > 6 { num.ushort[6] = self.number[6].into_u16() } }
+                unsafe { if N > 7 { num.ushort[7] = self.number[7].into_u16() } }
+                },
+            4 => {
+                unsafe { num.uint[0] = self.number[0].into_u32(); }
+                unsafe { if N > 2 { num.uint[1] = self.number[1].into_u32(); } }
+                unsafe { if N > 3 { num.uint[2] = self.number[2].into_u32(); } }
+                unsafe { if N > 4 { num.uint[3] = self.number[3].into_u32(); } }
+                },
+            8 => { 
+                unsafe { num.ulong[0] = self.number[0].into_u64(); }
+                unsafe { if N > 1 { num.ulong[1] = self.number[1].into_u64(); } }
+                },
+            _ => { return self.number[0].into_u128(); },
+        }
+        unsafe { num.ulonger }
+    }
+
+    fn into_u64(&self) -> u64
+    {
+        let mut num = ULonger { ulonger: 0 };
+        match size_of::<T>()
+        {
+            1 => {
+                unsafe { num.byte[0] = self.number[0].into_u8(); }
+                unsafe { if N > 1 { num.byte[1] = self.number[1].into_u8() } }
+                unsafe { if N > 2 { num.byte[2] = self.number[2].into_u8() } }
+                unsafe { if N > 3 { num.byte[3] = self.number[3].into_u8() } }
+                unsafe { if N > 4 { num.byte[4] = self.number[4].into_u8() } }
+                unsafe { if N > 5 { num.byte[5] = self.number[5].into_u8() } }
+                unsafe { if N > 6 { num.byte[6] = self.number[6].into_u8() } }
+                unsafe { if N > 7 { num.byte[7] = self.number[7].into_u8() } }
+                },
+            2 => {
+                unsafe { num.ushort[0] = self.number[0].into_u16(); }
+                unsafe { if N > 1 { num.ushort[1] = self.number[1].into_u16() } }
+                unsafe { if N > 2 { num.ushort[2] = self.number[2].into_u16() } }
+                unsafe { if N > 3 { num.ushort[3] = self.number[3].into_u16() } }
+                },
+            4 => {
+                unsafe { num.uint[0] = self.number[0].into_u32(); }
+                unsafe { if N > 1 { num.uint[1] = self.number[1].into_u32(); } }
+                },
+            8 => { return self.number[0].into_u64(); },
+            _ => { num.ulonger = self.number[0].into_u128(); },
+        }
+        unsafe { num.ulong[0] }
+    }
+
+    fn into_u32(&self) -> u32
+    {
+        let mut num = ULonger { ulonger: 0 };
+        match size_of::<T>()
+        {
+            1 => {
+                unsafe { num.byte[0] = self.number[0].into_u8(); }
+                unsafe { if N > 1 { num.byte[1] = self.number[1].into_u8() } }
+                unsafe { if N > 2 { num.byte[2] = self.number[2].into_u8() } }
+                unsafe { if N > 3 { num.byte[3] = self.number[3].into_u8() } }
+                },
+            2 => {
+                unsafe { num.ushort[0] = self.number[0].into_u16(); }
+                unsafe { if N > 1 { num.ushort[1] = self.number[1].into_u16() } }
+                },
+            4 => { return self.number[0].into_u32(); },
+            8 => { unsafe { num.ulong[0] = self.number[0].into_u64(); } },
+            _ => { num.ulonger = self.number[0].into_u128(); },
+        }
+        unsafe { num.uint[0] }
+    }
+
+    /// little endian
+    /// 
+    #[cfg(target_endian = "little")]
+    fn into_u16(&self) -> u16
+    {
+        let mut num = ULonger { ulonger: 0 };
+        match size_of::<T>()
+        {
+            1 => {
+                unsafe { num.byte[0] = self.number[0].into_u8(); }
+                unsafe { if N > 1 { num.byte[1] = self.number[1].into_u8() } }
+                },
+            2 => { return self.number[0].into_u16(); },
+            4 => { unsafe { num.uint[0] = self.number[0].into_u32(); } },
+            8 => { unsafe { num.ulong[0] = self.number[0].into_u64(); } },
+            _ => { num.ulonger = self.number[0].into_u128(); },
+        }
+        unsafe { num.ushort[0] }
+    }
+
+    /// big endian
+    /// 
+    #[cfg(target_endian = "big")]
+    fn into_u16(&self) -> u16
+    {
+        let mut num = ULonger { ulonger: 0 };
+        match size_of::<T>()
+        {
+            1 => {
+                unsafe { num.byte[15] = self.number[N-1].into_u8(); }
+                unsafe { if N > 1 { num.byte[14] = self.number[N-2].into_u8() } }
+                },
+            2 => { return self.number[N-1].into_u16(); },
+            4 => { unsafe { num.uint[3] = self.number[N-1].into_u32(); } },
+            8 => { unsafe { num.ulong[1] = self.number[N-1].into_u64(); } },
+            _ => { num.ulonger = self.number[N-1].into_u128(); },
+        }
+        unsafe { num.ushort[7] }
+    }
+
+    /// little endian
+    /// 
+    #[cfg(target_endian = "little")]
+    fn into_u8(&self) -> u8         { self.number[0].into_u8() }
+
+    /// big endian
+    /// 
+    #[cfg(target_endian = "big")]
+    fn into_u8(&self) -> u8         { self.number[N-1].into_u8() }
+
+//~
+}
+
+
+impl<T, const N: usize> BigNumber<T, N> for BigUInt<T, N>
+where T: Uint + Add<Output=T> + AddAssign + Sub<Output=T> + SubAssign
+        + Mul<Output=T> + MulAssign + Div<Output=T> + DivAssign
+        + Shl<Output=T> + ShlAssign + Shr<Output=T> + ShrAssign
+        + BitAnd<Output=T> + BitAndAssign + BitOr<Output=T> + BitOrAssign
+        + BitXor<Output=T> + BitXorAssign + Not<Output=T>
+        + PartialEq + PartialOrd
+        + Display + ToString,
+    Self: Sized + Clone + Copy
+        + Add<Output = Self> + AddAssign + Sub<Output = Self> + SubAssign
+        + Mul<Output = Self> + MulAssign + Div<Output = Self> + DivAssign
+        + Rem<Output = Self> + RemAssign
+        + Shl<i32, Output = Self> + ShlAssign<i32>
+        + Shr<i32, Output = Self> + ShrAssign<i32>
+        + BitAnd<Self, Output = Self> + BitAndAssign + BitOr<Output = Self> + BitOrAssign
+        + BitXorAssign + Not<Output = Self>
+        + Display + ToString
+{
     /// Reads the value of BigUInt<T, N> and write it into String
     /// with a certain radix.
-    pub fn to_string_with_radix(&self, radix: usize) -> String
+    fn to_string_with_radix(&self, radix: usize) -> String
     {
         let mut txt = String::new();
         let zero = Self::zero();
@@ -903,7 +1204,7 @@ where T: Uint + Add<Output=T> + AddAssign + Sub<Output=T> + SubAssign
     /// let divisor = u1024::from_string("1234567890");
     /// let (quotient, remainder) = dividend.divide_fully(divisor);
     /// ```
-    pub fn divide_fully(&self, rhs: Self) -> (Self, Self)
+    fn divide_fully(&self, rhs: Self) -> (Self, Self)
     {
         let mut quotient = Self::zero();
         let zero = T::zero();
@@ -1002,6 +1303,71 @@ where T: Uint + Add<Output=T> + AddAssign + Sub<Output=T> + SubAssign
         }
     }
 
+    fn accumulate(&mut self, rhs: T)
+    {
+        let zero = T::zero();
+        let one = T::one();
+        let mut midres = self.number[0].wrapping_add(rhs);
+        let mut	carry = if midres < self.number[0] { one } else { zero };
+        self.number[0] = midres;
+        for i in 1..N
+        {
+            midres = self.number[i].wrapping_add(carry);
+            carry = if midres < carry { one } else { zero };
+            self.number[i] = midres;
+            if carry == zero
+                { break; }
+        }
+        if carry != T::zero()
+            { self.set_overflow(); }
+    }
+
+    fn dissipate(&mut self, rhs: T)
+    {
+        let zero = T::zero();
+        let one = T::one();
+        let mut midres = self.number[0].wrapping_sub(rhs);
+        let mut	carry= if midres > self.number[0] { one } else { zero };
+        self.number[0] = midres;
+        for i in 1..N
+        {
+            midres = self.number[i].wrapping_sub(carry);
+            carry = if midres > self.number[i] { one } else { zero };
+            self.number[i] = midres;
+        }
+        if carry != zero
+        {
+            if !self.is_untrustable()
+                { self.set_underflow(); }
+        }
+    }
+
+    fn times(&mut self, rhs: T)
+    {
+        if self.is_zero()
+            { return; }
+        let zero = T::zero();
+        let one = T::one();
+        if rhs == zero
+        {
+            self.set_zero();
+            return;
+        }
+        let adder = self.clone();
+        let mut bit_check = one;
+        bit_check <<= T::num((size_of::<T>() * 8 - 1).into_u128());
+        self.set_zero();
+        while (bit_check != zero) && ((bit_check & rhs) == zero)
+            { bit_check >>= one; }
+        while bit_check != zero
+        {
+            *self <<= 1;
+            if bit_check & rhs != zero
+                { *self += adder; }
+            bit_check >>= one;
+        }
+    }
+
     /// Divide BigUInt<T, N> by T so as to get quotient and remainder
     /// It returns tuple of quotient and remainder. quotient is Self and
     /// remainder is T. If rhs is zero, the divided_by_zero and overflow flags
@@ -1016,7 +1382,7 @@ where T: Uint + Add<Output=T> + AddAssign + Sub<Output=T> + SubAssign
     /// let divisor = T::num(87_u128);
     /// let (quotient, remainder) = dividend.divide_by_uint_fully(divisor);
     /// ```
-    pub fn divide_by_uint_fully(&self, rhs: T) -> (Self, T)
+    fn divide_by_uint_fully(&self, rhs: T) -> (Self, T)
     {
         let mut quotient = Self::zero();
         let zero = T::zero();
@@ -1115,78 +1481,22 @@ where T: Uint + Add<Output=T> + AddAssign + Sub<Output=T> + SubAssign
         }
     }
 
-    pub fn times(&mut self, rhs: T)
-    {
-        if self.is_zero()
-            { return; }
-        let zero = T::zero();
-        let one = T::one();
-        if rhs == zero
-        {
-            self.set_zero();
-            return;
-        }
-        let adder = self.clone();
-        let mut bit_check = one;
-        bit_check <<= T::num((size_of::<T>() * 8 - 1).into_u128());
-        self.set_zero();
-        while (bit_check != zero) && ((bit_check & rhs) == zero)
-            { bit_check >>= one; }
-        while bit_check != zero
-        {
-            *self <<= 1;
-            if bit_check & rhs != zero
-                { *self += adder; }
-            bit_check >>= one;
-        }
-    }
-
-    pub fn quotient(&mut self, rhs: T)
+    fn quotient(&mut self, rhs: T)
     {
         let bi = Self::from_uint(rhs);
         *self /= bi;
     }
 
-    pub fn remainder(&mut self, rhs: T)
+    fn remainder(&mut self, rhs: T)
     {
         let bi = Self::from_uint(rhs);
         *self %= bi;
     }
 
-    pub fn add_uint(&self, rhs: T) -> Self
-    {
-        let mut bi = self.clone();
-        bi.accumulate(rhs);
-        bi
-    }
-
-    pub fn sub_uint(&self, rhs: T) -> Self
-    {
-        let mut bi = self.clone();
-        bi.dissipate(rhs);
-        bi
-    }
-
-    pub fn mul_uint(&self, rhs: T) -> Self
-    {
-        let mut bi = self.clone();
-        bi.times(rhs);
-        bi
-    }
-
-    pub fn div_uint(&self, rhs: T) -> Self
-    {
-        let mut bi = self.clone();
-        bi.quotient(rhs);
-        bi
-    }
-
-    pub fn rem_uint(&self, rhs: T) -> Self
-    {
-        let mut bi = self.clone();
-        bi.remainder(rhs);
-        bi
-    }
+    #[inline] fn get_num(&self, i: usize) -> T          { self.number[i] }
+    #[inline] fn set_num(&mut self, i: usize, val: T)   { self.number[i] = val; }
+    #[inline] fn get_number(&self) -> &[T; N]           { &self.number }
+    #[inline] fn set_number(&mut self, val: &[T; N])    { self.number.copy_from_slice(val); }
 
     fn partial_cmp_uint(&self, other: T) -> Option<Ordering>
     {
@@ -1214,317 +1524,11 @@ where T: Uint + Add<Output=T> + AddAssign + Sub<Output=T> + SubAssign
         Some(Ordering::Equal)
     }
 
-    pub fn lt_uint(&self, other: T) -> bool  { self.partial_cmp_uint(other).unwrap().is_lt() }
-    pub fn gt_uint(&self, other: T) -> bool  { self.partial_cmp_uint(other).unwrap().is_gt() }
-    pub fn le_uint(&self, other: T) -> bool  { self.partial_cmp_uint(other).unwrap().is_le() }
-    pub fn ge_uint(&self, other: T) -> bool  { self.partial_cmp_uint(other).unwrap().is_ge() }
-    pub fn eq_uint(&self, other: T) -> bool  { self.partial_cmp_uint(other).unwrap().is_eq() }
-
-    pub fn get_num(&self, i: usize) -> T    { self.number[i] }
-    pub fn set_num(&mut self, i: usize, val: T) { self.number[i] = val; }
-    pub fn set_number(&mut self, val: &[T; N])
-    {
-        self.number.copy_from_slice(val);
-    }
-    
-    pub fn set_zero(&mut self)
-    {
-        for it in &mut self.number
-            { *it = T::zero(); }
-    }
-
-    pub fn is_zero(&self) -> bool
-    {
-        for it in &self.number
-        {
-            if *it != T::zero()
-                { return false; }
-        }
-        true
-    }
-
-    pub fn set_max(&mut self)
-    {
-        for it in &mut self.number
-            { *it = T::Max(); }
-    }
-
-    pub fn is_max(&self) -> bool
-    {
-        for it in &self.number
-        {
-            if *it != T::Max()
-                { return false; }
-        }
-        true
-    }
-
-    pub fn set_uint(&mut self, val: T)
-    {
-        self.set_zero();
-        self.number[0] = val;
-    }
-
-    pub fn is_uint(&self, val: T) -> bool
-    {
-        if self.number[0] != val
-            { return false; }
-        for i in 1..N
-        {
-            if self.number[i] != T::zero()
-                { return false; }
-        }
-        true
-    }
-
-    fn set_flag_bit(&mut self, flag_bits: u8)   { self.flag |= flag_bits }
-    fn reset_flag_bit(&mut self, flag_bits: u8) { self.flag &= !flag_bits }
-    fn is_flag_bit_on(&self, flag_bits: u8) -> bool { (self.flag & flag_bits) != 0 }
-    fn reset_flags(&mut self)                   { self.flag = 0; }
-
-
-
-
-
-    pub fn accumulate(&mut self, rhs: T)
-    {
-        let zero = T::zero();
-        let one = T::one();
-        let mut midres = self.number[0].wrapping_add(rhs);
-        let mut	carry = if midres < self.number[0] { one } else { zero };
-        self.number[0] = midres;
-        for i in 1..N
-        {
-            midres = self.number[i].wrapping_add(carry);
-            carry = if midres < carry { one } else { zero };
-            self.number[i] = midres;
-            if carry == zero
-                { break; }
-        }
-        if carry != T::zero()
-            { self.set_overflow(); }
-    }
-
-    pub fn dissipate(&mut self, rhs: T)
-    {
-        let zero = T::zero();
-        let one = T::one();
-        let mut midres = self.number[0].wrapping_sub(rhs);
-        let mut	carry= if midres > self.number[0] { one } else { zero };
-        self.number[0] = midres;
-        for i in 1..N
-        {
-            midres = self.number[i].wrapping_sub(carry);
-            carry = if midres > self.number[i] { one } else { zero };
-            self.number[i] = midres;
-        }
-        if carry != zero
-        {
-            if !self.is_untrustable()
-                { self.set_underflow(); }
-        }
-    }
-
-    pub fn into_biguint<U, const M: usize>(&self) -> BigUInt<U, M>
-    where U: Uint + Add<Output=U> + AddAssign + Sub<Output=U> + SubAssign
-            + Mul<Output=U> + MulAssign + Div<Output=U> + DivAssign
-            + Shl<Output=U> + ShlAssign + Shr<Output=U> + ShrAssign
-            + BitAnd<Output=U> + BitAndAssign + BitOr<Output=U> + BitOrAssign
-            + BitXor<Output=U> + BitXorAssign + Not<Output=U>
-            + PartialEq + PartialOrd
-            + Display + ToString
-    {
-        BigUInt::<U, M>::from_biguint(&self)
-    }
-
-    pub fn into_u128(&self) -> u128
-    {
-        let mut num = ULonger { ulonger: 0 };
-        match size_of::<T>()
-        {
-            1 => {
-                unsafe { num.byte[0] = self.number[0].into_u8(); }
-                unsafe { if N > 1 { num.byte[1] = self.number[1].into_u8() } }
-                unsafe { if N > 2 { num.byte[2] = self.number[2].into_u8() } }
-                unsafe { if N > 3 { num.byte[3] = self.number[3].into_u8() } }
-                unsafe { if N > 4 { num.byte[4] = self.number[4].into_u8() } }
-                unsafe { if N > 5 { num.byte[5] = self.number[5].into_u8() } }
-                unsafe { if N > 6 { num.byte[6] = self.number[6].into_u8() } }
-                unsafe { if N > 7 { num.byte[7] = self.number[7].into_u8() } }
-                unsafe { if N > 8 { num.byte[8] = self.number[8].into_u8() } }
-                unsafe { if N > 9 { num.byte[9] = self.number[9].into_u8() } }
-                unsafe { if N > 10 { num.byte[10] = self.number[10].into_u8() } }
-                unsafe { if N > 11 { num.byte[11] = self.number[11].into_u8() } }
-                unsafe { if N > 12 { num.byte[12] = self.number[12].into_u8() } }
-                unsafe { if N > 13 { num.byte[13] = self.number[13].into_u8() } }
-                unsafe { if N > 14 { num.byte[14] = self.number[14].into_u8() } }
-                unsafe { if N > 15 { num.byte[15] = self.number[15].into_u8() } }
-                },
-            2 => {
-                unsafe { num.ushort[0] = self.number[0].into_u16(); }
-                unsafe { if N > 1 { num.ushort[1] = self.number[1].into_u16() } }
-                unsafe { if N > 2 { num.ushort[2] = self.number[2].into_u16() } }
-                unsafe { if N > 3 { num.ushort[3] = self.number[3].into_u16() } }
-                unsafe { if N > 4 { num.ushort[4] = self.number[4].into_u16() } }
-                unsafe { if N > 5 { num.ushort[5] = self.number[5].into_u16() } }
-                unsafe { if N > 6 { num.ushort[6] = self.number[6].into_u16() } }
-                unsafe { if N > 7 { num.ushort[7] = self.number[7].into_u16() } }
-                },
-            4 => {
-                unsafe { num.uint[0] = self.number[0].into_u32(); }
-                unsafe { if N > 2 { num.uint[1] = self.number[1].into_u32(); } }
-                unsafe { if N > 3 { num.uint[2] = self.number[2].into_u32(); } }
-                unsafe { if N > 4 { num.uint[3] = self.number[3].into_u32(); } }
-                },
-            8 => { 
-                unsafe { num.ulong[0] = self.number[0].into_u64(); }
-                unsafe { if N > 1 { num.ulong[1] = self.number[1].into_u64(); } }
-                },
-            _ => { return self.number[0].into_u128(); },
-        }
-        unsafe { num.ulonger }
-    }
-
-    pub fn into_u64(&self) -> u64
-    {
-        let mut num = ULonger { ulonger: 0 };
-        match size_of::<T>()
-        {
-            1 => {
-                unsafe { num.byte[0] = self.number[0].into_u8(); }
-                unsafe { if N > 1 { num.byte[1] = self.number[1].into_u8() } }
-                unsafe { if N > 2 { num.byte[2] = self.number[2].into_u8() } }
-                unsafe { if N > 3 { num.byte[3] = self.number[3].into_u8() } }
-                unsafe { if N > 4 { num.byte[4] = self.number[4].into_u8() } }
-                unsafe { if N > 5 { num.byte[5] = self.number[5].into_u8() } }
-                unsafe { if N > 6 { num.byte[6] = self.number[6].into_u8() } }
-                unsafe { if N > 7 { num.byte[7] = self.number[7].into_u8() } }
-                },
-            2 => {
-                unsafe { num.ushort[0] = self.number[0].into_u16(); }
-                unsafe { if N > 1 { num.ushort[1] = self.number[1].into_u16() } }
-                unsafe { if N > 2 { num.ushort[2] = self.number[2].into_u16() } }
-                unsafe { if N > 3 { num.ushort[3] = self.number[3].into_u16() } }
-                },
-            4 => {
-                unsafe { num.uint[0] = self.number[0].into_u32(); }
-                unsafe { if N > 1 { num.uint[1] = self.number[1].into_u32(); } }
-                },
-            8 => { return self.number[0].into_u64(); },
-            _ => { num.ulonger = self.number[0].into_u128(); },
-        }
-        unsafe { num.ulong[0] }
-    }
-
-    pub fn into_u32(&self) -> u32
-    {
-        let mut num = ULonger { ulonger: 0 };
-        match size_of::<T>()
-        {
-            1 => {
-                unsafe { num.byte[0] = self.number[0].into_u8(); }
-                unsafe { if N > 1 { num.byte[1] = self.number[1].into_u8() } }
-                unsafe { if N > 2 { num.byte[2] = self.number[2].into_u8() } }
-                unsafe { if N > 3 { num.byte[3] = self.number[3].into_u8() } }
-                },
-            2 => {
-                unsafe { num.ushort[0] = self.number[0].into_u16(); }
-                unsafe { if N > 1 { num.ushort[1] = self.number[1].into_u16() } }
-                },
-            4 => { return self.number[0].into_u32(); },
-            8 => { unsafe { num.ulong[0] = self.number[0].into_u64(); } },
-            _ => { num.ulonger = self.number[0].into_u128(); },
-        }
-        unsafe { num.uint[0] }
-    }
-
-    /// little endian
-    /// 
-    #[cfg(target_endian = "little")]
-    pub fn into_u16(&self) -> u16
-    {
-        let mut num = ULonger { ulonger: 0 };
-        match size_of::<T>()
-        {
-            1 => {
-                unsafe { num.byte[0] = self.number[0].into_u8(); }
-                unsafe { if N > 1 { num.byte[1] = self.number[1].into_u8() } }
-                },
-            2 => { return self.number[0].into_u16(); },
-            4 => { unsafe { num.uint[0] = self.number[0].into_u32(); } },
-            8 => { unsafe { num.ulong[0] = self.number[0].into_u64(); } },
-            _ => { num.ulonger = self.number[0].into_u128(); },
-        }
-        unsafe { num.ushort[0] }
-    }
-
-    /// big endian
-    /// 
-    #[cfg(target_endian = "big")]
-    pub fn into_u16(&self) -> u16
-    {
-        let mut num = ULonger { ulonger: 0 };
-        match size_of::<T>()
-        {
-            1 => {
-                unsafe { num.byte[15] = self.number[N-1].into_u8(); }
-                unsafe { if N > 1 { num.byte[14] = self.number[N-2].into_u8() } }
-                },
-            2 => { return self.number[N-1].into_u16(); },
-            4 => { unsafe { num.uint[3] = self.number[N-1].into_u32(); } },
-            8 => { unsafe { num.ulong[1] = self.number[N-1].into_u64(); } },
-            _ => { num.ulonger = self.number[N-1].into_u128(); },
-        }
-        unsafe { num.ushort[7] }
-    }
-
-    /// little endian
-    /// 
-    #[cfg(target_endian = "little")]
-    pub fn into_u8(&self) -> u8         { self.number[0].into_u8() }
-
-    /// big endian
-    /// 
-    #[cfg(target_endian = "big")]
-    pub fn into_u8(&self) -> u8         { self.number[N-1].into_u8() }
-
-    pub fn set_overflow(&mut self)      { self.set_flag_bit(Self::OVERFLOW); }
-    pub fn reset_overflow(&mut self)    { self.reset_flag_bit(Self::OVERFLOW); }
-    pub fn is_overflow(&self) -> bool   { self.is_flag_bit_on(Self::OVERFLOW) }
-    pub fn set_underflow(&mut self)     { self.set_flag_bit(Self::UNDERFLOW); }
-    pub fn reset_underflow(&mut self)   { self.reset_flag_bit(Self::UNDERFLOW); }
-    pub fn is_underflow(&self) -> bool  { self.is_flag_bit_on(Self::UNDERFLOW) }
-    pub fn set_infinity(&mut self)     { self.set_flag_bit(Self::INFINITY); }
-    pub fn reset_inifinity(&mut self)   { self.reset_flag_bit(Self::INFINITY); }
-    pub fn is_inifinity(&self) -> bool  { self.is_flag_bit_on(Self::INFINITY) }
-    pub fn set_untrustable(&mut self)   { self.set_flag_bit(Self::OVERFLOW | Self::UNDERFLOW); }
-    pub fn reset_untrustable(&mut self) { self.reset_flag_bit(Self::OVERFLOW | Self::UNDERFLOW); }
-    pub fn is_untrustable(&self) -> bool { self.is_flag_bit_on(Self::OVERFLOW | Self::UNDERFLOW) }
-    pub fn set_divided_by_zero(&mut self)   { self.set_flag_bit(Self::DIVIDED_BY_ZERO); }
-    pub fn reset_divided_by_zero(&mut self) { self.reset_flag_bit(Self::DIVIDED_BY_ZERO); }
-    pub fn is_divided_by_zero(&self) -> bool { self.is_flag_bit_on(Self::DIVIDED_BY_ZERO) }
+    fn set_flag_bit(&mut self, flag: u8)      { self.flag |= flag; }
+    fn reset_flag_bit(&mut self, flag: u8)    { self.flag &= !flag; }
+    fn is_flag_bit_on(&self, flag: u8) -> bool    { (self.flag & flag) != 0 }
 }
 
-
-/*
-impl<T, const N: usize> Large_Integer<T, N> for BigUInt<T, N>
-where T: Uint + Add + Sub + Mul + Div
-        + Shl<Output=T> + ShlAssign + Shr<Output=T> + ShrAssign
-        + BitAnd + BitAndAssign + BitOr + BitOrAssign
-        + BitXorAssign + Not,
-    Self: Sized + Clone
-        + Add<Output = Self> + AddAssign + Sub<Output = Self> + SubAssign
-        + Mul<Output = Self> + MulAssign + Div<Output = Self> + DivAssign
-        + Rem<Output = Self> + RemAssign
-        + Shl<i32, Output = Self> + ShlAssign<i32>
-        + Shr<i32, Output = Self> + ShrAssign<i32>
-        + BitAnd<Self, Output = Self> + BitAndAssign + BitOr<Output = Self> + BitOrAssign
-        + BitXorAssign + Not<Output = Self>
-        + Display
-{
-
-}
-*/
 
 
 
