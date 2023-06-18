@@ -6,22 +6,22 @@
 // This file may not be copied, modified, or distributed
 // except according to those terms.
 
-use std::fmt::{ self, Display, Formatter };
-use std::mem::{ size_of, transmute, transmute_copy, zeroed };
-use std::ops::*;
+use std::fmt::{ Display, Debug };
 use std::cmp::{ PartialEq, PartialOrd, Ordering };
+use std::ops::*;
+
 use super::uint::*;
 
 /// A trait for big unsigned integer and big signed integer with user-defined fixed size.
 /// 
 pub trait BigNumber<T, const N: usize>
-where T: Uint + Add<Output=T> + AddAssign + Sub<Output=T> + SubAssign
+where T: Uint + Display + Debug + ToString
+        + Add<Output=T> + AddAssign + Sub<Output=T> + SubAssign
         + Mul<Output=T> + MulAssign + Div<Output=T> + DivAssign
         + Shl<Output=T> + ShlAssign + Shr<Output=T> + ShrAssign
         + BitAnd<Output=T> + BitAndAssign + BitOr<Output=T> + BitOrAssign
         + BitXor<Output=T> + BitXorAssign + Not<Output=T>
-        + PartialEq + PartialOrd
-        + Display + ToString,
+        + PartialEq + PartialOrd,
     Self: Sized + Clone + Copy
         + Add<Output = Self> + AddAssign + Sub<Output = Self> + SubAssign
         + Mul<Output = Self> + MulAssign + Div<Output = Self> + DivAssign
@@ -36,8 +36,6 @@ where T: Uint + Add<Output=T> + AddAssign + Sub<Output=T> + SubAssign
     const UNDERFLOW: u8         = 0b0000_0010;
     const INFINITY: u8          = 0b0000_0100;
     const DIVIDED_BY_ZERO: u8   = 0b0000_1000;
-
-    #[inline] fn in_bytes() -> usize { size_of::<T>() * N }
 
     fn to_string_with_radix(&self, radix: usize) -> String;
     fn divide_fully(&self, rhs: Self) -> (Self, Self);
@@ -113,4 +111,3 @@ where T: Uint + Add<Output=T> + AddAssign + Sub<Output=T> + SubAssign
     fn reset_divided_by_zero(&mut self) { self.reset_flag_bit(Self::DIVIDED_BY_ZERO); }
     fn is_divided_by_zero(&self) -> bool { self.is_flag_bit_on(Self::DIVIDED_BY_ZERO) }
 }
-

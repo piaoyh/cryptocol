@@ -15,7 +15,6 @@
 use std::fmt::{ Debug, Display };
 use std::mem::size_of;
 use std::ops::*;
-use std::cmp::{ Eq, Ord };
 
 /// Trait Uint is for generic type of primitive unsigned integral data types
 /// for all modules of the crate Cryptocol.
@@ -26,10 +25,12 @@ use std::cmp::{ Eq, Ord };
 /// the crate Cryptocol. But, if you only use the crate Cryptocol, you can
 /// forget about this trait Uint.
 ///
-pub trait Uint: Copy + Debug
+pub trait Uint: Copy + Clone + Display + Debug + ToString
             + Add + AddAssign + Sub + SubAssign + Mul + MulAssign + Div + DivAssign
             + Shl + ShlAssign + Shr + ShrAssign
-            + Eq + Ord
+            + BitAnd + BitAndAssign + BitOr + BitOrAssign
+            + BitXor + BitXorAssign + Not
+            + PartialEq + PartialOrd
 {
     fn wrapping_add(self, rhs: Self) -> Self;
     fn wrapping_sub(self, rhs: Self) -> Self;
