@@ -18,7 +18,7 @@ use super::HugeInteger;
 
 /// A trait for big unsigned integer and big signed integer with user-defined fixed size.
 /// 
-pub trait BigNumber<T, const N: usize>
+pub trait BigInteger<T, const N: usize>
 where T: Uint + Copy + Clone + Display + Debug + ToString
         + Add<Output=T> + AddAssign + Sub<Output=T> + SubAssign
         + Mul<Output=T> + MulAssign + Div<Output=T> + DivAssign

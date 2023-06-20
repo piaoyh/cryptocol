@@ -49,7 +49,7 @@ where T: Uint + Display + Debug + ToString
         + Shr<i32> + ShrAssign<i32>
         + BitAnd + BitAndAssign + BitOr + BitOrAssign
         + BitXorAssign + Not
-        + BigNumber<T, N>
+        + BigInteger<T, N>
 {
     let mut now = SystemTime::now();
     for _ in 0..1000
@@ -76,7 +76,7 @@ where T: Uint + Display + Debug + ToString
         + Shr<i32> + ShrAssign<i32>
         + BitAnd + BitAndAssign + BitOr + BitOrAssign
         + BitXorAssign + Not
-        + BigNumber<T, N>
+        + BigInteger<T, N>
 {
     sum.set_one();
     let mut now = SystemTime::now();

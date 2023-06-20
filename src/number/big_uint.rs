@@ -17,7 +17,7 @@ use std::ops::*;
 
 use super::uint::*;
 use super::HugeInteger;
-use super::BigNumber;
+use super::BigInteger;
 
 
 /// 256-bit unsigned integer implemented by `BigUInt<u128, 2>` made with two `u128`s
@@ -1122,7 +1122,7 @@ where T: Uint + Copy + Clone + Display + Debug + ToString
     pub fn into_u8(&self) -> u8         { self.number[N-1].into_u8() }
 }
 
-impl<T, const N: usize> BigNumber<T, N> for BigUInt<T, N>
+impl<T, const N: usize> BigInteger<T, N> for BigUInt<T, N>
 where T: Uint + Copy + Clone + Display + Debug + ToString
         + Add<Output=T> + AddAssign + Sub<Output=T> + SubAssign
         + Mul<Output=T> + MulAssign + Div<Output=T> + DivAssign
