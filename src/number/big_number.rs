@@ -6,23 +6,27 @@
 // This file may not be copied, modified, or distributed
 // except according to those terms.
 
+//! A module that contains a trait for big unsigned integer and big signed
+//! integer with user-defined fixed size.
+
 use std::fmt::{ Display, Debug };
 use std::cmp::{ PartialEq, PartialOrd, Ordering };
 use std::ops::*;
 
 use super::uint::*;
+use super::HugeInteger;
 
 /// A trait for big unsigned integer and big signed integer with user-defined fixed size.
 /// 
 pub trait BigNumber<T, const N: usize>
-where T: Uint + Display + Debug + ToString
+where T: Uint + Copy + Clone + Display + Debug + ToString
         + Add<Output=T> + AddAssign + Sub<Output=T> + SubAssign
         + Mul<Output=T> + MulAssign + Div<Output=T> + DivAssign
         + Shl<Output=T> + ShlAssign + Shr<Output=T> + ShrAssign
         + BitAnd<Output=T> + BitAndAssign + BitOr<Output=T> + BitOrAssign
         + BitXor<Output=T> + BitXorAssign + Not<Output=T>
         + PartialEq + PartialOrd,
-    Self: Sized + Clone + Copy
+    Self: Sized + Clone + Copy + Display + Debug + ToString 
         + Add<Output = Self> + AddAssign + Sub<Output = Self> + SubAssign
         + Mul<Output = Self> + MulAssign + Div<Output = Self> + DivAssign
         + Rem<Output = Self> + RemAssign
@@ -30,13 +34,20 @@ where T: Uint + Display + Debug + ToString
         + Shr<i32, Output = Self> + ShrAssign<i32>
         + BitAnd<Self, Output = Self> + BitAndAssign + BitOr<Output = Self> + BitOrAssign
         + BitXorAssign + Not<Output = Self>
-        + Display + ToString
+        + HugeInteger<T>
 {
-    const OVERFLOW: u8          = 0b0000_0001;
-    const UNDERFLOW: u8         = 0b0000_0010;
-    const INFINITY: u8          = 0b0000_0100;
-    const DIVIDED_BY_ZERO: u8   = 0b0000_1000;
+    /// A flag to represent whether or not overflow happened
+    /// during previous operations. When divided-by-zero happens,
+    /// the flags DIVIDED_BY_ZERO, INFINITY and OVERFLOW will be set.
+    const OVERFLOW: u8          = 0b0000_0100;
 
+    /// A flag to represent whether or not underflow happened
+    /// during previous operations.
+    const UNDERFLOW: u8         = 0b0000_1000;
+
+    /// Converts BigNumber such as BigUInt, BigInt or LargeInt into a string
+    /// in order for a human to read. The number will be presented with the
+    /// given radix in string. 
     fn to_string_with_radix(&self, radix: usize) -> String;
     fn divide_fully(&self, rhs: Self) -> (Self, Self);
 
@@ -91,23 +102,13 @@ where T: Uint + Display + Debug + ToString
     fn ge_uint(&self, other: T) -> bool  { self.partial_cmp_uint(other).unwrap().is_ge() }
     fn eq_uint(&self, other: T) -> bool  { self.partial_cmp_uint(other).unwrap().is_eq() }
 
-    fn set_flag_bit(&mut self, flag: u8);
-    fn reset_flag_bit(&mut self, flag: u8);
-    fn is_flag_bit_on(&self, flag: u8) -> bool;
-
     fn set_overflow(&mut self)      { self.set_flag_bit(Self::OVERFLOW); }
     fn reset_overflow(&mut self)    { self.reset_flag_bit(Self::OVERFLOW); }
     fn is_overflow(&self) -> bool   { self.is_flag_bit_on(Self::OVERFLOW) }
     fn set_underflow(&mut self)     { self.set_flag_bit(Self::UNDERFLOW); }
     fn reset_underflow(&mut self)   { self.reset_flag_bit(Self::UNDERFLOW); }
     fn is_underflow(&self) -> bool  { self.is_flag_bit_on(Self::UNDERFLOW) }
-    fn set_infinity(&mut self)     { self.set_flag_bit(Self::INFINITY); }
-    fn reset_inifinity(&mut self)   { self.reset_flag_bit(Self::INFINITY); }
-    fn is_inifinity(&self) -> bool  { self.is_flag_bit_on(Self::INFINITY) }
     fn set_untrustable(&mut self)   { self.set_flag_bit(Self::OVERFLOW | Self::UNDERFLOW); }
     fn reset_untrustable(&mut self) { self.reset_flag_bit(Self::OVERFLOW | Self::UNDERFLOW); }
     fn is_untrustable(&self) -> bool { self.is_flag_bit_on(Self::OVERFLOW | Self::UNDERFLOW) }
-    fn set_divided_by_zero(&mut self)   { self.set_flag_bit(Self::DIVIDED_BY_ZERO); }
-    fn reset_divided_by_zero(&mut self) { self.reset_flag_bit(Self::DIVIDED_BY_ZERO); }
-    fn is_divided_by_zero(&self) -> bool { self.is_flag_bit_on(Self::DIVIDED_BY_ZERO) }
 }
