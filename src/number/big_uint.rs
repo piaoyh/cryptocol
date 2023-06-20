@@ -1140,7 +1140,57 @@ where T: Uint + Copy + Clone + Display + Debug + ToString
         + BitXorAssign + Not<Output = Self>
         //+ BigNumber<T, N> //+ BigUnsignedInt<T, N>
 {
-    /// Reads the value of BigUInt<T, N> and write it into String
+    #[inline] fn get_num(&self, i: usize) -> T          { self.number[i] }
+    #[inline] fn set_num(&mut self, i: usize, val: T)   { self.number[i] = val; }
+    #[inline] fn get_number(&self) -> &[T; N]           { &self.number }
+    #[inline] fn set_number(&mut self, val: &[T; N])    { self.number.copy_from_slice(val); }
+
+    fn partial_cmp_uint(&self, other: T) -> Option<Ordering>
+    {
+        if self.number[0] > other
+        {
+            return Some(Ordering::Greater);
+        }
+        else if self.number[0] < other
+        {
+            for idx in 1..N
+            {
+                if self.number[idx] != T::zero()
+                    { return Some(Ordering::Greater); }
+            }
+            return Some(Ordering::Less);
+        }
+        else    // if self.number[0] == other
+        {
+            for idx in 1..N
+            {
+                if self.number[idx] != T::zero()
+                    { return Some(Ordering::Greater); }
+            }
+        }
+        Some(Ordering::Equal)
+    }
+}
+
+
+impl<T, const N: usize> HugeInteger<T> for BigUInt<T, N>
+where T: Uint + Copy + Clone + Display + Debug + ToString
+        + Add<Output=T> + AddAssign + Sub<Output=T> + SubAssign
+        + Mul<Output=T> + MulAssign + Div<Output=T> + DivAssign
+        + Shl<Output=T> + ShlAssign + Shr<Output=T> + ShrAssign
+        + BitAnd<Output=T> + BitAndAssign + BitOr<Output=T> + BitOrAssign
+        + BitXor<Output=T> + BitXorAssign + Not<Output=T>
+        + PartialEq + PartialOrd,
+    Self: Sized + Clone + Copy + Display + Debug + ToString 
+        + Add<Output = Self> + AddAssign + Sub<Output = Self> + SubAssign
+        + Mul<Output = Self> + MulAssign + Div<Output = Self> + DivAssign
+        + Rem<Output = Self> + RemAssign
+        + Shl<i32, Output = Self> + ShlAssign<i32>
+        + Shr<i32, Output = Self> + ShrAssign<i32>
+        + BitAnd<Self, Output = Self> + BitAndAssign + BitOr<Output = Self> + BitOrAssign
+        + BitXorAssign + Not<Output = Self>
+{
+        /// Reads the value of BigUInt<T, N> and write it into String
     /// with a certain radix.
     fn to_string_with_radix(&self, radix: usize) -> String
     {
@@ -1471,56 +1521,6 @@ where T: Uint + Copy + Clone + Display + Debug + ToString
         *self %= bi;
     }
 
-    #[inline] fn get_num(&self, i: usize) -> T          { self.number[i] }
-    #[inline] fn set_num(&mut self, i: usize, val: T)   { self.number[i] = val; }
-    #[inline] fn get_number(&self) -> &[T; N]           { &self.number }
-    #[inline] fn set_number(&mut self, val: &[T; N])    { self.number.copy_from_slice(val); }
-
-    fn partial_cmp_uint(&self, other: T) -> Option<Ordering>
-    {
-        if self.number[0] > other
-        {
-            return Some(Ordering::Greater);
-        }
-        else if self.number[0] < other
-        {
-            for idx in 1..N
-            {
-                if self.number[idx] != T::zero()
-                    { return Some(Ordering::Greater); }
-            }
-            return Some(Ordering::Less);
-        }
-        else    // if self.number[0] == other
-        {
-            for idx in 1..N
-            {
-                if self.number[idx] != T::zero()
-                    { return Some(Ordering::Greater); }
-            }
-        }
-        Some(Ordering::Equal)
-    }
-}
-
-
-impl<T, const N: usize> HugeInteger<T> for BigUInt<T, N>
-where T: Uint + Copy + Clone + Display + Debug + ToString
-        + Add<Output=T> + AddAssign + Sub<Output=T> + SubAssign
-        + Mul<Output=T> + MulAssign + Div<Output=T> + DivAssign
-        + Shl<Output=T> + ShlAssign + Shr<Output=T> + ShrAssign
-        + BitAnd<Output=T> + BitAndAssign + BitOr<Output=T> + BitOrAssign
-        + BitXor<Output=T> + BitXorAssign + Not<Output=T>
-        + PartialEq + PartialOrd,
-    Self: Sized + Clone + Copy + Display + Debug + ToString 
-        + Add<Output = Self> + AddAssign + Sub<Output = Self> + SubAssign
-        + Mul<Output = Self> + MulAssign + Div<Output = Self> + DivAssign
-        + Rem<Output = Self> + RemAssign
-        + Shl<i32, Output = Self> + ShlAssign<i32>
-        + Shr<i32, Output = Self> + ShrAssign<i32>
-        + BitAnd<Self, Output = Self> + BitAndAssign + BitOr<Output = Self> + BitOrAssign
-        + BitXorAssign + Not<Output = Self>
-{
     #[inline] fn set_flag_bit(&mut self, flag: u8)      { self.flag |= flag; }
     #[inline] fn reset_flag_bit(&mut self, flag: u8)    { self.flag &= !flag; }
     #[inline] fn is_flag_bit_on(&self, flag: u8) -> bool    { (self.flag & flag) != 0 }

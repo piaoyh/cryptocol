@@ -46,6 +46,19 @@ where T: Uint + Copy + Clone + Display + Debug + ToString
     /// the flags DIVIDED_BY_ZERO, INFINITY and OVERFLOW will be set.
     const DIVIDED_BY_ZERO: u8   = 0b0000_0010;
 
+    /// Converts BigNumber such as BigUInt, BigInt or LargeInt into a string
+    /// in order for a human to read. The number will be presented with the
+    /// given radix in string. 
+    fn to_string_with_radix(&self, radix: usize) -> String;
+    fn divide_fully(&self, rhs: Self) -> (Self, Self);
+
+    fn accumulate(&mut self, rhs: T);
+    fn dissipate(&mut self, rhs: T);
+    fn times(&mut self, rhs: T);
+    fn divide_by_uint_fully(&self, rhs: T) -> (Self, T);
+    fn quotient(&mut self, rhs: T);
+    fn remainder(&mut self, rhs: T);
+
     fn set_flag_bit(&mut self, flag: u8);
     fn reset_flag_bit(&mut self, flag: u8);
     fn is_flag_bit_on(&self, flag: u8) -> bool;
