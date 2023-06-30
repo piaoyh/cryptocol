@@ -50,6 +50,8 @@ pub trait Uint: Copy + Clone + Display + Debug + ToString
     fn Max() -> Self;
     fn Min() -> Self;
     fn num(n: u128) -> Self;
+    fn size_in_bytes() -> usize;
+    fn size_in_bits() -> usize;
 }
 
 impl Uint for u8
@@ -72,6 +74,8 @@ impl Uint for u8
     fn Max() -> Self            { Self::MAX }
     fn Min() -> Self            { Self::MIN }
     fn num(n: u128) -> Self     { n as Self }
+    fn size_in_bytes() -> usize { size_of::<Self>() }
+    fn size_in_bits() -> usize  { size_of::<Self>() * 8 }
 }
 
 impl Uint for u16
@@ -94,6 +98,8 @@ impl Uint for u16
     fn Max() -> Self            { Self::MAX }
     fn Min() -> Self            { Self::MIN }
     fn num(n: u128) -> Self     { n as Self }
+    fn size_in_bytes() -> usize { size_of::<Self>() }
+    fn size_in_bits() -> usize  { size_of::<Self>() * 8 }
 }
 
 impl Uint for u32
@@ -116,6 +122,8 @@ impl Uint for u32
     fn Max() -> Self            { Self::MAX }
     fn Min() -> Self            { Self::MIN }
     fn num(n: u128) -> Self     { n as Self }
+    fn size_in_bytes() -> usize { size_of::<Self>() }
+    fn size_in_bits() -> usize  { size_of::<Self>() * 8 }
 }
 
 impl Uint for u64
@@ -138,6 +146,8 @@ impl Uint for u64
     fn Max() -> Self            { Self::MAX }
     fn Min() -> Self            { Self::MIN }
     fn num(n: u128) -> Self     { n as Self }
+    fn size_in_bytes() -> usize { size_of::<Self>() }
+    fn size_in_bits() -> usize  { size_of::<Self>() * 8 }
 }
 
 impl Uint for u128
@@ -160,6 +170,8 @@ impl Uint for u128
     fn Max() -> Self            { Self::MAX }
     fn Min() -> Self            { Self::MIN }
     fn num(n: u128) -> Self     { n as Self }
+    fn size_in_bytes() -> usize { size_of::<Self>() }
+    fn size_in_bits() -> usize  { size_of::<Self>() * 8 }
 }
 
 impl Uint for usize
@@ -182,6 +194,8 @@ impl Uint for usize
     fn Max() -> Self            { Self::MAX }
     fn Min() -> Self            { Self::MIN }
     fn num(n: u128) -> Self     { n as Self }
+    fn size_in_bytes() -> usize { size_of::<Self>() }
+    fn size_in_bits() -> usize  { size_of::<Self>() * 8 }
 }
 
 #[derive(Copy, Clone)]

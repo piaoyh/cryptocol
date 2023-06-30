@@ -5,9 +5,12 @@ use std::ops::*;
 mod number;
 use number::*;
 
-
 fn main()
 {
+    let mut sum = u1024::new();
+    sum.set_max();
+    println!("sum = {}", sum);
+/*    
     let num_txt = "1111111111_1111111111_1111111111_1111111111_1111111111_1111111111_1111111111_1111111111_1111111111_1111111111_1111111111_1111111111_1111111111_1111111111_1111111111_1111111111_";
     let a_128 = u1024_with_u128::from_string(num_txt).unwrap();
     let a_64 = u1024_with_u64::from_string(num_txt).unwrap();
@@ -31,6 +34,11 @@ fn main()
     calcMul(&mut sum_32, &a_32, 32);
     calcMul(&mut sum_16, &a_16, 16);
     calcMul(&mut sum_8, &a_8, 8);
+
+    let bi = u256::from_string_with_radix("A16F", 16).unwrap();
+    assert_eq!(bi.length(), 256 / 8);
+*/
+
 }
 
 fn calcAdd<T, const N: usize, S>(sum: &mut S, a: &S, bits: u8)

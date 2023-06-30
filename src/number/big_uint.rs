@@ -475,9 +475,10 @@ where T: Uint + Copy + Clone + Display + Debug + ToString
         + Shr<i32, Output = Self> + ShrAssign<i32>
         + BitAnd<Self, Output = Self> + BitAndAssign + BitOr<Output = Self> + BitOrAssign
         + BitXorAssign + Not<Output = Self>
+        //+ HugeInteger<T>
 {
-    /// Constructs a new BigUInt<T, N>.
-    /// All the attributes of te constructed object will be initialized with 0.
+    /// Constructs a new `BigUInt<T, N>`.
+    /// All the attributes of te constructed object will be initialized with `0`.
     /// 
     /// # Examples
     /// 
@@ -491,11 +492,11 @@ where T: Uint + Copy + Clone + Display + Debug + ToString
         Self { number: [T::zero(); N], flag: 0, }   // unsafe { zeroed::<Self>() }
     }
 
-    /// Constructs a new BigUInt<T, N> which has the value of zero.
-    /// This function calls BigUInt<T, N>::new(), so it is virtually exactly
-    /// the same as the function BigUInt<T, N>::new(). Your source code will be
-    /// better readable if you use BigUInt<T, N>::zero() instead of
-    /// BigUInt<T, N>::new() especially when you create the big number zero.
+    /// Constructs a new `BigUInt<T, N>` which has the value of zero.
+    /// This function calls `BigUInt<T, N>::new()`, so it is virtually exactly
+    /// the same as the function `BigUInt<T, N>::new()`. Your source code will
+    /// be better readable if you use `BigUInt<T, N>::zero()` instead of
+    /// `BigUInt<T, N>::new()` especially when you create the big number zero.
     ///
     /// # Examples
     /// 
@@ -510,7 +511,8 @@ where T: Uint + Copy + Clone + Display + Debug + ToString
         Self::new()   // unsafe { zeroed::<Self>() }
     }
 
-    /// Constructs a new BigUInt<T, N> from an array of type T with N elements.
+    /// Constructs a new `BigUInt<T, N>` from an array of type `T`
+    /// with `N` elements.
     /// 
     /// # Examples
     /// 
@@ -526,8 +528,8 @@ where T: Uint + Copy + Clone + Display + Debug + ToString
         s
     }
 
-    /// Constructs a new BigUInt<T, N> from an unsigned integer
-    /// such as u8, u16, u32, u64, u128 and usize.
+    /// Constructs a new `BigUInt<T, N>` from an unsigned integer
+    /// such as `u8`, `u16`, `u32`, `u64`, `u128` and `usize`.
     /// 
     /// # Examples
     /// 
@@ -624,8 +626,8 @@ where T: Uint + Copy + Clone + Display + Debug + ToString
         return me;
     }
 
-    /// Constructs a new BigUInt<T, N> from a string with radix.
-    /// The constructed object will be wrapped in Some(BigUInt<T, N>) if it is
+    /// Constructs a new `BigUInt<T, N>` from a string with radix.
+    /// The constructed object will be wrapped in `Some(BigUInt<T, N>)` if it is
     /// successfully created. Otherwise, this function returns None.
     /// 
     /// The radix can be from 2 up to 62 (= 10 + 26 + 26). Such a radix is 1 or
@@ -705,9 +707,9 @@ where T: Uint + Copy + Clone + Display + Debug + ToString
         Some(bignum)
     }
 
-    /// Constructs a new BigUInt<T, N> from a string with radix 10.
-    /// The constructed object will be wrapped in Some(BigUInt<T, N>) if it is
-    /// successfully created. Otherwise, this method returns None.
+    /// Constructs a new `BigUInt<T, N>` from a string with radix 10.
+    /// The constructed object will be wrapped in `Some(BigUInt<T, N>)` if it is
+    /// successfully created. Otherwise, this method returns `None`.
     /// 
     /// # Examples
     /// 
@@ -721,18 +723,47 @@ where T: Uint + Copy + Clone + Display + Debug + ToString
         Self::from_string_with_radix(txt, 10)
     }
 
-    pub fn in_bytes() -> usize { size_of::<T>() * N }
+    /// Returns how many bytes BigUInt contains. The return type is usize.
+    /// 
+    /// # Examples
+    /// 
+    /// ```
+    /// # use Cryptocol::number::BigUInt;
+    /// # fn main()
+    /// # {
+    /// let bi = u256::from_string_with_radix("A16F", 16).unwrap();
+    /// assert_eq!(u256::size_in_bytes(), 256 / 8);
+    /// # }
+    /// ```
+    pub fn size_in_bytes() -> usize { T::size_in_bytes() * N }
 
-    pub fn length(&self) -> usize { size_of::<T>() * N }
-    /// Constructs a new BigUInt<T, N> from another kind of BigUInt<U, M>.
+    pub fn size_in_bits() -> usize { Self::size_in_bytes() * 8 }
+
+    /// Returns how many bytes the object of BigUInt type contains.
+    /// The return type is usize.
+    /// 
+    /// # Examples
+    /// 
+    /// ```
+    /// # fn main()
+    /// # {
+    /// let bi = u256::from_string_with_radix("A16F", 16).unwrap();
+    /// assert_eq!(bi.size_in_bytes(), 256 / 8);
+    /// # }
+    /// ```
+    pub fn length_in_bytes(&self) -> usize { Self::size_in_bytes() }
+
+    pub fn length_in_bits(&self) -> usize { Self::size_in_bits() }
+
+    /// Constructs a new `BigUInt<T, N>` from another kind of `BigUInt<U, M>`.
     /// It copies not only long bit integer but also current flags from another
-    /// kind of BigUInt<U, M>.
+    /// kind of `BigUInt<U, M>`.
     /// 
     /// # Example
     /// 
     /// ```
     /// use std::mem::size_of;
-    /// 
+    /// # use number::*;
     /// type T = u16;
     /// const N: usize = 16;
     /// const M: usize = size_of::<T>() * N;
@@ -754,8 +785,8 @@ where T: Uint + Copy + Clone + Display + Debug + ToString
             + BitXor<Output=U> + BitXorAssign + Not<Output=U>
             + PartialEq + PartialOrd
     {
-        let my_size = Self::in_bytes();
-        let src_size = BigUInt::<U, M>::in_bytes();//size_of::<U>() * M;  //
+        let my_size = Self::size_in_bytes();
+        let src_size = BigUInt::<U, M>::size_in_bytes();//size_of::<U>() * M;  //
         if my_size <= src_size
         {
             let mut me = Self::new();
@@ -770,10 +801,10 @@ where T: Uint + Copy + Clone + Display + Debug + ToString
         }
     }
 
-    /// Constructs a new BigUInt<T, N> from another kind of BigUInt<U, M>.
+    /// Constructs a new `BigUInt<T, N>` from another kind of `BigUInt<U, M>`.
     /// It copies not only long bit integer but also current flags from another
-    /// kind of BigUInt<U, M>. It is so experimental for Big Endian CPU that you
-    /// may not want to use it for serious purpose.
+    /// kind of `BigUInt<U, M>`. It is so experimental for Big Endian CPU that
+    /// you may not want to use it for serious purpose.
     /// 
     /// # Example
     /// 
@@ -801,8 +832,8 @@ where T: Uint + Copy + Clone + Display + Debug + ToString
             + BitXor<Output=U> + BitXorAssign + Not<Output=U>
             + PartialEq + PartialOrd
     {
-        let my_size = Self::in_bytes();
-        let src_size = BigUInt::<U, M>::in_bytes();
+        let my_size = Self::size_in_bytes();
+        let src_size = BigUInt::<U, M>::size_in_bytes();
         let mut me = Self::new();
         if my_size == src_size
         {
@@ -817,7 +848,7 @@ where T: Uint + Copy + Clone + Display + Debug + ToString
         me
     }
 
-    /// Constucts a new BigUInt<T, N> which has the value zero
+    /// Constucts a new `BigUInt<T, N>` which has the value zero
     /// and sets only the bit specified by bit_pos to be 1.
     /// 
     fn make_check_bits(bit_pos: usize) -> Self
@@ -857,6 +888,17 @@ where T: Uint + Copy + Clone + Display + Debug + ToString
         self.set_num(chunk_num, val);
     }
 
+    /// Adds a unsigned integer number of type `T` to `BigUInt`-typed unsigned
+    /// integer and returns its result in a type of BigUInt.
+    /// 
+    /// # Examples
+    /// 
+    /// ```
+    /// use big_uint::*;
+    /// let a = u1024::from_string("10000000000000000000000000000000000").unwrap();
+    /// let sum = a.add_uint(35);
+    /// println!("sum = {}", sum);
+    /// ```
     pub fn add_uint(&self, rhs: T) -> Self
     {
         let mut bi = self.clone();
@@ -864,6 +906,17 @@ where T: Uint + Copy + Clone + Display + Debug + ToString
         bi
     }
 
+    /// Subtracts a unsigned integer number of type `T` from `BigUInt`-typed
+    /// unsigned integer and returns its result in a type of BigUInt.
+    /// 
+    /// # Examples
+    /// 
+    /// ```
+    /// use big_uint::*;
+    /// let a = u1024::from_string("10000000000000000000000000000000000").unwrap();
+    /// let sub = a.sub_uint(35);
+    /// println!("sub = {}", sub);
+    /// ```
     pub fn sub_uint(&self, rhs: T) -> Self
     {
         let mut bi = self.clone();
@@ -871,6 +924,17 @@ where T: Uint + Copy + Clone + Display + Debug + ToString
         bi
     }
 
+    /// Multiplies `BigUInt`-typed number with a unsigned integer number
+    /// of type `T` and returns its result in a type of BigUInt.
+    /// 
+    /// # Examples
+    /// 
+    /// ```
+    /// use big_uint::*;
+    /// let a = u1024::from_string("10000000000000000000000000000000000").unwrap();
+    /// let mul = a.mul_uint(35);
+    /// println!("mul = {}", mul);
+    /// ```
     pub fn mul_uint(&self, rhs: T) -> Self
     {
         let mut bi = self.clone();
@@ -878,31 +942,69 @@ where T: Uint + Copy + Clone + Display + Debug + ToString
         bi
     }
 
+    /// Divides `BigUInt`-typed number with a unsigned integer number
+    /// of type `T` and returns its quotient in a type of BigUInt.
+    /// 
+    /// # Examples
+    /// 
+    /// ```
+    /// use big_uint::*;
+    /// let a = u1024::from_string("10000000000000000000000000000000000").unwrap();
+    /// let div = a.div_uint(35);
+    /// println!("div = {}", div);
+    /// ```
     pub fn div_uint(&self, rhs: T) -> Self
     {
-        let mut bi = self.clone();
-        bi.quotient(rhs);
-        bi
+        let (quotient, _) = self.divide_by_uint_fully(rhs);
+        quotient
     }
 
-    pub fn rem_uint(&self, rhs: T) -> Self
+    /// Divides `BigUInt`-typed number with a unsigned integer number
+    /// of type `T` and returns its remainder in a type of T.
+    /// 
+    /// # Examples
+    /// 
+    /// ```
+    /// use big_uint::*;
+    /// let a = u1024::from_string("10000000000000000000000000000000000").unwrap();
+    /// let rem = a.rem_uint(35);
+    /// println!("rem = {}", rem);
+    /// ```
+    pub fn rem_uint(&self, rhs: T) -> T
     {
-        let mut bi = self.clone();
-        bi.remainder(rhs);
-        bi
+        let (_, remainder) = self.divide_by_uint_fully(rhs);
+        remainder
     }
 
+    /// Sets `BigUInt`-typed number to be maximum value.
+    /// 
+    /// # Examples
+    /// 
+    /// ```
+    /// let mut a = u1024::new();
+    /// a.set_max();
+    /// println!("a = {}", a);
+    /// ```
     pub fn set_max(&mut self)
     {
         for i in 0..N
             { self.set_num(i, T::Max()); }
     }
 
+    /// Checks whether or not `BigUInt`-typed number to be maximum value.
+    /// 
+    /// # Examples
+    /// 
+    /// ```
+    /// let mut a = u1024::new();
+    /// a.set_max();
+    /// println!("Is a maximun? - {}", a.is_max());
+    /// ```
     pub fn is_max(&self) -> bool
     {
         for i in 0..N
         {
-            if self.get_num(i) != T::Max()
+            if self.get_num(i).unwrap() != T::Max()
                 { return false; }
         }
         true
@@ -925,7 +1027,7 @@ where T: Uint + Copy + Clone + Display + Debug + ToString
     #[cfg(target_endian = "little")]
     pub fn is_uint(&self, val: T) -> bool
     {
-        if self.get_num(0) != val
+        if self.get_num(0).unwrap() != val
         {
             false
         }
@@ -933,7 +1035,7 @@ where T: Uint + Copy + Clone + Display + Debug + ToString
         {
             for i in 1..N
             {
-                if self.get_num(i) != T::zero()
+                if self.get_num(i).unwrap() != T::zero()
                     { return false; }
             }
             true
@@ -1138,11 +1240,15 @@ where T: Uint + Copy + Clone + Display + Debug + ToString
         + Shr<i32, Output = Self> + ShrAssign<i32>
         + BitAnd<Self, Output = Self> + BitAndAssign + BitOr<Output = Self> + BitOrAssign
         + BitXorAssign + Not<Output = Self>
-        //+ BigNumber<T, N> //+ BigUnsignedInt<T, N>
 {
-    #[inline] fn get_num(&self, i: usize) -> T          { self.number[i] }
-    #[inline] fn set_num(&mut self, i: usize, val: T)   { self.number[i] = val; }
-    #[inline] fn get_number(&self) -> &[T; N]           { &self.number }
+    /// Returns the reference of its array of T-type for borrowing instead
+    /// of giving its ownership. BigUInt has an array of T in order
+    /// to present long-sized unsigned integers.
+    #[inline] fn get_number(&self) -> &[T; N]
+    {
+        &self.number
+    }
+
     #[inline] fn set_number(&mut self, val: &[T; N])    { self.number.copy_from_slice(val); }
 
     fn partial_cmp_uint(&self, other: T) -> Option<Ordering>
@@ -1190,7 +1296,24 @@ where T: Uint + Copy + Clone + Display + Debug + ToString
         + BitAnd<Self, Output = Self> + BitAndAssign + BitOr<Output = Self> + BitOrAssign
         + BitXorAssign + Not<Output = Self>
 {
-        /// Reads the value of BigUInt<T, N> and write it into String
+    /// Sets i-th element of its array of type T and return true if i < N.
+    /// Otherwise, it sets none of the elements of its array of type T and
+    /// returns false. BigUInt and BigInt have an array of T in order to
+    /// present long-sized unsigned and signed integers, respectively.
+    fn set_num(&mut self, i: usize, val: T) -> bool
+    {
+        if i < N
+        {
+            self.number[i] = val;
+            true
+        }
+        else
+        {
+            false
+        }
+    }
+
+    /// Reads the value of BigUInt<T, N> and write it into String
     /// with a certain radix.
     fn to_string_with_radix(&self, radix: usize) -> String
     {
@@ -1217,12 +1340,11 @@ where T: Uint + Copy + Clone + Display + Debug + ToString
         num_str
     }
 
-    /// Divide BigUInt<T, N> by BigUInt<T, N> so as to get quotient and
-    /// remainder It returns tuple of quotient and remainder, where quotient
-    /// and remainder are Self. If rhs is zero, the divided_by_zero and
-    /// overflow flags of quotient, and the divided_by_zero flag of remainder
-    /// will be set, and the quotient and the remainder will be max value
-    /// and zero, respectively.
+    /// Divides self which is of `BigUInt` type by rhs which is of `BigUInt`
+    /// type, and returns quotient and remainder which are `BigUInt`type.
+    /// If rhs is zero, the divided_by_zero and overflow flags of quotient will
+    /// be set, and the quotient will be set to be max value of `BigUInt`type,
+    /// and the remainder will be set to be zero of `BigUInt` type.
     /// 
     /// # Examples
     /// 
@@ -1261,20 +1383,20 @@ where T: Uint + Copy + Clone + Display + Debug + ToString
             return (quotient, Self::zero());
         }
 
-        let maximum = Self::in_bytes() * 8 - 1;
+        let maximum = Self::size_in_bits() - 1;
         let mut adder = Self::zero();
         let mut res;
         let mut sum;
-        let mut highest = Self::in_bytes() * 8;
+        let mut highest = Self::size_in_bits();
         let mut n = N - 1;
-        let TSIZE_BIT = size_of::<T>() * 8;
-        while self.get_num(n) == zero && highest != 0
+        let TSIZE_BITS = size_of::<T>() * 8;
+        while self.get_num(n).unwrap() == zero && highest != 0
         {
-            highest -= TSIZE_BIT;
+            highest -= TSIZE_BITS;
             n -= 1;
         }
-        let mut piece = one << T::num(TSIZE_BIT as u128 - 1);
-        while self.get_num(n) & piece == zero
+        let mut piece = one << T::num(TSIZE_BITS as u128 - 1);
+        while self.get_num(n).unwrap() & piece == zero
         {
             highest -= 1;
             piece >>= one;
@@ -1299,7 +1421,7 @@ where T: Uint + Copy + Clone + Display + Debug + ToString
                     adder.turn_check_bits(mid);
                     sum = quotient + adder;
                     res = sum * rhs;
-                    if *self > res
+                    if !res.is_overflow() && (*self > res)
                     {
                         if mid == maximum
                         {
@@ -1315,7 +1437,7 @@ where T: Uint + Copy + Clone + Display + Debug + ToString
                         }
                         low = mid;
                     }
-                    else if res > *self
+                    else if res.is_overflow() || (res > *self)
                     {
                         if mid == low
                         { 
@@ -1331,6 +1453,7 @@ where T: Uint + Copy + Clone + Display + Debug + ToString
         }
     }
 
+    /// Accumulates or adds rhs of type `T` to self which is of `BigUInt` type.
     fn accumulate(&mut self, rhs: T)
     {
         let zero = T::zero();
@@ -1350,6 +1473,8 @@ where T: Uint + Copy + Clone + Display + Debug + ToString
             { self.set_overflow(); }
     }
 
+    /// Dissipates or subtracts rhs of type `T` from self which is of
+    /// `BigUInt` type.
     fn dissipate(&mut self, rhs: T)
     {
         let zero = T::zero();
@@ -1370,6 +1495,7 @@ where T: Uint + Copy + Clone + Display + Debug + ToString
         }
     }
 
+    /// Multiplies self which is of `BigUInt` type with rhs of type `T`.
     fn times(&mut self, rhs: T)
     {
         if self.is_zero()
@@ -1440,16 +1566,16 @@ where T: Uint + Copy + Clone + Display + Debug + ToString
         let mut adder = Self::zero();
         let mut res;
         let mut sum;
-        let mut highest = Self::in_bytes() * 8;
+        let mut highest = Self::size_in_bits();
         let mut n = N - 1;
-        let TSIZE_BIT = size_of::<T>() * 8;
-        while self.get_num(n) == zero && highest != 0
+        let TSIZE_IN_BITS = T::size_in_bits();
+        while (highest != 0) && (self.get_num(n).unwrap() == zero)
         {
-            highest -= TSIZE_BIT;
+            highest -= TSIZE_IN_BITS;
             n -= 1;
         }
-        let mut piece = one << T::num(TSIZE_BIT as u128 - 1);
-        while self.get_num(n) & piece == zero
+        let mut piece = one << T::num(TSIZE_IN_BITS as u128 - 1);
+        while self.get_num(n).unwrap() & piece == zero
         {
             highest -= 1;
             piece >>= one;
@@ -1474,7 +1600,7 @@ where T: Uint + Copy + Clone + Display + Debug + ToString
                     adder.turn_check_bits(mid);
                     sum = quotient + adder;
                     res = sum.mul_uint(rhs);
-                    if *self > res
+                    if !res.is_overflow() && (*self > res)
                     {
                         if mid == highest - 1
                         {
@@ -1491,7 +1617,7 @@ where T: Uint + Copy + Clone + Display + Debug + ToString
                         }
                         low = mid;
                     }
-                    else if res > *self
+                    else if res.is_overflow() || res > *self
                     {
                         if mid == low
                         {
@@ -1509,16 +1635,26 @@ where T: Uint + Copy + Clone + Display + Debug + ToString
         }
     }
 
-    fn quotient(&mut self, rhs: T)
+    /// Divides self which is of `BigUInt` type by rhs which is of type `T`,
+    /// and returns quotient of `BigUInt` type. If you get both quotient and
+    /// remainder, you'd better use the function divide_by_uint_fully() instead
+    /// of calling the functions quotient() and remainder() in series because
+    /// they call the function divide_by_uint_fully() internally.
+    fn quotient(&mut self, rhs: T) -> Self
     {
-        let bi = Self::from_uint(rhs);
-        *self /= bi;
+        let (quotient, _) = self.divide_by_uint_fully(rhs);
+        quotient
     }
 
-    fn remainder(&mut self, rhs: T)
+    /// Divides self which is of `BigUInt` type by rhs which is of type `T`,
+    /// and returns remainder of type `T`. If you get both quotient and
+    /// remainder, you'd better use the function divide_by_uint_fully() instead
+    /// of calling the functions quotient() and remainder() in series because
+    /// they call the function divide_by_uint_fully() internally.
+    fn remainder(&mut self, rhs: T) -> T
     {
-        let bi = Self::from_uint(rhs);
-        *self %= bi;
+        let (_, remainder) = self.divide_by_uint_fully(rhs);
+        remainder
     }
 
     #[inline] fn set_flag_bit(&mut self, flag: u8)      { self.flag |= flag; }

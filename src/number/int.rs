@@ -13,6 +13,7 @@
 #![warn(missing_doc_code_examples)]
 
 use std::fmt::Debug;
+use std::mem::size_of;
 use std::ops::*;
 use std::cmp::{Eq, Ord};
 
@@ -48,6 +49,8 @@ pub trait Int: Copy + Debug
     fn Max() -> Self;
     fn Min() -> Self;
     fn num(n: i128) -> Self;
+    fn size_in_bytes() -> usize;
+    fn size_in_bits() -> usize;
 }
 
 impl Int for i8
@@ -70,6 +73,8 @@ impl Int for i8
     fn Max() -> Self            { Self::MAX }
     fn Min() -> Self            { Self::MIN }
     fn num(n: i128) -> Self     { n as Self }
+    fn size_in_bytes() -> usize { size_of::<Self>() }
+    fn size_in_bits() -> usize  { size_of::<Self>() * 8 }
 }
 
 impl Int for i16
@@ -92,6 +97,8 @@ impl Int for i16
     fn Max() -> Self            { Self::MAX }
     fn Min() -> Self            { Self::MIN }
     fn num(n: i128) -> Self     { n as Self }
+    fn size_in_bytes() -> usize { size_of::<Self>() }
+    fn size_in_bits() -> usize  { size_of::<Self>() * 8 }
 }
 
 impl Int for i32
@@ -114,6 +121,8 @@ impl Int for i32
     fn Max() -> Self            { Self::MAX }
     fn Min() -> Self            { Self::MIN }
     fn num(n: i128) -> Self     { n as Self }
+    fn size_in_bytes() -> usize { size_of::<Self>() }
+    fn size_in_bits() -> usize  { size_of::<Self>() * 8 }
 }
 
 impl Int for i64
@@ -136,6 +145,8 @@ impl Int for i64
     fn Max() -> Self            { Self::MAX }
     fn Min() -> Self            { Self::MIN }
     fn num(n: i128) -> Self     { n as Self }
+    fn size_in_bytes() -> usize { size_of::<Self>() }
+    fn size_in_bits() -> usize  { size_of::<Self>() * 8 }
 }
 
 impl Int for i128
@@ -158,6 +169,8 @@ impl Int for i128
     fn Max() -> Self            { Self::MAX }
     fn Min() -> Self            { Self::MIN }
     fn num(n: i128) -> Self     { n as Self }
+    fn size_in_bytes() -> usize { size_of::<Self>() }
+    fn size_in_bits() -> usize  { size_of::<Self>() * 8 }
 }
 
 impl Int for isize
@@ -180,4 +193,6 @@ impl Int for isize
     fn Max() -> Self            { Self::MAX }
     fn Min() -> Self            { Self::MIN }
     fn num(n: i128) -> Self     { n as Self }
+    fn size_in_bytes() -> usize { size_of::<Self>() }
+    fn size_in_bits() -> usize  { size_of::<Self>() * 8 }
 }
