@@ -6,7 +6,7 @@
 // This file may not be copied, modified, or distributed
 // except according to those terms.
 
-//! Big numbers bigger than 128-bit integer and their arithmatic operation
+//! Big numbers bigger than 128-bit integer and their arithmatic operations
 //! 
 //! # Background: Arithmatic operations of big numbers
 //! 

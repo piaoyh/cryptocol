@@ -1,15 +1,28 @@
-use std::time::SystemTime;
-use std::fmt::{ Display, Debug };
-use std::ops::*;
+//use std::time::SystemTime;
+//use std::fmt::{ Display, Debug };
+//use std::ops::*;
 
-mod number;
-use number::*;
-
+//mod number;
+//use number::*;
+use Cryptocol::number::{u256, HugeInteger};
 fn main()
 {
-    let mut sum = u1024::new();
-    sum.set_max();
-    println!("sum = {}", sum);
+    let mut a = u256::from_string_with_radix("11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101", 2).unwrap();
+    let b = u256::from_string_with_radix("11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000", 2).unwrap();
+    let d = u256::max();
+    let c = !a | a;
+    println!("c = {}", c.to_string_with_radix(2));
+    assert_eq!(c, u256::max());
+
+    // let mut sum = u1024::new();
+    // sum.set_max();
+    // println!("sum = {}", sum);
+
+    // let mut a = u256::from_string("1234567_1234567890_1234567890_1234567890_1234567890_1234567890_1234567890_1234567890").unwrap();
+    // println!("{}", a);
+    // a >>= 2;
+    // println!("a = {}\n{}", a, a.is_underflow());
+    // assert_eq!(a.is_underflow(), true);
 /*    
     let num_txt = "1111111111_1111111111_1111111111_1111111111_1111111111_1111111111_1111111111_1111111111_1111111111_1111111111_1111111111_1111111111_1111111111_1111111111_1111111111_1111111111_";
     let a_128 = u1024_with_u128::from_string(num_txt).unwrap();
@@ -40,7 +53,7 @@ fn main()
 */
 
 }
-
+/*
 fn calcAdd<T, const N: usize, S>(sum: &mut S, a: &S, bits: u8)
 where T: Uint + Display + Debug + ToString
         + Add<Output=T> + AddAssign + Sub<Output=T> + SubAssign
@@ -95,3 +108,4 @@ where T: Uint + Display + Debug + ToString
     let mut elapsed = now.elapsed().unwrap();
     println!("{}-bit multiplication operation takes\t{}", bits, elapsed.as_nanos());
 }
+*/

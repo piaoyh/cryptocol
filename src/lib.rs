@@ -9,10 +9,13 @@
 #![warn(missing_docs)]
 #![warn(missing_doc_code_examples)]
 
-//! Cryptocol crate provides libraries for cryptograph.
+//! Cryptocol crate provides libraries for cryptography.
 //! 
-//! This crate is for Little Endian. Little Endian CPU is far more popular
-//! than Big Endian CPU.
+//! This crate is optimized for Little-endian CPUs
+//! because Little-Endian CPUs are far more popular than Big-endian CPUs.
+//! And, this crate is so experimental for Big-endian CPUs
+//! that you are highy discouraged to use this crate for Big-endian CPUs
+//! for serious purpose.
 //! 
 
 // #![doc(
@@ -20,7 +23,6 @@
 //     html_favicon_url = "https://www.rust-lang.org/favicon.ico",
 //     html_root_url = "https://rust-random.github.io/rand/"
 // )]
-
 
 pub mod number;
 

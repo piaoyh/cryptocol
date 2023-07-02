@@ -47,8 +47,8 @@ pub trait Uint: Copy + Clone + Display + Debug + ToString
     fn into_bool(self) -> bool;
     fn zero() -> Self;
     fn one() -> Self;
-    fn Max() -> Self;
-    fn Min() -> Self;
+    fn max() -> Self;
+    fn min() -> Self;
     fn num(n: u128) -> Self;
     fn size_in_bytes() -> usize;
     fn size_in_bits() -> usize;
@@ -71,8 +71,8 @@ impl Uint for u8
     fn into_bool(self) -> bool  { self != 0 }
     fn zero() -> Self           { 0 }
     fn one() -> Self            { 1 }
-    fn Max() -> Self            { Self::MAX }
-    fn Min() -> Self            { Self::MIN }
+    fn max() -> Self            { Self::MAX }
+    fn min() -> Self            { Self::MIN }
     fn num(n: u128) -> Self     { n as Self }
     fn size_in_bytes() -> usize { size_of::<Self>() }
     fn size_in_bits() -> usize  { size_of::<Self>() * 8 }
@@ -95,8 +95,8 @@ impl Uint for u16
     fn into_bool(self) -> bool  { self != 0 }
     fn zero() -> Self           { 0 }
     fn one() -> Self            { 1 }
-    fn Max() -> Self            { Self::MAX }
-    fn Min() -> Self            { Self::MIN }
+    fn max() -> Self            { Self::MAX }
+    fn min() -> Self            { Self::MIN }
     fn num(n: u128) -> Self     { n as Self }
     fn size_in_bytes() -> usize { size_of::<Self>() }
     fn size_in_bits() -> usize  { size_of::<Self>() * 8 }
@@ -119,8 +119,8 @@ impl Uint for u32
     fn into_bool(self) -> bool  { self != 0 }
     fn zero() -> Self           { 0 }
     fn one() -> Self            { 1 }
-    fn Max() -> Self            { Self::MAX }
-    fn Min() -> Self            { Self::MIN }
+    fn max() -> Self            { Self::MAX }
+    fn min() -> Self            { Self::MIN }
     fn num(n: u128) -> Self     { n as Self }
     fn size_in_bytes() -> usize { size_of::<Self>() }
     fn size_in_bits() -> usize  { size_of::<Self>() * 8 }
@@ -143,8 +143,8 @@ impl Uint for u64
     fn into_bool(self) -> bool  { self != 0 }
     fn zero() -> Self           { 0 }
     fn one() -> Self            { 1 }
-    fn Max() -> Self            { Self::MAX }
-    fn Min() -> Self            { Self::MIN }
+    fn max() -> Self            { Self::MAX }
+    fn min() -> Self            { Self::MIN }
     fn num(n: u128) -> Self     { n as Self }
     fn size_in_bytes() -> usize { size_of::<Self>() }
     fn size_in_bits() -> usize  { size_of::<Self>() * 8 }
@@ -167,8 +167,8 @@ impl Uint for u128
     fn into_bool(self) -> bool  { self != 0 }
     fn zero() -> Self           { 0 }
     fn one() -> Self            { 1 }
-    fn Max() -> Self            { Self::MAX }
-    fn Min() -> Self            { Self::MIN }
+    fn max() -> Self            { Self::MAX }
+    fn min() -> Self            { Self::MIN }
     fn num(n: u128) -> Self     { n as Self }
     fn size_in_bytes() -> usize { size_of::<Self>() }
     fn size_in_bits() -> usize  { size_of::<Self>() * 8 }
@@ -191,8 +191,8 @@ impl Uint for usize
     fn into_bool(self) -> bool  { self != 0 }
     fn zero() -> Self           { 0 }
     fn one() -> Self            { 1 }
-    fn Max() -> Self            { Self::MAX }
-    fn Min() -> Self            { Self::MIN }
+    fn max() -> Self            { Self::MAX }
+    fn min() -> Self            { Self::MIN }
     fn num(n: u128) -> Self     { n as Self }
     fn size_in_bytes() -> usize { size_of::<Self>() }
     fn size_in_bits() -> usize  { size_of::<Self>() * 8 }
@@ -314,40 +314,40 @@ impl USize
 
 /// union array for transforming from one type into anther type
 pub union Share<D, S>
-where D: Uint + Add<Output=D> + AddAssign + Sub<Output=D> + SubAssign
+where D: Uint + Copy + Clone + Display + Debug + ToString
+        + Add<Output=D> + AddAssign + Sub<Output=D> + SubAssign
         + Mul<Output=D> + MulAssign + Div<Output=D> + DivAssign
         + Shl<Output=D> + ShlAssign + Shr<Output=D> + ShrAssign
         + BitAnd<Output=D> + BitAndAssign + BitOr<Output=D> + BitOrAssign
         + BitXor<Output=D> + BitXorAssign + Not<Output=D>
-        + PartialEq + PartialOrd
-        + Display + ToString,
-      S: Uint + Add<Output=S> + AddAssign + Sub<Output=S> + SubAssign
+        + PartialEq + PartialOrd,
+      S: Uint + Copy + Clone + Display + Debug + ToString
+        + Add<Output=S> + AddAssign + Sub<Output=S> + SubAssign
         + Mul<Output=S> + MulAssign + Div<Output=S> + DivAssign
         + Shl<Output=S> + ShlAssign + Shr<Output=S> + ShrAssign
         + BitAnd<Output=S> + BitAndAssign + BitOr<Output=S> + BitOrAssign
         + BitXor<Output=S> + BitXorAssign + Not<Output=S>
         + PartialEq + PartialOrd
-        + Display + ToString
 {
     pub des: D,
     pub src: S,
 }
 
 impl<D, S> Share<D, S>
-where D: Uint + Add<Output=D> + AddAssign + Sub<Output=D> + SubAssign
+where D: Uint + Copy + Clone + Display + Debug + ToString
+        + Add<Output=D> + AddAssign + Sub<Output=D> + SubAssign
         + Mul<Output=D> + MulAssign + Div<Output=D> + DivAssign
         + Shl<Output=D> + ShlAssign + Shr<Output=D> + ShrAssign
         + BitAnd<Output=D> + BitAndAssign + BitOr<Output=D> + BitOrAssign
         + BitXor<Output=D> + BitXorAssign + Not<Output=D>
-        + PartialEq + PartialOrd
-        + Display + ToString,
-      S: Uint + Add<Output=S> + AddAssign + Sub<Output=S> + SubAssign
+        + PartialEq + PartialOrd,
+      S: Uint + Copy + Clone + Display + Debug + ToString
+        + Add<Output=S> + AddAssign + Sub<Output=S> + SubAssign
         + Mul<Output=S> + MulAssign + Div<Output=S> + DivAssign
         + Shl<Output=S> + ShlAssign + Shr<Output=S> + ShrAssign
         + BitAnd<Output=S> + BitAndAssign + BitOr<Output=S> + BitOrAssign
         + BitXor<Output=S> + BitXorAssign + Not<Output=S>
         + PartialEq + PartialOrd
-        + Display + ToString
 {
     pub fn new() -> Self
     {
@@ -545,8 +545,8 @@ pub trait Bool: Copy + Eq
     fn into_usize(self) -> usize;
     fn zero() -> Self;
     fn one() -> Self;
-    fn Max() -> Self;
-    fn Min() -> Self;
+    fn max() -> Self;
+    fn min() -> Self;
 }
 
 impl Bool for u8
@@ -558,8 +558,8 @@ impl Bool for u8
     fn into_usize(self) -> usize { self as usize }
     fn zero() -> Self           { 0 }
     fn one() -> Self            { 1 }
-    fn Max() -> Self            { 1 }
-    fn Min() -> Self            { 0 }
+    fn max() -> Self            { 1 }
+    fn min() -> Self            { 0 }
 }
 
 impl Bool for u16
@@ -571,8 +571,8 @@ impl Bool for u16
     fn into_usize(self) -> usize { self as usize }
     fn zero() -> Self           { 0 }
     fn one() -> Self            { 1 }
-    fn Max() -> Self            { 1 }
-    fn Min() -> Self            { 0 }
+    fn max() -> Self            { 1 }
+    fn min() -> Self            { 0 }
 }
 
 impl Bool for u32
@@ -584,8 +584,8 @@ impl Bool for u32
     fn into_usize(self) -> usize { self as usize }
     fn zero() -> Self           { 0 }
     fn one() -> Self            { 1 }
-    fn Max() -> Self            { 1 }
-    fn Min() -> Self            { 0 }
+    fn max() -> Self            { 1 }
+    fn min() -> Self            { 0 }
 }
 
 impl Bool for u64
@@ -597,8 +597,8 @@ impl Bool for u64
     fn into_usize(self) -> usize { self as usize }
     fn zero() -> Self           { 0 }
     fn one() -> Self            { 1 }
-    fn Max() -> Self            { 1 }
-    fn Min() -> Self            { 0 }
+    fn max() -> Self            { 1 }
+    fn min() -> Self            { 0 }
 }
 
 impl Bool for u128
@@ -610,8 +610,8 @@ impl Bool for u128
     fn into_usize(self) -> usize { self as usize }
     fn zero() -> Self           { 0 }
     fn one() -> Self            { 1 }
-    fn Max() -> Self            { 1 }
-    fn Min() -> Self            { 0 }
+    fn max() -> Self            { 1 }
+    fn min() -> Self            { 0 }
 }
 
 impl Bool for i8
@@ -623,8 +623,8 @@ impl Bool for i8
     fn into_usize(self) -> usize { self as usize }
     fn zero() -> Self           { 0 }
     fn one() -> Self            { 1 }
-    fn Max() -> Self            { 1 }
-    fn Min() -> Self            { 0 }
+    fn max() -> Self            { 1 }
+    fn min() -> Self            { 0 }
 }
 
 impl Bool for i16
@@ -636,8 +636,8 @@ impl Bool for i16
     fn into_usize(self) -> usize { self as usize }
     fn zero() -> Self           { 0 }
     fn one() -> Self            { 1 }
-    fn Max() -> Self            { 1 }
-    fn Min() -> Self            { 0 }
+    fn max() -> Self            { 1 }
+    fn min() -> Self            { 0 }
 }
 
 impl Bool for i32
@@ -649,8 +649,8 @@ impl Bool for i32
     fn into_usize(self) -> usize { self as usize }
     fn zero() -> Self           { 0 }
     fn one() -> Self            { 1 }
-    fn Max() -> Self            { 1 }
-    fn Min() -> Self            { 0 }
+    fn max() -> Self            { 1 }
+    fn min() -> Self            { 0 }
 }
 
 impl Bool for i64
@@ -662,8 +662,8 @@ impl Bool for i64
     fn into_usize(self) -> usize { self as usize }
     fn zero() -> Self           { 0 }
     fn one() -> Self            { 1 }
-    fn Max() -> Self            { 1 }
-    fn Min() -> Self            { 0 }
+    fn max() -> Self            { 1 }
+    fn min() -> Self            { 0 }
 }
 
 impl Bool for i128
@@ -675,7 +675,7 @@ impl Bool for i128
     fn into_usize(self) -> usize { self as usize }
     fn zero() -> Self           { 0 }
     fn one() -> Self            { 1 }
-    fn Max() -> Self            { 1 }
-    fn Min() -> Self            { 0 }
+    fn max() -> Self            { 1 }
+    fn min() -> Self            { 0 }
 }
 */

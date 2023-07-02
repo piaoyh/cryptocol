@@ -54,7 +54,6 @@ pub type u8192_with_u128 = BigUInt<u128, 64>;
 pub type u16384_with_u128 = BigUInt<u128, 128>;
 
 
-
 /// 256-bit unsigned integer implemented by `BigUInt<u64, 4>` made with four `u64`s
 pub type u256_with_u64 = BigUInt<u64, 4>;
 
@@ -398,7 +397,7 @@ pub type U2048 = u16384;
 /// A struct that represents a big unsigned integer with user-defined fixed size.
 /// 
 /// The struct `BigUInt<T, const N: usize>` is a generic struct for which you
-/// can decide the type of elements and its number. It is Little Endian.
+/// can decide the type of elements and its number. It is Little-endian.
 /// - It consists of an array of type `T` with `N` elements and flags of type
 ///   `u8`.
 /// - The generic data type `T` is supposed to be a _primitive unsigned integer_
@@ -426,10 +425,10 @@ pub type U2048 = u16384;
 /// # Examples
 /// 
 /// ```
-/// use Cryptoology::number::*;
+/// use Cryptocol::number::*;
 /// type BI = BigUInt::<u64, 16>;
 /// type AI = BigUInt::<usize, 16>;
-/// let bi = BI::from_array(&[1;N]);
+/// let bi = BI::from_array(&[1;16]);
 /// let bb = BI::from_string_with_radix("0000_0000_0000_0001__0000_0000_0000_0001__0000_0000_0000_0001__0000_0000_0000_0001__0000_0000_0000_0001__0000_0000_0000_0001__0000_0000_0000_0001__0000_0000_0000_0001__0000_0000_0000_0001__0000_0000_0000_0001__0000_0000_0000_0001__0000_0000_0000_0001__0000_0000_0000_0001__0000_0000_0000_0001__0000_0000_0000_0001__0000_0000_0000_0001__0000_0000_0000_0001__0000_0000_0000_0001__0000_0000_0000_0001__0000_0000_0000_0001__0000_0000_0000_0001__0000_0000_0000_0001__0000_0000_0000_0001__0000_0000_0000_0001__0000_0000_0000_0001__0000_0000_0000_0001__0000_0000_0000_0001__0000_0000_0000_0001__0000_0000_0000_0001__0000_0000_0000_0001__0000_0000_0000_0001__0000_0000_0000_0001__", 16).unwrap();
 /// let b = BI::from_string("1234567891234567879123456789111111111222222222333333333444444444555555555666666666777777777888888888999999999000000000").unwrap();
 /// println!("bi = {:?}", bi);
@@ -443,7 +442,7 @@ pub type U2048 = u16384;
 /// println!("b + 1 = {}", b.add_uint(1));
 /// println!("b - 1 = {}", b.sub_uint(1));
 /// let a = AI::from_string("123654789147258369").unwrap();
-/// println!("a = {}", a.to_strin());
+/// println!("a = {}", a);
 /// ```
 #[derive(Debug, Copy, Clone)]
 pub struct BigUInt<T, const N: usize>
@@ -475,17 +474,17 @@ where T: Uint + Copy + Clone + Display + Debug + ToString
         + Shr<i32, Output = Self> + ShrAssign<i32>
         + BitAnd<Self, Output = Self> + BitAndAssign + BitOr<Output = Self> + BitOrAssign
         + BitXorAssign + Not<Output = Self>
-        //+ HugeInteger<T>
+        //+ HugeInteger<T> + BigInteger<T, N>
 {
     /// Constructs a new `BigUInt<T, N>`.
     /// All the attributes of te constructed object will be initialized with `0`.
     /// 
-    /// # Examples
-    /// 
+    /// # Example
     /// ```
-    /// use Cryptocol::number::BigUInt;
-    /// let big_int = BigUInt::<u64,16>::new();
-    /// assert_eq!(big_int, BigUInt::<u64,16>::from_uint(0));
+    /// use Cryptocol::number::u256;
+    /// let a = u256::new();
+    /// println!("a = {}", a);
+    /// assert_eq!(a, u256::from_uint(0_u64));
     /// ```
     pub fn new() -> Self
     {
@@ -501,14 +500,19 @@ where T: Uint + Copy + Clone + Display + Debug + ToString
     /// # Examples
     /// 
     /// ```
-    /// use Cryptocol::number::BigUInt;
-    /// let zero = BigUInt::<u64,16>::zero();
-    /// assert_eq!(zero, BigUInt::<u64,16>::from_uint(0));
+    /// use Cryptocol::number::u256;
+    /// let zero = u256::zero();
+    /// assert_eq!(zero, u256::from_uint(0_u64));
     /// ```
     #[inline]
     pub fn zero() -> Self
     {
         Self::new()   // unsafe { zeroed::<Self>() }
+    }
+
+    pub fn max() -> Self
+    {
+        Self { number: [T::max(); N], flag: 0, }
     }
 
     /// Constructs a new `BigUInt<T, N>` from an array of type `T`
@@ -517,9 +521,9 @@ where T: Uint + Copy + Clone + Display + Debug + ToString
     /// # Examples
     /// 
     /// ```
-    /// use Cryptocol::number::BigUInt;
-    /// let big_num = BigUInt::<u8,32>::from_array(&[1;32]);
-    /// assert_eq!(big_num, BigUInt::<u8,32>::from_string_with_radix("0000_0000_0000_0001__0000_0000_0000_0001__0000_0000_0000_0001__0000_0000_0000_0001__0000_0000_0000_0001__0000_0000_0000_0001__0000_0000_0000_0001__0000_0000_0000_0001__0000_0000_0000_0001__0000_0000_0000_0001__0000_0000_0000_0001__0000_0000_0000_0001__0000_0000_0000_0001__0000_0000_0000_0001__0000_0000_0000_0001__0000_0000_0000_0001__0000_0000_0000_0001__0000_0000_0000_0001__0000_0000_0000_0001__0000_0000_0000_0001__0000_0000_0000_0001__0000_0000_0000_0001__0000_0000_0000_0001__0000_0000_0000_0001__0000_0000_0000_0001__0000_0000_0000_0001__0000_0000_0000_0001__0000_0000_0000_0001__0000_0000_0000_0001__0000_0000_0000_0001__0000_0000_0000_0001__0000_0000_0000_0001__", 16).unwrap(););
+    /// use Cryptocol::number::*;
+    /// let big_num = BigUInt::<u8,32>::from_array(&[1_u8;32]);
+    /// assert_eq!(big_num, BigUInt::<u8,32>::from_string_with_radix("00000001_00000001_00000001_00000001_00000001_00000001_00000001_00000001_00000001_00000001_00000001_00000001_00000001_00000001_00000001_00000001_00000001_00000001_00000001_00000001_00000001_00000001_00000001_00000001_00000001_00000001_00000001_00000001_00000001_00000001_00000001_00000001", 2).unwrap());
     /// ```
     pub fn from_array(val: &[T; N]) -> Self
     {
@@ -535,7 +539,7 @@ where T: Uint + Copy + Clone + Display + Debug + ToString
     /// 
     /// ```
     /// use Cryptocol::number::BigUInt;
-    /// let cc = BigUInt::<u8,32>::from_uint(1004);
+    /// let cc = BigUInt::<u16,32>::from_uint(1004_u16);
     /// assert_eq!(cc.into_u32(), 1004);
     /// ```
     /// 
@@ -652,7 +656,7 @@ where T: Uint + Copy + Clone + Display + Debug + ToString
     /// 
     /// ```
     /// use Cryptocol::number::BigUInt;
-    /// let bi = BigUInt::<u8,32>::from_string_with_radix("A16F", 16);
+    /// let bi = BigUInt::<u8,32>::from_string_with_radix("A16F", 16).unwrap();
     /// assert_eq!(bi.into_u16(), 0xA16F_u16);
     /// ```
     pub fn from_string_with_radix(txt: &str, radix: usize) -> Option<Self>
@@ -715,7 +719,7 @@ where T: Uint + Copy + Clone + Display + Debug + ToString
     /// 
     /// ```
     /// use Cryptocol::number::BigUInt;
-    /// let bi = BigUInt<u8,32>::from_string_with_radix("A16F", 16);
+    /// let bi = BigUInt::<u8,32>::from_string_with_radix("A16F", 16);
     /// ```
     #[inline]
     pub fn from_string(txt: &str) -> Option<Self>
@@ -728,12 +732,9 @@ where T: Uint + Copy + Clone + Display + Debug + ToString
     /// # Examples
     /// 
     /// ```
-    /// # use Cryptocol::number::BigUInt;
-    /// # fn main()
-    /// # {
+    /// use Cryptocol::number::u256;
     /// let bi = u256::from_string_with_radix("A16F", 16).unwrap();
     /// assert_eq!(u256::size_in_bytes(), 256 / 8);
-    /// # }
     /// ```
     pub fn size_in_bytes() -> usize { T::size_in_bytes() * N }
 
@@ -745,11 +746,9 @@ where T: Uint + Copy + Clone + Display + Debug + ToString
     /// # Examples
     /// 
     /// ```
-    /// # fn main()
-    /// # {
+    /// use Cryptocol::number::u256;
     /// let bi = u256::from_string_with_radix("A16F", 16).unwrap();
-    /// assert_eq!(bi.size_in_bytes(), 256 / 8);
-    /// # }
+    /// assert_eq!(bi.length_in_bytes(), 256 / 8);
     /// ```
     pub fn length_in_bytes(&self) -> usize { Self::size_in_bytes() }
 
@@ -763,7 +762,7 @@ where T: Uint + Copy + Clone + Display + Debug + ToString
     /// 
     /// ```
     /// use std::mem::size_of;
-    /// # use number::*;
+    /// use Cryptocol::number::*;
     /// type T = u16;
     /// const N: usize = 16;
     /// const M: usize = size_of::<T>() * N;
@@ -894,10 +893,11 @@ where T: Uint + Copy + Clone + Display + Debug + ToString
     /// # Examples
     /// 
     /// ```
-    /// use big_uint::*;
-    /// let a = u1024::from_string("10000000000000000000000000000000000").unwrap();
+    /// use Cryptocol::number::u256;
+    /// let a = u256::from_string("10000000000000000000000000000000000").unwrap();
     /// let sum = a.add_uint(35);
     /// println!("sum = {}", sum);
+    /// assert_eq!(sum, u256::from_string("10000000000000000000000000000000035").unwrap());
     /// ```
     pub fn add_uint(&self, rhs: T) -> Self
     {
@@ -912,9 +912,9 @@ where T: Uint + Copy + Clone + Display + Debug + ToString
     /// # Examples
     /// 
     /// ```
-    /// use big_uint::*;
-    /// let a = u1024::from_string("10000000000000000000000000000000000").unwrap();
-    /// let sub = a.sub_uint(35);
+    /// use Cryptocol::number::u256;
+    /// let a = u256::from_string("10000000000000000000000000000000000").unwrap();
+    /// let sub = a.sub_uint(35_u64);
     /// println!("sub = {}", sub);
     /// ```
     pub fn sub_uint(&self, rhs: T) -> Self
@@ -930,8 +930,8 @@ where T: Uint + Copy + Clone + Display + Debug + ToString
     /// # Examples
     /// 
     /// ```
-    /// use big_uint::*;
-    /// let a = u1024::from_string("10000000000000000000000000000000000").unwrap();
+    /// use Cryptocol::number::u256;
+    /// let a = u256::from_string("10000000000000000000000000000000000").unwrap();
     /// let mul = a.mul_uint(35);
     /// println!("mul = {}", mul);
     /// ```
@@ -948,8 +948,8 @@ where T: Uint + Copy + Clone + Display + Debug + ToString
     /// # Examples
     /// 
     /// ```
-    /// use big_uint::*;
-    /// let a = u1024::from_string("10000000000000000000000000000000000").unwrap();
+    /// use Cryptocol::number::{u256, HugeInteger};
+    /// let a = u256::from_string("10000000000000000000000000000000000").unwrap();
     /// let div = a.div_uint(35);
     /// println!("div = {}", div);
     /// ```
@@ -965,9 +965,9 @@ where T: Uint + Copy + Clone + Display + Debug + ToString
     /// # Examples
     /// 
     /// ```
-    /// use big_uint::*;
-    /// let a = u1024::from_string("10000000000000000000000000000000000").unwrap();
-    /// let rem = a.rem_uint(35);
+    /// use Cryptocol::number::u256;
+    /// let a = u256::from_string("10000000000000000000000000000000000").unwrap();
+    /// let rem = a.rem_uint(35_u64);
     /// println!("rem = {}", rem);
     /// ```
     pub fn rem_uint(&self, rhs: T) -> T
@@ -981,14 +981,15 @@ where T: Uint + Copy + Clone + Display + Debug + ToString
     /// # Examples
     /// 
     /// ```
-    /// let mut a = u1024::new();
+    /// use Cryptocol::number::u256;
+    /// let mut a = u256::new();
     /// a.set_max();
     /// println!("a = {}", a);
     /// ```
     pub fn set_max(&mut self)
     {
         for i in 0..N
-            { self.set_num(i, T::Max()); }
+            { self.set_num(i, T::max()); }
     }
 
     /// Checks whether or not `BigUInt`-typed number to be maximum value.
@@ -996,15 +997,16 @@ where T: Uint + Copy + Clone + Display + Debug + ToString
     /// # Examples
     /// 
     /// ```
-    /// let mut a = u1024::new();
-    /// a.set_max();
+    /// use Cryptocol::number::u256;
+    /// let a = u256::max();
     /// println!("Is a maximun? - {}", a.is_max());
+    /// assert_eq!(a.is_max(), true);
     /// ```
     pub fn is_max(&self) -> bool
     {
         for i in 0..N
         {
-            if self.get_num(i).unwrap() != T::Max()
+            if self.get_num(i).unwrap() != T::max()
                 { return false; }
         }
         true
@@ -1349,9 +1351,9 @@ where T: Uint + Copy + Clone + Display + Debug + ToString
     /// # Examples
     /// 
     /// ```
-    /// use Cryptocol::number::BigUInt;
-    /// let dividend = u1024::from_string("1234567890157589425462369896");
-    /// let divisor = u1024::from_string("1234567890");
+    /// use Cryptocol::number::{u256, HugeInteger};
+    /// let dividend = u256::from_string("1234567890157589425462369896").unwrap();
+    /// let divisor = u256::from_string("1234567890").unwrap();
     /// let (quotient, remainder) = dividend.divide_fully(divisor);
     /// ```
     fn divide_fully(&self, rhs: Self) -> (Self, Self)
@@ -1531,10 +1533,9 @@ where T: Uint + Copy + Clone + Display + Debug + ToString
     /// # Examples
     /// 
     /// ```
-    /// use Cryptocol::number::BigUInt;
-    /// let dividend = u1024::from_string("1234567890157589425462369896");
-    /// let divisor = T::num(87_u128);
-    /// let (quotient, remainder) = dividend.divide_by_uint_fully(divisor);
+    /// use Cryptocol::number::{u256, HugeInteger};
+    /// let dividend = u256::from_string("1234567890157589425462369896").unwrap();
+    /// let (quotient, remainder) = dividend.divide_by_uint_fully(87_u64);
     /// ```
     fn divide_by_uint_fully(&self, rhs: T) -> (Self, T)
     {
@@ -2042,6 +2043,31 @@ where T: Uint + Copy + Clone + Display + Debug + ToString
         + PartialEq + PartialOrd
 {
     type Output = Self;
+
+    /// Performs the << operation. If overflow happens during the << operation,
+    /// `OVERFLOW` flag is set and the method is_overflow() will return true. 
+    /// [Read more](https://doc.rust-lang.org/core/ops/bit/trait.Shl.html#tymethod.shl)
+    /// 
+    /// # Examples
+    /// ```
+    /// use Cryptocol::number::{u256, BigInteger};
+    /// let a = u256::from_string("1234567_1234567890_1234567890_1234567890_1234567890_1234567890_1234567890_1234567890").unwrap();
+    /// let b = a << 4;
+    /// println!("b = {}\noverflow: {}", b, b.is_overflow());
+    /// assert_eq!(b.is_overflow(), true);
+    /// ```
+    /// You have to import (use) Cryptocol::number::u256 in order to use the
+    /// type u256 and import Cryptocol::number::BigInteger in order to use
+    /// its method is_overflow(). If you find headaching to remember what you
+    /// should import, you can just import everything (Cryptocol::number::*)
+    /// as next example. It is not harmful.
+    /// ```
+    /// use Cryptocol::number::*;
+    /// let a = u256::from_string("1234567_1234567890_1234567890_1234567890_1234567890_1234567890_1234567890_1234567890").unwrap();
+    /// let b = a << 1;
+    /// println!("b = {}\noverflow: {}", b, b.is_overflow());
+    /// assert_eq!(b.is_overflow(), false);
+    /// ```
     fn shl(self, rhs: i32) -> Self
     {
         let mut s = self.clone();
@@ -2059,7 +2085,30 @@ where T: Uint + Copy + Clone + Display + Debug + ToString
         + BitXor<Output=T> + BitXorAssign + Not<Output=T>
         + PartialEq + PartialOrd
 {
-    /// for Little endian 
+    /// Performs the <<= operation. If overflow happens during the <<= operation,
+    /// `OVERFLOW` flag is set and the method is_overflow() will return true. 
+    /// [Read more](https://doc.rust-lang.org/core/ops/bit/trait.ShlAssign.html#tymethod.shl_assign)
+    /// 
+    /// # Examples
+    /// ```
+    /// use Cryptocol::number::{u256, BigInteger};
+    /// let mut a = u256::from_string("1234567_1234567890_1234567890_1234567890_1234567890_1234567890_1234567890_1234567890").unwrap();
+    /// a <<= 4;
+    /// println!("a = {}\noverflow: {}", a, a.is_overflow());
+    /// assert_eq!(a.is_overflow(), true);
+    /// ```
+    /// You have to import (use) Cryptocol::number::u256 in order to use the
+    /// type u256 and import Cryptocol::number::BigInteger in order to use
+    /// its method is_overflow(). If you find headaching to remember what you
+    /// should import, you can just import everything (Cryptocol::number::*)
+    /// as next example. It is not harmful.
+    /// ```
+    /// use Cryptocol::number::*;
+    /// let mut a = u256::from_string("1234567_1234567890_1234567890_1234567890_1234567890_1234567890_1234567890_1234567890").unwrap();
+    /// a <<= 1;
+    /// println!("a = {}\noverflow: {}", a, a.is_overflow());
+    /// assert_eq!(a.is_overflow(), false);
+    /// ```
     #[cfg(target_endian = "little")]
     fn shl_assign(&mut self, rhs: i32)
     {
@@ -2068,9 +2117,9 @@ where T: Uint + Copy + Clone + Display + Debug + ToString
 		    *self >>= -rhs;
             return;
         }
-        let TSIZE_BIT = size_of::<T>() * 8;
-        let chunk_num = rhs as usize / TSIZE_BIT as usize;
-        let piece_num = rhs as usize % TSIZE_BIT as usize;
+        let TSIZE_IN_BITS = T::size_in_bits();
+        let chunk_num = rhs as usize / TSIZE_IN_BITS as usize;
+        let piece_num = rhs as usize % TSIZE_IN_BITS as usize;
         let zero = T::zero();
         self.flag = 0;
         if chunk_num > 0
@@ -2089,7 +2138,7 @@ where T: Uint + Copy + Clone + Display + Debug + ToString
         }
         if piece_num == 0
             { return; }
-        if (self.number[N-1] >> T::num((TSIZE_BIT - piece_num).into_u128())) != zero
+        if (self.number[N-1] >> T::num((TSIZE_IN_BITS - piece_num).into_u128())) != zero
             { self.set_overflow(); }
 
         let mut num: T;
@@ -2097,14 +2146,39 @@ where T: Uint + Copy + Clone + Display + Debug + ToString
         for idx in chunk_num..N
         {
             num = (self.number[idx] << T::num(piece_num.into_u128())) | carry;
-            carry = self.number[idx] >> T::num((TSIZE_BIT - piece_num).into_u128());
+            carry = self.number[idx] >> T::num((TSIZE_IN_BITS - piece_num).into_u128());
             self.number[idx] = num;
         }
         if carry != zero
             { self.set_overflow(); }
     }
 
-    /// for Big endian 
+    /// Performs the <<= operation. It is so experimental for big endian CPUs
+    /// that you are highy discouraged to use this crate for big endian CPUs
+    /// for serious purpose. If overflow happens during the <<= operation,
+    /// `OVERFLOW` flag is set  and the method is_overflow() will return true. 
+    /// [Read more](https://doc.rust-lang.org/core/ops/bit/trait.ShlAssign.html#tymethod.shl_assign)
+    /// 
+    /// # Examples
+    /// ```
+    /// use Cryptocol::number::{u256, BigInteger};
+    /// let mut a = u256::from_string("1234567_1234567890_1234567890_1234567890_1234567890_1234567890_1234567890_1234567890").unwrap();
+    /// a <<= 4;
+    /// println!("a = {}\noverflow: {}", a, a.is_overflow());
+    /// assert_eq!(a.is_overflow(), true);
+    /// ```
+    /// You have to import (use) Cryptocol::number::u256 in order to use the
+    /// type u256 and import Cryptocol::number::BigInteger in order to use
+    /// its method is_overflow(). If you find headaching to remember what you
+    /// should import, you can just import everything (Cryptocol::number::*)
+    /// as next example. It is not harmful.
+    /// ```
+    /// use Cryptocol::number::*;
+    /// let mut a = u256::from_string("1234567_1234567890_1234567890_1234567890_1234567890_1234567890_1234567890_1234567890").unwrap();
+    /// a <<= 1;
+    /// println!("a = {}\noverflow: {}", a, a.is_overflow());
+    /// assert_eq!(a.is_overflow(), false);
+    /// ```
     #[cfg(target_endian = "big")]
     fn shl_assign(&mut self, rhs: i32)
     {
@@ -2113,9 +2187,9 @@ where T: Uint + Copy + Clone + Display + Debug + ToString
             *self >>= -rhs;
             return;
         }
-        let TSIZE_BIT = size_of::<T>() * 8;
-        let chunk_num = rhs as usize / TSIZE_BIT as usize;
-        let piece_num = rhs as usize % TSIZE_BIT as usize;
+        let TSIZE_IN_BITS = T::size_in_bits();
+        let chunk_num = rhs as usize / TSIZE_IN_BITS as usize;
+        let piece_num = rhs as usize % TSIZE_IN_BITS as usize;
         let zero = T::zero();
         self.flag = 0;
         if chunk_num > 0
@@ -2134,7 +2208,7 @@ where T: Uint + Copy + Clone + Display + Debug + ToString
         }
         if piece_num == 0
             { return; }
-        if (self.number[0] >> T::num((TSIZE_BIT - piece_num).into_u128())) != zero
+        if (self.number[0] >> T::num((TSIZE_IN_BITS - piece_num).into_u128())) != zero
             { self.set_overflow(); }
 
         let mut num: T;
@@ -2143,7 +2217,7 @@ where T: Uint + Copy + Clone + Display + Debug + ToString
         loop
         {
             num = (self.number[idx] << T::num(piece_num.into_u128())) | carry;
-            carry = self.number[idx] >> T::num((TSIZE_BIT - piece_num).into_u128());
+            carry = self.number[idx] >> T::num((TSIZE_IN_BITS - piece_num).into_u128());
             self.number[idx] = num;
             if idx == 0
                 { break; }
@@ -2164,6 +2238,32 @@ where T: Uint + Copy + Clone + Display + Debug + ToString
         + PartialEq + PartialOrd
 {
     type Output = Self;
+
+    /// Performs the >> operation. If underflow happens during the >> operation,
+    /// `UNDERFLOW` flag is set and the method is_underflow() will return true.
+    /// Here, 'underflow' means that none-zero part is shifted out to the right.
+    /// [Read more](https://doc.rust-lang.org/core/ops/bit/trait.Shr.html#tymethod.shr)
+    /// 
+    /// # Examples
+    /// ```
+    /// use Cryptocol::number::{u256, BigInteger};
+    /// let a = u256::from_string("1234567_1234567890_1234567890_1234567890_1234567890_1234567890_1234567890_1234567890").unwrap();
+    /// let b = a >> 2;
+    /// println!("b = {}\nunderflow: {}", b, b.is_underflow());
+    /// assert_eq!(b.is_underflow(), true);
+    /// ```
+    /// You have to import (use) Cryptocol::number::u256 in order to use the
+    /// type u256 and import Cryptocol::number::BigInteger in order to use
+    /// its method is_underflow(). If you find headaching to remember what you
+    /// should import, you can just import everything (Cryptocol::number::*)
+    /// as next example. It is not harmful.
+    /// ```
+    /// use Cryptocol::number::*;
+    /// let a = u256::from_string("1234567_1234567890_1234567890_1234567890_1234567890_1234567890_1234567890_1234567890").unwrap();
+    /// let b = a >> 1;
+    /// println!("b = {}\nunderflow: {}", b, b.is_underflow());
+    /// assert_eq!(b.is_underflow(), false);
+    /// ```
     fn shr(self, rhs: i32) -> Self
     {
         let mut s = self.clone();
@@ -2181,7 +2281,31 @@ where T: Uint + Copy + Clone + Display + Debug + ToString
         + BitXor<Output=T> + BitXorAssign + Not<Output=T>
         + PartialEq + PartialOrd
 {
-    /// for Little endian 
+    /// Performs the >>= operation. If underflow happens during the >>= operation,
+    /// `UNDERFLOW` flag is set and the method is_underflow() will return true.
+    /// Here, 'underflow' means that none-zero part is shifted out to the right.
+    /// [Read more](https://doc.rust-lang.org/core/ops/bit/trait.ShrAssign.html#tymethod.shr_assign)
+    /// 
+    /// # Examples
+    /// ```
+    /// use Cryptocol::number::{u256, BigInteger};
+    /// let mut a = u256::from_string("1234567_1234567890_1234567890_1234567890_1234567890_1234567890_1234567890_1234567890").unwrap();
+    /// a >>= 2;
+    /// println!("a = {}\nunderflow: {}", a, a.is_underflow());
+    /// assert_eq!(a.is_underflow(), true);
+    /// ```
+    /// You have to import (use) Cryptocol::number::u256 in order to use the
+    /// type u256 and import Cryptocol::number::BigInteger in order to use
+    /// its method is_underflow(). If you find headaching to remember what you
+    /// should import, you can just import everything (Cryptocol::number::*)
+    /// as next example. It is not harmful.
+    /// ```
+    /// use Cryptocol::number::*;
+    /// let mut a = u256::from_string("1234567_1234567890_1234567890_1234567890_1234567890_1234567890_1234567890_1234567890").unwrap();
+    /// a >>= 1;
+    /// println!("a = {}\nunderflow: {}", a, a.is_underflow());
+    /// assert_eq!(a.is_underflow(), false);
+    /// ```
     #[cfg(target_endian = "little")]
     fn shr_assign(&mut self, rhs: i32)
     {
@@ -2190,9 +2314,9 @@ where T: Uint + Copy + Clone + Display + Debug + ToString
 		    *self <<= -rhs;
             return;
         }
-        let TSIZE_BIT = size_of::<T>() * 8;
-        let chunk_num = rhs as usize / TSIZE_BIT as usize;
-        let piece_num = rhs as usize % TSIZE_BIT as usize;
+        let TSIZE_IN_BITS = T::size_in_bits();
+        let chunk_num = rhs as usize / TSIZE_IN_BITS as usize;
+        let piece_num = rhs as usize % TSIZE_IN_BITS as usize;
         let zero = T::zero();
         self.flag = 0;
         if chunk_num > 0
@@ -2211,7 +2335,7 @@ where T: Uint + Copy + Clone + Display + Debug + ToString
         }
         if piece_num == 0
             { return; }
-        if (self.number[0] << T::num((TSIZE_BIT - piece_num).into_u128())) != zero
+        if (self.number[0] << T::num((TSIZE_IN_BITS - piece_num).into_u128())) != zero
             { self.set_underflow(); }
 
         let mut num: T;
@@ -2220,7 +2344,7 @@ where T: Uint + Copy + Clone + Display + Debug + ToString
         loop
         {
             num = (self.number[idx] >> T::num(piece_num.into_u128())) | carry;
-            carry = self.number[idx] << T::num((TSIZE_BIT - piece_num).into_u128());
+            carry = self.number[idx] << T::num((TSIZE_IN_BITS - piece_num).into_u128());
             self.number[idx] = num;
             if idx == 0
                 { break; }
@@ -2230,7 +2354,33 @@ where T: Uint + Copy + Clone + Display + Debug + ToString
             { self.set_underflow(); }
     }
 
-    /// for Big endian 
+    /// Performs the >>= operation. It is so experimental for big endian CPUs
+    /// that you are highy discouraged to use this crate for big endian CPUs
+    /// for serious purpose. If underflow happens during the >>= operation,
+    /// `UNDERFLOW` flag is set and the method is_underflow() will return true.
+    /// Here, 'underflow' means that none-zero part is shifted out to the right.
+    /// [Read more](https://doc.rust-lang.org/core/ops/bit/trait.ShrAssign.html#tymethod.shr_assign)
+    /// 
+    /// # Examples
+    /// ```
+    /// use Cryptocol::number::{u256, BigInteger};
+    /// let mut a = u256::from_string("1234567_1234567890_1234567890_1234567890_1234567890_1234567890_1234567890_1234567890").unwrap();
+    /// a >>= 2;
+    /// println!("a = {}\nunderflow: {}", a, a.is_underflow());
+    /// assert_eq!(a.is_underflow(), true);
+    /// ```
+    /// You have to import (use) Cryptocol::number::u256 in order to use the
+    /// type u256 and import Cryptocol::number::BigInteger in order to use
+    /// its method is_underflow(). If you find headaching to remember what you
+    /// should import, you can just import everything (Cryptocol::number::*)
+    /// as next example. It is not harmful.
+    /// ```
+    /// use Cryptocol::number::*;
+    /// let mut a = u256::from_string("1234567_1234567890_1234567890_1234567890_1234567890_1234567890_1234567890_1234567890").unwrap();
+    /// a >>= 1;
+    /// println!("a = {}\nunderflow: {}", a, a.is_underflow());
+    /// assert_eq!(a.is_underflow(), false);
+    /// ```
     #[cfg(target_endian = "big")]
     fn shr_assign(&mut self, rhs: i32)
     {
@@ -2241,9 +2391,9 @@ where T: Uint + Copy + Clone + Display + Debug + ToString
 		    *self <<= -rhs;
             return;
         }
-        let TSIZE_BIT = size_of::<T>() * 8;
-        let chunk_num = rhs as usize / TSIZE_BIT as usize;
-        let piece_num = rhs as usize % TSIZE_BIT as usize;
+        let TSIZE_IN_BITS = T::size_in_bits();
+        let chunk_num = rhs as usize / TSIZE_IN_BITS as usize;
+        let piece_num = rhs as usize % TSIZE_IN_BITS as usize;
         let zero = T::zero();
         self.flag = 0;
         if chunk_num > 0
@@ -2262,7 +2412,7 @@ where T: Uint + Copy + Clone + Display + Debug + ToString
         }
         if piece_num == 0
             { return; }
-        if (self.number[N-1] << T::num((TSIZE_BIT - piece_num).into_u128())) != zero
+        if (self.number[N-1] << T::num((TSIZE_IN_BITS - piece_num).into_u128())) != zero
             { self.set_underflow(); }
 
         let mut num: T;
@@ -2271,7 +2421,7 @@ where T: Uint + Copy + Clone + Display + Debug + ToString
         for idx in 0..N-chunk_num
         {
             num = (self.number[idx] >> T::num(piece_num.into_u128())) | carry;
-            carry = self.number[idx] << T::num((TSIZE_BIT - piece_num).into_u128());
+            carry = self.number[idx] << T::num((TSIZE_IN_BITS - piece_num).into_u128());
             self.number[idx] = num;
         }
         if carry != zero
@@ -2289,6 +2439,36 @@ where T: Uint + Copy + Clone + Display + Debug + ToString
         + PartialEq + PartialOrd
 {
     type Output = Self;
+
+    /// Performs the & operation.
+    /// [Read more](https://doc.rust-lang.org/core/ops/bit/trait.BitAnd.html#tymethod.bitand)
+    /// 
+    /// # Examples
+    /// ```
+    /// use Cryptocol::number::{u256, HugeInteger};
+    /// let a = u256::from_string_with_radix("11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101", 2).unwrap();
+    /// let b = u256::from_string_with_radix("11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000", 2).unwrap();
+    /// let c = a & b;
+    /// println!("a = {}", a.to_string_with_radix(2));
+    /// println!("b = {}", b.to_string_with_radix(2));
+    /// println!("a & b = {}", c.to_string_with_radix(2));
+    /// assert_eq!(c, a & b);
+    /// ```
+    /// You have to import (use) Cryptocol::number::u256 in order to use the
+    /// type u256 and import Cryptocol::number::HugeInteger in order to use
+    /// its method to_string_with_radix(). If you find headaching to remember
+    /// what you should import, you can just import everything
+    /// (Cryptocol::number::*) as next example. It is not harmful.
+    /// ```
+    /// use Cryptocol::number::*;
+    /// let a = u256::from_string_with_radix("11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101", 2).unwrap();
+    /// let b = u256::zero();
+    /// let c = a & b;
+    /// println!("a = {}", a.to_string_with_radix(2));
+    /// println!("b = {}", b.to_string_with_radix(2));
+    /// println!("a & b = {}", c.to_string_with_radix(2));
+    /// assert_eq!(c, a & b);
+    /// ```
     fn bitand(self, rhs: Self) -> Self
     {
         let mut s = self.clone();
@@ -2306,6 +2486,31 @@ where T: Uint + Copy + Clone + Display + Debug + ToString
         + BitXor<Output=T> + BitXorAssign + Not<Output=T>
         + PartialEq + PartialOrd
 {
+    /// Performs the &= operation.
+    /// [Read more](https://doc.rust-lang.org/core/ops/bit/trait.BitAndAssign.html#tymethod.bitand_assign)
+    /// 
+    /// # Examples
+    /// ```
+    /// use Cryptocol::number::{u256, HugeInteger};
+    /// let mut a = u256::from_string_with_radix("11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101", 2).unwrap();
+    /// let b = u256::from_string_with_radix("11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000", 2).unwrap();
+    /// a &= b;
+    /// println!("a = {}", a.to_string_with_radix(2));
+    /// assert_eq!(a, u256::from_string_with_radix("1111000000000000110000000000001110001000000100011010101000000000111100000000000011000000000000111000100000010001101010100000000011110000000000001100000000000011100010000001000110101010000000001111000000000000110000000000001110001000000100011010101000000000", 2).unwrap());
+    /// ```
+    /// You have to import (use) Cryptocol::number::u256 in order to use the
+    /// type u256 and import Cryptocol::number::HugeInteger in order to use
+    /// its method to_string_with_radix(). If you find headaching to remember
+    /// what you should import, you can just import everything
+    /// (Cryptocol::number::*) as next example. It is not harmful.
+    /// ```
+    /// use Cryptocol::number::*;
+    /// let mut a = u256::from_string_with_radix("11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101", 2).unwrap();
+    /// let b = u256::zero();
+    /// a &= b;
+    /// println!("a = {}", a.to_string_with_radix(2));
+    /// assert_eq!(a, u256::zero());
+    /// ```
     fn bitand_assign(&mut self, rhs: Self)
     {
         for idx in 0..N
@@ -2323,6 +2528,36 @@ where T: Uint + Copy + Clone + Display + Debug + ToString
         + PartialEq + PartialOrd
 {
     type Output = Self;
+
+    /// Performs the | operation.
+    /// [Read more](https://doc.rust-lang.org/core/ops/bit/trait.BitOr.html#tymethod.bitor)
+    /// 
+    /// # Examples
+    /// ```
+    /// use Cryptocol::number::{u256, HugeInteger};
+    /// let a = u256::from_string_with_radix("11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101", 2).unwrap();
+    /// let b = u256::from_string_with_radix("11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000", 2).unwrap();
+    /// let c = a | b;
+    /// println!("a = {}", a.to_string_with_radix(2));
+    /// println!("b = {}", b.to_string_with_radix(2));
+    /// println!("a | b = {}", c.to_string_with_radix(2));
+    /// assert_eq!(c, a | b);
+    /// ```
+    /// You have to import (use) Cryptocol::number::u256 in order to use the
+    /// type u256 and import Cryptocol::number::HugeInteger in order to use
+    /// its method to_string_with_radix(). If you find headaching to remember
+    /// what you should import, you can just import everything
+    /// (Cryptocol::number::*) as next example. It is not harmful.
+    /// ```
+    /// use Cryptocol::number::*;
+    /// let a = u256::from_string_with_radix("11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101", 2).unwrap();
+    /// let b = u256::max();
+    /// let c = a | b;
+    /// println!("a = {}", a.to_string_with_radix(2));
+    /// println!("b = {}", b.to_string_with_radix(2));
+    /// println!("a | b = {}", c.to_string_with_radix(2));
+    /// assert_eq!(c, u256::max());
+    /// ```
     fn bitor(self, rhs: Self) -> Self
     {
         let mut s = self.clone();
@@ -2340,6 +2575,31 @@ where T: Uint + Copy + Clone + Display + Debug + ToString
         + BitXor<Output=T> + BitXorAssign + Not<Output=T>
         + PartialEq + PartialOrd
 {
+    /// Performs the |= operation.
+    /// [Read more](https://doc.rust-lang.org/core/ops/bit/trait.BitOrAssign.html#tymethod.bitor_assign)
+    /// 
+    /// # Examples
+    /// ```
+    /// use Cryptocol::number::{u256, HugeInteger};
+    /// let mut a = u256::from_string_with_radix("11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101", 2).unwrap();
+    /// let b = u256::from_string_with_radix("11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000", 2).unwrap();
+    /// a |= b;
+    /// println!("a = {}", a.to_string_with_radix(2));
+    /// assert_eq!(a, u256::from_string_with_radix("1111111100001111111111000011111111101110011101111111111101010101111111110000111111111100001111111110111001110111111111110101010111111111000011111111110000111111111011100111011111111111010101011111111100001111111111000011111111101110011101111111111101010101", 2).unwrap());
+    /// ```
+    /// You have to import (use) Cryptocol::number::u256 in order to use the
+    /// type u256 and import Cryptocol::number::HugeInteger in order to use
+    /// its method to_string_with_radix(). If you find headaching to remember
+    /// what you should import, you can just import everything
+    /// (Cryptocol::number::*) as next example. It is not harmful.
+    /// ```
+    /// use Cryptocol::number::*;
+    /// let mut a = u256::from_string_with_radix("11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101", 2).unwrap();
+    /// let b = u256::max();
+    /// a |= b;
+    /// println!("a = {}", a.to_string_with_radix(2));
+    /// assert_eq!(a, u256::max());
+    /// ```
     fn bitor_assign(&mut self, rhs: Self)
     {
         for idx in 0..N
@@ -2357,6 +2617,36 @@ where T: Uint + Copy + Clone + Display + Debug + ToString
         + PartialEq + PartialOrd
 {
     type Output = Self;
+
+    /// Performs the ^ operation.
+    /// [Read more](https://doc.rust-lang.org/core/ops/bit/trait.BitXor.html#tymethod.bitxor)
+    /// 
+    /// # Examples
+    /// ```
+    /// use Cryptocol::number::{u256, HugeInteger};
+    /// let a = u256::from_string_with_radix("11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101", 2).unwrap();
+    /// let b = u256::from_string_with_radix("11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000", 2).unwrap();
+    /// let c = a ^ b;
+    /// println!("a = {}", a.to_string_with_radix(2));
+    /// println!("b = {}", b.to_string_with_radix(2));
+    /// println!("a ^ b = {}", c.to_string_with_radix(2));
+    /// assert_eq!(c, a ^ b);
+    /// ```
+    /// You have to import (use) Cryptocol::number::u256 in order to use the
+    /// type u256 and import Cryptocol::number::HugeInteger in order to use
+    /// its method to_string_with_radix(). If you find headaching to remember
+    /// what you should import, you can just import everything
+    /// (Cryptocol::number::*) as next example. It is not harmful.
+    /// ```
+    /// use Cryptocol::number::*;
+    /// let a = u256::from_string_with_radix("11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101", 2).unwrap();
+    /// let b = u256::max();
+    /// let c = a ^ b;
+    /// println!("a = {}", a.to_string_with_radix(2));
+    /// println!("b = {}", b.to_string_with_radix(2));
+    /// println!("a ^ b = {}", c.to_string_with_radix(2));
+    /// assert_eq!(c, !a);
+    /// ```    
     fn bitxor(self, rhs: Self) -> Self
     {
         let mut s = self.clone();
@@ -2374,6 +2664,31 @@ where T: Uint + Copy + Clone + Display + Debug + ToString
         + BitXor<Output=T> + BitXorAssign + Not<Output=T>
         + PartialEq + PartialOrd
 {
+    /// Performs the ^= operation.
+    /// [Read more](https://doc.rust-lang.org/core/ops/bit/trait.BitXorAssign.html#tymethod.bitxor_assign)
+    /// 
+    /// # Examples
+    /// ```
+    /// use Cryptocol::number::{u256, HugeInteger};
+    /// let mut a = u256::from_string_with_radix("11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101", 2).unwrap();
+    /// let b = u256::from_string_with_radix("11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000", 2).unwrap();
+    /// a ^= b;
+    /// println!("a = {}", a.to_string_with_radix(2));
+    /// assert_eq!(a, u256::from_string_with_radix("111100001111001111000011110001100110011001100101010101010101000011110000111100111100001111000110011001100110010101010101010100001111000011110011110000111100011001100110011001010101010101010000111100001111001111000011110001100110011001100101010101010101", 2).unwrap());
+    /// ```
+    /// You have to import (use) Cryptocol::number::u256 in order to use the
+    /// type u256 and import Cryptocol::number::HugeInteger in order to use
+    /// its method to_string_with_radix(). If you find headaching to remember
+    /// what you should import, you can just import everything
+    /// (Cryptocol::number::*) as next example. It is not harmful.
+    /// ```
+    /// use Cryptocol::number::*;
+    /// let mut a = u256::from_string_with_radix("11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101", 2).unwrap();
+    /// let b = u256::max();
+    /// a ^= b;
+    /// println!("a = {}", a.to_string_with_radix(2));
+    /// assert_eq!(a, u256::from_string_with_radix("11111111000011111111000000110011110011000101010110101010000000001111111100001111111100000011001111001100010101011010101000000000111111110000111111110000001100111100110001010101101010100000000011111111000011111111000000110011110011000101010110101010", 2).unwrap());
+    /// ```
     fn bitxor_assign(&mut self, rhs: Self)
     {
         for idx in 0..N
@@ -2391,6 +2706,30 @@ where T: Uint + Copy + Clone + Display + Debug + ToString
         + PartialEq + PartialOrd
 {
     type Output = Self;
+
+    /// Performs the unary ! operation.
+    /// [Read more](https://doc.rust-lang.org/core/ops/bit/trait.Not.html#tymethod.not)
+    /// 
+    /// # Examples
+    /// ```
+    /// use Cryptocol::number::{u256, HugeInteger};
+    /// let a = u256::from_string_with_radix("11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101", 2).unwrap();
+    /// let c = !a;
+    /// println!("c = {}", c.to_string_with_radix(2));
+    /// assert_eq!(!c, a);
+    /// ```
+    /// You have to import (use) Cryptocol::number::u256 in order to use the
+    /// type u256 and import Cryptocol::number::HugeInteger in order to use
+    /// its method to_string_with_radix(). If you find headaching to remember
+    /// what you should import, you can just import everything
+    /// (Cryptocol::number::*) as next example. It is not harmful.
+    /// ```
+    /// use Cryptocol::number::*;
+    /// let a = u256::from_string_with_radix("11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101", 2).unwrap();
+    /// let c = !a | a;
+    /// println!("c = {}", c.to_string_with_radix(2));
+    /// assert_eq!(c, u256::max());
+    /// ```    
     fn not(self) -> Self
     {
         let mut s = self.clone();
@@ -2418,8 +2757,6 @@ where T: Uint + Copy + Clone + Display + Debug + ToString
         }
         true
     }
-
-    fn ne(&self, other: &Self) -> bool  { !(self == other) }
 }
 
 impl<T, const N: usize> PartialOrd for BigUInt<T, N>
@@ -2431,7 +2768,6 @@ where T: Uint + Copy + Clone + Display + Debug + ToString
         + BitXor<Output=T> + BitXorAssign + Not<Output=T>
         + PartialEq + PartialOrd
 {
-    /// for little endian 
     #[cfg(target_endian = "little")]
     fn partial_cmp(&self, other: &Self) -> Option<Ordering>
     {
@@ -2449,7 +2785,6 @@ where T: Uint + Copy + Clone + Display + Debug + ToString
         Some(Ordering::Equal)
     }
 
-    /// for Big endian 
     #[cfg(target_endian = "big")]
     fn partial_cmp(&self, other: &Self) -> Option<Ordering>
     {
@@ -2462,11 +2797,6 @@ where T: Uint + Copy + Clone + Display + Debug + ToString
         }
         Some(Ordering::Equal)
     }
-
-    fn lt(&self, other: &Self) -> bool  { self.partial_cmp(&other).unwrap().is_lt() }
-    fn gt(&self, other: &Self) -> bool  { self.partial_cmp(&other).unwrap().is_gt() }
-    fn le(&self, other: &Self) -> bool  { self.partial_cmp(&other).unwrap().is_le() }
-    fn ge(&self, other: &Self) -> bool  { self.partial_cmp(&other).unwrap().is_ge() }
 }
 
 impl<T, const N: usize> Display for BigUInt<T, N>
@@ -2478,8 +2808,18 @@ where T: Uint + Copy + Clone + Display + Debug + ToString
         + BitXor<Output=T> + BitXorAssign + Not<Output=T>
         + PartialEq + PartialOrd
 {
-    // Automatically to_string() will be implemented.
-    // `f` is a buffer, this method must write the formatted string into it
+    /// Formats the value using the given formatter.
+    /// Automatically the function `to_string()` will be implemented. So, you
+    /// can use the function `to_string()` and the macro `println!()`.
+    /// `f` is a buffer, this method must write the formatted string into it.
+    /// [Read more](https://doc.rust-lang.org/core/fmt/trait.Display.html#tymethod.fmt)
+    /// 
+    /// # Example
+    /// ```
+    /// use Cryptocol::number::u256;
+    /// let a = u256::from_string("1234567_1234567890_1234567890_1234567890_1234567890_1234567890_1234567890_1234567890").unwrap();
+    /// println!("{}", a);
+    /// ```
     fn fmt(&self, f: &mut Formatter) -> fmt::Result
     {
         // `write!` is like `format!`, but it will write the formatted string
