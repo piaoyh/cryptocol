@@ -32,6 +32,7 @@ pub trait Uint: Copy + Clone + Display + Debug + ToString
             + BitXor + BitXorAssign + Not
             + PartialEq + PartialOrd
 {
+
     fn wrapping_add(self, rhs: Self) -> Self;
     fn wrapping_sub(self, rhs: Self) -> Self;
     fn wrapping_mul(self, rhs: Self) -> Self;
@@ -56,6 +57,37 @@ pub trait Uint: Copy + Clone + Display + Debug + ToString
 
 impl Uint for u8
 {
+    /// Wrapping (modular) addition with an unsigned integer.
+    /// Computes self + rhs, wrapping around at the boundary of the type.
+    /// 
+    /// # Examples
+    /// ```
+    /// //use Cryptocol::number::Uint;
+    /// //fn main()
+    /// //{
+    /// let a = 100_u8;
+    /// let b = 100_u8;
+    /// let c = a + b;//func(a, b);
+    /// //println!("a + b = {}", c);
+    /// assert_eq!(c, 200_u8);
+    /// //}
+    /// /*
+    /// fn func<T: Uint>(lhs: T, rhs: T) -> T
+    /// {
+    ///     lhs.wrapping_add(rhs)
+    /// }
+    /// */
+    /// ```
+    /// 
+    /// ```
+    /// use Cryptocol::number::Uint;
+    ///
+    /// let a = 200_u8;
+    /// let b = 57_u8;
+    /// let c = func(a, b);
+    /// println!("a + b = {}", c);
+    /// assert_eq!(c, 1_u8);
+    /// ```
     fn wrapping_add(self, rhs: Self) -> Self    { self.wrapping_add(rhs) }
     fn wrapping_sub(self, rhs: Self) -> Self    { self.wrapping_sub(rhs) }
     fn wrapping_mul(self, rhs: Self) -> Self    { self.wrapping_mul(rhs) }

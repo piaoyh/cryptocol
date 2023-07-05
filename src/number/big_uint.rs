@@ -190,210 +190,6 @@ pub type u8192_with_u8 = BigUInt<u8, 1024>;
 pub type u16384_with_u8 = BigUInt<u8, 2048>;
 
 
-/// 256-bit unsigned integer, Synonym of `u256_with_u128`
-#[cfg(target_pointer_width = "128")] pub type u256 = u256_with_u128;
-
-/// 512-bit unsigned integer for 128-bit machines, Synonym of `u512_with_u128`
-#[cfg(target_pointer_width = "128")] pub type u512 = u512_with_u128;
-
-/// 1024-bit unsigned integer for 128-bit machines, Synonym of `u1024_with_u128`
-#[cfg(target_pointer_width = "128")] pub type u1024 = u1024_with_u128;
-
-/// 2048-bit unsigned integer for 128-bit machines, Synonym of `u2048_with_u128`
-#[cfg(target_pointer_width = "128")] pub type u2048 = u2048_with_u128;
-
-/// 3072-bit unsigned integer for 128-bit machines, Synonym of `u3072_with_u128`
-#[cfg(target_pointer_width = "128")] pub type u3072 = u3072_with_u128;
-
-/// 4096-bit unsigned integer for 128-bit machines, Synonym of `u4096_with_u128`
-#[cfg(target_pointer_width = "128")] pub type u4096 = u4096_with_u128;
-
-/// 5120-bit unsigned integer for 128-bit machines, Synonym of `u5120_with_u128`
-#[cfg(target_pointer_width = "128")] pub type u5120 = u5120_with_u128;
-
-/// 6144-bit unsigned integer for 128-bit machines, Synonym of `u6144_with_u128`
-#[cfg(target_pointer_width = "128")] pub type u6144 = u6144_with_u128;
-
-/// 7168-bit unsigned integer for 128-bit machines, Synonym of `u7168_with_u128`
-#[cfg(target_pointer_width = "128")] pub type u7168 = u7168_with_u128;
-
-/// 8192-bit unsigned integer for 128-bit machines, Synonym of `u8192_with_u128`
-#[cfg(target_pointer_width = "128")] pub type u8192 = u8192_with_u128;
-
-/// 16384-bit unsigned integer for 128-bit machines, Synonym of `u16384_with_u128`
-#[cfg(target_pointer_width = "128")] pub type u16384 = u16384_with_u128;
-
-
-/// 256-bit unsigned integer for 64-bit machines, Synonym of `u256_with_u64`
-#[cfg(target_pointer_width = "64")] pub type u256 = u256_with_u64;
-
-/// 512-bit unsigned integer for 64-bit machines, Synonym of `u512_with_u64`
-#[cfg(target_pointer_width = "64")] pub type u512 = u512_with_u64;
-
-/// 1024-bit unsigned integer for 64-bit machines, Synonym of `u1024_with_u64`
-#[cfg(target_pointer_width = "64")] pub type u1024 = u1024_with_u64;
-
-/// 2048-bit unsigned integer for 64-bit machines, Synonym of `u2048_with_u64`
-#[cfg(target_pointer_width = "64")] pub type u2048 = u2048_with_u64;
-
-/// 3072-bit unsigned integer for 64-bit machines, Synonym of `u3072_with_u64`
-#[cfg(target_pointer_width = "64")] pub type u3072 = u3072_with_u64;
-
-/// 4096-bit unsigned integer for 64-bit machines, Synonym of `u4096_with_u64`
-#[cfg(target_pointer_width = "64")] pub type u4096 = u4096_with_u64;
-
-/// 5120-bit unsigned integer for 64-bit machines, Synonym of `u5120_with_u64`
-#[cfg(target_pointer_width = "64")] pub type u5120 = u5120_with_u64;
-
-/// 6144-bit unsigned integer for 64-bit machines, Synonym of `u6144_with_u64`
-#[cfg(target_pointer_width = "64")] pub type u6144 = u6144_with_u64;
-
-/// 7168-bit unsigned integer for 64-bit machines, Synonym of `u7168_with_u64`
-#[cfg(target_pointer_width = "64")] pub type u7168 = u7168_with_u64;
-
-/// 8192-bit unsigned integer for 64-bit machines, Synonym of `u8192_with_u64`
-#[cfg(target_pointer_width = "64")] pub type u8192 = u8192_with_u64;
-
-/// 16384-bit unsigned integer for 64-bit machines, Synonym of `u16384_with_u64`
-#[cfg(target_pointer_width = "64")] pub type u16384 = u16384_with_u64;
-
-
-/// 256-bit unsigned integer for 32-bit machines, Synonym of `u256_with_u32`
-#[cfg(target_pointer_width = "32")] pub type u256 = u256_with_u32;
-
-/// 512-bit unsigned integer for 32-bit machines, Synonym of `u512_with_u32`
-#[cfg(target_pointer_width = "32")] pub type u512 = u512_with_u32;
-
-/// 1024-bit unsigned integer for 32-bit machines, Synonym of `u1024_with_u32`
-#[cfg(target_pointer_width = "32")] pub type u1024 = u1024_with_u32;
-
-/// 2048-bit unsigned integer for 32-bit machines, Synonym of `u2048_with_u32`
-#[cfg(target_pointer_width = "32")] pub type u2048 = u2048_with_u32;
-
-/// 3072-bit unsigned integer for 32-bit machines, Synonym of `u3072_with_u32`
-#[cfg(target_pointer_width = "32")] pub type u3072 = u3072_with_u32;
-
-/// 4096-bit unsigned integer for 32-bit machines, Synonym of `u4096_with_u32`
-#[cfg(target_pointer_width = "32")] pub type u4096 = u4096_with_u32;
-
-/// 5120-bit unsigned integer for 32-bit machines, Synonym of `u5120_with_u32`
-#[cfg(target_pointer_width = "32")] pub type u5120 = u5120_with_u32;
-
-/// 6144-bit unsigned integer for 32-bit machines, Synonym of `u6144_with_u32`
-#[cfg(target_pointer_width = "32")] pub type u6144 = u6144_with_u32;
-
-/// 7168-bit unsigned integer for 32-bit machines, Synonym of `u7168_with_u32`
-#[cfg(target_pointer_width = "32")] pub type u7168 = u7168_with_u32;
-
-/// 8192-bit unsigned integer for 32-bit machines, Synonym of `u8192_with_u32`
-#[cfg(target_pointer_width = "32")] pub type u8192 = u8192_with_u32;
-
-/// 16384-bit unsigned integer for 32-bit machines, Synonym of `u16384_with_u32`
-#[cfg(target_pointer_width = "32")] pub type u16384 = u16384_with_u32;
-
-
-/// 256-bit unsigned integer for 16-bit machines, Synonym of `u256_with_u16`
-#[cfg(target_pointer_width = "16")] pub type u256 = u256_with_u16;
-
-/// 512-bit unsigned integer for 16-bit machines, Synonym of `u512_with_u16`
-#[cfg(target_pointer_width = "16")] pub type u512 = u512_with_u16;
-
-/// 1024-bit unsigned integer for 16-bit machines, Synonym of `u1024_with_u16`
-#[cfg(target_pointer_width = "16")] pub type u1024 = u1024_with_u16;
-
-/// 2048-bit unsigned integer for 16-bit machines, Synonym of `u2048_with_u16`
-#[cfg(target_pointer_width = "16")] pub type u2048 = u2048_with_u16;
-
-/// 3072-bit unsigned integer for 16-bit machines, Synonym of `u3072_with_u16`
-#[cfg(target_pointer_width = "16")] pub type u3072 = u3072_with_u16;
-
-/// 4096-bit unsigned integer for 16-bit machines, Synonym of `u4096_with_u16`
-#[cfg(target_pointer_width = "16")] pub type u4096 = u4096_with_u16;
-
-/// 5120-bit unsigned integer for 16-bit machines, Synonym of `u5120_with_u16`
-#[cfg(target_pointer_width = "16")] pub type u5120 = u5120_with_u16;
-
-/// 6144-bit unsigned integer for 16-bit machines, Synonym of `u6144_with_u16`
-#[cfg(target_pointer_width = "16")] pub type u6144 = u6144_with_u16;
-
-/// 7168-bit unsigned integer for 16-bit machines, Synonym of `u7168_with_u16`
-#[cfg(target_pointer_width = "16")] pub type u7168 = u7168_with_u16;
-
-/// 8192-bit unsigned integer for 16-bit machines, Synonym of `u8192_with_u16`
-#[cfg(target_pointer_width = "16")] pub type u8192 = u8192_with_u16;
-
-/// 16384-bit unsigned integer for 16-bit machines, Synonym of `u16384_with_u16`
-#[cfg(target_pointer_width = "16")] pub type u16384 = u16384_with_u16;
-
-
-/// 256-bit unsigned integer for 8-bit machines, Synonym of `u256_with_u8`
-#[cfg(target_pointer_width = "8")] pub type u256 = u256_with_u8;
-
-/// 512-bit unsigned integer for 8-bit machines, Synonym of `u512_with_u8`
-#[cfg(target_pointer_width = "8")] pub type u512 = u512_with_u8;
-
-/// 1024-bit unsigned integer for 8-bit machines, Synonym of `u1024_with_u8`
-#[cfg(target_pointer_width = "8")] pub type u1024 = u1024_with_u8;
-
-/// 2048-bit unsigned integer for 8-bit machines, Synonym of `u2048_with_u8`
-#[cfg(target_pointer_width = "8")] pub type u2048 = u2048_with_u8;
-
-/// 3072-bit unsigned integer for 8-bit machines, Synonym of `u3072_with_u8`
-#[cfg(target_pointer_width = "8")] pub type u3072 = u3072_with_u8;
-
-/// 4096-bit unsigned integer for 8-bit machines, Synonym of `u4096_with_u8`
-#[cfg(target_pointer_width = "8")] pub type u4096 = u4096_with_u8;
-
-/// 5120-bit unsigned integer for 8-bit machines, Synonym of `u5120_with_u8`
-#[cfg(target_pointer_width = "8")] pub type u5120 = u5120_with_u8;
-
-/// 6144-bit unsigned integer for 8-bit machines, Synonym of `u6144_with_u8`
-#[cfg(target_pointer_width = "8")] pub type u6144 = u6144_with_u8;
-
-/// 7168-bit unsigned integer for 8-bit machines, Synonym of `u7168_with_u8`
-#[cfg(target_pointer_width = "8")] pub type u7168 = u7168_with_u8;
-
-/// 8192-bit unsigned integer for 8-bit machines, Synonym of `u8192_with_u8`
-#[cfg(target_pointer_width = "8")] pub type u8192 = u8192_with_u8;
-
-/// 16384-bit unsigned integer for 8-bit machines, Synonym of `u16384_with_u8`
-#[cfg(target_pointer_width = "8")] pub type u16384 = u16384_with_u8;
-
-
-/// 32-byte unsigned integer, Synonym of `u256`
-pub type U32 = u256;
-
-/// 64-byte unsigned integer, Synonym of `u512`
-pub type U64 = u512;
-
-/// 128-byte unsigned integer, Synonym of `u1024`
-pub type U128 = u1024;
-
-/// 256-byte unsigned integer, Synonym of `u2048`
-pub type U256 = u2048;
-
-/// 384-byte unsigned integer, Synonym of `u3072`
-pub type U384 = u3072;
-
-/// 512-byte unsigned integer, Synonym of `u4096`
-pub type U512 = u4096;
-
-/// 640-byte unsigned integer, Synonym of `u5120`
-pub type U640 = u5120;
-
-/// 760-byte unsigned integer, Synonym of `u6144`
-pub type U768 = u6144;
-
-/// 896-byte unsigned integer, Synonym of `u7168`
-pub type U896 = u7168;
-
-/// 1024-byte unsigned integer, Synonym of `u8192`
-pub type U1024 = u8192;
-
-/// 2048-byte unsigned integer, Synonym of `u16384`
-pub type U2048 = u16384;
-
-
 /// A struct that represents a big unsigned integer with user-defined fixed size.
 /// 
 /// The struct `BigUInt<T, const N: usize>` is a generic struct for which you
@@ -481,7 +277,8 @@ where T: Uint + Copy + Clone + Display + Debug + ToString
     /// 
     /// # Example
     /// ```
-    /// use Cryptocol::number::u256;
+    /// use Cryptocol::define_utypes_with;
+    /// define_utypes_with!(u128);
     /// let a = u256::new();
     /// println!("a = {}", a);
     /// assert_eq!(a, u256::from_uint(0_u64));
@@ -500,14 +297,51 @@ where T: Uint + Copy + Clone + Display + Debug + ToString
     /// # Examples
     /// 
     /// ```
-    /// use Cryptocol::number::u256;
+    /// use Cryptocol::define_utypes_with;
+    /// define_utypes_with!(u128);
     /// let zero = u256::zero();
-    /// assert_eq!(zero, u256::from_uint(0_u64));
+    /// assert_eq!(zero, u256::from_uint(0_u128));
     /// ```
     #[inline]
     pub fn zero() -> Self
     {
         Self::new()   // unsafe { zeroed::<Self>() }
+    }
+
+    /// Constructs a new `BigUInt<T, N>` which has the value of one.
+    ///
+    /// # Examples
+    /// 
+    /// ```
+    /// use Cryptocol::define_utypes_with;
+    /// define_utypes_with!(u128);
+    /// let one = u256::one();
+    /// assert_eq!(one, u256::from_uint(1_u64));
+    /// ```
+    #[cfg(target_endian = "little")]
+    pub fn one() -> Self
+    {
+        let mut me = Self::new();
+        me.set_num(0, T::one());
+        me
+    }
+
+    /// Constructs a new `BigUInt<T, N>` which has the value of one.
+    ///
+    /// # Examples
+    /// 
+    /// ```
+    /// use Cryptocol::define_utypes_with;
+    /// define_utypes_with!(u128);
+    /// let one = u256::one();
+    /// assert_eq!(one, u256::from_uint(1_u64));
+    /// ```
+    #[cfg(target_endian = "big")]
+    pub fn one() -> Self
+    {
+        let mut me = Self::new();
+        me.set_num(N-1, T::one());
+        me
     }
 
     pub fn max() -> Self
@@ -732,7 +566,8 @@ where T: Uint + Copy + Clone + Display + Debug + ToString
     /// # Examples
     /// 
     /// ```
-    /// use Cryptocol::number::u256;
+    /// use Cryptocol::define_utypes_with;
+    /// define_utypes_with!(u128);
     /// let bi = u256::from_string_with_radix("A16F", 16).unwrap();
     /// assert_eq!(u256::size_in_bytes(), 256 / 8);
     /// ```
@@ -746,7 +581,8 @@ where T: Uint + Copy + Clone + Display + Debug + ToString
     /// # Examples
     /// 
     /// ```
-    /// use Cryptocol::number::u256;
+    /// use Cryptocol::define_utypes_with;
+    /// define_utypes_with!(u128);
     /// let bi = u256::from_string_with_radix("A16F", 16).unwrap();
     /// assert_eq!(bi.length_in_bytes(), 256 / 8);
     /// ```
@@ -893,7 +729,8 @@ where T: Uint + Copy + Clone + Display + Debug + ToString
     /// # Examples
     /// 
     /// ```
-    /// use Cryptocol::number::u256;
+    /// use Cryptocol::define_utypes_with;
+    /// define_utypes_with!(u128);
     /// let a = u256::from_string("10000000000000000000000000000000000").unwrap();
     /// let sum = a.add_uint(35);
     /// println!("sum = {}", sum);
@@ -912,9 +749,10 @@ where T: Uint + Copy + Clone + Display + Debug + ToString
     /// # Examples
     /// 
     /// ```
-    /// use Cryptocol::number::u256;
+    /// use Cryptocol::define_utypes_with;
+    /// define_utypes_with!(u128);
     /// let a = u256::from_string("10000000000000000000000000000000000").unwrap();
-    /// let sub = a.sub_uint(35_u64);
+    /// let sub = a.sub_uint(35_u128);
     /// println!("sub = {}", sub);
     /// ```
     pub fn sub_uint(&self, rhs: T) -> Self
@@ -930,7 +768,8 @@ where T: Uint + Copy + Clone + Display + Debug + ToString
     /// # Examples
     /// 
     /// ```
-    /// use Cryptocol::number::u256;
+    /// use Cryptocol::define_utypes_with;
+    /// define_utypes_with!(u128);
     /// let a = u256::from_string("10000000000000000000000000000000000").unwrap();
     /// let mul = a.mul_uint(35);
     /// println!("mul = {}", mul);
@@ -948,7 +787,9 @@ where T: Uint + Copy + Clone + Display + Debug + ToString
     /// # Examples
     /// 
     /// ```
-    /// use Cryptocol::number::{u256, HugeInteger};
+    /// use Cryptocol::number::HugeInteger;
+    /// use Cryptocol::define_utypes_with;
+    /// define_utypes_with!(u128);
     /// let a = u256::from_string("10000000000000000000000000000000000").unwrap();
     /// let div = a.div_uint(35);
     /// println!("div = {}", div);
@@ -965,9 +806,10 @@ where T: Uint + Copy + Clone + Display + Debug + ToString
     /// # Examples
     /// 
     /// ```
-    /// use Cryptocol::number::u256;
+    /// use Cryptocol::define_utypes_with;
+    /// define_utypes_with!(u128);
     /// let a = u256::from_string("10000000000000000000000000000000000").unwrap();
-    /// let rem = a.rem_uint(35_u64);
+    /// let rem = a.rem_uint(35_u128);
     /// println!("rem = {}", rem);
     /// ```
     pub fn rem_uint(&self, rhs: T) -> T
@@ -981,7 +823,8 @@ where T: Uint + Copy + Clone + Display + Debug + ToString
     /// # Examples
     /// 
     /// ```
-    /// use Cryptocol::number::u256;
+    /// use Cryptocol::define_utypes_with;
+    /// define_utypes_with!(u128);
     /// let mut a = u256::new();
     /// a.set_max();
     /// println!("a = {}", a);
@@ -997,7 +840,8 @@ where T: Uint + Copy + Clone + Display + Debug + ToString
     /// # Examples
     /// 
     /// ```
-    /// use Cryptocol::number::u256;
+    /// use Cryptocol::define_utypes_with;
+    /// define_utypes_with!(u128);
     /// let a = u256::max();
     /// println!("Is a maximun? - {}", a.is_max());
     /// assert_eq!(a.is_max(), true);
@@ -1351,7 +1195,9 @@ where T: Uint + Copy + Clone + Display + Debug + ToString
     /// # Examples
     /// 
     /// ```
-    /// use Cryptocol::number::{u256, HugeInteger};
+    /// use Cryptocol::number::HugeInteger;
+    /// use Cryptocol::define_utypes_with;
+    /// define_utypes_with!(u128);
     /// let dividend = u256::from_string("1234567890157589425462369896").unwrap();
     /// let divisor = u256::from_string("1234567890").unwrap();
     /// let (quotient, remainder) = dividend.divide_fully(divisor);
@@ -1533,9 +1379,11 @@ where T: Uint + Copy + Clone + Display + Debug + ToString
     /// # Examples
     /// 
     /// ```
-    /// use Cryptocol::number::{u256, HugeInteger};
+    /// use Cryptocol::number::HugeInteger;
+    /// use Cryptocol::define_utypes_with;
+    /// define_utypes_with!(u128);
     /// let dividend = u256::from_string("1234567890157589425462369896").unwrap();
-    /// let (quotient, remainder) = dividend.divide_by_uint_fully(87_u64);
+    /// let (quotient, remainder) = dividend.divide_by_uint_fully(87_u128);
     /// ```
     fn divide_by_uint_fully(&self, rhs: T) -> (Self, T)
     {
@@ -2050,19 +1898,22 @@ where T: Uint + Copy + Clone + Display + Debug + ToString
     /// 
     /// # Examples
     /// ```
-    /// use Cryptocol::number::{u256, BigInteger};
+    /// use Cryptocol::number::BigInteger;
+    /// use Cryptocol::define_utypes_with;
+    /// define_utypes_with!(u128);
     /// let a = u256::from_string("1234567_1234567890_1234567890_1234567890_1234567890_1234567890_1234567890_1234567890").unwrap();
     /// let b = a << 4;
     /// println!("b = {}\noverflow: {}", b, b.is_overflow());
     /// assert_eq!(b.is_overflow(), true);
     /// ```
-    /// You have to import (use) Cryptocol::number::u256 in order to use the
-    /// type u256 and import Cryptocol::number::BigInteger in order to use
+    /// You have to import (use) Cryptocol::number::BigInteger in order to use
     /// its method is_overflow(). If you find headaching to remember what you
     /// should import, you can just import everything (Cryptocol::number::*)
     /// as next example. It is not harmful.
     /// ```
     /// use Cryptocol::number::*;
+    /// use Cryptocol::define_utypes_with;
+    /// define_utypes_with!(u128);
     /// let a = u256::from_string("1234567_1234567890_1234567890_1234567890_1234567890_1234567890_1234567890_1234567890").unwrap();
     /// let b = a << 1;
     /// println!("b = {}\noverflow: {}", b, b.is_overflow());
@@ -2091,19 +1942,22 @@ where T: Uint + Copy + Clone + Display + Debug + ToString
     /// 
     /// # Examples
     /// ```
-    /// use Cryptocol::number::{u256, BigInteger};
+    /// use Cryptocol::number::BigInteger;
+    /// use Cryptocol::define_utypes_with;
+    /// define_utypes_with!(u128);
     /// let mut a = u256::from_string("1234567_1234567890_1234567890_1234567890_1234567890_1234567890_1234567890_1234567890").unwrap();
     /// a <<= 4;
     /// println!("a = {}\noverflow: {}", a, a.is_overflow());
     /// assert_eq!(a.is_overflow(), true);
     /// ```
-    /// You have to import (use) Cryptocol::number::u256 in order to use the
-    /// type u256 and import Cryptocol::number::BigInteger in order to use
+    /// You have to import (use) Cryptocol::number::BigInteger in order to use
     /// its method is_overflow(). If you find headaching to remember what you
     /// should import, you can just import everything (Cryptocol::number::*)
     /// as next example. It is not harmful.
     /// ```
     /// use Cryptocol::number::*;
+    /// use Cryptocol::define_utypes_with;
+    /// define_utypes_with!(u128);
     /// let mut a = u256::from_string("1234567_1234567890_1234567890_1234567890_1234567890_1234567890_1234567890_1234567890").unwrap();
     /// a <<= 1;
     /// println!("a = {}\noverflow: {}", a, a.is_overflow());
@@ -2246,19 +2100,22 @@ where T: Uint + Copy + Clone + Display + Debug + ToString
     /// 
     /// # Examples
     /// ```
-    /// use Cryptocol::number::{u256, BigInteger};
+    /// use Cryptocol::number::BigInteger;
+    /// use Cryptocol::define_utypes_with;
+    /// define_utypes_with!(u128);
     /// let a = u256::from_string("1234567_1234567890_1234567890_1234567890_1234567890_1234567890_1234567890_1234567890").unwrap();
     /// let b = a >> 2;
     /// println!("b = {}\nunderflow: {}", b, b.is_underflow());
     /// assert_eq!(b.is_underflow(), true);
     /// ```
-    /// You have to import (use) Cryptocol::number::u256 in order to use the
-    /// type u256 and import Cryptocol::number::BigInteger in order to use
+    /// You have to import (use) Cryptocol::number::BigInteger in order to use
     /// its method is_underflow(). If you find headaching to remember what you
     /// should import, you can just import everything (Cryptocol::number::*)
     /// as next example. It is not harmful.
     /// ```
     /// use Cryptocol::number::*;
+    /// use Cryptocol::define_utypes_with;
+    /// define_utypes_with!(u128);
     /// let a = u256::from_string("1234567_1234567890_1234567890_1234567890_1234567890_1234567890_1234567890_1234567890").unwrap();
     /// let b = a >> 1;
     /// println!("b = {}\nunderflow: {}", b, b.is_underflow());
@@ -2288,19 +2145,22 @@ where T: Uint + Copy + Clone + Display + Debug + ToString
     /// 
     /// # Examples
     /// ```
-    /// use Cryptocol::number::{u256, BigInteger};
+    /// use Cryptocol::number::BigInteger;
+    /// use Cryptocol::define_utypes_with;
+    /// define_utypes_with!(u128);
     /// let mut a = u256::from_string("1234567_1234567890_1234567890_1234567890_1234567890_1234567890_1234567890_1234567890").unwrap();
     /// a >>= 2;
     /// println!("a = {}\nunderflow: {}", a, a.is_underflow());
     /// assert_eq!(a.is_underflow(), true);
     /// ```
-    /// You have to import (use) Cryptocol::number::u256 in order to use the
-    /// type u256 and import Cryptocol::number::BigInteger in order to use
+    /// You have to import (use) Cryptocol::number::BigInteger in order to use
     /// its method is_underflow(). If you find headaching to remember what you
     /// should import, you can just import everything (Cryptocol::number::*)
     /// as next example. It is not harmful.
     /// ```
     /// use Cryptocol::number::*;
+    /// use Cryptocol::define_utypes_with;
+    /// define_utypes_with!(u128);
     /// let mut a = u256::from_string("1234567_1234567890_1234567890_1234567890_1234567890_1234567890_1234567890_1234567890").unwrap();
     /// a >>= 1;
     /// println!("a = {}\nunderflow: {}", a, a.is_underflow());
@@ -2363,19 +2223,22 @@ where T: Uint + Copy + Clone + Display + Debug + ToString
     /// 
     /// # Examples
     /// ```
-    /// use Cryptocol::number::{u256, BigInteger};
+    /// use Cryptocol::number::BigInteger;
+    /// use Cryptocol::define_utypes_with;
+    /// define_utypes_with!(u128);
     /// let mut a = u256::from_string("1234567_1234567890_1234567890_1234567890_1234567890_1234567890_1234567890_1234567890").unwrap();
     /// a >>= 2;
     /// println!("a = {}\nunderflow: {}", a, a.is_underflow());
     /// assert_eq!(a.is_underflow(), true);
     /// ```
-    /// You have to import (use) Cryptocol::number::u256 in order to use the
-    /// type u256 and import Cryptocol::number::BigInteger in order to use
+    /// You have to import (use) Cryptocol::number::BigInteger in order to use
     /// its method is_underflow(). If you find headaching to remember what you
     /// should import, you can just import everything (Cryptocol::number::*)
     /// as next example. It is not harmful.
     /// ```
     /// use Cryptocol::number::*;
+    /// use Cryptocol::define_utypes_with;
+    /// define_utypes_with!(u128);
     /// let mut a = u256::from_string("1234567_1234567890_1234567890_1234567890_1234567890_1234567890_1234567890_1234567890").unwrap();
     /// a >>= 1;
     /// println!("a = {}\nunderflow: {}", a, a.is_underflow());
@@ -2445,7 +2308,9 @@ where T: Uint + Copy + Clone + Display + Debug + ToString
     /// 
     /// # Examples
     /// ```
-    /// use Cryptocol::number::{u256, HugeInteger};
+    /// use Cryptocol::number::HugeInteger;
+    /// use Cryptocol::define_utypes_with;
+    /// define_utypes_with!(u128);
     /// let a = u256::from_string_with_radix("11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101", 2).unwrap();
     /// let b = u256::from_string_with_radix("11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000", 2).unwrap();
     /// let c = a & b;
@@ -2454,13 +2319,14 @@ where T: Uint + Copy + Clone + Display + Debug + ToString
     /// println!("a & b = {}", c.to_string_with_radix(2));
     /// assert_eq!(c, a & b);
     /// ```
-    /// You have to import (use) Cryptocol::number::u256 in order to use the
-    /// type u256 and import Cryptocol::number::HugeInteger in order to use
+    /// You have to import (use) Cryptocol::number::HugeInteger in order to use
     /// its method to_string_with_radix(). If you find headaching to remember
     /// what you should import, you can just import everything
     /// (Cryptocol::number::*) as next example. It is not harmful.
     /// ```
     /// use Cryptocol::number::*;
+    /// use Cryptocol::define_utypes_with;
+    /// define_utypes_with!(u128);
     /// let a = u256::from_string_with_radix("11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101", 2).unwrap();
     /// let b = u256::zero();
     /// let c = a & b;
@@ -2491,20 +2357,24 @@ where T: Uint + Copy + Clone + Display + Debug + ToString
     /// 
     /// # Examples
     /// ```
-    /// use Cryptocol::number::{u256, HugeInteger};
+    /// use Cryptocol::number::*;
+    /// use Cryptocol::define_utypes_with;
+    /// define_utypes_with!(u128);
     /// let mut a = u256::from_string_with_radix("11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101", 2).unwrap();
     /// let b = u256::from_string_with_radix("11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000", 2).unwrap();
     /// a &= b;
     /// println!("a = {}", a.to_string_with_radix(2));
     /// assert_eq!(a, u256::from_string_with_radix("1111000000000000110000000000001110001000000100011010101000000000111100000000000011000000000000111000100000010001101010100000000011110000000000001100000000000011100010000001000110101010000000001111000000000000110000000000001110001000000100011010101000000000", 2).unwrap());
     /// ```
-    /// You have to import (use) Cryptocol::number::u256 in order to use the
-    /// type u256 and import Cryptocol::number::HugeInteger in order to use
-    /// its method to_string_with_radix(). If you find headaching to remember
+    /// You have to import (use) Cryptocol::number::* and then import
+    /// Cryptocol::define_utypes_with in order to use the macro define_utypes_with
+    /// and its method to_string_with_radix(). If you find headaching to remember
     /// what you should import, you can just import everything
     /// (Cryptocol::number::*) as next example. It is not harmful.
     /// ```
     /// use Cryptocol::number::*;
+    /// use Cryptocol::define_utypes_with;
+    /// define_utypes_with!(u128);
     /// let mut a = u256::from_string_with_radix("11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101", 2).unwrap();
     /// let b = u256::zero();
     /// a &= b;
@@ -2534,7 +2404,9 @@ where T: Uint + Copy + Clone + Display + Debug + ToString
     /// 
     /// # Examples
     /// ```
-    /// use Cryptocol::number::{u256, HugeInteger};
+    /// use Cryptocol::number::HugeInteger;
+    /// use Cryptocol::define_utypes_with;
+    /// define_utypes_with!(u128);
     /// let a = u256::from_string_with_radix("11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101", 2).unwrap();
     /// let b = u256::from_string_with_radix("11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000", 2).unwrap();
     /// let c = a | b;
@@ -2543,13 +2415,14 @@ where T: Uint + Copy + Clone + Display + Debug + ToString
     /// println!("a | b = {}", c.to_string_with_radix(2));
     /// assert_eq!(c, a | b);
     /// ```
-    /// You have to import (use) Cryptocol::number::u256 in order to use the
-    /// type u256 and import Cryptocol::number::HugeInteger in order to use
+    /// You have to import (use) Cryptocol::number::HugeInteger in order to use
     /// its method to_string_with_radix(). If you find headaching to remember
     /// what you should import, you can just import everything
     /// (Cryptocol::number::*) as next example. It is not harmful.
     /// ```
     /// use Cryptocol::number::*;
+    /// use Cryptocol::define_utypes_with;
+    /// define_utypes_with!(u128);
     /// let a = u256::from_string_with_radix("11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101", 2).unwrap();
     /// let b = u256::max();
     /// let c = a | b;
@@ -2580,20 +2453,23 @@ where T: Uint + Copy + Clone + Display + Debug + ToString
     /// 
     /// # Examples
     /// ```
-    /// use Cryptocol::number::{u256, HugeInteger};
+    /// use Cryptocol::number::HugeInteger;
+    /// use Cryptocol::define_utypes_with;
+    /// define_utypes_with!(u128);
     /// let mut a = u256::from_string_with_radix("11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101", 2).unwrap();
     /// let b = u256::from_string_with_radix("11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000", 2).unwrap();
     /// a |= b;
     /// println!("a = {}", a.to_string_with_radix(2));
     /// assert_eq!(a, u256::from_string_with_radix("1111111100001111111111000011111111101110011101111111111101010101111111110000111111111100001111111110111001110111111111110101010111111111000011111111110000111111111011100111011111111111010101011111111100001111111111000011111111101110011101111111111101010101", 2).unwrap());
     /// ```
-    /// You have to import (use) Cryptocol::number::u256 in order to use the
-    /// type u256 and import Cryptocol::number::HugeInteger in order to use
+    /// You have to import (use) Cryptocol::number::HugeInteger in order to use
     /// its method to_string_with_radix(). If you find headaching to remember
     /// what you should import, you can just import everything
     /// (Cryptocol::number::*) as next example. It is not harmful.
     /// ```
     /// use Cryptocol::number::*;
+    /// use Cryptocol::define_utypes_with;
+    /// define_utypes_with!(u128);
     /// let mut a = u256::from_string_with_radix("11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101", 2).unwrap();
     /// let b = u256::max();
     /// a |= b;
@@ -2623,7 +2499,9 @@ where T: Uint + Copy + Clone + Display + Debug + ToString
     /// 
     /// # Examples
     /// ```
-    /// use Cryptocol::number::{u256, HugeInteger};
+    /// use Cryptocol::number::HugeInteger;
+    /// use Cryptocol::define_utypes_with;
+    /// define_utypes_with!(u128);
     /// let a = u256::from_string_with_radix("11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101", 2).unwrap();
     /// let b = u256::from_string_with_radix("11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000", 2).unwrap();
     /// let c = a ^ b;
@@ -2638,7 +2516,9 @@ where T: Uint + Copy + Clone + Display + Debug + ToString
     /// what you should import, you can just import everything
     /// (Cryptocol::number::*) as next example. It is not harmful.
     /// ```
-    /// use Cryptocol::number::*;
+    /// use Cryptocol::number::HugeInteger;
+    /// use Cryptocol::define_utypes_with;
+    /// define_utypes_with!(u128);
     /// let a = u256::from_string_with_radix("11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101", 2).unwrap();
     /// let b = u256::max();
     /// let c = a ^ b;
@@ -2669,20 +2549,23 @@ where T: Uint + Copy + Clone + Display + Debug + ToString
     /// 
     /// # Examples
     /// ```
-    /// use Cryptocol::number::{u256, HugeInteger};
+    /// use Cryptocol::number::HugeInteger;
+    /// use Cryptocol::define_utypes_with;
+    /// define_utypes_with!(u128);
     /// let mut a = u256::from_string_with_radix("11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101", 2).unwrap();
     /// let b = u256::from_string_with_radix("11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000", 2).unwrap();
     /// a ^= b;
     /// println!("a = {}", a.to_string_with_radix(2));
     /// assert_eq!(a, u256::from_string_with_radix("111100001111001111000011110001100110011001100101010101010101000011110000111100111100001111000110011001100110010101010101010100001111000011110011110000111100011001100110011001010101010101010000111100001111001111000011110001100110011001100101010101010101", 2).unwrap());
     /// ```
-    /// You have to import (use) Cryptocol::number::u256 in order to use the
-    /// type u256 and import Cryptocol::number::HugeInteger in order to use
+    /// You have to import (use) Cryptocol::number::HugeInteger in order to use
     /// its method to_string_with_radix(). If you find headaching to remember
     /// what you should import, you can just import everything
     /// (Cryptocol::number::*) as next example. It is not harmful.
     /// ```
     /// use Cryptocol::number::*;
+    /// use Cryptocol::define_utypes_with;
+    /// define_utypes_with!(u128);
     /// let mut a = u256::from_string_with_radix("11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101", 2).unwrap();
     /// let b = u256::max();
     /// a ^= b;
@@ -2712,19 +2595,22 @@ where T: Uint + Copy + Clone + Display + Debug + ToString
     /// 
     /// # Examples
     /// ```
-    /// use Cryptocol::number::{u256, HugeInteger};
+    /// use Cryptocol::number::HugeInteger;
+    /// use Cryptocol::define_utypes_with;
+    /// define_utypes_with!(u128);
     /// let a = u256::from_string_with_radix("11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101", 2).unwrap();
     /// let c = !a;
     /// println!("c = {}", c.to_string_with_radix(2));
     /// assert_eq!(!c, a);
     /// ```
-    /// You have to import (use) Cryptocol::number::u256 in order to use the
-    /// type u256 and import Cryptocol::number::HugeInteger in order to use
+    /// You have to import (use) Cryptocol::number::HugeInteger in order to use
     /// its method to_string_with_radix(). If you find headaching to remember
     /// what you should import, you can just import everything
     /// (Cryptocol::number::*) as next example. It is not harmful.
     /// ```
     /// use Cryptocol::number::*;
+    /// use Cryptocol::define_utypes_with;
+    /// define_utypes_with!(u128);
     /// let a = u256::from_string_with_radix("11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101", 2).unwrap();
     /// let c = !a | a;
     /// println!("c = {}", c.to_string_with_radix(2));
@@ -2816,7 +2702,8 @@ where T: Uint + Copy + Clone + Display + Debug + ToString
     /// 
     /// # Example
     /// ```
-    /// use Cryptocol::number::u256;
+    /// use Cryptocol::define_utypes_with;
+    /// define_utypes_with!(u128);
     /// let a = u256::from_string("1234567_1234567890_1234567890_1234567890_1234567890_1234567890_1234567890_1234567890").unwrap();
     /// println!("{}", a);
     /// ```
