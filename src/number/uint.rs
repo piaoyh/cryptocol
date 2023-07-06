@@ -6,8 +6,8 @@
 // This file may not be copied, modified, or distributed
 // except according to those terms.
 
-//! A module for generic types of primitive unsigned integral data types
-//! used in a lot of modules of the crate Cryptocol.
+//! The module that contains generic types of primitive unsigned integral
+//! data types used in a lot of modules of the crate Cryptocol.
 
 #![warn(missing_docs)]
 #![warn(missing_doc_code_examples)]

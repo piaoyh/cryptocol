@@ -6,7 +6,8 @@
 // This file may not be copied, modified, or distributed
 // except according to those terms.
 
-//! A big unsigned integer with user-defined fixed size.
+//! The module that contains a big unsigned integer struct
+//! with user-defined fixed size and its methods.
 
 //#![warn(missing_docs)]
 //#![warn(missing_doc_code_examples)]
@@ -222,23 +223,27 @@ pub type u16384_with_u8 = BigUInt<u8, 2048>;
 /// 
 /// ```
 /// use Cryptocol::number::*;
-/// type BI = BigUInt::<u64, 16>;
-/// type AI = BigUInt::<usize, 16>;
-/// let bi = BI::from_array(&[1;16]);
-/// let bb = BI::from_string_with_radix("0000_0000_0000_0001__0000_0000_0000_0001__0000_0000_0000_0001__0000_0000_0000_0001__0000_0000_0000_0001__0000_0000_0000_0001__0000_0000_0000_0001__0000_0000_0000_0001__0000_0000_0000_0001__0000_0000_0000_0001__0000_0000_0000_0001__0000_0000_0000_0001__0000_0000_0000_0001__0000_0000_0000_0001__0000_0000_0000_0001__0000_0000_0000_0001__0000_0000_0000_0001__0000_0000_0000_0001__0000_0000_0000_0001__0000_0000_0000_0001__0000_0000_0000_0001__0000_0000_0000_0001__0000_0000_0000_0001__0000_0000_0000_0001__0000_0000_0000_0001__0000_0000_0000_0001__0000_0000_0000_0001__0000_0000_0000_0001__0000_0000_0000_0001__0000_0000_0000_0001__0000_0000_0000_0001__0000_0000_0000_0001__", 16).unwrap();
-/// let b = BI::from_string("1234567891234567879123456789111111111222222222333333333444444444555555555666666666777777777888888888999999999000000000").unwrap();
-/// println!("bi = {:?}", bi);
-/// println!("bi = {}", bi.to_string_with_radix(16));
-/// println!("bb = {:?}", bb);
-/// println!("bb = {}", bb.to_string_with_radix(16));
-/// println!("b = {}", b);
-/// println!("b * bb = {}", b * bb);
-/// println!("bb / b = {}", bb / b);
-/// println!("bb % b = {}", bb % b);
+/// type u1024 = BigUInt::<u128, 8>;
+/// type U128 = BigUInt::<usize, 16>;
+/// let a = u1024::from_array(&[1;8]);
+/// let b = u1024::from_string_with_radix("0000_0000_0000_0001__0000_0000_0000_0001__0000_0000_0000_0001__0000_0000_0000_0001__0000_0000_0000_0001__0000_0000_0000_0001__0000_0000_0000_0001__0000_0000_0000_0001__0000_0000_0000_0001__0000_0000_0000_0001__0000_0000_0000_0001__0000_0000_0000_0001__0000_0000_0000_0001__0000_0000_0000_0001__0000_0000_0000_0001__0000_0000_0000_0001__0000_0000_0000_0001__0000_0000_0000_0001__0000_0000_0000_0001__0000_0000_0000_0001__0000_0000_0000_0001__0000_0000_0000_0001__0000_0000_0000_0001__0000_0000_0000_0001__0000_0000_0000_0001__0000_0000_0000_0001__0000_0000_0000_0001__0000_0000_0000_0001__0000_0000_0000_0001__0000_0000_0000_0001__0000_0000_0000_0001__0000_0000_0000_0001__", 16).unwrap();
+/// let mut c = u1024::from_string("1234567891234567879123456789111111111222222222333333333444444444555555555666666666777777777888888888999999999000000000").unwrap();
+/// let d = U128::from_biguint(&c);
+/// println!("a = {:?}", a);
+/// println!("a = {}", a.to_string_with_radix(16));
+/// println!("b = {:?}", b);
+/// println!("b = {}", b.to_string_with_radix(16));
+/// println!("c = {}", c);
+/// println!("c + b = {}", c + b);
+/// println!("c - b = {}", c - b);
+/// println!("c * b = {}", c * b);
+/// println!("b / c = {}", b / c);
+/// println!("b % c = {}", b % c);
 /// println!("b + 1 = {}", b.add_uint(1));
 /// println!("b - 1 = {}", b.sub_uint(1));
-/// let a = AI::from_string("123654789147258369").unwrap();
-/// println!("a = {}", a);
+/// assert_eq!(a, b);
+/// c.set_one();
+/// assert_eq!(c, u1024::one());
 /// ```
 #[derive(Debug, Copy, Clone)]
 pub struct BigUInt<T, const N: usize>
@@ -281,7 +286,7 @@ where T: Uint + Copy + Clone + Display + Debug + ToString
     /// define_utypes_with!(u128);
     /// let a = u256::new();
     /// println!("a = {}", a);
-    /// assert_eq!(a, u256::from_uint(0_u64));
+    /// assert_eq!(a, u256::from_uint(0_u128));
     /// ```
     pub fn new() -> Self
     {
@@ -294,13 +299,14 @@ where T: Uint + Copy + Clone + Display + Debug + ToString
     /// be better readable if you use `BigUInt<T, N>::zero()` instead of
     /// `BigUInt<T, N>::new()` especially when you create the big number zero.
     ///
-    /// # Examples
+    /// # Example
     /// 
     /// ```
     /// use Cryptocol::define_utypes_with;
     /// define_utypes_with!(u128);
     /// let zero = u256::zero();
-    /// assert_eq!(zero, u256::from_uint(0_u128));
+    /// println!("zero = {}", zero);
+    /// assert_eq!(zero, u256::new());
     /// ```
     #[inline]
     pub fn zero() -> Self
@@ -310,13 +316,14 @@ where T: Uint + Copy + Clone + Display + Debug + ToString
 
     /// Constructs a new `BigUInt<T, N>` which has the value of one.
     ///
-    /// # Examples
+    /// # Example
     /// 
     /// ```
     /// use Cryptocol::define_utypes_with;
     /// define_utypes_with!(u128);
     /// let one = u256::one();
-    /// assert_eq!(one, u256::from_uint(1_u64));
+    /// println!("one = {}", one);
+    /// assert_eq!(one, u256::from_uint(1_u128));
     /// ```
     #[cfg(target_endian = "little")]
     pub fn one() -> Self
@@ -327,14 +334,19 @@ where T: Uint + Copy + Clone + Display + Debug + ToString
     }
 
     /// Constructs a new `BigUInt<T, N>` which has the value of one.
-    ///
-    /// # Examples
+    /// This crate is so experimental for Big-endian CPUs that you are highy
+    /// encouraged not to use this crate for Big-endian CPUs for serious
+    /// purpose. So, use this crate for Big-endian CPUs with your own full
+    /// responsibility.
+    /// 
+    /// # Example
     /// 
     /// ```
     /// use Cryptocol::define_utypes_with;
     /// define_utypes_with!(u128);
     /// let one = u256::one();
-    /// assert_eq!(one, u256::from_uint(1_u64));
+    /// println!("one = {}", one);
+    /// assert_eq!(one, u256::from_uint(1_u128));
     /// ```
     #[cfg(target_endian = "big")]
     pub fn one() -> Self
@@ -344,6 +356,17 @@ where T: Uint + Copy + Clone + Display + Debug + ToString
         me
     }
 
+    /// Constructs a new `BigUInt<T, N>` which has the value of maximum.
+    ///
+    /// # Example
+    /// 
+    /// ```
+    /// use Cryptocol::define_utypes_with;
+    /// define_utypes_with!(u128);
+    /// let maximum = u256::max();
+    /// println!("maximum = {}", maximum);
+    /// assert_eq!(maximum, !u256::zero());
+    /// ```
     pub fn max() -> Self
     {
         Self { number: [T::max(); N], flag: 0, }
@@ -357,6 +380,7 @@ where T: Uint + Copy + Clone + Display + Debug + ToString
     /// ```
     /// use Cryptocol::number::*;
     /// let big_num = BigUInt::<u8,32>::from_array(&[1_u8;32]);
+    /// println!("big_num = {}", big_num.to_string_with_radix(2));
     /// assert_eq!(big_num, BigUInt::<u8,32>::from_string_with_radix("00000001_00000001_00000001_00000001_00000001_00000001_00000001_00000001_00000001_00000001_00000001_00000001_00000001_00000001_00000001_00000001_00000001_00000001_00000001_00000001_00000001_00000001_00000001_00000001_00000001_00000001_00000001_00000001_00000001_00000001_00000001_00000001", 2).unwrap());
     /// ```
     pub fn from_array(val: &[T; N]) -> Self
@@ -374,6 +398,7 @@ where T: Uint + Copy + Clone + Display + Debug + ToString
     /// ```
     /// use Cryptocol::number::BigUInt;
     /// let cc = BigUInt::<u16,32>::from_uint(1004_u16);
+    /// println!("cc = {}", cc);
     /// assert_eq!(cc.into_u32(), 1004);
     /// ```
     /// 
@@ -408,15 +433,18 @@ where T: Uint + Copy + Clone + Display + Debug + ToString
         return me;
     }
 
-    /// Constructs a new BigUInt<T, N> from an unsigned integer
-    /// such as u8, u16, u32, u64, u128 and usize. The BigEndian version
-    /// is so experimental that you may not want to use it for serious purpose.
+    /// Constructs a new BigUInt<T, N> from an unsigned integer such as u8,
+    /// u16, u32, u64, u128 and usize. This crate is so experimental for
+    /// Big-endian CPUs that you are highy discouraged to use this crate
+    /// for Big-endian CPUs for serious purpose. So, use this crate for
+    /// Big-endian CPUs with your own full responsibility.
     /// 
     /// # Examples
     /// 
     /// ```
     /// use Cryptocol::number::BigUInt;
-    /// let cc = BigUInt::<u8,32>::from_uint(1004);
+    /// let cc = BigUInt::<u16,32>::from_uint(1004_u16);
+    /// println!("cc = {}", cc);
     /// assert_eq!(cc.into_u32(), 1004);
     /// ```
     /// 
@@ -486,12 +514,13 @@ where T: Uint + Copy + Clone + Display + Debug + ToString
     /// In the string expressing a number, you can separate the digits with '_'
     /// in order to make it more readable. So, "10000" is the same as "1_0000".
     /// 
-    /// # Examples
+    /// # Example
     /// 
     /// ```
-    /// use Cryptocol::number::BigUInt;
-    /// let bi = BigUInt::<u8,32>::from_string_with_radix("A16F", 16).unwrap();
-    /// assert_eq!(bi.into_u16(), 0xA16F_u16);
+    /// use Cryptocol::number::{ HugeInteger, BigUInt};
+    /// let a = BigUInt::<u8,32>::from_string_with_radix("1234_5678_9ABC_DEF0_1234_5678_9ABC_DEF0_1234_5678_9ABC_DEF0_1234_5678_9ABC_DEF0_1234_5678_9ABC_DEF0_1234_5678_9ABC_DEF0_1234_5678_9ABC_DEF0_1234_5678_9ABC_DEF0", 16).unwrap();
+    /// println!("a = {}", a);
+    /// assert_eq!(a.to_string(), "8234104123542484900769178205574010627627573691361805720124810878238590820080");
     /// ```
     pub fn from_string_with_radix(txt: &str, radix: usize) -> Option<Self>
     {

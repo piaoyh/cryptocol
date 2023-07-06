@@ -15,7 +15,8 @@
 //! because Little-Endian CPUs are far more popular than Big-endian CPUs.
 //! And, this crate is so experimental for Big-endian CPUs
 //! that you are highy discouraged to use this crate for Big-endian CPUs
-//! for serious purpose.
+//! for serious purpose. So, use this crate for Big-endian CPUs with
+//! your own full responsibility.
 //! 
 
 // #![doc(

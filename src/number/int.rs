@@ -6,8 +6,8 @@
 // This file may not be copied, modified, or distributed
 // except according to those terms.
 
-//! Trait Int for generic type of primitive signed integral data types
-//! for the counter part of uint.
+//! The module that contains a trait Int for generic type of primitive signed
+//! integral data types for the counter part of uint.
 
 #![warn(missing_docs)]
 #![warn(missing_doc_code_examples)]

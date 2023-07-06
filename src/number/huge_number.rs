@@ -6,8 +6,8 @@
 // This file may not be copied, modified, or distributed
 // except according to those terms.
 
-//! A module that contains a trait for big unsigned integer BigUInt, big signed
-//! integer BigInt and large integer LargeInt.
+//! The module that contains a trait HugeInteger for big unsigned integer
+//! BigUInt, big signed integer BigInt, and large integer LargeInt.
 
 use std::fmt::{ Display, Debug };
 use std::cmp::{ PartialEq, PartialOrd, Ordering };

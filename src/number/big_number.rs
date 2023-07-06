@@ -6,8 +6,8 @@
 // This file may not be copied, modified, or distributed
 // except according to those terms.
 
-//! A module that contains a trait for big unsigned integer and big signed
-//! integer with user-defined fixed size.
+//! The module that contains a trait for big unsigned integer
+//! and for big signed integer with user-defined fixed size.
 
 use std::fmt::{ Display, Debug };
 use std::cmp::{ PartialEq, PartialOrd, Ordering };

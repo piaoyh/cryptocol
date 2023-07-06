@@ -6,8 +6,8 @@
 // This file may not be copied, modified, or distributed
 // except according to those terms.
 
-//! For generic type of primitive signed/unsigned integral data
-//! types for all modules of the crate Cryptocol.
+//! The module that contains a trait Numeric for generic type of a primitive
+//! signed integral data type and a primitive unsigned integral data type.
 
 #![warn(missing_docs)]
 #![warn(missing_doc_code_examples)]
