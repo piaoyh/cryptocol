@@ -14,11 +14,14 @@
 use std::fmt::{ self, Display, Formatter, Debug };
 use std::mem::{ size_of, transmute };
 use std::cmp::{ PartialEq, PartialOrd, Ordering };
+use std::convert::{ From, Into };
+use std::str::FromStr;
 use std::ops::*;
 
 use super::uint::*;
 use super::HugeInteger;
 use super::BigInteger;
+use super::NumberErr;
 
 
 /// 256-bit unsigned integer implemented by `BigUInt<u128, 2>` made with two `u128`s
@@ -222,12 +225,13 @@ pub type u16384_with_u8 = BigUInt<u8, 2048>;
 /// # Examples
 /// 
 /// ```
+/// use std::str::FromStr;
 /// use Cryptocol::number::*;
 /// type u1024 = BigUInt::<u128, 8>;
 /// type U128 = BigUInt::<usize, 16>;
-/// let a = u1024::from_array(&[1;8]);
-/// let b = u1024::from_string_with_radix("0000_0000_0000_0001__0000_0000_0000_0001__0000_0000_0000_0001__0000_0000_0000_0001__0000_0000_0000_0001__0000_0000_0000_0001__0000_0000_0000_0001__0000_0000_0000_0001__0000_0000_0000_0001__0000_0000_0000_0001__0000_0000_0000_0001__0000_0000_0000_0001__0000_0000_0000_0001__0000_0000_0000_0001__0000_0000_0000_0001__0000_0000_0000_0001__0000_0000_0000_0001__0000_0000_0000_0001__0000_0000_0000_0001__0000_0000_0000_0001__0000_0000_0000_0001__0000_0000_0000_0001__0000_0000_0000_0001__0000_0000_0000_0001__0000_0000_0000_0001__0000_0000_0000_0001__0000_0000_0000_0001__0000_0000_0000_0001__0000_0000_0000_0001__0000_0000_0000_0001__0000_0000_0000_0001__0000_0000_0000_0001__", 16).unwrap();
-/// let mut c = u1024::from_string("1234567891234567879123456789111111111222222222333333333444444444555555555666666666777777777888888888999999999000000000").unwrap();
+/// let a = u1024::from(&[1;8]);
+/// let b = u1024::from_str_radix("00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000001__00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000001__00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000001__00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000001__00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000001__00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000001__00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000001__00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000001", 2).unwrap();
+/// let mut c = u1024::from_str("1234567891234567879123456789111111111222222222333333333444444444555555555666666666777777777888888888999999999000000000").unwrap();
 /// let d = U128::from_biguint(&c);
 /// println!("a = {:?}", a);
 /// println!("a = {}", a.to_string_with_radix(16));
@@ -247,7 +251,7 @@ pub type u16384_with_u8 = BigUInt<u8, 2048>;
 /// ```
 #[derive(Debug, Copy, Clone)]
 pub struct BigUInt<T, const N: usize>
-where T: Uint + Copy + Clone + Display + Debug + ToString
+where T: Uint + Clone + Display + Debug + ToString
         + Add<Output=T> + AddAssign + Sub<Output=T> + SubAssign
         + Mul<Output=T> + MulAssign + Div<Output=T> + DivAssign
         + Shl<Output=T> + ShlAssign + Shr<Output=T> + ShrAssign
@@ -260,14 +264,14 @@ where T: Uint + Copy + Clone + Display + Debug + ToString
 }
 
 impl<T, const N: usize> BigUInt<T, N>
-where T: Uint + Copy + Clone + Display + Debug + ToString
+where T: Uint + Clone + Display + Debug + ToString
         + Add<Output=T> + AddAssign + Sub<Output=T> + SubAssign
         + Mul<Output=T> + MulAssign + Div<Output=T> + DivAssign
         + Shl<Output=T> + ShlAssign + Shr<Output=T> + ShrAssign
         + BitAnd<Output=T> + BitAndAssign + BitOr<Output=T> + BitOrAssign
         + BitXor<Output=T> + BitXorAssign + Not<Output=T>
         + PartialEq + PartialOrd,
-    Self: Sized + Clone + Copy + Display + Debug + ToString 
+    Self: Sized + Clone + Copy + Display + Debug + ToString
         + Add<Output = Self> + AddAssign + Sub<Output = Self> + SubAssign
         + Mul<Output = Self> + MulAssign + Div<Output = Self> + DivAssign
         + Rem<Output = Self> + RemAssign
@@ -275,6 +279,7 @@ where T: Uint + Copy + Clone + Display + Debug + ToString
         + Shr<i32, Output = Self> + ShrAssign<i32>
         + BitAnd<Self, Output = Self> + BitAndAssign + BitOr<Output = Self> + BitOrAssign
         + BitXorAssign + Not<Output = Self>
+        + From<T> + FromStr //+ From<&'a [T; N]>
         //+ HugeInteger<T> + BigInteger<T, N>
 {
     /// Constructs a new `BigUInt<T, N>`.
@@ -286,7 +291,7 @@ where T: Uint + Copy + Clone + Display + Debug + ToString
     /// define_utypes_with!(u128);
     /// let a = u256::new();
     /// println!("a = {}", a);
-    /// assert_eq!(a, u256::from_uint(0_u128));
+    /// assert_eq!(a, u256::from(0_u128));
     /// ```
     pub fn new() -> Self
     {
@@ -319,11 +324,12 @@ where T: Uint + Copy + Clone + Display + Debug + ToString
     /// # Example
     /// 
     /// ```
+    /// use std::convert::From;
     /// use Cryptocol::define_utypes_with;
     /// define_utypes_with!(u128);
     /// let one = u256::one();
     /// println!("one = {}", one);
-    /// assert_eq!(one, u256::from_uint(1_u128));
+    /// assert_eq!(one, u256::from(1_u128));
     /// ```
     #[cfg(target_endian = "little")]
     pub fn one() -> Self
@@ -372,129 +378,10 @@ where T: Uint + Copy + Clone + Display + Debug + ToString
         Self { number: [T::max(); N], flag: 0, }
     }
 
-    /// Constructs a new `BigUInt<T, N>` from an array of type `T`
-    /// with `N` elements.
-    /// 
-    /// # Examples
-    /// 
-    /// ```
-    /// use Cryptocol::number::*;
-    /// let big_num = BigUInt::<u8,32>::from_array(&[1_u8;32]);
-    /// println!("big_num = {}", big_num.to_string_with_radix(2));
-    /// assert_eq!(big_num, BigUInt::<u8,32>::from_string_with_radix("00000001_00000001_00000001_00000001_00000001_00000001_00000001_00000001_00000001_00000001_00000001_00000001_00000001_00000001_00000001_00000001_00000001_00000001_00000001_00000001_00000001_00000001_00000001_00000001_00000001_00000001_00000001_00000001_00000001_00000001_00000001_00000001", 2).unwrap());
-    /// ```
-    pub fn from_array(val: &[T; N]) -> Self
-    {
-        let mut s = Self::new();
-        s.set_number(val);
-        s
-    }
-
-    /// Constructs a new `BigUInt<T, N>` from an unsigned integer
-    /// such as `u8`, `u16`, `u32`, `u64`, `u128` and `usize`.
-    /// 
-    /// # Examples
-    /// 
-    /// ```
-    /// use Cryptocol::number::BigUInt;
-    /// let cc = BigUInt::<u16,32>::from_uint(1004_u16);
-    /// println!("cc = {}", cc);
-    /// assert_eq!(cc.into_u32(), 1004);
-    /// ```
-    /// 
-    #[cfg(target_endian = "little")]
-    pub fn from_uint<S>(val: S) -> Self
-    where S: Uint + Copy + Clone + Display + Debug + ToString
-            + Add<Output=S> + AddAssign + Sub<Output=S> + SubAssign
-            + Mul<Output=S> + MulAssign + Div<Output=S> + DivAssign
-            + Shl<Output=S> + ShlAssign + Shr<Output=S> + ShrAssign
-            + BitAnd<Output=S> + BitAndAssign + BitOr<Output=S> + BitOrAssign
-            + BitXor<Output=S> + BitXorAssign + Not<Output=S>
-            + PartialEq + PartialOrd
-    {
-        let TSIZE = size_of::<T>();
-        let SSIZE = size_of::<S>();
-        let mut me = Self::new();
-        let mut share = Share::<T, S>::from_src(val);
-        
-        if TSIZE >= SSIZE
-        {
-            unsafe { me.set_num(0, share.des); }
-        }
-        else
-        {
-            let TSIZE_BIT = TSIZE * 8;
-            for i in 0..SSIZE/TSIZE
-            {
-                unsafe { me.set_num(i, share.des); }
-                unsafe { share.src >>= S::num(TSIZE_BIT as u128); }
-            }
-        }
-        return me;
-    }
-
-    /// Constructs a new BigUInt<T, N> from an unsigned integer such as u8,
-    /// u16, u32, u64, u128 and usize. This crate is so experimental for
-    /// Big-endian CPUs that you are highy discouraged to use this crate
-    /// for Big-endian CPUs for serious purpose. So, use this crate for
-    /// Big-endian CPUs with your own full responsibility.
-    /// 
-    /// # Examples
-    /// 
-    /// ```
-    /// use Cryptocol::number::BigUInt;
-    /// let cc = BigUInt::<u16,32>::from_uint(1004_u16);
-    /// println!("cc = {}", cc);
-    /// assert_eq!(cc.into_u32(), 1004);
-    /// ```
-    /// 
-    #[cfg(target_endian = "big")]
-    pub fn from_uint<S>(val: S) -> Self
-    where S: Uint + Copy + Clone + Display + Debug + ToString
-            + Add<Output=S> + AddAssign + Sub<Output=S> + SubAssign
-            + Mul<Output=S> + MulAssign + Div<Output=S> + DivAssign
-            + Shl<Output=S> + ShlAssign + Shr<Output=S> + ShrAssign
-            + BitAnd<Output=S> + BitAndAssign + BitOr<Output=S> + BitOrAssign
-            + BitXor<Output=S> + BitXorAssign + Not<Output=S>
-            + PartialEq + PartialOrd
-    {
-        let TSIZE = size_of::<T>();
-        let SSIZE = size_of::<S>();
-        let mut me = Self::new();
-        let mut share = Share::<T, S>::from_src(val);
-        
-        if TSIZE >= SSIZE
-        {
-            unsafe { me.set_num(N-1, share.des); }
-        }
-        else    // if TSIZE < SSIZE
-        {
-            let TSIZE_BIT = TSIZE * 8;
-            let LEN = SSIZE/TSIZE;
-            if LEN <= N
-            {
-                for i in 0..LEN
-                {
-                    unsafe { me.set_num(N - LEN + i, share.des); }
-                    unsafe { share.src <<= S::num(TSIZE_BIT as u128); }
-                }    
-            }
-            else    // if LEN > N
-            {
-                unsafe { share.src <<= S::num(((LEN - N) * TSIZE_BIT) as u128); }
-                for i in 0..N
-                {
-                    unsafe { me.set_num(i, share.des); }
-                    unsafe { share.src <<= S::num(TSIZE_BIT as u128); }
-                } 
-            }
-        }
-        return me;
-    }
-
     /// Constructs a new `BigUInt<T, N>` from a string with radix.
-    /// The constructed object will be wrapped in `Some(BigUInt<T, N>)` if it is
-    /// successfully created. Otherwise, this function returns None.
+    /// The constructed object will be wrapped in `Ok(BigUInt<T, N>)` if it is
+    /// successfully created. Otherwise, this method returns
+    /// `Err(BigUIntErr::ParsingError)`.
     /// 
     /// The radix can be from 2 up to 62 (= 10 + 26 + 26). Such a radix is 1 or
     /// more than 62 is not available, so that this function will return None.
@@ -517,15 +404,16 @@ where T: Uint + Copy + Clone + Display + Debug + ToString
     /// # Example
     /// 
     /// ```
-    /// use Cryptocol::number::{ HugeInteger, BigUInt};
-    /// let a = BigUInt::<u8,32>::from_string_with_radix("1234_5678_9ABC_DEF0_1234_5678_9ABC_DEF0_1234_5678_9ABC_DEF0_1234_5678_9ABC_DEF0_1234_5678_9ABC_DEF0_1234_5678_9ABC_DEF0_1234_5678_9ABC_DEF0_1234_5678_9ABC_DEF0", 16).unwrap();
+    /// use std::str::FromStr;
+    /// use Cryptocol::number::{ HugeInteger, BigUInt, NumberErr };
+    /// let a = BigUInt::<u8,32>::from_str_radix("1234_5678_9ABC_DEF0_1234_5678_9ABC_DEF0_1234_5678_9ABC_DEF0_1234_5678_9ABC_DEF0_1234_5678_9ABC_DEF0_1234_5678_9ABC_DEF0_1234_5678_9ABC_DEF0_1234_5678_9ABC_DEF0", 16).unwrap();
     /// println!("a = {}", a);
     /// assert_eq!(a.to_string(), "8234104123542484900769178205574010627627573691361805720124810878238590820080");
     /// ```
-    pub fn from_string_with_radix(txt: &str, radix: usize) -> Option<Self>
+    pub fn from_str_radix(txt: &str, radix: usize) -> Result<Self, NumberErr>
     {
         if (radix < 2) || (radix > 10 + 26 + 26)
-            { return None; }
+            { return Err(NumberErr::OutOfValidRadixRange); }
 
         let mut bignum = Self::zero();
         for c in txt.chars()
@@ -533,21 +421,21 @@ where T: Uint + Copy + Clone + Display + Debug + ToString
             if c == '_'
                 { continue; }
             if !c.is_alphanumeric()
-                { return None; }
+                { return Err(NumberErr::NotAlphaNumeric); }
             if radix <= 10
             {
                 if c as usize >= '0' as usize + radix
-                    { return None; }
+                    { return Err(NumberErr::NotFitToRadix); }
             }
             else if radix <= 10 + 26
             {
                 if (c as usize >= 'A' as usize + radix - 10) 
                         && (c as usize <= 'Z' as usize)
                     || (c as usize >= 'a' as usize + radix - 10)
-                    { return None; }
+                    { return Err(NumberErr::NotFitToRadix); }
             }
             else if c as usize >= 'a' as usize + radix - (10 + 26)  // radix <= 10 + 26 + 26
-                { return None; }
+                { return Err(NumberErr::NotFitToRadix); }
 
             let num: usize = if radix <= 10    { c as usize - '0' as usize }
                         else if radix <= 10 + 26
@@ -571,53 +459,26 @@ where T: Uint + Copy + Clone + Display + Debug + ToString
             bignum.times(T::num(radix as u128));
             bignum.accumulate(T::num(num as u128));
         }
-        Some(bignum)
+        Ok(bignum)
     }
 
-    /// Constructs a new `BigUInt<T, N>` from a string with radix 10.
-    /// The constructed object will be wrapped in `Some(BigUInt<T, N>)` if it is
-    /// successfully created. Otherwise, this method returns `None`.
+    /// Constructs a new `BigUInt<T, N>` from an array of type `T`
+    /// with `N` elements.
     /// 
     /// # Examples
     /// 
     /// ```
-    /// use Cryptocol::number::BigUInt;
-    /// let bi = BigUInt::<u8,32>::from_string_with_radix("A16F", 16);
+    /// use Cryptocol::number::*;
+    /// let big_num = BigUInt::<u8,32>::from_array(&[1_u8;32]);
+    /// println!("big_num = {}", big_num.to_string_with_radix(2));
+    /// assert_eq!(big_num, BigUInt::<u8,32>::from_str_radix("00000001_00000001_00000001_00000001_00000001_00000001_00000001_00000001_00000001_00000001_00000001_00000001_00000001_00000001_00000001_00000001_00000001_00000001_00000001_00000001_00000001_00000001_00000001_00000001_00000001_00000001_00000001_00000001_00000001_00000001_00000001_00000001", 2).unwrap());
     /// ```
-    #[inline]
-    pub fn from_string(txt: &str) -> Option<Self>
+    pub fn from_array(val: &[T; N]) -> Self
     {
-        Self::from_string_with_radix(txt, 10)
+        let mut s = Self::new();
+        s.set_number(val);
+        s
     }
-
-    /// Returns how many bytes BigUInt contains. The return type is usize.
-    /// 
-    /// # Examples
-    /// 
-    /// ```
-    /// use Cryptocol::define_utypes_with;
-    /// define_utypes_with!(u128);
-    /// let bi = u256::from_string_with_radix("A16F", 16).unwrap();
-    /// assert_eq!(u256::size_in_bytes(), 256 / 8);
-    /// ```
-    pub fn size_in_bytes() -> usize { T::size_in_bytes() * N }
-
-    pub fn size_in_bits() -> usize { Self::size_in_bytes() * 8 }
-
-    /// Returns how many bytes the object of BigUInt type contains.
-    /// The return type is usize.
-    /// 
-    /// # Examples
-    /// 
-    /// ```
-    /// use Cryptocol::define_utypes_with;
-    /// define_utypes_with!(u128);
-    /// let bi = u256::from_string_with_radix("A16F", 16).unwrap();
-    /// assert_eq!(bi.length_in_bytes(), 256 / 8);
-    /// ```
-    pub fn length_in_bytes(&self) -> usize { Self::size_in_bytes() }
-
-    pub fn length_in_bits(&self) -> usize { Self::size_in_bits() }
 
     /// Constructs a new `BigUInt<T, N>` from another kind of `BigUInt<U, M>`.
     /// It copies not only long bit integer but also current flags from another
@@ -626,6 +487,7 @@ where T: Uint + Copy + Clone + Display + Debug + ToString
     /// # Example
     /// 
     /// ```
+    /// use std::str::FromStr;
     /// use std::mem::size_of;
     /// use Cryptocol::number::*;
     /// type T = u16;
@@ -633,7 +495,7 @@ where T: Uint + Copy + Clone + Display + Debug + ToString
     /// const M: usize = size_of::<T>() * N;
     /// type BI = BigUInt::<T, N>;
     /// type AI = BigUInt::<u8, M>;
-    /// let a = AI::from_string("123456789123456789123456789123456789123456789123456789").unwrap();
+    /// let a = AI::from_str("123456789123456789123456789123456789123456789123456789").unwrap();
     /// let b = BI::from_biguint(&a);
     /// println!("a = {}", a);
     /// println!("b = {}", b);
@@ -641,7 +503,7 @@ where T: Uint + Copy + Clone + Display + Debug + ToString
     /// 
     #[cfg(target_endian = "little")]
     pub fn from_biguint<U, const M: usize>(biguint: &BigUInt<U, M>) -> Self
-    where U: Uint + Copy + Clone + Display + Debug + ToString
+    where U: Uint + Clone + Display + Debug + ToString
             + Add<Output=U> + AddAssign + Sub<Output=U> + SubAssign
             + Mul<Output=U> + MulAssign + Div<Output=U> + DivAssign
             + Shl<Output=U> + ShlAssign + Shr<Output=U> + ShrAssign
@@ -680,7 +542,7 @@ where T: Uint + Copy + Clone + Display + Debug + ToString
     /// const M: usize = size_of::<T>() * N;
     /// type BI = BigUInt::<T, N>;
     /// type AI = BigUInt::<u8, M>;
-    /// let a = AI::from_string("123456789123456789123456789123456789123456789123456789").unwrap();
+    /// let a = AI::from_str("123456789123456789123456789123456789123456789123456789").unwrap();
     /// let b = BI::from_biguint(&a);
     /// println!("a = {}", a);
     /// println!("b = {}", b);
@@ -688,7 +550,7 @@ where T: Uint + Copy + Clone + Display + Debug + ToString
     /// 
     #[cfg(target_endian = "big")]
     pub fn from_biguint<U, const M: usize>(biguint: &BigUInt<U, M>) -> Self
-    where U: Uint + Copy + Clone + Display + Debug + ToString
+    where U: Uint + Clone + Display + Debug + ToString
             + Add<Output=U> + AddAssign + Sub<Output=U> + SubAssign
             + Mul<Output=U> + MulAssign + Div<Output=U> + DivAssign
             + Shl<Output=U> + ShlAssign + Shr<Output=U> + ShrAssign
@@ -711,6 +573,35 @@ where T: Uint + Copy + Clone + Display + Debug + ToString
         }
         me
     }
+
+    /// Returns how many bytes BigUInt contains. The return type is usize.
+    /// 
+    /// # Examples
+    /// 
+    /// ```
+    /// use Cryptocol::define_utypes_with;
+    /// define_utypes_with!(u128);
+    /// let bi = u256::from_str_radix("A16F", 16).unwrap();
+    /// assert_eq!(u256::size_in_bytes(), 256 / 8);
+    /// ```
+    pub fn size_in_bytes() -> usize { T::size_in_bytes() * N }
+
+    pub fn size_in_bits() -> usize { Self::size_in_bytes() * 8 }
+
+    /// Returns how many bytes the object of BigUInt type contains.
+    /// The return type is usize.
+    /// 
+    /// # Examples
+    /// 
+    /// ```
+    /// use Cryptocol::define_utypes_with;
+    /// define_utypes_with!(u128);
+    /// let bi = u256::from_str_radix("A16F", 16).unwrap();
+    /// assert_eq!(bi.length_in_bytes(), 256 / 8);
+    /// ```
+    pub fn length_in_bytes(&self) -> usize { Self::size_in_bytes() }
+
+    pub fn length_in_bits(&self) -> usize { Self::size_in_bits() }
 
     /// Constucts a new `BigUInt<T, N>` which has the value zero
     /// and sets only the bit specified by bit_pos to be 1.
@@ -758,12 +649,13 @@ where T: Uint + Copy + Clone + Display + Debug + ToString
     /// # Examples
     /// 
     /// ```
+    /// use std::str::FromStr;
     /// use Cryptocol::define_utypes_with;
     /// define_utypes_with!(u128);
-    /// let a = u256::from_string("10000000000000000000000000000000000").unwrap();
+    /// let a = u256::from_str("10000000000000000000000000000000000").unwrap();
     /// let sum = a.add_uint(35);
     /// println!("sum = {}", sum);
-    /// assert_eq!(sum, u256::from_string("10000000000000000000000000000000035").unwrap());
+    /// assert_eq!(sum, u256::from_str("10000000000000000000000000000000035").unwrap());
     /// ```
     pub fn add_uint(&self, rhs: T) -> Self
     {
@@ -778,9 +670,10 @@ where T: Uint + Copy + Clone + Display + Debug + ToString
     /// # Examples
     /// 
     /// ```
+    /// use std::str::FromStr;
     /// use Cryptocol::define_utypes_with;
     /// define_utypes_with!(u128);
-    /// let a = u256::from_string("10000000000000000000000000000000000").unwrap();
+    /// let a = u256::from_str("10000000000000000000000000000000000").unwrap();
     /// let sub = a.sub_uint(35_u128);
     /// println!("sub = {}", sub);
     /// ```
@@ -795,11 +688,11 @@ where T: Uint + Copy + Clone + Display + Debug + ToString
     /// of type `T` and returns its result in a type of BigUInt.
     /// 
     /// # Examples
-    /// 
     /// ```
+    /// use std::str::FromStr;
     /// use Cryptocol::define_utypes_with;
     /// define_utypes_with!(u128);
-    /// let a = u256::from_string("10000000000000000000000000000000000").unwrap();
+    /// let a = u256::from_str("10000000000000000000000000000000000").unwrap();
     /// let mul = a.mul_uint(35);
     /// println!("mul = {}", mul);
     /// ```
@@ -816,10 +709,11 @@ where T: Uint + Copy + Clone + Display + Debug + ToString
     /// # Examples
     /// 
     /// ```
+    /// use std::str::FromStr;
     /// use Cryptocol::number::HugeInteger;
     /// use Cryptocol::define_utypes_with;
     /// define_utypes_with!(u128);
-    /// let a = u256::from_string("10000000000000000000000000000000000").unwrap();
+    /// let a = u256::from_str("10000000000000000000000000000000000").unwrap();
     /// let div = a.div_uint(35);
     /// println!("div = {}", div);
     /// ```
@@ -833,11 +727,11 @@ where T: Uint + Copy + Clone + Display + Debug + ToString
     /// of type `T` and returns its remainder in a type of T.
     /// 
     /// # Examples
-    /// 
     /// ```
+    /// use std::str::FromStr;
     /// use Cryptocol::define_utypes_with;
     /// define_utypes_with!(u128);
-    /// let a = u256::from_string("10000000000000000000000000000000000").unwrap();
+    /// let a = u256::from_str("10000000000000000000000000000000000").unwrap();
     /// let rem = a.rem_uint(35_u128);
     /// println!("rem = {}", rem);
     /// ```
@@ -936,7 +830,7 @@ where T: Uint + Copy + Clone + Display + Debug + ToString
     }
 
     pub fn into_biguint<U, const M: usize>(&self) -> BigUInt<U, M>
-    where U: Uint + Copy + Clone + Display + Debug + ToString
+    where U: Uint + Clone + Display + Debug + ToString
             + Add<Output=U> + AddAssign + Sub<Output=U> + SubAssign
             + Mul<Output=U> + MulAssign + Div<Output=U> + DivAssign
             + Shl<Output=U> + ShlAssign + Shr<Output=U> + ShrAssign
@@ -950,7 +844,7 @@ where T: Uint + Copy + Clone + Display + Debug + ToString
     pub fn into_u128(&self) -> u128
     {
         let mut num = ULonger { ulonger: 0 };
-        match size_of::<T>()
+        match T::size_in_bytes()
         {
             1 => {
                 unsafe { num.byte[0] = self.number[0].into_u8(); }
@@ -1100,7 +994,7 @@ where T: Uint + Copy + Clone + Display + Debug + ToString
 }
 
 impl<T, const N: usize> BigInteger<T, N> for BigUInt<T, N>
-where T: Uint + Copy + Clone + Display + Debug + ToString
+where T: Uint + Clone + Display + Debug + ToString
         + Add<Output=T> + AddAssign + Sub<Output=T> + SubAssign
         + Mul<Output=T> + MulAssign + Div<Output=T> + DivAssign
         + Shl<Output=T> + ShlAssign + Shr<Output=T> + ShrAssign
@@ -1115,6 +1009,7 @@ where T: Uint + Copy + Clone + Display + Debug + ToString
         + Shr<i32, Output = Self> + ShrAssign<i32>
         + BitAnd<Self, Output = Self> + BitAndAssign + BitOr<Output = Self> + BitOrAssign
         + BitXorAssign + Not<Output = Self>
+        + FromStr
 {
     /// Returns the reference of its array of T-type for borrowing instead
     /// of giving its ownership. BigUInt has an array of T in order
@@ -1155,7 +1050,7 @@ where T: Uint + Copy + Clone + Display + Debug + ToString
 
 
 impl<T, const N: usize> HugeInteger<T> for BigUInt<T, N>
-where T: Uint + Copy + Clone + Display + Debug + ToString
+where T: Uint + Clone + Display + Debug + ToString
         + Add<Output=T> + AddAssign + Sub<Output=T> + SubAssign
         + Mul<Output=T> + MulAssign + Div<Output=T> + DivAssign
         + Shl<Output=T> + ShlAssign + Shr<Output=T> + ShrAssign
@@ -1170,6 +1065,7 @@ where T: Uint + Copy + Clone + Display + Debug + ToString
         + Shr<i32, Output = Self> + ShrAssign<i32>
         + BitAnd<Self, Output = Self> + BitAndAssign + BitOr<Output = Self> + BitOrAssign
         + BitXorAssign + Not<Output = Self>
+        + FromStr
 {
     /// Sets i-th element of its array of type T and return true if i < N.
     /// Otherwise, it sets none of the elements of its array of type T and
@@ -1224,11 +1120,12 @@ where T: Uint + Copy + Clone + Display + Debug + ToString
     /// # Examples
     /// 
     /// ```
+    /// use std::str::FromStr;
     /// use Cryptocol::number::HugeInteger;
     /// use Cryptocol::define_utypes_with;
     /// define_utypes_with!(u128);
-    /// let dividend = u256::from_string("1234567890157589425462369896").unwrap();
-    /// let divisor = u256::from_string("1234567890").unwrap();
+    /// let dividend = u256::from_str("1234567890157589425462369896").unwrap();
+    /// let divisor = u256::from_str("1234567890").unwrap();
     /// let (quotient, remainder) = dividend.divide_fully(divisor);
     /// ```
     fn divide_fully(&self, rhs: Self) -> (Self, Self)
@@ -1386,7 +1283,7 @@ where T: Uint + Copy + Clone + Display + Debug + ToString
         }
         let adder = self.clone();
         let mut bit_check = one;
-        bit_check <<= T::num((size_of::<T>() * 8 - 1).into_u128());
+        bit_check <<= T::num((T::size_in_bits() - 1).into_u128());
         self.set_zero();
         while (bit_check != zero) && ((bit_check & rhs) == zero)
             { bit_check >>= one; }
@@ -1408,10 +1305,11 @@ where T: Uint + Copy + Clone + Display + Debug + ToString
     /// # Examples
     /// 
     /// ```
+    /// use std::str::FromStr;
     /// use Cryptocol::number::HugeInteger;
     /// use Cryptocol::define_utypes_with;
     /// define_utypes_with!(u128);
-    /// let dividend = u256::from_string("1234567890157589425462369896").unwrap();
+    /// let dividend = u256::from_str("1234567890157589425462369896").unwrap();
     /// let (quotient, remainder) = dividend.divide_by_uint_fully(87_u128);
     /// ```
     fn divide_by_uint_fully(&self, rhs: T) -> (Self, T)
@@ -1542,7 +1440,7 @@ where T: Uint + Copy + Clone + Display + Debug + ToString
 
 
 impl<T, const N: usize> Add for BigUInt<T, N>
-where T: Uint + Copy + Clone + Display + Debug + ToString
+where T: Uint + Clone + Display + Debug + ToString
         + Add<Output=T> + AddAssign + Sub<Output=T> + SubAssign
         + Mul<Output=T> + MulAssign + Div<Output=T> + DivAssign
         + Shl<Output=T> + ShlAssign + Shr<Output=T> + ShrAssign
@@ -1560,7 +1458,7 @@ where T: Uint + Copy + Clone + Display + Debug + ToString
 }
 
 impl<T, const N: usize> AddAssign for BigUInt<T, N>
-where T: Uint + Copy + Clone + Display + Debug + ToString
+where T: Uint + Clone + Display + Debug + ToString
         + Add<Output=T> + AddAssign + Sub<Output=T> + SubAssign
         + Mul<Output=T> + MulAssign + Div<Output=T> + DivAssign
         + Shl<Output=T> + ShlAssign + Shr<Output=T> + ShrAssign
@@ -1573,26 +1471,44 @@ where T: Uint + Copy + Clone + Display + Debug + ToString
     #[cfg(target_endian = "little")]
     fn add_assign(&mut self, rhs: Self)
     {
+        let mut	carry = false;
+        for i in 0..N
+            { (self.number[i], carry) = self.number[i].carrying_add(rhs.number[i], carry); }
+        if carry
+            { self.set_overflow(); }
+/*
         let zero = T::zero();
-        let mut	carry: T = zero;
         let mut midres: T;
+        let mut cc = zero;
         let mut c: bool;
-
         for i in 0..N
         {
             midres = self.number[i].wrapping_add(rhs.number[i]);
             c = midres < self.number[i];
             midres = midres.wrapping_add(carry);
-            carry = if c || (midres < carry) { T::one() } else { zero };
+            cc = if c || (midres < cc) { T::one() } else { zero };
             self.number[i] = midres;
         }
-        if carry != zero
+        if cc != zero
             { self.set_overflow(); }
+*/
     }
 
     #[cfg(target_endian = "big")]
     fn add_assign(&mut self, rhs: Self)
     {
+        let mut i = N - 1;
+        let mut	carry = false;
+        loop
+        {
+            (self.number[i], carry) = self.number[i].carrying_add(rhs.number[i], carry);
+            if i == 0
+                { break; }
+            i -= 1;
+        }
+        if carry
+            { self.set_overflow(); }
+/*
         let zero = T::zero();
         let mut	carry: T = zero;
         let mut midres: T;
@@ -1613,11 +1529,12 @@ where T: Uint + Copy + Clone + Display + Debug + ToString
 
         if carry != zero
             { self.set_overflow(); }
+    */
     }
 }
 
 impl<T, const N: usize> Sub for BigUInt<T, N>
-where T: Uint + Copy + Clone + Display + Debug + ToString
+where T: Uint + Clone + Display + Debug + ToString
         + Add<Output=T> + AddAssign + Sub<Output=T> + SubAssign
         + Mul<Output=T> + MulAssign + Div<Output=T> + DivAssign
         + Shl<Output=T> + ShlAssign + Shr<Output=T> + ShrAssign
@@ -1635,7 +1552,7 @@ where T: Uint + Copy + Clone + Display + Debug + ToString
 }
 
 impl<T, const N: usize> SubAssign for BigUInt<T, N>
-where T: Uint + Copy + Clone + Display + Debug + ToString
+where T: Uint + Clone + Display + Debug + ToString
         + Add<Output=T> + AddAssign + Sub<Output=T> + SubAssign
         + Mul<Output=T> + MulAssign + Div<Output=T> + DivAssign
         + Shl<Output=T> + ShlAssign + Shr<Output=T> + ShrAssign
@@ -1648,7 +1565,13 @@ where T: Uint + Copy + Clone + Display + Debug + ToString
     #[cfg(target_endian = "little")]
     fn sub_assign(&mut self, rhs: Self)
     {
-        let zero = T::zero();
+        let mut	borrow = false;
+        for i in 0..N
+            { (self.number[i], borrow) = self.number[i].borrowing_sub(rhs.number[i], borrow); }
+        if borrow
+            { self.set_underflow(); }
+/*
+       let zero = T::zero();
         let mut	carry: T = zero;
         let mut midres: T;
         let mut c: bool;
@@ -1665,6 +1588,7 @@ where T: Uint + Copy + Clone + Display + Debug + ToString
         }
         if carry != zero
             { self.set_underflow(); }
+*/
     }
 
     /// Subtracts and assign the result to it.
@@ -1672,6 +1596,18 @@ where T: Uint + Copy + Clone + Display + Debug + ToString
     #[cfg(target_endian = "big")]
     fn sub_assign(&mut self, rhs: Self)
     {
+        let mut i = N - 1;
+        let mut	borrow = false;
+        loop
+        {
+            (self.number[i], borrow) = self.number[i].borrowing_sub(rhs.number[i], borrow);
+            if i == 0
+                { break; }
+            i -= 1;
+        }
+        if carry
+            { self.set_underflow(); }
+/*
         let zero = T::zero();
         let mut	carry: T = zero;
         let mut midres: T;
@@ -1692,11 +1628,12 @@ where T: Uint + Copy + Clone + Display + Debug + ToString
         }
         if carry != zero
             { self.set_underflow(); }
+    */
     }
 }
 
 impl<T, const N: usize> Mul for BigUInt<T, N>
-where T: Uint + Copy + Clone + Display + Debug + ToString
+where T: Uint + Clone + Display + Debug + ToString
         + Add<Output=T> + AddAssign + Sub<Output=T> + SubAssign
         + Mul<Output=T> + MulAssign + Div<Output=T> + DivAssign
         + Shl<Output=T> + ShlAssign + Shr<Output=T> + ShrAssign
@@ -1714,7 +1651,7 @@ where T: Uint + Copy + Clone + Display + Debug + ToString
 }
 
 impl<T, const N: usize> MulAssign for BigUInt<T, N>
-where T: Uint + Copy + Clone + Display + Debug + ToString
+where T: Uint + Clone + Display + Debug + ToString
         + Add<Output=T> + AddAssign + Sub<Output=T> + SubAssign
         + Mul<Output=T> + MulAssign + Div<Output=T> + DivAssign
         + Shl<Output=T> + ShlAssign + Shr<Output=T> + ShrAssign
@@ -1853,7 +1790,7 @@ where T: Uint + Copy + Clone + Display + Debug + ToString
 }
 
 impl<T, const N: usize> Div for BigUInt<T, N>
-where T: Uint + Copy + Clone + Display + Debug + ToString
+where T: Uint + Clone + Display + Debug + ToString
         + Add<Output=T> + AddAssign + Sub<Output=T> + SubAssign
         + Mul<Output=T> + MulAssign + Div<Output=T> + DivAssign
         + Shl<Output=T> + ShlAssign + Shr<Output=T> + ShrAssign
@@ -1870,7 +1807,7 @@ where T: Uint + Copy + Clone + Display + Debug + ToString
 }
 
 impl<T, const N: usize> DivAssign for BigUInt<T, N>
-where T: Uint + Copy + Clone + Display + Debug + ToString
+where T: Uint + Clone + Display + Debug + ToString
         + Add<Output=T> + AddAssign + Sub<Output=T> + SubAssign
         + Mul<Output=T> + MulAssign + Div<Output=T> + DivAssign
         + Shl<Output=T> + ShlAssign + Shr<Output=T> + ShrAssign
@@ -1882,7 +1819,7 @@ where T: Uint + Copy + Clone + Display + Debug + ToString
 }
 
 impl<T, const N: usize> Rem for BigUInt<T, N>
-where T: Uint + Copy + Clone + Display + Debug + ToString
+where T: Uint + Clone + Display + Debug + ToString
         + Add<Output=T> + AddAssign + Sub<Output=T> + SubAssign
         + Mul<Output=T> + MulAssign + Div<Output=T> + DivAssign
         + Shl<Output=T> + ShlAssign + Shr<Output=T> + ShrAssign
@@ -1899,7 +1836,7 @@ where T: Uint + Copy + Clone + Display + Debug + ToString
 }
 
 impl<T, const N: usize> RemAssign for BigUInt<T, N>
-where T: Uint + Copy + Clone + Display + Debug + ToString
+where T: Uint + Clone + Display + Debug + ToString
         + Add<Output=T> + AddAssign + Sub<Output=T> + SubAssign
         + Mul<Output=T> + MulAssign + Div<Output=T> + DivAssign
         + Shl<Output=T> + ShlAssign + Shr<Output=T> + ShrAssign
@@ -1911,7 +1848,7 @@ where T: Uint + Copy + Clone + Display + Debug + ToString
 }
 
 impl<T, const N: usize> Shl<i32> for BigUInt<T, N>
-where T: Uint + Copy + Clone + Display + Debug + ToString
+where T: Uint + Clone + Display + Debug + ToString
         + Add<Output=T> + AddAssign + Sub<Output=T> + SubAssign
         + Mul<Output=T> + MulAssign + Div<Output=T> + DivAssign
         + Shl<Output=T> + ShlAssign + Shr<Output=T> + ShrAssign
@@ -1927,10 +1864,11 @@ where T: Uint + Copy + Clone + Display + Debug + ToString
     /// 
     /// # Examples
     /// ```
+    /// use std::str::FromStr;
     /// use Cryptocol::number::BigInteger;
     /// use Cryptocol::define_utypes_with;
     /// define_utypes_with!(u128);
-    /// let a = u256::from_string("1234567_1234567890_1234567890_1234567890_1234567890_1234567890_1234567890_1234567890").unwrap();
+    /// let a = u256::from_str("1234567_1234567890_1234567890_1234567890_1234567890_1234567890_1234567890_1234567890").unwrap();
     /// let b = a << 4;
     /// println!("b = {}\noverflow: {}", b, b.is_overflow());
     /// assert_eq!(b.is_overflow(), true);
@@ -1940,10 +1878,11 @@ where T: Uint + Copy + Clone + Display + Debug + ToString
     /// should import, you can just import everything (Cryptocol::number::*)
     /// as next example. It is not harmful.
     /// ```
+    /// use std::str::FromStr;
     /// use Cryptocol::number::*;
     /// use Cryptocol::define_utypes_with;
     /// define_utypes_with!(u128);
-    /// let a = u256::from_string("1234567_1234567890_1234567890_1234567890_1234567890_1234567890_1234567890_1234567890").unwrap();
+    /// let a = u256::from_str("1234567_1234567890_1234567890_1234567890_1234567890_1234567890_1234567890_1234567890").unwrap();
     /// let b = a << 1;
     /// println!("b = {}\noverflow: {}", b, b.is_overflow());
     /// assert_eq!(b.is_overflow(), false);
@@ -1957,7 +1896,7 @@ where T: Uint + Copy + Clone + Display + Debug + ToString
 }
 
 impl<T, const N: usize> ShlAssign<i32> for BigUInt<T, N>
-where T: Uint + Copy + Clone + Display + Debug + ToString
+where T: Uint + Clone + Display + Debug + ToString
         + Add<Output=T> + AddAssign + Sub<Output=T> + SubAssign
         + Mul<Output=T> + MulAssign + Div<Output=T> + DivAssign
         + Shl<Output=T> + ShlAssign + Shr<Output=T> + ShrAssign
@@ -1971,10 +1910,11 @@ where T: Uint + Copy + Clone + Display + Debug + ToString
     /// 
     /// # Examples
     /// ```
+    /// use std::str::FromStr;
     /// use Cryptocol::number::BigInteger;
     /// use Cryptocol::define_utypes_with;
     /// define_utypes_with!(u128);
-    /// let mut a = u256::from_string("1234567_1234567890_1234567890_1234567890_1234567890_1234567890_1234567890_1234567890").unwrap();
+    /// let mut a = u256::from_str("1234567_1234567890_1234567890_1234567890_1234567890_1234567890_1234567890_1234567890").unwrap();
     /// a <<= 4;
     /// println!("a = {}\noverflow: {}", a, a.is_overflow());
     /// assert_eq!(a.is_overflow(), true);
@@ -1984,10 +1924,11 @@ where T: Uint + Copy + Clone + Display + Debug + ToString
     /// should import, you can just import everything (Cryptocol::number::*)
     /// as next example. It is not harmful.
     /// ```
+    /// use std::str::FromStr;
     /// use Cryptocol::number::*;
     /// use Cryptocol::define_utypes_with;
     /// define_utypes_with!(u128);
-    /// let mut a = u256::from_string("1234567_1234567890_1234567890_1234567890_1234567890_1234567890_1234567890_1234567890").unwrap();
+    /// let mut a = u256::from_str("1234567_1234567890_1234567890_1234567890_1234567890_1234567890_1234567890_1234567890").unwrap();
     /// a <<= 1;
     /// println!("a = {}\noverflow: {}", a, a.is_overflow());
     /// assert_eq!(a.is_overflow(), false);
@@ -2045,7 +1986,7 @@ where T: Uint + Copy + Clone + Display + Debug + ToString
     /// # Examples
     /// ```
     /// use Cryptocol::number::{u256, BigInteger};
-    /// let mut a = u256::from_string("1234567_1234567890_1234567890_1234567890_1234567890_1234567890_1234567890_1234567890").unwrap();
+    /// let mut a = u256::from_str("1234567_1234567890_1234567890_1234567890_1234567890_1234567890_1234567890_1234567890").unwrap();
     /// a <<= 4;
     /// println!("a = {}\noverflow: {}", a, a.is_overflow());
     /// assert_eq!(a.is_overflow(), true);
@@ -2057,7 +1998,7 @@ where T: Uint + Copy + Clone + Display + Debug + ToString
     /// as next example. It is not harmful.
     /// ```
     /// use Cryptocol::number::*;
-    /// let mut a = u256::from_string("1234567_1234567890_1234567890_1234567890_1234567890_1234567890_1234567890_1234567890").unwrap();
+    /// let mut a = u256::from_str("1234567_1234567890_1234567890_1234567890_1234567890_1234567890_1234567890_1234567890").unwrap();
     /// a <<= 1;
     /// println!("a = {}\noverflow: {}", a, a.is_overflow());
     /// assert_eq!(a.is_overflow(), false);
@@ -2112,7 +2053,7 @@ where T: Uint + Copy + Clone + Display + Debug + ToString
 }
 
 impl<T, const N: usize> Shr<i32> for BigUInt<T, N>
-where T: Uint + Copy + Clone + Display + Debug + ToString
+where T: Uint + Clone + Display + Debug + ToString
         + Add<Output=T> + AddAssign + Sub<Output=T> + SubAssign
         + Mul<Output=T> + MulAssign + Div<Output=T> + DivAssign
         + Shl<Output=T> + ShlAssign + Shr<Output=T> + ShrAssign
@@ -2129,10 +2070,11 @@ where T: Uint + Copy + Clone + Display + Debug + ToString
     /// 
     /// # Examples
     /// ```
+    /// use std::str::FromStr;
     /// use Cryptocol::number::BigInteger;
     /// use Cryptocol::define_utypes_with;
     /// define_utypes_with!(u128);
-    /// let a = u256::from_string("1234567_1234567890_1234567890_1234567890_1234567890_1234567890_1234567890_1234567890").unwrap();
+    /// let a = u256::from_str("1234567_1234567890_1234567890_1234567890_1234567890_1234567890_1234567890_1234567890").unwrap();
     /// let b = a >> 2;
     /// println!("b = {}\nunderflow: {}", b, b.is_underflow());
     /// assert_eq!(b.is_underflow(), true);
@@ -2142,10 +2084,11 @@ where T: Uint + Copy + Clone + Display + Debug + ToString
     /// should import, you can just import everything (Cryptocol::number::*)
     /// as next example. It is not harmful.
     /// ```
+    /// use std::str::FromStr;
     /// use Cryptocol::number::*;
     /// use Cryptocol::define_utypes_with;
     /// define_utypes_with!(u128);
-    /// let a = u256::from_string("1234567_1234567890_1234567890_1234567890_1234567890_1234567890_1234567890_1234567890").unwrap();
+    /// let a = u256::from_str("1234567_1234567890_1234567890_1234567890_1234567890_1234567890_1234567890_1234567890").unwrap();
     /// let b = a >> 1;
     /// println!("b = {}\nunderflow: {}", b, b.is_underflow());
     /// assert_eq!(b.is_underflow(), false);
@@ -2159,7 +2102,7 @@ where T: Uint + Copy + Clone + Display + Debug + ToString
 }
 
 impl<T, const N: usize> ShrAssign<i32> for BigUInt<T, N>
-where T: Uint + Copy + Clone + Display + Debug + ToString
+where T: Uint + Clone + Display + Debug + ToString
         + Add<Output=T> + AddAssign + Sub<Output=T> + SubAssign
         + Mul<Output=T> + MulAssign + Div<Output=T> + DivAssign
         + Shl<Output=T> + ShlAssign + Shr<Output=T> + ShrAssign
@@ -2174,10 +2117,11 @@ where T: Uint + Copy + Clone + Display + Debug + ToString
     /// 
     /// # Examples
     /// ```
+    /// use std::str::FromStr;
     /// use Cryptocol::number::BigInteger;
     /// use Cryptocol::define_utypes_with;
     /// define_utypes_with!(u128);
-    /// let mut a = u256::from_string("1234567_1234567890_1234567890_1234567890_1234567890_1234567890_1234567890_1234567890").unwrap();
+    /// let mut a = u256::from_str("1234567_1234567890_1234567890_1234567890_1234567890_1234567890_1234567890_1234567890").unwrap();
     /// a >>= 2;
     /// println!("a = {}\nunderflow: {}", a, a.is_underflow());
     /// assert_eq!(a.is_underflow(), true);
@@ -2187,10 +2131,11 @@ where T: Uint + Copy + Clone + Display + Debug + ToString
     /// should import, you can just import everything (Cryptocol::number::*)
     /// as next example. It is not harmful.
     /// ```
+    /// use std::str::FromStr;
     /// use Cryptocol::number::*;
     /// use Cryptocol::define_utypes_with;
     /// define_utypes_with!(u128);
-    /// let mut a = u256::from_string("1234567_1234567890_1234567890_1234567890_1234567890_1234567890_1234567890_1234567890").unwrap();
+    /// let mut a = u256::from_str("1234567_1234567890_1234567890_1234567890_1234567890_1234567890_1234567890_1234567890").unwrap();
     /// a >>= 1;
     /// println!("a = {}\nunderflow: {}", a, a.is_underflow());
     /// assert_eq!(a.is_underflow(), false);
@@ -2255,7 +2200,7 @@ where T: Uint + Copy + Clone + Display + Debug + ToString
     /// use Cryptocol::number::BigInteger;
     /// use Cryptocol::define_utypes_with;
     /// define_utypes_with!(u128);
-    /// let mut a = u256::from_string("1234567_1234567890_1234567890_1234567890_1234567890_1234567890_1234567890_1234567890").unwrap();
+    /// let mut a = u256::from_str("1234567_1234567890_1234567890_1234567890_1234567890_1234567890_1234567890_1234567890").unwrap();
     /// a >>= 2;
     /// println!("a = {}\nunderflow: {}", a, a.is_underflow());
     /// assert_eq!(a.is_underflow(), true);
@@ -2268,7 +2213,7 @@ where T: Uint + Copy + Clone + Display + Debug + ToString
     /// use Cryptocol::number::*;
     /// use Cryptocol::define_utypes_with;
     /// define_utypes_with!(u128);
-    /// let mut a = u256::from_string("1234567_1234567890_1234567890_1234567890_1234567890_1234567890_1234567890_1234567890").unwrap();
+    /// let mut a = u256::from_str("1234567_1234567890_1234567890_1234567890_1234567890_1234567890_1234567890_1234567890").unwrap();
     /// a >>= 1;
     /// println!("a = {}\nunderflow: {}", a, a.is_underflow());
     /// assert_eq!(a.is_underflow(), false);
@@ -2322,7 +2267,7 @@ where T: Uint + Copy + Clone + Display + Debug + ToString
 }
 
 impl<T, const N: usize> BitAnd for BigUInt<T, N>
-where T: Uint + Copy + Clone + Display + Debug + ToString
+where T: Uint + Clone + Display + Debug + ToString
         + Add<Output=T> + AddAssign + Sub<Output=T> + SubAssign
         + Mul<Output=T> + MulAssign + Div<Output=T> + DivAssign
         + Shl<Output=T> + ShlAssign + Shr<Output=T> + ShrAssign
@@ -2340,8 +2285,8 @@ where T: Uint + Copy + Clone + Display + Debug + ToString
     /// use Cryptocol::number::HugeInteger;
     /// use Cryptocol::define_utypes_with;
     /// define_utypes_with!(u128);
-    /// let a = u256::from_string_with_radix("11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101", 2).unwrap();
-    /// let b = u256::from_string_with_radix("11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000", 2).unwrap();
+    /// let a = u256::from_str_radix("11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101", 2).unwrap();
+    /// let b = u256::from_str_radix("11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000", 2).unwrap();
     /// let c = a & b;
     /// println!("a = {}", a.to_string_with_radix(2));
     /// println!("b = {}", b.to_string_with_radix(2));
@@ -2356,7 +2301,7 @@ where T: Uint + Copy + Clone + Display + Debug + ToString
     /// use Cryptocol::number::*;
     /// use Cryptocol::define_utypes_with;
     /// define_utypes_with!(u128);
-    /// let a = u256::from_string_with_radix("11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101", 2).unwrap();
+    /// let a = u256::from_str_radix("11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101", 2).unwrap();
     /// let b = u256::zero();
     /// let c = a & b;
     /// println!("a = {}", a.to_string_with_radix(2));
@@ -2373,7 +2318,7 @@ where T: Uint + Copy + Clone + Display + Debug + ToString
 }
 
 impl<T, const N: usize> BitAndAssign for BigUInt<T, N>
-where T: Uint + Copy + Clone + Display + Debug + ToString
+where T: Uint + Clone + Display + Debug + ToString
         + Add<Output=T> + AddAssign + Sub<Output=T> + SubAssign
         + Mul<Output=T> + MulAssign + Div<Output=T> + DivAssign
         + Shl<Output=T> + ShlAssign + Shr<Output=T> + ShrAssign
@@ -2389,11 +2334,11 @@ where T: Uint + Copy + Clone + Display + Debug + ToString
     /// use Cryptocol::number::*;
     /// use Cryptocol::define_utypes_with;
     /// define_utypes_with!(u128);
-    /// let mut a = u256::from_string_with_radix("11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101", 2).unwrap();
-    /// let b = u256::from_string_with_radix("11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000", 2).unwrap();
+    /// let mut a = u256::from_str_radix("11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101", 2).unwrap();
+    /// let b = u256::from_str_radix("11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000", 2).unwrap();
     /// a &= b;
     /// println!("a = {}", a.to_string_with_radix(2));
-    /// assert_eq!(a, u256::from_string_with_radix("1111000000000000110000000000001110001000000100011010101000000000111100000000000011000000000000111000100000010001101010100000000011110000000000001100000000000011100010000001000110101010000000001111000000000000110000000000001110001000000100011010101000000000", 2).unwrap());
+    /// assert_eq!(a, u256::from_str_radix("1111000000000000110000000000001110001000000100011010101000000000111100000000000011000000000000111000100000010001101010100000000011110000000000001100000000000011100010000001000110101010000000001111000000000000110000000000001110001000000100011010101000000000", 2).unwrap());
     /// ```
     /// You have to import (use) Cryptocol::number::* and then import
     /// Cryptocol::define_utypes_with in order to use the macro define_utypes_with
@@ -2404,7 +2349,7 @@ where T: Uint + Copy + Clone + Display + Debug + ToString
     /// use Cryptocol::number::*;
     /// use Cryptocol::define_utypes_with;
     /// define_utypes_with!(u128);
-    /// let mut a = u256::from_string_with_radix("11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101", 2).unwrap();
+    /// let mut a = u256::from_str_radix("11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101", 2).unwrap();
     /// let b = u256::zero();
     /// a &= b;
     /// println!("a = {}", a.to_string_with_radix(2));
@@ -2418,7 +2363,7 @@ where T: Uint + Copy + Clone + Display + Debug + ToString
 }
 
 impl<T, const N: usize> BitOr for BigUInt<T, N>
-where T: Uint + Copy + Clone + Display + Debug + ToString
+where T: Uint + Clone + Display + Debug + ToString
         + Add<Output=T> + AddAssign + Sub<Output=T> + SubAssign
         + Mul<Output=T> + MulAssign + Div<Output=T> + DivAssign
         + Shl<Output=T> + ShlAssign + Shr<Output=T> + ShrAssign
@@ -2436,8 +2381,8 @@ where T: Uint + Copy + Clone + Display + Debug + ToString
     /// use Cryptocol::number::HugeInteger;
     /// use Cryptocol::define_utypes_with;
     /// define_utypes_with!(u128);
-    /// let a = u256::from_string_with_radix("11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101", 2).unwrap();
-    /// let b = u256::from_string_with_radix("11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000", 2).unwrap();
+    /// let a = u256::from_str_radix("11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101", 2).unwrap();
+    /// let b = u256::from_str_radix("11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000", 2).unwrap();
     /// let c = a | b;
     /// println!("a = {}", a.to_string_with_radix(2));
     /// println!("b = {}", b.to_string_with_radix(2));
@@ -2452,7 +2397,7 @@ where T: Uint + Copy + Clone + Display + Debug + ToString
     /// use Cryptocol::number::*;
     /// use Cryptocol::define_utypes_with;
     /// define_utypes_with!(u128);
-    /// let a = u256::from_string_with_radix("11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101", 2).unwrap();
+    /// let a = u256::from_str_radix("11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101", 2).unwrap();
     /// let b = u256::max();
     /// let c = a | b;
     /// println!("a = {}", a.to_string_with_radix(2));
@@ -2469,7 +2414,7 @@ where T: Uint + Copy + Clone + Display + Debug + ToString
 }
 
 impl<T, const N: usize> BitOrAssign for BigUInt<T, N>
-where T: Uint + Copy + Clone + Display + Debug + ToString
+where T: Uint + Clone + Display + Debug + ToString
         + Add<Output=T> + AddAssign + Sub<Output=T> + SubAssign
         + Mul<Output=T> + MulAssign + Div<Output=T> + DivAssign
         + Shl<Output=T> + ShlAssign + Shr<Output=T> + ShrAssign
@@ -2485,11 +2430,11 @@ where T: Uint + Copy + Clone + Display + Debug + ToString
     /// use Cryptocol::number::HugeInteger;
     /// use Cryptocol::define_utypes_with;
     /// define_utypes_with!(u128);
-    /// let mut a = u256::from_string_with_radix("11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101", 2).unwrap();
-    /// let b = u256::from_string_with_radix("11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000", 2).unwrap();
+    /// let mut a = u256::from_str_radix("11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101", 2).unwrap();
+    /// let b = u256::from_str_radix("11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000", 2).unwrap();
     /// a |= b;
     /// println!("a = {}", a.to_string_with_radix(2));
-    /// assert_eq!(a, u256::from_string_with_radix("1111111100001111111111000011111111101110011101111111111101010101111111110000111111111100001111111110111001110111111111110101010111111111000011111111110000111111111011100111011111111111010101011111111100001111111111000011111111101110011101111111111101010101", 2).unwrap());
+    /// assert_eq!(a, u256::from_str_radix("1111111100001111111111000011111111101110011101111111111101010101111111110000111111111100001111111110111001110111111111110101010111111111000011111111110000111111111011100111011111111111010101011111111100001111111111000011111111101110011101111111111101010101", 2).unwrap());
     /// ```
     /// You have to import (use) Cryptocol::number::HugeInteger in order to use
     /// its method to_string_with_radix(). If you find headaching to remember
@@ -2499,7 +2444,7 @@ where T: Uint + Copy + Clone + Display + Debug + ToString
     /// use Cryptocol::number::*;
     /// use Cryptocol::define_utypes_with;
     /// define_utypes_with!(u128);
-    /// let mut a = u256::from_string_with_radix("11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101", 2).unwrap();
+    /// let mut a = u256::from_str_radix("11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101", 2).unwrap();
     /// let b = u256::max();
     /// a |= b;
     /// println!("a = {}", a.to_string_with_radix(2));
@@ -2513,7 +2458,7 @@ where T: Uint + Copy + Clone + Display + Debug + ToString
 }
 
 impl<T, const N: usize> BitXor for BigUInt<T, N>
-where T: Uint + Copy + Clone + Display + Debug + ToString
+where T: Uint + Clone + Display + Debug + ToString
         + Add<Output=T> + AddAssign + Sub<Output=T> + SubAssign
         + Mul<Output=T> + MulAssign + Div<Output=T> + DivAssign
         + Shl<Output=T> + ShlAssign + Shr<Output=T> + ShrAssign
@@ -2531,8 +2476,8 @@ where T: Uint + Copy + Clone + Display + Debug + ToString
     /// use Cryptocol::number::HugeInteger;
     /// use Cryptocol::define_utypes_with;
     /// define_utypes_with!(u128);
-    /// let a = u256::from_string_with_radix("11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101", 2).unwrap();
-    /// let b = u256::from_string_with_radix("11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000", 2).unwrap();
+    /// let a = u256::from_str_radix("11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101", 2).unwrap();
+    /// let b = u256::from_str_radix("11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000", 2).unwrap();
     /// let c = a ^ b;
     /// println!("a = {}", a.to_string_with_radix(2));
     /// println!("b = {}", b.to_string_with_radix(2));
@@ -2548,7 +2493,7 @@ where T: Uint + Copy + Clone + Display + Debug + ToString
     /// use Cryptocol::number::HugeInteger;
     /// use Cryptocol::define_utypes_with;
     /// define_utypes_with!(u128);
-    /// let a = u256::from_string_with_radix("11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101", 2).unwrap();
+    /// let a = u256::from_str_radix("11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101", 2).unwrap();
     /// let b = u256::max();
     /// let c = a ^ b;
     /// println!("a = {}", a.to_string_with_radix(2));
@@ -2565,7 +2510,7 @@ where T: Uint + Copy + Clone + Display + Debug + ToString
 }
 
 impl<T, const N: usize> BitXorAssign for BigUInt<T, N>
-where T: Uint + Copy + Clone + Display + Debug + ToString
+where T: Uint + Clone + Display + Debug + ToString
         + Add<Output=T> + AddAssign + Sub<Output=T> + SubAssign
         + Mul<Output=T> + MulAssign + Div<Output=T> + DivAssign
         + Shl<Output=T> + ShlAssign + Shr<Output=T> + ShrAssign
@@ -2581,11 +2526,11 @@ where T: Uint + Copy + Clone + Display + Debug + ToString
     /// use Cryptocol::number::HugeInteger;
     /// use Cryptocol::define_utypes_with;
     /// define_utypes_with!(u128);
-    /// let mut a = u256::from_string_with_radix("11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101", 2).unwrap();
-    /// let b = u256::from_string_with_radix("11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000", 2).unwrap();
+    /// let mut a = u256::from_str_radix("11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101", 2).unwrap();
+    /// let b = u256::from_str_radix("11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000", 2).unwrap();
     /// a ^= b;
     /// println!("a = {}", a.to_string_with_radix(2));
-    /// assert_eq!(a, u256::from_string_with_radix("111100001111001111000011110001100110011001100101010101010101000011110000111100111100001111000110011001100110010101010101010100001111000011110011110000111100011001100110011001010101010101010000111100001111001111000011110001100110011001100101010101010101", 2).unwrap());
+    /// assert_eq!(a, u256::from_str_radix("111100001111001111000011110001100110011001100101010101010101000011110000111100111100001111000110011001100110010101010101010100001111000011110011110000111100011001100110011001010101010101010000111100001111001111000011110001100110011001100101010101010101", 2).unwrap());
     /// ```
     /// You have to import (use) Cryptocol::number::HugeInteger in order to use
     /// its method to_string_with_radix(). If you find headaching to remember
@@ -2595,11 +2540,11 @@ where T: Uint + Copy + Clone + Display + Debug + ToString
     /// use Cryptocol::number::*;
     /// use Cryptocol::define_utypes_with;
     /// define_utypes_with!(u128);
-    /// let mut a = u256::from_string_with_radix("11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101", 2).unwrap();
+    /// let mut a = u256::from_str_radix("11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101", 2).unwrap();
     /// let b = u256::max();
     /// a ^= b;
     /// println!("a = {}", a.to_string_with_radix(2));
-    /// assert_eq!(a, u256::from_string_with_radix("11111111000011111111000000110011110011000101010110101010000000001111111100001111111100000011001111001100010101011010101000000000111111110000111111110000001100111100110001010101101010100000000011111111000011111111000000110011110011000101010110101010", 2).unwrap());
+    /// assert_eq!(a, u256::from_str_radix("11111111000011111111000000110011110011000101010110101010000000001111111100001111111100000011001111001100010101011010101000000000111111110000111111110000001100111100110001010101101010100000000011111111000011111111000000110011110011000101010110101010", 2).unwrap());
     /// ```
     fn bitxor_assign(&mut self, rhs: Self)
     {
@@ -2609,7 +2554,7 @@ where T: Uint + Copy + Clone + Display + Debug + ToString
 }
 
 impl<T, const N: usize> Not for BigUInt<T, N>
-where T: Uint + Copy + Clone + Display + Debug + ToString
+where T: Uint + Clone + Display + Debug + ToString
         + Add<Output=T> + AddAssign + Sub<Output=T> + SubAssign
         + Mul<Output=T> + MulAssign + Div<Output=T> + DivAssign
         + Shl<Output=T> + ShlAssign + Shr<Output=T> + ShrAssign
@@ -2627,7 +2572,7 @@ where T: Uint + Copy + Clone + Display + Debug + ToString
     /// use Cryptocol::number::HugeInteger;
     /// use Cryptocol::define_utypes_with;
     /// define_utypes_with!(u128);
-    /// let a = u256::from_string_with_radix("11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101", 2).unwrap();
+    /// let a = u256::from_str_radix("11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101", 2).unwrap();
     /// let c = !a;
     /// println!("c = {}", c.to_string_with_radix(2));
     /// assert_eq!(!c, a);
@@ -2640,7 +2585,7 @@ where T: Uint + Copy + Clone + Display + Debug + ToString
     /// use Cryptocol::number::*;
     /// use Cryptocol::define_utypes_with;
     /// define_utypes_with!(u128);
-    /// let a = u256::from_string_with_radix("11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101", 2).unwrap();
+    /// let a = u256::from_str_radix("11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101", 2).unwrap();
     /// let c = !a | a;
     /// println!("c = {}", c.to_string_with_radix(2));
     /// assert_eq!(c, u256::max());
@@ -2655,7 +2600,7 @@ where T: Uint + Copy + Clone + Display + Debug + ToString
 }
 
 impl<T, const N: usize> PartialEq for BigUInt<T, N>
-where T: Uint + Copy + Clone + Display + Debug + ToString
+where T: Uint + Clone + Display + Debug + ToString
         + Add<Output=T> + AddAssign + Sub<Output=T> + SubAssign
         + Mul<Output=T> + MulAssign + Div<Output=T> + DivAssign
         + Shl<Output=T> + ShlAssign + Shr<Output=T> + ShrAssign
@@ -2675,7 +2620,7 @@ where T: Uint + Copy + Clone + Display + Debug + ToString
 }
 
 impl<T, const N: usize> PartialOrd for BigUInt<T, N>
-where T: Uint + Copy + Clone + Display + Debug + ToString
+where T: Uint + Clone + Display + Debug + ToString
         + Add<Output=T> + AddAssign + Sub<Output=T> + SubAssign
         + Mul<Output=T> + MulAssign + Div<Output=T> + DivAssign
         + Shl<Output=T> + ShlAssign + Shr<Output=T> + ShrAssign
@@ -2715,7 +2660,7 @@ where T: Uint + Copy + Clone + Display + Debug + ToString
 }
 
 impl<T, const N: usize> Display for BigUInt<T, N>
-where T: Uint + Copy + Clone + Display + Debug + ToString
+where T: Uint + Clone + Display + Debug + ToString
         + Add<Output=T> + AddAssign + Sub<Output=T> + SubAssign
         + Mul<Output=T> + MulAssign + Div<Output=T> + DivAssign
         + Shl<Output=T> + ShlAssign + Shr<Output=T> + ShrAssign
@@ -2724,16 +2669,17 @@ where T: Uint + Copy + Clone + Display + Debug + ToString
         + PartialEq + PartialOrd
 {
     /// Formats the value using the given formatter.
-    /// Automatically the function `to_string()` will be implemented. So, you
+    /// Automagically the function `to_string()` will be implemented. So, you
     /// can use the function `to_string()` and the macro `println!()`.
     /// `f` is a buffer, this method must write the formatted string into it.
     /// [Read more](https://doc.rust-lang.org/core/fmt/trait.Display.html#tymethod.fmt)
     /// 
     /// # Example
     /// ```
+    /// use std::str::FromStr;
     /// use Cryptocol::define_utypes_with;
     /// define_utypes_with!(u128);
-    /// let a = u256::from_string("1234567_1234567890_1234567890_1234567890_1234567890_1234567890_1234567890_1234567890").unwrap();
+    /// let a = u256::from_str("1234567_1234567890_1234567890_1234567890_1234567890_1234567890_1234567890_1234567890").unwrap();
     /// println!("{}", a);
     /// ```
     fn fmt(&self, f: &mut Formatter) -> fmt::Result
@@ -2741,5 +2687,172 @@ where T: Uint + Copy + Clone + Display + Debug + ToString
         // `write!` is like `format!`, but it will write the formatted string
         // into a buffer (the first argument)
         write!(f, "{}", self.to_string_with_radix(10))
+    }
+}
+
+impl<T, const N: usize, S> From<S> for BigUInt<T, N>
+where T: Uint + Clone + Display + Debug + ToString
+        + Add<Output=T> + AddAssign + Sub<Output=T> + SubAssign
+        + Mul<Output=T> + MulAssign + Div<Output=T> + DivAssign
+        + Shl<Output=T> + ShlAssign + Shr<Output=T> + ShrAssign
+        + BitAnd<Output=T> + BitAndAssign + BitOr<Output=T> + BitOrAssign
+        + BitXor<Output=T> + BitXorAssign + Not<Output=T>
+        + PartialEq + PartialOrd,
+    S: Uint + Clone + Display + Debug + ToString
+        + Add<Output=S> + AddAssign + Sub<Output=S> + SubAssign
+        + Mul<Output=S> + MulAssign + Div<Output=S> + DivAssign
+        + Shl<Output=S> + ShlAssign + Shr<Output=S> + ShrAssign
+        + BitAnd<Output=S> + BitAndAssign + BitOr<Output=S> + BitOrAssign
+        + BitXor<Output=S> + BitXorAssign + Not<Output=S>
+        + PartialEq + PartialOrd
+{
+    /// Constructs a new `BigUInt<T, N>` from an unsigned integer
+    /// such as `u8`, `u16`, `u32`, `u64`, `u128` and `usize`.
+    /// 
+    /// # Examples
+    /// 
+    /// ```
+    /// use Cryptocol::number::BigUInt;
+    /// let cc = BigUInt::<u16,32>::from(1004_u32);
+    /// println!("cc = {}", cc);
+    /// assert_eq!(cc.into_u32(), 1004);
+    /// ```
+    /// 
+    #[cfg(target_endian = "little")]
+    fn from(val: S) -> Self
+    {
+        let TSIZE = size_of::<T>();
+        let SSIZE = size_of::<S>();
+        let mut me = Self::new();
+        let mut share = Share::<T, S>::from_src(val);
+        
+        if TSIZE >= SSIZE
+        {
+            unsafe { me.set_num(0, share.des); }
+        }
+        else
+        {
+            let TSIZE_BIT = TSIZE * 8;
+            for i in 0..SSIZE/TSIZE
+            {
+                unsafe { me.set_num(i, share.des); }
+                unsafe { share.src >>= S::num(TSIZE_BIT as u128); }
+            }
+        }
+        return me;
+    }
+
+    /// Constructs a new BigUInt<T, N> from an unsigned integer such as u8,
+    /// u16, u32, u64, u128 and usize. This crate is so experimental for
+    /// Big-endian CPUs that you are highy discouraged to use this crate
+    /// for Big-endian CPUs for serious purpose. So, use this crate for
+    /// Big-endian CPUs with your own full responsibility.
+    /// 
+    /// # Examples
+    /// 
+    /// ```
+    /// use Cryptocol::number::BigUInt;
+    /// let cc = BigUInt::<u16,32>::from(1004_u16);
+    /// println!("cc = {}", cc);
+    /// assert_eq!(cc.into_u32(), 1004);
+    /// ```
+    /// 
+    #[cfg(target_endian = "big")]
+    fn from(val: S) -> Self
+    {
+        let TSIZE = size_of::<T>();
+        let SSIZE = size_of::<S>();
+        let mut me = Self::new();
+        let mut share = Share::<T, S>::from_src(val);
+        
+        if TSIZE >= SSIZE
+        {
+            unsafe { me.set_num(N-1, share.des); }
+        }
+        else    // if TSIZE < SSIZE
+        {
+            let TSIZE_BIT = TSIZE * 8;
+            let LEN = SSIZE/TSIZE;
+            if LEN <= N
+            {
+                for i in 0..LEN
+                {
+                    unsafe { me.set_num(N - LEN + i, share.des); }
+                    unsafe { share.src <<= S::num(TSIZE_BIT as u128); }
+                }    
+            }
+            else    // if LEN > N
+            {
+                unsafe { share.src <<= S::num(((LEN - N) * TSIZE_BIT) as u128); }
+                for i in 0..N
+                {
+                    unsafe { me.set_num(i, share.des); }
+                    unsafe { share.src <<= S::num(TSIZE_BIT as u128); }
+                } 
+            }
+        }
+        return me;
+    }
+}
+/*
+impl<T, const N: usize> From<&'a [T; N]> for BigUInt<T, N>
+where T: Uint + Clone + Display + Debug + ToString
+        + Add<Output=T> + AddAssign + Sub<Output=T> + SubAssign
+        + Mul<Output=T> + MulAssign + Div<Output=T> + DivAssign
+        + Shl<Output=T> + ShlAssign + Shr<Output=T> + ShrAssign
+        + BitAnd<Output=T> + BitAndAssign + BitOr<Output=T> + BitOrAssign
+        + BitXor<Output=T> + BitXorAssign + Not<Output=T>
+        + PartialEq + PartialOrd
+{
+    /// Constructs a new `BigUInt<T, N>` from an array of type `T`
+    /// with `N` elements.
+    /// 
+    /// # Examples
+    /// 
+    /// ```
+    /// use Cryptocol::number::*;
+    /// let big_num = BigUInt::<u8,32>::from(&[1_u8;32]);
+    /// println!("big_num = {}", big_num.to_string_with_radix(2));
+    /// assert_eq!(big_num, BigUInt::<u8,32>::from_str_radix("00000001_00000001_00000001_00000001_00000001_00000001_00000001_00000001_00000001_00000001_00000001_00000001_00000001_00000001_00000001_00000001_00000001_00000001_00000001_00000001_00000001_00000001_00000001_00000001_00000001_00000001_00000001_00000001_00000001_00000001_00000001_00000001", 2).unwrap());
+    /// ```
+    fn from(val: &[T; N]) -> Self
+    {
+        let mut s = Self::new();
+        s.set_number(val);
+        s
+    }
+}
+*/
+impl<T, const N: usize> FromStr for BigUInt<T, N>
+where T: Uint + Clone + Display + Debug + ToString
+        + Add<Output=T> + AddAssign + Sub<Output=T> + SubAssign
+        + Mul<Output=T> + MulAssign + Div<Output=T> + DivAssign
+        + Shl<Output=T> + ShlAssign + Shr<Output=T> + ShrAssign
+        + BitAnd<Output=T> + BitAndAssign + BitOr<Output=T> + BitOrAssign
+        + BitXor<Output=T> + BitXorAssign + Not<Output=T>
+        + PartialEq + PartialOrd
+{
+    type Err = NumberErr;
+
+    /// Constructs a new `BigUInt<T, N>` from a string with radix 10.
+    /// The constructed object will be wrapped in `Ok(BigUInt<T, N>)` if it is
+    /// successfully created. Otherwise, this method returns
+    /// `Err(NumberErr::ParsingError)`. And, if you import (use)
+    /// std::str::FromStr, you can automagically use str::parse::<BigUInt>() too.
+    /// 
+    /// # Examples
+    /// ```
+    /// use std::str::FromStr;
+    /// use Cryptocol::number::BigUInt;
+    /// use Cryptocol::define_utypes_with_u128;
+    /// define_utypes_with_u128!();
+    /// let a = u256::from_str("1234").unwrap();
+    /// let b = "123_4566".parse::<u256>().unwrap();
+    /// println!("a = {}, b = {}", a, b);
+    /// ```
+    #[inline]
+    fn from_str(s: &str) -> Result<Self, Self::Err>
+    {
+        Self::from_str_radix(s, 10)
     }
 }

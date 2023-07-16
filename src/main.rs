@@ -1,6 +1,7 @@
 use std::time::SystemTime;
 use std::fmt::{ Display, Debug };
 use std::ops::*;
+use std::convert::*;
 //use std::mem::size_of;
 
 mod number;
@@ -8,23 +9,83 @@ mod number;
 //#[macro_export]
 
 //use number::*;
-//use Cryptocol::number::*; //{u256, BigInteger, HugeInteger};
+use Cryptocol::number::{Uint, UShort, BigUInt}; //{u256, BigInteger, HugeInteger};
 
 //use Cryptocol::number::BigUInt;
 
 
-// fn func<T: Uint>(lhs: T, rhs: T) -> T
-// {
-//     lhs.wrapping_add(rhs)
-// }
+fn func<T: Uint + Add<Output = T>>(lhs: T, rhs: T) -> T
+{
+    lhs + rhs
+}
+fn func2<T: Uint>(lhs: T, rhs: T) -> T
+{
+    lhs.wrapping_add(rhs)
+}
 
 fn main()
 {
-    use Cryptocol::number::{ HugeInteger, BigUInt};
-    let a = BigUInt::<u8,32>::from_string_with_radix("1234_5678_9ABC_DEF0_1234_5678_9ABC_DEF0_1234_5678_9ABC_DEF0_1234_5678_9ABC_DEF0_1234_5678_9ABC_DEF0_1234_5678_9ABC_DEF0_1234_5678_9ABC_DEF0_1234_5678_9ABC_DEF0", 16).unwrap();
+    define_utypes_with_u128!();
+    let a = 100;
+    let b = a % -3;
+    let c = "1234567890".parse::<u256>().unwrap();
+    let e = u256::from(123456789u128);
+    let d: u128 = c.into::<u128>();
+    println!("a = {}, b = {}, c = {}", a, b, c);
+    let a = "123_4566".parse::<u256>().unwrap();
     println!("a = {}", a);
-    assert_eq!(a.to_string(), "8234104123542484900769178205574010627627573691361805720124810878238590820080");
-    define_utypes_with!(u128);
+    let ss = UShort { byte: [101, 100] };
+    unsafe { println!("ss.short = {}", ss.ushort ); }
+    println!("{}", (25700_u16 + 25800_u16));
+
+    // a: u16 === (a_high, a_low) == (100_u8, 101u8) == 25701_u16
+    let a_high = 100_u8;
+    let a_low = 101_u8;
+    // b: u16 === (b_high, b_low) == (100_u8, 200u8) == 51300_u16
+    let b_high = 100_u8;
+    let b_low = 200_u8;
+    // c: u16 === (c_high, c_low)
+    let c_high: u8;
+    let c_low: u8;
+    let mut carry: bool;
+    // (100_u8, 101_u8) + (100_u8, 200_u8) == 25701_u16 + 25800_u16 == 51501_u16
+    (c_high, c_low, carry) = add_long(a_high, a_low, b_high, b_low);
+    println!("{}-{}, {}", c_high, c_low, carry);
+    assert_eq!(c_high, 201);
+    assert_eq!(c_low, 45);
+    assert_eq!(carry, false);
+
+    let d_high: u128;
+    let d_low: u128;
+    let e = BigUInt::<u128, 2>::from_array(&[6789012345678919134, 12345678901234569124]);
+    println!("big = {}", e);
+    (d_high, d_low, carry) = add_long(12345678901234567890_u128, 6789012345678912345_u128, 1234_u128, 6789_u128);
+    println!("{}-{}, {}", d_high, d_low, carry);
+    assert_eq!(d_high, 12345678901234569124);
+    assert_eq!(d_low, 6789012345678919134);
+    assert_eq!(carry, false);
+}
+
+fn add_long<T: Uint>(lhs_high: T, lhs_low: T, rhs_high: T, rhs_low: T) -> (T, T, bool)
+{
+    let mut carry = false;
+    let mut sum_high: T;
+    let mut sum_low: T;
+    (sum_low, carry) = lhs_low.carrying_add(rhs_low, carry);
+    (sum_high, carry) = lhs_high.carrying_add(rhs_high, carry);
+    (sum_high, sum_low, carry)
+}
+/*
+fn main()
+{
+    let a = func(50_u128, 4_u128);
+    println!("50 + 4 = {}", a);
+    assert_eq!(a, 54_u128);
+
+    let b = func2(u8::MAX, u8::MAX);
+    println!("{} * 15_u64 = {}", u128::MAX, b);
+    assert_eq!(b, 254_u8);
+    
     // u256::new();
     // let a = 100_u8;
     // let b = 100_u8;
@@ -35,7 +96,6 @@ fn main()
     // assert_eq!(c, 200_u8);
     // assert_eq!(d, 1_u8);
     
-    /*
     let mut a = u256::from_string_with_radix("11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101", 2).unwrap();
     let b = u256::from_string_with_radix("11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000", 2).unwrap();
     let d = u256::max();
@@ -51,5 +111,6 @@ fn main()
     // println!("{}", a);
     // a >>= 2;
     // println!("a = {}\n{}", a, a.is_underflow());
-    // assert_eq!(a.is_underflow(), true);*/
+    // assert_eq!(a.is_underflow(), true);
 }
+*/

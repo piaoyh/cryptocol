@@ -52,6 +52,7 @@ pub mod numeric;
 pub mod float;
 pub mod real;
 pub mod big_uint;
+pub mod number_errors;
 mod macros_number;
 
 pub use huge_number::*;
@@ -62,3 +63,4 @@ pub use numeric::*;
 pub use float::*;
 pub use real::*;
 pub use big_uint::*;
+pub use number_errors::*;
