@@ -1084,6 +1084,49 @@ where T: Uint + Clone + Display + Debug + ToString
         }
     }
 
+    fn to_string_with_radix_and_delimiter(&self, radix: usize, stride: usize, delimiter: &str) -> String
+    {
+        self.to_string_with_radix_and_stride(radix, stride).replace("_", delimiter)
+    }
+
+    fn to_string_with_radix_and_stride(&self, radix: usize, stride: usize) -> String
+    {
+        if stride == 0 
+        {
+            self.to_string_with_radix(radix)
+        }
+        else
+        {
+            let mut stride_num = stride;
+            let mut txt = String::new();
+            let zero = Self::zero();
+            let mut dividend = self.clone();
+            let mut remainder;
+            loop
+            {
+                (dividend, remainder) = dividend.divide_by_uint_fully(T::num(radix as u128));
+                let r = remainder.into_u32();
+                let c = if r < 10     { ('0' as u32 + r) as u8 as char }
+                        else if r < 10 + 26 { ('A' as u32 - 10 + r) as u8 as char }
+                        else                { ('a' as u32 - 10 - 26 + r) as u8 as char };  // if r < 10 + 26 + 26
+                txt.push(c);
+                stride_num -= 1;
+                if dividend == zero
+                    { break; }
+                if stride_num == 0
+                {
+                    txt.push('_');
+                    stride_num = stride;
+                }
+            }
+            if txt.len() == 0
+                { txt.push('0'); }
+            let mut num_str = String::new();
+            while let Some(ch) = txt.pop()
+                { num_str.push(ch); }
+            num_str
+        }
+    }
     /// Reads the value of BigUInt<T, N> and write it into String
     /// with a certain radix.
     fn to_string_with_radix(&self, radix: usize) -> String

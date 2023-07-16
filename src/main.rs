@@ -9,7 +9,7 @@ mod number;
 //#[macro_export]
 
 //use number::*;
-use Cryptocol::number::{Uint, UShort, BigUInt}; //{u256, BigInteger, HugeInteger};
+use Cryptocol::number::{Uint, UShort, BigUInt, HugeInteger}; //{u256, BigInteger, HugeInteger};
 
 //use Cryptocol::number::BigUInt;
 
@@ -29,9 +29,9 @@ fn main()
     let a = 100;
     let b = a % -3;
     let c = "1234567890".parse::<u256>().unwrap();
-    let e = u256::from(123456789u128);
-    let d: u128 = c.into::<u128>();
-    println!("a = {}, b = {}, c = {}", a, b, c);
+    let e = c.to_string_with_radix_and_delimiter(10, 2, "*");
+    let d: u128 = c.into_u128();
+    println!("a = {}, b = {}, c = {}, e = {}", a, b, c, e);
     let a = "123_4566".parse::<u256>().unwrap();
     println!("a = {}", a);
     let ss = UShort { byte: [101, 100] };

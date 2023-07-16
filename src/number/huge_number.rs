@@ -61,6 +61,10 @@ where T: Uint + Copy + Clone + Display + Debug + ToString
     /// present long-sized unsigned and signed integers, respectively.
     fn set_num(&mut self, i: usize, val: T) -> bool;
 
+    fn to_string_with_radix_and_delimiter(&self, radix: usize, stride: usize, delimiter: &str) -> String;
+    
+    fn to_string_with_radix_and_stride(&self, radix: usize, stride: usize) -> String;
+    
     /// Shows `BigInteger` such as `BigUInt`, `BigInt` or `LargeInt` in a string
     /// in order for a human to read. The number will be presented with the
     /// given radix in string. 
