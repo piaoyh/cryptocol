@@ -44,8 +44,6 @@
 //! 
 //! 
 
-pub mod huge_number;
-pub mod big_number;
 pub mod uint;
 pub mod int;
 pub mod numeric;
@@ -55,8 +53,6 @@ pub mod big_uint;
 pub mod number_errors;
 mod macros_number;
 
-pub use huge_number::*;
-pub use big_number::*;
 pub use uint::*;
 pub use int::*;
 pub use numeric::*;

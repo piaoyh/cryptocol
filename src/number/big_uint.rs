@@ -19,8 +19,6 @@ use std::str::FromStr;
 use std::ops::*;
 
 use super::uint::*;
-use super::HugeInteger;
-use super::BigInteger;
 use super::NumberErr;
 
 
@@ -282,6 +280,31 @@ where T: Uint + Clone + Display + Debug + ToString
         + From<T> + FromStr //+ From<&'a [T; N]>
         //+ HugeInteger<T> + BigInteger<T, N>
 {
+    /***** CONSTANTS FOR FLAGS *****/
+
+    /// A flag to represent whether or not overflow happened
+    /// during previous operations. When divided-by-zero happens,
+    /// the flags `DIVIDED_BY_ZERO`, `INFINITY` and `OVERFLOW` will be set.
+    const OVERFLOW: u8          = 0b0000_0001;
+
+    /// A flag to represent whether or not underflow happened
+    /// during previous operations.
+    const UNDERFLOW: u8         = 0b0000_0010;
+    
+    /// A flag to represent whether or not the value became extremely big
+    /// for some reasons such as "divided by zero" during previous operations.
+    /// When divided-by-zero happens,
+    /// the flags `DIVIDED_BY_ZERO`, `INFINITY` and `OVERFLOW` will be set.
+    const INFINITY: u8          = 0b0000_0100;
+
+    /// A flag to represent whether or not divided-by-zero happened
+    /// during previous operations. When divided-by-zero happens,
+    /// the flags `DIVIDED_BY_ZERO`, `INFINITY` and `OVERFLOW` will be set.
+    const DIVIDED_BY_ZERO: u8   = 0b0000_1000;
+
+
+    /***** CONSTRUCTORS *****/
+
     /// Constructs a new `BigUInt<T, N>`.
     /// All the attributes of te constructed object will be initialized with `0`.
     /// 
@@ -574,7 +597,20 @@ where T: Uint + Clone + Display + Debug + ToString
         me
     }
 
-    /// Returns how many bytes BigUInt contains. The return type is usize.
+    /// Constucts a new `BigUInt<T, N>` which has the value zero
+    /// and sets only the bit specified by bit_pos to be 1.
+    /// 
+    fn make_check_bits(bit_pos: usize) -> Self
+    {
+        let mut check_bits = Self::zero();
+        check_bits.turn_check_bits(bit_pos);
+        check_bits
+    }
+
+
+    /***** METHODS TO GET SIZE BOTH IN BYTES AND BITS *****/
+
+    /// Returns how many bytes `BigUInt` contains. The return type is usize.
     /// 
     /// # Examples
     /// 
@@ -588,7 +624,7 @@ where T: Uint + Clone + Display + Debug + ToString
 
     pub fn size_in_bits() -> usize { Self::size_in_bytes() * 8 }
 
-    /// Returns how many bytes the object of BigUInt type contains.
+    /// Returns how many bytes the object of `BigUInt` type contains.
     /// The return type is usize.
     /// 
     /// # Examples
@@ -603,24 +639,17 @@ where T: Uint + Clone + Display + Debug + ToString
 
     pub fn length_in_bits(&self) -> usize { Self::size_in_bits() }
 
-    /// Constucts a new `BigUInt<T, N>` which has the value zero
-    /// and sets only the bit specified by bit_pos to be 1.
-    /// 
-    fn make_check_bits(bit_pos: usize) -> Self
-    {
-        let mut check_bits = Self::zero();
-        check_bits.turn_check_bits(bit_pos);
-        check_bits
-    }
+
+    /***** METHODS TO GET, SET, AND CHECK *****/
 
     /// Sets only the bit specified by bit_pos to be 1.
     /// 
     #[cfg(target_endian = "little")]
     fn turn_check_bits(&mut self, bit_pos: usize)
     {
-        let TSIZE_BIT = size_of::<T>() * 8;
-        let chunk_num = bit_pos / TSIZE_BIT;
-        let piece_num = bit_pos % TSIZE_BIT;
+        let TSIZE_BITS = T::size_in_bits();
+        let chunk_num = bit_pos / TSIZE_BITS;
+        let piece_num = bit_pos % TSIZE_BITS;
         let mut val = T::one();
         val <<= T::num(piece_num as u128);
         self.set_zero();
@@ -632,7 +661,7 @@ where T: Uint + Clone + Display + Debug + ToString
     /// purpose.
     /// 
     #[cfg(target_endian = "big")]
-    fn turn_check_bits(&mut self, bit_pos: usize)
+    pub fn turn_check_bits(&mut self, bit_pos: usize)
     {
         let TSIZE_BIT = size_of::<T>() * 8;
         let chunk_num = N - 1 - bit_pos / TSIZE_BIT;
@@ -641,6 +670,376 @@ where T: Uint + Clone + Display + Debug + ToString
         val <<= T::num(piece_num as u128);
         self.set_zero();
         self.set_num(chunk_num, val);
+    }
+
+    /// Returns i-th element of its array of type `T` wrapped in Some
+    /// if `i` < `N`. Otherwise, it returns `None`. `BigUInt` have an array of
+    /// type `T` in order to present long-sized unsigned integer.
+    pub fn get_num(&self, i: usize) -> Option<T>
+    {
+        if i < N
+            { Some(self.get_number()[i]) }
+        else
+            { None }
+    }
+
+    /// Sets i-th element of its array of type `T` and return true if `i` < `N`.
+    /// Otherwise, it sets none of the elements of its array of type `T` and
+    /// returns false. `BigUInt` has an array of `T` in order to
+    /// present long-sized unsigned integer.
+    pub fn set_num(&mut self, i: usize, val: T) -> bool
+    {
+        if i < N
+        {
+            self.number[i] = val;
+            true
+        }
+        else
+        {
+            false
+        }
+    }
+
+    /// Returns the reference of its array of `T`-type for borrowing instead
+    /// of giving its ownership. `BigUInt` has an array of `T` in order
+    /// to present long-sized unsigned integers.
+    #[inline] fn get_number(&self) -> &[T; N]
+    {
+        &self.number
+    }
+
+    /// Sets the contents of its array of `T`-type. The argument val is the
+    /// reference of array of type `T` with the length `N`. `BigUInt` have an
+    /// array of `T` in order to present long-sized unsigned integer.
+    #[inline] fn set_number(&mut self, val: &[T; N])
+    {
+        self.number.copy_from_slice(val);
+    }
+
+    /// Sets `BigUInt` to be zero.
+    fn set_zero(&mut self)
+    {
+        for i in 0..N
+            { self.set_num(i, T::zero()); }
+    }
+
+    /// Checks whether `BigUInt` to be zero and returns true if it is
+    /// zero and returns false if it is not zero. 
+    fn is_zero(&self) -> bool
+    {
+        for i in 0..N
+        {
+            if self.get_num(i).unwrap() != T::zero()
+                { return false; }
+        }
+        true
+    }
+
+    /// Sets `BigUInt` to be one.
+    #[cfg(target_endian = "little")]
+    fn set_one(&mut self)
+    {
+        for i in 1..N
+            { self.set_num(i, T::zero()); }
+        self.set_num(0, T::one());
+    }
+
+    /// Sets BigUInt to be one.
+    #[cfg(target_endian = "big")]
+    fn set_one(&mut self)
+    {
+        for i in 0..N-1
+            { self.set_num(i, T::zero()); }
+        self.set_num(N-1, T::one());
+    }
+
+    /// Checks whether `BigUInt` to be one and returns true if it is
+    /// one, and returns false if it is not one. 
+    #[cfg(target_endian = "little")]
+    fn is_one(&self) -> bool
+    {
+        if self.get_num(0).unwrap() != T::one()
+            { return false; }
+
+        for i in 1..N
+        {
+            if self.get_num(i).unwrap() != T::zero()
+                { return false; }
+        }
+        true
+    }
+
+    /// Checks whether `BigUInt` to be one and returns true if it is
+    /// one, and returns false if it is not one. 
+    #[cfg(target_endian = "big")]
+    fn is_one(&self) -> bool
+    {
+        if self.get_num(N-1).unwrap() != T::one()
+            { return false; }
+
+        for i in 0..N-1
+        {
+            if self.get_num(i).unwrap() != T::zero()
+                { return false; }
+        }
+        true
+    }
+
+    /***** METHODS FOR COMPARISON WITH UINT *****/
+    /// Compares BigUInt or BigInt with a value of type T and returns the
+    /// result of the comparison in the type `Option<Ordering>`. However, you'd
+    /// better use the functions lt_uint(), gt_uint(), le_uint(), ge_uint(),
+    /// and eq_uint(). Then, you don't have to use partial_cmp_uint() directly.
+    fn partial_cmp_uint(&self, other: T) -> Option<Ordering>
+    {
+        if self.number[0] > other
+        {
+            return Some(Ordering::Greater);
+        }
+        else if self.number[0] < other
+        {
+            for idx in 1..N
+            {
+                if self.number[idx] != T::zero()
+                    { return Some(Ordering::Greater); }
+            }
+            return Some(Ordering::Less);
+        }
+        else    // if self.number[0] == other
+        {
+            for idx in 1..N
+            {
+                if self.number[idx] != T::zero()
+                    { return Some(Ordering::Greater); }
+            }
+        }
+        Some(Ordering::Equal)
+    }
+
+    /// Returns true if self is less than other. Otherwise, it returns false.
+    fn lt_uint(&self, other: T) -> bool  { self.partial_cmp_uint(other).unwrap().is_lt() }
+
+    /// Returns true if self is greater than other. Otherwise, it returns false.
+    fn gt_uint(&self, other: T) -> bool  { self.partial_cmp_uint(other).unwrap().is_gt() }
+
+    /// Returns true if self is less than or equal to other.
+    /// Otherwise, it returns false.
+    fn le_uint(&self, other: T) -> bool  { self.partial_cmp_uint(other).unwrap().is_le() }
+
+    /// Returns true if self is greater than or equal to other.
+    /// Otherwise, it returns false.
+    fn ge_uint(&self, other: T) -> bool  { self.partial_cmp_uint(other).unwrap().is_ge() }
+
+    /// Returns true if self is equal to other. Otherwise, it returns false.
+    fn eq_uint(&self, other: T) -> bool  { self.partial_cmp_uint(other).unwrap().is_eq() }
+
+    
+    /***** Arithmatic operations with unsigned integers *****/
+
+    /// Accumulates or adds rhs of type `T` to self which is of `BigUInt` type.
+    pub fn accumulate(&mut self, rhs: T)
+    {
+        let zero = T::zero();
+        let one = T::one();
+        let mut midres = self.number[0].wrapping_add(rhs);
+        let mut	carry = if midres < self.number[0] { one } else { zero };
+        self.number[0] = midres;
+        for i in 1..N
+        {
+            midres = self.number[i].wrapping_add(carry);
+            carry = if midres < carry { one } else { zero };
+            self.number[i] = midres;
+            if carry == zero
+                { break; }
+        }
+        if carry != T::zero()
+            { self.set_overflow(); }
+    }
+
+    /// Dissipates or subtracts rhs of type `T` from self which is of
+    /// `BigUInt` type.
+    pub fn dissipate(&mut self, rhs: T)
+    {
+        let zero = T::zero();
+        let one = T::one();
+        let mut midres = self.number[0].wrapping_sub(rhs);
+        let mut	carry= if midres > self.number[0] { one } else { zero };
+        self.number[0] = midres;
+        for i in 1..N
+        {
+            midres = self.number[i].wrapping_sub(carry);
+            carry = if midres > self.number[i] { one } else { zero };
+            self.number[i] = midres;
+        }
+        if carry != zero
+        {
+            if !self.is_untrustable()
+                { self.set_underflow(); }
+        }
+    }
+
+    /// Multiplies self which is of `BigUInt` type with rhs of type `T`.
+    pub fn times(&mut self, rhs: T)
+    {
+        if self.is_zero()
+            { return; }
+        let zero = T::zero();
+        let one = T::one();
+        if rhs == zero
+        {
+            self.set_zero();
+            return;
+        }
+        let adder = self.clone();
+        let mut bit_check = one;
+        bit_check <<= T::num((T::size_in_bits() - 1).into_u128());
+        self.set_zero();
+        while (bit_check != zero) && ((bit_check & rhs) == zero)
+            { bit_check >>= one; }
+        while bit_check != zero
+        {
+            *self <<= 1;
+            if bit_check & rhs != zero
+                { *self += adder; }
+            bit_check >>= one;
+        }
+    }
+
+    /// Divide BigUInt<T, N> by T so as to get quotient and remainder
+    /// It returns tuple of quotient and remainder. quotient is Self and
+    /// remainder is T. If rhs is zero, the divided_by_zero and overflow flags
+    /// of quotient will be set, and the quotient and the remainder will be
+    /// max value and zero, respectively.
+    /// 
+    /// # Examples
+    /// 
+    /// ```
+    /// use std::str::FromStr;
+    /// use Cryptocol::number::HugeInteger;
+    /// use Cryptocol::define_utypes_with;
+    /// define_utypes_with!(u128);
+    /// let dividend = u256::from_str("1234567890157589425462369896").unwrap();
+    /// let (quotient, remainder) = dividend.divide_by_uint_fully(87_u128);
+    /// ```
+    pub fn divide_by_uint_fully(&self, rhs: T) -> (Self, T)
+    {
+        let mut quotient = Self::zero();
+        let zero = T::zero();
+        let one = T::one();
+        if self.is_zero()
+        {
+            return (quotient, zero);
+        }
+        if rhs == zero
+        {
+            quotient.set_max();
+            quotient.set_infinity();
+            quotient.set_divided_by_zero();
+            quotient.set_overflow();
+            return (quotient, zero);
+        }
+        if self.lt_uint(rhs)
+        {
+            return (quotient, self.number[0]);
+        }
+        else if self.eq_uint(rhs)
+        {
+            quotient.set_uint(T::one());
+            return (quotient, zero);
+        }
+
+        let mut adder = Self::zero();
+        let mut res;
+        let mut sum;
+        let mut highest = Self::size_in_bits();
+        let mut n = N - 1;
+        let TSIZE_IN_BITS = T::size_in_bits();
+        while (highest != 0) && (self.get_num(n).unwrap() == zero)
+        {
+            highest -= TSIZE_IN_BITS;
+            n -= 1;
+        }
+        let mut piece = one << T::num(TSIZE_IN_BITS as u128 - 1);
+        while self.get_num(n).unwrap() & piece == zero
+        {
+            highest -= 1;
+            piece >>= one;
+        }
+
+        let mut high = highest;
+        let mut low = 0;
+        let mut mid = (high + low) >> 1;
+        loop
+        {
+            high = highest;
+            low = 0;
+            if high == 0
+            {
+                return (quotient, (*self - quotient.mul_uint(rhs)).number[0]);
+            }
+            else    // if high > 0
+            {
+                loop
+                {
+                    mid = (high + low) >> 1;
+                    adder.turn_check_bits(mid);
+                    sum = quotient + adder;
+                    res = sum.mul_uint(rhs);
+                    if !res.is_overflow() && (*self > res)
+                    {
+                        if mid == highest - 1
+                        {
+                            quotient = sum;
+                            highest = mid;
+                            break;
+                        }
+                        else if mid == low 
+                        {
+                            quotient = sum;
+                            if mid == 0
+                                { highest = 0; }
+                            break;
+                        }
+                        low = mid;
+                    }
+                    else if res.is_overflow() || res > *self
+                    {
+                        if mid == low
+                        {
+                            highest = mid;
+                            break;
+                        }
+                        high = mid;
+                    }
+                    else    // if res == *self
+                    {
+                        return (quotient + adder, zero);
+                    }
+                }
+            }
+        }
+    }
+
+    /// Divides self which is of `BigUInt` type by rhs which is of type `T`,
+    /// and returns quotient of `BigUInt` type. If you get both quotient and
+    /// remainder, you'd better use the function divide_by_uint_fully() instead
+    /// of calling the functions quotient() and remainder() in series because
+    /// they call the function divide_by_uint_fully() internally.
+    pub fn quotient(&mut self, rhs: T) -> Self
+    {
+        let (quotient, _) = self.divide_by_uint_fully(rhs);
+        quotient
+    }
+
+    /// Divides self which is of `BigUInt` type by rhs which is of type `T`,
+    /// and returns remainder of type `T`. If you get both quotient and
+    /// remainder, you'd better use the function divide_by_uint_fully() instead
+    /// of calling the functions quotient() and remainder() in series because
+    /// they call the function divide_by_uint_fully() internally.
+    pub fn remainder(&mut self, rhs: T) -> T
+    {
+        let (_, remainder) = self.divide_by_uint_fully(rhs);
+        remainder
     }
 
     /// Adds a unsigned integer number of type `T` to `BigUInt`-typed unsigned
@@ -739,6 +1138,122 @@ where T: Uint + Clone + Display + Debug + ToString
     {
         let (_, remainder) = self.divide_by_uint_fully(rhs);
         remainder
+    }
+
+    /// Divides self which is of `BigUInt` type by rhs which is of `BigUInt`
+    /// type, and returns quotient and remainder which are `BigUInt`type.
+    /// If rhs is zero, the divided_by_zero and overflow flags of quotient will
+    /// be set, and the quotient will be set to be max value of `BigUInt`type,
+    /// and the remainder will be set to be zero of `BigUInt` type.
+    /// 
+    /// # Examples
+    /// 
+    /// ```
+    /// use std::str::FromStr;
+    /// use Cryptocol::number::HugeInteger;
+    /// use Cryptocol::define_utypes_with;
+    /// define_utypes_with!(u128);
+    /// let dividend = u256::from_str("1234567890157589425462369896").unwrap();
+    /// let divisor = u256::from_str("1234567890").unwrap();
+    /// let (quotient, remainder) = dividend.divide_fully(divisor);
+    /// ```
+    fn divide_fully(&self, rhs: Self) -> (Self, Self)
+    {
+        let mut quotient = Self::zero();
+        let zero = T::zero();
+        let one = T::one();
+        if self.is_zero()
+        {
+            return (quotient, Self::zero());
+        }
+        else if rhs.is_zero()
+        {
+            quotient.set_max();
+            quotient.set_infinity();
+            quotient.set_divided_by_zero();
+            quotient.set_overflow();
+            let mut remainder = Self::zero();
+            remainder.set_divided_by_zero();
+            return (quotient, remainder);
+        }
+        else if *self < rhs
+        {
+            return (quotient, self.clone());
+        }
+        else if *self == rhs
+        {
+            quotient.set_num(0, one);
+            return (quotient, Self::zero());
+        }
+
+        let maximum = Self::size_in_bits() - 1;
+        let mut adder = Self::zero();
+        let mut res;
+        let mut sum;
+        let mut highest = Self::size_in_bits();
+        let mut n = N - 1;
+        let TSIZE_BITS = size_of::<T>() * 8;
+        while self.get_num(n).unwrap() == zero && highest != 0
+        {
+            highest -= TSIZE_BITS;
+            n -= 1;
+        }
+        let mut piece = one << T::num(TSIZE_BITS as u128 - 1);
+        while self.get_num(n).unwrap() & piece == zero
+        {
+            highest -= 1;
+            piece >>= one;
+        }
+
+        let mut high = highest;
+        let mut low = 0;
+        let mut mid = (high + low) >> 1;
+        loop
+        {
+            high = highest;
+            low = 0;
+            if high == 0
+            {
+                return (quotient, *self - quotient * rhs);
+            }
+            else    // if high > 0
+            {
+                loop
+                {
+                    mid = (high + low) >> 1;
+                    adder.turn_check_bits(mid);
+                    sum = quotient + adder;
+                    res = sum * rhs;
+                    if !res.is_overflow() && (*self > res)
+                    {
+                        if mid == maximum
+                        {
+                            quotient = sum;
+                            break;
+                        }
+                        else if mid == low
+                        { 
+                            quotient = sum;
+                            if mid == 0
+                                { highest = 0; }
+                            break;
+                        }
+                        low = mid;
+                    }
+                    else if res.is_overflow() || (res > *self)
+                    {
+                        if mid == low
+                        { 
+                            highest = mid;
+                            break;
+                        }
+                        high = mid;
+                    }
+                    else    // if res == *self
+                        { return (quotient + adder, Self::zero()); }
+                }
+            }
+        }
     }
 
     /// Sets `BigUInt`-typed number to be maximum value.
@@ -991,105 +1506,13 @@ where T: Uint + Clone + Display + Debug + ToString
     /// 
     #[cfg(target_endian = "big")]
     pub fn into_u8(&self) -> u8         { self.number[N-1].into_u8() }
-}
 
-impl<T, const N: usize> BigInteger<T, N> for BigUInt<T, N>
-where T: Uint + Clone + Display + Debug + ToString
-        + Add<Output=T> + AddAssign + Sub<Output=T> + SubAssign
-        + Mul<Output=T> + MulAssign + Div<Output=T> + DivAssign
-        + Shl<Output=T> + ShlAssign + Shr<Output=T> + ShrAssign
-        + BitAnd<Output=T> + BitAndAssign + BitOr<Output=T> + BitOrAssign
-        + BitXor<Output=T> + BitXorAssign + Not<Output=T>
-        + PartialEq + PartialOrd,
-    Self: Sized + Clone + Copy + Display + Debug + ToString 
-        + Add<Output = Self> + AddAssign + Sub<Output = Self> + SubAssign
-        + Mul<Output = Self> + MulAssign + Div<Output = Self> + DivAssign
-        + Rem<Output = Self> + RemAssign
-        + Shl<i32, Output = Self> + ShlAssign<i32>
-        + Shr<i32, Output = Self> + ShrAssign<i32>
-        + BitAnd<Self, Output = Self> + BitAndAssign + BitOr<Output = Self> + BitOrAssign
-        + BitXorAssign + Not<Output = Self>
-        + FromStr
-{
-    /// Returns the reference of its array of T-type for borrowing instead
-    /// of giving its ownership. BigUInt has an array of T in order
-    /// to present long-sized unsigned integers.
-    #[inline] fn get_number(&self) -> &[T; N]
-    {
-        &self.number
-    }
-
-    #[inline] fn set_number(&mut self, val: &[T; N])    { self.number.copy_from_slice(val); }
-
-    fn partial_cmp_uint(&self, other: T) -> Option<Ordering>
-    {
-        if self.number[0] > other
-        {
-            return Some(Ordering::Greater);
-        }
-        else if self.number[0] < other
-        {
-            for idx in 1..N
-            {
-                if self.number[idx] != T::zero()
-                    { return Some(Ordering::Greater); }
-            }
-            return Some(Ordering::Less);
-        }
-        else    // if self.number[0] == other
-        {
-            for idx in 1..N
-            {
-                if self.number[idx] != T::zero()
-                    { return Some(Ordering::Greater); }
-            }
-        }
-        Some(Ordering::Equal)
-    }
-}
-
-
-impl<T, const N: usize> HugeInteger<T> for BigUInt<T, N>
-where T: Uint + Clone + Display + Debug + ToString
-        + Add<Output=T> + AddAssign + Sub<Output=T> + SubAssign
-        + Mul<Output=T> + MulAssign + Div<Output=T> + DivAssign
-        + Shl<Output=T> + ShlAssign + Shr<Output=T> + ShrAssign
-        + BitAnd<Output=T> + BitAndAssign + BitOr<Output=T> + BitOrAssign
-        + BitXor<Output=T> + BitXorAssign + Not<Output=T>
-        + PartialEq + PartialOrd,
-    Self: Sized + Clone + Copy + Display + Debug + ToString 
-        + Add<Output = Self> + AddAssign + Sub<Output = Self> + SubAssign
-        + Mul<Output = Self> + MulAssign + Div<Output = Self> + DivAssign
-        + Rem<Output = Self> + RemAssign
-        + Shl<i32, Output = Self> + ShlAssign<i32>
-        + Shr<i32, Output = Self> + ShrAssign<i32>
-        + BitAnd<Self, Output = Self> + BitAndAssign + BitOr<Output = Self> + BitOrAssign
-        + BitXorAssign + Not<Output = Self>
-        + FromStr
-{
-    /// Sets i-th element of its array of type T and return true if i < N.
-    /// Otherwise, it sets none of the elements of its array of type T and
-    /// returns false. BigUInt and BigInt have an array of T in order to
-    /// present long-sized unsigned and signed integers, respectively.
-    fn set_num(&mut self, i: usize, val: T) -> bool
-    {
-        if i < N
-        {
-            self.number[i] = val;
-            true
-        }
-        else
-        {
-            false
-        }
-    }
-
-    fn to_string_with_radix_and_delimiter(&self, radix: usize, stride: usize, delimiter: &str) -> String
+    pub fn to_string_with_radix_and_delimiter(&self, radix: usize, stride: usize, delimiter: &str) -> String
     {
         self.to_string_with_radix_and_stride(radix, stride).replace("_", delimiter)
     }
 
-    fn to_string_with_radix_and_stride(&self, radix: usize, stride: usize) -> String
+    pub fn to_string_with_radix_and_stride(&self, radix: usize, stride: usize) -> String
     {
         if stride == 0 
         {
@@ -1127,9 +1550,10 @@ where T: Uint + Clone + Display + Debug + ToString
             num_str
         }
     }
+
     /// Reads the value of BigUInt<T, N> and write it into String
     /// with a certain radix.
-    fn to_string_with_radix(&self, radix: usize) -> String
+    pub fn to_string_with_radix(&self, radix: usize) -> String
     {
         let mut txt = String::new();
         let zero = Self::zero();
@@ -1154,331 +1578,73 @@ where T: Uint + Clone + Display + Debug + ToString
         num_str
     }
 
-    /// Divides self which is of `BigUInt` type by rhs which is of `BigUInt`
-    /// type, and returns quotient and remainder which are `BigUInt`type.
-    /// If rhs is zero, the divided_by_zero and overflow flags of quotient will
-    /// be set, and the quotient will be set to be max value of `BigUInt`type,
-    /// and the remainder will be set to be zero of `BigUInt` type.
-    /// 
-    /// # Examples
-    /// 
-    /// ```
-    /// use std::str::FromStr;
-    /// use Cryptocol::number::HugeInteger;
-    /// use Cryptocol::define_utypes_with;
-    /// define_utypes_with!(u128);
-    /// let dividend = u256::from_str("1234567890157589425462369896").unwrap();
-    /// let divisor = u256::from_str("1234567890").unwrap();
-    /// let (quotient, remainder) = dividend.divide_fully(divisor);
-    /// ```
-    fn divide_fully(&self, rhs: Self) -> (Self, Self)
+    #[inline] pub fn set_flag_bit(&mut self, flag: u8)      { self.flag |= flag; }
+    #[inline] pub fn reset_flag_bit(&mut self, flag: u8)    { self.flag &= !flag; }
+    #[inline] pub fn is_flag_bit_on(&self, flag: u8) -> bool    { (self.flag & flag) != 0 }
+    #[inline] pub fn set_infinity(&mut self)     { self.set_flag_bit(Self::INFINITY); }
+    #[inline] pub fn reset_inifinity(&mut self)   { self.reset_flag_bit(Self::INFINITY); }
+    #[inline] pub fn is_inifinity(&self) -> bool  { self.is_flag_bit_on(Self::INFINITY) }
+    #[inline] pub fn set_divided_by_zero(&mut self)   { self.set_flag_bit(Self::DIVIDED_BY_ZERO); }
+    #[inline] pub fn reset_divided_by_zero(&mut self) { self.reset_flag_bit(Self::DIVIDED_BY_ZERO); }
+    #[inline] pub fn is_divided_by_zero(&self) -> bool { self.is_flag_bit_on(Self::DIVIDED_BY_ZERO) }
+
+    /// Sets overflow flag.
+    #[inline] pub fn set_overflow(&mut self)
     {
-        let mut quotient = Self::zero();
-        let zero = T::zero();
-        let one = T::one();
-        if self.is_zero()
-        {
-            return (quotient, Self::zero());
-        }
-        else if rhs.is_zero()
-        {
-            quotient.set_max();
-            quotient.set_infinity();
-            quotient.set_divided_by_zero();
-            quotient.set_overflow();
-            let mut remainder = Self::zero();
-            remainder.set_divided_by_zero();
-            return (quotient, remainder);
-        }
-        else if *self < rhs
-        {
-            return (quotient, self.clone());
-        }
-        else if *self == rhs
-        {
-            quotient.set_num(0, one);
-            return (quotient, Self::zero());
-        }
-
-        let maximum = Self::size_in_bits() - 1;
-        let mut adder = Self::zero();
-        let mut res;
-        let mut sum;
-        let mut highest = Self::size_in_bits();
-        let mut n = N - 1;
-        let TSIZE_BITS = size_of::<T>() * 8;
-        while self.get_num(n).unwrap() == zero && highest != 0
-        {
-            highest -= TSIZE_BITS;
-            n -= 1;
-        }
-        let mut piece = one << T::num(TSIZE_BITS as u128 - 1);
-        while self.get_num(n).unwrap() & piece == zero
-        {
-            highest -= 1;
-            piece >>= one;
-        }
-
-        let mut high = highest;
-        let mut low = 0;
-        let mut mid = (high + low) >> 1;
-        loop
-        {
-            high = highest;
-            low = 0;
-            if high == 0
-            {
-                return (quotient, *self - quotient * rhs);
-            }
-            else    // if high > 0
-            {
-                loop
-                {
-                    mid = (high + low) >> 1;
-                    adder.turn_check_bits(mid);
-                    sum = quotient + adder;
-                    res = sum * rhs;
-                    if !res.is_overflow() && (*self > res)
-                    {
-                        if mid == maximum
-                        {
-                            quotient = sum;
-                            break;
-                        }
-                        else if mid == low
-                        { 
-                            quotient = sum;
-                            if mid == 0
-                                { highest = 0; }
-                            break;
-                        }
-                        low = mid;
-                    }
-                    else if res.is_overflow() || (res > *self)
-                    {
-                        if mid == low
-                        { 
-                            highest = mid;
-                            break;
-                        }
-                        high = mid;
-                    }
-                    else    // if res == *self
-                        { return (quotient + adder, Self::zero()); }
-                }
-            }
-        }
+        self.set_flag_bit(Self::OVERFLOW);
     }
 
-    /// Accumulates or adds rhs of type `T` to self which is of `BigUInt` type.
-    fn accumulate(&mut self, rhs: T)
+    /// Resets overflow flag.
+    #[inline] pub fn reset_overflow(&mut self)
     {
-        let zero = T::zero();
-        let one = T::one();
-        let mut midres = self.number[0].wrapping_add(rhs);
-        let mut	carry = if midres < self.number[0] { one } else { zero };
-        self.number[0] = midres;
-        for i in 1..N
-        {
-            midres = self.number[i].wrapping_add(carry);
-            carry = if midres < carry { one } else { zero };
-            self.number[i] = midres;
-            if carry == zero
-                { break; }
-        }
-        if carry != T::zero()
-            { self.set_overflow(); }
+        self.reset_flag_bit(Self::OVERFLOW);
     }
 
-    /// Dissipates or subtracts rhs of type `T` from self which is of
-    /// `BigUInt` type.
-    fn dissipate(&mut self, rhs: T)
+    /// Checks whether or not overflow flag is set, and returns true
+    /// if the overflow flag is set. Otherwise, it returns false.
+    #[inline] pub fn is_overflow(&self) -> bool
     {
-        let zero = T::zero();
-        let one = T::one();
-        let mut midres = self.number[0].wrapping_sub(rhs);
-        let mut	carry= if midres > self.number[0] { one } else { zero };
-        self.number[0] = midres;
-        for i in 1..N
-        {
-            midres = self.number[i].wrapping_sub(carry);
-            carry = if midres > self.number[i] { one } else { zero };
-            self.number[i] = midres;
-        }
-        if carry != zero
-        {
-            if !self.is_untrustable()
-                { self.set_underflow(); }
-        }
+        self.is_flag_bit_on(Self::OVERFLOW)
     }
 
-    /// Multiplies self which is of `BigUInt` type with rhs of type `T`.
-    fn times(&mut self, rhs: T)
+    /// Sets underflow flag.
+    #[inline] pub fn set_underflow(&mut self)
     {
-        if self.is_zero()
-            { return; }
-        let zero = T::zero();
-        let one = T::one();
-        if rhs == zero
-        {
-            self.set_zero();
-            return;
-        }
-        let adder = self.clone();
-        let mut bit_check = one;
-        bit_check <<= T::num((T::size_in_bits() - 1).into_u128());
-        self.set_zero();
-        while (bit_check != zero) && ((bit_check & rhs) == zero)
-            { bit_check >>= one; }
-        while bit_check != zero
-        {
-            *self <<= 1;
-            if bit_check & rhs != zero
-                { *self += adder; }
-            bit_check >>= one;
-        }
+        self.set_flag_bit(Self::UNDERFLOW);
     }
 
-    /// Divide BigUInt<T, N> by T so as to get quotient and remainder
-    /// It returns tuple of quotient and remainder. quotient is Self and
-    /// remainder is T. If rhs is zero, the divided_by_zero and overflow flags
-    /// of quotient will be set, and the quotient and the remainder will be
-    /// max value and zero, respectively.
-    /// 
-    /// # Examples
-    /// 
-    /// ```
-    /// use std::str::FromStr;
-    /// use Cryptocol::number::HugeInteger;
-    /// use Cryptocol::define_utypes_with;
-    /// define_utypes_with!(u128);
-    /// let dividend = u256::from_str("1234567890157589425462369896").unwrap();
-    /// let (quotient, remainder) = dividend.divide_by_uint_fully(87_u128);
-    /// ```
-    fn divide_by_uint_fully(&self, rhs: T) -> (Self, T)
+    /// Reets underflow flag.
+    #[inline] pub fn reset_underflow(&mut self)
     {
-        let mut quotient = Self::zero();
-        let zero = T::zero();
-        let one = T::one();
-        if self.is_zero()
-        {
-            return (quotient, zero);
-        }
-        if rhs == zero
-        {
-            quotient.set_max();
-            quotient.set_infinity();
-            quotient.set_divided_by_zero();
-            quotient.set_overflow();
-            return (quotient, zero);
-        }
-        if self.lt_uint(rhs)
-        {
-            return (quotient, self.number[0]);
-        }
-        else if self.eq_uint(rhs)
-        {
-            quotient.set_uint(T::one());
-            return (quotient, zero);
-        }
-
-        let mut adder = Self::zero();
-        let mut res;
-        let mut sum;
-        let mut highest = Self::size_in_bits();
-        let mut n = N - 1;
-        let TSIZE_IN_BITS = T::size_in_bits();
-        while (highest != 0) && (self.get_num(n).unwrap() == zero)
-        {
-            highest -= TSIZE_IN_BITS;
-            n -= 1;
-        }
-        let mut piece = one << T::num(TSIZE_IN_BITS as u128 - 1);
-        while self.get_num(n).unwrap() & piece == zero
-        {
-            highest -= 1;
-            piece >>= one;
-        }
-
-        let mut high = highest;
-        let mut low = 0;
-        let mut mid = (high + low) >> 1;
-        loop
-        {
-            high = highest;
-            low = 0;
-            if high == 0
-            {
-                return (quotient, (*self - quotient.mul_uint(rhs)).number[0]);
-            }
-            else    // if high > 0
-            {
-                loop
-                {
-                    mid = (high + low) >> 1;
-                    adder.turn_check_bits(mid);
-                    sum = quotient + adder;
-                    res = sum.mul_uint(rhs);
-                    if !res.is_overflow() && (*self > res)
-                    {
-                        if mid == highest - 1
-                        {
-                            quotient = sum;
-                            highest = mid;
-                            break;
-                        }
-                        else if mid == low 
-                        {
-                            quotient = sum;
-                            if mid == 0
-                                { highest = 0; }
-                            break;
-                        }
-                        low = mid;
-                    }
-                    else if res.is_overflow() || res > *self
-                    {
-                        if mid == low
-                        {
-                            highest = mid;
-                            break;
-                        }
-                        high = mid;
-                    }
-                    else    // if res == *self
-                    {
-                        return (quotient + adder, zero);
-                    }
-                }
-            }
-        }
+        self.reset_flag_bit(Self::UNDERFLOW);
     }
 
-    /// Divides self which is of `BigUInt` type by rhs which is of type `T`,
-    /// and returns quotient of `BigUInt` type. If you get both quotient and
-    /// remainder, you'd better use the function divide_by_uint_fully() instead
-    /// of calling the functions quotient() and remainder() in series because
-    /// they call the function divide_by_uint_fully() internally.
-    fn quotient(&mut self, rhs: T) -> Self
+    /// Checks whether or not underflow flag is set, and returns true
+    /// if the underflow flag is set. Otherwise, it returns false.
+    #[inline] pub fn is_underflow(&self) -> bool
     {
-        let (quotient, _) = self.divide_by_uint_fully(rhs);
-        quotient
+        self.is_flag_bit_on(Self::UNDERFLOW)
     }
 
-    /// Divides self which is of `BigUInt` type by rhs which is of type `T`,
-    /// and returns remainder of type `T`. If you get both quotient and
-    /// remainder, you'd better use the function divide_by_uint_fully() instead
-    /// of calling the functions quotient() and remainder() in series because
-    /// they call the function divide_by_uint_fully() internally.
-    fn remainder(&mut self, rhs: T) -> T
+    /// Sets both overflow flag and underflow flag.
+    #[inline] pub fn set_untrustable(&mut self)
     {
-        let (_, remainder) = self.divide_by_uint_fully(rhs);
-        remainder
+        self.set_flag_bit(Self::OVERFLOW | Self::UNDERFLOW);
     }
 
-    #[inline] fn set_flag_bit(&mut self, flag: u8)      { self.flag |= flag; }
-    #[inline] fn reset_flag_bit(&mut self, flag: u8)    { self.flag &= !flag; }
-    #[inline] fn is_flag_bit_on(&self, flag: u8) -> bool    { (self.flag & flag) != 0 }
+    /// Resets both overflow flag and underflow flag.
+    #[inline] pub fn reset_untrustable(&mut self)
+    {
+        self.reset_flag_bit(Self::OVERFLOW | Self::UNDERFLOW);
+    }
+
+    /// Checks whether or not both overflow flag and underflow flag are all set,
+    /// and returns true if both of the overflow flag and the underflow flag
+    /// are all set. Otherwise, it returns false.
+    #[inline] pub fn is_untrustable(&self) -> bool
+    {
+        self.is_flag_bit_on(Self::OVERFLOW | Self::UNDERFLOW)
+    }
 }
 
 
@@ -2837,8 +3003,8 @@ where T: Uint + Clone + Display + Debug + ToString
         return me;
     }
 }
-/*
-impl<T, const N: usize> From<&'a [T; N]> for BigUInt<T, N>
+
+impl<T, const N: usize> From<[T; N]> for BigUInt<T, N>
 where T: Uint + Clone + Display + Debug + ToString
         + Add<Output=T> + AddAssign + Sub<Output=T> + SubAssign
         + Mul<Output=T> + MulAssign + Div<Output=T> + DivAssign
@@ -2858,14 +3024,14 @@ where T: Uint + Clone + Display + Debug + ToString
     /// println!("big_num = {}", big_num.to_string_with_radix(2));
     /// assert_eq!(big_num, BigUInt::<u8,32>::from_str_radix("00000001_00000001_00000001_00000001_00000001_00000001_00000001_00000001_00000001_00000001_00000001_00000001_00000001_00000001_00000001_00000001_00000001_00000001_00000001_00000001_00000001_00000001_00000001_00000001_00000001_00000001_00000001_00000001_00000001_00000001_00000001_00000001", 2).unwrap());
     /// ```
-    fn from(val: &[T; N]) -> Self
+    fn from(val: [T; N]) -> Self
     {
         let mut s = Self::new();
-        s.set_number(val);
+        s.set_number(&val);
         s
     }
 }
-*/
+
 impl<T, const N: usize> FromStr for BigUInt<T, N>
 where T: Uint + Clone + Display + Debug + ToString
         + Add<Output=T> + AddAssign + Sub<Output=T> + SubAssign
