@@ -18,6 +18,9 @@ use std::convert::{ From, Into };
 use std::str::FromStr;
 use std::ops::*;
 
+use rand::RngCore;
+use rand::rngs::OsRng;
+
 use super::uint::*;
 use super::NumberErr;
 
@@ -595,6 +598,63 @@ where T: Uint + Clone + Display + Debug + ToString
             common.into_des(&mut me.number);
         }
         me
+    }
+
+    /// Constucts a new `BigUInt<T, N>` which has the random value.
+    pub fn random() -> Self
+    {
+        let mut r = Self::new();
+        match T::size_in_bytes()
+        {
+            1 => {
+                    let mut common = UInt::new();
+                    for i in 0..N
+                    {
+                        common.uint = OsRng.next_u32();
+                        unsafe { r.set_num(i, T::num(common.byte[0] as u128)); }
+                    }
+                },
+            2 => {
+                    let mut common = UInt::new();
+                    for i in 0..N
+                    {
+                        common.uint = OsRng.next_u32();
+                        unsafe { r.set_num(i, T::num(common.ushort[0] as u128)); }
+                    }
+                },
+            4 => {
+                    for i in 0..N
+                        { r.set_num(i, T::num(OsRng.next_u32() as u128)); }
+                },
+            8 => {
+                    for i in 0..N
+                        { r.set_num(i, T::num(OsRng.next_u64() as u128)); }
+                },
+            16 => {
+                    for i in 0..N
+                    {
+                        let mut common = ULonger::new();
+                        unsafe {
+                            common.ulong[0] = OsRng.next_u64();
+                            common.ulong[1] = OsRng.next_u64();
+                            r.set_num(i, T::num(common.ulonger));
+                        }
+                    }
+                },
+            _ => { r.set_zero() },
+        }
+        r
+    }
+
+    /// Constucts a new `BigUInt<T, N>` which has the random value
+    /// with MSB (Most Segnificant Bit) is set.
+    pub fn random_with_MSB_set() -> Self
+    {
+        let mut r = Self::random();
+        let highest = r.get_num(N-1).unwrap();
+        let msb = !(T::max() >> T::one());
+        r.set_num(N-1, highest | msb);
+        r
     }
 
     /// Constucts a new `BigUInt<T, N>` which has the value zero

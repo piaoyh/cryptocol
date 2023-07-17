@@ -64,6 +64,9 @@ fn main()
     assert_eq!(d_high, 12345678901234569124);
     assert_eq!(d_low, 6789012345678919134);
     assert_eq!(carry, false);
+    println!("Random number = {}", u1024::random());
+    println!("Random number = {}", u1024::random_with_MSB_set());
+    
 }
 
 fn add_long<T: Uint>(lhs_high: T, lhs_low: T, rhs_high: T, rhs_low: T) -> (T, T, bool)
