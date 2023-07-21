@@ -14,11 +14,8 @@
 #[derive(Debug, Copy, Clone)]
 pub enum NumberErr
 {
-    /// Indicates a parsing error when error occurs during parsing.
-    //UnsignedIntegerParsingError,
-
     /// Indicates that the given radix is out of the valid range.
-    /// It should be in the range from binary up to 62-ary.
+    /// It should be in the range from binary up to 62-ary, inclusively.
     OutOfValidRadixRange,
 
     /// Indicates that the string or the character is not alphanumeric.

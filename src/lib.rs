@@ -11,13 +11,63 @@
 
 //! Cryptocol crate provides libraries for cryptography.
 //! 
-//! This crate is optimized for Little-endian CPUs
-//! because Little-Endian CPUs are far more popular than Big-endian CPUs.
-//! And, this crate is so experimental for Big-endian CPUs
-//! that you are highy discouraged to use this crate for Big-endian CPUs
-//! for serious purpose. So, use this crate for Big-endian CPUs with
-//! your own full responsibility.
+//! In many cases, a lot of parts of the documentations of this crate were made
+//! by taking (or copying and pasting) from pre-existing documentation and
+//! twicking if the methods that this crate provides are very similar to the
+//! pre-existing ones in terms of their interfaces, functionalities and
+//! purposes, for example, operators `+`, `<<`, etc., methods `copy_within()`,
+//! from_str(), etc. Please don't think they are plagiarism for those cases.
 //! 
+//! This crate is optimized for Little-endian CPUs because Little-Endian CPUs
+//! are far more popular than Big-endian CPUs. For the information about
+//! Endianness (including Little-endian and Big-endian) [Read more](https://en.wikipedia.org/wiki/Endianness).
+//! 
+//! # Big-endian issue
+//! This crate is just experimental for Big-endian CPUs. So, you are not
+//! encouraged to use this crate for Big-endian CPUs for serious purpose.
+//! Only use this crate for Big-endian CPUs with your own full responsibility.
+//! 
+//! # Road Map
+//! This crate Cryptocol is planned to provide the following functionalities.
+//! The checked items have already been implemented including documentation
+//! at least 80%. The unchecked items have not yet been implemented less than
+//! 80% or have not yet even been started to implement.
+//! 
+//! ## Big Numbers
+//! - [x] Fixed Sized Big Unsigned Integer Operation
+//! - [ ] Fixed Sized Big Signed Integer Operation
+//! - [ ] Variable Sized Big Signed Integer Operation
+//! 
+//! ## Hash Algorithms
+//! - [ ] MD5
+//! - [ ] SHA-1
+//! - [ ] SHA-2 (SHA-224)
+//! - [ ] SHA-2 (SHA-256)
+//! - [ ] SHA-2 (SHA-384)
+//! - [ ] SHA-2 (SHA-512)
+// ! - [ ] SHA-2 (SHA-512/224)
+// ! - [ ] SHA-2 (SHA-512/256)
+//! - [ ] SHA-3 (SHA3-224)
+//! - [ ] SHA-3 (SHA3-256)
+//! - [ ] SHA-3 (SHA3-384)
+//! - [ ] SHA-3 (SHA3-512)
+//! - [ ] SHA-3 (SHAKE 128)
+//! - [ ] SHA-3 (SHAKE 256)
+//! 
+//! ## Symetric-Key Encoding / Decoding Algorithms
+//! - [ ] DES
+//! - [ ] 3DES
+//! - [ ] AES
+//! 
+//! ## Asymetric-Key Encoding / Decoding Algorithms
+//! - [ ] Diffie-Hellman
+//! - [ ] RSA (Ron Rivest, Adi Shamir, Leonard Adleman)
+//! - [ ] ECC (Elliptic Curve Cryptosystem)
+//! 
+//! When all the above functionalitis are implemented, the version number
+//! 1.0.0.0 will be given. After that whenever another functionality is added to
+//! this crate, the version number will get higher beyond 1.0.0.0.
+
 
 // #![doc(
 //     html_logo_url = "https://www.rust-lang.org/logos/rust-logo-128x128-blk.png",
@@ -26,9 +76,3 @@
 // )]
 
 pub mod number;
-
-//use number::*;
-//pub use cryptocol_errors::*;
-
-
-

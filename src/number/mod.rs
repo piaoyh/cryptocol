@@ -50,6 +50,7 @@ pub mod numeric;
 pub mod float;
 pub mod real;
 pub mod big_uint;
+pub mod trait_impl_for_big_uint;
 pub mod number_errors;
 mod macros_number;
 
@@ -59,4 +60,16 @@ pub use numeric::*;
 pub use float::*;
 pub use real::*;
 pub use big_uint::*;
+pub use trait_impl_for_big_uint::*;
 pub use number_errors::*;
+
+
+
+
+/********** FOR BIG-ENDIANNESS ONLY **********/
+
+#[cfg(target_endian = "big")]
+pub mod big_uint_for_big_endian;
+
+#[cfg(target_endian = "big")]
+pub use big_uint_for_big_endian::*;

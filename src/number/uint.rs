@@ -27,7 +27,7 @@ use std::ops::*;
 /// this crate Cryptocol or create addional libraries that works with the crate
 /// Cryptocol. But, if you only use the crate Cryptocol, you can forget about
 /// this trait Uint.
-pub trait Uint: Copy //+ Clone + Display + Debug + ToString
+pub trait Uint: Copy + Sized //+ Clone + Display + Debug + ToString
 {
     fn abs_diff(self, other: Self) -> Self;
     fn pow(self, exp: u32) -> Self;
@@ -627,8 +627,8 @@ impl Uint for u8
     fn max() -> Self            { Self::MAX }
     fn min() -> Self            { Self::MIN }
     fn num(n: u128) -> Self     { n as Self }
-    fn size_in_bytes() -> usize { size_of::<Self>() }
-    fn size_in_bits() -> usize  { size_of::<Self>() * 8 }
+    #[inline] fn size_in_bytes() -> usize { size_of::<Self>() }
+    #[inline] fn size_in_bits() -> usize  { size_of::<Self>() * 8 }
 }
 
 impl Uint for u16
@@ -973,8 +973,8 @@ impl Uint for u16
     fn max() -> Self            { Self::MAX }
     fn min() -> Self            { Self::MIN }
     fn num(n: u128) -> Self     { n as Self }
-    fn size_in_bytes() -> usize { size_of::<Self>() }
-    fn size_in_bits() -> usize  { size_of::<Self>() * 8 }
+    #[inline] fn size_in_bytes() -> usize { size_of::<Self>() }
+    #[inline] fn size_in_bits() -> usize  { size_of::<Self>() * 8 }
 }
 
 impl Uint for u32
@@ -1319,8 +1319,8 @@ impl Uint for u32
     fn max() -> Self            { Self::MAX }
     fn min() -> Self            { Self::MIN }
     fn num(n: u128) -> Self     { n as Self }
-    fn size_in_bytes() -> usize { size_of::<Self>() }
-    fn size_in_bits() -> usize  { size_of::<Self>() * 8 }
+    #[inline] fn size_in_bytes() -> usize { size_of::<Self>() }
+    #[inline] fn size_in_bits() -> usize  { size_of::<Self>() * 8 }
 }
 
 impl Uint for u64
@@ -1665,8 +1665,8 @@ impl Uint for u64
     fn max() -> Self            { Self::MAX }
     fn min() -> Self            { Self::MIN }
     fn num(n: u128) -> Self     { n as Self }
-    fn size_in_bytes() -> usize { size_of::<Self>() }
-    fn size_in_bits() -> usize  { size_of::<Self>() * 8 }
+    #[inline] fn size_in_bytes() -> usize { size_of::<Self>() }
+    #[inline] fn size_in_bits() -> usize  { size_of::<Self>() * 8 }
 }
 
 impl Uint for u128
@@ -2010,8 +2010,8 @@ impl Uint for u128
     fn max() -> Self            { Self::MAX }
     fn min() -> Self            { Self::MIN }
     fn num(n: u128) -> Self     { n as Self }
-    fn size_in_bytes() -> usize { size_of::<Self>() }
-    fn size_in_bits() -> usize  { size_of::<Self>() * 8 }
+    #[inline] fn size_in_bytes() -> usize { size_of::<Self>() }
+    #[inline] fn size_in_bits() -> usize  { size_of::<Self>() * 8 }
 }
 
 impl Uint for usize
@@ -2356,8 +2356,8 @@ impl Uint for usize
     fn max() -> Self            { Self::MAX }
     fn min() -> Self            { Self::MIN }
     fn num(n: u128) -> Self     { n as Self }
-    fn size_in_bytes() -> usize { size_of::<Self>() }
-    fn size_in_bits() -> usize  { size_of::<Self>() * 8 }
+    #[inline] fn size_in_bytes() -> usize { size_of::<Self>() }
+    #[inline] fn size_in_bits() -> usize  { size_of::<Self>() * 8 }
 }
 
 

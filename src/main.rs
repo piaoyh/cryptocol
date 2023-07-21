@@ -2,18 +2,23 @@ use std::time::SystemTime;
 use std::fmt::{ Display, Debug };
 use std::ops::*;
 use std::convert::*;
-//use std::mem::size_of;
+use std::mem::size_of;
 
 mod number;
-
-//#[macro_export]
-
-//use number::*;
 use Cryptocol::number::{Uint, UShort, BigUInt}; //{u256, BigInteger, HugeInteger};
 
-//use Cryptocol::number::BigUInt;
+fn main()
+{
+    define_utypes_with!(u128);
+     let a = u1024::zero();
+     if a.is_zero()
+         { println!("a is Zero"); }
+     else
+         { println!("a is Not Zero"); }
+     assert!(a.is_zero());
+}
 
-
+/*
 fn func<T: Uint + Add<Output = T>>(lhs: T, rhs: T) -> T
 {
     lhs + rhs
@@ -25,7 +30,9 @@ fn func2<T: Uint>(lhs: T, rhs: T) -> T
 
 fn main()
 {
-    define_utypes_with_u128!();
+
+
+
     let a = 100;
     let b = a % -3;
     let c = "123456789012".parse::<u256>().unwrap();
@@ -64,9 +71,6 @@ fn main()
     assert_eq!(d_high, 12345678901234569124);
     assert_eq!(d_low, 6789012345678919134);
     assert_eq!(carry, false);
-    println!("Random number = {}", u1024::random());
-    println!("Random number = {}", u1024::random_with_MSB_set());
-    
 }
 
 fn add_long<T: Uint>(lhs_high: T, lhs_low: T, rhs_high: T, rhs_low: T) -> (T, T, bool)
@@ -78,7 +82,7 @@ fn add_long<T: Uint>(lhs_high: T, lhs_low: T, rhs_high: T, rhs_low: T) -> (T, T,
     (sum_high, carry) = lhs_high.carrying_add(rhs_high, carry);
     (sum_high, sum_low, carry)
 }
-/*
+
 fn main()
 {
     let a = func(50_u128, 4_u128);
