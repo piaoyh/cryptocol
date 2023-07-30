@@ -256,6 +256,7 @@ pub struct BigUInt<T, const N: usize>
 where T: Uint + Clone + Display + Debug + ToString
         + Add<Output=T> + AddAssign + Sub<Output=T> + SubAssign
         + Mul<Output=T> + MulAssign + Div<Output=T> + DivAssign
+        + Rem<Output=T> + RemAssign
         + Shl<Output=T> + ShlAssign + Shr<Output=T> + ShrAssign
         + BitAnd<Output=T> + BitAndAssign + BitOr<Output=T> + BitOrAssign
         + BitXor<Output=T> + BitXorAssign + Not<Output=T>
@@ -269,6 +270,7 @@ impl<T, const N: usize> BigUInt<T, N>
 where T: Uint + Clone + Display + Debug + ToString
         + Add<Output=T> + AddAssign + Sub<Output=T> + SubAssign
         + Mul<Output=T> + MulAssign + Div<Output=T> + DivAssign
+        + Rem<Output=T> + RemAssign
         + Shl<Output=T> + ShlAssign + Shr<Output=T> + ShrAssign
         + BitAnd<Output=T> + BitAndAssign + BitOr<Output=T> + BitOrAssign
         + BitXor<Output=T> + BitXorAssign + Not<Output=T>
@@ -282,7 +284,6 @@ where T: Uint + Clone + Display + Debug + ToString
         + BitAnd<Self, Output = Self> + BitAndAssign + BitOr<Output = Self> + BitOrAssign
         + BitXorAssign + Not<Output = Self>
         + From<T> + FromStr + From<[T; N]>
-        //+ HugeInteger<T> + BigInteger<T, N>
 {
     /***** CONSTANTS FOR FLAGS *****/
 
@@ -536,6 +537,7 @@ where T: Uint + Clone + Display + Debug + ToString
     where U: Uint + Clone + Display + Debug + ToString
             + Add<Output=U> + AddAssign + Sub<Output=U> + SubAssign
             + Mul<Output=U> + MulAssign + Div<Output=U> + DivAssign
+            + Rem<Output=U> + RemAssign
             + Shl<Output=U> + ShlAssign + Shr<Output=U> + ShrAssign
             + BitAnd<Output=U> + BitAndAssign + BitOr<Output=U> + BitOrAssign
             + BitXor<Output=U> + BitXorAssign + Not<Output=U>
@@ -583,6 +585,7 @@ where T: Uint + Clone + Display + Debug + ToString
     where U: Uint + Clone + Display + Debug + ToString
             + Add<Output=U> + AddAssign + Sub<Output=U> + SubAssign
             + Mul<Output=U> + MulAssign + Div<Output=U> + DivAssign
+            + Rem<Output=U> + RemAssign
             + Shl<Output=U> + ShlAssign + Shr<Output=U> + ShrAssign
             + BitAnd<Output=U> + BitAndAssign + BitOr<Output=U> + BitOrAssign
             + BitXor<Output=U> + BitXorAssign + Not<Output=U>
@@ -603,6 +606,39 @@ where T: Uint + Clone + Display + Debug + ToString
         }
         me
     }
+
+    /// Constucts a new `BigUInt<T, N>` which has the value zero and sets only
+    /// the bit specified by the argument bit_pos to be 1.
+    /// 
+    /// # Bit Position
+    /// The bit positon bit_pos is zero-based and should be counted from LSB
+    /// (Least Significant Bit) reguardless endian. So, if the bit_pos is `0`,
+    /// only LSB is set to be `1` and all the other bits will be set to `0`.
+    /// 
+    /// # Big-endian issue
+    /// It is just experimental for Big Endian CPUs. So, you are not encouraged
+    /// to use it for serious purpose. Only use this crate for Big-endian CPUs
+    /// 
+    /// # Example
+    /// ```
+    /// use Cryptocol::number::*;
+    /// use Cryptocol::define_utypes_with_u8;
+    /// 
+    /// define_utypes_with_u8!();
+    /// let a = u256::make_check_bits(12);
+    /// println!("a = {}", a.to_string_with_radix_and_stride(2, 8));
+    /// assert_eq!(a, u256::from_str_radix("10000_00000000", 2).unwrap());
+    /// ```
+    pub fn make_check_bits(bit_pos: usize) -> Self
+    {
+        let mut check_bits = Self::zero();
+        check_bits.turn_check_bits(bit_pos);
+        check_bits
+    }
+
+
+
+    /***** METHODS FOR GENERATING RANDOM PRIME NUMBERS *****/
 
     /// Constucts a new `BigUInt<T, N>` which has the random value.
     /// The random number that this method random() returns is a pure random
@@ -637,45 +673,27 @@ where T: Uint + Clone + Display + Debug + ToString
     pub fn random() -> Self
     {
         let mut r = Self::new();
-        match T::size_in_bytes()
-        {
-            1 => {
-                    let mut common = UInt::new();
-                    for i in 0..N
-                    {
-                        common.uint = OsRng.next_u32();
-                        unsafe { r.set_num_(i, T::num(common.byte[0] as u128)); }
-                    }
-                },
-            2 => {
-                    let mut common = UInt::new();
-                    for i in 0..N
-                    {
-                        common.uint = OsRng.next_u32();
-                        unsafe { r.set_num_(i, T::num(common.ushort[0] as u128)); }
-                    }
-                },
-            4 => {
-                    for i in 0..N
-                        { r.set_num_(i, T::num(OsRng.next_u32() as u128)); }
-                },
-            8 => {
-                    for i in 0..N
-                        { r.set_num_(i, T::num(OsRng.next_u64() as u128)); }
-                },
-            16 => {
-                    for i in 0..N
-                    {
-                        let mut common = ULonger::new();
-                        unsafe {
-                            common.ulong[0] = OsRng.next_u64();
-                            common.ulong[1] = OsRng.next_u64();
-                            r.set_num_(i, T::num(common.ulonger));
-                        }
-                    }
-                },
-            _ => { r.set_zero() },
-        }
+        r.randomize();
+        r
+    }
+
+    pub fn odd_random() -> Self
+    {
+        let mut r = Self::random();
+        r.set_LSB();
+        r
+    }
+
+    #[inline]
+    pub fn random_less_than(ceiling: &Self) -> Self
+    {
+        Self::random() % *ceiling
+    }
+
+    pub fn odd_random_less_than(ceiling: &Self) -> Self
+    {
+        let mut r = Self::random_less_than(ceiling);
+        r.set_LSB();
         r
     }
 
@@ -719,39 +737,115 @@ where T: Uint + Clone + Display + Debug + ToString
     pub fn random_with_MSB_set() -> Self
     {
         let mut r = Self::random();
-        let highest = r.get_num_(N-1);
-        let msb = !(T::max() >> T::one());
-        r.set_num_(N-1, highest | msb);
+        r.set_MSB();
         r
     }
 
-    /// Constucts a new `BigUInt<T, N>` which has the value zero and sets only
-    /// the bit specified by the argument bit_pos to be 1.
-    /// 
-    /// # Bit Position
-    /// The bit positon bit_pos is zero-based and should be counted from LSB
-    /// (Least Significant Bit) reguardless endian. So, if the bit_pos is `0`,
-    /// only LSB is set to be `1` and all the other bits will be set to `0`.
-    /// 
-    /// # Big-endian issue
-    /// It is just experimental for Big Endian CPUs. So, you are not encouraged
-    /// to use it for serious purpose. Only use this crate for Big-endian CPUs
-    /// 
-    /// # Example
-    /// ```
-    /// use Cryptocol::number::*;
-    /// use Cryptocol::define_utypes_with_u8;
-    /// 
-    /// define_utypes_with_u8!();
-    /// let a = u256::make_check_bits(12);
-    /// println!("a = {}", a.to_string_with_radix_and_stride(2, 8));
-    /// assert_eq!(a, u256::from_str_radix("10000_00000000", 2).unwrap());
-    /// ```
-    pub fn make_check_bits(bit_pos: usize) -> Self
+    pub fn odd_random_with_MSB_set() -> Self
     {
-        let mut check_bits = Self::zero();
-        check_bits.turn_check_bits(bit_pos);
-        check_bits
+        let mut r = Self::random_with_MSB_set();
+        r.set_LSB();
+        r
+    }
+
+    fn random_prime_Miller_Rabin(repetition: usize) -> Self
+    {
+        let mut complete = false;
+        let mut res = Self::new();
+        while !complete
+        {
+            res.randomize();
+            res.set_MSB();
+            res.set_LSB();
+            complete = res.is_prime_Miller_Rabin(repetition);
+        }
+        res
+    }
+
+    fn randomize(&mut self)
+    {
+        match T::size_in_bytes()
+        {
+            1 => {
+                    let mut common = UInt::new();
+                    for i in 0..N
+                    {
+                        common.uint = OsRng.next_u32();
+                        unsafe { self.set_num_(i, T::num(common.byte[0] as u128)); }
+                    }
+                },
+            2 => {
+                    let mut common = UInt::new();
+                    for i in 0..N
+                    {
+                        common.uint = OsRng.next_u32();
+                        unsafe { self.set_num_(i, T::num(common.ushort[0] as u128)); }
+                    }
+                },
+            4 => {
+                    for i in 0..N
+                        { self.set_num_(i, T::num(OsRng.next_u32() as u128)); }
+                },
+            8 => {
+                    for i in 0..N
+                        { self.set_num_(i, T::num(OsRng.next_u64() as u128)); }
+                },
+            16 => {
+                    for i in 0..N
+                    {
+                        let mut common = ULonger::new();
+                        unsafe {
+                            common.ulong[0] = OsRng.next_u64();
+                            common.ulong[1] = OsRng.next_u64();
+                            self.set_num_(i, T::num(common.ulonger));
+                        }
+                    }
+                },
+            _ => { self.set_zero() },
+        }
+    }
+
+    pub fn is_prime_Miller_Rabin(&self, repetition: usize) -> bool
+    {
+        if self.is_zero_or_one()
+            { return false; }
+        
+        if self.is_uint(T::num(2)) ||  self.is_uint(T::num(3))
+            { return true; }
+
+        // n-1 = (2^s) * d 로 표현하기 위한 과정
+        let mut d = self.sub_uint(T::one());
+        let self_minus_one = self.sub_uint(T::one());
+        d.shift_right_assign(d.trailing_zeros());
+        let mut rand_num: Self;
+        for _ in 0..repetition
+        {
+            rand_num = Self::random_less_than(&(self.sub_uint(T::num(4)))).add_uint(T::num(2));
+
+            // a^d % n을 계산
+            let mut x = rand_num.pow(d) % *self;
+
+            // x가 1이거나 n-1이라면 다음 반복으로 넘어감
+            if x.is_one() || x == self_minus_one
+                { continue; }
+
+            // 반복적으로 a^(2^r * d) % n을 계산
+            while d != self_minus_one
+            {
+                x = (x * x) % *self;
+                d.times(T::num(2));
+
+                if x.is_one()
+                    { return false; }
+                if x == self_minus_one
+                    { break; }
+            }
+
+            if x != self_minus_one
+                { return false; }
+        }
+
+        true
     }
 
 
@@ -1388,13 +1482,13 @@ where T: Uint + Clone + Display + Debug + ToString
         {
             Excluded(s) =>  { start = (N - s); },
             Included(s) =>  { start = (N - 1 - s); },
-            Unbounded =>            { start = 0; }
+            Unbounded =>    { start = 0; }
         }
         match src.start_bound()
         {
             Excluded(s) =>  { end = (N - s); },
             Included(s) =>  { end = (N - 1 - s); },
-            Unbounded =>            { end = N - 1; }
+            Unbounded =>    { end = N - 1; }
         }
         let new_src = Range::<&usize> { start: &start, end: &end };
         let new_dest = N - 1 - dest;
@@ -1447,6 +1541,19 @@ where T: Uint + Clone + Display + Debug + ToString
     }
 
     /// Sets `BigUInt` to be one.
+    /// 
+    /// # Example
+    /// ```
+    /// use Cryptocol::number::BigUInt;
+    /// use Cryptocol::define_utypes_with;
+    /// define_utypes_with!(u16);
+    /// let mut a = u256::new();
+    /// a.set_number(&[1_u16, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16]);
+    /// println!("a = {}", a);
+    /// a.set_one();
+    /// println!("a = {}", a);
+    /// assert_eq!(a, u256::one());
+    /// ```
     #[cfg(target_endian = "little")]
     pub fn set_one(&mut self)
     {
@@ -1456,6 +1563,24 @@ where T: Uint + Clone + Display + Debug + ToString
     }
 
     /// Sets BigUInt to be one.
+    /// 
+    /// # Big-endian issue
+    /// It is just experimental for Big Endian CPUs. So, you are not encouraged
+    /// to use it for serious purpose. Only use this crate for Big-endian CPUs
+    /// with your own full responsibility.
+    /// 
+    /// # Example
+    /// ```
+    /// use Cryptocol::number::BigUInt;
+    /// use Cryptocol::define_utypes_with;
+    /// define_utypes_with!(u16);
+    /// let mut a = u256::new();
+    /// a.set_number(&[1_u16, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16]);
+    /// println!("a = {}", a);
+    /// a.set_one();
+    /// println!("a = {}", a);
+    /// assert_eq!(a, u256::one());
+    /// ```
     #[cfg(target_endian = "big")]
     pub fn set_one(&mut self)
     {
@@ -1465,8 +1590,20 @@ where T: Uint + Clone + Display + Debug + ToString
     }
 
     /// Checks whether `BigUInt` to be one and returns true if it is
-    /// one, and returns false if it is not one. 
-    #[cfg(target_endian = "little")]
+    /// one, and returns false if it is not one.
+    /// 
+    /// # Example
+    /// ```
+    /// use Cryptocol::number::BigUInt;
+    /// use Cryptocol::define_utypes_with;
+    /// define_utypes_with!(u128);
+    /// let a = u1024::one();
+    /// if a.is_one()
+    ///     { println!("a is One"); }
+    /// else
+    ///     { println!("a is Not One"); }
+    /// assert!(a.is_one());
+    /// ```
     pub fn is_one(&self) -> bool
     {
         if self.get_num_(0) != T::one()
@@ -1480,15 +1617,27 @@ where T: Uint + Clone + Display + Debug + ToString
         true
     }
 
-    /// Checks whether `BigUInt` to be one and returns true if it is
-    /// one, and returns false if it is not one. 
-    #[cfg(target_endian = "big")]
-    pub fn is_one(&self) -> bool
+    /// Checks whether `BigUInt` to be either zero or one and returns true if it
+    /// is either zero or one. Otherwise, it returns false.
+    /// 
+    /// # Example
+    /// ```
+    /// use Cryptocol::number::BigUInt;
+    /// use Cryptocol::define_utypes_with;
+    /// define_utypes_with!(u128);
+    /// let a = u1024::one();
+    /// if a.is_zero_or_one()
+    ///     { println!("a is One or Zero."); }
+    /// else
+    ///     { println!("a is Neither One nor Zero."); }
+    /// assert!(a.is_zero_or_one());
+    /// ```
+    fn is_zero_or_one(&self) -> bool
     {
-        if self.get_num_(N-1) != T::one()
+        if self.get_num_(0) <= T::one()
             { return false; }
 
-        for i in 0..N-1
+        for i in 1..N
         {
             if self.get_num_(i) != T::zero()
                 { return false; }
@@ -1496,10 +1645,10 @@ where T: Uint + Clone + Display + Debug + ToString
         true
     }
 
-    /// Sets `BigUInt`-typed number to be maximum value.
+    /// Sets `BigUInt`-type number to be maximum value in which all bits are
+    /// set to be `1`.
     /// 
     /// # Examples
-    /// 
     /// ```
     /// use Cryptocol::define_utypes_with;
     /// define_utypes_with!(u128);
@@ -1513,10 +1662,9 @@ where T: Uint + Clone + Display + Debug + ToString
             { self.set_num(i, T::max()); }
     }
 
-    /// Checks whether or not `BigUInt`-typed number to be maximum value.
+    /// Checks whether or not `BigUInt`-type number to be maximum value.
     /// 
     /// # Examples
-    /// 
     /// ```
     /// use Cryptocol::define_utypes_with;
     /// define_utypes_with!(u128);
@@ -1534,21 +1682,98 @@ where T: Uint + Clone + Display + Debug + ToString
         true
     }
 
-    #[cfg(target_endian = "little")]
+    /// Sets the MSB (Most Significant Bit) of `BigUInt`-type number with `1`.
+    /// 
+    /// # Big-endian issue
+    /// It is just experimental for Big Endian CPUs. So, you are not encouraged
+    /// to use it for serious purpose. Only use this crate for Big-endian CPUs
+    /// with your own full responsibility.
+    pub fn set_MSB(&mut self)
+    {
+        let highest = self.get_num_(N-1);
+        let msb = !(T::max() >> T::one());
+        self.set_num_(N-1, highest | msb);
+    }
+
+    /// Sets the LSB (Least Significant Bit) of `BigUInt`-type number with `1`.
+    /// 
+    /// # Big-endian issue
+    /// It is just experimental for Big Endian CPUs. So, you are not encouraged
+    /// to use it for serious purpose. Only use this crate for Big-endian CPUs
+    /// with your own full responsibility.
+    pub fn set_LSB(&mut self)
+    {
+        let lowest = self.get_num_(0);
+        let lsb = T::one();
+        self.set_num_(0, lowest | lsb);
+    }
+
+    /// Sets `BigUInt`-type number with `T`-type small value such as `u8`,
+    /// `u16`, `u32`, `u64`, and `u128` type value. This mathod set_uint()
+    /// is useful especially when you initialize `BigUInt`-type big
+    /// unsigned integer with a small value.
+    /// 
+    /// # Example
+    /// ```
+    /// use Cryptocol::define_utypes_with;
+    /// define_utypes_with!(u8);
+    /// let mut a = u1024::new();
+    /// a.set_uint(25);
+    /// let b = u1024::from(25_u8);
+    /// println!("a = {}", a);
+    /// assert_eq!(a, b);
+    /// ```
     pub fn set_uint(&mut self, val: T)
     {
         self.set_zero();
-        self.set_num(0, val);
+        self.set_num_(0, val);
     }
-
+    
+    /// Sets `BigUInt`-type number with `T`-type small value such as `u8`,
+    /// `u16`, `u32`, `u64`, and `u128` type value. This mathod set_uint()
+    /// is useful especially when you initialize `BigUInt`-type big
+    /// unsigned integer with a small value.
+    /// 
+    /// # Big-endian issue
+    /// It is just experimental for Big Endian CPUs. So, you are not encouraged
+    /// to use it for serious purpose. Only use this crate for Big-endian CPUs
+    /// with your own full responsibility.
+    /// 
+    /// # Example
+    /// ```
+    /// use Cryptocol::define_utypes_with;
+    /// define_utypes_with!(u8);
+    /// let mut a = u1024::new();
+    /// a.set_uint(25);
+    /// let b = u1024::from(25_u8);
+    /// println!("a = {}", a);
+    /// assert_eq!(a, b);
+    /// ```
     #[cfg(target_endian = "big")]
-    pub fn set_uint(&mut self, val: T)
+    pub fn _set_uint(&mut self, val: T)
     {
         self.set_zero();
-        self.set_num(N-1, val);
+        self._set_num_(N-1, val);
     }
 
-    #[cfg(target_endian = "little")]
+    /// Check whether the `BigUInt`-type number is equal to `T`-type number.
+    /// It will return `true`, if it is equal to the `T`-type number. Otherwise,
+    /// it will return `false`.
+    /// 
+    /// # Counter Part Method
+    /// This method is_uint() is virtually the same the method [eq_uint()](struct@BigUInt#method.eq_uint).
+    /// However, you may want to use this method is_uint() rather than [eq_uint()](struct@BigUInt#method.eq_uint),
+    /// if you know that this method is_uint() is a bit faster than [eq_uint()](struct@BigUInt#method.eq_uint),
+    /// 
+    /// # Example
+    /// ```
+    /// define_utypes_with!(u128);
+    /// let mut a = u1024::new();
+    /// a.set_uint(25);
+    /// if a.is_uint(25u128)   { println!("They are the same."); }
+    /// else                   { println!("They are differnt."); }
+    /// assert!(a.is_uint(25_u128));
+    /// ```
     pub fn is_uint(&self, val: T) -> bool
     {
         if self.get_num_(0) != val
@@ -1566,28 +1791,143 @@ where T: Uint + Clone + Display + Debug + ToString
         }
     }
 
-    #[cfg(target_endian = "big")]
-    pub fn is_uint(&self, val: T) -> bool
+    /// Checks whether the `BigUInt`-type number is an odd number.
+    /// It will return `true`, if it is odd. Otherwise, it will return `false`.
+    /// 
+    /// # Example
+    /// ```
+    /// define_utypes_with!(u128);
+    /// let mut a = u1024::new();
+    /// a.set_uint(25);
+    /// if a.is_odd()
+    ///     { println!("a is odd"); }
+    /// else
+    ///     { println!("a is even"); }
+    /// assert!(a.is_odd());
+    /// ```
+    #[inline]
+    pub fn is_odd(&self) -> bool
     {
-        if self.get_num(N-1) != val
-        {
-            false
-        }
-        else
-        {
-            for i in 0..N-1
-            {
-                if self.get_num(i) != T::zero()
-                    { return false; }
-            }
-            true
-        }
+        self.get_num_(0).is_odd()
     }
+
+    /// Checks whether the `BigUInt`-type number is an even number.
+    /// It will return `true`, if it is even. Otherwise, it will return `false`.
+    /// 
+    /// # Example
+    /// ```
+    /// define_utypes_with!(u128);
+    /// let mut a = u1024::new();
+    /// a.set_uint(24);
+    /// if a.is_even()
+    ///     { println!("a is even"); }
+    /// else
+    ///     { println!("a is odd"); }
+    /// assert!(a.is_even());
+    /// ```
+    #[inline]
+    pub fn is_even(&self) -> bool
+    {
+        !self.is_odd()
+    }
+
+    pub fn count_ones(&self) -> u32
+    {
+        let mut res = 0_u32;
+        for i in 0..N
+            { res += self.number[i].count_ones(); }
+        res
+    }
+
+    pub fn count_zeros(&self) -> u32
+    {
+        let mut res = 0_u32;
+        for i in 0..N
+            { res += self.number[i].count_zeros(); }
+        res
+    }
+
+    pub fn leading_ones(&self) -> u32
+    {
+        let mut res = 0_u32;
+        let mut i = N-1;
+        while i != 0
+        {
+            if self.get_num_(i) == T::max()
+            {
+                res += T::size_in_bits().into_u32();
+            }
+            else
+            {
+                res += self.get_num_(i).leading_ones();
+                break;
+            }
+            i -= 1;
+        }
+        res
+    }
+
+    pub fn leading_zeros(&self) -> u32
+    {
+        let mut res = 0_u32;
+        let mut i = N-1;
+        while i != 0
+        {
+            if self.get_num_(i) == T::zero()
+            {
+                res += T::size_in_bits().into_u32();
+            }
+            else
+            {
+                res += self.get_num_(i).leading_zeros();
+                break;
+            }
+            i -= 1;
+        }
+        res
+    }
+
+    pub fn trailing_ones(&self) -> u32
+    {
+        let mut res = 0_u32;
+        for i in 0..N
+        {
+            if self.get_num_(i) == T::max()
+            {
+                res += T::size_in_bits().into_u32();
+            }
+            else
+            {
+                res += self.get_num_(i).trailing_ones();
+                break;
+            }
+        }
+        res
+    }
+
+    pub fn trailing_zeros(&self) -> u32
+    {
+        let mut res = 0_u32;
+        for i in 0..N
+        {
+            if self.get_num_(i) == T::zero()
+            {
+                res += T::size_in_bits().into_u32();
+            }
+            else
+            {
+                res += self.get_num_(i).trailing_zeros();
+                break;
+            }
+        }
+        res
+    }
+
 
 
     /***** METHODS FOR COMPARISON WITH UINT *****/
 
-    /// Compares BigUInt or BigInt with a value of type T and returns the
+    /// Compares BigUInt with a value of type T and returns the
     /// result of the comparison in the type `Option<Ordering>`. However, you'd
     /// better use the functions lt_uint(), gt_uint(), le_uint(), ge_uint(),
     /// and eq_uint(). Then, you don't have to use partial_cmp_uint() directly.
@@ -1636,6 +1976,15 @@ where T: Uint + Clone + Display + Debug + ToString
 
     
     /***** ARITHMATIC OPERATIONS WITH UNSIGNED INTEGERS *****/
+
+    /// Computes the absolute difference between self and other.
+    fn abs_diff(&self, other: &Self) -> Self
+    {
+        if self < other
+            { *other - *self }
+        else
+            { *self - *other }
+    }
 
     /// Accumulates or adds rhs of type `T` to self which is of `BigUInt` type.
     pub fn accumulate(&mut self, rhs: T)
@@ -1842,7 +2191,7 @@ where T: Uint + Clone + Display + Debug + ToString
         remainder
     }
 
-    /// Adds a unsigned integer number of type `T` to `BigUInt`-typed unsigned
+    /// Adds a unsigned integer number of type `T` to `BigUInt`-type unsigned
     /// integer and returns its result in a type of BigUInt.
     /// 
     /// # Examples
@@ -1863,7 +2212,7 @@ where T: Uint + Clone + Display + Debug + ToString
         bi
     }
 
-    /// Subtracts a unsigned integer number of type `T` from `BigUInt`-typed
+    /// Subtracts a unsigned integer number of type `T` from `BigUInt`-type
     /// unsigned integer and returns its result in a type of BigUInt.
     /// 
     /// # Examples
@@ -1883,7 +2232,7 @@ where T: Uint + Clone + Display + Debug + ToString
         bi
     }
 
-    /// Multiplies `BigUInt`-typed number with a unsigned integer number
+    /// Multiplies `BigUInt`-type number with a unsigned integer number
     /// of type `T` and returns its result in a type of BigUInt.
     /// 
     /// # Examples
@@ -1902,7 +2251,7 @@ where T: Uint + Clone + Display + Debug + ToString
         bi
     }
 
-    /// Divides `BigUInt`-typed number with a unsigned integer number
+    /// Divides `BigUInt`-type number with a unsigned integer number
     /// of type `T` and returns its quotient in a type of BigUInt.
     /// 
     /// # Examples
@@ -1921,7 +2270,7 @@ where T: Uint + Clone + Display + Debug + ToString
         quotient
     }
 
-    /// Divides `BigUInt`-typed number with a unsigned integer number
+    /// Divides `BigUInt`-type number with a unsigned integer number
     /// of type `T` and returns its remainder in a type of T.
     /// 
     /// # Examples
@@ -1939,8 +2288,181 @@ where T: Uint + Clone + Display + Debug + ToString
         remainder
     }
 
-    
-    /***** SUPPLIMENTARY ARITHMATIC OPERATIONS WITH BigUInt *****/
+    /// Raises `BigUInt` type number to the power of exp, using exponentiation
+    /// of type `T` by squaring.
+    pub fn pow_uint(&mut self, rhs: u128) -> Self
+    {
+        if self.is_zero() || self.is_one()
+            { return self.clone(); }
+
+        let mut res = Self::one();
+        if rhs == 0
+            { return res; }
+
+        let mut bit_check = 1;
+        bit_check <<= (rhs.length_in_bits() - rhs.leading_zeros() as usize - 1);
+        if bit_check != 0
+        {
+            res *= *self; 
+            bit_check >>= 1;
+        }
+        while bit_check != 0
+        {
+            res *= res;
+            if (bit_check & rhs) != 0
+                { res *= *self; }
+            bit_check >>= 1;
+        }
+        res
+    }
+
+    /// Raises `BigUInt` type number to the power of exp, using exponentiation
+    /// of type `BigUInt` by squaring.
+    pub fn pow(&mut self, rhs: Self) -> Self
+    {
+        if self.is_zero() || self.is_one()
+            { return self.clone(); }
+
+        let mut res = Self::one();
+        if rhs.is_zero()
+            { return res; }
+
+        let mut bit_check = Self::one();;
+        bit_check <<= (rhs.length_in_bits() - rhs.leading_zeros() as usize - 1) as i32;
+        if !bit_check.is_zero()
+        {
+            res *= *self; 
+            bit_check >>= 1;
+        }
+        while !bit_check.is_zero()
+        {
+            res *= res;
+            if !(bit_check & rhs).is_zero()
+                { res *= *self; }
+            bit_check >>= 1;
+        }
+        res
+    }
+
+
+
+    /***** ARITHMATIC OPERATIONS WITH BigUInt *****/
+
+    /*** ADDITION ***/
+
+    /// Wrapping (modular) addition. Computes self + rhs, wrapping around
+    /// at the boundary of the type.
+    /// 
+    /// # Big-endian issue
+    /// It is just experimental for Big Endian CPUs. So, you are not encouraged
+    /// to use it for serious purpose. Only use this crate for Big-endian CPUs
+    /// with your own full responsibility.
+    /// 
+    /// # Example
+    /// ```
+    /// use Cryptocol::define_utypes_with;
+    /// define_utypes_with!(u128);
+    /// 
+    /// let a = u512::max() - u512::from(1_u128);
+    /// 
+    /// println!("{} + 1 = {}", a, a.wrapping_add(u512::from(1_u128)));
+    /// assert_eq!(a.wrapping_add(u512::from(1_u128)), u512::max());
+    /// 
+    /// println!("{} + 2 = {}", a, a.wrapping_add(u512::from(2_u128)));
+    /// assert_eq!(a.wrapping_add(u512::from(2_u128)), u512::zero());
+    /// 
+    /// println!("{} + 3 = {}", a, a.wrapping_add(u512::from(3_u128)));
+    /// assert_eq!(a.wrapping_add(u512::from(3_u128)), u512::one());
+    /// ```
+    /// 
+    /// # References
+    /// - If you want to know about the declaration of the method `wrapping_add()`
+    /// in trait `Uint`, read [here](trait@Uint#method.wrapping_add).
+    pub fn wrapping_add(&self, rhs: Self) -> Self
+    {
+        let mut res = self.clone();
+        res.wrapping_add_assign(rhs);
+        res
+    }
+
+    /// Wrapping (modular) addition. Computes self + rhs, wrapping around
+    /// at the boundary of the type.
+    /// 
+    /// # Example
+    /// ```
+    /// use std::str::FromStr;
+    /// use Cryptocol::define_utypes_with;
+    /// define_utypes_with!(u128);
+    /// let mut a = u256::max() - u256::from(1_u128);
+    /// println!("Originally,\ta = {}", a);
+    /// 
+    /// a.wrapping_add_assign(u256::from(1_u128));
+    /// println!("After a += 1,\ta = {}", a);
+    /// assert_eq!(a, u256::from_str("347376267711948586270712955026063723559809953996921692118372752023739388919807").unwrap());
+    /// 
+    /// a.wrapping_add_assign(u256::from(1_u128));
+    /// println!("After a += 1,\ta = {}", a);
+    /// assert_eq!(a, u256::zero());
+    /// 
+    /// a.wrapping_add_assign(u256::from(1_u128));
+    /// println!("After a += 1,\ta = {}", a);
+    /// assert_eq!(a, u256::one());
+    /// ```
+    #[inline]
+    pub fn wrapping_add_assign(&mut self, rhs: Self)
+    {
+        self.carrying_add_assign(rhs, false);
+    /*
+        let zero = T::zero();
+        let mut midres: T;
+        let mut cc = zero;
+        let mut c: bool;
+        for i in 0..N
+        {
+            midres = self.number[i].wrapping_add(rhs.number[i]);
+            c = midres < self.number[i];
+            midres = midres.wrapping_add(carry);
+            cc = if c || (midres < cc) { T::one() } else { zero };
+            self.number[i] = midres;
+        }
+        if cc != zero
+            { self.set_overflow(); }
+    */
+    }
+
+    pub fn overflowing_add(self, rhs: Self) -> (Self, bool)
+    {
+        let mut res = self.clone();
+        let overflow = res.overflowing_add_assign(rhs);
+        (res, overflow)
+    }
+
+    pub fn overflowing_add_assign(&mut self, rhs: Self) -> bool
+    {
+        self.wrapping_add_assign(rhs);
+        self.is_overflow()
+    }
+
+    pub fn carrying_add(self, rhs: Self, carry: bool) -> (Self, bool)
+    {
+        let mut res = self.clone();
+        let c = res.carrying_add_assign(rhs, carry);
+        (res, c)
+    }
+
+    pub fn carrying_add_assign(&mut self, rhs: Self, carry: bool) -> bool
+    {
+        let mut c = carry;
+        let mut num: T;
+        for i in 0..N
+        {
+            (num, c) = self.get_num_(i).carrying_add(rhs.get_num_(i), c);
+            self.set_num_(i, num);
+        }
+        if c
+            { self.set_overflow(); }
+        c
+    }
 
     /// Divides self which is of `BigUInt` type by rhs which is of `BigUInt`
     /// type, and returns quotient and remainder which are `BigUInt`type.
@@ -2058,12 +2580,196 @@ where T: Uint + Clone + Display + Debug + ToString
     }
 
 
+
+    /***** METHODS FOR BIT OPERATION *****/
+
+    pub fn shift_left<U>(&self, n: U) -> Self
+    where U: Uint + Clone + Display + Debug + ToString
+            + Add<Output=U> + AddAssign + Sub<Output=U> + SubAssign
+            + Mul<Output=U> + MulAssign + Div<Output=U> + DivAssign
+            + Rem<Output=U> + RemAssign
+            + Shl<Output=U> + ShlAssign + Shr<Output=U> + ShrAssign
+            + BitAnd<Output=U> + BitAndAssign + BitOr<Output=U> + BitOrAssign
+            + BitXor<Output=U> + BitXorAssign + Not<Output=U>
+            + PartialEq + PartialOrd
+    {
+        let mut res = self.clone();
+        res.shift_left_assign(n);
+        res
+    }
+
+    pub fn shift_left_assign<U>(&mut self, n: U)
+    where U: Uint + Clone + Display + Debug + ToString
+            + Add<Output=U> + AddAssign + Sub<Output=U> + SubAssign
+            + Mul<Output=U> + MulAssign + Div<Output=U> + DivAssign
+            + Rem<Output=U> + RemAssign
+            + Shl<Output=U> + ShlAssign + Shr<Output=U> + ShrAssign
+            + BitAnd<Output=U> + BitAndAssign + BitOr<Output=U> + BitOrAssign
+            + BitXor<Output=U> + BitXorAssign + Not<Output=U>
+            + PartialEq + PartialOrd
+    {
+        let TSIZE_IN_BITS = T::size_in_bits();
+        let chunk_num = (n / U::num(TSIZE_IN_BITS as u128)).into_usize();
+        let piece_num = (n % U::num(TSIZE_IN_BITS as u128)).into_usize();
+        let zero = T::zero();
+        self.reset_all_flags();
+        if chunk_num > 0
+        {
+            for i in N-chunk_num..N
+            {
+                if self.get_num_(i) > zero
+                {
+                    self.set_overflow();
+                    break;
+                }
+            }
+            self.copy_within(0..N-chunk_num, chunk_num);
+            for idx in 0..chunk_num
+                { self.set_num_(idx, zero); }
+        }
+        if piece_num == 0
+            { return; }
+        if (self.get_num_(N-1) >> T::num((TSIZE_IN_BITS - piece_num).into_u128())) != zero
+            { self.set_overflow(); }
+
+        let mut num: T;
+        let mut carry = zero;
+        for idx in chunk_num..N
+        {
+            num = (self.get_num_(idx) << T::num(piece_num.into_u128())) | carry;
+            carry = self.get_num_(idx) >> T::num((TSIZE_IN_BITS - piece_num).into_u128());
+            self.set_num_(idx, num);
+        }
+        if carry != zero
+            { self.set_overflow(); }
+    }
+
+    pub fn shift_right<U>(&self, n: U) -> Self
+    where U: Uint + Clone + Display + Debug + ToString
+            + Add<Output=U> + AddAssign + Sub<Output=U> + SubAssign
+            + Mul<Output=U> + MulAssign + Div<Output=U> + DivAssign
+            + Rem<Output=U> + RemAssign
+            + Shl<Output=U> + ShlAssign + Shr<Output=U> + ShrAssign
+            + BitAnd<Output=U> + BitAndAssign + BitOr<Output=U> + BitOrAssign
+            + BitXor<Output=U> + BitXorAssign + Not<Output=U>
+            + PartialEq + PartialOrd
+    {
+        let mut res = self.clone();
+        res.shift_right_assign(n);
+        res
+    }
+
+    pub fn shift_right_assign<U>(&mut self, n: U)
+    where U: Uint + Clone + Display + Debug + ToString
+            + Add<Output=U> + AddAssign + Sub<Output=U> + SubAssign
+            + Mul<Output=U> + MulAssign + Div<Output=U> + DivAssign
+            + Rem<Output=U> + RemAssign
+            + Shl<Output=U> + ShlAssign + Shr<Output=U> + ShrAssign
+            + BitAnd<Output=U> + BitAndAssign + BitOr<Output=U> + BitOrAssign
+            + BitXor<Output=U> + BitXorAssign + Not<Output=U>
+            + PartialEq + PartialOrd
+    {
+        let TSIZE_IN_BITS = T::size_in_bits();
+        let chunk_num = (n / U::num(TSIZE_IN_BITS as u128)).into_usize();
+        let piece_num = (n % U::num(TSIZE_IN_BITS as u128)).into_usize();
+        let zero = T::zero();
+        self.reset_all_flags();
+        if chunk_num > 0
+        {
+            for i in 0..chunk_num
+            {
+                if self.get_num_(i) > zero
+                {
+                    self.set_underflow();
+                    break;
+                }
+            }
+            self.copy_within(chunk_num..N, 0);
+            for idx in N-chunk_num..N
+                { self.set_num_(idx, zero); }
+        }
+        if piece_num == 0
+            { return; }
+        if (self.get_num_(0) << T::num((TSIZE_IN_BITS - piece_num).into_u128())) != zero
+            { self.set_underflow(); }
+
+        let mut num: T;
+        let mut carry = T::zero();
+        let mut idx = N - 1 - chunk_num;
+        loop
+        {
+            num = (self.get_num_(idx) >> T::num(piece_num.into_u128())) | carry;
+            carry = self.get_num_(idx) << T::num((TSIZE_IN_BITS - piece_num).into_u128());
+            self.set_num_(idx, num);
+            if idx == 0
+                { break; }
+            idx -= 1;
+        }
+        if carry != zero
+            { self.set_underflow(); }
+    }
+
+    pub fn rotate_left<U>(&self, n: U) -> Self
+    where U: Uint + Clone + Display + Debug + ToString
+            + Add<Output=U> + AddAssign + Sub<Output=U> + SubAssign
+            + Mul<Output=U> + MulAssign + Div<Output=U> + DivAssign
+            + Rem<Output=U> + RemAssign
+            + Shl<Output=U> + ShlAssign + Shr<Output=U> + ShrAssign
+            + BitAnd<Output=U> + BitAndAssign + BitOr<Output=U> + BitOrAssign
+            + BitXor<Output=U> + BitXorAssign + Not<Output=U>
+            + PartialEq + PartialOrd
+    {
+       self.shift_left(n) | self.shift_right(U::num((N * 8) as u128 - n.into_u128()))
+    }
+
+    pub fn rotate_left_assign<U>(&mut self, n: U)
+    where U: Uint + Clone + Display + Debug + ToString
+            + Add<Output=U> + AddAssign + Sub<Output=U> + SubAssign
+            + Mul<Output=U> + MulAssign + Div<Output=U> + DivAssign
+            + Rem<Output=U> + RemAssign
+            + Shl<Output=U> + ShlAssign + Shr<Output=U> + ShrAssign
+            + BitAnd<Output=U> + BitAndAssign + BitOr<Output=U> + BitOrAssign
+            + BitXor<Output=U> + BitXorAssign + Not<Output=U>
+            + PartialEq + PartialOrd
+    {
+        self.set_number((self.rotate_left(n).get_number()));
+    }
+
+    pub fn rotate_right<U>(&self, n: U) -> Self
+    where U: Uint + Clone + Display + Debug + ToString
+            + Add<Output=U> + AddAssign + Sub<Output=U> + SubAssign
+            + Mul<Output=U> + MulAssign + Div<Output=U> + DivAssign
+            + Rem<Output=U> + RemAssign
+            + Shl<Output=U> + ShlAssign + Shr<Output=U> + ShrAssign
+            + BitAnd<Output=U> + BitAndAssign + BitOr<Output=U> + BitOrAssign
+            + BitXor<Output=U> + BitXorAssign + Not<Output=U>
+            + PartialEq + PartialOrd
+    {
+       self.shift_right(n) | self.shift_left(U::num((N * 8) as u128 - n.into_u128()))
+    }
+
+    pub fn rotate_right_assign<U>(&mut self, n: U)
+    where U: Uint + Clone + Display + Debug + ToString
+            + Add<Output=U> + AddAssign + Sub<Output=U> + SubAssign
+            + Mul<Output=U> + MulAssign + Div<Output=U> + DivAssign
+            + Rem<Output=U> + RemAssign
+            + Shl<Output=U> + ShlAssign + Shr<Output=U> + ShrAssign
+            + BitAnd<Output=U> + BitAndAssign + BitOr<Output=U> + BitOrAssign
+            + BitXor<Output=U> + BitXorAssign + Not<Output=U>
+            + PartialEq + PartialOrd
+    {
+        self.set_number((self.rotate_right(n).get_number()));
+    }
+
+
+
     /***** METHODS FOR CONVERTING INTO OTHER TYPES WITH/WITHOUT LOSS *****/
 
     pub fn into_biguint<U, const M: usize>(&self) -> BigUInt<U, M>
     where U: Uint + Clone + Display + Debug + ToString
             + Add<Output=U> + AddAssign + Sub<Output=U> + SubAssign
             + Mul<Output=U> + MulAssign + Div<Output=U> + DivAssign
+            + Rem<Output=U> + RemAssign
             + Shl<Output=U> + ShlAssign + Shr<Output=U> + ShrAssign
             + BitAnd<Output=U> + BitAndAssign + BitOr<Output=U> + BitOrAssign
             + BitXor<Output=U> + BitXorAssign + Not<Output=U>

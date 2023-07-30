@@ -46,9 +46,6 @@
 
 pub mod uint;
 pub mod int;
-pub mod numeric;
-pub mod float;
-pub mod real;
 pub mod big_uint;
 pub mod trait_impl_for_big_uint;
 pub mod number_errors;
@@ -56,9 +53,6 @@ mod macros_number;
 
 pub use uint::*;
 pub use int::*;
-pub use numeric::*;
-pub use float::*;
-pub use real::*;
 pub use big_uint::*;
 pub use trait_impl_for_big_uint::*;
 pub use number_errors::*;

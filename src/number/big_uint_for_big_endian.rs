@@ -23,6 +23,8 @@ use super::NumberErr;
 #[cfg(target_endian = "big")]
 pub trait _BigUInt
 {
+    fn _is_one(&self) -> bool;
+    fn _is_uint(&self, val: T) -> bool;
     fn _one() -> Self;
     fn _random_with_MSB_set() -> Self;
     fn _turn_check_bits(&mut self, bit_pos: usize);
@@ -31,11 +33,86 @@ pub trait _BigUInt
     fn _set_num(&mut self, i: usize, val: T) -> bool;
     fn _set_num_(&mut self, i: usize, val: T);
     fn _copy_within<R>(&mut self, src: R, dest: usize);
+    fn _add_assign(&mut self, rhs: Self);
 }
 
 #[cfg(target_endian = "big")]
 impl<T, const N: usize> _BigUInt for BigUInt<T, N>
 {
+    /// Checks whether `BigUInt` to be one and returns true if it is
+    /// one, and returns false if it is not one.
+    /// 
+    /// # Big-endian issue
+    /// It is just experimental for Big Endian CPUs. So, you are not encouraged
+    /// to use it for serious purpose. Only use this crate for Big-endian CPUs
+    /// with your own full responsibility.
+    /// 
+    /// # Example
+    /// ```
+    /// use Cryptocol::number::BigUInt;
+    /// use Cryptocol::define_utypes_with;
+    /// define_utypes_with!(u128);
+    /// let a = u1024::one();
+    /// if a.is_one()
+    ///     { println!("a is One"); }
+    /// else
+    ///     { println!("a is Not One"); }
+    /// assert!(a.is_one());
+    /// ```
+    fn _is_one(&self) -> bool
+    {
+        if self._get_num_(N-1) != T::one()
+            { return false; }
+
+        for i in 0..N-1
+        {
+            if self._get_num_(i) != T::zero()
+                { return false; }
+        }
+        true
+    }
+
+    /// Check whether the `BigUInt`-type number is equal to `T`-type number.
+    /// It will return `true`, if it is equal to the `T`-type number. Otherwise,
+    /// it will return `false`.
+    /// 
+    /// # Counter Part Method
+    /// This method is_uint() is virtually the same the method [eq_uint()](struct@BigUInt#method.eq_uint).
+    /// However, you may want to use this method is_uint() rather than [eq_uint()](struct@BigUInt#method.eq_uint),
+    /// if you know that this method is_uint() is a bit faster than [eq_uint()](struct@BigUInt#method.eq_uint),
+    /// 
+    /// # Big-endian issue
+    /// It is just experimental for Big Endian CPUs. So, you are not encouraged
+    /// to use it for serious purpose. Only use this crate for Big-endian CPUs
+    /// with your own full responsibility.
+    /// 
+    /// # Example
+    /// ```
+    /// define_utypes_with!(u128);
+    /// let mut a = u1024::new();
+    /// a.set_uint(25);
+    /// if a.is_uint(25u128)   { println!("They are the same."); }
+    /// else                   { println!("They are differnt."); }
+    /// let b = 
+    /// assert!(a.is_uint(25u128));
+    /// ```
+    pub fn _is_uint(&self, val: T) -> bool
+    {
+        if self._get_num_(N-1) != val
+        {
+            false
+        }
+        else
+        {
+            for i in 0..N-1
+            {
+                if self._get_num_(i) != T::zero()
+                    { return false; }
+            }
+            true
+        }
+    }
+
     /// Constructs a new `BigUInt<T, N>` which has the value of one.
     /// It is virtually the same as [one()](struct@BigUInt#method.one)
     /// but it is considered to be slightly faster than one() for big-endian
@@ -643,5 +720,42 @@ where T: Uint + Clone + Display + Debug + ToString
         }
         if carry != zero
             { self.set_underflow(); }
+    }
+
+    fn _add_assign(&mut self, rhs: Self)
+    {
+        let mut i = N - 1;
+        let mut	carry = false;
+        loop
+        {
+            (self._get_num_(i), carry) = self._get_num_(i).carrying_add(rhs.number[i], carry);
+            if i == 0
+                { break; }
+            i -= 1;
+        }
+        if carry
+            { self.set_overflow(); }
+    /*
+        let zero = T::zero();
+        let mut	carry: T = zero;
+        let mut midres: T;
+        let mut c: bool;
+
+        let mut i = N - 1;
+        loop
+        {
+            midres = self._get_num_(i).wrapping_add(rhs._get_num_(i));
+            c = midres < self._get_num_(i);
+            midres = midres.wrapping_add(carry);
+            carry = if c || (midres < carry) { T::one() } else { zero };
+            self._set_num_(i, midres);
+            if i == 0
+                { break; }
+            i -= 1;
+        }
+
+        if carry != zero
+            { self.set_overflow(); }
+    */
     }
 }

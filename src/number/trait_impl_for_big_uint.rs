@@ -11,13 +11,14 @@
 //#![warn(missing_docs)]
 //#![warn(missing_doc_code_examples)]
 use std::fmt::{ self, Display, Formatter, Debug };
-use std::mem::{ size_of, transmute };
+use std::mem::{ size_of, size_of_val, transmute };
 use std::cmp::{ PartialEq, PartialOrd, Ordering };
 use std::convert::{ From, Into };
 use std::str::FromStr;
 use std::ops::*;
 
 use super::uint::*;
+use super::int::*;
 use super::big_uint::BigUInt;
 use super::NumberErr;
 
@@ -27,17 +28,18 @@ impl<T, const N: usize> Add for BigUInt<T, N>
 where T: Uint + Clone + Display + Debug + ToString
         + Add<Output=T> + AddAssign + Sub<Output=T> + SubAssign
         + Mul<Output=T> + MulAssign + Div<Output=T> + DivAssign
+        + Rem<Output=T> + RemAssign
         + Shl<Output=T> + ShlAssign + Shr<Output=T> + ShrAssign
         + BitAnd<Output=T> + BitAndAssign + BitOr<Output=T> + BitOrAssign
         + BitXor<Output=T> + BitXorAssign + Not<Output=T>
         + PartialEq + PartialOrd
 {
     type Output = Self;
+
+    #[inline]
     fn add(self, rhs: Self) -> Self
     {
-        let mut s = self.clone();
-        s += rhs;
-        s
+        self.wrapping_add(rhs)
     }
 }
 
@@ -47,6 +49,7 @@ impl<T, const N: usize> AddAssign for BigUInt<T, N>
 where T: Uint + Clone + Display + Debug + ToString
         + Add<Output=T> + AddAssign + Sub<Output=T> + SubAssign
         + Mul<Output=T> + MulAssign + Div<Output=T> + DivAssign
+        + Rem<Output=T> + RemAssign
         + Shl<Output=T> + ShlAssign + Shr<Output=T> + ShrAssign
         + BitAnd<Output=T> + BitAndAssign + BitOr<Output=T> + BitOrAssign
         + BitXor<Output=T> + BitXorAssign + Not<Output=T>
@@ -54,72 +57,10 @@ where T: Uint + Clone + Display + Debug + ToString
 {
     /// Adds and assign the result to it.
     /// 
-    #[cfg(target_endian = "little")]
+    #[inline]
     fn add_assign(&mut self, rhs: Self)
     {
-        let mut num: T;
-        let mut	carry = false;
-        for i in 0..N
-        {
-            (num, carry) = self.get_num_(i).carrying_add(rhs.get_num_(i), carry);
-            self.set_num_(i, num);
-        }
-        if carry
-            { self.set_overflow(); }
-/*
-        let zero = T::zero();
-        let mut midres: T;
-        let mut cc = zero;
-        let mut c: bool;
-        for i in 0..N
-        {
-            midres = self.number[i].wrapping_add(rhs.number[i]);
-            c = midres < self.number[i];
-            midres = midres.wrapping_add(carry);
-            cc = if c || (midres < cc) { T::one() } else { zero };
-            self.number[i] = midres;
-        }
-        if cc != zero
-            { self.set_overflow(); }
-*/
-    }
-
-    #[cfg(target_endian = "big")]
-    fn add_assign(&mut self, rhs: Self)
-    {
-        let mut i = N - 1;
-        let mut	carry = false;
-        loop
-        {
-            (self.number[i], carry) = self.number[i].carrying_add(rhs.number[i], carry);
-            if i == 0
-                { break; }
-            i -= 1;
-        }
-        if carry
-            { self.set_overflow(); }
-/*
-        let zero = T::zero();
-        let mut	carry: T = zero;
-        let mut midres: T;
-        let mut c: bool;
-
-        let mut i = N - 1;
-        loop
-        {
-            midres = self.number[i].wrapping_add(rhs.number[i]);
-            c = midres < self.number[i];
-            midres = midres.wrapping_add(carry);
-            carry = if c || (midres < carry) { T::one() } else { zero };
-            self.number[i] = midres;
-            if i == 0
-                { break; }
-            i -= 1;
-        }
-
-        if carry != zero
-            { self.set_overflow(); }
-    */
+        self.wrapping_add_assign(rhs);
     }
 }
 
@@ -129,6 +70,7 @@ impl<T, const N: usize> Sub for BigUInt<T, N>
 where T: Uint + Clone + Display + Debug + ToString
         + Add<Output=T> + AddAssign + Sub<Output=T> + SubAssign
         + Mul<Output=T> + MulAssign + Div<Output=T> + DivAssign
+        + Rem<Output=T> + RemAssign
         + Shl<Output=T> + ShlAssign + Shr<Output=T> + ShrAssign
         + BitAnd<Output=T> + BitAndAssign + BitOr<Output=T> + BitOrAssign
         + BitXor<Output=T> + BitXorAssign + Not<Output=T>
@@ -149,6 +91,7 @@ impl<T, const N: usize> SubAssign for BigUInt<T, N>
 where T: Uint + Clone + Display + Debug + ToString
         + Add<Output=T> + AddAssign + Sub<Output=T> + SubAssign
         + Mul<Output=T> + MulAssign + Div<Output=T> + DivAssign
+        + Rem<Output=T> + RemAssign
         + Shl<Output=T> + ShlAssign + Shr<Output=T> + ShrAssign
         + BitAnd<Output=T> + BitAndAssign + BitOr<Output=T> + BitOrAssign
         + BitXor<Output=T> + BitXorAssign + Not<Output=T>
@@ -156,7 +99,6 @@ where T: Uint + Clone + Display + Debug + ToString
 {
     /// Subtracts and assign the result to it.
     /// 
-    #[cfg(target_endian = "little")]
     fn sub_assign(&mut self, rhs: Self)
     {
         let mut num: T;
@@ -192,7 +134,7 @@ where T: Uint + Clone + Display + Debug + ToString
     /// Subtracts and assign the result to it.
     /// 
     #[cfg(target_endian = "big")]
-    fn sub_assign(&mut self, rhs: Self)
+    fn _sub_assign(&mut self, rhs: Self)
     {
         let mut num: T;
         let mut i = N - 1;
@@ -238,6 +180,7 @@ impl<T, const N: usize> Mul for BigUInt<T, N>
 where T: Uint + Clone + Display + Debug + ToString
         + Add<Output=T> + AddAssign + Sub<Output=T> + SubAssign
         + Mul<Output=T> + MulAssign + Div<Output=T> + DivAssign
+        + Rem<Output=T> + RemAssign
         + Shl<Output=T> + ShlAssign + Shr<Output=T> + ShrAssign
         + BitAnd<Output=T> + BitAndAssign + BitOr<Output=T> + BitOrAssign
         + BitXor<Output=T> + BitXorAssign + Not<Output=T>
@@ -258,6 +201,7 @@ impl<T, const N: usize> MulAssign for BigUInt<T, N>
 where T: Uint + Clone + Display + Debug + ToString
         + Add<Output=T> + AddAssign + Sub<Output=T> + SubAssign
         + Mul<Output=T> + MulAssign + Div<Output=T> + DivAssign
+        + Rem<Output=T> + RemAssign
         + Shl<Output=T> + ShlAssign + Shr<Output=T> + ShrAssign
         + BitAnd<Output=T> + BitAndAssign + BitOr<Output=T> + BitOrAssign
         + BitXor<Output=T> + BitXorAssign + Not<Output=T>
@@ -265,7 +209,6 @@ where T: Uint + Clone + Display + Debug + ToString
 {
     /// Multiplies and assign the result to it.
     /// 
-    #[cfg(target_endian = "little")]
     fn mul_assign(&mut self, rhs: Self)
     {
         if rhs.is_zero()
@@ -333,7 +276,7 @@ where T: Uint + Clone + Display + Debug + ToString
     /// Multiplies and assign the result to it.
     /// 
     #[cfg(target_endian = "big")]
-    fn mul_assign(&mut self, rhs: Self)
+    fn _mul_assign(&mut self, rhs: Self)
     {
         if rhs.is_zero()
         {
@@ -399,6 +342,7 @@ impl<T, const N: usize> Div for BigUInt<T, N>
 where T: Uint + Clone + Display + Debug + ToString
         + Add<Output=T> + AddAssign + Sub<Output=T> + SubAssign
         + Mul<Output=T> + MulAssign + Div<Output=T> + DivAssign
+        + Rem<Output=T> + RemAssign
         + Shl<Output=T> + ShlAssign + Shr<Output=T> + ShrAssign
         + BitAnd<Output=T> + BitAndAssign + BitOr<Output=T> + BitOrAssign
         + BitXor<Output=T> + BitXorAssign + Not<Output=T>
@@ -418,6 +362,7 @@ impl<T, const N: usize> DivAssign for BigUInt<T, N>
 where T: Uint + Clone + Display + Debug + ToString
         + Add<Output=T> + AddAssign + Sub<Output=T> + SubAssign
         + Mul<Output=T> + MulAssign + Div<Output=T> + DivAssign
+        + Rem<Output=T> + RemAssign
         + Shl<Output=T> + ShlAssign + Shr<Output=T> + ShrAssign
         + BitAnd<Output=T> + BitAndAssign + BitOr<Output=T> + BitOrAssign
         + BitXor<Output=T> + BitXorAssign + Not<Output=T>
@@ -432,6 +377,7 @@ impl<T, const N: usize> Rem for BigUInt<T, N>
 where T: Uint + Clone + Display + Debug + ToString
         + Add<Output=T> + AddAssign + Sub<Output=T> + SubAssign
         + Mul<Output=T> + MulAssign + Div<Output=T> + DivAssign
+        + Rem<Output=T> + RemAssign
         + Shl<Output=T> + ShlAssign + Shr<Output=T> + ShrAssign
         + BitAnd<Output=T> + BitAndAssign + BitOr<Output=T> + BitOrAssign
         + BitXor<Output=T> + BitXorAssign + Not<Output=T>
@@ -451,6 +397,7 @@ impl<T, const N: usize> RemAssign for BigUInt<T, N>
 where T: Uint + Clone + Display + Debug + ToString
         + Add<Output=T> + AddAssign + Sub<Output=T> + SubAssign
         + Mul<Output=T> + MulAssign + Div<Output=T> + DivAssign
+        + Rem<Output=T> + RemAssign
         + Shl<Output=T> + ShlAssign + Shr<Output=T> + ShrAssign
         + BitAnd<Output=T> + BitAndAssign + BitOr<Output=T> + BitOrAssign
         + BitXor<Output=T> + BitXorAssign + Not<Output=T>
@@ -461,279 +408,501 @@ where T: Uint + Clone + Display + Debug + ToString
 
 
 
-impl<T, const N: usize> Shl<i32> for BigUInt<T, N>
-where T: Uint + Clone + Display + Debug + ToString
-        + Add<Output=T> + AddAssign + Sub<Output=T> + SubAssign
-        + Mul<Output=T> + MulAssign + Div<Output=T> + DivAssign
-        + Shl<Output=T> + ShlAssign + Shr<Output=T> + ShrAssign
-        + BitAnd<Output=T> + BitAndAssign + BitOr<Output=T> + BitOrAssign
-        + BitXor<Output=T> + BitXorAssign + Not<Output=T>
-        + PartialEq + PartialOrd
-{
-    type Output = Self;
+macro_rules! shl_for_BigUInt_impl {
+    ($f:ty) => {
+        /// Performs the << operation. If overflow happens during the << operation,
+        /// `OVERFLOW` flag is set and the method is_overflow() will return true. 
+        /// [Read more](https://doc.rust-lang.org/core/ops/bit/trait.Shl.html#tymethod.shl)
+        /// 
+        /// # Example 1
+        /// ```
+        /// use std::str::FromStr;
+        /// use Cryptocol::number::*;
+        /// use Cryptocol::define_utypes_with;
+        /// define_utypes_with!(u128);
+        /// let a = u256::from_str("1234567_1234567890_1234567890_1234567890_1234567890_1234567890_1234567890_1234567890").unwrap();
+        /// let b = a << 4_i128;
+        /// println!("b = {}\noverflow: {}", b, b.is_overflow());
+        /// assert_eq!(b.is_overflow(), true);
+        /// ```
+        /// 
+        /// # Example 2
+        /// ```
+        /// use std::str::FromStr;
+        /// use Cryptocol::number::*;
+        /// use Cryptocol::define_utypes_with;
+        /// define_utypes_with!(u128);
+        /// let a = u256::from_str("1234567_1234567890_1234567890_1234567890_1234567890_1234567890_1234567890_1234567890").unwrap();
+        /// let b = a << 1_i8;
+        /// println!("b = {}\noverflow: {}", b, b.is_overflow());
+        /// assert_eq!(b.is_overflow(), false);
+        /// ```
+        impl<T, const N: usize> Shl<$f> for BigUInt<T, N>
+        where T: Uint + Clone + Display + Debug + ToString
+                + Add<Output=T> + AddAssign + Sub<Output=T> + SubAssign
+                + Mul<Output=T> + MulAssign + Div<Output=T> + DivAssign
+                + Rem<Output=T> + RemAssign
+                + Shl<Output=T> + ShlAssign + Shr<Output=T> + ShrAssign
+                + BitAnd<Output=T> + BitAndAssign + BitOr<Output=T> + BitOrAssign
+                + BitXor<Output=T> + BitXorAssign + Not<Output=T>
+                + PartialEq + PartialOrd
+        {
+            type Output = Self;
 
-    /// Performs the << operation. If overflow happens during the << operation,
-    /// `OVERFLOW` flag is set and the method is_overflow() will return true. 
-    /// [Read more](https://doc.rust-lang.org/core/ops/bit/trait.Shl.html#tymethod.shl)
-    /// 
-    /// # Examples
-    /// ```
-    /// use std::str::FromStr;
-    /// use Cryptocol::number::BigInteger;
-    /// use Cryptocol::define_utypes_with;
-    /// define_utypes_with!(u128);
-    /// let a = u256::from_str("1234567_1234567890_1234567890_1234567890_1234567890_1234567890_1234567890_1234567890").unwrap();
-    /// let b = a << 4;
-    /// println!("b = {}\noverflow: {}", b, b.is_overflow());
-    /// assert_eq!(b.is_overflow(), true);
-    /// ```
-    /// You have to import (use) Cryptocol::number::BigInteger in order to use
-    /// its method is_overflow(). If you find headaching to remember what you
-    /// should import, you can just import everything (Cryptocol::number::*)
-    /// as next example. It is not harmful.
-    /// ```
-    /// use std::str::FromStr;
-    /// use Cryptocol::number::*;
-    /// use Cryptocol::define_utypes_with;
-    /// define_utypes_with!(u128);
-    /// let a = u256::from_str("1234567_1234567890_1234567890_1234567890_1234567890_1234567890_1234567890_1234567890").unwrap();
-    /// let b = a << 1;
-    /// println!("b = {}\noverflow: {}", b, b.is_overflow());
-    /// assert_eq!(b.is_overflow(), false);
-    /// ```
-    fn shl(self, rhs: i32) -> Self
-    {
-        let mut s = self.clone();
-        s <<= rhs;
-        s
+            fn shl(self, rhs: $f) -> Self
+            {
+                let mut s = self.clone();
+                s <<= rhs;
+                s
+            }
+        }
     }
 }
 
 
 
-impl<T, const N: usize> ShlAssign<i32> for BigUInt<T, N>
-where T: Uint + Clone + Display + Debug + ToString
-        + Add<Output=T> + AddAssign + Sub<Output=T> + SubAssign
-        + Mul<Output=T> + MulAssign + Div<Output=T> + DivAssign
-        + Shl<Output=T> + ShlAssign + Shr<Output=T> + ShrAssign
-        + BitAnd<Output=T> + BitAndAssign + BitOr<Output=T> + BitOrAssign
-        + BitXor<Output=T> + BitXorAssign + Not<Output=T>
-        + PartialEq + PartialOrd
-{
-    /// Performs the <<= operation. If overflow happens during the <<= operation,
-    /// `OVERFLOW` flag is set and the method is_overflow() will return true. 
-    /// [Read more](https://doc.rust-lang.org/core/ops/bit/trait.ShlAssign.html#tymethod.shl_assign)
-    /// 
-    /// # Examples
-    /// ```
-    /// use std::str::FromStr;
-    /// use Cryptocol::number::BigInteger;
-    /// use Cryptocol::define_utypes_with;
-    /// define_utypes_with!(u128);
-    /// let mut a = u256::from_str("1234567_1234567890_1234567890_1234567890_1234567890_1234567890_1234567890_1234567890").unwrap();
-    /// a <<= 4;
-    /// println!("a = {}\noverflow: {}", a, a.is_overflow());
-    /// assert_eq!(a.is_overflow(), true);
-    /// ```
-    /// You have to import (use) Cryptocol::number::BigInteger in order to use
-    /// its method is_overflow(). If you find headaching to remember what you
-    /// should import, you can just import everything (Cryptocol::number::*)
-    /// as next example. It is not harmful.
-    /// ```
-    /// use std::str::FromStr;
-    /// use Cryptocol::number::*;
-    /// use Cryptocol::define_utypes_with;
-    /// define_utypes_with!(u128);
-    /// let mut a = u256::from_str("1234567_1234567890_1234567890_1234567890_1234567890_1234567890_1234567890_1234567890").unwrap();
-    /// a <<= 1;
-    /// println!("a = {}\noverflow: {}", a, a.is_overflow());
-    /// assert_eq!(a.is_overflow(), false);
-    /// ```
-    #[cfg(target_endian = "little")]
-    fn shl_assign(&mut self, rhs: i32)
-    {
-        if rhs < 0
+macro_rules! shlassign_i_for_BigUInt_impl {
+    ($f:ty) => {
+        impl<T, const N: usize> ShlAssign<$f> for BigUInt<T, N>
+        where T: Uint + Clone + Display + Debug + ToString
+                + Add<Output=T> + AddAssign + Sub<Output=T> + SubAssign
+                + Mul<Output=T> + MulAssign + Div<Output=T> + DivAssign
+                + Rem<Output=T> + RemAssign
+                + Shl<Output=T> + ShlAssign + Shr<Output=T> + ShrAssign
+                + BitAnd<Output=T> + BitAndAssign + BitOr<Output=T> + BitOrAssign
+                + BitXor<Output=T> + BitXorAssign + Not<Output=T>
+                + PartialEq + PartialOrd
         {
-		    *self >>= -rhs;
-            return;
-        }
-        let TSIZE_IN_BITS = T::size_in_bits();
-        let chunk_num = rhs as usize / TSIZE_IN_BITS as usize;
-        let piece_num = rhs as usize % TSIZE_IN_BITS as usize;
-        let zero = T::zero();
-        self.reset_all_flags();
-        if chunk_num > 0
-        {
-            for i in N-chunk_num..N
+            /// Performs the <<= operation. If overflow happens during the <<= operation,
+            /// `OVERFLOW` flag is set and the method is_overflow() will return true. 
+            /// [Read more](https://doc.rust-lang.org/core/ops/bit/trait.ShlAssign.html#tymethod.shl_assign)
+            /// 
+            /// # Big-endian issue
+            /// It is just experimental for Big Endian CPUs. So, you are not encouraged
+            /// to use it for serious purpose. Only use this crate for Big-endian CPUs
+            /// with your own full responsibility.
+            ///
+            /// # Example 1
+            /// ```
+            /// use std::str::FromStr;
+            /// use Cryptocol::number::*;
+            /// use Cryptocol::define_utypes_with;
+            /// define_utypes_with!(u128);
+            /// let mut a = u256::from_str("1234567_1234567890_1234567890_1234567890_1234567890_1234567890_1234567890_1234567890").unwrap();
+            /// a <<= 4_i128;
+            /// println!("a = {}\noverflow: {}", a, a.is_overflow());
+            /// assert_eq!(a.is_overflow(), true);
+            /// ```
+            /// 
+            /// # Example 2
+            /// ```
+            /// use std::str::FromStr;
+            /// use Cryptocol::number::*;
+            /// use Cryptocol::define_utypes_with;
+            /// define_utypes_with!(u128);
+            /// let mut a = u256::from_str("1234567_1234567890_1234567890_1234567890_1234567890_1234567890_1234567890_1234567890").unwrap();
+            /// a <<= 1_i8;
+            /// println!("a = {}\noverflow: {}", a, a.is_overflow());
+            /// assert_eq!(a.is_overflow(), false);
+            /// ```
+            fn shl_assign(&mut self, rhs: $f)
             {
-                if self.get_num_(i) > zero
+                if rhs < 0
                 {
-                    self.set_overflow();
-                    break;
+                    match size_of_val(&rhs)
+                    {
+                        1 => { *self >>= (-rhs as u8); },
+                        2 => { *self >>= (-rhs as u16); },
+                        4 => { *self >>= (-rhs as u32); },
+                        8 => { *self >>= (-rhs as u64); },
+                        16 => { *self >>= (-rhs as u128); },
+                        _ => {},
+                    }
+                }
+                else
+                {
+                    match size_of_val(&rhs)
+                    {
+                        1 => { *self <<= (rhs as u8); },
+                        2 => { *self <<= (rhs as u16); },
+                        4 => { *self <<= (rhs as u32); },
+                        8 => { *self <<= (rhs as u64); },
+                        16 => { *self <<= (rhs as u128); },
+                        _ => {},
+                    }
                 }
             }
-            self.copy_within(0..N-chunk_num, chunk_num);
-            for idx in 0..chunk_num
-                { self.set_num_(idx, zero); }
         }
-        if piece_num == 0
-            { return; }
-        if (self.get_num_(N-1) >> T::num((TSIZE_IN_BITS - piece_num).into_u128())) != zero
-            { self.set_overflow(); }
-
-        let mut num: T;
-        let mut carry = zero;
-        for idx in chunk_num..N
-        {
-            num = (self.get_num_(idx) << T::num(piece_num.into_u128())) | carry;
-            carry = self.get_num_(idx) >> T::num((TSIZE_IN_BITS - piece_num).into_u128());
-            self.set_num_(idx, num);
-        }
-        if carry != zero
-            { self.set_overflow(); }
     }
 }
 
 
 
-impl<T, const N: usize> Shr<i32> for BigUInt<T, N>
-where T: Uint + Clone + Display + Debug + ToString
-        + Add<Output=T> + AddAssign + Sub<Output=T> + SubAssign
-        + Mul<Output=T> + MulAssign + Div<Output=T> + DivAssign
-        + Shl<Output=T> + ShlAssign + Shr<Output=T> + ShrAssign
-        + BitAnd<Output=T> + BitAndAssign + BitOr<Output=T> + BitOrAssign
-        + BitXor<Output=T> + BitXorAssign + Not<Output=T>
-        + PartialEq + PartialOrd
-{
-    type Output = Self;
-
-    /// Performs the >> operation. If underflow happens during the >> operation,
-    /// `UNDERFLOW` flag is set and the method is_underflow() will return true.
-    /// Here, 'underflow' means that none-zero part is shifted out to the right.
-    /// [Read more](https://doc.rust-lang.org/core/ops/bit/trait.Shr.html#tymethod.shr)
-    /// 
-    /// # Examples
-    /// ```
-    /// use std::str::FromStr;
-    /// use Cryptocol::number::BigInteger;
-    /// use Cryptocol::define_utypes_with;
-    /// define_utypes_with!(u128);
-    /// let a = u256::from_str("1234567_1234567890_1234567890_1234567890_1234567890_1234567890_1234567890_1234567890").unwrap();
-    /// let b = a >> 2;
-    /// println!("b = {}\nunderflow: {}", b, b.is_underflow());
-    /// assert_eq!(b.is_underflow(), true);
-    /// ```
-    /// You have to import (use) Cryptocol::number::BigInteger in order to use
-    /// its method is_underflow(). If you find headaching to remember what you
-    /// should import, you can just import everything (Cryptocol::number::*)
-    /// as next example. It is not harmful.
-    /// ```
-    /// use std::str::FromStr;
-    /// use Cryptocol::number::*;
-    /// use Cryptocol::define_utypes_with;
-    /// define_utypes_with!(u128);
-    /// let a = u256::from_str("1234567_1234567890_1234567890_1234567890_1234567890_1234567890_1234567890_1234567890").unwrap();
-    /// let b = a >> 1;
-    /// println!("b = {}\nunderflow: {}", b, b.is_underflow());
-    /// assert_eq!(b.is_underflow(), false);
-    /// ```
-    fn shr(self, rhs: i32) -> Self
-    {
-        let mut s = self.clone();
-        s >>= rhs;
-        s
-    }
-}
-
-
-
-impl<T, const N: usize> ShrAssign<i32> for BigUInt<T, N>
-where T: Uint + Clone + Display + Debug + ToString
-        + Add<Output=T> + AddAssign + Sub<Output=T> + SubAssign
-        + Mul<Output=T> + MulAssign + Div<Output=T> + DivAssign
-        + Shl<Output=T> + ShlAssign + Shr<Output=T> + ShrAssign
-        + BitAnd<Output=T> + BitAndAssign + BitOr<Output=T> + BitOrAssign
-        + BitXor<Output=T> + BitXorAssign + Not<Output=T>
-        + PartialEq + PartialOrd
-{
-    /// Performs the >>= operation. If underflow happens during the >>= operation,
-    /// `UNDERFLOW` flag is set and the method is_underflow() will return true.
-    /// Here, 'underflow' means that none-zero part is shifted out to the right.
-    /// [Read more](https://doc.rust-lang.org/core/ops/bit/trait.ShrAssign.html#tymethod.shr_assign)
-    /// 
-    /// # Examples
-    /// ```
-    /// use std::str::FromStr;
-    /// use Cryptocol::number::BigInteger;
-    /// use Cryptocol::define_utypes_with;
-    /// define_utypes_with!(u128);
-    /// let mut a = u256::from_str("1234567_1234567890_1234567890_1234567890_1234567890_1234567890_1234567890_1234567890").unwrap();
-    /// a >>= 2;
-    /// println!("a = {}\nunderflow: {}", a, a.is_underflow());
-    /// assert_eq!(a.is_underflow(), true);
-    /// ```
-    /// You have to import (use) Cryptocol::number::BigInteger in order to use
-    /// its method is_underflow(). If you find headaching to remember what you
-    /// should import, you can just import everything (Cryptocol::number::*)
-    /// as next example. It is not harmful.
-    /// ```
-    /// use std::str::FromStr;
-    /// use Cryptocol::number::*;
-    /// use Cryptocol::define_utypes_with;
-    /// define_utypes_with!(u128);
-    /// let mut a = u256::from_str("1234567_1234567890_1234567890_1234567890_1234567890_1234567890_1234567890_1234567890").unwrap();
-    /// a >>= 1;
-    /// println!("a = {}\nunderflow: {}", a, a.is_underflow());
-    /// assert_eq!(a.is_underflow(), false);
-    /// ```
-    #[cfg(target_endian = "little")]
-    fn shr_assign(&mut self, rhs: i32)
-    {
-        if rhs < 0
+macro_rules! shlassign_u_for_BigUInt_impl {
+    ($f:ty) => {
+        impl<T, const N: usize> ShlAssign<$f> for BigUInt<T, N>
+        where T: Uint + Clone + Display + Debug + ToString
+                + Add<Output=T> + AddAssign + Sub<Output=T> + SubAssign
+                + Mul<Output=T> + MulAssign + Div<Output=T> + DivAssign
+                + Rem<Output=T> + RemAssign
+                + Shl<Output=T> + ShlAssign + Shr<Output=T> + ShrAssign
+                + BitAnd<Output=T> + BitAndAssign + BitOr<Output=T> + BitOrAssign
+                + BitXor<Output=T> + BitXorAssign + Not<Output=T>
+                + PartialEq + PartialOrd
         {
-		    *self <<= -rhs;
-            return;
-        }
-        let TSIZE_IN_BITS = T::size_in_bits();
-        let chunk_num = rhs as usize / TSIZE_IN_BITS as usize;
-        let piece_num = rhs as usize % TSIZE_IN_BITS as usize;
-        let zero = T::zero();
-        self.reset_all_flags();
-        if chunk_num > 0
-        {
-            for i in 0..chunk_num
+            /// Performs the <<= operation. If overflow happens during the <<= operation,
+            /// `OVERFLOW` flag is set and the method is_overflow() will return true. 
+            /// [Read more](https://doc.rust-lang.org/core/ops/bit/trait.ShlAssign.html#tymethod.shl_assign)
+            /// 
+            /// # Big-endian issue
+            /// It is just experimental for Big Endian CPUs. So, you are not encouraged
+            /// to use it for serious purpose. Only use this crate for Big-endian CPUs
+            /// with your own full responsibility.
+            ///
+            /// # Example 1
+            /// ```
+            /// use std::str::FromStr;
+            /// use Cryptocol::number::*;
+            /// use Cryptocol::define_utypes_with;
+            /// define_utypes_with!(u128);
+            /// let mut a = u256::from_str("1234567_1234567890_1234567890_1234567890_1234567890_1234567890_1234567890_1234567890").unwrap();
+            /// a <<= 4_i128;
+            /// println!("a = {}\noverflow: {}", a, a.is_overflow());
+            /// assert_eq!(a.is_overflow(), true);
+            /// ```
+            /// 
+            /// # Example 2
+            /// ```
+            /// use std::str::FromStr;
+            /// use Cryptocol::number::*;
+            /// use Cryptocol::define_utypes_with;
+            /// define_utypes_with!(u128);
+            /// let mut a = u256::from_str("1234567_1234567890_1234567890_1234567890_1234567890_1234567890_1234567890_1234567890").unwrap();
+            /// a <<= 1_i8;
+            /// println!("a = {}\noverflow: {}", a, a.is_overflow());
+            /// assert_eq!(a.is_overflow(), false);
+            /// ```
+            fn shl_assign(&mut self, rhs: $f)
             {
-                if self.get_num_(i) > zero
+                self.shift_left_assign(rhs);
+                /*
+                let TSIZE_IN_BITS = T::size_in_bits();
+                let chunk_num = (rhs / TSIZE_IN_BITS as $f) as usize;
+                let piece_num = (rhs % TSIZE_IN_BITS as $f) as usize;
+                let zero = T::zero();
+                self.reset_all_flags();
+                if chunk_num > 0
                 {
-                    self.set_underflow();
-                    break;
+                    for i in N-chunk_num..N
+                    {
+                        if self.get_num_(i) > zero
+                        {
+                            self.set_overflow();
+                            break;
+                        }
+                    }
+                    self.copy_within(0..N-chunk_num, chunk_num);
+                    for idx in 0..chunk_num
+                        { self.set_num_(idx, zero); }
+                }
+                if piece_num == 0
+                    { return; }
+                if (self.get_num_(N-1) >> T::num((TSIZE_IN_BITS - piece_num).into_u128())) != zero
+                    { self.set_overflow(); }
+
+                let mut num: T;
+                let mut carry = zero;
+                for idx in chunk_num..N
+                {
+                    num = (self.get_num_(idx) << T::num(piece_num.into_u128())) | carry;
+                    carry = self.get_num_(idx) >> T::num((TSIZE_IN_BITS - piece_num).into_u128());
+                    self.set_num_(idx, num);
+                }
+                if carry != zero
+                    { self.set_overflow(); }*/
+            }
+        }
+    }
+}
+
+
+
+shl_for_BigUInt_impl! { i8 }
+shl_for_BigUInt_impl! { i16 }
+shl_for_BigUInt_impl! { i32 }
+shl_for_BigUInt_impl! { i64 }
+shl_for_BigUInt_impl! { i128 }
+shl_for_BigUInt_impl! { isize }
+shl_for_BigUInt_impl! { u8 }
+shl_for_BigUInt_impl! { u16 }
+shl_for_BigUInt_impl! { u32 }
+shl_for_BigUInt_impl! { u64 }
+shl_for_BigUInt_impl! { u128 }
+shl_for_BigUInt_impl! { usize }
+shlassign_i_for_BigUInt_impl! { i8 }
+shlassign_i_for_BigUInt_impl! { i16 }
+shlassign_i_for_BigUInt_impl! { i32 }
+shlassign_i_for_BigUInt_impl! { i64 }
+shlassign_i_for_BigUInt_impl! { i128 }
+shlassign_i_for_BigUInt_impl! { isize }
+shlassign_u_for_BigUInt_impl! { u8 }
+shlassign_u_for_BigUInt_impl! { u16 }
+shlassign_u_for_BigUInt_impl! { u32 }
+shlassign_u_for_BigUInt_impl! { u64 }
+shlassign_u_for_BigUInt_impl! { u128 }
+shlassign_u_for_BigUInt_impl! { usize }
+
+
+
+macro_rules! shr_for_BigUInt_impl {
+    ($f:ty) => {
+        impl<T, const N: usize> Shr<$f> for BigUInt<T, N>
+        where T: Uint + Clone + Display + Debug + ToString
+                + Add<Output=T> + AddAssign + Sub<Output=T> + SubAssign
+                + Mul<Output=T> + MulAssign + Div<Output=T> + DivAssign
+                + Rem<Output=T> + RemAssign
+                + Shl<Output=T> + ShlAssign + Shr<Output=T> + ShrAssign
+                + BitAnd<Output=T> + BitAndAssign + BitOr<Output=T> + BitOrAssign
+                + BitXor<Output=T> + BitXorAssign + Not<Output=T>
+                + PartialEq + PartialOrd
+        {
+            type Output = Self;
+
+            /// Performs the >> operation. If underflow happens during the >> operation,
+            /// `UNDERFLOW` flag is set and the method is_underflow() will return true.
+            /// Here, 'underflow' means that none-zero part is shifted out to the right.
+            /// [Read more](https://doc.rust-lang.org/core/ops/bit/trait.Shr.html#tymethod.shr)
+            /// 
+            /// # Example 1
+            /// ```
+            /// use std::str::FromStr;
+            /// use Cryptocol::number::*;
+            /// use Cryptocol::define_utypes_with;
+            /// define_utypes_with!(u128);
+            /// let a = u256::from_str("1234567_1234567890_1234567890_1234567890_1234567890_1234567890_1234567890_1234567890").unwrap();
+            /// let b = a >> 2;
+            /// println!("b = {}\nunderflow: {}", b, b.is_underflow());
+            /// assert_eq!(b.is_underflow(), true);
+            /// ```
+            /// 
+            /// # Example 2
+            /// ```
+            /// use std::str::FromStr;
+            /// use Cryptocol::number::*;
+            /// use Cryptocol::define_utypes_with;
+            /// define_utypes_with!(u128);
+            /// let a = u256::from_str("1234567_1234567890_1234567890_1234567890_1234567890_1234567890_1234567890_1234567890").unwrap();
+            /// let b = a >> 1;
+            /// println!("b = {}\nunderflow: {}", b, b.is_underflow());
+            /// assert_eq!(b.is_underflow(), false);
+            /// ```
+            fn shr(self, rhs: $f) -> Self
+            {
+                let mut s = self.clone();
+                s >>= rhs;
+                s
+            }
+        }
+    }
+}
+
+
+
+macro_rules! shrassign_i_for_BigUInt_impl {
+    ($f:ty) => {
+        impl<T, const N: usize> ShrAssign<$f> for BigUInt<T, N>
+        where T: Uint + Clone + Display + Debug + ToString
+                + Add<Output=T> + AddAssign + Sub<Output=T> + SubAssign
+                + Mul<Output=T> + MulAssign + Div<Output=T> + DivAssign
+                + Rem<Output=T> + RemAssign
+                + Shl<Output=T> + ShlAssign + Shr<Output=T> + ShrAssign
+                + BitAnd<Output=T> + BitAndAssign + BitOr<Output=T> + BitOrAssign
+                + BitXor<Output=T> + BitXorAssign + Not<Output=T>
+                + PartialEq + PartialOrd
+        {
+            /// Performs the >>= operation. If underflow happens during the >>= operation,
+            /// `UNDERFLOW` flag is set and the method is_underflow() will return true.
+            /// Here, 'underflow' means that none-zero part is shifted out to the right.
+            /// [Read more](https://doc.rust-lang.org/core/ops/bit/trait.ShrAssign.html#tymethod.shr_assign)
+            /// 
+            /// # Big-endian issue
+            /// It is just experimental for Big Endian CPUs. So, you are not encouraged
+            /// to use it for serious purpose. Only use this crate for Big-endian CPUs
+            /// with your own full responsibility.
+            /// 
+            /// # Example 1
+            /// ```
+            /// use std::str::FromStr;
+            /// use Cryptocol::number::*;
+            /// use Cryptocol::define_utypes_with;
+            /// define_utypes_with!(u128);
+            /// let mut a = u256::from_str("1234567_1234567890_1234567890_1234567890_1234567890_1234567890_1234567890_1234567890").unwrap();
+            /// a >>= 2_i128;
+            /// println!("a = {}\nunderflow: {}", a, a.is_underflow());
+            /// assert_eq!(a.is_underflow(), true);
+            /// ```
+            /// 
+            /// # Example 2
+            /// ```
+            /// use std::str::FromStr;
+            /// use Cryptocol::number::*;
+            /// use Cryptocol::define_utypes_with;
+            /// define_utypes_with!(u128);
+            /// let mut a = u256::from_str("1234567_1234567890_1234567890_1234567890_1234567890_1234567890_1234567890_1234567890").unwrap();
+            /// a >>= 1_i8;
+            /// println!("a = {}\nunderflow: {}", a, a.is_underflow());
+            /// assert_eq!(a.is_underflow(), false);
+            /// ```
+            fn shr_assign(&mut self, rhs: $f)
+            {
+                if rhs < 0
+                {
+                    match size_of_val(&rhs)
+                    {
+                        1 => { *self <<= (-rhs as u8); },
+                        2 => { *self <<= (-rhs as u16); },
+                        4 => { *self <<= (-rhs as u32); },
+                        8 => { *self <<= (-rhs as u64); },
+                        16 => { *self <<= (-rhs as u128); },
+                        _ => {},
+                    }
+                }
+                else
+                {
+                    match size_of_val(&rhs)
+                    {
+                        1 => { *self >>= (rhs as u8); },
+                        2 => { *self >>= (rhs as u16); },
+                        4 => { *self >>= (rhs as u32); },
+                        8 => { *self >>= (rhs as u64); },
+                        16 => { *self >>= (rhs as u128); },
+                        _ => {},
+                    }
                 }
             }
-            self.copy_within(chunk_num..N, 0);
-            for idx in N-chunk_num..N
-                { self.set_num_(idx, zero); }
         }
-        if piece_num == 0
-            { return; }
-        if (self.get_num_(0) << T::num((TSIZE_IN_BITS - piece_num).into_u128())) != zero
-            { self.set_underflow(); }
-
-        let mut num: T;
-        let mut carry = T::zero();
-        let mut idx = N - 1 - chunk_num;
-        loop
-        {
-            num = (self.get_num_(idx) >> T::num(piece_num.into_u128())) | carry;
-            carry = self.get_num_(idx) << T::num((TSIZE_IN_BITS - piece_num).into_u128());
-            self.set_num_(idx, num);
-            if idx == 0
-                { break; }
-            idx -= 1;
-        }
-        if carry != zero
-            { self.set_underflow(); }
     }
 }
+
+
+macro_rules! shrassign_u_for_BigUInt_impl {
+    ($f:ty) => {
+        impl<T, const N: usize> ShrAssign<$f> for BigUInt<T, N>
+        where T: Uint + Clone + Display + Debug + ToString
+                + Add<Output=T> + AddAssign + Sub<Output=T> + SubAssign
+                + Mul<Output=T> + MulAssign + Div<Output=T> + DivAssign
+                + Rem<Output=T> + RemAssign
+                + Shl<Output=T> + ShlAssign + Shr<Output=T> + ShrAssign
+                + BitAnd<Output=T> + BitAndAssign + BitOr<Output=T> + BitOrAssign
+                + BitXor<Output=T> + BitXorAssign + Not<Output=T>
+                + PartialEq + PartialOrd
+        {
+            /// Performs the >>= operation. If underflow happens during the >>= operation,
+            /// `UNDERFLOW` flag is set and the method is_underflow() will return true.
+            /// Here, 'underflow' means that none-zero part is shifted out to the right.
+            /// [Read more](https://doc.rust-lang.org/core/ops/bit/trait.ShrAssign.html#tymethod.shr_assign)
+            /// 
+            /// # Big-endian issue
+            /// It is just experimental for Big Endian CPUs. So, you are not encouraged
+            /// to use it for serious purpose. Only use this crate for Big-endian CPUs
+            /// with your own full responsibility.
+            /// 
+            /// # Example 1
+            /// ```
+            /// use std::str::FromStr;
+            /// use Cryptocol::number::*;
+            /// use Cryptocol::define_utypes_with;
+            /// define_utypes_with!(u128);
+            /// let mut a = u256::from_str("1234567_1234567890_1234567890_1234567890_1234567890_1234567890_1234567890_1234567890").unwrap();
+            /// a >>= 2_i128;
+            /// println!("a = {}\nunderflow: {}", a, a.is_underflow());
+            /// assert_eq!(a.is_underflow(), true);
+            /// ```
+            /// 
+            /// # Example 2
+            /// ```
+            /// use std::str::FromStr;
+            /// use Cryptocol::number::*;
+            /// use Cryptocol::define_utypes_with;
+            /// define_utypes_with!(u128);
+            /// let mut a = u256::from_str("1234567_1234567890_1234567890_1234567890_1234567890_1234567890_1234567890_1234567890").unwrap();
+            /// a >>= 1_i8;
+            /// println!("a = {}\nunderflow: {}", a, a.is_underflow());
+            /// assert_eq!(a.is_underflow(), false);
+            /// ```
+            fn shr_assign(&mut self, rhs: $f)
+            {
+                self.shift_right_assign(rhs);
+                /*
+                let TSIZE_IN_BITS = T::size_in_bits();
+                let chunk_num = (rhs / TSIZE_IN_BITS as $f) as usize;
+                let piece_num = (rhs % TSIZE_IN_BITS as $f) as usize;
+                let zero = T::zero();
+                self.reset_all_flags();
+                if chunk_num > 0
+                {
+                    for i in 0..chunk_num
+                    {
+                        if self.get_num_(i) > zero
+                        {
+                            self.set_underflow();
+                            break;
+                        }
+                    }
+                    self.copy_within(chunk_num..N, 0);
+                    for idx in N-chunk_num..N
+                        { self.set_num_(idx, zero); }
+                }
+                if piece_num == 0
+                    { return; }
+                if (self.get_num_(0) << T::num((TSIZE_IN_BITS - piece_num).into_u128())) != zero
+                    { self.set_underflow(); }
+
+                let mut num: T;
+                let mut carry = T::zero();
+                let mut idx = N - 1 - chunk_num;
+                loop
+                {
+                    num = (self.get_num_(idx) >> T::num(piece_num.into_u128())) | carry;
+                    carry = self.get_num_(idx) << T::num((TSIZE_IN_BITS - piece_num).into_u128());
+                    self.set_num_(idx, num);
+                    if idx == 0
+                        { break; }
+                    idx -= 1;
+                }
+                if carry != zero
+                    { self.set_underflow(); }*/
+            }
+        }
+    }
+}
+
+
+
+shr_for_BigUInt_impl! { i8 }
+shr_for_BigUInt_impl! { i16 }
+shr_for_BigUInt_impl! { i32 }
+shr_for_BigUInt_impl! { i64 }
+shr_for_BigUInt_impl! { i128 }
+shr_for_BigUInt_impl! { isize }
+shr_for_BigUInt_impl! { u8 }
+shr_for_BigUInt_impl! { u16 }
+shr_for_BigUInt_impl! { u32 }
+shr_for_BigUInt_impl! { u64 }
+shr_for_BigUInt_impl! { u128 }
+shr_for_BigUInt_impl! { usize }
+shrassign_i_for_BigUInt_impl! { i8 }
+shrassign_i_for_BigUInt_impl! { i16 }
+shrassign_i_for_BigUInt_impl! { i32 }
+shrassign_i_for_BigUInt_impl! { i64 }
+shrassign_i_for_BigUInt_impl! { i128 }
+shrassign_i_for_BigUInt_impl! { isize }
+shrassign_u_for_BigUInt_impl! { u8 }
+shrassign_u_for_BigUInt_impl! { u16 }
+shrassign_u_for_BigUInt_impl! { u32 }
+shrassign_u_for_BigUInt_impl! { u64 }
+shrassign_u_for_BigUInt_impl! { u128 }
+shrassign_u_for_BigUInt_impl! { usize }
 
 
 
@@ -741,6 +910,7 @@ impl<T, const N: usize> BitAnd for BigUInt<T, N>
 where T: Uint + Clone + Display + Debug + ToString
         + Add<Output=T> + AddAssign + Sub<Output=T> + SubAssign
         + Mul<Output=T> + MulAssign + Div<Output=T> + DivAssign
+        + Rem<Output=T> + RemAssign
         + Shl<Output=T> + ShlAssign + Shr<Output=T> + ShrAssign
         + BitAnd<Output=T> + BitAndAssign + BitOr<Output=T> + BitOrAssign
         + BitXor<Output=T> + BitXorAssign + Not<Output=T>
@@ -753,7 +923,7 @@ where T: Uint + Clone + Display + Debug + ToString
     /// 
     /// # Examples
     /// ```
-    /// use Cryptocol::number::HugeInteger;
+    /// use Cryptocol::number::*;
     /// use Cryptocol::define_utypes_with;
     /// define_utypes_with!(u128);
     /// let a = u256::from_str_radix("11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101", 2).unwrap();
@@ -794,6 +964,7 @@ impl<T, const N: usize> BitAndAssign for BigUInt<T, N>
 where T: Uint + Clone + Display + Debug + ToString
         + Add<Output=T> + AddAssign + Sub<Output=T> + SubAssign
         + Mul<Output=T> + MulAssign + Div<Output=T> + DivAssign
+        + Rem<Output=T> + RemAssign
         + Shl<Output=T> + ShlAssign + Shr<Output=T> + ShrAssign
         + BitAnd<Output=T> + BitAndAssign + BitOr<Output=T> + BitOrAssign
         + BitXor<Output=T> + BitXorAssign + Not<Output=T>
@@ -845,6 +1016,7 @@ impl<T, const N: usize> BitOr for BigUInt<T, N>
 where T: Uint + Clone + Display + Debug + ToString
         + Add<Output=T> + AddAssign + Sub<Output=T> + SubAssign
         + Mul<Output=T> + MulAssign + Div<Output=T> + DivAssign
+        + Rem<Output=T> + RemAssign
         + Shl<Output=T> + ShlAssign + Shr<Output=T> + ShrAssign
         + BitAnd<Output=T> + BitAndAssign + BitOr<Output=T> + BitOrAssign
         + BitXor<Output=T> + BitXorAssign + Not<Output=T>
@@ -898,6 +1070,7 @@ impl<T, const N: usize> BitOrAssign for BigUInt<T, N>
 where T: Uint + Clone + Display + Debug + ToString
         + Add<Output=T> + AddAssign + Sub<Output=T> + SubAssign
         + Mul<Output=T> + MulAssign + Div<Output=T> + DivAssign
+        + Rem<Output=T> + RemAssign
         + Shl<Output=T> + ShlAssign + Shr<Output=T> + ShrAssign
         + BitAnd<Output=T> + BitAndAssign + BitOr<Output=T> + BitOrAssign
         + BitXor<Output=T> + BitXorAssign + Not<Output=T>
@@ -908,7 +1081,7 @@ where T: Uint + Clone + Display + Debug + ToString
     /// 
     /// # Examples
     /// ```
-    /// use Cryptocol::number::HugeInteger;
+    /// use Cryptocol::number::*;
     /// use Cryptocol::define_utypes_with;
     /// define_utypes_with!(u128);
     /// let mut a = u256::from_str_radix("11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101", 2).unwrap();
@@ -948,6 +1121,7 @@ impl<T, const N: usize> BitXor for BigUInt<T, N>
 where T: Uint + Clone + Display + Debug + ToString
         + Add<Output=T> + AddAssign + Sub<Output=T> + SubAssign
         + Mul<Output=T> + MulAssign + Div<Output=T> + DivAssign
+        + Rem<Output=T> + RemAssign
         + Shl<Output=T> + ShlAssign + Shr<Output=T> + ShrAssign
         + BitAnd<Output=T> + BitAndAssign + BitOr<Output=T> + BitOrAssign
         + BitXor<Output=T> + BitXorAssign + Not<Output=T>
@@ -960,7 +1134,7 @@ where T: Uint + Clone + Display + Debug + ToString
     /// 
     /// # Examples
     /// ```
-    /// use Cryptocol::number::HugeInteger;
+    /// use Cryptocol::number::*;
     /// use Cryptocol::define_utypes_with;
     /// define_utypes_with!(u128);
     /// let a = u256::from_str_radix("11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101", 2).unwrap();
@@ -977,7 +1151,7 @@ where T: Uint + Clone + Display + Debug + ToString
     /// what you should import, you can just import everything
     /// (Cryptocol::number::*) as next example. It is not harmful.
     /// ```
-    /// use Cryptocol::number::HugeInteger;
+    /// use Cryptocol::number::*;
     /// use Cryptocol::define_utypes_with;
     /// define_utypes_with!(u128);
     /// let a = u256::from_str_radix("11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101", 2).unwrap();
@@ -1002,6 +1176,7 @@ impl<T, const N: usize> BitXorAssign for BigUInt<T, N>
 where T: Uint + Clone + Display + Debug + ToString
         + Add<Output=T> + AddAssign + Sub<Output=T> + SubAssign
         + Mul<Output=T> + MulAssign + Div<Output=T> + DivAssign
+        + Rem<Output=T> + RemAssign
         + Shl<Output=T> + ShlAssign + Shr<Output=T> + ShrAssign
         + BitAnd<Output=T> + BitAndAssign + BitOr<Output=T> + BitOrAssign
         + BitXor<Output=T> + BitXorAssign + Not<Output=T>
@@ -1012,7 +1187,7 @@ where T: Uint + Clone + Display + Debug + ToString
     /// 
     /// # Examples
     /// ```
-    /// use Cryptocol::number::HugeInteger;
+    /// use Cryptocol::number::*;
     /// use Cryptocol::define_utypes_with;
     /// define_utypes_with!(u128);
     /// let mut a = u256::from_str_radix("11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101", 2).unwrap();
@@ -1052,6 +1227,7 @@ impl<T, const N: usize> Not for BigUInt<T, N>
 where T: Uint + Clone + Display + Debug + ToString
         + Add<Output=T> + AddAssign + Sub<Output=T> + SubAssign
         + Mul<Output=T> + MulAssign + Div<Output=T> + DivAssign
+        + Rem<Output=T> + RemAssign
         + Shl<Output=T> + ShlAssign + Shr<Output=T> + ShrAssign
         + BitAnd<Output=T> + BitAndAssign + BitOr<Output=T> + BitOrAssign
         + BitXor<Output=T> + BitXorAssign + Not<Output=T>
@@ -1064,7 +1240,7 @@ where T: Uint + Clone + Display + Debug + ToString
     /// 
     /// # Examples
     /// ```
-    /// use Cryptocol::number::HugeInteger;
+    /// use Cryptocol::number::*;
     /// use Cryptocol::define_utypes_with;
     /// define_utypes_with!(u128);
     /// let a = u256::from_str_radix("11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101", 2).unwrap();
@@ -1104,6 +1280,7 @@ impl<T, const N: usize> PartialEq for BigUInt<T, N>
 where T: Uint + Clone + Display + Debug + ToString
         + Add<Output=T> + AddAssign + Sub<Output=T> + SubAssign
         + Mul<Output=T> + MulAssign + Div<Output=T> + DivAssign
+        + Rem<Output=T> + RemAssign
         + Shl<Output=T> + ShlAssign + Shr<Output=T> + ShrAssign
         + BitAnd<Output=T> + BitAndAssign + BitOr<Output=T> + BitOrAssign
         + BitXor<Output=T> + BitXorAssign + Not<Output=T>
@@ -1126,6 +1303,7 @@ impl<T, const N: usize> PartialOrd for BigUInt<T, N>
 where T: Uint + Clone + Display + Debug + ToString
         + Add<Output=T> + AddAssign + Sub<Output=T> + SubAssign
         + Mul<Output=T> + MulAssign + Div<Output=T> + DivAssign
+        + Rem<Output=T> + RemAssign
         + Shl<Output=T> + ShlAssign + Shr<Output=T> + ShrAssign
         + BitAnd<Output=T> + BitAndAssign + BitOr<Output=T> + BitOrAssign
         + BitXor<Output=T> + BitXorAssign + Not<Output=T>
@@ -1168,6 +1346,7 @@ impl<T, const N: usize> Display for BigUInt<T, N>
 where T: Uint + Clone + Display + Debug + ToString
         + Add<Output=T> + AddAssign + Sub<Output=T> + SubAssign
         + Mul<Output=T> + MulAssign + Div<Output=T> + DivAssign
+        + Rem<Output=T> + RemAssign
         + Shl<Output=T> + ShlAssign + Shr<Output=T> + ShrAssign
         + BitAnd<Output=T> + BitAndAssign + BitOr<Output=T> + BitOrAssign
         + BitXor<Output=T> + BitXorAssign + Not<Output=T>
@@ -1201,6 +1380,7 @@ impl<T, const N: usize, S> From<S> for BigUInt<T, N>
 where T: Uint + Clone + Display + Debug + ToString
         + Add<Output=T> + AddAssign + Sub<Output=T> + SubAssign
         + Mul<Output=T> + MulAssign + Div<Output=T> + DivAssign
+        + Rem<Output=T> + RemAssign
         + Shl<Output=T> + ShlAssign + Shr<Output=T> + ShrAssign
         + BitAnd<Output=T> + BitAndAssign + BitOr<Output=T> + BitOrAssign
         + BitXor<Output=T> + BitXorAssign + Not<Output=T>
@@ -1225,7 +1405,6 @@ where T: Uint + Clone + Display + Debug + ToString
     /// assert_eq!(cc.into_u32(), 1004);
     /// ```
     /// 
-    #[cfg(target_endian = "little")]
     fn from(val: S) -> Self
     {
         let TSIZE = size_of::<T>();
@@ -1235,14 +1414,14 @@ where T: Uint + Clone + Display + Debug + ToString
         
         if TSIZE >= SSIZE
         {
-            unsafe { me.set_num(0, share.des); }
+            unsafe { me.set_num_(0, share.des); }
         }
         else
         {
             let TSIZE_BITS = TSIZE * 8;
             for i in 0..SSIZE/TSIZE
             {
-                unsafe { me.set_num(i, share.des); }
+                unsafe { me.set_num_(i, share.des); }
                 unsafe { share.src >>= S::num(TSIZE_BITS as u128); }
             }
         }
@@ -1256,6 +1435,7 @@ impl<T, const N: usize> From<[T; N]> for BigUInt<T, N>
 where T: Uint + Clone + Display + Debug + ToString
         + Add<Output=T> + AddAssign + Sub<Output=T> + SubAssign
         + Mul<Output=T> + MulAssign + Div<Output=T> + DivAssign
+        + Rem<Output=T> + RemAssign
         + Shl<Output=T> + ShlAssign + Shr<Output=T> + ShrAssign
         + BitAnd<Output=T> + BitAndAssign + BitOr<Output=T> + BitOrAssign
         + BitXor<Output=T> + BitXorAssign + Not<Output=T>
@@ -1286,6 +1466,7 @@ impl<T, const N: usize> FromStr for BigUInt<T, N>
 where T: Uint + Clone + Display + Debug + ToString
         + Add<Output=T> + AddAssign + Sub<Output=T> + SubAssign
         + Mul<Output=T> + MulAssign + Div<Output=T> + DivAssign
+        + Rem<Output=T> + RemAssign
         + Shl<Output=T> + ShlAssign + Shr<Output=T> + ShrAssign
         + BitAnd<Output=T> + BitAndAssign + BitOr<Output=T> + BitOrAssign
         + BitXor<Output=T> + BitXorAssign + Not<Output=T>
