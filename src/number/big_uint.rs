@@ -353,6 +353,11 @@ where T: Uint + Clone + Display + Debug + ToString
 
     /// Constructs a new `BigUInt<T, N>` which has the value of one.
     /// 
+    /// # Benefit
+    /// Your source code will be better readable if you use
+    /// `BigUInt<T, N>::one()` instead of `BigUInt<T, N>::new()` and then
+    /// `set_uint(1)` especially when you create the big number one.
+    /// 
     /// # Big-endian issue
     /// It is just experimental for Big Endian CPUs. So, you are not encouraged
     /// to use it for serious purpose. Only use this crate for Big-endian CPUs
@@ -370,7 +375,7 @@ where T: Uint + Clone + Display + Debug + ToString
     pub fn one() -> Self
     {
         let mut me = Self::new();
-        me.set_num(0, T::one());
+        me.set_num_(0, T::one());
         me
     }
 
@@ -390,115 +395,55 @@ where T: Uint + Clone + Display + Debug + ToString
         Self { number: [T::max(); N], flag: 0, }
     }
 
-    /// Constructs a new `BigUInt<T, N>` from a string with radix.
-    /// The constructed object will be wrapped in `Ok(BigUInt<T, N>)` if it is
-    /// successfully created. Otherwise, this method returns one of
-    /// `Err(NumberErr::OutOfValidRadixRange)`, `Err(NumberErr::NotAlphaNumeric)`,
-    /// and `Err(NumberErr::NotFitToRadix)`.
+    /// Constructs a new `BigUInt<T, N>`-type object from an unsigned integer
+    /// such as `u8`, `u16`, `u32`, `u64`, `u128` and `usize`.
     /// 
-    /// # Errors
-    /// - If the argument `txt` of this method includes any alphanumeric
-    /// letter(s), it will return `Err(NumberErr::NotAlphaNumeric)`.
-    /// - If the argument `radix` of this method is out of the valid range from
-    /// `2` up to `62` inclusively, it will return `Err(NumberErr::OutOfValidRadixRange)`.
-    /// - If the argument `txt` of this method includes any letter(s) out of the
-    /// valid letter range even if they are alphanumeric, it will return
-    /// `Err(NumberErr::NotFitToRadix)`. For example, in the case of hexadecimal
-    /// number system which means that the argument radix is `16`, if the
-    /// argument `txt` includes 'g', it will return `Err(NumberErr::NotFitToRadix)`.
+    /// # Examples
     /// 
-    /// # Valid Radix Range
-    /// The radix can be from `2` up to `62` (= 10 + 26 + 26). Such radices that
-    /// are less than `2` or more than `62` are not available. In this case,
-    /// this method will return `Err(NumberErr::OutOfValidRadixRange)`.
-    /// 
-    /// # Radix more than `10` and less than `37`
-    /// If the radix is more than `10` and less than `37`, the digit bigger than
-    /// `9` will be expressed with alphabets. The avaiable alphabets are
-    /// _case-insensitive_. For example, in the case of hexadecimal number
-    /// system, the digit whose value is `10`, `11`, `12`, `13`, `14`, and `15`
-    /// are represented as `A` or `a`, `B` or `b`, `C` or `c`, `D` or `d`, `E`
-    /// or `e`, and `F` or `f`, respectively. And, in the case of 37-ary number
-    /// system, the values `16`, `35` and `36` are represented as `G` or `g`,
-    /// `Y` or `y`, and `Z` or `z`, respectively.
-    /// 
-    /// # Radix more than `36` and less than `63`
-    /// However, if the radix is more than `36` and less than `63`, the digit
-    /// bigger than `9` will be expressed with alphabets. The avaiable alphabets
-    /// are _case-sensitive_, so `A` is different from `a`. For instance, in the
-    /// case of 62-ary number system, the digit whose value is `10`, `11`, `35`,
-    /// `36`, `37`, `38`, `60` and `61` are represented as `A`, `B`, `Y`, `Z`,
-    /// `a`, `b`, `y` and `z`, respectively.
-    /// 
-    /// # Delimiter _
-    /// In the number expression in a string, you can separate the digits with
-    /// '_' in order to make it more readable. So, "10000" is the same as
-    /// "1_0000".
-    /// 
-    /// # Example
     /// ```
-    /// use std::str::FromStr;
-    /// use Cryptocol::number::{ BigUInt, NumberErr };
-    /// let a = BigUInt::<u8,32>::from_str_radix("1234_5678_9ABC_DEF0_1234_5678_9ABC_DEF0_1234_5678_9ABC_DEF0_1234_5678_9ABC_DEF0_1234_5678_9ABC_DEF0_1234_5678_9ABC_DEF0_1234_5678_9ABC_DEF0_1234_5678_9ABC_DEF0", 16).unwrap();
-    /// println!("a = {}", a);
-    /// assert_eq!(a.to_string(), "8234104123542484900769178205574010627627573691361805720124810878238590820080");
+    /// use Cryptocol::number::BigUInt;
+    /// use Cryptocol::define_utypes_with;
+    /// define_utypes_with!(u16);
+    /// 
+    /// let cc = u512::from_uint(1004_u32);
+    /// println!("cc = {}", cc);
+    /// assert_eq!(cc.into_u32(), 1004);
     /// ```
-    pub fn from_str_radix(txt: &str, radix: usize) -> Result<Self, NumberErr>
+    pub fn from_uint<S>(val: S) -> Self
+    where S: Uint + Clone + Display + Debug + ToString
+            + Add<Output=S> + AddAssign + Sub<Output=S> + SubAssign
+            + Mul<Output=S> + MulAssign + Div<Output=S> + DivAssign
+            + Rem<Output=S> + RemAssign
+            + Shl<Output=S> + ShlAssign + Shr<Output=S> + ShrAssign
+            + BitAnd<Output=S> + BitAndAssign + BitOr<Output=S> + BitOrAssign
+            + BitXor<Output=S> + BitXorAssign + Not<Output=S>
+            + PartialEq + PartialOrd
     {
-        if (radix < 2) || (radix > 10 + 26 + 26)
-            { return Err(NumberErr::OutOfValidRadixRange); }
-
-        let mut bignum = Self::zero();
-        for c in txt.chars()
+        let TSIZE = T::size_in_bytes();
+        let SSIZE = S::size_in_bytes();
+        let mut me = Self::new();
+        let mut share = Share::<T, S>::from_src(val);
+        
+        if TSIZE >= SSIZE
         {
-            if c == '_'
-                { continue; }
-            if !c.is_alphanumeric()
-                { return Err(NumberErr::NotAlphaNumeric); }
-            if radix <= 10
-            {
-                if c as usize >= '0' as usize + radix
-                    { return Err(NumberErr::NotFitToRadix); }
-            }
-            else if radix <= 10 + 26
-            {
-                if (c as usize >= 'A' as usize + radix - 10) 
-                        && (c as usize <= 'Z' as usize)
-                    || (c as usize >= 'a' as usize + radix - 10)
-                    { return Err(NumberErr::NotFitToRadix); }
-            }
-            else if c as usize >= 'a' as usize + radix - (10 + 26)  // radix <= 10 + 26 + 26
-                { return Err(NumberErr::NotFitToRadix); }
-
-            let num: usize = if radix <= 10    { c as usize - '0' as usize }
-                        else if radix <= 10 + 26
-                        {
-                            if c as usize <= '9' as usize
-                                { c as usize - '0' as usize }
-                            else if c as usize <= 'Z' as usize
-                                { c as usize - 'A' as usize + 10 }
-                            else
-                                { c as usize - 'a' as usize + 10 }
-                        }
-                        else    // if radix <= 10 + 26 + 26
-                        {
-                            if c as usize <= '9' as usize
-                                { c as usize - '0' as usize }
-                            else if c as usize <= 'Z' as usize
-                                { c as usize - 'A' as usize + 10 }
-                            else
-                                { c as usize - 'a' as usize + 10 + 26 }
-                        };
-            bignum.times(T::num(radix as u128));
-            bignum.accumulate(T::num(num as u128));
+            unsafe { me.set_num_(0, share.des); }
         }
-        Ok(bignum)
+        else
+        {
+            let TSIZE_BITS = TSIZE * 8;
+            for i in 0..SSIZE/TSIZE
+            {
+                unsafe { me.set_num_(i, share.des); }
+                unsafe { share.src >>= S::num(TSIZE_BITS as u128); }
+            }
+        }
+        return me;
     }
 
     /// Constructs a new `BigUInt<T, N>` from an array of type `T` with `N`
     /// elements.
     /// 
-    /// # Counter Part Method
+    /// # Counterpart Method
     /// You can also use the method [from()](struct@BigUInt#impl-From<[T;+N]>-for-BigUInt<T,+N>)
     /// implemented by implementation of trait From<[T;N]>.
     /// 
@@ -607,6 +552,111 @@ where T: Uint + Clone + Display + Debug + ToString
         me
     }
 
+    /// Constructs a new `BigUInt<T, N>` from a string with radix.
+    /// The constructed object will be wrapped in `Ok(BigUInt<T, N>)` if it is
+    /// successfully created. Otherwise, this method returns one of
+    /// `Err(NumberErr::OutOfValidRadixRange)`, `Err(NumberErr::NotAlphaNumeric)`,
+    /// and `Err(NumberErr::NotFitToRadix)`.
+    /// 
+    /// # Errors
+    /// - If the argument `txt` of this method includes any alphanumeric
+    /// letter(s), it will return `Err(NumberErr::NotAlphaNumeric)`.
+    /// - If the argument `radix` of this method is out of the valid range from
+    /// `2` up to `62` inclusively, it will return `Err(NumberErr::OutOfValidRadixRange)`.
+    /// - If the argument `txt` of this method includes any letter(s) out of the
+    /// valid letter range even if they are alphanumeric, it will return
+    /// `Err(NumberErr::NotFitToRadix)`. For example, in the case of hexadecimal
+    /// number system which means that the argument radix is `16`, if the
+    /// argument `txt` includes 'g', it will return `Err(NumberErr::NotFitToRadix)`.
+    /// 
+    /// # Valid Radix Range
+    /// The radix can be from `2` up to `62` (= 10 + 26 + 26). Such radices that
+    /// are less than `2` or more than `62` are not available. In this case,
+    /// this method will return `Err(NumberErr::OutOfValidRadixRange)`.
+    /// 
+    /// # Radix more than `10` and less than `37`
+    /// If the radix is more than `10` and less than `37`, the digit bigger than
+    /// `9` will be expressed with alphabets. The avaiable alphabets are
+    /// _case-insensitive_. For example, in the case of hexadecimal number
+    /// system, the digit whose value is `10`, `11`, `12`, `13`, `14`, and `15`
+    /// are represented as `A` or `a`, `B` or `b`, `C` or `c`, `D` or `d`, `E`
+    /// or `e`, and `F` or `f`, respectively. And, in the case of 37-ary number
+    /// system, the values `16`, `35` and `36` are represented as `G` or `g`,
+    /// `Y` or `y`, and `Z` or `z`, respectively.
+    /// 
+    /// # Radix more than `36` and less than `63`
+    /// However, if the radix is more than `36` and less than `63`, the digit
+    /// bigger than `9` will be expressed with alphabets. The avaiable alphabets
+    /// are _case-sensitive_, so `A` is different from `a`. For instance, in the
+    /// case of 62-ary number system, the digit whose value is `10`, `11`, `35`,
+    /// `36`, `37`, `38`, `60` and `61` are represented as `A`, `B`, `Y`, `Z`,
+    /// `a`, `b`, `y` and `z`, respectively.
+    /// 
+    /// # Delimiter _
+    /// In the number expression in a string, you can separate the digits with
+    /// '_' in order to make it more readable. So, "10000" is the same as
+    /// "1_0000".
+    /// 
+    /// # Example
+    /// ```
+    /// use std::str::FromStr;
+    /// use Cryptocol::number::{ BigUInt, NumberErr };
+    /// let a = BigUInt::<u8,32>::from_str_radix("1234_5678_9ABC_DEF0_1234_5678_9ABC_DEF0_1234_5678_9ABC_DEF0_1234_5678_9ABC_DEF0_1234_5678_9ABC_DEF0_1234_5678_9ABC_DEF0_1234_5678_9ABC_DEF0_1234_5678_9ABC_DEF0", 16).unwrap();
+    /// println!("a = {}", a);
+    /// assert_eq!(a.to_string(), "8234104123542484900769178205574010627627573691361805720124810878238590820080");
+    /// ```
+    pub fn from_str_radix(txt: &str, radix: usize) -> Result<Self, NumberErr>
+    {
+        if (radix < 2) || (radix > 10 + 26 + 26)
+            { return Err(NumberErr::OutOfValidRadixRange); }
+
+        let mut bignum = Self::zero();
+        for c in txt.chars()
+        {
+            if c == '_'
+                { continue; }
+            if !c.is_alphanumeric()
+                { return Err(NumberErr::NotAlphaNumeric); }
+            if radix <= 10
+            {
+                if c as usize >= '0' as usize + radix
+                    { return Err(NumberErr::NotFitToRadix); }
+            }
+            else if radix <= 10 + 26
+            {
+                if (c as usize >= 'A' as usize + radix - 10) 
+                        && (c as usize <= 'Z' as usize)
+                    || (c as usize >= 'a' as usize + radix - 10)
+                    { return Err(NumberErr::NotFitToRadix); }
+            }
+            else if c as usize >= 'a' as usize + radix - (10 + 26)  // radix <= 10 + 26 + 26
+                { return Err(NumberErr::NotFitToRadix); }
+
+            let num: usize = if radix <= 10    { c as usize - '0' as usize }
+                        else if radix <= 10 + 26
+                        {
+                            if c as usize <= '9' as usize
+                                { c as usize - '0' as usize }
+                            else if c as usize <= 'Z' as usize
+                                { c as usize - 'A' as usize + 10 }
+                            else
+                                { c as usize - 'a' as usize + 10 }
+                        }
+                        else    // if radix <= 10 + 26 + 26
+                        {
+                            if c as usize <= '9' as usize
+                                { c as usize - '0' as usize }
+                            else if c as usize <= 'Z' as usize
+                                { c as usize - 'A' as usize + 10 }
+                            else
+                                { c as usize - 'a' as usize + 10 + 26 }
+                        };
+            bignum.times(T::num(radix as u128));
+            bignum.accumulate(T::num(num as u128));
+        }
+        Ok(bignum)
+    }
+
     /// Constucts a new `BigUInt<T, N>` which has the value zero and sets only
     /// the bit specified by the argument bit_pos to be 1.
     /// 
@@ -618,6 +668,7 @@ where T: Uint + Clone + Display + Debug + ToString
     /// # Big-endian issue
     /// It is just experimental for Big Endian CPUs. So, you are not encouraged
     /// to use it for serious purpose. Only use this crate for Big-endian CPUs
+    /// with your own full responsibility.
     /// 
     /// # Example
     /// ```
@@ -640,7 +691,7 @@ where T: Uint + Clone + Display + Debug + ToString
 
     /***** METHODS FOR GENERATING RANDOM PRIME NUMBERS *****/
 
-    /// Constucts a new `BigUInt<T, N>` which has the random value.
+    /// Constucts a new `BigUInt<T, N>`-type object which has the random value.
     /// The random number that this method random() returns is a pure random
     /// number whose range is from 0 up to BigUInt::max() inclusively.
     /// 
@@ -650,16 +701,60 @@ where T: Uint + Clone + Display + Debug + ToString
     /// [rand](https://docs.rs/rand/latest/rand/index.html) (especially,
     /// [rand::rngs::OsRng](https://docs.rs/rand/latest/rand/rngs/struct.OsRng.html)).
     /// 
-    /// # Counter Part Method
-    /// - If you want to be sure to use pure random number whose range is from 0
-    /// up to BigUInt::max() inclusively, you are highly encouraged to use this
-    /// method [random()](struct@BigUInt#method.random) rather than the method
-    /// [random_with_MSB_set()](struct@BigUInt#method.random_with_MSB_set).
+    /// 
+    /// # Counterpart Methods
+    /// - If you want to be sure to use cryptographically secure pure random
+    /// number whose range is from 0 up to BigUInt::max() inclusively, you are
+    /// highly encouraged to use the method [random()](struct@BigUInt#method.random)
+    /// rather than other methods that generate different ramdom numbers such as
+    /// [random_less_than()](struct@BigUInt#method.random_less_than),
+    /// [random_odd()](struct@BigUInt#method.random_odd),
+    /// [random_odd_less_than()](struct@BigUInt#method.random_odd_less_than)
+    /// [random_with_MSB_set()](struct@BigUInt#method.random_with_MSB_set), and
+    /// [random_odd_with_MSB_set](struct@BigUInt#method.random_odd_with_MSB_set).
     /// - If you want to use (N * 8)-bit long random number for cryptographic
     /// purpose, you are highly recommended to use the method [random_with_MSB_set()](struct@BigUInt#method.random_with_MSB_set)
-    /// instead of this method random() because this method random() does __NOT__
-    /// guarrantee MSB (Most Significant Bit) is `1`. So, it is 50% that this
-    /// method random() will generate a random number shorter than (N * 8)-bit.
+    /// rather than other methods that generate different ramdom numbers such as
+    /// [random()](struct@BigUInt#method.random),
+    /// [random_less_than()](struct@BigUInt#method.random_less_than),
+    /// [random_odd()](struct@BigUInt#method.random_odd),
+    /// [random_odd_less_than()](struct@BigUInt#method.random_odd_less_than), and
+    /// [random_odd_with_MSB_set](struct@BigUInt#method.random_odd_with_MSB_set).
+    /// - If you want to use random odd number for cryptographic purpose, you
+    /// are highly recommended to use this method [random_odd()](struct@BigUInt#method.random_odd)
+    /// rather than other methods that generate different ramdom numbers such as
+    /// [random()](struct@BigUInt#method.random),
+    /// [random_less_than()](struct@BigUInt#method.random_less_than),
+    /// [random_odd_less_than()](struct@BigUInt#method.random_odd_less_than),
+    /// [random_with_MSB_set()](struct@BigUInt#method.random_with_MSB_set), and
+    /// [random_odd_with_MSB_set](struct@BigUInt#method.random_odd_with_MSB_set).
+    /// - If you want to use random number less than a certain value for
+    /// cryptographic purpose, you are highly recommended to use this method
+    /// [random_less_than()](struct@BigUInt#method.random_less_than)
+    /// rather than other methods that generate different ramdom numbers such as
+    /// [random()](struct@BigUInt#method.random),
+    /// [random_odd()](struct@BigUInt#method.random_odd),
+    /// [random_odd_less_than()](struct@BigUInt#method.random_odd_less_than),
+    /// [random_with_MSB_set()](struct@BigUInt#method.random_with_MSB_set), and
+    /// [random_odd_with_MSB_set](struct@BigUInt#method.random_odd_with_MSB_set).
+    /// - If you want to use random odd number less than a certain value for
+    /// cryptographic purpose, you are highly recommended to use this method
+    /// [random_odd_less_than()](struct@BigUInt#method.random_odd_less_than)
+    /// rather than other methods that generate different ramdom numbers such as
+    /// [random()](struct@BigUInt#method.random),
+    /// [random_odd()](struct@BigUInt#method.random_odd),
+    /// [random_less_than()](struct@BigUInt#method.random_less_than),
+    /// [random_with_MSB_set()](struct@BigUInt#method.random_with_MSB_set), and
+    /// [random_odd_with_MSB_set](struct@BigUInt#method.random_odd_with_MSB_set).
+    /// - If you want to use (N * 8)-bit long random odd number for
+    /// cryptographic purpose, you are highly recommended to use this method
+    /// [random_odd_with_MSB_set()](struct@BigUInt#method.random_odd_with_MSB_set)
+    /// rather than other methods that generate different ramdom numbers such as
+    /// [random()](struct@BigUInt#method.random),
+    /// [random_odd()](struct@BigUInt#method.random_odd),
+    /// [random_less_than()](struct@BigUInt#method.random_less_than),
+    /// [random_odd_less_than](struct@BigUInt#method.random_odd_less_than), and
+    /// [random_with_MSB_set()](struct@BigUInt#method.random_with_MSB_set).
     /// 
     /// # Example
     /// ```
@@ -668,7 +763,6 @@ where T: Uint + Clone + Display + Debug + ToString
     /// 
     /// define_utypes_with!(u128);
     /// println!("Random number = {}", u1024::random());
-    /// println!("Random number = {}", u1024::random_with_MSB_set());
     /// ```
     pub fn random() -> Self
     {
@@ -677,27 +771,265 @@ where T: Uint + Clone + Display + Debug + ToString
         r
     }
 
-    pub fn odd_random() -> Self
+    /// Constucts a new `BigUInt<T, N>`-type object which has the random odd
+    /// value. The random number that this method random_odd() returns is a pure
+    /// random odd number whose range is from 1 up to BigUInt::max() inclusively.
+    /// 
+    /// # Cryptographical Security
+    /// The random number generated by this method random_odd() is considered
+    /// cryptographically secure. This method random_odd() is based on the crate
+    /// [rand](https://docs.rs/rand/latest/rand/index.html) (especially,
+    /// [rand::rngs::OsRng](https://docs.rs/rand/latest/rand/rngs/struct.OsRng.html)),
+    /// even though this method random_odd() generates a cryptographically
+    /// secure random number and then simply sets its LSB (Least Significant
+    /// Bit) to be one.
+    /// 
+    /// # Counterpart Methods
+    /// - If you want to be sure to use cryptographically secure pure random
+    /// number whose range is from 0 up to BigUInt::max() inclusively, you are
+    /// highly encouraged to use the method [random()](struct@BigUInt#method.random)
+    /// rather than other methods that generate different ramdom numbers such as
+    /// [random_less_than()](struct@BigUInt#method.random_less_than),
+    /// [random_odd()](struct@BigUInt#method.random_odd),
+    /// [random_odd_less_than()](struct@BigUInt#method.random_odd_less_than)
+    /// [random_with_MSB_set()](struct@BigUInt#method.random_with_MSB_set), and
+    /// [random_odd_with_MSB_set](struct@BigUInt#method.random_odd_with_MSB_set).
+    /// - If you want to use (N * 8)-bit long random number for cryptographic
+    /// purpose, you are highly recommended to use the method [random_with_MSB_set()](struct@BigUInt#method.random_with_MSB_set)
+    /// rather than other methods that generate different ramdom numbers such as
+    /// [random()](struct@BigUInt#method.random),
+    /// [random_less_than()](struct@BigUInt#method.random_less_than),
+    /// [random_odd()](struct@BigUInt#method.random_odd),
+    /// [random_odd_less_than()](struct@BigUInt#method.random_odd_less_than), and
+    /// [random_odd_with_MSB_set](struct@BigUInt#method.random_odd_with_MSB_set).
+    /// - If you want to use random odd number for cryptographic purpose, you
+    /// are highly recommended to use this method [random_odd()](struct@BigUInt#method.random_odd)
+    /// rather than other methods that generate different ramdom numbers such as
+    /// [random()](struct@BigUInt#method.random),
+    /// [random_less_than()](struct@BigUInt#method.random_less_than),
+    /// [random_odd_less_than()](struct@BigUInt#method.random_odd_less_than),
+    /// [random_with_MSB_set()](struct@BigUInt#method.random_with_MSB_set), and
+    /// [random_odd_with_MSB_set](struct@BigUInt#method.random_odd_with_MSB_set).
+    /// - If you want to use random number less than a certain value for
+    /// cryptographic purpose, you are highly recommended to use this method
+    /// [random_less_than()](struct@BigUInt#method.random_less_than)
+    /// rather than other methods that generate different ramdom numbers such as
+    /// [random()](struct@BigUInt#method.random),
+    /// [random_odd()](struct@BigUInt#method.random_odd),
+    /// [random_odd_less_than()](struct@BigUInt#method.random_odd_less_than),
+    /// [random_with_MSB_set()](struct@BigUInt#method.random_with_MSB_set), and
+    /// [random_odd_with_MSB_set](struct@BigUInt#method.random_odd_with_MSB_set).
+    /// - If you want to use random odd number less than a certain value for
+    /// cryptographic purpose, you are highly recommended to use this method
+    /// [random_odd_less_than()](struct@BigUInt#method.random_odd_less_than)
+    /// rather than other methods that generate different ramdom numbers such as
+    /// [random()](struct@BigUInt#method.random),
+    /// [random_odd()](struct@BigUInt#method.random_odd),
+    /// [random_less_than()](struct@BigUInt#method.random_less_than),
+    /// [random_with_MSB_set()](struct@BigUInt#method.random_with_MSB_set), and
+    /// [random_odd_with_MSB_set](struct@BigUInt#method.random_odd_with_MSB_set).
+    /// - If you want to use (N * 8)-bit long random odd number for
+    /// cryptographic purpose, you are highly recommended to use this method
+    /// [random_odd_with_MSB_set()](struct@BigUInt#method.random_odd_with_MSB_set)
+    /// rather than other methods that generate different ramdom numbers such as
+    /// [random()](struct@BigUInt#method.random),
+    /// [random_odd()](struct@BigUInt#method.random_odd),
+    /// [random_less_than()](struct@BigUInt#method.random_less_than),
+    /// [random_odd_less_than](struct@BigUInt#method.random_odd_less_than), and
+    /// [random_with_MSB_set()](struct@BigUInt#method.random_with_MSB_set).
+    /// 
+    /// # Big-endian issue
+    /// It is just experimental for Big Endian CPUs. So, you are not encouraged
+    /// to use it for serious purpose. Only use this crate for Big-endian CPUs
+    /// with your own full responsibility.
+    /// 
+    /// # Example
+    /// ```
+    /// use Cryptocol::number::*;
+    /// use Cryptocol::define_utypes_with;
+    /// 
+    /// define_utypes_with!(u128);
+    /// println!("Random number = {}", u1024::random_odd());
+    /// ```
+    pub fn random_odd() -> Self
     {
         let mut r = Self::random();
         r.set_LSB();
         r
     }
 
+    /// Constucts a new `BigUInt<T, N>`-type object which has the random
+    /// value less than a certain value. The random number that this method
+    /// random_less_than() returns is a pure random number whose range is
+    /// between 0 inclusively and the certain value exclusively.
+    /// 
+    /// # Cryptographical Security
+    /// The random number generated by this method random_less_than() is
+    /// considered cryptographically secure. This method random_less_than() is
+    /// based on the crate [rand](https://docs.rs/rand/latest/rand/index.html)
+    /// (especially, [rand::rngs::OsRng](https://docs.rs/rand/latest/rand/rngs/struct.OsRng.html)),
+    /// even though this method random_less_than() generates a cryptographically
+    /// secure random number and then simply divides it by the certain value to
+    /// get its remainder.
+    /// 
+    /// # Counterpart Methods
+    /// - If you want to be sure to use cryptographically secure pure random
+    /// number whose range is from 0 up to BigUInt::max() inclusively, you are
+    /// highly encouraged to use the method [random()](struct@BigUInt#method.random)
+    /// rather than other methods that generate different ramdom numbers such as
+    /// [random_less_than()](struct@BigUInt#method.random_less_than),
+    /// [random_odd()](struct@BigUInt#method.random_odd),
+    /// [random_odd_less_than()](struct@BigUInt#method.random_odd_less_than)
+    /// [random_with_MSB_set()](struct@BigUInt#method.random_with_MSB_set), and
+    /// [random_odd_with_MSB_set](struct@BigUInt#method.random_odd_with_MSB_set).
+    /// - If you want to use (N * 8)-bit long random number for cryptographic
+    /// purpose, you are highly recommended to use the method [random_with_MSB_set()](struct@BigUInt#method.random_with_MSB_set)
+    /// rather than other methods that generate different ramdom numbers such as
+    /// [random()](struct@BigUInt#method.random),
+    /// [random_less_than()](struct@BigUInt#method.random_less_than),
+    /// [random_odd()](struct@BigUInt#method.random_odd),
+    /// [random_odd_less_than()](struct@BigUInt#method.random_odd_less_than), and
+    /// [random_odd_with_MSB_set](struct@BigUInt#method.random_odd_with_MSB_set).
+    /// - If you want to use random odd number for cryptographic purpose, you
+    /// are highly recommended to use this method [random_odd()](struct@BigUInt#method.random_odd)
+    /// rather than other methods that generate different ramdom numbers such as
+    /// [random()](struct@BigUInt#method.random),
+    /// [random_less_than()](struct@BigUInt#method.random_less_than),
+    /// [random_odd_less_than()](struct@BigUInt#method.random_odd_less_than),
+    /// [random_with_MSB_set()](struct@BigUInt#method.random_with_MSB_set), and
+    /// [random_odd_with_MSB_set](struct@BigUInt#method.random_odd_with_MSB_set).
+    /// - If you want to use random number less than a certain value for
+    /// cryptographic purpose, you are highly recommended to use this method
+    /// [random_less_than()](struct@BigUInt#method.random_less_than)
+    /// rather than other methods that generate different ramdom numbers such as
+    /// [random()](struct@BigUInt#method.random),
+    /// [random_odd()](struct@BigUInt#method.random_odd),
+    /// [random_odd_less_than()](struct@BigUInt#method.random_odd_less_than),
+    /// [random_with_MSB_set()](struct@BigUInt#method.random_with_MSB_set), and
+    /// [random_odd_with_MSB_set](struct@BigUInt#method.random_odd_with_MSB_set).
+    /// - If you want to use random odd number less than a certain value for
+    /// cryptographic purpose, you are highly recommended to use this method
+    /// [random_odd_less_than()](struct@BigUInt#method.random_odd_less_than)
+    /// rather than other methods that generate different ramdom numbers such as
+    /// [random()](struct@BigUInt#method.random),
+    /// [random_odd()](struct@BigUInt#method.random_odd),
+    /// [random_less_than()](struct@BigUInt#method.random_less_than),
+    /// [random_with_MSB_set()](struct@BigUInt#method.random_with_MSB_set), and
+    /// [random_odd_with_MSB_set](struct@BigUInt#method.random_odd_with_MSB_set).
+    /// - If you want to use (N * 8)-bit long random odd number for
+    /// cryptographic purpose, you are highly recommended to use this method
+    /// [random_odd_with_MSB_set()](struct@BigUInt#method.random_odd_with_MSB_set)
+    /// rather than other methods that generate different ramdom numbers such as
+    /// [random()](struct@BigUInt#method.random),
+    /// [random_odd()](struct@BigUInt#method.random_odd),
+    /// [random_less_than()](struct@BigUInt#method.random_less_than),
+    /// [random_odd_less_than](struct@BigUInt#method.random_odd_less_than), and
+    /// [random_with_MSB_set()](struct@BigUInt#method.random_with_MSB_set).
+    /// 
+    /// # Example
+    /// ```
+    /// use Cryptocol::number::*;
+    /// use Cryptocol::define_utypes_with;
+    /// define_utypes_with!(u128);
+    /// let ceiling = u1024::max() / u1024::from_uint::<u32>(3);
+    /// println!("Random number = {}", u1024::random_less_than(ceiling));
+    /// ```
     #[inline]
-    pub fn random_less_than(ceiling: &Self) -> Self
+    pub fn random_less_than(ceiling: Self) -> Self
     {
-        Self::random() % *ceiling
+        Self::random() % ceiling
     }
 
-    pub fn odd_random_less_than(ceiling: &Self) -> Self
+    /// Constucts a new `BigUInt<T, N>`-type object which has the random odd
+    /// value less than a certain value. The random number that this method
+    /// random_odd_less_than() returns is a pure random odd number whose range is
+    /// between 0 inclusively and the certain value exclusively.
+    /// 
+    /// # Cryptographical Security
+    /// The random number generated by this method random_odd_less_than() is
+    /// considered cryptographically secure. This method random_odd_less_than()
+    /// is based on the crate [rand](https://docs.rs/rand/latest/rand/index.html)
+    /// (especially, [rand::rngs::OsRng](https://docs.rs/rand/latest/rand/rngs/struct.OsRng.html)),
+    /// even though this method random_odd_less_than() generates a
+    /// cryptographically secure random number and then simply divides it by the
+    /// certain value to get its remainder.
+    /// 
+    /// # Counterpart Methods
+    /// - If you want to be sure to use cryptographically secure pure random
+    /// number whose range is from 0 up to BigUInt::max() inclusively, you are
+    /// highly encouraged to use the method [random()](struct@BigUInt#method.random)
+    /// rather than other methods that generate different ramdom numbers such as
+    /// [random_less_than()](struct@BigUInt#method.random_less_than),
+    /// [random_odd()](struct@BigUInt#method.random_odd),
+    /// [random_odd_less_than()](struct@BigUInt#method.random_odd_less_than)
+    /// [random_with_MSB_set()](struct@BigUInt#method.random_with_MSB_set), and
+    /// [random_odd_with_MSB_set](struct@BigUInt#method.random_odd_with_MSB_set).
+    /// - If you want to use (N * 8)-bit long random number for cryptographic
+    /// purpose, you are highly recommended to use the method [random_with_MSB_set()](struct@BigUInt#method.random_with_MSB_set)
+    /// rather than other methods that generate different ramdom numbers such as
+    /// [random()](struct@BigUInt#method.random),
+    /// [random_less_than()](struct@BigUInt#method.random_less_than),
+    /// [random_odd()](struct@BigUInt#method.random_odd),
+    /// [random_odd_less_than()](struct@BigUInt#method.random_odd_less_than), and
+    /// [random_odd_with_MSB_set](struct@BigUInt#method.random_odd_with_MSB_set).
+    /// - If you want to use random odd number for cryptographic purpose, you
+    /// are highly recommended to use this method [random_odd()](struct@BigUInt#method.random_odd)
+    /// rather than other methods that generate different ramdom numbers such as
+    /// [random()](struct@BigUInt#method.random),
+    /// [random_less_than()](struct@BigUInt#method.random_less_than),
+    /// [random_odd_less_than()](struct@BigUInt#method.random_odd_less_than),
+    /// [random_with_MSB_set()](struct@BigUInt#method.random_with_MSB_set), and
+    /// [random_odd_with_MSB_set](struct@BigUInt#method.random_odd_with_MSB_set).
+    /// - If you want to use random number less than a certain value for
+    /// cryptographic purpose, you are highly recommended to use this method
+    /// [random_less_than()](struct@BigUInt#method.random_less_than)
+    /// rather than other methods that generate different ramdom numbers such as
+    /// [random()](struct@BigUInt#method.random),
+    /// [random_odd()](struct@BigUInt#method.random_odd),
+    /// [random_odd_less_than()](struct@BigUInt#method.random_odd_less_than),
+    /// [random_with_MSB_set()](struct@BigUInt#method.random_with_MSB_set), and
+    /// [random_odd_with_MSB_set](struct@BigUInt#method.random_odd_with_MSB_set).
+    /// - If you want to use random odd number less than a certain value for
+    /// cryptographic purpose, you are highly recommended to use this method
+    /// [random_odd_less_than()](struct@BigUInt#method.random_odd_less_than)
+    /// rather than other methods that generate different ramdom numbers such as
+    /// [random()](struct@BigUInt#method.random),
+    /// [random_odd()](struct@BigUInt#method.random_odd),
+    /// [random_less_than()](struct@BigUInt#method.random_less_than),
+    /// [random_with_MSB_set()](struct@BigUInt#method.random_with_MSB_set), and
+    /// [random_odd_with_MSB_set](struct@BigUInt#method.random_odd_with_MSB_set).
+    /// - If you want to use (N * 8)-bit long random odd number for
+    /// cryptographic purpose, you are highly recommended to use this method
+    /// [random_odd_with_MSB_set()](struct@BigUInt#method.random_odd_with_MSB_set)
+    /// rather than other methods that generate different ramdom numbers such as
+    /// [random()](struct@BigUInt#method.random),
+    /// [random_odd()](struct@BigUInt#method.random_odd),
+    /// [random_less_than()](struct@BigUInt#method.random_less_than),
+    /// [random_odd_less_than](struct@BigUInt#method.random_odd_less_than), and
+    /// [random_with_MSB_set()](struct@BigUInt#method.random_with_MSB_set).
+    /// 
+    /// # Big-endian issue
+    /// It is just experimental for Big Endian CPUs. So, you are not encouraged
+    /// to use it for serious purpose. Only use this crate for Big-endian CPUs
+    /// with your own full responsibility.
+    /// 
+    /// # Example
+    /// ```
+    /// use Cryptocol::number::*;
+    /// use Cryptocol::define_utypes_with;
+    /// define_utypes_with!(u128);
+    /// let ceiling = u1024::max() / u1024::from_uint::<u32>(3);
+    /// println!("Random number = {}", u1024::random_odd_less_than(ceiling));
+    /// ```
+    #[inline]
+    pub fn random_odd_less_than(ceiling: Self) -> Self
     {
         let mut r = Self::random_less_than(ceiling);
         r.set_LSB();
         r
     }
 
-    /// Constucts a new `BigUInt<T, N>` which has the random value
+    /// Constucts a new `BigUInt<T, N>`-type object which has the random value
     /// with MSB (Most Significant Bit) is set. The random number that this
     /// method random_with_MSB_set() returns is a random number whose range
     /// is from !(BigUInt::max() >> 1) up to BigUInt::max() inclusively.
@@ -705,20 +1037,64 @@ where T: Uint + Clone + Display + Debug + ToString
     /// # Cryptographical Security
     /// The random number generated by this method random_with_MSB_set() is
     /// cryptographically secure because it uses the crate [rand](https://docs.rs/rand/latest/rand/index.html)
-    /// ([rand::rngs::OsRng](https://docs.rs/rand/latest/rand/rngs/struct.OsRng.html)).
+    /// ([rand::rngs::OsRng](https://docs.rs/rand/latest/rand/rngs/struct.OsRng.html)),
+    /// even though this method random_with_MSB_set() generates a
+    /// cryptographically secure random number and then simply sets its MSB
+    /// (Most Significant Bit) to be one.
     /// 
-    /// # Counter Part Method
-    /// - If you want to be sure to use pure random number whose range is from 0
-    /// up to BigUInt::max() inclusively, you are highly encouraged to use the
-    /// method [random()](struct@BigUInt#method.random) rather than this method
-    /// random_with_MSB_set().
-    /// - If you want to be sure to use (N * 8)-bit long random number for
-    /// cryptographic purpose, you are highly recommended to use the method
-    /// random_with_MSB_set() instead of this method [random()](struct@BigUInt#method.random)
-    /// because this method random_with_MSB_set() __DOES__ guarrantee MSB (Most
-    /// Significant Bit) is `1`. So, it is __0 (zero) %__ that this method
-    /// random_with_MSB_set() will generate a random number shorter than
-    /// (N * 8)-bit.
+    /// # Counterpart Methods
+    /// - If you want to be sure to use cryptographically secure pure random
+    /// number whose range is from 0 up to BigUInt::max() inclusively, you are
+    /// highly encouraged to use the method [random()](struct@BigUInt#method.random)
+    /// rather than other methods that generate different ramdom numbers such as
+    /// [random_less_than()](struct@BigUInt#method.random_less_than),
+    /// [random_odd()](struct@BigUInt#method.random_odd),
+    /// [random_odd_less_than()](struct@BigUInt#method.random_odd_less_than)
+    /// [random_with_MSB_set()](struct@BigUInt#method.random_with_MSB_set), and
+    /// [random_odd_with_MSB_set](struct@BigUInt#method.random_odd_with_MSB_set).
+    /// - If you want to use (N * 8)-bit long random number for cryptographic
+    /// purpose, you are highly recommended to use the method [random_with_MSB_set()](struct@BigUInt#method.random_with_MSB_set)
+    /// rather than other methods that generate different ramdom numbers such as
+    /// [random()](struct@BigUInt#method.random),
+    /// [random_less_than()](struct@BigUInt#method.random_less_than),
+    /// [random_odd()](struct@BigUInt#method.random_odd),
+    /// [random_odd_less_than()](struct@BigUInt#method.random_odd_less_than), and
+    /// [random_odd_with_MSB_set](struct@BigUInt#method.random_odd_with_MSB_set).
+    /// - If you want to use random odd number for cryptographic purpose, you
+    /// are highly recommended to use this method [random_odd()](struct@BigUInt#method.random_odd)
+    /// rather than other methods that generate different ramdom numbers such as
+    /// [random()](struct@BigUInt#method.random),
+    /// [random_less_than()](struct@BigUInt#method.random_less_than),
+    /// [random_odd_less_than()](struct@BigUInt#method.random_odd_less_than),
+    /// [random_with_MSB_set()](struct@BigUInt#method.random_with_MSB_set), and
+    /// [random_odd_with_MSB_set](struct@BigUInt#method.random_odd_with_MSB_set).
+    /// - If you want to use random number less than a certain value for
+    /// cryptographic purpose, you are highly recommended to use this method
+    /// [random_less_than()](struct@BigUInt#method.random_less_than)
+    /// rather than other methods that generate different ramdom numbers such as
+    /// [random()](struct@BigUInt#method.random),
+    /// [random_odd()](struct@BigUInt#method.random_odd),
+    /// [random_odd_less_than()](struct@BigUInt#method.random_odd_less_than),
+    /// [random_with_MSB_set()](struct@BigUInt#method.random_with_MSB_set), and
+    /// [random_odd_with_MSB_set](struct@BigUInt#method.random_odd_with_MSB_set).
+    /// - If you want to use random odd number less than a certain value for
+    /// cryptographic purpose, you are highly recommended to use this method
+    /// [random_odd_less_than()](struct@BigUInt#method.random_odd_less_than)
+    /// rather than other methods that generate different ramdom numbers such as
+    /// [random()](struct@BigUInt#method.random),
+    /// [random_odd()](struct@BigUInt#method.random_odd),
+    /// [random_less_than()](struct@BigUInt#method.random_less_than),
+    /// [random_with_MSB_set()](struct@BigUInt#method.random_with_MSB_set), and
+    /// [random_odd_with_MSB_set](struct@BigUInt#method.random_odd_with_MSB_set).
+    /// - If you want to use (N * 8)-bit long random odd number for
+    /// cryptographic purpose, you are highly recommended to use this method
+    /// [random_odd_with_MSB_set()](struct@BigUInt#method.random_odd_with_MSB_set)
+    /// rather than other methods that generate different ramdom numbers such as
+    /// [random()](struct@BigUInt#method.random),
+    /// [random_odd()](struct@BigUInt#method.random_odd),
+    /// [random_less_than()](struct@BigUInt#method.random_less_than),
+    /// [random_odd_less_than](struct@BigUInt#method.random_odd_less_than), and
+    /// [random_with_MSB_set()](struct@BigUInt#method.random_with_MSB_set).
     ///
     /// # Big-endian issue
     /// It is just experimental for Big Endian CPUs. So, you are not encouraged
@@ -731,8 +1107,10 @@ where T: Uint + Clone + Display + Debug + ToString
     /// use Cryptocol::define_utypes_with_u128;
     /// 
     /// define_utypes_with_u128!();
+    /// let num = u1024::random_with_MSB_set();
     /// println!("Random number = {}", u1024::random());
-    /// println!("Random number = {}", u1024::random_with_MSB_set());
+    /// println!("Random number = {}", num);
+    /// assert!(num > u1024::max() >> 1);
     /// ```
     pub fn random_with_MSB_set() -> Self
     {
@@ -741,14 +1119,143 @@ where T: Uint + Clone + Display + Debug + ToString
         r
     }
 
-    pub fn odd_random_with_MSB_set() -> Self
+    /// Constucts a new `BigUInt<T, N>`-type object which has the random odd
+    /// value with MSB (Most Significant Bit) is set. The random number that
+    /// this method random_odd_with_MSB_set() returns is a random odd number
+    /// whose range is from !(BigUInt::max() >> 1) + 1 up to BigUInt::max()
+    /// inclusively.
+    /// 
+    /// # Cryptographical Security
+    /// The random number generated by this method random_odd_with_MSB_set() is
+    /// cryptographically secure because it uses the crate [rand](https://docs.rs/rand/latest/rand/index.html)
+    /// ([rand::rngs::OsRng](https://docs.rs/rand/latest/rand/rngs/struct.OsRng.html)),
+    /// even though this method random_odd_with_MSB_set() generates a
+    /// cryptographically secure random number and then simply sets its MSB
+    /// (Most Significant Bit) and LSB (Least Significant Bit) to be one.
+    /// 
+    /// # Counterpart Methods
+    /// - If you want to be sure to use cryptographically secure pure random
+    /// number whose range is from 0 up to BigUInt::max() inclusively, you are
+    /// highly encouraged to use the method [random()](struct@BigUInt#method.random)
+    /// rather than other methods that generate different ramdom numbers such as
+    /// [random_less_than()](struct@BigUInt#method.random_less_than),
+    /// [random_odd()](struct@BigUInt#method.random_odd),
+    /// [random_odd_less_than()](struct@BigUInt#method.random_odd_less_than)
+    /// [random_with_MSB_set()](struct@BigUInt#method.random_with_MSB_set), and
+    /// [random_odd_with_MSB_set](struct@BigUInt#method.random_odd_with_MSB_set).
+    /// - If you want to use (N * 8)-bit long random number for cryptographic
+    /// purpose, you are highly recommended to use the method [random_with_MSB_set()](struct@BigUInt#method.random_with_MSB_set)
+    /// rather than other methods that generate different ramdom numbers such as
+    /// [random()](struct@BigUInt#method.random),
+    /// [random_less_than()](struct@BigUInt#method.random_less_than),
+    /// [random_odd()](struct@BigUInt#method.random_odd),
+    /// [random_odd_less_than()](struct@BigUInt#method.random_odd_less_than), and
+    /// [random_odd_with_MSB_set](struct@BigUInt#method.random_odd_with_MSB_set).
+    /// - If you want to use random odd number for cryptographic purpose, you
+    /// are highly recommended to use this method [random_odd()](struct@BigUInt#method.random_odd)
+    /// rather than other methods that generate different ramdom numbers such as
+    /// [random()](struct@BigUInt#method.random),
+    /// [random_less_than()](struct@BigUInt#method.random_less_than),
+    /// [random_odd_less_than()](struct@BigUInt#method.random_odd_less_than),
+    /// [random_with_MSB_set()](struct@BigUInt#method.random_with_MSB_set), and
+    /// [random_odd_with_MSB_set](struct@BigUInt#method.random_odd_with_MSB_set).
+    /// - If you want to use random number less than a certain value for
+    /// cryptographic purpose, you are highly recommended to use this method
+    /// [random_less_than()](struct@BigUInt#method.random_less_than)
+    /// rather than other methods that generate different ramdom numbers such as
+    /// [random()](struct@BigUInt#method.random),
+    /// [random_odd()](struct@BigUInt#method.random_odd),
+    /// [random_odd_less_than()](struct@BigUInt#method.random_odd_less_than),
+    /// [random_with_MSB_set()](struct@BigUInt#method.random_with_MSB_set), and
+    /// [random_odd_with_MSB_set](struct@BigUInt#method.random_odd_with_MSB_set).
+    /// - If you want to use random odd number less than a certain value for
+    /// cryptographic purpose, you are highly recommended to use this method
+    /// [random_odd_less_than()](struct@BigUInt#method.random_odd_less_than)
+    /// rather than other methods that generate different ramdom numbers such as
+    /// [random()](struct@BigUInt#method.random),
+    /// [random_odd()](struct@BigUInt#method.random_odd),
+    /// [random_less_than()](struct@BigUInt#method.random_less_than),
+    /// [random_with_MSB_set()](struct@BigUInt#method.random_with_MSB_set), and
+    /// [random_odd_with_MSB_set](struct@BigUInt#method.random_odd_with_MSB_set).
+    /// - If you want to use (N * 8)-bit long random odd number for
+    /// cryptographic purpose, you are highly recommended to use this method
+    /// [random_odd_with_MSB_set()](struct@BigUInt#method.random_odd_with_MSB_set)
+    /// rather than other methods that generate different ramdom numbers such as
+    /// [random()](struct@BigUInt#method.random),
+    /// [random_odd()](struct@BigUInt#method.random_odd),
+    /// [random_less_than()](struct@BigUInt#method.random_less_than),
+    /// [random_odd_less_than](struct@BigUInt#method.random_odd_less_than), and
+    /// [random_with_MSB_set()](struct@BigUInt#method.random_with_MSB_set).
+    /// 
+    /// # Example
+    /// ```
+    /// use Cryptocol::number::*;
+    /// use Cryptocol::define_utypes_with_u128;
+    /// 
+    /// define_utypes_with_u128!();
+    /// let num = u1024::random_odd_with_MSB_set();
+    /// println!("Random number = {}", u1024::random());
+    /// println!("Random number = {}", num);
+    /// let yes = num.is_odd();
+    /// if yes  { assert!(yes); }
+    /// else    { assert!(!yes); }
+    /// ```
+    pub fn random_odd_with_MSB_set() -> Self
     {
         let mut r = Self::random_with_MSB_set();
         r.set_LSB();
         r
     }
 
-    fn random_prime_Miller_Rabin(repetition: usize) -> Self
+    /// Constucts a new `BigUInt<T, N>`-type object which represents a random
+    /// prime number with MSB (Most Significant Bit) is set. The random prime
+    /// number that this method random_prime_Miller_Rabin() returns is a random
+    /// prime number whose range is from !(BigUInt::max() >> 1) + 1 up to
+    /// BigUInt::max() inclusively.
+    /// 
+    /// # Features
+    /// It uses [Miller Rabin algorithm](https://en.wikipedia.org/wiki/Miller%E2%80%93Rabin_primality_test).
+    /// If this test results in composite number, the tested number is surely a
+    /// composite number. If this test results in prime number, the probability
+    /// that the tested number is not a prime number is 1/4. So, if the test
+    /// results in prime number twice, the probability that the tested number
+    /// is not a prime number is 1/16 (= 1/4 * 1/4). Therefore, if you test any
+    /// number 5 times and they all result in a prime number, it is 99.9% that
+    /// the number is a prime number.
+    /// 
+    /// # Argument
+    /// The argument `repetition` defines how many times it tests whether the
+    /// generated random number is prime. Usually, `repetition` is given to be
+    /// 5 to have 99.9% accuracy. 
+    /// 
+    /// # Cryptographical Security
+    /// The random number generated by this method random_prime_Miller_Rabin()
+    /// is cryptographically secure because it uses the crate [rand](https://docs.rs/rand/latest/rand/index.html)
+    /// ([rand::rngs::OsRng](https://docs.rs/rand/latest/rand/rngs/struct.OsRng.html)),
+    /// even though this method random_prime_Miller_Rabin() generates a
+    /// cryptographically secure random number, and then simply sets its MSB
+    /// (Most Significant Bit) and LSB (Least Significant Bit) to be one, and
+    /// then checks whether the generated random number is prime number, and
+    /// then it repeats until it will generate a prime number.
+    /// 
+    /// # Big-endian issue
+    /// It is just experimental for Big Endian CPUs. So, you are not encouraged
+    /// to use it for serious purpose. Only use this crate for Big-endian CPUs
+    /// with your own full responsibility.
+    /// 
+    /// # Example
+    /// ```
+    /// use Cryptocol::number::*;
+    /// use Cryptocol::define_utypes_with_u128;
+    /// 
+    /// define_utypes_with_u128!();
+    /// let num = u256::random_prime_Miller_Rabin(5);
+    /// println!("Random number = {}", num);
+    /// let yes = num.is_prime_Miller_Rabin(5);
+    /// if yes  { assert!(yes) }
+    /// else    { assert!(!yes) }
+    /// ```
+    pub fn random_prime_Miller_Rabin(repetition: usize) -> Self
     {
         let mut complete = false;
         let mut res = Self::new();
@@ -762,7 +1269,33 @@ where T: Uint + Clone + Display + Debug + ToString
         res
     }
 
-    fn randomize(&mut self)
+    /// Make a `BigUInt<T, N>`-type object to have a random value.
+    /// The random number that this method randomize() makes is a pure random
+    /// number whose range is from 0 up to BigUInt::max() inclusively.
+    /// 
+    /// # Cryptographical Security
+    /// The random number generated by this method random() is considered
+    /// cryptographically secure. This method random() is based on the crate
+    /// [rand](https://docs.rs/rand/latest/rand/index.html) (especially,
+    /// [rand::rngs::OsRng](https://docs.rs/rand/latest/rand/rngs/struct.OsRng.html)).
+    /// 
+    /// # Example
+    /// ```
+    /// use Cryptocol::number::*;
+    /// use Cryptocol::define_utypes_with_u128;
+    /// define_utypes_with_u128!();
+    /// 
+    /// let mut r = u256::new();
+    /// println!("original number = {}", r);
+    /// assert_eq!(r, u256::zero());
+    /// r.randomize();
+    /// r;
+    /// println!("random number = {}", r);
+    /// let yes = r > u256::max() >> 1;
+    /// if yes  { assert!(yes) }
+    /// else    { assert!(!yes) }
+    /// ```
+    pub fn randomize(&mut self)
     {
         match T::size_in_bytes()
         {
@@ -805,6 +1338,41 @@ where T: Uint + Clone + Display + Debug + ToString
         }
     }
 
+    /// Tests a `BigUInt<T, N>`-type object to find whether or not it is a
+    /// primne number.
+    /// 
+    /// # Features
+    /// It uses [Miller Rabin algorithm](https://en.wikipedia.org/wiki/Miller%E2%80%93Rabin_primality_test).
+    /// If this test results in composite number, the tested number is surely a
+    /// composite number. If this test results in prime number, the probability
+    /// that the tested number is not a prime number is 1/4. So, if the test
+    /// results in prime number twice, the probability that the tested number
+    /// is not a prime number is 1/16 (= 1/4 * 1/4). Therefore, if you test any
+    /// number 5 times and they all result in a prime number, it is 99.9% that
+    /// the number is a prime number.
+    /// 
+    /// # Argument
+    /// The argument `repetition` defines how many times it tests whether the
+    /// generated random number is prime. Usually, `repetition` is given to be
+    /// 5 to have 99.9% accuracy. 
+    /// 
+    /// # Big-endian issue
+    /// It is just experimental for Big Endian CPUs. So, you are not encouraged
+    /// to use it for serious purpose. Only use this crate for Big-endian CPUs
+    /// with your own full responsibility.
+    /// 
+    /// # Example
+    /// ```
+    /// use Cryptocol::number::*;
+    /// use Cryptocol::define_utypes_with_u128;
+    /// 
+    /// define_utypes_with_u128!();
+    /// let num = u1024::random();
+    /// let yes = num.is_prime_Miller_Rabin(5);
+    /// println!("Is {} a random number? => {}", num, yes);
+    /// if yes  { assert!(yes); }
+    /// else    { assert!(!yes); }
+    /// ```
     pub fn is_prime_Miller_Rabin(&self, repetition: usize) -> bool
     {
         if self.is_zero_or_one()
@@ -817,19 +1385,14 @@ where T: Uint + Clone + Display + Debug + ToString
         let mut d = self.sub_uint(T::one());
         let self_minus_one = self.sub_uint(T::one());
         d.shift_right_assign(d.trailing_zeros());
-        let mut rand_num: Self;
         for _ in 0..repetition
         {
-            rand_num = Self::random_less_than(&(self.sub_uint(T::num(4)))).add_uint(T::num(2));
-
-            // a^d % n을 계산
+            let mut rand_num = Self::random_less_than(self.sub_uint(T::num(4))).add_uint(T::num(2));
             let mut x = rand_num.pow(d) % *self;
-
-            // x가 1이거나 n-1이라면 다음 반복으로 넘어감
             if x.is_one() || x == self_minus_one
                 { continue; }
 
-            // 반복적으로 a^(2^r * d) % n을 계산
+            // 반복적으로 a^(2^r * d) % n을 계산?
             while d != self_minus_one
             {
                 x = (x * x) % *self;
@@ -840,11 +1403,9 @@ where T: Uint + Clone + Display + Debug + ToString
                 if x == self_minus_one
                     { break; }
             }
-
             if x != self_minus_one
                 { return false; }
         }
-
         true
     }
 
@@ -968,8 +1529,8 @@ where T: Uint + Clone + Display + Debug + ToString
     /// # Error
     /// If `i` >= `N`, it returns `None`.
     /// 
-    /// # Counter Part Method
-    /// When you are sure that `i` < `N`, you may want to use its counter part
+    /// # Counterpart Method
+    /// When you are sure that `i` < `N`, you may want to use its Counterpart
     /// method [get_num_()](struct@BigUInt#method.get_num_) for performance.
     /// 
     /// # Example
@@ -1010,8 +1571,8 @@ where T: Uint + Clone + Display + Debug + ToString
     /// # Error
     /// If `i` >= `N`, it returns `None`.
     /// 
-    /// # Counter Part Method
-    /// When you are sure that `i` < `N`, you may want to use its counter part
+    /// # Counterpart Method
+    /// When you are sure that `i` < `N`, you may want to use its Counterpart
     /// method [get_num_()](struct@BigUInt#method.get_num_) for performance.
     /// 
     /// # Big-endian issue
@@ -1058,9 +1619,9 @@ where T: Uint + Clone + Display + Debug + ToString
     /// It is performance-oriented and does not care for safety. So, 
     /// if `i` >= `N`, it will panic.
     /// 
-    /// # Counter Part Method
+    /// # Counterpart Method
     /// Use this method only when you are sure that `i` < `N`.
-    /// Otherwise, use its counter part method [get_num()](struct@BigUInt#method.get_num).
+    /// Otherwise, use its Counterpart method [get_num()](struct@BigUInt#method.get_num).
     /// 
     /// # Example
     /// ```
@@ -1093,9 +1654,9 @@ where T: Uint + Clone + Display + Debug + ToString
     /// It is performance-oriented and does not care for safety. So, 
     /// if `i` >= `N`, it will panic.
     /// 
-    /// # Counter Part Method
+    /// # Counterpart Method
     /// Use this method only when you are sure that `i` < `N`.
-    /// Otherwise, use its counter part method [get_num()](struct@BigUInt#method.get_num).
+    /// Otherwise, use its Counterpart method [get_num()](struct@BigUInt#method.get_num).
     /// 
     /// # Big-endian issue
     /// It is just experimental for Big Endian CPUs. So, you are not encouraged
@@ -1133,8 +1694,8 @@ where T: Uint + Clone + Display + Debug + ToString
     /// # Error
     /// If `i` >= `N`, it will return `false`.
     /// 
-    /// # Counter Part Method
-    /// When you are sure that `i` < `N`, you may want to use its counter part
+    /// # Counterpart Method
+    /// When you are sure that `i` < `N`, you may want to use its Counterpart
     /// method [set_num_()](struct@BigUInt#method.set_num_) for performance.
     /// 
     /// # Example
@@ -1192,8 +1753,8 @@ where T: Uint + Clone + Display + Debug + ToString
     /// # Error
     /// If `i` >= `N`, it will return `false`.
     /// 
-    /// # Counter Part Method
-    /// When you are sure that `i` < `N`, you may want to use its counter part
+    /// # Counterpart Method
+    /// When you are sure that `i` < `N`, you may want to use its Counterpart
     /// method [set_num_()](struct@BigUInt#method.set_num_) for performance.
     /// 
     /// # Big-endian issue
@@ -1255,12 +1816,12 @@ where T: Uint + Clone + Display + Debug + ToString
     /// # Panics
     /// If `i` >= `N`, it will panic.
     /// 
-    /// # Counter Part Method
+    /// # Counterpart Method
     /// It is performance-oriented and does not care for safety.
     /// It is virtually the same as the method set_num(). This method set_num_()
     /// is considered to be slightly faster than the method set_num().
     /// Use this method set_num_() only when you are sure that `i` < `N`.
-    /// Otherwise, use its counter part method [set_num()](struct@BigUInt#method.set_num).
+    /// Otherwise, use its Counterpart method [set_num()](struct@BigUInt#method.set_num).
     /// 
     /// # Example
     /// ```
@@ -1297,12 +1858,12 @@ where T: Uint + Clone + Display + Debug + ToString
     /// # Panics
     /// If `i` >= `N`, it will panic.
     /// 
-    /// # Counter Part Method
+    /// # Counterpart Method
     /// It is performance-oriented and does not care for safety.
     /// It is virtually the same as the method set_num(). This method set_num_()
     /// is considered to be slightly faster than the method set_num().
     /// Use this method set_num_() only when you are sure that `i` < `N`.
-    /// Otherwise, use its counter part method [set_num()](struct@BigUInt#method.set_num).
+    /// Otherwise, use its Counterpart method [set_num()](struct@BigUInt#method.set_num).
     /// 
     /// # Big-endian issue
     /// It is just experimental for Big Endian CPUs. So, you are not encouraged
@@ -1760,7 +2321,7 @@ where T: Uint + Clone + Display + Debug + ToString
     /// It will return `true`, if it is equal to the `T`-type number. Otherwise,
     /// it will return `false`.
     /// 
-    /// # Counter Part Method
+    /// # Counterpart Method
     /// This method is_uint() is virtually the same the method [eq_uint()](struct@BigUInt#method.eq_uint).
     /// However, you may want to use this method is_uint() rather than [eq_uint()](struct@BigUInt#method.eq_uint),
     /// if you know that this method is_uint() is a bit faster than [eq_uint()](struct@BigUInt#method.eq_uint),
@@ -2300,7 +2861,7 @@ where T: Uint + Clone + Display + Debug + ToString
             { return res; }
 
         let mut bit_check = 1;
-        bit_check <<= (rhs.length_in_bits() - rhs.leading_zeros() as usize - 1);
+        bit_check <<= rhs.length_in_bits() - rhs.leading_zeros() as usize - 1;
         if bit_check != 0
         {
             res *= *self; 
@@ -2732,7 +3293,7 @@ where T: Uint + Clone + Display + Debug + ToString
             + BitXor<Output=U> + BitXorAssign + Not<Output=U>
             + PartialEq + PartialOrd
     {
-        self.set_number((self.rotate_left(n).get_number()));
+        self.set_number(self.rotate_left(n).get_number());
     }
 
     pub fn rotate_right<U>(&self, n: U) -> Self
@@ -2758,7 +3319,7 @@ where T: Uint + Clone + Display + Debug + ToString
             + BitXor<Output=U> + BitXorAssign + Not<Output=U>
             + PartialEq + PartialOrd
     {
-        self.set_number((self.rotate_right(n).get_number()));
+        self.set_number(self.rotate_right(n).get_number());
     }
 
 

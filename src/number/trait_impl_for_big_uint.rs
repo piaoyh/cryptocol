@@ -1388,12 +1388,13 @@ where T: Uint + Clone + Display + Debug + ToString
     S: Uint + Clone + Display + Debug + ToString
         + Add<Output=S> + AddAssign + Sub<Output=S> + SubAssign
         + Mul<Output=S> + MulAssign + Div<Output=S> + DivAssign
+        + Rem<Output=S> + RemAssign
         + Shl<Output=S> + ShlAssign + Shr<Output=S> + ShrAssign
         + BitAnd<Output=S> + BitAndAssign + BitOr<Output=S> + BitOrAssign
         + BitXor<Output=S> + BitXorAssign + Not<Output=S>
         + PartialEq + PartialOrd
 {
-    /// Constructs a new `BigUInt<T, N>` from an unsigned integer
+    /// Constructs a new `BigUInt<T, N>`-type object from an unsigned integer
     /// such as `u8`, `u16`, `u32`, `u64`, `u128` and `usize`.
     /// 
     /// # Examples
@@ -1404,28 +1405,9 @@ where T: Uint + Clone + Display + Debug + ToString
     /// println!("cc = {}", cc);
     /// assert_eq!(cc.into_u32(), 1004);
     /// ```
-    /// 
     fn from(val: S) -> Self
     {
-        let TSIZE = size_of::<T>();
-        let SSIZE = size_of::<S>();
-        let mut me = Self::new();
-        let mut share = Share::<T, S>::from_src(val);
-        
-        if TSIZE >= SSIZE
-        {
-            unsafe { me.set_num_(0, share.des); }
-        }
-        else
-        {
-            let TSIZE_BITS = TSIZE * 8;
-            for i in 0..SSIZE/TSIZE
-            {
-                unsafe { me.set_num_(i, share.des); }
-                unsafe { share.src >>= S::num(TSIZE_BITS as u128); }
-            }
-        }
-        return me;
+        Self::from_uint(val)
     }
 }
 
@@ -1441,22 +1423,20 @@ where T: Uint + Clone + Display + Debug + ToString
         + BitXor<Output=T> + BitXorAssign + Not<Output=T>
         + PartialEq + PartialOrd
 {
-    /// Constructs a new `BigUInt<T, N>` from an array of type `T`
+    /// Constructs a new `BigUInt<T, N>`-type object from an array of type `T`
     /// with `N` elements.
     /// 
     /// # Examples
     /// 
     /// ```
     /// use Cryptocol::number::*;
-    /// let big_num = BigUInt::<u8,32>::from(&[1_u8;32]);
+    /// let big_num = BigUInt::<u8,32>::from([1_u8;32]);
     /// println!("big_num = {}", big_num.to_string_with_radix(2));
     /// assert_eq!(big_num, BigUInt::<u8,32>::from_str_radix("00000001_00000001_00000001_00000001_00000001_00000001_00000001_00000001_00000001_00000001_00000001_00000001_00000001_00000001_00000001_00000001_00000001_00000001_00000001_00000001_00000001_00000001_00000001_00000001_00000001_00000001_00000001_00000001_00000001_00000001_00000001_00000001", 2).unwrap());
     /// ```
     fn from(val: [T; N]) -> Self
     {
-        let mut s = Self::new();
-        s.set_number(&val);
-        s
+        Self::from_array(&val)
     }
 }
 
@@ -1473,7 +1453,7 @@ where T: Uint + Clone + Display + Debug + ToString
         + PartialEq + PartialOrd
 {
     type Err = NumberErr;
-    /// Constructs a new `BigUInt<T, N>` from a string with radix 10.
+    /// Constructs a new `BigUInt<T, N>`-type object from a string with radix 10.
     /// The constructed object will be wrapped in `Ok(BigUInt<T, N>)` if it is
     /// successfully created. Otherwise, this method returns
     /// `Err(NumberErr::ParsingError)`. And, if you import (use)

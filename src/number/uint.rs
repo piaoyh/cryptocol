@@ -3112,6 +3112,7 @@ impl Uint for usize
 #[derive(Copy, Clone)]
 pub union UShort
 {
+    pub this: u16,
     pub ushort: u16,
     pub byte: [u8; 2],
     #[cfg(target_pointer_width = "16")] pub size: usize,
@@ -3120,6 +3121,7 @@ pub union UShort
 #[derive(Copy, Clone)]
 pub union UInt
 {
+    pub this: u32,
     pub uint: u32,
     pub ushort: [u16; 2],
     pub byte: [u8; 4],
@@ -3130,6 +3132,7 @@ pub union UInt
 #[derive(Copy, Clone)]
 pub union ULong
 {
+    pub this: u64,
     pub ulong: u64,
     pub uint: [u32; 2],
     pub ushort: [u16; 4],
@@ -3142,6 +3145,7 @@ pub union ULong
 #[derive(Copy, Clone)]
 pub union ULonger
 {
+    pub this: u128,
     pub ulonger: u128,
     pub ulong: [u64; 2],
     pub uint: [u32; 4],
@@ -3157,6 +3161,7 @@ pub union ULonger
 #[derive(Copy, Clone)]
 pub union USize
 {
+    pub this: usize,
     pub size: usize,
     pub ulonger: u128,
     pub ulong: [u64; 2],
@@ -3169,6 +3174,7 @@ pub union USize
 #[derive(Copy, Clone)]
 pub union USize
 {
+    pub this: usize,
     pub size: usize,
     pub ulong: u64,
     pub uint: [u32; 2],
@@ -3180,6 +3186,7 @@ pub union USize
 #[derive(Copy, Clone)]
 pub union USize
 {
+    pub this: usize,
     pub size: usize,
     pub uint: u32,
     pub ushort: [u16; 2],
@@ -3190,6 +3197,7 @@ pub union USize
 #[derive(Copy, Clone)]
 pub union USize
 {
+    pub this: usize,
     pub size: usize,
     pub ushort: u16,
     pub byte: [u8; 2],
@@ -3199,6 +3207,7 @@ pub union USize
 #[derive(Copy, Clone)]
 pub union USize
 {
+    pub this: usize,
     pub size: usize,
     pub byte: u8,
 }
@@ -3911,6 +3920,7 @@ impl Bool for i8
     fn max() -> Self            { 1 }
     fn min() -> Self            { 0 }
 }
+    pub this: usize,
 
 impl Bool for i16
 {
