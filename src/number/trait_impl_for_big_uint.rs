@@ -45,6 +45,27 @@ where T: Uint + Clone + Display + Debug + ToString
 
 
 
+impl<T, const N: usize> Add<T> for BigUInt<T, N>
+where T: Uint + Clone + Display + Debug + ToString
+        + Add<Output=T> + AddAssign + Sub<Output=T> + SubAssign
+        + Mul<Output=T> + MulAssign + Div<Output=T> + DivAssign
+        + Rem<Output=T> + RemAssign
+        + Shl<Output=T> + ShlAssign + Shr<Output=T> + ShrAssign
+        + BitAnd<Output=T> + BitAndAssign + BitOr<Output=T> + BitOrAssign
+        + BitXor<Output=T> + BitXorAssign + Not<Output=T>
+        + PartialEq + PartialOrd
+{
+    type Output = Self;
+
+    #[inline]
+    fn add(self, rhs: T) -> Self
+    {
+        self.add_uint(rhs)
+    }
+}
+
+
+
 impl<T, const N: usize> AddAssign for BigUInt<T, N>
 where T: Uint + Clone + Display + Debug + ToString
         + Add<Output=T> + AddAssign + Sub<Output=T> + SubAssign
@@ -66,6 +87,27 @@ where T: Uint + Clone + Display + Debug + ToString
 
 
 
+impl<T, const N: usize> AddAssign<T> for BigUInt<T, N>
+where T: Uint + Clone + Display + Debug + ToString
+        + Add<Output=T> + AddAssign + Sub<Output=T> + SubAssign
+        + Mul<Output=T> + MulAssign + Div<Output=T> + DivAssign
+        + Rem<Output=T> + RemAssign
+        + Shl<Output=T> + ShlAssign + Shr<Output=T> + ShrAssign
+        + BitAnd<Output=T> + BitAndAssign + BitOr<Output=T> + BitOrAssign
+        + BitXor<Output=T> + BitXorAssign + Not<Output=T>
+        + PartialEq + PartialOrd
+{
+    /// Adds and assign the result to it.
+    /// 
+    #[inline]
+    fn add_assign(&mut self, rhs: T)
+    {
+        self.accumulate(rhs);
+    }
+}
+
+
+
 impl<T, const N: usize> Sub for BigUInt<T, N>
 where T: Uint + Clone + Display + Debug + ToString
         + Add<Output=T> + AddAssign + Sub<Output=T> + SubAssign
@@ -77,11 +119,33 @@ where T: Uint + Clone + Display + Debug + ToString
         + PartialEq + PartialOrd
 {
     type Output = Self;
+
+    #[inline]
     fn sub(self, rhs: Self) -> Self
     {
-        let mut s = self.clone();
-        s -= rhs;
-        s
+        self.wrapping_sub(rhs)
+    }
+}
+
+
+
+
+impl<T, const N: usize> Sub<T> for BigUInt<T, N>
+where T: Uint + Clone + Display + Debug + ToString
+        + Add<Output=T> + AddAssign + Sub<Output=T> + SubAssign
+        + Mul<Output=T> + MulAssign + Div<Output=T> + DivAssign
+        + Rem<Output=T> + RemAssign
+        + Shl<Output=T> + ShlAssign + Shr<Output=T> + ShrAssign
+        + BitAnd<Output=T> + BitAndAssign + BitOr<Output=T> + BitOrAssign
+        + BitXor<Output=T> + BitXorAssign + Not<Output=T>
+        + PartialEq + PartialOrd
+{
+    type Output = Self;
+
+    #[inline]
+    fn sub(self, rhs: T) -> Self
+    {
+        self.sub_uint(rhs)
     }
 }
 
@@ -98,79 +162,30 @@ where T: Uint + Clone + Display + Debug + ToString
         + PartialEq + PartialOrd
 {
     /// Subtracts and assign the result to it.
-    /// 
+    #[inline]
     fn sub_assign(&mut self, rhs: Self)
     {
-        let mut num: T;
-        let mut	borrow = false;
-        for i in 0..N
-        {
-            (num, borrow) = self.get_num_(i).borrowing_sub(rhs.get_num_(i), borrow);
-            self.set_num_(i, num);
-        }
-        if borrow
-            { self.set_underflow(); }
-/*
-       let zero = T::zero();
-        let mut	carry: T = zero;
-        let mut midres: T;
-        let mut c: bool;
-        let mut cc: T;
-
-        for i in 0..N
-        {
-            midres = self.number[i].wrapping_sub(rhs.number[i]);
-            c = midres > self.number[i];
-            cc = midres;
-            midres = midres.wrapping_sub(carry);
-            carry = if c || (midres > cc) { T::one() } else { zero };
-            self.number[i] = midres;
-        }
-        if carry != zero
-            { self.set_underflow(); }
-*/
+        self.wrapping_sub_assign(rhs);
     }
+}
 
+
+
+impl<T, const N: usize> SubAssign<T> for BigUInt<T, N>
+where T: Uint + Clone + Display + Debug + ToString
+        + Add<Output=T> + AddAssign + Sub<Output=T> + SubAssign
+        + Mul<Output=T> + MulAssign + Div<Output=T> + DivAssign
+        + Rem<Output=T> + RemAssign
+        + Shl<Output=T> + ShlAssign + Shr<Output=T> + ShrAssign
+        + BitAnd<Output=T> + BitAndAssign + BitOr<Output=T> + BitOrAssign
+        + BitXor<Output=T> + BitXorAssign + Not<Output=T>
+        + PartialEq + PartialOrd
+{
     /// Subtracts and assign the result to it.
-    /// 
-    #[cfg(target_endian = "big")]
-    fn _sub_assign(&mut self, rhs: Self)
+    #[inline]
+    fn sub_assign(&mut self, rhs: T)
     {
-        let mut num: T;
-        let mut i = N - 1;
-        let mut	borrow = false;
-        loop
-        {
-            (num, borrow) = self.number[i].borrowing_sub(rhs.number[i], borrow);
-            self.set_num_(i, num);
-            if i == 0
-                { break; }
-            i -= 1;
-        }
-        if carry
-            { self.set_underflow(); }
-/*
-        let zero = T::zero();
-        let mut	carry: T = zero;
-        let mut midres: T;
-        let mut c: bool;
-        let mut cc: T;
-        let mut i = N;
-        loop
-        {
-            i -= 1;
-            midres = self.number[i].wrapping_sub(rhs.number[i]);
-            c = midres > self.number[i];
-            cc = midres;
-            midres = midres.wrapping_sub(carry);
-            carry = if c || (midres > cc) { T::one() } else { zero };
-            self.number[i] = midres;
-            if i == 0
-                { break; }
-        }
-        if carry != zero
-            { self.set_underflow(); }
-    */
+        self.dissipate(rhs);
     }
 }
 
@@ -187,11 +202,32 @@ where T: Uint + Clone + Display + Debug + ToString
         + PartialEq + PartialOrd
 {
     type Output = Self;
+
+    #[inline]
     fn mul(self, rhs: Self) -> Self
     {
-        let mut s = self.clone();
-        s *= rhs;
-        s
+        self.wrapping_mul(rhs)
+    }
+}
+
+
+
+impl<T, const N: usize> Mul<T> for BigUInt<T, N>
+where T: Uint + Clone + Display + Debug + ToString
+        + Add<Output=T> + AddAssign + Sub<Output=T> + SubAssign
+        + Mul<Output=T> + MulAssign + Div<Output=T> + DivAssign
+        + Rem<Output=T> + RemAssign
+        + Shl<Output=T> + ShlAssign + Shr<Output=T> + ShrAssign
+        + BitAnd<Output=T> + BitAndAssign + BitOr<Output=T> + BitOrAssign
+        + BitXor<Output=T> + BitXorAssign + Not<Output=T>
+        + PartialEq + PartialOrd
+{
+    type Output = Self;
+
+    #[inline]
+    fn mul(self, rhs: T) -> Self
+    {
+        self.mul_uint(rhs)
     }
 }
 
@@ -208,131 +244,29 @@ where T: Uint + Clone + Display + Debug + ToString
         + PartialEq + PartialOrd
 {
     /// Multiplies and assign the result to it.
-    /// 
+    #[inline] 
     fn mul_assign(&mut self, rhs: Self)
     {
-        if rhs.is_zero()
-        {
-            self.set_zero();
-            return;
-        }
-        if self.is_zero()
-            { return; }
-
-        let zero = T::zero();
-        let one = T::one();
-        let adder = self.clone();
-        let TSIZE_BITS = size_of::<T>() * 8;
-        let mut multiply_first = |num: T| {
-            let mut bit_check = one;
-            bit_check <<= T::num((TSIZE_BITS - 1).into_u128());
-            while (bit_check != zero) && (bit_check & num == zero)
-                { bit_check >>= one; }
-
-            self.set_zero();
-            while bit_check != zero
-            {
-                *self <<= 1;
-                if bit_check & num != zero
-                    { *self += adder; }
-                bit_check >>= one;
-            }
-        };
-
-        let mut n = N - 1;
-        while rhs.get_num_(n) == zero
-            { n -= 1; }
-        multiply_first(rhs.get_num_(n));
-        if n == 0
-            { return; }
-        n -= 1;
-
-        let mut multiply = |num: T| {
-            if num == T::zero()
-            {
-                *self <<= TSIZE_BITS as i32;
-                return;
-            }
-            let mut bit_check = one;
-            bit_check <<= T::num((TSIZE_BITS - 1).into_u128());
-            while bit_check != zero
-            {
-                *self <<= 1;
-                if bit_check & num != zero
-                    { *self += adder; }
-                bit_check >>= one;
-            }
-        };
-
-        loop
-        {
-            multiply(rhs.get_num_(n));
-            if n == 0
-                { break; }
-            n = n.wrapping_sub(1);
-        }
+        self.wrapping_mul_assign(rhs);
     }
+}
 
+
+impl<T, const N: usize> MulAssign<T> for BigUInt<T, N>
+where T: Uint + Clone + Display + Debug + ToString
+        + Add<Output=T> + AddAssign + Sub<Output=T> + SubAssign
+        + Mul<Output=T> + MulAssign + Div<Output=T> + DivAssign
+        + Rem<Output=T> + RemAssign
+        + Shl<Output=T> + ShlAssign + Shr<Output=T> + ShrAssign
+        + BitAnd<Output=T> + BitAndAssign + BitOr<Output=T> + BitOrAssign
+        + BitXor<Output=T> + BitXorAssign + Not<Output=T>
+        + PartialEq + PartialOrd
+{
     /// Multiplies and assign the result to it.
-    /// 
-    #[cfg(target_endian = "big")]
-    fn _mul_assign(&mut self, rhs: Self)
+    #[inline]
+    fn mul_assign(&mut self, rhs: T)
     {
-        if rhs.is_zero()
-        {
-            self.set_zero();
-            return;
-        }
-        if self.is_zero()
-            { return; }
-
-        let zero = T::zero();
-        let one = T::one();
-        let adder = self.clone();
-        let TSIZE_BIT = size_of::<T>() * 8;
-        let mut multiply_first = |num: T| {
-            let mut bit_check = one;
-            bit_check <<= T::num((TSIZE_BIT - 1).into_u128());
-            while (bit_check != zero) && (bit_check & num == zero)
-                { bit_check >>= one; }
-
-            self.set_zero();
-            while bit_check != zero
-            {
-                *self <<= 1;
-                if bit_check & num != zero
-                    { *self += adder; }
-                bit_check >>= one;
-            }
-        };
-
-        let mut n = 0;
-        while rhs.number[n] == zero
-            { n += 1; }
-        multiply_first(rhs.number[n]);
-        n += 1;
-
-        let mut multiply = |num: T| {
-            if num == T::zero()
-            {
-                *self <<= TSIZE_BIT as i32;
-                return;
-            }
-            let mut bit_check = one;
-            bit_check <<= T::num((TSIZE_BIT - 1).into_u128());
-            while bit_check != zero
-            {
-                *self <<= 1;
-                if bit_check & num != zero
-                    { *self += adder; }
-                bit_check >>= one;
-            }
-        };
-        while n < N
-        {
-            multiply(rhs.number[n]);
-            n += 1;
-        }
+        self.times(rhs);
     }
 }
 
@@ -349,10 +283,32 @@ where T: Uint + Clone + Display + Debug + ToString
         + PartialEq + PartialOrd
 {
     type Output = Self;
+
+    #[inline]
     fn div(self, rhs: Self) -> Self
     {
-        let (quotient, _) = self.divide_fully(rhs);
-        quotient
+        self.wrapping_div(rhs)
+    }
+}
+
+
+
+impl<T, const N: usize> Div<T> for BigUInt<T, N>
+where T: Uint + Clone + Display + Debug + ToString
+        + Add<Output=T> + AddAssign + Sub<Output=T> + SubAssign
+        + Mul<Output=T> + MulAssign + Div<Output=T> + DivAssign
+        + Rem<Output=T> + RemAssign
+        + Shl<Output=T> + ShlAssign + Shr<Output=T> + ShrAssign
+        + BitAnd<Output=T> + BitAndAssign + BitOr<Output=T> + BitOrAssign
+        + BitXor<Output=T> + BitXorAssign + Not<Output=T>
+        + PartialEq + PartialOrd
+{
+    type Output = Self;
+
+    #[inline]
+    fn div(self, rhs: T) -> Self
+    {
+        self.div_uint(rhs)
     }
 }
 
@@ -368,9 +324,31 @@ where T: Uint + Clone + Display + Debug + ToString
         + BitXor<Output=T> + BitXorAssign + Not<Output=T>
         + PartialEq + PartialOrd
 {
-    fn div_assign(&mut self, rhs: Self) { *self = *self / rhs; }
+    #[inline]
+    fn div_assign(&mut self, rhs: Self)
+    {
+        self.wrapping_div_assign(rhs);
+    }
 }
 
+
+
+impl<T, const N: usize> DivAssign<T> for BigUInt<T, N>
+where T: Uint + Clone + Display + Debug + ToString
+        + Add<Output=T> + AddAssign + Sub<Output=T> + SubAssign
+        + Mul<Output=T> + MulAssign + Div<Output=T> + DivAssign
+        + Rem<Output=T> + RemAssign
+        + Shl<Output=T> + ShlAssign + Shr<Output=T> + ShrAssign
+        + BitAnd<Output=T> + BitAndAssign + BitOr<Output=T> + BitOrAssign
+        + BitXor<Output=T> + BitXorAssign + Not<Output=T>
+        + PartialEq + PartialOrd
+{
+    #[inline]
+    fn div_assign(&mut self, rhs: T)
+    {
+        self.quotient(rhs);
+    }
+}
 
 
 impl<T, const N: usize> Rem for BigUInt<T, N>
@@ -384,10 +362,32 @@ where T: Uint + Clone + Display + Debug + ToString
         + PartialEq + PartialOrd
 {
     type Output = Self;
+
+    #[inline]
     fn rem(self, rhs: Self) -> Self
     {
-        let (_, remainder) = self.divide_fully(rhs);
-        remainder
+        self.wrapping_rem(rhs)
+    }
+}
+
+
+
+impl<T, const N: usize> Rem<T> for BigUInt<T, N>
+where T: Uint + Clone + Display + Debug + ToString
+        + Add<Output=T> + AddAssign + Sub<Output=T> + SubAssign
+        + Mul<Output=T> + MulAssign + Div<Output=T> + DivAssign
+        + Rem<Output=T> + RemAssign
+        + Shl<Output=T> + ShlAssign + Shr<Output=T> + ShrAssign
+        + BitAnd<Output=T> + BitAndAssign + BitOr<Output=T> + BitOrAssign
+        + BitXor<Output=T> + BitXorAssign + Not<Output=T>
+        + PartialEq + PartialOrd
+{
+    type Output = T;
+
+    #[inline]
+    fn rem(self, rhs: T) -> T
+    {
+        self.rem_uint(rhs)
     }
 }
 
@@ -403,7 +403,30 @@ where T: Uint + Clone + Display + Debug + ToString
         + BitXor<Output=T> + BitXorAssign + Not<Output=T>
         + PartialEq + PartialOrd
 {
-    fn rem_assign(&mut self, rhs: Self) { *self = *self % rhs; }
+    #[inline]
+    fn rem_assign(&mut self, rhs: Self)
+    {
+        self.wrapping_rem_assign(rhs);
+    }
+}
+
+
+
+impl<T, const N: usize> RemAssign<T> for BigUInt<T, N>
+where T: Uint + Clone + Display + Debug + ToString
+        + Add<Output=T> + AddAssign + Sub<Output=T> + SubAssign
+        + Mul<Output=T> + MulAssign + Div<Output=T> + DivAssign
+        + Rem<Output=T> + RemAssign
+        + Shl<Output=T> + ShlAssign + Shr<Output=T> + ShrAssign
+        + BitAnd<Output=T> + BitAndAssign + BitOr<Output=T> + BitOrAssign
+        + BitXor<Output=T> + BitXorAssign + Not<Output=T>
+        + PartialEq + PartialOrd
+{
+    #[inline]
+    fn rem_assign(&mut self, rhs: T)
+    {
+        self.remainder(rhs);
+    }
 }
 
 
@@ -582,6 +605,7 @@ macro_rules! shlassign_u_for_BigUInt_impl {
             /// println!("a = {}\noverflow: {}", a, a.is_overflow());
             /// assert_eq!(a.is_overflow(), false);
             /// ```
+            #[inline]
             fn shl_assign(&mut self, rhs: $f)
             {
                 self.shift_left_assign(rhs);
@@ -830,6 +854,7 @@ macro_rules! shrassign_u_for_BigUInt_impl {
             /// println!("a = {}\nunderflow: {}", a, a.is_underflow());
             /// assert_eq!(a.is_underflow(), false);
             /// ```
+            #[inline]
             fn shr_assign(&mut self, rhs: $f)
             {
                 self.shift_right_assign(rhs);
@@ -1405,6 +1430,7 @@ where T: Uint + Clone + Display + Debug + ToString
     /// println!("cc = {}", cc);
     /// assert_eq!(cc.into_u32(), 1004);
     /// ```
+    #[inline]
     fn from(val: S) -> Self
     {
         Self::from_uint(val)

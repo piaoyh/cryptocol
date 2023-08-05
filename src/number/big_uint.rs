@@ -24,6 +24,7 @@ use rand::rngs::OsRng;
 
 use super::trait_impl_for_big_uint::*;
 use super::uint::*;
+use super::uint_unions::*;
 use super::NumberErr;
 
 
@@ -283,7 +284,7 @@ where T: Uint + Clone + Display + Debug + ToString
         + Shr<i32, Output = Self> + ShrAssign<i32>
         + BitAnd<Self, Output = Self> + BitAndAssign + BitOr<Output = Self> + BitOrAssign
         + BitXorAssign + Not<Output = Self>
-        + From<T> + FromStr + From<[T; N]>
+        + From<T> + FromStr + From<[T; N]> + From<u32>
 {
     /***** CONSTANTS FOR FLAGS *****/
 
@@ -380,6 +381,8 @@ where T: Uint + Clone + Display + Debug + ToString
     }
 
     /// Constructs a new `BigUInt<T, N>` which has the value of maximum.
+    /// 
+    /// # Features
     /// All bits are set to be `1`.
     /// 
     /// # Example
@@ -393,6 +396,34 @@ where T: Uint + Clone + Display + Debug + ToString
     pub fn max() -> Self
     {
         Self { number: [T::max(); N], flag: 0, }
+    }
+
+    /// Constructs a new `BigUInt<T, N>`-type object which has the value of
+    /// `size_in_bits`-bit long maximum value in which all bits are set to
+    /// be `1`.
+    /// 
+    /// # Features
+    /// This method will make all the `size_in_bits` bits of `number[T;N]` of
+    /// `self` from LSB (Least Significant Bit) to be `1` and the rest of the
+    /// bits up to MSB (Most Significant Bit) to be `0`.
+    /// 
+    /// # Example
+    /// ```
+    /// use Cryptocol::define_utypes_with;
+    /// use Cryptocol::number::*;
+    /// use std::str::FromStr;
+    /// define_utypes_with!(u64);
+    /// let maximum = u256::max();
+    /// let half = u256::submax(128_usize);
+    /// println!("maximum =\t{}\nhalf maximum = \t{}", maximum, half);
+    /// assert_eq!(maximum, u256::from_str("347376267711948586270712955026063723559809953996921692118372752023739388919807").unwrap());
+    /// assert_eq!(half, u256::from_str("340282366920938463463374607431768211455").unwrap());
+    /// ```
+    pub fn submax(size_in_bits: usize) -> Self
+    {
+        let mut res = Self::max();
+        res.set_submax(size_in_bits);
+        res
     }
 
     /// Constructs a new `BigUInt<T, N>`-type object from an unsigned integer
@@ -680,7 +711,7 @@ where T: Uint + Clone + Display + Debug + ToString
     /// println!("a = {}", a.to_string_with_radix_and_stride(2, 8));
     /// assert_eq!(a, u256::from_str_radix("10000_00000000", 2).unwrap());
     /// ```
-    pub fn make_check_bits(bit_pos: usize) -> Self
+    pub fn generate_check_bits(bit_pos: usize) -> Self
     {
         let mut check_bits = Self::zero();
         check_bits.turn_check_bits(bit_pos);
@@ -2223,6 +2254,53 @@ where T: Uint + Clone + Display + Debug + ToString
             { self.set_num(i, T::max()); }
     }
 
+    /// Sets `BigUInt`-type number to be `size_in_bits`-bit long maximum value
+    /// in which all bits are set to be `1`.
+    /// 
+    /// # Features
+    /// This method will make all the `size_in_bits` bits of `number[T;N]` of
+    /// `self` from LSB (Least Significant Bit) to be `1` and the rest of the
+    /// bits up to MSB (Most Significant Bit) to be `0`.
+    /// 
+    /// # Examples
+    /// ```
+    /// use Cryptocol::define_utypes_with;
+    /// define_utypes_with!(u128);
+    /// let mut a = u256::new();
+    /// a.set_max();
+    /// println!("a = {}", a);
+    /// assert_eq!(a, u256::max());
+    /// a.set_submax(128_usize);
+    /// println!("a = {}", a);
+    /// assert_eq!(a, u256::submax(128_usize));
+    /// ```
+    pub fn set_submax(&mut self, size_in_bits: usize)
+    {
+        let TSIZE_IN_BITS = T::size_in_bits();
+        if size_in_bits >= self.length_in_bits()
+        {
+            self.set_max();
+            return;
+        }
+        else if size_in_bits == 0
+        {
+            self.set_zero();
+            return;
+        }
+
+        let chunk_num = size_in_bits / TSIZE_IN_BITS;
+        let piece_num = size_in_bits % TSIZE_IN_BITS;
+        let zero = T::zero();
+        let max = T::max();
+        self.reset_all_flags();
+        for i in 0..chunk_num
+            { self.set_num_(i, max); }
+        for i in chunk_num..N
+            { self.set_num_(i, zero); }
+        if piece_num != 0
+            { self.set_num_(chunk_num, max >> T::num((TSIZE_IN_BITS-piece_num) as u128)); }
+    }
+
     /// Checks whether or not `BigUInt`-type number to be maximum value.
     /// 
     /// # Examples
@@ -2731,25 +2809,25 @@ where T: Uint + Clone + Display + Debug + ToString
     }
 
     /// Divides self which is of `BigUInt` type by rhs which is of type `T`,
-    /// and returns quotient of `BigUInt` type. If you get both quotient and
+    /// and assign quotient of `BigUInt` type to self. If you get both quotient and
     /// remainder, you'd better use the function divide_by_uint_fully() instead
     /// of calling the functions quotient() and remainder() in series because
     /// they call the function divide_by_uint_fully() internally.
-    pub fn quotient(&mut self, rhs: T) -> Self
+    pub fn quotient(&mut self, rhs: T)
     {
         let (quotient, _) = self.divide_by_uint_fully(rhs);
-        quotient
+        *self = quotient;
     }
 
     /// Divides self which is of `BigUInt` type by rhs which is of type `T`,
-    /// and returns remainder of type `T`. If you get both quotient and
+    /// and assign remainder of type `T` to self. If you get both quotient and
     /// remainder, you'd better use the function divide_by_uint_fully() instead
     /// of calling the functions quotient() and remainder() in series because
     /// they call the function divide_by_uint_fully() internally.
-    pub fn remainder(&mut self, rhs: T) -> T
+    pub fn remainder(&mut self, rhs: T)
     {
         let (_, remainder) = self.divide_by_uint_fully(rhs);
-        remainder
+        self.set_uint(remainder);
     }
 
     /// Adds a unsigned integer number of type `T` to `BigUInt`-type unsigned
@@ -2911,6 +2989,27 @@ where T: Uint + Clone + Display + Debug + ToString
 
     /*** ADDITION ***/
 
+    pub fn carrying_add(self, rhs: Self, carry: bool) -> (Self, bool)
+    {
+        let mut res = self.clone();
+        let c = res.carrying_add_assign(rhs, carry);
+        (res, c)
+    }
+
+    pub fn carrying_add_assign(&mut self, rhs: Self, carry: bool) -> bool
+    {
+        let mut c = carry;
+        let mut num: T;
+        for i in 0..N
+        {
+            (num, c) = self.get_num_(i).carrying_add(rhs.get_num_(i), c);
+            self.set_num_(i, num);
+        }
+        if c
+            { self.set_overflow(); }
+        c
+    }
+
     /// Wrapping (modular) addition. Computes self + rhs, wrapping around
     /// at the boundary of the type.
     /// 
@@ -2939,7 +3038,7 @@ where T: Uint + Clone + Display + Debug + ToString
     /// # References
     /// - If you want to know about the declaration of the method `wrapping_add()`
     /// in trait `Uint`, read [here](trait@Uint#method.wrapping_add).
-    pub fn wrapping_add(&self, rhs: Self) -> Self
+    pub fn wrapping_add(self, rhs: Self) -> Self
     {
         let mut res = self.clone();
         res.wrapping_add_assign(rhs);
@@ -3004,26 +3103,356 @@ where T: Uint + Clone + Display + Debug + ToString
         self.is_overflow()
     }
 
-    pub fn carrying_add(self, rhs: Self, carry: bool) -> (Self, bool)
+    pub fn checked_add(self, rhs: Self) -> Option<Self>
     {
         let mut res = self.clone();
-        let c = res.carrying_add_assign(rhs, carry);
-        (res, c)
+        let overflow = res.overflowing_add_assign(rhs);
+        if overflow
+            { None }
+        else
+            { Some(res) }
+    }
+    
+    #[inline]
+    pub fn unchecked_add(self, rhs: Self) -> Self
+    {
+        self.checked_add(rhs).unwrap()
     }
 
-    pub fn carrying_add_assign(&mut self, rhs: Self, carry: bool) -> bool
+    pub fn saturating_add(self, rhs: Self) -> Self
     {
-        let mut c = carry;
+        let mut res = self.clone();
+        res.saturating_add_assign(rhs);
+        res
+    }
+    
+    pub fn saturating_add_assign(&mut self, rhs: Self)
+    {
+        if self.overflowing_add_assign(rhs)
+            { self.set_max(); }
+    }
+
+
+    /*** Subtraction ***/
+
+    pub fn borrowing_sub(self, rhs: Self, borrow: bool) -> (Self, bool)
+    {
+        let mut res = self.clone();
+        let b = res.borrowing_sub_assign(rhs, borrow);
+        (res, b)
+    }
+
+    pub fn borrowing_sub_assign(&mut self, rhs: Self, borrow: bool) -> bool
+    {
         let mut num: T;
+        let mut	b = borrow;
         for i in 0..N
         {
-            (num, c) = self.get_num_(i).carrying_add(rhs.get_num_(i), c);
+            (num, b) = self.get_num_(i).borrowing_sub(rhs.get_num_(i), borrow);
             self.set_num_(i, num);
         }
-        if c
-            { self.set_overflow(); }
-        c
+        if b
+            { self.set_underflow(); }
+        b
     }
+
+    pub fn wrapping_sub(self, rhs: Self) -> Self
+    {
+        let mut res = self.clone();
+        res.wrapping_sub_assign(rhs);
+        res
+    }
+
+    #[inline]
+    pub fn wrapping_sub_assign(&mut self, rhs: Self) -> bool
+    {
+        self.borrowing_sub_assign(rhs, false)
+/*
+       let zero = T::zero();
+        let mut	carry: T = zero;
+        let mut midres: T;
+        let mut c: bool;
+        let mut cc: T;
+
+        for i in 0..N
+        {
+            midres = self.number[i].wrapping_sub(rhs.number[i]);
+            c = midres > self.number[i];
+            cc = midres;
+            midres = midres.wrapping_sub(carry);
+            carry = if c || (midres > cc) { T::one() } else { zero };
+            self.number[i] = midres;
+        }
+        if carry != zero
+            { self.set_underflow(); }
+*/
+    }
+
+
+    /// Subtracts and assign the result to it.
+    /// 
+    #[cfg(target_endian = "big")]
+    fn _wrapping_sub_assign(&mut self, rhs: Self)
+    {
+        let mut num: T;
+        let mut i = N - 1;
+        let mut	borrow = false;
+        loop
+        {
+            (num, borrow) = self.number[i].borrowing_sub(rhs.number[i], borrow);
+            self.set_num_(i, num);
+            if i == 0
+                { break; }
+            i -= 1;
+        }
+        if carry
+            { self.set_underflow(); }
+/*
+        let zero = T::zero();
+        let mut	carry: T = zero;
+        let mut midres: T;
+        let mut c: bool;
+        let mut cc: T;
+        let mut i = N;
+        loop
+        {
+            i -= 1;
+            midres = self.number[i].wrapping_sub(rhs.number[i]);
+            c = midres > self.number[i];
+            cc = midres;
+            midres = midres.wrapping_sub(carry);
+            carry = if c || (midres > cc) { T::one() } else { zero };
+            self.number[i] = midres;
+            if i == 0
+                { break; }
+        }
+        if carry != zero
+            { self.set_underflow(); }
+    */
+    }
+
+    pub fn overflowing_sub(self, rhs: Self) -> (Self, bool)
+    {
+        let mut res = self.clone();
+        let overflow = res.overflowing_sub_assign(rhs);
+        (res, overflow)
+    }
+
+    pub fn overflowing_sub_assign(&mut self, rhs: Self) -> bool
+    {
+        self.wrapping_sub_assign(rhs);
+        self.is_underflow()
+    }
+
+    pub fn checked_sub(self, rhs: Self) -> Option<Self>
+    {
+        let mut res = self.clone();
+        let underflow = res.overflowing_sub_assign(rhs);
+        if underflow
+            { None }
+        else
+            { Some(res) }
+    }
+    
+    #[inline]
+    pub fn unchecked_sub(self, rhs: Self) -> Self
+    {
+        self.checked_sub(rhs).unwrap()
+    }
+
+    pub fn saturating_sub(self, rhs: Self) -> Self
+    {
+        let mut res = self.clone();
+        res.saturating_sub_assign(rhs);
+        res
+    }
+    
+    pub fn saturating_sub_assign(&mut self, rhs: Self)
+    {
+        if self.overflowing_sub_assign(rhs)
+            { self.set_max(); }
+    }
+
+
+    /*** Multiplication ***/
+
+    pub fn wrapping_mul(self, rhs: Self) -> Self
+    {
+        let mut res = self.clone();
+        res.wrapping_mul_assign(rhs);
+        res
+    }
+
+    pub fn wrapping_mul_assign(&mut self, rhs: Self)
+    {
+        if rhs.is_zero()
+        {
+            self.set_zero();
+            return;
+        }
+        if self.is_zero()
+            { return; }
+
+        let zero = T::zero();
+        let one = T::one();
+        let adder = self.clone();
+        let TSIZE_BITS = size_of::<T>() * 8;
+        let mut multiply_first = |num: T| {
+            let mut bit_check = one;
+            bit_check <<= T::num((TSIZE_BITS - 1).into_u128());
+            while (bit_check != zero) && (bit_check & num == zero)
+                { bit_check >>= one; }
+
+            self.set_zero();
+            while bit_check != zero
+            {
+                *self <<= 1;
+                if bit_check & num != zero
+                    { *self += adder; }
+                bit_check >>= one;
+            }
+        };
+
+        let mut n = N - 1;
+        while rhs.get_num_(n) == zero
+            { n -= 1; }
+        multiply_first(rhs.get_num_(n));
+        if n == 0
+            { return; }
+        n -= 1;
+
+        let mut multiply = |num: T| {
+            if num == T::zero()
+            {
+                *self <<= TSIZE_BITS as i32;
+                return;
+            }
+            let mut bit_check = one;
+            bit_check <<= T::num((TSIZE_BITS - 1).into_u128());
+            while bit_check != zero
+            {
+                *self <<= 1;
+                if bit_check & num != zero
+                    { *self += adder; }
+                bit_check >>= one;
+            }
+        };
+
+        loop
+        {
+            multiply(rhs.get_num_(n));
+            if n == 0
+                { break; }
+            n = n.wrapping_sub(1);
+        }
+    }
+
+    /// Multiplies and assign the result to it.
+    /// 
+    #[cfg(target_endian = "big")]
+    fn _wrapping_mul_assign(&mut self, rhs: Self)
+    {
+        if rhs.is_zero()
+        {
+            self.set_zero();
+            return;
+        }
+        if self.is_zero()
+            { return; }
+
+        let zero = T::zero();
+        let one = T::one();
+        let adder = self.clone();
+        let TSIZE_BIT = size_of::<T>() * 8;
+        let mut multiply_first = |num: T| {
+            let mut bit_check = one;
+            bit_check <<= T::num((TSIZE_BIT - 1).into_u128());
+            while (bit_check != zero) && (bit_check & num == zero)
+                { bit_check >>= one; }
+
+            self.set_zero();
+            while bit_check != zero
+            {
+                *self <<= 1;
+                if bit_check & num != zero
+                    { *self += adder; }
+                bit_check >>= one;
+            }
+        };
+
+        let mut n = 0;
+        while rhs.number[n] == zero
+            { n += 1; }
+        multiply_first(rhs.number[n]);
+        n += 1;
+
+        let mut multiply = |num: T| {
+            if num == T::zero()
+            {
+                *self <<= TSIZE_BIT as i32;
+                return;
+            }
+            let mut bit_check = one;
+            bit_check <<= T::num((TSIZE_BIT - 1).into_u128());
+            while bit_check != zero
+            {
+                *self <<= 1;
+                if bit_check & num != zero
+                    { *self += adder; }
+                bit_check >>= one;
+            }
+        };
+        while n < N
+        {
+            multiply(rhs.number[n]);
+            n += 1;
+        }
+    }
+
+    pub fn overflowing_mul(self, rhs: Self) -> (Self, bool)
+    {
+        let mut res = self.clone();
+        let overflow = res.overflowing_mul_assign(rhs);
+        (res, overflow)
+    }
+
+    pub fn overflowing_mul_assign(&mut self, rhs: Self) -> bool
+    {
+        self.wrapping_mul_assign(rhs);
+        self.is_overflow()
+    }
+
+    pub fn checked_mul(self, rhs: Self) -> Option<Self>
+    {
+        let mut res = self.clone();
+        let overflow = res.overflowing_mul_assign(rhs);
+        if overflow
+            { None }
+        else
+            { Some(res) }
+    }
+
+    pub fn unchecked_mul(self, rhs: Self) -> Self
+    {
+        self.checked_mul(rhs).unwrap()
+    }
+
+    pub fn saturating_mul(self, rhs: Self) -> Self
+    {
+        let mut res = self.clone();
+        res.saturating_mul_assign(rhs);
+        res
+    }
+
+    pub fn saturating_mul_assign(&mut self, rhs: Self)
+    {
+        self.wrapping_mul_assign(rhs);
+        if self.is_overflow()
+            { self.set_max(); }
+    }
+
+
+    /*** Division ***/
 
     /// Divides self which is of `BigUInt` type by rhs which is of `BigUInt`
     /// type, and returns quotient and remainder which are `BigUInt`type.
@@ -3138,6 +3567,58 @@ where T: Uint + Clone + Display + Debug + ToString
                 }
             }
         }
+    }
+
+    pub fn wrapping_div(self, rhs: Self) -> Self
+    {
+        let (quotient, _) = self.divide_fully(rhs);
+        quotient
+    }
+
+    pub fn wrapping_div_assign(&mut self, rhs: Self)
+    {
+        let (quotient, _) = self.divide_fully(rhs);
+        *self = quotient;
+    }
+
+    pub fn checked_div(self, rhs: Self) -> Option<Self>
+    {
+        let res = self.wrapping_div(rhs);
+        if res.is_divided_by_zero()
+            { None }
+        else
+            { Some(res) }
+    }
+
+    pub fn unchecked_div(self, rhs: Self) -> Self
+    {
+        self.checked_div(rhs).unwrap()
+    }
+
+    pub fn wrapping_rem(self, rhs: Self) -> Self
+    {
+        let (_, remainder) = self.divide_fully(rhs);
+        remainder
+    }
+
+    pub fn wrapping_rem_assign(&mut self, rhs: Self)
+    {
+        let (_, remainder) = self.divide_fully(rhs);
+        *self = remainder;
+    }
+
+    pub fn checked_rem(self, rhs: Self) -> Option<Self>
+    {
+        let res = self.wrapping_rem(rhs);
+        if res.is_divided_by_zero()
+            { None }
+        else
+            { Some(res) }
+    }
+
+    pub fn unchecked_rem(self, rhs: Self) -> Self
+    {
+        self.checked_rem(rhs).unwrap()
     }
 
 
