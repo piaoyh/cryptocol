@@ -18,7 +18,7 @@ use std::str::FromStr;
 use std::ops::*;
 
 use super::uint::*;
-use super::int::*;
+use super::sint::*;
 use super::big_uint::BigUInt;
 use super::NumberErr;
 

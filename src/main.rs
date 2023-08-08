@@ -9,13 +9,14 @@ use std::mem::size_of;
 
 mod number;
 use std::str::FromStr;
-use Cryptocol::number::{Uint, UShort, BigUInt, ULonger};
+use Cryptocol::number::*;
 use rand_distr::num_traits::PrimInt; //{u256, BigInteger, HugeInteger};
 
 
 fn main()
 {
     define_utypes_with!(u128);
+
 
     UInt_carrying_add___main();
     UInt_wrapping_add___main();
@@ -46,9 +47,9 @@ fn main()
     UInt_overflowing_rem___main();
     UInt_checked_rem___main();
 
-
+    UInt_pow___main();
+/*
     BigUInt_submax___main();
-    /*
 
     BigUInt_wrapping_add___main();
     BigUInt_wrapping_add_assign___main();
@@ -1909,7 +1910,353 @@ fn UInt_checked_rem___func<T: Uint>(lhs: T, rhs: T) -> Option<T>
     lhs.checked_rem(rhs)
 }
 
+fn UInt_pow___main()
+{
+    println!("UInt_pow___main()");
+    let a_u8 = UInt_pow___func(3_u8, 5_u32);
+    println!("3 ** 5 = {}", a_u8);
+    assert_eq!(a_u8, 243_u8);
+    // It will panic.
+    // println!("3 ** 5 = {}", UInt_pow___func(3_u8, 6_u32));
+    
+    let a_u16 = UInt_pow___func(9_u16, 5_u32);
+    println!("9 ** 5 = {}", a_u16);
+    assert_eq!(a_u16, 59049_u16);
+    // It will panic.
+    // println!("9 ** 5 = {}", UInt_pow___func(9_u16, 6_u32));
 
+    let a_u32 = UInt_pow___func(81_u32, 5_u32);
+    println!("81 ** 5 = {}", a_u32);
+    assert_eq!(a_u32, 3486784401_u32);
+    // It will panic.
+    // println!("81 ** 6 = {}", UInt_pow___func(81_u32, 6_u32));
+
+    let a_u64 = UInt_pow___func(6561_u64, 5_u32);
+    println!("6561 ** 5 = {}", a_u64);
+    assert_eq!(a_u64, 12157665459056928801_u64);
+    // It will panic.
+    // println!("6561 ** 6 = {}", UInt_pow___func(6561_u64, 6_u32));
+
+    let a_u128 = UInt_pow___func(43046721_u128, 5_u32);
+    println!("43046721 ** 5 = {}", a_u128);
+    assert_eq!(a_u128, 147808829414345923316083210206383297601_u128);
+    // It will panic.
+    // println!("43046721 ** 6 = {}", UInt_pow___func(43046721_u64, 6_u32));
+
+    let a_usize = UInt_pow___func(6561_usize, 5_u32);
+    println!("6561 ** 5 = {}", a_usize);
+    assert_eq!(a_usize, 12157665459056928801_usize);
+    // It will panic.
+    // println!("6561 ** 6 = {}", UInt_pow___func(6561_usize, 6_u32));
+
+    let a_ushort = ShortUnion::new_with(9);
+    let b_ushort = UInt_pow___func(a_ushort, 5_u32);
+    println!("9 ** 5 = {}", unsafe { b_ushort.ushort } );
+    assert_eq!(unsafe { b_ushort.ushort }, 59049_u16);
+    // It will panic.
+    // println!("9 ** 5 = {}", UInt_pow___func(a_ushort, 6_u32));
+
+    let a_uint = IntUnion::new_with(81);
+    let b_uint = UInt_pow___func(a_uint, 5_u32);
+    println!("81 ** 5 = {}", unsafe { b_uint.uint } );
+    assert_eq!(unsafe { b_uint.uint }, 3486784401_u32);
+    // It will panic.
+    // println!("81 ** 6 = {}", UInt_pow___func(a_uint, 6_u32));
+
+    let a_ulong = LongUnion::new_with(6561);
+    let b_ulong = UInt_pow___func(a_ulong, 5_u32);
+    println!("6561 ** 5 = {}", unsafe { b_ulong.ulong } );
+    assert_eq!(unsafe { b_ulong.ulong }, 12157665459056928801_u64);
+    // It will panic.
+    // println!("6561 ** 6 = {}", UInt_pow___func(a_ulong, 6_u32));
+
+    let a_ulonger = LongerUnion::new_with(43046721);
+    let b_ulonger = UInt_pow___func(a_ulonger, 5_u32);
+    println!("43046721 ** 5 = {}", unsafe { b_ulonger.ulonger } );
+    assert_eq!(unsafe { b_ulonger.ulonger }, 147808829414345923316083210206383297601_u128);
+    // It will panic.
+    // println!("43046721 ** 6 = {}", UInt_pow___func(a_ulonger, 6_u32));
+
+    let a_size = SizeUnion::new_with(6561);
+    let b_size = UInt_pow___func(a_size, 5_u32);
+    println!("6561 ** 5 = {}", unsafe { b_size.u_size } );
+    assert_eq!(unsafe { b_size.u_size }, 12157665459056928801_usize);
+    // It will panic.
+    // println!("6561 ** 6 = {}", UInt_pow___func(a_size, 6_u32));
+    println!("--------------------------------------");
+}
+
+fn UInt_pow___func<T: Uint>(base: T, exp: u32) -> T
+{
+    base.pow(exp)
+}
+
+/*
+fn UInt_wrapping_pow___main()
+{
+    println!("UInt_wrapping_pow___main()");
+    let a_u8 = UInt_wrapping_pow___func(u8::MAX / 3, 2_u8);
+    println!("{} / 2 = {}", u8::MAX / 3, a_u8);
+    assert_eq!(a_u8, 42_u8);
+
+    let a_u16 = UInt_wrapping_pow___func(u16::MAX / 3, 2_u16);
+    println!("{} / 2 = {}", u16::MAX / 3, a_u16);
+    assert_eq!(a_u16, 10922_u16);
+
+    let a_u32 = UInt_wrapping_pow___func(u32::MAX / 3, 2_u32);
+    println!("{} / 2 = {}", u32::MAX / 3, a_u32);
+    assert_eq!(a_u32, 715827882_u32);
+
+    let a_u64 = UInt_wrapping_pow___func(u64::MAX / 3, 2_u64);
+    println!("{} / 2 = {}", u64::MAX / 3, a_u64);
+    assert_eq!(a_u64, 3074457345618258602_u64);
+
+    let a_u128 = UInt_wrapping_pow___func(u128::MAX / 3, 2_u128);
+    println!("{} / 2 = {}", u128::MAX / 3, a_u128);
+    assert_eq!(a_u128, 56713727820156410577229101238628035242_u128);
+
+    let a_usize = UInt_wrapping_pow___func(usize::MAX / 3, 2_usize);
+    println!("{} / 2 = {}", usize::MAX / 3, a_usize);
+    assert_eq!(a_usize, 3074457345618258602_usize);
+
+    // It will panic.
+    // let a_panic = UInt_wrapping_div___func(usize::MAX / 3, 0_usize);
+    println!("--------------------------------------");
+}
+
+fn UInt_wrapping_pow___func<T: Uint>(base: T, exp: u32) -> T
+{
+    base.wrapping_pow(exp)
+}
+
+fn UInt_overflowing_powv___main()
+{
+    println!("UInt_overflowing_powv___main()");
+    let a_u8 = UInt_overflowing_pow___func(u8::MAX / 3, 2_u8);
+    println!("{} / 2 = {}\nOverflow = {}", u8::MAX / 3, a_u8.0, a_u8.1);
+    assert_eq!(a_u8.0, 42_u8);
+    assert_eq!(a_u8.1, false);
+
+    let a_u16 = UInt_overflowing_pow___func(u16::MAX / 3, 2_u16);
+    println!("{} / 2 = {}\nOverflow = {}", u16::MAX / 3, a_u16.0, a_u16.1);
+    assert_eq!(a_u16.0, 10922_u16);
+    assert_eq!(a_u16.1, false);
+ 
+    let a_u32 = UInt_overflowing_pow___func(u32::MAX / 3, 2_u32);
+    println!("{} / 2 = {}\nOverflow = {}", u32::MAX / 3, a_u32.0, a_u32.1);
+    assert_eq!(a_u32.0, 715827882_u32);
+    assert_eq!(a_u32.1, false);
+ 
+    let a_u64 = UInt_overflowing_pow___func(u64::MAX / 3, 2_u64);
+    println!("{} / 2 = {}\nOverflow = {}", u64::MAX / 3, a_u64.0, a_u64.1);
+    assert_eq!(a_u64.0, 3074457345618258602_u64);
+    assert_eq!(a_u64.1, false);
+ 
+    let a_u128 = UInt_overflowing_pow___func(u128::MAX / 3, 2_u128);
+    println!("{} / 2 = {}\nOverflow = {}", u128::MAX / 3, a_u128.0, a_u128.1);
+    assert_eq!(a_u128.0, 56713727820156410577229101238628035242_u128);
+    assert_eq!(a_u128.1, false);
+ 
+    let a_usize = UInt_overflowing_pow___func(usize::MAX / 3, 2_usize);
+    println!("{} / 2 = {}\nOverflow = {}", usize::MAX / 3, a_usize.0, a_usize.1);
+    assert_eq!(a_usize.0, 3074457345618258602_usize);
+    assert_eq!(a_usize.1, false);
+ 
+    // It will panic.
+    // let a_panic = UInt_overflowing_pow___func(a_usize.0, 0_usize);
+    println!("--------------------------------------");
+}
+
+fn UInt_overflowing_pow___func<T: Uint>(base: T, exp: u32) -> (T, bool)
+{
+    base.overflowing_pow(exp)
+}
+
+fn UInt_checked_pow___main()
+{
+    println!("UInt_checked_div___main()");
+    let a_u8 = UInt_checked_pow___main(u8::MAX / 3, 2_u8);
+    match a_u8
+    {
+        Some(a) => {
+                println!("{} / 2 = {}", u8::MAX / 3, a);
+                assert_eq!(a, 42_u8);
+            },
+        None => {
+                println!("Divided by zero.");
+                assert_eq!(a_u8, None);
+            },
+    }
+
+    let b_u8 = UInt_checked_pow___func(u8::MAX / 3, 0_u8);
+    match b_u8
+    {
+        Some(b) => { println!("{} / 2 = {}", u8::MAX / 3, b); },
+        None => {
+                println!("Divided by zero.");
+                assert_eq!(b_u8, None);
+            },
+    }
+
+    let a_u16 = UInt_checked_pow___func(u16::MAX / 3, 2_u16);
+    match a_u16
+    {
+        Some(a) => {
+                println!("{} / 2 = {}", u16::MAX / 3, a);
+                assert_eq!(a, 10922_u16);
+            },
+        None => {
+                println!("Divided by zero.");
+                assert_eq!(a_u16, None);
+            },
+    }
+
+    let b_u16 = UInt_checked_pow___func(u16::MAX / 3, 0_u32);
+    match b_u16
+    {
+        Some(b) => { println!("{} / 2 = {}", u16::MAX / 3, b); },
+        None => {
+                println!("Divided by zero.");
+                assert_eq!(b_u16, None);
+            },
+    }
+
+    let a_u32 = UInt_checked_pow___func(u32::MAX / 3, 2_u32);
+    match a_u32
+    {
+        Some(a) => {
+                println!("{} / 2 = {}", u32::MAX / 3, a);
+                assert_eq!(a, 715827882_u32);
+            },
+        None => {
+                println!("Divided by zero.");
+                assert_eq!(a_u32, None);
+            },
+    }
+
+    let b_u32 = UInt_checked_pow___func(u32::MAX / 3, 0_u32);
+    match b_u32
+    {
+        Some(b) => { println!("{} / 2 = {}", u32::MAX / 3, b); },
+        None => {
+                println!("Divided by zero.");
+                assert_eq!(b_u32, None);
+            },
+    }
+
+    let a_u64 = UInt_checked_pow___func(u64::MAX / 3, 2_u64);
+    match a_u64
+    {
+        Some(a) => {
+                println!("{} / 2 = {}", u64::MAX / 3, a);
+                assert_eq!(a, 3074457345618258602_u64);
+            },
+        None => {
+                println!("Divided by zero.");
+                assert_eq!(a_u64, None);
+            },
+    }
+
+    let b_u64 = UInt_checked_pow___func(u64::MAX / 3, 0_u64);
+    match b_u64
+    {
+        Some(b) => { println!("{} / 2 = {}", u64::MAX / 3, b); },
+        None => {
+                println!("Divided by zero.");
+                assert_eq!(b_u64, None);
+            },
+    }
+
+    let a_u128 = UInt_checked_pow___func(u128::MAX / 3, 2_u128);
+    match a_u128
+    {
+        Some(a) => {
+                println!("{} / 2 = {}", u128::MAX / 3, a);
+                assert_eq!(a, 56713727820156410577229101238628035242_u128);
+            },
+        None => {
+                println!("Divided by zero.");
+                assert_eq!(a_u128, None);
+            },
+    }
+
+    let b_u128 = UInt_checked_pow___func(u128::MAX / 3, 0_u128);
+    match b_u128
+    {
+        Some(b) => { println!("{} / 2 = {}", u128::MAX / 3, b); },
+        None => {
+                println!("Divided by zero.");
+                assert_eq!(b_u128, None);
+            },
+    }
+
+    let a_usize = UInt_checked_pow___func(usize::MAX / 3, 2_usize);
+    match a_usize
+    {
+        Some(a) => {
+                println!("{} / 2 = {}", usize::MAX / 3, a);
+                assert_eq!(a, 3074457345618258602_usize);
+            },
+        None => {
+                println!("Divided by zero.");
+                assert_eq!(a_usize, None);
+            },
+    }
+
+    let b_usize = UInt_checked_pow___func(usize::MAX / 3, 0_usize);
+    match b_usize
+    {
+        Some(b) => { println!("{} / 2 = {}", usize::MAX / 3, b); },
+        None => {
+                println!("Divided by zero.");
+                assert_eq!(b_usize, None);
+            },
+    }
+    println!("--------------------------------------");
+}
+
+fn UInt_checked_pow___func<T: Uint>(base: T, exp: u32) -> Option<T>
+{
+    base.checked_pow(exp)
+}
+
+fn UInt_saturating_pow___main()
+{
+    println!("UInt_saturating_pow___main()");
+    let a_u8 = UInt_saturating_pow___func(u8::MAX / 3, 2_u8);
+    println!("{} / 2 = {}", u8::MAX / 3, a_u8);
+    assert_eq!(a_u8, 42_u8);
+
+    let a_u16 = UInt_saturating_pow___func(u16::MAX / 3, 2_u16);
+    println!("{} / 2 = {}", u16::MAX / 3, a_u16);
+    assert_eq!(a_u16, 10922_u16);
+
+    let a_u32 = UInt_saturating_pow___func(u32::MAX / 3, 2_u32);
+    println!("{} / 2 = {}", u32::MAX / 3, a_u32);
+    assert_eq!(a_u32, 715827882_u32);
+
+    let a_u64 = UInt_saturating_pow___func(u64::MAX / 3, 2_u64);
+    println!("{} / 2 = {}", u64::MAX / 3, a_u64);
+    assert_eq!(a_u64, 3074457345618258602_u64);
+
+    let a_u128 = UInt_saturating_pow___func(u128::MAX / 3, 2_u128);
+    println!("{} / 2 = {}", u128::MAX / 3, a_u128);
+    assert_eq!(a_u128, 56713727820156410577229101238628035242_u128);
+
+    let a_usize = UInt_saturating_pow___func(usize::MAX / 3, 2_usize);
+    println!("{} / 2 = {}", usize::MAX / 3, a_usize);
+    assert_eq!(a_usize, 3074457345618258602_usize);
+
+    // It will panic.
+    // let a_panic = UInt_saturating_pow___func(usize::MAX / 3, 0_usize);
+    println!("--------------------------------------");
+}
+
+fn UInt_saturating_pow___func<T: Uint>(lhs: T, rhs: T) -> T
+{
+    lhs.saturating_pow(rhs)
+}
+*/
 
 
 

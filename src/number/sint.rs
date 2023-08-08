@@ -26,7 +26,7 @@ use std::cmp::{Eq, Ord};
 /// the crate Cryptocol. But, if you only use the crate Cryptocol, you can
 /// forget about this trait Int.
 /// 
-pub trait Int: Copy + Debug
+pub trait Sint: Copy + Debug
             + Add + AddAssign + Sub + SubAssign + Mul + MulAssign + Div + DivAssign
             + Shl + ShlAssign + Shr + ShrAssign
             + Eq + Ord
@@ -53,7 +53,7 @@ pub trait Int: Copy + Debug
     fn size_in_bits() -> usize;
 }
 
-impl Int for i8
+impl Sint for i8
 {
     fn wrapping_add(self, rhs: Self) -> Self    { self.wrapping_add(rhs) }
     fn wrapping_sub(self, rhs: Self) -> Self    { self.wrapping_sub(rhs) }
@@ -77,7 +77,7 @@ impl Int for i8
     fn size_in_bits() -> usize  { size_of::<Self>() * 8 }
 }
 
-impl Int for i16
+impl Sint for i16
 {
     fn wrapping_add(self, rhs: Self) -> Self    { self.wrapping_add(rhs) }
     fn wrapping_sub(self, rhs: Self) -> Self    { self.wrapping_sub(rhs) }
@@ -101,7 +101,7 @@ impl Int for i16
     fn size_in_bits() -> usize  { size_of::<Self>() * 8 }
 }
 
-impl Int for i32
+impl Sint for i32
 {
     fn wrapping_add(self, rhs: Self) -> Self    { self.wrapping_add(rhs) }
     fn wrapping_sub(self, rhs: Self) -> Self    { self.wrapping_sub(rhs) }
@@ -125,7 +125,7 @@ impl Int for i32
     fn size_in_bits() -> usize  { size_of::<Self>() * 8 }
 }
 
-impl Int for i64
+impl Sint for i64
 {
     fn wrapping_add(self, rhs: Self) -> Self    { self.wrapping_add(rhs) }
     fn wrapping_sub(self, rhs: Self) -> Self    { self.wrapping_sub(rhs) }
@@ -149,7 +149,7 @@ impl Int for i64
     fn size_in_bits() -> usize  { size_of::<Self>() * 8 }
 }
 
-impl Int for i128
+impl Sint for i128
 {
     fn wrapping_add(self, rhs: Self) -> Self    { self.wrapping_add(rhs) }
     fn wrapping_sub(self, rhs: Self) -> Self    { self.wrapping_sub(rhs) }
@@ -173,7 +173,7 @@ impl Int for i128
     fn size_in_bits() -> usize  { size_of::<Self>() * 8 }
 }
 
-impl Int for isize
+impl Sint for isize
 {
     fn wrapping_add(self, rhs: Self) -> Self    { self.wrapping_add(rhs) }
     fn wrapping_sub(self, rhs: Self) -> Self    { self.wrapping_sub(rhs) }

@@ -24,7 +24,7 @@ use rand::rngs::OsRng;
 
 use super::trait_impl_for_big_uint::*;
 use super::uint::*;
-use super::uint_unions::*;
+use super::int_unions::*;
 use super::NumberErr;
 
 
@@ -311,6 +311,7 @@ where T: Uint + Clone + Display + Debug + ToString
 
     /***** CONSTRUCTORS *****/
 
+    // pub fn new() -> Self
     /// Constructs a new `BigUInt<T, N>`.
     /// 
     /// # Initialization
@@ -329,7 +330,10 @@ where T: Uint + Clone + Display + Debug + ToString
         Self { number: [T::zero(); N], flag: 0, }   // unsafe { zeroed::<Self>() }
     }
 
+    // pub fn zero() -> Self
     /// Constructs a new `BigUInt<T, N>` which has the value of zero.
+    /// 
+    /// # Features
     /// This function calls `BigUInt<T, N>::new()`, so it is virtually exactly
     /// the same as the function `BigUInt<T, N>::new()`.
     /// 
@@ -352,6 +356,7 @@ where T: Uint + Clone + Display + Debug + ToString
         Self::new()   // unsafe { zeroed::<Self>() }
     }
 
+    // pub fn one() -> Self
     /// Constructs a new `BigUInt<T, N>` which has the value of one.
     /// 
     /// # Benefit
@@ -380,6 +385,7 @@ where T: Uint + Clone + Display + Debug + ToString
         me
     }
 
+    // pub fn max() -> Self
     /// Constructs a new `BigUInt<T, N>` which has the value of maximum.
     /// 
     /// # Features
@@ -398,6 +404,7 @@ where T: Uint + Clone + Display + Debug + ToString
         Self { number: [T::max(); N], flag: 0, }
     }
 
+    // pub fn submax(size_in_bits: usize) -> Self
     /// Constructs a new `BigUInt<T, N>`-type object which has the value of
     /// `size_in_bits`-bit long maximum value in which all bits are set to
     /// be `1`.
@@ -426,6 +433,34 @@ where T: Uint + Clone + Display + Debug + ToString
         res
     }
 
+    // pub fn halfmax() -> Self
+    /// Constructs a new `BigUInt<T, N>`-type object which has the value of
+    /// half long maximum value in which all bits are set to be `1`.
+    /// 
+    /// # Features
+    /// This method will make all the lower half bits of `number[T;N]` of
+    /// `self` from LSB (Least Significant Bit) to be `1` and the rest of the
+    /// bits up to MSB (Most Significant Bit) to be `0`.
+    /// 
+    /// # Example
+    /// ```
+    /// use Cryptocol::define_utypes_with;
+    /// use Cryptocol::number::*;
+    /// use std::str::FromStr;
+    /// define_utypes_with!(u64);
+    /// let maximum = u256::max();
+    /// let half = u256::halfmax();
+    /// println!("maximum =\t{}\nhalf maximum = \t{}", maximum, half);
+    /// assert_eq!(maximum, u256::from_str("347376267711948586270712955026063723559809953996921692118372752023739388919807").unwrap());
+    /// assert_eq!(half, u256::from_str("340282366920938463463374607431768211455").unwrap());
+    /// ```
+    #[inline]
+    pub fn halfmax() -> Self
+    {
+        Self::submax(Self::size_in_bits() >> 1)
+    }
+
+    // pub fn from_uint<S>(val: S) -> Self
     /// Constructs a new `BigUInt<T, N>`-type object from an unsigned integer
     /// such as `u8`, `u16`, `u32`, `u64`, `u128` and `usize`.
     /// 
@@ -436,9 +471,29 @@ where T: Uint + Clone + Display + Debug + ToString
     /// use Cryptocol::define_utypes_with;
     /// define_utypes_with!(u16);
     /// 
-    /// let cc = u512::from_uint(1004_u32);
+    /// let aa = u512::from_uint(123_u8);
+    /// println!("aa = {}", aa);
+    /// assert_eq!(aa.into_u8(), 123_u8);
+    /// 
+    /// let bb = u512::from_uint(12345_u16);
+    /// println!("bb = {}", bb);
+    /// assert_eq!(bb.into_u16(), 12345_u16);
+    /// 
+    /// let cc = u512::from_uint(1234567890_u32);
     /// println!("cc = {}", cc);
-    /// assert_eq!(cc.into_u32(), 1004);
+    /// assert_eq!(cc.into_u32(), 1234567890_u32);
+    /// 
+    /// let dd = u512::from_uint(12345678901234567890_u64);
+    /// println!("dd = {}", dd);
+    /// assert_eq!(dd.into_u64(), 12345678901234567890_u64);
+    /// 
+    /// let ee = u512::from_uint(123456789012345678901234567890123456789_u128);
+    /// println!("ee = {}", ee);
+    /// assert_eq!(ee.into_u128(), 123456789012345678901234567890123456789_u128);
+    /// 
+    /// let ff = u512::from_uint(12345678901234567890_usize);
+    /// println!("ff = {}", ff);
+    /// assert_eq!(ff.into_usize(), 12345678901234567890_usize);
     /// ```
     pub fn from_uint<S>(val: S) -> Self
     where S: Uint + Clone + Display + Debug + ToString
@@ -535,6 +590,7 @@ where T: Uint + Clone + Display + Debug + ToString
         }
     }
 
+    //pub fn from_biguint<U, const M: usize>(biguint: &BigUInt<U, M>) -> Self
     /// Constructs a new `BigUInt<T, N>` from another kind of `BigUInt<U, M>`.
     /// It copies not only long-bit integer but also current flags from another
     /// kind of `BigUInt<U, M>`.
@@ -707,7 +763,7 @@ where T: Uint + Clone + Display + Debug + ToString
     /// use Cryptocol::define_utypes_with_u8;
     /// 
     /// define_utypes_with_u8!();
-    /// let a = u256::make_check_bits(12);
+    /// let a = u256::generate_check_bits(12);
     /// println!("a = {}", a.to_string_with_radix_and_stride(2, 8));
     /// assert_eq!(a, u256::from_str_radix("10000_00000000", 2).unwrap());
     /// ```
@@ -722,16 +778,27 @@ where T: Uint + Clone + Display + Debug + ToString
 
     /***** METHODS FOR GENERATING RANDOM PRIME NUMBERS *****/
 
+    // pub fn random() -> Self
     /// Constucts a new `BigUInt<T, N>`-type object which has the random value.
+    /// 
+    /// # Output
     /// The random number that this method random() returns is a pure random
     /// number whose range is from 0 up to BigUInt::max() inclusively.
+    /// # Features
+    /// This method basically uses the method randomize() that fills all the
+    /// elements of the array number[T; N] in struct BigUInt<T, N> with the
+    /// cryptographically secure random numbers by means of
+    /// [rand::rngs::OsRng](https://docs.rs/rand/latest/rand/rngs/struct.OsRng.html))
+    /// which is considered to be cryptographically secure.
     /// 
     /// # Cryptographical Security
-    /// The random number generated by this method random() is considered
-    /// cryptographically secure. This method random() is based on the crate
-    /// [rand](https://docs.rs/rand/latest/rand/index.html) (especially,
-    /// [rand::rngs::OsRng](https://docs.rs/rand/latest/rand/rngs/struct.OsRng.html)).
-    /// 
+    /// It is not sure that the random number generated by this method random()
+    /// can be considered cryptographically secure though this method random()
+    /// is based on the crate [rand](https://docs.rs/rand/latest/rand/index.html)
+    /// (especially, [rand::rngs::OsRng](https://docs.rs/rand/latest/rand/rngs/struct.OsRng.html)).
+    /// The author is not sure that the _extended_ random number generated
+    /// in the way explained in the section 'Features' is also
+    /// cryptographically secure recursively.
     /// 
     /// # Counterpart Methods
     /// - If you want to be sure to use cryptographically secure pure random
@@ -751,10 +818,7 @@ where T: Uint + Clone + Display + Debug + ToString
     /// [random_odd()](struct@BigUInt#method.random_odd),
     /// [random_odd_less_than()](struct@BigUInt#method.random_odd_less_than), and
     /// [random_odd_with_MSB_set](struct@BigUInt#method.random_odd_with_MSB_set).
-    /// - If you want to use random odd number for cryptographic purpose, you
-    /// are highly recommended to use this method [random_odd()](struct@BigUInt#method.random_odd)
-    /// rather than other methods that generate different ramdom numbers such as
-    /// [random()](struct@BigUInt#method.random),
+    /// - If you want to uKerckhoffs principleBigUInt#method.random),
     /// [random_less_than()](struct@BigUInt#method.random_less_than),
     /// [random_odd_less_than()](struct@BigUInt#method.random_odd_less_than),
     /// [random_with_MSB_set()](struct@BigUInt#method.random_with_MSB_set), and
@@ -802,18 +866,31 @@ where T: Uint + Clone + Display + Debug + ToString
         r
     }
 
+    // pub fn random_odd() -> Self
     /// Constucts a new `BigUInt<T, N>`-type object which has the random odd
-    /// value. The random number that this method random_odd() returns is a pure
+    /// value.
+    /// 
+    /// # Output
+    /// The random number that this method random_odd() returns is a pure
     /// random odd number whose range is from 1 up to BigUInt::max() inclusively.
     /// 
+    /// # Features
+    /// This method random_odd() generates a random number and then simply sets
+    /// its LSB (Least Significant Bit) to be one.
+    /// This method basically uses the method randomize() that fills all the
+    /// elements of the array number[T; N] in struct BigUInt<T, N> with the
+    /// cryptographically secure random numbers by means of
+    /// [rand::rngs::OsRng](https://docs.rs/rand/latest/rand/rngs/struct.OsRng.html))
+    /// which is considered to be cryptographically secure.
+    /// 
     /// # Cryptographical Security
-    /// The random number generated by this method random_odd() is considered
-    /// cryptographically secure. This method random_odd() is based on the crate
-    /// [rand](https://docs.rs/rand/latest/rand/index.html) (especially,
-    /// [rand::rngs::OsRng](https://docs.rs/rand/latest/rand/rngs/struct.OsRng.html)),
-    /// even though this method random_odd() generates a cryptographically
-    /// secure random number and then simply sets its LSB (Least Significant
-    /// Bit) to be one.
+    /// It is not sure that the random number generated by this method
+    /// random_odd() can be considered cryptographically unsecure though This
+    /// method random_odd() is based on the crate [rand](https://docs.rs/rand/latest/rand/index.html)
+    /// (especially, [rand::rngs::OsRng](https://docs.rs/rand/latest/rand/rngs/struct.OsRng.html)).
+    /// The author is not sure that the _extended_ random number generated
+    /// in the way explained in the section 'Features' is also
+    /// cryptographically secure recursively.
     /// 
     /// # Counterpart Methods
     /// - If you want to be sure to use cryptographically secure pure random
@@ -889,19 +966,32 @@ where T: Uint + Clone + Display + Debug + ToString
         r
     }
 
+    // pub fn random_less_than(ceiling: Self) -> Self
     /// Constucts a new `BigUInt<T, N>`-type object which has the random
-    /// value less than a certain value. The random number that this method
-    /// random_less_than() returns is a pure random number whose range is
-    /// between 0 inclusively and the certain value exclusively.
+    /// value less than a certain value.
+    /// 
+    /// # Output
+    /// The random number that this method random_less_than() returns is
+    /// a pure random number whose range is between 0 inclusively
+    /// and the certain value exclusively.
+    /// 
+    /// # Features
+    /// This method random_less_than() generates a random number,
+    /// and then simply divides it by the certain value to get its remainder.
+    /// This method basically uses the method randomize() that fills all the
+    /// elements of the array number[T; N] in struct BigUInt<T, N> with the
+    /// cryptographically secure random numbers by means of
+    /// [rand::rngs::OsRng](https://docs.rs/rand/latest/rand/rngs/struct.OsRng.html))
+    /// which is considered to be cryptographically secure.
     /// 
     /// # Cryptographical Security
-    /// The random number generated by this method random_less_than() is
-    /// considered cryptographically secure. This method random_less_than() is
-    /// based on the crate [rand](https://docs.rs/rand/latest/rand/index.html)
-    /// (especially, [rand::rngs::OsRng](https://docs.rs/rand/latest/rand/rngs/struct.OsRng.html)),
-    /// even though this method random_less_than() generates a cryptographically
-    /// secure random number and then simply divides it by the certain value to
-    /// get its remainder.
+    /// It is not sure that the random number generated by this method
+    /// random_less_than() can be considered cryptographically unsecure though
+    /// this method random_less_than() is based on the crate [rand](https://docs.rs/rand/latest/rand/index.html)
+    /// (especially, [rand::rngs::OsRng](https://docs.rs/rand/latest/rand/rngs/struct.OsRng.html)).
+    /// The author is not sure that the _extended_ random number generated
+    /// in the way explained in the section 'Features' is also
+    /// cryptographically secure recursively.
     /// 
     /// # Counterpart Methods
     /// - If you want to be sure to use cryptographically secure pure random
@@ -971,19 +1061,33 @@ where T: Uint + Clone + Display + Debug + ToString
         Self::random() % ceiling
     }
 
+    // pub fn random_odd_less_than(ceiling: Self) -> Self
     /// Constucts a new `BigUInt<T, N>`-type object which has the random odd
-    /// value less than a certain value. The random number that this method
-    /// random_odd_less_than() returns is a pure random odd number whose range is
-    /// between 0 inclusively and the certain value exclusively.
+    /// value less than a certain value.
+    /// 
+    /// # Output
+    /// The random number that this method random_odd_less_than() returns is
+    /// a pure random odd number whose range is between 0 inclusively and
+    /// the certain value exclusively.
+    /// 
+    /// # Features
+    /// This method random_odd_less_than() generates a random number
+    /// and then simply divides it by the certain value to get its remainder.
+    /// This method basically uses the method randomize() that fills all the
+    /// elements of the array number[T; N] in struct BigUInt<T, N> with the
+    /// cryptographically secure random numbers by means of
+    /// [rand::rngs::OsRng](https://docs.rs/rand/latest/rand/rngs/struct.OsRng.html))
+    /// which is considered to be cryptographically secure.
     /// 
     /// # Cryptographical Security
-    /// The random number generated by this method random_odd_less_than() is
-    /// considered cryptographically secure. This method random_odd_less_than()
-    /// is based on the crate [rand](https://docs.rs/rand/latest/rand/index.html)
-    /// (especially, [rand::rngs::OsRng](https://docs.rs/rand/latest/rand/rngs/struct.OsRng.html)),
-    /// even though this method random_odd_less_than() generates a
-    /// cryptographically secure random number and then simply divides it by the
-    /// certain value to get its remainder.
+    /// It is not sure that the random number generated by this method
+    /// random_odd_less_than() can be considered cryptographically secure
+    /// though this method random_odd_less_than() is based on the crate
+    /// [rand](https://docs.rs/rand/latest/rand/index.html) (especially,
+    /// [rand::rngs::OsRng](https://docs.rs/rand/latest/rand/rngs/struct.OsRng.html)).
+    /// The author is not sure that the _extended_ random number generated
+    /// in the way explained in the section 'Features' is also
+    /// cryptographically secure recursively.
     /// 
     /// # Counterpart Methods
     /// - If you want to be sure to use cryptographically secure pure random
@@ -1060,18 +1164,32 @@ where T: Uint + Clone + Display + Debug + ToString
         r
     }
 
+    // pub fn random_with_MSB_set() -> Self
     /// Constucts a new `BigUInt<T, N>`-type object which has the random value
-    /// with MSB (Most Significant Bit) is set. The random number that this
+    /// with MSB (Most Significant Bit) is set.
+    /// 
+    /// # Output
+    /// The random number that this
     /// method random_with_MSB_set() returns is a random number whose range
     /// is from !(BigUInt::max() >> 1) up to BigUInt::max() inclusively.
     /// 
+    /// # Features
+    /// This method random_with_MSB_set() generates a random number and then
+    /// simply sets its MSB (Most Significant Bit) to be one.
+    /// This method basically uses the method randomize() that fills all the
+    /// elements of the array number[T; N] in struct BigUInt<T, N> with the
+    /// cryptographically secure random numbers by means of
+    /// [rand::rngs::OsRng](https://docs.rs/rand/latest/rand/rngs/struct.OsRng.html))
+    /// which is considered to be cryptographically secure.
+    /// 
     /// # Cryptographical Security
-    /// The random number generated by this method random_with_MSB_set() is
-    /// cryptographically secure because it uses the crate [rand](https://docs.rs/rand/latest/rand/index.html)
-    /// ([rand::rngs::OsRng](https://docs.rs/rand/latest/rand/rngs/struct.OsRng.html)),
-    /// even though this method random_with_MSB_set() generates a
-    /// cryptographically secure random number and then simply sets its MSB
-    /// (Most Significant Bit) to be one.
+    /// It is not sure that the random number generated by this method
+    /// random_with_MSB_set() can be considered to be cryptographically secure
+    /// though it uses the crate [rand](https://docs.rs/rand/latest/rand/index.html)
+    /// ([rand::rngs::OsRng](https://docs.rs/rand/latest/rand/rngs/struct.OsRng.html)).
+    /// The author is not sure that the _extended_ random number generated
+    /// in the way explained in the section 'Features' is also
+    /// cryptographically secure recursively.
     /// 
     /// # Counterpart Methods
     /// - If you want to be sure to use cryptographically secure pure random
@@ -1150,19 +1268,33 @@ where T: Uint + Clone + Display + Debug + ToString
         r
     }
 
+    // pub fn random_odd_with_MSB_set() -> Self
     /// Constucts a new `BigUInt<T, N>`-type object which has the random odd
-    /// value with MSB (Most Significant Bit) is set. The random number that
-    /// this method random_odd_with_MSB_set() returns is a random odd number
-    /// whose range is from !(BigUInt::max() >> 1) + 1 up to BigUInt::max()
-    /// inclusively.
+    /// value with MSB (Most Significant Bit) is set.
+    /// 
+    /// # Output
+    /// The random number that this method random_odd_with_MSB_set() returns is
+    /// a random odd number whose range is from !(BigUInt::max() >> 1) + 1 up to
+    /// BigUInt::max() inclusively.
+    /// 
+    /// # Features
+    /// This method random_odd_with_MSB_set() generates a random number and then
+    /// simply sets its MSB (Most Significant Bit) and LSB (Least Significant
+    /// Bit) to be one.
+    /// This method basically uses the method randomize() that fills all the
+    /// elements of the array number[T; N] in struct BigUInt<T, N> with the
+    /// cryptographically secure random numbers by means of
+    /// [rand::rngs::OsRng](https://docs.rs/rand/latest/rand/rngs/struct.OsRng.html))
+    /// which is considered to be cryptographically secure.
     /// 
     /// # Cryptographical Security
-    /// The random number generated by this method random_odd_with_MSB_set() is
-    /// cryptographically secure because it uses the crate [rand](https://docs.rs/rand/latest/rand/index.html)
+    /// It is not sure that the random number generated by this method
+    /// random_odd_with_MSB_set() can be considered to be cryptographically
+    /// secure though it uses the crate [rand](https://docs.rs/rand/latest/rand/index.html)
     /// ([rand::rngs::OsRng](https://docs.rs/rand/latest/rand/rngs/struct.OsRng.html)),
-    /// even though this method random_odd_with_MSB_set() generates a
-    /// cryptographically secure random number and then simply sets its MSB
-    /// (Most Significant Bit) and LSB (Least Significant Bit) to be one.
+    /// The author is not sure that the _extended_ random number generated
+    /// in the way explained in the section 'Features' is also
+    /// cryptographically secure recursively.
     /// 
     /// # Counterpart Methods
     /// - If you want to be sure to use cryptographically secure pure random
@@ -1238,11 +1370,13 @@ where T: Uint + Clone + Display + Debug + ToString
         r
     }
 
+    // pub fn random_prime_Miller_Rabin(repetition: usize) -> Self
     /// Constucts a new `BigUInt<T, N>`-type object which represents a random
-    /// prime number with MSB (Most Significant Bit) is set. The random prime
-    /// number that this method random_prime_Miller_Rabin() returns is a random
-    /// prime number whose range is from !(BigUInt::max() >> 1) + 1 up to
-    /// BigUInt::max() inclusively.
+    /// prime number with MSB (Most Significant Bit) is set.
+    /// # Output
+    /// The random prime number that this method random_prime_Miller_Rabin()
+    /// returns is a random prime number whose range is from
+    /// !(BigUInt::max() >> 1) + 1 up to BigUInt::max() inclusively.
     /// 
     /// # Features
     /// It uses [Miller Rabin algorithm](https://en.wikipedia.org/wiki/Miller%E2%80%93Rabin_primality_test).
@@ -1253,6 +1387,11 @@ where T: Uint + Clone + Display + Debug + ToString
     /// is not a prime number is 1/16 (= 1/4 * 1/4). Therefore, if you test any
     /// number 5 times and they all result in a prime number, it is 99.9% that
     /// the number is a prime number.
+    /// This method basically uses the method randomize() that fills all the
+    /// elements of the array number[T; N] in struct BigUInt<T, N> with the
+    /// cryptographically secure random numbers by means of
+    /// [rand::rngs::OsRng](https://docs.rs/rand/latest/rand/rngs/struct.OsRng.html))
+    /// which is considered to be cryptographically secure.
     /// 
     /// # Argument
     /// The argument `repetition` defines how many times it tests whether the
@@ -1260,14 +1399,18 @@ where T: Uint + Clone + Display + Debug + ToString
     /// 5 to have 99.9% accuracy. 
     /// 
     /// # Cryptographical Security
-    /// The random number generated by this method random_prime_Miller_Rabin()
-    /// is cryptographically secure because it uses the crate [rand](https://docs.rs/rand/latest/rand/index.html)
-    /// ([rand::rngs::OsRng](https://docs.rs/rand/latest/rand/rngs/struct.OsRng.html)),
-    /// even though this method random_prime_Miller_Rabin() generates a
-    /// cryptographically secure random number, and then simply sets its MSB
-    /// (Most Significant Bit) and LSB (Least Significant Bit) to be one, and
-    /// then checks whether the generated random number is prime number, and
-    /// then it repeats until it will generate a prime number.
+    /// It is not sure that the random number generated by this method
+    /// random_prime_Miller_Rabin() can be considered to be cryptographically
+    /// secure though it uses the crate [rand](https://docs.rs/rand/latest/rand/index.html)
+    /// ([rand::rngs::OsRng](https://docs.rs/rand/latest/rand/rngs/struct.OsRng.html)).
+    /// This method random_prime_Miller_Rabin() generates a random number, and
+    /// then simply sets its MSB (Most Significant Bit) and LSB (Least
+    /// Significant Bit) to be one, and then checks whether the generated random
+    /// number is prime number, and then it repeats until it will generate a
+    /// prime number.
+    /// The author is not sure that the _extended_ random number generated
+    /// in the way explained in the section 'Features' is also
+    /// cryptographically secure recursively.
     /// 
     /// # Big-endian issue
     /// It is just experimental for Big Endian CPUs. So, you are not encouraged
@@ -1300,15 +1443,26 @@ where T: Uint + Clone + Display + Debug + ToString
         res
     }
 
+    // pub fn randomize(&mut self)
     /// Make a `BigUInt<T, N>`-type object to have a random value.
     /// The random number that this method randomize() makes is a pure random
     /// number whose range is from 0 up to BigUInt::max() inclusively.
     /// 
+    /// # Features
+    /// This method randomize() fills all the elements of the array number[T; N]
+    /// in struct BigUInt<T, N> with the cryptographically secure random numbers
+    /// by means of [rand::rngs::OsRng](https://docs.rs/rand/latest/rand/rngs/struct.OsRng.html))
+    /// which is considered to be cryptographically secure.
+    /// 
     /// # Cryptographical Security
-    /// The random number generated by this method random() is considered
-    /// cryptographically secure. This method random() is based on the crate
-    /// [rand](https://docs.rs/rand/latest/rand/index.html) (especially,
+    /// It is not sure that the random number generated by this method random()
+    /// can be considered cryptographically secure though this method random()
+    /// is based on the crate [rand](https://docs.rs/rand/latest/rand/index.html) (especially,
     /// [rand::rngs::OsRng](https://docs.rs/rand/latest/rand/rngs/struct.OsRng.html)).
+    /// The author is not sure that the _extended_ random number generated
+    /// in the way explained in the section 'Features' is also
+    /// cryptographically secure recursively.
+    /// 
     /// 
     /// # Example
     /// ```
@@ -1331,19 +1485,19 @@ where T: Uint + Clone + Display + Debug + ToString
         match T::size_in_bytes()
         {
             1 => {
-                    let mut common = UInt::new();
+                    let mut common = IntUnion::new();
                     for i in 0..N
                     {
-                        common.uint = OsRng.next_u32();
-                        unsafe { self.set_num_(i, T::num(common.byte[0] as u128)); }
+                        common.set(OsRng.next_u32());
+                        self.set_num_(i, T::num(common.get_ubyte_(0) as u128));
                     }
                 },
             2 => {
-                    let mut common = UInt::new();
+                    let mut common = IntUnion::new();
                     for i in 0..N
                     {
-                        common.uint = OsRng.next_u32();
-                        unsafe { self.set_num_(i, T::num(common.ushort[0] as u128)); }
+                        common.set(OsRng.next_u32());
+                        self.set_num_(i, T::num(common.get_ushort_(0) as u128));
                     }
                 },
             4 => {
@@ -1357,12 +1511,10 @@ where T: Uint + Clone + Display + Debug + ToString
             16 => {
                     for i in 0..N
                     {
-                        let mut common = ULonger::new();
-                        unsafe {
-                            common.ulong[0] = OsRng.next_u64();
-                            common.ulong[1] = OsRng.next_u64();
-                            self.set_num_(i, T::num(common.ulonger));
-                        }
+                        let mut common = LongerUnion::new();
+                        common.set_ulong_(0, OsRng.next_u64());
+                        common.set_ulong_(1, OsRng.next_u64());
+                        self.set_num_(i, T::num(common.get()));
                     }
                 },
             _ => { self.set_zero() },
@@ -1423,7 +1575,6 @@ where T: Uint + Clone + Display + Debug + ToString
             if x.is_one() || x == self_minus_one
                 { continue; }
 
-            // 반복적으로 a^(2^r * d) % n을 계산?
             while d != self_minus_one
             {
                 x = (x * x) % *self;
@@ -2224,9 +2375,9 @@ where T: Uint + Clone + Display + Debug + ToString
     ///     { println!("a is Neither One nor Zero."); }
     /// assert!(a.is_zero_or_one());
     /// ```
-    fn is_zero_or_one(&self) -> bool
+    pub fn is_zero_or_one(&self) -> bool
     {
-        if self.get_num_(0) <= T::one()
+        if self.get_num_(0) > T::one()
             { return false; }
 
         for i in 1..N
@@ -2299,6 +2450,32 @@ where T: Uint + Clone + Display + Debug + ToString
             { self.set_num_(i, zero); }
         if piece_num != 0
             { self.set_num_(chunk_num, max >> T::num((TSIZE_IN_BITS-piece_num) as u128)); }
+    }
+
+    /// Sets `BigUInt`-type number to be half long maximum value
+    /// in which all bits are set to be `1`.
+    /// 
+    /// # Features
+    /// This method will make all the half lower bits of `number[T;N]` of
+    /// `self` from LSB (Least Significant Bit) to be `1` and the rest of the
+    /// bits up to MSB (Most Significant Bit) to be `0`.
+    /// 
+    /// # Examples
+    /// ```
+    /// use Cryptocol::define_utypes_with;
+    /// define_utypes_with!(u128);
+    /// let mut a = u256::new();
+    /// a.set_max();
+    /// println!("a = {}", a);
+    /// assert_eq!(a, u256::max());
+    /// a.set_halfmax();
+    /// println!("a = {}", a);
+    /// assert_eq!(a, u256::halfmax());
+    /// ```
+    #[inline]
+    pub fn set_halfmax(&mut self)
+    {
+        self.set_submax(self.length_in_bits() >> 1);
     }
 
     /// Checks whether or not `BigUInt`-type number to be maximum value.
@@ -2406,6 +2583,7 @@ where T: Uint + Clone + Display + Debug + ToString
     /// 
     /// # Example
     /// ```
+    /// use Cryptocol::define_utypes_with;
     /// define_utypes_with!(u128);
     /// let mut a = u1024::new();
     /// a.set_uint(25);
@@ -2435,6 +2613,7 @@ where T: Uint + Clone + Display + Debug + ToString
     /// 
     /// # Example
     /// ```
+    /// use Cryptocol::define_utypes_with;
     /// define_utypes_with!(u128);
     /// let mut a = u1024::new();
     /// a.set_uint(25);
@@ -2455,6 +2634,7 @@ where T: Uint + Clone + Display + Debug + ToString
     /// 
     /// # Example
     /// ```
+    /// use Cryptocol::define_utypes_with;
     /// define_utypes_with!(u128);
     /// let mut a = u1024::new();
     /// a.set_uint(24);
@@ -3822,154 +4002,132 @@ where T: Uint + Clone + Display + Debug + ToString
 
     pub fn into_u128(&self) -> u128
     {
-        let mut num = ULonger { ulonger: 0 };
+        let mut num = LongerUnion::new();
         match T::size_in_bytes()
         {
             1 => {
-                unsafe { num.byte[0] = self.number[0].into_u8(); }
-                unsafe { if N > 1 { num.byte[1] = self.number[1].into_u8() } }
-                unsafe { if N > 2 { num.byte[2] = self.number[2].into_u8() } }
-                unsafe { if N > 3 { num.byte[3] = self.number[3].into_u8() } }
-                unsafe { if N > 4 { num.byte[4] = self.number[4].into_u8() } }
-                unsafe { if N > 5 { num.byte[5] = self.number[5].into_u8() } }
-                unsafe { if N > 6 { num.byte[6] = self.number[6].into_u8() } }
-                unsafe { if N > 7 { num.byte[7] = self.number[7].into_u8() } }
-                unsafe { if N > 8 { num.byte[8] = self.number[8].into_u8() } }
-                unsafe { if N > 9 { num.byte[9] = self.number[9].into_u8() } }
-                unsafe { if N > 10 { num.byte[10] = self.number[10].into_u8() } }
-                unsafe { if N > 11 { num.byte[11] = self.number[11].into_u8() } }
-                unsafe { if N > 12 { num.byte[12] = self.number[12].into_u8() } }
-                unsafe { if N > 13 { num.byte[13] = self.number[13].into_u8() } }
-                unsafe { if N > 14 { num.byte[14] = self.number[14].into_u8() } }
-                unsafe { if N > 15 { num.byte[15] = self.number[15].into_u8() } }
+                    num.set_ubyte_(0, self.get_num_(0).into_u8());
+                    if N > 1 { num.set_ubyte_(1, self.get_num_(1).into_u8()) }
+                    if N > 2 { num.set_ubyte_(2, self.get_num_(2).into_u8()) }
+                    if N > 3 { num.set_ubyte_(3, self.get_num_(3).into_u8()) }
+                    if N > 4 { num.set_ubyte_(4, self.get_num_(4).into_u8()) }
+                    if N > 5 { num.set_ubyte_(5, self.get_num_(5).into_u8()) }
+                    if N > 6 { num.set_ubyte_(6, self.get_num_(6).into_u8()) }
+                    if N > 7 { num.set_ubyte_(7, self.get_num_(7).into_u8()) }
+                    if N > 8 { num.set_ubyte_(8, self.get_num_(8).into_u8()) }
+                    if N > 9 { num.set_ubyte_(9, self.get_num_(9).into_u8()) }
+                    if N > 10 { num.set_ubyte_(10, self.get_num_(10).into_u8()) }
+                    if N > 11 { num.set_ubyte_(11, self.get_num_(11).into_u8()) }
+                    if N > 12 { num.set_ubyte_(12, self.get_num_(12).into_u8()) }
+                    if N > 13 { num.set_ubyte_(13, self.get_num_(13).into_u8()) }
+                    if N > 14 { num.set_ubyte_(14, self.get_num_(14).into_u8()) }
+                    if N > 15 { num.set_ubyte_(15, self.get_num_(15).into_u8()) }
                 },
             2 => {
-                unsafe { num.ushort[0] = self.number[0].into_u16(); }
-                unsafe { if N > 1 { num.ushort[1] = self.number[1].into_u16() } }
-                unsafe { if N > 2 { num.ushort[2] = self.number[2].into_u16() } }
-                unsafe { if N > 3 { num.ushort[3] = self.number[3].into_u16() } }
-                unsafe { if N > 4 { num.ushort[4] = self.number[4].into_u16() } }
-                unsafe { if N > 5 { num.ushort[5] = self.number[5].into_u16() } }
-                unsafe { if N > 6 { num.ushort[6] = self.number[6].into_u16() } }
-                unsafe { if N > 7 { num.ushort[7] = self.number[7].into_u16() } }
+                    num.set_ushort_(0, self.get_num_(0).into_u16());
+                    if N > 1 { num.set_ushort_(1, self.get_num_(1).into_u16()); }
+                    if N > 2 { num.set_ushort_(2, self.get_num_(2).into_u16()); }
+                    if N > 3 { num.set_ushort_(3, self.get_num_(3).into_u16()); }
+                    if N > 4 { num.set_ushort_(4, self.get_num_(4).into_u16()); }
+                    if N > 5 { num.set_ushort_(5, self.get_num_(5).into_u16()); }
+                    if N > 6 { num.set_ushort_(6, self.get_num_(6).into_u16()); }
+                    if N > 7 { num.set_ushort_(7, self.get_num_(7).into_u16()); }
                 },
             4 => {
-                unsafe { num.uint[0] = self.number[0].into_u32(); }
-                unsafe { if N > 2 { num.uint[1] = self.number[1].into_u32(); } }
-                unsafe { if N > 3 { num.uint[2] = self.number[2].into_u32(); } }
-                unsafe { if N > 4 { num.uint[3] = self.number[3].into_u32(); } }
+                    num.set_uint_(0, self.get_num_(0).into_u32());
+                    if N > 2 { num.set_uint_(1, self.get_num_(1).into_u32()); }
+                    if N > 3 { num.set_uint_(2, self.get_num_(2).into_u32()); }
+                    if N > 4 { num.set_uint_(3, self.get_num_(3).into_u32()); }
                 },
             8 => { 
-                unsafe { num.ulong[0] = self.number[0].into_u64(); }
-                unsafe { if N > 1 { num.ulong[1] = self.number[1].into_u64(); } }
+                    num.set_ulong_(0, self.get_num_(0).into_u64());
+                    if N > 1 { num.set_ulong_(1, self.get_num_(1).into_u64()); }
                 },
-            _ => { return self.number[0].into_u128(); },
+            _ => { return self.get_num_(0).into_u128(); },
         }
-        unsafe { num.ulonger }
+        num.get()
     }
 
     pub fn into_u64(&self) -> u64
     {
-        let mut num = ULonger { ulonger: 0 };
+        let mut num = LongerUnion::new();
         match size_of::<T>()
         {
             1 => {
-                unsafe { num.byte[0] = self.number[0].into_u8(); }
-                unsafe { if N > 1 { num.byte[1] = self.number[1].into_u8() } }
-                unsafe { if N > 2 { num.byte[2] = self.number[2].into_u8() } }
-                unsafe { if N > 3 { num.byte[3] = self.number[3].into_u8() } }
-                unsafe { if N > 4 { num.byte[4] = self.number[4].into_u8() } }
-                unsafe { if N > 5 { num.byte[5] = self.number[5].into_u8() } }
-                unsafe { if N > 6 { num.byte[6] = self.number[6].into_u8() } }
-                unsafe { if N > 7 { num.byte[7] = self.number[7].into_u8() } }
+                    num.set_ubyte_(0, self.get_num_(0).into_u8());
+                    if N > 1 { num.set_ubyte_(1, self.get_num_(1).into_u8()); }
+                    if N > 2 { num.set_ubyte_(2, self.get_num_(2).into_u8()); }
+                    if N > 3 { num.set_ubyte_(3, self.get_num_(3).into_u8()); }
+                    if N > 4 { num.set_ubyte_(4, self.get_num_(4).into_u8()); }
+                    if N > 5 { num.set_ubyte_(5, self.get_num_(5).into_u8()); }
+                    if N > 6 { num.set_ubyte_(6, self.get_num_(6).into_u8()); }
+                    if N > 7 { num.set_ubyte_(7, self.get_num_(7).into_u8()); }
                 },
             2 => {
-                unsafe { num.ushort[0] = self.number[0].into_u16(); }
-                unsafe { if N > 1 { num.ushort[1] = self.number[1].into_u16() } }
-                unsafe { if N > 2 { num.ushort[2] = self.number[2].into_u16() } }
-                unsafe { if N > 3 { num.ushort[3] = self.number[3].into_u16() } }
+                    num.set_ushort_(0, self.get_num_(0).into_u16());
+                    if N > 1 { num.set_ushort_(1, self.get_num_(1).into_u16()); }
+                    if N > 2 { num.set_ushort_(2, self.get_num_(2).into_u16()); }
+                    if N > 3 { num.set_ushort_(3, self.get_num_(3).into_u16()); }
                 },
             4 => {
-                unsafe { num.uint[0] = self.number[0].into_u32(); }
-                unsafe { if N > 1 { num.uint[1] = self.number[1].into_u32(); } }
+                    num.set_uint_(0, self.get_num_(0).into_u32());
+                    if N > 1 { num.set_uint_(1, self.get_num_(1).into_u32()); }
                 },
-            8 => { return self.number[0].into_u64(); },
-            _ => { num.ulonger = self.number[0].into_u128(); },
+            8 => { return self.get_num_(0).into_u64(); },
+            _ => { num.set(self.number[0].into_u128()); },
         }
-        unsafe { num.ulong[0] }
+        num.get_ulong_(0)
     }
 
     pub fn into_u32(&self) -> u32
     {
-        let mut num = ULonger { ulonger: 0 };
+        let mut num = LongerUnion::new();
         match size_of::<T>()
         {
             1 => {
-                unsafe { num.byte[0] = self.number[0].into_u8(); }
-                unsafe { if N > 1 { num.byte[1] = self.number[1].into_u8() } }
-                unsafe { if N > 2 { num.byte[2] = self.number[2].into_u8() } }
-                unsafe { if N > 3 { num.byte[3] = self.number[3].into_u8() } }
+                    num.set_ubyte_(0, self.get_num_(0).into_u8());
+                    if N > 1 { num.set_ubyte_(1, self.get_num_(1).into_u8()); }
+                    if N > 2 { num.set_ubyte_(2, self.get_num_(2).into_u8()); }
+                    if N > 3 { num.set_ubyte_(3, self.get_num_(3).into_u8()); }
                 },
             2 => {
-                unsafe { num.ushort[0] = self.number[0].into_u16(); }
-                unsafe { if N > 1 { num.ushort[1] = self.number[1].into_u16() } }
+                    num.set_ushort_(0, self.get_num_(0).into_u16());
+                    if N > 1 { num.set_ushort_(1, self.get_num_(1).into_u16()); }
                 },
-            4 => { return self.number[0].into_u32(); },
-            8 => { unsafe { num.ulong[0] = self.number[0].into_u64(); } },
-            _ => { num.ulonger = self.number[0].into_u128(); },
+            4 => { return self.get_num_(0).into_u32(); },
+            8 => { num.set_ulong_(0, self.get_num_(0).into_u64()); },
+            _ => { num.set(self.get_num_(0).into_u128()); },
         }
-        unsafe { num.uint[0] }
+        num.get_uint_(0)
     }
 
-    /// little endian
-    /// 
-    #[cfg(target_endian = "little")]
     pub fn into_u16(&self) -> u16
     {
-        let mut num = ULonger { ulonger: 0 };
+        let mut num = LongerUnion::new();
         match size_of::<T>()
         {
             1 => {
-                unsafe { num.byte[0] = self.number[0].into_u8(); }
-                unsafe { if N > 1 { num.byte[1] = self.number[1].into_u8() } }
+                    num.set_ubyte_(0, self.get_num_(0).into_u8());
+                    if N > 1 { num.set_ubyte_(1, self.get_num_(1).into_u8()) }
                 },
-            2 => { return self.number[0].into_u16(); },
-            4 => { unsafe { num.uint[0] = self.number[0].into_u32(); } },
-            8 => { unsafe { num.ulong[0] = self.number[0].into_u64(); } },
-            _ => { num.ulonger = self.number[0].into_u128(); },
+            2 => { return self.get_num_(0).into_u16(); },
+            4 => { num.set_uint_(0, self.get_num_(0).into_u32()); },
+            8 => { num.set_ulong_(0, self.get_num_(0).into_u64()); },
+            _ => { num.set(self.get_num_(0).into_u128()); },
         }
-        unsafe { num.ushort[0] }
+        num.get_ushort_(0)
     }
 
-    /// big endian
-    /// 
-    #[cfg(target_endian = "big")]
-    pub fn into_u16(&self) -> u16
+    pub fn into_u8(&self) -> u8     { self.get_num_(0).into_u8() }
+
+    pub fn into_usize(&self) -> usize
     {
-        let mut num = ULonger { ulonger: 0 };
-        match size_of::<T>()
-        {
-            1 => {
-                unsafe { num.byte[15] = self.number[N-1].into_u8(); }
-                unsafe { if N > 1 { num.byte[14] = self.number[N-2].into_u8() } }
-                },
-            2 => { return self.number[N-1].into_u16(); },
-            4 => { unsafe { num.uint[3] = self.number[N-1].into_u32(); } },
-            8 => { unsafe { num.ulong[1] = self.number[N-1].into_u64(); } },
-            _ => { num.ulonger = self.number[N-1].into_u128(); },
-        }
-        unsafe { num.ushort[7] }
+        #[cfg(target_pointer_width = "128")]    return self.into_u128().into_usize();
+        #[cfg(target_pointer_width = "64")]     return self.into_u64().into_usize();
+        #[cfg(target_pointer_width = "32")]     return self.into_u32().into_usize();
+        #[cfg(target_pointer_width = "16")]     return self.into_u16().into_usize();
+        #[cfg(target_pointer_width = "16")]     return self.into_u16().into_usize();
     }
-
-    /// little endian
-    /// 
-    #[cfg(target_endian = "little")]
-    pub fn into_u8(&self) -> u8         { self.number[0].into_u8() }
-
-    /// big endian
-    /// 
-    #[cfg(target_endian = "big")]
-    pub fn into_u8(&self) -> u8         { self.number[N-1].into_u8() }
 
     pub fn to_string_with_radix_and_delimiter(&self, radix: usize, stride: usize, delimiter: &str) -> String
     {

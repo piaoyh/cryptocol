@@ -22,107 +22,169 @@ use super::uint::*;
 
 
 #[derive(Copy, Clone)]
-pub union UShort
+pub union ShortUnion
 {
     pub this: u16,
+    pub that: i16,
     pub ushort: u16,
-    pub byte: [u8; 2],
-    #[cfg(target_pointer_width = "16")] pub size: usize,
+    pub sshort: i16,
+    pub ubyte: [u8; 2],
+    pub sbyte: [i8; 2],
+    #[cfg(target_pointer_width = "16")] pub u_size: usize,
+    #[cfg(target_pointer_width = "16")] pub s_size: isize,
+    #[cfg(target_pointer_width = "8")] pub u_size: [usize; 2],
+    #[cfg(target_pointer_width = "8")] pub s_size: [isize; 2],
 }
 
 
 #[derive(Copy, Clone)]
-pub union UInt
+pub union IntUnion
 {
     pub this: u32,
+    pub that: i32,
     pub uint: u32,
+    pub sint: i32,
     pub ushort: [u16; 2],
-    pub byte: [u8; 4],
-    #[cfg(target_pointer_width = "32")] pub size: usize,
-    #[cfg(target_pointer_width = "16")] pub size: [usize; 2],
+    pub sshort: [i16; 2],
+    pub ubyte: [u8; 4],
+    pub sbyte: [i8; 4],
+    #[cfg(target_pointer_width = "32")] pub u_size: usize,
+    #[cfg(target_pointer_width = "32")] pub s_size: isize,
+    #[cfg(target_pointer_width = "16")] pub u_size: [usize; 2],
+    #[cfg(target_pointer_width = "16")] pub s_size: [isize; 2],
+    #[cfg(target_pointer_width = "8")] pub u_size: [usize; 4],
+    #[cfg(target_pointer_width = "8")] pub s_size: [isize; 4],
 }
 
 #[derive(Copy, Clone)]
-pub union ULong
+pub union LongUnion
 {
     pub this: u64,
+    pub that: i64,
     pub ulong: u64,
+    pub slong: i64,
     pub uint: [u32; 2],
+    pub sint: [i32; 2],
     pub ushort: [u16; 4],
-    pub byte: [u8; 8],
-    #[cfg(target_pointer_width = "64")] pub size: usize,
-    #[cfg(target_pointer_width = "32")] pub size: [usize; 2],
-    #[cfg(target_pointer_width = "16")] pub size: [usize; 4],
+    pub sshort: [i16; 4],
+    pub ubyte: [u8; 8],
+    pub sbyte: [i8; 8],
+    #[cfg(target_pointer_width = "64")] pub u_size: usize,
+    #[cfg(target_pointer_width = "64")] pub s_size: isize,
+    #[cfg(target_pointer_width = "32")] pub u_size: [usize; 2],
+    #[cfg(target_pointer_width = "32")] pub s_size: [uisize; 2],
+    #[cfg(target_pointer_width = "16")] pub u_size: [usize; 4],
+    #[cfg(target_pointer_width = "16")] pub s_size: [isize; 4],
+    #[cfg(target_pointer_width = "8")] pub u_size: [usize; 8],
+    #[cfg(target_pointer_width = "8")] pub s_size: [isize; 8],
 }
 
 #[derive(Copy, Clone)]
-pub union ULonger
+pub union LongerUnion
 {
     pub this: u128,
+    pub that: i128,
     pub ulonger: u128,
+    pub slonger: i128,
     pub ulong: [u64; 2],
+    pub slong: [i64; 2],
     pub uint: [u32; 4],
+    pub sint: [i32; 4],
     pub ushort: [u16; 8],
-    pub byte: [u8; 16],
-    #[cfg(target_pointer_width = "128")] pub size: usize,
-    #[cfg(target_pointer_width = "64")] pub size: [usize; 2],
-    #[cfg(target_pointer_width = "32")] pub size: [usize; 4],
-    #[cfg(target_pointer_width = "16")] pub size: [usize; 8],
+    pub sshort: [i16; 8],
+    pub ubyte: [u8; 16],
+    pub sbyte: [i8; 16],
+    #[cfg(target_pointer_width = "128")] pub u_size: usize,
+    #[cfg(target_pointer_width = "128")] pub s_size: isize,
+    #[cfg(target_pointer_width = "64")] pub u_size: [usize; 2],
+    #[cfg(target_pointer_width = "64")] pub s_size: [isize; 2],
+    #[cfg(target_pointer_width = "32")] pub u_size: [usize; 4],
+    #[cfg(target_pointer_width = "32")] pub s_size: [isize; 4],
+    #[cfg(target_pointer_width = "16")] pub u_size: [usize; 8],
+    #[cfg(target_pointer_width = "16")] pub s_size: [isize; 8],
+    #[cfg(target_pointer_width = "8")] pub u_size: [usize; 16],
+    #[cfg(target_pointer_width = "8")] pub s_size: [isize; 16],
 }
+
 
 #[cfg(target_pointer_width = "128")]
 #[derive(Copy, Clone)]
-pub union USize
+pub union SizeUnion
 {
     pub this: usize,
-    pub size: usize,
+    pub that: isize,
+    pub u_size: usize,
+    pub s_size: isize,
     pub ulonger: u128,
+    pub slonger: i128,
     pub ulong: [u64; 2],
+    pub slong: [i64; 2],
     pub uint: [u32; 4],
+    pub sint: [i32; 4],
     pub ushort: [u16; 8],
-    pub byte: [u8; 16],
+    pub sshort: [i16; 8],
+    pub ubyte: [u8; 16],
+    pub sbyte: [i8; 16],
 }
 
 #[cfg(target_pointer_width = "64")]
 #[derive(Copy, Clone)]
-pub union USize
+pub union SizeUnion
 {
     pub this: usize,
-    pub size: usize,
+    pub that: isize,
+    pub u_size: usize,
+    pub s_size: isize,
     pub ulong: u64,
+    pub slong: i64,
     pub uint: [u32; 2],
+    pub sint: [i32; 2],
     pub ushort: [u16; 4],
-    pub byte: [u8; 8],
+    pub sshort: [i16; 4],
+    pub ubyte: [u8; 8],
+    pub sbyte: [i8; 8],
 }
 
 #[cfg(target_pointer_width = "32")]
 #[derive(Copy, Clone)]
-pub union USize
+pub union SizeUnion
 {
     pub this: usize,
-    pub size: usize,
+    pub that: isize,
+    pub u_size: usize,
+    pub s_size: isize,
     pub uint: u32,
+    pub sint: i32,
     pub ushort: [u16; 2],
-    pub byte: [u8; 4],
+    pub sshort: [i16; 2],
+    pub ubyte: [u8; 4],
+    pub sbyte: [i8; 4],
 }
 
 #[cfg(target_pointer_width = "16")]
 #[derive(Copy, Clone)]
-pub union USize
+pub union SizeUnion
 {
     pub this: usize,
-    pub size: usize,
+    pub that: isize,
+    pub u_size: usize,
+    pub s_size: isize,
     pub ushort: u16,
-    pub byte: [u8; 2],
+    pub sshort: i16,
+    pub ubyte: [u8; 2],
+    pub sbyte: [i8; 2],
 }
 
 #[cfg(target_pointer_width = "8")]
 #[derive(Copy, Clone)]
-pub union USize
+pub union SizeUnion
 {
     pub this: usize,
-    pub size: usize,
-    pub byte: u8,
+    pub that: isize,
+    pub u_size: usize,
+    pub s_size: isize,
+    pub ubyte: u8,
+    pub sbyte: i8,
 }
 
 
@@ -130,43 +192,73 @@ pub union USize
 macro_rules! get_set_byte {
     ($f:expr) => {
         const N: usize = $f;
-    
+
         #[cfg(target_endian = "little")]
-        pub fn get_byte_(&self, i: usize) -> u8 { unsafe { self.byte[i] } }
-    
+        #[inline] pub fn get_ubyte_(&self, i: usize) -> u8 { unsafe { self.ubyte[i] } }
+
         #[cfg(target_endian = "big")]
-        pub fn get_byte_(&self, i: usize) -> u8 { unsafe { self.byte[Self::N-i] } }
-    
+        #[inline] pub fn get_ubyte_(&self, i: usize) -> u8 { unsafe { self.ubyte[Self::N-i] } }
+
         #[cfg(target_endian = "little")]
-        pub fn get_byte(&self, i: usize) -> Option<u8>
+        #[inline] pub fn get_sbyte_(&self, i: usize) -> i8 { unsafe { self.sbyte[i] } }
+
+        #[cfg(target_endian = "big")]
+        #[inline] pub fn get_sbyte_(&self, i: usize) -> i8 { unsafe { self.sbyte[Self::N-i] } }
+
+        #[cfg(target_endian = "little")]
+        #[inline] pub fn get_ubyte(&self, i: usize) -> Option<u8>
         {
             if i <= Self::N
-                { unsafe { Some(self.byte[i]) } }
+                { unsafe { Some(self.ubyte[i]) } }
             else
                 { None }
         }
-    
+
         #[cfg(target_endian = "big")]
-        pub fn get_byte(&self, i: usize) -> Option<u8>
+        pub fn get_ubyte(&self, i: usize) -> Option<u8>
         {
             if i <= Self::N
-                { unsafe { Some(self.byte[Self::N-i]) } }
+                { unsafe { Some(self.ubyte[Self::N-i]) } }
             else
                 { None }
         }
-    
+
         #[cfg(target_endian = "little")]
-        pub fn set_byte_(&mut self, i: usize, val: u8)  { unsafe { self.byte[i] = val; } }
-    
+        #[inline] pub fn get_sbyte(&self, i: usize) -> Option<i8>
+        {
+            if i <= Self::N
+                { unsafe { Some(self.sbyte[i]) } }
+            else
+                { None }
+        }
+
         #[cfg(target_endian = "big")]
-        pub fn set_byte_(&mut self, i: usize, val: u8)  { unsafe { self.byte[Self::N-i] = val; } }
-    
+        pub fn get_sbyte(&self, i: usize) -> Option<i8>
+        {
+            if i <= Self::N
+                { unsafe { Some(self.sbyte[Self::N-i]) } }
+            else
+                { None }
+        }
+
         #[cfg(target_endian = "little")]
-        pub fn set_byte(&mut self, i: usize, val: u8) -> bool
+        #[inline] pub fn set_ubyte_(&mut self, i: usize, val: u8)  { unsafe { self.ubyte[i] = val; } }
+
+        #[cfg(target_endian = "big")]
+        #[inline] pub fn set_ubyte_(&mut self, i: usize, val: u8)  { unsafe { self.ubyte[Self::N-i] = val; } }
+
+        #[cfg(target_endian = "little")]
+        #[inline] pub fn set_sbyte_(&mut self, i: usize, val: i8)  { unsafe { self.sbyte[i] = val; } }
+
+        #[cfg(target_endian = "big")]
+        #[inline] pub fn set_sbyte_(&mut self, i: usize, val: i8)  { unsafe { self.sbyte[Self::N-i] = val; } }
+
+        #[cfg(target_endian = "little")]
+        pub fn set_ubyte(&mut self, i: usize, val: u8) -> bool
         {
             if i < Self::N
             { 
-                unsafe { self.byte[i] = val; }
+                unsafe { self.ubyte[i] = val; }
                 true
             }
             else
@@ -174,13 +266,41 @@ macro_rules! get_set_byte {
                 false
             }
         }
-    
+
         #[cfg(target_endian = "big")]
-        pub fn set_byte(&self, i: usize, val: u8) -> bool
+        pub fn set_ubyte(&self, i: usize, val: u8) -> bool
         {
             if i < Self::N
             { 
-                unsafe { self.byte[Self::N-i] = val; }
+                unsafe { self.ubyte[Self::N-i] = val; }
+                true
+            }
+            else
+            {
+                false
+            }
+        }
+
+        #[cfg(target_endian = "little")]
+        pub fn set_sbyte(&mut self, i: usize, val: i8) -> bool
+        {
+            if i < Self::N
+            { 
+                unsafe { self.sbyte[i] = val; }
+                true
+            }
+            else
+            {
+                false
+            }
+        }
+
+        #[cfg(target_endian = "big")]
+        pub fn set_sbyte(&self, i: usize, val: i8) -> bool
+        {
+            if i < Self::N
+            { 
+                unsafe { self.sbyte[Self::N-i] = val; }
                 true
             }
             else
@@ -192,15 +312,21 @@ macro_rules! get_set_byte {
 }
 
 
-macro_rules! get_set_ushort {
+macro_rules! get_set_short {
     ($f:expr) => {
         const M: usize = $f;
 
         #[cfg(target_endian = "little")]
-        pub fn get_ushort_(&self, i: usize) -> u16 { unsafe { self.ushort[i] } }
+        #[inline] pub fn get_ushort_(&self, i: usize) -> u16 { unsafe { self.ushort[i] } }
 
         #[cfg(target_endian = "big")]
-        pub fn get_ushort_(&self, i: usize) -> u16 { unsafe { self.ushort[Self::M-i] } }
+        #[inline] pub fn get_ushort_(&self, i: usize) -> u16 { unsafe { self.ushort[Self::M-i] } }
+
+        #[cfg(target_endian = "little")]
+        #[inline] pub fn get_sshort_(&self, i: usize) -> i16 { unsafe { self.sshort[i] } }
+
+        #[cfg(target_endian = "big")]
+        #[inline] pub fn get_sshort_(&self, i: usize) -> i16 { unsafe { self.sshort[Self::M-i] } }
 
         #[cfg(target_endian = "little")]
         pub fn get_ushort(&self, i: usize) -> Option<u16>
@@ -221,10 +347,34 @@ macro_rules! get_set_ushort {
         }
 
         #[cfg(target_endian = "little")]
-        pub fn set_ushort_(&mut self, i: usize, val: u16)  { unsafe { self.ushort[i] = val; } }
+        pub fn get_sshort(&self, i: usize) -> Option<i16>
+        {
+            if i <= Self::M
+                { unsafe { Some(self.sshort[i]) } }
+            else
+                { None }
+        }
 
         #[cfg(target_endian = "big")]
-        pub fn set_ushort_(&mut self, i: usize, val: u16)  { unsafe { self.ushort[Self::M-i] = val; } }
+        pub fn get_sshort(&self, i: usize) -> Option<i16>
+        {
+            if i <= Self::M
+                { unsafe { Some(self.sshort[Self::M-i]) } }
+            else
+                { None }
+        }
+
+        #[cfg(target_endian = "little")]
+        #[inline] pub fn set_ushort_(&mut self, i: usize, val: u16)  { unsafe { self.ushort[i] = val; } }
+
+        #[cfg(target_endian = "big")]
+        #[inline] pub fn set_ushort_(&mut self, i: usize, val: u16)  { unsafe { self.ushort[Self::M-i] = val; } }
+
+        #[cfg(target_endian = "little")]
+        #[inline] pub fn set_sshort_(&mut self, i: usize, val: i16)  { unsafe { self.sshort[i] = val; } }
+
+        #[cfg(target_endian = "big")]
+        #[inline] pub fn set_sshort_(&mut self, i: usize, val: i16)  { unsafe { self.sshort[Self::M-i] = val; } }
 
         #[cfg(target_endian = "little")]
         pub fn set_ushort(&mut self, i: usize, val: u16) -> bool
@@ -253,19 +403,53 @@ macro_rules! get_set_ushort {
                 false
             }
         }
+
+        #[cfg(target_endian = "little")]
+        pub fn set_sshort(&mut self, i: usize, val: i16) -> bool
+        {
+            if i <= Self::M
+            { 
+                unsafe { self.sshort[i] = val; }
+                true
+            }
+            else
+            {
+                false
+            }
+        }
+
+        #[cfg(target_endian = "big")]
+        pub fn set_sshort(&self, i: usize, val: i16) -> bool
+        {
+            if i <= Self::M
+            { 
+                unsafe { self.sshort[Self::M-i] = val; }
+                true
+            }
+            else
+            {
+                false
+            }
+        }
     }
 }
 
 
-macro_rules! get_set_uint {
+macro_rules! get_set_int {
     ($f:expr) => {
         const L: usize = $f;
 
         #[cfg(target_endian = "little")]
-        pub fn get_uint_(&self, i: usize) -> u32 { unsafe { self.uint[i] } }
+        #[inline] pub fn get_uint_(&self, i: usize) -> u32 { unsafe { self.uint[i] } }
 
         #[cfg(target_endian = "big")]
-        pub fn get_uint_(&self, i: usize) -> u32 { unsafe { self.uint[Self::L-i] } }
+        #[inline] pub fn get_uint_(&self, i: usize) -> u32 { unsafe { self.uint[Self::L-i] } }
+
+        #[cfg(target_endian = "little")]
+        #[inline] pub fn get_sint_(&self, i: usize) -> i32 { unsafe { self.sint[i] } }
+
+        #[cfg(target_endian = "big")]
+        #[inline] pub fn get_sint_(&self, i: usize) -> i32 { unsafe { self.sint[Self::L-i] } }
 
         #[cfg(target_endian = "little")]
         pub fn get_uint(&self, i: usize) -> Option<u32>
@@ -286,10 +470,34 @@ macro_rules! get_set_uint {
         }
 
         #[cfg(target_endian = "little")]
-        pub fn set_uint_(&mut self, i: usize, val: u32)  { unsafe { self.uint[i] = val; } }
+        pub fn get_sint(&self, i: usize) -> Option<i32>
+        {
+            if i <= Self::L
+                { unsafe { Some(self.sint[i]) } }
+            else
+                { None }
+        }
 
         #[cfg(target_endian = "big")]
-        pub fn set_uint_(&mut self, i: usize, val: u32)  { unsafe { self.uint[Self::L-i] = val; } }
+        pub fn get_sint(&self, i: usize) -> Option<i32>
+        {
+            if i <= Self::L
+                { unsafe { Some(self.sint[Self::L-i]) } }
+            else
+                { None }
+        }
+
+        #[cfg(target_endian = "little")]
+        #[inline] pub fn set_uint_(&mut self, i: usize, val: u32)  { unsafe { self.uint[i] = val; } }
+
+        #[cfg(target_endian = "big")]
+        #[inline] pub fn set_uint_(&mut self, i: usize, val: u32)  { unsafe { self.uint[Self::L-i] = val; } }
+
+        #[cfg(target_endian = "little")]
+        #[inline] pub fn set_sint_(&mut self, i: usize, val: i32)  { unsafe { self.sint[i] = val; } }
+
+        #[cfg(target_endian = "big")]
+        #[inline] pub fn set_sint_(&mut self, i: usize, val: i32)  { unsafe { self.sint[Self::L-i] = val; } }
 
         #[cfg(target_endian = "little")]
         pub fn set_uint(&mut self, i: usize, val: u32) -> bool
@@ -318,18 +526,53 @@ macro_rules! get_set_uint {
                 false
             }
         }
+
+        #[cfg(target_endian = "little")]
+        pub fn set_sint(&mut self, i: usize, val: i32) -> bool
+        {
+            if i <= Self::L
+            { 
+                unsafe { self.sint[i] = val; }
+                true
+            }
+            else
+            {
+                false
+            }
+        }
+
+        #[cfg(target_endian = "big")]
+        pub fn set_sint(&self, i: usize, val: i32) -> bool
+        {
+            if i <= Self::L
+            { 
+                unsafe { self.sint[Self::L-i] = val; }
+                true
+            }
+            else
+            {
+                false
+            }
+        }
     }
 }
 
-macro_rules! get_set_ulong {
+
+macro_rules! get_set_long {
     ($f:expr) => {
         const K: usize = $f;
 
         #[cfg(target_endian = "little")]
-        pub fn get_ulong_(&self, i: usize) -> u64 { unsafe { self.ulong[i] } }
+        #[inline] pub fn get_ulong_(&self, i: usize) -> u64 { unsafe { self.ulong[i] } }
 
         #[cfg(target_endian = "big")]
-        pub fn get_ulong_(&self, i: usize) -> u64 { unsafe { self.ulong[Self::K-i] } }
+        #[inline] pub fn get_ulong_(&self, i: usize) -> u64 { unsafe { self.ulong[Self::K-i] } }
+
+        #[cfg(target_endian = "little")]
+        #[inline] pub fn get_slong_(&self, i: usize) -> i64 { unsafe { self.slong[i] } }
+
+        #[cfg(target_endian = "big")]
+        #[inline] pub fn get_slong_(&self, i: usize) -> i64 { unsafe { self.slong[Self::K-i] } }
 
         #[cfg(target_endian = "little")]
         pub fn get_ulong(&self, i: usize) -> Option<u64>
@@ -341,7 +584,7 @@ macro_rules! get_set_ulong {
         }
 
         #[cfg(target_endian = "big")]
-        pub fn get_ulong(&self, i: usize) -> Option<u64>
+        #[inline] pub fn get_ulong(&self, i: usize) -> Option<u64>
         {
             if i <= Self::K
                 { unsafe { Some(self.ulong[Self::K-i]) } }
@@ -350,10 +593,34 @@ macro_rules! get_set_ulong {
         }
 
         #[cfg(target_endian = "little")]
-        pub fn set_ulong_(&mut self, i: usize, val: u64)  { unsafe { self.ulong[i] = val; } }
+        pub fn get_slong(&self, i: usize) -> Option<i64>
+        {
+            if i <= Self::K
+                { unsafe { Some(self.slong[i]) } }
+            else
+                { None }
+        }
 
         #[cfg(target_endian = "big")]
-        pub fn set_ulong_(&mut self, i: usize, val: u64)  { unsafe { self.ulong[Self::K-i] = val; } }
+        #[inline] pub fn get_slong(&self, i: usize) -> Option<i64>
+        {
+            if i <= Self::K
+                { unsafe { Some(self.slong[Self::K-i]) } }
+            else
+                { None }
+        }
+
+        #[cfg(target_endian = "little")]
+        #[inline] pub fn set_ulong_(&mut self, i: usize, val: u64)  { unsafe { self.ulong[i] = val; } }
+
+        #[cfg(target_endian = "big")]
+        #[inline] pub fn set_ulong_(&mut self, i: usize, val: u64)  { unsafe { self.ulong[Self::K-i] = val; } }
+
+        #[cfg(target_endian = "little")]
+        #[inline] pub fn set_slong_(&mut self, i: usize, val: i64)  { unsafe { self.slong[i] = val; } }
+
+        #[cfg(target_endian = "big")]
+        #[inline] pub fn set_slong_(&mut self, i: usize, val: i64)  { unsafe { self.slong[Self::K-i] = val; } }
 
         #[cfg(target_endian = "little")]
         pub fn set_ulong(&mut self, i: usize, val: u64) -> bool
@@ -382,25 +649,59 @@ macro_rules! get_set_ulong {
                 false
             }
         }
+
+        #[cfg(target_endian = "little")]
+        pub fn set_slong(&mut self, i: usize, val: i64) -> bool
+        {
+            if i <= Self::L
+            { 
+                unsafe { self.slong[i] = val; }
+                true
+            }
+            else
+            {
+                false
+            }
+        }
+
+        #[cfg(target_endian = "big")]
+        pub fn set_ulong(&self, i: usize, val: i64) -> bool
+        {
+            if i <= Self::K
+            { 
+                unsafe { self.slong[Self::K-i] = val; }
+                true
+            }
+            else
+            {
+                false
+            }
+        }
     }
 }
 
 
-macro_rules! get_set_usize {
+macro_rules! get_set_size {
     ($f:expr) => {
         const J: usize = $f;
 
         #[cfg(target_endian = "little")]
-        pub fn get_usize_(&self, i: usize) -> usize { unsafe { self.size[i] } }
+        #[inline] pub fn get_usize_(&self, i: usize) -> usize { unsafe { self.u_size[i] } }
 
         #[cfg(target_endian = "big")]
-        pub fn get_usize_(&self, i: usize) -> usize { unsafe { self.size[Self::J-i] } }
+        #[inline] pub fn get_usize_(&self, i: usize) -> usize { unsafe { self.u_size[Self::J-i] } }
+
+        #[cfg(target_endian = "little")]
+        #[inline] pub fn get_ssize_(&self, i: usize) -> isize { unsafe { self.s_size[i] } }
+
+        #[cfg(target_endian = "big")]
+        #[inline] pub fn get_ssize_(&self, i: usize) -> isize { unsafe { self.s_size[Self::J-i] } }
 
         #[cfg(target_endian = "little")]
         pub fn get_usize(&self, i: usize) -> Option<usize>
         {
             if i <= Self::J
-                { unsafe { Some(self.size[i]) } }
+                { unsafe { Some(self.u_size[i]) } }
             else
                 { None }
         }
@@ -409,23 +710,47 @@ macro_rules! get_set_usize {
         pub fn get_usize(&self, i: usize) -> Option<usize>
         {
             if i <= Self::J
-                { unsafe { Some(self.size[Self::J-i]) } }
+                { unsafe { Some(self.u_size[Self::J-i]) } }
             else
                 { None }
         }
 
         #[cfg(target_endian = "little")]
-        pub fn set_usize_(&mut self, i: usize, val: usize)  { unsafe { self.size[i] = val; } }
+        pub fn get_ssize(&self, i: usize) -> Option<isize>
+        {
+            if i <= Self::J
+                { unsafe { Some(self.s_size[i]) } }
+            else
+                { None }
+        }
 
         #[cfg(target_endian = "big")]
-        pub fn set_usize_(&mut self, i: usize, val: usize)  { unsafe { self.size[Self::J-i] = val; } }
+        pub fn get_ssize(&self, i: usize) -> Option<isize>
+        {
+            if i <= Self::J
+                { unsafe { Some(self.s_size[Self::J-i]) } }
+            else
+                { None }
+        }
+
+        #[cfg(target_endian = "little")]
+        #[inline] pub fn set_usize_(&mut self, i: usize, val: usize)  { unsafe { self.u_size[i] = val; } }
+
+        #[cfg(target_endian = "big")]
+        #[inline] pub fn set_usize_(&mut self, i: usize, val: usize)  { unsafe { self.u_size[Self::J-i] = val; } }
+
+        #[cfg(target_endian = "little")]
+        #[inline] pub fn set_ssize_(&mut self, i: usize, val: isize)  { unsafe { self.s_size[i] = val; } }
+
+        #[cfg(target_endian = "big")]
+        #[inline] pub fn set_ssize_(&mut self, i: usize, val: isize)  { unsafe { self.s_size[Self::J-i] = val; } }
 
         #[cfg(target_endian = "little")]
         pub fn set_usize(&mut self, i: usize, val: usize) -> bool
         {
             if i <= Self::J
             { 
-                unsafe { self.size[i] = val; }
+                unsafe { self.u_size[i] = val; }
                 true
             }
             else
@@ -435,11 +760,11 @@ macro_rules! get_set_usize {
         }
 
         #[cfg(target_endian = "big")]
-        pub fn set_ulong(&self, i: usize, val: usize) -> bool
+        pub fn set_ssize(&self, i: usize, val: usize) -> bool
         {
             if i <= Self::J
             { 
-                unsafe { self.size[Self::J-i] = val; }
+                unsafe { self.s_size[Self::J-i] = val; }
                 true
             }
             else
@@ -451,130 +776,130 @@ macro_rules! get_set_usize {
 }
 
 
-macro_rules! UInt_union_methods {
+macro_rules! integer_union_methods {
     ($f:ty) => {
         pub fn carrying_add(self, rhs: Self, carry: bool) -> (Self, bool)
         {
-            let (r_this, c1) = unsafe { self.this.overflowing_add(rhs.this) };
+            let (r_this, c1) = self.get().overflowing_add(rhs.get());
             let cc = if carry { 1 as $f } else { 0 as $f };
             let (res_this, c2) = r_this.overflowing_add(cc);
-            let mut res = Self::new_with(res_this);
+            let res = Self::new_with(res_this);
             (res, c1 || c2)
         }
 
-        #[inline] pub fn wrapping_add(self, rhs: Self) -> Self      { Self::new_with( unsafe { self.this.wrapping_add(rhs.this) } ) }
-        #[inline] pub fn wrapping_add_assign(&mut self, rhs: Self)  { unsafe { self.this = self.this.wrapping_add(rhs.this); } }
+        #[inline] pub fn wrapping_add(self, rhs: Self) -> Self      { Self::new_with( self.get().wrapping_add(rhs.get()) ) }
+        #[inline] pub fn wrapping_add_assign(&mut self, rhs: Self)  { self.set(self.get().wrapping_add(rhs.get())); }
 
         pub fn overflowing_add(self, rhs: Self) -> (Self, bool)
         {
-            let (res_this, carry) = unsafe { self.this.overflowing_add(rhs.this) };
+            let (res_this, carry) = self.get().overflowing_add(rhs.get());
             (Self::new_with(res_this), carry)
         }
 
         pub fn checked_add(self, rhs: Self) -> Option<Self>
         {
-            match unsafe {self.this.checked_add(rhs.this) }
+            match self.get().checked_add(rhs.get())
             {
                 Some(res_this) =>   { Some(Self::new_with(res_this)) },
                 None =>             { None },
             }
         }
 
-        #[inline] pub fn unchecked_add(self, rhs: Self) -> Self     { Self::new_with( unsafe { self.this.checked_add(rhs.this).unwrap() } ) }
-        #[inline] pub fn saturating_add(self, rhs: Self) -> Self    { Self::new_with( unsafe {self.this.saturating_add(rhs.this) } ) }
+        #[inline] pub fn unchecked_add(self, rhs: Self) -> Self     { Self::new_with( self.get().checked_add(rhs.get()).unwrap() ) }
+        #[inline] pub fn saturating_add(self, rhs: Self) -> Self    { Self::new_with( self.get().saturating_add(rhs.get()) ) }
 
         pub fn borrowing_sub(self, rhs: Self, borrow: bool) -> (Self, bool)
         {
-            let (r_this, b1) = unsafe { self.this.overflowing_sub(rhs.this) };
+            let (r_this, b1) = self.get().overflowing_sub(rhs.get());
             let (res_this, b2) = r_this.overflowing_sub(borrow as $f);
             (Self::new_with(res_this), b1 || b2)
         }
 
-        #[inline] pub fn wrapping_sub(self, rhs: Self) -> Self      { Self::new_with( unsafe { self.this.wrapping_sub(rhs.this) } ) }
-        #[inline] pub fn wrapping_sub_assign(&mut self, rhs: Self)  { unsafe { self.this = self.this.wrapping_sub(rhs.this); } }
+        #[inline] pub fn wrapping_sub(self, rhs: Self) -> Self      { Self::new_with( self.get().wrapping_sub(rhs.get()) ) }
+        #[inline] pub fn wrapping_sub_assign(&mut self, rhs: Self)  { self.set(self.get().wrapping_sub(rhs.get())); }
         
         pub fn overflowing_sub(self, rhs: Self) -> (Self, bool)
         {
-            let (res_this, borrow) = unsafe { self.this.overflowing_sub(rhs.this) };
+            let (res_this, borrow) = self.get().overflowing_sub(rhs.get());
             (Self::new_with(res_this), borrow)
         }
 
         pub fn checked_sub(self, rhs: Self) -> Option<Self>
         {
-            match unsafe { self.this.checked_sub(rhs.this) }
+            match self.get().checked_sub(rhs.get())
             {
                 Some(res_this) =>   { Some(Self::new_with(res_this)) },
                 None =>             { None },
             }
         }
         
-        #[inline] pub fn unchecked_sub(self, rhs: Self) -> Self     { Self::new_with( unsafe { self.this.checked_sub(rhs.this).unwrap() } ) }
-        #[inline] pub fn saturating_sub(self, rhs: Self) -> Self    { Self::new_with( unsafe { self.this.saturating_sub(rhs.this) } ) }
+        #[inline] pub fn unchecked_sub(self, rhs: Self) -> Self     { Self::new_with( self.get().checked_sub(rhs.get()).unwrap() ) }
+        #[inline] pub fn saturating_sub(self, rhs: Self) -> Self    { Self::new_with( self.get().saturating_sub(rhs.get()) ) }
 
-        #[inline] pub fn wrapping_mul(self, rhs: Self) -> Self      { Self::new_with( unsafe { self.this.wrapping_mul(rhs.this) } ) }
-        #[inline] pub fn wrapping_mul_assign(&mut self, rhs: Self)       { unsafe { self.this = self.this.wrapping_mul(rhs.this); } }
+        #[inline] pub fn wrapping_mul(self, rhs: Self) -> Self      { Self::new_with( self.get().wrapping_mul(rhs.get()) ) }
+        #[inline] pub fn wrapping_mul_assign(&mut self, rhs: Self)  { self.set(self.get().wrapping_mul(rhs.get())); }
         
         pub fn overflowing_mul(self, rhs: Self) -> (Self, bool)
         {
-            let (res_this, carry) = unsafe { self.this.overflowing_mul(rhs.this) };
+            let (res_this, carry) = self.get().overflowing_mul(rhs.get());
             (Self::new_with(res_this), carry)
         }
 
         pub fn checked_mul(self, rhs: Self) -> Option<Self>
         {
-            match unsafe { self.this.checked_mul(rhs.this) }
+            match self.get().checked_mul(rhs.get())
             {
                 Some(res_this) =>   { Some(Self::new_with(res_this)) },
                 None =>             { None },
             }
         }
 
-        #[inline] pub fn unchecked_mul(self, rhs: Self) -> Self     { Self::new_with( unsafe { self.this.checked_mul(rhs.this).unwrap() } ) }
-        #[inline] pub fn saturating_mul(self, rhs: Self) -> Self    { Self::new_with( unsafe { self.this.saturating_mul(rhs.this) } ) }
+        #[inline] pub fn unchecked_mul(self, rhs: Self) -> Self     { Self::new_with( self.get().checked_mul(rhs.get()).unwrap() ) }
+        #[inline] pub fn saturating_mul(self, rhs: Self) -> Self    { Self::new_with( self.get().saturating_mul(rhs.get()) ) }
 
-        #[inline] pub fn wrapping_div(self, rhs: Self) -> Self      { Self::new_with( unsafe { self.this.wrapping_div(rhs.this) } ) }
-        #[inline] pub fn wrapping_div_assign(&mut self, rhs: Self)  { unsafe { self.this = self.this.wrapping_div(rhs.this); } }
+        #[inline] pub fn wrapping_div(self, rhs: Self) -> Self      { Self::new_with( self.get().wrapping_div(rhs.get()) ) }
+        #[inline] pub fn wrapping_div_assign(&mut self, rhs: Self)  { self.this = self.get().wrapping_div(rhs.get()); }
         
         pub fn overflowing_div(self, rhs: Self) -> (Self, bool)
         {
-            let (res_this, carry) = unsafe { self.this.overflowing_div(rhs.this) };
+            let (res_this, carry) = self.get().overflowing_div(rhs.get());
             (Self::new_with(res_this), carry)
         }
 
         pub fn checked_div(self, rhs: Self) -> Option<Self>
         {
-            match unsafe { self.this.checked_div(rhs.this) }
+            match self.get().checked_div(rhs.get())
             {
                 Some(res_this) =>   { Some(Self::new_with(res_this)) },
                 None =>             { None },
             }
         }
 
-        #[inline] pub fn saturating_div(self, rhs: Self) -> Self    { Self::new_with( unsafe { self.this.saturating_div(rhs.this) } ) }
+        #[inline] pub fn saturating_div(self, rhs: Self) -> Self    { Self::new_with( self.get().saturating_div(rhs.get()) ) }
 
-        #[inline] pub fn wrapping_rem(self, rhs: Self) -> Self      { Self::new_with( unsafe { self.this.wrapping_rem(rhs.this) } ) }
-        #[inline] pub fn wrapping_rem_assign(&mut self, rhs: Self)  { unsafe { self.this = self.this.wrapping_rem(rhs.this); } }
+        #[inline] pub fn wrapping_rem(self, rhs: Self) -> Self      { Self::new_with( self.get().wrapping_rem(rhs.get()) ) }
+        #[inline] pub fn wrapping_rem_assign(&mut self, rhs: Self)  { self.set(self.get().wrapping_rem(rhs.get())); }
 
         pub fn overflowing_rem(self, rhs: Self) -> (Self, bool)
         {
-            let (res_this, carry) = unsafe { self.this.overflowing_rem(rhs.this) };
+            let (res_this, carry) = self.get().overflowing_rem(rhs.get());
             (Self::new_with(res_this), carry)
         }
 
         pub fn checked_rem(self, rhs: Self) -> Option<Self>
         {
-            match unsafe { self.this.checked_rem(rhs.this) }
+            match self.get().checked_rem(rhs.get())
             {
                 Some(res_this) =>   { Some(Self::new_with(res_this)) },
                 None =>             { None },
             }
         }
 
-        #[inline] pub fn wrapping_pow(self, exp: u32) -> Self   { Self::new_with( unsafe { self.this.wrapping_pow(exp) } ) }
+        #[inline] pub fn wrapping_pow(self, exp: u32) -> Self   { Self::new_with( self.get().wrapping_pow(exp) ) }
         
         pub fn checked_pow(self, exp: u32) -> Option<Self>
         {
-            match unsafe { self.this.checked_pow(exp) }
+            match self.get().checked_pow(exp)
             {
                 Some(res_this) =>   { Some(Self::new_with(res_this)) },
                 None =>             { None },
@@ -583,51 +908,51 @@ macro_rules! UInt_union_methods {
 
         pub fn overflowing_pow(self, exp: u32) -> (Self, bool)
         {
-            let (res_this, carry) = unsafe { self.this.overflowing_pow(exp) };
+            let (res_this, carry) = self.get().overflowing_pow(exp);
             (Self::new_with(res_this), carry)
         }
 
-        #[inline] pub fn saturating_pow(self, exp: u32) -> Self { Self::new_with( unsafe { self.this.saturating_pow(exp) } ) }
+        #[inline] pub fn saturating_pow(self, exp: u32) -> Self { Self::new_with( self.get().saturating_pow(exp) ) }
 
 
-        #[inline] pub fn abs_diff(self, other: Self) -> Self    { Self::new_with( unsafe { self.this.abs_diff(other.this) } ) }
+        #[inline] pub fn abs_diff(self, other: Self) -> Self    { Self::new_with( self.get().abs_diff(other.get()) ) }
 
-        #[inline] pub fn pow(self, exp: u32) -> Self    { Self::new_with( unsafe { self.this.pow(exp) } ) }
+        #[inline] pub fn pow(self, exp: u32) -> Self    { Self::new_with( self.get().pow(exp) ) }
 
-        #[inline] pub fn ilog(self, base: Self) -> u32  { unsafe { self.this.ilog(base.this) } }
-        #[inline] pub fn ilog10(self) -> u32            { unsafe { self.this.ilog10() } }
-        #[inline] pub fn ilog2(self) -> u32             { unsafe { self.this.ilog2() } }
+        #[inline] pub fn ilog(self, base: Self) -> u32  { self.get().ilog(base.get()) }
+        #[inline] pub fn ilog10(self) -> u32            { self.get().ilog10() }
+        #[inline] pub fn ilog2(self) -> u32             { self.get().ilog2() }
 
-        #[inline] pub fn reverse_bits(self) -> Self     { Self::new_with( unsafe { self.this.reverse_bits() } ) }
+        #[inline] pub fn reverse_bits(self) -> Self     { Self::new_with( self.get().reverse_bits() ) }
 
-        #[inline] pub fn rotate_left(self, n: u32) -> Self  { Self::new_with( unsafe { self.this.rotate_left(n) } ) }
-        #[inline] pub fn rotate_right(self, n: u32) -> Self { Self::new_with(unsafe { self.this.rotate_right(n) } ) }
+        #[inline] pub fn rotate_left(self, n: u32) -> Self  { Self::new_with( self.get().rotate_left(n) ) }
+        #[inline] pub fn rotate_right(self, n: u32) -> Self { Self::new_with( self.get().rotate_right(n) ) }
 
-        #[inline] pub fn count_ones(self) -> u32        { unsafe { self.this.count_ones() } }
-        #[inline] pub fn count_zeros(self) -> u32       { unsafe { self.this.count_zeros() } }
-        #[inline] pub fn leading_ones(self) -> u32      { unsafe { self.this.leading_ones() } }
-        #[inline] pub fn leading_zeros(self) -> u32     { unsafe { self.this.leading_zeros() } }
-        #[inline] pub fn trailing_ones(self) -> u32     { unsafe { self.this.trailing_ones() } }
-        #[inline] pub fn trailing_zeros(self) -> u32    { unsafe { self.this.trailing_zeros() } }
+        #[inline] pub fn count_ones(self) -> u32        { self.get().count_ones() }
+        #[inline] pub fn count_zeros(self) -> u32       { self.get().count_zeros() }
+        #[inline] pub fn leading_ones(self) -> u32      { self.get().leading_ones() }
+        #[inline] pub fn leading_zeros(self) -> u32     { self.get().leading_zeros() }
+        #[inline] pub fn trailing_ones(self) -> u32     { self.get().trailing_ones() }
+        #[inline] pub fn trailing_zeros(self) -> u32    { self.get().trailing_zeros() }
 
-        #[inline] pub fn from_be(x: Self) -> Self   { Self::new_with(<$f>::from_be( unsafe { x.this } )) }
-        #[inline] pub fn from_le(x: Self) -> Self   { Self::new_with(<$f>::from_le( unsafe { x.this } )) }
-        #[inline] pub fn to_be(self) -> Self        { Self::new_with( unsafe { self.this.to_be() } ) }
-        #[inline] pub fn to_le(self) -> Self        { Self::new_with(unsafe { self.this.to_le() } ) }
-        #[inline] pub fn swap_bytes(self) -> Self   { Self::new_with(unsafe { self.this.swap_bytes() } ) }
+        #[inline] pub fn from_be(x: Self) -> Self   { Self::new_with( <$f>::from_be(x.get()) ) }
+        #[inline] pub fn from_le(x: Self) -> Self   { Self::new_with( <$f>::from_le(x.get()) ) }
+        #[inline] pub fn to_be(self) -> Self        { Self::new_with( self.get().to_be() ) }
+        #[inline] pub fn to_le(self) -> Self        { Self::new_with( self.get().to_le() ) }
+        #[inline] pub fn swap_bytes(self) -> Self   { Self::new_with( self.get().swap_bytes() ) }
 
-        #[inline] pub fn is_power_of_two(self) -> bool    { unsafe { self.this.is_power_of_two() } }
-        #[inline] pub fn next_power_of_two(self) -> Self  { Self::new_with( unsafe { self.this.next_power_of_two() } ) }
+        #[inline] pub fn is_power_of_two(self) -> bool    { self.get().is_power_of_two() }
+        #[inline] pub fn next_power_of_two(self) -> Self  { Self::new_with( self.get().next_power_of_two() ) }
 
-        #[inline] pub fn into_f64(self) -> f64      { unsafe { self.this as f64 } }
-        #[inline] pub fn into_f32(self) -> f32      { unsafe { self.this as f32 } }
-        #[inline] pub fn into_u128(self) -> u128    { unsafe { self.this as u128 } }
-        #[inline] pub fn into_u64(self) -> u64      { unsafe { self.this as u64 } }
-        #[inline] pub fn into_u32(self) -> u32      { unsafe { self.this as u32 } }
-        #[inline] pub fn into_u16(self) -> u16      { unsafe { self.this as u16 } }
-        #[inline] pub fn into_u8(self) -> u8        { unsafe { self.this as u8 } }
-        #[inline] pub fn into_usize(self) -> usize  { unsafe { self.this as usize } }
-        #[inline] pub fn into_bool(self) -> bool    { unsafe { self.this != 0 } }
+        #[inline] pub fn into_f64(self) -> f64      { self.get() as f64 }
+        #[inline] pub fn into_f32(self) -> f32      { self.get() as f32 }
+        #[inline] pub fn into_u128(self) -> u128    { self.get() as u128 }
+        #[inline] pub fn into_u64(self) -> u64      { self.get() as u64 }
+        #[inline] pub fn into_u32(self) -> u32      { self.get() as u32 }
+        #[inline] pub fn into_u16(self) -> u16      { self.get() as u16 }
+        #[inline] pub fn into_u8(self) -> u8        { self.get() as u8 }
+        #[inline] pub fn into_usize(self) -> usize  { self.get() as usize }
+        #[inline] pub fn into_bool(self) -> bool    { self.get() != 0 }
         #[inline] pub fn zero() -> Self             { Self::new_with(0 as $f) }
         #[inline] pub fn one() -> Self              { Self::new_with(1 as $f) }
         #[inline] pub fn max() -> Self              { Self::new_with(<$f>::MAX) }
@@ -637,111 +962,141 @@ macro_rules! UInt_union_methods {
         #[inline] pub fn size_in_bits() -> usize    { size_of::<Self>() * 8 }
         #[inline] pub fn length_in_bytes(self) -> usize    { size_of_val(&self) }
         #[inline] pub fn length_in_bits(self) -> usize     { size_of_val(&self) * 8 }
-        #[inline] pub fn is_odd(self) -> bool      { unsafe { (self.this & 1) != 0 } }
+        #[inline] pub fn is_odd(self) -> bool       { (self.get() & 1) != 0 }
     }
 }
 
 
 
-impl UShort
+impl ShortUnion
 {
     pub fn new() -> Self                    { Self { ushort: 0 } }
     pub fn new_with(ushort: u16) -> Self    { Self { ushort } }
+    pub fn new_with_singed(sshort: i16) -> Self { Self { sshort } }
     pub fn onoff(b: bool) -> Self           { Self { ushort: b as u16 } }
+    pub fn onoff_signed(b: bool) -> Self    { Self { sshort: b as i16 } }
 
+    #[inline] pub fn get(self) -> u16                 { unsafe { self.ushort } }
+    #[inline] pub fn get_signed(self) -> i16          { unsafe { self.sshort } }
+    #[inline] pub fn set(&mut self, val: u16)         { self.ushort = val; }
+    #[inline] pub fn set_signed(&mut self, val: i16)  { self.sshort = val; }
     get_set_byte!(2-1);
 
     #[cfg(target_pointer_width = "8")]      get_set_usize!(2-1);
 
-    UInt_union_methods!(u16);
+    integer_union_methods!(u16);
 }
 
 
 
-impl UInt
+impl IntUnion
 {
     pub fn new() -> Self                { Self { uint: 0 } }
     pub fn new_with(uint: u32) -> Self  { Self { uint } }
+    pub fn new_with_singed(sint: i32) -> Self   { Self { sint } }
     pub fn onoff(b: bool) -> Self       { Self { uint: b as u32 } }
+    pub fn onoff_singed(b: bool) -> Self    { Self { sint: b as i32 } }
 
+    #[inline] pub fn get(self) -> u32             { unsafe { self.uint } }
+    #[inline] pub fn get_singed(self) -> i32      { unsafe { self.sint } }
+    #[inline] pub fn set(&mut self, val: u32)     { self.uint = val; }
+    #[inline] pub fn set_singed(&mut self, val: i32)     { self.sint = val; }
     get_set_byte!(4-1);
-    get_set_ushort!(2-1);
+    get_set_short!(2-1);
 
     #[cfg(target_pointer_width = "16")]     get_set_usize!(2-1);
     #[cfg(target_pointer_width = "8")]      get_set_usize!(4-1);
 
-    UInt_union_methods!(u32);
+    integer_union_methods!(u32);
 }
 
 
 
-impl ULong
+impl LongUnion
 {
     pub fn new() -> Self                    { Self { ulong: 0 } }
     pub fn new_with(ulong: u64) -> Self     { Self { ulong } }
+    pub fn new_with_singed(slong: i64) -> Self  { Self { slong } }
     pub fn onoff(b: bool) -> Self           { Self { ulong: b as u64 } }
+    pub fn onoff_singed(b: bool) -> Self    { Self { slong: b as i64 } }
 
+    #[inline] pub fn get(self) -> u64           { unsafe { self.ulong } }
+    #[inline] pub fn get_singed(self) -> i64    { unsafe { self.slong } }
+    #[inline] pub fn set(&mut self, val: u64)   { self.ulong = val; }
+    #[inline] pub fn set_singed(&mut self, val: i64)    { self.slong = val; }
     get_set_byte!(8-1);
-    get_set_ushort!(4-1);
-    get_set_uint!(2-1);
+    get_set_short!(4-1);
+    get_set_int!(2-1);
 
     #[cfg(target_pointer_width = "32")]     get_set_usize!(2-1);
     #[cfg(target_pointer_width = "16")]     get_set_usize!(4-1);
     #[cfg(target_pointer_width = "8")]      get_set_usize!(8-1);
 
-    UInt_union_methods!(u64);
+    integer_union_methods!(u64);
 }
 
 
 
-impl ULonger
+impl LongerUnion
 {
     pub fn new() -> Self                    { Self { ulonger: 0 } }
     pub fn new_with(ulonger: u128) -> Self  { Self { ulonger } }
+    pub fn new_with_singed(slonger: i128) -> Self   { Self { slonger } }
     pub fn onoff(b: bool) -> Self           { Self { ulonger: b as u128 } }
+    pub fn onoff_singed(b: bool) -> Self    { Self { slonger: b as i128 } }
 
+    #[inline] pub fn get(self) -> u128          { unsafe { self.ulonger } }
+    #[inline] pub fn get_singed(self) -> i128   { unsafe { self.slonger } }
+    #[inline] pub fn set(&mut self, val: u128)  { self.ulonger = val; }
+    #[inline] pub fn set_singed(&mut self, val: i128)    { self.slonger = val; }
     get_set_byte!(16-1);
-    get_set_ushort!(8-1);
-    get_set_uint!(4-1);
-    get_set_ulong!(2-1);
+    get_set_short!(8-1);
+    get_set_int!(4-1);
+    get_set_long!(2-1);
 
-    #[cfg(target_pointer_width = "64")]     get_set_usize!(2-1);
-    #[cfg(target_pointer_width = "32")]     get_set_usize!(4-1);
-    #[cfg(target_pointer_width = "16")]     get_set_usize!(8-1);
-    #[cfg(target_pointer_width = "8")]      get_set_usize!(16-1);
+    #[cfg(target_pointer_width = "64")]     get_set_size!(2-1);
+    #[cfg(target_pointer_width = "32")]     get_set_size!(4-1);
+    #[cfg(target_pointer_width = "16")]     get_set_size!(8-1);
+    #[cfg(target_pointer_width = "8")]      get_set_size!(16-1);
 
-    UInt_union_methods!(u128);
+    integer_union_methods!(u128);
 }
 
 
 
-impl USize
+impl SizeUnion
 {
-    pub fn new() -> Self                    { Self { size: 0 } }
-    pub fn new_with(size: usize) -> Self    { Self { size } }
-    pub fn onoff(b: bool) -> Self           { Self { size: b as usize } }
+    pub fn new() -> Self                    { Self { u_size: 0 } }
+    pub fn new_with(u_size: usize) -> Self  { Self { u_size } }
+    pub fn new_with_singed(s_size: isize) -> Self   { Self { s_size } }
+    pub fn onoff(b: bool) -> Self           { Self { u_size: b as usize } }
+    pub fn onoff_singed(b: bool) -> Self    { Self { s_size: b as isize } }
 
+    #[inline] pub fn get(self) -> usize         { unsafe { self.u_size } }
+    #[inline] pub fn get_singed(self) -> isize  { unsafe { self.s_size } }
+    #[inline] pub fn set(&mut self, val: usize) { self.u_size = val; }
+    #[inline] pub fn set_singed(&mut self, val: isize)   { self.s_size = val; }
     #[cfg(target_pointer_width = "128")]    get_set_byte!(16-1);
     #[cfg(target_pointer_width = "64")]     get_set_byte!(8-1);
     #[cfg(target_pointer_width = "32")]     get_set_byte!(4-1);
     #[cfg(target_pointer_width = "16")]     get_set_byte!(2-1);
 
-    #[cfg(target_pointer_width = "128")]    get_set_ushort!(8-1);
-    #[cfg(target_pointer_width = "64")]     get_set_ushort!(4-1);
-    #[cfg(target_pointer_width = "32")]     get_set_ushort!(2-1);
+    #[cfg(target_pointer_width = "128")]    get_set_short!(8-1);
+    #[cfg(target_pointer_width = "64")]     get_set_short!(4-1);
+    #[cfg(target_pointer_width = "32")]     get_set_short!(2-1);
 
-    #[cfg(target_pointer_width = "128")]    get_set_uint!(4-1);
-    #[cfg(target_pointer_width = "64")]     get_set_uint!(2-1);
+    #[cfg(target_pointer_width = "128")]    get_set_int!(4-1);
+    #[cfg(target_pointer_width = "64")]     get_set_int!(2-1);
 
-    #[cfg(target_pointer_width = "128")]    get_set_ulong!(2-1);
+    #[cfg(target_pointer_width = "128")]    get_set_long!(2-1);
 
-    UInt_union_methods!(usize);
+    integer_union_methods!(usize);
 }
 
 
 
 
-macro_rules! Uint_for_uint_unions_impl {
+macro_rules! Uint_for_integer_unions_impl {
     ($f:ty, $g:ty) => {
         impl Uint for $f
         {
@@ -845,7 +1200,7 @@ macro_rules! Uint_for_uint_unions_impl {
 
 
 
-macro_rules! operators_for_UInt_unions_impl {
+macro_rules! operators_for_integer_unions_impl {
     ($f:ty) => {
         impl Add for $f
         {
@@ -1048,7 +1403,7 @@ macro_rules! operators_for_UInt_unions_impl {
 
 
 
-macro_rules! shift_ops_for_UInt_unions_impl {
+macro_rules! shift_ops_for_integer_unions_impl {
     ($u:ty, $f:ty) => {
         impl Shl<$f> for $u
         {
@@ -1096,72 +1451,72 @@ macro_rules! shift_ops_for_UInt_unions_impl {
 
 
 
-Uint_for_uint_unions_impl! { UShort, u16 }
-Uint_for_uint_unions_impl! { UInt, u32 }
-Uint_for_uint_unions_impl! { ULong, u64 }
-Uint_for_uint_unions_impl! { ULonger, u128 }
-Uint_for_uint_unions_impl! { USize, usize }
+Uint_for_integer_unions_impl! { ShortUnion, u16 }
+Uint_for_integer_unions_impl! { IntUnion, u32 }
+Uint_for_integer_unions_impl! { LongUnion, u64 }
+Uint_for_integer_unions_impl! { LongerUnion, u128 }
+Uint_for_integer_unions_impl! { SizeUnion, usize }
 
-operators_for_UInt_unions_impl! { UShort }
-operators_for_UInt_unions_impl! { UInt }
-operators_for_UInt_unions_impl! { ULong }
-operators_for_UInt_unions_impl! { ULonger }
+operators_for_integer_unions_impl! { ShortUnion }
+operators_for_integer_unions_impl! { IntUnion }
+operators_for_integer_unions_impl! { LongUnion }
+operators_for_integer_unions_impl! { LongerUnion }
 
-shift_ops_for_UInt_unions_impl! { UShort, i8 }
-shift_ops_for_UInt_unions_impl! { UShort, i16 }
-shift_ops_for_UInt_unions_impl! { UShort, i32 }
-shift_ops_for_UInt_unions_impl! { UShort, i64 }
-shift_ops_for_UInt_unions_impl! { UShort, i128 }
-shift_ops_for_UInt_unions_impl! { UShort, isize }
+shift_ops_for_integer_unions_impl! { ShortUnion, i8 }
+shift_ops_for_integer_unions_impl! { ShortUnion, i16 }
+shift_ops_for_integer_unions_impl! { ShortUnion, i32 }
+shift_ops_for_integer_unions_impl! { ShortUnion, i64 }
+shift_ops_for_integer_unions_impl! { ShortUnion, i128 }
+shift_ops_for_integer_unions_impl! { ShortUnion, isize }
 
-shift_ops_for_UInt_unions_impl! { UShort, u8 }
-shift_ops_for_UInt_unions_impl! { UShort, u16 }
-shift_ops_for_UInt_unions_impl! { UShort, u32 }
-shift_ops_for_UInt_unions_impl! { UShort, u64 }
-shift_ops_for_UInt_unions_impl! { UShort, u128 }
-shift_ops_for_UInt_unions_impl! { UShort, usize }
+shift_ops_for_integer_unions_impl! { ShortUnion, u8 }
+shift_ops_for_integer_unions_impl! { ShortUnion, u16 }
+shift_ops_for_integer_unions_impl! { ShortUnion, u32 }
+shift_ops_for_integer_unions_impl! { ShortUnion, u64 }
+shift_ops_for_integer_unions_impl! { ShortUnion, u128 }
+shift_ops_for_integer_unions_impl! { ShortUnion, usize }
 
-shift_ops_for_UInt_unions_impl! { UInt, i8 }
-shift_ops_for_UInt_unions_impl! { UInt, i16 }
-shift_ops_for_UInt_unions_impl! { UInt, i32 }
-shift_ops_for_UInt_unions_impl! { UInt, i64 }
-shift_ops_for_UInt_unions_impl! { UInt, i128 }
-shift_ops_for_UInt_unions_impl! { UInt, isize }
+shift_ops_for_integer_unions_impl! { IntUnion, i8 }
+shift_ops_for_integer_unions_impl! { IntUnion, i16 }
+shift_ops_for_integer_unions_impl! { IntUnion, i32 }
+shift_ops_for_integer_unions_impl! { IntUnion, i64 }
+shift_ops_for_integer_unions_impl! { IntUnion, i128 }
+shift_ops_for_integer_unions_impl! { IntUnion, isize }
 
-shift_ops_for_UInt_unions_impl! { UInt, u8 }
-shift_ops_for_UInt_unions_impl! { UInt, u16 }
-shift_ops_for_UInt_unions_impl! { UInt, u32 }
-shift_ops_for_UInt_unions_impl! { UInt, u64 }
-shift_ops_for_UInt_unions_impl! { UInt, u128 }
-shift_ops_for_UInt_unions_impl! { UInt, usize }
+shift_ops_for_integer_unions_impl! { IntUnion, u8 }
+shift_ops_for_integer_unions_impl! { IntUnion, u16 }
+shift_ops_for_integer_unions_impl! { IntUnion, u32 }
+shift_ops_for_integer_unions_impl! { IntUnion, u64 }
+shift_ops_for_integer_unions_impl! { IntUnion, u128 }
+shift_ops_for_integer_unions_impl! { IntUnion, usize }
 
-shift_ops_for_UInt_unions_impl! { ULong, i8 }
-shift_ops_for_UInt_unions_impl! { ULong, i16 }
-shift_ops_for_UInt_unions_impl! { ULong, i32 }
-shift_ops_for_UInt_unions_impl! { ULong, i64 }
-shift_ops_for_UInt_unions_impl! { ULong, i128 }
-shift_ops_for_UInt_unions_impl! { ULong, isize }
+shift_ops_for_integer_unions_impl! { LongUnion, i8 }
+shift_ops_for_integer_unions_impl! { LongUnion, i16 }
+shift_ops_for_integer_unions_impl! { LongUnion, i32 }
+shift_ops_for_integer_unions_impl! { LongUnion, i64 }
+shift_ops_for_integer_unions_impl! { LongUnion, i128 }
+shift_ops_for_integer_unions_impl! { LongUnion, isize }
 
-shift_ops_for_UInt_unions_impl! { ULong, u8 }
-shift_ops_for_UInt_unions_impl! { ULong, u16 }
-shift_ops_for_UInt_unions_impl! { ULong, u32 }
-shift_ops_for_UInt_unions_impl! { ULong, u64 }
-shift_ops_for_UInt_unions_impl! { ULong, u128 }
-shift_ops_for_UInt_unions_impl! { ULong, usize }
+shift_ops_for_integer_unions_impl! { LongUnion, u8 }
+shift_ops_for_integer_unions_impl! { LongUnion, u16 }
+shift_ops_for_integer_unions_impl! { LongUnion, u32 }
+shift_ops_for_integer_unions_impl! { LongUnion, u64 }
+shift_ops_for_integer_unions_impl! { LongUnion, u128 }
+shift_ops_for_integer_unions_impl! { LongUnion, usize }
 
-shift_ops_for_UInt_unions_impl! { ULonger, i8 }
-shift_ops_for_UInt_unions_impl! { ULonger, i16 }
-shift_ops_for_UInt_unions_impl! { ULonger, i32 }
-shift_ops_for_UInt_unions_impl! { ULonger, i64 }
-shift_ops_for_UInt_unions_impl! { ULonger, i128 }
-shift_ops_for_UInt_unions_impl! { ULonger, isize }
+shift_ops_for_integer_unions_impl! { LongerUnion, i8 }
+shift_ops_for_integer_unions_impl! { LongerUnion, i16 }
+shift_ops_for_integer_unions_impl! { LongerUnion, i32 }
+shift_ops_for_integer_unions_impl! { LongerUnion, i64 }
+shift_ops_for_integer_unions_impl! { LongerUnion, i128 }
+shift_ops_for_integer_unions_impl! { LongerUnion, isize }
 
-shift_ops_for_UInt_unions_impl! { ULonger, u8 }
-shift_ops_for_UInt_unions_impl! { ULonger, u16 }
-shift_ops_for_UInt_unions_impl! { ULonger, u32 }
-shift_ops_for_UInt_unions_impl! { ULonger, u64 }
-shift_ops_for_UInt_unions_impl! { ULonger, u128 }
-shift_ops_for_UInt_unions_impl! { ULonger, usize }
+shift_ops_for_integer_unions_impl! { LongerUnion, u8 }
+shift_ops_for_integer_unions_impl! { LongerUnion, u16 }
+shift_ops_for_integer_unions_impl! { LongerUnion, u32 }
+shift_ops_for_integer_unions_impl! { LongerUnion, u64 }
+shift_ops_for_integer_unions_impl! { LongerUnion, u128 }
+shift_ops_for_integer_unions_impl! { LongerUnion, usize }
 
 
 

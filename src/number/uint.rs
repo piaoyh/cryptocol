@@ -35,7 +35,7 @@ use std::ops::*;
 /// crate Cryptocol. So, if you only use the crate Cryptocol or you will not
 /// use primitive unsigned integral data types in generic context, you can
 /// almost forget about this trait Uint.
-pub trait Uint: Copy + Sized //+ Clone + Display + Debug + ToString
+pub trait Uint: Copy + Clone + Sized //+ Display + Debug + ToString
 {
     /***** ADDITION *****/
 
@@ -2973,27 +2973,129 @@ pub trait Uint: Copy + Sized //+ Clone + Display + Debug + ToString
     fn checked_rem(self, rhs: Self) -> Option<Self>;
 
 
-
-    /// Computes the absolute difference between self and other.
+    /*** Power ***/
+    
+    /// Raises self to the power of exp, using exponentiation by squaring.
     /// 
-    /// # Feature
+    /// # Features
     /// __The trait Uint is meaningful when you use it in generic context.__
-    /// Here, self can be one of the primitive types `u8`, `u16`,
-    /// `u32`, `u64`, `u128`, or `usize`. 
-    fn abs_diff(self, other: Self) -> Self;
-
-
+    /// 
+    /// # Panics
+    /// It will panic if the result of this method is more than
+    /// the maximum value.
+    /// 
+    /// # Output
+    /// It returns the self raised to the power of exp, in the type of `Self`.
+    /// 
+    /// # Example
+    /// ```
+    /// use Cryptocol::number::*;
+    /// fn main()
+    /// {
+    ///     let a_u8 = func(3_u8, 5_u32);
+    ///     println!("3 ** 5 = {}", a_u8);
+    ///     assert_eq!(a_u8, 243_u8);
+    ///     // It will panic.
+    ///     // println!("3 ** 5 = {}", UInt_pow___func(3_u8, 6_u32));
+    ///     
+    ///     let a_u16 = func(9_u16, 5_u32);
+    ///     println!("9 ** 5 = {}", a_u16);
+    ///     assert_eq!(a_u16, 59049_u16);
+    ///     // It will panic.
+    ///     // println!("9 ** 5 = {}", UInt_pow___func(9_u16, 6_u32));
+    /// 
+    ///     let a_u32 = func(81_u32, 5_u32);
+    ///     println!("81 ** 5 = {}", a_u32);
+    ///     assert_eq!(a_u32, 3486784401_u32);
+    ///     // It will panic.
+    ///     // println!("81 ** 6 = {}", UInt_pow___func(81_u32, 6_u32));
+    /// 
+    ///     let a_u64 = func(6561_u64, 5_u32);
+    ///     println!("6561 ** 5 = {}", a_u64);
+    ///     assert_eq!(a_u64, 12157665459056928801_u64);
+    ///     // It will panic.
+    ///     // println!("6561 ** 6 = {}", UInt_pow___func(6561_u64, 6_u32));
+    /// 
+    ///     let a_u128 = func(43046721_u128, 5_u32);
+    ///     println!("43046721 ** 5 = {}", a_u128);
+    ///     assert_eq!(a_u128, 147808829414345923316083210206383297601_u128);
+    ///     // It will panic.
+    ///     // println!("43046721 ** 6 = {}", UInt_pow___func(43046721_u64, 6_u32));
+    /// 
+    ///     let a_usize = func(6561_usize, 5_u32);
+    ///     println!("6561 ** 5 = {}", a_usize);
+    ///     assert_eq!(a_usize, 12157665459056928801_usize);
+    ///     // It will panic.
+    ///     // println!("6561 ** 6 = {}", UInt_pow___func(6561_usize, 6_u32));
+    /// 
+    ///     let a_Short = Short::new_with(9);
+    ///     let b_Short = UInt_pow___func(a_Short, 5_u32);
+    ///     println!("9 ** 5 = {}", unsafe { b_Short.Short } );
+    ///     assert_eq!(unsafe { b_Short.Short }, 59049_u16);
+    ///     // It will panic.
+    ///     // println!("9 ** 5 = {}", UInt_pow___func(a_Short, 6_u32));
+    ///     
+    ///     let a_uint = UInt::new_with(81);
+    ///     let b_uint = UInt_pow___func(a_uint, 5_u32);
+    ///     println!("81 ** 5 = {}", unsafe { b_uint.uint } );
+    ///     assert_eq!(unsafe { b_uint.uint }, 3486784401_u32);
+    ///     // It will panic.
+    ///     // println!("81 ** 6 = {}", UInt_pow___func(a_uint, 6_u32));
+    ///     
+    ///     let a_ulong = ULong::new_with(6561);
+    ///     let b_ulong = UInt_pow___func(a_ulong, 5_u32);
+    ///     println!("6561 ** 5 = {}", unsafe { b_ulong.ulong } );
+    ///     assert_eq!(unsafe { b_ulong.ulong }, 12157665459056928801_u64);
+    ///     // It will panic.
+    ///     // println!("6561 ** 6 = {}", UInt_pow___func(a_ulong, 6_u32));
+    ///     
+    ///     let a_ulonger = ULonger::new_with(43046721);
+    ///     let b_ulonger = UInt_pow___func(a_ulonger, 5_u32);
+    ///     println!("43046721 ** 5 = {}", unsafe { b_ulonger.ulonger } );
+    ///     assert_eq!(unsafe { b_ulonger.ulonger }, 147808829414345923316083210206383297601_u128);
+    ///     // It will panic.
+    ///     // println!("43046721 ** 6 = {}", UInt_pow___func(a_ulonger, 6_u32));
+    ///     
+    ///     let a_size = USize::new_with(6561);
+    ///     let b_size = UInt_pow___func(a_size, 5_u32);
+    ///     println!("6561 ** 5 = {}", unsafe { b_size.size } );
+    ///     assert_eq!(unsafe { b_size.size }, 12157665459056928801_usize);
+    ///     // It will panic.
+    ///     // println!("6561 ** 6 = {}", UInt_pow___func(a_size, 6_u32));
+    /// }
+    /// 
+    /// fn func<T: Uint>(lhs: T, rhs: i32) -> T
+    /// {
+    ///     lhs.pow(rhs)
+    /// }
+    /// ```
+    /// 
+    /// # Plagiarism in descryption
+    /// It calls the method pow() of implementation of the primitive
+    /// unsigned integer types such as`u8`, `u16`, `u32`, `u64`, `u128` and
+    /// `usize` directly. So, all the description of this method is mainly the
+    /// same as that of the method pow() of implementation of the
+    /// primitive unsigned integer types except example codes. Confer to the
+    /// descryptions that are linked to in the section _Reference_. This
+    /// plagiarism is not made maliciously but is made for the reason of
+    /// effectiveness and efficiency so that users may understand better and
+    /// easily how to use this method with simiilarity to the method
+    /// pow() of implementation of the primitive unsigned integer types.
+    /// 
+    /// # References
+    /// - If you want to know about the definition of the method `pow()`
+    /// for the primitive type `u8`, read [here](https://doc.rust-lang.org/core/primitive.u8.html#method.pow).
+    /// - If you want to know about the definition of the method `pow()`
+    /// for the primitive type `u16`, read [here](https://doc.rust-lang.org/core/primitive.u16.html#method.pow).
+    /// - If you want to know about the definition of the method `pow()`
+    /// for the primitive type `u32`, read [here](https://doc.rust-lang.org/core/primitive.u32.html#method.pow).
+    /// - If you want to know about the definition of the method `pow()`
+    /// for the primitive type `u64`, read [here](https://doc.rust-lang.org/core/primitive.u64.html#method.pow).
+    /// - If you want to know about the definition of the method `pow()`
+    /// for the primitive type `u128`, read [here](https://doc.rust-lang.org/core/primitive.u128.html#method.pow).
+    /// - If you want to know about the definition of the method `pow()`
+    /// for the primitive type `usize`, read [here](https://doc.rust-lang.org/core/primitive.usize.html#method.pow).
     fn pow(self, exp: u32) -> Self;
-    fn ilog(self, base: Self) -> u32;
-    fn ilog10(self) -> u32;
-    fn ilog2(self) -> u32;
-    fn reverse_bits(self) -> Self;
-    fn rotate_left(self, n: u32) -> Self;
-    fn rotate_right(self, n: u32) -> Self;
-
-
-
-
 
     /// Wrapping (modular) remainder. Computes self % rhs. Wrapped remainder
     /// calculation on unsigned types is just the regular remainder calculation.
@@ -3022,14 +3124,34 @@ pub trait Uint: Copy + Sized //+ Clone + Display + Debug + ToString
     /// }
     /// ```
     fn wrapping_pow(self, exp: u32) -> Self;
-
-    fn checked_pow(self, exp: u32) -> Option<Self>;
-
     fn overflowing_pow(self, exp: u32) -> (Self, bool);
-
-
-
+    fn checked_pow(self, exp: u32) -> Option<Self>;
     fn saturating_pow(self, exp: u32) -> Self;
+
+
+
+    /// Computes the absolute difference between self and other.
+    /// 
+    /// # Feature
+    /// __The trait Uint is meaningful when you use it in generic context.__
+    /// Here, self can be one of the primitive types `u8`, `u16`,
+    /// `u32`, `u64`, `u128`, or `usize`. 
+    fn abs_diff(self, other: Self) -> Self;
+
+
+
+    fn ilog(self, base: Self) -> u32;
+    fn ilog10(self) -> u32;
+    fn ilog2(self) -> u32;
+    fn reverse_bits(self) -> Self;
+    fn rotate_left(self, n: u32) -> Self;
+    fn rotate_right(self, n: u32) -> Self;
+
+
+
+
+
+
 
     fn count_ones(self) -> u32;
     fn count_zeros(self) -> u32;

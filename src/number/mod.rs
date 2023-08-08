@@ -45,16 +45,16 @@
 //! 
 
 pub mod uint;
-pub mod uint_unions;
-pub mod int;
+pub mod sint;
+pub mod int_unions;
 pub mod big_uint;
 pub mod trait_impl_for_big_uint;
 pub mod number_errors;
 mod macros_number;
 
 pub use uint::*;
-pub use uint_unions::*;
-pub use int::*;
+pub use int_unions::*;
+pub use sint::*;
 pub use big_uint::*;
 pub use trait_impl_for_big_uint::*;
 pub use number_errors::*;
