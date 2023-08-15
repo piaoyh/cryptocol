@@ -784,6 +784,7 @@ where T: Uint + Clone + Display + Debug + ToString
     /// # Output
     /// The random number that this method random() returns is a pure random
     /// number whose range is from 0 up to BigUInt::max() inclusively.
+    /// 
     /// # Features
     /// This method basically uses the method randomize() that fills all the
     /// elements of the array number[T; N] in struct BigUInt<T, N> with the
@@ -1798,8 +1799,8 @@ where T: Uint + Clone + Display + Debug + ToString
     /// unsigned integer.
     /// 
     /// # Panics
-    /// It is performance-oriented and does not care for safety. So, 
-    /// if `i` >= `N`, it will panic.
+    /// This method is performance-oriented and does not care for safety.
+    /// So, if `i` >= `N`, it will panic.
     /// 
     /// # Counterpart Method
     /// Use this method only when you are sure that `i` < `N`.
@@ -1812,9 +1813,11 @@ where T: Uint + Clone + Display + Debug + ToString
     /// 
     /// define_utypes_with_u32!();
     /// let a = u256::from([0_u32, 10, 20, 30, 40, 50, 60, 70]);
-    /// let e = a.get_num_(3);
-    /// println!("a.get_num_(3) = {}", e);
-    /// assert_eq!(e, 30);
+    /// let b = a.get_num_(3);
+    /// println!("a.get_num_(3) = {}", b);
+    /// assert_eq!(b, 30);
+    /// // It will panic.
+    /// // let c = a.get_num_(8);
     /// ```
     #[inline]
     #[cfg(target_endian = "little")]

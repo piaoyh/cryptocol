@@ -56,7 +56,7 @@ pub trait Uint: Copy + Clone + Sized //+ Display + Debug + ToString
     /// “ternary addition” of two integer operands and a carry-in bit, and
     /// returns an output integer and a carry-out bit.
     /// 
-    /// # Example
+    /// # Example for u8
     /// ```
     /// use Cryptocol::number::Uint;
     /// fn main()
@@ -94,7 +94,24 @@ pub trait Uint: Copy + Clone + Sized //+ Display + Debug + ToString
     ///     assert_eq!(d_high_u8, 45_u8);
     ///     assert_eq!(d_low_u8, 245_u8);
     ///     assert_eq!(carry, true);
+    /// }
     /// 
+    /// fn add_long<T: Uint>(lhs_high: T, lhs_low: T, rhs_high: T, rhs_low: T) -> (T, T, bool)
+    /// {
+    ///     let mut carry = false;
+    ///     let mut sum_high: T;
+    ///     let mut sum_low: T;
+    ///     (sum_low, carry) = lhs_low.carrying_add(rhs_low, carry);
+    ///     (sum_high, carry) = lhs_high.carrying_add(rhs_high, carry);
+    ///     (sum_high, sum_low, carry)
+    /// }
+    /// ```
+    /// 
+    /// # Example for u128
+    /// ```
+    /// use Cryptocol::number::Uint;
+    /// fn main()
+    /// {
     ///     let a_high_u128: u128;
     ///     let a_low_u128: u128;
     ///     //   4201016837757989640311993609423984479246482890531986660185 == (12345678901234567890_u128, 6789012345678912345_u128)
@@ -114,6 +131,83 @@ pub trait Uint: Copy + Clone + Sized //+ Display + Debug + ToString
     ///     // -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
     ///     //    19298681539552699237261830834781317975046994857318776714373108680289488156697 == ( 56713727820156410577229101238628035241_u128, 69134691246913480235802358023580235801_u128)
     ///     let (b_high_u128, b_low_u128, carry) = UInt_carrying_add___func(226854911280625642308916404954512140970_u128, 56789012345678912345678901234567890123_u128, 170141183460469231731687303715884105727_u128, 12345678901234567890123456789012345678_u128);
+    ///     println!("{}-{}, {}", b_high_u128, b_low_u128, carry);
+    ///     assert_eq!(b_high_u128, 56713727820156410577229101238628035241_u128);
+    ///     assert_eq!(b_low_u128, 69134691246913480235802358023580235801_u128);
+    ///     assert_eq!(carry, true);
+    /// }
+    /// 
+    /// fn add_long<T: Uint>(lhs_high: T, lhs_low: T, rhs_high: T, rhs_low: T) -> (T, T, bool)
+    /// {
+    ///     let mut carry = false;
+    ///     let mut sum_high: T;
+    ///     let mut sum_low: T;
+    ///     (sum_low, carry) = lhs_low.carrying_add(rhs_low, carry);
+    ///     (sum_high, carry) = lhs_high.carrying_add(rhs_high, carry);
+    ///     (sum_high, sum_low, carry)
+    /// }
+    /// ```
+    /// You can use the above generic function add_long<>() for all primitive
+    /// data types in a same scope. Look into the next example.
+    /// 
+    /// # Collective Example
+    /// ```
+    /// use Cryptocol::number::Uint;
+    /// fn main()
+    /// {
+    ///     // a_u16: u16 === (a_high_u8, a_low_u8) == (100_u8, 101_u8) == 25701_u16
+    ///     let a_high_u8 = 100_u8;
+    ///     let a_low_u8 = 101_u8;
+    ///     // b_u16: u16 === (b_high_u8, b_low_u8) == (100_u8, 200_u8) == 25800_u16
+    ///     let b_high_u8 = 100_u8;
+    ///     let b_low_u8 = 200_u8;
+    ///     // c_u16: u16 === (c_high_u8, c_low_u8)
+    ///     let c_high_u8: u8;
+    ///     let c_low_u8: u8;
+    ///     let mut carry: bool;
+    ///     // (100_u8, 101_u8) + (100_u8, 200_u8) == 25701_u16 + 25800_u16 == 51501_u16
+    ///     //   25701_u16 == (100_u8, 101_u8)
+    ///     // + 25800_u16 == (100_u8, 200_u8)
+    ///     // -------------------------------
+    ///     //   51501_u16 == (201_u8,  45_u8)
+    ///     (c_high_u8, c_low_u8, carry) = add_long(a_high_u8, a_low_u8, b_high_u8, b_low_u8);
+    ///     println!("{}-{}, {}", c_high_u8, c_low_u8, carry);
+    ///     assert_eq!(c_high_u8, 201);
+    ///     assert_eq!(c_low_u8, 45);
+    ///     assert_eq!(carry, false);
+    /// 
+    ///     let d_high_u8: u8;
+    ///     let d_low_u8: u8;
+    ///     //  (201_u8,  45_u8) + (100_u8, 200_u8) == 25701_u16 + 25800_u16 == 51501_u16
+    ///     //   25701_u16 == (100_u8, 101_u8)
+    ///     // + 25800_u16 == (100_u8, 200_u8)
+    ///     // -------------------------------
+    ///     //   11765_u16 == ( 45_u8, 245_u8)
+    ///     (d_high_u8, d_low_u8, carry) = add_long(c_high_u8, c_low_u8, b_high_u8, b_low_u8);
+    ///     println!("{}-{}, {}", d_high_u8, d_low_u8, carry);
+    ///     assert_eq!(d_high_u8, 45_u8);
+    ///     assert_eq!(d_low_u8, 245_u8);
+    ///     assert_eq!(carry, true);
+    /// 
+    ///     let a_high_u128: u128;
+    ///     let a_low_u128: u128;
+    ///     //   4201016837757989640311993609423984479246482890531986660185 == (12345678901234567890_u128, 6789012345678912345_u128)
+    ///     // +                 419908440780438063913804265570801972943493 == (                1234_u128,                6789_u128)
+    ///     // ---------------------------------------------------------------------------------------------------------------------
+    ///     //   4201016837757990060220434389862048393050748461333959603678 == (12345678901234569124_u128, 6789012345678919134_u128)
+    ///     (a_high_u128, a_low_u128, carry) = add_long(12345678901234567890_u128, 6789012345678912345_u128, 1234_u128, 6789_u128);
+    ///     println!("{}-{}, {}", a_high_u128, a_low_u128, carry);
+    ///     assert_eq!(a_high_u128, 12345678901234569124_u128);
+    ///     assert_eq!(a_low_u128, 6789012345678919134_u128);
+    ///     assert_eq!(carry, false);
+    /// 
+    ///     let b_high_u128: u128;
+    ///     let b_low_u128: u128;
+    ///     //   308778904632843187796189293356501087608549893209439890708590319850715068122315 == (226854911280625642308916404954512140970_u128, 56789012345678912345678901234567890123_u128)
+    ///     // +  57896044618658097711785492504343953926307055644800578124155540853313808954190 == (170141183460469231731687303715884105727_u128, 12345678901234567890123456789012345678_u128)
+    ///     // -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+    ///     //    19298681539552699237261830834781317975046994857318776714373108680289488156697 == ( 56713727820156410577229101238628035241_u128, 69134691246913480235802358023580235801_u128)
+    ///     let (b_high_u128, b_low_u128, carry) = add_long(226854911280625642308916404954512140970_u128, 56789012345678912345678901234567890123_u128, 170141183460469231731687303715884105727_u128, 12345678901234567890123456789012345678_u128);
     ///     println!("{}-{}, {}", b_high_u128, b_low_u128, carry);
     ///     assert_eq!(b_high_u128, 56713727820156410577229101238628035241_u128);
     ///     assert_eq!(b_low_u128, 69134691246913480235802358023580235801_u128);
@@ -179,7 +273,129 @@ pub trait Uint: Copy + Clone + Sized //+ Display + Debug + ToString
     /// # Output
     /// It returns the self + rhs in the type of `Self`.
     /// 
-    /// # Example
+    /// # Example for u8
+    /// ```
+    /// use Cryptocol::number::Uint;
+    /// fn main()
+    /// {
+    ///     let a_u8 = func(u8::MAX - 55_u8, 55_u8);
+    ///     println!("{} + 55 = {}", u8::MAX - 55_u8, a_u8);
+    ///     assert_eq!(a_u8, u8::MAX);
+    /// 
+    ///     let b_u8 = func(a_u8, 1_u8);
+    ///     println!("{} + 1 = {}", a_u8, b_u8);
+    ///     assert_eq!(b_u8, 0_u8);
+    /// }
+    /// 
+    /// fn func<T: Uint>(lhs: T, rhs: T) -> T
+    /// {
+    ///     lhs.wrapping_add(rhs)
+    /// }
+    /// ```
+    /// 
+    /// # Example for u16
+    /// ```
+    /// use Cryptocol::number::Uint;
+    /// fn main()
+    /// {
+    ///     let a_u16 = func(u16::MAX - 55_u16, 55_u16);
+    ///     println!("{} + 55 = {}", u16::MAX - 55_u16, a_u16);
+    ///     assert_eq!(a_u16, u16::MAX);
+    /// 
+    ///     let b_u16 = func(a_u16, 1_u16);
+    ///     println!("{} + 1 = {}", a_u16, b_u16);
+    ///     assert_eq!(b_u16, 0_u16);
+    /// }
+    /// 
+    /// fn func<T: Uint>(lhs: T, rhs: T) -> T
+    /// {
+    ///     lhs.wrapping_add(rhs)
+    /// }
+    /// ```
+    /// 
+    /// # Example for u32
+    /// ```
+    /// use Cryptocol::number::Uint;
+    /// fn main()
+    /// {
+    ///     let a_u32 = func(u32::MAX - 55_u32, 55_u32);
+    ///     println!("{} + 55 = {}", u32::MAX - 55_u32, a_u32);
+    ///     assert_eq!(a_u32, u32::MAX);
+    /// 
+    ///     let b_u32 = func(a_u32, 1_u32);
+    ///     println!("{} + 1 = {}", a_u32, b_u32);
+    ///     assert_eq!(b_u32, 0_u32);
+    /// }
+    /// 
+    /// fn func<T: Uint>(lhs: T, rhs: T) -> T
+    /// {
+    ///     lhs.wrapping_add(rhs)
+    /// }
+    /// ```
+    /// 
+    /// # Example for u64
+    /// ```
+    /// use Cryptocol::number::Uint;
+    /// fn main()
+    /// {
+    ///     let a_u64 = func(u64::MAX - 55_u64, 55_u64);
+    ///     println!("{} + 55 = {}", u64::MAX - 55_u64, a_u64);
+    ///     assert_eq!(a_u64, u64::MAX);
+    /// 
+    ///     let b_u64 = func(a_u64, 1_u64);
+    ///     println!("{} + 1 = {}", a_u64, b_u64);
+    ///     assert_eq!(b_u64, 0_u64);
+    /// }
+    /// 
+    /// fn func<T: Uint>(lhs: T, rhs: T) -> T
+    /// {
+    ///     lhs.wrapping_add(rhs)
+    /// }
+    /// ```
+    /// 
+    /// # Example for u128
+    /// ```
+    /// use Cryptocol::number::Uint;
+    /// fn main()
+    /// {
+    ///     let a_u128 = func(u128::MAX - 55_u128, 55_u128);
+    ///     println!("{} + 55 = {}", u128::MAX - 55_u128, a_u128);
+    ///     assert_eq!(a_u128, u128::MAX);
+    /// 
+    ///     let b_u128 = func(a_u128, 1_u128);
+    ///     println!("{} + 1 = {}",a_u128, b_u128);
+    ///     assert_eq!(b_u128, 0_u128);
+    /// }
+    /// 
+    /// fn func<T: Uint>(lhs: T, rhs: T) -> T
+    /// {
+    ///     lhs.wrapping_add(rhs)
+    /// }
+    /// ```
+    /// 
+    /// # Example for usize
+    /// ```
+    /// use Cryptocol::number::Uint;
+    /// fn main()
+    /// {
+    ///     let a_usize = func(usize::MAX - 55_usize, 55_usize);
+    ///     println!("{} + 55 = {}", usize::MAX - 55_usize, a_usize);
+    ///     assert_eq!(a_usize, usize::MAX);
+    /// 
+    ///     let b_usize = func(a_usize, 1_usize);
+    ///     println!("{} + 1 = {}", a_usize, b_usize);
+    ///     assert_eq!(b_usize, 0_usize);
+    /// }
+    /// 
+    /// fn func<T: Uint>(lhs: T, rhs: T) -> T
+    /// {
+    ///     lhs.wrapping_add(rhs)
+    /// }
+    /// ```
+    /// You can use the above generic function func<>() for all Uint-supported
+    /// data types in a same scope. Look into the next example.
+    /// 
+    /// # Collective Example
     /// ```
     /// use Cryptocol::number::Uint;
     /// fn main()
@@ -278,7 +494,141 @@ pub trait Uint: Copy + Clone + Sized //+ Display + Debug + ToString
     /// whether an arithmetic overflow would occur. If an overflow would
     /// have occurred then the wrapped value is returned.
     /// 
-    /// # Example
+    /// # Example for u8
+    /// ```
+    /// use Cryptocol::number::Uint;
+    /// fn main()
+    /// {
+    ///     let a_u8 = func(u8::MAX - 55_u8, 55_u8);
+    ///     println!("{} + 55 = {}\nOverflow = {}", u8::MAX - 55_u8, a_u8.0, a_u8.1);
+    ///     assert_eq!(a_u8.0, u8::MAX);
+    ///     assert_eq!(a_u8.1, false);
+    /// 
+    ///     let b_u8 = func(a_u8.0, 1_u8);
+    ///     println!("{} + 1 = {}\nOverflow = {}", a_u8.0, b_u8.0, b_u8.1);
+    ///     assert_eq!(b_u8.0, 0_u8);
+    ///     assert_eq!(b_u8.1, true);
+    /// }
+    /// 
+    /// fn func<T: Uint>(lhs: T, rhs: T) -> (T, bool)
+    /// {
+    ///     lhs.overflowing_add(rhs)
+    /// }
+    /// ```
+    /// 
+    /// # Example for u16
+    /// ```
+    /// use Cryptocol::number::Uint;
+    /// fn main()
+    /// {
+    ///     let a_u16 = func(u16::MAX - 55_u16, 55_u16);
+    ///     println!("{} + 55 = {}\nOverflow = {}", u16::MAX - 55_u16, a_u16.0, a_u16.1);
+    ///     assert_eq!(a_u16.0, u16::MAX);
+    ///     assert_eq!(a_u16.1, false);
+    /// 
+    ///     let b_u16 = func(a_u16.0, 1_u16);
+    ///     println!("{} + 1 = {}\nOverflow = {}", a_u16.0, b_u16.0, b_u16.1);
+    ///     assert_eq!(b_u16.0, 0_u16);
+    ///     assert_eq!(b_u16.1, true);
+    /// }
+    /// 
+    /// fn func<T: Uint>(lhs: T, rhs: T) -> (T, bool)
+    /// {
+    ///     lhs.overflowing_add(rhs)
+    /// }
+    /// ```
+    /// 
+    /// # Example for u32
+    /// ```
+    /// use Cryptocol::number::Uint;
+    /// fn main()
+    /// {
+    ///     let a_u32 = func(u32::MAX - 55_u32, 55_u32);
+    ///     println!("{} + 55 = {}\nOverflow = {}", u32::MAX - 55_u32, a_u32.0, a_u32.1);
+    ///     assert_eq!(a_u32.0, u32::MAX);
+    ///     assert_eq!(a_u32.1, false);
+    /// 
+    ///     let b_u32 = func(a_u32.0, 1_u32);
+    ///     println!("{} + 1 = {}\nOverflow = {}", a_u32.0, b_u32.0, b_u32.1);
+    ///     assert_eq!(b_u32.0, 0_u32);
+    ///     assert_eq!(b_u32.1, true);
+    /// }
+    /// 
+    /// fn func<T: Uint>(lhs: T, rhs: T) -> (T, bool)
+    /// {
+    ///     lhs.overflowing_add(rhs)
+    /// }
+    /// ```
+    /// 
+    /// # Example for u64
+    /// ```
+    /// use Cryptocol::number::Uint;
+    /// fn main()
+    /// {
+    ///     let a_u64 = func(u64::MAX - 55_u64, 55_u64);
+    ///     println!("{} + 55 = {}\nOverflow = {}", u64::MAX - 55_u64, a_u64.0, a_u64.1);
+    ///     assert_eq!(a_u64.0, u64::MAX);
+    ///     assert_eq!(a_u64.1, false);
+    /// 
+    ///     let b_u64 = func(a_u64.0, 1_u64);
+    ///     println!("{} + 1 = {}\nOverflow = {}", a_u64.0, b_u64.0, b_u64.1);
+    ///     assert_eq!(b_u64.0, 0_u64);
+    ///     assert_eq!(b_u64.1, true);
+    /// }
+    /// 
+    /// fn func<T: Uint>(lhs: T, rhs: T) -> (T, bool)
+    /// {
+    ///     lhs.overflowing_add(rhs)
+    /// }
+    /// ```
+    /// 
+    /// # Example for u128
+    /// ```
+    /// use Cryptocol::number::Uint;
+    /// fn main()
+    /// {
+    ///     let a_u128 = func(u128::MAX - 55_u128, 55_u128);
+    ///     println!("{} + 55 = {}\nOverflow = {}", u128::MAX - 55_u128, a_u128.0, a_u128.1);
+    ///     assert_eq!(a_u128.0, u128::MAX);
+    ///     assert_eq!(a_u128.1, false);
+    /// 
+    ///     let b_u128 = func(a_u128.0, 1_u128);
+    ///     println!("{} + 1 = {}\nOverflow = {}", a_u128.0, b_u128.0, b_u128.1);
+    ///     assert_eq!(b_u128.0, 0_u128);
+    ///     assert_eq!(b_u128.1, true);
+    /// }
+    /// 
+    /// fn func<T: Uint>(lhs: T, rhs: T) -> (T, bool)
+    /// {
+    ///     lhs.overflowing_add(rhs)
+    /// }
+    /// ```
+    /// 
+    /// # Example for usize
+    /// ```
+    /// use Cryptocol::number::Uint;
+    /// fn main()
+    /// {
+    ///     let a_usize = func(usize::MAX - 55_usize, 55_usize);
+    ///     println!("{} + 55 = {}\nOverflow = {}", usize::MAX - 55_usize, a_usize.0, a_usize.1);
+    ///     assert_eq!(a_usize.0, usize::MAX);
+    ///     assert_eq!(a_usize.1, false);
+    /// 
+    ///     let b_usize = func(a_usize.0, 1_usize);
+    ///     println!("{} + 1 = {}\nOverflow = {}", a_usize.0, b_usize.0, b_usize.1);
+    ///     assert_eq!(b_usize.0, 0_usize);
+    ///     assert_eq!(b_usize.1, true);
+    /// }
+    /// 
+    /// fn func<T: Uint>(lhs: T, rhs: T) -> (T, bool)
+    /// {
+    ///     lhs.overflowing_add(rhs)
+    /// }
+    /// ```
+    /// You can use the above generic function func<>() for all Uint-supported
+    /// data types in a same scope. Look into the next example.
+    /// 
+    /// # Collective Example
     /// ```
     /// use Cryptocol::number::Uint;
     /// fn main()
@@ -331,7 +681,7 @@ pub trait Uint: Copy + Clone + Sized //+ Display + Debug + ToString
     ///     let b_u128 = func(a_u128.0, 1_u128);
     ///     println!("{} + 1 = {}\nOverflow = {}", a_u128.0, b_u128.0, b_u128.1);
     ///     assert_eq!(b_u128.0, 0_u128);
-    ///     assert_eq!(b_u128.1, true
+    ///     assert_eq!(b_u128.1, true);
     /// 
     ///     let a_usize = func(usize::MAX - 55_usize, 55_usize);
     ///     println!("{} + 55 = {}\nOverflow = {}", usize::MAX - 55_usize, a_usize.0, a_usize.1);
@@ -387,7 +737,237 @@ pub trait Uint: Copy + Clone + Sized //+ Display + Debug + ToString
     /// It returns self + rhs in the type Self if overflow did not occur.
     /// And, it returns None if overflow occurred.
     /// 
-    /// # Example
+    /// # Example for u8
+    /// ```
+    /// use Cryptocol::number::Uint;
+    /// fn main()
+    /// {
+    ///     let a_u8 = func(u8::MAX - 55_u8, 55_u8);
+    ///     match a_u8
+    ///     {
+    ///         Some(a) => {
+    ///                 println!("{} + 55 = {}", u8::MAX - 55_u8, a);
+    ///                 assert_eq!(a, u8::MAX);
+    ///             },
+    ///         None => {
+    ///                 println!("Overflow happened.");
+    ///                 assert_eq!(a_u8, None);
+    ///             },
+    ///     }
+    /// 
+    ///     let b_u8 = func(a_u8.unwrap(), 1_u8);
+    ///     match b_u8
+    ///     {
+    ///         Some(b) => {
+    ///                 println!("{} + 1 = {}", a_u8.unwrap(), b);
+    ///                 assert_eq!(b, 0_u8);
+    ///             },
+    ///         None => {
+    ///                 println!("Overflow happened.");
+    ///                 assert_eq!(b_u8, None);
+    ///             },
+    ///     }
+    /// }
+    /// 
+    /// fn func<T: Uint>(lhs: T, rhs: T) -> Option<T>
+    /// {
+    ///     lhs.checked_add(rhs)
+    /// }
+    /// ```
+    /// 
+    /// # Example for u16
+    /// ```
+    /// use Cryptocol::number::Uint;
+    /// fn main()
+    /// {
+    ///     let a_u16 = func(u16::MAX - 55_u16, 55_u16);
+    ///     match a_u16
+    ///     {
+    ///         Some(a) => {
+    ///                 println!("{} + 55 = {}", u16::MAX - 55_u16, a);
+    ///                 assert_eq!(a, u16::MAX);
+    ///             },
+    ///         None => {
+    ///                 println!("Overflow happened.");
+    ///                 assert_eq!(a_u16, None);
+    ///             },
+    ///     }
+    /// 
+    ///     let b_u16 = func(a_u16.unwrap(), 1_u16);
+    ///     match b_u16
+    ///     {
+    ///         Some(b) => {
+    ///                 println!("{} + 1 = {}", a_u16.unwrap(), b);
+    ///                 assert_eq!(b, 0_u16);
+    ///             },
+    ///         None => {
+    ///                 println!("Overflow happened.");
+    ///                 assert_eq!(b_u16, None);
+    ///             },
+    ///     }
+    /// }
+    /// 
+    /// fn func<T: Uint>(lhs: T, rhs: T) -> Option<T>
+    /// {
+    ///     lhs.checked_add(rhs)
+    /// }
+    /// ```
+    /// 
+    /// # Example for u32
+    /// ```
+    /// use Cryptocol::number::Uint;
+    /// fn main()
+    /// {
+    ///     let a_u32 = func(u32::MAX - 55_u32, 55_u32);
+    ///     match a_u32
+    ///     {
+    ///         Some(a) => {
+    ///                 println!("{} + 55 = {}", u32::MAX - 55_u32, a);
+    ///                 assert_eq!(a, u32::MAX);
+    ///             },
+    ///         None => {
+    ///                 println!("Overflow happened.");
+    ///                 assert_eq!(a_u32, None);
+    ///             },
+    ///     }
+    /// 
+    ///     let b_u32 = func(a_u32.unwrap(), 1_u32);
+    ///     match b_u32
+    ///     {
+    ///         Some(b) => {
+    ///                 println!("{} + 1 = {}", a_u32.unwrap(), b);
+    ///                 assert_eq!(b, 0_u32);
+    ///             },
+    ///         None => {
+    ///                 println!("Overflow happened.");
+    ///                 assert_eq!(b_u32, None);
+    ///             },
+    ///     }
+    /// }
+    /// 
+    /// fn func<T: Uint>(lhs: T, rhs: T) -> Option<T>
+    /// {
+    ///     lhs.checked_add(rhs)
+    /// }
+    /// ```
+    /// 
+    /// # Example for u64
+    /// ```
+    /// use Cryptocol::number::Uint;
+    /// fn main()
+    /// {
+    ///     let a_u64 = func(u64::MAX - 55_u64, 55_u64);
+    ///     match a_u64
+    ///     {
+    ///         Some(a) => {
+    ///                 println!("{} + 55 = {}", u64::MAX - 55_u64, a);
+    ///                 assert_eq!(a, u64::MAX);
+    ///             },
+    ///         None => {
+    ///                 println!("Overflow happened.");
+    ///                 assert_eq!(a_u64, None);
+    ///             },
+    ///     }
+    /// 
+    ///     let b_u64 = func(a_u64.unwrap(), 1_u64);
+    ///     match b_u64
+    ///     {
+    ///         Some(b) => {
+    ///                 println!("{} + 1 = {}", a_u64.unwrap(), b);
+    ///                 assert_eq!(b, 0_u64);
+    ///             },
+    ///         None => {
+    ///                 println!("Overflow happened.");
+    ///                 assert_eq!(b_u64, None);
+    ///             },
+    ///     }
+    /// }
+    /// 
+    /// fn func<T: Uint>(lhs: T, rhs: T) -> Option<T>
+    /// {
+    ///     lhs.checked_add(rhs)
+    /// }
+    /// ```
+    /// 
+    /// # Example for u128
+    /// ```
+    /// use Cryptocol::number::Uint;
+    /// fn main()
+    /// {
+    ///     let a_u128 = func(u128::MAX - 55_u128, 55_u128);
+    ///     match a_u128
+    ///     {
+    ///         Some(a) => {
+    ///                 println!("{} + 55 = {}", u128::MAX - 55_u128, a);
+    ///                 assert_eq!(a, u128::MAX);
+    ///             },
+    ///         None => {
+    ///                 println!("Overflow happened.");
+    ///                 assert_eq!(a_u128, None);
+    ///             },
+    ///     }
+    /// 
+    ///     let b_u128 = func(a_u128.unwrap(), 1_u128);
+    ///     match b_u128
+    ///     {
+    ///         Some(b) => {
+    ///                 println!("{} + 1 = {}", a_u128.unwrap(), b);
+    ///                 assert_eq!(b, 0_u128);
+    ///             },
+    ///         None => {
+    ///                 println!("Overflow happened.");
+    ///                 assert_eq!(b_u128, None);
+    ///             },
+    ///     }
+    /// }
+    /// 
+    /// fn func<T: Uint>(lhs: T, rhs: T) -> Option<T>
+    /// {
+    ///     lhs.checked_add(rhs)
+    /// }
+    /// ```
+    /// 
+    /// # Example for usize
+    /// ```
+    /// use Cryptocol::number::Uint;
+    /// fn main()
+    /// {
+    ///     let a_usize = func(usize::MAX - 55_usize, 55_usize);
+    ///     match a_usize
+    ///     {
+    ///         Some(a) => {
+    ///                 println!("{} + 55 = {}", usize::MAX - 55_usize, a);
+    ///                 assert_eq!(a, usize::MAX);
+    ///             },
+    ///         None => {
+    ///                 println!("Overflow happened.");
+    ///                 assert_eq!(a_usize, None);
+    ///             },
+    ///     }
+    /// 
+    ///     let b_usize = func(a_usize.unwrap(), 1_usize);
+    ///     match b_usize
+    ///     {
+    ///         Some(b) => {
+    ///                 println!("{} + 1 = {}", a_usize.unwrap(), b);
+    ///                 assert_eq!(b, 0_usize);
+    ///             },
+    ///         None => {
+    ///                 println!("Overflow happened.");
+    ///                 assert_eq!(b_usize, None);
+    ///             },
+    ///     }
+    /// }
+    /// 
+    /// fn func<T: Uint>(lhs: T, rhs: T) -> Option<T>
+    /// {
+    ///     lhs.checked_add(rhs)
+    /// }
+    /// ```
+    /// You can use the above generic function func<>() for all Uint-supported
+    /// data types in a same scope. Look into the next example.
+    /// 
+    /// # Collective Example
     /// ```
     /// use Cryptocol::number::Uint;
     /// fn main()
@@ -554,7 +1134,6 @@ pub trait Uint: Copy + Clone + Sized //+ Display + Debug + ToString
     ///     lhs.checked_add(rhs)
     /// }
     /// ```
-    /// 
     /// # Plagiarism in descryption
     /// It calls the method checked_add() of implementation of the primitive
     /// unsigned integer types such as`u8`, `u16`, `u32`, `u64`, `u128` and
@@ -2982,7 +3561,7 @@ pub trait Uint: Copy + Clone + Sized //+ Display + Debug + ToString
     /// 
     /// # Panics
     /// It will panic if the result of this method is more than
-    /// the maximum value.
+    /// the possible maximum value.
     /// 
     /// # Output
     /// It returns the self raised to the power of exp, in the type of `Self`.
@@ -2996,75 +3575,75 @@ pub trait Uint: Copy + Clone + Sized //+ Display + Debug + ToString
     ///     println!("3 ** 5 = {}", a_u8);
     ///     assert_eq!(a_u8, 243_u8);
     ///     // It will panic.
-    ///     // println!("3 ** 5 = {}", UInt_pow___func(3_u8, 6_u32));
+    ///     // println!("3 ** 5 = {}", func(3_u8, 6_u32));
     ///     
     ///     let a_u16 = func(9_u16, 5_u32);
     ///     println!("9 ** 5 = {}", a_u16);
     ///     assert_eq!(a_u16, 59049_u16);
     ///     // It will panic.
-    ///     // println!("9 ** 5 = {}", UInt_pow___func(9_u16, 6_u32));
+    ///     // println!("9 ** 5 = {}", func(9_u16, 6_u32));
     /// 
     ///     let a_u32 = func(81_u32, 5_u32);
     ///     println!("81 ** 5 = {}", a_u32);
     ///     assert_eq!(a_u32, 3486784401_u32);
     ///     // It will panic.
-    ///     // println!("81 ** 6 = {}", UInt_pow___func(81_u32, 6_u32));
+    ///     // println!("81 ** 6 = {}", func(81_u32, 6_u32));
     /// 
     ///     let a_u64 = func(6561_u64, 5_u32);
     ///     println!("6561 ** 5 = {}", a_u64);
     ///     assert_eq!(a_u64, 12157665459056928801_u64);
     ///     // It will panic.
-    ///     // println!("6561 ** 6 = {}", UInt_pow___func(6561_u64, 6_u32));
+    ///     // println!("6561 ** 6 = {}", func(6561_u64, 6_u32));
     /// 
     ///     let a_u128 = func(43046721_u128, 5_u32);
     ///     println!("43046721 ** 5 = {}", a_u128);
     ///     assert_eq!(a_u128, 147808829414345923316083210206383297601_u128);
     ///     // It will panic.
-    ///     // println!("43046721 ** 6 = {}", UInt_pow___func(43046721_u64, 6_u32));
+    ///     // println!("43046721 ** 6 = {}", func(43046721_u64, 6_u32));
     /// 
     ///     let a_usize = func(6561_usize, 5_u32);
     ///     println!("6561 ** 5 = {}", a_usize);
     ///     assert_eq!(a_usize, 12157665459056928801_usize);
     ///     // It will panic.
-    ///     // println!("6561 ** 6 = {}", UInt_pow___func(6561_usize, 6_u32));
+    ///     // println!("6561 ** 6 = {}", func(6561_usize, 6_u32));
     /// 
     ///     let a_Short = Short::new_with(9);
-    ///     let b_Short = UInt_pow___func(a_Short, 5_u32);
+    ///     let b_Short = func(a_Short, 5_u32);
     ///     println!("9 ** 5 = {}", unsafe { b_Short.Short } );
     ///     assert_eq!(unsafe { b_Short.Short }, 59049_u16);
     ///     // It will panic.
-    ///     // println!("9 ** 5 = {}", UInt_pow___func(a_Short, 6_u32));
+    ///     // println!("9 ** 5 = {}", func(a_Short, 6_u32));
     ///     
     ///     let a_uint = UInt::new_with(81);
-    ///     let b_uint = UInt_pow___func(a_uint, 5_u32);
+    ///     let b_uint = func(a_uint, 5_u32);
     ///     println!("81 ** 5 = {}", unsafe { b_uint.uint } );
     ///     assert_eq!(unsafe { b_uint.uint }, 3486784401_u32);
     ///     // It will panic.
-    ///     // println!("81 ** 6 = {}", UInt_pow___func(a_uint, 6_u32));
+    ///     // println!("81 ** 6 = {}", func(a_uint, 6_u32));
     ///     
     ///     let a_ulong = ULong::new_with(6561);
-    ///     let b_ulong = UInt_pow___func(a_ulong, 5_u32);
+    ///     let b_ulong = func(a_ulong, 5_u32);
     ///     println!("6561 ** 5 = {}", unsafe { b_ulong.ulong } );
     ///     assert_eq!(unsafe { b_ulong.ulong }, 12157665459056928801_u64);
     ///     // It will panic.
-    ///     // println!("6561 ** 6 = {}", UInt_pow___func(a_ulong, 6_u32));
+    ///     // println!("6561 ** 6 = {}", func(a_ulong, 6_u32));
     ///     
     ///     let a_ulonger = ULonger::new_with(43046721);
-    ///     let b_ulonger = UInt_pow___func(a_ulonger, 5_u32);
+    ///     let b_ulonger = func(a_ulonger, 5_u32);
     ///     println!("43046721 ** 5 = {}", unsafe { b_ulonger.ulonger } );
     ///     assert_eq!(unsafe { b_ulonger.ulonger }, 147808829414345923316083210206383297601_u128);
     ///     // It will panic.
-    ///     // println!("43046721 ** 6 = {}", UInt_pow___func(a_ulonger, 6_u32));
+    ///     // println!("43046721 ** 6 = {}", func(a_ulonger, 6_u32));
     ///     
     ///     let a_size = USize::new_with(6561);
-    ///     let b_size = UInt_pow___func(a_size, 5_u32);
+    ///     let b_size = func(a_size, 5_u32);
     ///     println!("6561 ** 5 = {}", unsafe { b_size.size } );
     ///     assert_eq!(unsafe { b_size.size }, 12157665459056928801_usize);
     ///     // It will panic.
-    ///     // println!("6561 ** 6 = {}", UInt_pow___func(a_size, 6_u32));
+    ///     // println!("6561 ** 6 = {}", func(a_size, 6_u32));
     /// }
     /// 
-    /// fn func<T: Uint>(lhs: T, rhs: i32) -> T
+    /// fn func<T: Uint>(lhs: T, rhs: u32) -> T
     /// {
     ///     lhs.pow(rhs)
     /// }
@@ -3097,33 +3676,148 @@ pub trait Uint: Copy + Clone + Sized //+ Display + Debug + ToString
     /// for the primitive type `usize`, read [here](https://doc.rust-lang.org/core/primitive.usize.html#method.pow).
     fn pow(self, exp: u32) -> Self;
 
-    /// Wrapping (modular) remainder. Computes self % rhs. Wrapped remainder
-    /// calculation on unsigned types is just the regular remainder calculation.
-    /// There’s no way wrapping could ever happen. This function exists, so that
-    /// all operations are accounted for in the wrapping operations. In order to
-    /// use this trait, you have to import (use) `Cryptocol::number::Uint`.
-    /// [Read more](https://doc.rust-lang.org/core/primitive.u8.html#method.wrapping_rem).
+    /// Computes self.pow(exp) with wrapping around at the boundary of the type.
+    /// 
+    /// # Features
+    /// Wrapping (modular) exponentiation.
+    /// __The trait Uint is meaningful when you use it in generic context.__
+    /// 
+    /// # Output
+    /// It returns the self raised to the power of exp, in the type of `Self`.
     /// 
     /// # Example
     /// ```
-    /// use Cryptocol::number::Uint;
+    /// use Cryptocol::number::*;
     /// fn main()
     /// {
-    ///     let a = func(50_u8, 4_u8);
-    ///     println!("50 % 4 = {}", a);
-    ///     assert_eq!(a, 0_u8);
+    ///     let a_u8 = func(3_u8, 5_u32);
+    ///     println!("3 ** 5 = {}", a_u8);
+    ///     assert_eq!(a_u8, 243_u8);
     ///     
-    ///     let b = func(u128::MAX, u128::MAX);
-    ///     println!("{} % {} = {}", u128::MAX, u128::MAX, b);
-    ///     assert_eq!(b, 0_u128);
+    ///     let b_u8 = func(3_u8, 6_u32);
+    ///     println!("3 ** 6 = {}", b_u8);
+    ///     assert_eq!(b_u8, 217_u8);
+    ///     
+    ///     let a_u16 = func(9_u16, 5_u32);
+    ///     println!("9 ** 5 = {}", a_u16);
+    ///     assert_eq!(a_u16, 59049_u16);
+    ///     
+    ///     let b_u16 = func(9_u16, 6_u32);
+    ///     println!("9 ** 6 = {}", b_u16);
+    ///     assert_eq!(b_u16, 7153_u16);
+    ///     
+    ///     let a_u32 = func(81_u32, 5_u32);
+    ///     println!("81 ** 5 = {}", a_u32);
+    ///     assert_eq!(a_u32, 3486784401_u32);
+    ///     
+    ///     let b_u32 = func(81_u32, 6_u32);
+    ///     println!("81 ** 6 = {}", b_u32);
+    ///     assert_eq!(b_u32, 3256662241_u32);
+    ///     
+    ///     let a_u64 = func(6561_u64, 5_u32);
+    ///     println!("6561 ** 5 = {}", a_u64);
+    ///     assert_eq!(a_u64, 12157665459056928801_u64);
+    ///     
+    ///     let b_u64 = func(6561_u64, 6_u32);
+    ///     println!("6561 ** 6 = {}", b_u64);
+    ///     assert_eq!(b_u64, 2721702152408675777_u64);
+    ///     
+    ///     let a_u128 = func(43046721_u128, 5_u32);
+    ///     println!("43046721 ** 5 = {}", a_u128);
+    ///     assert_eq!(a_u128, 147808829414345923316083210206383297601_u128);
+    ///     
+    ///     let b_u128 = func(43046721_u128, 6_u32);
+    ///     println!("43046721 ** 6 = {}", b_u128);
+    ///     assert_eq!(b_u128, 333574137813082321045752866839264852865_u128);
+    ///     
+    ///     let a_usize = func(6561_usize, 5_u32);
+    ///     println!("6561 ** 5 = {}", a_usize);
+    ///     assert_eq!(a_usize, 12157665459056928801_usize);
+    ///     
+    ///     let b_usize = func(6561_usize, 6_u32);
+    ///     println!("6561 ** 6 = {}", b_usize);
+    ///     assert_eq!(b_usize, 2721702152408675777_usize);
+    ///     
+    ///     let a_ushort = ShortUnion::new_with(9);
+    ///     let b_ushort = func(a_ushort, 5_u32);
+    ///     println!("9 ** 5 = {}", b_ushort);
+    ///     assert_eq!(b_ushort.get(), 59049_u16);
+    ///     
+    ///     let c_ushort = func(a_ushort, 6_u32);
+    ///     println!("9 ** 6 = {}", c_ushort);
+    ///     assert_eq!(c_ushort.get(), 7153_u16);
+    ///     
+    ///     let a_uint = IntUnion::new_with(81);
+    ///     let b_uint = func(a_uint, 5_u32);
+    ///     println!("81 ** 5 = {}", b_uint);
+    ///     assert_eq!(b_uint.get(), 3486784401_u32);
+    ///     
+    ///     let c_uint = func(a_uint, 6_u32);
+    ///     println!("81 ** 6 = {}", c_uint);
+    ///     assert_eq!(c_uint.get(), 3256662241_u32);
+    ///     
+    ///     let a_ulong = LongUnion::new_with(6561);
+    ///     let b_ulong = func(a_ulong, 5_u32);
+    ///     println!("6561 ** 5 = {}", b_ulong);
+    ///     assert_eq!(b_ulong.get(), 12157665459056928801_u64);
+    ///     
+    ///     let c_ulong = func(a_ulong, 6_u32);
+    ///     println!("6561 ** 6 = {}", c_ulong);
+    ///     assert_eq!(c_ulong.get(), 2721702152408675777_u64);
+    ///     
+    ///     let a_ulonger = LongerUnion::new_with(43046721);
+    ///     let b_ulonger = func(a_ulonger, 5_u32);
+    ///     println!("43046721 ** 5 = {}", b_ulonger);
+    ///     assert_eq!(b_ulonger.get(), 147808829414345923316083210206383297601_u128);
+    ///     
+    ///     let c_ulonger = func(a_ulonger, 6_u32);
+    ///     println!("43046721 ** 6 = {}", c_ulonger);
+    ///     assert_eq!(c_ulonger.get(), 333574137813082321045752866839264852865_u128);
+    ///     
+    ///     let a_size = SizeUnion::new_with(6561);
+    ///     let b_size = func(a_size, 5_u32);
+    ///     println!("6561 ** 5 = {}", b_size);
+    ///     assert_eq!(b_size.get(), 12157665459056928801_usize);
+    ///     
+    ///     let c_size = func(a_size, 6_u32);
+    ///     println!("6561 ** 6 = {}", c_size);
+    ///     assert_eq!(c_size.get(), 2721702152408675777_usize);
     /// }
     /// 
-    /// fn func<T: Uint>(lhs: T, rhs: T) -> T
+    /// fn func<T: Uint>(lhs: T, rhs: u32) -> T
     /// {
-    ///     lhs.wrapping_rem(rhs)
+    ///     lhs.wrapping_pow(rhs)
     /// }
     /// ```
+    /// 
+    /// # Plagiarism in descryption
+    /// It calls the method wrapping_pow() of implementation of the primitive
+    /// unsigned integer types such as`u8`, `u16`, `u32`, `u64`, `u128` and
+    /// `usize` directly. So, all the description of this method is mainly the
+    /// same as that of the method wrapping_pow() of implementation of the
+    /// primitive unsigned integer types except example codes. Confer to the
+    /// descryptions that are linked to in the section _Reference_. This
+    /// plagiarism is not made maliciously but is made for the reason of
+    /// effectiveness and efficiency so that users may understand better and
+    /// easily how to use this method with simiilarity to the method
+    /// wrapping_pow() of implementation of the primitive unsigned integer types.
+    /// 
+    /// # References
+    /// - If you want to know about the definition of the method `wrapping_pow()`
+    /// for the primitive type `u8`, read [here](https://doc.rust-lang.org/core/primitive.u8.html#method.wrapping_pow).
+    /// - If you want to know about the definition of the method `wrapping_pow()`
+    /// for the primitive type `u16`, read [here](https://doc.rust-lang.org/core/primitive.u16.html#method.wrapping_pow).
+    /// - If you want to know about the definition of the method `wrapping_pow()`
+    /// for the primitive type `u32`, read [here](https://doc.rust-lang.org/core/primitive.u32.html#method.wrapping_pow).
+    /// - If you want to know about the definition of the method `wrapping_pow()`
+    /// for the primitive type `u64`, read [here](https://doc.rust-lang.org/core/primitive.u64.html#method.wrapping_pow).
+    /// - If you want to know about the definition of the method `wrapping_pow()`
+    /// for the primitive type `u128`, read [here](https://doc.rust-lang.org/core/primitive.u128.html#method.wrapping_pow).
+    /// - If you want to know about the definition of the method `wrapping_pow()`
+    /// for the primitive type `usize`, read [here](https://doc.rust-lang.org/core/primitive.usize.html#method.wrapping_pow).
     fn wrapping_pow(self, exp: u32) -> Self;
+
+
     fn overflowing_pow(self, exp: u32) -> (Self, bool);
     fn checked_pow(self, exp: u32) -> Option<Self>;
     fn saturating_pow(self, exp: u32) -> Self;

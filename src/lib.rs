@@ -33,10 +33,21 @@
 //! at least 80%. The unchecked items have not yet been implemented less than
 //! 80% or have not yet even been started to implement.
 //! 
+//! ## Foundations for Big Numbers
+//! - [ ] Unions for primitive data types and their implementation --- 
+//! [`ShortUnion`](number/int_unions/union.ShortUnion.html#union.ShortUnion),
+//! [`IntUnion`](number/int_unions/union.IntUnion.html#union.IntUnion),
+//! [`LongUnion`](number/int_unions/union.LongUnion.html#union.LongUnion),
+//! [`LongerUnion`](number/int_unions/union.LongerUnion.html#union.LongerUnion), and
+//! [`SizeUnion`](number/int_unions/union.SizeUnion.html#union.SizeUnion)
+//! - [ ] Trait UInt and its implementation for primitive data types and Unions ---
+//! [Uint](number/uint/trait.Uint.html#trait.Uint)
+//! - [ ] Trait SInt and its implementation for primitive data types and Unions
+//! 
 //! ## Big Numbers
-//! - [x] Fixed Sized Big Unsigned Integer Operation
-//! - [ ] Fixed Sized Big Signed Integer Operation
-//! - [ ] Variable Sized Big Signed Integer Operation
+//! - [x] Fixed Sized Big Unsigned Integer Operation --- [`BigUInt`](number/big_uint/struct.BigUInt.html#struct.BigUInt)
+//! - [ ] Fixed Sized Big Signed Integer Operation --- BigSInt
+//! - [ ] Variable Sized Big Signed Integer Operation --- LargeInt
 //! 
 //! ## Hash Algorithms
 //! - [ ] MD5

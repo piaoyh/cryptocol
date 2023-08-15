@@ -1,0 +1,906 @@
+// Copyright 2023 PARK Youngho.
+//
+// Licensed under the Apache License, Version 2.0 <LICENSE-APACHE or
+// https://www.apache.org/licenses/LICENSE-2.0> or the MIT license
+// <LICENSE-MIT or https://opensource.org/licenses/MIT>, at your option.
+// This file may not be copied, modified, or distributed
+// except according to those terms.
+
+#![allow(missing_docs)]
+#![allow(missing_doc_code_examples)]
+
+use std::time::SystemTime;
+use std::fmt::{ Display, Debug };
+use std::ops::*;
+use std::convert::*;
+use std::mem::size_of;
+
+use std::str::FromStr;
+use Cryptocol::number::*;
+use rand_distr::num_traits::PrimInt; //{u256, BigInteger, HugeInteger};
+
+pub fn test_main_Unions()
+{
+    ShortUnion___main();
+    IntUnion___main();
+    LongUnion___main();
+    LongerUnion___main();
+    SizeUnion___main();
+
+    ShortUnion_get_ubyte___main();
+    ShortUnion_get_sbyte___main();
+    LongerUnion_get_ubyte___main();
+    LongerUnion_get_sbyte___main();
+
+    ShortUnion_debug_fmt___main();
+    IntUnion_debug_fmt___main();
+    LongUnion_debug_fmt___main();
+    LongerUnion_debug_fmt___main();
+    SizeUnion_debug_fmt___main();
+}
+
+
+
+fn ShortUnion___main()
+{
+    println!("ShortUnion___main()");
+    let a = ShortUnion::new_with(55468_u16);
+    println!("a.this = {}, {}", unsafe { a.this }, a.get());
+    println!("a.that = {}, {}", unsafe { a.that }, a.get_signed());
+    println!("a.ushort = {}", unsafe { a.ushort });
+    println!("a.sshort = {}", unsafe { a.sshort });
+
+    #[cfg(target_endian = "little")]
+    {
+        for i in 0..2
+            { println!("a.ubyte[{}] = {}, {}", i, unsafe { a.ubyte[i] }, a.get_ubyte_(i)); }
+        for i in 0..2
+            { println!("a.sbyte[{}] = {}, {}", i, unsafe { a.sbyte[i] }, a.get_sbyte_(i)); }
+        #[cfg(target_pointer_width = "8")]
+        {
+            const N: usize = 2;
+            for i in 0..N
+                { println!("a.u_size[{}] = {}, {}", i, unsafe { a.u_size[i] }, a.get_usize_(i)); }
+            for i in 0..N
+                { println!("a.s_size[{}] = {}, {}", i, unsafe { a.s_size[i] }, a.get_ssize_(i)); }
+        }
+    }
+    #[cfg(target_pointer_width = "16")]
+    {
+        println!("a.u_size = {}", unsafe { a.u_size });
+        println!("a.s_size = {}", unsafe { a.s_size });
+    }
+
+    assert_eq!(unsafe { a.this }, 55468_u16);
+    assert_eq!(unsafe { a.that }, -10068_i16);
+    assert_eq!(unsafe { a.ushort }, 55468_u16);
+    assert_eq!(unsafe { a.sshort }, -10068_i16);
+    #[cfg(target_endian = "little")]
+    {
+        assert_eq!(unsafe { a.ubyte[0] }, 172_u8);
+        assert_eq!(unsafe { a.ubyte[1] }, 216_u8);
+        assert_eq!(unsafe { a.sbyte[0] }, -84_i8);
+        assert_eq!(unsafe { a.sbyte[1] }, -40_i8);
+    }
+    println!("--------------------------------------");
+}
+
+fn IntUnion___main()
+{
+    println!("IntUnion___main()");
+    let a = IntUnion::new_with_signed(-454688546_i32);
+    println!("a.this = {}, {}", unsafe { a.this }, a.get());
+    println!("a.that = {}, {}", unsafe { a.that }, a.get_signed());
+    println!("a.uint = {}", unsafe { a.uint });
+    println!("a.sint = {}", unsafe { a.uint });
+    #[cfg(target_endian = "little")]
+    {
+        for i in 0..2
+            { println!("a.ushort[{}] = {}, {}", i, unsafe { a.ushort[i] }, a.get_ushort_(i)); }
+        for i in 0..2
+            { println!("a.sshort[{}] = {}, {}", i, unsafe { a.sshort[i] }, a.get_sshort_(i)); }
+        for i in 0..4
+            { println!("a.ubyte[{}] = {}, {}", i, unsafe { a.ubyte[i] }, a.get_ubyte_(i)); }
+        for i in 0..4
+            { println!("a.sbyte[{}] = {}, {}", i, unsafe { a.sbyte[i] }, a.get_sbyte_(i)); }
+        #[cfg(target_pointer_width = "16")]
+        {
+            const N: usize = 2;
+            for i in 0..N
+                { println!("a.u_size[{}] = {}, {}", i, unsafe { a.u_size[i] }, a.get_usize_(i)); }
+            for i in 0..N
+                { println!("a.s_size[{}] = {}, {}", i, unsafe { a.s_size[i] }, a.get_ssize_(i)); }
+        }
+        #[cfg(target_pointer_width = "8")]
+        {
+            const N: usize = 4;
+            for i in 0..N
+                { println!("a.u_size[{}] = {}, {}", i, unsafe { a.u_size[i] }, a.get_usize_(i)); }
+            for i in 0..N
+                { println!("a.s_size[{}] = {}, {}", i, unsafe { a.s_size[i] }, a.get_ssize_(i)); }
+        }
+    }
+    #[cfg(target_pointer_width = "32")]
+    {
+        println!("a.u_size = {}", unsafe { a.u_size });
+        println!("a.s_size = {}", unsafe { a.s_size });
+    }
+
+    assert_eq!(unsafe { a.this }, 3840278750_u32);
+    assert_eq!(unsafe { a.that }, -454688546_i32);
+    assert_eq!(unsafe { a.uint }, 3840278750_u32);
+    assert_eq!(unsafe { a.sint }, -454688546_i32);
+    #[cfg(target_endian = "little")]
+    {
+        assert_eq!(unsafe { a.ushort[0] }, 222_u16);
+        assert_eq!(unsafe { a.ushort[1] }, 58598_u16);
+        assert_eq!(unsafe { a.sshort[0] }, 222_i16);
+        assert_eq!(unsafe { a.sshort[1] }, -6938_i16);
+        assert_eq!(unsafe { a.ubyte[0] }, 222_u8);
+        assert_eq!(unsafe { a.ubyte[1] }, 0_u8);
+        assert_eq!(unsafe { a.ubyte[2] }, 230_u8);
+        assert_eq!(unsafe { a.ubyte[3] }, 228_u8);
+        assert_eq!(unsafe { a.sbyte[0] }, -34_i8);
+        assert_eq!(unsafe { a.sbyte[1] }, 0_i8);
+        assert_eq!(unsafe { a.sbyte[2] }, -26_i8);
+        assert_eq!(unsafe { a.sbyte[3] }, -28_i8);
+    }
+    println!("--------------------------------------");
+}
+
+
+fn LongUnion___main()
+{
+    println!("LongUnion___main()");
+    let a = LongUnion::new_with_signed(-1234567890987645_i64);
+    println!("a.this = {}, {}", unsafe { a.this }, a.get());
+    println!("a.that = {}, {}", unsafe { a.that }, a.get_signed());
+    println!("a.ulong = {}", unsafe { a.ulong });
+    println!("a.slong = {}", unsafe { a.slong });
+    #[cfg(target_endian = "little")]
+    {
+        for i in 0..2
+            { println!("a.uint[{}] = {}, {}", i, unsafe { a.uint[i] }, a.get_uint_(i)); }
+        for i in 0..2
+            { println!("a.sint[{}] = {}, {}", i, unsafe { a.sint[i] }, a.get_sint_(i)); }
+        for i in 0..4
+            { println!("a.ushort[{}] = {}, {}", i, unsafe { a.ushort[i] }, a.get_ushort_(i)); }
+        for i in 0..4
+            { println!("a.sshort[{}] = {}, {}", i, unsafe { a.sshort[i] }, a.get_sshort_(i)); }
+        for i in 0..8
+            { println!("a.ubyte[{}] = {}, {}", i, unsafe { a.ubyte[i] }, a.get_ubyte_(i)); }
+        for i in 0..8
+            { println!("a.sbyte[{}] = {}, {}", i, unsafe { a.sbyte[i] }, a.get_sbyte_(i)); }
+        #[cfg(target_pointer_width = "32")]
+        {
+            const N: usize = 2;
+            for i in 0..N
+                { println!("a.u_size[{}] = {}, {}", i, unsafe { a.u_size[i] }, a.get_usize_(i)); }
+            for i in 0..N
+                { println!("a.s_size[{}] = {}, {}", i, unsafe { a.s_size[i] }, a.get_ssize_(i)); }
+        }
+        #[cfg(target_pointer_width = "16")]
+        {
+            const N: usize = 4;
+            for i in 0..N
+                { println!("a.u_size[{}] = {}, {}", i, unsafe { a.u_size[i] }, a.get_usize_(i)); }
+            for i in 0..N
+                { println!("a.s_size[{}] = {}, {}", i, unsafe { a.s_size[i] }, a.get_ssize_(i)); }
+        }
+        #[cfg(target_pointer_width = "8")]
+        {
+            const N: usize = 8;
+            for i in 0..N
+                { println!("a.u_size[{}] = {}, {}", i, unsafe { a.u_size[i] }, a.get_usize_(i)); }
+            for i in 0..N
+                { println!("a.s_size[{}] = {}, {}", i, unsafe { a.s_size[i] }, a.get_ssize_(i)); }
+        }
+    }
+    #[cfg(target_pointer_width = "64")]
+    {
+        println!("a.u_size = {}", unsafe { a.u_size });
+        println!("a.s_size = {}", unsafe { a.s_size });
+    }
+
+    assert_eq!(unsafe { a.this }, 18445509505818563971_u64);
+    assert_eq!(unsafe { a.that }, -1234567890987645_i64);
+    assert_eq!(unsafe { a.ulong }, 18445509505818563971_u64);
+    assert_eq!(unsafe { a.slong }, -1234567890987645_i64);
+    #[cfg(target_endian = "little")]
+    {
+        assert_eq!(unsafe { a.uint[0] }, 3278378371_u32);
+        assert_eq!(unsafe { a.uint[1] }, 4294679850_u32);
+        assert_eq!(unsafe { a.sint[0] }, -1016588925_i32);
+        assert_eq!(unsafe { a.sint[1] }, -287446_i32);
+        assert_eq!(unsafe { a.ushort[0] }, 5507_u16);
+        assert_eq!(unsafe { a.ushort[1] }, 50024_u16);
+        assert_eq!(unsafe { a.ushort[2] }, 40234_u16);
+        assert_eq!(unsafe { a.ushort[3] }, 65531_u16);
+        assert_eq!(unsafe { a.sshort[0] }, 5507_i16);
+        assert_eq!(unsafe { a.sshort[1] }, -15512_i16);
+        assert_eq!(unsafe { a.sshort[2] }, -25302_i16);
+        assert_eq!(unsafe { a.sshort[3] }, -5_i16);
+        assert_eq!(unsafe { a.ubyte[0] }, 131_u8);
+        assert_eq!(unsafe { a.ubyte[1] }, 21_u8);
+        assert_eq!(unsafe { a.ubyte[2] }, 104_u8);
+        assert_eq!(unsafe { a.ubyte[3] }, 195_u8);
+        assert_eq!(unsafe { a.ubyte[4] }, 42_u8);
+        assert_eq!(unsafe { a.ubyte[5] }, 157_u8);
+        assert_eq!(unsafe { a.ubyte[6] }, 251_u8);
+        assert_eq!(unsafe { a.ubyte[7] }, 255_u8);
+        assert_eq!(unsafe { a.sbyte[0] }, -125_i8);
+        assert_eq!(unsafe { a.sbyte[1] }, 21_i8);
+        assert_eq!(unsafe { a.sbyte[2] }, 104_i8);
+        assert_eq!(unsafe { a.sbyte[3] }, -61_i8);
+        assert_eq!(unsafe { a.sbyte[4] }, 42_i8);
+        assert_eq!(unsafe { a.sbyte[5] }, -99_i8);
+        assert_eq!(unsafe { a.sbyte[6] }, -5_i8);
+        assert_eq!(unsafe { a.sbyte[7] }, -1_i8);
+    }
+    println!("--------------------------------------");
+}
+
+
+fn LongerUnion___main()
+{
+    println!("LongerUnion___main()");
+    let a = LongerUnion::new_with_signed(-1234567890987654321012345678987654321_i128);
+    println!("a.this = {}, {}", unsafe { a.this }, a.get());
+    println!("a.that = {}, {}", unsafe { a.that }, a.get_signed());
+    println!("a.ulonger = {}", unsafe { a.ulonger });
+    println!("a.slonger = {}", unsafe { a.slonger });
+    #[cfg(target_endian = "little")]
+    {
+        for i in 0..2
+            { println!("a.ulong[{}] = {}, {}", i, unsafe { a.ulong[i] }, a.get_ulong_(i)); }
+        for i in 0..2
+            { println!("a.slong[{}] = {}, {}", i, unsafe { a.slong[i] }, a.get_slong_(i)); }
+        for i in 0..4
+            { println!("a.uint[{}] = {}, {}", i, unsafe { a.uint[i] }, a.get_uint_(i)); }
+        for i in 0..4
+            { println!("a.sint[{}] = {}, {}", i, unsafe { a.sint[i] }, a.get_sint_(i)); }
+        for i in 0..8
+            { println!("a.ushort[{}] = {}, {}", i, unsafe { a.ushort[i] }, a.get_ushort_(i)); }
+        for i in 0..8
+            { println!("a.sshort[{}] = {}, {}", i, unsafe { a.sshort[i] }, a.get_sshort_(i)); }
+        for i in 0..16
+            { println!("a.ubyte[{}] = {}, {}", i, unsafe { a.ubyte[i] }, a.get_ubyte_(i)); }
+        for i in 0..16
+            { println!("a.sbyte[{}] = {}, {}", i, unsafe { a.sbyte[i] }, a.get_sbyte_(i)); }
+        #[cfg(target_pointer_width = "64")]
+        {
+            const N: usize = 2;
+            for i in 0..N
+                { println!("a.u_size[{}] = {}, {}", i, unsafe { a.u_size[i] }, a.get_usize_(i)); }
+            for i in 0..N
+                { println!("a.s_size[{}] = {}, {}", i, unsafe { a.s_size[i] }, a.get_ssize_(i)); }
+        }
+        #[cfg(target_pointer_width = "32")]
+        {
+            const N: usize = 4;
+            for i in 0..N
+                { println!("a.u_size[{}] = {}, {}", i, unsafe { a.u_size[i] }, a.get_usize_(i)); }
+            for i in 0..N
+                { println!("a.s_size[{}] = {}, {}", i, unsafe { a.s_size[i] }, a.get_ssize_(i)); }
+        }
+        #[cfg(target_pointer_width = "16")]
+        {
+            const N: usize = 8;
+            for i in 0..N
+                { println!("a.u_size[{}] = {}, {}", i, unsafe { a.u_size[i] }, a.get_usize_(i)); }
+            for i in 0..N
+                { println!("a.s_size[{}] = {}, {}", i, unsafe { a.s_size[i] }, a.get_ssize_(i)); }
+        }
+        #[cfg(target_pointer_width = "8")]
+        {
+            const N: usize = 16;
+            for i in 0..N
+                { println!("a.u_size[{}] = {}, {}", i, unsafe { a.u_size[i] }, a.get_usize_(i)); }
+            for i in 0..N
+                { println!("a.s_size[{}] = {}, {}", i, unsafe { a.s_size[i] }, a.get_ssize_(i)); }
+        }
+    }
+    #[cfg(target_pointer_width = "128")]
+    {
+        println!("a.u_size = {}", unsafe { a.u_size });
+        println!("a.s_size = {}", unsafe { a.s_size });
+    }
+    assert_eq!(unsafe { a.this }, 339047799029950809142362261752780557135_u128);
+    assert_eq!(unsafe { a.that }, -1234567890987654321012345678987654321_i128);
+    assert_eq!(unsafe { a.ulonger }, 339047799029950809142362261752780557135_u128);
+    assert_eq!(unsafe { a.slonger }, -1234567890987654321012345678987654321_i128);
+    #[cfg(target_endian = "little")]
+    {
+        assert_eq!(unsafe { a.ulong[0] }, 13664881099896654671_u64);
+        assert_eq!(unsafe { a.ulong[1] }, 18379818014235068504_u64);
+        assert_eq!(unsafe { a.slong[0] }, -4781862973812896945_i64);
+        assert_eq!(unsafe { a.slong[1] }, -66926059474483112_i64);
+        assert_eq!(unsafe { a.uint[0] }, 4048161615_u32);
+        assert_eq!(unsafe { a.uint[1] }, 3181603061_u32);
+        assert_eq!(unsafe { a.uint[2] }, 2127464536_u32);
+        assert_eq!(unsafe { a.uint[3] }, 4279384858_u32);
+        assert_eq!(unsafe { a.sint[0] }, -246805681_i32);
+        assert_eq!(unsafe { a.sint[1] }, -1113364235_i32);
+        assert_eq!(unsafe { a.sint[2] }, 2127464536_i32);
+        assert_eq!(unsafe { a.sint[3] }, -15582438_i32);
+        assert_eq!(unsafe { a.ushort[0] }, 2895_u16);
+        assert_eq!(unsafe { a.ushort[1] }, 61770_u16);
+        assert_eq!(unsafe { a.ushort[2] }, 26869_u16);
+        assert_eq!(unsafe { a.ushort[3] }, 48547_u16);
+        assert_eq!(unsafe { a.ushort[4] }, 34904_u16);
+        assert_eq!(unsafe { a.ushort[5] }, 32462_u16);
+        assert_eq!(unsafe { a.ushort[6] }, 15130_u16);
+        assert_eq!(unsafe { a.ushort[7] }, 65298_u16);
+        assert_eq!(unsafe { a.sshort[0] }, 2895_i16);
+        assert_eq!(unsafe { a.sshort[1] }, -3766_i16);
+        assert_eq!(unsafe { a.sshort[2] }, 26869_i16);
+        assert_eq!(unsafe { a.sshort[3] }, -16989_i16);
+        assert_eq!(unsafe { a.sshort[4] }, -30632_i16);
+        assert_eq!(unsafe { a.sshort[5] }, 32462_i16);
+        assert_eq!(unsafe { a.sshort[6] }, 15130_i16);
+        assert_eq!(unsafe { a.sshort[7] }, -238_i16);
+        assert_eq!(unsafe { a.ubyte[0] }, 79_u8);
+        assert_eq!(unsafe { a.ubyte[1] }, 11_u8);
+        assert_eq!(unsafe { a.ubyte[2] }, 74_u8);
+        assert_eq!(unsafe { a.ubyte[3] }, 241_u8);
+        assert_eq!(unsafe { a.ubyte[4] }, 245_u8);
+        assert_eq!(unsafe { a.ubyte[5] }, 104_u8);
+        assert_eq!(unsafe { a.ubyte[6] }, 163_u8);
+        assert_eq!(unsafe { a.ubyte[7] }, 189_u8);
+        assert_eq!(unsafe { a.ubyte[8] }, 88_u8);
+        assert_eq!(unsafe { a.ubyte[9] }, 136_u8);
+        assert_eq!(unsafe { a.ubyte[10] }, 206_u8);
+        assert_eq!(unsafe { a.ubyte[11] }, 126_u8);
+        assert_eq!(unsafe { a.ubyte[12] }, 26_u8);
+        assert_eq!(unsafe { a.ubyte[13] }, 59_u8);
+        assert_eq!(unsafe { a.ubyte[14] }, 18_u8);
+        assert_eq!(unsafe { a.ubyte[15] }, 255_u8);
+        assert_eq!(unsafe { a.sbyte[0] }, 79_i8);
+        assert_eq!(unsafe { a.sbyte[1] }, 11_i8);
+        assert_eq!(unsafe { a.sbyte[2] }, 74_i8);
+        assert_eq!(unsafe { a.sbyte[3] }, -15_i8);
+        assert_eq!(unsafe { a.sbyte[4] }, -11_i8);
+        assert_eq!(unsafe { a.sbyte[5] }, 104_i8);
+        assert_eq!(unsafe { a.sbyte[6] }, -93_i8);
+        assert_eq!(unsafe { a.sbyte[7] }, -67_i8);
+        assert_eq!(unsafe { a.sbyte[8] }, 88_i8);
+        assert_eq!(unsafe { a.sbyte[9] }, -120_i8);
+        assert_eq!(unsafe { a.sbyte[10] }, -50_i8);
+        assert_eq!(unsafe { a.sbyte[11] }, 126_i8);
+        assert_eq!(unsafe { a.sbyte[12] }, 26_i8);
+        assert_eq!(unsafe { a.sbyte[13] }, 59_i8);
+        assert_eq!(unsafe { a.sbyte[14] }, 18_i8);
+        assert_eq!(unsafe { a.sbyte[15] }, -1_i8);
+    }
+    println!("--------------------------------------");
+}
+
+
+fn SizeUnion___main()
+{
+    println!("SizeUnion___main()");
+    #[cfg(target_pointer_width = "128")]
+    let a = SizeUnion::new_with_signed(-1234567890987654321012345678987654321_isize);
+    #[cfg(target_pointer_width = "64")]
+    let a = SizeUnion::new_with_signed(-1234567890123456789_isize);
+    #[cfg(target_pointer_width = "32")]
+    let a = SizeUnion::new_with_signed(2112454933_isize);
+    #[cfg(target_pointer_width = "16")]
+    let a = SizeUnion::new_with_signed(32491_isize);
+    #[cfg(target_pointer_width = "8")]
+    let a = SizeUnion::new_with_signed(-21_isize);
+    println!("a.this = {}, {}", unsafe { a.this }, a.get());
+    println!("a.that = {}, {}", unsafe { a.that }, a.get_signed());
+    println!("a.u_size = {}, {}", unsafe { a.u_size }, a.get());
+    println!("a.s_size = {}, {}", unsafe { a.s_size }, a.get_signed());
+    #[cfg(target_endian = "little")]
+    {
+        #[cfg(target_pointer_width = "128")]
+        {
+            println!("a.ulonger = {}, {}", unsafe { a.ulonger }, a.get());
+            println!("a.slonger = {}, {}", unsafe { a.slonger }, a.get_signed());
+            for i in 0..2
+                { println!("a.ulong[{}] = {}, {}", i, unsafe { a.ulong[i] }, a.get_ulong_(i)); }
+            for i in 0..2
+                { println!("a.slong[{}] = {}, {}", i, unsafe { a.slong[i] }, a.get_slong_(i)); }
+            for i in 0..4
+                { println!("a.uint[{}] = {}, {}", i, unsafe { a.uint[i] }, a.get_uint_(i)); }
+            for i in 0..4
+                { println!("a.sint[{}] = {}, {}", i, unsafe { a.sint[i] }, a.get_sint_(i)); }
+            for i in 0..8
+                { println!("a.ushort[{}] = {}, {}", i, unsafe { a.ushort[i] }, a.get_ushort_(i)); }
+            for i in 0..8
+                { println!("a.sshort[{}] = {}, {}", i, unsafe { a.sshort[i] }, a.get_sshort_(i)); }
+            for i in 0..16
+                { println!("a.ubyte[{}] = {}, {}", i, unsafe { a.ubyte[i] }, a.get_ubyte_(i)); }
+            for i in 0..16
+                { println!("a.sbyte[{}] = {}, {}", i, unsafe { a.sbyte[i] }, a.get_sbyte_(i)); }
+        }
+        #[cfg(target_pointer_width = "64")]
+        {
+            println!("a.ulong = {}, {}", unsafe { a.ulong }, a.get());
+            println!("a.slong = {}, {}", unsafe { a.slong }, a.get_signed());
+            for i in 0..2
+                { println!("a.uint[{}] = {}, {}", i, unsafe { a.uint[i] }, a.get_uint_(i)); }
+            for i in 0..2
+                { println!("a.sint[{}] = {}, {}", i, unsafe { a.sint[i] }, a.get_sint_(i)); }
+            for i in 0..4
+                { println!("a.ushort[{}] = {}, {}", i, unsafe { a.ushort[i] }, a.get_ushort_(i)); }
+            for i in 0..4
+                { println!("a.sshort[{}] = {}, {}", i, unsafe { a.sshort[i] }, a.get_sshort_(i)); }
+            for i in 0..8
+                { println!("a.ubyte[{}] = {}, {}", i, unsafe { a.ubyte[i] }, a.get_ubyte_(i)); }
+            for i in 0..8
+                { println!("a.sbyte[{}] = {}, {}", i, unsafe { a.sbyte[i] }, a.get_sbyte_(i)); }
+        }
+        #[cfg(target_pointer_width = "32")]
+        {
+            println!("a.uint = {}, {}", unsafe { a.uint }, a.get());
+            println!("a.sint = {}, {}", unsafe { a.sint }, a.get_signed());
+            for i in 0..2
+                { println!("a.ushort[{}] = {}, {}", i, unsafe { a.ushort[i] }, a.get_ushort_(i)); }
+            for i in 0..2
+                { println!("a.sshort[{}] = {}, {}", i, unsafe { a.sshort[i] }, a.get_sshort_(i)); }
+            for i in 0..4
+                { println!("a.ubyte[{}] = {}, {}", i, unsafe { a.ubyte[i] }, a.get_ubyte_(i)); }
+            for i in 0..4
+                { println!("a.sbyte[{}] = {}, {}", i, unsafe { a.sbyte[i] }, a.get_sbyte_(i)); }
+        }
+        #[cfg(target_pointer_width = "16")]
+        {
+            println!("a.ushort = {}, {}", unsafe { a.ushort }, a.get());
+            println!("a.sshort = {}, {}", unsafe { a.sshort }, a.get_signed());
+            for i in 0..2
+                { println!("a.ubyte[{}] = {}, {}", i, unsafe { a.ubyte[i] }, a.get_ubyte_(i)); }
+            for i in 0..2
+                { println!("a.sbyte[{}] = {}, {}", i, unsafe { a.sbyte[i] }, a.get_sbyte_(i)); }
+        }
+    }
+    #[cfg(target_pointer_width = "8")]
+    {
+        println!("a.ubyte = {}, {}", unsafe { a.ubyte }, a.get());
+        println!("a.sbyte = {}, {}", unsafe { a.sbyte }, a.get_signed());
+    }
+
+    #[cfg(target_pointer_width = "64")]
+    {
+        assert_eq!(unsafe { a.this }, 17212176183586094827_usize);
+        assert_eq!(unsafe { a.that }, -1234567890123456789_isize);
+        assert_eq!(unsafe { a.u_size }, 17212176183586094827_usize);
+        assert_eq!(unsafe { a.s_size }, -1234567890123456789_isize);
+        assert_eq!(unsafe { a.ulong }, 17212176183586094827_u64);
+        assert_eq!(unsafe { a.slong }, -1234567890123456789_i64);
+    }
+
+    #[cfg(target_endian = "little")]
+    #[cfg(target_pointer_width = "64")]
+    {
+        assert_eq!(unsafe { a.uint[0] }, 2182512363_u32);
+        assert_eq!(unsafe { a.uint[1] }, 4007522059_u32);
+        assert_eq!(unsafe { a.sint[0] }, -2112454933_i32);
+        assert_eq!(unsafe { a.sint[1] }, -287445237_i32);
+        assert_eq!(unsafe { a.ushort[0] }, 32491_u16);
+        assert_eq!(unsafe { a.ushort[1] }, 33302_u16);
+        assert_eq!(unsafe { a.ushort[2] }, 61195_u16);
+        assert_eq!(unsafe { a.ushort[3] }, 61149_u16);
+        assert_eq!(unsafe { a.sshort[0] }, 32491_i16);
+        assert_eq!(unsafe { a.sshort[1] }, -32234_i16);
+        assert_eq!(unsafe { a.sshort[2] }, -4341_i16);
+        assert_eq!(unsafe { a.sshort[3] }, -4387_i16);
+        assert_eq!(unsafe { a.ubyte[0] }, 235_u8);
+        assert_eq!(unsafe { a.ubyte[1] }, 126_u8);
+        assert_eq!(unsafe { a.ubyte[2] }, 22_u8);
+        assert_eq!(unsafe { a.ubyte[3] }, 130_u8);
+        assert_eq!(unsafe { a.ubyte[4] }, 11_u8);
+        assert_eq!(unsafe { a.ubyte[5] }, 239_u8);
+        assert_eq!(unsafe { a.ubyte[6] }, 221_u8);
+        assert_eq!(unsafe { a.ubyte[7] }, 238_u8);
+        assert_eq!(unsafe { a.sbyte[0] }, -21_i8);
+        assert_eq!(unsafe { a.sbyte[1] }, 126_i8);
+        assert_eq!(unsafe { a.sbyte[2] }, 22_i8);
+        assert_eq!(unsafe { a.sbyte[3] }, -126_i8);
+        assert_eq!(unsafe { a.sbyte[4] }, 11_i8);
+        assert_eq!(unsafe { a.sbyte[5] }, -17_i8);
+        assert_eq!(unsafe { a.sbyte[6] }, -35_i8);
+        assert_eq!(unsafe { a.sbyte[7] }, -18_i8);
+    }
+    println!("--------------------------------------");
+}
+
+fn ShortUnion_get_ubyte___main()
+{
+    println!("ShortUnion_get_ubyte___main");
+    let a_short = ShortUnion::new_with(2895_u16);
+    let b_short_u8 = a_short.get_ubyte_(1);
+    println!("a_short.get_ubyte_(1) = {}", b_short_u8);
+    assert_eq!(b_short_u8, 11_u8);
+    // It will panic.
+    // let c_short = a_short.get_ubyte_(2);
+
+    match a_short.get_ubyte(1)
+    {
+        Some(b) =>  {
+                println!("a_short.get_ubyte(1) = {}", b);
+                assert_eq!(b, 11_u8);
+            },
+        None =>     { println!("Out of range"); },
+    }
+    
+    match a_short.get_ubyte(2)
+    {
+        Some(b) =>  { println!("a_short.get_ubyte(2) = {}", b); },
+        None =>     {
+                println!("Out of range");
+                assert_eq!(a_short.get_ubyte(2), None);
+            },
+    }
+    println!("--------------------------------------");
+}
+
+fn ShortUnion_get_sbyte___main()
+{
+    println!("ShortUnion_get_sbyte___main");
+    let a_short = ShortUnion::new_with(2895_u16);
+    println!("Union_get_set_byte___main");
+    let b_short_i8 = a_short.get_sbyte_(1);
+    println!("a_short.get_sbyte_(1) = {}", b_short_i8);
+    assert_eq!(b_short_i8, 11_i8);
+    // It will panic.
+    // let c_short = a_short.get_sbyte_(2);
+
+    match a_short.get_sbyte(1)
+    {
+        Some(b) =>  {
+                println!("a_short.get_sbyte(1) = {}", b);
+                assert_eq!(b, 11_i8);
+            },
+        None =>     { println!("Out of range"); },
+    }
+    
+    match a_short.get_sbyte(2)
+    {
+        Some(b) =>  { println!("a_short.get_sbyte(2) = {}", b); },
+        None =>     {
+                println!("Out of range");
+                assert_eq!(a_short.get_sbyte(2), None);
+            },
+    }
+    println!("--------------------------------------");
+}
+
+fn LongerUnion_get_ubyte___main()
+{
+    println!("LongerUnion_get_sbyte___main");
+    let a_longer = LongerUnion::new_with(339047799029950809142362261752780557135_u128);
+    let b_longer_u8 = a_longer.get_ubyte_(3);
+    println!("a_longer.get_ubyte_(3) = {}", b_longer_u8);
+    assert_eq!(b_longer_u8, 241_u8);
+    // It will panic.
+    // let c_longer = a_longer.get_ubyte_(16);
+
+    match a_longer.get_ubyte(3)
+    {
+        Some(b) =>  {
+                println!("a_longer.get_ubyte(3) = {}", b);
+                assert_eq!(b, 241_u8);
+            },
+        None =>     { println!("Out of range"); },
+    }
+    
+    match a_longer.get_ubyte(16)
+    {
+        Some(b) =>  { println!("a_short.get_ubyte(16) = {}", b); },
+        None =>     {
+                println!("Out of range");
+                assert_eq!(a_longer.get_ubyte(16), None);
+            },
+    }
+    println!("--------------------------------------");
+}
+
+fn LongerUnion_get_sbyte___main()
+{
+    println!("LongerUnion_get_sbyte___main");
+    let a_longer = LongerUnion::new_with(339047799029950809142362261752780557135_u128);
+    let b_longer_i8 = a_longer.get_sbyte_(3);
+    println!("a_longer.get_sbyte_(3) = {}", b_longer_i8);
+    assert_eq!(b_longer_i8, -15_i8);
+    // It will panic.
+    // let c_longer = a_longer.get_ubyte_(16);
+
+    match a_longer.get_sbyte(3)
+    {
+        Some(b) =>  {
+                println!("a_longer.get_sbyte(3) = {}", b);
+                assert_eq!(b, -15_i8);
+            },
+        None =>     { println!("Out of range"); },
+    }
+    
+    match a_longer.get_sbyte(16)
+    {
+        Some(b) =>  { println!("a_short.get_sbyte(16) = {}", b); },
+        None =>     {
+                println!("Out of range");
+                assert_eq!(a_longer.get_sbyte(16), None);
+            },
+    }
+    println!("--------------------------------------");
+}
+
+fn ShortUnion_debug_fmt___main()
+{
+    println!("ShortUnion___main");
+    let a_short = ShortUnion::new_with_signed(-12345_i16);
+    println!("a_short = {:?}", a_short);
+    println!("a_short = {:#?}", a_short);
+    assert_eq!(format!("{a_short:?}"), "ShortUnion { this: 53191, that: -12345, ushort: 53191, sshort: -12345, ubyte: [199, 207], sbyte: [-57, -49] }");
+    assert_eq!(format!("{a_short:#?}"), r#"ShortUnion {
+    this: 53191,
+    that: -12345,
+    ushort: 53191,
+    sshort: -12345,
+    ubyte: [
+        199,
+        207,
+    ],
+    sbyte: [
+        -57,
+        -49,
+    ],
+}"#);
+    println!("--------------------------------------");
+}
+
+fn IntUnion_debug_fmt___main()
+{
+    println!("IntUnion___main");
+    let a_int = IntUnion::new_with_signed(-1234567890_i32);
+    println!("a_int = {:?}", a_int);
+    println!("a_int = {:#?}", a_int);
+    #[cfg(target_pointer_width = "64")] assert_eq!(format!("{a_int:?}"), "IntUnion { this: 3060399406, that: -1234567890, uint: 3060399406, sint: -1234567890, ushort: [64814, 46697], sshort: [-722, -18839], ubyte: [46, 253, 105, 182], sbyte: [46, -3, 105, -74] }");
+    #[cfg(target_pointer_width = "64")] assert_eq!(format!("{a_int:#?}"), r#"IntUnion {
+    this: 3060399406,
+    that: -1234567890,
+    uint: 3060399406,
+    sint: -1234567890,
+    ushort: [
+        64814,
+        46697,
+    ],
+    sshort: [
+        -722,
+        -18839,
+    ],
+    ubyte: [
+        46,
+        253,
+        105,
+        182,
+    ],
+    sbyte: [
+        46,
+        -3,
+        105,
+        -74,
+    ],
+}"#);
+    println!("--------------------------------------");
+}
+
+fn LongUnion_debug_fmt___main()
+{
+    println!("LongUnion___main");
+    let a_long = LongUnion::new_with_signed(-1234567890123456789_i64);
+    println!("a_long = {:?}", a_long);
+    println!("a_long = {:#?}", a_long);
+    #[cfg(target_pointer_width = "64")] assert_eq!(format!("{a_long:?}"), "LongUnion { this: 17212176183586094827, that: -1234567890123456789, ulong: 17212176183586094827, slong: -1234567890123456789, uint: [2182512363, 4007522059], sint: [-2112454933, -287445237], ushort: [32491, 33302, 61195, 61149], sshort: [32491, -32234, -4341, -4387], ubyte: [235, 126, 22, 130, 11, 239, 221, 238], sbyte: [-21, 126, 22, -126, 11, -17, -35, -18], u_size: 17212176183586094827, s_size: -1234567890123456789 }");
+    #[cfg(target_pointer_width = "64")] assert_eq!(format!("{a_long:#?}"), r#"LongUnion {
+    this: 17212176183586094827,
+    that: -1234567890123456789,
+    ulong: 17212176183586094827,
+    slong: -1234567890123456789,
+    uint: [
+        2182512363,
+        4007522059,
+    ],
+    sint: [
+        -2112454933,
+        -287445237,
+    ],
+    ushort: [
+        32491,
+        33302,
+        61195,
+        61149,
+    ],
+    sshort: [
+        32491,
+        -32234,
+        -4341,
+        -4387,
+    ],
+    ubyte: [
+        235,
+        126,
+        22,
+        130,
+        11,
+        239,
+        221,
+        238,
+    ],
+    sbyte: [
+        -21,
+        126,
+        22,
+        -126,
+        11,
+        -17,
+        -35,
+        -18,
+    ],
+    u_size: 17212176183586094827,
+    s_size: -1234567890123456789,
+}"#);
+    println!("--------------------------------------");
+}
+
+fn LongerUnion_debug_fmt___main()
+{
+    println!("LongerUnion___main");
+    let a_longer = LongerUnion::new_with_signed(-123456789012345678901234567890123456789_i128);
+    println!("a_long = {:?}", a_longer);
+    println!("a_long = {:#?}", a_longer);
+    #[cfg(target_pointer_width = "64")] assert_eq!(format!("{a_longer:?}"), "LongerUnion { this: 216825577908592784562140039541644754667, that: -123456789012345678901234567890123456789, ulonger: 216825577908592784562140039541644754667, slonger: -123456789012345678901234567890123456789, ulong: [6134004772338302699, 11754138130946064698], slong: [6134004772338302699, -6692605942763486918], uint: [1371963115, 1428184279, 2682913082, 2736723546], sint: [1371963115, 1428184279, -1612054214, -1558243750], ushort: [32491, 20934, 23767, 21792, 314, 40938, 5722, 41759], sshort: [32491, 20934, 23767, 21792, 314, -24598, 5722, -23777], ubyte: [235, 126, 198, 81, 215, 92, 32, 85, 58, 1, 234, 159, 90, 22, 31, 163], sbyte: [-21, 126, -58, 81, -41, 92, 32, 85, 58, 1, -22, -97, 90, 22, 31, -93], u_size: [6134004772338302699, 11754138130946064698], s_size: [6134004772338302699, -6692605942763486918] }");
+    #[cfg(target_pointer_width = "64")] assert_eq!(format!("{a_longer:#?}"), r#"LongerUnion {
+    this: 216825577908592784562140039541644754667,
+    that: -123456789012345678901234567890123456789,
+    ulonger: 216825577908592784562140039541644754667,
+    slonger: -123456789012345678901234567890123456789,
+    ulong: [
+        6134004772338302699,
+        11754138130946064698,
+    ],
+    slong: [
+        6134004772338302699,
+        -6692605942763486918,
+    ],
+    uint: [
+        1371963115,
+        1428184279,
+        2682913082,
+        2736723546,
+    ],
+    sint: [
+        1371963115,
+        1428184279,
+        -1612054214,
+        -1558243750,
+    ],
+    ushort: [
+        32491,
+        20934,
+        23767,
+        21792,
+        314,
+        40938,
+        5722,
+        41759,
+    ],
+    sshort: [
+        32491,
+        20934,
+        23767,
+        21792,
+        314,
+        -24598,
+        5722,
+        -23777,
+    ],
+    ubyte: [
+        235,
+        126,
+        198,
+        81,
+        215,
+        92,
+        32,
+        85,
+        58,
+        1,
+        234,
+        159,
+        90,
+        22,
+        31,
+        163,
+    ],
+    sbyte: [
+        -21,
+        126,
+        -58,
+        81,
+        -41,
+        92,
+        32,
+        85,
+        58,
+        1,
+        -22,
+        -97,
+        90,
+        22,
+        31,
+        -93,
+    ],
+    u_size: [
+        6134004772338302699,
+        11754138130946064698,
+    ],
+    s_size: [
+        6134004772338302699,
+        -6692605942763486918,
+    ],
+}"#);
+    println!("--------------------------------------");
+}
+
+#[cfg(target_pointer_width = "64")]
+fn SizeUnion_debug_fmt___main()
+{
+    println!("SizeUnion___main");
+    let a_size = SizeUnion::new_with_signed(-1234567890123456789_isize);
+    println!("a_size = {:?}", a_size);
+    println!("a_size = {:#?}", a_size);
+    assert_eq!(format!("{a_size:?}"), "SizeUnion { this: 17212176183586094827, that: -1234567890123456789, u_size: 17212176183586094827, s_size: -1234567890123456789, ulong: 17212176183586094827, slong: -1234567890123456789, uint: [2182512363, 4007522059], sint: [-2112454933, -287445237], ushort: [32491, 33302, 61195, 61149], sshort: [32491, -32234, -4341, -4387], ubyte: [235, 126, 22, 130, 11, 239, 221, 238], sbyte: [-21, 126, 22, -126, 11, -17, -35, -18] }");
+    assert_eq!(format!("{a_size:#?}"), r#"SizeUnion {
+    this: 17212176183586094827,
+    that: -1234567890123456789,
+    u_size: 17212176183586094827,
+    s_size: -1234567890123456789,
+    ulong: 17212176183586094827,
+    slong: -1234567890123456789,
+    uint: [
+        2182512363,
+        4007522059,
+    ],
+    sint: [
+        -2112454933,
+        -287445237,
+    ],
+    ushort: [
+        32491,
+        33302,
+        61195,
+        61149,
+    ],
+    sshort: [
+        32491,
+        -32234,
+        -4341,
+        -4387,
+    ],
+    ubyte: [
+        235,
+        126,
+        22,
+        130,
+        11,
+        239,
+        221,
+        238,
+    ],
+    sbyte: [
+        -21,
+        126,
+        22,
+        -126,
+        11,
+        -17,
+        -35,
+        -18,
+    ],
+}"#);
+    println!("--------------------------------------");
+}
