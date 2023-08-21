@@ -1100,23 +1100,26 @@ macro_rules! get_set_byte {
         /// Significant Bit) regardless endianness.
         /// 
         /// # Panics
-        /// This method is performance-oriented and does not care for safety.
         /// So, if `i` is greater than or equal to the size of this Union in
         /// bytes, it will panic. So, use this method only when you are sure
         /// that the argument i is less than the size of this Union
         /// 
         /// # Counterpart Method
+        /// It is performance-oriented and does not care for safety.
+        /// It is virtually the same as the method get_ubyte(). This method
+        /// get_ubyte_() is considered to be slightly faster than the method
+        /// get_ubyte().
         /// Use this method only when you are sure that `i` is less than the
-        /// size of this Union in bytes. Otherwise, use its Counterpart method
-        /// [get_ubyte()](#method.get_ubyte).
+        /// size of this Union in bytes. Otherwise, use its counterpart method
+        /// [get_ubyte()](#method.get_ubyte) for safety.
         /// 
         /// # Example for ShortUnion
         /// ```
         /// use Cryptocol::number::*;
         /// let a_short = ShortUnion::new_with(2895_u16);
-        /// let b_short = a.get_ubyte_(1);
-        /// println!("a_short.get_ubyte_(1) = {}", b_short);
-        /// assert_eq!(b_short, 11_u8);
+        /// let b_short_u8 = a_short.get_ubyte_(1);
+        /// println!("a_short.get_ubyte_(1) = {}", b_short_u8);
+        /// assert_eq!(b_short_u8, 11_u8);
         /// 
         /// // It will panic.
         /// // let c_short = a_short.get_ubyte_(2);
@@ -1126,9 +1129,9 @@ macro_rules! get_set_byte {
         /// ```
         /// use Cryptocol::number::*;
         /// let a_longer = LongerUnion::new_with(339047799029950809142362261752780557135_u128);
-        /// let b_longer = a_longer.get_ubyte_(3);
-        /// println!("a_longer.get_ubyte_(3) = {}", b);
-        /// assert_eq!(b_longer, 241_u8);
+        /// let b_longer_u8 = a_longer.get_ubyte_(3);
+        /// println!("a_longer.get_ubyte_(3) = {}", b_longer_u8);
+        /// assert_eq!(b_longer_u8, 241_u8);
         /// 
         /// // It will panic.
         /// // let c_longer = a_longer.get_ubyte_(16);
@@ -1146,23 +1149,26 @@ macro_rules! get_set_byte {
         /// Significant Bit) regardless endianness.
         /// 
         /// # Panics
-        /// This method is performance-oriented and does not care for safety.
         /// So, if `i` is greater than or equal to the size of this Union in
         /// bytes, it will panic. So, use this method only when you are sure
         /// that the argument i is less than the size of this Union
         /// 
         /// # Counterpart Method
+        /// It is performance-oriented and does not care for safety.
+        /// It is virtually the same as the method get_ubyte(). This method
+        /// get_ubyte_() is considered to be slightly faster than the method
+        /// get_ubyte().
         /// Use this method only when you are sure that `i` is less than the
-        /// size of this Union in bytes. Otherwise, use its Counterpart method
-        /// [get_ubyte()](#method.get_ubyte).
+        /// size of this Union in bytes. Otherwise, use its counterpart method
+        /// [get_ubyte()](#method.get_ubyte) for safety.
         /// 
         /// # Example for ShortUnion
         /// ```
         /// use Cryptocol::number::*;
         /// let a_short = ShortUnion::new_with(2895_u16);
-        /// let b_short = a.get_ubyte_(1);
-        /// println!("a_short.get_ubyte_(1) = {}", b_short);
-        /// assert_eq!(b_short, 11_u8);
+        /// let b_short_u8 = a_short.get_ubyte_(1);
+        /// println!("a_short.get_ubyte_(1) = {}", b_short_u8);
+        /// assert_eq!(b_short_u8, 11_u8);
         /// 
         /// // It will panic.
         /// // let c_short = a_short.get_ubyte_(2);
@@ -1172,12 +1178,12 @@ macro_rules! get_set_byte {
         /// ```
         /// use Cryptocol::number::*;
         /// let a_longer = LongerUnion::new_with(339047799029950809142362261752780557135_u128);
-        /// let b_longer = a_longer.get_ubyte_(3);
-        /// println!("a_longer.get_ubyte_(3) = {}", b);
-        /// assert_eq!(b_longer, 241_u8);
+        /// let b_longer_u8 = a_longer.get_ubyte_(3);
+        /// println!("a_longer.get_ubyte_(3) = {}", b_longer_u8);
+        /// assert_eq!(b_longer_u8, 241_u8);
         /// 
         /// // It will panic.
-        /// // let c_longer = a_longer.get_ubyte_(16);
+        /// // let c_longer_u8 = a_longer.get_ubyte_(16);
         /// ```
         /// 
         /// # Big-endian issue
@@ -1197,38 +1203,41 @@ macro_rules! get_set_byte {
         /// Significant Bit) regardless endianness.
         /// 
         /// # Panics
-        /// This method is performance-oriented and does not care for safety.
         /// So, if `i` is greater than or equal to the size of this Union in
         /// bytes, it will panic. So, use this method only when you are sure
         /// that the argument i is less than the size of this Union
         /// 
         /// # Counterpart Method
+        /// It is performance-oriented and does not care for safety.
+        /// It is virtually the same as the method get_sbyte(). This method
+        /// get_sbyte_() is considered to be slightly faster than the method
+        /// get_sbyte().
         /// Use this method only when you are sure that `i` is less than the
-        /// size of this Union in bytes. Otherwise, use its Counterpart method
-        /// [get_sbyte()](#method.get_sbyte).
+        /// size of this Union in bytes. Otherwise, use its counterpart method
+        /// [get_sbyte()](#method.get_sbyte) for safety.
         /// 
         /// # Example for ShortUnion
         /// ```
         /// use Cryptocol::number::*;
         /// let a_short = ShortUnion::new_with(2895_u16);
-        /// let b_short = a.get_sbyte_(1);
-        /// println!("a_short.get_sbyte_(1) = {}", b_short);
-        /// assert_eq!(b_short, 11_u8);
+        /// let b_short_i8 = a_short.get_sbyte_(1);
+        /// println!("a_short.get_sbyte_(1) = {}", b_short_i8);
+        /// assert_eq!(b_short_i8, 11_i8);
         /// 
         /// // It will panic.
-        /// // let c_short = a_short.get_sbyte_(2);
+        /// // let c_short_i8 = a_short.get_sbyte_(2);
         /// ```
         /// 
         /// # Example of LongerUnion
         /// ```
         /// use Cryptocol::number::*;
         /// let a_longer = LongerUnion::new_with(339047799029950809142362261752780557135_u128);
-        /// let b_longer = a_longer.get_sbyte_(3);
-        /// println!("a_longer.get_sbyte_(3) = {}", b);
-        /// assert_eq!(b_longer, -15_i8);
+        /// let b_longer_u8 = a_longer.get_sbyte_(3);
+        /// println!("a_longer.get_sbyte_(3) = {}", b_longer_u8);
+        /// assert_eq!(b_longer_u8, -15_i8);
         /// 
         /// // It will panic.
-        /// // let c_longer = a_longer.get_sbyte_(16);
+        /// // let c_longer_u8 = a_longer.get_sbyte_(16);
         /// ```
         #[cfg(target_endian = "little")]
         #[inline] pub fn get_sbyte_(&self, i: usize) -> i8 { unsafe { self.sbyte[i] } }
@@ -1243,44 +1252,47 @@ macro_rules! get_set_byte {
         /// Significant Bit) regardless endianness.
         /// 
         /// # Panics
-        /// This method is performance-oriented and does not care for safety.
         /// So, if `i` is greater than or equal to the size of this Union in
         /// bytes, it will panic. So, use this method only when you are sure
         /// that the argument i is less than the size of this Union
         /// 
         /// # Counterpart Method
+        /// It is performance-oriented and does not care for safety.
+        /// It is virtually the same as the method get_sbyte(). This method
+        /// get_sbyte_() is considered to be slightly faster than the method
+        /// get_sbyte().
         /// Use this method only when you are sure that `i` is less than the
-        /// size of this Union in bytes. Otherwise, use its Counterpart method
-        /// [get_ubyte()](#method.get_ubyte).
+        /// size of this Union in bytes. Otherwise, use its counterpart method
+        /// [get_ubyte()](#method.get_ubyte) for safety.
         /// 
         /// # Example for ShortUnion
         /// ```
         /// use Cryptocol::number::*;
         /// let a_short = ShortUnion::new_with(2895_u16);
-        /// let b_short = a.get_sbyte_(1);
-        /// println!("a_short.get_sbyte_(1) = {}", b_short);
-        /// assert_eq!(b_short, 11_u8);
+        /// let b_short_i8 = a_short.get_sbyte_(1);
+        /// println!("a_short.get_sbyte_(1) = {}", b_short_i8);
+        /// assert_eq!(b_short_i8, 11_i8);
         /// 
         /// // It will panic.
-        /// // let c_short = a_short.get_sbyte_(2);
+        /// // let c_short_i8 = a_short.get_sbyte_(2);
         /// ```
         /// 
         /// # Example of LongerUnion
         /// ```
         /// use Cryptocol::number::*;
         /// let a_longer = LongerUnion::new_with(339047799029950809142362261752780557135_u128);
-        /// let b_longer = a_longer.get_sbyte_(3);
-        /// println!("a_longer.get_sbyte_(3) = {}", b);
-        /// assert_eq!(b_longer, -15_i8);
+        /// let b_longer_i8 = a_longer.get_sbyte_(3);
+        /// println!("a_longer.get_sbyte_(3) = {}", b_longer_i8);
+        /// assert_eq!(b_longer_i8, -15_i8);
         /// 
         /// // It will panic.
-        /// // let c_longer = a_longer.get_sbyte_(16);
+        /// // let c_longer_i8 = a_longer.get_sbyte_(16);
         /// ```
         /// 
         /// # Big-endian issue
-        /// It is just experimental for Big Endian CPUs. So, you are not encouraged
-        /// to use it for serious purpose. Only use this crate for Big-endian CPUs
-        /// with your own full responsibility.
+        /// It is just experimental for Big Endian CPUs. So, you are not
+        /// encouraged to use it for serious purpose. Only use this crate for
+        /// Big-endian CPUs with your own full responsibility.
         #[cfg(target_endian = "big")]
         #[inline] pub fn get_sbyte_(&self, i: usize) -> i8 { unsafe { self.sbyte[Self::N-i] } }
 
@@ -1294,9 +1306,9 @@ macro_rules! get_set_byte {
         /// Significant Bit) regardless endianness.
         /// 
         /// # Counterpart Method
-        /// Use this method only when you are sure that `i` is less than the
-        /// size of this Union in bytes. Otherwise, use its Counterpart method
-        /// [get_ubyte_()](#method.get_ubyte_).
+        /// Use this method when you are not sure that `i` is less than the
+        /// size of this Union in bytes. Otherwise, use its counterpart method
+        /// [get_ubyte_()](#method.get_ubyte_) for performance.
         /// 
         /// # Example for ShortUnion
         /// ```
@@ -1363,9 +1375,9 @@ macro_rules! get_set_byte {
         /// Significant Bit) regardless endianness.
         /// 
         /// # Counterpart Method
-        /// Use this method only when you are sure that `i` is less than the
-        /// size of this Union in bytes. Otherwise, use its Counterpart method
-        /// [get_ubyte_()](#method.get_ubyte_).
+        /// Use this method when you are not sure that `i` is less than the
+        /// size of this Union in bytes. Otherwise, use its counterpart method
+        /// [get_ubyte_()](#method.get_ubyte_) for performance.
         /// 
         /// # Example for ShortUnion
         /// ```
@@ -1415,8 +1427,9 @@ macro_rules! get_set_byte {
         /// ```
         /// 
         /// # Big-endian issue
-        /// It is just experimental for Big Endian CPUs. So, you are not encouraged
-        /// to use it for serious purpose. Only use this crate for Big-endian CPUs
+        /// It is just experimental for Big Endian CPUs. So, you are not
+        /// encouraged to use it for serious purpose. Only use this crate for
+        /// Big-endian CPUs with your own full responsibility.
         /// with your own full responsibility.
         #[cfg(target_endian = "big")]
         pub fn get_ubyte(&self, i: usize) -> Option<u8>
@@ -1437,9 +1450,9 @@ macro_rules! get_set_byte {
         /// Significant Bit) regardless endianness.
         /// 
         /// # Counterpart Method
-        /// Use this method only when you are sure that `i` is less than the
-        /// size of this Union in bytes. Otherwise, use its Counterpart method
-        /// [get_sbyte_()](#method.get_sbyte_).
+        /// Use this method when you are not sure that `i` is less than the
+        /// size of this Union in bytes. Otherwise, use its counterpart method
+        /// [get_sbyte_()](#method.get_sbyte_) for performance.
         /// 
         /// # Example for ShortUnion
         /// ```
@@ -1450,12 +1463,12 @@ macro_rules! get_set_byte {
         /// {
         ///     Some(b) =>  {
         ///             println!("a_short.get_sbyte(1) = {}", b);
-        ///             assert_eq!(b, 11_u8);
+        ///             assert_eq!(b, 11_i8);
         ///         },
         ///     None =>     { println!("Out of range"); },
         /// }
         /// 
-        /// match a_short.get_ubyte(2)
+        /// match a_short.get_sbyte(2)
         /// {
         ///     Some(b) =>  { println!("a_short.get_sbyte(2) = {}", b); },
         ///     None =>     {
@@ -1469,7 +1482,7 @@ macro_rules! get_set_byte {
         /// ```
         /// use Cryptocol::number::*;
         /// let a_longer = LongerUnion::new_with(339047799029950809142362261752780557135_u128);
-        /// match a_longer.get_ubyte(3)
+        /// match a_longer.get_sbyte(3)
         /// {
         ///     Some(b) =>  {
         ///             println!("a_longer.get_sbyte(3) = {}", b);
@@ -1506,9 +1519,9 @@ macro_rules! get_set_byte {
         /// Significant Bit) regardless endianness.
         /// 
         /// # Counterpart Method
-        /// Use this method only when you are sure that `i` is less than the
-        /// size of this Union in bytes. Otherwise, use its Counterpart method
-        /// [get_sbyte_()](#method.get_sbyte_).
+        /// Use this method when you are not sure that `i` is less than the
+        /// size of this Union in bytes. Otherwise, use its counterpart method
+        /// [get_sbyte_()](#method.get_sbyte_) for performance.
         /// 
         /// # Example for ShortUnion
         /// ```
@@ -1519,12 +1532,12 @@ macro_rules! get_set_byte {
         /// {
         ///     Some(b) =>  {
         ///             println!("a_short.get_sbyte(1) = {}", b);
-        ///             assert_eq!(b, 11_u8);
+        ///             assert_eq!(b, 11_i8);
         ///         },
         ///     None =>     { println!("Out of range"); },
         /// }
         /// 
-        /// match a_short.get_ubyte(2)
+        /// match a_short.get_sbyte(2)
         /// {
         ///     Some(b) =>  { println!("a_short.get_sbyte(2) = {}", b); },
         ///     None =>     {
@@ -1538,7 +1551,7 @@ macro_rules! get_set_byte {
         /// ```
         /// use Cryptocol::number::*;
         /// let a_longer = LongerUnion::new_with(339047799029950809142362261752780557135_u128);
-        /// match a_longer.get_ubyte(3)
+        /// match a_longer.get_sbyte(3)
         /// {
         ///     Some(b) =>  {
         ///             println!("a_longer.get_sbyte(3) = {}", b);
@@ -1558,9 +1571,9 @@ macro_rules! get_set_byte {
         /// ```
         /// 
         /// # Big-endian issue
-        /// It is just experimental for Big Endian CPUs. So, you are not encouraged
-        /// to use it for serious purpose. Only use this crate for Big-endian CPUs
-        /// with your own full responsibility.
+        /// It is just experimental for Big Endian CPUs. So, you are not
+        /// encouraged to use it for serious purpose. Only use this crate for
+        /// Big-endian CPUs with your own full responsibility.
         #[cfg(target_endian = "big")]
         pub fn get_sbyte(&self, i: usize) -> Option<i8>
         {
@@ -1570,22 +1583,319 @@ macro_rules! get_set_byte {
                 { None }
         }
 
+        /// Sets i-th element of its array `ubyte` of type `u8`
+        /// if `i` is less than the size of this Union in bytes.
+        /// Otherwise, it will panic.
+        /// 
+        /// # Argument i
+        /// 0-th element contains LSB (Least Significant Bit), while (the size
+        /// of this Union in bytes - 1)-th element contains MSB (Most
+        /// Significant Bit) regardless endianness.
+        /// 
+        /// # Panics
+        /// So, if `i` is greater than or equal to the size of this Union in
+        /// bytes, it will panic. So, use this method only when you are sure
+        /// that the argument i is less than the size of this Union
+        /// 
+        /// # Counterpart Method
+        /// It is performance-oriented and does not care for safety.
+        /// It is virtually the same as the method set_ubyte(). This method
+        /// set_ubyte_() is considered to be slightly faster than the method
+        /// set_ubyte().
+        /// Use this method only when you are sure that `i` is less than the
+        /// size of this Union in bytes. Otherwise, use its counterpart method
+        /// [set_ubyte()](#method.set_ubyte) for safety.
+        /// 
+        /// # Example for ShortUnion
+        /// ```
+        /// use Cryptocol::number::*;
+        /// let mut a_short = ShortUnion::new_with(2895_u16);
+        /// let mut b_short_u8 = a_short.get_ubyte_(1);
+        /// println!("a_short.get_ubyte_(1) = {}", b_short_u8);
+        /// a_short.set_ubyte_(1, 0);
+        /// b_short_u8 = a_short.get_ubyte_(1);
+        /// println!("a_short.get() = {}, a_short.get_ubyte_(1) = {}", a_short, b_short_u8);
+        /// assert_eq!(a_short.get(), 79_u16);
+        /// assert_eq!(b_short_u8, 0_u8);
+        /// 
+        /// // It will panic.
+        /// // let c_short = a_short.set_ubyte_(2, 0);
+        /// ```
+        /// 
+        /// # Example of LongerUnion
+        /// ```
+        /// use Cryptocol::number::*;
+        /// let mut a_longer = LongerUnion::new_with(339047799029950809142362261752780557135_u128);
+        /// let mut b_longer_u8 = a_longer.get_ubyte_(3);
+        /// println!("a_longer.get_ubyte_(3) = {}", b_longer_u8);
+        /// a_longer.set_ubyte_(3, 0);
+        /// println!("a_longer.get() = {}, a_longer.get_ubyte_(3) = {}", a_longer, b_longer_u8);
+        /// assert_eq!(a_longer.get(), 339047799029950809142362261748737248079_u128);
+        /// assert_eq!(a_longer.get_ubyte_(3), 0_u8);
+        /// 
+        /// // It will panic.
+        /// // let c_longer = a_longer.get_ubyte_(16);
+        /// ```
         #[cfg(target_endian = "little")]
         #[inline] pub fn set_ubyte_(&mut self, i: usize, val: u8)  { unsafe { self.ubyte[i] = val; } }
 
+        /// Sets i-th element of its array `ubyte` of type `u8`
+        /// if `i` is less than the size of this Union in bytes.
+        /// Otherwise, it will panic.
+        /// 
+        /// # Argument i
+        /// 0-th element contains LSB (Least Significant Bit), while (the size
+        /// of this Union in bytes - 1)-th element contains MSB (Most
+        /// Significant Bit) regardless endianness.
+        /// 
+        /// # Panics
+        /// So, if `i` is greater than or equal to the size of this Union in
+        /// bytes, it will panic. So, use this method only when you are sure
+        /// that the argument i is less than the size of this Union
+        /// 
+        /// # Counterpart Method
+        /// It is performance-oriented and does not care for safety.
+        /// It is virtually the same as the method set_ubyte(). This method
+        /// set_ubyte_() is considered to be slightly faster than the method
+        /// set_ubyte().
+        /// Use this method only when you are sure that `i` is less than the
+        /// size of this Union in bytes. Otherwise, use its counterpart method
+        /// [set_ubyte()](#method.set_ubyte) for safety.
+        /// 
+        /// # Example for ShortUnion
+        /// ```
+        /// use Cryptocol::number::*;
+        /// let mut a_short = ShortUnion::new_with(2895_u16);
+        /// let mut b_short_u8 = a_short.get_ubyte_(1);
+        /// println!("a_short.get_ubyte_(1) = {}", b_short_u8);
+        /// a_short.set_ubyte_(1, 0);
+        /// b_short_u8 = a_short.get_ubyte_(1);
+        /// println!("a_short.get() = {}, a_short.get_ubyte_(1) = {}", a_short, b_short_u8);
+        /// assert_eq!(a_short.get(), 79_u16);
+        /// assert_eq!(b_short_u8, 0_u8);
+        /// 
+        /// // It will panic.
+        /// // let c_short = a_short.set_ubyte_(2, 0);
+        /// ```
+        /// 
+        /// # Example of LongerUnion
+        /// ```
+        /// use Cryptocol::number::*;
+        /// let mut a_longer = LongerUnion::new_with(339047799029950809142362261752780557135_u128);
+        /// let mut b_longer_u8 = a_longer.get_ubyte_(3);
+        /// println!("a_longer.get_ubyte_(3) = {}", b_longer_u8);
+        /// a_longer.set_ubyte_(3, 0);
+        /// println!("a_longer.get() = {}, a_longer.get_ubyte_(3) = {}", a_longer, b_longer_u8);
+        /// assert_eq!(a_longer.get(), 339047799029950809142362261748737248079_u128);
+        /// assert_eq!(a_longer.get_ubyte_(3), 0_u8);
+        /// 
+        /// // It will panic.
+        /// // let c_longer = a_longer.get_ubyte_(16);
+        /// ```
+        /// 
+        /// # Big-endian issue
+        /// It is just experimental for Big Endian CPUs. So, you are not
+        /// encouraged to use it for serious purpose. Only use this crate for
+        /// Big-endian CPUs with your own full responsibility.
         #[cfg(target_endian = "big")]
         #[inline] pub fn set_ubyte_(&mut self, i: usize, val: u8)  { unsafe { self.ubyte[Self::N-i] = val; } }
 
+        /// Sets i-th element of its array `sbyte` of type `i8`
+        /// if `i` is less than the size of this Union in bytes.
+        /// Otherwise, it will panic.
+        /// 
+        /// # Argument i
+        /// 0-th element contains LSB (Least Significant Bit), while (the size
+        /// of this Union in bytes - 1)-th element contains MSB (Most
+        /// Significant Bit) regardless endianness.
+        /// 
+        /// # Panics
+        /// So, if `i` is greater than or equal to the size of this Union in
+        /// bytes, it will panic. So, use this method only when you are sure
+        /// that the argument i is less than the size of this Union
+        /// 
+        /// # Counterpart Method
+        /// It is performance-oriented and does not care for safety.
+        /// It is virtually the same as the method set_sbyte(). This method
+        /// set_sbyte_() is considered to be slightly faster than the method
+        /// set_sbyte().
+        /// Use this method only when you are sure that `i` is less than the
+        /// size of this Union in bytes. Otherwise, use its counterpart method
+        /// [set_sbyte()](#method.set_sbyte) for safety.
+        /// 
+        /// # Example for ShortUnion
+        /// ```
+        /// use Cryptocol::number::*;
+        /// let mut a_short = ShortUnion::new_with_signed(79_i16);
+        /// let mut b_short_i8 = a_short.get_sbyte_(1);
+        /// println!("a_short.get_sbyte_(1) = {}", b_short_i8);
+        /// a_short.set_sbyte_(1, 0);
+        /// b_short_i8 = a_short.get_sbyte_(1);
+        /// println!("a_short.get_signed() = {}, a_short.get_sbyte_(1) = {}", a_short.get_signed(), b_short_i8);
+        /// assert_eq!(a_short.get(), 79_i16);
+        /// assert_eq!(b_short_i8, 0_i8);
+        /// 
+        /// // It will panic.
+        /// // let c_short = a_short.set_sbyte_(2, 0);
+        /// ```
+        /// 
+        /// # Example of LongerUnion
+        /// ```
+        /// use Cryptocol::number::*;
+        /// let mut a_longer = LongerUnion::new_with_signed(-123456789012345678901234567890123456789_i128);
+        /// let mut b_longer_i8 = a_longer.get_sbyte_(3);
+        /// println!("a_longer.get_sbyte_(3) = {}", b_longer_i8);
+        /// a_longer.set_sbyte_(3, 0);
+        /// b_longer_i8 = a_longer.get_sbyte_(3);
+        /// println!("a_longer.get_signed() = {}, a_longer.get_sbyte_(3) = {}", a_longer.get_signed(), b_longer_i8);
+        /// assert_eq!(a_longer.get_signed(), -123456789012345678901234567891482411285_i128);
+        /// assert_eq!(a_longer.get_ubyte_(3), 0_u8);
+        /// 
+        /// // It will panic.
+        /// // let c_longer = a_longer.get_sbyte_(16);
+        /// ```
         #[cfg(target_endian = "little")]
         #[inline] pub fn set_sbyte_(&mut self, i: usize, val: i8)  { unsafe { self.sbyte[i] = val; } }
 
+        /// Sets i-th element of its array `sbyte` of type `i8`
+        /// if `i` is less than the size of this Union in bytes.
+        /// Otherwise, it will panic.
+        /// 
+        /// # Argument i
+        /// 0-th element contains LSB (Least Significant Bit), while (the size
+        /// of this Union in bytes - 1)-th element contains MSB (Most
+        /// Significant Bit) regardless endianness.
+        /// 
+        /// # Panics
+        /// So, if `i` is greater than or equal to the size of this Union in
+        /// bytes, it will panic. So, use this method only when you are sure
+        /// that the argument i is less than the size of this Union
+        /// 
+        /// # Counterpart Method
+        /// It is performance-oriented and does not care for safety.
+        /// It is virtually the same as the method set_sbyte(). This method
+        /// set_sbyte_() is considered to be slightly faster than the method
+        /// set_sbyte().
+        /// Use this method only when you are sure that `i` is less than the
+        /// size of this Union in bytes. Otherwise, use its counterpart method
+        /// [set_sbyte()](#method.set_sbyte) for safety.
+        /// 
+        /// # Example for ShortUnion
+        /// ```
+        /// use Cryptocol::number::*;
+        /// let mut a_short = ShortUnion::new_with_signed(79_i16);
+        /// let mut b_short_i8 = a_short.get_sbyte_(1);
+        /// println!("a_short.get_sbyte_(1) = {}", b_short_i8);
+        /// a_short.set_sbyte_(1, 0);
+        /// b_short_i8 = a_short.get_sbyte_(1);
+        /// println!("a_short.get_signed() = {}, a_short.get_sbyte_(1) = {}", a_short.get_signed(), b_short_i8);
+        /// assert_eq!(a_short.get(), 79_i16);
+        /// assert_eq!(b_short_i8, 0_i8);
+        /// 
+        /// // It will panic.
+        /// // let c_short = a_short.set_sbyte_(2, 0);
+        /// ```
+        /// 
+        /// # Example of LongerUnion
+        /// ```
+        /// use Cryptocol::number::*;
+        /// let mut a_longer = LongerUnion::new_with_signed(-123456789012345678901234567890123456789_i128);
+        /// let mut b_longer_i8 = a_longer.get_sbyte_(3);
+        /// println!("a_longer.get_sbyte_(3) = {}", b_longer_i8);
+        /// a_longer.set_sbyte_(3, 0);
+        /// b_longer_i8 = a_longer.get_sbyte_(3);
+        /// println!("a_longer.get_signed() = {}, a_longer.get_sbyte_(3) = {}", a_longer.get_signed(), b_longer_i8);
+        /// assert_eq!(a_longer.get_signed(), -123456789012345678901234567891482411285_i128);
+        /// assert_eq!(a_longer.get_ubyte_(3), 0_u8);
+        /// 
+        /// // It will panic.
+        /// // let c_longer = a_longer.get_sbyte_(16);
+        /// ```
+        /// 
+        /// # Big-endian issue
+        /// It is just experimental for Big Endian CPUs. So, you are not
+        /// encouraged to use it for serious purpose. Only use this crate for
+        /// Big-endian CPUs with your own full responsibility.
         #[cfg(target_endian = "big")]
         #[inline] pub fn set_sbyte_(&mut self, i: usize, val: i8)  { unsafe { self.sbyte[Self::N-i] = val; } }
 
+        /// Sets i-th element of its array `ubyte` of type `u8` and returns true
+        /// if `i` is less than the size of this Union in bytes.
+        /// Otherwise, it will set nothing amd return false.
+        /// 
+        /// # Argument i
+        /// 0-th element contains LSB (Least Significant Bit), while (the size
+        /// of this Union in bytes - 1)-th element contains MSB (Most
+        /// Significant Bit) regardless endianness.
+        /// 
+        /// # Counterpart Method
+        /// Use this method when you are not sure that `i` is less than the
+        /// size of this Union in bytes. Otherwise, use its counterpart method
+        /// [set_ubyte_()](#method.set_ubyte_) for performance.
+        /// 
+        /// # Example for ShortUnion
+        /// ```
+        /// use Cryptocol::number::*;
+        /// let mut succ = a_short.set_sbyte(1, 11);
+        /// let mut sbyte = a_short.get_sbyte(1);
+        /// if succ
+        /// {
+        ///     println!("a_short.get() = {}, a_short.get_sbyte(1).unwrap() = {}", a_short, sbyte.unwrap());
+        ///     assert_eq!(sbyte.unwrap(), 11_i8);
+        /// }
+        /// else
+        /// {
+        ///     println!("Out of range");
+        ///     assert_eq!(sbyte, None);
+        /// }
+        /// 
+        /// succ = a_short.set_sbyte(2, 11);
+        /// sbyte = a_short.get_sbyte(2);
+        /// if succ
+        /// {
+        ///     println!("a_short.get() = {}, a_short.get_sbyte(2).unwrap() = {}", a_short, sbyte.unwrap());
+        ///     assert_eq!(sbyte.unwrap(), 11_i8);
+        /// }
+        /// else
+        /// {
+        ///     println!("Out of range");
+        ///     assert_eq!(sbyte, None);
+        /// }
+        /// ```
+        /// 
+        /// # Example of LongerUnion
+        /// ```
+        /// use Cryptocol::number::*;
+        /// let mut succ = a_longer.set_ubyte(3, 241_u8);
+        /// let mut ubyte = a_longer.get_ubyte(3);
+        /// if succ
+        /// {
+        ///     println!("a_longer.get() = {}, a_longer.get_ubyte(3).unwrap() = {}", a_longer, ubyte.unwrap());
+        ///     assert_eq!(ubyte.unwrap(), 241_u8);
+        /// }
+        /// else
+        /// {
+        ///     println!("Out of range");
+        ///     assert_eq!(ubyte, None);
+        /// }
+        /// 
+        /// succ = a_longer.set_ubyte(16, 241_u8);
+        /// ubyte = a_longer.get_ubyte(16);
+        /// if succ
+        /// {
+        ///     println!("a_longer.get() = {}, a_longer.get_sbyte(16).unwrap() = {}", a_longer, ubyte.unwrap());
+        ///     assert_eq!(ubyte.unwrap(), 241_u8);
+        /// }
+        /// else
+        /// {
+        ///     println!("Out of range");
+        ///     assert_eq!(ubyte, None);
+        /// }
+        /// ```
         #[cfg(target_endian = "little")]
         pub fn set_ubyte(&mut self, i: usize, val: u8) -> bool
         {
-            if i < Self::N
+            if i <= Self::N
             { 
                 unsafe { self.ubyte[i] = val; }
                 true
@@ -1596,10 +1906,88 @@ macro_rules! get_set_byte {
             }
         }
 
+        /// Sets i-th element of its array `ubyte` of type `u8` and returns true
+        /// if `i` is less than the size of this Union in bytes.
+        /// Otherwise, it will set nothing amd return false.
+        /// 
+        /// # Argument i
+        /// 0-th element contains LSB (Least Significant Bit), while (the size
+        /// of this Union in bytes - 1)-th element contains MSB (Most
+        /// Significant Bit) regardless endianness.
+        /// 
+        /// # Counterpart Method
+        /// Use this method when you are not sure that `i` is less than the
+        /// size of this Union in bytes. Otherwise, use its counterpart method
+        /// [set_ubyte_()](#method.set_ubyte_) for performance.
+        /// 
+        /// # Example for ShortUnion
+        /// ```
+        /// use Cryptocol::number::*;
+        /// let mut succ = a_short.set_sbyte(1, 11);
+        /// let mut sbyte = a_short.get_sbyte(1);
+        /// if succ
+        /// {
+        ///     println!("a_short.get() = {}, a_short.get_sbyte(1).unwrap() = {}", a_short, sbyte.unwrap());
+        ///     assert_eq!(sbyte.unwrap(), 11_i8);
+        /// }
+        /// else
+        /// {
+        ///     println!("Out of range");
+        ///     assert_eq!(sbyte, None);
+        /// }
+        /// 
+        /// succ = a_short.set_sbyte(2, 11);
+        /// sbyte = a_short.get_sbyte(2);
+        /// if succ
+        /// {
+        ///     println!("a_short.get() = {}, a_short.get_sbyte(2).unwrap() = {}", a_short, sbyte.unwrap());
+        ///     assert_eq!(sbyte.unwrap(), 11_i8);
+        /// }
+        /// else
+        /// {
+        ///     println!("Out of range");
+        ///     assert_eq!(sbyte, None);
+        /// }
+        /// ```
+        /// 
+        /// # Example of LongerUnion
+        /// ```
+        /// use Cryptocol::number::*;
+        /// let mut succ = a_longer.set_ubyte(3, 241_u8);
+        /// let mut ubyte = a_longer.get_ubyte(3);
+        /// if succ
+        /// {
+        ///     println!("a_longer.get() = {}, a_longer.get_ubyte(3).unwrap() = {}", a_longer, ubyte.unwrap());
+        ///     assert_eq!(ubyte.unwrap(), 241_u8);
+        /// }
+        /// else
+        /// {
+        ///     println!("Out of range");
+        ///     assert_eq!(ubyte, None);
+        /// }
+        /// 
+        /// succ = a_longer.set_ubyte(16, 241_u8);
+        /// ubyte = a_longer.get_ubyte(16);
+        /// if succ
+        /// {
+        ///     println!("a_longer.get() = {}, a_longer.get_sbyte(16).unwrap() = {}", a_longer, ubyte.unwrap());
+        ///     assert_eq!(ubyte.unwrap(), 241_u8);
+        /// }
+        /// else
+        /// {
+        ///     println!("Out of range");
+        ///     assert_eq!(ubyte, None);
+        /// }
+        /// ```
+        /// 
+        /// # Big-endian issue
+        /// It is just experimental for Big Endian CPUs. So, you are not
+        /// encouraged to use it for serious purpose. Only use this crate for
+        /// Big-endian CPUs with your own full responsibility.
         #[cfg(target_endian = "big")]
         pub fn set_ubyte(&self, i: usize, val: u8) -> bool
         {
-            if i < Self::N
+            if i <= Self::N
             { 
                 unsafe { self.ubyte[Self::N-i] = val; }
                 true
@@ -1610,10 +1998,83 @@ macro_rules! get_set_byte {
             }
         }
 
+        /// Sets i-th element of its array `sbyte` of type `i8` and returns true
+        /// if `i` is less than the size of this Union in bytes.
+        /// Otherwise, it will set nothing amd return false.
+        /// 
+        /// # Argument i
+        /// 0-th element contains LSB (Least Significant Bit), while (the size
+        /// of this Union in bytes - 1)-th element contains MSB (Most
+        /// Significant Bit) regardless endianness.
+        /// 
+        /// # Counterpart Method
+        /// Use this method when you are not sure that `i` is less than the
+        /// size of this Union in bytes. Otherwise, use its counterpart method
+        /// [set_sbyte_()](#method.set_sbyte_) for performance.
+        /// 
+        /// # Example for ShortUnion
+        /// ```
+        /// use Cryptocol::number::*;
+        /// let mut succ = a_short.set_sbyte(1, 11);
+        /// let mut sbyte = a_short.get_sbyte(1);
+        /// if succ
+        /// {
+        ///     println!("a_short.get() = {}, a_short.get_sbyte(1).unwrap() = {}", a_short, sbyte.unwrap());
+        ///     assert_eq!(sbyte.unwrap(), 11_i8);
+        /// }
+        /// else
+        /// {
+        ///     println!("Out of range");
+        ///     assert_eq!(sbyte, None);
+        /// }
+        /// 
+        /// succ = a_short.set_sbyte(2, 11);
+        /// sbyte = a_short.get_sbyte(2);
+        /// if succ
+        /// {
+        ///     println!("a_short.get() = {}, a_short.get_sbyte(2).unwrap() = {}", a_short, sbyte.unwrap());
+        ///     assert_eq!(sbyte.unwrap(), 11_i8);
+        /// }
+        /// else
+        /// {
+        ///     println!("Out of range");
+        ///     assert_eq!(sbyte, None);
+        /// }
+        /// ```
+        /// 
+        /// # Example of LongerUnion
+        /// ```
+        /// use Cryptocol::number::*;
+        /// let mut succ = a_longer.set_sbyte(3, 81_i8);
+        /// let mut sbyte = a_longer.get_sbyte(3);
+        /// if succ
+        /// {
+        ///     println!("a_longer.get_signed() = {}, a_longer.get_sbyte(3).unwrap() = {}", a_longer.get_signed(), sbyte.unwrap());
+        ///     assert_eq!(sbyte.unwrap(), 81_i8);
+        /// }
+        /// else
+        /// {
+        ///     println!("Out of range");
+        ///     assert_eq!(sbyte, None);
+        /// }
+        /// 
+        /// succ = a_longer.set_sbyte(16, 81_i8);
+        /// sbyte = a_longer.get_sbyte(16);
+        /// if succ
+        /// {
+        ///     println!("a_longer.get_signed() = {}, a_longer.get_sbyte(16).unwrap() = {}", a_longer.get_signed(), sbyte.unwrap());
+        ///     assert_eq!(sbyte.unwrap(), 81_i8);
+        /// }
+        /// else
+        /// {
+        ///     println!("Out of range");
+        ///     assert_eq!(sbyte, None);
+        /// }
+        /// ```
         #[cfg(target_endian = "little")]
         pub fn set_sbyte(&mut self, i: usize, val: i8) -> bool
         {
-            if i < Self::N
+            if i <= Self::N
             { 
                 unsafe { self.sbyte[i] = val; }
                 true
@@ -1624,10 +2085,88 @@ macro_rules! get_set_byte {
             }
         }
 
+        /// Sets i-th element of its array `sbyte` of type `i8` and returns true
+        /// if `i` is less than the size of this Union in bytes.
+        /// Otherwise, it will set nothing amd return false.
+        /// 
+        /// # Argument i
+        /// 0-th element contains LSB (Least Significant Bit), while (the size
+        /// of this Union in bytes - 1)-th element contains MSB (Most
+        /// Significant Bit) regardless endianness.
+        /// 
+        /// # Counterpart Method
+        /// Use this method when you are not sure that `i` is less than the
+        /// size of this Union in bytes. Otherwise, use its counterpart method
+        /// [set_sbyte_()](#method.set_sbyte_) for performance.
+        /// 
+        /// # Example for ShortUnion
+        /// ```
+        /// use Cryptocol::number::*;
+        /// let mut succ = a_short.set_sbyte(1, 11);
+        /// let mut sbyte = a_short.get_sbyte(1);
+        /// if succ
+        /// {
+        ///     println!("a_short.get() = {}, a_short.get_sbyte(1).unwrap() = {}", a_short, sbyte.unwrap());
+        ///     assert_eq!(sbyte.unwrap(), 11_i8);
+        /// }
+        /// else
+        /// {
+        ///     println!("Out of range");
+        ///     assert_eq!(sbyte, None);
+        /// }
+        /// 
+        /// succ = a_short.set_sbyte(2, 11);
+        /// sbyte = a_short.get_sbyte(2);
+        /// if succ
+        /// {
+        ///     println!("a_short.get() = {}, a_short.get_sbyte(2).unwrap() = {}", a_short, sbyte.unwrap());
+        ///     assert_eq!(sbyte.unwrap(), 11_i8);
+        /// }
+        /// else
+        /// {
+        ///     println!("Out of range");
+        ///     assert_eq!(sbyte, None);
+        /// }
+        /// ```
+        /// 
+        /// # Example of LongerUnion
+        /// ```
+        /// use Cryptocol::number::*;
+        /// let mut succ = a_longer.set_sbyte(3, 81_i8);
+        /// let mut sbyte = a_longer.get_sbyte(3);
+        /// if succ
+        /// {
+        ///     println!("a_longer.get_signed() = {}, a_longer.get_sbyte(3).unwrap() = {}", a_longer.get_signed(), sbyte.unwrap());
+        ///     assert_eq!(sbyte.unwrap(), 81_i8);
+        /// }
+        /// else
+        /// {
+        ///     println!("Out of range");
+        ///     assert_eq!(sbyte, None);
+        /// }
+        /// 
+        /// succ = a_longer.set_sbyte(16, 81_i8);
+        /// sbyte = a_longer.get_sbyte(16);
+        /// if succ
+        /// {
+        ///     println!("a_longer.get_signed() = {}, a_longer.get_sbyte(16).unwrap() = {}", a_longer.get_signed(), sbyte.unwrap());
+        ///     assert_eq!(sbyte.unwrap(), 81_i8);
+        /// }
+        /// else
+        /// {
+        ///     println!("Out of range");
+        ///     assert_eq!(sbyte, None);
+        /// }
+        /// ```
+        /// 
+        /// # Big-endian issue
+        /// It is just experimental for Big Endian CPUs. So, you are not
+        /// encouraged to use it for serious purpose. Only use this crate for
+        /// Big-endian CPUs with your own full responsibility.
         #[cfg(target_endian = "big")]
         pub fn set_sbyte(&self, i: usize, val: i8) -> bool
         {
-            if i < Self::N
+            if i <= Self::N
             { 
                 unsafe { self.sbyte[Self::N-i] = val; }
                 true
@@ -1645,18 +2184,197 @@ macro_rules! get_set_short {
     ($f:expr) => {
         const M: usize = $f;
 
+        /// Returns i-th element of array `ushort` of type `u16`
+        /// if `i` is less than a half of the size of this Union in bytes.
+        /// Otherwise, it will panic.
+        /// 
+        /// # Argument i
+        /// 0-th element contains LSB (Least Significant Bit), while (the size
+        /// of this Union in bytes - 1)-th element contains MSB (Most
+        /// Significant Bit) regardless endianness.
+        /// 
+        /// # Panics
+        /// So, if `i` is greater than or equal to a half of the size of this
+        /// Union in bytes, it will panic.
+        /// So, use this method only when you are sure that the argument `i` is
+        /// less than a half of the size of this Union
+        /// 
+        /// # Counterpart Method
+        /// It is performance-oriented and does not care for safety.
+        /// It is virtually the same as the method get_ushort(). This method
+        /// get_ushort_() is considered to be slightly faster than the method
+        /// get_ushort().
+        /// Use this method only when you are sure that `i` is less than a half
+        /// of the size of this Union in bytes.
+        /// Otherwise, use its counterpart method [get_ushort()](#method.get_ushort)
+        /// for safety.
+        /// 
+        /// # Example for ShortUnion
+        /// ```
+        /// use Cryptocol::number::*;
+        /// // to do
+        /// ```
+        /// 
+        /// # Example of LongerUnion
+        /// ```
+        /// use Cryptocol::number::*;
+        /// // to do
+        /// ```
         #[cfg(target_endian = "little")]
         #[inline] pub fn get_ushort_(&self, i: usize) -> u16 { unsafe { self.ushort[i] } }
 
+        /// Returns i-th element of array `ushort` of type `u16`
+        /// if `i` is less than a half of the size of this Union in bytes.
+        /// Otherwise, it will panic.
+        /// 
+        /// # Argument i
+        /// 0-th element contains LSB (Least Significant Bit), while (the size
+        /// of this Union in bytes - 1)-th element contains MSB (Most
+        /// Significant Bit) regardless endianness.
+        /// 
+        /// # Panics
+        /// So, if `i` is greater than or equal to a half of the size of this
+        /// Union in bytes, it will panic.
+        /// So, use this method only when you are sure that the argument `i` is
+        /// less than a half of the size of this Union
+        /// 
+        /// # Counterpart Method
+        /// It is performance-oriented and does not care for safety.
+        /// It is virtually the same as the method get_ushort(). This method
+        /// get_ushort_() is considered to be slightly faster than the method
+        /// get_ushort().
+        /// Use this method only when you are sure that `i` is less than a half
+        /// of the size of this Union in bytes.
+        /// Otherwise, use its counterpart method [get_ushort()](#method.get_ushort)
+        /// for safety.
+        /// 
+        /// # Example for ShortUnion
+        /// ```
+        /// use Cryptocol::number::*;
+        /// // to do
+        /// ```
+        /// 
+        /// # Example of LongerUnion
+        /// ```
+        /// use Cryptocol::number::*;
+        /// // to do
+        /// ```
+        /// 
+        /// # Big-endian issue
+        /// It is just experimental for Big Endian CPUs. So, you are not
+        /// encouraged to use it for serious purpose. Only use this crate for
+        /// Big-endian CPUs with your own full responsibility.
         #[cfg(target_endian = "big")]
         #[inline] pub fn get_ushort_(&self, i: usize) -> u16 { unsafe { self.ushort[Self::M-i] } }
 
+        /// Returns i-th element of array `sshort` of type `i16`
+        /// if `i` is less than a half of the size of this Union in bytes.
+        /// Otherwise, it will panic.
+        /// 
+        /// # Argument i
+        /// 0-th element contains LSB (Least Significant Bit), while (the size
+        /// of this Union in bytes - 1)-th element contains MSB (Most
+        /// Significant Bit) regardless endianness.
+        /// 
+        /// # Panics
+        /// So, if `i` is greater than or equal to a half of the size of this
+        /// Union in bytes, it will panic.
+        /// So, use this method only when you are sure that the argument `i` is
+        /// less than a half of the size of this Union
+        /// 
+        /// # Counterpart Method
+        /// It is performance-oriented and does not care for safety.
+        /// It is virtually the same as the method get_sshort(). This method
+        /// get_sshort_() is considered to be slightly faster than the method
+        /// get_sshort().
+        /// Use this method only when you are sure that `i` is less than a half
+        /// of the size of this Union in bytes.
+        /// Otherwise, use its counterpart method [get_sshort()](#method.get_sshort)
+        /// for safety.
+        /// 
+        /// # Example for ShortUnion
+        /// ```
+        /// use Cryptocol::number::*;
+        /// // to do
+        /// ```
+        /// 
+        /// # Example of LongerUnion
+        /// ```
+        /// use Cryptocol::number::*;
+        /// // to do
+        /// ```
         #[cfg(target_endian = "little")]
         #[inline] pub fn get_sshort_(&self, i: usize) -> i16 { unsafe { self.sshort[i] } }
 
+        /// Returns i-th element of array `sshort` of type `i16`
+        /// if `i` is less than a half of the size of this Union in bytes.
+        /// Otherwise, it will panic.
+        /// 
+        /// # Argument i
+        /// 0-th element contains LSB (Least Significant Bit), while (the size
+        /// of this Union in bytes - 1)-th element contains MSB (Most
+        /// Significant Bit) regardless endianness.
+        /// 
+        /// # Panics
+        /// So, if `i` is greater than or equal to a half of the size of this
+        /// Union in bytes, it will panic.
+        /// So, use this method only when you are sure that the argument `i` is
+        /// less than a half of the size of this Union
+        /// 
+        /// # Counterpart Method
+        /// It is performance-oriented and does not care for safety.
+        /// It is virtually the same as the method get_sshort(). This method
+        /// get_sshort_() is considered to be slightly faster than the method
+        /// get_sshort().
+        /// Use this method only when you are sure that `i` is less than a half
+        /// of the size of this Union in bytes.
+        /// Otherwise, use its counterpart method [get_sshort()](#method.get_sshort)
+        /// for safety.
+        /// 
+        /// # Example for ShortUnion
+        /// ```
+        /// use Cryptocol::number::*;
+        /// // to do
+        /// ```
+        /// 
+        /// # Example of LongerUnion
+        /// ```
+        /// use Cryptocol::number::*;
+        /// // to do
+        /// ```
+        /// 
+        /// # Big-endian issue
+        /// It is just experimental for Big Endian CPUs. So, you are not
+        /// encouraged to use it for serious purpose. Only use this crate for
+        /// Big-endian CPUs with your own full responsibility.
         #[cfg(target_endian = "big")]
         #[inline] pub fn get_sshort_(&self, i: usize) -> i16 { unsafe { self.sshort[Self::M-i] } }
 
+        /// Returns i-th element of array `ushort` of type `u16` wrapped in Some
+        /// of enum Option if `i` is less than a half of the size of this Union
+        /// in bytes. Otherwise, it returns None of enum Option.
+        /// 
+        /// # Argument i
+        /// 0-th element contains LSB (Least Significant Bit), while (the size
+        /// of this Union in bytes - 1)-th element contains MSB (Most
+        /// Significant Bit) regardless endianness.
+        /// 
+        /// # Counterpart Method
+        /// Use this method when you are not sure that `i` is less than a half
+        /// of the size of this Union in bytes. Otherwise, use its counterpart
+        /// method [get_ushort_()](#method.get_ushort_) for performance.
+        /// 
+        /// # Example for ShortUnion
+        /// ```
+        /// use Cryptocol::number::*;
+        /// // to do
+        /// ```
+        /// 
+        /// # Example of LongerUnion
+        /// ```
+        /// use Cryptocol::number::*;
+        /// // to do
+        /// ```
         #[cfg(target_endian = "little")]
         pub fn get_ushort(&self, i: usize) -> Option<u16>
         {
@@ -1666,6 +2384,36 @@ macro_rules! get_set_short {
                 { None }
         }
 
+        /// Returns i-th element of array `ushort` of type `u16` wrapped in Some
+        /// of enum Option if `i` is less than a half of the size of this Union
+        /// in bytes. Otherwise, it returns None of enum Option.
+        /// 
+        /// # Argument i
+        /// 0-th element contains LSB (Least Significant Bit), while (the size
+        /// of this Union in bytes - 1)-th element contains MSB (Most
+        /// Significant Bit) regardless endianness.
+        /// 
+        /// # Counterpart Method
+        /// Use this method when you are not sure that `i` is less than a half
+        /// of the size of this Union in bytes. Otherwise, use its counterpart
+        /// method [get_ushort_()](#method.get_ushort_) for performance.
+        /// 
+        /// # Example for ShortUnion
+        /// ```
+        /// use Cryptocol::number::*;
+        /// // to do
+        /// ```
+        /// 
+        /// # Example of LongerUnion
+        /// ```
+        /// use Cryptocol::number::*;
+        /// // to do
+        /// ```
+        /// 
+        /// # Big-endian issue
+        /// It is just experimental for Big Endian CPUs. So, you are not
+        /// encouraged to use it for serious purpose. Only use this crate for
+        /// Big-endian CPUs with your own full responsibility.
         #[cfg(target_endian = "big")]
         pub fn get_ushort(&self, i: usize) -> Option<u16>
         {
@@ -1675,6 +2423,31 @@ macro_rules! get_set_short {
                 { None }
         }
 
+        /// Returns i-th element of array `sshort` of type `i16` wrapped in Some
+        /// of enum Option if `i` is less than a half of the size of this Union
+        /// in bytes. Otherwise, it returns None of enum Option.
+        /// 
+        /// # Argument i
+        /// 0-th element contains LSB (Least Significant Bit), while (the size
+        /// of this Union in bytes - 1)-th element contains MSB (Most
+        /// Significant Bit) regardless endianness.
+        /// 
+        /// # Counterpart Method
+        /// Use this method when you are not sure that `i` is less than a half
+        /// of the size of this Union in bytes. Otherwise, use its counterpart
+        /// method [get_sshort_()](#method.get_sshort_) for performance.
+        /// 
+        /// # Example for ShortUnion
+        /// ```
+        /// use Cryptocol::number::*;
+        /// // to do
+        /// ```
+        /// 
+        /// # Example of LongerUnion
+        /// ```
+        /// use Cryptocol::number::*;
+        /// // to do
+        /// ```
         #[cfg(target_endian = "little")]
         pub fn get_sshort(&self, i: usize) -> Option<i16>
         {
@@ -1684,6 +2457,36 @@ macro_rules! get_set_short {
                 { None }
         }
 
+        /// Returns i-th element of array `sshort` of type `i16` wrapped in Some
+        /// of enum Option if `i` is less than a half of the size of this Union
+        /// in bytes. Otherwise, it returns None of enum Option.
+        /// 
+        /// # Argument i
+        /// 0-th element contains LSB (Least Significant Bit), while (the size
+        /// of this Union in bytes - 1)-th element contains MSB (Most
+        /// Significant Bit) regardless endianness.
+        /// 
+        /// # Counterpart Method
+        /// Use this method when you are not sure that `i` is less than a half
+        /// of the size of this Union in bytes. Otherwise, use its counterpart
+        /// method [get_sshort_()](#method.get_sshort_) for performance.
+        /// 
+        /// # Example for ShortUnion
+        /// ```
+        /// use Cryptocol::number::*;
+        /// // to do
+        /// ```
+        /// 
+        /// # Example of LongerUnion
+        /// ```
+        /// use Cryptocol::number::*;
+        /// // to do
+        /// ```
+        /// 
+        /// # Big-endian issue
+        /// It is just experimental for Big Endian CPUs. So, you are not
+        /// encouraged to use it for serious purpose. Only use this crate for
+        /// Big-endian CPUs with your own full responsibility.
         #[cfg(target_endian = "big")]
         pub fn get_sshort(&self, i: usize) -> Option<i16>
         {
@@ -1693,18 +2496,193 @@ macro_rules! get_set_short {
                 { None }
         }
 
+        /// Sets i-th element of its array `ushort` of type `u16`
+        /// if `i` is less than a half of the size of this Union in bytes.
+        /// Otherwise, it will panic.
+        /// 
+        /// # Argument i
+        /// 0-th element contains LSB (Least Significant Bit), while (the size
+        /// of this Union in bytes - 1)-th element contains MSB (Most
+        /// Significant Bit) regardless endianness.
+        /// 
+        /// # Panics
+        /// So, if `i` is greater than or equal to a half of the size of this
+        /// Union in bytes, it will panic. So, use this method only when you
+        /// are sure that the argument i is less than a half of the size of
+        /// this Union
+        /// 
+        /// # Counterpart Method
+        /// It is performance-oriented and does not care for safety.
+        /// It is virtually the same as the method set_ushort(). This method
+        /// set_ushort_() is considered to be slightly faster than the method
+        /// set_ushort().
+        /// Use this method only when you are sure that `i` is less than a half
+        /// of the size of this Union in bytes. Otherwise, use its counterpart
+        /// method [set_ushort()](#method.set_ushort) for safety.
+        /// 
+        /// # Example for ShortUnion
+        /// ```
+        /// use Cryptocol::number::*;
+        /// // to do
+        /// ```
+        /// 
+        /// # Example of LongerUnion
+        /// ```
+        /// use Cryptocol::number::*;
+        /// // to do
+        /// ```
         #[cfg(target_endian = "little")]
         #[inline] pub fn set_ushort_(&mut self, i: usize, val: u16)  { unsafe { self.ushort[i] = val; } }
 
+        /// Sets i-th element of its array `ushort` of type `u16`
+        /// if `i` is less than a half of the size of this Union in bytes.
+        /// Otherwise, it will panic.
+        /// 
+        /// # Argument i
+        /// 0-th element contains LSB (Least Significant Bit), while (the size
+        /// of this Union in bytes - 1)-th element contains MSB (Most
+        /// Significant Bit) regardless endianness.
+        /// 
+        /// # Panics
+        /// So, if `i` is greater than or equal to a half of the size of this
+        /// Union in bytes, it will panic. So, use this method only when you
+        /// are sure that the argument i is less than a half of the size of
+        /// this Union
+        /// 
+        /// # Counterpart Method
+        /// It is performance-oriented and does not care for safety.
+        /// It is virtually the same as the method set_ushort(). This method
+        /// set_ushort_() is considered to be slightly faster than the method
+        /// set_ushort().
+        /// Use this method only when you are sure that `i` is less than a half
+        /// of the size of this Union in bytes. Otherwise, use its counterpart
+        /// method [set_ushort()](#method.set_ushort) for safety.
+        /// 
+        /// # Example for ShortUnion
+        /// ```
+        /// use Cryptocol::number::*;
+        /// // to do
+        /// ```
+        /// 
+        /// # Example of LongerUnion
+        /// ```
+        /// use Cryptocol::number::*;
+        /// // to do
+        /// ```
+        /// 
+        /// # Big-endian issue
+        /// It is just experimental for Big Endian CPUs. So, you are not
+        /// encouraged to use it for serious purpose. Only use this crate for
+        /// Big-endian CPUs with your own full responsibility.
         #[cfg(target_endian = "big")]
         #[inline] pub fn set_ushort_(&mut self, i: usize, val: u16)  { unsafe { self.ushort[Self::M-i] = val; } }
 
+        /// Sets i-th element of its array `sshort` of type `i16`
+        /// if `i` is less than a half of the size of this Union in bytes.
+        /// Otherwise, it will panic.
+        /// 
+        /// # Argument i
+        /// 0-th element contains LSB (Least Significant Bit), while (the size
+        /// of this Union in bytes - 1)-th element contains MSB (Most
+        /// Significant Bit) regardless endianness.
+        /// 
+        /// # Panics
+        /// So, if `i` is greater than or equal to a half of the size of this
+        /// Union in bytes, it will panic. So, use this method only when you
+        /// are sure that the argument i is less than a half of the size of
+        /// this Union
+        /// 
+        /// # Counterpart Method
+        /// It is performance-oriented and does not care for safety.
+        /// It is virtually the same as the method set_sshort(). This method
+        /// set_sshort_() is considered to be slightly faster than the method
+        /// set_sshort().
+        /// Use this method only when you are sure that `i` is less than a half
+        /// of the size of this Union in bytes. Otherwise, use its counterpart
+        /// method [set_sshort()](#method.set_sshort) for safety.
+        /// 
+        /// # Example for ShortUnion
+        /// ```
+        /// use Cryptocol::number::*;
+        /// // to do
+        /// ```
+        /// 
+        /// # Example of LongerUnion
+        /// ```
+        /// use Cryptocol::number::*;
+        /// // to do
+        /// ```
         #[cfg(target_endian = "little")]
         #[inline] pub fn set_sshort_(&mut self, i: usize, val: i16)  { unsafe { self.sshort[i] = val; } }
 
+        /// Sets i-th element of its array `sshort` of type `i16`
+        /// if `i` is less than a half of the size of this Union in bytes.
+        /// Otherwise, it will panic.
+        /// 
+        /// # Argument i
+        /// 0-th element contains LSB (Least Significant Bit), while (the size
+        /// of this Union in bytes - 1)-th element contains MSB (Most
+        /// Significant Bit) regardless endianness.
+        /// 
+        /// # Panics
+        /// So, if `i` is greater than or equal to a half of the size of this
+        /// Union in bytes, it will panic. So, use this method only when you
+        /// are sure that the argument i is less than a half of the size of
+        /// this Union
+        /// 
+        /// # Counterpart Method
+        /// It is performance-oriented and does not care for safety.
+        /// It is virtually the same as the method set_sshort(). This method
+        /// set_sshort_() is considered to be slightly faster than the method
+        /// set_sshort().
+        /// Use this method only when you are sure that `i` is less than a half
+        /// of the size of this Union in bytes. Otherwise, use its counterpart
+        /// method [set_sshort()](#method.set_sshort) for safety.
+        /// 
+        /// # Example for ShortUnion
+        /// ```
+        /// use Cryptocol::number::*;
+        /// // to do
+        /// ```
+        /// 
+        /// # Example of LongerUnion
+        /// ```
+        /// use Cryptocol::number::*;
+        /// // to do
+        /// ```
+        /// 
+        /// # Big-endian issue
+        /// It is just experimental for Big Endian CPUs. So, you are not
+        /// encouraged to use it for serious purpose. Only use this crate for
+        /// Big-endian CPUs with your own full responsibility.
         #[cfg(target_endian = "big")]
         #[inline] pub fn set_sshort_(&mut self, i: usize, val: i16)  { unsafe { self.sshort[Self::M-i] = val; } }
 
+        /// Sets i-th element of its array `ushort` of type `u16` and returns
+        /// true if `i` is less than a half of the size of this Union in bytes.
+        /// Otherwise, it will set nothing amd return false.
+        /// 
+        /// # Argument i
+        /// 0-th element contains LSB (Least Significant Bit), while (the size
+        /// of this Union in bytes - 1)-th element contains MSB (Most
+        /// Significant Bit) regardless endianness.
+        /// 
+        /// # Counterpart Method
+        /// Use this method when you are not sure that `i` is less than a half
+        /// of the size of this Union in bytes. Otherwise, use its counterpart
+        /// method [set_ushort_()](#method.set_ushort_) for performance.
+        /// 
+        /// # Example for ShortUnion
+        /// ```
+        /// use Cryptocol::number::*;
+        /// // todo
+        /// ```
+        /// 
+        /// # Example of LongerUnion
+        /// ```
+        /// use Cryptocol::number::*;
+        /// // todo
+        /// ```
         #[cfg(target_endian = "little")]
         pub fn set_ushort(&mut self, i: usize, val: u16) -> bool
         {
@@ -1719,6 +2697,36 @@ macro_rules! get_set_short {
             }
         }
 
+        /// Sets i-th element of its array `ushort` of type `u16` and returns
+        /// true if `i` is less than a half of the size of this Union in bytes.
+        /// Otherwise, it will set nothing amd return false.
+        /// 
+        /// # Argument i
+        /// 0-th element contains LSB (Least Significant Bit), while (the size
+        /// of this Union in bytes - 1)-th element contains MSB (Most
+        /// Significant Bit) regardless endianness.
+        /// 
+        /// # Counterpart Method
+        /// Use this method when you are not sure that `i` is less than a half
+        /// of the size of this Union in bytes. Otherwise, use its counterpart
+        /// method [set_ushort_()](#method.set_ushort_) for performance.
+        /// 
+        /// # Example for ShortUnion
+        /// ```
+        /// use Cryptocol::number::*;
+        /// // todo
+        /// ```
+        /// 
+        /// # Example of LongerUnion
+        /// ```
+        /// use Cryptocol::number::*;
+        /// // todo
+        /// ```
+        /// 
+        /// # Big-endian issue
+        /// It is just experimental for Big Endian CPUs. So, you are not
+        /// encouraged to use it for serious purpose. Only use this crate for
+        /// Big-endian CPUs with your own full responsibility.
         #[cfg(target_endian = "big")]
         pub fn set_ushort(&self, i: usize, val: u16) -> bool
         {
@@ -1733,6 +2741,31 @@ macro_rules! get_set_short {
             }
         }
 
+        /// Sets i-th element of its array `sshort` of type `i16` and returns
+        /// true if `i` is less than a half of the size of this Union in bytes.
+        /// Otherwise, it will set nothing amd return false.
+        /// 
+        /// # Argument i
+        /// 0-th element contains LSB (Least Significant Bit), while (the size
+        /// of this Union in bytes - 1)-th element contains MSB (Most
+        /// Significant Bit) regardless endianness.
+        /// 
+        /// # Counterpart Method
+        /// Use this method when you are not sure that `i` is less than a half
+        /// of the size of this Union in bytes. Otherwise, use its counterpart
+        /// method [set_sshort_()](#method.set_sshort_) for performance.
+        /// 
+        /// # Example for ShortUnion
+        /// ```
+        /// use Cryptocol::number::*;
+        /// // todo
+        /// ```
+        /// 
+        /// # Example of LongerUnion
+        /// ```
+        /// use Cryptocol::number::*;
+        /// // todo
+        /// ```
         #[cfg(target_endian = "little")]
         pub fn set_sshort(&mut self, i: usize, val: i16) -> bool
         {
@@ -1747,6 +2780,36 @@ macro_rules! get_set_short {
             }
         }
 
+        /// Sets i-th element of its array `sshort` of type `i16` and returns
+        /// true if `i` is less than a half of the size of this Union in bytes.
+        /// Otherwise, it will set nothing amd return false.
+        /// 
+        /// # Argument i
+        /// 0-th element contains LSB (Least Significant Bit), while (the size
+        /// of this Union in bytes - 1)-th element contains MSB (Most
+        /// Significant Bit) regardless endianness.
+        /// 
+        /// # Counterpart Method
+        /// Use this method when you are not sure that `i` is less than a half
+        /// of the size of this Union in bytes. Otherwise, use its counterpart
+        /// method [set_sshort_()](#method.set_sshort_) for performance.
+        /// 
+        /// # Example for ShortUnion
+        /// ```
+        /// use Cryptocol::number::*;
+        /// // todo
+        /// ```
+        /// 
+        /// # Example of LongerUnion
+        /// ```
+        /// use Cryptocol::number::*;
+        /// // todo
+        /// ```
+        /// 
+        /// # Big-endian issue
+        /// It is just experimental for Big Endian CPUs. So, you are not
+        /// encouraged to use it for serious purpose. Only use this crate for
+        /// Big-endian CPUs with your own full responsibility.
         #[cfg(target_endian = "big")]
         pub fn set_sshort(&self, i: usize, val: i16) -> bool
         {
@@ -1768,18 +2831,197 @@ macro_rules! get_set_int {
     ($f:expr) => {
         const L: usize = $f;
 
+        /// Returns i-th element of array `uint` of type `u32`
+        /// if `i` is less than a quarter of the size of this Union in bytes.
+        /// Otherwise, it will panic.
+        /// 
+        /// # Argument i
+        /// 0-th element contains LSB (Least Significant Bit), while (the size
+        /// of this Union in bytes - 1)-th element contains MSB (Most
+        /// Significant Bit) regardless endianness.
+        /// 
+        /// # Panics
+        /// So, if `i` is greater than or equal to a quarter of the size of this
+        /// Union in bytes, it will panic.
+        /// So, use this method only when you are sure that the argument `i` is
+        /// less than a quarter of the size of this Union
+        /// 
+        /// # Counterpart Method
+        /// It is performance-oriented and does not care for safety.
+        /// It is virtually the same as the method get_uint(). This method
+        /// get_uint_() is considered to be slightly faster than the method
+        /// get_uint().
+        /// Use this method only when you are sure that `i` is less than
+        /// a quarter of the size of this Union in bytes.
+        /// Otherwise, use its counterpart method [get_uint()](#method.get_uint)
+        /// for safety.
+        /// 
+        /// # Example for ShortUnion
+        /// ```
+        /// use Cryptocol::number::*;
+        /// // to do
+        /// ```
+        /// 
+        /// # Example of LongerUnion
+        /// ```
+        /// use Cryptocol::number::*;
+        /// // to do
+        /// ```
         #[cfg(target_endian = "little")]
         #[inline] pub fn get_uint_(&self, i: usize) -> u32 { unsafe { self.uint[i] } }
 
+        /// Returns i-th element of array `uint` of type `u32`
+        /// if `i` is less than a quarter of the size of this Union in bytes.
+        /// Otherwise, it will panic.
+        /// 
+        /// # Argument i
+        /// 0-th element contains LSB (Least Significant Bit), while (the size
+        /// of this Union in bytes - 1)-th element contains MSB (Most
+        /// Significant Bit) regardless endianness.
+        /// 
+        /// # Panics
+        /// So, if `i` is greater than or equal to a quarter of the size of this
+        /// Union in bytes, it will panic.
+        /// So, use this method only when you are sure that the argument `i` is
+        /// less than a quarter of the size of this Union
+        /// 
+        /// # Counterpart Method
+        /// It is performance-oriented and does not care for safety.
+        /// It is virtually the same as the method get_uint(). This method
+        /// get_uint_() is considered to be slightly faster than the method
+        /// get_uint().
+        /// Use this method only when you are sure that `i` is less than
+        /// a quarter of the size of this Union in bytes.
+        /// Otherwise, use its counterpart method [get_uint()](#method.get_uint)
+        /// for safety.
+        /// 
+        /// # Example for ShortUnion
+        /// ```
+        /// use Cryptocol::number::*;
+        /// // to do
+        /// ```
+        /// 
+        /// # Example of LongerUnion
+        /// ```
+        /// use Cryptocol::number::*;
+        /// // to do
+        /// ```
+        /// 
+        /// # Big-endian issue
+        /// It is just experimental for Big Endian CPUs. So, you are not
+        /// encouraged to use it for serious purpose. Only use this crate for
+        /// Big-endian CPUs with your own full responsibility.
         #[cfg(target_endian = "big")]
         #[inline] pub fn get_uint_(&self, i: usize) -> u32 { unsafe { self.uint[Self::L-i] } }
 
+        /// Returns i-th element of array `sint` of type `i32`
+        /// if `i` is less than a quarter of the size of this Union in bytes.
+        /// Otherwise, it will panic.
+        /// 
+        /// # Argument i
+        /// 0-th element contains LSB (Least Significant Bit), while (the size
+        /// of this Union in bytes - 1)-th element contains MSB (Most
+        /// Significant Bit) regardless endianness.
+        /// 
+        /// # Panics
+        /// So, if `i` is greater than or equal to a quarter of the size of this
+        /// Union in bytes, it will panic.
+        /// So, use this method only when you are sure that the argument `i` is
+        /// less than a quarter of the size of this Union
+        /// 
+        /// # Counterpart Method
+        /// It is performance-oriented and does not care for safety.
+        /// It is virtually the same as the method get_sint(). This method
+        /// get_sint_() is considered to be slightly faster than the method
+        /// get_sint().
+        /// Use this method only when you are sure that `i` is less than
+        /// a quarter of the size of this Union in bytes.
+        /// Otherwise, use its counterpart method [get_sint()](#method.get_sint)
+        /// for safety.
+        /// 
+        /// # Example for ShortUnion
+        /// ```
+        /// use Cryptocol::number::*;
+        /// // to do
+        /// ```
+        /// 
+        /// # Example of LongerUnion
+        /// ```
+        /// use Cryptocol::number::*;
+        /// // to do
+        /// ```
         #[cfg(target_endian = "little")]
         #[inline] pub fn get_sint_(&self, i: usize) -> i32 { unsafe { self.sint[i] } }
 
+        /// Returns i-th element of array `sint` of type `i32`
+        /// if `i` is less than a quarter of the size of this Union in bytes.
+        /// Otherwise, it will panic.
+        /// 
+        /// # Argument i
+        /// 0-th element contains LSB (Least Significant Bit), while (the size
+        /// of this Union in bytes - 1)-th element contains MSB (Most
+        /// Significant Bit) regardless endianness.
+        /// 
+        /// # Panics
+        /// So, if `i` is greater than or equal to a quarter of the size of this
+        /// Union in bytes, it will panic.
+        /// So, use this method only when you are sure that the argument `i` is
+        /// less than a quarter of the size of this Union
+        /// 
+        /// # Counterpart Method
+        /// It is performance-oriented and does not care for safety.
+        /// It is virtually the same as the method get_sint(). This method
+        /// get_sint_() is considered to be slightly faster than the method
+        /// get_sint().
+        /// Use this method only when you are sure that `i` is less than
+        /// a quarter of the size of this Union in bytes.
+        /// Otherwise, use its counterpart method [get_sint()](#method.get_sint)
+        /// for safety.
+        /// 
+        /// # Example for ShortUnion
+        /// ```
+        /// use Cryptocol::number::*;
+        /// // to do
+        /// ```
+        /// 
+        /// # Example of LongerUnion
+        /// ```
+        /// use Cryptocol::number::*;
+        /// // to do
+        /// ```
+        /// 
+        /// # Big-endian issue
+        /// It is just experimental for Big Endian CPUs. So, you are not
+        /// encouraged to use it for serious purpose. Only use this crate for
+        /// Big-endian CPUs with your own full responsibility.
         #[cfg(target_endian = "big")]
         #[inline] pub fn get_sint_(&self, i: usize) -> i32 { unsafe { self.sint[Self::L-i] } }
 
+        /// Returns i-th element of array `uint` of type `u32` wrapped in Some
+        /// of enum Option if `i` is less than a quarter of the size of this
+        /// Union in bytes. Otherwise, it returns None of enum Option.
+        /// 
+        /// # Argument i
+        /// 0-th element contains LSB (Least Significant Bit), while (the size
+        /// of this Union in bytes - 1)-th element contains MSB (Most
+        /// Significant Bit) regardless endianness.
+        /// 
+        /// # Counterpart Method
+        /// Use this method when you are not sure that `i` is less than
+        /// a quarter of the size of this Union in bytes. Otherwise, use its
+        /// counterpart method [get_uint_()](#method.get_uint_) for performance.
+        /// 
+        /// # Example for ShortUnion
+        /// ```
+        /// use Cryptocol::number::*;
+        /// // to do
+        /// ```
+        /// 
+        /// # Example of LongerUnion
+        /// ```
+        /// use Cryptocol::number::*;
+        /// // to do
+        /// ```
         #[cfg(target_endian = "little")]
         pub fn get_uint(&self, i: usize) -> Option<u32>
         {
@@ -1789,6 +3031,36 @@ macro_rules! get_set_int {
                 { None }
         }
 
+        /// Returns i-th element of array `uint` of type `u32` wrapped in Some
+        /// of enum Option if `i` is less than a quarter of the size of this
+        /// Union in bytes. Otherwise, it returns None of enum Option.
+        /// 
+        /// # Argument i
+        /// 0-th element contains LSB (Least Significant Bit), while (the size
+        /// of this Union in bytes - 1)-th element contains MSB (Most
+        /// Significant Bit) regardless endianness.
+        /// 
+        /// # Counterpart Method
+        /// Use this method when you are not sure that `i` is less than
+        /// a quarter of the size of this Union in bytes. Otherwise, use its
+        /// counterpart method [get_uint_()](#method.get_uint_) for performance.
+        /// 
+        /// # Example for ShortUnion
+        /// ```
+        /// use Cryptocol::number::*;
+        /// // to do
+        /// ```
+        /// 
+        /// # Example of LongerUnion
+        /// ```
+        /// use Cryptocol::number::*;
+        /// // to do
+        /// ```
+        /// 
+        /// # Big-endian issue
+        /// It is just experimental for Big Endian CPUs. So, you are not
+        /// encouraged to use it for serious purpose. Only use this crate for
+        /// Big-endian CPUs with your own full responsibility.
         #[cfg(target_endian = "big")]
         pub fn get_uint(&self, i: usize) -> Option<u32>
         {
@@ -1798,6 +3070,31 @@ macro_rules! get_set_int {
                 { None }
         }
 
+        /// Returns i-th element of array `sint` of type `i32` wrapped in Some
+        /// of enum Option if `i` is less than a quarter of the size of this
+        /// Union in bytes. Otherwise, it returns None of enum Option.
+        /// 
+        /// # Argument i
+        /// 0-th element contains LSB (Least Significant Bit), while (the size
+        /// of this Union in bytes - 1)-th element contains MSB (Most
+        /// Significant Bit) regardless endianness.
+        /// 
+        /// # Counterpart Method
+        /// Use this method when you are not sure that `i` is less than
+        /// a quarter of the size of this Union in bytes. Otherwise, use its
+        /// counterpart method [get_sint_()](#method.get_sint_) for performance.
+        /// 
+        /// # Example for ShortUnion
+        /// ```
+        /// use Cryptocol::number::*;
+        /// // to do
+        /// ```
+        /// 
+        /// # Example of LongerUnion
+        /// ```
+        /// use Cryptocol::number::*;
+        /// // to do
+        /// ```
         #[cfg(target_endian = "little")]
         pub fn get_sint(&self, i: usize) -> Option<i32>
         {
@@ -1807,6 +3104,36 @@ macro_rules! get_set_int {
                 { None }
         }
 
+        /// Returns i-th element of array `sint` of type `i32` wrapped in Some
+        /// of enum Option if `i` is less than a quarter of the size of this
+        /// Union in bytes. Otherwise, it returns None of enum Option.
+        /// 
+        /// # Argument i
+        /// 0-th element contains LSB (Least Significant Bit), while (the size
+        /// of this Union in bytes - 1)-th element contains MSB (Most
+        /// Significant Bit) regardless endianness.
+        /// 
+        /// # Counterpart Method
+        /// Use this method when you are not sure that `i` is less than
+        /// a quarter of the size of this Union in bytes. Otherwise, use its
+        /// counterpart method [get_sint_()](#method.get_sint_) for performance.
+        /// 
+        /// # Example for ShortUnion
+        /// ```
+        /// use Cryptocol::number::*;
+        /// // to do
+        /// ```
+        /// 
+        /// # Example of LongerUnion
+        /// ```
+        /// use Cryptocol::number::*;
+        /// // to do
+        /// ```
+        /// 
+        /// # Big-endian issue
+        /// It is just experimental for Big Endian CPUs. So, you are not
+        /// encouraged to use it for serious purpose. Only use this crate for
+        /// Big-endian CPUs with your own full responsibility.
         #[cfg(target_endian = "big")]
         pub fn get_sint(&self, i: usize) -> Option<i32>
         {
@@ -1816,18 +3143,193 @@ macro_rules! get_set_int {
                 { None }
         }
 
+        /// Sets i-th element of its array `uint` of type `u32`
+        /// if `i` is less than a quarter of the size of this Union in bytes.
+        /// Otherwise, it will panic.
+        /// 
+        /// # Argument i
+        /// 0-th element contains LSB (Least Significant Bit), while (the size
+        /// of this Union in bytes - 1)-th element contains MSB (Most
+        /// Significant Bit) regardless endianness.
+        /// 
+        /// # Panics
+        /// So, if `i` is greater than or equal to a quarter of the size of this
+        /// Union in bytes, it will panic. So, use this method only when you
+        /// are sure that the argument i is less than a quarter of the size of
+        /// this Union
+        /// 
+        /// # Counterpart Method
+        /// It is performance-oriented and does not care for safety.
+        /// It is virtually the same as the method set_uint(). This method
+        /// set_uint_() is considered to be slightly faster than the method
+        /// set_uint().
+        /// Use this method only when you are sure that `i` is less than a quarter
+        /// of the size of this Union in bytes. Otherwise, use its counterpart
+        /// method [set_uint()](#method.set_uint) for safety.
+        /// 
+        /// # Example for ShortUnion
+        /// ```
+        /// use Cryptocol::number::*;
+        /// // to do
+        /// ```
+        /// 
+        /// # Example of LongerUnion
+        /// ```
+        /// use Cryptocol::number::*;
+        /// // to do
+        /// ```
         #[cfg(target_endian = "little")]
         #[inline] pub fn set_uint_(&mut self, i: usize, val: u32)  { unsafe { self.uint[i] = val; } }
 
+        /// Sets i-th element of its array `uint` of type `u32`
+        /// if `i` is less than a quarter of the size of this Union in bytes.
+        /// Otherwise, it will panic.
+        /// 
+        /// # Argument i
+        /// 0-th element contains LSB (Least Significant Bit), while (the size
+        /// of this Union in bytes - 1)-th element contains MSB (Most
+        /// Significant Bit) regardless endianness.
+        /// 
+        /// # Panics
+        /// So, if `i` is greater than or equal to a quarter of the size of this
+        /// Union in bytes, it will panic. So, use this method only when you
+        /// are sure that the argument i is less than a quarter of the size of
+        /// this Union
+        /// 
+        /// # Counterpart Method
+        /// It is performance-oriented and does not care for safety.
+        /// It is virtually the same as the method set_uint(). This method
+        /// set_uint_() is considered to be slightly faster than the method
+        /// set_uint().
+        /// Use this method only when you are sure that `i` is less than
+        /// a quarter of the size of this Union in bytes. Otherwise, use its
+        /// counterpart method [set_uint()](#method.set_uint) for safety.
+        /// 
+        /// # Example for ShortUnion
+        /// ```
+        /// use Cryptocol::number::*;
+        /// // to do
+        /// ```
+        /// 
+        /// # Example of LongerUnion
+        /// ```
+        /// use Cryptocol::number::*;
+        /// // to do
+        /// ```
+        /// 
+        /// # Big-endian issue
+        /// It is just experimental for Big Endian CPUs. So, you are not
+        /// encouraged to use it for serious purpose. Only use this crate for
+        /// Big-endian CPUs with your own full responsibility.
         #[cfg(target_endian = "big")]
         #[inline] pub fn set_uint_(&mut self, i: usize, val: u32)  { unsafe { self.uint[Self::L-i] = val; } }
 
+        /// Sets i-th element of its array `sint` of type `i32`
+        /// if `i` is less than a quarter of the size of this Union in bytes.
+        /// Otherwise, it will panic.
+        /// 
+        /// # Argument i
+        /// 0-th element contains LSB (Least Significant Bit), while (the size
+        /// of this Union in bytes - 1)-th element contains MSB (Most
+        /// Significant Bit) regardless endianness.
+        /// 
+        /// # Panics
+        /// So, if `i` is greater than or equal to a quarter of the size of this
+        /// Union in bytes, it will panic. So, use this method only when you
+        /// are sure that the argument i is less than a quarter of the size of
+        /// this Union
+        /// 
+        /// # Counterpart Method
+        /// It is performance-oriented and does not care for safety.
+        /// It is virtually the same as the method set_sint(). This method
+        /// set_sint_() is considered to be slightly faster than the method
+        /// set_sint().
+        /// Use this method only when you are sure that `i` is less than
+        /// a quarter of the size of this Union in bytes. Otherwise, use its
+        /// counterpart method [set_sint()](#method.set_sint) for safety.
+        /// 
+        /// # Example for ShortUnion
+        /// ```
+        /// use Cryptocol::number::*;
+        /// // to do
+        /// ```
+        /// 
+        /// # Example of LongerUnion
+        /// ```
+        /// use Cryptocol::number::*;
+        /// // to do
+        /// ```
         #[cfg(target_endian = "little")]
         #[inline] pub fn set_sint_(&mut self, i: usize, val: i32)  { unsafe { self.sint[i] = val; } }
 
+        /// Sets i-th element of its array `sint` of type `i32`
+        /// if `i` is less than a quarter of the size of this Union in bytes.
+        /// Otherwise, it will panic.
+        /// 
+        /// # Argument i
+        /// 0-th element contains LSB (Least Significant Bit), while (the size
+        /// of this Union in bytes - 1)-th element contains MSB (Most
+        /// Significant Bit) regardless endianness.
+        /// 
+        /// # Panics
+        /// So, if `i` is greater than or equal to a quarter of the size of this
+        /// Union in bytes, it will panic. So, use this method only when you
+        /// are sure that the argument i is less than a quarter of the size of
+        /// this Union
+        /// 
+        /// # Counterpart Method
+        /// It is performance-oriented and does not care for safety.
+        /// It is virtually the same as the method set_sint(). This method
+        /// set_sint_() is considered to be slightly faster than the method
+        /// set_sint().
+        /// Use this method only when you are sure that `i` is less than
+        /// a quarter of the size of this Union in bytes. Otherwise, use its
+        /// counterpart method [set_sint()](#method.set_sint) for safety.
+        /// 
+        /// # Example for ShortUnion
+        /// ```
+        /// use Cryptocol::number::*;
+        /// // to do
+        /// ```
+        /// 
+        /// # Example of LongerUnion
+        /// ```
+        /// use Cryptocol::number::*;
+        /// // to do
+        /// ```
+        /// 
+        /// # Big-endian issue
+        /// It is just experimental for Big Endian CPUs. So, you are not
+        /// encouraged to use it for serious purpose. Only use this crate for
+        /// Big-endian CPUs with your own full responsibility.
         #[cfg(target_endian = "big")]
         #[inline] pub fn set_sint_(&mut self, i: usize, val: i32)  { unsafe { self.sint[Self::L-i] = val; } }
 
+        /// Sets i-th element of its array `uint` of type `u32` and returns
+        /// true if `i` is less than a quarter of the size of this Union in
+        /// bytes. Otherwise, it will set nothing amd return false.
+        /// 
+        /// # Argument i
+        /// 0-th element contains LSB (Least Significant Bit), while (the size
+        /// of this Union in bytes - 1)-th element contains MSB (Most
+        /// Significant Bit) regardless endianness.
+        /// 
+        /// # Counterpart Method
+        /// Use this method when you are not sure that `i` is less than
+        /// a quarter of the size of this Union in bytes. Otherwise, use its
+        /// counterpart method [set_uint_()](#method.set_uint_) for performance.
+        /// 
+        /// # Example for ShortUnion
+        /// ```
+        /// use Cryptocol::number::*;
+        /// // todo
+        /// ```
+        /// 
+        /// # Example of LongerUnion
+        /// ```
+        /// use Cryptocol::number::*;
+        /// // todo
+        /// ```
         #[cfg(target_endian = "little")]
         pub fn set_uint(&mut self, i: usize, val: u32) -> bool
         {
@@ -1842,6 +3344,36 @@ macro_rules! get_set_int {
             }
         }
 
+        /// Sets i-th element of its array `uint` of type `u32` and returns
+        /// true if `i` is less than a quarter of the size of this Union in
+        /// bytes. Otherwise, it will set nothing amd return false.
+        /// 
+        /// # Argument i
+        /// 0-th element contains LSB (Least Significant Bit), while (the size
+        /// of this Union in bytes - 1)-th element contains MSB (Most
+        /// Significant Bit) regardless endianness.
+        /// 
+        /// # Counterpart Method
+        /// Use this method when you are not sure that `i` is less than
+        /// a quarter of the size of this Union in bytes. Otherwise, use its
+        /// counterpart method [set_uint_()](#method.set_uint_) for performance.
+        /// 
+        /// # Example for ShortUnion
+        /// ```
+        /// use Cryptocol::number::*;
+        /// // todo
+        /// ```
+        /// 
+        /// # Example of LongerUnion
+        /// ```
+        /// use Cryptocol::number::*;
+        /// // todo
+        /// ```
+        /// 
+        /// # Big-endian issue
+        /// It is just experimental for Big Endian CPUs. So, you are not
+        /// encouraged to use it for serious purpose. Only use this crate for
+        /// Big-endian CPUs with your own full responsibility.
         #[cfg(target_endian = "big")]
         pub fn set_uint(&self, i: usize, val: u32) -> bool
         {
@@ -1856,6 +3388,31 @@ macro_rules! get_set_int {
             }
         }
 
+        /// Sets i-th element of its array `sint` of type `i32` and returns
+        /// true if `i` is less than a quarter of the size of this Union in
+        /// bytes. Otherwise, it will set nothing amd return false.
+        /// 
+        /// # Argument i
+        /// 0-th element contains LSB (Least Significant Bit), while (the size
+        /// of this Union in bytes - 1)-th element contains MSB (Most
+        /// Significant Bit) regardless endianness.
+        /// 
+        /// # Counterpart Method
+        /// Use this method when you are not sure that `i` is less than
+        /// a quarter of the size of this Union in bytes. Otherwise, use its
+        /// counterpart method [set_sint_()](#method.set_sint_) for performance.
+        /// 
+        /// # Example for ShortUnion
+        /// ```
+        /// use Cryptocol::number::*;
+        /// // todo
+        /// ```
+        /// 
+        /// # Example of LongerUnion
+        /// ```
+        /// use Cryptocol::number::*;
+        /// // todo
+        /// ```
         #[cfg(target_endian = "little")]
         pub fn set_sint(&mut self, i: usize, val: i32) -> bool
         {
@@ -1870,6 +3427,36 @@ macro_rules! get_set_int {
             }
         }
 
+        /// Sets i-th element of its array `sint` of type `i32` and returns
+        /// true if `i` is less than a quarter of the size of this Union in
+        /// bytes. Otherwise, it will set nothing amd return false.
+        /// 
+        /// # Argument i
+        /// 0-th element contains LSB (Least Significant Bit), while (the size
+        /// of this Union in bytes - 1)-th element contains MSB (Most
+        /// Significant Bit) regardless endianness.
+        /// 
+        /// # Counterpart Method
+        /// Use this method when you are not sure that `i` is less than
+        /// a quarter of the size of this Union in bytes. Otherwise, use its
+        /// counterpart method [set_sint_()](#method.set_sint_) for performance.
+        /// 
+        /// # Example for ShortUnion
+        /// ```
+        /// use Cryptocol::number::*;
+        /// // todo
+        /// ```
+        /// 
+        /// # Example of LongerUnion
+        /// ```
+        /// use Cryptocol::number::*;
+        /// // todo
+        /// ```
+        /// 
+        /// # Big-endian issue
+        /// It is just experimental for Big Endian CPUs. So, you are not
+        /// encouraged to use it for serious purpose. Only use this crate for
+        /// Big-endian CPUs with your own full responsibility.
         #[cfg(target_endian = "big")]
         pub fn set_sint(&self, i: usize, val: i32) -> bool
         {
@@ -1891,18 +3478,198 @@ macro_rules! get_set_long {
     ($f:expr) => {
         const K: usize = $f;
 
+        /// Returns i-th element of array `ulong` of type `u64`
+        /// if `i` is less than an eighth of the size of this Union in bytes.
+        /// Otherwise, it will panic.
+        /// 
+        /// # Argument i
+        /// 0-th element contains LSB (Least Significant Bit), while (the size
+        /// of this Union in bytes - 1)-th element contains MSB (Most
+        /// Significant Bit) regardless endianness.
+        /// 
+        /// # Panics
+        /// So, if `i` is greater than or equal to an eighth of the size of this
+        /// Union in bytes, it will panic.
+        /// So, use this method only when you are sure that the argument `i` is
+        /// less than an eighth of the size of this Union
+        /// 
+        /// # Counterpart Method
+        /// It is performance-oriented and does not care for safety.
+        /// It is virtually the same as the method get_ulong(). This method
+        /// get_ulong_() is considered to be slightly faster than the method
+        /// get_ulong().
+        /// Use this method only when you are sure that `i` is less than
+        /// an eighth of the size of this Union in bytes.
+        /// Otherwise, use its counterpart method [get_ulong()](#method.get_ulong)
+        /// for safety.
+        /// 
+        /// # Example for ShortUnion
+        /// ```
+        /// use Cryptocol::number::*;
+        /// // to do
+        /// ```
+        /// 
+        /// # Example of LongerUnion
+        /// ```
+        /// use Cryptocol::number::*;
+        /// // to do
+        /// ```
         #[cfg(target_endian = "little")]
         #[inline] pub fn get_ulong_(&self, i: usize) -> u64 { unsafe { self.ulong[i] } }
 
+        /// Returns i-th element of array `ulong` of type `u64`
+        /// if `i` is less than an eighth of the size of this Union in bytes.
+        /// Otherwise, it will panic.
+        /// 
+        /// # Argument i
+        /// 0-th element contains LSB (Least Significant Bit), while (the size
+        /// of this Union in bytes - 1)-th element contains MSB (Most
+        /// Significant Bit) regardless endianness.
+        /// 
+        /// # Panics
+        /// So, if `i` is greater than or equal to an eighth of the size of this
+        /// Union in bytes, it will panic.
+        /// So, use this method only when you are sure that the argument `i` is
+        /// less than an eighth of the size of this Union
+        /// 
+        /// # Counterpart Method
+        /// It is performance-oriented and does not care for safety.
+        /// It is virtually the same as the method get_ulong(). This method
+        /// get_ulong_() is considered to be slightly faster than the method
+        /// get_ulong().
+        /// Use this method only when you are sure that `i` is less than
+        /// an eighth of the size of this Union in bytes.
+        /// Otherwise, use its counterpart method [get_ulong()](#method.get_ulong)
+        /// for safety.
+        /// 
+        /// # Example for ShortUnion
+        /// ```
+        /// use Cryptocol::number::*;
+        /// // to do
+        /// ```
+        /// 
+        /// # Example of LongerUnion
+        /// ```
+        /// use Cryptocol::number::*;
+        /// // to do
+        /// ```
+        /// 
+        /// # Big-endian issue
+        /// It is just experimental for Big Endian CPUs. So, you are not
+        /// encouraged to use it for serious purpose. Only use this crate for
+        /// Big-endian CPUs with your own full responsibility.
         #[cfg(target_endian = "big")]
         #[inline] pub fn get_ulong_(&self, i: usize) -> u64 { unsafe { self.ulong[Self::K-i] } }
 
+        /// Returns i-th element of array `slong` of type `i64`
+        /// if `i` is less than an eighth of the size of this Union in bytes.
+        /// Otherwise, it will panic.
+        /// 
+        /// # Argument i
+        /// 0-th element contains LSB (Least Significant Bit), while (the size
+        /// of this Union in bytes - 1)-th element contains MSB (Most
+        /// Significant Bit) regardless endianness.
+        /// 
+        /// # Panics
+        /// So, if `i` is greater than or equal to an eighth of the size of this
+        /// Union in bytes, it will panic.
+        /// So, use this method only when you are sure that the argument `i` is
+        /// less than an eighth of the size of this Union
+        /// 
+        /// # Counterpart Method
+        /// It is performance-oriented and does not care for safety.
+        /// It is virtually the same as the method get_slong(). This method
+        /// get_slong_() is considered to be slightly faster than the method
+        /// get_slong().
+        /// Use this method only when you are sure that `i` is less than
+        /// an eighth of the size of this Union in bytes.
+        /// Otherwise, use its counterpart method [get_slong()](#method.get_slong)
+        /// for safety.
+        /// 
+        /// # Example for ShortUnion
+        /// ```
+        /// use Cryptocol::number::*;
+        /// // to do
+        /// ```
+        /// 
+        /// # Example of LongerUnion
+        /// ```
+        /// use Cryptocol::number::*;
+        /// // to do
+        /// ```
         #[cfg(target_endian = "little")]
         #[inline] pub fn get_slong_(&self, i: usize) -> i64 { unsafe { self.slong[i] } }
 
+        /// Returns i-th element of array `slong` of type `i64`
+        /// if `i` is less than an eighth of the size of this Union in bytes.
+        /// Otherwise, it will panic.
+        /// 
+        /// # Argument i
+        /// 0-th element contains LSB (Least Significant Bit), while (the size
+        /// of this Union in bytes - 1)-th element contains MSB (Most
+        /// Significant Bit) regardless endianness.
+        /// 
+        /// # Panics
+        /// So, if `i` is greater than or equal to an eighth of the size of this
+        /// Union in bytes, it will panic.
+        /// So, use this method only when you are sure that the argument `i` is
+        /// less than an eighth of the size of this Union
+        /// 
+        /// # Counterpart Method
+        /// It is performance-oriented and does not care for safety.
+        /// It is virtually the same as the method get_slong(). This method
+        /// get_slong_() is considered to be slightly faster than the method
+        /// get_slong().
+        /// Use this method only when you are sure that `i` is less than
+        /// an eighth of the size of this Union in bytes.
+        /// Otherwise, use its counterpart method [get_slong()](#method.get_slong)
+        /// for safety.
+        /// 
+        /// # Example for ShortUnion
+        /// ```
+        /// use Cryptocol::number::*;
+        /// // to do
+        /// ```
+        /// 
+        /// # Example of LongerUnion
+        /// ```
+        /// use Cryptocol::number::*;
+        /// // to do
+        /// ```
+        /// 
+        /// # Big-endian issue
+        /// It is just experimental for Big Endian CPUs. So, you are not
+        /// encouraged to use it for serious purpose. Only use this crate for
+        /// Big-endian CPUs with your own full responsibility.
         #[cfg(target_endian = "big")]
         #[inline] pub fn get_slong_(&self, i: usize) -> i64 { unsafe { self.slong[Self::K-i] } }
 
+        /// Returns i-th element of array `ulong` of type `u64` wrapped in Some
+        /// of enum Option if `i` is less than an eighth of the size of this
+        /// Union in bytes. Otherwise, it returns None of enum Option.
+        /// 
+        /// # Argument i
+        /// 0-th element contains LSB (Least Significant Bit), while (the size
+        /// of this Union in bytes - 1)-th element contains MSB (Most
+        /// Significant Bit) regardless endianness.
+        /// 
+        /// # Counterpart Method
+        /// Use this method when you are not sure that `i` is less than
+        /// an eighth of the size of this Union in bytes. Otherwise, l;you can
+        /// use its counterpart method [get_ulong_()](#method.get_ulong_)
+        /// for performance.
+        /// 
+        /// # Example for ShortUnion
+        /// ```
+        /// use Cryptocol::number::*;
+        /// // to do
+        /// ```
+        /// 
+        /// # Example of LongerUnion
+        /// ```
+        /// use Cryptocol::number::*;
+        /// // to do
+        /// ```
         #[cfg(target_endian = "little")]
         pub fn get_ulong(&self, i: usize) -> Option<u64>
         {
@@ -1912,6 +3679,37 @@ macro_rules! get_set_long {
                 { None }
         }
 
+        /// Returns i-th element of array `ulong` of type `u64` wrapped in Some
+        /// of enum Option if `i` is less than an eighth of the size of this
+        /// Union in bytes. Otherwise, it returns None of enum Option.
+        /// 
+        /// # Argument i
+        /// 0-th element contains LSB (Least Significant Bit), while (the size
+        /// of this Union in bytes - 1)-th element contains MSB (Most
+        /// Significant Bit) regardless endianness.
+        /// 
+        /// # Counterpart Method
+        /// Use this method when you are not sure that `i` is less than
+        /// an eighth of the size of this Union in bytes. Otherwise, l;you can
+        /// use its counterpart method [get_ulong_()](#method.get_ulong_)
+        /// for performance.
+        /// 
+        /// # Example for ShortUnion
+        /// ```
+        /// use Cryptocol::number::*;
+        /// // to do
+        /// ```
+        /// 
+        /// # Example of LongerUnion
+        /// ```
+        /// use Cryptocol::number::*;
+        /// // to do
+        /// ```
+        /// 
+        /// # Big-endian issue
+        /// It is just experimental for Big Endian CPUs. So, you are not
+        /// encouraged to use it for serious purpose. Only use this crate for
+        /// Big-endian CPUs with your own full responsibility.
         #[cfg(target_endian = "big")]
         #[inline] pub fn get_ulong(&self, i: usize) -> Option<u64>
         {
@@ -1921,6 +3719,31 @@ macro_rules! get_set_long {
                 { None }
         }
 
+        /// Returns i-th element of array `slong` of type `i64` wrapped in Some
+        /// of enum Option if `i` is less than an eighth of the size of this
+        /// Union in bytes. Otherwise, it returns None of enum Option.
+        /// 
+        /// # Argument i
+        /// 0-th element contains LSB (Least Significant Bit), while (the size
+        /// of this Union in bytes - 1)-th element contains MSB (Most
+        /// Significant Bit) regardless endianness.
+        /// 
+        /// # Counterpart Method
+        /// Use this method when you are not sure that `i` is less than
+        /// an eighth of the size of this Union in bytes. Otherwise, use its
+        /// counterpart method [get_slong_()](#method.get_slong_) for performance.
+        /// 
+        /// # Example for ShortUnion
+        /// ```
+        /// use Cryptocol::number::*;
+        /// // to do
+        /// ```
+        /// 
+        /// # Example of LongerUnion
+        /// ```
+        /// use Cryptocol::number::*;
+        /// // to do
+        /// ```
         #[cfg(target_endian = "little")]
         pub fn get_slong(&self, i: usize) -> Option<i64>
         {
@@ -1930,6 +3753,36 @@ macro_rules! get_set_long {
                 { None }
         }
 
+        /// Returns i-th element of array `slong` of type `i64` wrapped in Some
+        /// of enum Option if `i` is less than an eighth of the size of this
+        /// Union in bytes. Otherwise, it returns None of enum Option.
+        /// 
+        /// # Argument i
+        /// 0-th element contains LSB (Least Significant Bit), while (the size
+        /// of this Union in bytes - 1)-th element contains MSB (Most
+        /// Significant Bit) regardless endianness.
+        /// 
+        /// # Counterpart Method
+        /// Use this method when you are not sure that `i` is less than
+        /// an eighth of the size of this Union in bytes. Otherwise, use its
+        /// counterpart method [get_slong_()](#method.get_slong_) for performance.
+        /// 
+        /// # Example for ShortUnion
+        /// ```
+        /// use Cryptocol::number::*;
+        /// // to do
+        /// ```
+        /// 
+        /// # Example of LongerUnion
+        /// ```
+        /// use Cryptocol::number::*;
+        /// // to do
+        /// ```
+        /// 
+        /// # Big-endian issue
+        /// It is just experimental for Big Endian CPUs. So, you are not
+        /// encouraged to use it for serious purpose. Only use this crate for
+        /// Big-endian CPUs with your own full responsibility.
         #[cfg(target_endian = "big")]
         #[inline] pub fn get_slong(&self, i: usize) -> Option<i64>
         {
@@ -1939,18 +3792,193 @@ macro_rules! get_set_long {
                 { None }
         }
 
+        /// Sets i-th element of its array `ulong` of type `u64`
+        /// if `i` is less than an eighth of the size of this Union in bytes.
+        /// Otherwise, it will panic.
+        /// 
+        /// # Argument i
+        /// 0-th element contains LSB (Least Significant Bit), while (the size
+        /// of this Union in bytes - 1)-th element contains MSB (Most
+        /// Significant Bit) regardless endianness.
+        /// 
+        /// # Panics
+        /// So, if `i` is greater than or equal to an eighth of the size of this
+        /// Union in bytes, it will panic. So, use this method only when you
+        /// are sure that the argument i is less than an eighth of the size of
+        /// this Union
+        /// 
+        /// # Counterpart Method
+        /// It is performance-oriented and does not care for safety.
+        /// It is virtually the same as the method set_ulong(). This method
+        /// set_ulong_() is considered to be slightly faster than the method
+        /// set_ulong().
+        /// Use this method only when you are sure that `i` is less than an eighth
+        /// of the size of this Union in bytes. Otherwise, use its counterpart
+        /// method [set_ulong()](#method.set_ulong) for safety.
+        /// 
+        /// # Example for ShortUnion
+        /// ```
+        /// use Cryptocol::number::*;
+        /// // to do
+        /// ```
+        /// 
+        /// # Example of LongerUnion
+        /// ```
+        /// use Cryptocol::number::*;
+        /// // to do
+        /// ```
         #[cfg(target_endian = "little")]
         #[inline] pub fn set_ulong_(&mut self, i: usize, val: u64)  { unsafe { self.ulong[i] = val; } }
 
+        /// Sets i-th element of its array `ulong` of type `u64`
+        /// if `i` is less than an eighth of the size of this Union in bytes.
+        /// Otherwise, it will panic.
+        /// 
+        /// # Argument i
+        /// 0-th element contains LSB (Least Significant Bit), while (the size
+        /// of this Union in bytes - 1)-th element contains MSB (Most
+        /// Significant Bit) regardless endianness.
+        /// 
+        /// # Panics
+        /// So, if `i` is greater than or equal to an eighth of the size of this
+        /// Union in bytes, it will panic. So, use this method only when you
+        /// are sure that the argument i is less than an eighth of the size of
+        /// this Union
+        /// 
+        /// # Counterpart Method
+        /// It is performance-oriented and does not care for safety.
+        /// It is virtually the same as the method set_ulong(). This method
+        /// set_ulong_() is considered to be slightly faster than the method
+        /// set_ulong().
+        /// Use this method only when you are sure that `i` is less than an eighth
+        /// of the size of this Union in bytes. Otherwise, use its counterpart
+        /// method [set_ulong()](#method.set_ulong) for safety.
+        /// 
+        /// # Example for ShortUnion
+        /// ```
+        /// use Cryptocol::number::*;
+        /// // to do
+        /// ```
+        /// 
+        /// # Example of LongerUnion
+        /// ```
+        /// use Cryptocol::number::*;
+        /// // to do
+        /// ```
+        /// 
+        /// # Big-endian issue
+        /// It is just experimental for Big Endian CPUs. So, you are not
+        /// encouraged to use it for serious purpose. Only use this crate for
+        /// Big-endian CPUs with your own full responsibility.
         #[cfg(target_endian = "big")]
         #[inline] pub fn set_ulong_(&mut self, i: usize, val: u64)  { unsafe { self.ulong[Self::K-i] = val; } }
 
+        /// Sets i-th element of its array `slong` of type `i64`
+        /// if `i` is less than an eighth of the size of this Union in bytes.
+        /// Otherwise, it will panic.
+        /// 
+        /// # Argument i
+        /// 0-th element contains LSB (Least Significant Bit), while (the size
+        /// of this Union in bytes - 1)-th element contains MSB (Most
+        /// Significant Bit) regardless endianness.
+        /// 
+        /// # Panics
+        /// So, if `i` is greater than or equal to an eighth of the size of this
+        /// Union in bytes, it will panic. So, use this method only when you
+        /// are sure that the argument i is less than an eighth of the size of
+        /// this Union
+        /// 
+        /// # Counterpart Method
+        /// It is performance-oriented and does not care for safety.
+        /// It is virtually the same as the method set_slong(). This method
+        /// set_slong_() is considered to be slightly faster than the method
+        /// set_slong().
+        /// Use this method only only when you are sure that `i` is less than
+        /// an eighth of the size of this Union in bytes. Otherwise, use its
+        /// counterpart method [set_slong()](#method.set_slong) for safety.
+        /// 
+        /// # Example for ShortUnion
+        /// ```
+        /// use Cryptocol::number::*;
+        /// // to do
+        /// ```
+        /// 
+        /// # Example of LongerUnion
+        /// ```
+        /// use Cryptocol::number::*;
+        /// // to do
+        /// ```
         #[cfg(target_endian = "little")]
         #[inline] pub fn set_slong_(&mut self, i: usize, val: i64)  { unsafe { self.slong[i] = val; } }
 
+        /// Sets i-th element of its array `slong` of type `i64`
+        /// if `i` is less than an eighth of the size of this Union in bytes.
+        /// Otherwise, it will panic.
+        /// 
+        /// # Argument i
+        /// 0-th element contains LSB (Least Significant Bit), while (the size
+        /// of this Union in bytes - 1)-th element contains MSB (Most
+        /// Significant Bit) regardless endianness.
+        /// 
+        /// # Panics
+        /// So, if `i` is greater than or equal to an eighth of the size of this
+        /// Union in bytes, it will panic. So, use this method only when you
+        /// are sure that the argument i is less than an eighth of the size of
+        /// this Union
+        /// 
+        /// # Counterpart Method
+        /// It is performance-oriented and does not care for safety.
+        /// It is virtually the same as the method set_slong(). This method
+        /// set_slong_() is considered to be slightly faster than the method
+        /// set_slong().
+        /// Use this method only only when you are sure that `i` is less than
+        /// an eighth of the size of this Union in bytes. Otherwise, use its
+        /// counterpart method [set_slong()](#method.set_slong) for safety.
+        /// 
+        /// # Example for ShortUnion
+        /// ```
+        /// use Cryptocol::number::*;
+        /// // to do
+        /// ```
+        /// 
+        /// # Example of LongerUnion
+        /// ```
+        /// use Cryptocol::number::*;
+        /// // to do
+        /// ```
+        /// 
+        /// # Big-endian issue
+        /// It is just experimental for Big Endian CPUs. So, you are not
+        /// encouraged to use it for serious purpose. Only use this crate for
+        /// Big-endian CPUs with your own full responsibility.
         #[cfg(target_endian = "big")]
         #[inline] pub fn set_slong_(&mut self, i: usize, val: i64)  { unsafe { self.slong[Self::K-i] = val; } }
 
+        /// Sets i-th element of its array `ulong` of type `u64` and returns
+        /// true if `i` is less than an eighth of the size of this Union in
+        /// bytes. Otherwise, it will set nothing amd return false.
+        /// 
+        /// # Argument i
+        /// 0-th element contains LSB (Least Significant Bit), while (the size
+        /// of this Union in bytes - 1)-th element contains MSB (Most
+        /// Significant Bit) regardless endianness.
+        /// 
+        /// # Counterpart Method
+        /// Use this method when you are not sure that `i` is less than
+        /// an eighth of the size of this Union in bytes. Otherwise, use its
+        /// counterpart method [set_ulong_()](#method.set_ulong_) for performance.
+        /// 
+        /// # Example for ShortUnion
+        /// ```
+        /// use Cryptocol::number::*;
+        /// // todo
+        /// ```
+        /// 
+        /// # Example of LongerUnion
+        /// ```
+        /// use Cryptocol::number::*;
+        /// // todo
+        /// ```
         #[cfg(target_endian = "little")]
         pub fn set_ulong(&mut self, i: usize, val: u64) -> bool
         {
@@ -1965,6 +3993,36 @@ macro_rules! get_set_long {
             }
         }
 
+        /// Sets i-th element of its array `ulong` of type `u64` and returns
+        /// true if `i` is less than an eighth of the size of this Union in
+        /// bytes. Otherwise, it will set nothing amd return false.
+        /// 
+        /// # Argument i
+        /// 0-th element contains LSB (Least Significant Bit), while (the size
+        /// of this Union in bytes - 1)-th element contains MSB (Most
+        /// Significant Bit) regardless endianness.
+        /// 
+        /// # Counterpart Method
+        /// Use this method when you are not sure that `i` is less than
+        /// an eighth of the size of this Union in bytes. Otherwise, use its
+        /// counterpart method [set_ulong_()](#method.set_ulong_) for performance.
+        /// 
+        /// # Example for ShortUnion
+        /// ```
+        /// use Cryptocol::number::*;
+        /// // todo
+        /// ```
+        /// 
+        /// # Example of LongerUnion
+        /// ```
+        /// use Cryptocol::number::*;
+        /// // todo
+        /// ```
+        /// 
+        /// # Big-endian issue
+        /// It is just experimental for Big Endian CPUs. So, you are not
+        /// encouraged to use it for serious purpose. Only use this crate for
+        /// Big-endian CPUs with your own full responsibility.
         #[cfg(target_endian = "big")]
         pub fn set_ulong(&self, i: usize, val: u64) -> bool
         {
@@ -1979,6 +4037,31 @@ macro_rules! get_set_long {
             }
         }
 
+        /// Sets i-th element of its array `slong` of type `i64` and returns
+        /// true if `i` is less than an eighth of the size of this Union in
+        /// bytes. Otherwise, it will set nothing amd return false.
+        /// 
+        /// # Argument i
+        /// 0-th element contains LSB (Least Significant Bit), while (the size
+        /// of this Union in bytes - 1)-th element contains MSB (Most
+        /// Significant Bit) regardless endianness.
+        /// 
+        /// # Counterpart Method
+        /// Use this method when you are not sure that `i` is less than
+        /// an eighth of the size of this Union in bytes. Otherwise, use its
+        /// counterpart method [set_slong_()](#method.set_slong_) for performance.
+        /// 
+        /// # Example for ShortUnion
+        /// ```
+        /// use Cryptocol::number::*;
+        /// // todo
+        /// ```
+        /// 
+        /// # Example of LongerUnion
+        /// ```
+        /// use Cryptocol::number::*;
+        /// // todo
+        /// ```
         #[cfg(target_endian = "little")]
         pub fn set_slong(&mut self, i: usize, val: i64) -> bool
         {
@@ -1993,6 +4076,36 @@ macro_rules! get_set_long {
             }
         }
 
+        /// Sets i-th element of its array `slong` of type `i64` and returns
+        /// true if `i` is less than an eighth of the size of this Union in
+        /// bytes. Otherwise, it will set nothing amd return false.
+        /// 
+        /// # Argument i
+        /// 0-th element contains LSB (Least Significant Bit), while (the size
+        /// of this Union in bytes - 1)-th element contains MSB (Most
+        /// Significant Bit) regardless endianness.
+        /// 
+        /// # Counterpart Method
+        /// Use this method when you are not sure that `i` is less than
+        /// an eighth of the size of this Union in bytes. Otherwise, use its
+        /// counterpart method [set_slong_()](#method.set_slong_) for performance.
+        /// 
+        /// # Example for ShortUnion
+        /// ```
+        /// use Cryptocol::number::*;
+        /// // todo
+        /// ```
+        /// 
+        /// # Example of LongerUnion
+        /// ```
+        /// use Cryptocol::number::*;
+        /// // todo
+        /// ```
+        /// 
+        /// # Big-endian issue
+        /// It is just experimental for Big Endian CPUs. So, you are not
+        /// encouraged to use it for serious purpose. Only use this crate for
+        /// Big-endian CPUs with your own full responsibility.
         #[cfg(target_endian = "big")]
         pub fn set_ulong(&self, i: usize, val: i64) -> bool
         {
@@ -2014,18 +4127,195 @@ macro_rules! get_set_size {
     ($f:expr) => {
         const J: usize = $f;
 
+        /// Returns i-th element of array `u_size` of type `usize`
+        /// if `i` is less than the size of this Union in bytes divided by
+        /// the size of the type `usize` in bytes. Otherwise, it will panic.
+        /// 
+        /// # Argument i
+        /// 0-th element contains LSB (Least Significant Bit), while (the size
+        /// of this Union in bytes - 1)-th element contains MSB (Most
+        /// Significant Bit) regardless endianness.
+        /// 
+        /// # Panics
+        /// So, if `i` is greater than or equal to the size of this Union
+        /// in bytes divided by the size of the type `usize` in bytes,
+        /// it will panic.
+        /// 
+        /// # Counterpart Method
+        /// It is performance-oriented and does not care for safety.
+        /// It is virtually the same as the method get_usize(). This method
+        /// get_usize_() is considered to be slightly faster than the method
+        /// get_usize().
+        /// Use this method only when you are sure that `i` is less than
+        /// the size of this Union in bytes divided by the size of the type
+        /// `usize` in bytes. Otherwise, use its counterpart method
+        /// [get_usize()](#method.get_usize) for safety.
+        /// 
+        /// # Example for ShortUnion
+        /// ```
+        /// use Cryptocol::number::*;
+        /// // to do
+        /// ```
+        /// 
+        /// # Example of LongerUnion
+        /// ```
+        /// use Cryptocol::number::*;
+        /// // to do
+        /// ```
         #[cfg(target_endian = "little")]
         #[inline] pub fn get_usize_(&self, i: usize) -> usize { unsafe { self.u_size[i] } }
 
+        /// Returns i-th element of array `u_size` of type `usize`
+        /// if `i` is less than the size of this Union in bytes divided by
+        /// the size of the type `usize` in bytes. Otherwise, it will panic.
+        /// 
+        /// # Argument i
+        /// 0-th element contains LSB (Least Significant Bit), while (the size
+        /// of this Union in bytes - 1)-th element contains MSB (Most
+        /// Significant Bit) regardless endianness.
+        /// 
+        /// # Panics
+        /// So, if `i` is greater than or equal to the size of this Union
+        /// in bytes divided by the size of the type `usize` in bytes,
+        /// it will panic.
+        /// 
+        /// # Counterpart Method
+        /// It is performance-oriented and does not care for safety.
+        /// It is virtually the same as the method get_usize(). This method
+        /// get_usize_() is considered to be slightly faster than the method
+        /// get_usize().
+        /// Use this method only when you are sure that `i` is less than
+        /// the size of this Union in bytes divided by the size of the type
+        /// `usize` in bytes. Otherwise, use its counterpart method
+        /// [get_usize()](#method.get_usize) for safety.
+        /// 
+        /// # Example for ShortUnion
+        /// ```
+        /// use Cryptocol::number::*;
+        /// // to do
+        /// ```
+        /// 
+        /// # Example of LongerUnion
+        /// ```
+        /// use Cryptocol::number::*;
+        /// // to do
+        /// ```
+        /// 
+        /// # Big-endian issue
+        /// It is just experimental for Big Endian CPUs. So, you are not
+        /// encouraged to use it for serious purpose. Only use this crate for
+        /// Big-endian CPUs with your own full responsibility.
         #[cfg(target_endian = "big")]
         #[inline] pub fn get_usize_(&self, i: usize) -> usize { unsafe { self.u_size[Self::J-i] } }
 
+        /// Returns i-th element of array `s_size` of type `isize`
+        /// if `i` is less than the size of this Union in bytes divided by
+        /// the size of the type `isize` in bytes. Otherwise, it will panic.
+        /// 
+        /// # Argument i
+        /// 0-th element contains LSB (Least Significant Bit), while (the size
+        /// of this Union in bytes - 1)-th element contains MSB (Most
+        /// Significant Bit) regardless endianness.
+        /// 
+        /// # Panics
+        /// So, if `i` is greater than or equal to the size of this Union
+        /// in bytes divided by the size of the type `isize` in bytes,
+        /// it will panic.
+        /// 
+        /// # Counterpart Method
+        /// It is performance-oriented and does not care for safety.
+        /// It is virtually the same as the method get_ssize(). This method
+        /// get_ssize_() is considered to be slightly faster than the method
+        /// get_ssize().
+        /// Use this method only when you are sure that `i` is less than
+        /// the size of this Union in bytes divided by the size of the type
+        /// `isize` in bytes. Otherwise, use its counterpart method
+        /// [get_ssize()](#method.get_ssize) for safety.
+        /// 
+        /// # Example for ShortUnion
+        /// ```
+        /// use Cryptocol::number::*;
+        /// // to do
+        /// ```
+        /// 
+        /// # Example of LongerUnion
+        /// ```
+        /// use Cryptocol::number::*;
+        /// // to do
+        /// ```
         #[cfg(target_endian = "little")]
         #[inline] pub fn get_ssize_(&self, i: usize) -> isize { unsafe { self.s_size[i] } }
 
+        /// Returns i-th element of array `s_size` of type `isize`
+        /// if `i` is less than the size of this Union in bytes divided by
+        /// the size of the type `isize` in bytes. Otherwise, it will panic.
+        /// 
+        /// # Argument i
+        /// 0-th element contains LSB (Least Significant Bit), while (the size
+        /// of this Union in bytes - 1)-th element contains MSB (Most
+        /// Significant Bit) regardless endianness.
+        /// 
+        /// # Panics
+        /// So, if `i` is greater than or equal to the size of this Union
+        /// in bytes divided by the size of the type `isize` in bytes,
+        /// it will panic.
+        /// 
+        /// # Counterpart Method
+        /// It is performance-oriented and does not care for safety.
+        /// It is virtually the same as the method get_ssize(). This method
+        /// get_ssize_() is considered to be slightly faster than the method
+        /// get_ssize().
+        /// Use this method only when you are sure that `i` is less than
+        /// the size of this Union in bytes divided by the size of the type
+        /// `isize` in bytes. Otherwise, use its counterpart method
+        /// [get_ssize()](#method.get_ssize) for safety.
+        /// 
+        /// # Example for ShortUnion
+        /// ```
+        /// use Cryptocol::number::*;
+        /// // to do
+        /// ```
+        /// 
+        /// # Example of LongerUnion
+        /// ```
+        /// use Cryptocol::number::*;
+        /// // to do
+        /// ```
+        /// 
+        /// # Big-endian issue
+        /// It is just experimental for Big Endian CPUs. So, you are not
+        /// encouraged to use it for serious purpose. Only use this crate for
+        /// Big-endian CPUs with your own full responsibility.
         #[cfg(target_endian = "big")]
         #[inline] pub fn get_ssize_(&self, i: usize) -> isize { unsafe { self.s_size[Self::J-i] } }
 
+        /// Returns i-th element of array `u_size` of type `usize` wrapped
+        /// in Some of enum Option if `i` is less than the size of this Union
+        /// in bytes divided by the size of the type `usize` in bytes.
+        /// Otherwise, it returns None of enum Option.
+        /// 
+        /// # Argument i
+        /// 0-th element contains LSB (Least Significant Bit), while (the size
+        /// of this Union in bytes - 1)-th element contains MSB (Most
+        /// Significant Bit) regardless endianness.
+        /// 
+        /// # Counterpart Method
+        /// Use this method when you are not sure that `i` is less than
+        /// the size of this Union in bytes divided by the size of the type
+        /// `usize` in bytes. Otherwise, use its counterpart method
+        /// [get_usize_()](#method.get_usize_) for performance.
+        /// 
+        /// # Example for ShortUnion
+        /// ```
+        /// use Cryptocol::number::*;
+        /// // to do
+        /// ```
+        /// 
+        /// # Example of LongerUnion
+        /// ```
+        /// use Cryptocol::number::*;
+        /// // to do
+        /// ```
         #[cfg(target_endian = "little")]
         pub fn get_usize(&self, i: usize) -> Option<usize>
         {
@@ -2035,6 +4325,38 @@ macro_rules! get_set_size {
                 { None }
         }
 
+        /// Returns i-th element of array `u_size` of type `usize` wrapped
+        /// in Some of enum Option if `i` is less than the size of this Union
+        /// in bytes divided by the size of the type `usize` in bytes.
+        /// Otherwise, it returns None of enum Option.
+        /// 
+        /// # Argument i
+        /// 0-th element contains LSB (Least Significant Bit), while (the size
+        /// of this Union in bytes - 1)-th element contains MSB (Most
+        /// Significant Bit) regardless endianness.
+        /// 
+        /// # Counterpart Method
+        /// Use this method when you are not sure that `i` is less than
+        /// the size of this Union in bytes divided by the size of the type
+        /// `usize` in bytes. Otherwise, use its counterpart method
+        /// [get_usize_()](#method.get_usize_) for performance.
+        /// 
+        /// # Example for ShortUnion
+        /// ```
+        /// use Cryptocol::number::*;
+        /// // to do
+        /// ```
+        /// 
+        /// # Example of LongerUnion
+        /// ```
+        /// use Cryptocol::number::*;
+        /// // to do
+        /// ```
+        /// 
+        /// # Big-endian issue
+        /// It is just experimental for Big Endian CPUs. So, you are not
+        /// encouraged to use it for serious purpose. Only use this crate for
+        /// Big-endian CPUs with your own full responsibility.
         #[cfg(target_endian = "big")]
         pub fn get_usize(&self, i: usize) -> Option<usize>
         {
@@ -2044,6 +4366,33 @@ macro_rules! get_set_size {
                 { None }
         }
 
+        /// Returns i-th element of array `s_size` of type `isize` wrapped
+        /// in Some of enum Option if `i` is less than the size of this Union
+        /// in bytes divided by the size of the type `isize` in bytes.
+        /// Otherwise, it returns None of enum Option.
+        /// 
+        /// # Argument i
+        /// 0-th element contains LSB (Least Significant Bit), while (the size
+        /// of this Union in bytes - 1)-th element contains MSB (Most
+        /// Significant Bit) regardless endianness.
+        /// 
+        /// # Counterpart Method
+        /// Use this method when you are not sure that `i` is less than
+        /// the size of this Union in bytes divided by the size of the type
+        /// `isize` in bytes. Otherwise, use its counterpart method
+        /// [get_ssize_()](#method.get_ssize_) for performance.
+        /// 
+        /// # Example for ShortUnion
+        /// ```
+        /// use Cryptocol::number::*;
+        /// // to do
+        /// ```
+        /// 
+        /// # Example of LongerUnion
+        /// ```
+        /// use Cryptocol::number::*;
+        /// // to do
+        /// ```
         #[cfg(target_endian = "little")]
         pub fn get_ssize(&self, i: usize) -> Option<isize>
         {
@@ -2053,6 +4402,38 @@ macro_rules! get_set_size {
                 { None }
         }
 
+        /// Returns i-th element of array `s_size` of type `isize` wrapped
+        /// in Some of enum Option if `i` is less than the size of this Union
+        /// in bytes divided by the size of the type `isize` in bytes.
+        /// Otherwise, it returns None of enum Option.
+        /// 
+        /// # Argument i
+        /// 0-th element contains LSB (Least Significant Bit), while (the size
+        /// of this Union in bytes - 1)-th element contains MSB (Most
+        /// Significant Bit) regardless endianness.
+        /// 
+        /// # Counterpart Method
+        /// Use this method when you are not sure that `i` is less than
+        /// the size of this Union in bytes divided by the size of the type
+        /// `isize` in bytes. Otherwise, use its counterpart method
+        /// [get_ssize_()](#method.get_ssize_) for performance.
+        /// 
+        /// # Example for ShortUnion
+        /// ```
+        /// use Cryptocol::number::*;
+        /// // to do
+        /// ```
+        /// 
+        /// # Example of LongerUnion
+        /// ```
+        /// use Cryptocol::number::*;
+        /// // to do
+        /// ```
+        /// 
+        /// # Big-endian issue
+        /// It is just experimental for Big Endian CPUs. So, you are not
+        /// encouraged to use it for serious purpose. Only use this crate for
+        /// Big-endian CPUs with your own full responsibility.
         #[cfg(target_endian = "big")]
         pub fn get_ssize(&self, i: usize) -> Option<isize>
         {
@@ -2062,20 +4443,181 @@ macro_rules! get_set_size {
                 { None }
         }
 
+        /// Sets i-th element of its array `u_size` of type `usize`
+        /// if `i` is less than the size of this Union in bytes divided
+        /// by the size of the type `usize` in bytes.
+        /// Otherwise, it will panic.
+        /// 
+        /// # Argument i
+        /// 0-th element contains LSB (Least Significant Bit), while (the size
+        /// of this Union in bytes - 1)-th element contains MSB (Most
+        /// Significant Bit) regardless endianness.
+        /// 
+        /// # Counterpart Method
+        /// It is performance-oriented and does not care for safety.
+        /// It is virtually the same as the method set_usize(). This method
+        /// set_usize_() is considered to be slightly faster than the method
+        /// set_usize().
+        /// Use this method only when you are sure that `i` is less than
+        /// the size of this Union in bytes divided by the size of the type
+        /// `usize` in bytes. Otherwise, use its counterpart
+        /// method [set_ssize()](#method.set_ssize) for safety.
+        /// 
+        /// # Example for ShortUnion
+        /// ```
+        /// use Cryptocol::number::*;
+        /// // todo
+        /// ```
+        /// 
+        /// # Example of LongerUnion
+        /// ```
+        /// use Cryptocol::number::*;
+        /// // todo
+        /// ```
         #[cfg(target_endian = "little")]
         #[inline] pub fn set_usize_(&mut self, i: usize, val: usize)  { unsafe { self.u_size[i] = val; } }
 
+        /// Sets i-th element of its array `u_size` of type `usize`
+        /// if `i` is less than the size of this Union in bytes divided
+        /// by the size of the type `usize` in bytes.
+        /// Otherwise, it will panic.
+        /// 
+        /// # Argument i
+        /// 0-th element contains LSB (Least Significant Bit), while (the size
+        /// of this Union in bytes - 1)-th element contains MSB (Most
+        /// Significant Bit) regardless endianness.
+        /// 
+        /// # Counterpart Method
+        /// It is performance-oriented and does not care for safety.
+        /// It is virtually the same as the method set_usize(). This method
+        /// set_usize_() is considered to be slightly faster than the method
+        /// set_usize().
+        /// Use this method only when you are sure that `i` is less than
+        /// the size of this Union in bytes divided by the size of the type
+        /// `usize` in bytes. Otherwise, use its counterpart
+        /// method [set_ssize()](#method.set_ssize) for safety.
+        /// 
+        /// # Example for ShortUnion
+        /// ```
+        /// use Cryptocol::number::*;
+        /// // todo
+        /// ```
+        /// 
+        /// # Example of LongerUnion
+        /// ```
+        /// use Cryptocol::number::*;
+        /// // todo
+        /// ```
+        /// 
+        /// # Big-endian issue
+        /// It is just experimental for Big Endian CPUs. So, you are not
+        /// encouraged to use it for serious purpose. Only use this crate for
+        /// Big-endian CPUs with your own full responsibility.
         #[cfg(target_endian = "big")]
         #[inline] pub fn set_usize_(&mut self, i: usize, val: usize)  { unsafe { self.u_size[Self::J-i] = val; } }
 
+        /// Sets i-th element of its array `s_size` of type `isize`
+        /// if `i` is less than the size of this Union in bytes divided
+        /// by the size of the type `isize` in bytes.
+        /// Otherwise, it will panic.
+        /// 
+        /// # Argument i
+        /// 0-th element contains LSB (Least Significant Bit), while (the size
+        /// of this Union in bytes - 1)-th element contains MSB (Most
+        /// Significant Bit) regardless endianness.
+        /// 
+        /// # Counterpart Method
+        /// It is performance-oriented and does not care for safety.
+        /// It is virtually the same as the method set_ssize(). This method
+        /// set_ssize_() is considered to be slightly faster than the method
+        /// set_ssize().
+        /// Use this method only when you are sure that `i` is less than
+        /// the size of this Union in bytes divided by the size of the type
+        /// `isize` in bytes. Otherwise, use its counterpart method
+        /// [set_ssize()](#method.set_ssize) for safety.
+        /// 
+        /// # Example for ShortUnion
+        /// ```
+        /// use Cryptocol::number::*;
+        /// // todo
+        /// ```
+        /// 
+        /// # Example of LongerUnion
+        /// ```
+        /// use Cryptocol::number::*;
+        /// // todo
+        /// ```
         #[cfg(target_endian = "little")]
         #[inline] pub fn set_ssize_(&mut self, i: usize, val: isize)  { unsafe { self.s_size[i] = val; } }
 
+        /// Sets i-th element of its array `s_size` of type `isize`
+        /// if `i` is less than the size of this Union in bytes divided
+        /// by the size of the type `isize` in bytes.
+        /// Otherwise, it will panic.
+        /// 
+        /// # Argument i
+        /// 0-th element contains LSB (Least Significant Bit), while (the size
+        /// of this Union in bytes - 1)-th element contains MSB (Most
+        /// Significant Bit) regardless endianness.
+        /// 
+        /// # Counterpart Method
+        /// It is performance-oriented and does not care for safety.
+        /// It is virtually the same as the method set_ssize(). This method
+        /// set_ssize_() is considered to be slightly faster than the method
+        /// set_ssize().
+        /// Use this method only when you are sure that `i` is less than
+        /// the size of this Union in bytes divided by the size of the type
+        /// `isize` in bytes. Otherwise, use its counterpart method
+        /// [set_ssize()](#method.set_ssize) for safety.
+        /// 
+        /// # Example for ShortUnion
+        /// ```
+        /// use Cryptocol::number::*;
+        /// // todo
+        /// ```
+        /// 
+        /// # Example of LongerUnion
+        /// ```
+        /// use Cryptocol::number::*;
+        /// // todo
+        /// ```
+        /// 
+        /// # Big-endian issue
+        /// It is just experimental for Big Endian CPUs. So, you are not
+        /// encouraged to use it for serious purpose. Only use this crate for
+        /// Big-endian CPUs with your own full responsibility.
         #[cfg(target_endian = "big")]
         #[inline] pub fn set_ssize_(&mut self, i: usize, val: isize)  { unsafe { self.s_size[Self::J-i] = val; } }
 
+        /// Sets i-th element of its array `u_size` of type `usize` and returns
+        /// true if `i` is less than the size of this Union in bytes divided
+        /// by the size of the type `usize` in bytes.
+        /// Otherwise, it will set nothing amd return false.
+        /// 
+        /// # Argument i
+        /// 0-th element contains LSB (Least Significant Bit), while (the size
+        /// of this Union in bytes - 1)-th element contains MSB (Most
+        /// Significant Bit) regardless endianness.
+        /// 
+        /// # Counterpart Method
+        /// Use this method when you are not sure that `i` is less than
+        /// the size of this Union in bytes divided by the size of the type
+        /// `usize` in bytes. Otherwise, use its counterpart
+        /// method [set_usize_()](#method.set_usize_) for performance.
+        /// 
+        /// # Example for ShortUnion
+        /// ```
+        /// use Cryptocol::number::*;
+        /// // todo
+        /// ```
+        /// 
+        /// # Example of LongerUnion
+        /// ```
+        /// use Cryptocol::number::*;
+        /// // todo
+        /// ```
         #[cfg(target_endian = "little")]
-        pub fn set_usize(&mut self, i: usize, val: usize) -> bool
+        pub fn set_usize(&mut self, i: usize, val:usize) -> bool
         {
             if i <= Self::J
             { 
@@ -2088,8 +4630,127 @@ macro_rules! get_set_size {
             }
         }
 
+        /// Sets i-th element of its array `u_size` of type `usize` and returns
+        /// true if `i` is less than the size of this Union in bytes divided
+        /// by the size of the type `usize` in bytes.
+        /// Otherwise, it will set nothing amd return false.
+        /// 
+        /// # Argument i
+        /// 0-th element contains LSB (Least Significant Bit), while (the size
+        /// of this Union in bytes - 1)-th element contains MSB (Most
+        /// Significant Bit) regardless endianness.
+        /// 
+        /// # Counterpart Method
+        /// Use this method when you are not sure that `i` is less than
+        /// the size of this Union in bytes divided by the size of the type
+        /// `usize` in bytes. Otherwise, use its counterpart
+        /// method [set_usize_()](#method.set_usize_) for performance.
+        /// 
+        /// # Example for ShortUnion
+        /// ```
+        /// use Cryptocol::number::*;
+        /// // todo
+        /// ```
+        /// 
+        /// # Example of LongerUnion
+        /// ```
+        /// use Cryptocol::number::*;
+        /// // todo
+        /// ```
+        /// 
+        /// # Big-endian issue
+        /// It is just experimental for Big Endian CPUs. So, you are not
+        /// encouraged to use it for serious purpose. Only use this crate for
+        /// Big-endian CPUs with your own full responsibility.
         #[cfg(target_endian = "big")]
-        pub fn set_ssize(&self, i: usize, val: usize) -> bool
+        pub fn set_usize(&self, i: usize, val: usize) -> bool
+        {
+            if i <= Self::J
+            { 
+                unsafe { self.u_size[Self::J-i] = val; }
+                true
+            }
+            else
+            {
+                false
+            }
+        }
+
+        /// Sets i-th element of its array `ssize` of type `isize` and returns
+        /// true if `i` is less than the size of this Union in bytes divided
+        /// by the size of the type `isize` in bytes.
+        /// Otherwise, it will set nothing amd return false.
+        /// 
+        /// # Argument i
+        /// 0-th element contains LSB (Least Significant Bit), while (the size
+        /// of this Union in bytes - 1)-th element contains MSB (Most
+        /// Significant Bit) regardless endianness.
+        /// 
+        /// # Counterpart Method
+        /// Use this method when you are not sure that `i` is less than
+        /// the size of this Union in bytes divided by the size of the type
+        /// `isize` in bytes. Otherwise, use its counterpart
+        /// method [set_ssize_()](#method.set_ssize_) for performance.
+        /// 
+        /// # Example for ShortUnion
+        /// ```
+        /// use Cryptocol::number::*;
+        /// // todo
+        /// ```
+        /// 
+        /// # Example of LongerUnion
+        /// ```
+        /// use Cryptocol::number::*;
+        /// // todo
+        /// ```
+        #[cfg(target_endian = "little")]
+        pub fn set_ssize(&mut self, i: usize, val: isize) -> bool
+        {
+            if i <= Self::J
+            { 
+                unsafe { self.s_size[i] = val; }
+                true
+            }
+            else
+            {
+                false
+            }
+        }
+
+        /// Sets i-th element of its array `ssize` of type `isize` and returns
+        /// true if `i` is less than the size of this Union in bytes divided
+        /// by the size of the type `isize` in bytes.
+        /// Otherwise, it will set nothing amd return false.
+        /// 
+        /// # Argument i
+        /// 0-th element contains LSB (Least Significant Bit), while (the size
+        /// of this Union in bytes - 1)-th element contains MSB (Most
+        /// Significant Bit) regardless endianness.
+        /// 
+        /// # Counterpart Method
+        /// Use this method when you are not sure that `i` is less than
+        /// the size of this Union in bytes divided by the size of the type
+        /// `isize` in bytes. Otherwise, use its counterpart
+        /// method [set_ssize_()](#method.set_ssize_) for performance.
+        /// 
+        /// # Example for ShortUnion
+        /// ```
+        /// use Cryptocol::number::*;
+        /// // todo
+        /// ```
+        /// 
+        /// # Example of LongerUnion
+        /// ```
+        /// use Cryptocol::number::*;
+        /// // todo
+        /// ```
+        /// 
+        /// # Big-endian issue
+        /// It is just experimental for Big Endian CPUs. So, you are not
+        /// encouraged to use it for serious purpose. Only use this crate for
+        /// Big-endian CPUs with your own full responsibility.
+        #[cfg(target_endian = "big")]
+        pub fn set_ssize(&self, i: usize, val: isize) -> bool
         {
             if i <= Self::J
             { 
@@ -2429,11 +5090,17 @@ macro_rules! Uint_for_integer_unions_impl {
     ($f:ty, $g:ty) => {
         impl Uint for $f
         {
+            /// Calculates self + rhs + carry, wrapping around at the boundary
+            /// of the type. [Read more](trait@Uint#tymethod.carrying_add)
+            #[inline]
             fn carrying_add(self, rhs: Self, carry: bool) -> (Self, bool)
             {
+                self.carrying_add(rhs, carry)
+                /*
                 let (r1, c1) = self.overflowing_add(rhs);
                 let (r2, c2) = r1.overflowing_add(Self::onoff(carry));
                 (r2, c1 || c2)
+                */
             }
 
             #[inline] fn wrapping_add(self, rhs: Self) -> Self              { self.wrapping_add(rhs) }

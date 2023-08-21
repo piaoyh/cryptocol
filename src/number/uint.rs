@@ -3890,6 +3890,7 @@ macro_rules! Uint_for_uint_impl {
     ($f:ty) => {
         impl Uint for $f
         {
+            /// read [here](trait@Uint#tymethod.carrying_add)
             fn carrying_add(self, rhs: Self, carry: bool) -> (Self, bool)
             {
                 let (r1, c1) = self.overflowing_add(rhs);
@@ -3897,12 +3898,23 @@ macro_rules! Uint_for_uint_impl {
                 (r2, c1 || c2)
             }
 
+            /// read [here](trait@Uint#tymethod.wrapping_add)
             #[inline] fn wrapping_add(self, rhs: Self) -> Self              { self.wrapping_add(rhs) }
+
+            /// read [here](trait@Uint#tymethod.overflowing_add)
             #[inline] fn overflowing_add(self, rhs: Self) -> (Self, bool)   { self.overflowing_add(rhs) }
+
+            /// read [here](trait@Uint#tymethod.checked_add)
             #[inline] fn checked_add(self, rhs: Self) -> Option<Self>       { self.checked_add(rhs) }
+
+            /// read [here](trait@Uint#tymethod.unchecked_add)
             #[inline] fn unchecked_add(self, rhs: Self) -> Self             { self.checked_add(rhs).unwrap() }
+
+            /// read [here](trait@Uint#tymethod.saturating_add)
             #[inline] fn saturating_add(self, rhs: Self) -> Self            { self.saturating_add(rhs) }
 
+
+            /// read [here](trait@Uint#tymethod.borrowing_sub)
             fn borrowing_sub(self, rhs: Self, borrow: bool) -> (Self, bool)
             {
                 let (r1, b1) = self.overflowing_sub(rhs);
@@ -3910,30 +3922,71 @@ macro_rules! Uint_for_uint_impl {
                 (r2, b1 || b2)
             }
 
+            /// read [here](trait@Uint#tymethod.wrapping_sub)
             #[inline] fn wrapping_sub(self, rhs: Self) -> Self              { self.wrapping_sub(rhs) }
+
+            /// read [here](trait@Uint#tymethod.overflowing_sub)
             #[inline] fn overflowing_sub(self, rhs: Self) -> (Self, bool)   { self.overflowing_sub(rhs) }
+
+            /// read [here](trait@Uint#tymethod.checked_sub)
             #[inline] fn checked_sub(self, rhs: Self) -> Option<Self>       { self.checked_sub(rhs) }
+
+            /// read [here](trait@Uint#tymethod.unchecked_sub)
             #[inline] fn unchecked_sub(self, rhs: Self) -> Self             { self.checked_sub(rhs).unwrap() }
+
+            /// read [here](trait@Uint#tymethod.saturating_sub)
             #[inline] fn saturating_sub(self, rhs: Self) -> Self            { self.saturating_sub(rhs) }
 
+
+            /// read [here](trait@Uint#tymethod.wrapping_mul)
             #[inline] fn wrapping_mul(self, rhs: Self) -> Self              { self.wrapping_mul(rhs) }
+
+            /// read [here](trait@Uint#tymethod.overflowing_mul)
             #[inline] fn overflowing_mul(self, rhs: Self) -> (Self, bool)   { self.overflowing_mul(rhs) }
+
+            /// read [here](trait@Uint#tymethod.checked_mul)
             #[inline] fn checked_mul(self, rhs: Self) -> Option<Self>       { self.checked_mul(rhs) }
+
+            /// read [here](trait@Uint#tymethod.unchecked_mul)
             #[inline] fn unchecked_mul(self, rhs: Self) -> Self             { self.checked_mul(rhs).unwrap() }
+
+            /// read [here](trait@Uint#tymethod.saturating_mul)
             #[inline] fn saturating_mul(self, rhs: Self) -> Self            { self.saturating_mul(rhs) }
 
+
+            /// read [here](trait@Uint#tymethod.wrapping_div)
             #[inline] fn wrapping_div(self, rhs: Self) -> Self              { self.wrapping_div(rhs) }
+
+            /// read [here](trait@Uint#tymethod.overflowing_div)
             #[inline] fn overflowing_div(self, rhs: Self) -> (Self, bool)   { self.overflowing_div(rhs) }
+
+            /// read [here](trait@Uint#tymethod.checked_div)
             #[inline] fn checked_div(self, rhs: Self) -> Option<Self>       { self.checked_div(rhs) }
+
+            /// read [here](trait@Uint#tymethod.saturating_div)
             #[inline] fn saturating_div(self, rhs: Self) -> Self            { self.saturating_div(rhs) }
 
+
+            /// read [here](trait@Uint#tymethod.wrapping_rem)
             #[inline] fn wrapping_rem(self, rhs: Self) -> Self              { self.wrapping_rem(rhs) }
+
+            /// read [here](trait@Uint#tymethod.overflowing_rem)
             #[inline] fn overflowing_rem(self, rhs: Self) -> (Self, bool)   { self.overflowing_rem(rhs) }
+
+            /// read [here](trait@Uint#tymethod.checked_rem)
             #[inline] fn checked_rem(self, rhs: Self) -> Option<Self>       { self.checked_rem(rhs) }
 
+
+            /// read [here](trait@Uint#tymethod.wrapping_pow)
             #[inline] fn wrapping_pow(self, exp: u32) -> Self               { self.wrapping_pow(exp) }
+
+            /// read [here](trait@Uint#tymethod.overflowing_pow)
             #[inline] fn overflowing_pow(self, exp: u32) -> (Self, bool)    { self.overflowing_pow(exp) }
+
+            /// read [here](trait@Uint#tymethod.checked_pow)
             #[inline] fn checked_pow(self, exp: u32) -> Option<Self>        { self.checked_pow(exp) }
+
+            /// read [here](trait@Uint#tymethod.saturating_pow)
             #[inline] fn saturating_pow(self, exp: u32) -> Self             { self.saturating_pow(exp) }
 
 

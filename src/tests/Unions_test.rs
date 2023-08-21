@@ -27,16 +27,21 @@ pub fn test_main_Unions()
     LongerUnion___main();
     SizeUnion___main();
 
-    ShortUnion_get_ubyte___main();
-    ShortUnion_get_sbyte___main();
-    LongerUnion_get_ubyte___main();
-    LongerUnion_get_sbyte___main();
-
     ShortUnion_debug_fmt___main();
     IntUnion_debug_fmt___main();
     LongUnion_debug_fmt___main();
     LongerUnion_debug_fmt___main();
     SizeUnion_debug_fmt___main();
+
+    ShortUnion_get_ubyte___main();
+    ShortUnion_get_sbyte___main();
+    ShortUnion_set_ubyte___main();
+    ShortUnion_set_sbyte___main();
+
+    LongerUnion_get_ubyte___main();
+    LongerUnion_get_sbyte___main();
+    LongerUnion_set_ubyte___main();
+    LongerUnion_set_sbyte___main();
 }
 
 
@@ -507,126 +512,6 @@ fn SizeUnion___main()
     println!("--------------------------------------");
 }
 
-fn ShortUnion_get_ubyte___main()
-{
-    println!("ShortUnion_get_ubyte___main");
-    let a_short = ShortUnion::new_with(2895_u16);
-    let b_short_u8 = a_short.get_ubyte_(1);
-    println!("a_short.get_ubyte_(1) = {}", b_short_u8);
-    assert_eq!(b_short_u8, 11_u8);
-    // It will panic.
-    // let c_short = a_short.get_ubyte_(2);
-
-    match a_short.get_ubyte(1)
-    {
-        Some(b) =>  {
-                println!("a_short.get_ubyte(1) = {}", b);
-                assert_eq!(b, 11_u8);
-            },
-        None =>     { println!("Out of range"); },
-    }
-    
-    match a_short.get_ubyte(2)
-    {
-        Some(b) =>  { println!("a_short.get_ubyte(2) = {}", b); },
-        None =>     {
-                println!("Out of range");
-                assert_eq!(a_short.get_ubyte(2), None);
-            },
-    }
-    println!("--------------------------------------");
-}
-
-fn ShortUnion_get_sbyte___main()
-{
-    println!("ShortUnion_get_sbyte___main");
-    let a_short = ShortUnion::new_with(2895_u16);
-    println!("Union_get_set_byte___main");
-    let b_short_i8 = a_short.get_sbyte_(1);
-    println!("a_short.get_sbyte_(1) = {}", b_short_i8);
-    assert_eq!(b_short_i8, 11_i8);
-    // It will panic.
-    // let c_short = a_short.get_sbyte_(2);
-
-    match a_short.get_sbyte(1)
-    {
-        Some(b) =>  {
-                println!("a_short.get_sbyte(1) = {}", b);
-                assert_eq!(b, 11_i8);
-            },
-        None =>     { println!("Out of range"); },
-    }
-    
-    match a_short.get_sbyte(2)
-    {
-        Some(b) =>  { println!("a_short.get_sbyte(2) = {}", b); },
-        None =>     {
-                println!("Out of range");
-                assert_eq!(a_short.get_sbyte(2), None);
-            },
-    }
-    println!("--------------------------------------");
-}
-
-fn LongerUnion_get_ubyte___main()
-{
-    println!("LongerUnion_get_sbyte___main");
-    let a_longer = LongerUnion::new_with(339047799029950809142362261752780557135_u128);
-    let b_longer_u8 = a_longer.get_ubyte_(3);
-    println!("a_longer.get_ubyte_(3) = {}", b_longer_u8);
-    assert_eq!(b_longer_u8, 241_u8);
-    // It will panic.
-    // let c_longer = a_longer.get_ubyte_(16);
-
-    match a_longer.get_ubyte(3)
-    {
-        Some(b) =>  {
-                println!("a_longer.get_ubyte(3) = {}", b);
-                assert_eq!(b, 241_u8);
-            },
-        None =>     { println!("Out of range"); },
-    }
-    
-    match a_longer.get_ubyte(16)
-    {
-        Some(b) =>  { println!("a_short.get_ubyte(16) = {}", b); },
-        None =>     {
-                println!("Out of range");
-                assert_eq!(a_longer.get_ubyte(16), None);
-            },
-    }
-    println!("--------------------------------------");
-}
-
-fn LongerUnion_get_sbyte___main()
-{
-    println!("LongerUnion_get_sbyte___main");
-    let a_longer = LongerUnion::new_with(339047799029950809142362261752780557135_u128);
-    let b_longer_i8 = a_longer.get_sbyte_(3);
-    println!("a_longer.get_sbyte_(3) = {}", b_longer_i8);
-    assert_eq!(b_longer_i8, -15_i8);
-    // It will panic.
-    // let c_longer = a_longer.get_ubyte_(16);
-
-    match a_longer.get_sbyte(3)
-    {
-        Some(b) =>  {
-                println!("a_longer.get_sbyte(3) = {}", b);
-                assert_eq!(b, -15_i8);
-            },
-        None =>     { println!("Out of range"); },
-    }
-    
-    match a_longer.get_sbyte(16)
-    {
-        Some(b) =>  { println!("a_short.get_sbyte(16) = {}", b); },
-        None =>     {
-                println!("Out of range");
-                assert_eq!(a_longer.get_sbyte(16), None);
-            },
-    }
-    println!("--------------------------------------");
-}
 
 fn ShortUnion_debug_fmt___main()
 {
@@ -902,5 +787,304 @@ fn SizeUnion_debug_fmt___main()
         -18,
     ],
 }"#);
+    println!("--------------------------------------");
+}
+
+
+fn ShortUnion_get_ubyte___main()
+{
+    println!("ShortUnion_get_ubyte___main");
+    let a_short = ShortUnion::new_with(2895_u16);
+    let b_short_u8 = a_short.get_ubyte_(1);
+    println!("a_short.get_ubyte_(1) = {}", b_short_u8);
+    assert_eq!(b_short_u8, 11_u8);
+    // It will panic.
+    // let c_short = a_short.get_ubyte_(2);
+
+    match a_short.get_ubyte(1)
+    {
+        Some(b) =>  {
+                println!("a_short.get_ubyte(1) = {}", b);
+                assert_eq!(b, 11_u8);
+            },
+        None =>     { println!("Out of range"); },
+    }
+    
+    match a_short.get_ubyte(2)
+    {
+        Some(b) =>  { println!("a_short.get_ubyte(2) = {}", b); },
+        None =>     {
+                println!("Out of range");
+                assert_eq!(a_short.get_ubyte(2), None);
+            },
+    }
+    println!("--------------------------------------");
+}
+
+
+fn ShortUnion_get_sbyte___main()
+{
+    println!("ShortUnion_get_sbyte___main");
+    let a_short = ShortUnion::new_with(2895_u16);
+    let b_short_i8 = a_short.get_sbyte_(1);
+    println!("a_short.get_sbyte_(1) = {}", b_short_i8);
+    assert_eq!(b_short_i8, 11_i8);
+    // It will panic.
+    // let c_short = a_short.get_sbyte_(2);
+
+    match a_short.get_sbyte(1)
+    {
+        Some(b) =>  {
+                println!("a_short.get_sbyte(1) = {}", b);
+                assert_eq!(b, 11_i8);
+            },
+        None =>     { println!("Out of range"); },
+    }
+    
+    match a_short.get_sbyte(2)
+    {
+        Some(b) =>  { println!("a_short.get_sbyte(2) = {}", b); },
+        None =>     {
+                println!("Out of range");
+                assert_eq!(a_short.get_sbyte(2), None);
+            },
+    }
+    println!("--------------------------------------");
+}
+
+
+fn ShortUnion_set_ubyte___main()
+{
+    println!("ShortUnion_set_ubyte___main");
+    let mut a_short = ShortUnion::new_with(2895_u16);
+    let mut b_short_u8 = a_short.get_ubyte_(1);
+    println!("a_short.get_ubyte_(1) = {}", b_short_u8);
+    a_short.set_ubyte_(1, 0);
+    b_short_u8 = a_short.get_ubyte_(1);
+    println!("a_short.get() = {}, a_short.get_ubyte_(1) = {}", a_short, b_short_u8);
+    assert_eq!(a_short.get(), 79_u16);
+    assert_eq!(b_short_u8, 0_u8);
+    // It will panic.
+    // let c_short = a_short.set_ubyte_(2, 0);
+
+    let mut succ = a_short.set_ubyte(1, 11);
+    let mut ubyte = a_short.get_ubyte(1);
+    if succ
+    {
+        println!("a_short.get() = {}, a_short.get_ubyte(1).unwrap() = {}", a_short, ubyte.unwrap());
+        assert_eq!(ubyte.unwrap(), 11_u8);
+    }
+    else
+    {
+        println!("Out of range");
+        assert_eq!(ubyte, None);
+    }
+
+    succ = a_short.set_ubyte(2, 11);
+    ubyte = a_short.get_ubyte(2);
+    if succ
+    {
+        println!("a_short.get() = {}, a_short.get_ubyte(2).unwrap() = {}", a_short, ubyte.unwrap());
+        assert_eq!(ubyte.unwrap(), 11_u8);
+    }
+    else
+    {
+        println!("Out of range");
+        assert_eq!(ubyte, None);
+    }
+    println!("--------------------------------------");
+}
+
+
+fn ShortUnion_set_sbyte___main()
+{
+    println!("ShortUnion_set_sbyte___main");
+    let mut a_short = ShortUnion::new_with_signed(79_i16);
+    let mut b_short_i8 = a_short.get_sbyte_(1);
+    println!("a_short.get_sbyte_(1) = {}", b_short_i8);
+    a_short.set_sbyte_(1, 0);
+    b_short_i8 = a_short.get_sbyte_(1);
+    println!("a_short.get_signed() = {}, a_short.get_sbyte_(1) = {}", a_short.get_signed(), b_short_i8);
+    assert_eq!(a_short.get_signed(), 79_i16);
+    assert_eq!(b_short_i8, 0_i8);
+
+    // It will panic.
+    // let c_short = a_short.set_sbyte_(2, 0);
+
+    let mut succ = a_short.set_sbyte(1, 11);
+    let mut sbyte = a_short.get_sbyte(1);
+    if succ
+    {
+        println!("a_short.get() = {}, a_short.get_sbyte(1).unwrap() = {}", a_short, sbyte.unwrap());
+        assert_eq!(sbyte.unwrap(), 11_i8);
+    }
+    else
+    {
+        println!("Out of range");
+        assert_eq!(sbyte, None);
+    }
+
+    succ = a_short.set_sbyte(2, 11);
+    sbyte = a_short.get_sbyte(2);
+    if succ
+    {
+        println!("a_short.get() = {}, a_short.get_sbyte(2).unwrap() = {}", a_short, sbyte.unwrap());
+        assert_eq!(sbyte.unwrap(), 11_i8);
+    }
+    else
+    {
+        println!("Out of range");
+        assert_eq!(sbyte, None);
+    }
+    println!("--------------------------------------");
+}
+
+
+fn LongerUnion_get_ubyte___main()
+{
+    println!("LongerUnion_get_sbyte___main");
+    let a_longer = LongerUnion::new_with(339047799029950809142362261752780557135_u128);
+    let b_longer_u8 = a_longer.get_ubyte_(3);
+    println!("a_longer.get_ubyte_(3) = {}", b_longer_u8);
+    assert_eq!(b_longer_u8, 241_u8);
+    // It will panic.
+    // let c_longer = a_longer.get_ubyte_(16);
+
+    match a_longer.get_ubyte(3)
+    {
+        Some(b) =>  {
+                println!("a_longer.get_ubyte(3) = {}", b);
+                assert_eq!(b, 241_u8);
+            },
+        None =>     { println!("Out of range"); },
+    }
+    
+    match a_longer.get_ubyte(16)
+    {
+        Some(b) =>  { println!("a_short.get_ubyte(16) = {}", b); },
+        None =>     {
+                println!("Out of range");
+                assert_eq!(a_longer.get_ubyte(16), None);
+            },
+    }
+    println!("--------------------------------------");
+}
+
+fn LongerUnion_get_sbyte___main()
+{
+    println!("LongerUnion_get_sbyte___main");
+    let a_longer = LongerUnion::new_with_signed(-123456789012345678901234567890123456789_i128);
+    let b_longer_i8 = a_longer.get_sbyte_(3);
+    println!("a_longer.get_sbyte_(3) = {}", b_longer_i8);
+    assert_eq!(b_longer_i8, 81_i8);
+
+    // It will panic.
+    // let c_longer = a_longer.get_sbyte_(16);
+
+    match a_longer.get_sbyte(3)
+    {
+        Some(b) =>  {
+                println!("a_longer.get_sbyte(3) = {}", b);
+                assert_eq!(b, 81_i8);
+            },
+        None =>     { println!("Out of range"); },
+    }
+    
+    match a_longer.get_sbyte(16)
+    {
+        Some(b) =>  { println!("a_short.get_sbyte(16) = {}", b); },
+        None =>     {
+                println!("Out of range");
+                assert_eq!(a_longer.get_sbyte(16), None);
+            },
+    }
+    println!("--------------------------------------");
+}
+
+
+fn LongerUnion_set_ubyte___main()
+{
+    println!("LongerUnion_set_ubyte___main");
+    let mut a_longer = LongerUnion::new_with(339047799029950809142362261752780557135_u128);
+    let mut b_longer_u8 = a_longer.get_ubyte_(3);
+    println!("a_longer.get_ubyte_(3) = {}", b_longer_u8);
+    a_longer.set_ubyte_(3, 0);
+    b_longer_u8 = a_longer.get_ubyte_(3);
+    println!("a_longer.get() = {}, a_longer.get_ubyte_(3) = {}", a_longer, b_longer_u8);
+    assert_eq!(a_longer.get(), 339047799029950809142362261748737248079_u128);
+    assert_eq!(a_longer.get_ubyte_(3), 0_u8);
+    
+    // It will panic.
+    // let c_longer = a_longer.get_ubyte_(16);
+
+    let mut succ = a_longer.set_ubyte(3, 241_u8);
+    let mut ubyte = a_longer.get_ubyte(3);
+    if succ
+    {
+        println!("a_longer.get() = {}, a_longer.get_ubyte(3).unwrap() = {}", a_longer, ubyte.unwrap());
+        assert_eq!(ubyte.unwrap(), 241_u8);
+    }
+    else
+    {
+        println!("Out of range");
+        assert_eq!(ubyte, None);
+    }
+
+    succ = a_longer.set_ubyte(16, 241_u8);
+    ubyte = a_longer.get_ubyte(16);
+    if succ
+    {
+        println!("a_longer.get() = {}, a_longer.get_sbyte(16).unwrap() = {}", a_longer, ubyte.unwrap());
+        assert_eq!(ubyte.unwrap(), 241_u8);
+    }
+    else
+    {
+        println!("Out of range");
+        assert_eq!(ubyte, None);
+    }
+    println!("--------------------------------------");
+}
+
+
+fn LongerUnion_set_sbyte___main()
+{
+    println!("LongerUnion_set_sbyte___main");
+    let mut a_longer = LongerUnion::new_with_signed(-123456789012345678901234567890123456789_i128);
+    let mut b_longer_i8 = a_longer.get_sbyte_(3);
+    println!("a_longer.get_sbyte_(3) = {}", b_longer_i8);
+    a_longer.set_sbyte_(3, 0);
+    b_longer_i8 = a_longer.get_sbyte_(3);
+    println!("a_longer.get_signed() = {}, a_longer.get_sbyte_(3) = {}", a_longer.get_signed(), b_longer_i8);
+    assert_eq!(a_longer.get_signed(), -123456789012345678901234567891482411285_i128);
+    assert_eq!(a_longer.get_ubyte_(3), 0_u8);
+    
+    // It will panic.
+    // let c_longer = a_longer.get_sbyte_(16);
+
+    let mut succ = a_longer.set_sbyte(3, 81_i8);
+    let mut sbyte = a_longer.get_sbyte(3);
+    if succ
+    {
+        println!("a_longer.get_signed() = {}, a_longer.get_sbyte(3).unwrap() = {}", a_longer.get_signed(), sbyte.unwrap());
+        assert_eq!(sbyte.unwrap(), 81_i8);
+    }
+    else
+    {
+        println!("Out of range");
+        assert_eq!(sbyte, None);
+    }
+
+    succ = a_longer.set_sbyte(16, 81_i8);
+    sbyte = a_longer.get_sbyte(16);
+    if succ
+    {
+        println!("a_longer.get_signed() = {}, a_longer.get_sbyte(16).unwrap() = {}", a_longer.get_signed(), sbyte.unwrap());
+        assert_eq!(sbyte.unwrap(), 81_i8);
+    }
+    else
+    {
+        println!("Out of range");
+        assert_eq!(sbyte, None);
+    }
     println!("--------------------------------------");
 }
