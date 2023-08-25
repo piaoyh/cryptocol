@@ -499,11 +499,6 @@ macro_rules! shlassign_i_for_BigUInt_impl {
             /// Performs the <<= operation. If overflow happens during the <<= operation,
             /// `OVERFLOW` flag is set and the method is_overflow() will return true. 
             /// [Read more](https://doc.rust-lang.org/core/ops/bit/trait.ShlAssign.html#tymethod.shl_assign)
-            /// 
-            /// # Big-endian issue
-            /// It is just experimental for Big Endian CPUs. So, you are not encouraged
-            /// to use it for serious purpose. Only use this crate for Big-endian CPUs
-            /// with your own full responsibility.
             ///
             /// # Example 1
             /// ```
@@ -528,6 +523,11 @@ macro_rules! shlassign_i_for_BigUInt_impl {
             /// println!("a = {}\noverflow: {}", a, a.is_overflow());
             /// assert_eq!(a.is_overflow(), false);
             /// ```
+            /// 
+            /// # Big-endian issue
+            /// It is just experimental for Big Endian CPUs. So, you are not encouraged
+            /// to use it for serious purpose. Only use this crate for Big-endian CPUs
+            /// with your own full responsibility.
             fn shl_assign(&mut self, rhs: $f)
             {
                 if rhs < 0
@@ -576,11 +576,6 @@ macro_rules! shlassign_u_for_BigUInt_impl {
             /// Performs the <<= operation. If overflow happens during the <<= operation,
             /// `OVERFLOW` flag is set and the method is_overflow() will return true. 
             /// [Read more](https://doc.rust-lang.org/core/ops/bit/trait.ShlAssign.html#tymethod.shl_assign)
-            /// 
-            /// # Big-endian issue
-            /// It is just experimental for Big Endian CPUs. So, you are not encouraged
-            /// to use it for serious purpose. Only use this crate for Big-endian CPUs
-            /// with your own full responsibility.
             ///
             /// # Example 1
             /// ```
@@ -605,6 +600,11 @@ macro_rules! shlassign_u_for_BigUInt_impl {
             /// println!("a = {}\noverflow: {}", a, a.is_overflow());
             /// assert_eq!(a.is_overflow(), false);
             /// ```
+            /// 
+            /// # Big-endian issue
+            /// It is just experimental for Big Endian CPUs. So, you are not encouraged
+            /// to use it for serious purpose. Only use this crate for Big-endian CPUs
+            /// with your own full responsibility.
             #[inline]
             fn shl_assign(&mut self, rhs: $f)
             {

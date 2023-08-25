@@ -231,7 +231,7 @@ pub type u16384_with_u8 = BigUInt<u8, 2048>;
 /// use std::str::FromStr;
 /// use Cryptocol::number::*;
 /// type u1024 = BigUInt::<u128, 8>;
-/// type U128 = BigUInt::<usize, 16>;
+/// type U128 = BigUInt::<u64, 16>;
 /// let a = u1024::from([1;8]);
 /// let b = u1024::from_str_radix("00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000001__00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000001__00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000001__00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000001__00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000001__00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000001__00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000001__00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000001", 2).unwrap();
 /// let mut c = u1024::from_str("1234567891234567879123456789111111111222222222333333333444444444555555555666666666777777777888888888999999999000000000").unwrap();
@@ -314,8 +314,12 @@ where T: Uint + Clone + Display + Debug + ToString
     // pub fn new() -> Self
     /// Constructs a new `BigUInt<T, N>`.
     /// 
+    /// # Output
+    /// A new object of `BigUInt<T, N>`.
+    /// 
     /// # Initialization
-    /// All the attributes of te constructed object will be initialized with `0`.
+    /// All the attributes of the constructed object will be
+    /// initialized with `0`.
     /// 
     /// # Example
     /// ```
@@ -332,6 +336,9 @@ where T: Uint + Clone + Display + Debug + ToString
 
     // pub fn zero() -> Self
     /// Constructs a new `BigUInt<T, N>` which has the value of zero.
+    /// 
+    /// # Output
+    /// A new object of `BigUInt<T, N>` that represents zero.
     /// 
     /// # Features
     /// This function calls `BigUInt<T, N>::new()`, so it is virtually exactly
@@ -359,15 +366,13 @@ where T: Uint + Clone + Display + Debug + ToString
     // pub fn one() -> Self
     /// Constructs a new `BigUInt<T, N>` which has the value of one.
     /// 
+    /// # Output
+    /// A new object of `BigUInt<T, N>` that represents one.
+    /// 
     /// # Benefit
     /// Your source code will be better readable if you use
     /// `BigUInt<T, N>::one()` instead of `BigUInt<T, N>::new()` and then
     /// `set_uint(1)` especially when you create the big number one.
-    /// 
-    /// # Big-endian issue
-    /// It is just experimental for Big Endian CPUs. So, you are not encouraged
-    /// to use it for serious purpose. Only use this crate for Big-endian CPUs
-    /// with your own full responsibility.
     /// 
     /// # Example
     /// ```
@@ -378,6 +383,11 @@ where T: Uint + Clone + Display + Debug + ToString
     /// println!("one = {}", one);
     /// assert_eq!(one, u256::from(1_u64));
     /// ```
+    /// 
+    /// # Big-endian issue
+    /// It is just experimental for Big Endian CPUs. So, you are not encouraged
+    /// to use it for Big Endian CPUs for serious purpose. Only use this crate
+    /// for Big-endian CPUs with your own full responsibility.
     pub fn one() -> Self
     {
         let mut me = Self::new();
@@ -387,6 +397,9 @@ where T: Uint + Clone + Display + Debug + ToString
 
     // pub fn max() -> Self
     /// Constructs a new `BigUInt<T, N>` which has the value of maximum.
+    /// 
+    /// # Output
+    /// A new object of `BigUInt<T, N>` that represents maximum value.
     /// 
     /// # Features
     /// All bits are set to be `1`.
@@ -408,6 +421,10 @@ where T: Uint + Clone + Display + Debug + ToString
     /// Constructs a new `BigUInt<T, N>`-type object which has the value of
     /// `size_in_bits`-bit long maximum value in which all bits are set to
     /// be `1`.
+    /// 
+    /// # Output
+    /// A new object of `BigUInt<T, N>` that represents `size_in_bits`-bit
+    /// long maximum value.
     /// 
     /// # Features
     /// This method will make all the `size_in_bits` bits of `number[T;N]` of
@@ -435,7 +452,11 @@ where T: Uint + Clone + Display + Debug + ToString
 
     // pub fn halfmax() -> Self
     /// Constructs a new `BigUInt<T, N>`-type object which has the value of
-    /// half long maximum value in which all bits are set to be `1`.
+    /// half-length maximum value in which all bits are set to be `1`.
+    /// 
+    /// # Output
+    /// A new object of `BigUInt<T, N>` that represents a half-length
+    /// maximum value.
     /// 
     /// # Features
     /// This method will make all the lower half bits of `number[T;N]` of
@@ -464,8 +485,10 @@ where T: Uint + Clone + Display + Debug + ToString
     /// Constructs a new `BigUInt<T, N>`-type object from an unsigned integer
     /// such as `u8`, `u16`, `u32`, `u64`, `u128` and `usize`.
     /// 
-    /// # Examples
+    /// # Output
+    /// A new object of `BigUInt<T, N>` that represents the same value of `val`.
     /// 
+    /// # Examples for u8
     /// ```
     /// use Cryptocol::number::BigUInt;
     /// use Cryptocol::define_utypes_with;
@@ -474,22 +497,57 @@ where T: Uint + Clone + Display + Debug + ToString
     /// let aa = u512::from_uint(123_u8);
     /// println!("aa = {}", aa);
     /// assert_eq!(aa.into_u8(), 123_u8);
+    /// ```
+    /// 
+    /// # Examples for u16
+    /// ```
+    /// use Cryptocol::number::BigUInt;
+    /// use Cryptocol::define_utypes_with;
+    /// define_utypes_with!(u64);
     /// 
     /// let bb = u512::from_uint(12345_u16);
     /// println!("bb = {}", bb);
     /// assert_eq!(bb.into_u16(), 12345_u16);
+    /// ```
+    /// 
+    /// # Examples for u32
+    /// ```
+    /// use Cryptocol::number::BigUInt;
+    /// use Cryptocol::define_utypes_with;
+    /// define_utypes_with!(u8);
     /// 
     /// let cc = u512::from_uint(1234567890_u32);
     /// println!("cc = {}", cc);
     /// assert_eq!(cc.into_u32(), 1234567890_u32);
+    /// ```
+    /// 
+    /// # Examples for u64
+    /// ```
+    /// use Cryptocol::number::BigUInt;
+    /// use Cryptocol::define_utypes_with;
+    /// define_utypes_with!(u128);
     /// 
     /// let dd = u512::from_uint(12345678901234567890_u64);
     /// println!("dd = {}", dd);
     /// assert_eq!(dd.into_u64(), 12345678901234567890_u64);
+    /// ```
+    /// 
+    /// # Examples for u128
+    /// ```
+    /// use Cryptocol::number::BigUInt;
+    /// use Cryptocol::define_utypes_with;
+    /// define_utypes_with!(usize);
     /// 
     /// let ee = u512::from_uint(123456789012345678901234567890123456789_u128);
     /// println!("ee = {}", ee);
     /// assert_eq!(ee.into_u128(), 123456789012345678901234567890123456789_u128);
+    /// ```
+    /// 
+    /// # Examples for usize
+    /// ```
+    /// use Cryptocol::number::BigUInt;
+    /// use Cryptocol::define_utypes_with;
+    /// define_utypes_with!(u32);
     /// 
     /// let ff = u512::from_uint(12345678901234567890_usize);
     /// println!("ff = {}", ff);
@@ -526,8 +584,12 @@ where T: Uint + Clone + Display + Debug + ToString
         return me;
     }
 
+    // pub fn from_array(val: &[T; N]) -> Self
     /// Constructs a new `BigUInt<T, N>` from an array of type `T` with `N`
     /// elements.
+    /// 
+    /// # Output
+    /// A new object of `BigUInt<T, N>` that represents the same value of array `val`.
     /// 
     /// # Counterpart Method
     /// You can also use the method [from()](struct@BigUInt#impl-From<[T;+N]>-for-BigUInt<T,+N>)
@@ -547,11 +609,18 @@ where T: Uint + Clone + Display + Debug + ToString
         s
     }
 
+    // pub fn from_biguint<U, const M: usize>(biguint: &BigUInt<U, M>) -> Self
     /// Constructs a new `BigUInt<T, N>` from another kind of `BigUInt<U, M>`.
+    /// 
+    /// # Output
+    /// A new object of `BigUInt<T, N>` that represents the same value of another
+    /// kind of `BigUInt<U, M>`.
+    /// 
+    /// # Feature
     /// It copies not only long-bit integer but also current flags from another
     /// kind of `BigUInt<U, M>`.
     /// 
-    /// # Example
+    /// # Example for the same length
     /// ```
     /// use std::str::FromStr;
     /// use std::mem::size_of;
@@ -590,17 +659,14 @@ where T: Uint + Clone + Display + Debug + ToString
         }
     }
 
-    //pub fn from_biguint<U, const M: usize>(biguint: &BigUInt<U, M>) -> Self
+    // pub fn from_biguint<U, const M: usize>(biguint: &BigUInt<U, M>) -> Self
     /// Constructs a new `BigUInt<T, N>` from another kind of `BigUInt<U, M>`.
-    /// It copies not only long-bit integer but also current flags from another
+    /// 
+    /// # Output
+    /// A new object of `BigUInt<T, N>` that represents the same value of another
     /// kind of `BigUInt<U, M>`.
     /// 
-    /// # Big-endian issue
-    /// It is just experimental for Big Endian CPUs. So, you are not encouraged
-    /// to use it for serious purpose. Only use this crate for Big-endian CPUs
-    /// with your own full responsibility.
-    /// 
-    /// # Example
+    /// # Example for the same length
     /// ```
     /// use std::str::FromStr;
     /// use std::mem::size_of;
@@ -612,6 +678,11 @@ where T: Uint + Clone + Display + Debug + ToString
     /// println!("a = {}", a);
     /// println!("b = {}", b);
     /// ```
+    /// 
+    /// # Big-endian issue
+    /// It is just experimental for Big Endian CPUs. So, you are not encouraged
+    /// to use it for Big Endian CPUs for serious purpose. Only use this crate
+    /// for Big-endian CPUs with your own full responsibility.
     #[cfg(target_endian = "big")]
     pub fn from_biguint<U, const M: usize>(biguint: &BigUInt<U, M>) -> Self
     where U: Uint + Clone + Display + Debug + ToString
@@ -639,11 +710,14 @@ where T: Uint + Clone + Display + Debug + ToString
         me
     }
 
+    //  pub fn from_str_radix(txt: &str, radix: usize) -> Result<Self, NumberErr>
     /// Constructs a new `BigUInt<T, N>` from a string with radix.
+    /// 
+    /// # Output
     /// The constructed object will be wrapped in `Ok(BigUInt<T, N>)` if it is
     /// successfully created. Otherwise, this method returns one of
     /// `Err(NumberErr::OutOfValidRadixRange)`, `Err(NumberErr::NotAlphaNumeric)`,
-    /// and `Err(NumberErr::NotFitToRadix)`.
+    /// and `Err(NumberErr::NotFitToRadix)` according to its failure reason.
     /// 
     /// # Errors
     /// - If the argument `txt` of this method includes any alphanumeric
@@ -744,18 +818,18 @@ where T: Uint + Clone + Display + Debug + ToString
         Ok(bignum)
     }
 
+    // pub fn generate_check_bits(bit_pos: usize) -> Self
     /// Constucts a new `BigUInt<T, N>` which has the value zero and sets only
     /// the bit specified by the argument bit_pos to be 1.
+    /// 
+    /// # Output
+    /// It returns a big unsigned integer `BigUInt<T, N>` whose bit specified
+    /// by the argument bit_posvalue is set to be 1.
     /// 
     /// # Bit Position
     /// The bit positon bit_pos is zero-based and should be counted from LSB
     /// (Least Significant Bit) reguardless endian. So, if the bit_pos is `0`,
     /// only LSB is set to be `1` and all the other bits will be set to `0`.
-    /// 
-    /// # Big-endian issue
-    /// It is just experimental for Big Endian CPUs. So, you are not encouraged
-    /// to use it for serious purpose. Only use this crate for Big-endian CPUs
-    /// with your own full responsibility.
     /// 
     /// # Example
     /// ```
@@ -767,6 +841,11 @@ where T: Uint + Clone + Display + Debug + ToString
     /// println!("a = {}", a.to_string_with_radix_and_stride(2, 8));
     /// assert_eq!(a, u256::from_str_radix("10000_00000000", 2).unwrap());
     /// ```
+    /// 
+    /// # Big-endian issue
+    /// It is just experimental for Big Endian CPUs. So, you are not encouraged
+    /// to use it for Big Endian CPUs for serious purpose. Only use this crate
+    /// for Big-endian CPUs with your own full responsibility.
     pub fn generate_check_bits(bit_pos: usize) -> Self
     {
         let mut check_bits = Self::zero();
@@ -947,11 +1026,6 @@ where T: Uint + Clone + Display + Debug + ToString
     /// [random_odd_less_than](struct@BigUInt#method.random_odd_less_than), and
     /// [random_with_MSB_set()](struct@BigUInt#method.random_with_MSB_set).
     /// 
-    /// # Big-endian issue
-    /// It is just experimental for Big Endian CPUs. So, you are not encouraged
-    /// to use it for serious purpose. Only use this crate for Big-endian CPUs
-    /// with your own full responsibility.
-    /// 
     /// # Example
     /// ```
     /// use Cryptocol::number::*;
@@ -960,6 +1034,11 @@ where T: Uint + Clone + Display + Debug + ToString
     /// define_utypes_with!(u128);
     /// println!("Random number = {}", u1024::random_odd());
     /// ```
+    /// 
+    /// # Big-endian issue
+    /// It is just experimental for Big Endian CPUs. So, you are not encouraged
+    /// to use it for Big Endian CPUs for serious purpose. Only use this crate
+    /// for Big-endian CPUs with your own full responsibility.
     pub fn random_odd() -> Self
     {
         let mut r = Self::random();
@@ -1144,11 +1223,6 @@ where T: Uint + Clone + Display + Debug + ToString
     /// [random_odd_less_than](struct@BigUInt#method.random_odd_less_than), and
     /// [random_with_MSB_set()](struct@BigUInt#method.random_with_MSB_set).
     /// 
-    /// # Big-endian issue
-    /// It is just experimental for Big Endian CPUs. So, you are not encouraged
-    /// to use it for serious purpose. Only use this crate for Big-endian CPUs
-    /// with your own full responsibility.
-    /// 
     /// # Example
     /// ```
     /// use Cryptocol::number::*;
@@ -1157,7 +1231,11 @@ where T: Uint + Clone + Display + Debug + ToString
     /// let ceiling = u1024::max() / u1024::from_uint::<u32>(3);
     /// println!("Random number = {}", u1024::random_odd_less_than(ceiling));
     /// ```
-    #[inline]
+    /// 
+    /// # Big-endian issue
+    /// It is just experimental for Big Endian CPUs. So, you are not encouraged
+    /// to use it for Big Endian CPUs for serious purpose. Only use this crate
+    /// for Big-endian CPUs with your own full responsibility.
     pub fn random_odd_less_than(ceiling: Self) -> Self
     {
         let mut r = Self::random_less_than(ceiling);
@@ -1245,11 +1323,6 @@ where T: Uint + Clone + Display + Debug + ToString
     /// [random_less_than()](struct@BigUInt#method.random_less_than),
     /// [random_odd_less_than](struct@BigUInt#method.random_odd_less_than), and
     /// [random_with_MSB_set()](struct@BigUInt#method.random_with_MSB_set).
-    ///
-    /// # Big-endian issue
-    /// It is just experimental for Big Endian CPUs. So, you are not encouraged
-    /// to use it for serious purpose. Only use this crate for Big-endian CPUs
-    /// with your own full responsibility.
     /// 
     /// # Example
     /// ```
@@ -1262,6 +1335,11 @@ where T: Uint + Clone + Display + Debug + ToString
     /// println!("Random number = {}", num);
     /// assert!(num > u1024::max() >> 1);
     /// ```
+    ///
+    /// # Big-endian issue
+    /// It is just experimental for Big Endian CPUs. So, you are not encouraged
+    /// to use it for Big Endian CPUs for serious purpose. Only use this crate
+    /// for Big-endian CPUs with your own full responsibility.
     pub fn random_with_MSB_set() -> Self
     {
         let mut r = Self::random();
@@ -1374,6 +1452,7 @@ where T: Uint + Clone + Display + Debug + ToString
     // pub fn random_prime_Miller_Rabin(repetition: usize) -> Self
     /// Constucts a new `BigUInt<T, N>`-type object which represents a random
     /// prime number with MSB (Most Significant Bit) is set.
+    /// 
     /// # Output
     /// The random prime number that this method random_prime_Miller_Rabin()
     /// returns is a random prime number whose range is from
@@ -1415,8 +1494,8 @@ where T: Uint + Clone + Display + Debug + ToString
     /// 
     /// # Big-endian issue
     /// It is just experimental for Big Endian CPUs. So, you are not encouraged
-    /// to use it for serious purpose. Only use this crate for Big-endian CPUs
-    /// with your own full responsibility.
+    /// to use it for Big Endian CPUs for serious purpose. Only use this crate
+    /// for Big-endian CPUs with your own full responsibility.
     /// 
     /// # Example
     /// ```
@@ -1463,7 +1542,6 @@ where T: Uint + Clone + Display + Debug + ToString
     /// The author is not sure that the _extended_ random number generated
     /// in the way explained in the section 'Features' is also
     /// cryptographically secure recursively.
-    /// 
     /// 
     /// # Example
     /// ```
@@ -1522,8 +1600,13 @@ where T: Uint + Clone + Display + Debug + ToString
         }
     }
 
+    // pub fn is_prime_Miller_Rabin(&self, repetition: usize) -> bool
     /// Tests a `BigUInt<T, N>`-type object to find whether or not it is a
     /// primne number.
+    /// 
+    /// # Output
+    /// It returns `true` if it is a primne number.
+    /// Otherwise, it returns `false`.
     /// 
     /// # Features
     /// It uses [Miller Rabin algorithm](https://en.wikipedia.org/wiki/Miller%E2%80%93Rabin_primality_test).
@@ -1538,12 +1621,7 @@ where T: Uint + Clone + Display + Debug + ToString
     /// # Argument
     /// The argument `repetition` defines how many times it tests whether the
     /// generated random number is prime. Usually, `repetition` is given to be
-    /// 5 to have 99.9% accuracy. 
-    /// 
-    /// # Big-endian issue
-    /// It is just experimental for Big Endian CPUs. So, you are not encouraged
-    /// to use it for serious purpose. Only use this crate for Big-endian CPUs
-    /// with your own full responsibility.
+    /// 5 to have 99.9% accuracy.
     /// 
     /// # Example
     /// ```
@@ -1557,6 +1635,11 @@ where T: Uint + Clone + Display + Debug + ToString
     /// if yes  { assert!(yes); }
     /// else    { assert!(!yes); }
     /// ```
+    /// 
+    /// # Big-endian issue
+    /// It is just experimental for Big Endian CPUs. So, you are not encouraged
+    /// to use it for Big Endian CPUs for serious purpose. Only use this crate
+    /// for Big-endian CPUs with your own full responsibility.
     pub fn is_prime_Miller_Rabin(&self, repetition: usize) -> bool
     {
         if self.is_zero_or_one()
@@ -1596,8 +1679,14 @@ where T: Uint + Clone + Display + Debug + ToString
 
     /***** METHODS TO GET SIZE BOTH IN BYTES AND BITS *****/
 
-    /// Returns how many bytes long the long-bit number `BigUInt` is. It does
-    /// not count how many bytes used for flags.
+    // pub fn size_in_bytes() -> usize
+    /// Returns how many bytes long the number `BigUInt` is.
+    /// 
+    /// # Output
+    /// It returns its size in bytes.
+    /// 
+    /// # Feature
+    /// It does not count how many bytes are used for flags.
     /// 
     /// # Examples
     /// ```
@@ -1612,8 +1701,14 @@ where T: Uint + Clone + Display + Debug + ToString
         T::size_in_bytes() * N
     }
 
-    /// Returns how many bits longz the long-bit number `BigUInt` is. It does
-    /// not count how many bits used for flags.
+    // pub fn size_in_bits() -> usize
+    /// Returns how many bits long the number `BigUInt` is.
+    /// 
+    /// # Output
+    /// It returns its size in bits.
+    /// 
+    /// # Feature
+    /// It does not count how many bytes are used for flags.
     /// 
     /// # Examples
     /// ```
@@ -1628,8 +1723,15 @@ where T: Uint + Clone + Display + Debug + ToString
         Self::size_in_bytes() * 8
     }
 
-    /// Returns how many bytes long the long-bit number, that is, the object of
-    /// `BigUInt` is. It does not count how many bytes used for flags.
+    // pub fn length_in_bytes(&self) -> usize
+    /// Returns how many bytes long the number i.e. the object of
+    /// `BigUInt` is.
+    /// 
+    /// # Output
+    /// It returns its size in bytes.
+    /// 
+    /// # Feature
+    /// It does not count how many bytes are used for flags.
     /// 
     /// # Examples
     /// ```
@@ -1645,8 +1747,15 @@ where T: Uint + Clone + Display + Debug + ToString
         Self::size_in_bytes()
     }
 
-    /// Returns how many bits long the long-bit number, that is, the object of
-    /// `BigUInt` is. It does not count how many bits used for flags.
+    // pub fn length_in_bits(&self) -> usize
+    /// Returns how many bits long the number i.e. the object of
+    /// `BigUInt` is.
+    /// 
+    /// # Output
+    /// It returns its size in bits.
+    /// 
+    /// # Feature
+    /// It does not count how many bytes are used for flags.
     /// 
     /// # Examples
     /// ```
@@ -1665,6 +1774,7 @@ where T: Uint + Clone + Display + Debug + ToString
 
     /***** METHODS TO GET, SET, AND CHECK *****/
 
+    // pub fn turn_check_bits(&mut self, bit_pos: usize)
     /// Changes a `BigUInt<T, N>` to have the value zero and sets only
     /// the bit specified by the argument bit_pos to be 1.
     /// 
@@ -1672,11 +1782,6 @@ where T: Uint + Clone + Display + Debug + ToString
     /// The bit positon bit_pos is zero-based and should be counted from LSB
     /// (Least Significant Bit) reguardless endian. So, if the bit_pos is `0`,
     /// only LSB is set to be `1` and all the other bits will be set to `0`.
-    /// 
-    /// # Big-endian issue
-    /// It is just experimental for Big Endian CPUs. So, you are not encouraged
-    /// to use it for serious purpose. Only use this crate for Big-endian CPUs
-    /// with your own full responsibility.
     /// 
     /// # Example
     /// ```
@@ -1689,6 +1794,11 @@ where T: Uint + Clone + Display + Debug + ToString
     /// println!("a = {}", a.to_string_with_radix_and_stride(2, 8));
     /// assert_eq!(a, u256::from_str_radix("10000_00000000", 2).unwrap());
     /// ```
+    /// 
+    /// # Big-endian issue
+    /// It is just experimental for Big Endian CPUs. So, you are not encouraged
+    /// to use it for Big Endian CPUs for serious purpose. Only use this crate
+    /// for Big-endian CPUs with your own full responsibility.
     pub fn turn_check_bits(&mut self, bit_pos: usize)
     {
         let TSIZE_BITS = T::size_in_bits();
@@ -1700,8 +1810,9 @@ where T: Uint + Clone + Display + Debug + ToString
         self.set_num_(chunk_num, val);
     }
 
+    // pub fn get_num(&self, i: usize) -> Option<T>
     /// Returns i-th element of its array of type `T` wrapped in Some
-    /// if `i` < `N`. Otherwise, it returns `None`. 
+    /// of enum Option if `i` < `N`. Otherwise, it returns `None`.
     /// 
     /// # Argument i
     /// 0-th element contains LSB (Least Significant Bit), while (N-1)-th
@@ -1713,7 +1824,7 @@ where T: Uint + Clone + Display + Debug + ToString
     /// If `i` >= `N`, it returns `None`.
     /// 
     /// # Counterpart Method
-    /// When you are sure that `i` < `N`, you may want to use its Counterpart
+    /// When you are sure that `i` < `N`, you may want to use its counterpart
     /// method [get_num_()](struct@BigUInt#method.get_num_) for performance.
     /// 
     /// # Example
@@ -1742,8 +1853,9 @@ where T: Uint + Clone + Display + Debug + ToString
             { None }
     }
 
+    // pub fn get_num(&self, i: usize) -> Option<T>
     /// Returns i-th element of its array of type `T` wrapped in Some
-    /// if `i` < `N`. Otherwise, it returns `None`. 
+    /// of enum Option if `i` < `N`. Otherwise, it returns `None`. 
     /// 
     /// # Argument i
     /// 0-th element contains LSB (Least Significant Bit), while (N-1)-th
@@ -1755,13 +1867,8 @@ where T: Uint + Clone + Display + Debug + ToString
     /// If `i` >= `N`, it returns `None`.
     /// 
     /// # Counterpart Method
-    /// When you are sure that `i` < `N`, you may want to use its Counterpart
+    /// When you are sure that `i` < `N`, you may want to use its counterpart
     /// method [get_num_()](struct@BigUInt#method.get_num_) for performance.
-    /// 
-    /// # Big-endian issue
-    /// It is just experimental for Big Endian CPUs. So, you are not encouraged
-    /// to use it for serious purpose. Only use this crate for Big-endian CPUs
-    /// with your own full responsibility.
     /// 
     /// # Example
     /// ```
@@ -1775,11 +1882,16 @@ where T: Uint + Clone + Display + Debug + ToString
     /// {
     ///     Some(num) => {
     ///             println!("a.get_num(3).unwrap() = {}", num);
-    ///             assert_eq!(num, 40);
+    ///             assert_eq!(num, 30);
     ///         },
     ///     None => { println!("There is no third element."); },
     /// }
     /// ```
+    /// 
+    /// # Big-endian issue
+    /// It is just experimental for Big Endian CPUs. So, you are not encouraged
+    /// to use it for Big Endian CPUs for serious purpose. Only use this crate
+    /// for Big-endian CPUs with your own full responsibility.
     #[cfg(target_endian = "big")]
     pub fn get_num(&self, i: usize) -> Option<T>
     {
@@ -1789,6 +1901,7 @@ where T: Uint + Clone + Display + Debug + ToString
             { None }
     }
 
+    // pub fn get_num_(&self, i: usize) -> T
     /// Returns i-th element of its array of type `T` if `i` < `N`.
     /// Otherwise, it will panic.
     /// 
@@ -1804,7 +1917,8 @@ where T: Uint + Clone + Display + Debug + ToString
     /// 
     /// # Counterpart Method
     /// Use this method only when you are sure that `i` < `N`.
-    /// Otherwise, use its Counterpart method [get_num()](struct@BigUInt#method.get_num).
+    /// Otherwise, use its Counterpart method
+    /// [get_num()](struct@BigUInt#method.get_num) for safety.
     /// 
     /// # Example
     /// ```
@@ -1826,6 +1940,7 @@ where T: Uint + Clone + Display + Debug + ToString
         self.number[i]
     }
 
+    // pub fn get_num_(&self, i: usize) -> T
     /// Returns i-th element of its array of type `T` if `i` < `N`.
     /// Otherwise, it will panic.
     /// 
@@ -1836,17 +1951,13 @@ where T: Uint + Clone + Display + Debug + ToString
     /// unsigned integer.
     /// 
     /// # Panics
-    /// It is performance-oriented and does not care for safety. So, 
-    /// if `i` >= `N`, it will panic.
+    /// This method is performance-oriented and does not care for safety.
+    /// So, if `i` >= `N`, it will panic.
     /// 
     /// # Counterpart Method
     /// Use this method only when you are sure that `i` < `N`.
-    /// Otherwise, use its Counterpart method [get_num()](struct@BigUInt#method.get_num).
-    /// 
-    /// # Big-endian issue
-    /// It is just experimental for Big Endian CPUs. So, you are not encouraged
-    /// to use it for serious purpose. Only use this crate for Big-endian CPUs
-    /// with your own full responsibility.
+    /// Otherwise, use its Counterpart method
+    /// [get_num()](struct@BigUInt#method.get_num) for safety.
     /// 
     /// # Example
     /// ```
@@ -1855,10 +1966,17 @@ where T: Uint + Clone + Display + Debug + ToString
     /// 
     /// define_utypes_with_u32!();
     /// let a = u256::from([0_u32, 10, 20, 30, 40, 50, 60, 70]);
-    /// let e = a.get_num_(3);
-    /// println!("a.get_num_(3) = {}", e);
-    /// assert_eq!(e, 40);
+    /// let b = a.get_num_(3);
+    /// println!("a.get_num_(3) = {}", b);
+    /// assert_eq!(b, 30);
+    /// // It will panic.
+    /// // let c = a.get_num_(8);
     /// ```
+    /// 
+    /// # Big-endian issue
+    /// It is just experimental for Big Endian CPUs. So, you are not encouraged
+    /// to use it for Big Endian CPUs for serious purpose. Only use this crate
+    /// for Big-endian CPUs with your own full responsibility.
     #[inline]
     #[cfg(target_endian = "big")]
     pub fn get_num_(&self, i: usize) -> T
@@ -1866,6 +1984,7 @@ where T: Uint + Clone + Display + Debug + ToString
         self.number[N-1-i]
     }
 
+    // pub fn set_num(&mut self, i: usize, val: T) -> bool
     /// Sets i-th element of its array of type `T`, and return `true`
     /// if `i` < `N`. Otherwise, it sets none of the elements of its
     /// array of type `T`, and returns `false`.
@@ -1942,11 +2061,6 @@ where T: Uint + Clone + Display + Debug + ToString
     /// When you are sure that `i` < `N`, you may want to use its Counterpart
     /// method [set_num_()](struct@BigUInt#method.set_num_) for performance.
     /// 
-    /// # Big-endian issue
-    /// It is just experimental for Big Endian CPUs. So, you are not encouraged
-    /// to use it for serious purpose. Only use this crate for Big-endian CPUs
-    /// with your own full responsibility.
-    /// 
     /// # Example
     /// ```
     /// use Cryptocol::number::*;
@@ -1975,6 +2089,11 @@ where T: Uint + Clone + Display + Debug + ToString
     ///     println!("There is no third element.");
     /// }
     /// ```
+    /// 
+    /// # Big-endian issue
+    /// It is just experimental for Big Endian CPUs. So, you are not encouraged
+    /// to use it for Big Endian CPUs for serious purpose. Only use this crate
+    /// for Big-endian CPUs with your own full responsibility.
     #[cfg(target_endian = "big")]
     pub fn set_num(&mut self, i: usize, val: T) -> bool
     {
@@ -1989,6 +2108,7 @@ where T: Uint + Clone + Display + Debug + ToString
         }
     }
 
+    // pub fn set_num_(&mut self, i: usize, val: T)
     /// Sets i-th element of its array of type `T` if `i` < `N`.
     /// Otherwise, it will panic.
     ///  
@@ -2031,6 +2151,7 @@ where T: Uint + Clone + Display + Debug + ToString
         self.number[i] = val;
     }
 
+    // pub fn set_num_(&mut self, i: usize, val: T)
     /// Sets i-th element of its array of type `T` if `i` < `N`.
     /// Otherwise, it will panic.
     ///  
@@ -2050,11 +2171,6 @@ where T: Uint + Clone + Display + Debug + ToString
     /// Use this method set_num_() only when you are sure that `i` < `N`.
     /// Otherwise, use its Counterpart method [set_num()](struct@BigUInt#method.set_num).
     /// 
-    /// # Big-endian issue
-    /// It is just experimental for Big Endian CPUs. So, you are not encouraged
-    /// to use it for serious purpose. Only use this crate for Big-endian CPUs
-    /// with your own full responsibility.
-    /// 
     /// # Example
     /// ```
     /// use Cryptocol::number::*;
@@ -2071,6 +2187,11 @@ where T: Uint + Clone + Display + Debug + ToString
     /// println!("a.get_num_(3) = {}", num);
     /// assert_eq!(num, 400);
     /// ```
+    /// 
+    /// # Big-endian issue
+    /// It is just experimental for Big Endian CPUs. So, you are not encouraged
+    /// to use it for Big Endian CPUs for serious purpose. Only use this crate
+    /// for Big-endian CPUs with your own full responsibility.
     #[inline]
     #[cfg(target_endian = "big")]
     pub fn set_num_(&mut self, i: usize, val: T)
@@ -2078,6 +2199,7 @@ where T: Uint + Clone + Display + Debug + ToString
         self.number[N-1-i] = val;
     }
 
+    // pub fn get_number(&self) -> &[T; N]
     /// Returns the reference of its array of `T`-type for borrowing instead
     /// of giving its ownership. `BigUInt` has an array of `T` in order
     /// to present long-sized unsigned integers.
@@ -2097,15 +2219,11 @@ where T: Uint + Clone + Display + Debug + ToString
     {
         &self.number
     }
+
+    // pub fn get_number_mut(&self) -> &mut [T; N]
     /// Returns the reference of its array of `T`-type for borrowing instead
     /// of giving its ownership. `BigUInt` has an array of `T` in order
     /// to present long-sized unsigned integers.
-    /// 
-    /// # Big-endian issue
-    /// Only for big-endian compatible.
-    /// It is just experimental for Big Endian CPUs. So, you are not encouraged
-    /// to use it for serious purpose. Only use this crate for Big-endian CPUs
-    /// with your own full responsibility.
     /// 
     /// # Example
     /// ```
@@ -2117,6 +2235,12 @@ where T: Uint + Clone + Display + Debug + ToString
     /// println!("arr = {:?}", arr);
     /// assert_eq!(arr, &[1524178666_u32, 777431351, 1787851831, 3605297539, 2895800654, 97228082, 1118990153, 2660148093]);
     /// ```
+    /// 
+    /// # Big-endian issue
+    /// Only for big-endian compatible.
+    /// It is just experimental for Big Endian CPUs. So, you are not encouraged
+    /// to use it for serious purpose. Only use this crate for Big-endian CPUs
+    /// with your own full responsibility.
     #[inline]
     #[cfg(target_endian = "big")]
     pub fn get_number_mut(&self) -> &mut [T; N]
@@ -2124,6 +2248,7 @@ where T: Uint + Clone + Display + Debug + ToString
         &mut self.number
     }
 
+    // pub fn set_number(&mut self, val: &[T; N])
     /// Sets the contents of its array of `T`-type. The argument val is the
     /// reference of array of type `T` with the length `N`. `BigUInt` have an
     /// array of `T` in order to present long-sized unsigned integer.
@@ -2144,6 +2269,7 @@ where T: Uint + Clone + Display + Debug + ToString
         self.number.copy_from_slice(val);
     }
 
+    // pub fn copy_within<R>(&mut self, src: R, dest: usize)
     /// Copies elements from one part of the slice `T`-array of BigUInt to
     /// another part of itself, using a memmove.
     /// 
@@ -2180,6 +2306,7 @@ where T: Uint + Clone + Display + Debug + ToString
         self.number.copy_within(src, dest);
     }
 
+    // pub fn copy_within<R>(&mut self, src: R, dest: usize)
     /// Copies elements from one part of the slice `T`-array of BigUInt to
     /// another part of itself, using a memmove.
     /// 
@@ -2199,11 +2326,6 @@ where T: Uint + Clone + Display + Debug + ToString
     /// This method copy_within() will panic if either range exceeds the end
     /// of the slice, or if the end of src is before the start.
     /// 
-    /// # Big-endian issue
-    /// It is just experimental for Big Endian CPUs. So, you are not encouraged
-    /// to use it for serious purpose. Only use this crate for Big-endian CPUs
-    /// with your own full responsibility.
-    /// 
     /// # Example
     /// ```
     /// use Cryptocol::define_utypes_with;
@@ -2216,6 +2338,11 @@ where T: Uint + Clone + Display + Debug + ToString
     /// println!("a = {:?}", a);
     /// assert_eq!(a.get_number(), &[0, 1, 2, 6, 7, 8, 9, 10, 11, 12, 10, 11, 12, 13, 14, 15]);
     /// ```
+    /// 
+    /// # Big-endian issue
+    /// It is just experimental for Big Endian CPUs. So, you are not encouraged
+    /// to use it for Big Endian CPUs for serious purpose. Only use this crate
+    /// for Big-endian CPUs with your own full responsibility.
     #[inline]
     #[cfg(target_endian = "big")]
     pub fn copy_within<R>(&mut self, src: R, dest: usize)
@@ -2241,6 +2368,7 @@ where T: Uint + Clone + Display + Debug + ToString
         self.number.copy_within(new_src, new_dest);
     }
 
+    // pub fn set_zero(&mut self)
     /// Sets `BigUInt` to be zero.
     /// 
     /// # Example
@@ -2261,8 +2389,12 @@ where T: Uint + Clone + Display + Debug + ToString
             { self.set_num(i, T::zero()); }
     }
 
+    // pub fn is_zero(&self) -> bool
     /// Checks whether `BigUInt` to be zero and returns true if it is
     /// zero and returns false if it is not zero.
+    /// 
+    /// # Output
+    /// It returns true if it is zero. Otherwise, it returns false.
     /// 
     /// # Example
     /// ```
@@ -2286,6 +2418,7 @@ where T: Uint + Clone + Display + Debug + ToString
         true
     }
 
+    // pub fn set_one(&mut self)
     /// Sets `BigUInt` to be one.
     /// 
     /// # Example
@@ -2308,12 +2441,8 @@ where T: Uint + Clone + Display + Debug + ToString
         self.set_num(0, T::one());
     }
 
+    // pub fn set_one(&mut self)
     /// Sets BigUInt to be one.
-    /// 
-    /// # Big-endian issue
-    /// It is just experimental for Big Endian CPUs. So, you are not encouraged
-    /// to use it for serious purpose. Only use this crate for Big-endian CPUs
-    /// with your own full responsibility.
     /// 
     /// # Example
     /// ```
@@ -2327,6 +2456,11 @@ where T: Uint + Clone + Display + Debug + ToString
     /// println!("a = {}", a);
     /// assert_eq!(a, u256::one());
     /// ```
+    /// 
+    /// # Big-endian issue
+    /// It is just experimental for Big Endian CPUs. So, you are not encouraged
+    /// to use it for Big Endian CPUs for serious purpose. Only use this crate
+    /// for Big-endian CPUs with your own full responsibility.
     #[cfg(target_endian = "big")]
     pub fn set_one(&mut self)
     {
@@ -2335,8 +2469,12 @@ where T: Uint + Clone + Display + Debug + ToString
         self.set_num(N-1, T::one());
     }
 
+    // pub fn is_one(&self) -> bool
     /// Checks whether `BigUInt` to be one and returns true if it is
     /// one, and returns false if it is not one.
+    /// 
+    /// # Output
+    /// It returns `true` if it is one. Otherwise, it returns `false`.
     /// 
     /// # Example
     /// ```
@@ -2363,8 +2501,12 @@ where T: Uint + Clone + Display + Debug + ToString
         true
     }
 
+    // pub fn is_zero_or_one(&self) -> bool
     /// Checks whether `BigUInt` to be either zero or one and returns true if it
     /// is either zero or one. Otherwise, it returns false.
+    /// 
+    /// # Output
+    /// It returns true if it is either zero or one. Otherwise, it returns false.
     /// 
     /// # Example
     /// ```
@@ -2391,6 +2533,7 @@ where T: Uint + Clone + Display + Debug + ToString
         true
     }
 
+    // pub fn set_max(&mut self)
     /// Sets `BigUInt`-type number to be maximum value in which all bits are
     /// set to be `1`.
     /// 
@@ -2408,6 +2551,7 @@ where T: Uint + Clone + Display + Debug + ToString
             { self.set_num(i, T::max()); }
     }
 
+    // pub fn set_submax(&mut self, size_in_bits: usize)
     /// Sets `BigUInt`-type number to be `size_in_bits`-bit long maximum value
     /// in which all bits are set to be `1`.
     /// 
@@ -2455,6 +2599,7 @@ where T: Uint + Clone + Display + Debug + ToString
             { self.set_num_(chunk_num, max >> T::num((TSIZE_IN_BITS-piece_num) as u128)); }
     }
 
+    // pub fn set_halfmax(&mut self)
     /// Sets `BigUInt`-type number to be half long maximum value
     /// in which all bits are set to be `1`.
     /// 
@@ -2481,7 +2626,12 @@ where T: Uint + Clone + Display + Debug + ToString
         self.set_submax(self.length_in_bits() >> 1);
     }
 
+    // pub fn is_max(&self) -> bool
     /// Checks whether or not `BigUInt`-type number to be maximum value.
+    /// 
+    /// # Output
+    /// It returns `true` if it has maxmum number.
+    /// Otherwise, it returns `false`.
     /// 
     /// # Examples
     /// ```
@@ -2491,6 +2641,11 @@ where T: Uint + Clone + Display + Debug + ToString
     /// println!("Is a maximun? - {}", a.is_max());
     /// assert_eq!(a.is_max(), true);
     /// ```
+    /// 
+    /// # Big-endian issue
+    /// It is just experimental for Big Endian CPUs. So, you are not encouraged
+    /// to use it for Big Endian CPUs for serious purpose. Only use this crate
+    /// for Big-endian CPUs with your own full responsibility.
     pub fn is_max(&self) -> bool
     {
         for i in 0..N
@@ -2501,12 +2656,13 @@ where T: Uint + Clone + Display + Debug + ToString
         true
     }
 
+    // pub fn set_MSB(&mut self)
     /// Sets the MSB (Most Significant Bit) of `BigUInt`-type number with `1`.
     /// 
     /// # Big-endian issue
     /// It is just experimental for Big Endian CPUs. So, you are not encouraged
-    /// to use it for serious purpose. Only use this crate for Big-endian CPUs
-    /// with your own full responsibility.
+    /// to use it for Big Endian CPUs for serious purpose. Only use this crate
+    /// for Big-endian CPUs with your own full responsibility.
     pub fn set_MSB(&mut self)
     {
         let highest = self.get_num_(N-1);
@@ -2514,12 +2670,13 @@ where T: Uint + Clone + Display + Debug + ToString
         self.set_num_(N-1, highest | msb);
     }
 
+    // pub fn set_LSB(&mut self)
     /// Sets the LSB (Least Significant Bit) of `BigUInt`-type number with `1`.
     /// 
     /// # Big-endian issue
     /// It is just experimental for Big Endian CPUs. So, you are not encouraged
-    /// to use it for serious purpose. Only use this crate for Big-endian CPUs
-    /// with your own full responsibility.
+    /// to use it for Big Endian CPUs for serious purpose. Only use this crate
+    /// for Big-endian CPUs with your own full responsibility.
     pub fn set_LSB(&mut self)
     {
         let lowest = self.get_num_(0);
@@ -2527,6 +2684,7 @@ where T: Uint + Clone + Display + Debug + ToString
         self.set_num_(0, lowest | lsb);
     }
 
+    // pub fn set_uint(&mut self, val: T)
     /// Sets `BigUInt`-type number with `T`-type small value such as `u8`,
     /// `u16`, `u32`, `u64`, and `u128` type value. This mathod set_uint()
     /// is useful especially when you initialize `BigUInt`-type big
@@ -2547,7 +2705,8 @@ where T: Uint + Clone + Display + Debug + ToString
         self.set_zero();
         self.set_num_(0, val);
     }
-    
+
+    // pub fn set_uint(&mut self, val: T)
     /// Sets `BigUInt`-type number with `T`-type small value such as `u8`,
     /// `u16`, `u32`, `u64`, and `u128` type value. This mathod set_uint()
     /// is useful especially when you initialize `BigUInt`-type big
@@ -2555,8 +2714,8 @@ where T: Uint + Clone + Display + Debug + ToString
     /// 
     /// # Big-endian issue
     /// It is just experimental for Big Endian CPUs. So, you are not encouraged
-    /// to use it for serious purpose. Only use this crate for Big-endian CPUs
-    /// with your own full responsibility.
+    /// to use it for Big Endian CPUs for serious purpose. Only use this crate
+    /// for Big-endian CPUs with your own full responsibility.
     /// 
     /// # Example
     /// ```
@@ -2575,9 +2734,14 @@ where T: Uint + Clone + Display + Debug + ToString
         self._set_num_(N-1, val);
     }
 
+    // pub fn is_uint(&self, val: T) -> bool
     /// Check whether the `BigUInt`-type number is equal to `T`-type number.
     /// It will return `true`, if it is equal to the `T`-type number. Otherwise,
     /// it will return `false`.
+    /// 
+    /// # Output
+    /// It will return `true`, if it is equal to val.
+    /// Otherwise, it will return `false`.
     /// 
     /// # Counterpart Method
     /// This method is_uint() is virtually the same the method [eq_uint()](struct@BigUInt#method.eq_uint).
@@ -2611,7 +2775,10 @@ where T: Uint + Clone + Display + Debug + ToString
         }
     }
 
+    // pub fn is_odd(&self) -> bool
     /// Checks whether the `BigUInt`-type number is an odd number.
+    /// 
+    /// # Output
     /// It will return `true`, if it is odd. Otherwise, it will return `false`.
     /// 
     /// # Example
@@ -2632,7 +2799,10 @@ where T: Uint + Clone + Display + Debug + ToString
         self.get_num_(0).is_odd()
     }
 
+    // pub fn is_even(&self) -> bool
     /// Checks whether the `BigUInt`-type number is an even number.
+    /// 
+    /// # Output
     /// It will return `true`, if it is even. Otherwise, it will return `false`.
     /// 
     /// # Example
@@ -2653,6 +2823,20 @@ where T: Uint + Clone + Display + Debug + ToString
         !self.is_odd()
     }
 
+
+    /***** METHODS TO CHECK BITS *****/
+
+    // pub fn count_ones(&self) -> u32
+    /// Returns the number of ones in the binary representation
+    /// of the array number[T;N] of `self`.
+    /// 
+    /// # Output
+    /// It returns the total number of the bits that are set to be one.
+    /// 
+    /// # Example
+    /// ```
+    /// // Todo
+    /// ```
     pub fn count_ones(&self) -> u32
     {
         let mut res = 0_u32;
@@ -2661,6 +2845,17 @@ where T: Uint + Clone + Display + Debug + ToString
         res
     }
 
+    // pub fn count_zeros(&self) -> u32
+    /// Returns the number of zeros in the binary representation
+    /// of the array number[T;N] of `self`.
+    /// 
+    /// # Output
+    /// It returns the total number of the bits that are set to be zero.
+    /// 
+    /// # Example
+    /// ```
+    /// // Todo
+    /// ```
     pub fn count_zeros(&self) -> u32
     {
         let mut res = 0_u32;
@@ -2669,6 +2864,17 @@ where T: Uint + Clone + Display + Debug + ToString
         res
     }
 
+    // pub fn leading_ones(&self) -> u32
+    /// Returns the number of leading ones in the binary representation
+    /// of the array number[T;N] of `self`.
+    /// 
+    /// # Output
+    /// It returns the total number of the leading bits that are set to be one.
+    /// 
+    /// # Example
+    /// ```
+    /// // Todo
+    /// ```
     pub fn leading_ones(&self) -> u32
     {
         let mut res = 0_u32;
@@ -2676,19 +2882,25 @@ where T: Uint + Clone + Display + Debug + ToString
         while i != 0
         {
             if self.get_num_(i) == T::max()
-            {
-                res += T::size_in_bits().into_u32();
-            }
+                { res += T::size_in_bits().into_u32(); }
             else
-            {
-                res += self.get_num_(i).leading_ones();
-                break;
-            }
+                { return res + self.get_num_(i).leading_ones(); }
             i -= 1;
         }
-        res
+        res + self.get_num_(0).leading_ones()
     }
 
+    // pub fn leading_zeros(&self) -> u32
+    /// Returns the number of leading zeros in the binary representation
+    /// of the array number[T;N] of `self`.
+    /// 
+    /// # Output
+    /// It returns the total number of the leading bits that are set to be zero.
+    /// 
+    /// # Example
+    /// ```
+    /// // Todo
+    /// ```
     pub fn leading_zeros(&self) -> u32
     {
         let mut res = 0_u32;
@@ -2696,19 +2908,25 @@ where T: Uint + Clone + Display + Debug + ToString
         while i != 0
         {
             if self.get_num_(i) == T::zero()
-            {
-                res += T::size_in_bits().into_u32();
-            }
+                { res += T::size_in_bits().into_u32(); }
             else
-            {
-                res += self.get_num_(i).leading_zeros();
-                break;
-            }
+                { return res + self.get_num_(i).leading_zeros(); }
             i -= 1;
         }
-        res
+        res + self.get_num_(0).leading_zeros()
     }
 
+    // pub fn trailing_ones(&self) -> u32
+    /// Returns the number of trailing ones in the binary representation
+    /// of the array number[T;N] of `self`.
+    /// 
+    /// # Output
+    /// It returns the total number of the trailing bits that are set to be one.
+    /// 
+    /// # Example
+    /// ```
+    /// // Todo
+    /// ```
     pub fn trailing_ones(&self) -> u32
     {
         let mut res = 0_u32;
@@ -2727,6 +2945,17 @@ where T: Uint + Clone + Display + Debug + ToString
         res
     }
 
+    // pub fn trailing_zeros(&self) -> u32
+    /// Returns the number of trailing zeros in the binary representation
+    /// of the array number[T;N] of `self`.
+    /// 
+    /// # Output
+    /// It returns the total number of the trailing bits that are set to be zero.
+    /// 
+    /// # Example
+    /// ```
+    /// // Todo
+    /// ```
     pub fn trailing_zeros(&self) -> u32
     {
         let mut res = 0_u32;
@@ -2749,11 +2978,26 @@ where T: Uint + Clone + Display + Debug + ToString
 
     /***** METHODS FOR COMPARISON WITH UINT *****/
 
+    // pub fn partial_cmp_uint(&self, other: T) -> Option<Ordering>
     /// Compares BigUInt with a value of type T and returns the
-    /// result of the comparison in the type `Option<Ordering>`. However, you'd
-    /// better use the functions lt_uint(), gt_uint(), le_uint(), ge_uint(),
-    /// and eq_uint(). Then, you don't have to use partial_cmp_uint() directly.
-    fn partial_cmp_uint(&self, other: T) -> Option<Ordering>
+    /// result of the comparison in the type `Option<Ordering>`. However,
+    /// you'd better use the functions `lt_uint()`, `gt_uint()`, `le_uint()`,
+    /// `ge_uint()`, and `eq_uint()`.
+    /// Then, you don't have to use `partial_cmp_uint()` directly.
+    /// 
+    /// # Output
+    /// It returns `Ordering::Greater` wrapped by `Some` of enum `Option`
+    /// if `self` is greater than `other`.
+    /// It returns `Ordering::Less` wrapped by `Some` of enum `Option`
+    /// if `self` is less than `other`.
+    /// It returns `Ordering::Equal` wrapped by `Some` of enum `Option`
+    /// if `self` is equal to `other`.
+    /// 
+    /// # Example
+    /// ```
+    /// // Todo
+    /// ```
+    pub fn partial_cmp_uint(&self, other: T) -> Option<Ordering>
     {
         if self.number[0] > other
         {
@@ -2779,28 +3023,104 @@ where T: Uint + Clone + Display + Debug + ToString
         Some(Ordering::Equal)
     }
 
-    /// Returns true if self is less than other. Otherwise, it returns false.
-    fn lt_uint(&self, other: T) -> bool  { self.partial_cmp_uint(other).unwrap().is_lt() }
+    // pub fn lt_uint(&self, other: T) -> bool
+    /// Returns `true` if `self` is less than `other`.
+    /// Otherwise, it returns `false`.
+    /// 
+    /// # Output
+    /// It returns `true` if `self` is less than `other`.
+    /// Otherwise, it returns `false`.
+    /// 
+    /// # Example
+    /// ```
+    /// // Todo
+    /// ```
+    pub fn lt_uint(&self, other: T) -> bool  { self.partial_cmp_uint(other).unwrap().is_lt() }
 
-    /// Returns true if self is greater than other. Otherwise, it returns false.
-    fn gt_uint(&self, other: T) -> bool  { self.partial_cmp_uint(other).unwrap().is_gt() }
+    // pub fn gt_uint(&self, other: T) -> bool
+    /// Returns `true` if `self` is greater than `other`.
+    /// Otherwise, it returns `false`.
+    /// 
+    /// # Output
+    /// It returns `true` if `self` is greater than `other`.
+    /// Otherwise, it returns `false`.
+    /// 
+    /// # Example
+    /// ```
+    /// // Todo
+    /// ```
+    pub fn gt_uint(&self, other: T) -> bool  { self.partial_cmp_uint(other).unwrap().is_gt() }
 
-    /// Returns true if self is less than or equal to other.
-    /// Otherwise, it returns false.
-    fn le_uint(&self, other: T) -> bool  { self.partial_cmp_uint(other).unwrap().is_le() }
+    // pub fn le_uint(&self, other: T) -> bool
+    /// Returns `true` if `self` is less than or equal to `other`.
+    /// Otherwise, it returns `false`.
+    /// 
+    /// # Output
+    /// It returns `true` if `self` is less than or equal to `other`.
+    /// Otherwise, it returns `false`.
+    /// 
+    /// # Example
+    /// ```
+    /// // Todo
+    /// ```
+    pub fn le_uint(&self, other: T) -> bool  { self.partial_cmp_uint(other).unwrap().is_le() }
 
-    /// Returns true if self is greater than or equal to other.
-    /// Otherwise, it returns false.
-    fn ge_uint(&self, other: T) -> bool  { self.partial_cmp_uint(other).unwrap().is_ge() }
+    // pub fn ge_uint(&self, other: T) -> bool 
+    /// Returns `true` if self is greater than or equal to `other`.
+    /// Otherwise, it returns `false`.
+    /// 
+    /// # Output
+    /// It returns `true` if `self` is greater than or equal to `other`.
+    /// Otherwise, it returns `false`.
+    /// 
+    /// # Example
+    /// ```
+    /// // Todo
+    /// ```
+    pub fn ge_uint(&self, other: T) -> bool  { self.partial_cmp_uint(other).unwrap().is_ge() }
 
-    /// Returns true if self is equal to other. Otherwise, it returns false.
-    fn eq_uint(&self, other: T) -> bool  { self.partial_cmp_uint(other).unwrap().is_eq() }
+    // pub fn eq_uint(&self, other: T) -> bool
+    /// Returns `true` if `self` is equal to `other`.
+    /// Otherwise, it returns `false`.
+    /// 
+    /// # Output
+    /// It returns `true` if `self` is equal to `other`.
+    /// Otherwise, it returns `false`.
+    /// 
+    /// # Example
+    /// ```
+    /// // Todo
+    /// ```
+    pub fn eq_uint(&self, other: T) -> bool  { self.partial_cmp_uint(other).unwrap().is_eq() }
 
     
+
     /***** ARITHMATIC OPERATIONS WITH UNSIGNED INTEGERS *****/
 
-    /// Computes the absolute difference between self and other.
-    fn abs_diff(&self, other: &Self) -> Self
+
+    // pub fn abs_diff(&self, other: &Self) -> Self
+    /// Computes the absolute difference between `self` and `other`.
+    /// 
+    /// # Output
+    /// It returns the absolute difference between `self` and `other`.
+    /// 
+    /// # Example
+    /// ```
+    /// use std::str::FromStr;
+    /// use Cryptocol::number::BigUInt;
+    /// use Cryptocol::define_utypes_with;
+    /// define_utypes_with!(u128);
+    /// 
+    /// let a = u256::from_str("500000000000000000500000000500000000500000000500000000").unwrap();
+    /// let b = u256::from_str("500000000000000000000000000000000000000000000000000000").unwrap();
+    /// let c = a.abs_diff(&b);
+    /// let d = b.abs_diff(&a);
+    /// println!("500000000000000000500000000500000000500000000500000000 <-> 500000000000000000000000000000000000000000000000000000 = {}", c);
+    /// println!("500000000000000000000000000000000000000000000000000000 <-> 500000000000000000500000000500000000500000000500000000 = {}", d);
+    /// assert_eq!(c, u256::from_str("500000000500000000500000000500000000").unwrap());
+    /// assert_eq!(d, u256::from_str("500000000500000000500000000500000000").unwrap());
+    /// ```
+    pub fn abs_diff(&self, other: &Self) -> Self
     {
         if self < other
             { *other - *self }
@@ -2808,7 +3128,13 @@ where T: Uint + Clone + Display + Debug + ToString
             { *self - *other }
     }
 
+    // pub fn accumulate(&mut self, rhs: T)
     /// Accumulates or adds rhs of type `T` to self which is of `BigUInt` type.
+    /// 
+    /// # Example
+    /// ```
+    /// // Todo
+    /// ```
     pub fn accumulate(&mut self, rhs: T)
     {
         let zero = T::zero();
@@ -2828,8 +3154,14 @@ where T: Uint + Clone + Display + Debug + ToString
             { self.set_overflow(); }
     }
 
+    // pub fn dissipate(&mut self, rhs: T)
     /// Dissipates or subtracts rhs of type `T` from self which is of
     /// `BigUInt` type.
+    /// 
+    /// # Example
+    /// ```
+    /// // Todo
+    /// ```
     pub fn dissipate(&mut self, rhs: T)
     {
         let zero = T::zero();
@@ -2850,7 +3182,13 @@ where T: Uint + Clone + Display + Debug + ToString
         }
     }
 
+    // pub fn times(&mut self, rhs: T)
     /// Multiplies self which is of `BigUInt` type with rhs of type `T`.
+    /// 
+    /// # Example
+    /// ```
+    /// // Todo
+    /// ```
     pub fn times(&mut self, rhs: T)
     {
         if self.is_zero()
@@ -2877,11 +3215,17 @@ where T: Uint + Clone + Display + Debug + ToString
         }
     }
 
+    // pub fn divide_by_uint_fully(&self, rhs: T) -> (Self, T)
     /// Divide BigUInt<T, N> by T so as to get quotient and remainder
-    /// It returns tuple of quotient and remainder. quotient is Self and
-    /// remainder is T. If rhs is zero, the divided_by_zero and overflow flags
-    /// of quotient will be set, and the quotient and the remainder will be
-    /// max value and zero, respectively.
+    /// 
+    /// # Output
+    /// It returns tuple of quotient and remainder. quotient is `Self` and
+    /// remainder is `T`.
+    /// 
+    /// # Feature
+    /// If `rhs` is zero, the divided_by_zero and overflow flags of quotient
+    /// will be set, and the quotient and the remainder will be max value and
+    /// zero, respectively.
     /// 
     /// # Examples
     /// 
@@ -2992,10 +3336,18 @@ where T: Uint + Clone + Display + Debug + ToString
     }
 
     /// Divides self which is of `BigUInt` type by rhs which is of type `T`,
-    /// and assign quotient of `BigUInt` type to self. If you get both quotient and
-    /// remainder, you'd better use the function divide_by_uint_fully() instead
-    /// of calling the functions quotient() and remainder() in series because
-    /// they call the function divide_by_uint_fully() internally.
+    /// and assign quotient of `BigUInt` type to self.
+    /// 
+    /// # Feature
+    /// If you get both quotient and remainder, you'd better use the function
+    /// `divide_by_uint_fully()` instead of calling the functions `quotient()`
+    /// and `remainder()` in series because they call the function
+    /// `divide_by_uint_fully()` internally.
+    /// 
+    /// # Example
+    /// ```
+    /// // Todo
+    /// ```
     pub fn quotient(&mut self, rhs: T)
     {
         let (quotient, _) = self.divide_by_uint_fully(rhs);
@@ -3003,18 +3355,30 @@ where T: Uint + Clone + Display + Debug + ToString
     }
 
     /// Divides self which is of `BigUInt` type by rhs which is of type `T`,
-    /// and assign remainder of type `T` to self. If you get both quotient and
-    /// remainder, you'd better use the function divide_by_uint_fully() instead
-    /// of calling the functions quotient() and remainder() in series because
-    /// they call the function divide_by_uint_fully() internally.
+    /// and assign remainder of type `T` to self.
+    /// 
+    /// # Feature
+    /// If you get both quotient and remainder, you'd better use the function
+    /// `divide_by_uint_fully()` instead of calling the functions `quotient()`
+    /// and `remainder()` in series because they call the function
+    /// `divide_by_uint_fully()` internally.
+    /// 
+    /// # Example
+    /// ```
+    /// // Todo
+    /// ```
     pub fn remainder(&mut self, rhs: T)
     {
         let (_, remainder) = self.divide_by_uint_fully(rhs);
         self.set_uint(remainder);
     }
 
+    // pub fn add_uint(&self, rhs: T) -> Self
     /// Adds a unsigned integer number of type `T` to `BigUInt`-type unsigned
     /// integer and returns its result in a type of BigUInt.
+    /// 
+    /// # Output
+    /// It returns the sum of `self` and `rhs`.
     /// 
     /// # Examples
     /// 
@@ -3034,8 +3398,12 @@ where T: Uint + Clone + Display + Debug + ToString
         bi
     }
 
+    // pub fn sub_uint(&self, rhs: T) -> Self
     /// Subtracts a unsigned integer number of type `T` from `BigUInt`-type
     /// unsigned integer and returns its result in a type of BigUInt.
+    /// 
+    /// # Output
+    /// It returns the subtraction of `rhs` from `self`.
     /// 
     /// # Examples
     /// 
@@ -3054,8 +3422,12 @@ where T: Uint + Clone + Display + Debug + ToString
         bi
     }
 
+    // pub fn mul_uint(&self, rhs: T) -> Self
     /// Multiplies `BigUInt`-type number with a unsigned integer number
     /// of type `T` and returns its result in a type of BigUInt.
+    /// 
+    /// # Output
+    /// It returns the multiplication of `self` and `rhs`.
     /// 
     /// # Examples
     /// ```
@@ -3073,8 +3445,12 @@ where T: Uint + Clone + Display + Debug + ToString
         bi
     }
 
+    // pub fn div_uint(&self, rhs: T) -> Self
     /// Divides `BigUInt`-type number with a unsigned integer number
     /// of type `T` and returns its quotient in a type of BigUInt.
+    /// 
+    /// # Output
+    /// It returns the quotient of `self` divided by `rhs`.
     /// 
     /// # Examples
     /// 
@@ -3092,8 +3468,12 @@ where T: Uint + Clone + Display + Debug + ToString
         quotient
     }
 
+    // pub fn rem_uint(&self, rhs: T) -> T
     /// Divides `BigUInt`-type number with a unsigned integer number
     /// of type `T` and returns its remainder in a type of T.
+    /// 
+    /// # Output
+    /// It returns the remainder of `self` divided by `rhs`.
     /// 
     /// # Examples
     /// ```
@@ -3110,37 +3490,121 @@ where T: Uint + Clone + Display + Debug + ToString
         remainder
     }
 
+    // pub fn pow_uint<U>(&mut self, rhs: U) -> Self
     /// Raises `BigUInt` type number to the power of exp, using exponentiation
-    /// of type `T` by squaring.
-    pub fn pow_uint(&mut self, rhs: u128) -> Self
+    /// of type `U` by squaring. The type `U` has the trait `Uint`.
+    /// 
+    /// # Output
+    /// It returns the result of `self` raised to the power of `exp`.
+    /// 
+    /// # Feature
+    /// If overflow happens, it will raise `self` to the power of exp with
+    /// wrapping (modular) exponentiation.
+    /// 
+    /// # Argument
+    /// The argument `rhs` is the type that has the trait `Uint`.
+    /// 
+    /// # Counterpart Method
+    /// This method `pow_uint()` is more efficient than the method `pow()`
+    /// when the exponent `rhs` is primitive unsigned integral data type
+    /// such as u8, u16, u32, u64, u128 and usize. If `rhs` is `BigUInt`
+    /// type number, use the mentod `pow()`.
+    /// 
+    /// # Example
+    /// ```
+    /// use Cryptocol::define_utypes_with;
+    /// define_utypes_with!(u128);
+    /// 
+    /// let a = u256::from_uint(123_u8);
+    /// 
+    /// // normal exponentiation
+    /// let b = a.pow_uint(37_u8);
+    /// println!("123 ** 37 = {}", b);
+    /// assert_eq!(b.to_string(), "327866917145357122766845521828011845892261593022600989693192403442113095387339");
+    /// 
+    /// // wrapping (modular) exponentiation
+    /// let c = a.pow_uint(38_u8);
+    /// println!("123 ** 38 = {}", c);
+    /// assert_eq!(c.to_string(), "31983754292890092919296401822065111810221278137005446531426388626141617944969");
+    /// 
+    /// // evidence of wrapping (modular) exponentiation
+    /// assert!(b > c);
+    /// ```
+    pub fn pow_uint<U>(&self, rhs: U) -> Self
+    where U: Uint + Clone + Display + Debug + ToString
+            + Add<Output=U> + AddAssign + Sub<Output=U> + SubAssign
+            + Mul<Output=U> + MulAssign + Div<Output=U> + DivAssign
+            + Rem<Output=U> + RemAssign
+            + Shl<Output=U> + ShlAssign + Shr<Output=U> + ShrAssign
+            + BitAnd<Output=U> + BitAndAssign + BitOr<Output=U> + BitOrAssign
+            + BitXor<Output=U> + BitXorAssign + Not<Output=U>
+            + PartialEq + PartialOrd
     {
         if self.is_zero() || self.is_one()
             { return self.clone(); }
 
+        let zero = U::zero();
+        let one = U::one();
         let mut res = Self::one();
-        if rhs == 0
+        if rhs == zero
             { return res; }
 
-        let mut bit_check = 1;
-        bit_check <<= rhs.length_in_bits() - rhs.leading_zeros() as usize - 1;
-        if bit_check != 0
+        let mut bit_check = U::one();
+        bit_check <<= U::num((rhs.length_in_bits() - rhs.leading_zeros() as usize - 1) as u128);
+        if bit_check != zero
         {
             res *= *self; 
-            bit_check >>= 1;
+            bit_check >>= one;
         }
-        while bit_check != 0
+        while bit_check != zero
         {
             res *= res;
-            if (bit_check & rhs) != 0
+            if (bit_check & rhs) != zero
                 { res *= *self; }
-            bit_check >>= 1;
+            bit_check >>= one;
         }
         res
     }
 
+    // pub fn pow(&mut self, rhs: Self) -> Self
     /// Raises `BigUInt` type number to the power of exp, using exponentiation
     /// of type `BigUInt` by squaring.
-    pub fn pow(&mut self, rhs: Self) -> Self
+    /// 
+    /// # Output
+    /// It returns the result of `self` raised to the power of `exp`.
+    /// 
+    /// # Argument
+    /// The argument `rhs` is the type `BigUInt`.
+    /// 
+    /// # Counterpart Method
+    /// The method `pow_uint()` is more efficient than this method `pow()`
+    /// when the exponent `rhs` is primitive unsigned integral data type
+    /// such as u8, u16, u32, u64, u128 and usize. If `rhs` is the primitive
+    /// unsigned integral data type number, use the mentod `pow_uint()`.
+    /// 
+    /// # Example
+    /// ```
+    /// use Cryptocol::define_utypes_with;
+    /// define_utypes_with!(u128);
+    /// 
+    /// let a = u256::from_uint(234_u8);
+    /// let mut exp = u256::from_uint(34_u8);
+    /// 
+    /// // normal exponentiation
+    /// let b = a.pow(exp);
+    /// println!("234 ** 34 = {}", b);
+    /// assert_eq!(b.to_string(), "333355548155350456483859370069812512225557842608257584768167093353269140914176");
+    /// 
+    /// // wrapping (modular) exponentiation
+    /// exp += 1;
+    /// let c = a.pow(exp);
+    /// println!("234 ** 35 = {}", c);
+    /// assert_eq!(c.to_string(), "308706390112839688006961655506541691236375459687456365275060975355268985520128");
+    /// 
+    /// // evidence of wrapping (modular) exponentiation
+    /// assert!(b > c);
+    /// ```
+    pub fn pow(&self, rhs: Self) -> Self
     {
         if self.is_zero() || self.is_one()
             { return self.clone(); }
@@ -3149,7 +3613,7 @@ where T: Uint + Clone + Display + Debug + ToString
         if rhs.is_zero()
             { return res; }
 
-        let mut bit_check = Self::one();;
+        let mut bit_check = Self::one();
         bit_check <<= (rhs.length_in_bits() - rhs.leading_zeros() as usize - 1) as i32;
         if !bit_check.is_zero()
         {
@@ -3172,6 +3636,27 @@ where T: Uint + Clone + Display + Debug + ToString
 
     /*** ADDITION ***/
 
+    // pub fn carrying_add(self, rhs: Self, carry: bool) -> (Self, bool)
+    /// Calculates self + rhs + carry,
+    /// wrapping around at the boundary of the type.
+    /// 
+    /// # Features
+    /// This allows chaining together multiple additions to create even a wider
+    /// addition. This can be thought of as a big integer “full adder”,
+    /// in the electronics sense.
+    /// 
+    /// If the input carry is false, this method is equivalent to
+    /// `overflowing_add()`, and the output carry is equal to the overflow flag.
+    /// 
+    /// # Outputs
+    /// It returns a tuple containing the sum and the output carry. It performs
+    /// “ternary addition” of two big integer operands and a carry-in bit, and
+    /// returns an output big integer and a carry-out bit.
+    /// 
+    /// # Example
+    /// ```
+    /// // Todo
+    /// ```
     pub fn carrying_add(self, rhs: Self, carry: bool) -> (Self, bool)
     {
         let mut res = self.clone();
@@ -3196,11 +3681,6 @@ where T: Uint + Clone + Display + Debug + ToString
     /// Wrapping (modular) addition. Computes self + rhs, wrapping around
     /// at the boundary of the type.
     /// 
-    /// # Big-endian issue
-    /// It is just experimental for Big Endian CPUs. So, you are not encouraged
-    /// to use it for serious purpose. Only use this crate for Big-endian CPUs
-    /// with your own full responsibility.
-    /// 
     /// # Example
     /// ```
     /// use Cryptocol::define_utypes_with;
@@ -3217,6 +3697,11 @@ where T: Uint + Clone + Display + Debug + ToString
     /// println!("{} + 3 = {}", a, a.wrapping_add(u512::from(3_u128)));
     /// assert_eq!(a.wrapping_add(u512::from(3_u128)), u512::one());
     /// ```
+    /// 
+    /// # Big-endian issue
+    /// It is just experimental for Big Endian CPUs. So, you are not encouraged
+    /// to use it for Big Endian CPUs for serious purpose. Only use this crate
+    /// for Big-endian CPUs with your own full responsibility.
     /// 
     /// # References
     /// - If you want to know about the declaration of the method `wrapping_add()`
@@ -3837,7 +4322,6 @@ where T: Uint + Clone + Display + Debug + ToString
         let chunk_num = (n / U::num(TSIZE_IN_BITS as u128)).into_usize();
         let piece_num = (n % U::num(TSIZE_IN_BITS as u128)).into_usize();
         let zero = T::zero();
-        self.reset_all_flags();
         if chunk_num > 0
         {
             for i in N-chunk_num..N
@@ -3854,7 +4338,7 @@ where T: Uint + Clone + Display + Debug + ToString
         }
         if piece_num == 0
             { return; }
-        if (self.get_num_(N-1) >> T::num((TSIZE_IN_BITS - piece_num).into_u128())) != zero
+        if (self.get_num_(N-1).leading_zeros() as usize) < piece_num
             { self.set_overflow(); }
 
         let mut num: T;

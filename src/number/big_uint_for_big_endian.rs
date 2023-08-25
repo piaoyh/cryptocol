@@ -44,8 +44,8 @@ impl<T, const N: usize> _BigUInt for BigUInt<T, N>
     /// 
     /// # Big-endian issue
     /// It is just experimental for Big Endian CPUs. So, you are not encouraged
-    /// to use it for serious purpose. Only use this crate for Big-endian CPUs
-    /// with your own full responsibility.
+    /// to use it for Big Endian CPUs for serious purpose. Only use this crate
+    /// for Big-endian CPUs with your own full responsibility.
     /// 
     /// # Example
     /// ```
@@ -83,8 +83,8 @@ impl<T, const N: usize> _BigUInt for BigUInt<T, N>
     /// 
     /// # Big-endian issue
     /// It is just experimental for Big Endian CPUs. So, you are not encouraged
-    /// to use it for serious purpose. Only use this crate for Big-endian CPUs
-    /// with your own full responsibility.
+    /// to use it for Big Endian CPUs for serious purpose. Only use this crate
+    /// for Big-endian CPUs with your own full responsibility.
     /// 
     /// # Example
     /// ```
@@ -120,8 +120,8 @@ impl<T, const N: usize> _BigUInt for BigUInt<T, N>
     /// 
     /// # Big-endian issue
     /// It is just experimental for Big Endian CPUs. So, you are not encouraged
-    /// to use it for serious purpose. Only use this crate for Big-endian CPUs
-    /// with your own full responsibility.
+    /// to use it for Big Endian CPUs for serious purpose. Only use this crate
+    /// for Big-endian CPUs with your own full responsibility.
     /// 
     /// # Example
     /// ```
@@ -165,8 +165,8 @@ impl<T, const N: usize> _BigUInt for BigUInt<T, N>
     ///
     /// # Big-endian issue
     /// It is just experimental for Big Endian CPUs. So, you are not encouraged
-    /// to use it for serious purpose. Only use this crate for Big-endian CPUs
-    /// with your own full responsibility.
+    /// to use it for Big Endian CPUs for serious purpose. Only use this crate
+    /// for Big-endian CPUs with your own full responsibility.
     /// 
     /// # Example
     /// ```
@@ -196,8 +196,8 @@ impl<T, const N: usize> _BigUInt for BigUInt<T, N>
     /// 
     /// # Big-endian issue
     /// It is just experimental for Big Endian CPUs. So, you are not encouraged
-    /// to use it for serious purpose. Only use this crate for Big-endian CPUs
-    /// with your own full responsibility.
+    /// to use it for Big Endian CPUs for serious purpose. Only use this crate
+    /// for Big-endian CPUs with your own full responsibility.
     /// 
     /// # Counter Part Method
     /// This method _turn_check_bits() is considered to be slightly faster than
@@ -242,8 +242,8 @@ impl<T, const N: usize> _BigUInt for BigUInt<T, N>
     /// 
     /// # Big-endian issue
     /// It is just experimental for Big Endian CPUs. So, you are not encouraged
-    /// to use it for serious purpose. Only use this crate for Big-endian CPUs
-    /// with your own full responsibility.
+    /// to use it for Big Endian CPUs for serious purpose. Only use this crate
+    /// for Big-endian CPUs with your own full responsibility.
     /// 
     /// # Example
     /// ```
@@ -288,8 +288,8 @@ impl<T, const N: usize> _BigUInt for BigUInt<T, N>
     /// 
     /// # Big-endian issue
     /// It is just experimental for Big Endian CPUs. So, you are not encouraged
-    /// to use it for serious purpose. Only use this crate for Big-endian CPUs
-    /// with your own full responsibility.
+    /// to use it for Big Endian CPUs for serious purpose. Only use this crate
+    /// for Big-endian CPUs with your own full responsibility.
     /// 
     /// # Example
     /// ```
@@ -326,8 +326,8 @@ impl<T, const N: usize> _BigUInt for BigUInt<T, N>
     /// 
     /// # Big-endian issue
     /// It is just experimental for Big Endian CPUs. So, you are not encouraged
-    /// to use it for serious purpose. Only use this crate for Big-endian CPUs
-    /// with your own full responsibility.
+    /// to use it for Big Endian CPUs for serious purpose. Only use this crate
+    /// for Big-endian CPUs with your own full responsibility.
     /// 
     /// # Example
     /// ```
@@ -390,8 +390,8 @@ impl<T, const N: usize> _BigUInt for BigUInt<T, N>
     /// 
     /// # Big-endian issue
     /// It is just experimental for Big Endian CPUs. So, you are not encouraged
-    /// to use it for serious purpose. Only use this crate for Big-endian CPUs
-    /// with your own full responsibility.
+    /// to use it for Big Endian CPUs for serious purpose. Only use this crate
+    /// for Big-endian CPUs with your own full responsibility.
     /// 
     /// # Example
     /// ```
@@ -433,8 +433,8 @@ impl<T, const N: usize> _BigUInt for BigUInt<T, N>
     ///  
     /// # Big-endian issue
     /// It is just experimental for Big Endian CPUs. So, you are not encouraged
-    /// to use it for serious purpose. Only use this crate for Big-endian CPUs
-    /// with your own full responsibility.
+    /// to use it for Big Endian CPUs for serious purpose. Only use this crate
+    /// for Big-endian CPUs with your own full responsibility.
     /// 
     /// # Example
     /// ```

@@ -20,8 +20,9 @@ use std::ops::*;
 
 
 /// Trait Uint is for generic type of primitive unsigned integer data types
-/// for all modules of the crate Cryptocol. __The trait Uint is meaningful when
-/// you use it in generic context.__
+/// for all modules of the crate Cryptocol.
+/// __The trait Uint is meaningful when you use it in generic context.
+/// Otherwise, it is pretty hard to imagine its usability.__
 /// In order to use this trait, you have to import (use)
 /// `Cryptocol::number::Uint`.
 ///  
@@ -39,17 +40,19 @@ pub trait Uint: Copy + Clone + Sized //+ Display + Debug + ToString
 {
     /***** ADDITION *****/
 
+    // fn carrying_add(self, rhs: Self, carry: bool) -> (Self, bool);
     /// Calculates self + rhs + carry,
     /// wrapping around at the boundary of the type.
     /// 
     /// # Features
-    /// __The trait Uint is meaningful when you use it in generic context.__
+    /// __The trait Uint is meaningful when you use it in generic context.
+    /// Otherwise, it is pretty hard to imagine its usability.__
     /// This allows chaining together multiple additions to create a wider
     /// addition, and can be useful for big integer type addition. This can be
     /// thought of as a 8-bit “full adder”, in the electronics sense.
     /// 
     /// If the input carry is false, this method is equivalent to
-    /// overflowing_add, and the output carry is equal to the overflow flag.
+    /// `overflowing_add()`, and the output carry is equal to the overflow flag.
     /// 
     /// # Outputs
     /// It returns a tuple containing the sum and the output carry. It performs
@@ -178,7 +181,7 @@ pub trait Uint: Copy + Clone + Sized //+ Display + Debug + ToString
     /// 
     ///     let d_high_u8: u8;
     ///     let d_low_u8: u8;
-    ///     //  (201_u8,  45_u8) + (100_u8, 200_u8) == 25701_u16 + 25800_u16 == 51501_u16
+    ///     //  (201_u8,  45_u8) + (100_u8    /// , 200_u8) == 25701_u16 + 25800_u16 == 51501_u16
     ///     //   25701_u16 == (100_u8, 101_u8)
     ///     // + 25800_u16 == (100_u8, 200_u8)
     ///     // -------------------------------
@@ -267,7 +270,8 @@ pub trait Uint: Copy + Clone + Sized //+ Display + Debug + ToString
     /// Computes self + rhs, wrapping around at the boundary of the type.
     /// 
     /// # Features
-    /// __The trait Uint is meaningful when you use it in generic context.__
+    /// __The trait Uint is meaningful when you use it in generic context.
+    /// Otherwise, it is pretty hard to imagine its usability.__
     /// It adds two numbers with wrapping (modular) addition.
     /// 
     /// # Output
@@ -485,7 +489,8 @@ pub trait Uint: Copy + Clone + Sized //+ Display + Debug + ToString
     /// Calculates self + rhs, wrapping around at the boundary of the type.
     /// 
     /// # Features
-    /// __The trait Uint is meaningful when you use it in generic context.__
+    /// __The trait Uint is meaningful when you use it in generic context.
+    /// Otherwise, it is pretty hard to imagine its usability.__
     /// It adds two numbers with wrapping (modular) addition. It is the same as
     /// the method carrying_add() with the imput carry which is false.
     /// 
@@ -731,11 +736,13 @@ pub trait Uint: Copy + Clone + Sized //+ Display + Debug + ToString
     /// Computes self + rhs.
     /// 
     /// # Feature
-    /// __The trait Uint is meaningful when you use it in generic context.__
+    /// __The trait Uint is meaningful when you use it in generic context.
+    /// Otherwise, it is pretty hard to imagine its usability.__
     /// 
     /// # Output
-    /// It returns self + rhs in the type Self if overflow did not occur.
-    /// And, it returns None if overflow occurred.
+    /// It returns self + rhs in the type `Self` wrapped by `Some`
+    /// of enum `Option` if overflow did not occur.
+    /// And, it returns `None` if overflow occurred.
     /// 
     /// # Example for u8
     /// ```
@@ -1164,7 +1171,8 @@ pub trait Uint: Copy + Clone + Sized //+ Display + Debug + ToString
     /// Computes self + rhs, assuming overflow cannot occur.
     /// 
     /// # Features
-    /// __The trait Uint is meaningful when you use it in generic context.__
+    /// __The trait Uint is meaningful when you use it in generic context.
+    /// Otherwise, it is pretty hard to imagine its usability.__
     /// It is virtually same as self.checked_add(rhs).unwrap().
     /// Use this method only when it is sure that overflow will never happen.
     /// 
@@ -1172,7 +1180,7 @@ pub trait Uint: Copy + Clone + Sized //+ Display + Debug + ToString
     /// If overflow occurs, this method will panic at this version.
     /// 
     /// # Output
-    /// It returns self + rhs in the type Self if overflow did not occur.
+    /// It returns self + rhs in the type `Self` if overflow did not occur.
     /// Otherwise, its behavior is not defined.
     /// 
     /// # Example
@@ -1266,7 +1274,8 @@ pub trait Uint: Copy + Clone + Sized //+ Display + Debug + ToString
     /// instead of overflowing.
     /// 
     /// # Features
-    /// __The trait Uint is meaningful when you use it in generic context.__
+    /// __The trait Uint is meaningful when you use it in generic context.
+    /// Otherwise, it is pretty hard to imagine its usability.__
     /// It adds two numbers with saturating integer addition
     /// 
     /// # Output
@@ -1368,7 +1377,8 @@ pub trait Uint: Copy + Clone + Sized //+ Display + Debug + ToString
     /// wrapping around at the boundary of the type. 
     /// 
     /// # Features
-    /// __The trait Uint is meaningful when you use it in generic context.__
+    /// __The trait Uint is meaningful when you use it in generic context.
+    /// Otherwise, it is pretty hard to imagine its usability.__
     /// This allows chaining together multiple subtractions to create a wider
     /// subtraction, and can be useful for big integer type subtraction.
     /// This can be thought of as a 8-bit “full subtracter”, in the electronics
@@ -1500,13 +1510,137 @@ pub trait Uint: Copy + Clone + Sized //+ Display + Debug + ToString
     /// Computes self - rhs, wrapping around at the boundary of the type.
     /// 
     /// # Features
-    /// __The trait Uint is meaningful when you use it in generic context.__
+    /// __The trait Uint is meaningful when you use it in generic context.
+    /// Otherwise, it is pretty hard to imagine its usability.__
     /// It subtracts rhs from self with wrapping (modular) subtraction.
     /// 
     /// # Output
     /// It returns the self - rhs in the type of `Self`.
     /// 
-    /// # Example
+    /// # Example for u8
+    /// ```
+    /// use Cryptocol::number::Uint;
+    /// fn main()
+    /// {
+    ///     let a_u8 = func(55_u8, 55_u8);
+    ///     println!("55 - 55 = {}", a_u8);
+    ///     assert_eq!(a_u8, 0_u8);
+    /// 
+    ///     let b_u8 = func(a_u8, 1_u8);
+    ///     println!("{} - 1 = {}", a_u8, b_u8);
+    ///     assert_eq!(b_u8, u8::MAX);
+    /// }
+    /// 
+    /// fn func<T: Uint>(lhs: T, rhs: T) -> T
+    /// {
+    ///     lhs.wrapping_sub(rhs)
+    /// }
+    /// ```
+    /// 
+    /// # Example for u16
+    /// ```
+    /// use Cryptocol::number::Uint;
+    /// fn main()
+    /// {
+    ///     let a_u16 = func(55_u16, 55_u16);
+    ///     println!("55 - 55 = {}", a_u16);
+    ///     assert_eq!(a_u16, 0_u16);
+    /// 
+    ///     let b_u16 = func(a_u16, 1_u16);
+    ///     println!("{} - 1 = {}", a_u16, b_u16);
+    ///     assert_eq!(b_u16, u16::MAX);
+    /// }
+    /// 
+    /// fn func<T: Uint>(lhs: T, rhs: T) -> T
+    /// {
+    ///     lhs.wrapping_sub(rhs)
+    /// }
+    /// ```
+    /// 
+    /// # Example for u32
+    /// ```
+    /// use Cryptocol::number::Uint;
+    /// fn main()
+    /// {
+    /// 
+    ///     let a_u32 = func(55_u32, 55_u32);
+    ///     println!("55 - 55 = {}", a_u32);
+    ///     assert_eq!(a_u32, 0_u32);
+    /// 
+    ///     let b_u32 = func(a_u32, 1_u32);
+    ///     println!("{} - 1 = {}", a_u32, b_u32);
+    ///     assert_eq!(b_u32, u32::MAX);
+    /// }
+    /// 
+    /// fn func<T: Uint>(lhs: T, rhs: T) -> T
+    /// {
+    ///     lhs.wrapping_sub(rhs)
+    /// }
+    /// ```
+    /// 
+    /// # Example for u64
+    /// ```
+    /// use Cryptocol::number::Uint;
+    /// fn main()
+    /// {
+    ///     let a_u64 = func(55_u64, 55_u64);
+    ///     println!("55 - 55 = {}", a_u64);
+    ///     assert_eq!(a_u64, 0_u64);
+    /// 
+    ///     let b_u64 = func(a_u64, 1_u64);
+    ///     println!("{} - 1 = {}", a_u64, b_u64);
+    ///     assert_eq!(b_u64, u64::MAX);
+    /// }
+    /// 
+    /// fn func<T: Uint>(lhs: T, rhs: T) -> T
+    /// {
+    ///     lhs.wrapping_sub(rhs)
+    /// }
+    /// ```
+    /// 
+    /// # Example for u128
+    /// ```
+    /// use Cryptocol::number::Uint;
+    /// fn main()
+    /// {
+    ///     let a_u128 = func(55_u128, 55_u128);
+    ///     println!("55 - 55 = {}", a_u128);
+    ///     assert_eq!(a_u128, 0_u128);
+    /// 
+    ///     let b_u128 = func(a_u128, 1_u128);
+    ///     println!("{} - 1 = {}",a_u128, b_u128);
+    ///     assert_eq!(b_u128, u128::MAX);
+    /// }
+    /// 
+    /// fn func<T: Uint>(lhs: T, rhs: T) -> T
+    /// {
+    ///     lhs.wrapping_sub(rhs)
+    /// }
+    /// ```
+    /// 
+    /// # Example for usize
+    /// ```
+    /// use Cryptocol::number::Uint;
+    /// fn main()
+    /// {
+    ///     let a_usize = func(55_usize, 55_usize);
+    ///     println!("55 - 55 = {}", a_usize);
+    ///     assert_eq!(a_usize, 0_usize);
+    /// 
+    ///     let b_usize = func(a_usize, 1_usize);
+    ///     println!("{} - 1 = {}", a_usize, b_usize);
+    ///     assert_eq!(b_usize, usize::MAX);
+    /// }
+    /// 
+    /// fn func<T: Uint>(lhs: T, rhs: T) -> T
+    /// {
+    ///     lhs.wrapping_sub(rhs)
+    /// }
+    /// ```
+    /// You can use the above generic function func<>() for all Uint-supported
+    /// data types in a same scope. Look into the next example.
+    /// 
+    /// # Collective Example
     /// ```
     /// use Cryptocol::number::Uint;
     /// fn main()
@@ -1596,7 +1730,8 @@ pub trait Uint: Copy + Clone + Sized //+ Display + Debug + ToString
     /// Calculates self - rhs, wrapping around at the boundary of the type.
     /// 
     /// # Features
-    /// __The trait Uint is meaningful when you use it in generic context.__
+    /// __The trait Uint is meaningful when you use it in generic context.
+    /// Otherwise, it is pretty hard to imagine its usability.__
     /// It subtracts rhs from self with wrapping (modular) subtraction.
     /// It is the same as the method carrying_sub() with the imput carry which
     /// is false.
@@ -1709,11 +1844,13 @@ pub trait Uint: Copy + Clone + Sized //+ Display + Debug + ToString
     /// Computes self - rhs.
     /// 
     /// # Feature
-    /// __The trait Uint is meaningful when you use it in generic context.__
+    /// __The trait Uint is meaningful when you use it in generic context.
+    /// Otherwise, it is pretty hard to imagine its usability.__
     /// 
     /// # Output
-    /// It returns self - rhs in the type Self if overflow did not occur.
-    /// And, it returns None if overflow occurred.
+    /// It returns self - rhs in the type `Self` wrapped by `Some`
+    /// of enum `Option` if overflow did not occur.
+    /// And, it returns `None` if overflow occurred.
     /// 
     /// # Example
     /// ```
@@ -1913,7 +2050,8 @@ pub trait Uint: Copy + Clone + Sized //+ Display + Debug + ToString
     /// Computes self - rhs, assuming overflow cannot occur.
     /// 
     /// # Features
-    /// __The trait Uint is meaningful when you use it in generic context.__
+    /// __The trait Uint is meaningful when you use it in generic context.
+    /// Otherwise, it is pretty hard to imagine its usability.__
     /// It is virtually same as self.checked_sub(rhs).unwrap().
     /// Use this method only when it is sure that underflow will never happen.
     /// 
@@ -1921,7 +2059,7 @@ pub trait Uint: Copy + Clone + Sized //+ Display + Debug + ToString
     /// If underflow occurs, this method will panic at this version.
     /// 
     /// # Output
-    /// It returns self - rhs in the type Self if underflow did not occur.
+    /// It returns self - rhs in the type `Self` if underflow did not occur.
     /// Otherwise, its behavior is not defined.
     /// 
     /// # Example
@@ -2021,7 +2159,8 @@ pub trait Uint: Copy + Clone + Sized //+ Display + Debug + ToString
     /// instead of underflowing.
     /// 
     /// # Features
-    /// __The trait Uint is meaningful when you use it in generic context.__
+    /// __The trait Uint is meaningful when you use it in generic context.
+    /// Otherwise, it is pretty hard to imagine its usability.__
     /// It subtracts rhs from self with saturating integer subtraction.
     /// 
     /// # Output
@@ -2121,7 +2260,8 @@ pub trait Uint: Copy + Clone + Sized //+ Display + Debug + ToString
     /// Computes self * rhs, wrapping around at the boundary of the type.
     /// 
     /// # Features
-    /// __The trait Uint is meaningful when you use it in generic context.__
+    /// __The trait Uint is meaningful when you use it in generic context.
+    /// Otherwise, it is pretty hard to imagine its usability.__
     /// It multiplies two numbers with wrapping (modular) multiplication.
     /// 
     /// # Output
@@ -2217,7 +2357,8 @@ pub trait Uint: Copy + Clone + Sized //+ Display + Debug + ToString
     /// Calculates self * rhs, wrapping around at the boundary of the type.
     /// 
     /// # Features
-    /// __The trait Uint is meaningful when you use it in generic context.__
+    /// __The trait Uint is meaningful when you use it in generic context.
+    /// Otherwise, it is pretty hard to imagine its usability.__
     /// It multiplies two numbers with wrapping (modular) multiplication.
     /// 
     /// # Output
@@ -2328,11 +2469,13 @@ pub trait Uint: Copy + Clone + Sized //+ Display + Debug + ToString
     /// Computes self * rhs.
     /// 
     /// # Feature
-    /// __The trait Uint is meaningful when you use it in generic context.__
+    /// __The trait Uint is meaningful when you use it in generic context.
+    /// Otherwise, it is pretty hard to imagine its usability.__
     /// 
     /// # Output
-    /// It returns self * rhs in the type Self if overflow did not occur.
-    /// And, it returns None if overflow occurred.
+    /// It returns self * rhs in the type `Self` wrapped by `Some`
+    /// of enum `Option` if overflow did not occur.
+    /// And, it returns `None` if overflow occurred.
     /// 
     /// # Example
     /// ```
@@ -2532,7 +2675,8 @@ pub trait Uint: Copy + Clone + Sized //+ Display + Debug + ToString
     /// Computes self + rhs, assuming overflow cannot occur.
     /// 
     /// # Features
-    /// __The trait Uint is meaningful when you use it in generic context.__
+    /// __The trait Uint is meaningful when you use it in generic context.
+    /// Otherwise, it is pretty hard to imagine its usability.__
     /// It is virtually same as self.checked_add(rhs).unwrap().
     /// Use this method only when it is sure that overflow will never happen.
     /// 
@@ -2540,7 +2684,7 @@ pub trait Uint: Copy + Clone + Sized //+ Display + Debug + ToString
     /// If overflow occurs, this method will panic at this version.
     /// 
     /// # Output
-    /// It returns self + rhs in the type Self if overflow did not occur.
+    /// It returns self + rhs in the type `Self` if overflow did not occur.
     /// Otherwise, its behavior is not defined.
     /// 
     /// # Example
@@ -2636,15 +2780,16 @@ pub trait Uint: Copy + Clone + Sized //+ Display + Debug + ToString
     /// for the primitive type `usize`, read [here](https://doc.rust-lang.org/core/primitive.usize.html#method.unchecked_mul).
     fn unchecked_mul(self, rhs: Self) -> Self;
 
-    /// Computes self + rhs, saturating at the numeric bounds
+    /// Computes self * rhs, saturating at the numeric bounds
     /// instead of overflowing.
     /// 
     /// # Features
-    /// __The trait Uint is meaningful when you use it in generic context.__
+    /// __The trait Uint is meaningful when you use it in generic context.
+    /// Otherwise, it is pretty hard to imagine its usability.__
     /// It multiplies two numbers with saturating integer multiplication
     /// 
     /// # Output
-    /// It returns the smaller one of self + rhs and the maxium
+    /// It returns the smaller one of self * rhs and the maxium
     /// of the type of `Self`.
     /// 
     /// # Example
@@ -2740,7 +2885,8 @@ pub trait Uint: Copy + Clone + Sized //+ Display + Debug + ToString
     /// Computes self / rhs.
     /// 
     /// # Features
-    /// __The trait Uint is meaningful when you use it in generic context.__
+    /// __The trait Uint is meaningful when you use it in generic context.
+    /// Otherwise, it is pretty hard to imagine its usability.__
     /// Wrapped division on unsigned types is just normal division. There’s no
     /// way wrapping could ever happen. This function exists, so that all
     /// operations are accounted for in the wrapping operations.
@@ -2820,7 +2966,8 @@ pub trait Uint: Copy + Clone + Sized //+ Display + Debug + ToString
     /// Calculates self / rhs.
     /// 
     /// # Features
-    /// __The trait Uint is meaningful when you use it in generic context.__
+    /// __The trait Uint is meaningful when you use it in generic context.
+    /// Otherwise, it is pretty hard to imagine its usability.__
     /// It divides self by rhs.
     /// 
     /// # Output
@@ -2934,11 +3081,12 @@ pub trait Uint: Copy + Clone + Sized //+ Display + Debug + ToString
     /// Computes self / rhs.
     /// 
     /// # Feature
-    /// __The trait Uint is meaningful when you use it in generic context.__
+    /// __The trait Uint is meaningful when you use it in generic context.
+    /// Otherwise, it is pretty hard to imagine its usability.__
     /// 
     /// # Output
-    /// It returns self / rhs in the type Self.
-    /// And, it returns None if rhs is zero.
+    /// It returns self / rhs in the type `Self` wrapped by `Some`
+    /// of enum `Option`. And, it returns `None` if rhs is zero.
     /// 
     /// # Example
     /// ```
@@ -3120,10 +3268,11 @@ pub trait Uint: Copy + Clone + Sized //+ Display + Debug + ToString
     /// Computes self / rhs.
     /// 
     /// # Features
-    /// __The trait Uint is meaningful when you use it in generic context.__
+    /// __The trait Uint is meaningful when you use it in generic context.
+    /// Otherwise, it is pretty hard to imagine its usability.__
     /// 
     /// # Output
-    /// It returns self / rhs in the type Self.
+    /// It returns self / rhs in the type `Self`.
     /// 
     /// # Panics
     /// It will panic if rhs is zero.
@@ -3200,7 +3349,8 @@ pub trait Uint: Copy + Clone + Sized //+ Display + Debug + ToString
     /// Computes self % rhs.
     /// 
     /// # Features
-    /// __The trait Uint is meaningful when you use it in generic context.__
+    /// __The trait Uint is meaningful when you use it in generic context.
+    /// Otherwise, it is pretty hard to imagine its usability.__
     /// Wrapped remainder calculation on unsigned types is just the regular
     /// remainder calculation. There’s no way wrapping could ever happen.
     /// This function exists, so that all operations are accounted for in the
@@ -3281,7 +3431,8 @@ pub trait Uint: Copy + Clone + Sized //+ Display + Debug + ToString
     /// Calculates self % rhs.
     /// 
     /// # Features
-    /// __The trait Uint is meaningful when you use it in generic context.__
+    /// __The trait Uint is meaningful when you use it in generic context.
+    /// Otherwise, it is pretty hard to imagine its usability.__
     /// It calculates the remainder when self is divided by rhs.
     /// 
     /// # Output
@@ -3368,11 +3519,12 @@ pub trait Uint: Copy + Clone + Sized //+ Display + Debug + ToString
     /// Computes self % rhs.
     /// 
     /// # Feature
-    /// __The trait Uint is meaningful when you use it in generic context.__
+    /// __The trait Uint is meaningful when you use it in generic context.
+    /// Otherwise, it is pretty hard to imagine its usability.__
     /// 
     /// # Output
-    /// It returns self % rhs in the type Self.
-    /// And, it returns None if rhs is zero.
+    /// It returns self % rhs in the type `Self` wrapped by `Some`
+    /// of enum `Option`. And, it returns `None` if rhs is zero.
     /// 
     /// # Example
     /// ```
@@ -3553,11 +3705,13 @@ pub trait Uint: Copy + Clone + Sized //+ Display + Debug + ToString
 
 
     /*** Power ***/
-    
-    /// Raises self to the power of exp, using exponentiation by squaring.
+
+    // fn pow(self, exp: u32) -> Self;
+    /// Raises `self` to the power of `exp`, using exponentiation by squaring.
     /// 
     /// # Features
-    /// __The trait Uint is meaningful when you use it in generic context.__
+    /// __The trait Uint is meaningful when you use it in generic context.
+    /// Otherwise, it is pretty hard to imagine its usability.__
     /// 
     /// # Panics
     /// It will panic if the result of this method is more than
@@ -3566,7 +3720,210 @@ pub trait Uint: Copy + Clone + Sized //+ Display + Debug + ToString
     /// # Output
     /// It returns the self raised to the power of exp, in the type of `Self`.
     /// 
-    /// # Example
+    /// # Example for u8
+    /// ```
+    /// use Cryptocol::number::*;
+    /// fn main()
+    /// {
+    ///     let a_u8 = func(3_u8, 5_u32);
+    ///     println!("3 ** 5 = {}", a_u8);
+    ///     assert_eq!(a_u8, 243_u8);
+    ///     // It will panic.
+    ///     // println!("3 ** 5 = {}", func(3_u8, 6_u32));
+    /// }
+    /// 
+    /// fn func<T: Uint>(lhs: T, rhs: u32) -> T
+    /// {
+    ///     lhs.pow(rhs)
+    /// }
+    /// ```
+    /// 
+    /// # Example for u16
+    /// ```
+    /// use Cryptocol::number::*;
+    /// fn main()
+    /// {
+    ///     let a_u16 = func(9_u16, 5_u32);
+    ///     println!("9 ** 5 = {}", a_u16);
+    ///     assert_eq!(a_u16, 59049_u16);
+    ///     // It will panic.
+    ///     // println!("9 ** 5 = {}", func(9_u16, 6_u32));
+    /// }
+    /// 
+    /// fn func<T: Uint>(lhs: T, rhs: u32) -> T
+    /// {
+    ///     lhs.pow(rhs)
+    /// }
+    /// ```
+    /// 
+    /// # Example for u32
+    /// ```
+    /// use Cryptocol::number::*;
+    /// fn main()
+    /// {
+    ///     let a_u32 = func(81_u32, 5_u32);
+    ///     println!("81 ** 5 = {}", a_u32);
+    ///     assert_eq!(a_u32, 3486784401_u32);
+    ///     // It will panic.
+    ///     // println!("81 ** 6 = {}", func(81_u32, 6_u32));
+    /// }
+    /// 
+    /// fn func<T: Uint>(lhs: T, rhs: u32) -> T
+    /// {
+    ///     lhs.pow(rhs)
+    /// }
+    /// ```
+    /// 
+    /// # Example for u64
+    /// ```
+    /// use Cryptocol::number::*;
+    /// fn main()
+    /// {
+    ///     let a_u64 = func(6561_u64, 5_u32);
+    ///     println!("6561 ** 5 = {}", a_u64);
+    ///     assert_eq!(a_u64, 12157665459056928801_u64);
+    ///     // It will panic.
+    ///     // println!("6561 ** 6 = {}", func(6561_u64, 6_u32));
+    /// }
+    /// 
+    /// fn func<T: Uint>(lhs: T, rhs: u32) -> T
+    /// {
+    ///     lhs.pow(rhs)
+    /// }
+    /// ```
+    /// 
+    /// # Example for u128
+    /// ```
+    /// use Cryptocol::number::*;
+    /// fn main()
+    /// {
+    ///     let a_u128 = func(43046721_u128, 5_u32);
+    ///     println!("43046721 ** 5 = {}", a_u128);
+    ///     assert_eq!(a_u128, 147808829414345923316083210206383297601_u128);
+    ///     // It will panic.
+    ///     // println!("43046721 ** 6 = {}", func(43046721_u64, 6_u32));
+    /// }
+    /// 
+    /// fn func<T: Uint>(lhs: T, rhs: u32) -> T
+    /// {
+    ///     lhs.pow(rhs)
+    /// }
+    /// ```
+    /// 
+    /// # Example for usize
+    /// ```
+    /// use Cryptocol::number::*;
+    /// fn main()
+    /// {
+    ///     let a_usize = func(6561_usize, 5_u32);
+    ///     println!("6561 ** 5 = {}", a_usize);
+    ///     assert_eq!(a_usize, 12157665459056928801_usize);
+    ///     // It will panic.
+    ///     // println!("6561 ** 6 = {}", func(6561_usize, 6_u32));
+    /// }
+    /// 
+    /// fn func<T: Uint>(lhs: T, rhs: u32) -> T
+    /// {
+    ///     lhs.pow(rhs)
+    /// }
+    /// ```
+    /// 
+    /// # Example for ShortUnion
+    /// ```
+    /// use Cryptocol::number::*;
+    /// fn main()
+    /// {
+    ///     let a_Short = ShortUnion::new_with(9);
+    ///     let b_Short = func(a_Short, 5_u32);
+    ///     println!("9 ** 5 = {}", unsafe { b_Short.Short } );
+    ///     assert_eq!(unsafe { b_Short.Short }, 59049_u16);
+    ///     // It will panic.
+    ///     // println!("9 ** 5 = {}", func(a_Short, 6_u32));
+    /// }
+    /// 
+    /// fn func<T: Uint>(lhs: T, rhs: u32) -> T
+    /// {
+    ///     lhs.pow(rhs)
+    /// }
+    /// ```
+    /// 
+    /// # Example for IntUnion
+    /// ```
+    /// use Cryptocol::number::*;
+    /// fn main()
+    /// {
+    ///     let a_uint = IntUnion::new_with(81);
+    ///     let b_uint = func(a_uint, 5_u32);
+    ///     println!("81 ** 5 = {}", unsafe { b_uint.uint } );
+    ///     assert_eq!(unsafe { b_uint.uint }, 3486784401_u32);
+    ///     // It will panic.
+    ///     // println!("81 ** 6 = {}", func(a_uint, 6_u32));
+    /// }
+    /// 
+    /// fn func<T: Uint>(lhs: T, rhs: u32) -> T
+    /// {
+    ///     lhs.pow(rhs)
+    /// }
+    /// ```
+    /// 
+    /// # Example for LongUnion
+    /// ```
+    /// use Cryptocol::number::*;
+    /// fn main()
+    /// {
+    ///     let a_ulong = LongUnion::new_with(6561);
+    ///     let b_ulong = func(a_ulong, 5_u32);
+    ///     println!("6561 ** 5 = {}", unsafe { b_ulong.ulong } );
+    ///     assert_eq!(unsafe { b_ulong.ulong }, 12157665459056928801_u64);
+    ///     // It will panic.
+    ///     // println!("6561 ** 6 = {}", func(a_ulong, 6_u32));
+    /// }
+    /// 
+    /// fn func<T: Uint>(lhs: T, rhs: u32) -> T
+    /// {
+    ///     lhs.pow(rhs)
+    /// }
+    /// ```
+    /// 
+    /// # Example for LongerUnion
+    /// ```
+    /// use Cryptocol::number::*;
+    /// fn main()
+    /// {
+    ///     let a_ulonger = LongerUnion::new_with(43046721);
+    ///     let b_ulonger = func(a_ulonger, 5_u32);
+    ///     println!("43046721 ** 5 = {}", unsafe { b_ulonger.ulonger } );
+    ///     assert_eq!(unsafe { b_ulonger.ulonger }, 147808829414345923316083210206383297601_u128);
+    ///     // It will panic.
+    ///     // println!("43046721 ** 6 = {}", func(a_ulonger, 6_u32));
+    /// }
+    /// 
+    /// fn func<T: Uint>(lhs: T, rhs: u32) -> T
+    /// {
+    ///     lhs.pow(rhs)
+    /// }
+    /// ```
+    /// 
+    /// # Example for SizeUnion
+    /// ```
+    /// use Cryptocol::number::*;
+    /// fn main()
+    /// {
+    ///     let a_size = SizeUnion::new_with(6561);
+    ///     let b_size = func(a_size, 5_u32);
+    ///     println!("6561 ** 5 = {}", unsafe { b_size.size } );
+    ///     assert_eq!(unsafe { b_size.size }, 12157665459056928801_usize);
+    ///     // It will panic.
+    ///     // println!("6561 ** 6 = {}", func(a_size, 6_u32));
+    /// }
+    /// 
+    /// fn func<T: Uint>(lhs: T, rhs: u32) -> T
+    /// {
+    ///     lhs.pow(rhs)
+    /// }
+    /// ```
+    /// 
+    /// # Collective Example
     /// ```
     /// use Cryptocol::number::*;
     /// fn main()
@@ -3680,7 +4037,8 @@ pub trait Uint: Copy + Clone + Sized //+ Display + Debug + ToString
     /// 
     /// # Features
     /// Wrapping (modular) exponentiation.
-    /// __The trait Uint is meaningful when you use it in generic context.__
+    /// __The trait Uint is meaningful when you use it in generic context.
+    /// Otherwise, it is pretty hard to imagine its usability.__
     /// 
     /// # Output
     /// It returns the self raised to the power of exp, in the type of `Self`.
@@ -3817,19 +4175,380 @@ pub trait Uint: Copy + Clone + Sized //+ Display + Debug + ToString
     /// for the primitive type `usize`, read [here](https://doc.rust-lang.org/core/primitive.usize.html#method.wrapping_pow).
     fn wrapping_pow(self, exp: u32) -> Self;
 
-
+    /// Raises self to the power of exp, using exponentiation by squaring.
+    /// 
+    /// # Features
+    /// Exponentiation by squaring.
+    /// __The trait Uint is meaningful when you use it in generic context.
+    /// Otherwise, it is pretty hard to imagine its usability.__
+    /// 
+    /// # Output
+    /// It returns a tuple of the exponentiation along with a bool indicating
+    /// whether an overflow happened.
+    /// 
+    /// # Example
+    /// ```
+    /// use Cryptocol::number::*;
+    /// 
+    /// fn main()
+    /// {
+    ///     // Todo
+    /// }
+    /// 
+    /// fn func<T: Uint>(lhs: T, rhs: u32) -> (T, bool)
+    /// {
+    ///     lhs.overflowing_pow(rhs)
+    /// }
+    /// ```
+    /// 
+    /// # Plagiarism in descryption
+    /// It calls the method overflowing_pow() of implementation of the primitive
+    /// unsigned integer types such as`u8`, `u16`, `u32`, `u64`, `u128` and
+    /// `usize` directly. So, all the description of this method is mainly the
+    /// same as that of the method overflowing_pow() of implementation of the
+    /// primitive unsigned integer types except example codes. Confer to the
+    /// descryptions that are linked to in the section _Reference_. This
+    /// plagiarism is not made maliciously but is made for the reason of
+    /// effectiveness and efficiency so that users may understand better and
+    /// easily how to use this method with simiilarity to the method
+    /// overflowing_pow() of implementation of the primitive unsigned integer types.
+    /// 
+    /// # References
+    /// - If you want to know about the definition of the method `overflowing_pow()`
+    /// for the primitive type `u8`, read [here](https://doc.rust-lang.org/core/primitive.u8.html#method.overflowing_pow).
+    /// - If you want to know about the definition of the method `overflowing_pow()`
+    /// for the primitive type `u16`, read [here](https://doc.rust-lang.org/core/primitive.u16.html#method.overflowing_pow).
+    /// - If you want to know about the definition of the method `overflowing_pow()`
+    /// for the primitive type `u32`, read [here](https://doc.rust-lang.org/core/primitive.u32.html#method.overflowing_pow).
+    /// - If you want to know about the definition of the method `overflowing_pow()`
+    /// for the primitive type `u64`, read [here](https://doc.rust-lang.org/core/primitive.u64.html#method.overflowing_pow).
+    /// - If you want to know about the definition of the method `overflowing_pow()`
+    /// for the primitive type `u128`, read [here](https://doc.rust-lang.org/core/primitive.u128.html#method.overflowing_pow).
+    /// - If you want to know about the definition of the method `overflowing_pow()`
+    /// for the primitive type `usize`, read [here](https://doc.rust-lang.org/core/primitive.usize.html#method.overflowing_pow).
     fn overflowing_pow(self, exp: u32) -> (Self, bool);
+
+    /// Computes self.pow(exp), returning None if overflow occurred.
+    /// 
+    /// # Features
+    /// __The trait Uint is meaningful when you use it in generic context.
+    /// Otherwise, it is pretty hard to imagine its usability.__
+    /// 
+    /// # Output
+    /// It returns None if overflow occurred. Otherwise, it returns 'self
+    /// raised to the power of exp' wrapped by `Some` of enum `Option`.
+    /// 
+    /// # Example
+    /// ```
+    /// use Cryptocol::number::*;
+    /// fn main()
+    /// {
+    ///     // Todo
+    /// }
+    /// 
+    /// fn func<T: Uint>(lhs: T, rhs: u32) -> Option<T>
+    /// {
+    ///     lhs.checked_pow(rhs)
+    /// }
+    /// ```
+    /// 
+    /// # Plagiarism in descryption
+    /// It calls the method checked_pow() of implementation of the primitive
+    /// unsigned integer types such as`u8`, `u16`, `u32`, `u64`, `u128` and
+    /// `usize` directly. So, all the description of this method is mainly the
+    /// same as that of the method checked_pow() of implementation of the
+    /// primitive unsigned integer types except example codes. Confer to the
+    /// descryptions that are linked to in the section _Reference_. This
+    /// plagiarism is not made maliciously but is made for the reason of
+    /// effectiveness and efficiency so that users may understand better and
+    /// easily how to use this method with simiilarity to the method
+    /// checked_pow() of implementation of the primitive unsigned integer types.
+    /// 
+    /// # References
+    /// - If you want to know about the definition of the method `checked_pow()`
+    /// for the primitive type `u8`, read [here](https://doc.rust-lang.org/core/primitive.u8.html#method.checked_pow).
+    /// - If you want to know about the definition of the method `checked_pow()`
+    /// for the primitive type `u16`, read [here](https://doc.rust-lang.org/core/primitive.u16.html#method.checked_pow).
+    /// - If you want to know about the definition of the method `checked_pow()`
+    /// for the primitive type `u32`, read [here](https://doc.rust-lang.org/core/primitive.u32.html#method.checked_pow).
+    /// - If you want to know about the definition of the method `checked_pow()`
+    /// for the primitive type `u64`, read [here](https://doc.rust-lang.org/core/primitive.u64.html#method.checked_pow).
+    /// - If you want to know about the definition of the method `checked_pow()`
+    /// for the primitive type `u128`, read [here](https://doc.rust-lang.org/core/primitive.u128.html#method.checked_pow).
+    /// - If you want to know about the definition of the method `checked_pow()`
+    /// for the primitive type `usize`, read [here](https://doc.rust-lang.org/core/primitive.usize.html#method.checked_pow).
     fn checked_pow(self, exp: u32) -> Option<Self>;
+
+    /// Computes self.pow(exp), saturating at the numeric bounds instead of overflowing.
+    /// 
+    /// # Features
+    /// __The trait Uint is meaningful when you use it in generic context.
+    /// Otherwise, it is pretty hard to imagine its usability.__
+    /// 
+    /// # Output
+    /// It returns 'self raised to the power of exp' in the type of `Self`
+    /// if overflow does not happen. Otherwise, it returns the maximum value
+    /// of the type `Self`.
+    /// 
+    /// # Example
+    /// ```
+    /// use Cryptocol::number::*;
+    /// fn main()
+    /// {
+    ///     // Todo
+    /// }
+    /// 
+    /// fn func<T: Uint>(lhs: T, rhs: u32) -> T
+    /// {
+    ///     lhs.saturating_pow(rhs)
+    /// }
+    /// ```
+    /// 
+    /// # Plagiarism in descryption
+    /// It calls the method saturating_pow() of implementation of the primitive
+    /// unsigned integer types such as`u8`, `u16`, `u32`, `u64`, `u128` and
+    /// `usize` directly. So, all the description of this method is mainly the
+    /// same as that of the method saturating_pow() of implementation of the
+    /// primitive unsigned integer types except example codes. Confer to the
+    /// descryptions that are linked to in the section _Reference_. This
+    /// plagiarism is not made maliciously but is made for the reason of
+    /// effectiveness and efficiency so that users may understand better and
+    /// easily how to use this method with simiilarity to the method
+    /// saturating_pow() of implementation of the primitive unsigned integer types.
+    /// 
+    /// # References
+    /// - If you want to know about the definition of the method `saturating_pow()`
+    /// for the primitive type `u8`, read [here](https://doc.rust-lang.org/core/primitive.u8.html#method.saturating_pow).
+    /// - If you want to know about the definition of the method `saturating_pow()`
+    /// for the primitive type `u16`, read [here](https://doc.rust-lang.org/core/primitive.u16.html#method.saturating_pow).
+    /// - If you want to know about the definition of the method `saturating_pow()`
+    /// for the primitive type `u32`, read [here](https://doc.rust-lang.org/core/primitive.u32.html#method.saturating_pow).
+    /// - If you want to know about the definition of the method `saturating_pow()`
+    /// for the primitive type `u64`, read [here](https://doc.rust-lang.org/core/primitive.u64.html#method.saturating_pow).
+    /// - If you want to know about the definition of the method `saturating_pow()`
+    /// for the primitive type `u128`, read [here](https://doc.rust-lang.org/core/primitive.u128.html#method.saturating_pow).
+    /// - If you want to know about the definition of the method `saturating_pow()`
+    /// for the primitive type `usize`, read [here](https://doc.rust-lang.org/core/primitive.usize.html#method.saturating_pow).
     fn saturating_pow(self, exp: u32) -> Self;
 
 
 
-    /// Computes the absolute difference between self and other.
+    /// Computes the absolute difference between `self` and `other`.
     /// 
     /// # Feature
-    /// __The trait Uint is meaningful when you use it in generic context.__
-    /// Here, self can be one of the primitive types `u8`, `u16`,
-    /// `u32`, `u64`, `u128`, or `usize`. 
+    /// __The trait Uint is meaningful when you use it in generic context.
+    /// Otherwise, it is pretty hard to imagine its usability.__
+    /// 
+    /// # Output
+    /// It returns the absolute difference between `self` and `other`.
+    /// 
+    /// # Example for u8
+    /// ```
+    /// use Cryptocol::number::Uint;
+    /// fn main()
+    /// {
+    ///     let a_u8 = func(55_u8, 50_u8);
+    ///     println!("55 <-> 50 = {}", a_u8);
+    ///     assert_eq!(a_u8, 5_u8);
+    ///     
+    ///     let b_u8 = func(50_u8, 55_u8);
+    ///     println!("50 <-> 55 = {}", b_u8);
+    ///     assert_eq!(b_u8, 5_u8);
+    /// }
+    /// 
+    /// fn func<T: Uint>(lhs: T, rhs: T) -> T
+    /// {
+    ///     lhs.abs_diff(rhs)
+    /// }
+    /// ```
+    /// 
+    /// # Example for u16
+    /// ```
+    /// use Cryptocol::number::Uint;
+    /// fn main()
+    /// {   
+    ///     let a_u16 = func(5050_u16, 5000_u16);
+    ///     println!("5050 <-> 5000 = {}", a_u16);
+    ///     assert_eq!(a_u16, 50_u16);
+    ///     
+    ///     let b_u16 = func(5000_u16, 5050_u16);
+    ///     println!("5000 <-> 5050 = {}", b_u16);
+    ///     assert_eq!(b_u16, 50_u16);
+    /// }
+    /// 
+    /// fn func<T: Uint>(lhs: T, rhs: T) -> T
+    /// {
+    ///     lhs.abs_diff(rhs)
+    /// }
+    /// ```
+    /// 
+    /// # Example for u32
+    /// ```
+    /// use Cryptocol::number::Uint;
+    /// fn main()
+    /// {
+    ///     let a_u32 = func(500500_u32, 500000_u32);
+    ///     println!("500500 <-> 500000 = {}", a_u32);
+    ///     assert_eq!(a_u32, 500_u32);
+    ///     
+    ///     let b_u32 = func(500000_u32, 500500_u32);
+    ///     println!("500000 <-> 500500 = {}", b_u32);
+    ///     assert_eq!(b_u32, 500_u32);
+    /// }
+    /// 
+    /// fn func<T: Uint>(lhs: T, rhs: T) -> T
+    /// {
+    ///     lhs.abs_diff(rhs)
+    /// }
+    /// ```
+    /// 
+    /// # Example for u64
+    /// ```
+    /// use Cryptocol::number::Uint;
+    /// fn main()
+    /// {
+    ///     let a_u64 = func(5000050000_u64, 5000000000_u64);
+    ///     println!("5000050000 <-> 5000000000 = {}", a_u64);
+    ///     assert_eq!(a_u64, 50000_u64);
+    ///     
+    ///     let b_u64 = func(5000000000_u64, 5000050000_u64);
+    ///     println!("5000000000 <-> 5000050000 = {}", b_u64);
+    ///     assert_eq!(b_u64, 50000_u64);
+    /// }
+    /// 
+    /// fn func<T: Uint>(lhs: T, rhs: T) -> T
+    /// {
+    ///     lhs.abs_diff(rhs)
+    /// }
+    /// ```
+    /// 
+    /// # Example for u128
+    /// ```
+    /// use Cryptocol::number::Uint;
+    /// fn main()
+    /// {
+    ///     let a_u128 = func(500000000500000000_u128, 500000000000000000_u128);
+    ///     println!("500000000500000000 <-> 500000000000000000 = {}", a_u128);
+    ///     assert_eq!(a_u128, 500000000_u128);
+    ///     
+    ///     let b_u128 = func(500000000000000000_u128, 500000000500000000_u128);
+    ///     println!("500000000000000000 <-> 500000000500000000 = {}", b_u128);
+    ///     assert_eq!(b_u128, 500000000_u128);
+    /// }
+    /// 
+    /// fn func<T: Uint>(lhs: T, rhs: T) -> T
+    /// {
+    ///     lhs.abs_diff(rhs)
+    /// }
+    /// ```
+    /// 
+    /// # Example for usize
+    /// ```
+    /// use Cryptocol::number::Uint;
+    /// fn main()
+    /// {
+    ///     let a_usize = func(5000050000_usize, 5000000000_usize);
+    ///     println!("5000050000 <-> 5000000000 = {}", a_usize);
+    ///     assert_eq!(a_usize, 50000_usize);
+    ///     
+    ///     let b_usize = func(5000000000_usize, 5000050000_usize);
+    ///     println!("5000000000 <-> 5000050000 = {}", b_usize);
+    ///     assert_eq!(b_usize, 50000_usize);
+    /// }
+    /// 
+    /// fn func<T: Uint>(lhs: T, rhs: T) -> T
+    /// {
+    ///     lhs.abs_diff(rhs)
+    /// }
+    /// ```
+    /// You can use the above generic function func<>() for all Uint-supported
+    /// data types in a same scope. Look into the next example.
+    /// 
+    /// # Collective Example
+    /// ```
+    /// use Cryptocol::number::Uint;
+    /// fn main()
+    /// {
+    ///     let a_u8 = func(55_u8, 50_u8);
+    ///     println!("55 <-> 50 = {}", a_u8);
+    ///     assert_eq!(a_u8, 5_u8);
+    ///     
+    ///     let b_u8 = func(50_u8, 55_u8);
+    ///     println!("50 <-> 55 = {}", b_u8);
+    ///     assert_eq!(b_u8, 5_u8);
+    ///     
+    ///     let a_u16 = func(5050_u16, 5000_u16);
+    ///     println!("5050 <-> 5000 = {}", a_u16);
+    ///     assert_eq!(a_u16, 50_u16);
+    ///     
+    ///     let b_u16 = func(5000_u16, 5050_u16);
+    ///     println!("5000 <-> 5050 = {}", b_u16);
+    ///     assert_eq!(b_u16, 50_u16);
+    ///     
+    ///     let a_u32 = func(500500_u32, 500000_u32);
+    ///     println!("500500 <-> 500000 = {}", a_u32);
+    ///     assert_eq!(a_u32, 500_u32);
+    ///     
+    ///     let b_u32 = func(500000_u32, 500500_u32);
+    ///     println!("500000 <-> 500500 = {}", b_u32);
+    ///     assert_eq!(b_u32, 500_u32);
+    ///     
+    ///     let a_u64 = func(5000050000_u64, 5000000000_u64);
+    ///     println!("5000050000 <-> 5000000000 = {}", a_u64);
+    ///     assert_eq!(a_u64, 50000_u64);
+    ///     
+    ///     let b_u64 = func(5000000000_u64, 5000050000_u64);
+    ///     println!("5000000000 <-> 5000050000 = {}", b_u64);
+    ///     assert_eq!(b_u64, 50000_u64);
+    ///     
+    ///     let a_u128 = func(500000000500000000_u128, 500000000000000000_u128);
+    ///     println!("500000000500000000 <-> 500000000000000000 = {}", a_u128);
+    ///     assert_eq!(a_u128, 500000000_u128);
+    ///     
+    ///     let b_u128 = func(500000000000000000_u128, 500000000500000000_u128);
+    ///     println!("500000000000000000 <-> 500000000500000000 = {}", b_u128);
+    ///     assert_eq!(b_u128, 500000000_u128);
+    ///     
+    ///     let a_usize = func(5000050000_usize, 5000000000_usize);
+    ///     println!("5000050000 <-> 5000000000 = {}", a_usize);
+    ///     assert_eq!(a_usize, 50000_usize);
+    ///     
+    ///     let b_usize = func(5000000000_usize, 5000050000_usize);
+    ///     println!("5000000000 <-> 5000050000 = {}", b_usize);
+    ///     assert_eq!(b_usize, 50000_usize);
+    /// }
+    /// 
+    /// fn func<T: Uint>(lhs: T, rhs: T) -> T
+    /// {
+    ///     lhs.abs_diff(rhs)
+    /// }
+    /// ```
+    /// 
+    /// # Plagiarism in descryption
+    /// It calls the method abs_diff() of implementation of the primitive
+    /// unsigned integer types such as`u8`, `u16`, `u32`, `u64`, `u128` and
+    /// `usize` directly. So, all the description of this method is mainly the
+    /// same as that of the method abs_diff() of implementation of the
+    /// primitive unsigned integer types except example codes. Confer to the
+    /// descryptions that are linked to in the section _Reference_. This
+    /// plagiarism is not made maliciously but is made for the reason of
+    /// effectiveness and efficiency so that users may understand better and
+    /// easily how to use this method with simiilarity to the method
+    /// abs_diff() of implementation of the primitive unsigned integer types.
+    /// 
+    /// # References
+    /// - If you want to know about the definition of the method `abs_diff()`
+    /// for the primitive type `u8`, read [here](https://doc.rust-lang.org/core/primitive.u8.html#method.abs_diff).
+    /// - If you want to know about the definition of the method `abs_diff()`
+    /// for the primitive type `u16`, read [here](https://doc.rust-lang.org/core/primitive.u16.html#method.abs_diff).
+    /// - If you want to know about the definition of the method `abs_diff()`
+    /// for the primitive type `u32`, read [here](https://doc.rust-lang.org/core/primitive.u32.html#method.abs_diff).
+    /// - If you want to know about the definition of the method `abs_diff()`
+    /// for the primitive type `u64`, read [here](https://doc.rust-lang.org/core/primitive.u64.html#method.abs_diff).
+    /// - If you want to know about the definition of the method `abs_diff()`
+    /// for the primitive type `u128`, read [here](https://doc.rust-lang.org/core/primitive.u128.html#method.abs_diff).
+    /// - If you want to know about the definition of the method `abs_diff()`
+    /// for the primitive type `usize`, read [here](https://doc.rust-lang.org/core/primitive.usize.html#method.abs_diff).
     fn abs_diff(self, other: Self) -> Self;
 
 
@@ -3890,7 +4609,9 @@ macro_rules! Uint_for_uint_impl {
     ($f:ty) => {
         impl Uint for $f
         {
-            /// read [here](trait@Uint#tymethod.carrying_add)
+            /// Calculates self + rhs + carry and returns a tuple containing
+            /// the sum and the output carry.
+            /// [Read more in detail](trait@Uint#tymethod.carrying_add)
             fn carrying_add(self, rhs: Self, carry: bool) -> (Self, bool)
             {
                 let (r1, c1) = self.overflowing_add(rhs);
@@ -3898,23 +4619,32 @@ macro_rules! Uint_for_uint_impl {
                 (r2, c1 || c2)
             }
 
-            /// read [here](trait@Uint#tymethod.wrapping_add)
+            /// Computes self + rhs, wrapping around at the boundary of the type.
+            /// [Read more in detail](trait@Uint#tymethod.wrapping_add)
             #[inline] fn wrapping_add(self, rhs: Self) -> Self              { self.wrapping_add(rhs) }
 
-            /// read [here](trait@Uint#tymethod.overflowing_add)
+            /// Calculates self + rhs and returns a tuple of the addition along
+            /// with a boolean indicating whether an arithmetic overflow would
+            /// occur. [Read more in detail](trait@Uint#tymethod.overflowing_add)
             #[inline] fn overflowing_add(self, rhs: Self) -> (Self, bool)   { self.overflowing_add(rhs) }
 
-            /// read [here](trait@Uint#tymethod.checked_add)
+            /// Computes self + rhs and returns None if overflow occurred.
+            /// [Read more in detail](trait@Uint#tymethod.checked_add)
             #[inline] fn checked_add(self, rhs: Self) -> Option<Self>       { self.checked_add(rhs) }
 
-            /// read [here](trait@Uint#tymethod.unchecked_add)
+            /// Computes self + rhs and returns None if overflow occurred.
+            /// [Read more in detail](trait@Uint#tymethod.checked_add)
             #[inline] fn unchecked_add(self, rhs: Self) -> Self             { self.checked_add(rhs).unwrap() }
 
-            /// read [here](trait@Uint#tymethod.saturating_add)
+            /// Computes self + rhs, saturating at the numeric bounds
+            /// instead of overflowing.
+            /// [Read more in detail](trait@Uint#tymethod.saturating_add)
             #[inline] fn saturating_add(self, rhs: Self) -> Self            { self.saturating_add(rhs) }
 
 
-            /// read [here](trait@Uint#tymethod.borrowing_sub)
+            /// Calculates self − rhs − borrow,
+            /// wrapping around at the boundary of the type.
+            /// [Read more in detail](trait@Uint#tymethod.borrowing_sub)
             fn borrowing_sub(self, rhs: Self, borrow: bool) -> (Self, bool)
             {
                 let (r1, b1) = self.overflowing_sub(rhs);
@@ -3922,75 +4652,110 @@ macro_rules! Uint_for_uint_impl {
                 (r2, b1 || b2)
             }
 
-            /// read [here](trait@Uint#tymethod.wrapping_sub)
+            /// Computes self - rhs, wrapping around at the boundary of the type.
+            /// [Read more in detail](trait@Uint#tymethod.wrapping_sub)
             #[inline] fn wrapping_sub(self, rhs: Self) -> Self              { self.wrapping_sub(rhs) }
 
-            /// read [here](trait@Uint#tymethod.overflowing_sub)
+            /// Calculates self - rhs and returns a tuple of the subtraction
+            /// along with a boolean indicating whether an arithmetic overflow
+            /// would occur.
+            /// [Read more in detail](trait@Uint#tymethod.overflowing_sub)
             #[inline] fn overflowing_sub(self, rhs: Self) -> (Self, bool)   { self.overflowing_sub(rhs) }
 
-            /// read [here](trait@Uint#tymethod.checked_sub)
+            /// Computes self - rhs, returning None if overflow occurred.
+            /// [Read more in detail](trait@Uint#tymethod.checked_sub)
             #[inline] fn checked_sub(self, rhs: Self) -> Option<Self>       { self.checked_sub(rhs) }
 
-            /// read [here](trait@Uint#tymethod.unchecked_sub)
+            /// Computes self - rhs, assuming overflow cannot occur.
+            /// [Read more in detail](trait@Uint#tymethod.unchecked_sub)
             #[inline] fn unchecked_sub(self, rhs: Self) -> Self             { self.checked_sub(rhs).unwrap() }
 
-            /// read [here](trait@Uint#tymethod.saturating_sub)
+            /// Computes self - rhs, saturating at the numeric bounds
+            /// instead of overflowing.
+            /// [Read more in detail](trait@Uint#tymethod.saturating_sub)
             #[inline] fn saturating_sub(self, rhs: Self) -> Self            { self.saturating_sub(rhs) }
 
+            /// Computes the absolute difference between self and other.
+            /// [Read more in detail](trait@Uint#tymethod.abs_diff)
+            #[inline] fn abs_diff(self, other: Self) -> Self    { self.abs_diff(other) }
 
-            /// read [here](trait@Uint#tymethod.wrapping_mul)
+
+            /// Computes self * rhs, wrapping around at the boundary of the type.
+            /// [Read more in detail](trait@Uint#tymethod.wrapping_mul)
             #[inline] fn wrapping_mul(self, rhs: Self) -> Self              { self.wrapping_mul(rhs) }
 
-            /// read [here](trait@Uint#tymethod.overflowing_mul)
+            /// Calculates the multiplication of self and rhs and returns a tuple
+            /// of the multiplication along with a boolean indicating whether an
+            /// arithmetic overflow would occur.
+            /// [Read more in detail](trait@Uint#tymethod.overflowing_mul)
             #[inline] fn overflowing_mul(self, rhs: Self) -> (Self, bool)   { self.overflowing_mul(rhs) }
 
-            /// read [here](trait@Uint#tymethod.checked_mul)
+            /// Computes self * rhs, returning None if overflow occurred.
+            /// [Read more in detail](trait@Uint#tymethod.checked_mul)
             #[inline] fn checked_mul(self, rhs: Self) -> Option<Self>       { self.checked_mul(rhs) }
 
-            /// read [here](trait@Uint#tymethod.unchecked_mul)
+            /// Computes self * rhs, assuming overflow cannot occur.
+            /// [Read more in detail](trait@Uint#tymethod.unchecked_mul)
             #[inline] fn unchecked_mul(self, rhs: Self) -> Self             { self.checked_mul(rhs).unwrap() }
 
-            /// read [here](trait@Uint#tymethod.saturating_mul)
+            /// Computes self * rhs, saturating at the numeric bounds
+            /// instead of overflowing.
+            /// [Read more in detail](trait@Uint#tymethod.saturating_mul)
             #[inline] fn saturating_mul(self, rhs: Self) -> Self            { self.saturating_mul(rhs) }
 
 
-            /// read [here](trait@Uint#tymethod.wrapping_div)
+            /// Computes self / rhs. Wrapped division on unsigned types is just
+            /// normal division. [Read more in detail](trait@Uint#tymethod.wrapping_div)
             #[inline] fn wrapping_div(self, rhs: Self) -> Self              { self.wrapping_div(rhs) }
 
-            /// read [here](trait@Uint#tymethod.overflowing_div)
+            /// Calculates the divisor when self is divided by rhs and returns
+            /// a tuple of the divisor along with a boolean indicating whether
+            /// an arithmetic overflow would occur.
+            /// [Read more in detail](trait@Uint#tymethod.overflowing_div)
             #[inline] fn overflowing_div(self, rhs: Self) -> (Self, bool)   { self.overflowing_div(rhs) }
 
-            /// read [here](trait@Uint#tymethod.checked_div)
+            /// Computes self / rhs, returning None if rhs == 0.
+            /// [Read more in detail](trait@Uint#tymethod.checked_div)
             #[inline] fn checked_div(self, rhs: Self) -> Option<Self>       { self.checked_div(rhs) }
 
-            /// read [here](trait@Uint#tymethod.saturating_div)
+            /// Computes self / rhs, saturating at the numeric bounds
+            /// instead of overflowing.
+            /// [Read more in detail](trait@Uint#tymethod.saturating_div)
             #[inline] fn saturating_div(self, rhs: Self) -> Self            { self.saturating_div(rhs) }
 
 
-            /// read [here](trait@Uint#tymethod.wrapping_rem)
+            /// Computes self % rhs. Wrapped remainder calculation on unsigned
+            /// types is just the regular remainder calculation.
+            /// [Read more in detail](trait@Uint#tymethod.wrapping_rem)
             #[inline] fn wrapping_rem(self, rhs: Self) -> Self              { self.wrapping_rem(rhs) }
 
-            /// read [here](trait@Uint#tymethod.overflowing_rem)
+            /// Calculates the remainder when self is divided by rhs, and returns
+            /// a tuple of the remainder after dividing along with a boolean
+            /// indicating whether an arithmetic overflow would occur.
+            /// [Read more in detail](trait@Uint#tymethod.overflowing_rem)
             #[inline] fn overflowing_rem(self, rhs: Self) -> (Self, bool)   { self.overflowing_rem(rhs) }
 
-            /// read [here](trait@Uint#tymethod.checked_rem)
+            /// Computes self % rhs, returning None if rhs == 0.
+            /// [Read more in detail](trait@Uint#tymethod.checked_rem)
             #[inline] fn checked_rem(self, rhs: Self) -> Option<Self>       { self.checked_rem(rhs) }
 
 
-            /// read [here](trait@Uint#tymethod.wrapping_pow)
+            /// Computes self.pow(exp), wrapping around at the boundary of the type.
+            /// [Read more in detail](trait@Uint#tymethod.wrapping_pow)
             #[inline] fn wrapping_pow(self, exp: u32) -> Self               { self.wrapping_pow(exp) }
 
-            /// read [here](trait@Uint#tymethod.overflowing_pow)
+            /// Raises self to the power of exp, using exponentiation by squaring.
+            /// [Read more in detail](trait@Uint#tymethod.overflowing_pow)
             #[inline] fn overflowing_pow(self, exp: u32) -> (Self, bool)    { self.overflowing_pow(exp) }
 
-            /// read [here](trait@Uint#tymethod.checked_pow)
+            /// Computes self.pow(exp), returning None if overflow occurred.
+            /// [Read more in detail](trait@Uint#tymethod.checked_pow)
             #[inline] fn checked_pow(self, exp: u32) -> Option<Self>        { self.checked_pow(exp) }
 
-            /// read [here](trait@Uint#tymethod.saturating_pow)
+            /// Computes self.pow(exp), saturating at the numeric bounds
+            /// instead of overflowing.
+            /// [Read more in detail](trait@Uint#tymethod.saturating_pow)
             #[inline] fn saturating_pow(self, exp: u32) -> Self             { self.saturating_pow(exp) }
-
-
-            #[inline] fn abs_diff(self, other: Self) -> Self    { self.abs_diff(other) }
 
             #[inline] fn pow(self, exp: u32) -> Self    { self.pow(exp) }
             #[inline] fn ilog(self, base: Self) -> u32  { self.ilog(base) }

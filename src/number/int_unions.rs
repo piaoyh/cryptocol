@@ -5090,62 +5090,145 @@ macro_rules! Uint_for_integer_unions_impl {
     ($f:ty, $g:ty) => {
         impl Uint for $f
         {
-            /// Calculates self + rhs + carry, wrapping around at the boundary
-            /// of the type. [Read more](trait@Uint#tymethod.carrying_add)
-            #[inline]
-            fn carrying_add(self, rhs: Self, carry: bool) -> (Self, bool)
-            {
-                self.carrying_add(rhs, carry)
-                /*
-                let (r1, c1) = self.overflowing_add(rhs);
-                let (r2, c2) = r1.overflowing_add(Self::onoff(carry));
-                (r2, c1 || c2)
-                */
-            }
+            /// Calculates self + rhs + carry and returns a tuple containing
+            /// the sum and the output carry.
+            /// [Read more in detail](trait@Uint#tymethod.carrying_add)
+            #[inline] fn carrying_add(self, rhs: Self, carry: bool) -> (Self, bool)   { self.carrying_add(rhs, carry) }
 
-            #[inline] fn wrapping_add(self, rhs: Self) -> Self              { self.wrapping_add(rhs) }
+            /// Computes self + rhs, wrapping around at the boundary of the type.
+            /// [Read more in detail](trait@Uint#tymethod.wrapping_add)
+            #[inline] fn wrapping_add(self, rhs: Self) -> Self  { self.wrapping_add(rhs) }
+
+            /// Calculates self + rhs and returns a tuple of the addition along
+            /// with a boolean indicating whether an arithmetic overflow would
+            /// occur. [Read more in detail](trait@Uint#tymethod.overflowing_add)
             #[inline] fn overflowing_add(self, rhs: Self) -> (Self, bool)   { self.overflowing_add(rhs) }
-            #[inline] fn checked_add(self, rhs: Self) -> Option<Self>       { self.checked_add(rhs) }
-            #[inline] fn unchecked_add(self, rhs: Self) -> Self             { self.checked_add(rhs).unwrap() }
-            #[inline] fn saturating_add(self, rhs: Self) -> Self            { self.saturating_add(rhs) }
+            
+            /// Computes self + rhs and returns None if overflow occurred.
+            /// [Read more in detail](trait@Uint#tymethod.checked_add)
+            #[inline] fn checked_add(self, rhs: Self) -> Option<Self>   { self.checked_add(rhs) }
+            
+            /// Computes self + rhs, assuming overflow cannot occur.
+            /// [Read more in detail](trait@Uint#tymethod.unchecked_add)
+            #[inline] fn unchecked_add(self, rhs: Self) -> Self     { self.checked_add(rhs).unwrap() }
+            
+            /// Computes self + rhs, saturating at the numeric bounds
+            /// instead of overflowing.
+            /// [Read more in detail](trait@Uint#tymethod.saturating_add)
+            #[inline] fn saturating_add(self, rhs: Self) -> Self    { self.saturating_add(rhs) }
 
-            fn borrowing_sub(self, rhs: Self, borrow: bool) -> (Self, bool)
-            {
-                let (r1, b1) = self.overflowing_sub(rhs);
-                let (r2, b2) = r1.overflowing_sub(Self::onoff(borrow));
-                (r2, b1 || b2)
-            }
 
-            #[inline] fn wrapping_sub(self, rhs: Self) -> Self              { self.wrapping_sub(rhs) }
+            /// Calculates self − rhs − borrow,
+            /// wrapping around at the boundary of the type.
+            /// [Read more in detail](trait@Uint#tymethod.borrowing_sub)
+            #[inline] fn borrowing_sub(self, rhs: Self, borrow: bool) -> (Self, bool)   { self.borrowing_sub(rhs, borrow) }
+
+            /// Computes self - rhs, wrapping around at the boundary of the type.
+            /// [Read more in detail](trait@Uint#tymethod.wrapping_sub)
+            #[inline] fn wrapping_sub(self, rhs: Self) -> Self  { self.wrapping_sub(rhs) }
+
+            /// Calculates self - rhs and returns a tuple of the subtraction
+            /// along with a boolean indicating whether an arithmetic overflow
+            /// would occur. [Read more in detail](trait@Uint#tymethod.overflowing_sub)
             #[inline] fn overflowing_sub(self, rhs: Self) -> (Self, bool)   { self.overflowing_sub(rhs) }
-            #[inline] fn checked_sub(self, rhs: Self) -> Option<Self>       { self.checked_sub(rhs) }
-            #[inline] fn unchecked_sub(self, rhs: Self) -> Self             { self.checked_sub(rhs).unwrap() }
-            #[inline] fn saturating_sub(self, rhs: Self) -> Self            { self.saturating_sub(rhs) }
 
-            #[inline] fn wrapping_mul(self, rhs: Self) -> Self              { self.wrapping_mul(rhs) }
-            #[inline] fn overflowing_mul(self, rhs: Self) -> (Self, bool)   { self.overflowing_mul(rhs) }
-            #[inline] fn checked_mul(self, rhs: Self) -> Option<Self>       { self.checked_mul(rhs) }
-            #[inline] fn unchecked_mul(self, rhs: Self) -> Self             { self.checked_mul(rhs).unwrap() }
-            #[inline] fn saturating_mul(self, rhs: Self) -> Self            { self.saturating_mul(rhs) }
+            /// Computes self - rhs, returning None if overflow occurred.
+            /// [Read more in detail](trait@Uint#tymethod.checked_sub)
+            #[inline] fn checked_sub(self, rhs: Self) -> Option<Self>   { self.checked_sub(rhs) }
 
-            #[inline] fn wrapping_div(self, rhs: Self) -> Self              { self.wrapping_div(rhs) }
-            #[inline] fn overflowing_div(self, rhs: Self) -> (Self, bool)   { self.overflowing_div(rhs) }
-            #[inline] fn checked_div(self, rhs: Self) -> Option<Self>       { self.checked_div(rhs) }
-            #[inline] fn saturating_div(self, rhs: Self) -> Self            { self.saturating_div(rhs) }
+            /// Computes self - rhs, assuming overflow cannot occur.
+            /// [Read more in detail](trait@Uint#tymethod.unchecked_sub)
+            #[inline] fn unchecked_sub(self, rhs: Self) -> Self     { self.checked_sub(rhs).unwrap() }
 
-            #[inline] fn wrapping_rem(self, rhs: Self) -> Self              { self.wrapping_rem(rhs) }
-            #[inline] fn overflowing_rem(self, rhs: Self) -> (Self, bool)   { self.overflowing_rem(rhs) }
-            #[inline] fn checked_rem(self, rhs: Self) -> Option<Self>       { self.checked_rem(rhs) }
+            /// Computes self - rhs, saturating at the numeric bounds
+            /// instead of overflowing.
+            /// [Read more in detail](trait@Uint#tymethod.saturating_sub)
+            #[inline] fn saturating_sub(self, rhs: Self) -> Self    { self.saturating_sub(rhs) }
 
-            #[inline] fn wrapping_pow(self, exp: u32) -> Self               { self.wrapping_pow(exp) }
-            #[inline] fn overflowing_pow(self, exp: u32) -> (Self, bool)    { self.overflowing_pow(exp) }
-            #[inline] fn checked_pow(self, exp: u32) -> Option<Self>        { self.checked_pow(exp) }
-            #[inline] fn saturating_pow(self, exp: u32) -> Self             { self.saturating_pow(exp) }
-
-
+            /// Computes the absolute difference between `self` and `other`.
+            /// [Read more in detail](trait@Uint#tymethod.abs_diff)
             #[inline] fn abs_diff(self, other: Self) -> Self    { self.abs_diff(other) }
 
+
+            /// Computes self * rhs, wrapping around at the boundary of the type.
+            /// [Read more in detail](trait@Uint#tymethod.wrapping_mul)
+            #[inline] fn wrapping_mul(self, rhs: Self) -> Self  { self.wrapping_mul(rhs) }
+
+            /// Calculates the multiplication of self and rhs and returns a tuple
+            /// of the multiplication along with a boolean indicating whether an
+            /// arithmetic overflow would occur.
+            /// [Read more in detail](trait@Uint#tymethod.overflowing_mul)
+            #[inline] fn overflowing_mul(self, rhs: Self) -> (Self, bool)   { self.overflowing_mul(rhs) }
+
+            /// Computes self * rhs, returning None if overflow occurred.
+            /// [Read more in detail](trait@Uint#tymethod.checked_mul)
+            #[inline] fn checked_mul(self, rhs: Self) -> Option<Self>   { self.checked_mul(rhs) }
+
+            /// Computes self * rhs, assuming overflow cannot occur.
+            /// [Read more in detail](trait@Uint#tymethod.unchecked_mul)
+            #[inline] fn unchecked_mul(self, rhs: Self) -> Self     { self.checked_mul(rhs).unwrap() }
+
+            /// Computes self * rhs, saturating at the numeric bounds
+            /// instead of overflowing.
+            /// [Read more in detail](trait@Uint#tymethod.saturating_mul)
+            #[inline] fn saturating_mul(self, rhs: Self) -> Self    { self.saturating_mul(rhs) }
+
+            /// Computes self / rhs. Wrapped division on unsigned types is just
+            /// normal division. [Read more in detail](trait@Uint#tymethod.wrapping_div)
+            #[inline] fn wrapping_div(self, rhs: Self) -> Self  { self.wrapping_div(rhs) }
+
+            /// Calculates the divisor when self is divided by rhs and returns
+            /// a tuple of the divisor along with a boolean indicating whether
+            /// an arithmetic overflow would occur.
+            /// [Read more in detail](trait@Uint#tymethod.overflowing_div)
+            #[inline] fn overflowing_div(self, rhs: Self) -> (Self, bool)   { self.overflowing_div(rhs) }
+
+            /// Computes self / rhs, returning None if rhs == 0.
+            /// [Read more in detail](trait@Uint#tymethod.checked_div)
+            #[inline] fn checked_div(self, rhs: Self) -> Option<Self>   { self.checked_div(rhs) }
+
+            /// Computes self / rhs, saturating at the numeric bounds
+            /// instead of overflowing.
+            /// [Read more in detail](trait@Uint#tymethod.saturating_div)
+            #[inline] fn saturating_div(self, rhs: Self) -> Self    { self.saturating_div(rhs) }
+
+            /// Computes self % rhs. Wrapped remainder calculation on unsigned
+            /// types is just the regular remainder calculation.
+            /// [Read more in detail](trait@Uint#tymethod.wrapping_rem)
+            #[inline] fn wrapping_rem(self, rhs: Self) -> Self  { self.wrapping_rem(rhs) }
+
+            /// Calculates the remainder when self is divided by rhs, and returns
+            /// a tuple of the remainder after dividing along with a boolean
+            /// indicating whether an arithmetic overflow would occur.
+            /// [Read more in detail](trait@Uint#tymethod.overflowing_rem)
+            #[inline] fn overflowing_rem(self, rhs: Self) -> (Self, bool)   { self.overflowing_rem(rhs) }
+
+            /// Computes self % rhs, returning None if rhs == 0.
+            /// [Read more in detail](trait@Uint#tymethod.checked_rem)
+            #[inline] fn checked_rem(self, rhs: Self) -> Option<Self>   { self.checked_rem(rhs) }
+
+            /// Raises `self` to the power of `exp`, using exponentiation by squaring.
+            /// [Read more in detail](trait@Uint#tymethod.pow)
             #[inline] fn pow(self, exp: u32) -> Self    { self.pow(exp) }
+
+            /// Computes self.pow(exp), wrapping around at the boundary of the type.
+            /// [Read more in detail](trait@Uint#tymethod.wrapping_pow)
+            #[inline] fn wrapping_pow(self, exp: u32) -> Self   { self.wrapping_pow(exp) }
+
+            /// Raises self to the power of exp, using exponentiation by squaring.
+            /// [Read more in detail](trait@Uint#tymethod.overflowing_pow)
+            #[inline] fn overflowing_pow(self, exp: u32) -> (Self, bool)    { self.overflowing_pow(exp) }
+
+            /// Computes self.pow(exp), returning None if overflow occurred.
+            /// [Read more in detail](trait@Uint#tymethod.checked_pow)
+            #[inline] fn checked_pow(self, exp: u32) -> Option<Self>    { self.checked_pow(exp) }
+
+            /// Computes self.pow(exp), saturating at the numeric bounds
+            /// instead of overflowing.
+            /// [Read more in detail](trait@Uint#tymethod.saturating_pow)
+            #[inline] fn saturating_pow(self, exp: u32) -> Self     { self.saturating_pow(exp) }
+
+
             #[inline] fn ilog(self, base: Self) -> u32  { self.ilog(base) }
             #[inline] fn ilog10(self) -> u32            { self.ilog10() }
             #[inline] fn ilog2(self) -> u32             { self.ilog2() }

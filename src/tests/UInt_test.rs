@@ -35,6 +35,7 @@ pub fn test_main_UInt()
     UInt_checked_sub___main();
     UInt_unchecked_sub___main();
     UInt_saturating_sub___main();
+    UInt_abs_diff___main();
 
     UInt_wrapping_mul___main();
     UInt_overflowing_mul___main();
@@ -1007,6 +1008,65 @@ fn UInt_saturating_sub___main()
 fn UInt_saturating_sub___func<T: Uint>(lhs: T, rhs: T) -> T
 {
     lhs.saturating_sub(rhs)
+}
+
+
+fn UInt_abs_diff___main()
+{
+    println!("UInt_abs_diff___main()");
+    let a_u8 = UInt_abs_diff___func(55_u8, 50_u8);
+    println!("55 <-> 50 = {}", a_u8);
+    assert_eq!(a_u8, 5_u8);
+
+    let b_u8 = UInt_abs_diff___func(50_u8, 55_u8);
+    println!("50 <-> 55 = {}", b_u8);
+    assert_eq!(b_u8, 5_u8);
+
+    let a_u16 = UInt_abs_diff___func(5050_u16, 5000_u16);
+    println!("5050 <-> 5000 = {}", a_u16);
+    assert_eq!(a_u16, 50_u16);
+
+    let b_u16 = UInt_abs_diff___func(5000_u16, 5050_u16);
+    println!("5000 <-> 5050 = {}", b_u16);
+    assert_eq!(b_u16, 50_u16);
+
+    let a_u32 = UInt_abs_diff___func(500500_u32, 500000_u32);
+    println!("500500 <-> 500000 = {}", a_u32);
+    assert_eq!(a_u32, 500_u32);
+
+    let b_u32 = UInt_abs_diff___func(500000_u32, 500500_u32);
+    println!("500000 <-> 500500 = {}", b_u32);
+    assert_eq!(b_u32, 500_u32);
+
+    let a_u64 = UInt_abs_diff___func(5000050000_u64, 5000000000_u64);
+    println!("5000050000 <-> 5000000000 = {}", a_u64);
+    assert_eq!(a_u64, 50000_u64);
+
+    let b_u64 = UInt_abs_diff___func(5000000000_u64, 5000050000_u64);
+    println!("5000000000 <-> 5000050000 = {}", b_u64);
+    assert_eq!(b_u64, 50000_u64);
+
+    let a_u128 = UInt_abs_diff___func(500000000500000000_u128, 500000000000000000_u128);
+    println!("500000000500000000 <-> 500000000000000000 = {}", a_u128);
+    assert_eq!(a_u128, 500000000_u128);
+
+    let b_u128 = UInt_abs_diff___func(500000000000000000_u128, 500000000500000000_u128);
+    println!("500000000000000000 <-> 500000000500000000 = {}", b_u128);
+    assert_eq!(b_u128, 500000000_u128);
+
+    let a_usize = UInt_abs_diff___func(5000050000_usize, 5000000000_usize);
+    println!("5000050000 <-> 5000000000 = {}", a_usize);
+    assert_eq!(a_usize, 50000_usize);
+
+    let b_usize = UInt_abs_diff___func(5000000000_usize, 5000050000_usize);
+    println!("5000000000 <-> 5000050000 = {}", b_usize);
+    assert_eq!(b_usize, 50000_usize);
+    println!("--------------------------------------");
+}
+
+fn UInt_abs_diff___func<T: Uint>(lhs: T, rhs: T) -> T
+{
+    lhs.abs_diff(rhs)
 }
 
 fn UInt_wrapping_mul___main()
