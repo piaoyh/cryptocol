@@ -23,4 +23,8 @@ pub enum NumberErr
 
     /// Indicates that the string or the character is not fit to the given radix.
     NotFitToRadix,
+
+    /// Indicates that the number that the string represents is too big
+    /// for the created object to contain.
+    TooBigNumber,
 }

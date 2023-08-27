@@ -1395,7 +1395,7 @@ where T: Uint + Clone + Display + Debug + ToString
     {
         // `write!` is like `format!`, but it will write the formatted string
         // into a buffer (the first argument)
-        write!(f, "{}", self.to_string_with_radix(10))
+        write!(f, "{}", self.to_string_with_radix(10).unwrap())
     }
 }
 

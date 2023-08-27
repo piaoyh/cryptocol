@@ -4596,7 +4596,14 @@ pub trait Uint: Copy + Clone + Sized //+ Display + Debug + ToString
     fn one() -> Self;
     fn max() -> Self;
     fn min() -> Self;
-    fn num(n: u128) -> Self;
+    fn u128_as_Uint(n: u128) -> Self;
+    fn u64_as_Uint(n: u64) -> Self;
+    fn u32_as_Uint(n: u32) -> Self;
+    fn u16_as_Uint(n: u16) -> Self;
+    fn u8_as_Uint(n: u8) -> Self;
+    fn usize_as_Uint(n: usize) -> Self;
+    fn num<T: Uint>(n: T) -> Self;
+
     fn size_in_bytes() -> usize;
     fn size_in_bits() -> usize;
     fn length_in_bytes(self) -> usize;
@@ -4796,7 +4803,26 @@ macro_rules! Uint_for_uint_impl {
             #[inline] fn one() -> Self              { 1 }
             #[inline] fn max() -> Self              { Self::MAX }
             #[inline] fn min() -> Self              { Self::MIN }
-            #[inline] fn num(n: u128) -> Self       { n as Self }
+            #[inline] fn u128_as_Uint(n: u128) -> Self  { n as Self }
+            #[inline] fn u64_as_Uint(n: u64) -> Self    { n as Self }
+            #[inline] fn u32_as_Uint(n: u32) -> Self    { n as Self }
+            #[inline] fn u16_as_Uint(n: u16) -> Self    { n as Self }
+            #[inline] fn u8_as_Uint(n: u8) -> Self      { n as Self }
+            #[inline] fn usize_as_Uint(n: usize) -> Self    { n as Self }
+
+            #[inline]
+            fn num<T: Uint>(n: T) -> Self
+            {
+                match size_of::<T>()
+                {
+                    1 => { return Self::u8_as_Uint(n.into_u8()); },
+                    2 => { return Self::u16_as_Uint(n.into_u16()); },
+                    4 => { return Self::u32_as_Uint(n.into_u32()); },
+                    8 => { return Self::u64_as_Uint(n.into_u64()); },
+                    _ => { return Self::u128_as_Uint(n.into_u128()); },
+                }
+            }
+
             #[inline] fn size_in_bytes() -> usize   { size_of::<Self>() }
             #[inline] fn size_in_bits() -> usize    { size_of::<Self>() * 8 }
             #[inline] fn length_in_bytes(self) -> usize    { size_of_val(&self) }

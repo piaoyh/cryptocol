@@ -34,6 +34,8 @@ pub trait _BigUInt
     fn _set_num_(&mut self, i: usize, val: T);
     fn _copy_within<R>(&mut self, src: R, dest: usize);
     fn _add_assign(&mut self, rhs: Self);
+    fn _wrapping_sub_assign(&mut self, rhs: Self);
+    fn _wrapping_mul_assign(&mut self, rhs: Self);
 }
 
 #[cfg(target_endian = "big")]
@@ -453,6 +455,124 @@ impl<T, const N: usize> _BigUInt for BigUInt<T, N>
     where R: RangeBounds<usize>
     {
         self.get_number_mut().copy_within(src, dest);
+    }
+
+
+    // pub fn wrapping_sub_assign(&mut self, rhs: Self)
+    /// Computes `self` - `rhs`, wrapping around at the boundary of the type.
+    /// 
+    /// # Feature
+    /// Wrapping (modular) subtraction.
+    /// 
+    /// # Example
+    /// ```
+    /// // Todo
+    /// ```
+    /// 
+    /// # Big-endian issue
+    /// It is just experimental for Big Endian CPUs. So, you are not encouraged
+    /// to use it for Big Endian CPUs for serious purpose. Only use this crate
+    /// for Big-endian CPUs with your own full responsibility.
+    #[cfg(target_endian = "big")]
+    fn _wrapping_sub_assign(&mut self, rhs: Self)
+    {
+        let mut num: T;
+        let mut i = N - 1;
+        let mut	borrow = false;
+        loop
+        {
+            (num, borrow) = self.number[i].borrowing_sub(rhs.number[i], borrow);
+            self.set_num_(i, num);
+            if i == 0
+                { break; }
+            i -= 1;
+        }
+        if carry
+            { self.set_underflow(); }
+/*
+        let zero = T::zero();
+        let mut	carry: T = zero;
+        let mut midres: T;
+        let mut c: bool;
+        let mut cc: T;
+        let mut i = N;
+        loop
+        {
+            i -= 1;
+            midres = self.number[i].wrapping_sub(rhs.number[i]);
+            c = midres > self.number[i];
+            cc = midres;
+            midres = midres.wrapping_sub(carry);
+            carry = if c || (midres > cc) { T::one() } else { zero };
+            self.number[i] = midres;
+            if i == 0
+                { break; }
+        }
+        if carry != zero
+            { self.set_underflow(); }
+    */
+    }
+
+    /// Multiplies and assign the result to it.
+    /// 
+    #[cfg(target_endian = "big")]
+    fn _wrapping_mul_assign(&mut self, rhs: Self)
+    {
+        if rhs.is_zero()
+        {
+            self.set_zero();
+            return;
+        }
+        if self.is_zero()
+            { return; }
+
+        let zero = T::zero();
+        let one = T::one();
+        let adder = self.clone();
+        let TSIZE_BIT = size_of::<T>() * 8;
+        let mut multiply_first = |num: T| {
+            let mut bit_check = one;
+            bit_check <<= T::num((TSIZE_BIT - 1).into_u128());
+            while (bit_check != zero) && (bit_check & num == zero)
+                { bit_check >>= one; }
+
+            self.set_zero();
+            while bit_check != zero
+            {
+                *self <<= 1;
+                if bit_check & num != zero
+                    { *self += adder; }
+                bit_check >>= one;
+            }
+        };
+
+        let mut n = 0;
+        while rhs.number[n] == zero
+            { n += 1; }
+        multiply_first(rhs.number[n]);
+        n += 1;
+
+        let mut multiply = |num: T| {
+            if num == T::zero()
+            {
+                *self <<= TSIZE_BIT as i32;
+                return;
+            }
+            let mut bit_check = one;
+            bit_check <<= T::num((TSIZE_BIT - 1).into_u128());
+            while bit_check != zero
+            {
+                *self <<= 1;
+                if bit_check & num != zero
+                    { *self += adder; }
+                bit_check >>= one;
+            }
+        };
+        while n < N
+        {
+            multiply(rhs.number[n]);
+            n += 1;
+        }
     }
 } 
 

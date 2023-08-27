@@ -40,9 +40,9 @@
 //! [`LongUnion`](number/int_unions/union.LongUnion.html#union.LongUnion),
 //! [`LongerUnion`](number/int_unions/union.LongerUnion.html#union.LongerUnion), and
 //! [`SizeUnion`](number/int_unions/union.SizeUnion.html#union.SizeUnion)
-//! - [ ] Trait UInt and its implementation for primitive data types and Unions ---
+//! - [ ] Trait Uint and its implementation for primitive data types and Unions ---
 //! [Uint](number/uint/trait.Uint.html#trait.Uint)
-//! - [ ] Trait SInt and its implementation for primitive data types and Unions
+//! - [ ] Trait Sint and its implementation for primitive data types and Unions
 //! 
 //! ## Big Numbers
 //! - [x] Fixed Sized Big Unsigned Integer Operation --- [`BigUInt`](number/big_uint/struct.BigUInt.html#struct.BigUInt)
@@ -65,19 +65,23 @@
 //! - [ ] SHA-3 (SHAKE 128)
 //! - [ ] SHA-3 (SHAKE 256)
 //! 
-//! ## Symetric-Key Encoding / Decoding Algorithms
+//! ## Symmetric-Key Cryptographic Algorithms
 //! - [ ] DES
 //! - [ ] 3DES
 //! - [ ] AES
 //! 
-//! ## Asymetric-Key Encoding / Decoding Algorithms
+//! ## Asymmetric-Key Cryptographic Algorithms
 //! - [ ] Diffie-Hellman
 //! - [ ] RSA (Ron Rivest, Adi Shamir, Leonard Adleman)
 //! - [ ] ECC (Elliptic Curve Cryptosystem)
 //! 
-//! When all the above functionalitis are implemented, the version number
-//! 1.0.0.0 will be given. After that whenever another functionality is added to
-//! this crate, the version number will get higher beyond 1.0.0.0.
+//! When the implementation of all the above functionalitis are completed,
+//! the version number 1.0.0.0 will be given. After that whenever another
+//! functionality is added to this crate, the version number will get higher
+//! beyond 1.0.0.0. Before the version number 1.0.0.0, the maximum version
+//! number will be 0.24.x.x since there are all twenty-four functionalities
+//! listed above. So, for example, even if the version number is 0.5.0.0,
+//! it does not mean that 50% of all functionalities are implemented.
 
 
 // #![doc(

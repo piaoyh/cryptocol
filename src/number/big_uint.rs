@@ -812,10 +812,13 @@ where T: Uint + Clone + Display + Debug + ToString
                             else
                                 { c as usize - 'a' as usize + 10 + 26 }
                         };
-            bignum.times(T::num(radix as u128));
-            bignum.accumulate(T::num(num as u128));
+            bignum.times(T::usize_as_Uint(radix));
+            bignum.accumulate(T::usize_as_Uint(num));
         }
-        Ok(bignum)
+        if bignum.is_overflow()
+            { Err(NumberErr::TooBigNumber) }
+        else
+            { Ok(bignum) }
     }
 
     // pub fn generate_check_bits(bit_pos: usize) -> Self
@@ -1568,7 +1571,7 @@ where T: Uint + Clone + Display + Debug + ToString
                     for i in 0..N
                     {
                         common.set(OsRng.next_u32());
-                        self.set_num_(i, T::num(common.get_ubyte_(0) as u128));
+                        self.set_num_(i, T::u8_as_Uint(common.get_ubyte_(0)));
                     }
                 },
             2 => {
@@ -1576,16 +1579,16 @@ where T: Uint + Clone + Display + Debug + ToString
                     for i in 0..N
                     {
                         common.set(OsRng.next_u32());
-                        self.set_num_(i, T::num(common.get_ushort_(0) as u128));
+                        self.set_num_(i, T::u16_as_Uint(common.get_ushort_(0)));
                     }
                 },
             4 => {
                     for i in 0..N
-                        { self.set_num_(i, T::num(OsRng.next_u32() as u128)); }
+                        { self.set_num_(i, T::u32_as_Uint(OsRng.next_u32())); }
                 },
             8 => {
                     for i in 0..N
-                        { self.set_num_(i, T::num(OsRng.next_u64() as u128)); }
+                        { self.set_num_(i, T::u64_as_Uint(OsRng.next_u64())); }
                 },
             16 => {
                     for i in 0..N
@@ -1593,7 +1596,7 @@ where T: Uint + Clone + Display + Debug + ToString
                         let mut common = LongerUnion::new();
                         common.set_ulong_(0, OsRng.next_u64());
                         common.set_ulong_(1, OsRng.next_u64());
-                        self.set_num_(i, T::num(common.get()));
+                        self.set_num_(i, T::u128_as_Uint(common.get()));
                     }
                 },
             _ => { self.set_zero() },
@@ -1645,7 +1648,7 @@ where T: Uint + Clone + Display + Debug + ToString
         if self.is_zero_or_one()
             { return false; }
         
-        if self.is_uint(T::num(2)) ||  self.is_uint(T::num(3))
+        if self.is_uint(T::u8_as_Uint(2)) ||  self.is_uint(T::u8_as_Uint(3))
             { return true; }
 
         // n-1 = (2^s) * d 로 표현하기 위한 과정
@@ -1654,7 +1657,7 @@ where T: Uint + Clone + Display + Debug + ToString
         d.shift_right_assign(d.trailing_zeros());
         for _ in 0..repetition
         {
-            let mut rand_num = Self::random_less_than(self.sub_uint(T::num(4))).add_uint(T::num(2));
+            let mut rand_num = Self::random_less_than(self.sub_uint(T::u8_as_Uint(4))).add_uint(T::u8_as_Uint(2));
             let mut x = rand_num.pow(d) % *self;
             if x.is_one() || x == self_minus_one
                 { continue; }
@@ -1662,7 +1665,7 @@ where T: Uint + Clone + Display + Debug + ToString
             while d != self_minus_one
             {
                 x = (x * x) % *self;
-                d.times(T::num(2));
+                d.times(T::u8_as_Uint(2));
 
                 if x.is_one()
                     { return false; }
@@ -1805,7 +1808,7 @@ where T: Uint + Clone + Display + Debug + ToString
         let chunk_num = bit_pos / TSIZE_BITS;
         let piece_num = bit_pos % TSIZE_BITS;
         let mut val = T::one();
-        val <<= T::num(piece_num as u128);
+        val <<= T::usize_as_Uint(piece_num);
         self.set_zero();
         self.set_num_(chunk_num, val);
     }
@@ -2596,7 +2599,7 @@ where T: Uint + Clone + Display + Debug + ToString
         for i in chunk_num..N
             { self.set_num_(i, zero); }
         if piece_num != 0
-            { self.set_num_(chunk_num, max >> T::num((TSIZE_IN_BITS-piece_num) as u128)); }
+            { self.set_num_(chunk_num, max >> T::usize_as_Uint(TSIZE_IN_BITS - piece_num)); }
     }
 
     // pub fn set_halfmax(&mut self)
@@ -2974,6 +2977,118 @@ where T: Uint + Clone + Display + Debug + ToString
         res
     }
 
+    // pub fn leading_max_elements(&self) -> u32
+    /// Returns the number of leading maximum elements in the binary
+    /// representation of the array number[T;N] of `self`.
+    /// Here, 'maximum element' means the element that has all bits to be one.
+    /// 
+    /// # Output
+    /// It returns the total number of the leading maximum elements
+    /// that has all bits set to be one.
+    /// Here, 'maximum element' means the element that has all bits to be one. 
+    /// 
+    /// # Example
+    /// ```
+    /// // Todo
+    /// ```
+    pub fn leading_max_elements(&self) -> u32
+    {
+        let mut res = 0_u32;
+        let mut i = N-1;
+        while i != 0
+        {
+            if self.get_num_(i) == T::max()
+                { res += 1; }
+            else
+                { return res; }
+            i -= 1;
+        }
+        if self.get_num_(0) == T::max()
+            { res + 1 }
+        else
+            { res }
+    }
+
+    // pub fn leading_zero_elements(&self) -> u32
+    /// Returns the number of leading zero elements in the binary
+    /// representation of the array number[T;N] of `self`.
+    /// 
+    /// # Output
+    /// It returns the total number of the leading zero elemments
+    /// that are set to be zero.
+    /// 
+    /// # Example
+    /// ```
+    /// // Todo
+    /// ```
+    pub fn leading_zero_elements(&self) -> u32
+    {
+        let mut res = 0_u32;
+        let mut i = N-1;
+        while i != 0
+        {
+            if self.get_num_(i) == T::zero()
+                { res += 1; }
+            else
+                { return res; }
+            i -= 1;
+        }
+        if self.get_num_(0) == T::zero()
+            { res + 1 }
+        else
+            { res }
+    }
+
+    // pub fn trailing_max_elements(&self) -> u32
+    /// Returns the number of trailing maximum elements in the binary
+    /// representation of the array number[T;N] of `self`.
+    /// Here, 'maximum element' means the element that has all bits to be one.
+    /// 
+    /// # Output
+    /// It returns the total number of the trailing maximum elemeents
+    /// that have all bits set to be one.
+    /// Here, 'maximum element' means the element that has all bits to be one.
+    /// 
+    /// # Example
+    /// ```
+    /// // Todo
+    /// ```
+    pub fn trailing_max_elements(&self) -> u32
+    {
+        let mut res = 0_u32;
+        for i in 0..N
+        {
+            if self.get_num_(i) == T::max()
+                { res += 1; }
+            else
+                { return res; }
+        }
+        res
+    }
+
+    // pub fn trailing_zero_elements(&self) -> u32
+    /// Returns the number of trailing zeros in the binary representation
+    /// of the array number[T;N] of `self`.
+    /// 
+    /// # Output
+    /// It returns the total number of the trailing bits that are set to be zero.
+    /// 
+    /// # Example
+    /// ```
+    /// // Todo
+    /// ```
+    pub fn trailing_zero_elements(&self) -> u32
+    {
+        let mut res = 0_u32;
+        for i in 0..N
+        {
+            if self.get_num_(i) == T::zero()
+                { res += 1; }
+            else
+                { return res; }
+        }
+        res
+    }
 
 
     /***** METHODS FOR COMPARISON WITH UINT *****/
@@ -3097,37 +3212,6 @@ where T: Uint + Clone + Display + Debug + ToString
 
     /***** ARITHMATIC OPERATIONS WITH UNSIGNED INTEGERS *****/
 
-
-    // pub fn abs_diff(&self, other: &Self) -> Self
-    /// Computes the absolute difference between `self` and `other`.
-    /// 
-    /// # Output
-    /// It returns the absolute difference between `self` and `other`.
-    /// 
-    /// # Example
-    /// ```
-    /// use std::str::FromStr;
-    /// use Cryptocol::number::BigUInt;
-    /// use Cryptocol::define_utypes_with;
-    /// define_utypes_with!(u128);
-    /// 
-    /// let a = u256::from_str("500000000000000000500000000500000000500000000500000000").unwrap();
-    /// let b = u256::from_str("500000000000000000000000000000000000000000000000000000").unwrap();
-    /// let c = a.abs_diff(&b);
-    /// let d = b.abs_diff(&a);
-    /// println!("500000000000000000500000000500000000500000000500000000 <-> 500000000000000000000000000000000000000000000000000000 = {}", c);
-    /// println!("500000000000000000000000000000000000000000000000000000 <-> 500000000000000000500000000500000000500000000500000000 = {}", d);
-    /// assert_eq!(c, u256::from_str("500000000500000000500000000500000000").unwrap());
-    /// assert_eq!(d, u256::from_str("500000000500000000500000000500000000").unwrap());
-    /// ```
-    pub fn abs_diff(&self, other: &Self) -> Self
-    {
-        if self < other
-            { *other - *self }
-        else
-            { *self - *other }
-    }
-
     // pub fn accumulate(&mut self, rhs: T)
     /// Accumulates or adds rhs of type `T` to self which is of `BigUInt` type.
     /// 
@@ -3202,7 +3286,7 @@ where T: Uint + Clone + Display + Debug + ToString
         }
         let adder = self.clone();
         let mut bit_check = one;
-        bit_check <<= T::num((T::size_in_bits() - 1).into_u128());
+        bit_check <<= T::usize_as_Uint(T::size_in_bits() - 1);
         self.set_zero();
         while (bit_check != zero) && ((bit_check & rhs) == zero)
             { bit_check >>= one; }
@@ -3274,7 +3358,7 @@ where T: Uint + Clone + Display + Debug + ToString
             highest -= TSIZE_IN_BITS;
             n -= 1;
         }
-        let mut piece = one << T::num(TSIZE_IN_BITS as u128 - 1);
+        let mut piece = one << T::usize_as_Uint(TSIZE_IN_BITS - 1);
         while self.get_num_(n) & piece == zero
         {
             highest -= 1;
@@ -3637,7 +3721,7 @@ where T: Uint + Clone + Display + Debug + ToString
     /*** ADDITION ***/
 
     // pub fn carrying_add(self, rhs: Self, carry: bool) -> (Self, bool)
-    /// Calculates self + rhs + carry,
+    /// Calculates `self` + `rhs` + `carry`,
     /// wrapping around at the boundary of the type.
     /// 
     /// # Features
@@ -3645,7 +3729,7 @@ where T: Uint + Clone + Display + Debug + ToString
     /// addition. This can be thought of as a big integer “full adder”,
     /// in the electronics sense.
     /// 
-    /// If the input carry is false, this method is equivalent to
+    /// If the input carry is `false`, this method is equivalent to
     /// `overflowing_add()`, and the output carry is equal to the overflow flag.
     /// 
     /// # Outputs
@@ -3655,8 +3739,32 @@ where T: Uint + Clone + Display + Debug + ToString
     /// 
     /// # Example
     /// ```
-    /// // Todo
+    /// use std::str::FromStr;
+    /// use Cryptocol::define_utypes_with;
+    /// 
+    /// define_utypes_with!(u128);
+    /// 
+    /// let a_hi = u256::from_str("9876543210987654321098765432109876543210987654321098765432109876543210987654").unwrap();
+    /// let a_lo = u256::from_str("91234567890123456789012345678901234567890123456789012345678901234567890123456").unwrap();
+    /// let b_hi = u256::from_str("1111111101111111110111111111011111111101111111110111111111011111111101111110").unwrap();
+    /// let b_lo = u256::from_str("101111111101111111110111111111011111111101111111110111111111011111111101111110").unwrap();
+    /// 
+    /// let (c_lo, carry) = a_lo.carrying_add(b_lo, false);
+    /// let (c_hi, overflow) = a_hi.carrying_add(b_hi, carry);
+    ///  
+    /// println!("{}:{} + {}:{} = {}:{}", a_hi, a_lo, b_hi, b_lo, c_hi, c_lo);
+    /// println!("carry = {}, overflow = {}", carry, overflow);
+    /// 
+    /// assert_eq!(c_hi.to_string(), "10987654312098765431209876543120987654312098765431209876543120987654312098765");
+    /// assert_eq!(c_lo.to_string(), "76553589753918372475552471781224437825721249902258559417332328337765861594630");
+    /// assert_eq!(carry, true);
+    /// assert_eq!(overflow, false);
     /// ```
+    /// 
+    /// # Big-endian issue
+    /// It is just experimental for Big Endian CPUs. So, you are not encouraged
+    /// to use it for Big Endian CPUs for serious purpose. Only use this crate
+    /// for Big-endian CPUs with your own full responsibility.
     pub fn carrying_add(self, rhs: Self, carry: bool) -> (Self, bool)
     {
         let mut res = self.clone();
@@ -3664,6 +3772,51 @@ where T: Uint + Clone + Display + Debug + ToString
         (res, c)
     }
 
+    // pub fn carrying_add_assign(self, rhs: Self, carry: bool) -> bool
+    /// Accumulate `rhs` + `carry` to `self`, wrapping around at the boundary
+    /// of the type, and return the resulting carry.
+    /// 
+    /// # Features
+    /// This allows chaining together multiple additions to create even a wider
+    /// addition. This can be thought of as a big integer “full adder”,
+    /// in the electronics sense.
+    /// 
+    /// If the input carry is false, this method is equivalent to
+    /// `overflowing_add_assign()`, and the output carry is equal to
+    /// the overflow flag.
+    /// 
+    /// # Outputs
+    /// It returns the output carry. It performs “ternary addition” of two big
+    /// integer operands and a carry-in bit, and returns a carry-out bit.
+    /// 
+    /// # Example
+    /// ```
+    /// use std::str::FromStr;
+    /// use Cryptocol::define_utypes_with;
+    /// 
+    /// define_utypes_with!(u128);
+    /// 
+    /// let mut a_hi = u256::from_str("9876543210987654321098765432109876543210987654321098765432109876543210987654").unwrap();
+    /// let mut a_lo = u256::from_str("91234567890123456789012345678901234567890123456789012345678901234567890123456").unwrap();
+    /// let b_hi = u256::from_str("1111111101111111110111111111011111111101111111110111111111011111111101111110").unwrap();
+    /// let b_lo = u256::from_str("101111111101111111110111111111011111111101111111110111111111011111111101111110").unwrap();
+    /// 
+    /// let carry = a_lo.carrying_add_assign(b_lo, false);
+    /// let overflow = a_hi.carrying_add_assign(b_hi, carry);
+    /// 
+    /// println!("9876543210987654321098765432109876543210987654321098765432109876543210987654:91234567890123456789012345678901234567890123456789012345678901234567890123456 + {}:{} = {}:{}", b_hi, b_lo, a_hi, a_lo);
+    /// println!("carry = {}, overflow = {}", carry, overflow);
+    /// 
+    /// assert_eq!(a_hi.to_string(), "10987654312098765431209876543120987654312098765431209876543120987654312098765");
+    /// assert_eq!(a_lo.to_string(), "76553589753918372475552471781224437825721249902258559417332328337765861594630");
+    /// assert_eq!(carry, true);
+    /// assert_eq!(overflow, false);
+    /// ```
+    /// 
+    /// # Big-endian issue
+    /// It is just experimental for Big Endian CPUs. So, you are not encouraged
+    /// to use it for Big Endian CPUs for serious purpose. Only use this crate
+    /// for Big-endian CPUs with your own full responsibility.
     pub fn carrying_add_assign(&mut self, rhs: Self, carry: bool) -> bool
     {
         let mut c = carry;
@@ -3678,64 +3831,85 @@ where T: Uint + Clone + Display + Debug + ToString
         c
     }
 
-    /// Wrapping (modular) addition. Computes self + rhs, wrapping around
-    /// at the boundary of the type.
+    // pub fn wrapping_add(self, rhs: Self) -> Self
+    /// Computes `self` + `rhs`, wrapping around at the boundary of the type.
+    /// 
+    /// # Output
+    /// It returns `self` + `rhs` with wrapping (modular) addition.
+    /// 
+    /// # Feature
+    /// Wrapping (modular) addition.
     /// 
     /// # Example
     /// ```
     /// use Cryptocol::define_utypes_with;
     /// define_utypes_with!(u128);
+    ///  
+    /// let zero = u512::zero();
+    /// let one = u512::one();
+    /// let two = u512::from(2_u8);
+    /// let three = u512::from(3_u8);
+    /// let a = u512::max() - one;
+    /// let b = a.wrapping_add(one);
+    /// let c = a.wrapping_add(two);
+    /// let d = a.wrapping_add(three);
     /// 
-    /// let a = u512::max() - u512::from(1_u128);
+    /// println!("{} + 1 = {}", a, b);
+    /// assert_eq!(b, u512::max());
     /// 
-    /// println!("{} + 1 = {}", a, a.wrapping_add(u512::from(1_u128)));
-    /// assert_eq!(a.wrapping_add(u512::from(1_u128)), u512::max());
-    /// 
-    /// println!("{} + 2 = {}", a, a.wrapping_add(u512::from(2_u128)));
-    /// assert_eq!(a.wrapping_add(u512::from(2_u128)), u512::zero());
-    /// 
-    /// println!("{} + 3 = {}", a, a.wrapping_add(u512::from(3_u128)));
-    /// assert_eq!(a.wrapping_add(u512::from(3_u128)), u512::one());
+    /// println!("{} + 2 = {}", a, c);
+    /// assert_eq!(c, zero);
+    /// println!("{} + 3 = {}", a, d);
+    /// assert_eq!(d, one);
     /// ```
     /// 
     /// # Big-endian issue
     /// It is just experimental for Big Endian CPUs. So, you are not encouraged
     /// to use it for Big Endian CPUs for serious purpose. Only use this crate
     /// for Big-endian CPUs with your own full responsibility.
-    /// 
-    /// # References
-    /// - If you want to know about the declaration of the method `wrapping_add()`
-    /// in trait `Uint`, read [here](trait@Uint#method.wrapping_add).
     pub fn wrapping_add(self, rhs: Self) -> Self
     {
-        let mut res = self.clone();
-        res.wrapping_add_assign(rhs);
+        let (res, _) = self.carrying_add(rhs, false); 
         res
     }
 
-    /// Wrapping (modular) addition. Computes self + rhs, wrapping around
-    /// at the boundary of the type.
+    // pub fn wrapping_add_assign(&mut self, rhs: Self)
+    /// Computes `self` + `rhs`, wrapping around at the boundary of the type,
+    /// and assign the result to `self` back.
+    /// 
+    /// # Feature
+    /// Wrapping (modular) addition.
     /// 
     /// # Example
     /// ```
     /// use std::str::FromStr;
     /// use Cryptocol::define_utypes_with;
     /// define_utypes_with!(u128);
-    /// let mut a = u256::max() - u256::from(1_u128);
+    /// 
+    /// let zero = u512::zero();
+    /// let one = u512::one();
+    /// 
+    /// let mut a = u512::max() - one;
     /// println!("Originally,\ta = {}", a);
+    /// assert_eq!(a.to_string(), "13407807929942597099574024998205846127479365820592393377723561443721764030073546976801874298166903427690031858186486050853753882811946569946433649006084094");
     /// 
-    /// a.wrapping_add_assign(u256::from(1_u128));
+    /// a.wrapping_add_assign(one);
     /// println!("After a += 1,\ta = {}", a);
-    /// assert_eq!(a, u256::from_str("347376267711948586270712955026063723559809953996921692118372752023739388919807").unwrap());
+    /// assert_eq!(a, u512::max());
     /// 
-    /// a.wrapping_add_assign(u256::from(1_u128));
+    /// a.wrapping_add_assign(one);
     /// println!("After a += 1,\ta = {}", a);
-    /// assert_eq!(a, u256::zero());
+    /// assert_eq!(a, zero);
     /// 
-    /// a.wrapping_add_assign(u256::from(1_u128));
+    /// a.wrapping_add_assign(one);
     /// println!("After a += 1,\ta = {}", a);
-    /// assert_eq!(a, u256::one());
+    /// assert_eq!(a, one);
     /// ```
+    /// 
+    /// # Big-endian issue
+    /// It is just experimental for Big Endian CPUs. So, you are not encouraged
+    /// to use it for Big Endian CPUs for serious purpose. Only use this crate
+    /// for Big-endian CPUs with your own full responsibility.
     #[inline]
     pub fn wrapping_add_assign(&mut self, rhs: Self)
     {
@@ -3758,6 +3932,23 @@ where T: Uint + Clone + Display + Debug + ToString
     */
     }
 
+    // pub fn overflowing_add(self, rhs: Self) -> (Self, bool)
+    /// Calculates `self` + `rhs`.
+    /// 
+    /// # Output
+    /// It returns a tuple of the addition `self` + `rhs` along with a boolean
+    /// indicating whether an arithmetic overflow would occur. If an overflow
+    /// would have occurred then the wrapped (modular) value is returned.
+    /// 
+    /// # Example
+    /// ```
+    /// // Todo
+    /// ```
+    /// 
+    /// # Big-endian issue
+    /// It is just experimental for Big Endian CPUs. So, you are not encouraged
+    /// to use it for Big Endian CPUs for serious purpose. Only use this crate
+    /// for Big-endian CPUs with your own full responsibility.
     pub fn overflowing_add(self, rhs: Self) -> (Self, bool)
     {
         let mut res = self.clone();
@@ -3765,12 +3956,44 @@ where T: Uint + Clone + Display + Debug + ToString
         (res, overflow)
     }
 
+    // pub fn overflowing_add_assign(&mut self, rhs: Self) -> bool
+    /// Calculates `self` + `rhs`, and assigns the result to `self` back.
+    /// 
+    /// # Output
+    /// It returns true if an arithmetic overflow would occur.
+    /// Otherwise, it returns `false`.
+    /// 
+    /// # Example
+    /// ```
+    /// // Todo
+    /// ```
+    /// 
+    /// # Big-endian issue
+    /// It is just experimental for Big Endian CPUs. So, you are not encouraged
+    /// to use it for Big Endian CPUs for serious purpose. Only use this crate
+    /// for Big-endian CPUs with your own full responsibility.
     pub fn overflowing_add_assign(&mut self, rhs: Self) -> bool
     {
         self.wrapping_add_assign(rhs);
         self.is_overflow()
     }
 
+    // pub fn checked_add(self, rhs: Self) -> Option<Self>
+    /// Computes `self` + `rhs`.
+    /// 
+    /// # Output
+    /// It returns the sum `self` + `rhs` wrapped by `Some` of enum `Option`
+    /// if overflow did not occur. Otherwise, it returns `None` of enum Option.
+    /// 
+    /// # Example
+    /// ```
+    /// // Todo
+    /// ```
+    /// 
+    /// # Big-endian issue
+    /// It is just experimental for Big Endian CPUs. So, you are not encouraged
+    /// to use it for Big Endian CPUs for serious purpose. Only use this crate
+    /// for Big-endian CPUs with your own full responsibility.
     pub fn checked_add(self, rhs: Self) -> Option<Self>
     {
         let mut res = self.clone();
@@ -3780,20 +4003,70 @@ where T: Uint + Clone + Display + Debug + ToString
         else
             { Some(res) }
     }
-    
+
+    // pub fn unchecked_add(self, rhs: Self) -> Self
+    /// Computes `self` + `rhs`, assuming overflow cannot occur.
+    /// 
+    /// # Panics
+    /// If overflow occurred, it will panic. So, use this method only when you
+    /// are sure that overflow will not occur. 
+    /// 
+    /// # Output
+    /// It returns the sum `self` + `rhs` if overflow did not occur.
+    /// Otherwise, it will panic.
+    /// 
+    /// # Example
+    /// ```
+    /// // Todo
+    /// ```
+    /// 
+    /// # Big-endian issue
+    /// It is just experimental for Big Endian CPUs. So, you are not encouraged
+    /// to use it for Big Endian CPUs for serious purpose. Only use this crate
+    /// for Big-endian CPUs with your own full responsibility.
     #[inline]
     pub fn unchecked_add(self, rhs: Self) -> Self
     {
         self.checked_add(rhs).unwrap()
     }
 
+    // pub fn saturating_add(self, rhs: Self) -> Self
+    /// Computes `self` + `rhs`, saturating at the numeric bounds
+    /// instead of overflowing.
+    /// 
+    /// # Output
+    /// It returns the sum `self` + `rhs` if overflow did not occur.
+    /// Otherwise, it returns the maximum value.
+    /// 
+    /// # Example
+    /// ```
+    /// // Todo
+    /// ```
+    /// 
+    /// # Big-endian issue
+    /// It is just experimental for Big Endian CPUs. So, you are not encouraged
+    /// to use it for Big Endian CPUs for serious purpose. Only use this crate
+    /// for Big-endian CPUs with your own full responsibility.
     pub fn saturating_add(self, rhs: Self) -> Self
     {
         let mut res = self.clone();
         res.saturating_add_assign(rhs);
         res
     }
-    
+
+    // pub fn saturating_add_assign(&mut self, rhs: Self)
+    /// Computes `self` + `rhs`, saturating at the numeric bounds
+    /// instead of overflowing, and assigns the result to `self` back.
+    /// 
+    /// # Example
+    /// ```
+    /// // Todo
+    /// ```
+    /// 
+    /// # Big-endian issue
+    /// It is just experimental for Big Endian CPUs. So, you are not encouraged
+    /// to use it for Big Endian CPUs for serious purpose. Only use this crate
+    /// for Big-endian CPUs with your own full responsibility.
     pub fn saturating_add_assign(&mut self, rhs: Self)
     {
         if self.overflowing_add_assign(rhs)
@@ -3803,6 +4076,32 @@ where T: Uint + Clone + Display + Debug + ToString
 
     /*** Subtraction ***/
 
+    // pub fn borrowing_sub(self, rhs: Self, borrow: bool) -> (Self, bool)
+    /// Calculates self − rhs − borrow and returns a tuple containing the
+    /// difference and the output borrow.
+    /// 
+    /// # Features
+    /// It performs “ternary subtraction” by subtracting both an integer operand
+    /// and a borrow-in bit from `self`, and returns an output integer and a
+    /// borrow-out bit. This allows chaining together multiple subtractions to
+    /// create a wider subtraction.
+    /// 
+    /// If the input carry is `false`, this method is equivalent to
+    /// `overflowing_sub()`, and the output carry is equal to
+    /// the underflow flag.
+    /// 
+    /// # Outputs
+    /// It returns a tuple containing an output big integer and a carry-out bit.
+    /// 
+    /// # Example
+    /// ```
+    /// // Todo
+    /// ```
+    /// 
+    /// # Big-endian issue
+    /// It is just experimental for Big Endian CPUs. So, you are not encouraged
+    /// to use it for Big Endian CPUs for serious purpose. Only use this crate
+    /// for Big-endian CPUs with your own full responsibility.
     pub fn borrowing_sub(self, rhs: Self, borrow: bool) -> (Self, bool)
     {
         let mut res = self.clone();
@@ -3810,6 +4109,31 @@ where T: Uint + Clone + Display + Debug + ToString
         (res, b)
     }
 
+    // pub fn borrowing_sub_assign(&mut self, rhs: Self, borrow: bool) -> bool
+    /// Calculates self − rhs − borrow, and assigns difference to `self` back,
+    /// and returns the output borrow.
+    /// 
+    /// # Features
+    /// It performs “ternary subtraction” by subtracting both an integer operand
+    /// and a borrow-in bit from `self`, and a borrow-out bit. This allows
+    /// chaining together multiple subtractions to create a wider subtraction.
+    /// 
+    /// If the input carry is `false`, this method is equivalent to
+    /// `overflowing_sub_assign()`, and the output carry is equal to
+    /// the underflow flag.
+    /// 
+    /// # Outputs
+    /// It returns a tuple containing an output big integer and a carry-out bit.
+    /// 
+    /// # Example
+    /// ```
+    /// // Todo
+    /// ```
+    /// 
+    /// # Big-endian issue
+    /// It is just experimental for Big Endian CPUs. So, you are not encouraged
+    /// to use it for Big Endian CPUs for serious purpose. Only use this crate
+    /// for Big-endian CPUs with your own full responsibility.
     pub fn borrowing_sub_assign(&mut self, rhs: Self, borrow: bool) -> bool
     {
         let mut num: T;
@@ -3824,6 +4148,24 @@ where T: Uint + Clone + Display + Debug + ToString
         b
     }
 
+    // pub fn wrapping_sub(self, rhs: Self) -> Self
+    /// Computes `self` - `rhs`, wrapping around at the boundary of the type.
+    /// 
+    /// # Output
+    /// It returns `self` - `rhs` with wrapping (modular) subtraction.
+    /// 
+    /// # Feature
+    /// Wrapping (modular) subtraction.
+    /// 
+    /// # Example
+    /// ```
+    /// // Todo
+    /// ```
+    /// 
+    /// # Big-endian issue
+    /// It is just experimental for Big Endian CPUs. So, you are not encouraged
+    /// to use it for Big Endian CPUs for serious purpose. Only use this crate
+    /// for Big-endian CPUs with your own full responsibility.
     pub fn wrapping_sub(self, rhs: Self) -> Self
     {
         let mut res = self.clone();
@@ -3831,11 +4173,27 @@ where T: Uint + Clone + Display + Debug + ToString
         res
     }
 
+    // pub fn wrapping_sub_assign(&mut self, rhs: Self)
+    /// Computes `self` - `rhs`, wrapping around at the boundary of the type,
+    /// and assign the result to `self` back.
+    /// 
+    /// # Feature
+    /// Wrapping (modular) subtraction.
+    /// 
+    /// # Example
+    /// ```
+    /// // Todo
+    /// ```
+    /// 
+    /// # Big-endian issue
+    /// It is just experimental for Big Endian CPUs. So, you are not encouraged
+    /// to use it for Big Endian CPUs for serious purpose. Only use this crate
+    /// for Big-endian CPUs with your own full responsibility.
     #[inline]
-    pub fn wrapping_sub_assign(&mut self, rhs: Self) -> bool
+    pub fn wrapping_sub_assign(&mut self, rhs: Self)
     {
-        self.borrowing_sub_assign(rhs, false)
-/*
+        self.borrowing_sub_assign(rhs, false);
+    /*
        let zero = T::zero();
         let mut	carry: T = zero;
         let mut midres: T;
@@ -3853,52 +4211,26 @@ where T: Uint + Clone + Display + Debug + ToString
         }
         if carry != zero
             { self.set_underflow(); }
-*/
-    }
-
-
-    /// Subtracts and assign the result to it.
-    /// 
-    #[cfg(target_endian = "big")]
-    fn _wrapping_sub_assign(&mut self, rhs: Self)
-    {
-        let mut num: T;
-        let mut i = N - 1;
-        let mut	borrow = false;
-        loop
-        {
-            (num, borrow) = self.number[i].borrowing_sub(rhs.number[i], borrow);
-            self.set_num_(i, num);
-            if i == 0
-                { break; }
-            i -= 1;
-        }
-        if carry
-            { self.set_underflow(); }
-/*
-        let zero = T::zero();
-        let mut	carry: T = zero;
-        let mut midres: T;
-        let mut c: bool;
-        let mut cc: T;
-        let mut i = N;
-        loop
-        {
-            i -= 1;
-            midres = self.number[i].wrapping_sub(rhs.number[i]);
-            c = midres > self.number[i];
-            cc = midres;
-            midres = midres.wrapping_sub(carry);
-            carry = if c || (midres > cc) { T::one() } else { zero };
-            self.number[i] = midres;
-            if i == 0
-                { break; }
-        }
-        if carry != zero
-            { self.set_underflow(); }
     */
     }
 
+    // pub fn overflowing_sub(self, rhs: Self) -> (Self, bool)
+    /// Calculates `self` - `rhs`.
+    /// 
+    /// # Output
+    /// It returns a tuple of the subtraction `self` - `rhs` along with a boolean
+    /// indicating whether an arithmetic unerflow would occur. If an unerflow
+    /// would have occurred then the wrapped (modular) value is returned.
+    /// 
+    /// # Example
+    /// ```
+    /// // Todo
+    /// ```
+    /// 
+    /// # Big-endian issue
+    /// It is just experimental for Big Endian CPUs. So, you are not encouraged
+    /// to use it for Big Endian CPUs for serious purpose. Only use this crate
+    /// for Big-endian CPUs with your own full responsibility.
     pub fn overflowing_sub(self, rhs: Self) -> (Self, bool)
     {
         let mut res = self.clone();
@@ -3906,12 +4238,45 @@ where T: Uint + Clone + Display + Debug + ToString
         (res, overflow)
     }
 
+    // pub fn overflowing_sub_assign(&mut self, rhs: Self) -> bool
+    /// Calculates `self` - `rhs`, and assigns the result to `self` back.
+    /// 
+    /// # Output
+    /// It returns true if an arithmetic unerflow would occur.
+    /// Otherwise, it returns `false`.
+    /// 
+    /// # Example
+    /// ```
+    /// // Todo
+    /// ```
+    /// 
+    /// # Big-endian issue
+    /// It is just experimental for Big Endian CPUs. So, you are not encouraged
+    /// to use it for Big Endian CPUs for serious purpose. Only use this crate
+    /// for Big-endian CPUs with your own full responsibility.
     pub fn overflowing_sub_assign(&mut self, rhs: Self) -> bool
     {
         self.wrapping_sub_assign(rhs);
         self.is_underflow()
     }
 
+    // pub fn checked_sub(self, rhs: Self) -> Option<Self>
+    /// Computes `self` - `rhs`.
+    /// 
+    /// # Output
+    /// It returns the difference `self` - `rhs` wrapped by `Some`
+    /// of enum `Option` if unerflow did not occur.
+    /// Otherwise, it returns `None` of enum Option.
+    /// 
+    /// # Example
+    /// ```
+    /// // Todo
+    /// ```
+    /// 
+    /// # Big-endian issue
+    /// It is just experimental for Big Endian CPUs. So, you are not encouraged
+    /// to use it for Big Endian CPUs for serious purpose. Only use this crate
+    /// for Big-endian CPUs with your own full responsibility.
     pub fn checked_sub(self, rhs: Self) -> Option<Self>
     {
         let mut res = self.clone();
@@ -3921,45 +4286,129 @@ where T: Uint + Clone + Display + Debug + ToString
         else
             { Some(res) }
     }
-    
+
+    // pub fn unchecked_sub(self, rhs: Self) -> Self
+    /// Computes `self` - `rhs`, assuming underflow cannot occur.
+    /// 
+    /// # Panics
+    /// If underflow occurred, it will panic. So, use this method only when you
+    /// are sure that underflow will not occur. 
+    /// 
+    /// # Output
+    /// It returns the difference `self` - `rhs` if underflow did not occur.
+    /// Otherwise, it will panic.
+    /// 
+    /// # Example
+    /// ```
+    /// // Todo
+    /// ```
+    /// 
+    /// # Big-endian issue
+    /// It is just experimental for Big Endian CPUs. So, you are not encouraged
+    /// to use it for Big Endian CPUs for serious purpose. Only use this crate
+    /// for Big-endian CPUs with your own full responsibility.
     #[inline]
     pub fn unchecked_sub(self, rhs: Self) -> Self
     {
         self.checked_sub(rhs).unwrap()
     }
 
+    // pub fn saturating_sub(self, rhs: Self) -> Self
+    /// Computes `self` - `rhs`, saturating at the numeric bounds
+    /// instead of underflowing.
+    /// 
+    /// # Output
+    /// It returns the difference `self` - `rhs` if underflowing did not occur.
+    /// Otherwise, it returns `0`.
+    /// 
+    /// # Example
+    /// ```
+    /// // Todo
+    /// ```
+    /// 
+    /// # Big-endian issue
+    /// It is just experimental for Big Endian CPUs. So, you are not encouraged
+    /// to use it for Big Endian CPUs for serious purpose. Only use this crate
+    /// for Big-endian CPUs with your own full responsibility.
     pub fn saturating_sub(self, rhs: Self) -> Self
     {
         let mut res = self.clone();
         res.saturating_sub_assign(rhs);
         res
     }
-    
+
+    // pub fn saturating_sub_assign(&mut self, rhs: Self)
+    /// Computes `self` - `rhs`, saturating at the numeric bounds
+    /// instead of underflowing, and assigns the result to `self` back.
+    /// 
+    /// # Feature
+    /// `self` will be the difference `self` - `rhs` if underflowing
+    /// did not occur. Otherwise, it returns `0`.
+    /// 
+    /// # Example
+    /// ```
+    /// // Todo
+    /// ```
+    /// 
+    /// # Big-endian issue
+    /// It is just experimental for Big Endian CPUs. So, you are not encouraged
+    /// to use it for Big Endian CPUs for serious purpose. Only use this crate
+    /// for Big-endian CPUs with your own full responsibility.
     pub fn saturating_sub_assign(&mut self, rhs: Self)
     {
         if self.overflowing_sub_assign(rhs)
             { self.set_max(); }
     }
 
+    // pub fn abs_diff(&self, other: &Self) -> Self
+    /// Computes the absolute difference between `self` and `other`.
+    /// 
+    /// # Output
+    /// It returns the absolute difference between `self` and `other`.
+    /// 
+    /// # Example
+    /// ```
+    /// use std::str::FromStr;
+    /// use Cryptocol::number::BigUInt;
+    /// use Cryptocol::define_utypes_with;
+    /// define_utypes_with!(u128);
+    /// 
+    /// let a = u256::from_str("500000000000000000500000000500000000500000000500000000").unwrap();
+    /// let b = u256::from_str("500000000000000000000000000000000000000000000000000000").unwrap();
+    /// let c = a.abs_diff(&b);
+    /// let d = b.abs_diff(&a);
+    /// println!("500000000000000000500000000500000000500000000500000000 <-> 500000000000000000000000000000000000000000000000000000 = {}", c);
+    /// println!("500000000000000000000000000000000000000000000000000000 <-> 500000000000000000500000000500000000500000000500000000 = {}", d);
+    /// assert_eq!(c, u256::from_str("500000000500000000500000000500000000").unwrap());
+    /// assert_eq!(d, u256::from_str("500000000500000000500000000500000000").unwrap());
+    /// ```
+    pub fn abs_diff(&self, other: &Self) -> Self
+    {
+        if self < other
+            { *other - *self }
+        else
+            { *self - *other }
+    }
+
 
     /*** Multiplication ***/
 
-    pub fn wrapping_mul(self, rhs: Self) -> Self
+    pub fn carrying_mul(self, rhs: Self, carry: Self) -> (Self, Self)
     {
-        let mut res = self.clone();
-        res.wrapping_mul_assign(rhs);
-        res
+        todo!();
     }
 
-    pub fn wrapping_mul_assign(&mut self, rhs: Self)
+    pub fn carrying_mul_assign(self, rhs: Self, carry: Self) -> Self
     {
+        todo!();
+        /*
         if rhs.is_zero()
         {
             self.set_zero();
-            return;
+            return Self::zero();
         }
         if self.is_zero()
-            { return; }
+            { return Self::zero(); }
 
         let zero = T::zero();
         let one = T::one();
@@ -3967,7 +4416,7 @@ where T: Uint + Clone + Display + Debug + ToString
         let TSIZE_BITS = size_of::<T>() * 8;
         let mut multiply_first = |num: T| {
             let mut bit_check = one;
-            bit_check <<= T::num((TSIZE_BITS - 1).into_u128());
+            bit_check <<= T::usize_as_Uint(TSIZE_BITS - 1);
             while (bit_check != zero) && (bit_check & num == zero)
                 { bit_check >>= one; }
 
@@ -3996,7 +4445,123 @@ where T: Uint + Clone + Display + Debug + ToString
                 return;
             }
             let mut bit_check = one;
-            bit_check <<= T::num((TSIZE_BITS - 1).into_u128());
+            bit_check <<= T::usize_as_Uint(TSIZE_BITS - 1);
+            while bit_check != zero
+            {
+                *self <<= 1;
+                if bit_check & num != zero
+                    { *self += adder; }
+                bit_check >>= one;
+            }
+        };
+
+        loop
+        {
+            multiply(rhs.get_num_(n));
+            if n == 0
+                { break; }
+            n = n.wrapping_sub(1);
+        }
+        */
+    }
+
+    pub fn widening_mul(self, rhs: Self) -> (Self, Self)
+    {
+        self.carrying_mul(rhs, Self::zero())
+    }
+
+    pub fn widening_mul_assign(self, rhs: Self) -> Self
+    {
+        self.carrying_mul_assign(rhs, Self::zero())
+    }
+
+    // pub fn wrapping_mul(self, rhs: Self) -> Self
+    /// Computes `self` * `rhs`, wrapping around at the boundary of the type.
+    /// 
+    /// # Output
+    /// It returns `self` * `rhs` with wrapping (modular) addition.
+    /// 
+    /// # Feature
+    /// Wrapping (modular) addition.
+    /// 
+    /// # Example
+    /// ```
+    /// // Todo
+    /// ```
+    /// 
+    /// # Big-endian issue
+    /// It is just experimental for Big Endian CPUs. So, you are not encouraged
+    /// to use it for Big Endian CPUs for serious purpose. Only use this crate
+    /// for Big-endian CPUs with your own full responsibility.
+    pub fn wrapping_mul(self, rhs: Self) -> Self
+    {
+        let mut res = self.clone();
+        res.wrapping_mul_assign(rhs);
+        res
+    }
+
+    // pub fn wrapping_mul_assign(&mut self, rhs: Self)
+    /// Computes self * rhs, wrapping around at the boundary of the type,
+    /// and assign the result to `self` back.
+    /// 
+    /// # Feature
+    /// Wrapping (modular) multiplication.
+    /// 
+    /// # Example
+    /// ```
+    /// // Todo
+    /// ```
+    /// 
+    /// # Big-endian issue
+    /// It is just experimental for Big Endian CPUs. So, you are not encouraged
+    /// to use it for Big Endian CPUs for serious purpose. Only use this crate
+    /// for Big-endian CPUs with your own full responsibility.
+    pub fn wrapping_mul_assign(&mut self, rhs: Self)
+    {
+        if rhs.is_zero()
+        {
+            self.set_zero();
+            return;
+        }
+        if self.is_zero()
+            { return; }
+
+        let zero = T::zero();
+        let one = T::one();
+        let adder = self.clone();
+        let TSIZE_BITS = size_of::<T>() * 8;
+        let mut multiply_first = |num: T| {
+            let mut bit_check = one;
+            bit_check <<= T::usize_as_Uint(TSIZE_BITS - 1);
+            while (bit_check != zero) && (bit_check & num == zero)
+                { bit_check >>= one; }
+
+            self.set_zero();
+            while bit_check != zero
+            {
+                *self <<= 1;
+                if bit_check & num != zero
+                    { *self += adder; }
+                bit_check >>= one;
+            }
+        };
+
+        let mut n = N - 1;
+        while rhs.get_num_(n) == zero
+            { n -= 1; }
+        multiply_first(rhs.get_num_(n));
+        if n == 0
+            { return; }
+        n -= 1;
+
+        let mut multiply = |num: T| {
+            if num == T::zero()
+            {
+                *self <<= TSIZE_BITS as i32;
+                return;
+            }
+            let mut bit_check = one;
+            bit_check <<= T::usize_as_Uint(TSIZE_BITS - 1);
             while bit_check != zero
             {
                 *self <<= 1;
@@ -4015,68 +4580,24 @@ where T: Uint + Clone + Display + Debug + ToString
         }
     }
 
-    /// Multiplies and assign the result to it.
+    // pub fn overflowing_mul(self, rhs: Self) -> (Self, bool)
+    /// Calculates `self` * `rhs`.
     /// 
-    #[cfg(target_endian = "big")]
-    fn _wrapping_mul_assign(&mut self, rhs: Self)
-    {
-        if rhs.is_zero()
-        {
-            self.set_zero();
-            return;
-        }
-        if self.is_zero()
-            { return; }
-
-        let zero = T::zero();
-        let one = T::one();
-        let adder = self.clone();
-        let TSIZE_BIT = size_of::<T>() * 8;
-        let mut multiply_first = |num: T| {
-            let mut bit_check = one;
-            bit_check <<= T::num((TSIZE_BIT - 1).into_u128());
-            while (bit_check != zero) && (bit_check & num == zero)
-                { bit_check >>= one; }
-
-            self.set_zero();
-            while bit_check != zero
-            {
-                *self <<= 1;
-                if bit_check & num != zero
-                    { *self += adder; }
-                bit_check >>= one;
-            }
-        };
-
-        let mut n = 0;
-        while rhs.number[n] == zero
-            { n += 1; }
-        multiply_first(rhs.number[n]);
-        n += 1;
-
-        let mut multiply = |num: T| {
-            if num == T::zero()
-            {
-                *self <<= TSIZE_BIT as i32;
-                return;
-            }
-            let mut bit_check = one;
-            bit_check <<= T::num((TSIZE_BIT - 1).into_u128());
-            while bit_check != zero
-            {
-                *self <<= 1;
-                if bit_check & num != zero
-                    { *self += adder; }
-                bit_check >>= one;
-            }
-        };
-        while n < N
-        {
-            multiply(rhs.number[n]);
-            n += 1;
-        }
-    }
-
+    /// # Output
+    /// It returns a tuple of the multiplication `self` * `rhs` along
+    /// with a boolean indicating whether an arithmetic overflow would occur.
+    /// If an overflow would have occurred then the wrapped (modular) value
+    /// is returned.
+    /// 
+    /// # Example
+    /// ```
+    /// // Todo
+    /// ```
+    /// 
+    /// # Big-endian issue
+    /// It is just experimental for Big Endian CPUs. So, you are not encouraged
+    /// to use it for Big Endian CPUs for serious purpose. Only use this crate
+    /// for Big-endian CPUs with your own full responsibility.
     pub fn overflowing_mul(self, rhs: Self) -> (Self, bool)
     {
         let mut res = self.clone();
@@ -4084,12 +4605,44 @@ where T: Uint + Clone + Display + Debug + ToString
         (res, overflow)
     }
 
+    // pub fn overflowing_mul_assign(&mut self, rhs: Self) -> bool
+    /// Calculates `self` * `rhs`, and assigns the result to `self` back.
+    /// 
+    /// # Output
+    /// It returns true if an arithmetic overflow would occur.
+    /// Otherwise, it returns `false`.
+    /// 
+    /// # Example
+    /// ```
+    /// // Todo
+    /// ```
+    /// 
+    /// # Big-endian issue
+    /// It is just experimental for Big Endian CPUs. So, you are not encouraged
+    /// to use it for Big Endian CPUs for serious purpose. Only use this crate
+    /// for Big-endian CPUs with your own full responsibility.
     pub fn overflowing_mul_assign(&mut self, rhs: Self) -> bool
     {
         self.wrapping_mul_assign(rhs);
         self.is_overflow()
     }
 
+    // pub fn checked_mul(self, rhs: Self) -> Option<Self>
+    /// Computes `self` * `rhs`.
+    /// 
+    /// # Output
+    /// It returns the sum `self` * `rhs` wrapped by `Some` of enum `Option`
+    /// if overflow did not occur. Otherwise, it returns `None` of enum Option.
+    /// 
+    /// # Example
+    /// ```
+    /// // Todo
+    /// ```
+    /// 
+    /// # Big-endian issue
+    /// It is just experimental for Big Endian CPUs. So, you are not encouraged
+    /// to use it for Big Endian CPUs for serious purpose. Only use this crate
+    /// for Big-endian CPUs with your own full responsibility.
     pub fn checked_mul(self, rhs: Self) -> Option<Self>
     {
         let mut res = self.clone();
@@ -4100,11 +4653,48 @@ where T: Uint + Clone + Display + Debug + ToString
             { Some(res) }
     }
 
+    // pub fn unchecked_mul(self, rhs: Self) -> Self
+    /// Computes `self` * `rhs`, assuming overflow cannot occur.
+    /// 
+    /// # Panics
+    /// If overflow occurred, it will panic. So, use this method only when you
+    /// are sure that overflow will not occur. 
+    /// 
+    /// # Output
+    /// It returns the sum `self` * `rhs` if overflow did not occur.
+    /// Otherwise, it will panic.
+    /// 
+    /// # Example
+    /// ```
+    /// // Todo
+    /// ```
+    /// 
+    /// # Big-endian issue
+    /// It is just experimental for Big Endian CPUs. So, you are not encouraged
+    /// to use it for Big Endian CPUs for serious purpose. Only use this crate
+    /// for Big-endian CPUs with your own full responsibility.
     pub fn unchecked_mul(self, rhs: Self) -> Self
     {
         self.checked_mul(rhs).unwrap()
     }
 
+    // pub fn saturating_mul(self, rhs: Self) -> Self
+    /// Computes `self` * `rhs`, saturating at the numeric bounds
+    /// instead of overflowing.
+    /// 
+    /// # Output
+    /// It returns the sum `self` + `rhs` if overflow did not occur.
+    /// Otherwise, it returns the maximum value.
+    /// 
+    /// # Example
+    /// ```
+    /// // Todo
+    /// ```
+    /// 
+    /// # Big-endian issue
+    /// It is just experimental for Big Endian CPUs. So, you are not encouraged
+    /// to use it for Big Endian CPUs for serious purpose. Only use this crate
+    /// for Big-endian CPUs with your own full responsibility.
     pub fn saturating_mul(self, rhs: Self) -> Self
     {
         let mut res = self.clone();
@@ -4112,6 +4702,19 @@ where T: Uint + Clone + Display + Debug + ToString
         res
     }
 
+    // pub fn saturating_mul_assign(&mut self, rhs: Self)
+    /// Computes `self` * `rhs`, saturating at the numeric bounds
+    /// instead of overflowing, and assigns the result to `self` back.
+    /// 
+    /// # Example
+    /// ```
+    /// // Todo
+    /// ```
+    /// 
+    /// # Big-endian issue
+    /// It is just experimental for Big Endian CPUs. So, you are not encouraged
+    /// to use it for Big Endian CPUs for serious purpose. Only use this crate
+    /// for Big-endian CPUs with your own full responsibility.
     pub fn saturating_mul_assign(&mut self, rhs: Self)
     {
         self.wrapping_mul_assign(rhs);
@@ -4122,14 +4725,20 @@ where T: Uint + Clone + Display + Debug + ToString
 
     /*** Division ***/
 
-    /// Divides self which is of `BigUInt` type by rhs which is of `BigUInt`
-    /// type, and returns quotient and remainder which are `BigUInt`type.
-    /// If rhs is zero, the divided_by_zero and overflow flags of quotient will
-    /// be set, and the quotient will be set to be max value of `BigUInt`type,
-    /// and the remainder will be set to be zero of `BigUInt` type.
+    /// Divides `self` which is of `BigUInt` type by `rhs` which is of `BigUInt`
+    /// type, and returns a tuple of quotient and remainder.
+    /// 
+    /// # Output
+    /// It returns a tuple of quotient and remainder which are `BigUInt`type.
+    /// 
+    /// # Feature
+    /// If `rhs` is zero, the quotient will have maximum value of `BigUInt`
+    /// type, and the flags of quotient such as `OVERFLOW`, `INFINITY`, and
+    /// `DIVIDED_BY_ZERO` will be set, and the remainder will be set to be
+    /// zero of `BigUInt` type, the `DIVIDED_BY_ZERO` flag of remainder
+    /// will be set. 
     /// 
     /// # Examples
-    /// 
     /// ```
     /// use std::str::FromStr;
     /// use Cryptocol::define_utypes_with;
@@ -4179,7 +4788,7 @@ where T: Uint + Clone + Display + Debug + ToString
             highest -= TSIZE_BITS;
             n -= 1;
         }
-        let mut piece = one << T::num(TSIZE_BITS as u128 - 1);
+        let mut piece = one << T::usize_as_Uint(TSIZE_BITS - 1);
         while self.get_num_(n) & piece == zero
         {
             highest -= 1;
@@ -4237,18 +4846,96 @@ where T: Uint + Clone + Display + Debug + ToString
         }
     }
 
+    // pub fn wrapping_div(self, rhs: Self) -> Self
+    /// Calculates the quotient when `self` is divided by `rhs`,
+    /// which is `self` / `rhs`.
+    ///
+    /// # Output
+    /// It returns the quotient of when `self` is divided by `rhs`,
+    /// which is `self` / `rhs`. 
+    /// 
+    /// # Feature
+    /// Wrapped division on `BigUInt` types is just normal division.
+    /// There’s no way wrapping could ever happen. This function exists,
+    /// so that all operations are accounted for in the wrapping operations.
+    /// 
+    /// If `rhs` is zero, the quotient will have maximum value of `BigUInt`
+    /// type, and the flags of quotient such as `OVERFLOW`, `INFINITY`, and
+    /// `DIVIDED_BY_ZERO` will be set. __It does not panic__ while the same
+    /// named methods `wrapping_div()` for primitive integer data type such
+    /// as u8, u16, u32, u64, etc. will panic if `rhs` is zero.
+    /// 
+    /// # Example
+    /// ```
+    /// // Todo
+    /// ```
+    /// 
+    /// # Big-endian issue
+    /// It is just experimental for Big Endian CPUs. So, you are not encouraged
+    /// to use it for Big Endian CPUs for serious purpose. Only use this crate
+    /// for Big-endian CPUs with your own full responsibility.
     pub fn wrapping_div(self, rhs: Self) -> Self
     {
         let (quotient, _) = self.divide_fully(rhs);
         quotient
     }
 
+    // pub fn wrapping_div_assign(&mut self, rhs: Self)
+    /// Calculates the quotient when `self` is divided by `rhs`,
+    /// which is `self` / `rhs`, and assign the result to `self` back.
+    /// 
+    /// # Feature
+    /// Wrapped division on `BigUInt` types is just normal division.
+    /// There’s no way wrapping could ever happen. This function exists,
+    /// so that all operations are accounted for in the wrapping operations.
+    /// 
+    /// If `rhs` is zero, the `self` will have maximum value of `BigUInt`
+    /// type, and the flags of `self` such as `OVERFLOW`, `INFINITY`, and
+    /// `DIVIDED_BY_ZERO` will be set. __It does not panic__ while the same
+    /// kind methods `wrapping_div()` for primitive integer data type such
+    /// as u8, u16, u32, u64, etc. will panic if `rhs` is zero.
+    /// 
+    /// # Example
+    /// ```
+    /// // Todo
+    /// ```
+    /// 
+    /// # Big-endian issue
+    /// It is just experimental for Big Endian CPUs. So, you are not encouraged
+    /// to use it for Big Endian CPUs for serious purpose. Only use this crate
+    /// for Big-endian CPUs with your own full responsibility.
     pub fn wrapping_div_assign(&mut self, rhs: Self)
     {
         let (quotient, _) = self.divide_fully(rhs);
         *self = quotient;
     }
 
+    // pub fn checked_div(self, rhs: Self) -> Option<Self>
+    /// Calculates the quotient when `self` is divided by `rhs`,
+    /// which is `self` / `rhs`.
+    /// 
+    /// # Output
+    /// It returns `None` if `rhs` is zero. Otherwise, it returns the quotient
+    /// of when `self` is divided by `rhs`, which is `self` / `rhs`,
+    /// wrapped by `Some` of enum `Option`.
+    /// 
+    /// # Feature
+    /// Wrapped division on `BigUInt` types is just normal division.
+    /// There’s no way wrapping could ever happen.
+    /// 
+    /// If `rhs` is zero, the quotient will have maximum value of `BigUInt`
+    /// type, and the flags of quotient such as `OVERFLOW`, `INFINITY`, and
+    /// `DIVIDED_BY_ZERO` will be set.
+    /// 
+    /// # Example
+    /// ```
+    /// // Todo
+    /// ```
+    /// 
+    /// # Big-endian issue
+    /// It is just experimental for Big Endian CPUs. So, you are not encouraged
+    /// to use it for Big Endian CPUs for serious purpose. Only use this crate
+    /// for Big-endian CPUs with your own full responsibility.
     pub fn checked_div(self, rhs: Self) -> Option<Self>
     {
         let res = self.wrapping_div(rhs);
@@ -4258,41 +4945,363 @@ where T: Uint + Clone + Display + Debug + ToString
             { Some(res) }
     }
 
+    // pub fn unchecked_div(self, rhs: Self) -> Self
+    /// Calculates the quotient when `self` is divided by `rhs`,
+    /// which is `self` / `rhs`, assuming that `rhs` cannot be zero.
+    /// 
+    /// # Panics
+    /// If `rhs` is zero, it will panic. So, use this method only when you
+    /// are sure that `rhs` is not zero. 
+    /// 
+    /// # Output
+    /// It returns the quotient of when `self` is divided by `rhs`,
+    /// which is `self` / `rhs` if `rhs` is not zero.
+    /// Otherwise, it will panic.
+    /// 
+    /// # Feature
+    /// Wrapped division on `BigUInt` types is just normal division.
+    /// There’s no way wrapping could ever happen.
+    /// 
+    /// # Example
+    /// ```
+    /// // Todo
+    /// ```
+    /// 
+    /// # Big-endian issue
+    /// It is just experimental for Big Endian CPUs. So, you are not encouraged
+    /// to use it for Big Endian CPUs for serious purpose. Only use this crate
+    /// for Big-endian CPUs with your own full responsibility.
     pub fn unchecked_div(self, rhs: Self) -> Self
     {
         self.checked_div(rhs).unwrap()
     }
 
+    // pub fn saturating_div(self, rhs: Self) -> Self
+    /// Calculates the quotient when `self` is divided by `rhs`,
+    /// which is `self` / `rhs`, saturating at the numeric bounds
+    /// instead of overflowing.
+    /// 
+    /// # Output
+    /// It returns the quotient of when `self` is divided by `rhs`,
+    /// which is `self` / `rhs` if `rhs` is not zero.
+    /// Otherwise, it returns the maximum value.
+    /// 
+    /// # Feature
+    /// Overflow will not happen unless `rhs` is zero. __It does not panic__
+    /// while the same named methods `saturating_div()` for primitive integer
+    /// data type such as u8, u16, u32, u64, etc. will panic if `rhs` is zero.
+    /// 
+    /// If `rhs` is zero, the quotient will have maximum value of `BigUInt`
+    /// type, and the flags of quotient such as `OVERFLOW` and `DIVIDED_BY_ZERO`
+    /// will be set.
+    /// 
+    /// # Example
+    /// ```
+    /// // Todo
+    /// ```
+    /// 
+    /// # Big-endian issue
+    /// It is just experimental for Big Endian CPUs. So, you are not encouraged
+    /// to use it for Big Endian CPUs for serious purpose. Only use this crate
+    /// for Big-endian CPUs with your own full responsibility.
+    pub fn saturating_div(self, rhs: Self) -> Self
+    {
+        let (mut quotient, _) = self.divide_fully(rhs);
+        quotient.reset_inifinity();
+        quotient
+    }
+
+    // pub fn saturating_div(self, rhs: Self) -> Self
+    /// Calculates the quotient when `self` is divided by `rhs`,
+    /// which is `self` / `rhs`, saturating at the numeric bounds
+    /// instead of overflowing, and assigns the quotient to `self`.
+    /// 
+    /// # Feature
+    /// Overflow will not happen unless `rhs` is zero. __It does not panic__
+    /// while the similar methods `saturating_div()` for primitive integer
+    /// data type such as u8, u16, u32, u64, etc. will panic if `rhs` is zero.
+    /// 
+    /// If `rhs` is zero, `self` will have maximum value of `BigUInt`
+    /// type, and the flags of `self` such as `OVERFLOW` and `DIVIDED_BY_ZERO`
+    /// will be set.
+    /// 
+    /// # Example
+    /// ```
+    /// // Todo
+    /// ```
+    /// 
+    /// # Big-endian issue
+    /// It is just experimental for Big Endian CPUs. So, you are not encouraged
+    /// to use it for Big Endian CPUs for serious purpose. Only use this crate
+    /// for Big-endian CPUs with your own full responsibility.
+    pub fn saturating_div_assign(&mut self, rhs: Self)
+    {
+        let (mut quotient, _) = self.divide_fully(rhs);
+        quotient.reset_inifinity();
+        *self = quotient;
+    }
+
+    // pub fn wrapping_rem(self, rhs: Self) -> Self
+    /// Calculates the remainder when `self` is divided by `rhs`,
+    /// which is `self` % `rhs`.
+    /// 
+    /// # Output
+    /// It returns the remainder when `self` is divided by `rhs`,
+    /// which is `self` % `rhs`, with wrapping (modular) addition.
+    /// 
+    /// # Feature
+    /// Wrapped remainder calculation on `BigUInt` types is just the regular
+    /// remainder calculation. There’s no way wrapping could ever happen. This
+    /// function exists, so that all operations are accounted for in the
+    /// wrapping operations.
+    /// 
+    /// If `rhs` is zero, the remainder is zero and its `DIVIDED_BY_ZERO`
+    /// is set. __It does not panic__ while the same named methods
+    /// `wrapping_rem()` for primitive integer data type such as u8, u16,
+    /// u32, u64, etc. will panic if `rhs` is zero.
+    /// 
+    /// # Example
+    /// ```
+    /// // Todo
+    /// ```
+    /// 
+    /// # Big-endian issue
+    /// It is just experimental for Big Endian CPUs. So, you are not encouraged
+    /// to use it for Big Endian CPUs for serious purpose. Only use this crate
+    /// for Big-endian CPUs with your own full responsibility.
     pub fn wrapping_rem(self, rhs: Self) -> Self
     {
         let (_, remainder) = self.divide_fully(rhs);
         remainder
     }
 
+    // pub fn wrapping_rem_assign(&mut self, rhs: Self)
+    /// Calculates the remainder when `self` is divided by `rhs`,
+    /// which is `self` % `rhs`, and returns the remainder to `self` back.
+    /// 
+    /// # Feature
+    /// Wrapped remainder calculation on `BigUInt` types is just the regular
+    /// remainder calculation. There’s no way wrapping could ever happen. This
+    /// function exists, so that all operations are accounted for in the
+    /// wrapping operations.
+    /// 
+    /// If `rhs` is zero, the `self` is zero and its `DIVIDED_BY_ZERO`
+    /// is set. __It does not panic__ while the similar methods
+    /// `wrapping_rem()` for primitive integer data type such as 
+    /// u8, u16, u32, u64, etc. will panic if `rhs` is zero.
+    /// 
+    /// # Example
+    /// ```
+    /// // Todo
+    /// ```
+    /// 
+    /// # Big-endian issue
+    /// It is just experimental for Big Endian CPUs. So, you are not encouraged
+    /// to use it for Big Endian CPUs for serious purpose. Only use this crate
+    /// for Big-endian CPUs with your own full responsibility.
     pub fn wrapping_rem_assign(&mut self, rhs: Self)
     {
         let (_, remainder) = self.divide_fully(rhs);
         *self = remainder;
     }
 
-    pub fn checked_rem(self, rhs: Self) -> Option<Self>
+    // pub fn overflowing_rem(self, rhs: Self) -> (Self, bool)
+    /// Calculates the remainder when `self` is divided by `rhs`,
+    /// which is `self` % `rhs`.
+    /// 
+    /// # Output
+    /// It returns a tuple of the remainder after dividing,
+    /// which is `self` % `rhs` along with a boolean indicating whether an
+    /// arithmetic overflow would occur.
+    /// 
+    /// # Feature
+    /// Note that overflow never occurs, so the second value is always false.
+    /// 
+    /// If `rhs` is zero, the remainder is zero and its `DIVIDED_BY_ZERO`
+    /// is set. __It does not panic__ while the same named methods
+    /// `overflowing_rem()` for primitive integer data type such as u8, u16,
+    /// u32, u64, etc. will panic if `rhs` is zero.
+    /// 
+    /// # Example
+    /// ```
+    /// // Todo
+    /// ```
+    /// 
+    /// # Big-endian issue
+    /// It is just experimental for Big Endian CPUs. So, you are not encouraged
+    /// to use it for Big Endian CPUs for serious purpose. Only use this crate
+    /// for Big-endian CPUs with your own full responsibility.
+    pub fn overflowing_rem(self, rhs: Self) -> (Self, bool)
     {
-        let res = self.wrapping_rem(rhs);
-        if res.is_divided_by_zero()
-            { None }
-        else
-            { Some(res) }
+        let (_, remainder) = self.divide_fully(rhs);
+        (remainder, false)
     }
 
+    // pub fn overflowing_rem_assign(&mut self, rhs: Self) -> bool
+    /// Calculates the remainder when `self` is divided by `rhs`,
+    /// which is `self` % `rhs`, and returns the remainder to `self` back.
+    /// 
+    /// # Output
+    /// It returns a boolean indicating whether an arithmetic overflow
+    /// would occur.
+    /// 
+    /// # Feature
+    /// Note that overflow never occurs, so the outtput is always false.
+    /// 
+    /// If `rhs` is zero, `self` is zero and its `DIVIDED_BY_ZERO`
+    /// is set. __It does not panic__ while the similar methods
+    /// `overflowing_rem()` for primitive integer data type such as
+    /// u8, u16, u32, u64, etc. will panic if `rhs` is zero.
+    /// 
+    /// # Example
+    /// ```
+    /// // Todo
+    /// ```
+    /// 
+    /// # Big-endian issue
+    /// It is just experimental for Big Endian CPUs. So, you are not encouraged
+    /// to use it for Big Endian CPUs for serious purpose. Only use this crate
+    /// for Big-endian CPUs with your own full responsibility.
+    pub fn overflowing_rem_assign(&mut self, rhs: Self) -> bool
+    {
+        let (_, remainder) = self.divide_fully(rhs);
+        *self = remainder;
+        false
+    }
+
+    // pub fn checked_rem(self, rhs: Self) -> Option<Self>
+    /// Calculates the remainder when `self` is divided by `rhs`,
+    /// which is `self` % `rhs`.
+    /// 
+    /// # Output
+    /// It returns the remainder when `self` is divided by `rhs`,
+    /// which is `self` % `rhs`, wrapped by `Some` of enum `Option`
+    /// if `rhs` is not zero. Otherwise, it returns `None` of enum Option.
+    /// 
+    /// # Feature
+    /// Note that overflow never occurs.
+    /// 
+    /// # Example
+    /// ```
+    /// // Todo
+    /// ```
+    /// 
+    /// # Big-endian issue
+    /// It is just experimental for Big Endian CPUs. So, you are not encouraged
+    /// to use it for Big Endian CPUs for serious purpose. Only use this crate
+    /// for Big-endian CPUs with your own full responsibility.
+    pub fn checked_rem(self, rhs: Self) -> Option<Self>
+    {
+        let (_, remainder) = self.divide_fully(rhs);
+        if remainder.is_divided_by_zero()
+            { None }
+        else
+            { Some(remainder) }
+    }
+
+    // pub fn unchecked_rem(self, rhs: Self) -> Self
+    /// Calculates the remainder when `self` is divided by `rhs`,
+    /// which is `self` % `rhs`, assuming `rhs` cannot be zero.
+    /// 
+    /// # Output
+    /// It returns the remainder when `self` is divided by `rhs`,
+    /// which is `self` % `rhs`, if `rhs` is not zero.
+    /// Otherwise, it returns zero.
+    /// 
+    /// # Feature
+    /// Note that overflow never occurs.
+    /// 
+    /// # Example
+    /// ```
+    /// // Todo
+    /// ```
+    /// 
+    /// # Big-endian issue
+    /// It is just experimental for Big Endian CPUs. So, you are not encouraged
+    /// to use it for Big Endian CPUs for serious purpose. Only use this crate
+    /// for Big-endian CPUs with your own full responsibility.
+    #[inline]
     pub fn unchecked_rem(self, rhs: Self) -> Self
     {
         self.checked_rem(rhs).unwrap()
+    }
+
+    // pub fn saturating_rem(self, rhs: Self) -> Self
+    /// Calculates the remainder when `self` is divided by `rhs`,
+    /// which is `self` % `rhs`
+    /// 
+    /// # Output
+    /// It returns the remainder when `self` is divided by `rhs`,
+    /// which is `self` % `rhs`, if `rhs` is not zero.
+    /// Otherwise, it returns zero.
+    /// 
+    /// # Feature
+    /// If `rhs` is zero, the remainder will have zero of`BigUInt` type,
+    /// and `DIVIDED_BY_ZERO` flag of the remainder will be set, and
+    /// the remainder will be set to be zero of `BigUInt` type.
+    /// 
+    /// Note that overflow never occurs.
+    /// 
+    /// # Example
+    /// ```
+    /// // Todo
+    /// ```
+    /// 
+    /// # Big-endian issue
+    /// It is just experimental for Big Endian CPUs. So, you are not encouraged
+    /// to use it for Big Endian CPUs for serious purpose. Only use this crate
+    /// for Big-endian CPUs with your own full responsibility.
+    pub fn saturating_rem(self, rhs: Self) -> Self
+    {
+        let (_, remainder) = self.divide_fully(rhs);
+        remainder
+    }
+
+    // pub fn saturating_rem_assign(&mut self, rhs: Self)
+    /// Calculates the remainder when `self` is divided by `rhs`,
+    /// which is `self` % `rhs`, and assigns the remainder to `self` back.
+    /// 
+    /// # Feature
+    /// If `rhs` is zero, `self` will have zero of`BigUInt` type,
+    /// and `DIVIDED_BY_ZERO` flag of `self` will be set, and
+    /// `self` will be set to be zero of `BigUInt` type.
+    /// 
+    /// Note that overflow never occurs.
+    /// 
+    /// # Example
+    /// ```
+    /// // Todo
+    /// ```
+    /// 
+    /// # Big-endian issue
+    /// It is just experimental for Big Endian CPUs. So, you are not encouraged
+    /// to use it for Big Endian CPUs for serious purpose. Only use this crate
+    /// for Big-endian CPUs with your own full responsibility.
+    pub fn saturating_rem_assign(&mut self, rhs: Self)
+    {
+        let (_, remainder) = self.divide_fully(rhs);
+        *self = remainder;
     }
 
 
 
     /***** METHODS FOR BIT OPERATION *****/
 
+    // pub fn shift_left<U>(&self, n: U) -> Self
+    /// Shift left the field `number: [T;N]` to the left by `n`.
+    /// 
+    /// # Feature
+    /// 'Shift left' means 'move left all bits'. So, if `10011010` is shifted
+    /// left by 2, it will be `01101000`, for example.
+    /// 
+    /// # Output
+    /// It returns the left-shifted version of `self`. which is shifted to the
+    /// left by `n` bits.
+    /// 
+    /// # Example
+    /// ```
+    /// // Todo
+    /// ```
     pub fn shift_left<U>(&self, n: U) -> Self
     where U: Uint + Clone + Display + Debug + ToString
             + Add<Output=U> + AddAssign + Sub<Output=U> + SubAssign
@@ -4308,6 +5317,18 @@ where T: Uint + Clone + Display + Debug + ToString
         res
     }
 
+    // pub fn shift_left_assign<U>(&mut self, n: U)
+    /// shifts the field `number: [T;N]` to the left by `n`, and assign it
+    /// to `self` back.
+    /// 
+    /// # Feature
+    /// 'Shift left' means 'move left all bits'. So, if `10011010` is shifted
+    /// left by 2, it will be `01101000`, for example.
+    /// 
+    /// # Example
+    /// ```
+    /// // Todo
+    /// ```
     pub fn shift_left_assign<U>(&mut self, n: U)
     where U: Uint + Clone + Display + Debug + ToString
             + Add<Output=U> + AddAssign + Sub<Output=U> + SubAssign
@@ -4345,14 +5366,29 @@ where T: Uint + Clone + Display + Debug + ToString
         let mut carry = zero;
         for idx in chunk_num..N
         {
-            num = (self.get_num_(idx) << T::num(piece_num.into_u128())) | carry;
-            carry = self.get_num_(idx) >> T::num((TSIZE_IN_BITS - piece_num).into_u128());
+            num = (self.get_num_(idx) << T::usize_as_Uint(piece_num)) | carry;
+            carry = self.get_num_(idx) >> T::usize_as_Uint(TSIZE_IN_BITS - piece_num);
             self.set_num_(idx, num);
         }
         if carry != zero
             { self.set_overflow(); }
     }
 
+    // pub fn shift_right<U>(&self, n: U) -> Self
+    /// Shift right the field `number: [T;N]` to the right by `n`.
+    /// 
+    /// # Feature
+    /// 'Shift right' means 'move right all bits'. So, if `10011010` is shifted
+    /// right by 2, it will be `00100110`, for example.
+    /// 
+    /// # Output
+    /// It returns the right-shifted version of `self`. which is shifted to the
+    /// right by `n` bits.
+    /// 
+    /// # Example
+    /// ```
+    /// // Todo
+    /// ```
     pub fn shift_right<U>(&self, n: U) -> Self
     where U: Uint + Clone + Display + Debug + ToString
             + Add<Output=U> + AddAssign + Sub<Output=U> + SubAssign
@@ -4368,6 +5404,18 @@ where T: Uint + Clone + Display + Debug + ToString
         res
     }
 
+    // pub fn shift_right_assign<U>(&mut self, n: U)
+    /// shifts the field `number: [T;N]` to the right by `n`, and assign it
+    /// to `self` back.
+    /// 
+    /// # Feature
+    /// 'Shift right' means 'move right all bits'. So, if `10011010` is shifted
+    /// right by 2, it will be `00100110`, for example.
+    /// 
+    /// # Example
+    /// ```
+    /// // Todo
+    /// ```
     pub fn shift_right_assign<U>(&mut self, n: U)
     where U: Uint + Clone + Display + Debug + ToString
             + Add<Output=U> + AddAssign + Sub<Output=U> + SubAssign
@@ -4379,8 +5427,8 @@ where T: Uint + Clone + Display + Debug + ToString
             + PartialEq + PartialOrd
     {
         let TSIZE_IN_BITS = T::size_in_bits();
-        let chunk_num = (n / U::num(TSIZE_IN_BITS as u128)).into_usize();
-        let piece_num = (n % U::num(TSIZE_IN_BITS as u128)).into_usize();
+        let chunk_num = (n / U::usize_as_Uint(TSIZE_IN_BITS)).into_usize();
+        let piece_num = (n % U::usize_as_Uint(TSIZE_IN_BITS)).into_usize();
         let zero = T::zero();
         self.reset_all_flags();
         if chunk_num > 0
@@ -4399,7 +5447,7 @@ where T: Uint + Clone + Display + Debug + ToString
         }
         if piece_num == 0
             { return; }
-        if (self.get_num_(0) << T::num((TSIZE_IN_BITS - piece_num).into_u128())) != zero
+        if (self.get_num_(0) << T::usize_as_Uint((TSIZE_IN_BITS - piece_num))) != zero
             { self.set_underflow(); }
 
         let mut num: T;
@@ -4407,8 +5455,8 @@ where T: Uint + Clone + Display + Debug + ToString
         let mut idx = N - 1 - chunk_num;
         loop
         {
-            num = (self.get_num_(idx) >> T::num(piece_num.into_u128())) | carry;
-            carry = self.get_num_(idx) << T::num((TSIZE_IN_BITS - piece_num).into_u128());
+            num = (self.get_num_(idx) >> T::usize_as_Uint(piece_num)) | carry;
+            carry = self.get_num_(idx) << T::usize_as_Uint((TSIZE_IN_BITS - piece_num));
             self.set_num_(idx, num);
             if idx == 0
                 { break; }
@@ -4418,6 +5466,23 @@ where T: Uint + Clone + Display + Debug + ToString
             { self.set_underflow(); }
     }
 
+    // pub fn rotate_left<U>(&self, n: U) -> Self
+    /// Rotates the field `number: [T;N]` to the left by `n`.
+    /// 
+    /// # Feature
+    /// 'Rotate left' means 'shift left' with filling the left-pushed-out bits
+    /// to the empty rightmost bits. So, if `10011010` is rotated left by 2,
+    /// it will be `01101010`, for example.
+    /// 
+    /// # Output
+    /// It returns the left-rotated version of `self`. which is rotated to the
+    /// left by `n` bits.
+    /// 
+    /// # Example
+    /// ```
+    /// // Todo
+    /// ```
+    #[inline]
     pub fn rotate_left<U>(&self, n: U) -> Self
     where U: Uint + Clone + Display + Debug + ToString
             + Add<Output=U> + AddAssign + Sub<Output=U> + SubAssign
@@ -4431,6 +5496,20 @@ where T: Uint + Clone + Display + Debug + ToString
        self.shift_left(n) | self.shift_right(U::num((N * 8) as u128 - n.into_u128()))
     }
 
+    // pub fn rotate_left_assign<U>(&mut self, n: U)
+    /// Rotates the field `number: [T;N]` to the left by `n`, and assign it
+    /// to `self` back.
+    /// 
+    /// # Feature
+    /// 'Rotate left' means 'shift left' with filling the left-pushed-out bits
+    /// to the empty rightmost bits. So, if `10011010` is rotated left by 2,
+    /// it will be `01101010`, for example.
+    /// 
+    /// # Example
+    /// ```
+    /// // Todo
+    /// ```
+    #[inline]
     pub fn rotate_left_assign<U>(&mut self, n: U)
     where U: Uint + Clone + Display + Debug + ToString
             + Add<Output=U> + AddAssign + Sub<Output=U> + SubAssign
@@ -4444,6 +5523,23 @@ where T: Uint + Clone + Display + Debug + ToString
         self.set_number(self.rotate_left(n).get_number());
     }
 
+    // pub fn rotate_right<U>(&self, n: U) -> Self
+    /// Rotates the field `number: [T;N]` to the right by `n`.
+    /// 
+    /// # Feature
+    /// 'Rotate right' means 'shift right' with filling the right-pushed-out bits
+    /// to the empty leftmost bits. So, if `10011010` is rotated right by 2,
+    /// it will be `10100110`, for example.
+    /// 
+    /// # Output
+    /// It returns the right-rotated version of `self`. which is rotated to the
+    /// right by `n` bits.
+    /// 
+    /// # Example
+    /// ```
+    /// // Todo
+    /// ```
+    #[inline]
     pub fn rotate_right<U>(&self, n: U) -> Self
     where U: Uint + Clone + Display + Debug + ToString
             + Add<Output=U> + AddAssign + Sub<Output=U> + SubAssign
@@ -4457,6 +5553,20 @@ where T: Uint + Clone + Display + Debug + ToString
        self.shift_right(n) | self.shift_left(U::num((N * 8) as u128 - n.into_u128()))
     }
 
+    // pub fn rotate_right_assign<U>(&mut self, n: U)
+    /// Rotates the field `number: [T;N]` to the right by `n`, and assign it
+    /// to `self` back.
+    /// 
+    /// # Feature
+    /// 'Rotate right' means 'shift right' with filling the right-pushed-out bits
+    /// to the empty leftmost bits. So, if `10011010` is rotated right by 2,
+    /// it will be `10100110`, for example.
+    /// 
+    /// # Example
+    /// ```
+    /// // Todo
+    /// ```
+    #[inline]
     pub fn rotate_right_assign<U>(&mut self, n: U)
     where U: Uint + Clone + Display + Debug + ToString
             + Add<Output=U> + AddAssign + Sub<Output=U> + SubAssign
@@ -4474,6 +5584,26 @@ where T: Uint + Clone + Display + Debug + ToString
 
     /***** METHODS FOR CONVERTING INTO OTHER TYPES WITH/WITHOUT LOSS *****/
 
+    // pub fn into_biguint<U, const M: usize>(&self) -> BigUInt<U, M>
+    /// Converts `self` into another kind of `BigUInt<U, M>`.
+    /// 
+    /// # Feature
+    /// It copies the contents of its field `number[T;N]` to the field
+    /// `number: [U;M]` of `BigUInt<U, M>`. If the size of `number: [T;N]`
+    /// of `self` is bigger than the size of `number: [U;M]` of `BigUInt<U, M>`,
+    /// that is, `size_of::<T>() * N` > `size_of::<U>() * M`, it is lossy
+    /// conversion. Otherwise, no contents of the field `number: [T;N]` of
+    /// `self` is lost. Always, the field `flag` is not copied.
+    /// 
+    /// # Output
+    /// It returns another kind of `BigUInt<U, M>` with keeping the contents
+    /// of the field `number: [T;N]` as much as possible.
+    /// 
+    /// # Example
+    /// ```
+    /// // Todo
+    /// ```
+    #[inline]
     pub fn into_biguint<U, const M: usize>(&self) -> BigUInt<U, M>
     where U: Uint + Clone + Display + Debug + ToString
             + Add<Output=U> + AddAssign + Sub<Output=U> + SubAssign
@@ -4487,6 +5617,21 @@ where T: Uint + Clone + Display + Debug + ToString
         BigUInt::<U, M>::from_biguint(&self)
     }
 
+    // pub fn into_u128(&self) -> u128
+    /// Converts `self` into `u128`.
+    /// 
+    /// # Feature
+    /// It takes the lowest `u128`-sized bytes, that is, the lowest sixteen
+    /// bytes from `self`, and return then as `u128` data type.
+    /// It is usually lossy conversion.
+    /// 
+    /// # Output
+    /// It returns the lowest sixteen bytes of `self`.
+    /// 
+    /// # Example
+    /// ```
+    /// // Todo
+    /// ```
     pub fn into_u128(&self) -> u128
     {
         let mut num = LongerUnion::new();
@@ -4535,6 +5680,21 @@ where T: Uint + Clone + Display + Debug + ToString
         num.get()
     }
 
+    // pub fn into_u64(&self) -> u64
+    /// Converts `self` into `u64`.
+    /// 
+    /// # Feature
+    /// It takes the lowest `u64`-sized bytes, that is, the lowest eight
+    /// bytes from `self`, and return then as `u64` data type.
+    /// It is usually lossy conversion.
+    /// 
+    /// # Output
+    /// It returns the lowest eight bytes of `self`.
+    /// 
+    /// # Example
+    /// ```
+    /// // Todo
+    /// ```
     pub fn into_u64(&self) -> u64
     {
         let mut num = LongerUnion::new();
@@ -4566,6 +5726,21 @@ where T: Uint + Clone + Display + Debug + ToString
         num.get_ulong_(0)
     }
 
+    // pub fn into_u32(&self) -> u32
+    /// Converts `self` into `u32`.
+    /// 
+    /// # Feature
+    /// It takes the lowest `u32`-sized bytes, that is, the lowest four
+    /// bytes from `self`, and return then as `u32` data type.
+    /// It is usually lossy conversion.
+    /// 
+    /// # Output
+    /// It returns the lowest four bytes of `self`.
+    /// 
+    /// # Example
+    /// ```
+    /// // Todo
+    /// ```
     pub fn into_u32(&self) -> u32
     {
         let mut num = LongerUnion::new();
@@ -4588,6 +5763,21 @@ where T: Uint + Clone + Display + Debug + ToString
         num.get_uint_(0)
     }
 
+    // pub fn into_u16(&self) -> u16
+    /// Converts `self` into `u16`.
+    /// 
+    /// # Feature
+    /// It takes the lowest `u16`-sized bytes, that is, the lowest two
+    /// bytes from `self`, and return then as `u16` data type.
+    /// It is usually lossy conversion.
+    /// 
+    /// # Output
+    /// It returns the lowest two bytes of `self`.
+    /// 
+    /// # Example
+    /// ```
+    /// // Todo
+    /// ```
     pub fn into_u16(&self) -> u16
     {
         let mut num = LongerUnion::new();
@@ -4605,8 +5795,40 @@ where T: Uint + Clone + Display + Debug + ToString
         num.get_ushort_(0)
     }
 
-    pub fn into_u8(&self) -> u8     { self.get_num_(0).into_u8() }
+    // pub fn into_u8(&self) -> u8
+    /// Converts `self` into `u8`.
+    /// 
+    /// # Feature
+    /// It takes the lowest `u8`-sized byte, that is, the lowest one
+    /// byte from `self`, and return it as `u8` data type.
+    /// It is usually lossy conversion.
+    /// 
+    /// # Output
+    /// It returns the lowest byte of `self`.
+    /// 
+    /// # Example
+    /// ```
+    /// // Todo
+    /// ```
+    pub fn into_u8(&self) -> u8
+    {
+        self.get_num_(0).into_u8()
+    }
 
+    // pub fn into_usize(&self) -> usize
+    /// Converts `self` into `usize`.
+    /// 
+    /// # Feature
+    /// It takes the lowest `usize`-sized bytes from `self`,
+    /// and return them as `usize` data type. It is usually lossy conversion.
+    /// 
+    /// # Output
+    /// It returns the lowest `usize` long part of `self`.
+    /// 
+    /// # Example
+    /// ```
+    /// // Todo
+    /// ```
     pub fn into_usize(&self) -> usize
     {
         #[cfg(target_pointer_width = "128")]    return self.into_u128().into_usize();
@@ -4616,13 +5838,115 @@ where T: Uint + Clone + Display + Debug + ToString
         #[cfg(target_pointer_width = "16")]     return self.into_u16().into_usize();
     }
 
-    pub fn to_string_with_radix_and_delimiter(&self, radix: usize, stride: usize, delimiter: &str) -> String
+    // pub fn to_string_with_radix_and_delimiter(&self, radix: usize, stride: usize, delimiter: &str) -> Result<String, NumberErr>
+    /// Reads the value of `BigUInt<T, N>` and write it into String in a 
+    /// certain radix indicated by `radix`, with certain stride steps
+    /// indicated by `stride`, and with a delimiter indicated by `delimiter`.
+    /// 
+    /// # Output
+    /// It returns a sring that shows the value of `BigUInt<T, N>` in a 
+    /// certain radix indicated by `radix`, with certain stride steps
+    /// indicated by `stride`, and with a delimiter indicated by `delimiter`.
+    /// 
+    /// # Valid Radix Range
+    /// The radix can be from `2` up to `62` (= 10 + 26 + 26). Such radices that
+    /// are less than `2` or more than `62` are not available. In this case,
+    /// this method will return `Err(NumberErr::OutOfValidRadixRange)`.
+    /// 
+    /// # Radix more than `10` and less than `37`
+    /// If the radix is more than `10` and less than `37`, the digit bigger than
+    /// `9` will be expressed with alphabets. The avaiable alphabets are
+    /// _case-insensitive_. For example, in the case of hexadecimal number
+    /// system, the digit whose value is `10`, `11`, `12`, `13`, `14`, and `15`
+    /// are represented as `A` or `a`, `B` or `b`, `C` or `c`, `D` or `d`, `E`
+    /// or `e`, and `F` or `f`, respectively. And, in the case of 37-ary number
+    /// system, the values `16`, `35` and `36` are represented as `G` or `g`,
+    /// `Y` or `y`, and `Z` or `z`, respectively.
+    /// 
+    /// # Radix more than `36` and less than `63`
+    /// However, if the radix is more than `36` and less than `63`, the digit
+    /// bigger than `9` will be expressed with alphabets. The avaiable alphabets
+    /// are _case-sensitive_, so `A` is different from `a`. For instance, in the
+    /// case of 62-ary number system, the digit whose value is `10`, `11`, `35`,
+    /// `36`, `37`, `38`, `60` and `61` are represented as `A`, `B`, `Y`, `Z`,
+    /// `a`, `b`, `y` and `z`, respectively.
+    /// 
+    /// # Stride
+    /// In the number expression in a string, you can separate the digits every
+    /// certain number of digits which is called stride. For example, if
+    /// `stride` is 4, the delimeter will be added every four digits. So,
+    /// `100000000` will be written as "1_0000_0000".
+    /// 
+    /// # Replaceable Delimiter
+    /// In the number expression in a string, you can replace the default
+    /// delimiter with any `str` such as "," or "--" in order to make it more
+    /// readable. So, `100000000` will be written as "1,0000,0000" or
+    /// "1--0000--0000", for example.
+    /// 
+    /// # Example
+    /// ```
+    /// // Todo
+    /// ```
+    pub fn to_string_with_radix_and_delimiter(&self, radix: usize, stride: usize, delimiter: &str) -> Result<String, NumberErr>
     {
-        self.to_string_with_radix_and_stride(radix, stride).replace("_", delimiter)
+        let res = self.to_string_with_radix_and_stride(radix, stride);
+        match res
+        {
+            Ok(txt) =>  { Ok(txt.replace("_", delimiter)) },
+            Err(_) =>   { res },
+        }
     }
 
-    pub fn to_string_with_radix_and_stride(&self, radix: usize, stride: usize) -> String
+    // pub fn to_string_with_radix_and_stride(&self, radix: usize, stride: usize) -> Result<String, NumberErr>
+    /// Reads the value of `BigUInt<T, N>` and write it into String
+    /// with a certain radix.
+    /// 
+    /// # Output
+    /// It returns a sring that shows the value of `BigUInt<T, N>`.
+    /// 
+    /// # Valid Radix Range
+    /// The radix can be from `2` up to `62` (= 10 + 26 + 26). Such radices that
+    /// are less than `2` or more than `62` are not available. In this case,
+    /// this method will return `Err(NumberErr::OutOfValidRadixRange)`.
+    /// 
+    /// # Radix more than `10` and less than `37`
+    /// If the radix is more than `10` and less than `37`, the digit bigger than
+    /// `9` will be expressed with alphabets. The avaiable alphabets are
+    /// _case-insensitive_. For example, in the case of hexadecimal number
+    /// system, the digit whose value is `10`, `11`, `12`, `13`, `14`, and `15`
+    /// are represented as `A` or `a`, `B` or `b`, `C` or `c`, `D` or `d`, `E`
+    /// or `e`, and `F` or `f`, respectively. And, in the case of 37-ary number
+    /// system, the values `16`, `35` and `36` are represented as `G` or `g`,
+    /// `Y` or `y`, and `Z` or `z`, respectively.
+    /// 
+    /// # Radix more than `36` and less than `63`
+    /// However, if the radix is more than `36` and less than `63`, the digit
+    /// bigger than `9` will be expressed with alphabets. The avaiable alphabets
+    /// are _case-sensitive_, so `A` is different from `a`. For instance, in the
+    /// case of 62-ary number system, the digit whose value is `10`, `11`, `35`,
+    /// `36`, `37`, `38`, `60` and `61` are represented as `A`, `B`, `Y`, `Z`,
+    /// `a`, `b`, `y` and `z`, respectively.
+    /// 
+    /// # Stride
+    /// In the number expression in a string, you can separate the digits every
+    /// certain number of digits which is called stride. For example, if
+    /// `stride` is 4, the delimeter will be added every four digits. So,
+    /// `100000000` will be written as "1_0000_0000".
+    /// 
+    /// # Default Delimiter _
+    /// In the number expression in a string, you can separate the digits with
+    /// the default delimiter '_' in order to make it more readable. So, "10000"
+    /// is the same as "1_0000".
+    /// 
+    /// # Example
+    /// ```
+    /// // Todo
+    /// ```
+    pub fn to_string_with_radix_and_stride(&self, radix: usize, stride: usize) -> Result<String, NumberErr>
     {
+        if (radix < 2) || (radix > 10 + 26 + 26)
+            { return Err(NumberErr::OutOfValidRadixRange); }
+
         if stride == 0 
         {
             self.to_string_with_radix(radix)
@@ -4636,7 +5960,7 @@ where T: Uint + Clone + Display + Debug + ToString
             let mut remainder;
             loop
             {
-                (dividend, remainder) = dividend.divide_by_uint_fully(T::num(radix as u128));
+                (dividend, remainder) = dividend.divide_by_uint_fully(T::usize_as_Uint(radix));
                 let r = remainder.into_u32();
                 let c = if r < 10     { ('0' as u32 + r) as u8 as char }
                         else if r < 10 + 26 { ('A' as u32 - 10 + r) as u8 as char }
@@ -4656,21 +5980,56 @@ where T: Uint + Clone + Display + Debug + ToString
             let mut num_str = String::new();
             while let Some(ch) = txt.pop()
                 { num_str.push(ch); }
-            num_str
+            Ok(num_str)
         }
     }
 
-    /// Reads the value of BigUInt<T, N> and write it into String
+    // pub fn to_string_with_radix(&self, radix: usize) -> Result<String, NumberErr>
+    /// Reads the value of `BigUInt<T, N>` and write it into String
     /// with a certain radix.
-    pub fn to_string_with_radix(&self, radix: usize) -> String
+    /// 
+    /// # Output
+    /// It returns a sring that shows the value of `BigUInt<T, N>`.
+    /// 
+    /// # Valid Radix Range
+    /// The radix can be from `2` up to `62` (= 10 + 26 + 26). Such radices that
+    /// are less than `2` or more than `62` are not available. In this case,
+    /// this method will return `Err(NumberErr::OutOfValidRadixRange)`.
+    /// 
+    /// # Radix more than `10` and less than `37`
+    /// If the radix is more than `10` and less than `37`, the digit bigger than
+    /// `9` will be expressed with alphabets. The avaiable alphabets are
+    /// _case-insensitive_. For example, in the case of hexadecimal number
+    /// system, the digit whose value is `10`, `11`, `12`, `13`, `14`, and `15`
+    /// are represented as `A` or `a`, `B` or `b`, `C` or `c`, `D` or `d`, `E`
+    /// or `e`, and `F` or `f`, respectively. And, in the case of 37-ary number
+    /// system, the values `16`, `35` and `36` are represented as `G` or `g`,
+    /// `Y` or `y`, and `Z` or `z`, respectively.
+    /// 
+    /// # Radix more than `36` and less than `63`
+    /// However, if the radix is more than `36` and less than `63`, the digit
+    /// bigger than `9` will be expressed with alphabets. The avaiable alphabets
+    /// are _case-sensitive_, so `A` is different from `a`. For instance, in the
+    /// case of 62-ary number system, the digit whose value is `10`, `11`, `35`,
+    /// `36`, `37`, `38`, `60` and `61` are represented as `A`, `B`, `Y`, `Z`,
+    /// `a`, `b`, `y` and `z`, respectively.
+    /// 
+    /// # Example
+    /// ```
+    /// // Todo
+    /// ```
+    pub fn to_string_with_radix(&self, radix: usize) -> Result<String, NumberErr>
     {
+        if (radix < 2) || (radix > 10 + 26 + 26)
+            { return Err(NumberErr::OutOfValidRadixRange); }
+
         let mut txt = String::new();
         let zero = Self::zero();
         let mut dividend = self.clone();
         let mut remainder;
         loop
         {
-            (dividend, remainder) = dividend.divide_by_uint_fully(T::num(radix as u128));
+            (dividend, remainder) = dividend.divide_by_uint_fully(T::usize_as_Uint(radix));
             let r = remainder.into_u32();
             let c = if r < 10     { ('0' as u32 + r) as u8 as char }
                     else if r < 10 + 26 { ('A' as u32 - 10 + r) as u8 as char }
@@ -4684,77 +6043,277 @@ where T: Uint + Clone + Display + Debug + ToString
         let mut num_str = String::new();
         while let Some(ch) = txt.pop()
             { num_str.push(ch); }
-        num_str
+        Ok(num_str)
     }
+
 
 
     /***** FLAG MANIPULATION *****/
 
-    #[inline] pub fn set_flag_bit(&mut self, flag: u8)      { self.flag |= flag; }
-    #[inline] pub fn reset_flag_bit(&mut self, flag: u8)    { self.flag &= !flag; }
-    #[inline] pub fn is_flag_bit_on(&self, flag: u8) -> bool    { (self.flag & flag) != 0 }
-    #[inline] pub fn reset_all_flags(&mut self)             { self.flag = 0; }
-    #[inline] pub fn set_infinity(&mut self)      { self.set_flag_bit(Self::INFINITY); }
-    #[inline] pub fn reset_inifinity(&mut self)   { self.reset_flag_bit(Self::INFINITY); }
-    #[inline] pub fn is_inifinity(&self) -> bool  { self.is_flag_bit_on(Self::INFINITY) }
-    #[inline] pub fn set_divided_by_zero(&mut self)   { self.set_flag_bit(Self::DIVIDED_BY_ZERO); }
-    #[inline] pub fn reset_divided_by_zero(&mut self) { self.reset_flag_bit(Self::DIVIDED_BY_ZERO); }
-    #[inline] pub fn is_divided_by_zero(&self) -> bool { self.is_flag_bit_on(Self::DIVIDED_BY_ZERO) }
+    // pub fn set_flag_bit(&mut self, flag: u8)
+    /// Sets flag bits that `flag`indicates to be `1`.
+    /// 
+    /// # Example
+    /// ```
+    /// // Todo
+    /// ```
+    #[inline]
+    pub fn set_flag_bit(&mut self, flag: u8)
+    {
+        self.flag |= flag;
+    }
 
+    // pub fn reset_flag_bit(&mut self, flag: u8)
+    /// Resets flag bits that `flag`indicates to be `0`.
+    /// 
+    /// # Example
+    /// ```
+    /// // Todo
+    /// ```
+    #[inline]
+    pub fn reset_flag_bit(&mut self, flag: u8)
+    {
+        self.flag &= !flag;
+    }
+
+    // pub fn is_flag_bit_on(&self) -> bool
+    /// Checks whether or not the flag bits that `flag`indicates are set to be `1.
+    /// 
+    /// # Output
+    /// It returns `true` if the flag bits that `flag`indicates are set.
+    /// Otherwise, it returns `false`.
+    /// 
+    /// # Example
+    /// ```
+    /// // Todo
+    /// ```
+    #[inline]
+    pub fn is_flag_bit_on(&self, flag: u8) -> bool
+    {
+        (self.flag & flag) != 0
+    }
+
+    // pub fn reset_all_flags(&mut self)
+    /// Resets all flag bits to be `0`.
+    /// 
+    /// # Example
+    /// ```
+    /// // Todo
+    /// ```
+    #[inline]
+    pub fn reset_all_flags(&mut self)
+    {
+        self.flag = 0;
+    }
+
+    // pub fn set_infinity(&mut self)
+    /// Sets infinity flag.
+    /// 
+    /// # Example
+    /// ```
+    /// // Todo
+    /// ```
+    #[inline]
+    pub fn set_infinity(&mut self)
+    {
+        self.set_flag_bit(Self::INFINITY);
+    }
+
+    // pub fn reset_inifinity(&mut self)
+    /// Resets infinity flag.
+    /// 
+    /// # Example
+    /// ```
+    /// // Todo
+    /// ```
+    #[inline]
+    pub fn reset_inifinity(&mut self)
+    {
+        self.reset_flag_bit(Self::INFINITY);
+    }
+
+    // pub fn is_inifinity(&self) -> bool
+    /// Checks whether or not inifinity flag is set.
+    /// 
+    /// # Output
+    /// It returns `true` if the inifinity flag is set.
+    /// Otherwise, it returns `false`.
+    /// 
+    /// # Example
+    /// ```
+    /// // Todo
+    /// ```
+    #[inline]
+    pub fn is_inifinity(&self) -> bool
+    {
+        self.is_flag_bit_on(Self::INFINITY)
+    }
+
+    // pub fn set_divided_by_zero(&mut self)
+    /// Sets divided_by_zero flag.
+    /// 
+    /// # Example
+    /// ```
+    /// // Todo
+    /// ```
+    #[inline]
+    pub fn set_divided_by_zero(&mut self)
+    {
+        self.set_flag_bit(Self::DIVIDED_BY_ZERO);
+    }
+
+    // pub fn reset_divided_by_zero(&mut self)
+    /// Resets divided_by_zero flag.
+    /// 
+    /// # Example
+    /// ```
+    /// // Todo
+    /// ```
+    #[inline]
+    pub fn reset_divided_by_zero(&mut self) { self.reset_flag_bit(Self::DIVIDED_BY_ZERO); }
+
+    // pub fn is_overflow(&self) -> bool
+    /// Checks whether or not divided_by_zero flag is set.
+    /// 
+    /// # Output
+    /// It returns `true` if the divided_by_zero flag is set.
+    /// Otherwise, it returns `false`.
+    /// 
+    /// # Example
+    /// ```
+    /// // Todo
+    /// ```
+    #[inline]
+    pub fn is_divided_by_zero(&self) -> bool
+    {
+        self.is_flag_bit_on(Self::DIVIDED_BY_ZERO)
+    }
+
+    // pub fn set_overflow(&mut self)
     /// Sets overflow flag.
-    #[inline] pub fn set_overflow(&mut self)
+    /// 
+    /// # Example
+    /// ```
+    /// // Todo
+    /// ```
+    #[inline]
+    pub fn set_overflow(&mut self)
     {
         self.set_flag_bit(Self::OVERFLOW);
     }
 
+    // pub fn reset_overflow(&mut self)
     /// Resets overflow flag.
-    #[inline] pub fn reset_overflow(&mut self)
+    /// 
+    /// # Example
+    /// ```
+    /// // Todo
+    /// ```
+    #[inline]
+    pub fn reset_overflow(&mut self)
     {
         self.reset_flag_bit(Self::OVERFLOW);
     }
 
-    /// Checks whether or not overflow flag is set, and returns true
-    /// if the overflow flag is set. Otherwise, it returns false.
-    #[inline] pub fn is_overflow(&self) -> bool
+    // pub fn is_overflow(&self) -> bool
+    /// Checks whether or not overflow flag is set.
+    /// 
+    /// # Output
+    /// It returns `true` if the overflow flag is set.
+    /// Otherwise, it returns `false`.
+    /// 
+    /// # Example
+    /// ```
+    /// // Todo
+    /// ```
+    #[inline]
+    pub fn is_overflow(&self) -> bool
     {
         self.is_flag_bit_on(Self::OVERFLOW)
     }
 
+    // pub fn set_underflow(&mut self)
     /// Sets underflow flag.
-    #[inline] pub fn set_underflow(&mut self)
+    /// 
+    /// # Example
+    /// ```
+    /// // Todo
+    /// ```
+    #[inline]
+    pub fn set_underflow(&mut self)
     {
         self.set_flag_bit(Self::UNDERFLOW);
     }
 
+    // pub fn reset_underflow(&mut self)
     /// Reets underflow flag.
-    #[inline] pub fn reset_underflow(&mut self)
+    /// 
+    /// # Example
+    /// ```
+    /// // Todo
+    /// ```
+    #[inline]
+    pub fn reset_underflow(&mut self)
     {
         self.reset_flag_bit(Self::UNDERFLOW);
     }
 
-    /// Checks whether or not underflow flag is set, and returns true
-    /// if the underflow flag is set. Otherwise, it returns false.
-    #[inline] pub fn is_underflow(&self) -> bool
+    // pub fn is_underflow(&self) -> bool
+    /// Checks whether or not underflow flag is set.
+    /// 
+    /// # Output
+    /// It returns `true` if the underflow flag is set.
+    /// Otherwise, it returns `false`.
+    /// 
+    /// # Example
+    /// ```
+    /// // Todo
+    /// ```
+    #[inline]
+    pub fn is_underflow(&self) -> bool
     {
         self.is_flag_bit_on(Self::UNDERFLOW)
     }
 
+    // pub fn set_untrustable(&mut self)
     /// Sets both overflow flag and underflow flag.
-    #[inline] pub fn set_untrustable(&mut self)
+    /// 
+    /// # Example
+    /// ```
+    /// // Todo
+    /// ```
+    #[inline]
+    pub fn set_untrustable(&mut self)
     {
         self.set_flag_bit(Self::OVERFLOW | Self::UNDERFLOW);
     }
 
+    // pub fn reset_untrustable(&mut self)
     /// Resets both overflow flag and underflow flag.
-    #[inline] pub fn reset_untrustable(&mut self)
+    /// 
+    /// # Example
+    /// ```
+    /// // Todo
+    /// ```
+    #[inline]
+    pub fn reset_untrustable(&mut self)
     {
         self.reset_flag_bit(Self::OVERFLOW | Self::UNDERFLOW);
     }
 
-    /// Checks whether or not both overflow flag and underflow flag are all set,
-    /// and returns true if both of the overflow flag and the underflow flag
-    /// are all set. Otherwise, it returns false.
-    #[inline] pub fn is_untrustable(&self) -> bool
+    // pub fn is_untrustable(&self) -> bool
+    /// Checks whether or not both overflow flag and underflow flag are all set.
+    /// 
+    /// # Output
+    /// It returns `true` if both of the overflow flag and the underflow flag
+    /// are all set. Otherwise, it returns `false`.
+    /// 
+    /// # Example
+    /// ```
+    /// // Todo
+    /// ```
+    #[inline]
+    pub fn is_untrustable(&self) -> bool
     {
         self.is_flag_bit_on(Self::OVERFLOW | Self::UNDERFLOW)
     }

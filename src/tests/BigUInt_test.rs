@@ -32,9 +32,10 @@ pub fn test_main_BigUInt()
 {
     // BigUInt_submax___main();
 
-    BigUInt_carrying_add___main();
-    // BigUInt_wrapping_add___main();
-    // BigUInt_wrapping_add_assign___main();
+    // BigUInt_carrying_add___main();
+    // BigUInt_carrying_add_assign___main();
+    BigUInt_wrapping_add___main();
+    BigUInt_wrapping_add_assign___main();
 
     // BigUInt_abs_diff___main();
 
@@ -59,22 +60,81 @@ fn BigUInt_submax___main()
     println!("---------------------------");
 }
 
+fn BigUInt_carrying_add___main()
+{
+    println!("BigUInt_carrying_add___main()");
+    use std::str::FromStr;
+    use Cryptocol::define_utypes_with;
+
+    define_utypes_with!(u128);
+
+    let a_hi = u256::from_str("9876543210987654321098765432109876543210987654321098765432109876543210987654").unwrap();
+    let a_lo = u256::from_str("91234567890123456789012345678901234567890123456789012345678901234567890123456").unwrap();
+    let b_hi = u256::from_str("1111111101111111110111111111011111111101111111110111111111011111111101111110").unwrap();
+    let b_lo = u256::from_str("101111111101111111110111111111011111111101111111110111111111011111111101111110").unwrap();
+
+    let (c_lo, carry) = a_lo.carrying_add(b_lo, false);
+    let (c_hi, overflow) = a_hi.carrying_add(b_hi, carry);
+
+    println!("{}:{} + {}:{} = {}:{}", a_hi, a_lo, b_hi, b_lo, c_hi, c_lo);
+    println!("carry = {}, overflow = {}", carry, overflow);
+
+    assert_eq!(c_hi.to_string(), "10987654312098765431209876543120987654312098765431209876543120987654312098765");
+    assert_eq!(c_lo.to_string(), "76553589753918372475552471781224437825721249902258559417332328337765861594630");
+    assert_eq!(carry, true);
+    assert_eq!(overflow, false);
+    println!("---------------------------");
+}
+
+fn BigUInt_carrying_add_assign___main()
+{
+    println!("BigUInt_carrying_add_assign___main()");
+    use std::str::FromStr;
+    use Cryptocol::define_utypes_with;
+
+    define_utypes_with!(u128);
+
+    let mut a_hi = u256::from_str("9876543210987654321098765432109876543210987654321098765432109876543210987654").unwrap();
+    let mut a_lo = u256::from_str("91234567890123456789012345678901234567890123456789012345678901234567890123456").unwrap();
+    let b_hi = u256::from_str("1111111101111111110111111111011111111101111111110111111111011111111101111110").unwrap();
+    let b_lo = u256::from_str("101111111101111111110111111111011111111101111111110111111111011111111101111110").unwrap();
+
+    let carry = a_lo.carrying_add_assign(b_lo, false);
+    let overflow = a_hi.carrying_add_assign(b_hi, carry);
+
+    println!("9876543210987654321098765432109876543210987654321098765432109876543210987654:91234567890123456789012345678901234567890123456789012345678901234567890123456 + {}:{} = {}:{}", b_hi, b_lo, a_hi, a_lo);
+    println!("carry = {}, overflow = {}", carry, overflow);
+
+    assert_eq!(a_hi.to_string(), "10987654312098765431209876543120987654312098765431209876543120987654312098765");
+    assert_eq!(a_lo.to_string(), "76553589753918372475552471781224437825721249902258559417332328337765861594630");
+    assert_eq!(carry, true);
+    assert_eq!(overflow, false);
+    println!("---------------------------");
+}
+
 fn BigUInt_wrapping_add___main()
 {
     println!("BigUInt_wrapping_add___main()");
     use Cryptocol::define_utypes_with;
     define_utypes_with!(u128);
 
-    let a = u512::max() - u512::from(1_u128);
+    let zero = u512::zero();
+    let one = u512::one();
+    let two = u512::from(2_u8);
+    let three = u512::from(3_u8);
+    let a = u512::max() - one;
+    let b = a.wrapping_add(one);
+    let c = a.wrapping_add(two);
+    let d = a.wrapping_add(three);
 
-    println!("{} + 1 = {}", a, a.wrapping_add(u512::from(1_u128)));
-    assert_eq!(a.wrapping_add(u512::from(1_u128)), u512::max());
+    println!("{} + 1 = {}", a, b);
+    assert_eq!(b, u512::max());
 
-    println!("{} + 2 = {}", a, a.wrapping_add(u512::from(2_u128)));
-    assert_eq!(a.wrapping_add(u512::from(2_u128)), u512::zero());
+    println!("{} + 2 = {}", a, c);
+    assert_eq!(c, zero);
 
-    println!("{} + 3 = {}", a, a.wrapping_add(u512::from(3_u128)));
-    assert_eq!(a.wrapping_add(u512::from(3_u128)), u512::one());
+    println!("{} + 3 = {}", a, d);
+    assert_eq!(d, one);
     println!("---------------------------");
 }
 
@@ -83,22 +143,26 @@ fn BigUInt_wrapping_add_assign___main()
     println!("BigUInt_wrapping_add_assign___main()");
     use std::str::FromStr;
     use Cryptocol::define_utypes_with;
-
     define_utypes_with!(u128);
-    let mut a = u256::max() - u256::from(1_u128);
+
+    let zero = u512::zero();
+    let one = u512::one();
+
+    let mut a = u512::max() - one;
     println!("Originally,\ta = {}", a);
+    assert_eq!(a.to_string(), "13407807929942597099574024998205846127479365820592393377723561443721764030073546976801874298166903427690031858186486050853753882811946569946433649006084094");
 
-    a.wrapping_add_assign(u256::from(1_u128));
+    a.wrapping_add_assign(one);
     println!("After a += 1,\ta = {}", a);
-    assert_eq!(a, u256::from_str("347376267711948586270712955026063723559809953996921692118372752023739388919807").unwrap());
+    assert_eq!(a, u512::max());
 
-    a.wrapping_add_assign(u256::from(1_u128));
+    a.wrapping_add_assign(one);
     println!("After a += 1,\ta = {}", a);
-    assert_eq!(a, u256::zero());
+    assert_eq!(a, zero);
 
-    a.wrapping_add_assign(u256::from(1_u128));
+    a.wrapping_add_assign(one);
     println!("After a += 1,\ta = {}", a);
-    assert_eq!(a, u256::one());
+    assert_eq!(a, one);
     println!("---------------------------");
 }
 
@@ -166,25 +230,6 @@ fn BigUInt_pow___main()
     // evidence of wrapping (modular) exponentiation
     assert!(b > c);
     println!("---------------------------");
-}
-
-fn BigUInt_carrying_add___main()
-{
-    println!("BigUInt_carrying_add___main()");
-    use std::str::FromStr;
-    use Cryptocol::define_utypes_with;
-    define_utypes_with!(u128);
-/*
-    let a = u256::from_str("1234567890123456789012345678901234567890123456789012345678901234567890123456").unwrap();
-    let b = u256::from_str("9876543210987654321098765432109876543210987654321098765432109876543210987654").unwrap();
-    let (c, carry) = a.carrying_add(b, false);
-    println!("{} + {} = {}", a, b, c);
-    println!("carry = {}", carry);
-    assert_eq!(c.to_string(), "11111111101111111110111111111011111111101111111110111111111011111111101111110");
-    assert_eq!(carry, false);
-*/
-    let d = u256::from_str("1234567890123456789012345678901234567890123456789012345678901234567890123456789").unwrap();
-    println!("value = {}, overflow = {}", d, d.is_overflow());
 }
 
 

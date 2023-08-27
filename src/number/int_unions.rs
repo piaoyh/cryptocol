@@ -5267,7 +5267,26 @@ macro_rules! Uint_for_integer_unions_impl {
             #[inline] fn one() -> Self              { Self::new_with(1) }
             #[inline] fn max() -> Self              { Self::new_with(<$g>::MAX) }
             #[inline] fn min() -> Self              { Self::new_with(<$g>::MIN) }
-            #[inline] fn num(n: u128) -> Self       { Self::new_with(n as $g) }
+            #[inline] fn u128_as_Uint(n: u128) -> Self  { Self::new_with(n as $g) }
+            #[inline] fn u64_as_Uint(n: u64) -> Self    { Self::new_with(n as $g) }
+            #[inline] fn u32_as_Uint(n: u32) -> Self    { Self::new_with(n as $g) }
+            #[inline] fn u16_as_Uint(n: u16) -> Self    { Self::new_with(n as $g) }
+            #[inline] fn u8_as_Uint(n: u8) -> Self      { Self::new_with(n as $g) }
+            #[inline] fn usize_as_Uint(n: usize) -> Self    { Self::new_with(n as $g) }
+
+            #[inline]
+            fn num<T: Uint>(n: T) -> Self
+            {
+                match size_of::<T>()
+                {
+                    1 => { return Self::u8_as_Uint(n.into_u8()); },
+                    2 => { return Self::u16_as_Uint(n.into_u16()); },
+                    4 => { return Self::u32_as_Uint(n.into_u32()); },
+                    8 => { return Self::u64_as_Uint(n.into_u64()); },
+                    _ => { return Self::u128_as_Uint(n.into_u128()); },
+                }
+            }
+
             #[inline] fn size_in_bytes() -> usize   { size_of::<Self>() }
             #[inline] fn size_in_bits() -> usize    { size_of::<Self>() * 8 }
             #[inline] fn length_in_bytes(self) -> usize    { size_of_val(&self) }
