@@ -3212,56 +3212,406 @@ where T: Uint + Clone + Display + Debug + ToString
 
     /***** ARITHMATIC OPERATIONS WITH UNSIGNED INTEGERS *****/
 
-    // pub fn wrapping_wrapping_add_uint(&self, rhs: T) -> Self
-    /// Adds a unsigned integer number of type `T` to `BigUInt`-type unsigned
-    /// integer and returns its result in a type of BigUInt.
+    /*** ADDITION ***/
+
+    // pub fn carrying_add_uint(&self, rhs: T, carry: bool) -> (Self, bool)
+    /// Calculates `self` + `rhs` + `carry`,
+    /// wrapping around at the boundary of the type.
+    /// 
+    /// # Features
+    /// This allows chaining together multiple additions to create even a wider
+    /// addition. This can be thought of as a big integer “full adder”,
+    /// in the electronics sense.
+    /// 
+    /// If the input carry is `false`, this method is equivalent to
+    /// `overflowing_add_uint()`, and the output carry is equal to
+    /// the overflow flag.
+    /// 
+    /// # Outputs
+    /// It returns a tuple containing the sum and the output carry. It performs
+    /// “ternary addition” of one big integer operand, a primitive unsigned
+    /// integer, and a carry-in bit, and returns an output big integer and a
+    /// carry-out bit.
+    /// 
+    /// # Example
+    /// ```
+    /// use std::str::FromStr;
+    /// use Cryptocol::define_utypes_with;
+    /// 
+    /// define_utypes_with!(u128);
+    /// // Todo
+    /// ```
+    /// 
+    /// # Big-endian issue
+    /// It is just experimental for Big Endian CPUs. So, you are not encouraged
+    /// to use it for Big Endian CPUs for serious purpose. Only use this crate
+    /// for Big-endian CPUs with your own full responsibility.
+    pub fn carrying_add_uint(&self, rhs: T, carry: bool) -> (Self, bool)
+    {
+        let mut res = self.clone();
+        let c = res.carrying_add_assign_uint(rhs, carry);
+        (res, c)
+    }
+
+    // pub fn carrying_add_assign_uint(&mut self, rhs: T, carry: bool) -> bool
+    /// Accumulate `rhs` + `carry` to `self`, wrapping around at the boundary
+    /// of the type, and return the resulting carry.
+    /// 
+    /// # Features
+    /// This allows chaining together multiple additions to create even a wider
+    /// addition. This can be thought of as a big integer “full adder”,
+    /// in the electronics sense.
+    /// 
+    /// If the input carry is false, this method is equivalent to
+    /// `overflowing_add_assign_uint()`, and the output carry is equal to
+    /// the overflow flag.
+    /// 
+    /// # Outputs
+    /// It returns the output carry. It performs “ternary addition” of a big
+    /// integer operands, primitive unsigned integer, and a carry-in bit,
+    /// and returns a carry-out bit.
+    /// 
+    /// # Example
+    /// ```
+    /// use std::str::FromStr;
+    /// use Cryptocol::define_utypes_with;
+    /// 
+    /// define_utypes_with!(u128);
+    /// 
+    /// // Todo
+    /// ```
+    /// 
+    /// # Big-endian issue
+    /// It is just experimental for Big Endian CPUs. So, you are not encouraged
+    /// to use it for Big Endian CPUs for serious purpose. Only use this crate
+    /// for Big-endian CPUs with your own full responsibility.
+    pub fn carrying_add_assign_uint(&mut self, rhs: T, carry: bool) -> bool
+    {
+        let mut c: bool;
+        let mut num: T;
+        (num, c) = self.get_num_(0).carrying_add(rhs, carry);
+        self.set_num_(0, num);
+        if c
+        {
+            for i in 1..N
+            {
+                (num, c) = self.get_num_(i).carrying_add(T::zero(), c);
+                self.set_num_(i, num);
+                if !c
+                    { break; }
+            }
+        }
+        if c
+            { self.set_overflow(); }
+        c
+    }
+
+    // pub fn wrapping_add_uint(&self, rhs: T) -> Self
+    /// Computes `self` + `rhs`, wrapping around at the boundary of the type.
     /// 
     /// # Output
-    /// It returns the sum of `self` and `rhs`.
+    /// It returns `self` + `rhs` with wrapping (modular) addition.
     /// 
-    /// # Examples
+    /// # Feature
+    /// Wrapping (modular) addition.
     /// 
+    /// # Example
+    /// ```
+    /// use Cryptocol::define_utypes_with;
+    /// define_utypes_with!(u128);
+    ///  
+    /// let zero = u512::zero();
+    /// let one = u512::one();
+    /// let two = u512::from(2_u8);
+    /// let three = u512::from(3_u8);
+    /// let a = u512::max() - one;
+    /// let b = a.wrapping_add_uint(1_u128);
+    /// let c = a.wrapping_add_uint(2_u128);
+    /// let d = a.wrapping_add_uint(3_u128);
+    /// 
+    /// println!("{} + 1 = {}", a, b);
+    /// assert_eq!(b, u512::max());
+    /// 
+    /// println!("{} + 2 = {}", a, c);
+    /// assert_eq!(c, zero);
+    /// println!("{} + 3 = {}", a, d);
+    /// assert_eq!(d, one);
+    /// ```
+    /// 
+    /// # Big-endian issue
+    /// It is just experimental for Big Endian CPUs. So, you are not encouraged
+    /// to use it for Big Endian CPUs for serious purpose. Only use this crate
+    /// for Big-endian CPUs with your own full responsibility.
+    pub fn wrapping_add_uint(&self, rhs: T) -> Self
+    {
+        let (res, _) = self.carrying_add_uint(rhs, false); 
+        res
+    }
+
+    // pub fn wrapping_add_assign_uint(&mut self, rhs: T)
+    /// Computes `self` + `rhs`, wrapping around at the boundary of the type,
+    /// and assign the result to `self` back.
+    /// 
+    /// # Feature
+    /// Wrapping (modular) addition.
+    /// 
+    /// # Example
     /// ```
     /// use std::str::FromStr;
     /// use Cryptocol::define_utypes_with;
     /// define_utypes_with!(u128);
-    /// let a = u256::from_str("10000000000000000000000000000000000").unwrap();
-    /// let sum = a.wrapping_add_uint(35);
-    /// println!("sum = {}", sum);
-    /// assert_eq!(sum, u256::from_str("10000000000000000000000000000000035").unwrap());
+    /// 
+    /// let zero = u512::zero();
+    /// let one = u512::one();
+    /// 
+    /// let mut a = u512::max() - one;
+    /// println!("Originally,\ta = {}", a);
+    /// assert_eq!(a.to_string(), "13407807929942597099574024998205846127479365820592393377723561443721764030073546976801874298166903427690031858186486050853753882811946569946433649006084094");
+    /// 
+    /// a.wrapping_add_assign_uint(1_u128);
+    /// println!("After a += 1,\ta = {}", a);
+    /// assert_eq!(a, u512::max());
+    /// 
+    /// a.wrapping_add_assign_uint(1_u128);
+    /// println!("After a += 1,\ta = {}", a);
+    /// assert_eq!(a, zero);
+    /// 
+    /// a.wrapping_add_assign_uint(1_u128);
+    /// println!("After a += 1,\ta = {}", a);
+    /// assert_eq!(a, one);
     /// ```
-    pub fn wrapping_add_uint(&self, rhs: T) -> Self
+    /// 
+    /// # Big-endian issue
+    /// It is just experimental for Big Endian CPUs. So, you are not encouraged
+    /// to use it for Big Endian CPUs for serious purpose. Only use this crate
+    /// for Big-endian CPUs with your own full responsibility.
+    #[inline]
+    pub fn wrapping_add_assign_uint(&mut self, rhs: T)
     {
-        let mut bi = self.clone();
-        bi.wrapping_add_assign_uint(rhs);
-        bi
+        self.carrying_add_assign_uint(rhs, false);
     }
 
-    // pub fn wrapping_add_assign_uint(&mut self, rhs: T)
-    /// Adds a unsigned integer number of type `T` to `BigUInt`-type unsigned
-    /// integer and returns its result to `self` back.
+    // pub fn overflowing_add_uint(&self, rhs: T) -> (Self, bool)
+    /// Calculates `self` + `rhs`.
+    /// 
+    /// # Output
+    /// It returns a tuple of the addition `self` + `rhs` along with a boolean
+    /// indicating whether an arithmetic overflow would occur. If an overflow
+    /// would have occurred then the wrapped (modular) value is returned.
     /// 
     /// # Example
     /// ```
     /// // Todo
     /// ```
-    pub fn wrapping_add_assign_uint(&mut self, rhs: T)
+    /// 
+    /// # Big-endian issue
+    /// It is just experimental for Big Endian CPUs. So, you are not encouraged
+    /// to use it for Big Endian CPUs for serious purpose. Only use this crate
+    /// for Big-endian CPUs with your own full responsibility.
+    #[inline]
+    pub fn overflowing_add_uint(&self, rhs: T) -> (Self, bool)
     {
-        let zero = T::zero();
-        let one = T::one();
-        let mut midres = self.number[0].wrapping_add(rhs);
-        let mut	carry = if midres < self.number[0] { one } else { zero };
-        self.number[0] = midres;
-        for i in 1..N
+        self.carrying_add_uint(rhs, false)
+    }
+
+    // pub fn overflowing_add_assign_uint(&mut self, rhs: T) -> bool
+    /// Calculates `self` + `rhs`, and assigns the result to `self` back.
+    /// 
+    /// # Output
+    /// It returns true if an arithmetic overflow would occur.
+    /// Otherwise, it returns `false`.
+    /// 
+    /// # Example
+    /// ```
+    /// // Todo
+    /// ```
+    /// 
+    /// # Big-endian issue
+    /// It is just experimental for Big Endian CPUs. So, you are not encouraged
+    /// to use it for Big Endian CPUs for serious purpose. Only use this crate
+    /// for Big-endian CPUs with your own full responsibility.
+    #[inline]
+    pub fn overflowing_add_assign_uint(&mut self, rhs: T) -> bool
+    {
+        self.carrying_add_assign_uint(rhs, false)
+    }
+
+    // pub fn checked_add_uint(&self, rhs: T) -> Option<Self>
+    /// Computes `self` + `rhs`.
+    /// 
+    /// # Output
+    /// It returns the sum `self` + `rhs` wrapped by `Some` of enum `Option`
+    /// if overflow did not occur. Otherwise, it returns `None` of enum Option.
+    /// 
+    /// # Example
+    /// ```
+    /// // Todo
+    /// ```
+    /// 
+    /// # Big-endian issue
+    /// It is just experimental for Big Endian CPUs. So, you are not encouraged
+    /// to use it for Big Endian CPUs for serious purpose. Only use this crate
+    /// for Big-endian CPUs with your own full responsibility.
+    pub fn checked_add_uint(&self, rhs: T) -> Option<Self>
+    {
+        let mut res = self.clone();
+        let overflow = res.overflowing_add_assign_uint(rhs);
+        if overflow
+            { None }
+        else
+            { Some(res) }
+    }
+
+    // pub fn unchecked_add_uint(&self, rhs: T) -> Self
+    /// Computes `self` + `rhs`, assuming overflow cannot occur.
+    /// 
+    /// # Panics
+    /// If overflow occurred, it will panic. So, use this method only when you
+    /// are sure that overflow will not occur. 
+    /// 
+    /// # Output
+    /// It returns the sum `self` + `rhs` if overflow did not occur.
+    /// Otherwise, it will panic.
+    /// 
+    /// # Example
+    /// ```
+    /// // Todo
+    /// ```
+    /// 
+    /// # Big-endian issue
+    /// It is just experimental for Big Endian CPUs. So, you are not encouraged
+    /// to use it for Big Endian CPUs for serious purpose. Only use this crate
+    /// for Big-endian CPUs with your own full responsibility.
+    #[inline]
+    pub fn unchecked_add_uint(&self, rhs: T) -> Self
+    {
+        self.checked_add_uint(rhs).unwrap()
+    }
+
+    // pub fn saturating_add_uint(&self, rhs: T) -> Self
+    /// Computes `self` + `rhs`, saturating at the numeric bounds
+    /// instead of overflowing.
+    /// 
+    /// # Output
+    /// It returns the sum `self` + `rhs` if overflow did not occur.
+    /// Otherwise, it returns the maximum value.
+    /// 
+    /// # Example
+    /// ```
+    /// // Todo
+    /// ```
+    /// 
+    /// # Big-endian issue
+    /// It is just experimental for Big Endian CPUs. So, you are not encouraged
+    /// to use it for Big Endian CPUs for serious purpose. Only use this crate
+    /// for Big-endian CPUs with your own full responsibility.
+    pub fn saturating_add_uint(&self, rhs: T) -> Self
+    {
+        let mut res = self.clone();
+        res.saturating_add_assign_uint(rhs);
+        res
+    }
+
+    // pub fn saturating_add_assign_uint(&mut self, rhs: T)
+    /// Computes `self` + `rhs`, saturating at the numeric bounds
+    /// instead of overflowing, and assigns the result to `self` back.
+    /// 
+    /// # Example
+    /// ```
+    /// // Todo
+    /// ```
+    /// 
+    /// # Big-endian issue
+    /// It is just experimental for Big Endian CPUs. So, you are not encouraged
+    /// to use it for Big Endian CPUs for serious purpose. Only use this crate
+    /// for Big-endian CPUs with your own full responsibility.
+    pub fn saturating_add_assign_uint(&mut self, rhs: T)
+    {
+        if self.overflowing_add_assign_uint(rhs)
+            { self.set_max(); }
+    }
+
+
+    /*** Subtraction ***/
+
+    // pub fn borrowing_sub_uint(&self, rhs: T, borrow: bool) -> (Self, bool)
+    /// Calculates self − rhs − borrow and returns a tuple containing the
+    /// difference and the output borrow.
+    /// 
+    /// # Features
+    /// It performs “ternary subtraction” by subtracting a primitive unsigned
+    /// integer operand and a borrow-in bit from `self`, and returns an output
+    /// integer and a borrow-out bit. This allows chaining together multiple
+    /// subtractions to create a wider subtraction.
+    /// 
+    /// If the input borrow is `false`, this method is equivalent to
+    /// `overflowing_sub_uint()`, and the output carry is equal to
+    /// the underflow flag.
+    /// 
+    /// # Outputs
+    /// It returns a tuple containing an output big integer and a carry-out bit.
+    /// 
+    /// # Example
+    /// ```
+    /// // Todo
+    /// ```
+    /// 
+    /// # Big-endian issue
+    /// It is just experimental for Big Endian CPUs. So, you are not encouraged
+    /// to use it for Big Endian CPUs for serious purpose. Only use this crate
+    /// for Big-endian CPUs with your own full responsibility.
+    pub fn borrowing_sub_uint(&self, rhs: T, borrow: bool) -> (Self, bool)
+    {
+        let mut res = self.clone();
+        let b = res.borrowing_sub_assign_uint(rhs, borrow);
+        (res, b)
+    }
+
+    // pub fn borrowing_sub_assign_uint(&mut self, rhs: T, borrow: bool) -> bool
+    /// Calculates self − rhs − borrow, and assigns difference to `self` back,
+    /// and returns the output borrow.
+    /// 
+    /// # Features
+    /// It performs “ternary subtraction” by subtracting an primitive unsiged
+    /// integer operand and a borrow-in bit from `self`, and a borrow-out bit.
+    /// This allows chaining together multiple subtractions to create a wider
+    /// subtraction.
+    /// 
+    /// If the input borrow is `false`, this method is equivalent to
+    /// `overflowing_sub_assign_uint()`, and the output carry is equal to
+    /// the underflow flag.
+    /// 
+    /// # Outputs
+    /// It returns a tuple containing an output big integer and a carry-out bit.
+    /// 
+    /// # Example
+    /// ```
+    /// // Todo
+    /// ```
+    /// 
+    /// # Big-endian issue
+    /// It is just experimental for Big Endian CPUs. So, you are not encouraged
+    /// to use it for Big Endian CPUs for serious purpose. Only use this crate
+    /// for Big-endian CPUs with your own full responsibility.
+    pub fn borrowing_sub_assign_uint(&mut self, rhs: T, borrow: bool) -> bool
+    {
+        let mut num: T;
+        let mut b: bool;
+        (num, b) = self.get_num_(0).borrowing_sub(rhs, borrow);
+        self.set_num_(0, num);
+        if b
         {
-            midres = self.number[i].wrapping_add(carry);
-            carry = if midres < carry { one } else { zero };
-            self.number[i] = midres;
-            if carry == zero
-                { break; }
+            for i in 1..N
+            {
+                (num, b) = self.get_num_(i).borrowing_sub(T::zero(), b);
+                self.set_num_(i, num);
+                if !b
+                    { break; }
+            }
         }
-        if carry != zero
-            { self.set_overflow(); }
+        if b
+            { self.set_underflow(); }
+        b
     }
 
     // pub fn wrapping_sub_uint(&self, rhs: T) -> Self
@@ -3280,12 +3630,12 @@ where T: Uint + Clone + Display + Debug + ToString
     /// let a = u256::from_str("10000000000000000000000000000000000").unwrap();
     /// let sub = a.wrapping_sub_uint(35_u128);
     /// println!("sub = {}", sub);
+    /// assert_eq!(sub, "9999999999999999999999999999999965");
     /// ```
     pub fn wrapping_sub_uint(&self, rhs: T) -> Self
     {
-        let mut bi = self.clone();
-        bi.wrapping_sub_assign_uint(rhs);
-        bi
+        let (res, _) = self.borrowing_sub_uint(rhs, false);
+        res
     }
 
     // pub fn wrapping_sub_assign_uint(&mut self, rhs: T)
@@ -3296,23 +3646,359 @@ where T: Uint + Clone + Display + Debug + ToString
     /// ```
     /// // Todo
     /// ```
+    #[inline]
     pub fn wrapping_sub_assign_uint(&mut self, rhs: T)
     {
+        self.borrowing_sub_assign_uint(rhs, false);
+    }
+
+    // pub fn overflowing_sub_uint(&self, rhs: T) -> (Self, bool)
+    /// Calculates `self` - `rhs`.
+    /// 
+    /// # Output
+    /// It returns a tuple of the subtraction `self` - `rhs` along with a boolean
+    /// indicating whether an arithmetic unerflow would occur. If an unerflow
+    /// would have occurred then the wrapped (modular) value is returned.
+    /// 
+    /// # Example
+    /// ```
+    /// // Todo
+    /// ```
+    /// 
+    /// # Big-endian issue
+    /// It is just experimental for Big Endian CPUs. So, you are not encouraged
+    /// to use it for Big Endian CPUs for serious purpose. Only use this crate
+    /// for Big-endian CPUs with your own full responsibility.
+    #[inline]
+    pub fn overflowing_sub_uint(&self, rhs: T) -> (Self, bool)
+    {
+        self.borrowing_sub_uint(rhs, false)
+    }
+
+    // pub fn overflowing_sub_assign(&mut self, rhs: T) -> bool
+    /// Calculates `self` - `rhs`, and assigns the result to `self` back.
+    /// 
+    /// # Output
+    /// It returns true if an arithmetic unerflow would occur.
+    /// Otherwise, it returns `false`.
+    /// 
+    /// # Example
+    /// ```
+    /// // Todo
+    /// ```
+    /// 
+    /// # Big-endian issue
+    /// It is just experimental for Big Endian CPUs. So, you are not encouraged
+    /// to use it for Big Endian CPUs for serious purpose. Only use this crate
+    /// for Big-endian CPUs with your own full responsibility.
+    #[inline]
+    pub fn overflowing_sub_assign_uint(&mut self, rhs: T) -> bool
+    {
+        self.borrowing_sub_assign_uint(rhs, false)
+    }
+
+    // pub fn checked_sub_uint(&self, rhs: T) -> Option<Self>
+    /// Computes `self` - `rhs`.
+    /// 
+    /// # Output
+    /// It returns the difference `self` - `rhs` wrapped by `Some`
+    /// of enum `Option` if unerflow did not occur.
+    /// Otherwise, it returns `None` of enum Option.
+    /// 
+    /// # Example
+    /// ```
+    /// // Todo
+    /// ```
+    /// 
+    /// # Big-endian issue
+    /// It is just experimental for Big Endian CPUs. So, you are not encouraged
+    /// to use it for Big Endian CPUs for serious purpose. Only use this crate
+    /// for Big-endian CPUs with your own full responsibility.
+    pub fn checked_sub_uint(&self, rhs: T) -> Option<Self>
+    {
+        let mut res = self.clone();
+        let underflow = res.overflowing_sub_assign_uint(rhs);
+        if underflow
+            { None }
+        else
+            { Some(res) }
+    }
+
+    // pub fn unchecked_sub_uint(&self, rhs: T) -> Self
+    /// Computes `self` - `rhs`, assuming underflow cannot occur.
+    /// 
+    /// # Panics
+    /// If underflow occurred, it will panic. So, use this method only when you
+    /// are sure that underflow will not occur. 
+    /// 
+    /// # Output
+    /// It returns the difference `self` - `rhs` if underflow did not occur.
+    /// Otherwise, it will panic.
+    /// 
+    /// # Example
+    /// ```
+    /// // Todo
+    /// ```
+    /// 
+    /// # Big-endian issue
+    /// It is just experimental for Big Endian CPUs. So, you are not encouraged
+    /// to use it for Big Endian CPUs for serious purpose. Only use this crate
+    /// for Big-endian CPUs with your own full responsibility.
+    #[inline]
+    pub fn unchecked_sub_uint(&self, rhs: T) -> Self
+    {
+        self.checked_sub_uint(rhs).unwrap()
+    }
+
+    // pub fn saturating_sub_uint(&self, rhs: T) -> Self
+    /// Computes `self` - `rhs`, saturating at the numeric bounds
+    /// instead of underflowing.
+    /// 
+    /// # Output
+    /// It returns the difference `self` - `rhs` if underflowing did not occur.
+    /// Otherwise, it returns `0`.
+    /// 
+    /// # Example
+    /// ```
+    /// // Todo
+    /// ```
+    /// 
+    /// # Big-endian issue
+    /// It is just experimental for Big Endian CPUs. So, you are not encouraged
+    /// to use it for Big Endian CPUs for serious purpose. Only use this crate
+    /// for Big-endian CPUs with your own full responsibility.
+    pub fn saturating_sub_uint(&self, rhs: T) -> Self
+    {
+        let mut res = self.clone();
+        res.saturating_sub_assign_uint(rhs);
+        res
+    }
+
+    // pub fn saturating_sub_assign_uint(&mut self, rhs: T)
+    /// Computes `self` - `rhs`, saturating at the numeric bounds
+    /// instead of underflowing, and assigns the result to `self` back.
+    /// 
+    /// # Feature
+    /// `self` will be the difference `self` - `rhs` if underflowing
+    /// did not occur. Otherwise, it returns `0`.
+    /// 
+    /// # Example
+    /// ```
+    /// // Todo
+    /// ```
+    /// 
+    /// # Big-endian issue
+    /// It is just experimental for Big Endian CPUs. So, you are not encouraged
+    /// to use it for Big Endian CPUs for serious purpose. Only use this crate
+    /// for Big-endian CPUs with your own full responsibility.
+    pub fn saturating_sub_assign_uint(&mut self, rhs: T)
+    {
+        if self.overflowing_sub_assign_uint(rhs)
+            { self.set_zero(); }
+    }
+
+    // pub fn abs_diff(&self, other: T) -> Self
+    /// Computes the absolute difference between `self` and `other`.
+    /// 
+    /// # Output
+    /// It returns the absolute difference between `self` and `other`.
+    /// 
+    /// # Example
+    /// ```
+    /// use std::str::FromStr;
+    /// use Cryptocol::number::BigUInt;
+    /// use Cryptocol::define_utypes_with;
+    /// 
+    /// define_utypes_with!(u128);
+    /// // Todo
+    /// ```
+    pub fn abs_diff_uint(&self, other: T) -> Self
+    {
+        if self.lt_uint(other)
+            { Self::from_uint(other - self.get_num_(0)) }
+        else
+            { self.wrapping_add_uint(other) }
+    }
+
+    /*** Multiplication ***/
+
+    // pub fn carrying_mul_uint(&self, rhs: T, carry: Self) -> (Self, Self)
+    /// Calculates the “full multiplication” `self` * `rhs` + `carry` without
+    /// the possibility to overflow.
+    /// 
+    /// # Output
+    /// It returns `self` * `rhs` + `carry` in the form of a tuple of the
+    /// low-order (wrapping) bits and the high-order (overflow) bits of the
+    /// result as two separate values, in that order.
+    /// 
+    /// # Feature
+    /// It performs “long multiplication” which takes in an extra amount to add,
+    /// and may return an additional amount of overflow. This allows for
+    /// chaining together multiple multiplications to create “bigger integers”
+    /// which represent larger values.
+    /// 
+    /// # Counterpart Methods
+    /// If you don’t need the carry, then you can use `widening_mul()` instead.
+    /// 
+    /// The value of the first field in the returned tuple matches what you’d
+    /// get by combining the `wrapping_mul_uint()` and `wrapping_add_uint()`
+    /// methods: `self.wrapping_mul_uint(rhs).wrapping_add_uint(carry)`. So,
+    /// `self.carrying_mul_uint(rhs, carry).0`
+    /// == `self.wrapping_mul_uint(rhs).wrapping_add_uint(carry)`
+    /// 
+    /// # Example
+    /// ```
+    /// // Todo
+    /// ```
+    /// 
+    /// # Big-endian issue
+    /// It is just experimental for Big Endian CPUs. So, you are not encouraged
+    /// to use it for Big Endian CPUs for serious purpose. Only use this crate
+    /// for Big-endian CPUs with your own full responsibility.
+    pub fn carrying_mul_uint(&self, rhs: T, carry: Self) -> (Self, Self)
+    {
+        let mut low = self.clone();
+        let high = low.carrying_mul_assign_uint(rhs, carry);
+        (low, high)
+    }
+
+    // pub fn carrying_mul_assign_uint(&mut self, rhs: T, carry: Self) -> Self
+    /// Calculates the “full multiplication” `self` * `rhs` + `carry` without
+    /// the possibility to overflow, and assigs the low-order bits of the result
+    /// to `self` back and returns the high-order bits of the result.
+    /// 
+    /// # Output
+    /// It returns the high-order (overflow) bits of `self` * `rhs` + `carry`
+    /// of the result.
+    /// 
+    /// # Feature
+    /// It performs “long multiplication” which takes in an extra amount to add,
+    /// and may return an additional amount of overflow. This allows for
+    /// chaining together multiple multiplications to create “bigger integers”
+    /// which represent larger values.
+    /// 
+    /// # Counterpart Methods
+    /// If you don’t need the carry, then you can use `widening_mul_assign_uint()`
+    /// instead.
+    /// 
+    /// The value of `self` after calculation matches what you’d get by
+    /// combining the `wrapping_mul_uint()` and `wrapping_add_assign_uint()` methods:
+    /// `self.wrapping_mul_uint(rhs).wrapping_add_assign(_uintcarry)`.
+    /// 
+    /// # Example
+    /// ```
+    /// // Todo
+    /// ```
+    /// 
+    /// # Big-endian issue
+    /// It is just experimental for Big Endian CPUs. So, you are not encouraged
+    /// to use it for Big Endian CPUs for serious purpose. Only use this crate
+    /// for Big-endian CPUs with your own full responsibility.
+    pub fn carrying_mul_assign_uint(&mut self, rhs: T, carry: Self) -> Self
+    {
         let zero = T::zero();
-        let one = T::one();
-        let mut midres = self.number[0].wrapping_sub(rhs);
-        let mut	carry= if midres > self.number[0] { one } else { zero };
-        self.number[0] = midres;
-        for i in 1..N
+        let mut high = Self::zero();
+        if rhs == zero
         {
-            midres = self.number[i].wrapping_sub(carry);
-            carry = if midres > self.number[i] { one } else { zero };
-            self.number[i] = midres;
-            if carry == zero
-                { break; }
+            self.set_zero();
+            return high;
         }
-        if carry != zero
-            { self.set_underflow(); }
+        if self.is_zero()
+            { return high; }
+
+        let one = T::one();
+        let adder = self.clone();
+        let mut bit_check = one << T::usize_as_Uint(T::size_in_bits() - 1 - rhs.leading_zeros() as usize);
+        self.set_zero();
+        while bit_check != zero
+        {
+            *self <<= 1;
+            high <<= 1;
+            if bit_check & rhs != zero
+            {
+                *self += adder;
+                if self.is_overflow()
+                    { high.wrapping_add_uint(T::u8_as_Uint(1)); }
+            }
+            bit_check >>= one;
+        }
+        if self.overflowing_add_assign(carry)
+            { high.wrapping_add_assign_uint(T::u8_as_Uint(1u8)); }
+        high
+    }
+
+    // pub fn widening_mul(&self, rhs: T) -> (Self, Self)
+    /// Calculates the complete product `self` * `rhs` without the possibility
+    /// to overflow.
+    /// 
+    /// # Output
+    /// It returns `self` * `rhs` in the form of a tuple of the low-order
+    /// (wrapping) bits and the high-order (overflow) bits of the result as
+    /// two separate values, in that order.
+    /// 
+    /// /// # Feature
+    /// It performs “long multiplication” which takes in an extra amount to add,
+    /// and may return an additional amount of overflow. This allows for
+    /// chaining together multiple multiplications to create “bigger integers”
+    /// which represent larger values.
+    /// 
+    /// # Counterpart Methods
+    /// If you also need to add a carry to the wide result, then you want to use
+    /// `carrying_mul_uint()` instead.
+    ///     
+    /// The value of the first field in the returned tuple matches what you’d
+    /// get the `wrapping_mul_uint()` methods.
+    /// `self.widening_mul_uint(rhs).0` == `self.wrapping_mul_uint(rhs)`
+    /// 
+    /// # Example
+    /// ```
+    /// // Todo
+    /// ```
+    /// 
+    /// # Big-endian issue
+    /// It is just experimental for Big Endian CPUs. So, you are not encouraged
+    /// to use it for Big Endian CPUs for serious purpose. Only use this crate
+    /// for Big-endian CPUs with your own full responsibility.
+    #[inline]
+    pub fn widening_mul_uint(&self, rhs: T) -> (Self, Self)
+    {
+        self.carrying_mul_uint(rhs, Self::zero())
+    }
+
+    // pub fn widening_mul_assign_uint(&mut self, rhs: T) -> Self
+    /// Calculates the complete product `self` * `rhs` without the possibility
+    /// to overflow.
+    /// 
+    /// # Output
+    /// It returns the high-order (overflow) bits of the result `self` * `rhs`.
+    /// 
+    /// /// # Feature
+    /// It performs “long multiplication” which takes in an extra amount to add,
+    /// and may return an additional amount of overflow. This allows for
+    /// chaining together multiple multiplications to create “bigger integers”
+    /// which represent larger values.
+    /// 
+    /// # Counterpart Methods
+    /// If you also need to add a carry to the wide result, then you want to use
+    /// `carrying_mul_assign_uint()` instead.
+    ///     
+    /// The value of `self` after calculation matches what you’d get the
+    /// `wrapping_mul_uint()` methods.
+    /// `self` == `self.wrapping_mul_uint(rhs)`
+    /// 
+    /// # Example
+    /// ```
+    /// // Todo
+    /// ```
+    /// 
+    /// # Big-endian issue
+    /// It is just experimental for Big Endian CPUs. So, you are not encouraged
+    /// to use it for Big Endian CPUs for serious purpose. Only use this crate
+    /// for Big-endian CPUs with your own full responsibility.
+    #[inline]
+    pub fn widening_mul_assign_uint(&mut self, rhs: T) -> Self
+    {
+        self.carrying_mul_assign_uint(rhs, Self::zero())
     }
 
     // pub fn wrapping_mul_uint(&self, rhs: T) -> Self
@@ -3328,8 +4014,9 @@ where T: Uint + Clone + Display + Debug + ToString
     /// use Cryptocol::define_utypes_with;
     /// define_utypes_with!(u128);
     /// let a = u256::from_str("10000000000000000000000000000000000").unwrap();
-    /// let mul = a.wrapping_mul_uint(35);
+    /// let mul = a.wrapping_mul_uint(35_u128);
     /// println!("mul = {}", mul);
+    /// assert_eq!(mul, "350000000000000000000000000000000000");
     /// ```
     pub fn wrapping_mul_uint(&self, rhs: T) -> Self
     {
@@ -3357,11 +4044,9 @@ where T: Uint + Clone + Display + Debug + ToString
             return;
         }
         let adder = self.clone();
-        let mut bit_check = one;
-        bit_check <<= T::usize_as_Uint(T::size_in_bits() - 1);
+        let mut bit_check = one << T::usize_as_Uint(T::size_in_bits() - 1 - rhs.leading_zeros() as usize);
         self.set_zero();
-        while (bit_check != zero) && ((bit_check & rhs) == zero)
-            { bit_check >>= one; }
+
         while bit_check != zero
         {
             *self <<= 1;
@@ -3371,12 +4056,157 @@ where T: Uint + Clone + Display + Debug + ToString
         }
     }
 
-    // pub fn divide_by_uint_fully(&self, rhs: T) -> (Self, T)
-    /// Divide BigUInt<T, N> by T so as to get quotient and remainder
+    // pub fn overflowing_mul_uint(&self, rhs: T) -> (Self, bool)
+    /// Calculates `self` * `rhs`.
     /// 
     /// # Output
-    /// It returns tuple of quotient and remainder. quotient is `Self` and
-    /// remainder is `T`.
+    /// It returns a tuple of the multiplication `self` * `rhs` along
+    /// with a boolean indicating whether an arithmetic overflow would occur.
+    /// If an overflow would have occurred then the wrapped (modular) value
+    /// is returned.
+    /// 
+    /// # Example
+    /// ```
+    /// // Todo
+    /// ```
+    /// 
+    /// # Big-endian issue
+    /// It is just experimental for Big Endian CPUs. So, you are not encouraged
+    /// to use it for Big Endian CPUs for serious purpose. Only use this crate
+    /// for Big-endian CPUs with your own full responsibility.
+    pub fn overflowing_mul_uint(&self, rhs: T) -> (Self, bool)
+    {
+        let mut res = self.clone();
+        let overflow = res.overflowing_mul_assign_uint(rhs);
+        (res, overflow)
+    }
+
+    // pub fn overflowing_mul_assign_uint(&mut self, rhs: T) -> bool
+    /// Calculates `self` * `rhs`, and assigns the result to `self` back.
+    /// 
+    /// # Output
+    /// It returns true if an arithmetic overflow would occur.
+    /// Otherwise, it returns `false`.
+    /// 
+    /// # Example
+    /// ```
+    /// // Todo
+    /// ```
+    /// 
+    /// # Big-endian issue
+    /// It is just experimental for Big Endian CPUs. So, you are not encouraged
+    /// to use it for Big Endian CPUs for serious purpose. Only use this crate
+    /// for Big-endian CPUs with your own full responsibility.
+    pub fn overflowing_mul_assign_uint(&mut self, rhs: T) -> bool
+    {
+        self.wrapping_mul_assign_uint(rhs);
+        self.is_overflow()
+    }
+
+    // pub fn checked_mul_uint(&self, rhs: T) -> Option<Self>
+    /// Computes `self` * `rhs`.
+    /// 
+    /// # Output
+    /// It returns the sum `self` * `rhs` wrapped by `Some` of enum `Option`
+    /// if overflow did not occur. Otherwise, it returns `None` of enum Option.
+    /// 
+    /// # Example
+    /// ```
+    /// // Todo
+    /// ```
+    /// 
+    /// # Big-endian issue
+    /// It is just experimental for Big Endian CPUs. So, you are not encouraged
+    /// to use it for Big Endian CPUs for serious purpose. Only use this crate
+    /// for Big-endian CPUs with your own full responsibility.
+    pub fn checked_mul_uint(&self, rhs: T) -> Option<Self>
+    {
+        let mut res = self.clone();
+        let overflow = res.overflowing_mul_assign_uint(rhs);
+        if overflow
+            { None }
+        else
+            { Some(res) }
+    }
+
+    // pub fn unchecked_mul_uint(&self, rhs: T) -> Self
+    /// Computes `self` * `rhs`, assuming overflow cannot occur.
+    /// 
+    /// # Panics
+    /// If overflow occurred, it will panic. So, use this method only when you
+    /// are sure that overflow will not occur. 
+    /// 
+    /// # Output
+    /// It returns the sum `self` * `rhs` if overflow did not occur.
+    /// Otherwise, it will panic.
+    /// 
+    /// # Example
+    /// ```
+    /// // Todo
+    /// ```
+    /// 
+    /// # Big-endian issue
+    /// It is just experimental for Big Endian CPUs. So, you are not encouraged
+    /// to use it for Big Endian CPUs for serious purpose. Only use this crate
+    /// for Big-endian CPUs with your own full responsibility.
+    #[inline]
+    pub fn unchecked_mul_uint(&self, rhs: T) -> Self
+    {
+        self.checked_mul_uint(rhs).unwrap()
+    }
+
+    // pub fn saturating_mul_uint(&self, rhs: T) -> Self
+    /// Computes `self` * `rhs`, saturating at the numeric bounds
+    /// instead of overflowing.
+    /// 
+    /// # Output
+    /// It returns the sum `self` + `rhs` if overflow did not occur.
+    /// Otherwise, it returns the maximum value.
+    /// 
+    /// # Example
+    /// ```
+    /// // Todo
+    /// ```
+    /// 
+    /// # Big-endian issue
+    /// It is just experimental for Big Endian CPUs. So, you are not encouraged
+    /// to use it for Big Endian CPUs for serious purpose. Only use this crate
+    /// for Big-endian CPUs with your own full responsibility.
+    pub fn saturating_mul_uint(&self, rhs: T) -> Self
+    {
+        let mut res = self.clone();
+        res.saturating_mul_assign_uint(rhs);
+        res
+    }
+
+    // pub fn saturating_mul_assign(&mut self, rhs: T)
+    /// Computes `self` * `rhs`, saturating at the numeric bounds
+    /// instead of overflowing, and assigns the result to `self` back.
+    /// 
+    /// # Example
+    /// ```
+    /// // Todo
+    /// ```
+    /// 
+    /// # Big-endian issue
+    /// It is just experimental for Big Endian CPUs. So, you are not encouraged
+    /// to use it for Big Endian CPUs for serious purpose. Only use this crate
+    /// for Big-endian CPUs with your own full responsibility.
+    pub fn saturating_mul_assign_uint(&mut self, rhs: T)
+    {
+        if self.overflowing_mul_assign_uint(rhs)
+            { self.set_max(); }
+    }
+
+
+    /*** Division ***/
+
+    // pub fn divide_fully_uint(&self, rhs: T) -> (Self, T)
+    /// Divide `BigUInt<T, N>` by `rhs` so as to get quotient and remainder
+    /// 
+    /// # Output
+    /// It returns tuple of quotient and remainder. quotient is `Self` type
+    /// and remainder is `T` type.
     /// 
     /// # Feature
     /// If `rhs` is zero, the divided_by_zero and overflow flags of quotient
@@ -3390,9 +4220,9 @@ where T: Uint + Clone + Display + Debug + ToString
     /// use Cryptocol::define_utypes_with;
     /// define_utypes_with!(u128);
     /// let dividend = u256::from_str("1234567890157589425462369896").unwrap();
-    /// let (quotient, remainder) = dividend.divide_by_uint_fully(87_u128);
+    /// let (quotient, remainder) = dividend.divide_fully_uint(87_u128);
     /// ```
-    pub fn divide_by_uint_fully(&self, rhs: T) -> (Self, T)
+    pub fn divide_fully_uint(&self, rhs: T) -> (Self, T)
     {
         let mut quotient = Self::zero();
         let zero = T::zero();
@@ -3491,75 +4321,226 @@ where T: Uint + Clone + Display + Debug + ToString
         }
     }
 
-    /// Divides self which is of `BigUInt` type by rhs which is of type `T`,
-    /// and assign quotient of `BigUInt` type to self.
-    /// 
-    /// # Feature
-    /// If you get both quotient and remainder, you'd better use the function
-    /// `divide_by_uint_fully()` instead of calling the functions `quotient()`
-    /// and `remainder()` in series because they call the function
-    /// `divide_by_uint_fully()` internally.
-    /// 
-    /// # Example
-    /// ```
-    /// // Todo
-    /// ```
-    pub fn quotient(&mut self, rhs: T)
-    {
-        let (quotient, _) = self.divide_by_uint_fully(rhs);
-        *self = quotient;
-    }
-
-    /// Divides self which is of `BigUInt` type by rhs which is of type `T`,
-    /// and assign remainder of type `T` to self.
-    /// 
-    /// # Feature
-    /// If you get both quotient and remainder, you'd better use the function
-    /// `divide_by_uint_fully()` instead of calling the functions `quotient()`
-    /// and `remainder()` in series because they call the function
-    /// `divide_by_uint_fully()` internally.
-    /// 
-    /// # Example
-    /// ```
-    /// // Todo
-    /// ```
-    pub fn remainder(&mut self, rhs: T)
-    {
-        let (_, remainder) = self.divide_by_uint_fully(rhs);
-        self.set_uint(remainder);
-    }
-
-    // pub fn div_uint(&self, rhs: T) -> Self
-    /// Divides `BigUInt`-type number with a unsigned integer number
-    /// of type `T` and returns its quotient in a type of BigUInt.
-    /// 
+    // pub fn wrapping_div_uint(&self, rhs: T) -> Self
+    /// Calculates the quotient when `self` is divided by `rhs`,
+    /// which is `self` / `rhs`.
+    ///
     /// # Output
-    /// It returns the quotient of `self` divided by `rhs`.
+    /// It returns the quotient of when `self` is divided by `rhs`,
+    /// which is `self` / `rhs`. 
     /// 
-    /// # Examples
+    /// # Feature
+    /// Wrapped division on `BigUInt` types is just normal division.
+    /// There’s no way wrapping could ever happen. This function exists,
+    /// so that all operations are accounted for in the wrapping operations.
     /// 
+    /// If `rhs` is zero, the quotient will have maximum value of `BigUInt`
+    /// type, and the flags of quotient such as `OVERFLOW`, `INFINITY`, and
+    /// `DIVIDED_BY_ZERO` will be set. __It does not panic__ while the same
+    /// named methods `wrapping_div()` for primitive integer data type such
+    /// as u8, u16, u32, u64, etc. will panic if `rhs` is zero.
+    /// 
+    /// # Example
     /// ```
     /// use std::str::FromStr;
     /// use Cryptocol::define_utypes_with;
     /// define_utypes_with!(u128);
     /// let a = u256::from_str("10000000000000000000000000000000000").unwrap();
-    /// let div = a.div_uint(35);
+    /// let div = a.wrapping_div_uint(35);
     /// println!("div = {}", div);
     /// ```
-    pub fn div_uint(&self, rhs: T) -> Self
+    /// 
+    /// # Big-endian issue
+    /// It is just experimental for Big Endian CPUs. So, you are not encouraged
+    /// to use it for Big Endian CPUs for serious purpose. Only use this crate
+    /// for Big-endian CPUs with your own full responsibility.
+    pub fn wrapping_div_uint(&self, rhs: T) -> Self
     {
-        let (quotient, _) = self.divide_by_uint_fully(rhs);
+        let (quotient, _) = self.divide_fully_uint(rhs);
         quotient
     }
 
-    // pub fn rem_uint(&self, rhs: T) -> T
-    /// Divides `BigUInt`-type number with a unsigned integer number
-    /// of type `T` and returns its remainder in a type of T.
+    // pub fn wrapping_div_assign_uint(&mut self, rhs: T)
+    /// Calculates the quotient when `self` is divided by `rhs`,
+    /// which is `self` / `rhs`, and assign the result to `self` back.
+    /// 
+    /// # Feature
+    /// Wrapped division on `BigUInt` types is just normal division.
+    /// There’s no way wrapping could ever happen. This function exists,
+    /// so that all operations are accounted for in the wrapping operations.
+    /// 
+    /// If `rhs` is zero, the `self` will have maximum value of `BigUInt`
+    /// type, and the flags of `self` such as `OVERFLOW`, `INFINITY`, and
+    /// `DIVIDED_BY_ZERO` will be set. __It does not panic__ while the same
+    /// kind methods `wrapping_div()` for primitive integer data type such
+    /// as u8, u16, u32, u64, etc. will panic if `rhs` is zero.
+    /// 
+    /// # Example
+    /// ```
+    /// // Todo
+    /// ```
+    /// 
+    /// # Big-endian issue
+    /// It is just experimental for Big Endian CPUs. So, you are not encouraged
+    /// to use it for Big Endian CPUs for serious purpose. Only use this crate
+    /// for Big-endian CPUs with your own full responsibility.
+    pub fn wrapping_div_assign_uint(&mut self, rhs: T)
+    {
+        let (quotient, _) = self.divide_fully_uint(rhs);
+        *self = quotient;
+    }
+
+    // pub fn checked_div_uint(&self, rhs: T) -> Option<Self>
+    /// Calculates the quotient when `self` is divided by `rhs`,
+    /// which is `self` / `rhs`.
     /// 
     /// # Output
-    /// It returns the remainder of `self` divided by `rhs`.
+    /// It returns `None` if `rhs` is zero. Otherwise, it returns the quotient
+    /// of when `self` is divided by `rhs`, which is `self` / `rhs`,
+    /// wrapped by `Some` of enum `Option`.
     /// 
-    /// # Examples
+    /// # Feature
+    /// Wrapped division on `BigUInt` types is just normal division.
+    /// There’s no way wrapping could ever happen.
+    /// 
+    /// If `rhs` is zero, the quotient will have maximum value of `BigUInt`
+    /// type, and the flags of quotient such as `OVERFLOW`, `INFINITY`, and
+    /// `DIVIDED_BY_ZERO` will be set.
+    /// 
+    /// # Example
+    /// ```
+    /// // Todo
+    /// ```
+    /// 
+    /// # Big-endian issue
+    /// It is just experimental for Big Endian CPUs. So, you are not encouraged
+    /// to use it for Big Endian CPUs for serious purpose. Only use this crate
+    /// for Big-endian CPUs with your own full responsibility.
+    pub fn checked_div_uint(&self, rhs: T) -> Option<Self>
+    {
+        let res = self.wrapping_div_uint(rhs);
+        if res.is_divided_by_zero()
+            { None }
+        else
+            { Some(res) }
+    }
+
+    // pub fn unchecked_div_uint(&self, rhs: T) -> Self
+    /// Calculates the quotient when `self` is divided by `rhs`,
+    /// which is `self` / `rhs`, assuming that `rhs` cannot be zero.
+    /// 
+    /// # Panics
+    /// If `rhs` is zero, it will panic. So, use this method only when you
+    /// are sure that `rhs` is not zero. 
+    /// 
+    /// # Output
+    /// It returns the quotient of when `self` is divided by `rhs`,
+    /// which is `self` / `rhs` if `rhs` is not zero.
+    /// Otherwise, it will panic.
+    /// 
+    /// # Feature
+    /// Wrapped division on `BigUInt` types is just normal division.
+    /// There’s no way wrapping could ever happen.
+    /// 
+    /// # Example
+    /// ```
+    /// // Todo
+    /// ```
+    /// 
+    /// # Big-endian issue
+    /// It is just experimental for Big Endian CPUs. So, you are not encouraged
+    /// to use it for Big Endian CPUs for serious purpose. Only use this crate
+    /// for Big-endian CPUs with your own full responsibility.
+    #[inline]
+    pub fn unchecked_div_uint(&self, rhs: T) -> Self
+    {
+        self.checked_div_uint(rhs).unwrap()
+    }
+
+    // pub fn saturating_div_uint(&self, rhs: T) -> Self
+    /// Calculates the quotient when `self` is divided by `rhs`,
+    /// which is `self` / `rhs`, saturating at the numeric bounds
+    /// instead of overflowing.
+    /// 
+    /// # Output
+    /// It returns the quotient of when `self` is divided by `rhs`,
+    /// which is `self` / `rhs` if `rhs` is not zero.
+    /// Otherwise, it returns the maximum value.
+    /// 
+    /// # Feature
+    /// Overflow will not happen unless `rhs` is zero. __It does not panic__
+    /// while the same named methods `saturating_div()` for primitive integer
+    /// data type such as u8, u16, u32, u64, etc. will panic if `rhs` is zero.
+    /// 
+    /// If `rhs` is zero, the quotient will have maximum value of `BigUInt`
+    /// type, and the flags of quotient such as `OVERFLOW` and `DIVIDED_BY_ZERO`
+    /// will be set.
+    /// 
+    /// # Example
+    /// ```
+    /// // Todo
+    /// ```
+    /// 
+    /// # Big-endian issue
+    /// It is just experimental for Big Endian CPUs. So, you are not encouraged
+    /// to use it for Big Endian CPUs for serious purpose. Only use this crate
+    /// for Big-endian CPUs with your own full responsibility.
+    pub fn saturating_div_uint(&self, rhs: T) -> Self
+    {
+        let (mut quotient, _) = self.divide_fully_uint(rhs);
+        quotient.reset_inifinity();
+        quotient
+    }
+
+    // pub fn saturating_div_assign_uint(&mut self, rhs: T) -> Self
+    /// Calculates the quotient when `self` is divided by `rhs`,
+    /// which is `self` / `rhs`, saturating at the numeric bounds
+    /// instead of overflowing, and assigns the quotient to `self` back.
+    /// 
+    /// # Feature
+    /// Overflow will not happen unless `rhs` is zero. __It does not panic__
+    /// while the similar methods `saturating_div()` for primitive integer
+    /// data type such as u8, u16, u32, u64, etc. will panic if `rhs` is zero.
+    /// 
+    /// If `rhs` is zero, `self` will have maximum value of `BigUInt`
+    /// type, and the flags of `self` such as `OVERFLOW` and `DIVIDED_BY_ZERO`
+    /// will be set.
+    /// 
+    /// # Example
+    /// ```
+    /// // Todo
+    /// ```
+    /// 
+    /// # Big-endian issue
+    /// It is just experimental for Big Endian CPUs. So, you are not encouraged
+    /// to use it for Big Endian CPUs for serious purpose. Only use this crate
+    /// for Big-endian CPUs with your own full responsibility.
+    #[inline]
+    pub fn saturating_div_assign_uint(&mut self, rhs: T)
+    {
+        *self = self.saturating_div_uint(rhs);
+    }
+
+    // pub fn wrapping_rem_uint(&self, rhs: T) -> T
+    /// Calculates the remainder when `self` is divided by `rhs`,
+    /// which is `self` % `rhs`.
+    /// 
+    /// # Output
+    /// It returns the remainder when `self` is divided by `rhs`,
+    /// which is `self` % `rhs`, with wrapping (modular) addition.
+    /// 
+    /// # Feature
+    /// Wrapped remainder calculation on `BigUInt` types is just the regular
+    /// remainder calculation. There’s no way wrapping could ever happen. This
+    /// function exists, so that all operations are accounted for in the
+    /// wrapping operations.
+    /// 
+    /// If `rhs` is zero, the remainder is zero and its `DIVIDED_BY_ZERO`
+    /// is set. __It does not panic__ while the same named methods
+    /// `wrapping_rem()` for primitive integer data type such as u8, u16,
+    /// u32, u64, etc. will panic if `rhs` is zero.
+    /// 
+    /// # Example
     /// ```
     /// use std::str::FromStr;
     /// use Cryptocol::define_utypes_with;
@@ -3568,31 +4549,247 @@ where T: Uint + Clone + Display + Debug + ToString
     /// let rem = a.rem_uint(35_u128);
     /// println!("rem = {}", rem);
     /// ```
-    pub fn rem_uint(&self, rhs: T) -> T
+    /// 
+    /// # Big-endian issue
+    /// It is just experimental for Big Endian CPUs. So, you are not encouraged
+    /// to use it for Big Endian CPUs for serious purpose. Only use this crate
+    /// for Big-endian CPUs with your own full responsibility.
+    pub fn wrapping_rem_uint(&self, rhs: T) -> T
     {
-        let (_, remainder) = self.divide_by_uint_fully(rhs);
+        let (_, remainder) = self.divide_fully_uint(rhs);
         remainder
     }
 
-    // pub fn pow_uint<U>(&mut self, exp: U) -> Self
+    // pub fn wrapping_rem_assign_uint(&mut self, rhs: T)
+    /// Calculates the remainder when `self` is divided by `rhs`,
+    /// which is `self` % `rhs`, and returns the remainder to `self` back.
+    /// 
+    /// # Feature
+    /// Wrapped remainder calculation on `BigUInt` types is just the regular
+    /// remainder calculation. There’s no way wrapping could ever happen. This
+    /// function exists, so that all operations are accounted for in the
+    /// wrapping operations.
+    /// 
+    /// If `rhs` is zero, the `self` is zero and its `DIVIDED_BY_ZERO`
+    /// is set. __It does not panic__ while the similar methods
+    /// `wrapping_rem()` for primitive integer data type such as 
+    /// u8, u16, u32, u64, etc. will panic if `rhs` is zero.
+    /// 
+    /// # Example
+    /// ```
+    /// // Todo
+    /// ```
+    /// 
+    /// # Big-endian issue
+    /// It is just experimental for Big Endian CPUs. So, you are not encouraged
+    /// to use it for Big Endian CPUs for serious purpose. Only use this crate
+    /// for Big-endian CPUs with your own full responsibility.
+    pub fn wrapping_rem_assign_uint(&mut self, rhs: T)
+    {
+        let (_, remainder) = self.divide_fully_uint(rhs);
+        self.set_uint(remainder);
+        if rhs == T::zero()
+            { self.set_divided_by_zero(); }
+    }
+
+    // pub fn overflowing_rem_uint(&self, rhs: T) -> (T, bool)
+    /// Calculates the remainder when `self` is divided by `rhs`,
+    /// which is `self` % `rhs`.
+    /// 
+    /// # Output
+    /// It returns a tuple of the remainder after dividing,
+    /// which is `self` % `rhs` along with a boolean indicating whether an
+    /// arithmetic overflow would occur.
+    /// 
+    /// # Feature
+    /// Note that overflow never occurs, so the second value is always false.
+    /// 
+    /// If `rhs` is zero, the remainder is zero and its `DIVIDED_BY_ZERO`
+    /// is set. __It does not panic__ while the same named methods
+    /// `overflowing_rem()` for primitive integer data type such as u8, u16,
+    /// u32, u64, etc. will panic if `rhs` is zero.
+    /// 
+    /// # Example
+    /// ```
+    /// // Todo
+    /// ```
+    /// 
+    /// # Big-endian issue
+    /// It is just experimental for Big Endian CPUs. So, you are not encouraged
+    /// to use it for Big Endian CPUs for serious purpose. Only use this crate
+    /// for Big-endian CPUs with your own full responsibility.
+    pub fn overflowing_rem_uint(&self, rhs: T) -> (T, bool)
+    {
+        let (_, remainder) = self.divide_fully_uint(rhs);
+        (remainder, false)
+    }
+
+    // pub fn overflowing_rem_assign_uint(&mut self, rhs: T) -> bool
+    /// Calculates the remainder when `self` is divided by `rhs`,
+    /// which is `self` % `rhs`, and returns the remainder to `self` back.
+    /// 
+    /// # Output
+    /// It returns a boolean indicating whether an arithmetic overflow
+    /// would occur.
+    /// 
+    /// # Feature
+    /// Note that overflow never occurs, so the outtput is always false.
+    /// 
+    /// If `rhs` is zero, `self` is zero and its `DIVIDED_BY_ZERO`
+    /// is set. __It does not panic__ while the similar methods
+    /// `overflowing_rem()` for primitive integer data type such as
+    /// u8, u16, u32, u64, etc. will panic if `rhs` is zero.
+    /// 
+    /// # Example
+    /// ```
+    /// // Todo
+    /// ```
+    /// 
+    /// # Big-endian issue
+    /// It is just experimental for Big Endian CPUs. So, you are not encouraged
+    /// to use it for Big Endian CPUs for serious purpose. Only use this crate
+    /// for Big-endian CPUs with your own full responsibility.
+    pub fn overflowing_rem_assign_uint(&mut self, rhs: T) -> bool
+    {
+        let (_, remainder) = self.divide_fully_uint(rhs);
+        self.set_uint(remainder);
+        if (rhs == T::zero())
+            { self.set_divided_by_zero(); }
+        false
+    }
+
+    // pub fn checked_rem_uint(&self, rhs: T) -> Option<T>
+    /// Calculates the remainder when `self` is divided by `rhs`,
+    /// which is `self` % `rhs`.
+    /// 
+    /// # Output
+    /// It returns the remainder when `self` is divided by `rhs`,
+    /// which is `self` % `rhs`, wrapped by `Some` of enum `Option`
+    /// if `rhs` is not zero. Otherwise, it returns `None` of enum Option.
+    /// 
+    /// # Feature
+    /// Note that overflow never occurs.
+    /// 
+    /// # Example
+    /// ```
+    /// // Todo
+    /// ```
+    /// 
+    /// # Big-endian issue
+    /// It is just experimental for Big Endian CPUs. So, you are not encouraged
+    /// to use it for Big Endian CPUs for serious purpose. Only use this crate
+    /// for Big-endian CPUs with your own full responsibility.
+    pub fn checked_rem_uint(&self, rhs: T) -> Option<T>
+    {
+        let (_, remainder) = self.divide_fully_uint(rhs);
+        if rhs == T::zero()
+            { None }
+        else
+            { Some(remainder) }
+    }
+
+    // pub fn unchecked_rem_uint(&self, rhs: T) -> T
+    /// Calculates the remainder when `self` is divided by `rhs`,
+    /// which is `self` % `rhs`, assuming `rhs` cannot be zero.
+    /// 
+    /// # Output
+    /// It returns the remainder when `self` is divided by `rhs`,
+    /// which is `self` % `rhs`, if `rhs` is not zero.
+    /// Otherwise, it returns zero.
+    /// 
+    /// # Feature
+    /// Note that overflow never occurs.
+    /// 
+    /// # Example
+    /// ```
+    /// // Todo
+    /// ```
+    /// 
+    /// # Big-endian issue
+    /// It is just experimental for Big Endian CPUs. So, you are not encouraged
+    /// to use it for Big Endian CPUs for serious purpose. Only use this crate
+    /// for Big-endian CPUs with your own full responsibility.
+    #[inline]
+    pub fn unchecked_rem_uint(&self, rhs: T) -> T
+    {
+        self.checked_rem_uint(rhs).unwrap()
+    }
+
+    // pub fn saturating_rem_uint(&self, rhs: T) -> T
+    /// Calculates the remainder when `self` is divided by `rhs`,
+    /// which is `self` % `rhs`
+    /// 
+    /// # Output
+    /// It returns the remainder when `self` is divided by `rhs`,
+    /// which is `self` % `rhs`, if `rhs` is not zero.
+    /// Otherwise, it returns zero.
+    /// 
+    /// # Feature
+    /// If `rhs` is zero, the remainder will have zero of`BigUInt` type,
+    /// and `DIVIDED_BY_ZERO` flag of the remainder will be set, and
+    /// the remainder will be set to be zero of `BigUInt` type.
+    /// 
+    /// Note that overflow never occurs.
+    /// 
+    /// # Example
+    /// ```
+    /// // Todo
+    /// ```
+    /// 
+    /// # Big-endian issue
+    /// It is just experimental for Big Endian CPUs. So, you are not encouraged
+    /// to use it for Big Endian CPUs for serious purpose. Only use this crate
+    /// for Big-endian CPUs with your own full responsibility.
+    pub fn saturating_rem_uint(&self, rhs: T) -> T
+    {
+        let (_, remainder) = self.divide_fully_uint(rhs);
+        remainder
+    }
+
+    // pub fn saturating_rem_assign_uint(&mut self, rhs: T)
+    /// Calculates the remainder when `self` is divided by `rhs`,
+    /// which is `self` % `rhs`, and assigns the remainder to `self` back.
+    /// 
+    /// # Feature
+    /// If `rhs` is zero, `self` will have zero of`BigUInt` type,
+    /// and `DIVIDED_BY_ZERO` flag of `self` will be set, and
+    /// `self` will be set to be zero of `BigUInt` type.
+    /// 
+    /// Note that overflow never occurs.
+    /// 
+    /// # Example
+    /// ```
+    /// // Todo
+    /// ```
+    /// 
+    /// # Big-endian issue
+    /// It is just experimental for Big Endian CPUs. So, you are not encouraged
+    /// to use it for Big Endian CPUs for serious purpose. Only use this crate
+    /// for Big-endian CPUs with your own full responsibility.
+    pub fn saturating_rem_assign_uint(&mut self, rhs: T)
+    {
+        let (_, remainder) = self.divide_fully_uint(rhs);
+        self.set_uint(remainder);
+        if rhs == T::zero()
+            { self.set_divided_by_zero(); }
+    }
+
+
+
+    /***** METHODS FOR EXPONENTIATION AND LOGARITHM WITH UNSIGNED INTEGERS *****/
+
+    // pub fn pow_uint<U>(&self, exp: U) -> Self
     /// Raises `BigUInt` type number to the power of exp, using exponentiation
-    /// by squaring. The type `U` has the trait `Uint`.
+    /// of type `BigUInt` by squaring. The type `U` has the trait `Uint`.
     /// 
     /// # Output
     /// It returns the result of `self` raised to the power of `exp`.
-    /// 
-    /// # Feature
-    /// If overflow happens, it will raise `self` to the power of exp with
-    /// wrapping (modular) exponentiation.
     /// 
     /// # Argument
     /// The argument `exp` is the type that has the trait `Uint`.
     /// 
     /// # Counterpart Method
-    /// This method `pow_uint()` is more efficient than the method `pow()`
-    /// when the exponent `rhs` is primitive unsigned integral data type
-    /// such as u8, u16, u32, u64, u128 and usize. If `rhs` is `BigUInt`
-    /// type number, use the mentod `pow()`.
+    /// If `rhs` is `BigUInt` type number, use the mentod `pow()` instead.
     /// 
     /// # Example
     /// ```
@@ -3633,8 +4830,7 @@ where T: Uint + Clone + Display + Debug + ToString
         if exp == zero
             { return res; }
 
-        let mut bit_check = U::one();
-        bit_check <<= U::num((exp.length_in_bits() - exp.leading_zeros() as usize - 1) as u128);
+        let mut bit_check = U::one() << U::usize_as_Uint(exp.length_in_bits() - 1 - exp.leading_zeros() as usize);
         if bit_check != zero
         {
             res *= *self; 
@@ -3648,6 +4844,77 @@ where T: Uint + Clone + Display + Debug + ToString
             bit_check >>= one;
         }
         res
+    }
+
+    // pub fn pow_assign_uint(&mut self, rhs: T)
+    /// Raises `BigUInt` type number to the power of exp,
+    /// using exponentiation of primitive unsigned integer type by squaring,
+    /// and assign the result to `self` back.
+    /// 
+    /// # Argument
+    /// The argument `exp` is the primitive unsigned integer type.
+    /// 
+    /// # Counterpart Method
+    /// If `rhs` is the `BigUInt` type number, use the mentod `pow_assign()`
+    /// instead.
+    /// 
+    /// # Example
+    /// ```
+    /// use Cryptocol::define_utypes_with;
+    /// define_utypes_with!(u128);
+    /// 
+    /// let mut a = u256::from_uint(234_u8);
+    /// let mut exp = u256::from_uint(34_u8);
+    /// 
+    /// // normal exponentiation
+    /// a.pow_assign(exp);
+    /// println!("234 ** 34 = {}", a);
+    /// assert_eq!(a.to_string(), "101771369680718065636717400052436696519017873276976456689251925337442881634304");
+    /// 
+    /// // wrapping (modular) exponentiation
+    /// let old = a.clone();
+    /// a = u256::from_uint(234_u8);
+    /// exp += 1;
+    /// a.pow_assign(exp);
+    /// println!("234 ** 35 = {}", a);
+    /// assert_eq!(a.to_string(), "77122211638207297159819685489165875529835490356175237196145807339442726240256");
+    /// 
+    /// // evidence of wrapping (modular) exponentiation
+    /// assert!(old > a);
+    /// ```
+    pub fn pow_assign_uint<U>(&mut self, exp: U)
+    where U: Uint + Clone + Display + Debug + ToString
+            + Add<Output=U> + AddAssign + Sub<Output=U> + SubAssign
+            + Mul<Output=U> + MulAssign + Div<Output=U> + DivAssign
+            + Rem<Output=U> + RemAssign
+            + Shl<Output=U> + ShlAssign + Shr<Output=U> + ShrAssign
+            + BitAnd<Output=U> + BitAndAssign + BitOr<Output=U> + BitOrAssign
+            + BitXor<Output=U> + BitXorAssign + Not<Output=U>
+            + PartialEq + PartialOrd
+    {
+        if self.is_zero() || self.is_one()
+            { return; }
+
+        let zero = U::zero();
+        let one = U::one();
+        let multiplier = self.clone();
+        self.set_one();
+        if exp == zero
+            { return; }
+
+        let mut bit_check = one << U::usize_as_Uint(exp.length_in_bits() - 1 - exp.leading_zeros() as usize);
+        if bit_check != zero
+        {
+            *self *= multiplier; 
+            bit_check >>= one;
+        }
+        while bit_check != zero
+        {
+            *self *= *self;
+            if (bit_check & exp) != zero
+                { *self *= multiplier; }
+            bit_check >>= one;
+        }
     }
 
 
@@ -3672,6 +4939,11 @@ where T: Uint + Clone + Display + Debug + ToString
     /// It returns a tuple containing the sum and the output carry. It performs
     /// “ternary addition” of two big integer operands and a carry-in bit, and
     /// returns an output big integer and a carry-out bit.
+    /// 
+    /// # Counterpart Method
+    /// The method `carrying_add_uint()` is a bit faster than this method
+    /// `carrying_add()`. If `rhs` is primitive unsigned integral data type
+    /// such as u8, u16, u32, u64, u128 and usize. use the mentod `pow_uint()`.
     /// 
     /// # Example
     /// ```
@@ -3725,6 +4997,12 @@ where T: Uint + Clone + Display + Debug + ToString
     /// It returns the output carry. It performs “ternary addition” of two big
     /// integer operands and a carry-in bit, and returns a carry-out bit.
     /// 
+    /// # Counterpart Method
+    /// The method `carrying_add_assign_uint()` is a bit faster than this
+    /// method `carrying_add_assign()`. If `rhs` is primitive unsigned integral
+    /// data type such as u8, u16, u32, u64, u128 and usize. use the mentod
+    /// `carrying_add_assign_uint()`.
+    /// 
     /// # Example
     /// ```
     /// use std::str::FromStr;
@@ -3776,6 +5054,12 @@ where T: Uint + Clone + Display + Debug + ToString
     /// # Feature
     /// Wrapping (modular) addition.
     /// 
+    /// # Counterpart Method
+    /// The method `wrapping_add_uint()` is a bit faster than this
+    /// method `wrapping_add()`. If `rhs` is primitive unsigned integral
+    /// data type such as u8, u16, u32, u64, u128 and usize. use the mentod
+    /// `wrapping_add_uint()`.
+    /// 
     /// # Example
     /// ```
     /// use Cryptocol::define_utypes_with;
@@ -3815,6 +5099,12 @@ where T: Uint + Clone + Display + Debug + ToString
     /// 
     /// # Feature
     /// Wrapping (modular) addition.
+    /// 
+    /// # Counterpart Method
+    /// The method `wrapping_add_assign_uint()` is a bit faster than this
+    /// method `wrapping_add_assign()`. If `rhs` is primitive unsigned integral
+    /// data type such as u8, u16, u32, u64, u128 and usize. use the mentod
+    /// `wrapping_add_assign_uint()`.
     /// 
     /// # Example
     /// ```
@@ -3876,6 +5166,12 @@ where T: Uint + Clone + Display + Debug + ToString
     /// indicating whether an arithmetic overflow would occur. If an overflow
     /// would have occurred then the wrapped (modular) value is returned.
     /// 
+    /// # Counterpart Method
+    /// The method `overflowing_add_uint()` is a bit faster than this
+    /// method `overflowing_add()`. If `rhs` is primitive unsigned integral
+    /// data type such as u8, u16, u32, u64, u128 and usize. use the mentod
+    /// `overflowing_add_uint()`.
+    /// 
     /// # Example
     /// ```
     /// // Todo
@@ -3888,8 +5184,7 @@ where T: Uint + Clone + Display + Debug + ToString
     pub fn overflowing_add(self, rhs: Self) -> (Self, bool)
     {
         let mut res = self.clone();
-        let overflow = res.overflowing_add_assign(rhs);
-        (res, overflow)
+        res.carrying_add(rhs, false)
     }
 
     // pub fn overflowing_add_assign(&mut self, rhs: Self) -> bool
@@ -3898,6 +5193,12 @@ where T: Uint + Clone + Display + Debug + ToString
     /// # Output
     /// It returns true if an arithmetic overflow would occur.
     /// Otherwise, it returns `false`.
+    /// 
+    /// # Counterpart Method
+    /// The method `overflowing_add_assign_uint()` is a bit faster than this
+    /// method `overflowing_add_assign()`. If `rhs` is primitive unsigned integral
+    /// data type such as u8, u16, u32, u64, u128 and usize. use the mentod
+    /// `overflowing_add_assign_uint()`.
     /// 
     /// # Example
     /// ```
@@ -3908,10 +5209,10 @@ where T: Uint + Clone + Display + Debug + ToString
     /// It is just experimental for Big Endian CPUs. So, you are not encouraged
     /// to use it for Big Endian CPUs for serious purpose. Only use this crate
     /// for Big-endian CPUs with your own full responsibility.
+    #[inline]
     pub fn overflowing_add_assign(&mut self, rhs: Self) -> bool
     {
-        self.wrapping_add_assign(rhs);
-        self.is_overflow()
+        self.carrying_add_assign(rhs, false)
     }
 
     // pub fn checked_add(self, rhs: Self) -> Option<Self>
@@ -3920,6 +5221,12 @@ where T: Uint + Clone + Display + Debug + ToString
     /// # Output
     /// It returns the sum `self` + `rhs` wrapped by `Some` of enum `Option`
     /// if overflow did not occur. Otherwise, it returns `None` of enum Option.
+    /// 
+    /// # Counterpart Method
+    /// The method `checked_add_uint()` is a bit faster than this
+    /// method `checked_add()`. If `rhs` is primitive unsigned integral
+    /// data type such as u8, u16, u32, u64, u128 and usize. use the mentod
+    /// `checked_add_uint()`.
     /// 
     /// # Example
     /// ```
@@ -3951,6 +5258,12 @@ where T: Uint + Clone + Display + Debug + ToString
     /// It returns the sum `self` + `rhs` if overflow did not occur.
     /// Otherwise, it will panic.
     /// 
+    /// # Counterpart Method
+    /// The method `unchecked_add_uint()` is a bit faster than this
+    /// method `unchecked_add()`. If `rhs` is primitive unsigned integral
+    /// data type such as u8, u16, u32, u64, u128 and usize. use the mentod
+    /// `unchecked_add_uint()`.
+    /// 
     /// # Example
     /// ```
     /// // Todo
@@ -3974,6 +5287,12 @@ where T: Uint + Clone + Display + Debug + ToString
     /// It returns the sum `self` + `rhs` if overflow did not occur.
     /// Otherwise, it returns the maximum value.
     /// 
+    /// # Counterpart Method
+    /// The method `saturating_add_uint()` is a bit faster than this
+    /// method `saturating_add()`. If `rhs` is primitive unsigned integral
+    /// data type such as u8, u16, u32, u64, u128 and usize. use the mentod
+    /// `saturating_add_uint()`.
+    /// 
     /// # Example
     /// ```
     /// // Todo
@@ -3993,6 +5312,12 @@ where T: Uint + Clone + Display + Debug + ToString
     // pub fn saturating_add_assign(&mut self, rhs: Self)
     /// Computes `self` + `rhs`, saturating at the numeric bounds
     /// instead of overflowing, and assigns the result to `self` back.
+    /// 
+    /// # Counterpart Method
+    /// The method `saturating_add_assign_uint()` is a bit faster than this
+    /// method `saturating_add_assign()`. If `rhs` is primitive unsigned integral
+    /// data type such as u8, u16, u32, u64, u128 and usize. use the mentod
+    /// `saturating_add_assign_uint()`.
     /// 
     /// # Example
     /// ```
@@ -4029,6 +5354,12 @@ where T: Uint + Clone + Display + Debug + ToString
     /// # Outputs
     /// It returns a tuple containing an output big integer and a carry-out bit.
     /// 
+    /// # Counterpart Method
+    /// The method `borrowing_sub_uint()` is a bit faster than this
+    /// method `borrowing_sub()`. If `rhs` is primitive unsigned integral
+    /// data type such as u8, u16, u32, u64, u128 and usize. use the mentod
+    /// `borrowing_sub_uint()`.
+    /// 
     /// # Example
     /// ```
     /// // Todo
@@ -4059,7 +5390,13 @@ where T: Uint + Clone + Display + Debug + ToString
     /// the underflow flag.
     /// 
     /// # Outputs
-    /// It returns a tuple containing an output big integer and a carry-out bit.
+    /// It returns a carry-out bit.
+    /// 
+    /// # Counterpart Method
+    /// The method `borrowing_sub_assign_uint()` is a bit faster than this
+    /// method `borrowing_sub_assign()`. If `rhs` is primitive unsigned integral
+    /// data type such as u8, u16, u32, u64, u128 and usize. use the mentod
+    /// `borrowing_sub_assign_uint()`.
     /// 
     /// # Example
     /// ```
@@ -4093,6 +5430,12 @@ where T: Uint + Clone + Display + Debug + ToString
     /// # Feature
     /// Wrapping (modular) subtraction.
     /// 
+    /// # Counterpart Method
+    /// The method `wrapping_sub_uint()` is a bit faster than this
+    /// method `wrapping_sub()`. If `rhs` is primitive unsigned integral
+    /// data type such as u8, u16, u32, u64, u128 and usize. use the mentod
+    /// `wrapping_sub_uint()`.
+    /// 
     /// # Example
     /// ```
     /// // Todo
@@ -4104,8 +5447,7 @@ where T: Uint + Clone + Display + Debug + ToString
     /// for Big-endian CPUs with your own full responsibility.
     pub fn wrapping_sub(self, rhs: Self) -> Self
     {
-        let mut res = self.clone();
-        res.wrapping_sub_assign(rhs);
+        let (res, _) = self.borrowing_sub(rhs, false);
         res
     }
 
@@ -4115,6 +5457,12 @@ where T: Uint + Clone + Display + Debug + ToString
     /// 
     /// # Feature
     /// Wrapping (modular) subtraction.
+    /// 
+    /// # Counterpart Method
+    /// The method `wwrapping_sub_assign_uint()` is a bit faster than this
+    /// method `wrapping_sub_assign()`. If `rhs` is primitive unsigned integral
+    /// data type such as u8, u16, u32, u64, u128 and usize. use the mentod
+    /// `wwrapping_sub_assign_uint()`.
     /// 
     /// # Example
     /// ```
@@ -4158,6 +5506,12 @@ where T: Uint + Clone + Display + Debug + ToString
     /// indicating whether an arithmetic unerflow would occur. If an unerflow
     /// would have occurred then the wrapped (modular) value is returned.
     /// 
+    /// # Counterpart Method
+    /// The method `overflowing_sub_uint()` is a bit faster than this
+    /// method `overflowing_sub()`. If `rhs` is primitive unsigned integral
+    /// data type such as u8, u16, u32, u64, u128 and usize. use the mentod
+    /// `overflowing_sub_uint()`.
+    /// 
     /// # Example
     /// ```
     /// // Todo
@@ -4167,11 +5521,10 @@ where T: Uint + Clone + Display + Debug + ToString
     /// It is just experimental for Big Endian CPUs. So, you are not encouraged
     /// to use it for Big Endian CPUs for serious purpose. Only use this crate
     /// for Big-endian CPUs with your own full responsibility.
+    #[inline]
     pub fn overflowing_sub(self, rhs: Self) -> (Self, bool)
     {
-        let mut res = self.clone();
-        let overflow = res.overflowing_sub_assign(rhs);
-        (res, overflow)
+        self.borrowing_sub(rhs, false)
     }
 
     // pub fn overflowing_sub_assign(&mut self, rhs: Self) -> bool
@@ -4181,6 +5534,12 @@ where T: Uint + Clone + Display + Debug + ToString
     /// It returns true if an arithmetic unerflow would occur.
     /// Otherwise, it returns `false`.
     /// 
+    /// # Counterpart Method
+    /// The method `overflowing_sub_assign_uint()` is a bit faster than this
+    /// method `overflowing_sub_assign()`. If `rhs` is primitive unsigned
+    /// integral data type such as u8, u16, u32, u64, u128 and usize.
+    /// use the mentod `overflowing_sub_assign_uint()`.
+    /// 
     /// # Example
     /// ```
     /// // Todo
@@ -4190,10 +5549,10 @@ where T: Uint + Clone + Display + Debug + ToString
     /// It is just experimental for Big Endian CPUs. So, you are not encouraged
     /// to use it for Big Endian CPUs for serious purpose. Only use this crate
     /// for Big-endian CPUs with your own full responsibility.
+    #[inline]
     pub fn overflowing_sub_assign(&mut self, rhs: Self) -> bool
     {
-        self.wrapping_sub_assign(rhs);
-        self.is_underflow()
+        self.borrowing_sub_assign(rhs, false)
     }
 
     // pub fn checked_sub(self, rhs: Self) -> Option<Self>
@@ -4203,6 +5562,12 @@ where T: Uint + Clone + Display + Debug + ToString
     /// It returns the difference `self` - `rhs` wrapped by `Some`
     /// of enum `Option` if unerflow did not occur.
     /// Otherwise, it returns `None` of enum Option.
+    /// 
+    /// # Counterpart Method
+    /// The method `checked_sub_uint()` is a bit faster than this
+    /// method `checked_sub()`. If `rhs` is primitive unsigned
+    /// integral data type such as u8, u16, u32, u64, u128 and usize.
+    /// use the mentod `checked_sub_uint()`.
     /// 
     /// # Example
     /// ```
@@ -4234,6 +5599,12 @@ where T: Uint + Clone + Display + Debug + ToString
     /// It returns the difference `self` - `rhs` if underflow did not occur.
     /// Otherwise, it will panic.
     /// 
+    /// # Counterpart Method
+    /// The method `unchecked_sub_uint()` is a bit faster than this
+    /// method `unchecked_sub()`. If `rhs` is primitive unsigned
+    /// integral data type such as u8, u16, u32, u64, u128 and usize.
+    /// use the mentod `unchecked_sub_uint()`.
+    /// 
     /// # Example
     /// ```
     /// // Todo
@@ -4256,6 +5627,12 @@ where T: Uint + Clone + Display + Debug + ToString
     /// # Output
     /// It returns the difference `self` - `rhs` if underflowing did not occur.
     /// Otherwise, it returns `0`.
+    /// 
+    /// # Counterpart Method
+    /// The method `saturating_sub_uint()` is a bit faster than this
+    /// method `saturating_sub()`. If `rhs` is primitive unsigned
+    /// integral data type such as u8, u16, u32, u64, u128 and usize.
+    /// use the mentod `saturating_sub()`.
     /// 
     /// # Example
     /// ```
@@ -4281,6 +5658,12 @@ where T: Uint + Clone + Display + Debug + ToString
     /// `self` will be the difference `self` - `rhs` if underflowing
     /// did not occur. Otherwise, it returns `0`.
     /// 
+    /// # Counterpart Method
+    /// The method `saturating_sub_assign_uint()` is a bit faster than this
+    /// method `saturating_sub_assign()`. If `rhs` is primitive unsigned
+    /// integral data type such as u8, u16, u32, u64, u128 and usize.
+    /// use the mentod `saturating_sub_assign_uint()`.
+    /// 
     /// # Example
     /// ```
     /// // Todo
@@ -4293,7 +5676,7 @@ where T: Uint + Clone + Display + Debug + ToString
     pub fn saturating_sub_assign(&mut self, rhs: Self)
     {
         if self.overflowing_sub_assign(rhs)
-            { self.set_max(); }
+            { self.set_zero(); }
     }
 
     // pub fn abs_diff(&self, other: &Self) -> Self
@@ -4301,6 +5684,12 @@ where T: Uint + Clone + Display + Debug + ToString
     /// 
     /// # Output
     /// It returns the absolute difference between `self` and `other`.
+    /// 
+    /// # Counterpart Method
+    /// The method `abs_diff_uint()` is a bit faster than this
+    /// method `abs_diff()`. If `rhs` is primitive unsigned
+    /// integral data type such as u8, u16, u32, u64, u128 and usize.
+    /// use the mentod `abs_diff_uint()`.
     /// 
     /// # Example
     /// ```
@@ -4352,6 +5741,11 @@ where T: Uint + Clone + Display + Debug + ToString
     /// `self.wrapping_mul(rhs).wrapping_add(carry)`. So,
     /// `self.carrying_mul(rhs, carry).0` == `self.wrapping_mul(rhs).wrapping_add(carry)`
     /// 
+    /// The method `carrying_mul_uint()` is a bit faster than this
+    /// method `carrying_mul()`. If `rhs` is primitive unsigned
+    /// integral data type such as u8, u16, u32, u64, u128 and usize.
+    /// use the mentod `carrying_mul_uint()`.
+    /// 
     /// # Example
     /// ```
     /// // Todo
@@ -4390,6 +5784,11 @@ where T: Uint + Clone + Display + Debug + ToString
     /// The value of `self` after calculation matches what you’d get by
     /// combining the `wrapping_mul()` and `wrapping_add_assign()` methods:
     /// `self.wrapping_mul(rhs).wrapping_add_assign(carry)`.
+    /// 
+    /// The method `carrying_mul_assign_uint()` is a bit faster than this
+    /// method `carrying_mul_assign()`. If `rhs` is primitive unsigned
+    /// integral data type such as u8, u16, u32, u64, u128 and usize.
+    /// use the mentod `carrying_mul_assign_uint()`.
     /// 
     /// # Example
     /// ```
@@ -4486,7 +5885,7 @@ where T: Uint + Clone + Display + Debug + ToString
     /// (wrapping) bits and the high-order (overflow) bits of the result as
     /// two separate values, in that order.
     /// 
-    /// /// # Feature
+    /// # Feature
     /// It performs “long multiplication” which takes in an extra amount to add,
     /// and may return an additional amount of overflow. This allows for
     /// chaining together multiple multiplications to create “bigger integers”
@@ -4499,6 +5898,11 @@ where T: Uint + Clone + Display + Debug + ToString
     /// The value of the first field in the returned tuple matches what you’d
     /// get the `wrapping_mul()` methods.
     /// `self.widening_mul(rhs).0` == `self.wrapping_mul(rhs)`
+    /// 
+    /// The method `widening_mul_uint()` is a bit faster than this
+    /// method `widening_mul()`. If `rhs` is primitive unsigned
+    /// integral data type such as u8, u16, u32, u64, u128 and usize.
+    /// use the mentod `widening_mul_uint()`.
     /// 
     /// # Example
     /// ```
@@ -4522,7 +5926,7 @@ where T: Uint + Clone + Display + Debug + ToString
     /// # Output
     /// It returns the high-order (overflow) bits of the result `self` * `rhs`.
     /// 
-    /// /// # Feature
+    /// # Feature
     /// It performs “long multiplication” which takes in an extra amount to add,
     /// and may return an additional amount of overflow. This allows for
     /// chaining together multiple multiplications to create “bigger integers”
@@ -4535,6 +5939,11 @@ where T: Uint + Clone + Display + Debug + ToString
     /// The value of `self` after calculation matches what you’d get the
     /// `wrapping_mul()` methods.
     /// `self` == `self.wrapping_mul(rhs)`
+    /// 
+    /// The method `widening_mul_assign_uint()` is a bit faster than this
+    /// method `widening_mul_assign()`. If `rhs` is primitive unsigned
+    /// integral data type such as u8, u16, u32, u64, u128 and usize.
+    /// use the mentod `widening_mul_assign_uint()`.
     /// 
     /// # Example
     /// ```
@@ -4560,6 +5969,12 @@ where T: Uint + Clone + Display + Debug + ToString
     /// # Feature
     /// Wrapping (modular) addition.
     /// 
+    /// # Counterpart Method
+    /// The method `wrapping_mul_uint()` is a bit faster than this
+    /// method `wrapping_mul()`. If `rhs` is primitive unsigned
+    /// integral data type such as u8, u16, u32, u64, u128 and usize.
+    /// use the mentod `wrapping_mul_uint()`.
+    /// 
     /// # Example
     /// ```
     /// // Todo
@@ -4582,6 +5997,12 @@ where T: Uint + Clone + Display + Debug + ToString
     /// 
     /// # Feature
     /// Wrapping (modular) multiplication.
+    /// 
+    /// # Counterpart Method
+    /// The method `wrapping_mul_assign_uint()` is a bit faster than this
+    /// method `wrapping_mul_assign()`. If `rhs` is primitive unsigned
+    /// integral data type such as u8, u16, u32, u64, u128 and usize.
+    /// use the mentod `wrapping_mul_assign_uint()`.
     /// 
     /// # Example
     /// ```
@@ -4665,6 +6086,12 @@ where T: Uint + Clone + Display + Debug + ToString
     /// If an overflow would have occurred then the wrapped (modular) value
     /// is returned.
     /// 
+    /// # Counterpart Method
+    /// The method `overflowing_mul_uint()` is a bit faster than this
+    /// method `overflowing_mul()`. If `rhs` is primitive unsigned
+    /// integral data type such as u8, u16, u32, u64, u128 and usize.
+    /// use the mentod `overflowing_mul_uint()`.
+    /// 
     /// # Example
     /// ```
     /// // Todo
@@ -4688,6 +6115,12 @@ where T: Uint + Clone + Display + Debug + ToString
     /// It returns true if an arithmetic overflow would occur.
     /// Otherwise, it returns `false`.
     /// 
+    /// # Counterpart Method
+    /// The method `overflowing_mul_assign_uint()` is a bit faster than this
+    /// method `overflowing_mul_assign()`. If `rhs` is primitive unsigned
+    /// integral data type such as u8, u16, u32, u64, u128 and usize.
+    /// use the mentod `overflowing_mul_assign_uint()`.
+    /// 
     /// # Example
     /// ```
     /// // Todo
@@ -4709,6 +6142,12 @@ where T: Uint + Clone + Display + Debug + ToString
     /// # Output
     /// It returns the sum `self` * `rhs` wrapped by `Some` of enum `Option`
     /// if overflow did not occur. Otherwise, it returns `None` of enum Option.
+    /// 
+    /// # Counterpart Method
+    /// The method `checked_mul_uint()` is a bit faster than this
+    /// method `checked_mul()`. If `rhs` is primitive unsigned
+    /// integral data type such as u8, u16, u32, u64, u128 and usize.
+    /// use the mentod `checked_mul_uint()`.
     /// 
     /// # Example
     /// ```
@@ -4740,6 +6179,12 @@ where T: Uint + Clone + Display + Debug + ToString
     /// It returns the sum `self` * `rhs` if overflow did not occur.
     /// Otherwise, it will panic.
     /// 
+    /// # Counterpart Method
+    /// The method `unchecked_mul_uint()` is a bit faster than this
+    /// method `unchecked_mul()`. If `rhs` is primitive unsigned
+    /// integral data type such as u8, u16, u32, u64, u128 and usize.
+    /// use the mentod `unchecked_mul_uint()`.
+    /// 
     /// # Example
     /// ```
     /// // Todo
@@ -4763,6 +6208,12 @@ where T: Uint + Clone + Display + Debug + ToString
     /// It returns the sum `self` + `rhs` if overflow did not occur.
     /// Otherwise, it returns the maximum value.
     /// 
+    /// # Counterpart Method
+    /// The method `saturating_mul_uint()` is a bit faster than this
+    /// method `saturating_mul()`. If `rhs` is primitive unsigned
+    /// integral data type such as u8, u16, u32, u64, u128 and usize.
+    /// use the mentod `saturating_mul_uint()`.
+    /// 
     /// # Example
     /// ```
     /// // Todo
@@ -4783,6 +6234,12 @@ where T: Uint + Clone + Display + Debug + ToString
     /// Computes `self` * `rhs`, saturating at the numeric bounds
     /// instead of overflowing, and assigns the result to `self` back.
     /// 
+    /// # Counterpart Method
+    /// The method `saturating_mul_assign_uint()` is a bit faster than this
+    /// method `saturating_mul_assign()`. If `rhs` is primitive unsigned
+    /// integral data type such as u8, u16, u32, u64, u128 and usize.
+    /// use the mentod `saturating_mul_assign_uint()`.
+    /// 
     /// # Example
     /// ```
     /// // Todo
@@ -4794,14 +6251,14 @@ where T: Uint + Clone + Display + Debug + ToString
     /// for Big-endian CPUs with your own full responsibility.
     pub fn saturating_mul_assign(&mut self, rhs: Self)
     {
-        self.wrapping_mul_assign(rhs);
-        if self.is_overflow()
+        if self.overflowing_mul_assign(rhs)
             { self.set_max(); }
     }
 
 
     /*** Division ***/
 
+    // pub fn divide_fully(&self, rhs: Self) -> (Self, Self)
     /// Divides `self` which is of `BigUInt` type by `rhs` which is of `BigUInt`
     /// type, and returns a tuple of quotient and remainder.
     /// 
@@ -4813,7 +6270,13 @@ where T: Uint + Clone + Display + Debug + ToString
     /// type, and the flags of quotient such as `OVERFLOW`, `INFINITY`, and
     /// `DIVIDED_BY_ZERO` will be set, and the remainder will be set to be
     /// zero of `BigUInt` type, the `DIVIDED_BY_ZERO` flag of remainder
-    /// will be set. 
+    /// will be set.
+    /// 
+    /// # Counterpart Method
+    /// The method `divide_fully_uint()` is a bit faster than this
+    /// method `divide_fully()`. If `rhs` is primitive unsigned
+    /// integral data type such as u8, u16, u32, u64, u128 and usize.
+    /// use the mentod `divide_fully_uint()`.
     /// 
     /// # Examples
     /// ```
@@ -4942,6 +6405,12 @@ where T: Uint + Clone + Display + Debug + ToString
     /// named methods `wrapping_div()` for primitive integer data type such
     /// as u8, u16, u32, u64, etc. will panic if `rhs` is zero.
     /// 
+    /// # Counterpart Method
+    /// The method `wrapping_div_uint()` is a bit faster than this
+    /// method `wrapping_div()`. If `rhs` is primitive unsigned
+    /// integral data type such as u8, u16, u32, u64, u128 and usize.
+    /// use the mentod `wrapping_div_uint()`.
+    /// 
     /// # Example
     /// ```
     /// // Todo
@@ -4971,6 +6440,12 @@ where T: Uint + Clone + Display + Debug + ToString
     /// `DIVIDED_BY_ZERO` will be set. __It does not panic__ while the same
     /// kind methods `wrapping_div()` for primitive integer data type such
     /// as u8, u16, u32, u64, etc. will panic if `rhs` is zero.
+    /// 
+    /// # Counterpart Method
+    /// The method `wrapping_div_assign_uint()` is a bit faster than this
+    /// method `wrapping_div_assign()`. If `rhs` is primitive unsigned
+    /// integral data type such as u8, u16, u32, u64, u128 and usize.
+    /// use the mentod `wrapping_div_assign_uint()`.
     /// 
     /// # Example
     /// ```
@@ -5003,6 +6478,12 @@ where T: Uint + Clone + Display + Debug + ToString
     /// If `rhs` is zero, the quotient will have maximum value of `BigUInt`
     /// type, and the flags of quotient such as `OVERFLOW`, `INFINITY`, and
     /// `DIVIDED_BY_ZERO` will be set.
+    /// 
+    /// # Counterpart Method
+    /// The method `checked_div_uint()` is a bit faster than this
+    /// method `checked_div()`. If `rhs` is primitive unsigned
+    /// integral data type such as u8, u16, u32, u64, u128 and usize.
+    /// use the mentod `checked_div_uint()`.
     /// 
     /// # Example
     /// ```
@@ -5039,6 +6520,12 @@ where T: Uint + Clone + Display + Debug + ToString
     /// Wrapped division on `BigUInt` types is just normal division.
     /// There’s no way wrapping could ever happen.
     /// 
+    /// # Counterpart Method
+    /// The method `unchecked_div_uint()` is a bit faster than this
+    /// method `unchecked_div()`. If `rhs` is primitive unsigned
+    /// integral data type such as u8, u16, u32, u64, u128 and usize.
+    /// use the mentod `unchecked_div_uint()`.
+    /// 
     /// # Example
     /// ```
     /// // Todo
@@ -5073,6 +6560,12 @@ where T: Uint + Clone + Display + Debug + ToString
     /// type, and the flags of quotient such as `OVERFLOW` and `DIVIDED_BY_ZERO`
     /// will be set.
     /// 
+    /// # Counterpart Method
+    /// The method `saturating_div_uint()` is a bit faster than this
+    /// method `saturating_div()`. If `rhs` is primitive unsigned
+    /// integral data type such as u8, u16, u32, u64, u128 and usize.
+    /// use the mentod `saturating_div_uint()`.
+    /// 
     /// # Example
     /// ```
     /// // Todo
@@ -5103,6 +6596,12 @@ where T: Uint + Clone + Display + Debug + ToString
     /// type, and the flags of `self` such as `OVERFLOW` and `DIVIDED_BY_ZERO`
     /// will be set.
     /// 
+    /// # Counterpart Method
+    /// The method `saturating_div_assign_uint()` is a bit faster than this
+    /// method `saturating_div_assign()`. If `rhs` is primitive unsigned
+    /// integral data type such as u8, u16, u32, u64, u128 and usize.
+    /// use the mentod `saturating_div_assign_uint()`.
+    /// 
     /// # Example
     /// ```
     /// // Todo
@@ -5112,11 +6611,10 @@ where T: Uint + Clone + Display + Debug + ToString
     /// It is just experimental for Big Endian CPUs. So, you are not encouraged
     /// to use it for Big Endian CPUs for serious purpose. Only use this crate
     /// for Big-endian CPUs with your own full responsibility.
+    #[inline]
     pub fn saturating_div_assign(&mut self, rhs: Self)
     {
-        let (mut quotient, _) = self.divide_fully(rhs);
-        quotient.reset_inifinity();
-        *self = quotient;
+        *self = self.saturating_div(rhs);
     }
 
     // pub fn wrapping_rem(self, rhs: Self) -> Self
@@ -5137,6 +6635,12 @@ where T: Uint + Clone + Display + Debug + ToString
     /// is set. __It does not panic__ while the same named methods
     /// `wrapping_rem()` for primitive integer data type such as u8, u16,
     /// u32, u64, etc. will panic if `rhs` is zero.
+    /// 
+    /// # Counterpart Method
+    /// The method `wrapping_rem_uint()` is a bit faster than this
+    /// method `wrapping_rem()`. If `rhs` is primitive unsigned
+    /// integral data type such as u8, u16, u32, u64, u128 and usize.
+    /// use the mentod `wrapping_rem_uint()`.
     /// 
     /// # Example
     /// ```
@@ -5167,6 +6671,12 @@ where T: Uint + Clone + Display + Debug + ToString
     /// is set. __It does not panic__ while the similar methods
     /// `wrapping_rem()` for primitive integer data type such as 
     /// u8, u16, u32, u64, etc. will panic if `rhs` is zero.
+    /// 
+    /// # Counterpart Method
+    /// The method `wrapping_rem_assign_uint()` is a bit faster than this
+    /// method `wrapping_rem_assign()`. If `rhs` is primitive unsigned
+    /// integral data type such as u8, u16, u32, u64, u128 and usize.
+    /// use the mentod `wrapping_rem_assign_uint()`.
     /// 
     /// # Example
     /// ```
@@ -5200,6 +6710,12 @@ where T: Uint + Clone + Display + Debug + ToString
     /// `overflowing_rem()` for primitive integer data type such as u8, u16,
     /// u32, u64, etc. will panic if `rhs` is zero.
     /// 
+    /// # Counterpart Method
+    /// The method `overflowing_rem_uint()` is a bit faster than this
+    /// method `overflowing_rem()`. If `rhs` is primitive unsigned
+    /// integral data type such as u8, u16, u32, u64, u128 and usize.
+    /// use the mentod `overflowing_rem_uint()`.
+    /// 
     /// # Example
     /// ```
     /// // Todo
@@ -5231,6 +6747,12 @@ where T: Uint + Clone + Display + Debug + ToString
     /// `overflowing_rem()` for primitive integer data type such as
     /// u8, u16, u32, u64, etc. will panic if `rhs` is zero.
     /// 
+    /// # Counterpart Method
+    /// The method `overflowing_rem_assign_uint()` is a bit faster than this
+    /// method `overflowing_rem_assign()`. If `rhs` is primitive unsigned
+    /// integral data type such as u8, u16, u32, u64, u128 and usize.
+    /// use the mentod `overflowing_rem_assign_uint()`.
+    /// 
     /// # Example
     /// ```
     /// // Todo
@@ -5258,6 +6780,12 @@ where T: Uint + Clone + Display + Debug + ToString
     /// 
     /// # Feature
     /// Note that overflow never occurs.
+    /// 
+    /// # Counterpart Method
+    /// The method `checked_rem_uint()` is a bit faster than this
+    /// method `checked_rem()`. If `rhs` is primitive unsigned
+    /// integral data type such as u8, u16, u32, u64, u128 and usize.
+    /// use the mentod `checked_rem_uint()`.
     /// 
     /// # Example
     /// ```
@@ -5288,6 +6816,12 @@ where T: Uint + Clone + Display + Debug + ToString
     /// 
     /// # Feature
     /// Note that overflow never occurs.
+    /// 
+    /// # Counterpart Method
+    /// The method `unchecked_rem_uint()` is a bit faster than this
+    /// method `unchecked_rem()`. If `rhs` is primitive unsigned
+    /// integral data type such as u8, u16, u32, u64, u128 and usize.
+    /// use the mentod `unchecked_rem_uint()`.
     /// 
     /// # Example
     /// ```
@@ -5320,6 +6854,12 @@ where T: Uint + Clone + Display + Debug + ToString
     /// 
     /// Note that overflow never occurs.
     /// 
+    /// # Counterpart Method
+    /// The method `saturating_rem_uint()` is a bit faster than this
+    /// method `saturating_rem()`. If `rhs` is primitive unsigned
+    /// integral data type such as u8, u16, u32, u64, u128 and usize.
+    /// use the mentod `saturating_rem_uint()`.
+    /// 
     /// # Example
     /// ```
     /// // Todo
@@ -5346,6 +6886,12 @@ where T: Uint + Clone + Display + Debug + ToString
     /// 
     /// Note that overflow never occurs.
     /// 
+    /// # Counterpart Method
+    /// The method `saturating_rem_assign_uint()` is a bit faster than this
+    /// method `saturating_rem_assign()`. If `rhs` is primitive unsigned
+    /// integral data type such as u8, u16, u32, u64, u128 and usize.
+    /// use the mentod `saturating_rem_assign_uint()`.
+    /// 
     /// # Example
     /// ```
     /// // Todo
@@ -5355,10 +6901,10 @@ where T: Uint + Clone + Display + Debug + ToString
     /// It is just experimental for Big Endian CPUs. So, you are not encouraged
     /// to use it for Big Endian CPUs for serious purpose. Only use this crate
     /// for Big-endian CPUs with your own full responsibility.
+    #[inline]
     pub fn saturating_rem_assign(&mut self, rhs: Self)
     {
-        let (_, remainder) = self.divide_fully(rhs);
-        *self = remainder;
+        *self = self.saturating_rem(rhs);
     }
 
 
@@ -6154,7 +7700,7 @@ where T: Uint + Clone + Display + Debug + ToString
             let mut remainder;
             loop
             {
-                (dividend, remainder) = dividend.divide_by_uint_fully(T::usize_as_Uint(radix));
+                (dividend, remainder) = dividend.divide_fully_uint(T::usize_as_Uint(radix));
                 let r = remainder.into_u32();
                 let c = if r < 10     { ('0' as u32 + r) as u8 as char }
                         else if r < 10 + 26 { ('A' as u32 - 10 + r) as u8 as char }
@@ -6223,7 +7769,7 @@ where T: Uint + Clone + Display + Debug + ToString
         let mut remainder;
         loop
         {
-            (dividend, remainder) = dividend.divide_by_uint_fully(T::usize_as_Uint(radix));
+            (dividend, remainder) = dividend.divide_fully_uint(T::usize_as_Uint(radix));
             let r = remainder.into_u32();
             let c = if r < 10     { ('0' as u32 + r) as u8 as char }
                     else if r < 10 + 26 { ('A' as u32 - 10 + r) as u8 as char }

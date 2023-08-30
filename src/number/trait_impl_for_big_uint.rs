@@ -308,7 +308,7 @@ where T: Uint + Clone + Display + Debug + ToString
     #[inline]
     fn div(self, rhs: T) -> Self
     {
-        self.div_uint(rhs)
+        self.wrapping_div_uint(rhs)
     }
 }
 
@@ -346,7 +346,7 @@ where T: Uint + Clone + Display + Debug + ToString
     #[inline]
     fn div_assign(&mut self, rhs: T)
     {
-        self.quotient(rhs);
+        self.wrapping_div_assign_uint(rhs);
     }
 }
 
@@ -387,7 +387,7 @@ where T: Uint + Clone + Display + Debug + ToString
     #[inline]
     fn rem(self, rhs: T) -> T
     {
-        self.rem_uint(rhs)
+        self.wrapping_rem_uint(rhs)
     }
 }
 
@@ -425,7 +425,7 @@ where T: Uint + Clone + Display + Debug + ToString
     #[inline]
     fn rem_assign(&mut self, rhs: T)
     {
-        self.remainder(rhs);
+        self.wrapping_rem_assign_uint(rhs);
     }
 }
 
