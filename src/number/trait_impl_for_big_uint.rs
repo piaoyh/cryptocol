@@ -60,7 +60,7 @@ where T: Uint + Clone + Display + Debug + ToString
     #[inline]
     fn add(self, rhs: T) -> Self
     {
-        self.add_uint(rhs)
+        self.wrapping_add_uint(rhs)
     }
 }
 
@@ -102,7 +102,7 @@ where T: Uint + Clone + Display + Debug + ToString
     #[inline]
     fn add_assign(&mut self, rhs: T)
     {
-        self.accumulate(rhs);
+        self.wrapping_add_assign_uint(rhs);
     }
 }
 
@@ -145,7 +145,7 @@ where T: Uint + Clone + Display + Debug + ToString
     #[inline]
     fn sub(self, rhs: T) -> Self
     {
-        self.sub_uint(rhs)
+        self.wrapping_sub_uint(rhs)
     }
 }
 
@@ -185,7 +185,7 @@ where T: Uint + Clone + Display + Debug + ToString
     #[inline]
     fn sub_assign(&mut self, rhs: T)
     {
-        self.dissipate(rhs);
+        self.wrapping_sub_assign_uint(rhs);
     }
 }
 
@@ -227,7 +227,7 @@ where T: Uint + Clone + Display + Debug + ToString
     #[inline]
     fn mul(self, rhs: T) -> Self
     {
-        self.mul_uint(rhs)
+        self.wrapping_mul_uint(rhs)
     }
 }
 
@@ -266,7 +266,7 @@ where T: Uint + Clone + Display + Debug + ToString
     #[inline]
     fn mul_assign(&mut self, rhs: T)
     {
-        self.times(rhs);
+        self.wrapping_mul_assign_uint(rhs);
     }
 }
 

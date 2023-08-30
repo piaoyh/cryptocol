@@ -246,8 +246,8 @@ pub type u16384_with_u8 = BigUInt<u8, 2048>;
 /// println!("c * b = {}", c * b);
 /// println!("b / c = {}", b / c);
 /// println!("b % c = {}", b % c);
-/// println!("b + 1 = {}", b.add_uint(1));
-/// println!("b - 1 = {}", b.sub_uint(1));
+/// println!("b + 1 = {}", b.wrapping_add_uint(1));
+/// println!("b - 1 = {}", b.wrapping_sub_uint(1));
 /// assert_eq!(a, b);
 /// c.set_one();
 /// assert_eq!(c, u1024::one());
@@ -812,8 +812,8 @@ where T: Uint + Clone + Display + Debug + ToString
                             else
                                 { c as usize - 'a' as usize + 10 + 26 }
                         };
-            bignum.times(T::usize_as_Uint(radix));
-            bignum.accumulate(T::usize_as_Uint(num));
+            bignum.wrapping_mul_assign_uint(T::usize_as_Uint(radix));
+            bignum.wrapping_add_assign_uint(T::usize_as_Uint(num));
         }
         if bignum.is_overflow()
             { Err(NumberErr::TooBigNumber) }
@@ -1652,12 +1652,12 @@ where T: Uint + Clone + Display + Debug + ToString
             { return true; }
 
         // n-1 = (2^s) * d 로 표현하기 위한 과정
-        let mut d = self.sub_uint(T::one());
-        let self_minus_one = self.sub_uint(T::one());
+        let mut d = self.wrapping_sub_uint(T::one());
+        let self_minus_one = self.wrapping_sub_uint(T::one());
         d.shift_right_assign(d.trailing_zeros());
         for _ in 0..repetition
         {
-            let mut rand_num = Self::random_less_than(self.sub_uint(T::u8_as_Uint(4))).add_uint(T::u8_as_Uint(2));
+            let mut rand_num = Self::random_less_than(self.wrapping_sub_uint(T::u8_as_Uint(4))).wrapping_add_uint(T::u8_as_Uint(2));
             let mut x = rand_num.pow(d) % *self;
             if x.is_one() || x == self_minus_one
                 { continue; }
@@ -1665,7 +1665,7 @@ where T: Uint + Clone + Display + Debug + ToString
             while d != self_minus_one
             {
                 x = (x * x) % *self;
-                d.times(T::u8_as_Uint(2));
+                d.wrapping_mul_assign_uint(T::u8_as_Uint(2));
 
                 if x.is_one()
                     { return false; }
@@ -3212,14 +3212,40 @@ where T: Uint + Clone + Display + Debug + ToString
 
     /***** ARITHMATIC OPERATIONS WITH UNSIGNED INTEGERS *****/
 
-    // pub fn accumulate(&mut self, rhs: T)
-    /// Accumulates or adds rhs of type `T` to self which is of `BigUInt` type.
+    // pub fn wrapping_wrapping_add_uint(&self, rhs: T) -> Self
+    /// Adds a unsigned integer number of type `T` to `BigUInt`-type unsigned
+    /// integer and returns its result in a type of BigUInt.
+    /// 
+    /// # Output
+    /// It returns the sum of `self` and `rhs`.
+    /// 
+    /// # Examples
+    /// 
+    /// ```
+    /// use std::str::FromStr;
+    /// use Cryptocol::define_utypes_with;
+    /// define_utypes_with!(u128);
+    /// let a = u256::from_str("10000000000000000000000000000000000").unwrap();
+    /// let sum = a.wrapping_add_uint(35);
+    /// println!("sum = {}", sum);
+    /// assert_eq!(sum, u256::from_str("10000000000000000000000000000000035").unwrap());
+    /// ```
+    pub fn wrapping_add_uint(&self, rhs: T) -> Self
+    {
+        let mut bi = self.clone();
+        bi.wrapping_add_assign_uint(rhs);
+        bi
+    }
+
+    // pub fn wrapping_add_assign_uint(&mut self, rhs: T)
+    /// Adds a unsigned integer number of type `T` to `BigUInt`-type unsigned
+    /// integer and returns its result to `self` back.
     /// 
     /// # Example
     /// ```
     /// // Todo
     /// ```
-    pub fn accumulate(&mut self, rhs: T)
+    pub fn wrapping_add_assign_uint(&mut self, rhs: T)
     {
         let zero = T::zero();
         let one = T::one();
@@ -3234,19 +3260,43 @@ where T: Uint + Clone + Display + Debug + ToString
             if carry == zero
                 { break; }
         }
-        if carry != T::zero()
+        if carry != zero
             { self.set_overflow(); }
     }
 
-    // pub fn dissipate(&mut self, rhs: T)
-    /// Dissipates or subtracts rhs of type `T` from self which is of
-    /// `BigUInt` type.
+    // pub fn wrapping_sub_uint(&self, rhs: T) -> Self
+    /// Subtracts a unsigned integer number of type `T` from `BigUInt`-type
+    /// unsigned integer and returns its result in a type of BigUInt.
+    /// 
+    /// # Output
+    /// It returns the subtraction of `rhs` from `self`.
+    /// 
+    /// # Examples
+    /// 
+    /// ```
+    /// use std::str::FromStr;
+    /// use Cryptocol::define_utypes_with;
+    /// define_utypes_with!(u128);
+    /// let a = u256::from_str("10000000000000000000000000000000000").unwrap();
+    /// let sub = a.wrapping_sub_uint(35_u128);
+    /// println!("sub = {}", sub);
+    /// ```
+    pub fn wrapping_sub_uint(&self, rhs: T) -> Self
+    {
+        let mut bi = self.clone();
+        bi.wrapping_sub_assign_uint(rhs);
+        bi
+    }
+
+    // pub fn wrapping_sub_assign_uint(&mut self, rhs: T)
+    /// Subtracts rhs of type `T` from self which is of `BigUInt` type,
+    /// and returns the result to `self` back.
     /// 
     /// # Example
     /// ```
     /// // Todo
     /// ```
-    pub fn dissipate(&mut self, rhs: T)
+    pub fn wrapping_sub_assign_uint(&mut self, rhs: T)
     {
         let zero = T::zero();
         let one = T::one();
@@ -3258,22 +3308,44 @@ where T: Uint + Clone + Display + Debug + ToString
             midres = self.number[i].wrapping_sub(carry);
             carry = if midres > self.number[i] { one } else { zero };
             self.number[i] = midres;
+            if carry == zero
+                { break; }
         }
         if carry != zero
-        {
-            if !self.is_untrustable()
-                { self.set_underflow(); }
-        }
+            { self.set_underflow(); }
     }
 
-    // pub fn times(&mut self, rhs: T)
+    // pub fn wrapping_mul_uint(&self, rhs: T) -> Self
+    /// Multiplies `BigUInt`-type number with a unsigned integer number
+    /// of type `T` and returns its result in a type of BigUInt.
+    /// 
+    /// # Output
+    /// It returns the multiplication of `self` and `rhs`.
+    /// 
+    /// # Examples
+    /// ```
+    /// use std::str::FromStr;
+    /// use Cryptocol::define_utypes_with;
+    /// define_utypes_with!(u128);
+    /// let a = u256::from_str("10000000000000000000000000000000000").unwrap();
+    /// let mul = a.wrapping_mul_uint(35);
+    /// println!("mul = {}", mul);
+    /// ```
+    pub fn wrapping_mul_uint(&self, rhs: T) -> Self
+    {
+        let mut bi = self.clone();
+        bi.wrapping_mul_assign_uint(rhs);
+        bi
+    }
+
+    // pub fn wrapping_mul_assign_uint(&mut self, rhs: T)
     /// Multiplies self which is of `BigUInt` type with rhs of type `T`.
     /// 
     /// # Example
     /// ```
     /// // Todo
     /// ```
-    pub fn times(&mut self, rhs: T)
+    pub fn wrapping_mul_assign_uint(&mut self, rhs: T)
     {
         if self.is_zero()
             { return; }
@@ -3374,7 +3446,7 @@ where T: Uint + Clone + Display + Debug + ToString
             low = 0;
             if high == 0
             {
-                return (quotient, (*self - quotient.mul_uint(rhs)).number[0]);
+                return (quotient, (*self - quotient.wrapping_mul_uint(rhs)).number[0]);
             }
             else    // if high > 0
             {
@@ -3383,7 +3455,7 @@ where T: Uint + Clone + Display + Debug + ToString
                     mid = (high + low) >> 1;
                     adder.turn_check_bits(mid);
                     sum = quotient + adder;
-                    res = sum.mul_uint(rhs);
+                    res = sum.wrapping_mul_uint(rhs);
                     if !res.is_overflow() && (*self > res)
                     {
                         if mid == highest - 1
@@ -3455,78 +3527,6 @@ where T: Uint + Clone + Display + Debug + ToString
     {
         let (_, remainder) = self.divide_by_uint_fully(rhs);
         self.set_uint(remainder);
-    }
-
-    // pub fn add_uint(&self, rhs: T) -> Self
-    /// Adds a unsigned integer number of type `T` to `BigUInt`-type unsigned
-    /// integer and returns its result in a type of BigUInt.
-    /// 
-    /// # Output
-    /// It returns the sum of `self` and `rhs`.
-    /// 
-    /// # Examples
-    /// 
-    /// ```
-    /// use std::str::FromStr;
-    /// use Cryptocol::define_utypes_with;
-    /// define_utypes_with!(u128);
-    /// let a = u256::from_str("10000000000000000000000000000000000").unwrap();
-    /// let sum = a.add_uint(35);
-    /// println!("sum = {}", sum);
-    /// assert_eq!(sum, u256::from_str("10000000000000000000000000000000035").unwrap());
-    /// ```
-    pub fn add_uint(&self, rhs: T) -> Self
-    {
-        let mut bi = self.clone();
-        bi.accumulate(rhs);
-        bi
-    }
-
-    // pub fn sub_uint(&self, rhs: T) -> Self
-    /// Subtracts a unsigned integer number of type `T` from `BigUInt`-type
-    /// unsigned integer and returns its result in a type of BigUInt.
-    /// 
-    /// # Output
-    /// It returns the subtraction of `rhs` from `self`.
-    /// 
-    /// # Examples
-    /// 
-    /// ```
-    /// use std::str::FromStr;
-    /// use Cryptocol::define_utypes_with;
-    /// define_utypes_with!(u128);
-    /// let a = u256::from_str("10000000000000000000000000000000000").unwrap();
-    /// let sub = a.sub_uint(35_u128);
-    /// println!("sub = {}", sub);
-    /// ```
-    pub fn sub_uint(&self, rhs: T) -> Self
-    {
-        let mut bi = self.clone();
-        bi.dissipate(rhs);
-        bi
-    }
-
-    // pub fn mul_uint(&self, rhs: T) -> Self
-    /// Multiplies `BigUInt`-type number with a unsigned integer number
-    /// of type `T` and returns its result in a type of BigUInt.
-    /// 
-    /// # Output
-    /// It returns the multiplication of `self` and `rhs`.
-    /// 
-    /// # Examples
-    /// ```
-    /// use std::str::FromStr;
-    /// use Cryptocol::define_utypes_with;
-    /// define_utypes_with!(u128);
-    /// let a = u256::from_str("10000000000000000000000000000000000").unwrap();
-    /// let mul = a.mul_uint(35);
-    /// println!("mul = {}", mul);
-    /// ```
-    pub fn mul_uint(&self, rhs: T) -> Self
-    {
-        let mut bi = self.clone();
-        bi.times(rhs);
-        bi
     }
 
     // pub fn div_uint(&self, rhs: T) -> Self
@@ -4430,7 +4430,7 @@ where T: Uint + Clone + Display + Debug + ToString
                 {
                     *self += adder;
                     if self.is_overflow()
-                        { high.add_uint(T::u8_as_Uint(1)); }
+                        { high.wrapping_add_uint(T::u8_as_Uint(1)); }
                 }
                 bit_check >>= one;
             }
@@ -4462,7 +4462,7 @@ where T: Uint + Clone + Display + Debug + ToString
                 if bit_check & num != zero
                 {
                     *self += adder;
-                    high.add_uint(T::bool_as_Uint(self.is_overflow()));
+                    high.wrapping_add_uint(T::bool_as_Uint(self.is_overflow()));
                 }
                 bit_check >>= one;
             }
