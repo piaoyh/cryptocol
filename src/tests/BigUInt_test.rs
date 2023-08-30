@@ -34,13 +34,14 @@ pub fn test_main_BigUInt()
 
     // BigUInt_carrying_add___main();
     // BigUInt_carrying_add_assign___main();
-    BigUInt_wrapping_add___main();
-    BigUInt_wrapping_add_assign___main();
+    //BigUInt_wrapping_add___main();
+    //BigUInt_wrapping_add_assign___main();
 
     // BigUInt_abs_diff___main();
 
-    // BigUInt_pow_uint___main();
-    // BigUInt_pow___main();
+    BigUInt_pow_uint___main();
+    BigUInt_pow___main();
+    BigUInt_pow_assign___main();
 }
 
 
@@ -195,7 +196,7 @@ fn BigUInt_pow_uint___main()
     // normal exponentiation
     let b = a.pow_uint(37_u8);
     println!("123 ** 37 = {}", b);
-    assert_eq!(b.to_string(), "327866917145357122766845521828011845892261593022600989693192403442113095387339");
+    assert_eq!(b.to_string(), "96282738670724731919703551810636030185721623691319861614277235426286836107467");
 
     // wrapping (modular) exponentiation
     let c = a.pow_uint(38_u8);
@@ -219,19 +220,45 @@ fn BigUInt_pow___main()
     // normal exponentiation
     let b = a.pow(exp);
     println!("234 ** 34 = {}", b);
-    assert_eq!(b.to_string(), "333355548155350456483859370069812512225557842608257584768167093353269140914176");
+    assert_eq!(b.to_string(), "101771369680718065636717400052436696519017873276976456689251925337442881634304");
 
     // wrapping (modular) exponentiation
     exp += 1;
     let c = a.pow(exp);
     println!("234 ** 35 = {}", c);
-    assert_eq!(c.to_string(), "308706390112839688006961655506541691236375459687456365275060975355268985520128");
+    assert_eq!(c.to_string(), "77122211638207297159819685489165875529835490356175237196145807339442726240256");
 
     // evidence of wrapping (modular) exponentiation
     assert!(b > c);
     println!("---------------------------");
 }
 
+fn BigUInt_pow_assign___main()
+{
+    println!("BigUInt_pow_assign___main()");
+    use Cryptocol::define_utypes_with;
+    define_utypes_with!(u128);
+
+    let mut a = u256::from_uint(234_u8);
+    let mut exp = u256::from_uint(34_u8);
+
+    // normal exponentiation
+    a.pow_assign(exp);
+    println!("234 ** 34 = {}", a);
+    assert_eq!(a.to_string(), "101771369680718065636717400052436696519017873276976456689251925337442881634304");
+
+    // wrapping (modular) exponentiation
+    let old = a.clone();
+    a = u256::from_uint(234_u8);
+    exp += 1;
+    a.pow_assign(exp);
+    println!("234 ** 35 = {}", a);
+    assert_eq!(a.to_string(), "77122211638207297159819685489165875529835490356175237196145807339442726240256");
+
+    // evidence of wrapping (modular) exponentiation
+    assert!(old > a);
+    println!("---------------------------");
+}
 
 fn find_maximum()
 {

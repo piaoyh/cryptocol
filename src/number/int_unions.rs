@@ -5149,6 +5149,31 @@ macro_rules! Uint_for_integer_unions_impl {
             /// [Read more in detail](trait@Uint#tymethod.abs_diff)
             #[inline] fn abs_diff(self, other: Self) -> Self    { self.abs_diff(other) }
 
+            /// Calculates the “full multiplication” `self` * `rhs` + `carry` without
+            /// the possibility to overflow.
+            /// [Read more in detail](trait@Uint#tymethod.carrying_mul)
+            #[inline] fn carrying_mul(self, rhs: Self, carry: Self) -> (Self, Self) { self.carrying_mul_(rhs, carry) }
+
+            /// Calculates the “full multiplication” `self` * `rhs` + `carry` without
+            /// the possibility to overflow.
+            /// [Read more in detail](trait@Uint#tymethod.carrying_mul)
+            fn carrying_mul_(self, rhs: Self, carry: Self) -> (Self, Self)
+            {
+                let (low, high) = self.get().carrying_mul_(rhs.get(), carry.get());
+                (Self::new_with(low), Self::new_with(high))
+            }
+
+            /// Calculates the complete product `self` * `rhs` without the possibility
+            /// to overflow. [Read more in detail](trait@Uint#tymethod.widening_mul)
+            #[inline] fn widening_mul(self, rhs: Self) -> (Self, Self)  { self.widening_mul_(rhs) }
+
+            /// Calculates the complete product `self` * `rhs` without the possibility
+            /// to overflow. [Read more in detail](trait@Uint#tymethod.widening_mul)
+            fn widening_mul_(self, rhs: Self) -> (Self, Self)
+            {
+                let (low, high) = self.get().widening_mul_(rhs.get());
+                (Self::new_with(low), Self::new_with(high))
+            }
 
             /// Computes self * rhs, wrapping around at the boundary of the type.
             /// [Read more in detail](trait@Uint#tymethod.wrapping_mul)
@@ -5173,6 +5198,7 @@ macro_rules! Uint_for_integer_unions_impl {
             /// [Read more in detail](trait@Uint#tymethod.saturating_mul)
             #[inline] fn saturating_mul(self, rhs: Self) -> Self    { self.saturating_mul(rhs) }
 
+
             /// Computes self / rhs. Wrapped division on unsigned types is just
             /// normal division. [Read more in detail](trait@Uint#tymethod.wrapping_div)
             #[inline] fn wrapping_div(self, rhs: Self) -> Self  { self.wrapping_div(rhs) }
@@ -5192,6 +5218,7 @@ macro_rules! Uint_for_integer_unions_impl {
             /// [Read more in detail](trait@Uint#tymethod.saturating_div)
             #[inline] fn saturating_div(self, rhs: Self) -> Self    { self.saturating_div(rhs) }
 
+
             /// Computes self % rhs. Wrapped remainder calculation on unsigned
             /// types is just the regular remainder calculation.
             /// [Read more in detail](trait@Uint#tymethod.wrapping_rem)
@@ -5206,6 +5233,7 @@ macro_rules! Uint_for_integer_unions_impl {
             /// Computes self % rhs, returning None if rhs == 0.
             /// [Read more in detail](trait@Uint#tymethod.checked_rem)
             #[inline] fn checked_rem(self, rhs: Self) -> Option<Self>   { self.checked_rem(rhs) }
+
 
             /// Raises `self` to the power of `exp`, using exponentiation by squaring.
             /// [Read more in detail](trait@Uint#tymethod.pow)
@@ -5273,6 +5301,7 @@ macro_rules! Uint_for_integer_unions_impl {
             #[inline] fn u16_as_Uint(n: u16) -> Self    { Self::new_with(n as $g) }
             #[inline] fn u8_as_Uint(n: u8) -> Self      { Self::new_with(n as $g) }
             #[inline] fn usize_as_Uint(n: usize) -> Self    { Self::new_with(n as $g) }
+            #[inline] fn bool_as_Uint(n: bool) -> Self  { Self::new_with(n as $g) }
 
             #[inline]
             fn num<T: Uint>(n: T) -> Self

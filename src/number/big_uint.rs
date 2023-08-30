@@ -3574,9 +3574,9 @@ where T: Uint + Clone + Display + Debug + ToString
         remainder
     }
 
-    // pub fn pow_uint<U>(&mut self, rhs: U) -> Self
+    // pub fn pow_uint<U>(&mut self, exp: U) -> Self
     /// Raises `BigUInt` type number to the power of exp, using exponentiation
-    /// of type `U` by squaring. The type `U` has the trait `Uint`.
+    /// by squaring. The type `U` has the trait `Uint`.
     /// 
     /// # Output
     /// It returns the result of `self` raised to the power of `exp`.
@@ -3586,7 +3586,7 @@ where T: Uint + Clone + Display + Debug + ToString
     /// wrapping (modular) exponentiation.
     /// 
     /// # Argument
-    /// The argument `rhs` is the type that has the trait `Uint`.
+    /// The argument `exp` is the type that has the trait `Uint`.
     /// 
     /// # Counterpart Method
     /// This method `pow_uint()` is more efficient than the method `pow()`
@@ -3604,7 +3604,7 @@ where T: Uint + Clone + Display + Debug + ToString
     /// // normal exponentiation
     /// let b = a.pow_uint(37_u8);
     /// println!("123 ** 37 = {}", b);
-    /// assert_eq!(b.to_string(), "327866917145357122766845521828011845892261593022600989693192403442113095387339");
+    /// assert_eq!(b.to_string(), "96282738670724731919703551810636030185721623691319861614277235426286836107467");
     /// 
     /// // wrapping (modular) exponentiation
     /// let c = a.pow_uint(38_u8);
@@ -3614,7 +3614,7 @@ where T: Uint + Clone + Display + Debug + ToString
     /// // evidence of wrapping (modular) exponentiation
     /// assert!(b > c);
     /// ```
-    pub fn pow_uint<U>(&self, rhs: U) -> Self
+    pub fn pow_uint<U>(&self, exp: U) -> Self
     where U: Uint + Clone + Display + Debug + ToString
             + Add<Output=U> + AddAssign + Sub<Output=U> + SubAssign
             + Mul<Output=U> + MulAssign + Div<Output=U> + DivAssign
@@ -3630,11 +3630,11 @@ where T: Uint + Clone + Display + Debug + ToString
         let zero = U::zero();
         let one = U::one();
         let mut res = Self::one();
-        if rhs == zero
+        if exp == zero
             { return res; }
 
         let mut bit_check = U::one();
-        bit_check <<= U::num((rhs.length_in_bits() - rhs.leading_zeros() as usize - 1) as u128);
+        bit_check <<= U::num((exp.length_in_bits() - exp.leading_zeros() as usize - 1) as u128);
         if bit_check != zero
         {
             res *= *self; 
@@ -3643,73 +3643,9 @@ where T: Uint + Clone + Display + Debug + ToString
         while bit_check != zero
         {
             res *= res;
-            if (bit_check & rhs) != zero
+            if (bit_check & exp) != zero
                 { res *= *self; }
             bit_check >>= one;
-        }
-        res
-    }
-
-    // pub fn pow(&mut self, rhs: Self) -> Self
-    /// Raises `BigUInt` type number to the power of exp, using exponentiation
-    /// of type `BigUInt` by squaring.
-    /// 
-    /// # Output
-    /// It returns the result of `self` raised to the power of `exp`.
-    /// 
-    /// # Argument
-    /// The argument `rhs` is the type `BigUInt`.
-    /// 
-    /// # Counterpart Method
-    /// The method `pow_uint()` is more efficient than this method `pow()`
-    /// when the exponent `rhs` is primitive unsigned integral data type
-    /// such as u8, u16, u32, u64, u128 and usize. If `rhs` is the primitive
-    /// unsigned integral data type number, use the mentod `pow_uint()`.
-    /// 
-    /// # Example
-    /// ```
-    /// use Cryptocol::define_utypes_with;
-    /// define_utypes_with!(u128);
-    /// 
-    /// let a = u256::from_uint(234_u8);
-    /// let mut exp = u256::from_uint(34_u8);
-    /// 
-    /// // normal exponentiation
-    /// let b = a.pow(exp);
-    /// println!("234 ** 34 = {}", b);
-    /// assert_eq!(b.to_string(), "333355548155350456483859370069812512225557842608257584768167093353269140914176");
-    /// 
-    /// // wrapping (modular) exponentiation
-    /// exp += 1;
-    /// let c = a.pow(exp);
-    /// println!("234 ** 35 = {}", c);
-    /// assert_eq!(c.to_string(), "308706390112839688006961655506541691236375459687456365275060975355268985520128");
-    /// 
-    /// // evidence of wrapping (modular) exponentiation
-    /// assert!(b > c);
-    /// ```
-    pub fn pow(&self, rhs: Self) -> Self
-    {
-        if self.is_zero() || self.is_one()
-            { return self.clone(); }
-
-        let mut res = Self::one();
-        if rhs.is_zero()
-            { return res; }
-
-        let mut bit_check = Self::one();
-        bit_check <<= (rhs.length_in_bits() - rhs.leading_zeros() as usize - 1) as i32;
-        if !bit_check.is_zero()
-        {
-            res *= *self; 
-            bit_check >>= 1;
-        }
-        while !bit_check.is_zero()
-        {
-            res *= res;
-            if !(bit_check & rhs).is_zero()
-                { res *= *self; }
-            bit_check >>= 1;
         }
         res
     }
@@ -4393,27 +4329,92 @@ where T: Uint + Clone + Display + Debug + ToString
 
     /*** Multiplication ***/
 
+    // pub fn carrying_mul(self, rhs: Self, carry: Self) -> (Self, Self)
+    /// Calculates the “full multiplication” `self` * `rhs` + `carry` without
+    /// the possibility to overflow.
+    /// 
+    /// # Output
+    /// It returns `self` * `rhs` + `carry` in the form of a tuple of the
+    /// low-order (wrapping) bits and the high-order (overflow) bits of the
+    /// result as two separate values, in that order.
+    /// 
+    /// # Feature
+    /// It performs “long multiplication” which takes in an extra amount to add,
+    /// and may return an additional amount of overflow. This allows for
+    /// chaining together multiple multiplications to create “bigger integers”
+    /// which represent larger values.
+    /// 
+    /// # Counterpart Methods
+    /// If you don’t need the carry, then you can use `widening_mul()` instead.
+    /// 
+    /// The value of the first field in the returned tuple matches what you’d
+    /// get by combining the `wrapping_mul()` and `wrapping_add()` methods:
+    /// `self.wrapping_mul(rhs).wrapping_add(carry)`. So,
+    /// `self.carrying_mul(rhs, carry).0` == `self.wrapping_mul(rhs).wrapping_add(carry)`
+    /// 
+    /// # Example
+    /// ```
+    /// // Todo
+    /// ```
+    /// 
+    /// # Big-endian issue
+    /// It is just experimental for Big Endian CPUs. So, you are not encouraged
+    /// to use it for Big Endian CPUs for serious purpose. Only use this crate
+    /// for Big-endian CPUs with your own full responsibility.
     pub fn carrying_mul(self, rhs: Self, carry: Self) -> (Self, Self)
     {
-        todo!();
+        let mut low = self.clone();
+        let high = low.carrying_mul_assign(rhs, carry);
+        (low, high)
     }
 
-    pub fn carrying_mul_assign(self, rhs: Self, carry: Self) -> Self
+    // pub fn carrying_mul_assign(&mut self, rhs: Self, carry: Self) -> Self
+    /// Calculates the “full multiplication” `self` * `rhs` + `carry` without
+    /// the possibility to overflow, and assigs the low-order bits of the result
+    /// to `self` back and returns the high-order bits of the result.
+    /// 
+    /// # Output
+    /// It returns the high-order (overflow) bits of `self` * `rhs` + `carry`
+    /// of the result.
+    /// 
+    /// # Feature
+    /// It performs “long multiplication” which takes in an extra amount to add,
+    /// and may return an additional amount of overflow. This allows for
+    /// chaining together multiple multiplications to create “bigger integers”
+    /// which represent larger values.
+    /// 
+    /// # Counterpart Methods
+    /// If you don’t need the carry, then you can use `widening_mul_assign()`
+    /// instead.
+    /// 
+    /// The value of `self` after calculation matches what you’d get by
+    /// combining the `wrapping_mul()` and `wrapping_add_assign()` methods:
+    /// `self.wrapping_mul(rhs).wrapping_add_assign(carry)`.
+    /// 
+    /// # Example
+    /// ```
+    /// // Todo
+    /// ```
+    /// 
+    /// # Big-endian issue
+    /// It is just experimental for Big Endian CPUs. So, you are not encouraged
+    /// to use it for Big Endian CPUs for serious purpose. Only use this crate
+    /// for Big-endian CPUs with your own full responsibility.
+    pub fn carrying_mul_assign(&mut self, rhs: Self, carry: Self) -> Self
     {
-        todo!();
-        /*
+        let mut high = Self::zero();
         if rhs.is_zero()
         {
             self.set_zero();
-            return Self::zero();
+            return high;
         }
         if self.is_zero()
-            { return Self::zero(); }
+            { return high; }
 
         let zero = T::zero();
         let one = T::one();
         let adder = self.clone();
-        let TSIZE_BITS = size_of::<T>() * 8;
+        let TSIZE_BITS = T::size_in_bits();
         let mut multiply_first = |num: T| {
             let mut bit_check = one;
             bit_check <<= T::usize_as_Uint(TSIZE_BITS - 1);
@@ -4424,8 +4425,13 @@ where T: Uint + Clone + Display + Debug + ToString
             while bit_check != zero
             {
                 *self <<= 1;
+                high <<= 1;
                 if bit_check & num != zero
-                    { *self += adder; }
+                {
+                    *self += adder;
+                    if self.is_overflow()
+                        { high.add_uint(T::u8_as_Uint(1)); }
+                }
                 bit_check >>= one;
             }
         };
@@ -4435,13 +4441,14 @@ where T: Uint + Clone + Display + Debug + ToString
             { n -= 1; }
         multiply_first(rhs.get_num_(n));
         if n == 0
-            { return; }
+            { return high; }
         n -= 1;
 
         let mut multiply = |num: T| {
             if num == T::zero()
             {
                 *self <<= TSIZE_BITS as i32;
+                high <<= TSIZE_BITS as i32;
                 return;
             }
             let mut bit_check = one;
@@ -4449,8 +4456,14 @@ where T: Uint + Clone + Display + Debug + ToString
             while bit_check != zero
             {
                 *self <<= 1;
+                high <<= 1;
+                if self.is_overflow()
+                    { high.set_num_(0, high.get_num_(0) | T::u8_as_Uint(1)) ; }
                 if bit_check & num != zero
-                    { *self += adder; }
+                {
+                    *self += adder;
+                    high.add_uint(T::bool_as_Uint(self.is_overflow()));
+                }
                 bit_check >>= one;
             }
         };
@@ -4459,18 +4472,81 @@ where T: Uint + Clone + Display + Debug + ToString
         {
             multiply(rhs.get_num_(n));
             if n == 0
-                { break; }
+                { return high; }
             n = n.wrapping_sub(1);
         }
-        */
     }
 
+    // pub fn widening_mul(self, rhs: Self) -> (Self, Self)
+    /// Calculates the complete product `self` * `rhs` without the possibility
+    /// to overflow.
+    /// 
+    /// # Output
+    /// It returns `self` * `rhs` in the form of a tuple of the low-order
+    /// (wrapping) bits and the high-order (overflow) bits of the result as
+    /// two separate values, in that order.
+    /// 
+    /// /// # Feature
+    /// It performs “long multiplication” which takes in an extra amount to add,
+    /// and may return an additional amount of overflow. This allows for
+    /// chaining together multiple multiplications to create “bigger integers”
+    /// which represent larger values.
+    /// 
+    /// # Counterpart Methods
+    /// If you also need to add a carry to the wide result, then you want to use
+    /// `carrying_mul()` instead.
+    ///     
+    /// The value of the first field in the returned tuple matches what you’d
+    /// get the `wrapping_mul()` methods.
+    /// `self.widening_mul(rhs).0` == `self.wrapping_mul(rhs)`
+    /// 
+    /// # Example
+    /// ```
+    /// // Todo
+    /// ```
+    /// 
+    /// # Big-endian issue
+    /// It is just experimental for Big Endian CPUs. So, you are not encouraged
+    /// to use it for Big Endian CPUs for serious purpose. Only use this crate
+    /// for Big-endian CPUs with your own full responsibility.
+    #[inline]
     pub fn widening_mul(self, rhs: Self) -> (Self, Self)
     {
         self.carrying_mul(rhs, Self::zero())
     }
 
-    pub fn widening_mul_assign(self, rhs: Self) -> Self
+    // pub fn widening_mul_assign(&mut self, rhs: Self) -> Self
+    /// Calculates the complete product `self` * `rhs` without the possibility
+    /// to overflow.
+    /// 
+    /// # Output
+    /// It returns the high-order (overflow) bits of the result `self` * `rhs`.
+    /// 
+    /// /// # Feature
+    /// It performs “long multiplication” which takes in an extra amount to add,
+    /// and may return an additional amount of overflow. This allows for
+    /// chaining together multiple multiplications to create “bigger integers”
+    /// which represent larger values.
+    /// 
+    /// # Counterpart Methods
+    /// If you also need to add a carry to the wide result, then you want to use
+    /// `carrying_mul_assign()` instead.
+    ///     
+    /// The value of `self` after calculation matches what you’d get the
+    /// `wrapping_mul()` methods.
+    /// `self` == `self.wrapping_mul(rhs)`
+    /// 
+    /// # Example
+    /// ```
+    /// // Todo
+    /// ```
+    /// 
+    /// # Big-endian issue
+    /// It is just experimental for Big Endian CPUs. So, you are not encouraged
+    /// to use it for Big Endian CPUs for serious purpose. Only use this crate
+    /// for Big-endian CPUs with your own full responsibility.
+    #[inline]
+    pub fn widening_mul_assign(&mut self, rhs: Self) -> Self
     {
         self.carrying_mul_assign(rhs, Self::zero())
     }
@@ -4673,6 +4749,7 @@ where T: Uint + Clone + Display + Debug + ToString
     /// It is just experimental for Big Endian CPUs. So, you are not encouraged
     /// to use it for Big Endian CPUs for serious purpose. Only use this crate
     /// for Big-endian CPUs with your own full responsibility.
+    #[inline]
     pub fn unchecked_mul(self, rhs: Self) -> Self
     {
         self.checked_mul(rhs).unwrap()
@@ -4971,6 +5048,7 @@ where T: Uint + Clone + Display + Debug + ToString
     /// It is just experimental for Big Endian CPUs. So, you are not encouraged
     /// to use it for Big Endian CPUs for serious purpose. Only use this crate
     /// for Big-endian CPUs with your own full responsibility.
+    #[inline]
     pub fn unchecked_div(self, rhs: Self) -> Self
     {
         self.checked_div(rhs).unwrap()
@@ -5282,6 +5360,122 @@ where T: Uint + Clone + Display + Debug + ToString
         let (_, remainder) = self.divide_fully(rhs);
         *self = remainder;
     }
+
+
+
+
+    /***** METHODS FOR EXPONENTIATION AND LOGARITHM *****/
+
+    // pub fn pow(&mut self, rhs: Self) -> Self
+    /// Raises `BigUInt` type number to the power of exp, using exponentiation
+    /// of type `BigUInt` by squaring.
+    /// 
+    /// # Output
+    /// It returns the result of `self` raised to the power of `exp`.
+    /// 
+    /// # Argument
+    /// The argument `exp` is the type `BigUInt`.
+    /// 
+    /// # Counterpart Method
+    /// The method `pow_uint()` is more efficient than this method `pow()`
+    /// when the exponent `exp` is primitive unsigned integral data type
+    /// such as u8, u16, u32, u64, u128 and usize. If `rhs` is the primitive
+    /// unsigned integral data type number, use the mentod `pow_uint()`.
+    /// 
+    /// # Example
+    /// ```
+    /// use Cryptocol::define_utypes_with;
+    /// define_utypes_with!(u128);
+    /// 
+    /// let a = u256::from_uint(234_u8);
+    /// let mut exp = u256::from_uint(34_u8);
+    /// 
+    /// // normal exponentiation
+    /// let b = a.pow(exp);
+    /// println!("234 ** 34 = {}", b);
+    /// assert_eq!(b.to_string(), "101771369680718065636717400052436696519017873276976456689251925337442881634304");
+    /// 
+    /// // wrapping (modular) exponentiation
+    /// exp += 1;
+    /// let c = a.pow(exp);
+    /// println!("234 ** 35 = {}", c);
+    /// assert_eq!(c.to_string(), "77122211638207297159819685489165875529835490356175237196145807339442726240256");
+    /// 
+    /// // evidence of wrapping (modular) exponentiation
+    /// assert!(b > c);
+    /// ```
+    pub fn pow(&self, exp: Self) -> Self
+    {
+        let mut res = self.clone();
+        res.pow_assign(exp);
+        res
+    }
+
+
+    // pub fn pow_assign(&mut self, rhs: Self)
+    /// Raises `BigUInt` type number to the power of exp, using exponentiation
+    /// of type `BigUInt` by squaring, and assign the result to `self` back.
+    /// 
+    /// # Argument
+    /// The argument `exp` is the type `BigUInt`.
+    /// 
+    /// # Counterpart Method
+    /// The method `pow_uint()` is more efficient than this method `pow()`
+    /// when the exponent `exp` is primitive unsigned integral data type
+    /// such as u8, u16, u32, u64, u128 and usize. If `rhs` is the primitive
+    /// unsigned integral data type number, use the mentod `pow_uint()`.
+    /// 
+    /// # Example
+    /// ```
+    /// use Cryptocol::define_utypes_with;
+    /// define_utypes_with!(u128);
+    /// 
+    /// let mut a = u256::from_uint(234_u8);
+    /// let mut exp = u256::from_uint(34_u8);
+    /// 
+    /// // normal exponentiation
+    /// a.pow_assign(exp);
+    /// println!("234 ** 34 = {}", a);
+    /// assert_eq!(a.to_string(), "101771369680718065636717400052436696519017873276976456689251925337442881634304");
+    /// 
+    /// // wrapping (modular) exponentiation
+    /// let old = a.clone();
+    /// a = u256::from_uint(234_u8);
+    /// exp += 1;
+    /// a.pow_assign(exp);
+    /// println!("234 ** 35 = {}", a);
+    /// assert_eq!(a.to_string(), "77122211638207297159819685489165875529835490356175237196145807339442726240256");
+    /// 
+    /// // evidence of wrapping (modular) exponentiation
+    /// assert!(old > a);
+    /// ```
+    pub fn pow_assign(&mut self, exp: Self)
+    {
+        if self.is_zero() || self.is_one()
+            { return; }
+
+        let multiplier = self.clone();
+        self.set_one();
+        if exp.is_zero()
+            { return; }
+
+        let mut bit_check = Self::one();
+        bit_check <<= (exp.length_in_bits() - exp.leading_zeros() as usize - 1) as i32;
+        if !bit_check.is_zero()
+        {
+            *self *= multiplier; 
+            bit_check >>= 1;
+        }
+        while !bit_check.is_zero()
+        {
+            *self *= *self;
+            if !(bit_check & exp).is_zero()
+                { *self *= multiplier; }
+            bit_check >>= 1;
+        }
+    }
+
+
 
 
 

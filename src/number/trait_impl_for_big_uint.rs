@@ -631,15 +631,15 @@ macro_rules! shlassign_u_for_BigUInt_impl {
                 }
                 if piece_num == 0
                     { return; }
-                if (self.get_num_(N-1) >> T::num((TSIZE_IN_BITS - piece_num).into_u128())) != zero
+                if (self.get_num_(N-1) >> T::usize_as_Uint(TSIZE_IN_BITS - piece_num)) != zero
                     { self.set_overflow(); }
 
                 let mut num: T;
                 let mut carry = zero;
                 for idx in chunk_num..N
                 {
-                    num = (self.get_num_(idx) << T::num(piece_num.into_u128())) | carry;
-                    carry = self.get_num_(idx) >> T::num((TSIZE_IN_BITS - piece_num).into_u128());
+                    num = (self.get_num_(idx) << T::usize_as_Uint(piece_num) | carry;
+                    carry = self.get_num_(idx) >> T::usize_as_Uint(TSIZE_IN_BITS - piece_num);
                     self.set_num_(idx, num);
                 }
                 if carry != zero
@@ -880,7 +880,7 @@ macro_rules! shrassign_u_for_BigUInt_impl {
                 }
                 if piece_num == 0
                     { return; }
-                if (self.get_num_(0) << T::num((TSIZE_IN_BITS - piece_num).into_u128())) != zero
+                if (self.get_num_(0) << T::usize_as_Uint(TSIZE_IN_BITS - piece_num)) != zero
                     { self.set_underflow(); }
 
                 let mut num: T;
@@ -888,8 +888,8 @@ macro_rules! shrassign_u_for_BigUInt_impl {
                 let mut idx = N - 1 - chunk_num;
                 loop
                 {
-                    num = (self.get_num_(idx) >> T::num(piece_num.into_u128())) | carry;
-                    carry = self.get_num_(idx) << T::num((TSIZE_IN_BITS - piece_num).into_u128());
+                    num = (self.get_num_(idx) >> T::usize_as_Uint(piece_num)) | carry;
+                    carry = self.get_num_(idx) << T::usize_as_Uint(TSIZE_IN_BITS - piece_num);
                     self.set_num_(idx, num);
                     if idx == 0
                         { break; }

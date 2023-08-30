@@ -2257,6 +2257,153 @@ pub trait Uint: Copy + Clone + Sized //+ Display + Debug + ToString
 
     /***** MULTIPLICATION *****/
 
+    // pub fn carrying_mul(self, rhs: Self, carry: Self) -> (Self, Self)
+    /// Calculates the “full multiplication” `self` * `rhs` + `carry` without
+    /// the possibility to overflow.
+    /// 
+    /// # Output
+    /// It returns `self` * `rhs` + `carry` in the form of a tuple of the
+    /// low-order (wrapping) bits and the high-order (overflow) bits of the
+    /// result as two separate values, in that order.
+    /// 
+    /// # Feature
+    /// It performs “long multiplication” which takes in an extra amount to add,
+    /// and may return an additional amount of overflow. This allows for
+    /// chaining together multiple multiplications to create “big integers”
+    /// which represent larger values.
+    /// 
+    /// # Counterpart Methods
+    /// If you don’t need the carry, then you can use `widening_mul()` instead.
+    /// 
+    /// The value of the first field in the returned tuple matches what you’d
+    /// get by combining the `wrapping_mul()` and `wrapping_add()` methods:
+    /// `self.wrapping_mul(rhs).wrapping_add(carry)`. So,
+    /// `self.carrying_mul(rhs, carry).0` == `self.wrapping_mul(rhs).wrapping_add(carry)`
+    /// 
+    /// # Example
+    /// ```
+    /// // Todo
+    /// ```
+    /// 
+    /// # Plagiarism in descryption
+    /// Even though it does not call the method `carrying_mul()` of
+    /// implementation of the primitive unsigned integer types such as `u8`,
+    /// `u16`, `u32`, `u64`, `u128` and `usize` directly, all the description
+    /// of this method is mainly the same as that of the method `carrying_mul()`
+    /// of implementation of the primitive unsigned integer types for nightly
+    /// version except example codes. Confer to the descryptions that are linked
+    /// to in the section _Reference_. This plagiarism is not made maliciously
+    /// but is made for the reason of effectiveness and efficiency so that users
+    /// may understand better and easily how to use this method with simiilarity
+    /// to the method `carrying_mul()` of implementation of the primitive
+    /// unsigned integer types.
+    /// 
+    /// # Possiible Changes in Future
+    /// This method does not call the method `carrying_mul()` of the primitive
+    /// unsigned integer types directly. Instead, it is implemented to perform
+    /// the same thing as that of `carrying_mul()` of the primitive unsigned
+    /// integer types because the methods `carrying_mul()` of the primitive
+    /// unsigned integer types are only for nightly version. So, when the method
+    /// `carrying_mul()` of the primitive unsigned integer types will become a
+    /// part of non-nightly normal version, the implementation of this method
+    /// will be changed to call the method `carrying_mul()` of the primitive
+    /// unsigned integer types directly.
+    /// 
+    /// # Big-endian issue
+    /// It is just experimental for Big Endian CPUs. So, you are not encouraged
+    /// to use it for Big Endian CPUs for serious purpose. Only use this crate
+    /// for Big-endian CPUs with your own full responsibility.
+    /// 
+    /// # References
+    /// - If you want to know about the definition of the method `carrying_mul()`
+    /// for the primitive type `u8`, read [here](https://doc.rust-lang.org/core/primitive.u8.html#method.carrying_mul).
+    /// - If you want to know about the definition of the method `carrying_mul()`
+    /// for the primitive type `u16`, read [here](https://doc.rust-lang.org/core/primitive.u16.html#method.carrying_mul).
+    /// - If you want to know about the definition of the method `carrying_mul()`
+    /// for the primitive type `u32`, read [here](https://doc.rust-lang.org/core/primitive.u32.html#method.carrying_mul).
+    /// - If you want to know about the definition of the method `carrying_mul()`
+    /// for the primitive type `u64`, read [here](https://doc.rust-lang.org/core/primitive.u64.html#method.carrying_mul).
+    /// - If you want to know about the definition of the method `carrying_mul()`
+    /// for the primitive type `u128`, read [here](https://doc.rust-lang.org/core/primitive.u128.html#method.carrying_mul).
+    /// - If you want to know about the definition of the method `carrying_mul()`
+    /// for the primitive type `usize`, read [here](https://doc.rust-lang.org/core/primitive.usize.html#method.carrying_mul).
+    fn carrying_mul(self, rhs: Self, carry: Self) -> (Self, Self);
+    fn carrying_mul_(self, rhs: Self, carry: Self) -> (Self, Self);
+    
+    // pub fn widening_mul(self, rhs: Self) -> (Self, Self)
+    /// Calculates the complete product `self` * `rhs` without the possibility
+    /// to overflow.
+    /// 
+    /// # Output
+    /// It returns `self` * `rhs` in the form of a tuple of the low-order
+    /// (wrapping) bits and the high-order (overflow) bits of the result as
+    /// two separate values, in that order.
+    /// 
+    /// /// # Feature
+    /// It performs “long multiplication” which takes in an extra amount to add,
+    /// and may return an additional amount of overflow. This allows for
+    /// chaining together multiple multiplications to create “big integers”
+    /// which represent larger values.
+    /// 
+    /// # Counterpart Methods
+    /// If you also need to add a carry to the wide result, then you want to use
+    /// `carrying_mul()` instead.
+    ///     
+    /// The value of the first field in the returned tuple matches what you’d
+    /// get the `wrapping_mul()` methods.
+    /// `self.widening_mul(rhs).0` == `self.wrapping_mul(rhs)`
+    /// 
+    /// # Example
+    /// ```
+    /// // Todo
+    /// ```
+    /// 
+    /// # Plagiarism in descryption
+    /// Even though it does not call the method `widening_mul()` of
+    /// implementation of the primitive unsigned integer types such as `u8`,
+    /// `u16`, `u32`, `u64`, `u128` and `usize` directly, all the description
+    /// of this method is mainly the same as that of the method `widening_mul()`
+    /// of implementation of the primitive unsigned integer types for nightly
+    /// version except example codes. Confer to the descryptions that are linked
+    /// to in the section _Reference_. This plagiarism is not made maliciously
+    /// but is made for the reason of effectiveness and efficiency so that users
+    /// may understand better and easily how to use this method with simiilarity
+    /// to the method `widening_mul()` of implementation of the primitive
+    /// unsigned integer types.
+    /// 
+    /// # Possiible Changes in Future
+    /// This method does not call the method widening_mul() of the primitive
+    /// unsigned integer types directly. Instead, it is implemented to perform
+    /// the same thing as that of widening_mul() of the primitive unsigned
+    /// integer types because the methods widening_mul() of the primitive
+    /// unsigned integer types are only for nightly version. So, when the method
+    /// widening_mul() of the primitive unsigned integer types will become a
+    /// part of non-nightly normal version, the implementation of this method
+    /// will be changed to call the method widening_mul() of the primitive
+    /// unsigned integer types directly.
+    /// 
+    /// # Big-endian issue
+    /// It is just experimental for Big Endian CPUs. So, you are not encouraged
+    /// to use it for Big Endian CPUs for serious purpose. Only use this crate
+    /// for Big-endian CPUs with your own full responsibility.
+    /// 
+    /// # References
+    /// - If you want to know about the definition of the method `widening_mul()`
+    /// for the primitive type `u8`, read [here](https://doc.rust-lang.org/core/primitive.u8.html#method.widening_mul).
+    /// - If you want to know about the definition of the method `widening_mul()`
+    /// for the primitive type `u16`, read [here](https://doc.rust-lang.org/core/primitive.u16.html#method.widening_mul).
+    /// - If you want to know about the definition of the method `widening_mul()`
+    /// for the primitive type `u32`, read [here](https://doc.rust-lang.org/core/primitive.u32.html#method.widening_mul).
+    /// - If you want to know about the definition of the method `widening_mul()`
+    /// for the primitive type `u64`, read [here](https://doc.rust-lang.org/core/primitive.u64.html#method.widening_mul).
+    /// - If you want to know about the definition of the method `widening_mul()`
+    /// for the primitive type `u128`, read [here](https://doc.rust-lang.org/core/primitive.u128.html#method.widening_mul).
+    /// - If you want to know about the definition of the method `widening_mul()`
+    /// for the primitive type `usize`, read [here](https://doc.rust-lang.org/core/primitive.usize.html#method.widening_mul).
+    fn widening_mul(self, rhs: Self) -> (Self, Self);
+    fn widening_mul_(self, rhs: Self) -> (Self, Self);
+
+    // fn wrapping_mul(self, rhs: Self) -> Self
     /// Computes self * rhs, wrapping around at the boundary of the type.
     /// 
     /// # Features
@@ -4602,6 +4749,7 @@ pub trait Uint: Copy + Clone + Sized //+ Display + Debug + ToString
     fn u16_as_Uint(n: u16) -> Self;
     fn u8_as_Uint(n: u8) -> Self;
     fn usize_as_Uint(n: usize) -> Self;
+    fn bool_as_Uint(n: bool) -> Self;
     fn num<T: Uint>(n: T) -> Self;
 
     fn size_in_bytes() -> usize;
@@ -4686,6 +4834,76 @@ macro_rules! Uint_for_uint_impl {
             /// [Read more in detail](trait@Uint#tymethod.abs_diff)
             #[inline] fn abs_diff(self, other: Self) -> Self    { self.abs_diff(other) }
 
+            /// Calculates the “full multiplication” `self` * `rhs` + `carry` without
+            /// the possibility to overflow.
+            /// [Read more in detail](trait@Uint#tymethod.carrying_mul)
+
+            #[inline] fn carrying_mul(self, rhs: Self, carry: Self) -> (Self, Self) { self.carrying_mul_(rhs, carry) }
+            /// Calculates the “full multiplication” `self` * `rhs` + `carry` without
+            /// the possibility to overflow.
+            /// [Read more in detail](trait@Uint#tymethod.carrying_mul)
+
+            fn carrying_mul_(self, rhs: Self, carry: Self) -> (Self, Self)
+            {
+                if (rhs == 0) || (self == 0)
+                    { return (0, 0); }
+
+                let mut low: Self = 0;
+                let mut high: Self = 0;
+                let adder = self;
+                let mut bit_check: Self = 1 << (Self::size_in_bits() - 1 - rhs.leading_zeros() as usize);
+
+                while bit_check != 0
+                {
+                    low <<= 1;
+                    high <<= 1;
+                    if bit_check & rhs != 0
+                    {
+                        let old = low;
+                        low += adder;
+                        if low < old
+                            { high += 1; }
+                    }
+                    bit_check >>= 1;
+                }
+                let mut c = false;
+                (low, c) = low.overflowing_add(carry);
+                if c
+                    { high = high.wrapping_add(1); }
+                (low, high)
+            }
+
+            /// Calculates the complete product `self` * `rhs` without the possibility
+            /// to overflow. [Read more in detail](trait@Uint#tymethod.widening_mul)
+            #[inline] fn widening_mul(self, rhs: Self) -> (Self, Self) { self.widening_mul_(rhs) }
+
+            /// Calculates the complete product `self` * `rhs` without the possibility
+            /// to overflow. [Read more in detail](trait@Uint#tymethod.widening_mul)
+            fn widening_mul_(self, rhs: Self) -> (Self, Self)
+            {
+                if (rhs == 0) || (self == 0)
+                { return (0, 0); }
+
+                let mut low: Self = 0;
+                let mut high: Self = 0;
+                let adder = self;
+                let mut bit_check: Self = 1 << (Self::size_in_bits() - 1 - rhs.leading_zeros() as usize);
+
+                while bit_check != 0
+                {
+                    low <<= 1;
+                    high <<= 1;
+                    if bit_check & rhs != 0
+                    {
+                        let old = low;
+                        low += adder;
+                        if low < old
+                            { high += 1; }
+                    }
+                    bit_check >>= 1;
+                }
+                (low, high)
+            }
 
             /// Computes self * rhs, wrapping around at the boundary of the type.
             /// [Read more in detail](trait@Uint#tymethod.wrapping_mul)
@@ -4809,6 +5027,7 @@ macro_rules! Uint_for_uint_impl {
             #[inline] fn u16_as_Uint(n: u16) -> Self    { n as Self }
             #[inline] fn u8_as_Uint(n: u8) -> Self      { n as Self }
             #[inline] fn usize_as_Uint(n: usize) -> Self    { n as Self }
+            #[inline] fn bool_as_Uint(n: bool) -> Self    { n as Self }
 
             #[inline]
             fn num<T: Uint>(n: T) -> Self
