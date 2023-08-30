@@ -5641,7 +5641,7 @@ where T: Uint + Clone + Display + Debug + ToString
         }
         if piece_num == 0
             { return; }
-        if (self.get_num_(0) << T::usize_as_Uint((TSIZE_IN_BITS - piece_num))) != zero
+        if (self.get_num_(0) << T::usize_as_Uint(TSIZE_IN_BITS - piece_num)) != zero
             { self.set_underflow(); }
 
         let mut num: T;
@@ -5650,7 +5650,7 @@ where T: Uint + Clone + Display + Debug + ToString
         loop
         {
             num = (self.get_num_(idx) >> T::usize_as_Uint(piece_num)) | carry;
-            carry = self.get_num_(idx) << T::usize_as_Uint((TSIZE_IN_BITS - piece_num));
+            carry = self.get_num_(idx) << T::usize_as_Uint(TSIZE_IN_BITS - piece_num);
             self.set_num_(idx, num);
             if idx == 0
                 { break; }

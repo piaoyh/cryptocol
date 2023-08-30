@@ -2328,7 +2328,10 @@ pub trait Uint: Copy + Clone + Sized //+ Display + Debug + ToString
     /// - If you want to know about the definition of the method `carrying_mul()`
     /// for the primitive type `usize`, read [here](https://doc.rust-lang.org/core/primitive.usize.html#method.carrying_mul).
     fn carrying_mul(self, rhs: Self, carry: Self) -> (Self, Self);
-    fn carrying_mul_(self, rhs: Self, carry: Self) -> (Self, Self);
+
+    // fn carrying_mul_for_internal_use(self, rhs: Self, carry: Self) -> (Self, Self);
+    /// It is for internal use. You are recommended to use [carrying_mul()](trait@Uint#tymethod.carrying_mul) instead.
+    fn carrying_mul_for_internal_use(self, rhs: Self, carry: Self) -> (Self, Self);
     
     // pub fn widening_mul(self, rhs: Self) -> (Self, Self)
     /// Calculates the complete product `self` * `rhs` without the possibility
@@ -2401,7 +2404,10 @@ pub trait Uint: Copy + Clone + Sized //+ Display + Debug + ToString
     /// - If you want to know about the definition of the method `widening_mul()`
     /// for the primitive type `usize`, read [here](https://doc.rust-lang.org/core/primitive.usize.html#method.widening_mul).
     fn widening_mul(self, rhs: Self) -> (Self, Self);
-    fn widening_mul_(self, rhs: Self) -> (Self, Self);
+
+    // fn carrying_mul_for_internal_use(self, rhs: Self, carry: Self) -> (Self, Self);
+    /// It is for internal use. You are recommended to use [carrying_mul()](trait@Uint#tymethod.widening_mul) instead.
+    fn widening_mul_for_internal_use(self, rhs: Self) -> (Self, Self);
 
     // fn wrapping_mul(self, rhs: Self) -> Self
     /// Computes self * rhs, wrapping around at the boundary of the type.
@@ -4837,13 +4843,11 @@ macro_rules! Uint_for_uint_impl {
             /// Calculates the “full multiplication” `self` * `rhs` + `carry` without
             /// the possibility to overflow.
             /// [Read more in detail](trait@Uint#tymethod.carrying_mul)
+            #[inline] fn carrying_mul(self, rhs: Self, carry: Self) -> (Self, Self) { self.carrying_mul_for_internal_use(rhs, carry) }
 
-            #[inline] fn carrying_mul(self, rhs: Self, carry: Self) -> (Self, Self) { self.carrying_mul_(rhs, carry) }
-            /// Calculates the “full multiplication” `self` * `rhs` + `carry` without
-            /// the possibility to overflow.
-            /// [Read more in detail](trait@Uint#tymethod.carrying_mul)
-
-            fn carrying_mul_(self, rhs: Self, carry: Self) -> (Self, Self)
+            // fn carrying_mul_for_internal_use(self, rhs: Self, carry: Self) -> (Self, Self);
+            /// It is for internal use. You are recommended to use [carrying_mul()](trait@Uint#tymethod.carrying_mul) instead.
+            fn carrying_mul_for_internal_use(self, rhs: Self, carry: Self) -> (Self, Self)
             {
                 if (rhs == 0) || (self == 0)
                     { return (0, 0); }
@@ -4875,11 +4879,11 @@ macro_rules! Uint_for_uint_impl {
 
             /// Calculates the complete product `self` * `rhs` without the possibility
             /// to overflow. [Read more in detail](trait@Uint#tymethod.widening_mul)
-            #[inline] fn widening_mul(self, rhs: Self) -> (Self, Self) { self.widening_mul_(rhs) }
+            #[inline] fn widening_mul(self, rhs: Self) -> (Self, Self) { self.widening_mul_for_internal_use(rhs) }
 
-            /// Calculates the complete product `self` * `rhs` without the possibility
-            /// to overflow. [Read more in detail](trait@Uint#tymethod.widening_mul)
-            fn widening_mul_(self, rhs: Self) -> (Self, Self)
+            // fn carrying_mul_for_internal_use(self, rhs: Self, carry: Self) -> (Self, Self);
+            /// It is for internal use. You are recommended to use [carrying_mul()](trait@Uint#tymethod.widening_mul) instead.
+            fn widening_mul_for_internal_use(self, rhs: Self) -> (Self, Self)
             {
                 if (rhs == 0) || (self == 0)
                 { return (0, 0); }

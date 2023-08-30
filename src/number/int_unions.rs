@@ -5152,26 +5152,25 @@ macro_rules! Uint_for_integer_unions_impl {
             /// Calculates the “full multiplication” `self` * `rhs` + `carry` without
             /// the possibility to overflow.
             /// [Read more in detail](trait@Uint#tymethod.carrying_mul)
-            #[inline] fn carrying_mul(self, rhs: Self, carry: Self) -> (Self, Self) { self.carrying_mul_(rhs, carry) }
+            #[inline] fn carrying_mul(self, rhs: Self, carry: Self) -> (Self, Self) { self.carrying_mul_for_internal_use(rhs, carry) }
 
-            /// Calculates the “full multiplication” `self` * `rhs` + `carry` without
-            /// the possibility to overflow.
-            /// [Read more in detail](trait@Uint#tymethod.carrying_mul)
-            fn carrying_mul_(self, rhs: Self, carry: Self) -> (Self, Self)
+            // fn carrying_mul_for_internal_use(self, rhs: Self, carry: Self) -> (Self, Self);
+            /// It is for internal use. You are recommended to use [carrying_mul()](trait@Uint#tymethod.carrying_mul) instead.
+            fn carrying_mul_for_internal_use(self, rhs: Self, carry: Self) -> (Self, Self)
             {
-                let (low, high) = self.get().carrying_mul_(rhs.get(), carry.get());
+                let (low, high) = self.get().carrying_mul_for_internal_use(rhs.get(), carry.get());
                 (Self::new_with(low), Self::new_with(high))
             }
 
             /// Calculates the complete product `self` * `rhs` without the possibility
             /// to overflow. [Read more in detail](trait@Uint#tymethod.widening_mul)
-            #[inline] fn widening_mul(self, rhs: Self) -> (Self, Self)  { self.widening_mul_(rhs) }
+            #[inline] fn widening_mul(self, rhs: Self) -> (Self, Self)  { self.widening_mul_for_internal_use(rhs) }
 
-            /// Calculates the complete product `self` * `rhs` without the possibility
-            /// to overflow. [Read more in detail](trait@Uint#tymethod.widening_mul)
-            fn widening_mul_(self, rhs: Self) -> (Self, Self)
+            // fn carrying_mul_for_internal_use(self, rhs: Self, carry: Self) -> (Self, Self);
+            /// It is for internal use. You are recommended to use [carrying_mul()](trait@Uint#tymethod.widening_mul) instead.
+            fn widening_mul_for_internal_use(self, rhs: Self) -> (Self, Self)
             {
-                let (low, high) = self.get().widening_mul_(rhs.get());
+                let (low, high) = self.get().widening_mul_for_internal_use(rhs.get());
                 (Self::new_with(low), Self::new_with(high))
             }
 
