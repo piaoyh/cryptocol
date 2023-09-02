@@ -330,4 +330,11 @@ pub fn Test()
 
     let e = a.divide_fully_uint(4);
     println!("{:?} {:?}", e.0, e.1);
+
+    println!("a == b {}", a == b);
+    println!("a != b {}", a != b);
+    println!("a > b {}", a > b);
+    println!("a >= b {}", a >= b);
+    println!("a < b {}", a < b);
+    println!("a <= b {}", a <= b);
 }

@@ -45,6 +45,27 @@ where T: Uint + Copy + Clone + Display + Debug + ToString
 
 
 
+impl<T, const N: usize> Add<&Self> for BigUInt<T, N>
+where T: Uint + Copy + Clone + Display + Debug + ToString
+        + Add<Output=T> + AddAssign + Sub<Output=T> + SubAssign
+        + Mul<Output=T> + MulAssign + Div<Output=T> + DivAssign
+        + Rem<Output=T> + RemAssign
+        + Shl<Output=T> + ShlAssign + Shr<Output=T> + ShrAssign
+        + BitAnd<Output=T> + BitAndAssign + BitOr<Output=T> + BitOrAssign
+        + BitXor<Output=T> + BitXorAssign + Not<Output=T>
+        + PartialEq + PartialOrd
+{
+    type Output = Self;
+
+    #[inline]
+    fn add(self, rhs: &Self) -> Self
+    {
+        self.wrapping_add(rhs)
+    }
+}
+
+
+
 impl<T, const N: usize> Add<T> for BigUInt<T, N>
 where T: Uint + Copy + Clone + Display + Debug + ToString
         + Add<Output=T> + AddAssign + Sub<Output=T> + SubAssign
@@ -82,6 +103,27 @@ where T: Uint + Copy + Clone + Display + Debug + ToString
     fn add_assign(&mut self, rhs: Self)
     {
         self.wrapping_add_assign(&rhs);
+    }
+}
+
+
+
+impl<T, const N: usize> AddAssign<&Self> for BigUInt<T, N>
+where T: Uint + Copy + Clone + Display + Debug + ToString
+        + Add<Output=T> + AddAssign + Sub<Output=T> + SubAssign
+        + Mul<Output=T> + MulAssign + Div<Output=T> + DivAssign
+        + Rem<Output=T> + RemAssign
+        + Shl<Output=T> + ShlAssign + Shr<Output=T> + ShrAssign
+        + BitAnd<Output=T> + BitAndAssign + BitOr<Output=T> + BitOrAssign
+        + BitXor<Output=T> + BitXorAssign + Not<Output=T>
+        + PartialEq + PartialOrd
+{
+    /// Adds and assign the result to it.
+    /// 
+    #[inline]
+    fn add_assign(&mut self, rhs: &Self)
+    {
+        self.wrapping_add_assign(rhs);
     }
 }
 
@@ -129,6 +171,26 @@ where T: Uint + Copy + Clone + Display + Debug + ToString
 
 
 
+impl<T, const N: usize> Sub<&Self> for BigUInt<T, N>
+where T: Uint + Copy + Clone + Display + Debug + ToString
+        + Add<Output=T> + AddAssign + Sub<Output=T> + SubAssign
+        + Mul<Output=T> + MulAssign + Div<Output=T> + DivAssign
+        + Rem<Output=T> + RemAssign
+        + Shl<Output=T> + ShlAssign + Shr<Output=T> + ShrAssign
+        + BitAnd<Output=T> + BitAndAssign + BitOr<Output=T> + BitOrAssign
+        + BitXor<Output=T> + BitXorAssign + Not<Output=T>
+        + PartialEq + PartialOrd
+{
+    type Output = Self;
+
+    #[inline]
+    fn sub(self, rhs: &Self) -> Self
+    {
+        self.wrapping_sub(rhs)
+    }
+}
+
+
 
 impl<T, const N: usize> Sub<T> for BigUInt<T, N>
 where T: Uint + Copy + Clone + Display + Debug + ToString
@@ -166,6 +228,26 @@ where T: Uint + Copy + Clone + Display + Debug + ToString
     fn sub_assign(&mut self, rhs: Self)
     {
         self.wrapping_sub_assign(&rhs);
+    }
+}
+
+
+
+impl<T, const N: usize> SubAssign<&Self> for BigUInt<T, N>
+where T: Uint + Copy + Clone + Display + Debug + ToString
+        + Add<Output=T> + AddAssign + Sub<Output=T> + SubAssign
+        + Mul<Output=T> + MulAssign + Div<Output=T> + DivAssign
+        + Rem<Output=T> + RemAssign
+        + Shl<Output=T> + ShlAssign + Shr<Output=T> + ShrAssign
+        + BitAnd<Output=T> + BitAndAssign + BitOr<Output=T> + BitOrAssign
+        + BitXor<Output=T> + BitXorAssign + Not<Output=T>
+        + PartialEq + PartialOrd
+{
+    /// Subtracts and assign the result to it.
+    #[inline]
+    fn sub_assign(&mut self, rhs: &Self)
+    {
+        self.wrapping_sub_assign(rhs);
     }
 }
 
@@ -212,6 +294,27 @@ where T: Uint + Copy + Clone + Display + Debug + ToString
 
 
 
+impl<T, const N: usize> Mul<&Self> for BigUInt<T, N>
+where T: Uint + Copy + Clone + Display + Debug + ToString
+        + Add<Output=T> + AddAssign + Sub<Output=T> + SubAssign
+        + Mul<Output=T> + MulAssign + Div<Output=T> + DivAssign
+        + Rem<Output=T> + RemAssign
+        + Shl<Output=T> + ShlAssign + Shr<Output=T> + ShrAssign
+        + BitAnd<Output=T> + BitAndAssign + BitOr<Output=T> + BitOrAssign
+        + BitXor<Output=T> + BitXorAssign + Not<Output=T>
+        + PartialEq + PartialOrd
+{
+    type Output = Self;
+
+    #[inline]
+    fn mul(self, rhs: &Self) -> Self
+    {
+        self.wrapping_mul(rhs)
+    }
+}
+
+
+
 impl<T, const N: usize> Mul<T> for BigUInt<T, N>
 where T: Uint + Copy + Clone + Display + Debug + ToString
         + Add<Output=T> + AddAssign + Sub<Output=T> + SubAssign
@@ -248,6 +351,26 @@ where T: Uint + Copy + Clone + Display + Debug + ToString
     fn mul_assign(&mut self, rhs: Self)
     {
         self.wrapping_mul_assign(&rhs);
+    }
+}
+
+
+
+impl<T, const N: usize> MulAssign<&Self> for BigUInt<T, N>
+where T: Uint + Copy + Clone + Display + Debug + ToString
+        + Add<Output=T> + AddAssign + Sub<Output=T> + SubAssign
+        + Mul<Output=T> + MulAssign + Div<Output=T> + DivAssign
+        + Rem<Output=T> + RemAssign
+        + Shl<Output=T> + ShlAssign + Shr<Output=T> + ShrAssign
+        + BitAnd<Output=T> + BitAndAssign + BitOr<Output=T> + BitOrAssign
+        + BitXor<Output=T> + BitXorAssign + Not<Output=T>
+        + PartialEq + PartialOrd
+{
+    /// Multiplies and assign the result to it.
+    #[inline] 
+    fn mul_assign(&mut self, rhs: &Self)
+    {
+        self.wrapping_mul_assign(rhs);
     }
 }
 
@@ -293,6 +416,27 @@ where T: Uint + Copy + Clone + Display + Debug + ToString
 
 
 
+impl<T, const N: usize> Div<&Self> for BigUInt<T, N>
+where T: Uint + Copy + Clone + Display + Debug + ToString
+        + Add<Output=T> + AddAssign + Sub<Output=T> + SubAssign
+        + Mul<Output=T> + MulAssign + Div<Output=T> + DivAssign
+        + Rem<Output=T> + RemAssign
+        + Shl<Output=T> + ShlAssign + Shr<Output=T> + ShrAssign
+        + BitAnd<Output=T> + BitAndAssign + BitOr<Output=T> + BitOrAssign
+        + BitXor<Output=T> + BitXorAssign + Not<Output=T>
+        + PartialEq + PartialOrd
+{
+    type Output = Self;
+
+    #[inline]
+    fn div(self, rhs: &Self) -> Self
+    {
+        self.wrapping_div(rhs)
+    }
+}
+
+
+
 impl<T, const N: usize> Div<T> for BigUInt<T, N>
 where T: Uint + Copy + Clone + Display + Debug + ToString
         + Add<Output=T> + AddAssign + Sub<Output=T> + SubAssign
@@ -333,6 +477,25 @@ where T: Uint + Copy + Copy + Clone + Display + Debug + ToString
 
 
 
+impl<T, const N: usize> DivAssign<&Self> for BigUInt<T, N>
+where T: Uint + Copy + Copy + Clone + Display + Debug + ToString
+        + Add<Output=T> + AddAssign + Sub<Output=T> + SubAssign
+        + Mul<Output=T> + MulAssign + Div<Output=T> + DivAssign
+        + Rem<Output=T> + RemAssign
+        + Shl<Output=T> + ShlAssign + Shr<Output=T> + ShrAssign
+        + BitAnd<Output=T> + BitAndAssign + BitOr<Output=T> + BitOrAssign
+        + BitXor<Output=T> + BitXorAssign + Not<Output=T>
+        + PartialEq + PartialOrd
+{
+    #[inline]
+    fn div_assign(&mut self, rhs: &Self)
+    {
+        self.wrapping_div_assign(rhs);
+    }
+}
+
+
+
 impl<T, const N: usize> DivAssign<T> for BigUInt<T, N>
 where T: Uint + Copy + Clone + Display + Debug + ToString
         + Add<Output=T> + AddAssign + Sub<Output=T> + SubAssign
@@ -351,6 +514,7 @@ where T: Uint + Copy + Clone + Display + Debug + ToString
 }
 
 
+
 impl<T, const N: usize> Rem for BigUInt<T, N>
 where T: Uint + Copy + Clone + Display + Debug + ToString
         + Add<Output=T> + AddAssign + Sub<Output=T> + SubAssign
@@ -367,6 +531,27 @@ where T: Uint + Copy + Clone + Display + Debug + ToString
     fn rem(self, rhs: Self) -> Self
     {
         self.wrapping_rem(&rhs)
+    }
+}
+
+
+
+impl<T, const N: usize> Rem<&Self> for BigUInt<T, N>
+where T: Uint + Copy + Clone + Display + Debug + ToString
+        + Add<Output=T> + AddAssign + Sub<Output=T> + SubAssign
+        + Mul<Output=T> + MulAssign + Div<Output=T> + DivAssign
+        + Rem<Output=T> + RemAssign
+        + Shl<Output=T> + ShlAssign + Shr<Output=T> + ShrAssign
+        + BitAnd<Output=T> + BitAndAssign + BitOr<Output=T> + BitOrAssign
+        + BitXor<Output=T> + BitXorAssign + Not<Output=T>
+        + PartialEq + PartialOrd
+{
+    type Output = Self;
+
+    #[inline]
+    fn rem(self, rhs: &Self) -> Self
+    {
+        self.wrapping_rem(rhs)
     }
 }
 
@@ -407,6 +592,25 @@ where T: Uint + Copy + Clone + Display + Debug + ToString
     fn rem_assign(&mut self, rhs: Self)
     {
         self.wrapping_rem_assign(&rhs);
+    }
+}
+
+
+
+impl<T, const N: usize> RemAssign<&Self> for BigUInt<T, N>
+where T: Uint + Copy + Clone + Display + Debug + ToString
+        + Add<Output=T> + AddAssign + Sub<Output=T> + SubAssign
+        + Mul<Output=T> + MulAssign + Div<Output=T> + DivAssign
+        + Rem<Output=T> + RemAssign
+        + Shl<Output=T> + ShlAssign + Shr<Output=T> + ShrAssign
+        + BitAnd<Output=T> + BitAndAssign + BitOr<Output=T> + BitOrAssign
+        + BitXor<Output=T> + BitXorAssign + Not<Output=T>
+        + PartialEq + PartialOrd
+{
+    #[inline]
+    fn rem_assign(&mut self, rhs: &Self)
+    {
+        self.wrapping_rem_assign(rhs);
     }
 }
 
@@ -931,8 +1135,8 @@ shrassign_u_for_BigUInt_impl! { usize }
 
 
 
-impl<'a, T, const N: usize> BitAnd for BigUInt<T, N>
-where T: Uint + Copy + Clone + Display + Debug + ToString + 'a
+impl<T, const N: usize> BitAnd for BigUInt<T, N>
+where T: Uint + Copy + Clone + Display + Debug + ToString
         + Add<Output=T> + AddAssign + Sub<Output=T> + SubAssign
         + Mul<Output=T> + MulAssign + Div<Output=T> + DivAssign
         + Rem<Output=T> + RemAssign
@@ -981,6 +1185,7 @@ where T: Uint + Copy + Clone + Display + Debug + ToString + 'a
     /// 
     /// assert_eq!(c, a & b);
     /// ```
+    #[inline]
     fn bitand(self, rhs: Self) -> Self
     {
         self.and(&rhs)
@@ -988,8 +1193,9 @@ where T: Uint + Copy + Clone + Display + Debug + ToString + 'a
 }
 
 
-impl<'a, T, const N: usize> BitAnd<&'a Self> for BigUInt<T, N>
-where T: Uint + Copy + Clone + Display + Debug + ToString + 'a
+
+impl<T, const N: usize> BitAnd<&Self> for BigUInt<T, N>
+where T: Uint + Copy + Clone + Display + Debug + ToString
         + Add<Output=T> + AddAssign + Sub<Output=T> + SubAssign
         + Mul<Output=T> + MulAssign + Div<Output=T> + DivAssign
         + Rem<Output=T> + RemAssign
@@ -1040,15 +1246,16 @@ where T: Uint + Copy + Clone + Display + Debug + ToString + 'a
     /// 
     /// assert_eq!(c, a & b);
     /// ```
-    fn bitand(self, rhs: &'a Self) -> Self
+    fn bitand(self, rhs: &Self) -> Self
     {
         self.and(rhs)
     }
 }
 
 
-impl<'a, T, const N: usize> BitAndAssign for BigUInt<T, N>
-where T: Uint + Copy + Clone + Display + Debug + ToString + 'a
+
+impl<T, const N: usize> BitAndAssign for BigUInt<T, N>
+where T: Uint + Copy + Clone + Display + Debug + ToString
         + Add<Output=T> + AddAssign + Sub<Output=T> + SubAssign
         + Mul<Output=T> + MulAssign + Div<Output=T> + DivAssign
         + Rem<Output=T> + RemAssign
@@ -1099,8 +1306,9 @@ where T: Uint + Copy + Clone + Display + Debug + ToString + 'a
 }
 
 
-impl<'a, T, const N: usize> BitAndAssign<&'a Self> for BigUInt<T, N>
-where T: Uint + Copy + Clone + Display + Debug + ToString + 'a
+
+impl<T, const N: usize> BitAndAssign<&Self> for BigUInt<T, N>
+where T: Uint + Copy + Clone + Display + Debug + ToString
         + Add<Output=T> + AddAssign + Sub<Output=T> + SubAssign
         + Mul<Output=T> + MulAssign + Div<Output=T> + DivAssign
         + Rem<Output=T> + RemAssign
@@ -1151,8 +1359,9 @@ where T: Uint + Copy + Clone + Display + Debug + ToString + 'a
 }
 
 
-impl<'a, T, const N: usize> BitOr<Self> for BigUInt<T, N>
-where T: Uint + Copy + Clone + Display + Debug + ToString + 'a
+
+impl<T, const N: usize> BitOr for BigUInt<T, N>
+where T: Uint + Copy + Clone + Display + Debug + ToString
         + Add<Output=T> + AddAssign + Sub<Output=T> + SubAssign
         + Mul<Output=T> + MulAssign + Div<Output=T> + DivAssign
         + Rem<Output=T> + RemAssign
@@ -1211,8 +1420,9 @@ where T: Uint + Copy + Clone + Display + Debug + ToString + 'a
 }
 
 
-impl<'a, T, const N: usize> BitOr<&'a Self> for BigUInt<T, N>
-where T: Uint + Copy + Clone + Display + Debug + ToString + 'a
+
+impl<T, const N: usize> BitOr<&Self> for BigUInt<T, N>
+where T: Uint + Copy + Clone + Display + Debug + ToString
         + Add<Output=T> + AddAssign + Sub<Output=T> + SubAssign
         + Mul<Output=T> + MulAssign + Div<Output=T> + DivAssign
         + Rem<Output=T> + RemAssign
@@ -1265,15 +1475,16 @@ where T: Uint + Copy + Clone + Display + Debug + ToString + 'a
     /// assert_eq!(c, u256::max());
     /// ```
     #[inline]
-    fn bitor(self, rhs: &'a Self) -> Self
+    fn bitor(self, rhs: &Self) -> Self
     {
         self.or(rhs)
     }
 }
 
 
-impl<'a, T, const N: usize> BitOrAssign for BigUInt<T, N>
-where T: Uint + Copy + Clone + Display + Debug + ToString + 'a
+
+impl<T, const N: usize> BitOrAssign for BigUInt<T, N>
+where T: Uint + Copy + Clone + Display + Debug + ToString
         + Add<Output=T> + AddAssign + Sub<Output=T> + SubAssign
         + Mul<Output=T> + MulAssign + Div<Output=T> + DivAssign
         + Rem<Output=T> + RemAssign
@@ -1327,8 +1538,9 @@ where T: Uint + Copy + Clone + Display + Debug + ToString + 'a
 }
 
 
-impl<'a, T, const N: usize> BitOrAssign<&'a Self> for BigUInt<T, N>
-where T: Uint + Copy + Clone + Display + Debug + ToString + 'a
+
+impl<T, const N: usize> BitOrAssign<&Self> for BigUInt<T, N>
+where T: Uint + Copy + Clone + Display + Debug + ToString
         + Add<Output=T> + AddAssign + Sub<Output=T> + SubAssign
         + Mul<Output=T> + MulAssign + Div<Output=T> + DivAssign
         + Rem<Output=T> + RemAssign
@@ -1375,15 +1587,17 @@ where T: Uint + Copy + Clone + Display + Debug + ToString + 'a
     /// assert_eq!(a, u256::max());
     /// ```
     #[inline]
-    fn bitor_assign(&mut self, rhs: &'a Self)
+    fn bitor_assign(&mut self, rhs: &Self)
     {
         self.or_assign(rhs);
     }
 }
 
 
-impl<'a, T, const N: usize> BitXor for BigUInt<T, N>
-where T: Uint + Copy + Clone + Display + Debug + ToString + 'a
+
+
+impl<T, const N: usize> BitXor for BigUInt<T, N>
+where T: Uint + Copy + Clone + Display + Debug + ToString
         + Add<Output=T> + AddAssign + Sub<Output=T> + SubAssign
         + Mul<Output=T> + MulAssign + Div<Output=T> + DivAssign
         + Rem<Output=T> + RemAssign
@@ -1435,8 +1649,9 @@ where T: Uint + Copy + Clone + Display + Debug + ToString + 'a
 }
 
 
-impl<'a, T, const N: usize> BitXor<&'a Self> for BigUInt<T, N>
-where T: Uint + Copy + Clone + Display + Debug + ToString + 'a
+
+impl<T, const N: usize> BitXor<&Self> for BigUInt<T, N>
+where T: Uint + Copy + Clone + Display + Debug + ToString
         + Add<Output=T> + AddAssign + Sub<Output=T> + SubAssign
         + Mul<Output=T> + MulAssign + Div<Output=T> + DivAssign
         + Rem<Output=T> + RemAssign
@@ -1479,11 +1694,12 @@ where T: Uint + Copy + Clone + Display + Debug + ToString + 'a
     /// assert_eq!(c, !a);
     /// ```    
     #[inline]
-    fn bitxor(self, rhs: &'a Self) -> Self
+    fn bitxor(self, rhs: &Self) -> Self
     {
         self.xor(rhs)
     }
 }
+
 
 
 impl<'a, T, const N: usize> BitXorAssign for BigUInt<T, N>
@@ -1532,8 +1748,9 @@ where T: Uint + Copy + Clone + Display + Debug + ToString + 'a
 }
 
 
-impl<'a, T, const N: usize> BitXorAssign<&'a Self> for BigUInt<T, N>
-where T: Uint + Copy + Clone + Display + Debug + ToString + 'a
+
+impl<T, const N: usize> BitXorAssign<&Self> for BigUInt<T, N>
+where T: Uint + Copy + Clone + Display + Debug + ToString
         + Add<Output=T> + AddAssign + Sub<Output=T> + SubAssign
         + Mul<Output=T> + MulAssign + Div<Output=T> + DivAssign
         + Rem<Output=T> + RemAssign
@@ -1571,15 +1788,15 @@ where T: Uint + Copy + Clone + Display + Debug + ToString + 'a
     /// assert_eq!(a, u256::from_str_radix("11111111000011111111000000110011110011000101010110101010000000001111111100001111111100000011001111001100010101011010101000000000111111110000111111110000001100111100110001010101101010100000000011111111000011111111000000110011110011000101010110101010", 2).unwrap());
     /// ```
     #[inline]
-    fn bitxor_assign(&mut self, rhs: &'a Self)
+    fn bitxor_assign(&mut self, rhs: &Self)
     {
         self.xor_assign(rhs);
     }
 }
 
 
-impl<'a, T, const N: usize> Not for BigUInt<T, N>
-where T: Uint + Copy + Clone + Display + Debug + ToString + 'a
+impl<T, const N: usize> Not for BigUInt<T, N>
+where T: Uint + Copy + Clone + Display + Debug + ToString
         + Add<Output=T> + AddAssign + Sub<Output=T> + SubAssign
         + Mul<Output=T> + MulAssign + Div<Output=T> + DivAssign
         + Rem<Output=T> + RemAssign
@@ -1616,18 +1833,13 @@ where T: Uint + Copy + Clone + Display + Debug + ToString + 'a
     /// println!("c = {}", c.to_string_with_radix(2));
     /// assert_eq!(c, u256::max());
     /// ```    
+    #[inline]
     fn not(self) -> Self
     {
-        let mut s = self.clone();
-        let mut n: T;
-        for idx in 0..N
-        {
-            n = !s.get_num_(idx);
-            s.set_num_(idx, n);
-        }
-        s
+        self.flip()
     }
 }
+
 
 
 impl<T, const N: usize> PartialEq for BigUInt<T, N>
@@ -1640,14 +1852,10 @@ where T: Uint + Copy + Clone + Display + Debug + ToString
         + BitXor<Output=T> + BitXorAssign + Not<Output=T>
         + PartialEq + PartialOrd
 {
+    #[inline]
     fn eq(&self, other: &Self) -> bool
     {
-        for idx in 0..N
-        {
-            if self.get_num_(idx) != other.get_num_(idx)
-                { return false; }
-        }
-        true
+        self.eq(other)
     }
 }
 
@@ -1664,33 +1872,17 @@ where T: Uint + Copy + Clone + Display + Debug + ToString
         + PartialEq + PartialOrd
 {
     #[cfg(target_endian = "little")]
+    #[inline]
     fn partial_cmp(&self, other: &Self) -> Option<Ordering>
     {
-        let mut idx = N - 1;
-        loop
-        {
-            if self.get_num_(idx) > other.get_num_(idx)
-                { return Some(Ordering::Greater); }
-            else if self.get_num_(idx) < other.get_num_(idx)
-                { return Some(Ordering::Less); }
-            if idx == 0
-                { break; }
-            idx -= 1;
-        }
-        Some(Ordering::Equal)
+        self.partial_cmp(other)
     }
 
     #[cfg(target_endian = "big")]
+    #[inline]
     fn partial_cmp(&self, other: &Self) -> Option<Ordering>
     {
-        for idx in 0..N
-        {
-            if self.get_num_(idx) > other.get_num_(idx)
-                { return Some(Ordering::Greater); }
-            else if self.get_num_(idx) < other.get_num_(idx)
-                { return Some(Ordering::Less); }
-        }
-        Some(Ordering::Equal)
+        self.partial_cmp(other)
     }
 }
 
@@ -1739,7 +1931,7 @@ where T: Uint + Copy + Clone + Display + Debug + ToString
         + BitAnd<Output=T> + BitAndAssign + BitOr<Output=T> + BitOrAssign
         + BitXor<Output=T> + BitXorAssign + Not<Output=T>
         + PartialEq + PartialOrd,
-    S: Uint + Clone + Display + Debug + ToString
+    S: Uint + Copy + Clone + Display + Debug + ToString
         + Add<Output=S> + AddAssign + Sub<Output=S> + SubAssign
         + Mul<Output=S> + MulAssign + Div<Output=S> + DivAssign
         + Rem<Output=S> + RemAssign

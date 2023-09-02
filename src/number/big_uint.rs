@@ -268,7 +268,7 @@ where T: Uint + Copy + Clone + Display + Debug + ToString
 }
 
 impl<'a, T, const N: usize> BigUInt<T, N>
-where T: Uint + Copy + Clone + Display + Debug + ToString + 'a
+where T: Uint + Copy + Clone + Display + Debug + ToString
         + Add<Output=T> + AddAssign + Sub<Output=T> + SubAssign
         + Mul<Output=T> + MulAssign + Div<Output=T> + DivAssign
         + Rem<Output=T> + RemAssign
@@ -277,9 +277,16 @@ where T: Uint + Copy + Clone + Display + Debug + ToString + 'a
         + BitXor<Output=T> + BitXorAssign + Not<Output=T>
         + PartialEq + PartialOrd,
     Self: Sized + Clone + Display + Debug + ToString + 'a
-        + Add<Output = Self> + AddAssign + Sub<Output = Self> + SubAssign
-        + Mul<Output = Self> + MulAssign + Div<Output = Self> + DivAssign
+        + Add<Output = Self> + AddAssign
+        + Add<&'a Self, Output = Self> + AddAssign<&'a Self>
+        + Sub<Output = Self> + SubAssign
+        + Sub<&'a Self, Output = Self> + SubAssign<&'a Self>
+        + Mul<Output = Self> + MulAssign
+        + Mul<&'a Self, Output = Self> + MulAssign<&'a Self>
+        + Div<Output = Self> + DivAssign
+        + Div<&'a Self, Output = Self> + DivAssign<&'a Self>
         + Rem<Output = Self> + RemAssign
+        + Rem<&'a Self, Output = Self> + RemAssign<&'a Self>
         + Shl<i32, Output = Self> + ShlAssign<i32>
         + Shr<i32, Output = Self> + ShrAssign<i32>
         + BitAnd<Self, Output = Self> + BitAndAssign
@@ -7926,7 +7933,58 @@ where T: Uint + Copy + Clone + Display + Debug + ToString + 'a
             self.set_num_(idx, n);
         }
     }
-    
+
+    pub fn flip(&self) -> Self
+    {
+        let mut s = self.clone();
+        let mut n: T;
+        for idx in 0..N
+        {
+            n = !s.get_num_(idx);
+            s.set_num_(idx, n);
+        }
+        s
+    }
+
+    pub fn eq(&self, other: &Self) -> bool
+    {
+        for idx in 0..N
+        {
+            if self.get_num_(idx) != other.get_num_(idx)
+                { return false; }
+        }
+        true
+    }
+
+    #[cfg(target_endian = "little")]
+    pub fn partial_cmp(&self, other: &Self) -> Option<Ordering>
+    {
+        let mut idx = N - 1;
+        loop
+        {
+            if self.get_num_(idx) > other.get_num_(idx)
+                { return Some(Ordering::Greater); }
+            else if self.get_num_(idx) < other.get_num_(idx)
+                { return Some(Ordering::Less); }
+            if idx == 0
+                { break; }
+            idx -= 1;
+        }
+        Some(Ordering::Equal)
+    }
+
+    #[cfg(target_endian = "big")]
+    pub fn partial_cmp(&self, other: &Self) -> Option<Ordering>
+    {
+        for idx in 0..N
+        {
+            if self.get_num_(idx) > other.get_num_(idx)
+                { return Some(Ordering::Greater); }
+            else if self.get_num_(idx) < other.get_num_(idx)
+                { return Some(Ordering::Less); }
+        }
+        Some(Ordering::Equal)
+    }
 
 
     /***** METHODS FOR CONVERTING INTO OTHER TYPES WITH/WITHOUT LOSS *****/
