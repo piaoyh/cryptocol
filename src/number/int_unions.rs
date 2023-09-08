@@ -4914,7 +4914,7 @@ macro_rules! integer_union_methods {
         #[inline] pub fn ilog2(self) -> u32             { self.get().ilog2() }
 
         #[inline] pub fn reverse_bits(self) -> Self     { Self::new_with( self.get().reverse_bits() ) }
-
+        #[inline] pub fn reverse_bits_assign(&mut self) { self.reverse_bits_assign(); }
         #[inline] pub fn rotate_left(self, n: u32) -> Self  { Self::new_with( self.get().rotate_left(n) ) }
         #[inline] pub fn rotate_right(self, n: u32) -> Self { Self::new_with( self.get().rotate_right(n) ) }
 
@@ -5261,6 +5261,7 @@ macro_rules! Uint_for_integer_unions_impl {
             #[inline] fn ilog2(self) -> u32             { self.ilog2() }
 
             #[inline] fn reverse_bits(self) -> Self     { self.reverse_bits() }
+            #[inline] fn reverse_bits_assign(&mut self) { *self = self.reverse_bits(); }
 
             #[inline] fn rotate_left(self, n: u32) -> Self  { self.rotate_left(n) }
             #[inline] fn rotate_right(self, n: u32) -> Self { self.rotate_right(n) }
@@ -6316,7 +6317,7 @@ where D: Uint + Copy + Clone + Display + Debug + ToString
     }
 
     #[cfg(target_endian = "big")]
-    pub fn into_des1(&mut self, pos: usize) -> Option<D>
+    pub fn into_des(&mut self, pos: usize) -> Option<D>
     {
         let des_size = size_of::<D>();
         let src_size = size_of::<S>();

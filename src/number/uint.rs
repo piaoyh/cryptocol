@@ -4710,6 +4710,7 @@ pub trait Uint: Copy + Clone + Sized //+ Display + Debug + ToString
     fn ilog10(self) -> u32;
     fn ilog2(self) -> u32;
     fn reverse_bits(self) -> Self;
+    fn reverse_bits_assign(&mut self);
     fn rotate_left(self, n: u32) -> Self;
     fn rotate_right(self, n: u32) -> Self;
 
@@ -4992,6 +4993,7 @@ macro_rules! Uint_for_uint_impl {
             #[inline] fn ilog2(self) -> u32             { self.ilog2() }
 
             #[inline] fn reverse_bits(self) -> Self     { self.reverse_bits() }
+            #[inline] fn reverse_bits_assign(&mut self) { *self = self.reverse_bits(); }
 
             #[inline] fn rotate_left(self, n: u32) -> Self  { self.rotate_left(n) }
             #[inline] fn rotate_right(self, n: u32) -> Self { self.rotate_right(n) }

@@ -226,6 +226,10 @@ pub type u16384_with_u8 = BigUInt<u8, 2048>;
 /// - flags are OVERFLOW (0b0000_0001), UNDERFLOW (0b0000_0010),
 ///   INFINITY (0b0000_0100), and DIVIDED_BY_ZERO (== INFINITY)
 /// 
+/// # Panics
+/// If size_of::<T>() * N <= 128, some methods may panic or its behavior may
+/// undefined though it may not panic.
+/// 
 /// # Examples
 /// ```
 /// use std::str::FromStr;
@@ -237,17 +241,17 @@ pub type u16384_with_u8 = BigUInt<u8, 2048>;
 /// let mut c = u1024::from_str("1234567891234567879123456789111111111222222222333333333444444444555555555666666666777777777888888888999999999000000000").unwrap();
 /// let d = U128::from_biguint(&c);
 /// println!("a = {:?}", a);
-/// println!("a = {}", a.to_string_with_radix(16));
+/// println!("a = {}", a.to_string_with_radix(16).unwrap());
 /// println!("b = {:?}", b);
-/// println!("b = {}", b.to_string_with_radix(16));
+/// println!("b = {}", b.to_string_with_radix(16).unwrap());
 /// println!("c = {}", c);
-/// println!("c + b = {}", c + b);
-/// println!("c - b = {}", c - b);
-/// println!("c * b = {}", c * b);
-/// println!("b / c = {}", b / c);
-/// println!("b % c = {}", b % c);
-/// println!("b + 1 = {}", b.wrapping_add_uint(1));
-/// println!("b - 1 = {}", b.wrapping_sub_uint(1));
+/// println!("c + b = {}", c.wrapping_add(&b));
+/// println!("c - b = {}", c.wrapping_sub(&b));
+/// println!("c * b = {}", c.wrapping_mul(&b));
+/// println!("b / c = {}", b.wrapping_div(&c));
+/// println!("b % c = {}", b.wrapping_rem(&c));
+/// println!("b + 1 = {}", b.wrapping_add_uint(1_u8));
+/// println!("b - 1 = {}", b.wrapping_sub_uint(1_u8));
 /// assert_eq!(a, b);
 /// c.set_one();
 /// assert_eq!(c, u1024::one());
@@ -493,12 +497,16 @@ where T: Uint + Copy + Clone + Display + Debug + ToString
         Self::submax(Self::size_in_bits() >> 1)
     }
 
-    // pub fn from_uint<S>(val: S) -> Self
+    // pub fn from_uint<U>(val: U) -> Self
     /// Constructs a new `BigUInt<T, N>`-type object from an unsigned integer
     /// such as `u8`, `u16`, `u32`, `u64`, `u128` and `usize`.
     /// 
     /// # Output
     /// A new object of `BigUInt<T, N>` that represents the same value of `val`.
+    /// 
+    /// # Panics
+    /// If size_of::<T>() * N <= 128, this method may panic or its behavior may
+    /// undefined though it may not panic.
     /// 
     /// # Examples for u8
     /// ```
@@ -548,7 +556,7 @@ where T: Uint + Copy + Clone + Display + Debug + ToString
     /// ```
     /// use Cryptocol::number::BigUInt;
     /// use Cryptocol::define_utypes_with;
-    /// define_utypes_with!(usize);
+    /// define_utypes_with!(u128);
     /// 
     /// let ee = u512::from_uint(123456789012345678901234567890123456789_u128);
     /// println!("ee = {}", ee);
@@ -565,20 +573,20 @@ where T: Uint + Copy + Clone + Display + Debug + ToString
     /// println!("ff = {}", ff);
     /// assert_eq!(ff.into_usize(), 12345678901234567890_usize);
     /// ```
-    pub fn from_uint<S>(val: S) -> Self
-    where S: Uint + Copy + Clone + Display + Debug + ToString
-            + Add<Output=S> + AddAssign + Sub<Output=S> + SubAssign
-            + Mul<Output=S> + MulAssign + Div<Output=S> + DivAssign
-            + Rem<Output=S> + RemAssign
-            + Shl<Output=S> + ShlAssign + Shr<Output=S> + ShrAssign
-            + BitAnd<Output=S> + BitAndAssign + BitOr<Output=S> + BitOrAssign
-            + BitXor<Output=S> + BitXorAssign + Not<Output=S>
+    pub fn from_uint<U>(val: U) -> Self
+    where U: Uint + Copy + Clone + Display + Debug + ToString
+            + Add<Output=U> + AddAssign + Sub<Output=U> + SubAssign
+            + Mul<Output=U> + MulAssign + Div<Output=U> + DivAssign
+            + Rem<Output=U> + RemAssign
+            + Shl<Output=U> + ShlAssign + Shr<Output=U> + ShrAssign
+            + BitAnd<Output=U> + BitAndAssign + BitOr<Output=U> + BitOrAssign
+            + BitXor<Output=U> + BitXorAssign + Not<Output=U>
             + PartialEq + PartialOrd
     {
         let TSIZE = T::size_in_bytes();
-        let SSIZE = S::size_in_bytes();
+        let SSIZE = U::size_in_bytes();
         let mut me = Self::new();
-        let mut share = Share::<T, S>::from_src(val);
+        let mut share = Share::<T, U>::from_src(val);
         
         if TSIZE >= SSIZE
         {
@@ -590,7 +598,7 @@ where T: Uint + Copy + Clone + Display + Debug + ToString
             for i in 0..SSIZE/TSIZE
             {
                 unsafe { me.set_num_(i, share.des); }
-                unsafe { share.src >>= S::num(TSIZE_BITS as u128); }
+                unsafe { share.src >>= U::num(TSIZE_BITS as u128); }
             }
         }
         return me;
@@ -611,7 +619,7 @@ where T: Uint + Copy + Clone + Display + Debug + ToString
     /// ```
     /// use Cryptocol::number::*;
     /// let big_num = BigUInt::<u8,32>::from_array(&[1_u8;32]);
-    /// println!("big_num = {}", big_num.to_string_with_radix(2));
+    /// println!("big_num = {}", big_num.to_string_with_radix(2).unwrap());
     /// assert_eq!(big_num, BigUInt::<u8,32>::from_str_radix("00000001_00000001_00000001_00000001_00000001_00000001_00000001_00000001_00000001_00000001_00000001_00000001_00000001_00000001_00000001_00000001_00000001_00000001_00000001_00000001_00000001_00000001_00000001_00000001_00000001_00000001_00000001_00000001_00000001_00000001_00000001_00000001", 2).unwrap());
     /// ```
     pub fn from_array(val: &[T; N]) -> Self
@@ -720,6 +728,146 @@ where T: Uint + Copy + Clone + Display + Debug + ToString
             common.into_des(&mut me.number);
         }
         me
+    }
+
+    // pub fn from_be(be: &Self) -> Self
+    /// Converts a big integer from big endian to the target’s endianness.
+    /// 
+    /// # Feature
+    /// On big endian this is a no-op. On little endian the bytes are swapped.
+    /// 
+    /// # Example
+    /// ```
+    /// // Todo
+    /// ```
+    #[cfg(target_endian = "little")]
+    #[inline]
+    pub fn from_be(be: &Self) -> Self
+    {
+        be.swap_bytes()
+    }
+
+    // pub fn from_be(be: &Self) -> Self
+    /// Converts a big integer from big endian to the target’s endianness.
+    /// 
+    /// # Feature
+    /// On big endian this is a no-op. On little endian the bytes are swapped.
+    /// 
+    /// # Example
+    /// ```
+    /// // Todo
+    /// ```
+    #[cfg(target_endian = "big")]
+    #[inline]
+    pub fn from_be(be: &Self) -> Self
+    {
+        be.clone()
+    }
+
+    // pub fn from_be_bytes(be_bytes: &[T; N]) -> Self
+    /// Create a native endian integer value from its representation
+    /// as a byte array in big endian.
+    /// 
+    /// # Feature
+    /// On big endian this is a no-op. On little endian the bytes are swapped.
+    /// 
+    /// # Example
+    /// ```
+    /// // Todo
+    /// ```
+    #[cfg(target_endian = "little")]
+    #[inline]
+    pub fn from_be_bytes(be_bytes: &[T; N]) -> Self
+    {
+        Self::from_array(be_bytes).swap_bytes()
+    }
+
+    // pub fn from_be_bytes(be_bytes: &[T; N]) -> Self
+    /// Create a native endian integer value from its representation
+    /// as a byte array in big endian.
+    /// 
+    /// # Feature
+    /// On big endian this is a no-op. On little endian the bytes are swapped.
+    /// 
+    /// # Example
+    /// ```
+    /// // Todo
+    /// ```
+    #[cfg(target_endian = "big")]
+    #[inline]
+    pub fn from_be_bytes(be_bytes: &[T; N]) -> Self
+    {
+        Self::from_array(be_bytes)
+    }
+
+    // pub fn from_le(le: &Self) -> Self
+    /// Converts a little integer from little endian to the target’s endianness.
+    /// 
+    /// # Feature
+    /// On little endian this is a no-op. On big endian the bytes are swapped.
+    /// 
+    /// # Example
+    /// ```
+    /// // Todo
+    /// ```
+    #[cfg(target_endian = "little")]
+    #[inline]
+    pub fn from_le(le: &Self) -> Self
+    {
+        le.clone()
+    }
+
+    // pub fn from_le(le: &Self) -> Self
+    /// Converts a little integer from little endian to the target’s endianness.
+    /// 
+    /// # Feature
+    /// On little endian this is a no-op. On big endian the bytes are swapped.
+    /// 
+    /// # Example
+    /// ```
+    /// // Todo
+    /// ```
+    #[cfg(target_endian = "big")]
+    #[inline]
+    pub fn from_le(le: &Self) -> Self
+    {
+        le.swap_bytes()
+    }
+
+    // pub fn from_le_bytes(le_bytes: &[T; N]) -> Self
+    /// Create a native endian integer value from its representation
+    /// as a byte array in little endian.
+    /// 
+    /// # Feature
+    /// On little endian this is a no-op. On big endian the bytes are swapped.
+    /// 
+    /// # Example
+    /// ```
+    /// // Todo
+    /// ```
+    #[cfg(target_endian = "little")]
+    #[inline]
+    pub fn from_le_bytes(le_bytes: &[T; N]) -> Self
+    {
+        Self::from_array(le_bytes)
+    }
+
+    // pub fn from_le_bytes(le_bytes: &[T; N]) -> Self
+    /// Create a native endian integer value from its representation
+    /// as a byte array in little endian.
+    /// 
+    /// # Feature
+    /// On little endian this is a no-op. On big endian the bytes are swapped.
+    /// 
+    /// # Example
+    /// ```
+    /// // Todo
+    /// ```
+    #[cfg(target_endian = "big")]
+    #[inline]
+    pub fn from_le_bytes(le_bytes: &[T; N]) -> Self
+    {
+        Self::from_array(le_bytes).swap_bytes()
     }
 
     //  pub fn from_str_radix(txt: &str, radix: usize) -> Result<Self, NumberErr>
@@ -853,7 +1001,7 @@ where T: Uint + Copy + Clone + Display + Debug + ToString
     /// 
     /// define_utypes_with_u8!();
     /// let a = u256::generate_check_bits(12);
-    /// println!("a = {}", a.to_string_with_radix_and_stride(2, 8));
+    /// println!("a = {}", a.to_string_with_radix_and_stride(2, 8).unwrap());
     /// assert_eq!(a, u256::from_str_radix("10000_00000000", 2).unwrap());
     /// ```
     /// 
@@ -1148,7 +1296,7 @@ where T: Uint + Copy + Clone + Display + Debug + ToString
     /// use Cryptocol::define_utypes_with;
     /// define_utypes_with!(u128);
     /// let ceiling = u1024::max() / u1024::from_uint::<u32>(3);
-    /// println!("Random number = {}", u1024::random_less_than(ceiling));
+    /// println!("Random number = {}", u1024::random_less_than(&ceiling));
     /// ```
     #[inline]
     pub fn random_less_than(ceiling: &Self) -> Self
@@ -1242,9 +1390,11 @@ where T: Uint + Copy + Clone + Display + Debug + ToString
     /// ```
     /// use Cryptocol::number::*;
     /// use Cryptocol::define_utypes_with;
+    /// 
     /// define_utypes_with!(u128);
+    /// 
     /// let ceiling = u1024::max() / u1024::from_uint::<u32>(3);
-    /// println!("Random number = {}", u1024::random_odd_less_than(ceiling));
+    /// println!("Random number = {}", u1024::random_odd_less_than(&ceiling));
     /// ```
     /// 
     /// # Big-endian issue
@@ -1568,7 +1718,6 @@ where T: Uint + Copy + Clone + Display + Debug + ToString
     /// println!("original number = {}", r);
     /// assert_eq!(r, u256::zero());
     /// r.randomize();
-    /// r;
     /// println!("random number = {}", r);
     /// let yes = r > u256::max() >> 1;
     /// if yes  { assert!(yes) }
@@ -1807,7 +1956,7 @@ where T: Uint + Copy + Clone + Display + Debug + ToString
     /// define_utypes_with_u8!();
     /// let mut a = u256::random();
     /// a.turn_check_bits(12);
-    /// println!("a = {}", a.to_string_with_radix_and_stride(2, 8));
+    /// println!("a = {}", a.to_string_with_radix_and_stride(2, 8).unwrap());
     /// assert_eq!(a, u256::from_str_radix("10000_00000000", 2).unwrap());
     /// ```
     /// 
@@ -3106,12 +3255,16 @@ where T: Uint + Copy + Clone + Display + Debug + ToString
 
     /***** METHODS FOR COMPARISON WITH UINT *****/
 
-    // pub fn partial_cmp_uint(&self, other: T) -> Option<Ordering>
-    /// Compares BigUInt with a value of type T and returns the
+    // pub fn partial_cmp_uint<U>(&self, other: U) -> Option<Ordering>
+    /// Compares BigUInt with a value of type `U` and returns the
     /// result of the comparison in the type `Option<Ordering>`. However,
     /// you'd better use the functions `lt_uint()`, `gt_uint()`, `le_uint()`,
     /// `ge_uint()`, and `eq_uint()`.
     /// Then, you don't have to use `partial_cmp_uint()` directly.
+    /// 
+    /// # Panics
+    /// If size_of::<T>() * N <= 128, some methods may panic or its behavior may
+    /// undefined though it may not panic.
     /// 
     /// # Output
     /// It returns `Ordering::Greater` wrapped by `Some` of enum `Option`
@@ -3125,13 +3278,31 @@ where T: Uint + Copy + Clone + Display + Debug + ToString
     /// ```
     /// // Todo
     /// ```
-    pub fn partial_cmp_uint(&self, other: T) -> Option<Ordering>
+    pub fn partial_cmp_uint<U>(&self, other: U) -> Option<Ordering>
+    where U: Uint + Copy + Clone + Display + Debug + ToString
+            + Add<Output=U> + AddAssign + Sub<Output=U> + SubAssign
+            + Mul<Output=U> + MulAssign + Div<Output=U> + DivAssign
+            + Rem<Output=U> + RemAssign
+            + Shl<Output=U> + ShlAssign + Shr<Output=U> + ShrAssign
+            + BitAnd<Output=U> + BitAndAssign + BitOr<Output=U> + BitOrAssign
+            + BitXor<Output=U> + BitXorAssign + Not<Output=U>
+            + PartialEq + PartialOrd
     {
-        if self.number[0] > other
+        let t_other: T;
+        if other.length_in_bytes() > T::size_in_bytes()
+        {
+            return self.partial_cmp(&Self::from_uint(other));
+        }
+        else    // if rhs.length_in_bytes() <= T::size_in_bytes()
+        {
+            t_other = T::num::<U>(other);
+        }
+
+        if self.number[0] > t_other
         {
             return Some(Ordering::Greater);
         }
-        else if self.number[0] < other
+        else if self.number[0] < t_other
         {
             for idx in 1..N
             {
@@ -3151,9 +3322,13 @@ where T: Uint + Copy + Clone + Display + Debug + ToString
         Some(Ordering::Equal)
     }
 
-    // pub fn lt_uint(&self, other: T) -> bool
+    // pub fn lt_uint<U>(&self, other: T) -> bool
     /// Returns `true` if `self` is less than `other`.
     /// Otherwise, it returns `false`.
+    /// 
+    /// # Panics
+    /// If size_of::<T>() * N <= 128, some methods may panic or its behavior may
+    /// undefined though it may not panic.
     /// 
     /// # Output
     /// It returns `true` if `self` is less than `other`.
@@ -3163,11 +3338,25 @@ where T: Uint + Copy + Clone + Display + Debug + ToString
     /// ```
     /// // Todo
     /// ```
-    pub fn lt_uint(&self, other: T) -> bool  { self.partial_cmp_uint(other).unwrap().is_lt() }
+    #[inline]
+    pub fn lt_uint<U>(&self, other: U) -> bool
+    where U: Uint + Copy + Clone + Display + Debug + ToString
+            + Add<Output=U> + AddAssign + Sub<Output=U> + SubAssign
+            + Mul<Output=U> + MulAssign + Div<Output=U> + DivAssign
+            + Rem<Output=U> + RemAssign
+            + Shl<Output=U> + ShlAssign + Shr<Output=U> + ShrAssign
+            + BitAnd<Output=U> + BitAndAssign + BitOr<Output=U> + BitOrAssign
+            + BitXor<Output=U> + BitXorAssign + Not<Output=U>
+            + PartialEq + PartialOrd
+    { self.partial_cmp_uint(other).unwrap().is_lt() }
 
-    // pub fn gt_uint(&self, other: T) -> bool
+    // pub fn gt_uint<U>(&self, other: U) -> bool
     /// Returns `true` if `self` is greater than `other`.
     /// Otherwise, it returns `false`.
+    /// 
+    /// # Panics
+    /// If size_of::<T>() * N <= 128, some methods may panic or its behavior may
+    /// undefined though it may not panic.
     /// 
     /// # Output
     /// It returns `true` if `self` is greater than `other`.
@@ -3177,11 +3366,25 @@ where T: Uint + Copy + Clone + Display + Debug + ToString
     /// ```
     /// // Todo
     /// ```
-    pub fn gt_uint(&self, other: T) -> bool  { self.partial_cmp_uint(other).unwrap().is_gt() }
+    #[inline]
+    pub fn gt_uint<U>(&self, other: U) -> bool
+    where U: Uint + Copy + Clone + Display + Debug + ToString
+            + Add<Output=U> + AddAssign + Sub<Output=U> + SubAssign
+            + Mul<Output=U> + MulAssign + Div<Output=U> + DivAssign
+            + Rem<Output=U> + RemAssign
+            + Shl<Output=U> + ShlAssign + Shr<Output=U> + ShrAssign
+            + BitAnd<Output=U> + BitAndAssign + BitOr<Output=U> + BitOrAssign
+            + BitXor<Output=U> + BitXorAssign + Not<Output=U>
+            + PartialEq + PartialOrd
+    { self.partial_cmp_uint(other).unwrap().is_gt() }
 
-    // pub fn le_uint(&self, other: T) -> bool
+    // pub fn le_uint<U>(&self, other: U) -> bool
     /// Returns `true` if `self` is less than or equal to `other`.
     /// Otherwise, it returns `false`.
+    /// 
+    /// # Panics
+    /// If size_of::<T>() * N <= 128, some methods may panic or its behavior may
+    /// undefined though it may not panic.
     /// 
     /// # Output
     /// It returns `true` if `self` is less than or equal to `other`.
@@ -3191,11 +3394,25 @@ where T: Uint + Copy + Clone + Display + Debug + ToString
     /// ```
     /// // Todo
     /// ```
-    pub fn le_uint(&self, other: T) -> bool  { self.partial_cmp_uint(other).unwrap().is_le() }
+    #[inline]
+    pub fn le_uint<U>(&self, other: U) -> bool
+    where U: Uint + Copy + Clone + Display + Debug + ToString
+            + Add<Output=U> + AddAssign + Sub<Output=U> + SubAssign
+            + Mul<Output=U> + MulAssign + Div<Output=U> + DivAssign
+            + Rem<Output=U> + RemAssign
+            + Shl<Output=U> + ShlAssign + Shr<Output=U> + ShrAssign
+            + BitAnd<Output=U> + BitAndAssign + BitOr<Output=U> + BitOrAssign
+            + BitXor<Output=U> + BitXorAssign + Not<Output=U>
+            + PartialEq + PartialOrd
+    { self.partial_cmp_uint(other).unwrap().is_le() }
 
-    // pub fn ge_uint(&self, other: T) -> bool 
+    // pub fn ge_uint<U>(&self, other: U) -> bool 
     /// Returns `true` if self is greater than or equal to `other`.
     /// Otherwise, it returns `false`.
+    /// 
+    /// # Panics
+    /// If size_of::<T>() * N <= 128, some methods may panic or its behavior may
+    /// undefined though it may not panic.
     /// 
     /// # Output
     /// It returns `true` if `self` is greater than or equal to `other`.
@@ -3205,11 +3422,25 @@ where T: Uint + Copy + Clone + Display + Debug + ToString
     /// ```
     /// // Todo
     /// ```
-    pub fn ge_uint(&self, other: T) -> bool  { self.partial_cmp_uint(other).unwrap().is_ge() }
+    #[inline]
+    pub fn ge_uint<U>(&self, other: U) -> bool
+    where U: Uint + Copy + Clone + Display + Debug + ToString
+            + Add<Output=U> + AddAssign + Sub<Output=U> + SubAssign
+            + Mul<Output=U> + MulAssign + Div<Output=U> + DivAssign
+            + Rem<Output=U> + RemAssign
+            + Shl<Output=U> + ShlAssign + Shr<Output=U> + ShrAssign
+            + BitAnd<Output=U> + BitAndAssign + BitOr<Output=U> + BitOrAssign
+            + BitXor<Output=U> + BitXorAssign + Not<Output=U>
+            + PartialEq + PartialOrd
+    { self.partial_cmp_uint(other).unwrap().is_ge() }
 
-    // pub fn eq_uint(&self, other: T) -> bool
+    // pub fn eq_uint<U>(&self, other: U) -> bool
     /// Returns `true` if `self` is equal to `other`.
     /// Otherwise, it returns `false`.
+    /// 
+    /// # Panics
+    /// If size_of::<T>() * N <= 128, some methods may panic or its behavior may
+    /// undefined though it may not panic.
     /// 
     /// # Output
     /// It returns `true` if `self` is equal to `other`.
@@ -3219,7 +3450,17 @@ where T: Uint + Copy + Clone + Display + Debug + ToString
     /// ```
     /// // Todo
     /// ```
-    pub fn eq_uint(&self, other: T) -> bool  { self.partial_cmp_uint(other).unwrap().is_eq() }
+    #[inline]
+    pub fn eq_uint<U>(&self, other: U) -> bool
+    where U: Uint + Copy + Clone + Display + Debug + ToString
+            + Add<Output=U> + AddAssign + Sub<Output=U> + SubAssign
+            + Mul<Output=U> + MulAssign + Div<Output=U> + DivAssign
+            + Rem<Output=U> + RemAssign
+            + Shl<Output=U> + ShlAssign + Shr<Output=U> + ShrAssign
+            + BitAnd<Output=U> + BitAndAssign + BitOr<Output=U> + BitOrAssign
+            + BitXor<Output=U> + BitXorAssign + Not<Output=U>
+            + PartialEq + PartialOrd
+    { self.partial_cmp_uint(other).unwrap().is_eq() }
 
     
 
@@ -3227,9 +3468,13 @@ where T: Uint + Copy + Clone + Display + Debug + ToString
 
     /*** ADDITION ***/
 
-    // pub fn carrying_add_uint(&self, rhs: T, carry: bool) -> (Self, bool)
+    // pub fn carrying_add_uint<U>(&self, rhs: U, carry: bool) -> (Self, bool)
     /// Calculates `self` + `rhs` + `carry`,
     /// wrapping around at the boundary of the type.
+    /// 
+    /// # Panics
+    /// If size_of::<T>() * N <= 128, some methods may panic or its behavior may
+    /// undefined though it may not panic.
     /// 
     /// # Features
     /// This allows chaining together multiple additions to create even a wider
@@ -3259,16 +3504,28 @@ where T: Uint + Copy + Clone + Display + Debug + ToString
     /// It is just experimental for Big Endian CPUs. So, you are not encouraged
     /// to use it for Big Endian CPUs for serious purpose. Only use this crate
     /// for Big-endian CPUs with your own full responsibility.
-    pub fn carrying_add_uint(&self, rhs: T, carry: bool) -> (Self, bool)
+    pub fn carrying_add_uint<U>(&self, rhs: U, carry: bool) -> (Self, bool)
+    where U: Uint + Copy + Clone + Display + Debug + ToString
+            + Add<Output=U> + AddAssign + Sub<Output=U> + SubAssign
+            + Mul<Output=U> + MulAssign + Div<Output=U> + DivAssign
+            + Rem<Output=U> + RemAssign
+            + Shl<Output=U> + ShlAssign + Shr<Output=U> + ShrAssign
+            + BitAnd<Output=U> + BitAndAssign + BitOr<Output=U> + BitOrAssign
+            + BitXor<Output=U> + BitXorAssign + Not<Output=U>
+            + PartialEq + PartialOrd
     {
         let mut res = self.clone();
         let c = res.carrying_add_assign_uint(rhs, carry);
         (res, c)
     }
 
-    // pub fn carrying_add_assign_uint(&mut self, rhs: T, carry: bool) -> bool
+    // pub fn carrying_add_assign_uint<U>(&mut self, rhs: U, carry: bool) -> bool
     /// Accumulate `rhs` + `carry` to `self`, wrapping around at the boundary
     /// of the type, and return the resulting carry.
+    /// 
+    /// # Panics
+    /// If size_of::<T>() * N <= 128, some methods may panic or its behavior may
+    /// undefined though it may not panic.
     /// 
     /// # Features
     /// This allows chaining together multiple additions to create even a wider
@@ -3298,11 +3555,29 @@ where T: Uint + Copy + Clone + Display + Debug + ToString
     /// It is just experimental for Big Endian CPUs. So, you are not encouraged
     /// to use it for Big Endian CPUs for serious purpose. Only use this crate
     /// for Big-endian CPUs with your own full responsibility.
-    pub fn carrying_add_assign_uint(&mut self, rhs: T, carry: bool) -> bool
+    pub fn carrying_add_assign_uint<U>(&mut self, rhs: U, carry: bool) -> bool
+    where U: Uint + Copy + Clone + Display + Debug + ToString
+            + Add<Output=U> + AddAssign + Sub<Output=U> + SubAssign
+            + Mul<Output=U> + MulAssign + Div<Output=U> + DivAssign
+            + Rem<Output=U> + RemAssign
+            + Shl<Output=U> + ShlAssign + Shr<Output=U> + ShrAssign
+            + BitAnd<Output=U> + BitAndAssign + BitOr<Output=U> + BitOrAssign
+            + BitXor<Output=U> + BitXorAssign + Not<Output=U>
+            + PartialEq + PartialOrd
     {
+        let trhs: T;
+        if rhs.length_in_bytes() > T::size_in_bytes()
+        {
+            return self.carrying_add_assign(&Self::from_uint(rhs), carry);
+        }
+        else    // if rhs.length_in_bytes() <= T::size_in_bytes()
+        {
+            trhs = T::num::<U>(rhs);
+        }
+        
         let mut c: bool;
         let mut num: T;
-        (num, c) = self.get_num_(0).carrying_add(rhs, carry);
+        (num, c) = self.get_num_(0).carrying_add(trhs, carry);
         self.set_num_(0, num);
         if c
         {
@@ -3319,8 +3594,12 @@ where T: Uint + Copy + Clone + Display + Debug + ToString
         c
     }
 
-    // pub fn wrapping_add_uint(&self, rhs: T) -> Self
+    // pub fn wrapping_add_uint<U>(&self, rhs: U) -> Self
     /// Computes `self` + `rhs`, wrapping around at the boundary of the type.
+    /// 
+    /// # Panics
+    /// If size_of::<T>() * N <= 128, some methods may panic or its behavior may
+    /// undefined though it may not panic.
     /// 
     /// # Output
     /// It returns `self` + `rhs` with wrapping (modular) addition.
@@ -3337,7 +3616,7 @@ where T: Uint + Copy + Clone + Display + Debug + ToString
     /// let one = u512::one();
     /// let two = u512::from(2_u8);
     /// let three = u512::from(3_u8);
-    /// let a = u512::max() - one;
+    /// let a = u512::max().wrapping_sub(&one);
     /// let b = a.wrapping_add_uint(1_u128);
     /// let c = a.wrapping_add_uint(2_u128);
     /// let d = a.wrapping_add_uint(3_u128);
@@ -3355,15 +3634,36 @@ where T: Uint + Copy + Clone + Display + Debug + ToString
     /// It is just experimental for Big Endian CPUs. So, you are not encouraged
     /// to use it for Big Endian CPUs for serious purpose. Only use this crate
     /// for Big-endian CPUs with your own full responsibility.
-    pub fn wrapping_add_uint(&self, rhs: T) -> Self
+    pub fn wrapping_add_uint<U>(&self, rhs: U) -> Self
+    where U: Uint + Copy + Clone + Display + Debug + ToString
+            + Add<Output=U> + AddAssign + Sub<Output=U> + SubAssign
+            + Mul<Output=U> + MulAssign + Div<Output=U> + DivAssign
+            + Rem<Output=U> + RemAssign
+            + Shl<Output=U> + ShlAssign + Shr<Output=U> + ShrAssign
+            + BitAnd<Output=U> + BitAndAssign + BitOr<Output=U> + BitOrAssign
+            + BitXor<Output=U> + BitXorAssign + Not<Output=U>
+            + PartialEq + PartialOrd
     {
-        let (res, _) = self.carrying_add_uint(rhs, false); 
+        let trhs: T;
+        if rhs.length_in_bytes() > T::size_in_bytes()
+        {
+            return self.wrapping_add(&Self::from_uint(rhs));
+        }
+        else    // if rhs.length_in_bytes() <= T::size_in_bytes()
+        {
+            trhs = T::num::<U>(rhs);
+        }
+        let (res, _) = self.carrying_add_uint(trhs, false);
         res
     }
 
-    // pub fn wrapping_add_assign_uint(&mut self, rhs: T)
+    // pub fn wrapping_add_assign_uint<U>(&mut self, rhs: U)
     /// Computes `self` + `rhs`, wrapping around at the boundary of the type,
     /// and assign the result to `self` back.
+    /// 
+    /// # Panics
+    /// If size_of::<T>() * N <= 128, some methods may panic or its behavior may
+    /// undefined though it may not panic.
     /// 
     /// # Feature
     /// Wrapping (modular) addition.
@@ -3399,13 +3699,25 @@ where T: Uint + Copy + Clone + Display + Debug + ToString
     /// to use it for Big Endian CPUs for serious purpose. Only use this crate
     /// for Big-endian CPUs with your own full responsibility.
     #[inline]
-    pub fn wrapping_add_assign_uint(&mut self, rhs: T)
+    pub fn wrapping_add_assign_uint<U>(&mut self, rhs: U)
+    where U: Uint + Copy + Clone + Display + Debug + ToString
+            + Add<Output=U> + AddAssign + Sub<Output=U> + SubAssign
+            + Mul<Output=U> + MulAssign + Div<Output=U> + DivAssign
+            + Rem<Output=U> + RemAssign
+            + Shl<Output=U> + ShlAssign + Shr<Output=U> + ShrAssign
+            + BitAnd<Output=U> + BitAndAssign + BitOr<Output=U> + BitOrAssign
+            + BitXor<Output=U> + BitXorAssign + Not<Output=U>
+            + PartialEq + PartialOrd
     {
         self.carrying_add_assign_uint(rhs, false);
     }
 
-    // pub fn overflowing_add_uint(&self, rhs: T) -> (Self, bool)
+    // pub fn overflowing_add_uint<U>(&self, rhs: U) -> (Self, bool)
     /// Calculates `self` + `rhs`.
+    /// 
+    /// # Panics
+    /// If size_of::<T>() * N <= 128, some methods may panic or its behavior may
+    /// undefined though it may not panic.
     /// 
     /// # Output
     /// It returns a tuple of the addition `self` + `rhs` along with a boolean
@@ -3422,13 +3734,25 @@ where T: Uint + Copy + Clone + Display + Debug + ToString
     /// to use it for Big Endian CPUs for serious purpose. Only use this crate
     /// for Big-endian CPUs with your own full responsibility.
     #[inline]
-    pub fn overflowing_add_uint(&self, rhs: T) -> (Self, bool)
+    pub fn overflowing_add_uint<U>(&self, rhs: U) -> (Self, bool)
+    where U: Uint + Copy + Clone + Display + Debug + ToString
+            + Add<Output=U> + AddAssign + Sub<Output=U> + SubAssign
+            + Mul<Output=U> + MulAssign + Div<Output=U> + DivAssign
+            + Rem<Output=U> + RemAssign
+            + Shl<Output=U> + ShlAssign + Shr<Output=U> + ShrAssign
+            + BitAnd<Output=U> + BitAndAssign + BitOr<Output=U> + BitOrAssign
+            + BitXor<Output=U> + BitXorAssign + Not<Output=U>
+            + PartialEq + PartialOrd
     {
         self.carrying_add_uint(rhs, false)
     }
 
-    // pub fn overflowing_add_assign_uint(&mut self, rhs: T) -> bool
+    // pub fn overflowing_add_assign_uint<U>(&mut self, rhs: U) -> bool
     /// Calculates `self` + `rhs`, and assigns the result to `self` back.
+    /// 
+    /// # Panics
+    /// If size_of::<T>() * N <= 128, some methods may panic or its behavior may
+    /// undefined though it may not panic.
     /// 
     /// # Output
     /// It returns true if an arithmetic overflow would occur.
@@ -3444,13 +3768,25 @@ where T: Uint + Copy + Clone + Display + Debug + ToString
     /// to use it for Big Endian CPUs for serious purpose. Only use this crate
     /// for Big-endian CPUs with your own full responsibility.
     #[inline]
-    pub fn overflowing_add_assign_uint(&mut self, rhs: T) -> bool
+    pub fn overflowing_add_assign_uint<U>(&mut self, rhs: U) -> bool
+    where U: Uint + Copy + Clone + Display + Debug + ToString
+            + Add<Output=U> + AddAssign + Sub<Output=U> + SubAssign
+            + Mul<Output=U> + MulAssign + Div<Output=U> + DivAssign
+            + Rem<Output=U> + RemAssign
+            + Shl<Output=U> + ShlAssign + Shr<Output=U> + ShrAssign
+            + BitAnd<Output=U> + BitAndAssign + BitOr<Output=U> + BitOrAssign
+            + BitXor<Output=U> + BitXorAssign + Not<Output=U>
+            + PartialEq + PartialOrd
     {
         self.carrying_add_assign_uint(rhs, false)
     }
 
-    // pub fn checked_add_uint(&self, rhs: T) -> Option<Self>
+    // pub fn checked_add_uint<U>(&self, rhs: U) -> Option<Self>
     /// Computes `self` + `rhs`.
+    /// 
+    /// # Panics
+    /// If size_of::<T>() * N <= 128, some methods may panic or its behavior may
+    /// undefined though it may not panic.
     /// 
     /// # Output
     /// It returns the sum `self` + `rhs` wrapped by `Some` of enum `Option`
@@ -3465,22 +3801,42 @@ where T: Uint + Copy + Clone + Display + Debug + ToString
     /// It is just experimental for Big Endian CPUs. So, you are not encouraged
     /// to use it for Big Endian CPUs for serious purpose. Only use this crate
     /// for Big-endian CPUs with your own full responsibility.
-    pub fn checked_add_uint(&self, rhs: T) -> Option<Self>
+    pub fn checked_add_uint<U>(&self, rhs: U) -> Option<Self>
+    where U: Uint + Copy + Clone + Display + Debug + ToString
+            + Add<Output=U> + AddAssign + Sub<Output=U> + SubAssign
+            + Mul<Output=U> + MulAssign + Div<Output=U> + DivAssign
+            + Rem<Output=U> + RemAssign
+            + Shl<Output=U> + ShlAssign + Shr<Output=U> + ShrAssign
+            + BitAnd<Output=U> + BitAndAssign + BitOr<Output=U> + BitOrAssign
+            + BitXor<Output=U> + BitXorAssign + Not<Output=U>
+            + PartialEq + PartialOrd
     {
+        let trhs: T;
+        if rhs.length_in_bytes() > T::size_in_bytes()
+        {
+            return self.checked_add(&Self::from_uint(rhs));
+        }
+        else    // if rhs.length_in_bytes() <= T::size_in_bytes()
+        {
+            trhs = T::num::<U>(rhs);
+        }
         let mut res = self.clone();
-        let overflow = res.overflowing_add_assign_uint(rhs);
+        let overflow = res.overflowing_add_assign_uint(trhs);
         if overflow
             { None }
         else
             { Some(res) }
     }
 
-    // pub fn unchecked_add_uint(&self, rhs: T) -> Self
+    // pub fn unchecked_add_uint<U>(&self, rhs: U) -> Self
     /// Computes `self` + `rhs`, assuming overflow cannot occur.
     /// 
     /// # Panics
     /// If overflow occurred, it will panic. So, use this method only when you
     /// are sure that overflow will not occur. 
+    /// 
+    /// If size_of::<T>() * N <= 128, some methods may panic or its behavior may
+    /// undefined though it may not panic.
     /// 
     /// # Output
     /// It returns the sum `self` + `rhs` if overflow did not occur.
@@ -3496,14 +3852,26 @@ where T: Uint + Copy + Clone + Display + Debug + ToString
     /// to use it for Big Endian CPUs for serious purpose. Only use this crate
     /// for Big-endian CPUs with your own full responsibility.
     #[inline]
-    pub fn unchecked_add_uint(&self, rhs: T) -> Self
+    pub fn unchecked_add_uint<U>(&self, rhs: U) -> Self
+    where U: Uint + Copy + Clone + Display + Debug + ToString
+            + Add<Output=U> + AddAssign + Sub<Output=U> + SubAssign
+            + Mul<Output=U> + MulAssign + Div<Output=U> + DivAssign
+            + Rem<Output=U> + RemAssign
+            + Shl<Output=U> + ShlAssign + Shr<Output=U> + ShrAssign
+            + BitAnd<Output=U> + BitAndAssign + BitOr<Output=U> + BitOrAssign
+            + BitXor<Output=U> + BitXorAssign + Not<Output=U>
+            + PartialEq + PartialOrd
     {
         self.checked_add_uint(rhs).unwrap()
     }
 
-    // pub fn saturating_add_uint(&self, rhs: T) -> Self
+    // pub fn saturating_add_uint<U>(&self, rhs: U) -> Self
     /// Computes `self` + `rhs`, saturating at the numeric bounds
     /// instead of overflowing.
+    /// 
+    /// # Panics
+    /// If size_of::<T>() * N <= 128, some methods may panic or its behavior may
+    /// undefined though it may not panic.
     /// 
     /// # Output
     /// It returns the sum `self` + `rhs` if overflow did not occur.
@@ -3518,16 +3886,28 @@ where T: Uint + Copy + Clone + Display + Debug + ToString
     /// It is just experimental for Big Endian CPUs. So, you are not encouraged
     /// to use it for Big Endian CPUs for serious purpose. Only use this crate
     /// for Big-endian CPUs with your own full responsibility.
-    pub fn saturating_add_uint(&self, rhs: T) -> Self
+    pub fn saturating_add_uint<U>(&self, rhs: U) -> Self
+    where U: Uint + Copy + Clone + Display + Debug + ToString
+            + Add<Output=U> + AddAssign + Sub<Output=U> + SubAssign
+            + Mul<Output=U> + MulAssign + Div<Output=U> + DivAssign
+            + Rem<Output=U> + RemAssign
+            + Shl<Output=U> + ShlAssign + Shr<Output=U> + ShrAssign
+            + BitAnd<Output=U> + BitAndAssign + BitOr<Output=U> + BitOrAssign
+            + BitXor<Output=U> + BitXorAssign + Not<Output=U>
+            + PartialEq + PartialOrd
     {
         let mut res = self.clone();
         res.saturating_add_assign_uint(rhs);
         res
     }
 
-    // pub fn saturating_add_assign_uint(&mut self, rhs: T)
+    // pub fn saturating_add_assign_uint<U>(&mut self, rhs: T)
     /// Computes `self` + `rhs`, saturating at the numeric bounds
     /// instead of overflowing, and assigns the result to `self` back.
+    /// 
+    /// # Panics
+    /// If size_of::<T>() * N <= 128, some methods may panic or its behavior may
+    /// undefined though it may not panic.
     /// 
     /// # Example
     /// ```
@@ -3538,7 +3918,15 @@ where T: Uint + Copy + Clone + Display + Debug + ToString
     /// It is just experimental for Big Endian CPUs. So, you are not encouraged
     /// to use it for Big Endian CPUs for serious purpose. Only use this crate
     /// for Big-endian CPUs with your own full responsibility.
-    pub fn saturating_add_assign_uint(&mut self, rhs: T)
+    pub fn saturating_add_assign_uint<U>(&mut self, rhs: U)
+    where U: Uint + Copy + Clone + Display + Debug + ToString
+            + Add<Output=U> + AddAssign + Sub<Output=U> + SubAssign
+            + Mul<Output=U> + MulAssign + Div<Output=U> + DivAssign
+            + Rem<Output=U> + RemAssign
+            + Shl<Output=U> + ShlAssign + Shr<Output=U> + ShrAssign
+            + BitAnd<Output=U> + BitAndAssign + BitOr<Output=U> + BitOrAssign
+            + BitXor<Output=U> + BitXorAssign + Not<Output=U>
+            + PartialEq + PartialOrd
     {
         if self.overflowing_add_assign_uint(rhs)
             { self.set_max(); }
@@ -3547,9 +3935,13 @@ where T: Uint + Copy + Clone + Display + Debug + ToString
 
     /*** Subtraction ***/
 
-    // pub fn borrowing_sub_uint(&self, rhs: T, borrow: bool) -> (Self, bool)
+    // pub fn borrowing_sub_uint<U>(&self, rhs: U, borrow: bool) -> (Self, bool)
     /// Calculates self − rhs − borrow and returns a tuple containing the
     /// difference and the output borrow.
+    /// 
+    /// # Panics
+    /// If size_of::<T>() * N <= 128, some methods may panic or its behavior may
+    /// undefined though it may not panic.
     /// 
     /// # Features
     /// It performs “ternary subtraction” by subtracting a primitive unsigned
@@ -3573,16 +3965,28 @@ where T: Uint + Copy + Clone + Display + Debug + ToString
     /// It is just experimental for Big Endian CPUs. So, you are not encouraged
     /// to use it for Big Endian CPUs for serious purpose. Only use this crate
     /// for Big-endian CPUs with your own full responsibility.
-    pub fn borrowing_sub_uint(&self, rhs: T, borrow: bool) -> (Self, bool)
+    pub fn borrowing_sub_uint<U>(&self, rhs: U, borrow: bool) -> (Self, bool)
+    where U: Uint + Copy + Clone + Display + Debug + ToString
+            + Add<Output=U> + AddAssign + Sub<Output=U> + SubAssign
+            + Mul<Output=U> + MulAssign + Div<Output=U> + DivAssign
+            + Rem<Output=U> + RemAssign
+            + Shl<Output=U> + ShlAssign + Shr<Output=U> + ShrAssign
+            + BitAnd<Output=U> + BitAndAssign + BitOr<Output=U> + BitOrAssign
+            + BitXor<Output=U> + BitXorAssign + Not<Output=U>
+            + PartialEq + PartialOrd
     {
         let mut res = self.clone();
         let b = res.borrowing_sub_assign_uint(rhs, borrow);
         (res, b)
     }
 
-    // pub fn borrowing_sub_assign_uint(&mut self, rhs: T, borrow: bool) -> bool
+    // pub fn borrowing_sub_assign_uint<U>(&mut self, rhs: U, borrow: bool) -> bool
     /// Calculates self − rhs − borrow, and assigns difference to `self` back,
     /// and returns the output borrow.
+    /// 
+    /// # Panics
+    /// If size_of::<T>() * N <= 128, some methods may panic or its behavior may
+    /// undefined though it may not panic.
     /// 
     /// # Features
     /// It performs “ternary subtraction” by subtracting an primitive unsiged
@@ -3606,11 +4010,29 @@ where T: Uint + Copy + Clone + Display + Debug + ToString
     /// It is just experimental for Big Endian CPUs. So, you are not encouraged
     /// to use it for Big Endian CPUs for serious purpose. Only use this crate
     /// for Big-endian CPUs with your own full responsibility.
-    pub fn borrowing_sub_assign_uint(&mut self, rhs: T, borrow: bool) -> bool
+    pub fn borrowing_sub_assign_uint<U>(&mut self, rhs: U, borrow: bool) -> bool
+    where U: Uint + Copy + Clone + Display + Debug + ToString
+            + Add<Output=U> + AddAssign + Sub<Output=U> + SubAssign
+            + Mul<Output=U> + MulAssign + Div<Output=U> + DivAssign
+            + Rem<Output=U> + RemAssign
+            + Shl<Output=U> + ShlAssign + Shr<Output=U> + ShrAssign
+            + BitAnd<Output=U> + BitAndAssign + BitOr<Output=U> + BitOrAssign
+            + BitXor<Output=U> + BitXorAssign + Not<Output=U>
+            + PartialEq + PartialOrd
     {
+        let trhs: T;
+        if rhs.length_in_bytes() > T::size_in_bytes()
+        {
+            return self.borrowing_sub_assign(&Self::from_uint(rhs), borrow);
+        }
+        else    // if rhs.length_in_bytes() <= T::size_in_bytes()
+        {
+            trhs = T::num::<U>(rhs);
+        }
+
         let mut num: T;
         let mut b: bool;
-        (num, b) = self.get_num_(0).borrowing_sub(rhs, borrow);
+        (num, b) = self.get_num_(0).borrowing_sub(trhs, borrow);
         self.set_num_(0, num);
         if b
         {
@@ -3627,9 +4049,13 @@ where T: Uint + Copy + Clone + Display + Debug + ToString
         b
     }
 
-    // pub fn wrapping_sub_uint(&self, rhs: T) -> Self
-    /// Subtracts a unsigned integer number of type `T` from `BigUInt`-type
+    // pub fn wrapping_sub_uint<U>(&self, rhs: U) -> Self
+    /// Subtracts a unsigned integer number of type `U` from `BigUInt`-type
     /// unsigned integer and returns its result in a type of BigUInt.
+    /// 
+    /// # Panics
+    /// If size_of::<T>() * N <= 128, some methods may panic or its behavior may
+    /// undefined though it may not panic.
     /// 
     /// # Output
     /// It returns the subtraction of `rhs` from `self`.
@@ -3643,30 +4069,54 @@ where T: Uint + Copy + Clone + Display + Debug + ToString
     /// let a = u256::from_str("10000000000000000000000000000000000").unwrap();
     /// let sub = a.wrapping_sub_uint(35_u128);
     /// println!("sub = {}", sub);
-    /// assert_eq!(sub, "9999999999999999999999999999999965");
+    /// assert_eq!(sub.to_string(), "9999999999999999999999999999999965");
     /// ```
-    pub fn wrapping_sub_uint(&self, rhs: T) -> Self
+    pub fn wrapping_sub_uint<U>(&self, rhs: U) -> Self
+    where U: Uint + Copy + Clone + Display + Debug + ToString
+            + Add<Output=U> + AddAssign + Sub<Output=U> + SubAssign
+            + Mul<Output=U> + MulAssign + Div<Output=U> + DivAssign
+            + Rem<Output=U> + RemAssign
+            + Shl<Output=U> + ShlAssign + Shr<Output=U> + ShrAssign
+            + BitAnd<Output=U> + BitAndAssign + BitOr<Output=U> + BitOrAssign
+            + BitXor<Output=U> + BitXorAssign + Not<Output=U>
+            + PartialEq + PartialOrd
     {
         let (res, _) = self.borrowing_sub_uint(rhs, false);
         res
     }
 
-    // pub fn wrapping_sub_assign_uint(&mut self, rhs: T)
-    /// Subtracts rhs of type `T` from self which is of `BigUInt` type,
+    // pub fn wrapping_sub_assign_uint<U>(&mut self, rhs: U)
+    /// Subtracts rhs of type `U` from self which is of `BigUInt` type,
     /// and returns the result to `self` back.
+    /// 
+    /// # Panics
+    /// If size_of::<T>() * N <= 128, some methods may panic or its behavior may
+    /// undefined though it may not panic.
     /// 
     /// # Example
     /// ```
     /// // Todo
     /// ```
     #[inline]
-    pub fn wrapping_sub_assign_uint(&mut self, rhs: T)
+    pub fn wrapping_sub_assign_uint<U>(&mut self, rhs: U)
+    where U: Uint + Copy + Clone + Display + Debug + ToString
+            + Add<Output=U> + AddAssign + Sub<Output=U> + SubAssign
+            + Mul<Output=U> + MulAssign + Div<Output=U> + DivAssign
+            + Rem<Output=U> + RemAssign
+            + Shl<Output=U> + ShlAssign + Shr<Output=U> + ShrAssign
+            + BitAnd<Output=U> + BitAndAssign + BitOr<Output=U> + BitOrAssign
+            + BitXor<Output=U> + BitXorAssign + Not<Output=U>
+            + PartialEq + PartialOrd
     {
         self.borrowing_sub_assign_uint(rhs, false);
     }
 
-    // pub fn overflowing_sub_uint(&self, rhs: T) -> (Self, bool)
+    // pub fn overflowing_sub_uint<U>(&self, rhs: U) -> (Self, bool)
     /// Calculates `self` - `rhs`.
+    /// 
+    /// # Panics
+    /// If size_of::<T>() * N <= 128, some methods may panic or its behavior may
+    /// undefined though it may not panic.
     /// 
     /// # Output
     /// It returns a tuple of the subtraction `self` - `rhs` along with a boolean
@@ -3683,13 +4133,25 @@ where T: Uint + Copy + Clone + Display + Debug + ToString
     /// to use it for Big Endian CPUs for serious purpose. Only use this crate
     /// for Big-endian CPUs with your own full responsibility.
     #[inline]
-    pub fn overflowing_sub_uint(&self, rhs: T) -> (Self, bool)
+    pub fn overflowing_sub_uint<U>(&self, rhs: U) -> (Self, bool)
+    where U: Uint + Copy + Clone + Display + Debug + ToString
+            + Add<Output=U> + AddAssign + Sub<Output=U> + SubAssign
+            + Mul<Output=U> + MulAssign + Div<Output=U> + DivAssign
+            + Rem<Output=U> + RemAssign
+            + Shl<Output=U> + ShlAssign + Shr<Output=U> + ShrAssign
+            + BitAnd<Output=U> + BitAndAssign + BitOr<Output=U> + BitOrAssign
+            + BitXor<Output=U> + BitXorAssign + Not<Output=U>
+            + PartialEq + PartialOrd
     {
         self.borrowing_sub_uint(rhs, false)
     }
 
-    // pub fn overflowing_sub_assign(&mut self, rhs: T) -> bool
+    // pub fn overflowing_sub_assign<U>(&mut self, rhs: U) -> bool
     /// Calculates `self` - `rhs`, and assigns the result to `self` back.
+    /// 
+    /// # Panics
+    /// If size_of::<T>() * N <= 128, some methods may panic or its behavior may
+    /// undefined though it may not panic.
     /// 
     /// # Output
     /// It returns true if an arithmetic unerflow would occur.
@@ -3705,13 +4167,25 @@ where T: Uint + Copy + Clone + Display + Debug + ToString
     /// to use it for Big Endian CPUs for serious purpose. Only use this crate
     /// for Big-endian CPUs with your own full responsibility.
     #[inline]
-    pub fn overflowing_sub_assign_uint(&mut self, rhs: T) -> bool
+    pub fn overflowing_sub_assign_uint<U>(&mut self, rhs: U) -> bool
+    where U: Uint + Copy + Clone + Display + Debug + ToString
+            + Add<Output=U> + AddAssign + Sub<Output=U> + SubAssign
+            + Mul<Output=U> + MulAssign + Div<Output=U> + DivAssign
+            + Rem<Output=U> + RemAssign
+            + Shl<Output=U> + ShlAssign + Shr<Output=U> + ShrAssign
+            + BitAnd<Output=U> + BitAndAssign + BitOr<Output=U> + BitOrAssign
+            + BitXor<Output=U> + BitXorAssign + Not<Output=U>
+            + PartialEq + PartialOrd
     {
         self.borrowing_sub_assign_uint(rhs, false)
     }
 
-    // pub fn checked_sub_uint(&self, rhs: T) -> Option<Self>
+    // pub fn checked_sub_uint<U>(&self, rhs: U) -> Option<Self>
     /// Computes `self` - `rhs`.
+    /// 
+    /// # Panics
+    /// If size_of::<T>() * N <= 128, some methods may panic or its behavior may
+    /// undefined though it may not panic.
     /// 
     /// # Output
     /// It returns the difference `self` - `rhs` wrapped by `Some`
@@ -3727,7 +4201,15 @@ where T: Uint + Copy + Clone + Display + Debug + ToString
     /// It is just experimental for Big Endian CPUs. So, you are not encouraged
     /// to use it for Big Endian CPUs for serious purpose. Only use this crate
     /// for Big-endian CPUs with your own full responsibility.
-    pub fn checked_sub_uint(&self, rhs: T) -> Option<Self>
+    pub fn checked_sub_uint<U>(&self, rhs: U) -> Option<Self>
+    where U: Uint + Copy + Clone + Display + Debug + ToString
+            + Add<Output=U> + AddAssign + Sub<Output=U> + SubAssign
+            + Mul<Output=U> + MulAssign + Div<Output=U> + DivAssign
+            + Rem<Output=U> + RemAssign
+            + Shl<Output=U> + ShlAssign + Shr<Output=U> + ShrAssign
+            + BitAnd<Output=U> + BitAndAssign + BitOr<Output=U> + BitOrAssign
+            + BitXor<Output=U> + BitXorAssign + Not<Output=U>
+            + PartialEq + PartialOrd
     {
         let mut res = self.clone();
         let underflow = res.overflowing_sub_assign_uint(rhs);
@@ -3737,12 +4219,14 @@ where T: Uint + Copy + Clone + Display + Debug + ToString
             { Some(res) }
     }
 
-    // pub fn unchecked_sub_uint(&self, rhs: T) -> Self
+    // pub fn unchecked_sub_uint<U>(&self, rhs: U) -> Self
     /// Computes `self` - `rhs`, assuming underflow cannot occur.
     /// 
     /// # Panics
-    /// If underflow occurred, it will panic. So, use this method only when you
-    /// are sure that underflow will not occur. 
+    /// - If underflow occurred, it will panic. So, use this method only when
+    /// you are sure that underflow will not occur.
+    /// - If size_of::<T>() * N <= 128, some methods may panic or its behavior
+    /// may undefined though it may not panic.
     /// 
     /// # Output
     /// It returns the difference `self` - `rhs` if underflow did not occur.
@@ -3758,14 +4242,26 @@ where T: Uint + Copy + Clone + Display + Debug + ToString
     /// to use it for Big Endian CPUs for serious purpose. Only use this crate
     /// for Big-endian CPUs with your own full responsibility.
     #[inline]
-    pub fn unchecked_sub_uint(&self, rhs: T) -> Self
+    pub fn unchecked_sub_uint<U>(&self, rhs: U) -> Self
+    where U: Uint + Copy + Clone + Display + Debug + ToString
+            + Add<Output=U> + AddAssign + Sub<Output=U> + SubAssign
+            + Mul<Output=U> + MulAssign + Div<Output=U> + DivAssign
+            + Rem<Output=U> + RemAssign
+            + Shl<Output=U> + ShlAssign + Shr<Output=U> + ShrAssign
+            + BitAnd<Output=U> + BitAndAssign + BitOr<Output=U> + BitOrAssign
+            + BitXor<Output=U> + BitXorAssign + Not<Output=U>
+            + PartialEq + PartialOrd
     {
         self.checked_sub_uint(rhs).unwrap()
     }
 
-    // pub fn saturating_sub_uint(&self, rhs: T) -> Self
+    // pub fn saturating_sub_uint<U>(&self, rhs: U) -> Self
     /// Computes `self` - `rhs`, saturating at the numeric bounds
     /// instead of underflowing.
+    /// 
+    /// # Panics
+    /// If size_of::<T>() * N <= 128, some methods may panic or its behavior may
+    /// undefined though it may not panic.
     /// 
     /// # Output
     /// It returns the difference `self` - `rhs` if underflowing did not occur.
@@ -3780,16 +4276,28 @@ where T: Uint + Copy + Clone + Display + Debug + ToString
     /// It is just experimental for Big Endian CPUs. So, you are not encouraged
     /// to use it for Big Endian CPUs for serious purpose. Only use this crate
     /// for Big-endian CPUs with your own full responsibility.
-    pub fn saturating_sub_uint(&self, rhs: T) -> Self
+    pub fn saturating_sub_uint<U>(&self, rhs: U) -> Self
+    where U: Uint + Copy + Clone + Display + Debug + ToString
+            + Add<Output=U> + AddAssign + Sub<Output=U> + SubAssign
+            + Mul<Output=U> + MulAssign + Div<Output=U> + DivAssign
+            + Rem<Output=U> + RemAssign
+            + Shl<Output=U> + ShlAssign + Shr<Output=U> + ShrAssign
+            + BitAnd<Output=U> + BitAndAssign + BitOr<Output=U> + BitOrAssign
+            + BitXor<Output=U> + BitXorAssign + Not<Output=U>
+            + PartialEq + PartialOrd
     {
         let mut res = self.clone();
         res.saturating_sub_assign_uint(rhs);
         res
     }
 
-    // pub fn saturating_sub_assign_uint(&mut self, rhs: T)
+    // pub fn saturating_sub_assign_uint<U>(&mut self, rhs: U)
     /// Computes `self` - `rhs`, saturating at the numeric bounds
     /// instead of underflowing, and assigns the result to `self` back.
+    /// 
+    /// # Panics
+    /// If size_of::<T>() * N <= 128, some methods may panic or its behavior may
+    /// undefined though it may not panic.
     /// 
     /// # Feature
     /// `self` will be the difference `self` - `rhs` if underflowing
@@ -3804,14 +4312,26 @@ where T: Uint + Copy + Clone + Display + Debug + ToString
     /// It is just experimental for Big Endian CPUs. So, you are not encouraged
     /// to use it for Big Endian CPUs for serious purpose. Only use this crate
     /// for Big-endian CPUs with your own full responsibility.
-    pub fn saturating_sub_assign_uint(&mut self, rhs: T)
+    pub fn saturating_sub_assign_uint<U>(&mut self, rhs: U)
+    where U: Uint + Copy + Clone + Display + Debug + ToString
+            + Add<Output=U> + AddAssign + Sub<Output=U> + SubAssign
+            + Mul<Output=U> + MulAssign + Div<Output=U> + DivAssign
+            + Rem<Output=U> + RemAssign
+            + Shl<Output=U> + ShlAssign + Shr<Output=U> + ShrAssign
+            + BitAnd<Output=U> + BitAndAssign + BitOr<Output=U> + BitOrAssign
+            + BitXor<Output=U> + BitXorAssign + Not<Output=U>
+            + PartialEq + PartialOrd
     {
         if self.overflowing_sub_assign_uint(rhs)
             { self.set_zero(); }
     }
 
-    // pub fn abs_diff(&self, other: T) -> Self
+    // pub fn abs_diff<U>(&self, other: U) -> Self
     /// Computes the absolute difference between `self` and `other`.
+    /// 
+    /// # Panics
+    /// If size_of::<T>() * N <= 128, some methods may panic or its behavior may
+    /// undefined though it may not panic.
     /// 
     /// # Output
     /// It returns the absolute difference between `self` and `other`.
@@ -3825,19 +4345,41 @@ where T: Uint + Copy + Clone + Display + Debug + ToString
     /// define_utypes_with!(u128);
     /// // Todo
     /// ```
-    pub fn abs_diff_uint(&self, other: T) -> Self
+    pub fn abs_diff_uint<U>(&self, other: U) -> Self
+    where U: Uint + Copy + Clone + Display + Debug + ToString
+            + Add<Output=U> + AddAssign + Sub<Output=U> + SubAssign
+            + Mul<Output=U> + MulAssign + Div<Output=U> + DivAssign
+            + Rem<Output=U> + RemAssign
+            + Shl<Output=U> + ShlAssign + Shr<Output=U> + ShrAssign
+            + BitAnd<Output=U> + BitAndAssign + BitOr<Output=U> + BitOrAssign
+            + BitXor<Output=U> + BitXorAssign + Not<Output=U>
+            + PartialEq + PartialOrd
     {
-        if self.lt_uint(other)
-            { Self::from_uint(other - self.get_num_(0)) }
+        let t_other: T;
+        if other.length_in_bytes() > T::size_in_bytes()
+        {
+            return self.abs_diff(&Self::from_uint(other));
+        }
+        else    // if rhs.length_in_bytes() <= T::size_in_bytes()
+        {
+            t_other = T::num::<U>(other);
+        }
+
+        if self.lt_uint(t_other)
+            { Self::from_uint(t_other - self.get_num_(0)) }
         else
-            { self.wrapping_add_uint(other) }
+            { self.wrapping_add_uint(t_other) }
     }
 
     /*** Multiplication ***/
 
-    // pub fn carrying_mul_uint(&self, rhs: T, carry: Self) -> (Self, Self)
+    // pub fn carrying_mul_uint<U>(&self, rhs: U, carry: Self) -> (Self, Self)
     /// Calculates the “full multiplication” `self` * `rhs` + `carry` without
     /// the possibility to overflow.
+    /// 
+    /// # Panics
+    /// If size_of::<T>() * N <= 128, some methods may panic or its behavior may
+    /// undefined though it may not panic.
     /// 
     /// # Output
     /// It returns `self` * `rhs` + `carry` in the form of a tuple of the
@@ -3868,17 +4410,29 @@ where T: Uint + Copy + Clone + Display + Debug + ToString
     /// It is just experimental for Big Endian CPUs. So, you are not encouraged
     /// to use it for Big Endian CPUs for serious purpose. Only use this crate
     /// for Big-endian CPUs with your own full responsibility.
-    pub fn carrying_mul_uint(&self, rhs: T, carry: Self) -> (Self, Self)
+    pub fn carrying_mul_uint<U>(&self, rhs: U, carry: Self) -> (Self, Self)
+    where U: Uint + Copy + Clone + Display + Debug + ToString
+            + Add<Output=U> + AddAssign + Sub<Output=U> + SubAssign
+            + Mul<Output=U> + MulAssign + Div<Output=U> + DivAssign
+            + Rem<Output=U> + RemAssign
+            + Shl<Output=U> + ShlAssign + Shr<Output=U> + ShrAssign
+            + BitAnd<Output=U> + BitAndAssign + BitOr<Output=U> + BitOrAssign
+            + BitXor<Output=U> + BitXorAssign + Not<Output=U>
+            + PartialEq + PartialOrd
     {
         let mut low = self.clone();
         let high = low.carrying_mul_assign_uint(rhs, carry);
         (low, high)
     }
 
-    // pub fn carrying_mul_assign_uint(&mut self, rhs: T, carry: Self) -> Self
+    // pub fn carrying_mul_assign_uint<U>(&mut self, rhs: U, carry: Self) -> Self
     /// Calculates the “full multiplication” `self` * `rhs` + `carry` without
     /// the possibility to overflow, and assigs the low-order bits of the result
     /// to `self` back and returns the high-order bits of the result.
+    /// 
+    /// # Panics
+    /// If size_of::<T>() * N <= 128, some methods may panic or its behavior may
+    /// undefined though it may not panic.
     /// 
     /// # Output
     /// It returns the high-order (overflow) bits of `self` * `rhs` + `carry`
@@ -3907,11 +4461,28 @@ where T: Uint + Copy + Clone + Display + Debug + ToString
     /// It is just experimental for Big Endian CPUs. So, you are not encouraged
     /// to use it for Big Endian CPUs for serious purpose. Only use this crate
     /// for Big-endian CPUs with your own full responsibility.
-    pub fn carrying_mul_assign_uint(&mut self, rhs: T, carry: Self) -> Self
+    pub fn carrying_mul_assign_uint<U>(&mut self, rhs: U, carry: Self) -> Self
+    where U: Uint + Copy + Clone + Display + Debug + ToString
+            + Add<Output=U> + AddAssign + Sub<Output=U> + SubAssign
+            + Mul<Output=U> + MulAssign + Div<Output=U> + DivAssign
+            + Rem<Output=U> + RemAssign
+            + Shl<Output=U> + ShlAssign + Shr<Output=U> + ShrAssign
+            + BitAnd<Output=U> + BitAndAssign + BitOr<Output=U> + BitOrAssign
+            + BitXor<Output=U> + BitXorAssign + Not<Output=U>
+            + PartialEq + PartialOrd
     {
+        let trhs: T;
+        if rhs.length_in_bytes() > T::size_in_bytes()
+        {
+            return self.carrying_mul_assign(&Self::from_uint(rhs), carry);
+        }
+        else    // if rhs.length_in_bytes() <= T::size_in_bytes()
+        {
+            trhs = T::num::<U>(rhs);
+        }
         let zero = T::zero();
         let mut high = Self::zero();
-        if rhs == zero
+        if trhs == zero
         {
             self.set_zero();
             return high;
@@ -3921,35 +4492,39 @@ where T: Uint + Copy + Clone + Display + Debug + ToString
 
         let one = T::one();
         let adder = self.clone();
-        let mut bit_check = one << T::usize_as_Uint(T::size_in_bits() - 1 - rhs.leading_zeros() as usize);
+        let mut bit_check = one << T::usize_as_Uint(T::size_in_bits() - 1 - trhs.leading_zeros() as usize);
         self.set_zero();
         while bit_check != zero
         {
             *self <<= 1;
             high <<= 1;
-            if bit_check & rhs != zero
+            if bit_check & trhs != zero
             {
                 self.wrapping_add_assign(&adder);
                 if self.is_overflow()
-                    { high.wrapping_add_assign_uint(T::u8_as_Uint(1)); }
+                    { high.wrapping_add_assign_uint(1_u8); }
             }
             bit_check >>= one;
         }
         if self.overflowing_add_assign(&carry)
-            { high.wrapping_add_assign_uint(T::u8_as_Uint(1)); }
+            { high.wrapping_add_assign_uint(1_u8); }
         high
     }
 
-    // pub fn widening_mul(&self, rhs: T) -> (Self, Self)
+    // pub fn widening_mul<U>(&self, rhs: U) -> (Self, Self)
     /// Calculates the complete product `self` * `rhs` without the possibility
     /// to overflow.
+    /// 
+    /// # Panics
+    /// If size_of::<T>() * N <= 128, some methods may panic or its behavior may
+    /// undefined though it may not panic.
     /// 
     /// # Output
     /// It returns `self` * `rhs` in the form of a tuple of the low-order
     /// (wrapping) bits and the high-order (overflow) bits of the result as
     /// two separate values, in that order.
     /// 
-    /// /// # Feature
+    /// # Feature
     /// It performs “long multiplication” which takes in an extra amount to add,
     /// and may return an additional amount of overflow. This allows for
     /// chaining together multiple multiplications to create “bigger integers”
@@ -3973,19 +4548,31 @@ where T: Uint + Copy + Clone + Display + Debug + ToString
     /// to use it for Big Endian CPUs for serious purpose. Only use this crate
     /// for Big-endian CPUs with your own full responsibility.
     #[inline]
-    pub fn widening_mul_uint(&self, rhs: T) -> (Self, Self)
+    pub fn widening_mul_uint<U>(&self, rhs: U) -> (Self, Self)
+    where U: Uint + Copy + Clone + Display + Debug + ToString
+            + Add<Output=U> + AddAssign + Sub<Output=U> + SubAssign
+            + Mul<Output=U> + MulAssign + Div<Output=U> + DivAssign
+            + Rem<Output=U> + RemAssign
+            + Shl<Output=U> + ShlAssign + Shr<Output=U> + ShrAssign
+            + BitAnd<Output=U> + BitAndAssign + BitOr<Output=U> + BitOrAssign
+            + BitXor<Output=U> + BitXorAssign + Not<Output=U>
+            + PartialEq + PartialOrd
     {
         self.carrying_mul_uint(rhs, Self::zero())
     }
 
-    // pub fn widening_mul_assign_uint(&mut self, rhs: T) -> Self
+    // pub fn widening_mul_assign_uint<U>(&mut self, rhs: U) -> Self
     /// Calculates the complete product `self` * `rhs` without the possibility
     /// to overflow.
+    /// 
+    /// # Panics
+    /// If size_of::<T>() * N <= 128, some methods may panic or its behavior may
+    /// undefined though it may not panic.
     /// 
     /// # Output
     /// It returns the high-order (overflow) bits of the result `self` * `rhs`.
     /// 
-    /// /// # Feature
+    /// # Feature
     /// It performs “long multiplication” which takes in an extra amount to add,
     /// and may return an additional amount of overflow. This allows for
     /// chaining together multiple multiplications to create “bigger integers”
@@ -4009,14 +4596,26 @@ where T: Uint + Copy + Clone + Display + Debug + ToString
     /// to use it for Big Endian CPUs for serious purpose. Only use this crate
     /// for Big-endian CPUs with your own full responsibility.
     #[inline]
-    pub fn widening_mul_assign_uint(&mut self, rhs: T) -> Self
+    pub fn widening_mul_assign_uint<U>(&mut self, rhs: U) -> Self
+    where U: Uint + Copy + Clone + Display + Debug + ToString
+            + Add<Output=U> + AddAssign + Sub<Output=U> + SubAssign
+            + Mul<Output=U> + MulAssign + Div<Output=U> + DivAssign
+            + Rem<Output=U> + RemAssign
+            + Shl<Output=U> + ShlAssign + Shr<Output=U> + ShrAssign
+            + BitAnd<Output=U> + BitAndAssign + BitOr<Output=U> + BitOrAssign
+            + BitXor<Output=U> + BitXorAssign + Not<Output=U>
+            + PartialEq + PartialOrd
     {
         self.carrying_mul_assign_uint(rhs, Self::zero())
     }
 
-    // pub fn wrapping_mul_uint(&self, rhs: T) -> Self
+    // pub fn wrapping_mul_uint<U>(&self, rhs: U) -> Self
     /// Multiplies `BigUInt`-type number with a unsigned integer number
     /// of type `T` and returns its result in a type of BigUInt.
+    /// 
+    /// # Panics
+    /// If size_of::<T>() * N <= 128, some methods may panic or its behavior may
+    /// undefined though it may not panic.
     /// 
     /// # Output
     /// It returns the multiplication of `self` and `rhs`.
@@ -4029,48 +4628,81 @@ where T: Uint + Copy + Clone + Display + Debug + ToString
     /// let a = u256::from_str("10000000000000000000000000000000000").unwrap();
     /// let mul = a.wrapping_mul_uint(35_u128);
     /// println!("mul = {}", mul);
-    /// assert_eq!(mul, "350000000000000000000000000000000000");
+    /// assert_eq!(mul.to_string(), "350000000000000000000000000000000000");
     /// ```
-    pub fn wrapping_mul_uint(&self, rhs: T) -> Self
+    pub fn wrapping_mul_uint<U>(&self, rhs: U) -> Self
+    where U: Uint + Copy + Clone + Display + Debug + ToString
+            + Add<Output=U> + AddAssign + Sub<Output=U> + SubAssign
+            + Mul<Output=U> + MulAssign + Div<Output=U> + DivAssign
+            + Rem<Output=U> + RemAssign
+            + Shl<Output=U> + ShlAssign + Shr<Output=U> + ShrAssign
+            + BitAnd<Output=U> + BitAndAssign + BitOr<Output=U> + BitOrAssign
+            + BitXor<Output=U> + BitXorAssign + Not<Output=U>
+            + PartialEq + PartialOrd
     {
         let mut bi = self.clone();
         bi.wrapping_mul_assign_uint(rhs);
         bi
     }
 
-    // pub fn wrapping_mul_assign_uint(&mut self, rhs: T)
-    /// Multiplies self which is of `BigUInt` type with rhs of type `T`.
+    // pub fn wrapping_mul_assign_uint<U>(&mut self, rhs: U)
+    /// Multiplies self which is of `BigUInt` type with rhs of type `U`.
+    /// 
+    /// # Panics
+    /// If size_of::<T>() * N <= 128, some methods may panic or its behavior may
+    /// undefined though it may not panic.
     /// 
     /// # Example
     /// ```
     /// // Todo
     /// ```
-    pub fn wrapping_mul_assign_uint(&mut self, rhs: T)
+    pub fn wrapping_mul_assign_uint<U>(&mut self, rhs: U)
+    where U: Uint + Copy + Clone + Display + Debug + ToString
+            + Add<Output=U> + AddAssign + Sub<Output=U> + SubAssign
+            + Mul<Output=U> + MulAssign + Div<Output=U> + DivAssign
+            + Rem<Output=U> + RemAssign
+            + Shl<Output=U> + ShlAssign + Shr<Output=U> + ShrAssign
+            + BitAnd<Output=U> + BitAndAssign + BitOr<Output=U> + BitOrAssign
+            + BitXor<Output=U> + BitXorAssign + Not<Output=U>
+            + PartialEq + PartialOrd
     {
+        let trhs: T;
+        if rhs.length_in_bytes() > T::size_in_bytes()
+        {
+            return self.wrapping_mul_assign(&Self::from_uint(rhs));
+        }
+        else    // if rhs.length_in_bytes() <= T::size_in_bytes()
+        {
+            trhs = T::num::<U>(rhs);
+        }
         if self.is_zero()
             { return; }
         let zero = T::zero();
         let one = T::one();
-        if rhs == zero
+        if trhs == zero
         {
             self.set_zero();
             return;
         }
         let adder = self.clone();
-        let mut bit_check = one << T::usize_as_Uint(T::size_in_bits() - 1 - rhs.leading_zeros() as usize);
+        let mut bit_check = one << T::usize_as_Uint(T::size_in_bits() - 1 - trhs.leading_zeros() as usize);
         self.set_zero();
 
         while bit_check != zero
         {
             *self <<= 1;
-            if bit_check & rhs != zero
+            if bit_check & trhs != zero
                 { self.wrapping_add_assign(&adder); }
             bit_check >>= one;
         }
     }
 
-    // pub fn overflowing_mul_uint(&self, rhs: T) -> (Self, bool)
+    // pub fn overflowing_mul_uint<U>(&self, rhs: U) -> (Self, bool)
     /// Calculates `self` * `rhs`.
+    /// 
+    /// # Panics
+    /// If size_of::<T>() * N <= 128, some methods may panic or its behavior may
+    /// undefined though it may not panic.
     /// 
     /// # Output
     /// It returns a tuple of the multiplication `self` * `rhs` along
@@ -4087,15 +4719,27 @@ where T: Uint + Copy + Clone + Display + Debug + ToString
     /// It is just experimental for Big Endian CPUs. So, you are not encouraged
     /// to use it for Big Endian CPUs for serious purpose. Only use this crate
     /// for Big-endian CPUs with your own full responsibility.
-    pub fn overflowing_mul_uint(&self, rhs: T) -> (Self, bool)
+    pub fn overflowing_mul_uint<U>(&self, rhs: U) -> (Self, bool)
+    where U: Uint + Copy + Clone + Display + Debug + ToString
+            + Add<Output=U> + AddAssign + Sub<Output=U> + SubAssign
+            + Mul<Output=U> + MulAssign + Div<Output=U> + DivAssign
+            + Rem<Output=U> + RemAssign
+            + Shl<Output=U> + ShlAssign + Shr<Output=U> + ShrAssign
+            + BitAnd<Output=U> + BitAndAssign + BitOr<Output=U> + BitOrAssign
+            + BitXor<Output=U> + BitXorAssign + Not<Output=U>
+            + PartialEq + PartialOrd
     {
         let mut res = self.clone();
         let overflow = res.overflowing_mul_assign_uint(rhs);
         (res, overflow)
     }
 
-    // pub fn overflowing_mul_assign_uint(&mut self, rhs: T) -> bool
+    // pub fn overflowing_mul_assign_uint<U>(&mut self, rhs: U) -> bool
     /// Calculates `self` * `rhs`, and assigns the result to `self` back.
+    /// 
+    /// # Panics
+    /// If size_of::<T>() * N <= 128, some methods may panic or its behavior may
+    /// undefined though it may not panic.
     /// 
     /// # Output
     /// It returns true if an arithmetic overflow would occur.
@@ -4110,14 +4754,26 @@ where T: Uint + Copy + Clone + Display + Debug + ToString
     /// It is just experimental for Big Endian CPUs. So, you are not encouraged
     /// to use it for Big Endian CPUs for serious purpose. Only use this crate
     /// for Big-endian CPUs with your own full responsibility.
-    pub fn overflowing_mul_assign_uint(&mut self, rhs: T) -> bool
+    pub fn overflowing_mul_assign_uint<U>(&mut self, rhs: U) -> bool
+    where U: Uint + Copy + Clone + Display + Debug + ToString
+            + Add<Output=U> + AddAssign + Sub<Output=U> + SubAssign
+            + Mul<Output=U> + MulAssign + Div<Output=U> + DivAssign
+            + Rem<Output=U> + RemAssign
+            + Shl<Output=U> + ShlAssign + Shr<Output=U> + ShrAssign
+            + BitAnd<Output=U> + BitAndAssign + BitOr<Output=U> + BitOrAssign
+            + BitXor<Output=U> + BitXorAssign + Not<Output=U>
+            + PartialEq + PartialOrd
     {
         self.wrapping_mul_assign_uint(rhs);
         self.is_overflow()
     }
 
-    // pub fn checked_mul_uint(&self, rhs: T) -> Option<Self>
+    // pub fn checked_mul_uint<U>(&self, rhs: U) -> Option<Self>
     /// Computes `self` * `rhs`.
+    /// 
+    /// # Panics
+    /// If size_of::<T>() * N <= 128, some methods may panic or its behavior may
+    /// undefined though it may not panic.
     /// 
     /// # Output
     /// It returns the sum `self` * `rhs` wrapped by `Some` of enum `Option`
@@ -4132,7 +4788,15 @@ where T: Uint + Copy + Clone + Display + Debug + ToString
     /// It is just experimental for Big Endian CPUs. So, you are not encouraged
     /// to use it for Big Endian CPUs for serious purpose. Only use this crate
     /// for Big-endian CPUs with your own full responsibility.
-    pub fn checked_mul_uint(&self, rhs: T) -> Option<Self>
+    pub fn checked_mul_uint<U>(&self, rhs: U) -> Option<Self>
+    where U: Uint + Copy + Clone + Display + Debug + ToString
+            + Add<Output=U> + AddAssign + Sub<Output=U> + SubAssign
+            + Mul<Output=U> + MulAssign + Div<Output=U> + DivAssign
+            + Rem<Output=U> + RemAssign
+            + Shl<Output=U> + ShlAssign + Shr<Output=U> + ShrAssign
+            + BitAnd<Output=U> + BitAndAssign + BitOr<Output=U> + BitOrAssign
+            + BitXor<Output=U> + BitXorAssign + Not<Output=U>
+            + PartialEq + PartialOrd
     {
         let mut res = self.clone();
         let overflow = res.overflowing_mul_assign_uint(rhs);
@@ -4142,12 +4806,14 @@ where T: Uint + Copy + Clone + Display + Debug + ToString
             { Some(res) }
     }
 
-    // pub fn unchecked_mul_uint(&self, rhs: T) -> Self
+    // pub fn unchecked_mul_uint<U>(&self, rhs: U) -> Self
     /// Computes `self` * `rhs`, assuming overflow cannot occur.
     /// 
     /// # Panics
-    /// If overflow occurred, it will panic. So, use this method only when you
-    /// are sure that overflow will not occur. 
+    /// - If overflow occurred, it will panic. So, use this method only when
+    /// you are sure that overflow will not occur.
+    /// - If size_of::<T>() * N <= 128, some methods may panic or its behavior
+    /// may undefined though it may not panic.
     /// 
     /// # Output
     /// It returns the sum `self` * `rhs` if overflow did not occur.
@@ -4163,14 +4829,26 @@ where T: Uint + Copy + Clone + Display + Debug + ToString
     /// to use it for Big Endian CPUs for serious purpose. Only use this crate
     /// for Big-endian CPUs with your own full responsibility.
     #[inline]
-    pub fn unchecked_mul_uint(&self, rhs: T) -> Self
+    pub fn unchecked_mul_uint<U>(&self, rhs: U) -> Self
+    where U: Uint + Copy + Clone + Display + Debug + ToString
+            + Add<Output=U> + AddAssign + Sub<Output=U> + SubAssign
+            + Mul<Output=U> + MulAssign + Div<Output=U> + DivAssign
+            + Rem<Output=U> + RemAssign
+            + Shl<Output=U> + ShlAssign + Shr<Output=U> + ShrAssign
+            + BitAnd<Output=U> + BitAndAssign + BitOr<Output=U> + BitOrAssign
+            + BitXor<Output=U> + BitXorAssign + Not<Output=U>
+            + PartialEq + PartialOrd
     {
         self.checked_mul_uint(rhs).unwrap()
     }
 
-    // pub fn saturating_mul_uint(&self, rhs: T) -> Self
+    // pub fn saturating_mul_uint<U>(&self, rhs: U) -> Self
     /// Computes `self` * `rhs`, saturating at the numeric bounds
     /// instead of overflowing.
+    /// 
+    /// # Panics
+    /// If size_of::<T>() * N <= 128, some methods may panic or its behavior may
+    /// undefined though it may not panic.
     /// 
     /// # Output
     /// It returns the sum `self` + `rhs` if overflow did not occur.
@@ -4185,16 +4863,28 @@ where T: Uint + Copy + Clone + Display + Debug + ToString
     /// It is just experimental for Big Endian CPUs. So, you are not encouraged
     /// to use it for Big Endian CPUs for serious purpose. Only use this crate
     /// for Big-endian CPUs with your own full responsibility.
-    pub fn saturating_mul_uint(&self, rhs: T) -> Self
+    pub fn saturating_mul_uint<U>(&self, rhs: U) -> Self
+    where U: Uint + Copy + Clone + Display + Debug + ToString
+            + Add<Output=U> + AddAssign + Sub<Output=U> + SubAssign
+            + Mul<Output=U> + MulAssign + Div<Output=U> + DivAssign
+            + Rem<Output=U> + RemAssign
+            + Shl<Output=U> + ShlAssign + Shr<Output=U> + ShrAssign
+            + BitAnd<Output=U> + BitAndAssign + BitOr<Output=U> + BitOrAssign
+            + BitXor<Output=U> + BitXorAssign + Not<Output=U>
+            + PartialEq + PartialOrd
     {
         let mut res = self.clone();
         res.saturating_mul_assign_uint(rhs);
         res
     }
 
-    // pub fn saturating_mul_assign(&mut self, rhs: T)
+    // pub fn saturating_mul_assign_uint<U>(&mut self, rhs: U)
     /// Computes `self` * `rhs`, saturating at the numeric bounds
     /// instead of overflowing, and assigns the result to `self` back.
+    /// 
+    /// # Panics
+    /// If size_of::<T>() * N <= 128, some methods may panic or its behavior may
+    /// undefined though it may not panic.
     /// 
     /// # Example
     /// ```
@@ -4205,7 +4895,15 @@ where T: Uint + Copy + Clone + Display + Debug + ToString
     /// It is just experimental for Big Endian CPUs. So, you are not encouraged
     /// to use it for Big Endian CPUs for serious purpose. Only use this crate
     /// for Big-endian CPUs with your own full responsibility.
-    pub fn saturating_mul_assign_uint(&mut self, rhs: T)
+    pub fn saturating_mul_assign_uint<U>(&mut self, rhs: U)
+    where U: Uint + Copy + Clone + Display + Debug + ToString
+            + Add<Output=U> + AddAssign + Sub<Output=U> + SubAssign
+            + Mul<Output=U> + MulAssign + Div<Output=U> + DivAssign
+            + Rem<Output=U> + RemAssign
+            + Shl<Output=U> + ShlAssign + Shr<Output=U> + ShrAssign
+            + BitAnd<Output=U> + BitAndAssign + BitOr<Output=U> + BitOrAssign
+            + BitXor<Output=U> + BitXorAssign + Not<Output=U>
+            + PartialEq + PartialOrd
     {
         if self.overflowing_mul_assign_uint(rhs)
             { self.set_max(); }
@@ -4214,8 +4912,12 @@ where T: Uint + Copy + Clone + Display + Debug + ToString
 
     /*** Division ***/
 
-    // pub fn divide_fully_uint(&self, rhs: T) -> (Self, T)
+    // pub fn divide_fully_uint<U>t(&self, rhs: U) -> (Self, T)
     /// Divide `BigUInt<T, N>` by `rhs` so as to get quotient and remainder
+    /// 
+    /// # Panics
+    /// If size_of::<T>() * N <= 128, some methods may panic or its behavior may
+    /// undefined though it may not panic.
     /// 
     /// # Output
     /// It returns tuple of quotient and remainder. quotient is `Self` type
@@ -4235,30 +4937,134 @@ where T: Uint + Copy + Clone + Display + Debug + ToString
     /// let dividend = u256::from_str("1234567890157589425462369896").unwrap();
     /// let (quotient, remainder) = dividend.divide_fully_uint(87_u128);
     /// ```
-    pub fn divide_fully_uint(&self, rhs: T) -> (Self, T)
+    pub fn divide_fully_uint<U>(&self, rhs: U) -> (Self, U)
+    where U: Uint + Copy + Clone + Display + Debug + ToString
+            + Add<Output=U> + AddAssign + Sub<Output=U> + SubAssign
+            + Mul<Output=U> + MulAssign + Div<Output=U> + DivAssign
+            + Rem<Output=U> + RemAssign
+            + Shl<Output=U> + ShlAssign + Shr<Output=U> + ShrAssign
+            + BitAnd<Output=U> + BitAndAssign + BitOr<Output=U> + BitOrAssign
+            + BitXor<Output=U> + BitXorAssign + Not<Output=U>
+            + PartialEq + PartialOrd
     {
+        let trhs: T;
+        if rhs.length_in_bytes() > T::size_in_bytes()
+        {
+            let (q, r) = self.divide_fully(&Self::from_uint(rhs));
+            match U::size_in_bytes()
+            {
+                2 => {
+                    let mut rr = ShortUnion::new();
+                    for i in 0..2
+                    {
+                        rr.set_ubyte_(i, r.get_num_(i).into_u8());
+                    }
+                    return (q, U::u16_as_Uint(rr.get()));
+                },
+                4 => {
+                    let mut rr = IntUnion::new();
+                    match T::size_in_bytes()
+                    {
+                        1 => {
+                            for i in 0..4
+                            {
+                                rr.set_ubyte_(i, r.get_num_(i).into_u8());
+                            }
+                        },
+                        _ => {
+                            for i in 0..2
+                            {
+                                rr.set_ushort_(i, r.get_num_(i).into_u16());
+                            }
+                        },
+                    }
+                    return (q, U::u32_as_Uint(rr.get()));
+                },
+                8 => {
+                    let mut rr = LongUnion::new();
+                    match T::size_in_bytes()
+                    {
+                        1 => {
+                            for i in 0..8
+                            {
+                                rr.set_ubyte_(i, r.get_num_(i).into_u8());
+                            }
+                        },
+                        2 => {
+                            for i in 0..4
+                            {
+                                rr.set_ushort_(i, r.get_num_(i).into_u16());
+                            }
+                        },
+                        _ => {
+                            for i in 0..2
+                            {
+                                rr.set_uint_(i, r.get_num_(i).into_u32());
+                            }
+                        },
+                    }
+                    return (q, U::u64_as_Uint(rr.get()));
+                },
+                _ => {
+                    let mut rr = LongerUnion::new();
+                    match T::size_in_bytes()
+                    {
+                        1 => {
+                            for i in 0..16
+                            {
+                                rr.set_ubyte_(i, r.get_num_(i).into_u8());
+                            }
+                        },
+                        2 => {
+                            for i in 0..8
+                            {
+                                rr.set_ushort_(i, r.get_num_(i).into_u16());
+                            }
+                        },
+                        4 => {
+                            for i in 0..4
+                            {
+                                rr.set_uint_(i, r.get_num_(i).into_u32());
+                            }
+                        },
+                        _ => {
+                            for i in 0..2
+                            {
+                                rr.set_ulong_(i, r.get_num_(i).into_u64());
+                            }
+                        },
+                    }
+                    return (q, U::u128_as_Uint(rr.get()));
+                }
+            }
+        }
+        else    // if rhs.length_in_bytes() <= T::size_in_bytes()
+        {
+            trhs = T::num::<U>(rhs);
+        }
         let mut quotient = Self::zero();
-        let zero = T::zero();
+        let tzero = T::zero();
+        let uzero = U::zero();
         if self.is_zero()
         {
-            return (quotient, zero);
+            return (quotient, uzero);
         }
-        if rhs == zero
+        if rhs == uzero
         {
             quotient.set_max();
             quotient.set_infinity();
             quotient.set_divided_by_zero();
             quotient.set_overflow();
-            return (quotient, zero);
+            return (quotient, uzero);
         }
         if self.lt_uint(rhs)
         {
-            return (quotient, self.get_num_(0));
+            return (quotient, U::num(self.get_num_(0)));
         }
         else if self.eq_uint(rhs)
         {
             quotient.set_uint(T::one());
-            return (quotient, zero);
+            return (quotient, uzero);
         }
 
         let mut adder = Self::zero();
@@ -4275,7 +5081,7 @@ where T: Uint + Copy + Clone + Display + Debug + ToString
             low = 0;
             if high == 0
             {
-                return (quotient.clone(), self.wrapping_sub(&quotient.wrapping_mul_uint(rhs)).get_num_(0));
+                return (quotient.clone(), U::num(self.wrapping_sub(&quotient.wrapping_mul_uint(rhs)).get_num_(0)));
             }
             else    // if high > 0
             {
@@ -4312,7 +5118,7 @@ where T: Uint + Copy + Clone + Display + Debug + ToString
                     }
                     else    // if res == *self
                     {
-                        return (quotient + adder, zero);
+                        return (quotient + adder, uzero);
                     }
                 }
             }
@@ -4544,7 +5350,7 @@ where T: Uint + Copy + Clone + Display + Debug + ToString
     /// use Cryptocol::define_utypes_with;
     /// define_utypes_with!(u128);
     /// let a = u256::from_str("10000000000000000000000000000000000").unwrap();
-    /// let rem = a.rem_uint(35_u128);
+    /// let rem = a.wrapping_rem_uint(35_u128);
     /// println!("rem = {}", rem);
     /// ```
     /// 
@@ -4772,6 +5578,86 @@ where T: Uint + Copy + Clone + Display + Debug + ToString
             { self.set_divided_by_zero(); }
     }
 
+    // pub fn next_multiple_of_uint<U>(&self, rhs: U) -> Self
+    /// Calculates the smallest value greater than or equal to `self` that is
+    /// a multiple of `rhs`.
+    /// 
+    /// # Panics
+    /// - This function will panic if rhs is zero.
+    /// - If size_of::<T>() * N <= 128, This method may panic or its behavior may
+    /// undefined though it may not panic.
+    /// 
+    /// # Output
+    /// It returns the smallest value greater than or equal to self that is
+    /// a multiple of `rhs`. However, if overflow occurs, it returns the value
+    /// wrapped around.
+    /// 
+    /// # Example
+    /// ```
+    /// // Todo
+    /// ```
+    pub fn next_multiple_of_uint<U>(&self, rhs: U) -> Self
+    where U: Uint + Copy + Clone + Display + Debug + ToString
+            + Add<Output=U> + AddAssign + Sub<Output=U> + SubAssign
+            + Mul<Output=U> + MulAssign + Div<Output=U> + DivAssign
+            + Rem<Output=U> + RemAssign
+            + Shl<Output=U> + ShlAssign + Shr<Output=U> + ShrAssign
+            + BitAnd<Output=U> + BitAndAssign + BitOr<Output=U> + BitOrAssign
+            + BitXor<Output=U> + BitXorAssign + Not<Output=U>
+            + PartialEq + PartialOrd
+    {
+        let mut res = self.clone();
+        res.next_multiple_of_assign_uint(rhs);
+        res
+    }
+
+    // pub fn next_multiple_of_assign_uint<U>(&mut self, rhs: U)
+    /// Calculates the smallest value greater than or equal to `self` that is
+    /// a multiple of `rhs`, and assigns the result to `self` back.
+    /// 
+    /// # Panics
+    /// - This function will panic if rhs is zero.
+    /// - If size_of::<T>() * N <= 128, This method may panic or its behavior may
+    /// undefined though it may not panic.
+    /// 
+    /// # Feature
+    /// `self` will be the smallest value greater than or equal to self that is
+    /// a multiple of `rhs`. However, if overflow occurs, `self` will be the
+    /// value wrapped around.
+    /// 
+    /// # Example
+    /// ```
+    /// // Todo
+    /// ```
+    pub fn next_multiple_of_assign_uint<U>(&mut self, rhs: U)
+    where U: Uint + Copy + Clone + Display + Debug + ToString
+            + Add<Output=U> + AddAssign + Sub<Output=U> + SubAssign
+            + Mul<Output=U> + MulAssign + Div<Output=U> + DivAssign
+            + Rem<Output=U> + RemAssign
+            + Shl<Output=U> + ShlAssign + Shr<Output=U> + ShrAssign
+            + BitAnd<Output=U> + BitAndAssign + BitOr<Output=U> + BitOrAssign
+            + BitXor<Output=U> + BitXorAssign + Not<Output=U>
+            + PartialEq + PartialOrd
+    {
+        if rhs == U::zero()
+            { panic!(); }
+
+        if U::size_in_bytes() > T::size_in_bytes()
+        {
+            self.next_multiple_of_assign(&Self::from_uint(rhs));
+        }
+        else
+        {
+            let trhs = T::num(rhs);
+            let r = self.wrapping_rem_uint(trhs);
+            if r != T::zero()
+            {
+                self.wrapping_add_assign_uint(trhs - r);
+            }
+        }
+    }
+
+    
 
 
     /***** METHODS FOR EXPONENTIATION AND LOGARITHM WITH UNSIGNED INTEGERS *****/
@@ -4779,6 +5665,10 @@ where T: Uint + Copy + Clone + Display + Debug + ToString
     // pub fn pow_uint<U>(&self, exp: U) -> Self
     /// Raises `BigUInt` type number to the power of exp, using exponentiation
     /// of type `BigUInt` by squaring. The type `U` has the trait `Uint`.
+    /// 
+    /// # Panics
+    /// If size_of::<T>() * N <= 128, some methods may panic or its behavior may
+    /// undefined though it may not panic.
     /// 
     /// # Output
     /// It returns the result of `self` raised to the power of `exp`.
@@ -4824,10 +5714,14 @@ where T: Uint + Copy + Clone + Display + Debug + ToString
         self.wrapping_pow_uint(exp)
     }
 
-    // pub fn pow_assign_uint(&mut self, rhs: T)
+    // pub fn pow_assign_uint<U>(&mut self, exp: U)
     /// Raises `BigUInt` type number to the power of exp,
     /// using exponentiation of primitive unsigned integer type by squaring,
     /// and assign the result to `self` back.
+    /// 
+    /// # Panics
+    /// If size_of::<T>() * N <= 128, some methods may panic or its behavior may
+    /// undefined though it may not panic.
     /// 
     /// # Argument
     /// The argument `exp` is the primitive unsigned integer type.
@@ -4877,6 +5771,10 @@ where T: Uint + Copy + Clone + Display + Debug + ToString
     /// of type `BigUInt` by squaring, wrapping around at the boundary of the
     /// type. The type `U` has the trait `Uint`.
     /// 
+    /// # Panics
+    /// If size_of::<T>() * N <= 128, some methods may panic or its behavior may
+    /// undefined though it may not panic.
+    /// 
     /// # Output
     /// It returns the result of `self` raised to the power of `exp`.
     /// 
@@ -4925,10 +5823,14 @@ where T: Uint + Copy + Clone + Display + Debug + ToString
         res
     }
 
-    // pub fn wrapping_pow_assign_uint(&mut self, rhs: T)
-    /// Raises `BigUInt` type number to the power of exp, using exponentiation
+    // pub fn wrapping_pow_assign_uint<U>(&mut self, exp: U)
+    /// Raises `BigUInt` type number to the power of `exp`, using exponentiation
     /// of primitive unsigned integer type by squaring, wrapping around at the
     /// boundary of the type, and assign the result to `self` back.
+    /// 
+    /// # Panics
+    /// If size_of::<T>() * N <= 128, some methods may panic or its behavior may
+    /// undefined though it may not panic.
     /// 
     /// # Argument
     /// The argument `exp` is the primitive unsigned integer type.
@@ -4950,7 +5852,7 @@ where T: Uint + Copy + Clone + Display + Debug + ToString
     /// let mut exp = u256::from_uint(34_u8);
     /// 
     /// // normal exponentiation
-    /// a.wrapping_pow_assign(exp);
+    /// a.wrapping_pow_assign(&exp);
     /// println!("234 ** 34 = {}", a);
     /// assert_eq!(a.to_string(), "101771369680718065636717400052436696519017873276976456689251925337442881634304");
     /// 
@@ -4958,7 +5860,7 @@ where T: Uint + Copy + Clone + Display + Debug + ToString
     /// let old = a.clone();
     /// a = u256::from_uint(234_u8);
     /// exp += 1;
-    /// a.wrapping_pow_assign(exp);
+    /// a.wrapping_pow_assign(&exp);
     /// println!("234 ** 35 = {}", a);
     /// assert_eq!(a.to_string(), "77122211638207297159819685489165875529835490356175237196145807339442726240256");
     /// 
@@ -5001,6 +5903,111 @@ where T: Uint + Copy + Clone + Display + Debug + ToString
     }
 
 
+    // pub fn ilog_uint<U>(&self, base: U) -> Self
+    /// Calculates the logarithm of the number with respect to a `base`.
+    /// 
+    /// # Panics
+    /// If size_of::<T>() * N <= 128, some methods may panic or its behavior may
+    /// undefined though it may not panic.
+    /// 
+    /// # Output
+    /// It returns the logarithm of the number with respect to an arbitrary
+    /// `base`, rounded down.
+    /// 
+    /// # Counterpart Methods
+    /// This method might not be optimized owing to implementation details;
+    /// `ilog2()` can produce results more efficiently for base 2,
+    /// and `ilog10()` can produce results more efficiently for base 10.
+    /// 
+    /// # Panics
+    /// This function will panic if `self` is zero, or if `base` is less than 2.
+    /// 
+    /// # Example
+    /// ```
+    /// // Todo
+    /// ```
+    pub fn ilog_uint<U>(&self, base: U) -> Self
+    where U: Uint + Copy + Clone + Display + Debug + ToString
+            + Add<Output=U> + AddAssign + Sub<Output=U> + SubAssign
+            + Mul<Output=U> + MulAssign + Div<Output=U> + DivAssign
+            + Rem<Output=U> + RemAssign
+            + Shl<Output=U> + ShlAssign + Shr<Output=U> + ShrAssign
+            + BitAnd<Output=U> + BitAndAssign + BitOr<Output=U> + BitOrAssign
+            + BitXor<Output=U> + BitXorAssign + Not<Output=U>
+            + PartialEq + PartialOrd
+    {
+        if self.is_zero() || (base <= U::one())
+            { panic!() }
+        let mut count = 0_usize;
+        let mut quotient = self.clone();
+        quotient.wrapping_div_assign_uint(T::num::<U>(base));
+        while !quotient.is_zero()
+        {
+            count += 1;
+            quotient.wrapping_div_assign_uint(T::num::<U>(base))
+        }
+        Self::from_uint(count)
+    }
+
+    // pub fn checked_ilog_uint<U>(&self, base: U) -> Option<Self>
+    /// Calculates the logarithm of the number with respect to a `base`.
+    /// 
+    /// # Panics
+    /// If size_of::<T>() * N <= 128, some methods may panic or its behavior may
+    /// undefined though it may not panic.
+    /// 
+    /// # Output
+    /// It returns the logarithm of the number with respect to an arbitrary
+    /// `base`, rounded down, wrapped by `Some` of enum `Option`.
+    /// It returns `None` if `self` is zero, or if `base` is less than 2.
+    /// 
+    /// # Counterpart Methods
+    /// This method might not be optimized owing to implementation details;
+    /// `checked_ilog2()` can produce results more efficiently for base 2,
+    /// and `checked_ilog10` can produce results more efficiently for base 10.
+    /// 
+    /// # Example
+    /// ```
+    /// // Todo
+    /// ```
+    pub fn checked_ilog_uint<U>(&self, base: U) -> Option<Self>
+    where U: Uint + Copy + Clone + Display + Debug + ToString
+            + Add<Output=U> + AddAssign + Sub<Output=U> + SubAssign
+            + Mul<Output=U> + MulAssign + Div<Output=U> + DivAssign
+            + Rem<Output=U> + RemAssign
+            + Shl<Output=U> + ShlAssign + Shr<Output=U> + ShrAssign
+            + BitAnd<Output=U> + BitAndAssign + BitOr<Output=U> + BitOrAssign
+            + BitXor<Output=U> + BitXorAssign + Not<Output=U>
+            + PartialEq + PartialOrd
+    {
+        if self.is_zero() || (base <= U::one())
+            { return None }
+        let mut count = 0_usize;
+        let mut quotient = self.clone();
+        quotient.wrapping_div_assign_uint(T::num::<U>(base));
+        while !quotient.is_zero()
+        {
+            count += 1;
+            quotient.wrapping_div_assign_uint(T::num::<U>(base))
+        }
+        Some(Self::from_uint(count))
+    }
+
+    // pub fn overflowing_pow_uint() -> (Self, bool)
+    // pub fn overflowing_pow_assign_uint() -> bool
+    // pub fn checked_pow_uint() -> Option<Self>
+    // pub fn unchecked_pow_uint() -> Self
+    // pub fn saturating_pow_uint() -> Self
+    // pub fn saturating_pow_assign_uint()
+
+    // pub fn wrapping_pow_uint() -> Self
+    // pub fn wrapping_pow_assign_uint()
+    // pub fn overflowing_pow_uint() -> (Self, bool)
+    // pub fn overflowing_pow_assign_uint() -> bool
+    // pub fn checked_pow_uint() -> Option<Self>
+    // pub fn unchecked_pow_uint() -> Self
+    // pub fn saturating_pow_uint() -> Self
+    // pub fn saturating_pow_assign_uint()
 
     /***** ARITHMATIC OPERATIONS WITH BigUInt *****/
 
@@ -6976,6 +7983,154 @@ where T: Uint + Copy + Clone + Display + Debug + ToString
     }
 
 
+    // pub fn next_multiple_of(&self, rhs: &Self) -> Self
+    /// Calculates the smallest value greater than or equal to `self` that is
+    /// a multiple of `rhs`.
+    /// 
+    /// # Panics
+    /// - This function will panic if rhs is zero.
+    /// - If size_of::<T>() * N <= 128, This method may panic or its behavior may
+    /// undefined though it may not panic.
+    /// 
+    /// # Output
+    /// It returns the smallest value greater than or equal to self that is
+    /// a multiple of `rhs`. However, if overflow occurs, it returns the value
+    /// wrapped around.
+    /// 
+    /// # Example
+    /// ```
+    /// // Todo
+    /// ```
+    pub fn next_multiple_of(&self, rhs: &Self) -> Self
+    {
+        let mut res = self.clone();
+        res.next_multiple_of_assign(&rhs);
+        res
+    }
+
+    // pub fn next_multiple_of_assign(&mut self, rhs: &Self)
+    /// Calculates the smallest value greater than or equal to `self` that is
+    /// a multiple of `rhs`, and assigns the result to `self` back.
+    /// 
+    /// # Panics
+    /// - This function will panic if rhs is zero.
+    /// - If size_of::<T>() * N <= 128, This method may panic or its behavior may
+    /// undefined though it may not panic.
+    /// 
+    /// # Feature
+    /// `self` will be the smallest value greater than or equal to self that is
+    /// a multiple of `rhs`. However, if overflow occurs, `self` will be the
+    /// value wrapped around.
+    /// 
+    /// # Example
+    /// ```
+    /// // Todo
+    /// ```
+    pub fn next_multiple_of_assign(&mut self, rhs: &Self)
+    {
+        if rhs.is_zero()
+            { panic!(); }
+
+        let r = self.wrapping_rem(rhs);
+        if !r.is_zero()
+        {
+            self.wrapping_add_assign(&rhs.wrapping_sub(&r));
+        }
+    }
+
+    // pub fn next_power_of_two(&self) -> Self
+    /// Returns the smallest power of two greater than or equal to `self`.
+    /// 
+    /// # Output
+    /// It returns the smallest power of two greater than or equal to `self`.
+    /// 
+    /// # Feature
+    /// When return value overflows (i.e., self > (1 << (size_of::<T>() * N - 1))),
+    /// it returns value wrapped around.
+    /// 
+    /// # Example
+    /// ```
+    /// // Todo
+    /// ```
+    pub fn next_power_of_two(&self) -> Self
+    {
+        let mut res = self.clone();
+        res.next_power_of_two_assign();
+        res
+    }
+
+    // pub fn next_power_of_two_assign(&mut self)
+    /// Finds the smallest power of two greater than or equal to `self`,
+    /// and returns the result to `self` back.
+    /// 
+    /// # Feature
+    /// When the result overflows
+    /// (i.e., self > (1 << (size_of::<T>() * N - 1))),
+    /// it `self` will be the value wrapped around.
+    /// 
+    /// # Example
+    /// ```
+    /// // Todo
+    /// ```
+    pub fn next_power_of_two_assign(&mut self)
+    {
+        if !self.is_power_of_two()
+        {
+            let bit_pos = Self::size_in_bits() - 1 - self.leading_zeros() as usize;
+            self.turn_check_bits(bit_pos);
+            self.shift_left(1_u8);
+        }
+    }
+
+    // pub fn is_power_of_two(&self) -> bool
+    /// Returns true if and only if self == 2 ** k for some k.
+    /// 
+    /// # Example
+    /// ```
+    /// // Todo
+    /// ```
+    #[inline]
+    pub fn is_power_of_two(&self) -> bool
+    {
+        self.count_ones() == 1
+    }
+
+    // pub fn midpoint(&self, rhs: &Self) -> Self
+    /// Calculates the middle point of `self` and `rhs`.
+    /// 
+    /// # Feature
+    /// midpoint(&a, &b) is (a + b) >> 1 as if it were performed in
+    /// a sufficiently-large signed integral type.
+    /// 
+    /// This implies that the result is always rounded towards negative infinity
+    /// and that no overflow will ever occur.
+    /// 
+    /// # Example
+    /// ```
+    /// // Todo
+    /// ```
+    #[inline]
+    pub fn midpoint(&self, rhs: &Self) -> Self
+    {
+        self.wrapping_add(&rhs) >> 1
+    }
+
+    pub fn gcd(&self, other: &Self) -> Self
+    {
+        if self.is_zero() || other.is_zero()
+            { panic!(); }
+        let mut x = self.clone();
+        let mut y = Self::from_biguint(other);
+        let mut t: Self;
+        while !y.is_zero()
+        {
+            t = y.clone();
+            y = x.wrapping_rem(&y);
+            x = t;
+        }
+        x
+     }
+
 
 
     /***** METHODS FOR EXPONENTIATION AND LOGARITHM *****/
@@ -7106,13 +8261,13 @@ where T: Uint + Copy + Clone + Display + Debug + ToString
     /// let mut exp = u256::from_uint(34_u8);
     /// 
     /// // normal exponentiation
-    /// let b = a.wrapping_pow(exp);
+    /// let b = a.wrapping_pow(&exp);
     /// println!("234 ** 34 = {}", b);
     /// assert_eq!(b.to_string(), "101771369680718065636717400052436696519017873276976456689251925337442881634304");
     /// 
     /// // wrapping (modular) exponentiation
     /// exp += 1;
-    /// let c = a.wrapping_pow(exp);
+    /// let c = a.wrapping_pow(&exp);
     /// println!("234 ** 35 = {}", c);
     /// assert_eq!(c.to_string(), "77122211638207297159819685489165875529835490356175237196145807339442726240256");
     /// 
@@ -7253,9 +8408,8 @@ where T: Uint + Copy + Clone + Display + Debug + ToString
     /// exponentiation along with a bool indicating whether an overflow happened.
     /// 
     /// # Output
-    /// It returns a tuple of the exponentiation along with a bool indicating
-    /// whether an overflow happened. It returns `true` if overflow happened.
-    /// Otherwise, it returns `false`.
+    /// It returns bool indicating whether an overflow happened.
+    /// It returns `true` if overflow happened. Otherwise, it returns `false`.
     /// 
     /// # Argument
     /// The argument `exp` is the type `BigUInt`.
@@ -7335,13 +8489,13 @@ where T: Uint + Copy + Clone + Display + Debug + ToString
     /// 
     /// // normal exponentiation
     /// let b = a.checked_pow(&exp);
-    /// println!("234 ** 34 = {}", b.unwrap());
+    /// println!("234 ** 34 = {}", b.as_ref().unwrap());
     /// assert_eq!(b.unwrap().to_string(), "101771369680718065636717400052436696519017873276976456689251925337442881634304");
     /// 
     /// // wrapping (modular) exponentiation
     /// exp += 1;
     /// let c = a.checked_pow(&exp);
-    /// println!("234 ** 35 = {}", c.unwrap());
+    /// println!("234 ** 35 = {}", c.as_ref().unwrap());
     /// assert_eq!(c, None);
     /// ```
     pub fn checked_pow(&self, exp: &Self) -> Option<Self>
@@ -7349,13 +8503,167 @@ where T: Uint + Copy + Clone + Display + Debug + ToString
         let mut res = self.clone();
         let overflow = res.overflowing_pow_assign(exp);
         if overflow
-            { Some(res) }
-        else
             { None }
+        else
+            { Some(res) }
     }
 
+    #[inline]
+    pub fn unchecked_pow(&self, exp: &Self) -> Self
+    {
+        self.checked_pow(&exp).unwrap()
+    }
 
+    pub fn saturating_pow(&self, exp: &Self) -> Self
+    {
+        let mut res = self.clone();
+        res.saturating_pow_assign(exp);
+        res
+    }
 
+    pub fn saturating_pow_assign(&mut self, exp: &Self)
+    {
+        if self.overflowing_pow_assign(&exp)
+            { self.set_max(); }
+    }
+
+    // pub fn ilog(&self, base: Self) -> Self
+    /// Calculates the logarithm of the number with respect to a `base`.
+    /// 
+    /// # Output
+    /// It returns the logarithm of the number with respect to an arbitrary
+    /// `base`, rounded down.
+    /// 
+    /// # Counterpart Methods
+    /// This method might not be optimized owing to implementation details;
+    /// `ilog2()` can produce results more efficiently for base 2,
+    /// and `ilog10` can produce results more efficiently for base 10.
+    /// 
+    /// # Panics
+    /// This function will panic if `self` is zero, or if `base` is less than 2.
+    /// 
+    /// # Example
+    /// ```
+    /// // Todo
+    /// ```
+    pub fn ilog(&self, base: Self) -> Self
+    {
+        if self.is_zero() || (base < Self::from_uint(2_u8))
+            { panic!() }
+        let mut count = 0_usize;
+        let mut quotient = self.clone();
+        quotient.wrapping_div_assign(&base);
+        while !quotient.is_zero()
+        {
+            count += 1;
+            quotient.wrapping_div_assign(&base)
+        }
+        Self::from_uint(count)
+    }
+
+    // pub fn ilog2(&self) -> Self
+    /// Calculates Returns the base 2 logarithm of the number.
+    /// 
+    /// # Output
+    /// It returns the base 2 logarithm of the number, rounded down.
+    /// 
+    /// # Panics
+    /// This function will panic if `self` is zero.
+    /// 
+    /// # Example
+    /// ```
+    /// use Cryptocol::define_utypes_with;
+    /// define_utypes_with!(u128);
+    /// 
+    /// let a = u256::from_uint(2_u8);
+    /// let b = a.ilog2();
+    /// println!("log_2(2) = {}", b);
+    /// assert_eq!(b, u256::from_uint(1_u8));
+    /// ```
+    pub fn ilog2(&self) -> Self
+    {
+        if self.is_zero()
+            { panic!() }
+        Self::from_uint(self.length_in_bits() - self.leading_zeros() as usize - 1)
+    }
+
+    #[inline]
+    pub fn ilog10(&self) -> Self
+    {
+        self.ilog_uint(10_u8)
+    }
+
+    // pub fn checked_ilog(&self, base: Self) -> Self
+    /// Calculates the logarithm of the number with respect to a `base`.
+    /// 
+    /// # Output
+    /// It returns the logarithm of the number with respect to an arbitrary
+    /// `base`, rounded down, wrapped by `Some` of enum `Option`.
+    /// It returns `None` if `self` is zero, or if `base` is less than 2.
+    /// 
+    /// # Counterpart Methods
+    /// This method might not be optimized owing to implementation details;
+    /// `checked_ilog2()` can produce results more efficiently for base 2,
+    /// and `checked_ilog10` can produce results more efficiently for base 10.
+    /// 
+    /// # Example
+    /// ```
+    /// // Todo
+    /// ```
+    pub fn checked_ilog(&self, base: Self) -> Option<Self>
+    {
+        if self.is_zero() || (base < Self::from_uint(2_u8))
+            { return None; }
+        let mut count = 0_usize;
+        let mut quotient = self.clone();
+        quotient.wrapping_div_assign(&base);
+        while !quotient.is_zero()
+        {
+            count += 1;
+            quotient.wrapping_div_assign(&base)
+        }
+        Some(Self::from_uint(count))
+    }
+
+    // pub fn checked_ilog2(&self) -> Self
+    /// Calculates Returns the base 2 logarithm of the number.
+    /// 
+    /// # Output
+    /// It returns the base 2 logarithm of the number, rounded down,
+    /// wrapped by `Some` of enum `Option`. It returns `None` if `self` is zero.
+    /// 
+    /// # Example
+    /// ```
+    /// use Cryptocol::number::*;
+    /// use Cryptocol::define_utypes_with;
+    /// define_utypes_with!(u128);
+    /// 
+    /// let a = u256::from_uint(2_u8);
+    /// let b = a.ilog2();
+    /// println!("log_2(2) = {}", b);
+    /// assert_eq!(b, u256::from_uint(1_u8));
+    /// ```
+    pub fn checked_ilog2(&self) -> Option<Self>
+    {
+        if self.is_zero()
+            { return None; }
+        Some(Self::from_uint(self.length_in_bits() - self.leading_zeros() as usize - 1))
+    }
+
+    #[inline]
+    pub fn checked_ilog10(&self) -> Option<Self>
+    {
+        self.checked_ilog_uint(10_u8)
+    }
+
+    // pub fn wrapping_pow() -> Self
+    // pub fn wrapping_pow_assign()
+    // pub fn overflowing_pow() -> (Self, bool)
+    // pub fn overflowing_pow_assign() -> bool
+    // pub fn checked_pow() -> Option<Self>
+    // pub fn unchecked_pow() -> Self
+    // pub fn saturating_pow() -> Self
+    // pub fn saturating_pow_assign()
 
 
     /***** METHODS FOR BIT OPERATION *****/
@@ -7671,9 +8979,9 @@ where T: Uint + Copy + Clone + Display + Debug + ToString
     /// let b = u256::from_str_radix("11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000", 2).unwrap();
     /// let c = a.and(&b);
     /// 
-    /// println!("a = {}", a.to_string_with_radix(2));
-    /// println!("b = {}", b.to_string_with_radix(2));
-    /// println!("a & b = {}", c.to_string_with_radix(2));
+    /// println!("a = {}", a.to_string_with_radix(2).unwrap());
+    /// println!("b = {}", b.to_string_with_radix(2).unwrap());
+    /// println!("a & b = {}", c.to_string_with_radix(2).unwrap());
     /// 
     /// assert_eq!(c, a & b);
     /// ```
@@ -7689,9 +8997,9 @@ where T: Uint + Copy + Clone + Display + Debug + ToString
     /// let b = u256::zero();
     /// let c = a.and(&b);
     /// 
-    /// println!("a = {}", a.to_string_with_radix(2));
-    /// println!("b = {}", b.to_string_with_radix(2));
-    /// println!("a & b = {}", c.to_string_with_radix(2));
+    /// println!("a = {}", a.to_string_with_radix(2).unwrap());
+    /// println!("b = {}", b.to_string_with_radix(2).unwrap());
+    /// println!("a & b = {}", c.to_string_with_radix(2).unwrap());
     /// 
     /// assert_eq!(c, a & b);
     /// ```
@@ -7717,7 +9025,7 @@ where T: Uint + Copy + Clone + Display + Debug + ToString
     /// let b = u256::from_str_radix("11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000", 2).unwrap();
     /// a.and_assign(&b);
     /// 
-    /// println!("a = {}", a.to_string_with_radix(2));
+    /// println!("a = {}", a.to_string_with_radix(2).unwrap());
     /// 
     /// assert_eq!(a, u256::from_str_radix("1111000000000000110000000000001110001000000100011010101000000000111100000000000011000000000000111000100000010001101010100000000011110000000000001100000000000011100010000001000110101010000000001111000000000000110000000000001110001000000100011010101000000000", 2).unwrap());
     /// ```
@@ -7733,7 +9041,7 @@ where T: Uint + Copy + Clone + Display + Debug + ToString
     /// let b = u256::zero();
     /// a.and_assign(&b);
     /// 
-    /// println!("a = {}", a.to_string_with_radix(2));
+    /// println!("a = {}", a.to_string_with_radix(2).unwrap());
     /// 
     /// assert_eq!(a, u256::zero());
     /// ```
@@ -7755,7 +9063,6 @@ where T: Uint + Copy + Clone + Display + Debug + ToString
     /// 
     /// # Example 1
     /// ```
-    /// use Cryptocol::number::HugeInteger;
     /// use Cryptocol::define_utypes_with;
     /// 
     /// define_utypes_with!(u128);
@@ -7764,9 +9071,9 @@ where T: Uint + Copy + Clone + Display + Debug + ToString
     /// let b = u256::from_str_radix("11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000", 2).unwrap();
     /// let c = a.or(&b);
     /// 
-    /// println!("a = {}", a.to_string_with_radix(2));
-    /// println!("b = {}", b.to_string_with_radix(2));
-    /// println!("a | b = {}", c.to_string_with_radix(2));
+    /// println!("a = {}", a.to_string_with_radix(2).unwrap());
+    /// println!("b = {}", b.to_string_with_radix(2).unwrap());
+    /// println!("a | b = {}", c.to_string_with_radix(2).unwrap());
     /// 
     /// assert_eq!(c, a.or(&b));
     /// ```
@@ -7782,9 +9089,9 @@ where T: Uint + Copy + Clone + Display + Debug + ToString
     /// let b = u256::max();
     /// let c = a.or(&b);
     /// 
-    /// println!("a = {}", a.to_string_with_radix(2));
-    /// println!("b = {}", b.to_string_with_radix(2));
-    /// println!("a | b = {}", c.to_string_with_radix(2));
+    /// println!("a = {}", a.to_string_with_radix(2).unwrap());
+    /// println!("b = {}", b.to_string_with_radix(2).unwrap());
+    /// println!("a | b = {}", c.to_string_with_radix(2).unwrap());
     /// 
     /// assert_eq!(c, u256::max());
     /// ```
@@ -7810,7 +9117,7 @@ where T: Uint + Copy + Clone + Display + Debug + ToString
     /// let b = u256::from_str_radix("11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000", 2).unwrap();
     /// a.or_assign(&b);
     /// 
-    /// println!("a = {}", a.to_string_with_radix(2));
+    /// println!("a = {}", a.to_string_with_radix(2).unwrap());
     /// 
     /// assert_eq!(a, u256::from_str_radix("1111111100001111111111000011111111101110011101111111111101010101111111110000111111111100001111111110111001110111111111110101010111111111000011111111110000111111111011100111011111111111010101011111111100001111111111000011111111101110011101111111111101010101", 2).unwrap());
     /// ```
@@ -7826,7 +9133,7 @@ where T: Uint + Copy + Clone + Display + Debug + ToString
     /// let b = u256::max();
     /// a.or_assign(&b);
     /// 
-    /// println!("a = {}", a.to_string_with_radix(2));
+    /// println!("a = {}", a.to_string_with_radix(2).unwrap());
     /// 
     /// assert_eq!(a, u256::max());
     /// ```
@@ -7849,7 +9156,6 @@ where T: Uint + Copy + Clone + Display + Debug + ToString
     /// 
     /// # Example 1
     /// ```
-    /// use Cryptocol::number::HugeInteger;
     /// use Cryptocol::define_utypes_with;
     /// 
     /// define_utypes_with!(u128);
@@ -7858,9 +9164,9 @@ where T: Uint + Copy + Clone + Display + Debug + ToString
     /// let b = u256::from_str_radix("11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000", 2).unwrap();
     /// let c = a.xor(&b);
     /// 
-    /// println!("a = {}", a.to_string_with_radix(2));
-    /// println!("b = {}", b.to_string_with_radix(2));
-    /// println!("a ^ b = {}", c.to_string_with_radix(2));
+    /// println!("a = {}", a.to_string_with_radix(2).unwrap());
+    /// println!("b = {}", b.to_string_with_radix(2).unwrap());
+    /// println!("a ^ b = {}", c.to_string_with_radix(2).unwrap());
     /// 
     /// assert_eq!(c, a.or(&b));
     /// ```
@@ -7876,9 +9182,9 @@ where T: Uint + Copy + Clone + Display + Debug + ToString
     /// let b = u256::max();
     /// let c = a.xor(&b);
     /// 
-    /// println!("a = {}", a.to_string_with_radix(2));
-    /// println!("b = {}", b.to_string_with_radix(2));
-    /// println!("a ^ b = {}", c.to_string_with_radix(2));
+    /// println!("a = {}", a.to_string_with_radix(2).unwrap());
+    /// println!("b = {}", b.to_string_with_radix(2).unwrap());
+    /// println!("a ^ b = {}", c.to_string_with_radix(2).unwrap());
     /// 
     /// assert_eq!(c, u256::max());
     /// ```
@@ -7904,7 +9210,7 @@ where T: Uint + Copy + Clone + Display + Debug + ToString
     /// let b = u256::from_str_radix("11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000", 2).unwrap();
     /// a.xor_assign(&b);
     /// 
-    /// println!("a = {}", a.to_string_with_radix(2));
+    /// println!("a = {}", a.to_string_with_radix(2).unwrap());
     /// 
     /// assert_eq!(a, u256::from_str_radix("1111111100001111111111000011111111101110011101111111111101010101111111110000111111111100001111111110111001110111111111110101010111111111000011111111110000111111111011100111011111111111010101011111111100001111111111000011111111101110011101111111111101010101", 2).unwrap());
     /// ```
@@ -7920,7 +9226,7 @@ where T: Uint + Copy + Clone + Display + Debug + ToString
     /// let b = u256::max();
     /// a.xor_assign(&b);
     /// 
-    /// println!("a = {}", a.to_string_with_radix(2));
+    /// println!("a = {}", a.to_string_with_radix(2).unwrap());
     /// 
     /// assert_eq!(a, u256::max());
     /// ```
@@ -7934,17 +9240,119 @@ where T: Uint + Copy + Clone + Display + Debug + ToString
         }
     }
 
+    // pub fn flip(&self) -> Self
+    /// Performs the unary ! operation.
+    /// 
+    /// # Example
+    /// ```
+    /// // Todo
+    /// ```
     pub fn flip(&self) -> Self
     {
-        let mut s = self.clone();
-        let mut n: T;
-        for idx in 0..N
-        {
-            n = !s.get_num_(idx);
-            s.set_num_(idx, n);
-        }
-        s
+        let mut res = self.clone();
+        res.flip_assign();
+        res
     }
+
+    // pub fn flip_assign(&mut self)
+    /// Performs the unary ! operation, and assigns the result to `self`.
+    /// 
+    /// # Example
+    /// ```
+    /// // Todo
+    /// ```
+    pub fn flip_assign(&mut self)
+    {
+        for idx in 0..N
+            { self.set_num_(idx, !self.get_num_(idx)); }
+    }
+
+    // pub fn reverse_bits(&self) -> Self
+    /// Reverses the order of bits in the integer.
+    /// 
+    /// # Output
+    /// It returns the reversed order of bits in the integer.
+    /// 
+    /// # Feature
+    /// The least significant bit becomes the most significant bit,
+    /// second least-significant bit becomes second most-significant bit, etc.
+    /// 
+    /// # Example
+    /// ```
+    /// // Todo
+    /// ```
+    pub fn reverse_bits(&self) -> Self
+    {
+        let mut res = self.clone();
+        res.reverse_bits_assign();
+        res
+    }
+
+    // pub fn reverse_bits_assign(&mut self)
+    /// Reverses the order of bits in the integer,
+    /// and assigns the result to `self`.
+    /// 
+    /// # Output
+    /// It returns the reversed order of bits in the integer.
+    /// 
+    /// # Feature
+    /// The least significant bit becomes the most significant bit,
+    /// second least-significant bit becomes second most-significant bit, etc.
+    /// 
+    /// # Example
+    /// ```
+    /// // Todo
+    /// ```
+    pub fn reverse_bits_assign(&mut self)
+    {
+        let mut low: T;
+        let mut high: T;
+        for i in 0..N/2
+        {
+            low = self.get_num_(i).reverse_bits();
+            high = self.get_num_(N-1-i).reverse_bits();
+            self.set_num_(N-1-i, low);
+            self.set_num_(i, high);
+        }
+        if N.is_odd()
+            { self.set_num_(N/2+1, self.get_num_(N/2+1).reverse_bits()); }
+    }
+
+    // pub fn swap_bytes(&self) -> Self
+    /// Reverses the byte order of the integer.
+    /// 
+    /// # Example
+    /// ```
+    /// // Todo
+    /// ```
+    pub fn swap_bytes(&self) -> Self
+    {
+        let mut res = self.clone();
+        res.swap_bytes_assign();
+        res
+    }
+
+    // pub fn swap_bytes_assign(&mut self)
+    /// Reverses the byte order of the integer, and assign the result to `self`.
+    /// 
+    /// # Example
+    /// ```
+    /// // Todo
+    /// ```
+    pub fn swap_bytes_assign(&mut self)
+    {
+        let mut tmp: T;
+        for i in 0..N/2
+        {
+            tmp = self.get_num_(i);
+            self.set_num_(i, self.get_num_(N-1-i));
+            self.set_num_(N-1-i, tmp);
+        }
+    }
+
+
+
+    /***** METHODS FOR COMPARISON *****/
 
     pub fn eq(&self, other: &Self) -> bool
     {
@@ -8243,6 +9651,144 @@ where T: Uint + Copy + Clone + Display + Debug + ToString
         #[cfg(target_pointer_width = "32")]     return self.into_u32().into_usize();
         #[cfg(target_pointer_width = "16")]     return self.into_u16().into_usize();
         #[cfg(target_pointer_width = "16")]     return self.into_u16().into_usize();
+    }
+
+    // pub fn to_be(&self) -> Self
+    /// Converts `self` to big endian from the target’s endianness.
+    /// 
+    /// # Feature
+    /// On big endian this is a no-op. On little endian the bytes are swapped.
+    /// 
+    /// # Example
+    /// ```
+    /// // Todo
+    /// ```
+    #[cfg(target_endian = "little")]
+    #[inline]
+    pub fn to_be(&self) -> Self
+    {
+        self.swap_bytes()
+    }
+
+    // pub fn to_be(&self) -> Self
+    /// Converts `self` to big endian from the target’s endianness.
+    /// 
+    /// # Feature
+    /// On big endian this is a no-op. On little endian the bytes are swapped.
+    /// 
+    /// # Example
+    /// ```
+    /// // Todo
+    /// ```
+    #[cfg(target_endian = "big")]
+    #[inline]
+    pub fn to_be(&self) -> Self
+    {
+        self.clone()
+    }
+
+    // pub fn to_be_bytes(&self) -> [T; N]
+    /// Return the memory representation of this integer as a byte array
+    /// in big-endian (network) byte order.
+    /// # Feature
+    /// On big endian this is a no-op. On little endian the bytes are swapped.
+    /// 
+    /// # Example
+    /// ```
+    /// // Todo
+    /// ```
+    #[cfg(target_endian = "little")]
+    #[inline]
+    pub fn to_be_bytes(&self) -> [T; N]
+    {
+        self.swap_bytes().get_number().clone()
+    }
+
+    // pub fn to_be_bytes(&self) -> [T; N]
+    /// Return the memory representation of this integer as a byte array
+    /// in big-endian (network) byte order.
+    /// # Feature
+    /// On big endian this is a no-op. On little endian the bytes are swapped.
+    /// 
+    /// # Example
+    /// ```
+    /// // Todo
+    /// ```
+    #[cfg(target_endian = "big")]
+    #[inline]
+    pub fn to_be_bytes(&self) -> [T; N]
+    {
+        self.get_number().clone()
+    }
+
+    // pub fn from_le(le: &Self) -> Self
+    /// Converts `self` to little endian from the target’s endianness.
+    /// 
+    /// # Feature
+    /// On little endian this is a no-op. On big endian the bytes are swapped.
+    /// 
+    /// # Example
+    /// ```
+    /// // Todo
+    /// ```
+    #[cfg(target_endian = "little")]
+    #[inline]
+    pub fn to_le(&self) -> Self
+    {
+        self.clone()
+    }
+
+    // pub fn from_le(le: &Self) -> Self
+    /// Converts `self` to little endian from the target’s endianness.
+    /// 
+    /// # Feature
+    /// On little endian this is a no-op. On big endian the bytes are swapped.
+    /// 
+    /// # Example
+    /// ```
+    /// // Todo
+    /// ```
+    #[cfg(target_endian = "big")]
+    #[inline]
+    pub fn to_le(&self) -> Self
+    {
+        self.swap_bytes()
+    }
+
+    // pub fn to_le_bytes(&self) -> [T; N]
+    /// Return the memory representation of this integer as a byte array
+    /// in little-endian byte order.
+    /// 
+    /// # Feature
+    /// On little endian this is a no-op. On big endian the bytes are swapped.
+    /// 
+    /// # Example
+    /// ```
+    /// // Todo
+    /// ```
+    #[cfg(target_endian = "little")]
+    #[inline]
+    pub fn to_le_bytes(&self) -> [T; N]
+    {
+        self.get_number().clone()
+    }
+
+    // pub fn to_le_bytes(&self) -> [T; N]
+    /// Return the memory representation of this integer as a byte array
+    /// in little-endian byte order.
+    /// 
+    /// # Feature
+    /// On little endian this is a no-op. On big endian the bytes are swapped.
+    /// 
+    /// # Example
+    /// ```
+    /// // Todo
+    /// ```
+    #[cfg(target_endian = "big")]
+    #[inline]
+    pub fn to_le_bytes(&self) -> [T; N]
+    {
+        self.swap_bytes().get_number().clone()
     }
 
     // pub fn to_string_with_radix_and_delimiter(&self, radix: usize, stride: usize, delimiter: &str) -> Result<String, NumberErr>

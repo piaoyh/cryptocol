@@ -304,7 +304,7 @@ pub fn find_maximum()
             println!("Maximum i is {}", exp);
             break;
         }
-        exp.wrapping_add_assign_uint(1);
+        exp.wrapping_add_assign_uint(1_u8);
     }
     println!("---------------------------");
 }
@@ -316,19 +316,26 @@ pub fn Test()
     use Cryptocol::define_utypes_with;
     define_utypes_with!(u8);
 
+    let p = u256::from_uint(12345678901234567890123456789_u128);
+    let q = u256::from_uint(12345678901234567890_u128);
+    let r = p.gcd(&q);
+
+    println!("{} , {} => {}", p, q, r);
+
     let a = u256::from_uint(254_u8);
     let b = u256::from_uint(123_u8);
     let c = a.divide_fully(&b);
     let d = a.divide_fully_uint(123_u8);
     let aa = LongerUnion::new_with(254_u128);
     let bb = LongerUnion::new_with(123_u128);
+
     let cc = aa % bb;
 
     println!("c: {}  {}", c.0, c.1);
     println!("d: {}  {}", d.0, d.1);
     println!("{}", cc);
 
-    let e = a.divide_fully_uint(4);
+    let e = a.divide_fully_uint(4_u8);
     println!("{:?} {:?}", e.0, e.1);
 
     println!("a == b {}", a == b);
