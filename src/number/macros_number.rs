@@ -8,7 +8,7 @@
 
 #![warn(missing_docs)]
 #![warn(missing_doc_code_examples)]
-
+#![allow(non_camel_case_types)]
 //! The module that contains macros for defining big unsigned integer data types. 
 
 /// The macro that defines the types `u256`, `u512`, `u1024`, `u2048`, `u3072`,

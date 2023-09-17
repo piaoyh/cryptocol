@@ -6,6 +6,7 @@
 // This file may not be copied, modified, or distributed
 // except according to those terms.
 
+//! # Introduction
 //! The module that contains a few sub-modules to define Big numbers bigger
 //! than 128-bit integer and their arithmatic operations
 //! 
@@ -17,14 +18,14 @@
 //! but not bigger numbers than those.
 //! 
 //! In some areas such as cryptography, however, it is required to calculate
-//! 1024-bit or even longer bit integers especially for RSA cryptographic
-//! alogorithm. Then, we need special algorithms to calculate such big numbers.
-//! This is the library for such special purposes.
+//! 1024-bit or even longer bit integers especially for such as RSA
+//! cryptographic alogorithm. Then, we need special algorithms to calculate
+//! such big numbers. This is the library for such special purposes.
 //! 
 //! # Three kinds of long bit integers
 //! This module provides three kinds of long bit integers: BigUInt, BigInt,
 //! and LargeInt.
-//! - `BigUInt` --- a big _unsigned_ integer with user-defined _fixed_ size.
+//! - `BigUInt` --- a big _unsigned_ integer with user-defined _fixed_ size. [Read more](struct@BigUInt)
 //! - `BigInt` --- a big _signed_ integer with user-defined _fixed_ size.
 //! - `LargeInt` --- a big _signed_ integer with _variable_ size.
 //! 
@@ -41,7 +42,7 @@
 //! while `u256` for 32-bit machines is `BigUInt<u32, 8>` for example.
 //! 
 //! # QUICK START
-//! 
+//! For `BigUInt`, read [here](struct@BigUInt#quick-start).
 //! 
 
 pub mod uint;

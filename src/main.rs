@@ -6,11 +6,14 @@ use tests::*;
 
 fn main()
 {
+    test_main_BigUInt();
+    
+    /*
     find_maximum();
     test_main_Unions();
     test_main_UInt();
-    test_main_BigUInt();
     Test();
+    */
 }
 
 /*

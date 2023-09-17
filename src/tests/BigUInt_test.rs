@@ -8,9 +8,9 @@
 
 #![allow(missing_docs)]
 #![allow(missing_doc_code_examples)]
+#![allow(non_camel_case_types)]
 /*
-use std::time::SystemTime;
-use std::fmt::{ Display, Debug };
+
 use std::ops::*;
 use std::convert::*;
 use std::mem::size_of;
@@ -28,10 +28,11 @@ use Cryptocol::define_utypes_with_u16;
 use Cryptocol::define_utypes_with_u8;
 */
 
+
 pub fn test_main_BigUInt()
 {
-    // Test();
-    // BigUInt_submax___main();
+//    BigUInt_quick_start___main();
+//    BigUInt_constructors___main();
 
     // BigUInt_carrying_add___main();
     // BigUInt_carrying_add_assign___main();
@@ -46,22 +47,571 @@ pub fn test_main_BigUInt()
     // BigUInt_pow_assign___main();
 }
 
+fn BigUInt_quick_start___main()
+{
+    BigUInt_quick_start1___main();
+    BigUInt_quick_start2___main();
+    BigUInt_performance_test();
+}
 
+fn BigUInt_quick_start1___main()
+{
+    println!("fn BigUInt_quick_start1___main()");
+    use std::str::FromStr;
+    use Cryptocol::number::*;
+
+    type u1024 = BigUInt::<u128, 8>;
+
+    let a = u1024::from([1;8]);
+    let b = u1024::from_str_radix("00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000001__00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000001__00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000001__00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000001__00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000001__00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000001__00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000001__00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000001", 2).unwrap();
+    let c = u1024::from_str("1234567891234567879123456789111111111222222222333333333444444444555555555666666666777777777888888888999999999000000000").unwrap();
+
+    println!("a = {:?}", a);
+    assert_eq!(format!("{:?}", a), "BigUInt { number: [1, 1, 1, 1, 1, 1, 1, 1], flag: 0 }");
+
+    println!("a = {}", a.to_string_with_radix(16).unwrap());
+    assert_eq!(a.to_string_with_radix(16).unwrap(), "100000000000000000000000000000001000000000000000000000000000000010000000000000000000000000000000100000000000000000000000000000001000000000000000000000000000000010000000000000000000000000000000100000000000000000000000000000001");
+
+    println!("b = {:?}", b);
+    assert_eq!(format!("{:?}", b), "BigUInt { number: [1, 1, 1, 1, 1, 1, 1, 1], flag: 0 }");
+
+    println!("b = {}", b.to_string_with_radix(16).unwrap());
+    assert_eq!(b.to_string_with_radix(16).unwrap(), "100000000000000000000000000000001000000000000000000000000000000010000000000000000000000000000000100000000000000000000000000000001000000000000000000000000000000010000000000000000000000000000000100000000000000000000000000000001");
+
+    println!("c = {}", c);
+    assert_eq!(c.to_string(), "1234567891234567879123456789111111111222222222333333333444444444555555555666666666777777777888888888999999999000000000");
+
+    let mut d = c.clone() + b.clone();
+    println!("c + b = {}", d);
+    assert_eq!(d.to_string(), "528294531135665246352339784916516606520399844128422231063109688515136405111986307932151574694014881104306146237268412201528404470859010781743924190173408080836782200210173329257227380279796317564269871499347888467433181081526414901390421871123571433486060157564694902273");
+
+    d = c.clone() - b.clone();
+    println!("c - b = {}", d);
+    assert_eq!(d.to_string(), "179769313486231590772930519078902473361797697894230657273430081157732675805500963132708477322407536021120113879871393357658789768814416622492847430639474110969959963482268385702277221395399967835253147397865027956454455971545930224953627282297099651332502986953874099069742291515547035859317810474001329894911");
+
+    d = c.clone() * b.clone();
+    println!("c * b = {}", d);
+    assert_eq!(d.to_string(), "59830717854030867758075123183163555064720825939616846267926369121354707541167863856429897315021801292311343603281484761713479005341939688693125073345149826515313989515871501605159397439048630578377892313876159164289859563003628270426845234033215692532247483706885131175507859004610238546564083383732338767360");
+
+    d = b.clone() / c.clone();
+    println!("b / c = {}", d);
+    assert_eq!(d.to_string(), "427918573686029304066254243786715892164567464161173266402914429285403265969001177679575353202952599315891695262671719654199608368852942773933951103642477");
+
+    d = b.clone() % c.clone();
+    println!("b % c = {}", d);
+    assert_eq!(d.to_string(), "13407807929942597099574024998205846128493599681261533778420315443464330801466754909627229853216489898311858516129779051425416284792074901709655664589144577");
+
+    d = b.clone() + 5_u128;
+    println!("b + 5 = {}", d);
+    assert_eq!(d.to_string(), "528294531135665246352339784916516606520399844128422231063109688515136405111986307932151574694014881104306146237268412201528404470859010781743924190173406846268890965642294205800438269168685095342047538166014444022988625525970748234723644093345682544597060157565694902278");
+
+    d = b.clone() - 1_u128;
+    println!("b - 1 = {}", d);
+    assert_eq!(d.to_string(), "528294531135665246352339784916516606520399844128422231063109688515136405111986307932151574694014881104306146237268412201528404470859010781743924190173406846268890965642294205800438269168685095342047538166014444022988625525970748234723644093345682544597060157565694902272");
+
+    d = b.clone() * 42_u128;
+    println!("b * 42 = {}", d);
+    assert_eq!(d.to_string(), "22188370307697940346798270966493697473856793453393733704650606917635729014703424933150366137148625006380858141965273312464192987776078452833244815987283087543293420556976356643618407305084774004365996602972606648965522272090771425858393051920518666873076526617759185895466");
+
+    d = b.clone() / 5_u128;
+    println!("b / 5 = {}", d);
+    assert_eq!(d.to_string(), "105658906227133049270467956983303321304079968825684446212621937703027281022397261586430314938802976220861229247453682440305680894171802156348784838034681369253778193128458841160087653833737019068409507633202888804597725105194149646944728818669136508919412031513138980454");
+
+    let e = b.clone() % 5_u128;
+    println!("b % 5 = {}", e);
+    assert_eq!(e, 3);
+}
+
+fn BigUInt_quick_start2___main()
+{
+    println!("fn BigUInt_quick_start2___main()");
+    use std::str::FromStr;
+    use Cryptocol::define_utypes_with;
+    
+    define_utypes_with!(u128);
+
+    let a = u1024::from([1;8]);
+    let b = u1024::from_str_radix("00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000001__00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000001__00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000001__00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000001__00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000001__00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000001__00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000001__00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000001", 2).unwrap();
+    let c = u1024::from_str("1234567891234567879123456789111111111222222222333333333444444444555555555666666666777777777888888888999999999000000000").unwrap();
+
+    println!("a = {:?}", a);
+    assert_eq!(format!("{:?}", a), "BigUInt { number: [1, 1, 1, 1, 1, 1, 1, 1], flag: 0 }");
+
+    println!("a = {}", a.to_string_with_radix(16).unwrap());
+    assert_eq!(a.to_string_with_radix(16).unwrap(), "100000000000000000000000000000001000000000000000000000000000000010000000000000000000000000000000100000000000000000000000000000001000000000000000000000000000000010000000000000000000000000000000100000000000000000000000000000001");
+
+    println!("b = {:?}", b);
+    assert_eq!(format!("{:?}", b), "BigUInt { number: [1, 1, 1, 1, 1, 1, 1, 1], flag: 0 }");
+
+    println!("b = {}", b.to_string_with_radix(16).unwrap());
+    assert_eq!(b.to_string_with_radix(16).unwrap(), "100000000000000000000000000000001000000000000000000000000000000010000000000000000000000000000000100000000000000000000000000000001000000000000000000000000000000010000000000000000000000000000000100000000000000000000000000000001");
+
+    println!("c = {}", c);
+    assert_eq!(c.to_string(), "1234567891234567879123456789111111111222222222333333333444444444555555555666666666777777777888888888999999999000000000");
+
+    let mut d = c.wrapping_add(&b);
+    println!("c + b = {}", d);
+    assert_eq!(d.to_string(), "528294531135665246352339784916516606520399844128422231063109688515136405111986307932151574694014881104306146237268412201528404470859010781743924190173408080836782200210173329257227380279796317564269871499347888467433181081526414901390421871123571433486060157564694902273");
+
+    d = c.wrapping_sub(&b);
+    println!("c - b = {}", d);
+    assert_eq!(d.to_string(), "179769313486231590772930519078902473361797697894230657273430081157732675805500963132708477322407536021120113879871393357658789768814416622492847430639474110969959963482268385702277221395399967835253147397865027956454455971545930224953627282297099651332502986953874099069742291515547035859317810474001329894911");
+
+    d = c.wrapping_mul(&b);
+    println!("c * b = {}", d);
+    assert_eq!(d.to_string(), "59830717854030867758075123183163555064720825939616846267926369121354707541167863856429897315021801292311343603281484761713479005341939688693125073345149826515313989515871501605159397439048630578377892313876159164289859563003628270426845234033215692532247483706885131175507859004610238546564083383732338767360");
+
+    d = b.wrapping_div(&c);
+    println!("b / c = {}", d);
+    assert_eq!(d.to_string(), "427918573686029304066254243786715892164567464161173266402914429285403265969001177679575353202952599315891695262671719654199608368852942773933951103642477");
+
+    d = b.wrapping_rem(&c);
+    println!("b % c = {}", d);
+    assert_eq!(d.to_string(), "13407807929942597099574024998205846128493599681261533778420315443464330801466754909627229853216489898311858516129779051425416284792074901709655664589144577");
+
+    d = b.wrapping_add_uint(5_u128);
+    println!("b + 5 = {}", d);
+    assert_eq!(d.to_string(), "528294531135665246352339784916516606520399844128422231063109688515136405111986307932151574694014881104306146237268412201528404470859010781743924190173406846268890965642294205800438269168685095342047538166014444022988625525970748234723644093345682544597060157565694902278");
+
+    d = b.wrapping_sub_uint(1_u128);
+    println!("b - 1 = {}", d);
+    assert_eq!(d.to_string(), "528294531135665246352339784916516606520399844128422231063109688515136405111986307932151574694014881104306146237268412201528404470859010781743924190173406846268890965642294205800438269168685095342047538166014444022988625525970748234723644093345682544597060157565694902272");
+
+    d = b.wrapping_mul_uint(42_u128);
+    println!("b * 42 = {}", d);
+    assert_eq!(d.to_string(), "22188370307697940346798270966493697473856793453393733704650606917635729014703424933150366137148625006380858141965273312464192987776078452833244815987283087543293420556976356643618407305084774004365996602972606648965522272090771425858393051920518666873076526617759185895466");
+
+    d = b.wrapping_div_uint(5_u128);
+    println!("b / 5 = {}", d);
+    assert_eq!(d.to_string(), "105658906227133049270467956983303321304079968825684446212621937703027281022397261586430314938802976220861229247453682440305680894171802156348784838034681369253778193128458841160087653833737019068409507633202888804597725105194149646944728818669136508919412031513138980454");
+
+    let e = b.wrapping_rem_uint(5_u128);
+    println!("b % 5 = {}", e);
+    assert_eq!(e, 3);
+}
+
+macro_rules! performance
+{
+    ($t:ty, $b:expr, $ti:expr, $f:expr) => {
+        let mut sum = <$t>::zero();
+        let a = <$t>::from_str_radix("00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000001__00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000001__00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000001__00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000001__00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000001__00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000001__00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000001__00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000001", 2).unwrap();
+        let now: SystemTime;
+        match $f
+        {
+            0 => {
+                now = SystemTime::now();
+                for _ in 0..100_0000
+                    { sum.wrapping_add_assign(&a); }
+            },
+            1 => {
+                now = SystemTime::now();
+                for _ in 0..100_0000
+                    { sum.wrapping_sub_assign(&a); }
+            },
+            2 => {
+                now = SystemTime::now();
+                for _ in 0..100_0000
+                    { sum.wrapping_mul_assign(&a); }
+            },
+            _ => {
+                now = SystemTime::now();
+                for _ in 0..100_0000
+                    { sum.wrapping_div_assign(&a); }
+            },
+        }
+        match now.elapsed()
+        {
+            Ok(elapsed) => {
+                $ti = elapsed.as_micros();
+                println!("{}-based: {} usec", $b, $ti);
+            },
+            Err(e) => { println!("{}", e); },
+        }
+    }
+}
+
+fn BigUInt_performance_test()
+{
+    println!("BigUInt_performance_test");
+    use std::time::SystemTime;
+    use Cryptocol::number::*;
+
+    let mut ti = [0_u128; 5];   // How many microseconds
+    let dt = ["u128", "u64", "u32", "u16", "u8"];
+    let op = ["addition", "subtraction", "multplication", "division" ];
+
+    for operator in 0..4
+    {
+        println!("=== {} ===", op[operator]);
+        performance!(u1024_with_u128, dt[0], ti[0], operator);
+        performance!(u1024_with_u64, dt[1], ti[1], operator);
+        performance!(u1024_with_u32, dt[2], ti[2], operator);
+        performance!(u1024_with_u16, dt[3], ti[3], operator);
+        performance!(u1024_with_u8, dt[4], ti[4], operator);
+    
+        let mut fastest = 0;
+        for i in 1..5
+        {
+            if ti[fastest] > ti[i]
+                { fastest = i; }
+        }
+        println!("The fastest one is {}.\n", dt[fastest]);
+
+        #[cfg(debug_assertions)]
+        assert_eq!(fastest, 0); // It means u128 shows the best performance most of the time.
+
+        #[cfg(not(debug_assertions))]
+        if operator < 2
+            { assert_eq!(fastest, 0); } // It means u128 shows the best performance.
+        else
+            { assert_eq!(fastest, 1); } // It means u64 shows the best performance most of the time.
+    }
+}
+
+fn BigUInt_constructors___main()
+{
+    BigUInt_new___main();
+    BigUInt_zero___main();
+    BigUInt_one___main();
+    BigUInt_max___main();
+    BigUInt_submax___main();
+    BigUInt_halfmax___main();
+    BigUInt_from_uint___main();
+    BigUInt_from_array___main();
+    BigUInt_from_biguint___main();
+    BigUInt_from_be___main();
+    BigUInt_from_be_bytes___main();
+    BigUInt_from_le___main();
+    BigUInt_from_le_bytes___main();
+    BigUInt_from_str_radix___main();
+    BigUInt_generate_check_bits___main();
+}
+
+fn BigUInt_new___main()
+{
+    println!("fn BigUInt_new___main()");
+    use Cryptocol::define_utypes_with;
+    define_utypes_with!(u128);
+
+    let obj = u256::new();
+    let zero = u256::zero();
+    println!("obj = {}", obj);
+    assert_eq!(obj, zero);
+}
+
+fn BigUInt_zero___main()
+{
+    println!("fn BigUInt_zero___main()");
+    use Cryptocol::define_utypes_with;
+    define_utypes_with!(u64);
+
+    let zero = u256::zero();
+    let obj = u256::new();
+    println!("zero = {}", zero);
+    assert_eq!(zero, obj);
+}
+
+fn BigUInt_one___main()
+{
+    println!("fn BigUInt_one___main()");
+    use Cryptocol::define_utypes_with;
+    define_utypes_with!(u32);
+
+    let one = u256::one();
+    let mut obj = u256::new();
+    obj.set_uint(1_u32);
+    println!("one = {}", one);
+    assert_eq!(one, obj);
+}
+
+fn BigUInt_max___main()
+{
+    println!("BigUInt_max___main()");
+    use std::str::FromStr;
+    use Cryptocol::define_utypes_with;
+    define_utypes_with!(u16);
+
+    let maximum = u256::max();
+    println!("maximum =\t{}", maximum);
+    assert_eq!(maximum, u256::from_str("115792089237316195423570985008687907853269984665640564039457584007913129639935").unwrap());
+    println!("---------------------------");
+}
 
 fn BigUInt_submax___main()
 {
     println!("BigUInt_submax___main()");
     use std::str::FromStr;
     use Cryptocol::define_utypes_with;
+    define_utypes_with!(u8);
 
-    define_utypes_with!(u64);
-    let maximum = u256::max();
     let half = u256::submax(128_usize);
-    println!("maximum =\t{}\nhalf maximum = \t{}", maximum, half);
-    assert_eq!(maximum, u256::from_str("347376267711948586270712955026063723559809953996921692118372752023739388919807").unwrap());
+    println!("half maximum = \t{}", half);
     assert_eq!(half, u256::from_str("340282366920938463463374607431768211455").unwrap());
     println!("---------------------------");
 }
+
+fn BigUInt_halfmax___main()
+{
+    println!("BigUInt_halfmax___main()");
+    use std::str::FromStr;
+    use Cryptocol::define_utypes_with;
+    define_utypes_with!(u128);
+
+    let half = u256::halfmax();
+    println!("half maximum = \t{}", half);
+    assert_eq!(half, u256::from_str("340282366920938463463374607431768211455").unwrap());
+    println!("---------------------------");
+}
+
+fn BigUInt_from_uint___main()
+{
+    BigUInt_from_uint_u8___main();
+    BigUInt_from_uint_u16___main();
+    BigUInt_from_uint_u32___main();
+    BigUInt_from_uint_u64___main();
+    BigUInt_from_uint_u128___main();
+    BigUInt_from_uint_usize___main();
+}
+
+fn BigUInt_from_uint_u8___main()
+{
+    println!("BigUInt_from_uint_u8___main");
+    use Cryptocol::define_utypes_with_u16;
+    define_utypes_with_u16!();
+     
+    let aa = u512::from_uint(123_u8);
+    println!("aa = {}", aa);
+    assert_eq!(aa.into_u8(), 123_u8);
+    println!("---------------------------");
+}
+
+fn BigUInt_from_uint_u16___main()
+{
+    println!("BigUInt_from_uint_u16___main");
+    use Cryptocol::define_utypes_with_u64;
+    define_utypes_with_u64!();
+     
+    let bb = u512::from_uint(12345_u16);
+    println!("bb = {}", bb);
+    assert_eq!(bb.into_u16(), 12345_u16);
+    println!("---------------------------");
+}
+
+fn BigUInt_from_uint_u32___main()
+{
+    println!("BigUInt_from_uint_u32___main");
+    use Cryptocol::define_utypes_with_u8;
+    define_utypes_with_u8!();
+     
+    let cc = u512::from_uint(1234567890_u32);
+    println!("cc = {}", cc);
+    assert_eq!(cc.into_u32(), 1234567890_u32);
+    println!("---------------------------");
+}
+
+fn BigUInt_from_uint_u64___main()
+{
+    println!("BigUInt_from_uint_u64___main");
+    use Cryptocol::define_utypes_with_u128;
+    define_utypes_with_u128!();
+     
+    let dd = u512::from_uint(12345678901234567890_u64);
+    println!("dd = {}", dd);
+    assert_eq!(dd.into_u64(), 12345678901234567890_u64);
+    println!("---------------------------");
+}
+
+fn BigUInt_from_uint_u128___main()
+{
+    println!("BigUInt_from_uint_u128___main");
+    use Cryptocol::define_utypes_with_u128;
+    define_utypes_with_u128!();
+     
+    let ee = u512::from_uint(123456789012345678901234567890123456789_u128);
+    println!("ee = {}", ee);
+    assert_eq!(ee.into_u128(), 123456789012345678901234567890123456789_u128);
+    println!("---------------------------");
+}
+
+fn BigUInt_from_uint_usize___main()
+{
+    println!("BigUInt_from_uint_usize___main");
+    use Cryptocol::define_utypes_with_u32;
+    define_utypes_with_u32!();
+
+    let ff = u512::from_uint(123_usize);
+    println!("ff = {}", ff);
+
+    assert_eq!(ff.into_usize(), 123_usize);
+    println!("---------------------------");
+}
+
+fn BigUInt_from_array___main()
+{
+    println!("BigUInt_from_array___main");
+    use Cryptocol::define_utypes_with;
+    define_utypes_with!(u8);
+
+    let big_num = u256::from_array(&[1_u8;32]);
+    println!("big_num = {}", big_num.to_string_with_radix(2).unwrap());
+    assert_eq!(big_num, u256::from_str_radix("00000001_00000001_00000001_00000001_00000001_00000001_00000001_00000001_00000001_00000001_00000001_00000001_00000001_00000001_00000001_00000001_00000001_00000001_00000001_00000001_00000001_00000001_00000001_00000001_00000001_00000001_00000001_00000001_00000001_00000001_00000001_00000001", 2).unwrap());
+    println!("---------------------------");
+}
+
+fn BigUInt_from_biguint___main()
+{
+    BigUInt_from_biguint_same_length___main();
+    BigUInt_from_biguint_shorter_length___main();
+    BigUInt_from_biguint_longer_length___main();
+}
+
+fn BigUInt_from_biguint_same_length___main()
+{
+    println!("BigUInt_from_biguint_same_length___main");
+    use std::str::FromStr;
+    use Cryptocol::number::*;
+
+    let a = u256_with_u8::from_str("123456789123456789123456789123456789123456789123456789").unwrap();
+    let b = u256_with_u16::from_biguint(&a);
+    println!("a = {}", a);
+    println!("b = {}", b);
+    assert_eq!(a.to_string(), b.to_string());
+    println!("---------------------------");
+}
+
+fn BigUInt_from_biguint_shorter_length___main()
+{
+    println!("BigUInt_from_biguint_shorter_length___main");
+    use std::str::FromStr;
+    use Cryptocol::number::*;
+
+    let a = u256_with_u8::from_str("123456789123456789123456789123456789123456789123456789").unwrap();
+    let b = u512_with_u16::from_biguint(&a);
+    println!("a = {}", a);
+    println!("b = {}", b);
+    assert_eq!(a.to_string(), b.to_string());
+    println!("---------------------------");
+}
+
+fn BigUInt_from_biguint_longer_length___main()
+{
+    println!("BigUInt_from_biguint_longer_length___main");
+    use std::str::FromStr;
+    use Cryptocol::number::*;
+
+    let a = u512_with_u8::from_str("123456789123456789123456789123456789123456789123456789").unwrap();
+    let b = u256_with_u16::from_biguint(&a);
+    println!("a = {}", a);
+    println!("b = {}", b);
+    assert_eq!(a.to_string(), b.to_string());
+    println!("---------------------------");
+}
+
+fn BigUInt_from_be___main()
+{
+    println!("BigUInt_from_be___main");
+    use Cryptocol::define_utypes_with;
+    define_utypes_with!(u8);
+
+    let be = u256::from_array(&[0x12, 0x34, 0x56, 0x78, 0x90, 0xab, 0xcd, 0xef,
+                                0x11, 0x22, 0x33, 0x44, 0x55, 0x66, 0x77, 0x88,
+                                0x99, 0x00, 0xaa, 0xbb, 0xcc, 0xdd, 0xee, 0xff,
+                                0x1f, 0x2e, 0x3d, 0x4c, 0x5b, 0x6a, 0x70, 0x89]);
+    let le = u256::from_be(&be);
+    println!("be = 0x{}", be.to_string_with_radix(16).unwrap());
+    println!("le = 0x{}", le.to_string_with_radix(16).unwrap());
+    assert_eq!(be.to_string_with_radix(16).unwrap(), "89706A5B4C3D2E1FFFEEDDCCBBAA00998877665544332211EFCDAB9078563412");
+    assert_eq!(le.to_string_with_radix(16).unwrap(), "1234567890ABCDEF11223344556677889900AABBCCDDEEFF1F2E3D4C5B6A7089");
+    println!("---------------------------");
+}
+
+fn BigUInt_from_be_bytes___main()
+{
+    println!("BigUInt_from_be___main");
+    use Cryptocol::define_utypes_with;
+    define_utypes_with!(u8);
+
+    let be_array = [0x12, 0x34, 0x56, 0x78, 0x90, 0xab, 0xcd, 0xef,
+                    0x11, 0x22, 0x33, 0x44, 0x55, 0x66, 0x77, 0x88,
+                    0x99, 0x00, 0xaa, 0xbb, 0xcc, 0xdd, 0xee, 0xff,
+                    0x1f, 0x2e, 0x3d, 0x4c, 0x5b, 0x6a, 0x70, 0x89];
+    let le = u256::from_be_bytes(&be_array);
+    println!("be_array = {:?}", be_array);
+    println!("le = {:?}", le);
+    assert_eq!(le.to_string_with_radix(16).unwrap(), "1234567890ABCDEF11223344556677889900AABBCCDDEEFF1F2E3D4C5B6A7089");
+    println!("---------------------------");
+}
+
+/////THIS/////
+fn BigUInt_from_le___main()
+{
+    println!("BigUInt_from_le___main");
+    use Cryptocol::define_utypes_with;
+    define_utypes_with!(u8);
+
+    let le1 = u256::from_array(&[0x12, 0x34, 0x56, 0x78, 0x90, 0xab, 0xcd, 0xef,
+                                0x11, 0x22, 0x33, 0x44, 0x55, 0x66, 0x77, 0x88,
+                                0x99, 0x00, 0xaa, 0xbb, 0xcc, 0xdd, 0xee, 0xff,
+                                0x1f, 0x2e, 0x3d, 0x4c, 0x5b, 0x6a, 0x70, 0x89]);
+    let le2 = u256::from_le(&le1);
+    println!("le1 = 0x{}", le1.to_string_with_radix(16).unwrap());
+    println!("le2 = 0x{}", le2.to_string_with_radix(16).unwrap());
+    assert_eq!(le1.to_string_with_radix(16).unwrap(), "89706A5B4C3D2E1FFFEEDDCCBBAA00998877665544332211EFCDAB9078563412");
+    assert_eq!(le2.to_string_with_radix(16).unwrap(), "89706A5B4C3D2E1FFFEEDDCCBBAA00998877665544332211EFCDAB9078563412");
+    println!("---------------------------");
+}
+
+fn BigUInt_from_le_bytes___main()
+{
+    println!("BigUInt_from_le_bytes___main");
+    use Cryptocol::define_utypes_with;
+    define_utypes_with!(u8);
+
+    let le_array = [0x12, 0x34, 0x56, 0x78, 0x90, 0xab, 0xcd, 0xef,
+                    0x11, 0x22, 0x33, 0x44, 0x55, 0x66, 0x77, 0x88,
+                    0x99, 0x00, 0xaa, 0xbb, 0xcc, 0xdd, 0xee, 0xff,
+                    0x1f, 0x2e, 0x3d, 0x4c, 0x5b, 0x6a, 0x70, 0x89];
+    let le = u256::from_le_bytes(&le_array);
+    println!("le_array = {:?}", le_array);
+    println!("le = {:?}", le);
+    assert_eq!(le.to_string_with_radix(16).unwrap(), "89706A5B4C3D2E1FFFEEDDCCBBAA00998877665544332211EFCDAB9078563412");
+    println!("---------------------------");
+}
+
+fn BigUInt_from_str_radix___main()
+{
+    println!("BigUInt_from_str_radix___main");
+    use Cryptocol::define_utypes_with;
+    define_utypes_with!(u16);
+    let a = u512::from_str_radix("1234_5678_9ABC_DEF0_1234_5678_9ABC_DEF0_1234_5678_9ABC_DEF0_1234_5678_9ABC_DEF0_1234_5678_9ABC_DEF0_1234_5678_9ABC_DEF0_1234_5678_9ABC_DEF0_1234_5678_9ABC_DEF0", 16).unwrap();
+    println!("a = {}", a);
+    assert_eq!(a.to_string(), "953444119462584670231660883005169236350945453535049253076624239367818227875140724454335257332337691463184490358643394140772086144551847644877923949534960");
+    println!("---------------------------");
+}
+
+fn BigUInt_generate_check_bits___main()
+{
+    println!("BigUInt_generate_check_bits___main");
+    use Cryptocol::define_utypes_with_u32;
+    define_utypes_with_u32!();
+
+    let a_0 = u256::generate_check_bits(0);
+    println!("a_0 = {}", a_0.to_string_with_radix_and_stride(2, 10).unwrap());
+    assert_eq!(a_0.to_string_with_radix_and_stride(2, 10).unwrap(), "1");
+    
+    let a_12 = u256::generate_check_bits(12);
+    println!("a_12 = {}", a_12.to_string_with_radix_and_stride(2, 10).unwrap());
+    assert_eq!(a_12.to_string_with_radix_and_stride(2, 10).unwrap(), "100_0000000000");
+
+    let a_255 = u256::generate_check_bits(255);
+    println!("a_255 = {}", a_255.to_string_with_radix_and_stride(2, 10).unwrap());
+    assert_eq!(a_255.to_string_with_radix_and_stride(2, 10).unwrap(), "100000_0000000000_0000000000_0000000000_0000000000_0000000000_0000000000_0000000000_0000000000_0000000000_0000000000_0000000000_0000000000_0000000000_0000000000_0000000000_0000000000_0000000000_0000000000_0000000000_0000000000_0000000000_0000000000_0000000000_0000000000_0000000000");
+
+    // It will panic!
+    // let a_256 = u256::generate_check_bits(256);
+    println!("---------------------------");
+}
+
 
 fn BigUInt_carrying_add___main()
 {
@@ -316,6 +866,9 @@ pub fn Test()
     use Cryptocol::define_utypes_with;
     define_utypes_with!(u8);
 
+    let a = 128_u8;
+    let b = a << 1;
+    println!("b = {}", b);
     let p = u256::from_uint(12345678901234567890123456789_u128);
     let q = u256::from_uint(12345678901234567890_u128);
     let r = p.gcd(&q);

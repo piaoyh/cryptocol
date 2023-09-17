@@ -9,10 +9,12 @@
 //! The module is for all test code of examples.
 //! 
 
-pub mod Unions_test;
-pub mod UInt_test;
+#[cfg(test)] pub mod Unions_test;
+#[cfg(test)] pub mod UInt_test;
+
+// #[cfg(test)]
 pub mod BigUInt_test;
 
-pub use Unions_test::*;
-pub use UInt_test::*;
+// pub use Unions_test::*;
+// pub use UInt_test::*;
 pub use BigUInt_test::*;

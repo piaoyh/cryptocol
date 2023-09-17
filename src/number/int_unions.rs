@@ -76,6 +76,7 @@ use super::uint::*;
 /// to use it for serious purpose. Only use this crate for Big-endian CPUs
 /// with your own full responsibility.
 #[derive(Copy, Clone)]
+#[allow(non_camel_case_types)]
 pub union ShortUnion
 {
     /// The biggest unsigned element for compatibility with other unions
@@ -188,6 +189,7 @@ pub union ShortUnion
 /// to use it for serious purpose. Only use this crate for Big-endian CPUs
 /// with your own full responsibility.
 #[derive(Copy, Clone)]
+#[allow(non_camel_case_types)]
 pub union IntUnion
 {
     /// The biggest unsigned element for compatibility with other unions
@@ -342,6 +344,7 @@ pub union IntUnion
 /// to use it for serious purpose. Only use this crate for Big-endian CPUs
 /// with your own full responsibility.
 #[derive(Copy, Clone)]
+#[allow(non_camel_case_types)]
 pub union LongUnion
 {
     /// The biggest unsigned element for compatibility with other unions
@@ -554,6 +557,7 @@ pub union LongUnion
 /// to use it for serious purpose. Only use this crate for Big-endian CPUs
 /// with your own full responsibility.
 #[derive(Copy, Clone)]
+#[allow(non_camel_case_types)]
 pub union LongerUnion
 {
     /// The biggest unsigned element for compatibility with other unions
@@ -678,6 +682,7 @@ pub union LongerUnion
 /// with your own full responsibility.
 #[cfg(target_pointer_width = "128")]
 #[derive(Copy, Clone)]
+#[allow(non_camel_case_types)]
 pub union SizeUnion
 {
     /// The biggest unsigned element for compatibility with other unions
@@ -812,6 +817,7 @@ pub union SizeUnion
 /// with your own full responsibility.
 #[cfg(target_pointer_width = "64")]
 #[derive(Copy, Clone)]
+#[allow(non_camel_case_types)]
 pub union SizeUnion
 {
     /// The biggest unsigned element for compatibility with other unions
@@ -918,6 +924,7 @@ pub union SizeUnion
 /// with your own full responsibility.
 #[cfg(target_pointer_width = "32")]
 #[derive(Copy, Clone)]
+#[allow(non_camel_case_types)]
 pub union SizeUnion
 {
     /// The biggest unsigned element for compatibility with other unions
@@ -1004,6 +1011,7 @@ pub union SizeUnion
 /// with your own full responsibility.
 #[cfg(target_pointer_width = "16")]
 #[derive(Copy, Clone)]
+#[allow(non_camel_case_types)]
 pub union SizeUnion
 {
     /// The biggest unsigned element for compatibility with other unions
@@ -1063,6 +1071,7 @@ pub union SizeUnion
 /// ```
 #[cfg(target_pointer_width = "8")]
 #[derive(Copy, Clone)]
+#[allow(non_camel_case_types)]
 pub union SizeUnion
 {
     /// The biggest unsigned element for compatibility with other unions
