@@ -228,8 +228,8 @@ use super::NumberErr;
 ///   INFINITY (0b0000_0100), and DIVIDED_BY_ZERO (== INFINITY)
 /// 
 /// # Panics
-/// If size_of::<T>() * N <= 128, some methods may panic or its behavior may
-/// undefined though it may not panic.
+/// If `size_of::<T>() * N` <= `128`, some methods may panic
+/// or its behavior may undefined though it may not panic.
 /// 
 /// # Quick Start
 /// It is generic data type. So, you can define 1024-bit unsigned integer
@@ -821,8 +821,8 @@ where T: Uint + Copy + Clone + Display + Debug + ToString
     /// A new object of `BigUInt<T, N>` that represents the same value of `val`.
     /// 
     /// # Panics
-    /// If size_of::<T>() * N <= 128, this method may panic or its behavior may
-    /// undefined though it may not panic.
+    /// If `size_of::<T>() * N` < `size_of::<U>()`, some methods may panic
+    /// or its behavior may undefined though it may not panic.
     /// 
     /// # Example for u8
     /// ```
@@ -1132,15 +1132,15 @@ where T: Uint + Copy + Clone + Display + Debug + ToString
     /// use Cryptocol::define_utypes_with;
     /// define_utypes_with!(u8);
     /// 
-    /// let be = u256::from_array(&[0x12, 0x34, 0x56, 0x78, 0x90, 0xab, 0xcd, 0xef,
+    /// let be1 = u256::from_array(&[0x12, 0x34, 0x56, 0x78, 0x90, 0xab, 0xcd, 0xef,
     ///                             0x11, 0x22, 0x33, 0x44, 0x55, 0x66, 0x77, 0x88,
     ///                             0x99, 0x00, 0xaa, 0xbb, 0xcc, 0xdd, 0xee, 0xff,
     ///                             0x1f, 0x2e, 0x3d, 0x4c, 0x5b, 0x6a, 0x70, 0x89]);
-    /// let le = u256::from_be(&be);
-    /// println!("be = 0x{}", be.to_string_with_radix(16).unwrap());
-    /// println!("le = 0x{}", le.to_string_with_radix(16).unwrap());
-    /// assert_eq!(be.to_string_with_radix(16).unwrap(), "89706A5B4C3D2E1FFFEEDDCCBBAA00998877665544332211EFCDAB9078563412");
-    /// assert_eq!(le.to_string_with_radix(16).unwrap(), "1234567890ABCDEF11223344556677889900AABBCCDDEEFF1F2E3D4C5B6A7089");
+    /// let be2 = u256::from_be(&be);
+    /// println!("be1 = 0x{}", be.to_string_with_radix(16).unwrap());
+    /// println!("be2 = 0x{}", le.to_string_with_radix(16).unwrap());
+    /// assert_eq!(be1.to_string_with_radix(16).unwrap(), "1234567890ABCDEF11223344556677889900AABBCCDDEEFF1F2E3D4C5B6A7089");
+    /// assert_eq!(be2.to_string_with_radix(16).unwrap(), "1234567890ABCDEF11223344556677889900AABBCCDDEEFF1F2E3D4C5B6A7089");
     /// ```
     #[cfg(target_endian = "big")]
     #[inline]
@@ -1193,10 +1193,10 @@ where T: Uint + Copy + Clone + Display + Debug + ToString
     ///                 0x11, 0x22, 0x33, 0x44, 0x55, 0x66, 0x77, 0x88,
     ///                 0x99, 0x00, 0xaa, 0xbb, 0xcc, 0xdd, 0xee, 0xff,
     ///                 0x1f, 0x2e, 0x3d, 0x4c, 0x5b, 0x6a, 0x70, 0x89];
-    /// let le = u256::from_be_bytes(&be_array);
+    /// let be = u256::from_be_bytes(&be_array);
     /// println!("be_array = {:?}", be_array);
-    /// println!("le = {:?}", le);
-    /// assert_eq!(le.to_string_with_radix(16).unwrap(), "1234567890ABCDEF11223344556677889900AABBCCDDEEFF1F2E3D4C5B6A7089");
+    /// println!("be = {:?}", be);
+    /// assert_eq!(be.to_string_with_radix(16).unwrap(), "1234567890ABCDEF11223344556677889900AABBCCDDEEFF1F2E3D4C5B6A7089");
     /// ```
     #[cfg(target_endian = "big")]
     #[inline]
@@ -1244,15 +1244,15 @@ where T: Uint + Copy + Clone + Display + Debug + ToString
     /// use Cryptocol::define_utypes_with;
     /// define_utypes_with!(u8);
     /// 
-    /// let le1 = u256::from_array(&[0x12, 0x34, 0x56, 0x78, 0x90, 0xab, 0xcd, 0xef,
+    /// let le = u256::from_array(&[0x12, 0x34, 0x56, 0x78, 0x90, 0xab, 0xcd, 0xef,
     ///                             0x11, 0x22, 0x33, 0x44, 0x55, 0x66, 0x77, 0x88,
     ///                             0x99, 0x00, 0xaa, 0xbb, 0xcc, 0xdd, 0xee, 0xff,
     ///                             0x1f, 0x2e, 0x3d, 0x4c, 0x5b, 0x6a, 0x70, 0x89]);
-    /// let le2 = u256::from_le(&le1);
-    /// println!("le1 = 0x{}", le1.to_string_with_radix(16).unwrap());
-    /// println!("le2 = 0x{}", le2.to_string_with_radix(16).unwrap());
-    /// assert_eq!(le1.to_string_with_radix(16).unwrap(), "89706A5B4C3D2E1FFFEEDDCCBBAA00998877665544332211EFCDAB9078563412");
-    /// assert_eq!(le2.to_string_with_radix(16).unwrap(), "89706A5B4C3D2E1FFFEEDDCCBBAA00998877665544332211EFCDAB9078563412");
+    /// let be = u256::from_le(&le);
+    /// println!("le = 0x{}", le.to_string_with_radix(16).unwrap());
+    /// println!("be = 0x{}", be.to_string_with_radix(16).unwrap());
+    /// assert_eq!(le.to_string_with_radix(16).unwrap(), "1234567890ABCDEF11223344556677889900AABBCCDDEEFF1F2E3D4C5B6A7089");
+    /// assert_eq!(be.to_string_with_radix(16).unwrap(), "89706A5B4C3D2E1FFFEEDDCCBBAA00998877665544332211EFCDAB9078563412");
     /// ```
     #[cfg(target_endian = "big")]
     #[inline]
@@ -1305,10 +1305,10 @@ where T: Uint + Copy + Clone + Display + Debug + ToString
     ///                 0x11, 0x22, 0x33, 0x44, 0x55, 0x66, 0x77, 0x88,
     ///                 0x99, 0x00, 0xaa, 0xbb, 0xcc, 0xdd, 0xee, 0xff,
     ///                 0x1f, 0x2e, 0x3d, 0x4c, 0x5b, 0x6a, 0x70, 0x89];
-    /// let le = u256::from_le_bytes(&le_array);
+    /// let be = u256::from_le_bytes(&le_array);
     /// println!("le_array = {:?}", le_array);
-    /// println!("le = {:?}", le);
-    /// assert_eq!(le.to_string_with_radix(16).unwrap(), "89706A5B4C3D2E1FFFEEDDCCBBAA00998877665544332211EFCDAB9078563412");
+    /// println!("be = {:?}", le);
+    /// assert_eq!(be.to_string_with_radix(16).unwrap(), "89706A5B4C3D2E1FFFEEDDCCBBAA00998877665544332211EFCDAB9078563412");
     /// ```
     #[cfg(target_endian = "big")]
     #[inline]
@@ -1480,7 +1480,6 @@ where T: Uint + Copy + Clone + Display + Debug + ToString
 
     /***** METHODS FOR GENERATING RANDOM PRIME NUMBERS *****/
 
-    /////THIS/////
     // pub fn random() -> Self
     /// Constucts a new `BigUInt<T, N>`-type object which has the random value.
     /// 
@@ -1559,9 +1558,8 @@ where T: Uint + Copy + Clone + Display + Debug + ToString
     /// ```
     /// use Cryptocol::number::*;
     /// use Cryptocol::define_utypes_with;
-    /// 
     /// define_utypes_with!(u128);
-    /// println!("Random number = {}", u1024::random());
+    /// println!("Random Number: {}", u1024::random());
     /// ```
     pub fn random() -> Self
     {
@@ -1589,7 +1587,7 @@ where T: Uint + Copy + Clone + Display + Debug + ToString
     /// 
     /// # Cryptographical Security
     /// It is not sure that the random number generated by this method
-    /// random_odd() can be considered cryptographically unsecure though This
+    /// random_odd() can be considered cryptographically secure though this
     /// method random_odd() is based on the crate [rand](https://docs.rs/rand/latest/rand/index.html)
     /// (especially, [rand::rngs::OsRng](https://docs.rs/rand/latest/rand/rngs/struct.OsRng.html)).
     /// The author is not sure that the _extended_ random number generated
@@ -1654,9 +1652,11 @@ where T: Uint + Copy + Clone + Display + Debug + ToString
     /// ```
     /// use Cryptocol::number::*;
     /// use Cryptocol::define_utypes_with;
+    /// define_utypes_with!(u64);
     /// 
-    /// define_utypes_with!(u128);
-    /// println!("Random number = {}", u1024::random_odd());
+    /// let r = u1024::random_odd();
+    /// println!("Random Odd Number: {}", r);
+    /// assert!(r.is_odd());
     /// ```
     /// 
     /// # Big-endian issue
@@ -1690,7 +1690,7 @@ where T: Uint + Copy + Clone + Display + Debug + ToString
     /// 
     /// # Cryptographical Security
     /// It is not sure that the random number generated by this method
-    /// random_less_than() can be considered cryptographically unsecure though
+    /// random_less_than() can be considered cryptographically secure though
     /// this method random_less_than() is based on the crate [rand](https://docs.rs/rand/latest/rand/index.html)
     /// (especially, [rand::rngs::OsRng](https://docs.rs/rand/latest/rand/rngs/struct.OsRng.html)).
     /// The author is not sure that the _extended_ random number generated
@@ -1755,9 +1755,12 @@ where T: Uint + Copy + Clone + Display + Debug + ToString
     /// ```
     /// use Cryptocol::number::*;
     /// use Cryptocol::define_utypes_with;
-    /// define_utypes_with!(u128);
+    /// define_utypes_with!(u32);
+    /// 
     /// let ceiling = u1024::max() / u1024::from_uint::<u32>(3);
-    /// println!("Random number = {}", u1024::random_less_than(&ceiling));
+    /// let r = u1024::random_less_than(&ceiling);
+    /// println!("Random Number less than {} is\n{}", ceiling, r);
+    /// assert!(r < ceiling);
     /// ```
     #[inline]
     pub fn random_less_than(ceiling: &Self) -> Self
@@ -1851,11 +1854,13 @@ where T: Uint + Copy + Clone + Display + Debug + ToString
     /// ```
     /// use Cryptocol::number::*;
     /// use Cryptocol::define_utypes_with;
-    /// 
-    /// define_utypes_with!(u128);
+    /// define_utypes_with!(u16);
     /// 
     /// let ceiling = u1024::max() / u1024::from_uint::<u32>(3);
-    /// println!("Random number = {}", u1024::random_odd_less_than(&ceiling));
+    /// let r = u1024::random_odd_less_than(&ceiling);
+    /// println!("Random Odd Number less than {} is\n{}", ceiling, u1024::random_odd_less_than(&ceiling));
+    /// assert!(r < ceiling);
+    /// assert!(r.is_odd());
     /// ```
     /// 
     /// # Big-endian issue
@@ -1952,14 +1957,13 @@ where T: Uint + Copy + Clone + Display + Debug + ToString
     /// 
     /// # Example
     /// ```
-    /// use Cryptocol::number::*;
-    /// use Cryptocol::define_utypes_with_u128;
+    /// use Cryptocol::define_utypes_with;
+    /// define_utypes_with!(u8);
     /// 
-    /// define_utypes_with_u128!();
     /// let num = u1024::random_with_MSB_set();
-    /// println!("Random number = {}", u1024::random());
-    /// println!("Random number = {}", num);
-    /// assert!(num > u1024::max() >> 1);
+    /// println!("Random Number = {}", u1024::random());
+    /// println!("1024-bit Random Number = {}", num);
+    /// assert!(num > u1024::submax(1023));
     /// ```
     ///
     /// # Big-endian issue
@@ -2057,16 +2061,14 @@ where T: Uint + Copy + Clone + Display + Debug + ToString
     /// 
     /// # Example
     /// ```
-    /// use Cryptocol::number::*;
-    /// use Cryptocol::define_utypes_with_u128;
+    /// use Cryptocol::define_utypes_with;
+    /// define_utypes_with!(u128);
     /// 
-    /// define_utypes_with_u128!();
     /// let num = u1024::random_odd_with_MSB_set();
-    /// println!("Random number = {}", u1024::random());
-    /// println!("Random number = {}", num);
-    /// let yes = num.is_odd();
-    /// if yes  { assert!(yes); }
-    /// else    { assert!(!yes); }
+    /// println!("Random Number = {}", u1024::random());
+    /// println!("1024-bit Random Odd Number = {}", num);
+    /// assert!(num > u1024::submax(1023));
+    /// assert!(num.is_odd());
     /// ```
     pub fn random_odd_with_MSB_set() -> Self
     {
@@ -2075,7 +2077,7 @@ where T: Uint + Copy + Clone + Display + Debug + ToString
         r
     }
 
-    // pub fn random_prime_Miller_Rabin(repetition: usize) -> Self
+    // pub fn random_prime_using_Miller_Rabin(repetition: usize) -> Self
     /// Constucts a new `BigUInt<T, N>`-type object which represents a random
     /// prime number with MSB (Most Significant Bit) is set.
     /// 
@@ -2125,17 +2127,14 @@ where T: Uint + Copy + Clone + Display + Debug + ToString
     /// 
     /// # Example
     /// ```
-    /// use Cryptocol::number::*;
-    /// use Cryptocol::define_utypes_with_u128;
-    /// 
-    /// define_utypes_with_u128!();
-    /// let num = u256::random_prime_Miller_Rabin(5);
-    /// println!("Random number = {}", num);
-    /// let yes = num.is_prime_Miller_Rabin(5);
-    /// if yes  { assert!(yes) }
-    /// else    { assert!(!yes) }
+    /// use Cryptocol::define_utypes_with;
+    /// define_utypes_with!(u64);
+    ///
+    /// let num = u256::random_prime_using_Miller_Rabin(5);
+    /// println!("Random Prime Number = {}", num);
+    /// assert!(num.is_prime_using_Miller_Rabin(5));
     /// ```
-    pub fn random_prime_Miller_Rabin(repetition: usize) -> Self
+    pub fn random_prime_using_Miller_Rabin(repetition: usize) -> Self
     {
         let mut complete = false;
         let mut res = Self::new();
@@ -2144,7 +2143,7 @@ where T: Uint + Copy + Clone + Display + Debug + ToString
             res.randomize();
             res.set_MSB();
             res.set_LSB();
-            complete = res.is_prime_Miller_Rabin(repetition);
+            complete = res.is_prime_using_Miller_Rabin(repetition);
         }
         res
     }
@@ -2171,18 +2170,15 @@ where T: Uint + Copy + Clone + Display + Debug + ToString
     /// 
     /// # Example
     /// ```
-    /// use Cryptocol::number::*;
-    /// use Cryptocol::define_utypes_with_u128;
-    /// define_utypes_with_u128!();
+    /// use Cryptocol::define_utypes_with;
+    /// define_utypes_with!(u32);
     /// 
     /// let mut r = u256::new();
     /// println!("original number = {}", r);
     /// assert_eq!(r, u256::zero());
     /// r.randomize();
     /// println!("random number = {}", r);
-    /// let yes = r > u256::max() >> 1;
-    /// if yes  { assert!(yes) }
-    /// else    { assert!(!yes) }
+    /// assert_ne!(r, u256::zero());
     /// ```
     pub fn randomize(&mut self)
     {
@@ -2225,7 +2221,7 @@ where T: Uint + Copy + Clone + Display + Debug + ToString
         }
     }
 
-    // pub fn is_prime_Miller_Rabin(&self, repetition: usize) -> bool
+    // pub fn is_prime_using_Miller_Rabin(&self, repetition: usize) -> bool
     /// Tests a `BigUInt<T, N>`-type object to find whether or not it is a
     /// primne number.
     /// 
@@ -2250,13 +2246,12 @@ where T: Uint + Copy + Clone + Display + Debug + ToString
     /// 
     /// # Example
     /// ```
-    /// use Cryptocol::number::*;
-    /// use Cryptocol::define_utypes_with_u128;
+    /// use Cryptocol::define_utypes_with;
+    /// define_utypes_with!(u16);
     /// 
-    /// define_utypes_with_u128!();
     /// let num = u1024::random();
-    /// let yes = num.is_prime_Miller_Rabin(5);
-    /// println!("Is {} a random number? => {}", num, yes);
+    /// let yes = num.is_prime_using_Miller_Rabin(5);
+    /// println!("Is {} a prime number? => {}", num, yes);
     /// if yes  { assert!(yes); }
     /// else    { assert!(!yes); }
     /// ```
@@ -2265,7 +2260,7 @@ where T: Uint + Copy + Clone + Display + Debug + ToString
     /// It is just experimental for Big Endian CPUs. So, you are not encouraged
     /// to use it for Big Endian CPUs for serious purpose. Only use this crate
     /// for Big-endian CPUs with your own full responsibility.
-    pub fn is_prime_Miller_Rabin(&self, repetition: usize) -> bool
+    pub fn is_prime_using_Miller_Rabin(&self, repetition: usize) -> bool
     {
         if self.is_zero_or_one()
             { return false; }
@@ -2317,9 +2312,10 @@ where T: Uint + Copy + Clone + Display + Debug + ToString
     /// # Examples
     /// ```
     /// use Cryptocol::define_utypes_with;
-    /// define_utypes_with!(u128);
+    /// define_utypes_with!(u8);
+    /// 
     /// println!("u256 is {}-byte integer.", u256::size_in_bytes());
-    /// assert_eq!(u256::size_in_bytes(), 256 / 8);
+    /// assert_eq!(u256::size_in_bytes(), 32);
     /// ```
     #[inline]
     pub fn size_in_bytes() -> usize
@@ -2339,7 +2335,8 @@ where T: Uint + Copy + Clone + Display + Debug + ToString
     /// # Examples
     /// ```
     /// use Cryptocol::define_utypes_with;
-    /// define_utypes_with!(u128);
+    /// define_utypes_with!(u32);
+    /// 
     /// println!("u256 is {}-bit integer.", u256::size_in_bits());
     /// assert_eq!(u256::size_in_bits(), 256);
     /// ```
@@ -2362,10 +2359,10 @@ where T: Uint + Copy + Clone + Display + Debug + ToString
     /// # Examples
     /// ```
     /// use Cryptocol::define_utypes_with;
-    /// define_utypes_with!(u128);
-    /// let bi = u256::from_str_radix("A16F", 16).unwrap();
-    /// println!("bi is {}-byte integer.", bi.length_in_bytes());
-    /// assert_eq!(bi.length_in_bytes(), 256 / 8);
+    /// define_utypes_with!(u16);
+    /// let a = u256::from_str_radix("A16F", 16).unwrap();
+    /// println!("a is {}-byte integer.", a.length_in_bytes());
+    /// assert_eq!(a.length_in_bytes(), 32);
     /// ```
     #[inline]
     pub fn length_in_bytes(&self) -> usize
@@ -2386,10 +2383,11 @@ where T: Uint + Copy + Clone + Display + Debug + ToString
     /// # Examples
     /// ```
     /// use Cryptocol::define_utypes_with;
-    /// define_utypes_with!(u128);
-    /// let bi = u256::from_str_radix("A16F", 16).unwrap();
-    /// println!("bi is {}-bit integer.", bi.length_in_bits());
-    /// assert_eq!(bi.length_in_bits(), 256);
+    /// define_utypes_with!(u64);
+    /// 
+    /// let a = u256::from_str_radix("A16F", 16).unwrap();
+    /// println!("a is {}-bit integer.", a.length_in_bits());
+    /// assert_eq!(a.length_in_bits(), 256);
     /// ```
     #[inline]
     pub fn length_in_bits(&self) -> usize
@@ -3314,11 +3312,15 @@ where T: Uint + Copy + Clone + Display + Debug + ToString
         self.set_num_(0, lowest | lsb);
     }
 
-    // pub fn set_uint(&mut self, val: T)
-    /// Sets `BigUInt`-type number with `T`-type small value such as `u8`,
+    // pub fn set_uintt<U>(&mut self, val: U)
+    /// Sets `BigUInt`-type number with `U`-type small value such as `u8`,
     /// `u16`, `u32`, `u64`, and `u128` type value. This mathod set_uint()
     /// is useful especially when you initialize `BigUInt`-type big
     /// unsigned integer with a small value.
+    /// 
+    /// # Panics
+    /// If `size_of::<T>() * N` < `size_of::<U>()`, this method may panic or
+    /// its behavior may undefined though it may not panic.
     /// 
     /// # Example
     /// ```
@@ -3330,17 +3332,45 @@ where T: Uint + Copy + Clone + Display + Debug + ToString
     /// println!("a = {}", a);
     /// assert_eq!(a, b);
     /// ```
-    pub fn set_uint(&mut self, val: T)
+    pub fn set_uint<U>(&mut self, val: U)
+    where U: Uint + Copy + Clone + Display + Debug + ToString
+            + Add<Output=U> + AddAssign + Sub<Output=U> + SubAssign
+            + Mul<Output=U> + MulAssign + Div<Output=U> + DivAssign
+            + Rem<Output=U> + RemAssign
+            + Shl<Output=U> + ShlAssign + Shr<Output=U> + ShrAssign
+            + BitAnd<Output=U> + BitAndAssign + BitOr<Output=U> + BitOrAssign
+            + BitXor<Output=U> + BitXorAssign + Not<Output=U>
+            + PartialEq + PartialOrd
     {
+        let TSIZE = T::size_in_bytes();
+        let VSIZE = U::size_in_bytes();
+        let mut share = Share::<T, U>::from_src(val);
+        
         self.set_zero();
-        self.set_num_(0, val);
+        if TSIZE >= VSIZE
+        {
+            unsafe { self.set_num_(0, share.des); }
+        }
+        else    // VSIZE is multiple of TSIZE.
+        {
+            let TSIZE_BITS = TSIZE * 8;
+            for i in 0..VSIZE/TSIZE
+            {
+                unsafe { self.set_num_(i, share.des); }
+                unsafe { share.src >>= U::usize_as_Uint(TSIZE_BITS); }
+            }
+        }
     }
 
-    // pub fn set_uint(&mut self, val: T)
-    /// Sets `BigUInt`-type number with `T`-type small value such as `u8`,
+    // pub fn set_uint<U>(&mut self, val: U)
+    /// Sets `BigUInt`-type number with `U`-type small value such as `u8`,
     /// `u16`, `u32`, `u64`, and `u128` type value. This mathod set_uint()
     /// is useful especially when you initialize `BigUInt`-type big
     /// unsigned integer with a small value.
+    /// 
+    /// # Panics
+    /// If `size_of::<T>() * N` < `size_of::<U>()`, some methods may panic
+    /// or its behavior may undefined though it may not panic.
     /// 
     /// # Big-endian issue
     /// It is just experimental for Big Endian CPUs. So, you are not encouraged
@@ -3358,20 +3388,52 @@ where T: Uint + Copy + Clone + Display + Debug + ToString
     /// assert_eq!(a, b);
     /// ```
     #[cfg(target_endian = "big")]
-    pub fn _set_uint(&mut self, val: T)
+    pub fn set_uint<U>(&mut self, val: U)
+    where U: Uint + Copy + Clone + Display + Debug + ToString
+            + Add<Output=U> + AddAssign + Sub<Output=U> + SubAssign
+            + Mul<Output=U> + MulAssign + Div<Output=U> + DivAssign
+            + Rem<Output=U> + RemAssign
+            + Shl<Output=U> + ShlAssign + Shr<Output=U> + ShrAssign
+            + BitAnd<Output=U> + BitAndAssign + BitOr<Output=U> + BitOrAssign
+            + BitXor<Output=U> + BitXorAssign + Not<Output=U>
+            + PartialEq + PartialOrd
     {
+        let TSIZE = T::size_in_bytes();
+        let VSIZE = U::size_in_bytes();
+        let mut share = Share::<T, U>::from_src(val);
+        
         self.set_zero();
-        self._set_num_(N-1, val);
+        if TSIZE >= VSIZE
+        {
+            unsafe { self.set_num_(0, share.des); }
+        }
+        else    // VSIZE is multiple of TSIZE.
+        {
+            let TSIZE_BITS = TSIZE * 8;
+            let mut i = VSIZE/TSIZE - 1;
+            loop
+            {
+                unsafe { self.set_num_(i, share.des); }
+                unsafe { share.src <<= U::usize_as_Uint(TSIZE_BITS); }
+                if i == 0
+                    { break; }
+                i -= 1;
+            }
+        }
     }
 
-    // pub fn is_uint(&self, val: T) -> bool
-    /// Check whether the `BigUInt`-type number is equal to `T`-type number.
-    /// It will return `true`, if it is equal to the `T`-type number. Otherwise,
+    // pub fn is_uint<U>(&self, val: U) -> bool
+    /// Check whether the `BigUInt`-type number is equal to `U`-type number.
+    /// It will return `true`, if it is equal to the `U`-type number. Otherwise,
     /// it will return `false`.
     /// 
     /// # Output
     /// It will return `true`, if it is equal to val.
     /// Otherwise, it will return `false`.
+    /// 
+    /// # Panics
+    /// If `size_of::<T>() * N` < `size_of::<U>()`, some methods may panic
+    /// or its behavior may undefined though it may not panic.
     /// 
     /// # Counterpart Method
     /// This method is_uint() is virtually the same the method [eq_uint()](struct@BigUInt#method.eq_uint).
@@ -3388,21 +3450,122 @@ where T: Uint + Copy + Clone + Display + Debug + ToString
     /// else                   { println!("They are differnt."); }
     /// assert!(a.is_uint(25_u128));
     /// ```
-    pub fn is_uint(&self, val: T) -> bool
+    #[cfg(target_endian = "little")]
+    pub fn is_uint<U>(&self, val: U) -> bool
+    where U: Uint + Copy + Clone + Display + Debug + ToString
+            + Add<Output=U> + AddAssign + Sub<Output=U> + SubAssign
+            + Mul<Output=U> + MulAssign + Div<Output=U> + DivAssign
+            + Rem<Output=U> + RemAssign
+            + Shl<Output=U> + ShlAssign + Shr<Output=U> + ShrAssign
+            + BitAnd<Output=U> + BitAndAssign + BitOr<Output=U> + BitOrAssign
+            + BitXor<Output=U> + BitXorAssign + Not<Output=U>
+            + PartialEq + PartialOrd
     {
-        if self.get_num_(0) != val
+        let TSIZE = T::size_in_bytes();
+        let VSIZE = U::size_in_bytes();
+        let mut share = Share::<T, U>::from_src(val);
+        
+        if TSIZE >= VSIZE
         {
-            false
-        }
-        else
-        {
+            if unsafe { self.get_num_(0) != share.des }
+                { return false; }
             for i in 1..N
             {
                 if self.get_num_(i) != T::zero()
                     { return false; }
             }
-            true
         }
+        else    // VSIZE is multiple of TSIZE.
+        {
+            let TSIZE_BITS = TSIZE * 8;
+            for i in 0..VSIZE/TSIZE
+            {
+                if unsafe { self.get_num_(i) != share.des }
+                    { return false; }
+                unsafe { share.src >>= U::usize_as_Uint(TSIZE_BITS); }
+            }
+            for i in VSIZE/TSIZE..N
+            {
+                if self.get_num_(i) != T::zero()
+                    { return false; }
+            }
+        }
+        true
+    }
+
+    // pub fn is_uint<U>(&self, val: U) -> bool
+    /// Check whether the `BigUInt`-type number is equal to `U`-type number.
+    /// It will return `true`, if it is equal to the `U`-type number. Otherwise,
+    /// it will return `false`.
+    /// 
+    /// # Output
+    /// It will return `true`, if it is equal to val.
+    /// Otherwise, it will return `false`.
+    /// 
+    /// # Panics
+    /// If `size_of::<T>() * N` < `size_of::<U>()`, some methods may panic
+    /// or its behavior may undefined though it may not panic.
+    /// 
+    /// # Counterpart Method
+    /// This method is_uint() is virtually the same the method [eq_uint()](struct@BigUInt#method.eq_uint).
+    /// However, you may want to use this method is_uint() rather than [eq_uint()](struct@BigUInt#method.eq_uint),
+    /// if you know that this method is_uint() is a bit faster than [eq_uint()](struct@BigUInt#method.eq_uint),
+    /// 
+    /// # Example
+    /// ```
+    /// use Cryptocol::define_utypes_with;
+    /// define_utypes_with!(u128);
+    /// let mut a = u1024::new();
+    /// a.set_uint(25);
+    /// if a.is_uint(25u128)   { println!("They are the same."); }
+    /// else                   { println!("They are differnt."); }
+    /// assert!(a.is_uint(25_u128));
+    /// ```
+    #[cfg(target_endian = "big")]
+    pub fn is_uint<U>(&self, val: U) -> bool
+    where U: Uint + Copy + Clone + Display + Debug + ToString
+            + Add<Output=U> + AddAssign + Sub<Output=U> + SubAssign
+            + Mul<Output=U> + MulAssign + Div<Output=U> + DivAssign
+            + Rem<Output=U> + RemAssign
+            + Shl<Output=U> + ShlAssign + Shr<Output=U> + ShrAssign
+            + BitAnd<Output=U> + BitAndAssign + BitOr<Output=U> + BitOrAssign
+            + BitXor<Output=U> + BitXorAssign + Not<Output=U>
+            + PartialEq + PartialOrd
+    {
+        let TSIZE = T::size_in_bytes();
+        let VSIZE = U::size_in_bytes();
+        let mut share = Share::<T, U>::from_src(val);
+        
+        if TSIZE >= VSIZE
+        {
+            if unsafe { self.get_num_(0) != share.des }
+                { return false; }
+            for i in 1..N
+            {
+                if self.get_num_(i) != T::zero()
+                    { return false; }
+            }
+        }
+        else    // VSIZE is multiple of TSIZE.
+        {
+            let TSIZE_BITS = TSIZE * 8;
+            let mut i = VSIZE/TSIZE - 1;
+            loop
+            {
+                if unsafe { self.get_num_(i) != share.des }
+                    { return false; }
+                if i == 0
+                    { break; }
+                unsafe { share.src <<= U::usize_as_Uint(TSIZE_BITS); }      
+                i -= 1;          
+            }
+            for i in VSIZE/TSIZE..N
+            {
+                if self.get_num_(i) != T::zero()
+                    { return false; }
+            }
+        }
+        true
     }
 
     // pub fn is_odd(&self) -> bool
@@ -3728,8 +3891,8 @@ where T: Uint + Copy + Clone + Display + Debug + ToString
     /// Then, you don't have to use `partial_cmp_uint()` directly.
     /// 
     /// # Panics
-    /// If size_of::<T>() * N <= 128, some methods may panic or its behavior may
-    /// undefined though it may not panic.
+    /// If `size_of::<T>() * N` < `size_of::<U>()`, This method may panic
+    /// or its behavior may undefined though it may not panic.
     /// 
     /// # Output
     /// It returns `Ordering::Greater` wrapped by `Some` of enum `Option`
@@ -3787,13 +3950,13 @@ where T: Uint + Copy + Clone + Display + Debug + ToString
         Some(Ordering::Equal)
     }
 
-    // pub fn lt_uint<U>(&self, other: T) -> bool
+    // pub fn lt_uint<U>(&self, other: U) -> bool
     /// Returns `true` if `self` is less than `other`.
     /// Otherwise, it returns `false`.
     /// 
     /// # Panics
-    /// If size_of::<T>() * N <= 128, some methods may panic or its behavior may
-    /// undefined though it may not panic.
+    /// If `size_of::<T>() * N` < `size_of::<U>()`, This method may panic
+    /// or its behavior may undefined though it may not panic.
     /// 
     /// # Output
     /// It returns `true` if `self` is less than `other`.
@@ -3820,8 +3983,8 @@ where T: Uint + Copy + Clone + Display + Debug + ToString
     /// Otherwise, it returns `false`.
     /// 
     /// # Panics
-    /// If size_of::<T>() * N <= 128, some methods may panic or its behavior may
-    /// undefined though it may not panic.
+    /// If `size_of::<T>() * N` < `size_of::<U>()`, This method may panic
+    /// or its behavior may undefined though it may not panic.
     /// 
     /// # Output
     /// It returns `true` if `self` is greater than `other`.
@@ -3848,8 +4011,8 @@ where T: Uint + Copy + Clone + Display + Debug + ToString
     /// Otherwise, it returns `false`.
     /// 
     /// # Panics
-    /// If size_of::<T>() * N <= 128, some methods may panic or its behavior may
-    /// undefined though it may not panic.
+    /// If `size_of::<T>() * N` < `size_of::<U>()`, This method may panic
+    /// or its behavior may undefined though it may not panic.
     /// 
     /// # Output
     /// It returns `true` if `self` is less than or equal to `other`.
@@ -3876,8 +4039,8 @@ where T: Uint + Copy + Clone + Display + Debug + ToString
     /// Otherwise, it returns `false`.
     /// 
     /// # Panics
-    /// If size_of::<T>() * N <= 128, some methods may panic or its behavior may
-    /// undefined though it may not panic.
+    /// If `size_of::<T>() * N` < `size_of::<U>()`, This method may panic
+    /// or its behavior may undefined though it may not panic.
     /// 
     /// # Output
     /// It returns `true` if `self` is greater than or equal to `other`.
@@ -3904,8 +4067,8 @@ where T: Uint + Copy + Clone + Display + Debug + ToString
     /// Otherwise, it returns `false`.
     /// 
     /// # Panics
-    /// If size_of::<T>() * N <= 128, some methods may panic or its behavior may
-    /// undefined though it may not panic.
+    /// If `size_of::<T>() * N` < `size_of::<U>()`, This method may panic
+    /// or its behavior may undefined though it may not panic.
     /// 
     /// # Output
     /// It returns `true` if `self` is equal to `other`.
@@ -3938,8 +4101,8 @@ where T: Uint + Copy + Clone + Display + Debug + ToString
     /// wrapping around at the boundary of the type.
     /// 
     /// # Panics
-    /// If size_of::<T>() * N <= 128, some methods may panic or its behavior may
-    /// undefined though it may not panic.
+    /// If `size_of::<T>() * N` < `size_of::<U>()`, This method may panic
+    /// or its behavior may undefined though it may not panic.
     /// 
     /// # Features
     /// This allows chaining together multiple additions to create even a wider
@@ -3989,8 +4152,8 @@ where T: Uint + Copy + Clone + Display + Debug + ToString
     /// of the type, and return the resulting carry.
     /// 
     /// # Panics
-    /// If size_of::<T>() * N <= 128, some methods may panic or its behavior may
-    /// undefined though it may not panic.
+    /// If `size_of::<T>() * N` < `size_of::<U>()`, This method may panic
+    /// or its behavior may undefined though it may not panic.
     /// 
     /// # Features
     /// This allows chaining together multiple additions to create even a wider
@@ -4063,8 +4226,8 @@ where T: Uint + Copy + Clone + Display + Debug + ToString
     /// Computes `self` + `rhs`, wrapping around at the boundary of the type.
     /// 
     /// # Panics
-    /// If size_of::<T>() * N <= 128, some methods may panic or its behavior may
-    /// undefined though it may not panic.
+    /// If `size_of::<T>() * N` < `size_of::<U>()`, This method may panic
+    /// or its behavior may undefined though it may not panic.
     /// 
     /// # Output
     /// It returns `self` + `rhs` with wrapping (modular) addition.
@@ -4127,8 +4290,8 @@ where T: Uint + Copy + Clone + Display + Debug + ToString
     /// and assign the result to `self` back.
     /// 
     /// # Panics
-    /// If size_of::<T>() * N <= 128, some methods may panic or its behavior may
-    /// undefined though it may not panic.
+    /// If `size_of::<T>() * N` < `size_of::<U>()`, This method may panic
+    /// or its behavior may undefined though it may not panic.
     /// 
     /// # Feature
     /// Wrapping (modular) addition.
@@ -4181,8 +4344,8 @@ where T: Uint + Copy + Clone + Display + Debug + ToString
     /// Calculates `self` + `rhs`.
     /// 
     /// # Panics
-    /// If size_of::<T>() * N <= 128, some methods may panic or its behavior may
-    /// undefined though it may not panic.
+    /// If `size_of::<T>() * N` < `size_of::<U>()`, This method may panic
+    /// or its behavior may undefined though it may not panic.
     /// 
     /// # Output
     /// It returns a tuple of the addition `self` + `rhs` along with a boolean
@@ -4216,8 +4379,8 @@ where T: Uint + Copy + Clone + Display + Debug + ToString
     /// Calculates `self` + `rhs`, and assigns the result to `self` back.
     /// 
     /// # Panics
-    /// If size_of::<T>() * N <= 128, some methods may panic or its behavior may
-    /// undefined though it may not panic.
+    /// If `size_of::<T>() * N` < `size_of::<U>()`, This method may panic
+    /// or its behavior may undefined though it may not panic.
     /// 
     /// # Output
     /// It returns true if an arithmetic overflow would occur.
@@ -4250,8 +4413,8 @@ where T: Uint + Copy + Clone + Display + Debug + ToString
     /// Computes `self` + `rhs`.
     /// 
     /// # Panics
-    /// If size_of::<T>() * N <= 128, some methods may panic or its behavior may
-    /// undefined though it may not panic.
+    /// If `size_of::<T>() * N` < `size_of::<U>()`, This method may panic
+    /// or its behavior may undefined though it may not panic.
     /// 
     /// # Output
     /// It returns the sum `self` + `rhs` wrapped by `Some` of enum `Option`
@@ -4297,11 +4460,10 @@ where T: Uint + Copy + Clone + Display + Debug + ToString
     /// Computes `self` + `rhs`, assuming overflow cannot occur.
     /// 
     /// # Panics
-    /// If overflow occurred, it will panic. So, use this method only when you
-    /// are sure that overflow will not occur. 
-    /// 
-    /// If size_of::<T>() * N <= 128, some methods may panic or its behavior may
-    /// undefined though it may not panic.
+    /// - If overflow occurred, it will panic. So, use this method
+    /// only when you are sure that overflow will not occur. 
+    /// - If `size_of::<T>() * N` < `size_of::<U>()`, This method may panic
+    /// or its behavior may undefined though it may not panic.
     /// 
     /// # Output
     /// It returns the sum `self` + `rhs` if overflow did not occur.
@@ -4335,8 +4497,8 @@ where T: Uint + Copy + Clone + Display + Debug + ToString
     /// instead of overflowing.
     /// 
     /// # Panics
-    /// If size_of::<T>() * N <= 128, some methods may panic or its behavior may
-    /// undefined though it may not panic.
+    /// If `size_of::<T>() * N` < `size_of::<U>()`, This method may panic
+    /// or its behavior may undefined though it may not panic.
     /// 
     /// # Output
     /// It returns the sum `self` + `rhs` if overflow did not occur.
@@ -4371,8 +4533,8 @@ where T: Uint + Copy + Clone + Display + Debug + ToString
     /// instead of overflowing, and assigns the result to `self` back.
     /// 
     /// # Panics
-    /// If size_of::<T>() * N <= 128, some methods may panic or its behavior may
-    /// undefined though it may not panic.
+    /// If `size_of::<T>() * N` < `size_of::<U>()`, This method may panic
+    /// or its behavior may undefined though it may not panic.
     /// 
     /// # Example
     /// ```
@@ -4405,8 +4567,8 @@ where T: Uint + Copy + Clone + Display + Debug + ToString
     /// difference and the output borrow.
     /// 
     /// # Panics
-    /// If size_of::<T>() * N <= 128, some methods may panic or its behavior may
-    /// undefined though it may not panic.
+    /// If `size_of::<T>() * N` < `size_of::<U>()`, This method may panic
+    /// or its behavior may undefined though it may not panic.
     /// 
     /// # Features
     /// It performs “ternary subtraction” by subtracting a primitive unsigned
@@ -4450,8 +4612,8 @@ where T: Uint + Copy + Clone + Display + Debug + ToString
     /// and returns the output borrow.
     /// 
     /// # Panics
-    /// If size_of::<T>() * N <= 128, some methods may panic or its behavior may
-    /// undefined though it may not panic.
+    /// If `size_of::<T>() * N` < `size_of::<U>()`, This method may panic
+    /// or its behavior may undefined though it may not panic.
     /// 
     /// # Features
     /// It performs “ternary subtraction” by subtracting an primitive unsiged
@@ -4519,8 +4681,8 @@ where T: Uint + Copy + Clone + Display + Debug + ToString
     /// unsigned integer and returns its result in a type of BigUInt.
     /// 
     /// # Panics
-    /// If size_of::<T>() * N <= 128, some methods may panic or its behavior may
-    /// undefined though it may not panic.
+    /// If `size_of::<T>() * N` < `size_of::<U>()`, This method may panic
+    /// or its behavior may undefined though it may not panic.
     /// 
     /// # Output
     /// It returns the subtraction of `rhs` from `self`.
@@ -4555,8 +4717,8 @@ where T: Uint + Copy + Clone + Display + Debug + ToString
     /// and returns the result to `self` back.
     /// 
     /// # Panics
-    /// If size_of::<T>() * N <= 128, some methods may panic or its behavior may
-    /// undefined though it may not panic.
+    /// If `size_of::<T>() * N` < `size_of::<U>()`, This method may panic
+    /// or its behavior may undefined though it may not panic.
     /// 
     /// # Example
     /// ```
@@ -4580,8 +4742,8 @@ where T: Uint + Copy + Clone + Display + Debug + ToString
     /// Calculates `self` - `rhs`.
     /// 
     /// # Panics
-    /// If size_of::<T>() * N <= 128, some methods may panic or its behavior may
-    /// undefined though it may not panic.
+    /// If `size_of::<T>() * N` < `size_of::<U>()`, This method may panic
+    /// or its behavior may undefined though it may not panic.
     /// 
     /// # Output
     /// It returns a tuple of the subtraction `self` - `rhs` along with a boolean
@@ -4615,8 +4777,8 @@ where T: Uint + Copy + Clone + Display + Debug + ToString
     /// Calculates `self` - `rhs`, and assigns the result to `self` back.
     /// 
     /// # Panics
-    /// If size_of::<T>() * N <= 128, some methods may panic or its behavior may
-    /// undefined though it may not panic.
+    /// If `size_of::<T>() * N` < `size_of::<U>()`, This method may panic
+    /// or its behavior may undefined though it may not panic.
     /// 
     /// # Output
     /// It returns true if an arithmetic unerflow would occur.
@@ -4649,8 +4811,8 @@ where T: Uint + Copy + Clone + Display + Debug + ToString
     /// Computes `self` - `rhs`.
     /// 
     /// # Panics
-    /// If size_of::<T>() * N <= 128, some methods may panic or its behavior may
-    /// undefined though it may not panic.
+    /// If `size_of::<T>() * N` < `size_of::<U>()`, This method may panic
+    /// or its behavior may undefined though it may not panic.
     /// 
     /// # Output
     /// It returns the difference `self` - `rhs` wrapped by `Some`
@@ -4690,8 +4852,8 @@ where T: Uint + Copy + Clone + Display + Debug + ToString
     /// # Panics
     /// - If underflow occurred, it will panic. So, use this method only when
     /// you are sure that underflow will not occur.
-    /// - If size_of::<T>() * N <= 128, some methods may panic or its behavior
-    /// may undefined though it may not panic.
+    /// - If `size_of::<T>() * N` < `size_of::<U>()`, This method may panic
+    /// or its behavior may undefined though it may not panic.
     /// 
     /// # Output
     /// It returns the difference `self` - `rhs` if underflow did not occur.
@@ -4725,8 +4887,8 @@ where T: Uint + Copy + Clone + Display + Debug + ToString
     /// instead of underflowing.
     /// 
     /// # Panics
-    /// If size_of::<T>() * N <= 128, some methods may panic or its behavior may
-    /// undefined though it may not panic.
+    /// If `size_of::<T>() * N` < `size_of::<U>()`, This method may panic
+    /// or its behavior may undefined though it may not panic.
     /// 
     /// # Output
     /// It returns the difference `self` - `rhs` if underflowing did not occur.
@@ -4761,8 +4923,8 @@ where T: Uint + Copy + Clone + Display + Debug + ToString
     /// instead of underflowing, and assigns the result to `self` back.
     /// 
     /// # Panics
-    /// If size_of::<T>() * N <= 128, some methods may panic or its behavior may
-    /// undefined though it may not panic.
+    /// If `size_of::<T>() * N` < `size_of::<U>()`, This method may panic
+    /// or its behavior may undefined though it may not panic.
     /// 
     /// # Feature
     /// `self` will be the difference `self` - `rhs` if underflowing
@@ -4795,8 +4957,8 @@ where T: Uint + Copy + Clone + Display + Debug + ToString
     /// Computes the absolute difference between `self` and `other`.
     /// 
     /// # Panics
-    /// If size_of::<T>() * N <= 128, some methods may panic or its behavior may
-    /// undefined though it may not panic.
+    /// If `size_of::<T>() * N` < `size_of::<U>()`, This method may panic
+    /// or its behavior may undefined though it may not panic.
     /// 
     /// # Output
     /// It returns the absolute difference between `self` and `other`.
@@ -4843,8 +5005,8 @@ where T: Uint + Copy + Clone + Display + Debug + ToString
     /// the possibility to overflow.
     /// 
     /// # Panics
-    /// If size_of::<T>() * N <= 128, some methods may panic or its behavior may
-    /// undefined though it may not panic.
+    /// If `size_of::<T>() * N` < `size_of::<U>()`, This method may panic
+    /// or its behavior may undefined though it may not panic.
     /// 
     /// # Output
     /// It returns `self` * `rhs` + `carry` in the form of a tuple of the
@@ -4896,8 +5058,8 @@ where T: Uint + Copy + Clone + Display + Debug + ToString
     /// to `self` back and returns the high-order bits of the result.
     /// 
     /// # Panics
-    /// If size_of::<T>() * N <= 128, some methods may panic or its behavior may
-    /// undefined though it may not panic.
+    /// If `size_of::<T>() * N` < `size_of::<U>()`, This method may panic
+    /// or its behavior may undefined though it may not panic.
     /// 
     /// # Output
     /// It returns the high-order (overflow) bits of `self` * `rhs` + `carry`
@@ -4981,8 +5143,8 @@ where T: Uint + Copy + Clone + Display + Debug + ToString
     /// to overflow.
     /// 
     /// # Panics
-    /// If size_of::<T>() * N <= 128, some methods may panic or its behavior may
-    /// undefined though it may not panic.
+    /// If `size_of::<T>() * N` < `size_of::<U>()`, This method may panic
+    /// or its behavior may undefined though it may not panic.
     /// 
     /// # Output
     /// It returns `self` * `rhs` in the form of a tuple of the low-order
@@ -5031,8 +5193,8 @@ where T: Uint + Copy + Clone + Display + Debug + ToString
     /// to overflow.
     /// 
     /// # Panics
-    /// If size_of::<T>() * N <= 128, some methods may panic or its behavior may
-    /// undefined though it may not panic.
+    /// If `size_of::<T>() * N` < `size_of::<U>()`, This method may panic
+    /// or its behavior may undefined though it may not panic.
     /// 
     /// # Output
     /// It returns the high-order (overflow) bits of the result `self` * `rhs`.
@@ -5079,8 +5241,8 @@ where T: Uint + Copy + Clone + Display + Debug + ToString
     /// of type `T` and returns its result in a type of BigUInt.
     /// 
     /// # Panics
-    /// If size_of::<T>() * N <= 128, some methods may panic or its behavior may
-    /// undefined though it may not panic.
+    /// If `size_of::<T>() * N` < `size_of::<U>()`, This method may panic
+    /// or its behavior may undefined though it may not panic.
     /// 
     /// # Output
     /// It returns the multiplication of `self` and `rhs`.
@@ -5114,8 +5276,8 @@ where T: Uint + Copy + Clone + Display + Debug + ToString
     /// Multiplies self which is of `BigUInt` type with rhs of type `U`.
     /// 
     /// # Panics
-    /// If size_of::<T>() * N <= 128, some methods may panic or its behavior may
-    /// undefined though it may not panic.
+    /// If `size_of::<T>() * N` < `size_of::<U>()`, This method may panic
+    /// or its behavior may undefined though it may not panic.
     /// 
     /// # Example
     /// ```
@@ -5166,8 +5328,8 @@ where T: Uint + Copy + Clone + Display + Debug + ToString
     /// Calculates `self` * `rhs`.
     /// 
     /// # Panics
-    /// If size_of::<T>() * N <= 128, some methods may panic or its behavior may
-    /// undefined though it may not panic.
+    /// If `size_of::<T>() * N` < `size_of::<U>()`, This method may panic
+    /// or its behavior may undefined though it may not panic.
     /// 
     /// # Output
     /// It returns a tuple of the multiplication `self` * `rhs` along
@@ -5203,8 +5365,8 @@ where T: Uint + Copy + Clone + Display + Debug + ToString
     /// Calculates `self` * `rhs`, and assigns the result to `self` back.
     /// 
     /// # Panics
-    /// If size_of::<T>() * N <= 128, some methods may panic or its behavior may
-    /// undefined though it may not panic.
+    /// If `size_of::<T>() * N` < `size_of::<U>()`, This method may panic
+    /// or its behavior may undefined though it may not panic.
     /// 
     /// # Output
     /// It returns true if an arithmetic overflow would occur.
@@ -5237,8 +5399,8 @@ where T: Uint + Copy + Clone + Display + Debug + ToString
     /// Computes `self` * `rhs`.
     /// 
     /// # Panics
-    /// If size_of::<T>() * N <= 128, some methods may panic or its behavior may
-    /// undefined though it may not panic.
+    /// If `size_of::<T>() * N` < `size_of::<U>()`, This method may panic
+    /// or its behavior may undefined though it may not panic.
     /// 
     /// # Output
     /// It returns the sum `self` * `rhs` wrapped by `Some` of enum `Option`
@@ -5277,8 +5439,8 @@ where T: Uint + Copy + Clone + Display + Debug + ToString
     /// # Panics
     /// - If overflow occurred, it will panic. So, use this method only when
     /// you are sure that overflow will not occur.
-    /// - If size_of::<T>() * N <= 128, some methods may panic or its behavior
-    /// may undefined though it may not panic.
+    /// - If `size_of::<T>() * N` < `size_of::<U>()`, This method may panic
+    /// or its behavior may undefined though it may not panic.
     /// 
     /// # Output
     /// It returns the sum `self` * `rhs` if overflow did not occur.
@@ -5312,8 +5474,8 @@ where T: Uint + Copy + Clone + Display + Debug + ToString
     /// instead of overflowing.
     /// 
     /// # Panics
-    /// If size_of::<T>() * N <= 128, some methods may panic or its behavior may
-    /// undefined though it may not panic.
+    /// If `size_of::<T>() * N` < `size_of::<U>()`, This method may panic
+    /// or its behavior may undefined though it may not panic.
     /// 
     /// # Output
     /// It returns the sum `self` + `rhs` if overflow did not occur.
@@ -5348,8 +5510,8 @@ where T: Uint + Copy + Clone + Display + Debug + ToString
     /// instead of overflowing, and assigns the result to `self` back.
     /// 
     /// # Panics
-    /// If size_of::<T>() * N <= 128, some methods may panic or its behavior may
-    /// undefined though it may not panic.
+    /// If `size_of::<T>() * N` < `size_of::<U>()`, This method may panic
+    /// or its behavior may undefined though it may not panic.
     /// 
     /// # Example
     /// ```
@@ -5395,12 +5557,12 @@ where T: Uint + Copy + Clone + Display + Debug + ToString
 
     /*** Division ***/
 
-    // pub fn divide_fully_uint<U>t(&self, rhs: U) -> (Self, T)
+    // pub fn divide_fully_uint<U>(&self, rhs: U) -> (Self, T)
     /// Divide `BigUInt<T, N>` by `rhs` so as to get quotient and remainder
     /// 
     /// # Panics
-    /// If size_of::<T>() * N <= 128, some methods may panic or its behavior may
-    /// undefined though it may not panic.
+    /// If `size_of::<T>() * N` < `size_of::<U>()`, This method may panic
+    /// or its behavior may undefined though it may not panic.
     /// 
     /// # Output
     /// It returns tuple of quotient and remainder. quotient is `Self` type
@@ -6067,8 +6229,8 @@ where T: Uint + Copy + Clone + Display + Debug + ToString
     /// 
     /// # Panics
     /// - This function will panic if rhs is zero.
-    /// - If size_of::<T>() * N <= 128, This method may panic or its behavior may
-    /// undefined though it may not panic.
+    /// - If `size_of::<T>() * N` < `size_of::<U>()`, This method may panic
+    /// or its behavior may undefined though it may not panic.
     /// 
     /// # Output
     /// It returns the smallest value greater than or equal to self that is
@@ -6100,8 +6262,8 @@ where T: Uint + Copy + Clone + Display + Debug + ToString
     /// 
     /// # Panics
     /// - This function will panic if rhs is zero.
-    /// - If size_of::<T>() * N <= 128, This method may panic or its behavior may
-    /// undefined though it may not panic.
+    /// - If `size_of::<T>() * N` < `size_of::<U>()`, This method may panic
+    /// or its behavior may undefined though it may not panic.
     /// 
     /// # Feature
     /// `self` will be the smallest value greater than or equal to self that is
@@ -6150,8 +6312,8 @@ where T: Uint + Copy + Clone + Display + Debug + ToString
     /// of type `BigUInt` by squaring. The type `U` has the trait `Uint`.
     /// 
     /// # Panics
-    /// If size_of::<T>() * N <= 128, some methods may panic or its behavior may
-    /// undefined though it may not panic.
+    /// If `size_of::<T>() * N` < `size_of::<U>()`, This method may panic
+    /// or its behavior may undefined though it may not panic.
     /// 
     /// # Output
     /// It returns the result of `self` raised to the power of `exp`.
@@ -6203,8 +6365,8 @@ where T: Uint + Copy + Clone + Display + Debug + ToString
     /// and assign the result to `self` back.
     /// 
     /// # Panics
-    /// If size_of::<T>() * N <= 128, some methods may panic or its behavior may
-    /// undefined though it may not panic.
+    /// If `size_of::<T>() * N` < `size_of::<U>()`, This method may panic
+    /// or its behavior may undefined though it may not panic.
     /// 
     /// # Argument
     /// The argument `exp` is the primitive unsigned integer type.
@@ -6255,8 +6417,8 @@ where T: Uint + Copy + Clone + Display + Debug + ToString
     /// type. The type `U` has the trait `Uint`.
     /// 
     /// # Panics
-    /// If size_of::<T>() * N <= 128, some methods may panic or its behavior may
-    /// undefined though it may not panic.
+    /// If `size_of::<T>() * N` < `size_of::<U>()`, This method may panic
+    /// or its behavior may undefined though it may not panic.
     /// 
     /// # Output
     /// It returns the result of `self` raised to the power of `exp`.
@@ -6312,8 +6474,8 @@ where T: Uint + Copy + Clone + Display + Debug + ToString
     /// boundary of the type, and assign the result to `self` back.
     /// 
     /// # Panics
-    /// If size_of::<T>() * N <= 128, some methods may panic or its behavior may
-    /// undefined though it may not panic.
+    /// If `size_of::<T>() * N` < `size_of::<U>()`, This method may panic
+    /// or its behavior may undefined though it may not panic.
     /// 
     /// # Argument
     /// The argument `exp` is the primitive unsigned integer type.
@@ -6390,8 +6552,8 @@ where T: Uint + Copy + Clone + Display + Debug + ToString
     /// Calculates the logarithm of the number with respect to a `base`.
     /// 
     /// # Panics
-    /// If size_of::<T>() * N <= 128, some methods may panic or its behavior may
-    /// undefined though it may not panic.
+    /// If `size_of::<T>() * N` < `size_of::<U>()`, This method may panic
+    /// or its behavior may undefined though it may not panic.
     /// 
     /// # Output
     /// It returns the logarithm of the number with respect to an arbitrary
@@ -6436,8 +6598,8 @@ where T: Uint + Copy + Clone + Display + Debug + ToString
     /// Calculates the logarithm of the number with respect to a `base`.
     /// 
     /// # Panics
-    /// If size_of::<T>() * N <= 128, some methods may panic or its behavior may
-    /// undefined though it may not panic.
+    /// If `size_of::<T>() * N` < `size_of::<U>()`, This method may panic
+    /// or its behavior may undefined though it may not panic.
     /// 
     /// # Output
     /// It returns the logarithm of the number with respect to an arbitrary
@@ -8472,8 +8634,8 @@ where T: Uint + Copy + Clone + Display + Debug + ToString
     /// 
     /// # Panics
     /// - This function will panic if rhs is zero.
-    /// - If size_of::<T>() * N <= 128, This method may panic or its behavior may
-    /// undefined though it may not panic.
+    /// - If `size_of::<T>() * N` <= `128`, This method may panic
+    /// or its behavior may undefined though it may not panic.
     /// 
     /// # Output
     /// It returns the smallest value greater than or equal to self that is
@@ -8497,8 +8659,8 @@ where T: Uint + Copy + Clone + Display + Debug + ToString
     /// 
     /// # Panics
     /// - This function will panic if rhs is zero.
-    /// - If size_of::<T>() * N <= 128, This method may panic or its behavior may
-    /// undefined though it may not panic.
+    /// - If `size_of::<T>() * N` <= `128`, This method may panic
+    /// or its behavior may undefined though it may not panic.
     /// 
     /// # Feature
     /// `self` will be the smallest value greater than or equal to self that is

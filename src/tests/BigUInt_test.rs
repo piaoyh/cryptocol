@@ -16,8 +16,6 @@ use std::convert::*;
 use std::mem::size_of;
 use std::str::FromStr;
 
-use rand_distr::num_traits::PrimInt; //{u256, BigInteger, HugeInteger};
-
 use Cryptocol::number::*;
 use Cryptocol::define_utypes_with;
 use Cryptocol::define_Utypes_with_utypes;
@@ -33,7 +31,9 @@ pub fn test_main_BigUInt()
 {
 //    BigUInt_quick_start___main();
 //    BigUInt_constructors___main();
-
+//    BigUInt_random_number___main();   // Prime number related methods not yet finished
+//    BigUInt_get_size___main();
+    BigUInt_get_set_check___main();
     // BigUInt_carrying_add___main();
     // BigUInt_carrying_add_assign___main();
     //BigUInt_wrapping_add___main();
@@ -542,7 +542,6 @@ fn BigUInt_from_be_bytes___main()
     println!("---------------------------");
 }
 
-/////THIS/////
 fn BigUInt_from_le___main()
 {
     println!("BigUInt_from_le___main");
@@ -612,7 +611,212 @@ fn BigUInt_generate_check_bits___main()
     println!("---------------------------");
 }
 
+fn BigUInt_random_number___main()
+{
+    BigUInt_random___main();
+    BigUInt_random_odd___main();
+    BigUInt_random_less_than___main();
+    BigUInt_random_odd_less_than___main();
+    BigUInt_random_with_MSB_set___main();
+    BigUInt_random_odd_with_MSB_set___main();
+    BigUInt_random_prime_using_Miller_Rabin___main();
+    BigUInt_randomize___main();
+    BigUInt_is_prime_using_Miller_Rabin___main();
+}
 
+fn BigUInt_random___main()
+{
+    println!("BigUInt_random___main");
+    use Cryptocol::define_utypes_with;
+    define_utypes_with!(u64);
+    println!("Random Number: {}", u1024::random());
+    println!("---------------------------");
+}
+
+fn BigUInt_random_odd___main()
+{
+    println!("BigUInt_random_odd___main");
+    use Cryptocol::define_utypes_with;
+    define_utypes_with!(u128);
+
+    let r = u1024::random_odd();
+    println!("Random Odd Number: {}", r);
+    assert!(r.is_odd());
+    println!("---------------------------");
+}
+
+fn BigUInt_random_less_than___main()
+{
+    println!("BigUInt_random_less_than___main");
+    use Cryptocol::define_utypes_with;
+    define_utypes_with!(u32);
+
+    let ceiling = u1024::max() / u1024::from_uint::<u32>(3);
+    let r = u1024::random_less_than(&ceiling);
+    println!("Random Number less than {} is\n{}", ceiling, r);
+    assert!(r < ceiling);
+    println!("---------------------------");
+}
+
+fn BigUInt_random_odd_less_than___main()
+{
+    println!("BigUInt_random_odd_less_than___main");
+    use Cryptocol::define_utypes_with;
+    define_utypes_with!(u16);
+
+    let ceiling = u1024::max() / u1024::from_uint::<u32>(3);
+    let r = u1024::random_odd_less_than(&ceiling);
+    println!("Random Odd Number less than {} is\n{}", ceiling, u1024::random_odd_less_than(&ceiling));
+    assert!(r < ceiling);
+    assert!(r.is_odd());
+    println!("---------------------------");
+}
+
+fn BigUInt_random_with_MSB_set___main()
+{
+    println!("BigUInt_random_with_MSB_set___main");
+    use Cryptocol::define_utypes_with;
+    define_utypes_with!(u8);
+
+    let num = u1024::random_with_MSB_set();
+    println!("Random Number = {}", u1024::random());
+    println!("1024-bit Random Number = {}", num);
+    assert!(num > u1024::submax(1023));
+    println!("---------------------------");
+}
+
+fn BigUInt_random_odd_with_MSB_set___main()
+{
+    println!("BigUInt_random_with_MSB_set___main");
+    use Cryptocol::define_utypes_with;
+    define_utypes_with!(u128);
+
+    let num = u1024::random_odd_with_MSB_set();
+    println!("Random Number = {}", u1024::random());
+    println!("1024-bit Random Odd Number = {}", num);
+    assert!(num > u1024::submax(1023));
+    assert!(num.is_odd());
+    println!("---------------------------");
+}
+
+fn BigUInt_random_prime_using_Miller_Rabin___main()
+{
+    println!("BigUInt_random_prime_using_Miller_Rabin___main");
+    use Cryptocol::define_utypes_with;
+    define_utypes_with!(u64);
+
+    let num = u256::random_prime_using_Miller_Rabin(5);
+    println!("Random Prime Number = {}", num);
+    assert!(num.is_prime_using_Miller_Rabin(5));
+    println!("---------------------------");
+}
+
+fn BigUInt_randomize___main()
+{
+    println!("BigUInt_randomize___main");
+    use Cryptocol::define_utypes_with;
+    define_utypes_with!(u32);
+
+    let mut r = u256::new();
+    println!("original number = {}", r);
+    assert_eq!(r, u256::zero());
+    r.randomize();
+    println!("random number = {}", r);
+    assert_ne!(r, u256::zero());
+    println!("---------------------------");
+}
+
+fn BigUInt_is_prime_using_Miller_Rabin___main()
+{
+    println!("BigUInt_is_prime_using_Miller_Rabin___main");
+    use Cryptocol::define_utypes_with;
+    define_utypes_with!(u16);
+
+    let num = u1024::random();
+    let yes = num.is_prime_using_Miller_Rabin(5);
+    println!("Is {} a prime number? => {}", num, yes);
+    if yes  { assert!(yes); }
+    else    { assert!(!yes); }
+    println!("---------------------------");
+}
+
+fn BigUInt_get_size___main()
+{
+    BigUInt_size_in_bytes___main();
+    BigUInt_size_in_bits___main();
+    BigUInt_length_in_bytes___main();
+    BigUInt_length_in_bits___main();
+}
+
+fn BigUInt_size_in_bytes___main()
+{
+    use Cryptocol::define_utypes_with;
+    define_utypes_with!(u8);
+
+    println!("u256 is {}-byte integer.", u256::size_in_bytes());
+    assert_eq!(u256::size_in_bytes(), 32);
+}
+
+fn BigUInt_size_in_bits___main()
+{
+    use Cryptocol::define_utypes_with;
+    define_utypes_with!(u32);
+
+    println!("u256 is {}-bit integer.", u256::size_in_bits());
+    assert_eq!(u256::size_in_bits(), 256);
+}
+
+fn BigUInt_length_in_bytes___main()
+{
+    use Cryptocol::define_utypes_with;
+    define_utypes_with!(u16);
+
+    let a = u256::from_str_radix("A16F", 16).unwrap();
+    println!("a is {}-byte integer.", a.length_in_bytes());
+    assert_eq!(a.length_in_bytes(), 32);
+}
+
+fn BigUInt_length_in_bits___main()
+{
+    use Cryptocol::define_utypes_with;
+    define_utypes_with!(u64);
+
+    let a = u256::from_str_radix("A16F", 16).unwrap();
+    println!("a is {}-bit integer.", a.length_in_bits());
+    assert_eq!(a.length_in_bits(), 256);
+}
+
+fn BigUInt_get_set_check___main()
+{
+    BigUInt_turn_check_bits___main();
+    BigUInt_get_num___main();
+    BigUInt_get_num____main();
+    BigUInt_set_num___main();
+    BigUInt_set_num____main();
+    BigUInt_get_number___main();
+    BigUInt_set_number___main();
+    BigUInt_copy_within___main();
+    BigUInt_set_zero___main();
+    BigUInt_is_zero___main();
+    BigUInt_set_one___main();
+    BigUInt_is_one___main();
+    BigUInt_is_zero_or_one___main();
+    BigUInt_set_max___main();
+    BigUInt_set_submax___main();
+    BigUInt_set_halfmax___main();
+    BigUInt_is_max___main();
+    BigUInt_set_msb___main();
+    BigUInt_set_lsb___main();
+    BigUInt_set_uint___main();
+    BigUInt_is_uint___main();
+    BigUInt_is_odd___main();
+    BigUInt_is_even___main();
+
+}
+
+
+
+/////THIS/////
 fn BigUInt_carrying_add___main()
 {
     println!("BigUInt_carrying_add___main()");
