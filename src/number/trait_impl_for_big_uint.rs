@@ -17,7 +17,7 @@ use std::convert::{ From, Into };
 use std::str::FromStr;
 use std::ops::*;
 
-use super::uint::*;
+use super::small_uint::*;
 use super::sint::*;
 use super::big_uint::BigUInt;
 use super::NumberErr;
@@ -25,7 +25,7 @@ use super::NumberErr;
 
 
 impl<T, const N: usize> Add for BigUInt<T, N>
-where T: Uint + Copy + Clone + Display + Debug + ToString
+where T: SmallUInt + Copy + Clone + Display + Debug + ToString
         + Add<Output=T> + AddAssign + Sub<Output=T> + SubAssign
         + Mul<Output=T> + MulAssign + Div<Output=T> + DivAssign
         + Rem<Output=T> + RemAssign
@@ -46,7 +46,7 @@ where T: Uint + Copy + Clone + Display + Debug + ToString
 
 
 impl<T, const N: usize> Add<T> for BigUInt<T, N>
-where T: Uint + Copy + Clone + Display + Debug + ToString
+where T: SmallUInt + Copy + Clone + Display + Debug + ToString
         + Add<Output=T> + AddAssign + Sub<Output=T> + SubAssign
         + Mul<Output=T> + MulAssign + Div<Output=T> + DivAssign
         + Rem<Output=T> + RemAssign
@@ -67,7 +67,7 @@ where T: Uint + Copy + Clone + Display + Debug + ToString
 
 
 impl<T, const N: usize> AddAssign for BigUInt<T, N>
-where T: Uint + Copy + Clone + Display + Debug + ToString
+where T: SmallUInt + Copy + Clone + Display + Debug + ToString
         + Add<Output=T> + AddAssign + Sub<Output=T> + SubAssign
         + Mul<Output=T> + MulAssign + Div<Output=T> + DivAssign
         + Rem<Output=T> + RemAssign
@@ -88,7 +88,7 @@ where T: Uint + Copy + Clone + Display + Debug + ToString
 
 
 impl<T, const N: usize> AddAssign<T> for BigUInt<T, N>
-where T: Uint + Copy + Clone + Display + Debug + ToString
+where T: SmallUInt + Copy + Clone + Display + Debug + ToString
         + Add<Output=T> + AddAssign + Sub<Output=T> + SubAssign
         + Mul<Output=T> + MulAssign + Div<Output=T> + DivAssign
         + Rem<Output=T> + RemAssign
@@ -109,7 +109,7 @@ where T: Uint + Copy + Clone + Display + Debug + ToString
 
 
 impl<T, const N: usize> Sub for BigUInt<T, N>
-where T: Uint + Copy + Clone + Display + Debug + ToString
+where T: SmallUInt + Copy + Clone + Display + Debug + ToString
         + Add<Output=T> + AddAssign + Sub<Output=T> + SubAssign
         + Mul<Output=T> + MulAssign + Div<Output=T> + DivAssign
         + Rem<Output=T> + RemAssign
@@ -130,7 +130,7 @@ where T: Uint + Copy + Clone + Display + Debug + ToString
 
 
 impl<T, const N: usize> Sub<T> for BigUInt<T, N>
-where T: Uint + Copy + Clone + Display + Debug + ToString
+where T: SmallUInt + Copy + Clone + Display + Debug + ToString
         + Add<Output=T> + AddAssign + Sub<Output=T> + SubAssign
         + Mul<Output=T> + MulAssign + Div<Output=T> + DivAssign
         + Rem<Output=T> + RemAssign
@@ -151,7 +151,7 @@ where T: Uint + Copy + Clone + Display + Debug + ToString
 
 
 impl<T, const N: usize> SubAssign for BigUInt<T, N>
-where T: Uint + Copy + Clone + Display + Debug + ToString
+where T: SmallUInt + Copy + Clone + Display + Debug + ToString
         + Add<Output=T> + AddAssign + Sub<Output=T> + SubAssign
         + Mul<Output=T> + MulAssign + Div<Output=T> + DivAssign
         + Rem<Output=T> + RemAssign
@@ -171,7 +171,7 @@ where T: Uint + Copy + Clone + Display + Debug + ToString
 
 
 impl<T, const N: usize> SubAssign<T> for BigUInt<T, N>
-where T: Uint + Copy + Clone + Display + Debug + ToString
+where T: SmallUInt + Copy + Clone + Display + Debug + ToString
         + Add<Output=T> + AddAssign + Sub<Output=T> + SubAssign
         + Mul<Output=T> + MulAssign + Div<Output=T> + DivAssign
         + Rem<Output=T> + RemAssign
@@ -191,7 +191,7 @@ where T: Uint + Copy + Clone + Display + Debug + ToString
 
 
 impl<T, const N: usize> Mul for BigUInt<T, N>
-where T: Uint + Copy + Clone + Display + Debug + ToString
+where T: SmallUInt + Copy + Clone + Display + Debug + ToString
         + Add<Output=T> + AddAssign + Sub<Output=T> + SubAssign
         + Mul<Output=T> + MulAssign + Div<Output=T> + DivAssign
         + Rem<Output=T> + RemAssign
@@ -212,7 +212,7 @@ where T: Uint + Copy + Clone + Display + Debug + ToString
 
 
 impl<T, const N: usize> Mul<T> for BigUInt<T, N>
-where T: Uint + Copy + Clone + Display + Debug + ToString
+where T: SmallUInt + Copy + Clone + Display + Debug + ToString
         + Add<Output=T> + AddAssign + Sub<Output=T> + SubAssign
         + Mul<Output=T> + MulAssign + Div<Output=T> + DivAssign
         + Rem<Output=T> + RemAssign
@@ -233,7 +233,7 @@ where T: Uint + Copy + Clone + Display + Debug + ToString
 
 
 impl<T, const N: usize> MulAssign for BigUInt<T, N>
-where T: Uint + Copy + Clone + Display + Debug + ToString
+where T: SmallUInt + Copy + Clone + Display + Debug + ToString
         + Add<Output=T> + AddAssign + Sub<Output=T> + SubAssign
         + Mul<Output=T> + MulAssign + Div<Output=T> + DivAssign
         + Rem<Output=T> + RemAssign
@@ -253,7 +253,7 @@ where T: Uint + Copy + Clone + Display + Debug + ToString
 
 
 impl<T, const N: usize> MulAssign<T> for BigUInt<T, N>
-where T: Uint + Copy + Clone + Display + Debug + ToString
+where T: SmallUInt + Copy + Clone + Display + Debug + ToString
         + Add<Output=T> + AddAssign + Sub<Output=T> + SubAssign
         + Mul<Output=T> + MulAssign + Div<Output=T> + DivAssign
         + Rem<Output=T> + RemAssign
@@ -273,7 +273,7 @@ where T: Uint + Copy + Clone + Display + Debug + ToString
 
 
 impl<T, const N: usize> Div for BigUInt<T, N>
-where T: Uint + Copy + Clone + Display + Debug + ToString
+where T: SmallUInt + Copy + Clone + Display + Debug + ToString
         + Add<Output=T> + AddAssign + Sub<Output=T> + SubAssign
         + Mul<Output=T> + MulAssign + Div<Output=T> + DivAssign
         + Rem<Output=T> + RemAssign
@@ -294,7 +294,7 @@ where T: Uint + Copy + Clone + Display + Debug + ToString
 
 
 impl<T, const N: usize> Div<T> for BigUInt<T, N>
-where T: Uint + Copy + Clone + Display + Debug + ToString
+where T: SmallUInt + Copy + Clone + Display + Debug + ToString
         + Add<Output=T> + AddAssign + Sub<Output=T> + SubAssign
         + Mul<Output=T> + MulAssign + Div<Output=T> + DivAssign
         + Rem<Output=T> + RemAssign
@@ -315,7 +315,7 @@ where T: Uint + Copy + Clone + Display + Debug + ToString
 
 
 impl<T, const N: usize> DivAssign for BigUInt<T, N>
-where T: Uint + Copy + Copy + Clone + Display + Debug + ToString
+where T: SmallUInt + Copy + Copy + Clone + Display + Debug + ToString
         + Add<Output=T> + AddAssign + Sub<Output=T> + SubAssign
         + Mul<Output=T> + MulAssign + Div<Output=T> + DivAssign
         + Rem<Output=T> + RemAssign
@@ -334,7 +334,7 @@ where T: Uint + Copy + Copy + Clone + Display + Debug + ToString
 
 
 impl<T, const N: usize> DivAssign<T> for BigUInt<T, N>
-where T: Uint + Copy + Clone + Display + Debug + ToString
+where T: SmallUInt + Copy + Clone + Display + Debug + ToString
         + Add<Output=T> + AddAssign + Sub<Output=T> + SubAssign
         + Mul<Output=T> + MulAssign + Div<Output=T> + DivAssign
         + Rem<Output=T> + RemAssign
@@ -353,7 +353,7 @@ where T: Uint + Copy + Clone + Display + Debug + ToString
 
 
 impl<T, const N: usize> Rem for BigUInt<T, N>
-where T: Uint + Copy + Clone + Display + Debug + ToString
+where T: SmallUInt + Copy + Clone + Display + Debug + ToString
         + Add<Output=T> + AddAssign + Sub<Output=T> + SubAssign
         + Mul<Output=T> + MulAssign + Div<Output=T> + DivAssign
         + Rem<Output=T> + RemAssign
@@ -374,7 +374,7 @@ where T: Uint + Copy + Clone + Display + Debug + ToString
 
 
 impl<T, const N: usize> Rem<T> for BigUInt<T, N>
-where T: Uint + Copy + Clone + Display + Debug + ToString
+where T: SmallUInt + Copy + Clone + Display + Debug + ToString
         + Add<Output=T> + AddAssign + Sub<Output=T> + SubAssign
         + Mul<Output=T> + MulAssign + Div<Output=T> + DivAssign
         + Rem<Output=T> + RemAssign
@@ -395,7 +395,7 @@ where T: Uint + Copy + Clone + Display + Debug + ToString
 
 
 impl<T, const N: usize> RemAssign for BigUInt<T, N>
-where T: Uint + Copy + Clone + Display + Debug + ToString
+where T: SmallUInt + Copy + Clone + Display + Debug + ToString
         + Add<Output=T> + AddAssign + Sub<Output=T> + SubAssign
         + Mul<Output=T> + MulAssign + Div<Output=T> + DivAssign
         + Rem<Output=T> + RemAssign
@@ -414,7 +414,7 @@ where T: Uint + Copy + Clone + Display + Debug + ToString
 
 
 impl<T, const N: usize> RemAssign<T> for BigUInt<T, N>
-where T: Uint + Copy + Clone + Display + Debug + ToString
+where T: SmallUInt + Copy + Clone + Display + Debug + ToString
         + Add<Output=T> + AddAssign + Sub<Output=T> + SubAssign
         + Mul<Output=T> + MulAssign + Div<Output=T> + DivAssign
         + Rem<Output=T> + RemAssign
@@ -462,7 +462,7 @@ macro_rules! shl_for_BigUInt_impl {
         /// assert_eq!(b.is_overflow(), false);
         /// ```
         impl<T, const N: usize> Shl<$f> for BigUInt<T, N>
-        where T: Uint + Copy + Clone + Display + Debug + ToString
+        where T: SmallUInt + Copy + Clone + Display + Debug + ToString
                 + Add<Output=T> + AddAssign + Sub<Output=T> + SubAssign
                 + Mul<Output=T> + MulAssign + Div<Output=T> + DivAssign
                 + Rem<Output=T> + RemAssign
@@ -488,7 +488,7 @@ macro_rules! shl_for_BigUInt_impl {
 macro_rules! shlassign_i_for_BigUInt_impl {
     ($f:ty) => {
         impl<T, const N: usize> ShlAssign<$f> for BigUInt<T, N>
-        where T: Uint + Copy + Clone + Display + Debug + ToString
+        where T: SmallUInt + Copy + Clone + Display + Debug + ToString
                 + Add<Output=T> + AddAssign + Sub<Output=T> + SubAssign
                 + Mul<Output=T> + MulAssign + Div<Output=T> + DivAssign
                 + Rem<Output=T> + RemAssign
@@ -565,7 +565,7 @@ macro_rules! shlassign_i_for_BigUInt_impl {
 macro_rules! shlassign_u_for_BigUInt_impl {
     ($f:ty) => {
         impl<T, const N: usize> ShlAssign<$f> for BigUInt<T, N>
-        where T: Uint + Copy + Clone + Display + Debug + ToString
+        where T: SmallUInt + Copy + Clone + Display + Debug + ToString
                 + Add<Output=T> + AddAssign + Sub<Output=T> + SubAssign
                 + Mul<Output=T> + MulAssign + Div<Output=T> + DivAssign
                 + Rem<Output=T> + RemAssign
@@ -632,15 +632,15 @@ macro_rules! shlassign_u_for_BigUInt_impl {
                 }
                 if piece_num == 0
                     { return; }
-                if (self.get_num_(N-1) >> T::usize_as_Uint(TSIZE_IN_BITS - piece_num)) != zero
+                if (self.get_num_(N-1) >> T::usize_as_SmallUInt(TSIZE_IN_BITS - piece_num)) != zero
                     { self.set_overflow(); }
 
                 let mut num: T;
                 let mut carry = zero;
                 for idx in chunk_num..N
                 {
-                    num = (self.get_num_(idx) << T::usize_as_Uint(piece_num) | carry;
-                    carry = self.get_num_(idx) >> T::usize_as_Uint(TSIZE_IN_BITS - piece_num);
+                    num = (self.get_num_(idx) << T::usize_as_SmallUInt(piece_num) | carry;
+                    carry = self.get_num_(idx) >> T::usize_as_SmallUInt(TSIZE_IN_BITS - piece_num);
                     self.set_num_(idx, num);
                 }
                 if carry != zero
@@ -682,7 +682,7 @@ shlassign_u_for_BigUInt_impl! { usize }
 macro_rules! shr_for_BigUInt_impl {
     ($f:ty) => {
         impl<T, const N: usize> Shr<$f> for BigUInt<T, N>
-        where T: Uint + Copy + Clone + Display + Debug + ToString
+        where T: SmallUInt + Copy + Clone + Display + Debug + ToString
                 + Add<Output=T> + AddAssign + Sub<Output=T> + SubAssign
                 + Mul<Output=T> + MulAssign + Div<Output=T> + DivAssign
                 + Rem<Output=T> + RemAssign
@@ -736,7 +736,7 @@ macro_rules! shr_for_BigUInt_impl {
 macro_rules! shrassign_i_for_BigUInt_impl {
     ($f:ty) => {
         impl<T, const N: usize> ShrAssign<$f> for BigUInt<T, N>
-        where T: Uint + Copy + Clone + Display + Debug + ToString
+        where T: SmallUInt + Copy + Clone + Display + Debug + ToString
                 + Add<Output=T> + AddAssign + Sub<Output=T> + SubAssign
                 + Mul<Output=T> + MulAssign + Div<Output=T> + DivAssign
                 + Rem<Output=T> + RemAssign
@@ -813,7 +813,7 @@ macro_rules! shrassign_i_for_BigUInt_impl {
 macro_rules! shrassign_u_for_BigUInt_impl {
     ($f:ty) => {
         impl<T, const N: usize> ShrAssign<$f> for BigUInt<T, N>
-        where T: Uint + Copy + Clone + Display + Debug + ToString
+        where T: SmallUInt + Copy + Clone + Display + Debug + ToString
                 + Add<Output=T> + AddAssign + Sub<Output=T> + SubAssign
                 + Mul<Output=T> + MulAssign + Div<Output=T> + DivAssign
                 + Rem<Output=T> + RemAssign
@@ -881,7 +881,7 @@ macro_rules! shrassign_u_for_BigUInt_impl {
                 }
                 if piece_num == 0
                     { return; }
-                if (self.get_num_(0) << T::usize_as_Uint(TSIZE_IN_BITS - piece_num)) != zero
+                if (self.get_num_(0) << T::usize_as_SmallUInt(TSIZE_IN_BITS - piece_num)) != zero
                     { self.set_underflow(); }
 
                 let mut num: T;
@@ -889,8 +889,8 @@ macro_rules! shrassign_u_for_BigUInt_impl {
                 let mut idx = N - 1 - chunk_num;
                 loop
                 {
-                    num = (self.get_num_(idx) >> T::usize_as_Uint(piece_num)) | carry;
-                    carry = self.get_num_(idx) << T::usize_as_Uint(TSIZE_IN_BITS - piece_num);
+                    num = (self.get_num_(idx) >> T::usize_as_SmallUInt(piece_num)) | carry;
+                    carry = self.get_num_(idx) << T::usize_as_SmallUInt(TSIZE_IN_BITS - piece_num);
                     self.set_num_(idx, num);
                     if idx == 0
                         { break; }
@@ -933,7 +933,7 @@ shrassign_u_for_BigUInt_impl! { usize }
 
 
 impl<T, const N: usize> BitAnd for BigUInt<T, N>
-where T: Uint + Copy + Clone + Display + Debug + ToString
+where T: SmallUInt + Copy + Clone + Display + Debug + ToString
         + Add<Output=T> + AddAssign + Sub<Output=T> + SubAssign
         + Mul<Output=T> + MulAssign + Div<Output=T> + DivAssign
         + Rem<Output=T> + RemAssign
@@ -992,7 +992,7 @@ where T: Uint + Copy + Clone + Display + Debug + ToString
 
 
 impl<T, const N: usize> BitAndAssign for BigUInt<T, N>
-where T: Uint + Copy + Clone + Display + Debug + ToString
+where T: SmallUInt + Copy + Clone + Display + Debug + ToString
         + Add<Output=T> + AddAssign + Sub<Output=T> + SubAssign
         + Mul<Output=T> + MulAssign + Div<Output=T> + DivAssign
         + Rem<Output=T> + RemAssign
@@ -1045,7 +1045,7 @@ where T: Uint + Copy + Clone + Display + Debug + ToString
 
 
 impl<T, const N: usize> BitOr for BigUInt<T, N>
-where T: Uint + Copy + Clone + Display + Debug + ToString
+where T: SmallUInt + Copy + Clone + Display + Debug + ToString
         + Add<Output=T> + AddAssign + Sub<Output=T> + SubAssign
         + Mul<Output=T> + MulAssign + Div<Output=T> + DivAssign
         + Rem<Output=T> + RemAssign
@@ -1106,7 +1106,7 @@ where T: Uint + Copy + Clone + Display + Debug + ToString
 
 
 impl<T, const N: usize> BitOrAssign for BigUInt<T, N>
-where T: Uint + Copy + Clone + Display + Debug + ToString
+where T: SmallUInt + Copy + Clone + Display + Debug + ToString
         + Add<Output=T> + AddAssign + Sub<Output=T> + SubAssign
         + Mul<Output=T> + MulAssign + Div<Output=T> + DivAssign
         + Rem<Output=T> + RemAssign
@@ -1162,7 +1162,7 @@ where T: Uint + Copy + Clone + Display + Debug + ToString
 
 
 impl<T, const N: usize> BitXor for BigUInt<T, N>
-where T: Uint + Copy + Clone + Display + Debug + ToString
+where T: SmallUInt + Copy + Clone + Display + Debug + ToString
         + Add<Output=T> + AddAssign + Sub<Output=T> + SubAssign
         + Mul<Output=T> + MulAssign + Div<Output=T> + DivAssign
         + Rem<Output=T> + RemAssign
@@ -1216,7 +1216,7 @@ where T: Uint + Copy + Clone + Display + Debug + ToString
 
 
 impl<'a, T, const N: usize> BitXorAssign for BigUInt<T, N>
-where T: Uint + Copy + Clone + Display + Debug + ToString + 'a
+where T: SmallUInt + Copy + Clone + Display + Debug + ToString + 'a
         + Add<Output=T> + AddAssign + Sub<Output=T> + SubAssign
         + Mul<Output=T> + MulAssign + Div<Output=T> + DivAssign
         + Rem<Output=T> + RemAssign
@@ -1263,7 +1263,7 @@ where T: Uint + Copy + Clone + Display + Debug + ToString + 'a
 
 
 impl<T, const N: usize> Not for BigUInt<T, N>
-where T: Uint + Copy + Clone + Display + Debug + ToString
+where T: SmallUInt + Copy + Clone + Display + Debug + ToString
         + Add<Output=T> + AddAssign + Sub<Output=T> + SubAssign
         + Mul<Output=T> + MulAssign + Div<Output=T> + DivAssign
         + Rem<Output=T> + RemAssign
@@ -1310,7 +1310,7 @@ where T: Uint + Copy + Clone + Display + Debug + ToString
 
 
 impl<T, const N: usize> PartialEq for BigUInt<T, N>
-where T: Uint + Copy + Clone + Display + Debug + ToString
+where T: SmallUInt + Copy + Clone + Display + Debug + ToString
         + Add<Output=T> + AddAssign + Sub<Output=T> + SubAssign
         + Mul<Output=T> + MulAssign + Div<Output=T> + DivAssign
         + Rem<Output=T> + RemAssign
@@ -1329,7 +1329,7 @@ where T: Uint + Copy + Clone + Display + Debug + ToString
 
 
 impl<T, const N: usize> PartialOrd for BigUInt<T, N>
-where T: Uint + Copy + Clone + Display + Debug + ToString
+where T: SmallUInt + Copy + Clone + Display + Debug + ToString
         + Add<Output=T> + AddAssign + Sub<Output=T> + SubAssign
         + Mul<Output=T> + MulAssign + Div<Output=T> + DivAssign
         + Rem<Output=T> + RemAssign
@@ -1356,7 +1356,7 @@ where T: Uint + Copy + Clone + Display + Debug + ToString
 
 
 impl<T, const N: usize> Display for BigUInt<T, N>
-where T: Uint + Copy + Clone + Display + Debug + ToString
+where T: SmallUInt + Copy + Clone + Display + Debug + ToString
         + Add<Output=T> + AddAssign + Sub<Output=T> + SubAssign
         + Mul<Output=T> + MulAssign + Div<Output=T> + DivAssign
         + Rem<Output=T> + RemAssign
@@ -1390,7 +1390,7 @@ where T: Uint + Copy + Clone + Display + Debug + ToString
 
 
 impl<T, const N: usize, S> From<S> for BigUInt<T, N>
-where T: Uint + Copy + Clone + Display + Debug + ToString
+where T: SmallUInt + Copy + Clone + Display + Debug + ToString
         + Add<Output=T> + AddAssign + Sub<Output=T> + SubAssign
         + Mul<Output=T> + MulAssign + Div<Output=T> + DivAssign
         + Rem<Output=T> + RemAssign
@@ -1398,7 +1398,7 @@ where T: Uint + Copy + Clone + Display + Debug + ToString
         + BitAnd<Output=T> + BitAndAssign + BitOr<Output=T> + BitOrAssign
         + BitXor<Output=T> + BitXorAssign + Not<Output=T>
         + PartialEq + PartialOrd,
-    S: Uint + Copy + Clone + Display + Debug + ToString
+    S: SmallUInt + Copy + Clone + Display + Debug + ToString
         + Add<Output=S> + AddAssign + Sub<Output=S> + SubAssign
         + Mul<Output=S> + MulAssign + Div<Output=S> + DivAssign
         + Rem<Output=S> + RemAssign
@@ -1428,7 +1428,7 @@ where T: Uint + Copy + Clone + Display + Debug + ToString
 
 
 impl<T, const N: usize> From<[T; N]> for BigUInt<T, N>
-where T: Uint + Copy + Clone + Display + Debug + ToString
+where T: SmallUInt + Copy + Clone + Display + Debug + ToString
         + Add<Output=T> + AddAssign + Sub<Output=T> + SubAssign
         + Mul<Output=T> + MulAssign + Div<Output=T> + DivAssign
         + Rem<Output=T> + RemAssign
@@ -1457,7 +1457,7 @@ where T: Uint + Copy + Clone + Display + Debug + ToString
 
 
 impl<T, const N: usize> FromStr for BigUInt<T, N>
-where T: Uint + Copy + Clone + Display + Debug + ToString
+where T: SmallUInt + Copy + Clone + Display + Debug + ToString
         + Add<Output=T> + AddAssign + Sub<Output=T> + SubAssign
         + Mul<Output=T> + MulAssign + Div<Output=T> + DivAssign
         + Rem<Output=T> + RemAssign
@@ -1494,7 +1494,7 @@ where T: Uint + Copy + Clone + Display + Debug + ToString
 
 /*
 impl<T, const N: usize> Add<&Self> for BigUInt<T, N>
-where T: Uint + Copy + Clone + Display + Debug + ToString
+where T: SmallUInt + Copy + Clone + Display + Debug + ToString
         + Add<Output=T> + AddAssign + Sub<Output=T> + SubAssign
         + Mul<Output=T> + MulAssign + Div<Output=T> + DivAssign
         + Rem<Output=T> + RemAssign
@@ -1513,7 +1513,7 @@ where T: Uint + Copy + Clone + Display + Debug + ToString
 }
 
 impl<T, const N: usize> AddAssign<&Self> for BigUInt<T, N>
-where T: Uint + Copy + Clone + Display + Debug + ToString
+where T: SmallUInt + Copy + Clone + Display + Debug + ToString
         + Add<Output=T> + AddAssign + Sub<Output=T> + SubAssign
         + Mul<Output=T> + MulAssign + Div<Output=T> + DivAssign
         + Rem<Output=T> + RemAssign
@@ -1532,7 +1532,7 @@ where T: Uint + Copy + Clone + Display + Debug + ToString
 }
 
 impl<T, const N: usize> Sub<&Self> for BigUInt<T, N>
-where T: Uint + Copy + Clone + Display + Debug + ToString
+where T: SmallUInt + Copy + Clone + Display + Debug + ToString
         + Add<Output=T> + AddAssign + Sub<Output=T> + SubAssign
         + Mul<Output=T> + MulAssign + Div<Output=T> + DivAssign
         + Rem<Output=T> + RemAssign
@@ -1551,7 +1551,7 @@ where T: Uint + Copy + Clone + Display + Debug + ToString
 }
 
 impl<T, const N: usize> SubAssign<&Self> for BigUInt<T, N>
-where T: Uint + Copy + Clone + Display + Debug + ToString
+where T: SmallUInt + Copy + Clone + Display + Debug + ToString
         + Add<Output=T> + AddAssign + Sub<Output=T> + SubAssign
         + Mul<Output=T> + MulAssign + Div<Output=T> + DivAssign
         + Rem<Output=T> + RemAssign
@@ -1569,7 +1569,7 @@ where T: Uint + Copy + Clone + Display + Debug + ToString
 }
 
 impl<T, const N: usize> Mul<&Self> for BigUInt<T, N>
-where T: Uint + Copy + Clone + Display + Debug + ToString
+where T: SmallUInt + Copy + Clone + Display + Debug + ToString
         + Add<Output=T> + AddAssign + Sub<Output=T> + SubAssign
         + Mul<Output=T> + MulAssign + Div<Output=T> + DivAssign
         + Rem<Output=T> + RemAssign
@@ -1588,7 +1588,7 @@ where T: Uint + Copy + Clone + Display + Debug + ToString
 }
 
 impl<T, const N: usize> MulAssign<&Self> for BigUInt<T, N>
-where T: Uint + Copy + Clone + Display + Debug + ToString
+where T: SmallUInt + Copy + Clone + Display + Debug + ToString
         + Add<Output=T> + AddAssign + Sub<Output=T> + SubAssign
         + Mul<Output=T> + MulAssign + Div<Output=T> + DivAssign
         + Rem<Output=T> + RemAssign
@@ -1606,7 +1606,7 @@ where T: Uint + Copy + Clone + Display + Debug + ToString
 }
 
 impl<T, const N: usize> Div<&Self> for BigUInt<T, N>
-where T: Uint + Copy + Clone + Display + Debug + ToString
+where T: SmallUInt + Copy + Clone + Display + Debug + ToString
         + Add<Output=T> + AddAssign + Sub<Output=T> + SubAssign
         + Mul<Output=T> + MulAssign + Div<Output=T> + DivAssign
         + Rem<Output=T> + RemAssign
@@ -1625,7 +1625,7 @@ where T: Uint + Copy + Clone + Display + Debug + ToString
 }
 
 impl<T, const N: usize> DivAssign<&Self> for BigUInt<T, N>
-where T: Uint + Copy + Copy + Clone + Display + Debug + ToString
+where T: SmallUInt + Copy + Copy + Clone + Display + Debug + ToString
         + Add<Output=T> + AddAssign + Sub<Output=T> + SubAssign
         + Mul<Output=T> + MulAssign + Div<Output=T> + DivAssign
         + Rem<Output=T> + RemAssign
@@ -1642,7 +1642,7 @@ where T: Uint + Copy + Copy + Clone + Display + Debug + ToString
 }
 
 impl<T, const N: usize> Rem<&Self> for BigUInt<T, N>
-where T: Uint + Copy + Clone + Display + Debug + ToString
+where T: SmallUInt + Copy + Clone + Display + Debug + ToString
         + Add<Output=T> + AddAssign + Sub<Output=T> + SubAssign
         + Mul<Output=T> + MulAssign + Div<Output=T> + DivAssign
         + Rem<Output=T> + RemAssign
@@ -1661,7 +1661,7 @@ where T: Uint + Copy + Clone + Display + Debug + ToString
 }
 
 impl<T, const N: usize> RemAssign<&Self> for BigUInt<T, N>
-where T: Uint + Copy + Clone + Display + Debug + ToString
+where T: SmallUInt + Copy + Clone + Display + Debug + ToString
         + Add<Output=T> + AddAssign + Sub<Output=T> + SubAssign
         + Mul<Output=T> + MulAssign + Div<Output=T> + DivAssign
         + Rem<Output=T> + RemAssign
@@ -1678,7 +1678,7 @@ where T: Uint + Copy + Clone + Display + Debug + ToString
 }
 
 impl<T, const N: usize> BitAnd<&Self> for BigUInt<T, N>
-where T: Uint + Copy + Clone + Display + Debug + ToString
+where T: SmallUInt + Copy + Clone + Display + Debug + ToString
         + Add<Output=T> + AddAssign + Sub<Output=T> + SubAssign
         + Mul<Output=T> + MulAssign + Div<Output=T> + DivAssign
         + Rem<Output=T> + RemAssign
@@ -1736,7 +1736,7 @@ where T: Uint + Copy + Clone + Display + Debug + ToString
 }
 
 impl<T, const N: usize> BitAndAssign<&Self> for BigUInt<T, N>
-where T: Uint + Copy + Clone + Display + Debug + ToString
+where T: SmallUInt + Copy + Clone + Display + Debug + ToString
         + Add<Output=T> + AddAssign + Sub<Output=T> + SubAssign
         + Mul<Output=T> + MulAssign + Div<Output=T> + DivAssign
         + Rem<Output=T> + RemAssign
@@ -1787,7 +1787,7 @@ where T: Uint + Copy + Clone + Display + Debug + ToString
 }
 
 impl<T, const N: usize> BitOr<&Self> for BigUInt<T, N>
-where T: Uint + Copy + Clone + Display + Debug + ToString
+where T: SmallUInt + Copy + Clone + Display + Debug + ToString
         + Add<Output=T> + AddAssign + Sub<Output=T> + SubAssign
         + Mul<Output=T> + MulAssign + Div<Output=T> + DivAssign
         + Rem<Output=T> + RemAssign
@@ -1847,7 +1847,7 @@ where T: Uint + Copy + Clone + Display + Debug + ToString
 }
 
 impl<T, const N: usize> BitOrAssign<&Self> for BigUInt<T, N>
-where T: Uint + Copy + Clone + Display + Debug + ToString
+where T: SmallUInt + Copy + Clone + Display + Debug + ToString
         + Add<Output=T> + AddAssign + Sub<Output=T> + SubAssign
         + Mul<Output=T> + MulAssign + Div<Output=T> + DivAssign
         + Rem<Output=T> + RemAssign
@@ -1901,7 +1901,7 @@ where T: Uint + Copy + Clone + Display + Debug + ToString
 }
 
 impl<T, const N: usize> BitXor<&Self> for BigUInt<T, N>
-where T: Uint + Copy + Clone + Display + Debug + ToString
+where T: SmallUInt + Copy + Clone + Display + Debug + ToString
         + Add<Output=T> + AddAssign + Sub<Output=T> + SubAssign
         + Mul<Output=T> + MulAssign + Div<Output=T> + DivAssign
         + Rem<Output=T> + RemAssign
@@ -1951,7 +1951,7 @@ where T: Uint + Copy + Clone + Display + Debug + ToString
 }
 
 impl<T, const N: usize> BitXorAssign<&Self> for BigUInt<T, N>
-where T: Uint + Copy + Clone + Display + Debug + ToString
+where T: SmallUInt + Copy + Clone + Display + Debug + ToString
         + Add<Output=T> + AddAssign + Sub<Output=T> + SubAssign
         + Mul<Output=T> + MulAssign + Div<Output=T> + DivAssign
         + Rem<Output=T> + RemAssign

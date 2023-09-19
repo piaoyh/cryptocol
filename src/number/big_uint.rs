@@ -23,8 +23,8 @@ use rand::RngCore;
 use rand::rngs::OsRng;
 
 use super::trait_impl_for_big_uint::*;
-use super::uint::*;
-use super::int_unions::*;
+use super::small_uint::*;
+use super::small_int_unions::*;
 use super::NumberErr;
 
 
@@ -568,7 +568,7 @@ use super::NumberErr;
 /// ```
 #[derive(Debug, Clone)]
 pub struct BigUInt<T, const N: usize>
-where T: Uint + Copy + Clone + Display + Debug + ToString
+where T: SmallUInt + Copy + Clone + Display + Debug + ToString
         + Add<Output=T> + AddAssign + Sub<Output=T> + SubAssign
         + Mul<Output=T> + MulAssign + Div<Output=T> + DivAssign
         + Rem<Output=T> + RemAssign
@@ -582,7 +582,7 @@ where T: Uint + Copy + Clone + Display + Debug + ToString
 }
 
 impl<T, const N: usize> BigUInt<T, N>
-where T: Uint + Copy + Clone + Display + Debug + ToString
+where T: SmallUInt + Copy + Clone + Display + Debug + ToString
         + Add<Output=T> + AddAssign + Sub<Output=T> + SubAssign
         + Mul<Output=T> + MulAssign + Div<Output=T> + DivAssign
         + Rem<Output=T> + RemAssign
@@ -889,7 +889,7 @@ where T: Uint + Copy + Clone + Display + Debug + ToString
     /// assert_eq!(ff.into_usize(), 123_usize);
     /// ```
     pub fn from_uint<U>(val: U) -> Self
-    where U: Uint + Copy + Clone + Display + Debug + ToString
+    where U: SmallUInt + Copy + Clone + Display + Debug + ToString
             + Add<Output=U> + AddAssign + Sub<Output=U> + SubAssign
             + Mul<Output=U> + MulAssign + Div<Output=U> + DivAssign
             + Rem<Output=U> + RemAssign
@@ -994,7 +994,7 @@ where T: Uint + Copy + Clone + Display + Debug + ToString
     /// ```
     #[cfg(target_endian = "little")]
     pub fn from_biguint<U, const M: usize>(biguint: &BigUInt<U, M>) -> Self
-    where U: Uint + Copy + Clone + Display + Debug + ToString
+    where U: SmallUInt + Copy + Clone + Display + Debug + ToString
             + Add<Output=U> + AddAssign + Sub<Output=U> + SubAssign
             + Mul<Output=U> + MulAssign + Div<Output=U> + DivAssign
             + Rem<Output=U> + RemAssign
@@ -1068,7 +1068,7 @@ where T: Uint + Copy + Clone + Display + Debug + ToString
     /// for Big-endian CPUs with your own full responsibility.
     #[cfg(target_endian = "big")]
     pub fn from_biguint<U, const M: usize>(biguint: &BigUInt<U, M>) -> Self
-    where U: Uint + Copy + Clone + Display + Debug + ToString
+    where U: SmallUInt + Copy + Clone + Display + Debug + ToString
             + Add<Output=U> + AddAssign + Sub<Output=U> + SubAssign
             + Mul<Output=U> + MulAssign + Div<Output=U> + DivAssign
             + Rem<Output=U> + RemAssign
@@ -1419,8 +1419,8 @@ where T: Uint + Copy + Clone + Display + Debug + ToString
                             else
                                 { c as usize - 'a' as usize + 10 + 26 }
                         };
-            bignum.wrapping_mul_assign_uint(T::usize_as_Uint(radix));
-            bignum.wrapping_add_assign_uint(T::usize_as_Uint(num));
+            bignum.wrapping_mul_assign_uint(T::usize_as_SmallUInt(radix));
+            bignum.wrapping_add_assign_uint(T::usize_as_SmallUInt(num));
         }
         if bignum.is_overflow()
             { Err(NumberErr::TooBigNumber) }
@@ -2189,7 +2189,7 @@ where T: Uint + Copy + Clone + Display + Debug + ToString
                     for i in 0..N
                     {
                         common.set(OsRng.next_u32());
-                        self.set_num_(i, T::u8_as_Uint(common.get_ubyte_(0)));
+                        self.set_num_(i, T::u8_as_SmallUInt(common.get_ubyte_(0)));
                     }
                 },
             2 => {
@@ -2197,16 +2197,16 @@ where T: Uint + Copy + Clone + Display + Debug + ToString
                     for i in 0..N
                     {
                         common.set(OsRng.next_u32());
-                        self.set_num_(i, T::u16_as_Uint(common.get_ushort_(0)));
+                        self.set_num_(i, T::u16_as_SmallUInt(common.get_ushort_(0)));
                     }
                 },
             4 => {
                     for i in 0..N
-                        { self.set_num_(i, T::u32_as_Uint(OsRng.next_u32())); }
+                        { self.set_num_(i, T::u32_as_SmallUInt(OsRng.next_u32())); }
                 },
             8 => {
                     for i in 0..N
-                        { self.set_num_(i, T::u64_as_Uint(OsRng.next_u64())); }
+                        { self.set_num_(i, T::u64_as_SmallUInt(OsRng.next_u64())); }
                 },
             16 => {
                     for i in 0..N
@@ -2214,7 +2214,7 @@ where T: Uint + Copy + Clone + Display + Debug + ToString
                         let mut common = LongerUnion::new();
                         common.set_ulong_(0, OsRng.next_u64());
                         common.set_ulong_(1, OsRng.next_u64());
-                        self.set_num_(i, T::u128_as_Uint(common.get()));
+                        self.set_num_(i, T::u128_as_SmallUInt(common.get()));
                     }
                 },
             _ => { self.set_zero() },
@@ -2265,7 +2265,7 @@ where T: Uint + Copy + Clone + Display + Debug + ToString
         if self.is_zero_or_one()
             { return false; }
         
-        if self.is_uint(T::u8_as_Uint(2)) ||  self.is_uint(T::u8_as_Uint(3))
+        if self.is_uint(T::u8_as_SmallUInt(2)) ||  self.is_uint(T::u8_as_SmallUInt(3))
             { return true; }
 
         // n-1 = (2^s) * d 로 표현하기 위한 과정
@@ -2274,7 +2274,7 @@ where T: Uint + Copy + Clone + Display + Debug + ToString
         d.shift_right_assign(d.trailing_zeros());
         for _ in 0..repetition
         {
-            let mut rand_num = Self::random_less_than(&self.wrapping_sub_uint(T::u8_as_Uint(4))).wrapping_add_uint(T::u8_as_Uint(2));
+            let mut rand_num = Self::random_less_than(&self.wrapping_sub_uint(T::u8_as_SmallUInt(4))).wrapping_add_uint(T::u8_as_SmallUInt(2));
             let mut x = rand_num.pow(&d).wrapping_rem(self);
             if x.is_one() || x == self_minus_one
                 { continue; }
@@ -2283,7 +2283,7 @@ where T: Uint + Copy + Clone + Display + Debug + ToString
             {
                 x = x.wrapping_mul(&x);
                 x.wrapping_rem_assign(self);
-                d.wrapping_mul_assign_uint(T::u8_as_Uint(2));
+                d.wrapping_mul_assign_uint(T::u8_as_SmallUInt(2));
 
                 if x.is_one()
                     { return false; }
@@ -2414,13 +2414,14 @@ where T: Uint + Copy + Clone + Display + Debug + ToString
     /// # Example
     /// ```
     /// use Cryptocol::number::*;
-    /// use Cryptocol::define_utypes_with_u8;
+    /// use Cryptocol::define_utypes_with;
     /// 
-    /// define_utypes_with_u8!();
+    /// define_utypes_with!(u128);
     /// let mut a = u256::random();
-    /// a.turn_check_bits(12);
     /// println!("a = {}", a.to_string_with_radix_and_stride(2, 8).unwrap());
-    /// assert_eq!(a, u256::from_str_radix("10000_00000000", 2).unwrap());
+    /// a.turn_check_bits(102);
+    /// println!("a = {}", a.to_string_with_radix_and_stride(2, 8).unwrap());
+    /// assert_eq!(a, u256::from_str_radix("1000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000", 2).unwrap());
     /// ```
     /// 
     /// # Big-endian issue
@@ -2433,11 +2434,11 @@ where T: Uint + Copy + Clone + Display + Debug + ToString
         let chunk_num = bit_pos / TSIZE_BITS;
         let piece_num = bit_pos % TSIZE_BITS;
         let mut val = T::one();
-        val <<= T::usize_as_Uint(piece_num);
+        val <<= T::usize_as_SmallUInt(piece_num);
         self.set_zero();
         self.set_num_(chunk_num, val);
     }
-
+/////THIS/////
     // pub fn get_num(&self, i: usize) -> Option<T>
     /// Returns i-th element of its array of type `T` wrapped in Some
     /// of enum Option if `i` < `N`. Otherwise, it returns `None`.
@@ -3224,7 +3225,7 @@ where T: Uint + Copy + Clone + Display + Debug + ToString
         for i in chunk_num..N
             { self.set_num_(i, zero); }
         if piece_num != 0
-            { self.set_num_(chunk_num, max >> T::usize_as_Uint(TSIZE_IN_BITS - piece_num)); }
+            { self.set_num_(chunk_num, max >> T::usize_as_SmallUInt(TSIZE_IN_BITS - piece_num)); }
     }
 
     // pub fn set_halfmax(&mut self)
@@ -3333,7 +3334,7 @@ where T: Uint + Copy + Clone + Display + Debug + ToString
     /// assert_eq!(a, b);
     /// ```
     pub fn set_uint<U>(&mut self, val: U)
-    where U: Uint + Copy + Clone + Display + Debug + ToString
+    where U: SmallUInt + Copy + Clone + Display + Debug + ToString
             + Add<Output=U> + AddAssign + Sub<Output=U> + SubAssign
             + Mul<Output=U> + MulAssign + Div<Output=U> + DivAssign
             + Rem<Output=U> + RemAssign
@@ -3357,7 +3358,7 @@ where T: Uint + Copy + Clone + Display + Debug + ToString
             for i in 0..VSIZE/TSIZE
             {
                 unsafe { self.set_num_(i, share.des); }
-                unsafe { share.src >>= U::usize_as_Uint(TSIZE_BITS); }
+                unsafe { share.src >>= U::usize_as_SmallUInt(TSIZE_BITS); }
             }
         }
     }
@@ -3389,7 +3390,7 @@ where T: Uint + Copy + Clone + Display + Debug + ToString
     /// ```
     #[cfg(target_endian = "big")]
     pub fn set_uint<U>(&mut self, val: U)
-    where U: Uint + Copy + Clone + Display + Debug + ToString
+    where U: SmallUInt + Copy + Clone + Display + Debug + ToString
             + Add<Output=U> + AddAssign + Sub<Output=U> + SubAssign
             + Mul<Output=U> + MulAssign + Div<Output=U> + DivAssign
             + Rem<Output=U> + RemAssign
@@ -3414,7 +3415,7 @@ where T: Uint + Copy + Clone + Display + Debug + ToString
             loop
             {
                 unsafe { self.set_num_(i, share.des); }
-                unsafe { share.src <<= U::usize_as_Uint(TSIZE_BITS); }
+                unsafe { share.src <<= U::usize_as_SmallUInt(TSIZE_BITS); }
                 if i == 0
                     { break; }
                 i -= 1;
@@ -3452,7 +3453,7 @@ where T: Uint + Copy + Clone + Display + Debug + ToString
     /// ```
     #[cfg(target_endian = "little")]
     pub fn is_uint<U>(&self, val: U) -> bool
-    where U: Uint + Copy + Clone + Display + Debug + ToString
+    where U: SmallUInt + Copy + Clone + Display + Debug + ToString
             + Add<Output=U> + AddAssign + Sub<Output=U> + SubAssign
             + Mul<Output=U> + MulAssign + Div<Output=U> + DivAssign
             + Rem<Output=U> + RemAssign
@@ -3482,7 +3483,7 @@ where T: Uint + Copy + Clone + Display + Debug + ToString
             {
                 if unsafe { self.get_num_(i) != share.des }
                     { return false; }
-                unsafe { share.src >>= U::usize_as_Uint(TSIZE_BITS); }
+                unsafe { share.src >>= U::usize_as_SmallUInt(TSIZE_BITS); }
             }
             for i in VSIZE/TSIZE..N
             {
@@ -3523,7 +3524,7 @@ where T: Uint + Copy + Clone + Display + Debug + ToString
     /// ```
     #[cfg(target_endian = "big")]
     pub fn is_uint<U>(&self, val: U) -> bool
-    where U: Uint + Copy + Clone + Display + Debug + ToString
+    where U: SmallUInt + Copy + Clone + Display + Debug + ToString
             + Add<Output=U> + AddAssign + Sub<Output=U> + SubAssign
             + Mul<Output=U> + MulAssign + Div<Output=U> + DivAssign
             + Rem<Output=U> + RemAssign
@@ -3556,7 +3557,7 @@ where T: Uint + Copy + Clone + Display + Debug + ToString
                     { return false; }
                 if i == 0
                     { break; }
-                unsafe { share.src <<= U::usize_as_Uint(TSIZE_BITS); }      
+                unsafe { share.src <<= U::usize_as_SmallUInt(TSIZE_BITS); }      
                 i -= 1;          
             }
             for i in VSIZE/TSIZE..N
@@ -3907,7 +3908,7 @@ where T: Uint + Copy + Clone + Display + Debug + ToString
     /// // Todo
     /// ```
     pub fn partial_cmp_uint<U>(&self, other: U) -> Option<Ordering>
-    where U: Uint + Copy + Clone + Display + Debug + ToString
+    where U: SmallUInt + Copy + Clone + Display + Debug + ToString
             + Add<Output=U> + AddAssign + Sub<Output=U> + SubAssign
             + Mul<Output=U> + MulAssign + Div<Output=U> + DivAssign
             + Rem<Output=U> + RemAssign
@@ -3968,7 +3969,7 @@ where T: Uint + Copy + Clone + Display + Debug + ToString
     /// ```
     #[inline]
     pub fn lt_uint<U>(&self, other: U) -> bool
-    where U: Uint + Copy + Clone + Display + Debug + ToString
+    where U: SmallUInt + Copy + Clone + Display + Debug + ToString
             + Add<Output=U> + AddAssign + Sub<Output=U> + SubAssign
             + Mul<Output=U> + MulAssign + Div<Output=U> + DivAssign
             + Rem<Output=U> + RemAssign
@@ -3996,7 +3997,7 @@ where T: Uint + Copy + Clone + Display + Debug + ToString
     /// ```
     #[inline]
     pub fn gt_uint<U>(&self, other: U) -> bool
-    where U: Uint + Copy + Clone + Display + Debug + ToString
+    where U: SmallUInt + Copy + Clone + Display + Debug + ToString
             + Add<Output=U> + AddAssign + Sub<Output=U> + SubAssign
             + Mul<Output=U> + MulAssign + Div<Output=U> + DivAssign
             + Rem<Output=U> + RemAssign
@@ -4024,7 +4025,7 @@ where T: Uint + Copy + Clone + Display + Debug + ToString
     /// ```
     #[inline]
     pub fn le_uint<U>(&self, other: U) -> bool
-    where U: Uint + Copy + Clone + Display + Debug + ToString
+    where U: SmallUInt + Copy + Clone + Display + Debug + ToString
             + Add<Output=U> + AddAssign + Sub<Output=U> + SubAssign
             + Mul<Output=U> + MulAssign + Div<Output=U> + DivAssign
             + Rem<Output=U> + RemAssign
@@ -4052,7 +4053,7 @@ where T: Uint + Copy + Clone + Display + Debug + ToString
     /// ```
     #[inline]
     pub fn ge_uint<U>(&self, other: U) -> bool
-    where U: Uint + Copy + Clone + Display + Debug + ToString
+    where U: SmallUInt + Copy + Clone + Display + Debug + ToString
             + Add<Output=U> + AddAssign + Sub<Output=U> + SubAssign
             + Mul<Output=U> + MulAssign + Div<Output=U> + DivAssign
             + Rem<Output=U> + RemAssign
@@ -4080,7 +4081,7 @@ where T: Uint + Copy + Clone + Display + Debug + ToString
     /// ```
     #[inline]
     pub fn eq_uint<U>(&self, other: U) -> bool
-    where U: Uint + Copy + Clone + Display + Debug + ToString
+    where U: SmallUInt + Copy + Clone + Display + Debug + ToString
             + Add<Output=U> + AddAssign + Sub<Output=U> + SubAssign
             + Mul<Output=U> + MulAssign + Div<Output=U> + DivAssign
             + Rem<Output=U> + RemAssign
@@ -4133,7 +4134,7 @@ where T: Uint + Copy + Clone + Display + Debug + ToString
     /// to use it for Big Endian CPUs for serious purpose. Only use this crate
     /// for Big-endian CPUs with your own full responsibility.
     pub fn carrying_add_uint<U>(&self, rhs: U, carry: bool) -> (Self, bool)
-    where U: Uint + Copy + Clone + Display + Debug + ToString
+    where U: SmallUInt + Copy + Clone + Display + Debug + ToString
             + Add<Output=U> + AddAssign + Sub<Output=U> + SubAssign
             + Mul<Output=U> + MulAssign + Div<Output=U> + DivAssign
             + Rem<Output=U> + RemAssign
@@ -4184,7 +4185,7 @@ where T: Uint + Copy + Clone + Display + Debug + ToString
     /// to use it for Big Endian CPUs for serious purpose. Only use this crate
     /// for Big-endian CPUs with your own full responsibility.
     pub fn carrying_add_assign_uint<U>(&mut self, rhs: U, carry: bool) -> bool
-    where U: Uint + Copy + Clone + Display + Debug + ToString
+    where U: SmallUInt + Copy + Clone + Display + Debug + ToString
             + Add<Output=U> + AddAssign + Sub<Output=U> + SubAssign
             + Mul<Output=U> + MulAssign + Div<Output=U> + DivAssign
             + Rem<Output=U> + RemAssign
@@ -4263,7 +4264,7 @@ where T: Uint + Copy + Clone + Display + Debug + ToString
     /// to use it for Big Endian CPUs for serious purpose. Only use this crate
     /// for Big-endian CPUs with your own full responsibility.
     pub fn wrapping_add_uint<U>(&self, rhs: U) -> Self
-    where U: Uint + Copy + Clone + Display + Debug + ToString
+    where U: SmallUInt + Copy + Clone + Display + Debug + ToString
             + Add<Output=U> + AddAssign + Sub<Output=U> + SubAssign
             + Mul<Output=U> + MulAssign + Div<Output=U> + DivAssign
             + Rem<Output=U> + RemAssign
@@ -4328,7 +4329,7 @@ where T: Uint + Copy + Clone + Display + Debug + ToString
     /// for Big-endian CPUs with your own full responsibility.
     #[inline]
     pub fn wrapping_add_assign_uint<U>(&mut self, rhs: U)
-    where U: Uint + Copy + Clone + Display + Debug + ToString
+    where U: SmallUInt + Copy + Clone + Display + Debug + ToString
             + Add<Output=U> + AddAssign + Sub<Output=U> + SubAssign
             + Mul<Output=U> + MulAssign + Div<Output=U> + DivAssign
             + Rem<Output=U> + RemAssign
@@ -4363,7 +4364,7 @@ where T: Uint + Copy + Clone + Display + Debug + ToString
     /// for Big-endian CPUs with your own full responsibility.
     #[inline]
     pub fn overflowing_add_uint<U>(&self, rhs: U) -> (Self, bool)
-    where U: Uint + Copy + Clone + Display + Debug + ToString
+    where U: SmallUInt + Copy + Clone + Display + Debug + ToString
             + Add<Output=U> + AddAssign + Sub<Output=U> + SubAssign
             + Mul<Output=U> + MulAssign + Div<Output=U> + DivAssign
             + Rem<Output=U> + RemAssign
@@ -4397,7 +4398,7 @@ where T: Uint + Copy + Clone + Display + Debug + ToString
     /// for Big-endian CPUs with your own full responsibility.
     #[inline]
     pub fn overflowing_add_assign_uint<U>(&mut self, rhs: U) -> bool
-    where U: Uint + Copy + Clone + Display + Debug + ToString
+    where U: SmallUInt + Copy + Clone + Display + Debug + ToString
             + Add<Output=U> + AddAssign + Sub<Output=U> + SubAssign
             + Mul<Output=U> + MulAssign + Div<Output=U> + DivAssign
             + Rem<Output=U> + RemAssign
@@ -4430,7 +4431,7 @@ where T: Uint + Copy + Clone + Display + Debug + ToString
     /// to use it for Big Endian CPUs for serious purpose. Only use this crate
     /// for Big-endian CPUs with your own full responsibility.
     pub fn checked_add_uint<U>(&self, rhs: U) -> Option<Self>
-    where U: Uint + Copy + Clone + Display + Debug + ToString
+    where U: SmallUInt + Copy + Clone + Display + Debug + ToString
             + Add<Output=U> + AddAssign + Sub<Output=U> + SubAssign
             + Mul<Output=U> + MulAssign + Div<Output=U> + DivAssign
             + Rem<Output=U> + RemAssign
@@ -4480,7 +4481,7 @@ where T: Uint + Copy + Clone + Display + Debug + ToString
     /// for Big-endian CPUs with your own full responsibility.
     #[inline]
     pub fn unchecked_add_uint<U>(&self, rhs: U) -> Self
-    where U: Uint + Copy + Clone + Display + Debug + ToString
+    where U: SmallUInt + Copy + Clone + Display + Debug + ToString
             + Add<Output=U> + AddAssign + Sub<Output=U> + SubAssign
             + Mul<Output=U> + MulAssign + Div<Output=U> + DivAssign
             + Rem<Output=U> + RemAssign
@@ -4514,7 +4515,7 @@ where T: Uint + Copy + Clone + Display + Debug + ToString
     /// to use it for Big Endian CPUs for serious purpose. Only use this crate
     /// for Big-endian CPUs with your own full responsibility.
     pub fn saturating_add_uint<U>(&self, rhs: U) -> Self
-    where U: Uint + Copy + Clone + Display + Debug + ToString
+    where U: SmallUInt + Copy + Clone + Display + Debug + ToString
             + Add<Output=U> + AddAssign + Sub<Output=U> + SubAssign
             + Mul<Output=U> + MulAssign + Div<Output=U> + DivAssign
             + Rem<Output=U> + RemAssign
@@ -4546,7 +4547,7 @@ where T: Uint + Copy + Clone + Display + Debug + ToString
     /// to use it for Big Endian CPUs for serious purpose. Only use this crate
     /// for Big-endian CPUs with your own full responsibility.
     pub fn saturating_add_assign_uint<U>(&mut self, rhs: U)
-    where U: Uint + Copy + Clone + Display + Debug + ToString
+    where U: SmallUInt + Copy + Clone + Display + Debug + ToString
             + Add<Output=U> + AddAssign + Sub<Output=U> + SubAssign
             + Mul<Output=U> + MulAssign + Div<Output=U> + DivAssign
             + Rem<Output=U> + RemAssign
@@ -4593,7 +4594,7 @@ where T: Uint + Copy + Clone + Display + Debug + ToString
     /// to use it for Big Endian CPUs for serious purpose. Only use this crate
     /// for Big-endian CPUs with your own full responsibility.
     pub fn borrowing_sub_uint<U>(&self, rhs: U, borrow: bool) -> (Self, bool)
-    where U: Uint + Copy + Clone + Display + Debug + ToString
+    where U: SmallUInt + Copy + Clone + Display + Debug + ToString
             + Add<Output=U> + AddAssign + Sub<Output=U> + SubAssign
             + Mul<Output=U> + MulAssign + Div<Output=U> + DivAssign
             + Rem<Output=U> + RemAssign
@@ -4638,7 +4639,7 @@ where T: Uint + Copy + Clone + Display + Debug + ToString
     /// to use it for Big Endian CPUs for serious purpose. Only use this crate
     /// for Big-endian CPUs with your own full responsibility.
     pub fn borrowing_sub_assign_uint<U>(&mut self, rhs: U, borrow: bool) -> bool
-    where U: Uint + Copy + Clone + Display + Debug + ToString
+    where U: SmallUInt + Copy + Clone + Display + Debug + ToString
             + Add<Output=U> + AddAssign + Sub<Output=U> + SubAssign
             + Mul<Output=U> + MulAssign + Div<Output=U> + DivAssign
             + Rem<Output=U> + RemAssign
@@ -4699,7 +4700,7 @@ where T: Uint + Copy + Clone + Display + Debug + ToString
     /// assert_eq!(sub.to_string(), "9999999999999999999999999999999965");
     /// ```
     pub fn wrapping_sub_uint<U>(&self, rhs: U) -> Self
-    where U: Uint + Copy + Clone + Display + Debug + ToString
+    where U: SmallUInt + Copy + Clone + Display + Debug + ToString
             + Add<Output=U> + AddAssign + Sub<Output=U> + SubAssign
             + Mul<Output=U> + MulAssign + Div<Output=U> + DivAssign
             + Rem<Output=U> + RemAssign
@@ -4726,7 +4727,7 @@ where T: Uint + Copy + Clone + Display + Debug + ToString
     /// ```
     #[inline]
     pub fn wrapping_sub_assign_uint<U>(&mut self, rhs: U)
-    where U: Uint + Copy + Clone + Display + Debug + ToString
+    where U: SmallUInt + Copy + Clone + Display + Debug + ToString
             + Add<Output=U> + AddAssign + Sub<Output=U> + SubAssign
             + Mul<Output=U> + MulAssign + Div<Output=U> + DivAssign
             + Rem<Output=U> + RemAssign
@@ -4761,7 +4762,7 @@ where T: Uint + Copy + Clone + Display + Debug + ToString
     /// for Big-endian CPUs with your own full responsibility.
     #[inline]
     pub fn overflowing_sub_uint<U>(&self, rhs: U) -> (Self, bool)
-    where U: Uint + Copy + Clone + Display + Debug + ToString
+    where U: SmallUInt + Copy + Clone + Display + Debug + ToString
             + Add<Output=U> + AddAssign + Sub<Output=U> + SubAssign
             + Mul<Output=U> + MulAssign + Div<Output=U> + DivAssign
             + Rem<Output=U> + RemAssign
@@ -4795,7 +4796,7 @@ where T: Uint + Copy + Clone + Display + Debug + ToString
     /// for Big-endian CPUs with your own full responsibility.
     #[inline]
     pub fn overflowing_sub_assign_uint<U>(&mut self, rhs: U) -> bool
-    where U: Uint + Copy + Clone + Display + Debug + ToString
+    where U: SmallUInt + Copy + Clone + Display + Debug + ToString
             + Add<Output=U> + AddAssign + Sub<Output=U> + SubAssign
             + Mul<Output=U> + MulAssign + Div<Output=U> + DivAssign
             + Rem<Output=U> + RemAssign
@@ -4829,7 +4830,7 @@ where T: Uint + Copy + Clone + Display + Debug + ToString
     /// to use it for Big Endian CPUs for serious purpose. Only use this crate
     /// for Big-endian CPUs with your own full responsibility.
     pub fn checked_sub_uint<U>(&self, rhs: U) -> Option<Self>
-    where U: Uint + Copy + Clone + Display + Debug + ToString
+    where U: SmallUInt + Copy + Clone + Display + Debug + ToString
             + Add<Output=U> + AddAssign + Sub<Output=U> + SubAssign
             + Mul<Output=U> + MulAssign + Div<Output=U> + DivAssign
             + Rem<Output=U> + RemAssign
@@ -4870,7 +4871,7 @@ where T: Uint + Copy + Clone + Display + Debug + ToString
     /// for Big-endian CPUs with your own full responsibility.
     #[inline]
     pub fn unchecked_sub_uint<U>(&self, rhs: U) -> Self
-    where U: Uint + Copy + Clone + Display + Debug + ToString
+    where U: SmallUInt + Copy + Clone + Display + Debug + ToString
             + Add<Output=U> + AddAssign + Sub<Output=U> + SubAssign
             + Mul<Output=U> + MulAssign + Div<Output=U> + DivAssign
             + Rem<Output=U> + RemAssign
@@ -4904,7 +4905,7 @@ where T: Uint + Copy + Clone + Display + Debug + ToString
     /// to use it for Big Endian CPUs for serious purpose. Only use this crate
     /// for Big-endian CPUs with your own full responsibility.
     pub fn saturating_sub_uint<U>(&self, rhs: U) -> Self
-    where U: Uint + Copy + Clone + Display + Debug + ToString
+    where U: SmallUInt + Copy + Clone + Display + Debug + ToString
             + Add<Output=U> + AddAssign + Sub<Output=U> + SubAssign
             + Mul<Output=U> + MulAssign + Div<Output=U> + DivAssign
             + Rem<Output=U> + RemAssign
@@ -4940,7 +4941,7 @@ where T: Uint + Copy + Clone + Display + Debug + ToString
     /// to use it for Big Endian CPUs for serious purpose. Only use this crate
     /// for Big-endian CPUs with your own full responsibility.
     pub fn saturating_sub_assign_uint<U>(&mut self, rhs: U)
-    where U: Uint + Copy + Clone + Display + Debug + ToString
+    where U: SmallUInt + Copy + Clone + Display + Debug + ToString
             + Add<Output=U> + AddAssign + Sub<Output=U> + SubAssign
             + Mul<Output=U> + MulAssign + Div<Output=U> + DivAssign
             + Rem<Output=U> + RemAssign
@@ -4973,7 +4974,7 @@ where T: Uint + Copy + Clone + Display + Debug + ToString
     /// // Todo
     /// ```
     pub fn abs_diff_uint<U>(&self, other: U) -> Self
-    where U: Uint + Copy + Clone + Display + Debug + ToString
+    where U: SmallUInt + Copy + Clone + Display + Debug + ToString
             + Add<Output=U> + AddAssign + Sub<Output=U> + SubAssign
             + Mul<Output=U> + MulAssign + Div<Output=U> + DivAssign
             + Rem<Output=U> + RemAssign
@@ -5038,7 +5039,7 @@ where T: Uint + Copy + Clone + Display + Debug + ToString
     /// to use it for Big Endian CPUs for serious purpose. Only use this crate
     /// for Big-endian CPUs with your own full responsibility.
     pub fn carrying_mul_uint<U>(&self, rhs: U, carry: Self) -> (Self, Self)
-    where U: Uint + Copy + Clone + Display + Debug + ToString
+    where U: SmallUInt + Copy + Clone + Display + Debug + ToString
             + Add<Output=U> + AddAssign + Sub<Output=U> + SubAssign
             + Mul<Output=U> + MulAssign + Div<Output=U> + DivAssign
             + Rem<Output=U> + RemAssign
@@ -5089,7 +5090,7 @@ where T: Uint + Copy + Clone + Display + Debug + ToString
     /// to use it for Big Endian CPUs for serious purpose. Only use this crate
     /// for Big-endian CPUs with your own full responsibility.
     pub fn carrying_mul_assign_uint<U>(&mut self, rhs: U, carry: Self) -> Self
-    where U: Uint + Copy + Clone + Display + Debug + ToString
+    where U: SmallUInt + Copy + Clone + Display + Debug + ToString
             + Add<Output=U> + AddAssign + Sub<Output=U> + SubAssign
             + Mul<Output=U> + MulAssign + Div<Output=U> + DivAssign
             + Rem<Output=U> + RemAssign
@@ -5119,7 +5120,7 @@ where T: Uint + Copy + Clone + Display + Debug + ToString
 
         let one = T::one();
         let adder = self.clone();
-        let mut bit_check = one << T::usize_as_Uint(T::size_in_bits() - 1 - trhs.leading_zeros() as usize);
+        let mut bit_check = one << T::usize_as_SmallUInt(T::size_in_bits() - 1 - trhs.leading_zeros() as usize);
         self.set_zero();
         while bit_check != zero
         {
@@ -5176,7 +5177,7 @@ where T: Uint + Copy + Clone + Display + Debug + ToString
     /// for Big-endian CPUs with your own full responsibility.
     #[inline]
     pub fn widening_mul_uint<U>(&self, rhs: U) -> (Self, Self)
-    where U: Uint + Copy + Clone + Display + Debug + ToString
+    where U: SmallUInt + Copy + Clone + Display + Debug + ToString
             + Add<Output=U> + AddAssign + Sub<Output=U> + SubAssign
             + Mul<Output=U> + MulAssign + Div<Output=U> + DivAssign
             + Rem<Output=U> + RemAssign
@@ -5224,7 +5225,7 @@ where T: Uint + Copy + Clone + Display + Debug + ToString
     /// for Big-endian CPUs with your own full responsibility.
     #[inline]
     pub fn widening_mul_assign_uint<U>(&mut self, rhs: U) -> Self
-    where U: Uint + Copy + Clone + Display + Debug + ToString
+    where U: SmallUInt + Copy + Clone + Display + Debug + ToString
             + Add<Output=U> + AddAssign + Sub<Output=U> + SubAssign
             + Mul<Output=U> + MulAssign + Div<Output=U> + DivAssign
             + Rem<Output=U> + RemAssign
@@ -5258,7 +5259,7 @@ where T: Uint + Copy + Clone + Display + Debug + ToString
     /// assert_eq!(mul.to_string(), "350000000000000000000000000000000000");
     /// ```
     pub fn wrapping_mul_uint<U>(&self, rhs: U) -> Self
-    where U: Uint + Copy + Clone + Display + Debug + ToString
+    where U: SmallUInt + Copy + Clone + Display + Debug + ToString
             + Add<Output=U> + AddAssign + Sub<Output=U> + SubAssign
             + Mul<Output=U> + MulAssign + Div<Output=U> + DivAssign
             + Rem<Output=U> + RemAssign
@@ -5284,7 +5285,7 @@ where T: Uint + Copy + Clone + Display + Debug + ToString
     /// // Todo
     /// ```
     pub fn wrapping_mul_assign_uint<U>(&mut self, rhs: U)
-    where U: Uint + Copy + Clone + Display + Debug + ToString
+    where U: SmallUInt + Copy + Clone + Display + Debug + ToString
             + Add<Output=U> + AddAssign + Sub<Output=U> + SubAssign
             + Mul<Output=U> + MulAssign + Div<Output=U> + DivAssign
             + Rem<Output=U> + RemAssign
@@ -5312,7 +5313,7 @@ where T: Uint + Copy + Clone + Display + Debug + ToString
             return;
         }
         let adder = self.clone();
-        let mut bit_check = one << T::usize_as_Uint(T::size_in_bits() - 1 - trhs.leading_zeros() as usize);
+        let mut bit_check = one << T::usize_as_SmallUInt(T::size_in_bits() - 1 - trhs.leading_zeros() as usize);
         self.set_zero();
 
         while bit_check != zero
@@ -5347,7 +5348,7 @@ where T: Uint + Copy + Clone + Display + Debug + ToString
     /// to use it for Big Endian CPUs for serious purpose. Only use this crate
     /// for Big-endian CPUs with your own full responsibility.
     pub fn overflowing_mul_uint<U>(&self, rhs: U) -> (Self, bool)
-    where U: Uint + Copy + Clone + Display + Debug + ToString
+    where U: SmallUInt + Copy + Clone + Display + Debug + ToString
             + Add<Output=U> + AddAssign + Sub<Output=U> + SubAssign
             + Mul<Output=U> + MulAssign + Div<Output=U> + DivAssign
             + Rem<Output=U> + RemAssign
@@ -5382,7 +5383,7 @@ where T: Uint + Copy + Clone + Display + Debug + ToString
     /// to use it for Big Endian CPUs for serious purpose. Only use this crate
     /// for Big-endian CPUs with your own full responsibility.
     pub fn overflowing_mul_assign_uint<U>(&mut self, rhs: U) -> bool
-    where U: Uint + Copy + Clone + Display + Debug + ToString
+    where U: SmallUInt + Copy + Clone + Display + Debug + ToString
             + Add<Output=U> + AddAssign + Sub<Output=U> + SubAssign
             + Mul<Output=U> + MulAssign + Div<Output=U> + DivAssign
             + Rem<Output=U> + RemAssign
@@ -5416,7 +5417,7 @@ where T: Uint + Copy + Clone + Display + Debug + ToString
     /// to use it for Big Endian CPUs for serious purpose. Only use this crate
     /// for Big-endian CPUs with your own full responsibility.
     pub fn checked_mul_uint<U>(&self, rhs: U) -> Option<Self>
-    where U: Uint + Copy + Clone + Display + Debug + ToString
+    where U: SmallUInt + Copy + Clone + Display + Debug + ToString
             + Add<Output=U> + AddAssign + Sub<Output=U> + SubAssign
             + Mul<Output=U> + MulAssign + Div<Output=U> + DivAssign
             + Rem<Output=U> + RemAssign
@@ -5457,7 +5458,7 @@ where T: Uint + Copy + Clone + Display + Debug + ToString
     /// for Big-endian CPUs with your own full responsibility.
     #[inline]
     pub fn unchecked_mul_uint<U>(&self, rhs: U) -> Self
-    where U: Uint + Copy + Clone + Display + Debug + ToString
+    where U: SmallUInt + Copy + Clone + Display + Debug + ToString
             + Add<Output=U> + AddAssign + Sub<Output=U> + SubAssign
             + Mul<Output=U> + MulAssign + Div<Output=U> + DivAssign
             + Rem<Output=U> + RemAssign
@@ -5491,7 +5492,7 @@ where T: Uint + Copy + Clone + Display + Debug + ToString
     /// to use it for Big Endian CPUs for serious purpose. Only use this crate
     /// for Big-endian CPUs with your own full responsibility.
     pub fn saturating_mul_uint<U>(&self, rhs: U) -> Self
-    where U: Uint + Copy + Clone + Display + Debug + ToString
+    where U: SmallUInt + Copy + Clone + Display + Debug + ToString
             + Add<Output=U> + AddAssign + Sub<Output=U> + SubAssign
             + Mul<Output=U> + MulAssign + Div<Output=U> + DivAssign
             + Rem<Output=U> + RemAssign
@@ -5523,7 +5524,7 @@ where T: Uint + Copy + Clone + Display + Debug + ToString
     /// to use it for Big Endian CPUs for serious purpose. Only use this crate
     /// for Big-endian CPUs with your own full responsibility.
     pub fn saturating_mul_assign_uint<U>(&mut self, rhs: U)
-    where U: Uint + Copy + Clone + Display + Debug + ToString
+    where U: SmallUInt + Copy + Clone + Display + Debug + ToString
             + Add<Output=U> + AddAssign + Sub<Output=U> + SubAssign
             + Mul<Output=U> + MulAssign + Div<Output=U> + DivAssign
             + Rem<Output=U> + RemAssign
@@ -5538,7 +5539,7 @@ where T: Uint + Copy + Clone + Display + Debug + ToString
 
     /*
     pub fn expanded_mul<U, const M: usize>(&self, rhs: U) -> BigUInt<T, M>
-    where U: Uint + Copy + Clone + Display + Debug + ToString
+    where U: SmallUInt + Copy + Clone + Display + Debug + ToString
             + Add<Output=U> + AddAssign + Sub<Output=U> + SubAssign
             + Mul<Output=U> + MulAssign + Div<Output=U> + DivAssign
             + Rem<Output=U> + RemAssign
@@ -5583,7 +5584,7 @@ where T: Uint + Copy + Clone + Display + Debug + ToString
     /// let (quotient, remainder) = dividend.divide_fully_uint(87_u128);
     /// ```
     pub fn divide_fully_uint<U>(&self, rhs: U) -> (Self, U)
-    where U: Uint + Copy + Clone + Display + Debug + ToString
+    where U: SmallUInt + Copy + Clone + Display + Debug + ToString
             + Add<Output=U> + AddAssign + Sub<Output=U> + SubAssign
             + Mul<Output=U> + MulAssign + Div<Output=U> + DivAssign
             + Rem<Output=U> + RemAssign
@@ -5604,7 +5605,7 @@ where T: Uint + Copy + Clone + Display + Debug + ToString
                     {
                         rr.set_ubyte_(i, r.get_num_(i).into_u8());
                     }
-                    return (q, U::u16_as_Uint(rr.get()));
+                    return (q, U::u16_as_SmallUInt(rr.get()));
                 },
                 4 => {
                     let mut rr = IntUnion::new();
@@ -5623,7 +5624,7 @@ where T: Uint + Copy + Clone + Display + Debug + ToString
                             }
                         },
                     }
-                    return (q, U::u32_as_Uint(rr.get()));
+                    return (q, U::u32_as_SmallUInt(rr.get()));
                 },
                 8 => {
                     let mut rr = LongUnion::new();
@@ -5648,7 +5649,7 @@ where T: Uint + Copy + Clone + Display + Debug + ToString
                             }
                         },
                     }
-                    return (q, U::u64_as_Uint(rr.get()));
+                    return (q, U::u64_as_SmallUInt(rr.get()));
                 },
                 _ => {
                     let mut rr = LongerUnion::new();
@@ -5679,7 +5680,7 @@ where T: Uint + Copy + Clone + Display + Debug + ToString
                             }
                         },
                     }
-                    return (q, U::u128_as_Uint(rr.get()));
+                    return (q, U::u128_as_SmallUInt(rr.get()));
                 }
             }
         }
@@ -6242,7 +6243,7 @@ where T: Uint + Copy + Clone + Display + Debug + ToString
     /// // Todo
     /// ```
     pub fn next_multiple_of_uint<U>(&self, rhs: U) -> Self
-    where U: Uint + Copy + Clone + Display + Debug + ToString
+    where U: SmallUInt + Copy + Clone + Display + Debug + ToString
             + Add<Output=U> + AddAssign + Sub<Output=U> + SubAssign
             + Mul<Output=U> + MulAssign + Div<Output=U> + DivAssign
             + Rem<Output=U> + RemAssign
@@ -6275,7 +6276,7 @@ where T: Uint + Copy + Clone + Display + Debug + ToString
     /// // Todo
     /// ```
     pub fn next_multiple_of_assign_uint<U>(&mut self, rhs: U)
-    where U: Uint + Copy + Clone + Display + Debug + ToString
+    where U: SmallUInt + Copy + Clone + Display + Debug + ToString
             + Add<Output=U> + AddAssign + Sub<Output=U> + SubAssign
             + Mul<Output=U> + MulAssign + Div<Output=U> + DivAssign
             + Rem<Output=U> + RemAssign
@@ -6309,7 +6310,7 @@ where T: Uint + Copy + Clone + Display + Debug + ToString
 
     // pub fn pow_uint<U>(&self, exp: U) -> Self
     /// Raises `BigUInt` type number to the power of exp, using exponentiation
-    /// of type `BigUInt` by squaring. The type `U` has the trait `Uint`.
+    /// of type `BigUInt` by squaring. The type `U` has the trait `SmallUInt`.
     /// 
     /// # Panics
     /// If `size_of::<T>() * N` < `size_of::<U>()`, This method may panic
@@ -6347,7 +6348,7 @@ where T: Uint + Copy + Clone + Display + Debug + ToString
     /// ```
     #[inline]
     pub fn pow_uint<U>(&self, exp: U) -> Self
-    where U: Uint + Copy + Clone + Display + Debug + ToString
+    where U: SmallUInt + Copy + Clone + Display + Debug + ToString
             + Add<Output=U> + AddAssign + Sub<Output=U> + SubAssign
             + Mul<Output=U> + MulAssign + Div<Output=U> + DivAssign
             + Rem<Output=U> + RemAssign
@@ -6399,7 +6400,7 @@ where T: Uint + Copy + Clone + Display + Debug + ToString
     /// ```
     #[inline]
     pub fn pow_assign_uint<U>(&mut self, exp: U)
-    where U: Uint + Copy + Clone + Display + Debug + ToString
+    where U: SmallUInt + Copy + Clone + Display + Debug + ToString
             + Add<Output=U> + AddAssign + Sub<Output=U> + SubAssign
             + Mul<Output=U> + MulAssign + Div<Output=U> + DivAssign
             + Rem<Output=U> + RemAssign
@@ -6414,7 +6415,7 @@ where T: Uint + Copy + Clone + Display + Debug + ToString
     // pub fn wrapping_pow_uint<U>(&self, exp: U) -> Self
     /// Raises `BigUInt` type number to the power of exp, using exponentiation
     /// of type `BigUInt` by squaring, wrapping around at the boundary of the
-    /// type. The type `U` has the trait `Uint`.
+    /// type. The type `U` has the trait `SmallUInt`.
     /// 
     /// # Panics
     /// If `size_of::<T>() * N` < `size_of::<U>()`, This method may panic
@@ -6454,7 +6455,7 @@ where T: Uint + Copy + Clone + Display + Debug + ToString
     /// assert!(b > c);
     /// ```
     pub fn wrapping_pow_uint<U>(&self, exp: U) -> Self
-    where U: Uint + Copy + Clone + Display + Debug + ToString
+    where U: SmallUInt + Copy + Clone + Display + Debug + ToString
             + Add<Output=U> + AddAssign + Sub<Output=U> + SubAssign
             + Mul<Output=U> + MulAssign + Div<Output=U> + DivAssign
             + Rem<Output=U> + RemAssign
@@ -6513,7 +6514,7 @@ where T: Uint + Copy + Clone + Display + Debug + ToString
     /// assert!(old > a);
     /// ```
     pub fn wrapping_pow_assign_uint<U>(&mut self, exp: U)
-    where U: Uint + Copy + Clone + Display + Debug + ToString
+    where U: SmallUInt + Copy + Clone + Display + Debug + ToString
             + Add<Output=U> + AddAssign + Sub<Output=U> + SubAssign
             + Mul<Output=U> + MulAssign + Div<Output=U> + DivAssign
             + Rem<Output=U> + RemAssign
@@ -6532,7 +6533,7 @@ where T: Uint + Copy + Clone + Display + Debug + ToString
         if exp == zero
             { return; }
 
-        let mut bit_check = one << U::usize_as_Uint(exp.length_in_bits() - 1 - exp.leading_zeros() as usize);
+        let mut bit_check = one << U::usize_as_SmallUInt(exp.length_in_bits() - 1 - exp.leading_zeros() as usize);
         if bit_check != zero
         {
             self.wrapping_mul_assign(&multiplier);
@@ -6572,7 +6573,7 @@ where T: Uint + Copy + Clone + Display + Debug + ToString
     /// // Todo
     /// ```
     pub fn ilog_uint<U>(&self, base: U) -> Self
-    where U: Uint + Copy + Clone + Display + Debug + ToString
+    where U: SmallUInt + Copy + Clone + Display + Debug + ToString
             + Add<Output=U> + AddAssign + Sub<Output=U> + SubAssign
             + Mul<Output=U> + MulAssign + Div<Output=U> + DivAssign
             + Rem<Output=U> + RemAssign
@@ -6616,7 +6617,7 @@ where T: Uint + Copy + Clone + Display + Debug + ToString
     /// // Todo
     /// ```
     pub fn checked_ilog_uint<U>(&self, base: U) -> Option<Self>
-    where U: Uint + Copy + Clone + Display + Debug + ToString
+    where U: SmallUInt + Copy + Clone + Display + Debug + ToString
             + Add<Output=U> + AddAssign + Sub<Output=U> + SubAssign
             + Mul<Output=U> + MulAssign + Div<Output=U> + DivAssign
             + Rem<Output=U> + RemAssign
@@ -7551,7 +7552,7 @@ where T: Uint + Copy + Clone + Display + Debug + ToString
         let TSIZE_BITS = T::size_in_bits();
         let mut multiply_first = |num: T| {
             let mut bit_check = one;
-            bit_check <<= T::usize_as_Uint(TSIZE_BITS - 1);
+            bit_check <<= T::usize_as_SmallUInt(TSIZE_BITS - 1);
             while (bit_check != zero) && (bit_check & num == zero)
                 { bit_check >>= one; }
 
@@ -7564,7 +7565,7 @@ where T: Uint + Copy + Clone + Display + Debug + ToString
                 {
                     self.wrapping_add_assign(&adder);
                     if self.is_overflow()
-                        { high.wrapping_add_uint(T::u8_as_Uint(1)); }
+                        { high.wrapping_add_uint(T::u8_as_SmallUInt(1)); }
                 }
                 bit_check >>= one;
             }
@@ -7586,17 +7587,17 @@ where T: Uint + Copy + Clone + Display + Debug + ToString
                 return;
             }
             let mut bit_check = one;
-            bit_check <<= T::usize_as_Uint(TSIZE_BITS - 1);
+            bit_check <<= T::usize_as_SmallUInt(TSIZE_BITS - 1);
             while bit_check != zero
             {
                 *self <<= 1;
                 high <<= 1;
                 if self.is_overflow()
-                    { high.set_num_(0, high.get_num_(0) | T::u8_as_Uint(1)) ; }
+                    { high.set_num_(0, high.get_num_(0) | T::u8_as_SmallUInt(1)) ; }
                 if bit_check & num != zero
                 {
                     self.wrapping_add_assign(&adder);
-                    high.wrapping_add_uint(T::bool_as_Uint(self.is_overflow()));
+                    high.wrapping_add_uint(T::bool_as_SmallUInt(self.is_overflow()));
                 }
                 bit_check >>= one;
             }
@@ -7764,7 +7765,7 @@ where T: Uint + Copy + Clone + Display + Debug + ToString
         let TSIZE_BITS = size_of::<T>() * 8;
         let mut multiply_first = |num: T| {
             let mut bit_check = one;
-            bit_check <<= T::usize_as_Uint(TSIZE_BITS - 1);
+            bit_check <<= T::usize_as_SmallUInt(TSIZE_BITS - 1);
             while (bit_check != zero) && (bit_check & num == zero)
                 { bit_check >>= one; }
 
@@ -7793,7 +7794,7 @@ where T: Uint + Copy + Clone + Display + Debug + ToString
                 return;
             }
             let mut bit_check = one;
-            bit_check <<= T::usize_as_Uint(TSIZE_BITS - 1);
+            bit_check <<= T::usize_as_SmallUInt(TSIZE_BITS - 1);
             while bit_check != zero
             {
                 *self <<= 1;
@@ -9336,7 +9337,7 @@ where T: Uint + Copy + Clone + Display + Debug + ToString
     /// // Todo
     /// ```
     pub fn shift_left<U>(&self, n: U) -> Self
-    where U: Uint + Copy + Clone + Display + Debug + ToString
+    where U: SmallUInt + Copy + Clone + Display + Debug + ToString
             + Add<Output=U> + AddAssign + Sub<Output=U> + SubAssign
             + Mul<Output=U> + MulAssign + Div<Output=U> + DivAssign
             + Rem<Output=U> + RemAssign
@@ -9369,7 +9370,7 @@ where T: Uint + Copy + Clone + Display + Debug + ToString
     /// // Todo
     /// ```
     pub fn shift_left_assign<U>(&mut self, n: U)
-    where U: Uint + Copy + Clone + Display + Debug + ToString
+    where U: SmallUInt + Copy + Clone + Display + Debug + ToString
             + Add<Output=U> + AddAssign + Sub<Output=U> + SubAssign
             + Mul<Output=U> + MulAssign + Div<Output=U> + DivAssign
             + Rem<Output=U> + RemAssign
@@ -9405,8 +9406,8 @@ where T: Uint + Copy + Clone + Display + Debug + ToString
         let mut carry = zero;
         for idx in chunk_num..N
         {
-            num = (self.get_num_(idx) << T::usize_as_Uint(piece_num)) | carry;
-            carry = self.get_num_(idx) >> T::usize_as_Uint(TSIZE_IN_BITS - piece_num);
+            num = (self.get_num_(idx) << T::usize_as_SmallUInt(piece_num)) | carry;
+            carry = self.get_num_(idx) >> T::usize_as_SmallUInt(TSIZE_IN_BITS - piece_num);
             self.set_num_(idx, num);
         }
         if carry != zero
@@ -9437,7 +9438,7 @@ where T: Uint + Copy + Clone + Display + Debug + ToString
     /// // Todo
     /// ```
     pub fn checked_shift_left<U>(&self, n: U) -> Option<Self>
-    where U: Uint + Copy + Clone + Display + Debug + ToString
+    where U: SmallUInt + Copy + Clone + Display + Debug + ToString
             + Add<Output=U> + AddAssign + Sub<Output=U> + SubAssign
             + Mul<Output=U> + MulAssign + Div<Output=U> + DivAssign
             + Rem<Output=U> + RemAssign
@@ -9482,7 +9483,7 @@ where T: Uint + Copy + Clone + Display + Debug + ToString
     /// ```
     #[inline]
     pub fn unchecked_shift_left<U>(&self, n: U) -> Self
-    where U: Uint + Copy + Clone + Display + Debug + ToString
+    where U: SmallUInt + Copy + Clone + Display + Debug + ToString
             + Add<Output=U> + AddAssign + Sub<Output=U> + SubAssign
             + Mul<Output=U> + MulAssign + Div<Output=U> + DivAssign
             + Rem<Output=U> + RemAssign
@@ -9516,7 +9517,7 @@ where T: Uint + Copy + Clone + Display + Debug + ToString
     /// // Todo
     /// ```
     pub fn shift_right<U>(&self, n: U) -> Self
-    where U: Uint + Copy + Clone + Display + Debug + ToString
+    where U: SmallUInt + Copy + Clone + Display + Debug + ToString
             + Add<Output=U> + AddAssign + Sub<Output=U> + SubAssign
             + Mul<Output=U> + MulAssign + Div<Output=U> + DivAssign
             + Rem<Output=U> + RemAssign
@@ -9549,7 +9550,7 @@ where T: Uint + Copy + Clone + Display + Debug + ToString
     /// // Todo
     /// ```
     pub fn shift_right_assign<U>(&mut self, n: U)
-    where U: Uint + Copy + Clone + Display + Debug + ToString
+    where U: SmallUInt + Copy + Clone + Display + Debug + ToString
             + Add<Output=U> + AddAssign + Sub<Output=U> + SubAssign
             + Mul<Output=U> + MulAssign + Div<Output=U> + DivAssign
             + Rem<Output=U> + RemAssign
@@ -9559,8 +9560,8 @@ where T: Uint + Copy + Clone + Display + Debug + ToString
             + PartialEq + PartialOrd
     {
         let TSIZE_IN_BITS = T::size_in_bits();
-        let chunk_num = (n / U::usize_as_Uint(TSIZE_IN_BITS)).into_usize();
-        let piece_num = (n % U::usize_as_Uint(TSIZE_IN_BITS)).into_usize();
+        let chunk_num = (n / U::usize_as_SmallUInt(TSIZE_IN_BITS)).into_usize();
+        let piece_num = (n % U::usize_as_SmallUInt(TSIZE_IN_BITS)).into_usize();
         let zero = T::zero();
         self.reset_all_flags();
         if chunk_num > 0
@@ -9579,7 +9580,7 @@ where T: Uint + Copy + Clone + Display + Debug + ToString
         }
         if piece_num == 0
             { return; }
-        if (self.get_num_(0) << T::usize_as_Uint(TSIZE_IN_BITS - piece_num)) != zero
+        if (self.get_num_(0) << T::usize_as_SmallUInt(TSIZE_IN_BITS - piece_num)) != zero
             { self.set_underflow(); }
 
         let mut num: T;
@@ -9587,8 +9588,8 @@ where T: Uint + Copy + Clone + Display + Debug + ToString
         let mut idx = N - 1 - chunk_num;
         loop
         {
-            num = (self.get_num_(idx) >> T::usize_as_Uint(piece_num)) | carry;
-            carry = self.get_num_(idx) << T::usize_as_Uint(TSIZE_IN_BITS - piece_num);
+            num = (self.get_num_(idx) >> T::usize_as_SmallUInt(piece_num)) | carry;
+            carry = self.get_num_(idx) << T::usize_as_SmallUInt(TSIZE_IN_BITS - piece_num);
             self.set_num_(idx, num);
             if idx == 0
                 { break; }
@@ -9622,7 +9623,7 @@ where T: Uint + Copy + Clone + Display + Debug + ToString
     /// // Todo
     /// ```
     pub fn checked_shift_right<U>(&self, n: U) -> Option<Self>
-    where U: Uint + Copy + Clone + Display + Debug + ToString
+    where U: SmallUInt + Copy + Clone + Display + Debug + ToString
             + Add<Output=U> + AddAssign + Sub<Output=U> + SubAssign
             + Mul<Output=U> + MulAssign + Div<Output=U> + DivAssign
             + Rem<Output=U> + RemAssign
@@ -9668,7 +9669,7 @@ where T: Uint + Copy + Clone + Display + Debug + ToString
     /// ```
     #[inline]
     pub fn unchecked_shift_right<U>(&mut self, n: U) -> Self
-    where U: Uint + Copy + Clone + Display + Debug + ToString
+    where U: SmallUInt + Copy + Clone + Display + Debug + ToString
             + Add<Output=U> + AddAssign + Sub<Output=U> + SubAssign
             + Mul<Output=U> + MulAssign + Div<Output=U> + DivAssign
             + Rem<Output=U> + RemAssign
@@ -9698,7 +9699,7 @@ where T: Uint + Copy + Clone + Display + Debug + ToString
     /// ```
     #[inline]
     pub fn rotate_left<U>(&self, n: U) -> Self
-    where U: Uint + Copy + Clone + Display + Debug + ToString
+    where U: SmallUInt + Copy + Clone + Display + Debug + ToString
             + Add<Output=U> + AddAssign + Sub<Output=U> + SubAssign
             + Mul<Output=U> + MulAssign + Div<Output=U> + DivAssign
             + Rem<Output=U> + RemAssign
@@ -9725,7 +9726,7 @@ where T: Uint + Copy + Clone + Display + Debug + ToString
     /// ```
     #[inline]
     pub fn rotate_left_assign<U>(&mut self, n: U)
-    where U: Uint + Copy + Clone + Display + Debug + ToString
+    where U: SmallUInt + Copy + Clone + Display + Debug + ToString
             + Add<Output=U> + AddAssign + Sub<Output=U> + SubAssign
             + Mul<Output=U> + MulAssign + Div<Output=U> + DivAssign
             + Rem<Output=U> + RemAssign
@@ -9755,7 +9756,7 @@ where T: Uint + Copy + Clone + Display + Debug + ToString
     /// ```
     #[inline]
     pub fn rotate_right<U>(&self, n: U) -> Self
-    where U: Uint + Copy + Clone + Display + Debug + ToString
+    where U: SmallUInt + Copy + Clone + Display + Debug + ToString
             + Add<Output=U> + AddAssign + Sub<Output=U> + SubAssign
             + Mul<Output=U> + MulAssign + Div<Output=U> + DivAssign
             + Rem<Output=U> + RemAssign
@@ -9782,7 +9783,7 @@ where T: Uint + Copy + Clone + Display + Debug + ToString
     /// ```
     #[inline]
     pub fn rotate_right_assign<U>(&mut self, n: U)
-    where U: Uint + Copy + Clone + Display + Debug + ToString
+    where U: SmallUInt + Copy + Clone + Display + Debug + ToString
             + Add<Output=U> + AddAssign + Sub<Output=U> + SubAssign
             + Mul<Output=U> + MulAssign + Div<Output=U> + DivAssign
             + Rem<Output=U> + RemAssign
@@ -10250,7 +10251,7 @@ where T: Uint + Copy + Clone + Display + Debug + ToString
     /// ```
     #[inline]
     pub fn into_biguint<U, const M: usize>(&self) -> BigUInt<U, M>
-    where U: Uint + Copy + Clone + Display + Debug + ToString
+    where U: SmallUInt + Copy + Clone + Display + Debug + ToString
             + Add<Output=U> + AddAssign + Sub<Output=U> + SubAssign
             + Mul<Output=U> + MulAssign + Div<Output=U> + DivAssign
             + Rem<Output=U> + RemAssign
@@ -10745,7 +10746,7 @@ where T: Uint + Copy + Clone + Display + Debug + ToString
             let mut remainder;
             loop
             {
-                (dividend, remainder) = dividend.divide_fully_uint(T::usize_as_Uint(radix));
+                (dividend, remainder) = dividend.divide_fully_uint(T::usize_as_SmallUInt(radix));
                 let r = remainder.into_u32();
                 let c = if r < 10     { ('0' as u32 + r) as u8 as char }
                         else if r < 10 + 26 { ('A' as u32 - 10 + r) as u8 as char }
@@ -10814,7 +10815,7 @@ where T: Uint + Copy + Clone + Display + Debug + ToString
         let mut remainder;
         loop
         {
-            (dividend, remainder) = dividend.divide_fully_uint(T::usize_as_Uint(radix));
+            (dividend, remainder) = dividend.divide_fully_uint(T::usize_as_SmallUInt(radix));
             let r = remainder.into_u32();
             let c = if r < 10     { ('0' as u32 + r) as u8 as char }
                     else if r < 10 + 26 { ('A' as u32 - 10 + r) as u8 as char }

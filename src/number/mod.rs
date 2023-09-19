@@ -45,16 +45,16 @@
 //! For `BigUInt`, read [here](struct@BigUInt#quick-start).
 //! 
 
-pub mod uint;
+pub mod small_uint;
 pub mod sint;
-pub mod int_unions;
+pub mod small_int_unions;
 pub mod big_uint;
 pub mod trait_impl_for_big_uint;
 pub mod number_errors;
 mod macros_number;
 
-pub use uint::*;
-pub use int_unions::*;
+pub use small_uint::*;
+pub use small_int_unions::*;
 pub use sint::*;
 pub use big_uint::*;
 pub use trait_impl_for_big_uint::*;

@@ -750,40 +750,48 @@ fn BigUInt_get_size___main()
 
 fn BigUInt_size_in_bytes___main()
 {
+    println!("BigUInt_size_in_bytes___main");
     use Cryptocol::define_utypes_with;
     define_utypes_with!(u8);
 
     println!("u256 is {}-byte integer.", u256::size_in_bytes());
     assert_eq!(u256::size_in_bytes(), 32);
+    println!("---------------------------");
 }
 
 fn BigUInt_size_in_bits___main()
 {
+    println!("BigUInt_size_in_bits___main");
     use Cryptocol::define_utypes_with;
     define_utypes_with!(u32);
 
     println!("u256 is {}-bit integer.", u256::size_in_bits());
     assert_eq!(u256::size_in_bits(), 256);
+    println!("---------------------------");
 }
 
 fn BigUInt_length_in_bytes___main()
 {
+    println!("BigUInt_length_in_bytes___main");
     use Cryptocol::define_utypes_with;
     define_utypes_with!(u16);
 
     let a = u256::from_str_radix("A16F", 16).unwrap();
     println!("a is {}-byte integer.", a.length_in_bytes());
     assert_eq!(a.length_in_bytes(), 32);
+    println!("---------------------------");
 }
 
 fn BigUInt_length_in_bits___main()
 {
+    println!("BigUInt_length_in_bits___main");
     use Cryptocol::define_utypes_with;
     define_utypes_with!(u64);
 
     let a = u256::from_str_radix("A16F", 16).unwrap();
     println!("a is {}-bit integer.", a.length_in_bits());
     assert_eq!(a.length_in_bits(), 256);
+    println!("---------------------------");
 }
 
 fn BigUInt_get_set_check___main()
@@ -814,9 +822,180 @@ fn BigUInt_get_set_check___main()
 
 }
 
-
-
+fn BigUInt_turn_check_bits___main()
+{
+    println!("BigUInt_length_in_bits___main");
+    use Cryptocol::define_utypes_with;
+    
+    define_utypes_with!(u128);
+    let mut a = u256::random();
+    println!("a = {}", a.to_string_with_radix_and_stride(2, 8).unwrap());
+    a.turn_check_bits(102);
+    println!("a = {}", a.to_string_with_radix_and_stride(2, 8).unwrap());
+    assert_eq!(a, u256::from_str_radix("1000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000", 2).unwrap());
+    println!("---------------------------");
+}
 /////THIS/////
+
+fn BigUInt_get_num___main()
+{
+    println!("BigUInt_get_num___main");
+
+    println!("---------------------------");
+}
+
+fn BigUInt_get_num____main()
+{
+    println!("BigUInt_get_num____main");
+
+    println!("---------------------------");
+}
+
+fn BigUInt_set_num___main()
+{
+    println!("BigUInt_set_num___main");
+
+    println!("---------------------------");
+}
+
+fn BigUInt_set_num____main()
+{
+    println!("BigUInt_set_num____main");
+
+    println!("---------------------------");
+}
+
+fn BigUInt_get_number___main()
+{
+    println!("BigUInt_get_number___main");
+
+    println!("---------------------------");
+}
+
+fn BigUInt_set_number___main()
+{
+    println!("BigUInt_set_number___main");
+
+    println!("---------------------------");
+}
+
+fn BigUInt_copy_within___main()
+{
+    println!("BigUInt_copy_within___main");
+
+    println!("---------------------------");
+}
+
+fn BigUInt_set_zero___main()
+{
+    println!("BigUInt_set_zero___main");
+
+    println!("---------------------------");
+}
+
+fn BigUInt_is_zero___main()
+{
+    println!("BigUInt_is_zero___main");
+
+    println!("---------------------------");
+}
+
+fn BigUInt_set_one___main()
+{
+    println!("BigUInt_set_one___main");
+
+    println!("---------------------------");
+}
+
+fn BigUInt_is_one___main()
+{
+    println!("BigUInt_is_one___main");
+
+    println!("---------------------------");
+}
+
+fn BigUInt_is_zero_or_one___main()
+{
+    println!("BigUInt_is_zero_or_one___main");
+
+    println!("---------------------------");
+}
+
+fn BigUInt_set_max___main()
+{
+    println!("BigUInt_set_max___main");
+
+    println!("---------------------------");
+}
+
+fn BigUInt_set_submax___main()
+{
+    println!("BigUInt_set_submax___main");
+
+    println!("---------------------------");
+}
+
+fn BigUInt_set_halfmax___main()
+{
+    println!("BigUInt_set_halfmax___main");
+
+    println!("---------------------------");
+}
+
+fn BigUInt_is_max___main()
+{
+    println!("BigUInt_is_max___main");
+
+    println!("---------------------------");
+}
+
+fn BigUInt_set_msb___main()
+{
+    println!("BigUInt_set_msb___main");
+
+    println!("---------------------------");
+}
+
+fn BigUInt_set_lsb___main()
+{
+    println!("BigUInt_set_lsb___main");
+
+    println!("---------------------------");
+}
+
+fn BigUInt_set_uint___main()
+{
+    println!("BigUInt_set_uint___main");
+
+    println!("---------------------------");
+}
+
+fn BigUInt_is_uint___main()
+{
+    println!("BigUInt_is_uint___main");
+
+    println!("---------------------------");
+}
+
+fn BigUInt_is_odd___main()
+{
+    println!("BigUInt_is_odd___main");
+
+    println!("---------------------------");
+}
+
+fn BigUInt_is_even___main()
+{
+    println!("BigUInt_is_even___main");
+
+    println!("---------------------------");
+}
+
+
+
+
+
+
 fn BigUInt_carrying_add___main()
 {
     println!("BigUInt_carrying_add___main()");

@@ -8,7 +8,7 @@
 
 //! The module that contains generic types of primitive unsigned integral
 //! data types used in a lot of modules of the crate Cryptocol.
-//! __The trait Uint is meaningful when you use it in generic context.__
+//! __The trait SmallUInt is meaningful when you use it in generic context.__
 
 #![warn(missing_docs)]
 #![warn(missing_doc_code_examples)]
@@ -19,24 +19,24 @@ use std::cmp::{ PartialEq, PartialOrd, Ordering };
 use std::ops::*;
 
 
-/// Trait Uint is for generic type of primitive unsigned integer data types
+/// Trait SmallUInt is for generic type of primitive unsigned integer data types
 /// for all modules of the crate Cryptocol.
-/// __The trait Uint is meaningful when you use it in generic context.
+/// __The trait SmallUInt is meaningful when you use it in generic context.
 /// Otherwise, it is pretty hard to imagine its usability.__
 /// In order to use this trait, you have to import (use)
-/// `Cryptocol::number::Uint`.
+/// `Cryptocol::number::SmallUInt`.
 ///  
 /// Here, the generic type of primitive unsigned integral data types includes:
 /// `u8`, `u16`, `u32`, `u64`, `u128` and `usize`. In order to use this trait,
-/// you have to import (use) `Cryptocol::number::Uint`.
+/// you have to import (use) `Cryptocol::number::SmallUInt`.
 /// 
-/// You will, however, hardly use the trait Uint unless you use primitive
+/// You will, however, hardly use the trait SmallUInt unless you use primitive
 /// unsigned integral data types in generic context, or you improve or modify
 /// this crate Cryptocol, or you create addional libraries that works with the
 /// crate Cryptocol. So, if you only use the crate Cryptocol or you will not
 /// use primitive unsigned integral data types in generic context, you can
-/// almost forget about this trait Uint.
-pub trait Uint: Copy + Clone + Sized //+ Display + Debug + ToString
+/// almost forget about this trait SmallUInt.
+pub trait SmallUInt: Copy + Clone + Sized //+ Display + Debug + ToString
 {
     /***** ADDITION *****/
 
@@ -45,7 +45,7 @@ pub trait Uint: Copy + Clone + Sized //+ Display + Debug + ToString
     /// wrapping around at the boundary of the type.
     /// 
     /// # Features
-    /// __The trait Uint is meaningful when you use it in generic context.
+    /// __The trait SmallUInt is meaningful when you use it in generic context.
     /// Otherwise, it is pretty hard to imagine its usability.__
     /// This allows chaining together multiple additions to create a wider
     /// addition, and can be useful for big integer type addition. This can be
@@ -61,7 +61,7 @@ pub trait Uint: Copy + Clone + Sized //+ Display + Debug + ToString
     /// 
     /// # Example for u8
     /// ```
-    /// use Cryptocol::number::Uint;
+    /// use Cryptocol::number::SmallUInt;
     /// fn main()
     /// {
     ///     // a_u16: u16 === (a_high_u8, a_low_u8) == (100_u8, 101_u8) == 25701_u16
@@ -99,7 +99,7 @@ pub trait Uint: Copy + Clone + Sized //+ Display + Debug + ToString
     ///     assert_eq!(carry, true);
     /// }
     /// 
-    /// fn add_long<T: Uint>(lhs_high: T, lhs_low: T, rhs_high: T, rhs_low: T) -> (T, T, bool)
+    /// fn add_long<T: SmallUInt>(lhs_high: T, lhs_low: T, rhs_high: T, rhs_low: T) -> (T, T, bool)
     /// {
     ///     let mut carry = false;
     ///     let mut sum_high: T;
@@ -112,7 +112,7 @@ pub trait Uint: Copy + Clone + Sized //+ Display + Debug + ToString
     /// 
     /// # Example for u128
     /// ```
-    /// use Cryptocol::number::Uint;
+    /// use Cryptocol::number::SmallUInt;
     /// fn main()
     /// {
     ///     let a_high_u128: u128;
@@ -140,7 +140,7 @@ pub trait Uint: Copy + Clone + Sized //+ Display + Debug + ToString
     ///     assert_eq!(carry, true);
     /// }
     /// 
-    /// fn add_long<T: Uint>(lhs_high: T, lhs_low: T, rhs_high: T, rhs_low: T) -> (T, T, bool)
+    /// fn add_long<T: SmallUInt>(lhs_high: T, lhs_low: T, rhs_high: T, rhs_low: T) -> (T, T, bool)
     /// {
     ///     let mut carry = false;
     ///     let mut sum_high: T;
@@ -155,7 +155,7 @@ pub trait Uint: Copy + Clone + Sized //+ Display + Debug + ToString
     /// 
     /// # Collective Example
     /// ```
-    /// use Cryptocol::number::Uint;
+    /// use Cryptocol::number::SmallUInt;
     /// fn main()
     /// {
     ///     // a_u16: u16 === (a_high_u8, a_low_u8) == (100_u8, 101_u8) == 25701_u16
@@ -217,7 +217,7 @@ pub trait Uint: Copy + Clone + Sized //+ Display + Debug + ToString
     ///     assert_eq!(carry, true);
     /// }
     /// 
-    /// fn add_long<T: Uint>(lhs_high: T, lhs_low: T, rhs_high: T, rhs_low: T) -> (T, T, bool)
+    /// fn add_long<T: SmallUInt>(lhs_high: T, lhs_low: T, rhs_high: T, rhs_low: T) -> (T, T, bool)
     /// {
     ///     let mut carry = false;
     ///     let mut sum_high: T;
@@ -270,7 +270,7 @@ pub trait Uint: Copy + Clone + Sized //+ Display + Debug + ToString
     /// Computes self + rhs, wrapping around at the boundary of the type.
     /// 
     /// # Features
-    /// __The trait Uint is meaningful when you use it in generic context.
+    /// __The trait SmallUInt is meaningful when you use it in generic context.
     /// Otherwise, it is pretty hard to imagine its usability.__
     /// It adds two numbers with wrapping (modular) addition.
     /// 
@@ -279,7 +279,7 @@ pub trait Uint: Copy + Clone + Sized //+ Display + Debug + ToString
     /// 
     /// # Example for u8
     /// ```
-    /// use Cryptocol::number::Uint;
+    /// use Cryptocol::number::SmallUInt;
     /// fn main()
     /// {
     ///     let a_u8 = func(u8::MAX - 55_u8, 55_u8);
@@ -291,7 +291,7 @@ pub trait Uint: Copy + Clone + Sized //+ Display + Debug + ToString
     ///     assert_eq!(b_u8, 0_u8);
     /// }
     /// 
-    /// fn func<T: Uint>(lhs: T, rhs: T) -> T
+    /// fn func<T: SmallUInt>(lhs: T, rhs: T) -> T
     /// {
     ///     lhs.wrapping_add(rhs)
     /// }
@@ -299,7 +299,7 @@ pub trait Uint: Copy + Clone + Sized //+ Display + Debug + ToString
     /// 
     /// # Example for u16
     /// ```
-    /// use Cryptocol::number::Uint;
+    /// use Cryptocol::number::SmallUInt;
     /// fn main()
     /// {
     ///     let a_u16 = func(u16::MAX - 55_u16, 55_u16);
@@ -311,7 +311,7 @@ pub trait Uint: Copy + Clone + Sized //+ Display + Debug + ToString
     ///     assert_eq!(b_u16, 0_u16);
     /// }
     /// 
-    /// fn func<T: Uint>(lhs: T, rhs: T) -> T
+    /// fn func<T: SmallUInt>(lhs: T, rhs: T) -> T
     /// {
     ///     lhs.wrapping_add(rhs)
     /// }
@@ -319,7 +319,7 @@ pub trait Uint: Copy + Clone + Sized //+ Display + Debug + ToString
     /// 
     /// # Example for u32
     /// ```
-    /// use Cryptocol::number::Uint;
+    /// use Cryptocol::number::SmallUInt;
     /// fn main()
     /// {
     ///     let a_u32 = func(u32::MAX - 55_u32, 55_u32);
@@ -331,7 +331,7 @@ pub trait Uint: Copy + Clone + Sized //+ Display + Debug + ToString
     ///     assert_eq!(b_u32, 0_u32);
     /// }
     /// 
-    /// fn func<T: Uint>(lhs: T, rhs: T) -> T
+    /// fn func<T: SmallUInt>(lhs: T, rhs: T) -> T
     /// {
     ///     lhs.wrapping_add(rhs)
     /// }
@@ -339,7 +339,7 @@ pub trait Uint: Copy + Clone + Sized //+ Display + Debug + ToString
     /// 
     /// # Example for u64
     /// ```
-    /// use Cryptocol::number::Uint;
+    /// use Cryptocol::number::SmallUInt;
     /// fn main()
     /// {
     ///     let a_u64 = func(u64::MAX - 55_u64, 55_u64);
@@ -351,7 +351,7 @@ pub trait Uint: Copy + Clone + Sized //+ Display + Debug + ToString
     ///     assert_eq!(b_u64, 0_u64);
     /// }
     /// 
-    /// fn func<T: Uint>(lhs: T, rhs: T) -> T
+    /// fn func<T: SmallUInt>(lhs: T, rhs: T) -> T
     /// {
     ///     lhs.wrapping_add(rhs)
     /// }
@@ -359,7 +359,7 @@ pub trait Uint: Copy + Clone + Sized //+ Display + Debug + ToString
     /// 
     /// # Example for u128
     /// ```
-    /// use Cryptocol::number::Uint;
+    /// use Cryptocol::number::SmallUInt;
     /// fn main()
     /// {
     ///     let a_u128 = func(u128::MAX - 55_u128, 55_u128);
@@ -371,7 +371,7 @@ pub trait Uint: Copy + Clone + Sized //+ Display + Debug + ToString
     ///     assert_eq!(b_u128, 0_u128);
     /// }
     /// 
-    /// fn func<T: Uint>(lhs: T, rhs: T) -> T
+    /// fn func<T: SmallUInt>(lhs: T, rhs: T) -> T
     /// {
     ///     lhs.wrapping_add(rhs)
     /// }
@@ -379,7 +379,7 @@ pub trait Uint: Copy + Clone + Sized //+ Display + Debug + ToString
     /// 
     /// # Example for usize
     /// ```
-    /// use Cryptocol::number::Uint;
+    /// use Cryptocol::number::SmallUInt;
     /// fn main()
     /// {
     ///     let a_usize = func(usize::MAX - 55_usize, 55_usize);
@@ -391,17 +391,17 @@ pub trait Uint: Copy + Clone + Sized //+ Display + Debug + ToString
     ///     assert_eq!(b_usize, 0_usize);
     /// }
     /// 
-    /// fn func<T: Uint>(lhs: T, rhs: T) -> T
+    /// fn func<T: SmallUInt>(lhs: T, rhs: T) -> T
     /// {
     ///     lhs.wrapping_add(rhs)
     /// }
     /// ```
-    /// You can use the above generic function func<>() for all Uint-supported
+    /// You can use the above generic function func<>() for all SmallUInt-supported
     /// data types in a same scope. Look into the next example.
     /// 
     /// # Collective Example
     /// ```
-    /// use Cryptocol::number::Uint;
+    /// use Cryptocol::number::SmallUInt;
     /// fn main()
     /// {
     ///     let a_u8 = func(u8::MAX - 55_u8, 55_u8);
@@ -453,7 +453,7 @@ pub trait Uint: Copy + Clone + Sized //+ Display + Debug + ToString
     ///     assert_eq!(b_usize, 0_usize);
     /// }
     /// 
-    /// fn func<T: Uint>(lhs: T, rhs: T) -> T
+    /// fn func<T: SmallUInt>(lhs: T, rhs: T) -> T
     /// {
     ///     lhs.wrapping_add(rhs)
     /// }
@@ -489,7 +489,7 @@ pub trait Uint: Copy + Clone + Sized //+ Display + Debug + ToString
     /// Calculates self + rhs, wrapping around at the boundary of the type.
     /// 
     /// # Features
-    /// __The trait Uint is meaningful when you use it in generic context.
+    /// __The trait SmallUInt is meaningful when you use it in generic context.
     /// Otherwise, it is pretty hard to imagine its usability.__
     /// It adds two numbers with wrapping (modular) addition. It is the same as
     /// the method carrying_add() with the imput carry which is false.
@@ -501,7 +501,7 @@ pub trait Uint: Copy + Clone + Sized //+ Display + Debug + ToString
     /// 
     /// # Example for u8
     /// ```
-    /// use Cryptocol::number::Uint;
+    /// use Cryptocol::number::SmallUInt;
     /// fn main()
     /// {
     ///     let a_u8 = func(u8::MAX - 55_u8, 55_u8);
@@ -515,7 +515,7 @@ pub trait Uint: Copy + Clone + Sized //+ Display + Debug + ToString
     ///     assert_eq!(b_u8.1, true);
     /// }
     /// 
-    /// fn func<T: Uint>(lhs: T, rhs: T) -> (T, bool)
+    /// fn func<T: SmallUInt>(lhs: T, rhs: T) -> (T, bool)
     /// {
     ///     lhs.overflowing_add(rhs)
     /// }
@@ -523,7 +523,7 @@ pub trait Uint: Copy + Clone + Sized //+ Display + Debug + ToString
     /// 
     /// # Example for u16
     /// ```
-    /// use Cryptocol::number::Uint;
+    /// use Cryptocol::number::SmallUInt;
     /// fn main()
     /// {
     ///     let a_u16 = func(u16::MAX - 55_u16, 55_u16);
@@ -537,7 +537,7 @@ pub trait Uint: Copy + Clone + Sized //+ Display + Debug + ToString
     ///     assert_eq!(b_u16.1, true);
     /// }
     /// 
-    /// fn func<T: Uint>(lhs: T, rhs: T) -> (T, bool)
+    /// fn func<T: SmallUInt>(lhs: T, rhs: T) -> (T, bool)
     /// {
     ///     lhs.overflowing_add(rhs)
     /// }
@@ -545,7 +545,7 @@ pub trait Uint: Copy + Clone + Sized //+ Display + Debug + ToString
     /// 
     /// # Example for u32
     /// ```
-    /// use Cryptocol::number::Uint;
+    /// use Cryptocol::number::SmallUInt;
     /// fn main()
     /// {
     ///     let a_u32 = func(u32::MAX - 55_u32, 55_u32);
@@ -559,7 +559,7 @@ pub trait Uint: Copy + Clone + Sized //+ Display + Debug + ToString
     ///     assert_eq!(b_u32.1, true);
     /// }
     /// 
-    /// fn func<T: Uint>(lhs: T, rhs: T) -> (T, bool)
+    /// fn func<T: SmallUInt>(lhs: T, rhs: T) -> (T, bool)
     /// {
     ///     lhs.overflowing_add(rhs)
     /// }
@@ -567,7 +567,7 @@ pub trait Uint: Copy + Clone + Sized //+ Display + Debug + ToString
     /// 
     /// # Example for u64
     /// ```
-    /// use Cryptocol::number::Uint;
+    /// use Cryptocol::number::SmallUInt;
     /// fn main()
     /// {
     ///     let a_u64 = func(u64::MAX - 55_u64, 55_u64);
@@ -581,7 +581,7 @@ pub trait Uint: Copy + Clone + Sized //+ Display + Debug + ToString
     ///     assert_eq!(b_u64.1, true);
     /// }
     /// 
-    /// fn func<T: Uint>(lhs: T, rhs: T) -> (T, bool)
+    /// fn func<T: SmallUInt>(lhs: T, rhs: T) -> (T, bool)
     /// {
     ///     lhs.overflowing_add(rhs)
     /// }
@@ -589,7 +589,7 @@ pub trait Uint: Copy + Clone + Sized //+ Display + Debug + ToString
     /// 
     /// # Example for u128
     /// ```
-    /// use Cryptocol::number::Uint;
+    /// use Cryptocol::number::SmallUInt;
     /// fn main()
     /// {
     ///     let a_u128 = func(u128::MAX - 55_u128, 55_u128);
@@ -603,7 +603,7 @@ pub trait Uint: Copy + Clone + Sized //+ Display + Debug + ToString
     ///     assert_eq!(b_u128.1, true);
     /// }
     /// 
-    /// fn func<T: Uint>(lhs: T, rhs: T) -> (T, bool)
+    /// fn func<T: SmallUInt>(lhs: T, rhs: T) -> (T, bool)
     /// {
     ///     lhs.overflowing_add(rhs)
     /// }
@@ -611,7 +611,7 @@ pub trait Uint: Copy + Clone + Sized //+ Display + Debug + ToString
     /// 
     /// # Example for usize
     /// ```
-    /// use Cryptocol::number::Uint;
+    /// use Cryptocol::number::SmallUInt;
     /// fn main()
     /// {
     ///     let a_usize = func(usize::MAX - 55_usize, 55_usize);
@@ -625,17 +625,17 @@ pub trait Uint: Copy + Clone + Sized //+ Display + Debug + ToString
     ///     assert_eq!(b_usize.1, true);
     /// }
     /// 
-    /// fn func<T: Uint>(lhs: T, rhs: T) -> (T, bool)
+    /// fn func<T: SmallUInt>(lhs: T, rhs: T) -> (T, bool)
     /// {
     ///     lhs.overflowing_add(rhs)
     /// }
     /// ```
-    /// You can use the above generic function func<>() for all Uint-supported
+    /// You can use the above generic function func<>() for all SmallUInt-supported
     /// data types in a same scope. Look into the next example.
     /// 
     /// # Collective Example
     /// ```
-    /// use Cryptocol::number::Uint;
+    /// use Cryptocol::number::SmallUInt;
     /// fn main()
     /// {
     ///     let a_u8 = func(u8::MAX - 55_u8, 55_u8);
@@ -699,7 +699,7 @@ pub trait Uint: Copy + Clone + Sized //+ Display + Debug + ToString
     ///     assert_eq!(b_usize.1, true);
     /// }
     /// 
-    /// fn func<T: Uint>(lhs: T, rhs: T) -> (T, bool)
+    /// fn func<T: SmallUInt>(lhs: T, rhs: T) -> (T, bool)
     /// {
     ///     lhs.overflowing_add(rhs)
     /// }
@@ -736,7 +736,7 @@ pub trait Uint: Copy + Clone + Sized //+ Display + Debug + ToString
     /// Computes self + rhs.
     /// 
     /// # Feature
-    /// __The trait Uint is meaningful when you use it in generic context.
+    /// __The trait SmallUInt is meaningful when you use it in generic context.
     /// Otherwise, it is pretty hard to imagine its usability.__
     /// 
     /// # Output
@@ -746,7 +746,7 @@ pub trait Uint: Copy + Clone + Sized //+ Display + Debug + ToString
     /// 
     /// # Example for u8
     /// ```
-    /// use Cryptocol::number::Uint;
+    /// use Cryptocol::number::SmallUInt;
     /// fn main()
     /// {
     ///     let a_u8 = func(u8::MAX - 55_u8, 55_u8);
@@ -776,7 +776,7 @@ pub trait Uint: Copy + Clone + Sized //+ Display + Debug + ToString
     ///     }
     /// }
     /// 
-    /// fn func<T: Uint>(lhs: T, rhs: T) -> Option<T>
+    /// fn func<T: SmallUInt>(lhs: T, rhs: T) -> Option<T>
     /// {
     ///     lhs.checked_add(rhs)
     /// }
@@ -784,7 +784,7 @@ pub trait Uint: Copy + Clone + Sized //+ Display + Debug + ToString
     /// 
     /// # Example for u16
     /// ```
-    /// use Cryptocol::number::Uint;
+    /// use Cryptocol::number::SmallUInt;
     /// fn main()
     /// {
     ///     let a_u16 = func(u16::MAX - 55_u16, 55_u16);
@@ -814,7 +814,7 @@ pub trait Uint: Copy + Clone + Sized //+ Display + Debug + ToString
     ///     }
     /// }
     /// 
-    /// fn func<T: Uint>(lhs: T, rhs: T) -> Option<T>
+    /// fn func<T: SmallUInt>(lhs: T, rhs: T) -> Option<T>
     /// {
     ///     lhs.checked_add(rhs)
     /// }
@@ -822,7 +822,7 @@ pub trait Uint: Copy + Clone + Sized //+ Display + Debug + ToString
     /// 
     /// # Example for u32
     /// ```
-    /// use Cryptocol::number::Uint;
+    /// use Cryptocol::number::SmallUInt;
     /// fn main()
     /// {
     ///     let a_u32 = func(u32::MAX - 55_u32, 55_u32);
@@ -852,7 +852,7 @@ pub trait Uint: Copy + Clone + Sized //+ Display + Debug + ToString
     ///     }
     /// }
     /// 
-    /// fn func<T: Uint>(lhs: T, rhs: T) -> Option<T>
+    /// fn func<T: SmallUInt>(lhs: T, rhs: T) -> Option<T>
     /// {
     ///     lhs.checked_add(rhs)
     /// }
@@ -860,7 +860,7 @@ pub trait Uint: Copy + Clone + Sized //+ Display + Debug + ToString
     /// 
     /// # Example for u64
     /// ```
-    /// use Cryptocol::number::Uint;
+    /// use Cryptocol::number::SmallUInt;
     /// fn main()
     /// {
     ///     let a_u64 = func(u64::MAX - 55_u64, 55_u64);
@@ -890,7 +890,7 @@ pub trait Uint: Copy + Clone + Sized //+ Display + Debug + ToString
     ///     }
     /// }
     /// 
-    /// fn func<T: Uint>(lhs: T, rhs: T) -> Option<T>
+    /// fn func<T: SmallUInt>(lhs: T, rhs: T) -> Option<T>
     /// {
     ///     lhs.checked_add(rhs)
     /// }
@@ -898,7 +898,7 @@ pub trait Uint: Copy + Clone + Sized //+ Display + Debug + ToString
     /// 
     /// # Example for u128
     /// ```
-    /// use Cryptocol::number::Uint;
+    /// use Cryptocol::number::SmallUInt;
     /// fn main()
     /// {
     ///     let a_u128 = func(u128::MAX - 55_u128, 55_u128);
@@ -928,7 +928,7 @@ pub trait Uint: Copy + Clone + Sized //+ Display + Debug + ToString
     ///     }
     /// }
     /// 
-    /// fn func<T: Uint>(lhs: T, rhs: T) -> Option<T>
+    /// fn func<T: SmallUInt>(lhs: T, rhs: T) -> Option<T>
     /// {
     ///     lhs.checked_add(rhs)
     /// }
@@ -936,7 +936,7 @@ pub trait Uint: Copy + Clone + Sized //+ Display + Debug + ToString
     /// 
     /// # Example for usize
     /// ```
-    /// use Cryptocol::number::Uint;
+    /// use Cryptocol::number::SmallUInt;
     /// fn main()
     /// {
     ///     let a_usize = func(usize::MAX - 55_usize, 55_usize);
@@ -966,17 +966,17 @@ pub trait Uint: Copy + Clone + Sized //+ Display + Debug + ToString
     ///     }
     /// }
     /// 
-    /// fn func<T: Uint>(lhs: T, rhs: T) -> Option<T>
+    /// fn func<T: SmallUInt>(lhs: T, rhs: T) -> Option<T>
     /// {
     ///     lhs.checked_add(rhs)
     /// }
     /// ```
-    /// You can use the above generic function func<>() for all Uint-supported
+    /// You can use the above generic function func<>() for all SmallUInt-supported
     /// data types in a same scope. Look into the next example.
     /// 
     /// # Collective Example
     /// ```
-    /// use Cryptocol::number::Uint;
+    /// use Cryptocol::number::SmallUInt;
     /// fn main()
     /// {
     ///     let a_u8 = func(u8::MAX - 55_u8, 55_u8);
@@ -1136,7 +1136,7 @@ pub trait Uint: Copy + Clone + Sized //+ Display + Debug + ToString
     ///     }
     /// }
     /// 
-    /// fn func<T: Uint>(lhs: T, rhs: T) -> Option<T>
+    /// fn func<T: SmallUInt>(lhs: T, rhs: T) -> Option<T>
     /// {
     ///     lhs.checked_add(rhs)
     /// }
@@ -1171,7 +1171,7 @@ pub trait Uint: Copy + Clone + Sized //+ Display + Debug + ToString
     /// Computes self + rhs, assuming overflow cannot occur.
     /// 
     /// # Features
-    /// __The trait Uint is meaningful when you use it in generic context.
+    /// __The trait SmallUInt is meaningful when you use it in generic context.
     /// Otherwise, it is pretty hard to imagine its usability.__
     /// It is virtually same as self.checked_add(rhs).unwrap().
     /// Use this method only when it is sure that overflow will never happen.
@@ -1185,7 +1185,7 @@ pub trait Uint: Copy + Clone + Sized //+ Display + Debug + ToString
     /// 
     /// # Example
     /// ```
-    /// use Cryptocol::number::Uint;
+    /// use Cryptocol::number::SmallUInt;
     /// fn main()
     /// {
     ///     let a_u8 = func(u8::MAX - 55_u8, 55_u8);
@@ -1225,7 +1225,7 @@ pub trait Uint: Copy + Clone + Sized //+ Display + Debug + ToString
     ///     // let b_usize = func(a_usize, 1_usize);    // It will panic
     /// }
     ///     
-    /// fn func<T: Uint>(lhs: T, rhs: T) -> T
+    /// fn func<T: SmallUInt>(lhs: T, rhs: T) -> T
     /// {
     ///     lhs.unchecked_add(rhs)
     /// }
@@ -1274,7 +1274,7 @@ pub trait Uint: Copy + Clone + Sized //+ Display + Debug + ToString
     /// instead of overflowing.
     /// 
     /// # Features
-    /// __The trait Uint is meaningful when you use it in generic context.
+    /// __The trait SmallUInt is meaningful when you use it in generic context.
     /// Otherwise, it is pretty hard to imagine its usability.__
     /// It adds two numbers with saturating integer addition
     /// 
@@ -1284,7 +1284,7 @@ pub trait Uint: Copy + Clone + Sized //+ Display + Debug + ToString
     /// 
     /// # Example
     /// ```
-    /// use Cryptocol::number::Uint;
+    /// use Cryptocol::number::SmallUInt;
     /// fn main()
     /// {
     ///     let a_u8 = func(u8::MAX - 55_u8, 55_u8);
@@ -1336,7 +1336,7 @@ pub trait Uint: Copy + Clone + Sized //+ Display + Debug + ToString
     ///     assert_eq!(b_usize, usize::MAX);
     /// }
     /// 
-    /// fn func<T: Uint>(lhs: T, rhs: T) -> T
+    /// fn func<T: SmallUInt>(lhs: T, rhs: T) -> T
     /// {
     ///     lhs.saturating_add(rhs)
     /// }    
@@ -1377,7 +1377,7 @@ pub trait Uint: Copy + Clone + Sized //+ Display + Debug + ToString
     /// wrapping around at the boundary of the type. 
     /// 
     /// # Features
-    /// __The trait Uint is meaningful when you use it in generic context.
+    /// __The trait SmallUInt is meaningful when you use it in generic context.
     /// Otherwise, it is pretty hard to imagine its usability.__
     /// This allows chaining together multiple subtractions to create a wider
     /// subtraction, and can be useful for big integer type subtraction.
@@ -1395,7 +1395,7 @@ pub trait Uint: Copy + Clone + Sized //+ Display + Debug + ToString
     /// 
     /// # Example
     /// ```
-    /// use Cryptocol::number::Uint;
+    /// use Cryptocol::number::SmallUInt;
     /// fn main()
     /// {
     ///     // a_u16: u16 === (a_high_u8, a_low_u8) == (100_u8, 200_u8) == 25800_u16
@@ -1457,7 +1457,7 @@ pub trait Uint: Copy + Clone + Sized //+ Display + Debug + ToString
     ///     assert_eq!(borrow, true);
     /// }
     /// 
-    /// fn sub_long<T: Uint>(lhs_high: T, lhs_low: T, rhs_high: T, rhs_low: T) -> (T, T, bool)
+    /// fn sub_long<T: SmallUInt>(lhs_high: T, lhs_low: T, rhs_high: T, rhs_low: T) -> (T, T, bool)
     /// {
     ///     let mut borrow = false;
     ///     let mut sum_high: T;
@@ -1510,7 +1510,7 @@ pub trait Uint: Copy + Clone + Sized //+ Display + Debug + ToString
     /// Computes self - rhs, wrapping around at the boundary of the type.
     /// 
     /// # Features
-    /// __The trait Uint is meaningful when you use it in generic context.
+    /// __The trait SmallUInt is meaningful when you use it in generic context.
     /// Otherwise, it is pretty hard to imagine its usability.__
     /// It subtracts rhs from self with wrapping (modular) subtraction.
     /// 
@@ -1519,7 +1519,7 @@ pub trait Uint: Copy + Clone + Sized //+ Display + Debug + ToString
     /// 
     /// # Example for u8
     /// ```
-    /// use Cryptocol::number::Uint;
+    /// use Cryptocol::number::SmallUInt;
     /// fn main()
     /// {
     ///     let a_u8 = func(55_u8, 55_u8);
@@ -1531,7 +1531,7 @@ pub trait Uint: Copy + Clone + Sized //+ Display + Debug + ToString
     ///     assert_eq!(b_u8, u8::MAX);
     /// }
     /// 
-    /// fn func<T: Uint>(lhs: T, rhs: T) -> T
+    /// fn func<T: SmallUInt>(lhs: T, rhs: T) -> T
     /// {
     ///     lhs.wrapping_sub(rhs)
     /// }
@@ -1539,7 +1539,7 @@ pub trait Uint: Copy + Clone + Sized //+ Display + Debug + ToString
     /// 
     /// # Example for u16
     /// ```
-    /// use Cryptocol::number::Uint;
+    /// use Cryptocol::number::SmallUInt;
     /// fn main()
     /// {
     ///     let a_u16 = func(55_u16, 55_u16);
@@ -1551,7 +1551,7 @@ pub trait Uint: Copy + Clone + Sized //+ Display + Debug + ToString
     ///     assert_eq!(b_u16, u16::MAX);
     /// }
     /// 
-    /// fn func<T: Uint>(lhs: T, rhs: T) -> T
+    /// fn func<T: SmallUInt>(lhs: T, rhs: T) -> T
     /// {
     ///     lhs.wrapping_sub(rhs)
     /// }
@@ -1559,7 +1559,7 @@ pub trait Uint: Copy + Clone + Sized //+ Display + Debug + ToString
     /// 
     /// # Example for u32
     /// ```
-    /// use Cryptocol::number::Uint;
+    /// use Cryptocol::number::SmallUInt;
     /// fn main()
     /// {
     /// 
@@ -1572,7 +1572,7 @@ pub trait Uint: Copy + Clone + Sized //+ Display + Debug + ToString
     ///     assert_eq!(b_u32, u32::MAX);
     /// }
     /// 
-    /// fn func<T: Uint>(lhs: T, rhs: T) -> T
+    /// fn func<T: SmallUInt>(lhs: T, rhs: T) -> T
     /// {
     ///     lhs.wrapping_sub(rhs)
     /// }
@@ -1580,7 +1580,7 @@ pub trait Uint: Copy + Clone + Sized //+ Display + Debug + ToString
     /// 
     /// # Example for u64
     /// ```
-    /// use Cryptocol::number::Uint;
+    /// use Cryptocol::number::SmallUInt;
     /// fn main()
     /// {
     ///     let a_u64 = func(55_u64, 55_u64);
@@ -1592,7 +1592,7 @@ pub trait Uint: Copy + Clone + Sized //+ Display + Debug + ToString
     ///     assert_eq!(b_u64, u64::MAX);
     /// }
     /// 
-    /// fn func<T: Uint>(lhs: T, rhs: T) -> T
+    /// fn func<T: SmallUInt>(lhs: T, rhs: T) -> T
     /// {
     ///     lhs.wrapping_sub(rhs)
     /// }
@@ -1600,7 +1600,7 @@ pub trait Uint: Copy + Clone + Sized //+ Display + Debug + ToString
     /// 
     /// # Example for u128
     /// ```
-    /// use Cryptocol::number::Uint;
+    /// use Cryptocol::number::SmallUInt;
     /// fn main()
     /// {
     ///     let a_u128 = func(55_u128, 55_u128);
@@ -1612,7 +1612,7 @@ pub trait Uint: Copy + Clone + Sized //+ Display + Debug + ToString
     ///     assert_eq!(b_u128, u128::MAX);
     /// }
     /// 
-    /// fn func<T: Uint>(lhs: T, rhs: T) -> T
+    /// fn func<T: SmallUInt>(lhs: T, rhs: T) -> T
     /// {
     ///     lhs.wrapping_sub(rhs)
     /// }
@@ -1620,7 +1620,7 @@ pub trait Uint: Copy + Clone + Sized //+ Display + Debug + ToString
     /// 
     /// # Example for usize
     /// ```
-    /// use Cryptocol::number::Uint;
+    /// use Cryptocol::number::SmallUInt;
     /// fn main()
     /// {
     ///     let a_usize = func(55_usize, 55_usize);
@@ -1632,17 +1632,17 @@ pub trait Uint: Copy + Clone + Sized //+ Display + Debug + ToString
     ///     assert_eq!(b_usize, usize::MAX);
     /// }
     /// 
-    /// fn func<T: Uint>(lhs: T, rhs: T) -> T
+    /// fn func<T: SmallUInt>(lhs: T, rhs: T) -> T
     /// {
     ///     lhs.wrapping_sub(rhs)
     /// }
     /// ```
-    /// You can use the above generic function func<>() for all Uint-supported
+    /// You can use the above generic function func<>() for all SmallUInt-supported
     /// data types in a same scope. Look into the next example.
     /// 
     /// # Collective Example
     /// ```
-    /// use Cryptocol::number::Uint;
+    /// use Cryptocol::number::SmallUInt;
     /// fn main()
     /// {
     ///     let a_u8 = func(55_u8, 55_u8);
@@ -1694,7 +1694,7 @@ pub trait Uint: Copy + Clone + Sized //+ Display + Debug + ToString
     ///     assert_eq!(b_usize, usize::MAX);
     /// }
     /// 
-    /// fn func<T: Uint>(lhs: T, rhs: T) -> T
+    /// fn func<T: SmallUInt>(lhs: T, rhs: T) -> T
     /// {
     ///     lhs.wrapping_sub(rhs)
     /// }
@@ -1730,7 +1730,7 @@ pub trait Uint: Copy + Clone + Sized //+ Display + Debug + ToString
     /// Calculates self - rhs, wrapping around at the boundary of the type.
     /// 
     /// # Features
-    /// __The trait Uint is meaningful when you use it in generic context.
+    /// __The trait SmallUInt is meaningful when you use it in generic context.
     /// Otherwise, it is pretty hard to imagine its usability.__
     /// It subtracts rhs from self with wrapping (modular) subtraction.
     /// It is the same as the method carrying_sub() with the imput carry which
@@ -1743,7 +1743,7 @@ pub trait Uint: Copy + Clone + Sized //+ Display + Debug + ToString
     /// 
     /// # Example
     /// ```
-    /// use Cryptocol::number::Uint;
+    /// use Cryptocol::number::SmallUInt;
     /// fn main()
     /// {
     ///     let a_u8 = func(55_u8, 55_u8);
@@ -1807,7 +1807,7 @@ pub trait Uint: Copy + Clone + Sized //+ Display + Debug + ToString
     ///     assert_eq!(b_usize.1, true);
     /// }
     /// 
-    /// fn func<T: Uint>(lhs: T, rhs: T) -> (T, bool)
+    /// fn func<T: SmallUInt>(lhs: T, rhs: T) -> (T, bool)
     /// {
     ///     lhs.overflowing_sub(rhs)
     /// }        
@@ -1844,7 +1844,7 @@ pub trait Uint: Copy + Clone + Sized //+ Display + Debug + ToString
     /// Computes self - rhs.
     /// 
     /// # Feature
-    /// __The trait Uint is meaningful when you use it in generic context.
+    /// __The trait SmallUInt is meaningful when you use it in generic context.
     /// Otherwise, it is pretty hard to imagine its usability.__
     /// 
     /// # Output
@@ -1854,7 +1854,7 @@ pub trait Uint: Copy + Clone + Sized //+ Display + Debug + ToString
     /// 
     /// # Example
     /// ```
-    /// use Cryptocol::number::Uint;
+    /// use Cryptocol::number::SmallUInt;
     /// fn main()
     /// {
     ///     let a_u8 = func(55_u8, 55_u8);
@@ -2014,7 +2014,7 @@ pub trait Uint: Copy + Clone + Sized //+ Display + Debug + ToString
     ///     }
     /// }
     /// 
-    /// fn func<T: Uint>(lhs: T, rhs: T) -> Option<T>
+    /// fn func<T: SmallUInt>(lhs: T, rhs: T) -> Option<T>
     /// {
     ///     lhs.checked_sub(rhs)
     /// }    
@@ -2050,7 +2050,7 @@ pub trait Uint: Copy + Clone + Sized //+ Display + Debug + ToString
     /// Computes self - rhs, assuming overflow cannot occur.
     /// 
     /// # Features
-    /// __The trait Uint is meaningful when you use it in generic context.
+    /// __The trait SmallUInt is meaningful when you use it in generic context.
     /// Otherwise, it is pretty hard to imagine its usability.__
     /// It is virtually same as self.checked_sub(rhs).unwrap().
     /// Use this method only when it is sure that underflow will never happen.
@@ -2064,7 +2064,7 @@ pub trait Uint: Copy + Clone + Sized //+ Display + Debug + ToString
     /// 
     /// # Example
     /// ```
-    /// use Cryptocol::number::Uint;
+    /// use Cryptocol::number::SmallUInt;
     /// fn main()
     /// {
     ///     let a_u8 = func(55_u8, 55_u8);
@@ -2110,7 +2110,7 @@ pub trait Uint: Copy + Clone + Sized //+ Display + Debug + ToString
     ///     // let b_usize = func(a_usize, 1_usize);
     /// }
     /// 
-    /// fn func<T: Uint>(lhs: T, rhs: T) -> T
+    /// fn func<T: SmallUInt>(lhs: T, rhs: T) -> T
     /// {
     ///     lhs.unchecked_sub(rhs)
     /// }
@@ -2159,7 +2159,7 @@ pub trait Uint: Copy + Clone + Sized //+ Display + Debug + ToString
     /// instead of underflowing.
     /// 
     /// # Features
-    /// __The trait Uint is meaningful when you use it in generic context.
+    /// __The trait SmallUInt is meaningful when you use it in generic context.
     /// Otherwise, it is pretty hard to imagine its usability.__
     /// It subtracts rhs from self with saturating integer subtraction.
     /// 
@@ -2169,7 +2169,7 @@ pub trait Uint: Copy + Clone + Sized //+ Display + Debug + ToString
     /// 
     /// # Example
     /// ```
-    /// use Cryptocol::number::Uint;
+    /// use Cryptocol::number::SmallUInt;
     /// fn main()
     /// {
     ///     let a_u8 = func(55_u8, 50_u8);
@@ -2221,7 +2221,7 @@ pub trait Uint: Copy + Clone + Sized //+ Display + Debug + ToString
     ///     assert_eq!(b_usize, 0_usize);
     /// }
     /// 
-    /// fn func<T: Uint>(lhs: T, rhs: T) -> T
+    /// fn func<T: SmallUInt>(lhs: T, rhs: T) -> T
     /// {
     ///     lhs.saturating_sub(rhs)
     /// }
@@ -2330,7 +2330,7 @@ pub trait Uint: Copy + Clone + Sized //+ Display + Debug + ToString
     fn carrying_mul(self, rhs: Self, carry: Self) -> (Self, Self);
 
     // fn carrying_mul_for_internal_use(self, rhs: Self, carry: Self) -> (Self, Self);
-    /// It is for internal use. You are recommended to use [carrying_mul()](trait@Uint#tymethod.carrying_mul) instead.
+    /// It is for internal use. You are recommended to use [carrying_mul()](trait@SmallUInt#tymethod.carrying_mul) instead.
     fn carrying_mul_for_internal_use(self, rhs: Self, carry: Self) -> (Self, Self);
     
     // pub fn widening_mul(self, rhs: Self) -> (Self, Self)
@@ -2406,14 +2406,14 @@ pub trait Uint: Copy + Clone + Sized //+ Display + Debug + ToString
     fn widening_mul(self, rhs: Self) -> (Self, Self);
 
     // fn carrying_mul_for_internal_use(self, rhs: Self, carry: Self) -> (Self, Self);
-    /// It is for internal use. You are recommended to use [carrying_mul()](trait@Uint#tymethod.widening_mul) instead.
+    /// It is for internal use. You are recommended to use [carrying_mul()](trait@SmallUInt#tymethod.widening_mul) instead.
     fn widening_mul_for_internal_use(self, rhs: Self) -> (Self, Self);
 
     // fn wrapping_mul(self, rhs: Self) -> Self
     /// Computes self * rhs, wrapping around at the boundary of the type.
     /// 
     /// # Features
-    /// __The trait Uint is meaningful when you use it in generic context.
+    /// __The trait SmallUInt is meaningful when you use it in generic context.
     /// Otherwise, it is pretty hard to imagine its usability.__
     /// It multiplies two numbers with wrapping (modular) multiplication.
     /// 
@@ -2422,7 +2422,7 @@ pub trait Uint: Copy + Clone + Sized //+ Display + Debug + ToString
     /// 
     /// # Example
     /// ```
-    /// use Cryptocol::number::Uint;
+    /// use Cryptocol::number::SmallUInt;
     /// fn main()
     /// {
     ///     let a_u8 = func(u8::MAX / 3, 2_u8);
@@ -2474,7 +2474,7 @@ pub trait Uint: Copy + Clone + Sized //+ Display + Debug + ToString
     ///     assert_eq!(b_usize, 6148914691236517204_usize);
     /// }
     /// 
-    /// fn func<T: Uint>(lhs: T, rhs: T) -> T
+    /// fn func<T: SmallUInt>(lhs: T, rhs: T) -> T
     /// {
     ///     lhs.wrapping_mul(rhs)
     /// }
@@ -2510,7 +2510,7 @@ pub trait Uint: Copy + Clone + Sized //+ Display + Debug + ToString
     /// Calculates self * rhs, wrapping around at the boundary of the type.
     /// 
     /// # Features
-    /// __The trait Uint is meaningful when you use it in generic context.
+    /// __The trait SmallUInt is meaningful when you use it in generic context.
     /// Otherwise, it is pretty hard to imagine its usability.__
     /// It multiplies two numbers with wrapping (modular) multiplication.
     /// 
@@ -2521,7 +2521,7 @@ pub trait Uint: Copy + Clone + Sized //+ Display + Debug + ToString
     /// 
     /// # Example
     /// ```
-    /// use Cryptocol::number::Uint;
+    /// use Cryptocol::number::SmallUInt;
     /// fn main()
     /// {
     ///     let a_u8 = func(u8::MAX / 3, 2_u8);
@@ -2585,7 +2585,7 @@ pub trait Uint: Copy + Clone + Sized //+ Display + Debug + ToString
     ///     assert_eq!(b_usize.1, true);
     /// }
     /// 
-    /// fn func<T: Uint>(lhs: T, rhs: T) -> (T, bool)
+    /// fn func<T: SmallUInt>(lhs: T, rhs: T) -> (T, bool)
     /// {
     ///     lhs.overflowing_mul(rhs)
     /// }
@@ -2622,7 +2622,7 @@ pub trait Uint: Copy + Clone + Sized //+ Display + Debug + ToString
     /// Computes self * rhs.
     /// 
     /// # Feature
-    /// __The trait Uint is meaningful when you use it in generic context.
+    /// __The trait SmallUInt is meaningful when you use it in generic context.
     /// Otherwise, it is pretty hard to imagine its usability.__
     /// 
     /// # Output
@@ -2632,7 +2632,7 @@ pub trait Uint: Copy + Clone + Sized //+ Display + Debug + ToString
     /// 
     /// # Example
     /// ```
-    /// use Cryptocol::number::Uint;
+    /// use Cryptocol::number::SmallUInt;
     /// fn main()
     /// {
     ///     let a_u8 = func(u8::MAX / 3, 2_u8);
@@ -2792,7 +2792,7 @@ pub trait Uint: Copy + Clone + Sized //+ Display + Debug + ToString
     ///     }
     /// }
     /// 
-    /// fn func<T: Uint>(lhs: T, rhs: T) -> Option<T>
+    /// fn func<T: SmallUInt>(lhs: T, rhs: T) -> Option<T>
     /// {
     ///     lhs.checked_mul(rhs)
     /// }
@@ -2828,7 +2828,7 @@ pub trait Uint: Copy + Clone + Sized //+ Display + Debug + ToString
     /// Computes self + rhs, assuming overflow cannot occur.
     /// 
     /// # Features
-    /// __The trait Uint is meaningful when you use it in generic context.
+    /// __The trait SmallUInt is meaningful when you use it in generic context.
     /// Otherwise, it is pretty hard to imagine its usability.__
     /// It is virtually same as self.checked_add(rhs).unwrap().
     /// Use this method only when it is sure that overflow will never happen.
@@ -2842,7 +2842,7 @@ pub trait Uint: Copy + Clone + Sized //+ Display + Debug + ToString
     /// 
     /// # Example
     /// ```
-    /// use Cryptocol::number::Uint;
+    /// use Cryptocol::number::SmallUInt;
     /// fn main()
     /// {
     ///     let a_u8 = func(u8::MAX / 3, 2_u8);
@@ -2888,7 +2888,7 @@ pub trait Uint: Copy + Clone + Sized //+ Display + Debug + ToString
     ///     // let b_usize = func(a_usize, 2_usize);
     /// }
     ///     
-    /// fn func<T: Uint>(lhs: T, rhs: T) -> T
+    /// fn func<T: SmallUInt>(lhs: T, rhs: T) -> T
     /// {
     ///     lhs.unchecked_mul(rhs)
     /// }
@@ -2937,7 +2937,7 @@ pub trait Uint: Copy + Clone + Sized //+ Display + Debug + ToString
     /// instead of overflowing.
     /// 
     /// # Features
-    /// __The trait Uint is meaningful when you use it in generic context.
+    /// __The trait SmallUInt is meaningful when you use it in generic context.
     /// Otherwise, it is pretty hard to imagine its usability.__
     /// It multiplies two numbers with saturating integer multiplication
     /// 
@@ -2947,7 +2947,7 @@ pub trait Uint: Copy + Clone + Sized //+ Display + Debug + ToString
     /// 
     /// # Example
     /// ```
-    /// use Cryptocol::number::Uint;
+    /// use Cryptocol::number::SmallUInt;
     /// fn main()
     /// {
     ///     let a_u8 = func(u8::MAX / 3, 2_u8);
@@ -2999,7 +2999,7 @@ pub trait Uint: Copy + Clone + Sized //+ Display + Debug + ToString
     ///     assert_eq!(b_usize, usize::MAX);
     /// }
     /// 
-    /// fn func<T: Uint>(lhs: T, rhs: T) -> T
+    /// fn func<T: SmallUInt>(lhs: T, rhs: T) -> T
     /// {
     ///     lhs.saturating_mul(rhs)
     /// }    
@@ -3038,7 +3038,7 @@ pub trait Uint: Copy + Clone + Sized //+ Display + Debug + ToString
     /// Computes self / rhs.
     /// 
     /// # Features
-    /// __The trait Uint is meaningful when you use it in generic context.
+    /// __The trait SmallUInt is meaningful when you use it in generic context.
     /// Otherwise, it is pretty hard to imagine its usability.__
     /// Wrapped division on unsigned types is just normal division. There’s no
     /// way wrapping could ever happen. This function exists, so that all
@@ -3052,7 +3052,7 @@ pub trait Uint: Copy + Clone + Sized //+ Display + Debug + ToString
     /// 
     /// # Example
     /// ```
-    /// use Cryptocol::number::Uint;
+    /// use Cryptocol::number::SmallUInt;
     /// fn main()
     /// {
     ///     let a_u8 = func(u8::MAX / 3, 2_u8);
@@ -3083,7 +3083,7 @@ pub trait Uint: Copy + Clone + Sized //+ Display + Debug + ToString
     ///     // let a_panic = func(usize::MAX / 3, 0_usize);
     /// }
     /// 
-    /// fn func<T: Uint>(lhs: T, rhs: T) -> T
+    /// fn func<T: SmallUInt>(lhs: T, rhs: T) -> T
     /// {
     ///     lhs.wrapping_div(rhs)
     /// }
@@ -3119,7 +3119,7 @@ pub trait Uint: Copy + Clone + Sized //+ Display + Debug + ToString
     /// Calculates self / rhs.
     /// 
     /// # Features
-    /// __The trait Uint is meaningful when you use it in generic context.
+    /// __The trait SmallUInt is meaningful when you use it in generic context.
     /// Otherwise, it is pretty hard to imagine its usability.__
     /// It divides self by rhs.
     /// 
@@ -3133,7 +3133,7 @@ pub trait Uint: Copy + Clone + Sized //+ Display + Debug + ToString
     /// 
     /// # Example
     /// ```
-    /// use Cryptocol::number::Uint;
+    /// use Cryptocol::number::SmallUInt;
     /// fn main()
     /// {
     ///     let a_u8 = func(u8::MAX / 3, 2_u8);
@@ -3197,7 +3197,7 @@ pub trait Uint: Copy + Clone + Sized //+ Display + Debug + ToString
     ///     assert_eq!(b_usize.1, true);
     /// }
     /// 
-    /// fn func<T: Uint>(lhs: T, rhs: T) -> (T, bool)
+    /// fn func<T: SmallUInt>(lhs: T, rhs: T) -> (T, bool)
     /// {
     ///     lhs.overflowing_div(rhs)
     /// }
@@ -3234,7 +3234,7 @@ pub trait Uint: Copy + Clone + Sized //+ Display + Debug + ToString
     /// Computes self / rhs.
     /// 
     /// # Feature
-    /// __The trait Uint is meaningful when you use it in generic context.
+    /// __The trait SmallUInt is meaningful when you use it in generic context.
     /// Otherwise, it is pretty hard to imagine its usability.__
     /// 
     /// # Output
@@ -3243,7 +3243,7 @@ pub trait Uint: Copy + Clone + Sized //+ Display + Debug + ToString
     /// 
     /// # Example
     /// ```
-    /// use Cryptocol::number::Uint;
+    /// use Cryptocol::number::SmallUInt;
     /// fn main()
     /// {
     ///     let a_u8 = UInt_checked_mul___func(u8::MAX / 3, 2_u8);
@@ -3385,7 +3385,7 @@ pub trait Uint: Copy + Clone + Sized //+ Display + Debug + ToString
     ///     }
     /// }
     /// 
-    /// fn func<T: Uint>(lhs: T, rhs: T) -> Option<T>
+    /// fn func<T: SmallUInt>(lhs: T, rhs: T) -> Option<T>
     /// {
     ///     lhs.checked_div(rhs)
     /// }
@@ -3421,7 +3421,7 @@ pub trait Uint: Copy + Clone + Sized //+ Display + Debug + ToString
     /// Computes self / rhs.
     /// 
     /// # Features
-    /// __The trait Uint is meaningful when you use it in generic context.
+    /// __The trait SmallUInt is meaningful when you use it in generic context.
     /// Otherwise, it is pretty hard to imagine its usability.__
     /// 
     /// # Output
@@ -3432,7 +3432,7 @@ pub trait Uint: Copy + Clone + Sized //+ Display + Debug + ToString
     /// 
     /// # Example
     /// ```
-    /// use Cryptocol::number::Uint;
+    /// use Cryptocol::number::SmallUInt;
     /// fn main()
     /// {
     ///     let a_u8 = func(u8::MAX / 3, 2_u8);
@@ -3463,7 +3463,7 @@ pub trait Uint: Copy + Clone + Sized //+ Display + Debug + ToString
     ///     // let a_panic = UInt_saturating_div___func(usize::MAX / 3, 0_usize);
     /// }
     /// 
-    /// fn func<T: Uint>(lhs: T, rhs: T) -> T
+    /// fn func<T: SmallUInt>(lhs: T, rhs: T) -> T
     /// {
     ///     lhs.saturating_div(rhs)
     /// }    
@@ -3502,7 +3502,7 @@ pub trait Uint: Copy + Clone + Sized //+ Display + Debug + ToString
     /// Computes self % rhs.
     /// 
     /// # Features
-    /// __The trait Uint is meaningful when you use it in generic context.
+    /// __The trait SmallUInt is meaningful when you use it in generic context.
     /// Otherwise, it is pretty hard to imagine its usability.__
     /// Wrapped remainder calculation on unsigned types is just the regular
     /// remainder calculation. There’s no way wrapping could ever happen.
@@ -3517,7 +3517,7 @@ pub trait Uint: Copy + Clone + Sized //+ Display + Debug + ToString
     /// 
     /// # Example
     /// ```
-    /// use Cryptocol::number::Uint;
+    /// use Cryptocol::number::SmallUInt;
     /// fn main()
     /// {
     ///     let a_u8 = func(u8::MAX / 3, 3_u8);
@@ -3548,7 +3548,7 @@ pub trait Uint: Copy + Clone + Sized //+ Display + Debug + ToString
     ///     // let a_panic = func(usize::MAX / 3, 0_usize);
     /// }
     /// 
-    /// fn func<T: Uint>(lhs: T, rhs: T) -> T
+    /// fn func<T: SmallUInt>(lhs: T, rhs: T) -> T
     /// {
     ///     lhs.wrapping_rem(rhs)
     /// }
@@ -3584,7 +3584,7 @@ pub trait Uint: Copy + Clone + Sized //+ Display + Debug + ToString
     /// Calculates self % rhs.
     /// 
     /// # Features
-    /// __The trait Uint is meaningful when you use it in generic context.
+    /// __The trait SmallUInt is meaningful when you use it in generic context.
     /// Otherwise, it is pretty hard to imagine its usability.__
     /// It calculates the remainder when self is divided by rhs.
     /// 
@@ -3598,7 +3598,7 @@ pub trait Uint: Copy + Clone + Sized //+ Display + Debug + ToString
     /// 
     /// # Example
     /// ```
-    /// use Cryptocol::number::Uint;
+    /// use Cryptocol::number::SmallUInt;
     /// fn main()
     /// {
     ///     let a_u8 = func(u8::MAX / 3, 3_u8);
@@ -3635,7 +3635,7 @@ pub trait Uint: Copy + Clone + Sized //+ Display + Debug + ToString
     ///     // let a_panic = func(a_usize.0, 0_usize);
     /// }
     /// 
-    /// fn func<T: Uint>(lhs: T, rhs: T) -> (T, bool)
+    /// fn func<T: SmallUInt>(lhs: T, rhs: T) -> (T, bool)
     /// {
     ///     lhs.overflowing_rem(rhs)
     /// }
@@ -3672,7 +3672,7 @@ pub trait Uint: Copy + Clone + Sized //+ Display + Debug + ToString
     /// Computes self % rhs.
     /// 
     /// # Feature
-    /// __The trait Uint is meaningful when you use it in generic context.
+    /// __The trait SmallUInt is meaningful when you use it in generic context.
     /// Otherwise, it is pretty hard to imagine its usability.__
     /// 
     /// # Output
@@ -3681,7 +3681,7 @@ pub trait Uint: Copy + Clone + Sized //+ Display + Debug + ToString
     /// 
     /// # Example
     /// ```
-    /// use Cryptocol::number::Uint;
+    /// use Cryptocol::number::SmallUInt;
     /// fn main()
     /// {
     ///     let a_u8 = func(u8::MAX / 3, 3_u8);
@@ -3823,7 +3823,7 @@ pub trait Uint: Copy + Clone + Sized //+ Display + Debug + ToString
     ///     }
     /// }
     /// 
-    /// fn func<T: Uint>(lhs: T, rhs: T) -> Option<T>
+    /// fn func<T: SmallUInt>(lhs: T, rhs: T) -> Option<T>
     /// {
     ///     lhs.checked_rem(rhs)
     /// }
@@ -3863,7 +3863,7 @@ pub trait Uint: Copy + Clone + Sized //+ Display + Debug + ToString
     /// Raises `self` to the power of `exp`, using exponentiation by squaring.
     /// 
     /// # Features
-    /// __The trait Uint is meaningful when you use it in generic context.
+    /// __The trait SmallUInt is meaningful when you use it in generic context.
     /// Otherwise, it is pretty hard to imagine its usability.__
     /// 
     /// # Panics
@@ -3885,7 +3885,7 @@ pub trait Uint: Copy + Clone + Sized //+ Display + Debug + ToString
     ///     // println!("3 ** 5 = {}", func(3_u8, 6_u32));
     /// }
     /// 
-    /// fn func<T: Uint>(lhs: T, rhs: u32) -> T
+    /// fn func<T: SmallUInt>(lhs: T, rhs: u32) -> T
     /// {
     ///     lhs.pow(rhs)
     /// }
@@ -3903,7 +3903,7 @@ pub trait Uint: Copy + Clone + Sized //+ Display + Debug + ToString
     ///     // println!("9 ** 5 = {}", func(9_u16, 6_u32));
     /// }
     /// 
-    /// fn func<T: Uint>(lhs: T, rhs: u32) -> T
+    /// fn func<T: SmallUInt>(lhs: T, rhs: u32) -> T
     /// {
     ///     lhs.pow(rhs)
     /// }
@@ -3921,7 +3921,7 @@ pub trait Uint: Copy + Clone + Sized //+ Display + Debug + ToString
     ///     // println!("81 ** 6 = {}", func(81_u32, 6_u32));
     /// }
     /// 
-    /// fn func<T: Uint>(lhs: T, rhs: u32) -> T
+    /// fn func<T: SmallUInt>(lhs: T, rhs: u32) -> T
     /// {
     ///     lhs.pow(rhs)
     /// }
@@ -3939,7 +3939,7 @@ pub trait Uint: Copy + Clone + Sized //+ Display + Debug + ToString
     ///     // println!("6561 ** 6 = {}", func(6561_u64, 6_u32));
     /// }
     /// 
-    /// fn func<T: Uint>(lhs: T, rhs: u32) -> T
+    /// fn func<T: SmallUInt>(lhs: T, rhs: u32) -> T
     /// {
     ///     lhs.pow(rhs)
     /// }
@@ -3957,7 +3957,7 @@ pub trait Uint: Copy + Clone + Sized //+ Display + Debug + ToString
     ///     // println!("43046721 ** 6 = {}", func(43046721_u64, 6_u32));
     /// }
     /// 
-    /// fn func<T: Uint>(lhs: T, rhs: u32) -> T
+    /// fn func<T: SmallUInt>(lhs: T, rhs: u32) -> T
     /// {
     ///     lhs.pow(rhs)
     /// }
@@ -3975,7 +3975,7 @@ pub trait Uint: Copy + Clone + Sized //+ Display + Debug + ToString
     ///     // println!("6561 ** 6 = {}", func(6561_usize, 6_u32));
     /// }
     /// 
-    /// fn func<T: Uint>(lhs: T, rhs: u32) -> T
+    /// fn func<T: SmallUInt>(lhs: T, rhs: u32) -> T
     /// {
     ///     lhs.pow(rhs)
     /// }
@@ -3994,7 +3994,7 @@ pub trait Uint: Copy + Clone + Sized //+ Display + Debug + ToString
     ///     // println!("9 ** 5 = {}", func(a_Short, 6_u32));
     /// }
     /// 
-    /// fn func<T: Uint>(lhs: T, rhs: u32) -> T
+    /// fn func<T: SmallUInt>(lhs: T, rhs: u32) -> T
     /// {
     ///     lhs.pow(rhs)
     /// }
@@ -4013,7 +4013,7 @@ pub trait Uint: Copy + Clone + Sized //+ Display + Debug + ToString
     ///     // println!("81 ** 6 = {}", func(a_uint, 6_u32));
     /// }
     /// 
-    /// fn func<T: Uint>(lhs: T, rhs: u32) -> T
+    /// fn func<T: SmallUInt>(lhs: T, rhs: u32) -> T
     /// {
     ///     lhs.pow(rhs)
     /// }
@@ -4032,7 +4032,7 @@ pub trait Uint: Copy + Clone + Sized //+ Display + Debug + ToString
     ///     // println!("6561 ** 6 = {}", func(a_ulong, 6_u32));
     /// }
     /// 
-    /// fn func<T: Uint>(lhs: T, rhs: u32) -> T
+    /// fn func<T: SmallUInt>(lhs: T, rhs: u32) -> T
     /// {
     ///     lhs.pow(rhs)
     /// }
@@ -4051,7 +4051,7 @@ pub trait Uint: Copy + Clone + Sized //+ Display + Debug + ToString
     ///     // println!("43046721 ** 6 = {}", func(a_ulonger, 6_u32));
     /// }
     /// 
-    /// fn func<T: Uint>(lhs: T, rhs: u32) -> T
+    /// fn func<T: SmallUInt>(lhs: T, rhs: u32) -> T
     /// {
     ///     lhs.pow(rhs)
     /// }
@@ -4070,7 +4070,7 @@ pub trait Uint: Copy + Clone + Sized //+ Display + Debug + ToString
     ///     // println!("6561 ** 6 = {}", func(a_size, 6_u32));
     /// }
     /// 
-    /// fn func<T: Uint>(lhs: T, rhs: u32) -> T
+    /// fn func<T: SmallUInt>(lhs: T, rhs: u32) -> T
     /// {
     ///     lhs.pow(rhs)
     /// }
@@ -4153,7 +4153,7 @@ pub trait Uint: Copy + Clone + Sized //+ Display + Debug + ToString
     ///     // println!("6561 ** 6 = {}", func(a_size, 6_u32));
     /// }
     /// 
-    /// fn func<T: Uint>(lhs: T, rhs: u32) -> T
+    /// fn func<T: SmallUInt>(lhs: T, rhs: u32) -> T
     /// {
     ///     lhs.pow(rhs)
     /// }
@@ -4190,7 +4190,7 @@ pub trait Uint: Copy + Clone + Sized //+ Display + Debug + ToString
     /// 
     /// # Features
     /// Wrapping (modular) exponentiation.
-    /// __The trait Uint is meaningful when you use it in generic context.
+    /// __The trait SmallUInt is meaningful when you use it in generic context.
     /// Otherwise, it is pretty hard to imagine its usability.__
     /// 
     /// # Output
@@ -4295,7 +4295,7 @@ pub trait Uint: Copy + Clone + Sized //+ Display + Debug + ToString
     ///     assert_eq!(c_size.get(), 2721702152408675777_usize);
     /// }
     /// 
-    /// fn func<T: Uint>(lhs: T, rhs: u32) -> T
+    /// fn func<T: SmallUInt>(lhs: T, rhs: u32) -> T
     /// {
     ///     lhs.wrapping_pow(rhs)
     /// }
@@ -4332,7 +4332,7 @@ pub trait Uint: Copy + Clone + Sized //+ Display + Debug + ToString
     /// 
     /// # Features
     /// Exponentiation by squaring.
-    /// __The trait Uint is meaningful when you use it in generic context.
+    /// __The trait SmallUInt is meaningful when you use it in generic context.
     /// Otherwise, it is pretty hard to imagine its usability.__
     /// 
     /// # Output
@@ -4348,7 +4348,7 @@ pub trait Uint: Copy + Clone + Sized //+ Display + Debug + ToString
     ///     // Todo
     /// }
     /// 
-    /// fn func<T: Uint>(lhs: T, rhs: u32) -> (T, bool)
+    /// fn func<T: SmallUInt>(lhs: T, rhs: u32) -> (T, bool)
     /// {
     ///     lhs.overflowing_pow(rhs)
     /// }
@@ -4384,7 +4384,7 @@ pub trait Uint: Copy + Clone + Sized //+ Display + Debug + ToString
     /// Computes self.pow(exp), returning None if overflow occurred.
     /// 
     /// # Features
-    /// __The trait Uint is meaningful when you use it in generic context.
+    /// __The trait SmallUInt is meaningful when you use it in generic context.
     /// Otherwise, it is pretty hard to imagine its usability.__
     /// 
     /// # Output
@@ -4399,7 +4399,7 @@ pub trait Uint: Copy + Clone + Sized //+ Display + Debug + ToString
     ///     // Todo
     /// }
     /// 
-    /// fn func<T: Uint>(lhs: T, rhs: u32) -> Option<T>
+    /// fn func<T: SmallUInt>(lhs: T, rhs: u32) -> Option<T>
     /// {
     ///     lhs.checked_pow(rhs)
     /// }
@@ -4435,7 +4435,7 @@ pub trait Uint: Copy + Clone + Sized //+ Display + Debug + ToString
     /// Computes self.pow(exp), saturating at the numeric bounds instead of overflowing.
     /// 
     /// # Features
-    /// __The trait Uint is meaningful when you use it in generic context.
+    /// __The trait SmallUInt is meaningful when you use it in generic context.
     /// Otherwise, it is pretty hard to imagine its usability.__
     /// 
     /// # Output
@@ -4451,7 +4451,7 @@ pub trait Uint: Copy + Clone + Sized //+ Display + Debug + ToString
     ///     // Todo
     /// }
     /// 
-    /// fn func<T: Uint>(lhs: T, rhs: u32) -> T
+    /// fn func<T: SmallUInt>(lhs: T, rhs: u32) -> T
     /// {
     ///     lhs.saturating_pow(rhs)
     /// }
@@ -4489,7 +4489,7 @@ pub trait Uint: Copy + Clone + Sized //+ Display + Debug + ToString
     /// Computes the absolute difference between `self` and `other`.
     /// 
     /// # Feature
-    /// __The trait Uint is meaningful when you use it in generic context.
+    /// __The trait SmallUInt is meaningful when you use it in generic context.
     /// Otherwise, it is pretty hard to imagine its usability.__
     /// 
     /// # Output
@@ -4497,7 +4497,7 @@ pub trait Uint: Copy + Clone + Sized //+ Display + Debug + ToString
     /// 
     /// # Example for u8
     /// ```
-    /// use Cryptocol::number::Uint;
+    /// use Cryptocol::number::SmallUInt;
     /// fn main()
     /// {
     ///     let a_u8 = func(55_u8, 50_u8);
@@ -4509,7 +4509,7 @@ pub trait Uint: Copy + Clone + Sized //+ Display + Debug + ToString
     ///     assert_eq!(b_u8, 5_u8);
     /// }
     /// 
-    /// fn func<T: Uint>(lhs: T, rhs: T) -> T
+    /// fn func<T: SmallUInt>(lhs: T, rhs: T) -> T
     /// {
     ///     lhs.abs_diff(rhs)
     /// }
@@ -4517,7 +4517,7 @@ pub trait Uint: Copy + Clone + Sized //+ Display + Debug + ToString
     /// 
     /// # Example for u16
     /// ```
-    /// use Cryptocol::number::Uint;
+    /// use Cryptocol::number::SmallUInt;
     /// fn main()
     /// {   
     ///     let a_u16 = func(5050_u16, 5000_u16);
@@ -4529,7 +4529,7 @@ pub trait Uint: Copy + Clone + Sized //+ Display + Debug + ToString
     ///     assert_eq!(b_u16, 50_u16);
     /// }
     /// 
-    /// fn func<T: Uint>(lhs: T, rhs: T) -> T
+    /// fn func<T: SmallUInt>(lhs: T, rhs: T) -> T
     /// {
     ///     lhs.abs_diff(rhs)
     /// }
@@ -4537,7 +4537,7 @@ pub trait Uint: Copy + Clone + Sized //+ Display + Debug + ToString
     /// 
     /// # Example for u32
     /// ```
-    /// use Cryptocol::number::Uint;
+    /// use Cryptocol::number::SmallUInt;
     /// fn main()
     /// {
     ///     let a_u32 = func(500500_u32, 500000_u32);
@@ -4549,7 +4549,7 @@ pub trait Uint: Copy + Clone + Sized //+ Display + Debug + ToString
     ///     assert_eq!(b_u32, 500_u32);
     /// }
     /// 
-    /// fn func<T: Uint>(lhs: T, rhs: T) -> T
+    /// fn func<T: SmallUInt>(lhs: T, rhs: T) -> T
     /// {
     ///     lhs.abs_diff(rhs)
     /// }
@@ -4557,7 +4557,7 @@ pub trait Uint: Copy + Clone + Sized //+ Display + Debug + ToString
     /// 
     /// # Example for u64
     /// ```
-    /// use Cryptocol::number::Uint;
+    /// use Cryptocol::number::SmallUInt;
     /// fn main()
     /// {
     ///     let a_u64 = func(5000050000_u64, 5000000000_u64);
@@ -4569,7 +4569,7 @@ pub trait Uint: Copy + Clone + Sized //+ Display + Debug + ToString
     ///     assert_eq!(b_u64, 50000_u64);
     /// }
     /// 
-    /// fn func<T: Uint>(lhs: T, rhs: T) -> T
+    /// fn func<T: SmallUInt>(lhs: T, rhs: T) -> T
     /// {
     ///     lhs.abs_diff(rhs)
     /// }
@@ -4577,7 +4577,7 @@ pub trait Uint: Copy + Clone + Sized //+ Display + Debug + ToString
     /// 
     /// # Example for u128
     /// ```
-    /// use Cryptocol::number::Uint;
+    /// use Cryptocol::number::SmallUInt;
     /// fn main()
     /// {
     ///     let a_u128 = func(500000000500000000_u128, 500000000000000000_u128);
@@ -4589,7 +4589,7 @@ pub trait Uint: Copy + Clone + Sized //+ Display + Debug + ToString
     ///     assert_eq!(b_u128, 500000000_u128);
     /// }
     /// 
-    /// fn func<T: Uint>(lhs: T, rhs: T) -> T
+    /// fn func<T: SmallUInt>(lhs: T, rhs: T) -> T
     /// {
     ///     lhs.abs_diff(rhs)
     /// }
@@ -4597,7 +4597,7 @@ pub trait Uint: Copy + Clone + Sized //+ Display + Debug + ToString
     /// 
     /// # Example for usize
     /// ```
-    /// use Cryptocol::number::Uint;
+    /// use Cryptocol::number::SmallUInt;
     /// fn main()
     /// {
     ///     let a_usize = func(5000050000_usize, 5000000000_usize);
@@ -4609,17 +4609,17 @@ pub trait Uint: Copy + Clone + Sized //+ Display + Debug + ToString
     ///     assert_eq!(b_usize, 50000_usize);
     /// }
     /// 
-    /// fn func<T: Uint>(lhs: T, rhs: T) -> T
+    /// fn func<T: SmallUInt>(lhs: T, rhs: T) -> T
     /// {
     ///     lhs.abs_diff(rhs)
     /// }
     /// ```
-    /// You can use the above generic function func<>() for all Uint-supported
+    /// You can use the above generic function func<>() for all SmallUInt-supported
     /// data types in a same scope. Look into the next example.
     /// 
     /// # Collective Example
     /// ```
-    /// use Cryptocol::number::Uint;
+    /// use Cryptocol::number::SmallUInt;
     /// fn main()
     /// {
     ///     let a_u8 = func(55_u8, 50_u8);
@@ -4671,7 +4671,7 @@ pub trait Uint: Copy + Clone + Sized //+ Display + Debug + ToString
     ///     assert_eq!(b_usize, 50000_usize);
     /// }
     /// 
-    /// fn func<T: Uint>(lhs: T, rhs: T) -> T
+    /// fn func<T: SmallUInt>(lhs: T, rhs: T) -> T
     /// {
     ///     lhs.abs_diff(rhs)
     /// }
@@ -4750,14 +4750,14 @@ pub trait Uint: Copy + Clone + Sized //+ Display + Debug + ToString
     fn one() -> Self;
     fn max() -> Self;
     fn min() -> Self;
-    fn u128_as_Uint(n: u128) -> Self;
-    fn u64_as_Uint(n: u64) -> Self;
-    fn u32_as_Uint(n: u32) -> Self;
-    fn u16_as_Uint(n: u16) -> Self;
-    fn u8_as_Uint(n: u8) -> Self;
-    fn usize_as_Uint(n: usize) -> Self;
-    fn bool_as_Uint(n: bool) -> Self;
-    fn num<T: Uint>(n: T) -> Self;
+    fn u128_as_SmallUInt(n: u128) -> Self;
+    fn u64_as_SmallUInt(n: u64) -> Self;
+    fn u32_as_SmallUInt(n: u32) -> Self;
+    fn u16_as_SmallUInt(n: u16) -> Self;
+    fn u8_as_SmallUInt(n: u8) -> Self;
+    fn usize_as_SmallUInt(n: usize) -> Self;
+    fn bool_as_SmallUInt(n: bool) -> Self;
+    fn num<T: SmallUInt>(n: T) -> Self;
 
     fn size_in_bytes() -> usize;
     fn size_in_bits() -> usize;
@@ -4767,13 +4767,13 @@ pub trait Uint: Copy + Clone + Sized //+ Display + Debug + ToString
 }
 
 
-macro_rules! Uint_for_uint_impl {
+macro_rules! SmallUInt_for_uint_impl {
     ($f:ty) => {
-        impl Uint for $f
+        impl SmallUInt for $f
         {
             /// Calculates self + rhs + carry and returns a tuple containing
             /// the sum and the output carry.
-            /// [Read more in detail](trait@Uint#tymethod.carrying_add)
+            /// [Read more in detail](trait@SmallUInt#tymethod.carrying_add)
             fn carrying_add(self, rhs: Self, carry: bool) -> (Self, bool)
             {
                 let (r1, c1) = self.overflowing_add(rhs);
@@ -4782,31 +4782,31 @@ macro_rules! Uint_for_uint_impl {
             }
 
             /// Computes self + rhs, wrapping around at the boundary of the type.
-            /// [Read more in detail](trait@Uint#tymethod.wrapping_add)
+            /// [Read more in detail](trait@SmallUInt#tymethod.wrapping_add)
             #[inline] fn wrapping_add(self, rhs: Self) -> Self              { self.wrapping_add(rhs) }
 
             /// Calculates self + rhs and returns a tuple of the addition along
             /// with a boolean indicating whether an arithmetic overflow would
-            /// occur. [Read more in detail](trait@Uint#tymethod.overflowing_add)
+            /// occur. [Read more in detail](trait@SmallUInt#tymethod.overflowing_add)
             #[inline] fn overflowing_add(self, rhs: Self) -> (Self, bool)   { self.overflowing_add(rhs) }
 
             /// Computes self + rhs and returns None if overflow occurred.
-            /// [Read more in detail](trait@Uint#tymethod.checked_add)
+            /// [Read more in detail](trait@SmallUInt#tymethod.checked_add)
             #[inline] fn checked_add(self, rhs: Self) -> Option<Self>       { self.checked_add(rhs) }
 
             /// Computes self + rhs and returns None if overflow occurred.
-            /// [Read more in detail](trait@Uint#tymethod.checked_add)
+            /// [Read more in detail](trait@SmallUInt#tymethod.checked_add)
             #[inline] fn unchecked_add(self, rhs: Self) -> Self             { self.checked_add(rhs).unwrap() }
 
             /// Computes self + rhs, saturating at the numeric bounds
             /// instead of overflowing.
-            /// [Read more in detail](trait@Uint#tymethod.saturating_add)
+            /// [Read more in detail](trait@SmallUInt#tymethod.saturating_add)
             #[inline] fn saturating_add(self, rhs: Self) -> Self            { self.saturating_add(rhs) }
 
 
             /// Calculates self − rhs − borrow,
             /// wrapping around at the boundary of the type.
-            /// [Read more in detail](trait@Uint#tymethod.borrowing_sub)
+            /// [Read more in detail](trait@SmallUInt#tymethod.borrowing_sub)
             fn borrowing_sub(self, rhs: Self, borrow: bool) -> (Self, bool)
             {
                 let (r1, b1) = self.overflowing_sub(rhs);
@@ -4815,39 +4815,39 @@ macro_rules! Uint_for_uint_impl {
             }
 
             /// Computes self - rhs, wrapping around at the boundary of the type.
-            /// [Read more in detail](trait@Uint#tymethod.wrapping_sub)
+            /// [Read more in detail](trait@SmallUInt#tymethod.wrapping_sub)
             #[inline] fn wrapping_sub(self, rhs: Self) -> Self              { self.wrapping_sub(rhs) }
 
             /// Calculates self - rhs and returns a tuple of the subtraction
             /// along with a boolean indicating whether an arithmetic overflow
             /// would occur.
-            /// [Read more in detail](trait@Uint#tymethod.overflowing_sub)
+            /// [Read more in detail](trait@SmallUInt#tymethod.overflowing_sub)
             #[inline] fn overflowing_sub(self, rhs: Self) -> (Self, bool)   { self.overflowing_sub(rhs) }
 
             /// Computes self - rhs, returning None if overflow occurred.
-            /// [Read more in detail](trait@Uint#tymethod.checked_sub)
+            /// [Read more in detail](trait@SmallUInt#tymethod.checked_sub)
             #[inline] fn checked_sub(self, rhs: Self) -> Option<Self>       { self.checked_sub(rhs) }
 
             /// Computes self - rhs, assuming overflow cannot occur.
-            /// [Read more in detail](trait@Uint#tymethod.unchecked_sub)
+            /// [Read more in detail](trait@SmallUInt#tymethod.unchecked_sub)
             #[inline] fn unchecked_sub(self, rhs: Self) -> Self             { self.checked_sub(rhs).unwrap() }
 
             /// Computes self - rhs, saturating at the numeric bounds
             /// instead of overflowing.
-            /// [Read more in detail](trait@Uint#tymethod.saturating_sub)
+            /// [Read more in detail](trait@SmallUInt#tymethod.saturating_sub)
             #[inline] fn saturating_sub(self, rhs: Self) -> Self            { self.saturating_sub(rhs) }
 
             /// Computes the absolute difference between self and other.
-            /// [Read more in detail](trait@Uint#tymethod.abs_diff)
+            /// [Read more in detail](trait@SmallUInt#tymethod.abs_diff)
             #[inline] fn abs_diff(self, other: Self) -> Self    { self.abs_diff(other) }
 
             /// Calculates the “full multiplication” `self` * `rhs` + `carry` without
             /// the possibility to overflow.
-            /// [Read more in detail](trait@Uint#tymethod.carrying_mul)
+            /// [Read more in detail](trait@SmallUInt#tymethod.carrying_mul)
             #[inline] fn carrying_mul(self, rhs: Self, carry: Self) -> (Self, Self) { self.carrying_mul_for_internal_use(rhs, carry) }
 
             // fn carrying_mul_for_internal_use(self, rhs: Self, carry: Self) -> (Self, Self);
-            /// It is for internal use. You are recommended to use [carrying_mul()](trait@Uint#tymethod.carrying_mul) instead.
+            /// It is for internal use. You are recommended to use [carrying_mul()](trait@SmallUInt#tymethod.carrying_mul) instead.
             fn carrying_mul_for_internal_use(self, rhs: Self, carry: Self) -> (Self, Self)
             {
                 if (rhs == 0) || (self == 0)
@@ -4879,11 +4879,11 @@ macro_rules! Uint_for_uint_impl {
             }
 
             /// Calculates the complete product `self` * `rhs` without the possibility
-            /// to overflow. [Read more in detail](trait@Uint#tymethod.widening_mul)
+            /// to overflow. [Read more in detail](trait@SmallUInt#tymethod.widening_mul)
             #[inline] fn widening_mul(self, rhs: Self) -> (Self, Self) { self.widening_mul_for_internal_use(rhs) }
 
             // fn carrying_mul_for_internal_use(self, rhs: Self, carry: Self) -> (Self, Self);
-            /// It is for internal use. You are recommended to use [carrying_mul()](trait@Uint#tymethod.widening_mul) instead.
+            /// It is for internal use. You are recommended to use [carrying_mul()](trait@SmallUInt#tymethod.widening_mul) instead.
             fn widening_mul_for_internal_use(self, rhs: Self) -> (Self, Self)
             {
                 if (rhs == 0) || (self == 0)
@@ -4911,80 +4911,80 @@ macro_rules! Uint_for_uint_impl {
             }
 
             /// Computes self * rhs, wrapping around at the boundary of the type.
-            /// [Read more in detail](trait@Uint#tymethod.wrapping_mul)
+            /// [Read more in detail](trait@SmallUInt#tymethod.wrapping_mul)
             #[inline] fn wrapping_mul(self, rhs: Self) -> Self              { self.wrapping_mul(rhs) }
 
             /// Calculates the multiplication of self and rhs and returns a tuple
             /// of the multiplication along with a boolean indicating whether an
             /// arithmetic overflow would occur.
-            /// [Read more in detail](trait@Uint#tymethod.overflowing_mul)
+            /// [Read more in detail](trait@SmallUInt#tymethod.overflowing_mul)
             #[inline] fn overflowing_mul(self, rhs: Self) -> (Self, bool)   { self.overflowing_mul(rhs) }
 
             /// Computes self * rhs, returning None if overflow occurred.
-            /// [Read more in detail](trait@Uint#tymethod.checked_mul)
+            /// [Read more in detail](trait@SmallUInt#tymethod.checked_mul)
             #[inline] fn checked_mul(self, rhs: Self) -> Option<Self>       { self.checked_mul(rhs) }
 
             /// Computes self * rhs, assuming overflow cannot occur.
-            /// [Read more in detail](trait@Uint#tymethod.unchecked_mul)
+            /// [Read more in detail](trait@SmallUInt#tymethod.unchecked_mul)
             #[inline] fn unchecked_mul(self, rhs: Self) -> Self             { self.checked_mul(rhs).unwrap() }
 
             /// Computes self * rhs, saturating at the numeric bounds
             /// instead of overflowing.
-            /// [Read more in detail](trait@Uint#tymethod.saturating_mul)
+            /// [Read more in detail](trait@SmallUInt#tymethod.saturating_mul)
             #[inline] fn saturating_mul(self, rhs: Self) -> Self            { self.saturating_mul(rhs) }
 
 
             /// Computes self / rhs. Wrapped division on unsigned types is just
-            /// normal division. [Read more in detail](trait@Uint#tymethod.wrapping_div)
+            /// normal division. [Read more in detail](trait@SmallUInt#tymethod.wrapping_div)
             #[inline] fn wrapping_div(self, rhs: Self) -> Self              { self.wrapping_div(rhs) }
 
             /// Calculates the divisor when self is divided by rhs and returns
             /// a tuple of the divisor along with a boolean indicating whether
             /// an arithmetic overflow would occur.
-            /// [Read more in detail](trait@Uint#tymethod.overflowing_div)
+            /// [Read more in detail](trait@SmallUInt#tymethod.overflowing_div)
             #[inline] fn overflowing_div(self, rhs: Self) -> (Self, bool)   { self.overflowing_div(rhs) }
 
             /// Computes self / rhs, returning None if rhs == 0.
-            /// [Read more in detail](trait@Uint#tymethod.checked_div)
+            /// [Read more in detail](trait@SmallUInt#tymethod.checked_div)
             #[inline] fn checked_div(self, rhs: Self) -> Option<Self>       { self.checked_div(rhs) }
 
             /// Computes self / rhs, saturating at the numeric bounds
             /// instead of overflowing.
-            /// [Read more in detail](trait@Uint#tymethod.saturating_div)
+            /// [Read more in detail](trait@SmallUInt#tymethod.saturating_div)
             #[inline] fn saturating_div(self, rhs: Self) -> Self            { self.saturating_div(rhs) }
 
 
             /// Computes self % rhs. Wrapped remainder calculation on unsigned
             /// types is just the regular remainder calculation.
-            /// [Read more in detail](trait@Uint#tymethod.wrapping_rem)
+            /// [Read more in detail](trait@SmallUInt#tymethod.wrapping_rem)
             #[inline] fn wrapping_rem(self, rhs: Self) -> Self              { self.wrapping_rem(rhs) }
 
             /// Calculates the remainder when self is divided by rhs, and returns
             /// a tuple of the remainder after dividing along with a boolean
             /// indicating whether an arithmetic overflow would occur.
-            /// [Read more in detail](trait@Uint#tymethod.overflowing_rem)
+            /// [Read more in detail](trait@SmallUInt#tymethod.overflowing_rem)
             #[inline] fn overflowing_rem(self, rhs: Self) -> (Self, bool)   { self.overflowing_rem(rhs) }
 
             /// Computes self % rhs, returning None if rhs == 0.
-            /// [Read more in detail](trait@Uint#tymethod.checked_rem)
+            /// [Read more in detail](trait@SmallUInt#tymethod.checked_rem)
             #[inline] fn checked_rem(self, rhs: Self) -> Option<Self>       { self.checked_rem(rhs) }
 
 
             /// Computes self.pow(exp), wrapping around at the boundary of the type.
-            /// [Read more in detail](trait@Uint#tymethod.wrapping_pow)
+            /// [Read more in detail](trait@SmallUInt#tymethod.wrapping_pow)
             #[inline] fn wrapping_pow(self, exp: u32) -> Self               { self.wrapping_pow(exp) }
 
             /// Raises self to the power of exp, using exponentiation by squaring.
-            /// [Read more in detail](trait@Uint#tymethod.overflowing_pow)
+            /// [Read more in detail](trait@SmallUInt#tymethod.overflowing_pow)
             #[inline] fn overflowing_pow(self, exp: u32) -> (Self, bool)    { self.overflowing_pow(exp) }
 
             /// Computes self.pow(exp), returning None if overflow occurred.
-            /// [Read more in detail](trait@Uint#tymethod.checked_pow)
+            /// [Read more in detail](trait@SmallUInt#tymethod.checked_pow)
             #[inline] fn checked_pow(self, exp: u32) -> Option<Self>        { self.checked_pow(exp) }
 
             /// Computes self.pow(exp), saturating at the numeric bounds
             /// instead of overflowing.
-            /// [Read more in detail](trait@Uint#tymethod.saturating_pow)
+            /// [Read more in detail](trait@SmallUInt#tymethod.saturating_pow)
             #[inline] fn saturating_pow(self, exp: u32) -> Self             { self.saturating_pow(exp) }
 
             #[inline] fn pow(self, exp: u32) -> Self    { self.pow(exp) }
@@ -5027,24 +5027,24 @@ macro_rules! Uint_for_uint_impl {
             #[inline] fn one() -> Self              { 1 }
             #[inline] fn max() -> Self              { Self::MAX }
             #[inline] fn min() -> Self              { Self::MIN }
-            #[inline] fn u128_as_Uint(n: u128) -> Self  { n as Self }
-            #[inline] fn u64_as_Uint(n: u64) -> Self    { n as Self }
-            #[inline] fn u32_as_Uint(n: u32) -> Self    { n as Self }
-            #[inline] fn u16_as_Uint(n: u16) -> Self    { n as Self }
-            #[inline] fn u8_as_Uint(n: u8) -> Self      { n as Self }
-            #[inline] fn usize_as_Uint(n: usize) -> Self    { n as Self }
-            #[inline] fn bool_as_Uint(n: bool) -> Self    { n as Self }
+            #[inline] fn u128_as_SmallUInt(n: u128) -> Self  { n as Self }
+            #[inline] fn u64_as_SmallUInt(n: u64) -> Self    { n as Self }
+            #[inline] fn u32_as_SmallUInt(n: u32) -> Self    { n as Self }
+            #[inline] fn u16_as_SmallUInt(n: u16) -> Self    { n as Self }
+            #[inline] fn u8_as_SmallUInt(n: u8) -> Self      { n as Self }
+            #[inline] fn usize_as_SmallUInt(n: usize) -> Self    { n as Self }
+            #[inline] fn bool_as_SmallUInt(n: bool) -> Self    { n as Self }
 
             #[inline]
-            fn num<T: Uint>(n: T) -> Self
+            fn num<T: SmallUInt>(n: T) -> Self
             {
                 match size_of::<T>()
                 {
-                    1 => { return Self::u8_as_Uint(n.into_u8()); },
-                    2 => { return Self::u16_as_Uint(n.into_u16()); },
-                    4 => { return Self::u32_as_Uint(n.into_u32()); },
-                    8 => { return Self::u64_as_Uint(n.into_u64()); },
-                    _ => { return Self::u128_as_Uint(n.into_u128()); },
+                    1 => { return Self::u8_as_SmallUInt(n.into_u8()); },
+                    2 => { return Self::u16_as_SmallUInt(n.into_u16()); },
+                    4 => { return Self::u32_as_SmallUInt(n.into_u32()); },
+                    8 => { return Self::u64_as_SmallUInt(n.into_u64()); },
+                    _ => { return Self::u128_as_SmallUInt(n.into_u128()); },
                 }
             }
 
@@ -5059,12 +5059,12 @@ macro_rules! Uint_for_uint_impl {
 
 
 
-Uint_for_uint_impl! { u8 }
-Uint_for_uint_impl! { u16 }
-Uint_for_uint_impl! { u32 }
-Uint_for_uint_impl! { u64 }
-Uint_for_uint_impl! { u128 }
-Uint_for_uint_impl! { usize }
+SmallUInt_for_uint_impl! { u8 }
+SmallUInt_for_uint_impl! { u16 }
+SmallUInt_for_uint_impl! { u32 }
+SmallUInt_for_uint_impl! { u64 }
+SmallUInt_for_uint_impl! { u128 }
+SmallUInt_for_uint_impl! { usize }
 
 
 

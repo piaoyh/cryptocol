@@ -18,7 +18,7 @@ use std::mem::{ size_of, size_of_val };
 use std::cmp::{ PartialEq, PartialOrd, Ordering };
 use std::ops::*;
 
-use super::uint::*;
+use super::small_uint::*;
 
 /// This union `ShortUnion` is for converting one primitive integral type into
 /// another integeral type within 16-bit long type.
@@ -5095,76 +5095,76 @@ impl SizeUnion
 
 
 
-macro_rules! Uint_for_integer_unions_impl {
+macro_rules! SmallUInt_for_integer_unions_impl {
     ($f:ty, $g:ty) => {
-        impl Uint for $f
+        impl SmallUInt for $f
         {
             /// Calculates self + rhs + carry and returns a tuple containing
             /// the sum and the output carry.
-            /// [Read more in detail](trait@Uint#tymethod.carrying_add)
+            /// [Read more in detail](trait@SmallUInt#tymethod.carrying_add)
             #[inline] fn carrying_add(self, rhs: Self, carry: bool) -> (Self, bool)   { self.carrying_add(rhs, carry) }
 
             /// Computes self + rhs, wrapping around at the boundary of the type.
-            /// [Read more in detail](trait@Uint#tymethod.wrapping_add)
+            /// [Read more in detail](trait@SmallUInt#tymethod.wrapping_add)
             #[inline] fn wrapping_add(self, rhs: Self) -> Self  { self.wrapping_add(rhs) }
 
             /// Calculates self + rhs and returns a tuple of the addition along
             /// with a boolean indicating whether an arithmetic overflow would
-            /// occur. [Read more in detail](trait@Uint#tymethod.overflowing_add)
+            /// occur. [Read more in detail](trait@SmallUInt#tymethod.overflowing_add)
             #[inline] fn overflowing_add(self, rhs: Self) -> (Self, bool)   { self.overflowing_add(rhs) }
             
             /// Computes self + rhs and returns None if overflow occurred.
-            /// [Read more in detail](trait@Uint#tymethod.checked_add)
+            /// [Read more in detail](trait@SmallUInt#tymethod.checked_add)
             #[inline] fn checked_add(self, rhs: Self) -> Option<Self>   { self.checked_add(rhs) }
             
             /// Computes self + rhs, assuming overflow cannot occur.
-            /// [Read more in detail](trait@Uint#tymethod.unchecked_add)
+            /// [Read more in detail](trait@SmallUInt#tymethod.unchecked_add)
             #[inline] fn unchecked_add(self, rhs: Self) -> Self     { self.checked_add(rhs).unwrap() }
             
             /// Computes self + rhs, saturating at the numeric bounds
             /// instead of overflowing.
-            /// [Read more in detail](trait@Uint#tymethod.saturating_add)
+            /// [Read more in detail](trait@SmallUInt#tymethod.saturating_add)
             #[inline] fn saturating_add(self, rhs: Self) -> Self    { self.saturating_add(rhs) }
 
 
             /// Calculates self − rhs − borrow,
             /// wrapping around at the boundary of the type.
-            /// [Read more in detail](trait@Uint#tymethod.borrowing_sub)
+            /// [Read more in detail](trait@SmallUInt#tymethod.borrowing_sub)
             #[inline] fn borrowing_sub(self, rhs: Self, borrow: bool) -> (Self, bool)   { self.borrowing_sub(rhs, borrow) }
 
             /// Computes self - rhs, wrapping around at the boundary of the type.
-            /// [Read more in detail](trait@Uint#tymethod.wrapping_sub)
+            /// [Read more in detail](trait@SmallUInt#tymethod.wrapping_sub)
             #[inline] fn wrapping_sub(self, rhs: Self) -> Self  { self.wrapping_sub(rhs) }
 
             /// Calculates self - rhs and returns a tuple of the subtraction
             /// along with a boolean indicating whether an arithmetic overflow
-            /// would occur. [Read more in detail](trait@Uint#tymethod.overflowing_sub)
+            /// would occur. [Read more in detail](trait@SmallUInt#tymethod.overflowing_sub)
             #[inline] fn overflowing_sub(self, rhs: Self) -> (Self, bool)   { self.overflowing_sub(rhs) }
 
             /// Computes self - rhs, returning None if overflow occurred.
-            /// [Read more in detail](trait@Uint#tymethod.checked_sub)
+            /// [Read more in detail](trait@SmallUInt#tymethod.checked_sub)
             #[inline] fn checked_sub(self, rhs: Self) -> Option<Self>   { self.checked_sub(rhs) }
 
             /// Computes self - rhs, assuming overflow cannot occur.
-            /// [Read more in detail](trait@Uint#tymethod.unchecked_sub)
+            /// [Read more in detail](trait@SmallUInt#tymethod.unchecked_sub)
             #[inline] fn unchecked_sub(self, rhs: Self) -> Self     { self.checked_sub(rhs).unwrap() }
 
             /// Computes self - rhs, saturating at the numeric bounds
             /// instead of overflowing.
-            /// [Read more in detail](trait@Uint#tymethod.saturating_sub)
+            /// [Read more in detail](trait@SmallUInt#tymethod.saturating_sub)
             #[inline] fn saturating_sub(self, rhs: Self) -> Self    { self.saturating_sub(rhs) }
 
             /// Computes the absolute difference between `self` and `other`.
-            /// [Read more in detail](trait@Uint#tymethod.abs_diff)
+            /// [Read more in detail](trait@SmallUInt#tymethod.abs_diff)
             #[inline] fn abs_diff(self, other: Self) -> Self    { self.abs_diff(other) }
 
             /// Calculates the “full multiplication” `self` * `rhs` + `carry` without
             /// the possibility to overflow.
-            /// [Read more in detail](trait@Uint#tymethod.carrying_mul)
+            /// [Read more in detail](trait@SmallUInt#tymethod.carrying_mul)
             #[inline] fn carrying_mul(self, rhs: Self, carry: Self) -> (Self, Self) { self.carrying_mul_for_internal_use(rhs, carry) }
 
             // fn carrying_mul_for_internal_use(self, rhs: Self, carry: Self) -> (Self, Self);
-            /// It is for internal use. You are recommended to use [carrying_mul()](trait@Uint#tymethod.carrying_mul) instead.
+            /// It is for internal use. You are recommended to use [carrying_mul()](trait@SmallUInt#tymethod.carrying_mul) instead.
             fn carrying_mul_for_internal_use(self, rhs: Self, carry: Self) -> (Self, Self)
             {
                 let (low, high) = self.get().carrying_mul_for_internal_use(rhs.get(), carry.get());
@@ -5172,11 +5172,11 @@ macro_rules! Uint_for_integer_unions_impl {
             }
 
             /// Calculates the complete product `self` * `rhs` without the possibility
-            /// to overflow. [Read more in detail](trait@Uint#tymethod.widening_mul)
+            /// to overflow. [Read more in detail](trait@SmallUInt#tymethod.widening_mul)
             #[inline] fn widening_mul(self, rhs: Self) -> (Self, Self)  { self.widening_mul_for_internal_use(rhs) }
 
             // fn carrying_mul_for_internal_use(self, rhs: Self, carry: Self) -> (Self, Self);
-            /// It is for internal use. You are recommended to use [carrying_mul()](trait@Uint#tymethod.widening_mul) instead.
+            /// It is for internal use. You are recommended to use [carrying_mul()](trait@SmallUInt#tymethod.widening_mul) instead.
             fn widening_mul_for_internal_use(self, rhs: Self) -> (Self, Self)
             {
                 let (low, high) = self.get().widening_mul_for_internal_use(rhs.get());
@@ -5184,84 +5184,84 @@ macro_rules! Uint_for_integer_unions_impl {
             }
 
             /// Computes self * rhs, wrapping around at the boundary of the type.
-            /// [Read more in detail](trait@Uint#tymethod.wrapping_mul)
+            /// [Read more in detail](trait@SmallUInt#tymethod.wrapping_mul)
             #[inline] fn wrapping_mul(self, rhs: Self) -> Self  { self.wrapping_mul(rhs) }
 
             /// Calculates the multiplication of self and rhs and returns a tuple
             /// of the multiplication along with a boolean indicating whether an
             /// arithmetic overflow would occur.
-            /// [Read more in detail](trait@Uint#tymethod.overflowing_mul)
+            /// [Read more in detail](trait@SmallUInt#tymethod.overflowing_mul)
             #[inline] fn overflowing_mul(self, rhs: Self) -> (Self, bool)   { self.overflowing_mul(rhs) }
 
             /// Computes self * rhs, returning None if overflow occurred.
-            /// [Read more in detail](trait@Uint#tymethod.checked_mul)
+            /// [Read more in detail](trait@SmallUInt#tymethod.checked_mul)
             #[inline] fn checked_mul(self, rhs: Self) -> Option<Self>   { self.checked_mul(rhs) }
 
             /// Computes self * rhs, assuming overflow cannot occur.
-            /// [Read more in detail](trait@Uint#tymethod.unchecked_mul)
+            /// [Read more in detail](trait@SmallUInt#tymethod.unchecked_mul)
             #[inline] fn unchecked_mul(self, rhs: Self) -> Self     { self.checked_mul(rhs).unwrap() }
 
             /// Computes self * rhs, saturating at the numeric bounds
             /// instead of overflowing.
-            /// [Read more in detail](trait@Uint#tymethod.saturating_mul)
+            /// [Read more in detail](trait@SmallUInt#tymethod.saturating_mul)
             #[inline] fn saturating_mul(self, rhs: Self) -> Self    { self.saturating_mul(rhs) }
 
 
             /// Computes self / rhs. Wrapped division on unsigned types is just
-            /// normal division. [Read more in detail](trait@Uint#tymethod.wrapping_div)
+            /// normal division. [Read more in detail](trait@SmallUInt#tymethod.wrapping_div)
             #[inline] fn wrapping_div(self, rhs: Self) -> Self  { self.wrapping_div(rhs) }
 
             /// Calculates the divisor when self is divided by rhs and returns
             /// a tuple of the divisor along with a boolean indicating whether
             /// an arithmetic overflow would occur.
-            /// [Read more in detail](trait@Uint#tymethod.overflowing_div)
+            /// [Read more in detail](trait@SmallUInt#tymethod.overflowing_div)
             #[inline] fn overflowing_div(self, rhs: Self) -> (Self, bool)   { self.overflowing_div(rhs) }
 
             /// Computes self / rhs, returning None if rhs == 0.
-            /// [Read more in detail](trait@Uint#tymethod.checked_div)
+            /// [Read more in detail](trait@SmallUInt#tymethod.checked_div)
             #[inline] fn checked_div(self, rhs: Self) -> Option<Self>   { self.checked_div(rhs) }
 
             /// Computes self / rhs, saturating at the numeric bounds
             /// instead of overflowing.
-            /// [Read more in detail](trait@Uint#tymethod.saturating_div)
+            /// [Read more in detail](trait@SmallUInt#tymethod.saturating_div)
             #[inline] fn saturating_div(self, rhs: Self) -> Self    { self.saturating_div(rhs) }
 
 
             /// Computes self % rhs. Wrapped remainder calculation on unsigned
             /// types is just the regular remainder calculation.
-            /// [Read more in detail](trait@Uint#tymethod.wrapping_rem)
+            /// [Read more in detail](trait@SmallUInt#tymethod.wrapping_rem)
             #[inline] fn wrapping_rem(self, rhs: Self) -> Self  { self.wrapping_rem(rhs) }
 
             /// Calculates the remainder when self is divided by rhs, and returns
             /// a tuple of the remainder after dividing along with a boolean
             /// indicating whether an arithmetic overflow would occur.
-            /// [Read more in detail](trait@Uint#tymethod.overflowing_rem)
+            /// [Read more in detail](trait@SmallUInt#tymethod.overflowing_rem)
             #[inline] fn overflowing_rem(self, rhs: Self) -> (Self, bool)   { self.overflowing_rem(rhs) }
 
             /// Computes self % rhs, returning None if rhs == 0.
-            /// [Read more in detail](trait@Uint#tymethod.checked_rem)
+            /// [Read more in detail](trait@SmallUInt#tymethod.checked_rem)
             #[inline] fn checked_rem(self, rhs: Self) -> Option<Self>   { self.checked_rem(rhs) }
 
 
             /// Raises `self` to the power of `exp`, using exponentiation by squaring.
-            /// [Read more in detail](trait@Uint#tymethod.pow)
+            /// [Read more in detail](trait@SmallUInt#tymethod.pow)
             #[inline] fn pow(self, exp: u32) -> Self    { self.pow(exp) }
 
             /// Computes self.pow(exp), wrapping around at the boundary of the type.
-            /// [Read more in detail](trait@Uint#tymethod.wrapping_pow)
+            /// [Read more in detail](trait@SmallUInt#tymethod.wrapping_pow)
             #[inline] fn wrapping_pow(self, exp: u32) -> Self   { self.wrapping_pow(exp) }
 
             /// Raises self to the power of exp, using exponentiation by squaring.
-            /// [Read more in detail](trait@Uint#tymethod.overflowing_pow)
+            /// [Read more in detail](trait@SmallUInt#tymethod.overflowing_pow)
             #[inline] fn overflowing_pow(self, exp: u32) -> (Self, bool)    { self.overflowing_pow(exp) }
 
             /// Computes self.pow(exp), returning None if overflow occurred.
-            /// [Read more in detail](trait@Uint#tymethod.checked_pow)
+            /// [Read more in detail](trait@SmallUInt#tymethod.checked_pow)
             #[inline] fn checked_pow(self, exp: u32) -> Option<Self>    { self.checked_pow(exp) }
 
             /// Computes self.pow(exp), saturating at the numeric bounds
             /// instead of overflowing.
-            /// [Read more in detail](trait@Uint#tymethod.saturating_pow)
+            /// [Read more in detail](trait@SmallUInt#tymethod.saturating_pow)
             #[inline] fn saturating_pow(self, exp: u32) -> Self     { self.saturating_pow(exp) }
 
 
@@ -5304,24 +5304,24 @@ macro_rules! Uint_for_integer_unions_impl {
             #[inline] fn one() -> Self              { Self::new_with(1) }
             #[inline] fn max() -> Self              { Self::new_with(<$g>::MAX) }
             #[inline] fn min() -> Self              { Self::new_with(<$g>::MIN) }
-            #[inline] fn u128_as_Uint(n: u128) -> Self  { Self::new_with(n as $g) }
-            #[inline] fn u64_as_Uint(n: u64) -> Self    { Self::new_with(n as $g) }
-            #[inline] fn u32_as_Uint(n: u32) -> Self    { Self::new_with(n as $g) }
-            #[inline] fn u16_as_Uint(n: u16) -> Self    { Self::new_with(n as $g) }
-            #[inline] fn u8_as_Uint(n: u8) -> Self      { Self::new_with(n as $g) }
-            #[inline] fn usize_as_Uint(n: usize) -> Self    { Self::new_with(n as $g) }
-            #[inline] fn bool_as_Uint(n: bool) -> Self  { Self::new_with(n as $g) }
+            #[inline] fn u128_as_SmallUInt(n: u128) -> Self  { Self::new_with(n as $g) }
+            #[inline] fn u64_as_SmallUInt(n: u64) -> Self    { Self::new_with(n as $g) }
+            #[inline] fn u32_as_SmallUInt(n: u32) -> Self    { Self::new_with(n as $g) }
+            #[inline] fn u16_as_SmallUInt(n: u16) -> Self    { Self::new_with(n as $g) }
+            #[inline] fn u8_as_SmallUInt(n: u8) -> Self      { Self::new_with(n as $g) }
+            #[inline] fn usize_as_SmallUInt(n: usize) -> Self    { Self::new_with(n as $g) }
+            #[inline] fn bool_as_SmallUInt(n: bool) -> Self  { Self::new_with(n as $g) }
 
             #[inline]
-            fn num<T: Uint>(n: T) -> Self
+            fn num<T: SmallUInt>(n: T) -> Self
             {
                 match size_of::<T>()
                 {
-                    1 => { return Self::u8_as_Uint(n.into_u8()); },
-                    2 => { return Self::u16_as_Uint(n.into_u16()); },
-                    4 => { return Self::u32_as_Uint(n.into_u32()); },
-                    8 => { return Self::u64_as_Uint(n.into_u64()); },
-                    _ => { return Self::u128_as_Uint(n.into_u128()); },
+                    1 => { return Self::u8_as_SmallUInt(n.into_u8()); },
+                    2 => { return Self::u16_as_SmallUInt(n.into_u16()); },
+                    4 => { return Self::u32_as_SmallUInt(n.into_u32()); },
+                    8 => { return Self::u64_as_SmallUInt(n.into_u64()); },
+                    _ => { return Self::u128_as_SmallUInt(n.into_u128()); },
                 }
             }
 
@@ -5615,11 +5615,11 @@ macro_rules! display_for_integer_unions_impl {
 
 
 
-Uint_for_integer_unions_impl! { ShortUnion, u16 }
-Uint_for_integer_unions_impl! { IntUnion, u32 }
-Uint_for_integer_unions_impl! { LongUnion, u64 }
-Uint_for_integer_unions_impl! { LongerUnion, u128 }
-Uint_for_integer_unions_impl! { SizeUnion, usize }
+SmallUInt_for_integer_unions_impl! { ShortUnion, u16 }
+SmallUInt_for_integer_unions_impl! { IntUnion, u32 }
+SmallUInt_for_integer_unions_impl! { LongUnion, u64 }
+SmallUInt_for_integer_unions_impl! { LongerUnion, u128 }
+SmallUInt_for_integer_unions_impl! { SizeUnion, usize }
 
 operators_for_integer_unions_impl! { ShortUnion }
 operators_for_integer_unions_impl! { IntUnion }
@@ -6260,7 +6260,7 @@ impl Debug for SizeUnion
 
 /// union array for transforming from one type into anther type
 pub union Share<D, S>
-where D: Uint + Copy + Clone + Display + Debug + ToString
+where D: SmallUInt + Copy + Clone + Display + Debug + ToString
         + Add<Output=D> + AddAssign + Sub<Output=D> + SubAssign
         + Mul<Output=D> + MulAssign + Div<Output=D> + DivAssign
         + Rem<Output=D> + RemAssign
@@ -6268,7 +6268,7 @@ where D: Uint + Copy + Clone + Display + Debug + ToString
         + BitAnd<Output=D> + BitAndAssign + BitOr<Output=D> + BitOrAssign
         + BitXor<Output=D> + BitXorAssign + Not<Output=D>
         + PartialEq + PartialOrd,
-      S: Uint + Copy + Clone + Display + Debug + ToString
+      S: SmallUInt + Copy + Clone + Display + Debug + ToString
         + Add<Output=S> + AddAssign + Sub<Output=S> + SubAssign
         + Mul<Output=S> + MulAssign + Div<Output=S> + DivAssign
         + Rem<Output=S> + RemAssign
@@ -6282,7 +6282,7 @@ where D: Uint + Copy + Clone + Display + Debug + ToString
 }
 
 impl<D, S> Share<D, S>
-where D: Uint + Copy + Clone + Display + Debug + ToString
+where D: SmallUInt + Copy + Clone + Display + Debug + ToString
         + Add<Output=D> + AddAssign + Sub<Output=D> + SubAssign
         + Mul<Output=D> + MulAssign + Div<Output=D> + DivAssign
         + Rem<Output=D> + RemAssign
@@ -6290,7 +6290,7 @@ where D: Uint + Copy + Clone + Display + Debug + ToString
         + BitAnd<Output=D> + BitAndAssign + BitOr<Output=D> + BitOrAssign
         + BitXor<Output=D> + BitXorAssign + Not<Output=D>
         + PartialEq + PartialOrd,
-      S: Uint + Copy + Clone + Display + Debug + ToString
+      S: SmallUInt + Copy + Clone + Display + Debug + ToString
         + Add<Output=S> + AddAssign + Sub<Output=S> + SubAssign
         + Mul<Output=S> + MulAssign + Div<Output=S> + DivAssign
         + Rem<Output=S> + RemAssign
@@ -6344,7 +6344,7 @@ where D: Uint + Copy + Clone + Display + Debug + ToString
 
 /// union array for transforming from one type into anther type
 pub union Common<D, const N: usize, S, const M: usize>
-where D: Uint + Add<Output=D> + AddAssign + Sub<Output=D> + SubAssign
+where D: SmallUInt + Add<Output=D> + AddAssign + Sub<Output=D> + SubAssign
         + Mul<Output=D> + MulAssign + Div<Output=D> + DivAssign
         + Rem<Output=D> + RemAssign
         + Shl<Output=D> + ShlAssign + Shr<Output=D> + ShrAssign
@@ -6352,7 +6352,7 @@ where D: Uint + Add<Output=D> + AddAssign + Sub<Output=D> + SubAssign
         + BitXor<Output=D> + BitXorAssign + Not<Output=D>
         + PartialEq + PartialOrd
         + Display + ToString,
-      S: Uint + Add<Output=S> + AddAssign + Sub<Output=S> + SubAssign
+      S: SmallUInt + Add<Output=S> + AddAssign + Sub<Output=S> + SubAssign
         + Mul<Output=S> + MulAssign + Div<Output=S> + DivAssign
         + Shl<Output=S> + ShlAssign + Shr<Output=S> + ShrAssign
         + Rem<Output=S> + RemAssign
@@ -6366,7 +6366,7 @@ where D: Uint + Add<Output=D> + AddAssign + Sub<Output=D> + SubAssign
 }
 
 impl<D, const N: usize, S, const M: usize> Common<D, N, S, M>
-where D: Uint + Add<Output=D> + AddAssign + Sub<Output=D> + SubAssign
+where D: SmallUInt + Add<Output=D> + AddAssign + Sub<Output=D> + SubAssign
         + Mul<Output=D> + MulAssign + Div<Output=D> + DivAssign
         + Rem<Output=D> + RemAssign
         + Shl<Output=D> + ShlAssign + Shr<Output=D> + ShrAssign
@@ -6374,7 +6374,7 @@ where D: Uint + Add<Output=D> + AddAssign + Sub<Output=D> + SubAssign
         + BitXor<Output=D> + BitXorAssign + Not<Output=D>
         + PartialEq + PartialOrd
         + Display + ToString,
-      S: Uint + Add<Output=S> + AddAssign + Sub<Output=S> + SubAssign
+      S: SmallUInt + Add<Output=S> + AddAssign + Sub<Output=S> + SubAssign
         + Mul<Output=S> + MulAssign + Div<Output=S> + DivAssign
         + Rem<Output=S> + RemAssign
         + Shl<Output=S> + ShlAssign + Shr<Output=S> + ShrAssign
