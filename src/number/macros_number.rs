@@ -85,7 +85,7 @@
 /// }
 /// 
 /// fn calcAdd<T, const N: usize>(a: &BigUInt<T, N>)
-/// where T: Uint + Display + Debug + ToString
+/// where T: SmallUInt + Display + Debug + ToString
 ///         + Add<Output=T> + AddAssign + Sub<Output=T> + SubAssign
 ///         + Mul<Output=T> + MulAssign + Div<Output=T> + DivAssign
 ///         + Shl<Output=T> + ShlAssign + Shr<Output=T> + ShrAssign
@@ -104,7 +104,7 @@
 /// }
 ///
 /// fn calcMul<T, const N: usize>(a: &BigUInt<T, N>)
-/// where T: Uint + Display + Debug + ToString
+/// where T: SmallUInt + Display + Debug + ToString
 ///         + Add<Output=T> + AddAssign + Sub<Output=T> + SubAssign
 ///         + Mul<Output=T> + MulAssign + Div<Output=T> + DivAssign
 ///         + Shl<Output=T> + ShlAssign + Shr<Output=T> + ShrAssign

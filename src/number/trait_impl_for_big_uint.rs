@@ -1215,8 +1215,8 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
 
 
 
-impl<'a, T, const N: usize> BitXorAssign for BigUInt<T, N>
-where T: SmallUInt + Copy + Clone + Display + Debug + ToString + 'a
+impl<T, const N: usize> BitXorAssign for BigUInt<T, N>
+where T: SmallUInt + Copy + Clone + Display + Debug + ToString 
         + Add<Output=T> + AddAssign + Sub<Output=T> + SubAssign
         + Mul<Output=T> + MulAssign + Div<Output=T> + DivAssign
         + Rem<Output=T> + RemAssign
@@ -1309,6 +1309,25 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
 
 
 
+impl<T, const N: usize> PartialEq<T> for BigUInt<T, N>
+where T: SmallUInt + Copy + Clone + Display + Debug + ToString
+        + Add<Output=T> + AddAssign + Sub<Output=T> + SubAssign
+        + Mul<Output=T> + MulAssign + Div<Output=T> + DivAssign
+        + Rem<Output=T> + RemAssign
+        + Shl<Output=T> + ShlAssign + Shr<Output=T> + ShrAssign
+        + BitAnd<Output=T> + BitAndAssign + BitOr<Output=T> + BitOrAssign
+        + BitXor<Output=T> + BitXorAssign + Not<Output=T>
+        + PartialEq + PartialOrd
+{
+    #[inline]
+    fn eq(&self, other: &T) -> bool
+    {
+        self.eq_uint(*other)
+    }
+}
+
+
+
 impl<T, const N: usize> PartialEq for BigUInt<T, N>
 where T: SmallUInt + Copy + Clone + Display + Debug + ToString
         + Add<Output=T> + AddAssign + Sub<Output=T> + SubAssign
@@ -1328,6 +1347,25 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
 
 
 
+impl<T, const N: usize> PartialOrd<T> for BigUInt<T, N>
+where T: SmallUInt + Copy + Clone + Display + Debug + ToString
+        + Add<Output=T> + AddAssign + Sub<Output=T> + SubAssign
+        + Mul<Output=T> + MulAssign + Div<Output=T> + DivAssign
+        + Rem<Output=T> + RemAssign
+        + Shl<Output=T> + ShlAssign + Shr<Output=T> + ShrAssign
+        + BitAnd<Output=T> + BitAndAssign + BitOr<Output=T> + BitOrAssign
+        + BitXor<Output=T> + BitXorAssign + Not<Output=T>
+        + PartialEq + PartialOrd
+{
+    #[inline]
+    fn partial_cmp(&self, other: &T) -> Option<Ordering>
+    {
+        self.partial_cmp_uint(*other)
+    }
+}
+
+
+
 impl<T, const N: usize> PartialOrd for BigUInt<T, N>
 where T: SmallUInt + Copy + Clone + Display + Debug + ToString
         + Add<Output=T> + AddAssign + Sub<Output=T> + SubAssign
@@ -1338,14 +1376,6 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
         + BitXor<Output=T> + BitXorAssign + Not<Output=T>
         + PartialEq + PartialOrd
 {
-    #[cfg(target_endian = "little")]
-    #[inline]
-    fn partial_cmp(&self, other: &Self) -> Option<Ordering>
-    {
-        self.partial_cmp(other)
-    }
-
-    #[cfg(target_endian = "big")]
     #[inline]
     fn partial_cmp(&self, other: &Self) -> Option<Ordering>
     {
@@ -1486,7 +1516,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     #[inline]
     fn from_str(s: &str) -> Result<Self, Self::Err>
     {
-        Self::from_str_radix(s, 10)
+        Self::from_string(s)
     }
 }
 

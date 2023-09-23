@@ -40,8 +40,8 @@
 //! [`LongUnion`](number/int_unions/union.LongUnion.html#union.LongUnion),
 //! [`LongerUnion`](number/int_unions/union.LongerUnion.html#union.LongerUnion), and
 //! [`SizeUnion`](number/int_unions/union.SizeUnion.html#union.SizeUnion)
-//! - [ ] Trait Uint and its implementation for primitive data types and Unions ---
-//! [Uint](number/uint/trait.Uint.html#trait.Uint)
+//! - [ ] Trait SmallUInt and its implementation for primitive data types and Unions ---
+//! [SmallUInt](number/uint/trait.SmallUInt.html#trait.SmallUInt)
 //! - [ ] Trait Sint and its implementation for primitive data types and Unions
 //! 
 //! ## Big Numbers

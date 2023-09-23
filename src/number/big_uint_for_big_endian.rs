@@ -587,14 +587,14 @@ pub trait _From<T>: Sized
 
 #[cfg(target_endian = "big")]
 impl<T, const N: usize, S> _From<S> for BigUInt<T, N>
-where T: Uint + Clone + Display + Debug + ToString
+where T: SmallUInt + Clone + Display + Debug + ToString
         + Add<Output=T> + AddAssign + Sub<Output=T> + SubAssign
         + Mul<Output=T> + MulAssign + Div<Output=T> + DivAssign
         + Shl<Output=T> + ShlAssign + Shr<Output=T> + ShrAssign
         + BitAnd<Output=T> + BitAndAssign + BitOr<Output=T> + BitOrAssign
         + BitXor<Output=T> + BitXorAssign + Not<Output=T>
         + PartialEq + PartialOrd,
-    S: Uint + Clone + Display + Debug + ToString
+    S: SmallUInt + Clone + Display + Debug + ToString
         + Add<Output=S> + AddAssign + Sub<Output=S> + SubAssign
         + Mul<Output=S> + MulAssign + Div<Output=S> + DivAssign
         + Shl<Output=S> + ShlAssign + Shr<Output=S> + ShrAssign
@@ -664,7 +664,7 @@ pub trait _ShlAssign<Rhs = Self>
 
 #[cfg(target_endian = "big")]
 impl<T, const N: usize> _ShLAssign<i32> for BigUInt<T, N>
-where T: Uint + Clone + Display + Debug + ToString
+where T: SmallUInt + Clone + Display + Debug + ToString
         + Add<Output=T> + AddAssign + Sub<Output=T> + SubAssign
         + Mul<Output=T> + MulAssign + Div<Output=T> + DivAssign
         + Shl<Output=T> + ShlAssign + Shr<Output=T> + ShrAssign
@@ -758,7 +758,7 @@ pub trait _ShrAssign<Rhs = Self>
 
 #[cfg(target_endian = "big")]
 impl<T, const N: usize> _ShrAssign<i32> for BigUInt<T, N>
-where T: Uint + Clone + Display + Debug + ToString
+where T: SmallUInt + Clone + Display + Debug + ToString
         + Add<Output=T> + AddAssign + Sub<Output=T> + SubAssign
         + Mul<Output=T> + MulAssign + Div<Output=T> + DivAssign
         + Shl<Output=T> + ShlAssign + Shr<Output=T> + ShrAssign

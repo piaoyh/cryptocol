@@ -238,7 +238,6 @@ use super::NumberErr;
 /// 
 /// ## Example 1
 /// ```
-/// use std::str::FromStr;
 /// use Cryptocol::number::*;
 /// type u1024 = BigUInt::<u128, 8>;
 /// ```
@@ -248,7 +247,6 @@ use super::NumberErr;
 /// 
 /// ## Example 2
 /// ```
-/// use std::str::FromStr;
 /// use Cryptocol::number::*;
 /// type u1024 = BigUInt::<u64, 16>;
 /// ```
@@ -358,15 +356,14 @@ use super::NumberErr;
 /// Example 3.
 /// 
 /// ## Predefined Datatypes for Convenience
-/// Plus, you can use predefiend datatypes such as `u125`, `u512`, `u1024`, etc.
-/// All you have to do is to use (import) `Cryptocol::define_utypes_with`,
-/// and use a `define_utypes_with!()` macro. The macro `define_utypes_with!()`
-/// requires base unsigned integer type such as `u128`, `u64`, `u32`, `u16`,
-/// and `u8`. It is better not to use `usize` as base type because `usize` and
-/// `isize` have different size according to CPU and operating system.
+/// You can use predefiend datatypes such as `u256`, `u512`, `u1024`, etc.,
+/// or `U32`, `U64`, `U128`, etc. All you have to do is to use (import)
+/// `Cryptocol::define_utypes_with`, and use a `define_utypes_with!()` macro.
+/// The macro `define_utypes_with!()` requires base unsigned integer type such
+/// as `u128`, `u64`, `u32`, `u16`, and `u8`. `usize` is not supported as base
+/// type because `usize` and `isize` have different size according to
+/// CPU and operating system. So, Example 3 can be rewritten as Example 4.
 /// 
-/// So, Example 3 can be rewritten as Example 4.
-///  
 /// # Example 4
 /// ```
 /// use std::str::FromStr;
@@ -376,7 +373,7 @@ use super::NumberErr;
 /// 
 /// let a = u1024::from([1;8]);
 /// let b = u1024::from_str_radix("00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000001__00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000001__00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000001__00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000001__00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000001__00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000001__00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000001__00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000001", 2).unwrap();
-/// let c = u1024::from_str("1234567891234567879123456789111111111222222222333333333444444444555555555666666666777777777888888888999999999000000000").unwrap();
+/// let c = U128::from_str("1234567891234567879123456789111111111222222222333333333444444444555555555666666666777777777888888888999999999000000000").unwrap();
 /// 
 /// println!("a = {:?}", a);
 /// assert_eq!(format!("{:?}", a), "BigUInt { number: [1, 1, 1, 1, 1, 1, 1, 1], flag: 0 }");
@@ -434,17 +431,38 @@ use super::NumberErr;
 /// assert_eq!(e, 3);
 /// ```
 /// 
+/// However, if you want to use any datatypes that are not predefined
+/// such as `u136`, `u144`, `u192`, `u320`, `u384`, etc. or `U17`, `U18`,
+/// `U24`, `U40`, `U48`, etc., you can define them for yourself as Example 5.
+/// 
+/// # Example 5
+/// ```
+/// use Cryptocol::number::*;
+/// type u136 = BigUInt::<u8, 17>;
+/// type u144 = BigUInt::<u16, 9>;
+/// type u192 = BigUInt::<u32, 6>;
+/// type u320 = BigUInt::<u64, 5>;
+/// type u348 = BigUInt::<u128, 3>;
+/// type U17 = BigUInt::<u8, 17>;
+/// type U18 = BigUInt::<u16, 9>;
+/// type U24 = BigUInt::<u32, 6>;
+/// type U40 = BigUInt::<u64, 5>;
+/// type U48 = BigUInt::<u128, 3>;
+/// ```
+/// 
 /// ## Performance Test
 /// Which base type will achieve best performance? According to the result of
-/// performance test on autor's computer, `u128` as base type showed the best
-/// performannce for addition and subtraction in both release mode and
-/// debug mode all the time, while `u64` as base type showed the best
+/// performance test on autor's 64-bit computer, `u128` as base type showed
+/// the best performannce for addition and subtraction in both release mode
+/// and debug mode all the time, while `u64` as base type showed the best
 /// performannce for multiplication and division in release mode most of the
 /// time. Rarely, however, `u32` as base type showed the best performannce for
 /// multiplication and/or division in release mode. In debug mode, `u128` as
 /// base type showed the best performannce for multiplication and division
 /// most of the time. More rarely than in release mode, however, `u32` as
 /// base type showed the best performannce for multiplication and division.
+/// The result is obtained from 64-bit machine. If the test was done in 32-bit
+/// machine, the result might be different.
 /// 
 /// | Operation      | Best base type in Release mode        | Best base type in Debug mode                |
 /// |----------------|---------------------------------------|---------------------------------------------|
@@ -548,7 +566,7 @@ use super::NumberErr;
 /// `u128`-based datatype such as `BigUInt<u128, N>`. Or use predefined
 /// datatype as follows.
 /// 
-/// ## Example 5
+/// ## Example 6
 /// ```
 /// use std::str::FromStr;
 /// use Cryptocol::define_utypes_with;
@@ -559,7 +577,7 @@ use super::NumberErr;
 /// `u64`-based datatype such as `BigUInt<u64, N>`. Or use predefined
 /// datatype as follows.
 /// 
-/// ## Example 6
+/// ## Example 7
 /// ```
 /// use std::str::FromStr;
 /// use Cryptocol::define_utypes_with;
@@ -1317,8 +1335,48 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
         Self::from_array(le_bytes).swap_bytes()
     }
 
+
+    //  pub fn from_string(txt: &str) -> Result<Self, NumberErr>
+    /// Constructs a new `BigUInt<T, N>` from a string of decimal number.
+    /// 
+    /// # Output
+    /// The constructed object will be wrapped in `Ok(BigUInt<T, N>)` if it is
+    /// successfully created. Otherwise, this method returns one of
+    /// `Err(NumberErr::NotAlphaNumeric)`, and `Err(NumberErr::NotFitToRadix)`
+    /// according to its failure reason.
+    /// 
+    /// # Delimiter _
+    /// In the number expression in a string, you can separate the digits with
+    /// '_' in order to make it more readable. So, "1_0000" and "10_000" are all
+    /// the same as"10000".
+    /// 
+    /// # Errors
+    /// | priority | argument | value                                           | Caused Error                      |
+    /// |----------|----------|-------------------------------------------------|-----------------------------------|
+    /// | 1st      | `txt`    | contains any non-alphanumeric letter except '_' | `NumberErr::NotAlphaNumeric`      |
+    /// | 2nd      | `txt`    | contains any alphabet                           | `NumberErr::NotFitToRadix`        |
+    /// | 3rd      | `txt`    | expresses bigger number than maximum value      | `NumberErr::TooBigNumber`         |
+    /// 
+    /// When multiple errors were caused, only the error with higher priority is
+    /// issued. `1st` is higher than `2nd`, and so on.
+    /// 
+    /// # Example
+    /// ```
+    /// use Cryptocol::define_utypes_with;
+    /// define_utypes_with!(u64);
+    /// 
+    /// let a = u256::from_string("1234567890_1234567890_1234567890_1234567890_1234567890_1234567890_1234567890").unwrap();
+    /// println!("a = {}", a);
+    /// assert_eq!(a.to_string(), "1234567890123456789012345678901234567890123456789012345678901234567890");
+    /// ```
+    #[inline]
+    pub fn from_string(txt: &str) -> Result<Self, NumberErr>
+    {
+        Self::from_str_radix(txt, 10)
+    }
+
     //  pub fn from_str_radix(txt: &str, radix: usize) -> Result<Self, NumberErr>
-    /// Constructs a new `BigUInt<T, N>` from a string with radix.
+    /// Constructs a new `BigUInt<T, N>` from a string with `radix`.
     /// 
     /// # Output
     /// The constructed object will be wrapped in `Ok(BigUInt<T, N>)` if it is
@@ -1327,15 +1385,18 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// and `Err(NumberErr::NotFitToRadix)` according to its failure reason.
     /// 
     /// # Errors
-    /// - If the argument `txt` of this method includes any alphanumeric
-    /// letter(s), it will return `Err(NumberErr::NotAlphaNumeric)`.
+    /// - If the argument `txt` of this method includes any letters other than
+    /// alphanumeric letter(s),
+    /// it will return`Err(NumberErr::NotAlphaNumeric)`.
     /// - If the argument `radix` of this method is out of the valid range from
-    /// `2` up to `62` inclusively, it will return `Err(NumberErr::OutOfValidRadixRange)`.
-    /// - If the argument `txt` of this method includes any letter(s) out of the
-    /// valid letter range even if they are alphanumeric, it will return
+    /// `2` up to `62` inclusively,
+    /// it will return `Err(NumberErr::OutOfValidRadixRange)`.
+    /// - If the argument `txt` of this method includes any letter(s) out of
+    /// the valid letter range even if they are alphanumeric, it will return
     /// `Err(NumberErr::NotFitToRadix)`. For example, in the case of hexadecimal
     /// number system which means that the argument radix is `16`, if the
-    /// argument `txt` includes 'g', it will return `Err(NumberErr::NotFitToRadix)`.
+    /// argument `txt` includes 'g',
+    /// it will return `Err(NumberErr::NotFitToRadix)`.
     /// 
     /// # Valid Radix Range
     /// The radix can be from `2` up to `62` (= 10 + 26 + 26). Such radices that
@@ -1364,6 +1425,17 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// In the number expression in a string, you can separate the digits with
     /// '_' in order to make it more readable. So, "10000" is the same as
     /// "1_0000".
+    /// 
+    /// # Errors
+    /// | priority | argument | value                                           | Caused Error                      |
+    /// |----------|----------|-------------------------------------------------|-----------------------------------|
+    /// | 1st      | `radix`  | less than `2` or greater than `62`              | `NumberErr::OutOfValidRadixRange` |
+    /// | 2nd      | `txt`    | contains any non-alphanumeric letter except '_' | `NumberErr::NotAlphaNumeric`      |
+    /// | 3rd      | `txt`    | contains any letter or number out of `radix`    | `NumberErr::NotFitToRadix`        |
+    /// | 4th      | `txt`    | expresses bigger number than maximum value      | `NumberErr::TooBigNumber`         |
+    /// 
+    /// When multiple errors were caused, only the error with higher priority is
+    /// issued. `1st` is higher than `2nd`, and so on.
     /// 
     /// # Example
     /// ```
@@ -2438,7 +2510,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
         self.set_zero();
         self.set_num_(chunk_num, val);
     }
-/////THIS/////
+
     // pub fn get_num(&self, i: usize) -> Option<T>
     /// Returns i-th element of its array of type `T` wrapped in Some
     /// of enum Option if `i` < `N`. Otherwise, it returns `None`.
@@ -2458,19 +2530,33 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// 
     /// # Example
     /// ```
-    /// use Cryptocol::number::*;
-    /// use Cryptocol::define_utypes_with_u32;
+    /// use Cryptocol::define_utypes_with;
+    /// define_utypes_with!(u32);
     /// 
-    /// define_utypes_with_u32!();
     /// let a = u256::from([0_u32, 10, 20, 30, 40, 50, 60, 70]);
     /// let e = a.get_num(3);
-    /// match e
+    /// match a.get_num(3)
     /// {
     ///     Some(num) => {
-    ///             println!("a.get_num(3).unwrap() = {}", num);
-    ///             assert_eq!(num, 30);
-    ///         },
-    ///     None => { println!("There is no third element."); },
+    ///         println!("a.get_num(3).unwrap() = {}", num);
+    ///         assert_eq!(num, 30);
+    ///     },
+    ///     None => {
+    ///         println!("There is no third element.");
+    ///         assert_eq!(e, None);
+    ///     },
+    /// }
+    /// let f = a.get_num(8);
+    /// match f
+    /// {
+    ///     Some(num) => {
+    ///         println!("a.get_num(3).unwrap() = {}", num);
+    ///         assert_eq!(num, 30);
+    ///     },
+    ///     None => {
+    ///         println!("There is no third element.");
+    ///         assert_eq!(f, None);
+    ///     },
     /// }
     /// ```
     #[cfg(target_endian = "little")]
@@ -2501,19 +2587,33 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// 
     /// # Example
     /// ```
-    /// use Cryptocol::number::*;
-    /// use Cryptocol::define_utypes_with_u32;
+    /// use Cryptocol::define_utypes_with;
+    /// define_utypes_with!(u32);
     /// 
-    /// define_utypes_with_u32!();
     /// let a = u256::from([0_u32, 10, 20, 30, 40, 50, 60, 70]);
     /// let e = a.get_num(3);
-    /// match e
+    /// match a.get_num(3)
     /// {
     ///     Some(num) => {
-    ///             println!("a.get_num(3).unwrap() = {}", num);
-    ///             assert_eq!(num, 30);
-    ///         },
-    ///     None => { println!("There is no third element."); },
+    ///         println!("a.get_num(3).unwrap() = {}", num);
+    ///         assert_eq!(num, 30);
+    ///     },
+    ///     None => {
+    ///         println!("There is no third element.");
+    ///         assert_eq!(e, None);
+    ///     },
+    /// }
+    /// let f = a.get_num(8);
+    /// match f
+    /// {
+    ///     Some(num) => {
+    ///         println!("a.get_num(3).unwrap() = {}", num);
+    ///         assert_eq!(num, 30);
+    ///     },
+    ///     None => {
+    ///         println!("There is no third element.");
+    ///         assert_eq!(f, None);
+    ///     },
     /// }
     /// ```
     /// 
@@ -2551,10 +2651,9 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// 
     /// # Example
     /// ```
-    /// use Cryptocol::number::*;
-    /// use Cryptocol::define_utypes_with_u32;
+    /// use Cryptocol::define_utypes_with;
     /// 
-    /// define_utypes_with_u32!();
+    /// define_utypes_with!(u32);
     /// let a = u256::from([0_u32, 10, 20, 30, 40, 50, 60, 70]);
     /// let b = a.get_num_(3);
     /// println!("a.get_num_(3) = {}", b);
@@ -2562,8 +2661,8 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// // It will panic.
     /// // let c = a.get_num_(8);
     /// ```
-    #[inline]
     #[cfg(target_endian = "little")]
+    #[inline]
     pub fn get_num_(&self, i: usize) -> T
     {
         self.number[i]
@@ -2590,10 +2689,9 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// 
     /// # Example
     /// ```
-    /// use Cryptocol::number::*;
-    /// use Cryptocol::define_utypes_with_u32;
+    /// use Cryptocol::define_utypes_with;
     /// 
-    /// define_utypes_with_u32!();
+    /// define_utypes_with!(u32);
     /// let a = u256::from([0_u32, 10, 20, 30, 40, 50, 60, 70]);
     /// let b = a.get_num_(3);
     /// println!("a.get_num_(3) = {}", b);
@@ -2606,8 +2704,8 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// It is just experimental for Big Endian CPUs. So, you are not encouraged
     /// to use it for Big Endian CPUs for serious purpose. Only use this crate
     /// for Big-endian CPUs with your own full responsibility.
-    #[inline]
     #[cfg(target_endian = "big")]
+    #[inline]
     pub fn get_num_(&self, i: usize) -> T
     {
         self.number[N-1-i]
@@ -2633,31 +2731,22 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// 
     /// # Example
     /// ```
-    /// use Cryptocol::number::*;
-    /// use Cryptocol::define_utypes_with_u32;
+    /// use Cryptocol::define_utypes_with;
+    /// define_utypes_with!(u64);
     /// 
-    /// define_utypes_with_u32!();
-    /// let mut a = u256::from([0_u32, 10, 20, 30, 40, 50, 60, 70]);
-    /// let mut e = a.get_num(3);
-    /// match e
-    /// {
-    ///     Some(num) => {
-    ///             println!("a.get_num(3).unwrap() = {}", num);
-    ///             assert_eq!(num, 30);
-    ///         },
-    ///     None => { println!("There is no third element."); },
-    /// }
-    /// let succ = a.set_num(3, 300);
-    /// if succ
-    /// {
-    ///     let num = a.get_num_(3);
-    ///     println!("a.get_num_(3) = {}", num);
-    ///     assert_eq!(num, 300);
-    /// }
-    /// else
-    /// {
-    ///     println!("There is no third element.");
-    /// }
+    /// let mut a = u256::from([0_u64, 10, 20, 30]);
+    /// let mut num = a.get_num_(3);
+    /// println!("a.get_num(3).unwrap() = {}", num);
+    /// let b = a.set_num(3, 0);
+    /// num = a.get_num_(3);
+    /// println!("a.get_num(3).unwrap() = {}", num);
+    /// assert!(b);
+    /// assert_eq!(num, 0);
+    /// 
+    /// let c = a.set_num(4, 0);
+    /// if !b
+    ///     { println!("There is no fourth element."); }
+    /// assert!(!c);
     /// ```
     #[cfg(target_endian = "little")]
     pub fn set_num(&mut self, i: usize, val: T) -> bool
@@ -2692,31 +2781,22 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// 
     /// # Example
     /// ```
-    /// use Cryptocol::number::*;
-    /// use Cryptocol::define_utypes_with_u32;
+    /// use Cryptocol::define_utypes_with;
+    /// define_utypes_with!(u64);
     /// 
-    /// define_utypes_with_u32!();
-    /// let mut a = u256::from([0_u32, 10, 20, 30, 40, 50, 60, 70]);
-    /// let mut e = a.get_num(3);
-    /// match e
-    /// {
-    ///     Some(num) => {
-    ///             println!("a.get_num(3).unwrap() = {}", num);
-    ///             assert_eq!(num, 30);
-    ///         },
-    ///     None => { println!("There is no third element."); },
-    /// }
-    /// let succ = a.set_num(3, 300);
-    /// if succ
-    /// {
-    ///     let num = a.get_num_(3);
-    ///     println!("a.get_num_(3) = {}", num);
-    ///     assert_eq!(num, 300);
-    /// }
-    /// else
-    /// {
-    ///     println!("There is no third element.");
-    /// }
+    /// let mut a = u256::from([0_u64, 10, 20, 30]);
+    /// let mut num = a.get_num_(3);
+    /// println!("a.get_num(3).unwrap() = {}", num);
+    /// let b = a.set_num(3, 0);
+    /// num = a.get_num_(3);
+    /// println!("a.get_num(3).unwrap() = {}", num);
+    /// assert!(b);
+    /// assert_eq!(num, 0);
+    /// 
+    /// let c = a.set_num(4, 0);
+    /// if !b
+    ///     { println!("There is no fourth element."); }
+    /// assert!(!c);
     /// ```
     /// 
     /// # Big-endian issue
@@ -2759,19 +2839,18 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// 
     /// # Example
     /// ```
-    /// use Cryptocol::number::*;
-    /// use Cryptocol::define_utypes_with_u32;
+    /// use Cryptocol::define_utypes_with;
+    /// define_utypes_with!(u128);
     /// 
-    /// define_utypes_with_u32!();
-    /// let mut a = u256::from([0_u32, 10, 20, 30, 40, 50, 60, 70]);
-    /// let mut num = a.get_num_(3);
-    /// println!("a.get_num_(3) = {}", num);
-    /// assert_eq!(num, 30);
-    /// 
-    /// a.set_num_(3, 300);
-    /// num = a.get_num_(3);
-    /// println!("a.get_num_(3) = {}", num);
-    /// assert_eq!(num, 300);
+    /// let mut a = u256::from([10_u128, 20]);
+    /// let mut num = a.get_num_(1);
+    /// println!("a.get_num(1).unwrap() = {}", num);
+    /// let b = a.set_num_(1, 0);
+    /// num = a.get_num_(1);
+    /// println!("a.get_num(1).unwrap() = {}", num);
+    /// assert_eq!(num, 0);
+    /// // It will panic.
+    /// // let c = a.set_num_(4, 0);
     /// ```
     #[inline]
     #[cfg(target_endian = "little")]
@@ -2802,19 +2881,18 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// 
     /// # Example
     /// ```
-    /// use Cryptocol::number::*;
-    /// use Cryptocol::define_utypes_with_u32;
+    /// use Cryptocol::define_utypes_with;
+    /// define_utypes_with!(u128);
     /// 
-    /// define_utypes_with_u32!();
-    /// let mut a = u256::from([0_u32, 10, 20, 30, 40, 50, 60, 70]);
-    /// let mut num = a.get_num_(3);
-    /// println!("a.get_num_(3) = {}", num);
-    /// assert_eq!(num, 40);
-    /// 
-    /// a.set_num_(3, 400);
-    /// num = a.get_num_(3);
-    /// println!("a.get_num_(3) = {}", num);
-    /// assert_eq!(num, 400);
+    /// let mut a = u256::from([10_u128, 20]);
+    /// let mut num = a.get_num_(1);
+    /// println!("a.get_num(1).unwrap() = {}", num);
+    /// let b = a.set_num_(1, 0);
+    /// num = a.get_num_(1);
+    /// println!("a.get_num(1).unwrap() = {}", num);
+    /// assert_eq!(num, 0);
+    /// // It will panic.
+    /// // let c = a.set_num_(4, 0);
     /// ```
     /// 
     /// # Big-endian issue
@@ -2835,13 +2913,14 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// 
     /// # Example
     /// ```
-    /// use Cryptocol::number::*;
     /// use Cryptocol::define_utypes_with;
     /// define_utypes_with!(u32);
-    /// let a = "12345678909876543210123456789098765432101234567890987654321012345678909876543210".parse::<u256>().unwrap();
-    /// let arr = a.get_number();
-    /// println!("arr = {:?}", arr);
-    /// assert_eq!(arr, &[1524178666_u32, 777431351, 1787851831, 3605297539, 2895800654, 97228082, 1118990153, 2660148093]);
+    /// if let Ok(a) = "12345678909876543210123456789098765432101234567890987654321012345678909876543".parse::<u256>()
+    /// {
+    ///     let arr = a.get_number();
+    ///     println!("arr = {:?}", arr);
+    ///     assert_eq!(arr, &[169027903, 1302152522, 3897323189, 3259190507, 1179716839, 4196280276, 2015458651, 457926681]);
+    /// }
     /// ```
     #[inline]
     pub fn get_number(&self) -> &[T; N]
@@ -2856,13 +2935,14 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// 
     /// # Example
     /// ```
-    /// use Cryptocol::number::*;
     /// use Cryptocol::define_utypes_with;
     /// define_utypes_with!(u32);
-    /// let a = "12345678909876543210123456789098765432101234567890987654321012345678909876543210".parse::<u256>().unwrap();
-    /// let arr = a.get_number_mut();
-    /// println!("arr = {:?}", arr);
-    /// assert_eq!(arr, &[1524178666_u32, 777431351, 1787851831, 3605297539, 2895800654, 97228082, 1118990153, 2660148093]);
+    /// if let Ok(a) = "12345678909876543210123456789098765432101234567890987654321012345678909876543".parse::<u256>()
+    /// {
+    ///     let arr = a.get_number_mut();
+    ///     println!("arr = {:?}", arr);
+    ///     assert_eq!(arr, &[169027903, 1302152522, 3897323189, 3259190507, 1179716839, 4196280276, 2015458651, 457926681]);
+    /// }
     /// ```
     /// 
     /// # Big-endian issue
@@ -2884,10 +2964,10 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// 
     /// # Example
     /// ```
-    /// use Cryptocol::number::*;
     /// use Cryptocol::define_utypes_with;
     /// define_utypes_with!(u16);
     /// let mut a = u256::new();
+    /// println!("arr = {:?}", a);
     /// a.set_number(&[1_u16, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16]);
     /// println!("arr = {:?}", a);
     /// assert_eq!(a.get_number(), &[1_u16, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16]);
@@ -2918,7 +2998,6 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// # Example
     /// ```
     /// use Cryptocol::define_utypes_with;
-    /// use Cryptocol::number::BigUInt;
     /// define_utypes_with!(u16);
     /// let mut a = u256::new();
     /// a.set_number(&[0_u16, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15]);
@@ -2958,14 +3037,13 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// # Example
     /// ```
     /// use Cryptocol::define_utypes_with;
-    /// use Cryptocol::number::BigUInt;
     /// define_utypes_with!(u16);
     /// let mut a = u256::new();
     /// a.set_number(&[0_u16, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15]);
     /// println!("a = {:?}", a);
     /// a.copy_within(3..10, 6);
     /// println!("a = {:?}", a);
-    /// assert_eq!(a.get_number(), &[0, 1, 2, 6, 7, 8, 9, 10, 11, 12, 10, 11, 12, 13, 14, 15]);
+    /// assert_eq!(a.get_number(), &[0, 1, 2, 3, 4, 5, 3, 4, 5, 6, 7, 8, 9, 13, 14, 15]);
     /// ```
     /// 
     /// # Big-endian issue
@@ -3002,9 +3080,9 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// 
     /// # Example
     /// ```
-    /// use Cryptocol::number::BigUInt;
     /// use Cryptocol::define_utypes_with;
     /// define_utypes_with!(u16);
+    /// 
     /// let mut a = u256::new();
     /// a.set_number(&[1_u16, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16]);
     /// println!("a = {}", a);
@@ -3027,15 +3105,21 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// 
     /// # Example
     /// ```
-    /// use Cryptocol::number::BigUInt;
     /// use Cryptocol::define_utypes_with;
     /// define_utypes_with!(u128);
-    /// let a = u1024::zero();
+    /// let mut a = u1024::zero();
     /// if a.is_zero()
     ///     { println!("a is Zero"); }
     /// else
     ///     { println!("a is Not Zero"); }
     /// assert!(a.is_zero());
+    /// 
+    /// a.set_one();
+    /// if a.is_zero()
+    ///     { println!("a is Zero"); }
+    /// else
+    ///     { println!("a is Not Zero"); }
+    /// assert!(!a.is_zero());
     /// ```
     pub fn is_zero(&self) -> bool
     {
@@ -3052,9 +3136,9 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// 
     /// # Example
     /// ```
-    /// use Cryptocol::number::BigUInt;
     /// use Cryptocol::define_utypes_with;
     /// define_utypes_with!(u16);
+    /// 
     /// let mut a = u256::new();
     /// a.set_number(&[1_u16, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16]);
     /// println!("a = {}", a);
@@ -3075,9 +3159,9 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// 
     /// # Example
     /// ```
-    /// use Cryptocol::number::BigUInt;
     /// use Cryptocol::define_utypes_with;
     /// define_utypes_with!(u16);
+    /// 
     /// let mut a = u256::new();
     /// a.set_number(&[1_u16, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16]);
     /// println!("a = {}", a);
@@ -3107,15 +3191,22 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// 
     /// # Example
     /// ```
-    /// use Cryptocol::number::BigUInt;
     /// use Cryptocol::define_utypes_with;
     /// define_utypes_with!(u128);
-    /// let a = u1024::one();
+    /// 
+    /// let mut a = u256::one();
     /// if a.is_one()
     ///     { println!("a is One"); }
     /// else
     ///     { println!("a is Not One"); }
     /// assert!(a.is_one());
+    /// 
+    /// a.set_max();
+    /// if a.is_one()
+    ///     { println!("a is One"); }
+    /// else
+    ///     { println!("a is Not One"); }
+    /// assert!(!a.is_one());
     /// ```
     pub fn is_one(&self) -> bool
     {
@@ -3139,15 +3230,32 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// 
     /// # Example
     /// ```
-    /// use Cryptocol::number::BigUInt;
     /// use Cryptocol::define_utypes_with;
-    /// define_utypes_with!(u128);
-    /// let a = u1024::one();
+    /// define_utypes_with!(u32);
+    /// 
+    /// let mut a = u256::zero();
+    /// println!("a = {}", a);
     /// if a.is_zero_or_one()
     ///     { println!("a is One or Zero."); }
     /// else
     ///     { println!("a is Neither One nor Zero."); }
     /// assert!(a.is_zero_or_one());
+    /// 
+    /// a.wrapping_add_assign_uint(1_u8);
+    /// println!("a = {}", a);
+    /// if a.is_zero_or_one()
+    ///     { println!("a is One or Zero."); }
+    /// else
+    ///     { println!("a is Neither One nor Zero."); }
+    /// assert!(a.is_zero_or_one());
+    /// 
+    /// a.wrapping_add_assign_uint(1_u8);
+    /// println!("a = {}", a);
+    /// if a.is_zero_or_one()
+    ///     { println!("a is One or Zero."); }
+    /// else
+    ///     { println!("a is Neither One nor Zero."); }
+    /// assert!(!a.is_zero_or_one());
     /// ```
     pub fn is_zero_or_one(&self) -> bool
     {
@@ -3169,10 +3277,13 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// # Examples
     /// ```
     /// use Cryptocol::define_utypes_with;
-    /// define_utypes_with!(u128);
+    /// define_utypes_with!(u64);
+    /// 
     /// let mut a = u256::new();
+    /// println!("a = {}", a);
     /// a.set_max();
     /// println!("a = {}", a);
+    /// assert_eq!(a.to_string(), "115792089237316195423570985008687907853269984665640564039457584007913129639935");
     /// ```
     pub fn set_max(&mut self)
     {
@@ -3192,14 +3303,16 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// # Examples
     /// ```
     /// use Cryptocol::define_utypes_with;
-    /// define_utypes_with!(u128);
+    /// define_utypes_with!(u16);
+    /// 
     /// let mut a = u256::new();
     /// a.set_max();
     /// println!("a = {}", a);
     /// assert_eq!(a, u256::max());
-    /// a.set_submax(128_usize);
+    /// 
+    /// a.set_submax(200_usize);
     /// println!("a = {}", a);
-    /// assert_eq!(a, u256::submax(128_usize));
+    /// assert_eq!(a.to_string_with_radix_and_stride(16, 8).unwrap(), "FF_FFFFFFFF_FFFFFFFF_FFFFFFFF_FFFFFFFF_FFFFFFFF_FFFFFFFF");
     /// ```
     pub fn set_submax(&mut self, size_in_bits: usize)
     {
@@ -3240,14 +3353,13 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// # Examples
     /// ```
     /// use Cryptocol::define_utypes_with;
-    /// define_utypes_with!(u128);
+    /// define_utypes_with!(u8);
+    /// 
     /// let mut a = u256::new();
-    /// a.set_max();
     /// println!("a = {}", a);
-    /// assert_eq!(a, u256::max());
     /// a.set_halfmax();
     /// println!("a = {}", a);
-    /// assert_eq!(a, u256::halfmax());
+    /// assert_eq!(a.to_string_with_radix_and_stride(16, 8).unwrap(), "FFFFFFFF_FFFFFFFF_FFFFFFFF_FFFFFFFF");
     /// ```
     #[inline]
     pub fn set_halfmax(&mut self)
@@ -3266,8 +3378,9 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// ```
     /// use Cryptocol::define_utypes_with;
     /// define_utypes_with!(u128);
+    /// 
     /// let a = u256::max();
-    /// println!("Is a maximun? - {}", a.is_max());
+    /// println!("Is {} a 256-bit maximun? - {}", a, a.is_max());
     /// assert_eq!(a.is_max(), true);
     /// ```
     /// 
@@ -3288,6 +3401,18 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     // pub fn set_MSB(&mut self)
     /// Sets the MSB (Most Significant Bit) of `BigUInt`-type number with `1`.
     /// 
+    /// # Examples
+    /// ```
+    /// use Cryptocol::define_utypes_with;
+    /// define_utypes_with!(u32);
+    /// 
+    /// let mut a = u256::new();
+    /// println!("a = {}", a);
+    /// a.set_MSB();
+    /// println!("a = {}", a);
+    /// assert_eq!(a.to_string_with_radix_and_stride(2, 8).unwrap(), "10000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000");
+    /// ```
+    /// 
     /// # Big-endian issue
     /// It is just experimental for Big Endian CPUs. So, you are not encouraged
     /// to use it for Big Endian CPUs for serious purpose. Only use this crate
@@ -3302,6 +3427,18 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     // pub fn set_LSB(&mut self)
     /// Sets the LSB (Least Significant Bit) of `BigUInt`-type number with `1`.
     /// 
+    /// # Examples
+    /// ```
+    /// use Cryptocol::define_utypes_with;
+    /// define_utypes_with!(u64);
+    /// 
+    /// let mut a = u256::new();
+    /// println!("a = {}", a);
+    /// a.set_LSB();
+    /// println!("a = {}", a);
+    /// assert_eq!(a.to_string_with_radix_and_stride(2, 8).unwrap(), "1");
+    /// ```
+    /// 
     /// # Big-endian issue
     /// It is just experimental for Big Endian CPUs. So, you are not encouraged
     /// to use it for Big Endian CPUs for serious purpose. Only use this crate
@@ -3313,7 +3450,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
         self.set_num_(0, lowest | lsb);
     }
 
-    // pub fn set_uintt<U>(&mut self, val: U)
+    // pub fn set_uint<U>(&mut self, val: U)
     /// Sets `BigUInt`-type number with `U`-type small value such as `u8`,
     /// `u16`, `u32`, `u64`, and `u128` type value. This mathod set_uint()
     /// is useful especially when you initialize `BigUInt`-type big
@@ -3327,11 +3464,12 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// ```
     /// use Cryptocol::define_utypes_with;
     /// define_utypes_with!(u8);
+    /// 
     /// let mut a = u1024::new();
-    /// a.set_uint(25);
-    /// let b = u1024::from(25_u8);
     /// println!("a = {}", a);
-    /// assert_eq!(a, b);
+    /// a.set_uint(340282366920938463453374607431768211455_u128);
+    /// println!("a = {}", a);
+    /// assert_eq!(a.to_string(), "340282366920938463453374607431768211455");
     /// ```
     pub fn set_uint<U>(&mut self, val: U)
     where U: SmallUInt + Copy + Clone + Display + Debug + ToString
@@ -3373,21 +3511,22 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// If `size_of::<T>() * N` < `size_of::<U>()`, some methods may panic
     /// or its behavior may undefined though it may not panic.
     /// 
-    /// # Big-endian issue
-    /// It is just experimental for Big Endian CPUs. So, you are not encouraged
-    /// to use it for Big Endian CPUs for serious purpose. Only use this crate
-    /// for Big-endian CPUs with your own full responsibility.
-    /// 
     /// # Example
     /// ```
     /// use Cryptocol::define_utypes_with;
     /// define_utypes_with!(u8);
+    /// 
     /// let mut a = u1024::new();
-    /// a.set_uint(25);
-    /// let b = u1024::from(25_u8);
     /// println!("a = {}", a);
-    /// assert_eq!(a, b);
+    /// a.set_uint(340282366920938463453374607431768211455_u128);
+    /// println!("a = {}", a);
+    /// assert_eq!(a.to_string(), "340282366920938463453374607431768211455");
     /// ```
+    /// 
+    /// # Big-endian issue
+    /// It is just experimental for Big Endian CPUs. So, you are not encouraged
+    /// to use it for Big Endian CPUs for serious purpose. Only use this crate
+    /// for Big-endian CPUs with your own full responsibility.
     #[cfg(target_endian = "big")]
     pub fn set_uint<U>(&mut self, val: U)
     where U: SmallUInt + Copy + Clone + Display + Debug + ToString
@@ -3444,12 +3583,11 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// # Example
     /// ```
     /// use Cryptocol::define_utypes_with;
-    /// define_utypes_with!(u128);
-    /// let mut a = u1024::new();
-    /// a.set_uint(25);
-    /// if a.is_uint(25u128)   { println!("They are the same."); }
-    /// else                   { println!("They are differnt."); }
-    /// assert!(a.is_uint(25_u128));
+    /// define_utypes_with!(u16);
+    /// 
+    /// let a = u1024::one() + 50_u16;
+    /// println!("Question: Is a 51?\nAnswer: {}", a.is_uint(51_u32));
+    /// assert!(a.is_uint(51_u16));
     /// ```
     #[cfg(target_endian = "little")]
     pub fn is_uint<U>(&self, val: U) -> bool
@@ -3515,13 +3653,17 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// # Example
     /// ```
     /// use Cryptocol::define_utypes_with;
-    /// define_utypes_with!(u128);
-    /// let mut a = u1024::new();
-    /// a.set_uint(25);
-    /// if a.is_uint(25u128)   { println!("They are the same."); }
-    /// else                   { println!("They are differnt."); }
-    /// assert!(a.is_uint(25_u128));
+    /// define_utypes_with!(u16);
+    /// 
+    /// let a = u1024::one() + 50_u16;
+    /// println!("Question: Is a 51?\nAnswer: {}", a.is_uint(51_u32));
+    /// assert!(a.is_uint(51_u16));
     /// ```
+    /// 
+    /// # Big-endian issue
+    /// It is just experimental for Big Endian CPUs. So, you are not encouraged
+    /// to use it for Big Endian CPUs for serious purpose. Only use this crate
+    /// for Big-endian CPUs with your own full responsibility.
     #[cfg(target_endian = "big")]
     pub fn is_uint<U>(&self, val: U) -> bool
     where U: SmallUInt + Copy + Clone + Display + Debug + ToString
@@ -3578,14 +3720,22 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// # Example
     /// ```
     /// use Cryptocol::define_utypes_with;
-    /// define_utypes_with!(u128);
-    /// let mut a = u1024::new();
-    /// a.set_uint(25);
+    /// define_utypes_with!(u32);
+    /// 
+    /// let mut a = u256::new();
+    /// a.set_uint(340282366920938463453374697431768211455_u128);
     /// if a.is_odd()
-    ///     { println!("a is odd"); }
+    ///     { println!("{} is odd", a); }
     /// else
-    ///     { println!("a is even"); }
+    ///     { println!("{} is even", a); }
     /// assert!(a.is_odd());
+    /// 
+    /// a <<= 1;
+    /// if a.is_odd()
+    ///     { println!("{} is odd", a); }
+    /// else
+    ///     { println!("{} is even", a); }
+    /// assert!(!a.is_odd());
     /// ```
     #[inline]
     pub fn is_odd(&self) -> bool
@@ -3603,12 +3753,20 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// ```
     /// use Cryptocol::define_utypes_with;
     /// define_utypes_with!(u128);
-    /// let mut a = u1024::new();
-    /// a.set_uint(24);
+    /// 
+    /// let mut a = u256::new();
+    /// a.set_uint(169743176821145534028236692093846345739_u128);
     /// if a.is_even()
-    ///     { println!("a is even"); }
+    ///     { println!("{} is even", a); }
     /// else
-    ///     { println!("a is odd"); }
+    ///     { println!("{} is odd", a); }
+    /// assert!(!a.is_even());
+    /// 
+    /// a <<= 1;
+    /// if a.is_even()
+    ///     { println!("{} is even", a); }
+    /// else
+    ///     { println!("{} is odd", a); }
     /// assert!(a.is_even());
     /// ```
     #[inline]
@@ -3629,7 +3787,13 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// 
     /// # Example
     /// ```
-    /// // Todo
+    /// use std::str::FromStr;
+    /// use Cryptocol::define_utypes_with;
+    /// define_utypes_with!(u8);
+    /// 
+    /// let a = u256::from_str("100000000000000000000000000000000000000000000000000000000000000000000000000000").unwrap();
+    /// println!("{} has {} ones in binary.", a, a.count_ones());
+    /// assert_eq!(a.count_ones(), 107);
     /// ```
     pub fn count_ones(&self) -> u32
     {
@@ -3648,7 +3812,12 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// 
     /// # Example
     /// ```
-    /// // Todo
+    /// use Cryptocol::define_utypes_with;
+    /// define_utypes_with!(u16);
+    /// 
+    /// let a = "100000000000000000000000000000000000000000000000000000000000000000000000000000".parse::<u256>().unwrap();
+    /// println!("{} has {} zeros in binary.", a, a.count_zeros());
+    /// assert_eq!(a.count_zeros(), 149);
     /// ```
     pub fn count_zeros(&self) -> u32
     {
@@ -3667,7 +3836,13 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// 
     /// # Example
     /// ```
-    /// // Todo
+    /// use std::str::FromStr;
+    /// use Cryptocol::define_utypes_with;
+    /// define_utypes_with!(u32);
+    /// 
+    /// let a = u256::from_str("100000000000000000000000000000000000000000000000000000000000000000000000000000").unwrap();
+    /// println!("{} has {} leading ones in binary.", a, a.leading_ones());
+    /// assert_eq!(a.leading_ones(), 2);
     /// ```
     pub fn leading_ones(&self) -> u32
     {
@@ -3693,7 +3868,12 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// 
     /// # Example
     /// ```
-    /// // Todo
+    /// use Cryptocol::define_utypes_with;
+    /// define_utypes_with!(u64);
+    /// 
+    /// let a = "100000000000000000000000000000000000000000000000000000000000000000000000000000".parse::<u256>().unwrap();
+    /// println!("{} has {} leading ones in binary.", a, a.leading_zeros());
+    /// assert_eq!(a.leading_zeros(), 0);
     /// ```
     pub fn leading_zeros(&self) -> u32
     {
@@ -3719,7 +3899,13 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// 
     /// # Example
     /// ```
-    /// // Todo
+    /// use Cryptocol::define_utypes_with;
+    /// use std::str::FromStr;
+    /// define_utypes_with!(u128);
+    /// 
+    /// let a = u256::from_str("111111111111111111111111111111111111111111111111111111111111111111111111111111").unwrap();
+    /// println!("{} has {} trailing ones in binary.", a, a.trailing_ones());
+    /// assert_eq!(a.trailing_ones(), 3);
     /// ```
     pub fn trailing_ones(&self) -> u32
     {
@@ -3748,7 +3934,12 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// 
     /// # Example
     /// ```
-    /// // Todo
+    /// use Cryptocol::define_utypes_with;
+    /// define_utypes_with!(u16);
+    /// 
+    /// let a = "111111111111111111111111111111111111111111111111111111111111111111111111111111".parse::<u256>().unwrap();
+    /// println!("{} has {} trailing zeros in binary.", a, a.trailing_zeros());
+    /// assert_eq!(a.trailing_zeros(), 0);
     /// ```
     pub fn trailing_zeros(&self) -> u32
     {
@@ -3780,24 +3971,28 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// 
     /// # Example
     /// ```
-    /// // Todo
+    /// use Cryptocol::define_utypes_with;
+    /// define_utypes_with!(u8);
+    /// 
+    /// let a = u256::from_str_radix("FFFFFFFF_EEEEEEEE_DDDDDDDD_CCCCCCCC_BBBBBBBB_AAAAAAAA_99999999_88888888", 16).unwrap();
+    /// println!("{} has {} leading max elements in array.", a, a.leading_max_elements());
+    /// assert_eq!(a.leading_max_elements(), 4);
     /// ```
     pub fn leading_max_elements(&self) -> u32
     {
         let mut res = 0_u32;
         let mut i = N-1;
-        while i != 0
+        loop
         {
             if self.get_num_(i) == T::max()
                 { res += 1; }
             else
                 { return res; }
+            if i == 0
+                { break; }
             i -= 1;
         }
-        if self.get_num_(0) == T::max()
-            { res + 1 }
-        else
-            { res }
+        res
     }
 
     // pub fn leading_zero_elements(&self) -> u32
@@ -3810,7 +4005,12 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// 
     /// # Example
     /// ```
-    /// // Todo
+    /// use Cryptocol::define_utypes_with;
+    /// define_utypes_with!(u32);
+    /// 
+    /// let a = u256::from_str_radix("00000000_FFFFFFFF_EEEEEEEE_DDDDDDDD_CCCCCCCC_BBBBBBBB_AAAAAAAA_99999999", 16).unwrap();
+    /// println!("{} has {} leading zero elements in array.", a, a.leading_zero_elements());
+    /// assert_eq!(a.leading_zero_elements(), 1);
     /// ```
     pub fn leading_zero_elements(&self) -> u32
     {
@@ -3842,7 +4042,12 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// 
     /// # Example
     /// ```
-    /// // Todo
+    /// use Cryptocol::define_utypes_with;
+    /// define_utypes_with!(u16);
+    /// 
+    /// let a = u256::from_str_radix("88888888_99999999_AAAAAAAA_BBBBBBBB_CCCCCCCC_DDDDDDDD_EEEEEEEE_FFFFFFFF", 16).unwrap();
+    /// println!("{} has {} leading max elements in array.", a, a.trailing_max_elements());
+    /// assert_eq!(a.trailing_max_elements(), 2);
     /// ```
     pub fn trailing_max_elements(&self) -> u32
     {
@@ -3866,7 +4071,12 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// 
     /// # Example
     /// ```
-    /// // Todo
+    /// use Cryptocol::define_utypes_with;
+    /// define_utypes_with!(u8);
+    /// 
+    /// let a = u256::from_str_radix("FFFFFFFF_EEEEEEEE_DDDDDDDD_CCCCCCCC_BBBBBBBB_AAAAAAAA_9999999_900000000", 16).unwrap();
+    /// println!("{} has {} leading zero elements in array.", a, a.trailing_zero_elements());
+    /// assert_eq!(a.trailing_zero_elements(), 4);
     /// ```
     pub fn trailing_zero_elements(&self) -> u32
     {
@@ -3885,11 +4095,15 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /***** METHODS FOR COMPARISON WITH UINT *****/
 
     // pub fn partial_cmp_uint<U>(&self, other: U) -> Option<Ordering>
-    /// Compares BigUInt with a value of type `U` and returns the
-    /// result of the comparison in the type `Option<Ordering>`. However,
-    /// you'd better use the functions `lt_uint()`, `gt_uint()`, `le_uint()`,
-    /// `ge_uint()`, and `eq_uint()`.
-    /// Then, you don't have to use `partial_cmp_uint()` directly.
+    /// Compares `self` and a value of type `U` and returns the
+    /// result of the comparison in the type `Option<Ordering>`.
+    /// However, if the datatype `U` is the same datatype `T`, it will be
+    /// more convenient for you to use the operators `<`, `>`, `<=`, `>=`,
+    /// `==`, and `!=`. Then, you don't have to use `partial_cmp_uint()`
+    /// directly. But, if the datatype `U` is not the same datatype `T`, you
+    /// can use the methods `lt_uint()`, `gt_uint()`, `le_uint()`,
+    /// `ge_uint()`, and `eq_uint()` for your convenience. Then, you don't
+    /// have to use `partial_cmp_uint()` directly too.
     /// 
     /// # Panics
     /// If `size_of::<T>() * N` < `size_of::<U>()`, This method may panic
@@ -3905,7 +4119,36 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// 
     /// # Example
     /// ```
-    /// // Todo
+    /// use std::cmp::Ordering;
+    /// use Cryptocol::define_utypes_with;
+    /// define_utypes_with!(u8);
+    /// 
+    /// let mut res = U32::from_uint(100_u8).partial_cmp_uint(90_u128).unwrap();
+    /// match res
+    /// {
+    ///     Ordering::Greater => { println!("100 > 90"); }
+    ///     Ordering::Less => { println!("100 < 90"); }
+    ///     Ordering::Equal => { println!("100 = 90"); }
+    /// }
+    /// assert_eq!(res, Ordering::Greater);
+    /// 
+    /// res = U32::from_uint(100_u8).partial_cmp_uint(110_u128).unwrap();
+    /// match res
+    /// {
+    ///     Ordering::Greater => { println!("100 > 110"); }
+    ///     Ordering::Less => { println!("100 < 110"); }
+    ///     Ordering::Equal => { println!("100 = 110"); }
+    /// }
+    /// assert_eq!(res, Ordering::Less);
+    /// 
+    /// res = U32::from_uint(100_u8).partial_cmp_uint(100_u128).unwrap();
+    /// match res
+    /// {
+    ///     Ordering::Greater => { println!("100 > 100"); }
+    ///     Ordering::Less => { println!("100 < 100"); }
+    ///     Ordering::Equal => { println!("100 = 100"); }
+    /// }
+    /// assert_eq!(res, Ordering::Equal);
     /// ```
     pub fn partial_cmp_uint<U>(&self, other: U) -> Option<Ordering>
     where U: SmallUInt + Copy + Clone + Display + Debug + ToString
@@ -3917,25 +4160,22 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
             + BitXor<Output=U> + BitXorAssign + Not<Output=U>
             + PartialEq + PartialOrd
     {
-        let t_other: T;
         if other.length_in_bytes() > T::size_in_bytes()
         {
             return self.partial_cmp(&Self::from_uint(other));
         }
-        else    // if rhs.length_in_bytes() <= T::size_in_bytes()
-        {
-            t_other = T::num::<U>(other);
-        }
 
-        if self.number[0] > t_other
+        // if rhs.length_in_bytes() <= T::size_in_bytes()
+        let t_other = T::num::<U>(other);
+        if self.get_num_(0) > t_other
         {
             return Some(Ordering::Greater);
         }
-        else if self.number[0] < t_other
+        else if self.get_num_(0) < t_other
         {
             for idx in 1..N
             {
-                if self.number[idx] != T::zero()
+                if self.get_num_(idx) != T::zero()
                     { return Some(Ordering::Greater); }
             }
             return Some(Ordering::Less);
@@ -3944,7 +4184,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
         {
             for idx in 1..N
             {
-                if self.number[idx] != T::zero()
+                if self.get_num_(idx) != T::zero()
                     { return Some(Ordering::Greater); }
             }
         }
@@ -3952,8 +4192,9 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     }
 
     // pub fn lt_uint<U>(&self, other: U) -> bool
-    /// Returns `true` if `self` is less than `other`.
-    /// Otherwise, it returns `false`.
+    /// Compares `self` and `other` to find whether `self` is less than `other`.
+    /// However, if the datatype `U` is the same datatype `T`, it will be
+    /// more convenient for you to use the operator `<`.
     /// 
     /// # Panics
     /// If `size_of::<T>() * N` < `size_of::<U>()`, This method may panic
@@ -3965,7 +4206,22 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// 
     /// # Example
     /// ```
-    /// // Todo
+    /// use Cryptocol::define_utypes_with;
+    /// define_utypes_with!(u32);
+    /// 
+    /// let mut res = U32::from_uint(100_u16).gt_uint(90_u64);
+    /// if res
+    ///     { println!("100 > 90"); }
+    /// else
+    ///     { println!("100 <= 90"); }
+    /// assert_eq!(res, true);
+    /// 
+    /// res = U32::from_uint(100_u16).gt_uint(110_u64);
+    /// if res
+    ///     { println!("100 > 110"); }
+    /// else
+    ///     { println!("100 <= 110"); }
+    /// assert_eq!(res, false);
     /// ```
     #[inline]
     pub fn lt_uint<U>(&self, other: U) -> bool
@@ -3980,8 +4236,9 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     { self.partial_cmp_uint(other).unwrap().is_lt() }
 
     // pub fn gt_uint<U>(&self, other: U) -> bool
-    /// Returns `true` if `self` is greater than `other`.
-    /// Otherwise, it returns `false`.
+    /// Compares `self` and `other` to find whether `self` is greater
+    /// than `other`. However, if the datatype `U` is the same datatype `T`,
+    /// it will be more convenient for you to use the operator `>`.
     /// 
     /// # Panics
     /// If `size_of::<T>() * N` < `size_of::<U>()`, This method may panic
@@ -3993,7 +4250,22 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// 
     /// # Example
     /// ```
-    /// // Todo
+    /// use Cryptocol::define_utypes_with;
+    /// define_utypes_with!(u32);
+    /// 
+    /// let mut res = U32::from_uint(100_u32).gt_uint(90_u32);
+    /// if res
+    ///     { println!("100 > 90"); }
+    /// else
+    ///     { println!("100 <= 90"); }
+    /// assert_eq!(res, true);
+    /// 
+    /// res = U32::from_uint(100_u32).gt_uint(110_u32);
+    /// if res
+    ///     { println!("100 > 110"); }
+    /// else
+    ///     { println!("100 <= 110"); }
+    /// assert_eq!(res, false);
     /// ```
     #[inline]
     pub fn gt_uint<U>(&self, other: U) -> bool
@@ -4008,8 +4280,9 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     { self.partial_cmp_uint(other).unwrap().is_gt() }
 
     // pub fn le_uint<U>(&self, other: U) -> bool
-    /// Returns `true` if `self` is less than or equal to `other`.
-    /// Otherwise, it returns `false`.
+    /// Compares `self` and `other` to find whether `self` is less than or
+    /// equal to `other`. However, if the datatype `U` is the same datatype
+    /// `T`, it will be more convenient for you to use the operator `<=`.
     /// 
     /// # Panics
     /// If `size_of::<T>() * N` < `size_of::<U>()`, This method may panic
@@ -4021,7 +4294,22 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// 
     /// # Example
     /// ```
-    /// // Todo
+    /// use Cryptocol::define_utypes_with;
+    /// define_utypes_with!(u64);
+    /// 
+    /// let mut res = U32::from_uint(100_u64).le_uint(110_u16);
+    /// if res
+    ///     { println!("100 <= 110"); }
+    /// else
+    ///     { println!("100 > 110"); }
+    /// assert_eq!(res, true);
+    /// 
+    /// res = U32::from_uint(100_u64).lt_uint(90_u16);
+    /// if res
+    ///     { println!("100 < 90"); }
+    /// else
+    ///     { println!("100 >= 90"); }
+    /// assert_eq!(res, false);
     /// ```
     #[inline]
     pub fn le_uint<U>(&self, other: U) -> bool
@@ -4036,8 +4324,9 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     { self.partial_cmp_uint(other).unwrap().is_le() }
 
     // pub fn ge_uint<U>(&self, other: U) -> bool 
-    /// Returns `true` if self is greater than or equal to `other`.
-    /// Otherwise, it returns `false`.
+    /// Compares `self` and `other` to find whether `self` is greater than
+    /// or equal to `other`. However, if the datatype `U` is the same datatype
+    /// `T`, it will be more convenient for you to use the operator `>=`.
     /// 
     /// # Panics
     /// If `size_of::<T>() * N` < `size_of::<U>()`, This method may panic
@@ -4049,7 +4338,22 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// 
     /// # Example
     /// ```
-    /// // Todo
+    /// use Cryptocol::define_utypes_with;
+    /// define_utypes_with!(u32);
+    /// 
+    /// let mut res = U32::from_uint(100_u128).gt_uint(90_u8);
+    /// if res
+    ///     { println!("100 >= 90"); }
+    /// else
+    ///     { println!("100 <= 90"); }
+    /// assert_eq!(res, true);
+    /// 
+    /// res = U32::from_uint(100_u128).gt_uint(110_u8);
+    /// if res
+    ///     { println!("100 > 110"); }
+    /// else
+    ///     { println!("100 <= 110"); }
+    /// assert_eq!(res, false);
     /// ```
     #[inline]
     pub fn ge_uint<U>(&self, other: U) -> bool
@@ -4064,9 +4368,9 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     { self.partial_cmp_uint(other).unwrap().is_ge() }
 
     // pub fn eq_uint<U>(&self, other: U) -> bool
-    /// Returns `true` if `self` is equal to `other`.
-    /// Otherwise, it returns `false`.
-    /// 
+    /// Compares `self` and `other` to find whether `self` is equal to `other`.
+    /// However, if the datatype `U` is the same datatype `T`, it will be
+    /// more convenient for you to use the operator `==`.
     /// # Panics
     /// If `size_of::<T>() * N` < `size_of::<U>()`, This method may panic
     /// or its behavior may undefined though it may not panic.
@@ -4077,7 +4381,22 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// 
     /// # Example
     /// ```
-    /// // Todo
+    /// use Cryptocol::define_utypes_with;
+    /// define_utypes_with!(u8);
+    /// 
+    /// let mut res = U32::from_uint(100_u32).eq_uint(100_u8);
+    /// if res
+    ///     { println!("100 = 100"); }
+    /// else
+    ///     { println!("100 != 100"); }
+    /// assert_eq!(res, true);
+    /// 
+    /// res = U32::from_uint(100_u64).eq_uint(200_u16);
+    /// if res
+    ///     { println!("100 = 200"); }
+    /// else
+    ///     { println!("100 != 200"); }
+    /// assert_eq!(res, false);
     /// ```
     #[inline]
     pub fn eq_uint<U>(&self, other: U) -> bool
@@ -4091,9 +4410,125 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
             + PartialEq + PartialOrd
     { self.partial_cmp_uint(other).unwrap().is_eq() }
 
+
+
+
+    /***** METHODS FOR COMPARISON WITH BIGUINT *****/
+
+    // pub fn eq(&self, other: &Self) -> bool
+    /// Compare `self` with `other` to find whether `self` is equal to `other`.
+    /// However, it will be more convenient to you if you use use the operator
+    /// `==`. Then, you don't have to use `partial_cmp()` directly.
+    /// 
+    /// # Output
+    /// It returns `true` if `self` is equal to `other`.
+    /// Otherwise, it returns `false`.
+    /// 
+    /// # Example
+    /// ```
+    /// use Cryptocol::define_utypes_with;
+    /// define_utypes_with!(u128);
+    /// 
+    /// let num_str = "69743176821145534028236692093846345739169743176821145534028236692093846345739";
+    /// let mut res = U32::from_string(num_str).unwrap().eq(&U32::from_string(num_str).unwrap());
+    /// if res
+    ///     { println!("{0} = {0}", num_str); }
+    /// else
+    ///     { println!("{0} != {0}", num_str); }
+    /// assert_eq!(res, true);
+    /// 
+    /// res = U32::from_string(num_str).unwrap().eq(&U32::from_uint(100_u8));
+    /// if res
+    ///     { println!("{} = 100", num_str); }
+    /// else
+    ///     { println!("{} != 100", num_str); }
+    /// assert_eq!(res, false);
+    /// ```
+    pub fn eq(&self, other: &Self) -> bool
+    {
+        for idx in 0..N
+        {
+            if self.get_num_(idx) != other.get_num_(idx)
+                { return false; }
+        }
+        true
+    }
+
+    // pub fn partial_cmp(&self, other: &Self) -> Option<Ordering>
+    /// Compares `self` and a value of `other` and returns the result of the
+    /// comparison in the type `Option<Ordering>`.
+    /// However, it will be more convenient to you if you use use the operators
+    /// `<`, `>`, `<=`, `>=`,  `==`, and `!=`. Then, you don't have to use
+    /// `partial_cmp()` directly.
+    /// 
+    /// # Output
+    /// It returns `Ordering::Greater` wrapped by `Some` of enum `Option`
+    /// if `self` is greater than `other`.
+    /// It returns `Ordering::Less` wrapped by `Some` of enum `Option`
+    /// if `self` is less than `other`.
+    /// It returns `Ordering::Equal` wrapped by `Some` of enum `Option`
+    /// if `self` is equal to `other`.
+    /// 
+    /// # Example
+    /// ```
+    /// use std::cmp::Ordering;
+    /// use Cryptocol::define_utypes_with;
+    /// define_utypes_with!(u16);
+    /// 
+    /// let num_str1 = "70000000000000000000000000000000000000000000000000000000000000000000000000000";
+    /// let num_str2 = "60000000000000000000000000000000000000000000000000000000000000000000000000000";
+    /// let num_str3 = "80000000000000000000000000000000000000000000000000000000000000000000000000000";
+    /// let num1 = num_str1.parse::<U32>().unwrap();
+    /// let num2 = num_str2.parse::<U32>().unwrap();
+    /// let num3 = num_str3.parse::<U32>().unwrap();
+    /// 
+    /// let mut res = num1.partial_cmp(&num2).unwrap();
+    /// match res
+    /// {
+    ///     Ordering::Greater => { println!("{} > {}", num1, num2); }
+    ///     Ordering::Less => { println!("{} < {}", num1, num2); }
+    ///     Ordering::Equal => { println!("{} = {}", num1, num2); }
+    /// }
+    /// assert_eq!(res, Ordering::Greater);
+    /// 
+    /// res = num1.partial_cmp(&num3).unwrap();
+    /// match res
+    /// {
+    ///     Ordering::Greater => { println!("{} > {}", num1, num3); }
+    ///     Ordering::Less => { println!("{} < {}", num1, num3); }
+    ///     Ordering::Equal => { println!("{} = {}", num1, num3); }
+    /// }
+    /// assert_eq!(res, Ordering::Less);
+    /// 
+    /// res = num1.partial_cmp(&num1).unwrap();
+    /// match res
+    /// {
+    ///     Ordering::Greater => { println!("{0} > {0}", num1); }
+    ///     Ordering::Less => { println!("{0} < {0}", num1); }
+    ///     Ordering::Equal => { println!("{0} = {0}", num1); }
+    /// }
+    /// assert_eq!(res, Ordering::Equal);
+    /// ```
+    #[cfg(target_endian = "little")]
+    pub fn partial_cmp(&self, other: &Self) -> Option<Ordering>
+    {
+        let mut idx = N - 1;
+        loop
+        {
+            if self.get_num_(idx) > other.get_num_(idx)
+                { return Some(Ordering::Greater); }
+            else if self.get_num_(idx) < other.get_num_(idx)
+                { return Some(Ordering::Less); }
+            if idx == 0
+                { break; }
+            idx -= 1;
+        }
+        Some(Ordering::Equal)
+    }
+
     
 
-    /***** ARITHMATIC OPERATIONS WITH UNSIGNED INTEGERS *****/
+    /***** ARITHMATIC OPERATIONS WITH UINT *****/
 
     /*** ADDITION ***/
 
@@ -4954,7 +5389,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
             { self.set_zero(); }
     }
 
-    // pub fn abs_diff<U>(&self, other: U) -> Self
+    // pub fn abs_diff_uint<U>(&self, other: U) -> Self
     /// Computes the absolute difference between `self` and `other`.
     /// 
     /// # Panics
@@ -6306,7 +6741,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     
 
 
-    /***** METHODS FOR EXPONENTIATION AND LOGARITHM WITH UNSIGNED INTEGERS *****/
+    /***** METHODS FOR EXPONENTIATION AND LOGARITHM WITH UINT *****/
 
     // pub fn pow_uint<U>(&self, exp: U) -> Self
     /// Raises `BigUInt` type number to the power of exp, using exponentiation
@@ -6655,7 +7090,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     // pub fn saturating_pow_uint() -> Self
     // pub fn saturating_pow_assign_uint()
 
-    /***** ARITHMATIC OPERATIONS WITH BigUInt *****/
+    /***** ARITHMATIC OPERATIONS WITH BIGUINT *****/
 
     /*** ADDITION ***/
 
@@ -8779,7 +9214,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
 
 
 
-    /***** METHODS FOR EXPONENTIATION AND LOGARITHM *****/
+    /***** METHODS FOR EXPONENTIATION AND LOGARITHM WITH BIGUINT *****/
 
     // pub fn pow(&mut self, exp: &Self) -> Self
     /// Raises `BigUInt` type number to the power of exp, using exponentiation
@@ -10185,49 +10620,6 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
 
 
 
-    /***** METHODS FOR COMPARISON *****/
-
-    pub fn eq(&self, other: &Self) -> bool
-    {
-        for idx in 0..N
-        {
-            if self.get_num_(idx) != other.get_num_(idx)
-                { return false; }
-        }
-        true
-    }
-
-    #[cfg(target_endian = "little")]
-    pub fn partial_cmp(&self, other: &Self) -> Option<Ordering>
-    {
-        let mut idx = N - 1;
-        loop
-        {
-            if self.get_num_(idx) > other.get_num_(idx)
-                { return Some(Ordering::Greater); }
-            else if self.get_num_(idx) < other.get_num_(idx)
-                { return Some(Ordering::Less); }
-            if idx == 0
-                { break; }
-            idx -= 1;
-        }
-        Some(Ordering::Equal)
-    }
-
-    #[cfg(target_endian = "big")]
-    pub fn partial_cmp(&self, other: &Self) -> Option<Ordering>
-    {
-        for idx in 0..N
-        {
-            if self.get_num_(idx) > other.get_num_(idx)
-                { return Some(Ordering::Greater); }
-            else if self.get_num_(idx) < other.get_num_(idx)
-                { return Some(Ordering::Less); }
-        }
-        Some(Ordering::Equal)
-    }
-
-
     /***** METHODS FOR CONVERTING INTO OTHER TYPES WITH/WITHOUT LOSS *****/
 
     // pub fn into_biguint<U, const M: usize>(&self) -> BigUInt<U, M>
@@ -10669,6 +11061,11 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// readable. So, `100000000` will be written as "1,0000,0000" or
     /// "1--0000--0000", for example.
     /// 
+    /// # Error
+    /// | argument | value                              | Caused Error                      |
+    /// |----------|------------------------------------|-----------------------------------|
+    /// | `radix`  | less than `2` or greater than `62` | `NumberErr::OutOfValidRadixRange` |
+    /// 
     /// # Example
     /// ```
     /// // Todo
@@ -10723,6 +11120,11 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// In the number expression in a string, you can separate the digits with
     /// the default delimiter '_' in order to make it more readable. So, "10000"
     /// is the same as "1_0000".
+    /// 
+    /// # Error
+    /// | argument | value                              | Caused Error                      |
+    /// |----------|------------------------------------|-----------------------------------|
+    /// | `radix`  | less than `2` or greater than `62` | `NumberErr::OutOfValidRadixRange` |
     /// 
     /// # Example
     /// ```
@@ -10799,6 +11201,11 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// case of 62-ary number system, the digit whose value is `10`, `11`, `35`,
     /// `36`, `37`, `38`, `60` and `61` are represented as `A`, `B`, `Y`, `Z`,
     /// `a`, `b`, `y` and `z`, respectively.
+    /// 
+    /// # Error
+    /// | argument | value                              | Caused Error                      |
+    /// |----------|------------------------------------|-----------------------------------|
+    /// | `radix`  | less than `2` or greater than `62` | `NumberErr::OutOfValidRadixRange` |
     /// 
     /// # Example
     /// ```

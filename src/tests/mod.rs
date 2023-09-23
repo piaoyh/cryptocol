@@ -10,7 +10,7 @@
 //! 
 
 #[cfg(test)] pub mod Unions_test;
-#[cfg(test)] pub mod UInt_test;
+#[cfg(test)] pub mod SmallUInt_test;
 
 // #[cfg(test)]
 pub mod BigUInt_test;

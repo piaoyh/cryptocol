@@ -11,7 +11,7 @@ fn main()
     /*
     find_maximum();
     test_main_Unions();
-    test_main_UInt();
+    test_main_SmallUInt();
     Test();
     */
 }
