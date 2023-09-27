@@ -8,7 +8,6 @@
 
 #![allow(missing_docs)]
 #![allow(missing_doc_code_examples)]
-#![allow(non_camel_case_types)]
 /*
 
 use std::ops::*;
@@ -27,6 +26,7 @@ use Cryptocol::define_utypes_with_u8;
 */
 
 
+#[allow(non_camel_case_types)]
 pub fn test_main_BigUInt()
 {
     // BigUInt_quick_start___main();
@@ -1626,7 +1626,7 @@ fn BigUInt_arithmatic_operation_uint___main()
 
 fn BigUInt_add_uint___main()
 {
-    // BigUInt_carrying_add_uint___main();
+    BigUInt_carrying_add_uint___main();
     // BigUInt_carrying_add_assign_uint___main();
     // BigUInt_wrapping_add_uint___main();
     // BigUInt_wrapping_add_assign_uint___main();
@@ -1636,6 +1636,27 @@ fn BigUInt_add_uint___main()
     // BigUInt_unchecked_add_uint___main();
     // BigUInt_saturating_add_uint___main();
     // BigUInt_saturating_add_assign_uint___main();
+}
+
+fn BigUInt_carrying_add_uint___main()
+{
+    use std::str::FromStr;
+    use Cryptocol::number::*;
+    use Cryptocol::define_utypes_with;
+    define_utypes_with!(u8);
+//    let __000000000000000000000000000000000000000000000000000000000000000000000000";";
+
+    let num_str_low1 = "FFEEDDBB_AA998877_66554433_221100FF_EEDDBBAA_99887766_55443322_1100FFEE";
+    let num_str_low2 = "DDBBAA99_88776655_44332211_00FFEEDD_BBAA9988_77665544_33221100_FFEEDDBB";
+    let num_str_high1 = "AABBCCDD_99887766_55443322_1100FFEE";
+
+    let num_low1 = U32::from_str_radix(num_str_low1, 16).unwrap();
+    let num_low2 = U32::from_str_radix(num_str_low2, 16).unwrap();
+    let num_high1 = U32::from_str_radix(num_str_high1, 16).unwrap();
+    let num_high2 = 0x11223344_55667788_9900AABB_CCDDEEFF_u128;
+    let (sum_low, carry) = num_low1.carrying_add(&num_low2, false);
+    let (sum_high, overflow) = num_high1.carrying_add_uint(num_high2, carry);
+
 }
 
 fn BigUInt_sub_uint___main()

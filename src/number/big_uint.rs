@@ -364,7 +364,7 @@ use super::NumberErr;
 /// type because `usize` and `isize` have different size according to
 /// CPU and operating system. So, Example 3 can be rewritten as Example 4.
 /// 
-/// # Example 4
+/// ## Example 4
 /// ```
 /// use std::str::FromStr;
 /// use Cryptocol::define_utypes_with;
@@ -435,7 +435,7 @@ use super::NumberErr;
 /// such as `u136`, `u144`, `u192`, `u320`, `u384`, etc. or `U17`, `U18`,
 /// `U24`, `U40`, `U48`, etc., you can define them for yourself as Example 5.
 /// 
-/// # Example 5
+/// ## Example 5
 /// ```
 /// use Cryptocol::number::*;
 /// type u136 = BigUInt::<u8, 17>;
@@ -461,7 +461,7 @@ use super::NumberErr;
 /// base type showed the best performannce for multiplication and division
 /// most of the time. More rarely than in release mode, however, `u32` as
 /// base type showed the best performannce for multiplication and division.
-/// The result is obtained from 64-bit machine. If the test was done in 32-bit
+/// The result is obtained from 64-bit machine. If the test was done on 32-bit
 /// machine, the result might be different.
 /// 
 /// | Operation      | Best base type in Release mode        | Best base type in Debug mode                |
@@ -2316,6 +2316,10 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// generated random number is prime. Usually, `repetition` is given to be
     /// 5 to have 99.9% accuracy.
     /// 
+    /// # Panics
+    /// If `size_of::<T>() * N` <= `128`, This method may panic
+    /// or its behavior may undefined though it may not panic.
+    /// 
     /// # Example
     /// ```
     /// use Cryptocol::define_utypes_with;
@@ -2334,38 +2338,78 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// for Big-endian CPUs with your own full responsibility.
     pub fn is_prime_using_Miller_Rabin(&self, repetition: usize) -> bool
     {
-        if self.is_zero_or_one()
+        if self.is_zero_or_one() || self.is_even()
             { return false; }
         
-        if self.is_uint(T::u8_as_SmallUInt(2)) ||  self.is_uint(T::u8_as_SmallUInt(3))
+        if self.is_uint(2_u8) ||  self.is_uint(3_u8)
             { return true; }
 
-        // n-1 = (2^s) * d 로 표현하기 위한 과정
-        let mut d = self.wrapping_sub_uint(T::one());
-        let self_minus_one = self.wrapping_sub_uint(T::one());
-        d.shift_right_assign(d.trailing_zeros());
-        for _ in 0..repetition
+        if self.lt_uint(10000_u16)
         {
-            let mut rand_num = Self::random_less_than(&self.wrapping_sub_uint(T::u8_as_SmallUInt(4))).wrapping_add_uint(T::u8_as_SmallUInt(2));
-            let mut x = rand_num.pow(&d).wrapping_rem(self);
-            if x.is_one() || x == self_minus_one
-                { continue; }
+            let small_self = self.into_u32();
 
-            while d != self_minus_one
+            let half = small_self >> 1;
+            let mut i = 3_u32;
+            while i < 100 || i < half
             {
-                x = x.wrapping_mul(&x);
-                x.wrapping_rem_assign(self);
-                d.wrapping_mul_assign_uint(T::u8_as_SmallUInt(2));
-
-                if x.is_one()
+                if small_self.wrapping_rem(i) == 0
                     { return false; }
-                if x == self_minus_one
-                    { break; }
+                i += 2;
             }
-            if x != self_minus_one
+            return true;
+        }
+        else if self.le_uint(u32::MAX)
+        {
+            let a_list = [2_u8, 7, 61];
+            for a in a_list
+            {
+                if !self.test_Miller_Rabin(&Self::from_uint(a))
+                    { return false; }
+            }
+        }
+        else if self.le_uint(u64::MAX)
+        {
+            let a_list = [2_u64, 325, 9375, 28178, 450775, 9780504, 1795265022];
+            for a in a_list
+            {
+                if !self.test_Miller_Rabin(&Self::from_uint(a))
+                    { return false; }
+            }
+        }
+
+        let a_list = [2_u64, 7, 61, 325, 9375, 28178, 450775, 9780504, 1795265022];
+        let len = a_list.len();
+        let common = if len < repetition { len } else { repetition };
+        let mut i = 0;
+        while i < common
+        {
+            if !self.test_Miller_Rabin(&Self::from_uint(a_list[i]))
                 { return false; }
+            i += 1;
+        }
+
+        let mut a = a_list[len-1] + 1;
+        for _ in i..repetition
+        {
+            if !self.test_Miller_Rabin(&Self::from_uint(a))
+                { return false; }
+            a += 1;
         }
         true
+    }
+
+    fn test_Miller_Rabin(&self, a: &Self) -> bool
+    {
+        let self_minus_one = self.wrapping_sub_uint(1_u8);
+        let mut d = self_minus_one.clone();
+        while d.is_even()
+        {
+            if a.modular_pow(&d, self) == self_minus_one
+                { return true; }
+            d.shift_right_assign(1_u8);
+        }
+        let tmp = a.modular_pow(&d, self);
+        return tmp == self_minus_one || tmp.is_one();
     }
 
 
@@ -4996,6 +5040,120 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     }
 
 
+    // pub fn modular_add_uint<U>(&self, rhs: U, modulo: &Self) -> Self
+    /// Computes (`self` + `rhs`) % `modulo`, wrapping around at `modulo` of the
+    /// type `Self` instead of overflowing.
+    /// 
+    /// # Output
+    /// It returns the modulo-sum (`self` + `rhs`) % `modulo` with wrapping
+    /// (modular) addition at `modulo`.
+    /// 
+    /// # Feature
+    /// Wrapping (modular) addition at `modulo`. The differences between this
+    /// method `modular_add_uint()` and the method `wrapping_add_uint()` are,
+    /// first, where wrapping around happens, and, second, whether or not
+    /// `OVERFLOW` flag is set. First, this method wraps araound at `modulo`
+    /// while the method `wrapping_add_uint()` wraps araound at maximum value.
+    /// Second, this method does not set `OVERFLOW` flag even if wrapping
+    /// around happens while the method `wrapping_add_uint()` sets `OVERFLOW`
+    /// flag when wrapping around happens.
+    /// 
+    /// # Counterpart Method
+    /// If `rhs` is bigger than `u128`, the method `modular_add()` is proper
+    /// rather than this method `modular_add_uint()`.
+    /// 
+    /// # Example
+    /// ```
+    /// // Todo
+    /// ```
+    /// 
+    /// # Big-endian issue
+    /// It is just experimental for Big Endian CPUs. So, you are not encouraged
+    /// to use it for Big Endian CPUs for serious purpose. Only use this crate
+    /// for Big-endian CPUs with your own full responsibility.
+    pub fn modular_add_uint<U>(&self, rhs: U, modulo: &Self) -> Self
+    where U: SmallUInt + Copy + Clone + Display + Debug + ToString
+            + Add<Output=U> + AddAssign + Sub<Output=U> + SubAssign
+            + Mul<Output=U> + MulAssign + Div<Output=U> + DivAssign
+            + Rem<Output=U> + RemAssign
+            + Shl<Output=U> + ShlAssign + Shr<Output=U> + ShrAssign
+            + BitAnd<Output=U> + BitAndAssign + BitOr<Output=U> + BitOrAssign
+            + BitXor<Output=U> + BitXorAssign + Not<Output=U>
+            + PartialEq + PartialOrd
+
+    {
+        let mut res = self.clone();
+        res.modular_add_assign_uint(rhs, modulo);
+        res
+    }
+
+    // pub fn modular_add_assign_uint<U>(&mut self, rhs: U, modulo: &Self)
+    /// Computes (`self` + `rhs`) % `modulo`, wrapping around at `modulo`
+    /// of the type `Self` instead of overflowing, and then, assign the result
+    /// back to `self`.
+    /// 
+    /// # Feature
+    /// Wrapping (modular) addition at `modulo`. The differences between this
+    /// method `modular_add_assign_uint()` and the method
+    /// `wrapping_add_assign_uint()` are, first, where wrapping around happens,
+    /// and, second, whether or not `OVERFLOW` flag is set. First, this method
+    /// wraps araound at `modulo` while the method `wrapping_add_assign_uint()`
+    /// wraps araound at maximum value. Second, this method does not set
+    /// `OVERFLOW` flag even if wrapping around happens, while the method
+    /// `wrapping_add_assign_uint()` sets `OVERFLOW` flag when wrapping around
+    /// happens.
+    /// 
+    /// # Counterpart Method
+    /// If `rhs` is bigger tham `ui128`, the method `modular_add_assign()` is
+    /// proper rather than this method.
+    /// 
+    /// # Example
+    /// ```
+    /// // Todo
+    /// ```
+    /// 
+    /// # Big-endian issue
+    /// It is just experimental for Big Endian CPUs. So, you are not encouraged
+    /// to use it for Big Endian CPUs for serious purpose. Only use this crate
+    /// for Big-endian CPUs with your own full responsibility.
+    pub fn modular_add_assign_uint<U>(&mut self, rhs: U, modulo: &Self)
+    where U: SmallUInt + Copy + Clone + Display + Debug + ToString
+            + Add<Output=U> + AddAssign + Sub<Output=U> + SubAssign
+            + Mul<Output=U> + MulAssign + Div<Output=U> + DivAssign
+            + Rem<Output=U> + RemAssign
+            + Shl<Output=U> + ShlAssign + Shr<Output=U> + ShrAssign
+            + BitAnd<Output=U> + BitAndAssign + BitOr<Output=U> + BitOrAssign
+            + BitXor<Output=U> + BitXorAssign + Not<Output=U>
+            + PartialEq + PartialOrd
+    {
+        if *self >= *modulo
+            { self.wrapping_rem_assign(modulo); }
+        if modulo.gt_uint(rhs)
+        {
+            let diff = modulo.wrapping_sub_uint(rhs);
+            if *self >= diff
+                { self.wrapping_sub_assign(&diff); }
+            else
+                { self.wrapping_add_assign_uint(rhs); }
+        }
+        else if rhs.length_in_bytes() > T::size_in_bytes()  // && (module <= rhs)
+        {
+            self.modular_add_assign(&Self::from_uint(rhs), modulo);
+        }
+        else    // if (U::size_in_bytes() <= T::size_in_bytes()) && (module <= rhs)
+        {
+            let trhs = T::num::<U>(rhs);
+            let modu = T::u128_as_SmallUInt(modulo.into_u128());
+            let mrhs = T::num::<U>(rhs).wrapping_rem(modu);
+            let diff = modu.wrapping_sub(mrhs);
+            if *self >= diff
+                { self.wrapping_sub_assign_uint(diff); }
+            else
+                { self.wrapping_add_assign_uint(mrhs); }
+        }
+    }
+
+
     /*** Subtraction ***/
 
     // pub fn borrowing_sub_uint<U>(&self, rhs: U, borrow: bool) -> (Self, bool)
@@ -5433,6 +5591,125 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
         else
             { self.wrapping_add_uint(t_other) }
     }
+
+    // pub fn modular_sub_uint<U>(&self, rhs: U, modulo: &Self) -> Self
+    /// Computes (`self` - `rhs`) % `modulo`, wrapping around at `modulo` of the
+    /// type `Self` instead of underflowing.
+    /// 
+    /// # Output
+    /// It returns the modulo-difference (`self` - `rhs`) % `modulo` with
+    /// wrapping (modular) subtraction at `modulo`.
+    /// 
+    /// # Feature
+    /// Wrapping (modular) subtraction at `modulo`. The differences between
+    /// this method `modular_sub_uint()` and the method `wrapping_sub_uint()`
+    /// are, first, where wrapping around happens, and, second, whether or not
+    /// `UNDERFLOW` flag is set. First, this method wraps araound at `modulo`
+    /// while the method `wrapping_sub_uint()` wraps araound at maximum value.
+    /// Second, this method does not set `UNDERFLOW` flag even if wrapping
+    /// around happens while the method `wrapping_sub_uint()` sets `UNDERFLOW`
+    /// flag when wrapping around happens.
+    /// 
+    /// # Counterpart Method
+    /// If `rhs` is bigger than `u128`, the method `modular_sub_uint()` is
+    /// proper rather than this method.
+    /// 
+    /// # Example
+    /// ```
+    /// // Todo
+    /// ```
+    /// 
+    /// # Big-endian issue
+    /// It is just experimental for Big Endian CPUs. So, you are not encouraged
+    /// to use it for Big Endian CPUs for serious purpose. Only use this crate
+    /// for Big-endian CPUs with your own full responsibility.
+    pub fn modular_sub_uint<U>(&self, rhs: U, modulo: &Self) -> Self
+    where U: SmallUInt + Copy + Clone + Display + Debug + ToString
+            + Add<Output=U> + AddAssign + Sub<Output=U> + SubAssign
+            + Mul<Output=U> + MulAssign + Div<Output=U> + DivAssign
+            + Rem<Output=U> + RemAssign
+            + Shl<Output=U> + ShlAssign + Shr<Output=U> + ShrAssign
+            + BitAnd<Output=U> + BitAndAssign + BitOr<Output=U> + BitOrAssign
+            + BitXor<Output=U> + BitXorAssign + Not<Output=U>
+            + PartialEq + PartialOrd
+    {
+        let mut res = self.clone();
+        res.modular_sub_assign_uint(rhs, modulo);
+        res
+    }
+
+    // pub fn modular_sub_assign_uint<U>(&mut self, rhs: U, modulo: &Self)
+    /// Computes (`self` - `rhs`) % `modulo`, wrapping around at `modulo`
+    /// of the type `Self` instead of underflowing, and then, assign the result
+    /// back to `self`.
+    /// 
+    /// # Feature
+    /// Wrapping (modular) subtraction at `modulo`. The differences between this
+    /// method `modular_sub_assign()` and the method `wrapping_sub_assign()`
+    /// are, first, where wrapping around happens, and, second, whether or not
+    /// `UNDERFLOW` flag is set. First, this method wraps araound at `modulo`
+    /// while the method `wrapping_sub_assign()` wraps araound at maximum value.
+    /// Second, this method does not set `UNDERFLOW` flag even if wrapping
+    /// around happens, while the method `wrapping_sub_assign()` sets
+    /// `UNDERFLOW` flag when wrapping around happens.
+    /// 
+    /// # Counterpart Method
+    /// If `rhs` is bigger than `u128, the method `modular_sub_assign()` is
+    /// proper rather than this method.
+    /// 
+    /// # Example
+    /// ```
+    /// // Todo
+    /// ```
+    /// 
+    /// # Big-endian issue
+    /// It is just experimental for Big Endian CPUs. So, you are not encouraged
+    /// to use it for Big Endian CPUs for serious purpose. Only use this crate
+    /// for Big-endian CPUs with your own full responsibility.
+    pub fn modular_sub_assign_uint<U>(&mut self, rhs: U, modulo: &Self)
+    where U: SmallUInt + Copy + Clone + Display + Debug + ToString
+            + Add<Output=U> + AddAssign + Sub<Output=U> + SubAssign
+            + Mul<Output=U> + MulAssign + Div<Output=U> + DivAssign
+            + Rem<Output=U> + RemAssign
+            + Shl<Output=U> + ShlAssign + Shr<Output=U> + ShrAssign
+            + BitAnd<Output=U> + BitAndAssign + BitOr<Output=U> + BitOrAssign
+            + BitXor<Output=U> + BitXorAssign + Not<Output=U>
+            + PartialEq + PartialOrd
+    {
+        if *self >= *modulo
+            { self.wrapping_rem_assign(modulo); }
+        if modulo.gt_uint(rhs)
+        {
+            if self.ge_uint(rhs)
+            {
+                self.wrapping_sub_assign_uint(rhs);
+            }
+            else
+            {
+                let diff = modulo.wrapping_sub_uint(rhs);
+                self.wrapping_add_assign(&diff);
+            }
+        }
+        else if rhs.length_in_bytes() > T::size_in_bytes()  // && (module <= rhs)
+        {
+            self.modular_sub_assign(&Self::from_uint(rhs), modulo);
+        }
+        else    // if (U::size_in_bytes() <= T::size_in_bytes()) && (module <= rhs)
+        {
+            let modu = T::u128_as_SmallUInt(modulo.into_u128());
+            let mrhs = T::num::<U>(rhs).wrapping_rem(modu);
+            if self.ge_uint(mrhs)
+            {
+                self.wrapping_sub_assign_uint(mrhs);
+            }
+            else
+            {
+                let diff = modu.wrapping_sub(mrhs);
+                self.wrapping_add_assign_uint(diff);
+            }
+        }
+    }
+
 
     /*** Multiplication ***/
 
@@ -5990,6 +6267,126 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     }
     */
 
+    // pub fn modular_mul_uint<U>(&self, rhs: U, modulo: &Self) -> Self
+    /// Computes (`self` * `rhs`) % `modulo`, wrapping around at `modulo`
+    /// of the type `Self`.
+    /// 
+    /// # Feature
+    /// Wrapping (modular) multiplication at `modulo`. The differences between
+    /// this method `modular_mul_uint()` and the method `wrapping_mul_uint()`
+    /// are, first, where wrapping around happens, and, second, whether or not
+    /// `OVERFLOW` flag is set. First, this method wraps araound at `modulo`
+    /// while the method `wrapping_mul_uint()` wraps araound at maximum value.
+    /// Second, this method does not set `OVERFLOW` flag even if wrapping around
+    /// happens, while the method `wrapping_mul_uint()` sets `OVERFLOW` flag
+    /// when wrapping around happens.
+    /// 
+    /// # Counterpart Method
+    /// If `rhs` is bigger than `u128`, the method `modular_mul()` is proper
+    /// rather than this method.
+    /// 
+    /// # Example
+    /// ```
+    /// // Todo
+    /// ```
+    /// 
+    /// # Big-endian issue
+    /// It is just experimental for Big Endian CPUs. So, you are not encouraged
+    /// to use it for Big Endian CPUs for serious purpose. Only use this crate
+    /// for Big-endian CPUs with your own full responsibility.
+    pub fn modular_mul_uint<U>(&self, rhs: U, modulo: &Self) -> Self
+    where U: SmallUInt + Copy + Clone + Display + Debug + ToString
+            + Add<Output=U> + AddAssign + Sub<Output=U> + SubAssign
+            + Mul<Output=U> + MulAssign + Div<Output=U> + DivAssign
+            + Rem<Output=U> + RemAssign
+            + Shl<Output=U> + ShlAssign + Shr<Output=U> + ShrAssign
+            + BitAnd<Output=U> + BitAndAssign + BitOr<Output=U> + BitOrAssign
+            + BitXor<Output=U> + BitXorAssign + Not<Output=U>
+            + PartialEq + PartialOrd
+    {
+        let mut res = self.clone();
+        res.modular_mul_assign_uint(rhs, modulo);
+        res
+    }
+
+    // pub fn modular_mul_assign_uint<U>(&mut self, rhs: U, modulo: &Self)
+    /// Computes (`self` * `rhs`) % `modulo`, wrapping around at `modulo`
+    /// of the type `Self`, and assign the result to `self` back.
+    /// 
+    /// # Feature
+    /// Wrapping (modular) multiplication at `modulo`. The differences between
+    /// this method `modular_mul_assign_uint()` and the method
+    /// `wrapping_mul_assign_uint()` are, first, where wrapping around happens,
+    /// and, second, whether or not `OVERFLOW` flag is set. First, this method
+    /// wraps araound at `modulo` while the method `wrapping_mul_assign_uint()`
+    /// wraps araound at maximum value. Second, this method does not set
+    /// `OVERFLOW` flag even if wrapping around happens, while the method
+    /// `wrapping_mul_assign_uint()` sets `OVERFLOW` flag when wrapping around
+    /// happens.
+    /// 
+    /// # Counterpart Method
+    /// If `rhs` is bigger than `u128`, the method `modular_mul_assign()`
+    /// is proper rather than this method.
+    /// 
+    /// # Example
+    /// ```
+    /// // Todo
+    /// ```
+    /// 
+    /// # Big-endian issue
+    /// It is just experimental for Big Endian CPUs. So, you are not encouraged
+    /// to use it for Big Endian CPUs for serious purpose. Only use this crate
+    /// for Big-endian CPUs with your own full responsibility.
+    pub fn modular_mul_assign_uint<U>(&mut self, rhs: U, modulo: &Self)
+    where U: SmallUInt + Copy + Clone + Display + Debug + ToString
+            + Add<Output=U> + AddAssign + Sub<Output=U> + SubAssign
+            + Mul<Output=U> + MulAssign + Div<Output=U> + DivAssign
+            + Rem<Output=U> + RemAssign
+            + Shl<Output=U> + ShlAssign + Shr<Output=U> + ShrAssign
+            + BitAnd<Output=U> + BitAndAssign + BitOr<Output=U> + BitOrAssign
+            + BitXor<Output=U> + BitXorAssign + Not<Output=U>
+            + PartialEq + PartialOrd
+    {
+        if *self >= *modulo
+            { self.wrapping_rem_assign(modulo); }
+        if modulo.gt_uint(rhs)
+        {
+            let mut mrhs = T::num::<U>(rhs);
+            let mut res = Self::zero();
+            while mrhs > T::zero()
+            {
+                if mrhs.is_odd()
+                    { res.modular_add_assign(self, modulo); }
+                self.shift_left_assign(1_u8);
+                self.wrapping_rem_assign(modulo);
+                mrhs >>= T::one();
+            }
+            *self = res;
+        }
+        else if rhs.length_in_bytes() > T::size_in_bytes()  // && (module <= rhs)
+        {
+            self.modular_mul_assign(&Self::from_uint(rhs), modulo);
+        }
+        else    // if (U::size_in_bytes() <= T::size_in_bytes()) && (module <= rhs)
+        {
+            let modu = T::u128_as_SmallUInt(modulo.into_u128());
+            let mut mrhs = T::num::<U>(rhs).wrapping_rem(modu);
+            let mut res = Self::zero();
+            while mrhs > T::zero()
+            {
+                if mrhs.is_odd()
+                {
+                    res.wrapping_add_assign(self);
+                    res.wrapping_rem_assign_uint(modu);
+                }
+                self.shift_left_assign(1_u8);
+                self.wrapping_rem_assign_uint(modu);
+                mrhs >>= T::one();
+            }
+            *self = res;
+        }
+    }
+
 
     /*** Division ***/
 
@@ -6206,7 +6603,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
         }
     }
 
-    // pub fn wrapping_div_uint(&self, rhs: T) -> Self
+    // pub fn wrapping_div_uint<U>(&self, rhs: U) -> Self
     /// Calculates the quotient when `self` is divided by `rhs`,
     /// which is `self` / `rhs`.
     ///
@@ -6239,13 +6636,21 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// It is just experimental for Big Endian CPUs. So, you are not encouraged
     /// to use it for Big Endian CPUs for serious purpose. Only use this crate
     /// for Big-endian CPUs with your own full responsibility.
-    pub fn wrapping_div_uint(&self, rhs: T) -> Self
+    pub fn wrapping_div_uint<U>(&self, rhs: U) -> Self
+    where U: SmallUInt + Copy + Clone + Display + Debug + ToString
+            + Add<Output=U> + AddAssign + Sub<Output=U> + SubAssign
+            + Mul<Output=U> + MulAssign + Div<Output=U> + DivAssign
+            + Rem<Output=U> + RemAssign
+            + Shl<Output=U> + ShlAssign + Shr<Output=U> + ShrAssign
+            + BitAnd<Output=U> + BitAndAssign + BitOr<Output=U> + BitOrAssign
+            + BitXor<Output=U> + BitXorAssign + Not<Output=U>
+            + PartialEq + PartialOrd
     {
         let (quotient, _) = self.divide_fully_uint(rhs);
         quotient
     }
 
-    // pub fn wrapping_div_assign_uint(&mut self, rhs: T)
+    // pub fn wrapping_div_assign_uint<U>(&mut self, rhs: U)
     /// Calculates the quotient when `self` is divided by `rhs`,
     /// which is `self` / `rhs`, and assign the result to `self` back.
     /// 
@@ -6269,13 +6674,21 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// It is just experimental for Big Endian CPUs. So, you are not encouraged
     /// to use it for Big Endian CPUs for serious purpose. Only use this crate
     /// for Big-endian CPUs with your own full responsibility.
-    pub fn wrapping_div_assign_uint(&mut self, rhs: T)
+    pub fn wrapping_div_assign_uint<U>(&mut self, rhs: U)
+    where U: SmallUInt + Copy + Clone + Display + Debug + ToString
+            + Add<Output=U> + AddAssign + Sub<Output=U> + SubAssign
+            + Mul<Output=U> + MulAssign + Div<Output=U> + DivAssign
+            + Rem<Output=U> + RemAssign
+            + Shl<Output=U> + ShlAssign + Shr<Output=U> + ShrAssign
+            + BitAnd<Output=U> + BitAndAssign + BitOr<Output=U> + BitOrAssign
+            + BitXor<Output=U> + BitXorAssign + Not<Output=U>
+            + PartialEq + PartialOrd
     {
         let (quotient, _) = self.divide_fully_uint(rhs);
         *self = quotient;
     }
 
-    // pub fn checked_div_uint(&self, rhs: T) -> Option<Self>
+    // pub fn checked_div_uint<U>(&self, rhs: U) -> Option<Self>
     /// Calculates the quotient when `self` is divided by `rhs`,
     /// which is `self` / `rhs`.
     /// 
@@ -6301,7 +6714,15 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// It is just experimental for Big Endian CPUs. So, you are not encouraged
     /// to use it for Big Endian CPUs for serious purpose. Only use this crate
     /// for Big-endian CPUs with your own full responsibility.
-    pub fn checked_div_uint(&self, rhs: T) -> Option<Self>
+    pub fn checked_div_uint<U>(&self, rhs: U) -> Option<Self>
+    where U: SmallUInt + Copy + Clone + Display + Debug + ToString
+            + Add<Output=U> + AddAssign + Sub<Output=U> + SubAssign
+            + Mul<Output=U> + MulAssign + Div<Output=U> + DivAssign
+            + Rem<Output=U> + RemAssign
+            + Shl<Output=U> + ShlAssign + Shr<Output=U> + ShrAssign
+            + BitAnd<Output=U> + BitAndAssign + BitOr<Output=U> + BitOrAssign
+            + BitXor<Output=U> + BitXorAssign + Not<Output=U>
+            + PartialEq + PartialOrd
     {
         let res = self.wrapping_div_uint(rhs);
         if res.is_divided_by_zero()
@@ -6310,7 +6731,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
             { Some(res) }
     }
 
-    // pub fn unchecked_div_uint(&self, rhs: T) -> Self
+    // pub fn unchecked_div_uint<U>(&self, rhs: U) -> Self
     /// Calculates the quotient when `self` is divided by `rhs`,
     /// which is `self` / `rhs`, assuming that `rhs` cannot be zero.
     /// 
@@ -6337,12 +6758,20 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// to use it for Big Endian CPUs for serious purpose. Only use this crate
     /// for Big-endian CPUs with your own full responsibility.
     #[inline]
-    pub fn unchecked_div_uint(&self, rhs: T) -> Self
+    pub fn unchecked_div_uint<U>(&self, rhs: U) -> Self
+    where U: SmallUInt + Copy + Clone + Display + Debug + ToString
+            + Add<Output=U> + AddAssign + Sub<Output=U> + SubAssign
+            + Mul<Output=U> + MulAssign + Div<Output=U> + DivAssign
+            + Rem<Output=U> + RemAssign
+            + Shl<Output=U> + ShlAssign + Shr<Output=U> + ShrAssign
+            + BitAnd<Output=U> + BitAndAssign + BitOr<Output=U> + BitOrAssign
+            + BitXor<Output=U> + BitXorAssign + Not<Output=U>
+            + PartialEq + PartialOrd
     {
         self.checked_div_uint(rhs).unwrap()
     }
 
-    // pub fn saturating_div_uint(&self, rhs: T) -> Self
+    // pub fn saturating_div_uint<U>(&self, rhs: U) -> Self
     /// Calculates the quotient when `self` is divided by `rhs`,
     /// which is `self` / `rhs`, saturating at the numeric bounds
     /// instead of overflowing.
@@ -6370,14 +6799,22 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// It is just experimental for Big Endian CPUs. So, you are not encouraged
     /// to use it for Big Endian CPUs for serious purpose. Only use this crate
     /// for Big-endian CPUs with your own full responsibility.
-    pub fn saturating_div_uint(&self, rhs: T) -> Self
+    pub fn saturating_div_uint<U>(&self, rhs: U) -> Self
+    where U: SmallUInt + Copy + Clone + Display + Debug + ToString
+            + Add<Output=U> + AddAssign + Sub<Output=U> + SubAssign
+            + Mul<Output=U> + MulAssign + Div<Output=U> + DivAssign
+            + Rem<Output=U> + RemAssign
+            + Shl<Output=U> + ShlAssign + Shr<Output=U> + ShrAssign
+            + BitAnd<Output=U> + BitAndAssign + BitOr<Output=U> + BitOrAssign
+            + BitXor<Output=U> + BitXorAssign + Not<Output=U>
+            + PartialEq + PartialOrd
     {
         let (mut quotient, _) = self.divide_fully_uint(rhs);
         quotient.reset_inifinity();
         quotient
     }
 
-    // pub fn saturating_div_assign_uint(&mut self, rhs: T) -> Self
+    // pub fn saturating_div_assign_uint<U>(&mut self, rhs: U) -> Self
     /// Calculates the quotient when `self` is divided by `rhs`,
     /// which is `self` / `rhs`, saturating at the numeric bounds
     /// instead of overflowing, and assigns the quotient to `self` back.
@@ -6401,12 +6838,20 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// to use it for Big Endian CPUs for serious purpose. Only use this crate
     /// for Big-endian CPUs with your own full responsibility.
     #[inline]
-    pub fn saturating_div_assign_uint(&mut self, rhs: T)
+    pub fn saturating_div_assign_uint<U>(&mut self, rhs: U)
+    where U: SmallUInt + Copy + Clone + Display + Debug + ToString
+            + Add<Output=U> + AddAssign + Sub<Output=U> + SubAssign
+            + Mul<Output=U> + MulAssign + Div<Output=U> + DivAssign
+            + Rem<Output=U> + RemAssign
+            + Shl<Output=U> + ShlAssign + Shr<Output=U> + ShrAssign
+            + BitAnd<Output=U> + BitAndAssign + BitOr<Output=U> + BitOrAssign
+            + BitXor<Output=U> + BitXorAssign + Not<Output=U>
+            + PartialEq + PartialOrd
     {
         *self = self.saturating_div_uint(rhs);
     }
 
-    // pub fn wrapping_rem_uint(&self, rhs: T) -> T
+    // pub fn wrapping_rem_uint<U>(&self, rhs: U) -> U
     /// Calculates the remainder when `self` is divided by `rhs`,
     /// which is `self` % `rhs`.
     /// 
@@ -6439,13 +6884,21 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// It is just experimental for Big Endian CPUs. So, you are not encouraged
     /// to use it for Big Endian CPUs for serious purpose. Only use this crate
     /// for Big-endian CPUs with your own full responsibility.
-    pub fn wrapping_rem_uint(&self, rhs: T) -> T
+    pub fn wrapping_rem_uint<U>(&self, rhs: U) -> U
+    where U: SmallUInt + Copy + Clone + Display + Debug + ToString
+            + Add<Output=U> + AddAssign + Sub<Output=U> + SubAssign
+            + Mul<Output=U> + MulAssign + Div<Output=U> + DivAssign
+            + Rem<Output=U> + RemAssign
+            + Shl<Output=U> + ShlAssign + Shr<Output=U> + ShrAssign
+            + BitAnd<Output=U> + BitAndAssign + BitOr<Output=U> + BitOrAssign
+            + BitXor<Output=U> + BitXorAssign + Not<Output=U>
+            + PartialEq + PartialOrd
     {
         let (_, remainder) = self.divide_fully_uint(rhs);
         remainder
     }
 
-    // pub fn wrapping_rem_assign_uint(&mut self, rhs: T)
+    // pub fn wrapping_rem_assign_uint<U>(&mut self, rhs: U)
     /// Calculates the remainder when `self` is divided by `rhs`,
     /// which is `self` % `rhs`, and returns the remainder to `self` back.
     /// 
@@ -6469,15 +6922,23 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// It is just experimental for Big Endian CPUs. So, you are not encouraged
     /// to use it for Big Endian CPUs for serious purpose. Only use this crate
     /// for Big-endian CPUs with your own full responsibility.
-    pub fn wrapping_rem_assign_uint(&mut self, rhs: T)
+    pub fn wrapping_rem_assign_uint<U>(&mut self, rhs: U)
+    where U: SmallUInt + Copy + Clone + Display + Debug + ToString
+            + Add<Output=U> + AddAssign + Sub<Output=U> + SubAssign
+            + Mul<Output=U> + MulAssign + Div<Output=U> + DivAssign
+            + Rem<Output=U> + RemAssign
+            + Shl<Output=U> + ShlAssign + Shr<Output=U> + ShrAssign
+            + BitAnd<Output=U> + BitAndAssign + BitOr<Output=U> + BitOrAssign
+            + BitXor<Output=U> + BitXorAssign + Not<Output=U>
+            + PartialEq + PartialOrd
     {
         let (_, remainder) = self.divide_fully_uint(rhs);
         self.set_uint(remainder);
-        if rhs == T::zero()
+        if rhs == U::zero()
             { self.set_divided_by_zero(); }
     }
 
-    // pub fn overflowing_rem_uint(&self, rhs: T) -> (T, bool)
+    // pub fn overflowing_rem_uint<U>(&self, rhs: U) -> (U, bool)
     /// Calculates the remainder when `self` is divided by `rhs`,
     /// which is `self` % `rhs`.
     /// 
@@ -6503,13 +6964,21 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// It is just experimental for Big Endian CPUs. So, you are not encouraged
     /// to use it for Big Endian CPUs for serious purpose. Only use this crate
     /// for Big-endian CPUs with your own full responsibility.
-    pub fn overflowing_rem_uint(&self, rhs: T) -> (T, bool)
+    pub fn overflowing_rem_uint<U>(&self, rhs: U) -> (U, bool)
+    where U: SmallUInt + Copy + Clone + Display + Debug + ToString
+            + Add<Output=U> + AddAssign + Sub<Output=U> + SubAssign
+            + Mul<Output=U> + MulAssign + Div<Output=U> + DivAssign
+            + Rem<Output=U> + RemAssign
+            + Shl<Output=U> + ShlAssign + Shr<Output=U> + ShrAssign
+            + BitAnd<Output=U> + BitAndAssign + BitOr<Output=U> + BitOrAssign
+            + BitXor<Output=U> + BitXorAssign + Not<Output=U>
+            + PartialEq + PartialOrd
     {
         let (_, remainder) = self.divide_fully_uint(rhs);
         (remainder, false)
     }
 
-    // pub fn overflowing_rem_assign_uint(&mut self, rhs: T) -> bool
+    // pub fn overflowing_rem_assign_uint<U>(&mut self, rhs: U) -> bool
     /// Calculates the remainder when `self` is divided by `rhs`,
     /// which is `self` % `rhs`, and returns the remainder to `self` back.
     /// 
@@ -6534,16 +7003,24 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// It is just experimental for Big Endian CPUs. So, you are not encouraged
     /// to use it for Big Endian CPUs for serious purpose. Only use this crate
     /// for Big-endian CPUs with your own full responsibility.
-    pub fn overflowing_rem_assign_uint(&mut self, rhs: T) -> bool
+    pub fn overflowing_rem_assign_uint<U>(&mut self, rhs: U) -> bool
+    where U: SmallUInt + Copy + Clone + Display + Debug + ToString
+            + Add<Output=U> + AddAssign + Sub<Output=U> + SubAssign
+            + Mul<Output=U> + MulAssign + Div<Output=U> + DivAssign
+            + Rem<Output=U> + RemAssign
+            + Shl<Output=U> + ShlAssign + Shr<Output=U> + ShrAssign
+            + BitAnd<Output=U> + BitAndAssign + BitOr<Output=U> + BitOrAssign
+            + BitXor<Output=U> + BitXorAssign + Not<Output=U>
+            + PartialEq + PartialOrd
     {
         let (_, remainder) = self.divide_fully_uint(rhs);
         self.set_uint(remainder);
-        if rhs == T::zero()
+        if rhs == U::zero()
             { self.set_divided_by_zero(); }
         false
     }
 
-    // pub fn checked_rem_uint(&self, rhs: T) -> Option<T>
+    // pub fn checked_rem_uint<U>(&self, rhs: U) -> Option<U>
     /// Calculates the remainder when `self` is divided by `rhs`,
     /// which is `self` % `rhs`.
     /// 
@@ -6564,16 +7041,24 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// It is just experimental for Big Endian CPUs. So, you are not encouraged
     /// to use it for Big Endian CPUs for serious purpose. Only use this crate
     /// for Big-endian CPUs with your own full responsibility.
-    pub fn checked_rem_uint(&self, rhs: T) -> Option<T>
+    pub fn checked_rem_uint<U>(&self, rhs: U) -> Option<U>
+    where U: SmallUInt + Copy + Clone + Display + Debug + ToString
+            + Add<Output=U> + AddAssign + Sub<Output=U> + SubAssign
+            + Mul<Output=U> + MulAssign + Div<Output=U> + DivAssign
+            + Rem<Output=U> + RemAssign
+            + Shl<Output=U> + ShlAssign + Shr<Output=U> + ShrAssign
+            + BitAnd<Output=U> + BitAndAssign + BitOr<Output=U> + BitOrAssign
+            + BitXor<Output=U> + BitXorAssign + Not<Output=U>
+            + PartialEq + PartialOrd
     {
         let (_, remainder) = self.divide_fully_uint(rhs);
-        if rhs == T::zero()
+        if rhs == U::zero()
             { None }
         else
             { Some(remainder) }
     }
 
-    // pub fn unchecked_rem_uint(&self, rhs: T) -> T
+    // pub fn unchecked_rem_uint<U>(&self, rhs: U) -> U
     /// Calculates the remainder when `self` is divided by `rhs`,
     /// which is `self` % `rhs`, assuming `rhs` cannot be zero.
     /// 
@@ -6595,12 +7080,20 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// to use it for Big Endian CPUs for serious purpose. Only use this crate
     /// for Big-endian CPUs with your own full responsibility.
     #[inline]
-    pub fn unchecked_rem_uint(&self, rhs: T) -> T
+    pub fn unchecked_rem_uint<U>(&self, rhs: U) -> U
+    where U: SmallUInt + Copy + Clone + Display + Debug + ToString
+            + Add<Output=U> + AddAssign + Sub<Output=U> + SubAssign
+            + Mul<Output=U> + MulAssign + Div<Output=U> + DivAssign
+            + Rem<Output=U> + RemAssign
+            + Shl<Output=U> + ShlAssign + Shr<Output=U> + ShrAssign
+            + BitAnd<Output=U> + BitAndAssign + BitOr<Output=U> + BitOrAssign
+            + BitXor<Output=U> + BitXorAssign + Not<Output=U>
+            + PartialEq + PartialOrd
     {
         self.checked_rem_uint(rhs).unwrap()
     }
 
-    // pub fn saturating_rem_uint(&self, rhs: T) -> T
+    // pub fn saturating_rem_uint<U>(&self, rhs: U) -> U
     /// Calculates the remainder when `self` is divided by `rhs`,
     /// which is `self` % `rhs`
     /// 
@@ -6625,13 +7118,21 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// It is just experimental for Big Endian CPUs. So, you are not encouraged
     /// to use it for Big Endian CPUs for serious purpose. Only use this crate
     /// for Big-endian CPUs with your own full responsibility.
-    pub fn saturating_rem_uint(&self, rhs: T) -> T
+    pub fn saturating_rem_uint<U>(&self, rhs: U) -> U
+    where U: SmallUInt + Copy + Clone + Display + Debug + ToString
+            + Add<Output=U> + AddAssign + Sub<Output=U> + SubAssign
+            + Mul<Output=U> + MulAssign + Div<Output=U> + DivAssign
+            + Rem<Output=U> + RemAssign
+            + Shl<Output=U> + ShlAssign + Shr<Output=U> + ShrAssign
+            + BitAnd<Output=U> + BitAndAssign + BitOr<Output=U> + BitOrAssign
+            + BitXor<Output=U> + BitXorAssign + Not<Output=U>
+            + PartialEq + PartialOrd
     {
         let (_, remainder) = self.divide_fully_uint(rhs);
         remainder
     }
 
-    // pub fn saturating_rem_assign_uint(&mut self, rhs: T)
+    // pub fn saturating_rem_assign_uint<U>(&mut self, rhs: U)
     /// Calculates the remainder when `self` is divided by `rhs`,
     /// which is `self` % `rhs`, and assigns the remainder to `self` back.
     /// 
@@ -6651,11 +7152,19 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// It is just experimental for Big Endian CPUs. So, you are not encouraged
     /// to use it for Big Endian CPUs for serious purpose. Only use this crate
     /// for Big-endian CPUs with your own full responsibility.
-    pub fn saturating_rem_assign_uint(&mut self, rhs: T)
+    pub fn saturating_rem_assign_uint<U>(&mut self, rhs: U)
+    where U: SmallUInt + Copy + Clone + Display + Debug + ToString
+            + Add<Output=U> + AddAssign + Sub<Output=U> + SubAssign
+            + Mul<Output=U> + MulAssign + Div<Output=U> + DivAssign
+            + Rem<Output=U> + RemAssign
+            + Shl<Output=U> + ShlAssign + Shr<Output=U> + ShrAssign
+            + BitAnd<Output=U> + BitAndAssign + BitOr<Output=U> + BitOrAssign
+            + BitXor<Output=U> + BitXorAssign + Not<Output=U>
+            + PartialEq + PartialOrd
     {
         let (_, remainder) = self.divide_fully_uint(rhs);
         self.set_uint(remainder);
-        if rhs == T::zero()
+        if rhs == U::zero()
             { self.set_divided_by_zero(); }
     }
 
@@ -6758,7 +7267,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// The argument `exp` is the primitive unsigned integer type.
     /// 
     /// # Counterpart Method
-    /// If `rhs` is `BigUInt` type number, use the mentod `pow()` instead.
+    /// If `rhs` is `BigUInt` type number, use the method `pow()` instead.
     /// 
     /// # Example
     /// ```
@@ -6808,7 +7317,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// The argument `exp` is the primitive unsigned integer type.
     /// 
     /// # Counterpart Method
-    /// If `rhs` is the `BigUInt` type number, use the mentod `pow_assign()`
+    /// If `rhs` is the `BigUInt` type number, use the method `pow_assign()`
     /// instead.
     /// 
     /// # Example
@@ -6867,7 +7376,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// internally.
     /// 
     /// # Counterpart Method
-    /// If `rhs` is `BigUInt` type number, use the mentod `pow()` instead.
+    /// If `rhs` is `BigUInt` type number, use the method `pow()` instead.
     /// 
     /// # Example
     /// ```
@@ -6921,7 +7430,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// internally.
     /// 
     /// # Counterpart Method
-    /// If `rhs` is the `BigUInt` type number, use the mentod `pow_assign()`
+    /// If `rhs` is the `BigUInt` type number, use the method `pow_assign()`
     /// instead.
     /// 
     /// # Example
@@ -6983,6 +7492,129 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
         }
     }
 
+    // pub fn modular_pow_uint<U>(&self, exp: U, modulo: &Self) -> Self
+    /// Raises `BigUInt` type number to the power of exp, using exponentiation
+    /// of type `U` by squaring, wrapping around at `modulo` of the
+    /// type `U`. The type `U` has the trait `SmallUInt`.
+    /// 
+    /// # Panics
+    /// If `size_of::<T>() * N` < `size_of::<U>()`, This method may panic
+    /// or its behavior may undefined though it may not panic.
+    /// 
+    /// # Output
+    /// It returns the result of `self` raised to the power of `exp`, wrapping
+    /// around at `modulo`.
+    /// 
+    /// # Argument
+    /// The argument `exp` is the primitive unsigned integer type.
+    /// 
+    /// # Feature
+    /// Wrapping (modular) exponentiation, wrapping around at `modulo`.
+    /// 
+    /// # Counterpart Method
+    /// If `rhs` is bigger than `u128`, use the method `modular_pow()` instead.
+    /// 
+    /// # Example
+    /// ```
+    /// use Cryptocol::define_utypes_with;
+    /// define_utypes_with!(u128);
+    /// 
+    /// let a = u256::from_uint(123_u8);
+    /// 
+    /// // normal exponentiation
+    /// let b = a.wrapping_pow_uint(37_u8);
+    /// println!("123 ** 37 = {}", b);
+    /// assert_eq!(b.to_string(), "96282738670724731919703551810636030185721623691319861614277235426286836107467");
+    /// 
+    /// // wrapping (modular) exponentiation
+    /// let c = a.wrapping_pow_uint(38_u8);
+    /// println!("123 ** 38 = {}", c);
+    /// assert_eq!(c.to_string(), "31983754292890092919296401822065111810221278137005446531426388626141617944969");
+    /// 
+    /// // evidence of wrapping (modular) exponentiation
+    /// assert!(b > c);
+    /// ```
+    pub fn modular_pow_uint<U>(&self, exp: U, modulo: &Self) -> Self
+    where U: SmallUInt + Copy + Clone + Display + Debug + ToString
+            + Add<Output=U> + AddAssign + Sub<Output=U> + SubAssign
+            + Mul<Output=U> + MulAssign + Div<Output=U> + DivAssign
+            + Rem<Output=U> + RemAssign
+            + Shl<Output=U> + ShlAssign + Shr<Output=U> + ShrAssign
+            + BitAnd<Output=U> + BitAndAssign + BitOr<Output=U> + BitOrAssign
+            + BitXor<Output=U> + BitXorAssign + Not<Output=U>
+            + PartialEq + PartialOrd
+    {
+        let mut res = self.clone();
+        res.modular_pow_assign_uint(exp, modulo);
+        res
+    }
+
+    // pub fn modular_pow_assign_uint<U>(&mut self, exp: U, modulo: &Self)
+    /// Raises `BigUInt` type number to the power of `exp`, using exponentiation
+    /// of primitive unsigned integer type by squaring, wrapping around at
+    /// `modulo`, and assign the result to `self` back.
+    /// 
+    /// # Panics
+    /// If `size_of::<T>() * N` < `size_of::<U>()`, This method may panic
+    /// or its behavior may undefined though it may not panic.
+    /// 
+    /// # Argument
+    /// The argument `exp` is the primitive unsigned integer type.
+    /// 
+    /// # Feature
+    /// Wrapping (modular) exponentiation, wrapping around at `modulo`.
+    /// 
+    /// # Counterpart Method
+    /// If `rhs` is bigger than `u128`, the method `modular_pow_assign()`
+    /// is proper rather than this method.
+    /// 
+    /// # Example
+    /// ```
+    /// use Cryptocol::define_utypes_with;
+    /// define_utypes_with!(u128);
+    /// 
+    /// let mut a = u256::from_uint(234_u8);
+    /// let mut exp = u256::from_uint(34_u8);
+    /// 
+    /// // normal exponentiation
+    /// a.wrapping_pow_assign(&exp);
+    /// println!("234 ** 34 = {}", a);
+    /// assert_eq!(a.to_string(), "101771369680718065636717400052436696519017873276976456689251925337442881634304");
+    /// 
+    /// // wrapping (modular) exponentiation
+    /// let old = a.clone();
+    /// a = u256::from_uint(234_u8);
+    /// exp += 1;
+    /// a.wrapping_pow_assign(&exp);
+    /// println!("234 ** 35 = {}", a);
+    /// assert_eq!(a.to_string(), "77122211638207297159819685489165875529835490356175237196145807339442726240256");
+    /// 
+    /// // evidence of wrapping (modular) exponentiation
+    /// assert!(old > a);
+    /// ```
+    pub fn modular_pow_assign_uint<U>(&mut self, exp: U, modulo: &Self)
+    where U: SmallUInt + Copy + Clone + Display + Debug + ToString
+            + Add<Output=U> + AddAssign + Sub<Output=U> + SubAssign
+            + Mul<Output=U> + MulAssign + Div<Output=U> + DivAssign
+            + Rem<Output=U> + RemAssign
+            + Shl<Output=U> + ShlAssign + Shr<Output=U> + ShrAssign
+            + BitAnd<Output=U> + BitAndAssign + BitOr<Output=U> + BitOrAssign
+            + BitXor<Output=U> + BitXorAssign + Not<Output=U>
+            + PartialEq + PartialOrd
+    {
+        if *self >= *modulo
+            { self.wrapping_rem_assign(modulo); }
+        let mut res = Self::one();
+        let mut mexp = exp;
+        while mexp > U::zero()
+        {
+            if mexp.is_odd()
+                { res.modular_mul_assign(self, modulo); }
+            self.modular_mul_assign(&self.clone(), modulo);
+            mexp >>= U::one();
+        }
+        *self = res;
+    }
 
     // pub fn ilog_uint<U>(&self, base: U) -> Self
     /// Calculates the logarithm of the number with respect to a `base`.
@@ -7114,7 +7746,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// # Counterpart Method
     /// The method `carrying_add_uint()` is a bit faster than this method
     /// `carrying_add()`. If `rhs` is primitive unsigned integral data type
-    /// such as u8, u16, u32, u64, u128 and usize. use the mentod `pow_uint()`.
+    /// such as u8, u16, u32, u64, u128 and usize, use the method `pow_uint()`.
     /// 
     /// # Example
     /// ```
@@ -7171,7 +7803,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// # Counterpart Method
     /// The method `carrying_add_assign_uint()` is a bit faster than this
     /// method `carrying_add_assign()`. If `rhs` is primitive unsigned integral
-    /// data type such as u8, u16, u32, u64, u128 and usize. use the mentod
+    /// data type such as u8, u16, u32, u64, u128 and usize, use the method
     /// `carrying_add_assign_uint()`.
     /// 
     /// # Example
@@ -7228,7 +7860,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// # Counterpart Method
     /// The method `wrapping_add_uint()` is a bit faster than this
     /// method `wrapping_add()`. If `rhs` is primitive unsigned integral
-    /// data type such as u8, u16, u32, u64, u128 and usize. use the mentod
+    /// data type such as u8, u16, u32, u64, u128 and usize, use the method
     /// `wrapping_add_uint()`.
     /// 
     /// # Example
@@ -7274,7 +7906,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// # Counterpart Method
     /// The method `wrapping_add_assign_uint()` is a bit faster than this
     /// method `wrapping_add_assign()`. If `rhs` is primitive unsigned integral
-    /// data type such as u8, u16, u32, u64, u128 and usize. use the mentod
+    /// data type such as u8, u16, u32, u64, u128 and usize, use the method
     /// `wrapping_add_assign_uint()`.
     /// 
     /// # Example
@@ -7340,7 +7972,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// # Counterpart Method
     /// The method `overflowing_add_uint()` is a bit faster than this
     /// method `overflowing_add()`. If `rhs` is primitive unsigned integral
-    /// data type such as u8, u16, u32, u64, u128 and usize. use the mentod
+    /// data type such as u8, u16, u32, u64, u128 and usize, use the method
     /// `overflowing_add_uint()`.
     /// 
     /// # Example
@@ -7368,7 +8000,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// # Counterpart Method
     /// The method `overflowing_add_assign_uint()` is a bit faster than this
     /// method `overflowing_add_assign()`. If `rhs` is primitive unsigned integral
-    /// data type such as u8, u16, u32, u64, u128 and usize. use the mentod
+    /// data type such as u8, u16, u32, u64, u128 and usize, use the method
     /// `overflowing_add_assign_uint()`.
     /// 
     /// # Example
@@ -7396,7 +8028,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// # Counterpart Method
     /// The method `checked_add_uint()` is a bit faster than this
     /// method `checked_add()`. If `rhs` is primitive unsigned integral
-    /// data type such as u8, u16, u32, u64, u128 and usize. use the mentod
+    /// data type such as u8, u16, u32, u64, u128 and usize, use the method
     /// `checked_add_uint()`.
     /// 
     /// # Example
@@ -7432,7 +8064,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// # Counterpart Method
     /// The method `unchecked_add_uint()` is a bit faster than this
     /// method `unchecked_add()`. If `rhs` is primitive unsigned integral
-    /// data type such as u8, u16, u32, u64, u128 and usize. use the mentod
+    /// data type such as u8, u16, u32, u64, u128 and usize, use the method
     /// `unchecked_add_uint()`.
     /// 
     /// # Example
@@ -7461,7 +8093,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// # Counterpart Method
     /// The method `saturating_add_uint()` is a bit faster than this
     /// method `saturating_add()`. If `rhs` is primitive unsigned integral
-    /// data type such as u8, u16, u32, u64, u128 and usize. use the mentod
+    /// data type such as u8, u16, u32, u64, u128 and usize, use the method
     /// `saturating_add_uint()`.
     /// 
     /// # Example
@@ -7487,7 +8119,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// # Counterpart Method
     /// The method `saturating_add_assign_uint()` is a bit faster than this
     /// method `saturating_add_assign()`. If `rhs` is primitive unsigned integral
-    /// data type such as u8, u16, u32, u64, u128 and usize. use the mentod
+    /// data type such as u8, u16, u32, u64, u128 and usize, use the method
     /// `saturating_add_assign_uint()`.
     /// 
     /// # Example
@@ -7503,6 +8135,100 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     {
         if self.overflowing_add_assign(rhs)
             { self.set_max(); }
+    }
+
+    // pub fn modular_add(&self, rhs: &Self, modulo: &Self) -> Self
+    /// Computes (`self` + `rhs`) % `modulo`, wrapping around at `modulo` of the
+    /// type `Self` instead of overflowing.
+    /// 
+    /// # Output
+    /// It returns the modulo-sum (`self` + `rhs`) % `modulo` with wrapping
+    /// (modular) addition at `modulo`.
+    /// 
+    /// # Feature
+    /// Wrapping (modular) addition at `modulo`. The differences between this
+    /// method `modular_add()` and the method `wrapping_add()` are, first,
+    /// where wrapping around happens, and, second, whether or not `OVERFLOW`
+    /// flag is set. First, this method wraps araound at `modulo` while the
+    /// method `wrapping_add()` wraps araound at maximum value. Second, this
+    /// method does not set `OVERFLOW` flag even if wrapping around
+    /// happens while the method `wrapping_add()` sets `OVERFLOW` flag when
+    /// wrapping around happens.
+    /// 
+    /// # Counterpart Method
+    /// The method `modular_add_uint()` is a bit faster than this
+    /// method `modular_add()`. If `rhs` is primitive unsigned integral
+    /// data type such as u8, u16, u32, u64, u128 and usize, use the method
+    /// `modular_add_uint()`.
+    /// 
+    /// # Example
+    /// ```
+    /// // Todo
+    /// ```
+    /// 
+    /// # Big-endian issue
+    /// It is just experimental for Big Endian CPUs. So, you are not encouraged
+    /// to use it for Big Endian CPUs for serious purpose. Only use this crate
+    /// for Big-endian CPUs with your own full responsibility.
+    pub fn modular_add(&self, rhs: &Self, modulo: &Self) -> Self
+    {
+        let mut res = self.clone();
+        res.modular_add_assign(rhs, modulo);
+        res
+    }
+
+    // pub fn modular_add_assign(&mut self, rhs: &Self, modulo: &Self)
+    /// Computes (`self` + `rhs`) % `modulo`, wrapping around at `modulo`
+    /// of the type `Self` instead of overflowing, and then, assign the result
+    /// back to `self`.
+    /// 
+    /// # Feature
+    /// Wrapping (modular) addition at `modulo`. The differences between this
+    /// method `modular_add_assign()` and the method `wrapping_add_assign()`
+    /// are, first, where wrapping around happens, and, second, whether or not
+    /// `OVERFLOW` flag is set. First, this method wraps araound at `modulo`
+    /// while the method `wrapping_add_assign()` wraps araound at maximum value.
+    /// Second, this method does not set `OVERFLOW` flag even if wrapping around
+    /// happens, while the method `wrapping_add_assign()` sets `OVERFLOW` flag
+    /// when wrapping around happens.
+    /// 
+    /// # Counterpart Method
+    /// The method `modular_add_assign_uint()` is a bit faster than this
+    /// method `modular_add_assign()`. If `rhs` is primitive unsigned integral
+    /// data type such as u8, u16, u32, u64, u128 and usize, use the method
+    /// `modular_add_assign_uint()`.
+    /// 
+    /// # Example
+    /// ```
+    /// // Todo
+    /// ```
+    /// 
+    /// # Big-endian issue
+    /// It is just experimental for Big Endian CPUs. So, you are not encouraged
+    /// to use it for Big Endian CPUs for serious purpose. Only use this crate
+    /// for Big-endian CPUs with your own full responsibility.
+    pub fn modular_add_assign(&mut self, rhs: &Self, modulo: &Self)
+    {
+        if *self >= *modulo
+            { self.wrapping_rem_assign(modulo); }
+        if *rhs < *modulo    // In this case, it does not cause cloning for performance.
+        {
+            // let mrhs = rhs.clone(); // Does not clone for performance
+            let diff = modulo.wrapping_sub(rhs);
+            if *self >= diff
+                { self.wrapping_sub_assign(&diff); }
+            else
+                { self.wrapping_add_assign(rhs); }
+        }
+        else
+        {
+            let mrhs = rhs.wrapping_rem(modulo);
+            let diff = modulo.wrapping_sub(&mrhs);
+            if *self >= diff
+                { self.wrapping_sub_assign(&diff); }
+            else
+                { self.wrapping_add_assign(&mrhs); }
+        }
     }
 
 
@@ -7528,7 +8254,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// # Counterpart Method
     /// The method `borrowing_sub_uint()` is a bit faster than this
     /// method `borrowing_sub()`. If `rhs` is primitive unsigned integral
-    /// data type such as u8, u16, u32, u64, u128 and usize. use the mentod
+    /// data type such as u8, u16, u32, u64, u128 and usize, use the method
     /// `borrowing_sub_uint()`.
     /// 
     /// # Example
@@ -7566,7 +8292,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// # Counterpart Method
     /// The method `borrowing_sub_assign_uint()` is a bit faster than this
     /// method `borrowing_sub_assign()`. If `rhs` is primitive unsigned integral
-    /// data type such as u8, u16, u32, u64, u128 and usize. use the mentod
+    /// data type such as u8, u16, u32, u64, u128 and usize, use the method
     /// `borrowing_sub_assign_uint()`.
     /// 
     /// # Example
@@ -7604,7 +8330,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// # Counterpart Method
     /// The method `wrapping_sub_uint()` is a bit faster than this
     /// method `wrapping_sub()`. If `rhs` is primitive unsigned integral
-    /// data type such as u8, u16, u32, u64, u128 and usize. use the mentod
+    /// data type such as u8, u16, u32, u64, u128 and usize, use the method
     /// `wrapping_sub_uint()`.
     /// 
     /// # Example
@@ -7632,7 +8358,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// # Counterpart Method
     /// The method `wwrapping_sub_assign_uint()` is a bit faster than this
     /// method `wrapping_sub_assign()`. If `rhs` is primitive unsigned integral
-    /// data type such as u8, u16, u32, u64, u128 and usize. use the mentod
+    /// data type such as u8, u16, u32, u64, u128 and usize, use the method
     /// `wwrapping_sub_assign_uint()`.
     /// 
     /// # Example
@@ -7680,7 +8406,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// # Counterpart Method
     /// The method `overflowing_sub_uint()` is a bit faster than this
     /// method `overflowing_sub()`. If `rhs` is primitive unsigned integral
-    /// data type such as u8, u16, u32, u64, u128 and usize. use the mentod
+    /// data type such as u8, u16, u32, u64, u128 and usize, use the method
     /// `overflowing_sub_uint()`.
     /// 
     /// # Example
@@ -7708,8 +8434,8 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// # Counterpart Method
     /// The method `overflowing_sub_assign_uint()` is a bit faster than this
     /// method `overflowing_sub_assign()`. If `rhs` is primitive unsigned
-    /// integral data type such as u8, u16, u32, u64, u128 and usize.
-    /// use the mentod `overflowing_sub_assign_uint()`.
+    /// integral data type such as u8, u16, u32, u64, u128 and usize,
+    /// use the method `overflowing_sub_assign_uint()`.
     /// 
     /// # Example
     /// ```
@@ -7737,8 +8463,8 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// # Counterpart Method
     /// The method `checked_sub_uint()` is a bit faster than this
     /// method `checked_sub()`. If `rhs` is primitive unsigned
-    /// integral data type such as u8, u16, u32, u64, u128 and usize.
-    /// use the mentod `checked_sub_uint()`.
+    /// integral data type such as u8, u16, u32, u64, u128 and usize,
+    /// use the method `checked_sub_uint()`.
     /// 
     /// # Example
     /// ```
@@ -7773,8 +8499,8 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// # Counterpart Method
     /// The method `unchecked_sub_uint()` is a bit faster than this
     /// method `unchecked_sub()`. If `rhs` is primitive unsigned
-    /// integral data type such as u8, u16, u32, u64, u128 and usize.
-    /// use the mentod `unchecked_sub_uint()`.
+    /// integral data type such as u8, u16, u32, u64, u128 and usize,
+    /// use the method `unchecked_sub_uint()`.
     /// 
     /// # Example
     /// ```
@@ -7802,8 +8528,8 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// # Counterpart Method
     /// The method `saturating_sub_uint()` is a bit faster than this
     /// method `saturating_sub()`. If `rhs` is primitive unsigned
-    /// integral data type such as u8, u16, u32, u64, u128 and usize.
-    /// use the mentod `saturating_sub()`.
+    /// integral data type such as u8, u16, u32, u64, u128 and usize,
+    /// use the method `saturating_sub()`.
     /// 
     /// # Example
     /// ```
@@ -7832,8 +8558,8 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// # Counterpart Method
     /// The method `saturating_sub_assign_uint()` is a bit faster than this
     /// method `saturating_sub_assign()`. If `rhs` is primitive unsigned
-    /// integral data type such as u8, u16, u32, u64, u128 and usize.
-    /// use the mentod `saturating_sub_assign_uint()`.
+    /// integral data type such as u8, u16, u32, u64, u128 and usize,
+    /// use the method `saturating_sub_assign_uint()`.
     /// 
     /// # Example
     /// ```
@@ -7859,8 +8585,8 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// # Counterpart Method
     /// The method `abs_diff_uint()` is a bit faster than this
     /// method `abs_diff()`. If `rhs` is primitive unsigned
-    /// integral data type such as u8, u16, u32, u64, u128 and usize.
-    /// use the mentod `abs_diff_uint()`.
+    /// integral data type such as u8, u16, u32, u64, u128 and usize,
+    /// use the method `abs_diff_uint()`.
     /// 
     /// # Example
     /// ```
@@ -7884,6 +8610,108 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
             { other.wrapping_sub(self) }
         else
             { self.wrapping_sub(other) }
+    }
+
+    // pub fn modular_sub(&self, rhs: &Self, modulo: &Self) -> Self
+    /// Computes (`self` - `rhs`) % `modulo`, wrapping around at `modulo` of the
+    /// type `Self` instead of underflowing.
+    /// 
+    /// # Output
+    /// It returns the modulo-difference (`self` - `rhs`) % `modulo` with
+    /// wrapping (modular) subtraction at `modulo`.
+    /// 
+    /// # Feature
+    /// Wrapping (modular) subtraction at `modulo`. The differences between this
+    /// method `modular_sub()` and the method `wrapping_sub()` are, first,
+    /// where wrapping around happens, and, second, whether or not `UNDERFLOW`
+    /// flag is set. First, this method wraps araound at `modulo` while the
+    /// method `wrapping_sub()` wraps araound at maximum value. Second, this
+    /// method does not set `UNDERFLOW` flag even if wrapping around
+    /// happens while the method `wrapping_sub()` sets `UNDERFLOW` flag when
+    /// wrapping around happens.
+    /// 
+    /// # Counterpart Method
+    /// The method `modular_sub_uint()` is a bit faster than this
+    /// method `modular_sub()`. If `rhs` is primitive unsigned integral
+    /// data type such as u8, u16, u32, u64, u128 and usize, use the method
+    /// `modular_sub_uint()`.
+    /// 
+    /// # Example
+    /// ```
+    /// // Todo
+    /// ```
+    /// 
+    /// # Big-endian issue
+    /// It is just experimental for Big Endian CPUs. So, you are not encouraged
+    /// to use it for Big Endian CPUs for serious purpose. Only use this crate
+    /// for Big-endian CPUs with your own full responsibility.
+    pub fn modular_sub(&self, rhs: &Self, modulo: &Self) -> Self
+    {
+        let mut res = self.clone();
+        res.modular_sub_assign(rhs, modulo);
+        res
+    }
+
+    // pub fn modular_sub_assign(&mut self, rhs: &Self, modulo: &Self)
+    /// Computes (`self` - `rhs`) % `modulo`, wrapping around at `modulo`
+    /// of the type `Self` instead of underflowing, and then, assign the result
+    /// back to `self`.
+    /// 
+    /// # Feature
+    /// Wrapping (modular) subtraction at `modulo`. The differences between this
+    /// method `modular_sub_assign()` and the method `wrapping_sub_assign()`
+    /// are, first, where wrapping around happens, and, second, whether or not
+    /// `UNDERFLOW` flag is set. First, this method wraps araound at `modulo`
+    /// while the method `wrapping_sub_assign()` wraps araound at maximum value.
+    /// Second, this method does not set `UNDERFLOW` flag even if wrapping
+    /// around happens, while the method `wrapping_sub_assign()` sets
+    /// `UNDERFLOW` flag when wrapping around happens.
+    /// 
+    /// # Counterpart Method
+    /// The method `modular_sub_assign_uint()` is a bit faster than this
+    /// method `modular_sub_assign()`. If `rhs` is primitive unsigned integral
+    /// data type such as u8, u16, u32, u64, u128 and usize, use the method
+    /// `modular_sub_assign_uint()`.
+    /// 
+    /// # Example
+    /// ```
+    /// // Todo
+    /// ```
+    /// 
+    /// # Big-endian issue
+    /// It is just experimental for Big Endian CPUs. So, you are not encouraged
+    /// to use it for Big Endian CPUs for serious purpose. Only use this crate
+    /// for Big-endian CPUs with your own full responsibility.
+    pub fn modular_sub_assign(&mut self, rhs: &Self, modulo: &Self)
+    {
+        if *self >= *modulo
+            { self.wrapping_rem_assign(modulo); }
+        if *rhs < *modulo    // In this case, it does not cause cloning for performance.
+        {
+            // let mrhs = rhs.clone(); // Does not clone for performance
+            if *self >= *rhs
+            {
+                self.wrapping_sub_assign(rhs);
+            }
+            else
+            {
+                let diff = modulo.wrapping_sub(rhs);
+                self.wrapping_add_assign(&diff);
+            }
+        }
+        else
+        {
+            let mrhs = rhs.wrapping_rem(modulo);
+            if *self >= *rhs
+            {
+                self.wrapping_sub_assign(&mrhs);
+            }
+            else
+            {
+                let diff = modulo.wrapping_sub(&mrhs);
+                self.wrapping_add_assign(&diff);
+            }
+        }
     }
 
 
@@ -7914,8 +8742,8 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// 
     /// The method `carrying_mul_uint()` is a bit faster than this
     /// method `carrying_mul()`. If `rhs` is primitive unsigned
-    /// integral data type such as u8, u16, u32, u64, u128 and usize.
-    /// use the mentod `carrying_mul_uint()`.
+    /// integral data type such as u8, u16, u32, u64, u128 and usize,
+    /// use the method `carrying_mul_uint()`.
     /// 
     /// # Example
     /// ```
@@ -7958,8 +8786,8 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// 
     /// The method `carrying_mul_assign_uint()` is a bit faster than this
     /// method `carrying_mul_assign()`. If `rhs` is primitive unsigned
-    /// integral data type such as u8, u16, u32, u64, u128 and usize.
-    /// use the mentod `carrying_mul_assign_uint()`.
+    /// integral data type such as u8, u16, u32, u64, u128 and usize,
+    /// use the method `carrying_mul_assign_uint()`.
     /// 
     /// # Example
     /// ```
@@ -8072,8 +8900,8 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// 
     /// The method `widening_mul_uint()` is a bit faster than this
     /// method `widening_mul()`. If `rhs` is primitive unsigned
-    /// integral data type such as u8, u16, u32, u64, u128 and usize.
-    /// use the mentod `widening_mul_uint()`.
+    /// integral data type such as u8, u16, u32, u64, u128 and usize,
+    /// use the method `widening_mul_uint()`.
     /// 
     /// # Example
     /// ```
@@ -8113,8 +8941,8 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// 
     /// The method `widening_mul_assign_uint()` is a bit faster than this
     /// method `widening_mul_assign()`. If `rhs` is primitive unsigned
-    /// integral data type such as u8, u16, u32, u64, u128 and usize.
-    /// use the mentod `widening_mul_assign_uint()`.
+    /// integral data type such as u8, u16, u32, u64, u128 and usize,
+    /// use the method `widening_mul_assign_uint()`.
     /// 
     /// # Example
     /// ```
@@ -8143,8 +8971,8 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// # Counterpart Method
     /// The method `wrapping_mul_uint()` is a bit faster than this
     /// method `wrapping_mul()`. If `rhs` is primitive unsigned
-    /// integral data type such as u8, u16, u32, u64, u128 and usize.
-    /// use the mentod `wrapping_mul_uint()`.
+    /// integral data type such as u8, u16, u32, u64, u128 and usize,
+    /// use the method `wrapping_mul_uint()`.
     /// 
     /// # Example
     /// ```
@@ -8172,8 +9000,8 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// # Counterpart Method
     /// The method `wrapping_mul_assign_uint()` is a bit faster than this
     /// method `wrapping_mul_assign()`. If `rhs` is primitive unsigned
-    /// integral data type such as u8, u16, u32, u64, u128 and usize.
-    /// use the mentod `wrapping_mul_assign_uint()`.
+    /// integral data type such as u8, u16, u32, u64, u128 and usize,
+    /// use the method `wrapping_mul_assign_uint()`.
     /// 
     /// # Example
     /// ```
@@ -8260,8 +9088,8 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// # Counterpart Method
     /// The method `overflowing_mul_uint()` is a bit faster than this
     /// method `overflowing_mul()`. If `rhs` is primitive unsigned
-    /// integral data type such as u8, u16, u32, u64, u128 and usize.
-    /// use the mentod `overflowing_mul_uint()`.
+    /// integral data type such as u8, u16, u32, u64, u128 and usize,
+    /// use the method `overflowing_mul_uint()`.
     /// 
     /// # Example
     /// ```
@@ -8289,8 +9117,8 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// # Counterpart Method
     /// The method `overflowing_mul_assign_uint()` is a bit faster than this
     /// method `overflowing_mul_assign()`. If `rhs` is primitive unsigned
-    /// integral data type such as u8, u16, u32, u64, u128 and usize.
-    /// use the mentod `overflowing_mul_assign_uint()`.
+    /// integral data type such as u8, u16, u32, u64, u128 and usize,
+    /// use the method `overflowing_mul_assign_uint()`.
     /// 
     /// # Example
     /// ```
@@ -8317,8 +9145,8 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// # Counterpart Method
     /// The method `checked_mul_uint()` is a bit faster than this
     /// method `checked_mul()`. If `rhs` is primitive unsigned
-    /// integral data type such as u8, u16, u32, u64, u128 and usize.
-    /// use the mentod `checked_mul_uint()`.
+    /// integral data type such as u8, u16, u32, u64, u128 and usize,
+    /// use the method `checked_mul_uint()`.
     /// 
     /// # Example
     /// ```
@@ -8353,8 +9181,8 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// # Counterpart Method
     /// The method `unchecked_mul_uint()` is a bit faster than this
     /// method `unchecked_mul()`. If `rhs` is primitive unsigned
-    /// integral data type such as u8, u16, u32, u64, u128 and usize.
-    /// use the mentod `unchecked_mul_uint()`.
+    /// integral data type such as u8, u16, u32, u64, u128 and usize,
+    /// use the method `unchecked_mul_uint()`.
     /// 
     /// # Example
     /// ```
@@ -8382,8 +9210,8 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// # Counterpart Method
     /// The method `saturating_mul_uint()` is a bit faster than this
     /// method `saturating_mul()`. If `rhs` is primitive unsigned
-    /// integral data type such as u8, u16, u32, u64, u128 and usize.
-    /// use the mentod `saturating_mul_uint()`.
+    /// integral data type such as u8, u16, u32, u64, u128 and usize,
+    /// use the method `saturating_mul_uint()`.
     /// 
     /// # Example
     /// ```
@@ -8408,8 +9236,8 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// # Counterpart Method
     /// The method `saturating_mul_assign_uint()` is a bit faster than this
     /// method `saturating_mul_assign()`. If `rhs` is primitive unsigned
-    /// integral data type such as u8, u16, u32, u64, u128 and usize.
-    /// use the mentod `saturating_mul_assign_uint()`.
+    /// integral data type such as u8, u16, u32, u64, u128 and usize,
+    /// use the method `saturating_mul_assign_uint()`.
     /// 
     /// # Example
     /// ```
@@ -8424,6 +9252,90 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     {
         if self.overflowing_mul_assign(rhs)
             { self.set_max(); }
+    }
+
+    // pub fn modular_mul(&self, rhs: &Self, modulo: &Self) -> Self
+    /// Computes (`self` * `rhs`) % `modulo`, wrapping around at `modulo`
+    /// of the type `Self`.
+    /// 
+    /// # Feature
+    /// Wrapping (modular) multiplication at `modulo`. The differences between
+    /// this method `modular_mul()` and the method `wrapping_mul()` are, first,
+    /// where wrapping around happens, and, second, whether or not `OVERFLOW`
+    /// flag is set. First, this method wraps araound at `modulo` while the
+    /// method `wrapping_mul()` wraps araound at maximum value. Second, this
+    /// method does not set `OVERFLOW` flag even if wrapping around happens,
+    /// while the method `wrapping_mul()` sets `OVERFLOW` flag when wrapping
+    /// around happens.
+    /// 
+    /// # Counterpart Method
+    /// The method `modular_mul_uint()` is a bit faster than this method
+    /// `modular_mul()`. If `rhs` is primitive unsigned integral data type
+    /// such as u8, u16, u32, u64, u128 and usize, use the method
+    /// `modular_mul_uint()`.
+    /// 
+    /// # Example
+    /// ```
+    /// // Todo
+    /// ```
+    /// 
+    /// # Big-endian issue
+    /// It is just experimental for Big Endian CPUs. So, you are not encouraged
+    /// to use it for Big Endian CPUs for serious purpose. Only use this crate
+    /// for Big-endian CPUs with your own full responsibility.
+    pub fn modular_mul(&self, rhs: &Self, modulo: &Self) -> Self
+    {
+        let mut res = self.clone();
+        res.modular_mul_assign(rhs, modulo);
+        res
+    }
+
+    // pub fn modular_mul_assign(&self, rhs: &Self, modulo: &Self)
+    /// Computes (`self` * `rhs`) % `modulo`, wrapping around at `modulo`
+    /// of the type `Self`, and assign the result to `self` back.
+    /// 
+    /// # Feature
+    /// Wrapping (modular) multiplication at `modulo`. The differences between
+    /// this method `modular_mul_assign()` and the method
+    /// `wrapping_mul_assign()` are, first, where wrapping around happens, and,
+    /// second, whether or not `OVERFLOW` flag is set. First, this method wraps
+    /// araound at `modulo` while the method `wrapping_mul_assign()` wraps
+    /// araound at maximum value. Second, this method does not set `OVERFLOW`
+    /// flag even if wrapping around happens, while the method
+    /// `wrapping_mul_assign()` sets `OVERFLOW` flag when wrapping around
+    /// happens.
+    /// 
+    /// # Counterpart Method
+    /// The method `modular_mul_assign_uint()` is a bit faster than this
+    /// method `modular_mul_assign()`. If `rhs` is primitive unsigned
+    /// integral data type such as u8, u16, u32, u64, u128 and usize,
+    /// use the method `modular_mul_assign_uint()`.
+    /// 
+    /// # Example
+    /// ```
+    /// // Todo
+    /// ```
+    /// 
+    /// # Big-endian issue
+    /// It is just experimental for Big Endian CPUs. So, you are not encouraged
+    /// to use it for Big Endian CPUs for serious purpose. Only use this crate
+    /// for Big-endian CPUs with your own full responsibility.
+    pub fn modular_mul_assign(&mut self, rhs: &Self, modulo: &Self)
+    {
+        if *self >= *modulo
+            { self.wrapping_rem_assign(modulo); }
+        let mut mrhs = if *rhs < *modulo { rhs.clone() } else { rhs.wrapping_rem(&modulo) };
+        let mut res = Self::zero();
+        let zero = Self::zero();
+
+        while *rhs > zero
+        {
+            if rhs.is_odd()
+                { res.modular_add_assign(self, modulo); }
+            self.modular_mul_assign_uint(2_u8, modulo);
+            mrhs.shift_right_assign(1_u8);
+        }
+        *self = res;
     }
 
 
@@ -8446,8 +9358,8 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// # Counterpart Method
     /// The method `divide_fully_uint()` is a bit faster than this
     /// method `divide_fully()`. If `rhs` is primitive unsigned
-    /// integral data type such as u8, u16, u32, u64, u128 and usize.
-    /// use the mentod `divide_fully_uint()`.
+    /// integral data type such as u8, u16, u32, u64, u128 and usize,
+    /// use the method `divide_fully_uint()`.
     /// 
     /// # Examples
     /// ```
@@ -8564,8 +9476,8 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// # Counterpart Method
     /// The method `wrapping_div_uint()` is a bit faster than this
     /// method `wrapping_div()`. If `rhs` is primitive unsigned
-    /// integral data type such as u8, u16, u32, u64, u128 and usize.
-    /// use the mentod `wrapping_div_uint()`.
+    /// integral data type such as u8, u16, u32, u64, u128 and usize,
+    /// use the method `wrapping_div_uint()`.
     /// 
     /// # Example
     /// ```
@@ -8600,8 +9512,8 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// # Counterpart Method
     /// The method `wrapping_div_assign_uint()` is a bit faster than this
     /// method `wrapping_div_assign()`. If `rhs` is primitive unsigned
-    /// integral data type such as u8, u16, u32, u64, u128 and usize.
-    /// use the mentod `wrapping_div_assign_uint()`.
+    /// integral data type such as u8, u16, u32, u64, u128 and usize,
+    /// use the method `wrapping_div_assign_uint()`.
     /// 
     /// # Example
     /// ```
@@ -8638,8 +9550,8 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// # Counterpart Method
     /// The method `checked_div_uint()` is a bit faster than this
     /// method `checked_div()`. If `rhs` is primitive unsigned
-    /// integral data type such as u8, u16, u32, u64, u128 and usize.
-    /// use the mentod `checked_div_uint()`.
+    /// integral data type such as u8, u16, u32, u64, u128 and usize,
+    /// use the method `checked_div_uint()`.
     /// 
     /// # Example
     /// ```
@@ -8679,8 +9591,8 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// # Counterpart Method
     /// The method `unchecked_div_uint()` is a bit faster than this
     /// method `unchecked_div()`. If `rhs` is primitive unsigned
-    /// integral data type such as u8, u16, u32, u64, u128 and usize.
-    /// use the mentod `unchecked_div_uint()`.
+    /// integral data type such as u8, u16, u32, u64, u128 and usize,
+    /// use the method `unchecked_div_uint()`.
     /// 
     /// # Example
     /// ```
@@ -8719,8 +9631,8 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// # Counterpart Method
     /// The method `saturating_div_uint()` is a bit faster than this
     /// method `saturating_div()`. If `rhs` is primitive unsigned
-    /// integral data type such as u8, u16, u32, u64, u128 and usize.
-    /// use the mentod `saturating_div_uint()`.
+    /// integral data type such as u8, u16, u32, u64, u128 and usize,
+    /// use the method `saturating_div_uint()`.
     /// 
     /// # Example
     /// ```
@@ -8755,8 +9667,8 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// # Counterpart Method
     /// The method `saturating_div_assign_uint()` is a bit faster than this
     /// method `saturating_div_assign()`. If `rhs` is primitive unsigned
-    /// integral data type such as u8, u16, u32, u64, u128 and usize.
-    /// use the mentod `saturating_div_assign_uint()`.
+    /// integral data type such as u8, u16, u32, u64, u128 and usize,
+    /// use the method `saturating_div_assign_uint()`.
     /// 
     /// # Example
     /// ```
@@ -8795,8 +9707,8 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// # Counterpart Method
     /// The method `wrapping_rem_uint()` is a bit faster than this
     /// method `wrapping_rem()`. If `rhs` is primitive unsigned
-    /// integral data type such as u8, u16, u32, u64, u128 and usize.
-    /// use the mentod `wrapping_rem_uint()`.
+    /// integral data type such as u8, u16, u32, u64, u128 and usize,
+    /// use the method `wrapping_rem_uint()`.
     /// 
     /// # Example
     /// ```
@@ -8831,8 +9743,8 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// # Counterpart Method
     /// The method `wrapping_rem_assign_uint()` is a bit faster than this
     /// method `wrapping_rem_assign()`. If `rhs` is primitive unsigned
-    /// integral data type such as u8, u16, u32, u64, u128 and usize.
-    /// use the mentod `wrapping_rem_assign_uint()`.
+    /// integral data type such as u8, u16, u32, u64, u128 and usize,
+    /// use the method `wrapping_rem_assign_uint()`.
     /// 
     /// # Example
     /// ```
@@ -8869,8 +9781,8 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// # Counterpart Method
     /// The method `overflowing_rem_uint()` is a bit faster than this
     /// method `overflowing_rem()`. If `rhs` is primitive unsigned
-    /// integral data type such as u8, u16, u32, u64, u128 and usize.
-    /// use the mentod `overflowing_rem_uint()`.
+    /// integral data type such as u8, u16, u32, u64, u128 and usize,
+    /// use the method `overflowing_rem_uint()`.
     /// 
     /// # Example
     /// ```
@@ -8906,8 +9818,8 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// # Counterpart Method
     /// The method `overflowing_rem_assign_uint()` is a bit faster than this
     /// method `overflowing_rem_assign()`. If `rhs` is primitive unsigned
-    /// integral data type such as u8, u16, u32, u64, u128 and usize.
-    /// use the mentod `overflowing_rem_assign_uint()`.
+    /// integral data type such as u8, u16, u32, u64, u128 and usize,
+    /// use the method `overflowing_rem_assign_uint()`.
     /// 
     /// # Example
     /// ```
@@ -8940,8 +9852,8 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// # Counterpart Method
     /// The method `checked_rem_uint()` is a bit faster than this
     /// method `checked_rem()`. If `rhs` is primitive unsigned
-    /// integral data type such as u8, u16, u32, u64, u128 and usize.
-    /// use the mentod `checked_rem_uint()`.
+    /// integral data type such as u8, u16, u32, u64, u128 and usize,
+    /// use the method `checked_rem_uint()`.
     /// 
     /// # Example
     /// ```
@@ -8976,8 +9888,8 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// # Counterpart Method
     /// The method `unchecked_rem_uint()` is a bit faster than this
     /// method `unchecked_rem()`. If `rhs` is primitive unsigned
-    /// integral data type such as u8, u16, u32, u64, u128 and usize.
-    /// use the mentod `unchecked_rem_uint()`.
+    /// integral data type such as u8, u16, u32, u64, u128 and usize,
+    /// use the method `unchecked_rem_uint()`.
     /// 
     /// # Example
     /// ```
@@ -9013,8 +9925,8 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// # Counterpart Method
     /// The method `saturating_rem_uint()` is a bit faster than this
     /// method `saturating_rem()`. If `rhs` is primitive unsigned
-    /// integral data type such as u8, u16, u32, u64, u128 and usize.
-    /// use the mentod `saturating_rem_uint()`.
+    /// integral data type such as u8, u16, u32, u64, u128 and usize,
+    /// use the method `saturating_rem_uint()`.
     /// 
     /// # Example
     /// ```
@@ -9045,8 +9957,8 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// # Counterpart Method
     /// The method `saturating_rem_assign_uint()` is a bit faster than this
     /// method `saturating_rem_assign()`. If `rhs` is primitive unsigned
-    /// integral data type such as u8, u16, u32, u64, u128 and usize.
-    /// use the mentod `saturating_rem_assign_uint()`.
+    /// integral data type such as u8, u16, u32, u64, u128 and usize,
+    /// use the method `saturating_rem_assign_uint()`.
     /// 
     /// # Example
     /// ```
@@ -9234,7 +10146,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// The method `pow_uint()` is more efficient than this method `pow()`
     /// when the exponent `exp` is primitive unsigned integral data type
     /// such as u8, u16, u32, u64, u128 and usize. If `rhs` is the primitive
-    /// unsigned integral data type number, use the mentod `pow_uint()`.
+    /// unsigned integral data type number, use the method `pow_uint()`.
     /// 
     /// # Example
     /// ```
@@ -9279,7 +10191,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// The method `pow_assign_uint()` is more efficient than this method
     /// `pow_assign()` when the exponent `exp` is primitive unsigned integral
     /// data type such as u8, u16, u32, u64, u128 and usize. If `rhs` is the
-    /// primitive unsigned integral data type number, use the mentod
+    /// primitive unsigned integral data type number, use the method
     /// `pow_assign_uint()`.
     /// 
     /// # Example
@@ -9330,7 +10242,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// The method `wrapping_pow_uint()` is a bit faster than this method
     /// `wrapping_pow()` when the exponent `exp` is primitive unsigned integral
     /// data type such as u8, u16, u32, u64, u128 and usize. If `rhs` is the
-    /// primitive unsigned integral data type number, use the mentod
+    /// primitive unsigned integral data type number, use the method
     /// `wrapping_pow_uint()`.
     /// 
     /// # Example
@@ -9377,7 +10289,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// The method `wrapping_pow_assign_uint()` is a bit faster than this method
     /// `wrapping_pow_assign()` when the exponent `exp` is primitive unsigned
     /// integral data type such as u8, u16, u32, u64, u128 and usize. If `rhs`
-    /// is the primitive unsigned integral data type number, use the mentod
+    /// is the primitive unsigned integral data type number, use the method
     /// `wrapping_pow_assign_uint()`.
     /// 
     /// # Example
@@ -9449,7 +10361,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// `overflowing_pow()` when the exponent `exp` is primitive unsigned
     /// integral data type such as u8, u16, u32, u64, u128 and usize. If `rhs`
     /// is the primitive unsigned integral data type number,
-    /// use the mentod `overflowing_pow_uint()`.
+    /// use the method `overflowing_pow_uint()`.
     /// 
     /// # Example
     /// ```
@@ -9502,7 +10414,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// The method `overflow_pow_assign_uint()` is a bit faster than this method
     /// `overflow_pow_assign()` when the exponent `exp` is primitive unsigned
     /// integral data type such as u8, u16, u32, u64, u128 and usize. If `rhs`
-    /// is the primitive unsigned integral data type number, use the mentod
+    /// is the primitive unsigned integral data type number, use the method
     /// `overflow_pow_assign_uint()`.
     /// 
     /// # Example
@@ -9557,7 +10469,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// The method `checked_pow_uint()` is a bit faster than this method
     /// `checked_pow()` when the exponent `exp` is primitive unsigned integral
     /// data type such as u8, u16, u32, u64, u128 and usize. If `rhs` is the
-    /// primitive unsigned integral data type number, use the mentod
+    /// primitive unsigned integral data type number, use the method
     /// `checked_pow_uint()`.
     /// 
     /// # Example
@@ -9607,6 +10519,33 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
         if self.overflowing_pow_assign(&exp)
             { self.set_max(); }
     }
+
+    pub fn modular_pow(&self, exp: &Self, modulo: &Self) -> Self
+    {
+        let mut res = self.clone();
+        res.modular_pow_assign(exp, modulo);
+        res
+    }
+
+    pub fn modular_pow_assign(&mut self, exp: &Self, modulo: &Self)
+    {
+        if *self >= *modulo
+            { self.wrapping_rem_assign(modulo); }
+        let mut res = Self::one();
+        let mut mexp = exp.clone();
+        let zero = Self::zero();
+
+
+        while mexp > zero
+        {
+            if mexp.is_odd()
+                { res.modular_mul_assign(self, modulo); }
+            self.modular_mul_assign(&self.clone(), modulo);
+            mexp.shift_right_assign(2_u8);
+        }
+        *self = res;
+    }
+
 
     // pub fn ilog(&self, base: Self) -> Self
     /// Calculates the logarithm of the number with respect to a `base`.
