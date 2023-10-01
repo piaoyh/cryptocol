@@ -10,11 +10,11 @@
 //! 
 
 #[cfg(test)] pub mod Unions_test;
-#[cfg(test)] pub mod SmallUInt_test;
+pub mod SmallUInt_test;
 
 // #[cfg(test)]
 pub mod BigUInt_test;
 
 // pub use Unions_test::*;
-// pub use UInt_test::*;
+pub use SmallUInt_test::*;
 pub use BigUInt_test::*;

@@ -31,12 +31,12 @@ pub fn test_main_BigUInt()
 {
     // BigUInt_quick_start___main();
     // BigUInt_constructors___main();
-    // BigUInt_random_number___main();   // Prime number related methods not yet finished
+    BigUInt_random_number___main();  // Prime number related methods not yet finished
     // BigUInt_get_size___main();
     // BigUInt_get_set_check___main();
     // BigUInt_check_bits___main();
     // BigUInt_comparison_uint___main();
-    BigUInt_comparison_biguint___main();
+    // BigUInt_comparison_biguint___main();
     // BigUInt_arithmatic_operation_uint___main();
     // BigUInt_exponentiation_logarithm_uint___main();
     // BigUInt_arithmatic_operation_biguint___main();
@@ -625,29 +625,29 @@ fn BigUInt_generate_check_bits___main()
 
 fn BigUInt_random_number___main()
 {
-    BigUInt_random___main();
-    BigUInt_random_odd___main();
-    BigUInt_random_less_than___main();
-    BigUInt_random_odd_less_than___main();
-    BigUInt_random_with_MSB_set___main();
-    BigUInt_random_odd_with_MSB_set___main();
-    BigUInt_random_prime_using_Miller_Rabin___main();
-    BigUInt_randomize___main();
-    BigUInt_is_prime_using_Miller_Rabin___main();
+    // BigUInt_random();
+    // BigUInt_random_odd();
+    // BigUInt_random_less_than();
+    // BigUInt_random_odd_less_than();
+    // BigUInt_random_with_MSB_set();
+    // BigUInt_random_odd_with_MSB_set();
+    BigUInt_random_prime_using_Miller_Rabin();
+    // BigUInt_randomize();
+    // BigUInt_is_prime_using_Miller_Rabin();
 }
 
-fn BigUInt_random___main()
+fn BigUInt_random()
 {
-    println!("BigUInt_random___main");
+    println!("BigUInt_random");
     use Cryptocol::define_utypes_with;
     define_utypes_with!(u64);
     println!("Random Number: {}", u1024::random());
     println!("---------------------------");
 }
 
-fn BigUInt_random_odd___main()
+fn BigUInt_random_odd()
 {
-    println!("BigUInt_random_odd___main");
+    println!("BigUInt_random_odd");
     use Cryptocol::define_utypes_with;
     define_utypes_with!(u128);
 
@@ -657,9 +657,9 @@ fn BigUInt_random_odd___main()
     println!("---------------------------");
 }
 
-fn BigUInt_random_less_than___main()
+fn BigUInt_random_less_than()
 {
-    println!("BigUInt_random_less_than___main");
+    println!("BigUInt_random_less_than");
     use Cryptocol::define_utypes_with;
     define_utypes_with!(u32);
 
@@ -670,9 +670,9 @@ fn BigUInt_random_less_than___main()
     println!("---------------------------");
 }
 
-fn BigUInt_random_odd_less_than___main()
+fn BigUInt_random_odd_less_than()
 {
-    println!("BigUInt_random_odd_less_than___main");
+    println!("BigUInt_random_odd_less_than");
     use Cryptocol::define_utypes_with;
     define_utypes_with!(u16);
 
@@ -684,9 +684,9 @@ fn BigUInt_random_odd_less_than___main()
     println!("---------------------------");
 }
 
-fn BigUInt_random_with_MSB_set___main()
+fn BigUInt_random_with_MSB_set()
 {
-    println!("BigUInt_random_with_MSB_set___main");
+    println!("BigUInt_random_with_MSB_set");
     use Cryptocol::define_utypes_with;
     define_utypes_with!(u8);
 
@@ -697,9 +697,9 @@ fn BigUInt_random_with_MSB_set___main()
     println!("---------------------------");
 }
 
-fn BigUInt_random_odd_with_MSB_set___main()
+fn BigUInt_random_odd_with_MSB_set()
 {
-    println!("BigUInt_random_with_MSB_set___main");
+    println!("BigUInt_random_odd_with_MSB_set");
     use Cryptocol::define_utypes_with;
     define_utypes_with!(u128);
 
@@ -711,9 +711,9 @@ fn BigUInt_random_odd_with_MSB_set___main()
     println!("---------------------------");
 }
 
-fn BigUInt_random_prime_using_Miller_Rabin___main()
+fn BigUInt_random_prime_using_Miller_Rabin()
 {
-    println!("BigUInt_random_prime_using_Miller_Rabin___main");
+    println!("BigUInt_random_prime_using_Miller_Rabin");
     use Cryptocol::define_utypes_with;
     define_utypes_with!(u64);
 
@@ -723,9 +723,9 @@ fn BigUInt_random_prime_using_Miller_Rabin___main()
     println!("---------------------------");
 }
 
-fn BigUInt_randomize___main()
+fn BigUInt_randomize()
 {
-    println!("BigUInt_randomize___main");
+    println!("BigUInt_randomize");
     use Cryptocol::define_utypes_with;
     define_utypes_with!(u32);
 
@@ -738,9 +738,9 @@ fn BigUInt_randomize___main()
     println!("---------------------------");
 }
 
-fn BigUInt_is_prime_using_Miller_Rabin___main()
+fn BigUInt_is_prime_using_Miller_Rabin()
 {
-    println!("BigUInt_is_prime_using_Miller_Rabin___main");
+    println!("BigUInt_is_prime_using_Miller_Rabin");
     use Cryptocol::define_utypes_with;
     define_utypes_with!(u16);
 
