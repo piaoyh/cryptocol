@@ -29,9 +29,9 @@ pub fn test_main_SmallUInt()
     // SmallUInt_mul___main();
     // SmallUInt_div___main();
     // SmallUInt_rem___main();
-    // SmallUInt_pow___main();
-    SmallUInt_root___main();
-    // SmallUInt_prime___main();
+    SmallUInt_pow___main();
+    // SmallUInt_root___main();
+    SmallUInt_prime___main();
 }
 
 fn SmallUInt_add___main()
@@ -1993,8 +1993,16 @@ fn SmallUInt_checked_rem___func<T: Cryptocol::number::SmallUInt>(lhs: T, rhs: T)
 
 fn SmallUInt_pow___main()
 {
-    SmallUInt_pow();
-    SmallUInt_wrapping_pow();    
+    println!("Small");
+    let a = 2_u128;
+    let d = 4776913109852041418248056622882488318_u128;
+    let modulo = 4776913109852041418248056622882488319_u128;
+    let res = a.modular_pow(d, modulo);
+    println!("res = {}", res);
+    println!("{}.modular_pow({}, {}) = {}", a, d, modulo, res);
+
+    // SmallUInt_pow();
+    // SmallUInt_wrapping_pow();    
 }
 
 fn SmallUInt_pow()
@@ -2446,9 +2454,9 @@ fn SmallUInt_root()
 
 fn SmallUInt_prime___main()
 {
-    SmallUInt_is_random___main();
+    // SmallUInt_is_random___main();
     SmallUInt_is_prime_using_Miller_Rabin___main();
-    SmallUInt_random_prime_using_Miller_Rabin___main();
+    // SmallUInt_random_prime_using_Miller_Rabin___main();
 }
 
 fn SmallUInt_is_random___main()
@@ -2469,7 +2477,7 @@ fn SmallUInt_is_prime_using_Miller_Rabin___main()
 
     let num = 4776913109852041418248056622882488319_u128;//125469875632546987525485265478911_u128;
     let bPrime = num.is_prime_using_Miller_Rabin(5);
-    println!("{} is prime : {}.", num, bPrime);
+    println!("Is {} a prime number? => {}.", num, bPrime);
     println!("-------------------------");
 }
 

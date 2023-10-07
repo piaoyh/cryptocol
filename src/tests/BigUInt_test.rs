@@ -633,7 +633,7 @@ fn BigUInt_random_number___main()
     // BigUInt_random_odd_with_MSB_set();
     BigUInt_random_prime_using_Miller_Rabin();
     // BigUInt_randomize();
-    // BigUInt_is_prime_using_Miller_Rabin();
+    BigUInt_is_prime_using_Miller_Rabin();
 }
 
 fn BigUInt_random()
@@ -717,9 +717,15 @@ fn BigUInt_random_prime_using_Miller_Rabin()
     use Cryptocol::define_utypes_with;
     define_utypes_with!(u64);
 
-    let num = u256::random_prime_using_Miller_Rabin(5);
-    println!("Random Prime Number = {}", num);
-    assert!(num.is_prime_using_Miller_Rabin(5));
+    let num1 = u256::random_prime_using_Miller_Rabin(5);
+    println!("Random Prime Number = {}", num1);
+    assert!(num1.is_prime_using_Miller_Rabin(5));
+    let num2 = u512::random_prime_using_Miller_Rabin(5);
+    assert!(num2.is_prime_using_Miller_Rabin(5));
+    println!("Random Prime Number = {}", num2);
+    let num2 = u1024::random_prime_using_Miller_Rabin(5);
+    assert!(num2.is_prime_using_Miller_Rabin(5));
+    println!("Random Prime Number = {}", num2);
     println!("---------------------------");
 }
 
@@ -744,7 +750,7 @@ fn BigUInt_is_prime_using_Miller_Rabin()
     use Cryptocol::define_utypes_with;
     define_utypes_with!(u16);
 
-    let num = u1024::random();
+    let num = u256::from_string("4776913109852041418248056622882488319").unwrap();//u1024::random();
     let yes = num.is_prime_using_Miller_Rabin(5);
     println!("Is {} a prime number? => {}", num, yes);
     if yes  { assert!(yes); }
@@ -1810,7 +1816,6 @@ fn BigUInt_abs_diff___main()
 
 fn BigUInt_exponentiation_logarithm_biguint___main()
 {
-
 }
 
 fn BigUInt_pow_uint___main()

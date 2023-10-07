@@ -6872,10 +6872,10 @@ macro_rules! SmallUInt_methods_for_uint_impl {
         /// [Read more in detail](trait@SmallUInt#tymethod.modular_mul)
         fn modular_mul(self, rhs: Self, modulo: Self) -> Self
         {
-            let mut mrhs = rhs.wrapping_rem(modulo);
             let mut mlhs = self.wrapping_rem(modulo);
+            let mut mrhs = rhs.wrapping_rem(modulo);
             let mut res = Self::zero();
-            while mrhs > Self::zero()
+            while mrhs > 0
             {
                 if mrhs.is_odd()
                     { res = res.modular_add(mlhs, modulo); }
@@ -6948,6 +6948,7 @@ macro_rules! SmallUInt_methods_for_uint_impl {
             let mut mlhs = self.wrapping_rem(modulo);
             let mut res = Self::one();
             let mut mexp = exp;
+
             while mexp > 0
             {
                 if mexp.is_odd()

@@ -9080,8 +9080,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// for Big-endian CPUs with your own full responsibility.
     pub fn modular_add_assign(&mut self, rhs: &Self, modulo: &Self)
     {
-        if *self >= *modulo
-            { self.wrapping_rem_assign(modulo); }
+        self.wrapping_rem_assign(modulo);
         if *rhs < *modulo    // In this case, it does not cause cloning for performance.
         {
             // let mrhs = rhs.clone(); // Does not clone for performance
@@ -9181,7 +9180,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
         let mut	b = borrow;
         for i in 0..N
         {
-            (num, b) = self.get_num_(i).borrowing_sub(rhs.get_num_(i), borrow);
+            (num, b) = self.get_num_(i).borrowing_sub(rhs.get_num_(i), b);
             self.set_num_(i, num);
         }
         if b
@@ -9563,8 +9562,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// for Big-endian CPUs with your own full responsibility.
     pub fn modular_sub_assign(&mut self, rhs: &Self, modulo: &Self)
     {
-        if *self >= *modulo
-            { self.wrapping_rem_assign(modulo); }
+        self.wrapping_rem_assign(modulo);
         if *rhs < *modulo    // In this case, it does not cause cloning for performance.
         {
             // let mrhs = rhs.clone(); // Does not clone for performance
@@ -9581,7 +9579,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
         else    // if *rhs >= *modulo
         {
             let mrhs = rhs.wrapping_rem(modulo);
-            if *self >= *rhs
+            if *self >= mrhs
             {
                 self.wrapping_sub_assign(&mrhs);
             }
@@ -10230,9 +10228,8 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// for Big-endian CPUs with your own full responsibility.
     pub fn modular_mul_assign(&mut self, rhs: &Self, modulo: &Self)
     {
-        if *self >= *modulo
-            { self.wrapping_rem_assign(modulo); }
-        let mut mrhs = if *rhs < *modulo { rhs.clone() } else { rhs.wrapping_rem(&modulo) };
+        self.wrapping_rem_assign(modulo);
+        let mut mrhs = rhs.wrapping_rem(modulo);
         let mut res = Self::zero();
         let zero = Self::zero();
         while mrhs > zero
@@ -10242,7 +10239,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
             self.modular_add_assign(&self.clone(), modulo);
             mrhs.shift_right_assign(1_u8);
         }
-        *self = res;
+        self.set_number(res.get_number());
     }
 
 
@@ -11457,6 +11454,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
         let mut res = Self::one();
         let mut mexp = exp.clone();
         let zero = Self::zero();
+
         while mexp > zero
         {
             if mexp.is_odd()

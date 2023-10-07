@@ -6,7 +6,7 @@ use tests::*;
 
 fn main()
 {
-   test_main_BigUInt();
+    test_main_BigUInt();
 //    test_main_Unions();
     // test_main_SmallUInt();
 //     Test();
