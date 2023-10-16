@@ -22,26 +22,26 @@ use Cryptocol::number::SmallUInt;
 use rand_distr::num_traits::PrimInt; //{u256, BigInteger, HugeInteger};
 
 
-pub fn test_main_SmallUInt()
+fn main()
 {
-    // SmallUInt_add___main();
+    SmallUInt_add___main();
     // SmallUInt_sub___main();
     // SmallUInt_mul___main();
     // SmallUInt_div___main();
     // SmallUInt_rem___main();
-    SmallUInt_pow___main();
+    // SmallUInt_pow___main();
     // SmallUInt_root___main();
-    SmallUInt_prime___main();
+    // SmallUInt_prime___main();
 }
 
 fn SmallUInt_add___main()
 {
     SmallUInt_carrying_add();
-    SmallUInt_wrapping_add();
-    SmallUInt_overflowing_add();
-    SmallUInt_checked_add();
-    SmallUInt_unchecked_add();
-    SmallUInt_saturating_add();
+    // SmallUInt_wrapping_add();
+    // SmallUInt_overflowing_add();
+    // SmallUInt_checked_add();
+    // SmallUInt_unchecked_add();
+    // SmallUInt_saturating_add();
 }
 
 fn SmallUInt_carrying_add()

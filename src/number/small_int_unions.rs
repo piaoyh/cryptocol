@@ -5526,14 +5526,22 @@ macro_rules! SmallUInt_methods_for_integer_unions_impl {
         /// number with `1`.
         /// [Read more in detail](trait@SmallUInt#tymethod.set_LSB)
         #[inline] fn set_LSB(&mut self)     { self.set(self.get() | 1); }
-
+/*
         /// Constucts a new `SmallUInt` which has the value zero and sets only
         /// the bit specified by the argument bit_pos to be 1.
         /// [Read more in detail](trait@SmallUInt#tymethod.generate_check_bits)
-        #[inline] fn generate_check_bits(bit_pos: usize) -> Self    { Self::new_with(Self::one().get() << bit_pos) }
+        #[inline] fn generate_check_bits(bit_pos: usize) -> Option<Self>    { if bit_pos < Self::size_in_bits { Some(generate_check_bits_(bit_pos)) } else { None }
+*/
+        /// Constucts a new `SmallUInt` which has the value zero and sets only
+        /// the bit specified by the argument bit_pos to be 1.
+        /// [Read more in detail](trait@SmallUInt#tymethod.generate_check_bits_)
+        #[inline] fn generate_check_bits_(bit_pos: usize) -> Self    { Self::new_with(Self::one().get() << bit_pos) }
 
-        #[inline] fn is_odd(self) -> bool       { unsafe { (self.this & 1) != 0 } }
+        #[inline] fn is_odd(self) -> bool       { (self.get() & 1) != 0 }
         #[inline] fn is_even(self) -> bool      { !self.is_odd() }
+        #[inline] fn is_MSB_set(self) -> bool   { (self.get() & !(Self::max().get() >> 1)) != 0 }
+        #[inline] fn is_bit_set(self, bit_pos: usize) -> Option<bool>  { if bit_pos < Self::size_in_bits() { Some(self.is_bit_set_(bit_pos)) } else { None } }
+        #[inline] fn is_bit_set_(self, bit_pos: usize) -> bool  { self.get() & Self::generate_check_bits_(bit_pos).get() != 0 }
 
         #[inline] fn size_in_bytes() -> usize   { size_of::<Self>() }
         #[inline] fn size_in_bits() -> usize    { size_of::<Self>() * 8 }

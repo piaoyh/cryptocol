@@ -28,6 +28,7 @@ use std::cmp::{Eq, Ord};
 /// 
 pub trait SmallSInt: Copy + Debug
             + Add + AddAssign + Sub + SubAssign + Mul + MulAssign + Div + DivAssign
+            + Rem + RemAssign
             + Shl + ShlAssign + Shr + ShrAssign
             + Eq + Ord
 {

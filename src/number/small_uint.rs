@@ -51,12 +51,12 @@ pub trait SmallUInt: Copy + Clone + Sized //+ Display + Debug + ToString
     /// # Features
     /// __The trait SmallUInt is meaningful when you use it in generic context.
     /// Otherwise, it is pretty hard to imagine its usability.__
-    /// This allows chaining together multiple additions to create a wider
-    /// addition, and can be useful for big integer type addition. This can be
-    /// thought of as a 8-bit “full adder”, in the electronics sense.
-    /// 
-    /// If the input carry is false, this method is equivalent to
-    /// `overflowing_add()`, and the output carry is equal to the overflow flag.
+    /// - This allows chaining together multiple additions to create a wider
+    /// addition, and can be useful for big integer type addition.
+    /// - This can be thought of as a 8-bit “full adder”, in the electronics
+    /// sense.
+    /// - If the input carry is false, this method is equivalent to
+    /// `overflowing_add()`.
     /// 
     /// # Outputs
     /// It returns a tuple containing the sum and the output carry. It performs
@@ -6528,7 +6528,7 @@ pub trait SmallUInt: Copy + Clone + Sized //+ Display + Debug + ToString
     /// for Big-endian CPUs with your own full responsibility.
     fn set_LSB(&mut self);
 
-    // fn generate_check_bits(&mut self, bit_pos: usize) -> Self
+    // fn generate_check_bits(bit_pos: usize) -> Option<Self>
     /// Constucts a new `BigUInt<T, N>` which has the value zero and sets only
     /// the bit specified by the argument bit_pos to be 1.
     /// 
@@ -6550,29 +6550,77 @@ pub trait SmallUInt: Copy + Clone + Sized //+ Display + Debug + ToString
     /// use Cryptocol::define_utypes_with_u32;
     /// define_utypes_with_u32!();
     /// 
-    /// let a_0 = u256::generate_check_bits(0);
+    /// let a_0 = u256::generate_check_bits(0).unwrap();
     /// println!("a_0 = {}", a_0.to_string_with_radix_and_stride(2, 10).unwrap());
     /// assert_eq!(a_0.to_string_with_radix_and_stride(2, 10).unwrap(), "1");
     /// 
-    /// let a_12 = u256::generate_check_bits(12);
+    /// let a_12 = u256::generate_check_bits(12).unwrap();
     /// println!("a_12 = {}", a_12.to_string_with_radix_and_stride(2, 10).unwrap());
     /// assert_eq!(a_12.to_string_with_radix_and_stride(2, 10).unwrap(), "100_0000000000");
     /// 
-    /// let a_255 = u256::generate_check_bits(255);
+    /// let a_255 = u256::generate_check_bits(255).unwrap();
     /// println!("a_255 = {}", a_255.to_string_with_radix_and_stride(2, 10).unwrap());
     /// assert_eq!(a_255.to_string_with_radix_and_stride(2, 10).unwrap(), "100000_0000000000_0000000000_0000000000_0000000000_0000000000_0000000000_0000000000_0000000000_0000000000_0000000000_0000000000_0000000000_0000000000_0000000000_0000000000_0000000000_0000000000_0000000000_0000000000_0000000000_0000000000_0000000000_0000000000_0000000000_0000000000");
-    /// // It will panic!
-    /// // let a_256 = u256::generate_check_bits(256);
+    /// 
+    /// let a_256 = u256::generate_check_bits(256);
+    /// println!("a_256 = {}", a_256);
+    /// assert_eq!(a_255, None);
     /// ```
     /// 
     /// # Big-endian issue
     /// It is just experimental for Big Endian CPUs. So, you are not encouraged
     /// to use it for Big Endian CPUs for serious purpose. Only use this crate
     /// for Big-endian CPUs with your own full responsibility.
-    fn generate_check_bits(bit_pos: usize) -> Self;
+    #[inline] fn generate_check_bits(bit_pos: usize) -> Option<Self>    { if bit_pos < Self::size_in_bits() { Some(Self::generate_check_bits_(bit_pos)) } else { None } }
+
+    // fn generate_check_bits_(&mut self, bit_pos: usize) -> Self
+    /// Constucts a new `BigUInt<T, N>` which has the value zero and sets only
+    /// the bit specified by the argument bit_pos to be 1.
+    /// 
+    /// # Output
+    /// It returns a big unsigned integer `BigUInt<T, N>` whose bit specified
+    /// by the argument bit_posvalue is set to be 1.
+    /// 
+    /// # Bit Position
+    /// The bit positon bit_pos is zero-based and should be counted from LSB
+    /// (Least Significant Bit) reguardless endian. So, if the bit_pos is `0`,
+    /// only LSB is set to be `1` and all the other bits will be set to `0`.
+    /// 
+    /// # Panics
+    /// If the bit positon `bit_pos` is greater than or equal to
+    /// `size_of::<T>() * N * 8`, this method will panic.
+    /// 
+    /// # Example
+    /// ```
+    /// use Cryptocol::define_utypes_with_u32;
+    /// define_utypes_with_u32!();
+    /// 
+    /// let a_0 = u256::generate_check_bits_(0);
+    /// println!("a_0 = {}", a_0.to_string_with_radix_and_stride(2, 10).unwrap());
+    /// assert_eq!(a_0.to_string_with_radix_and_stride(2, 10).unwrap(), "1");
+    /// 
+    /// let a_12 = u256::generate_check_bits_(12);
+    /// println!("a_12 = {}", a_12.to_string_with_radix_and_stride(2, 10).unwrap());
+    /// assert_eq!(a_12.to_string_with_radix_and_stride(2, 10).unwrap(), "100_0000000000");
+    /// 
+    /// let a_255 = u256::generate_check_bits_(255);
+    /// println!("a_255 = {}", a_255.to_string_with_radix_and_stride(2, 10).unwrap());
+    /// assert_eq!(a_255.to_string_with_radix_and_stride(2, 10).unwrap(), "100000_0000000000_0000000000_0000000000_0000000000_0000000000_0000000000_0000000000_0000000000_0000000000_0000000000_0000000000_0000000000_0000000000_0000000000_0000000000_0000000000_0000000000_0000000000_0000000000_0000000000_0000000000_0000000000_0000000000_0000000000_0000000000");
+    /// // It will panic!
+    /// // let a_256 = u256::generate_check_bits_(256);
+    /// ```
+    /// 
+    /// # Big-endian issue
+    /// It is just experimental for Big Endian CPUs. So, you are not encouraged
+    /// to use it for Big Endian CPUs for serious purpose. Only use this crate
+    /// for Big-endian CPUs with your own full responsibility.
+    fn generate_check_bits_(bit_pos: usize) -> Self;
 
     fn is_odd(self) -> bool;
     fn is_even(self) -> bool;
+    fn is_MSB_set(self) -> bool;
+    fn is_bit_set(self, bit_pos: usize) -> Option<bool>;
+    fn is_bit_set_(self, bit_pos: usize) -> bool;
 
     fn size_in_bytes() -> usize;
     fn size_in_bits() -> usize;
@@ -6987,7 +7035,7 @@ macro_rules! SmallUInt_methods_for_uint_impl {
                     loop
                     {
                         mid = (high + low) >> 1;
-                        adder = Self::generate_check_bits(mid);
+                        adder = Self::generate_check_bits_(mid);
                         sum = res + adder;
                         let (sq, b_overflow) = sum.overflowing_mul(sum);
                         if !b_overflow && (sq < self)
@@ -7047,7 +7095,7 @@ macro_rules! SmallUInt_methods_for_uint_impl {
                     loop
                     {
                         mid = (high + low) >> 1;
-                        adder = Self::generate_check_bits(mid);
+                        adder = Self::generate_check_bits_(mid);
                         sum = res + adder;
                         let (sq, b_overflow) = sum.overflowing_pow(exp as u32);
                         if !b_overflow && (sq < self)
@@ -7262,14 +7310,22 @@ macro_rules! SmallUInt_methods_for_uint_impl {
         /// number with `1`.
         /// [Read more in detail](trait@SmallUInt#tymethod.set_LSB)
         #[inline] fn set_LSB(&mut self)     { *self |= 1; }
-
+/*
         /// Constucts a new `SmallUInt` which has the value zero and sets only
         /// the bit specified by the argument bit_pos to be 1.
         /// [Read more in detail](trait@SmallUInt#tymethod.generate_check_bits)
-        #[inline] fn generate_check_bits(bit_pos: usize) -> Self    { Self::one() << bit_pos }
+        #[inline] fn generate_check_bits(bit_pos: usize) -> Option<Self>    { if bit_pos < Self::size_in_bits { Some(generate_check_bits_(bit_pos)) } else { None }
+*/
+        /// Constucts a new `SmallUInt` which has the value zero and sets only
+        /// the bit specified by the argument bit_pos to be 1.
+        /// [Read more in detail](trait@SmallUInt#tymethod.generate_check_bits_)
+        #[inline] fn generate_check_bits_(bit_pos: usize) -> Self    { Self::one() << bit_pos }
 
         #[inline] fn is_odd(self) -> bool       { (self & 1) != 0 }
         #[inline] fn is_even(self) -> bool      { !self.is_odd() }
+        #[inline] fn is_MSB_set(self) -> bool   { (self & !(Self::MAX >> 1)) != 0 }
+        #[inline] fn is_bit_set(self, bit_pos: usize) -> Option<bool>  { if bit_pos < Self::size_in_bits() { Some(self & Self::generate_check_bits_(bit_pos) != 0) } else { None } }
+        #[inline] fn is_bit_set_(self, bit_pos: usize) -> bool  { self & Self::generate_check_bits_(bit_pos) != 0 }
 
         #[inline] fn size_in_bytes() -> usize   { size_of::<Self>() }
         #[inline] fn size_in_bits() -> usize    { size_of::<Self>() * 8 }

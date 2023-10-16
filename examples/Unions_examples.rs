@@ -19,7 +19,8 @@ use std::str::FromStr;
 use Cryptocol::number::*;
 use rand_distr::num_traits::PrimInt; //{u256, BigInteger, HugeInteger};
 
-pub fn test_main_Unions()
+
+fn main()
 {
     ShortUnion___main();
     IntUnion___main();
