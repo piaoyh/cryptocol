@@ -1,9 +1,7 @@
-
 fn main()
 {
     t();
     // test_main_BigUInt();
-
 }
 
 
@@ -57,7 +55,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
         let zero = T::zero();
         let one = T::one();
         let adder = self.clone();
-        let TSIZE_BITS = size_of::<T>() * 8;
+        let TSIZE_BITS = T::size_in_bits();;
         let mut multiply_first = |num: T| {
             let mut bit_check = one;
             bit_check <<= T::usize_as_SmallUInt(TSIZE_BITS - 1);
@@ -118,35 +116,17 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
         if self.is_zero()
             { return; }
 
-        let adder = self.clone();
-        let TSIZE_BITS = T::size_in_bits();
-        let mut chunk = N - 1 - self.leading_zero_elements() as usize;
-        let mut piece = T::size_in_bits() - 1 - self.get_num_(chunk).leading_zeros() as usize;
+        let mut adder = self.clone();
+        let mut mrhs = rhs.clone();
         self.set_zero();
-
         loop
         {
-            let num = rhs.get_num_(chunk);
-            if num.is_zero()
-            {
-                self.shift_left_assign(TSIZE_BITS);
-            }
-            else
-            {
-                loop
-                {
-                    if num.is_bit_set_(piece)
-                        { self.wrapping_add_assign(&adder); }
-                    if piece == 0
-                        { break; }
-                    piece -= 1;
-                    self.shift_left_assign(1_u8);
-                }
-            }
-            if chunk == 0
+            if mrhs.is_odd()
+                { self.wrapping_add_assign(&adder); }
+            mrhs.shift_right_assign(1_u8);
+            if mrhs.is_zero()
                 { break; }
-            chunk -= 1;
-            piece = T::size_in_bits() - 1;
+            adder.shift_left_assign(1_u8);
         }
     }
 }
@@ -162,21 +142,21 @@ macro_rules! performance
         {
             0 => {
                 now = SystemTime::now();
-                for _ in 0..1000
+                for _ in 0..100000
                     { sum.wrapping_mul_assign(&a); }
                 println!("sum = {}", sum);
             },
             1 => {
                 now = SystemTime::now();
-                for _ in 0..1000
+                for _ in 0..100000
                     { sum.wrapping_mul_assign2(&a); }
-                    println!("sum = {}", sum);
+                println!("sum = {}", sum);
             },
             _ => {
                 now = SystemTime::now();
-                for _ in 0..1000
+                for _ in 0..100000
                     { sum.wrapping_mul_assign3(&a); }
-                    println!("sum = {}", sum);
+                println!("sum = {}", sum);
             },
         }
         match now.elapsed()
@@ -202,11 +182,11 @@ pub fn t()
     for operator in 0..3
     {
         println!("=== {} ===", op[operator]);
-        performance!(u1024_with_u128, dt[0], ti[operator][0], operator);
-        performance!(u1024_with_u64, dt[1], ti[operator][1], operator);
-        performance!(u1024_with_u32, dt[2], ti[operator][2], operator);
-        performance!(u1024_with_u16, dt[3], ti[operator][3], operator);
-        performance!(u1024_with_u8, dt[4], ti[operator][4], operator);
+        performance!(u2048_with_u128, dt[0], ti[operator][0], operator);
+        performance!(u2048_with_u64, dt[1], ti[operator][1], operator);
+        performance!(u2048_with_u32, dt[2], ti[operator][2], operator);
+        performance!(u2048_with_u16, dt[3], ti[operator][3], operator);
+        performance!(u2048_with_u8, dt[4], ti[operator][4], operator);
     
         let mut fastest = 0;
         for i in 1..5

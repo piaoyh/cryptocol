@@ -9,10 +9,13 @@
 //! The module is for all test code of examples.
 //! 
 
-pub mod Unions_test;
-pub mod SmallUInt_test;
-pub mod BigUInt_test;
+pub mod Unions_examples;
+pub mod SmallUInt_examples;
+pub mod BigUInt_examples;
 
-pub use Unions_test::*;
-pub use SmallUInt_test::*;
-pub use BigUInt_test::*;
+pub use Unions_examples::*;
+pub use SmallUInt_examples::*;
+pub use BigUInt_examples::*;
+
+fn main()
+{}

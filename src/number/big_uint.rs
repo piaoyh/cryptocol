@@ -6598,34 +6598,34 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
             + BitXor<Output=U> + BitXorAssign + Not<Output=U>
             + PartialEq + PartialOrd
     {
-        let trhs: T;
-        if rhs.length_in_bytes() > T::size_in_bytes()
-        {
-            return self.wrapping_mul_assign(&Self::from_uint(rhs));
-        }
-        else    // if rhs.length_in_bytes() <= T::size_in_bytes()
-        {
-            trhs = T::num::<U>(rhs);
-        }
         if self.is_zero()
-            { return; }
-        let zero = T::zero();
-        let one = T::one();
-        if trhs == zero
+        {
+            return;
+        }
+        if rhs.is_zero()
         {
             self.set_zero();
             return;
         }
-        let adder = self.clone();
-        let mut bit_check = one << T::usize_as_SmallUInt(T::size_in_bits() - 1 - trhs.leading_zeros() as usize);
-        self.set_zero();
 
-        while bit_check != zero
+        let trhs: T;
+        let TSIZE_BITS = T::size_in_bits();
+        if U::size_in_bits() > TSIZE_BITS
+            { return self.wrapping_mul_assign(&Self::from_uint(rhs)); }
+        else    // if rhs.length_in_bytes() <= TSIZE_BITS
+            { trhs = T::num::<U>(rhs); }
+
+        let adder = self.clone();
+        let mut piece = TSIZE_BITS - 1 - trhs.leading_zeros() as usize;
+        self.set_zero();
+        loop
         {
-            *self <<= 1;
-            if bit_check & trhs != zero
+            if trhs.is_bit_set_(piece)
                 { self.wrapping_add_assign(&adder); }
-            bit_check >>= one;
+            if piece == 0
+                { break; }
+            piece -= 1;
+            self.shift_left_assign(1_u8);
         }
     }
 
@@ -9733,74 +9733,35 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
         if self.is_zero()
             { return; }
 
-        let mut adder = self.clone();
-        let mut mrhs = rhs.clone();
+        let adder = self.clone();
+        let TSIZE_BITS = T::size_in_bits();
+        let mut chunk = N - 1 - rhs.leading_zero_elements() as usize;
+        let mut piece = T::size_in_bits() - 1 - rhs.get_num_(chunk).leading_zeros() as usize;
         self.set_zero();
         loop
         {
-            if mrhs.is_odd()
-                { self.wrapping_add_assign(&adder); }
-            mrhs.shift_right_assign(1_u8);
-            if mrhs.is_zero()
+            let num = rhs.get_num_(chunk);
+            if num.is_zero()
+            {
+                self.shift_left_assign(TSIZE_BITS);
+            }
+            else
+            {
+                loop
+                {
+                    if num.is_bit_set_(piece)
+                        { self.wrapping_add_assign(&adder); }
+                    if piece == 0
+                        { break; }
+                    piece -= 1;
+                    self.shift_left_assign(1_u8);
+                }
+            }
+            if chunk == 0
                 { break; }
-            adder.shift_left_assign(1_u8);
+            chunk -= 1;
+            piece = T::size_in_bits() - 1;
         }
-
-
-        /*
-        let zero = T::zero();
-        let one = T::one();
-        let adder = self.clone();
-        let TSIZE_BITS = size_of::<T>() * 8;
-        let mut multiply_first = |num: T| {
-            let mut bit_check = one;
-            bit_check <<= T::usize_as_SmallUInt(TSIZE_BITS - 1);
-            while (bit_check != zero) && (bit_check & num == zero)
-                { bit_check >>= one; }
-
-            self.set_zero();
-            while bit_check != zero
-            {
-                *self <<= 1;
-                if bit_check & num != zero
-                    { self.wrapping_add_assign(&adder); }
-                bit_check >>= one;
-            }
-        };
-
-        let mut n = N - 1;
-        while rhs.get_num_(n) == zero
-            { n -= 1; }
-        multiply_first(rhs.get_num_(n));
-        if n == 0
-            { return; }
-        n -= 1;
-
-        let mut multiply = |num: T| {
-            if num == T::zero()
-            {
-                *self <<= TSIZE_BITS as i32;
-                return;
-            }
-            let mut bit_check = one;
-            bit_check <<= T::usize_as_SmallUInt(TSIZE_BITS - 1);
-            while bit_check != zero
-            {
-                *self <<= 1;
-                if bit_check & num != zero
-                    { self.wrapping_add_assign(&adder); }
-                bit_check >>= one;
-            }
-        };
-
-        loop
-        {
-            multiply(rhs.get_num_(n));
-            if n == 0
-                { break; }
-            n = n.wrapping_sub(1);
-        }
-        */
     }
 
 
