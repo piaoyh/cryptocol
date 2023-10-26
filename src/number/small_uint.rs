@@ -6832,30 +6832,10 @@ macro_rules! SmallUInt_methods_for_uint_impl {
         /// It is for internal use. You are recommended to use [carrying_mul()](trait@SmallUInt#tymethod.carrying_mul) instead.
         fn carrying_mul_for_internal_use(self, rhs: Self, carry: Self) -> (Self, Self)
         {
-            if (rhs == 0) || (self == 0)
-                { return (0, 0); }
-
-            let mut low: Self = 0;
-            let mut high: Self = 0;
-            let adder = self;
-            let mut bit_check: Self = 1 << (Self::size_in_bits() - 1 - rhs.leading_zeros() as usize);
-
-            while bit_check != 0
-            {
-                low <<= 1;
-                high <<= 1;
-                if bit_check & rhs != 0
-                {
-                    let old = low;
-                    low += adder;
-                    if low < old
-                        { high += 1; }
-                }
-                bit_check >>= 1;
-            }
-            let mut c = false;
-            (low, c) = low.overflowing_add(carry);
-            if c
+            let overflow;
+            let (mut low, mut high) = self.widening_mul_for_internal_use(rhs);
+            (low, overflow) = low.overflowing_add(carry);
+            if overflow
                 { high = high.wrapping_add(1); }
             (low, high)
         }
@@ -6869,22 +6849,23 @@ macro_rules! SmallUInt_methods_for_uint_impl {
         fn widening_mul_for_internal_use(self, rhs: Self) -> (Self, Self)
         {
             if (rhs == 0) || (self == 0)
-            { return (0, 0); }
+                { return (0, 0); }
 
             let mut low: Self = 0;
             let mut high: Self = 0;
-            let adder = self;
+            let mut overflow: bool;
             let mut bit_check: Self = 1 << (Self::size_in_bits() - 1 - rhs.leading_zeros() as usize);
-
+            let adder = self;
             while bit_check != 0
             {
-                low <<= 1;
                 high <<= 1;
+                if low.is_MSB_set()
+                    { high.set_LSB(); }
+                low <<= 1;
                 if bit_check & rhs != 0
                 {
-                    let old = low;
-                    low += adder;
-                    if low < old
+                    (low, overflow) = low.overflowing_add(adder);
+                    if overflow
                         { high += 1; }
                 }
                 bit_check >>= 1;
