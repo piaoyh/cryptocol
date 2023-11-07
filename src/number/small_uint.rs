@@ -6866,7 +6866,7 @@ macro_rules! SmallUInt_methods_for_uint_impl {
                 {
                     (low, overflow) = low.overflowing_add(adder);
                     if overflow
-                        { high += 1; }
+                        { high = high.wrapping_add(1); }
                 }
                 bit_check >>= 1;
             }

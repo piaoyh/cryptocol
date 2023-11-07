@@ -592,8 +592,8 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
 {
     method_widening_mul_assign_uint: fn(&mut Self, T) -> Self,
     method_wrapping_mul_assign_uint: fn(&mut Self, T),
-    method_widening_mul_assign: fn(&mut Self, T) -> Self,
-    method_wrapping_mul_assign: fn(&mut Self, T),
+    method_widening_mul_assign: fn(&mut Self, &Self) -> Self,
+    method_wrapping_mul_assign: fn(&mut Self, &Self),
     number: [T; N],
     flag: u8,
 }
@@ -687,18 +687,18 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
                                                 { Self::widening_mul_assign_uint_2 },
 
             method_wrapping_mul_assign_uint: if N > 16
-                                                { Self::wrapping_mul_assign_uint_1 }
+                                                { Self::wrapping_mul_assign_uint_2 }
                                             else
                                                 { Self::wrapping_mul_assign_uint_2 },
             method_widening_mul_assign: if N > 16
-                                            { Self::widening_mul_assign_uint_1 }
+                                            { Self::widening_mul_assign_2 }
                                         else
-                                            { Self::widening_mul_assign_uint_2 },
+                                            { Self::widening_mul_assign_2 },
 
             method_wrapping_mul_assign: if N > 16
-                                            { Self::wrapping_mul_assign_uint_1 }
+                                            { Self::wrapping_mul_assign_2 }
                                         else
-                                            { Self::wrapping_mul_assign_uint_2 },
+                                            { Self::wrapping_mul_assign_2 },
             number: [T::zero(); N],
             flag: 0,
         }
@@ -1399,7 +1399,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
         Self::from_str_radix(txt, 10)
     }
 
-    //  pub fn from_str_radix(txt: &str, radix: usize) -> Result<Self, NumberErr>
+    //  pub fn from_str_radix(txt: &str, radix: u32) -> Result<Self, NumberErr>
     /// Constructs a new `BigUInt<T, N>` from a string with `radix`.
     /// 
     /// # Output
@@ -1469,7 +1469,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// println!("a = {}", a);
     /// assert_eq!(a.to_string(), "953444119462584670231660883005169236350945453535049253076624239367818227875140724454335257332337691463184490358643394140772086144551847644877923949534960");
     /// ```
-    pub fn from_str_radix(txt: &str, radix: usize) -> Result<Self, NumberErr>
+    pub fn from_str_radix(txt: &str, radix: u32) -> Result<Self, NumberErr>
     {
         if (radix < 2) || (radix > 10 + 26 + 26)
             { return Err(NumberErr::OutOfValidRadixRange); }
@@ -1483,40 +1483,40 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
                 { return Err(NumberErr::NotAlphaNumeric); }
             if radix <= 10
             {
-                if c as usize >= '0' as usize + radix
+                if c as u32 >= '0' as u32 + radix
                     { return Err(NumberErr::NotFitToRadix); }
             }
             else if radix <= 10 + 26
             {
-                if (c as usize >= 'A' as usize + radix - 10) 
-                        && (c as usize <= 'Z' as usize)
-                    || (c as usize >= 'a' as usize + radix - 10)
+                if (c as u32 >= 'A' as u32 + radix - 10) 
+                        && (c as u32 <= 'Z' as u32)
+                    || (c as u32 >= 'a' as u32 + radix - 10)
                     { return Err(NumberErr::NotFitToRadix); }
             }
-            else if c as usize >= 'a' as usize + radix - (10 + 26)  // radix <= 10 + 26 + 26
+            else if c as u32 >= 'a' as u32 + radix - (10 + 26)  // radix <= 10 + 26 + 26
                 { return Err(NumberErr::NotFitToRadix); }
 
-            let num: usize = if radix <= 10    { c as usize - '0' as usize }
+            let num: u32 = if radix <= 10    { c as u32 - '0' as u32 }
                         else if radix <= 10 + 26
                         {
-                            if c as usize <= '9' as usize
-                                { c as usize - '0' as usize }
-                            else if c as usize <= 'Z' as usize
-                                { c as usize - 'A' as usize + 10 }
+                            if c <= '9'
+                                { c as u32 - '0' as u32 }
+                            else if c <= 'Z'
+                                { c as u32 - 'A' as u32 + 10 }
                             else
-                                { c as usize - 'a' as usize + 10 }
+                                { c as u32 - 'a' as u32 + 10 }
                         }
                         else    // if radix <= 10 + 26 + 26
                         {
-                            if c as usize <= '9' as usize
-                                { c as usize - '0' as usize }
-                            else if c as usize <= 'Z' as usize
-                                { c as usize - 'A' as usize + 10 }
+                            if c <= '9'
+                                { c as u32 - '0' as u32 }
+                            else if c <= 'Z'
+                                { c as u32 - 'A' as u32 + 10 }
                             else
-                                { c as usize - 'a' as usize + 10 + 26 }
+                                { c as u32 - 'a' as u32 + 10 + 26 }
                         };
-            bignum.wrapping_mul_assign_uint(T::usize_as_SmallUInt(radix));
-            bignum.wrapping_add_assign_uint(T::usize_as_SmallUInt(num));
+            bignum.wrapping_mul_assign_uint(T::u32_as_SmallUInt(radix));
+            bignum.wrapping_add_assign_uint(T::u32_as_SmallUInt(num));
         }
         if bignum.is_overflow()
             { Err(NumberErr::TooBigNumber) }
@@ -5375,10 +5375,9 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
         }
 
         // if rhs.length_in_bytes() <= T::size_in_bytes()
-        let trhs = T::num::<U>(rhs);
         let mut c: bool;
         let mut num: T;
-        (num, c) = self.get_num_(0).carrying_add(trhs, carry);
+        (num, c) = self.get_num_(0).carrying_add(T::num::<U>(rhs), carry);
         self.set_num_(0, num);
         if c
         {
@@ -5389,9 +5388,9 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
                 if !c
                     { break; }
             }
+            if c
+                { self.set_overflow(); }
         }
-        if c
-            { self.set_overflow(); }
         c
     }
 
@@ -5455,7 +5454,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
             return self.wrapping_add(&Self::from_uint(rhs));
         }
         // if U::size_in_bytes() <= T::size_in_bytes()
-        let (res, _) = self.carrying_add_uint(T::num::<U>(rhs), false);
+        let (res, _) = self.carrying_add_uint(rhs, false);
         res
     }
 
@@ -5961,22 +5960,20 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// use Cryptocol::define_utypes_with;
     /// define_utypes_with!(u32);
     /// 
-    /// let mut a = u256::from_string("76801874298166903427690031858186486050853753882811946569946433649006084094").unwrap();
+    /// let a = u256::from_string("76801874298166903427690031858186486050853753882811946569946433649006").unwrap();
     /// let m = a.wrapping_add_uint(2_u8);
-    /// println!("Originally,\ta = {}", a);
-    /// assert_eq!(a.to_string(), "76801874298166903427690031858186486050853753882811946569946433649006084094");
+    /// let b = a.modular_add_uint(1_u8, &m);
+    /// let c = a.modular_add_uint(2_u8, &m);
+    /// let d = a.modular_add_uint(3_u8, &m);
     /// 
-    /// a.modular_add_assign_uint(1_u8, &m);
-    /// println!("After a += 1,\ta = {}", a);
-    /// assert_eq!(a.to_string(), "76801874298166903427690031858186486050853753882811946569946433649006084095");
+    /// println!("{} + 1 = {}", a, b);
+    /// assert_eq!(b.to_string(), "76801874298166903427690031858186486050853753882811946569946433649007");
     /// 
-    /// a.modular_add_assign_uint(1_u8, &m);
-    /// println!("After a += 1,\ta = {}", a);
-    /// assert_eq!(a.to_string(), "0");
+    /// println!("{} + 2 = {}", a, c);
+    /// assert_eq!(c.to_string(), "0");
     /// 
-    /// a.modular_add_assign_uint(1_u8, &m);
-    /// println!("After a += 1,\ta = {}", a);
-    /// assert_eq!(a.to_string(), "1");
+    /// println!("{} + 3 = {}", a, d);
+    /// assert_eq!(d.to_string(), "1");
     /// ```
     /// 
     /// # Big-endian issue
@@ -6034,14 +6031,14 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// use Cryptocol::define_utypes_with;
     /// define_utypes_with!(u8);
     /// 
-    /// let mut a = u256::from_string("76801874298166903427690031858186486050853753882811946569946433649006084094").unwrap();
+    /// let mut a = u256::from_string("768018742981669034276900318581864860508537538828119465699464336490060").unwrap();
     /// let m = a.wrapping_add_uint(2_u8);
     /// println!("Originally,\ta = {}", a);
-    /// assert_eq!(a.to_string(), "76801874298166903427690031858186486050853753882811946569946433649006084094");
+    /// assert_eq!(a.to_string(), "768018742981669034276900318581864860508537538828119465699464336490060");
     /// 
     /// a.modular_add_assign_uint(1_u8, &m);
     /// println!("After a += 1,\ta = {}", a);
-    /// assert_eq!(a.to_string(), "76801874298166903427690031858186486050853753882811946569946433649006084095");
+    /// assert_eq!(a.to_string(), "768018742981669034276900318581864860508537538828119465699464336490061");
     /// 
     /// a.modular_add_assign_uint(1_u8, &m);
     /// println!("After a += 1,\ta = {}", a);
@@ -6272,9 +6269,9 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
                 if !b
                     { break; }
             }
+            if b
+                { self.set_underflow(); }
         }
-        if b
-            { self.set_underflow(); }
         b
     }
 
@@ -7062,15 +7059,16 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     {
         if U::size_in_bytes() > T::size_in_bytes()
         {
-            return self.abs_diff(&Self::from_uint(other));
+            self.abs_diff(&Self::from_uint(other))
         }
-        // if rhs.length_in_bytes() <= T::size_in_bytes()
-        let t_other = T::num::<U>(other);
-
-        if self.lt_uint(t_other)
-            { Self::from_uint(t_other - self.get_num_(0)) }
-        else
-            { self.wrapping_sub_uint(t_other) }
+        else // if rhs.length_in_bytes() <= T::size_in_bytes()
+        {
+            let t_other = T::num::<U>(other);
+            if self.lt_uint(t_other)
+                { Self::from_uint(t_other - self.get_num_(0)) }
+            else
+                { self.wrapping_sub_uint(t_other) }
+        }
     }
 
 
@@ -7117,7 +7115,19 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// 
     /// # Example
     /// ```
-    /// // Todo
+    /// use Cryptocol::define_utypes_with;
+    /// define_utypes_with!(u8);
+    /// 
+    /// let a_low = U32::from_string("76801874298166903427690031858186486050853753882811946569946433649006084094").unwrap();
+    /// let a_high = U32::from_string("75388281194656994643364900608409476801874298166903427690031858186486050853").unwrap();
+    /// let b_uint = 225_u8;
+    /// let (mut res_low, mut res_high) = a_low.carrying_mul_uint(b_uint, U32::zero());
+    /// let (mut res_high, mut res_higher) = a_high.carrying_mul_uint(b_uint, res_high);
+    /// 
+    /// println!("{}:{} X {} = {}:{}:{}", a_high, a_low, b_uint, res_higher, res_high, res_low);
+    /// assert_eq!(res_higher.to_string(), "0");
+    /// assert_eq!(res_high.to_string(), "16962363268797823794757102636892132280421717087553271230257168091959361441925");
+    /// assert_eq!(res_low.to_string(), "17280421717087553271230257168091959361442094623632687978237947571026368921150");
     /// ```
     /// 
     /// # Big-endian issue
@@ -7326,14 +7336,26 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
         if self.is_zero()
             { return high; }
 
+        let iN = N-self.leading_zero_elements() as usize;
         let mut lower = zero;
         let mut higher = zero;
-        for i in 0..N-self.leading_zero_elements() as usize
+        for i in 0..iN
         {
             (lower, higher) = self.get_num_(i).carrying_mul(rhs, higher);
             self.set_num_(i, lower);
         }
-        high.set_num_(0, higher);
+        if !higher.is_zero()
+        {
+            if iN < N
+            {
+                self.set_num_(iN, higher);
+            }
+            else
+            {
+                self.set_overflow();
+                high.set_num_(0, higher);
+            }
+        }
         high
     }
     
@@ -7443,10 +7465,18 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
 
         let mut lower = zero;
         let mut higher = zero;
-        for i in 0..N-self.leading_zero_elements() as usize
+        let iN = N - self.leading_zero_elements() as usize;
+        for i in 0..iN
         {
             (lower, higher) = self.get_num_(i).carrying_mul(rhs, higher);
             self.set_num_(i, lower);
+        }
+        if !higher.is_zero()
+        {
+            if iN < N
+                { self.set_num_(iN, higher); }
+            else
+                { self.set_overflow(); }
         }
     }
     
@@ -7467,7 +7497,11 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
         loop
         {
             if rhs.is_odd()
-                { self.wrapping_add_assign(&adder); }
+            {
+                self.wrapping_add_assign(&adder);
+                if adder.is_overflow()
+                    { self.set_overflow(); }
+            }
             rhs >>= T::one();
             if rhs == T::zero()
                 { break; }
@@ -9388,14 +9422,27 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     pub fn carrying_add_assign(&mut self, rhs: &Self, carry: bool) -> bool
     {
         let mut c = carry;
-        let mut num: T;
-        for i in 0..N
+        let mut num = T::zero();
+        let iL = self.leading_zero_elements() as usize;
+        let jL = rhs.leading_zero_elements() as usize;
+        let ijN = N - if iL < jL {iL} else {jL};
+        for i in 0..ijN
         {
             (num, c) = self.get_num_(i).carrying_add(rhs.get_num_(i), c);
             self.set_num_(i, num);
         }
         if c
-            { self.set_overflow(); }
+        {
+            if ijN < N
+            {
+                self.set_num_(ijN, T::one());
+                c = false;
+            }
+            else
+            {
+                self.set_overflow();
+            }
+        }
         c
     }
 
@@ -9887,15 +9934,22 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// for Big-endian CPUs with your own full responsibility.
     pub fn borrowing_sub_assign(&mut self, rhs: &Self, borrow: bool) -> bool
     {
-        let mut num: T;
         let mut	b = borrow;
-        for i in 0..N
+        let mut num = T::zero();
+        let iL = self.leading_zero_elements() as usize;
+        let jL = rhs.leading_zero_elements() as usize;
+        let ijN = if iL < jL {N-iL} else {N};
+        for i in 0..ijN
         {
             (num, b) = self.get_num_(i).borrowing_sub(rhs.get_num_(i), b);
             self.set_num_(i, num);
         }
         if b
-            { self.set_underflow(); }
+        {
+            for i in ijN..N
+                { self.set_num_(i, T::max()); }
+            self.set_underflow();
+        }
         b
     }
 
@@ -10416,16 +10470,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// for Big-endian CPUs with your own full responsibility.
     pub fn carrying_mul_assign(&mut self, rhs: &Self, carry: Self) -> Self
     {
-        let mut high = Self::zero();
-        if rhs.is_zero()
-        {
-            self.set_zero();
-            return high;
-        }
-        if self.is_zero()
-            { return high; }
-
-        self.wrapping_mul_assign(rhs);
+        let mut high = self.widening_mul_assign(rhs);
         if self.overflowing_add_assign(&carry)
             { high.wrapping_add_assign_uint(1_u8); }
         high
@@ -10539,7 +10584,9 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     #[inline]
     pub fn widening_mul(&self, rhs: &Self) -> (Self, Self)
     {
-        self.carrying_mul(rhs, Self::zero())
+        let mut low = Self::from_array(self.get_number());
+        let high = low.widening_mul_assign(rhs);
+        (low, high)
     }
 
     // pub fn widening_mul_assign(&mut self, rhs: &Self) -> Self
@@ -10582,14 +10629,92 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     #[inline]
     pub fn widening_mul_assign(&mut self, rhs: &Self) -> Self
     {
-        self.carrying_mul_assign(rhs, Self::zero())
+        if rhs.is_zero()
+        {
+            self.set_zero();
+            Self::zero()
+        }
+        else if self.is_zero()
+        {
+            Self::zero()
+        }
+        else
+        {
+            (self.method_widening_mul_assign)(self, rhs)
+        }
     }
 
     fn widening_mul_assign_1(&mut self, rhs: &Self) -> Self
-    { *self }
+    {
+        let operand = self.clone();
+        let zero = T::zero();
+        let mut high = Self::zero();
+        let mut lower = zero;
+        let mut higher = zero;
+        let iN = N - rhs.leading_zero_elements() as usize;
+        let jN = N - operand.leading_zero_elements() as usize;
+        for i in 0..iN
+        {
+            for j in 0..jN
+            {
+                (lower, higher) = operand.get_num_(j).carrying_mul(rhs.get_num_(i), higher);
+                let ij = i + j;
+                if ij < N
+                    { self.set_num_(ij, lower); }
+                else
+                    { high.set_num_(ij - N, lower); }
+            }
+            let c = i + jN;
+            if c < N
+                { self.set_num_(c, lower); }
+            else
+                { high.set_num_(c - N, lower); }
+        }
+        if !high.is_zero()
+            { self.set_overflow(); }
+        high
+    }
 
     fn widening_mul_assign_2(&mut self, rhs: &Self) -> Self
-    { *self }
+    {
+        let adder = self.clone();
+        let TSIZE_BITS = T::size_in_bits();
+        let mut high = Self::zero();
+        let mut chunk = N - 1 - rhs.leading_zero_elements() as usize;
+        let mut piece = T::size_in_bits() - 1 - rhs.get_num_(chunk).leading_zeros() as usize;
+        self.set_zero();
+        loop
+        {
+            let num = rhs.get_num_(chunk);
+            if num.is_zero()
+            {
+                self.shift_left_assign(TSIZE_BITS);
+            }
+            else
+            {
+                loop
+                {
+                    if num.is_bit_set_(piece)
+                    {
+                        if self.overflowing_add_assign(&adder)
+                            { high.wrapping_add_assign_uint(1_u8); }
+                    }
+                    if piece == 0
+                        { break; }
+                    piece -= 1;
+                    high.shift_left_assign(1_u8);
+                    if self.is_MSB_set()
+                        { high.set_LSB(); }
+                    self.shift_left_assign(1_u8);
+                }
+            }
+            if chunk == 0
+                { break; }
+            chunk -= 1;
+            piece = T::size_in_bits() - 1;
+        }
+        high
+    }
 
     // pub fn wrapping_mul(&self, rhs: &Self) -> Self
     /// Computes `self` * `rhs`, wrapping around at the boundary of the type.
@@ -10651,13 +10776,37 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     pub fn wrapping_mul_assign(&mut self, rhs: &Self)
     {
         if rhs.is_zero()
-        {
-            self.set_zero();
-            return;
-        }
-        if self.is_zero()
-            { return; }
+            { self.set_zero(); }
+        else if !self.is_zero()
+            { (self.method_wrapping_mul_assign)(self, rhs); }
+    }
 
+    fn wrapping_mul_assign_1(&mut self, rhs: &Self)
+    {
+        let operand = self.clone();
+        let zero = T::zero();
+        let iN = N - rhs.leading_zero_elements() as usize;
+        let jN = N - operand.leading_zero_elements() as usize;
+        let mut lower = zero;
+        let mut higher = zero;
+        for i in 0..iN
+        {
+            for j in 0..jN
+            {
+                if i + j >= N
+                {
+                    if !higher.is_zero()
+                        { self.set_overflow(); }
+                    break;
+                }
+                (lower, higher) = operand.get_num_(j).carrying_mul(rhs.get_num_(i), higher);
+                self.set_num_(i + j, lower);
+            }
+        }
+    }
+
+    fn wrapping_mul_assign_2(&mut self, rhs: &Self)
+    {
         let adder = self.clone();
         let TSIZE_BITS = T::size_in_bits();
         let mut chunk = N - 1 - rhs.leading_zero_elements() as usize;
@@ -10688,12 +10837,6 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
             piece = T::size_in_bits() - 1;
         }
     }
-
-    fn wrapping_mul_assign_1(&mut self, rhs: &Self)
-    {  }
-
-    fn wrapping_mul_assign_2(&mut self, rhs: &Self)
-    {  }
 
     // pub fn overflowing_mul(&self, rhs: &Self) -> (Self, bool)
     /// Calculates `self` * `rhs`.
@@ -12543,7 +12686,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
         {
             for i in N-chunk_num..N
             {
-                if self.get_num_(i) > zero
+                if self.get_num_(i).is_zero()
                 {
                     self.set_overflow();
                     break;
@@ -12555,8 +12698,8 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
         }
         if piece_num == 0
             { return; }
-        if (self.get_num_(N-1).leading_zeros() as usize) < piece_num
-            { self.set_overflow(); }
+        // if (self.get_num_(N-1).leading_zeros() as usize) < piece_num
+        //     { self.set_overflow(); }
 
         let mut num: T;
         let mut carry = zero;
@@ -12566,7 +12709,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
             carry = self.get_num_(idx) >> T::usize_as_SmallUInt(TSIZE_IN_BITS - piece_num);
             self.set_num_(idx, num);
         }
-        if carry != zero
+        if !carry.is_zero()
             { self.set_overflow(); }
     }
 

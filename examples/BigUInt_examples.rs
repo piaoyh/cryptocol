@@ -41,14 +41,13 @@ fn main()
 
 fn BigUInt_quick_start___main()
 {
-    // BigUInt_quick_start1___main();
-    // BigUInt_quick_start2___main();
-    BigUInt_performance_test();
+    // BigUInt_quick_start1();
+    // BigUInt_quick_start2();
 }
 
 fn BigUInt_quick_start1___main()
 {
-    println!("fn BigUInt_quick_start1___main()");
+    println!("BigUInt_quick_start1");
     use std::str::FromStr;
     use Cryptocol::number::*;
 
@@ -112,11 +111,12 @@ fn BigUInt_quick_start1___main()
     let e = b.clone() % 5_u128;
     println!("b % 5 = {}", e);
     assert_eq!(e, 3);
+    println!("-------------------------------");
 }
 
-fn BigUInt_quick_start2___main()
+fn BigUInt_quick_start2()
 {
-    println!("fn BigUInt_quick_start2___main()");
+    println!("BigUInt_quick_start2()");
     use std::str::FromStr;
     use Cryptocol::define_utypes_with;
     
@@ -180,110 +180,33 @@ fn BigUInt_quick_start2___main()
     let e = b.wrapping_rem_uint(5_u128);
     println!("b % 5 = {}", e);
     assert_eq!(e, 3);
-}
-
-macro_rules! performance
-{
-    ($t:ty, $b:expr, $ti:expr, $f:expr) => {
-        let mut sum = <$t>::zero();
-        let a = <$t>::from_str_radix("00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000001__00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000001__00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000001__00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000001__00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000001__00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000001__00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000001__00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000001", 2).unwrap();
-        let now: SystemTime;
-        match $f
-        {
-            0 => {
-                now = SystemTime::now();
-                for _ in 0..100_0000
-                    { sum.wrapping_add_assign(&a); }
-            },
-            1 => {
-                now = SystemTime::now();
-                for _ in 0..100_0000
-                    { sum.wrapping_sub_assign(&a); }
-            },
-            2 => {
-                now = SystemTime::now();
-                for _ in 0..100_0000
-                    { sum.wrapping_mul_assign(&a); }
-            },
-            _ => {
-                now = SystemTime::now();
-                for _ in 0..100_0000
-                    { sum.wrapping_div_assign(&a); }
-            },
-        }
-        match now.elapsed()
-        {
-            Ok(elapsed) => {
-                $ti = elapsed.as_micros();
-                println!("{}-based: {} usec", $b, $ti);
-            },
-            Err(e) => { println!("{}", e); },
-        }
-    }
-}
-
-fn BigUInt_performance_test()
-{
-    println!("BigUInt_performance_test");
-    use std::time::SystemTime;
-    use Cryptocol::number::*;
-
-    let mut ti = [0_u128; 5];   // How many microseconds
-    let dt = ["u128", "u64", "u32", "u16", "u8"];
-    let op = ["addition", "subtraction", "multplication", "division" ];
-
-    for operator in 0..4
-    {
-        println!("=== {} ===", op[operator]);
-        performance!(u1024_with_u128, dt[0], ti[0], operator);
-        performance!(u1024_with_u64, dt[1], ti[1], operator);
-        performance!(u1024_with_u32, dt[2], ti[2], operator);
-        performance!(u1024_with_u16, dt[3], ti[3], operator);
-        performance!(u1024_with_u8, dt[4], ti[4], operator);
-    
-        let mut fastest = 0;
-        for i in 1..5
-        {
-            if ti[fastest] > ti[i]
-                { fastest = i; }
-        }
-        println!("The fastest one is {}.\n", dt[fastest]);
-
-        // #[cfg(debug_assertions)]
-        // assert_eq!(fastest, 0); // It means u128 shows the best performance most of the time.
-
-        // #[cfg(not(debug_assertions))]
-        // if operator < 2
-        //     { assert_eq!(fastest, 0); } // It means u128 shows the best performance.
-        // else
-        //     { assert_eq!(fastest, 1); } // It means u64 shows the best performance most of the time.
-    }
+    println!("-------------------------------");
 }
 
 fn BigUInt_constructors___main()
 {
-    BigUInt_new___main();
-    BigUInt_zero___main();
-    BigUInt_one___main();
-    BigUInt_max___main();
-    BigUInt_submax___main();
-    BigUInt_halfmax___main();
-    BigUInt_from_uint___main();
-    BigUInt_from_array___main();
-    BigUInt_from_biguint___main();
-    BigUInt_from_be___main();
-    BigUInt_from_be_bytes___main();
-    BigUInt_from_le___main();
-    BigUInt_from_le_bytes___main();
-    BigUInt_from_string___main();
-    BigUInt_from_str_radix___main();
+    BigUInt_new();
+    BigUInt_zero();
+    BigUInt_one();
+    BigUInt_max();
+    BigUInt_submax();
+    BigUInt_halfmax();
+    BigUInt_from_uint();
+    BigUInt_from_array();
+    BigUInt_from_biguint();
+    BigUInt_from_be();
+    BigUInt_from_be_bytes();
+    BigUInt_from_le();
+    BigUInt_from_le_bytes();
+    BigUInt_from_string();
+    BigUInt_from_str_radix();
     BigUInt_generate_check_bits_();
     BigUInt_generate_check_bits();
 }
 
-fn BigUInt_new___main()
+fn BigUInt_new()
 {
-    println!("fn BigUInt_new___main()");
+    println!("BigUInt_new");
     use Cryptocol::define_utypes_with;
     define_utypes_with!(u128);
 
@@ -291,11 +214,12 @@ fn BigUInt_new___main()
     let zero = u256::zero();
     println!("obj = {}", obj);
     assert_eq!(obj, zero);
+    println!("-------------------------------");
 }
 
-fn BigUInt_zero___main()
+fn BigUInt_zero()
 {
-    println!("fn BigUInt_zero___main()");
+    println!("BigUInt_zero");
     use Cryptocol::define_utypes_with;
     define_utypes_with!(u64);
 
@@ -303,11 +227,12 @@ fn BigUInt_zero___main()
     let obj = u256::new();
     println!("zero = {}", zero);
     assert_eq!(zero, obj);
+    println!("-------------------------------");
 }
 
-fn BigUInt_one___main()
+fn BigUInt_one()
 {
-    println!("fn BigUInt_one___main()");
+    println!("BigUInt_one");
     use Cryptocol::define_utypes_with;
     define_utypes_with!(u32);
 
@@ -316,11 +241,12 @@ fn BigUInt_one___main()
     obj.set_uint(1_u32);
     println!("one = {}", one);
     assert_eq!(one, obj);
+    println!("-------------------------------");
 }
 
-fn BigUInt_max___main()
+fn BigUInt_max()
 {
-    println!("BigUInt_max___main()");
+    println!("BigUInt_max");
     use std::str::FromStr;
     use Cryptocol::define_utypes_with;
     define_utypes_with!(u16);
@@ -331,9 +257,9 @@ fn BigUInt_max___main()
     println!("---------------------------");
 }
 
-fn BigUInt_submax___main()
+fn BigUInt_submax()
 {
-    println!("BigUInt_submax___main()");
+    println!("BigUInt_submax");
     use std::str::FromStr;
     use Cryptocol::define_utypes_with;
     define_utypes_with!(u8);
@@ -344,9 +270,9 @@ fn BigUInt_submax___main()
     println!("---------------------------");
 }
 
-fn BigUInt_halfmax___main()
+fn BigUInt_halfmax()
 {
-    println!("BigUInt_halfmax___main()");
+    println!("BigUInt_halfmax");
     use std::str::FromStr;
     use Cryptocol::define_utypes_with;
     define_utypes_with!(u128);
@@ -357,19 +283,19 @@ fn BigUInt_halfmax___main()
     println!("---------------------------");
 }
 
-fn BigUInt_from_uint___main()
+fn BigUInt_from_uint()
 {
-    BigUInt_from_uint_u8___main();
-    BigUInt_from_uint_u16___main();
-    BigUInt_from_uint_u32___main();
-    BigUInt_from_uint_u64___main();
-    BigUInt_from_uint_u128___main();
-    BigUInt_from_uint_usize___main();
+    BigUInt_from_uint_u8();
+    BigUInt_from_uint_u16();
+    BigUInt_from_uint_u32();
+    BigUInt_from_uint_u64();
+    BigUInt_from_uint_u128();
+    BigUInt_from_uint_usize();
 }
 
-fn BigUInt_from_uint_u8___main()
+fn BigUInt_from_uint_u8()
 {
-    println!("BigUInt_from_uint_u8___main");
+    println!("BigUInt_from_uint_u8");
     use Cryptocol::define_utypes_with_u16;
     define_utypes_with_u16!();
      
@@ -379,9 +305,9 @@ fn BigUInt_from_uint_u8___main()
     println!("---------------------------");
 }
 
-fn BigUInt_from_uint_u16___main()
+fn BigUInt_from_uint_u16()
 {
-    println!("BigUInt_from_uint_u16___main");
+    println!("BigUInt_from_uint_u16");
     use Cryptocol::define_utypes_with_u64;
     define_utypes_with_u64!();
      
@@ -391,9 +317,9 @@ fn BigUInt_from_uint_u16___main()
     println!("---------------------------");
 }
 
-fn BigUInt_from_uint_u32___main()
+fn BigUInt_from_uint_u32()
 {
-    println!("BigUInt_from_uint_u32___main");
+    println!("BigUInt_from_uint_u32");
     use Cryptocol::define_utypes_with_u8;
     define_utypes_with_u8!();
      
@@ -403,9 +329,9 @@ fn BigUInt_from_uint_u32___main()
     println!("---------------------------");
 }
 
-fn BigUInt_from_uint_u64___main()
+fn BigUInt_from_uint_u64()
 {
-    println!("BigUInt_from_uint_u64___main");
+    println!("BigUInt_from_uint_u64");
     use Cryptocol::define_utypes_with_u128;
     define_utypes_with_u128!();
      
@@ -415,9 +341,9 @@ fn BigUInt_from_uint_u64___main()
     println!("---------------------------");
 }
 
-fn BigUInt_from_uint_u128___main()
+fn BigUInt_from_uint_u128()
 {
-    println!("BigUInt_from_uint_u128___main");
+    println!("BigUInt_from_uint_u128");
     use Cryptocol::define_utypes_with_u128;
     define_utypes_with_u128!();
      
@@ -427,9 +353,9 @@ fn BigUInt_from_uint_u128___main()
     println!("---------------------------");
 }
 
-fn BigUInt_from_uint_usize___main()
+fn BigUInt_from_uint_usize()
 {
-    println!("BigUInt_from_uint_usize___main");
+    println!("BigUInt_from_uint_usize");
     use Cryptocol::define_utypes_with_u32;
     define_utypes_with_u32!();
 
@@ -440,9 +366,9 @@ fn BigUInt_from_uint_usize___main()
     println!("---------------------------");
 }
 
-fn BigUInt_from_array___main()
+fn BigUInt_from_array()
 {
-    println!("BigUInt_from_array___main");
+    println!("BigUInt_from_array");
     use Cryptocol::define_utypes_with;
     define_utypes_with!(u8);
 
@@ -452,16 +378,16 @@ fn BigUInt_from_array___main()
     println!("---------------------------");
 }
 
-fn BigUInt_from_biguint___main()
+fn BigUInt_from_biguint()
 {
-    BigUInt_from_biguint_same_length___main();
-    BigUInt_from_biguint_shorter_length___main();
-    BigUInt_from_biguint_longer_length___main();
+    BigUInt_from_biguint_same_length();
+    BigUInt_from_biguint_shorter_length();
+    BigUInt_from_biguint_longer_length();
 }
 
-fn BigUInt_from_biguint_same_length___main()
+fn BigUInt_from_biguint_same_length()
 {
-    println!("BigUInt_from_biguint_same_length___main");
+    println!("BigUInt_from_biguint_same_length");
     use std::str::FromStr;
     use Cryptocol::number::*;
 
@@ -473,9 +399,9 @@ fn BigUInt_from_biguint_same_length___main()
     println!("---------------------------");
 }
 
-fn BigUInt_from_biguint_shorter_length___main()
+fn BigUInt_from_biguint_shorter_length()
 {
-    println!("BigUInt_from_biguint_shorter_length___main");
+    println!("BigUInt_from_biguint_shorter_length");
     use std::str::FromStr;
     use Cryptocol::number::*;
 
@@ -487,9 +413,9 @@ fn BigUInt_from_biguint_shorter_length___main()
     println!("---------------------------");
 }
 
-fn BigUInt_from_biguint_longer_length___main()
+fn BigUInt_from_biguint_longer_length()
 {
-    println!("BigUInt_from_biguint_longer_length___main");
+    println!("BigUInt_from_biguint_longer_length");
     use std::str::FromStr;
     use Cryptocol::number::*;
 
@@ -501,9 +427,9 @@ fn BigUInt_from_biguint_longer_length___main()
     println!("---------------------------");
 }
 
-fn BigUInt_from_be___main()
+fn BigUInt_from_be()
 {
-    println!("BigUInt_from_be___main");
+    println!("BigUInt_from_be");
     use Cryptocol::define_utypes_with;
     define_utypes_with!(u8);
 
@@ -519,9 +445,9 @@ fn BigUInt_from_be___main()
     println!("---------------------------");
 }
 
-fn BigUInt_from_be_bytes___main()
+fn BigUInt_from_be_bytes()
 {
-    println!("BigUInt_from_be___main");
+    println!("BigUInt_from_be");
     use Cryptocol::define_utypes_with;
     define_utypes_with!(u8);
 
@@ -536,9 +462,9 @@ fn BigUInt_from_be_bytes___main()
     println!("---------------------------");
 }
 
-fn BigUInt_from_le___main()
+fn BigUInt_from_le()
 {
-    println!("BigUInt_from_le___main");
+    println!("BigUInt_from_le");
     use Cryptocol::define_utypes_with;
     define_utypes_with!(u8);
 
@@ -554,9 +480,9 @@ fn BigUInt_from_le___main()
     println!("---------------------------");
 }
 
-fn BigUInt_from_le_bytes___main()
+fn BigUInt_from_le_bytes()
 {
-    println!("BigUInt_from_le_bytes___main");
+    println!("BigUInt_from_le_bytes");
     use Cryptocol::define_utypes_with;
     define_utypes_with!(u8);
 
@@ -571,9 +497,9 @@ fn BigUInt_from_le_bytes___main()
     println!("---------------------------");
 }
 
-fn BigUInt_from_string___main()
+fn BigUInt_from_string()
 {
-    println!("BigUInt_from_string___main");
+    println!("BigUInt_from_string");
     use Cryptocol::define_utypes_with;
     define_utypes_with!(u64);
 
@@ -583,9 +509,9 @@ fn BigUInt_from_string___main()
     println!("---------------------------");
 }
 
-fn BigUInt_from_str_radix___main()
+fn BigUInt_from_str_radix()
 {
-    println!("BigUInt_from_str_radix___main");
+    println!("BigUInt_from_str_radix");
     use Cryptocol::define_utypes_with;
     define_utypes_with!(u16);
     let a = u512::from_str_radix("1234_5678_9ABC_DEF0_1234_5678_9ABC_DEF0_1234_5678_9ABC_DEF0_1234_5678_9ABC_DEF0_1234_5678_9ABC_DEF0_1234_5678_9ABC_DEF0_1234_5678_9ABC_DEF0_1234_5678_9ABC_DEF0", 16).unwrap();
@@ -872,15 +798,15 @@ fn BigUInt_is_prime_using_Miller_Rabin()
 
 fn BigUInt_get_size___main()
 {
-    BigUInt_size_in_bytes___main();
-    BigUInt_size_in_bits___main();
-    BigUInt_length_in_bytes___main();
-    BigUInt_length_in_bits___main();
+    BigUInt_size_in_bytes();
+    BigUInt_size_in_bits();
+    BigUInt_length_in_bytes();
+    BigUInt_length_in_bits();
 }
 
-fn BigUInt_size_in_bytes___main()
+fn BigUInt_size_in_bytes()
 {
-    println!("BigUInt_size_in_bytes___main");
+    println!("BigUInt_size_in_bytes");
     use Cryptocol::define_utypes_with;
     define_utypes_with!(u8);
 
@@ -889,9 +815,9 @@ fn BigUInt_size_in_bytes___main()
     println!("---------------------------");
 }
 
-fn BigUInt_size_in_bits___main()
+fn BigUInt_size_in_bits()
 {
-    println!("BigUInt_size_in_bits___main");
+    println!("BigUInt_size_in_bits");
     use Cryptocol::define_utypes_with;
     define_utypes_with!(u32);
 
@@ -900,9 +826,9 @@ fn BigUInt_size_in_bits___main()
     println!("---------------------------");
 }
 
-fn BigUInt_length_in_bytes___main()
+fn BigUInt_length_in_bytes()
 {
-    println!("BigUInt_length_in_bytes___main");
+    println!("BigUInt_length_in_bytes");
     use Cryptocol::define_utypes_with;
     define_utypes_with!(u16);
 
@@ -912,9 +838,9 @@ fn BigUInt_length_in_bytes___main()
     println!("---------------------------");
 }
 
-fn BigUInt_length_in_bits___main()
+fn BigUInt_length_in_bits()
 {
-    println!("BigUInt_length_in_bits___main");
+    println!("BigUInt_length_in_bits");
     use Cryptocol::define_utypes_with;
     define_utypes_with!(u64);
 
@@ -1456,21 +1382,21 @@ fn BigUInt_is_even()
 
 fn BigUInt_check_bits___main()
 {
-    BigUInt_count_ones___main();
-    BigUInt_count_zeros___main();
-    BigUInt_leading_ones___main();
-    BigUInt_leading_zeros___main();
-    BigUInt_trailing_ones___main();
-    BigUInt_trailing_zeros___main();
-    BigUInt_leading_max_elements___main();
-    BigUInt_leading_zero_elements___main();
-    BigUInt_trailing_max_elements___main();
-    BigUInt_trailing_zero_elements___main();
+    BigUInt_count_ones();
+    BigUInt_count_zeros();
+    BigUInt_leading_ones();
+    BigUInt_leading_zeros();
+    BigUInt_trailing_ones();
+    BigUInt_trailing_zeros();
+    BigUInt_leading_max_elements();
+    BigUInt_leading_zero_elements();
+    BigUInt_trailing_max_elements();
+    BigUInt_trailing_zero_elements();
 }
 
-fn BigUInt_count_ones___main()
+fn BigUInt_count_ones()
 {
-    println!("BigUInt_count_ones___main");
+    println!("BigUInt_count_ones");
     use std::str::FromStr;
     use Cryptocol::define_utypes_with;
     define_utypes_with!(u8);
@@ -1481,9 +1407,9 @@ fn BigUInt_count_ones___main()
     println!("---------------------------");
 }
 
-fn BigUInt_count_zeros___main()
+fn BigUInt_count_zeros()
 {
-    println!("BigUInt_count_zeros___main");
+    println!("BigUInt_count_zeros");
     use Cryptocol::define_utypes_with;
     define_utypes_with!(u16);
 
@@ -1493,9 +1419,9 @@ fn BigUInt_count_zeros___main()
     println!("---------------------------");
 }
 
-fn BigUInt_leading_ones___main()
+fn BigUInt_leading_ones()
 {
-    println!("BigUInt_leading_ones___main");
+    println!("BigUInt_leading_ones");
     use std::str::FromStr;
     use Cryptocol::define_utypes_with;
     define_utypes_with!(u32);
@@ -1506,9 +1432,9 @@ fn BigUInt_leading_ones___main()
     println!("---------------------------");
 }
 
-fn BigUInt_leading_zeros___main()
+fn BigUInt_leading_zeros()
 {
-    println!("BigUInt_leading_zeros___main");
+    println!("BigUInt_leading_zeros");
     use Cryptocol::define_utypes_with;
     define_utypes_with!(u64);
 
@@ -1518,9 +1444,9 @@ fn BigUInt_leading_zeros___main()
     println!("---------------------------");
 }
 
-fn BigUInt_trailing_ones___main()
+fn BigUInt_trailing_ones()
 {
-    println!("BigUInt_trailing_ones___main");
+    println!("BigUInt_trailing_ones");
     use std::str::FromStr;
     use Cryptocol::define_utypes_with;
     define_utypes_with!(u128);
@@ -1531,9 +1457,9 @@ fn BigUInt_trailing_ones___main()
     println!("---------------------------");
 }
 
-fn BigUInt_trailing_zeros___main()
+fn BigUInt_trailing_zeros()
 {
-    println!("BigUInt_trailing_zeros___main");
+    println!("BigUInt_trailing_zeros");
     use Cryptocol::define_utypes_with;
     define_utypes_with!(u16);
 
@@ -1543,9 +1469,9 @@ fn BigUInt_trailing_zeros___main()
     println!("---------------------------");
 }
 
-fn BigUInt_leading_max_elements___main()
+fn BigUInt_leading_max_elements()
 {
-    println!("BigUInt_leading_max_elements___main");
+    println!("BigUInt_leading_max_elements");
     use Cryptocol::define_utypes_with;
     define_utypes_with!(u8);
 
@@ -1555,9 +1481,9 @@ fn BigUInt_leading_max_elements___main()
     println!("---------------------------");
 }
 
-fn BigUInt_leading_zero_elements___main()
+fn BigUInt_leading_zero_elements()
 {
-    println!("BigUInt_leading_zero_elements___main");
+    println!("BigUInt_leading_zero_elements");
     use Cryptocol::define_utypes_with;
     define_utypes_with!(u32);
 
@@ -1567,9 +1493,9 @@ fn BigUInt_leading_zero_elements___main()
     println!("---------------------------");
 }
 
-fn BigUInt_trailing_max_elements___main()
+fn BigUInt_trailing_max_elements()
 {
-    println!("BigUInt_trailing_max_elements___main");
+    println!("BigUInt_trailing_max_elements");
     use Cryptocol::define_utypes_with;
     define_utypes_with!(u16);
 
@@ -1579,9 +1505,9 @@ fn BigUInt_trailing_max_elements___main()
     println!("---------------------------");
 }
 
-fn BigUInt_trailing_zero_elements___main()
+fn BigUInt_trailing_zero_elements()
 {
-    println!("BigUInt_trailing_zero_elements___main");
+    println!("BigUInt_trailing_zero_elements");
     use Cryptocol::define_utypes_with;
     define_utypes_with!(u8);
 
@@ -1593,17 +1519,17 @@ fn BigUInt_trailing_zero_elements___main()
 
 fn BigUInt_comparison_uint___main()
 {
-    BigUInt_partial_cmp_uint___main();
-    BigUInt_lt_uint___main();
-    BigUInt_gt_uint___main();
-    BigUInt_le_uint___main();
-    BigUInt_ge_uint___main();
-    BigUInt_eq_uint___main();
+    BigUInt_partial_cmp_uint();
+    BigUInt_lt_uint();
+    BigUInt_gt_uint();
+    BigUInt_le_uint();
+    BigUInt_ge_uint();
+    BigUInt_eq_uint();
 }
 
-fn BigUInt_partial_cmp_uint___main()
+fn BigUInt_partial_cmp_uint()
 {
-    println!("BigUInt_partial_cmp_uint___main");
+    println!("BigUInt_partial_cmp_uint");
     use std::cmp::Ordering;
     use Cryptocol::define_utypes_with;
     define_utypes_with!(u8);
@@ -1637,9 +1563,9 @@ fn BigUInt_partial_cmp_uint___main()
     println!("---------------------------");
 }
 
-fn BigUInt_lt_uint___main()
+fn BigUInt_lt_uint()
 {
-    println!("BigUInt_lt_uint___main");
+    println!("BigUInt_lt_uint");
     use Cryptocol::define_utypes_with;
     define_utypes_with!(u16);
 
@@ -1659,9 +1585,9 @@ fn BigUInt_lt_uint___main()
     println!("---------------------------");
 }
 
-fn BigUInt_gt_uint___main()
+fn BigUInt_gt_uint()
 {
-    println!("BigUInt_gt_uint___main");
+    println!("BigUInt_gt_uint");
     use Cryptocol::define_utypes_with;
     define_utypes_with!(u32);
 
@@ -1681,9 +1607,9 @@ fn BigUInt_gt_uint___main()
     println!("---------------------------");
 }
 
-fn BigUInt_le_uint___main()
+fn BigUInt_le_uint()
 {
-    println!("BigUInt_le_uint___main");
+    println!("BigUInt_le_uint");
     use Cryptocol::define_utypes_with;
     define_utypes_with!(u64);
 
@@ -1703,9 +1629,9 @@ fn BigUInt_le_uint___main()
     println!("---------------------------");
 }
 
-fn BigUInt_ge_uint___main()
+fn BigUInt_ge_uint()
 {
-    println!("BigUInt_ge_uint___main");
+    println!("BigUInt_ge_uint");
     use Cryptocol::define_utypes_with;
     define_utypes_with!(u32);
 
@@ -1725,9 +1651,9 @@ fn BigUInt_ge_uint___main()
     println!("---------------------------");
 }
 
-fn BigUInt_eq_uint___main()
+fn BigUInt_eq_uint()
 {
-    println!("BigUInt_eq_uint___main");
+    println!("BigUInt_eq_uint");
     use Cryptocol::define_utypes_with;
     define_utypes_with!(u8);
 
@@ -1747,17 +1673,15 @@ fn BigUInt_eq_uint___main()
     println!("---------------------------");
 }
 
-/////THIS/////
-
 fn BigUInt_comparison_biguint___main()
 {
-    BigUInt_eq_biguint___main();
-    BigUInt_partial_cmp_biguint___main();
+    BigUInt_eq_biguint();
+    BigUInt_partial_cmp_biguint();
 }
 
-fn BigUInt_eq_biguint___main()
+fn BigUInt_eq_biguint()
 {
-    println!("BigUInt_eq_biguint___main");
+    println!("BigUInt_eq_biguint");
     use Cryptocol::define_utypes_with;
     define_utypes_with!(u128);
 
@@ -1778,9 +1702,9 @@ fn BigUInt_eq_biguint___main()
     println!("---------------------------");
 }
 
-fn BigUInt_partial_cmp_biguint___main()
+fn BigUInt_partial_cmp_biguint()
 {
-    println!("BigUInt_partial_cmp_biguint___main");
+    println!("BigUInt_partial_cmp_biguint");
     use std::cmp::Ordering;
     use Cryptocol::define_utypes_with;
     define_utypes_with!(u16);
@@ -1825,16 +1749,7 @@ fn BigUInt_arithmatic_operation_uint___main()
 {
     BigUInt_add_uint();
     BigUInt_sub_uint();
-
-    // BigUInt_carrying_mul_uint___main();
-    // BigUInt_carrying_mul_assign_uint___main();
-    // BigUInt_carrying_div_uint___main();
-    // BigUInt_carrying_div_assign_uint___main();
-    // BigUInt_carrying_rem_uint___main();
-    // BigUInt_carrying_rem_assign_uint___main();
-    // BigUInt_carrying_add_uint___main();
-    // BigUInt_carrying_add_assign_uint___main();
-
+    BigUInt_mul_uint();
 }
 
 fn BigUInt_add_uint()
@@ -2137,16 +2052,16 @@ fn BigUInt_modular_add_uint()
 {
     println!("BigUInt_modular_add_uint");
     use Cryptocol::define_utypes_with;
-    define_utypes_with!(u32);
+    define_utypes_with!(u8);
 
-    let a = u256::from_string("76801874298166903427690031858186486050853753882811946569946433649006084094").unwrap();
+    let a = u256::from_string("76801874298166903427690031858186486050853753882811946569946433649006").unwrap();
     let m = a.wrapping_add_uint(2_u8);
     let b = a.modular_add_uint(1_u8, &m);
     let c = a.modular_add_uint(2_u8, &m);
     let d = a.modular_add_uint(3_u8, &m);
     
     println!("{} + 1 = {}", a, b);
-    assert_eq!(b.to_string(), "76801874298166903427690031858186486050853753882811946569946433649006084095");
+    assert_eq!(b.to_string(), "76801874298166903427690031858186486050853753882811946569946433649007");
 
     println!("{} + 2 = {}", a, c);
     assert_eq!(c.to_string(), "0");
@@ -2162,14 +2077,14 @@ fn BigUInt_modular_add_assign_uint()
     use Cryptocol::define_utypes_with;
     define_utypes_with!(u8);
 
-    let mut a = u256::from_string("76801874298166903427690031858186486050853753882811946569946433649006084094").unwrap();
+    let mut a = u256::from_string("768018742981669034276900318581864860508537538828119465699464336490060").unwrap();
     let m = a.wrapping_add_uint(2_u8);
     println!("Originally,\ta = {}", a);
-    assert_eq!(a.to_string(), "76801874298166903427690031858186486050853753882811946569946433649006084094");
+    assert_eq!(a.to_string(), "768018742981669034276900318581864860508537538828119465699464336490060");
     
     a.modular_add_assign_uint(1_u8, &m);
     println!("After a += 1,\ta = {}", a);
-    assert_eq!(a.to_string(), "76801874298166903427690031858186486050853753882811946569946433649006084095");
+    assert_eq!(a.to_string(), "768018742981669034276900318581864860508537538828119465699464336490061");
     
     a.modular_add_assign_uint(1_u8, &m);
     println!("After a += 1,\ta = {}", a);
@@ -2558,6 +2473,47 @@ fn BigUInt_abs_diff_uint()
 }
 
 
+fn BigUInt_mul_uint()
+{
+    BigUInt_carrying_mul_uint();
+    BigUInt_carrying_mul_assign_uint();
+}
+
+fn BigUInt_carrying_mul_uint()
+{
+    println!("BigUInt_carrying_mul_uint");
+    use Cryptocol::define_utypes_with;
+    define_utypes_with!(u8);
+
+    let a_low = U32::from_string("76801874298166903427690031858186486050853753882811946569946433649006084094").unwrap();
+    let a_high = U32::from_string("75388281194656994643364900608409476801874298166903427690031858186486050853").unwrap();
+    let b_uint = 225_u8;
+    let (mut res_low, mut res_high) = a_low.carrying_mul_uint(b_uint, U32::zero());
+    let (mut res_high, mut res_higher) = a_high.carrying_mul_uint(b_uint, res_high);
+
+    println!("{}:{} X {} = {}:{}:{}", a_high, a_low, b_uint, res_higher, res_high, res_low);
+    assert_eq!(res_higher.to_string(), "0");
+    assert_eq!(res_high.to_string(), "16962363268797823794757102636892132280421717087553271230257168091959361441925");
+    assert_eq!(res_low.to_string(), "17280421717087553271230257168091959361442094623632687978237947571026368921150");
+    println!("---------------------------");
+}
+
+fn BigUInt_carrying_mul_assign_uint()
+{
+
+}
+
+fn BigUInt_div_uint()
+{
+    // BigUInt_carrying_div_uint___main();
+    // BigUInt_carrying_div_assign_uint___main();
+}
+
+fn BigUInt_rem_uint()
+{
+    // BigUInt_carrying_rem_uint___main();
+    // BigUInt_carrying_rem_assign_uint___main();
+}
 
 fn BigUInt_exponentiation_logarithm_uint()
 {
