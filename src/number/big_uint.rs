@@ -224,7 +224,7 @@ use super::NumberErr;
 /// 
 /// # Panics
 /// If `size_of::<T>() * N` <= `128`, some methods may panic
-/// or its behavior may undefined though it may not panic.
+/// or its behavior may be undefined though it may not panic.
 /// 
 /// # Quick Start
 /// It is generic data type. So, you can define 1024-bit unsigned integer
@@ -687,16 +687,16 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
                                                 { Self::widening_mul_assign_uint_2 },
 
             method_wrapping_mul_assign_uint: if N > 16
-                                                { Self::wrapping_mul_assign_uint_2 }
+                                                { Self::wrapping_mul_assign_uint_1 }
                                             else
                                                 { Self::wrapping_mul_assign_uint_2 },
             method_widening_mul_assign: if N > 16
-                                            { Self::widening_mul_assign_2 }
+                                            { Self::widening_mul_assign_1 }
                                         else
                                             { Self::widening_mul_assign_2 },
 
             method_wrapping_mul_assign: if N > 16
-                                            { Self::wrapping_mul_assign_2 }
+                                            { Self::wrapping_mul_assign_1 }
                                         else
                                             { Self::wrapping_mul_assign_2 },
             number: [T::zero(); N],
@@ -864,7 +864,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// 
     /// # Panics
     /// If `size_of::<T>() * N` < `size_of::<U>()`, some methods may panic
-    /// or its behavior may undefined though it may not panic.
+    /// or its behavior may be undefined though it may not panic.
     /// 
     /// # Example for u8
     /// ```
@@ -2711,7 +2711,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// 
     /// # Panics
     /// If `size_of::<T>() * N` <= `128`, This method may panic
-    /// or its behavior may undefined though it may not panic.
+    /// or its behavior may be undefined though it may not panic.
     /// 
     /// # Example
     /// ```
@@ -4097,7 +4097,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// 
     /// # Panics
     /// If `size_of::<T>() * N` < `size_of::<U>()`, this method may panic or
-    /// its behavior may undefined though it may not panic.
+    /// its behavior may be undefined though it may not panic.
     /// 
     /// # Example
     /// ```
@@ -4148,7 +4148,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// 
     /// # Panics
     /// If `size_of::<T>() * N` < `size_of::<U>()`, some methods may panic
-    /// or its behavior may undefined though it may not panic.
+    /// or its behavior may be undefined though it may not panic.
     /// 
     /// # Example
     /// ```
@@ -4212,7 +4212,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// 
     /// # Panics
     /// If `size_of::<T>() * N` < `size_of::<U>()`, some methods may panic
-    /// or its behavior may undefined though it may not panic.
+    /// or its behavior may be undefined though it may not panic.
     /// 
     /// # Counterpart Method
     /// This method is_uint() is virtually the same the method [eq_uint()](struct@BigUInt#method.eq_uint).
@@ -4282,7 +4282,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// 
     /// # Panics
     /// If `size_of::<T>() * N` < `size_of::<U>()`, some methods may panic
-    /// or its behavior may undefined though it may not panic.
+    /// or its behavior may be undefined though it may not panic.
     /// 
     /// # Counterpart Method
     /// This method is_uint() is virtually the same the method [eq_uint()](struct@BigUInt#method.eq_uint).
@@ -4782,7 +4782,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// 
     /// # Panics
     /// If `size_of::<T>() * N` < `size_of::<U>()`, This method may panic
-    /// or its behavior may undefined though it may not panic.
+    /// or its behavior may be undefined though it may not panic.
     /// 
     /// # Output
     /// It returns `Ordering::Greater` wrapped by `Some` of enum `Option`
@@ -4873,7 +4873,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// 
     /// # Panics
     /// If `size_of::<T>() * N` < `size_of::<U>()`, This method may panic
-    /// or its behavior may undefined though it may not panic.
+    /// or its behavior may be undefined though it may not panic.
     /// 
     /// # Output
     /// It returns `true` if `self` is less than `other`.
@@ -4917,7 +4917,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// 
     /// # Panics
     /// If `size_of::<T>() * N` < `size_of::<U>()`, This method may panic
-    /// or its behavior may undefined though it may not panic.
+    /// or its behavior may be undefined though it may not panic.
     /// 
     /// # Output
     /// It returns `true` if `self` is greater than `other`.
@@ -4961,7 +4961,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// 
     /// # Panics
     /// If `size_of::<T>() * N` < `size_of::<U>()`, This method may panic
-    /// or its behavior may undefined though it may not panic.
+    /// or its behavior may be undefined though it may not panic.
     /// 
     /// # Output
     /// It returns `true` if `self` is less than or equal to `other`.
@@ -5005,7 +5005,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// 
     /// # Panics
     /// If `size_of::<T>() * N` < `size_of::<U>()`, This method may panic
-    /// or its behavior may undefined though it may not panic.
+    /// or its behavior may be undefined though it may not panic.
     /// 
     /// # Output
     /// It returns `true` if `self` is greater than or equal to `other`.
@@ -5048,7 +5048,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// more convenient for you to use the operator `==`.
     /// # Panics
     /// If `size_of::<T>() * N` < `size_of::<U>()`, This method may panic
-    /// or its behavior may undefined though it may not panic.
+    /// or its behavior may be undefined though it may not panic.
     /// 
     /// # Output
     /// It returns `true` if `self` is equal to `other`.
@@ -5212,7 +5212,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// 
     /// # Panics
     /// If `size_of::<T>() * N` <= `128`, some methods may panic
-    /// or its behavior may undefined though it may not panic.
+    /// or its behavior may be undefined though it may not panic.
     /// 
     /// # Outputs
     /// It returns a tuple containing the sum and the output carry. It performs
@@ -5292,7 +5292,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// 
     /// # Panics
     /// If `size_of::<T>() * N` <= `128`, some methods may panic
-    /// or its behavior may undefined though it may not panic.
+    /// or its behavior may be undefined though it may not panic.
     /// 
     /// # Outputs
     /// It returns the output carry. It performs “ternary addition” of a big
@@ -5399,7 +5399,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// 
     /// # Panics
     /// If `size_of::<T>() * N` <= `128`, some methods may panic
-    /// or its behavior may undefined though it may not panic.
+    /// or its behavior may be undefined though it may not panic.
     /// 
     /// # Output
     /// It returns `self` + `rhs` with wrapping (modular) addition.
@@ -5464,7 +5464,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// 
     /// # Panics
     /// If `size_of::<T>() * N` <= `128`, some methods may panic
-    /// or its behavior may undefined though it may not panic.
+    /// or its behavior may be undefined though it may not panic.
     /// 
     /// # Feature
     /// - Wrapping (modular) addition.
@@ -5522,7 +5522,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// 
     /// # Panics
     /// If `size_of::<T>() * N` <= `128`, some methods may panic
-    /// or its behavior may undefined though it may not panic.
+    /// or its behavior may be undefined though it may not panic.
     /// 
     /// # Output
     /// It returns a tuple of the addition `self` + `rhs` along with a boolean
@@ -5586,7 +5586,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// 
     /// # Panics
     /// If `size_of::<T>() * N` <= `128`, some methods may panic
-    /// or its behavior may undefined though it may not panic.
+    /// or its behavior may be undefined though it may not panic.
     /// 
     /// # Output
     /// It returns true if an arithmetic overflow would occur.
@@ -5656,7 +5656,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// 
     /// # Panics
     /// If `size_of::<T>() * N` <= `128`, some methods may panic
-    /// or its behavior may undefined though it may not panic.
+    /// or its behavior may be undefined though it may not panic.
     /// 
     /// # Output
     /// It returns the sum `self` + `rhs` wrapped by `Some` of enum `Option`
@@ -5754,7 +5754,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// - If overflow occurred, it will panic. So, use this method
     /// only when you are sure that overflow will not occur.
     /// - If `size_of::<T>() * N` <= `128`, some methods may panic
-    /// or its behavior may undefined though it may not panic.
+    /// or its behavior may be undefined though it may not panic.
     /// 
     /// # Output
     /// It returns the sum `self` + `rhs` if overflow did not occur at current
@@ -5808,7 +5808,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// 
     /// # Panics
     /// If `size_of::<T>() * N` <= `128`, some methods may panic
-    /// or its behavior may undefined though it may not panic.
+    /// or its behavior may be undefined though it may not panic.
     /// 
     /// # Output
     /// It returns the sum `self` + `rhs` if overflow did not occur.
@@ -5870,7 +5870,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// 
     /// # Panics
     /// If `size_of::<T>() * N` <= `128`, some methods may panic
-    /// or its behavior may undefined though it may not panic.
+    /// or its behavior may be undefined though it may not panic.
     /// 
     /// # Feature
     /// - This method saturates at current overflow.
@@ -5929,7 +5929,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// 
     /// # Panics
     /// If `size_of::<T>() * N` <= `128`, some methods may panic
-    /// or its behavior may undefined though it may not panic.
+    /// or its behavior may be undefined though it may not panic.
     /// 
     /// # Output
     /// It returns the modulo-sum (`self` + `rhs`) % `modulo` with wrapping
@@ -6003,7 +6003,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// 
     /// # Panics
     /// If `size_of::<T>() * N` <= `128`, some methods may panic
-    /// or its behavior may undefined though it may not panic.
+    /// or its behavior may be undefined though it may not panic.
     /// 
     /// # Feature
     /// - Wrapping (modular) addition at `modulo`.
@@ -6096,7 +6096,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// 
     /// # Panics
     /// If `size_of::<T>() * N` <= `128`, some methods may panic
-    /// or its behavior may undefined though it may not panic.
+    /// or its behavior may be undefined though it may not panic.
     /// 
     /// # Outputs
     /// It returns a tuple containing an output big integer and a carry-out bit.
@@ -6176,7 +6176,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// 
     /// # Panics
     /// If `size_of::<T>() * N` <= `128`, some methods may panic
-    /// or its behavior may undefined though it may not panic.
+    /// or its behavior may be undefined though it may not panic.
     /// 
     /// # Outputs
     /// It returns a tuple containing an output big integer and a carry-out bit.
@@ -6281,7 +6281,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// 
     /// # Panics
     /// If `size_of::<T>() * N` <= `128`, some methods may panic
-    /// or its behavior may undefined though it may not panic.
+    /// or its behavior may be undefined though it may not panic.
     /// 
     /// # Output
     /// It returns the subtraction of `rhs` from `self`.
@@ -6345,7 +6345,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// 
     /// # Panics
     /// If `size_of::<T>() * N` <= `128`, some methods may panic
-    /// or its behavior may undefined though it may not panic.
+    /// or its behavior may be undefined though it may not panic.
     /// 
     /// # Features
     /// - Wrapping (modular) subtraction.
@@ -6407,7 +6407,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// 
     /// # Panics
     /// If `size_of::<T>() * N` <= `128`, some methods may panic
-    /// or its behavior may undefined though it may not panic.
+    /// or its behavior may be undefined though it may not panic.
     /// 
     /// # Output
     /// It returns a tuple of the subtraction `self` - `rhs` along with a
@@ -6478,7 +6478,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// 
     /// # Panics
     /// If `size_of::<T>() * N` <= `128`, some methods may panic
-    /// or its behavior may undefined though it may not panic.
+    /// or its behavior may be undefined though it may not panic.
     /// 
     /// # Output
     /// It returns true if an arithmetic unerflow would occur.
@@ -6552,7 +6552,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// 
     /// # Panics
     /// If `size_of::<T>() * N` <= `128`, some methods may panic
-    /// or its behavior may undefined though it may not panic.
+    /// or its behavior may be undefined though it may not panic.
     /// 
     /// # Output
     /// It returns the difference `self` - `rhs` wrapped by `Some`
@@ -6645,7 +6645,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// - If underflow occurred, it will panic. So, use this method only when
     /// you are sure that underflow will not occur.
     /// - If `size_of::<T>() * N` <= `128`, some methods may panic
-    /// or its behavior may undefined though it may not panic.
+    /// or its behavior may be undefined though it may not panic.
     /// 
     /// # Output
     /// It returns the difference `self` - `rhs` if underflow did not occur.
@@ -6702,7 +6702,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// 
     /// # Panics
     /// If `size_of::<T>() * N` <= `128`, some methods may panic
-    /// or its behavior may undefined though it may not panic.
+    /// or its behavior may be undefined though it may not panic.
     /// 
     /// # Output
     /// It returns the difference `self` - `rhs` if underflowing did not occur.
@@ -6768,7 +6768,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// 
     /// # Panics
     /// If `size_of::<T>() * N` <= `128`, some methods may panic
-    /// or its behavior may undefined though it may not panic.
+    /// or its behavior may be undefined though it may not panic.
     /// 
     /// # Feature
     /// - `self` will be the difference `self` - `rhs` if underflowing
@@ -6830,7 +6830,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// 
     /// # Panics
     /// If `size_of::<T>() * N` <= `128`, some methods may panic
-    /// or its behavior may undefined though it may not panic.
+    /// or its behavior may be undefined though it may not panic.
     /// 
     /// # Output
     /// It returns the modulo-difference (`self` - `rhs`) % `modulo` with
@@ -6904,7 +6904,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// 
     /// # Panics
     /// If `size_of::<T>() * N` <= `128`, some methods may panic
-    /// or its behavior may undefined though it may not panic.
+    /// or its behavior may be undefined though it may not panic.
     /// 
     /// # Feature
     /// - Wrapping (modular) subtraction at `modulo`.
@@ -6998,7 +6998,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// 
     /// # Panics
     /// If `size_of::<T>() * N` <= `128`, some methods may panic
-    /// or its behavior may undefined though it may not panic.
+    /// or its behavior may be undefined though it may not panic.
     /// 
     /// # Output
     /// It returns the absolute difference between `self` and `other`.
@@ -7080,7 +7080,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// 
     /// # Panics
     /// If `size_of::<T>() * N` <= `128`, some methods may panic
-    /// or its behavior may undefined though it may not panic.
+    /// or its behavior may be undefined though it may not panic.
     /// 
     /// # Output
     /// It returns `self` * `rhs` + `carry` in the form of a tuple of the
@@ -7118,7 +7118,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// use Cryptocol::define_utypes_with;
     /// define_utypes_with!(u8);
     /// 
-    /// let a_low = U32::from_string("76801874298166903427690031858186486050853753882811946569946433649006084094").unwrap();
+    /// let a_low = u256::from_string("76801874298166903427690031858186486050853753882811946569946433649006084094").unwrap();
     /// let a_high = U32::from_string("75388281194656994643364900608409476801874298166903427690031858186486050853").unwrap();
     /// let b_uint = 225_u8;
     /// let (mut res_low, mut res_high) = a_low.carrying_mul_uint(b_uint, U32::zero());
@@ -7156,7 +7156,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// 
     /// # Panics
     /// If `size_of::<T>() * N` <= `128`, some methods may panic
-    /// or its behavior may undefined though it may not panic.
+    /// or its behavior may be undefined though it may not panic.
     /// 
     /// # Output
     /// It returns the high-order (overflow) bits of `self` * `rhs` + `carry`
@@ -7185,11 +7185,30 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// combining the mehtods
     /// [wrapping_mul_uint()](struct@BigUInt#method.wrapping_mul_uint) and
     /// [wrapping_add_assign_uint()](struct@BigUInt#method.wrapping_add_assign_uint):
-    /// `self.wrapping_mul_uint(rhs).wrapping_add_assign(_uintcarry)`.
+    /// `self.wrapping_mul_uint(rhs).wrapping_add_assign_uint(carry)`.
     /// 
     /// # Example
     /// ```
-    /// // Todo
+    /// use Cryptocol::define_utypes_with;
+    /// define_utypes_with!(u16);
+    /// 
+    /// let mut a_low = U32::from_string("76801874298166903427690031858186486050853753882811946569946433649006084094").unwrap();
+    /// let mut a_high = u256::from_string("75388281194656994643364900608409476801874298166903427690031858186486050853").unwrap();
+    /// let b_uint = 225_u8;
+    /// 
+    /// println!("Originally,\ta_low = {}", a_low);
+    /// assert_eq!(a_low.to_string(), "76801874298166903427690031858186486050853753882811946569946433649006084094");
+    /// println!("Originally,\ta_high = {}\n", a_high);
+    /// assert_eq!(a_high.to_string(), "75388281194656994643364900608409476801874298166903427690031858186486050853");
+    /// 
+    /// let mut res_high = a_low.carrying_mul_assign_uint(b_uint, U32::zero());
+    /// println!("After a_low.carrying_mul_assign_uint(225_u8, 0),\na_low = {}\n", a_low);
+    /// assert_eq!(a_low.to_string(), "17280421717087553271230257168091959361442094623632687978237947571026368921150");
+    /// 
+    /// let mut res_higher = a_high.carrying_mul_assign_uint(b_uint, res_high);
+    /// println!("After a_high.carrying_mul_assign_uint(225_u8, res_higher),\na_high = {}\nres_higher = {}", a_high, res_higher);
+    /// assert_eq!(a_high.to_string(), "16962363268797823794757102636892132280421717087553271230257168091959361441925");
+    /// assert_eq!(res_higher.to_string(), "0");
     /// ```
     /// 
     /// # Big-endian issue
@@ -7212,13 +7231,13 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
         high
     }
 
-    // pub fn widening_mul<U>(&self, rhs: U) -> (Self, Self)
+    // pub fn widening_mul_uint<U>(&self, rhs: U) -> (Self, Self)
     /// Calculates the complete product `self` * `rhs` without the possibility
     /// to overflow.
     /// 
     /// # Panics
-    /// If `size_of::<T>() * N` < `size_of::<U>()`, This method may panic
-    /// or its behavior may undefined though it may not panic.
+    /// If `size_of::<T>() * N` <= `128`, some methods may panic
+    /// or its behavior may be undefined though it may not panic.
     /// 
     /// # Output
     /// It returns `self` * `rhs` in the form of a tuple of the low-order
@@ -7226,7 +7245,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// two separate values, in that order.
     /// 
     /// # Feature
-    /// It performs “long multiplication” which takes in an extra amount to add,
+    /// - It performs “long multiplication” which takes in an extra amount to add,
     /// and may return an additional amount of overflow. This allows for
     /// chaining together multiple multiplications to create “bigger integers”
     /// which represent larger values.
@@ -7234,6 +7253,11 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// `OVERFOLOW` flag will be set though the output tuple is free from
     /// overflow. It is because the `OVERFOLOW` flag is about `self`,
     /// and not about the result of multiplication.
+    /// - The `OVERFOLOW` flag reflect historical overflow, which means if an
+    /// overflow occurred even once before this current operation or
+    /// `OVERFOLOW` flag is already set before this current operation, the
+    /// `OVERFOLOW` flag is not changed even if this current operation does
+    /// not cause overflow.
     /// 
     /// # Counterpart Methods
     /// - If you also need to add a carry to the wide result, then you want to
@@ -7246,7 +7270,16 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// 
     /// # Example
     /// ```
-    /// // Todo
+    /// use Cryptocol::define_utypes_with;
+    /// define_utypes_with!(u8);
+    /// 
+    /// let a_biguint = u256::from_string("876801874298166903427690031858186486050853753882811946569946433649006084094").unwrap();
+    /// let b_uint = 248_u8;
+    /// let (res_low, res_high) = a_biguint.widening_mul_uint(b_uint);
+    /// 
+    /// println!("{} X {} = {}:{}", a_biguint, b_uint, res_high, res_low);
+    /// assert_eq!(res_high.to_string(), "1");
+    /// assert_eq!(res_low.to_string(), "101654775588629196626496142892142340687341746297296798709889131537040379215376");
     /// ```
     /// 
     /// # Big-endian issue
@@ -7274,8 +7307,8 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// to overflow.
     /// 
     /// # Panics
-    /// If `size_of::<T>() * N` < `size_of::<U>()`, This method may panic
-    /// or its behavior may undefined though it may not panic.
+    /// If `size_of::<T>() * N` <= `128`, some methods may panic
+    /// or its behavior may be undefined though it may not panic.
     /// 
     /// # Output
     /// It returns the high-order (overflow) bits of the result `self` * `rhs`.
@@ -7289,6 +7322,11 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// though the output tuple is free from overflow. It is because the
     /// `OVERFOLOW` flag is about `self`, and not about the result of
     /// multiplication.
+    /// - The `OVERFOLOW` flag reflect historical overflow, which means if an
+    /// overflow occurred even once before this current operation or
+    /// `OVERFOLOW` flag is already set before this current operation, the
+    /// `OVERFOLOW` flag is not changed even if this current operation does
+    /// not cause overflow.
     /// 
     /// # Counterpart Methods
     /// - If you also need to add a carry to the wide result, then you want to
@@ -7301,7 +7339,19 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// 
     /// # Example
     /// ```
-    /// // Todo
+    /// use Cryptocol::define_utypes_with;
+    /// define_utypes_with!(u16);
+    /// 
+    /// let mut a_biguint = U32::from_string("876801874298166903427690031858186486050853753882811946569946433649006084094").unwrap();
+    /// let b_uint = 248_u8;
+    /// 
+    /// println!("Originally,\ta_biguint = {}", a_biguint);
+    /// assert_eq!(a_biguint.to_string(), "876801874298166903427690031858186486050853753882811946569946433649006084094");
+    /// 
+    /// let mut res_high = a_biguint.widening_mul_assign_uint(b_uint);
+    /// println!("After a_biguint.widening_mul_assign_uint(248_u8),\na_biguint = {}\nres_high = {}", a_biguint, res_high);
+    /// assert_eq!(a_biguint.to_string(), "101654775588629196626496142892142340687341746297296798709889131537040379215376");
+    /// assert_eq!(res_high.to_string(), "1");
     /// ```
     /// 
     /// # Big-endian issue
@@ -7324,6 +7374,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
             { (self.method_widening_mul_assign_uint)(self, T::num::<U>(rhs)) }
     }
 
+    // Using carrying_mul()
     fn widening_mul_assign_uint_1(&mut self, rhs: T) -> Self
     {
         let zero = T::zero();
@@ -7358,7 +7409,8 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
         }
         high
     }
-    
+
+    // Using shift_left()
     fn widening_mul_assign_uint_2(&mut self, rhs: T) -> Self
     {
         let zero = T::zero();
@@ -7391,25 +7443,40 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
 
     // pub fn wrapping_mul_uint<U>(&self, rhs: U) -> Self
     /// Multiplies `BigUInt`-type number with a unsigned integer number
-    /// of type `T` and returns its result in a type of BigUInt.
+    /// of type `T` and returns its result in a type of `BigUInt`.
     /// 
     /// # Panics
-    /// If `size_of::<T>() * N` < `size_of::<U>()`, This method may panic
-    /// or its behavior may undefined though it may not panic.
+    /// If `size_of::<T>() * N` <= `128`, some methods may panic
+    /// or its behavior may be undefined though it may not panic.
     /// 
     /// # Output
-    /// It returns the multiplication of `self` and `rhs`.
+    /// It returns the multiplication of `self` and `rhs`, wrapping around
+    /// at the boundary of the type.
+    /// 
+    /// # Features
+    /// The `OVERFOLOW` flag reflect historical overflow, which means if an
+    /// overflow occurred even once before this current operation or
+    /// `OVERFOLOW` flag is already set before this current operation, the
+    /// `OVERFOLOW` flag is not changed even if this current operation does
+    /// not cause overflow.
     /// 
     /// # Examples
     /// ```
-    /// use std::str::FromStr;
     /// use Cryptocol::define_utypes_with;
-    /// define_utypes_with!(u128);
-    /// let a = u256::from_str("10000000000000000000000000000000000").unwrap();
-    /// let mul = a.wrapping_mul_uint(35_u128);
-    /// println!("mul = {}", mul);
-    /// assert_eq!(mul.to_string(), "350000000000000000000000000000000000");
+    /// define_utypes_with!(u32);
+    /// 
+    /// let a_biguint = u256::from_string("876801874298166903427690031858186486050853753882811946569946433649006084094").unwrap();
+    /// let b_uint = 248_u16;
+    /// let res = a_biguint.wrapping_mul_uint(b_uint);
+    /// println!("{} X {} = {}", a_biguint, b_uint, res);
+    /// assert_eq!(res.to_string(), "101654775588629196626496142892142340687341746297296798709889131537040379215376");
+    /// assert_eq!(res.is_overflow(), true);
     /// ```
+    /// 
+    /// # Big-endian issue
+    /// It is just experimental for Big Endian CPUs. So, you are not encouraged
+    /// to use it for Big Endian CPUs for serious purpose. Only use this crate
+    /// for Big-endian CPUs with your own full responsibility.
     pub fn wrapping_mul_uint<U>(&self, rhs: U) -> Self
     where U: SmallUInt + Copy + Clone + Display + Debug + ToString
             + Add<Output=U> + AddAssign + Sub<Output=U> + SubAssign
@@ -7429,13 +7496,37 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// Multiplies self which is of `BigUInt` type with rhs of type `U`.
     /// 
     /// # Panics
-    /// If `size_of::<T>() * N` < `size_of::<U>()`, This method may panic
-    /// or its behavior may undefined though it may not panic.
+    /// If `size_of::<T>() * N` <= `128`, some methods may panic
+    /// or its behavior may be undefined though it may not panic.
+    /// 
+    /// # Features
+    /// The `OVERFOLOW` flag reflect historical overflow, which means if an
+    /// overflow occurred even once before this current operation or
+    /// `OVERFOLOW` flag is already set before this current operation, the
+    /// `OVERFOLOW` flag is not changed even if this current operation does
+    /// not cause overflow.
     /// 
     /// # Example
     /// ```
-    /// // Todo
+    /// use Cryptocol::define_utypes_with;
+    /// define_utypes_with!(u64);
+    /// 
+    /// let mut a_biguint = U32::from_string("876801874298166903427690031858186486050853753882811946569946433649006084094").unwrap();
+    /// let b_uint = 248_u16;
+    /// 
+    /// println!("Originally,\ta_biguint = {}", a_biguint);
+    /// assert_eq!(a_biguint.to_string(), "876801874298166903427690031858186486050853753882811946569946433649006084094");
+    /// 
+    /// a_biguint.wrapping_mul_assign_uint(b_uint);
+    /// println!("After a_biguint.wrapping_mul_assign_uint(248_u16), a_biguint = {}", a_biguint);
+    /// assert_eq!(a_biguint.to_string(), "101654775588629196626496142892142340687341746297296798709889131537040379215376");
+    /// assert_eq!(a_biguint.is_overflow(), true);
     /// ```
+    /// 
+    /// # Big-endian issue
+    /// It is just experimental for Big Endian CPUs. So, you are not encouraged
+    /// to use it for Big Endian CPUs for serious purpose. Only use this crate
+    /// for Big-endian CPUs with your own full responsibility.
     pub fn wrapping_mul_assign_uint<U>(&mut self, rhs: U)
     where U: SmallUInt + Copy + Clone + Display + Debug + ToString
             + Add<Output=U> + AddAssign + Sub<Output=U> + SubAssign
@@ -7452,6 +7543,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
             { (self.method_wrapping_mul_assign_uint)(self, T::num::<U>(rhs)) }
     }
 
+    // Using carrying_mul()
     fn wrapping_mul_assign_uint_1(&mut self, rhs: T)
     {
         let zero = T::zero();
@@ -7479,7 +7571,8 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
                 { self.set_overflow(); }
         }
     }
-    
+
+    // Using shift_left()
     fn wrapping_mul_assign_uint_2(&mut self, rhs: T)
     {
         let zero = T::zero();
@@ -7513,14 +7606,27 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// Calculates `self` * `rhs`.
     /// 
     /// # Panics
-    /// If `size_of::<T>() * N` < `size_of::<U>()`, This method may panic
-    /// or its behavior may undefined though it may not panic.
+    /// If `size_of::<T>() * N` <= `128`, some methods may panic
+    /// or its behavior may be undefined though it may not panic.
     /// 
     /// # Output
     /// It returns a tuple of the multiplication `self` * `rhs` along
     /// with a boolean indicating whether an arithmetic overflow would occur.
     /// If an overflow would have occurred then the wrapped (modular) value
     /// is returned.
+    /// 
+    /// # Features
+    /// - If the second element of the output tuple is false, the `OVERFOLOW`
+    /// flag will be set.
+    /// - The `OVERFOLOW` flag reflect historical overflow, which means
+    /// if an overflow occurred even once before this current operation or
+    /// `OVERFOLOW` flag is already set before this current operation, the
+    /// `OVERFOLOW` flag is not changed even if this current operation does
+    /// not cause overflow.
+    /// 
+    /// # Counterpart Method
+    /// If `rhs` is bigger than `u128`, the method [overflowing_mul()](struct@BigUInt#method.overflowing_mul)
+    /// is proper rather than this method `overflowing_mul_uint()`.
     /// 
     /// # Example
     /// ```
@@ -7550,12 +7656,20 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// Calculates `self` * `rhs`, and assigns the result to `self` back.
     /// 
     /// # Panics
-    /// If `size_of::<T>() * N` < `size_of::<U>()`, This method may panic
-    /// or its behavior may undefined though it may not panic.
+    /// If `size_of::<T>() * N` <= `128`, some methods may panic
+    /// or its behavior may be undefined though it may not panic.
     /// 
     /// # Output
     /// It returns true if an arithmetic overflow would occur.
     /// Otherwise, it returns `false`.
+    /// 
+    /// # Features
+    /// - If the output is false, the `OVERFOLOW` flag will be set.
+    /// - The `OVERFOLOW` flag reflect historical overflow, which means if an
+    /// overflow occurred even once before this current operation or
+    /// `OVERFOLOW` flag is already set before this current operation, the
+    /// `OVERFOLOW` flag is not changed even if this current operation does
+    /// not cause overflow.
     /// 
     /// # Example
     /// ```
@@ -7590,7 +7704,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// 
     /// # Panics
     /// If `size_of::<T>() * N` < `size_of::<U>()`, This method may panic
-    /// or its behavior may undefined though it may not panic.
+    /// or its behavior may be undefined though it may not panic.
     /// 
     /// # Output
     /// It returns the sum `self` * `rhs` wrapped by `Some` of enum `Option`
@@ -7630,7 +7744,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// - If overflow occurred, it will panic. So, use this method only when
     /// you are sure that overflow will not occur.
     /// - If `size_of::<T>() * N` < `size_of::<U>()`, This method may panic
-    /// or its behavior may undefined though it may not panic.
+    /// or its behavior may be undefined though it may not panic.
     /// 
     /// # Output
     /// It returns the sum `self` * `rhs` if overflow did not occur.
@@ -7665,7 +7779,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// 
     /// # Panics
     /// If `size_of::<T>() * N` < `size_of::<U>()`, This method may panic
-    /// or its behavior may undefined though it may not panic.
+    /// or its behavior may be undefined though it may not panic.
     /// 
     /// # Output
     /// It returns the sum `self` + `rhs` if overflow did not occur.
@@ -7701,7 +7815,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// 
     /// # Panics
     /// If `size_of::<T>() * N` < `size_of::<U>()`, This method may panic
-    /// or its behavior may undefined though it may not panic.
+    /// or its behavior may be undefined though it may not panic.
     /// 
     /// # Example
     /// ```
@@ -7863,7 +7977,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// 
     /// # Panics
     /// If `size_of::<T>() * N` < `size_of::<U>()`, This method may panic
-    /// or its behavior may undefined though it may not panic.
+    /// or its behavior may be undefined though it may not panic.
     /// 
     /// # Output
     /// It returns tuple of quotient and remainder. quotient is `Self` type
@@ -8576,7 +8690,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// # Panics
     /// - This function will panic if rhs is zero.
     /// - If `size_of::<T>() * N` < `size_of::<U>()`, This method may panic
-    /// or its behavior may undefined though it may not panic.
+    /// or its behavior may be undefined though it may not panic.
     /// 
     /// # Output
     /// It returns the smallest value greater than or equal to self that is
@@ -8609,7 +8723,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// # Panics
     /// - This function will panic if rhs is zero.
     /// - If `size_of::<T>() * N` < `size_of::<U>()`, This method may panic
-    /// or its behavior may undefined though it may not panic.
+    /// or its behavior may be undefined though it may not panic.
     /// 
     /// # Feature
     /// `self` will be the smallest value greater than or equal to self that is
@@ -8658,7 +8772,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// 
     /// # Panics
     /// If `size_of::<T>() * N` < `size_of::<U>()`, This method may panic
-    /// or its behavior may undefined though it may not panic.
+    /// or its behavior may be undefined though it may not panic.
     /// 
     /// # Output
     /// It returns the result of `self` raised to the power of `exp`.
@@ -8712,7 +8826,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// 
     /// # Panics
     /// If `size_of::<T>() * N` < `size_of::<U>()`, This method may panic
-    /// or its behavior may undefined though it may not panic.
+    /// or its behavior may be undefined though it may not panic.
     /// 
     /// # Argument
     /// The argument `exp` is the primitive unsigned integer type.
@@ -8764,7 +8878,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// 
     /// # Panics
     /// If `size_of::<T>() * N` < `size_of::<U>()`, This method may panic
-    /// or its behavior may undefined though it may not panic.
+    /// or its behavior may be undefined though it may not panic.
     /// 
     /// # Output
     /// It returns the result of `self` raised to the power of `exp`.
@@ -8822,7 +8936,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// 
     /// # Panics
     /// If `size_of::<T>() * N` < `size_of::<U>()`, This method may panic
-    /// or its behavior may undefined though it may not panic.
+    /// or its behavior may be undefined though it may not panic.
     /// 
     /// # Argument
     /// The argument `exp` is the primitive unsigned integer type.
@@ -9066,7 +9180,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// 
     /// # Panics
     /// If `size_of::<T>() * N` < `size_of::<U>()`, This method may panic
-    /// or its behavior may undefined though it may not panic.
+    /// or its behavior may be undefined though it may not panic.
     /// 
     /// # Output
     /// It returns the result of `self` raised to the power of `exp`, wrapping
@@ -9120,7 +9234,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// 
     /// # Panics
     /// If `size_of::<T>() * N` < `size_of::<U>()`, This method may panic
-    /// or its behavior may undefined though it may not panic.
+    /// or its behavior may be undefined though it may not panic.
     /// 
     /// # Argument
     /// The argument `exp` is the primitive unsigned integer type.
@@ -9186,7 +9300,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// 
     /// # Panics
     /// If `size_of::<T>() * N` < `size_of::<U>()`, This method may panic
-    /// or its behavior may undefined though it may not panic.
+    /// or its behavior may be undefined though it may not panic.
     /// 
     /// # Output
     /// It returns the logarithm of the number with respect to an arbitrary
@@ -9233,7 +9347,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// 
     /// # Panics
     /// If `size_of::<T>() * N` < `size_of::<U>()`, This method may panic
-    /// or its behavior may undefined though it may not panic.
+    /// or its behavior may be undefined though it may not panic.
     /// 
     /// # Output
     /// It returns the logarithm of the number with respect to an arbitrary
@@ -10783,24 +10897,59 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
 
     fn wrapping_mul_assign_1(&mut self, rhs: &Self)
     {
-        let operand = self.clone();
+        let operand = Self::from_array(self.get_number());
         let zero = T::zero();
+        let one = T::one();
         let iN = N - rhs.leading_zero_elements() as usize;
         let jN = N - operand.leading_zero_elements() as usize;
         let mut lower = zero;
         let mut higher = zero;
+        let mut sum = zero;
+        let mut overflow = false;
+        let mut ij = 0_usize;
+        self.set_zero();
         for i in 0..iN
         {
+            higher = zero;
             for j in 0..jN
             {
-                if i + j >= N
+                ij = i + j;
+                if ij >= N
                 {
-                    if !higher.is_zero()
-                        { self.set_overflow(); }
+                    self.set_overflow();
+                    ij -= 1;
                     break;
                 }
                 (lower, higher) = operand.get_num_(j).carrying_mul(rhs.get_num_(i), higher);
-                self.set_num_(i + j, lower);
+                (sum, overflow) = self.get_num_(ij).overflowing_add(lower);
+                self.set_num_(ij, sum);
+                if overflow
+                    { higher += one; }
+            }
+
+            ij += 1;
+            if !higher.is_zero()
+            {
+                if ij < N
+                {
+                    (sum, overflow) = self.get_num_(ij).overflowing_add(higher);
+                    self.set_num_(ij, sum);
+                    ij += 1;
+                    while overflow
+                    {
+                        if ij >= N
+                            { break; }
+                        (sum, overflow) = self.get_num_(ij).overflowing_add(one);
+                        self.set_num_(ij, sum);
+                        ij += 1;
+                    }
+                    if overflow
+                        { self.set_overflow(); }
+                }
+                else
+                {
+                    self.set_overflow();
+                }
             }
         }
     }
@@ -11769,7 +11918,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// # Panics
     /// - This function will panic if rhs is zero.
     /// - If `size_of::<T>() * N` <= `128`, This method may panic
-    /// or its behavior may undefined though it may not panic.
+    /// or its behavior may be undefined though it may not panic.
     /// 
     /// # Output
     /// It returns the smallest value greater than or equal to self that is
@@ -11794,7 +11943,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// # Panics
     /// - This function will panic if rhs is zero.
     /// - If `size_of::<T>() * N` <= `128`, This method may panic
-    /// or its behavior may undefined though it may not panic.
+    /// or its behavior may be undefined though it may not panic.
     /// 
     /// # Feature
     /// `self` will be the smallest value greater than or equal to self that is
@@ -12686,7 +12835,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
         {
             for i in N-chunk_num..N
             {
-                if self.get_num_(i).is_zero()
+                if !self.get_num_(i).is_zero()
                 {
                     self.set_overflow();
                     break;
@@ -12866,7 +13015,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
         {
             for i in 0..chunk_num
             {
-                if self.get_num_(i) > zero
+                if self.get_num_(i) != zero
                 {
                     self.set_underflow();
                     break;
