@@ -3401,6 +3401,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
         }
     }
 
+    // pub fn set_num(&mut self, i: usize, val: T) -> bool
     /// Sets i-th element of its array of type `T`, and return `true`
     /// if `i` < `N`. Otherwise, it sets none of the elements of its
     /// array of type `T`, and returns `false`.
@@ -5226,10 +5227,6 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// in the electronics sense.
     /// - If the input carry is `false`, this method is equivalent to
     /// `overflowing_add_uint()`, and the output carry reflect current overflow.
-    /// - The `OVERFLOW` flag reflect historical overflow, which means if an
-    /// overflow occurred even once before this current operation or `OVERFLOW`
-    /// flag is already set before this current operation, the `OVERFLOW` flag is
-    /// not changed even if this current operation does not cause overflow.
     /// 
     /// # Counterpart Method
     /// If `rhs` is bigger tham `ui128`, the method [carrying_add()](struct@BigUInt#method.carrying_add)
@@ -5404,12 +5401,8 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// # Output
     /// It returns `self` + `rhs` with wrapping (modular) addition.
     /// 
-    /// # Feature
-    /// - Wrapping (modular) addition.
-    /// - The `OVERFLOW` flag reflect historical overflow, which means if an
-    /// overflow occurred even once before this current operation or `OVERFLOW`
-    /// flag is already set before this current operation, the `OVERFLOW` flag
-    /// is not changed even if this current operation does not cause overflow.
+    /// # Features
+    /// Wrapping (modular) addition.
     /// 
     /// # Counterpart Method
     /// If `rhs` is bigger tham `ui128`, the method [wrapping_add()](struct@BigUInt#method.wrapping_add)
@@ -5529,12 +5522,8 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// indicating whether an arithmetic overflow would occur. If an overflow
     /// would have occurred then the wrapped (modular) value is returned.
     /// 
-    /// # Feature
-    /// - The output overflow reflects current overflow.
-    /// - The `OVERFLOW` flag reflect historical overflow, which means if an
-    /// overflow occurred even once before this current operation or `OVERFLOW`
-    /// flag is already set before this current operation, the `OVERFLOW` flag
-    /// is not changed even if this current operation does not cause overflow.
+    /// # Features
+    /// The output overflow reflects current overflow.
     /// 
     /// # Counterpart Method
     /// If `rhs` is bigger tham `ui128`, the method [overflowing_add()](struct@BigUInt#method.overflowing_add)
@@ -5592,7 +5581,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// It returns true if an arithmetic overflow would occur.
     /// Otherwise, it returns `false`.
     /// 
-    /// # Feature
+    /// # Features
     /// - The output overflow reflects current overflow.
     /// - The `OVERFLOW` flag reflect historical overflow, which means if an
     /// overflow occurred even once before this current operation or `OVERFLOW`
@@ -5662,12 +5651,6 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// It returns the sum `self` + `rhs` wrapped by `Some` of enum `Option`
     /// if overflow did not occur at current operation.
     /// Otherwise, it returns `None` of enum Option.
-    /// 
-    /// # Feature
-    /// The `OVERFLOW` flag reflect historical overflow, which means if an
-    /// overflow occurred even once before this current operation or `OVERFLOW`
-    /// flag is already set before this current operation, the `OVERFLOW` flag
-    /// is not changed even if this current operation does not cause overflow.
     /// 
     /// # Counterpart Method
     /// If `rhs` is bigger tham `ui128`, the method [checked_add()](struct@BigUInt#method.checked_add)
@@ -5760,12 +5743,6 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// It returns the sum `self` + `rhs` if overflow did not occur at current
     /// operation. Otherwise, it will panic.
     /// 
-    /// # Feature
-    /// The `OVERFLOW` flag reflect historical overflow, which means if an
-    /// overflow occurred even once before this current operation or `OVERFLOW`
-    /// flag is already set before this current operation, the `OVERFLOW` flag
-    /// is not changed even if this current operation does not cause overflow.
-    /// 
     /// # Counterpart Method
     /// If `rhs` is bigger tham `ui128`, the method [unchecked_add()](struct@BigUInt#method.unchecked_add)
     /// is proper rather than this method.
@@ -5814,12 +5791,8 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// It returns the sum `self` + `rhs` if overflow did not occur.
     /// Otherwise, it returns the maximum value.
     /// 
-    /// # Feature
-    /// - This method saturates at current overflow.
-    /// - The `OVERFLOW` flag reflect historical overflow, which means if an
-    /// overflow occurred even once before this current operation or `OVERFLOW`
-    /// flag is already set before this current operation, the `OVERFLOW` flag
-    /// is not changed even if this current operation does not cause overflow.
+    /// # Features
+    /// This method saturates at current overflow.
     /// 
     /// # Counterpart Method
     /// If `rhs` is bigger tham `ui128`, the method [saturating_add()](struct@BigUInt#method.saturating_add)
@@ -5872,7 +5845,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// If `size_of::<T>() * N` <= `128`, some methods may panic
     /// or its behavior may be undefined though it may not panic.
     /// 
-    /// # Feature
+    /// # Features
     /// - This method saturates at current overflow.
     /// - The `OVERFLOW` flag reflect historical overflow, which means if an
     /// overflow occurred even once before this current operation or `OVERFLOW`
@@ -5945,11 +5918,6 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// `OVERFLOW` flag even if wrapping around happens at `modulo` while the
     /// method `wrapping_add_uint()` sets `OVERFLOW` flag when wrapping around
     /// happens.
-    /// - The `OVERFLOW` flag reflect historical overflow, which means if an
-    /// overflow occurred even once before this current operation or `OVERFLOW`
-    /// flag is already set before this current operation, the `OVERFLOW` flag
-    /// is not changed even though this current operation does not cause
-    /// overflow.
     /// 
     /// # Counterpart Method
     /// If `rhs` is bigger than `u128`, the method [modular_add()](struct@BigUInt#method.modular_add)
@@ -6109,11 +6077,6 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// - If the input borrow is `false`, this method is equivalent to
     /// `overflowing_sub_uint()`, and the output carry is equal to
     /// the `UNDERFLOW` flag.
-    /// - The `UNDERFLOW` flag reflect historical underflow, which means if an
-    /// underflow occurred even once before this current operation or
-    /// `UNDERFLOW` flag is already set before this current operation, the
-    /// `UNDERFLOW` flag is not changed even if this current operation does
-    /// not cause underflow.
     /// 
     /// # Counterpart Method
     /// If `rhs` is bigger than `u128`, the method [borrowing_sub()](struct@BigUInt#method.borrowing_sub)
@@ -6290,11 +6253,6 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// - Wrapping (modular) subtraction.
     /// - It computes `self`` - `rhs`, wrapping around at the boundary
     /// of the type.
-    /// - The `UNDERFLOW` flag reflect historical underflow, which means if an
-    /// underflow occurred even once before this current operation or `UNDERFLOW`
-    /// flag is already set before this current operation, the `UNDERFLOW` flag
-    /// is not changed even though this current operation does not cause
-    /// underflow.
     /// 
     /// # Counterpart Method
     /// If `rhs` is bigger than `u128`, the method [wrapping_sub()](struct@BigUInt#method.wrapping_sub)
@@ -6419,12 +6377,6 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// - It returns a tuple of the subtraction along with a boolean indicating
     /// whether an arithmetic overflow would occur.
     /// - If an overflow would have occurred then the wrapped value is returned.
-    /// - The `UNDERFLOW` flag reflect historical underflow, which means if an
-    /// underflow occurred even once before this current operation or
-    /// `UNDERFLOW` flag is already set before this current operation, the
-    /// `UNDERFLOW` flag is not changed even if this current operation does
-    /// not cause underflow.
-    /// underflow.
     /// 
     /// # Counterpart Method
     /// If `rhs` is bigger than `u128`, the method
@@ -6562,11 +6514,6 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// # Features
     /// - Checked integer subtraction.
     /// - It computes `self` - `rhs, returning None if underflow occurred.
-    /// - The `UNDERFLOW` flag reflect historical underflow, which means if an
-    /// underflow occurred even once before this current operation or
-    /// `UNDERFLOW` flag is already set before this current operation, the
-    /// `UNDERFLOW` flag is not changed even though this current operation does
-    /// not cause underflow.
     /// 
     /// # Counterpart Method
     /// If `rhs` is bigger than `u128`, the method
@@ -6654,11 +6601,6 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// # Features
     /// - Unchecked integer subtraction.
     /// - It computes `self` - `rhs`, assuming overflow cannot occur.
-    /// - The `UNDERFLOW` flag reflect historical underflow, which means if an
-    /// underflow occurred even once before this current operation or
-    /// `UNDERFLOW` flag is already set before this current operation, the
-    /// `UNDERFLOW` flag is not changed even though this current operation
-    /// does not cause underflow.
     /// 
     /// # Counterpart Method
     /// If `rhs` is bigger than `u128`, the method
@@ -6712,11 +6654,6 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// - Saturating integer subtraction.
     /// - It computes `self`- `rhs`, saturating at the numeric bounds instead
     /// of overflowing.
-    /// - The `UNDERFLOW` flag reflect historical underflow, which means if an
-    /// underflow occurred even once before this current operation or
-    /// `UNDERFLOW` flag is already set before this current operation, the
-    /// `UNDERFLOW` flag is not changed even if this current operation does
-    /// not cause underflow.
     /// 
     /// # Counterpart Method
     /// If `rhs` is bigger than `u128`, the method
@@ -6836,7 +6773,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// It returns the modulo-difference (`self` - `rhs`) % `modulo` with
     /// wrapping (modular) subtraction at `modulo`.
     /// 
-    /// # Feature
+    /// # Features
     /// - Wrapping (modular) subtraction at `modulo`.
     /// - The differences between this method `modular_sub_uint()` and the
     /// method `wrapping_sub_uint()` are, first, where wrapping around happens,
@@ -6846,11 +6783,6 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// flag even if wrapping around happens while the method
     /// `wrapping_sub_uint()` sets `UNDERFLOW` flag when wrapping around
     /// happens.
-    /// - The `UNDERFLOW` flag reflect historical underflow, which means if an
-    /// underflow occurred even once before this current operation or
-    /// `UNDERFLOW` flag is already set before this current operation, the
-    /// `UNDERFLOW` flag is not changed even if this current operation does
-    /// not cause underflow.
     /// 
     /// # Counterpart Method
     /// If `rhs` is bigger than `u128`, the method
@@ -7004,12 +6936,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// It returns the absolute difference between `self` and `other`.
     /// 
     /// # Features
-    /// - It computes the absolute difference between `self` and other.
-    /// - The `UNDERFOLOW` flag reflect historical underflow, which means if an
-    /// underflow occurred even once before this current operation or
-    /// `UNDERFOLOW` flag is already set before this current operation, the
-    /// `UNDERFOLOW` flag is not changed even if this current operation does
-    /// not cause underflow.
+    /// It computes the absolute difference between `self` and other.
     /// 
     /// # Counterpart Method
     /// If `rhs` is bigger than `u128`, the method
@@ -7096,11 +7023,6 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// `OVERFOLOW` flag will be set though the output tuple is free from
     /// overflow. It is because the `OVERFOLOW` flag is about `self`,
     /// and not about the result of multiplication.
-    /// - The `OVERFOLOW` flag reflect historical overflow, which means if an
-    /// overflow occurred even once before this current operation or
-    /// `OVERFOLOW` flag is already set before this current operation, the
-    /// `OVERFOLOW` flag is not changed even if this current operation does
-    /// not cause overflow.
     /// 
     /// # Counterpart Methods
     /// - If you don’t need the carry, then you can use
@@ -7112,6 +7034,8 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// `self.wrapping_mul_uint(rhs).wrapping_add_uint(carry)`. So,
     /// `self.carrying_mul_uint(rhs, carry).0`
     /// == `self.wrapping_mul_uint(rhs).wrapping_add_uint(carry)`
+    /// - If `rhs` is bigger than `u128`, the method [carrying_mul()](struct@BigUInt#method.carrying_mul)
+    /// is proper rather than this method `carrying_mul_uint()`.
     /// 
     /// # Example
     /// ```
@@ -7186,6 +7110,8 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// [wrapping_mul_uint()](struct@BigUInt#method.wrapping_mul_uint) and
     /// [wrapping_add_assign_uint()](struct@BigUInt#method.wrapping_add_assign_uint):
     /// `self.wrapping_mul_uint(rhs).wrapping_add_assign_uint(carry)`.
+    /// - If `rhs` is bigger than `u128`, the method [carrying_mul_assign()](struct@BigUInt#method.carrying_mul_assign)
+    /// is proper rather than this method `carrying_mul_assign_uint()`.
     /// 
     /// # Example
     /// ```
@@ -7253,11 +7179,6 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// `OVERFOLOW` flag will be set though the output tuple is free from
     /// overflow. It is because the `OVERFOLOW` flag is about `self`,
     /// and not about the result of multiplication.
-    /// - The `OVERFOLOW` flag reflect historical overflow, which means if an
-    /// overflow occurred even once before this current operation or
-    /// `OVERFOLOW` flag is already set before this current operation, the
-    /// `OVERFOLOW` flag is not changed even if this current operation does
-    /// not cause overflow.
     /// 
     /// # Counterpart Methods
     /// - If you also need to add a carry to the wide result, then you want to
@@ -7267,6 +7188,8 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// you’d get the method
     /// [wrapping_mul_uint()](struct@BigUInt#method.wrapping_mul_uint).
     /// `self.widening_mul_uint(rhs).0` == `self.wrapping_mul_uint(rhs)`
+    /// - If `rhs` is bigger than `u128`, the method [widening_mul()](struct@BigUInt#method.widening_mul)
+    /// is proper rather than this method `widening_mul_uint()`.
     /// 
     /// # Example
     /// ```
@@ -7331,11 +7254,13 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// # Counterpart Methods
     /// - If you also need to add a carry to the wide result, then you want to
     /// use
-    /// [carrying_mul_assign_uint()](struct@BigUInt#method.carrying_mul_assign_uint)
+    /// [widening_mul_assign_uint()](struct@BigUInt#method.carrying_mul_assign_uint)
     /// instead.
     /// - The value of `self` after calculation matches what you’d get the
     /// method [wrapping_mul_uint()](struct@BigUInt#method.wrapping_mul_uint)
-    /// `self` == `self.wrapping_mul_uint(rhs)`
+    /// `self` == `self.wrapping_mul_uint(rhs)`.
+    /// - If `rhs` is bigger than `u128`, the method [widening_mul_assign()](struct@BigUInt#method.widening_mul_assign)
+    /// is proper rather than this method `widening_mul_assign_uint()`.
     /// 
     /// # Example
     /// ```
@@ -7453,12 +7378,9 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// It returns the multiplication of `self` and `rhs`, wrapping around
     /// at the boundary of the type.
     /// 
-    /// # Features
-    /// The `OVERFOLOW` flag reflect historical overflow, which means if an
-    /// overflow occurred even once before this current operation or
-    /// `OVERFOLOW` flag is already set before this current operation, the
-    /// `OVERFOLOW` flag is not changed even if this current operation does
-    /// not cause overflow.
+    /// # Counterpart Method
+    /// If `rhs` is bigger than `u128`, the method [wrapping_mul_uint()](struct@BigUInt#method.wrapping_mul_uint)
+    /// is proper rather than this method `wrapping_mul_uint()`.
     /// 
     /// # Examples
     /// ```
@@ -7505,6 +7427,10 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// `OVERFOLOW` flag is already set before this current operation, the
     /// `OVERFOLOW` flag is not changed even if this current operation does
     /// not cause overflow.
+    /// 
+    /// # Counterpart Method
+    /// If `rhs` is bigger than `u128`, the method [wrapping_mul_assign()](struct@BigUInt#method.wrapping_mul_assign)
+    /// is proper rather than this method `wrapping_mul_assign_uint()`.
     /// 
     /// # Example
     /// ```
@@ -7618,19 +7544,23 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// # Features
     /// - If the second element of the output tuple is false, the `OVERFOLOW`
     /// flag will be set.
-    /// - The `OVERFOLOW` flag reflect historical overflow, which means
-    /// if an overflow occurred even once before this current operation or
-    /// `OVERFOLOW` flag is already set before this current operation, the
-    /// `OVERFOLOW` flag is not changed even if this current operation does
-    /// not cause overflow.
     /// 
     /// # Counterpart Method
-    /// If `rhs` is bigger than `u128`, the method [overflowing_mul()](struct@BigUInt#method.overflowing_mul)
+    /// If `rhs` is bigger than `u128`, the method
+    /// [overflowing_mul()](struct@BigUInt#method.overflowing_mul)
     /// is proper rather than this method `overflowing_mul_uint()`.
     /// 
     /// # Example
     /// ```
-    /// // Todo
+    /// use Cryptocol::define_utypes_with;
+    /// define_utypes_with!(u128);
+    /// 
+    /// let a_biguint = u256::from_string("876801874298166903427690031858186486050853753882811946569946433649006084094").unwrap();
+    /// let b_uint = 248_u8;
+    /// let (res, overflow) = a_biguint.overflowing_mul_uint(b_uint);
+    /// println!("{} X {} = {}, {}", a_biguint, b_uint, res, overflow);
+    /// assert_eq!(res.to_string(), "101654775588629196626496142892142340687341746297296798709889131537040379215376");
+    /// assert_eq!(overflow, true);
     /// ```
     /// 
     /// # Big-endian issue
@@ -7671,9 +7601,26 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// `OVERFOLOW` flag is not changed even if this current operation does
     /// not cause overflow.
     /// 
+    /// # Counterpart Method
+    /// If `rhs` is bigger than `u128`, the method
+    /// [overflowing_mul_assign()](struct@BigUInt#method.overflowing_mul_assign)
+    /// is proper rather than this method `overflowing_mul_assign_uint()`.
+    /// 
     /// # Example
     /// ```
-    /// // Todo
+    /// use Cryptocol::define_utypes_with;
+    /// define_utypes_with!(u8);
+    /// 
+    /// let mut a_biguint = U32::from_string("876801874298166903427690031858186486050853753882811946569946433649006084094").unwrap();
+    /// let b_uint = 248_u16;
+    /// 
+    /// println!("Originally,\ta_biguint = {}", a_biguint);
+    /// assert_eq!(a_biguint.to_string(), "876801874298166903427690031858186486050853753882811946569946433649006084094");
+    /// 
+    /// let overflow = a_biguint.overflowing_mul_assign_uint(b_uint);
+    /// println!("After a_biguint.overflowing_mul_assign_uint(248_u16), a_biguint = {}, {}", a_biguint, overflow);
+    /// assert_eq!(a_biguint.to_string(), "101654775588629196626496142892142340687341746297296798709889131537040379215376");
+    /// assert_eq!(overflow, true);
     /// ```
     /// 
     /// # Big-endian issue
@@ -7703,16 +7650,41 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// Computes `self` * `rhs`.
     /// 
     /// # Panics
-    /// If `size_of::<T>() * N` < `size_of::<U>()`, This method may panic
+    /// If `size_of::<T>() * N` <= `128`, some methods may panic
     /// or its behavior may be undefined though it may not panic.
     /// 
     /// # Output
     /// It returns the sum `self` * `rhs` wrapped by `Some` of enum `Option`
     /// if overflow did not occur. Otherwise, it returns `None` of enum Option.
     /// 
+    /// # Counterpart Method
+    /// If `rhs` is bigger than `u128`, the method
+    /// [checked_mul()](struct@BigUInt#method.checked_mul)
+    /// is proper rather than this method `checked_mul_uint()`.
+    /// 
     /// # Example
     /// ```
-    /// // Todo
+    /// use Cryptocol::define_utypes_with;
+    /// define_utypes_with!(u16);
+    /// 
+    /// let a_biguint = u256::from_string("876801874298166903427690031858186486050853753882811946569946433649006084094").unwrap();
+    /// let mut b_uint = 248_u8;
+    /// let mut res = a_biguint.checked_mul_uint(b_uint);
+    /// match &res
+    /// {
+    ///     Some(r) => { println!("{} X {} = {}", a_biguint, b_uint, r); },
+    ///     None => { println!("Overflow happend!"); },
+    /// }
+    /// assert_eq!(res, None);
+    /// 
+    /// b_uint = 5_u8;
+    /// res = a_biguint.checked_mul_uint(b_uint);
+    /// match &res
+    /// {
+    ///     Some(r) => { println!("{} X {} = {}", a_biguint, b_uint, r); },
+    ///     None => { println!("Overflow happend!"); },
+    /// }
+    /// assert_eq!(res.unwrap().to_string(), "4384009371490834517138450159290932430254268769414059732849732168245030420470");
     /// ```
     /// 
     /// # Big-endian issue
@@ -7743,16 +7715,30 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// # Panics
     /// - If overflow occurred, it will panic. So, use this method only when
     /// you are sure that overflow will not occur.
-    /// - If `size_of::<T>() * N` < `size_of::<U>()`, This method may panic
+    /// - If `size_of::<T>() * N` <= `128`, some methods may panic
     /// or its behavior may be undefined though it may not panic.
     /// 
     /// # Output
     /// It returns the sum `self` * `rhs` if overflow did not occur.
     /// Otherwise, it will panic.
     /// 
+    /// # Counterpart Method
+    /// If `rhs` is bigger than `u128`, the method
+    /// [unchecked_mul()](struct@BigUInt#method.unchecked_mul)
+    /// is proper rather than this method `unchecked_mul_uint()`.
+    /// 
     /// # Example
     /// ```
-    /// // Todo
+    /// use Cryptocol::define_utypes_with;
+    /// define_utypes_with!(u32);
+    /// 
+    /// let a_biguint = U32::from_string("876801874298166903427690031858186486050853753882811946569946433649006084094").unwrap();
+    /// let mut res = a_biguint.unchecked_mul_uint(5_u8);
+    /// println!("{} X {} = {}", a_biguint, 5_u8, res);
+    /// assert_eq!(res.to_string(), "4384009371490834517138450159290932430254268769414059732849732168245030420470");
+    /// 
+    /// // It will panic.
+    /// // res = a_biguint.unchecked_mul_uint(248_u8);
     /// ```
     /// 
     /// # Big-endian issue
@@ -7778,16 +7764,32 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// instead of overflowing.
     /// 
     /// # Panics
-    /// If `size_of::<T>() * N` < `size_of::<U>()`, This method may panic
+    /// If `size_of::<T>() * N` <= `128`, some methods may panic
     /// or its behavior may be undefined though it may not panic.
     /// 
     /// # Output
     /// It returns the sum `self` + `rhs` if overflow did not occur.
     /// Otherwise, it returns the maximum value.
     /// 
+    /// # Counterpart Method
+    /// If `rhs` is bigger than `u128`, the method
+    /// [saturating_mul()](struct@BigUInt#method.saturating_mul)
+    /// is proper rather than this method `saturating_mul_uint()`.
+    /// 
     /// # Example
     /// ```
-    /// // Todo
+    /// use Cryptocol::define_utypes_with;
+    /// define_utypes_with!(u64);
+    /// 
+    /// let a_biguint = u256::from_string("876801874298166903427690031858186486050853753882811946569946433649006084094").unwrap();
+    /// let mut res = a_biguint.saturating_mul_uint(5_u8);
+    /// println!("{} X {} = {}", a_biguint, 5_u8, res);
+    /// assert_eq!(res.to_string(), "4384009371490834517138450159290932430254268769414059732849732168245030420470");
+    /// 
+    /// res = a_biguint.saturating_mul_uint(248_u8);
+    /// println!("{} X {} = {}", a_biguint, 248_u8, res);
+    /// assert_eq!(res.to_string(), "115792089237316195423570985008687907853269984665640564039457584007913129639935");
+    /// assert_eq!(res, U32::max());
     /// ```
     /// 
     /// # Big-endian issue
@@ -7814,12 +7816,38 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// instead of overflowing, and assigns the result to `self` back.
     /// 
     /// # Panics
-    /// If `size_of::<T>() * N` < `size_of::<U>()`, This method may panic
+    /// If `size_of::<T>() * N` <= `128`, some methods may panic
     /// or its behavior may be undefined though it may not panic.
+    /// 
+    /// # Features
+    /// - The `OVERFOLOW` flag reflect historical overflow, which means if an
+    /// overflow occurred even once before this current operation or
+    /// `OVERFOLOW` flag is already set before this current operation, the
+    /// `OVERFOLOW` flag is not changed even if this current operation does
+    /// not cause overflow.
+    /// 
+    /// # Counterpart Method
+    /// If `rhs` is bigger than `u128`, the method
+    /// [saturating_mul_assign()](struct@BigUInt#method.saturating_mul_assign)
+    /// is proper rather than this method `saturating_mul_assign_uint()`.
     /// 
     /// # Example
     /// ```
-    /// // Todo
+    /// use Cryptocol::define_utypes_with;
+    /// define_utypes_with!(u128);
+    /// 
+    /// let mut a_biguint = u256::from_string("876801874298166903427690031858186486050853753882811946569946433649006084094").unwrap();
+    /// let mut b_biguint = a_biguint.clone();
+    /// 
+    /// println!("Originally, a_biguint = {}", a_biguint);
+    /// a_biguint.saturating_mul_assign_uint(5_u8);
+    /// println!("After a_biguint.saturating_mul_assign_uint(5_u8), a_biguint = {}", a_biguint);
+    /// 
+    /// println!("Originally, b_biguint = {}", b_biguint);
+    /// b_biguint.saturating_mul_assign_uint(248_u8);
+    /// println!("After b_biguint.saturating_mul_assign_uint(248_u8), b_biguint = {}", b_biguint);
+    /// assert_eq!(b_biguint.to_string(), "115792089237316195423570985008687907853269984665640564039457584007913129639935");
+    /// assert_eq!(b_biguint, U32::max());
     /// ```
     /// 
     /// # Big-endian issue
@@ -7862,6 +7890,13 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// Computes (`self` * `rhs`) % `modulo`, wrapping around at `modulo`
     /// of the type `Self`.
     /// 
+    /// # Panics
+    /// If `size_of::<T>() * N` <= `128`, some methods may panic
+    /// or its behavior may be undefined though it may not panic.
+    /// 
+    /// # Output
+    /// It returns (`self` * `rhs`) % `modulo`.
+    /// 
     /// # Feature
     /// Wrapping (modular) multiplication at `modulo`. The differences between
     /// this method `modular_mul_uint()` and the method `wrapping_mul_uint()`
@@ -7875,11 +7910,25 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// # Counterpart Method
     /// If `rhs` is bigger than `u128`, the method
     /// [modular_mul()](struct@BigUInt#method.modular_mul) is proper
-    /// rather than this method.
+    /// rather than this method `modular_mul_uint()`.
     /// 
     /// # Example
     /// ```
-    /// // Todo
+    /// use Cryptocol::define_utypes_with;
+    /// define_utypes_with!(u8);
+    /// 
+    /// let m = U32::from_string("76801874298166903427690031858186486050853753882811946569946433649006084094").unwrap();
+    /// let a_biguint = u256::from_string("31858186486050853753882811946768018742981669034276900586487291375468285").unwrap();
+    /// let mut mul_uint = 5_u8;
+    /// 
+    /// let mut res = a_biguint.modular_mul_uint(mul_uint, &m);
+    /// println!("{} * {} = {}", a_biguint, mul_uint, res);
+    /// assert_eq!(res.to_string(), "159290932430254268769414059733840093714908345171384502932436456877341425");
+    /// 
+    /// mul_uint = 248_u8;
+    /// res = a_biguint.modular_mul_uint(mul_uint, &m);
+    /// println!("{} * {} = {}", a_biguint, mul_uint, res);
+    /// assert_eq!(res.to_string(), "7900830248540611730962937362798468648259453920500671345448848261116134680");
     /// ```
     /// 
     /// # Big-endian issue
@@ -7906,7 +7955,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// of the type `Self`, and assign the result to `self` back.
     /// 
     /// # Feature
-    /// Wrapping (modular) multiplication at `modulo`. The differences between
+    /// - Wrapping (modular) multiplication at `modulo`. The differences between
     /// this method `modular_mul_assign_uint()` and the method
     /// `wrapping_mul_assign_uint()` are, first, where wrapping around happens,
     /// and, second, whether or not `OVERFLOW` flag is set. First, this method
@@ -7915,15 +7964,37 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// `OVERFLOW` flag even if wrapping around happens, while the method
     /// `wrapping_mul_assign_uint()` sets `OVERFLOW` flag when wrapping around
     /// happens.
+    /// - The `OVERFOLOW` flag reflect historical overflow, which means if an
+    /// overflow occurred even once before this current operation or
+    /// `OVERFOLOW` flag is already set before this current operation, the
+    /// `OVERFOLOW` flag is not changed even though this current operation does
+    /// not cause overflow.
     /// 
     /// # Counterpart Method
     /// If `rhs` is bigger than `u128`, the method
     /// [modular_mul_assign()](struct@BigUInt#method.modular_mul_assign)
-    /// is proper rather than this method.
+    /// is proper rather than this method `modular_mul_assign_uint()`.
     /// 
     /// # Example
     /// ```
-    /// // Todo
+    /// use Cryptocol::define_utypes_with;
+    /// define_utypes_with!(u32);
+    /// 
+    /// let m = U32::from_string("76801874298166903427690031858186486050853753882811946569946433649006084094").unwrap();
+    /// let mut a_biguint = u256::from_string("31858186486050853753882811946768018742981669034276900586487291375468285").unwrap();
+    /// let mut b_biguint = a_biguint.clone();
+    /// let mut mul_uint = 5_u8;
+    /// 
+    /// println!("Originally, a_biguint = {}", a_biguint);
+    /// a_biguint.modular_mul_assign_uint(mul_uint, &m);
+    /// println!("After a_biguint.modular_mul_assign_uint(mul_uint, &m), a_biguint = {}", a_biguint);
+    /// assert_eq!(a_biguint.to_string(), "159290932430254268769414059733840093714908345171384502932436456877341425");
+    /// 
+    /// mul_uint = 248_u8;
+    /// println!("Originally, b_biguint = {}", b_biguint);
+    /// b_biguint.modular_mul_assign_uint(mul_uint, &m);
+    /// println!("After b_biguint.modular_mul_assign_uint(mul_uint, &m), b_biguint = {}", b_biguint);
+    /// assert_eq!(b_biguint.to_string(), "7900830248540611730962937362798468648259453920500671345448848261116134680");
     /// ```
     /// 
     /// # Big-endian issue
@@ -7955,7 +8026,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
             }
             *self = res;
         }
-        else if rhs.length_in_bytes() > T::size_in_bytes()  // && (module <= rhs)
+        else if U::size_in_bytes() > T::size_in_bytes()  // && (module <= rhs)
         {
             self.modular_mul_assign(&Self::from_uint(rhs), modulo);
         }
@@ -7976,27 +8047,41 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// Divide `BigUInt<T, N>` by `rhs` so as to get quotient and remainder
     /// 
     /// # Panics
-    /// If `size_of::<T>() * N` < `size_of::<U>()`, This method may panic
+    /// If `size_of::<T>() * N` <= `128`, some methods may panic
     /// or its behavior may be undefined though it may not panic.
     /// 
     /// # Output
     /// It returns tuple of quotient and remainder. quotient is `Self` type
     /// and remainder is `T` type.
     /// 
-    /// # Feature
-    /// If `rhs` is zero, the divided_by_zero and `OVERFLOW` flags of quotient
-    /// will be set, and the quotient and the remainder will be max value and
-    /// zero, respectively.
+    /// # Features
+    /// If `rhs` is zero, the `DIVIDED_BY_ZERO` and `OVERFLOW` flags of
+    /// quotient will be set, and the quotient and the remainder will
+    /// be maximum value and zero, respectively.
+    /// 
+    /// # Counterpart Method
+    /// If `rhs` is bigger than `u128`, the method
+    /// [divide_fully()](struct@BigUInt#method.divide_fully)
+    /// is proper rather than this method `divide_fully_uint()`.
     /// 
     /// # Examples
-    /// 
     /// ```
     /// use std::str::FromStr;
     /// use Cryptocol::define_utypes_with;
-    /// define_utypes_with!(u128);
-    /// let dividend = u256::from_str("1234567890157589425462369896").unwrap();
-    /// let (quotient, remainder) = dividend.divide_fully_uint(87_u128);
+    /// define_utypes_with!(u16);
+    /// 
+    /// let dividend = U32::from_str("123456789015758942546236989636279846864825945392").unwrap();
+    /// let divisor = 87_u8;
+    /// let (quotient, remainder) = dividend.divide_fully_uint(divisor);
+    /// println!("{} / {} => quotient = {} , remainder = {}", dividend, divisor, quotient, remainder);
+    /// assert_eq!(quotient.to_string(), "1419043551905275201680884938348044216837079832");
+    /// assert_eq!(remainder.to_string(), "8");
     /// ```
+    /// 
+    /// # Big-endian issue
+    /// It is just experimental for Big Endian CPUs. So, you are not encouraged
+    /// to use it for Big Endian CPUs for serious purpose. Only use this crate
+    /// for Big-endian CPUs with your own full responsibility.
     pub fn divide_fully_uint<U>(&self, rhs: U) -> (Self, U)
     where U: SmallUInt + Copy + Clone + Display + Debug + ToString
             + Add<Output=U> + AddAssign + Sub<Output=U> + SubAssign
@@ -8007,86 +8092,54 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
             + BitXor<Output=U> + BitXorAssign + Not<Output=U>
             + PartialEq + PartialOrd
     {
-        let (quotient, remainder) = self.divide_fully(&Self::from_uint(rhs));
-        if U::size_in_bytes() <= T::size_in_bytes()
+        if self.is_zero()
         {
-            match U::size_in_bytes()
+            return (Self::zero(), U::zero());
+        }
+        else if rhs.is_zero()
+        {
+            let mut quotient = Self::max();
+            quotient.set_infinity();
+            quotient.set_divided_by_zero();
+            quotient.set_overflow();
+            return (Self::zero(), U::zero());
+        }
+        else if self.lt_uint(rhs)
+        {
+            return (Self::zero(), Share::<U, T>::from_src(self.get_num_(0)).get_des());
+        }
+        else if self.eq_uint(rhs)
+        {
+            return (Self::one(), U::zero());
+        }
+        else if U::size_in_bytes() <= T::size_in_bytes()
+        {
+            let mut quotient = Self::zero();
+            let size_rhs = rhs.length_in_bits() - rhs.leading_zeros() as usize;
+            let size_self = self.length_in_bits() - self.leading_zeros() as usize;
+            let mut remainder = Share::<U, T>::from_src(self.get_upper_portion(size_rhs).get_num_(0)).get_des();
+            let mut position = size_self - size_rhs;
+            loop
             {
-                1 => { (quotient, U::num(remainder.get_num_(0).into_u8())) },
-                2 => { (quotient, U::num(remainder.get_num_(0).into_u16())) },
-                4 => { (quotient, U::num(remainder.get_num_(0).into_u32())) },
-                8 => { (quotient, U::num(remainder.get_num_(0).into_u64())) },
-                _ => { (quotient, U::num(remainder.get_num_(0).into_u128())) },
+                if remainder >= rhs
+                {
+                    quotient.set_LSB();
+                    remainder = remainder.wrapping_sub(rhs);
+                }
+                if position == 0
+                    { break; }
+                position -= 1;
+                quotient.shift_left_assign(1_u8);
+                remainder <<= U::one();
+                if self.is_bit_set_(position)
+                    { remainder.set_LSB(); }
             }
+            (quotient, remainder)
         }
         else    // if U::size_in_bytes() > T::size_in_bytes()
         {
-            match U::size_in_bytes()
-            {
-                2 => {
-                    let mut rr = ShortUnion::new();
-                    for i in 0..2
-                        { rr.set_ubyte_(i, remainder.get_num_(i).into_u8()); }
-                    (quotient, U::u16_as_SmallUInt(rr.get()))
-                },
-                4 => {
-                    let mut rr = IntUnion::new();
-                    match T::size_in_bytes()
-                    {
-                        1 => {
-                            for i in 0..4
-                                { rr.set_ubyte_(i, remainder.get_num_(i).into_u8()); }
-                        },
-                        _ => {
-                            for i in 0..2
-                                { rr.set_ushort_(i, remainder.get_num_(i).into_u16()); }
-                        },
-                    }
-                    (quotient, U::u32_as_SmallUInt(rr.get()))
-                },
-                8 => {
-                    let mut rr = LongUnion::new();
-                    match T::size_in_bytes()
-                    {
-                        1 => {
-                            for i in 0..8
-                                { rr.set_ubyte_(i, remainder.get_num_(i).into_u8()); }
-                        },
-                        2 => {
-                            for i in 0..4
-                                { rr.set_ushort_(i, remainder.get_num_(i).into_u16()); }
-                        },
-                        _ => {
-                            for i in 0..2
-                                { rr.set_uint_(i, remainder.get_num_(i).into_u32()); }
-                        },
-                    }
-                    (quotient, U::u64_as_SmallUInt(rr.get()))
-                },
-                _ => {
-                    let mut rr = LongerUnion::new();
-                    match T::size_in_bytes()
-                    {
-                        1 => {
-                            for i in 0..16
-                                { rr.set_ubyte_(i, remainder.get_num_(i).into_u8()); }
-                        },
-                        2 => {
-                            for i in 0..8
-                                { rr.set_ushort_(i, remainder.get_num_(i).into_u16()); }
-                        },
-                        4 => {
-                            for i in 0..4
-                                { rr.set_uint_(i, remainder.get_num_(i).into_u32()); }
-                        },
-                        _ => {
-                            for i in 0..2
-                                { rr.set_ulong_(i, remainder.get_num_(i).into_u64()); }
-                        },
-                    }
-                    (quotient, U::u128_as_SmallUInt(rr.get()))
-                }
-            }
+            let (quotient, remainder) = self.divide_fully(&Self::from_uint(rhs));
+            (quotient, remainder.into_uint::<U>())
         }
     }
 
@@ -13667,16 +13720,69 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
         BigUInt::<U, M>::from_biguint(&self)
     }
 
+    // pub fn into_uint<U>(&self) -> U
+    /// Converts `self` into `U`-type small value such as `u8`, `u16`, `u32`,
+    /// `u64`, and `u128` type value.
+    /// This mathod get_uint() is useful especially when `self` has `U`-type
+    /// small unsigned integer sized value and you want to cast `self` into
+    /// `U`-type small unsigned integer with a small value.
+    /// 
+    /// # Panics
+    /// If `size_of::<T>() * N` <= `128`, this method may panic
+    /// or its behavior may be undefined though it may not panic.
+    /// 
+    /// # Output
+    /// It returns the `U`-type small unsigned integer
+    /// which are its lowest elements.
+    /// 
+    /// # Features
+    /// If the size of the value that `self` has is bigger than
+    /// the size of `U`, the higher-bit portion will be truncated.
+    /// 
+    /// # Example
+    /// ```
+    /// // Todo
+    /// ```
+    pub fn into_uint<U>(&self) -> U
+    where U: SmallUInt + Copy + Clone + Display + Debug + ToString
+            + Add<Output=U> + AddAssign + Sub<Output=U> + SubAssign
+            + Mul<Output=U> + MulAssign + Div<Output=U> + DivAssign
+            + Rem<Output=U> + RemAssign
+            + Shl<Output=U> + ShlAssign + Shr<Output=U> + ShrAssign
+            + BitAnd<Output=U> + BitAndAssign + BitOr<Output=U> + BitOrAssign
+            + BitXor<Output=U> + BitXorAssign + Not<Output=U>
+            + PartialEq + PartialOrd
+    {
+        if T::size_in_bytes() >= U::size_in_bytes()
+        {
+            Share::<U, T>::from_src(self.get_num_(0)).get_des()
+        }
+        else
+        {
+            match U::size_in_bytes()
+            {
+                2 => { U::u16_as_SmallUInt(self.into_u16()) },
+                4 => { U::u32_as_SmallUInt(self.into_u32()) },
+                8 => { U::u64_as_SmallUInt(self.into_u64()) },
+                _ => { U::u128_as_SmallUInt(self.into_u128()) },
+            }
+        }
+    }
+
     // pub fn into_u128(&self) -> u128
     /// Converts `self` into `u128`.
     /// 
-    /// # Feature
+    /// # Panics
+    /// If `size_of::<T>() * N` <= `128`, some methods may panic
+    /// or its behavior may be undefined though it may not panic.
+    /// 
+    /// # Output
+    /// It returns the lowest sixteen bytes of `self` as `u128`.
+    /// 
+    /// # Features
     /// It takes the lowest `u128`-sized bytes, that is, the lowest sixteen
     /// bytes from `self`, and return then as `u128` data type.
     /// It is usually lossy conversion.
-    /// 
-    /// # Output
-    /// It returns the lowest sixteen bytes of `self`.
     /// 
     /// # Example
     /// ```
@@ -13688,42 +13794,36 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
         match T::size_in_bytes()
         {
             1 => {
-                    num.set_ubyte_(0, self.get_num_(0).into_u8());
-                    if N > 1 { num.set_ubyte_(1, self.get_num_(1).into_u8()) }
-                    if N > 2 { num.set_ubyte_(2, self.get_num_(2).into_u8()) }
-                    if N > 3 { num.set_ubyte_(3, self.get_num_(3).into_u8()) }
-                    if N > 4 { num.set_ubyte_(4, self.get_num_(4).into_u8()) }
-                    if N > 5 { num.set_ubyte_(5, self.get_num_(5).into_u8()) }
-                    if N > 6 { num.set_ubyte_(6, self.get_num_(6).into_u8()) }
-                    if N > 7 { num.set_ubyte_(7, self.get_num_(7).into_u8()) }
-                    if N > 8 { num.set_ubyte_(8, self.get_num_(8).into_u8()) }
-                    if N > 9 { num.set_ubyte_(9, self.get_num_(9).into_u8()) }
-                    if N > 10 { num.set_ubyte_(10, self.get_num_(10).into_u8()) }
-                    if N > 11 { num.set_ubyte_(11, self.get_num_(11).into_u8()) }
-                    if N > 12 { num.set_ubyte_(12, self.get_num_(12).into_u8()) }
-                    if N > 13 { num.set_ubyte_(13, self.get_num_(13).into_u8()) }
-                    if N > 14 { num.set_ubyte_(14, self.get_num_(14).into_u8()) }
-                    if N > 15 { num.set_ubyte_(15, self.get_num_(15).into_u8()) }
+                    for i in 0..16
+                    {
+                        if i >= N
+                            { break; }
+                        num.set_ubyte_(i, self.get_num_(i).into_u8());
+                    }
                 },
             2 => {
-                    num.set_ushort_(0, self.get_num_(0).into_u16());
-                    if N > 1 { num.set_ushort_(1, self.get_num_(1).into_u16()); }
-                    if N > 2 { num.set_ushort_(2, self.get_num_(2).into_u16()); }
-                    if N > 3 { num.set_ushort_(3, self.get_num_(3).into_u16()); }
-                    if N > 4 { num.set_ushort_(4, self.get_num_(4).into_u16()); }
-                    if N > 5 { num.set_ushort_(5, self.get_num_(5).into_u16()); }
-                    if N > 6 { num.set_ushort_(6, self.get_num_(6).into_u16()); }
-                    if N > 7 { num.set_ushort_(7, self.get_num_(7).into_u16()); }
+                    for i in 0..8
+                    {
+                        if i >= N
+                            { break; }
+                        num.set_ushort_(i, self.get_num_(i).into_u16());
+                    }
                 },
             4 => {
-                    num.set_uint_(0, self.get_num_(0).into_u32());
-                    if N > 2 { num.set_uint_(1, self.get_num_(1).into_u32()); }
-                    if N > 3 { num.set_uint_(2, self.get_num_(2).into_u32()); }
-                    if N > 4 { num.set_uint_(3, self.get_num_(3).into_u32()); }
+                    for i in 0..4
+                    {
+                        if i >= N
+                            { break; }
+                        num.set_uint_(i, self.get_num_(i).into_u32());
+                    }
                 },
-            8 => { 
-                    num.set_ulong_(0, self.get_num_(0).into_u64());
-                    if N > 1 { num.set_ulong_(1, self.get_num_(1).into_u64()); }
+            8 => {
+                    for i in 0..2
+                    {
+                        if i >= N
+                            { break; }
+                        num.set_ulong_(i, self.get_num_(i).into_u64());
+                    }
                 },
             _ => { return self.get_num_(0).into_u128(); },
         }
@@ -13733,13 +13833,17 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     // pub fn into_u64(&self) -> u64
     /// Converts `self` into `u64`.
     /// 
-    /// # Feature
+    /// # Panics
+    /// If `size_of::<T>() * N` <= `128`, some methods may panic
+    /// or its behavior may be undefined though it may not panic.
+    /// 
+    /// # Output
+    /// It returns the lowest eight bytes of `self` as `u64`.
+    /// 
+    /// # Features
     /// It takes the lowest `u64`-sized bytes, that is, the lowest eight
     /// bytes from `self`, and return then as `u64` data type.
     /// It is usually lossy conversion.
-    /// 
-    /// # Output
-    /// It returns the lowest eight bytes of `self`.
     /// 
     /// # Example
     /// ```
@@ -13748,27 +13852,33 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     pub fn into_u64(&self) -> u64
     {
         let mut num = LongerUnion::new();
-        match size_of::<T>()
+        match T::size_in_bytes()
         {
             1 => {
+                    for i in 0..8
+                    {
+                        if i >= N
+                            { break; }
+                        num.set_ubyte_(i, self.get_num_(i).into_u8());
+                    }
                     num.set_ubyte_(0, self.get_num_(0).into_u8());
-                    if N > 1 { num.set_ubyte_(1, self.get_num_(1).into_u8()); }
-                    if N > 2 { num.set_ubyte_(2, self.get_num_(2).into_u8()); }
-                    if N > 3 { num.set_ubyte_(3, self.get_num_(3).into_u8()); }
-                    if N > 4 { num.set_ubyte_(4, self.get_num_(4).into_u8()); }
-                    if N > 5 { num.set_ubyte_(5, self.get_num_(5).into_u8()); }
-                    if N > 6 { num.set_ubyte_(6, self.get_num_(6).into_u8()); }
-                    if N > 7 { num.set_ubyte_(7, self.get_num_(7).into_u8()); }
                 },
             2 => {
-                    num.set_ushort_(0, self.get_num_(0).into_u16());
-                    if N > 1 { num.set_ushort_(1, self.get_num_(1).into_u16()); }
-                    if N > 2 { num.set_ushort_(2, self.get_num_(2).into_u16()); }
-                    if N > 3 { num.set_ushort_(3, self.get_num_(3).into_u16()); }
+                    for i in 0..4
+                    {
+                        if i >= N
+                            { break; }
+                        num.set_ushort_(i, self.get_num_(i).into_u16());
+                    }
                 },
             4 => {
+                    for i in 0..2
+                    {
+                        if i >= N
+                            { break; }
+                        num.set_uint_(i, self.get_num_(i).into_u32());
+                    }
                     num.set_uint_(0, self.get_num_(0).into_u32());
-                    if N > 1 { num.set_uint_(1, self.get_num_(1).into_u32()); }
                 },
             8 => { return self.get_num_(0).into_u64(); },
             _ => { num.set(self.number[0].into_u128()); },
@@ -13779,13 +13889,17 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     // pub fn into_u32(&self) -> u32
     /// Converts `self` into `u32`.
     /// 
-    /// # Feature
+    /// # Panics
+    /// If `size_of::<T>() * N` <= `128`, some methods may panic
+    /// or its behavior may be undefined though it may not panic.
+    /// 
+    /// # Output
+    /// It returns the lowest four bytes of `self` as `u32`.
+    /// 
+    /// # Features
     /// It takes the lowest `u32`-sized bytes, that is, the lowest four
     /// bytes from `self`, and return then as `u32` data type.
     /// It is usually lossy conversion.
-    /// 
-    /// # Output
-    /// It returns the lowest four bytes of `self`.
     /// 
     /// # Example
     /// ```
@@ -13794,17 +13908,23 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     pub fn into_u32(&self) -> u32
     {
         let mut num = LongerUnion::new();
-        match size_of::<T>()
+        match T::size_in_bytes()
         {
             1 => {
-                    num.set_ubyte_(0, self.get_num_(0).into_u8());
-                    if N > 1 { num.set_ubyte_(1, self.get_num_(1).into_u8()); }
-                    if N > 2 { num.set_ubyte_(2, self.get_num_(2).into_u8()); }
-                    if N > 3 { num.set_ubyte_(3, self.get_num_(3).into_u8()); }
+                    for i in 0..4
+                    {
+                        if i >= N
+                            { break; }
+                        num.set_ubyte_(i, self.get_num_(i).into_u8());
+                    }
                 },
             2 => {
-                    num.set_ushort_(0, self.get_num_(0).into_u16());
-                    if N > 1 { num.set_ushort_(1, self.get_num_(1).into_u16()); }
+                    for i in 0..2
+                    {
+                        if i >= N
+                            { break; }
+                        num.set_ushort_(i, self.get_num_(i).into_u16());
+                    }
                 },
             4 => { return self.get_num_(0).into_u32(); },
             8 => { num.set_ulong_(0, self.get_num_(0).into_u64()); },
@@ -13816,13 +13936,17 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     // pub fn into_u16(&self) -> u16
     /// Converts `self` into `u16`.
     /// 
-    /// # Feature
+    /// # Panics
+    /// If `size_of::<T>() * N` <= `128`, some methods may panic
+    /// or its behavior may be undefined though it may not panic.
+    /// 
+    /// # Output
+    /// It returns the lowest two bytes of `self` as `u16`.
+    /// 
+    /// # Features
     /// It takes the lowest `u16`-sized bytes, that is, the lowest two
     /// bytes from `self`, and return then as `u16` data type.
     /// It is usually lossy conversion.
-    /// 
-    /// # Output
-    /// It returns the lowest two bytes of `self`.
     /// 
     /// # Example
     /// ```
@@ -13834,8 +13958,12 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
         match size_of::<T>()
         {
             1 => {
-                    num.set_ubyte_(0, self.get_num_(0).into_u8());
-                    if N > 1 { num.set_ubyte_(1, self.get_num_(1).into_u8()) }
+                    for i in 0..2
+                    {
+                        if i >= N
+                            { break; }
+                        num.set_ubyte_(i, self.get_num_(i).into_u8());
+                    }
                 },
             2 => { return self.get_num_(0).into_u16(); },
             4 => { num.set_uint_(0, self.get_num_(0).into_u32()); },
@@ -13848,13 +13976,17 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     // pub fn into_u8(&self) -> u8
     /// Converts `self` into `u8`.
     /// 
-    /// # Feature
+    /// # Panics
+    /// If `size_of::<T>() * N` <= `128`, some methods may panic
+    /// or its behavior may be undefined though it may not panic.
+    /// 
+    /// # Output
+    /// It returns the lowest one byte of `self` as `u32`.
+    /// 
+    /// # Features
     /// It takes the lowest `u8`-sized byte, that is, the lowest one
     /// byte from `self`, and return it as `u8` data type.
     /// It is usually lossy conversion.
-    /// 
-    /// # Output
-    /// It returns the lowest byte of `self`.
     /// 
     /// # Example
     /// ```
@@ -13869,12 +14001,16 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     // pub fn into_usize(&self) -> usize
     /// Converts `self` into `usize`.
     /// 
+    /// # Panics
+    /// If `size_of::<T>() * N` <= `128`, some methods may panic
+    /// or its behavior may be undefined though it may not panic.
+    /// 
+    /// # Output
+    /// It returns the lowest `usize` long part of `self` as `usize`.
+    /// 
     /// # Feature
     /// It takes the lowest `usize`-sized bytes from `self`,
     /// and return them as `usize` data type. It is usually lossy conversion.
-    /// 
-    /// # Output
-    /// It returns the lowest `usize` long part of `self`.
     /// 
     /// # Example
     /// ```

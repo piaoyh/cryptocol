@@ -6554,11 +6554,14 @@ where D: SmallUInt + Copy + Clone + Display + Debug + ToString
         me
     }
 
+    #[inline] pub fn get_des(&self) -> D  { unsafe { self.des } }
+    #[inline] pub fn get_src(&self) -> S  { unsafe { self.src } }
+
     #[cfg(target_endian = "little")]
     pub fn into_des(&mut self, pos: usize) -> Option<D>
     {
-        let bit_pos = pos * size_of::<D>() * 8;
-        unsafe { self.src >>= S::num(bit_pos as u128); }
+        let bit_pos = pos * D::size_in_bits();
+        unsafe { self.src >>= S::usize_as_SmallUInt(bit_pos); }
         if (bit_pos > 0) && self.is_src_zero()
             { None }
         else
@@ -6570,8 +6573,8 @@ where D: SmallUInt + Copy + Clone + Display + Debug + ToString
     {
         let des_size = size_of::<D>();
         let src_size = size_of::<S>();
-        let bit_pos = pos * size_of::<D>() * 8;
-        unsafe { self.src <<= S::num(bit_pos as u128); }
+        let bit_pos = pos * D::size_in_bits();
+        unsafe { self.src <<= S::usize_as_SmallUInt(bit_pos); }
         if des_size > src_size
             { unsafe { self.des >>= D::num((des_size - src_size).into_u128() * 8); } }
         else if src_size > des_size
