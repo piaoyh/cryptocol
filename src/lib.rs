@@ -91,3 +91,4 @@
 // )]
 
 pub mod number;
+pub mod hash;

@@ -8094,7 +8094,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     {
         if self.is_zero()
         {
-            return (Self::zero(), U::zero());
+            (Self::zero(), U::zero())
         }
         else if rhs.is_zero()
         {
@@ -8102,15 +8102,15 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
             quotient.set_infinity();
             quotient.set_divided_by_zero();
             quotient.set_overflow();
-            return (Self::zero(), U::zero());
+            (Self::zero(), U::zero())
         }
         else if self.lt_uint(rhs)
         {
-            return (Self::zero(), Share::<U, T>::from_src(self.get_num_(0)).get_des());
+            (Self::zero(), Share::<U, T>::from_src(self.get_num_(0)).get_des())
         }
         else if self.eq_uint(rhs)
         {
-            return (Self::one(), U::zero());
+            (Self::one(), U::zero())
         }
         else if U::size_in_bytes() <= T::size_in_bytes()
         {
@@ -8146,21 +8146,29 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     // pub fn wrapping_div_uint<U>(&self, rhs: U) -> Self
     /// Calculates the quotient when `self` is divided by `rhs`,
     /// which is `self` / `rhs`.
+    /// 
+    /// # Panics
+    /// If `size_of::<T>() * N` <= `128`, some methods may panic
+    /// or its behavior may be undefined though it may not panic.
     ///
     /// # Output
     /// It returns the quotient of when `self` is divided by `rhs`,
     /// which is `self` / `rhs`. 
     /// 
-    /// # Feature
-    /// Wrapped division on `BigUInt` types is just normal division.
+    /// # Features
+    /// - Wrapped division on `BigUInt` types is just normal division.
     /// There’s no way wrapping could ever happen. This function exists,
     /// so that all operations are accounted for in the wrapping operations.
-    /// 
-    /// If `rhs` is zero, the quotient will have maximum value of `BigUInt`
+    /// - If `rhs` is zero, the quotient will have maximum value of `BigUInt`
     /// type, and the flags of quotient such as `OVERFLOW`, `INFINITY`, and
     /// `DIVIDED_BY_ZERO` will be set. __It does not panic__ while the same
     /// named methods `wrapping_div()` for primitive integer data type such
     /// as u8, u16, u32, u64, etc. will panic if `rhs` is zero.
+    /// 
+    /// # Counterpart Method
+    /// If `rhs` is bigger than `u128`, the method
+    /// [wrapping_div()](struct@BigUInt#method.wrapping_div)
+    /// is proper rather than this method `wrapping_div_uint()`.
     /// 
     /// # Example
     /// ```
@@ -13794,36 +13802,20 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
         match T::size_in_bytes()
         {
             1 => {
-                    for i in 0..16
-                    {
-                        if i >= N
-                            { break; }
-                        num.set_ubyte_(i, self.get_num_(i).into_u8());
-                    }
+                    for i in 0..if 16 < N {16} else {N}
+                        { num.set_ubyte_(i, self.get_num_(i).into_u8()); }
                 },
             2 => {
-                    for i in 0..8
-                    {
-                        if i >= N
-                            { break; }
-                        num.set_ushort_(i, self.get_num_(i).into_u16());
-                    }
+                    for i in 0..if 8 < N {8} else {N}
+                        { num.set_ushort_(i, self.get_num_(i).into_u16()); }
                 },
             4 => {
-                    for i in 0..4
-                    {
-                        if i >= N
-                            { break; }
-                        num.set_uint_(i, self.get_num_(i).into_u32());
-                    }
+                    for i in 0..if 4 < N {4} else {N}
+                        { num.set_uint_(i, self.get_num_(i).into_u32()); }
                 },
             8 => {
-                    for i in 0..2
-                    {
-                        if i >= N
-                            { break; }
-                        num.set_ulong_(i, self.get_num_(i).into_u64());
-                    }
+                    for i in 0..if 2 < N {2} else {N}
+                        { num.set_ulong_(i, self.get_num_(i).into_u64()); }
                 },
             _ => { return self.get_num_(0).into_u128(); },
         }
@@ -13855,30 +13847,16 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
         match T::size_in_bytes()
         {
             1 => {
-                    for i in 0..8
-                    {
-                        if i >= N
-                            { break; }
-                        num.set_ubyte_(i, self.get_num_(i).into_u8());
-                    }
-                    num.set_ubyte_(0, self.get_num_(0).into_u8());
+                    for i in 0..if 8 < N {8} else {N}
+                        { num.set_ubyte_(i, self.get_num_(i).into_u8()); }
                 },
             2 => {
-                    for i in 0..4
-                    {
-                        if i >= N
-                            { break; }
-                        num.set_ushort_(i, self.get_num_(i).into_u16());
-                    }
+                    for i in 0..if 4 < N {4} else {N}
+                    { num.set_ushort_(i, self.get_num_(i).into_u16()); }
                 },
             4 => {
-                    for i in 0..2
-                    {
-                        if i >= N
-                            { break; }
-                        num.set_uint_(i, self.get_num_(i).into_u32());
-                    }
-                    num.set_uint_(0, self.get_num_(0).into_u32());
+                    for i in 0..if 2 < N {2} else {N}
+                        { num.set_uint_(i, self.get_num_(i).into_u32()); }
                 },
             8 => { return self.get_num_(0).into_u64(); },
             _ => { num.set(self.number[0].into_u128()); },
@@ -13911,20 +13889,12 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
         match T::size_in_bytes()
         {
             1 => {
-                    for i in 0..4
-                    {
-                        if i >= N
-                            { break; }
-                        num.set_ubyte_(i, self.get_num_(i).into_u8());
-                    }
+                    for i in 0..if 4 < N {4} else {N}
+                        { num.set_ubyte_(i, self.get_num_(i).into_u8()); }
                 },
             2 => {
-                    for i in 0..2
-                    {
-                        if i >= N
-                            { break; }
-                        num.set_ushort_(i, self.get_num_(i).into_u16());
-                    }
+                    for i in 0..if 2 < N {2} else {N}
+                        { num.set_ushort_(i, self.get_num_(i).into_u16()); }
                 },
             4 => { return self.get_num_(0).into_u32(); },
             8 => { num.set_ulong_(0, self.get_num_(0).into_u64()); },
@@ -13958,12 +13928,8 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
         match size_of::<T>()
         {
             1 => {
-                    for i in 0..2
-                    {
-                        if i >= N
-                            { break; }
-                        num.set_ubyte_(i, self.get_num_(i).into_u8());
-                    }
+                    for i in 0..if 2 < N {2} else {N}
+                        { num.set_ubyte_(i, self.get_num_(i).into_u8()); }
                 },
             2 => { return self.get_num_(0).into_u16(); },
             4 => { num.set_uint_(0, self.get_num_(0).into_u32()); },
