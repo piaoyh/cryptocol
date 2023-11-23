@@ -5212,7 +5212,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// wrapping around at the boundary of the type.
     /// 
     /// # Panics
-    /// If `size_of::<T>() * N` <= `128`, some methods may panic
+    /// If `size_of::<T>() * N` <= `128`, this method may panic
     /// or its behavior may be undefined though it may not panic.
     /// 
     /// # Outputs
@@ -5288,7 +5288,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// of the type, and return the resulting carry.
     /// 
     /// # Panics
-    /// If `size_of::<T>() * N` <= `128`, some methods may panic
+    /// If `size_of::<T>() * N` <= `128`, this method may panic
     /// or its behavior may be undefined though it may not panic.
     /// 
     /// # Outputs
@@ -5372,9 +5372,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
         }
 
         // if rhs.length_in_bytes() <= T::size_in_bytes()
-        let mut c: bool;
-        let mut num: T;
-        (num, c) = self.get_num_(0).carrying_add(T::num::<U>(rhs), carry);
+        let (mut num, mut c) = self.get_num_(0).carrying_add(T::num::<U>(rhs), carry);
         self.set_num_(0, num);
         if c
         {
@@ -5395,7 +5393,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// Computes `self` + `rhs`, wrapping around at the boundary of the type.
     /// 
     /// # Panics
-    /// If `size_of::<T>() * N` <= `128`, some methods may panic
+    /// If `size_of::<T>() * N` <= `128`, this method may panic
     /// or its behavior may be undefined though it may not panic.
     /// 
     /// # Output
@@ -5456,7 +5454,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// and assign the result to `self` back.
     /// 
     /// # Panics
-    /// If `size_of::<T>() * N` <= `128`, some methods may panic
+    /// If `size_of::<T>() * N` <= `128`, this method may panic
     /// or its behavior may be undefined though it may not panic.
     /// 
     /// # Feature
@@ -5514,7 +5512,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// Calculates `self` + `rhs`.
     /// 
     /// # Panics
-    /// If `size_of::<T>() * N` <= `128`, some methods may panic
+    /// If `size_of::<T>() * N` <= `128`, this method may panic
     /// or its behavior may be undefined though it may not panic.
     /// 
     /// # Output
@@ -5574,7 +5572,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// Calculates `self` + `rhs`, and assigns the result to `self` back.
     /// 
     /// # Panics
-    /// If `size_of::<T>() * N` <= `128`, some methods may panic
+    /// If `size_of::<T>() * N` <= `128`, this method may panic
     /// or its behavior may be undefined though it may not panic.
     /// 
     /// # Output
@@ -5631,12 +5629,11 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
             + BitXor<Output=U> + BitXorAssign + Not<Output=U>
             + PartialEq + PartialOrd
     {
-        let old_overflow = self.is_overflow();
-        self.reset_overflow();
+        let old = self.get_all_flags();
+        self.reset_all_flags();
         self.wrapping_add_assign_uint(rhs);
         let current_overflow = self.is_overflow();
-        if old_overflow || current_overflow
-            { self.set_overflow(); }
+        self.set_flag_bit(old);
         current_overflow
     }
 
@@ -5644,7 +5641,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// Computes `self` + `rhs`.
     /// 
     /// # Panics
-    /// If `size_of::<T>() * N` <= `128`, some methods may panic
+    /// If `size_of::<T>() * N` <= `128`, this method may panic
     /// or its behavior may be undefined though it may not panic.
     /// 
     /// # Output
@@ -5736,7 +5733,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// # Panics
     /// - If overflow occurred, it will panic. So, use this method
     /// only when you are sure that overflow will not occur.
-    /// - If `size_of::<T>() * N` <= `128`, some methods may panic
+    /// - If `size_of::<T>() * N` <= `128`, this method may panic
     /// or its behavior may be undefined though it may not panic.
     /// 
     /// # Output
@@ -5784,7 +5781,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// instead of overflowing.
     /// 
     /// # Panics
-    /// If `size_of::<T>() * N` <= `128`, some methods may panic
+    /// If `size_of::<T>() * N` <= `128`, this method may panic
     /// or its behavior may be undefined though it may not panic.
     /// 
     /// # Output
@@ -5842,7 +5839,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// instead of overflowing, and assigns the result to `self` back.
     /// 
     /// # Panics
-    /// If `size_of::<T>() * N` <= `128`, some methods may panic
+    /// If `size_of::<T>() * N` <= `128`, this method may panic
     /// or its behavior may be undefined though it may not panic.
     /// 
     /// # Features
@@ -5901,7 +5898,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// the type `Self` instead of overflowing.
     /// 
     /// # Panics
-    /// If `size_of::<T>() * N` <= `128`, some methods may panic
+    /// If `size_of::<T>() * N` <= `128`, this method may panic
     /// or its behavior may be undefined though it may not panic.
     /// 
     /// # Output
@@ -5970,7 +5967,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// back to `self`.
     /// 
     /// # Panics
-    /// If `size_of::<T>() * N` <= `128`, some methods may panic
+    /// If `size_of::<T>() * N` <= `128`, this method may panic
     /// or its behavior may be undefined though it may not panic.
     /// 
     /// # Feature
@@ -6063,7 +6060,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// difference and the output borrow.
     /// 
     /// # Panics
-    /// If `size_of::<T>() * N` <= `128`, some methods may panic
+    /// If `size_of::<T>() * N` <= `128`, this method may panic
     /// or its behavior may be undefined though it may not panic.
     /// 
     /// # Outputs
@@ -6138,7 +6135,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// and returns the output borrow.
     /// 
     /// # Panics
-    /// If `size_of::<T>() * N` <= `128`, some methods may panic
+    /// If `size_of::<T>() * N` <= `128`, this method may panic
     /// or its behavior may be undefined though it may not panic.
     /// 
     /// # Outputs
@@ -6243,7 +6240,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// unsigned integer and returns its result in a type of `BigUInt`.
     /// 
     /// # Panics
-    /// If `size_of::<T>() * N` <= `128`, some methods may panic
+    /// If `size_of::<T>() * N` <= `128`, this method may panic
     /// or its behavior may be undefined though it may not panic.
     /// 
     /// # Output
@@ -6302,7 +6299,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// and returns the result to `self` back.
     /// 
     /// # Panics
-    /// If `size_of::<T>() * N` <= `128`, some methods may panic
+    /// If `size_of::<T>() * N` <= `128`, this method may panic
     /// or its behavior may be undefined though it may not panic.
     /// 
     /// # Features
@@ -6364,7 +6361,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// Calculates `self` - `rhs`.
     /// 
     /// # Panics
-    /// If `size_of::<T>() * N` <= `128`, some methods may panic
+    /// If `size_of::<T>() * N` <= `128`, this method may panic
     /// or its behavior may be undefined though it may not panic.
     /// 
     /// # Output
@@ -6429,7 +6426,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// Calculates `self` - `rhs`, and assigns the result to `self` back.
     /// 
     /// # Panics
-    /// If `size_of::<T>() * N` <= `128`, some methods may panic
+    /// If `size_of::<T>() * N` <= `128`, this method may panic
     /// or its behavior may be undefined though it may not panic.
     /// 
     /// # Output
@@ -6490,12 +6487,11 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
             + BitXor<Output=U> + BitXorAssign + Not<Output=U>
             + PartialEq + PartialOrd
     {
-        let old_underflow = self.is_underflow();
-        self.reset_underflow();
+        let old = self.get_all_flags();
+        self.reset_all_flags();
         self.wrapping_sub_assign_uint(rhs);
         let current_underflow = self.is_underflow();
-        if old_underflow || current_underflow
-            { self.set_underflow(); }
+        self.set_flag_bit(old);
         current_underflow
     }
 
@@ -6503,7 +6499,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// Computes `self` - `rhs`.
     /// 
     /// # Panics
-    /// If `size_of::<T>() * N` <= `128`, some methods may panic
+    /// If `size_of::<T>() * N` <= `128`, this method may panic
     /// or its behavior may be undefined though it may not panic.
     /// 
     /// # Output
@@ -6591,7 +6587,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// # Panics
     /// - If underflow occurred, it will panic. So, use this method only when
     /// you are sure that underflow will not occur.
-    /// - If `size_of::<T>() * N` <= `128`, some methods may panic
+    /// - If `size_of::<T>() * N` <= `128`, this method may panic
     /// or its behavior may be undefined though it may not panic.
     /// 
     /// # Output
@@ -6643,7 +6639,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// instead of underflowing.
     /// 
     /// # Panics
-    /// If `size_of::<T>() * N` <= `128`, some methods may panic
+    /// If `size_of::<T>() * N` <= `128`, this method may panic
     /// or its behavior may be undefined though it may not panic.
     /// 
     /// # Output
@@ -6704,7 +6700,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// instead of underflowing, and assigns the result to `self` back.
     /// 
     /// # Panics
-    /// If `size_of::<T>() * N` <= `128`, some methods may panic
+    /// If `size_of::<T>() * N` <= `128`, this method may panic
     /// or its behavior may be undefined though it may not panic.
     /// 
     /// # Feature
@@ -6766,7 +6762,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// type `Self` instead of underflowing.
     /// 
     /// # Panics
-    /// If `size_of::<T>() * N` <= `128`, some methods may panic
+    /// If `size_of::<T>() * N` <= `128`, this method may panic
     /// or its behavior may be undefined though it may not panic.
     /// 
     /// # Output
@@ -6835,7 +6831,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// back to `self`.
     /// 
     /// # Panics
-    /// If `size_of::<T>() * N` <= `128`, some methods may panic
+    /// If `size_of::<T>() * N` <= `128`, this method may panic
     /// or its behavior may be undefined though it may not panic.
     /// 
     /// # Feature
@@ -6929,7 +6925,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// Computes the absolute difference between `self` and `other`.
     /// 
     /// # Panics
-    /// If `size_of::<T>() * N` <= `128`, some methods may panic
+    /// If `size_of::<T>() * N` <= `128`, this method may panic
     /// or its behavior may be undefined though it may not panic.
     /// 
     /// # Output
@@ -7006,7 +7002,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// without the possibility to overflow.
     /// 
     /// # Panics
-    /// If `size_of::<T>() * N` <= `128`, some methods may panic
+    /// If `size_of::<T>() * N` <= `128`, this method may panic
     /// or its behavior may be undefined though it may not panic.
     /// 
     /// # Output
@@ -7079,7 +7075,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// the result to `self` back and returns the high-order bits of the result.
     /// 
     /// # Panics
-    /// If `size_of::<T>() * N` <= `128`, some methods may panic
+    /// If `size_of::<T>() * N` <= `128`, this method may panic
     /// or its behavior may be undefined though it may not panic.
     /// 
     /// # Output
@@ -7162,7 +7158,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// to overflow.
     /// 
     /// # Panics
-    /// If `size_of::<T>() * N` <= `128`, some methods may panic
+    /// If `size_of::<T>() * N` <= `128`, this method may panic
     /// or its behavior may be undefined though it may not panic.
     /// 
     /// # Output
@@ -7230,7 +7226,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// to overflow.
     /// 
     /// # Panics
-    /// If `size_of::<T>() * N` <= `128`, some methods may panic
+    /// If `size_of::<T>() * N` <= `128`, this method may panic
     /// or its behavior may be undefined though it may not panic.
     /// 
     /// # Output
@@ -7371,7 +7367,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// of type `T` and returns its result in a type of `BigUInt`.
     /// 
     /// # Panics
-    /// If `size_of::<T>() * N` <= `128`, some methods may panic
+    /// If `size_of::<T>() * N` <= `128`, this method may panic
     /// or its behavior may be undefined though it may not panic.
     /// 
     /// # Output
@@ -7418,7 +7414,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// Multiplies self which is of `BigUInt` type with rhs of type `U`.
     /// 
     /// # Panics
-    /// If `size_of::<T>() * N` <= `128`, some methods may panic
+    /// If `size_of::<T>() * N` <= `128`, this method may panic
     /// or its behavior may be undefined though it may not panic.
     /// 
     /// # Features
@@ -7532,7 +7528,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// Calculates `self` * `rhs`.
     /// 
     /// # Panics
-    /// If `size_of::<T>() * N` <= `128`, some methods may panic
+    /// If `size_of::<T>() * N` <= `128`, this method may panic
     /// or its behavior may be undefined though it may not panic.
     /// 
     /// # Output
@@ -7586,7 +7582,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// Calculates `self` * `rhs`, and assigns the result to `self` back.
     /// 
     /// # Panics
-    /// If `size_of::<T>() * N` <= `128`, some methods may panic
+    /// If `size_of::<T>() * N` <= `128`, this method may panic
     /// or its behavior may be undefined though it may not panic.
     /// 
     /// # Output
@@ -7637,12 +7633,11 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
             + BitXor<Output=U> + BitXorAssign + Not<Output=U>
             + PartialEq + PartialOrd
     {
-        let old_overflow = self.is_overflow();
-        self.reset_overflow();
+        let old = self.get_all_flags();
+        self.reset_all_flags();
         self.wrapping_mul_assign_uint(rhs);
         let current_overflow = self.is_overflow();
-        if old_overflow || current_overflow
-            { self.set_overflow(); }
+        self.set_flag_bit(old);
         current_overflow
     }
 
@@ -7650,7 +7645,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// Computes `self` * `rhs`.
     /// 
     /// # Panics
-    /// If `size_of::<T>() * N` <= `128`, some methods may panic
+    /// If `size_of::<T>() * N` <= `128`, this method may panic
     /// or its behavior may be undefined though it may not panic.
     /// 
     /// # Output
@@ -7715,7 +7710,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// # Panics
     /// - If overflow occurred, it will panic. So, use this method only when
     /// you are sure that overflow will not occur.
-    /// - If `size_of::<T>() * N` <= `128`, some methods may panic
+    /// - If `size_of::<T>() * N` <= `128`, this method may panic
     /// or its behavior may be undefined though it may not panic.
     /// 
     /// # Output
@@ -7764,7 +7759,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// instead of overflowing.
     /// 
     /// # Panics
-    /// If `size_of::<T>() * N` <= `128`, some methods may panic
+    /// If `size_of::<T>() * N` <= `128`, this method may panic
     /// or its behavior may be undefined though it may not panic.
     /// 
     /// # Output
@@ -7816,7 +7811,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// instead of overflowing, and assigns the result to `self` back.
     /// 
     /// # Panics
-    /// If `size_of::<T>() * N` <= `128`, some methods may panic
+    /// If `size_of::<T>() * N` <= `128`, this method may panic
     /// or its behavior may be undefined though it may not panic.
     /// 
     /// # Features
@@ -7891,21 +7886,21 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// of the type `Self`.
     /// 
     /// # Panics
-    /// If `size_of::<T>() * N` <= `128`, some methods may panic
+    /// If `size_of::<T>() * N` <= `128`, this method may panic
     /// or its behavior may be undefined though it may not panic.
     /// 
     /// # Output
     /// It returns (`self` * `rhs`) % `modulo`.
     /// 
-    /// # Feature
-    /// Wrapping (modular) multiplication at `modulo`. The differences between
-    /// this method `modular_mul_uint()` and the method `wrapping_mul_uint()`
-    /// are, first, where wrapping around happens, and, second, whether or not
-    /// `OVERFLOW` flag is set. First, this method wraps araound at `modulo`
-    /// while the method `wrapping_mul_uint()` wraps araound at maximum value.
-    /// Second, this method does not set `OVERFLOW` flag even if wrapping around
-    /// happens, while the method `wrapping_mul_uint()` sets `OVERFLOW` flag
-    /// when wrapping around happens.
+    /// # Features
+    /// - Wrapping (modular) multiplication at `modulo`.
+    /// - The differences between this method `modular_mul_uint()` and the
+    /// method `wrapping_mul_uint()` are, first, where wrapping around happens,
+    /// and, second, whether or not `OVERFLOW` flag is set. First, this method
+    /// wraps araound at `modulo` while the method `wrapping_mul_uint()` wraps
+    /// araound at maximum value. Second, this method does not set `OVERFLOW`
+    /// flag even if wrapping around happens, while the method
+    /// `wrapping_mul_uint()` sets `OVERFLOW` flag when wrapping around happens.
     /// 
     /// # Counterpart Method
     /// If `rhs` is bigger than `u128`, the method
@@ -8047,7 +8042,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// Divide `BigUInt<T, N>` by `rhs` so as to get quotient and remainder
     /// 
     /// # Panics
-    /// If `size_of::<T>() * N` <= `128`, some methods may panic
+    /// If `size_of::<T>() * N` <= `128`, this method may panic
     /// or its behavior may be undefined though it may not panic.
     /// 
     /// # Output
@@ -8055,9 +8050,11 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// and remainder is `T` type.
     /// 
     /// # Features
-    /// If `rhs` is zero, the `DIVIDED_BY_ZERO` and `OVERFLOW` flags of
-    /// quotient will be set, and the quotient and the remainder will
-    /// be maximum value and zero, respectively.
+    /// - If `rhs` is zero, the quotient will have maximum value of `BigUInt`
+    /// type, and the flags of quotient such as `OVERFLOW`, `INFINITY`, and
+    /// `DIVIDED_BY_ZERO` will be set. __It does not panic__ while the
+    /// counterpart method `wrapping_div()` for primitive integer data type
+    /// such as u8, u16, u32, u64, etc. will panic if `rhs` is zero.
     /// 
     /// # Counterpart Method
     /// If `rhs` is bigger than `u128`, the method
@@ -8102,7 +8099,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
             quotient.set_infinity();
             quotient.set_divided_by_zero();
             quotient.set_overflow();
-            (Self::zero(), U::zero())
+            (quotient, U::zero())
         }
         else if self.lt_uint(rhs)
         {
@@ -8148,7 +8145,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// which is `self` / `rhs`.
     /// 
     /// # Panics
-    /// If `size_of::<T>() * N` <= `128`, some methods may panic
+    /// If `size_of::<T>() * N` <= `128`, this method may panic
     /// or its behavior may be undefined though it may not panic.
     ///
     /// # Output
@@ -8157,13 +8154,14 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// 
     /// # Features
     /// - Wrapped division on `BigUInt` types is just normal division.
-    /// There’s no way wrapping could ever happen. This function exists,
-    /// so that all operations are accounted for in the wrapping operations.
+    /// There’s no way wrapping could ever happen unless `rhs` is zero.
+    /// This function exists, so that all operations are accounted for
+    /// in the wrapping operations.
     /// - If `rhs` is zero, the quotient will have maximum value of `BigUInt`
     /// type, and the flags of quotient such as `OVERFLOW`, `INFINITY`, and
-    /// `DIVIDED_BY_ZERO` will be set. __It does not panic__ while the same
-    /// named methods `wrapping_div()` for primitive integer data type such
-    /// as u8, u16, u32, u64, etc. will panic if `rhs` is zero.
+    /// `DIVIDED_BY_ZERO` will be set. __It does not panic__ while the
+    /// counterpart method `wrapping_div()` for primitive integer data type
+    /// such as u8, u16, u32, u64, etc. will panic if `rhs` is zero.
     /// 
     /// # Counterpart Method
     /// If `rhs` is bigger than `u128`, the method
@@ -8174,10 +8172,13 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// ```
     /// use std::str::FromStr;
     /// use Cryptocol::define_utypes_with;
-    /// define_utypes_with!(u128);
-    /// let a = u256::from_str("10000000000000000000000000000000000").unwrap();
-    /// let div = a.wrapping_div_uint(35);
-    /// println!("div = {}", div);
+    /// define_utypes_with!(u64);
+    /// 
+    /// let dividend = u256::from_str("123456789015758942546236989636279846864825945392").unwrap();
+    /// let divisor = 87_u8;
+    /// let quotient = dividend.wrapping_div_uint(divisor);
+    /// println!("{} / {} = {}", dividend, divisor, quotient);
+    /// assert_eq!(quotient.to_string(), "1419043551905275201680884938348044216837079832");
     /// ```
     /// 
     /// # Big-endian issue
@@ -8200,22 +8201,42 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
 
     // pub fn wrapping_div_assign_uint<U>(&mut self, rhs: U)
     /// Calculates the quotient when `self` is divided by `rhs`,
-    /// which is `self` / `rhs`, and assign the result to `self` back.
+    /// which is `self` / `rhs`, and assigns the result to `self` back.
     /// 
+    /// # Panics
+    /// If `size_of::<T>() * N` <= `128`, this method may panic
+    /// or its behavior may be undefined though it may not panic.
+    ///
     /// # Feature
-    /// Wrapped division on `BigUInt` types is just normal division.
-    /// There’s no way wrapping could ever happen. This function exists,
-    /// so that all operations are accounted for in the wrapping operations.
-    /// 
-    /// If `rhs` is zero, the `self` will have maximum value of `BigUInt`
-    /// type, and the flags of `self` such as `OVERFLOW`, `INFINITY`, and
-    /// `DIVIDED_BY_ZERO` will be set. __It does not panic__ while the same
-    /// kind methods `wrapping_div()` for primitive integer data type such
-    /// as u8, u16, u32, u64, etc. will panic if `rhs` is zero.
+    /// - Wrapped division on `BigUInt` types is just normal division.
+    /// There’s no way wrapping could ever happen unless `rhs` is zero.
+    /// This function exists, so that all operations are accounted for
+    /// in the wrapping operations.
+    /// - If `rhs` is zero, the quotient will have maximum value of `BigUInt`
+    /// type, and the flags of quotient such as `OVERFLOW`, `INFINITY`, and
+    /// `DIVIDED_BY_ZERO` will be set. __It does not panic__ while the
+    /// counterpart method `wrapping_div()` for primitive integer data type
+    /// such as u8, u16, u32, u64, etc. will panic if `rhs` is zero.
+    /// - The `OVERFLOW`, `INFINITY`, and `DIVIDED_BY_ZERO` flags reflect
+    /// historical overflow, which means if an overflow and/or divided-by-zero
+    /// occurred even once before this current operation or `OVERFLOW`,
+    /// `INFINITY`, and/or `DIVIDED_BY_ZERO` flag(s) is/are already set before
+    /// this current operation, the `OVERFLOW`, `INFINITY`, and/or
+    /// `DIVIDED_BY_ZERO` flag(s) is/are not changed even though this current
+    /// operation does not cause overflow and/or divided-by-zero.
     /// 
     /// # Example
     /// ```
-    /// // Todo
+    /// use std::str::FromStr;
+    /// use Cryptocol::define_utypes_with;
+    /// define_utypes_with!(u128);
+    /// 
+    /// let mut a_biguint = U32::from_str("123456789015758942546236989636279846864825945392").unwrap();
+    /// let divisor = 87_u8;
+    /// println!("Originally,\na_biguint = {}", a_biguint);
+    /// a_biguint.wrapping_div_assign_uint(divisor);
+    /// println!("After a_biguint.wrapping_div_assign_uint(divisor),\na_biguint = {}", a_biguint);
+    /// assert_eq!(a_biguint.to_string(), "1419043551905275201680884938348044216837079832");
     /// ```
     /// 
     /// # Big-endian issue
@@ -8232,10 +8253,59 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
             + BitXor<Output=U> + BitXorAssign + Not<Output=U>
             + PartialEq + PartialOrd
     {
-        let (quotient, _) = self.divide_fully_uint(rhs);
-        *self = quotient;
+        let flags = self.get_all_flags();
+        *self = self.wrapping_div_uint(rhs);
+        self.set_flag_bit(flags);
     }
 
+    // pub fn overflowing_div_uint<U>(&self, rhs: U) -> (Self, bool)
+    /// Calculates the quotient when `self` is divided by `rhs`,
+    /// which is `self` / `rhs`.
+    ///
+    /// # Panics
+    /// If `size_of::<T>() * N` <= `128`, this method may panic
+    /// or its behavior may be undefined though it may not panic.
+    ///
+    /// # Output
+    /// It returns a tuple of the quotient along with a boolean indicating
+    /// whether an arithmetic overflow would occur. Note that when `rhs` is
+    /// a non-zero unsigned integer, overflow never occurs, so the second
+    /// value is always `false` in that case. However, if `rhs` is zero,
+    /// the second value of the output tuple will be `true`.
+    ///
+    /// # Feature
+    /// - Overflowing division on `BigUInt` types is just normal division.
+    /// There’s no way overflowing could ever happen unless `rhs` is zero.
+    /// This function exists, so that all operations are accounted for
+    /// in the wrapping operations.
+    /// - If `rhs` is zero, the quotient will have maximum value of `BigUInt`
+    /// type, and the flags of quotient such as `OVERFLOW`, `INFINITY`, and
+    /// `DIVIDED_BY_ZERO` will be set. __It does not panic__ while the
+    /// counterpart method `wrapping_div()` for primitive integer data type
+    /// such as u8, u16, u32, u64, etc. will panic if `rhs` is zero.
+    ///
+    /// # Example
+    /// ```
+    /// use std::str::FromStr;
+    /// use Cryptocol::define_utypes_with;
+    /// define_utypes_with!(u8);
+    ///
+    /// let dividend = u256::from_str("123456789015758942546236989636279846864825945392").unwrap();
+    /// let divisor = 87_u8;
+    /// let (mut quotient, mut overflow) = dividend.overflowing_div_uint(divisor);
+    /// println!("{} / {} = {}", dividend, divisor, quotient);
+    /// assert_eq!(quotient.to_string(), "1419043551905275201680884938348044216837079832");
+    /// assert_eq!(overflow, false);
+    /// (quotient, overflow) = dividend.overflowing_div_uint(0_u8);
+    /// println!("{} / {} = {}", dividend, divisor, quotient);
+    /// assert_eq!(quotient, u256::max());
+    /// assert_eq!(overflow, true);
+    /// ```
+    ///
+    /// # Big-endian issue
+    /// It is just experimental for Big Endian CPUs. So, you are not encouraged
+    /// to use it for Big Endian CPUs for serious purpose. Only use this crate
+    /// for Big-endian CPUs with your own full responsibility.
     pub fn overflowing_div_uint<U>(&self, rhs: U) -> (Self, bool)
     where U: SmallUInt + Copy + Clone + Display + Debug + ToString
             + Add<Output=U> + AddAssign + Sub<Output=U> + SubAssign
@@ -8246,11 +8316,66 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
             + BitXor<Output=U> + BitXorAssign + Not<Output=U>
             + PartialEq + PartialOrd
     {
-        let mut res = self.clone();
-        let current_overflow = res.overflowing_div_assign_uint(rhs);
-        (res, current_overflow)
+        let (quotient, _) = self.divide_fully_uint(rhs);
+        let overflow = quotient.is_overflow();
+        (quotient, overflow)
     }
 
+    // pub fn overflowing_div_assign_uint<U>(&mut self, rhs: U) -> bool
+    /// Calculates the quotient when `self` is divided by `rhs`,
+    /// which is `self` / `rhs`, and assigns the result to `self` back.
+    ///
+    /// # Panics
+    /// If `size_of::<T>() * N` <= `128`, this method may panic
+    /// or its behavior may be undefined though it may not panic.
+    ///
+    /// # Output
+    /// It returns a boolean indicating whether an arithmetic overflow would
+    /// occur. Note that when `rhs` is a non-zero unsigned integer, overflow
+    /// never occurs, so the output is always `false` in that case. However,
+    /// if `rhs` is zero, the output will be `true`.
+    ///
+    /// # Feature
+    /// - Overflowing division on `BigUInt` types is just normal division.
+    /// There’s no way overflowing could ever happen unless `rhs` is zero.
+    /// This function exists, so that all operations are accounted for
+    /// in the wrapping operations.
+    /// - If `rhs` is zero, the quotient will have maximum value of `BigUInt`
+    /// type, and the flags of quotient such as `OVERFLOW`, `INFINITY`, and
+    /// `DIVIDED_BY_ZERO` will be set. __It does not panic__ while the
+    /// counterpart method `wrapping_div()` for primitive integer data type
+    /// such as u8, u16, u32, u64, etc. will panic if `rhs` is zero.
+    /// - The `OVERFLOW`, `INFINITY`, and `DIVIDED_BY_ZERO` flags reflect
+    /// historical overflow, which means if an overflow and/or divided-by-zero
+    /// occurred even once before this current operation or `OVERFLOW`,
+    /// `INFINITY`, and/or `DIVIDED_BY_ZERO` flag(s) is/are already set before
+    /// this current operation, the `OVERFLOW`, `INFINITY`, and/or
+    /// `DIVIDED_BY_ZERO` flag(s) is/are not changed even though this current
+    /// operation does not cause overflow and/or divided-by-zero.
+    ///
+    /// # Example
+    /// ```
+    /// use std::str::FromStr;
+    /// use Cryptocol::define_utypes_with;
+    /// define_utypes_with!(u16);
+    /// 
+    /// let mut a_biguint = U32::from_str("123456789015758942546236989636279846864825945392").unwrap();
+    /// let divisor = 87_u16;
+    /// println!("Originally,\na_biguint = {}", a_biguint);
+    /// let mut overflow = a_biguint.overflowing_div_assign_uint(divisor);
+    /// println!("After a_biguint.overflowing_div_assign_uint(divisor),\na_biguint = {}", a_biguint);
+    /// assert_eq!(a_biguint.to_string(), "1419043551905275201680884938348044216837079832");
+    /// assert_eq!(overflow, false);
+    /// let mut overflow = a_biguint.overflowing_div_assign_uint(0_u16);
+    /// println!("After a_biguint.overflowing_div_assign_uint(0_u16),\na_biguint = {}", a_biguint);
+    /// assert_eq!(a_biguint, U32::max());
+    /// assert_eq!(overflow, true);
+    /// ```
+    ///
+    /// # Big-endian issue
+    /// It is just experimental for Big Endian CPUs. So, you are not encouraged
+    /// to use it for Big Endian CPUs for serious purpose. Only use this crate
+    /// for Big-endian CPUs with your own full responsibility.
     pub fn overflowing_div_assign_uint<U>(&mut self, rhs: U) -> bool
     where U: SmallUInt + Copy + Clone + Display + Debug + ToString
             + Add<Output=U> + AddAssign + Sub<Output=U> + SubAssign
@@ -8261,8 +8386,13 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
             + BitXor<Output=U> + BitXorAssign + Not<Output=U>
             + PartialEq + PartialOrd
     {
-        (*self, _) = self.divide_fully_uint(rhs);
-        false
+        let old = self.get_all_flags();
+        self.reset_all_flags();
+        let (quotient, _) = self.divide_fully_uint(rhs);
+        *self = quotient;
+        let overflow = self.is_overflow();
+        self.set_flag_bit(old);
+        overflow
     }
 
     // pub fn checked_div_uint<U>(&self, rhs: U) -> Option<Self>
@@ -8275,12 +8405,12 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// wrapped by `Some` of enum `Option`.
     /// 
     /// # Feature
-    /// Wrapped division on `BigUInt` types is just normal division.
-    /// There’s no way wrapping could ever happen.
-    /// 
-    /// If `rhs` is zero, the quotient will have maximum value of `BigUInt`
+    /// - Checked integer division on `BigUInt` types is just normal division.
+    /// - If `rhs` is zero, the quotient will have maximum value of `BigUInt`
     /// type, and the flags of quotient such as `OVERFLOW`, `INFINITY`, and
-    /// `DIVIDED_BY_ZERO` will be set.
+    /// `DIVIDED_BY_ZERO` will be set. __It does not panic__ while the
+    /// counterpart method `wrapping_div()` for primitive integer data type
+    /// such as u8, u16, u32, u64, etc. will panic if `rhs` is zero.
     /// 
     /// # Example
     /// ```
@@ -8322,8 +8452,8 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// Otherwise, it will panic.
     /// 
     /// # Feature
-    /// Wrapped division on `BigUInt` types is just normal division.
-    /// There’s no way wrapping could ever happen.
+    /// - Unchecked integer division on `BigUInt` types is just normal division.
+    /// - If `rhs` is zero, it will panic.
     /// 
     /// # Example
     /// ```
@@ -8359,13 +8489,14 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// Otherwise, it returns the maximum value.
     /// 
     /// # Feature
-    /// Overflow will not happen unless `rhs` is zero. __It does not panic__
+    /// - Overflow will not happen unless `rhs` is zero. __It does not panic__
     /// while the same named methods `saturating_div()` for primitive integer
     /// data type such as u8, u16, u32, u64, etc. will panic if `rhs` is zero.
-    /// 
-    /// If `rhs` is zero, the quotient will have maximum value of `BigUInt`
-    /// type, and the flags of quotient such as `OVERFLOW` and `DIVIDED_BY_ZERO`
-    /// will be set.
+    /// - If `rhs` is zero, the quotient will have maximum value of `BigUInt`
+    /// type, and the flags of quotient such as `OVERFLOW`, `INFINITY`, and
+    /// `DIVIDED_BY_ZERO` will be set. __It does not panic__ while the
+    /// counterpart method `wrapping_div()` for primitive integer data type
+    /// such as u8, u16, u32, u64, etc. will panic if `rhs` is zero.
     /// 
     /// # Example
     /// ```
@@ -8386,7 +8517,9 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
             + BitXor<Output=U> + BitXorAssign + Not<Output=U>
             + PartialEq + PartialOrd
     {
-        let (quotient, _) = self.divide_fully_uint(rhs);
+        let (mut quotient, _) = self.divide_fully_uint(rhs);
+        if rhs.is_zero()
+            { quotient.set_max(); }
         quotient
     }
 
@@ -8396,13 +8529,21 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// instead of overflowing, and assigns the quotient to `self` back.
     /// 
     /// # Feature
-    /// Overflow will not happen unless `rhs` is zero. __It does not panic__
+    /// - Overflow will not happen unless `rhs` is zero. __It does not panic__
     /// while the similar methods `saturating_div()` for primitive integer
     /// data type such as u8, u16, u32, u64, etc. will panic if `rhs` is zero.
-    /// 
-    /// If `rhs` is zero, `self` will have maximum value of `BigUInt`
-    /// type, and the flags of `self` such as `OVERFLOW` and `DIVIDED_BY_ZERO`
-    /// will be set.
+    /// - If `rhs` is zero, the quotient will have maximum value of `BigUInt`
+    /// type, and the flags of quotient such as `OVERFLOW`, `INFINITY`, and
+    /// `DIVIDED_BY_ZERO` will be set. __It does not panic__ while the
+    /// counterpart method `wrapping_div()` for primitive integer data type
+    /// such as u8, u16, u32, u64, etc. will panic if `rhs` is zero.
+    /// - The `OVERFLOW`, `INFINITY`, and `DIVIDED_BY_ZERO` flags reflect
+    /// historical overflow, which means if an overflow and/or divided-by-zero
+    /// occurred even once before this current operation or `OVERFLOW`,
+    /// `INFINITY`, and/or `DIVIDED_BY_ZERO` flag(s) is/are already set before
+    /// this current operation, the `OVERFLOW`, `INFINITY`, and/or
+    /// `DIVIDED_BY_ZERO` flag(s) is/are not changed even though this current
+    /// operation does not cause overflow and/or divided-by-zero.
     /// 
     /// # Example
     /// ```
@@ -8450,10 +8591,13 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// ```
     /// use std::str::FromStr;
     /// use Cryptocol::define_utypes_with;
-    /// define_utypes_with!(u128);
-    /// let a = u256::from_str("10000000000000000000000000000000000").unwrap();
-    /// let rem = a.wrapping_rem_uint(35_u128);
-    /// println!("rem = {}", rem);
+    /// define_utypes_with!(u64);
+    /// 
+    /// let dividend = U32::from_str("123456789015758942546236989636279846864825945392").unwrap();
+    /// let divisor = 87_u8;
+    /// let remainder = dividend.wrapping_rem_uint(divisor);
+    /// println!("{} % {} = {}", dividend, divisor, remainder);
+    /// assert_eq!(remainder.to_string(), "8");
     /// ```
     /// 
     /// # Big-endian issue
@@ -8491,7 +8635,16 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// 
     /// # Example
     /// ```
-    /// // Todo
+    /// use std::str::FromStr;
+    /// use Cryptocol::define_utypes_with;
+    /// define_utypes_with!(u128);
+    /// 
+    /// let mut a_biguint = u256::from_str("123456789015758942546236989636279846864825945392").unwrap();
+    /// let divisor = 87_u8;
+    /// println!("Originally,\na_biguint = {}", a_biguint);
+    /// a_biguint.wrapping_rem_assign_uint(divisor);
+    /// println!("After a_biguint.wrapping_rem_assign_uint(divisor),\na_biguint = {}", a_biguint);
+    /// assert_eq!(a_biguint.to_string(), "8");
     /// ```
     /// 
     /// # Big-endian issue
@@ -13781,7 +13934,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// Converts `self` into `u128`.
     /// 
     /// # Panics
-    /// If `size_of::<T>() * N` <= `128`, some methods may panic
+    /// If `size_of::<T>() * N` <= `128`, this method may panic
     /// or its behavior may be undefined though it may not panic.
     /// 
     /// # Output
@@ -13826,7 +13979,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// Converts `self` into `u64`.
     /// 
     /// # Panics
-    /// If `size_of::<T>() * N` <= `128`, some methods may panic
+    /// If `size_of::<T>() * N` <= `128`, this method may panic
     /// or its behavior may be undefined though it may not panic.
     /// 
     /// # Output
@@ -13868,7 +14021,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// Converts `self` into `u32`.
     /// 
     /// # Panics
-    /// If `size_of::<T>() * N` <= `128`, some methods may panic
+    /// If `size_of::<T>() * N` <= `128`, this method may panic
     /// or its behavior may be undefined though it may not panic.
     /// 
     /// # Output
@@ -13907,7 +14060,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// Converts `self` into `u16`.
     /// 
     /// # Panics
-    /// If `size_of::<T>() * N` <= `128`, some methods may panic
+    /// If `size_of::<T>() * N` <= `128`, this method may panic
     /// or its behavior may be undefined though it may not panic.
     /// 
     /// # Output
@@ -13943,7 +14096,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// Converts `self` into `u8`.
     /// 
     /// # Panics
-    /// If `size_of::<T>() * N` <= `128`, some methods may panic
+    /// If `size_of::<T>() * N` <= `128`, this method may panic
     /// or its behavior may be undefined though it may not panic.
     /// 
     /// # Output
@@ -13968,7 +14121,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// Converts `self` into `usize`.
     /// 
     /// # Panics
-    /// If `size_of::<T>() * N` <= `128`, some methods may panic
+    /// If `size_of::<T>() * N` <= `128`, this method may panic
     /// or its behavior may be undefined though it may not panic.
     /// 
     /// # Output
@@ -14400,6 +14553,22 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
         (self.flag & flag) != 0
     }
 
+    // pub fn get_flags(&self) -> u8
+    /// Gets all the flag bits.
+    ///
+    /// # Output
+    /// It returns all the flag bits.
+    ///
+    /// # Example
+    /// ```
+    /// // Todo
+    /// ```
+    #[inline]
+    fn get_all_flags(&self) -> u8
+    {
+        self.flag
+    }
+
     // pub fn reset_all_flags(&mut self)
     /// Resets all flag bits to be `0`.
     /// 
@@ -14408,7 +14577,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// // Todo
     /// ```
     #[inline]
-    pub fn reset_all_flags(&mut self)
+    fn reset_all_flags(&mut self)
     {
         self.flag = 0;
     }

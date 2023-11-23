@@ -2771,8 +2771,14 @@ fn BigUInt_modular_mul_assign_uint()
 fn BigUInt_div_uint()
 {
     BigUInt_divide_fully_uint();
-    // BigUInt_carrying_div_uint();
-    // BigUInt_carrying_div_assign_uint();
+    BigUInt_wrapping_div_uint();
+    BigUInt_wrapping_div_assign_uint();
+    BigUInt_overflowing_div_uint();
+    BigUInt_overflowing_div_assign_uint();
+    BigUInt_checked_div_uint();
+    BigUInt_unchecked_div_uint();
+    BigUInt_saturating_div_uint();
+    BigUInt_saturating_div_assign_uint();
 }
 
 fn BigUInt_divide_fully_uint()
@@ -2791,10 +2797,178 @@ fn BigUInt_divide_fully_uint()
     println!("---------------------------");
 }
 
+fn BigUInt_wrapping_div_uint()
+{
+    println!("BigUInt_wrapping_div_uint");
+    use std::str::FromStr;
+    use Cryptocol::define_utypes_with;
+    define_utypes_with!(u64);
+
+    let dividend = u256::from_str("123456789015758942546236989636279846864825945392").unwrap();
+    let divisor = 87_u8;
+    let quotient = dividend.wrapping_div_uint(divisor);
+    println!("{} / {} = {}", dividend, divisor, quotient);
+    assert_eq!(quotient.to_string(), "1419043551905275201680884938348044216837079832");
+    println!("---------------------------");
+}
+
+fn BigUInt_wrapping_div_assign_uint()
+{
+    println!("BigUInt_wrapping_div_assign_uint");
+    use std::str::FromStr;
+    use Cryptocol::define_utypes_with;
+    define_utypes_with!(u128);
+
+    let mut a_biguint = U32::from_str("123456789015758942546236989636279846864825945392").unwrap();
+    let divisor = 87_u8;
+    println!("Originally,\na_biguint = {}", a_biguint);
+    a_biguint.wrapping_div_assign_uint(divisor);
+    println!("After a_biguint.wrapping_div_assign_uint(divisor),\na_biguint = {}", a_biguint);
+    assert_eq!(a_biguint.to_string(), "1419043551905275201680884938348044216837079832");
+    println!("---------------------------");
+}
+
+fn BigUInt_overflowing_div_uint()
+{
+    println!("BigUInt_overflowing_div_uint");
+    use std::str::FromStr;
+    use Cryptocol::define_utypes_with;
+    define_utypes_with!(u8);
+
+    let dividend = u256::from_str("123456789015758942546236989636279846864825945392").unwrap();
+    let divisor = 87_u8;
+    let (mut quotient, mut overflow) = dividend.overflowing_div_uint(divisor);
+    println!("{} / {} = {}", dividend, divisor, quotient);
+    assert_eq!(quotient.to_string(), "1419043551905275201680884938348044216837079832");
+    assert_eq!(overflow, false);
+    (quotient, overflow) = dividend.overflowing_div_uint(0_u8);
+    println!("{} / {} = {}", dividend, divisor, quotient);
+    assert_eq!(quotient, u256::max());
+    assert_eq!(overflow, true);
+    println!("---------------------------");
+}
+fn BigUInt_overflowing_div_assign_uint()
+{
+    println!("BigUInt_overflowing_div_assign_uint");
+    use std::str::FromStr;
+    use Cryptocol::define_utypes_with;
+    define_utypes_with!(u16);
+
+    let mut a_biguint = U32::from_str("123456789015758942546236989636279846864825945392").unwrap();
+    let divisor = 87_u16;
+    println!("Originally,\na_biguint = {}", a_biguint);
+    let mut overflow = a_biguint.overflowing_div_assign_uint(divisor);
+    println!("After a_biguint.overflowing_div_assign_uint(divisor),\na_biguint = {}", a_biguint);
+    assert_eq!(a_biguint.to_string(), "1419043551905275201680884938348044216837079832");
+    assert_eq!(overflow, false);
+    let mut overflow = a_biguint.overflowing_div_assign_uint(0_u16);
+    println!("After a_biguint.overflowing_div_assign_uint(0_u16),\na_biguint = {}", a_biguint);
+    assert_eq!(a_biguint, U32::max());
+    assert_eq!(overflow, true);
+    println!("---------------------------");
+}
+
+fn BigUInt_checked_div_uint()
+{
+    println!("BigUInt_checked_div_uint");
+    println!("---------------------------");
+}
+
+fn BigUInt_unchecked_div_uint()
+{
+    println!("BigUInt_unchecked_div_uint");
+    println!("---------------------------");
+}
+
+fn BigUInt_saturating_div_uint()
+{
+    println!("BigUInt_saturating_div_uint");
+    println!("---------------------------")
+}
+
+fn BigUInt_saturating_div_assign_uint()
+{
+    println!("BigUInt_saturating_div_assign_uint");
+    println!("---------------------------");
+}
+
 fn BigUInt_rem_uint()
 {
-    // BigUInt_carrying_rem_uint();
-    // BigUInt_carrying_rem_assign_uint();
+    BigUInt_wrapping_rem_uint();
+    BigUInt_wrapping_rem_assign_uint();
+    BigUInt_overflowing_rem_uint();
+    BigUInt_overflowing_rem_assign_uint();
+    BigUInt_checked_rem_uint();
+    BigUInt_unchecked_rem_uint();
+    BigUInt_saturating_rem_uint();
+    BigUInt_saturating_rem_assign_uint();
+}
+
+fn BigUInt_wrapping_rem_uint()
+{
+    println!("BigUInt_wrapping_rem_uint");
+    use std::str::FromStr;
+    use Cryptocol::define_utypes_with;
+    define_utypes_with!(u64);
+
+    let dividend = U32::from_str("123456789015758942546236989636279846864825945392").unwrap();
+    let divisor = 87_u8;
+    let remainder = dividend.wrapping_rem_uint(divisor);
+    println!("{} % {} = {}", dividend, divisor, remainder);
+    assert_eq!(remainder.to_string(), "8");
+    println!("---------------------------");
+}
+
+fn BigUInt_wrapping_rem_assign_uint()
+{
+    println!("BigUInt_wrapping_rem_assign_uint");
+    use std::str::FromStr;
+    use Cryptocol::define_utypes_with;
+    define_utypes_with!(u128);
+
+    let mut a_biguint = u256::from_str("123456789015758942546236989636279846864825945392").unwrap();
+    let divisor = 87_u8;
+    println!("Originally,\na_biguint = {}", a_biguint);
+    a_biguint.wrapping_rem_assign_uint(divisor);
+    println!("After a_biguint.wrapping_rem_assign_uint(divisor),\na_biguint = {}", a_biguint);
+    assert_eq!(a_biguint.to_string(), "8");
+    println!("---------------------------");
+}
+
+fn BigUInt_overflowing_rem_uint()
+{
+    println!("BigUInt_overflowing_rem_uint");
+    println!("---------------------------");
+}
+
+fn BigUInt_overflowing_rem_assign_uint()
+{
+    println!("BigUInt_overflowing_rem_assign_uint");
+    println!("---------------------------");
+}
+
+fn BigUInt_checked_rem_uint()
+{
+    println!("BigUInt_checked_rem_uint");
+    println!("---------------------------");
+}
+
+fn BigUInt_unchecked_rem_uint()
+{
+    println!("BigUInt_unchecked_rem_uint");
+    println!("---------------------------");
+}
+
+fn BigUInt_saturating_rem_uint()
+{
+    println!("BigUInt_saturating_rem_uint");
+    println!("---------------------------");
+}
+
+fn BigUInt_saturating_rem_assign_uint()
+{
+    println!("BigUInt_saturating_rem_assign_uint");
+    println!("---------------------------");
 }
 
 fn BigUInt_exponentiation_logarithm_uint()

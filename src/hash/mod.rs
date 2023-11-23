@@ -12,5 +12,7 @@
 //! # Background: Hash algorithms
 
 mod sha1;
+mod md5;
 
 pub use sha1::*;
+pub use md5::*;
