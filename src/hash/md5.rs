@@ -24,7 +24,7 @@ use crate::number::{IntUnion, LongUnion, LongerUnion, SmallUInt};
 #[derive(Debug, Clone)]
 pub struct MD5
 {
-    hash_code: [u32; 4],
+    hash_code: [IntUnion; 4],
 }
 
 impl MD5
@@ -46,18 +46,21 @@ impl MD5
                             0x6fa87e4f, 0xfe2ce6e0, 0xa3014314, 0x4e0811a1,
                             0xf7537e82, 0xbd3af235, 0x2ad7d2bb, 0xeb86d391 ];
     const Rot: [[u32; 4]; 4] = [[7, 12, 17, 22], [5,  9, 14, 20], [4, 11, 16, 23], [6, 10, 15, 21]];
-    const H: [u32; 4] = [ 0x67452301_u32.to_le(), 0xefcdab89_u32.to_le(), 0x98badcfe_u32.to_le(), 0x10325476_u32.to_le() ];
+    const H: [u32; 4] = [ 0x67452301, 0xefcdab89, 0x98badcfe, 0x10325476 ];
 
-    pub fn new() -> Self    { MD5 { hash_code: Self::H } }
+    pub fn new() -> Self    { MD5 { hash_code: [IntUnion::new_with(Self::H[0]),
+                                                IntUnion::new_with(Self::H[1]),
+                                                IntUnion::new_with(Self::H[2]),
+                                                IntUnion::new_with(Self::H[3])] } }
 
     /// // pub fn digest(&mut self, message: *const u8, length_in_bytes: u64)
     pub fn digest(&mut self, message: *const u8, length_in_bytes: u64)
     {
         self.initialize();
-        let length_done = (length_in_bytes >> 8) as usize;
+        let length_done = (length_in_bytes >> 6) as usize;
         for i in 0..length_done
-            { self.update(unsafe { from_raw_parts::<u32>(message.add(i << 8) as *const u32, 16) } ); }
-        self.finalize(unsafe { message.add(length_done << 8) }, length_in_bytes);
+            { self.update(unsafe { from_raw_parts(message.add(i << 6) as *const u32, 16) } ); }
+        self.finalize(unsafe { message.add(length_done << 6) }, length_in_bytes);
     }
 
     /// // pub fn digest_str(&mut self, message: &str)
@@ -86,46 +89,39 @@ impl MD5
     pub fn getHashValue(&self, hashValue: *mut u8, length: usize)
     {
         let n_length = if length < (4 * 4) {length} else {4 * 4};
-        union HU
-        {
-            hh: [u32; 4],
-            hh8: [u8; 4*4],
-        }
-        let mut hu = HU { hh: [0; 4]};
-    
-        for i in 0..4_usize
-            { unsafe { hu.hh[i] = self.hash_code[i]; } }
-    
         for i in 0..n_length
-            { unsafe { *hashValue.add(i) = hu.hh8[i]; } }
+            { unsafe { *hashValue.add(i) = self.hash_code[i/4].get_ubyte_(i%4); } }
     }
 
     /// // pub fn getHashValue_in_array(&self) -> [u32; 4]
     /// 
     pub fn getHashValue_in_array(&self) -> [u32; 4]
     {
-        self.hash_code.clone()
+        let mut res = [0_u32; 4];
+        for i in 0..4
+            { unsafe { res[i] = self.hash_code[i].get().to_le(); } }
+        res
     }
 
     /// // pub fn getHashValue_in_vec(&self) -> Vec<u32>
     /// 
+    #[inline]
     pub fn getHashValue_in_vec(&self) -> Vec<u32>
     {
-        Vec::from(self.hash_code)
+        Vec::<u32>::from(&self.getHashValue_in_array())
     }
 
     /// // pub fn getHashValue_in_vec(&self) -> Vec<u32>
     /// 
     pub fn getHashValue_in_string(&self) -> String
     {
-        let mut lu = LongUnion::new();
         let mut txt = String::new();
         for i in 0..4
         {
-            lu.set_uint_(0, self.hash_code[i].to_le());
+            let hs = self.hash_code[i];
             for j in 0..4
             {
-                let byte = lu.get_ubyte_(j);
+                let byte = hs.get_ubyte_(j);
                 txt.push(Self::to_char(byte >> 4));
                 txt.push(Self::to_char(byte & 0b1111));
             }
@@ -136,80 +132,104 @@ impl MD5
     fn initialize(&mut self)
     {
         for i in 0..4_usize
-            { self.hash_code[i] = Self::getH(i); }
+            { self.hash_code[i] = IntUnion::new_with(Self::getH(i)); }
     }
 
     fn update(&mut self, message: &[u32])
     {
-        let mut a = self.hash_code[0];
-        let mut b = self.hash_code[1];
-        let mut c = self.hash_code[2];
-        let mut d = self.hash_code[3];
+        let mut a = self.hash_code[0].get();
+        let mut b = self.hash_code[1].get();
+        let mut c = self.hash_code[2].get();
+        let mut d = self.hash_code[3].get();
 
-        for i in 0..64_usize
+        for i in 0..16_usize
         {
-            let (mut f, g) = Self::func(b, c, d, i);
-            f = f.to_le() + a.to_le() + Self::getK(i) + message[g].to_le();
+            let f = Self::Ff(b, c, d).wrapping_add(a)
+                                .wrapping_add(Self::getK(i))
+                                .wrapping_add(message[i].to_le())
+                                .rotate_left(Self::Rot[0][i & 0b11]);
             a = d;
             d = c;
             c = b;
-            b = (b.to_le() + f.rotate_left(Self::getRot(i/16, i & 0b11))).to_le();
+            b = b.wrapping_add(f);
         }
-        self.hash_code[0] = (self.hash_code[0].to_le() + a.to_le()).to_le();
-        self.hash_code[1] = (self.hash_code[1].to_le() + b.to_le()).to_le();
-        self.hash_code[2] = (self.hash_code[2].to_le() + c.to_le()).to_le();
-        self.hash_code[3] = (self.hash_code[3].to_le() + d.to_le()).to_le();
+        for i in 16..32_usize
+        {
+            let g = ((i << 2) + i + 1) & 0b1111;
+            let f = Self::Gg(b, c, d).wrapping_add(a)
+                                .wrapping_add(Self::getK(i))
+                                .wrapping_add(message[g].to_le())
+                                .rotate_left(Self::Rot[1][i & 0b11]);
+            a = d;
+            d = c;
+            c = b;
+            b = b.wrapping_add(f);
+        }
+        for i in 32..48_usize
+        {
+            let g = ((i << 1) + i + 5) & 0b1111;
+            let f = Self::Hh(b, c, d).wrapping_add(a)
+                                .wrapping_add(Self::getK(i))
+                                .wrapping_add(message[g].to_le())
+                                .rotate_left(Self::Rot[2][i & 0b11]);
+            a = d;
+            d = c;
+            c = b;
+            b = b.wrapping_add(f);
+        }
+        for i in 48..64_usize
+        {
+            let g = ((i << 3) - i) & 0b1111;
+            let f = Self::Ii(b, c, d).wrapping_add(a)
+                                .wrapping_add(Self::getK(i))
+                                .wrapping_add(message[g].to_le())
+                                .rotate_left(Self::Rot[3][i & 0b11]);
+            a = d;
+            d = c;
+            c = b;
+            b = b.wrapping_add(f);
+        }
+        // for i in 0..64_usize
+        // {
+        //     let (mut f, g) = Self::func(b, c, d, i);
+        //     f = f.wrapping_add(a)
+        //             .wrapping_add(Self::getK(i))
+        //             .wrapping_add(message[g].to_le())
+        //             .rotate_left(Self::getRot(i));
+        //     a = d;
+        //     d = c;
+        //     c = b;
+        //     b = b.wrapping_add(f);
+        // }
+
+        self.hash_code[0].set(self.hash_code[0].get() + a);
+        self.hash_code[1].set(self.hash_code[1].get() + b);
+        self.hash_code[2].set(self.hash_code[2].get() + c);
+        self.hash_code[3].set(self.hash_code[3].get() + d);
     }
     
     fn finalize(&mut self, message: *const u8, length_in_bytes: u64)
     {
         union MU
         {
-            lu: [LongUnion; 8],
+            lu: [u64; 8],
             iu: [u32; 16],
             txt: [u8; 64],
         }
 
         let mut mu = MU { txt: [0; 64] };
-        let remaining_in_bytes = (length_in_bytes % 64) as usize;
-
-        let mut end = 0_usize;
-        let mut last = 0_usize;
-        if remaining_in_bytes >= 8
+        let last_bytes = (length_in_bytes & 0b11_1111) as usize;    // equivalent to (length_in_bytes % 64) as usize
+        unsafe { copy_nonoverlapping(message, mu.txt.as_mut_ptr(), last_bytes); }
+        unsafe { mu.txt[last_bytes] = 0b1000_0000; }
+        // 데이터 기록후, 데이터의 길이를 비트 단위로 기록하기 위한 64 비트(8 바이트)와
+        // 0b1000_0000를 기록하기 위한 한 바이트의 여유공간이 남아있지 않으면,
+        if last_bytes > 54  // (64 - 8 - 1)
         {
-            let msg = message as *const u64;
-            end = remaining_in_bytes / 8;
-            for i in 0..end
-                { unsafe { mu.lu[i].set(*msg.add(i)); } }
-            last = end;
-            end *= 8;
-        }
-        let mut j = 0;
-        for i in end..remaining_in_bytes
-        {
-            unsafe { mu.lu[last].set_ubyte_(j, *message.add(i)); }
-            j += 1;
-        }
-        if j == 8
-        {
-            last += 1;
-            j = 0;
-        }
-        unsafe { mu.lu[last].set_ubyte_(j, 0b1000_0000); }
-        for i in j+1..8
-            { unsafe {mu.lu[last].set_ubyte_(i, 0);} }
-        last += 1;
-        for i in last..7
-            { unsafe {mu.lu[i].set(0);} }
-
-        if remaining_in_bytes > 55
-        {
-            unsafe { mu.lu[7].set(0); }
             self.update(unsafe {&mu.iu});
             for i in 0..7
-                { unsafe {mu.lu[i].set(0);} }
+                { unsafe { mu.lu[i] = 0; } }
         }
-        unsafe { mu.lu[7].set(length_in_bytes.to_le()); }
+        unsafe { mu.lu[7] = (length_in_bytes << 3).to_le(); }    // 데이터 길이의 단위는 바이트가 아니라 비트이다.
         self.update(unsafe {&mu.iu});
     }
 
@@ -218,16 +238,16 @@ impl MD5
         if round < 16
             { (Self::Ff(x, y, z), round) }
         else if round < 32
-            { (Self::Gg(x, y, z), (5 * round + 1) % 16) }
+            { (Self::Gg(x, y, z), ((round << 2) + round + 1) & 0b1111) }    // same as ((5 * round) + 1) % 16
         else if round < 48
-            { (Self::Hh(x, y, z), (3 * round + 5) % 16) }
+            { (Self::Hh(x, y, z), ((round << 1) + round + 5) & 0b1111) }    // same as ((3 * round) + 5) % 16
         else
-            { (Self::Ii(x, y, z), (7 * round) % 16) }
+            { (Self::Ii(x, y, z), ((round << 3) - round) & 0b1111) }        // same as (7 * round) % 16
     }
 
-	#[inline] fn getK(idx: usize) -> u32    { Self::K[idx/20] }
+	#[inline] fn getK(idx: usize) -> u32    { Self::K[idx] }
 	#[inline] fn getH(idx: usize) -> u32    { Self::H[idx] }
-    #[inline] fn getRot(idx: usize, sub: usize) -> u32  { Self::Rot[idx][sub] }
+    #[inline] fn getRot(idx: usize) -> u32  { Self::Rot[idx >> 4][idx & 0b11] }
 	#[inline] fn Ff(x: u32, y: u32, z: u32) -> u32  { (x & y) | (!x & z) }
 	#[inline] fn Gg(x: u32, y: u32, z: u32) -> u32  { (x & z) | (y & !z) }
 	#[inline] fn Hh(x: u32, y: u32, z: u32) -> u32	{ x ^ y ^ z }

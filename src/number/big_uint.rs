@@ -863,7 +863,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// A new object of `BigUInt<T, N>` that represents the same value of `val`.
     /// 
     /// # Panics
-    /// If `size_of::<T>() * N` <= `128`, some methods may panic
+    /// If `size_of::<T>() * N` <= `128`, this method may panic
     /// or its behavior may be undefined though it may not panic.
     /// 
     /// # Example for u8
@@ -939,12 +939,12 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
             + BitAnd<Output=U> + BitAndAssign + BitOr<Output=U> + BitOrAssign
             + BitXor<Output=U> + BitXorAssign + Not<Output=U>
             + PartialEq + PartialOrd
-    {
+    {use std::ptr::copy_nonoverlapping;
         let TSIZE = T::size_in_bytes();
         let USIZE = U::size_in_bytes();
         let mut me = Self::zero();
         let mut share = Share::<T, U>::from_src(val);
-        
+//        unsafe { copy_nonoverlapping(val.as_ptr() as *const u8, me.number.as_mut_ptr() as *mut u8, USIZE); }
         if TSIZE >= USIZE
         {
             unsafe { me.set_num_(0, share.des); }
@@ -5347,8 +5347,8 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// - If the input carry is false, this method is equivalent to
     /// `overflowing_add_assign_uint()`, and the output carry reflect current
     /// overflow.
-    /// - The `OVERFLOW` flag reflect historical overflow, which means if an
-    /// overflow occurred even once before this current operation or `OVERFLOW`
+    /// - All the flags are historical, which means, for example, if an overflow
+    /// occurred even once before this current operation or `OVERFLOW`
     /// flag is already set before this current operation, the `OVERFLOW` flag
     /// is not changed even if this current operation does not cause overflow.
     /// 
@@ -5504,8 +5504,8 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// 
     /// # Features
     /// - Wrapping (modular) addition.
-    /// - The `OVERFLOW` flag reflect historical overflow, which means if an
-    /// overflow occurred even once before this current operation or `OVERFLOW`
+    /// - All the flags are historical, which means, for example, if an overflow
+    /// occurred even once before this current operation or `OVERFLOW`
     /// flag is already set before this current operation, the `OVERFLOW` flag
     /// is not changed even if this current operation does not cause overflow.
     /// 
@@ -5626,8 +5626,8 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// 
     /// # Features
     /// - The output overflow reflects current overflow.
-    /// - The `OVERFLOW` flag reflect historical overflow, which means if an
-    /// overflow occurred even once before this current operation or `OVERFLOW`
+    /// - All the flags are historical, which means, for example, if an overflow
+    /// occurred even once before this current operation or `OVERFLOW`
     /// flag is already set before this current operation, the `OVERFLOW` flag
     /// is not changed even if this current operation does not cause overflow.
     /// 
@@ -5834,7 +5834,8 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// Otherwise, it returns the maximum value.
     /// 
     /// # Features
-    /// This method saturates at current overflow.
+    /// - This method saturates when it reaches maximum value.
+    /// - It does not set `OVERFLOW` flag.
     /// 
     /// # Counterpart Method
     /// If `rhs` is bigger tham `ui128`, the method [saturating_add()](struct@BigUInt#method.saturating_add)
@@ -5888,9 +5889,10 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// or its behavior may be undefined though it may not panic.
     /// 
     /// # Features
-    /// - This method saturates at current overflow.
-    /// - The `OVERFLOW` flag reflect historical overflow, which means if an
-    /// overflow occurred even once before this current operation or `OVERFLOW`
+    /// - This method saturates when it reaches maximum value.
+    /// - It does not set `OVERFLOW` flag.
+    /// - All the flags are historical, which means, for example, if an overflow
+    /// occurred even once before this current operation or `OVERFLOW`
     /// flag is already set before this current operation, the `OVERFLOW` flag
     /// is not changed even if this current operation does not cause overflow.
     /// 
@@ -5934,8 +5936,13 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
             + BitXor<Output=U> + BitXorAssign + Not<Output=U>
             + PartialEq + PartialOrd
     {
+        let overflow = self.is_overflow();
         if self.overflowing_add_assign_uint(rhs)
-            { self.set_max(); }
+        {
+            self.set_max();
+            if !overflow
+                { self.reset_overflow(); }
+        }
     }
 
     // pub fn modular_add_uint<U>(&self, rhs: U, modulo: &Self) -> Self
@@ -5960,6 +5967,8 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// `OVERFLOW` flag even if wrapping around happens at `modulo` while the
     /// method `wrapping_add_uint()` sets `OVERFLOW` flag when wrapping around
     /// happens.
+    /// - If `modulo` is `zero`, the flags such as `OVERFLOW`, `DIVIDED_BY_ZERO`,
+    /// and `INFINITY` will be set.
     /// 
     /// # Counterpart Method
     /// If `rhs` is bigger than `u128`, the method [modular_add()](struct@BigUInt#method.modular_add)
@@ -6026,14 +6035,16 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// `OVERFLOW` flag even if wrapping around happens at `modulo` while the
     /// method `wrapping_add_assign_uint()` sets `OVERFLOW` flag when wrapping
     /// around happens.
-    /// - The `OVERFLOW` flag reflect historical overflow, which means if an
-    /// overflow occurred even once before this current operation or `OVERFLOW`
+    /// - If `modulo` is `zero`, the flags such as `OVERFLOW`, `DIVIDED_BY_ZERO`,
+    /// and `INFINITY` will be set.
+    /// - All the flags are historical, which means, for example, if an overflow
+    /// occurred even once before this current operation or `OVERFLOW`
     /// flag is already set before this current operation, the `OVERFLOW` flag
-    /// is not changed even though this current operation does not cause
-    /// overflow.
+    /// is not changed even if this current operation does not cause overflow.
     /// 
     /// # Counterpart Method
-    /// If `rhs` is bigger tham `ui128`, the method [modular_add_assign()](struct@BigUInt#method.modular_add_assign)
+    /// If `rhs` is bigger tham `ui128`, the method
+    /// [modular_add_assign()](struct@BigUInt#method.modular_add_assign)
     /// is proper rather than this method.
     /// 
     /// # Example
@@ -6073,8 +6084,17 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
             + BitXor<Output=U> + BitXorAssign + Not<Output=U>
             + PartialEq + PartialOrd
     {
-        if *self >= *modulo
-            { self.wrapping_rem_assign(modulo); }
+        if modulo.is_zero()
+        {
+            self.set_max();
+            self.set_overflow();
+            self.set_divided_by_zero();
+            self.set_infinity();
+        }
+        else if *self >= *modulo
+        {
+            self.wrapping_rem_assign(modulo);
+        }
         if modulo.gt_uint(rhs)
         {
             let diff = modulo.wrapping_sub_uint(rhs);
@@ -6194,11 +6214,16 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// - If the input borrow is `false`, this method is equivalent to
     /// `overflowing_sub_assign_uint()`, and the output carry reflect current
     /// underflow.
-    /// - The `UNDERFLOW` flag reflect historical underflow, which means if an
+    /// - All the flags are historical, which means, for example, if an
     /// underflow occurred even once before this current operation or
-    /// `UNDERFLOW` flag is already set before this current operation, the
-    /// `UNDERFLOW` flag is not changed even if this current operation does
-    /// not cause underflow.
+    /// `UNDERFLOW` flag is already set before this current operation,
+    /// the `UNDERFLOW` flag is not changed even if this current operation
+    /// does not cause overflow.
+    /// - All the flags are historical, which means, for example, if an
+    /// overflow occurred even once before this current operation or
+    /// `OVERFLOW` flag is already set before this current operation,
+    /// the `OVERFLOW` flag is not changed even if this current operation
+    /// does not cause overflow.
     /// 
     /// # Counterpart Method
     /// If `rhs` is bigger than `u128`, the method [borrowing_sub_assign()](struct@BigUInt#method.borrowing_sub_assign)
@@ -6351,11 +6376,11 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// - Wrapping (modular) subtraction.
     /// - It computes `self`` - `rhs`, wrapping around at the boundary
     /// of the type.
-    /// - The `UNDERFLOW` flag reflect historical underflow, which means if an
+    /// - All the flags are historical, which means, for example, if an
     /// underflow occurred even once before this current operation or
-    /// `UNDERFLOW` flag is already set before this current operation, the
-    /// `UNDERFLOW` flag is not changed even if this current operation does
-    /// not cause underflow.
+    /// `UNDERFLOW` flag is already set before this current operation,
+    /// the `UNDERFLOW` flag is not changed even if this current operation
+    /// does not cause underflow.
     /// 
     /// # Counterpart Method
     /// If `rhs` is bigger than `u128`, the method
@@ -6481,11 +6506,11 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// # Features
     /// - If an overflow would have occurred then the wrapped value is returned
     /// back to `self`.
-    /// - The `UNDERFLOW` flag reflect historical underflow, which means if an
+    /// - All the flags are historical, which means, for example, if an
     /// underflow occurred even once before this current operation or
-    /// `UNDERFLOW` flag is already set before this current operation, the
-    /// `UNDERFLOW` flag is not changed even if this current operation does
-    /// not cause underflow.
+    /// `UNDERFLOW` flag is already set before this current operation,
+    /// the `UNDERFLOW` flag is not changed even if this current operation
+    /// does not cause underflow.
     /// 
     /// # Counterpart Method
     /// If `rhs` is bigger than `u128`, the method
@@ -6693,8 +6718,8 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// 
     /// # Features
     /// - Saturating integer subtraction.
-    /// - It computes `self`- `rhs`, saturating at the numeric bounds instead
-    /// of overflowing.
+    /// - This method saturates when it reaches `zero`.
+    /// - It does not set `UNDERFLOW` flag.
     /// 
     /// # Counterpart Method
     /// If `rhs` is bigger than `u128`, the method
@@ -6751,11 +6776,13 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// # Features
     /// - `self` will be the difference `self` - `rhs` if underflowing
     /// did not occur. Otherwise, it returns `0`.
-    /// - The `UNDERFLOW` flag reflect historical underflow, which means if an
+    /// - This method saturates when it reaches `zero`.
+    /// - It does not set `UNDERFLOW` flag.
+    /// - All the flags are historical, which means, for example, if an
     /// underflow occurred even once before this current operation or
-    /// `UNDERFLOW` flag is already set before this current operation, the
-    /// `UNDERFLOW` flag is not changed even if this current operation does
-    /// not cause underflow.
+    /// `UNDERFLOW` flag is already set before this current operation,
+    /// the `UNDERFLOW` flag is not changed even if this current operation
+    /// does not cause underflow.
     /// 
     /// # Counterpart Method
     /// If `rhs` is bigger than `u128`, the method
@@ -6798,8 +6825,13 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
             + BitXor<Output=U> + BitXorAssign + Not<Output=U>
             + PartialEq + PartialOrd
     {
+        let underflow = self.is_underflow();
         if self.overflowing_sub_assign_uint(rhs)
-            { self.set_zero(); }
+        {
+            self.set_zero();
+            if !underflow
+                { self.reset_underflow(); }
+        }
     }
 
     // pub fn modular_sub_uint<U>(&self, rhs: U, modulo: &Self) -> Self
@@ -6824,6 +6856,8 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// flag even if wrapping around happens while the method
     /// `wrapping_sub_uint()` sets `UNDERFLOW` flag when wrapping around
     /// happens.
+    /// - If `modulo` is `zero`, the flags such as `OVERFLOW`, `DIVIDED_BY_ZERO`,
+    /// and `INFINITY` will be set.
     /// 
     /// # Counterpart Method
     /// If `rhs` is bigger than `u128`, the method
@@ -6889,11 +6923,13 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// method does not set `UNDERFLOW` flag even if wrapping around happens,
     /// while the method `wrapping_sub_assign()` sets `UNDERFLOW` flag when
     /// wrapping around happens.
-    /// - The `UNDERFLOW` flag reflect historical underflow, which means if an
+    /// - If `modulo` is `zero`, the flags such as `OVERFLOW`, `DIVIDED_BY_ZERO`,
+    /// and `INFINITY` will be set.
+    /// - All the flags are historical, which means, for example, if an
     /// underflow occurred even once before this current operation or
-    /// `UNDERFLOW` flag is already set before this current operation, the
-    /// `UNDERFLOW` flag is not changed even if this current operation does
-    /// not cause underflow.
+    /// `UNDERFLOW` flag is already set before this current operation,
+    /// the `UNDERFLOW` flag is not changed even if this current operation
+    /// does not cause underflow.
     /// 
     /// # Counterpart Method
     /// If `rhs` is bigger than `u128, the method
@@ -7136,11 +7172,11 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// though the output tuple is free from overflow. It is because the
     /// `OVERFOLOW` flag is about `self`, and not about the result of
     /// multiplication.
-    /// - The `OVERFOLOW` flag reflect historical overflow, which means if an
+    /// - All the flags are historical, which means, for example, if an
     /// overflow occurred even once before this current operation or
-    /// `OVERFOLOW` flag is already set before this current operation, the
-    /// `OVERFOLOW` flag is not changed even if this current operation does
-    /// not cause overflow.
+    /// `OVERFLOW` flag is already set before this current operation,
+    /// the `OVERFLOW` flag is not changed even if this current operation
+    /// does not cause overflow.
     /// 
     /// # Counterpart Methods
     /// - If you don’t need the carry, then you can use
@@ -7286,11 +7322,11 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// though the output tuple is free from overflow. It is because the
     /// `OVERFOLOW` flag is about `self`, and not about the result of
     /// multiplication.
-    /// - The `OVERFOLOW` flag reflect historical overflow, which means if an
+    /// - All the flags are historical, which means, for example, if an
     /// overflow occurred even once before this current operation or
-    /// `OVERFOLOW` flag is already set before this current operation, the
-    /// `OVERFOLOW` flag is not changed even if this current operation does
-    /// not cause overflow.
+    /// `OVERFLOW` flag is already set before this current operation,
+    /// the `OVERFLOW` flag is not changed even if this current operation
+    /// does not cause overflow.
     /// 
     /// # Counterpart Methods
     /// - If you also need to add a carry to the wide result, then you want to
@@ -7462,11 +7498,11 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// or its behavior may be undefined though it may not panic.
     /// 
     /// # Features
-    /// The `OVERFOLOW` flag reflect historical overflow, which means if an
+    /// - All the flags are historical, which means, for example, if an
     /// overflow occurred even once before this current operation or
-    /// `OVERFOLOW` flag is already set before this current operation, the
-    /// `OVERFOLOW` flag is not changed even if this current operation does
-    /// not cause overflow.
+    /// `OVERFLOW` flag is already set before this current operation,
+    /// the `OVERFLOW` flag is not changed even if this current operation
+    /// does not cause overflow.
     /// 
     /// # Counterpart Method
     /// If `rhs` is bigger than `u128`, the method [wrapping_mul_assign()](struct@BigUInt#method.wrapping_mul_assign)
@@ -7632,11 +7668,11 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// 
     /// # Features
     /// - If the output is false, the `OVERFOLOW` flag will be set.
-    /// - The `OVERFOLOW` flag reflect historical overflow, which means if an
+    /// - All the flags are historical, which means, for example, if an
     /// overflow occurred even once before this current operation or
-    /// `OVERFOLOW` flag is already set before this current operation, the
-    /// `OVERFOLOW` flag is not changed even if this current operation does
-    /// not cause overflow.
+    /// `OVERFLOW` flag is already set before this current operation,
+    /// the `OVERFLOW` flag is not changed even if this current operation
+    /// does not cause overflow.
     /// 
     /// # Counterpart Method
     /// If `rhs` is bigger than `u128`, the method
@@ -7807,6 +7843,10 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// It returns the sum `self` + `rhs` if overflow did not occur.
     /// Otherwise, it returns the maximum value.
     /// 
+    /// # Features
+    /// - This method saturates when it reaches maximum value.
+    /// - It does not set `OVERFLOW` flag.
+    /// 
     /// # Counterpart Method
     /// If `rhs` is bigger than `u128`, the method
     /// [saturating_mul()](struct@BigUInt#method.saturating_mul)
@@ -7856,11 +7896,13 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// or its behavior may be undefined though it may not panic.
     /// 
     /// # Features
-    /// - The `OVERFOLOW` flag reflect historical overflow, which means if an
+    /// - This method saturates when it reaches maximum value.
+    /// - It does not set `OVERFLOW` flag.
+    /// - All the flags are historical, which means, for example, if an
     /// overflow occurred even once before this current operation or
-    /// `OVERFOLOW` flag is already set before this current operation, the
-    /// `OVERFOLOW` flag is not changed even if this current operation does
-    /// not cause overflow.
+    /// `OVERFLOW` flag is already set before this current operation,
+    /// the `OVERFLOW` flag is not changed even if this current operation
+    /// does not cause overflow.
     /// 
     /// # Counterpart Method
     /// If `rhs` is bigger than `u128`, the method
@@ -7900,8 +7942,13 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
             + BitXor<Output=U> + BitXorAssign + Not<Output=U>
             + PartialEq + PartialOrd
     {
+        let overflow = self.is_overflow();
         if self.overflowing_mul_assign_uint(rhs)
-            { self.set_max(); }
+        {
+            self.set_max();
+            if !overflow
+                { self.reset_overflow(); }
+        }
     }
 
     /*
@@ -7942,6 +7989,8 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// araound at maximum value. Second, this method does not set `OVERFLOW`
     /// flag even if wrapping around happens, while the method
     /// `wrapping_mul_uint()` sets `OVERFLOW` flag when wrapping around happens.
+    /// - If `modulo` is `zero`, the flags such as `OVERFLOW`, `DIVIDED_BY_ZERO`,
+    /// and `INFINITY` will be set.
     /// 
     /// # Counterpart Method
     /// If `rhs` is bigger than `u128`, the method
@@ -8000,11 +8049,13 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// `OVERFLOW` flag even if wrapping around happens, while the method
     /// `wrapping_mul_assign_uint()` sets `OVERFLOW` flag when wrapping around
     /// happens.
-    /// - The `OVERFOLOW` flag reflect historical overflow, which means if an
+    /// - If `modulo` is `zero`, the flags such as `OVERFLOW`, `DIVIDED_BY_ZERO`,
+    /// and `INFINITY` will be set.
+    /// - All the flags are historical, which means, for example, if an
     /// overflow occurred even once before this current operation or
-    /// `OVERFOLOW` flag is already set before this current operation, the
-    /// `OVERFOLOW` flag is not changed even though this current operation does
-    /// not cause overflow.
+    /// `OVERFLOW` flag is already set before this current operation,
+    /// the `OVERFLOW` flag is not changed even if this current operation
+    /// does not cause overflow.
     /// 
     /// # Counterpart Method
     /// If `rhs` is bigger than `u128`, the method
@@ -8079,7 +8130,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
 
     /*** Division ***/
 
-    // pub fn divide_fully_uint<U>(&self, rhs: U) -> (Self, T)
+    // pub fn divide_fully_uint<U>(&self, rhs: U) -> (Self, U)
     /// Divide `BigUInt<T, N>` by `rhs` so as to get quotient and remainder
     /// 
     /// # Panics
@@ -8088,14 +8139,18 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// 
     /// # Output
     /// It returns tuple of quotient and remainder. quotient is `Self` type
-    /// and remainder is `T` type.
+    /// and remainder is `U` type.
     /// 
     /// # Features
+    /// - There’s no way wrapping could ever happen unless `rhs` is zero.
     /// - If `rhs` is zero, the quotient will have maximum value of `BigUInt`
     /// type, and the flags of quotient such as `OVERFLOW`, `INFINITY`, and
-    /// `DIVIDED_BY_ZERO` will be set. __It does not panic__ while the
-    /// counterpart method `wrapping_div()` for primitive integer data type
-    /// such as u8, u16, u32, u64, etc. will panic if `rhs` is zero.
+    /// `DIVIDED_BY_ZERO` will be set.
+    /// - If `rhs` is zero, the remainder will be `zero` of `U` type,
+    /// and the `DIVIDED_BY_ZERO` flag of remainder will be set.
+    /// - __It does not panic__ even if `rhs` is zero.
+    /// - This function is the base function for all the methods *_div_uint(),
+    /// and *_div_assign_uint().
     /// 
     /// # Counterpart Method
     /// If `rhs` is bigger than `u128`, the method
@@ -8207,14 +8262,15 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// 
     /// # Features
     /// - Wrapped division on `BigUInt` types is just normal division.
-    /// There’s no way wrapping could ever happen unless `rhs` is zero.
-    /// This function exists, so that all operations are accounted for
+    /// - There’s no way wrapping could ever happen unless `rhs` is zero.
+    /// - This function exists, so that all operations are accounted for
     /// in the wrapping operations.
     /// - If `rhs` is zero, the quotient will have maximum value of `BigUInt`
     /// type, and the flags of quotient such as `OVERFLOW`, `INFINITY`, and
-    /// `DIVIDED_BY_ZERO` will be set. __It does not panic__ while the
-    /// counterpart method `wrapping_div()` for primitive integer data type
-    /// such as u8, u16, u32, u64, etc. will panic if `rhs` is zero.
+    /// `DIVIDED_BY_ZERO` will be set
+    /// - __It does not panic__ while the counterpart method `wrapping_div()`
+    /// for primitive integer data type such as u8, u16, u32, u64, etc.
+    /// will panic if `rhs` is zero.
     /// 
     /// # Counterpart Method
     /// If `rhs` is bigger than `u128`, the method
@@ -8273,21 +8329,20 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     ///
     /// # Features
     /// - Wrapped division on `BigUInt` types is just normal division.
-    /// There’s no way wrapping could ever happen unless `rhs` is zero.
-    /// This function exists, so that all operations are accounted for
+    /// - There’s no way wrapping could ever happen unless `rhs` is zero.
+    /// - This function exists, so that all operations are accounted for
     /// in the wrapping operations.
     /// - If `rhs` is zero, the quotient will have maximum value of `BigUInt`
     /// type, and the flags of quotient such as `OVERFLOW`, `INFINITY`, and
-    /// `DIVIDED_BY_ZERO` will be set. __It does not panic__ while the
-    /// counterpart method `wrapping_div()` for primitive integer data type
-    /// such as u8, u16, u32, u64, etc. will panic if `rhs` is zero.
-    /// - The `OVERFLOW`, `INFINITY`, and `DIVIDED_BY_ZERO` flags reflect
-    /// historical overflow, which means if an overflow and/or divided-by-zero
-    /// occurred even once before this current operation or `OVERFLOW`,
-    /// `INFINITY`, and/or `DIVIDED_BY_ZERO` flag(s) is/are already set before
-    /// this current operation, the `OVERFLOW`, `INFINITY`, and/or
-    /// `DIVIDED_BY_ZERO` flag(s) is/are not changed even though this current
-    /// operation does not cause overflow and/or divided-by-zero.
+    /// `DIVIDED_BY_ZERO` will be set
+    /// - __It does not panic__ while the counterpart method `wrapping_div()`
+    /// for primitive integer data type such as u8, u16, u32, u64, etc.
+    /// will panic if `rhs` is zero.
+    /// - All the flags are historical, which means, for example, if an
+    /// divided_by_zero occurred even once before this current operation or
+    /// `DIVIDED_BY_ZERO` flag is already set before this current operation,
+    /// the `DIVIDED_BY_ZERO` flag is not changed even if this current operation
+    /// does not cause divided_by_zero.
     /// 
     /// # Counterpart Method
     /// If `rhs` is bigger than `u128`, the method
@@ -8352,14 +8407,15 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     ///
     /// # Features
     /// - Overflowing division on `BigUInt` types is just normal division.
-    /// There’s no way overflowing could ever happen unless `rhs` is zero.
-    /// This function exists, so that all operations are accounted for
+    /// - There’s no way overflowing could ever happen unless `rhs` is zero.
+    /// - This function exists, so that all operations are accounted for
     /// in the wrapping operations.
     /// - If `rhs` is zero, the quotient will have maximum value of `BigUInt`
     /// type, and the flags of quotient such as `OVERFLOW`, `INFINITY`, and
-    /// `DIVIDED_BY_ZERO` will be set. __It does not panic__ while the
-    /// counterpart method `wrapping_div()` for primitive integer data type
-    /// such as u8, u16, u32, u64, etc. will panic if `rhs` is zero.
+    /// `DIVIDED_BY_ZERO` will be set
+    /// - __It does not panic__ while the counterpart method `overflowing_div()`
+    /// for primitive integer data type such as u8, u16, u32, u64, etc.
+    /// will panic if `rhs` is zero.
     /// 
     /// # Counterpart Method
     /// If `rhs` is bigger than `u128`, the method
@@ -8427,21 +8483,20 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     ///
     /// # Features
     /// - Overflowing division on `BigUInt` types is just normal division.
-    /// There’s no way overflowing could ever happen unless `rhs` is zero.
-    /// This function exists, so that all operations are accounted for
+    /// - There’s no way overflowing could ever happen unless `rhs` is zero.
+    /// - This function exists, so that all operations are accounted for
     /// in the wrapping operations.
     /// - If `rhs` is zero, the quotient will have maximum value of `BigUInt`
     /// type, and the flags of quotient such as `OVERFLOW`, `INFINITY`, and
-    /// `DIVIDED_BY_ZERO` will be set. __It does not panic__ while the
-    /// counterpart method `wrapping_div()` for primitive integer data type
-    /// such as u8, u16, u32, u64, etc. will panic if `rhs` is zero.
-    /// - The `OVERFLOW`, `INFINITY`, and `DIVIDED_BY_ZERO` flags reflect
-    /// historical overflow, which means if an overflow and/or divided-by-zero
-    /// occurred even once before this current operation or `OVERFLOW`,
-    /// `INFINITY`, and/or `DIVIDED_BY_ZERO` flag(s) is/are already set before
-    /// this current operation, the `OVERFLOW`, `INFINITY`, and/or
-    /// `DIVIDED_BY_ZERO` flag(s) is/are not changed even though this current
-    /// operation does not cause overflow and/or divided-by-zero.
+    /// `DIVIDED_BY_ZERO` will be set
+    /// - __It does not panic__ while the counterpart method `overflowing_div()`
+    /// for primitive integer data type such as u8, u16, u32, u64, etc.
+    /// will panic if `rhs` is zero.
+    /// - All the flags are historical, which means, for example, if an
+    /// divided_by_zero occurred even once before this current operation or
+    /// `DIVIDED_BY_ZERO` flag is already set before this current operation,
+    /// the `DIVIDED_BY_ZERO` flag is not changed even if this current operation
+    /// does not cause divided_by_zero.
     /// 
     /// # Counterpart Method
     /// If `rhs` is bigger than `u128`, the method
@@ -8512,11 +8567,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// 
     /// # Features
     /// - Checked integer division on `BigUInt` types is just normal division.
-    /// - If `rhs` is zero, the quotient will have maximum value of `BigUInt`
-    /// type, and the flags of quotient such as `OVERFLOW`, `INFINITY`, and
-    /// `DIVIDED_BY_ZERO` will be set. __It does not panic__ while the
-    /// counterpart method `wrapping_div()` for primitive integer data type
-    /// such as u8, u16, u32, u64, etc. will panic if `rhs` is zero.
+    /// - There’s no way wrapping could ever happen unless `rhs` is zero.
     /// 
     /// # Counterpart Method
     /// If `rhs` is bigger than `u128`, the method
@@ -8592,10 +8643,11 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// # Output
     /// It returns the quotient of when `self` is divided by `rhs`,
     /// which is `self` / `rhs` if `rhs` is not zero.
-    /// Otherwise, it will panic.
+    /// If `rhs` is zero, it will panic.
     /// 
     /// # Features
     /// - Unchecked integer division on `BigUInt` types is just normal division.
+    /// - There’s no way wrapping could ever happen unless `rhs` is zero.
     /// - If `rhs` is zero, it will panic.
     /// 
     /// # Counterpart Method
@@ -8653,17 +8705,17 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// # Output
     /// It returns the quotient of when `self` is divided by `rhs`,
     /// which is `self` / `rhs` if `rhs` is not zero.
-    /// Otherwise, it returns the maximum value.
+    /// If `rhs` is zero, it returns the maximum value.
     /// 
     /// # Features
-    /// - Overflow will not happen unless `rhs` is zero. __It does not panic__
-    /// while the same named methods `saturating_div()` for primitive integer
-    /// data type such as u8, u16, u32, u64, etc. will panic if `rhs` is zero.
+    /// - There’s no way wrapping could ever happen unless `rhs` is zero.
+    /// - This method saturates when it reaches maximum value.
+    /// - It does not set `OVERFLOW` flag.
     /// - If `rhs` is zero, the quotient will have maximum value of `BigUInt`
-    /// type, and the flags of quotient such as `OVERFLOW`, `INFINITY`, and
-    /// `DIVIDED_BY_ZERO` will be set. __It does not panic__ while the
-    /// counterpart method `wrapping_div()` for primitive integer data type
-    /// such as u8, u16, u32, u64, etc. will panic if `rhs` is zero.
+    /// type, and `DIVIDED_BY_ZERO` flag of quotient will be set.
+    /// - __It does not panic__ while the counterpart method `saturating_div()`
+    /// for primitive integer data type such as u8, u16, u32, u64, etc.
+    /// will panic if `rhs` is zero.
     /// 
     /// # Counterpart Method
     /// If `rhs` is bigger than `u128`, the method
@@ -8680,6 +8732,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// let mut divisor = 87_u8;
     /// let mut quotient = dividend.saturating_div_uint(divisor);
     /// println!("{} / {} = {}", dividend, divisor, quotient);
+    /// assert_eq!(quotient.to_string(), "1419043551905275201680884938348044216837079832");
     /// assert_eq!(quotient.is_overflow(), false);
     /// assert_eq!(quotient.is_inifinity(), false);
     /// assert_eq!(quotient.is_divided_by_zero(), false);
@@ -8688,8 +8741,8 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// quotient = dividend.saturating_div_uint(divisor);
     /// println!("{} / {} = {}", dividend, divisor, quotient);
     /// assert_eq!(quotient, u256::max());
-    /// assert_eq!(quotient.is_overflow(), true);
-    /// assert_eq!(quotient.is_inifinity(), true);
+    /// assert_eq!(quotient.is_overflow(), false);
+    /// assert_eq!(quotient.is_inifinity(), false);
     /// assert_eq!(quotient.is_divided_by_zero(), true);
     /// ```
     /// 
@@ -8709,7 +8762,12 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     {
         let (mut quotient, _) = self.divide_fully_uint(rhs);
         if rhs.is_zero()
-            { quotient.set_max(); }
+        {
+            quotient.set_max();
+            quotient.reset_overflow();
+            quotient.reset_inifinity();
+            quotient.set_divided_by_zero();
+        }
         quotient
     }
 
@@ -8723,21 +8781,19 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// or its behavior may be undefined though it may not panic.
     /// 
     /// # Features
-    /// - Overflow will not happen unless `rhs` is zero. __It does not panic__
-    /// while the similar methods `saturating_div()` for primitive integer
-    /// data type such as u8, u16, u32, u64, etc. will panic if `rhs` is zero.
+    /// - There’s no way wrapping could ever happen unless `rhs` is zero.
+    /// - This method saturates when it reaches maximum value.
+    /// - It does not set `OVERFLOW` flag.
     /// - If `rhs` is zero, the quotient will have maximum value of `BigUInt`
-    /// type, and the flags of quotient such as `OVERFLOW`, `INFINITY`, and
-    /// `DIVIDED_BY_ZERO` will be set. __It does not panic__ while the
-    /// counterpart method `wrapping_div()` for primitive integer data type
-    /// such as u8, u16, u32, u64, etc. will panic if `rhs` is zero.
-    /// - The `OVERFLOW`, `INFINITY`, and `DIVIDED_BY_ZERO` flags reflect
-    /// historical overflow, which means if an overflow and/or divided-by-zero
-    /// occurred even once before this current operation or `OVERFLOW`,
-    /// `INFINITY`, and/or `DIVIDED_BY_ZERO` flag(s) is/are already set before
-    /// this current operation, the `OVERFLOW`, `INFINITY`, and/or
-    /// `DIVIDED_BY_ZERO` flag(s) is/are not changed even though this current
-    /// operation does not cause overflow and/or divided-by-zero.
+    /// type, and `DIVIDED_BY_ZERO` flag of quotient will be set.
+    /// - __It does not panic__ while the counterpart method `saturating_div()`
+    /// for primitive integer data type such as u8, u16, u32, u64, etc.
+    /// will panic if `rhs` is zero.
+    /// - All the flags are historical, which means, for example, if an
+    /// divided_by_zero occurred even once before this current operation or
+    /// `DIVIDED_BY_ZERO` flag is already set before this current operation,
+    /// the `DIVIDED_BY_ZERO` flag is not changed even if this current operation
+    /// does not cause divided_by_zero.
     /// 
     /// # Counterpart Method
     /// If `rhs` is bigger than `u128`, the method
@@ -8764,8 +8820,8 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// a_biguint.saturating_div_assign_uint(divisor);
     /// println!("After a_biguint.saturating_div_assign_uint({}),\na_biguint = {}", divisor, a_biguint);
     /// assert_eq!(a_biguint, U32::max());
-    /// assert_eq!(a_biguint.is_overflow(), true);
-    /// assert_eq!(a_biguint.is_inifinity(), true);
+    /// assert_eq!(a_biguint.is_overflow(), false);
+    /// assert_eq!(a_biguint.is_inifinity(), false);
     /// assert_eq!(a_biguint.is_divided_by_zero(), true);
     /// ```
     /// 
@@ -8784,7 +8840,151 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
             + BitXor<Output=U> + BitXorAssign + Not<Output=U>
             + PartialEq + PartialOrd
     {
+        let flags = self.get_all_flags();
         *self = self.saturating_div_uint(rhs);
+        self.set_flag_bit(flags);
+    }
+
+    // pub fn modular_div_uint<U>(&self, rhs: U, modulo: &Self) -> Self
+    /// Calculates the quotient when `self` % `modulo` is divided by
+    /// `rhs` % `modulo`.
+    ///
+    /// # Panics
+    /// If `size_of::<T>() * N` <= `128`, this method may panic
+    /// or its behavior may be undefined though it may not panic.
+    /// 
+    /// # Output
+    /// It returns the quotient of when `self` % `modulo` is divided by
+    /// `rhs` % `modulo` if `rhs` % `modulo` is not zero.
+    /// If `rhs` % `modulo` is zero, the quotient will have maximum value
+    /// of `BigUInt` type.
+    /// 
+    /// # Features
+    /// - There’s no way wrapping could ever happen unless `rhs` is zero.
+    /// - If `rhs` % `modulo` is zero, the quotient will have maximum value
+    /// of `BigUInt` type, and the flags of quotient such as `OVERFLOW`,
+    /// `INFINITY`, and `DIVIDED_BY_ZERO` will be set.
+    /// - __It does not panic__ even if `rhs` % `modulo` is zero.
+    /// - If `modulo` is `zero`, the flags such as `OVERFLOW`, `DIVIDED_BY_ZERO`,
+    /// and `INFINITY` will be set.
+    /// 
+    /// # Counterpart Method
+    /// If `rhs` is bigger than `u128`, the method
+    /// [modular_div()](struct@BigUInt#method.modular_div)
+    /// is proper rather than this method `modular_div_uint()`.
+    /// 
+    /// # Example
+    /// ```
+    /// use std::str::FromStr;
+    /// use Cryptocol::define_utypes_with;
+    /// define_utypes_with!(u8);
+    /// 
+    /// let dividend = u256::from_str("123456789015758942546236989636279846864825945392").unwrap();
+    /// let mut divisor = 128_u8;
+    /// let modulo = u256::from_uint(100_u8);
+    /// let mut quotient = dividend.modular_div_uint(divisor, &modulo);
+    /// println!("{} / {} = {}", dividend, divisor, quotient);
+    /// assert_eq!(quotient.to_string(), "3");
+    /// assert_eq!(quotient.is_overflow(), false);
+    /// assert_eq!(quotient.is_inifinity(), false);
+    /// assert_eq!(quotient.is_divided_by_zero(), false);
+    /// 
+    /// divisor = 200_u8;
+    /// quotient = dividend.modular_div_uint(divisor, &modulo);
+    /// println!("{} / {} = {}", dividend, divisor, quotient);
+    /// assert_eq!(quotient, u256::max());
+    /// assert_eq!(quotient.is_overflow(), true);
+    /// assert_eq!(quotient.is_inifinity(), true);
+    /// assert_eq!(quotient.is_divided_by_zero(), true);
+    /// ```
+    /// 
+    /// # Big-endian issue
+    /// It is just experimental for Big Endian CPUs. So, you are not encouraged
+    /// to use it for Big Endian CPUs for serious purpose. Only use this crate
+    /// for Big-endian CPUs with your own full responsibility.
+    #[inline]
+    pub fn modular_div_uint<U>(&self, rhs: U, modulo: &Self) -> Self
+    where U: SmallUInt + Copy + Clone + Display + Debug + ToString
+            + Add<Output=U> + AddAssign + Sub<Output=U> + SubAssign
+            + Mul<Output=U> + MulAssign + Div<Output=U> + DivAssign
+            + Rem<Output=U> + RemAssign
+            + Shl<Output=U> + ShlAssign + Shr<Output=U> + ShrAssign
+            + BitAnd<Output=U> + BitAndAssign + BitOr<Output=U> + BitOrAssign
+            + BitXor<Output=U> + BitXorAssign + Not<Output=U>
+            + PartialEq + PartialOrd
+    {
+        self.modular_div(&Self::from_uint(rhs), modulo)
+    }
+
+    // pub fn modular_div_assign_uint<U>(&mut self, rhs: U, modulo: &Self)
+    /// Calculates the quotient when `self` % `modulo` is divided by
+    /// `rhs` % `modulo`, and assigns the quotient to `self` back.
+    ///
+    /// # Panics
+    /// If `size_of::<T>() * N` <= `128`, this method may panic
+    /// or its behavior may be undefined though it may not panic.
+    /// 
+    /// # Features
+    /// - There’s no way wrapping could ever happen unless `rhs` is zero.
+    /// - If `rhs` % `modulo` is zero, the quotient will have maximum value
+    /// of `BigUInt` type, and the flags of quotient such as `OVERFLOW`,
+    /// `INFINITY`, and `DIVIDED_BY_ZERO` will be set.
+    /// - __It does not panic__ even if `rhs` % `modulo` is zero.
+    /// - If `modulo` is `zero`, the flags such as `OVERFLOW`, `DIVIDED_BY_ZERO`,
+    /// and `INFINITY` will be set.
+    /// - All the flags are historical, which means, for example, if an
+    /// divided_by_zero occurred even once before this current operation or
+    /// `DIVIDED_BY_ZERO` flag is already set before this current operation,
+    /// the `DIVIDED_BY_ZERO` flag is not changed even if this current operation
+    /// does not cause divided_by_zero.
+    /// 
+    /// # Counterpart Method
+    /// If `rhs` is bigger than `u128`, the method
+    /// [modular_div_assign()](struct@BigUInt#method.modular_div_assign)
+    /// is proper rather than this method `modular_div_assign_uint()`.
+    /// 
+    /// # Example
+    /// ```
+    /// use std::str::FromStr;
+    /// use Cryptocol::define_utypes_with;
+    /// define_utypes_with!(u16);
+    /// 
+    /// let mut a_biguint = U32::from_str("123456789015758942546236989636279846864825945392").unwrap();
+    /// let mut divisor = 128_u8;
+    /// let modulo = U32::from_uint(100_u8);
+    /// println!("Originally,\na_biguint = {}", a_biguint);
+    /// a_biguint.modular_div_assign_uint(divisor, &modulo);
+    /// println!("After a_biguint.modular_div_assign_uint({}),\na_biguint = {}", divisor, a_biguint);
+    /// assert_eq!(a_biguint.to_string(), "3");
+    /// assert_eq!(a_biguint.is_overflow(), false);
+    /// assert_eq!(a_biguint.is_inifinity(), false);
+    /// assert_eq!(a_biguint.is_divided_by_zero(), false);
+    /// 
+    /// divisor = 200_u8;
+    /// a_biguint.modular_div_assign_uint(divisor, &modulo);
+    /// println!("After a_biguint.modular_div_assign_uint({}),\na_biguint = {}", divisor, a_biguint);
+    /// assert_eq!(a_biguint, u256::max());
+    /// assert_eq!(a_biguint.is_overflow(), true);
+    /// assert_eq!(a_biguint.is_inifinity(), true);
+    /// assert_eq!(a_biguint.is_divided_by_zero(), true);
+    /// ```
+    /// 
+    /// # Big-endian issue
+    /// It is just experimental for Big Endian CPUs. So, you are not encouraged
+    /// to use it for Big Endian CPUs for serious purpose. Only use this crate
+    /// for Big-endian CPUs with your own full responsibility.
+    #[inline]
+    pub fn modular_div_assign_uint<U>(&mut self, rhs: U, modulo: &Self)
+    where U: SmallUInt + Copy + Clone + Display + Debug + ToString
+            + Add<Output=U> + AddAssign + Sub<Output=U> + SubAssign
+            + Mul<Output=U> + MulAssign + Div<Output=U> + DivAssign
+            + Rem<Output=U> + RemAssign
+            + Shl<Output=U> + ShlAssign + Shr<Output=U> + ShrAssign
+            + BitAnd<Output=U> + BitAndAssign + BitOr<Output=U> + BitOrAssign
+            + BitXor<Output=U> + BitXorAssign + Not<Output=U>
+            + PartialEq + PartialOrd
+    {
+        self.modular_div_assign(&Self::from_uint(rhs), modulo);
     }
 
     // pub fn wrapping_rem_uint<U>(&self, rhs: U) -> U
@@ -8796,13 +8996,15 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// or its behavior may be undefined though it may not panic.
     /// 
     /// # Output
-    /// It returns the remainder when `self` is divided by `rhs`,
-    /// which is `self` % `rhs`, with wrapping (modular) addition.
+    /// - If `rhs` is not zero, it returns the remainder when `self` is divided
+    /// by `rhs`, which is `self` % `rhs`, with wrapping (modular) addition.
+    /// - If `rhs` is zero, it returns `zero` of `U` type.
     /// 
     /// # Features
     /// - Wrapped remainder calculation on `BigUInt` types is just the regular
-    /// remainder calculation. There’s no way wrapping could ever happen. This
-    /// function exists, so that all operations are accounted for in the
+    /// remainder calculation.
+    /// - There’s no way wrapping could ever happen.
+    /// - This function exists, so that all operations are accounted for in the
     /// wrapping operations.
     /// - If `rhs` is `zero`, the remainder is zero.
     /// -__It does not panic__ while the same named methods `wrapping_rem()`
@@ -8860,20 +9062,20 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// 
     /// # Features
     /// - Wrapped remainder calculation on `BigUInt` types is just the regular
-    /// remainder calculation. There’s no way wrapping could ever happen. This
-    /// function exists, so that all operations are accounted for in the
+    /// remainder calculation.
+    /// - There’s no way wrapping could ever happen.
+    /// - This function exists, so that all operations are accounted for in the
     /// wrapping operations.
     /// - If `rhs` is zero, the `self` is zero and its `DIVIDED_BY_ZERO`
-    /// is set. __It does not panic__ while the similar methods
+    /// is set.
+    /// - __It does not panic__ while the counterpart method
     /// `wrapping_rem()` for primitive integer data type such as 
     /// u8, u16, u32, u64, etc. will panic if `rhs` is zero.
-    /// - The `OVERFLOW`, `INFINITY`, and `DIVIDED_BY_ZERO` flags reflect
-    /// historical overflow, which means if an overflow and/or divided-by-zero
-    /// occurred even once before this current operation or `OVERFLOW`,
-    /// `INFINITY`, and/or `DIVIDED_BY_ZERO` flag(s) is/are already set before
-    /// this current operation, the `OVERFLOW`, `INFINITY`, and/or
-    /// `DIVIDED_BY_ZERO` flag(s) is/are not changed even though this current
-    /// operation does not cause overflow and/or divided-by-zero.
+    /// - All the flags are historical, which means, for example, if an
+    /// divided_by_zero occurred even once before this current operation or
+    /// `DIVIDED_BY_ZERO` flag is already set before this current operation,
+    /// the `DIVIDED_BY_ZERO` flag is not changed even if this current operation
+    /// does not cause divided_by_zero.
     /// 
     /// # Counterpart Method
     /// If `rhs` is bigger than `u128`, the method
@@ -8942,7 +9144,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// - Note that overflow never occurs, so the second value is always false.
     /// - If `rhs` is zero, the remainder is zero and the second output
     /// indicating whether or not an arithmetic overflow would occur is `false`.
-    /// - __It does not panic__ while the same named method `overflowing_rem()`
+    /// - __It does not panic__ while the counterpart method `overflowing_rem()`
     /// for primitive integer data type such as u8, u16, u32, u64, etc. will
     /// panic if `rhs` is zero.
     /// 
@@ -9007,13 +9209,11 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// is set. __It does not panic__ while the similar methods
     /// `overflowing_rem()` for primitive integer data type such as
     /// u8, u16, u32, u64, etc. will panic if `rhs` is zero.
-    /// - The `OVERFLOW`, `INFINITY`, and `DIVIDED_BY_ZERO` flags reflect
-    /// historical overflow, which means if an overflow and/or divided-by-zero
-    /// occurred even once before this current operation or `OVERFLOW`,
-    /// `INFINITY`, and/or `DIVIDED_BY_ZERO` flag(s) is/are already set before
-    /// this current operation, the `OVERFLOW`, `INFINITY`, and/or
-    /// `DIVIDED_BY_ZERO` flag(s) is/are not changed even though this current
-    /// operation does not cause overflow and/or divided-by-zero.
+    /// - All the flags are historical, which means, for example, if an
+    /// divided_by_zero occurred even once before this current operation or
+    /// `DIVIDED_BY_ZERO` flag is already set before this current operation,
+    /// the `DIVIDED_BY_ZERO` flag is not changed even if this current operation
+    /// does not cause divided_by_zero.
     /// 
     /// # Counterpart Method
     /// If `rhs` is bigger than `u128`, the method
@@ -9085,9 +9285,6 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// - Note that overflow never occurs.
     /// - If `rhs` is zero, the output of this method
     /// is `None` of enum `Option`.
-    /// - __It does not panic__ while the same named method `checked_rem_uint()`
-    /// for primitive integer data type such as u8, u16, u32, u64, etc. will
-    /// panic if `rhs` is zero.
     /// 
     /// # Counterpart Method
     /// If `rhs` is bigger than `u128`, the method
@@ -9215,14 +9412,12 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// # Output
     /// It returns the remainder when `self` is divided by `rhs`,
     /// which is `self` % `rhs`, if `rhs` is not zero.
-    /// Otherwise, it returns zero.
+    /// If `rhs` is zero, it returns zero.
     /// 
     /// # Features
     /// - Note that overflow never occurs.
-    /// - If `rhs` is `zero`, the remainder will have zero of`BigUInt` type,
-    /// and `DIVIDED_BY_ZERO` flag of the remainder will be set, and
-    /// the remainder will be set to be zero of `BigUInt` type.
-    /// There’s no way wrapping could ever happen.
+    /// - There’s no way wrapping could ever happen.
+    /// - If `rhs` is `zero`, the remainder will have zero of`BigUInt` type.
     /// 
     /// # Counterpart Method
     /// If `rhs` is bigger than `u128`, the method
@@ -9274,10 +9469,15 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// or its behavior may be undefined though it may not panic.
     /// 
     /// # Features
-    /// - If `rhs` is zero, `self` will have zero of`BigUInt` type,
-    /// and `DIVIDED_BY_ZERO` flag of `self` will be set, and
-    /// `self` will be set to be zero of `BigUInt` type.
+    /// - If `rhs` is zero, `self` will have the value `zero`` of`BigUInt` type,
+    /// and `DIVIDED_BY_ZERO` flag of `self` will be set.
     /// - Note that overflow never occurs.
+    /// - All the flags are historical, which means, for example, if an
+    /// divided_by_zero occurred even once before this current operation or
+    /// `DIVIDED_BY_ZERO` flag is already set before this current operation,
+    /// the `DIVIDED_BY_ZERO` flag is not changed even if this current operation
+    /// does not cause divided_by_zero.
+    /// 
     /// 
     /// # Counterpart Method
     /// If `rhs` is bigger than `u128`, the method
@@ -9327,6 +9527,139 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
         self.set_uint(remainder);
         if rhs == U::zero()
             { self.set_divided_by_zero(); }
+    }
+
+    // pub fn modular_rem_uint<U>(&self, rhs: U, modulo: &Self) -> U
+    /// Calculates the remainder when `self` % `modulo` is divided by
+    /// `rhs` % `modulo`.
+    ///
+    /// # Panics
+    /// If `size_of::<T>() * N` <= `128`, this method may panic
+    /// or its behavior may be undefined though it may not panic.
+    /// 
+    /// # Output
+    /// - It returns the remainder of when `self` % `modulo` is divided by
+    /// `rhs` % `modulo` if `rhs` % `modulo` is not zero.
+    /// - If `rhs` % `modulo` is zero, it returns `zero`.
+    /// 
+    /// # Features
+    /// - Overflow will not happen unless `rhs` % `modulo` is zero.
+    /// - If `rhs` % `modulo` is zero, the remaindere will be `zero` of `U`
+    /// type.
+    /// - __It does not panic__ even if `rhs` % `modulo` is zero.
+    /// - If `modulo` is `zero`, the flags such as `OVERFLOW`,
+    /// `DIVIDED_BY_ZERO`, and `INFINITY` will be set.
+    /// 
+    /// # Counterpart Method
+    /// If `rhs` is bigger than `u128`, the method
+    /// [modular_rem()](struct@BigUInt#method.modular_rem)
+    /// is proper rather than this method `modular_rem_uint()`.
+    /// 
+    /// # Example
+    /// ```
+    /// use std::str::FromStr;
+    /// use Cryptocol::define_utypes_with;
+    /// define_utypes_with!(u32);
+    /// 
+    /// let dividend = u256::from_str("123456789015758942546236989636279846864825945392").unwrap();
+    /// let mut divisor = 128_u8;
+    /// let modulo = u256::from_uint(100_u8);
+    /// let mut remainder = dividend.modular_rem_uint(divisor, &modulo);
+    /// println!("{} % {} = {}", dividend, divisor, remainder);
+    /// assert_eq!(remainder.to_string(), "8");
+    /// 
+    /// divisor = 200_u8;
+    /// remainder = dividend.modular_rem_uint(divisor, &modulo);
+    /// println!("{} % {} = {}", dividend, divisor, remainder);
+    /// assert_eq!(remainder.to_string(), "0");
+    /// ```
+    /// 
+    /// # Big-endian issue
+    /// It is just experimental for Big Endian CPUs. So, you are not encouraged
+    /// to use it for Big Endian CPUs for serious purpose. Only use this crate
+    /// for Big-endian CPUs with your own full responsibility.
+    #[inline]
+    pub fn modular_rem_uint<U>(&self, rhs: U, modulo: &Self) -> U
+    where U: SmallUInt + Copy + Clone + Display + Debug + ToString
+            + Add<Output=U> + AddAssign + Sub<Output=U> + SubAssign
+            + Mul<Output=U> + MulAssign + Div<Output=U> + DivAssign
+            + Rem<Output=U> + RemAssign
+            + Shl<Output=U> + ShlAssign + Shr<Output=U> + ShrAssign
+            + BitAnd<Output=U> + BitAndAssign + BitOr<Output=U> + BitOrAssign
+            + BitXor<Output=U> + BitXorAssign + Not<Output=U>
+            + PartialEq + PartialOrd
+    {
+        self.modular_rem(&Self::from_uint(rhs), modulo).into_uint::<U>()
+    }
+
+    // pub fn modular_rem_assign_uint<U>(&mut self, rhs: U, modulo: &Self)
+    /// Calculates the remainder when `self` % `modulo` is divided by
+    /// `rhs` % `modulo`.
+    ///
+    /// # Panics
+    /// If `size_of::<T>() * N` <= `128`, this method may panic
+    /// or its behavior may be undefined though it may not panic.
+    /// 
+    /// # Features
+    /// - Overflow will not happen unless `rhs` is zero.
+    /// - If `rhs` % `modulo` is zero, `self` which is remainder will be `zero`,
+    /// and its flag `DIVIDED_BY_ZERO` will be set.
+    /// - __It does not panic__ even if `rhs` % `modulo` is zero.
+    /// - If `modulo` is `zero`, the flags such as `OVERFLOW`, `DIVIDED_BY_ZERO`,
+    /// and `INFINITY` will be set.
+    /// - All the flags are historical, which means, for example, if an
+    /// divided_by_zero occurred even once before this current operation or
+    /// `DIVIDED_BY_ZERO` flag is already set before this current operation,
+    /// the `DIVIDED_BY_ZERO` flag is not changed even if this current operation
+    /// does not cause divided_by_zero.
+    /// 
+    /// # Counterpart Method
+    /// If `rhs` is bigger than `u128`, the method
+    /// [modular_rem_assign()](struct@BigUInt#method.modular_rem_assign)
+    /// is proper rather than this method `modular_rem_assign_uint()`.
+    /// 
+    /// # Example
+    /// ```
+    /// use std::str::FromStr;
+    /// use Cryptocol::define_utypes_with;
+    /// define_utypes_with!(u64);
+    /// 
+    /// let mut a_biguint = U32::from_str("123456789015758942546236989636279846864825945392").unwrap();
+    /// let mut divisor = 128_u8;
+    /// let modulo = U32::from_uint(100_u8);
+    /// println!("Originally,\na_biguint = {}", a_biguint);
+    /// a_biguint.modular_rem_assign_uint(divisor, &modulo);
+    /// println!("After a_biguint.modular_rem_assign_uint({}),\na_biguint = {}", divisor, a_biguint);
+    /// assert_eq!(a_biguint.to_string(), "8");
+    /// assert_eq!(a_biguint.is_overflow(), false);
+    /// assert_eq!(a_biguint.is_inifinity(), false);
+    /// assert_eq!(a_biguint.is_divided_by_zero(), false);
+    /// 
+    /// divisor = 200_u8;
+    /// a_biguint.modular_rem_assign_uint(divisor, &modulo);
+    /// println!("After a_biguint.modular_rem_assign_uint({}),\na_biguint = {}", divisor, a_biguint);
+    /// assert_eq!(a_biguint.to_string(), "0");
+    /// assert_eq!(a_biguint.is_overflow(), false);
+    /// assert_eq!(a_biguint.is_inifinity(), false);
+    /// assert_eq!(a_biguint.is_divided_by_zero(), true);
+    /// ```
+    /// 
+    /// # Big-endian issue
+    /// It is just experimental for Big Endian CPUs. So, you are not encouraged
+    /// to use it for Big Endian CPUs for serious purpose. Only use this crate
+    /// for Big-endian CPUs with your own full responsibility.
+    #[inline]
+    pub fn modular_rem_assign_uint<U>(&mut self, rhs: U, modulo: &Self)
+    where U: SmallUInt + Copy + Clone + Display + Debug + ToString
+            + Add<Output=U> + AddAssign + Sub<Output=U> + SubAssign
+            + Mul<Output=U> + MulAssign + Div<Output=U> + DivAssign
+            + Rem<Output=U> + RemAssign
+            + Shl<Output=U> + ShlAssign + Shr<Output=U> + ShrAssign
+            + BitAnd<Output=U> + BitAndAssign + BitOr<Output=U> + BitOrAssign
+            + BitXor<Output=U> + BitXorAssign + Not<Output=U>
+            + PartialEq + PartialOrd
+    {
+        self.modular_rem_assign(&Self::from_uint(rhs), modulo);
     }
 
     // pub fn next_multiple_of_uint<U>(&self, rhs: U) -> Self
@@ -9401,9 +9734,14 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// - This function will panic if rhs is zero.
     /// 
     /// # Features
-    /// `self` will be the smallest value greater than or equal to self that is
+    /// - `self` will be the smallest value greater than or equal to self that is
     /// a multiple of `rhs`. However, if overflow occurs, `self` will be the
     /// value wrapped around.
+    /// - All the flags are historical, which means, for example, if an
+    /// overflow occurred even once before this current operation or
+    /// `OVERFLOW` flag is already set before this current operation,
+    /// the `OVERFLOW` flag is not changed even if this current operation
+    /// does not cause overflow.
     /// 
     /// # Counterpart Method
     /// If `rhs` is bigger than `u128`, the method
@@ -9547,7 +9885,12 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// The argument `exp` is the primitive unsigned integer type.
     /// 
     /// # Features
-    /// It calls wrapping_pow_assign_uint() internally.
+    /// - It calls wrapping_pow_assign_uint() internally.
+    /// - All the flags are historical, which means, for example, if an
+    /// overflow occurred even once before this current operation or
+    /// `OVERFLOW` flag is already set before this current operation,
+    /// the `OVERFLOW` flag is not changed even if this current operation
+    /// does not cause overflow.
     /// 
     /// # Counterpart Method
     /// If `rhs` is bigger than `u128`, the method
@@ -9608,11 +9951,13 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// The argument `exp` is the primitive unsigned integer type.
     /// 
     /// # Features
-    /// Wrapping (modular) exponentiation.
+    /// - Wrapping (modular) exponentiation.
+    /// - If overflowing happens, the `OVERFLOW` flag will be set.
     /// 
     /// # Counterpart Method
-    /// If `rhs` is `BigUInt` type number, use the method
-    /// [pow()](struct@BigUInt#method.pow) instead.
+    /// If `rhs` is bigger than `u128`, the method
+    /// [wrapping_pow_uint()](struct@BigUInt#method.wrapping_pow_uint)
+    /// is proper rather than this method `wrapping_pow()`.
     /// 
     /// # Example
     /// ```
@@ -9666,10 +10011,17 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// 
     /// # Features
     /// Wrapping (modular) exponentiation.
+    /// - If overflowing happens, the `OVERFLOW` flag will be set.
+    /// - All the flags are historical, which means, for example, if an
+    /// overflow occurred even once before this current operation or
+    /// `OVERFLOW` flag is already set before this current operation,
+    /// the `OVERFLOW` flag is not changed even if this current operation
+    /// does not cause overflow.
     /// 
     /// # Counterpart Method
-    /// If `rhs` is the `BigUInt` type number, use the method
-    /// [pow_assign()](struct@BigUInt#method.pow_assign) instead.
+    /// If `rhs` is bigger than `u128`, the method
+    /// [wrapping_pow_assign()](struct@BigUInt#method.wrapping_pow_assign)
+    /// is proper rather than this method `wrapping_pow_assign_uint()`.
     /// 
     /// # Example
     /// ```
@@ -9730,6 +10082,60 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
         }
     }
 
+    // pub fn overflowing_pow_uint<U>(&self, exp: U) -> (Self, bool)
+    /// Raises `BigUInt` type number to the power of `exp`, using exponentiation
+    /// of primitive unsigned integer type by squaring.
+    /// 
+    /// # Panics
+    /// If `size_of::<T>() * N` <= `128`, this method may panic
+    /// or its behavior may be undefined though it may not panic.
+    /// 
+    /// # Output
+    /// It returns a tuple of the exponentiation along with a bool indicating
+    /// whether an overflow happened. The second term of the tuple output
+    /// is the current overflow which has nothing to do with historical
+    /// ovrerflow of `self`.
+    ///
+    /// # Argument
+    /// The argument `exp` is the primitive unsigned integer type.
+    /// 
+    /// # Features
+    /// - Wrapping (modular) exponentiation.
+    /// - If overflowing happens, the `OVERFLOW` flag will be set.
+    /// - If overflowing did not happen in the current operation, the second
+    /// term of output tuple will be false even if the `OVERFLOW` flag of `self`
+    /// was already set because of previous operation of `self`.
+    /// 
+    /// # Counterpart Method
+    /// If `rhs` is bigger than `u128`, the method
+    /// [overflowing_pow()](struct@BigUInt#method.overflowing_pow)
+    /// is proper rather than this method `overflowing_pow_uint()`.
+    /// 
+    /// # Example
+    /// ```
+    /// use Cryptocol::define_utypes_with;
+    /// define_utypes_with!(u128);
+    /// 
+    /// let a_biguint = U32::from_uint(10_u8);
+    /// let mut exp = 30_u32;
+    /// let mut res = a_biguint.overflowing_pow_uint(exp);
+    /// println!("{} ** {} = {}\noverflow = {}", a_biguint, exp, res.0, res.1);
+    /// assert_eq!(res.0.to_string(), "1000000000000000000000000000000");
+    /// assert_eq!(res.1, false);
+    /// assert_eq!(res.0.is_overflow(), false);
+    /// 
+    /// exp = 100_u32;
+    /// res = a_biguint.overflowing_pow_uint(exp);
+    /// println!("{} ** {} = {}\noverflow = {}", a_biguint, exp, res.0, res.1);
+    /// assert_eq!(res.0.to_string(), "60053020119642567005817971699943807522652027577520184704273238430174760927232");
+    /// assert_eq!(res.1, true);
+    /// assert_eq!(res.0.is_overflow(), true);
+    /// ```
+    /// 
+    /// # Big-endian issue
+    /// It is just experimental for Big Endian CPUs. So, you are not encouraged
+    /// to use it for Big Endian CPUs for serious purpose. Only use this crate
+    /// for Big-endian CPUs with your own full responsibility.
     pub fn overflowing_pow_uint<U>(&self, exp: U) -> (Self, bool)
     where U: SmallUInt + Copy + Clone + Display + Debug + ToString
             + Add<Output=U> + AddAssign + Sub<Output=U> + SubAssign
@@ -9740,11 +10146,79 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
             + BitXor<Output=U> + BitXorAssign + Not<Output=U>
             + PartialEq + PartialOrd
     {
-        let mut res = self.clone();
+        let mut res = Self::from_array(self.get_number());
         let overflow = res.overflowing_pow_assign_uint(exp);
         (res, overflow)
     }
     
+    // pub fn overflowing_pow_assign_uint<U>(&mut self, exp: U) -> bool
+    /// Raises `BigUInt` type number to the power of `exp`, using exponentiation
+    /// of primitive unsigned integer type by squaring, and returns the result
+    /// to `self` back.
+    /// 
+    /// # Panics
+    /// If `size_of::<T>() * N` <= `128`, this method may panic
+    /// or its behavior may be undefined though it may not panic.
+    /// 
+    /// # Output
+    /// It returns a bool indicating whether or not an overflow happened.
+    /// It is the current overflow which has nothing to do with historical
+    /// ovrerflow of `self`.
+    ///
+    /// # Argument
+    /// The argument `exp` is the primitive unsigned integer type.
+    /// 
+    /// # Features
+    /// - Wrapping (modular) exponentiation.
+    /// - If overflowing happens, the `OVERFLOW` flag will be set.
+    /// - If overflowing did not happen in the current operation, the output
+    /// will be false even if the `OVERFLOW` flag of `self` was already set
+    /// because of previous operation of `self`.
+    /// - All the flags are historical, which means, for example, if an
+    /// overflow occurred even once before this current operation or
+    /// `OVERFLOW` flag is already set before this current operation,
+    /// the `OVERFLOW` flag is not changed even if this current operation
+    /// does not cause overflow.
+    /// 
+    /// # Counterpart Method
+    /// If `rhs` is bigger than `u128`, the method
+    /// [overflowing_pow_assign()](struct@BigUInt#method.overflowing_pow_assign)
+    /// is proper rather than this method `overflowing_pow_assign_uint()`.
+    /// 
+    /// # Example
+    /// ```
+    /// use Cryptocol::define_utypes_with;
+    /// define_utypes_with!(u8);
+    /// 
+    /// let mut a_biguint = u256::from_uint(10_u8);
+    /// let mut exp = 30_u32;
+    /// 
+    /// println!("Originally,\na_biguint = {}", a_biguint);
+    /// let mut overflow = a_biguint.overflowing_pow_assign_uint(exp);
+    /// println!("After a_biguint.overflowing_pow_assign_uint({}),\na_biguint = {}\noverflow = {}", exp, a_biguint, overflow);
+    /// assert_eq!(a_biguint.to_string(), "1000000000000000000000000000000");
+    /// assert_eq!(overflow, false);
+    /// assert_eq!(a_biguint.is_overflow(), false);
+    /// 
+    /// exp = 3_u32;
+    /// overflow = a_biguint.overflowing_pow_assign_uint(exp);
+    /// println!("After a_biguint.overflowing_pow_assign_uint({}),\na_biguint = {}\noverflow = {}", exp, a_biguint, overflow);
+    /// assert_eq!(a_biguint.to_string(), "51484102413631087777415798035541167055393351402420714880745735202410401366016");
+    /// assert_eq!(overflow, true);
+    /// assert_eq!(a_biguint.is_overflow(), true);
+    /// 
+    /// exp = 0_u32;
+    /// overflow = a_biguint.overflowing_pow_assign_uint(exp);
+    /// println!("After a_biguint.overflowing_pow_assign_uint({}),\na_biguint = {}\noverflow = {}", exp, a_biguint, overflow);
+    /// assert_eq!(a_biguint.to_string(), "1");
+    /// assert_eq!(overflow, false);
+    /// assert_eq!(a_biguint.is_overflow(), true);
+    /// ```
+    /// 
+    /// # Big-endian issue
+    /// It is just experimental for Big Endian CPUs. So, you are not encouraged
+    /// to use it for Big Endian CPUs for serious purpose. Only use this crate
+    /// for Big-endian CPUs with your own full responsibility.
     pub fn overflowing_pow_assign_uint<U>(&mut self, exp: U) -> bool
     where U: SmallUInt + Copy + Clone + Display + Debug + ToString
             + Add<Output=U> + AddAssign + Sub<Output=U> + SubAssign
@@ -9764,6 +10238,65 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
         current_overflow
     }
 
+    // pub fn checked_pow_uint<U>(&self, exp: U) -> Option<Self>
+    /// Raises `BigUInt` type number to the power of exp, using exponentiation
+    /// of type `BigUInt` by squaring, wrapping around at the boundary of the
+    /// type. The type `U` has the trait `SmallUInt`.
+    ///
+    /// # Panics
+    /// If `size_of::<T>() * N` <= `128`, this method may panic
+    /// or its behavior may be undefined though it may not panic.
+    /// 
+    /// # Output
+    /// It returns the result of `self` raised to the power of `exp`,
+    /// wrapped by `Some` of enum `Option` if overflow does not occur.
+    /// If overflow occurs, it returns `None` of enum `Option`.
+    /// 
+    /// # Argument
+    /// The argument `exp` is the primitive unsigned integer type.
+    /// 
+    /// # Features
+    /// Wrapping (modular) exponentiation.
+    /// 
+    /// # Counterpart Method
+    /// If `rhs` is bigger than `u128`, the method
+    /// [checked_pow()](struct@BigUInt#method.checked_pow)
+    /// is proper rather than this method `checked_pow_uint()`.
+    /// 
+    /// # Example
+    /// ```
+    /// use Cryptocol::define_utypes_with;
+    /// define_utypes_with!(u16);
+    /// 
+    /// let a_biguint = U32::from_uint(10_u8);
+    /// let mut exp = 30_u32;
+    /// let mut res = a_biguint.checked_pow_uint(exp);
+    /// match res
+    /// {
+    ///     Some(raised) => {
+    ///             println!("{} ** {} = {}", a_biguint, exp, raised);
+    ///             assert_eq!(raised.to_string(), "1000000000000000000000000000000");
+    ///             assert_eq!(raised.is_overflow(), false);
+    ///         },
+    ///     None => { println!("Overflow"); }
+    /// }
+    /// 
+    /// exp = 100_u32;
+    /// res = a_biguint.checked_pow_uint(exp);
+    /// match res
+    /// {
+    ///     Some(raised) => { println!("{} ** {} = {}", a_biguint, exp, raised); },
+    ///     None => {
+    ///             println!("Overflow");
+    ///             assert_eq!(res, None);
+    ///         },
+    /// }
+    /// ```
+    /// 
+    /// # Big-endian issue
+    /// It is just experimental for Big Endian CPUs. So, you are not encouraged
+    /// to use it for Big Endian CPUs for serious purpose. Only use this crate
+    /// for Big-endian CPUs with your own full responsibility.
     pub fn checked_pow_uint<U>(&self, exp: U) -> Option<Self>
     where U: SmallUInt + Copy + Clone + Display + Debug + ToString
             + Add<Output=U> + AddAssign + Sub<Output=U> + SubAssign
@@ -9780,7 +10313,53 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
         else
             { Some(res) }
     }
-
+   
+    // pub fn unchecked_pow_uint<U>(&self, exp: U) -> Self
+    /// Raises `BigUInt` type number to the power of exp, using exponentiation
+    /// of type `BigUInt` by squaring, wrapping around at the boundary of the
+    /// type. The type `U` has the trait `SmallUInt`.
+    ///
+    /// # Panics
+    /// - If `size_of::<T>() * N` <= `128`, this method may panic
+    /// or its behavior may be undefined though it may not panic.
+    /// - If overflow occurs, it will panic.
+    /// 
+    /// # Output
+    /// It returns the result of `self` raised to the power of `exp`
+    /// if overflow does not occur. If overflow occurs, it will panic.
+    /// 
+    /// # Argument
+    /// The argument `exp` is the primitive unsigned integer type.
+    /// 
+    /// # Features
+    /// - Wrapping (modular) exponentiation.
+    /// 
+    /// # Counterpart Method
+    /// If `rhs` is bigger than `u128`, the method
+    /// [unchecked_pow()](struct@BigUInt#method.unchecked_pow)
+    /// is proper rather than this method `unchecked_pow_uint()`.
+    /// 
+    /// # Example
+    /// ```
+    /// use Cryptocol::define_utypes_with;
+    /// define_utypes_with!(u32);
+    /// 
+    /// let a_biguint = U32::from_uint(10_u8);
+    /// let mut exp = 30_u32;
+    /// let mut res = a_biguint.unchecked_pow_uint(exp);
+    /// println!("{} ** {} = {}", a_biguint, exp, res);
+    /// assert_eq!(res.to_string(), "1000000000000000000000000000000");
+    /// assert_eq!(res.is_overflow(), false);
+    /// 
+    /// exp = 100_u32;
+    // It will panic.
+    // res = a_biguint.unchecked_pow_uint(exp);
+    /// ```
+    /// 
+    /// # Big-endian issue
+    /// It is just experimental for Big Endian CPUs. So, you are not encouraged
+    /// to use it for Big Endian CPUs for serious purpose. Only use this crate
+    /// for Big-endian CPUs with your own full responsibility.
     pub fn unchecked_pow_uint<U>(&self, exp: U) -> Self
     where U: SmallUInt + Copy + Clone + Display + Debug + ToString
             + Add<Output=U> + AddAssign + Sub<Output=U> + SubAssign
@@ -9794,6 +10373,56 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
         self.checked_pow_uint(exp).unwrap()
     }
 
+    // pub fn saturating_pow_uint<U>(&self, exp: U) -> Self
+    /// Raises `BigUInt` type number to the power of exp, using exponentiation
+    /// of type `BigUInt` by squaring, saturating at the numeric bounds
+    /// instead of overflowing. The type `U` has the trait `SmallUInt`.
+    ///
+    /// # Panics
+    /// If `size_of::<T>() * N` <= `128`, this method may panic
+    /// or its behavior may be undefined though it may not panic.
+    /// 
+    /// # Output
+    /// It returns the result of `self` raised to the power of `exp`.
+    /// It returns the maximum value instead of overflowing.
+    /// 
+    /// # Argument
+    /// The argument `exp` is the primitive unsigned integer type.
+    /// 
+    /// # Features
+    /// - Wrapping (modular) exponentiation.
+    /// - Overflowing never happens.
+    /// - This method saturates when it reaches maximum value.
+    /// - It does not set `OVERFLOW` flag.
+    /// 
+    /// # Counterpart Method
+    /// If `rhs` is bigger than `u128`, the method
+    /// [saturating_pow()](struct@BigUInt#method.saturating_pow)
+    /// is proper rather than this method `saturating_pow_uint()`.
+    /// 
+    /// # Example
+    /// ```
+    /// use Cryptocol::define_utypes_with;
+    /// define_utypes_with!(u64);
+    /// 
+    /// let a_biguint = u256::from_uint(10_u8);
+    /// let mut exp = 30_u32;
+    /// let mut res = a_biguint.saturating_pow_uint(exp);
+    /// println!("{} ** {} = {}", a_biguint, exp, res);
+    /// assert_eq!(res.to_string(), "1000000000000000000000000000000");
+    /// assert_eq!(res.is_overflow(), false);
+    /// 
+    /// exp = 100_u32;
+    /// res = a_biguint.saturating_pow_uint(exp);
+    /// println!("{} ** {} = {}", a_biguint, exp, res);
+    /// assert_eq!(res, U32::max());
+    /// assert_eq!(res.is_overflow(), false);
+    /// ```
+    /// 
+    /// # Big-endian issue
+    /// It is just experimental for Big Endian CPUs. So, you are not encouraged
+    /// to use it for Big Endian CPUs for serious purpose. Only use this crate
+    /// for Big-endian CPUs with your own full responsibility.
     pub fn saturating_pow_uint<U>(&self, exp: U) -> Self
     where U: SmallUInt + Copy + Clone + Display + Debug + ToString
             + Add<Output=U> + AddAssign + Sub<Output=U> + SubAssign
@@ -9804,11 +10433,59 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
             + BitXor<Output=U> + BitXorAssign + Not<Output=U>
             + PartialEq + PartialOrd
     {
-        let mut res = self.clone();
+        let mut res = Self::from_array(self.get_number());
         res.saturating_pow_assign_uint(exp);
         res
     }
 
+    // pub fn saturating_pow_uint<U>(&self, exp: U) -> Self
+    /// Raises `BigUInt` type number to the power of exp, using exponentiation
+    /// of type `BigUInt` by squaring, saturating at the numeric bounds
+    /// instead of overflowing, and returns the result to `self` back.
+    /// The type `U` has the trait `SmallUInt`.
+    ///
+    /// # Panics
+    /// If `size_of::<T>() * N` <= `128`, this method may panic
+    /// or its behavior may be undefined though it may not panic.
+    /// 
+    /// # Argument
+    /// The argument `exp` is the primitive unsigned integer type.
+    /// 
+    /// # Features
+    /// - Wrapping (modular) exponentiation.
+    /// - Overflowing never happens.
+    /// - `self` will be the maximum value instead of overflowing.
+    /// - This method saturates when it reaches maximum value.
+    /// - It does not set `OVERFLOW` flag.
+    /// 
+    /// # Counterpart Method
+    /// If `rhs` is bigger than `u128`, the method
+    /// [saturating_pow_assign()](struct@BigUInt#method.saturating_pow_assign)
+    /// is proper rather than this method `saturating_pow_assign_uint()`.
+    /// 
+    /// # Example
+    /// ```
+    /// use Cryptocol::define_utypes_with;
+    /// define_utypes_with!(u128);
+    /// 
+    /// let mut a_biguint = U32::from_uint(10_u8);
+    /// let mut exp = 30_u32;
+    /// println!("Originally,\na_biguint = {}", a_biguint);
+    /// a_biguint.saturating_pow_assign_uint(exp);
+    /// println!("After a_biguint.overflowing_pow_assign_uint({}),\na_biguint = {}", exp, a_biguint);
+    /// assert_eq!(a_biguint.to_string(), "1000000000000000000000000000000");
+    /// assert_eq!(a_biguint.is_overflow(), false);
+    /// 
+    /// a_biguint.saturating_pow_assign_uint(exp);
+    /// println!("After a_biguint.overflowing_pow_assign_uint({}),\na_biguint = {}", exp, a_biguint);
+    /// assert_eq!(a_biguint, U32::max());
+    /// assert_eq!(a_biguint.is_overflow(), false);
+    /// ```
+    /// 
+    /// # Big-endian issue
+    /// It is just experimental for Big Endian CPUs. So, you are not encouraged
+    /// to use it for Big Endian CPUs for serious purpose. Only use this crate
+    /// for Big-endian CPUs with your own full responsibility.
     pub fn saturating_pow_assign_uint<U>(&mut self, exp: U)
     where U: SmallUInt + Copy + Clone + Display + Debug + ToString
             + Add<Output=U> + AddAssign + Sub<Output=U> + SubAssign
@@ -9819,14 +10496,211 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
             + BitXor<Output=U> + BitXorAssign + Not<Output=U>
             + PartialEq + PartialOrd
     {
+        let overflow = self.is_overflow();
         if self.overflowing_pow_assign_uint(exp)
         {
             self.set_max();
-            self.reset_overflow();
+            if !overflow
+                { self.reset_overflow(); }
         }
     }
 
+    // pub fn modular_pow_uint<U>(&self, exp: U, modulo: &Self) -> Self
+    /// Raises `BigUInt` type number to the power of exp, using exponentiation
+    /// of type `U` by squaring, wrapping around at `modulo` of the
+    /// type `U`. The type `U` has the trait `SmallUInt`.
+    ///
+    /// # Panics
+    /// If `size_of::<T>() * N` <= `128`, this method may panic
+    /// or its behavior may be undefined though it may not panic.
+    /// 
+    /// # Output
+    /// It returns the result of `self` raised to the power of `exp`, wrapping
+    /// around at `modulo`. If `modulo` is `zero`, it returns maximum value.
+    /// 
+    /// # Argument
+    /// The argument `exp` is the primitive unsigned integer type.
+    /// 
+    /// # Features
+    /// - Wrapping (modular) exponentiation, wrapping around at `modulo`.
+    /// - If `modulo` is `zero`, the flags such as `OVERFLOW`, `DIVIDED_BY_ZERO`,
+    /// and `INFINITY` will be set.
+    /// 
+    /// # Counterpart Method
+    /// If `rhs` is bigger than `u128`, use the method
+    /// [modular_pow()](struct@BigUInt#method.modular_pow) instead.
+    /// 
+    /// # Examples
+    /// ```
+    /// use Cryptocol::define_utypes_with;
+    /// define_utypes_with!(u8);
+    /// 
+    /// let a_biguint = u256::from_uint(10_u8);
+    /// let mut exp = 30_u32;
+    /// let mut modulo = u256::halfmax();
+    /// let mut res = a_biguint.modular_pow_uint(exp, &modulo);
+    /// println!("{} ** {} (mod {}) = {}", a_biguint, exp, modulo, res);
+    /// assert_eq!(res.to_string(), "1000000000000000000000000000000");
+    /// assert_eq!(res.is_overflow(), false);
+    /// 
+    /// exp = 100_u32;
+    /// res = a_biguint.modular_pow_uint(exp, &modulo);
+    /// println!("{} ** {} (mod {}) = {}", a_biguint, exp, modulo, res);
+    /// assert_eq!(res.to_string(), "59749648429786538521694772865754025520");
+    /// assert_eq!(res.is_overflow(), false);
+    /// 
+    /// modulo.set_zero();
+    /// res = a_biguint.modular_pow_uint(exp, &modulo);
+    /// println!("{} ** {} (mod {}) = {}", a_biguint, exp, modulo, res);
+    /// assert_eq!(res, u256::max());
+    /// assert_eq!(res.is_overflow(), true);
+    /// assert_eq!(res.is_inifinity(), true);
+    /// assert_eq!(res.is_divided_by_zero(), true);
+    /// ```
+    /// 
+    /// # Big-endian issue
+    /// It is just experimental for Big Endian CPUs. So, you are not encouraged
+    /// to use it for Big Endian CPUs for serious purpose. Only use this crate
+    /// for Big-endian CPUs with your own full responsibility.
+    pub fn modular_pow_uint<U>(&self, exp: U, modulo: &Self) -> Self
+    where U: SmallUInt + Copy + Clone + Display + Debug + ToString
+            + Add<Output=U> + AddAssign + Sub<Output=U> + SubAssign
+            + Mul<Output=U> + MulAssign + Div<Output=U> + DivAssign
+            + Rem<Output=U> + RemAssign
+            + Shl<Output=U> + ShlAssign + Shr<Output=U> + ShrAssign
+            + BitAnd<Output=U> + BitAndAssign + BitOr<Output=U> + BitOrAssign
+            + BitXor<Output=U> + BitXorAssign + Not<Output=U>
+            + PartialEq + PartialOrd
+    {
+        let mut res = Self::from_array(self.get_number());
+        res.modular_pow_assign_uint(exp, modulo);
+        res
+    }
+
+    // pub fn modular_pow_assign_uint<U>(&mut self, exp: U, modulo: &Self)
+    /// Raises `BigUInt` type number to the power of `exp`, using exponentiation
+    /// of primitive unsigned integer type by squaring, wrapping around at
+    /// `modulo`, and assign the result to `self` back.
+    ///
+    /// # Panics
+    /// If `size_of::<T>() * N` <= `128`, this method may panic
+    /// or its behavior may be undefined though it may not panic.
+    /// 
+    /// # Argument
+    /// The argument `exp` is the primitive unsigned integer type.
+    /// 
+    /// # Features
+    /// - Wrapping (modular) exponentiation, wrapping around at `modulo`.
+    /// - If `modulo` is `zero`, `self` will have the maximum value and
+    /// the flags such as `OVERFLOW`, `DIVIDED_BY_ZERO`,
+    /// and `INFINITY` will be set.
+    /// - All the flags are historical, which means, for example, if an
+    /// overflow occurred even once before this current operation or
+    /// `OVERFLOW` flag is already set before this current operation,
+    /// the `OVERFLOW` flag is not changed even if this current operation
+    /// does not cause overflow.
+    /// 
+    /// # Counterpart Method
+    /// If `rhs` is bigger than `u128`, the method
+    /// [modular_pow_assign()](struct@BigUInt#method.modular_pow_assign)
+    /// is proper rather than this method.
+    /// 
+    /// # Example
+    /// ```
+    /// use Cryptocol::define_utypes_with;
+    /// define_utypes_with!(u16);
+    /// 
+    /// let mut a_biguint = u256::from_uint(10_u8);
+    /// let mut exp = 30_u32;
+    /// let mut modulo = u256::halfmax();
+    /// println!("Originally,\na_biguint = {}", a_biguint);
+    /// a_biguint.modular_pow_assign_uint(exp, &modulo);
+    /// println!("After a_biguint.modular_pow_assign_uint({}),\na_biguint = {}", exp, a_biguint);
+    /// assert_eq!(a_biguint.to_string(), "1000000000000000000000000000000");
+    /// assert_eq!(a_biguint.is_overflow(), false);
+    /// 
+    /// exp = 100_u32;
+    /// a_biguint.modular_pow_assign_uint(exp, &modulo);
+    /// println!("After a_biguint.modular_pow_assign_uint({}),\na_biguint = {}", exp, a_biguint);
+    /// assert_eq!(a_biguint.to_string(), "52266245075570873327294567809656160090");
+    /// assert_eq!(a_biguint.is_overflow(), false);
+    /// 
+    /// modulo.set_zero();
+    /// a_biguint.modular_pow_assign_uint(exp, &modulo);
+    /// println!("After a_biguint.modular_pow_assign_uint({}),\na_biguint = {}", exp, a_biguint);
+    /// assert_eq!(a_biguint, u256::max());
+    /// assert_eq!(a_biguint.is_overflow(), true);
+    /// assert_eq!(a_biguint.is_inifinity(), true);
+    /// assert_eq!(a_biguint.is_divided_by_zero(), true);
+    /// ```
+    /// 
+    /// # Big-endian issue
+    /// It is just experimental for Big Endian CPUs. So, you are not encouraged
+    /// to use it for Big Endian CPUs for serious purpose. Only use this crate
+    /// for Big-endian CPUs with your own full responsibility.
+    pub fn modular_pow_assign_uint<U>(&mut self, exp: U, modulo: &Self)
+    where U: SmallUInt + Copy + Clone + Display + Debug + ToString
+            + Add<Output=U> + AddAssign + Sub<Output=U> + SubAssign
+            + Mul<Output=U> + MulAssign + Div<Output=U> + DivAssign
+            + Rem<Output=U> + RemAssign
+            + Shl<Output=U> + ShlAssign + Shr<Output=U> + ShrAssign
+            + BitAnd<Output=U> + BitAndAssign + BitOr<Output=U> + BitOrAssign
+            + BitXor<Output=U> + BitXorAssign + Not<Output=U>
+            + PartialEq + PartialOrd
+    {
+        if modulo.is_zero()
+        {
+            self.set_max();
+            self.set_overflow();
+            self.set_infinity();
+            self.set_divided_by_zero();
+            return;
+        }
+        if *self >= *modulo
+            { self.wrapping_rem_assign(modulo); }
+        let mut acc = Self::from_array(self.get_number());
+        self.set_one();
+        let mut mexp = exp;
+        while mexp > U::zero()
+        {
+            if mexp.is_odd()
+                { self.modular_mul_assign(&acc, modulo); }
+                acc.modular_mul_assign(&acc.clone(), modulo);
+            mexp >>= U::one();
+        }
+    }
+
+    //////////////////////////////////////////////////
+    /// // pub fn root_uint<U>(&self, exp: U) -> Self
+    /// 
+    #[inline]
     pub fn root_uint<U>(&self, exp: U) -> Self
+    where U: SmallUInt + Copy + Clone + Display + Debug + ToString
+            + Add<Output=U> + AddAssign + Sub<Output=U> + SubAssign
+            + Mul<Output=U> + MulAssign + Div<Output=U> + DivAssign
+            + Rem<Output=U> + RemAssign
+            + Shl<Output=U> + ShlAssign + Shr<Output=U> + ShrAssign
+            + BitAnd<Output=U> + BitAndAssign + BitOr<Output=U> + BitOrAssign
+            + BitXor<Output=U> + BitXorAssign + Not<Output=U>
+            + PartialEq + PartialOrd
+    {
+        self.wrapping_root_uint(exp)
+    }
+
+    pub fn root_assign_uint<U>(&mut self, exp: U)
+    where U: SmallUInt + Copy + Clone + Display + Debug + ToString
+            + Add<Output=U> + AddAssign + Sub<Output=U> + SubAssign
+            + Mul<Output=U> + MulAssign + Div<Output=U> + DivAssign
+            + Rem<Output=U> + RemAssign
+            + Shl<Output=U> + ShlAssign + Shr<Output=U> + ShrAssign
+            + BitAnd<Output=U> + BitAndAssign + BitOr<Output=U> + BitOrAssign
+            + BitXor<Output=U> + BitXorAssign + Not<Output=U>
+            + PartialEq + PartialOrd
+    {
+        
+    }
+
+    pub fn wrapping_root_uint<U>(&self, exp: U) -> Self
     where U: SmallUInt + Copy + Clone + Display + Debug + ToString
             + Add<Output=U> + AddAssign + Sub<Output=U> + SubAssign
             + Mul<Output=U> + MulAssign + Div<Output=U> + DivAssign
@@ -9894,32 +10768,6 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
         }
     }
 
-    pub fn root_assign_uint<U>(&mut self, exp: U)
-    where U: SmallUInt + Copy + Clone + Display + Debug + ToString
-            + Add<Output=U> + AddAssign + Sub<Output=U> + SubAssign
-            + Mul<Output=U> + MulAssign + Div<Output=U> + DivAssign
-            + Rem<Output=U> + RemAssign
-            + Shl<Output=U> + ShlAssign + Shr<Output=U> + ShrAssign
-            + BitAnd<Output=U> + BitAndAssign + BitOr<Output=U> + BitOrAssign
-            + BitXor<Output=U> + BitXorAssign + Not<Output=U>
-            + PartialEq + PartialOrd
-    {
-        
-    }
-
-    pub fn wrapping_root_uint<U>(&self, exp: U) -> Self
-    where U: SmallUInt + Copy + Clone + Display + Debug + ToString
-            + Add<Output=U> + AddAssign + Sub<Output=U> + SubAssign
-            + Mul<Output=U> + MulAssign + Div<Output=U> + DivAssign
-            + Rem<Output=U> + RemAssign
-            + Shl<Output=U> + ShlAssign + Shr<Output=U> + ShrAssign
-            + BitAnd<Output=U> + BitAndAssign + BitOr<Output=U> + BitOrAssign
-            + BitXor<Output=U> + BitXorAssign + Not<Output=U>
-            + PartialEq + PartialOrd
-    {
-        self.root_uint(exp)
-    }
-
     pub fn wrapping_root_assign_uint<U>(&mut self, exp: U)
     where U: SmallUInt + Copy + Clone + Display + Debug + ToString
             + Add<Output=U> + AddAssign + Sub<Output=U> + SubAssign
@@ -9943,7 +10791,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
             + BitXor<Output=U> + BitXorAssign + Not<Output=U>
             + PartialEq + PartialOrd
     {
-        (self.root_uint(exp), false)
+        (self.wrapping_root_uint(exp), false)
     }
     
     pub fn overflowing_root_assign_uint<U>(&mut self, exp: U) -> bool
@@ -10009,128 +10857,6 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
             + PartialEq + PartialOrd
     {
         
-    }
-
-    // pub fn modular_pow_uint<U>(&self, exp: U, modulo: &Self) -> Self
-    /// Raises `BigUInt` type number to the power of exp, using exponentiation
-    /// of type `U` by squaring, wrapping around at `modulo` of the
-    /// type `U`. The type `U` has the trait `SmallUInt`.
-    ///
-    /// # Panics
-    /// If `size_of::<T>() * N` <= `128`, this method may panic
-    /// or its behavior may be undefined though it may not panic.
-    /// 
-    /// # Output
-    /// It returns the result of `self` raised to the power of `exp`, wrapping
-    /// around at `modulo`.
-    /// 
-    /// # Argument
-    /// The argument `exp` is the primitive unsigned integer type.
-    /// 
-    /// # Features
-    /// Wrapping (modular) exponentiation, wrapping around at `modulo`.
-    /// 
-    /// # Counterpart Method
-    /// If `rhs` is bigger than `u128`, use the method
-    /// [modular_pow()](struct@BigUInt#method.modular_pow) instead.
-    /// 
-    /// # Examples
-    /// let a = u256::from_uint(123_u8);
-    /// 
-    /// // normal exponentiation
-    /// let b = a.wrapping_pow_uint(37_u8);
-    /// println!("123 ** 37 = {}", b);
-    /// assert_eq!(b.to_string(), "96282738670724731919703551810636030185721623691319861614277235426286836107467");
-    /// 
-    /// // wrapping (modular) exponentiation
-    /// let c = a.wrapping_pow_uint(38_u8);
-    /// println!("123 ** 38 = {}", c);
-    /// assert_eq!(c.to_string(), "31983754292890092919296401822065111810221278137005446531426388626141617944969");
-    /// 
-    /// // evidence of wrapping (modular) exponentiation
-    /// assert!(b > c);
-    /// ```
-    pub fn modular_pow_uint<U>(&self, exp: U, modulo: &Self) -> Self
-    where U: SmallUInt + Copy + Clone + Display + Debug + ToString
-            + Add<Output=U> + AddAssign + Sub<Output=U> + SubAssign
-            + Mul<Output=U> + MulAssign + Div<Output=U> + DivAssign
-            + Rem<Output=U> + RemAssign
-            + Shl<Output=U> + ShlAssign + Shr<Output=U> + ShrAssign
-            + BitAnd<Output=U> + BitAndAssign + BitOr<Output=U> + BitOrAssign
-            + BitXor<Output=U> + BitXorAssign + Not<Output=U>
-            + PartialEq + PartialOrd
-    {
-        let mut res = self.clone();
-        res.modular_pow_assign_uint(exp, modulo);
-        res
-    }
-
-    // pub fn modular_pow_assign_uint<U>(&mut self, exp: U, modulo: &Self)
-    /// Raises `BigUInt` type number to the power of `exp`, using exponentiation
-    /// of primitive unsigned integer type by squaring, wrapping around at
-    /// `modulo`, and assign the result to `self` back.
-    ///
-    /// # Panics
-    /// If `size_of::<T>() * N` <= `128`, this method may panic
-    /// or its behavior may be undefined though it may not panic.
-    /// 
-    /// # Argument
-    /// The argument `exp` is the primitive unsigned integer type.
-    /// 
-    /// # Features
-    /// Wrapping (modular) exponentiation, wrapping around at `modulo`.
-    /// 
-    /// # Counterpart Method
-    /// If `rhs` is bigger than `u128`, the method
-    /// [modular_pow_assign()](struct@BigUInt#method.modular_pow_assign)
-    /// is proper rather than this method.
-    /// 
-    /// # Example
-    /// ```
-    /// use Cryptocol::define_utypes_with;
-    /// define_utypes_with!(u128);
-    /// 
-    /// let mut a = u256::from_uint(234_u8);
-    /// let mut exp = u256::from_uint(34_u8);
-    /// 
-    /// // normal exponentiation
-    /// a.wrapping_pow_assign(&exp);
-    /// println!("234 ** 34 = {}", a);
-    /// assert_eq!(a.to_string(), "101771369680718065636717400052436696519017873276976456689251925337442881634304");
-    /// 
-    /// // wrapping (modular) exponentiation
-    /// let old = a.clone();
-    /// a = u256::from_uint(234_u8);
-    /// exp += 1;
-    /// a.wrapping_pow_assign(&exp);
-    /// println!("234 ** 35 = {}", a);
-    /// assert_eq!(a.to_string(), "77122211638207297159819685489165875529835490356175237196145807339442726240256");
-    /// 
-    /// // evidence of wrapping (modular) exponentiation
-    /// assert!(old > a);
-    /// ```
-    pub fn modular_pow_assign_uint<U>(&mut self, exp: U, modulo: &Self)
-    where U: SmallUInt + Copy + Clone + Display + Debug + ToString
-            + Add<Output=U> + AddAssign + Sub<Output=U> + SubAssign
-            + Mul<Output=U> + MulAssign + Div<Output=U> + DivAssign
-            + Rem<Output=U> + RemAssign
-            + Shl<Output=U> + ShlAssign + Shr<Output=U> + ShrAssign
-            + BitAnd<Output=U> + BitAndAssign + BitOr<Output=U> + BitOrAssign
-            + BitXor<Output=U> + BitXorAssign + Not<Output=U>
-            + PartialEq + PartialOrd
-    {
-        if *self >= *modulo
-            { self.wrapping_rem_assign(modulo); }
-        let mut res = Self::one();
-        let mut mexp = exp;
-        while mexp > U::zero()
-        {
-            if mexp.is_odd()
-                { res.modular_mul_assign(self, modulo); }
-            self.modular_mul_assign(&self.clone(), modulo);
-            mexp >>= U::one();
-        }
-        *self = res;
     }
 
     // pub fn ilog_uint<U>(&self, base: U) -> Self
@@ -10554,11 +11280,11 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// in the electronics sense.
     /// - If the input carry is `false`, this method is equivalent to
     /// `overflowing_add_assign()`.
-    /// - The output is the carry of the current operation and is not
-    /// necessarily equal to the `OVERFLOW` flag which is so historical that
-    /// the `OVERFLOW` flag will be set if any of the previous operations of
-    /// `self` caused overflow even if the current operation of `self` did
-    /// not cuase overflow.
+    /// - All the flags are historical, which means, for example, if an
+    /// overflow occurred even once before this current operation or
+    /// `OVERFLOW` flag is already set before this current operation,
+    /// the `OVERFLOW` flag is not changed even if this current operation
+    /// does not cause overflow.
     /// 
     /// # Output
     /// It returns the output carry. It performs “ternary addition” of two big
@@ -10964,14 +11690,16 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// (modular) addition at `modulo`.
     /// 
     /// # Features
-    /// Wrapping (modular) addition at `modulo`. The differences between this
+    /// - Wrapping (modular) addition at `modulo`. The differences between this
     /// method `modular_add()` and the method `wrapping_add()` are, first,
     /// where wrapping around happens, and, second, whether or not `OVERFLOW`
     /// flag is set. First, this method wraps araound at `modulo` while the
-    /// method `wrapping_add()` wraps araound at maximum value. Second, this
-    /// method does not set `OVERFLOW` flag even if wrapping around
+    /// method `wrapping_add()` wraps araound at maximum value + 1. Second,
+    /// this method does not set `OVERFLOW` flag even if wrapping around
     /// happens while the method `wrapping_add()` sets `OVERFLOW` flag when
     /// wrapping around happens.
+    /// - If `modulo` is `zero`, the flags such as `OVERFLOW`, `DIVIDED_BY_ZERO`,
+    /// and `INFINITY` will be set.
     /// 
     /// # Counterpart Method
     /// - The method
@@ -11003,7 +11731,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// back to `self`.
     /// 
     /// # Features
-    /// Wrapping (modular) addition at `modulo`. The differences between this
+    /// - Wrapping (modular) addition at `modulo`. The differences between this
     /// method `modular_add_assign()` and the method `wrapping_add_assign()`
     /// are, first, where wrapping around happens, and, second, whether or not
     /// `OVERFLOW` flag is set. First, this method wraps araound at `modulo`
@@ -11011,6 +11739,13 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// Second, this method does not set `OVERFLOW` flag even if wrapping around
     /// happens, while the method `wrapping_add_assign()` sets `OVERFLOW` flag
     /// when wrapping around happens.
+    /// - If `modulo` is `zero`, the flags such as `OVERFLOW`, `DIVIDED_BY_ZERO`,
+    /// and `INFINITY` will be set.
+    /// - All the flags are historical, which means, for example, if an
+    /// overflow occurred even once before this current operation or
+    /// `OVERFLOW` flag is already set before this current operation,
+    /// the `OVERFLOW` flag is not changed even if this current operation
+    /// does not cause overflow.
     /// 
     /// # Counterpart Method
     /// - The method
@@ -11480,14 +12215,16 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// wrapping (modular) subtraction at `modulo`.
     /// 
     /// # Features
-    /// Wrapping (modular) subtraction at `modulo`. The differences between this
-    /// method `modular_sub()` and the method `wrapping_sub()` are, first,
+    /// - Wrapping (modular) subtraction at `modulo`. The differences between
+    /// this method `modular_sub()` and the method `wrapping_sub()` are, first,
     /// where wrapping around happens, and, second, whether or not `UNDERFLOW`
     /// flag is set. First, this method wraps araound at `modulo` while the
     /// method `wrapping_sub()` wraps araound at maximum value. Second, this
     /// method does not set `UNDERFLOW` flag even if wrapping around
     /// happens while the method `wrapping_sub()` sets `UNDERFLOW` flag when
     /// wrapping around happens.
+    /// - If `modulo` is `zero`, the flags such as `OVERFLOW`, `DIVIDED_BY_ZERO`,
+    /// and `INFINITY` will be set.
     /// 
     /// # Counterpart Method
     /// The method
@@ -11527,6 +12264,13 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// Second, this method does not set `UNDERFLOW` flag even if wrapping
     /// around happens, while the method `wrapping_sub_assign()` sets
     /// `UNDERFLOW` flag when wrapping around happens.
+    /// - If `modulo` is `zero`, the flags such as `OVERFLOW`, `DIVIDED_BY_ZERO`,
+    /// and `INFINITY` will be set.
+    /// - All the flags reflect historical underflow, which means, for example,
+    /// if an overflow occurred even once before this current operation or
+    /// `OVERFOLOW` flag is already set before this current operation, the
+    /// `OVERFOLOW` flag is not changed even though this current operation does
+    /// not cause overflow.
     /// 
     /// # Counterpart Method
     /// The method
@@ -12296,7 +13040,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// of the type `Self`.
     /// 
     /// # Features
-    /// Wrapping (modular) multiplication at `modulo`. The differences between
+    /// - Wrapping (modular) multiplication at `modulo`. The differences between
     /// this method `modular_mul()` and the method `wrapping_mul()` are, first,
     /// where wrapping around happens, and, second, whether or not `OVERFLOW`
     /// flag is set. First, this method wraps araound at `modulo` while the
@@ -12304,6 +13048,8 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// method does not set `OVERFLOW` flag even if wrapping around happens,
     /// while the method `wrapping_mul()` sets `OVERFLOW` flag when wrapping
     /// around happens.
+    /// - If `modulo` is `zero`, the flags such as `OVERFLOW`, `DIVIDED_BY_ZERO`,
+    /// and `INFINITY` will be set.
     /// 
     /// # Counterpart Method
     /// The method [modular_mul_uint()](struct@BigUInt#method.modular_mul_uint)
@@ -12333,7 +13079,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// of the type `Self`, and assign the result to `self` back.
     /// 
     /// # Features
-    /// Wrapping (modular) multiplication at `modulo`. The differences between
+    /// - Wrapping (modular) multiplication at `modulo`. The differences between
     /// this method `modular_mul_assign()` and the method
     /// `wrapping_mul_assign()` are, first, where wrapping around happens, and,
     /// second, whether or not `OVERFLOW` flag is set. First, this method wraps
@@ -12342,6 +13088,13 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// flag even if wrapping around happens, while the method
     /// `wrapping_mul_assign()` sets `OVERFLOW` flag when wrapping around
     /// happens.
+    /// - If `modulo` is `zero`, the flags such as `OVERFLOW`, `DIVIDED_BY_ZERO`,
+    /// and `INFINITY` will be set.
+    /// - All the flags reflect historical underflow, which means, for example,
+    /// if an overflow occurred even once before this current operation or
+    /// `OVERFOLOW` flag is already set before this current operation, the
+    /// `OVERFOLOW` flag is not changed even though this current operation does
+    /// not cause overflow.
     /// 
     /// # Counterpart Method
     /// The method
@@ -12707,6 +13460,146 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
             { self.set_overflow(); }
     }
 
+    // pub fn modular_div(&self, rhs: &Self, modulo: &Self) -> Self
+    /// Calculates the quotient when `self` % `modulo` is divided by
+    /// `rhs` % `modulo`.
+    ///
+    /// # Panics
+    /// If `size_of::<T>() * N` <= `128`, this method may panic
+    /// or its behavior may be undefined though it may not panic.
+    /// 
+    /// # Output
+    /// It returns the quotient of when `self` % `modulo` is divided by
+    /// `rhs` % `modulo` if `rhs` % `modulo` is not zero.
+    /// If `rhs` % `modulo` is zero, it returns the maximum value.
+    /// 
+    /// # Features
+    /// - Overflow will not happen unless `rhs` % `modulo` is zero.
+    /// - __It does not panic__ even if `rhs` % `modulo` is `zero`
+    /// - If `rhs` % `modulo` is zero, the quotient will have maximum value
+    /// of `BigUInt` type, and the flags of quotient such as `OVERFLOW`,
+    /// `INFINITY`, and `DIVIDED_BY_ZERO` will be set.
+    /// - If `modulo` is `zero`, the remainder will be `zero` and its
+    /// flags such as `OVERFLOW`, `DIVIDED_BY_ZERO`, and `INFINITY` will be set.
+    /// 
+    /// # Counterpart Method
+    /// If `rhs` is smaller than or equal to `u128`, the method
+    /// [modular_div_uint()](struct@BigUInt#method.modular_div_uint)
+    /// is proper rather than this method `modular_div()`.
+    /// 
+    /// # Example
+    /// ```
+    /// use std::str::FromStr;
+    /// use Cryptocol::define_utypes_with;
+    /// define_utypes_with!(u32);
+    /// 
+    /// let dividend = u256::from_str("123456789015758942546236989636279846864825945392").unwrap();
+    /// let mut divisor = 87_u8;
+    /// let mut quotient = dividend.saturating_div_uint(divisor);
+    /// println!("{} / {} = {}", dividend, divisor, quotient);
+    /// assert_eq!(quotient.is_overflow(), false);
+    /// assert_eq!(quotient.is_inifinity(), false);
+    /// assert_eq!(quotient.is_divided_by_zero(), false);
+    /// 
+    /// divisor = 0_u8;
+    /// quotient = dividend.saturating_div_uint(divisor);
+    /// println!("{} / {} = {}", dividend, divisor, quotient);
+    /// assert_eq!(quotient, u256::max());
+    /// assert_eq!(quotient.is_overflow(), true);
+    /// assert_eq!(quotient.is_inifinity(), true);
+    /// assert_eq!(quotient.is_divided_by_zero(), true);
+    /// ```
+    /// 
+    /// # Big-endian issue
+    /// It is just experimental for Big Endian CPUs. So, you are not encouraged
+    /// to use it for Big Endian CPUs for serious purpose. Only use this crate
+    /// for Big-endian CPUs with your own full responsibility.
+    #[inline]
+    pub fn modular_div(&self, rhs: &Self, modulo: &Self) -> Self
+    {
+        let mut lhs = Self::from_array(self.get_number());
+        lhs.modular_div_assign(rhs, modulo);
+        lhs
+    }
+
+    // pub fn modular_div_assign(&mut self, rhs: &Self, modulo: &Self)
+    /// Calculates the quotient when `self` % `modulo` is divided by
+    /// `rhs` % `modulo`, and assigns the quotient to `self` back.
+    ///
+    /// # Panics
+    /// If `size_of::<T>() * N` <= `128`, this method may panic
+    /// or its behavior may be undefined though it may not panic.
+    /// 
+    /// # Features
+    /// - Overflow will not happen unless `rhs` % `modulo` is zero.
+    /// - If `rhs` % `modulo` is zero, the quotient will have maximum value
+    /// of `BigUInt` type, and the flags of quotient such as `OVERFLOW`,
+    /// `INFINITY`, and `DIVIDED_BY_ZERO` will be set.
+    /// - __It does not panic__ even if `rhs` % `modulo` is `zero`.
+    /// - If `modulo` is `zero`, the flags such as `OVERFLOW`, `DIVIDED_BY_ZERO`,
+    /// and `INFINITY` will be set.
+    /// - If `modulo` is `zero`, the flags such as `OVERFLOW`, `DIVIDED_BY_ZERO`,
+    /// and `INFINITY` will be set.
+    /// - All the flags reflect historical flags, which means, for example,
+    /// if an overflow occurred even once before this current operation or
+    /// `OVERFOLOW` flag is already set before this current operation, the
+    /// `OVERFOLOW` flag is not changed even though this current operation does
+    /// not cause overflow.
+    /// - All the flags reflect historical underflow, which means, for example,
+    /// if an overflow occurred even once before this current operation or
+    /// `OVERFOLOW` flag is already set before this current operation, the
+    /// `OVERFOLOW` flag is not changed even though this current operation does
+    /// not cause overflow.
+    /// - If `modulo` is `zero`, the flags such as `OVERFLOW`, `DIVIDED_BY_ZERO`,
+    /// and `INFINITY` will be set.
+    /// - The `OVERFLOW`, `INFINITY`, and `DIVIDED_BY_ZERO` flags reflect
+    /// historical overflow, which means if an overflow and/or divided-by-zero
+    /// occurred even once before this current operation or `OVERFLOW`,
+    /// `INFINITY`, and/or `DIVIDED_BY_ZERO` flag(s) is/are already set before
+    /// this current operation, the `OVERFLOW`, `INFINITY`, and/or
+    /// `DIVIDED_BY_ZERO` flag(s) is/are not changed even though this current
+    /// operation does not cause overflow and/or divided-by-zero.
+    /// 
+    /// # Counterpart Method
+    /// If `rhs` is bigger than `u128`, the method
+    /// [saturating_div_assign()](struct@BigUInt#method.saturating_div_assign)
+    /// is proper rather than this method `saturating_div_assign_uint()`.
+    /// 
+    /// # Example
+    /// ```
+    /// use std::str::FromStr;
+    /// use Cryptocol::define_utypes_with;
+    /// define_utypes_with!(u128);
+    /// 
+    /// let mut a_biguint = U32::from_str("123456789015758942546236989636279846864825945392").unwrap();
+    /// let mut divisor = 87_u16;
+    /// println!("Originally,\na_biguint = {}", a_biguint);
+    /// a_biguint.saturating_div_assign_uint(divisor);
+    /// println!("After a_biguint.saturating_div_assign_uint({}),\na_biguint = {}", divisor, a_biguint);
+    /// assert_eq!(a_biguint.to_string(), "1419043551905275201680884938348044216837079832");
+    /// assert_eq!(a_biguint.is_overflow(), false);
+    /// assert_eq!(a_biguint.is_inifinity(), false);
+    /// assert_eq!(a_biguint.is_divided_by_zero(), false);
+    /// 
+    /// divisor = 0_u16;
+    /// a_biguint.saturating_div_assign_uint(divisor);
+    /// println!("After a_biguint.saturating_div_assign_uint({}),\na_biguint = {}", divisor, a_biguint);
+    /// assert_eq!(a_biguint, U32::max());
+    /// assert_eq!(a_biguint.is_overflow(), true);
+    /// assert_eq!(a_biguint.is_inifinity(), true);
+    /// assert_eq!(a_biguint.is_divided_by_zero(), true);
+    /// ```
+    /// 
+    /// # Big-endian issue
+    /// It is just experimental for Big Endian CPUs. So, you are not encouraged
+    /// to use it for Big Endian CPUs for serious purpose. Only use this crate
+    /// for Big-endian CPUs with your own full responsibility.
+    pub fn modular_div_assign(&mut self, rhs: &Self, modulo: &Self)
+    {
+        self.wrapping_rem_assign(modulo);
+        self.wrapping_div_assign(&rhs.wrapping_rem(modulo));
+    }
+
     // pub fn wrapping_rem(&self, rhs: &Self) -> Self
     /// Calculates the remainder when `self` is divided by `rhs`,
     /// which is `self` % `rhs`.
@@ -13022,6 +13915,145 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
             { self.set_overflow(); }
     }
 
+
+    // pub fn modular_rem(&self, rhs: &Self, modulo: &Self) -> Self
+    /// Calculates the remainder when `self` % `modulo` is divided by 
+    /// rhs` % `modulo`.
+    ///
+    /// # Panics
+    /// If `size_of::<T>() * N` <= `128`, this method may panic
+    /// or its behavior may be undefined though it may not panic.
+    /// 
+    /// # Output
+    /// - It returns the remainder of when `self` % `modulo` is divided by
+    /// `rhs` % `modulo`, if `rhs` % `modulo` is not zero.
+    /// - If `rhs` % `modulo` is zero, it returns `zero`.
+    /// 
+    /// # Features
+    /// - If `rhs` % `modulo` is zero, the remainder will be `zero`
+    /// of `BigUInt` type, and the flag of remainder `DIVIDED_BY_ZERO`
+    /// will be set.
+    /// - __It does not panic__ even if `rhs` % `modulo` is `zero`.
+    /// - If `modulo` is `zero`, the flags such as `OVERFLOW`, `DIVIDED_BY_ZERO`,
+    /// and `INFINITY` will be set.
+    /// 
+    /// # Counterpart Method
+    /// If `rhs` is bigger than `u128`, the method
+    /// [saturating_div()](struct@BigUInt#method.saturating_div)
+    /// is proper rather than this method `saturating_div_uint()`.
+    /// 
+    /// # Example
+    /// ```
+    /// use std::str::FromStr;
+    /// use Cryptocol::define_utypes_with;
+    /// define_utypes_with!(u32);
+    /// 
+    /// let dividend = u256::from_str("123456789015758942546236989636279846864825945392").unwrap();
+    /// let mut divisor = 87_u8;
+    /// let mut quotient = dividend.saturating_div_uint(divisor);
+    /// println!("{} / {} = {}", dividend, divisor, quotient);
+    /// assert_eq!(quotient.is_overflow(), false);
+    /// assert_eq!(quotient.is_inifinity(), false);
+    /// assert_eq!(quotient.is_divided_by_zero(), false);
+    /// 
+    /// divisor = 0_u8;
+    /// quotient = dividend.saturating_div_uint(divisor);
+    /// println!("{} / {} = {}", dividend, divisor, quotient);
+    /// assert_eq!(quotient, u256::max());
+    /// assert_eq!(quotient.is_overflow(), true);
+    /// assert_eq!(quotient.is_inifinity(), true);
+    /// assert_eq!(quotient.is_divided_by_zero(), true);
+    /// ```
+    /// 
+    /// # Big-endian issue
+    /// It is just experimental for Big Endian CPUs. So, you are not encouraged
+    /// to use it for Big Endian CPUs for serious purpose. Only use this crate
+    /// for Big-endian CPUs with your own full responsibility.
+    #[inline]
+    pub fn modular_rem(&self, rhs: &Self, modulo: &Self) -> Self
+    {
+        let mut lhs = Self::from_array(self.get_number());
+        lhs.modular_rem_assign(rhs, modulo);
+        lhs
+    }
+
+    // pub fn modular_rem_assign(&mut self, rhs: &Self, modulo: &Self)
+    /// Calculates the quotient when `self` % `modulo` is divided by
+    /// `rhs` % `modulo`, and assigns the remainder to `self` back.
+    ///
+    /// # Panics
+    /// If `size_of::<T>() * N` <= `128`, this method may panic
+    /// or its behavior may be undefined though it may not panic.
+    /// 
+    /// # Features
+    /// - If `rhs` % `modulo` is zero, `self` which is the remainder will be
+    /// `zero`, and its flag `DIVIDED_BY_ZERO` will be set.
+    /// - __It does not panic__ even if `rhs` % `modulo` is `zero`.
+    /// - If `modulo` is `zero`, the flags such as `OVERFLOW`, `DIVIDED_BY_ZERO`,
+    /// and `INFINITY` will be set.
+    /// - 
+    /// The `OVERFLOW`, `INFINITY`, and `DIVIDED_BY_ZERO` flags reflect
+    /// historical overflow, which means if an overflow and/or divided-by-zero
+    /// occurred even once before this current operation or `OVERFLOW`,
+    /// `INFINITY`, and/or `DIVIDED_BY_ZERO` flag(s) is/are already set before
+    /// this current operation, the `OVERFLOW`, `INFINITY`, and/or
+    /// `DIVIDED_BY_ZERO` flag(s) is/are not changed even though this current
+    /// operation does not cause overflow and/or divided-by-zero.
+    /// - Overflow will not happen unless `rhs` is zero. __It does not panic__
+    /// while the similar methods `saturating_div()` for primitive integer
+    /// data type such as u8, u16, u32, u64, etc. will panic if `rhs` is zero.
+    /// - If `rhs` is zero, the quotient will have maximum value of `BigUInt`
+    /// type, and the flags of quotient such as `OVERFLOW`, `INFINITY`, and
+    /// `DIVIDED_BY_ZERO` will be set. __It does not panic__ while the
+    /// counterpart method `wrapping_div()` for primitive integer data type
+    /// such as u8, u16, u32, u64, etc. will panic if `rhs` is zero.
+    /// - The `OVERFLOW`, `INFINITY`, and `DIVIDED_BY_ZERO` flags reflect
+    /// historical overflow, which means if an overflow and/or divided-by-zero
+    /// occurred even once before this current operation or `OVERFLOW`,
+    /// `INFINITY`, and/or `DIVIDED_BY_ZERO` flag(s) is/are already set before
+    /// this current operation, the `OVERFLOW`, `INFINITY`, and/or
+    /// `DIVIDED_BY_ZERO` flag(s) is/are not changed even though this current
+    /// operation does not cause overflow and/or divided-by-zero.
+    /// 
+    /// # Counterpart Method
+    /// If `rhs` is bigger than `u128`, the method
+    /// [saturating_div_assign()](struct@BigUInt#method.saturating_div_assign)
+    /// is proper rather than this method `saturating_div_assign_uint()`.
+    /// 
+    /// # Example
+    /// ```
+    /// use std::str::FromStr;
+    /// use Cryptocol::define_utypes_with;
+    /// define_utypes_with!(u128);
+    /// 
+    /// let mut a_biguint = U32::from_str("123456789015758942546236989636279846864825945392").unwrap();
+    /// let mut divisor = 87_u16;
+    /// println!("Originally,\na_biguint = {}", a_biguint);
+    /// a_biguint.saturating_div_assign_uint(divisor);
+    /// println!("After a_biguint.saturating_div_assign_uint({}),\na_biguint = {}", divisor, a_biguint);
+    /// assert_eq!(a_biguint.to_string(), "1419043551905275201680884938348044216837079832");
+    /// assert_eq!(a_biguint.is_overflow(), false);
+    /// assert_eq!(a_biguint.is_inifinity(), false);
+    /// assert_eq!(a_biguint.is_divided_by_zero(), false);
+    /// 
+    /// divisor = 0_u16;
+    /// a_biguint.saturating_div_assign_uint(divisor);
+    /// println!("After a_biguint.saturating_div_assign_uint({}),\na_biguint = {}", divisor, a_biguint);
+    /// assert_eq!(a_biguint, U32::max());
+    /// assert_eq!(a_biguint.is_overflow(), true);
+    /// assert_eq!(a_biguint.is_inifinity(), true);
+    /// assert_eq!(a_biguint.is_divided_by_zero(), true);
+    /// ```
+    /// 
+    /// # Big-endian issue
+    /// It is just experimental for Big Endian CPUs. So, you are not encouraged
+    /// to use it for Big Endian CPUs for serious purpose. Only use this crate
+    /// for Big-endian CPUs with your own full responsibility.
+    pub fn modular_rem_assign(&mut self, rhs: &Self, modulo: &Self)
+    {
+        self.wrapping_rem_assign(modulo);
+        self.wrapping_rem_assign(&rhs.wrapping_rem(modulo));
+    }
 
     // pub fn next_multiple_of(&self, rhs: &Self) -> Self
     /// Calculates the smallest value greater than or equal to `self` that is
