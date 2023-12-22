@@ -6,21 +6,112 @@
 // This file may not be copied, modified, or distributed
 // except according to those terms.
 
-//! The module that contains SHA1 hash algorithm
+//! The module that contains a MD5 hash algorithm.
 
 #![warn(missing_docs)]
 #![warn(missing_doc_code_examples)]
 
 use std::fmt::{ self, Debug, Display, Formatter };
-use std::vec::*;
 use std::ptr::copy_nonoverlapping;
-use std::mem::{ size_of, size_of_val };
 use std::slice::from_raw_parts;
-use std::cmp::{ PartialEq, PartialOrd, Ordering };
-use std::ops::*;
 
-use crate::number::{IntUnion, LongUnion, LongerUnion, SmallUInt};
+use crate::number::IntUnion;
+use crate::number::SmallUInt;
 
+/// # Introduction
+/// A MD5 message-digest algorithm that lossily compresses data of arbitrary
+/// length into a 128-bit hash value. MD5 was designed by Ronald Rivest who
+/// is one of the inventors of RSA asymmetric cryptographic algorithm. MD5 was
+/// invented in 1991 to replace an earlier hash function MD4. It was specified
+/// in 1992 as RFC 1321.
+/// 
+/// # Vulnerability
+/// In 2004, it was shown that MD5 is not collision-resistant. Today, MD5 is
+/// not recommended for serious cryptographic purposes anymore. So, NIST also
+/// does not include MD5 in their list of recommended hashes for password
+/// storage. __DO NOT USE MD5 FOR SERIOUS CRYPTOGRAPHIC PURPOSES AT ALL!__
+/// If you need to use a hash algorithm for serious cryptographic purposes,
+/// you are highly recommended to use SHA-3 hash algorithm instead of MD5,
+/// for example.
+/// 
+/// # Usage of HD5
+/// Though MD5 is lack of cryptographic security, MD5 is still widely used
+/// for non-cryptograpic purposes such as:
+/// - Generating small number of IDs
+/// - Integrity test in some collision-free situations
+/// - Storing passwords with limited security
+/// - Digital Signature
+/// 
+/// Read [more](https://en.wikipedia.org/wiki/MD5) about MD5 in detail.
+/// 
+/// # Quick Start
+/// In order to use the module md5, the module Cryptocol::hash::md5 is
+/// re-exported so that you don't have to import (or use)
+/// Cryptocol::hash::md5 directly. You only import MD5 struct in
+/// Cryptocol::hash. Example 1 shows how to import MD5 struct.
+/// 
+/// ## Example 1
+/// ```
+/// use Cryptocol::hash::MD5;
+/// ```
+/// Then, you create MD5 object by the method MD5::new(). Now, you are ready to
+/// use all prepared methods to hash any data. If you want to hash a string,
+/// for example, you can use the method digest_str(). Then, the MD5 object that
+/// you created will contain its hash value. You can use the macro println!()
+/// for instance to print on a commandline screen by `println!("{}", hash)`
+/// where hash is the MD5 object. Example 2 shows how to use MD5 struct quickly.
+/// 
+/// ## Example 2
+/// ```
+/// use std::string::*;
+/// use Cryptocol::hash::MD5;
+/// let mut hash = MD5::new();
+/// 
+/// let mut txt = "";
+/// hash.digest_str(txt);
+/// println!("Msg =\t\"{}\"\nHash =\t{}\n", txt, hash);
+/// assert_eq!(hash.getHashValue_in_string(), "D41D8CD98F00B204E9800998ECF8427E");
+/// 
+/// let txtStirng = String::from("A");
+/// hash.digest_string(&txtStirng);
+/// println!("Msg =\t\"{}\"\nHash =\t{}\n", txtStirng, hash);
+/// assert_eq!(hash.to_string(), "7FC56270E7A70FA81A5935B72EACBE29");
+/// 
+/// let txtArray = ['W' as u8, 'o' as u8, 'w' as u8];
+/// hash.digest_array(&txtArray);
+/// println!("Msg =\t\"{:?}\"\nHash =\t{}\n", txtArray, hash);
+/// assert_eq!(hash.getHashValue_in_string(), "49DC5E45FBEC1433E2C612E5AA809C10");
+/// 
+/// txt = "This data is 26-byte long.";
+/// hash.digest_str(txt);
+/// println!("Msg =\t\"{}\"\nHash =\t{}\n", txt, hash);
+/// assert_eq!(hash.to_string(), "17ED1DB5CD96184041659D84BB36D76B");
+/// 
+/// txt = "The unit of data length is not byte but bit.";
+/// hash.digest_str(txt);
+/// println!("Msg =\t\"{}\"\nHash =\t{}\n", txt, hash);
+/// assert_eq!(hash.getHashValue_in_string(), "C3EB6D4A1071E1A9C5E08FEF6E8F3FBF");
+/// 
+/// txt = "I am testing MD5 for the data whose length is sixty-two bytes.";
+/// hash.digest_str(txt);
+/// println!("Msg =\t\"{}\"\nHash =\t{}\n", txt, hash);
+/// assert_eq!(hash.to_string(), "6C33614E6317DC4641573E0EBC287F98");
+/// 
+/// let mut txt = "I am testing MD5 for the data whose length is sixty-four bytes..";
+/// hash.digest_str(txt);
+/// println!("Msg =\t\"{}\"\nHash =\t{}\n", txt, hash);
+/// assert_eq!(hash.getHashValue_in_string(), "200F9A19EA45A830284342114483172B");
+/// 
+/// txt = "I am testing MD5 for the case data whose length is more than sixty-four bytes is given.";
+/// hash.digest_str(txt);
+/// println!("Msg =\t\"{}\"\nHash =\t{}\n", txt, hash);
+/// assert_eq!(hash.to_string(), "9831162AB272AE1D85245B75726D215E");
+/// ```
+/// 
+/// # Big-endian issue
+/// It is just experimental for Big Endian CPUs. So, you are not encouraged
+/// to use it for Big Endian CPUs for serious purpose. Only use this crate
+/// for Big-endian CPUs with your own full responsibility.
 #[derive(Debug, Clone)]
 pub struct MD5
 {
@@ -45,15 +136,80 @@ impl MD5
                             0x655b59c3, 0x8f0ccc92, 0xffeff47d, 0x85845dd1,
                             0x6fa87e4f, 0xfe2ce6e0, 0xa3014314, 0x4e0811a1,
                             0xf7537e82, 0xbd3af235, 0x2ad7d2bb, 0xeb86d391 ];
-    const Rot: [[u32; 4]; 4] = [[7, 12, 17, 22], [5,  9, 14, 20], [4, 11, 16, 23], [6, 10, 15, 21]];
+    const R: [[u32; 4]; 4] = [[7, 12, 17, 22], [5,  9, 14, 20], [4, 11, 16, 23], [6, 10, 15, 21]];
     const H: [u32; 4] = [ 0x67452301, 0xefcdab89, 0x98badcfe, 0x10325476 ];
 
+
+    // pub fn new() -> Self
+    /// Constructs a new `MD5`.
+    /// 
+    /// # Output
+    /// A new object of `MD5`.
+    /// 
+    /// # Initialization
+    /// All the attributes of the constructed object, which is initial hash
+    /// value, will be initialized with `0123456789ABCDEFFEDCBA9876543210`.
+    /// 
+    /// # Example
+    /// ```
+    /// use Cryptocol::hash::MD5;
+    /// let mut hash = MD5::new();
+    /// println!("Hash =\t{}", hash);
+    /// assert_eq!(hash.to_string(), "0123456789ABCDEFFEDCBA9876543210");
+    /// ```
     pub fn new() -> Self    { MD5 { hash_code: [IntUnion::new_with(Self::H[0]),
                                                 IntUnion::new_with(Self::H[1]),
                                                 IntUnion::new_with(Self::H[2]),
                                                 IntUnion::new_with(Self::H[3])] } }
 
-    /// // pub fn digest(&mut self, message: *const u8, length_in_bytes: u64)
+    // pub fn digest(&mut self, message: *const u8, length_in_bytes: u64)
+    /// Compute hash value.
+    /// 
+    /// # Features
+    /// This function has the generalized interface (pointer, `*const u8`)
+    /// so as to enable other functions to wrap this function with any
+    /// convenient interface for uses. So, this function is usually not called
+    /// directly in Rust. This function is provided to be called from other
+    /// programming languages such as C/C++.
+    /// 
+    /// # Arguments
+    /// - `message` is pointer to const u8.
+    /// - `length_in_bytes` is the size of message in the unit of bytes, and
+    /// data type is `u64`.
+    /// 
+    /// # Counterpart Methods
+    /// - If you want to compute of the hash value of a string slice,
+    /// you are highly recommended to use the method
+    /// [digest_str()](struct@MD5#method.digest_str)
+    /// rather than this method.
+    /// - If you want to compute of the hash value of the content of String
+    /// object, you are highly recommended to use the method
+    /// [digest_string()](struct@MD5#method.digest_string)
+    /// rather than this method.
+    /// - If you want to compute of the hash value of the content of Array
+    /// object, you are highly recommended to use the method
+    /// [digest_array()](struct@MD5#method.digest_array)
+    /// rather than this method.
+    /// - If you want to compute of the hash value of the content of Vec
+    /// object, you are highly recommended to use the method
+    /// [digest_vec()](struct@MD5#method.digest_array)
+    /// rather than this method.
+    ///
+    /// # Example
+    /// ```
+    /// use Cryptocol::hash::MD5;
+    /// 
+    /// let txt = "This is an example of the method digest().";
+    /// let mut hash = MD5::new();
+    /// hash.digest(txt.as_ptr(), txt.len() as u64);
+    /// println!("Msg =\t\"{}\"\nHash =\t{}", txt, hash);
+    /// assert_eq!(hash.to_string(), "336EA91DD3216BD0FC841E86F9E722D8");
+    /// ```
+    /// 
+    /// # Big-endian issue
+    /// It is just experimental for Big Endian CPUs. So, you are not encouraged
+    /// to use it for Big Endian CPUs for serious purpose. Only use this crate
+    /// for Big-endian CPUs with your own full responsibility.
     pub fn digest(&mut self, message: *const u8, length_in_bytes: u64)
     {
         self.initialize();
@@ -64,56 +220,283 @@ impl MD5
     }
 
     /// // pub fn digest_str(&mut self, message: &str)
+    /// Compute hash value.
+    /// 
+    /// # Features
+    /// This function is a wrapping function of `digest()`.
+    /// This function computes hash value of the content of string slice.
+    /// 
+    /// # Argument
+    /// - message is `&str`.
+    /// 
+    /// # Counterpart Methods
+    /// - If you want to compute of the hash value of the content of String
+    /// object, you are highly recommended to use the method
+    /// [digest_string()](struct@MD5#method.digest_string)
+    /// rather than this method.
+    /// - If you want to compute of the hash value of the content of Array
+    /// object, you are highly recommended to use the method
+    /// [digest_array()](struct@MD5#method.digest_array)
+    /// rather than this method.
+    /// - If you want to compute of the hash value of the content of Vec
+    /// object, you are highly recommended to use the method
+    /// [digest_vec()](struct@MD5#method.digest_array)
+    /// rather than this method.
+    /// - If you want to use this method from other programming languages such
+    /// as C/C++, you are highly recommended to use the method
+    /// [digest()](struct@MD5#method.digest) rather than this method.
+    ///
+    /// # Example
+    /// ```
+    /// use Cryptocol::hash::MD5;
+    /// 
+    /// let txt = "This is an example of the method digest_str().";
+    /// let mut hash = MD5::new();
+    /// hash.digest_str(txt);
+    /// println!("Msg =\t\"{}\"\nHash =\t{}", txt, hash);
+    /// assert_eq!(hash.to_string(), "F2E455CEB5FB993A980E67D3FA8A3961");
+    /// ```
+    /// 
+    /// # Big-endian issue
+    /// It is just experimental for Big Endian CPUs. So, you are not encouraged
+    /// to use it for Big Endian CPUs for serious purpose. Only use this crate
+    /// for Big-endian CPUs with your own full responsibility.
     #[inline]
     pub fn digest_str(&mut self, message: &str)
     {
         self.digest(message.as_ptr(), message.len() as u64);
     }
 
-    /// // pub fn digest_str(&mut self, message: &str)
+    // pub fn digest_string(&mut self, message: &String)
+    /// Compute hash value.
+    /// 
+    /// # Features
+    /// This function is a wrapping function of `digest()`.
+    /// This function computes hash value of the content of String object.
+    /// 
+    /// # Argument
+    /// - message is `&String`.
+    /// 
+    /// # Counterpart Methods
+    /// - If you want to compute of the hash value of a string slice,
+    /// you are highly recommended to use the method
+    /// [digest_str()](struct@MD5#method.digest_str)
+    /// rather than this method.
+    /// - If you want to compute of the hash value of the content of Array
+    /// object, you are highly recommended to use the method
+    /// [digest_array()](struct@MD5#method.digest_array)
+    /// rather than this method.
+    /// - If you want to compute of the hash value of the content of Vec
+    /// object, you are highly recommended to use the method
+    /// [digest_vec()](struct@MD5#method.digest_array)
+    /// rather than this method.
+    /// - If you want to use this method from other programming languages such
+    /// as C/C++, you are highly recommended to use the method
+    /// [digest()](struct@MD5#method.digest) rather than this method.
+    ///
+    /// # Example
+    /// ```
+    /// use Cryptocol::hash::MD5;
+    /// 
+    /// let txt = "This is an example of the method digest_string().".to_string();
+    /// let mut hash = MD5::new();
+    /// hash.digest_string(&txt);
+    /// println!("Msg =\t\"{}\"\nHash =\t{}", txt, hash);
+    /// assert_eq!(hash.to_string(), "40929E789D2F5880B85456E289F704C0");
+    /// ```
+    /// 
+    /// # Big-endian issue
+    /// It is just experimental for Big Endian CPUs. So, you are not encouraged
+    /// to use it for Big Endian CPUs for serious purpose. Only use this crate
+    /// for Big-endian CPUs with your own full responsibility.
     #[inline]
     pub fn digest_string(&mut self, message: &String)
     {
         self.digest(message.as_ptr(), message.len() as u64);
     }
 
-    /// // pub fn digest_str(&mut self, message: &str)
+    // pub fn digest_array<const N: usize>(&mut self, message: &[T; N])
+    /// Compute hash value.
+    /// 
+    /// # Features
+    /// This function is a wrapping function of `digest()`.
+    /// This function computes hash value of the content of Array object.
+    /// 
+    /// # Argument
+    /// - message is `&[T; N]`.
+    /// 
+    /// # Counterpart Methods
+    /// - If you want to compute of the hash value of a string slice,
+    /// you are highly recommended to use the method
+    /// [digest_str()](struct@MD5#method.digest_str)
+    /// rather than this method.
+    /// - If you want to compute of the hash value of the content of String
+    /// object, you are highly recommended to use the method
+    /// [digest_string()](struct@MD5#method.digest_string)
+    /// rather than this method.
+    /// - If you want to compute of the hash value of the content of Vec
+    /// object, you are highly recommended to use the method
+    /// [digest_vec()](struct@MD5#method.digest_array)
+    /// rather than this method.
+    /// - If you want to use this method from other programming languages such
+    /// as C/C++, you are highly recommended to use the method
+    /// [digest()](struct@MD5#method.digest) rather than this method.
+    ///
+    /// # Example
+    /// ```
+    /// use Cryptocol::hash::MD5;
+    /// 
+    /// let data = [ 0x67452301_u32.to_le(), 0xefcdab89_u32.to_le(), 0x98badcfe_u32.to_le(), 0x10325476_u32.to_le() ];
+    /// let mut hash = MD5::new();
+    /// hash.digest_array(&data);
+    /// println!("Msg =\t{:?}\nHash =\t{}", data, hash);
+    /// assert_eq!(hash.to_string(), "054DE9CF5F9EA623BBB8DC4781685A58");
+    /// ```
+    /// 
+    /// # Big-endian issue
+    /// It is just experimental for Big Endian CPUs. So, you are not encouraged
+    /// to use it for Big Endian CPUs for serious purpose. Only use this crate
+    /// for Big-endian CPUs with your own full responsibility.
     #[inline]
-    pub fn digest_array<const N: usize>(&mut self, message: &[u8; N])
+    pub fn digest_array<T, const N: usize>(&mut self, message: &[T; N])
+    where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     {
-        self.digest((message as &[u8]).as_ptr(), N as u64);
+        self.digest(message.as_ptr() as *const u8, (N * T::size_in_bytes()) as u64);
     }
 
-    /// // pub fn getHashValue(&self, hashValue: *mut u8, length: usize)
+    // pub fn digest_vec<T>(&mut self, message: &Vec<T>)
+    /// Compute hash value.
     /// 
-    pub fn getHashValue(&self, hashValue: *mut u8, length: usize)
+    /// # Features
+    /// This function is a wrapping function of `digest()`.
+    /// This function computes hash value of the content of Vec object.
+    /// 
+    /// # Argument
+    /// - message is `&Vec<T>`.
+    /// 
+    /// # Counterpart Methods
+    /// - If you want to compute of the hash value of a string slice,
+    /// you are highly recommended to use the method
+    /// [digest_str()](struct@MD5#method.digest_str)
+    /// rather than this method.
+    /// - If you want to compute of the hash value of the content of String
+    /// object, you are highly recommended to use the method
+    /// [digest_string()](struct@MD5#method.digest_string)
+    /// rather than this method.
+    /// - If you want to compute of the hash value of the content of Array
+    /// object, you are highly recommended to use the method
+    /// [digest_array()](struct@MD5#method.digest_array)
+    /// rather than this method.
+    /// - If you want to use this method from other programming languages such
+    /// as C/C++, you are highly recommended to use the method
+    /// [digest()](struct@MD5#method.digest) rather than this method.
+    ///
+    /// # Example
+    /// ```
+    /// use Cryptocol::hash::MD5;
+    /// 
+    /// let data = vec![ 0x67452301_u32.to_le(), 0xefcdab89_u32.to_le(), 0x98badcfe_u32.to_le(), 0x10325476_u32.to_le() ];
+    /// let mut hash = MD5::new();
+    /// hash.digest_vec(&data);
+    /// println!("Msg =\t{:?}\nHash =\t{}", data, hash);
+    /// assert_eq!(data.to_string(), "054DE9CF5F9EA623BBB8DC4781685A58");
+    /// ```
+    /// 
+    /// # Big-endian issue
+    /// It is just experimental for Big Endian CPUs. So, you are not encouraged
+    /// to use it for Big Endian CPUs for serious purpose. Only use this crate
+    /// for Big-endian CPUs with your own full responsibility.
+    #[inline]
+    pub fn digest_vec<T>(&mut self, message: &Vec<T>)
+    where T: SmallUInt + Copy + Clone + Display + Debug + ToString
+    {
+        self.digest(message.as_ptr() as *const u8, (message.len() * T::size_in_bytes()) as u64);
+    }
+
+    // pub fn get_HashValue(&self, hashValue: *mut u8, length: usize)
+    /// Gives a hash value to the place where `hashValue` points to.
+    /// 
+    /// # Features
+    /// This function has the generalized interface (pointer, `*mut u8`)
+    /// so as to enable other functions to wrap this function with any
+    /// convenient interface for uses. So, this function is usually not called
+    /// directly in Rust. This function is provided to be called from other
+    /// programming languages such as C/C++.
+    /// 
+    /// # Arguments
+    /// - `hashValue` is the pointer to the place to hold the result hash value.
+    /// - `length` is the size of the place that `hashValue` points to. 
+    /// 
+    /// # Counterpart Methods
+    /// - If you want to get the hash value in the form of String object,
+    /// you are highly recommended to use the method
+    /// [get_HashValue_string()](struct@MD5#method.get_HashValue_string)
+    /// rather than this method.
+    /// - If you want to get the hash value in the form of array object,
+    /// you are highly recommended to use the method
+    /// [get_HashValue_in_array()](struct@MD5#method.get_HashValue_in_array)
+    /// rather than this method.
+    /// - If you want to get the hash value in the form of Vec object,
+    /// you are highly recommended to use the method
+    /// [get_HashValue_in_vec()](struct@MD5#method.get_HashValue_in_vec)
+    /// rather than this method.
+    ///
+    /// # Example
+    /// ```
+    /// use Cryptocol::hash::MD5;
+    /// 
+    /// let txt = "This is an example of the method get_HashValue().";
+    /// let mut hashValue = [0_u8; 16];
+    /// let mut hash = MD5::new();
+    /// hash.digest_str(txt);
+    /// hash.get_HashValue(hashValue.as_ptr() as *mut u8, hashValue.len());
+    /// println!("Msg =\t\"{}\"\nHash =\t{:02X?}", txt, hashValue);
+    /// assert_eq!(format!("{:02X?}", hashValue), "[D9, FB, 90, AB, DD, 2E, 1E, 48, D8, 5E, E5, 08, 4B, AE, 2C, 39]");
+    /// ```
+    /// 
+    /// # Big-endian issue
+    /// It is just experimental for Big Endian CPUs. So, you are not encouraged
+    /// to use it for Big Endian CPUs for serious purpose. Only use this crate
+    /// for Big-endian CPUs with your own full responsibility.
+    pub fn get_HashValue(&self, hashValue: *mut u8, length: usize)
     {
         let n_length = if length < (4 * 4) {length} else {4 * 4};
-        for i in 0..n_length
-            { unsafe { *hashValue.add(i) = self.hash_code[i/4].get_ubyte_(i%4); } }
+        unsafe { copy_nonoverlapping(self.hash_code.as_ptr() as *const u8, hashValue, n_length); }
     }
 
-    /// // pub fn getHashValue_in_array(&self) -> [u32; 4]
+    // pub fn get_HashValue_in_string(&self) -> String
+    /// Returns a hash value in the form of String object.
     /// 
-    pub fn getHashValue_in_array(&self) -> [u32; 4]
-    {
-        let mut res = [0_u32; 4];
-        for i in 0..4
-            { unsafe { res[i] = self.hash_code[i].get().to_le(); } }
-        res
-    }
-
-    /// // pub fn getHashValue_in_vec(&self) -> Vec<u32>
+    /// # Counterpart Methods
+    /// - If you want to get the hash value in the form of array object,
+    /// you are highly recommended to use the method
+    /// [get_HashValue_in_array()](struct@MD5#method.get_HashValue_in_array)
+    /// rather than this method.
+    /// - If you want to get the hash value in the form of Vec object,
+    /// you are highly recommended to use the method
+    /// [get_HashValue_in_vec()](struct@MD5#method.get_HashValue_in_vec)
+    /// rather than this method.
+    /// - If you want to use this method from other programming languages such
+    /// as C/C++, you are highly recommended to use the method
+    /// [get_HashValue()](struct@MD5#method.get_HashValue)
+    /// rather than this method.
+    ///
+    /// # Example
+    /// ```
+    /// use Cryptocol::hash::MD5;
     /// 
-    #[inline]
-    pub fn getHashValue_in_vec(&self) -> Vec<u32>
-    {
-        Vec::<u32>::from(&self.getHashValue_in_array())
-    }
-
-    /// // pub fn getHashValue_in_vec(&self) -> Vec<u32>
+    /// let txt = "This is an example of the method get_HashValue_in_string().";
+    /// let mut hash = MD5::new();
+    /// hash.digest_str(txt);
+    /// println!("Msg =\t\"{}\"\nHash =\t{}", txt, hash.get_HashValue_in_string());
+    /// assert_eq!(hash.get_HashValue_in_string(), "7BB1ED16E2E302AA3B16CD24EC3E3093");
+    /// ```
     /// 
-    pub fn getHashValue_in_string(&self) -> String
+    /// # Big-endian issue
+    /// It is just experimental for Big Endian CPUs. So, you are not encouraged
+    /// to use it for Big Endian CPUs for serious purpose. Only use this crate
+    /// for Big-endian CPUs with your own full responsibility.
+    pub fn get_HashValue_in_string(&self) -> String
     {
         let mut txt = String::new();
         for i in 0..4
@@ -127,6 +510,84 @@ impl MD5
             }
         }
         txt
+    }
+
+    // pub fn getHashValue_in_array(&self) -> [u32; 4]
+    /// Returns a hash value in the form of array object.
+    /// 
+    /// # Counterpart Methods
+    /// - If you want to get the hash value in the form of String object,
+    /// you are highly recommended to use the method
+    /// [get_HashValue_string()](struct@MD5#method.get_HashValue_string)
+    /// rather than this method.
+    /// - If you want to get the hash value in the form of Vec object,
+    /// you are highly recommended to use the method
+    /// [get_HashValue_in_vec()](struct@MD5#method.get_HashValue_in_vec)
+    /// rather than this method.
+    /// - If you want to use this method from other programming languages such
+    /// as C/C++, you are highly recommended to use the method
+    /// [get_HashValue()](struct@MD5#method.get_HashValue)
+    /// rather than this method.
+    ///
+    /// # Example
+    /// ```
+    /// use Cryptocol::hash::MD5;
+    /// 
+    /// let txt = "This is an example of the method get_HashValue_in_array().";
+    /// let mut hash = MD5::new();
+    /// hash.digest_str(txt);
+    /// println!("Msg =\t\"{}\"\nHash =\t{:02X?}", txt, hash.get_HashValue_in_array());
+    /// assert_eq!(format!("{:02X?}", hash.get_HashValue_in_array()), "[A4BE6EEF, C9A5DFBA, 558B5ADF, 3B1035F9]");
+    /// ```
+    /// 
+    /// # Big-endian issue
+    /// It is just experimental for Big Endian CPUs. So, you are not encouraged
+    /// to use it for Big Endian CPUs for serious purpose. Only use this crate
+    /// for Big-endian CPUs with your own full responsibility.
+    pub fn get_HashValue_in_array(&self) -> [u32; 4]
+    {
+        let mut res = [0_u32; 4];
+        for i in 0..4
+            { res[i] = self.hash_code[i].get().to_le(); }
+        res
+    }
+
+    // pub fn getHashValue_in_vec(&self) -> Vec
+    /// Returns a hash value in the form of Vec object.
+    /// 
+    /// # Counterpart Methods
+    /// - If you want to get the hash value in the form of String object,
+    /// you are highly recommended to use the method
+    /// [get_HashValue_string()](struct@MD5#method.get_HashValue_string)
+    /// rather than this method.
+    /// - If you want to get the hash value in the form of array object,
+    /// you are highly recommended to use the method
+    /// [get_HashValue_in_array()](struct@MD5#method.get_HashValue_in_array)
+    /// rather than this method.
+    /// - If you want to use this method from other programming languages such
+    /// as C/C++, you are highly recommended to use the method
+    /// [get_HashValue()](struct@MD5#method.get_HashValue)
+    /// rather than this method.
+    ///
+    /// # Example
+    /// ```
+    /// use Cryptocol::hash::MD5;
+    /// 
+    /// let txt = "This is an example of the method get_HashValue_in_vec().";
+    /// let mut hash = MD5::new();
+    /// hash.digest_str(txt);
+    /// println!("Msg =\t\"{}\"\nHash =\t{:02X?}", txt, hash.get_HashValue_in_vec());
+    /// assert_eq!(format!("{:02X?}", hash.get_HashValue_in_vec()), "[C24C5F26, D87BBAC8, D66148F4, 4D7DE209]");
+    /// ```
+    /// 
+    /// # Big-endian issue
+    /// It is just experimental for Big Endian CPUs. So, you are not encouraged
+    /// to use it for Big Endian CPUs for serious purpose. Only use this crate
+    /// for Big-endian CPUs with your own full responsibility.
+    #[inline]
+    pub fn get_HashValue_in_vec(&self) -> Vec<u32>
+    {
+        Vec::<u32>::from(&self.get_HashValue_in_array())
     }
 
     fn initialize(&mut self)
@@ -147,7 +608,7 @@ impl MD5
             let f = Self::Ff(b, c, d).wrapping_add(a)
                                 .wrapping_add(Self::getK(i))
                                 .wrapping_add(message[i].to_le())
-                                .rotate_left(Self::Rot[0][i & 0b11]);
+                                .rotate_left(Self::R[0][i & 0b11]);
             a = d;
             d = c;
             c = b;
@@ -159,7 +620,7 @@ impl MD5
             let f = Self::Gg(b, c, d).wrapping_add(a)
                                 .wrapping_add(Self::getK(i))
                                 .wrapping_add(message[g].to_le())
-                                .rotate_left(Self::Rot[1][i & 0b11]);
+                                .rotate_left(Self::R[1][i & 0b11]);
             a = d;
             d = c;
             c = b;
@@ -171,7 +632,7 @@ impl MD5
             let f = Self::Hh(b, c, d).wrapping_add(a)
                                 .wrapping_add(Self::getK(i))
                                 .wrapping_add(message[g].to_le())
-                                .rotate_left(Self::Rot[2][i & 0b11]);
+                                .rotate_left(Self::R[2][i & 0b11]);
             a = d;
             d = c;
             c = b;
@@ -183,29 +644,34 @@ impl MD5
             let f = Self::Ii(b, c, d).wrapping_add(a)
                                 .wrapping_add(Self::getK(i))
                                 .wrapping_add(message[g].to_le())
-                                .rotate_left(Self::Rot[3][i & 0b11]);
+                                .rotate_left(Self::R[3][i & 0b11]);
             a = d;
             d = c;
             c = b;
             b = b.wrapping_add(f);
         }
+
+        // Or the above can be shortened as follows but then it will be slower
+        // a bit because of some overheads such as comparation, pointer
+        // arithmatic operation, etc.
+        //
         // for i in 0..64_usize
         // {
         //     let (mut f, g) = Self::func(b, c, d, i);
         //     f = f.wrapping_add(a)
         //             .wrapping_add(Self::getK(i))
         //             .wrapping_add(message[g].to_le())
-        //             .rotate_left(Self::getRot(i));
+        //             .rotate_left(Self::getR(i));
         //     a = d;
         //     d = c;
         //     c = b;
         //     b = b.wrapping_add(f);
         // }
 
-        self.hash_code[0].set(self.hash_code[0].get() + a);
-        self.hash_code[1].set(self.hash_code[1].get() + b);
-        self.hash_code[2].set(self.hash_code[2].get() + c);
-        self.hash_code[3].set(self.hash_code[3].get() + d);
+        self.hash_code[0].set(self.hash_code[0].get().wrapping_add(a));
+        self.hash_code[1].set(self.hash_code[1].get().wrapping_add(b));
+        self.hash_code[2].set(self.hash_code[2].get().wrapping_add(c));
+        self.hash_code[3].set(self.hash_code[3].get().wrapping_add(d));
     }
     
     fn finalize(&mut self, message: *const u8, length_in_bytes: u64)
@@ -247,12 +713,11 @@ impl MD5
 
 	#[inline] fn getK(idx: usize) -> u32    { Self::K[idx] }
 	#[inline] fn getH(idx: usize) -> u32    { Self::H[idx] }
-    #[inline] fn getRot(idx: usize) -> u32  { Self::Rot[idx >> 4][idx & 0b11] }
+    #[inline] fn getR(idx: usize) -> u32  { Self::R[idx >> 4][idx & 0b11] }
 	#[inline] fn Ff(x: u32, y: u32, z: u32) -> u32  { (x & y) | (!x & z) }
 	#[inline] fn Gg(x: u32, y: u32, z: u32) -> u32  { (x & z) | (y & !z) }
 	#[inline] fn Hh(x: u32, y: u32, z: u32) -> u32	{ x ^ y ^ z }
     #[inline] fn Ii(x: u32, y: u32, z: u32) -> u32	{ y ^ (x | !z) }
-
     #[inline] fn to_char(nibble: u8) -> char    { if nibble < 10  { ('0' as u8 + nibble) as u8 as char } else { ('A' as u8 - 10 + nibble) as char } }
 }
 
@@ -260,19 +725,36 @@ impl MD5
 impl Display for MD5
 {
     /// Formats the value using the given formatter.
+    /// You will hardly use this method directly.
     /// Automagically the function `to_string()` will be implemented. So, you
-    /// can use the function `to_string()` and the macro `println!()`.
+    /// can use the function `to_string()`, and you can also print the MD5
+    /// object in the macro `println!()` directly for example.
     /// `f` is a buffer, this method must write the formatted string into it.
     /// [Read more](https://doc.rust-lang.org/core/fmt/trait.Display.html#tymethod.fmt)
     /// 
-    /// # Example
+    /// # Example 1 for the method to_string()
     /// ```
-    /// // Todo
+    /// use Cryptocol::hash::MD5;
+    /// let mut hash = MD5::new();
+    /// let txt = "Display::fmt() automagically implement to_string().";
+    /// hash.digest_str(txt);
+    /// println!("Msg =\t\"{}\"\nHash =\t{}\n", txt, hash.to_string());
+    /// assert_eq!(hash.to_string(), "ED085603C2CDE77DD0C6FED3EC1A8ADB");
+    /// ```
+    /// 
+    /// # Example 2 for the use in the macro println!()
+    /// ```
+    /// use Cryptocol::hash::MD5;
+    /// let mut hash = MD5::new();
+    /// let txt = "Display::fmt() enables the object to be printed in the macro println!() directly for example.";
+    /// hash.digest_str(txt);
+    /// println!("Msg =\t\"{}\"\nHash =\t{}", txt, hash);
+    /// assert_eq!(hash.to_string(), "6C9494A4A5C313001695262D72571F74");
     /// ```
     fn fmt(&self, f: &mut Formatter) -> fmt::Result
     {
         // `write!` is like `format!`, but it will write the formatted string
         // into a buffer (the first argument)
-        write!(f, "{}", self.getHashValue_in_string())
+        write!(f, "{}", self.get_HashValue_in_string())
     }
 }

@@ -579,6 +579,11 @@ use super::NumberErr;
 /// define_utypes_with!(u64);
 /// let a = u1024::new();
 /// ```
+/// 
+/// # Big-endian issue
+/// It is just experimental for Big Endian CPUs. So, you are not encouraged
+/// to use it for Big Endian CPUs for serious purpose. Only use this crate
+/// for Big-endian CPUs with your own full responsibility.
 #[derive(Debug, Clone)]
 pub struct BigUInt<T, const N: usize>
 where T: SmallUInt + Copy + Clone + Display + Debug + ToString

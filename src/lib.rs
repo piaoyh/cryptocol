@@ -45,12 +45,12 @@
 //! - [ ] Trait Sint and its implementation for primitive data types and Unions
 //! 
 //! ## Big Numbers
-//! - [x] Fixed Sized Big Unsigned Integer Operation --- [`BigUInt`](number/big_uint/struct.BigUInt.html#struct.BigUInt)
+//! - [ ] Fixed Sized Big Unsigned Integer Operation --- [`BigUInt`](number/big_uint/struct.BigUInt.html#struct.BigUInt)
 //! - [ ] Fixed Sized Big Signed Integer Operation --- BigSInt
 //! - [ ] Variable Sized Big Signed Integer Operation --- LargeInt
 //! 
 //! ## Hash Algorithms
-//! - [ ] MD5
+//! - [X] MD5 --- [`MD5`](hash/md5/struct.MD5.html#struct.MD5)
 //! - [ ] SHA-1
 //! - [ ] SHA-2 (SHA-224)
 //! - [ ] SHA-2 (SHA-256)
