@@ -461,8 +461,19 @@ impl MD5
     pub fn get_HashValue(&self, hashValue: *mut u8, length: usize)
     {
         let n_length = if length < (4 * 4) {length} else {4 * 4};
+        #[cfg(target_endian = "little")]
         unsafe { copy_nonoverlapping(self.hash_code.as_ptr() as *const u8, hashValue, n_length); }
+        #[cfg(target_endian = "big")]
+        {
+            let mut hash_code = [IntUnion::new(); 4];
+            for i in 0..4
+            {
+                hash_code[i].set(self.hash_code[i].get().to_le());
+            }
+            unsafe { copy_nonoverlapping(hash_code.as_ptr() as *const u8, hashValue, n_length); }
+        }
     }
+
 
     // pub fn get_HashValue_in_string(&self) -> String
     /// Returns a hash value in the form of String object.
@@ -512,7 +523,7 @@ impl MD5
         txt
     }
 
-    // pub fn getHashValue_in_array(&self) -> [u32; 4]
+    // pub fn get_HashValue_in_array(&self) -> [u32; 4]
     /// Returns a hash value in the form of array object.
     /// 
     /// # Counterpart Methods

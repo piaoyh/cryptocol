@@ -3209,73 +3209,17 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     ///     },
     /// }
     /// ```
-    #[cfg(target_endian = "little")]
-    pub fn get_num(&self, i: usize) -> Option<T>
-    {
-        if i < N
-            { Some(self.get_number()[i]) }
-        else
-            { None }
-    }
-
-    // pub fn get_num(&self, i: usize) -> Option<T>
-    /// Returns i-th element of its array of type `T` wrapped in Some
-    /// of enum Option if `i` < `N`. Otherwise, it returns `None`. 
-    /// 
-    /// # Argument i
-    /// 0-th element contains LSB (Least Significant Bit), while (N-1)-th
-    /// element contains MSB (Most Significant Bit) regardless endianness.
-    /// `BigUInt` have an array of type `T` in order to present long-sized
-    /// unsigned integer.
-    /// 
-    /// # Error
-    /// If `i` >= `N`, it returns `None`.
-    /// 
-    /// # Counterpart Method
-    /// When you are sure that `i` < `N`, you may want to use its counterpart
-    /// method [get_num_()](struct@BigUInt#method.get_num_) for performance.
-    /// 
-    /// # Example
-    /// ```
-    /// use Cryptocol::define_utypes_with;
-    /// define_utypes_with!(u32);
-    /// 
-    /// let a = u256::from([0_u32, 10, 20, 30, 40, 50, 60, 70]);
-    /// let e = a.get_num(3);
-    /// match a.get_num(3)
-    /// {
-    ///     Some(num) => {
-    ///         println!("a.get_num(3).unwrap() = {}", num);
-    ///         assert_eq!(num, 30);
-    ///     },
-    ///     None => {
-    ///         println!("There is no third element.");
-    ///         assert_eq!(e, None);
-    ///     },
-    /// }
-    /// let f = a.get_num(8);
-    /// match f
-    /// {
-    ///     Some(num) => {
-    ///         println!("a.get_num(3).unwrap() = {}", num);
-    ///         assert_eq!(num, 30);
-    ///     },
-    ///     None => {
-    ///         println!("There is no third element.");
-    ///         assert_eq!(f, None);
-    ///     },
-    /// }
-    /// ```
-    /// any_prime_using_Miller_Rabin
     /// # Big-endian issue
     /// It is just experimental for Big Endian CPUs. So, you are not encouraged
     /// to use it for Big Endian CPUs for serious purpose. Only use this crate
     /// for Big-endian CPUs with your own full responsibility.
-    #[cfg(target_endian = "big")]
     pub fn get_num(&self, i: usize) -> Option<T>
     {
         if i < N
-            { Some(self.get_number()[N-1-i]) }
+        {
+            #[cfg(target_endian = "little")]    { Some(self.get_number()[i]) }
+            #[cfg(target_endian = "big")]       { Some(self.get_number()[N-1-i]) }
+        }
         else
             { None }
     }
@@ -3313,56 +3257,16 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// // It will panic.
     /// // let c = a.get_num_(8);
     /// ```
-    #[cfg(target_endian = "little")]
-    #[inline]
-    pub fn get_num_(&self, i: usize) -> T
-    {
-        self.number[i]
-    }
-
-    // pub fn get_num_(&self, i: usize) -> T
-    /// Returns i-th element of its array of type `T` if `i` < `N`.
-    /// Otherwise, it will panic.
-    /// 
-    /// # Panics
-    /// - If `size_of::<T>() * N` <= `128`, some methods may panic
-    /// or its behavior may be undefined though it may not panic.
-    /// - This method is performance-oriented and does not care for safety.
-    /// So, if `i` >= `N`, it will panic.
-    /// 
-    /// # Argument i
-    /// 0-th element contains LSB (Least Significant Bit), while (N-1)-th
-    /// element contains MSB (Most Significant Bit) regardless endianness.
-    /// `BigUInt` have an array of type `T` in order to present long-sized
-    /// unsigned integer.
-    /// 
-    /// # Counterpart Method
-    /// Use this method only when you are sure that `i` < `N`.
-    /// Otherwise, use its Counterpart method
-    /// [get_num()](struct@BigUInt#method.get_num) for safety.
-    /// 
-    /// # Example
-    /// ```
-    /// use Cryptocol::define_utypes_with;
-    /// 
-    /// define_utypes_with!(u32);
-    /// let a = u256::from([0_u32, 10, 20, 30, 40, 50, 60, 70]);
-    /// let b = a.get_num_(3);
-    /// println!("a.get_num_(3) = {}", b);
-    /// assert_eq!(b, 30);
-    /// // It will panic.
-    /// // let c = a.get_num_(8);
-    /// ```
-    /// 
     /// # Big-endian issue
     /// It is just experimental for Big Endian CPUs. So, you are not encouraged
     /// to use it for Big Endian CPUs for serious purpose. Only use this crate
     /// for Big-endian CPUs with your own full responsibility.
-    #[cfg(target_endian = "big")]
+    
     #[inline]
     pub fn get_num_(&self, i: usize) -> T
     {
-        self.number[N-1-i]
+        #[cfg(target_endian = "little")]    { self.number[i] }
+        #[cfg(target_endian = "big")]       { self.number[N-1-i] }
     }
 
     // pub fn set_num(&mut self, i: usize, val: T) -> bool
@@ -3406,68 +3310,16 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     ///     { println!("There is no fourth element."); }
     /// assert!(!c);
     /// ```
-    #[cfg(target_endian = "little")]
-    pub fn set_num(&mut self, i: usize, val: T) -> bool
-    {
-        if i < N
-        {
-            self.number[i] = val;
-            true
-        }
-        else
-        {
-            false
-        }
-    }
-
-    // pub fn set_num(&mut self, i: usize, val: T) -> bool
-    /// Sets i-th element of its array of type `T`, and return `true`
-    /// if `i` < `N`. Otherwise, it sets none of the elements of its
-    /// array of type `T`, and returns `false`.
-    ///  
-    /// # Argument i
-    /// 0-th element contains LSB (Least Significant Bit), while (N-1)-th
-    /// element contains MSB (Most Significant Bit) regardless endianness.
-    /// `BigUInt` have an array of type `T` in order to present long-sized
-    /// unsigned integer.
-    /// 
-    /// # Error
-    /// If `i` >= `N`, it will return `false`.
-    /// 
-    /// # Counterpart Method
-    /// When you are sure that `i` < `N`, you may want to use its Counterpart
-    /// method [set_num_()](struct@BigUInt#method.set_num_) for performance.
-    /// 
-    /// # Example
-    /// ```
-    /// use Cryptocol::define_utypes_with;
-    /// define_utypes_with!(u64);
-    /// 
-    /// let mut a = u256::from([0_u64, 10, 20, 30]);
-    /// let mut num = a.get_num_(3);
-    /// println!("a.get_num(3).unwrap() = {}", num);
-    /// let b = a.set_num(3, 0);
-    /// num = a.get_num_(3);
-    /// println!("a.get_num(3).unwrap() = {}", num);
-    /// assert!(b);
-    /// assert_eq!(num, 0);
-    /// 
-    /// let c = a.set_num(4, 0);
-    /// if !b
-    ///     { println!("There is no fourth element."); }
-    /// assert!(!c);
-    /// ```
-    /// 
     /// # Big-endian issue
     /// It is just experimental for Big Endian CPUs. So, you are not encouraged
     /// to use it for Big Endian CPUs for serious purpose. Only use this crate
     /// for Big-endian CPUs with your own full responsibility.
-    #[cfg(target_endian = "big")]
     pub fn set_num(&mut self, i: usize, val: T) -> bool
     {
         if i < N
         {
-            self.number[N-1-i] = val;
+            #[cfg(target_endian = "little")]    { self.number[i] = val; }
+            #[cfg(target_endian = "big")]       { self.number[N-1-i] = val; }
             true
         }
         else
@@ -3514,59 +3366,10 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// // let c = a.set_num_(4, 0);
     /// ```
     #[inline]
-    #[cfg(target_endian = "little")]
     pub fn set_num_(&mut self, i: usize, val: T)
     {
-        self.number[i] = val;
-    }
-
-    // pub fn set_num_(&mut self, i: usize, val: T)
-    /// Sets i-th element of its array of type `T` if `i` < `N`.
-    /// Otherwise, it will panic.
-    /// 
-    /// # Panics
-    /// - If `size_of::<T>() * N` <= `128`, some methods may panic
-    /// or its behavior may be undefined though it may not panic.
-    /// - If `i` >= `N`, it will panic.
-    /// 
-    /// # Argument i
-    /// 0-th element contains LSB (Least Significant Bit), while (N-1)-th
-    /// element contains MSB (Most Significant Bit) regardless endianness.
-    /// `BigUInt` have an array of type `T` in order to present long-sized
-    /// unsigned integer.
-    /// 
-    /// # Counterpart Method
-    /// It is performance-oriented and does not care for safety.
-    /// It is virtually the same as the method set_num(). This method set_num_()
-    /// is considered to be slightly faster than the method set_num().
-    /// Use this method set_num_() only when you are sure that `i` < `N`.
-    /// Otherwise, use its Counterpart method [set_num()](struct@BigUInt#method.set_num).
-    /// 
-    /// # Example
-    /// ```
-    /// use Cryptocol::define_utypes_with;
-    /// define_utypes_with!(u128);
-    /// 
-    /// let mut a = u256::from([10_u128, 20]);
-    /// let mut num = a.get_num_(1);
-    /// println!("a.get_num(1).unwrap() = {}", num);
-    /// let b = a.set_num_(1, 0);
-    /// num = a.get_num_(1);
-    /// println!("a.get_num(1).unwrap() = {}", num);
-    /// assert_eq!(num, 0);
-    /// // It will panic.
-    /// // let c = a.set_num_(4, 0);
-    /// ```
-    /// 
-    /// # Big-endian issue
-    /// It is just experimental for Big Endian CPUs. So, you are not encouraged
-    /// to use it for Big Endian CPUs for serious purpose. Only use this crate
-    /// for Big-endian CPUs with your own full responsibility.
-    #[inline]
-    #[cfg(target_endian = "big")]
-    pub fn set_num_(&mut self, i: usize, val: T)
-    {
-        self.number[N-1-i] = val;
+        #[cfg(target_endian = "little")]    { self.number[i] = val; }
+        #[cfg(target_endian = "big")]       { self.number[N-1-i] = val; }
     }
 
     // pub fn get_number(&self) -> &[T; N]
@@ -3813,40 +3616,15 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// println!("a = {}", a);
     /// assert_eq!(a, u256::one());
     /// ```
-    #[cfg(target_endian = "little")]
-    pub fn set_one(&mut self)
-    {
-        for i in 1..N
-            { self.set_num(i, T::zero()); }
-        self.set_num(0, T::one());
-    }
-
-    // pub fn set_one(&mut self)
-    /// Sets BigUInt to be one.
-    /// 
-    /// # Example
-    /// ```
-    /// use Cryptocol::define_utypes_with;
-    /// define_utypes_with!(u16);
-    /// 
-    /// let mut a = u256::new();
-    /// a.set_number(&[1_u16, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16]);
-    /// println!("a = {}", a);
-    /// a.set_one();
-    /// println!("a = {}", a);
-    /// assert_eq!(a, u256::one());
-    /// ```
-    /// 
     /// # Big-endian issue
     /// It is just experimental for Big Endian CPUs. So, you are not encouraged
     /// to use it for Big Endian CPUs for serious purpose. Only use this crate
     /// for Big-endian CPUs with your own full responsibility.
-    #[cfg(target_endian = "big")]
     pub fn set_one(&mut self)
     {
-        for i in 0..N-1
-            { self.set_num(i, T::zero()); }
-        self.set_num(N-1, T::one());
+        self.set_zero();
+        #[cfg(target_endian = "little")]    { self.set_num(0, T::one()); }
+        #[cfg(target_endian = "big")]       { self.set_num(N-1, T::one()); }
     }
 
     // pub fn is_one(&self) -> bool
@@ -4140,6 +3918,10 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// println!("a = {}", a);
     /// assert_eq!(a.to_string(), "340282366920938463453374607431768211455");
     /// ```
+    /// # Big-endian issue
+    /// It is just experimental for Big Endian CPUs. So, you are not encouraged
+    /// to use it for Big Endian CPUs for serious purpose. Only use this crate
+    /// for Big-endian CPUs with your own full responsibility.
     pub fn set_uint<U>(&mut self, val: U)
     where U: SmallUInt + Copy + Clone + Display + Debug + ToString
             + Add<Output=U> + AddAssign + Sub<Output=U> + SubAssign
@@ -4162,73 +3944,23 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
         else    // VSIZE is multiple of TSIZE.
         {
             let TSIZE_BITS = TSIZE * 8;
+            #[cfg(target_endian = "little")]
             for i in 0..VSIZE/TSIZE
             {
                 unsafe { self.set_num_(i, share.des); }
                 unsafe { share.src >>= U::usize_as_SmallUInt(TSIZE_BITS); }
             }
-        }
-    }
-
-    // pub fn set_uint<U>(&mut self, val: U)
-    /// Sets `BigUInt`-type number with `U`-type small value such as `u8`,
-    /// `u16`, `u32`, `u64`, and `u128` type value. This mathod set_uint()
-    /// is useful especially when you initialize `BigUInt`-type big
-    /// unsigned integer with a small value.
-    /// 
-    /// # Panics
-    /// - If `size_of::<T>() * N` <= `128`, some methods may panic
-    /// or its behavior may be undefined though it may not panic.
-    /// - If `size_of::<T>() * N` < `size_of::<U>()`, some methods may panic
-    /// or its behavior may be undefined though it may not panic.
-    /// 
-    /// # Example
-    /// ```
-    /// use Cryptocol::define_utypes_with;
-    /// define_utypes_with!(u8);
-    /// 
-    /// let mut a = u1024::new();
-    /// println!("a = {}", a);
-    /// a.set_uint(340282366920938463453374607431768211455_u128);
-    /// println!("a = {}", a);
-    /// assert_eq!(a.to_string(), "340282366920938463453374607431768211455");
-    /// ```
-    /// 
-    /// # Big-endian issue
-    /// It is just experimental for Big Endian CPUs. So, you are not encouraged
-    /// to use it for Big Endian CPUs for serious purpose. Only use this crate
-    /// for Big-endian CPUs with your own full responsibility.
-    #[cfg(target_endian = "big")]
-    pub fn set_uint<U>(&mut self, val: U)
-    where U: SmallUInt + Copy + Clone + Display + Debug + ToString
-            + Add<Output=U> + AddAssign + Sub<Output=U> + SubAssign
-            + Mul<Output=U> + MulAssign + Div<Output=U> + DivAssign
-            + Rem<Output=U> + RemAssign
-            + Shl<Output=U> + ShlAssign + Shr<Output=U> + ShrAssign
-            + BitAnd<Output=U> + BitAndAssign + BitOr<Output=U> + BitOrAssign
-            + BitXor<Output=U> + BitXorAssign + Not<Output=U>
-            + PartialEq + PartialOrd
-    {
-        let TSIZE = T::size_in_bytes();
-        let VSIZE = U::size_in_bytes();
-        let mut share = Share::<T, U>::from_src(val);
-        
-        self.set_zero();
-        if TSIZE >= VSIZE
-        {
-            unsafe { self.set_num_(0, share.des); }
-        }
-        else    // VSIZE is multiple of TSIZE.
-        {
-            let TSIZE_BITS = TSIZE * 8;
-            let mut i = VSIZE/TSIZE - 1;
-            loop
+            #[cfg(target_endian = "big")]
             {
-                unsafe { self.set_num_(i, share.des); }
-                unsafe { share.src <<= U::usize_as_SmallUInt(TSIZE_BITS); }
-                if i == 0
-                    { break; }
-                i -= 1;
+                let mut i = VSIZE/TSIZE - 1;
+                loop
+                {
+                    unsafe { self.set_num_(i, share.des); }
+                    unsafe { share.src <<= U::usize_as_SmallUInt(TSIZE_BITS); }
+                    if i == 0
+                        { break; }
+                    i -= 1;
+                }
             }
         }
     }
@@ -4262,7 +3994,10 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// println!("Question: Is a 51?\nAnswer: {}", a.is_uint(51_u32));
     /// assert!(a.is_uint(51_u16));
     /// ```
-    #[cfg(target_endian = "little")]
+    /// # Big-endian issue
+    /// It is just experimental for Big Endian CPUs. So, you are not encouraged
+    /// to use it for Big Endian CPUs for serious purpose. Only use this crate
+    /// for Big-endian CPUs with your own full responsibility.
     pub fn is_uint<U>(&self, val: U) -> bool
     where U: SmallUInt + Copy + Clone + Display + Debug + ToString
             + Add<Output=U> + AddAssign + Sub<Output=U> + SubAssign
@@ -4290,92 +4025,26 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
         else    // VSIZE is multiple of TSIZE.
         {
             let TSIZE_BITS = TSIZE * 8;
+            #[cfg(target_endian = "little")]
             for i in 0..VSIZE/TSIZE
             {
                 if unsafe { self.get_num_(i) != share.des }
                     { return false; }
                 unsafe { share.src >>= U::usize_as_SmallUInt(TSIZE_BITS); }
             }
-            for i in VSIZE/TSIZE..N
+            #[cfg(target_endian = "big")]
             {
-                if self.get_num_(i) != T::zero()
-                    { return false; }
-            }
-        }
-        true
-    }
-
-    // pub fn is_uint<U>(&self, val: U) -> bool
-    /// Check whether the `BigUInt`-type number is equal to `U`-type number.
-    /// It will return `true`, if it is equal to the `U`-type number. Otherwise,
-    /// it will return `false`.
-    /// 
-    /// # Panics
-    /// - If `size_of::<T>() * N` <= `128`, some methods may panic
-    /// or its behavior may be undefined though it may not panic.
-    /// - If `size_of::<T>() * N` < `size_of::<U>()`, some methods may panic
-    /// or its behavior may be undefined though it may not panic.
-    /// 
-    /// # Output
-    /// It will return `true`, if it is equal to val.
-    /// Otherwise, it will return `false`.
-    /// 
-    /// # Counterpart Method
-    /// This method is_uint() is virtually the same the method [eq_uint()](struct@BigUInt#method.eq_uint).
-    /// However, you may want to use this method is_uint() rather than [eq_uint()](struct@BigUInt#method.eq_uint),
-    /// if you know that this method is_uint() is a bit faster than [eq_uint()](struct@BigUInt#method.eq_uint),
-    /// 
-    /// # Example
-    /// ```
-    /// use Cryptocol::define_utypes_with;
-    /// define_utypes_with!(u16);
-    /// 
-    /// let a = u1024::one() + 50_u16;
-    /// println!("Question: Is a 51?\nAnswer: {}", a.is_uint(51_u32));
-    /// assert!(a.is_uint(51_u16));
-    /// ```
-    /// 
-    /// # Big-endian issue
-    /// It is just experimental for Big Endian CPUs. So, you are not encouraged
-    /// to use it for Big Endian CPUs for serious purpose. Only use this crate
-    /// for Big-endian CPUs with your own full responsibility.
-    #[cfg(target_endian = "big")]
-    pub fn is_uint<U>(&self, val: U) -> bool
-    where U: SmallUInt + Copy + Clone + Display + Debug + ToString
-            + Add<Output=U> + AddAssign + Sub<Output=U> + SubAssign
-            + Mul<Output=U> + MulAssign + Div<Output=U> + DivAssign
-            + Rem<Output=U> + RemAssign
-            + Shl<Output=U> + ShlAssign + Shr<Output=U> + ShrAssign
-            + BitAnd<Output=U> + BitAndAssign + BitOr<Output=U> + BitOrAssign
-            + BitXor<Output=U> + BitXorAssign + Not<Output=U>
-            + PartialEq + PartialOrd
-    {
-        let TSIZE = T::size_in_bytes();
-        let VSIZE = U::size_in_bytes();
-        let mut share = Share::<T, U>::from_src(val);
-        
-        if TSIZE >= VSIZE
-        {
-            if unsafe { self.get_num_(0) != share.des }
-                { return false; }
-            for i in 1..N
-            {
-                if self.get_num_(i) != T::zero()
-                    { return false; }
-            }
-        }
-        else    // VSIZE is multiple of TSIZE.
-        {
-            let TSIZE_BITS = TSIZE * 8;
-            let mut i = VSIZE/TSIZE - 1;
-            loop
-            {
-                if unsafe { self.get_num_(i) != share.des }
-                    { return false; }
-                if i == 0
-                    { break; }
-                unsafe { share.src <<= U::usize_as_SmallUInt(TSIZE_BITS); }      
-                i -= 1;          
+                let mut i = VSIZE/TSIZE - 1;
+                loop
+                {
+                    if unsafe { self.get_num_(i) != share.des }
+                        { return false; }
+                    if i == 0
+                        { break; }
+                    unsafe { share.src <<= U::usize_as_SmallUInt(TSIZE_BITS); }     
+     
+                    i -= 1;          
+                }
             }
             for i in VSIZE/TSIZE..N
             {
