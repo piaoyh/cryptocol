@@ -18,6 +18,7 @@ use std::slice::from_raw_parts;
 use crate::number::IntUnion;
 use crate::number::SmallUInt;
 
+
 /// # Introduction
 /// A MD5 message-digest algorithm that lossily compresses data of arbitrary
 /// length into a 128-bit hash value. MD5 was designed by Ronald Rivest who
@@ -47,7 +48,7 @@ use crate::number::SmallUInt;
 /// # Quick Start
 /// In order to use the module md5, the module Cryptocol::hash::md5 is
 /// re-exported so that you don't have to import (or use)
-/// Cryptocol::hash::md5 directly. You only import MD5 struct in
+/// Cryptocol::hash::md5 directly. You only import MD5 struct in the module
 /// Cryptocol::hash. Example 1 shows how to import MD5 struct.
 /// 
 /// ## Example 1
@@ -70,7 +71,7 @@ use crate::number::SmallUInt;
 /// let mut txt = "";
 /// hash.digest_str(txt);
 /// println!("Msg =\t\"{}\"\nHash =\t{}\n", txt, hash);
-/// assert_eq!(hash.getHashValue_in_string(), "D41D8CD98F00B204E9800998ECF8427E");
+/// assert_eq!(hash.get_HashValue_in_string(), "D41D8CD98F00B204E9800998ECF8427E");
 /// 
 /// let txtStirng = String::from("A");
 /// hash.digest_string(&txtStirng);
@@ -80,7 +81,7 @@ use crate::number::SmallUInt;
 /// let txtArray = ['W' as u8, 'o' as u8, 'w' as u8];
 /// hash.digest_array(&txtArray);
 /// println!("Msg =\t\"{:?}\"\nHash =\t{}\n", txtArray, hash);
-/// assert_eq!(hash.getHashValue_in_string(), "49DC5E45FBEC1433E2C612E5AA809C10");
+/// assert_eq!(hash.get_HashValue_in_string(), "49DC5E45FBEC1433E2C612E5AA809C10");
 /// 
 /// txt = "This data is 26-byte long.";
 /// hash.digest_str(txt);
@@ -90,7 +91,7 @@ use crate::number::SmallUInt;
 /// txt = "The unit of data length is not byte but bit.";
 /// hash.digest_str(txt);
 /// println!("Msg =\t\"{}\"\nHash =\t{}\n", txt, hash);
-/// assert_eq!(hash.getHashValue_in_string(), "C3EB6D4A1071E1A9C5E08FEF6E8F3FBF");
+/// assert_eq!(hash.get_HashValue_in_string(), "C3EB6D4A1071E1A9C5E08FEF6E8F3FBF");
 /// 
 /// txt = "I am testing MD5 for the data whose length is sixty-two bytes.";
 /// hash.digest_str(txt);
@@ -100,7 +101,7 @@ use crate::number::SmallUInt;
 /// let mut txt = "I am testing MD5 for the data whose length is sixty-four bytes..";
 /// hash.digest_str(txt);
 /// println!("Msg =\t\"{}\"\nHash =\t{}\n", txt, hash);
-/// assert_eq!(hash.getHashValue_in_string(), "200F9A19EA45A830284342114483172B");
+/// assert_eq!(hash.get_HashValue_in_string(), "200F9A19EA45A830284342114483172B");
 /// 
 /// txt = "I am testing MD5 for the case data whose length is more than sixty-four bytes is given.";
 /// hash.digest_str(txt);
@@ -198,7 +199,6 @@ impl MD5
     /// # Example
     /// ```
     /// use Cryptocol::hash::MD5;
-    /// 
     /// let txt = "This is an example of the method digest().";
     /// let mut hash = MD5::new();
     /// hash.digest(txt.as_ptr(), txt.len() as u64);
@@ -249,7 +249,6 @@ impl MD5
     /// # Example
     /// ```
     /// use Cryptocol::hash::MD5;
-    /// 
     /// let txt = "This is an example of the method digest_str().";
     /// let mut hash = MD5::new();
     /// hash.digest_str(txt);
@@ -297,7 +296,6 @@ impl MD5
     /// # Example
     /// ```
     /// use Cryptocol::hash::MD5;
-    /// 
     /// let txt = "This is an example of the method digest_string().".to_string();
     /// let mut hash = MD5::new();
     /// hash.digest_string(&txt);
@@ -345,7 +343,6 @@ impl MD5
     /// # Example
     /// ```
     /// use Cryptocol::hash::MD5;
-    /// 
     /// let data = [ 0x67452301_u32.to_le(), 0xefcdab89_u32.to_le(), 0x98badcfe_u32.to_le(), 0x10325476_u32.to_le() ];
     /// let mut hash = MD5::new();
     /// hash.digest_array(&data);
@@ -394,12 +391,11 @@ impl MD5
     /// # Example
     /// ```
     /// use Cryptocol::hash::MD5;
-    /// 
     /// let data = vec![ 0x67452301_u32.to_le(), 0xefcdab89_u32.to_le(), 0x98badcfe_u32.to_le(), 0x10325476_u32.to_le() ];
     /// let mut hash = MD5::new();
     /// hash.digest_vec(&data);
     /// println!("Msg =\t{:?}\nHash =\t{}", data, hash);
-    /// assert_eq!(data.to_string(), "054DE9CF5F9EA623BBB8DC4781685A58");
+    /// assert_eq!(hash.to_string(), "054DE9CF5F9EA623BBB8DC4781685A58");
     /// ```
     /// 
     /// # Big-endian issue
@@ -444,7 +440,6 @@ impl MD5
     /// # Example
     /// ```
     /// use Cryptocol::hash::MD5;
-    /// 
     /// let txt = "This is an example of the method get_HashValue().";
     /// let mut hashValue = [0_u8; 16];
     /// let mut hash = MD5::new();
@@ -467,9 +462,7 @@ impl MD5
         {
             let mut hash_code = [IntUnion::new(); 4];
             for i in 0..4
-            {
-                hash_code[i].set(self.hash_code[i].get().to_le());
-            }
+                { hash_code[i].set(self.hash_code[i].get().to_le()); }
             unsafe { copy_nonoverlapping(hash_code.as_ptr() as *const u8, hashValue, n_length); }
         }
     }
@@ -495,7 +488,6 @@ impl MD5
     /// # Example
     /// ```
     /// use Cryptocol::hash::MD5;
-    /// 
     /// let txt = "This is an example of the method get_HashValue_in_string().";
     /// let mut hash = MD5::new();
     /// hash.digest_str(txt);
@@ -543,7 +535,6 @@ impl MD5
     /// # Example
     /// ```
     /// use Cryptocol::hash::MD5;
-    /// 
     /// let txt = "This is an example of the method get_HashValue_in_array().";
     /// let mut hash = MD5::new();
     /// hash.digest_str(txt);
@@ -583,7 +574,6 @@ impl MD5
     /// # Example
     /// ```
     /// use Cryptocol::hash::MD5;
-    /// 
     /// let txt = "This is an example of the method get_HashValue_in_vec().";
     /// let mut hash = MD5::new();
     /// hash.digest_str(txt);
@@ -709,7 +699,7 @@ impl MD5
         unsafe { mu.lu[7] = (length_in_bytes << 3).to_le(); }    // 데이터 길이의 단위는 바이트가 아니라 비트이다.
         self.update(unsafe {&mu.iu});
     }
-
+/*
     fn func(x: u32, y: u32, z: u32, round: usize) -> (u32, usize)
     {
         if round < 16
@@ -721,10 +711,10 @@ impl MD5
         else
             { (Self::Ii(x, y, z), ((round << 3) - round) & 0b1111) }        // same as (7 * round) % 16
     }
-
+*/
 	#[inline] fn getK(idx: usize) -> u32    { Self::K[idx] }
 	#[inline] fn getH(idx: usize) -> u32    { Self::H[idx] }
-    #[inline] fn getR(idx: usize) -> u32  { Self::R[idx >> 4][idx & 0b11] }
+    // #[inline] fn getR(idx: usize) -> u32  { Self::R[idx >> 4][idx & 0b11] }
 	#[inline] fn Ff(x: u32, y: u32, z: u32) -> u32  { (x & y) | (!x & z) }
 	#[inline] fn Gg(x: u32, y: u32, z: u32) -> u32  { (x & z) | (y & !z) }
 	#[inline] fn Hh(x: u32, y: u32, z: u32) -> u32	{ x ^ y ^ z }

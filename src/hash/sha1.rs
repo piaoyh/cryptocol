@@ -19,6 +19,105 @@ use crate::number::IntUnion;
 use crate::number::SmallUInt;
 
 
+/// # Introduction
+/// A SHA-1 message-digest algorithm that lossily compresses data of arbitrary
+/// length into a 128-bit hash value. SHA-1 was designed by the United States
+/// National Security Agency, and is a U.S. Federal Information Processing
+/// Standard. SHA-1 produces a message digest based on principles similar to
+/// those used by Ronald L. Rivest of MIT in the design of the MD2, MD4
+/// and MD5 message digest algorithms, but generates a larger hash value
+/// (160 bits vs. 128 bits).
+/// 
+/// # Vulnerability
+/// In February 2005, Xiaoyun Wang, Yiqun Lisa Yin, and Hongbo Yu announced
+/// an attack to find collisions in the full version of SHA-1. Today, SHA-1
+/// is not recommended for serious cryptographic purposes anymore.
+/// __DO NOT USE SHA1 FOR SERIOUS CRYPTOGRAPHIC PURPOSES AT ALL!__
+/// If you need to use a hash algorithm for serious cryptographic purposes,
+/// you are highly recommended to use SHA-3 hash algorithm instead of SHA-1,
+/// for example.
+/// 
+/// # Usage of SHA-1
+/// Though SHA-1 is lack of cryptographic security, SHA-1 is still widely used
+/// for non-cryptograpic purposes such as:
+/// - Generating small number of IDs
+/// - Integrity test in some collision-free situations
+/// - Storing passwords with limited security
+/// - Digital Signature
+/// 
+/// Read [this article](https://en.wikipedia.org/wiki/SHA-1)
+/// and/or watch [this video](https://www.youtube.com/watch?v=JIhZWgJA-9o)
+/// to learn SHA-1 more in detail.
+/// 
+/// # Quick Start
+/// In order to use the module SHA-1, the module Cryptocol::hash::SHA1 is
+/// re-exported so that you don't have to import (or use)
+/// Cryptocol::hash::SHA1 directly. You only import SHA1 struct in the module
+/// Cryptocol::hash. Example 1 shows how to import SHA1 struct.
+/// 
+/// ## Example 1
+/// ```
+/// use Cryptocol::hash::SHA1;
+/// ```
+/// Then, you create SHA1 object by the method SHA1::new(). Now, you are ready
+/// to use all prepared methods to hash any data. If you want to hash a string,
+/// for example, you can use the method digest_str(). Then, the SHA1 object
+/// that you created will contain its hash value. You can use the macro
+/// println!() for instance to print on a commandline screen by
+/// `println!("{}", hash)` where hash is the SHA1 object.
+/// Example 2 shows how to use SHA1 struct quickly.
+/// 
+/// ## Example 2
+/// ```
+/// use std::string::*;
+/// use Cryptocol::hash::SHA1;
+/// let mut hash = SHA1::new();
+/// 
+/// let mut txt = "";
+/// hash.digest_str(txt);
+/// println!("Msg =\t\"{}\"\nHash =\t{}\n", txt, hash.get_HashValue_in_string());
+/// assert_eq!(hash.get_HashValue_in_string(), "DA39A3EE5E6B4B0D3255BFEF95601890AFD80709");
+/// 
+/// let txtStirng = String::from("A");
+/// hash.digest_string(&txtStirng);
+/// println!("Msg =\t\"{}\"\nHash =\t{}\n", txtStirng, hash);
+/// assert_eq!(hash.to_string(), "6DCD4CE23D88E2EE9568BA546C007C63D9131C1B");
+/// 
+/// let txtArray = ['W' as u8, 'o' as u8, 'w' as u8];
+/// hash.digest_array(&txtArray);
+/// println!("Msg =\t\"{:?}\"\nHash =\t{}\n", txtArray, hash);
+/// assert_eq!(hash.get_HashValue_in_string(), "0BBCDBD1616A1D2230100F629649DCF5B7A28B7F");
+/// 
+/// txt = "This data is 26-byte long.";
+/// hash.digest_str(txt);
+/// println!("Msg =\t\"{}\"\nHash =\t{}\n", txt, hash);
+/// assert_eq!(hash.to_string(), "B82A61505779F6B3ACA4F5E0D54DA44C17375B49");
+/// 
+/// txt = "The unit of data length is not byte but bit.";
+/// hash.digest_str(txt);
+/// println!("Msg =\t\"{}\"\nHash =\t{}\n", txt, hash);
+/// assert_eq!(hash.get_HashValue_in_string(), "C6DC54281357FC16D357E1D730BFC313C585DAEC");
+/// 
+/// txt = "I am testing SHA1 for the data whose length is sixty-two bytes.";
+/// hash.digest_str(txt);
+/// println!("Msg =\t\"{}\"\nHash =\t{}\n", txt, hash);
+/// assert_eq!(hash.to_string(), "36CD36337097D764797091E5796B6FF45A9FA79F");
+/// 
+/// let mut txt = "I am testing SHA-1 for the data whose length is sixty-four bytes.";
+/// hash.digest_str(txt);
+/// println!("Msg =\t\"{}\"\nHash =\t{}\n", txt, hash);
+/// assert_eq!(hash.get_HashValue_in_string(), "E408F6B82DCDDB5EE6613A759AC1B13D0FA1CEF1");
+/// 
+/// txt = "I am testing SHA1 for the case data whose length is more than sixty-four bytes is given.";
+/// hash.digest_str(txt);
+/// println!("Msg =\t\"{}\"\nHash =\t{}\n", txt, hash);
+/// assert_eq!(hash.to_string(), "BB2C79F551B95963ECE49D40F8A92349BF66CAE7");
+/// ```
+/// 
+/// # Big-endian issue
+/// It is just experimental for Big Endian CPUs. So, you are not encouraged
+/// to use it for Big Endian CPUs for serious purpose. Only use this crate
+/// for Big-endian CPUs with your own full responsibility.
 #[derive(Debug, Clone)]
 pub struct SHA1
 {
@@ -30,13 +129,77 @@ impl SHA1
     const K: [u32; 4] = [ 0x5a827999, 0x6ed9eba1, 0x8f1bbcdc, 0xca62c1d6 ];
     const H: [u32; 5] = [ 0x67452301, 0xefcdab89, 0x98badcfe, 0x10325476, 0xc3d2e1f0 ];
 
+    // pub fn new() -> Self
+    /// Constructs a new `SHA1`.
+    /// 
+    /// # Output
+    /// A new object of `SHA1`.
+    /// 
+    /// # Initialization
+    /// All the attributes of the constructed object, which is initial hash
+    /// value, will be initialized with
+    /// `67452301EFCDAB8998BADCFE10325476C3D2E1F0`.
+    /// 
+    /// # Example
+    /// ```
+    /// use Cryptocol::hash::SHA1;
+    /// let mut hash = SHA1::new();
+    /// println!("Hash =\t{}", hash);
+    /// assert_eq!(hash.to_string(), "67452301EFCDAB8998BADCFE10325476C3D2E1F0");
+    /// ```
     pub fn new() -> Self    { SHA1 { hash_code: [IntUnion::new_with(Self::H[0]),
                                                 IntUnion::new_with(Self::H[1]),
                                                 IntUnion::new_with(Self::H[2]),
                                                 IntUnion::new_with(Self::H[3]),
                                                 IntUnion::new_with(Self::H[4])] } }
 
-    /// // pub fn digest(&mut self, message: *const u8, length_in_bytes: u64)
+    // pub fn digest(&mut self, message: *const u8, length_in_bytes: u64)
+    /// Compute hash value.
+    /// 
+    /// # Features
+    /// This function has the generalized interface (pointer, `*const u8`)
+    /// so as to enable other functions to wrap this function with any
+    /// convenient interface for uses. So, this function is usually not called
+    /// directly in Rust. This function is provided to be called from other
+    /// programming languages such as C/C++.
+    /// 
+    /// # Arguments
+    /// - `message` is pointer to const u8.
+    /// - `length_in_bytes` is the size of message in the unit of bytes, and
+    /// data type is `u64`.
+    /// 
+    /// # Counterpart Methods
+    /// - If you want to compute of the hash value of a string slice,
+    /// you are highly recommended to use the method
+    /// [digest_str()](struct@SHA1#method.digest_str)
+    /// rather than this method.
+    /// - If you want to compute of the hash value of the content of String
+    /// object, you are highly recommended to use the method
+    /// [digest_string()](struct@SHA1#method.digest_string)
+    /// rather than this method.
+    /// - If you want to compute of the hash value of the content of Array
+    /// object, you are highly recommended to use the method
+    /// [digest_array()](struct@SHA1#method.digest_array)
+    /// rather than this method.
+    /// - If you want to compute of the hash value of the content of Vec
+    /// object, you are highly recommended to use the method
+    /// [digest_vec()](struct@SHA1#method.digest_array)
+    /// rather than this method.
+    ///
+    /// # Example
+    /// ```
+    /// use Cryptocol::hash::SHA1;
+    /// let txt = "This is an example of the method digest().";
+    /// let mut hash = SHA1::new();
+    /// hash.digest(txt.as_ptr(), txt.len() as u64);
+    /// println!("Msg =\t\"{}\"\nHash =\t{}", txt, hash);
+    /// assert_eq!(hash.to_string(), "9631162DFDAEAB89821256D4585D66D35CD61FD6");
+    /// ```
+    /// 
+    /// # Big-endian issue
+    /// It is just experimental for Big Endian CPUs. So, you are not encouraged
+    /// to use it for Big Endian CPUs for serious purpose. Only use this crate
+    /// for Big-endian CPUs with your own full responsibility.
     pub fn digest(&mut self, message: *const u8, length_in_bytes: u64)
     {
         self.initialize();
@@ -46,7 +209,47 @@ impl SHA1
         self.finalize(unsafe { message.add(length_done << 6) }, length_in_bytes);
     }
 
-    // pub fn digest_str(&mut self, message: &str)
+    /// // pub fn digest_str(&mut self, message: &str)
+    /// Compute hash value.
+    /// 
+    /// # Features
+    /// This function is a wrapping function of `digest()`.
+    /// This function computes hash value of the content of string slice.
+    /// 
+    /// # Argument
+    /// - message is `&str`.
+    /// 
+    /// # Counterpart Methods
+    /// - If you want to compute of the hash value of the content of String
+    /// object, you are highly recommended to use the method
+    /// [digest_string()](struct@SHA1#method.digest_string)
+    /// rather than this method.
+    /// - If you want to compute of the hash value of the content of Array
+    /// object, you are highly recommended to use the method
+    /// [digest_array()](struct@SHA1#method.digest_array)
+    /// rather than this method.
+    /// - If you want to compute of the hash value of the content of Vec
+    /// object, you are highly recommended to use the method
+    /// [digest_vec()](struct@SHA1#method.digest_array)
+    /// rather than this method.
+    /// - If you want to use this method from other programming languages such
+    /// as C/C++, you are highly recommended to use the method
+    /// [digest()](struct@SHA1#method.digest) rather than this method.
+    ///
+    /// # Example
+    /// ```
+    /// use Cryptocol::hash::SHA1;
+    /// let txt = "This is an example of the method digest_str().";
+    /// let mut hash = SHA1::new();
+    /// hash.digest_str(txt);
+    /// println!("Msg =\t\"{}\"\nHash =\t{}", txt, hash);
+    /// assert_eq!(hash.to_string(), "9FDE56BBB5028966CC2E7BDCD0758FE3121407E6");
+    /// ```
+    /// 
+    /// # Big-endian issue
+    /// It is just experimental for Big Endian CPUs. So, you are not encouraged
+    /// to use it for Big Endian CPUs for serious purpose. Only use this crate
+    /// for Big-endian CPUs with your own full responsibility.
     #[inline]
     pub fn digest_str(&mut self, message: &str)
     {
@@ -54,13 +257,93 @@ impl SHA1
     }
 
     // pub fn digest_string(&mut self, message: &String)
+    /// Compute hash value.
+    /// 
+    /// # Features
+    /// This function is a wrapping function of `digest()`.
+    /// This function computes hash value of the content of String object.
+    /// 
+    /// # Argument
+    /// - message is `&String`.
+    /// 
+    /// # Counterpart Methods
+    /// - If you want to compute of the hash value of a string slice,
+    /// you are highly recommended to use the method
+    /// [digest_str()](struct@SHA1#method.digest_str)
+    /// rather than this method.
+    /// - If you want to compute of the hash value of the content of Array
+    /// object, you are highly recommended to use the method
+    /// [digest_array()](struct@SHA1#method.digest_array)
+    /// rather than this method.
+    /// - If you want to compute of the hash value of the content of Vec
+    /// object, you are highly recommended to use the method
+    /// [digest_vec()](struct@SHA1#method.digest_array)
+    /// rather than this method.
+    /// - If you want to use this method from other programming languages such
+    /// as C/C++, you are highly recommended to use the method
+    /// [digest()](struct@SHA1#method.digest) rather than this method.
+    ///
+    /// # Example
+    /// ```
+    /// use Cryptocol::hash::SHA1;
+    /// let txt = "This is an example of the method digest_string().".to_string();
+    /// let mut hash = SHA1::new();
+    /// hash.digest_string(&txt);
+    /// println!("Msg =\t\"{}\"\nHash =\t{}", txt, hash);
+    /// assert_eq!(hash.to_string(), "FDCDC0EBC9181B881BE1F15FECEBB9D70E4DDAAB");
+    /// ```
+    /// 
+    /// # Big-endian issue
+    /// It is just experimental for Big Endian CPUs. So, you are not encouraged
+    /// to use it for Big Endian CPUs for serious purpose. Only use this crate
+    /// for Big-endian CPUs with your own full responsibility.
     #[inline]
     pub fn digest_string(&mut self, message: &String)
     {
         self.digest(message.as_ptr(), message.len() as u64);
     }
 
-    // pub fn digest_array<T, const N: usize>(&mut self, message: &[T; N])
+    // pub fn digest_array<const N: usize>(&mut self, message: &[T; N])
+    /// Compute hash value.
+    /// 
+    /// # Features
+    /// This function is a wrapping function of `digest()`.
+    /// This function computes hash value of the content of Array object.
+    /// 
+    /// # Argument
+    /// - message is `&[T; N]`.
+    /// 
+    /// # Counterpart Methods
+    /// - If you want to compute of the hash value of a string slice,
+    /// you are highly recommended to use the method
+    /// [digest_str()](struct@SHA1#method.digest_str)
+    /// rather than this method.
+    /// - If you want to compute of the hash value of the content of String
+    /// object, you are highly recommended to use the method
+    /// [digest_string()](struct@SHA1#method.digest_string)
+    /// rather than this method.
+    /// - If you want to compute of the hash value of the content of Vec
+    /// object, you are highly recommended to use the method
+    /// [digest_vec()](struct@SHA1#method.digest_array)
+    /// rather than this method.
+    /// - If you want to use this method from other programming languages such
+    /// as C/C++, you are highly recommended to use the method
+    /// [digest()](struct@SHA1#method.digest) rather than this method.
+    ///
+    /// # Example
+    /// ```
+    /// use Cryptocol::hash::SHA1;
+    /// let data = [ 0x67452301_u32.to_le(), 0xefcdab89_u32.to_le(), 0x98badcfe_u32.to_le(), 0x10325476_u32.to_le() ];
+    /// let mut hash = SHA1::new();
+    /// hash.digest_array(&data);
+    /// println!("Msg =\t{:?}\nHash =\t{}", data, hash);
+    /// assert_eq!(hash.to_string(), "76BC87BAECA7725C948FD1C53766454FDA0867AF");
+    /// ```
+    /// 
+    /// # Big-endian issue
+    /// It is just experimental for Big Endian CPUs. So, you are not encouraged
+    /// to use it for Big Endian CPUs for serious purpose. Only use this crate
+    /// for Big-endian CPUs with your own full responsibility.
     #[inline]
     pub fn digest_array<T, const N: usize>(&mut self, message: &[T; N])
     where T: SmallUInt + Copy + Clone + Display + Debug + ToString
@@ -69,6 +352,46 @@ impl SHA1
     }
 
     // pub fn digest_vec<T>(&mut self, message: &Vec<T>)
+    /// Compute hash value.
+    /// 
+    /// # Features
+    /// This function is a wrapping function of `digest()`.
+    /// This function computes hash value of the content of Vec object.
+    /// 
+    /// # Argument
+    /// - message is `&Vec<T>`.
+    /// 
+    /// # Counterpart Methods
+    /// - If you want to compute of the hash value of a string slice,
+    /// you are highly recommended to use the method
+    /// [digest_str()](struct@SHA1#method.digest_str)
+    /// rather than this method.
+    /// - If you want to compute of the hash value of the content of String
+    /// object, you are highly recommended to use the method
+    /// [digest_string()](struct@SHA1#method.digest_string)
+    /// rather than this method.
+    /// - If you want to compute of the hash value of the content of Array
+    /// object, you are highly recommended to use the method
+    /// [digest_array()](struct@SHA1#method.digest_array)
+    /// rather than this method.
+    /// - If you want to use this method from other programming languages such
+    /// as C/C++, you are highly recommended to use the method
+    /// [digest()](struct@SHA1#method.digest) rather than this method.
+    ///
+    /// # Example
+    /// ```
+    /// use Cryptocol::hash::SHA1;
+    /// let data = vec![ 0x67452301_u32.to_le(), 0xefcdab89_u32.to_le(), 0x98badcfe_u32.to_le(), 0x10325476_u32.to_le() ];
+    /// let mut hash = SHA1::new();
+    /// hash.digest_vec(&data);
+    /// println!("Msg =\t{:?}\nHash =\t{}", data, hash);
+    /// assert_eq!(hash.to_string(), "76BC87BAECA7725C948FD1C53766454FDA0867AF");
+    /// ```
+    /// 
+    /// # Big-endian issue
+    /// It is just experimental for Big Endian CPUs. So, you are not encouraged
+    /// to use it for Big Endian CPUs for serious purpose. Only use this crate
+    /// for Big-endian CPUs with your own full responsibility.
     #[inline]
     pub fn digest_vec<T>(&mut self, message: &Vec<T>)
     where T: SmallUInt + Copy + Clone + Display + Debug + ToString
@@ -77,13 +400,94 @@ impl SHA1
     }
 
     // pub fn get_HashValue(&self, hashValue: *mut u8, length: usize)
+    /// Gives a hash value to the place where `hashValue` points to.
+    /// 
+    /// # Features
+    /// This function has the generalized interface (pointer, `*mut u8`)
+    /// so as to enable other functions to wrap this function with any
+    /// convenient interface for uses. So, this function is usually not called
+    /// directly in Rust. This function is provided to be called from other
+    /// programming languages such as C/C++.
+    /// 
+    /// # Arguments
+    /// - `hashValue` is the pointer to the place to hold the result hash value.
+    /// - `length` is the size of the place that `hashValue` points to. 
+    /// 
+    /// # Counterpart Methods
+    /// - If you want to get the hash value in the form of String object,
+    /// you are highly recommended to use the method
+    /// [get_HashValue_string()](struct@SHA1#method.get_HashValue_string)
+    /// rather than this method.
+    /// - If you want to get the hash value in the form of array object,
+    /// you are highly recommended to use the method
+    /// [get_HashValue_in_array()](struct@SHA1#method.get_HashValue_in_array)
+    /// rather than this method.
+    /// - If you want to get the hash value in the form of Vec object,
+    /// you are highly recommended to use the method
+    /// [get_HashValue_in_vec()](struct@SHA1#method.get_HashValue_in_vec)
+    /// rather than this method.
+    ///
+    /// # Example
+    /// ```
+    /// use Cryptocol::hash::SHA1;
+    /// let txt = "This is an example of the method get_HashValue().";
+    /// let mut hashValue = [0_u8; 20];
+    /// let mut hash = SHA1::new();
+    /// hash.digest_str(txt);
+    /// hash.get_HashValue(hashValue.as_ptr() as *mut u8, hashValue.len());
+    /// println!("Msg =\t\"{}\"\nHash =\t{:02X?}", txt, hashValue);
+    /// assert_eq!(format!("{:02X?}", hashValue), "[E9, C6, F4, 3B, 77, AA, 27, A1, 6E, B4, F0, F5, 5B, F3, D8, C7, 3A, EB, 7F, 93]");
+    /// ```
+    /// 
+    /// # Big-endian issue
+    /// It is just experimental for Big Endian CPUs. So, you are not encouraged
+    /// to use it for Big Endian CPUs for serious purpose. Only use this crate
+    /// for Big-endian CPUs with your own full responsibility.
     pub fn get_HashValue(&self, hashValue: *mut u8, length: usize)
     {
         let n_length = if length < (4 * 5) {length} else {4 * 5};
+        #[cfg(target_endian = "little")]
+        {
+            let mut hash_code = [IntUnion::new(); 5];
+            for i in 0..5
+                { hash_code[i].set(self.hash_code[i].get().to_be()); }
+            unsafe { copy_nonoverlapping(hash_code.as_ptr() as *const u8, hashValue, n_length); }
+        }
+        #[cfg(target_endian = "big")]
         unsafe { copy_nonoverlapping(self.hash_code.as_ptr() as *const u8, hashValue, n_length); }
     }
 
     // pub fn get_HashValue_in_string(&self) -> String
+    /// Returns a hash value in the form of String object.
+    /// 
+    /// # Counterpart Methods
+    /// - If you want to get the hash value in the form of array object,
+    /// you are highly recommended to use the method
+    /// [get_HashValue_in_array()](struct@SHA1#method.get_HashValue_in_array)
+    /// rather than this method.
+    /// - If you want to get the hash value in the form of Vec object,
+    /// you are highly recommended to use the method
+    /// [get_HashValue_in_vec()](struct@SHA1#method.get_HashValue_in_vec)
+    /// rather than this method.
+    /// - If you want to use this method from other programming languages such
+    /// as C/C++, you are highly recommended to use the method
+    /// [get_HashValue()](struct@SHA1#method.get_HashValue)
+    /// rather than this method.
+    ///
+    /// # Example
+    /// ```
+    /// use Cryptocol::hash::SHA1;
+    /// let txt = "This is an example of the method get_HashValue_in_string().";
+    /// let mut hash = SHA1::new();
+    /// hash.digest_str(txt);
+    /// println!("Msg =\t\"{}\"\nHash =\t{}", txt, hash.get_HashValue_in_string());
+    /// assert_eq!(hash.get_HashValue_in_string(), "899B9673103FCB06B237A5A6A7D04D749EA4BD92");
+    /// ```
+    /// 
+    /// # Big-endian issue
+    /// It is just experimental for Big Endian CPUs. So, you are not encouraged
+    /// to use it for Big Endian CPUs for serious purpose. Only use this crate
+    /// for Big-endian CPUs with your own full responsibility.
     pub fn get_HashValue_in_string(&self) -> String
     {
         let mut txt = String::new();
@@ -101,6 +505,36 @@ impl SHA1
     }
 
     // pub fn get_HashValue_in_array(&self) -> [u32; 5]
+    /// Returns a hash value in the form of array object.
+    /// 
+    /// # Counterpart Methods
+    /// - If you want to get the hash value in the form of String object,
+    /// you are highly recommended to use the method
+    /// [get_HashValue_string()](struct@SHA1#method.get_HashValue_string)
+    /// rather than this method.
+    /// - If you want to get the hash value in the form of Vec object,
+    /// you are highly recommended to use the method
+    /// [get_HashValue_in_vec()](struct@SHA1#method.get_HashValue_in_vec)
+    /// rather than this method.
+    /// - If you want to use this method from other programming languages such
+    /// as C/C++, you are highly recommended to use the method
+    /// [get_HashValue()](struct@SHA1#method.get_HashValue)
+    /// rather than this method.
+    ///
+    /// # Example
+    /// ```
+    /// use Cryptocol::hash::SHA1;
+    /// let txt = "This is an example of the method get_HashValue_in_array().";
+    /// let mut hash = SHA1::new();
+    /// hash.digest_str(txt);
+    /// println!("Msg =\t\"{}\"\nHash =\t{:02X?}", txt, hash.get_HashValue_in_array());
+    /// assert_eq!(format!("{:02X?}", hash.get_HashValue_in_array()), "[E9840962, 837B21A9, D9321727, 74980B51, 364DD5A2]");
+    /// ```
+    /// 
+    /// # Big-endian issue
+    /// It is just experimental for Big Endian CPUs. So, you are not encouraged
+    /// to use it for Big Endian CPUs for serious purpose. Only use this crate
+    /// for Big-endian CPUs with your own full responsibility.
     pub fn get_HashValue_in_array(&self) -> [u32; 5]
     {
         let mut res = [0_u32; 5];
@@ -109,8 +543,37 @@ impl SHA1
         res
     }
 
-    // pub fn get_HashValue_in_vec(&self) -> Vec<u32>
-    #[inline]
+    // pub fn getHashValue_in_vec(&self) -> Vec
+    /// Returns a hash value in the form of Vec object.
+    /// 
+    /// # Counterpart Methods
+    /// - If you want to get the hash value in the form of String object,
+    /// you are highly recommended to use the method
+    /// [get_HashValue_string()](struct@SHA1#method.get_HashValue_string)
+    /// rather than this method.
+    /// - If you want to get the hash value in the form of array object,
+    /// you are highly recommended to use the method
+    /// [get_HashValue_in_array()](struct@SHA1#method.get_HashValue_in_array)
+    /// rather than this method.
+    /// - If you want to use this method from other programming languages such
+    /// as C/C++, you are highly recommended to use the method
+    /// [get_HashValue()](struct@SHA1#method.get_HashValue)
+    /// rather than this method.
+    ///
+    /// # Example
+    /// ```
+    /// use Cryptocol::hash::SHA1;
+    /// let txt = "This is an example of the method get_HashValue_in_vec().";
+    /// let mut hash = SHA1::new();
+    /// hash.digest_str(txt);
+    /// println!("Msg =\t\"{}\"\nHash =\t{:02X?}", txt, hash.get_HashValue_in_vec());
+    /// assert_eq!(format!("{:02X?}", hash.get_HashValue_in_vec()), "[96E00128, E1E04E29, F65ABA7B, AD10C0A2, 1BC438DA]");
+    /// ```
+    /// 
+    /// # Big-endian issue
+    /// It is just experimental for Big Endian CPUs. So, you are not encouraged
+    /// to use it for Big Endian CPUs for serious purpose. Only use this crate
+    /// for Big-endian CPUs with your own full responsibility.
     pub fn get_HashValue_in_vec(&self) -> Vec<u32>
     {
         let mut res = Vec::new();
@@ -118,6 +581,7 @@ impl SHA1
             { res.push(self.hash_code[i].get().to_be()); }
         res
     }
+
     fn initialize(&mut self)
     {
         for i in 0..5_usize
@@ -126,6 +590,7 @@ impl SHA1
 
     fn update(&mut self, message: &[u32])
     {
+        let mut W = [0_u32; 16];
         let mut a = self.hash_code[0].get();
         let mut b = self.hash_code[1].get();
         let mut c = self.hash_code[2].get();
@@ -134,9 +599,10 @@ impl SHA1
 
         for i in 0..16_usize
         {
+            W[i] = message[i].to_be();
             let f = Self::Ff(b, c, d).wrapping_add(e)
-                                .wrapping_add(Self::getK(i))
-                                .wrapping_add(message[i].to_be())
+                                .wrapping_add(Self::getK(0))
+                                .wrapping_add(W[i])
                                 .wrapping_add(a.rotate_left(5));
             e = d;
             d = c;
@@ -146,9 +612,11 @@ impl SHA1
         }
         for i in 16..20_usize
         {
+            let j = i & 0b1111;
+            W[j] = Self::getW(&W, i);
             let f = Self::Ff(b, c, d).wrapping_add(e)
-                                .wrapping_add(Self::getK(i))
-                                .wrapping_add(Self::getW(message, i).to_be())
+                                .wrapping_add(Self::getK(0))
+                                .wrapping_add(W[j])
                                 .wrapping_add(a.rotate_left(5));
             e = d;
             d = c;
@@ -158,9 +626,11 @@ impl SHA1
         }
         for i in 20..40_usize
         {
+            let j = i & 0b1111;
+            W[j] = Self::getW(&W, i);
             let f = Self::Gg(b, c, d).wrapping_add(e)
-                                .wrapping_add(Self::getK(i))
-                                .wrapping_add(Self::getW(message, i).to_be())
+                                .wrapping_add(Self::getK(1))
+                                .wrapping_add(W[j])
                                 .wrapping_add(a.rotate_left(5));
             e = d;
             d = c;
@@ -170,9 +640,11 @@ impl SHA1
         }
         for i in 40..60_usize
         {
+            let j = i & 0b1111;
+            W[j] = Self::getW(&W, i);
             let f = Self::Hh(b, c, d).wrapping_add(e)
-                                .wrapping_add(Self::getK(i))
-                                .wrapping_add(Self::getW(message, i).to_be())
+                                .wrapping_add(Self::getK(2))
+                                .wrapping_add(W[j])
                                 .wrapping_add(a.rotate_left(5));
             e = d;
             d = c;
@@ -182,9 +654,11 @@ impl SHA1
         }
         for i in 60..80_usize
         {
-            let f = Self::Ff(b, c, d).wrapping_add(e)
-                                .wrapping_add(Self::getK(i))
-                                .wrapping_add(Self::getW(message, i).to_be())
+            let j = i & 0b1111;
+            W[j] = Self::getW(&W, i);
+            let f = Self::Gg(b, c, d).wrapping_add(e)
+                                .wrapping_add(Self::getK(3))
+                                .wrapping_add(W[j])
                                 .wrapping_add(a.rotate_left(5));
             e = d;
             d = c;
@@ -221,16 +695,16 @@ impl SHA1
             for i in 0..7
                 { unsafe { mu.lu[i] = 0; } }
         }
-        unsafe { mu.lu[7] = (length_in_bytes << 3).to_le(); }    // 데이터 길이의 단위는 바이트가 아니라 비트이다.
+        unsafe { mu.lu[7] = (length_in_bytes << 3).to_be(); }    // 데이터 길이의 단위는 바이트가 아니라 비트이다.
         self.update(unsafe {&mu.iu});
     }
 
 	#[inline] fn getK(idx: usize) -> u32    { Self::K[idx] }
 	#[inline] fn getH(idx: usize) -> u32    { Self::H[idx] }
-    #[inline] fn getW(message: &[u32], idx: usize) -> u32   { (message[idx-3] ^ message[idx-8] ^ message[idx-14] ^ message[idx-16]).rotate_left(1) }
-	#[inline] fn Ff(x: u32, y: u32, z: u32) -> u32  { (x & y) | (!x & z) }
+    #[inline] fn getW(W: &[u32; 16], idx: usize) -> u32   { (W[(idx-3) & 0b1111] ^ W[(idx-8) & 0b1111] ^ W[(idx-14) & 0b1111] ^ W[(idx-16) & 0b1111]).rotate_left(1) }
+	#[inline] fn Ff(x: u32, y: u32, z: u32) -> u32  { z ^ (x & (y ^ z)) }   // equivalent to { (x & y) | (!x & z) }
 	#[inline] fn Gg(x: u32, y: u32, z: u32) -> u32	{ x ^ y ^ z }
-	#[inline] fn Hh(x: u32, y: u32, z: u32) -> u32  { (x & z) | (y & z) | (z & x) }
+	#[inline] fn Hh(x: u32, y: u32, z: u32) -> u32  { (x & y) | (z & (x | y)) } // equivalent to { (x & y) | (y & z) | (z & x) }
     #[inline] fn to_char(nibble: u8) -> char    { if nibble < 10  { ('0' as u8 + nibble) as u8 as char } else { ('A' as u8 - 10 + nibble) as char } }
 }
 
@@ -240,29 +714,29 @@ impl Display for SHA1
     /// Formats the value using the given formatter.
     /// You will hardly use this method directly.
     /// Automagically the function `to_string()` will be implemented. So, you
-    /// can use the function `to_string()`, and you can also print the MD5
+    /// can use the function `to_string()`, and you can also print the SHA-1
     /// object in the macro `println!()` directly for example.
     /// `f` is a buffer, this method must write the formatted string into it.
     /// [Read more](https://doc.rust-lang.org/core/fmt/trait.Display.html#tymethod.fmt)
     /// 
     /// # Example 1 for the method to_string()
     /// ```
-    /// use Cryptocol::hash::MD5;
-    /// let mut hash = MD5::new();
+    /// use Cryptocol::hash::SHA1;
+    /// let mut hash = SHA1::new();
     /// let txt = "Display::fmt() automagically implement to_string().";
     /// hash.digest_str(txt);
     /// println!("Msg =\t\"{}\"\nHash =\t{}\n", txt, hash.to_string());
-    /// assert_eq!(hash.to_string(), "ED085603C2CDE77DD0C6FED3EC1A8ADB");
+    /// assert_eq!(hash.to_string(), "8D0A6284BBFF4DE8D68962A924842C80959B0404");
     /// ```
     /// 
     /// # Example 2 for the use in the macro println!()
     /// ```
-    /// use Cryptocol::hash::MD5;
-    /// let mut hash = MD5::new();
+    /// use Cryptocol::hash::SHA1;
+    /// let mut hash = SHA1::new();
     /// let txt = "Display::fmt() enables the object to be printed in the macro println!() directly for example.";
     /// hash.digest_str(txt);
     /// println!("Msg =\t\"{}\"\nHash =\t{}", txt, hash);
-    /// assert_eq!(hash.to_string(), "6C9494A4A5C313001695262D72571F74");
+    /// assert_eq!(hash.to_string(), "835CEFA297628E4DADBDA011C5FDEA68D88A8EE8");
     /// ```
     fn fmt(&self, f: &mut Formatter) -> fmt::Result
     {
@@ -271,129 +745,3 @@ impl Display for SHA1
         write!(f, "{}", self.get_HashValue_in_string())
     }
 }
-
-/*
-
-    fn update(&mut self, message: &[u32; 16])
-    {
-        let mut M = [0_u32; 16];
-        let mut W = [0_u32; 80];
-        let mut T: u32;
-
-        let mut a = self.hash_code[0];
-        let mut b = self.hash_code[1];
-        let mut c = self.hash_code[2];
-        let mut d = self.hash_code[3];
-        let mut e = self.hash_code[4];
-    
-        for i in 0..16
-        {
-            M[i] = message[i].to_be();
-            W[i] = M[i];
-        }
-        for i in 16..80
-            { W[i] = Self::ROTL1(&W, i); }
-    
-        for i in 0..80
-        {
-            T = Self::ROTL5(a) + Self::f(b, c, d, i) + e + Self::getK(i) + W[i];
-            e = d;
-            d = c;
-            c = Self::ROTL30(b);
-            b = a;
-            a = T;
-        }
-    
-        self.hash_code[0] += a;
-        self.hash_code[1] += b;
-        self.hash_code[2] += c;
-        self.hash_code[3] += d;
-        self.hash_code[4] += e;
-    }
-
-    fn finalize(&mut self, message: *const u8, length_in_bytes: u64)
-    {
-        union MU {
-            M64: [u64; 2 * 4],
-            M32: [u32; 4 * 4],
-            M8: [[u8; 4 * 4]; 4],
-            M: [u8; 4 * 4 * 4],
-        }
-        let mut mu = MU { M: [0; 4 * 4 * 4] };
-        let mut msg = message as *const u32;
-        let mut msg8 = message as *const [u8; 4];
-    //	const uint32_t	lengthDone = nLengthInBytes / (16 * sizeof (baseType));
-        let length_padding = (length_in_bytes % (4 * 4 * 4)) as usize;
-        let length_in_blocks = length_padding / 4;
-        let length_remained = length_padding % 4;
-
-        for i in 0..length_in_blocks
-            { unsafe { mu.M32[i] = *msg.add(i); } }
-
-        for i in 0..length_remained
-            { unsafe { mu.M8[length_in_blocks][i] = (*msg8.add(length_in_blocks))[i]; } }
-
-        unsafe { mu.M[length_in_blocks * 4 + length_remained] = 0b10000000_u8; }
-        if length_in_bytes + 1 >= 64 - 8
-        {
-            for i in (length_in_blocks * 4 + length_remained + 1)..64
-                { unsafe { mu.M[i] = 0; } }
-            self.update(unsafe { &mu.M32 } );
-            for i in 0..8-1
-                { unsafe { mu.M64[i] = 0; } }
-        }
-        else
-        {
-            for i in (length_in_blocks * 4 + length_remained + 1)..(64-8)
-                { unsafe { mu.M[i] = 0; } }
-        }
-        unsafe { mu.M64[7] = (length_in_bytes * 8).to_be(); }
-        self.update(unsafe { &mu.M32 });
-    }
-
-    fn f(x: u32, y: u32, z: u32, round: usize) -> u32
-    {
-        if round < 20
-           { Self::Ch(x, y, z) }
-        else if round < 40
-            { Self::Parity(x, y, z) }
-        else if round < 60
-            { Self::Maj(x, y, z) }
-        else
-            { Self::Parity(x, y, z) }
-    }
-
-	#[inline] fn getK(idx: usize) -> u32    { Self::K[idx/20] }
-	#[inline] fn getH(idx: usize) -> u32	{ Self::H[idx] }
-
-	#[inline] fn Ch(x: u32, y: u32, z: u32) -> u32      { (x & y) ^ (!x & z) }
-	#[inline] fn Maj(x: u32, y: u32, z: u32) -> u32		{ (x & y) ^ (x & z) ^ (y & z) }
-	#[inline] fn Parity(x: u32, y: u32, z: u32) -> u32	{ x ^ y ^ z }
-
-	#[inline] fn ROTL1(w: &[u32; 80], round: usize) -> u32	{ (w[round-3] ^ w[round-8] ^ w[round-14] ^ w[round-16]).rotate_left(1) }
-	#[inline] fn ROTL5(x: u32) -> u32           { x.rotate_left(5) }
-	#[inline] fn ROTL30(x: u32) -> u32          { x.rotate_left(30) }
-    #[inline] fn to_char(nibble: u8) -> char    { if nibble < 10  { ('0' as u8 + nibble) as u8 as char } else { ('A' as u8 - 10 + nibble) as char } }
-}
-
-
-impl Display for SHA1
-{
-    /// Formats the value using the given formatter.
-    /// Automagically the function `to_string()` will be implemented. So, you
-    /// can use the function `to_string()` and the macro `println!()`.
-    /// `f` is a buffer, this method must write the formatted string into it.
-    /// [Read more](https://doc.rust-lang.org/core/fmt/trait.Display.html#tymethod.fmt)
-    /// 
-    /// # Example
-    /// ```
-    /// // Todo
-    /// ```
-    fn fmt(&self, f: &mut Formatter) -> fmt::Result
-    {
-        // `write!` is like `format!`, but it will write the formatted string
-        // into a buffer (the first argument)
-        write!(f, "{}", self.getHashValue_in_string())
-    }
-}
-*/

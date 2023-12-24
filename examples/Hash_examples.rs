@@ -9,11 +9,11 @@
 #![allow(missing_docs)]
 #![allow(missing_doc_code_examples)]
 
-use Cryptocol::hash;
 
 fn main()
 {
     Hash_MD5_main();
+    Hash_SHA1_main();
 }
 
 fn Hash_MD5_main()
@@ -97,7 +97,6 @@ fn MD5_digest()
 {
     println!("MD5_digest");
     use Cryptocol::hash::MD5;
-
     let txt = "This is an example of the method digest().";
     let mut hash = MD5::new();
     hash.digest(txt.as_ptr(), txt.len() as u64);
@@ -110,7 +109,6 @@ fn MD5_digest_str()
 {
     println!("MD5_digest_str");
     use Cryptocol::hash::MD5;
-
     let txt = "This is an example of the method digest_str().";
     let mut hash = MD5::new();
     hash.digest_str(txt);
@@ -123,7 +121,6 @@ fn MD5_digest_string()
 {
     println!("MD5_digest_string");
     use Cryptocol::hash::MD5;
-
     let txt = "This is an example of the method digest_string().".to_string();
     let mut hash = MD5::new();
     hash.digest_string(&txt);
@@ -136,7 +133,6 @@ fn MD5_digest_array()
 {
     println!("MD5_digest_array");
     use Cryptocol::hash::MD5;
-
     let data = [ 0x67452301_u32.to_le(), 0xefcdab89_u32.to_le(), 0x98badcfe_u32.to_le(), 0x10325476_u32.to_le() ];
     let mut hash = MD5::new();
     hash.digest_array(&data);
@@ -149,7 +145,6 @@ fn MD5_digest_vec()
 {
     println!("MD5_digest_vec");
     use Cryptocol::hash::MD5;
-
     let data = vec![ 0x67452301_u32.to_le(), 0xefcdab89_u32.to_le(), 0x98badcfe_u32.to_le(), 0x10325476_u32.to_le() ];
     let mut hash = MD5::new();
     hash.digest_vec(&data);
@@ -162,7 +157,6 @@ fn MD5_get_HashValue()
 {
     println!("MD5_get_HashValue");
     use Cryptocol::hash::MD5;
-
     let txt = "This is an example of the method get_HashValue().";
     let mut hashValue = [0_u8; 16];
     let mut hash = MD5::new();
@@ -177,7 +171,6 @@ fn MD5_get_HashValue_in_string()
 {
     println!("MD5_get_HashValue_in_string");
     use Cryptocol::hash::MD5;
-
     let txt = "This is an example of the method get_HashValue_in_string().";
     let mut hash = MD5::new();
     hash.digest_str(txt);
@@ -190,7 +183,6 @@ fn MD5_get_HashValue_in_array()
 {
     println!("MD5_get_HashValue_in_array");
     use Cryptocol::hash::MD5;
-
     let txt = "This is an example of the method get_HashValue_in_array().";
     let mut hash = MD5::new();
     hash.digest_str(txt);
@@ -203,7 +195,6 @@ fn MD5_get_HashValue_in_vec()
 {
     println!("MD5_get_HashValue_in_vec");
     use Cryptocol::hash::MD5;
-
     let txt = "This is an example of the method get_HashValue_in_vec().";
     let mut hash = MD5::new();
     hash.digest_str(txt);
@@ -232,5 +223,216 @@ fn MD5_fmt_for_println()
     hash.digest_str(txt);
     println!("Msg =\t\"{}\"\nHash =\t{}", txt, hash);
     assert_eq!(hash.to_string(), "6C9494A4A5C313001695262D72571F74");
+    println!("-------------------------------");
+}
+
+fn Hash_SHA1_main()
+{
+    SHA1_Quick_Start();
+    SHA1_new();
+    SHA1_digest();
+    SHA1_digest_str();
+    SHA1_digest_string();
+    SHA1_digest_array();
+    SHA1_digest_vec();
+    SHA1_get_HashValue();
+    SHA1_get_HashValue_in_string();
+    SHA1_get_HashValue_in_array();
+    SHA1_get_HashValue_in_vec();
+    SHA1_fmt_for_to_string();
+    SHA1_fmt_for_println();
+}
+
+fn SHA1_Quick_Start()
+{
+    println!("SHA1_Quick_Start");
+    use std::string::*;
+    use Cryptocol::hash::SHA1;
+    let mut hash = SHA1::new();
+
+    let mut txt = "";
+    hash.digest_str(txt);
+    println!("Msg =\t\"{}\"\nHash =\t{}\n", txt, hash.get_HashValue_in_string());
+    assert_eq!(hash.get_HashValue_in_string(), "DA39A3EE5E6B4B0D3255BFEF95601890AFD80709");
+
+    let txtStirng = String::from("A");
+    hash.digest_string(&txtStirng);
+    println!("Msg =\t\"{}\"\nHash =\t{}\n", txtStirng, hash);
+    assert_eq!(hash.to_string(), "6DCD4CE23D88E2EE9568BA546C007C63D9131C1B");
+
+    let txtArray = ['W' as u8, 'o' as u8, 'w' as u8];
+    hash.digest_array(&txtArray);
+    println!("Msg =\t\"{:?}\"\nHash =\t{}\n", txtArray, hash);
+    assert_eq!(hash.get_HashValue_in_string(), "0BBCDBD1616A1D2230100F629649DCF5B7A28B7F");
+
+    txt = "This data is 26-byte long.";
+    hash.digest_str(txt);
+    println!("Msg =\t\"{}\"\nHash =\t{}\n", txt, hash);
+    assert_eq!(hash.to_string(), "B82A61505779F6B3ACA4F5E0D54DA44C17375B49");
+
+    txt = "The unit of data length is not byte but bit.";
+    hash.digest_str(txt);
+    println!("Msg =\t\"{}\"\nHash =\t{}\n", txt, hash);
+    assert_eq!(hash.get_HashValue_in_string(), "C6DC54281357FC16D357E1D730BFC313C585DAEC");
+
+    txt = "I am testing SHA1 for the data whose length is sixty-two bytes.";
+    hash.digest_str(txt);
+    println!("Msg =\t\"{}\"\nHash =\t{}\n", txt, hash);
+    assert_eq!(hash.to_string(), "36CD36337097D764797091E5796B6FF45A9FA79F");
+
+    let mut txt = "I am testing SHA-1 for the data whose length is sixty-four bytes.";
+    hash.digest_str(txt);
+    println!("Msg =\t\"{}\"\nHash =\t{}\n", txt, hash);
+    assert_eq!(hash.get_HashValue_in_string(), "E408F6B82DCDDB5EE6613A759AC1B13D0FA1CEF1");
+
+    txt = "I am testing SHA1 for the case data whose length is more than sixty-four bytes is given.";
+    hash.digest_str(txt);
+    println!("Msg =\t\"{}\"\nHash =\t{}\n", txt, hash);
+    assert_eq!(hash.to_string(), "BB2C79F551B95963ECE49D40F8A92349BF66CAE7");
+    println!("-------------------------------");
+}
+
+
+fn SHA1_new()
+{
+    println!("SHA1_new");
+    use Cryptocol::hash::SHA1;
+    let mut hash = SHA1::new();
+    println!("Hash =\t{}", hash);
+    assert_eq!(hash.to_string(), "67452301EFCDAB8998BADCFE10325476C3D2E1F0");
+    println!("-------------------------------");
+}
+
+fn SHA1_digest()
+{
+    println!("SHA1_digest");
+    use Cryptocol::hash::SHA1;
+    let txt = "This is an example of the method digest().";
+    let mut hash = SHA1::new();
+    hash.digest(txt.as_ptr(), txt.len() as u64);
+    println!("Msg =\t\"{}\"\nHash =\t{}", txt, hash);
+    assert_eq!(hash.to_string(), "9631162DFDAEAB89821256D4585D66D35CD61FD6");
+    println!("-------------------------------");
+}
+
+fn SHA1_digest_str()
+{
+    println!("SHA1_digest_str");
+    use Cryptocol::hash::SHA1;
+    let txt = "This is an example of the method digest_str().";
+    let mut hash = SHA1::new();
+    hash.digest_str(txt);
+    println!("Msg =\t\"{}\"\nHash =\t{}", txt, hash);
+    assert_eq!(hash.to_string(), "9FDE56BBB5028966CC2E7BDCD0758FE3121407E6");
+    println!("-------------------------------");
+}
+
+fn SHA1_digest_string()
+{
+    println!("SHA1_digest_string");
+    use Cryptocol::hash::SHA1;
+    let txt = "This is an example of the method digest_string().".to_string();
+    let mut hash = SHA1::new();
+    hash.digest_string(&txt);
+    println!("Msg =\t\"{}\"\nHash =\t{}", txt, hash);
+    assert_eq!(hash.to_string(), "FDCDC0EBC9181B881BE1F15FECEBB9D70E4DDAAB");
+    println!("-------------------------------");
+}
+
+fn SHA1_digest_array()
+{
+    println!("SHA1_digest_array");
+    use Cryptocol::hash::SHA1;
+    let data = [ 0x67452301_u32.to_le(), 0xefcdab89_u32.to_le(), 0x98badcfe_u32.to_le(), 0x10325476_u32.to_le() ];
+    let mut hash = SHA1::new();
+    hash.digest_array(&data);
+    println!("Msg =\t{:?}\nHash =\t{}", data, hash);
+    assert_eq!(hash.to_string(), "76BC87BAECA7725C948FD1C53766454FDA0867AF");
+    println!("-------------------------------");
+}
+
+fn SHA1_digest_vec()
+{
+    println!("SHA1_digest_vec");
+    use Cryptocol::hash::SHA1;
+    let data = vec![ 0x67452301_u32.to_le(), 0xefcdab89_u32.to_le(), 0x98badcfe_u32.to_le(), 0x10325476_u32.to_le() ];
+    let mut hash = SHA1::new();
+    hash.digest_vec(&data);
+    println!("Msg =\t{:?}\nHash =\t{}", data, hash);
+    assert_eq!(hash.to_string(), "76BC87BAECA7725C948FD1C53766454FDA0867AF");
+    println!("-------------------------------");
+}
+
+fn SHA1_get_HashValue()
+{
+    println!("SHA1_get_HashValue");
+    use Cryptocol::hash::SHA1;
+    let txt = "This is an example of the method get_HashValue().";
+    let mut hashValue = [0_u8; 20];
+    let mut hash = SHA1::new();
+    hash.digest_str(txt);
+    hash.get_HashValue(hashValue.as_ptr() as *mut u8, hashValue.len());
+    println!("Msg =\t\"{}\"\nHash =\t{:02X?}", txt, hashValue);
+    assert_eq!(format!("{:02X?}", hashValue), "[E9, C6, F4, 3B, 77, AA, 27, A1, 6E, B4, F0, F5, 5B, F3, D8, C7, 3A, EB, 7F, 93]");
+    println!("-------------------------------");
+}
+
+fn SHA1_get_HashValue_in_string()
+{
+    println!("SHA1_get_HashValue_in_string");
+    use Cryptocol::hash::SHA1;
+    let txt = "This is an example of the method get_HashValue_in_string().";
+    let mut hash = SHA1::new();
+    hash.digest_str(txt);
+    println!("Msg =\t\"{}\"\nHash =\t{}", txt, hash.get_HashValue_in_string());
+    assert_eq!(hash.get_HashValue_in_string(), "899B9673103FCB06B237A5A6A7D04D749EA4BD92");
+    println!("-------------------------------");
+}
+
+fn SHA1_get_HashValue_in_array()
+{
+    println!("SHA1_get_HashValue_in_array");
+    use Cryptocol::hash::SHA1;
+    let txt = "This is an example of the method get_HashValue_in_array().";
+    let mut hash = SHA1::new();
+    hash.digest_str(txt);
+    println!("Msg =\t\"{}\"\nHash =\t{:02X?}", txt, hash.get_HashValue_in_array());
+    assert_eq!(format!("{:02X?}", hash.get_HashValue_in_array()), "[E9840962, 837B21A9, D9321727, 74980B51, 364DD5A2]");
+    println!("-------------------------------");
+}
+
+fn SHA1_get_HashValue_in_vec()
+{
+    println!("SHA1_get_HashValue_in_vec");
+    use Cryptocol::hash::SHA1;
+    let txt = "This is an example of the method get_HashValue_in_vec().";
+    let mut hash = SHA1::new();
+    hash.digest_str(txt);
+    println!("Msg =\t\"{}\"\nHash =\t{:02X?}", txt, hash.get_HashValue_in_vec());
+    assert_eq!(format!("{:02X?}", hash.get_HashValue_in_vec()), "[96E00128, E1E04E29, F65ABA7B, AD10C0A2, 1BC438DA]");
+    println!("-------------------------------");
+}
+
+fn SHA1_fmt_for_to_string()
+{
+    println!("SHA1_fmt_for_to_string");
+    use Cryptocol::hash::SHA1;
+    let mut hash = SHA1::new();
+    let txt = "Display::fmt() automagically implement to_string().";
+    hash.digest_str(txt);
+    println!("Msg =\t\"{}\"\nHash =\t{}\n", txt, hash.to_string());
+    assert_eq!(hash.to_string(), "8D0A6284BBFF4DE8D68962A924842C80959B0404");
+    println!("-------------------------------");
+}
+
+fn SHA1_fmt_for_println()
+{
+    println!("SHA1_fmt_for_println");
+    use Cryptocol::hash::SHA1;
+    let mut hash = SHA1::new();
+    let txt = "Display::fmt() enables the object to be printed in the macro println!() directly for example.";
+    hash.digest_str(txt);
+    println!("Msg =\t\"{}\"\nHash =\t{}", txt, hash);
+    assert_eq!(hash.to_string(), "835CEFA297628E4DADBDA011C5FDEA68D88A8EE8");
     println!("-------------------------------");
 }
