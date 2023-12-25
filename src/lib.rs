@@ -51,7 +51,7 @@
 //! 
 //! ## Hash Algorithms
 //! - [X] MD5 --- [`MD5`](hash/md5/struct.MD5.html#struct.MD5)
-//! - [ ] SHA-1
+//! - [X] SHA-1 --- [`SHA1`](hash/sha1/struct.SHA1.html#struct.SHA1)
 //! - [ ] SHA-2 (SHA-224)
 //! - [ ] SHA-2 (SHA-256)
 //! - [ ] SHA-2 (SHA-384)

@@ -582,12 +582,18 @@ impl SHA1
         res
     }
 
+    // fn initialize(&mut self)
+    /// Initializes all five self.hash_code[] with predetermined values H[].
     fn initialize(&mut self)
     {
         for i in 0..5_usize
             { self.hash_code[i] = IntUnion::new_with(Self::getH(i)); }
     }
 
+    // fn update(&mut self, message: &[u32])
+    /// This method is the core part of MD5 hash algorithm.
+    /// It has eighty rounds. It updates self.hash_code[] for those
+    /// eighty rounds.
     fn update(&mut self, message: &[u32])
     {
         let mut W = [0_u32; 16];
@@ -673,7 +679,12 @@ impl SHA1
         self.hash_code[3].set(self.hash_code[3].get().wrapping_add(d));
         self.hash_code[4].set(self.hash_code[4].get().wrapping_add(e));
     }
-    
+
+    // fn finalize(&mut self, message: *const u8, length_in_bytes: u64)
+    /// finalizes the hash process. In this process, it pads with padding bits,
+    /// which are bit one, bits zeros, and eight bytes that show the message
+    /// size in the unit of bits with big endianness so as to make the data
+    /// (message + padding bits) be multiples of 512 bits (64 bytes).
     fn finalize(&mut self, message: *const u8, length_in_bytes: u64)
     {
         union MU

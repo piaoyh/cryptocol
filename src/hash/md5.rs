@@ -591,12 +591,18 @@ impl MD5
         Vec::<u32>::from(&self.get_HashValue_in_array())
     }
 
+    // fn initialize(&mut self)
+    /// Initializes all four self.hash_code[] with predetermined values H[].
     fn initialize(&mut self)
     {
         for i in 0..4_usize
             { self.hash_code[i] = IntUnion::new_with(Self::getH(i)); }
     }
 
+    // fn update(&mut self, message: &[u32])
+    /// This method is the core part of MD5 hash algorithm.
+    /// It has sixty-four rounds. It updates self.hash_code[] for those
+    /// sixty-four rounds.
     fn update(&mut self, message: &[u32])
     {
         let mut a = self.hash_code[0].get();
@@ -674,7 +680,12 @@ impl MD5
         self.hash_code[2].set(self.hash_code[2].get().wrapping_add(c));
         self.hash_code[3].set(self.hash_code[3].get().wrapping_add(d));
     }
-    
+
+    // fn finalize(&mut self, message: *const u8, length_in_bytes: u64)
+    /// finalizes the hash process. In this process, it pads with padding bits,
+    /// which are bit one, bits zeros, and eight bytes that show the message
+    /// size in the unit of bits with little endianness so as to make the data
+    /// (message + padding bits) be multiples of 512 bits (64 bytes).
     fn finalize(&mut self, message: *const u8, length_in_bytes: u64)
     {
         union MU
@@ -715,7 +726,7 @@ impl MD5
 	#[inline] fn getK(idx: usize) -> u32    { Self::K[idx] }
 	#[inline] fn getH(idx: usize) -> u32    { Self::H[idx] }
     // #[inline] fn getR(idx: usize) -> u32  { Self::R[idx >> 4][idx & 0b11] }
-	#[inline] fn Ff(x: u32, y: u32, z: u32) -> u32  { (x & y) | (!x & z) }
+    #[inline] fn Ff(x: u32, y: u32, z: u32) -> u32  { z ^ (x & (y ^ z)) }   // equivalent to { (x & y) | (!x & z) }
 	#[inline] fn Gg(x: u32, y: u32, z: u32) -> u32  { (x & z) | (y & !z) }
 	#[inline] fn Hh(x: u32, y: u32, z: u32) -> u32	{ x ^ y ^ z }
     #[inline] fn Ii(x: u32, y: u32, z: u32) -> u32	{ y ^ (x | !z) }
