@@ -15,34 +15,103 @@ use std::fmt::{ self, Debug, Display, Formatter };
 use std::ptr::copy_nonoverlapping;
 use std::slice::from_raw_parts;
 
-use crate::number::IntUnion;
+use crate::number::{ LongUnion, LongerUnion };
 use crate::number::SmallUInt;
 
-/// K0 ~ K63 are initialized with array of round constants: the first 32 bits
-/// of the fractional parts of the cube roots of the first 64 primes 2..311
+
+/// K0 ~ K79 are initialized with array of round constants: the first 64 bits
+/// of the fractional parts of the cube roots of the first 80 primes 2..409
 #[allow(non_camel_case_types)]
-pub type SHA1_Generic_K_fixed<  const H0: u32, const H1: u32, const H2: u32,
-                                const H3: u32, const H4: u32, const RL1: u32,
-                                const ROUND: usize, const N: usize>
-    // Initialize array of round constants: the first 32 bits of
-    // the fractional parts of the cube roots of the first 64 primes 2..311
-    = SHA1_generic< 0x5a827999, 0x6ed9eba1, 0x8f1bbcdc, 0xca62c1d6,
-                    H0, H1, H2, H3, H4, RL1, 5, 30, ROUND, N>;
+pub type SHA2_Generic_512_t_KRS_fixed<const H0: u64, const H1: u64, const H2: u64,
+                                        const H3: u64, const H4: u64, const H5: u64,
+                                        const H6: u64, const H7: u64, const ROUND: usize,
+                                        const A5A5A5A5A5A5A5A5: u64, const t: usize>
+    // Initialize array of round constants: based on the first 80 primes 2..409.
+    = SHA2_Generic_512_t<0x428a2f98d728ae22, 0x7137449123ef65cd, 0xb5c0fbcfec4d3b2f, 0xe9b5dba58189dbbc, 0x3956c25bf348b538, 
+                        0x59f111f1b605d019, 0x923f82a4af194f9b, 0xab1c5ed5da6d8118, 0xd807aa98a3030242, 0x12835b0145706fbe, 
+                        0x243185be4ee4b28c, 0x550c7dc3d5ffb4e2, 0x72be5d74f27b896f, 0x80deb1fe3b1696b1, 0x9bdc06a725c71235, 
+                        0xc19bf174cf692694, 0xe49b69c19ef14ad2, 0xefbe4786384f25e3, 0x0fc19dc68b8cd5b5, 0x240ca1cc77ac9c65, 
+                        0x2de92c6f592b0275, 0x4a7484aa6ea6e483, 0x5cb0a9dcbd41fbd4, 0x76f988da831153b5, 0x983e5152ee66dfab, 
+                        0xa831c66d2db43210, 0xb00327c898fb213f, 0xbf597fc7beef0ee4, 0xc6e00bf33da88fc2, 0xd5a79147930aa725, 
+                        0x06ca6351e003826f, 0x142929670a0e6e70, 0x27b70a8546d22ffc, 0x2e1b21385c26c926, 0x4d2c6dfc5ac42aed, 
+                        0x53380d139d95b3df, 0x650a73548baf63de, 0x766a0abb3c77b2a8, 0x81c2c92e47edaee6, 0x92722c851482353b, 
+                        0xa2bfe8a14cf10364, 0xa81a664bbc423001, 0xc24b8b70d0f89791, 0xc76c51a30654be30, 0xd192e819d6ef5218, 
+                        0xd69906245565a910, 0xf40e35855771202a, 0x106aa07032bbd1b8, 0x19a4c116b8d2d0c8, 0x1e376c085141ab53, 
+                        0x2748774cdf8eeb99, 0x34b0bcb5e19b48a8, 0x391c0cb3c5c95a63, 0x4ed8aa4ae3418acb, 0x5b9cca4f7763e373, 
+                        0x682e6ff3d6b2b8a3, 0x748f82ee5defb2fc, 0x78a5636f43172f60, 0x84c87814a1f0ab72, 0x8cc702081a6439ec, 
+                        0x90befffa23631e28, 0xa4506cebde82bde9, 0xbef9a3f7b2c67915, 0xc67178f2e372532b, 0xca273eceea26619c, 
+                        0xd186b8c721c0c207, 0xeada7dd6cde0eb1e, 0xf57d4f7fee6ed178, 0x06f067aa72176fba, 0x0a637dc5a2c898a6, 
+                        0x113f9804bef90dae, 0x1b710b35131c471b, 0x28db77f523047d84, 0x32caab7b40c72493, 0x3c9ebe0a15c9bebc, 
+                        0x431d67c49c100d4c, 0x4cc5d4becb3e42b6, 0x597f299cfc657e2a, 0x5fcb6fab3ad6faec, 0x6c44198c4a475817,
+                        H0, H1, H2, H3, H4, H5, H6, H7,
+                        1, 8, 14, 18, 19, 28, 34, 39, 41, 61, 6, 7, 
+                        ROUND, A5A5A5A5A5A5A5A5, t>;
+
+/// H0 ~ H7 are The first 32 bits of the fractional parts of the square roots
+/// of the first 8 primes 2..19
+#[allow(non_camel_case_types)]
+pub type SHA2_Generic_512_t_HRS_fixed<const K00: u64, const K01: u64, const K02: u64, const K03: u64,
+                                const K04: u64, const K05: u64, const K06: u64, const K07: u64,
+                                const K08: u64, const K09: u64, const K10: u64, const K11: u64,
+                                const K12: u64, const K13: u64, const K14: u64, const K15: u64,
+                                const K16: u64, const K17: u64, const K18: u64, const K19: u64,
+                                const K20: u64, const K21: u64, const K22: u64, const K23: u64,
+                                const K24: u64, const K25: u64, const K26: u64, const K27: u64,
+                                const K28: u64, const K29: u64, const K30: u64, const K31: u64,
+                                const K32: u64, const K33: u64, const K34: u64, const K35: u64,
+                                const K36: u64, const K37: u64, const K38: u64, const K39: u64,
+                                const K40: u64, const K41: u64, const K42: u64, const K43: u64,
+                                const K44: u64, const K45: u64, const K46: u64, const K47: u64,
+                                const K48: u64, const K49: u64, const K50: u64, const K51: u64,
+                                const K52: u64, const K53: u64, const K54: u64, const K55: u64,
+                                const K56: u64, const K57: u64, const K58: u64, const K59: u64,
+                                const K60: u64, const K61: u64, const K62: u64, const K63: u64,
+                                const K64: u64, const K65: u64, const K66: u64, const K67: u64,
+                                const K68: u64, const K69: u64, const K70: u64, const K71: u64,
+                                const K72: u64, const K73: u64, const K74: u64, const K75: u64,
+                                const K76: u64, const K77: u64, const K78: u64, const K79: u64,
+                                const ROUND: usize, const A5A5A5A5A5A5A5A5: u64, const t: usize>
+    = SHA2_Generic_512_t< K00, K01, K02, K03, K04, K05, K06, K07,
+                        K08, K09, K10, K11, K12, K13, K14, K15,
+                        K16, K17, K18, K19, K20, K21, K22, K23,
+                        K24, K25, K26, K27, K28, K29, K30, K31,
+                        K32, K33, K34, K35, K36, K37, K38, K39,
+                        K40, K41, K42, K43, K44, K45, K46, K47,
+                        K48, K49, K50, K51, K52, K53, K54, K55,
+                        K56, K57, K58, K59, K60, K61, K62, K63,
+                        K64, K65, K66, K67, K68, K69, K70, K71,
+                        K72, K73, K74, K75, K76, K77, K78, K79,
+                        // The first 32 bits of the fractional parts of the square roots
+                        // of the first 8 primes 2..19
+                        0x6a09e667f3bcc908, 0xbb67ae8584caa73b,
+                        0x3c6ef372fe94f82b, 0xa54ff53a5f1d36f1,
+                        0x510e527fade682d1, 0x9b05688c2b3e6c1f,
+                        0x1f83d9abfb41bd6b, 0x5be0cd19137e2179, 
+                        1, 8, 14, 18, 19, 28, 34, 39, 41, 61, 6, 7,
+                        ROUND, A5A5A5A5A5A5A5A5, t>;
+
+/// H0 ~ H7 are the first 32 bits of the fractional parts of the square roots
+/// of the first 8 primes 2..19
+#[allow(non_camel_case_types)]
+pub type SHA2_512_t_Expanded<const ROUND: usize, const t: usize>
+                                // H0 ~ H7 are the first 32 bits of the fractional
+                                // parts of the square roots of the first 8 primes 2..19
+    = SHA2_Generic_512_t_KRS_fixed<0x6a09e667f3bcc908, 0xbb67ae8584caa73b, 0x3c6ef372fe94f82b,
+                                0xa54ff53a5f1d36f1, 0x510e527fade682d1, 0x9b05688c2b3e6c1f,
+                                0x1f83d9abfb41bd6b, 0x5be0cd19137e2179, ROUND, 
+                                0xA5A5A5A5A5A5A5A5, t>;
 
 #[allow(non_camel_case_types)]
-pub type SHA1_Expanded<const ROUND: usize, const N: usize>
-        = SHA1_Generic_K_fixed< 0x67452301, 0xefcdab89, 0x98badcfe,
-                                0x10325476, 0xc3d2e1f0, 1, ROUND, N>;
+pub type SHA2_512_t<const t: usize> = SHA2_512_t_Expanded<80, t>;
 
 #[allow(non_camel_case_types)]
-pub type SHA0_Expanded<const ROUND: usize, const N: usize>
-        = SHA1_Generic_K_fixed< 0x67452301, 0xefcdab89, 0x98badcfe,
-                                0x10325476, 0xc3d2e1f0, 0, ROUND, N>;
+pub type SHA2_512_t_256 = SHA2_512_t<256>;
 
-pub type SHA1 = SHA1_Expanded<80, 5>;
+#[allow(non_camel_case_types)]
+pub type SHA2_512_t_224 = SHA2_512_t<224>;
 
-pub type SHA0 = SHA0_Expanded<80, 5>;
-
+#[allow(non_camel_case_types)]
+pub type SHA2_512_0 = SHA2_512_t<512>;
 
 /// # Introduction
 /// A SHA-1 message-digest algorithm that lossily compresses data of arbitrary
@@ -158,29 +227,96 @@ pub type SHA0 = SHA0_Expanded<80, 5>;
 /// to use it for Big Endian CPUs for serious purpose. Only use this crate
 /// for Big-endian CPUs with your own full responsibility.
 #[derive(Debug, Clone)]
-pub struct SHA1_generic<const K0: u32, const K1: u32, const K2: u32, const K3: u32,
-                        const H0: u32, const H1: u32, const H2: u32, const H3: u32,
-                        const H4: u32, const RL1: u32, const RL2: u32, const RL3: u32,
-                        const ROUND: usize, const N: usize>
-                        // N is the number of output bytes of hash value.
-                        // RL is 1 for SHA-1 while RL is 0 for SHA-0.
+#[allow(non_camel_case_types)]
+pub struct SHA2_Generic_512_t<const K00: u64, const K01: u64, const K02: u64, const K03: u64,
+                            const K04: u64, const K05: u64, const K06: u64, const K07: u64,
+                            const K08: u64, const K09: u64, const K10: u64, const K11: u64,
+                            const K12: u64, const K13: u64, const K14: u64, const K15: u64,
+                            const K16: u64, const K17: u64, const K18: u64, const K19: u64,
+                            const K20: u64, const K21: u64, const K22: u64, const K23: u64,
+                            const K24: u64, const K25: u64, const K26: u64, const K27: u64,
+                            const K28: u64, const K29: u64, const K30: u64, const K31: u64,
+                            const K32: u64, const K33: u64, const K34: u64, const K35: u64,
+                            const K36: u64, const K37: u64, const K38: u64, const K39: u64,
+                            const K40: u64, const K41: u64, const K42: u64, const K43: u64,
+                            const K44: u64, const K45: u64, const K46: u64, const K47: u64,
+                            const K48: u64, const K49: u64, const K50: u64, const K51: u64,
+                            const K52: u64, const K53: u64, const K54: u64, const K55: u64,
+                            const K56: u64, const K57: u64, const K58: u64, const K59: u64,
+                            const K60: u64, const K61: u64, const K62: u64, const K63: u64,
+                            const K64: u64, const K65: u64, const K66: u64, const K67: u64,
+                            const K68: u64, const K69: u64, const K70: u64, const K71: u64,
+                            const K72: u64, const K73: u64, const K74: u64, const K75: u64,
+                            const K76: u64, const K77: u64, const K78: u64, const K79: u64,
+                            const H0: u64, const H1: u64, const H2: u64, const H3: u64,
+                            const H4: u64, const H5: u64, const H6: u64, const H7: u64,
+                            const RR1: u32, const RR8: u32, const RR14: u32, const RR18: u32, 
+                            const RR19: u32, const RR28: u32, const RR34: u32, const RR39: u32, 
+                            const RR41: u32, const RR61: u32, const SR6: i32, const SR7: i32,
+                            const ROUND: usize, const a5a5a5a5a5a5a5a5: u64, const t: usize>
+                            // t is the number of output bits of hash value.
 {
-    hash_code: [IntUnion; 5],
+    hash_code: [LongUnion; 8],
+    O: [u64; 8],
 }
 
-impl<const K0: u32, const K1: u32, const K2: u32, const K3: u32,
-    const H0: u32, const H1: u32, const H2: u32, const H3: u32, const H4: u32,
-    const RL1: u32, const RL5: u32, const RL30: u32, const ROUND: usize, const N: usize>
-SHA1_generic<K0, K1, K2, K3, H0, H1, H2, H3, H4, RL1, RL5, RL30, ROUND, N>
+impl<const K00: u64, const K01: u64, const K02: u64, const K03: u64,
+    const K04: u64, const K05: u64, const K06: u64, const K07: u64,
+    const K08: u64, const K09: u64, const K10: u64, const K11: u64,
+    const K12: u64, const K13: u64, const K14: u64, const K15: u64,
+    const K16: u64, const K17: u64, const K18: u64, const K19: u64,
+    const K20: u64, const K21: u64, const K22: u64, const K23: u64,
+    const K24: u64, const K25: u64, const K26: u64, const K27: u64,
+    const K28: u64, const K29: u64, const K30: u64, const K31: u64,
+    const K32: u64, const K33: u64, const K34: u64, const K35: u64,
+    const K36: u64, const K37: u64, const K38: u64, const K39: u64,
+    const K40: u64, const K41: u64, const K42: u64, const K43: u64,
+    const K44: u64, const K45: u64, const K46: u64, const K47: u64,
+    const K48: u64, const K49: u64, const K50: u64, const K51: u64,
+    const K52: u64, const K53: u64, const K54: u64, const K55: u64,
+    const K56: u64, const K57: u64, const K58: u64, const K59: u64,
+    const K60: u64, const K61: u64, const K62: u64, const K63: u64,
+    const K64: u64, const K65: u64, const K66: u64, const K67: u64,
+    const K68: u64, const K69: u64, const K70: u64, const K71: u64,
+    const K72: u64, const K73: u64, const K74: u64, const K75: u64,
+    const K76: u64, const K77: u64, const K78: u64, const K79: u64,
+    const H0: u64, const H1: u64, const H2: u64, const H3: u64,
+    const H4: u64, const H5: u64, const H6: u64, const H7: u64,
+    const RR1: u32, const RR8: u32, const RR14: u32, const RR18: u32, 
+    const RR19: u32, const RR28: u32, const RR34: u32, const RR39: u32, 
+    const RR41: u32, const RR61: u32, const SR6: i32, const SR7: i32,
+    const ROUND: usize, const A5A5A5A5A5A5A5A5: u64, const t: usize>
+SHA2_Generic_512_t<K00, K01, K02, K03, K04, K05, K06, K07,
+                K08, K09, K10, K11, K12, K13, K14, K15,
+                K16, K17, K18, K19, K20, K21, K22, K23,
+                K24, K25, K26, K27, K28, K29, K30, K31,
+                K32, K33, K34, K35, K36, K37, K38, K39,
+                K40, K41, K42, K43, K44, K45, K46, K47,
+                K48, K49, K50, K51, K52, K53, K54, K55,
+                K56, K57, K58, K59, K60, K61, K62, K63,
+                K64, K65, K66, K67, K68, K69, K70, K71,
+                K72, K73, K74, K75, K76, K77, K78, K79,
+                H0, H1, H2, H3, H4, H5, H6, H7, 
+                RR1, RR8, RR14, RR18, RR19, RR28, RR34,
+                RR39, RR41, RR61, SR6, SR7, ROUND, A5A5A5A5A5A5A5A5, t>
 {
-    const K: [u32; 4] = [ K0, K1, K2, K3 ];
-    const H: [u32; 5] = [ H0, H1, H2, H3, H4 ];
+    const K: [u64; 80] = [  K00, K01, K02, K03, K04, K05, K06, K07,
+                            K08, K09, K10, K11, K12, K13, K14, K15,
+                            K16, K17, K18, K19, K20, K21, K22, K23,
+                            K24, K25, K26, K27, K28, K29, K30, K31,
+                            K32, K33, K34, K35, K36, K37, K38, K39,
+                            K40, K41, K42, K43, K44, K45, K46, K47,
+                            K48, K49, K50, K51, K52, K53, K54, K55,
+                            K56, K57, K58, K59, K60, K61, K62, K63,
+                            K64, K65, K66, K67, K68, K69, K70, K71,
+                            K72, K73, K74, K75, K76, K77, K78, K79 ];
+    const H: [u64; 8] = [ H0, H1, H2, H3, H4, H5, H6, H7 ];
 
     // pub fn new() -> Self
-    /// Constructs a new `SHA1` object.
+    /// Constructs a new `SHA2_256` object.
     /// 
     /// # Output
-    /// A new object of `SHA1`.
+    /// A new object of `SHA2_256`.
     /// 
     /// # Initialization
     /// All the attributes of the constructed object, which is initial hash
@@ -196,32 +332,66 @@ SHA1_generic<K0, K1, K2, K3, H0, H1, H2, H3, H4, RL1, RL5, RL30, ROUND, N>
     /// ```
     pub fn new() -> Self
     {
-        if N > 5 || N == 0
-            { panic!("N cannot be equal to 0 or greater than 5."); }
+        let seedText = format!("SHA-512/{}", t);
+        Self::new_with_seedText(seedText.as_str())
+    }
+
+    pub fn new_with_seedText(seedText: &str) -> Self
+    {
+        if t > 512
+            { panic!("t cannot be greater than 512."); }
+        if (t & 0b111) != 0
+            { panic!("t should be multiple of 8."); }
+
+        let seedText = format!("SHA-512/{}", t);
+        let o = [ Self::H[0] ^ A5A5A5A5A5A5A5A5,
+                            Self::H[1] ^ A5A5A5A5A5A5A5A5, 
+                            Self::H[2] ^ A5A5A5A5A5A5A5A5,
+                            Self::H[3] ^ A5A5A5A5A5A5A5A5,
+                            Self::H[4] ^ A5A5A5A5A5A5A5A5,
+                            Self::H[5] ^ A5A5A5A5A5A5A5A5, 
+                            Self::H[6] ^ A5A5A5A5A5A5A5A5,
+                            Self::H[7] ^ A5A5A5A5A5A5A5A5 ];
+
+        let mut h = SHA2_512_0::new_with_H(&o);
+        h.digest(seedText.as_ptr(), seedText.len() as u128);
+        let mut O = [0_u64; 8];
+        h.get_HashValue_in_array(&mut O);
+        for i in 0..8
+            { O[i] = O[i].to_be(); }
+        Self::new_with_H(&O)
+    }
+
+    fn new_with_H(H: &[u64; 8]) -> Self
+    {
         Self
         {
-            hash_code: [IntUnion::new_with(Self::H[0]),
-                        IntUnion::new_with(Self::H[1]),
-                        IntUnion::new_with(Self::H[2]),
-                        IntUnion::new_with(Self::H[3]),
-                        IntUnion::new_with(Self::H[4])]
+            hash_code: [LongUnion::new_with(H[0]),
+                        LongUnion::new_with(H[1]),
+                        LongUnion::new_with(H[2]),
+                        LongUnion::new_with(H[3]),
+                        LongUnion::new_with(H[4]),
+                        LongUnion::new_with(H[5]),
+                        LongUnion::new_with(H[6]),
+                        LongUnion::new_with(H[7])],
+            O: [ H[0], H[1], H[2], H[3], H[4], H[5], H[6], H[7] ],
         }
     }
 
-    // pub fn digest(&mut self, message: *const u8, length_in_bytes: u64)
+    // pub fn digest_C(&mut self, message: *const u8, length_in_bytes_low: u64, length_in_bytes_high: u64)
     /// Compute hash value.
     /// 
     /// # Features
-    /// This function has the generalized interface (pointer, `*const u8`)
-    /// so as to enable other functions to wrap this function with any
-    /// convenient interface for uses. So, this function is usually not called
-    /// directly in Rust. This function is provided to be called from other
-    /// programming languages such as C/C++.
+    /// This function has the generalized interface (pointer, `*const u8`).
+    /// So, this function is usually not called directly in Rust. This function
+    /// is provided to be called from other programming languages such as C/C++.
     /// 
     /// # Arguments
     /// - `message` is pointer to const u8.
-    /// - `length_in_bytes` is the size of message in the unit of bytes, and
-    /// data type is `u64`.
+    /// - `length_in_bytes_low` is the lower 64 bits of the size of message
+    /// in the unit of bytes.
+    /// - `length_in_bytes_high` is the higher 64 bits of the size of message
+    /// in the unit of bytes.
     /// 
     /// # Counterpart Methods
     /// - If you want to compute of the hash value of a string slice,
@@ -255,10 +425,63 @@ SHA1_generic<K0, K1, K2, K3, H0, H1, H2, H3, H4, RL1, RL5, RL30, ROUND, N>
     /// It is just experimental for Big Endian CPUs. So, you are not encouraged
     /// to use it for Big Endian CPUs for serious purpose. Only use this crate
     /// for Big-endian CPUs with your own full responsibility.
-    pub fn digest(&mut self, message: *const u8, length_in_bytes: u64)
+    pub fn digest_C(&mut self, message: *const u8, length_in_bytes_low: u64, length_in_bytes_high: u64)
     {
-        type MessageType = u32;
-        const SHIFT_NUM: usize = 6;
+        let mut vu = LongerUnion::new();
+        vu.set_ulong_(0, length_in_bytes_low);
+        vu.set_ulong_(1, length_in_bytes_high);
+        self.digest(message, vu.get());
+    }
+
+    // pub fn digest(&mut self, message: *const u8, length_in_bytes: u128)
+    /// Compute hash value.
+    /// 
+    /// # Features
+    /// This function has the generalized interface (pointer, `*const u8`)
+    /// so as to enable other functions to wrap this function with any
+    /// convenient interface for uses. So, this function can be called in Rust.
+    /// 
+    /// # Arguments
+    /// - `message` is pointer to const u8.
+    /// - `length_in_bytes` is the size of message in the unit of bytes, and
+    /// data type is `u128`.
+    /// 
+    /// # Counterpart Methods
+    /// - If you want to compute of the hash value of a string slice,
+    /// you are highly recommended to use the method
+    /// [digest_str()](struct@SHA1#method.digest_str)
+    /// rather than this method.
+    /// - If you want to compute of the hash value of the content of String
+    /// object, you are highly recommended to use the method
+    /// [digest_string()](struct@SHA1#method.digest_string)
+    /// rather than this method.
+    /// - If you want to compute of the hash value of the content of Array
+    /// object, you are highly recommended to use the method
+    /// [digest_array()](struct@SHA1#method.digest_array)
+    /// rather than this method.
+    /// - If you want to compute of the hash value of the content of Vec
+    /// object, you are highly recommended to use the method
+    /// [digest_vec()](struct@SHA1#method.digest_array)
+    /// rather than this method.
+    ///
+    /// # Example
+    /// ```
+    /// use Cryptocol::hash::SHA1;
+    /// let txt = "This is an example of the method digest().";
+    /// let mut hash = SHA1::new();
+    /// hash.digest(txt.as_ptr(), txt.len() as u64);
+    /// println!("Msg =\t\"{}\"\nHash =\t{}", txt, hash);
+    /// assert_eq!(hash.to_string(), "9631162DFDAEAB89821256D4585D66D35CD61FD6");
+    /// ```
+    /// 
+    /// # Big-endian issue
+    /// It is just experimental for Big Endian CPUs. So, you are not encouraged
+    /// to use it for Big Endian CPUs for serious purpose. Only use this crate
+    /// for Big-endian CPUs with your own full responsibility.
+    pub fn digest(&mut self, message: *const u8, length_in_bytes: u128)
+    {
+        type MessageType = u64;
+        const SHIFT_NUM: usize = 7;
         const CHUNK_NUM: usize = 16;
         self.initialize();
         let length_done = (length_in_bytes >> SHIFT_NUM) as usize;
@@ -267,7 +490,7 @@ SHA1_generic<K0, K1, K2, K3, H0, H1, H2, H3, H4, RL1, RL5, RL30, ROUND, N>
         self.finalize(unsafe { message.add(length_done << SHIFT_NUM) }, length_in_bytes);
     }
 
-    /// // pub fn digest_str(&mut self, message: &str)
+    // pub fn digest_str(&mut self, message: &str)
     /// Compute hash value.
     /// 
     /// # Features
@@ -311,7 +534,7 @@ SHA1_generic<K0, K1, K2, K3, H0, H1, H2, H3, H4, RL1, RL5, RL30, ROUND, N>
     #[inline]
     pub fn digest_str(&mut self, message: &str)
     {
-        self.digest(message.as_ptr(), message.len() as u64);
+        self.digest(message.as_ptr(), message.len() as u128);
     }
 
     // pub fn digest_string(&mut self, message: &String)
@@ -358,7 +581,7 @@ SHA1_generic<K0, K1, K2, K3, H0, H1, H2, H3, H4, RL1, RL5, RL30, ROUND, N>
     #[inline]
     pub fn digest_string(&mut self, message: &String)
     {
-        self.digest(message.as_ptr(), message.len() as u64);
+        self.digest(message.as_ptr(), message.len() as u128);
     }
 
     // pub fn digest_array<const N: usize>(&mut self, message: &[T; N])
@@ -406,7 +629,7 @@ SHA1_generic<K0, K1, K2, K3, H0, H1, H2, H3, H4, RL1, RL5, RL30, ROUND, N>
     pub fn digest_array<T, const M: usize>(&mut self, message: &[T; M])
     where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     {
-        self.digest(message.as_ptr() as *const u8, (M * T::size_in_bytes()) as u64);
+        self.digest(message.as_ptr() as *const u8, (M * T::size_in_bytes()) as u128);
     }
 
     // pub fn digest_vec<T>(&mut self, message: &Vec<T>)
@@ -454,7 +677,7 @@ SHA1_generic<K0, K1, K2, K3, H0, H1, H2, H3, H4, RL1, RL5, RL30, ROUND, N>
     pub fn digest_vec<T>(&mut self, message: &Vec<T>)
     where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     {
-        self.digest(message.as_ptr() as *const u8, (message.len() * T::size_in_bytes()) as u64);
+        self.digest(message.as_ptr() as *const u8, (message.len() * T::size_in_bytes()) as u128);
     }
 
     // pub fn get_HashValue(&self, hashValue: *mut u8, length: usize)
@@ -503,17 +726,20 @@ SHA1_generic<K0, K1, K2, K3, H0, H1, H2, H3, H4, RL1, RL5, RL30, ROUND, N>
     /// for Big-endian CPUs with your own full responsibility.
     pub fn get_HashValue(&self, hashValue: *mut u8, length: usize)
     {
-        const BYTES: usize = 4;
-        let n_length = if length < (BYTES * N) {length} else {BYTES * N};
-        #[cfg(target_endian = "little")]
+        let n = t & 0b11_1111;
+        let N = (t >> 6) + if n == 0 {0} else {1};
+        let n_length = if length < (t >> 3) {length} else {t >> 3};
+        let mut hash_code = [0_u64; 8];
+        for i in 0..N
+            { hash_code[i] = self.hash_code[i].get(); }
+        if n != 0
         {
-            let mut hash_code = [IntUnion::new(); N];
-            for i in 0..N
-                { hash_code[i].set(self.hash_code[i].get().to_be()); }
-            unsafe { copy_nonoverlapping(hash_code.as_ptr() as *const u8, hashValue, n_length); }
+            let mask = (!0_u64) << (64-n);
+            hash_code[N-1] &= mask;
         }
-        #[cfg(target_endian = "big")]
-        unsafe { copy_nonoverlapping(self.hash_code.as_ptr() as *const u8, hashValue, n_length); }
+        for i in 0..N
+            { hash_code[i] = hash_code[i].to_be(); }
+        unsafe { copy_nonoverlapping(hash_code.as_ptr() as *const u8, hashValue, n_length); }
     }
 
     // pub fn get_HashValue_in_string(&self) -> String
@@ -549,14 +775,27 @@ SHA1_generic<K0, K1, K2, K3, H0, H1, H2, H3, H4, RL1, RL5, RL30, ROUND, N>
     /// for Big-endian CPUs with your own full responsibility.
     pub fn get_HashValue_in_string(&self) -> String
     {
-        const BYTES: usize = 4;
+        const BYTES: usize = 8;
+        let n = t & 0b11_1111;  // equivalent to = t % 64
+        let N = (t >> 6) + if n != 0 {1} else {0};
         let mut txt = String::new();
-        for i in 0..N
+        for i in 0..if n == 0 {N} else {N-1}
         {
             let hs = self.hash_code[i];
-            for j in 0..BYTES
+            for j in 0..8
             {
-                let byte = hs.get_ubyte_(BYTES-1-j);
+                let byte = hs.get_ubyte_(7-j);
+                txt.push(Self::to_char(byte >> 4));
+                txt.push(Self::to_char(byte & 0b1111));
+            }
+        }
+        if n != 0
+        {
+            let hs = self.hash_code[N-1];
+            let m = n >> 3; // equivalent to = n / 8
+            for j in 0..m
+            {
+                let byte = hs.get_ubyte_(7-j);
                 txt.push(Self::to_char(byte >> 4));
                 txt.push(Self::to_char(byte & 0b1111));
             }
@@ -595,12 +834,16 @@ SHA1_generic<K0, K1, K2, K3, H0, H1, H2, H3, H4, RL1, RL5, RL30, ROUND, N>
     /// It is just experimental for Big Endian CPUs. So, you are not encouraged
     /// to use it for Big Endian CPUs for serious purpose. Only use this crate
     /// for Big-endian CPUs with your own full responsibility.
-    pub fn get_HashValue_in_array(&self) -> [u32; N]
+    pub fn get_HashValue_in_array<T, const N: usize>(&self, out: &mut [T; N])
+    where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     {
-        let mut res = [0_u32; N];
-        for i in 0..N
-            { res[i] = self.hash_code[i].get().to_be(); }
-        res
+        let mut out_hash = [0_u64; 8];
+        let t_size = t / 8;
+        let out_size = T::size_in_bytes() * N;
+        let length = if out_size < t_size {out_size} else {t_size};
+        for i in 0..8
+            { out_hash[i] = self.hash_code[i].get().to_be(); }
+        unsafe { copy_nonoverlapping(out_hash.as_ptr() as *const u8, out as *mut T as *mut u8, length); }
     }
 
     // pub fn getHashValue_in_vec(&self) -> Vec
@@ -634,11 +877,15 @@ SHA1_generic<K0, K1, K2, K3, H0, H1, H2, H3, H4, RL1, RL5, RL30, ROUND, N>
     /// It is just experimental for Big Endian CPUs. So, you are not encouraged
     /// to use it for Big Endian CPUs for serious purpose. Only use this crate
     /// for Big-endian CPUs with your own full responsibility.
-    pub fn get_HashValue_in_vec(&self) -> Vec<u32>
+    pub fn get_HashValue_in_vec(&self) -> Vec<u64>
     {
+        let n = t & 0b11_1111;  // equivalent to = t % 64
+        let N = (t >> 6) + if n == 0 {0} else {1};
         let mut res = Vec::new();
         for i in 0..N
             { res.push(self.hash_code[i].get().to_be()); }
+        if n != 0
+            { res[N-1] &= (!0_u64) << (64-n); }
         res
     }
 
@@ -646,50 +893,64 @@ SHA1_generic<K0, K1, K2, K3, H0, H1, H2, H3, H4, RL1, RL5, RL30, ROUND, N>
     /// Initializes all five self.hash_code[] with predetermined values H[].
     fn initialize(&mut self)
     {
-        for i in 0..5_usize
-            { self.hash_code[i] = IntUnion::new_with(Self::getH(i)); }
+        for i in 0..8_usize
+            { self.hash_code[i] = LongUnion::new_with(self.O[i]); }
     }
 
     // fn update(&mut self, message: &[u32])
     /// This method is the core part of MD5 hash algorithm.
-    /// It has eighty rounds. It updates self.hash_code[] for those
-    /// eighty rounds.
-    fn update(&mut self, message: &[u32])
+    /// It has sixty-four rounds. It updates self.hash_code[] for those
+    /// sixty-four rounds.
+    fn update(&mut self, message: &[u64])
     {
-        let mut W = [0_u32; 16];
+        let mut W = [0_u64; 16];
         let mut a = self.hash_code[0].get();
         let mut b = self.hash_code[1].get();
         let mut c = self.hash_code[2].get();
         let mut d = self.hash_code[3].get();
         let mut e = self.hash_code[4].get();
+        let mut f = self.hash_code[5].get();
+        let mut g = self.hash_code[6].get();
+        let mut h = self.hash_code[7].get();
 
         for i in 0..16_usize
         {
             W[i] = message[i].to_be();
-            let f = Self::Ff(b, c, d).wrapping_add(e)
-                                .wrapping_add(Self::getK(0))
+            let S1 = e.rotate_right(RR14) ^ e.rotate_right(RR18) ^ e.rotate_right(RR41);
+            let t1 = Self::Ch(e, f, g).wrapping_add(h)
+                                .wrapping_add(Self::getK(i))
                                 .wrapping_add(W[i])
-                                .wrapping_add(a.rotate_left(RL5));
-            e = d;
+                                .wrapping_add(S1);
+            let S0 = a.rotate_right(RR28) ^ a.rotate_right(RR34) ^ a.rotate_right(RR39);
+            let t2 = Self::Maj(a, b, c).wrapping_add(S0);
+            h = g;
+            g = f;
+            f = e;
+            e = d.wrapping_add(t1);
             d = c;
-            c = b.rotate_left(RL30);
+            c = b;
             b = a;
-            a = f;
+            a = t1.wrapping_add(t2);
         }
-        for i in 16..ROUND
+        for i in 16..ROUND // ROUND = 64_usize for officiial SHA-2/256
         {
             let j = i & 0b1111;
             W[j] = Self::getW(&W, i);
-            let (mut f, z) = Self::func(b, c, d, i);
-            f = f.wrapping_add(e)
-                .wrapping_add(Self::getK(z))
-                .wrapping_add(W[j])
-                .wrapping_add(a.rotate_left(RL5));
-            e = d;
+            let S1 = e.rotate_right(RR14) ^ e.rotate_right(RR18) ^ e.rotate_right(RR41);
+            let t1 = Self::Ch(e, f, g).wrapping_add(h)
+                                .wrapping_add(Self::getK(i))
+                                .wrapping_add(W[j])
+                                .wrapping_add(S1);
+            let S0 = a.rotate_right(RR28) ^ a.rotate_right(RR34) ^ a.rotate_right(RR39);
+            let t2 = Self::Maj(a, b, c).wrapping_add(S0);
+            h = g;
+            g = f;
+            f = e;
+            e = d.wrapping_add(t1);
             d = c;
-            c = b.rotate_left(30);
+            c = b;
             b = a;
-            a = f;
+            a = t1.wrapping_add(t2);
         }
 
         self.hash_code[0].set(self.hash_code[0].get().wrapping_add(a));
@@ -697,6 +958,9 @@ SHA1_generic<K0, K1, K2, K3, H0, H1, H2, H3, H4, RL1, RL5, RL30, ROUND, N>
         self.hash_code[2].set(self.hash_code[2].get().wrapping_add(c));
         self.hash_code[3].set(self.hash_code[3].get().wrapping_add(d));
         self.hash_code[4].set(self.hash_code[4].get().wrapping_add(e));
+        self.hash_code[5].set(self.hash_code[5].get().wrapping_add(f));
+        self.hash_code[6].set(self.hash_code[6].get().wrapping_add(g));
+        self.hash_code[7].set(self.hash_code[7].get().wrapping_add(h));
     }
 
     // fn finalize(&mut self, message: *const u8, length_in_bytes: u64)
@@ -704,12 +968,12 @@ SHA1_generic<K0, K1, K2, K3, H0, H1, H2, H3, H4, RL1, RL5, RL30, ROUND, N>
     /// which are bit one, bits zeros, and eight bytes that show the message
     /// size in the unit of bits with big endianness so as to make the data
     /// (message + padding bits) be multiples of 512 bits (64 bytes).
-    fn finalize(&mut self, message: *const u8, length_in_bytes: u64)
+    fn finalize(&mut self, message: *const u8, length_in_bytes: u128)
     {
-        type ChunkType = u64;
-        type PieceType = u32;
-        const MESSAGE_NUM: usize = 64;
-        const LAST_BYTES: ChunkType = 0b11_1111;
+        type ChunkType = u128;
+        type PieceType = u64;
+        const MESSAGE_NUM: usize = 128;
+        const LAST_BYTES: ChunkType = 0b111_1111;
         union MU
         {
             chunk: [ChunkType; 8],
@@ -717,13 +981,13 @@ SHA1_generic<K0, K1, K2, K3, H0, H1, H2, H3, H4, RL1, RL5, RL30, ROUND, N>
             txt: [u8; MESSAGE_NUM],
         }
 
-        let mut mu = MU { txt: [0; 64] };
-        let last_bytes = (length_in_bytes & LAST_BYTES) as usize;    // equivalent to (length_in_bytes % 64) as usize
+        let mut mu = MU { txt: [0; MESSAGE_NUM] };
+        let last_bytes = (length_in_bytes & LAST_BYTES) as usize;    // equivalent to (length_in_bytes % 128) as usize
         unsafe { copy_nonoverlapping(message, mu.txt.as_mut_ptr(), last_bytes); }
         unsafe { mu.txt[last_bytes] = 0b1000_0000; }
         // 데이터 기록후, 데이터의 길이를 비트 단위로 기록하기 위한 64 비트(8 바이트)와
         // 0b1000_0000를 기록하기 위한 한 바이트의 여유공간이 남아있지 않으면,
-        if last_bytes > 54  // (64 - 8 - 1)
+        if last_bytes > 110  // (128 - 16 - 1)
         {
             self.update(unsafe {&mu.piece});
             for i in 0..7
@@ -733,31 +997,56 @@ SHA1_generic<K0, K1, K2, K3, H0, H1, H2, H3, H4, RL1, RL5, RL30, ROUND, N>
         self.update(unsafe {&mu.piece});
     }
 
-    fn func(x: u32, y: u32, z: u32, round: usize) -> (u32, usize)
-    {
-        let r = (round / 20) & 0b11;
-        match r
-        {
-            0 => { (Self::Ff(x, y, z), r) }
-            2 => { (Self::Hh(x, y, z), r) }
-            _ => { (Self::Gg(x, y, z), r) }
-        }
-    }
-
-	#[inline] fn getK(idx: usize) -> u32    { Self::K[idx] }
-	#[inline] fn getH(idx: usize) -> u32    { Self::H[idx] }
-    #[inline] fn getW(W: &[u32; 16], idx: usize) -> u32   { (W[(idx-3) & 0b1111] ^ W[(idx-8) & 0b1111] ^ W[(idx-14) & 0b1111] ^ W[(idx-16) & 0b1111]).rotate_left(RL1) }
-	#[inline] fn Ff(x: u32, y: u32, z: u32) -> u32  { z ^ (x & (y ^ z)) }   // equivalent to { (x & y) | (!x & z) }
-	#[inline] fn Gg(x: u32, y: u32, z: u32) -> u32	{ x ^ y ^ z }
-	#[inline] fn Hh(x: u32, y: u32, z: u32) -> u32  { (x & y) | (z & (x | y)) } // equivalent to { (x & y) | (y & z) | (z & x) }
+	#[inline] fn getK(idx: usize) -> u64    { Self::K[idx] }
+	#[inline] fn getH(idx: usize) -> u64    { Self::H[idx] }
+    #[inline] fn getS0(W: &[u64; 16], idx: usize) -> u64  { let w = W[(idx-15) & 0b1111]; w.rotate_right(RR1) ^ w.rotate_right(RR8) ^ (w >> SR7) }
+    #[inline] fn getS1(W: &[u64; 16], idx: usize) -> u64  { let w = W[(idx-2) & 0b1111]; w.rotate_right(RR19) ^ w.rotate_right(RR61) ^ (w >> SR6) }
+    #[inline] fn getW(W: &[u64; 16], idx: usize) -> u64   { W[(idx-16) & 0b1111].wrapping_add(Self::getS0(&W, idx)).wrapping_add(W[(idx-7) & 0b1111]).wrapping_add(Self::getS1(&W, idx)) }
+	#[inline] fn Ch(x: u64, y: u64, z: u64) -> u64  { z ^ (x & (y ^ z)) }   // equivalent to { (x & y) | (!x & z) }
+	#[inline] fn Maj(x: u64, y: u64, z: u64) -> u64  { (x & y) | (z & (x | y)) } // equivalent to { (x & y) | (y & z) | (z & x) }
     #[inline] fn to_char(nibble: u8) -> char    { if nibble < 10  { ('0' as u8 + nibble) as u8 as char } else { ('A' as u8 - 10 + nibble) as char } }
 }
 
 
-impl<const K0: u32, const K1: u32, const K2: u32, const K3: u32,
-const H0: u32, const H1: u32, const H2: u32, const H3: u32, const H4: u32,
-const RL1: u32, const RL5: u32, const RL30: u32, const ROUND: usize, const N: usize>
-Display for SHA1_generic<K0, K1, K2, K3, H0, H1, H2, H3, H4, RL1, RL5, RL30, ROUND, N>
+impl<const K00: u64, const K01: u64, const K02: u64, const K03: u64,
+    const K04: u64, const K05: u64, const K06: u64, const K07: u64,
+    const K08: u64, const K09: u64, const K10: u64, const K11: u64,
+    const K12: u64, const K13: u64, const K14: u64, const K15: u64,
+    const K16: u64, const K17: u64, const K18: u64, const K19: u64,
+    const K20: u64, const K21: u64, const K22: u64, const K23: u64,
+    const K24: u64, const K25: u64, const K26: u64, const K27: u64,
+    const K28: u64, const K29: u64, const K30: u64, const K31: u64,
+    const K32: u64, const K33: u64, const K34: u64, const K35: u64,
+    const K36: u64, const K37: u64, const K38: u64, const K39: u64,
+    const K40: u64, const K41: u64, const K42: u64, const K43: u64,
+    const K44: u64, const K45: u64, const K46: u64, const K47: u64,
+    const K48: u64, const K49: u64, const K50: u64, const K51: u64,
+    const K52: u64, const K53: u64, const K54: u64, const K55: u64,
+    const K56: u64, const K57: u64, const K58: u64, const K59: u64,
+    const K60: u64, const K61: u64, const K62: u64, const K63: u64,
+    const K64: u64, const K65: u64, const K66: u64, const K67: u64,
+    const K68: u64, const K69: u64, const K70: u64, const K71: u64,
+    const K72: u64, const K73: u64, const K74: u64, const K75: u64,
+    const K76: u64, const K77: u64, const K78: u64, const K79: u64,
+    const H0: u64, const H1: u64, const H2: u64, const H3: u64,
+    const H4: u64, const H5: u64, const H6: u64, const H7: u64,
+    const RR1: u32, const RR8: u32, const RR14: u32, const RR18: u32, 
+    const RR19: u32, const RR28: u32, const RR34: u32, const RR39: u32, 
+    const RR41: u32, const RR61: u32, const SR6: i32, const SR7: i32,
+    const ROUND: usize, const A5A5A5A5A5A5A5A5: u64, const t: usize>
+Display for SHA2_Generic_512_t<K00, K01, K02, K03, K04, K05, K06, K07,
+                            K08, K09, K10, K11, K12, K13, K14, K15,
+                            K16, K17, K18, K19, K20, K21, K22, K23,
+                            K24, K25, K26, K27, K28, K29, K30, K31,
+                            K32, K33, K34, K35, K36, K37, K38, K39,
+                            K40, K41, K42, K43, K44, K45, K46, K47,
+                            K48, K49, K50, K51, K52, K53, K54, K55,
+                            K56, K57, K58, K59, K60, K61, K62, K63,
+                            K64, K65, K66, K67, K68, K69, K70, K71,
+                            K72, K73, K74, K75, K76, K77, K78, K79,
+                            H0, H1, H2, H3, H4, H5, H6, H7, 
+                            RR1, RR8, RR14, RR18, RR19, RR28, RR34, RR39, RR41, RR61,
+                            SR6, SR7, ROUND, A5A5A5A5A5A5A5A5, t>
 {
     /// Formats the value using the given formatter.
     /// You will hardly use this method directly.

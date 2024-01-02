@@ -19,12 +19,84 @@ use crate::number::IntUnion;
 use crate::number::SmallUInt;
 
 
+/// K0 ~ K63 are initialized with array of round constants: the first 32 bits
+/// of the fractional parts of the cube roots of the first 64 primes 2..311
+#[allow(non_camel_case_types)]
+pub type MD5_Generic_KR_fixed<const H0: u32, const H1: u32, const H2: u32,
+                            const H3: u32, const ROUND: usize, const N: usize>
+    // Initialize array of round constants: the first 32 bits of
+    // the fractional parts of the cube roots of the first 64 primes 2..311
+    = MD5_Generic<  0xd76aa478, 0xe8c7b756, 0x242070db, 0xc1bdceee,
+                    0xf57c0faf, 0x4787c62a, 0xa8304613, 0xfd469501,
+                    0x698098d8, 0x8b44f7af, 0xffff5bb1, 0x895cd7be,
+                    0x6b901122, 0xfd987193, 0xa679438e, 0x49b40821,
+                    0xf61e2562, 0xc040b340, 0x265e5a51, 0xe9b6c7aa,
+                    0xd62f105d, 0x02441453, 0xd8a1e681, 0xe7d3fbc8,
+                    0x21e1cde6, 0xc33707d6, 0xf4d50d87, 0x455a14ed,
+                    0xa9e3e905, 0xfcefa3f8, 0x676f02d9, 0x8d2a4c8a,
+                    0xfffa3942, 0x8771f681, 0x6d9d6122, 0xfde5380c,
+                    0xa4beea44, 0x4bdecfa9, 0xf6bb4b60, 0xbebfbc70,
+                    0x289b7ec6, 0xeaa127fa, 0xd4ef3085, 0x04881d05,
+                    0xd9d4d039, 0xe6db99e5, 0x1fa27cf8, 0xc4ac5665,
+                    0xf4292244, 0x432aff97, 0xab9423a7, 0xfc93a039,
+                    0x655b59c3, 0x8f0ccc92, 0xffeff47d, 0x85845dd1,
+                    0x6fa87e4f, 0xfe2ce6e0, 0xa3014314, 0x4e0811a1,
+                    0xf7537e82, 0xbd3af235, 0x2ad7d2bb, 0xeb86d391,
+                    H0, H1, H2, H3,
+                    7, 12, 17, 22, 5, 9, 14, 20, 4, 11, 16, 23, 6, 10, 15, 21,
+                    ROUND, N>;
+
+/// H0 ~ H7 are The first 32 bits of the fractional parts of the square roots
+/// of the first 8 primes 2..19
+#[allow(non_camel_case_types)]
+pub type MD5_Generic_HR_fixed<const K00: u32, const K01: u32, const K02: u32, const K03: u32,
+                    const K04: u32, const K05: u32, const K06: u32, const K07: u32,
+                    const K08: u32, const K09: u32, const K10: u32, const K11: u32,
+                    const K12: u32, const K13: u32, const K14: u32, const K15: u32,
+                    const K16: u32, const K17: u32, const K18: u32, const K19: u32,
+                    const K20: u32, const K21: u32, const K22: u32, const K23: u32,
+                    const K24: u32, const K25: u32, const K26: u32, const K27: u32,
+                    const K28: u32, const K29: u32, const K30: u32, const K31: u32,
+                    const K32: u32, const K33: u32, const K34: u32, const K35: u32,
+                    const K36: u32, const K37: u32, const K38: u32, const K39: u32,
+                    const K40: u32, const K41: u32, const K42: u32, const K43: u32,
+                    const K44: u32, const K45: u32, const K46: u32, const K47: u32,
+                    const K48: u32, const K49: u32, const K50: u32, const K51: u32,
+                    const K52: u32, const K53: u32, const K54: u32, const K55: u32,
+                    const K56: u32, const K57: u32, const K58: u32, const K59: u32,
+                    const K60: u32, const K61: u32, const K62: u32, const K63: u32,
+                    const ROUND: usize, const N: usize>
+    = MD5_Generic<  K00, K01, K02, K03, K04, K05, K06, K07,
+                    K08, K09, K10, K11, K12, K13, K14, K15,
+                    K16, K17, K18, K19, K20, K21, K22, K23,
+                    K24, K25, K26, K27, K28, K29, K30, K31,
+                    K32, K33, K34, K35, K36, K37, K38, K39,
+                    K40, K41, K42, K43, K44, K45, K46, K47,
+                    K48, K49, K50, K51, K52, K53, K54, K55,
+                    K56, K57, K58, K59,K60, K61, K62, K63,
+                    // The first 32 bits of the fractional parts of the square roots
+                    // of the first 8 primes 2..19
+                    0x67452301, 0xefcdab89, 0x98badcfe, 0x10325476,
+                    7, 12, 17, 22, 5, 9, 14, 20, 4, 11, 16, 23, 6, 10, 15, 21, ROUND, N>;
+
+/// H0 ~ H7 are the first 32 bits of the fractional parts of the square roots
+/// of the first 8 primes 2..19
+#[allow(non_camel_case_types)]
+pub type MD5_Expended<const ROUND: usize, const N: usize>
+                                // H0 ~ H7 are the first 32 bits of the fractional
+                                // parts of the square roots of the first 8 primes 2..19
+    = MD5_Generic_KR_fixed<0x67452301, 0xefcdab89, 0x98badcfe, 0x10325476, ROUND, N>;
+
+#[allow(non_camel_case_types)]
+pub type MD5 = MD5_Expended<64, 4>;
+
 /// # Introduction
 /// A MD5 message-digest algorithm that lossily compresses data of arbitrary
 /// length into a 128-bit hash value. MD5 was designed by Ronald Rivest who
 /// is one of the inventors of RSA asymmetric cryptographic algorithm. MD5 was
 /// invented in 1991 to replace an earlier hash function MD4. It was specified
-/// in 1992 as RFC 1321.
+/// in 1992 as RFC 1321. This module provides not only the official MD5 but
+/// also its expanded versions which is implemented with the name `MD5_Generic`.
 /// 
 /// # Vulnerability
 /// In 2004, it was shown that MD5 is not collision-resistant. Today, MD5 is
@@ -42,7 +114,17 @@ use crate::number::SmallUInt;
 /// - Integrity test in some collision-free situations
 /// - Storing passwords with limited security
 /// - Digital Signature
+/// - Study purposes
 /// 
+/// # About the expanded version MD5_Generic
+/// You can create your own expanded version of MD5 by changing the constants
+/// K00 ~ K63, the initial hash values H0 ~ H7, the amount of
+/// rotate left R00 ~ R33, the number of round ROUND, and the output amount.
+/// Your own algrorithm based on MD5 may be stronger or weaker than official
+/// MD5. Unless you seriously checked the security of your own algorithms, it
+/// is high chance that your own alogrithms are weaker than the official MD5.
+/// 
+/// # Reference
 /// Read [more](https://en.wikipedia.org/wiki/MD5) about MD5 in detail.
 /// 
 /// # Quick Start
@@ -105,7 +187,7 @@ use crate::number::SmallUInt;
 /// 
 /// txt = "I am testing MD5 for the case data whose length is more than sixty-four bytes is given.";
 /// hash.digest_str(txt);
-/// println!("Msg =\t\"{}\"\nHash =\t{}\n", txt, hash);
+/// println!("Msg =\t\"{}\"\nHash =\t{}", txt, hash);
 /// assert_eq!(hash.to_string(), "9831162AB272AE1D85245B75726D215E");
 /// ```
 /// 
@@ -114,35 +196,81 @@ use crate::number::SmallUInt;
 /// to use it for Big Endian CPUs for serious purpose. Only use this crate
 /// for Big-endian CPUs with your own full responsibility.
 #[derive(Debug, Clone)]
-pub struct MD5
+pub struct MD5_Generic<const K00: u32, const K01: u32, const K02: u32, const K03: u32,
+                    const K04: u32, const K05: u32, const K06: u32, const K07: u32,
+                    const K08: u32, const K09: u32, const K10: u32, const K11: u32,
+                    const K12: u32, const K13: u32, const K14: u32, const K15: u32,
+                    const K16: u32, const K17: u32, const K18: u32, const K19: u32,
+                    const K20: u32, const K21: u32, const K22: u32, const K23: u32,
+                    const K24: u32, const K25: u32, const K26: u32, const K27: u32,
+                    const K28: u32, const K29: u32, const K30: u32, const K31: u32,
+                    const K32: u32, const K33: u32, const K34: u32, const K35: u32,
+                    const K36: u32, const K37: u32, const K38: u32, const K39: u32,
+                    const K40: u32, const K41: u32, const K42: u32, const K43: u32,
+                    const K44: u32, const K45: u32, const K46: u32, const K47: u32,
+                    const K48: u32, const K49: u32, const K50: u32, const K51: u32,
+                    const K52: u32, const K53: u32, const K54: u32, const K55: u32,
+                    const K56: u32, const K57: u32, const K58: u32, const K59: u32,
+                    const K60: u32, const K61: u32, const K62: u32, const K63: u32,
+                    const H0: u32, const H1: u32, const H2: u32, const H3: u32,
+                    const R00: u32, const R01: u32, const R02: u32, const R03: u32,
+                    const R10: u32, const R11: u32, const R12: u32, const R13: u32,
+                    const R20: u32, const R21: u32, const R22: u32, const R23: u32,
+                    const R30: u32, const R31: u32, const R32: u32, const R33: u32,
+                    const ROUND: usize, const N: usize>
 {
     hash_code: [IntUnion; 4],
 }
 
-impl MD5
+impl<const K00: u32, const K01: u32, const K02: u32, const K03: u32,
+    const K04: u32, const K05: u32, const K06: u32, const K07: u32,
+    const K08: u32, const K09: u32, const K10: u32, const K11: u32,
+    const K12: u32, const K13: u32, const K14: u32, const K15: u32,
+    const K16: u32, const K17: u32, const K18: u32, const K19: u32,
+    const K20: u32, const K21: u32, const K22: u32, const K23: u32,
+    const K24: u32, const K25: u32, const K26: u32, const K27: u32,
+    const K28: u32, const K29: u32, const K30: u32, const K31: u32,
+    const K32: u32, const K33: u32, const K34: u32, const K35: u32,
+    const K36: u32, const K37: u32, const K38: u32, const K39: u32,
+    const K40: u32, const K41: u32, const K42: u32, const K43: u32,
+    const K44: u32, const K45: u32, const K46: u32, const K47: u32,
+    const K48: u32, const K49: u32, const K50: u32, const K51: u32,
+    const K52: u32, const K53: u32, const K54: u32, const K55: u32,
+    const K56: u32, const K57: u32, const K58: u32, const K59: u32,
+    const K60: u32, const K61: u32, const K62: u32, const K63: u32,
+    const H0: u32, const H1: u32, const H2: u32, const H3: u32,
+    const R00: u32, const R01: u32, const R02: u32, const R03: u32,
+    const R10: u32, const R11: u32, const R12: u32, const R13: u32,
+    const R20: u32, const R21: u32, const R22: u32, const R23: u32,
+    const R30: u32, const R31: u32, const R32: u32, const R33: u32,
+    const ROUND: usize, const N: usize>
+MD5_Generic<K00, K01, K02, K03, K04, K05, K06, K07,
+            K08, K09, K10, K11, K12, K13, K14, K15,
+            K16, K17, K18, K19, K20, K21, K22, K23,
+            K24, K25, K26, K27, K28, K29, K30, K31,
+            K32, K33, K34, K35, K36, K37, K38, K39,
+            K40, K41, K42, K43, K44, K45, K46, K47,
+            K48, K49, K50, K51, K52, K53, K54, K55,
+            K56, K57, K58, K59, K60, K61, K62, K63,
+            H0, H1, H2, H3, 
+            R00, R01, R02, R03, R10, R11, R12, R13,
+            R20, R21, R22, R23, R30, R31, R32, R33, ROUND, N>
 {
-    const K: [u32; 64] = [  0xd76aa478, 0xe8c7b756, 0x242070db, 0xc1bdceee,
-                            0xf57c0faf, 0x4787c62a, 0xa8304613, 0xfd469501,
-                            0x698098d8, 0x8b44f7af, 0xffff5bb1, 0x895cd7be,
-                            0x6b901122, 0xfd987193, 0xa679438e, 0x49b40821,
-                            0xf61e2562, 0xc040b340, 0x265e5a51, 0xe9b6c7aa,
-                            0xd62f105d, 0x02441453, 0xd8a1e681, 0xe7d3fbc8,
-                            0x21e1cde6, 0xc33707d6, 0xf4d50d87, 0x455a14ed,
-                            0xa9e3e905, 0xfcefa3f8, 0x676f02d9, 0x8d2a4c8a,
-                            0xfffa3942, 0x8771f681, 0x6d9d6122, 0xfde5380c,
-                            0xa4beea44, 0x4bdecfa9, 0xf6bb4b60, 0xbebfbc70,
-                            0x289b7ec6, 0xeaa127fa, 0xd4ef3085, 0x04881d05,
-                            0xd9d4d039, 0xe6db99e5, 0x1fa27cf8, 0xc4ac5665,
-                            0xf4292244, 0x432aff97, 0xab9423a7, 0xfc93a039,
-                            0x655b59c3, 0x8f0ccc92, 0xffeff47d, 0x85845dd1,
-                            0x6fa87e4f, 0xfe2ce6e0, 0xa3014314, 0x4e0811a1,
-                            0xf7537e82, 0xbd3af235, 0x2ad7d2bb, 0xeb86d391 ];
-    const R: [[u32; 4]; 4] = [[7, 12, 17, 22], [5,  9, 14, 20], [4, 11, 16, 23], [6, 10, 15, 21]];
-    const H: [u32; 4] = [ 0x67452301, 0xefcdab89, 0x98badcfe, 0x10325476 ];
+    const K: [u32; 64] = [  K00, K01, K02, K03, K04, K05, K06, K07,
+                            K08, K09, K10, K11, K12, K13, K14, K15,
+                            K16, K17, K18, K19, K20, K21, K22, K23,
+                            K24, K25, K26, K27, K28, K29, K30, K31,
+                            K32, K33, K34, K35, K36, K37, K38, K39,
+                            K40, K41, K42, K43, K44, K45, K46, K47,
+                            K48, K49, K50, K51, K52, K53, K54, K55,
+                            K56, K57, K58, K59, K60, K61, K62, K63 ];
+    const R: [[u32; 4]; 4] = [  [R00, R01, R02, R03], [R10, R11, R12, R13],
+                                [R20, R21, R22, R23], [R30, R31, R32, R33] ];
+    const H: [u32; 4] = [ H0, H1, H2, H3 ];
 
 
     // pub fn new() -> Self
-    /// Constructs a new `MD5`.
+    /// Constructs a new `MD5` object.
     /// 
     /// # Output
     /// A new object of `MD5`.
@@ -158,10 +286,14 @@ impl MD5
     /// println!("Hash =\t{}", hash);
     /// assert_eq!(hash.to_string(), "0123456789ABCDEFFEDCBA9876543210");
     /// ```
-    pub fn new() -> Self    { MD5 { hash_code: [IntUnion::new_with(Self::H[0]),
-                                                IntUnion::new_with(Self::H[1]),
-                                                IntUnion::new_with(Self::H[2]),
-                                                IntUnion::new_with(Self::H[3])] } }
+    pub fn new() -> Self
+    {
+        MD5_Generic
+        {
+            hash_code: [IntUnion::new_with(Self::H[0]),
+                        IntUnion::new_with(Self::H[1]),
+                        IntUnion::new_with(Self::H[2]),
+                        IntUnion::new_with(Self::H[3])] } }
 
     // pub fn digest(&mut self, message: *const u8, length_in_bytes: u64)
     /// Compute hash value.
@@ -212,11 +344,14 @@ impl MD5
     /// for Big-endian CPUs with your own full responsibility.
     pub fn digest(&mut self, message: *const u8, length_in_bytes: u64)
     {
+        type MessageType = u32;
+        const SHIFT_NUM: usize = 6;
+        const CHUNK_NUM: usize = 16;
         self.initialize();
-        let length_done = (length_in_bytes >> 6) as usize;
+        let length_done = (length_in_bytes >> SHIFT_NUM) as usize;
         for i in 0..length_done
-            { self.update(unsafe { from_raw_parts(message.add(i << 6) as *const u32, 16) } ); }
-        self.finalize(unsafe { message.add(length_done << 6) }, length_in_bytes);
+            { self.update(unsafe { from_raw_parts(message.add(i << SHIFT_NUM) as *const MessageType, CHUNK_NUM) } ); }
+        self.finalize(unsafe { message.add(length_done << SHIFT_NUM) }, length_in_bytes);
     }
 
     /// // pub fn digest_str(&mut self, message: &str)
@@ -355,10 +490,10 @@ impl MD5
     /// to use it for Big Endian CPUs for serious purpose. Only use this crate
     /// for Big-endian CPUs with your own full responsibility.
     #[inline]
-    pub fn digest_array<T, const N: usize>(&mut self, message: &[T; N])
+    pub fn digest_array<T, const M: usize>(&mut self, message: &[T; M])
     where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     {
-        self.digest(message.as_ptr() as *const u8, (N * T::size_in_bytes()) as u64);
+        self.digest(message.as_ptr() as *const u8, (M * T::size_in_bytes()) as u64);
     }
 
     // pub fn digest_vec<T>(&mut self, message: &Vec<T>)
@@ -455,13 +590,14 @@ impl MD5
     /// for Big-endian CPUs with your own full responsibility.
     pub fn get_HashValue(&self, hashValue: *mut u8, length: usize)
     {
-        let n_length = if length < (4 * 4) {length} else {4 * 4};
-        #[cfg(target_endian = "little")]
+        const BYTES: usize = 4;
+        let n_length = if length < (BYTES * N) {length} else {BYTES * N};
+        #[cfg(target_endian = "little")]   // Because of MD5 is based on Little Endian
         unsafe { copy_nonoverlapping(self.hash_code.as_ptr() as *const u8, hashValue, n_length); }
-        #[cfg(target_endian = "big")]
+        #[cfg(target_endian = "big")]   // Because of MD5 is based on Little Endian
         {
-            let mut hash_code = [IntUnion::new(); 4];
-            for i in 0..4
+            let mut hash_code = [IntUnion::new(); N];
+            for i in 0..N
                 { hash_code[i].set(self.hash_code[i].get().to_le()); }
             unsafe { copy_nonoverlapping(hash_code.as_ptr() as *const u8, hashValue, n_length); }
         }
@@ -501,13 +637,14 @@ impl MD5
     /// for Big-endian CPUs with your own full responsibility.
     pub fn get_HashValue_in_string(&self) -> String
     {
+        const BYTES: usize = 4;
         let mut txt = String::new();
-        for i in 0..4
+        for i in 0..N
         {
             let hs = self.hash_code[i];
-            for j in 0..4
+            for j in 0..BYTES
             {
-                let byte = hs.get_ubyte_(j);
+                let byte = hs.get_ubyte_(j);    // Because of MD5 is based on Little Endian
                 txt.push(Self::to_char(byte >> 4));
                 txt.push(Self::to_char(byte & 0b1111));
             }
@@ -546,10 +683,10 @@ impl MD5
     /// It is just experimental for Big Endian CPUs. So, you are not encouraged
     /// to use it for Big Endian CPUs for serious purpose. Only use this crate
     /// for Big-endian CPUs with your own full responsibility.
-    pub fn get_HashValue_in_array(&self) -> [u32; 4]
+    pub fn get_HashValue_in_array(&self) -> [u32; N]
     {
-        let mut res = [0_u32; 4];
-        for i in 0..4
+        let mut res = [0_u32; N];
+        for i in 0..N
             { res[i] = self.hash_code[i].get().to_le(); }
         res
     }
@@ -588,7 +725,10 @@ impl MD5
     #[inline]
     pub fn get_HashValue_in_vec(&self) -> Vec<u32>
     {
-        Vec::<u32>::from(&self.get_HashValue_in_array())
+        let mut res = Vec::new();
+        for i in 0..N
+            { res.push(self.hash_code[i].get().to_le()); }
+        res
     }
 
     // fn initialize(&mut self)
@@ -596,7 +736,7 @@ impl MD5
     fn initialize(&mut self)
     {
         for i in 0..4_usize
-            { self.hash_code[i] = IntUnion::new_with(Self::getH(i)); }
+            { self.hash_code[i] = IntUnion::new_with(Self::H[i]); }
     }
 
     // fn update(&mut self, message: &[u32])
@@ -610,65 +750,66 @@ impl MD5
         let mut c = self.hash_code[2].get();
         let mut d = self.hash_code[3].get();
 
-        for i in 0..16_usize
+        for i in 0..ROUND
         {
-            let f = Self::Ff(b, c, d).wrapping_add(a)
-                                .wrapping_add(Self::getK(i))
-                                .wrapping_add(message[i].to_le())
-                                .rotate_left(Self::R[0][i & 0b11]);
-            a = d;
-            d = c;
-            c = b;
-            b = b.wrapping_add(f);
-        }
-        for i in 16..32_usize
-        {
-            let g = ((i << 2) + i + 1) & 0b1111;
-            let f = Self::Gg(b, c, d).wrapping_add(a)
-                                .wrapping_add(Self::getK(i))
-                                .wrapping_add(message[g].to_le())
-                                .rotate_left(Self::R[1][i & 0b11]);
-            a = d;
-            d = c;
-            c = b;
-            b = b.wrapping_add(f);
-        }
-        for i in 32..48_usize
-        {
-            let g = ((i << 1) + i + 5) & 0b1111;
-            let f = Self::Hh(b, c, d).wrapping_add(a)
-                                .wrapping_add(Self::getK(i))
-                                .wrapping_add(message[g].to_le())
-                                .rotate_left(Self::R[2][i & 0b11]);
-            a = d;
-            d = c;
-            c = b;
-            b = b.wrapping_add(f);
-        }
-        for i in 48..64_usize
-        {
-            let g = ((i << 3) - i) & 0b1111;
-            let f = Self::Ii(b, c, d).wrapping_add(a)
-                                .wrapping_add(Self::getK(i))
-                                .wrapping_add(message[g].to_le())
-                                .rotate_left(Self::R[3][i & 0b11]);
+            let j = i & 0b11_1111;
+            let (mut f, g) = Self::func(b, c, d, j);
+            f = f.wrapping_add(a)
+                    .wrapping_add(Self::getK(j))
+                    .wrapping_add(message[g].to_le())
+                    .rotate_left(Self::getR(j));
             a = d;
             d = c;
             c = b;
             b = b.wrapping_add(f);
         }
 
-        // Or the above can be shortened as follows but then it will be slower
-        // a bit because of some overheads such as comparation, pointer
-        // arithmatic operation, etc.
+        // Or the above can be divided into four sections as follows but then
+        // it will be slower a bit because of some overheads such as
+        // comparation, pointer arithmatic operation, etc.
         //
-        // for i in 0..64_usize
+        // for i in 0..16_usize
         // {
-        //     let (mut f, g) = Self::func(b, c, d, i);
-        //     f = f.wrapping_add(a)
-        //             .wrapping_add(Self::getK(i))
-        //             .wrapping_add(message[g].to_le())
-        //             .rotate_left(Self::getR(i));
+        //     let f = Self::Ff(b, c, d).wrapping_add(a)
+        //                         .wrapping_add(Self::getK(i))
+        //                         .wrapping_add(message[i].to_le())
+        //                         .rotate_left(Self::R[0][i & 0b11]);
+        //     a = d;
+        //     d = c;
+        //     c = b;
+        //     b = b.wrapping_add(f);
+        // }
+        // for i in 16..32_usize
+        // {
+        //     let g = ((i << 2) + i + 1) & 0b1111;
+        //     let f = Self::Gg(b, c, d).wrapping_add(a)
+        //                         .wrapping_add(Self::getK(i))
+        //                         .wrapping_add(message[g].to_le())
+        //                         .rotate_left(Self::R[1][i & 0b11]);
+        //     a = d;
+        //     d = c;
+        //     c = b;
+        //     b = b.wrapping_add(f);
+        // }
+        // for i in 32..48_usize
+        // {
+        //     let g = ((i << 1) + i + 5) & 0b1111;
+        //     let f = Self::Hh(b, c, d).wrapping_add(a)
+        //                         .wrapping_add(Self::getK(i))
+        //                         .wrapping_add(message[g].to_le())
+        //                         .rotate_left(Self::R[2][i & 0b11]);
+        //     a = d;
+        //     d = c;
+        //     c = b;
+        //     b = b.wrapping_add(f);
+        // }
+        // for i in 48..64_usize
+        // {
+        //     let g = ((i << 3) - i) & 0b1111;
+        //     let f = Self::Ii(b, c, d).wrapping_add(a)
+        //                         .wrapping_add(Self::getK(i))
+        //                         .wrapping_add(message[g].to_le())
+        //                         .rotate_left(Self::R[3][i & 0b11]);
         //     a = d;
         //     d = c;
         //     c = b;
@@ -688,44 +829,48 @@ impl MD5
     /// (message + padding bits) be multiples of 512 bits (64 bytes).
     fn finalize(&mut self, message: *const u8, length_in_bytes: u64)
     {
+        type ChunkType = u64;
+        type PieceType = u32;
+        const MESSAGE_NUM: usize = 64;
+        const LAST_BYTES: ChunkType = 0b11_1111;
         union MU
         {
-            lu: [u64; 8],
-            iu: [u32; 16],
-            txt: [u8; 64],
+            chunk: [ChunkType; 8],
+            piece: [PieceType; 16],
+            txt: [u8; MESSAGE_NUM],
         }
 
         let mut mu = MU { txt: [0; 64] };
-        let last_bytes = (length_in_bytes & 0b11_1111) as usize;    // equivalent to (length_in_bytes % 64) as usize
+        let last_bytes = (length_in_bytes & LAST_BYTES) as usize;    // equivalent to (length_in_bytes % 64) as usize
         unsafe { copy_nonoverlapping(message, mu.txt.as_mut_ptr(), last_bytes); }
         unsafe { mu.txt[last_bytes] = 0b1000_0000; }
         // 데이터 기록후, 데이터의 길이를 비트 단위로 기록하기 위한 64 비트(8 바이트)와
         // 0b1000_0000를 기록하기 위한 한 바이트의 여유공간이 남아있지 않으면,
         if last_bytes > 54  // (64 - 8 - 1)
         {
-            self.update(unsafe {&mu.iu});
+            self.update(unsafe {&mu.piece});
             for i in 0..7
-                { unsafe { mu.lu[i] = 0; } }
+                { unsafe { mu.chunk[i] = 0; } }
         }
-        unsafe { mu.lu[7] = (length_in_bytes << 3).to_le(); }    // 데이터 길이의 단위는 바이트가 아니라 비트이다.
-        self.update(unsafe {&mu.iu});
+        unsafe { mu.chunk[7] = (length_in_bytes << 3).to_le(); }    // 데이터 길이의 단위는 바이트가 아니라 비트이다.
+        self.update(unsafe {&mu.piece});
     }
-/*
+
     fn func(x: u32, y: u32, z: u32, round: usize) -> (u32, usize)
     {
+        // ideally round &= 0b11_1111 equivalent to round %= 64;
         if round < 16
-            { (Self::Ff(x, y, z), round) }
+            { (Self::Ff(x, y, z), round & 0b1111) }
         else if round < 32
-            { (Self::Gg(x, y, z), ((round << 2) + round + 1) & 0b1111) }    // same as ((5 * round) + 1) % 16
+            { (Self::Gg(x, y, z), ((round << 2) + round + 1) & 0b1111) }    // equivalent to ((5 * round) + 1) % 16
         else if round < 48
-            { (Self::Hh(x, y, z), ((round << 1) + round + 5) & 0b1111) }    // same as ((3 * round) + 5) % 16
+            { (Self::Hh(x, y, z), ((round << 1) + round + 5) & 0b1111) }    // equivalent to ((3 * round) + 5) % 16
         else
-            { (Self::Ii(x, y, z), ((round << 3) - round) & 0b1111) }        // same as (7 * round) % 16
+            { (Self::Ii(x, y, z), ((round << 3) - round) & 0b1111) }        // equivalent to (7 * round) % 16
     }
-*/
-	#[inline] fn getK(idx: usize) -> u32    { Self::K[idx] }
-	#[inline] fn getH(idx: usize) -> u32    { Self::H[idx] }
-    // #[inline] fn getR(idx: usize) -> u32  { Self::R[idx >> 4][idx & 0b11] }
+
+	#[inline] fn getK(idx: usize) -> u32    { Self::K[idx] }    // ideally Self::K[idx & 0b11_1111] equivalent to Self::K[idx % 64]
+    #[inline] fn getR(idx: usize) -> u32    { Self::R[idx >> 4][idx & 0b11] }   // ideally Self::R[(idx & 0b11_1111) >> 4)][idx & 0b11] equivalent to Self::R[(idx % 16) / 4][idx % 4]
     #[inline] fn Ff(x: u32, y: u32, z: u32) -> u32  { z ^ (x & (y ^ z)) }   // equivalent to { (x & y) | (!x & z) }
 	#[inline] fn Gg(x: u32, y: u32, z: u32) -> u32  { (x & z) | (y & !z) }
 	#[inline] fn Hh(x: u32, y: u32, z: u32) -> u32	{ x ^ y ^ z }
@@ -734,7 +879,39 @@ impl MD5
 }
 
 
-impl Display for MD5
+impl<const K00: u32, const K01: u32, const K02: u32, const K03: u32,
+    const K04: u32, const K05: u32, const K06: u32, const K07: u32,
+    const K08: u32, const K09: u32, const K10: u32, const K11: u32,
+    const K12: u32, const K13: u32, const K14: u32, const K15: u32,
+    const K16: u32, const K17: u32, const K18: u32, const K19: u32,
+    const K20: u32, const K21: u32, const K22: u32, const K23: u32,
+    const K24: u32, const K25: u32, const K26: u32, const K27: u32,
+    const K28: u32, const K29: u32, const K30: u32, const K31: u32,
+    const K32: u32, const K33: u32, const K34: u32, const K35: u32,
+    const K36: u32, const K37: u32, const K38: u32, const K39: u32,
+    const K40: u32, const K41: u32, const K42: u32, const K43: u32,
+    const K44: u32, const K45: u32, const K46: u32, const K47: u32,
+    const K48: u32, const K49: u32, const K50: u32, const K51: u32,
+    const K52: u32, const K53: u32, const K54: u32, const K55: u32,
+    const K56: u32, const K57: u32, const K58: u32, const K59: u32,
+    const K60: u32, const K61: u32, const K62: u32, const K63: u32,
+    const H0: u32, const H1: u32, const H2: u32, const H3: u32,
+    const R00: u32, const R01: u32, const R02: u32, const R03: u32,
+    const R10: u32, const R11: u32, const R12: u32, const R13: u32,
+    const R20: u32, const R21: u32, const R22: u32, const R23: u32,
+    const R30: u32, const R31: u32, const R32: u32, const R33: u32,
+    const ROUND: usize, const N: usize>
+Display for MD5_Generic<K00, K01, K02, K03, K04, K05, K06, K07,
+                        K08, K09, K10, K11, K12, K13, K14, K15,
+                        K16, K17, K18, K19, K20, K21, K22, K23,
+                        K24, K25, K26, K27, K28, K29, K30, K31,
+                        K32, K33, K34, K35, K36, K37, K38, K39,
+                        K40, K41, K42, K43, K44, K45, K46, K47,
+                        K48, K49, K50, K51, K52, K53, K54, K55,
+                        K56, K57, K58, K59, K60, K61, K62, K63,
+                        H0, H1, H2, H3, 
+                        R00, R01, R02, R03, R10, R11, R12, R13,
+                        R20, R21, R22, R23, R30, R31, R32, R33, ROUND, N>
 {
     /// Formats the value using the given formatter.
     /// You will hardly use this method directly.

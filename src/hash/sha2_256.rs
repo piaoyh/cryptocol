@@ -18,31 +18,95 @@ use std::slice::from_raw_parts;
 use crate::number::IntUnion;
 use crate::number::SmallUInt;
 
+
 /// K0 ~ K63 are initialized with array of round constants: the first 32 bits
 /// of the fractional parts of the cube roots of the first 64 primes 2..311
 #[allow(non_camel_case_types)]
-pub type SHA1_Generic_K_fixed<  const H0: u32, const H1: u32, const H2: u32,
-                                const H3: u32, const H4: u32, const RL1: u32,
-                                const ROUND: usize, const N: usize>
+pub type SHA2_Generic_256_KRS_fixed<const H0: u32, const H1: u32, const H2: u32,
+                                    const H3: u32, const H4: u32, const H5: u32,
+                                    const H6: u32, const H7: u32,
+                                    const ROUND: usize, const N: usize>
     // Initialize array of round constants: the first 32 bits of
     // the fractional parts of the cube roots of the first 64 primes 2..311
-    = SHA1_generic< 0x5a827999, 0x6ed9eba1, 0x8f1bbcdc, 0xca62c1d6,
-                    H0, H1, H2, H3, H4, RL1, 5, 30, ROUND, N>;
+    = SHA2_Generic_256< 0x428a2f98, 0x71374491, 0xb5c0fbcf, 0xe9b5dba5,
+                        0x3956c25b, 0x59f111f1, 0x923f82a4, 0xab1c5ed5,
+                        0xd807aa98, 0x12835b01, 0x243185be, 0x550c7dc3,
+                        0x72be5d74, 0x80deb1fe, 0x9bdc06a7, 0xc19bf174,
+                        0xe49b69c1, 0xefbe4786, 0x0fc19dc6, 0x240ca1cc,
+                        0x2de92c6f, 0x4a7484aa, 0x5cb0a9dc, 0x76f988da,
+                        0x983e5152, 0xa831c66d, 0xb00327c8, 0xbf597fc7,
+                        0xc6e00bf3, 0xd5a79147, 0x06ca6351, 0x14292967,
+                        0x27b70a85, 0x2e1b2138, 0x4d2c6dfc, 0x53380d13,
+                        0x650a7354, 0x766a0abb, 0x81c2c92e, 0x92722c85,
+                        0xa2bfe8a1, 0xa81a664b, 0xc24b8b70, 0xc76c51a3,
+                        0xd192e819, 0xd6990624, 0xf40e3585, 0x106aa070,
+                        0x19a4c116, 0x1e376c08, 0x2748774c, 0x34b0bcb5,
+                        0x391c0cb3, 0x4ed8aa4a, 0x5b9cca4f, 0x682e6ff3,
+                        0x748f82ee, 0x78a5636f, 0x84c87814, 0x8cc70208,
+                        0x90befffa, 0xa4506ceb, 0xbef9a3f7, 0xc67178f2,
+                        H0, H1, H2, H3, H4, H5, H6, H7, 
+                        2, 6, 7, 11, 13, 17, 18, 19, 22, 25, 3, 10, ROUND, N>;
+
+/// H0 ~ H7 are The first 32 bits of the fractional parts of the square roots
+/// of the first 8 primes 2..19
+#[allow(non_camel_case_types)]
+pub type SHA2_Generic_256_HRS_fixed<const K00: u32, const K01: u32, const K02: u32, const K03: u32,
+                    const K04: u32, const K05: u32, const K06: u32, const K07: u32,
+                    const K08: u32, const K09: u32, const K10: u32, const K11: u32,
+                    const K12: u32, const K13: u32, const K14: u32, const K15: u32,
+                    const K16: u32, const K17: u32, const K18: u32, const K19: u32,
+                    const K20: u32, const K21: u32, const K22: u32, const K23: u32,
+                    const K24: u32, const K25: u32, const K26: u32, const K27: u32,
+                    const K28: u32, const K29: u32, const K30: u32, const K31: u32,
+                    const K32: u32, const K33: u32, const K34: u32, const K35: u32,
+                    const K36: u32, const K37: u32, const K38: u32, const K39: u32,
+                    const K40: u32, const K41: u32, const K42: u32, const K43: u32,
+                    const K44: u32, const K45: u32, const K46: u32, const K47: u32,
+                    const K48: u32, const K49: u32, const K50: u32, const K51: u32,
+                    const K52: u32, const K53: u32, const K54: u32, const K55: u32,
+                    const K56: u32, const K57: u32, const K58: u32, const K59: u32,
+                    const K60: u32, const K61: u32, const K62: u32, const K63: u32,
+                    const ROUND: usize, const N: usize>
+    = SHA2_Generic_256<K00, K01, K02, K03, K04, K05, K06, K07,
+                        K08, K09, K10, K11, K12, K13, K14, K15,
+                        K16, K17, K18, K19, K20, K21, K22, K23,
+                        K24, K25, K26, K27, K28, K29, K30, K31,
+                        K32, K33, K34, K35, K36, K37, K38, K39,
+                        K40, K41, K42, K43, K44, K45, K46, K47,
+                        K48, K49, K50, K51, K52, K53, K54, K55,
+                        K56, K57, K58, K59,K60, K61, K62, K63,
+                        // The first 32 bits of the fractional parts of the square roots
+                        // of the first 8 primes 2..19
+                        0x6a09e667, 0xbb67ae85, 0x3c6ef372, 0xa54ff53a,
+                        0x510e527f, 0x9b05688c, 0x1f83d9ab, 0x5be0cd19, 
+                        2, 6, 7, 11, 13, 17, 18, 19, 22, 25, 3, 10, ROUND, N>;
+
+/// H0 ~ H7 are the first 32 bits of the fractional parts of the square roots
+/// of the first 8 primes 2..19
+#[allow(non_camel_case_types)]
+pub type SHA2_256_Expanded<const ROUND: usize, const N: usize>
+                                // H0 ~ H7 are the first 32 bits of the fractional
+                                // parts of the square roots of the first 8 primes 2..19
+    = SHA2_Generic_256_KRS_fixed<0x6a09e667, 0xbb67ae85, 0x3c6ef372, 0xa54ff53a,
+                                0x510e527f, 0x9b05688c, 0x1f83d9ab, 0x5be0cd19,
+                                ROUND, N>;
+
+/// H0 ~ H7 are the second 32 bits of the fractional parts of the square roots
+/// of the 9th through 16th primes 23..53
+#[allow(non_camel_case_types)]
+pub type SHA2_224_Expanded<const ROUND: usize, const N: usize>
+                                // H0 ~ H7 are the second 32 bits of the fractional
+                                // parts of the square roots of the 9th through
+                                // 16th primes 23..53
+    = SHA2_Generic_256_KRS_fixed<0xc1059ed8, 0x367cd507, 0x3070dd17, 0xf70e5939,
+                                0xffc00b31, 0x68581511, 0x64f98fa7, 0xbefa4fa4,
+                                ROUND, N>;
 
 #[allow(non_camel_case_types)]
-pub type SHA1_Expanded<const ROUND: usize, const N: usize>
-        = SHA1_Generic_K_fixed< 0x67452301, 0xefcdab89, 0x98badcfe,
-                                0x10325476, 0xc3d2e1f0, 1, ROUND, N>;
+pub type SHA2_256 = SHA2_256_Expanded<64, 8>;
 
 #[allow(non_camel_case_types)]
-pub type SHA0_Expanded<const ROUND: usize, const N: usize>
-        = SHA1_Generic_K_fixed< 0x67452301, 0xefcdab89, 0x98badcfe,
-                                0x10325476, 0xc3d2e1f0, 0, ROUND, N>;
-
-pub type SHA1 = SHA1_Expanded<80, 5>;
-
-pub type SHA0 = SHA0_Expanded<80, 5>;
-
+pub type SHA2_224 = SHA2_224_Expanded<64, 7>;
 
 /// # Introduction
 /// A SHA-1 message-digest algorithm that lossily compresses data of arbitrary
@@ -158,29 +222,83 @@ pub type SHA0 = SHA0_Expanded<80, 5>;
 /// to use it for Big Endian CPUs for serious purpose. Only use this crate
 /// for Big-endian CPUs with your own full responsibility.
 #[derive(Debug, Clone)]
-pub struct SHA1_generic<const K0: u32, const K1: u32, const K2: u32, const K3: u32,
-                        const H0: u32, const H1: u32, const H2: u32, const H3: u32,
-                        const H4: u32, const RL1: u32, const RL2: u32, const RL3: u32,
-                        const ROUND: usize, const N: usize>
-                        // N is the number of output bytes of hash value.
-                        // RL is 1 for SHA-1 while RL is 0 for SHA-0.
+#[allow(non_camel_case_types)]
+pub struct SHA2_Generic_256<const K00: u32, const K01: u32, const K02: u32, const K03: u32,
+                            const K04: u32, const K05: u32, const K06: u32, const K07: u32,
+                            const K08: u32, const K09: u32, const K10: u32, const K11: u32,
+                            const K12: u32, const K13: u32, const K14: u32, const K15: u32,
+                            const K16: u32, const K17: u32, const K18: u32, const K19: u32,
+                            const K20: u32, const K21: u32, const K22: u32, const K23: u32,
+                            const K24: u32, const K25: u32, const K26: u32, const K27: u32,
+                            const K28: u32, const K29: u32, const K30: u32, const K31: u32,
+                            const K32: u32, const K33: u32, const K34: u32, const K35: u32,
+                            const K36: u32, const K37: u32, const K38: u32, const K39: u32,
+                            const K40: u32, const K41: u32, const K42: u32, const K43: u32,
+                            const K44: u32, const K45: u32, const K46: u32, const K47: u32,
+                            const K48: u32, const K49: u32, const K50: u32, const K51: u32,
+                            const K52: u32, const K53: u32, const K54: u32, const K55: u32,
+                            const K56: u32, const K57: u32, const K58: u32, const K59: u32,
+                            const K60: u32, const K61: u32, const K62: u32, const K63: u32,
+                            const H0: u32, const H1: u32, const H2: u32, const H3: u32,
+                            const H4: u32, const H5: u32, const H6: u32, const H7: u32,
+                            const RR2: u32, const RR6: u32, const RR7: u32, const RR11: u32, 
+                            const RR13: u32, const RR17: u32, const RR18: u32, const RR19: u32, 
+                            const RR22: u32, const RR25: u32, const SR3: i32, const SR10: i32,
+                            const ROUND: usize, const N: usize>
+                            // N is the number of output bytes of hash value.
 {
-    hash_code: [IntUnion; 5],
+    hash_code: [IntUnion; 8],
 }
 
-impl<const K0: u32, const K1: u32, const K2: u32, const K3: u32,
-    const H0: u32, const H1: u32, const H2: u32, const H3: u32, const H4: u32,
-    const RL1: u32, const RL5: u32, const RL30: u32, const ROUND: usize, const N: usize>
-SHA1_generic<K0, K1, K2, K3, H0, H1, H2, H3, H4, RL1, RL5, RL30, ROUND, N>
+impl<const K00: u32, const K01: u32, const K02: u32, const K03: u32,
+    const K04: u32, const K05: u32, const K06: u32, const K07: u32,
+    const K08: u32, const K09: u32, const K10: u32, const K11: u32,
+    const K12: u32, const K13: u32, const K14: u32, const K15: u32,
+    const K16: u32, const K17: u32, const K18: u32, const K19: u32,
+    const K20: u32, const K21: u32, const K22: u32, const K23: u32,
+    const K24: u32, const K25: u32, const K26: u32, const K27: u32,
+    const K28: u32, const K29: u32, const K30: u32, const K31: u32,
+    const K32: u32, const K33: u32, const K34: u32, const K35: u32,
+    const K36: u32, const K37: u32, const K38: u32, const K39: u32,
+    const K40: u32, const K41: u32, const K42: u32, const K43: u32,
+    const K44: u32, const K45: u32, const K46: u32, const K47: u32,
+    const K48: u32, const K49: u32, const K50: u32, const K51: u32,
+    const K52: u32, const K53: u32, const K54: u32, const K55: u32,
+    const K56: u32, const K57: u32, const K58: u32, const K59: u32,
+    const K60: u32, const K61: u32, const K62: u32, const K63: u32,
+    const H0: u32, const H1: u32, const H2: u32, const H3: u32,
+    const H4: u32, const H5: u32, const H6: u32, const H7: u32,
+    const RR2: u32, const RR6: u32, const RR7: u32, const RR11: u32, 
+    const RR13: u32, const RR17: u32, const RR18: u32, const RR19: u32, 
+    const RR22: u32, const RR25: u32, const SR3: i32, const SR10: i32,
+    const ROUND: usize, const N: usize>
+SHA2_Generic_256<K00, K01, K02, K03, K04, K05, K06, K07,
+                K08, K09, K10, K11, K12, K13, K14, K15,
+                K16, K17, K18, K19, K20, K21, K22, K23,
+                K24, K25, K26, K27, K28, K29, K30, K31,
+                K32, K33, K34, K35, K36, K37, K38, K39,
+                K40, K41, K42, K43, K44, K45, K46, K47,
+                K48, K49, K50, K51, K52, K53, K54, K55,
+                K56, K57, K58, K59, K60, K61, K62, K63,
+                H0, H1, H2, H3, H4, H5, H6, H7, 
+                RR2, RR6, RR7, RR11, RR13, RR17, RR18, RR19, 
+                RR22, RR25, SR3, SR10, ROUND, N>
 {
-    const K: [u32; 4] = [ K0, K1, K2, K3 ];
-    const H: [u32; 5] = [ H0, H1, H2, H3, H4 ];
+    const K: [u32; 64] = [  K00, K01, K02, K03, K04, K05, K06, K07,
+                            K08, K09, K10, K11, K12, K13, K14, K15,
+                            K16, K17, K18, K19, K20, K21, K22, K23,
+                            K24, K25, K26, K27, K28, K29, K30, K31,
+                            K32, K33, K34, K35, K36, K37, K38, K39,
+                            K40, K41, K42, K43, K44, K45, K46, K47,
+                            K48, K49, K50, K51, K52, K53, K54, K55,
+                            K56, K57, K58, K59, K60, K61, K62, K63 ];
+    const H: [u32; 8] = [ H0, H1, H2, H3, H4, H5, H6, H7 ];
 
     // pub fn new() -> Self
-    /// Constructs a new `SHA1` object.
+    /// Constructs a new `SHA2_256` object.
     /// 
     /// # Output
-    /// A new object of `SHA1`.
+    /// A new object of `SHA2_256`.
     /// 
     /// # Initialization
     /// All the attributes of the constructed object, which is initial hash
@@ -196,15 +314,18 @@ SHA1_generic<K0, K1, K2, K3, H0, H1, H2, H3, H4, RL1, RL5, RL30, ROUND, N>
     /// ```
     pub fn new() -> Self
     {
-        if N > 5 || N == 0
-            { panic!("N cannot be equal to 0 or greater than 5."); }
+        if N > 8 || N == 0
+            { panic!("N cannot be equal to 0 or greater than 8."); }
         Self
         {
-            hash_code: [IntUnion::new_with(Self::H[0]),
+            hash_code: [ IntUnion::new_with(Self::H[0]),
                         IntUnion::new_with(Self::H[1]),
                         IntUnion::new_with(Self::H[2]),
                         IntUnion::new_with(Self::H[3]),
-                        IntUnion::new_with(Self::H[4])]
+                        IntUnion::new_with(Self::H[4]),
+                        IntUnion::new_with(Self::H[5]),
+                        IntUnion::new_with(Self::H[6]),
+                        IntUnion::new_with(Self::H[7]) ]
         }
     }
 
@@ -507,7 +628,7 @@ SHA1_generic<K0, K1, K2, K3, H0, H1, H2, H3, H4, RL1, RL5, RL30, ROUND, N>
         let n_length = if length < (BYTES * N) {length} else {BYTES * N};
         #[cfg(target_endian = "little")]
         {
-            let mut hash_code = [IntUnion::new(); N];
+            let mut hash_code = [IntUnion::new(); 8];
             for i in 0..N
                 { hash_code[i].set(self.hash_code[i].get().to_be()); }
             unsafe { copy_nonoverlapping(hash_code.as_ptr() as *const u8, hashValue, n_length); }
@@ -646,14 +767,14 @@ SHA1_generic<K0, K1, K2, K3, H0, H1, H2, H3, H4, RL1, RL5, RL30, ROUND, N>
     /// Initializes all five self.hash_code[] with predetermined values H[].
     fn initialize(&mut self)
     {
-        for i in 0..5_usize
+        for i in 0..8_usize
             { self.hash_code[i] = IntUnion::new_with(Self::getH(i)); }
     }
 
     // fn update(&mut self, message: &[u32])
     /// This method is the core part of MD5 hash algorithm.
-    /// It has eighty rounds. It updates self.hash_code[] for those
-    /// eighty rounds.
+    /// It has sixty-four rounds. It updates self.hash_code[] for those
+    /// sixty-four rounds.
     fn update(&mut self, message: &[u32])
     {
         let mut W = [0_u32; 16];
@@ -662,34 +783,48 @@ SHA1_generic<K0, K1, K2, K3, H0, H1, H2, H3, H4, RL1, RL5, RL30, ROUND, N>
         let mut c = self.hash_code[2].get();
         let mut d = self.hash_code[3].get();
         let mut e = self.hash_code[4].get();
+        let mut f = self.hash_code[5].get();
+        let mut g = self.hash_code[6].get();
+        let mut h = self.hash_code[7].get();
 
         for i in 0..16_usize
         {
             W[i] = message[i].to_be();
-            let f = Self::Ff(b, c, d).wrapping_add(e)
-                                .wrapping_add(Self::getK(0))
+            let S1 = e.rotate_right(RR6) ^ e.rotate_right(RR11) ^ e.rotate_right(RR25);
+            let t1 = Self::Ch(e, f, g).wrapping_add(h)
+                                .wrapping_add(Self::getK(i))
                                 .wrapping_add(W[i])
-                                .wrapping_add(a.rotate_left(RL5));
-            e = d;
+                                .wrapping_add(S1);
+            let S0 = a.rotate_right(RR2) ^ a.rotate_right(RR13) ^ a.rotate_right(RR22);
+            let t2 = Self::Maj(a, b, c).wrapping_add(S0);
+            h = g;
+            g = f;
+            f = e;
+            e = d.wrapping_add(t1);
             d = c;
-            c = b.rotate_left(RL30);
+            c = b;
             b = a;
-            a = f;
+            a = t1.wrapping_add(t2);
         }
-        for i in 16..ROUND
+        for i in 16..ROUND // ROUND = 64_usize for officiial SHA-2/256
         {
             let j = i & 0b1111;
             W[j] = Self::getW(&W, i);
-            let (mut f, z) = Self::func(b, c, d, i);
-            f = f.wrapping_add(e)
-                .wrapping_add(Self::getK(z))
-                .wrapping_add(W[j])
-                .wrapping_add(a.rotate_left(RL5));
-            e = d;
+            let S1 = e.rotate_right(RR6) ^ e.rotate_right(RR11) ^ e.rotate_right(RR25);
+            let t1 = Self::Ch(e, f, g).wrapping_add(h)
+                                .wrapping_add(Self::getK(i))
+                                .wrapping_add(W[j])
+                                .wrapping_add(S1);
+            let S0 = a.rotate_right(RR2) ^ a.rotate_right(RR13) ^ a.rotate_right(RR22);
+            let t2 = Self::Maj(a, b, c).wrapping_add(S0);
+            h = g;
+            g = f;
+            f = e;
+            e = d.wrapping_add(t1);
             d = c;
-            c = b.rotate_left(30);
+            c = b;
             b = a;
-            a = f;
+            a = t1.wrapping_add(t2);
         }
 
         self.hash_code[0].set(self.hash_code[0].get().wrapping_add(a));
@@ -697,6 +832,9 @@ SHA1_generic<K0, K1, K2, K3, H0, H1, H2, H3, H4, RL1, RL5, RL30, ROUND, N>
         self.hash_code[2].set(self.hash_code[2].get().wrapping_add(c));
         self.hash_code[3].set(self.hash_code[3].get().wrapping_add(d));
         self.hash_code[4].set(self.hash_code[4].get().wrapping_add(e));
+        self.hash_code[5].set(self.hash_code[5].get().wrapping_add(f));
+        self.hash_code[6].set(self.hash_code[6].get().wrapping_add(g));
+        self.hash_code[7].set(self.hash_code[7].get().wrapping_add(h));
     }
 
     // fn finalize(&mut self, message: *const u8, length_in_bytes: u64)
@@ -717,13 +855,13 @@ SHA1_generic<K0, K1, K2, K3, H0, H1, H2, H3, H4, RL1, RL5, RL30, ROUND, N>
             txt: [u8; MESSAGE_NUM],
         }
 
-        let mut mu = MU { txt: [0; 64] };
+        let mut mu = MU { txt: [0; MESSAGE_NUM] };
         let last_bytes = (length_in_bytes & LAST_BYTES) as usize;    // equivalent to (length_in_bytes % 64) as usize
         unsafe { copy_nonoverlapping(message, mu.txt.as_mut_ptr(), last_bytes); }
         unsafe { mu.txt[last_bytes] = 0b1000_0000; }
         // 데이터 기록후, 데이터의 길이를 비트 단위로 기록하기 위한 64 비트(8 바이트)와
         // 0b1000_0000를 기록하기 위한 한 바이트의 여유공간이 남아있지 않으면,
-        if last_bytes > 54  // (64 - 8 - 1)
+        if last_bytes > 54  // (>= 64 - 8 - 1)
         {
             self.update(unsafe {&mu.piece});
             for i in 0..7
@@ -733,31 +871,50 @@ SHA1_generic<K0, K1, K2, K3, H0, H1, H2, H3, H4, RL1, RL5, RL30, ROUND, N>
         self.update(unsafe {&mu.piece});
     }
 
-    fn func(x: u32, y: u32, z: u32, round: usize) -> (u32, usize)
-    {
-        let r = (round / 20) & 0b11;
-        match r
-        {
-            0 => { (Self::Ff(x, y, z), r) }
-            2 => { (Self::Hh(x, y, z), r) }
-            _ => { (Self::Gg(x, y, z), r) }
-        }
-    }
-
 	#[inline] fn getK(idx: usize) -> u32    { Self::K[idx] }
 	#[inline] fn getH(idx: usize) -> u32    { Self::H[idx] }
-    #[inline] fn getW(W: &[u32; 16], idx: usize) -> u32   { (W[(idx-3) & 0b1111] ^ W[(idx-8) & 0b1111] ^ W[(idx-14) & 0b1111] ^ W[(idx-16) & 0b1111]).rotate_left(RL1) }
-	#[inline] fn Ff(x: u32, y: u32, z: u32) -> u32  { z ^ (x & (y ^ z)) }   // equivalent to { (x & y) | (!x & z) }
-	#[inline] fn Gg(x: u32, y: u32, z: u32) -> u32	{ x ^ y ^ z }
-	#[inline] fn Hh(x: u32, y: u32, z: u32) -> u32  { (x & y) | (z & (x | y)) } // equivalent to { (x & y) | (y & z) | (z & x) }
+    #[inline] fn getS0(W: &[u32; 16], idx: usize) -> u32  { let w = W[(idx-15) & 0b1111]; w.rotate_right(RR7) ^ w.rotate_right(RR18) ^ (w >> SR3) }
+    #[inline] fn getS1(W: &[u32; 16], idx: usize) -> u32  { let w = W[(idx-2) & 0b1111]; w.rotate_right(RR17) ^ w.rotate_right(RR19) ^ (w >> SR10) }
+    #[inline] fn getW(W: &[u32; 16], idx: usize) -> u32   { W[(idx-16) & 0b1111].wrapping_add(Self::getS0(&W, idx)).wrapping_add(W[(idx-7) & 0b1111]).wrapping_add(Self::getS1(&W, idx)) }
+	#[inline] fn Ch(x: u32, y: u32, z: u32) -> u32  { z ^ (x & (y ^ z)) }   // equivalent to { (x & y) | (!x & z) }
+	#[inline] fn Maj(x: u32, y: u32, z: u32) -> u32  { (x & y) | (z & (x | y)) } // equivalent to { (x & y) | (y & z) | (z & x) }
     #[inline] fn to_char(nibble: u8) -> char    { if nibble < 10  { ('0' as u8 + nibble) as u8 as char } else { ('A' as u8 - 10 + nibble) as char } }
 }
 
 
-impl<const K0: u32, const K1: u32, const K2: u32, const K3: u32,
-const H0: u32, const H1: u32, const H2: u32, const H3: u32, const H4: u32,
-const RL1: u32, const RL5: u32, const RL30: u32, const ROUND: usize, const N: usize>
-Display for SHA1_generic<K0, K1, K2, K3, H0, H1, H2, H3, H4, RL1, RL5, RL30, ROUND, N>
+impl<const K00: u32, const K01: u32, const K02: u32, const K03: u32,
+    const K04: u32, const K05: u32, const K06: u32, const K07: u32,
+    const K08: u32, const K09: u32, const K10: u32, const K11: u32,
+    const K12: u32, const K13: u32, const K14: u32, const K15: u32,
+    const K16: u32, const K17: u32, const K18: u32, const K19: u32,
+    const K20: u32, const K21: u32, const K22: u32, const K23: u32,
+    const K24: u32, const K25: u32, const K26: u32, const K27: u32,
+    const K28: u32, const K29: u32, const K30: u32, const K31: u32,
+    const K32: u32, const K33: u32, const K34: u32, const K35: u32,
+    const K36: u32, const K37: u32, const K38: u32, const K39: u32,
+    const K40: u32, const K41: u32, const K42: u32, const K43: u32,
+    const K44: u32, const K45: u32, const K46: u32, const K47: u32,
+    const K48: u32, const K49: u32, const K50: u32, const K51: u32,
+    const K52: u32, const K53: u32, const K54: u32, const K55: u32,
+    const K56: u32, const K57: u32, const K58: u32, const K59: u32,
+    const K60: u32, const K61: u32, const K62: u32, const K63: u32,
+    const H0: u32, const H1: u32, const H2: u32, const H3: u32,
+    const H4: u32, const H5: u32, const H6: u32, const H7: u32,
+    const RR2: u32, const RR6: u32, const RR7: u32, const RR11: u32, 
+    const RR13: u32, const RR17: u32, const RR18: u32, const RR19: u32, 
+    const RR22: u32, const RR25: u32, const SR3: i32, const SR10: i32,
+    const ROUND: usize, const N: usize>
+Display for SHA2_Generic_256<K00, K01, K02, K03, K04, K05, K06, K07,
+                            K08, K09, K10, K11, K12, K13, K14, K15,
+                            K16, K17, K18, K19, K20, K21, K22, K23,
+                            K24, K25, K26, K27, K28, K29, K30, K31,
+                            K32, K33, K34, K35, K36, K37, K38, K39,
+                            K40, K41, K42, K43, K44, K45, K46, K47,
+                            K48, K49, K50, K51, K52, K53, K54, K55,
+                            K56, K57, K58, K59, K60, K61, K62, K63,
+                            H0, H1, H2, H3, H4, H5, H6, H7, 
+                            RR2, RR6, RR7, RR11, RR13, RR17, RR18, RR19, 
+                            RR22, RR25, SR3, SR10, ROUND, N>
 {
     /// Formats the value using the given formatter.
     /// You will hardly use this method directly.

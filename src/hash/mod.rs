@@ -49,8 +49,14 @@
 //! - For `MD5`, read [here](struct@MD5#quick-start).
 //! - For `SHA1`, read [here](struct@SHA1#quick-start).
 
-mod sha1;
 mod md5;
+mod sha1;
+mod sha2_256;
+mod sha2_512;
+mod sha2_512_t;
 
-pub use sha1::*;
 pub use md5::*;
+pub use sha1::*;
+pub use sha2_256::*;
+pub use sha2_512::*;
+pub use sha2_512_t::*;
