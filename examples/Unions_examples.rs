@@ -1,4 +1,4 @@
-// Copyright 2023 PARK Youngho.
+// Copyright 2023, 2024 PARK Youngho.
 //
 // Licensed under the Apache License, Version 2.0 <LICENSE-APACHE or
 // https://www.apache.org/licenses/LICENSE-2.0> or the MIT license
@@ -17,7 +17,7 @@ use std::mem::size_of;
 
 use std::str::FromStr;
 use Cryptocol::number::*;
-use rand_distr::num_traits::PrimInt; //{u256, BigInteger, HugeInteger};
+// use rand_distr::num_traits::PrimInt; //{u256, BigInteger, HugeInteger};
 
 
 fn main()

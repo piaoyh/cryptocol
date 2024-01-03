@@ -1,4 +1,4 @@
-// Copyright 2023 PARK Youngho.
+// Copyright 2023, 2024 PARK Youngho.
 //
 // Licensed under the Apache License, Version 2.0 <LICENSE-APACHE or
 // https://www.apache.org/licenses/LICENSE-2.0> or the MIT license
@@ -18,8 +18,8 @@ use std::mem::{ size_of, size_of_val };
 use std::cmp::{ PartialEq, PartialOrd, Ordering };
 use std::ops::*;
 
-use rand::{ RngCore, thread_rng, Rng };
-use rand::rngs::OsRng;
+// use rand::{ RngCore, thread_rng, Rng };
+// use rand::rngs::OsRng;
 
 use super::small_uint::*;
 
@@ -5096,7 +5096,7 @@ impl SizeUnion
 }
 
 
-
+/*
 macro_rules! random_for_unions_impl {
     (ShortUnion) => {
         /// Constucts a new `SmallUInt`-type object which has the random value.
@@ -5177,6 +5177,7 @@ macro_rules! random_for_unions_impl {
         }
     };
 }
+*/
 
 macro_rules! SmallUInt_methods_for_integer_unions_impl {
     ($f:ty, $g:ty) => {
@@ -5419,7 +5420,7 @@ macro_rules! SmallUInt_methods_for_integer_unions_impl {
         #[inline] fn root(self, exp: Self) -> Self  { self.root(exp) }
 
 
-
+/*
 /***** METHODS FOR GENERATING RANDOM PRIME NUMBERS *****/
 
         /// Performs Millar Rabin method with a number less than `self`.
@@ -5430,7 +5431,7 @@ macro_rules! SmallUInt_methods_for_integer_unions_impl {
         /// prime number.
         /// [Read more in detail](trait@SmallUInt#tymethod.test_Miller_Rabin)
         #[inline] fn test_Miller_Rabin(self, a: Self) -> bool   { self.get().test_Miller_Rabin(a.get()) }
-
+*/
         #[inline] fn reverse_bits(self) -> Self     { self.reverse_bits() }
         #[inline] fn reverse_bits_assign(&mut self) { *self = self.reverse_bits(); }
 
@@ -5832,31 +5833,31 @@ macro_rules! display_for_integer_unions_impl {
 impl SmallUInt for ShortUnion
 {
     SmallUInt_methods_for_integer_unions_impl! { ShortUnion, u16 }
-    random_for_unions_impl! { ShortUnion }
+    // random_for_unions_impl! { ShortUnion }
 }
 
 impl SmallUInt for IntUnion
 {
     SmallUInt_methods_for_integer_unions_impl! { IntUnion, u32 }
-    random_for_unions_impl! { IntUnion }
+    // random_for_unions_impl! { IntUnion }
 }
 
 impl SmallUInt for LongUnion
 {
     SmallUInt_methods_for_integer_unions_impl! { LongUnion, u64 }
-    random_for_unions_impl! { LongUnion }
+    // random_for_unions_impl! { LongUnion }
 }
 
 impl SmallUInt for LongerUnion
 {
     SmallUInt_methods_for_integer_unions_impl! { LongerUnion, u128 }
-    random_for_unions_impl! { LongerUnion }
+    // random_for_unions_impl! { LongerUnion }
 }
 
 impl SmallUInt for SizeUnion
 {
     SmallUInt_methods_for_integer_unions_impl! { SizeUnion, usize }
-    random_for_unions_impl! { SizeUnion }
+    // random_for_unions_impl! { SizeUnion }
 }
 
 

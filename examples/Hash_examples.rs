@@ -1,4 +1,4 @@
-// Copyright 2023 PARK Youngho.
+// Copyright 2023, 2024 PARK Youngho.
 //
 // Licensed under the Apache License, Version 2.0 <LICENSE-APACHE or
 // https://www.apache.org/licenses/LICENSE-2.0> or the MIT license
@@ -12,6 +12,7 @@
 
 fn main()
 {
+    Hash_MD4_main();
     Hash_MD5_main();
     Hash_SHA1_main();
     Hash_SHA2_256_main();
@@ -22,6 +23,216 @@ fn main()
     Hash_SHA2_512_t_256_main();
     Hash_SHA2_512_t_224_main();
 }
+
+fn Hash_MD4_main()
+{
+    MD4_Quick_Start();
+    MD4_new();
+    MD4_digest();
+    MD4_digest_str();
+    MD4_digest_string();
+    MD4_digest_array();
+    MD4_digest_vec();
+    MD4_get_HashValue();
+    MD4_get_HashValue_in_string();
+    MD4_get_HashValue_in_array();
+    MD4_get_HashValue_in_vec();
+    MD4_fmt_for_to_string();
+    MD4_fmt_for_println();
+}
+
+fn MD4_Quick_Start()
+{
+    println!("MD4_Quick_Start");
+    use std::string::*;
+    use Cryptocol::hash::MD4;
+    let mut hash = MD4::new();
+
+    let mut txt = "";
+    hash.digest_str(txt);
+    println!("Msg =\t\"{}\"\nHash =\t{}\n", txt, hash);
+    assert_eq!(hash.get_HashValue_in_string(), "31D6CFE0D16AE931B73C59D7E0C089C0");
+
+    let txtStirng = String::from("A");
+    hash.digest_string(&txtStirng);
+    println!("Msg =\t\"{}\"\nHash =\t{}\n", txtStirng, hash);
+    assert_eq!(hash.to_string(), "D5EF20EEB3F75679F86CF57F93ED0FFE");
+
+    let txtArray = ['W' as u8, 'o' as u8, 'w' as u8];
+    hash.digest_array(&txtArray);
+    println!("Msg =\t\"{:?}\"\nHash =\t{}\n", txtArray, hash);
+    assert_eq!(hash.get_HashValue_in_string(), "6407C0E728DA762A04924ADFE630974C");
+
+    txt = "This data is 26-byte long.";
+    hash.digest_str(txt);
+    println!("Msg =\t\"{}\"\nHash =\t{}\n", txt, hash);
+    assert_eq!(hash.to_string(), "4F4A24D124B996BEA395344419F9A06B");
+
+    txt = "The unit of data length is not byte but bit.";
+    hash.digest_str(txt);
+    println!("Msg =\t\"{}\"\nHash =\t{}\n", txt, hash);
+    assert_eq!(hash.get_HashValue_in_string(), "9DE35D8FCF68E74867FFB63F28625ABE");
+
+    txt = "I am testing MD4 for the data whose length is sixty-two bytes.";
+    hash.digest_str(txt);
+    println!("Msg =\t\"{}\"\nHash =\t{}\n", txt, hash);
+    assert_eq!(hash.to_string(), "3A9F1487472B3A4315E0C90DC5CB3A2E");
+
+    let mut txt = "I am testing MD4 for the message which is sixty-four bytes long.";
+    hash.digest_str(txt);
+    println!("Msg =\t\"{}\"\nHash =\t{}\n", txt, hash);
+    assert_eq!(hash.get_HashValue_in_string(), "6CDB5B2BFF823A4A7B23675180EB7BEF");
+
+    txt = "I am testing MD4 for the case data whose length is more than sixty-four bytes is given.";
+    hash.digest_str(txt);
+    println!("Msg =\t\"{}\"\nHash =\t{}", txt, hash);
+    assert_eq!(hash.to_string(), "56771653687981390B0EB2A7D0A40DBB");
+    println!("-------------------------------");
+}
+
+fn MD4_new()
+{
+    println!("MD4_new");
+    use Cryptocol::hash::MD4;
+    let mut hash = MD4::new();
+    println!("Hash =\t{}", hash);
+    assert_eq!(hash.to_string(), "0123456789ABCDEFFEDCBA9876543210");
+    println!("-------------------------------");
+}
+
+fn MD4_digest()
+{
+    println!("MD4_digest");
+    use Cryptocol::hash::MD4;
+    let txt = "This is an example of the method digest().";
+    let mut hash = MD4::new();
+    hash.digest(txt.as_ptr(), txt.len() as u64);
+    println!("Msg =\t\"{}\"\nHash =\t{}", txt, hash);
+    assert_eq!(hash.to_string(), "A18836F660C3C66B8CBEE4BD24FEFFA9");
+    println!("-------------------------------");
+}
+
+fn MD4_digest_str()
+{
+    println!("MD4_digest_str");
+    use Cryptocol::hash::MD4;
+    let txt = "This is an example of the method digest_str().";
+    let mut hash = MD4::new();
+    hash.digest_str(txt);
+    println!("Msg =\t\"{}\"\nHash =\t{}", txt, hash);
+    assert_eq!(hash.to_string(), "E396CE68E2BE1001BCBFD62B49E226C0");
+    println!("-------------------------------");
+}
+
+fn MD4_digest_string()
+{
+    println!("MD4_digest_string");
+    use Cryptocol::hash::MD4;
+    let txt = "This is an example of the method digest_string().".to_string();
+    let mut hash = MD4::new();
+    hash.digest_string(&txt);
+    println!("Msg =\t\"{}\"\nHash =\t{}", txt, hash);
+    assert_eq!(hash.to_string(), "DF23C7808B2B158C5E2D8C9FE1FF2ECC");
+    println!("-------------------------------");
+}
+
+fn MD4_digest_array()
+{
+    println!("MD4_digest_array");
+    use Cryptocol::hash::MD4;
+    let data = [ 0x67452301_u32.to_le(), 0xefcdab89_u32.to_le(), 0x98badcfe_u32.to_le(), 0x10325476_u32.to_le() ];
+    let mut hash = MD4::new();
+    hash.digest_array(&data);
+    println!("Msg =\t{:?}\nHash =\t{}", data, hash);
+    assert_eq!(hash.to_string(), "31489CF63B7FC170E9046F0176A60B39");
+    println!("-------------------------------");
+}
+
+fn MD4_digest_vec()
+{
+    println!("MD4_digest_vec");
+    use Cryptocol::hash::MD4;
+    let data = vec![ 0x67452301_u32.to_le(), 0xefcdab89_u32.to_le(), 0x98badcfe_u32.to_le(), 0x10325476_u32.to_le() ];
+    let mut hash = MD4::new();
+    hash.digest_vec(&data);
+    println!("Msg =\t{:?}\nHash =\t{}", data, hash);
+    assert_eq!(hash.to_string(), "31489CF63B7FC170E9046F0176A60B39");
+    println!("-------------------------------");
+}
+
+fn MD4_get_HashValue()
+{
+    println!("MD4_get_HashValue");
+    use Cryptocol::hash::MD4;
+    let txt = "This is an example of the method get_HashValue().";
+    let mut hashValue = [0_u8; 16];
+    let mut hash = MD4::new();
+    hash.digest_str(txt);
+    hash.get_HashValue(hashValue.as_ptr() as *mut u8, hashValue.len());
+    println!("Msg =\t\"{}\"\nHash =\t{:02X?}", txt, hashValue);
+    assert_eq!(format!("{:02X?}", hashValue), "[12, E1, F9, 39, C3, D8, 09, A7, 23, 7D, 94, B4, F1, A0, 1E, FD]");
+    println!("-------------------------------");
+}
+
+fn MD4_get_HashValue_in_string()
+{
+    println!("MD4_get_HashValue_in_string");
+    use Cryptocol::hash::MD4;
+    let txt = "This is an example of the method get_HashValue_in_string().";
+    let mut hash = MD4::new();
+    hash.digest_str(txt);
+    println!("Msg =\t\"{}\"\nHash =\t{}", txt, hash.get_HashValue_in_string());
+    assert_eq!(hash.get_HashValue_in_string(), "B871AC07999486EB0A6450DA5E09E92D");
+    println!("-------------------------------");
+}
+
+fn MD4_get_HashValue_in_array()
+{
+    println!("MD4_get_HashValue_in_array");
+    use Cryptocol::hash::MD4;
+    let txt = "This is an example of the method get_HashValue_in_array().";
+    let mut hash = MD4::new();
+    hash.digest_str(txt);
+    println!("Msg =\t\"{}\"\nHash =\t{:02X?}", txt, hash.get_HashValue_in_array());
+    assert_eq!(format!("{:02X?}", hash.get_HashValue_in_array()), "[9F7E4FD8, 906C5422, 9FAAAFBA, 363BE03A]");
+    println!("-------------------------------");
+}
+
+fn MD4_get_HashValue_in_vec()
+{
+    println!("MD4_get_HashValue_in_vec");
+    use Cryptocol::hash::MD4;
+    let txt = "This is an example of the method get_HashValue_in_vec().";
+    let mut hash = MD4::new();
+    hash.digest_str(txt);
+    println!("Msg =\t\"{}\"\nHash =\t{:02X?}", txt, hash.get_HashValue_in_vec());
+    assert_eq!(format!("{:02X?}", hash.get_HashValue_in_vec()), "[6BD261A9, 47EFE9B7, 4397C1B, 628A61D7]");
+    println!("-------------------------------");
+}
+
+fn MD4_fmt_for_to_string()
+{
+    println!("MD4_fmt_for_to_string");
+    use Cryptocol::hash::MD4;
+    let mut hash = MD4::new();
+    let txt = "Display::fmt() automagically implement to_string().";
+    hash.digest_str(txt);
+    println!("Msg =\t\"{}\"\nHash =\t{}", txt, hash.to_string());
+    assert_eq!(hash.to_string(), "E2244B71E17D5BD7E1CCEB58C8F8C82E");
+}
+
+fn MD4_fmt_for_println()
+{
+    println!("MD4_fmt_for_println");
+    use Cryptocol::hash::MD4;
+    let mut hash = MD4::new();
+    let txt = "Display::fmt() enables the object to be printed in the macro println!() directly for example.";
+    hash.digest_str(txt);
+    println!("Msg =\t\"{}\"\nHash =\t{}", txt, hash);
+    assert_eq!(hash.to_string(), "3C607B5548C155DCF4E84C7A6C21D349");
+    println!("-------------------------------");
+}
+
 
 fn Hash_MD5_main()
 {
@@ -77,10 +288,10 @@ fn MD5_Quick_Start()
     println!("Msg =\t\"{}\"\nHash =\t{}\n", txt, hash);
     assert_eq!(hash.to_string(), "6C33614E6317DC4641573E0EBC287F98");
 
-    let mut txt = "I am testing MD5 for the data whose length is sixty-four bytes..";
+    let mut txt = "I am testing MD5 for the message which is sixty-four bytes long.";
     hash.digest_str(txt);
     println!("Msg =\t\"{}\"\nHash =\t{}\n", txt, hash);
-    assert_eq!(hash.get_HashValue_in_string(), "200F9A19EA45A830284342114483172B");
+    assert_eq!(hash.get_HashValue_in_string(), "584D41C6837AC714275196E4FF14B2EF");
 
     txt = "I am testing MD5 for the case data whose length is more than sixty-four bytes is given.";
     hash.digest_str(txt);
@@ -88,7 +299,6 @@ fn MD5_Quick_Start()
     assert_eq!(hash.to_string(), "9831162AB272AE1D85245B75726D215E");
     println!("-------------------------------");
 }
-
 
 fn MD5_new()
 {
@@ -298,7 +508,6 @@ fn SHA1_Quick_Start()
     assert_eq!(hash.to_string(), "BB2C79F551B95963ECE49D40F8A92349BF66CAE7");
     println!("-------------------------------");
 }
-
 
 fn SHA1_new()
 {

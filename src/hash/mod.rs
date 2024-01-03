@@ -1,4 +1,4 @@
-// Copyright 2023 PARK Youngho.
+// Copyright 2023, 2024 PARK Youngho.
 //
 // Licensed under the Apache License, Version 2.0 <LICENSE-APACHE or
 // https://www.apache.org/licenses/LICENSE-2.0> or the MIT license
@@ -30,31 +30,29 @@
 //! 
 //! # The algorithms of cryptographic hash functions
 //! This module provides several kinds of cryptographic hash algorithms:
-//! - `MD5` --- [Read more](struct@MD5)
-//! - `SHA1` --- [Read more](struct@SHA1)
-//! - `SHA-2 (SHA-224)` --- [Read more](struct@SHA2_224)
-//! - `SHA-2 (SHA-256)` --- [Read more](struct@SHA2_256)
-//! - `SHA-2 (SHA-384)` --- [Read more](struct@SHA2_384)
-//! - `SHA-2 (SHA-512)` --- [Read more](struct@SHA2_512)
-// ! - `SHA-2 (SHA-512/224)` --- [Read more](struct@SHA2_512_224)
-// ! - `SHA-2 (SHA-512/256)` --- [Read more](struct@SHA2_512_256)
-//! - `SHA-3 (SHA3-224)` --- [Read more](struct@SHA3_224)
-//! - `SHA-3 (SHA3-256)` --- [Read more](struct@SHA3_256)
-//! - `SHA-3 (SHA3-384)` --- [Read more](struct@SHA3_348)
-//! - `SHA-3 (SHA3-512)` --- [Read more](struct@SHA3_512)
-//! - `SHA-3 (SHAKE 128)` --- [Read more](struct@SHA3_SHAKE_128)
-//! - `SHA-3 (SHAKE 256)` --- [Read more](struct@SHA3_SHAKE_256)
+//! - MD4 hash algorithms based on 128 bits --- Includes MD4 and its expanded versions. [`MD4_Generic`](hash/md4/struct.MD4_Generic.html#struct.MD4_Generic)
+//! - MD5 hash algorithms based on 128 bits --- Includes MD5 and its expanded versions. [`MD5_Generic`](hash/md5/struct.MD5_Generic.html#struct.MD5_Generic)
+//! - SHA-1 hash algorithms based on 160 bits --- Includes SHA-1, SHA-0, and their expanded versions. [`SHA1_Generic`](hash/sha1/struct.SHA1_Generic.html#struct.SHA1_Generic)
+//! - SHA-2 hash algorithms based on 256 bits --- Includes SHA-256, SHA-224, and their expanded versions. [`SHA2_Generic_256`](hash/sha2_256/struct.SHA2_Generic_256.html#struct.SHA2_Generic_256)
+//! - SHA-2 hash algorithms based on 512 bits --- Includes SHA-512, SHA-384, SHA-512/256, and their expanded versions. [`SHA2_Generic_512`](hash/sha2_512/struct.SHA2_Generic_512.html#struct.SHA2_Generic_512)
+//! - SHA-2 hash algorithms based on 512/t bits --- Includes 512/256, SHA-512/224, and their expanded versions. [`SHA2_Generic_512_t`](hash/sha2_512_t/struct.SHA2_Generic_512_t.html#struct.SHA2_Generic_512_t)
 //! 
 //! # QUICK START
-//! - For `MD5`, read [here](struct@MD5#quick-start).
-//! - For `SHA1`, read [here](struct@SHA1#quick-start).
+//! - For `MD4`, read [here](struct@MD4_Generic#quick-start).
+//! - For `MD5`, read [here](struct@MD5_Generic#quick-start).
+//! - For `SHA-1`, read [here](struct@SHA1_generic#quick-start).
+//! - For `SHA-256`, read [here](struct@SHA2_Generic_256#quick-start).
+//! - For `SHA-512`, read [here](struct@SHA2_Generic_512#quick-start).
+//! - For `SHA-512/t`, read [here](struct@SHA2_Generic_512_t#quick-start).
 
+mod md4;
 mod md5;
 mod sha1;
 mod sha2_256;
 mod sha2_512;
 mod sha2_512_t;
 
+pub use md4::*;
 pub use md5::*;
 pub use sha1::*;
 pub use sha2_256::*;

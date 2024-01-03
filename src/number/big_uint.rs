@@ -1,4 +1,4 @@
-// Copyright 2023 PARK Youngho.
+// Copyright 2023, 2024 PARK Youngho.
 //
 // Licensed under the Apache License, Version 2.0 <LICENSE-APACHE or
 // https://www.apache.org/licenses/LICENSE-2.0> or the MIT license
@@ -1630,7 +1630,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     }
 
 
-
+/*
     /***** METHODS FOR GENERATING RANDOM PRIME NUMBERS *****/
 
     // pub fn any() -> Self
@@ -2785,7 +2785,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
         let tmp = a.modular_pow(&d, self);
         return tmp == self_minus_one || tmp.is_one();
     }
-
+*/
 
 
     /***** METHODS TO GET SIZE BOTH IN BYTES AND BITS *****/

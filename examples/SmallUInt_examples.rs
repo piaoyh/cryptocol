@@ -1,4 +1,4 @@
-// Copyright 2023 PARK Youngho.
+// Copyright 2023, 2024 PARK Youngho.
 //
 // Licensed under the Apache License, Version 2.0 <LICENSE-APACHE or
 // https://www.apache.org/licenses/LICENSE-2.0> or the MIT license
@@ -19,7 +19,7 @@ use std::mem::size_of;
 use std::str::FromStr;
 
 use Cryptocol::number::SmallUInt;
-use rand_distr::num_traits::PrimInt; //{u256, BigInteger, HugeInteger};
+// use rand_distr::num_traits::PrimInt; //{u256, BigInteger, HugeInteger};
 
 
 fn main()
@@ -2452,6 +2452,7 @@ fn SmallUInt_root()
     println!("cbrt({}) = {}\t\t{} ** 3 = {}", a + 1, d, b + 1, e);
 }
 
+/*
 fn SmallUInt_prime___main()
 {
     // SmallUInt_is_random___main();
@@ -2490,3 +2491,4 @@ fn SmallUInt_random_prime_using_Miller_Rabin___main()
     println!("Random prime : {}.", num);
     println!("-------------------------");
 }
+*/

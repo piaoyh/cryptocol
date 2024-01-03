@@ -1,4 +1,4 @@
-// Copyright 2023 PARK Youngho.
+// Copyright 2023, 2024 PARK Youngho.
 //
 // Licensed under the Apache License, Version 2.0 <LICENSE-APACHE or
 // https://www.apache.org/licenses/LICENSE-2.0> or the MIT license
@@ -113,6 +113,12 @@ pub type SHA2_512_t_224 = SHA2_512_t<224>;
 #[allow(non_camel_case_types)]
 pub type SHA2_512_0 = SHA2_512_t<512>;
 
+
+/// A SHA-2 message-digest algorithm that lossily compresses data of arbitrary
+/// length into a any-bit hash values less than 512 bits, and its flexible
+/// variants that allows you to develop your own
+/// `SHA-2-512/t`-based hash algorithms
+/// 
 /// # Introduction
 /// A SHA-1 message-digest algorithm that lossily compresses data of arbitrary
 /// length into a 128-bit hash value. SHA-1 was designed by the United States

@@ -1,4 +1,4 @@
-// Copyright 2023 PARK Youngho.
+// Copyright 2023, 2024 PARK Youngho.
 //
 // Licensed under the Apache License, Version 2.0 <LICENSE-APACHE or
 // https://www.apache.org/licenses/LICENSE-2.0> or the MIT license
@@ -567,6 +567,7 @@ fn BigUInt_generate_check_bits_()
     println!("---------------------------");
 }
 
+/*
 fn BigUInt_random_number___main()
 {
     BigUInt_any();
@@ -795,6 +796,7 @@ fn BigUInt_is_prime_using_Miller_Rabin()
     else    { assert!(!yes); }
     println!("---------------------------");
 }
+*/
 
 fn BigUInt_get_size___main()
 {
@@ -888,7 +890,7 @@ fn BigUInt_turn_check_bits()
     use Cryptocol::define_utypes_with;
     
     define_utypes_with!(u128);
-    let mut a = u256::any();
+    let mut a = u256::from_string("256487951236974125896345564889974258").unwrap();
     println!("a = {}", a.to_string_with_radix_and_stride(2, 8).unwrap());
     a.turn_check_bits(102);
     println!("a = {}", a.to_string_with_radix_and_stride(2, 8).unwrap());

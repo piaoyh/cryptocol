@@ -1,4 +1,4 @@
-// Copyright 2023 PARK Youngho.
+// Copyright 2023, 2024 PARK Youngho.
 //
 // Licensed under the Apache License, Version 2.0 <LICENSE-APACHE or
 // https://www.apache.org/licenses/LICENSE-2.0> or the MIT license
@@ -18,8 +18,8 @@ use std::mem::{ size_of, size_of_val };
 use std::cmp::{ PartialEq, PartialOrd, Ordering };
 use std::ops::*;
 
-use rand::{ RngCore, thread_rng, Rng };
-use rand::rngs::OsRng;
+// use rand::{ RngCore, thread_rng, Rng };
+// use rand::rngs::OsRng;
 
 use super::small_int_unions::*;
 
@@ -4854,7 +4854,7 @@ pub trait SmallUInt: Copy + Clone + Sized //+ Display + Debug + ToString
     fn sqrt(self) -> Self;
     fn root(self, exp: Self) -> Self;
 
-
+/*
     /***** METHODS FOR GENERATING RANDOM NUMBERS AND PRIME NUMBERS *****/
 
     // fn any() -> Self
@@ -6227,7 +6227,7 @@ pub trait SmallUInt: Copy + Clone + Sized //+ Display + Debug + ToString
     /// for Big-endian CPUs with your own full responsibility.
     fn is_prime_using_Miller_Rabin(self, repetition: usize) -> bool;
     fn test_Miller_Rabin(self, a: Self) -> bool;
-
+*/
     fn reverse_bits(self) -> Self;
     fn reverse_bits_assign(&mut self);
     fn rotate_left(self, n: u32) -> Self;
@@ -6629,7 +6629,7 @@ pub trait SmallUInt: Copy + Clone + Sized //+ Display + Debug + ToString
 }
 
 
-
+/*
 macro_rules! random_for_uint_impl {
     (u8) => {
         /// Constucts a new `SmallUInt`-type object which has the random value.
@@ -6719,6 +6719,7 @@ macro_rules! random_for_uint_impl {
         }
     };
 }
+*/
 
 macro_rules! SmallUInt_methods_for_uint_impl {
     ($f:ty) => {
@@ -7113,6 +7114,7 @@ macro_rules! SmallUInt_methods_for_uint_impl {
             }
         }
 
+/*
 /***** METHODS FOR GENERATING RANDOM PRIME NUMBERS *****/
 
         /// Tests a `SmallUInt`-type object to find whether or not it is a
@@ -7193,6 +7195,7 @@ macro_rules! SmallUInt_methods_for_uint_impl {
             let tmp = a.modular_pow(d, self);
             return tmp == self_minus_one || tmp.is_one();
         }
+*/
 
         #[inline] fn reverse_bits(self) -> Self     { self.reverse_bits() }
         #[inline] fn reverse_bits_assign(&mut self) { *self = self.reverse_bits(); }
@@ -7320,37 +7323,37 @@ macro_rules! SmallUInt_methods_for_uint_impl {
 impl SmallUInt for u8
 {
     SmallUInt_methods_for_uint_impl! { u8 }
-    random_for_uint_impl! { u8 }
+    // random_for_uint_impl! { u8 }
 }
 
 impl SmallUInt for u16
 {
     SmallUInt_methods_for_uint_impl! { u16 }
-    random_for_uint_impl! { u16 }
+    // random_for_uint_impl! { u16 }
 }
 
 impl SmallUInt for u32
 {
     SmallUInt_methods_for_uint_impl! { u32 }
-    random_for_uint_impl! { u32 }
+    // random_for_uint_impl! { u32 }
 }
 
 impl SmallUInt for u64
 {
     SmallUInt_methods_for_uint_impl! { u64 }
-    random_for_uint_impl! { u64 }
+    // random_for_uint_impl! { u64 }
 }
 
 impl SmallUInt for u128
 {
     SmallUInt_methods_for_uint_impl! { u128 }
-    random_for_uint_impl! { u128 }
+    // random_for_uint_impl! { u128 }
 }
 
 impl SmallUInt for usize
 {
     SmallUInt_methods_for_uint_impl! { usize }
-    random_for_uint_impl! { usize }
+    // random_for_uint_impl! { usize }
 }
 
 

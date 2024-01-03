@@ -1,4 +1,4 @@
-// Copyright 2023 PARK Youngho.
+// Copyright 2023, 2024 PARK Youngho.
 //
 // Licensed under the Apache License, Version 2.0 <LICENSE-APACHE or
 // https://www.apache.org/licenses/LICENSE-2.0> or the MIT license
@@ -90,13 +90,17 @@ pub type MD5_Expended<const ROUND: usize, const N: usize>
 #[allow(non_camel_case_types)]
 pub type MD5 = MD5_Expended<64, 4>;
 
-/// # Introduction
+
 /// A MD5 message-digest algorithm that lossily compresses data of arbitrary
-/// length into a 128-bit hash value. MD5 was designed by Ronald Rivest who
-/// is one of the inventors of RSA asymmetric cryptographic algorithm. MD5 was
-/// invented in 1991 to replace an earlier hash function MD4. It was specified
-/// in 1992 as RFC 1321. This module provides not only the official MD5 but
-/// also its expanded versions which is implemented with the name `MD5_Generic`.
+/// length into a 128-bit hash value, and its flexible variants that allows
+/// you to develop your own `MD5`-based hash algorithms
+/// 
+/// # Introduction
+/// MD5 was designed by Ronald Rivest who is one of the inventors of RSA
+/// asymmetric cryptographic algorithm. MD5 was invented in 1991 to replace
+/// an earlier hash function MD4. It was specified in 1992 as RFC 1321.
+/// This module provides not only the official MD5 but also its expanded
+/// versions which is implemented with the name `MD5_Generic`.
 /// 
 /// # Vulnerability
 /// In 2004, it was shown that MD5 is not collision-resistant. Today, MD5 is
@@ -121,8 +125,9 @@ pub type MD5 = MD5_Expended<64, 4>;
 /// K00 ~ K63, the initial hash values H0 ~ H7, the amount of
 /// rotate left R00 ~ R33, the number of round ROUND, and the output amount.
 /// Your own algrorithm based on MD5 may be stronger or weaker than official
-/// MD5. Unless you seriously checked the security of your own algorithms, it
-/// is high chance that your own alogrithms are weaker than the official MD5.
+/// MD5. Unless you seriously checked the cryptographic security of your own
+/// algorithms, it is hard to assume that your own alogrithms are stronger
+/// than the official MD5.
 /// 
 /// # Reference
 /// Read [more](https://en.wikipedia.org/wiki/MD5) about MD5 in detail.

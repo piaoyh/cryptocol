@@ -1,4 +1,4 @@
-// Copyright 2023 PARK Youngho.
+// Copyright 2023, 2024 PARK Youngho.
 //
 // Licensed under the Apache License, Version 2.0 <LICENSE-APACHE or
 // https://www.apache.org/licenses/LICENSE-2.0> or the MIT license
@@ -108,9 +108,13 @@ pub type SHA2_256 = SHA2_256_Expanded<64, 8>;
 #[allow(non_camel_case_types)]
 pub type SHA2_224 = SHA2_224_Expanded<64, 7>;
 
+/// A SHA-2 message-digest algorithm that lossily compresses data of arbitrary
+/// length into a 256-bit hash value or 224-bit hash value, and its flexible
+/// variants that allows you to develop your own
+/// `SHA-2-256`-based hash algorithms
+/// 
 /// # Introduction
-/// A SHA-1 message-digest algorithm that lossily compresses data of arbitrary
-/// length into a 128-bit hash value. SHA-1 was designed by the United States
+/// SHA-1 was designed by the United States
 /// National Security Agency, and is a U.S. Federal Information Processing
 /// Standard. SHA-1 produces a message digest based on principles similar to
 /// those used by Ronald L. Rivest of MIT in the design of the MD2, MD4

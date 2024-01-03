@@ -1,4 +1,4 @@
-// Copyright 2023 PARK Youngho.
+// Copyright 2023, 2024 PARK Youngho.
 //
 // Licensed under the Apache License, Version 2.0 <LICENSE-APACHE or
 // https://www.apache.org/licenses/LICENSE-2.0> or the MIT license
@@ -27,21 +27,21 @@
 //! encouraged to use this crate for Big-endian CPUs for serious purpose.
 //! Only use this crate for Big-endian CPUs with your own full responsibility.
 //! 
-//! # Road Map
+//! # Road Map for Version 1.0
 //! This crate Cryptocol is planned to provide the following functionalities.
 //! The checked items have already been implemented including documentation
-//! at least 80%. The unchecked items have not yet been implemented less than
-//! 80% or have not yet even been started to implement.
+//! at least 80%. The unchecked items have not yet been implemented including
+//! documentation more than 80% or have not yet even been started to implement.
 //! 
 //! ## Foundations for Big Numbers
 //! - [ ] Unions for primitive data types and their implementation --- 
-//! [`ShortUnion`](number/int_unions/union.ShortUnion.html#union.ShortUnion),
-//! [`IntUnion`](number/int_unions/union.IntUnion.html#union.IntUnion),
-//! [`LongUnion`](number/int_unions/union.LongUnion.html#union.LongUnion),
-//! [`LongerUnion`](number/int_unions/union.LongerUnion.html#union.LongerUnion), and
-//! [`SizeUnion`](number/int_unions/union.SizeUnion.html#union.SizeUnion)
+//! [`ShortUnion`](number/small_int_unions/union.ShortUnion.html#union.ShortUnion),
+//! [`IntUnion`](number/small_int_unions/union.IntUnion.html#union.IntUnion),
+//! [`LongUnion`](number/small_int_unions/union.LongUnion.html#union.LongUnion),
+//! [`LongerUnion`](number/small_int_unions/union.LongerUnion.html#union.LongerUnion), and
+//! [`SizeUnion`](number/small_int_unions/union.SizeUnion.html#union.SizeUnion)
 //! - [ ] Trait SmallUInt and its implementation for primitive data types and Unions ---
-//! [SmallUInt](number/uint/trait.SmallUInt.html#trait.SmallUInt)
+//! [SmallUInt](number/small_uint/trait.SmallUInt.html#trait.SmallUInt)
 //! - [ ] Trait Sint and its implementation for primitive data types and Unions
 //! 
 //! ## Big Numbers
@@ -50,6 +50,7 @@
 //! - [ ] Variable Sized Big Signed Integer Operation --- LargeInt
 //! 
 //! ## Hash Algorithms
+//! - [ ] MD4 hash algorithms based on 128 bits --- Includes MD4 and its expanded versions. [`MD4_Generic`](hash/md4/struct.MD4_Generic.html#struct.MD4_Generic)
 //! - [X] MD5 hash algorithms based on 128 bits --- Includes MD5 and its expanded versions. [`MD5_Generic`](hash/md5/struct.MD5_Generic.html#struct.MD5_Generic)
 //! - [X] SHA-1 hash algorithms based on 160 bits --- Includes SHA-1, SHA-0, and their expanded versions. [`SHA1_Generic`](hash/sha1/struct.SHA1_Generic.html#struct.SHA1_Generic)
 //! - [ ] SHA-2 hash algorithms based on 256 bits --- Includes SHA-256, SHA-224, and their expanded versions. [`SHA2_Generic_256`](hash/sha2_256/struct.SHA2_Generic_256.html#struct.SHA2_Generic_256)
@@ -76,7 +77,7 @@
 //! the version number 1.0.0.0 will be given. After that whenever another
 //! functionality is added to this crate, the version number will get higher
 //! beyond 1.0.0.0. Before the version number 1.0.0.0, the maximum version
-//! number will be 0.23.x.x since there are all twenty-four functionalities
+//! number will be 0.24.x.x since there are all twenty-three functionalities
 //! listed above. So, for example, even if the version number is 0.5.0.0,
 //! it does not mean that 50% of all functionalities are implemented.
 

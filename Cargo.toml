@@ -1,11 +1,11 @@
 [package]
 name = "Cryptocol"
-version = "0.1.4"
+version = "0.3.0"
 authors = ["PARK Youngho"]
 edition = "2021"
 license = "MIT OR Apache-2.0"
 description = "A cryptographic library that includes big number operation, Hash Algorithms, Symmetric-Key Cryptographic Algorithms, Asymmetric-Key Cryptographic Algorithms, etc."
-keyword = ["cryptographic", "security", "encryption", "hash", "number"]
+keyword = ["cryptography", "security", "encryption", "hash", "number"]
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
@@ -13,8 +13,8 @@ keyword = ["cryptographic", "security", "encryption", "hash", "number"]
 incremental = false
 
 [dependencies]
-rand = { version = "0.8", features = ["getrandom"] }
-rand_chacha = "0.3.1"
-rand_distr = "0.4.3"
-rand_pcg = "0.3.1"
-rand_seeder = "0.2.3"
+#rand = { version = "0.8", features = ["getrandom"] }
+#rand_chacha = "0.3.1"
+#rand_distr = "0.4.3"
+#rand_pcg = "0.3.1"
+#rand_seeder = "0.2.3"
