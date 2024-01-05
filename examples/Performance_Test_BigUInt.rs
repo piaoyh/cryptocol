@@ -10,12 +10,8 @@
 use std::fmt::{Debug, Display};
 use std::ops::*;
 use std::convert::*;
-use std::mem::size_of;
-use std::str::FromStr;
 use Cryptocol::number::*;
 use Cryptocol::define_utypes_with;
-use Cryptocol::number::small_uint::*;
-use Cryptocol::number::small_int_unions::*;
 use Cryptocol::number::BigUInt;
 
 fn main()

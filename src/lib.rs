@@ -33,16 +33,16 @@
 //! at least 80%. The unchecked items have not yet been implemented including
 //! documentation more than 80% or have not yet even been started to implement.
 //! 
-//! ## Foundations for Big Numbers
+//! ## Foundations mainly for Big Numbers and also for other modules
 //! - [ ] Unions for primitive data types and their implementation --- 
 //! [`ShortUnion`](number/small_int_unions/union.ShortUnion.html#union.ShortUnion),
 //! [`IntUnion`](number/small_int_unions/union.IntUnion.html#union.IntUnion),
 //! [`LongUnion`](number/small_int_unions/union.LongUnion.html#union.LongUnion),
 //! [`LongerUnion`](number/small_int_unions/union.LongerUnion.html#union.LongerUnion), and
 //! [`SizeUnion`](number/small_int_unions/union.SizeUnion.html#union.SizeUnion)
-//! - [ ] Trait SmallUInt and its implementation for primitive data types and Unions ---
+//! - [ ] Trait SmallUInt and its implementation of primitive data types and Unions ---
 //! [SmallUInt](number/small_uint/trait.SmallUInt.html#trait.SmallUInt)
-//! - [ ] Trait Sint and its implementation for primitive data types and Unions
+//! - [ ] Trait SmallSInt and its implementation of primitive data types and Unions
 //! 
 //! ## Big Numbers
 //! - [ ] Fixed Sized Big Unsigned Integer Operation --- [`BigUInt`](number/big_uint/struct.BigUInt.html#struct.BigUInt)
@@ -68,6 +68,9 @@
 //! - [ ] 3DES
 //! - [ ] AES
 //! 
+//! ## Pseudo-Random Number Generator Algorithms
+//! - [ ] The implementation of hash algorithms for the Hash-like Random Number Generator trait
+//! 
 //! ## Asymmetric-Key Cryptographic Algorithms
 //! - [ ] Diffie-Hellman
 //! - [ ] RSA (Ron Rivest, Adi Shamir, Leonard Adleman)
@@ -90,3 +93,4 @@
 
 pub mod number;
 pub mod hash;
+pub mod random;

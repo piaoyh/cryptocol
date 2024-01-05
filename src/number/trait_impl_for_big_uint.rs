@@ -11,14 +11,13 @@
 //#![warn(missing_docs)]
 //#![warn(missing_doc_code_examples)]
 use std::fmt::{ self, Display, Formatter, Debug };
-use std::mem::{ size_of, size_of_val, transmute };
+use std::mem::size_of_val;
 use std::cmp::{ PartialEq, PartialOrd, Ordering };
-use std::convert::{ From, Into };
+use std::convert::From;
 use std::str::FromStr;
 use std::ops::*;
 
 use super::small_uint::*;
-use super::small_sint::*;
 use super::big_uint::BigUInt;
 use super::NumberErr;
 

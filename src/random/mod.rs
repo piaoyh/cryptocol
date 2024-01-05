@@ -1,4 +1,4 @@
-// Copyright 2023, 2024 PARK Youngho.
+// Copyright 2024 PARK Youngho.
 //
 // Licensed under the Apache License, Version 2.0 <LICENSE-APACHE or
 // https://www.apache.org/licenses/LICENSE-2.0> or the MIT license
@@ -7,11 +7,10 @@
 // except according to those terms.
 
 //! # Introduction
-//! The module that contains a few sub-modules to define Big numbers bigger
-//! than 128-bit integer and their arithmatic operations
+//! The module that contains a few sub-modules to define various pseudo-random
+//! number generators
 //! 
-//! # Background: Arithmatic operations of big numbers
-//! 
+//! # Background: Random number generators
 //! Most of the modern programming languages do not support big numbers
 //! such as 256-bit, 512-bit, and 1024-bit integers or even bigger integers.
 //! Rust supports up to 128-bit integers such as u128 and i128
@@ -41,30 +40,33 @@
 //! `u256` for 64-bit machines is `BigUInt<u64, 4>` for example
 //! while `u256` for 32-bit machines is `BigUInt<u32, 8>` for example.
 //! 
+//! # Quality Issues
+//! The pseudo-random number generators in this module use hash algorithms,
+//! encrytion/decryption algorithms, etc. which are not originally designed
+//! for random number generation so that you are encouraged to use the crate
+//! [rand](https://docs.rs/rand/latest/rand/index.html) (especially,
+//! [rand::rngs::OsRng](https://docs.rs/rand/latest/rand/rngs/struct.OsRng.html))
+//! if you really want one of the best quality pseudo-random number generator
+//! rather than this module. [rand](https://docs.rs/rand/latest/rand/index.html)
+//! is well known to be a good random number generator for normal purpose and
+//! [rand::rngs::OsRng](https://docs.rs/rand/latest/rand/rngs/struct.OsRng.html))
+//! is well know to be a good random number generator for _cryptographical_
+//! security purpose. However, the pseudo-random number generators in this
+//! module is not really horrible because the official hash algorithms which is
+//! the base algorithm of this module have also passed the statistical and
+//! cryptographical security test of NIST.
+//! 
 //! # QUICK START
 //! For `BigUInt`, read [here](struct@BigUInt#quick-start).
 //! 
 
-pub mod small_uint;
-pub mod small_sint;
-pub mod small_int_unions;
-pub mod big_uint;
-pub mod trait_impl_for_big_uint;
-pub mod number_errors;
-pub mod macros_number;
+pub mod random;
+pub mod trait_prng;
+pub mod trait_impl_for_MD4;
+pub mod trait_impl_for_MD5;
+pub mod trait_impl_for_SHA1;
+pub mod trait_impl_for_SHA2_256;
+pub mod trait_impl_for_SHA2_512;
 
-pub use small_uint::*;
-pub use small_int_unions::*;
-pub use small_sint::*;
-pub use big_uint::*;
-pub use number_errors::*;
-
-
-/********** FOR BIG-ENDIANNESS ONLY **********/
-
-#[cfg(target_endian = "big")]
-pub mod big_uint_for_big_endian;
-
-#[cfg(target_endian = "big")]
-pub use big_uint_for_big_endian::*;
-
+pub use random::*;
+pub use trait_prng::*;

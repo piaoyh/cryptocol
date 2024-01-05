@@ -349,7 +349,7 @@ SHA2_Generic_512_t<K00, K01, K02, K03, K04, K05, K06, K07,
         if (t & 0b111) != 0
             { panic!("t should be multiple of 8."); }
 
-        let seedText = format!("SHA-512/{}", t);
+        let seedText = format!("{}", seedText);
         let o = [ Self::H[0] ^ A5A5A5A5A5A5A5A5,
                             Self::H[1] ^ A5A5A5A5A5A5A5A5, 
                             Self::H[2] ^ A5A5A5A5A5A5A5A5,
@@ -633,7 +633,7 @@ SHA2_Generic_512_t<K00, K01, K02, K03, K04, K05, K06, K07,
     /// for Big-endian CPUs with your own full responsibility.
     #[inline]
     pub fn digest_array<T, const M: usize>(&mut self, message: &[T; M])
-    where T: SmallUInt + Copy + Clone + Display + Debug + ToString
+    where T: SmallUInt + Copy + Clone
     {
         self.digest(message.as_ptr() as *const u8, (M * T::size_in_bytes()) as u128);
     }
@@ -681,7 +681,7 @@ SHA2_Generic_512_t<K00, K01, K02, K03, K04, K05, K06, K07,
     /// for Big-endian CPUs with your own full responsibility.
     #[inline]
     pub fn digest_vec<T>(&mut self, message: &Vec<T>)
-    where T: SmallUInt + Copy + Clone + Display + Debug + ToString
+    where T: SmallUInt + Copy + Clone
     {
         self.digest(message.as_ptr() as *const u8, (message.len() * T::size_in_bytes()) as u128);
     }
@@ -781,7 +781,6 @@ SHA2_Generic_512_t<K00, K01, K02, K03, K04, K05, K06, K07,
     /// for Big-endian CPUs with your own full responsibility.
     pub fn get_HashValue_in_string(&self) -> String
     {
-        const BYTES: usize = 8;
         let n = t & 0b11_1111;  // equivalent to = t % 64
         let N = (t >> 6) + if n != 0 {1} else {0};
         let mut txt = String::new();
@@ -895,6 +894,12 @@ SHA2_Generic_512_t<K00, K01, K02, K03, K04, K05, K06, K07,
         res
     }
 
+    #[inline]
+    pub fn tangle(&mut self)
+    {
+        self.finalize(self.hash_code.as_ptr() as *const u8, 64);
+    }
+
     // fn initialize(&mut self)
     /// Initializes all five self.hash_code[] with predetermined values H[].
     fn initialize(&mut self)
@@ -1004,7 +1009,6 @@ SHA2_Generic_512_t<K00, K01, K02, K03, K04, K05, K06, K07,
     }
 
 	#[inline] fn getK(idx: usize) -> u64    { Self::K[idx] }
-	#[inline] fn getH(idx: usize) -> u64    { Self::H[idx] }
     #[inline] fn getS0(W: &[u64; 16], idx: usize) -> u64  { let w = W[(idx-15) & 0b1111]; w.rotate_right(RR1) ^ w.rotate_right(RR8) ^ (w >> SR7) }
     #[inline] fn getS1(W: &[u64; 16], idx: usize) -> u64  { let w = W[(idx-2) & 0b1111]; w.rotate_right(RR19) ^ w.rotate_right(RR61) ^ (w >> SR6) }
     #[inline] fn getW(W: &[u64; 16], idx: usize) -> u64   { W[(idx-16) & 0b1111].wrapping_add(Self::getS0(&W, idx)).wrapping_add(W[(idx-7) & 0b1111]).wrapping_add(Self::getS1(&W, idx)) }

@@ -11,12 +11,12 @@
 #![warn(missing_docs)]
 #![warn(missing_doc_code_examples)]
 
-use std::fmt::{ self, Debug, Display, Formatter };
+
 use std::ptr::copy_nonoverlapping;
 use std::slice::from_raw_parts;
+use std::fmt::{ self, Debug, Display, Formatter };
 
-use crate::number::IntUnion;
-use crate::number::SmallUInt;
+use crate::number::{ SmallUInt, IntUnion };
 
 
 /// K0 ~ K63 are initialized with array of round constants: the first 32 bits
@@ -408,7 +408,7 @@ MD4_Generic<K0, K1, K2, H0, H1, H2, H3,
     /// for Big-endian CPUs with your own full responsibility.
     #[inline]
     pub fn digest_array<T, const M: usize>(&mut self, message: &[T; M])
-    where T: SmallUInt + Copy + Clone + Display + Debug + ToString
+    where T: SmallUInt + Copy + Clone
     {
         self.digest(message.as_ptr() as *const u8, (M * T::size_in_bytes()) as u64);
     }
@@ -456,7 +456,7 @@ MD4_Generic<K0, K1, K2, H0, H1, H2, H3,
     /// for Big-endian CPUs with your own full responsibility.
     #[inline]
     pub fn digest_vec<T>(&mut self, message: &Vec<T>)
-    where T: SmallUInt + Copy + Clone + Display + Debug + ToString
+    where T: SmallUInt + Copy + Clone
     {
         self.digest(message.as_ptr() as *const u8, (message.len() * T::size_in_bytes()) as u64);
     }
@@ -646,6 +646,12 @@ MD4_Generic<K0, K1, K2, H0, H1, H2, H3,
         for i in 0..N
             { res.push(self.hash_code[i].get().to_le()); }
         res
+    }
+
+    #[inline]
+    pub fn tangle(&mut self)
+    {
+        self.finalize(self.hash_code.as_ptr() as *const u8, 32);
     }
 
     // fn initialize(&mut self)

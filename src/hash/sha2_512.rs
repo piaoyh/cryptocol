@@ -11,12 +11,11 @@
 #![warn(missing_docs)]
 #![warn(missing_doc_code_examples)]
 
-use std::fmt::{ self, Debug, Display, Formatter };
 use std::ptr::copy_nonoverlapping;
 use std::slice::from_raw_parts;
+use std::fmt::{ self, Debug, Display, Formatter };
 
-use crate::number::{ LongUnion, LongerUnion };
-use crate::number::SmallUInt;
+use crate::number::{ SmallUInt, LongUnion, LongerUnion };
 
 
 /// K0 ~ K79 are initialized with array of round constants: the first 64 bits
@@ -616,7 +615,7 @@ SHA2_Generic_512<K00, K01, K02, K03, K04, K05, K06, K07,
     /// for Big-endian CPUs with your own full responsibility.
     #[inline]
     pub fn digest_array<T, const M: usize>(&mut self, message: &[T; M])
-    where T: SmallUInt + Copy + Clone + Display + Debug + ToString
+    where T: SmallUInt + Copy + Clone
     {
         self.digest(message.as_ptr() as *const u8, (M * T::size_in_bytes()) as u128);
     }
@@ -664,7 +663,7 @@ SHA2_Generic_512<K00, K01, K02, K03, K04, K05, K06, K07,
     /// for Big-endian CPUs with your own full responsibility.
     #[inline]
     pub fn digest_vec<T>(&mut self, message: &Vec<T>)
-    where T: SmallUInt + Copy + Clone + Display + Debug + ToString
+    where T: SmallUInt + Copy + Clone
     {
         self.digest(message.as_ptr() as *const u8, (message.len() * T::size_in_bytes()) as u128);
     }
@@ -852,6 +851,12 @@ SHA2_Generic_512<K00, K01, K02, K03, K04, K05, K06, K07,
         for i in 0..N
             { res.push(self.hash_code[i].get().to_be()); }
         res
+    }
+
+    #[inline]
+    pub fn tangle(&mut self)
+    {
+        self.finalize(self.hash_code.as_ptr() as *const u8, 64);
     }
 
     // fn initialize(&mut self)

@@ -11,12 +11,11 @@
 #![warn(missing_docs)]
 #![warn(missing_doc_code_examples)]
 
-use std::fmt::{ self, Debug, Display, Formatter };
 use std::ptr::copy_nonoverlapping;
 use std::slice::from_raw_parts;
+use std::fmt::{ self, Debug, Display, Formatter };
 
-use crate::number::IntUnion;
-use crate::number::SmallUInt;
+use crate::number::{ SmallUInt, IntUnion };
 
 /// K0 ~ K63 are initialized with array of round constants: the first 32 bits
 /// of the fractional parts of the cube roots of the first 64 primes 2..311
@@ -406,7 +405,7 @@ SHA1_generic<K0, K1, K2, K3, H0, H1, H2, H3, H4, RL1, RL5, RL30, ROUND, N>
     /// for Big-endian CPUs with your own full responsibility.
     #[inline]
     pub fn digest_array<T, const M: usize>(&mut self, message: &[T; M])
-    where T: SmallUInt + Copy + Clone + Display + Debug + ToString
+    where T: SmallUInt + Copy + Clone
     {
         self.digest(message.as_ptr() as *const u8, (M * T::size_in_bytes()) as u64);
     }
@@ -454,7 +453,7 @@ SHA1_generic<K0, K1, K2, K3, H0, H1, H2, H3, H4, RL1, RL5, RL30, ROUND, N>
     /// for Big-endian CPUs with your own full responsibility.
     #[inline]
     pub fn digest_vec<T>(&mut self, message: &Vec<T>)
-    where T: SmallUInt + Copy + Clone + Display + Debug + ToString
+    where T: SmallUInt + Copy + Clone
     {
         self.digest(message.as_ptr() as *const u8, (message.len() * T::size_in_bytes()) as u64);
     }
@@ -644,6 +643,12 @@ SHA1_generic<K0, K1, K2, K3, H0, H1, H2, H3, H4, RL1, RL5, RL30, ROUND, N>
         res
     }
 
+    #[inline]
+    pub fn tangle(&mut self)
+    {
+        self.finalize(self.hash_code.as_ptr() as *const u8, 32);
+    }
+
     // fn initialize(&mut self)
     /// Initializes all five self.hash_code[] with predetermined values H[].
     fn initialize(&mut self)
@@ -757,8 +762,8 @@ SHA1_generic<K0, K1, K2, K3, H0, H1, H2, H3, H4, RL1, RL5, RL30, ROUND, N>
 
 
 impl<const K0: u32, const K1: u32, const K2: u32, const K3: u32,
-const H0: u32, const H1: u32, const H2: u32, const H3: u32, const H4: u32,
-const RL1: u32, const RL5: u32, const RL30: u32, const ROUND: usize, const N: usize>
+    const H0: u32, const H1: u32, const H2: u32, const H3: u32, const H4: u32,
+    const RL1: u32, const RL5: u32, const RL30: u32, const ROUND: usize, const N: usize>
 Display for SHA1_generic<K0, K1, K2, K3, H0, H1, H2, H3, H4, RL1, RL5, RL30, ROUND, N>
 {
     /// Formats the value using the given formatter.

@@ -9,14 +9,6 @@
 #![allow(missing_docs)]
 #![allow(missing_doc_code_examples)]
 
-use std::time::SystemTime;
-use std::fmt::{ Display, Debug };
-
-use std::ops::*;
-use std::convert::*;
-use std::mem::size_of;
-
-use std::str::FromStr;
 
 use Cryptocol::number::SmallUInt;
 // use rand_distr::num_traits::PrimInt; //{u256, BigInteger, HugeInteger};

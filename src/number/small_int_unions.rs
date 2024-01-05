@@ -4921,7 +4921,7 @@ macro_rules! integer_union_methods {
         #[inline] pub fn root(self, exp: Self) -> Self  { Self::new_with( self.get().root(exp.get()) ) }
 
         #[inline] pub fn reverse_bits(self) -> Self     { Self::new_with( self.get().reverse_bits() ) }
-        #[inline] pub fn reverse_bits_assign(&mut self) { self.reverse_bits_assign(); }
+        #[inline] pub fn reverse_bits_assign(&mut self) { self.get().reverse_bits_assign(); }
         #[inline] pub fn rotate_left(self, n: u32) -> Self  { Self::new_with( self.get().rotate_left(n) ) }
         #[inline] pub fn rotate_right(self, n: u32) -> Self { Self::new_with( self.get().rotate_right(n) ) }
 
@@ -5420,7 +5420,7 @@ macro_rules! SmallUInt_methods_for_integer_unions_impl {
         #[inline] fn root(self, exp: Self) -> Self  { self.root(exp) }
 
 
-/*
+
 /***** METHODS FOR GENERATING RANDOM PRIME NUMBERS *****/
 
         /// Performs Millar Rabin method with a number less than `self`.
@@ -5431,7 +5431,7 @@ macro_rules! SmallUInt_methods_for_integer_unions_impl {
         /// prime number.
         /// [Read more in detail](trait@SmallUInt#tymethod.test_Miller_Rabin)
         #[inline] fn test_Miller_Rabin(self, a: Self) -> bool   { self.get().test_Miller_Rabin(a.get()) }
-*/
+
         #[inline] fn reverse_bits(self) -> Self     { self.reverse_bits() }
         #[inline] fn reverse_bits_assign(&mut self) { *self = self.reverse_bits(); }
 
@@ -6551,7 +6551,7 @@ where D: SmallUInt + Copy + Clone + Display + Debug + ToString
     pub fn from_src(src: S) -> Self
     {
         let mut me = Share::<D, S>::new();
-        unsafe { me.src = src; }
+        me.src = src;
         me
     }
 

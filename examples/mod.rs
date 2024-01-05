@@ -13,8 +13,6 @@ pub mod Unions_examples;
 pub mod SmallUInt_examples;
 pub mod BigUInt_examples;
 
-pub use Unions_examples::*;
-pub use SmallUInt_examples::*;
 pub use BigUInt_examples::*;
 
 fn main()
