@@ -16,7 +16,7 @@ use std::ptr::copy_nonoverlapping;
 use std::slice::from_raw_parts;
 use std::fmt::{ self, Debug, Display, Formatter };
 
-use crate::number::{ SmallUInt, IntUnion };
+use crate::number::{ SmallUInt, IntUnion, LongUnion };
 
 
 /// K0 ~ K63 are initialized with array of round constants: the first 32 bits
@@ -737,9 +737,15 @@ MD5_Generic<K00, K01, K02, K03, K04, K05, K06, K07,
     }
 
     #[inline]
-    pub fn tangle(&mut self)
+    pub fn tangle(&mut self, tangling: u64)
     {
-        self.finalize(self.hash_code.as_ptr() as *const u8, 32);
+        let common = LongUnion::new_with(tangling);
+        let mut m = [0_u32; 6];
+        for i in 0..4
+            { m[i] = self.hash_code[i].get(); }
+        m[4] = common.get_uint_(0);
+        m[5] = common.get_uint_(1);
+        self.finalize(self.hash_code.as_ptr() as *const u8, 24);
     }
     
     // fn initialize(&mut self)

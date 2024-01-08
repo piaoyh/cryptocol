@@ -51,9 +51,9 @@ impl PRNG for SHA2_512
         self.digest_array(message);
     }
 
-    fn harvest(&mut self) -> [u64; 8]
+    fn harvest(&mut self, tangling: u64) -> [u64; 8]
     {
-        self.tangle();
+        self.tangle(tangling);
         self.get_HashValue_in_array()
     }
 }

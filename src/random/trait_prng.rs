@@ -37,5 +37,5 @@ pub trait PRNG
         + BitXor<Output=T> + BitXorAssign + Not<Output=T>
         + PartialEq + PartialOrd;
 
-    fn harvest(&mut self) -> [u64; 8];
+    fn harvest(&mut self, sugar: u64) -> [u64; 8];
 }

@@ -50,15 +50,15 @@ impl PRNG for MD4
         self.digest_array(message);
     }
 
-    fn harvest(&mut self) -> [u64; 8]
+    fn harvest(&mut self, tangling: u64) -> [u64; 8]
     {
-        self.tangle();
+        self.tangle(tangling);
         let a = self.get_HashValue_in_array();
-        self.tangle();
+        self.tangle(tangling);
         let b = self.get_HashValue_in_array();
-        self.tangle();
+        self.tangle(tangling);
         let c = self.get_HashValue_in_array();
-        self.tangle();
+        self.tangle(tangling);
         let d = self.get_HashValue_in_array();
         let mut res = [0_u64; 8];
         for i in 0..4

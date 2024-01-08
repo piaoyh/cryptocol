@@ -895,9 +895,13 @@ SHA2_Generic_512_t<K00, K01, K02, K03, K04, K05, K06, K07,
     }
 
     #[inline]
-    pub fn tangle(&mut self)
+    pub fn tangle(&mut self, tangling: u64)
     {
-        self.finalize(self.hash_code.as_ptr() as *const u8, 64);
+        let mut m = [0_u64; 9];
+        for i in 0..8
+            { m[i] = self.hash_code[i].get(); }
+        m[8] = tangling;
+        self.finalize(self.hash_code.as_ptr() as *const u8, 72);
     }
 
     // fn initialize(&mut self)

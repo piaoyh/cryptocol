@@ -16,7 +16,7 @@ use std::ptr::copy_nonoverlapping;
 use std::slice::from_raw_parts;
 use std::fmt::{ self, Debug, Display, Formatter };
 
-use crate::number::{ SmallUInt, IntUnion };
+use crate::number::{ SmallUInt, IntUnion, LongUnion };
 
 
 /// K0 ~ K63 are initialized with array of round constants: the first 32 bits
@@ -210,7 +210,9 @@ MD4_Generic<K0, K1, K2, H0, H1, H2, H3,
             hash_code: [IntUnion::new_with(Self::H[0]),
                         IntUnion::new_with(Self::H[1]),
                         IntUnion::new_with(Self::H[2]),
-                        IntUnion::new_with(Self::H[3])] } }
+                        IntUnion::new_with(Self::H[3])]
+        }
+    }
 
     // pub fn digest(&mut self, message: *const u8, length_in_bytes: u64)
     /// Compute hash value.
@@ -649,9 +651,15 @@ MD4_Generic<K0, K1, K2, H0, H1, H2, H3,
     }
 
     #[inline]
-    pub fn tangle(&mut self)
+    pub fn tangle(&mut self, tangling: u64)
     {
-        self.finalize(self.hash_code.as_ptr() as *const u8, 32);
+        let common = LongUnion::new_with(tangling);
+        let mut m = [0_u32; 6];
+        for i in 0..4
+            { m[i] = self.hash_code[i].get(); }
+        m[4] = common.get_uint_(0);
+        m[5] = common.get_uint_(1);
+        self.finalize(m.as_ptr() as *const u8, 24);
     }
 
     // fn initialize(&mut self)

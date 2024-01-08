@@ -30,13 +30,20 @@ fn main()
     // BigUInt_check_bits___main();
     // BigUInt_comparison_uint___main();
     // BigUInt_comparison_biguint___main();
-    BigUInt_arithmatic_operation_uint___main();
+    // @BigUInt_arithmatic_operation_uint___main();
     // BigUInt_exponentiation_logarithm_uint___main();
     // BigUInt_arithmatic_operation_biguint___main();
     // BigUInt_exponentiation_logarithm_biguint___main();
     // BigUInt_bit_operation___main();
     // BigUInt_conversion___main();
     // BigUInt_flag_manipulation___main();
+    // use Cryptocol::define_utypes_with;
+    // define_utypes_with!(u64);
+    // println!("SHA2-512: 2^256 = {}", u256::max());
+    // println!("SHA2-256: 2^127 = {}", u128::MAX >> 1);
+    // println!("md5: 2^16 = {}", u16::MAX >> 2);
+    // println!("SHA0: 2^31 = {}", u32::MAX >> 1);
+    // println!("SHA1: 2^60 = {}", u64::MAX >> 2);
 }
 
 fn BigUInt_quick_start___main()

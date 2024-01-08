@@ -22,6 +22,7 @@ fn main()
     Hash_SHA2_512_256_main();
     Hash_SHA2_512_t_256_main();
     Hash_SHA2_512_t_224_main();
+    // Hash_OS_Rng_main();
 }
 
 fn Hash_MD4_main()
@@ -2132,3 +2133,74 @@ fn SHA2_512_t_224_fmt_for_println()
     assert_eq!(hash.to_string(), "7988DFC3FB4BB8DB449B189C5D906901921C1AC0D60D94376B498795");
     println!("-------------------------------");
 }
+
+/*
+fn Hash_OS_Rng_main()
+{
+    use std::ops::*;
+    use std::fmt::{ Display, Debug };
+    use rand::{ rngs, RngCore };
+
+    use Cryptocol::number::SmallUInt;
+    use Cryptocol::random::{ PRNG, Random_Generic };
+
+    pub struct OsRng;
+    // {
+    //     hash_code: [u64; 8]
+    // }
+
+    impl PRNG for OsRng
+    {
+        #[inline]
+        fn new() -> Self    { Self }
+
+        #[inline]
+        fn new_with<T, const N: usize>(_: &[T; N]) -> Self
+        where T: SmallUInt + Copy + Clone + Display + Debug + ToString
+            + Add<Output=T> + AddAssign + Sub<Output=T> + SubAssign
+            + Mul<Output=T> + MulAssign + Div<Output=T> + DivAssign
+            + Rem<Output=T> + RemAssign
+            + Shl<Output=T> + ShlAssign + Shr<Output=T> + ShrAssign
+            + BitAnd<Output=T> + BitAndAssign + BitOr<Output=T> + BitOrAssign
+            + BitXor<Output=T> + BitXorAssign + Not<Output=T>
+            + PartialEq + PartialOrd
+        { Self::new() }
+
+        #[inline]
+        fn sow_array<T, const N: usize>(&mut self, _: &[T; N])
+        where T: SmallUInt + Copy + Clone + Display + Debug + ToString
+            + Add<Output=T> + AddAssign + Sub<Output=T> + SubAssign
+            + Mul<Output=T> + MulAssign + Div<Output=T> + DivAssign
+            + Rem<Output=T> + RemAssign
+            + Shl<Output=T> + ShlAssign + Shr<Output=T> + ShrAssign
+            + BitAnd<Output=T> + BitAndAssign + BitOr<Output=T> + BitOrAssign
+            + BitXor<Output=T> + BitXorAssign + Not<Output=T>
+            + PartialEq + PartialOrd
+        {}
+
+        #[inline]
+        fn harvest(&mut self, _: u64) -> [u64; 8]
+        {
+            [rngs::OsRng.next_u64(), rngs::OsRng.next_u64(),
+            rngs::OsRng.next_u64(), rngs::OsRng.next_u64(),
+            rngs::OsRng.next_u64(), rngs::OsRng.next_u64(),
+            rngs::OsRng.next_u64(), rngs::OsRng.next_u64()]
+        }
+    }
+
+    pub type Random_OsRng = Random_Generic<OsRng>;
+    
+    let mut r = Random_OsRng::new();
+    println!("Random_OsRng u8 = {}", r.random_u8());
+    println!("Random_OsRng u16 = {}", r.random_u16());
+    println!("Random_OsRng u32 = {}", r.random_u32());
+    println!("Random_OsRng u64 = {}", r.random_u64());
+    println!("Random_OsRng u128 = {}", r.random_u128());
+    println!("Random_OsRng under 123456789 = {}", r.random_under_uint_(123456789_u64));
+    println!("Random_OsRng prime number = {}", r.random_prime_using_Miller_Rabin_uint::<u128>(5));
+    println!("Random_OsRng under BigUInt = {}", r.random_BigUInt::<u64, 8>());
+    println!("Random_OsRng odd BigUInt = {}", r.random_odd_BigUInt::<u64, 8>());
+    println!("Random_OsRng BigUInt prime number = {}", r.random_prime_using_Miller_Rabin_BigUInt::<u64, 8>(5));
+}
+*/
+

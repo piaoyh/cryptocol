@@ -15,7 +15,7 @@ use std::ptr::copy_nonoverlapping;
 use std::slice::from_raw_parts;
 use std::fmt::{ self, Debug, Display, Formatter };
 
-use crate::number::{ SmallUInt, IntUnion };
+use crate::number::{ SmallUInt, IntUnion, LongUnion };
 
 /// K0 ~ K63 are initialized with array of round constants: the first 32 bits
 /// of the fractional parts of the cube roots of the first 64 primes 2..311
@@ -644,9 +644,15 @@ SHA1_generic<K0, K1, K2, K3, H0, H1, H2, H3, H4, RL1, RL5, RL30, ROUND, N>
     }
 
     #[inline]
-    pub fn tangle(&mut self)
+    pub fn tangle(&mut self, tangling: u64)
     {
-        self.finalize(self.hash_code.as_ptr() as *const u8, 32);
+        let common = LongUnion::new_with(tangling);
+        let mut m = [0_u32; 7];
+        for i in 0..5
+            { m[i] = self.hash_code[i].get(); }
+        m[5] = common.get_uint_(0);
+        m[6] = common.get_uint_(1);
+        self.finalize(self.hash_code.as_ptr() as *const u8, 28);
     }
 
     // fn initialize(&mut self)
