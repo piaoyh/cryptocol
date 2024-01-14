@@ -50,10 +50,10 @@
 //! - [ ] Variable Sized Big Signed Integer Operation --- LargeInt
 //! 
 //! ## Hash Algorithms
-//! - [ ] MD4 hash algorithms based on 128 bits --- Includes MD4 and its expanded versions. [`MD4_Generic`](hash/md4/struct.MD4_Generic.html#struct.MD4_Generic)
+//! - [X] MD4 hash algorithms based on 128 bits --- Includes MD4 and its expanded versions. [`MD4_Generic`](hash/md4/struct.MD4_Generic.html#struct.MD4_Generic)
 //! - [X] MD5 hash algorithms based on 128 bits --- Includes MD5 and its expanded versions. [`MD5_Generic`](hash/md5/struct.MD5_Generic.html#struct.MD5_Generic)
 //! - [X] SHA-1 hash algorithms based on 160 bits --- Includes SHA-1, SHA-0, and their expanded versions. [`SHA1_Generic`](hash/sha1/struct.SHA1_Generic.html#struct.SHA1_Generic)
-//! - [ ] SHA-2 hash algorithms based on 256 bits --- Includes SHA-256, SHA-224, and their expanded versions. [`SHA2_Generic_256`](hash/sha2_256/struct.SHA2_Generic_256.html#struct.SHA2_Generic_256)
+//! - [X] SHA-2 hash algorithms based on 256 bits --- Includes SHA-256, SHA-224, and their expanded versions. [`SHA2_Generic_256`](hash/sha2_256/struct.SHA2_Generic_256.html#struct.SHA2_Generic_256)
 //! - [ ] SHA-2 hash algorithms based on 512 bits --- Includes SHA-512, SHA-384, SHA-512/256, and their expanded versions. [`SHA2_Generic_512`](hash/sha2_512/struct.SHA2_Generic_512.html#struct.SHA2_Generic_512)
 //! - [ ] SHA-2 hash algorithms based on 512/t bits --- Includes 512/256, SHA-512/224, and their expanded versions. [`SHA2_Generic_512_t`](hash/sha2_512_t/struct.SHA2_Generic_512_t.html#struct.SHA2_Generic_512_t)
 //! - [ ] SHA-3 (SHA3-224)

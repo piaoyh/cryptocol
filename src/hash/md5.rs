@@ -9,7 +9,7 @@
 //! The module that contains a MD5 hash algorithm.
 
 #![warn(missing_docs)]
-#![warn(missing_doc_code_examples)]
+#![warn(rustdoc::missing_doc_code_examples)]
 
 
 use std::ptr::copy_nonoverlapping;
@@ -19,37 +19,18 @@ use std::fmt::{ self, Debug, Display, Formatter };
 use crate::number::{ SmallUInt, IntUnion, LongUnion };
 
 
-/// K0 ~ K63 are initialized with array of round constants: the first 32 bits
-/// of the fractional parts of the cube roots of the first 64 primes 2..311
+/// You have freedom of changing H0 ~ H3, and ROUND.
 #[allow(non_camel_case_types)]
-pub type MD5_Generic_KR_fixed<const H0: u32, const H1: u32, const H2: u32,
-                            const H3: u32, const ROUND: usize, const N: usize>
-    // Initialize array of round constants: the first 32 bits of
-    // the fractional parts of the cube roots of the first 64 primes 2..311
-    = MD5_Generic<  0xd76aa478, 0xe8c7b756, 0x242070db, 0xc1bdceee,
-                    0xf57c0faf, 0x4787c62a, 0xa8304613, 0xfd469501,
-                    0x698098d8, 0x8b44f7af, 0xffff5bb1, 0x895cd7be,
-                    0x6b901122, 0xfd987193, 0xa679438e, 0x49b40821,
-                    0xf61e2562, 0xc040b340, 0x265e5a51, 0xe9b6c7aa,
-                    0xd62f105d, 0x02441453, 0xd8a1e681, 0xe7d3fbc8,
-                    0x21e1cde6, 0xc33707d6, 0xf4d50d87, 0x455a14ed,
-                    0xa9e3e905, 0xfcefa3f8, 0x676f02d9, 0x8d2a4c8a,
-                    0xfffa3942, 0x8771f681, 0x6d9d6122, 0xfde5380c,
-                    0xa4beea44, 0x4bdecfa9, 0xf6bb4b60, 0xbebfbc70,
-                    0x289b7ec6, 0xeaa127fa, 0xd4ef3085, 0x04881d05,
-                    0xd9d4d039, 0xe6db99e5, 0x1fa27cf8, 0xc4ac5665,
-                    0xf4292244, 0x432aff97, 0xab9423a7, 0xfc93a039,
-                    0x655b59c3, 0x8f0ccc92, 0xffeff47d, 0x85845dd1,
-                    0x6fa87e4f, 0xfe2ce6e0, 0xa3014314, 0x4e0811a1,
-                    0xf7537e82, 0xbd3af235, 0x2ad7d2bb, 0xeb86d391,
-                    H0, H1, H2, H3,
-                    7, 12, 17, 22, 5, 9, 14, 20, 4, 11, 16, 23, 6, 10, 15, 21,
-                    ROUND, N>;
+pub type MD5_Expanded<const N: usize = 4,
+                        const H0: u32 = 0x67452301, const H1: u32 = 0xefcdab89,
+                        const H2: u32 = 0x98badcfe, const H3: u32 = 0x10325476,
+                        const ROUND: usize = 64>
+    = MD5_Generic<N, H0, H1, H2, H3, ROUND>;
 
-/// H0 ~ H7 are The first 32 bits of the fractional parts of the square roots
-/// of the first 8 primes 2..19
+/// You have freedom of changing ROUND, and K00 ~ K63.
 #[allow(non_camel_case_types)]
-pub type MD5_Generic_HR_fixed<const K00: u32, const K01: u32, const K02: u32, const K03: u32,
+pub type MD5_Generic_HR_fixed<const N: usize, const ROUND: usize,
+                    const K00: u32, const K01: u32, const K02: u32, const K03: u32,
                     const K04: u32, const K05: u32, const K06: u32, const K07: u32,
                     const K08: u32, const K09: u32, const K10: u32, const K11: u32,
                     const K12: u32, const K13: u32, const K14: u32, const K15: u32,
@@ -64,31 +45,20 @@ pub type MD5_Generic_HR_fixed<const K00: u32, const K01: u32, const K02: u32, co
                     const K48: u32, const K49: u32, const K50: u32, const K51: u32,
                     const K52: u32, const K53: u32, const K54: u32, const K55: u32,
                     const K56: u32, const K57: u32, const K58: u32, const K59: u32,
-                    const K60: u32, const K61: u32, const K62: u32, const K63: u32,
-                    const ROUND: usize, const N: usize>
-    = MD5_Generic<  K00, K01, K02, K03, K04, K05, K06, K07,
+                    const K60: u32, const K61: u32, const K62: u32, const K63: u32>
+    = MD5_Generic<N, 0x67452301, 0xefcdab89, 0x98badcfe, 0x10325476, ROUND, 
+                    K00, K01, K02, K03, K04, K05, K06, K07,
                     K08, K09, K10, K11, K12, K13, K14, K15,
                     K16, K17, K18, K19, K20, K21, K22, K23,
                     K24, K25, K26, K27, K28, K29, K30, K31,
                     K32, K33, K34, K35, K36, K37, K38, K39,
                     K40, K41, K42, K43, K44, K45, K46, K47,
                     K48, K49, K50, K51, K52, K53, K54, K55,
-                    K56, K57, K58, K59,K60, K61, K62, K63,
-                    // The first 32 bits of the fractional parts of the square roots
-                    // of the first 8 primes 2..19
-                    0x67452301, 0xefcdab89, 0x98badcfe, 0x10325476,
-                    7, 12, 17, 22, 5, 9, 14, 20, 4, 11, 16, 23, 6, 10, 15, 21, ROUND, N>;
+                    K56, K57, K58, K59,K60, K61, K62, K63>;
 
-/// H0 ~ H7 are the first 32 bits of the fractional parts of the square roots
-/// of the first 8 primes 2..19
+/// The official MD5 hash algorithm
 #[allow(non_camel_case_types)]
-pub type MD5_Expended<const ROUND: usize, const N: usize>
-                                // H0 ~ H7 are the first 32 bits of the fractional
-                                // parts of the square roots of the first 8 primes 2..19
-    = MD5_Generic_KR_fixed<0x67452301, 0xefcdab89, 0x98badcfe, 0x10325476, ROUND, N>;
-
-#[allow(non_camel_case_types)]
-pub type MD5 = MD5_Expended<64, 4>;
+pub type MD5 = MD5_Expanded;
 
 
 /// A MD5 message-digest algorithm that lossily compresses data of arbitrary
@@ -101,6 +71,8 @@ pub type MD5 = MD5_Expended<64, 4>;
 /// an earlier hash function MD4. It was specified in 1992 as RFC 1321.
 /// This module provides not only the official MD5 but also its expanded
 /// versions which is implemented with the name `MD5_Generic`.
+/// MD5 uses the
+/// [Merkle–Damgård construction](https://en.wikipedia.org/wiki/Merkle%E2%80%93Damg%C3%A5rd_construction).
 /// 
 /// # Vulnerability
 /// In 2004, it was shown that MD5 is not collision-resistant. Today, MD5 is
@@ -108,22 +80,43 @@ pub type MD5 = MD5_Expended<64, 4>;
 /// does not include MD5 in their list of recommended hashes for password
 /// storage. __DO NOT USE MD5 FOR SERIOUS CRYPTOGRAPHIC PURPOSES AT ALL!__
 /// If you need to use a hash algorithm for serious cryptographic purposes,
-/// you are highly recommended to use SHA-3 hash algorithm instead of MD5,
-/// for example.
+/// you are highly recommended to use SHA-2 or SHA-3 hash algorithm,
+/// for example, instead of MD4.
 /// 
-/// # Usage of HD5
-/// Though MD5 is lack of cryptographic security, MD5 is still widely used
-/// for non-cryptograpic purposes such as:
+/// # Use of MD5 and their variants
+/// Though MD5 and its variants are lack of cryptographic security, MD5 and
+/// its variants can be still used for non-cryptograpic purposes such as:
 /// - Generating small number of IDs
 /// - Integrity test in some collision-free situations
 /// - Storing passwords with limited security
-/// - Digital Signature
-/// - Study purposes
+/// - Study of hash algorithms
 /// 
-/// # About the expanded version MD5_Generic
-/// You can create your own expanded version of MD5 by changing the constants
-/// K00 ~ K63, the initial hash values H0 ~ H7, the amount of
-/// rotate left R00 ~ R33, the number of round ROUND, and the output amount.
+/// # Generic Parameters
+/// You can create your own expanded version of MD5 by changing the generic
+/// parameters H0 ~ H3, ROUND, K00 ~ K63, R00 ~ R03, R10 ~ R13, and R20 ~ R23,
+/// and R30 ~ R33.
+/// - N : the size of output. N cannot be 0 or greater than 4. If N is 4, the
+/// output is 128 bits, while if N is 1, the output is 32 bits.
+/// - H0 ~ H3 : the initial hash values, four u32 values.
+/// The default values of H0, H1, H2, and H3 are 0x67452301, 0xefcdab89,
+/// 0x98badcfe, and 0x10325476, respectively (in little endian representation).
+/// - ROUND : the number of rounds. The default value of it is `64` (= 16 * 4).
+/// - K00 ~ K63 : the added values in hashing process, sixty-four u32 values.
+/// The default values of K00 ~ K63 are defined to be the integer part of
+/// 4294967296 times abs(sin(i)), where i is in radians. So, K00 = 4294967296
+/// times abs(sin(1)), K01 = 4294967296 times abs(sin(2)), K02 = 4294967296
+/// times abs(sin(3)), and so on (in little endian representation).
+/// - R00 ~ R03, R10 ~ R13, R20 ~ R23, and R30 ~ R33 : the amounts of rotate
+/// left in the hashing process.
+/// The default values of R00, R01, R02, and R03 are 7, 12, 17, and 22, respectively.
+/// The default values of R10, R11, R12, and R13 are 5, 9, 14, and 20, respectively.
+/// The default values of R20, R11, R12, and R23 are 4, 11, 16, and 23, respecively.
+/// The default values of R30, R31, R32, and R33 are 6, 10, 15, and 21, respectively.
+/// 
+/// About the parameters and their default values,
+/// read [more](https://datatracker.ietf.org/doc/html/rfc1321)
+/// 
+/// # Security of your own expanded version
 /// Your own algrorithm based on MD5 may be stronger or weaker than official
 /// MD5. Unless you seriously checked the cryptographic security of your own
 /// algorithms, it is hard to assume that your own alogrithms are stronger
@@ -133,20 +126,28 @@ pub type MD5 = MD5_Expended<64, 4>;
 /// Read [more](https://en.wikipedia.org/wiki/MD5) about MD5 in detail.
 /// 
 /// # Quick Start
-/// In order to use the module md5, the module Cryptocol::hash::md5 is
-/// re-exported so that you don't have to import (or use)
-/// Cryptocol::hash::md5 directly. You only import MD5 struct in the module
-/// Cryptocol::hash. Example 1 shows how to import MD5 struct.
+/// In order to use the module md5, you don't have to import (or use)
+/// Cryptocol::hash::md5::* directly because the module Cryptocol::hash::md5
+/// is re-exported. All you have to do is only import MD5, MD5_Expanded,
+/// MD5_Generic_HR_fixed and/or MD5_Generic in the module Cryptocol::hash.
+/// Example 1 shows how to import structs MD5, MD5_Expanded,
+/// MD5_Generic_HR_fixed and/or MD5_Generic. Plus, what you have to know is
+/// these. All the types (or structs) are the specific versions of MD5_Generic.
+/// Actually, MD5 is a specific version of MD5_Expanded. MD5_Expanded and
+/// MD5_Generic_HR_fixed are specific versions of MD5_Generic.
 /// 
 /// ## Example 1
 /// ```
 /// use Cryptocol::hash::MD5;
+/// use Cryptocol::hash::MD5_Expanded;
+/// use Cryptocol::hash::MD5_Generic_HR_fixed;
+/// use Cryptocol::hash::MD5_Generic;
 /// ```
 /// Then, you create MD5 object by the method MD5::new(). Now, you are ready to
 /// use all prepared methods to hash any data. If you want to hash a string,
 /// for example, you can use the method digest_str(). Then, the MD5 object that
-/// you created will contain its hash value. You can use the macro println!()
-/// for instance to print on a commandline screen by `println!("{}", hash)`
+/// you created will contain its hash value. You can use the macro println!(),
+/// for instance, to print on a commandline screen by `println!("{}", hash)`
 /// where hash is the MD5 object. Example 2 shows how to use MD5 struct quickly.
 /// 
 /// ## Example 2
@@ -185,10 +186,10 @@ pub type MD5 = MD5_Expended<64, 4>;
 /// println!("Msg =\t\"{}\"\nHash =\t{}\n", txt, hash);
 /// assert_eq!(hash.to_string(), "6C33614E6317DC4641573E0EBC287F98");
 /// 
-/// let mut txt = "I am testing MD5 for the data whose length is sixty-four bytes..";
+/// let mut txt = "I am testing MD5 for the message which is sixty-four bytes long.";
 /// hash.digest_str(txt);
 /// println!("Msg =\t\"{}\"\nHash =\t{}\n", txt, hash);
-/// assert_eq!(hash.get_HashValue_in_string(), "200F9A19EA45A830284342114483172B");
+/// assert_eq!(hash.get_HashValue_in_string(), "584D41C6837AC714275196E4FF14B2EF");
 /// 
 /// txt = "I am testing MD5 for the case data whose length is more than sixty-four bytes is given.";
 /// hash.digest_str(txt);
@@ -201,33 +202,54 @@ pub type MD5 = MD5_Expended<64, 4>;
 /// to use it for Big Endian CPUs for serious purpose. Only use this crate
 /// for Big-endian CPUs with your own full responsibility.
 #[derive(Debug, Clone)]
-pub struct MD5_Generic<const K00: u32, const K01: u32, const K02: u32, const K03: u32,
-                    const K04: u32, const K05: u32, const K06: u32, const K07: u32,
-                    const K08: u32, const K09: u32, const K10: u32, const K11: u32,
-                    const K12: u32, const K13: u32, const K14: u32, const K15: u32,
-                    const K16: u32, const K17: u32, const K18: u32, const K19: u32,
-                    const K20: u32, const K21: u32, const K22: u32, const K23: u32,
-                    const K24: u32, const K25: u32, const K26: u32, const K27: u32,
-                    const K28: u32, const K29: u32, const K30: u32, const K31: u32,
-                    const K32: u32, const K33: u32, const K34: u32, const K35: u32,
-                    const K36: u32, const K37: u32, const K38: u32, const K39: u32,
-                    const K40: u32, const K41: u32, const K42: u32, const K43: u32,
-                    const K44: u32, const K45: u32, const K46: u32, const K47: u32,
-                    const K48: u32, const K49: u32, const K50: u32, const K51: u32,
-                    const K52: u32, const K53: u32, const K54: u32, const K55: u32,
-                    const K56: u32, const K57: u32, const K58: u32, const K59: u32,
-                    const K60: u32, const K61: u32, const K62: u32, const K63: u32,
-                    const H0: u32, const H1: u32, const H2: u32, const H3: u32,
-                    const R00: u32, const R01: u32, const R02: u32, const R03: u32,
-                    const R10: u32, const R11: u32, const R12: u32, const R13: u32,
-                    const R20: u32, const R21: u32, const R22: u32, const R23: u32,
-                    const R30: u32, const R31: u32, const R32: u32, const R33: u32,
-                    const ROUND: usize, const N: usize>
+#[allow(non_camel_case_types)]
+pub struct MD5_Generic<const N: usize = 4,
+        const H0: u32 = 0x67452301, const H1: u32 = 0xefcdab89,
+        const H2: u32 = 0x98badcfe, const H3: u32 = 0x10325476,
+        const ROUND: usize = 64,
+        const K00: u32 = 0xd76aa478, const K01: u32 = 0xe8c7b756,
+        const K02: u32 = 0x242070db, const K03: u32 = 0xc1bdceee,
+        const K04: u32 = 0xf57c0faf, const K05: u32 = 0x4787c62a,
+        const K06: u32 = 0xa8304613, const K07: u32 = 0xfd469501,
+        const K08: u32 = 0x698098d8, const K09: u32 = 0x8b44f7af,
+        const K10: u32 = 0xffff5bb1, const K11: u32 = 0x895cd7be,
+        const K12: u32 = 0x6b901122, const K13: u32 = 0xfd987193,
+        const K14: u32 = 0xa679438e, const K15: u32 = 0x49b40821,
+        const K16: u32 = 0xf61e2562, const K17: u32 = 0xc040b340,
+        const K18: u32 = 0x265e5a51, const K19: u32 = 0xe9b6c7aa,
+        const K20: u32 = 0xd62f105d, const K21: u32 = 0x02441453,
+        const K22: u32 = 0xd8a1e681, const K23: u32 = 0xe7d3fbc8,
+        const K24: u32 = 0x21e1cde6, const K25: u32 = 0xc33707d6,
+        const K26: u32 = 0xf4d50d87, const K27: u32 = 0x455a14ed,
+        const K28: u32 = 0xa9e3e905, const K29: u32 = 0xfcefa3f8,
+        const K30: u32 = 0x676f02d9, const K31: u32 = 0x8d2a4c8a,
+        const K32: u32 = 0xfffa3942, const K33: u32 = 0x8771f681,
+        const K34: u32 = 0x6d9d6122, const K35: u32 = 0xfde5380c,
+        const K36: u32 = 0xa4beea44, const K37: u32 = 0x4bdecfa9,
+        const K38: u32 = 0xf6bb4b60, const K39: u32 = 0xbebfbc70,
+        const K40: u32 = 0x289b7ec6, const K41: u32 = 0xeaa127fa,
+        const K42: u32 = 0xd4ef3085, const K43: u32 = 0x04881d05,
+        const K44: u32 = 0xd9d4d039, const K45: u32 = 0xe6db99e5,
+        const K46: u32 = 0x1fa27cf8, const K47: u32 = 0xc4ac5665,
+        const K48: u32 = 0xf4292244, const K49: u32 = 0x432aff97,
+        const K50: u32 = 0xab9423a7, const K51: u32 = 0xfc93a039,
+        const K52: u32 = 0x655b59c3, const K53: u32 = 0x8f0ccc92,
+        const K54: u32 = 0xffeff47d, const K55: u32 = 0x85845dd1,
+        const K56: u32 = 0x6fa87e4f, const K57: u32 = 0xfe2ce6e0,
+        const K58: u32 = 0xa3014314, const K59: u32 = 0x4e0811a1,
+        const K60: u32 = 0xf7537e82, const K61: u32 = 0xbd3af235,
+        const K62: u32 = 0x2ad7d2bb, const K63: u32 = 0xeb86d391,
+        const R00: u32 = 7, const R01: u32 = 12, const R02: u32 = 17, const R03: u32 = 22,
+        const R10: u32 = 5, const R11: u32 = 9,  const R12: u32 = 14, const R13: u32 = 20,
+        const R20: u32 = 4, const R21: u32 = 11, const R22: u32 = 16, const R23: u32 = 23,
+        const R30: u32 = 6, const R31: u32 = 10, const R32: u32 = 15, const R33: u32 = 21>
 {
     hash_code: [IntUnion; 4],
 }
 
-impl<const K00: u32, const K01: u32, const K02: u32, const K03: u32,
+impl<const N: usize, const H0: u32, const H1: u32, const H2: u32,
+    const H3: u32, const ROUND: usize, 
+    const K00: u32, const K01: u32, const K02: u32, const K03: u32,
     const K04: u32, const K05: u32, const K06: u32, const K07: u32,
     const K08: u32, const K09: u32, const K10: u32, const K11: u32,
     const K12: u32, const K13: u32, const K14: u32, const K15: u32,
@@ -243,13 +265,12 @@ impl<const K00: u32, const K01: u32, const K02: u32, const K03: u32,
     const K52: u32, const K53: u32, const K54: u32, const K55: u32,
     const K56: u32, const K57: u32, const K58: u32, const K59: u32,
     const K60: u32, const K61: u32, const K62: u32, const K63: u32,
-    const H0: u32, const H1: u32, const H2: u32, const H3: u32,
     const R00: u32, const R01: u32, const R02: u32, const R03: u32,
     const R10: u32, const R11: u32, const R12: u32, const R13: u32,
     const R20: u32, const R21: u32, const R22: u32, const R23: u32,
-    const R30: u32, const R31: u32, const R32: u32, const R33: u32,
-    const ROUND: usize, const N: usize>
-MD5_Generic<K00, K01, K02, K03, K04, K05, K06, K07,
+    const R30: u32, const R31: u32, const R32: u32, const R33: u32>
+MD5_Generic<N, H0, H1, H2, H3, ROUND,
+            K00, K01, K02, K03, K04, K05, K06, K07,
             K08, K09, K10, K11, K12, K13, K14, K15,
             K16, K17, K18, K19, K20, K21, K22, K23,
             K24, K25, K26, K27, K28, K29, K30, K31,
@@ -257,9 +278,8 @@ MD5_Generic<K00, K01, K02, K03, K04, K05, K06, K07,
             K40, K41, K42, K43, K44, K45, K46, K47,
             K48, K49, K50, K51, K52, K53, K54, K55,
             K56, K57, K58, K59, K60, K61, K62, K63,
-            H0, H1, H2, H3, 
             R00, R01, R02, R03, R10, R11, R12, R13,
-            R20, R21, R22, R23, R30, R31, R32, R33, ROUND, N>
+            R20, R21, R22, R23, R30, R31, R32, R33>
 {
     const K: [u32; 64] = [  K00, K01, K02, K03, K04, K05, K06, K07,
                             K08, K09, K10, K11, K12, K13, K14, K15,
@@ -275,33 +295,49 @@ MD5_Generic<K00, K01, K02, K03, K04, K05, K06, K07,
 
 
     // pub fn new() -> Self
-    /// Constructs a new `MD5` object.
+    /// Constructs a new `MD5` object or a new MD5-based hash object.
     /// 
     /// # Output
-    /// A new object of `MD5`.
+    /// A new object of `MD5` or a new MD5-based hash object.
     /// 
     /// # Initialization
     /// All the attributes of the constructed object, which is initial hash
-    /// value, will be initialized with `0123456789ABCDEFFEDCBA9876543210`.
+    /// value, will be initialized with `0123456789ABCDEFFEDCBA9876543210` for
+    /// MD5. However, if you use your own MD5-expanded version, it will be
+    /// initialized with your special values H0 ~ H3.
     /// 
-    /// # Example
+    /// # Example for MD5
     /// ```
     /// use Cryptocol::hash::MD5;
     /// let mut hash = MD5::new();
     /// println!("Hash =\t{}", hash);
     /// assert_eq!(hash.to_string(), "0123456789ABCDEFFEDCBA9876543210");
     /// ```
+    /// 
+    /// # Exmaple for MD5_Expanded
+    /// ```
+    /// use Cryptocol::hash::MD5_Expanded;
+    /// type myMD5 = MD5_Expanded<4, 0x1111_1111, 0x4444_4444, 0x8888_8888, 0xffff_ffff, 128>;
+    /// let mut my_hash = myMD5::new();
+    /// println!("Hash =\t{}", my_hash);
+    /// assert_eq!(my_hash.to_string(), "111111114444444488888888FFFFFFFF");
+    /// ```
     pub fn new() -> Self
     {
+        if (N > 4) || (N == 0)
+            { panic!("N cannot be either 0 or greater than 4. {}", N); }
+
         MD5_Generic
         {
             hash_code: [IntUnion::new_with(Self::H[0]),
                         IntUnion::new_with(Self::H[1]),
                         IntUnion::new_with(Self::H[2]),
-                        IntUnion::new_with(Self::H[3])] } }
+                        IntUnion::new_with(Self::H[3])]
+        }
+    }
 
     // pub fn digest(&mut self, message: *const u8, length_in_bytes: u64)
-    /// Compute hash value.
+    /// Computes hash value.
     /// 
     /// # Features
     /// This function has the generalized interface (pointer, `*const u8`)
@@ -333,7 +369,7 @@ MD5_Generic<K00, K01, K02, K03, K04, K05, K06, K07,
     /// [digest_vec()](struct@MD5#method.digest_array)
     /// rather than this method.
     ///
-    /// # Example
+    /// # Example for MD5
     /// ```
     /// use Cryptocol::hash::MD5;
     /// let txt = "This is an example of the method digest().";
@@ -343,6 +379,16 @@ MD5_Generic<K00, K01, K02, K03, K04, K05, K06, K07,
     /// assert_eq!(hash.to_string(), "336EA91DD3216BD0FC841E86F9E722D8");
     /// ```
     /// 
+    /// # Example for MD5_Expanded
+    /// ```
+    /// use Cryptocol::hash::MD5_Expanded;
+    /// type myMD5 = MD5_Expanded<4, 0x1111_1111, 0x4444_4444, 0x8888_8888, 0xffff_ffff, 128>;
+    /// let txt = "This is an example of the method digest().";
+    /// let mut my_hash = myMD5::new();
+    /// my_hash.digest(txt.as_ptr(), txt.len() as u64);
+    /// println!("Msg =\t\"{}\"\nHash =\t{}", txt, my_hash);
+    /// assert_eq!(my_hash.to_string(), "51F4248FBEFBE0A00196F9F04DD07FF0");
+    /// ````
     /// # Big-endian issue
     /// It is just experimental for Big Endian CPUs. So, you are not encouraged
     /// to use it for Big Endian CPUs for serious purpose. Only use this crate
@@ -359,8 +405,8 @@ MD5_Generic<K00, K01, K02, K03, K04, K05, K06, K07,
         self.finalize(unsafe { message.add(length_done << SHIFT_NUM) }, length_in_bytes);
     }
 
-    /// // pub fn digest_str(&mut self, message: &str)
-    /// Compute hash value.
+    // pub fn digest_str(&mut self, message: &str)
+    /// Computes hash value.
     /// 
     /// # Features
     /// This function is a wrapping function of `digest()`.
@@ -386,7 +432,7 @@ MD5_Generic<K00, K01, K02, K03, K04, K05, K06, K07,
     /// as C/C++, you are highly recommended to use the method
     /// [digest()](struct@MD5#method.digest) rather than this method.
     ///
-    /// # Example
+    /// # Example for MD5
     /// ```
     /// use Cryptocol::hash::MD5;
     /// let txt = "This is an example of the method digest_str().";
@@ -394,6 +440,17 @@ MD5_Generic<K00, K01, K02, K03, K04, K05, K06, K07,
     /// hash.digest_str(txt);
     /// println!("Msg =\t\"{}\"\nHash =\t{}", txt, hash);
     /// assert_eq!(hash.to_string(), "F2E455CEB5FB993A980E67D3FA8A3961");
+    /// ```
+    /// 
+    /// # Example for MD5_Expanded
+    /// ```
+    /// use Cryptocol::hash::MD5_Expanded;
+    /// type myMD5 = MD5_Expanded<4, 0x1111_1111, 0x4444_4444, 0x8888_8888, 0xffff_ffff, 96>;
+    /// let txt = "This is an example of the method digest_str().";
+    /// let mut my_hash = myMD5::new();
+    /// my_hash.digest_str(txt);
+    /// println!("Msg =\t\"{}\"\nHash =\t{}", txt, my_hash);
+    /// assert_eq!(my_hash.to_string(), "21EE03C8185BD65CDB8116D0E2714F09");
     /// ```
     /// 
     /// # Big-endian issue
@@ -407,7 +464,7 @@ MD5_Generic<K00, K01, K02, K03, K04, K05, K06, K07,
     }
 
     // pub fn digest_string(&mut self, message: &String)
-    /// Compute hash value.
+    /// Computes hash value.
     /// 
     /// # Features
     /// This function is a wrapping function of `digest()`.
@@ -433,7 +490,7 @@ MD5_Generic<K00, K01, K02, K03, K04, K05, K06, K07,
     /// as C/C++, you are highly recommended to use the method
     /// [digest()](struct@MD5#method.digest) rather than this method.
     ///
-    /// # Example
+    /// # Example for MD5
     /// ```
     /// use Cryptocol::hash::MD5;
     /// let txt = "This is an example of the method digest_string().".to_string();
@@ -441,6 +498,17 @@ MD5_Generic<K00, K01, K02, K03, K04, K05, K06, K07,
     /// hash.digest_string(&txt);
     /// println!("Msg =\t\"{}\"\nHash =\t{}", txt, hash);
     /// assert_eq!(hash.to_string(), "40929E789D2F5880B85456E289F704C0");
+    /// ```
+    /// 
+    /// # Example for MD5_Expanded
+    /// ```
+    /// use Cryptocol::hash::MD5_Expanded;
+    /// type myMD5 = MD5_Expanded<4, 0x1111_1111, 0x4444_4444, 0x8888_8888, 0xffff_ffff, 96>;
+    /// let txt = "This is an example of the method digest_string().".to_string();
+    /// let mut my_hash = myMD5::new();
+    /// my_hash.digest_string(&txt);
+    /// println!("Msg =\t\"{}\"\nHash =\t{}", txt, my_hash);
+    /// assert_eq!(my_hash.to_string(), "02BDBC510B949045A131C0C3302027BA");
     /// ```
     /// 
     /// # Big-endian issue
@@ -453,15 +521,15 @@ MD5_Generic<K00, K01, K02, K03, K04, K05, K06, K07,
         self.digest(message.as_ptr(), message.len() as u64);
     }
 
-    // pub fn digest_array<const N: usize>(&mut self, message: &[T; N])
-    /// Compute hash value.
+    // pub fn digest_array<T, const M: usize>(&mut self, message: &[T; M])
+    /// Computes hash value.
     /// 
     /// # Features
     /// This function is a wrapping function of `digest()`.
     /// This function computes hash value of the content of Array object.
     /// 
     /// # Argument
-    /// - message is `&[T; N]`.
+    /// - message is `&[T; M]`.
     /// 
     /// # Counterpart Methods
     /// - If you want to compute of the hash value of a string slice,
@@ -480,7 +548,7 @@ MD5_Generic<K00, K01, K02, K03, K04, K05, K06, K07,
     /// as C/C++, you are highly recommended to use the method
     /// [digest()](struct@MD5#method.digest) rather than this method.
     ///
-    /// # Example
+    /// # Example for MD5
     /// ```
     /// use Cryptocol::hash::MD5;
     /// let data = [ 0x67452301_u32.to_le(), 0xefcdab89_u32.to_le(), 0x98badcfe_u32.to_le(), 0x10325476_u32.to_le() ];
@@ -490,19 +558,30 @@ MD5_Generic<K00, K01, K02, K03, K04, K05, K06, K07,
     /// assert_eq!(hash.to_string(), "054DE9CF5F9EA623BBB8DC4781685A58");
     /// ```
     /// 
+    /// # Example for MD5_Expanded
+    /// ```
+    /// use Cryptocol::hash::MD5_Expanded;
+    /// type myMD5 = MD5_Expanded<4, 0x1111_1111, 0x4444_4444, 0x8888_8888, 0xffff_ffff, 96>;
+    /// let data = [ 0x67452301_u32.to_le(), 0xefcdab89_u32.to_le(), 0x98badcfe_u32.to_le(), 0x10325476_u32.to_le() ];
+    /// let mut my_hash = myMD5::new();
+    /// my_hash.digest_array(&data);
+    /// println!("Msg =\t{:?}\nHash =\t{}", data, my_hash);
+    /// assert_eq!(my_hash.to_string(), "A5DC1291539528723C6C3E6F7EFDAE94");
+    /// ```
+    /// 
     /// # Big-endian issue
     /// It is just experimental for Big Endian CPUs. So, you are not encouraged
     /// to use it for Big Endian CPUs for serious purpose. Only use this crate
     /// for Big-endian CPUs with your own full responsibility.
     #[inline]
     pub fn digest_array<T, const M: usize>(&mut self, message: &[T; M])
-    where T: SmallUInt + Copy + Clone
+    where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     {
         self.digest(message.as_ptr() as *const u8, (M * T::size_in_bytes()) as u64);
     }
 
     // pub fn digest_vec<T>(&mut self, message: &Vec<T>)
-    /// Compute hash value.
+    /// Computes hash value.
     /// 
     /// # Features
     /// This function is a wrapping function of `digest()`.
@@ -528,7 +607,7 @@ MD5_Generic<K00, K01, K02, K03, K04, K05, K06, K07,
     /// as C/C++, you are highly recommended to use the method
     /// [digest()](struct@MD5#method.digest) rather than this method.
     ///
-    /// # Example
+    /// # Example for MD5
     /// ```
     /// use Cryptocol::hash::MD5;
     /// let data = vec![ 0x67452301_u32.to_le(), 0xefcdab89_u32.to_le(), 0x98badcfe_u32.to_le(), 0x10325476_u32.to_le() ];
@@ -538,13 +617,24 @@ MD5_Generic<K00, K01, K02, K03, K04, K05, K06, K07,
     /// assert_eq!(hash.to_string(), "054DE9CF5F9EA623BBB8DC4781685A58");
     /// ```
     /// 
+    /// # Example for MD5_Expanded
+    /// ```
+    /// use Cryptocol::hash::MD5_Expanded;
+    /// type myMD5 = MD5_Expanded<4, 0x1111_1111, 0x4444_4444, 0x8888_8888, 0xffff_ffff, 96>;
+    /// let data = vec![ 0x67452301_u32.to_le(), 0xefcdab89_u32.to_le(), 0x98badcfe_u32.to_le(), 0x10325476_u32.to_le() ];
+    /// let mut my_hash = myMD5::new();
+    /// my_hash.digest_vec(&data);
+    /// println!("Msg =\t{:?}\nHash =\t{}", data, my_hash);
+    /// assert_eq!(my_hash.to_string(), "A5DC1291539528723C6C3E6F7EFDAE94");
+    /// ```
+    /// 
     /// # Big-endian issue
     /// It is just experimental for Big Endian CPUs. So, you are not encouraged
     /// to use it for Big Endian CPUs for serious purpose. Only use this crate
     /// for Big-endian CPUs with your own full responsibility.
     #[inline]
     pub fn digest_vec<T>(&mut self, message: &Vec<T>)
-    where T: SmallUInt + Copy + Clone
+    where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     {
         self.digest(message.as_ptr() as *const u8, (message.len() * T::size_in_bytes()) as u64);
     }
@@ -577,7 +667,7 @@ MD5_Generic<K00, K01, K02, K03, K04, K05, K06, K07,
     /// [get_HashValue_in_vec()](struct@MD5#method.get_HashValue_in_vec)
     /// rather than this method.
     ///
-    /// # Example
+    /// # Example for MD5
     /// ```
     /// use Cryptocol::hash::MD5;
     /// let txt = "This is an example of the method get_HashValue().";
@@ -589,6 +679,19 @@ MD5_Generic<K00, K01, K02, K03, K04, K05, K06, K07,
     /// assert_eq!(format!("{:02X?}", hashValue), "[D9, FB, 90, AB, DD, 2E, 1E, 48, D8, 5E, E5, 08, 4B, AE, 2C, 39]");
     /// ```
     /// 
+    /// # Example for MD5_Expanded
+    /// ```
+    /// use Cryptocol::hash::MD5_Expanded;
+    /// type myMD5 = MD5_Expanded<4, 0x1111_1111, 0x4444_4444, 0x8888_8888, 0xffff_ffff, 96>;
+    /// let txt = "This is an example of the method get_HashValue().";
+    /// let mut hashValue = [0_u8; 16];
+    /// let mut my_hash = myMD5::new();
+    /// my_hash.digest_str(txt);
+    /// my_hash.get_HashValue(hashValue.as_ptr() as *mut u8, hashValue.len());
+    /// println!("Msg =\t\"{}\"\nHash =\t{:02X?}", txt, hashValue);
+    /// assert_eq!(format!("{:02X?}", hashValue), "[2F, E0, 49, D9, 9C, 33, C0, DC, 6A, 8B, 4F, 3B, C6, 31, 68, 71]");
+    /// ```
+    /// 
     /// # Big-endian issue
     /// It is just experimental for Big Endian CPUs. So, you are not encouraged
     /// to use it for Big Endian CPUs for serious purpose. Only use this crate
@@ -596,6 +699,7 @@ MD5_Generic<K00, K01, K02, K03, K04, K05, K06, K07,
     pub fn get_HashValue(&self, hashValue: *mut u8, length: usize)
     {
         const BYTES: usize = 4;
+        const N: usize = 4;
         let n_length = if length < (BYTES * N) {length} else {BYTES * N};
         #[cfg(target_endian = "little")]   // Because of MD5 is based on Little Endian
         unsafe { copy_nonoverlapping(self.hash_code.as_ptr() as *const u8, hashValue, n_length); }
@@ -612,6 +716,9 @@ MD5_Generic<K00, K01, K02, K03, K04, K05, K06, K07,
     // pub fn get_HashValue_in_string(&self) -> String
     /// Returns a hash value in the form of String object.
     /// 
+    /// # Output
+    /// It returns String object.
+    /// 
     /// # Counterpart Methods
     /// - If you want to get the hash value in the form of array object,
     /// you are highly recommended to use the method
@@ -626,7 +733,7 @@ MD5_Generic<K00, K01, K02, K03, K04, K05, K06, K07,
     /// [get_HashValue()](struct@MD5#method.get_HashValue)
     /// rather than this method.
     ///
-    /// # Example
+    /// # Example for MD5
     /// ```
     /// use Cryptocol::hash::MD5;
     /// let txt = "This is an example of the method get_HashValue_in_string().";
@@ -636,6 +743,16 @@ MD5_Generic<K00, K01, K02, K03, K04, K05, K06, K07,
     /// assert_eq!(hash.get_HashValue_in_string(), "7BB1ED16E2E302AA3B16CD24EC3E3093");
     /// ```
     /// 
+    /// # Example for MD5_Expanded
+    /// ```
+    /// use Cryptocol::hash::MD5_Expanded;
+    /// type myMD5 = MD5_Expanded<4, 0x1111_1111, 0x4444_4444, 0x8888_8888, 0xffff_ffff, 96>;
+    /// let txt = "This is an example of the method get_HashValue_in_string().";
+    /// let mut my_hash = myMD5::new();
+    /// my_hash.digest_str(txt);
+    /// println!("Msg =\t\"{}\"\nHash =\t{}", txt, my_hash.get_HashValue_in_string());
+    /// assert_eq!(my_hash.get_HashValue_in_string(), "1D850D022B0B079C896180B796E7B424");
+    /// ```
     /// # Big-endian issue
     /// It is just experimental for Big Endian CPUs. So, you are not encouraged
     /// to use it for Big Endian CPUs for serious purpose. Only use this crate
@@ -657,8 +774,11 @@ MD5_Generic<K00, K01, K02, K03, K04, K05, K06, K07,
         txt
     }
 
-    // pub fn get_HashValue_in_array(&self) -> [u32; 4]
+    // pub fn get_HashValue_in_array(&self) -> [u32; N]
     /// Returns a hash value in the form of array object.
+    /// 
+    /// # Output
+    /// It returns [u32; N].
     /// 
     /// # Counterpart Methods
     /// - If you want to get the hash value in the form of String object,
@@ -674,7 +794,7 @@ MD5_Generic<K00, K01, K02, K03, K04, K05, K06, K07,
     /// [get_HashValue()](struct@MD5#method.get_HashValue)
     /// rather than this method.
     ///
-    /// # Example
+    /// # Example for MD5
     /// ```
     /// use Cryptocol::hash::MD5;
     /// let txt = "This is an example of the method get_HashValue_in_array().";
@@ -682,6 +802,17 @@ MD5_Generic<K00, K01, K02, K03, K04, K05, K06, K07,
     /// hash.digest_str(txt);
     /// println!("Msg =\t\"{}\"\nHash =\t{:02X?}", txt, hash.get_HashValue_in_array());
     /// assert_eq!(format!("{:02X?}", hash.get_HashValue_in_array()), "[A4BE6EEF, C9A5DFBA, 558B5ADF, 3B1035F9]");
+    /// ```
+    /// 
+    /// # Example for MD5_Expanded
+    /// ```
+    /// use Cryptocol::hash::MD5_Expanded;
+    /// type myMD5 = MD5_Expanded<4, 0x1111_1111, 0x4444_4444, 0x8888_8888, 0xffff_ffff, 96>;
+    /// let txt = "This is an example of the method get_HashValue_in_array().";
+    /// let mut my_hash = myMD5::new();
+    /// my_hash.digest_str(txt);
+    /// println!("Msg =\t\"{}\"\nHash =\t{:02X?}", txt, my_hash.get_HashValue_in_array());
+    /// assert_eq!(format!("{:08X?}", my_hash.get_HashValue_in_array()), "[67A6CAD6, 4B138BB8, 846C082C, 8ABDFE02]");
     /// ```
     /// 
     /// # Big-endian issue
@@ -699,6 +830,9 @@ MD5_Generic<K00, K01, K02, K03, K04, K05, K06, K07,
     // pub fn getHashValue_in_vec(&self) -> Vec
     /// Returns a hash value in the form of Vec object.
     /// 
+    /// # Output
+    /// It returns Vec<u32>.
+    /// 
     /// # Counterpart Methods
     /// - If you want to get the hash value in the form of String object,
     /// you are highly recommended to use the method
@@ -713,7 +847,7 @@ MD5_Generic<K00, K01, K02, K03, K04, K05, K06, K07,
     /// [get_HashValue()](struct@MD5#method.get_HashValue)
     /// rather than this method.
     ///
-    /// # Example
+    /// # Example for MD5
     /// ```
     /// use Cryptocol::hash::MD5;
     /// let txt = "This is an example of the method get_HashValue_in_vec().";
@@ -721,6 +855,16 @@ MD5_Generic<K00, K01, K02, K03, K04, K05, K06, K07,
     /// hash.digest_str(txt);
     /// println!("Msg =\t\"{}\"\nHash =\t{:02X?}", txt, hash.get_HashValue_in_vec());
     /// assert_eq!(format!("{:02X?}", hash.get_HashValue_in_vec()), "[C24C5F26, D87BBAC8, D66148F4, 4D7DE209]");
+    /// ```
+    /// # Example for MD5_Expanded
+    /// ```
+    /// use Cryptocol::hash::MD5_Expanded;
+    /// type myMD5 = MD5_Expanded<4, 0x1111_1111, 0x4444_4444, 0x8888_8888, 0xffff_ffff, 96>;
+    /// let txt = "This is an example of the method get_HashValue_in_vec().";
+    /// let mut my_hash = myMD5::new();
+    /// my_hash.digest_str(txt);
+    /// println!("Msg =\t\"{}\"\nHash =\t{:08X?}", txt, my_hash.get_HashValue_in_vec());
+    /// assert_eq!(format!("{:08X?}", my_hash.get_HashValue_in_vec()), "[E02B8514, CC2B4041, 38CBFA58, 1E6B3F51]");
     /// ```
     /// 
     /// # Big-endian issue
@@ -736,6 +880,92 @@ MD5_Generic<K00, K01, K02, K03, K04, K05, K06, K07,
         res
     }
 
+    // pub fn put_HashValue_in_array<T, const N: usize>(&self, out: &mut [T; N])
+    /// Puts a hash value in the form of array object.
+    /// 
+    /// # Panics
+    /// If N * mem::size_of::<T>() > 16 (= 4 * 4), this method will panic
+    /// or its behaviour is undefined even if it won't panic.
+    ///
+    /// # Example for MD5
+    /// ```
+    /// use Cryptocol::hash::MD5;
+    /// let txt = "This is an example of the method put_HashValue_in_array().";
+    /// let mut hash = MD5::new();
+    /// let mut hash_code = [0_u32; 4];
+    /// hash.digest_str(txt);
+    /// hash.put_HashValue_in_array(&mut hash_code);
+    /// println!("Msg =\t\"{}\"\nHash =\t{:08X?}", txt, hash_code);
+    /// assert_eq!(format!("{:08X?}", hash_code), "[A2D690F9, CA6253E5, 2CB87DC4, 0ADF1A33]");
+    /// ```
+    /// 
+    /// # Example for MD5_Expanded
+    /// ```
+    /// use Cryptocol::hash::MD5_Expanded;
+    /// type myMD5 = MD5_Expanded<4, 0x1111_1111, 0x4444_4444, 0x8888_8888, 0xffff_ffff, 96>;
+    /// let txt = "This is an example of the method put_HashValue_in_array().";
+    /// let mut my_hash = myMD5::new();
+    /// let mut hash_code = [0_u32; 4];
+    /// my_hash.digest_str(txt);
+    /// my_hash.put_HashValue_in_array(&mut hash_code);
+    /// println!("Msg =\t\"{}\"\nHash =\t{:08X?}", txt, hash_code);
+    /// assert_eq!(format!("{:08X?}", hash_code), "[39B83B83, C327EE5E, 621A0669, A43A572A]");
+    /// ```
+    /// 
+    /// # Big-endian issue
+    /// It is just experimental for Big Endian CPUs. So, you are not encouraged
+    /// to use it for Big Endian CPUs for serious purpose. Only use this crate
+    /// for Big-endian CPUs with your own full responsibility.
+    pub fn put_HashValue_in_array<T, const M: usize>(&self, out: &mut [T; M])
+    where T: SmallUInt + Copy + Clone + Display + Debug + ToString
+    {
+        let res = self.get_HashValue_in_array();
+        let out_size = T::size_in_bytes() * M;
+        let length = if out_size < 16 {out_size} else {16};
+        unsafe { copy_nonoverlapping(res.as_ptr() as *const u8, out as *mut T as *mut u8, length); }
+    }
+
+    // pub fn tangle(&mut self, tangling: u64)
+    /// Tangles the hash value
+    /// 
+    /// # Argument
+    /// u32 constants to tangle the hash value
+    /// 
+    /// # Features
+    /// It is for using this struct as random number generator.
+    /// 
+    /// Example for MD5
+    /// ```
+    /// use Cryptocol::hash::MD5;
+    /// let txt = "TANGLING";
+    /// let mut hash = MD5::new();
+    /// hash.digest_str(txt);
+    /// println!("Msg =\t\"{}\"\nHash =\t{:08X?}", txt, hash.get_HashValue_in_array());
+    /// assert_eq!(format!("{:08X?}", hash.get_HashValue_in_array()), "[E60545F6, 6DCF2B02, 8245048B, AE2A98C6]");
+    /// hash.tangle(1);
+    /// println!("Hash =\t{:08X?}", hash.get_HashValue_in_array());
+    /// assert_eq!(format!("{:08X?}", hash.get_HashValue_in_array()), "[E0B5F1C0, 5C62629F, 68D44BC1, D384AB34]");
+    /// hash.tangle(1);
+    /// println!("Hash =\t{:08X?}", hash.get_HashValue_in_array());
+    /// assert_eq!(format!("{:08X?}", hash.get_HashValue_in_array()), "[C75EEA9C, 9D5CF62B, 0ABFA634, CD29C2D4]");
+    /// ```
+    /// 
+    /// Example for MD5_Expanded
+    /// ```
+    /// use Cryptocol::hash::MD5_Expanded;
+    /// type myMD5 = MD5_Expanded<4, 0x1111_1111, 0x4444_4444, 0x8888_8888, 0xffff_ffff, 96>;
+    /// let txt = "TANGLING";
+    /// let mut my_hash = myMD5::new();
+    /// my_hash.digest_str(txt);
+    /// println!("Msg =\t\"{}\"\nHash =\t{:08X?}", txt, my_hash.get_HashValue_in_array());
+    /// assert_eq!(format!("{:08X?}", my_hash.get_HashValue_in_array()), "[9CCE671A, 5366F625, 68056532, D6B0DA5C]");
+    /// my_hash.tangle(1);
+    /// println!("Hash =\t{:08X?}", my_hash.get_HashValue_in_array());
+    /// assert_eq!(format!("{:08X?}", my_hash.get_HashValue_in_array()), "[A12380BC, DE74206D, C145732C, 4CAAD502]");
+    /// my_hash.tangle(1);
+    /// println!("Hash =\t{:08X?}", my_hash.get_HashValue_in_array());
+    /// assert_eq!(format!("{:08X?}", my_hash.get_HashValue_in_array()), "[D9EB87F4, 00C2D299, A492A483, 1C24FCDD]");
+    /// ```
     #[inline]
     pub fn tangle(&mut self, tangling: u64)
     {
@@ -745,7 +975,7 @@ MD5_Generic<K00, K01, K02, K03, K04, K05, K06, K07,
             { m[i] = self.hash_code[i].get(); }
         m[4] = common.get_uint_(0);
         m[5] = common.get_uint_(1);
-        self.finalize(self.hash_code.as_ptr() as *const u8, 24);
+        self.finalize(m.as_ptr() as *const u8, 24);
     }
     
     // fn initialize(&mut self)
@@ -896,7 +1126,9 @@ MD5_Generic<K00, K01, K02, K03, K04, K05, K06, K07,
 }
 
 
-impl<const K00: u32, const K01: u32, const K02: u32, const K03: u32,
+impl<const N: usize,
+    const H0: u32, const H1: u32, const H2: u32, const H3: u32, const ROUND: usize, 
+    const K00: u32, const K01: u32, const K02: u32, const K03: u32,
     const K04: u32, const K05: u32, const K06: u32, const K07: u32,
     const K08: u32, const K09: u32, const K10: u32, const K11: u32,
     const K12: u32, const K13: u32, const K14: u32, const K15: u32,
@@ -912,13 +1144,12 @@ impl<const K00: u32, const K01: u32, const K02: u32, const K03: u32,
     const K52: u32, const K53: u32, const K54: u32, const K55: u32,
     const K56: u32, const K57: u32, const K58: u32, const K59: u32,
     const K60: u32, const K61: u32, const K62: u32, const K63: u32,
-    const H0: u32, const H1: u32, const H2: u32, const H3: u32,
     const R00: u32, const R01: u32, const R02: u32, const R03: u32,
     const R10: u32, const R11: u32, const R12: u32, const R13: u32,
     const R20: u32, const R21: u32, const R22: u32, const R23: u32,
-    const R30: u32, const R31: u32, const R32: u32, const R33: u32,
-    const ROUND: usize, const N: usize>
-Display for MD5_Generic<K00, K01, K02, K03, K04, K05, K06, K07,
+    const R30: u32, const R31: u32, const R32: u32, const R33: u32>
+Display for MD5_Generic<N, H0, H1, H2, H3, ROUND,
+                        K00, K01, K02, K03, K04, K05, K06, K07,
                         K08, K09, K10, K11, K12, K13, K14, K15,
                         K16, K17, K18, K19, K20, K21, K22, K23,
                         K24, K25, K26, K27, K28, K29, K30, K31,
@@ -926,9 +1157,8 @@ Display for MD5_Generic<K00, K01, K02, K03, K04, K05, K06, K07,
                         K40, K41, K42, K43, K44, K45, K46, K47,
                         K48, K49, K50, K51, K52, K53, K54, K55,
                         K56, K57, K58, K59, K60, K61, K62, K63,
-                        H0, H1, H2, H3, 
                         R00, R01, R02, R03, R10, R11, R12, R13,
-                        R20, R21, R22, R23, R30, R31, R32, R33, ROUND, N>
+                        R20, R21, R22, R23, R30, R31, R32, R33>
 {
     /// Formats the value using the given formatter.
     /// You will hardly use this method directly.
@@ -938,7 +1168,7 @@ Display for MD5_Generic<K00, K01, K02, K03, K04, K05, K06, K07,
     /// `f` is a buffer, this method must write the formatted string into it.
     /// [Read more](https://doc.rust-lang.org/core/fmt/trait.Display.html#tymethod.fmt)
     /// 
-    /// # Example 1 for the method to_string()
+    /// # Example 1 for the method to_string() for MD5
     /// ```
     /// use Cryptocol::hash::MD5;
     /// let mut hash = MD5::new();
@@ -948,7 +1178,18 @@ Display for MD5_Generic<K00, K01, K02, K03, K04, K05, K06, K07,
     /// assert_eq!(hash.to_string(), "ED085603C2CDE77DD0C6FED3EC1A8ADB");
     /// ```
     /// 
-    /// # Example 2 for the use in the macro println!()
+    /// # Example 2 for the method to_string() for MD5_Expanded
+    /// ```
+    /// use Cryptocol::hash::MD5_Expanded;
+    /// type myMD5 = MD5_Expanded<4, 0x1111_1111, 0x4444_4444, 0x8888_8888, 0xffff_ffff, 96>;
+    /// let txt = "Display::fmt() automagically implement to_string().";
+    /// let mut my_hash = myMD5::new();
+    /// my_hash.digest_str(txt);
+    /// println!("Msg =\t\"{}\"\nHash =\t{}", txt, my_hash.to_string());
+    /// assert_eq!(my_hash.to_string(), "3FDFF3827C89F3C770A0863F069FE766");
+    /// ```
+    /// 
+    /// # Example 3 for the use in the macro println!() for MD5
     /// ```
     /// use Cryptocol::hash::MD5;
     /// let mut hash = MD5::new();
@@ -956,6 +1197,17 @@ Display for MD5_Generic<K00, K01, K02, K03, K04, K05, K06, K07,
     /// hash.digest_str(txt);
     /// println!("Msg =\t\"{}\"\nHash =\t{}", txt, hash);
     /// assert_eq!(hash.to_string(), "6C9494A4A5C313001695262D72571F74");
+    /// ```
+    /// 
+    /// # Example 4 for the use in the macro println!() for MD5_Expanded
+    /// ```
+    /// use Cryptocol::hash::MD5_Expanded;
+    /// type myMD5 = MD5_Expanded<4, 0x1111_1111, 0x4444_4444, 0x8888_8888, 0xffff_ffff, 96>;
+    /// let mut my_hash = myMD5::new();
+    /// let txt = "Display::fmt() enables the object to be printed in the macro println!() directly for example.";
+    /// my_hash.digest_str(txt);
+    /// println!("Msg =\t\"{}\"\nHash =\t{}", txt, my_hash);
+    /// assert_eq!(my_hash.to_string(), "45BA0E4FEA1FACF829D19544A77105B8");
     /// ```
     fn fmt(&self, f: &mut Formatter) -> fmt::Result
     {

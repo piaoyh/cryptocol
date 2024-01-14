@@ -6,6 +6,8 @@
 // This file may not be copied, modified, or distributed
 // except according to those terms.
 
+//! various pseudo-random number generators
+//! 
 //! # Introduction
 //! The module that contains a few sub-modules to define various pseudo-random
 //! number generators
@@ -73,10 +75,11 @@
 //! `Random_Generic<GenFunc: PRNG + 'static>` to use
 //! [rand::rngs::OsRng](https://docs.rs/rand/latest/rand/rngs/struct.OsRng.html)
 //! as a pseudo-random number generator is not implemented in this crate in
-//! order to keep small number of dependencies but how to make a module of
-//! implementation of `Random_Generic<GenFunc: PRNG + 'static>`to use
+//! order to keep small number of dependencies, but how to embed
 //! [rand::rngs::OsRng](https://docs.rs/rand/latest/rand/rngs/struct.OsRng.html)
-//! is shown below in the section 'HOW TO USE OsRng IN THIS MODULE' in order
+//! in a module of `Random_Generic<GenFunc: PRNG + 'static>`to use
+//! [rand::rngs::OsRng](https://docs.rs/rand/latest/rand/rngs/struct.OsRng.html)
+//! is shown below in the section 'HOW TO EMBED OsRng IN THIS MODULE' in order
 //! to help you implement a module to use
 //! [rand::rngs::OsRng](https://docs.rs/rand/latest/rand/rngs/struct.OsRng.html)
 //! as a pseudo-random number generator in your project by yourself. 
@@ -93,7 +96,7 @@
 //! //Todo
 //! ```
 //! 
-//! # HOW TO USE OsRng IN THIS MODULE
+//! # How to embed OsRng in this module
 //! First, you have to include additional dependencies in your Cargo.toml
 //! as follows.
 //! 
@@ -215,7 +218,7 @@
 
 
 pub mod random;
-pub mod trait_prng;
+pub mod trait_random_engine;
 pub mod trait_impl_for_MD4;
 pub mod trait_impl_for_MD5;
 pub mod trait_impl_for_SHA1;
@@ -223,4 +226,4 @@ pub mod trait_impl_for_SHA2_256;
 pub mod trait_impl_for_SHA2_512;
 
 pub use random::*;
-pub use trait_prng::*;
+pub use trait_random_engine::*;

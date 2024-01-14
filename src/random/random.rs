@@ -25,7 +25,7 @@ use std::io::Read;
 use crate::number::{small_uint::*, BigUInt};
 use crate::number::small_int_unions::*;
 use crate::hash::{ MD4, MD5, SHA0, SHA1, SHA2_256, SHA2_512 };
-use super::PRNG;
+use super::Random_Engine;
 
 
 /// The struct `Any_MD4` which is a random number generator using a hash
@@ -120,7 +120,7 @@ pub type Any = Any_SHA2_256;
 /// - Any: uses a hash algorithm SHA2_256.
 /// - Random: uses a hash algorithm SHA2_512.
 #[allow(non_camel_case_types)]
-pub struct Random_Generic<GenFunc: PRNG + 'static, const COUNT: u128 = 170141183460469231731687303715884105727>
+pub struct Random_Generic<GenFunc: Random_Engine + 'static, const COUNT: u128 = 170141183460469231731687303715884105727>
 {
     seed_generator: GenFunc,
     aux_generator: GenFunc,
@@ -128,7 +128,7 @@ pub struct Random_Generic<GenFunc: PRNG + 'static, const COUNT: u128 = 170141183
     sugar: u64,
 }
 
-impl<GenFunc: PRNG + 'static, const COUNT: u128> Random_Generic<GenFunc, COUNT>
+impl<GenFunc: Random_Engine + 'static, const COUNT: u128> Random_Generic<GenFunc, COUNT>
 {
     // pub fn new() -> Self
     /// Constructs a new struct Random_Generic.

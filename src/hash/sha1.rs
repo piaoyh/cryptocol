@@ -17,42 +17,57 @@ use std::fmt::{ self, Debug, Display, Formatter };
 
 use crate::number::{ SmallUInt, IntUnion, LongUnion };
 
-/// K0 ~ K63 are initialized with array of round constants: the first 32 bits
-/// of the fractional parts of the cube roots of the first 64 primes 2..311
+
+/// You have freedom of changing H0 ~ H4, and ROUND.
 #[allow(non_camel_case_types)]
-pub type SHA1_Generic_K_fixed<  const H0: u32, const H1: u32, const H2: u32,
-                                const H3: u32, const H4: u32, const RL1: u32,
-                                const ROUND: usize, const N: usize>
-    // Initialize array of round constants: the first 32 bits of
-    // the fractional parts of the cube roots of the first 64 primes 2..311
-    = SHA1_generic< 0x5a827999, 0x6ed9eba1, 0x8f1bbcdc, 0xca62c1d6,
-                    H0, H1, H2, H3, H4, RL1, 5, 30, ROUND, N>;
+pub type SHA1_Expanded<const N: usize = 5,
+                        const H0: u32 = 0x67452301, const H1: u32 = 0xefcdab89,
+                        const H2: u32 = 0x98badcfe, const H3: u32 = 0x10325476,
+                        const H4: u32 = 0xc3d2e1f0, const ROUND: usize = 80>
+    = SHA1_generic<N, H0, H1, H2, H3, H4, ROUND>;
 
+/// You have freedom of changing H0 ~ H4, and ROUND.
 #[allow(non_camel_case_types)]
-pub type SHA1_Expanded<const ROUND: usize, const N: usize>
-        = SHA1_Generic_K_fixed< 0x67452301, 0xefcdab89, 0x98badcfe,
-                                0x10325476, 0xc3d2e1f0, 1, ROUND, N>;
+pub type SHA0_Expanded<const N: usize = 5,
+                        const H0: u32 = 0x67452301, const H1: u32 = 0xefcdab89,
+                        const H2: u32 = 0x98badcfe, const H3: u32 = 0x10325476,
+                        const H4: u32 = 0xc3d2e1f0, const ROUND: usize = 80>
+        = SHA1_generic<N, H0, H1, H2, H3, H4, ROUND,
+                        0x5a827999, 0x6ed9eba1, 0x8f1bbcdc, 0xca62c1d6, 0>;
 
+/// You have freedom of changing ROUND, and K0 ~ K3.
 #[allow(non_camel_case_types)]
-pub type SHA0_Expanded<const ROUND: usize, const N: usize>
-        = SHA1_Generic_K_fixed< 0x67452301, 0xefcdab89, 0x98badcfe,
-                                0x10325476, 0xc3d2e1f0, 0, ROUND, N>;
+pub type SHA1_Generic_HR_fixed<const N: usize, const ROUND: usize,
+                        const K0: u32, const K1: u32, const K2: u32, const K3: u32>
+        = SHA1_generic<N, 0x67452301, 0xefcdab89, 0x98badcfe,
+                        0x10325476, 0xc3d2e1f0, ROUND, K0, K1, K2, K3>;
 
-pub type SHA1 = SHA1_Expanded<80, 5>;
+/// You have freedom of changing ROUND, and K0 ~ K3.
+#[allow(non_camel_case_types)]
+pub type SHA0_Generic_HR_fixed<const N: usize, const ROUND: usize,
+                        const K0: u32, const K1: u32, const K2: u32, const K3: u32>
+        = SHA1_generic<N, 0x67452301, 0xefcdab89, 0x98badcfe, 0x10325476, 0xc3d2e1f0,
+                        ROUND, K0, K1, K2, K3, 0>;
 
-pub type SHA0 = SHA0_Expanded<80, 5>;
+/// The official SHA-1 hash algorithm
+pub type SHA1 = SHA1_Expanded;
+
+/// The official SHA-0 hash algorithm
+pub type SHA0 = SHA0_Expanded;
 
 
-/// A SHA-1 message-digest algorithm that lossily compresses data of arbitrary
-/// length into a 160-bit hash value, and its flexible variants that allows
-/// you to develop your own `SHA-1`-based hash algorithms
+/// A SHA-1 and SHA-0 message-digest algorithms that lossily compress data
+/// of arbitrary length into a 160-bit hash value, and their flexible variants
+/// that allow you to develop your own `SHA-1`-based hash algorithms
 /// 
 /// # Introduction
-/// SHA-1 was designed by the United States National Security Agency, and is
-/// a U.S. Federal Information Processing Standard. SHA-1 produces a message
-/// digest based on principles similar to those used by Ronald L. Rivest of
-/// MIT in the design of the MD2, MD4 and MD5 message digest algorithms, but
-/// generates a larger hash value (160 bits vs. 128 bits).
+/// SHA-1 and SHA-0 were designed by the United States National Security Agency,
+/// and are a U.S. Federal Information Processing Standard. SHA-1 and SHA-0
+/// produces a message digest based on principles similar to those used by
+/// Ronald L. Rivest of MIT in the design of the MD2, MD4 and MD5 message digest
+/// algorithms, but generates a larger hash value (160 bits vs. 128 bits).
+/// SHA-1 and SHA-0 use the
+/// [Merkle–Damgård construction](https://en.wikipedia.org/wiki/Merkle%E2%80%93Damg%C3%A5rd_construction).
 /// 
 /// # Vulnerability
 /// In February 2005, Xiaoyun Wang, Yiqun Lisa Yin, and Hongbo Yu announced
@@ -60,43 +75,81 @@ pub type SHA0 = SHA0_Expanded<80, 5>;
 /// is not recommended for serious cryptographic purposes anymore.
 /// __DO NOT USE SHA1 FOR SERIOUS CRYPTOGRAPHIC PURPOSES AT ALL!__
 /// If you need to use a hash algorithm for serious cryptographic purposes,
-/// you are highly recommended to use SHA-3 hash algorithm instead of SHA-1,
-/// for example.
-/// 
-/// # About this struct
-/// This struct is implemented not only for SHA-1 but also for SHA-0 and for
-/// their expanded versions. So, this struct is implemented as a generic
-/// version of SHA-1 hash algorithm. Therefore, you can make your own hash
-/// algorithm based on SHA-1 algorithm by changing the paramenters such as
-/// K0 ~ K3, H0 ~ H4, RL1, RL5, RL30, ROUND, N. Then, the cryptographic security
-/// level of your own hash algoritm may be higher or lower than that of the
-/// original SHA-1 hash algorithm.
-/// 
-/// # Use of SHA-1, SHA-0, and other variations
-/// Though SHA-1 and SHA-0 are lack of cryptographic security, SHA-1, SHA-0,
-/// and other variations can be still used for non-cryptograpic purposes
-/// such as:
+/// you are highly recommended to use either SHA-2 or SHA-3 hash algorithm,
+/// for example, instead of SHA-1 or SHA-0.
+///
+/// # Use of SHA-1, SHA-0, and their variants
+/// Though SHA-1, SHA-0, and their variants are lack of cryptographic security,
+/// SHA-1, SHA-0, and their variants can be still used for non-cryptograpic
+/// purposes such as:
 /// - Generating small number of IDs
 /// - Integrity test in some collision-free situations
 /// - Storing passwords with limited security
 /// - Digital Signature with limited security
 /// - Study of hash algorithms
 /// 
-/// Read [this article](https://en.wikipedia.org/wiki/SHA-1)
+/// # Generic Parameters
+/// You can create your own expanded version of SHA-1 by changing the generic
+/// parameters H0 ~ H4, ROUND, K0 ~ K3, RL1, RL5, and R30.
+/// - N : the size of output. N cannot be 0 or greater than 5. If N is 5, the
+/// output is 160 bits, while if N is 1, the output is 32 bits.
+/// - H0 ~ H4 : the initial hash values, five u32 values.
+/// The default values of H0, H1, H2, and H3 are 0x67452301, 0xefcdab89,
+/// 0x98badcfe, 0x10325476, and 0xc3d2e1f0, respectively (in big endian
+/// representation).
+/// - ROUND : the number of rounds. The default value of it is `80` (= 20 * 4).
+/// - K0 ~ K3 : the added values in hashing process, which are four u32 values
+/// and called round constants.
+/// The default values of K0 ~ K3 are defined to be 2^30 times the square roots
+/// of 2, 3, 5 and 10, respectivey. _However, they are incorrectly rounded to
+/// the nearest integer instead of being rounded to the nearest odd integer,
+/// with equilibrated proportions of zero and one bits. As well, choosing the
+/// square root of 10 (which is not a prime) made it a common factor for the
+/// two other chosen square roots of primes 2 and 5, with possibly usable
+/// arithmetic properties across successive rounds, reducing the strength
+/// of the algorithm against finding collisions on some bits._
+/// (quoted from [Wikipedia](https://en.wikipedia.org/wiki/SHA-1#SHA-1_pseudocode))
+/// So, K0 = 0x5a827999, K1 = 0x6ed9eba1, K2 = 0x8f1bbcdc, and K2 = 0xca62c1d6
+/// (in big endian representation).
+/// - RL1, RL5, and RL30 : the amounts of rotate left in the hashing process.
+/// The default values of RL1, RL5, and RL30 are 1, 5, and 30, respecively.
+/// RL1 is 1 for SHA-1 while RL1 is 0 for SHA-0.
+/// 
+/// About the parameters and their default values,
+/// read [more](https://en.wikipedia.org/wiki/SHA-2#Pseudocode)
+/// 
+/// # Security of your own expanded version
+/// Your own algrorithm based on SHA-0 or SHA-1 may be stronger or weaker than
+/// official SHA-0 or SHA-1. Unless you seriously checked the cryptographic
+/// security of your own algorithms, it is hard to assume that your own
+/// alogrithms are stronger than the official SHA-0 or SHA-1.
+/// 
+/// Read [more](https://doi.org/10.6028/NIST.FIPS.180-4)
 /// and/or watch [this video](https://www.youtube.com/watch?v=JIhZWgJA-9o)
 /// to learn SHA-1 more in detail.
 /// 
 /// # Quick Start
-/// In order to use the module SHA-1, SHA-0, and other variations, the module
-/// Cryptocol::hash::sha1 is re-exported so that you don't have to import
-/// (or use) `Cryptocol::hash::sha1::* directly. You only import SHA1, SHA0,
-/// and/or SHA1_generic in the module Cryptocol::hash. Example 1 shows how to
-/// import SHA1, SHA0, and/or SHA1_generic.
+/// In order to use the module sha1, you don't have to import (or use)
+/// Cryptocol::hash::sha1::* directly because the module Cryptocol::hash::sha1
+/// is re-exported. All you have to do is only import SHA1, SHA0, SHA1_Expanded,
+/// SHA0_Expanded, SHA1_Generic_HR_fixed, SHA0_Generic_HR_fixed and/or
+/// SHA1_Generic in the module Cryptocol::hash. Example 1 shows how to import
+/// structs SHA1, SHA0, SHA1_Expanded, SHA0_Expanded, SHA1_Generic_HR_fixed,
+/// SHA0_Generic_HR_fixed and/or SHA1_Generic. Plus, what you have to know is
+/// these. All the types (or structs) are the specific versions of SHA1_Generic.
+/// Actually, SHA1 is a specific version of SHA1_Expanded. SHA0 is a specific
+/// version of SHA0_Expanded. SHA1_Expanded, SHA0_Expanded,
+/// SHA1_Generic_HR_fixed and SHA0_Generic_HR_fixed are specific versions
+/// of MD5_Generic.
 /// 
 /// ## Example 1
 /// ```
 /// use Cryptocol::hash::SHA1;
 /// use Cryptocol::hash::SHA0;
+/// use Cryptocol::hash::SHA1_Expanded;
+/// use Cryptocol::hash::SHA0_Expanded;
+/// use Cryptocol::hash::SHA1_Generic_HR_fixed;
+/// use Cryptocol::hash::SHA0_Generic_HR_fixed;
 /// use Cryptocol::hash::SHA1_generic;
 /// ```
 /// Then, you can create SHA1 object by the method SHA1::new() for example.
@@ -111,8 +164,8 @@ pub type SHA0 = SHA0_Expanded<80, 5>;
 /// ```
 /// use std::string::*;
 /// use Cryptocol::hash::SHA1;
-/// let mut hash = SHA1::new();
 /// 
+/// let mut hash = SHA1::new();
 /// let mut txt = "";
 /// hash.digest_str(txt);
 /// println!("Msg =\t\"{}\"\nHash =\t{}\n", txt, hash.get_HashValue_in_string());
@@ -159,46 +212,58 @@ pub type SHA0 = SHA0_Expanded<80, 5>;
 /// to use it for Big Endian CPUs for serious purpose. Only use this crate
 /// for Big-endian CPUs with your own full responsibility.
 #[derive(Debug, Clone)]
-pub struct SHA1_generic<const K0: u32, const K1: u32, const K2: u32, const K3: u32,
-                        const H0: u32, const H1: u32, const H2: u32, const H3: u32,
-                        const H4: u32, const RL1: u32, const RL2: u32, const RL3: u32,
-                        const ROUND: usize, const N: usize>
-                        // N is the number of output bytes of hash value.
-                        // RL is 1 for SHA-1 while RL is 0 for SHA-0.
+#[allow(non_camel_case_types)]
+pub struct SHA1_generic<const N: usize = 5,
+                        const H0: u32 = 0x67452301, const H1: u32 = 0xefcdab89,
+                        const H2: u32 = 0x98badcfe, const H3: u32 = 0x10325476,
+                        const H4: u32 = 0xc3d2e1f0, const ROUND: usize = 80, 
+                        const K0: u32 = 0x5a827999, const K1: u32 = 0x6ed9eba1,
+                        const K2: u32 = 0x8f1bbcdc, const K3: u32 = 0xca62c1d6,
+                        const RL1: u32 = 1, const RL5: u32 = 5, const RL30: u32 = 30>
 {
     hash_code: [IntUnion; 5],
 }
 
-impl<const K0: u32, const K1: u32, const K2: u32, const K3: u32,
-    const H0: u32, const H1: u32, const H2: u32, const H3: u32, const H4: u32,
-    const RL1: u32, const RL5: u32, const RL30: u32, const ROUND: usize, const N: usize>
-SHA1_generic<K0, K1, K2, K3, H0, H1, H2, H3, H4, RL1, RL5, RL30, ROUND, N>
+impl<const N: usize, const H0: u32, const H1: u32, const H2: u32, const H3: u32,
+        const H4: u32, const ROUND: usize, const K0: u32, const K1: u32,
+        const K2: u32, const K3: u32, const RL1: u32, const RL5: u32, const RL30: u32>
+SHA1_generic<N, H0, H1, H2, H3, H4, ROUND, K0, K1, K2, K3, RL1, RL5, RL30>
 {
     const K: [u32; 4] = [ K0, K1, K2, K3 ];
     const H: [u32; 5] = [ H0, H1, H2, H3, H4 ];
 
     // pub fn new() -> Self
-    /// Constructs a new `SHA1` object.
+    /// Constructs a new object of `SHA1` or `SHA0`, or SHA1-based hash object.
     /// 
     /// # Output
-    /// A new object of `SHA1`.
+    /// A new object of `SHA1` or `SHA0`, or a new SHA1-based hash object.
     /// 
     /// # Initialization
     /// All the attributes of the constructed object, which is initial hash
     /// value, will be initialized with
     /// `67452301EFCDAB8998BADCFE10325476C3D2E1F0`.
     /// 
-    /// # Example
+    /// # Example for SHA1
     /// ```
     /// use Cryptocol::hash::SHA1;
     /// let mut hash = SHA1::new();
     /// println!("Hash =\t{}", hash);
     /// assert_eq!(hash.to_string(), "67452301EFCDAB8998BADCFE10325476C3D2E1F0");
     /// ```
+    /// 
+    /// # Exmaple for SHA1_Expanded
+    /// ```
+    /// use Cryptocol::hash::SHA1_Expanded;
+    /// type mySHA1 = SHA1_Expanded<5, 0x1111_1111, 0x4444_4444, 0x8888_8888, 0xcccc_cccc, 0xffff_ffff, 160>;
+    /// let mut my_hash = mySHA1::new();
+    /// println!("Hash =\t{}", my_hash);
+    /// assert_eq!(my_hash.to_string(), "111111114444444488888888CCCCCCCCFFFFFFFF");
+    /// ```
     pub fn new() -> Self
     {
-        if N > 5 || N == 0
-            { panic!("N cannot be equal to 0 or greater than 5."); }
+        if (N > 5) || (N == 0)
+            { panic!("N cannot be either 0 or greater than 5. {}", N); }
+
         Self
         {
             hash_code: [IntUnion::new_with(Self::H[0]),
@@ -210,7 +275,7 @@ SHA1_generic<K0, K1, K2, K3, H0, H1, H2, H3, H4, RL1, RL5, RL30, ROUND, N>
     }
 
     // pub fn digest(&mut self, message: *const u8, length_in_bytes: u64)
-    /// Compute hash value.
+    /// Computes hash value.
     /// 
     /// # Features
     /// This function has the generalized interface (pointer, `*const u8`)
@@ -242,7 +307,7 @@ SHA1_generic<K0, K1, K2, K3, H0, H1, H2, H3, H4, RL1, RL5, RL30, ROUND, N>
     /// [digest_vec()](struct@SHA1#method.digest_array)
     /// rather than this method.
     ///
-    /// # Example
+    /// # Example for SHA1
     /// ```
     /// use Cryptocol::hash::SHA1;
     /// let txt = "This is an example of the method digest().";
@@ -251,6 +316,17 @@ SHA1_generic<K0, K1, K2, K3, H0, H1, H2, H3, H4, RL1, RL5, RL30, ROUND, N>
     /// println!("Msg =\t\"{}\"\nHash =\t{}", txt, hash);
     /// assert_eq!(hash.to_string(), "9631162DFDAEAB89821256D4585D66D35CD61FD6");
     /// ```
+    /// 
+    /// # Example for SHA1_Expanded
+    /// ```
+    /// use Cryptocol::hash::SHA1_Expanded;
+    /// type mySHA1 = SHA1_Expanded<5, 0x1111_1111, 0x4444_4444, 0x8888_8888, 0xcccc_cccc, 0xffff_ffff, 160>;
+    /// let txt = "This is an example of the method digest().";
+    /// let mut my_hash = mySHA1::new();
+    /// my_hash.digest(txt.as_ptr(), txt.len() as u64);
+    /// println!("Msg =\t\"{}\"\nHash =\t{}", txt, my_hash);
+    /// assert_eq!(my_hash.to_string(), "FAF77A15CDEDFC6A33CE2C4003B119F225CBE414");
+    /// ````
     /// 
     /// # Big-endian issue
     /// It is just experimental for Big Endian CPUs. So, you are not encouraged
@@ -269,7 +345,7 @@ SHA1_generic<K0, K1, K2, K3, H0, H1, H2, H3, H4, RL1, RL5, RL30, ROUND, N>
     }
 
     /// // pub fn digest_str(&mut self, message: &str)
-    /// Compute hash value.
+    /// Computess hash value.
     /// 
     /// # Features
     /// This function is a wrapping function of `digest()`.
@@ -295,7 +371,7 @@ SHA1_generic<K0, K1, K2, K3, H0, H1, H2, H3, H4, RL1, RL5, RL30, ROUND, N>
     /// as C/C++, you are highly recommended to use the method
     /// [digest()](struct@SHA1#method.digest) rather than this method.
     ///
-    /// # Example
+    /// # Example for SHA1
     /// ```
     /// use Cryptocol::hash::SHA1;
     /// let txt = "This is an example of the method digest_str().";
@@ -303,6 +379,17 @@ SHA1_generic<K0, K1, K2, K3, H0, H1, H2, H3, H4, RL1, RL5, RL30, ROUND, N>
     /// hash.digest_str(txt);
     /// println!("Msg =\t\"{}\"\nHash =\t{}", txt, hash);
     /// assert_eq!(hash.to_string(), "9FDE56BBB5028966CC2E7BDCD0758FE3121407E6");
+    /// ```
+    /// 
+    /// # Example for SHA1_Expanded
+    /// ```
+    /// use Cryptocol::hash::SHA1_Expanded;
+    /// type mySHA1 = SHA1_Expanded<5, 0x1111_1111, 0x4444_4444, 0x8888_8888, 0xcccc_cccc, 0xffff_ffff, 160>;
+    /// let txt = "This is an example of the method digest_str().";
+    /// let mut my_hash = mySHA1::new();
+    /// my_hash.digest_str(txt);
+    /// println!("Msg =\t\"{}\"\nHash =\t{}", txt, my_hash);
+    /// assert_eq!(my_hash.to_string(), "A6BE8FEA7E3F61508DC0A8BA85A0AEC77D0C0784");
     /// ```
     /// 
     /// # Big-endian issue
@@ -316,7 +403,7 @@ SHA1_generic<K0, K1, K2, K3, H0, H1, H2, H3, H4, RL1, RL5, RL30, ROUND, N>
     }
 
     // pub fn digest_string(&mut self, message: &String)
-    /// Compute hash value.
+    /// Computess hash value.
     /// 
     /// # Features
     /// This function is a wrapping function of `digest()`.
@@ -342,7 +429,7 @@ SHA1_generic<K0, K1, K2, K3, H0, H1, H2, H3, H4, RL1, RL5, RL30, ROUND, N>
     /// as C/C++, you are highly recommended to use the method
     /// [digest()](struct@SHA1#method.digest) rather than this method.
     ///
-    /// # Example
+    /// # Example for SHA1
     /// ```
     /// use Cryptocol::hash::SHA1;
     /// let txt = "This is an example of the method digest_string().".to_string();
@@ -350,6 +437,17 @@ SHA1_generic<K0, K1, K2, K3, H0, H1, H2, H3, H4, RL1, RL5, RL30, ROUND, N>
     /// hash.digest_string(&txt);
     /// println!("Msg =\t\"{}\"\nHash =\t{}", txt, hash);
     /// assert_eq!(hash.to_string(), "FDCDC0EBC9181B881BE1F15FECEBB9D70E4DDAAB");
+    /// ```
+    /// 
+    /// # Example for SHA1_Expanded
+    /// ```
+    /// use Cryptocol::hash::SHA1_Expanded;
+    /// type mySHA1 = SHA1_Expanded<5, 0x1111_1111, 0x4444_4444, 0x8888_8888, 0xcccc_cccc, 0xffff_ffff, 160>;
+    /// let txt = "This is an example of the method digest_string().".to_string();
+    /// let mut my_hash = mySHA1::new();
+    /// my_hash.digest_string(&txt);
+    /// println!("Msg =\t\"{}\"\nHash =\t{}", txt, my_hash);
+    /// assert_eq!(my_hash.to_string(), "F4FE5C5A4D2A4BD414DDDF1FD32B185F3ED8AA32");
     /// ```
     /// 
     /// # Big-endian issue
@@ -362,15 +460,15 @@ SHA1_generic<K0, K1, K2, K3, H0, H1, H2, H3, H4, RL1, RL5, RL30, ROUND, N>
         self.digest(message.as_ptr(), message.len() as u64);
     }
 
-    // pub fn digest_array<const N: usize>(&mut self, message: &[T; N])
-    /// Compute hash value.
+    // pub fn digest_array<T, const M: usize>(&mut self, message: &[T; M])
+    /// Computes hash value.
     /// 
     /// # Features
     /// This function is a wrapping function of `digest()`.
     /// This function computes hash value of the content of Array object.
     /// 
     /// # Argument
-    /// - message is `&[T; N]`.
+    /// - message is `&[T; M]`.
     /// 
     /// # Counterpart Methods
     /// - If you want to compute of the hash value of a string slice,
@@ -389,7 +487,7 @@ SHA1_generic<K0, K1, K2, K3, H0, H1, H2, H3, H4, RL1, RL5, RL30, ROUND, N>
     /// as C/C++, you are highly recommended to use the method
     /// [digest()](struct@SHA1#method.digest) rather than this method.
     ///
-    /// # Example
+    /// # Example for SHA1
     /// ```
     /// use Cryptocol::hash::SHA1;
     /// let data = [ 0x67452301_u32.to_le(), 0xefcdab89_u32.to_le(), 0x98badcfe_u32.to_le(), 0x10325476_u32.to_le() ];
@@ -399,19 +497,30 @@ SHA1_generic<K0, K1, K2, K3, H0, H1, H2, H3, H4, RL1, RL5, RL30, ROUND, N>
     /// assert_eq!(hash.to_string(), "76BC87BAECA7725C948FD1C53766454FDA0867AF");
     /// ```
     /// 
+    /// # Example for SHA1_Expanded
+    /// ```
+    /// use Cryptocol::hash::SHA1_Expanded;
+    /// type mySHA1 = SHA1_Expanded<5, 0x1111_1111, 0x4444_4444, 0x8888_8888, 0xcccc_cccc, 0xffff_ffff, 160>;
+    /// let data = [ 0x67452301_u32.to_le(), 0xefcdab89_u32.to_le(), 0x98badcfe_u32.to_le(), 0x10325476_u32.to_le() ];
+    /// let mut my_hash = mySHA1::new();
+    /// my_hash.digest_array(&data);
+    /// println!("Msg =\t{:?}\nHash =\t{}", data, my_hash);
+    /// assert_eq!(my_hash.to_string(), "A6E00DB72776DEBB7C6DB235024BB3E237E24D18");
+    /// ```
+    /// 
     /// # Big-endian issue
     /// It is just experimental for Big Endian CPUs. So, you are not encouraged
     /// to use it for Big Endian CPUs for serious purpose. Only use this crate
     /// for Big-endian CPUs with your own full responsibility.
     #[inline]
     pub fn digest_array<T, const M: usize>(&mut self, message: &[T; M])
-    where T: SmallUInt + Copy + Clone
+    where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     {
         self.digest(message.as_ptr() as *const u8, (M * T::size_in_bytes()) as u64);
     }
 
     // pub fn digest_vec<T>(&mut self, message: &Vec<T>)
-    /// Compute hash value.
+    /// Computes hash value.
     /// 
     /// # Features
     /// This function is a wrapping function of `digest()`.
@@ -437,7 +546,7 @@ SHA1_generic<K0, K1, K2, K3, H0, H1, H2, H3, H4, RL1, RL5, RL30, ROUND, N>
     /// as C/C++, you are highly recommended to use the method
     /// [digest()](struct@SHA1#method.digest) rather than this method.
     ///
-    /// # Example
+    /// # Example for SHA1
     /// ```
     /// use Cryptocol::hash::SHA1;
     /// let data = vec![ 0x67452301_u32.to_le(), 0xefcdab89_u32.to_le(), 0x98badcfe_u32.to_le(), 0x10325476_u32.to_le() ];
@@ -447,13 +556,24 @@ SHA1_generic<K0, K1, K2, K3, H0, H1, H2, H3, H4, RL1, RL5, RL30, ROUND, N>
     /// assert_eq!(hash.to_string(), "76BC87BAECA7725C948FD1C53766454FDA0867AF");
     /// ```
     /// 
+    /// # Example for SHA1_Expanded
+    /// ```
+    /// use Cryptocol::hash::SHA1_Expanded;
+    /// type mySHA1 = SHA1_Expanded<5, 0x1111_1111, 0x4444_4444, 0x8888_8888, 0xcccc_cccc, 0xffff_ffff, 160>;
+    /// let data = vec![ 0x67452301_u32.to_le(), 0xefcdab89_u32.to_le(), 0x98badcfe_u32.to_le(), 0x10325476_u32.to_le() ];
+    /// let mut my_hash = mySHA1::new();
+    /// my_hash.digest_vec(&data);
+    /// println!("Msg =\t{:?}\nHash =\t{}", data, my_hash);
+    /// assert_eq!(my_hash.to_string(), "A6E00DB72776DEBB7C6DB235024BB3E237E24D18");
+    /// ```
+    /// 
     /// # Big-endian issue
     /// It is just experimental for Big Endian CPUs. So, you are not encouraged
     /// to use it for Big Endian CPUs for serious purpose. Only use this crate
     /// for Big-endian CPUs with your own full responsibility.
     #[inline]
     pub fn digest_vec<T>(&mut self, message: &Vec<T>)
-    where T: SmallUInt + Copy + Clone
+    where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     {
         self.digest(message.as_ptr() as *const u8, (message.len() * T::size_in_bytes()) as u64);
     }
@@ -486,7 +606,7 @@ SHA1_generic<K0, K1, K2, K3, H0, H1, H2, H3, H4, RL1, RL5, RL30, ROUND, N>
     /// [get_HashValue_in_vec()](struct@SHA1#method.get_HashValue_in_vec)
     /// rather than this method.
     ///
-    /// # Example
+    /// # Example for SHA1
     /// ```
     /// use Cryptocol::hash::SHA1;
     /// let txt = "This is an example of the method get_HashValue().";
@@ -496,6 +616,19 @@ SHA1_generic<K0, K1, K2, K3, H0, H1, H2, H3, H4, RL1, RL5, RL30, ROUND, N>
     /// hash.get_HashValue(hashValue.as_ptr() as *mut u8, hashValue.len());
     /// println!("Msg =\t\"{}\"\nHash =\t{:02X?}", txt, hashValue);
     /// assert_eq!(format!("{:02X?}", hashValue), "[E9, C6, F4, 3B, 77, AA, 27, A1, 6E, B4, F0, F5, 5B, F3, D8, C7, 3A, EB, 7F, 93]");
+    /// ```
+    /// 
+    /// # Example for MD5_Expanded
+    /// ```
+    /// use Cryptocol::hash::SHA1_Expanded;
+    /// type mySHA1 = SHA1_Expanded<5, 0x1111_1111, 0x4444_4444, 0x8888_8888, 0xcccc_cccc, 0xffff_ffff, 160>;
+    /// let txt = "This is an example of the method get_HashValue().";
+    /// let mut hashValue = [0_u8; 20];
+    /// let mut my_hash = mySHA1::new();
+    /// my_hash.digest_str(txt);
+    /// my_hash.get_HashValue(hashValue.as_ptr() as *mut u8, hashValue.len());
+    /// println!("Msg =\t\"{}\"\nHash =\t{:02X?}", txt, hashValue);
+    /// assert_eq!(format!("{:02X?}", hashValue), "[2B, C2, AC, 74, 3D, 46, 91, 1C, 89, 40, F7, 54, FD, 25, 4F, 19, CC, 9B, 18, 61]");
     /// ```
     /// 
     /// # Big-endian issue
@@ -520,6 +653,9 @@ SHA1_generic<K0, K1, K2, K3, H0, H1, H2, H3, H4, RL1, RL5, RL30, ROUND, N>
     // pub fn get_HashValue_in_string(&self) -> String
     /// Returns a hash value in the form of String object.
     /// 
+    /// # Output
+    /// It returns String object.
+    /// 
     /// # Counterpart Methods
     /// - If you want to get the hash value in the form of array object,
     /// you are highly recommended to use the method
@@ -534,7 +670,7 @@ SHA1_generic<K0, K1, K2, K3, H0, H1, H2, H3, H4, RL1, RL5, RL30, ROUND, N>
     /// [get_HashValue()](struct@SHA1#method.get_HashValue)
     /// rather than this method.
     ///
-    /// # Example
+    /// # Example for SHA1
     /// ```
     /// use Cryptocol::hash::SHA1;
     /// let txt = "This is an example of the method get_HashValue_in_string().";
@@ -542,6 +678,17 @@ SHA1_generic<K0, K1, K2, K3, H0, H1, H2, H3, H4, RL1, RL5, RL30, ROUND, N>
     /// hash.digest_str(txt);
     /// println!("Msg =\t\"{}\"\nHash =\t{}", txt, hash.get_HashValue_in_string());
     /// assert_eq!(hash.get_HashValue_in_string(), "899B9673103FCB06B237A5A6A7D04D749EA4BD92");
+    /// ```
+    /// 
+    /// # Example for SHA1_Expanded
+    /// ```
+    /// use Cryptocol::hash::SHA1_Expanded;
+    /// type mySHA1 = SHA1_Expanded<5, 0x1111_1111, 0x4444_4444, 0x8888_8888, 0xcccc_cccc, 0xffff_ffff, 160>;
+    /// let txt = "This is an example of the method get_HashValue_in_string().";
+    /// let mut my_hash = mySHA1::new();
+    /// my_hash.digest_str(txt);
+    /// println!("Msg =\t\"{}\"\nHash =\t{}", txt, my_hash.get_HashValue_in_string());
+    /// assert_eq!(my_hash.get_HashValue_in_string(), "EA946E24D16483679986EEEA53271E2533AE1292");
     /// ```
     /// 
     /// # Big-endian issue
@@ -568,6 +715,13 @@ SHA1_generic<K0, K1, K2, K3, H0, H1, H2, H3, H4, RL1, RL5, RL30, ROUND, N>
     // pub fn get_HashValue_in_array(&self) -> [u32; N]
     /// Returns a hash value in the form of array object.
     /// 
+    /// # Output
+    /// It returns [u32; 5].
+    /// 
+    /// # Panics
+    /// If N > 5, this method will panic
+    /// or its behaviour is undefined even if it won't panic.
+    /// 
     /// # Counterpart Methods
     /// - If you want to get the hash value in the form of String object,
     /// you are highly recommended to use the method
@@ -582,7 +736,7 @@ SHA1_generic<K0, K1, K2, K3, H0, H1, H2, H3, H4, RL1, RL5, RL30, ROUND, N>
     /// [get_HashValue()](struct@SHA1#method.get_HashValue)
     /// rather than this method.
     ///
-    /// # Example
+    /// # Example for SHA1
     /// ```
     /// use Cryptocol::hash::SHA1;
     /// let txt = "This is an example of the method get_HashValue_in_array().";
@@ -590,6 +744,17 @@ SHA1_generic<K0, K1, K2, K3, H0, H1, H2, H3, H4, RL1, RL5, RL30, ROUND, N>
     /// hash.digest_str(txt);
     /// println!("Msg =\t\"{}\"\nHash =\t{:02X?}", txt, hash.get_HashValue_in_array());
     /// assert_eq!(format!("{:02X?}", hash.get_HashValue_in_array()), "[E9840962, 837B21A9, D9321727, 74980B51, 364DD5A2]");
+    /// ```
+    /// 
+    /// # Example for SHA1_Expanded
+    /// ```
+    /// use Cryptocol::hash::SHA1_Expanded;
+    /// type mySHA1 = SHA1_Expanded<5, 0x1111_1111, 0x4444_4444, 0x8888_8888, 0xcccc_cccc, 0xffff_ffff, 160>;
+    /// let txt = "This is an example of the method get_HashValue_in_array().";
+    /// let mut my_hash = mySHA1::new();
+    /// my_hash.digest_str(txt);
+    /// println!("Msg =\t\"{}\"\nHash =\t{:02X?}", txt, my_hash.get_HashValue_in_array());
+    /// assert_eq!(format!("{:08X?}", my_hash.get_HashValue_in_array()), "[D55C8BDE, 1B7102CD, C9827513, 7DCD2E46, E3DE8B12]");
     /// ```
     /// 
     /// # Big-endian issue
@@ -606,6 +771,9 @@ SHA1_generic<K0, K1, K2, K3, H0, H1, H2, H3, H4, RL1, RL5, RL30, ROUND, N>
 
     // pub fn getHashValue_in_vec(&self) -> Vec
     /// Returns a hash value in the form of Vec object.
+    /// 
+    /// # Output
+    /// It returns Vec<u32>.
     /// 
     /// # Counterpart Methods
     /// - If you want to get the hash value in the form of String object,
@@ -630,6 +798,16 @@ SHA1_generic<K0, K1, K2, K3, H0, H1, H2, H3, H4, RL1, RL5, RL30, ROUND, N>
     /// println!("Msg =\t\"{}\"\nHash =\t{:02X?}", txt, hash.get_HashValue_in_vec());
     /// assert_eq!(format!("{:02X?}", hash.get_HashValue_in_vec()), "[96E00128, E1E04E29, F65ABA7B, AD10C0A2, 1BC438DA]");
     /// ```
+    /// # Example for MD5_Expanded
+    /// ```
+    /// use Cryptocol::hash::MD5_Expanded;
+    /// type myMD5 = MD5_Expanded<0x1111_1111, 0x4444_4444, 0x8888_8888, 0xffff_ffff, 96>;
+    /// let txt = "This is an example of the method get_HashValue_in_vec().";
+    /// let mut my_hash = myMD5::new();
+    /// my_hash.digest_str(txt);
+    /// println!("Msg =\t\"{}\"\nHash =\t{:08X?}", txt, my_hash.get_HashValue_in_vec());
+    /// assert_eq!(format!("{:08X?}", my_hash.get_HashValue_in_vec()), "[E02B8514, CC2B4041, 38CBFA58, 1E6B3F51]");
+    /// ```
     /// 
     /// # Big-endian issue
     /// It is just experimental for Big Endian CPUs. So, you are not encouraged
@@ -643,6 +821,92 @@ SHA1_generic<K0, K1, K2, K3, H0, H1, H2, H3, H4, RL1, RL5, RL30, ROUND, N>
         res
     }
 
+    // pub fn put_HashValue_in_array<T, const M: usize>(&self, out: &mut [T; M])
+    /// Puts a hash value in the form of array object.
+    /// 
+    /// # Panics
+    /// If M * mem::size_of::<T>() > 20 (= 4 * 5), this method will panic
+    /// or its behaviour is undefined even if it won't panic.
+    ///
+    /// # Example 1 for SHA1
+    /// ```
+    /// use Cryptocol::hash::SHA1;
+    /// let txt = "This is an example of the method put_HashValue_in_array().";
+    /// let mut hash = SHA1::new();
+    /// let mut hash_code = [0_u32; 5];
+    /// hash.digest_str(txt);
+    /// hash.put_HashValue_in_array(&mut hash_code);
+    /// println!("Msg =\t\"{}\"\nHash =\t{:08X?}", txt, hash_code);
+    /// assert_eq!(format!("{:08X?}", hash_code), "[43A03EAD, E239C73E, 239E1235, 55033CEE, 5603FDF8]");
+    /// ```
+    /// 
+    /// # Example 2 for SHA1_Expanded
+    /// ```
+    /// use Cryptocol::hash::SHA1_Expanded;
+    /// type mySHA1 = SHA1_Expanded<5, 0x1111_1111, 0x4444_4444, 0x8888_8888, 0xffff_ffff, 96>;
+    /// let txt = "This is an example of the method put_HashValue_in_array().";
+    /// let mut my_hash = mySHA1::new();
+    /// let mut hash_code = [0_u32; 5];
+    /// my_hash.digest_str(txt);
+    /// my_hash.put_HashValue_in_array(&mut hash_code);
+    /// println!("Msg =\t\"{}\"\nHash =\t{:08X?}", txt, hash_code);
+    /// assert_eq!(format!("{:08X?}", hash_code), "[F1B38744, D331E027, C10A5B1E, 2E8869B9, 42BEF118]");
+    /// ```
+    /// 
+    /// # Big-endian issue
+    /// It is just experimental for Big Endian CPUs. So, you are not encouraged
+    /// to use it for Big Endian CPUs for serious purpose. Only use this crate
+    /// for Big-endian CPUs with your own full responsibility.
+    pub fn put_HashValue_in_array<T, const M: usize>(&self, out: &mut [T; M])
+    where T: SmallUInt + Copy + Clone + Display + Debug + ToString
+    {
+        let res = self.get_HashValue_in_array();
+        let out_size = T::size_in_bytes() * M;
+        let length = if out_size < 20 {out_size} else {20};
+        unsafe { copy_nonoverlapping(res.as_ptr() as *const u8, out as *mut T as *mut u8, length); }
+    }
+
+    // pub fn tangle(&mut self, tangling: u64)
+    /// Tangles the hash value
+    /// 
+    /// # Argument
+    /// u32 constants to tangle the hash value
+    /// 
+    /// # Features
+    /// It is for using this struct as random number generator.
+    /// 
+    /// Example for SHA1
+    /// ```
+    /// use Cryptocol::hash::SHA1;
+    /// let txt = "TANGLING";
+    /// let mut hash = SHA1::new();
+    /// hash.digest_str(txt);
+    /// println!("Msg =\t\"{}\"\nHash =\t{:08X?}", txt, hash.get_HashValue_in_array());
+    /// assert_eq!(format!("{:08X?}", hash.get_HashValue_in_array()), "[5B296514, 79D48A17, 1ADABF55, 09CC69B9, 83477776]");
+    /// hash.tangle(1);
+    /// println!("Hash =\t{:08X?}", hash.get_HashValue_in_array());
+    /// assert_eq!(format!("{:08X?}", hash.get_HashValue_in_array()), "[6D00CD91, 2A9BAD37, 210A8909, B6A83E2F, 5D986325]");
+    /// hash.tangle(1);
+    /// println!("Hash =\t{:08X?}", hash.get_HashValue_in_array());
+    /// assert_eq!(format!("{:08X?}", hash.get_HashValue_in_array()), "[E41C001F, 476FDC14, 1166767C, 3C09AE4D, 447B9B2F]");
+    /// ```
+    /// 
+    /// Example for SHA1_Expanded
+    /// ```
+    /// use Cryptocol::hash::SHA1_Expanded;
+    /// type mySHA1 = SHA1_Expanded<5, 0x1111_1111, 0x4444_4444, 0x8888_8888, 0xcccc_cccc, 0xffff_ffff, 160>;
+    /// let txt = "TANGLING";
+    /// let mut my_hash = mySHA1::new();
+    /// my_hash.digest_str(txt);
+    /// println!("Msg =\t\"{}\"\nHash =\t{:08X?}", txt, my_hash.get_HashValue_in_array());
+    /// assert_eq!(format!("{:08X?}", my_hash.get_HashValue_in_array()), "[570C0960, 44388BBA, 0DD84AC9, 2F78A2F8, E514D1FD]");
+    /// my_hash.tangle(1);
+    /// println!("Hash =\t{:08X?}", my_hash.get_HashValue_in_array());
+    /// assert_eq!(format!("{:08X?}", my_hash.get_HashValue_in_array()), "[AE8C42A9, 4CFC9130, FF606528, E4876633, 27FC359F]");
+    /// my_hash.tangle(1);
+    /// println!("Hash =\t{:08X?}", my_hash.get_HashValue_in_array());
+    /// assert_eq!(format!("{:08X?}", my_hash.get_HashValue_in_array()), "[2E33CBCF, 800599AD, 98827D7A, 41AA8BCB, D2D011FD]");
+    /// ```
     #[inline]
     pub fn tangle(&mut self, tangling: u64)
     {
@@ -652,7 +916,7 @@ SHA1_generic<K0, K1, K2, K3, H0, H1, H2, H3, H4, RL1, RL5, RL30, ROUND, N>
             { m[i] = self.hash_code[i].get(); }
         m[5] = common.get_uint_(0);
         m[6] = common.get_uint_(1);
-        self.finalize(self.hash_code.as_ptr() as *const u8, 28);
+        self.finalize(m.as_ptr() as *const u8, 28);
     }
 
     // fn initialize(&mut self)
@@ -767,10 +1031,10 @@ SHA1_generic<K0, K1, K2, K3, H0, H1, H2, H3, H4, RL1, RL5, RL30, ROUND, N>
 }
 
 
-impl<const K0: u32, const K1: u32, const K2: u32, const K3: u32,
-    const H0: u32, const H1: u32, const H2: u32, const H3: u32, const H4: u32,
-    const RL1: u32, const RL5: u32, const RL30: u32, const ROUND: usize, const N: usize>
-Display for SHA1_generic<K0, K1, K2, K3, H0, H1, H2, H3, H4, RL1, RL5, RL30, ROUND, N>
+impl<const N: usize, const H0: u32, const H1: u32, const H2: u32, const H3: u32,
+        const H4: u32, const ROUND: usize, const K0: u32, const K1: u32, const K2: u32,
+        const K3: u32, const RL1: u32, const RL5: u32, const RL30: u32>
+Display for SHA1_generic<N, H0, H1, H2, H3, H4, ROUND, K0, K1, K2, K3, RL1, RL5, RL30>
 {
     /// Formats the value using the given formatter.
     /// You will hardly use this method directly.
@@ -780,7 +1044,7 @@ Display for SHA1_generic<K0, K1, K2, K3, H0, H1, H2, H3, H4, RL1, RL5, RL30, ROU
     /// `f` is a buffer, this method must write the formatted string into it.
     /// [Read more](https://doc.rust-lang.org/core/fmt/trait.Display.html#tymethod.fmt)
     /// 
-    /// # Example 1 for the method to_string()
+    /// # Example 1 for the method to_string() for SHA1
     /// ```
     /// use Cryptocol::hash::SHA1;
     /// let mut hash = SHA1::new();
@@ -790,7 +1054,18 @@ Display for SHA1_generic<K0, K1, K2, K3, H0, H1, H2, H3, H4, RL1, RL5, RL30, ROU
     /// assert_eq!(hash.to_string(), "8D0A6284BBFF4DE8D68962A924842C80959B0404");
     /// ```
     /// 
-    /// # Example 2 for the use in the macro println!()
+    /// # Example 2 for the method to_string() for SHA1_Expanded
+    /// ```
+    /// use Cryptocol::hash::SHA1_Expanded;
+    /// type mySHA1 = SHA1_Expanded<5, 0x1111_1111, 0x4444_4444, 0x8888_8888, 0xcccc_cccc, 0xffff_ffff, 160>;
+    /// let mut my_hash = mySHA1::new();
+    /// let txt = "Display::fmt() automagically implement to_string().";
+    /// my_hash.digest_str(txt);
+    /// println!("Msg =\t\"{}\"\nHash =\t{}", txt, my_hash.to_string());
+    /// assert_eq!(my_hash.to_string(), "54F0234F7188202D98EDDC643F71D95BEDE77ED7");
+    /// ```
+    /// 
+    /// # Example 3 for the use in the macro println!() for SHA1
     /// ```
     /// use Cryptocol::hash::SHA1;
     /// let mut hash = SHA1::new();
@@ -798,6 +1073,17 @@ Display for SHA1_generic<K0, K1, K2, K3, H0, H1, H2, H3, H4, RL1, RL5, RL30, ROU
     /// hash.digest_str(txt);
     /// println!("Msg =\t\"{}\"\nHash =\t{}", txt, hash);
     /// assert_eq!(hash.to_string(), "835CEFA297628E4DADBDA011C5FDEA68D88A8EE8");
+    /// ```
+    /// 
+    /// # Example 4 for the use in the macro println!() for SHA1_Expanded
+    /// ```
+    /// use Cryptocol::hash::SHA1_Expanded;
+    /// type mySHA1 = SHA1_Expanded<5, 0x1111_1111, 0x4444_4444, 0x8888_8888, 0xcccc_cccc, 0xffff_ffff, 160>;
+    /// let mut my_hash = mySHA1::new();
+    /// let txt = "Display::fmt() enables the object to be printed in the macro println!() directly for example.";
+    /// my_hash.digest_str(txt);
+    /// println!("Msg =\t\"{}\"\nHash =\t{}", txt, my_hash);
+    /// assert_eq!(my_hash.to_string(), "78083F4E573928D6C4E9F869036F8A4D4D549E9F");
     /// ```
     fn fmt(&self, f: &mut Formatter) -> fmt::Result
     {

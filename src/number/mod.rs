@@ -6,6 +6,8 @@
 // This file may not be copied, modified, or distributed
 // except according to those terms.
 
+//! various big numbers bigger than 128-bit integer
+//! 
 //! # Introduction
 //! The module that contains a few sub-modules to define Big numbers bigger
 //! than 128-bit integer and their arithmatic operations

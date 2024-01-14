@@ -9230,8 +9230,8 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     {
         let mut adder;
         let mut highest = ((Self::size_in_bits() as u128 - self.leading_zeros() as u128).wrapping_div(exp.into_u128())) as usize;
-        let mut high = highest;
-        let mut low = 0;
+        let mut high;
+        let mut low;
         let mut mid;
         let mut res = Self::zero();
         let mut sum;
@@ -13274,8 +13274,8 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     {
         let mut adder;
         let mut highest = (Self::size_in_bits() - self.leading_zeros() as usize) >> 1;
-        let mut high = highest;
-        let mut low = 0;
+        let mut high;
+        let mut low;
         let mut mid;
         let mut res = Self::zero();
         let mut sum;
@@ -13334,8 +13334,8 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     {
         let mut adder;
         let mut highest = Self::from_uint(Self::size_in_bits() - self.leading_zeros() as usize).wrapping_add(&exp).into_usize();
-        let mut high = highest;
-        let mut low = 0;
+        let mut high;
+        let mut low;
         let mut mid;
         let mut res = Self::zero();
         let mut sum;

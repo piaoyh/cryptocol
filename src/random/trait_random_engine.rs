@@ -13,7 +13,7 @@ use std::cmp::{ PartialEq, PartialOrd};
 
 use crate::number::small_uint::*;
 
-pub trait PRNG
+pub trait Random_Engine
 {
     fn new() -> Self;
 
