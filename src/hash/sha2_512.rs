@@ -171,6 +171,8 @@ pub type SHA2_512_256 = SHA2_512_256_Expanded;
 /// - Digital Signature
 /// - Implementing proof of work for block chain.
 /// - Study of hash algorithms
+/// - Cryptanalysis Research to find the weakness of SHA-512 and Merkle-Damgard
+/// construction which MD2, MD4, MD5, SHA0, SHA1, and all SHA2 family use
 /// 
 /// # Generic Parameters
 /// You can create your own expanded version of SHA-2-512 and SHA-2-512-384 by
@@ -606,19 +608,19 @@ SHA2_512_Generic<N, H0, H1, H2, H3, H4, H5, H6, H7, ROUND,
     /// # Counterpart Methods
     /// - If you want to compute of the hash value of a string slice,
     /// you are highly recommended to use the method
-    /// [digest_str()](struct@SHA1#method.digest_str)
+    /// [digest_str()](struct@SHA2_512_Generic#method.digest_str)
     /// rather than this method.
     /// - If you want to compute of the hash value of the content of String
     /// object, you are highly recommended to use the method
-    /// [digest_string()](struct@SHA1#method.digest_string)
+    /// [digest_string()](struct@SHA2_512_Generic#method.digest_string)
     /// rather than this method.
     /// - If you want to compute of the hash value of the content of Array
     /// object, you are highly recommended to use the method
-    /// [digest_array()](struct@SHA1#method.digest_array)
+    /// [digest_array()](struct@SHA2_512_Generic#method.digest_array)
     /// rather than this method.
     /// - If you want to compute of the hash value of the content of Vec
     /// object, you are highly recommended to use the method
-    /// [digest_vec()](struct@SHA1#method.digest_array)
+    /// [digest_vec()](struct@SHA2_512_Generic#method.digest_array)
     /// rather than this method.
     ///
     /// # Example 1 for SHA2_512
@@ -689,19 +691,19 @@ SHA2_512_Generic<N, H0, H1, H2, H3, H4, H5, H6, H7, ROUND,
     /// # Counterpart Methods
     /// - If you want to compute of the hash value of a string slice,
     /// you are highly recommended to use the method
-    /// [digest_str()](struct@SHA1#method.digest_str)
+    /// [digest_str()](struct@SHA2_512_Generic#method.digest_str)
     /// rather than this method.
     /// - If you want to compute of the hash value of the content of String
     /// object, you are highly recommended to use the method
-    /// [digest_string()](struct@SHA1#method.digest_string)
+    /// [digest_string()](struct@SHA2_512_Generic#method.digest_string)
     /// rather than this method.
     /// - If you want to compute of the hash value of the content of Array
     /// object, you are highly recommended to use the method
-    /// [digest_array()](struct@SHA1#method.digest_array)
+    /// [digest_array()](struct@SHA2_512_Generic#method.digest_array)
     /// rather than this method.
     /// - If you want to compute of the hash value of the content of Vec
     /// object, you are highly recommended to use the method
-    /// [digest_vec()](struct@SHA1#method.digest_array)
+    /// [digest_vec()](struct@SHA2_512_Generic#method.digest_array)
     /// rather than this method.
     ///
     /// # Example 1 for SHA2_512
@@ -774,19 +776,19 @@ SHA2_512_Generic<N, H0, H1, H2, H3, H4, H5, H6, H7, ROUND,
     /// # Counterpart Methods
     /// - If you want to compute of the hash value of the content of String
     /// object, you are highly recommended to use the method
-    /// [digest_string()](struct@SHA1#method.digest_string)
+    /// [digest_string()](struct@SHA2_512_Generic#method.digest_string)
     /// rather than this method.
     /// - If you want to compute of the hash value of the content of Array
     /// object, you are highly recommended to use the method
-    /// [digest_array()](struct@SHA1#method.digest_array)
+    /// [digest_array()](struct@SHA2_512_Generic#method.digest_array)
     /// rather than this method.
     /// - If you want to compute of the hash value of the content of Vec
     /// object, you are highly recommended to use the method
-    /// [digest_vec()](struct@SHA1#method.digest_array)
+    /// [digest_vec()](struct@SHA2_512_Generic#method.digest_array)
     /// rather than this method.
     /// - If you want to use this method from other programming languages such
     /// as C/C++, you are highly recommended to use the method
-    /// [digest()](struct@SHA1#method.digest) rather than this method.
+    /// [digest()](struct@SHA2_512_Generic#method.digest) rather than this method.
     ///
     /// # Example 1 for SHA2_512
     /// ```
@@ -843,19 +845,19 @@ SHA2_512_Generic<N, H0, H1, H2, H3, H4, H5, H6, H7, ROUND,
     /// # Counterpart Methods
     /// - If you want to compute of the hash value of a string slice,
     /// you are highly recommended to use the method
-    /// [digest_str()](struct@SHA1#method.digest_str)
+    /// [digest_str()](struct@SHA2_512_Generic#method.digest_str)
     /// rather than this method.
     /// - If you want to compute of the hash value of the content of Array
     /// object, you are highly recommended to use the method
-    /// [digest_array()](struct@SHA1#method.digest_array)
+    /// [digest_array()](struct@SHA2_512_Generic#method.digest_array)
     /// rather than this method.
     /// - If you want to compute of the hash value of the content of Vec
     /// object, you are highly recommended to use the method
-    /// [digest_vec()](struct@SHA1#method.digest_array)
+    /// [digest_vec()](struct@SHA2_512_Generic#method.digest_array)
     /// rather than this method.
     /// - If you want to use this method from other programming languages such
     /// as C/C++, you are highly recommended to use the method
-    /// [digest()](struct@SHA1#method.digest) rather than this method.
+    /// [digest()](struct@SHA2_512_Generic#method.digest) rather than this method.
     ///
     /// # Example 1 for SHA2_512
     /// ```
@@ -910,19 +912,19 @@ SHA2_512_Generic<N, H0, H1, H2, H3, H4, H5, H6, H7, ROUND,
     /// # Counterpart Methods
     /// - If you want to compute of the hash value of a string slice,
     /// you are highly recommended to use the method
-    /// [digest_str()](struct@SHA1#method.digest_str)
+    /// [digest_str()](struct@SHA2_512_Generic#method.digest_str)
     /// rather than this method.
     /// - If you want to compute of the hash value of the content of String
     /// object, you are highly recommended to use the method
-    /// [digest_string()](struct@SHA1#method.digest_string)
+    /// [digest_string()](struct@SHA2_512_Generic#method.digest_string)
     /// rather than this method.
     /// - If you want to compute of the hash value of the content of Vec
     /// object, you are highly recommended to use the method
-    /// [digest_vec()](struct@SHA1#method.digest_array)
+    /// [digest_vec()](struct@SHA2_512_Generic#method.digest_array)
     /// rather than this method.
     /// - If you want to use this method from other programming languages such
     /// as C/C++, you are highly recommended to use the method
-    /// [digest()](struct@SHA1#method.digest) rather than this method.
+    /// [digest()](struct@SHA2_512_Generic#method.digest) rather than this method.
     ///
     /// # Example 1 for SHA2_512
     /// ```
@@ -978,19 +980,19 @@ SHA2_512_Generic<N, H0, H1, H2, H3, H4, H5, H6, H7, ROUND,
     /// # Counterpart Methods
     /// - If you want to compute of the hash value of a string slice,
     /// you are highly recommended to use the method
-    /// [digest_str()](struct@SHA1#method.digest_str)
+    /// [digest_str()](struct@SHA2_512_Generic#method.digest_str)
     /// rather than this method.
     /// - If you want to compute of the hash value of the content of String
     /// object, you are highly recommended to use the method
-    /// [digest_string()](struct@SHA1#method.digest_string)
+    /// [digest_string()](struct@SHA2_512_Generic#method.digest_string)
     /// rather than this method.
     /// - If you want to compute of the hash value of the content of Array
     /// object, you are highly recommended to use the method
-    /// [digest_array()](struct@SHA1#method.digest_array)
+    /// [digest_array()](struct@SHA2_512_Generic#method.digest_array)
     /// rather than this method.
     /// - If you want to use this method from other programming languages such
     /// as C/C++, you are highly recommended to use the method
-    /// [digest()](struct@SHA1#method.digest) rather than this method.
+    /// [digest()](struct@SHA2_512_Generic#method.digest) rather than this method.
     ///
     /// # Example 1 for SHA2_512
     /// ```
@@ -1050,15 +1052,15 @@ SHA2_512_Generic<N, H0, H1, H2, H3, H4, H5, H6, H7, ROUND,
     /// # Counterpart Methods
     /// - If you want to get the hash value in the form of String object,
     /// you are highly recommended to use the method
-    /// [get_HashValue_string()](struct@SHA1#method.get_HashValue_string)
+    /// [get_HashValue_string()](struct@SHA2_512_Generic#method.get_HashValue_string)
     /// rather than this method.
     /// - If you want to get the hash value in the form of array object,
     /// you are highly recommended to use the method
-    /// [get_HashValue_in_array()](struct@SHA1#method.get_HashValue_in_array)
+    /// [get_HashValue_in_array()](struct@SHA2_512_Generic#method.get_HashValue_in_array)
     /// rather than this method.
     /// - If you want to get the hash value in the form of Vec object,
     /// you are highly recommended to use the method
-    /// [get_HashValue_in_vec()](struct@SHA1#method.get_HashValue_in_vec)
+    /// [get_HashValue_in_vec()](struct@SHA2_512_Generic#method.get_HashValue_in_vec)
     /// rather than this method.
     ///
     /// # Example 1 for SHA2_512
@@ -1125,15 +1127,15 @@ SHA2_512_Generic<N, H0, H1, H2, H3, H4, H5, H6, H7, ROUND,
     /// # Counterpart Methods
     /// - If you want to get the hash value in the form of array object,
     /// you are highly recommended to use the method
-    /// [get_HashValue_in_array()](struct@SHA1#method.get_HashValue_in_array)
+    /// [get_HashValue_in_array()](struct@SHA2_512_Generic#method.get_HashValue_in_array)
     /// rather than this method.
     /// - If you want to get the hash value in the form of Vec object,
     /// you are highly recommended to use the method
-    /// [get_HashValue_in_vec()](struct@SHA1#method.get_HashValue_in_vec)
+    /// [get_HashValue_in_vec()](struct@SHA2_512_Generic#method.get_HashValue_in_vec)
     /// rather than this method.
     /// - If you want to use this method from other programming languages such
     /// as C/C++, you are highly recommended to use the method
-    /// [get_HashValue()](struct@SHA1#method.get_HashValue)
+    /// [get_HashValue()](struct@SHA2_512_Generic#method.get_HashValue)
     /// rather than this method.
     ///
     /// # Example 1 for SHA2_512
@@ -1200,15 +1202,15 @@ SHA2_512_Generic<N, H0, H1, H2, H3, H4, H5, H6, H7, ROUND,
     /// # Counterpart Methods
     /// - If you want to get the hash value in the form of String object,
     /// you are highly recommended to use the method
-    /// [get_HashValue_string()](struct@SHA1#method.get_HashValue_string)
+    /// [get_HashValue_string()](struct@SHA2_512_Generic#method.get_HashValue_string)
     /// rather than this method.
     /// - If you want to get the hash value in the form of Vec object,
     /// you are highly recommended to use the method
-    /// [get_HashValue_in_vec()](struct@SHA1#method.get_HashValue_in_vec)
+    /// [get_HashValue_in_vec()](struct@SHA2_512_Generic#method.get_HashValue_in_vec)
     /// rather than this method.
     /// - If you want to use this method from other programming languages such
     /// as C/C++, you are highly recommended to use the method
-    /// [get_HashValue()](struct@SHA1#method.get_HashValue)
+    /// [get_HashValue()](struct@SHA2_512_Generic#method.get_HashValue)
     /// rather than this method.
     ///
     /// # Example 1 for SHA2_512
@@ -1262,15 +1264,15 @@ SHA2_512_Generic<N, H0, H1, H2, H3, H4, H5, H6, H7, ROUND,
     /// # Counterpart Methods
     /// - If you want to get the hash value in the form of String object,
     /// you are highly recommended to use the method
-    /// [get_HashValue_string()](struct@SHA1#method.get_HashValue_string)
+    /// [get_HashValue_string()](struct@SHA2_512_Generic#method.get_HashValue_string)
     /// rather than this method.
     /// - If you want to get the hash value in the form of array object,
     /// you are highly recommended to use the method
-    /// [get_HashValue_in_array()](struct@SHA1#method.get_HashValue_in_array)
+    /// [get_HashValue_in_array()](struct@SHA2_512_Generic#method.get_HashValue_in_array)
     /// rather than this method.
     /// - If you want to use this method from other programming languages such
     /// as C/C++, you are highly recommended to use the method
-    /// [get_HashValue()](struct@SHA1#method.get_HashValue)
+    /// [get_HashValue()](struct@SHA2_512_Generic#method.get_HashValue)
     /// rather than this method.
     ///
     /// # Example 1 for SHA2_512
@@ -1317,6 +1319,9 @@ SHA2_512_Generic<N, H0, H1, H2, H3, H4, H5, H6, H7, ROUND,
 
     // pub fn put_HashValue_in_array<T, const M: usize>(&self, out: &mut [T; M])
     /// Puts a hash value in the form of array object.
+    /// 
+    /// # Argument
+    /// `out` is the array [T; M] which is the place to put the hash value.
     /// 
     /// # Features
     /// If M * mem::size_of::<T>() > mem::size_of::<u32>() * N,
@@ -1414,7 +1419,7 @@ SHA2_512_Generic<N, H0, H1, H2, H3, H4, H5, H6, H7, ROUND,
     /// Tangles the hash value
     /// 
     /// # Argument
-    /// u32 constants to tangle the hash value
+    /// u64 constants to tangle the hash value
     /// 
     /// # Features
     /// It is for using this struct as random number generator.

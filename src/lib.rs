@@ -20,7 +20,8 @@
 //! 
 //! This crate is optimized for Little-endian CPUs because Little-Endian CPUs
 //! are far more popular than Big-endian CPUs. For the information about
-//! Endianness (including Little-endian and Big-endian) [Read more](https://en.wikipedia.org/wiki/Endianness).
+//! Endianness (including Little-endian and Big-endian)
+//! [Read more](https://en.wikipedia.org/wiki/Endianness).
 //! 
 //! # Big-endian issue
 //! This crate is just experimental for Big-endian CPUs. So, you are not
@@ -34,28 +35,42 @@
 //! documentation more than 80% or have not yet even been started to implement.
 //! 
 //! ## Foundations mainly for Big Numbers and also for other modules
-//! - [ ] Unions for primitive data types and their implementation --- 
-//! [`ShortUnion`](number/small_int_unions/union.ShortUnion.html#union.ShortUnion),
-//! [`IntUnion`](number/small_int_unions/union.IntUnion.html#union.IntUnion),
-//! [`LongUnion`](number/small_int_unions/union.LongUnion.html#union.LongUnion),
-//! [`LongerUnion`](number/small_int_unions/union.LongerUnion.html#union.LongerUnion), and
-//! [`SizeUnion`](number/small_int_unions/union.SizeUnion.html#union.SizeUnion)
-//! - [ ] Trait SmallUInt and its implementation of primitive data types and Unions ---
-//! [SmallUInt](number/small_uint/trait.SmallUInt.html#trait.SmallUInt)
-//! - [ ] Trait SmallSInt and its implementation of primitive data types and Unions
+//! - [ ] Unions for primitive data types and their implementation ---
+//!     [`ShortUnion`](number/small_int_unions/union.ShortUnion.html#union.ShortUnion),
+//!     [`IntUnion`](number/small_int_unions/union.IntUnion.html#union.IntUnion),
+//!     [`LongUnion`](number/small_int_unions/union.LongUnion.html#union.LongUnion),
+//!     [`LongerUnion`](number/small_int_unions/union.LongerUnion.html#union.LongerUnion),
+//!     and
+//!     [`SizeUnion`](number/small_int_unions/union.SizeUnion.html#union.SizeUnion)
+//! - [ ] Trait SmallUInt and its implementation of primitive data types ---
+//!     [SmallUInt](number/small_uint/trait.SmallUInt.html#trait.SmallUInt)
+//! - [ ] Trait SmallSInt and its implementation of primitive data types
 //! 
 //! ## Big Numbers
-//! - [ ] Fixed Sized Big Unsigned Integer Operation --- [`BigUInt`](number/big_uint/struct.BigUInt.html#struct.BigUInt)
+//! - [ ] Fixed Sized Big Unsigned Integer Operation ---
+//!     [`BigUInt`](number/big_uint/struct.BigUInt.html#struct.BigUInt)
 //! - [ ] Fixed Sized Big Signed Integer Operation --- BigSInt
 //! - [ ] Variable Sized Big Signed Integer Operation --- LargeInt
 //! 
 //! ## Hash Algorithms
-//! - [X] MD4 hash algorithms based on 128 bits --- Includes MD4 and its expanded versions. [`MD4_Generic`](hash/md4/struct.MD4_Generic.html#struct.MD4_Generic)
-//! - [X] MD5 hash algorithms based on 128 bits --- Includes MD5 and its expanded versions. [`MD5_Generic`](hash/md5/struct.MD5_Generic.html#struct.MD5_Generic)
-//! - [X] SHA-1 hash algorithms based on 160 bits --- Includes SHA-1, SHA-0, and their expanded versions. [`SHA1_Generic`](hash/sha1/struct.SHA1_Generic.html#struct.SHA1_Generic)
-//! - [X] SHA-2 hash algorithms based on 256 bits --- Includes SHA-256, SHA-224, and their expanded versions. [`SHA2_Generic_256`](hash/sha2_256/struct.SHA2_Generic_256.html#struct.SHA2_Generic_256)
-//! - [ ] SHA-2 hash algorithms based on 512 bits --- Includes SHA-512, SHA-384, SHA-512/256, and their expanded versions. [`SHA2_Generic_512`](hash/sha2_512/struct.SHA2_Generic_512.html#struct.SHA2_Generic_512)
-//! - [ ] SHA-2 hash algorithms based on 512/t bits --- Includes 512/256, SHA-512/224, and their expanded versions. [`SHA2_Generic_512_t`](hash/sha2_512_t/struct.SHA2_Generic_512_t.html#struct.SHA2_Generic_512_t)
+//! - [X] MD4 hash algorithms based on 128 bits
+//!     --- Includes MD4 and its expanded versions.
+//!     [`MD4_Generic`](hash/md4/struct.MD4_Generic.html#struct.MD4_Generic)
+//! - [X] MD5 hash algorithms based on 128 bits
+//!     --- Includes MD5 and its expanded versions.
+//!     [`MD5_Generic`](hash/md5/struct.MD5_Generic.html#struct.MD5_Generic)
+//! - [X] SHA-1 hash algorithms based on 160 bits
+//!     --- Includes SHA-1, SHA-0, and their expanded versions.
+//!     [`SHA1_Generic`](hash/sha1/struct.SHA1_generic.html#struct.SHA1_generic)
+//! - [X] SHA-2 hash algorithms based on 256 bits
+//!     --- Includes SHA-256, SHA-224, and their expanded versions.
+//!     [`SHA2_256_Generic`](hash/sha2_256/struct.SHA2_256_Generic.html#struct.SHA2_256_Generic)
+//! - [X] SHA-2 hash algorithms based on 512 bits
+//!     --- Includes SHA-512, SHA-384, SHA-512/256, and their expanded versions.
+//!     [`SHA2_512_Generic`](hash/sha2_512/struct.SHA2_512_Generic.html#struct.SHA2_512_Generic)
+//! - [X] SHA-2 hash algorithms based on 512/t bits
+//!     --- Includes 512/256, SHA-512/224, and their expanded versions.
+//!     [`SHA2_512_t_Generic`](hash/sha2_512_t/struct.SHA2_512_t_Generic.html#struct.SHA2_512_t_Generic)
 //! - [ ] SHA-3 (SHA3-224)
 //! - [ ] SHA-3 (SHA3-256)
 //! - [ ] SHA-3 (SHA3-384)
@@ -69,7 +84,15 @@
 //! - [ ] AES
 //! 
 //! ## Pseudo-Random Number Generator Algorithms
-//! - [ ] The implementation of hash algorithms for the Hash-like Random Number Generator trait
+//! - [ ] The Pseudo-random number generator wrappers
+//!     --- struct [`Random_Generic`](random/random/struct.Random_Generic.html#struct.Random_Generic)
+//!     and trait
+//!     [Random_Engine](random/trait_random_engine/trait.Random_Engine.html#trait.Random_Engine)
+//! - [X] The implementation of `Random_Engine` for hash algorithm `MD4_Generic`
+//! - [X] The implementation of `Random_Engine` for hash algorithm `MD5_Generic`
+//! - [X] The implementation of `Random_Engine` for hash algorithm `SHA1_Generic`
+//! - [X] The implementation of `Random_Engine` for hash algorithm `SHA2_256_Generic`
+//! - [X] The implementation of `Random_Engine` for hash algorithm `SHA2_512_Generic`
 //! 
 //! ## Asymmetric-Key Cryptographic Algorithms
 //! - [ ] Diffie-Hellman
@@ -80,7 +103,7 @@
 //! the version number 1.0.0.0 will be given. After that whenever another
 //! functionality is added to this crate, the version number will get higher
 //! beyond 1.0.0.0. Before the version number 1.0.0.0, the maximum version
-//! number will be 0.24.x.x since there are all twenty-three functionalities
+//! number will be 0.30.x.x since there are all thirty functionalities
 //! listed above. So, for example, even if the version number is 0.5.0.0,
 //! it does not mean that 50% of all functionalities are implemented.
 

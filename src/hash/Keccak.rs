@@ -109,49 +109,181 @@ use crate::number::{ SmallUInt, IntUnion, LongUnion };
 /// for Big-endian CPUs with your own full responsibility.
 #[derive(Debug, Clone)]
 #[allow(non_camel_case_types)]
-pub struct Keccak_Generic<const N: usize = 8, const ROUND: usize = 48, T,
-        const R00: u32 = 3, const R01: u32 = 7, const R02: u32 = 11, const R03: u32 = 19,
-        const R10: u32 = 3, const R11: u32 = 5, const R12: u32 = 9, const R13: u32 = 13, 
-        const R20: u32 = 3, const R21: u32 = 9, const R22: u32 = 11, const R23: u32 = 15,
-        const X: usize = 5, const Y: usize = 5, const ROUND: usize = 0>
+pub struct Keccak_Generic<const N: usize = 8, T = u64,
+        const THETA_LEFT: usize = 1, const THETA_RIGHT: usize = 1,
+        const THETA_RR1: usize = 1,
+        const RHO_NEXT1: usize = 1, const RHO_NEXT2: usize = 2, 
+        const SIZE: usize = 5, const ROUND: usize = 0>
     where T: SmallUInt + Copy + Clone + Display + Debug + ToString
 {
-    hash_code: [LongUnion; 8],
+    state: [[T; SIZE]; SIZE],
 }
 
-impl<const N: usize, T,
-    const R00: u32, const R01: u32, const R02: u32, const R03: u32,
-    const R10: u32, const R11: u32, const R12: u32, const R13: u32,
-    const R20: u32, const R21: u32, const R22: u32, const R23: u32,
-    const X: usize, const Y: usize, const ROUND: usize>
-Keccak_Generic<N, R00, R01, R02, R03, R10, R11, R12, R13, R20, R21, R22, R23, X, Y, ROUND>
+impl<const N: usize, T, const THETA_LEFT: usize, const THETA_RIGHT: usize,
+    const RR1: usize,
+    const SIZE: usize, const ROUND: usize>
+Keccak_Generic<N, T, THETA_LEFT, THETA_RIGHT, RR1, X, Y, ROUND>
 where T: SmallUInt + Copy + Clone + Display + Debug + ToString
 {
     const ROUNDS: usize = if ROUND == 0 {12 + T::size_in_bits()} else {ROUND};
+    const RC: [u64; 24] = [ 0x0000000000000001, 0x0000000000008082, 0x800000000000808A, 
+                            0x8000000080008000, 0x000000000000808B, 0x0000000080000001, 
+                            0x8000000080008081, 0x8000000000008009, 0x000000000000008A, 
+                            0x0000000000000088, 0x0000000080008009, 0x000000008000000A, 
+                            0x000000008000808B, 0x800000000000008B, 0x8000000000008089, 
+                            0x8000000000008003, 0x8000000000008002, 0x8000000000000080, 
+                            0x000000000000800A, 0x800000008000000A, 0x8000000080008081, 
+                            0x8000000000008080, 0x0000000080000001, 0x8000000080008008 ];
 
-    fn theta(input: &[[T; X]; Y]) -> [[T; X]; Y]
+    #[inline]
+    pub fn new() -> Self
+    {
+        Self { state: [[T::zero(); SIZE]; SIZE] }
+    }
+
+    pub fn initialize()
+    {
+        for y in 0..SIZE
+        {
+            for x in 0..SIZE
+                { self.state[x][y] = 0; }
+        }
+    }
+
+    pub fn absorb(message: *const u8, lemgth_in_bute: isize)
+    {
+        const SHIFT_NUM: usize = T::size_in_bits().ilog(2);
+        const CHUNK_NUM: usize = 16;
+        self.initialize();
+        let length_done = (length_in_bytes >> SHIFT_NUM) as usize;
+        for i in 0..length_done
+            { self.update(unsafe { from_raw_parts(message.add(i << SHIFT_NUM) as *const T, SIZE * SIZE) } ); }
+        self.finalize(unsafe { message.add(length_done << SHIFT_NUM) }, length_in_bytes);
+
+    }
+
+    fn convert_message_to_state(mut message: [T; SIZE * SIZE])
+    {
+        let mut i = 0_usize;
+        for y in 0..SIZE
+        {
+            for x in 0..SIZE
+            {
+                self.state[x][y] = message[i];
+                i += 1;
+            }
+        }
+    }
+
+    fn convert_state_to_message() -> [T; SIZE * SIZE]
+    {
+        let mut i = 0_usize;
+        let mut message: [T; SIZE * SIZE];
+        for y in 0..SIZE
+        {
+            for x in 0..SIZE
+            {
+                message[i] = self.state[x][y];
+                i += 1;
+            }
+        }
+        message
+    }
+
+    fn theta(input: &[[T; SIZE]; SIZE]) -> [[T; SIZE]; SIZE]
     {
         let mut c: [T::zero(); X];
-        for x in 0..X
+        for x in 0..SIZE
         {
-            for y in 0..Y
+            for y in 0..SIZE
                 { c[x] ^= input[x][y]; }
         }
 
-        let mut d: [T::zero(); X];
-        for x in 0..X
+        let mut d: [T::zero(); SIZE];
+        for x in 0..SIZE
         {
-            for y in 0..Y
-                { d[x] = c[x.modular_sub(1, X)] ^ c[y.x.modular_add(1, X)].rotate_right(1); }
+            for y in 0..SIZE
+            {
+                let a = c[y.x.modular_add(THETA_RIGHT, SIZE)];
+                let b = a.rotate_right(THETA_RR1);
+                d[x] = c[x.modular_sub(THETA_LEFT, SIZE)] ^ b;
+            }
         }
 
-        let mut output: [[T; X]; Y];
-        for y in 0..Y
+        let mut output: [[T; SIZE]; SIZE];
+        for y in 0..SIZE
         {
-            for x in 0..Y
+            for x in 0..SIZE
                 { output[x][y] = input[x][y] ^ d[x]; }
         }
-
         output
     }
+
+    fn rho(cube: &mut [[T; SIZE]; SIZE])
+    {
+        const X: usize = SIZE >> 1;
+        const Y: usize = X + (SIZE & 1);
+        let (mut x, mut y) = (1_usize, 0_usize);
+        for t in 0..(SIZE * SIZE)
+        {
+            let rr = ((t + RHO_NEXT1) * (t + RHO_NEXT2)) >> 1;
+            cube[x][y] = cube[x][y].rotate_right(rr);
+
+            let xx = X.modular_mul(x, SIZE);
+            let yy = Y.modular_mul(y, SIZE);
+            (x, y) = (y, (xx.modular_add(yy, SIZE)));
+        }
+    }
+
+    fn pi(input: [[T; SIZE]; SIZE]) -> [[T; SIZE]; SIZE]
+    {
+        const Y: usize = (SIZE >> 1) + (SIZE & 1);
+        let mut output: [[T; SIZE]; SIZE];
+        for y in 0..SIZE
+        {
+            for x in 0..SIZE
+            {
+                let yy = Y.modular_mul(y, SIZE);    // yy = (Y * y) % SIZE;
+                let xx = x.modular_add(yy, SIZE);   // XX = (x + yy) % SIZE;
+                ouput[x][y] = input[xx][x];
+            }
+        }
+        output
+    }
+
+    fn chi(input: [[T; SIZE]; SIZE]) -> [[T; SIZE]; SIZE]
+    {
+        let mut output: [[T; SIZE]; SIZE];
+        for y in 0..SIZE
+        {
+            for x in 0..SIZE
+            {
+                let a = !input[x][y.modular_add(1, SIZE)];
+                let b = input[x][y.modular_add(2, SIZE)];
+                output[x][y] = input[x][y] ^ (a & b);
+            }
+       }
+       output
+    }
+
+    #[inline]
+    fn iota(cube: &mut [[T; SIZE]; SIZE], round: usize)
+    {
+        cube[0][0] ^= self.get_RC(round);
+    }
+
+    fn rc(t: usize) -> bool
+    {
+        if t % 255 == 0
+            { return true; }
+
+        let R = 10000000;
+        for i in 1..(t % 255)
+        {
+            
+        }
+
+    }
+
+    #[inline] fn get_RC(idx: usize) { RC[idx] }
 }

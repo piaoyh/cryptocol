@@ -131,6 +131,8 @@ pub type SHA2_224 = SHA2_224_Expanded;
 /// - Digital Signature
 /// - Implementing proof of work for block chain.
 /// - Study of hash algorithms
+/// - Cryptanalysis Research to find the weakness of SHA-256 and Merkle-Damgard
+/// construction which MD2, MD4, MD5, SHA0, SHA1, and all SHA2 family use
 /// 
 /// # Generic Parameters
 /// You can create your own expanded version of SHA-2-256 or SHA-2-224 by
@@ -498,19 +500,19 @@ SHA2_256_Generic<N, H0, H1, H2, H3, H4, H5, H6, H7, ROUND,
     /// # Counterpart Methods
     /// - If you want to compute of the hash value of a string slice,
     /// you are highly recommended to use the method
-    /// [digest_str()](struct@SHA1#method.digest_str)
+    /// [digest_str()](struct@SHA2_256_Generic#method.digest_str)
     /// rather than this method.
     /// - If you want to compute of the hash value of the content of String
     /// object, you are highly recommended to use the method
-    /// [digest_string()](struct@SHA1#method.digest_string)
+    /// [digest_string()](struct@SHA2_256_Generic#method.digest_string)
     /// rather than this method.
     /// - If you want to compute of the hash value of the content of Array
     /// object, you are highly recommended to use the method
-    /// [digest_array()](struct@SHA1#method.digest_array)
+    /// [digest_array()](struct@SHA2_256_Generic#method.digest_array)
     /// rather than this method.
     /// - If you want to compute of the hash value of the content of Vec
     /// object, you are highly recommended to use the method
-    /// [digest_vec()](struct@SHA1#method.digest_array)
+    /// [digest_vec()](struct@SHA2_256_Generic#method.digest_array)
     /// rather than this method.
     ///
     /// # Example 1 for SHA2_256
@@ -584,19 +586,19 @@ SHA2_256_Generic<N, H0, H1, H2, H3, H4, H5, H6, H7, ROUND,
     /// # Counterpart Methods
     /// - If you want to compute of the hash value of the content of String
     /// object, you are highly recommended to use the method
-    /// [digest_string()](struct@SHA1#method.digest_string)
+    /// [digest_string()](struct@SHA2_256_Generic#method.digest_string)
     /// rather than this method.
     /// - If you want to compute of the hash value of the content of Array
     /// object, you are highly recommended to use the method
-    /// [digest_array()](struct@SHA1#method.digest_array)
+    /// [digest_array()](struct@SHA2_256_Generic#method.digest_array)
     /// rather than this method.
     /// - If you want to compute of the hash value of the content of Vec
     /// object, you are highly recommended to use the method
-    /// [digest_vec()](struct@SHA1#method.digest_array)
+    /// [digest_vec()](struct@SHA2_256_Generic#method.digest_array)
     /// rather than this method.
     /// - If you want to use this method from other programming languages such
     /// as C/C++, you are highly recommended to use the method
-    /// [digest()](struct@SHA1#method.digest) rather than this method.
+    /// [digest()](struct@SHA2_256_Generic#method.digest) rather than this method.
     ///
     /// # Example 1 for SHA2_256
     /// ```
@@ -663,19 +665,19 @@ SHA2_256_Generic<N, H0, H1, H2, H3, H4, H5, H6, H7, ROUND,
     /// # Counterpart Methods
     /// - If you want to compute of the hash value of a string slice,
     /// you are highly recommended to use the method
-    /// [digest_str()](struct@SHA1#method.digest_str)
+    /// [digest_str()](struct@SHA2_256_Generic#method.digest_str)
     /// rather than this method.
     /// - If you want to compute of the hash value of the content of Array
     /// object, you are highly recommended to use the method
-    /// [digest_array()](struct@SHA1#method.digest_array)
+    /// [digest_array()](struct@SHA2_256_Generic#method.digest_array)
     /// rather than this method.
     /// - If you want to compute of the hash value of the content of Vec
     /// object, you are highly recommended to use the method
-    /// [digest_vec()](struct@SHA1#method.digest_array)
+    /// [digest_vec()](struct@SHA2_256_Generic#method.digest_array)
     /// rather than this method.
     /// - If you want to use this method from other programming languages such
     /// as C/C++, you are highly recommended to use the method
-    /// [digest()](struct@SHA1#method.digest) rather than this method.
+    /// [digest()](struct@SHA2_256_Generic#method.digest) rather than this method.
     ///
     /// # Example 1 for SHA2_256
     /// ```
@@ -742,19 +744,19 @@ SHA2_256_Generic<N, H0, H1, H2, H3, H4, H5, H6, H7, ROUND,
     /// # Counterpart Methods
     /// - If you want to compute of the hash value of a string slice,
     /// you are highly recommended to use the method
-    /// [digest_str()](struct@SHA1#method.digest_str)
+    /// [digest_str()](struct@SHA2_256_Generic#method.digest_str)
     /// rather than this method.
     /// - If you want to compute of the hash value of the content of String
     /// object, you are highly recommended to use the method
-    /// [digest_string()](struct@SHA1#method.digest_string)
+    /// [digest_string()](struct@SHA2_256_Generic#method.digest_string)
     /// rather than this method.
     /// - If you want to compute of the hash value of the content of Vec
     /// object, you are highly recommended to use the method
-    /// [digest_vec()](struct@SHA1#method.digest_array)
+    /// [digest_vec()](struct@SHA2_256_Generic#method.digest_array)
     /// rather than this method.
     /// - If you want to use this method from other programming languages such
     /// as C/C++, you are highly recommended to use the method
-    /// [digest()](struct@SHA1#method.digest) rather than this method.
+    /// [digest()](struct@SHA2_256_Generic#method.digest) rather than this method.
     ///
     /// # Example 1 for SHA2_256
     /// ```
@@ -822,19 +824,19 @@ SHA2_256_Generic<N, H0, H1, H2, H3, H4, H5, H6, H7, ROUND,
     /// # Counterpart Methods
     /// - If you want to compute of the hash value of a string slice,
     /// you are highly recommended to use the method
-    /// [digest_str()](struct@SHA1#method.digest_str)
+    /// [digest_str()](struct@SHA2_256_Generic#method.digest_str)
     /// rather than this method.
     /// - If you want to compute of the hash value of the content of String
     /// object, you are highly recommended to use the method
-    /// [digest_string()](struct@SHA1#method.digest_string)
+    /// [digest_string()](struct@SHA2_256_Generic#method.digest_string)
     /// rather than this method.
     /// - If you want to compute of the hash value of the content of Array
     /// object, you are highly recommended to use the method
-    /// [digest_array()](struct@SHA1#method.digest_array)
+    /// [digest_array()](struct@SHA2_256_Generic#method.digest_array)
     /// rather than this method.
     /// - If you want to use this method from other programming languages such
     /// as C/C++, you are highly recommended to use the method
-    /// [digest()](struct@SHA1#method.digest) rather than this method.
+    /// [digest()](struct@SHA2_256_Generic#method.digest) rather than this method.
     ///
     /// # Example 1 for SHA2_256
     /// ```
@@ -889,6 +891,338 @@ SHA2_256_Generic<N, H0, H1, H2, H3, H4, H5, H6, H7, ROUND,
         self.digest(message.as_ptr() as *const u8, (message.len() * T::size_in_bytes()) as u64);
     }
 
+    // pub fn ruminate(&mut self, n: usize, message: *const u8, length_in_bytes: u64)
+    /// Computes a hash value of `message`, and then computes a new hash value
+    /// of the hash value of the message, and then computes a hash value of the
+    /// previous hash value, and then ... `n` times repeatedly.
+    /// 
+    /// # Arguments
+    /// - `n` is the number of repetition of digestion
+    /// - `message` is pointer to const u8.
+    /// - `length_in_bytes` is the size of message in the unit of bytes, and
+    /// data type is `u64`.
+    /// 
+    /// # Origin
+    /// The double hashing is invented by Ferguson and Schneier in their book
+    /// Practical Cryptography to countermeasure against length extension
+    /// attacks. This is generalized version of it.
+    /// 
+    /// # Features
+    /// This function has the generalized interface (pointer, `*const u8`)
+    /// so as to enable other functions to wrap this function with any
+    /// convenient interface for uses. So, this function is usually not called
+    /// directly in Rust. This function is provided to be called from other
+    /// programming languages such as C/C++.
+    /// 
+    /// # Counterpart Methods
+    /// - If you want to compute of the hash value of a string slice,
+    /// you are highly recommended to use the method
+    /// [ruminate_str()](struct@SHA2_256_Generic#method.ruminate_str)
+    /// rather than this method.
+    /// - If you want to compute of the hash value of the content of String
+    /// object, you are highly recommended to use the method
+    /// [ruminate_string()](struct@SHA2_256_Generic#method.ruminate_string)
+    /// rather than this method.
+    /// - If you want to compute of the hash value of the content of Array
+    /// object, you are highly recommended to use the method
+    /// [ruminate_array()](struct@SHA2_256_Generic#method.ruminate_array)
+    /// rather than this method.
+    /// - If you want to compute of the hash value of the content of Vec
+    /// object, you are highly recommended to use the method
+    /// [ruminate_vec()](struct@SHA2_256_Generic#method.ruminate_array)
+    /// rather than this method.
+    ///
+    /// # Example 1 for SHA2_256
+    /// ```
+    /// use Cryptocol::hash::SHA2_256;
+    /// let txt = "This is an example of the method ruminate().";
+    /// let mut hash = SHA2_256::new();
+    /// hash.ruminate(2, txt.as_ptr(), txt.len() as u64);
+    /// println!("Msg =\t\"{}\"\nHash =\t{}", txt, hash);
+    /// assert_eq!(hash.to_string(), "5EB550DEA1A606FE03338BBEAEB7200003472FDF02556C6E32273C0405EF1443");
+    /// ```
+    ///
+    /// # Example 2 for SHA2_256_Expanded
+    /// ```
+    /// use Cryptocol::hash::SHA2_256_Expanded;
+    /// type mySHA2 = SHA2_256_Expanded<0x1111_1111, 0x2222_2222, 0x4444_4444, 0x6666_6666, 0x8888_8888, 0xaaaa_aaaa, 0xcccc_cccc, 0xeeee_eeee, 128>;
+    /// let txt = "This is an example of the method ruminate().";
+    /// let mut hash = mySHA2::new();
+    /// hash.ruminate(2, txt.as_ptr(), txt.len() as u64);
+    /// println!("Msg =\t\"{}\"\nHash =\t{}", txt, hash);
+    /// assert_eq!(hash.to_string(), "78782D14800491F6E66CAA238D955FE11FC9E9750161D51B83429B58AEC3EE0B");
+    /// ```
+    /// 
+    /// # Example 3 for SHA2_224
+    /// ```
+    /// ```
+    ///
+    /// # Example 4 for SHA2_224_Expanded
+    /// ```
+    /// ```
+    /// 
+    /// # Big-endian issue
+    /// It is just experimental for Big Endian CPUs. So, you are not encouraged
+    /// to use it for Big Endian CPUs for serious purpose. Only use this crate
+    /// for Big-endian CPUs with your own full responsibility.
+    pub fn ruminate(&mut self, n: usize, message: *const u8, length_in_bytes: u64)
+    {
+        self.digest(message, length_in_bytes);
+        for i in 1..n
+            { self.digest_array(&self.get_HashValue_in_array()); }
+    }
+
+    // pub fn ruminate_str(&mut self, n: usize, message: &str)
+    /// Computes a hash value of `message`, and then computes a new hash value
+    /// of the hash value of the message, and then computes a hash value of the
+    /// previous hash value, and then ... `n` times repeatedly.
+    /// 
+    /// # Arguments
+    /// - `n` is the number of repetition of digestion
+    /// - `message` is `&str`.
+    /// 
+    /// # Origin
+    /// The double hashing is invented by Ferguson and Schneier in their book
+    /// Practical Cryptography to countermeasure against length extension
+    /// attacks. This is generalized version of it.
+    /// 
+    /// # Features
+    /// This function is a wrapping function of `ruminate()`.
+    /// This function computes hash value of the content of string slice.
+    /// 
+    /// # Counterpart Methods
+    /// - If you want to compute of the hash value of the content of String
+    /// object, you are highly recommended to use the method
+    /// [digest_string()](struct@SHA2_256_Generic#method.digest_string)
+    /// rather than this method.
+    /// - If you want to compute of the hash value of the content of Array
+    /// object, you are highly recommended to use the method
+    /// [digest_array()](struct@SHA2_256_Generic#method.digest_array)
+    /// rather than this method.
+    /// - If you want to compute of the hash value of the content of Vec
+    /// object, you are highly recommended to use the method
+    /// [digest_vec()](struct@SHA2_256_Generic#method.digest_array)
+    /// rather than this method.
+    /// - If you want to use this method from other programming languages such
+    /// as C/C++, you are highly recommended to use the method
+    /// [digest()](struct@SHA2_256_Generic#method.digest) rather than this method.
+    ///
+    /// # Example 1 for SHA2_256
+    /// ```
+    /// ```
+    ///
+    /// # Example 2 for SHA2_256_Expanded
+    /// ```
+    /// ```
+    ///
+    /// # Example 3 for SHA2_224
+    /// ```
+    /// ```
+    ///
+    /// # Example 4 for SHA2_224_Expanded
+    /// ```
+    /// ```
+    /// # Big-endian issue
+    /// It is just experimental for Big Endian CPUs. So, you are not encouraged
+    /// to use it for Big Endian CPUs for serious purpose. Only use this crate
+    /// for Big-endian CPUs with your own full responsibility.
+    #[inline]
+    pub fn ruminate_str(&mut self, n: usize, message: &str)
+    {
+        self.ruminate(n, message.as_ptr(), message.len() as u64);
+    }
+
+    // pub fn ruminate_string(&mut self, n: usize, message: &String)
+    /// Computes a hash value of `message`, and then computes a new hash value
+    /// of the hash value of the message, and then computes a hash value of the
+    /// previous hash value, and then ... `n` times repeatedly.
+    /// 
+    /// # Arguments
+    /// - `n` is the number of repetition of digestion
+    /// - `message` is `&String`.
+    /// 
+    /// # Origin
+    /// The double hashing is invented by Ferguson and Schneier in their book
+    /// Practical Cryptography to countermeasure against length extension
+    /// attacks. This is generalized version of it.
+    /// 
+    /// # Features
+    /// This function is a wrapping function of `ruminate()`.
+    /// This function computes hash value of the content of String object.
+    /// 
+    /// # Counterpart Methods
+    /// - If you want to compute of the hash value of a string slice,
+    /// you are highly recommended to use the method
+    /// [digest_str()](struct@SHA2_256_Generic#method.digest_str)
+    /// rather than this method.
+    /// - If you want to compute of the hash value of the content of Array
+    /// object, you are highly recommended to use the method
+    /// [digest_array()](struct@SHA2_256_Generic#method.digest_array)
+    /// rather than this method.
+    /// - If you want to compute of the hash value of the content of Vec
+    /// object, you are highly recommended to use the method
+    /// [digest_vec()](struct@SHA2_256_Generic#method.digest_array)
+    /// rather than this method.
+    /// - If you want to use this method from other programming languages such
+    /// as C/C++, you are highly recommended to use the method
+    /// [digest()](struct@SHA2_256_Generic#method.digest) rather than this method.
+    ///
+    /// # Example 1 for SHA2_256
+    /// ```
+    /// ```
+    ///
+    /// # Example 2 for SHA2_256_Expanded
+    /// ```
+    /// ```
+    ///
+    /// # Example 3 for SHA2_224
+    /// ```
+    /// ```
+    ///
+    /// # Example 4 for SHA2_224
+    /// ```
+    /// ```
+    /// 
+    /// # Big-endian issue
+    /// It is just experimental for Big Endian CPUs. So, you are not encouraged
+    /// to use it for Big Endian CPUs for serious purpose. Only use this crate
+    /// for Big-endian CPUs with your own full responsibility.
+    #[inline]
+    pub fn ruminate_string(&mut self, n: usize, message: &String)
+    {
+        self.ruminate(n, message.as_ptr(), message.len() as u64);
+    }
+
+    // pub fn ruminate_array<T, const M: usize>(&mut self, message: &[T; M])
+    /// Computes a hash value of `message`, and then computes a new hash value
+    /// of the hash value of the message, and then computes a hash value of the
+    /// previous hash value, and then ... `n` times repeatedly.
+    /// 
+    /// # Arguments
+    /// - `n` is the number of repetition of digestion
+    /// - `message` is `&[T; M]`.
+    /// 
+    /// # Origin
+    /// The double hashing is invented by Ferguson and Schneier in their book
+    /// Practical Cryptography to countermeasure against length extension
+    /// attacks. This is generalized version of it.
+    /// 
+    /// # Features
+    /// This function is a wrapping function of `ruminate()`.
+    /// This function computes hash value of the content of Array object.
+    /// 
+    /// # Argument
+    /// - message is `&[T; M]`.
+    /// 
+    /// # Counterpart Methods
+    /// - If you want to compute of the hash value of a string slice,
+    /// you are highly recommended to use the method
+    /// [digest_str()](struct@SHA2_256_Generic#method.digest_str)
+    /// rather than this method.
+    /// - If you want to compute of the hash value of the content of String
+    /// object, you are highly recommended to use the method
+    /// [digest_string()](struct@SHA2_256_Generic#method.digest_string)
+    /// rather than this method.
+    /// - If you want to compute of the hash value of the content of Vec
+    /// object, you are highly recommended to use the method
+    /// [digest_vec()](struct@SHA2_256_Generic#method.digest_array)
+    /// rather than this method.
+    /// - If you want to use this method from other programming languages such
+    /// as C/C++, you are highly recommended to use the method
+    /// [digest()](struct@SHA2_256_Generic#method.digest) rather than this method.
+    ///
+    /// # Example 1 for SHA2_256
+    /// ```
+    /// ```
+    ///
+    /// # Example 2 for SHA2_256_Expanded
+    /// ```
+    /// ```
+    ///
+    /// # Example 3 for SHA2_224
+    /// ```
+    /// ```
+    ///
+    /// # Example 4 for SHA2_224
+    /// ```
+    /// ```
+    /// 
+    /// # Big-endian issue
+    /// It is just experimental for Big Endian CPUs. So, you are not encouraged
+    /// to use it for Big Endian CPUs for serious purpose. Only use this crate
+    /// for Big-endian CPUs with your own full responsibility.
+    #[inline]
+    pub fn ruminate_array<T, const M: usize>(&mut self, n: usize, message: &[T; M])
+    where T: SmallUInt + Copy + Clone
+    {
+        self.ruminate(n, message.as_ptr() as *const u8, (M * T::size_in_bytes()) as u64);
+    }
+
+    // pub fn ruminate_vec<T>(&mut self, message: &Vec<T>)
+    /// Computes a hash value of `message`, and then computes a new hash value
+    /// of the hash value of the message, and then computes a hash value of the
+    /// previous hash value, and then ... `n` times repeatedly.
+    /// 
+    /// # Arguments
+    /// - `n` is the number of repetition of digestion
+    /// - `message` is `&Vec<T>`.
+    /// 
+    /// # Origin
+    /// The double hashing is invented by Ferguson and Schneier in their book
+    /// Practical Cryptography to countermeasure against length extension
+    /// attacks. This is generalized version of it.
+    /// 
+    /// # Features
+    /// This function is a wrapping function of `ruminate()`.
+    /// This function computes hash value of the content of Vec object.
+    /// 
+    /// # Argument
+    /// - message is `&Vec<T>`.
+    /// 
+    /// # Counterpart Methods
+    /// - If you want to compute of the hash value of a string slice,
+    /// you are highly recommended to use the method
+    /// [digest_str()](struct@SHA2_256_Generic#method.digest_str)
+    /// rather than this method.
+    /// - If you want to compute of the hash value of the content of String
+    /// object, you are highly recommended to use the method
+    /// [digest_string()](struct@SHA2_256_Generic#method.digest_string)
+    /// rather than this method.
+    /// - If you want to compute of the hash value of the content of Array
+    /// object, you are highly recommended to use the method
+    /// [digest_array()](struct@SHA2_256_Generic#method.digest_array)
+    /// rather than this method.
+    /// - If you want to use this method from other programming languages such
+    /// as C/C++, you are highly recommended to use the method
+    /// [digest()](struct@SHA2_256_Generic#method.digest) rather than this method.
+    ///
+    /// # Example 1 for SHA2_256
+    /// ```
+    /// ```
+    ///
+    /// # Example 2 for SHA2_256_Expanded
+    /// ```
+    /// ```
+    ///
+    /// # Example 3 for SHA2_224
+    /// ```
+    /// ```
+    ///
+    /// # Example 4 for SHA2_224_Expanded
+    /// ```
+    /// ```
+    /// 
+    /// # Big-endian issue
+    /// It is just experimental for Big Endian CPUs. So, you are not encouraged
+    /// to use it for Big Endian CPUs for serious purpose. Only use this crate
+    /// for Big-endian CPUs with your own full responsibility.
+    #[inline]
+    pub fn ruminate_vec<T>(&mut self, n: usize, message: &Vec<T>)
+    where T: SmallUInt + Copy + Clone
+    {
+        self.ruminate(n, message.as_ptr() as *const u8, (message.len() * T::size_in_bytes()) as u64);
+    }
+
     // pub fn get_HashValue(&self, hashValue: *mut u8, length: usize)
     /// Gives a hash value to the place where `hashValue` points to.
     /// 
@@ -906,15 +1240,15 @@ SHA2_256_Generic<N, H0, H1, H2, H3, H4, H5, H6, H7, ROUND,
     /// # Counterpart Methods
     /// - If you want to get the hash value in the form of String object,
     /// you are highly recommended to use the method
-    /// [get_HashValue_string()](struct@SHA1#method.get_HashValue_string)
+    /// [get_HashValue_string()](struct@SHA2_256_Generic#method.get_HashValue_string)
     /// rather than this method.
     /// - If you want to get the hash value in the form of array object,
     /// you are highly recommended to use the method
-    /// [get_HashValue_in_array()](struct@SHA1#method.get_HashValue_in_array)
+    /// [get_HashValue_in_array()](struct@SHA2_256_Generic#method.get_HashValue_in_array)
     /// rather than this method.
     /// - If you want to get the hash value in the form of Vec object,
     /// you are highly recommended to use the method
-    /// [get_HashValue_in_vec()](struct@SHA1#method.get_HashValue_in_vec)
+    /// [get_HashValue_in_vec()](struct@SHA2_256_Generic#method.get_HashValue_in_vec)
     /// rather than this method.
     ///
     /// # Example 1 for SHA2_256
@@ -995,15 +1329,15 @@ SHA2_256_Generic<N, H0, H1, H2, H3, H4, H5, H6, H7, ROUND,
     /// # Counterpart Methods
     /// - If you want to get the hash value in the form of array object,
     /// you are highly recommended to use the method
-    /// [get_HashValue_in_array()](struct@SHA1#method.get_HashValue_in_array)
+    /// [get_HashValue_in_array()](struct@SHA2_256_Generic#method.get_HashValue_in_array)
     /// rather than this method.
     /// - If you want to get the hash value in the form of Vec object,
     /// you are highly recommended to use the method
-    /// [get_HashValue_in_vec()](struct@SHA1#method.get_HashValue_in_vec)
+    /// [get_HashValue_in_vec()](struct@SHA2_256_Generic#method.get_HashValue_in_vec)
     /// rather than this method.
     /// - If you want to use this method from other programming languages such
     /// as C/C++, you are highly recommended to use the method
-    /// [get_HashValue()](struct@SHA1#method.get_HashValue)
+    /// [get_HashValue()](struct@SHA2_256_Generic#method.get_HashValue)
     /// rather than this method.
     ///
     /// # Example 1 for SHA2_256
@@ -1083,15 +1417,15 @@ SHA2_256_Generic<N, H0, H1, H2, H3, H4, H5, H6, H7, ROUND,
     /// # Counterpart Methods
     /// - If you want to get the hash value in the form of String object,
     /// you are highly recommended to use the method
-    /// [get_HashValue_string()](struct@SHA1#method.get_HashValue_string)
+    /// [get_HashValue_string()](struct@SHA2_256_Generic#method.get_HashValue_string)
     /// rather than this method.
     /// - If you want to get the hash value in the form of Vec object,
     /// you are highly recommended to use the method
-    /// [get_HashValue_in_vec()](struct@SHA1#method.get_HashValue_in_vec)
+    /// [get_HashValue_in_vec()](struct@SHA2_256_Generic#method.get_HashValue_in_vec)
     /// rather than this method.
     /// - If you want to use this method from other programming languages such
     /// as C/C++, you are highly recommended to use the method
-    /// [get_HashValue()](struct@SHA1#method.get_HashValue)
+    /// [get_HashValue()](struct@SHA2_256_Generic#method.get_HashValue)
     /// rather than this method.
     ///
     /// # Example 1 for SHA2_256
@@ -1157,15 +1491,15 @@ SHA2_256_Generic<N, H0, H1, H2, H3, H4, H5, H6, H7, ROUND,
     /// # Counterpart Methods
     /// - If you want to get the hash value in the form of String object,
     /// you are highly recommended to use the method
-    /// [get_HashValue_string()](struct@SHA1#method.get_HashValue_string)
+    /// [get_HashValue_string()](struct@SHA2_256_Generic#method.get_HashValue_string)
     /// rather than this method.
     /// - If you want to get the hash value in the form of array object,
     /// you are highly recommended to use the method
-    /// [get_HashValue_in_array()](struct@SHA1#method.get_HashValue_in_array)
+    /// [get_HashValue_in_array()](struct@SHA2_256_Generic#method.get_HashValue_in_array)
     /// rather than this method.
     /// - If you want to use this method from other programming languages such
     /// as C/C++, you are highly recommended to use the method
-    /// [get_HashValue()](struct@SHA1#method.get_HashValue)
+    /// [get_HashValue()](struct@SHA2_256_Generic#method.get_HashValue)
     /// rather than this method.
     ///
     /// # Example 1 for SHA2_256
@@ -1224,6 +1558,9 @@ SHA2_256_Generic<N, H0, H1, H2, H3, H4, H5, H6, H7, ROUND,
 
     // pub fn put_HashValue_in_array<T, const M: usize>(&self, out: &mut [T; M])
     /// Puts a hash value in the form of array object.
+    /// 
+    /// # Argument
+    /// `out` is the array [T; M] which is the place to put the hash value.
     /// 
     /// # Features
     /// If M * mem::size_of::<T>() > mem::size_of::<u32>() * N,

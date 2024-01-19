@@ -135,6 +135,8 @@ pub type SHA2_512_0 = SHA2_512_t;
 /// - Digital Signature
 /// - Implementing proof of work for block chain.
 /// - Study of hash algorithms
+/// - Cryptanalysis Research to find the weakness of SHA-512/t and Merkle-Damgard
+/// construction which MD2, MD4, MD5, SHA0, SHA1, and all SHA2 family use
 /// 
 /// # Generic Parameters
 /// You can create your own expanded version of SHA-2-512/t by changing the
@@ -239,53 +241,99 @@ pub type SHA2_512_0 = SHA2_512_t;
 /// `println!("{}", hash)` where hash is the SHA1 object.
 /// Example 2 shows how to use SHA1 struct quickly.
 /// 
-/// ## Example 2 for SHA-1
+/// ## Example 2 for SHA-512/256
 /// ```
 /// use std::string::*;
-/// use Cryptocol::hash::SHA1;
-/// let mut hash = SHA1::new();
+/// use Cryptocol::hash::SHA2_512_t_256;
+/// let mut hash = SHA2_512_t_256::new();
 /// 
 /// let mut txt = "";
 /// hash.digest_str(txt);
 /// println!("Msg =\t\"{}\"\nHash =\t{}\n", txt, hash.get_HashValue_in_string());
-/// assert_eq!(hash.get_HashValue_in_string(), "DA39A3EE5E6B4B0D3255BFEF95601890AFD80709");
+/// assert_eq!(hash.get_HashValue_in_string(), "C672B8D1EF56ED28AB87C3622C5114069BDD3AD7B8F9737498D0C01ECEF0967A");
 /// 
 /// let txtStirng = String::from("A");
 /// hash.digest_string(&txtStirng);
 /// println!("Msg =\t\"{}\"\nHash =\t{}\n", txtStirng, hash);
-/// assert_eq!(hash.to_string(), "6DCD4CE23D88E2EE9568BA546C007C63D9131C1B");
+/// assert_eq!(hash.to_string(), "65A992AD19967492B5780D76A4733AF553F796F688B79102D01EC7FDE5590CAB");
 /// 
 /// let txtArray = ['W' as u8, 'o' as u8, 'w' as u8];
 /// hash.digest_array(&txtArray);
 /// println!("Msg =\t\"{:?}\"\nHash =\t{}\n", txtArray, hash);
-/// assert_eq!(hash.get_HashValue_in_string(), "0BBCDBD1616A1D2230100F629649DCF5B7A28B7F");
+/// assert_eq!(hash.get_HashValue_in_string(), "E4AF36E824AFDB9E42291983AFA292B894DED2CCAFCCF53346B223FCA846694D");
 /// 
-/// txt = "This data is 26-byte long.";
+/// txt = "The length of this message is forty-eight bytes.";
 /// hash.digest_str(txt);
 /// println!("Msg =\t\"{}\"\nHash =\t{}\n", txt, hash);
-/// assert_eq!(hash.to_string(), "B82A61505779F6B3ACA4F5E0D54DA44C17375B49");
+/// assert_eq!(hash.to_string(), "4E730BDADF49EC9F3E920F72EAD3AC8D09B459900BE4F6E27848652632277205");
 /// 
-/// txt = "The unit of data length is not byte but bit.";
+/// txt = "The unit of the message length is not byte but bit.";
 /// hash.digest_str(txt);
 /// println!("Msg =\t\"{}\"\nHash =\t{}\n", txt, hash);
-/// assert_eq!(hash.get_HashValue_in_string(), "C6DC54281357FC16D357E1D730BFC313C585DAEC");
+/// assert_eq!(hash.get_HashValue_in_string(), "AE0EAB6824897F575FCC051DBC2D1AA7F7BF0DB2C80172F639CE20B3B498C9D5");
 /// 
-/// txt = "I am testing SHA1 for the data whose length is sixty-two bytes.";
+/// txt = "This algorithm SHA-2/512/256 is being tested with this message, the length of which is one hundred twelve bytes.";
 /// hash.digest_str(txt);
 /// println!("Msg =\t\"{}\"\nHash =\t{}\n", txt, hash);
-/// assert_eq!(hash.to_string(), "36CD36337097D764797091E5796B6FF45A9FA79F");
+/// assert_eq!(hash.to_string(), "7876C6F1285C4B6EC6A2F4A76BBF81815B470536F3A38B7028AA88A3C5C31651");
 /// 
-/// let mut txt = "I am testing SHA-1 for the data whose length is sixty-four bytes.";
+/// txt = "This algorithm SHA-2/512/256 is being tested for this message the length of which is one hundred sixty-nine long so as to check whether or not this algorithm works well.";
 /// hash.digest_str(txt);
 /// println!("Msg =\t\"{}\"\nHash =\t{}\n", txt, hash);
-/// assert_eq!(hash.get_HashValue_in_string(), "E408F6B82DCDDB5EE6613A759AC1B13D0FA1CEF1");
+/// assert_eq!(hash.get_HashValue_in_string(), "6FCE377EA6116BEAC9C11606C59A5D034C8C6EF5A1920B783A9097E07BE36D31");
 /// 
-/// txt = "I am testing SHA1 for the case data whose length is more than sixty-four bytes is given.";
+/// txt = "This algorithm SHA-2/512/256 is being tested with this message the length of which is two hundred ninety-seven long so that whether or not this algorithm works well is checked. The message is 'Do you see a man skilled in his work? He will serve before kings; he will not serve before obscure men.'";
 /// hash.digest_str(txt);
 /// println!("Msg =\t\"{}\"\nHash =\t{}", txt, hash);
-/// assert_eq!(hash.to_string(), "BB2C79F551B95963ECE49D40F8A92349BF66CAE7");
+/// assert_eq!(hash.to_string(), "63FD06E11EF67F0F5EF598C3B2F2E221D5557AD1EEA46156D1B657F1EDF08D5D");
 /// ```
 /// 
+/// ## Example 3 for SHA-512/224
+/// ```
+/// use std::string::*;
+/// use Cryptocol::hash::SHA2_512_t_224;
+/// let mut hash = SHA2_512_t_224::new();
+/// 
+/// let mut txt = "";
+/// hash.digest_str(txt);
+/// println!("Msg =\t\"{}\"\nHash =\t{}\n", txt, hash.get_HashValue_in_string());
+/// assert_eq!(hash.get_HashValue_in_string(), "6ED0DD02806FA89E25DE060C19D3AC86CABB87D6A0DDD05C333B84F4");
+/// 
+/// let txtStirng = String::from("A");
+/// hash.digest_string(&txtStirng);
+/// println!("Msg =\t\"{}\"\nHash =\t{}\n", txtStirng, hash);
+/// assert_eq!(hash.to_string(), "1DEF1E6A5344538A07A3C93A3A765FA1D2859A576947791A9047C3E6");
+/// 
+/// let txtArray = ['W' as u8, 'o' as u8, 'w' as u8];
+/// hash.digest_array(&txtArray);
+/// println!("Msg =\t\"{:?}\"\nHash =\t{}\n", txtArray, hash);
+/// assert_eq!(hash.get_HashValue_in_string(), "021B7E0CFE3FBD598CF0366464AEB4C93A900BBA1DF8CADB5F611345");
+/// 
+/// txt = "The length of this message is forty-eight bytes.";
+/// hash.digest_str(txt);
+/// println!("Msg =\t\"{}\"\nHash =\t{}\n", txt, hash);
+/// assert_eq!(hash.to_string(), "1E6EEBF17E8B2B1D2A41B14D9813561E44814E35F01119ED7BA3E19F");
+/// 
+/// txt = "The unit of the message length is not byte but bit.";
+/// hash.digest_str(txt);
+/// println!("Msg =\t\"{}\"\nHash =\t{}\n", txt, hash);
+/// assert_eq!(hash.get_HashValue_in_string(), "5251D628FE99DA19238D277DF9AC03382249FF3830AD764EF0A68CDA");
+/// 
+/// txt = "This algorithm SHA-2/512/224 is being tested with this message, the length of which is one hundred twelve bytes.";
+/// hash.digest_str(txt);
+/// println!("Msg =\t\"{}\"\nHash =\t{}\n", txt, hash);
+/// assert_eq!(hash.to_string(), "225B3D39D9B91705E7C08DBBF66E5F34E88554685C78AF2535FD3CE2");
+/// 
+/// txt = "This algorithm SHA-2/512/224 is being tested for this message the length of which is one hundred sixty-nine long so as to check whether or not this algorithm works well.";
+/// hash.digest_str(txt);
+/// println!("Msg =\t\"{}\"\nHash =\t{}\n", txt, hash);
+/// assert_eq!(hash.get_HashValue_in_string(), "3DD5D6503AFE8247B37AFD72DFD56718E6CA70D0B425739928885D0F");
+/// 
+/// txt = "This algorithm SHA-2/512/224 is being tested with this message the length of which is two hundred ninety-seven long so that whether or not this algorithm works well is checked. The message is 'Do you see a man skilled in his work? He will serve before kings; he will not serve before obscure men.'";
+/// hash.digest_str(txt);
+/// println!("Msg =\t\"{}\"\nHash =\t{}", txt, hash);
+/// assert_eq!(hash.to_string(), "D709EC6C2CAA1DAC61B0121675C3B131C23209F9E9ABC60392D99F52");
+/// ```
 /// # Big-endian issue
 /// It is just experimental for Big Endian CPUs. So, you are not encouraged
 /// to use it for Big Endian CPUs for serious purpose. Only use this crate
@@ -403,17 +451,27 @@ SHA2_512_t_Generic<t, A5A5A5A5A5A5A5A5,
     const H: [u64; 8] = [ H0, H1, H2, H3, H4, H5, H6, H7 ];
 
     // pub fn new() -> Self
-    /// Constructs a new `SHA2_256` object.
+    /// Constructs a new object of `SHA2_256` or `SHA2_224`,
+    /// or a new SHA2_256-based object.
     /// 
     /// # Output
-    /// A new object of `SHA2_256`.
+    /// A new object of `SHA2_512_t_256` or `SHA2_512_t_224`,
+    /// or a new SHA2_512_t-based object.
     /// 
-    /// # Example
+    /// # Example for SHA2_512_t_256
     /// ```
-    /// use Cryptocol::hash::SHA1;
-    /// let mut hash = SHA1::new();
+    /// use Cryptocol::hash::SHA2_512_t_256;
+    /// let mut hash = SHA2_512_t_256::new();
     /// println!("Hash =\t{}", hash);
-    /// assert_eq!(hash.to_string(), "67452301EFCDAB8998BADCFE10325476C3D2E1F0");
+    /// assert_eq!(hash.to_string(), "22312194FC2BF72C9F555FA3C84C64C22393B86B6F53B151963877195940EABD");
+    /// ```
+    /// 
+    /// # Example for SHA2_512_t_224
+    /// ```
+    /// use Cryptocol::hash::SHA2_512_t_224;
+    /// let mut hash = SHA2_512_t_224::new();
+    /// println!("Hash =\t{}", hash);
+    /// assert_eq!(hash.to_string(), "8C3D37C819544DA273E1996689DCD4D61DFAB7AE32FF9C82679DD514");
     /// ```
     #[inline]
     pub fn new() -> Self
@@ -422,20 +480,23 @@ SHA2_512_t_Generic<t, A5A5A5A5A5A5A5A5,
     }
 
     // pub fn new_with_seedText(seedText: &str) -> Self
-    /// Constructs a new `SHA2_256` object.
+    /// Constructs a new object of `SHA2_256` or `SHA2_224`,
+    /// or a new SHA2_256-based object with seed text
     /// 
     /// # Output
-    /// A new object of `SHA2_256`.
+    /// A new object of `SHA2_512_t_256` or `SHA2_512_t_224`,
+    /// or a new SHA2_512_t-based object.
     /// 
     /// # Argument
-    /// The seed text to make initial values by hash `seedText`.
+    /// The seed text to make initial hash values.
     /// 
-    /// # Example
+    /// # Example for SHA2_512_t_256
     /// ```
-    /// use Cryptocol::hash::SHA1;
-    /// let mut hash = SHA1::new();
+    /// use Cryptocol::hash::SHA2_512_t_256;
+    /// let mut hash = SHA2_512_t_256::new_with_seedText("샤-");
+    /// // '샤' is from Hangeul which is Korean letter, sounds like 'sha'
     /// println!("Hash =\t{}", hash);
-    /// assert_eq!(hash.to_string(), "67452301EFCDAB8998BADCFE10325476C3D2E1F0");
+    /// assert_eq!(hash.to_string(), "6E231779CE7B233F74077E896D4ABCCA8B31054CB94168164E08BD8F31764DCB");
     /// ```
     pub fn new_with_seedText(seedText: &str) -> Self
     {
@@ -463,22 +524,16 @@ SHA2_512_t_Generic<t, A5A5A5A5A5A5A5A5,
         Self::new_with_H(&O)
     }
 
-    // fn new_with_H(H: &[u64; 8]) -> Self
-    /// Constructs a new `SHA2_256` object.
+    // pub fn new_with_H(H: &[u64; 8]) -> Self
+    /// Constructs a new object of `SHA2_256` or `SHA2_224`,
+    /// or a new SHA2_256-based object with initial hash value
     /// 
     /// # Output
-    /// A new object of `SHA2_256`.
+    /// A new object of `SHA2_512_t_256` or `SHA2_512_t_224`,
+    /// or a new SHA2_512_t-based object.
     /// 
     /// # Argument
-    /// The seed text to make initial values by hash `seedText`.
-    /// 
-    /// # Example
-    /// ```
-    /// use Cryptocol::hash::SHA1;
-    /// let mut hash = SHA1::new();
-    /// println!("Hash =\t{}", hash);
-    /// assert_eq!(hash.to_string(), "67452301EFCDAB8998BADCFE10325476C3D2E1F0");
-    /// ```
+    /// The initial hash value `H` to set initial value.
     fn new_with_H(H: &[u64; 8]) -> Self
     {
         Self
@@ -513,29 +568,40 @@ SHA2_512_t_Generic<t, A5A5A5A5A5A5A5A5,
     /// # Counterpart Methods
     /// - If you want to compute of the hash value of a string slice,
     /// you are highly recommended to use the method
-    /// [digest_str()](struct@SHA1#method.digest_str)
+    /// [digest_str()](struct@SHA2_512_t_Generic#method.digest_str)
     /// rather than this method.
     /// - If you want to compute of the hash value of the content of String
     /// object, you are highly recommended to use the method
-    /// [digest_string()](struct@SHA1#method.digest_string)
+    /// [digest_string()](struct@SHA2_512_t_Generic#method.digest_string)
     /// rather than this method.
     /// - If you want to compute of the hash value of the content of Array
     /// object, you are highly recommended to use the method
-    /// [digest_array()](struct@SHA1#method.digest_array)
+    /// [digest_array()](struct@SHA2_512_t_Generic#method.digest_array)
     /// rather than this method.
     /// - If you want to compute of the hash value of the content of Vec
     /// object, you are highly recommended to use the method
-    /// [digest_vec()](struct@SHA1#method.digest_array)
+    /// [digest_vec()](struct@SHA2_512_t_Generic#method.digest_array)
     /// rather than this method.
     ///
-    /// # Example
+    /// # Example for SHA2_512_t_256
     /// ```
-    /// use Cryptocol::hash::SHA1;
-    /// let txt = "This is an example of the method digest().";
-    /// let mut hash = SHA1::new();
-    /// hash.digest(txt.as_ptr(), txt.len() as u64);
+    /// use Cryptocol::hash::SHA2_512_t_256;
+    /// let txt = "This is an example of the method digest_C().";
+    /// let mut hash = SHA2_512_t_256::new();
+    /// hash.digest_C(txt.as_ptr(), txt.len() as u64, 0);
     /// println!("Msg =\t\"{}\"\nHash =\t{}", txt, hash);
-    /// assert_eq!(hash.to_string(), "9631162DFDAEAB89821256D4585D66D35CD61FD6");
+    /// assert_eq!(hash.to_string(), "91589EAF3AAC1137D8672E02248AFC73B0A831EF6C36A88269566B6A6C0461F0");
+    /// ```
+    /// 
+    /// # Example 2 `for SHA2_512_t_256_Expanded
+    /// ```
+    /// use Cryptocol::hash::SHA2_512_t_256_Expanded;
+    /// type mySHA2 = SHA2_512_t_256_Expanded<0x123456789abcdef0, 160>;
+    /// let mut my_hash = mySHA2::new();
+    /// let txt = "This is an example of the method digest_C().";
+    /// my_hash.digest_C(txt.as_ptr(), txt.len() as u64, 0);
+    /// println!("Msg =\t\"{}\"\nHash =\t{}", txt, my_hash);
+    /// assert_eq!(my_hash.to_string(), "FFD5110E22D3BE4CBAA837F95189F369AB199285C1763EDBCE28C4E49FD210F6");
     /// ```
     /// 
     /// # Big-endian issue
@@ -566,29 +632,39 @@ SHA2_512_t_Generic<t, A5A5A5A5A5A5A5A5,
     /// # Counterpart Methods
     /// - If you want to compute of the hash value of a string slice,
     /// you are highly recommended to use the method
-    /// [digest_str()](struct@SHA1#method.digest_str)
+    /// [digest_str()](struct@SHA2_512_t_Generic#method.digest_str)
     /// rather than this method.
     /// - If you want to compute of the hash value of the content of String
     /// object, you are highly recommended to use the method
-    /// [digest_string()](struct@SHA1#method.digest_string)
+    /// [digest_string()](struct@SHA2_512_t_Generic#method.digest_string)
     /// rather than this method.
     /// - If you want to compute of the hash value of the content of Array
     /// object, you are highly recommended to use the method
-    /// [digest_array()](struct@SHA1#method.digest_array)
+    /// [digest_array()](struct@SHA2_512_t_Generic#method.digest_array)
     /// rather than this method.
     /// - If you want to compute of the hash value of the content of Vec
     /// object, you are highly recommended to use the method
-    /// [digest_vec()](struct@SHA1#method.digest_array)
+    /// [digest_vec()](struct@SHA2_512_t_Generic#method.digest_array)
     /// rather than this method.
     ///
-    /// # Example
+    /// # Example for SHA2_512_t_256
     /// ```
-    /// use Cryptocol::hash::SHA1;
+    /// use Cryptocol::hash::SHA2_512_t_256;
     /// let txt = "This is an example of the method digest().";
-    /// let mut hash = SHA1::new();
-    /// hash.digest(txt.as_ptr(), txt.len() as u64);
+    /// let mut hash = SHA2_512_t_256::new();
+    /// hash.digest(txt.as_ptr(), txt.len() as u128);
     /// println!("Msg =\t\"{}\"\nHash =\t{}", txt, hash);
-    /// assert_eq!(hash.to_string(), "9631162DFDAEAB89821256D4585D66D35CD61FD6");
+    /// assert_eq!(hash.to_string(), "BF3A06F51CE91951607AABD2E33AD24D8B75618F2366B90D98991AD28E47FAA5");
+    /// ```
+    ///
+    /// # Example for SHA2_512_t_224
+    /// ```
+    /// use Cryptocol::hash::SHA2_512_t_224;
+    /// let txt = "This is an example of the method digest().";
+    /// let mut hash = SHA2_512_t_224::new();
+    /// hash.digest(txt.as_ptr(), txt.len() as u128);
+    /// println!("Msg =\t\"{}\"\nHash =\t{}", txt, hash);
+    /// assert_eq!(hash.to_string(), "2269C5A3791E72D00337D9EDDE9BA9568539F4E131B7DB7555545633");
     /// ```
     /// 
     /// # Big-endian issue
@@ -620,28 +696,39 @@ SHA2_512_t_Generic<t, A5A5A5A5A5A5A5A5,
     /// # Counterpart Methods
     /// - If you want to compute of the hash value of the content of String
     /// object, you are highly recommended to use the method
-    /// [digest_string()](struct@SHA1#method.digest_string)
+    /// [digest_string()](struct@SHA2_512_t_Generic#method.digest_string)
     /// rather than this method.
     /// - If you want to compute of the hash value of the content of Array
     /// object, you are highly recommended to use the method
-    /// [digest_array()](struct@SHA1#method.digest_array)
+    /// [digest_array()](struct@SHA2_512_t_Generic#method.digest_array)
     /// rather than this method.
     /// - If you want to compute of the hash value of the content of Vec
     /// object, you are highly recommended to use the method
-    /// [digest_vec()](struct@SHA1#method.digest_array)
+    /// [digest_vec()](struct@SHA2_512_t_Generic#method.digest_array)
     /// rather than this method.
     /// - If you want to use this method from other programming languages such
     /// as C/C++, you are highly recommended to use the method
-    /// [digest()](struct@SHA1#method.digest) rather than this method.
+    /// [digest()](struct@SHA2_512_t_Generic#method.digest)
+    /// rather than this method.
     ///
-    /// # Example
+    /// # Example for SHA2_512_t_256
     /// ```
-    /// use Cryptocol::hash::SHA1;
+    /// use Cryptocol::hash::SHA2_512_t_256;
     /// let txt = "This is an example of the method digest_str().";
-    /// let mut hash = SHA1::new();
+    /// let mut hash = SHA2_512_t_256::new();
     /// hash.digest_str(txt);
     /// println!("Msg =\t\"{}\"\nHash =\t{}", txt, hash);
-    /// assert_eq!(hash.to_string(), "9FDE56BBB5028966CC2E7BDCD0758FE3121407E6");
+    /// assert_eq!(hash.to_string(), "D0ED13389E431C8D74FE6E8DB5B6194682874B52E800524136E35D7E9CFA496B");
+    /// ```
+    ///
+    /// # Example for SHA2_512_t_224
+    /// ```
+    /// use Cryptocol::hash::SHA2_512_t_224;
+    /// let txt = "This is an example of the method digest_str().";
+    /// let mut hash = SHA2_512_t_224::new();
+    /// hash.digest_str(txt);
+    /// println!("Msg =\t\"{}\"\nHash =\t{}", txt, hash);
+    /// assert_eq!(hash.to_string(), "17E80E466E706474DB2C9E39691150805AC536319125AFB1E436BE8F");
     /// ```
     /// 
     /// # Big-endian issue
@@ -667,28 +754,39 @@ SHA2_512_t_Generic<t, A5A5A5A5A5A5A5A5,
     /// # Counterpart Methods
     /// - If you want to compute of the hash value of a string slice,
     /// you are highly recommended to use the method
-    /// [digest_str()](struct@SHA1#method.digest_str)
+    /// [digest_str()](struct@SHA2_512_t_Generic#method.digest_str)
     /// rather than this method.
     /// - If you want to compute of the hash value of the content of Array
     /// object, you are highly recommended to use the method
-    /// [digest_array()](struct@SHA1#method.digest_array)
+    /// [digest_array()](struct@SHA2_512_t_Generic#method.digest_array)
     /// rather than this method.
     /// - If you want to compute of the hash value of the content of Vec
     /// object, you are highly recommended to use the method
-    /// [digest_vec()](struct@SHA1#method.digest_array)
+    /// [digest_vec()](struct@SHA2_512_t_Generic#method.digest_array)
     /// rather than this method.
     /// - If you want to use this method from other programming languages such
     /// as C/C++, you are highly recommended to use the method
-    /// [digest()](struct@SHA1#method.digest) rather than this method.
+    /// [digest()](struct@SHA2_512_t_Generic#method.digest)
+    /// rather than this method.
     ///
-    /// # Example
+    /// # Example for SHA2_512_t_256
     /// ```
-    /// use Cryptocol::hash::SHA1;
+    /// use Cryptocol::hash::SHA2_512_t_256;
     /// let txt = "This is an example of the method digest_string().".to_string();
-    /// let mut hash = SHA1::new();
+    /// let mut hash = SHA2_512_t_256::new();
     /// hash.digest_string(&txt);
     /// println!("Msg =\t\"{}\"\nHash =\t{}", txt, hash);
-    /// assert_eq!(hash.to_string(), "FDCDC0EBC9181B881BE1F15FECEBB9D70E4DDAAB");
+    /// assert_eq!(hash.to_string(), "2824B79B5D8A1D02454612B72B9CD9544D0DF8E126E7A01E55AC479B0903297C");
+    /// ```
+    ///
+    /// # Example for SHA2_512_t_224
+    /// ```
+    /// use Cryptocol::hash::SHA2_512_t_224;
+    /// let txt = "This is an example of the method digest_string().".to_string();
+    /// let mut hash = SHA2_512_t_224::new();
+    /// hash.digest_string(&txt);
+    /// println!("Msg =\t\"{}\"\nHash =\t{}", txt, hash);
+    /// assert_eq!(hash.to_string(), "E1423096CED4DC8D9522C75C8BBB12B59A4510093CFA4FD480D270FD");
     /// ```
     /// 
     /// # Big-endian issue
@@ -714,28 +812,39 @@ SHA2_512_t_Generic<t, A5A5A5A5A5A5A5A5,
     /// # Counterpart Methods
     /// - If you want to compute of the hash value of a string slice,
     /// you are highly recommended to use the method
-    /// [digest_str()](struct@SHA1#method.digest_str)
+    /// [digest_str()](struct@SHA2_512_t_Generic#method.digest_str)
     /// rather than this method.
     /// - If you want to compute of the hash value of the content of String
     /// object, you are highly recommended to use the method
-    /// [digest_string()](struct@SHA1#method.digest_string)
+    /// [digest_string()](struct@SHA2_512_t_Generic#method.digest_string)
     /// rather than this method.
     /// - If you want to compute of the hash value of the content of Vec
     /// object, you are highly recommended to use the method
-    /// [digest_vec()](struct@SHA1#method.digest_array)
+    /// [digest_vec()](struct@SHA2_512_t_Generic#method.digest_array)
     /// rather than this method.
     /// - If you want to use this method from other programming languages such
     /// as C/C++, you are highly recommended to use the method
-    /// [digest()](struct@SHA1#method.digest) rather than this method.
+    /// [digest()](struct@SHA2_512_t_Generic#method.digest)
+    /// rather than this method.
     ///
-    /// # Example
+    /// # Example for SHA2_512_t_256
     /// ```
-    /// use Cryptocol::hash::SHA1;
+    /// use Cryptocol::hash::SHA2_512_t_256;
     /// let data = [ 0x67452301_u32.to_le(), 0xefcdab89_u32.to_le(), 0x98badcfe_u32.to_le(), 0x10325476_u32.to_le() ];
-    /// let mut hash = SHA1::new();
+    /// let mut hash = SHA2_512_t_256::new();
     /// hash.digest_array(&data);
     /// println!("Msg =\t{:?}\nHash =\t{}", data, hash);
-    /// assert_eq!(hash.to_string(), "76BC87BAECA7725C948FD1C53766454FDA0867AF");
+    /// assert_eq!(hash.to_string(), "E9A9876BBF1432C27CE58D6B8EA66B5A0B719FA80832D491768033F4DAF65A64");
+    /// ```
+    ///
+    /// # Example for SHA2_512_t_224
+    /// ```
+    /// use Cryptocol::hash::SHA2_512_t_224;
+    /// let data = [ 0x67452301_u32.to_le(), 0xefcdab89_u32.to_le(), 0x98badcfe_u32.to_le(), 0x10325476_u32.to_le() ];
+    /// let mut hash = SHA2_512_t_224::new();
+    /// hash.digest_array(&data);
+    /// println!("Msg =\t{:?}\nHash =\t{}", data, hash);
+    /// assert_eq!(hash.to_string(), "3F600A922240910231ACA350DEDD49BD875936BE5AAB8A034D09334B");
     /// ```
     /// 
     /// # Big-endian issue
@@ -762,28 +871,39 @@ SHA2_512_t_Generic<t, A5A5A5A5A5A5A5A5,
     /// # Counterpart Methods
     /// - If you want to compute of the hash value of a string slice,
     /// you are highly recommended to use the method
-    /// [digest_str()](struct@SHA1#method.digest_str)
+    /// [digest_str()](struct@SHA2_512_t_Generic#method.digest_str)
     /// rather than this method.
     /// - If you want to compute of the hash value of the content of String
     /// object, you are highly recommended to use the method
-    /// [digest_string()](struct@SHA1#method.digest_string)
+    /// [digest_string()](struct@SHA2_512_t_Generic#method.digest_string)
     /// rather than this method.
     /// - If you want to compute of the hash value of the content of Array
     /// object, you are highly recommended to use the method
-    /// [digest_array()](struct@SHA1#method.digest_array)
+    /// [digest_array()](struct@SHA2_512_t_Generic#method.digest_array)
     /// rather than this method.
     /// - If you want to use this method from other programming languages such
     /// as C/C++, you are highly recommended to use the method
-    /// [digest()](struct@SHA1#method.digest) rather than this method.
+    /// [digest()](struct@SHA2_512_t_Generic#method.digest)
+    /// rather than this method.
     ///
-    /// # Example
+    /// # Example for SHA2_512_t_256
     /// ```
-    /// use Cryptocol::hash::SHA1;
+    /// use Cryptocol::hash::SHA2_512_t_256;
     /// let data = vec![ 0x67452301_u32.to_le(), 0xefcdab89_u32.to_le(), 0x98badcfe_u32.to_le(), 0x10325476_u32.to_le() ];
-    /// let mut hash = SHA1::new();
+    /// let mut hash = SHA2_512_t_256::new();
     /// hash.digest_vec(&data);
     /// println!("Msg =\t{:?}\nHash =\t{}", data, hash);
-    /// assert_eq!(hash.to_string(), "76BC87BAECA7725C948FD1C53766454FDA0867AF");
+    /// assert_eq!(hash.to_string(), "E9A9876BBF1432C27CE58D6B8EA66B5A0B719FA80832D491768033F4DAF65A64");
+    /// ```
+    ///
+    /// # Example for SHA2_512_t_224
+    /// ```
+    /// use Cryptocol::hash::SHA2_512_t_224;
+    /// let data = vec![ 0x67452301_u32.to_le(), 0xefcdab89_u32.to_le(), 0x98badcfe_u32.to_le(), 0x10325476_u32.to_le() ];
+    /// let mut hash = SHA2_512_t_224::new();
+    /// hash.digest_vec(&data);
+    /// println!("Msg =\t{:?}\nHash =\t{}", data, hash);
+    /// assert_eq!(hash.to_string(), "3F600A922240910231ACA350DEDD49BD875936BE5AAB8A034D09334B");
     /// ```
     /// 
     /// # Big-endian issue
@@ -814,27 +934,39 @@ SHA2_512_t_Generic<t, A5A5A5A5A5A5A5A5,
     /// # Counterpart Methods
     /// - If you want to get the hash value in the form of String object,
     /// you are highly recommended to use the method
-    /// [get_HashValue_string()](struct@SHA1#method.get_HashValue_string)
+    /// [get_HashValue_string()](struct@SHA2_512_t_Generic#method.get_HashValue_string)
     /// rather than this method.
     /// - If you want to get the hash value in the form of array object,
     /// you are highly recommended to use the method
-    /// [get_HashValue_in_array()](struct@SHA1#method.get_HashValue_in_array)
+    /// [get_HashValue_in_array()](struct@SHA2_512_t_Generic#method.get_HashValue_in_array)
     /// rather than this method.
     /// - If you want to get the hash value in the form of Vec object,
     /// you are highly recommended to use the method
-    /// [get_HashValue_in_vec()](struct@SHA1#method.get_HashValue_in_vec)
+    /// [get_HashValue_in_vec()](struct@SHA2_512_t_Generic#method.get_HashValue_in_vec)
     /// rather than this method.
     ///
-    /// # Example
+    /// # Example for SHA2_512_t_256
     /// ```
-    /// use Cryptocol::hash::SHA1;
+    /// use Cryptocol::hash::SHA2_512_t_256;
     /// let txt = "This is an example of the method get_HashValue().";
-    /// let mut hashValue = [0_u8; 20];
-    /// let mut hash = SHA1::new();
+    /// let mut hashValue = [0_u8; 32];
+    /// let mut hash = SHA2_512_t_256::new();
     /// hash.digest_str(txt);
     /// hash.get_HashValue(hashValue.as_ptr() as *mut u8, hashValue.len());
     /// println!("Msg =\t\"{}\"\nHash =\t{:02X?}", txt, hashValue);
-    /// assert_eq!(format!("{:02X?}", hashValue), "[E9, C6, F4, 3B, 77, AA, 27, A1, 6E, B4, F0, F5, 5B, F3, D8, C7, 3A, EB, 7F, 93]");
+    /// assert_eq!(format!("{:02X?}", hashValue), "[6B, CD, 05, 58, 76, E2, E2, 10, E1, BA, 59, 18, 0A, A8, 04, 8B, 49, 86, CB, 12, E2, 56, 1F, DB, 26, 0A, 0F, 0C, 25, 8F, 88, DD]");
+    /// ```
+    ///
+    /// # Example for SHA2_512_t_256
+    /// ```
+    /// use Cryptocol::hash::SHA2_512_t_224;
+    /// let txt = "This is an example of the method get_HashValue().";
+    /// let mut hashValue = [0_u8; 28];
+    /// let mut hash = SHA2_512_t_224::new();
+    /// hash.digest_str(txt);
+    /// hash.get_HashValue(hashValue.as_ptr() as *mut u8, hashValue.len());
+    /// println!("Msg =\t\"{}\"\nHash =\t{:02X?}", txt, hashValue);
+    /// assert_eq!(format!("{:02X?}", hashValue), "[65, 12, 55, 2D, 41, F9, 6A, 38, 89, 91, FB, E2, 68, 1F, 0E, F5, 86, E0, 08, 8D, 81, 36, DB, 27, 7C, 7D, 96, 42]");
     /// ```
     /// 
     /// # Big-endian issue
@@ -865,25 +997,35 @@ SHA2_512_t_Generic<t, A5A5A5A5A5A5A5A5,
     /// # Counterpart Methods
     /// - If you want to get the hash value in the form of array object,
     /// you are highly recommended to use the method
-    /// [get_HashValue_in_array()](struct@SHA1#method.get_HashValue_in_array)
+    /// [get_HashValue_in_array()](struct@SHA2_512_t_Generic#method.get_HashValue_in_array)
     /// rather than this method.
     /// - If you want to get the hash value in the form of Vec object,
     /// you are highly recommended to use the method
-    /// [get_HashValue_in_vec()](struct@SHA1#method.get_HashValue_in_vec)
+    /// [get_HashValue_in_vec()](struct@SHA2_512_t_Generic#method.get_HashValue_in_vec)
     /// rather than this method.
     /// - If you want to use this method from other programming languages such
     /// as C/C++, you are highly recommended to use the method
-    /// [get_HashValue()](struct@SHA1#method.get_HashValue)
+    /// [get_HashValue()](struct@SHA2_512_t_Generic#method.get_HashValue)
     /// rather than this method.
     ///
-    /// # Example
+    /// # Example for SHA2_512_t_256
     /// ```
-    /// use Cryptocol::hash::SHA1;
+    /// use Cryptocol::hash::SHA2_512_t_256;
     /// let txt = "This is an example of the method get_HashValue_in_string().";
-    /// let mut hash = SHA1::new();
+    /// let mut hash = SHA2_512_t_256::new();
     /// hash.digest_str(txt);
     /// println!("Msg =\t\"{}\"\nHash =\t{}", txt, hash.get_HashValue_in_string());
-    /// assert_eq!(hash.get_HashValue_in_string(), "899B9673103FCB06B237A5A6A7D04D749EA4BD92");
+    /// assert_eq!(hash.get_HashValue_in_string(), "CFEEC9D8BAB717BBD52B89202B0D671603C6841A0D81FF08C9E1AC60AAD2D038");
+    /// ```
+    ///
+    /// # Example for SHA2_512_t_224
+    /// ```
+    /// use Cryptocol::hash::SHA2_512_t_224;
+    /// let txt = "This is an example of the method get_HashValue_in_string().";
+    /// let mut hash = SHA2_512_t_224::new();
+    /// hash.digest_str(txt);
+    /// println!("Msg =\t\"{}\"\nHash =\t{}", txt, hash.get_HashValue_in_string());
+    /// assert_eq!(hash.get_HashValue_in_string(), "B030A1B50A7C3886A0DCFB53C2D65404C6DD3B59F19CE6850D413181");
     /// ```
     /// 
     /// # Big-endian issue
@@ -925,25 +1067,39 @@ SHA2_512_t_Generic<t, A5A5A5A5A5A5A5A5,
     /// # Counterpart Methods
     /// - If you want to get the hash value in the form of String object,
     /// you are highly recommended to use the method
-    /// [get_HashValue_string()](struct@SHA1#method.get_HashValue_string)
+    /// [get_HashValue_string()](struct@SHA2_512_t_Generic#method.get_HashValue_string)
     /// rather than this method.
     /// - If you want to get the hash value in the form of Vec object,
     /// you are highly recommended to use the method
-    /// [get_HashValue_in_vec()](struct@SHA1#method.get_HashValue_in_vec)
+    /// [get_HashValue_in_vec()](struct@SHA2_512_t_Generic#method.get_HashValue_in_vec)
     /// rather than this method.
     /// - If you want to use this method from other programming languages such
     /// as C/C++, you are highly recommended to use the method
-    /// [get_HashValue()](struct@SHA1#method.get_HashValue)
+    /// [get_HashValue()](struct@SHA2_512_t_Generic#method.get_HashValue)
     /// rather than this method.
     ///
-    /// # Example
+    /// # Example for SHA2_512_t_256
     /// ```
-    /// use Cryptocol::hash::SHA1;
+    /// use Cryptocol::hash::SHA2_512_t_256;
     /// let txt = "This is an example of the method get_HashValue_in_array().";
-    /// let mut hash = SHA1::new();
+    /// let mut hash = SHA2_512_t_256::new();
     /// hash.digest_str(txt);
-    /// println!("Msg =\t\"{}\"\nHash =\t{:02X?}", txt, hash.get_HashValue_in_array());
-    /// assert_eq!(format!("{:02X?}", hash.get_HashValue_in_array()), "[E9840962, 837B21A9, D9321727, 74980B51, 364DD5A2]");
+    /// let mut h = [0_u64; 4];
+    /// hash.put_HashValue_in_array(&mut h);
+    /// println!("Msg =\t\"{}\"\nHash =\t{:02X?}", txt, h);
+    /// assert_eq!(format!("{:02X?}", h), "[84D92CCECF19A8E1, F10F35786EEE5BC5, B58793B76661CF2, 56EED9A53EDF76F4]");
+    /// ```
+    ///
+    /// # Example for SHA2_512_t_224
+    /// ```
+    /// use Cryptocol::hash::SHA2_512_t_224;
+    /// let txt = "This is an example of the method get_HashValue_in_array().";
+    /// let mut hash = SHA2_512_t_224::new();
+    /// hash.digest_str(txt);
+    /// let mut h = [0_u32; 7];
+    /// hash.put_HashValue_in_array(&mut h);
+    /// println!("Msg =\t\"{}\"\nHash =\t{:02X?}", txt, h);
+    /// assert_eq!(format!("{:02X?}", h), "[D79CD72B, 7CE44470, 5035DFA8, B50B1D54, AF732B81, 369AFB07, 5010FD03]");
     /// ```
     /// 
     /// # Big-endian issue
@@ -958,31 +1114,30 @@ SHA2_512_t_Generic<t, A5A5A5A5A5A5A5A5,
         res
     }
 
-    // pub fn get_HashValue_in_array_Generic<T, const M: usize>(&self) -> [T; M]
+    // pub fn get_HashValue_in_array_TM<T, const M: usize>(&self) -> [T; M]
     /// Returns a hash value in the form of array object.
+    /// 
+    /// # Generic Parameters
+    /// - `T`: primitive datatype of each element.
+    /// - `N`: the number of elements
     /// 
     /// # Counterpart Methods
     /// - If you want to get the hash value in the form of String object,
     /// you are highly recommended to use the method
-    /// [get_HashValue_string()](struct@SHA1#method.get_HashValue_string)
+    /// [get_HashValue_string()](struct@SHA2_512_t_Generic#method.get_HashValue_string)
     /// rather than this method.
     /// - If you want to get the hash value in the form of Vec object,
     /// you are highly recommended to use the method
-    /// [get_HashValue_in_vec()](struct@SHA1#method.get_HashValue_in_vec)
+    /// [get_HashValue_in_vec()](struct@SHA2_512_t_Generic#method.get_HashValue_in_vec)
     /// rather than this method.
     /// - If you want to use this method from other programming languages such
     /// as C/C++, you are highly recommended to use the method
-    /// [get_HashValue()](struct@SHA1#method.get_HashValue)
+    /// [get_HashValue()](struct@SHA2_512_t_Generic#method.get_HashValue)
     /// rather than this method.
     ///
-    /// # Example
+    /// # Example for SHA2_512_t_256
     /// ```
-    /// use Cryptocol::hash::SHA1;
-    /// let txt = "This is an example of the method get_HashValue_in_array().";
-    /// let mut hash = SHA1::new();
-    /// hash.digest_str(txt);
-    /// println!("Msg =\t\"{}\"\nHash =\t{:02X?}", txt, hash.get_HashValue_in_array());
-    /// assert_eq!(format!("{:02X?}", hash.get_HashValue_in_array()), "[E9840962, 837B21A9, D9321727, 74980B51, 364DD5A2]");
+    /// // Todo
     /// ```
     /// 
     /// # Big-endian issue
@@ -1003,25 +1158,35 @@ SHA2_512_t_Generic<t, A5A5A5A5A5A5A5A5,
     /// # Counterpart Methods
     /// - If you want to get the hash value in the form of String object,
     /// you are highly recommended to use the method
-    /// [get_HashValue_string()](struct@SHA1#method.get_HashValue_string)
+    /// [get_HashValue_string()](struct@SHA2_512_t_Generic#method.get_HashValue_string)
     /// rather than this method.
     /// - If you want to get the hash value in the form of array object,
     /// you are highly recommended to use the method
-    /// [get_HashValue_in_array()](struct@SHA1#method.get_HashValue_in_array)
+    /// [get_HashValue_in_array()](struct@SHA2_512_t_Generic#method.get_HashValue_in_array)
     /// rather than this method.
     /// - If you want to use this method from other programming languages such
     /// as C/C++, you are highly recommended to use the method
-    /// [get_HashValue()](struct@SHA1#method.get_HashValue)
+    /// [get_HashValue()](struct@SHA2_512_t_Generic#method.get_HashValue)
     /// rather than this method.
     ///
-    /// # Example
+    /// # Example for SHA2_512_t_256
     /// ```
-    /// use Cryptocol::hash::SHA1;
+    /// use Cryptocol::hash::SHA2_512_t_256;
     /// let txt = "This is an example of the method get_HashValue_in_vec().";
-    /// let mut hash = SHA1::new();
+    /// let mut hash = SHA2_512_t_256::new();
     /// hash.digest_str(txt);
     /// println!("Msg =\t\"{}\"\nHash =\t{:02X?}", txt, hash.get_HashValue_in_vec());
-    /// assert_eq!(format!("{:02X?}", hash.get_HashValue_in_vec()), "[96E00128, E1E04E29, F65ABA7B, AD10C0A2, 1BC438DA]");
+    /// assert_eq!(format!("{:02X?}", hash.get_HashValue_in_vec()), "[3D61494146786869, A70B85EEF50F080B, AC0C9758D1CD8A32, 776CD6411B2BBAAA]");
+    /// ```
+    ///
+    /// # Example for SHA2_512_t_224
+    /// ```
+    /// use Cryptocol::hash::SHA2_512_t_224;
+    /// let txt = "This is an example of the method get_HashValue_in_vec().";
+    /// let mut hash = SHA2_512_t_224::new();
+    /// hash.digest_str(txt);
+    /// println!("Msg =\t\"{}\"\nHash =\t{:02X?}", txt, hash.get_HashValue_in_vec());
+    /// assert_eq!(format!("{:02X?}", hash.get_HashValue_in_vec()), "[208DF702B905BB5D, 49169B1240A9883, 72C4A5A7D4FD5141, D8081D6200000000]");
     /// ```
     /// 
     /// # Big-endian issue
@@ -1043,31 +1208,61 @@ SHA2_512_t_Generic<t, A5A5A5A5A5A5A5A5,
     // pub fn put_HashValue_in_array<T, const M: usize>(&self, out: &mut [T; M])
     /// Puts a hash value in the form of array object.
     /// 
+    /// # Argument
+    /// `out` is the array [T; M] which is the place to put the hash value.
     /// 
-    /// # Panics
-    /// If N * mem::size_of::<T>() > 64 (= 8 * 8), this method will panic
-    /// or its behaviour is undefined even if it won't panic.
-    /// 
+    /// # Features
+    /// If M * mem::size_of::<T>() > mem::size_of::<u32>() * N,
+    /// it pass the output as the amount of mem::size_of::<u32>() * N.
     ///
-    /// # Example for MD4
+    /// # Example 1 for SHA2_512_t_256
     /// ```
-    /// use Cryptocol::hash::MD4;
-    /// let txt = "This is an example of the method get_HashValue_in_array().";
-    /// let mut hash = MD4::new();
+    /// use Cryptocol::hash::SHA2_512_t_256;
+    /// let txt = "This is an example of the method put_HashValue_in_array().";
+    /// let mut hash = SHA2_512_t_256::new();
+    /// let mut hash_code = [0_u64; 4];
     /// hash.digest_str(txt);
-    /// println!("Msg =\t\"{}\"\nHash =\t{:02X?}", txt, hash.get_HashValue_in_array());
-    /// assert_eq!(format!("{:02X?}", hash.get_HashValue_in_array()), "[9F7E4FD8, 906C5422, 9FAAAFBA, 363BE03A]");
+    /// hash.put_HashValue_in_array(&mut hash_code);
+    /// println!("Msg =\t\"{}\"\nHash =\t{:016X?}", txt, hash_code);
+    /// assert_eq!(format!("{:016X?}", hash_code), "[218BF516E454F8E8, 3275DBD07098A67B, B1D289D9DCC2A854, 4D1672BEFB75B043]");
     /// ```
-    /// 
-    /// # Example for MD4_Expanded
+    ///
+    /// # Example 2 for SHA2_512_t_256_Expanded
     /// ```
-    /// use Cryptocol::hash::MD4_Expanded;
-    /// type myMD4 = MD4_Expanded<4, 0x1111_1111, 0x4444_4444, 0x8888_8888, 0xffff_ffff, 96>;
-    /// let txt = "This is an example of the method get_HashValue_in_array().";
-    /// let mut my_hash = myMD4::new();
+    /// use Cryptocol::hash::SHA2_512_t_256_Expanded;
+    /// type mySHA2 = SHA2_512_t_256_Expanded<160>;
+    /// let txt = "This is an example of the method put_HashValue_in_array().";
+    /// let mut my_hash = mySHA2::new();
+    /// let mut hash_code = [0_u64; 4];
     /// my_hash.digest_str(txt);
-    /// println!("Msg =\t\"{}\"\nHash =\t{:02X?}", txt, my_hash.get_HashValue_in_array());
-    /// assert_eq!(format!("{:02X?}", my_hash.get_HashValue_in_array()), "[E68DA94C, 583C881E, A7D2A6F5, 5BC4347F]");
+    /// my_hash.put_HashValue_in_array(&mut hash_code);
+    /// println!("Msg =\t\"{}\"\nHash =\t{:016X?}", txt, hash_code);
+    /// assert_eq!(format!("{:016X?}", hash_code), "[BC3F9E2D39A7884A, 145476850E31A6A4, 5E9E4735097FA868, 9C54C80B9D591AE8]");
+    /// ```
+    ///
+    /// # Example 3 for SHA2_512_t_224
+    /// ```
+    /// use Cryptocol::hash::SHA2_512_t_224;
+    /// let txt = "This is an example of the method put_HashValue_in_array().";
+    /// let mut hash = SHA2_512_t_224::new();
+    /// let mut hash_code = [0_u64; 4];
+    /// hash.digest_str(txt);
+    /// hash.put_HashValue_in_array(&mut hash_code);
+    /// println!("Msg =\t\"{}\"\nHash =\t{:016X?}", txt, hash_code);
+    /// assert_eq!(format!("{:016X?}", hash_code), "[6CF723619865F699, 7DC49BFEAED1C117, 2DF9E01CAEF542F5, FA1BA67BA06F5FF5]");
+    /// ```
+    ///
+    /// # Example 4 for SHA2_512_t_224_Expanded
+    /// ```
+    /// use Cryptocol::hash::SHA2_512_t_224_Expanded;
+    /// type mySHA2 = SHA2_512_t_224_Expanded<160>;
+    /// let txt = "This is an example of the method put_HashValue_in_array().";
+    /// let mut my_hash = mySHA2::new();
+    /// let mut hash_code = [0_u64; 4];
+    /// my_hash.digest_str(txt);
+    /// my_hash.put_HashValue_in_array(&mut hash_code);
+    /// println!("Msg =\t\"{}\"\nHash =\t{:016X?}", txt, hash_code);
+    /// assert_eq!(format!("{:016X?}", hash_code), "[08143B9294ECCD69, B89B933148B16625, B9DE1F9C0E182568, C95A5B18FDD97FF5]");
     /// ```
     /// 
     /// # Big-endian issue
@@ -1083,6 +1278,80 @@ SHA2_512_t_Generic<t, A5A5A5A5A5A5A5A5,
         unsafe { copy_nonoverlapping(res.as_ptr() as *const u8, out as *mut T as *mut u8, length); }
     }
 
+    // pub fn tangle(&mut self, tangling: u64)
+    /// Tangles the hash value
+    /// 
+    /// # Argument
+    /// u64 constants to tangle the hash value
+    /// 
+    /// # Features
+    /// It is for using this struct as random number generator.
+    ///
+    /// # Example 1 for SHA2_512_t_256
+    /// ```
+    /// use Cryptocol::hash::SHA2_512_t_256;
+    /// let txt = "TANGLING";
+    /// let mut hash = SHA2_512_t_256::new();
+    /// hash.digest_str(txt);
+    /// println!("Msg =\t\"{}\"\nHash =\t{:016X?}", txt, hash.get_HashValue_in_array_TM::<u64, 4>());
+    /// assert_eq!(format!("{:016X?}", hash.get_HashValue_in_array_TM::<u64, 4>()), "[FC36648637962C38, BDFBBAE5DEA75E0E, D72827D56EB79EF9, 4969BAA99DB0E42B]");
+    /// hash.tangle(1);
+    /// println!("Hash =\t{:016X?}", hash.get_HashValue_in_array_TM::<u64, 4>());
+    /// assert_eq!(format!("{:016X?}", hash.get_HashValue_in_array_TM::<u64, 4>()), "[96CA6859E014C355, 6BBED0E8DA26FFAD, A4F89477C93C9E8C, 806148BDB037AE26]");
+    /// hash.tangle(1);
+    /// println!("Hash =\t{:016X?}", hash.get_HashValue_in_array_TM::<u64, 4>());
+    /// assert_eq!(format!("{:016X?}", hash.get_HashValue_in_array_TM::<u64, 4>()), "[11F5369ABC9E3B5D, D3D869131E697AB2, 1899C8D791BB09FC, 0C6CE82AE3B9D583]");
+    /// ```
+    ///
+    /// # Example 2 for SHA2_512_t_256_Expanded
+    /// ```
+    /// use Cryptocol::hash::SHA2_512_t_256_Expanded;
+    /// type mySHA2 = SHA2_512_t_256_Expanded<160>;
+    /// let txt = "TANGLING";
+    /// let mut my_hash = mySHA2::new();
+    /// my_hash.digest_str(txt);
+    /// println!("Msg =\t\"{}\"\nHash =\t{:016X?}", txt, my_hash.get_HashValue_in_array_TM::<u64, 4>());
+    /// assert_eq!(format!("{:016X?}", my_hash.get_HashValue_in_array_TM::<u64, 4>()), "[C60A42A16859F8B8, 7EAB94538B024642, 654DD7795DDDD39B, 12E1A03748AEFFF3]");
+    /// my_hash.tangle(1);
+    /// println!("Hash =\t{:016X?}", my_hash.get_HashValue_in_array_TM::<u64, 4>());
+    /// assert_eq!(format!("{:016X?}", my_hash.get_HashValue_in_array_TM::<u64, 4>()), "[05A82162DE47FEE5, 4B7C2320AF525665, 0D9A9FC79B16B8E6, B51D2D5242BADECD]");
+    /// my_hash.tangle(1);
+    /// println!("Hash =\t{:016X?}", my_hash.get_HashValue_in_array_TM::<u64, 4>());
+    /// assert_eq!(format!("{:016X?}", my_hash.get_HashValue_in_array_TM::<u64, 4>()), "[BC74B5902DD2AB00, 680C9FE85FED5E60, 4FAAF51214292837, B9292AFDBF94B64E]");
+    /// ```
+    ///
+    /// # Example 3 for SHA2_512_t_224
+    /// ```
+    /// use Cryptocol::hash::SHA2_512_t_224;
+    /// let txt = "TANGLING";
+    /// let mut hash = SHA2_512_t_224::new();
+    /// hash.digest_str(txt);
+    /// println!("Msg =\t\"{}\"\nHash =\t{:08X?}", txt, hash.get_HashValue_in_array_TM::<u32, 7>());
+    /// assert_eq!(format!("{:08X?}", hash.get_HashValue_in_array_TM::<u32, 7>()), "[72E2E82F, C78389DA, 112F494F, B415B8C4, EF993BFA, EDB5091B, 8C03F067]");
+    /// hash.tangle(1);
+    /// println!("Hash =\t{:08X?}", hash.get_HashValue_in_array_TM::<u32, 7>());
+    /// assert_eq!(format!("{:08X?}", hash.get_HashValue_in_array_TM::<u32, 7>()), "[A7CED549, 2C050740, 9BC2F6E5, EAC6D908, 26148AE9, 966D5E72, ED5DF840]");
+    /// hash.tangle(1);
+    /// println!("Hash =\t{:08X?}", hash.get_HashValue_in_array_TM::<u32, 7>());
+    /// assert_eq!(format!("{:08X?}", hash.get_HashValue_in_array_TM::<u32, 7>()), "[14C24EAE, B39CD243, 8C484722, CB1A03AA, F1F9F55E, 955A27D8, 70A3ED4F]");
+    /// ```
+    ///
+    /// # Example 4 for SHA2_512_t_224_Expanded
+    /// ```
+    /// use Cryptocol::hash::SHA2_512_t_224_Expanded;
+    /// type mySHA2 = SHA2_512_t_224_Expanded<160>;
+    /// let txt = "TANGLING";
+    /// let mut my_hash = mySHA2::new();
+    /// my_hash.digest_str(txt);
+    /// println!("Msg =\t\"{}\"\nHash =\t{:08X?}", txt, my_hash.get_HashValue_in_array_TM::<u32, 7>());
+    /// assert_eq!(format!("{:08X?}", my_hash.get_HashValue_in_array_TM::<u32, 7>()), "[6EF90662, CD08A7EA, 93D0EDFC, 390175A6, 53368038, ADC8BCC8, 11351AB8]");
+    /// my_hash.tangle(1);
+    /// println!("Hash =\t{:08X?}", my_hash.get_HashValue_in_array_TM::<u32, 7>());
+    /// assert_eq!(format!("{:08X?}", my_hash.get_HashValue_in_array_TM::<u32, 7>()), "[F7566CAF, B1039FF1, 722C9B99, 5AA84D67, E6C1182A, 3B4D2DBF, 7F1FA1C8]");
+    /// my_hash.tangle(1);
+    /// println!("Hash =\t{:08X?}", my_hash.get_HashValue_in_array_TM::<u32, 7>());
+    /// assert_eq!(format!("{:08X?}", my_hash.get_HashValue_in_array_TM::<u32, 7>()), "[5B74C46E, F433ACC6, 6A402398, 39126678, 581E67AD, 14A4C823, 4B387049]");
+    /// ```
     #[inline]
     pub fn tangle(&mut self, tangling: u64)
     {
@@ -1261,25 +1530,46 @@ Display for SHA2_512_t_Generic<t, A5A5A5A5A5A5A5A5,
     /// `f` is a buffer, this method must write the formatted string into it.
     /// [Read more](https://doc.rust-lang.org/core/fmt/trait.Display.html#tymethod.fmt)
     /// 
-    /// # Example 1 for the method to_string()
+    /// # Example 1 for SHA2_512_t_256 for the method to_string()
     /// ```
-    /// use Cryptocol::hash::SHA1;
-    /// let mut hash = SHA1::new();
+    /// use Cryptocol::hash::SHA2_512_t_256;
+    /// let mut hash = SHA2_512_t_256::new();
     /// let txt = "Display::fmt() automagically implement to_string().";
     /// hash.digest_str(txt);
-    /// println!("Msg =\t\"{}\"\nHash =\t{}\n", txt, hash.to_string());
-    /// assert_eq!(hash.to_string(), "8D0A6284BBFF4DE8D68962A924842C80959B0404");
+    /// println!("Msg =\t\"{}\"\nHash =\t{}", txt, hash.to_string());
+    /// assert_eq!(hash.to_string(), "5ED309022841125DE856B25C56A741166872A1D681DF5C69F84AD8B2F30E6DD8");
     /// ```
     /// 
-    /// # Example 2 for the use in the macro println!()
+    /// # Example 2 for SHA2_512_t_256 for the use in the macro println!()
     /// ```
-    /// use Cryptocol::hash::SHA1;
-    /// let mut hash = SHA1::new();
+    /// use Cryptocol::hash::SHA2_512_t_256;
+    /// let mut hash = SHA2_512_t_256::new();
     /// let txt = "Display::fmt() enables the object to be printed in the macro println!() directly for example.";
     /// hash.digest_str(txt);
     /// println!("Msg =\t\"{}\"\nHash =\t{}", txt, hash);
-    /// assert_eq!(hash.to_string(), "835CEFA297628E4DADBDA011C5FDEA68D88A8EE8");
+    /// assert_eq!(hash.to_string(), "660F8CA5DDC61C43BCEBAB6B8FFD4081F9015CE9A7800BFE29B5100709C3E232");
     /// ```
+    /// 
+    /// # Example 3 for SHA2_512_t_224 for the method to_string()
+    /// ```
+    /// use Cryptocol::hash::SHA2_512_t_224;
+    /// let mut hash = SHA2_512_t_224::new();
+    /// let txt = "Display::fmt() automagically implement to_string().";
+    /// hash.digest_str(txt);
+    /// println!("Msg =\t\"{}\"\nHash =\t{}", txt, hash.to_string());
+    /// assert_eq!(hash.to_string(), "0FFD651E288004466FF247808E1FF5B482AFF547E94C66FF507BF021");
+    /// ```
+    /// 
+    /// # Example 4 for SHA2_512_t_224 for the use in the macro println!()
+    /// ```
+    /// use Cryptocol::hash::SHA2_512_t_224;
+    /// let mut hash = SHA2_512_t_224::new();
+    /// let txt = "Display::fmt() enables the object to be printed in the macro println!() directly for example.";
+    /// hash.digest_str(txt);
+    /// println!("Msg =\t\"{}\"\nHash =\t{}", txt, hash);
+    /// assert_eq!(hash.to_string(), "7988DFC3FB4BB8DB449B189C5D906901921C1AC0D60D94376B498795");
+    /// ```
+    /// 
     fn fmt(&self, f: &mut Formatter) -> fmt::Result
     {
         // `write!` is like `format!`, but it will write the formatted string

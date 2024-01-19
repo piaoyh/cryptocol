@@ -87,6 +87,8 @@ pub type SHA0 = SHA0_Expanded;
 /// - Storing passwords with limited security
 /// - Digital Signature with limited security
 /// - Study of hash algorithms
+/// - Cryptanalysis Research to find the weakness of SHA-1 and Merkle-Damgard
+/// construction which MD2, MD4, MD5, SHA0, SHA1, and all SHA2 family use
 /// 
 /// # Generic Parameters
 /// You can create your own expanded version of SHA-1 by changing the generic
@@ -824,9 +826,12 @@ SHA1_generic<N, H0, H1, H2, H3, H4, ROUND, K0, K1, K2, K3, RL1, RL5, RL30>
     // pub fn put_HashValue_in_array<T, const M: usize>(&self, out: &mut [T; M])
     /// Puts a hash value in the form of array object.
     /// 
-    /// # Panics
-    /// If M * mem::size_of::<T>() > 20 (= 4 * 5), this method will panic
-    /// or its behaviour is undefined even if it won't panic.
+    /// # Argument
+    /// `out` is the array [T; M] which is the place to put the hash value.
+    /// 
+    /// # Features
+    /// If M * mem::size_of::<T>() > mem::size_of::<u32>() * N,
+    /// it pass the output as the amount of mem::size_of::<u32>() * N.
     ///
     /// # Example 1 for SHA1
     /// ```

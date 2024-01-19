@@ -1154,6 +1154,11 @@ fn Hash_SHA2_256_main()
     SHA2_256_digest_string();
     SHA2_256_digest_array();
     SHA2_256_digest_vec();
+    SHA2_256_ruminate();
+    SHA2_256_ruminate_str();
+    SHA2_256_ruminate_string();
+    SHA2_256_ruminate_array();
+    SHA2_256_ruminate_vec();
     SHA2_256_get_HashValue();
     SHA2_256_get_HashValue_in_string();
     SHA2_256_get_HashValue_in_array();
@@ -1332,6 +1337,106 @@ fn SHA2_256_digest_vec()
     my_hash.digest_vec(&data);
     println!("Msg =\t{:?}\nHash =\t{}", data, my_hash);
     assert_eq!(my_hash.to_string(), "C5E18AD8B82014203663BD271D12D2BF5F51045D0E9A1BBDE7D7A7B10A125DA0");
+    println!("-------------------------------");
+}
+
+fn SHA2_256_ruminate()
+{
+    println!("SHA2_256_ruminate");
+    use Cryptocol::hash::SHA2_256;
+    let txt = "This is an example of the method ruminate().";
+    let mut hash = SHA2_256::new();
+    hash.ruminate(2, txt.as_ptr(), txt.len() as u64);
+    println!("Msg =\t\"{}\"\nHash =\t{}", txt, hash);
+    assert_eq!(hash.to_string(), "5EB550DEA1A606FE03338BBEAEB7200003472FDF02556C6E32273C0405EF1443");
+
+    use Cryptocol::hash::SHA2_256_Expanded;
+    type mySHA2 = SHA2_256_Expanded<0x1111_1111, 0x2222_2222, 0x4444_4444, 0x6666_6666, 0x8888_8888, 0xaaaa_aaaa, 0xcccc_cccc, 0xeeee_eeee, 128>;
+    let txt = "This is an example of the method ruminate().";
+    let mut hash = mySHA2::new();
+    hash.ruminate(2, txt.as_ptr(), txt.len() as u64);
+    println!("Msg =\t\"{}\"\nHash =\t{}", txt, hash);
+    assert_eq!(hash.to_string(), "78782D14800491F6E66CAA238D955FE11FC9E9750161D51B83429B58AEC3EE0B");
+    println!("-------------------------------");
+}
+
+fn SHA2_256_ruminate_str()
+{
+    println!("SHA2_256_ruminate_str");
+    use Cryptocol::hash::SHA2_256;
+    let txt = "This is an example of the method ruminate_str().";
+    let mut hash = SHA2_256::new();
+    hash.ruminate_str(3, txt);
+    println!("Msg =\t\"{}\"\nHash =\t{}", txt, hash);
+    assert_eq!(hash.to_string(), "CD24A2825FA0CBAB8D70467D82E92D8BF0CBE86C6B0DAFECB87C254376A9323D");
+
+    use Cryptocol::hash::SHA2_256_Expanded;
+    type mySHA2 = SHA2_256_Expanded<0x1111_1111, 0x2222_2222, 0x4444_4444, 0x6666_6666, 0x8888_8888, 0xaaaa_aaaa, 0xcccc_cccc, 0xeeee_eeee, 128>;
+    let txt = "This is an example of the method ruminate_str().";
+    let mut my_hash = mySHA2::new();
+    my_hash.ruminate_str(3, txt);
+    println!("Hash =\t{}", my_hash);
+    assert_eq!(my_hash.to_string(), "BF0DAD806A1D09BA917C08C951CB97F8F51C67D0EE8DFDBFCCEE7E5D6DE288C5");
+    println!("-------------------------------");
+}
+
+fn SHA2_256_ruminate_string()
+{
+    println!("SHA2_256_ruminate_string");
+    use Cryptocol::hash::SHA2_256;
+    let txt = "This is an example of the method ruminate_string().".to_string();
+    let mut hash = SHA2_256::new();
+    hash.ruminate_string(2, &txt);
+    println!("Msg =\t\"{}\"\nHash =\t{}", txt, hash);
+    assert_eq!(hash.to_string(), "B013EDF34D926ABF2BE04489593A214FFECCA1F5334E31D17BFFEA000E4E85FE");
+
+    use Cryptocol::hash::SHA2_256_Expanded;
+    type mySHA2 = SHA2_256_Expanded<0x1111_1111, 0x2222_2222, 0x4444_4444, 0x6666_6666, 0x8888_8888, 0xaaaa_aaaa, 0xcccc_cccc, 0xeeee_eeee, 128>;
+    let txt = "This is an example of the method ruminate_string().".to_string();
+    let mut my_hash = mySHA2::new();
+    my_hash.ruminate_string(2, &txt);
+    println!("Msg =\t\"{}\"\nHash =\t{}", txt, my_hash);
+    assert_eq!(my_hash.to_string(), "6C72B5A23ED16E4533FA3437AF27E9DE21ECA6D0C947CDCB1CC684FBABA3E720");
+    println!("-------------------------------");
+}
+
+fn SHA2_256_ruminate_array()
+{
+    println!("SHA2_256_ruminate_array");
+    use Cryptocol::hash::SHA2_256;
+    let data = [ 0x67452301_u32.to_le(), 0xefcdab89_u32.to_le(), 0x98badcfe_u32.to_le(), 0x10325476_u32.to_le() ];
+    let mut hash = SHA2_256::new();
+    hash.ruminate_array(5,&data);
+    println!("Msg =\t{:?}\nHash =\t{}", data, hash);
+    assert_eq!(hash.to_string(), "CD949334D0E7BBEEC7C0B3FDDED14A2FFFA85EA91DCFB171521C5C74CB989925");
+
+    use Cryptocol::hash::SHA2_256_Expanded;
+    type mySHA2 = SHA2_256_Expanded<0x1111_1111, 0x2222_2222, 0x4444_4444, 0x6666_6666, 0x8888_8888, 0xaaaa_aaaa, 0xcccc_cccc, 0xeeee_eeee, 128>;
+    let data = [ 0x67452301_u32.to_le(), 0xefcdab89_u32.to_le(), 0x98badcfe_u32.to_le(), 0x10325476_u32.to_le() ];
+    let mut my_hash = mySHA2::new();
+    my_hash.ruminate_array(5,&data);
+    println!("Msg =\t{:?}\nHash =\t{}", data, my_hash);
+    assert_eq!(my_hash.to_string(), "5E2FEBBBED0F9EFC2AFA2C892B9AC09B6A38DA45C0D23633D3C9F58A0C547909");
+    println!("-------------------------------");
+}
+
+fn SHA2_256_ruminate_vec()
+{
+    println!("SHA2_256_ruminate_vec");
+    use Cryptocol::hash::SHA2_256;
+    let data = vec![ 0x67452301_u32.to_le(), 0xefcdab89_u32.to_le(), 0x98badcfe_u32.to_le(), 0x10325476_u32.to_le() ];
+    let mut hash = SHA2_256::new();
+    hash.ruminate_vec(2, &data);
+    println!("Msg =\t{:?}\nHash =\t{}", data, hash);
+    assert_eq!(hash.to_string(), "C02DA0025F7228433CB12036E35F60242B2F6C82F55DA1497ACABD491D381EDF");
+
+    use Cryptocol::hash::SHA2_256_Expanded;
+    type mySHA2 = SHA2_256_Expanded<0x1111_1111, 0x2222_2222, 0x4444_4444, 0x6666_6666, 0x8888_8888, 0xaaaa_aaaa, 0xcccc_cccc, 0xeeee_eeee, 128>;
+    let data = vec![ 0x67452301_u32.to_le(), 0xefcdab89_u32.to_le(), 0x98badcfe_u32.to_le(), 0x10325476_u32.to_le() ];
+    let mut my_hash = mySHA2::new();
+    my_hash.ruminate_vec(2, &data);
+    println!("Msg =\t{:?}\nHash =\t{}", data, my_hash);
+    assert_eq!(my_hash.to_string(), "D5E63A6B8D2E4F1912AAD8C6C99C9B063CB001A4FB1AD6B3D08A8F0C1B4CF947");
     println!("-------------------------------");
 }
 
@@ -2646,7 +2751,7 @@ fn SHA2_512_256_put_HashValue_in_array()
     hash.digest_str(txt);
     hash.put_HashValue_in_array(&mut hash_code);
     println!("Msg =\t\"{}\"\nHash =\t{:08X?}", txt, hash_code);
-    assert_eq!(format!("{:08X?}", hash_code), "[218BF516E454F8E8, 3275DBD07098A67B, B1D289D9DCC2A854, 4D1672BEFB75B043]");
+    assert_eq!(format!("{:016X?}", hash_code), "[218BF516E454F8E8, 3275DBD07098A67B, B1D289D9DCC2A854, 4D1672BEFB75B043]");
 
     use Cryptocol::hash::SHA2_512_256_Expanded;
     type mySHA2 = SHA2_512_256_Expanded<160>;
@@ -2656,7 +2761,7 @@ fn SHA2_512_256_put_HashValue_in_array()
     my_hash.digest_str(txt);
     my_hash.put_HashValue_in_array(&mut hash_code);
     println!("Msg =\t\"{}\"\nHash =\t{:08X?}", txt, hash_code);
-    assert_eq!(format!("{:08X?}", hash_code), "[DF7A58B7D93D2EA8, 5199F8078F5F6813, D6390AFF49FE37FE, 59E9B161E91C2EB8]");
+    assert_eq!(format!("{:016X?}", hash_code), "[DF7A58B7D93D2EA8, 5199F8078F5F6813, D6390AFF49FE37FE, 59E9B161E91C2EB8]");
     println!("-------------------------------");
 }
 
@@ -2720,6 +2825,8 @@ fn Hash_SHA2_512_t_256_main()
 {
     SHA2_512_t_256_Quick_Start();
     SHA2_512_t_256_new();
+    SHA2_512_t_256_new_with_seedText();
+    SHA2_512_t_256_digest_C();
     SHA2_512_t_256_digest();
     SHA2_512_t_256_digest_str();
     SHA2_512_t_256_digest_string();
@@ -2791,6 +2898,36 @@ fn SHA2_512_t_256_new()
     let mut hash = SHA2_512_t_256::new();
     println!("Hash =\t{}", hash);
     assert_eq!(hash.to_string(), "22312194FC2BF72C9F555FA3C84C64C22393B86B6F53B151963877195940EABD");
+    println!("-------------------------------");
+}
+
+fn SHA2_512_t_256_new_with_seedText()
+{
+    println!("SHA2_512_t_256_new_with_seedText");
+    use Cryptocol::hash::SHA2_512_t_256;
+    let mut hash = SHA2_512_t_256::new_with_seedText("샤-");
+    // '샤' is from Hangeul which is Korean letter, sounds like 'sha'
+    println!("Hash =\t{}", hash);
+    assert_eq!(hash.to_string(), "6E231779CE7B233F74077E896D4ABCCA8B31054CB94168164E08BD8F31764DCB");
+    println!("-------------------------------");
+}
+
+fn SHA2_512_t_256_digest_C()
+{
+    println!("SHA2_512_t_256_digest_C");
+    use Cryptocol::hash::SHA2_512_t_256;
+    let txt = "This is an example of the method digest_C().";
+    let mut hash = SHA2_512_t_256::new();
+    hash.digest_C(txt.as_ptr(), txt.len() as u64, 0);
+    println!("Msg =\t\"{}\"\nHash =\t{}", txt, hash);
+    assert_eq!(hash.to_string(), "91589EAF3AAC1137D8672E02248AFC73B0A831EF6C36A88269566B6A6C0461F0");
+
+    use Cryptocol::hash::SHA2_512_t_256_Expanded;
+    type mySHA2 = SHA2_512_t_256_Expanded<0x123456789abcdef0, 160>;
+    let mut my_hash = mySHA2::new();
+    my_hash.digest_C(txt.as_ptr(), txt.len() as u64, 0);
+    println!("Msg =\t\"{}\"\nHash =\t{}", txt, my_hash);
+    assert_eq!(my_hash.to_string(), "FFD5110E22D3BE4CBAA837F95189F369AB199285C1763EDBCE28C4E49FD210F6");
     println!("-------------------------------");
 }
 
@@ -2908,12 +3045,58 @@ fn SHA2_512_t_256_get_HashValue_in_vec()
 
 fn SHA2_512_t_256_put_HashValue_in_array()
 {
+    println!("SHA2_512_t_256_put_HashValue_in_array");
+    use Cryptocol::hash::SHA2_512_t_256;
+    let txt = "This is an example of the method put_HashValue_in_array().";
+    let mut hash = SHA2_512_t_256::new();
+    let mut hash_code = [0_u64; 4];
+    hash.digest_str(txt);
+    hash.put_HashValue_in_array(&mut hash_code);
+    println!("Msg =\t\"{}\"\nHash =\t{:08X?}", txt, hash_code);
+    assert_eq!(format!("{:08X?}", hash_code), "[218BF516E454F8E8, 3275DBD07098A67B, B1D289D9DCC2A854, 4D1672BEFB75B043]");
 
+    use Cryptocol::hash::SHA2_512_t_256_Expanded;
+    type mySHA2 = SHA2_512_t_256_Expanded<160>;
+    let txt = "This is an example of the method put_HashValue_in_array().";
+    let mut my_hash = mySHA2::new();
+    let mut hash_code = [0_u64; 4];
+    my_hash.digest_str(txt);
+    my_hash.put_HashValue_in_array(&mut hash_code);
+    println!("Msg =\t\"{}\"\nHash =\t{:08X?}", txt, hash_code);
+    assert_eq!(format!("{:08X?}", hash_code), "[BC3F9E2D39A7884A, 145476850E31A6A4, 5E9E4735097FA868, 9C54C80B9D591AE8]");
+    println!("-------------------------------");
 }
 
 fn SHA2_512_t_256_tangle()
 {
+    println!("SHA2_512_t_256_tangle");
+    use Cryptocol::hash::SHA2_512_t_256;
+    let txt = "TANGLING";
+    let mut hash = SHA2_512_t_256::new();
+    hash.digest_str(txt);
+    println!("Msg =\t\"{}\"\nHash =\t{:016X?}", txt, hash.get_HashValue_in_array_TM::<u64, 4>());
+    assert_eq!(format!("{:016X?}", hash.get_HashValue_in_array_TM::<u64, 4>()), "[FC36648637962C38, BDFBBAE5DEA75E0E, D72827D56EB79EF9, 4969BAA99DB0E42B]");
+    hash.tangle(1);
+    println!("Hash =\t{:016X?}", hash.get_HashValue_in_array_TM::<u64, 4>());
+    assert_eq!(format!("{:016X?}", hash.get_HashValue_in_array_TM::<u64, 4>()), "[96CA6859E014C355, 6BBED0E8DA26FFAD, A4F89477C93C9E8C, 806148BDB037AE26]");
+    hash.tangle(1);
+    println!("Hash =\t{:016X?}", hash.get_HashValue_in_array_TM::<u64, 4>());
+    assert_eq!(format!("{:016X?}", hash.get_HashValue_in_array_TM::<u64, 4>()), "[11F5369ABC9E3B5D, D3D869131E697AB2, 1899C8D791BB09FC, 0C6CE82AE3B9D583]");
 
+    use Cryptocol::hash::SHA2_512_t_256_Expanded;
+    type mySHA2 = SHA2_512_t_256_Expanded<160>;
+    let txt = "TANGLING";
+    let mut my_hash = mySHA2::new();
+    my_hash.digest_str(txt);
+    println!("Msg =\t\"{}\"\nHash =\t{:016X?}", txt, my_hash.get_HashValue_in_array_TM::<u64, 4>());
+    assert_eq!(format!("{:016X?}", my_hash.get_HashValue_in_array_TM::<u64, 4>()), "[C60A42A16859F8B8, 7EAB94538B024642, 654DD7795DDDD39B, 12E1A03748AEFFF3]");
+    my_hash.tangle(1);
+    println!("Hash =\t{:016X?}", my_hash.get_HashValue_in_array_TM::<u64, 4>());
+    assert_eq!(format!("{:016X?}", my_hash.get_HashValue_in_array_TM::<u64, 4>()), "[05A82162DE47FEE5, 4B7C2320AF525665, 0D9A9FC79B16B8E6, B51D2D5242BADECD]");
+    my_hash.tangle(1);
+    println!("Hash =\t{:016X?}", my_hash.get_HashValue_in_array_TM::<u64, 4>());
+    assert_eq!(format!("{:016X?}", my_hash.get_HashValue_in_array_TM::<u64, 4>()), "[BC74B5902DD2AB00, 680C9FE85FED5E60, 4FAAF51214292837, B9292AFDBF94B64E]");
+    println!("-------------------------------");
 }
 
 fn SHA2_512_t_256_fmt_for_to_string()
@@ -2946,6 +3129,7 @@ fn Hash_SHA2_512_t_224_main()
     SHA2_512_t_224_new();
     // SHA2_512_t_224_new_with_seedText();
     // SHA2_512_t_224_new_with_H();
+    // SHA2_512_t_224_digest_C();
     SHA2_512_t_224_digest();
     SHA2_512_t_224_digest_str();
     SHA2_512_t_224_digest_string();
@@ -3134,12 +3318,58 @@ fn SHA2_512_t_224_get_HashValue_in_vec()
 
 fn SHA2_512_t_224_put_HashValue_in_array()
 {
+    println!("SHA2_512_t_224_put_HashValue_in_array");
+    use Cryptocol::hash::SHA2_512_t_224;
+    let txt = "This is an example of the method put_HashValue_in_array().";
+    let mut hash = SHA2_512_t_224::new();
+    let mut hash_code = [0_u64; 4];
+    hash.digest_str(txt);
+    hash.put_HashValue_in_array(&mut hash_code);
+    println!("Msg =\t\"{}\"\nHash =\t{:016X?}", txt, hash_code);
+    assert_eq!(format!("{:016X?}", hash_code), "[6CF723619865F699, 7DC49BFEAED1C117, 2DF9E01CAEF542F5, FA1BA67BA06F5FF5]");
 
+    use Cryptocol::hash::SHA2_512_t_224_Expanded;
+    type mySHA2 = SHA2_512_t_224_Expanded<160>;
+    let txt = "This is an example of the method put_HashValue_in_array().";
+    let mut my_hash = mySHA2::new();
+    let mut hash_code = [0_u64; 4];
+    my_hash.digest_str(txt);
+    my_hash.put_HashValue_in_array(&mut hash_code);
+    println!("Msg =\t\"{}\"\nHash =\t{:016X?}", txt, hash_code);
+    assert_eq!(format!("{:016X?}", hash_code), "[08143B9294ECCD69, B89B933148B16625, B9DE1F9C0E182568, C95A5B18FDD97FF5]");
+    println!("-------------------------------");
 }
 
 fn SHA2_512_t_224_tangle()
 {
+    println!("SHA2_512_t_224_tangle");
+    use Cryptocol::hash::SHA2_512_t_224;
+    let txt = "TANGLING";
+    let mut hash = SHA2_512_t_224::new();
+    hash.digest_str(txt);
+    println!("Msg =\t\"{}\"\nHash =\t{:08X?}", txt, hash.get_HashValue_in_array_TM::<u32, 7>());
+    assert_eq!(format!("{:08X?}", hash.get_HashValue_in_array_TM::<u32, 7>()), "[72E2E82F, C78389DA, 112F494F, B415B8C4, EF993BFA, EDB5091B, 8C03F067]");
+    hash.tangle(1);
+    println!("Hash =\t{:08X?}", hash.get_HashValue_in_array_TM::<u32, 7>());
+    assert_eq!(format!("{:08X?}", hash.get_HashValue_in_array_TM::<u32, 7>()), "[A7CED549, 2C050740, 9BC2F6E5, EAC6D908, 26148AE9, 966D5E72, ED5DF840]");
+    hash.tangle(1);
+    println!("Hash =\t{:08X?}", hash.get_HashValue_in_array_TM::<u32, 7>());
+    assert_eq!(format!("{:08X?}", hash.get_HashValue_in_array_TM::<u32, 7>()), "[14C24EAE, B39CD243, 8C484722, CB1A03AA, F1F9F55E, 955A27D8, 70A3ED4F]");
 
+    use Cryptocol::hash::SHA2_512_t_224_Expanded;
+    type mySHA2 = SHA2_512_t_224_Expanded<160>;
+    let txt = "TANGLING";
+    let mut my_hash = mySHA2::new();
+    my_hash.digest_str(txt);
+    println!("Msg =\t\"{}\"\nHash =\t{:08X?}", txt, my_hash.get_HashValue_in_array_TM::<u32, 7>());
+    assert_eq!(format!("{:08X?}", my_hash.get_HashValue_in_array_TM::<u32, 7>()), "[6EF90662, CD08A7EA, 93D0EDFC, 390175A6, 53368038, ADC8BCC8, 11351AB8]");
+    my_hash.tangle(1);
+    println!("Hash =\t{:08X?}", my_hash.get_HashValue_in_array_TM::<u32, 7>());
+    assert_eq!(format!("{:08X?}", my_hash.get_HashValue_in_array_TM::<u32, 7>()), "[F7566CAF, B1039FF1, 722C9B99, 5AA84D67, E6C1182A, 3B4D2DBF, 7F1FA1C8]");
+    my_hash.tangle(1);
+    println!("Hash =\t{:08X?}", my_hash.get_HashValue_in_array_TM::<u32, 7>());
+    assert_eq!(format!("{:08X?}", my_hash.get_HashValue_in_array_TM::<u32, 7>()), "[5B74C46E, F433ACC6, 6A402398, 39126678, 581E67AD, 14A4C823, 4B387049]");
+    println!("-------------------------------");
 }
 
 fn SHA2_512_t_224_fmt_for_to_string()
