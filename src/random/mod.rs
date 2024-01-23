@@ -13,25 +13,23 @@
 //! number generators
 //! 
 //! # Background: Random number generators
+//! Generating true random numbers is very difficult. However, if artificial
+//! random numbers which are widely called 'pseudo-random numbers' has the
+//! same statistical characterisics as the true random numbers, it is
+//! considered to be virtually random. For more in detail about randomness,
+//! [Read more](https://en.wikipedia.org/wiki/Statistical_randomness).
 //! 
-//! 
-//! # Three kinds of long bit integers
-//! This module provides some kinds of pseudo-random number generators.
-//! - `BigUInt` --- a big _unsigned_ integer with user-defined _fixed_ size. [Read more](struct@BigUInt)
-//! - `BigSInt` --- a big _signed_ integer with user-defined _fixed_ size.
-//! - `LargeInt` --- a big _signed_ integer with _variable_ size.
-//! 
-//! # Predefined big unsigned integer data types
-//! There are provided predefined data types: `u256`, `u512`, `u1024`, `u2048`,
-//! `u3072`, `u4096`, `u5120`, `u6144`, `u7168`, `u8192`, and `u16384`.
-//! And their synonyms are also provided such as `U32` (= `u256`),
-//! `U64` (= `u512`), `U128` (= `u1024`), `U256` (= `u2048`),
-//! `U384` (= `u3072`), `U512` (= `u4096`), `U640` (= `u5120`),
-//! `U768` (= `u6144`), `U896` (= `u7168`), `U1024` (= `u8192`),
-//! and `U2048` (= `u16384`). You can further define more data types.
-//! 
-//! `u256` for 64-bit machines is `BigUInt<u64, 4>` for example
-//! while `u256` for 32-bit machines is `BigUInt<u32, 8>` for example.
+//! # Predefined pseudo-random number generators
+//! There are provided predefined pseudo-random number generators:
+//! - Any_MD4: uses a hash algorithm MD4.
+//! - Any_MD5: uses a hash algorithm MD5.
+//! - Any_SHA0: uses a hash algorithm SHA0.
+//! - Any_SHA1: uses a hash algorithm SHA1.
+//! - Any_SHA2_256: uses a hash algorithm SHA2_256.
+//! - Random_SHA2_512: uses a hash algorithm SHA2_512.
+//! - Any: uses a hash algorithm SHA2_256.
+//! - Random: uses a hash algorithm SHA2_512.
+//! - Any_Num: uses a pseudo-random number generator algorithm of the function
 //! 
 //! # Quality Issues and Debate
 //! The pseudo-random number generators in this module use hash algorithms,
