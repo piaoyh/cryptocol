@@ -76,9 +76,9 @@ use crate::number::{ SmallUInt, IntUnion, LongUnion };
 /// 
 /// # Quick Start
 /// In order to use the module Keccak, you don't have to import (or use)
-/// Cryptocol::hash::keccak::* directly because the module Cryptocol::hash::keccak
+/// cryptocol::hash::keccak::* directly because the module cryptocol::hash::keccak
 /// is re-exported. All you have to do is only import Keccak, Keccak_Expanded,
-/// Keccak_Generic_HR_fixed and/or Keccak_Generic in the module Cryptocol::hash.
+/// Keccak_Generic_HR_fixed and/or Keccak_Generic in the module cryptocol::hash.
 /// Example 1 shows how to import structs Keccak, Keccak_Expanded,
 /// Keccak_Generic_HR_fixed and/or Keccak_Generic. Plus, what you have to know is
 /// these. All the types (or structs) are the specific versions of Keccak_Generic.
@@ -87,10 +87,10 @@ use crate::number::{ SmallUInt, IntUnion, LongUnion };
 /// 
 /// ## Example 1
 /// ```
-/// use Cryptocol::hash::Keccak;
-/// use Cryptocol::hash::Keccak;
-/// use Cryptocol::hash::Keccak_Generic_HR_fixed;
-/// use Cryptocol::hash::Keccak_Generic;
+/// use cryptocol::hash::Keccak;
+/// use cryptocol::hash::Keccak;
+/// use cryptocol::hash::Keccak_Generic_HR_fixed;
+/// use cryptocol::hash::Keccak_Generic;
 /// ```
 /// Then, you create Keccak object by the method Keccak::new(). Now, you are ready to
 /// use all provided methods to hash any data. If you want to hash a string,

@@ -234,7 +234,7 @@ use super::NumberErr;
 /// 
 /// ## Example 1
 /// ```
-/// use Cryptocol::number::*;
+/// use cryptocol::number::*;
 /// type u1024 = BigUInt::<u128, 8>;
 /// ```
 /// Then, you can use `u1024` in the similar way to how to use `u8` or `u64`.
@@ -243,7 +243,7 @@ use super::NumberErr;
 /// 
 /// ## Example 2
 /// ```
-/// use Cryptocol::number::*;
+/// use cryptocol::number::*;
 /// type u1024 = BigUInt::<u64, 16>;
 /// ```
 /// Then, it is composed of sixteen `u64`s inside though it is the same size of
@@ -266,8 +266,8 @@ use super::NumberErr;
 /// ## Modules and Constructors for Convenience
 /// If you use (import) `std::str::FromStr`, you can create BigUInt integer
 /// intuitively and conveniently. Of course, you have to use (import) the
-/// necessary stuffs in the module `Cryptocol::number`. So, for your
-/// convenience, use (import) `Cryptocol::number::*`. It is no harm for you.
+/// necessary stuffs in the module `cryptocol::number`. So, for your
+/// convenience, use (import) `cryptocol::number::*`. It is no harm for you.
 /// 
 /// Look into the following examples so that you may get some more ideas
 /// about how to use BigUInt.
@@ -275,7 +275,7 @@ use super::NumberErr;
 /// ## Example 3
 /// ```
 /// use std::str::FromStr;
-/// use Cryptocol::number::*;
+/// use cryptocol::number::*;
 /// 
 /// type u1024 = BigUInt::<u128, 8>;
 /// 
@@ -354,7 +354,7 @@ use super::NumberErr;
 /// ## Predefined Datatypes for Convenience
 /// You can use predefiend datatypes such as `u256`, `u512`, `u1024`, etc.,
 /// or `U32`, `U64`, `U128`, etc. All you have to do is to use (import)
-/// `Cryptocol::define_utypes_with`, and use a `define_utypes_with!()` macro.
+/// `cryptocol::define_utypes_with`, and use a `define_utypes_with!()` macro.
 /// The macro `define_utypes_with!()` requires base unsigned integer type such
 /// as `u128`, `u64`, `u32`, `u16`, and `u8`. `usize` is not supported as base
 /// type because `usize` and `isize` have different size according to
@@ -363,7 +363,7 @@ use super::NumberErr;
 /// ## Example 4
 /// ```
 /// use std::str::FromStr;
-/// use Cryptocol::define_utypes_with;
+/// use cryptocol::define_utypes_with;
 /// 
 /// define_utypes_with!(u128);
 /// 
@@ -433,7 +433,7 @@ use super::NumberErr;
 /// 
 /// ## Example 5
 /// ```
-/// use Cryptocol::number::*;
+/// use cryptocol::number::*;
 /// type u136 = BigUInt::<u8, 17>;
 /// type u144 = BigUInt::<u16, 9>;
 /// type u192 = BigUInt::<u32, 6>;
@@ -518,7 +518,7 @@ use super::NumberErr;
 /// fn main()
 /// {
 ///     use std::time::SystemTime;
-///     use Cryptocol::number::*;
+///     use cryptocol::number::*;
 /// 
 ///     let mut ti = [0_u128; 5];   // How many microseconds
 ///     let dt = ["u128", "u64", "u32", "u16", "u8"];
@@ -565,7 +565,7 @@ use super::NumberErr;
 /// ## Example 6
 /// ```
 /// use std::str::FromStr;
-/// use Cryptocol::define_utypes_with;
+/// use cryptocol::define_utypes_with;
 /// define_utypes_with!(u128);
 /// let a = u1024::new();
 /// ```
@@ -576,7 +576,7 @@ use super::NumberErr;
 /// ## Example 7
 /// ```
 /// use std::str::FromStr;
-/// use Cryptocol::define_utypes_with;
+/// use cryptocol::define_utypes_with;
 /// define_utypes_with!(u64);
 /// let a = u1024::new();
 /// ```
@@ -675,7 +675,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// 
     /// # Example
     /// ```
-    /// use Cryptocol::define_utypes_with;
+    /// use cryptocol::define_utypes_with;
     /// define_utypes_with!(u128);
     /// 
     /// let obj = u256::new();
@@ -727,7 +727,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     ///
     /// # Example
     /// ```
-    /// use Cryptocol::define_utypes_with;
+    /// use cryptocol::define_utypes_with;
     /// define_utypes_with!(u64);
     /// 
     /// let zero = u256::zero();
@@ -754,7 +754,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// 
     /// # Example
     /// ```
-    /// use Cryptocol::define_utypes_with;
+    /// use cryptocol::define_utypes_with;
     /// define_utypes_with!(u32);
     /// 
     /// let one = u256::one();
@@ -787,7 +787,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// # Example
     /// ```
     /// use std::str::FromStr;
-    /// use Cryptocol::define_utypes_with;
+    /// use cryptocol::define_utypes_with;
     /// define_utypes_with!(u16);
     /// 
     /// let maximum = u256::max();
@@ -818,7 +818,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// # Example
     /// ```
     /// use std::str::FromStr;
-    /// use Cryptocol::define_utypes_with;
+    /// use cryptocol::define_utypes_with;
     /// define_utypes_with!(u8);
     /// 
     /// let half = u256::submax(128_usize);
@@ -848,7 +848,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// # Example
     /// ```
     /// use std::str::FromStr;
-    /// use Cryptocol::define_utypes_with;
+    /// use cryptocol::define_utypes_with;
     /// define_utypes_with!(u128);
     /// 
     /// let half = u256::halfmax();
@@ -874,7 +874,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// 
     /// # Example for u8
     /// ```
-    /// use Cryptocol::define_utypes_with_u16;
+    /// use cryptocol::define_utypes_with_u16;
     /// define_utypes_with_u16!();
     /// 
     /// let aa = u512::from_uint(123_u8);
@@ -884,8 +884,8 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// 
     /// # Example for u16
     /// ```
-    /// use Cryptocol::number::BigUInt;
-    /// use Cryptocol::define_utypes_with_u64;
+    /// use cryptocol::number::BigUInt;
+    /// use cryptocol::define_utypes_with_u64;
     /// define_utypes_with_u64!();
     /// 
     /// let bb = u512::from_uint(12345_u16);
@@ -895,8 +895,8 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// 
     /// # Example for u32
     /// ```
-    /// use Cryptocol::number::BigUInt;
-    /// use Cryptocol::define_utypes_with_u8;
+    /// use cryptocol::number::BigUInt;
+    /// use cryptocol::define_utypes_with_u8;
     /// define_utypes_with_u8!();
     /// 
     /// let cc = u512::from_uint(1234567890_u32);
@@ -906,8 +906,8 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// 
     /// # Example for u64
     /// ```
-    /// use Cryptocol::number::BigUInt;
-    /// use Cryptocol::define_utypes_with_u128;
+    /// use cryptocol::number::BigUInt;
+    /// use cryptocol::define_utypes_with_u128;
     /// define_utypes_with_u128!();
     /// 
     /// let dd = u512::from_uint(12345678901234567890_u64);
@@ -917,8 +917,8 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// 
     /// # Example for u128
     /// ```
-    /// use Cryptocol::number::BigUInt;
-    /// use Cryptocol::define_utypes_with_u128;
+    /// use cryptocol::number::BigUInt;
+    /// use cryptocol::define_utypes_with_u128;
     /// define_utypes_with_u128!();
     /// 
     /// let ee = u512::from_uint(123456789012345678901234567890123456789_u128);
@@ -928,8 +928,8 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// 
     /// # Example for usize
     /// ```
-    /// use Cryptocol::number::BigUInt;
-    /// use Cryptocol::define_utypes_with_u32;
+    /// use cryptocol::number::BigUInt;
+    /// use cryptocol::define_utypes_with_u32;
     /// define_utypes_with_u32!();
     /// 
     /// let ff = u512::from_uint(123_usize);
@@ -980,7 +980,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// 
     /// # Example
     /// ```
-    /// use Cryptocol::define_utypes_with;
+    /// use cryptocol::define_utypes_with;
     /// define_utypes_with!(u8);
     /// 
     /// let big_num = u256::from_array(&[1_u8;32]);
@@ -1008,7 +1008,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// # Example for the same length
     /// ```
     /// use std::str::FromStr;
-    /// use Cryptocol::number::*;
+    /// use cryptocol::number::*;
     /// 
     /// let a = u256_with_u8::from_str("123456789123456789123456789123456789123456789123456789").unwrap();
     /// let b = u256_with_u16::from_biguint(&a);
@@ -1020,7 +1020,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// # Example for the shorter length
     /// ```
     /// use std::str::FromStr;
-    /// use Cryptocol::number::*;
+    /// use cryptocol::number::*;
     /// 
     /// let a = u256_with_u8::from_str("123456789123456789123456789123456789123456789123456789").unwrap();
     /// let b = u512_with_u16::from_biguint(&a);
@@ -1032,7 +1032,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// # Example for the longer length
     /// ```
     /// use std::str::FromStr;
-    /// use Cryptocol::number::*;
+    /// use cryptocol::number::*;
     /// 
     /// let a = u512_with_u8::from_str("123456789123456789123456789123456789123456789123456789").unwrap();
     /// let b = u256_with_u16::from_biguint(&a);
@@ -1077,7 +1077,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// # Example for the same length
     /// ```
     /// use std::str::FromStr;
-    /// use Cryptocol::number::*;
+    /// use cryptocol::number::*;
     /// 
     /// let a = u256_with_u8::from_str("123456789123456789123456789123456789123456789123456789").unwrap();
     /// let b = u256_with_u16::from_biguint(&a);
@@ -1089,7 +1089,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// # Example for the shorter length
     /// ```
     /// use std::str::FromStr;
-    /// use Cryptocol::number::*;
+    /// use cryptocol::number::*;
     /// 
     /// let a = u256_with_u8::from_str("123456789123456789123456789123456789123456789123456789").unwrap();
     /// let b = u512_with_u16::from_biguint(&a);
@@ -1101,7 +1101,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// # Example for the longer length
     /// ```
     /// use std::str::FromStr;
-    /// use Cryptocol::number::*;
+    /// use cryptocol::number::*;
     /// 
     /// let a = u512_with_u8::from_str("123456789123456789123456789123456789123456789123456789").unwrap();
     /// let b = u256_with_u16::from_biguint(&a);
@@ -1149,7 +1149,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// 
     /// # Example
     /// ```
-    /// use Cryptocol::define_utypes_with;
+    /// use cryptocol::define_utypes_with;
     /// define_utypes_with!(u8);
     /// 
     /// let be = u256::from_array(&[0x12, 0x34, 0x56, 0x78, 0x90, 0xab, 0xcd, 0xef,
@@ -1177,7 +1177,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// 
     /// # Example
     /// ```
-    /// use Cryptocol::define_utypes_with;
+    /// use cryptocol::define_utypes_with;
     /// define_utypes_with!(u8);
     /// 
     /// let be1 = u256::from_array(&[0x12, 0x34, 0x56, 0x78, 0x90, 0xab, 0xcd, 0xef,
@@ -1206,7 +1206,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// 
     /// # Example
     /// ```
-    /// use Cryptocol::define_utypes_with;
+    /// use cryptocol::define_utypes_with;
     /// define_utypes_with!(u8);
     /// 
     /// let be_array = [0x12, 0x34, 0x56, 0x78, 0x90, 0xab, 0xcd, 0xef,
@@ -1234,7 +1234,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// 
     /// # Example
     /// ```
-    /// use Cryptocol::define_utypes_with;
+    /// use cryptocol::define_utypes_with;
     /// define_utypes_with!(u8);
     /// 
     /// let be_array = [0x12, 0x34, 0x56, 0x78, 0x90, 0xab, 0xcd, 0xef,
@@ -1261,7 +1261,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// 
     /// # Example
     /// ```
-    /// use Cryptocol::define_utypes_with;
+    /// use cryptocol::define_utypes_with;
     /// define_utypes_with!(u8);
     /// 
     /// let le1 = u256::from_array(&[0x12, 0x34, 0x56, 0x78, 0x90, 0xab, 0xcd, 0xef,
@@ -1289,7 +1289,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// 
     /// # Example
     /// ```
-    /// use Cryptocol::define_utypes_with;
+    /// use cryptocol::define_utypes_with;
     /// define_utypes_with!(u8);
     /// 
     /// let le = u256::from_array(&[0x12, 0x34, 0x56, 0x78, 0x90, 0xab, 0xcd, 0xef,
@@ -1318,7 +1318,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// 
     /// # Example
     /// ```
-    /// use Cryptocol::define_utypes_with;
+    /// use cryptocol::define_utypes_with;
     /// define_utypes_with!(u8);
     /// 
     /// let le_array = [0x12, 0x34, 0x56, 0x78, 0x90, 0xab, 0xcd, 0xef,
@@ -1346,7 +1346,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// 
     /// # Example
     /// ```
-    /// use Cryptocol::define_utypes_with;
+    /// use cryptocol::define_utypes_with;
     /// define_utypes_with!(u8);
     /// 
     /// let le_array = [0x12, 0x34, 0x56, 0x78, 0x90, 0xab, 0xcd, 0xef,
@@ -1392,7 +1392,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// 
     /// # Example
     /// ```
-    /// use Cryptocol::define_utypes_with;
+    /// use cryptocol::define_utypes_with;
     /// define_utypes_with!(u64);
     /// 
     /// let a = u256::from_string("1234567890_1234567890_1234567890_1234567890_1234567890_1234567890_1234567890").unwrap();
@@ -1469,7 +1469,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// 
     /// # Example
     /// ```
-    /// use Cryptocol::define_utypes_with;
+    /// use cryptocol::define_utypes_with;
     /// define_utypes_with!(u16);
     /// let a = u512::from_str_radix("1234_5678_9ABC_DEF0_1234_5678_9ABC_DEF0_1234_5678_9ABC_DEF0_1234_5678_9ABC_DEF0_1234_5678_9ABC_DEF0_1234_5678_9ABC_DEF0_1234_5678_9ABC_DEF0_1234_5678_9ABC_DEF0", 16).unwrap();
     /// println!("a = {}", a);
@@ -1548,7 +1548,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// 
     /// # Example
     /// ```
-    /// use Cryptocol::define_utypes_with_u32;
+    /// use cryptocol::define_utypes_with_u32;
     /// define_utypes_with_u32!();
     /// 
     /// let a_0 = u256::generate_check_bits(0).unwrap();
@@ -1601,7 +1601,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// 
     /// # Example
     /// ```
-    /// use Cryptocol::define_utypes_with_u32;
+    /// use cryptocol::define_utypes_with_u32;
     /// define_utypes_with_u32!();
     /// 
     /// let a_0 = u256::generate_check_bits(0);
@@ -1645,7 +1645,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// 
     /// # Examples
     /// ```
-    /// use Cryptocol::define_utypes_with;
+    /// use cryptocol::define_utypes_with;
     /// define_utypes_with!(u8);
     /// 
     /// println!("u256 is {}-byte integer.", u256::size_in_bytes());
@@ -1668,7 +1668,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// 
     /// # Examples
     /// ```
-    /// use Cryptocol::define_utypes_with;
+    /// use cryptocol::define_utypes_with;
     /// define_utypes_with!(u32);
     /// 
     /// println!("u256 is {}-bit integer.", u256::size_in_bits());
@@ -1692,7 +1692,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// 
     /// # Examples
     /// ```
-    /// use Cryptocol::define_utypes_with;
+    /// use cryptocol::define_utypes_with;
     /// define_utypes_with!(u16);
     /// let a = u256::from_str_radix("A16F", 16).unwrap();
     /// println!("a is {}-byte integer.", a.length_in_bytes());
@@ -1716,7 +1716,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// 
     /// # Examples
     /// ```
-    /// use Cryptocol::define_utypes_with;
+    /// use cryptocol::define_utypes_with;
     /// define_utypes_with!(u64);
     /// 
     /// let a = u256::from_str_radix("A16F", 16).unwrap();
@@ -1750,8 +1750,8 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// 
     /// # Example
     /// ```
-    /// use Cryptocol::number::*;
-    /// use Cryptocol::define_utypes_with;
+    /// use cryptocol::number::*;
+    /// use cryptocol::define_utypes_with;
     /// 
     /// define_utypes_with!(u128);
     /// let mut a = u256::any();
@@ -1799,7 +1799,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// 
     /// # Example
     /// ```
-    /// use Cryptocol::define_utypes_with;
+    /// use cryptocol::define_utypes_with;
     /// define_utypes_with!(u64);
     /// 
     /// let a = u256::from_string("12345678912345678912345678912345678912345678912345678912345678912345678912345").unwrap();
@@ -1883,7 +1883,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// 
     /// # Example
     /// ```
-    /// use Cryptocol::define_utypes_with;
+    /// use cryptocol::define_utypes_with;
     /// define_utypes_with!(u64);
     /// 
     /// let a = u256::from_string("12345678912345678912345678912345678912345678912345678912345678912345678912345").unwrap();
@@ -1923,7 +1923,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// 
     /// # Example
     /// ```
-    /// use Cryptocol::define_utypes_with;
+    /// use cryptocol::define_utypes_with;
     /// define_utypes_with!(u32);
     /// 
     /// let a = u256::from_string("12345678912345678912345678912345678912345678912345678912345678912345678912345").unwrap();
@@ -1963,7 +1963,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// 
     /// # Example
     /// ```
-    /// use Cryptocol::define_utypes_with;
+    /// use cryptocol::define_utypes_with;
     /// define_utypes_with!(u32);
     /// 
     /// let a = u256::from_string("12345678912345678912345678912345678912345678912345678912345678912345678912345").unwrap();
@@ -2024,7 +2024,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// 
     /// # Example
     /// ```
-    /// use Cryptocol::define_utypes_with;
+    /// use cryptocol::define_utypes_with;
     /// define_utypes_with!(u32);
     /// 
     /// let a = u256::from([0_u32, 10, 20, 30, 40, 50, 60, 70]);
@@ -2091,7 +2091,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// 
     /// # Example
     /// ```
-    /// use Cryptocol::define_utypes_with;
+    /// use cryptocol::define_utypes_with;
     /// 
     /// define_utypes_with!(u32);
     /// let a = u256::from([0_u32, 10, 20, 30, 40, 50, 60, 70]);
@@ -2137,7 +2137,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// 
     /// # Example
     /// ```
-    /// use Cryptocol::define_utypes_with;
+    /// use cryptocol::define_utypes_with;
     /// define_utypes_with!(u64);
     /// 
     /// let mut a = u256::from([0_u64, 10, 20, 30]);
@@ -2196,7 +2196,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// 
     /// # Example
     /// ```
-    /// use Cryptocol::define_utypes_with;
+    /// use cryptocol::define_utypes_with;
     /// define_utypes_with!(u128);
     /// 
     /// let mut a = u256::from([10_u128, 20]);
@@ -2223,7 +2223,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// 
     /// # Example
     /// ```
-    /// use Cryptocol::define_utypes_with;
+    /// use cryptocol::define_utypes_with;
     /// define_utypes_with!(u32);
     /// if let Ok(a) = "12345678909876543210123456789098765432101234567890987654321012345678909876543".parse::<u256>()
     /// {
@@ -2245,7 +2245,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// 
     /// # Example
     /// ```
-    /// use Cryptocol::define_utypes_with;
+    /// use cryptocol::define_utypes_with;
     /// define_utypes_with!(u32);
     /// if let Ok(a) = "12345678909876543210123456789098765432101234567890987654321012345678909876543".parse::<u256>()
     /// {
@@ -2274,7 +2274,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// 
     /// # Example
     /// ```
-    /// use Cryptocol::define_utypes_with;
+    /// use cryptocol::define_utypes_with;
     /// define_utypes_with!(u16);
     /// let mut a = u256::new();
     /// println!("arr = {:?}", a);
@@ -2309,7 +2309,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// 
     /// # Example
     /// ```
-    /// use Cryptocol::define_utypes_with;
+    /// use cryptocol::define_utypes_with;
     /// define_utypes_with!(u16);
     /// let mut a = u256::new();
     /// a.set_number(&[0_u16, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15]);
@@ -2350,7 +2350,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// 
     /// # Example
     /// ```
-    /// use Cryptocol::define_utypes_with;
+    /// use cryptocol::define_utypes_with;
     /// define_utypes_with!(u16);
     /// let mut a = u256::new();
     /// a.set_number(&[0_u16, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15]);
@@ -2394,7 +2394,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// 
     /// # Example
     /// ```
-    /// use Cryptocol::define_utypes_with;
+    /// use cryptocol::define_utypes_with;
     /// define_utypes_with!(u16);
     /// 
     /// let mut a = u256::new();
@@ -2419,7 +2419,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// 
     /// # Example
     /// ```
-    /// use Cryptocol::define_utypes_with;
+    /// use cryptocol::define_utypes_with;
     /// define_utypes_with!(u128);
     /// let mut a = u1024::zero();
     /// if a.is_zero()
@@ -2450,7 +2450,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// 
     /// # Example
     /// ```
-    /// use Cryptocol::define_utypes_with;
+    /// use cryptocol::define_utypes_with;
     /// define_utypes_with!(u16);
     /// 
     /// let mut a = u256::new();
@@ -2480,7 +2480,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// 
     /// # Example
     /// ```
-    /// use Cryptocol::define_utypes_with;
+    /// use cryptocol::define_utypes_with;
     /// define_utypes_with!(u128);
     /// 
     /// let mut a = u256::one();
@@ -2519,7 +2519,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// 
     /// # Example
     /// ```
-    /// use Cryptocol::define_utypes_with;
+    /// use cryptocol::define_utypes_with;
     /// define_utypes_with!(u32);
     /// 
     /// let mut a = u256::zero();
@@ -2565,7 +2565,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// 
     /// # Examples
     /// ```
-    /// use Cryptocol::define_utypes_with;
+    /// use cryptocol::define_utypes_with;
     /// define_utypes_with!(u64);
     /// 
     /// let mut a = u256::new();
@@ -2591,7 +2591,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// 
     /// # Examples
     /// ```
-    /// use Cryptocol::define_utypes_with;
+    /// use cryptocol::define_utypes_with;
     /// define_utypes_with!(u16);
     /// 
     /// let mut a = u256::new();
@@ -2641,7 +2641,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// 
     /// # Examples
     /// ```
-    /// use Cryptocol::define_utypes_with;
+    /// use cryptocol::define_utypes_with;
     /// define_utypes_with!(u8);
     /// 
     /// let mut a = u256::new();
@@ -2665,7 +2665,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// 
     /// # Examples
     /// ```
-    /// use Cryptocol::define_utypes_with;
+    /// use cryptocol::define_utypes_with;
     /// define_utypes_with!(u128);
     /// 
     /// let a = u256::max();
@@ -2692,7 +2692,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// 
     /// # Examples
     /// ```
-    /// use Cryptocol::define_utypes_with;
+    /// use cryptocol::define_utypes_with;
     /// define_utypes_with!(u32);
     /// 
     /// let mut a = u256::new();
@@ -2718,7 +2718,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// 
     /// # Examples
     /// ```
-    /// use Cryptocol::define_utypes_with;
+    /// use cryptocol::define_utypes_with;
     /// define_utypes_with!(u64);
     /// 
     /// let mut a = u256::new();
@@ -2753,7 +2753,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// 
     /// # Example
     /// ```
-    /// use Cryptocol::define_utypes_with;
+    /// use cryptocol::define_utypes_with;
     /// define_utypes_with!(u8);
     /// 
     /// let mut a = u1024::new();
@@ -2831,7 +2831,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// 
     /// # Example
     /// ```
-    /// use Cryptocol::define_utypes_with;
+    /// use cryptocol::define_utypes_with;
     /// define_utypes_with!(u16);
     /// 
     /// let a = u1024::one() + 50_u16;
@@ -2907,7 +2907,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// 
     /// # Example
     /// ```
-    /// use Cryptocol::define_utypes_with;
+    /// use cryptocol::define_utypes_with;
     /// define_utypes_with!(u32);
     /// 
     /// let mut a = u256::new();
@@ -2939,7 +2939,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// 
     /// # Example
     /// ```
-    /// use Cryptocol::define_utypes_with;
+    /// use cryptocol::define_utypes_with;
     /// define_utypes_with!(u128);
     /// 
     /// let mut a = u256::new();
@@ -2973,7 +2973,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// 
     /// # Example
     /// ```
-    /// use Cryptocol::define_utypes_with;
+    /// use cryptocol::define_utypes_with;
     /// define_utypes_with!(u128);
     /// 
     /// let mut a = u256::new();
@@ -3011,7 +3011,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// # Example
     /// ```
     /// use std::str::FromStr;
-    /// use Cryptocol::define_utypes_with;
+    /// use cryptocol::define_utypes_with;
     /// define_utypes_with!(u8);
     /// 
     /// let a = u256::from_str("100000000000000000000000000000000000000000000000000000000000000000000000000000").unwrap();
@@ -3035,7 +3035,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// 
     /// # Example
     /// ```
-    /// use Cryptocol::define_utypes_with;
+    /// use cryptocol::define_utypes_with;
     /// define_utypes_with!(u16);
     /// 
     /// let a = "100000000000000000000000000000000000000000000000000000000000000000000000000000".parse::<u256>().unwrap();
@@ -3060,7 +3060,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// # Example
     /// ```
     /// use std::str::FromStr;
-    /// use Cryptocol::define_utypes_with;
+    /// use cryptocol::define_utypes_with;
     /// define_utypes_with!(u32);
     /// 
     /// let a = u256::from_str("100000000000000000000000000000000000000000000000000000000000000000000000000000").unwrap();
@@ -3091,7 +3091,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// 
     /// # Example
     /// ```
-    /// use Cryptocol::define_utypes_with;
+    /// use cryptocol::define_utypes_with;
     /// define_utypes_with!(u64);
     /// 
     /// let a = "100000000000000000000000000000000000000000000000000000000000000000000000000000".parse::<u256>().unwrap();
@@ -3122,7 +3122,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// 
     /// # Example
     /// ```
-    /// use Cryptocol::define_utypes_with;
+    /// use cryptocol::define_utypes_with;
     /// use std::str::FromStr;
     /// define_utypes_with!(u128);
     /// 
@@ -3157,7 +3157,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// 
     /// # Example
     /// ```
-    /// use Cryptocol::define_utypes_with;
+    /// use cryptocol::define_utypes_with;
     /// define_utypes_with!(u16);
     /// 
     /// let a = "111111111111111111111111111111111111111111111111111111111111111111111111111111".parse::<u256>().unwrap();
@@ -3194,7 +3194,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// 
     /// # Example
     /// ```
-    /// use Cryptocol::define_utypes_with;
+    /// use cryptocol::define_utypes_with;
     /// define_utypes_with!(u8);
     /// 
     /// let a = u256::from_str_radix("FFFFFFFF_EEEEEEEE_DDDDDDDD_CCCCCCCC_BBBBBBBB_AAAAAAAA_99999999_88888888", 16).unwrap();
@@ -3229,7 +3229,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// 
     /// # Example
     /// ```
-    /// use Cryptocol::define_utypes_with;
+    /// use cryptocol::define_utypes_with;
     /// define_utypes_with!(u32);
     /// 
     /// let a = u256::from_str_radix("00000000_FFFFFFFF_EEEEEEEE_DDDDDDDD_CCCCCCCC_BBBBBBBB_AAAAAAAA_99999999", 16).unwrap();
@@ -3266,7 +3266,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// 
     /// # Example
     /// ```
-    /// use Cryptocol::define_utypes_with;
+    /// use cryptocol::define_utypes_with;
     /// define_utypes_with!(u16);
     /// 
     /// let a = u256::from_str_radix("88888888_99999999_AAAAAAAA_BBBBBBBB_CCCCCCCC_DDDDDDDD_EEEEEEEE_FFFFFFFF", 16).unwrap();
@@ -3295,7 +3295,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// 
     /// # Example
     /// ```
-    /// use Cryptocol::define_utypes_with;
+    /// use cryptocol::define_utypes_with;
     /// define_utypes_with!(u8);
     /// 
     /// let a = u256::from_str_radix("FFFFFFFF_EEEEEEEE_DDDDDDDD_CCCCCCCC_BBBBBBBB_AAAAAAAA_9999999_900000000", 16).unwrap();
@@ -3347,7 +3347,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// # Example
     /// ```
     /// use std::cmp::Ordering;
-    /// use Cryptocol::define_utypes_with;
+    /// use cryptocol::define_utypes_with;
     /// define_utypes_with!(u8);
     /// 
     /// let mut res = U32::from_uint(100_u8).partial_cmp_uint(90_u128).unwrap();
@@ -3435,7 +3435,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// 
     /// # Example
     /// ```
-    /// use Cryptocol::define_utypes_with;
+    /// use cryptocol::define_utypes_with;
     /// define_utypes_with!(u32);
     /// 
     /// let mut res = U32::from_uint(100_u16).gt_uint(90_u64);
@@ -3481,7 +3481,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// 
     /// # Example
     /// ```
-    /// use Cryptocol::define_utypes_with;
+    /// use cryptocol::define_utypes_with;
     /// define_utypes_with!(u32);
     /// 
     /// let mut res = U32::from_uint(100_u32).gt_uint(90_u32);
@@ -3527,7 +3527,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// 
     /// # Example
     /// ```
-    /// use Cryptocol::define_utypes_with;
+    /// use cryptocol::define_utypes_with;
     /// define_utypes_with!(u64);
     /// 
     /// let mut res = U32::from_uint(100_u64).le_uint(110_u16);
@@ -3573,7 +3573,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// 
     /// # Example
     /// ```
-    /// use Cryptocol::define_utypes_with;
+    /// use cryptocol::define_utypes_with;
     /// define_utypes_with!(u32);
     /// 
     /// let mut res = U32::from_uint(100_u128).gt_uint(90_u8);
@@ -3619,7 +3619,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// 
     /// # Example
     /// ```
-    /// use Cryptocol::define_utypes_with;
+    /// use cryptocol::define_utypes_with;
     /// define_utypes_with!(u8);
     /// 
     /// let mut res = U32::from_uint(100_u32).eq_uint(100_u8);
@@ -3663,7 +3663,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// 
     /// # Example
     /// ```
-    /// use Cryptocol::define_utypes_with;
+    /// use cryptocol::define_utypes_with;
     /// define_utypes_with!(u128);
     /// 
     /// let num_str = "69743176821145534028236692093846345739169743176821145534028236692093846345739";
@@ -3709,7 +3709,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// # Example
     /// ```
     /// use std::cmp::Ordering;
-    /// use Cryptocol::define_utypes_with;
+    /// use cryptocol::define_utypes_with;
     /// define_utypes_with!(u16);
     /// 
     /// let num_str1 = "70000000000000000000000000000000000000000000000000000000000000000000000000000";
@@ -3796,7 +3796,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// 
     /// # Example
     /// ```
-    /// use Cryptocol::define_utypes_with;
+    /// use cryptocol::define_utypes_with;
     /// define_utypes_with!(u128);
     /// 
     /// let num_str1 = "FFEEDDBB_AA998877_66554433_221100FF_EEDDBBAA_99887766_55443322_1100FFEE";
@@ -3876,7 +3876,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// 
     /// # Example
     /// ```
-    /// use Cryptocol::define_utypes_with;
+    /// use cryptocol::define_utypes_with;
     /// define_utypes_with!(u64);
     /// 
     /// let num_str1 = "FFEEDDBB_AA998877_66554433_221100FF_EEDDBBAA_99887766_55443322_1100FFEE";
@@ -3971,7 +3971,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// 
     /// # Example
     /// ```
-    /// use Cryptocol::define_utypes_with;
+    /// use cryptocol::define_utypes_with;
     /// define_utypes_with!(u32);
     /// 
     /// let a = u512::max().wrapping_sub_uint(1_u8);
@@ -4033,7 +4033,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// 
     /// # Example
     /// ```
-    /// use Cryptocol::define_utypes_with;
+    /// use cryptocol::define_utypes_with;
     /// define_utypes_with!(u16);
     /// 
     /// let mut a = U64::max().wrapping_sub_uint(1_u8);
@@ -4092,7 +4092,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// 
     /// # Example
     /// ```
-    /// use Cryptocol::define_utypes_with;
+    /// use cryptocol::define_utypes_with;
     /// define_utypes_with!(u8);
     /// 
     /// let a = u512::max().wrapping_sub_uint(1_u8);
@@ -4155,7 +4155,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// 
     /// # Example
     /// ```
-    /// use Cryptocol::define_utypes_with;
+    /// use cryptocol::define_utypes_with;
     /// define_utypes_with!(u16);
     /// 
     /// let mut a = U64::max().wrapping_sub_uint(1_u8);
@@ -4218,7 +4218,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// 
     /// # Example
     /// ```
-    /// use Cryptocol::define_utypes_with;
+    /// use cryptocol::define_utypes_with;
     /// define_utypes_with!(u8);
     /// 
     /// let a = u512::max().wrapping_sub_uint(1_u8);
@@ -4309,7 +4309,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// 
     /// # Example
     /// ```
-    /// use Cryptocol::define_utypes_with;
+    /// use cryptocol::define_utypes_with;
     /// define_utypes_with!(u32);
     /// 
     /// let a = U64::max().wrapping_sub_uint(1_u8);
@@ -4361,7 +4361,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// 
     /// # Example
     /// ```
-    /// use Cryptocol::define_utypes_with;
+    /// use cryptocol::define_utypes_with;
     /// define_utypes_with!(u64);
     /// 
     /// let a = u512::max().wrapping_sub_uint(2_u8);
@@ -4420,7 +4420,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// 
     /// # Example
     /// ```
-    /// use Cryptocol::define_utypes_with;
+    /// use cryptocol::define_utypes_with;
     /// define_utypes_with!(u128);
     /// 
     /// let mut a = U64::max().wrapping_sub_uint(2_u8);
@@ -4494,7 +4494,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// 
     /// # Example
     /// ```
-    /// use Cryptocol::define_utypes_with;
+    /// use cryptocol::define_utypes_with;
     /// define_utypes_with!(u32);
     /// 
     /// let a = u256::from_string("76801874298166903427690031858186486050853753882811946569946433649006").unwrap();
@@ -4567,7 +4567,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// 
     /// # Example
     /// ```
-    /// use Cryptocol::define_utypes_with;
+    /// use cryptocol::define_utypes_with;
     /// define_utypes_with!(u8);
     /// 
     /// let mut a = u256::from_string("768018742981669034276900318581864860508537538828119465699464336490060").unwrap();
@@ -4664,7 +4664,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// 
     /// # Example
     /// ```
-    /// use Cryptocol::define_utypes_with;
+    /// use cryptocol::define_utypes_with;
     /// define_utypes_with!(u128);
     /// 
     /// let num_str1 = "FFEEDDBB_AA998877_66554433_221100FF_EEDDBBAA_99887766_55443322_1100FFEE";
@@ -4749,7 +4749,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// 
     /// # Example
     /// ```
-    /// use Cryptocol::define_utypes_with;
+    /// use cryptocol::define_utypes_with;
     /// define_utypes_with!(u64);
     /// 
     /// let num_str1 = "FFEEDDBB_AA998877_66554433_221100FF_EEDDBBAA_99887766_55443322_1100FFEE";
@@ -4846,7 +4846,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// # Examples
     /// 
     /// ```
-    /// use Cryptocol::define_utypes_with;
+    /// use cryptocol::define_utypes_with;
     /// define_utypes_with!(u32);
     /// 
     /// let a = u512::one();
@@ -4907,7 +4907,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// 
     /// # Example
     /// ```
-    /// use Cryptocol::define_utypes_with;
+    /// use cryptocol::define_utypes_with;
     /// define_utypes_with!(u16);
     /// 
     /// let mut a = U64::one();
@@ -4970,7 +4970,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// 
     /// # Example
     /// ```
-    /// use Cryptocol::define_utypes_with;
+    /// use cryptocol::define_utypes_with;
     /// define_utypes_with!(u8);
     /// 
     /// let a = u512::one();
@@ -5037,7 +5037,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// 
     /// # Example
     /// ```
-    /// use Cryptocol::define_utypes_with;
+    /// use cryptocol::define_utypes_with;
     /// define_utypes_with!(u16);
     /// 
     /// let mut a = U64::one();
@@ -5106,7 +5106,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// 
     /// # Example
     /// ```
-    /// use Cryptocol::define_utypes_with;
+    /// use cryptocol::define_utypes_with;
     /// define_utypes_with!(u8);
     /// 
     /// let a = u512::one();
@@ -5193,7 +5193,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// 
     /// # Example
     /// ```
-    /// use Cryptocol::define_utypes_with;
+    /// use cryptocol::define_utypes_with;
     /// define_utypes_with!(u32);
     /// 
     /// let a = U64::one();
@@ -5246,7 +5246,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// 
     /// # Example
     /// ```
-    /// use Cryptocol::define_utypes_with;
+    /// use cryptocol::define_utypes_with;
     /// define_utypes_with!(u64);
     /// 
     /// let a = u512::zero().wrapping_add_uint(2_u8);
@@ -5309,7 +5309,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// 
     /// # Example
     /// ```
-    /// use Cryptocol::define_utypes_with;
+    /// use cryptocol::define_utypes_with;
     /// define_utypes_with!(u128);
     /// 
     /// let mut a = U64::zero().wrapping_add_uint(2_u8);
@@ -5384,7 +5384,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// 
     /// # Example
     /// ```
-    /// use Cryptocol::define_utypes_with;
+    /// use cryptocol::define_utypes_with;
     /// define_utypes_with!(u64);
     /// 
     /// let m = u256::from_string("76801874298166903427690031858186486050853753882811946569946433649006084094").unwrap();
@@ -5456,7 +5456,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// 
     /// # Example
     /// ```
-    /// use Cryptocol::define_utypes_with;
+    /// use cryptocol::define_utypes_with;
     /// define_utypes_with!(u32);
     /// 
     /// let m = U32::from_string("76801874298166903427690031858186486050853753882811946569946433649006084094").unwrap();
@@ -5540,7 +5540,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// 
     /// # Example
     /// ```
-    /// use Cryptocol::define_utypes_with;
+    /// use cryptocol::define_utypes_with;
     /// define_utypes_with!(u128);
     /// 
     /// let num_str1 = "FFFFFFFF_FFFFFFFF_FFFFFFFF_FFFFFFFF_FFFFFFFF_FFFFFFFF_FFFFFFFF_FFFFFFFF";
@@ -5634,7 +5634,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// 
     /// # Example
     /// ```
-    /// use Cryptocol::define_utypes_with;
+    /// use cryptocol::define_utypes_with;
     /// define_utypes_with!(u8);
     /// 
     /// let a_low = u256::from_string("76801874298166903427690031858186486050853753882811946569946433649006084094").unwrap();
@@ -5710,7 +5710,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// 
     /// # Example
     /// ```
-    /// use Cryptocol::define_utypes_with;
+    /// use cryptocol::define_utypes_with;
     /// define_utypes_with!(u16);
     /// 
     /// let mut a_low = U32::from_string("76801874298166903427690031858186486050853753882811946569946433649006084094").unwrap();
@@ -5788,7 +5788,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// 
     /// # Example
     /// ```
-    /// use Cryptocol::define_utypes_with;
+    /// use cryptocol::define_utypes_with;
     /// define_utypes_with!(u8);
     /// 
     /// let a_biguint = u256::from_string("876801874298166903427690031858186486050853753882811946569946433649006084094").unwrap();
@@ -5859,7 +5859,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// 
     /// # Example
     /// ```
-    /// use Cryptocol::define_utypes_with;
+    /// use cryptocol::define_utypes_with;
     /// define_utypes_with!(u16);
     /// 
     /// let mut a_biguint = U32::from_string("876801874298166903427690031858186486050853753882811946569946433649006084094").unwrap();
@@ -5978,7 +5978,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// 
     /// # Examples
     /// ```
-    /// use Cryptocol::define_utypes_with;
+    /// use cryptocol::define_utypes_with;
     /// define_utypes_with!(u32);
     /// 
     /// let a_biguint = u256::from_string("876801874298166903427690031858186486050853753882811946569946433649006084094").unwrap();
@@ -6028,7 +6028,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// 
     /// # Example
     /// ```
-    /// use Cryptocol::define_utypes_with;
+    /// use cryptocol::define_utypes_with;
     /// define_utypes_with!(u64);
     /// 
     /// let mut a_biguint = U32::from_string("876801874298166903427690031858186486050853753882811946569946433649006084094").unwrap();
@@ -6143,7 +6143,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// 
     /// # Example
     /// ```
-    /// use Cryptocol::define_utypes_with;
+    /// use cryptocol::define_utypes_with;
     /// define_utypes_with!(u128);
     /// 
     /// let a_biguint = u256::from_string("876801874298166903427690031858186486050853753882811946569946433649006084094").unwrap();
@@ -6199,7 +6199,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// 
     /// # Example
     /// ```
-    /// use Cryptocol::define_utypes_with;
+    /// use cryptocol::define_utypes_with;
     /// define_utypes_with!(u8);
     /// 
     /// let mut a_biguint = U32::from_string("876801874298166903427690031858186486050853753882811946569946433649006084094").unwrap();
@@ -6254,7 +6254,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// 
     /// # Example
     /// ```
-    /// use Cryptocol::define_utypes_with;
+    /// use cryptocol::define_utypes_with;
     /// define_utypes_with!(u16);
     /// 
     /// let a_biguint = u256::from_string("876801874298166903427690031858186486050853753882811946569946433649006084094").unwrap();
@@ -6319,7 +6319,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// 
     /// # Example
     /// ```
-    /// use Cryptocol::define_utypes_with;
+    /// use cryptocol::define_utypes_with;
     /// define_utypes_with!(u32);
     /// 
     /// let a_biguint = U32::from_string("876801874298166903427690031858186486050853753882811946569946433649006084094").unwrap();
@@ -6372,7 +6372,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// 
     /// # Example
     /// ```
-    /// use Cryptocol::define_utypes_with;
+    /// use cryptocol::define_utypes_with;
     /// define_utypes_with!(u64);
     /// 
     /// let a_biguint = u256::from_string("876801874298166903427690031858186486050853753882811946569946433649006084094").unwrap();
@@ -6429,7 +6429,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// 
     /// # Example
     /// ```
-    /// use Cryptocol::define_utypes_with;
+    /// use cryptocol::define_utypes_with;
     /// define_utypes_with!(u128);
     /// 
     /// let mut a_biguint = u256::from_string("876801874298166903427690031858186486050853753882811946569946433649006084094").unwrap();
@@ -6517,7 +6517,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// 
     /// # Example
     /// ```
-    /// use Cryptocol::define_utypes_with;
+    /// use cryptocol::define_utypes_with;
     /// define_utypes_with!(u8);
     /// 
     /// let m = U32::from_string("76801874298166903427690031858186486050853753882811946569946433649006084094").unwrap();
@@ -6582,7 +6582,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// 
     /// # Example
     /// ```
-    /// use Cryptocol::define_utypes_with;
+    /// use cryptocol::define_utypes_with;
     /// define_utypes_with!(u32);
     /// 
     /// let m = U32::from_string("76801874298166903427690031858186486050853753882811946569946433649006084094").unwrap();
@@ -6678,7 +6678,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// # Examples
     /// ```
     /// use std::str::FromStr;
-    /// use Cryptocol::define_utypes_with;
+    /// use cryptocol::define_utypes_with;
     /// define_utypes_with!(u16);
     /// 
     /// let dividend = U32::from_str("123456789015758942546236989636279846864825945392").unwrap();
@@ -6798,7 +6798,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// # Example
     /// ```
     /// use std::str::FromStr;
-    /// use Cryptocol::define_utypes_with;
+    /// use cryptocol::define_utypes_with;
     /// define_utypes_with!(u64);
     /// 
     /// let dividend = u256::from_str("123456789015758942546236989636279846864825945392").unwrap();
@@ -6870,7 +6870,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// # Example
     /// ```
     /// use std::str::FromStr;
-    /// use Cryptocol::define_utypes_with;
+    /// use cryptocol::define_utypes_with;
     /// define_utypes_with!(u128);
     /// 
     /// let mut a_biguint = U32::from_str("123456789015758942546236989636279846864825945392").unwrap();
@@ -6943,7 +6943,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// # Example
     /// ```
     /// use std::str::FromStr;
-    /// use Cryptocol::define_utypes_with;
+    /// use cryptocol::define_utypes_with;
     /// define_utypes_with!(u8);
     /// 
     /// let dividend = u256::from_str("123456789015758942546236989636279846864825945392").unwrap();
@@ -7024,7 +7024,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// # Example
     /// ```
     /// use std::str::FromStr;
-    /// use Cryptocol::define_utypes_with;
+    /// use cryptocol::define_utypes_with;
     /// define_utypes_with!(u16);
     /// 
     /// let mut a_biguint = U32::from_str("123456789015758942546236989636279846864825945392").unwrap();
@@ -7095,7 +7095,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// # Example
     /// ```
     /// use std::str::FromStr;
-    /// use Cryptocol::define_utypes_with;
+    /// use cryptocol::define_utypes_with;
     /// define_utypes_with!(u32);
     /// 
     /// let dividend = u256::from_str("123456789015758942546236989636279846864825945392").unwrap();
@@ -7176,7 +7176,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// # Example
     /// ```
     /// use std::str::FromStr;
-    /// use Cryptocol::define_utypes_with;
+    /// use cryptocol::define_utypes_with;
     /// define_utypes_with!(u64);
     /// 
     /// let dividend = U32::from_str("123456789015758942546236989636279846864825945392").unwrap();
@@ -7243,7 +7243,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// # Example
     /// ```
     /// use std::str::FromStr;
-    /// use Cryptocol::define_utypes_with;
+    /// use cryptocol::define_utypes_with;
     /// define_utypes_with!(u32);
     /// 
     /// let dividend = u256::from_str("123456789015758942546236989636279846864825945392").unwrap();
@@ -7321,7 +7321,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// # Example
     /// ```
     /// use std::str::FromStr;
-    /// use Cryptocol::define_utypes_with;
+    /// use cryptocol::define_utypes_with;
     /// define_utypes_with!(u128);
     /// 
     /// let mut a_biguint = U32::from_str("123456789015758942546236989636279846864825945392").unwrap();
@@ -7394,7 +7394,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// # Example
     /// ```
     /// use std::str::FromStr;
-    /// use Cryptocol::define_utypes_with;
+    /// use cryptocol::define_utypes_with;
     /// define_utypes_with!(u8);
     /// 
     /// let dividend = u256::from_str("123456789015758942546236989636279846864825945392").unwrap();
@@ -7464,7 +7464,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// # Example
     /// ```
     /// use std::str::FromStr;
-    /// use Cryptocol::define_utypes_with;
+    /// use cryptocol::define_utypes_with;
     /// define_utypes_with!(u16);
     /// 
     /// let mut a_biguint = U32::from_str("123456789015758942546236989636279846864825945392").unwrap();
@@ -7537,7 +7537,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// # Example
     /// ```
     /// use std::str::FromStr;
-    /// use Cryptocol::define_utypes_with;
+    /// use cryptocol::define_utypes_with;
     /// define_utypes_with!(u8);
     /// 
     /// let dividend = U32::from_str("123456789015758942546236989636279846864825945392").unwrap();
@@ -7603,7 +7603,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// # Example
     /// ```
     /// use std::str::FromStr;
-    /// use Cryptocol::define_utypes_with;
+    /// use cryptocol::define_utypes_with;
     /// define_utypes_with!(u16);
     /// 
     /// let mut a_biguint = u256::from_str("123456789015758942546236989636279846864825945392").unwrap();
@@ -7674,7 +7674,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// # Example
     /// ```
     /// use std::str::FromStr;
-    /// use Cryptocol::define_utypes_with;
+    /// use cryptocol::define_utypes_with;
     /// define_utypes_with!(u32);
     /// 
     /// let dividend = U32::from_str("123456789015758942546236989636279846864825945392").unwrap();
@@ -7741,7 +7741,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// # Example
     /// ```
     /// use std::str::FromStr;
-    /// use Cryptocol::define_utypes_with;
+    /// use cryptocol::define_utypes_with;
     /// define_utypes_with!(u64);
     /// 
     /// let mut a_biguint = u256::from_str("123456789015758942546236989636279846864825945392").unwrap();
@@ -7812,7 +7812,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// # Example
     /// ```
     /// use std::str::FromStr;
-    /// use Cryptocol::define_utypes_with;
+    /// use cryptocol::define_utypes_with;
     /// define_utypes_with!(u128);
     /// 
     /// let dividend = U32::from_str("123456789015758942546236989636279846864825945392").unwrap();
@@ -7887,7 +7887,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// # Example
     /// ```
     /// use std::str::FromStr;
-    /// use Cryptocol::define_utypes_with;
+    /// use cryptocol::define_utypes_with;
     /// define_utypes_with!(u8);
     /// 
     /// let dividend = u256::from_str("123456789015758942546236989636279846864825945392").unwrap();
@@ -7945,7 +7945,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// # Example
     /// ```
     /// use std::str::FromStr;
-    /// use Cryptocol::define_utypes_with;
+    /// use cryptocol::define_utypes_with;
     /// define_utypes_with!(u16);
     /// 
     /// let dividend = U32::from_str("123456789015758942546236989636279846864825945392").unwrap();
@@ -8005,7 +8005,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// # Example
     /// ```
     /// use std::str::FromStr;
-    /// use Cryptocol::define_utypes_with;
+    /// use cryptocol::define_utypes_with;
     /// define_utypes_with!(u32);
     /// 
     /// let mut a_biguint = u256::from_str("123456789015758942546236989636279846864825945392").unwrap();
@@ -8076,7 +8076,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// # Example
     /// ```
     /// use std::str::FromStr;
-    /// use Cryptocol::define_utypes_with;
+    /// use cryptocol::define_utypes_with;
     /// define_utypes_with!(u32);
     /// 
     /// let dividend = u256::from_str("123456789015758942546236989636279846864825945392").unwrap();
@@ -8139,7 +8139,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// # Example
     /// ```
     /// use std::str::FromStr;
-    /// use Cryptocol::define_utypes_with;
+    /// use cryptocol::define_utypes_with;
     /// define_utypes_with!(u64);
     /// 
     /// let mut a_biguint = U32::from_str("123456789015758942546236989636279846864825945392").unwrap();
@@ -8202,7 +8202,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// # Example
     /// ```
     /// use std::str::FromStr;
-    /// use Cryptocol::define_utypes_with;
+    /// use cryptocol::define_utypes_with;
     /// define_utypes_with!(u64);
     /// 
     /// let mut a_biguint = u256::from_str("123456789012345678901234567890123456789").unwrap();
@@ -8269,7 +8269,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// # Example
     /// ```
     /// use std::str::FromStr;
-    /// use Cryptocol::define_utypes_with;
+    /// use cryptocol::define_utypes_with;
     /// define_utypes_with!(u128);
     /// 
     /// let mut a_biguint = U32::from_str("123456789012345678901234567890123456789").unwrap();
@@ -8354,7 +8354,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// # Example
     /// ```
     /// use std::str::FromStr;
-    /// use Cryptocol::define_utypes_with;
+    /// use cryptocol::define_utypes_with;
     /// define_utypes_with!(u8);
     /// 
     /// let a_biguint = U32::from_str("10").unwrap();
@@ -8417,7 +8417,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// 
     /// # Example
     /// ```
-    /// use Cryptocol::define_utypes_with;
+    /// use cryptocol::define_utypes_with;
     /// define_utypes_with!(u16);
     /// 
     /// let mut a_biguint = u256::from_uint(10_u8);
@@ -8479,7 +8479,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// 
     /// # Example
     /// ```
-    /// use Cryptocol::define_utypes_with;
+    /// use cryptocol::define_utypes_with;
     /// define_utypes_with!(u32);
     /// 
     /// let a_biguint = U32::from_uint(10_u8);
@@ -8543,7 +8543,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// 
     /// # Example
     /// ```
-    /// use Cryptocol::define_utypes_with;
+    /// use cryptocol::define_utypes_with;
     /// define_utypes_with!(u64);
     /// 
     /// let mut a_biguint = u256::from_uint(10_u8);
@@ -8631,7 +8631,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// 
     /// # Example
     /// ```
-    /// use Cryptocol::define_utypes_with;
+    /// use cryptocol::define_utypes_with;
     /// define_utypes_with!(u128);
     /// 
     /// let a_biguint = U32::from_uint(10_u8);
@@ -8705,7 +8705,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// 
     /// # Example
     /// ```
-    /// use Cryptocol::define_utypes_with;
+    /// use cryptocol::define_utypes_with;
     /// define_utypes_with!(u8);
     /// 
     /// let mut a_biguint = u256::from_uint(10_u8);
@@ -8783,7 +8783,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// 
     /// # Example
     /// ```
-    /// use Cryptocol::define_utypes_with;
+    /// use cryptocol::define_utypes_with;
     /// define_utypes_with!(u16);
     /// 
     /// let a_biguint = U32::from_uint(10_u8);
@@ -8859,7 +8859,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// 
     /// # Example
     /// ```
-    /// use Cryptocol::define_utypes_with;
+    /// use cryptocol::define_utypes_with;
     /// define_utypes_with!(u32);
     /// 
     /// let a_biguint = U32::from_uint(10_u8);
@@ -8920,7 +8920,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// 
     /// # Example
     /// ```
-    /// use Cryptocol::define_utypes_with;
+    /// use cryptocol::define_utypes_with;
     /// define_utypes_with!(u64);
     /// 
     /// let a_biguint = u256::from_uint(10_u8);
@@ -8983,7 +8983,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// 
     /// # Example
     /// ```
-    /// use Cryptocol::define_utypes_with;
+    /// use cryptocol::define_utypes_with;
     /// define_utypes_with!(u128);
     /// 
     /// let mut a_biguint = U32::from_uint(10_u8);
@@ -9050,7 +9050,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// 
     /// # Examples
     /// ```
-    /// use Cryptocol::define_utypes_with;
+    /// use cryptocol::define_utypes_with;
     /// define_utypes_with!(u8);
     /// 
     /// let a_biguint = u256::from_uint(10_u8);
@@ -9125,7 +9125,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// 
     /// # Example
     /// ```
-    /// use Cryptocol::define_utypes_with;
+    /// use cryptocol::define_utypes_with;
     /// define_utypes_with!(u16);
     /// 
     /// let mut a_biguint = u256::from_uint(10_u8);
@@ -9755,7 +9755,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// 
     /// # Example
     /// ```
-    /// use Cryptocol::define_utypes_with;
+    /// use cryptocol::define_utypes_with;
     /// define_utypes_with!(u128);
     /// 
     /// let a_hi = u256::from_str_radix("15D5_ECE4_41DB_7709_BA44_8C40_0DCF_7160_3CD4_F7FF_F0CF_476F_33FD_438B_0E1D_2086", 16).unwrap();
@@ -9818,7 +9818,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// 
     /// # Example
     /// ```
-    /// use Cryptocol::define_utypes_with;
+    /// use cryptocol::define_utypes_with;
     /// define_utypes_with!(u16);
     /// 
     /// let mut a_hi = u256::from_str_radix("15D5_ECE4_41DB_7709_BA44_8C40_0DCF_7160_3CD4_F7FF_F0CF_476F_33FD_438B_0E1D_2086", 16).unwrap();
@@ -9904,7 +9904,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// 
     /// # Example
     /// ```
-    /// use Cryptocol::define_utypes_with;
+    /// use cryptocol::define_utypes_with;
     /// define_utypes_with!(u128);
     ///  
     /// let zero = u512::zero();
@@ -9953,7 +9953,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// # Example
     /// ```
     /// use std::str::FromStr;
-    /// use Cryptocol::define_utypes_with;
+    /// use cryptocol::define_utypes_with;
     /// define_utypes_with!(u128);
     /// 
     /// let zero = u512::zero();
@@ -10703,8 +10703,8 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// # Example
     /// ```
     /// use std::str::FromStr;
-    /// use Cryptocol::number::BigUInt;
-    /// use Cryptocol::define_utypes_with;
+    /// use cryptocol::number::BigUInt;
+    /// use cryptocol::define_utypes_with;
     /// define_utypes_with!(u128);
     /// 
     /// let a = u256::from_str("500000000000000000500000000500000000500000000500000000").unwrap();
@@ -11675,7 +11675,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// # Examples
     /// ```
     /// use std::str::FromStr;
-    /// use Cryptocol::define_utypes_with;
+    /// use cryptocol::define_utypes_with;
     /// define_utypes_with!(u128);
     /// let dividend = u256::from_str("1234567890157589425462369896").unwrap();
     /// let divisor = u256::from_str("1234567890").unwrap();
@@ -12008,7 +12008,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// # Example
     /// ```
     /// use std::str::FromStr;
-    /// use Cryptocol::define_utypes_with;
+    /// use cryptocol::define_utypes_with;
     /// define_utypes_with!(u32);
     /// 
     /// let dividend = u256::from_str("123456789015758942546236989636279846864825945392").unwrap();
@@ -12086,7 +12086,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// # Example
     /// ```
     /// use std::str::FromStr;
-    /// use Cryptocol::define_utypes_with;
+    /// use cryptocol::define_utypes_with;
     /// define_utypes_with!(u128);
     /// 
     /// let mut a_biguint = U32::from_str("123456789015758942546236989636279846864825945392").unwrap();
@@ -12463,7 +12463,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// # Example
     /// ```
     /// use std::str::FromStr;
-    /// use Cryptocol::define_utypes_with;
+    /// use cryptocol::define_utypes_with;
     /// define_utypes_with!(u32);
     /// 
     /// let dividend = u256::from_str("123456789015758942546236989636279846864825945392").unwrap();
@@ -12541,7 +12541,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// # Example
     /// ```
     /// use std::str::FromStr;
-    /// use Cryptocol::define_utypes_with;
+    /// use cryptocol::define_utypes_with;
     /// define_utypes_with!(u128);
     /// 
     /// let mut a_biguint = U32::from_str("123456789015758942546236989636279846864825945392").unwrap();
@@ -12712,7 +12712,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// 
     /// # Example
     /// ```
-    /// use Cryptocol::define_utypes_with;
+    /// use cryptocol::define_utypes_with;
     /// define_utypes_with!(u128);
     /// 
     /// let a = u256::from_uint(234_u8);
@@ -12759,7 +12759,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// 
     /// # Example
     /// ```
-    /// use Cryptocol::define_utypes_with;
+    /// use cryptocol::define_utypes_with;
     /// define_utypes_with!(u128);
     /// 
     /// let mut a = u256::from_uint(234_u8);
@@ -12812,7 +12812,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// 
     /// # Example
     /// ```
-    /// use Cryptocol::define_utypes_with;
+    /// use cryptocol::define_utypes_with;
     /// define_utypes_with!(u128);
     /// 
     /// let a = u256::from_uint(234_u8);
@@ -12861,7 +12861,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// 
     /// # Example
     /// ```
-    /// use Cryptocol::define_utypes_with;
+    /// use cryptocol::define_utypes_with;
     /// define_utypes_with!(u128);
     /// 
     /// let mut a = u256::from_uint(234_u8);
@@ -12934,7 +12934,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// 
     /// # Example
     /// ```
-    /// use Cryptocol::define_utypes_with;
+    /// use cryptocol::define_utypes_with;
     /// define_utypes_with!(u128);
     /// 
     /// let a = u256::from_uint(234_u8);
@@ -12990,7 +12990,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// 
     /// # Example
     /// ```
-    /// use Cryptocol::define_utypes_with;
+    /// use cryptocol::define_utypes_with;
     /// define_utypes_with!(u128);
     /// 
     /// let mut a = u256::from_uint(234_u8);
@@ -13052,7 +13052,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// 
     /// # Example
     /// ```
-    /// use Cryptocol::define_utypes_with;
+    /// use cryptocol::define_utypes_with;
     /// define_utypes_with!(u128);
     /// 
     /// let a = u256::from_uint(234_u8);
@@ -13175,7 +13175,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// 
     /// # Example
     /// ```
-    /// use Cryptocol::define_utypes_with;
+    /// use cryptocol::define_utypes_with;
     /// define_utypes_with!(u128);
     /// 
     /// let a = u256::from_uint(2_u8);
@@ -13239,8 +13239,8 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// 
     /// # Example
     /// ```
-    /// use Cryptocol::number::*;
-    /// use Cryptocol::define_utypes_with;
+    /// use cryptocol::number::*;
+    /// use cryptocol::define_utypes_with;
     /// define_utypes_with!(u128);
     /// 
     /// let a = u256::from_uint(2_u8);
@@ -13971,8 +13971,8 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     ///  
     /// # Example 1
     /// ```
-    /// use Cryptocol::number::*;
-    /// use Cryptocol::define_utypes_with;
+    /// use cryptocol::number::*;
+    /// use cryptocol::define_utypes_with;
     /// 
     /// define_utypes_with!(u128);
     /// 
@@ -13989,8 +13989,8 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// 
     /// # Example 2
     /// ```
-    /// use Cryptocol::number::*;
-    /// use Cryptocol::define_utypes_with;
+    /// use cryptocol::number::*;
+    /// use cryptocol::define_utypes_with;
     /// 
     /// define_utypes_with!(u128);
     /// 
@@ -14017,8 +14017,8 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// 
     /// # Example 1
     /// ```
-    /// use Cryptocol::number::*;
-    /// use Cryptocol::define_utypes_with;
+    /// use cryptocol::number::*;
+    /// use cryptocol::define_utypes_with;
     /// 
     /// define_utypes_with!(u128);
     /// 
@@ -14033,8 +14033,8 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// 
     /// # Example 2
     /// ```
-    /// use Cryptocol::number::*;
-    /// use Cryptocol::define_utypes_with;
+    /// use cryptocol::number::*;
+    /// use cryptocol::define_utypes_with;
     /// 
     /// define_utypes_with!(u128);
     /// 
@@ -14064,7 +14064,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// 
     /// # Example 1
     /// ```
-    /// use Cryptocol::define_utypes_with;
+    /// use cryptocol::define_utypes_with;
     /// 
     /// define_utypes_with!(u128);
     /// 
@@ -14081,8 +14081,8 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// 
     /// # Example 2
     /// ```
-    /// use Cryptocol::number::*;
-    /// use Cryptocol::define_utypes_with;
+    /// use cryptocol::number::*;
+    /// use cryptocol::define_utypes_with;
     /// 
     /// define_utypes_with!(u128);
     /// 
@@ -14109,8 +14109,8 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// 
     /// # Example 1
     /// ```
-    /// use Cryptocol::number::*;
-    /// use Cryptocol::define_utypes_with;
+    /// use cryptocol::number::*;
+    /// use cryptocol::define_utypes_with;
     /// 
     /// define_utypes_with!(u128);
     /// 
@@ -14125,8 +14125,8 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// 
     /// # Example 2
     /// ```
-    /// use Cryptocol::number::*;
-    /// use Cryptocol::define_utypes_with;
+    /// use cryptocol::number::*;
+    /// use cryptocol::define_utypes_with;
     /// 
     /// define_utypes_with!(u128);
     /// 
@@ -14157,7 +14157,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// 
     /// # Example 1
     /// ```
-    /// use Cryptocol::define_utypes_with;
+    /// use cryptocol::define_utypes_with;
     /// 
     /// define_utypes_with!(u128);
     /// 
@@ -14174,8 +14174,8 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// 
     /// # Example 2
     /// ```
-    /// use Cryptocol::number::*;
-    /// use Cryptocol::define_utypes_with;
+    /// use cryptocol::number::*;
+    /// use cryptocol::define_utypes_with;
     /// 
     /// define_utypes_with!(u128);
     /// 
@@ -14202,8 +14202,8 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// 
     /// # Example 1
     /// ```
-    /// use Cryptocol::number::*;
-    /// use Cryptocol::define_utypes_with;
+    /// use cryptocol::number::*;
+    /// use cryptocol::define_utypes_with;
     /// 
     /// define_utypes_with!(u128);
     /// 
@@ -14218,8 +14218,8 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// 
     /// # Example 2
     /// ```
-    /// use Cryptocol::number::*;
-    /// use Cryptocol::define_utypes_with;
+    /// use cryptocol::number::*;
+    /// use cryptocol::define_utypes_with;
     /// 
     /// define_utypes_with!(u128);
     /// 

@@ -204,12 +204,12 @@ pub type SHA2_512_0 = SHA2_512_t;
 /// 
 /// # Quick Start
 /// In order to use the module sha2_512_t, you don't have to import (or use)
-/// Cryptocol::hash::sha2_512_t::* directly because the module
-/// Cryptocol::hash::sha2_512_t is re-exported. All you have to do is only
+/// cryptocol::hash::sha2_512_t::* directly because the module
+/// cryptocol::hash::sha2_512_t is re-exported. All you have to do is only
 /// import SHA2_512_t, SHA2_512_t_256, SHA2_512_t_224, SHA2_512_0,
 /// SHA2_512_t_Expanded, SHA2_512_t_256_Expanded, SHA2_512_t_224_Expanded,
 /// SHA2_512_t_Generic_HRS_fixed, and/or SHA2_512_t_Generic in the module
-/// Cryptocol::hash. Example 1 shows how to import structs SHA2_512_t,
+/// cryptocol::hash. Example 1 shows how to import structs SHA2_512_t,
 /// SHA2_512_t_256, SHA2_512_t_224, SHA2_512_0, SHA2_512_t_Expanded,
 /// SHA2_512_t_256_Expanded, SHA2_512_t_224_Expanded,
 /// SHA2_512_t_Generic_HRS_fixed, and/or SHA2_512_t_Generic. Plus, what you
@@ -223,15 +223,15 @@ pub type SHA2_512_0 = SHA2_512_t;
 /// 
 /// ## Example 1
 /// ```
-/// use Cryptocol::hash::SHA2_512_0;
-/// use Cryptocol::hash::SHA2_512_t;
-/// use Cryptocol::hash::SHA2_512_t_256;
-/// use Cryptocol::hash::SHA2_512_t_224;
-/// use Cryptocol::hash::SHA2_512_t_Expanded;
-/// use Cryptocol::hash::SHA2_512_t_256_Expanded;
-/// use Cryptocol::hash::SHA2_512_t_224_Expanded;
-/// use Cryptocol::hash::SHA2_512_t_Generic_HRS_fixed;
-/// use Cryptocol::hash::SHA2_512_t_Generic;
+/// use cryptocol::hash::SHA2_512_0;
+/// use cryptocol::hash::SHA2_512_t;
+/// use cryptocol::hash::SHA2_512_t_256;
+/// use cryptocol::hash::SHA2_512_t_224;
+/// use cryptocol::hash::SHA2_512_t_Expanded;
+/// use cryptocol::hash::SHA2_512_t_256_Expanded;
+/// use cryptocol::hash::SHA2_512_t_224_Expanded;
+/// use cryptocol::hash::SHA2_512_t_Generic_HRS_fixed;
+/// use cryptocol::hash::SHA2_512_t_Generic;
 /// ```
 /// Then, you can create SHA1 object by the method SHA1::new() for example.
 /// Now, you are ready to use all prepared methods to hash any data. If you
@@ -244,7 +244,7 @@ pub type SHA2_512_0 = SHA2_512_t;
 /// ## Example 2 for SHA-512/256
 /// ```
 /// use std::string::*;
-/// use Cryptocol::hash::SHA2_512_t_256;
+/// use cryptocol::hash::SHA2_512_t_256;
 /// let mut hash = SHA2_512_t_256::new();
 /// 
 /// let mut txt = "";
@@ -291,7 +291,7 @@ pub type SHA2_512_0 = SHA2_512_t;
 /// ## Example 3 for SHA-512/224
 /// ```
 /// use std::string::*;
-/// use Cryptocol::hash::SHA2_512_t_224;
+/// use cryptocol::hash::SHA2_512_t_224;
 /// let mut hash = SHA2_512_t_224::new();
 /// 
 /// let mut txt = "";
@@ -460,7 +460,7 @@ SHA2_512_t_Generic<t, A5A5A5A5A5A5A5A5,
     /// 
     /// # Example for SHA2_512_t_256
     /// ```
-    /// use Cryptocol::hash::SHA2_512_t_256;
+    /// use cryptocol::hash::SHA2_512_t_256;
     /// let mut hash = SHA2_512_t_256::new();
     /// println!("Hash =\t{}", hash);
     /// assert_eq!(hash.to_string(), "22312194FC2BF72C9F555FA3C84C64C22393B86B6F53B151963877195940EABD");
@@ -468,7 +468,7 @@ SHA2_512_t_Generic<t, A5A5A5A5A5A5A5A5,
     /// 
     /// # Example for SHA2_512_t_224
     /// ```
-    /// use Cryptocol::hash::SHA2_512_t_224;
+    /// use cryptocol::hash::SHA2_512_t_224;
     /// let mut hash = SHA2_512_t_224::new();
     /// println!("Hash =\t{}", hash);
     /// assert_eq!(hash.to_string(), "8C3D37C819544DA273E1996689DCD4D61DFAB7AE32FF9C82679DD514");
@@ -492,7 +492,7 @@ SHA2_512_t_Generic<t, A5A5A5A5A5A5A5A5,
     /// 
     /// # Example for SHA2_512_t_256
     /// ```
-    /// use Cryptocol::hash::SHA2_512_t_256;
+    /// use cryptocol::hash::SHA2_512_t_256;
     /// let mut hash = SHA2_512_t_256::new_with_seedText("샤-");
     /// // '샤' is from Hangeul which is Korean letter, sounds like 'sha'
     /// println!("Hash =\t{}", hash);
@@ -585,7 +585,7 @@ SHA2_512_t_Generic<t, A5A5A5A5A5A5A5A5,
     ///
     /// # Example for SHA2_512_t_256
     /// ```
-    /// use Cryptocol::hash::SHA2_512_t_256;
+    /// use cryptocol::hash::SHA2_512_t_256;
     /// let txt = "This is an example of the method digest_C().";
     /// let mut hash = SHA2_512_t_256::new();
     /// hash.digest_C(txt.as_ptr(), txt.len() as u64, 0);
@@ -595,7 +595,7 @@ SHA2_512_t_Generic<t, A5A5A5A5A5A5A5A5,
     /// 
     /// # Example 2 `for SHA2_512_t_256_Expanded
     /// ```
-    /// use Cryptocol::hash::SHA2_512_t_256_Expanded;
+    /// use cryptocol::hash::SHA2_512_t_256_Expanded;
     /// type mySHA2 = SHA2_512_t_256_Expanded<0x123456789abcdef0, 160>;
     /// let mut my_hash = mySHA2::new();
     /// let txt = "This is an example of the method digest_C().";
@@ -649,7 +649,7 @@ SHA2_512_t_Generic<t, A5A5A5A5A5A5A5A5,
     ///
     /// # Example for SHA2_512_t_256
     /// ```
-    /// use Cryptocol::hash::SHA2_512_t_256;
+    /// use cryptocol::hash::SHA2_512_t_256;
     /// let txt = "This is an example of the method digest().";
     /// let mut hash = SHA2_512_t_256::new();
     /// hash.digest(txt.as_ptr(), txt.len() as u128);
@@ -659,7 +659,7 @@ SHA2_512_t_Generic<t, A5A5A5A5A5A5A5A5,
     ///
     /// # Example for SHA2_512_t_224
     /// ```
-    /// use Cryptocol::hash::SHA2_512_t_224;
+    /// use cryptocol::hash::SHA2_512_t_224;
     /// let txt = "This is an example of the method digest().";
     /// let mut hash = SHA2_512_t_224::new();
     /// hash.digest(txt.as_ptr(), txt.len() as u128);
@@ -713,7 +713,7 @@ SHA2_512_t_Generic<t, A5A5A5A5A5A5A5A5,
     ///
     /// # Example for SHA2_512_t_256
     /// ```
-    /// use Cryptocol::hash::SHA2_512_t_256;
+    /// use cryptocol::hash::SHA2_512_t_256;
     /// let txt = "This is an example of the method digest_str().";
     /// let mut hash = SHA2_512_t_256::new();
     /// hash.digest_str(txt);
@@ -723,7 +723,7 @@ SHA2_512_t_Generic<t, A5A5A5A5A5A5A5A5,
     ///
     /// # Example for SHA2_512_t_224
     /// ```
-    /// use Cryptocol::hash::SHA2_512_t_224;
+    /// use cryptocol::hash::SHA2_512_t_224;
     /// let txt = "This is an example of the method digest_str().";
     /// let mut hash = SHA2_512_t_224::new();
     /// hash.digest_str(txt);
@@ -771,7 +771,7 @@ SHA2_512_t_Generic<t, A5A5A5A5A5A5A5A5,
     ///
     /// # Example for SHA2_512_t_256
     /// ```
-    /// use Cryptocol::hash::SHA2_512_t_256;
+    /// use cryptocol::hash::SHA2_512_t_256;
     /// let txt = "This is an example of the method digest_string().".to_string();
     /// let mut hash = SHA2_512_t_256::new();
     /// hash.digest_string(&txt);
@@ -781,7 +781,7 @@ SHA2_512_t_Generic<t, A5A5A5A5A5A5A5A5,
     ///
     /// # Example for SHA2_512_t_224
     /// ```
-    /// use Cryptocol::hash::SHA2_512_t_224;
+    /// use cryptocol::hash::SHA2_512_t_224;
     /// let txt = "This is an example of the method digest_string().".to_string();
     /// let mut hash = SHA2_512_t_224::new();
     /// hash.digest_string(&txt);
@@ -829,7 +829,7 @@ SHA2_512_t_Generic<t, A5A5A5A5A5A5A5A5,
     ///
     /// # Example for SHA2_512_t_256
     /// ```
-    /// use Cryptocol::hash::SHA2_512_t_256;
+    /// use cryptocol::hash::SHA2_512_t_256;
     /// let data = [ 0x67452301_u32.to_le(), 0xefcdab89_u32.to_le(), 0x98badcfe_u32.to_le(), 0x10325476_u32.to_le() ];
     /// let mut hash = SHA2_512_t_256::new();
     /// hash.digest_array(&data);
@@ -839,7 +839,7 @@ SHA2_512_t_Generic<t, A5A5A5A5A5A5A5A5,
     ///
     /// # Example for SHA2_512_t_224
     /// ```
-    /// use Cryptocol::hash::SHA2_512_t_224;
+    /// use cryptocol::hash::SHA2_512_t_224;
     /// let data = [ 0x67452301_u32.to_le(), 0xefcdab89_u32.to_le(), 0x98badcfe_u32.to_le(), 0x10325476_u32.to_le() ];
     /// let mut hash = SHA2_512_t_224::new();
     /// hash.digest_array(&data);
@@ -888,7 +888,7 @@ SHA2_512_t_Generic<t, A5A5A5A5A5A5A5A5,
     ///
     /// # Example for SHA2_512_t_256
     /// ```
-    /// use Cryptocol::hash::SHA2_512_t_256;
+    /// use cryptocol::hash::SHA2_512_t_256;
     /// let data = vec![ 0x67452301_u32.to_le(), 0xefcdab89_u32.to_le(), 0x98badcfe_u32.to_le(), 0x10325476_u32.to_le() ];
     /// let mut hash = SHA2_512_t_256::new();
     /// hash.digest_vec(&data);
@@ -898,7 +898,7 @@ SHA2_512_t_Generic<t, A5A5A5A5A5A5A5A5,
     ///
     /// # Example for SHA2_512_t_224
     /// ```
-    /// use Cryptocol::hash::SHA2_512_t_224;
+    /// use cryptocol::hash::SHA2_512_t_224;
     /// let data = vec![ 0x67452301_u32.to_le(), 0xefcdab89_u32.to_le(), 0x98badcfe_u32.to_le(), 0x10325476_u32.to_le() ];
     /// let mut hash = SHA2_512_t_224::new();
     /// hash.digest_vec(&data);
@@ -947,7 +947,7 @@ SHA2_512_t_Generic<t, A5A5A5A5A5A5A5A5,
     ///
     /// # Example for SHA2_512_t_256
     /// ```
-    /// use Cryptocol::hash::SHA2_512_t_256;
+    /// use cryptocol::hash::SHA2_512_t_256;
     /// let txt = "This is an example of the method get_HashValue().";
     /// let mut hashValue = [0_u8; 32];
     /// let mut hash = SHA2_512_t_256::new();
@@ -959,7 +959,7 @@ SHA2_512_t_Generic<t, A5A5A5A5A5A5A5A5,
     ///
     /// # Example for SHA2_512_t_256
     /// ```
-    /// use Cryptocol::hash::SHA2_512_t_224;
+    /// use cryptocol::hash::SHA2_512_t_224;
     /// let txt = "This is an example of the method get_HashValue().";
     /// let mut hashValue = [0_u8; 28];
     /// let mut hash = SHA2_512_t_224::new();
@@ -1010,7 +1010,7 @@ SHA2_512_t_Generic<t, A5A5A5A5A5A5A5A5,
     ///
     /// # Example for SHA2_512_t_256
     /// ```
-    /// use Cryptocol::hash::SHA2_512_t_256;
+    /// use cryptocol::hash::SHA2_512_t_256;
     /// let txt = "This is an example of the method get_HashValue_in_string().";
     /// let mut hash = SHA2_512_t_256::new();
     /// hash.digest_str(txt);
@@ -1020,7 +1020,7 @@ SHA2_512_t_Generic<t, A5A5A5A5A5A5A5A5,
     ///
     /// # Example for SHA2_512_t_224
     /// ```
-    /// use Cryptocol::hash::SHA2_512_t_224;
+    /// use cryptocol::hash::SHA2_512_t_224;
     /// let txt = "This is an example of the method get_HashValue_in_string().";
     /// let mut hash = SHA2_512_t_224::new();
     /// hash.digest_str(txt);
@@ -1080,7 +1080,7 @@ SHA2_512_t_Generic<t, A5A5A5A5A5A5A5A5,
     ///
     /// # Example for SHA2_512_t_256
     /// ```
-    /// use Cryptocol::hash::SHA2_512_t_256;
+    /// use cryptocol::hash::SHA2_512_t_256;
     /// let txt = "This is an example of the method get_HashValue_in_array().";
     /// let mut hash = SHA2_512_t_256::new();
     /// hash.digest_str(txt);
@@ -1092,7 +1092,7 @@ SHA2_512_t_Generic<t, A5A5A5A5A5A5A5A5,
     ///
     /// # Example for SHA2_512_t_224
     /// ```
-    /// use Cryptocol::hash::SHA2_512_t_224;
+    /// use cryptocol::hash::SHA2_512_t_224;
     /// let txt = "This is an example of the method get_HashValue_in_array().";
     /// let mut hash = SHA2_512_t_224::new();
     /// hash.digest_str(txt);
@@ -1171,7 +1171,7 @@ SHA2_512_t_Generic<t, A5A5A5A5A5A5A5A5,
     ///
     /// # Example for SHA2_512_t_256
     /// ```
-    /// use Cryptocol::hash::SHA2_512_t_256;
+    /// use cryptocol::hash::SHA2_512_t_256;
     /// let txt = "This is an example of the method get_HashValue_in_vec().";
     /// let mut hash = SHA2_512_t_256::new();
     /// hash.digest_str(txt);
@@ -1181,7 +1181,7 @@ SHA2_512_t_Generic<t, A5A5A5A5A5A5A5A5,
     ///
     /// # Example for SHA2_512_t_224
     /// ```
-    /// use Cryptocol::hash::SHA2_512_t_224;
+    /// use cryptocol::hash::SHA2_512_t_224;
     /// let txt = "This is an example of the method get_HashValue_in_vec().";
     /// let mut hash = SHA2_512_t_224::new();
     /// hash.digest_str(txt);
@@ -1217,7 +1217,7 @@ SHA2_512_t_Generic<t, A5A5A5A5A5A5A5A5,
     ///
     /// # Example 1 for SHA2_512_t_256
     /// ```
-    /// use Cryptocol::hash::SHA2_512_t_256;
+    /// use cryptocol::hash::SHA2_512_t_256;
     /// let txt = "This is an example of the method put_HashValue_in_array().";
     /// let mut hash = SHA2_512_t_256::new();
     /// let mut hash_code = [0_u64; 4];
@@ -1229,7 +1229,7 @@ SHA2_512_t_Generic<t, A5A5A5A5A5A5A5A5,
     ///
     /// # Example 2 for SHA2_512_t_256_Expanded
     /// ```
-    /// use Cryptocol::hash::SHA2_512_t_256_Expanded;
+    /// use cryptocol::hash::SHA2_512_t_256_Expanded;
     /// type mySHA2 = SHA2_512_t_256_Expanded<160>;
     /// let txt = "This is an example of the method put_HashValue_in_array().";
     /// let mut my_hash = mySHA2::new();
@@ -1242,7 +1242,7 @@ SHA2_512_t_Generic<t, A5A5A5A5A5A5A5A5,
     ///
     /// # Example 3 for SHA2_512_t_224
     /// ```
-    /// use Cryptocol::hash::SHA2_512_t_224;
+    /// use cryptocol::hash::SHA2_512_t_224;
     /// let txt = "This is an example of the method put_HashValue_in_array().";
     /// let mut hash = SHA2_512_t_224::new();
     /// let mut hash_code = [0_u64; 4];
@@ -1254,7 +1254,7 @@ SHA2_512_t_Generic<t, A5A5A5A5A5A5A5A5,
     ///
     /// # Example 4 for SHA2_512_t_224_Expanded
     /// ```
-    /// use Cryptocol::hash::SHA2_512_t_224_Expanded;
+    /// use cryptocol::hash::SHA2_512_t_224_Expanded;
     /// type mySHA2 = SHA2_512_t_224_Expanded<160>;
     /// let txt = "This is an example of the method put_HashValue_in_array().";
     /// let mut my_hash = mySHA2::new();
@@ -1289,7 +1289,7 @@ SHA2_512_t_Generic<t, A5A5A5A5A5A5A5A5,
     ///
     /// # Example 1 for SHA2_512_t_256
     /// ```
-    /// use Cryptocol::hash::SHA2_512_t_256;
+    /// use cryptocol::hash::SHA2_512_t_256;
     /// let txt = "TANGLING";
     /// let mut hash = SHA2_512_t_256::new();
     /// hash.digest_str(txt);
@@ -1305,7 +1305,7 @@ SHA2_512_t_Generic<t, A5A5A5A5A5A5A5A5,
     ///
     /// # Example 2 for SHA2_512_t_256_Expanded
     /// ```
-    /// use Cryptocol::hash::SHA2_512_t_256_Expanded;
+    /// use cryptocol::hash::SHA2_512_t_256_Expanded;
     /// type mySHA2 = SHA2_512_t_256_Expanded<160>;
     /// let txt = "TANGLING";
     /// let mut my_hash = mySHA2::new();
@@ -1322,7 +1322,7 @@ SHA2_512_t_Generic<t, A5A5A5A5A5A5A5A5,
     ///
     /// # Example 3 for SHA2_512_t_224
     /// ```
-    /// use Cryptocol::hash::SHA2_512_t_224;
+    /// use cryptocol::hash::SHA2_512_t_224;
     /// let txt = "TANGLING";
     /// let mut hash = SHA2_512_t_224::new();
     /// hash.digest_str(txt);
@@ -1338,7 +1338,7 @@ SHA2_512_t_Generic<t, A5A5A5A5A5A5A5A5,
     ///
     /// # Example 4 for SHA2_512_t_224_Expanded
     /// ```
-    /// use Cryptocol::hash::SHA2_512_t_224_Expanded;
+    /// use cryptocol::hash::SHA2_512_t_224_Expanded;
     /// type mySHA2 = SHA2_512_t_224_Expanded<160>;
     /// let txt = "TANGLING";
     /// let mut my_hash = mySHA2::new();
@@ -1532,7 +1532,7 @@ Display for SHA2_512_t_Generic<t, A5A5A5A5A5A5A5A5,
     /// 
     /// # Example 1 for SHA2_512_t_256 for the method to_string()
     /// ```
-    /// use Cryptocol::hash::SHA2_512_t_256;
+    /// use cryptocol::hash::SHA2_512_t_256;
     /// let mut hash = SHA2_512_t_256::new();
     /// let txt = "Display::fmt() automagically implement to_string().";
     /// hash.digest_str(txt);
@@ -1542,7 +1542,7 @@ Display for SHA2_512_t_Generic<t, A5A5A5A5A5A5A5A5,
     /// 
     /// # Example 2 for SHA2_512_t_256 for the use in the macro println!()
     /// ```
-    /// use Cryptocol::hash::SHA2_512_t_256;
+    /// use cryptocol::hash::SHA2_512_t_256;
     /// let mut hash = SHA2_512_t_256::new();
     /// let txt = "Display::fmt() enables the object to be printed in the macro println!() directly for example.";
     /// hash.digest_str(txt);
@@ -1552,7 +1552,7 @@ Display for SHA2_512_t_Generic<t, A5A5A5A5A5A5A5A5,
     /// 
     /// # Example 3 for SHA2_512_t_224 for the method to_string()
     /// ```
-    /// use Cryptocol::hash::SHA2_512_t_224;
+    /// use cryptocol::hash::SHA2_512_t_224;
     /// let mut hash = SHA2_512_t_224::new();
     /// let txt = "Display::fmt() automagically implement to_string().";
     /// hash.digest_str(txt);
@@ -1562,7 +1562,7 @@ Display for SHA2_512_t_Generic<t, A5A5A5A5A5A5A5A5,
     /// 
     /// # Example 4 for SHA2_512_t_224 for the use in the macro println!()
     /// ```
-    /// use Cryptocol::hash::SHA2_512_t_224;
+    /// use cryptocol::hash::SHA2_512_t_224;
     /// let mut hash = SHA2_512_t_224::new();
     /// let txt = "Display::fmt() enables the object to be printed in the macro println!() directly for example.";
     /// hash.digest_str(txt);

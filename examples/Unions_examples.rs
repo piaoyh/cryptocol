@@ -10,7 +10,7 @@
 #![allow(missing_doc_code_examples)]
 
 
-use Cryptocol::number::*;
+use cryptocol::number::*;
 // use rand_distr::num_traits::PrimInt; //{u256, BigInteger, HugeInteger};
 
 

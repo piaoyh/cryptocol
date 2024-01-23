@@ -9,14 +9,14 @@
 #![allow(missing_docs)]
 #![allow(missing_doc_code_examples)]
 /*
-use Cryptocol::number::*;
-use Cryptocol::define_utypes_with;
-use Cryptocol::define_Utypes_with_utypes;
-use Cryptocol::define_utypes_with_u128;
-use Cryptocol::define_utypes_with_u64;
-use Cryptocol::define_utypes_with_u32;
-use Cryptocol::define_utypes_with_u16;
-use Cryptocol::define_utypes_with_u8;
+use cryptocol::number::*;
+use cryptocol::define_utypes_with;
+use cryptocol::define_Utypes_with_utypes;
+use cryptocol::define_utypes_with_u128;
+use cryptocol::define_utypes_with_u64;
+use cryptocol::define_utypes_with_u32;
+use cryptocol::define_utypes_with_u16;
+use cryptocol::define_utypes_with_u8;
 */
 
 
@@ -37,7 +37,7 @@ fn main()
     // BigUInt_bit_operation___main();
     // BigUInt_conversion___main();
     // BigUInt_flag_manipulation___main();
-    // use Cryptocol::define_utypes_with;
+    // use cryptocol::define_utypes_with;
     // define_utypes_with!(u64);
     // println!("SHA2-512: 2^256 = {}", u256::max());
     // println!("SHA2-256: 2^127 = {}", u128::MAX >> 1);
@@ -56,7 +56,7 @@ fn BigUInt_quick_start1___main()
 {
     println!("BigUInt_quick_start1");
     use std::str::FromStr;
-    use Cryptocol::number::*;
+    use cryptocol::number::*;
 
     type u1024 = BigUInt::<u128, 8>;
 
@@ -125,7 +125,7 @@ fn BigUInt_quick_start2()
 {
     println!("BigUInt_quick_start2()");
     use std::str::FromStr;
-    use Cryptocol::define_utypes_with;
+    use cryptocol::define_utypes_with;
     
     define_utypes_with!(u128);
 
@@ -214,7 +214,7 @@ fn BigUInt_constructors___main()
 fn BigUInt_new()
 {
     println!("BigUInt_new");
-    use Cryptocol::define_utypes_with;
+    use cryptocol::define_utypes_with;
     define_utypes_with!(u128);
 
     let obj = u256::new();
@@ -227,7 +227,7 @@ fn BigUInt_new()
 fn BigUInt_zero()
 {
     println!("BigUInt_zero");
-    use Cryptocol::define_utypes_with;
+    use cryptocol::define_utypes_with;
     define_utypes_with!(u64);
 
     let zero = u256::zero();
@@ -240,7 +240,7 @@ fn BigUInt_zero()
 fn BigUInt_one()
 {
     println!("BigUInt_one");
-    use Cryptocol::define_utypes_with;
+    use cryptocol::define_utypes_with;
     define_utypes_with!(u32);
 
     let one = u256::one();
@@ -255,7 +255,7 @@ fn BigUInt_max()
 {
     println!("BigUInt_max");
     use std::str::FromStr;
-    use Cryptocol::define_utypes_with;
+    use cryptocol::define_utypes_with;
     define_utypes_with!(u16);
 
     let maximum = u256::max();
@@ -268,7 +268,7 @@ fn BigUInt_submax()
 {
     println!("BigUInt_submax");
     use std::str::FromStr;
-    use Cryptocol::define_utypes_with;
+    use cryptocol::define_utypes_with;
     define_utypes_with!(u8);
 
     let half = u256::submax(128_usize);
@@ -281,7 +281,7 @@ fn BigUInt_halfmax()
 {
     println!("BigUInt_halfmax");
     use std::str::FromStr;
-    use Cryptocol::define_utypes_with;
+    use cryptocol::define_utypes_with;
     define_utypes_with!(u128);
 
     let half = u256::halfmax();
@@ -303,7 +303,7 @@ fn BigUInt_from_uint()
 fn BigUInt_from_uint_u8()
 {
     println!("BigUInt_from_uint_u8");
-    use Cryptocol::define_utypes_with_u16;
+    use cryptocol::define_utypes_with_u16;
     define_utypes_with_u16!();
      
     let aa = u512::from_uint(123_u8);
@@ -315,7 +315,7 @@ fn BigUInt_from_uint_u8()
 fn BigUInt_from_uint_u16()
 {
     println!("BigUInt_from_uint_u16");
-    use Cryptocol::define_utypes_with_u64;
+    use cryptocol::define_utypes_with_u64;
     define_utypes_with_u64!();
      
     let bb = u512::from_uint(12345_u16);
@@ -327,7 +327,7 @@ fn BigUInt_from_uint_u16()
 fn BigUInt_from_uint_u32()
 {
     println!("BigUInt_from_uint_u32");
-    use Cryptocol::define_utypes_with_u8;
+    use cryptocol::define_utypes_with_u8;
     define_utypes_with_u8!();
      
     let cc = u512::from_uint(1234567890_u32);
@@ -339,7 +339,7 @@ fn BigUInt_from_uint_u32()
 fn BigUInt_from_uint_u64()
 {
     println!("BigUInt_from_uint_u64");
-    use Cryptocol::define_utypes_with_u128;
+    use cryptocol::define_utypes_with_u128;
     define_utypes_with_u128!();
      
     let dd = u512::from_uint(12345678901234567890_u64);
@@ -351,7 +351,7 @@ fn BigUInt_from_uint_u64()
 fn BigUInt_from_uint_u128()
 {
     println!("BigUInt_from_uint_u128");
-    use Cryptocol::define_utypes_with_u128;
+    use cryptocol::define_utypes_with_u128;
     define_utypes_with_u128!();
      
     let ee = u512::from_uint(123456789012345678901234567890123456789_u128);
@@ -363,7 +363,7 @@ fn BigUInt_from_uint_u128()
 fn BigUInt_from_uint_usize()
 {
     println!("BigUInt_from_uint_usize");
-    use Cryptocol::define_utypes_with_u32;
+    use cryptocol::define_utypes_with_u32;
     define_utypes_with_u32!();
 
     let ff = u512::from_uint(123_usize);
@@ -376,7 +376,7 @@ fn BigUInt_from_uint_usize()
 fn BigUInt_from_array()
 {
     println!("BigUInt_from_array");
-    use Cryptocol::define_utypes_with;
+    use cryptocol::define_utypes_with;
     define_utypes_with!(u8);
 
     let big_num = u256::from_array(&[1_u8;32]);
@@ -396,7 +396,7 @@ fn BigUInt_from_biguint_same_length()
 {
     println!("BigUInt_from_biguint_same_length");
     use std::str::FromStr;
-    use Cryptocol::number::*;
+    use cryptocol::number::*;
 
     let a = u256_with_u8::from_str("123456789123456789123456789123456789123456789123456789").unwrap();
     let b = u256_with_u16::from_biguint(&a);
@@ -410,7 +410,7 @@ fn BigUInt_from_biguint_shorter_length()
 {
     println!("BigUInt_from_biguint_shorter_length");
     use std::str::FromStr;
-    use Cryptocol::number::*;
+    use cryptocol::number::*;
 
     let a = u256_with_u8::from_str("123456789123456789123456789123456789123456789123456789").unwrap();
     let b = u512_with_u16::from_biguint(&a);
@@ -424,7 +424,7 @@ fn BigUInt_from_biguint_longer_length()
 {
     println!("BigUInt_from_biguint_longer_length");
     use std::str::FromStr;
-    use Cryptocol::number::*;
+    use cryptocol::number::*;
 
     let a = u512_with_u8::from_str("123456789123456789123456789123456789123456789123456789").unwrap();
     let b = u256_with_u16::from_biguint(&a);
@@ -437,7 +437,7 @@ fn BigUInt_from_biguint_longer_length()
 fn BigUInt_from_be()
 {
     println!("BigUInt_from_be");
-    use Cryptocol::define_utypes_with;
+    use cryptocol::define_utypes_with;
     define_utypes_with!(u8);
 
     let be = u256::from_array(&[0x12, 0x34, 0x56, 0x78, 0x90, 0xab, 0xcd, 0xef,
@@ -455,7 +455,7 @@ fn BigUInt_from_be()
 fn BigUInt_from_be_bytes()
 {
     println!("BigUInt_from_be");
-    use Cryptocol::define_utypes_with;
+    use cryptocol::define_utypes_with;
     define_utypes_with!(u8);
 
     let be_array = [0x12, 0x34, 0x56, 0x78, 0x90, 0xab, 0xcd, 0xef,
@@ -472,7 +472,7 @@ fn BigUInt_from_be_bytes()
 fn BigUInt_from_le()
 {
     println!("BigUInt_from_le");
-    use Cryptocol::define_utypes_with;
+    use cryptocol::define_utypes_with;
     define_utypes_with!(u8);
 
     let le1 = u256::from_array(&[0x12, 0x34, 0x56, 0x78, 0x90, 0xab, 0xcd, 0xef,
@@ -490,7 +490,7 @@ fn BigUInt_from_le()
 fn BigUInt_from_le_bytes()
 {
     println!("BigUInt_from_le_bytes");
-    use Cryptocol::define_utypes_with;
+    use cryptocol::define_utypes_with;
     define_utypes_with!(u8);
 
     let le_array = [0x12, 0x34, 0x56, 0x78, 0x90, 0xab, 0xcd, 0xef,
@@ -507,7 +507,7 @@ fn BigUInt_from_le_bytes()
 fn BigUInt_from_string()
 {
     println!("BigUInt_from_string");
-    use Cryptocol::define_utypes_with;
+    use cryptocol::define_utypes_with;
     define_utypes_with!(u64);
 
     let a = u256::from_string("1234567890_1234567890_1234567890_1234567890_1234567890_1234567890_1234567890").unwrap();
@@ -519,7 +519,7 @@ fn BigUInt_from_string()
 fn BigUInt_from_str_radix()
 {
     println!("BigUInt_from_str_radix");
-    use Cryptocol::define_utypes_with;
+    use cryptocol::define_utypes_with;
     define_utypes_with!(u16);
     let a = u512::from_str_radix("1234_5678_9ABC_DEF0_1234_5678_9ABC_DEF0_1234_5678_9ABC_DEF0_1234_5678_9ABC_DEF0_1234_5678_9ABC_DEF0_1234_5678_9ABC_DEF0_1234_5678_9ABC_DEF0_1234_5678_9ABC_DEF0", 16).unwrap();
     println!("a = {}", a);
@@ -530,7 +530,7 @@ fn BigUInt_from_str_radix()
 fn BigUInt_generate_check_bits()
 {
     println!("BigUInt_generate_check_bits");
-    use Cryptocol::define_utypes_with_u32;
+    use cryptocol::define_utypes_with_u32;
     define_utypes_with_u32!();
 
     let a_0 = u256::generate_check_bits(0).unwrap();
@@ -554,7 +554,7 @@ fn BigUInt_generate_check_bits()
 fn BigUInt_generate_check_bits_()
 {
     println!("BigUInt_generate_check_bits_");
-    use Cryptocol::define_utypes_with_u32;
+    use cryptocol::define_utypes_with_u32;
     define_utypes_with_u32!();
 
     let a_0 = u256::generate_check_bits_(0);
@@ -599,7 +599,7 @@ fn BigUInt_random_number___main()
 fn BigUInt_any()
 {
     println!("BigUInt_any");
-    use Cryptocol::define_utypes_with;
+    use cryptocol::define_utypes_with;
     define_utypes_with!(u128);
     println!("Random Number: {}", u1024::any());
     println!("---------------------------");
@@ -608,7 +608,7 @@ fn BigUInt_any()
 fn BigUInt_any_odd()
 {
     println!("BigUInt_any_odd");
-    use Cryptocol::define_utypes_with;
+    use cryptocol::define_utypes_with;
     define_utypes_with!(u64);
     let r = u1024::any_odd();
     println!("Random Odd Number: {}", r);
@@ -619,7 +619,7 @@ fn BigUInt_any_odd()
 fn BigUInt_any_less_than()
 {
     println!("BigUInt_any_less_than");
-    use Cryptocol::define_utypes_with;
+    use cryptocol::define_utypes_with;
     define_utypes_with!(u32);
     let ceiling = u1024::max() / u1024::from_uint::<u32>(3);
     let r = u1024::any_less_than(&ceiling);
@@ -631,7 +631,7 @@ fn BigUInt_any_less_than()
 fn BigUInt_any_odd_less_than()
 {
     println!("BigUInt_any_odd_less_than");
-    use Cryptocol::define_utypes_with;
+    use cryptocol::define_utypes_with;
     define_utypes_with!(u16);
     let ceiling = u1024::max() / u1024::from_uint::<u32>(3);
     let r = u1024::any_odd_less_than(&ceiling);
@@ -644,7 +644,7 @@ fn BigUInt_any_odd_less_than()
 fn BigUInt_any_with_MSB_set()
 {
     println!("BigUInt_any_with_MSB_set");
-    use Cryptocol::define_utypes_with;
+    use cryptocol::define_utypes_with;
     define_utypes_with!(u8);
     let num = u1024::any_with_MSB_set();
     println!("Random Number = {}", u1024::any());
@@ -656,7 +656,7 @@ fn BigUInt_any_with_MSB_set()
 fn BigUInt_any_odd_with_MSB_set()
 {
     println!("BigUInt_any_odd_with_MSB_set");
-    use Cryptocol::define_utypes_with;
+    use cryptocol::define_utypes_with;
     define_utypes_with!(u128);
     let num = u1024::any_odd_with_MSB_set();
     println!("Random Number = {}", u1024::any());
@@ -669,7 +669,7 @@ fn BigUInt_any_odd_with_MSB_set()
 fn BigUInt_any_prime_using_Miller_Rabin()
 {
     println!("BigUInt_any_prime_using_Miller_Rabin");
-    use Cryptocol::define_utypes_with;
+    use cryptocol::define_utypes_with;
     define_utypes_with!(u64);
     let num = u256::any_prime_using_Miller_Rabin(5);
     println!("Random Prime Number = {}", num);
@@ -681,7 +681,7 @@ fn BigUInt_any_prime_using_Miller_Rabin()
 fn BigUInt_turn_any()
 {
     println!("BigUInt_turn_any");
-    use Cryptocol::define_utypes_with;
+    use cryptocol::define_utypes_with;
     define_utypes_with!(u32);
     let mut r = u256::new();
     println!("original number = {}", r);
@@ -696,7 +696,7 @@ fn BigUInt_turn_any()
 fn BigUInt_random()
 {
     println!("BigUInt_random");
-    use Cryptocol::define_utypes_with;
+    use cryptocol::define_utypes_with;
     define_utypes_with!(u64);
     println!("Random Number: {}", u1024::random());
     println!("---------------------------");
@@ -705,7 +705,7 @@ fn BigUInt_random()
 fn BigUInt_random_odd()
 {
     println!("BigUInt_random_odd");
-    use Cryptocol::define_utypes_with;
+    use cryptocol::define_utypes_with;
     define_utypes_with!(u128);
     let r = u1024::random_odd();
     println!("Random Odd Number: {}", r);
@@ -716,7 +716,7 @@ fn BigUInt_random_odd()
 fn BigUInt_random_less_than()
 {
     println!("BigUInt_random_less_than");
-    use Cryptocol::define_utypes_with;
+    use cryptocol::define_utypes_with;
     define_utypes_with!(u32);
     let ceiling = u1024::max() / u1024::from_uint::<u32>(3);
     let r = u1024::random_less_than(&ceiling);
@@ -728,7 +728,7 @@ fn BigUInt_random_less_than()
 fn BigUInt_random_odd_less_than()
 {
     println!("BigUInt_random_odd_less_than");
-    use Cryptocol::define_utypes_with;
+    use cryptocol::define_utypes_with;
     define_utypes_with!(u16);
 
     let ceiling = u1024::max() / u1024::from_uint::<u32>(3);
@@ -742,7 +742,7 @@ fn BigUInt_random_odd_less_than()
 fn BigUInt_random_with_MSB_set()
 {
     println!("BigUInt_random_with_MSB_set");
-    use Cryptocol::define_utypes_with;
+    use cryptocol::define_utypes_with;
     define_utypes_with!(u8);
     let num = u1024::random_with_MSB_set();
     println!("Random Number = {}", u1024::random());
@@ -754,7 +754,7 @@ fn BigUInt_random_with_MSB_set()
 fn BigUInt_random_odd_with_MSB_set()
 {
     println!("BigUInt_random_odd_with_MSB_set");
-    use Cryptocol::define_utypes_with;
+    use cryptocol::define_utypes_with;
     define_utypes_with!(u128);
     let num = u1024::random_odd_with_MSB_set();
     println!("Random Number = {}", u1024::random());
@@ -767,7 +767,7 @@ fn BigUInt_random_odd_with_MSB_set()
 fn BigUInt_random_prime_using_Miller_Rabin()
 {
     println!("BigUInt_random_prime_using_Miller_Rabin");
-    use Cryptocol::define_utypes_with;
+    use cryptocol::define_utypes_with;
     define_utypes_with!(u64);
     let num = u1024::random_prime_using_Miller_Rabin(5);
     assert!(num.is_prime_using_Miller_Rabin(5));
@@ -778,7 +778,7 @@ fn BigUInt_random_prime_using_Miller_Rabin()
 fn BigUInt_randomize()
 {
     println!("BigUInt_randomize");
-    use Cryptocol::define_utypes_with;
+    use cryptocol::define_utypes_with;
     define_utypes_with!(u32);
 
     let mut r = u1024::new();
@@ -793,7 +793,7 @@ fn BigUInt_randomize()
 fn BigUInt_is_prime_using_Miller_Rabin()
 {
     println!("BigUInt_is_prime_using_Miller_Rabin");
-    use Cryptocol::define_utypes_with;
+    use cryptocol::define_utypes_with;
     define_utypes_with!(u16);
 
     let num = u1024::from_string("157847659859841049478697210209054499132116730052547470511818639401226705057924429751936169954758794979780692256039595351594450957429818931145981533862363167515145703012676459279601554094177152095755375227908501443524236048737351327752857335149319939532219166843564206337168180636940438709755340632429325500479").unwrap();
@@ -816,7 +816,7 @@ fn BigUInt_get_size___main()
 fn BigUInt_size_in_bytes()
 {
     println!("BigUInt_size_in_bytes");
-    use Cryptocol::define_utypes_with;
+    use cryptocol::define_utypes_with;
     define_utypes_with!(u8);
 
     println!("u256 is {}-byte integer.", u256::size_in_bytes());
@@ -827,7 +827,7 @@ fn BigUInt_size_in_bytes()
 fn BigUInt_size_in_bits()
 {
     println!("BigUInt_size_in_bits");
-    use Cryptocol::define_utypes_with;
+    use cryptocol::define_utypes_with;
     define_utypes_with!(u32);
 
     println!("u256 is {}-bit integer.", u256::size_in_bits());
@@ -838,7 +838,7 @@ fn BigUInt_size_in_bits()
 fn BigUInt_length_in_bytes()
 {
     println!("BigUInt_length_in_bytes");
-    use Cryptocol::define_utypes_with;
+    use cryptocol::define_utypes_with;
     define_utypes_with!(u16);
 
     let a = u256::from_str_radix("A16F", 16).unwrap();
@@ -850,7 +850,7 @@ fn BigUInt_length_in_bytes()
 fn BigUInt_length_in_bits()
 {
     println!("BigUInt_length_in_bits");
-    use Cryptocol::define_utypes_with;
+    use cryptocol::define_utypes_with;
     define_utypes_with!(u64);
 
     let a = u256::from_str_radix("A16F", 16).unwrap();
@@ -894,7 +894,7 @@ fn BigUInt_get_set_check___main()
 fn BigUInt_turn_check_bits()
 {
     println!("BigUInt_turn_check_bits");
-    use Cryptocol::define_utypes_with;
+    use cryptocol::define_utypes_with;
     
     define_utypes_with!(u128);
     let mut a = u256::from_string("256487951236974125896345564889974258").unwrap();
@@ -908,7 +908,7 @@ fn BigUInt_turn_check_bits()
 fn BigUInt_is_bit_set()
 {
     println!("BigUInt_is_bit_set");
-    use Cryptocol::define_utypes_with;
+    use cryptocol::define_utypes_with;
     define_utypes_with!(u64);
 
     let a = u256::from_string("12345678912345678912345678912345678912345678912345678912345678912345678912345").unwrap();
@@ -954,7 +954,7 @@ fn BigUInt_is_bit_set()
 fn BigUInt_is_bit_set_()
 {
     println!("BigUInt_is_bit_set_");
-    use Cryptocol::define_utypes_with;
+    use cryptocol::define_utypes_with;
     define_utypes_with!(u64);
 
     let a = u256::from_string("12345678912345678912345678912345678912345678912345678912345678912345678912345").unwrap();
@@ -971,7 +971,7 @@ fn BigUInt_is_bit_set_()
 fn BigUInt_get_upper_portion()
 {
     println!("BigUInt_get_upper_portion");
-    use Cryptocol::define_utypes_with;
+    use cryptocol::define_utypes_with;
     define_utypes_with!(u32);
 
     let a = u256::from_string("12345678912345678912345678912345678912345678912345678912345678912345678912345").unwrap();
@@ -985,7 +985,7 @@ fn BigUInt_get_upper_portion()
 fn BigUInt_get_lower_portion()
 {
     println!("BigUInt_get_lower_portion");
-    use Cryptocol::define_utypes_with;
+    use cryptocol::define_utypes_with;
     define_utypes_with!(u32);
 
     let a = u256::from_string("12345678912345678912345678912345678912345678912345678912345678912345678912345").unwrap();
@@ -999,7 +999,7 @@ fn BigUInt_get_lower_portion()
 fn BigUInt_get_num()
 {
     println!("BigUInt_get_num");
-    use Cryptocol::define_utypes_with;
+    use cryptocol::define_utypes_with;
     define_utypes_with!(u32);
 
     let a = u256::from([0_u32, 10, 20, 30, 40, 50, 60, 70]);
@@ -1033,7 +1033,7 @@ fn BigUInt_get_num()
 fn BigUInt_get_num_()
 {
     println!("BigUInt_get_num_");
-    use Cryptocol::define_utypes_with;
+    use cryptocol::define_utypes_with;
     
     define_utypes_with!(u32);
     let a = u256::from([0_u32, 10, 20, 30, 40, 50, 60, 70]);
@@ -1048,7 +1048,7 @@ fn BigUInt_get_num_()
 fn BigUInt_set_num()
 {
     println!("BigUInt_set_num");
-    use Cryptocol::define_utypes_with;
+    use cryptocol::define_utypes_with;
     define_utypes_with!(u64);
 
     let mut a = u256::from([0_u64, 10, 20, 30]);
@@ -1070,7 +1070,7 @@ fn BigUInt_set_num()
 fn BigUInt_set_num_()
 {
     println!("BigUInt_set_num_");
-    use Cryptocol::define_utypes_with;
+    use cryptocol::define_utypes_with;
     define_utypes_with!(u128);
 
     let mut a = u256::from([10_u128, 20]);
@@ -1089,7 +1089,7 @@ fn BigUInt_set_num_()
 fn BigUInt_get_number()
 {
     println!("BigUInt_get_number");
-    use Cryptocol::define_utypes_with;
+    use cryptocol::define_utypes_with;
     define_utypes_with!(u32);
     if let Ok(a) = "12345678909876543210123456789098765432101234567890987654321012345678909876543".parse::<u256>()
     {
@@ -1103,7 +1103,7 @@ fn BigUInt_get_number()
 fn BigUInt_set_number()
 {
     println!("BigUInt_set_number");
-    use Cryptocol::define_utypes_with;
+    use cryptocol::define_utypes_with;
     define_utypes_with!(u16);
     let mut a = u256::new();
     println!("arr = {:?}", a);
@@ -1116,7 +1116,7 @@ fn BigUInt_set_number()
 fn BigUInt_copy_within()
 {
     println!("BigUInt_copy_within");
-    use Cryptocol::define_utypes_with;
+    use cryptocol::define_utypes_with;
     define_utypes_with!(u16);
     let mut a = u256::new();
     a.set_number(&[0_u16, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15]);
@@ -1130,7 +1130,7 @@ fn BigUInt_copy_within()
 fn BigUInt_set_zero()
 {
     println!("BigUInt_set_zero");
-    use Cryptocol::define_utypes_with;
+    use cryptocol::define_utypes_with;
     define_utypes_with!(u16);
 
     let mut a = u256::new();
@@ -1145,7 +1145,7 @@ fn BigUInt_set_zero()
 fn BigUInt_is_zero()
 {
     println!("BigUInt_is_zero");
-    use Cryptocol::define_utypes_with;
+    use cryptocol::define_utypes_with;
     define_utypes_with!(u128);
     let mut a = u1024::zero();
     if a.is_zero()
@@ -1166,7 +1166,7 @@ fn BigUInt_is_zero()
 fn BigUInt_set_one()
 {
     println!("BigUInt_set_one");
-    use Cryptocol::define_utypes_with;
+    use cryptocol::define_utypes_with;
     define_utypes_with!(u16);
 
     let mut a = u256::new();
@@ -1181,7 +1181,7 @@ fn BigUInt_set_one()
 fn BigUInt_is_one()
 {
     println!("BigUInt_is_one");
-    use Cryptocol::define_utypes_with;
+    use cryptocol::define_utypes_with;
     define_utypes_with!(u128);
     
     let mut a = u256::one();
@@ -1203,7 +1203,7 @@ fn BigUInt_is_one()
 fn BigUInt_is_zero_or_one()
 {
     println!("BigUInt_is_zero_or_one");
-    use Cryptocol::define_utypes_with;
+    use cryptocol::define_utypes_with;
     define_utypes_with!(u32);
 
     let mut a = u256::zero();
@@ -1235,7 +1235,7 @@ fn BigUInt_is_zero_or_one()
 fn BigUInt_set_max()
 {
     println!("BigUInt_set_max");
-    use Cryptocol::define_utypes_with;
+    use cryptocol::define_utypes_with;
     define_utypes_with!(u64);
 
     let mut a = u256::new();
@@ -1249,7 +1249,7 @@ fn BigUInt_set_max()
 fn BigUInt_set_submax()
 {
     println!("BigUInt_set_submax");
-    use Cryptocol::define_utypes_with;
+    use cryptocol::define_utypes_with;
     define_utypes_with!(u16);
 
     let mut a = u256::new();
@@ -1266,7 +1266,7 @@ fn BigUInt_set_submax()
 fn BigUInt_set_halfmax()
 {
     println!("BigUInt_set_halfmax");
-    use Cryptocol::define_utypes_with;
+    use cryptocol::define_utypes_with;
     define_utypes_with!(u8);
 
     let mut a = u256::new();
@@ -1280,7 +1280,7 @@ fn BigUInt_set_halfmax()
 fn BigUInt_is_max()
 {
     println!("BigUInt_is_max");
-    use Cryptocol::define_utypes_with;
+    use cryptocol::define_utypes_with;
     define_utypes_with!(u128);
 
     let a = u256::max();
@@ -1292,7 +1292,7 @@ fn BigUInt_is_max()
 fn BigUInt_set_msb()
 {
     println!("BigUInt_set_msb");
-    use Cryptocol::define_utypes_with;
+    use cryptocol::define_utypes_with;
     define_utypes_with!(u32);
 
     let mut a = u256::new();
@@ -1306,7 +1306,7 @@ fn BigUInt_set_msb()
 fn BigUInt_set_lsb()
 {
     println!("BigUInt_set_lsb");
-    use Cryptocol::define_utypes_with;
+    use cryptocol::define_utypes_with;
     define_utypes_with!(u64);
 
     let mut a = u256::new();
@@ -1320,7 +1320,7 @@ fn BigUInt_set_lsb()
 fn BigUInt_set_uint()
 {
     println!("BigUInt_set_uint");
-    use Cryptocol::define_utypes_with;
+    use cryptocol::define_utypes_with;
     define_utypes_with!(u8);
 
     let mut a = u1024::new();
@@ -1334,7 +1334,7 @@ fn BigUInt_set_uint()
 fn BigUInt_is_uint()
 {
     println!("BigUInt_is_uint");
-    use Cryptocol::define_utypes_with;
+    use cryptocol::define_utypes_with;
     define_utypes_with!(u16);
 
     let a = u1024::one() + 50_u16;
@@ -1346,7 +1346,7 @@ fn BigUInt_is_uint()
 fn BigUInt_is_odd()
 {
     println!("BigUInt_is_odd");
-    use Cryptocol::define_utypes_with;
+    use cryptocol::define_utypes_with;
     define_utypes_with!(u32);
 
     let mut a = u256::new();
@@ -1369,7 +1369,7 @@ fn BigUInt_is_odd()
 fn BigUInt_is_even()
 {
     println!("BigUInt_is_even");
-    use Cryptocol::define_utypes_with;
+    use cryptocol::define_utypes_with;
     define_utypes_with!(u128);
 
     let mut a = u256::new();
@@ -1407,7 +1407,7 @@ fn BigUInt_count_ones()
 {
     println!("BigUInt_count_ones");
     use std::str::FromStr;
-    use Cryptocol::define_utypes_with;
+    use cryptocol::define_utypes_with;
     define_utypes_with!(u8);
 
     let a = u256::from_str("100000000000000000000000000000000000000000000000000000000000000000000000000000").unwrap();
@@ -1419,7 +1419,7 @@ fn BigUInt_count_ones()
 fn BigUInt_count_zeros()
 {
     println!("BigUInt_count_zeros");
-    use Cryptocol::define_utypes_with;
+    use cryptocol::define_utypes_with;
     define_utypes_with!(u16);
 
     let a = "100000000000000000000000000000000000000000000000000000000000000000000000000000".parse::<u256>().unwrap();
@@ -1432,7 +1432,7 @@ fn BigUInt_leading_ones()
 {
     println!("BigUInt_leading_ones");
     use std::str::FromStr;
-    use Cryptocol::define_utypes_with;
+    use cryptocol::define_utypes_with;
     define_utypes_with!(u32);
 
     let a = u256::from_str("100000000000000000000000000000000000000000000000000000000000000000000000000000").unwrap();
@@ -1444,7 +1444,7 @@ fn BigUInt_leading_ones()
 fn BigUInt_leading_zeros()
 {
     println!("BigUInt_leading_zeros");
-    use Cryptocol::define_utypes_with;
+    use cryptocol::define_utypes_with;
     define_utypes_with!(u64);
 
     let a = "100000000000000000000000000000000000000000000000000000000000000000000000000000".parse::<u256>().unwrap();
@@ -1457,7 +1457,7 @@ fn BigUInt_trailing_ones()
 {
     println!("BigUInt_trailing_ones");
     use std::str::FromStr;
-    use Cryptocol::define_utypes_with;
+    use cryptocol::define_utypes_with;
     define_utypes_with!(u128);
 
     let a = u256::from_str("111111111111111111111111111111111111111111111111111111111111111111111111111111").unwrap();
@@ -1469,7 +1469,7 @@ fn BigUInt_trailing_ones()
 fn BigUInt_trailing_zeros()
 {
     println!("BigUInt_trailing_zeros");
-    use Cryptocol::define_utypes_with;
+    use cryptocol::define_utypes_with;
     define_utypes_with!(u16);
 
     let a = "111111111111111111111111111111111111111111111111111111111111111111111111111111".parse::<u256>().unwrap();
@@ -1481,7 +1481,7 @@ fn BigUInt_trailing_zeros()
 fn BigUInt_leading_max_elements()
 {
     println!("BigUInt_leading_max_elements");
-    use Cryptocol::define_utypes_with;
+    use cryptocol::define_utypes_with;
     define_utypes_with!(u8);
 
     let a = u256::from_str_radix("FFFFFFFF_EEEEEEEE_DDDDDDDD_CCCCCCCC_BBBBBBBB_AAAAAAAA_99999999_88888888", 16).unwrap();
@@ -1493,7 +1493,7 @@ fn BigUInt_leading_max_elements()
 fn BigUInt_leading_zero_elements()
 {
     println!("BigUInt_leading_zero_elements");
-    use Cryptocol::define_utypes_with;
+    use cryptocol::define_utypes_with;
     define_utypes_with!(u32);
 
     let a = u256::from_str_radix("00000000_FFFFFFFF_EEEEEEEE_DDDDDDDD_CCCCCCCC_BBBBBBBB_AAAAAAAA_99999999", 16).unwrap();
@@ -1505,7 +1505,7 @@ fn BigUInt_leading_zero_elements()
 fn BigUInt_trailing_max_elements()
 {
     println!("BigUInt_trailing_max_elements");
-    use Cryptocol::define_utypes_with;
+    use cryptocol::define_utypes_with;
     define_utypes_with!(u16);
 
     let a = u256::from_str_radix("88888888_99999999_AAAAAAAA_BBBBBBBB_CCCCCCCC_DDDDDDDD_EEEEEEEE_FFFFFFFF", 16).unwrap();
@@ -1517,7 +1517,7 @@ fn BigUInt_trailing_max_elements()
 fn BigUInt_trailing_zero_elements()
 {
     println!("BigUInt_trailing_zero_elements");
-    use Cryptocol::define_utypes_with;
+    use cryptocol::define_utypes_with;
     define_utypes_with!(u8);
 
     let a = u256::from_str_radix("FFFFFFFF_EEEEEEEE_DDDDDDDD_CCCCCCCC_BBBBBBBB_AAAAAAAA_9999999_900000000", 16).unwrap();
@@ -1540,7 +1540,7 @@ fn BigUInt_partial_cmp_uint()
 {
     println!("BigUInt_partial_cmp_uint");
     use std::cmp::Ordering;
-    use Cryptocol::define_utypes_with;
+    use cryptocol::define_utypes_with;
     define_utypes_with!(u8);
 
     let mut res = U32::from_uint(100_u8).partial_cmp_uint(90_u128).unwrap();
@@ -1575,7 +1575,7 @@ fn BigUInt_partial_cmp_uint()
 fn BigUInt_lt_uint()
 {
     println!("BigUInt_lt_uint");
-    use Cryptocol::define_utypes_with;
+    use cryptocol::define_utypes_with;
     define_utypes_with!(u16);
 
     let mut res = U32::from_uint(100_u16).lt_uint(110_u64);
@@ -1597,7 +1597,7 @@ fn BigUInt_lt_uint()
 fn BigUInt_gt_uint()
 {
     println!("BigUInt_gt_uint");
-    use Cryptocol::define_utypes_with;
+    use cryptocol::define_utypes_with;
     define_utypes_with!(u32);
 
     let mut res = U32::from_uint(100_u32).gt_uint(90_u32);
@@ -1619,7 +1619,7 @@ fn BigUInt_gt_uint()
 fn BigUInt_le_uint()
 {
     println!("BigUInt_le_uint");
-    use Cryptocol::define_utypes_with;
+    use cryptocol::define_utypes_with;
     define_utypes_with!(u64);
 
     let mut res = U32::from_uint(100_u64).le_uint(110_u16);
@@ -1641,7 +1641,7 @@ fn BigUInt_le_uint()
 fn BigUInt_ge_uint()
 {
     println!("BigUInt_ge_uint");
-    use Cryptocol::define_utypes_with;
+    use cryptocol::define_utypes_with;
     define_utypes_with!(u32);
 
     let mut res = U32::from_uint(100_u128).gt_uint(90_u8);
@@ -1663,7 +1663,7 @@ fn BigUInt_ge_uint()
 fn BigUInt_eq_uint()
 {
     println!("BigUInt_eq_uint");
-    use Cryptocol::define_utypes_with;
+    use cryptocol::define_utypes_with;
     define_utypes_with!(u8);
 
     let mut res = U32::from_uint(100_u32).eq_uint(100_u8);
@@ -1691,7 +1691,7 @@ fn BigUInt_comparison_biguint___main()
 fn BigUInt_eq_biguint()
 {
     println!("BigUInt_eq_biguint");
-    use Cryptocol::define_utypes_with;
+    use cryptocol::define_utypes_with;
     define_utypes_with!(u128);
 
     let num_str = "69743176821145534028236692093846345739169743176821145534028236692093846345739";
@@ -1715,7 +1715,7 @@ fn BigUInt_partial_cmp_biguint()
 {
     println!("BigUInt_partial_cmp_biguint");
     use std::cmp::Ordering;
-    use Cryptocol::define_utypes_with;
+    use cryptocol::define_utypes_with;
     define_utypes_with!(u16);
 
     let num_str1 = "70000000000000000000000000000000000000000000000000000000000000000000000000000";
@@ -1784,7 +1784,7 @@ fn BigUInt_add_uint()
 fn BigUInt_carrying_add_uint()
 {
     println!("BigUInt_carrying_add_uint");
-    use Cryptocol::define_utypes_with;
+    use cryptocol::define_utypes_with;
     define_utypes_with!(u128);
 
     let num_str1 = "FFEEDDBB_AA998877_66554433_221100FF_EEDDBBAA_99887766_55443322_1100FFEE";
@@ -1818,7 +1818,7 @@ fn BigUInt_carrying_add_uint()
 fn BigUInt_carrying_add_assign_uint()
 {
     println!("BigUInt_carrying_add_assign_uint");
-    use Cryptocol::define_utypes_with;
+    use cryptocol::define_utypes_with;
     define_utypes_with!(u64);
 
     let num_str1 = "FFEEDDBB_AA998877_66554433_221100FF_EEDDBBAA_99887766_55443322_1100FFEE";
@@ -1860,7 +1860,7 @@ fn BigUInt_carrying_add_assign_uint()
 fn BigUInt_wrapping_add_uint()
 {
     println!("BigUInt_wrapping_add_uint");
-    use Cryptocol::define_utypes_with;
+    use cryptocol::define_utypes_with;
     define_utypes_with!(u32);
 
     let a = u512::max().wrapping_sub_uint(1_u8);
@@ -1882,7 +1882,7 @@ fn BigUInt_wrapping_add_uint()
 fn BigUInt_wrapping_add_assign_uint()
 {
     println!("BigUInt_wrapping_add_assign_uint");
-    use Cryptocol::define_utypes_with;
+    use cryptocol::define_utypes_with;
     define_utypes_with!(u16);
 
     let mut a = U64::max().wrapping_sub_uint(1_u8);
@@ -1906,7 +1906,7 @@ fn BigUInt_wrapping_add_assign_uint()
 fn BigUInt_overflowing_add_uint()
 {
     println!("BigUInt_overflowing_add_uint");
-    use Cryptocol::define_utypes_with;
+    use cryptocol::define_utypes_with;
     define_utypes_with!(u8);
 
     let a = u512::max().wrapping_sub_uint(1_u8);
@@ -1930,7 +1930,7 @@ fn BigUInt_overflowing_add_uint()
 fn BigUInt_overflowing_add_assign_uint()
 {
     println!("BigUInt_overflowing_add_assign_uint");
-    use Cryptocol::define_utypes_with;
+    use cryptocol::define_utypes_with;
     define_utypes_with!(u16);
 
     let mut a = U64::max().wrapping_sub_uint(1_u8);
@@ -1957,7 +1957,7 @@ fn BigUInt_overflowing_add_assign_uint()
 fn BigUInt_checked_add_uint()
 {
     println!("BigUInt_checked_add_uint");
-    use Cryptocol::define_utypes_with;
+    use cryptocol::define_utypes_with;
     define_utypes_with!(u8);
 
     let a = u512::max().wrapping_sub_uint(1_u8);
@@ -2002,7 +2002,7 @@ fn BigUInt_checked_add_uint()
 fn BigUInt_unchecked_add_uint()
 {
     println!("BigUInt_unchecked_add_uint");
-    use Cryptocol::define_utypes_with;
+    use cryptocol::define_utypes_with;
     define_utypes_with!(u32);
 
     let a = U64::max().wrapping_sub_uint(1_u8);
@@ -2018,7 +2018,7 @@ fn BigUInt_unchecked_add_uint()
 fn BigUInt_saturating_add_uint()
 {
     println!("BigUInt_saturating_add_uint");
-    use Cryptocol::define_utypes_with;
+    use cryptocol::define_utypes_with;
     define_utypes_with!(u64);
 
     let a = u512::max().wrapping_sub_uint(2_u8);
@@ -2040,7 +2040,7 @@ fn BigUInt_saturating_add_uint()
 fn BigUInt_saturating_add_assign_uint()
 {
     println!("BigUInt_saturating_add_assign_uint");
-    use Cryptocol::define_utypes_with;
+    use cryptocol::define_utypes_with;
     define_utypes_with!(u128);
 
     let mut a = U64::max().wrapping_sub_uint(2_u8);
@@ -2064,7 +2064,7 @@ fn BigUInt_saturating_add_assign_uint()
 fn BigUInt_modular_add_uint()
 {
     println!("BigUInt_modular_add_uint");
-    use Cryptocol::define_utypes_with;
+    use cryptocol::define_utypes_with;
     define_utypes_with!(u8);
 
     let a = u256::from_string("76801874298166903427690031858186486050853753882811946569946433649006").unwrap();
@@ -2087,7 +2087,7 @@ fn BigUInt_modular_add_uint()
 fn BigUInt_modular_add_assign_uint()
 {
     println!("BigUInt_modular_add_assign_uint");
-    use Cryptocol::define_utypes_with;
+    use cryptocol::define_utypes_with;
     define_utypes_with!(u8);
 
     let mut a = u256::from_string("768018742981669034276900318581864860508537538828119465699464336490060").unwrap();
@@ -2130,7 +2130,7 @@ fn BigUInt_sub_uint()
 fn BigUInt_borrowing_sub_uint()
 {
     println!("BigUInt_borrowing_sub_uint");
-    use Cryptocol::define_utypes_with;
+    use cryptocol::define_utypes_with;
     define_utypes_with!(u128);
 
     let num_str1 = "FFEEDDBB_AA998877_66554433_221100FF_EEDDBBAA_99887766_55443322_1100FFEE";
@@ -2164,7 +2164,7 @@ fn BigUInt_borrowing_sub_uint()
 fn BigUInt_borrowing_sub_assign_uint()
 {
     println!("BigUInt_borrowing_sub_assign_uint");
-    use Cryptocol::define_utypes_with;
+    use cryptocol::define_utypes_with;
     define_utypes_with!(u64);
 
     let num_str1 = "FFEEDDBB_AA998877_66554433_221100FF_EEDDBBAA_99887766_55443322_1100FFEE";
@@ -2206,7 +2206,7 @@ fn BigUInt_borrowing_sub_assign_uint()
 fn BigUInt_wrapping_sub_uint()
 {
     println!("BigUInt_wrapping_sub_uint");
-    use Cryptocol::define_utypes_with;
+    use cryptocol::define_utypes_with;
     define_utypes_with!(u32);
 
     let a = u512::one();
@@ -2228,7 +2228,7 @@ fn BigUInt_wrapping_sub_uint()
 fn BigUInt_wrapping_sub_assign_uint()
 {
     println!("fn BigUInt_wrapping_sub_assign_uint");
-    use Cryptocol::define_utypes_with;
+    use cryptocol::define_utypes_with;
     define_utypes_with!(u16);
 
     let mut a = U64::one();
@@ -2252,7 +2252,7 @@ fn BigUInt_wrapping_sub_assign_uint()
 fn BigUInt_overflowing_sub_uint()
 {
     println!("BigUInt_overflowing_sub_uint");
-    use Cryptocol::define_utypes_with;
+    use cryptocol::define_utypes_with;
     define_utypes_with!(u8);
 
     let a = u512::one();
@@ -2276,7 +2276,7 @@ fn BigUInt_overflowing_sub_uint()
 fn BigUInt_overflowing_sub_assign_uint()
 {
     println!("BigUInt_overflowing_sub_assign_uint");
-    use Cryptocol::define_utypes_with;
+    use cryptocol::define_utypes_with;
     define_utypes_with!(u16);
 
     let mut a = U64::one();
@@ -2303,7 +2303,7 @@ fn BigUInt_overflowing_sub_assign_uint()
 fn BigUInt_checked_sub_uint()
 {
     println!("BigUInt_checked_sub_uint");
-    use Cryptocol::define_utypes_with;
+    use cryptocol::define_utypes_with;
     define_utypes_with!(u8);
 
     let a = u512::one();
@@ -2348,7 +2348,7 @@ fn BigUInt_checked_sub_uint()
 fn BigUInt_unchecked_sub_uint()
 {
     println!("BigUInt_unchecked_sub_uint");
-    use Cryptocol::define_utypes_with;
+    use cryptocol::define_utypes_with;
     define_utypes_with!(u32);
 
     let a = U64::one();
@@ -2364,7 +2364,7 @@ fn BigUInt_unchecked_sub_uint()
 fn BigUInt_saturating_sub_uint()
 {
     println!("BigUInt_saturating_sub_uint");
-    use Cryptocol::define_utypes_with;
+    use cryptocol::define_utypes_with;
     define_utypes_with!(u64);
 
     let a = u512::zero().wrapping_add_uint(2_u8);
@@ -2386,7 +2386,7 @@ fn BigUInt_saturating_sub_uint()
 fn BigUInt_saturating_sub_assign_uint()
 {
     println!("BigUInt_saturating_sub_assign_uint");
-    use Cryptocol::define_utypes_with;
+    use cryptocol::define_utypes_with;
     define_utypes_with!(u128);
 
     let mut a = U64::zero().wrapping_add_uint(2_u8);
@@ -2410,7 +2410,7 @@ fn BigUInt_saturating_sub_assign_uint()
 fn BigUInt_modular_sub_uint()
 {
     println!("BigUInt_modular_sub_uint");
-    use Cryptocol::define_utypes_with;
+    use cryptocol::define_utypes_with;
     define_utypes_with!(u64);
 
     let m = u256::from_string("76801874298166903427690031858186486050853753882811946569946433649006084094").unwrap();
@@ -2433,7 +2433,7 @@ fn BigUInt_modular_sub_uint()
 fn BigUInt_modular_sub_assign_uint()
 {
     println!("BigUInt_modular_sub_assign_uint");
-    use Cryptocol::define_utypes_with;
+    use cryptocol::define_utypes_with;
     define_utypes_with!(u32);
 
     let m = U32::from_string("76801874298166903427690031858186486050853753882811946569946433649006084094").unwrap();
@@ -2459,7 +2459,7 @@ fn BigUInt_modular_sub_assign_uint()
 fn BigUInt_abs_diff_uint()
 {
     println!("BigUInt_abs_diff_uint");
-    use Cryptocol::define_utypes_with;
+    use cryptocol::define_utypes_with;
     define_utypes_with!(u128);
 
     let num_str1 = "FFFFFFFF_FFFFFFFF_FFFFFFFF_FFFFFFFF_FFFFFFFF_FFFFFFFF_FFFFFFFF_FFFFFFFF";
@@ -2507,7 +2507,7 @@ fn BigUInt_mul_uint()
 fn BigUInt_carrying_mul_uint()
 {
     println!("BigUInt_carrying_mul_uint");
-    use Cryptocol::define_utypes_with;
+    use cryptocol::define_utypes_with;
     define_utypes_with!(u8);
 
     let a_low = u256::from_string("76801874298166903427690031858186486050853753882811946569946433649006084094").unwrap();
@@ -2526,7 +2526,7 @@ fn BigUInt_carrying_mul_uint()
 fn BigUInt_carrying_mul_assign_uint()
 {
     println!("BigUInt_carrying_mul_assign_uint");
-    use Cryptocol::define_utypes_with;
+    use cryptocol::define_utypes_with;
     define_utypes_with!(u16);
 
     let mut a_low = U32::from_string("76801874298166903427690031858186486050853753882811946569946433649006084094").unwrap();
@@ -2552,7 +2552,7 @@ fn BigUInt_carrying_mul_assign_uint()
 fn BigUInt_widening_mul_uint()
 {
     println!("BigUInt_widening_mul_uint");
-    use Cryptocol::define_utypes_with;
+    use cryptocol::define_utypes_with;
     define_utypes_with!(u8);
 
     let a_biguint = u256::from_string("876801874298166903427690031858186486050853753882811946569946433649006084094").unwrap();
@@ -2568,7 +2568,7 @@ fn BigUInt_widening_mul_uint()
 fn BigUInt_widening_mul_assign_uint()
 {
     println!("BigUInt_widening_mul_assign_uint");
-    use Cryptocol::define_utypes_with;
+    use cryptocol::define_utypes_with;
     define_utypes_with!(u16);
 
     let mut a_biguint = U32::from_string("876801874298166903427690031858186486050853753882811946569946433649006084094").unwrap();
@@ -2587,7 +2587,7 @@ fn BigUInt_widening_mul_assign_uint()
 fn BigUInt_wrapping_mul_uint()
 {
     println!("BigUInt_wrapping_mul_uint");
-    use Cryptocol::define_utypes_with;
+    use cryptocol::define_utypes_with;
     define_utypes_with!(u32);
 
     let a_biguint = u256::from_string("876801874298166903427690031858186486050853753882811946569946433649006084094").unwrap();
@@ -2602,7 +2602,7 @@ fn BigUInt_wrapping_mul_uint()
 fn BigUInt_wrapping_mul_assign_uint()
 {
     println!("BigUInt_wrapping_mul_assign_uint");
-    use Cryptocol::define_utypes_with;
+    use cryptocol::define_utypes_with;
     define_utypes_with!(u64);
 
     let mut a_biguint = U32::from_string("876801874298166903427690031858186486050853753882811946569946433649006084094").unwrap();
@@ -2621,7 +2621,7 @@ fn BigUInt_wrapping_mul_assign_uint()
 fn BigUInt_overflowing_mul_uint()
 {
     println!("BigUInt_overflowing_mul_uint");
-    use Cryptocol::define_utypes_with;
+    use cryptocol::define_utypes_with;
     define_utypes_with!(u128);
 
     let a_biguint = u256::from_string("876801874298166903427690031858186486050853753882811946569946433649006084094").unwrap();
@@ -2636,7 +2636,7 @@ fn BigUInt_overflowing_mul_uint()
 fn BigUInt_overflowing_mul_assign_uint()
 {
     println!("BigUInt_overflowing_mul_assign_uint");
-    use Cryptocol::define_utypes_with;
+    use cryptocol::define_utypes_with;
     define_utypes_with!(u8);
 
     let mut a_biguint = U32::from_string("876801874298166903427690031858186486050853753882811946569946433649006084094").unwrap();
@@ -2655,7 +2655,7 @@ fn BigUInt_overflowing_mul_assign_uint()
 fn BigUInt_checked_mul_uint()
 {
     println!("BigUInt_checked_mul_uint");
-    use Cryptocol::define_utypes_with;
+    use cryptocol::define_utypes_with;
     define_utypes_with!(u16);
 
     let a_biguint = u256::from_string("876801874298166903427690031858186486050853753882811946569946433649006084094").unwrap();
@@ -2682,7 +2682,7 @@ fn BigUInt_checked_mul_uint()
 fn BigUInt_unchecked_mul_uint()
 {
     println!("BigUInt_unchecked_mul_uint");
-    use Cryptocol::define_utypes_with;
+    use cryptocol::define_utypes_with;
     define_utypes_with!(u32);
 
     let a_biguint = U32::from_string("876801874298166903427690031858186486050853753882811946569946433649006084094").unwrap();
@@ -2698,7 +2698,7 @@ fn BigUInt_unchecked_mul_uint()
 fn BigUInt_saturating_mul_uint()
 {
     println!("BigUInt_saturating_mul_uint");
-    use Cryptocol::define_utypes_with;
+    use cryptocol::define_utypes_with;
     define_utypes_with!(u64);
 
     let a_biguint = u256::from_string("876801874298166903427690031858186486050853753882811946569946433649006084094").unwrap();
@@ -2716,7 +2716,7 @@ fn BigUInt_saturating_mul_uint()
 fn BigUInt_saturating_mul_assign_uint()
 {
     println!("BigUInt_saturating_mul_assign_uint");
-    use Cryptocol::define_utypes_with;
+    use cryptocol::define_utypes_with;
     define_utypes_with!(u128);
 
     let mut a_biguint = u256::from_string("876801874298166903427690031858186486050853753882811946569946433649006084094").unwrap();
@@ -2737,7 +2737,7 @@ fn BigUInt_saturating_mul_assign_uint()
 fn BigUInt_modular_mul_uint()
 {
     println!("BigUInt_modular_mul_uint");
-    use Cryptocol::define_utypes_with;
+    use cryptocol::define_utypes_with;
     define_utypes_with!(u8);
 
     let m = U32::from_string("76801874298166903427690031858186486050853753882811946569946433649006084094").unwrap();
@@ -2758,7 +2758,7 @@ fn BigUInt_modular_mul_uint()
 fn BigUInt_modular_mul_assign_uint()
 {
     println!("BigUInt_modular_mul_assign_uint");
-    use Cryptocol::define_utypes_with;
+    use cryptocol::define_utypes_with;
     define_utypes_with!(u32);
 
     let m = U32::from_string("76801874298166903427690031858186486050853753882811946569946433649006084094").unwrap();
@@ -2798,7 +2798,7 @@ fn BigUInt_divide_fully_uint()
 {
     println!("BigUInt_divide_fully_uint");
     use std::str::FromStr;
-    use Cryptocol::define_utypes_with;
+    use cryptocol::define_utypes_with;
     define_utypes_with!(u16);
 
     let dividend = U32::from_str("123456789015758942546236989636279846864825945392").unwrap();
@@ -2826,7 +2826,7 @@ fn BigUInt_wrapping_div_uint()
 {
     println!("BigUInt_wrapping_div_uint");
     use std::str::FromStr;
-    use Cryptocol::define_utypes_with;
+    use cryptocol::define_utypes_with;
     define_utypes_with!(u64);
 
     let dividend = u256::from_str("123456789015758942546236989636279846864825945392").unwrap();
@@ -2852,7 +2852,7 @@ fn BigUInt_wrapping_div_assign_uint()
 {
     println!("BigUInt_wrapping_div_assign_uint");
     use std::str::FromStr;
-    use Cryptocol::define_utypes_with;
+    use cryptocol::define_utypes_with;
     define_utypes_with!(u128);
 
     let mut a_biguint = U32::from_str("123456789015758942546236989636279846864825945392").unwrap();
@@ -2876,7 +2876,7 @@ fn BigUInt_overflowing_div_uint()
 {
     println!("BigUInt_overflowing_div_uint");
     use std::str::FromStr;
-    use Cryptocol::define_utypes_with;
+    use cryptocol::define_utypes_with;
     define_utypes_with!(u8);
 
     let dividend = u256::from_str("123456789015758942546236989636279846864825945392").unwrap();
@@ -2903,7 +2903,7 @@ fn BigUInt_overflowing_div_assign_uint()
 {
     println!("BigUInt_overflowing_div_assign_uint");
     use std::str::FromStr;
-    use Cryptocol::define_utypes_with;
+    use cryptocol::define_utypes_with;
     define_utypes_with!(u16);
 
     let mut a_biguint = U32::from_str("123456789015758942546236989636279846864825945392").unwrap();
@@ -2932,7 +2932,7 @@ fn BigUInt_checked_div_uint()
 {
     println!("BigUInt_checked_div_uint");
     use std::str::FromStr;
-    use Cryptocol::define_utypes_with;
+    use cryptocol::define_utypes_with;
     define_utypes_with!(u32);
 
     let dividend = u256::from_str("123456789015758942546236989636279846864825945392").unwrap();
@@ -2969,7 +2969,7 @@ fn BigUInt_unchecked_div_uint()
 {
     println!("BigUInt_unchecked_div_uint");
     use std::str::FromStr;
-    use Cryptocol::define_utypes_with;
+    use cryptocol::define_utypes_with;
     define_utypes_with!(u64);
 
     let dividend = U32::from_str("123456789015758942546236989636279846864825945392").unwrap();
@@ -2991,7 +2991,7 @@ fn BigUInt_saturating_div_uint()
 {
     println!("BigUInt_saturating_div_uint");
     use std::str::FromStr;
-    use Cryptocol::define_utypes_with;
+    use cryptocol::define_utypes_with;
     define_utypes_with!(u32);
 
     let dividend = u256::from_str("123456789015758942546236989636279846864825945392").unwrap();
@@ -3017,7 +3017,7 @@ fn BigUInt_saturating_div_assign_uint()
 {
     println!("BigUInt_saturating_div_assign_uint");
     use std::str::FromStr;
-    use Cryptocol::define_utypes_with;
+    use cryptocol::define_utypes_with;
     define_utypes_with!(u128);
 
     let mut a_biguint = U32::from_str("123456789015758942546236989636279846864825945392").unwrap();
@@ -3044,7 +3044,7 @@ fn BigUInt_modular_div_uint()
 {
     println!("BigUInt_modular_div_uint");
     use std::str::FromStr;
-    use Cryptocol::define_utypes_with;
+    use cryptocol::define_utypes_with;
     define_utypes_with!(u8);
     
     let dividend = u256::from_str("123456789015758942546236989636279846864825945392").unwrap();
@@ -3071,7 +3071,7 @@ fn BigUInt_modular_div_assign_uint()
 {
     println!("BigUInt_modular_div_assign_uint");
     use std::str::FromStr;
-    use Cryptocol::define_utypes_with;
+    use cryptocol::define_utypes_with;
     define_utypes_with!(u16);
     
     let mut a_biguint = U32::from_str("123456789015758942546236989636279846864825945392").unwrap();
@@ -3113,7 +3113,7 @@ fn BigUInt_wrapping_rem_uint()
 {
     println!("BigUInt_wrapping_rem_uint");
     use std::str::FromStr;
-    use Cryptocol::define_utypes_with;
+    use cryptocol::define_utypes_with;
     define_utypes_with!(u8);
 
     let dividend = U32::from_str("123456789015758942546236989636279846864825945392").unwrap();
@@ -3133,7 +3133,7 @@ fn BigUInt_wrapping_rem_assign_uint()
 {
     println!("BigUInt_wrapping_rem_assign_uint");
     use std::str::FromStr;
-    use Cryptocol::define_utypes_with;
+    use cryptocol::define_utypes_with;
     define_utypes_with!(u16);
 
     let mut a_biguint = u256::from_str("123456789015758942546236989636279846864825945392").unwrap();
@@ -3160,7 +3160,7 @@ fn BigUInt_overflowing_rem_uint()
 {
     println!("BigUInt_overflowing_rem_uint");
     use std::str::FromStr;
-    use Cryptocol::define_utypes_with;
+    use cryptocol::define_utypes_with;
     define_utypes_with!(u32);
 
     let dividend = U32::from_str("123456789015758942546236989636279846864825945392").unwrap();
@@ -3182,7 +3182,7 @@ fn BigUInt_overflowing_rem_assign_uint()
 {
     println!("BigUInt_overflowing_rem_assign_uint");
     use std::str::FromStr;
-    use Cryptocol::define_utypes_with;
+    use cryptocol::define_utypes_with;
     define_utypes_with!(u64);
 
     let mut a_biguint = u256::from_str("123456789015758942546236989636279846864825945392").unwrap();
@@ -3211,7 +3211,7 @@ fn BigUInt_checked_rem_uint()
 {
     println!("BigUInt_checked_rem_uint");
     use std::str::FromStr;
-    use Cryptocol::define_utypes_with;
+    use cryptocol::define_utypes_with;
     define_utypes_with!(u128);
 
     let dividend = U32::from_str("123456789015758942546236989636279846864825945392").unwrap();
@@ -3245,7 +3245,7 @@ fn BigUInt_unchecked_rem_uint()
 {
     println!("BigUInt_unchecked_rem_uint");
     use std::str::FromStr;
-    use Cryptocol::define_utypes_with;
+    use cryptocol::define_utypes_with;
     define_utypes_with!(u8);
 
     let dividend = u256::from_str("123456789015758942546236989636279846864825945392").unwrap();
@@ -3264,7 +3264,7 @@ fn BigUInt_saturating_rem_uint()
 {
     println!("BigUInt_saturating_rem_uint");
     use std::str::FromStr;
-    use Cryptocol::define_utypes_with;
+    use cryptocol::define_utypes_with;
     define_utypes_with!(u16);
 
     let dividend = U32::from_str("123456789015758942546236989636279846864825945392").unwrap();
@@ -3284,7 +3284,7 @@ fn BigUInt_saturating_rem_assign_uint()
 {
     println!("BigUInt_saturating_rem_assign_uint");
     use std::str::FromStr;
-    use Cryptocol::define_utypes_with;
+    use cryptocol::define_utypes_with;
     define_utypes_with!(u32);
 
     let mut a_biguint = u256::from_str("123456789015758942546236989636279846864825945392").unwrap();
@@ -3311,7 +3311,7 @@ fn BigUInt_modular_rem_uint()
 {
     println!("BigUInt_modular_rem_uint");
     use std::str::FromStr;
-    use Cryptocol::define_utypes_with;
+    use cryptocol::define_utypes_with;
     define_utypes_with!(u32);
 
     let dividend = u256::from_str("123456789015758942546236989636279846864825945392").unwrap();
@@ -3332,7 +3332,7 @@ fn BigUInt_modular_rem_assign_uint()
 {
     println!("BigUInt_modular_rem_assign_uint");
     use std::str::FromStr;
-    use Cryptocol::define_utypes_with;
+    use cryptocol::define_utypes_with;
     define_utypes_with!(u64);
     
     let mut a_biguint = U32::from_str("123456789015758942546236989636279846864825945392").unwrap();
@@ -3366,7 +3366,7 @@ fn BigUInt_next_multiple_of_uint()
 {
     println!("BigUInt_next_multiple_of_uint");
     use std::str::FromStr;
-    use Cryptocol::define_utypes_with;
+    use cryptocol::define_utypes_with;
     define_utypes_with!(u64);
 
     let mut a_biguint = u256::from_str("123456789012345678901234567890123456789").unwrap();
@@ -3392,7 +3392,7 @@ fn BigUInt_next_multiple_of_assign_uint()
 {
     println!("BigUInt_next_multiple_of_assign_uint");
     use std::str::FromStr;
-    use Cryptocol::define_utypes_with;
+    use cryptocol::define_utypes_with;
     define_utypes_with!(u128);
 
     let mut a_biguint = U32::from_str("123456789012345678901234567890123456789").unwrap();
@@ -3480,7 +3480,7 @@ fn BigUInt_exponentiation_logarithm_uint()
 fn BigUInt_pow_uint()
 {
     println!("BigUInt_pow_uint");
-    use Cryptocol::define_utypes_with;
+    use cryptocol::define_utypes_with;
     define_utypes_with!(u8);
 
     let a_biguint = U32::from_uint(10_u8);
@@ -3501,7 +3501,7 @@ fn BigUInt_pow_uint()
 fn BigUInt_pow_assign_uint()
 {
     println!("BigUInt_pow_assign_uint");
-    use Cryptocol::define_utypes_with;
+    use cryptocol::define_utypes_with;
     define_utypes_with!(u16);
 
     let mut a_biguint = u256::from_uint(10_u8);
@@ -3523,7 +3523,7 @@ fn BigUInt_pow_assign_uint()
 fn BigUInt_wrapping_pow_uint()
 {
     println!("BigUInt_wrapping_pow_uint");
-    use Cryptocol::define_utypes_with;
+    use cryptocol::define_utypes_with;
     define_utypes_with!(u32);
 
     let a_biguint = U32::from_uint(10_u8);
@@ -3544,7 +3544,7 @@ fn BigUInt_wrapping_pow_uint()
 fn BigUInt_wrapping_pow_assign_uint()
 {
     println!("BigUInt_wrapping_pow_assign_uint");
-    use Cryptocol::define_utypes_with;
+    use cryptocol::define_utypes_with;
     define_utypes_with!(u64);
 
     let mut a_biguint = u256::from_uint(10_u8);
@@ -3566,7 +3566,7 @@ fn BigUInt_wrapping_pow_assign_uint()
 fn BigUInt_overflowing_pow_uint()
 {
     println!("BigUInt_overflowing_pow_uint");
-    use Cryptocol::define_utypes_with;
+    use cryptocol::define_utypes_with;
     define_utypes_with!(u128);
 
     let a_biguint = U32::from_uint(10_u8);
@@ -3589,7 +3589,7 @@ fn BigUInt_overflowing_pow_uint()
 fn BigUInt_overflowing_pow_assign_uint()
 {
     println!("BigUInt_overflowing_pow_assign_uint");
-    use Cryptocol::define_utypes_with;
+    use cryptocol::define_utypes_with;
     define_utypes_with!(u8);
 
     let mut a_biguint = u256::from_uint(10_u8);
@@ -3621,7 +3621,7 @@ fn BigUInt_overflowing_pow_assign_uint()
 fn BigUInt_checked_pow_uint()
 {
     println!("BigUInt_checked_pow_uint");
-    use Cryptocol::define_utypes_with;
+    use cryptocol::define_utypes_with;
     define_utypes_with!(u16);
 
     let a_biguint = U32::from_uint(10_u8);
@@ -3653,7 +3653,7 @@ fn BigUInt_checked_pow_uint()
 fn BigUInt_unchecked_pow_uint()
 {
     println!("BigUInt_unchecked_pow_uint");
-    use Cryptocol::define_utypes_with;
+    use cryptocol::define_utypes_with;
     define_utypes_with!(u32);
 
     let a_biguint = U32::from_uint(10_u8);
@@ -3672,7 +3672,7 @@ fn BigUInt_unchecked_pow_uint()
 fn BigUInt_saturating_pow_uint()
 {
     println!("BigUInt_saturating_pow_uint");
-    use Cryptocol::define_utypes_with;
+    use cryptocol::define_utypes_with;
     define_utypes_with!(u64);
     
     let a_biguint = u256::from_uint(10_u8);
@@ -3693,7 +3693,7 @@ fn BigUInt_saturating_pow_uint()
 fn BigUInt_saturating_pow_assign_uint()
 {
     println!("BigUInt_saturating_pow_assign_uint");
-    use Cryptocol::define_utypes_with;
+    use cryptocol::define_utypes_with;
     define_utypes_with!(u128);
     
     let mut a_biguint = U32::from_uint(10_u8);
@@ -3714,7 +3714,7 @@ fn BigUInt_saturating_pow_assign_uint()
 fn BigUInt_modular_pow_uint()
 {
     println!("BigUInt_modular_pow_uint");
-    use Cryptocol::define_utypes_with;
+    use cryptocol::define_utypes_with;
     define_utypes_with!(u8);
     
     let a_biguint = u256::from_uint(10_u8);
@@ -3744,7 +3744,7 @@ fn BigUInt_modular_pow_uint()
 fn BigUInt_modular_pow_assign_uint()
 {
     println!("BigUInt_modular_pow_assign_uint");
-    use Cryptocol::define_utypes_with;
+    use cryptocol::define_utypes_with;
     define_utypes_with!(u16);
     
     let mut a_biguint = u256::from_uint(10_u8);
@@ -4043,7 +4043,7 @@ fn BigUInt_add()
 fn BigUInt_carrying_add()
 {
     println!("BigUInt_carrying_add");
-    use Cryptocol::define_utypes_with;
+    use cryptocol::define_utypes_with;
     define_utypes_with!(u128);
 
     let a_hi = u256::from_str_radix("15D5_ECE4_41DB_7709_BA44_8C40_0DCF_7160_3CD4_F7FF_F0CF_476F_33FD_438B_0E1D_2086", 16).unwrap();
@@ -4069,7 +4069,7 @@ fn BigUInt_carrying_add()
 fn BigUInt_carrying_add_assign()
 {
     println!("BigUInt_carrying_add_assign");
-    use Cryptocol::define_utypes_with;
+    use cryptocol::define_utypes_with;
     define_utypes_with!(u16);
 
     let mut a_hi = u256::from_str_radix("15D5_ECE4_41DB_7709_BA44_8C40_0DCF_7160_3CD4_F7FF_F0CF_476F_33FD_438B_0E1D_2086", 16).unwrap();
@@ -4109,7 +4109,7 @@ fn BigUInt_carrying_add_assign()
 fn BigUInt_wrapping_add()
 {
     println!("BigUInt_wrapping_add___main()");
-    use Cryptocol::define_utypes_with;
+    use cryptocol::define_utypes_with;
     define_utypes_with!(u128);
 
     let zero = u512::zero();
@@ -4136,7 +4136,7 @@ fn BigUInt_wrapping_add_assign()
 {
     println!("BigUInt_wrapping_add_assign()");
     use std::str::FromStr;
-    use Cryptocol::define_utypes_with;
+    use cryptocol::define_utypes_with;
     define_utypes_with!(u128);
 
     let zero = u512::zero();
@@ -4237,7 +4237,7 @@ fn BigUInt_abs_diff___main()
 {
     println!("BigUInt_abs_diff___main()");
     use std::str::FromStr;
-    use Cryptocol::define_utypes_with;
+    use cryptocol::define_utypes_with;
     define_utypes_with!(u128);
     
     let a = u256::from_str("500000000000000000500000000500000000500000000500000000").unwrap();
@@ -4258,7 +4258,7 @@ fn BigUInt_exponentiation_logarithm_biguint___main()
 fn BigUInt_pow_uint___main()
 {
     println!("BigUInt_pow_uint___main()");
-    use Cryptocol::define_utypes_with;
+    use cryptocol::define_utypes_with;
     define_utypes_with!(u128);
 
     let a = u256::from_uint(123_u8);
@@ -4283,7 +4283,7 @@ fn BigUInt_pow_uint___main()
 fn BigUInt_pow_assign_uint___main()
 {
     println!("BigUInt_pow_assign_uint___main()");
-    use Cryptocol::define_utypes_with;
+    use cryptocol::define_utypes_with;
     define_utypes_with!(u128);
 
     let mut a = u256::from_uint(123_u8);
@@ -4308,7 +4308,7 @@ fn BigUInt_pow_assign_uint___main()
 fn BigUInt_pow___main()
 {
     println!("BigUInt_pow___main()");
-    use Cryptocol::define_utypes_with;
+    use cryptocol::define_utypes_with;
     define_utypes_with!(u128);
 
     let a = u256::from_uint(234_u8);
@@ -4333,7 +4333,7 @@ fn BigUInt_pow___main()
 fn BigUInt_pow_assign___main()
 {
     println!("BigUInt_pow_assign___main()");
-    use Cryptocol::define_utypes_with;
+    use cryptocol::define_utypes_with;
     define_utypes_with!(u128);
 
     let mut a = u256::from_uint(234_u8);
@@ -4376,7 +4376,7 @@ fn BigUInt_flag_manipulation___main()
 pub fn find_maximum()
 {
     println!("find_maximum()");
-    use Cryptocol::define_utypes_with;
+    use cryptocol::define_utypes_with;
     define_utypes_with!(u128);
 
     let a = u256::from_uint(123_u8);
@@ -4396,8 +4396,8 @@ pub fn find_maximum()
 pub fn Test()
 {
     println!("Test()");
-    use Cryptocol::number::*;
-    use Cryptocol::define_utypes_with;
+    use cryptocol::number::*;
+    use cryptocol::define_utypes_with;
     define_utypes_with!(u8);
 
     let a = 128_u8;
@@ -4439,7 +4439,7 @@ pub fn Test()
 fn f()
 {
     use std::str::FromStr;
-    use Cryptocol::define_utypes_with;
+    use cryptocol::define_utypes_with;
     define_utypes_with!(u8);
     let divisor = 87_u8;
     let dividend = 1234567890157589425462369896584689254_u128;

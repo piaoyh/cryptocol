@@ -1,4 +1,4 @@
-# Cryptocol crate provides libraries for cryptography.
+# cryptocol crate provides libraries for cryptography.
 
 ## Endianness
 This crate is optimized for Little-endian CPUs because Little-Endian CPUs

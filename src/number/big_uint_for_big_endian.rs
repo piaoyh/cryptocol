@@ -51,8 +51,8 @@ impl<T, const N: usize> _BigUInt for BigUInt<T, N>
     /// 
     /// # Example
     /// ```
-    /// use Cryptocol::number::BigUInt;
-    /// use Cryptocol::define_utypes_with;
+    /// use cryptocol::number::BigUInt;
+    /// use cryptocol::define_utypes_with;
     /// define_utypes_with!(u128);
     /// let a = u1024::one();
     /// if a.is_one()
@@ -127,7 +127,7 @@ impl<T, const N: usize> _BigUInt for BigUInt<T, N>
     /// 
     /// # Example
     /// ```
-    /// use Cryptocol::define_utypes_with;
+    /// use cryptocol::define_utypes_with;
     /// define_utypes_with!(u64);
     /// let one = u256::_one();
     /// println!("one = {}", one);
@@ -172,8 +172,8 @@ impl<T, const N: usize> _BigUInt for BigUInt<T, N>
     /// 
     /// # Example
     /// ```
-    /// use Cryptocol::number::*;
-    /// use Cryptocol::define_utypes_with_u128;
+    /// use cryptocol::number::*;
+    /// use cryptocol::define_utypes_with_u128;
     /// 
     /// define_utypes_with_u128!();
     /// println!("Random number = {}", u1024::random());
@@ -207,8 +207,8 @@ impl<T, const N: usize> _BigUInt for BigUInt<T, N>
     /// 
     /// # Example
     /// ```
-    /// use Cryptocol::number::*;
-    /// use Cryptocol::define_utypes_with_u8;
+    /// use cryptocol::number::*;
+    /// use cryptocol::define_utypes_with_u8;
     /// 
     /// define_utypes_with_u8!();
     /// let mut a = u256::random();
@@ -249,8 +249,8 @@ impl<T, const N: usize> _BigUInt for BigUInt<T, N>
     /// 
     /// # Example
     /// ```
-    /// use Cryptocol::number::*;
-    /// use Cryptocol::define_utypes_with_u32;
+    /// use cryptocol::number::*;
+    /// use cryptocol::define_utypes_with_u32;
     /// 
     /// define_utypes_with_u32!();
     /// let a = u256::from([0_u32, 10, 20, 30, 40, 50, 60, 70]);
@@ -295,8 +295,8 @@ impl<T, const N: usize> _BigUInt for BigUInt<T, N>
     /// 
     /// # Example
     /// ```
-    /// use Cryptocol::number::*;
-    /// use Cryptocol::define_utypes_with_u32;
+    /// use cryptocol::number::*;
+    /// use cryptocol::define_utypes_with_u32;
     /// 
     /// define_utypes_with_u32!();
     /// let a = u256::from([0_u32, 10, 20, 30, 40, 50, 60, 70]);
@@ -333,8 +333,8 @@ impl<T, const N: usize> _BigUInt for BigUInt<T, N>
     /// 
     /// # Example
     /// ```
-    /// use Cryptocol::number::*;
-    /// use Cryptocol::define_utypes_with_u32;
+    /// use cryptocol::number::*;
+    /// use cryptocol::define_utypes_with_u32;
     /// 
     /// define_utypes_with_u32!();
     /// let mut a = u256::from([0_u32, 10, 20, 30, 40, 50, 60, 70]);
@@ -397,8 +397,8 @@ impl<T, const N: usize> _BigUInt for BigUInt<T, N>
     /// 
     /// # Example
     /// ```
-    /// use Cryptocol::number::*;
-    /// use Cryptocol::define_utypes_with_u32;
+    /// use cryptocol::number::*;
+    /// use cryptocol::define_utypes_with_u32;
     /// 
     /// define_utypes_with_u32!();
     /// let mut a = u256::from([0_u32, 10, 20, 30, 40, 50, 60, 70]);
@@ -440,8 +440,8 @@ impl<T, const N: usize> _BigUInt for BigUInt<T, N>
     /// 
     /// # Example
     /// ```
-    /// use Cryptocol::define_utypes_with;
-    /// use Cryptocol::number::BigUInt;
+    /// use cryptocol::define_utypes_with;
+    /// use cryptocol::number::BigUInt;
     /// define_utypes_with!(u16);
     /// let mut a = u256::new();
     /// a.set_number(&[0_u16, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15]);
@@ -611,7 +611,7 @@ where T: SmallUInt + Clone + Display + Debug + ToString
     /// # Examples
     /// 
     /// ```
-    /// use Cryptocol::number::BigUInt;
+    /// use cryptocol::number::BigUInt;
     /// let cc = BigUInt::<u16,32>::from(1004_u16);
     /// println!("cc = {}", cc);
     /// assert_eq!(cc.into_u32(), 1004);
@@ -680,19 +680,19 @@ where T: SmallUInt + Clone + Display + Debug + ToString
     /// 
     /// # Examples
     /// ```
-    /// use Cryptocol::number::{u256, BigInteger};
+    /// use cryptocol::number::{u256, BigInteger};
     /// let mut a = u256::from_str("1234567_1234567890_1234567890_1234567890_1234567890_1234567890_1234567890_1234567890").unwrap();
     /// a <<= 4;
     /// println!("a = {}\noverflow: {}", a, a.is_overflow());
     /// assert_eq!(a.is_overflow(), true);
     /// ```
-    /// You have to import (use) Cryptocol::number::u256 in order to use the
-    /// type u256 and import Cryptocol::number::BigInteger in order to use
+    /// You have to import (use) cryptocol::number::u256 in order to use the
+    /// type u256 and import cryptocol::number::BigInteger in order to use
     /// its method is_overflow(). If you find headaching to remember what you
-    /// should import, you can just import everything (Cryptocol::number::*)
+    /// should import, you can just import everything (cryptocol::number::*)
     /// as next example. It is not harmful.
     /// ```
-    /// use Cryptocol::number::*;
+    /// use cryptocol::number::*;
     /// let mut a = u256::from_str("1234567_1234567890_1234567890_1234567890_1234567890_1234567890_1234567890_1234567890").unwrap();
     /// a <<= 1;
     /// println!("a = {}\noverflow: {}", a, a.is_overflow());
@@ -775,21 +775,21 @@ where T: SmallUInt + Clone + Display + Debug + ToString
     /// 
     /// # Examples
     /// ```
-    /// use Cryptocol::number::BigInteger;
-    /// use Cryptocol::define_utypes_with;
+    /// use cryptocol::number::BigInteger;
+    /// use cryptocol::define_utypes_with;
     /// define_utypes_with!(u128);
     /// let mut a = u256::from_str("1234567_1234567890_1234567890_1234567890_1234567890_1234567890_1234567890_1234567890").unwrap();
     /// a >>= 2;
     /// println!("a = {}\nunderflow: {}", a, a.is_underflow());
     /// assert_eq!(a.is_underflow(), true);
     /// ```
-    /// You have to import (use) Cryptocol::number::BigInteger in order to use
+    /// You have to import (use) cryptocol::number::BigInteger in order to use
     /// its method is_underflow(). If you find headaching to remember what you
-    /// should import, you can just import everything (Cryptocol::number::*)
+    /// should import, you can just import everything (cryptocol::number::*)
     /// as next example. It is not harmful.
     /// ```
-    /// use Cryptocol::number::*;
-    /// use Cryptocol::define_utypes_with;
+    /// use cryptocol::number::*;
+    /// use cryptocol::define_utypes_with;
     /// define_utypes_with!(u128);
     /// let mut a = u256::from_str("1234567_1234567890_1234567890_1234567890_1234567890_1234567890_1234567890_1234567890").unwrap();
     /// a >>= 1;

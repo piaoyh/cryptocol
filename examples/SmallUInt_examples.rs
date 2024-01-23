@@ -10,7 +10,7 @@
 #![allow(missing_doc_code_examples)]
 
 
-use Cryptocol::number::SmallUInt;
+use cryptocol::number::SmallUInt;
 // use rand_distr::num_traits::PrimInt; //{u256, BigInteger, HugeInteger};
 
 
@@ -38,7 +38,7 @@ fn SmallUInt_add___main()
 
 fn SmallUInt_carrying_add()
 {
-    use Cryptocol::number::*;
+    use cryptocol::number::*;
     println!("SmallUInt_carrying_add()");
     // a_u16: u16 === (a_high_u8, a_low_u8) == (100_u8, 101_u8) == 25701_u16
     let a_high_u8 = 100_u8;
@@ -99,9 +99,9 @@ fn SmallUInt_carrying_add()
     assert_eq!(carry, true);
 }
 
-fn SmallUInt_carrying_add___func<T: Cryptocol::number::SmallUInt>(lhs_high: T, lhs_low: T, rhs_high: T, rhs_low: T) -> (T, T, bool)
+fn SmallUInt_carrying_add___func<T: cryptocol::number::SmallUInt>(lhs_high: T, lhs_low: T, rhs_high: T, rhs_low: T) -> (T, T, bool)
 {
-    use Cryptocol::number::*;
+    use cryptocol::number::*;
     let mut carry = false;
     let mut sum_high: T;
     let mut sum_low: T;
@@ -163,7 +163,7 @@ fn SmallUInt_wrapping_add()
     println!("--------------------------------------");
 }
 
-fn SmallUInt_wrapping_add___func<T: Cryptocol::number::SmallUInt>(lhs: T, rhs: T) -> T
+fn SmallUInt_wrapping_add___func<T: cryptocol::number::SmallUInt>(lhs: T, rhs: T) -> T
 {
     lhs.wrapping_add(rhs)
 }
@@ -233,7 +233,7 @@ fn SmallUInt_overflowing_add()
     println!("--------------------------------------");
 }
 
-fn SmallUInt_overflowing_add___func<T: Cryptocol::number::SmallUInt>(lhs: T, rhs: T) -> (T, bool)
+fn SmallUInt_overflowing_add___func<T: cryptocol::number::SmallUInt>(lhs: T, rhs: T) -> (T, bool)
 {
     lhs.overflowing_add(rhs)
 }
@@ -399,7 +399,7 @@ fn SmallUInt_checked_add()
     println!("--------------------------------------");
 }
 
-fn SmallUInt_checked_add___func<T: Cryptocol::number::SmallUInt>(lhs: T, rhs: T) -> Option<T>
+fn SmallUInt_checked_add___func<T: cryptocol::number::SmallUInt>(lhs: T, rhs: T) -> Option<T>
 {
     lhs.checked_add(rhs)
 }
@@ -451,7 +451,7 @@ fn SmallUInt_unchecked_add()
     println!("--------------------------------------");
 }
 
-fn SmallUInt_unchecked_add___func<T: Cryptocol::number::SmallUInt>(lhs: T, rhs: T) -> T
+fn SmallUInt_unchecked_add___func<T: cryptocol::number::SmallUInt>(lhs: T, rhs: T) -> T
 {
     lhs.unchecked_add(rhs)
 }
@@ -509,7 +509,7 @@ fn SmallUInt_saturating_add()
     println!("--------------------------------------");
 }
 
-fn SmallUInt_saturating_add___func<T: Cryptocol::number::SmallUInt>(lhs: T, rhs: T) -> T
+fn SmallUInt_saturating_add___func<T: cryptocol::number::SmallUInt>(lhs: T, rhs: T) -> T
 {
     lhs.saturating_add(rhs)
 }
@@ -588,7 +588,7 @@ fn SmallUInt_borrowing_sub()
     println!("--------------------------------------");
 }
 
-fn SmallUInt_borrowing_sub___func<T: Cryptocol::number::SmallUInt>(lhs_high: T, lhs_low: T, rhs_high: T, rhs_low: T) -> (T, T, bool)
+fn SmallUInt_borrowing_sub___func<T: cryptocol::number::SmallUInt>(lhs_high: T, lhs_low: T, rhs_high: T, rhs_low: T) -> (T, T, bool)
 {
     let mut borrow = false;
     let mut sum_high: T;
@@ -651,7 +651,7 @@ fn SmallUInt_wrapping_sub()
     println!("--------------------------------------");
 }
 
-fn SmallUInt_wrapping_sub___func<T: Cryptocol::number::SmallUInt>(lhs: T, rhs: T) -> T
+fn SmallUInt_wrapping_sub___func<T: cryptocol::number::SmallUInt>(lhs: T, rhs: T) -> T
 {
     lhs.wrapping_sub(rhs)
 }
@@ -721,7 +721,7 @@ fn SmallUInt_overflowing_sub()
     println!("--------------------------------------");
 }
 
-fn SmallUInt_overflowing_sub___func<T: Cryptocol::number::SmallUInt>(lhs: T, rhs: T) -> (T, bool)
+fn SmallUInt_overflowing_sub___func<T: cryptocol::number::SmallUInt>(lhs: T, rhs: T) -> (T, bool)
 {
     lhs.overflowing_sub(rhs)
 }
@@ -887,7 +887,7 @@ fn SmallUInt_checked_sub()
     println!("--------------------------------------");
 }
 
-fn SmallUInt_checked_sub___func<T: Cryptocol::number::SmallUInt>(lhs: T, rhs: T) -> Option<T>
+fn SmallUInt_checked_sub___func<T: cryptocol::number::SmallUInt>(lhs: T, rhs: T) -> Option<T>
 {
     lhs.checked_sub(rhs)
 }
@@ -939,7 +939,7 @@ fn SmallUInt_unchecked_sub()
     println!("--------------------------------------");
 }
 
-fn SmallUInt_unchecked_sub___func<T: Cryptocol::number::SmallUInt>(lhs: T, rhs: T) -> T
+fn SmallUInt_unchecked_sub___func<T: cryptocol::number::SmallUInt>(lhs: T, rhs: T) -> T
 {
     lhs.unchecked_sub(rhs)
 }
@@ -997,7 +997,7 @@ fn SmallUInt_saturating_sub()
     println!("--------------------------------------");
 }
 
-fn SmallUInt_saturating_sub___func<T: Cryptocol::number::SmallUInt>(lhs: T, rhs: T) -> T
+fn SmallUInt_saturating_sub___func<T: cryptocol::number::SmallUInt>(lhs: T, rhs: T) -> T
 {
     lhs.saturating_sub(rhs)
 }
@@ -1056,7 +1056,7 @@ fn SmallUInt_abs_diff()
     println!("--------------------------------------");
 }
 
-fn SmallUInt_abs_diff___func<T: Cryptocol::number::SmallUInt>(lhs: T, rhs: T) -> T
+fn SmallUInt_abs_diff___func<T: cryptocol::number::SmallUInt>(lhs: T, rhs: T) -> T
 {
     lhs.abs_diff(rhs)
 }
@@ -1124,7 +1124,7 @@ fn SmallUInt_wrapping_mul()
     println!("--------------------------------------");
 }
 
-fn SmallUInt_wrapping_mul___func<T: Cryptocol::number::SmallUInt>(lhs: T, rhs: T) -> T
+fn SmallUInt_wrapping_mul___func<T: cryptocol::number::SmallUInt>(lhs: T, rhs: T) -> T
 {
     lhs.wrapping_mul(rhs)
 }
@@ -1194,7 +1194,7 @@ fn SmallUInt_overflowing_mul()
     println!("--------------------------------------");
 }
 
-fn SmallUInt_overflowing_mul___func<T: Cryptocol::number::SmallUInt>(lhs: T, rhs: T) -> (T, bool)
+fn SmallUInt_overflowing_mul___func<T: cryptocol::number::SmallUInt>(lhs: T, rhs: T) -> (T, bool)
 {
     lhs.overflowing_mul(rhs)
 }
@@ -1360,7 +1360,7 @@ fn SmallUInt_checked_mul()
     println!("--------------------------------------");
 }
 
-fn SmallUInt_checked_mul___func<T: Cryptocol::number::SmallUInt>(lhs: T, rhs: T) -> Option<T>
+fn SmallUInt_checked_mul___func<T: cryptocol::number::SmallUInt>(lhs: T, rhs: T) -> Option<T>
 {
     lhs.checked_mul(rhs)
 }
@@ -1412,7 +1412,7 @@ fn SmallUInt_unchecked_mul()
     println!("--------------------------------------");
 }
 
-fn SmallUInt_unchecked_mul___func<T: Cryptocol::number::SmallUInt>(lhs: T, rhs: T) -> T
+fn SmallUInt_unchecked_mul___func<T: cryptocol::number::SmallUInt>(lhs: T, rhs: T) -> T
 {
     lhs.unchecked_mul(rhs)
 }
@@ -1470,7 +1470,7 @@ fn SmallUInt_saturating_mul()
     println!("--------------------------------------");
 }
 
-fn SmallUInt_saturating_mul___func<T: Cryptocol::number::SmallUInt>(lhs: T, rhs: T) -> T
+fn SmallUInt_saturating_mul___func<T: cryptocol::number::SmallUInt>(lhs: T, rhs: T) -> T
 {
     lhs.saturating_mul(rhs)
 }
@@ -1515,7 +1515,7 @@ fn SmallUInt_wrapping_div()
     println!("--------------------------------------");
 }
 
-fn SmallUInt_wrapping_div___func<T: Cryptocol::number::SmallUInt>(lhs: T, rhs: T) -> T
+fn SmallUInt_wrapping_div___func<T: cryptocol::number::SmallUInt>(lhs: T, rhs: T) -> T
 {
     lhs.wrapping_div(rhs)
 }
@@ -1558,7 +1558,7 @@ fn SmallUInt_overflowing_div()
     println!("--------------------------------------");
 }
 
-fn SmallUInt_overflowing_div___func<T: Cryptocol::number::SmallUInt>(lhs: T, rhs: T) -> (T, bool)
+fn SmallUInt_overflowing_div___func<T: cryptocol::number::SmallUInt>(lhs: T, rhs: T) -> (T, bool)
 {
     lhs.overflowing_div(rhs)
 }
@@ -1706,7 +1706,7 @@ fn SmallUInt_checked_div()
     println!("--------------------------------------");
 }
 
-fn SmallUInt_checked_div___func<T: Cryptocol::number::SmallUInt>(lhs: T, rhs: T) -> Option<T>
+fn SmallUInt_checked_div___func<T: cryptocol::number::SmallUInt>(lhs: T, rhs: T) -> Option<T>
 {
     lhs.checked_div(rhs)
 }
@@ -1743,7 +1743,7 @@ fn SmallUInt_saturating_div()
     println!("--------------------------------------");
 }
 
-fn SmallUInt_saturating_div___func<T: Cryptocol::number::SmallUInt>(lhs: T, rhs: T) -> T
+fn SmallUInt_saturating_div___func<T: cryptocol::number::SmallUInt>(lhs: T, rhs: T) -> T
 {
     lhs.saturating_div(rhs)
 }
@@ -1787,7 +1787,7 @@ fn SmallUInt_wrapping_rem()
     println!("--------------------------------------");
 }
 
-fn SmallUInt_wrapping_rem___func<T: Cryptocol::number::SmallUInt>(lhs: T, rhs: T) -> T
+fn SmallUInt_wrapping_rem___func<T: cryptocol::number::SmallUInt>(lhs: T, rhs: T) -> T
 {
     lhs.wrapping_rem(rhs)
 }
@@ -1830,7 +1830,7 @@ fn SmallUInt_overflowing_rem()
     println!("--------------------------------------");
 }
 
-fn SmallUInt_overflowing_rem___func<T: Cryptocol::number::SmallUInt>(lhs: T, rhs: T) -> (T, bool)
+fn SmallUInt_overflowing_rem___func<T: cryptocol::number::SmallUInt>(lhs: T, rhs: T) -> (T, bool)
 {
     lhs.overflowing_rem(rhs)
 }
@@ -1978,7 +1978,7 @@ fn SmallUInt_checked_rem()
     println!("--------------------------------------");
 }
 
-fn SmallUInt_checked_rem___func<T: Cryptocol::number::SmallUInt>(lhs: T, rhs: T) -> Option<T>
+fn SmallUInt_checked_rem___func<T: cryptocol::number::SmallUInt>(lhs: T, rhs: T) -> Option<T>
 {
     lhs.checked_rem(rhs)
 }
@@ -2000,7 +2000,7 @@ fn SmallUInt_pow___main()
 fn SmallUInt_pow()
 {
     println!("SmallUInt_pow()");
-    use Cryptocol::number::*;
+    use cryptocol::number::*;
 
     let a_u8 = SmallUInt_pow___func(3_u8, 5_u32);
     println!("3 ** 5 = {}", a_u8);
@@ -2075,7 +2075,7 @@ fn SmallUInt_pow()
     println!("--------------------------------------");
 }
 
-fn SmallUInt_pow___func<T: Cryptocol::number::SmallUInt>(base: T, exp: u32) -> T
+fn SmallUInt_pow___func<T: cryptocol::number::SmallUInt>(base: T, exp: u32) -> T
 {
     base.pow(exp)
 }
@@ -2084,7 +2084,7 @@ fn SmallUInt_pow___func<T: Cryptocol::number::SmallUInt>(base: T, exp: u32) -> T
 fn SmallUInt_wrapping_pow()
 {
     println!("SmallUInt_wrapping_pow()");
-    use Cryptocol::number::*;
+    use cryptocol::number::*;
 
     let a_u8 = SmallUInt_wrapping_pow___func(3_u8, 5_u32);
     println!("3 ** 5 = {}", a_u8);
@@ -2181,7 +2181,7 @@ fn SmallUInt_wrapping_pow()
     println!("--------------------------------------");
 }
 
-fn SmallUInt_wrapping_pow___func<T: Cryptocol::number::SmallUInt>(base: T, exp: u32) -> T
+fn SmallUInt_wrapping_pow___func<T: cryptocol::number::SmallUInt>(base: T, exp: u32) -> T
 {
     base.wrapping_pow(exp)
 }
@@ -2224,7 +2224,7 @@ fn SmallUInt_overflowing_pow()
     println!("--------------------------------------");
 }
 
-fn SmallUInt_overflowing_pow___func<T: Cryptocol::number::SmallUInt>(base: T, exp: u32) -> (T, bool)
+fn SmallUInt_overflowing_pow___func<T: cryptocol::number::SmallUInt>(base: T, exp: u32) -> (T, bool)
 {
     base.overflowing_pow(exp)
 }
@@ -2372,7 +2372,7 @@ fn SmallUInt_checked_pow()
     println!("--------------------------------------");
 }
 
-fn SmallUInt_checked_pow___func<T: Cryptocol::number::SmallUInt>(base: T, exp: u32) -> Option<T>
+fn SmallUInt_checked_pow___func<T: cryptocol::number::SmallUInt>(base: T, exp: u32) -> Option<T>
 {
     base.checked_pow(exp)
 }
@@ -2380,7 +2380,7 @@ fn SmallUInt_checked_pow___func<T: Cryptocol::number::SmallUInt>(base: T, exp: u
 fn SmallUInt_saturating_pow()
 {
     println!("SmallUInt_saturating_pow()");
-    use Cryptocol::number::*;
+    use cryptocol::number::*;
 
     let a_u8 = SmallUInt_saturating_pow___func(u8::MAX / 3, 2_u32);
     println!("{} / 2 = {}", u8::MAX / 3, a_u8);
@@ -2411,7 +2411,7 @@ fn SmallUInt_saturating_pow()
     println!("--------------------------------------");
 }
 
-fn SmallUInt_saturating_pow___func<T: Cryptocol::number::SmallUInt>(lhs: T, rhs: u32) -> T
+fn SmallUInt_saturating_pow___func<T: cryptocol::number::SmallUInt>(lhs: T, rhs: u32) -> T
 {
     lhs.saturating_pow(rhs)
 }
@@ -2455,7 +2455,7 @@ fn SmallUInt_prime___main()
 fn SmallUInt_is_random___main()
 {
     println!("SmallUInt_is_random___main");
-    use Cryptocol::number::*;
+    use cryptocol::number::*;
 
     let a = u128::random();
     println!("Random number = {}", a);
@@ -2466,7 +2466,7 @@ fn SmallUInt_is_random___main()
 fn SmallUInt_is_prime_using_Miller_Rabin___main()
 {
     println!("SmallUInt_is_prime_using_Miller_Rabin___main");
-    use Cryptocol::number::*;
+    use cryptocol::number::*;
 
     let num = 4776913109852041418248056622882488319_u128;//125469875632546987525485265478911_u128;
     let bPrime = num.is_prime_using_Miller_Rabin(5);
@@ -2477,7 +2477,7 @@ fn SmallUInt_is_prime_using_Miller_Rabin___main()
 fn SmallUInt_random_prime_using_Miller_Rabin___main()
 {
     println!("SmallUInt_random_prime_using_Miller_Rabin___main");
-    use Cryptocol::number::*;
+    use cryptocol::number::*;
 
     let num = u128::random_prime_using_Miller_Rabin(5);
     println!("Random prime : {}.", num);

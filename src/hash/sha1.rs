@@ -132,10 +132,10 @@ pub type SHA0 = SHA0_Expanded;
 /// 
 /// # Quick Start
 /// In order to use the module sha1, you don't have to import (or use)
-/// Cryptocol::hash::sha1::* directly because the module Cryptocol::hash::sha1
+/// cryptocol::hash::sha1::* directly because the module cryptocol::hash::sha1
 /// is re-exported. All you have to do is only import SHA1, SHA0, SHA1_Expanded,
 /// SHA0_Expanded, SHA1_Generic_HR_fixed, SHA0_Generic_HR_fixed and/or
-/// SHA1_Generic in the module Cryptocol::hash. Example 1 shows how to import
+/// SHA1_Generic in the module cryptocol::hash. Example 1 shows how to import
 /// structs SHA1, SHA0, SHA1_Expanded, SHA0_Expanded, SHA1_Generic_HR_fixed,
 /// SHA0_Generic_HR_fixed and/or SHA1_Generic. Plus, what you have to know is
 /// these. All the types (or structs) are the specific versions of SHA1_Generic.
@@ -146,13 +146,13 @@ pub type SHA0 = SHA0_Expanded;
 /// 
 /// ## Example 1
 /// ```
-/// use Cryptocol::hash::SHA1;
-/// use Cryptocol::hash::SHA0;
-/// use Cryptocol::hash::SHA1_Expanded;
-/// use Cryptocol::hash::SHA0_Expanded;
-/// use Cryptocol::hash::SHA1_Generic_HR_fixed;
-/// use Cryptocol::hash::SHA0_Generic_HR_fixed;
-/// use Cryptocol::hash::SHA1_generic;
+/// use cryptocol::hash::SHA1;
+/// use cryptocol::hash::SHA0;
+/// use cryptocol::hash::SHA1_Expanded;
+/// use cryptocol::hash::SHA0_Expanded;
+/// use cryptocol::hash::SHA1_Generic_HR_fixed;
+/// use cryptocol::hash::SHA0_Generic_HR_fixed;
+/// use cryptocol::hash::SHA1_generic;
 /// ```
 /// Then, you can create SHA1 object by the method SHA1::new() for example.
 /// Now, you are ready to use all prepared methods to hash any data. If you
@@ -165,7 +165,7 @@ pub type SHA0 = SHA0_Expanded;
 /// ## Example 2 for SHA-1
 /// ```
 /// use std::string::*;
-/// use Cryptocol::hash::SHA1;
+/// use cryptocol::hash::SHA1;
 /// 
 /// let mut hash = SHA1::new();
 /// let mut txt = "";
@@ -247,7 +247,7 @@ SHA1_generic<N, H0, H1, H2, H3, H4, ROUND, K0, K1, K2, K3, RL1, RL5, RL30>
     /// 
     /// # Example for SHA1
     /// ```
-    /// use Cryptocol::hash::SHA1;
+    /// use cryptocol::hash::SHA1;
     /// let mut hash = SHA1::new();
     /// println!("Hash =\t{}", hash);
     /// assert_eq!(hash.to_string(), "67452301EFCDAB8998BADCFE10325476C3D2E1F0");
@@ -255,7 +255,7 @@ SHA1_generic<N, H0, H1, H2, H3, H4, ROUND, K0, K1, K2, K3, RL1, RL5, RL30>
     /// 
     /// # Exmaple for SHA1_Expanded
     /// ```
-    /// use Cryptocol::hash::SHA1_Expanded;
+    /// use cryptocol::hash::SHA1_Expanded;
     /// type mySHA1 = SHA1_Expanded<5, 0x1111_1111, 0x4444_4444, 0x8888_8888, 0xcccc_cccc, 0xffff_ffff, 160>;
     /// let mut my_hash = mySHA1::new();
     /// println!("Hash =\t{}", my_hash);
@@ -311,7 +311,7 @@ SHA1_generic<N, H0, H1, H2, H3, H4, ROUND, K0, K1, K2, K3, RL1, RL5, RL30>
     ///
     /// # Example for SHA1
     /// ```
-    /// use Cryptocol::hash::SHA1;
+    /// use cryptocol::hash::SHA1;
     /// let txt = "This is an example of the method digest().";
     /// let mut hash = SHA1::new();
     /// hash.digest(txt.as_ptr(), txt.len() as u64);
@@ -321,7 +321,7 @@ SHA1_generic<N, H0, H1, H2, H3, H4, ROUND, K0, K1, K2, K3, RL1, RL5, RL30>
     /// 
     /// # Example for SHA1_Expanded
     /// ```
-    /// use Cryptocol::hash::SHA1_Expanded;
+    /// use cryptocol::hash::SHA1_Expanded;
     /// type mySHA1 = SHA1_Expanded<5, 0x1111_1111, 0x4444_4444, 0x8888_8888, 0xcccc_cccc, 0xffff_ffff, 160>;
     /// let txt = "This is an example of the method digest().";
     /// let mut my_hash = mySHA1::new();
@@ -375,7 +375,7 @@ SHA1_generic<N, H0, H1, H2, H3, H4, ROUND, K0, K1, K2, K3, RL1, RL5, RL30>
     ///
     /// # Example for SHA1
     /// ```
-    /// use Cryptocol::hash::SHA1;
+    /// use cryptocol::hash::SHA1;
     /// let txt = "This is an example of the method digest_str().";
     /// let mut hash = SHA1::new();
     /// hash.digest_str(txt);
@@ -385,7 +385,7 @@ SHA1_generic<N, H0, H1, H2, H3, H4, ROUND, K0, K1, K2, K3, RL1, RL5, RL30>
     /// 
     /// # Example for SHA1_Expanded
     /// ```
-    /// use Cryptocol::hash::SHA1_Expanded;
+    /// use cryptocol::hash::SHA1_Expanded;
     /// type mySHA1 = SHA1_Expanded<5, 0x1111_1111, 0x4444_4444, 0x8888_8888, 0xcccc_cccc, 0xffff_ffff, 160>;
     /// let txt = "This is an example of the method digest_str().";
     /// let mut my_hash = mySHA1::new();
@@ -433,7 +433,7 @@ SHA1_generic<N, H0, H1, H2, H3, H4, ROUND, K0, K1, K2, K3, RL1, RL5, RL30>
     ///
     /// # Example for SHA1
     /// ```
-    /// use Cryptocol::hash::SHA1;
+    /// use cryptocol::hash::SHA1;
     /// let txt = "This is an example of the method digest_string().".to_string();
     /// let mut hash = SHA1::new();
     /// hash.digest_string(&txt);
@@ -443,7 +443,7 @@ SHA1_generic<N, H0, H1, H2, H3, H4, ROUND, K0, K1, K2, K3, RL1, RL5, RL30>
     /// 
     /// # Example for SHA1_Expanded
     /// ```
-    /// use Cryptocol::hash::SHA1_Expanded;
+    /// use cryptocol::hash::SHA1_Expanded;
     /// type mySHA1 = SHA1_Expanded<5, 0x1111_1111, 0x4444_4444, 0x8888_8888, 0xcccc_cccc, 0xffff_ffff, 160>;
     /// let txt = "This is an example of the method digest_string().".to_string();
     /// let mut my_hash = mySHA1::new();
@@ -491,7 +491,7 @@ SHA1_generic<N, H0, H1, H2, H3, H4, ROUND, K0, K1, K2, K3, RL1, RL5, RL30>
     ///
     /// # Example for SHA1
     /// ```
-    /// use Cryptocol::hash::SHA1;
+    /// use cryptocol::hash::SHA1;
     /// let data = [ 0x67452301_u32.to_le(), 0xefcdab89_u32.to_le(), 0x98badcfe_u32.to_le(), 0x10325476_u32.to_le() ];
     /// let mut hash = SHA1::new();
     /// hash.digest_array(&data);
@@ -501,7 +501,7 @@ SHA1_generic<N, H0, H1, H2, H3, H4, ROUND, K0, K1, K2, K3, RL1, RL5, RL30>
     /// 
     /// # Example for SHA1_Expanded
     /// ```
-    /// use Cryptocol::hash::SHA1_Expanded;
+    /// use cryptocol::hash::SHA1_Expanded;
     /// type mySHA1 = SHA1_Expanded<5, 0x1111_1111, 0x4444_4444, 0x8888_8888, 0xcccc_cccc, 0xffff_ffff, 160>;
     /// let data = [ 0x67452301_u32.to_le(), 0xefcdab89_u32.to_le(), 0x98badcfe_u32.to_le(), 0x10325476_u32.to_le() ];
     /// let mut my_hash = mySHA1::new();
@@ -550,7 +550,7 @@ SHA1_generic<N, H0, H1, H2, H3, H4, ROUND, K0, K1, K2, K3, RL1, RL5, RL30>
     ///
     /// # Example for SHA1
     /// ```
-    /// use Cryptocol::hash::SHA1;
+    /// use cryptocol::hash::SHA1;
     /// let data = vec![ 0x67452301_u32.to_le(), 0xefcdab89_u32.to_le(), 0x98badcfe_u32.to_le(), 0x10325476_u32.to_le() ];
     /// let mut hash = SHA1::new();
     /// hash.digest_vec(&data);
@@ -560,7 +560,7 @@ SHA1_generic<N, H0, H1, H2, H3, H4, ROUND, K0, K1, K2, K3, RL1, RL5, RL30>
     /// 
     /// # Example for SHA1_Expanded
     /// ```
-    /// use Cryptocol::hash::SHA1_Expanded;
+    /// use cryptocol::hash::SHA1_Expanded;
     /// type mySHA1 = SHA1_Expanded<5, 0x1111_1111, 0x4444_4444, 0x8888_8888, 0xcccc_cccc, 0xffff_ffff, 160>;
     /// let data = vec![ 0x67452301_u32.to_le(), 0xefcdab89_u32.to_le(), 0x98badcfe_u32.to_le(), 0x10325476_u32.to_le() ];
     /// let mut my_hash = mySHA1::new();
@@ -610,7 +610,7 @@ SHA1_generic<N, H0, H1, H2, H3, H4, ROUND, K0, K1, K2, K3, RL1, RL5, RL30>
     ///
     /// # Example for SHA1
     /// ```
-    /// use Cryptocol::hash::SHA1;
+    /// use cryptocol::hash::SHA1;
     /// let txt = "This is an example of the method get_HashValue().";
     /// let mut hashValue = [0_u8; 20];
     /// let mut hash = SHA1::new();
@@ -622,7 +622,7 @@ SHA1_generic<N, H0, H1, H2, H3, H4, ROUND, K0, K1, K2, K3, RL1, RL5, RL30>
     /// 
     /// # Example for MD5_Expanded
     /// ```
-    /// use Cryptocol::hash::SHA1_Expanded;
+    /// use cryptocol::hash::SHA1_Expanded;
     /// type mySHA1 = SHA1_Expanded<5, 0x1111_1111, 0x4444_4444, 0x8888_8888, 0xcccc_cccc, 0xffff_ffff, 160>;
     /// let txt = "This is an example of the method get_HashValue().";
     /// let mut hashValue = [0_u8; 20];
@@ -674,7 +674,7 @@ SHA1_generic<N, H0, H1, H2, H3, H4, ROUND, K0, K1, K2, K3, RL1, RL5, RL30>
     ///
     /// # Example for SHA1
     /// ```
-    /// use Cryptocol::hash::SHA1;
+    /// use cryptocol::hash::SHA1;
     /// let txt = "This is an example of the method get_HashValue_in_string().";
     /// let mut hash = SHA1::new();
     /// hash.digest_str(txt);
@@ -684,7 +684,7 @@ SHA1_generic<N, H0, H1, H2, H3, H4, ROUND, K0, K1, K2, K3, RL1, RL5, RL30>
     /// 
     /// # Example for SHA1_Expanded
     /// ```
-    /// use Cryptocol::hash::SHA1_Expanded;
+    /// use cryptocol::hash::SHA1_Expanded;
     /// type mySHA1 = SHA1_Expanded<5, 0x1111_1111, 0x4444_4444, 0x8888_8888, 0xcccc_cccc, 0xffff_ffff, 160>;
     /// let txt = "This is an example of the method get_HashValue_in_string().";
     /// let mut my_hash = mySHA1::new();
@@ -740,7 +740,7 @@ SHA1_generic<N, H0, H1, H2, H3, H4, ROUND, K0, K1, K2, K3, RL1, RL5, RL30>
     ///
     /// # Example for SHA1
     /// ```
-    /// use Cryptocol::hash::SHA1;
+    /// use cryptocol::hash::SHA1;
     /// let txt = "This is an example of the method get_HashValue_in_array().";
     /// let mut hash = SHA1::new();
     /// hash.digest_str(txt);
@@ -750,7 +750,7 @@ SHA1_generic<N, H0, H1, H2, H3, H4, ROUND, K0, K1, K2, K3, RL1, RL5, RL30>
     /// 
     /// # Example for SHA1_Expanded
     /// ```
-    /// use Cryptocol::hash::SHA1_Expanded;
+    /// use cryptocol::hash::SHA1_Expanded;
     /// type mySHA1 = SHA1_Expanded<5, 0x1111_1111, 0x4444_4444, 0x8888_8888, 0xcccc_cccc, 0xffff_ffff, 160>;
     /// let txt = "This is an example of the method get_HashValue_in_array().";
     /// let mut my_hash = mySHA1::new();
@@ -793,7 +793,7 @@ SHA1_generic<N, H0, H1, H2, H3, H4, ROUND, K0, K1, K2, K3, RL1, RL5, RL30>
     ///
     /// # Example
     /// ```
-    /// use Cryptocol::hash::SHA1;
+    /// use cryptocol::hash::SHA1;
     /// let txt = "This is an example of the method get_HashValue_in_vec().";
     /// let mut hash = SHA1::new();
     /// hash.digest_str(txt);
@@ -802,7 +802,7 @@ SHA1_generic<N, H0, H1, H2, H3, H4, ROUND, K0, K1, K2, K3, RL1, RL5, RL30>
     /// ```
     /// # Example for MD5_Expanded
     /// ```
-    /// use Cryptocol::hash::MD5_Expanded;
+    /// use cryptocol::hash::MD5_Expanded;
     /// type myMD5 = MD5_Expanded<0x1111_1111, 0x4444_4444, 0x8888_8888, 0xffff_ffff, 96>;
     /// let txt = "This is an example of the method get_HashValue_in_vec().";
     /// let mut my_hash = myMD5::new();
@@ -835,7 +835,7 @@ SHA1_generic<N, H0, H1, H2, H3, H4, ROUND, K0, K1, K2, K3, RL1, RL5, RL30>
     ///
     /// # Example 1 for SHA1
     /// ```
-    /// use Cryptocol::hash::SHA1;
+    /// use cryptocol::hash::SHA1;
     /// let txt = "This is an example of the method put_HashValue_in_array().";
     /// let mut hash = SHA1::new();
     /// let mut hash_code = [0_u32; 5];
@@ -847,7 +847,7 @@ SHA1_generic<N, H0, H1, H2, H3, H4, ROUND, K0, K1, K2, K3, RL1, RL5, RL30>
     /// 
     /// # Example 2 for SHA1_Expanded
     /// ```
-    /// use Cryptocol::hash::SHA1_Expanded;
+    /// use cryptocol::hash::SHA1_Expanded;
     /// type mySHA1 = SHA1_Expanded<5, 0x1111_1111, 0x4444_4444, 0x8888_8888, 0xffff_ffff, 96>;
     /// let txt = "This is an example of the method put_HashValue_in_array().";
     /// let mut my_hash = mySHA1::new();
@@ -882,7 +882,7 @@ SHA1_generic<N, H0, H1, H2, H3, H4, ROUND, K0, K1, K2, K3, RL1, RL5, RL30>
     /// 
     /// Example for SHA1
     /// ```
-    /// use Cryptocol::hash::SHA1;
+    /// use cryptocol::hash::SHA1;
     /// let txt = "TANGLING";
     /// let mut hash = SHA1::new();
     /// hash.digest_str(txt);
@@ -898,7 +898,7 @@ SHA1_generic<N, H0, H1, H2, H3, H4, ROUND, K0, K1, K2, K3, RL1, RL5, RL30>
     /// 
     /// Example for SHA1_Expanded
     /// ```
-    /// use Cryptocol::hash::SHA1_Expanded;
+    /// use cryptocol::hash::SHA1_Expanded;
     /// type mySHA1 = SHA1_Expanded<5, 0x1111_1111, 0x4444_4444, 0x8888_8888, 0xcccc_cccc, 0xffff_ffff, 160>;
     /// let txt = "TANGLING";
     /// let mut my_hash = mySHA1::new();
@@ -1051,7 +1051,7 @@ Display for SHA1_generic<N, H0, H1, H2, H3, H4, ROUND, K0, K1, K2, K3, RL1, RL5,
     /// 
     /// # Example 1 for the method to_string() for SHA1
     /// ```
-    /// use Cryptocol::hash::SHA1;
+    /// use cryptocol::hash::SHA1;
     /// let mut hash = SHA1::new();
     /// let txt = "Display::fmt() automagically implement to_string().";
     /// hash.digest_str(txt);
@@ -1061,7 +1061,7 @@ Display for SHA1_generic<N, H0, H1, H2, H3, H4, ROUND, K0, K1, K2, K3, RL1, RL5,
     /// 
     /// # Example 2 for the method to_string() for SHA1_Expanded
     /// ```
-    /// use Cryptocol::hash::SHA1_Expanded;
+    /// use cryptocol::hash::SHA1_Expanded;
     /// type mySHA1 = SHA1_Expanded<5, 0x1111_1111, 0x4444_4444, 0x8888_8888, 0xcccc_cccc, 0xffff_ffff, 160>;
     /// let mut my_hash = mySHA1::new();
     /// let txt = "Display::fmt() automagically implement to_string().";
@@ -1072,7 +1072,7 @@ Display for SHA1_generic<N, H0, H1, H2, H3, H4, ROUND, K0, K1, K2, K3, RL1, RL5,
     /// 
     /// # Example 3 for the use in the macro println!() for SHA1
     /// ```
-    /// use Cryptocol::hash::SHA1;
+    /// use cryptocol::hash::SHA1;
     /// let mut hash = SHA1::new();
     /// let txt = "Display::fmt() enables the object to be printed in the macro println!() directly for example.";
     /// hash.digest_str(txt);
@@ -1082,7 +1082,7 @@ Display for SHA1_generic<N, H0, H1, H2, H3, H4, ROUND, K0, K1, K2, K3, RL1, RL5,
     /// 
     /// # Example 4 for the use in the macro println!() for SHA1_Expanded
     /// ```
-    /// use Cryptocol::hash::SHA1_Expanded;
+    /// use cryptocol::hash::SHA1_Expanded;
     /// type mySHA1 = SHA1_Expanded<5, 0x1111_1111, 0x4444_4444, 0x8888_8888, 0xcccc_cccc, 0xffff_ffff, 160>;
     /// let mut my_hash = mySHA1::new();
     /// let txt = "Display::fmt() enables the object to be printed in the macro println!() directly for example.";

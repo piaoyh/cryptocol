@@ -3,5 +3,5 @@
 version = 3
 
 [[package]]
-name = "Cryptocol"
+name = "cryptocol"
 version = "0.5.0"

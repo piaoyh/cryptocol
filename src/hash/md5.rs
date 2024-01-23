@@ -129,9 +129,9 @@ pub type MD5 = MD5_Expanded;
 /// 
 /// # Quick Start
 /// In order to use the module md5, you don't have to import (or use)
-/// Cryptocol::hash::md5::* directly because the module Cryptocol::hash::md5
+/// cryptocol::hash::md5::* directly because the module cryptocol::hash::md5
 /// is re-exported. All you have to do is only import MD5, MD5_Expanded,
-/// MD5_Generic_HR_fixed and/or MD5_Generic in the module Cryptocol::hash.
+/// MD5_Generic_HR_fixed and/or MD5_Generic in the module cryptocol::hash.
 /// Example 1 shows how to import structs MD5, MD5_Expanded,
 /// MD5_Generic_HR_fixed and/or MD5_Generic. Plus, what you have to know is
 /// these. All the types (or structs) are the specific versions of MD5_Generic.
@@ -140,10 +140,10 @@ pub type MD5 = MD5_Expanded;
 /// 
 /// ## Example 1
 /// ```
-/// use Cryptocol::hash::MD5;
-/// use Cryptocol::hash::MD5_Expanded;
-/// use Cryptocol::hash::MD5_Generic_HR_fixed;
-/// use Cryptocol::hash::MD5_Generic;
+/// use cryptocol::hash::MD5;
+/// use cryptocol::hash::MD5_Expanded;
+/// use cryptocol::hash::MD5_Generic_HR_fixed;
+/// use cryptocol::hash::MD5_Generic;
 /// ```
 /// Then, you create MD5 object by the method MD5::new(). Now, you are ready to
 /// use all prepared methods to hash any data. If you want to hash a string,
@@ -155,7 +155,7 @@ pub type MD5 = MD5_Expanded;
 /// ## Example 2
 /// ```
 /// use std::string::*;
-/// use Cryptocol::hash::MD5;
+/// use cryptocol::hash::MD5;
 /// let mut hash = MD5::new();
 /// 
 /// let mut txt = "";
@@ -310,7 +310,7 @@ MD5_Generic<N, H0, H1, H2, H3, ROUND,
     /// 
     /// # Example for MD5
     /// ```
-    /// use Cryptocol::hash::MD5;
+    /// use cryptocol::hash::MD5;
     /// let mut hash = MD5::new();
     /// println!("Hash =\t{}", hash);
     /// assert_eq!(hash.to_string(), "0123456789ABCDEFFEDCBA9876543210");
@@ -318,7 +318,7 @@ MD5_Generic<N, H0, H1, H2, H3, ROUND,
     /// 
     /// # Exmaple for MD5_Expanded
     /// ```
-    /// use Cryptocol::hash::MD5_Expanded;
+    /// use cryptocol::hash::MD5_Expanded;
     /// type myMD5 = MD5_Expanded<4, 0x1111_1111, 0x4444_4444, 0x8888_8888, 0xffff_ffff, 128>;
     /// let mut my_hash = myMD5::new();
     /// println!("Hash =\t{}", my_hash);
@@ -373,7 +373,7 @@ MD5_Generic<N, H0, H1, H2, H3, ROUND,
     ///
     /// # Example for MD5
     /// ```
-    /// use Cryptocol::hash::MD5;
+    /// use cryptocol::hash::MD5;
     /// let txt = "This is an example of the method digest().";
     /// let mut hash = MD5::new();
     /// hash.digest(txt.as_ptr(), txt.len() as u64);
@@ -383,7 +383,7 @@ MD5_Generic<N, H0, H1, H2, H3, ROUND,
     /// 
     /// # Example for MD5_Expanded
     /// ```
-    /// use Cryptocol::hash::MD5_Expanded;
+    /// use cryptocol::hash::MD5_Expanded;
     /// type myMD5 = MD5_Expanded<4, 0x1111_1111, 0x4444_4444, 0x8888_8888, 0xffff_ffff, 128>;
     /// let txt = "This is an example of the method digest().";
     /// let mut my_hash = myMD5::new();
@@ -436,7 +436,7 @@ MD5_Generic<N, H0, H1, H2, H3, ROUND,
     ///
     /// # Example for MD5
     /// ```
-    /// use Cryptocol::hash::MD5;
+    /// use cryptocol::hash::MD5;
     /// let txt = "This is an example of the method digest_str().";
     /// let mut hash = MD5::new();
     /// hash.digest_str(txt);
@@ -446,7 +446,7 @@ MD5_Generic<N, H0, H1, H2, H3, ROUND,
     /// 
     /// # Example for MD5_Expanded
     /// ```
-    /// use Cryptocol::hash::MD5_Expanded;
+    /// use cryptocol::hash::MD5_Expanded;
     /// type myMD5 = MD5_Expanded<4, 0x1111_1111, 0x4444_4444, 0x8888_8888, 0xffff_ffff, 96>;
     /// let txt = "This is an example of the method digest_str().";
     /// let mut my_hash = myMD5::new();
@@ -494,7 +494,7 @@ MD5_Generic<N, H0, H1, H2, H3, ROUND,
     ///
     /// # Example for MD5
     /// ```
-    /// use Cryptocol::hash::MD5;
+    /// use cryptocol::hash::MD5;
     /// let txt = "This is an example of the method digest_string().".to_string();
     /// let mut hash = MD5::new();
     /// hash.digest_string(&txt);
@@ -504,7 +504,7 @@ MD5_Generic<N, H0, H1, H2, H3, ROUND,
     /// 
     /// # Example for MD5_Expanded
     /// ```
-    /// use Cryptocol::hash::MD5_Expanded;
+    /// use cryptocol::hash::MD5_Expanded;
     /// type myMD5 = MD5_Expanded<4, 0x1111_1111, 0x4444_4444, 0x8888_8888, 0xffff_ffff, 96>;
     /// let txt = "This is an example of the method digest_string().".to_string();
     /// let mut my_hash = myMD5::new();
@@ -552,7 +552,7 @@ MD5_Generic<N, H0, H1, H2, H3, ROUND,
     ///
     /// # Example for MD5
     /// ```
-    /// use Cryptocol::hash::MD5;
+    /// use cryptocol::hash::MD5;
     /// let data = [ 0x67452301_u32.to_le(), 0xefcdab89_u32.to_le(), 0x98badcfe_u32.to_le(), 0x10325476_u32.to_le() ];
     /// let mut hash = MD5::new();
     /// hash.digest_array(&data);
@@ -562,7 +562,7 @@ MD5_Generic<N, H0, H1, H2, H3, ROUND,
     /// 
     /// # Example for MD5_Expanded
     /// ```
-    /// use Cryptocol::hash::MD5_Expanded;
+    /// use cryptocol::hash::MD5_Expanded;
     /// type myMD5 = MD5_Expanded<4, 0x1111_1111, 0x4444_4444, 0x8888_8888, 0xffff_ffff, 96>;
     /// let data = [ 0x67452301_u32.to_le(), 0xefcdab89_u32.to_le(), 0x98badcfe_u32.to_le(), 0x10325476_u32.to_le() ];
     /// let mut my_hash = myMD5::new();
@@ -611,7 +611,7 @@ MD5_Generic<N, H0, H1, H2, H3, ROUND,
     ///
     /// # Example for MD5
     /// ```
-    /// use Cryptocol::hash::MD5;
+    /// use cryptocol::hash::MD5;
     /// let data = vec![ 0x67452301_u32.to_le(), 0xefcdab89_u32.to_le(), 0x98badcfe_u32.to_le(), 0x10325476_u32.to_le() ];
     /// let mut hash = MD5::new();
     /// hash.digest_vec(&data);
@@ -621,7 +621,7 @@ MD5_Generic<N, H0, H1, H2, H3, ROUND,
     /// 
     /// # Example for MD5_Expanded
     /// ```
-    /// use Cryptocol::hash::MD5_Expanded;
+    /// use cryptocol::hash::MD5_Expanded;
     /// type myMD5 = MD5_Expanded<4, 0x1111_1111, 0x4444_4444, 0x8888_8888, 0xffff_ffff, 96>;
     /// let data = vec![ 0x67452301_u32.to_le(), 0xefcdab89_u32.to_le(), 0x98badcfe_u32.to_le(), 0x10325476_u32.to_le() ];
     /// let mut my_hash = myMD5::new();
@@ -671,7 +671,7 @@ MD5_Generic<N, H0, H1, H2, H3, ROUND,
     ///
     /// # Example for MD5
     /// ```
-    /// use Cryptocol::hash::MD5;
+    /// use cryptocol::hash::MD5;
     /// let txt = "This is an example of the method get_HashValue().";
     /// let mut hashValue = [0_u8; 16];
     /// let mut hash = MD5::new();
@@ -683,7 +683,7 @@ MD5_Generic<N, H0, H1, H2, H3, ROUND,
     /// 
     /// # Example for MD5_Expanded
     /// ```
-    /// use Cryptocol::hash::MD5_Expanded;
+    /// use cryptocol::hash::MD5_Expanded;
     /// type myMD5 = MD5_Expanded<4, 0x1111_1111, 0x4444_4444, 0x8888_8888, 0xffff_ffff, 96>;
     /// let txt = "This is an example of the method get_HashValue().";
     /// let mut hashValue = [0_u8; 16];
@@ -737,7 +737,7 @@ MD5_Generic<N, H0, H1, H2, H3, ROUND,
     ///
     /// # Example for MD5
     /// ```
-    /// use Cryptocol::hash::MD5;
+    /// use cryptocol::hash::MD5;
     /// let txt = "This is an example of the method get_HashValue_in_string().";
     /// let mut hash = MD5::new();
     /// hash.digest_str(txt);
@@ -747,7 +747,7 @@ MD5_Generic<N, H0, H1, H2, H3, ROUND,
     /// 
     /// # Example for MD5_Expanded
     /// ```
-    /// use Cryptocol::hash::MD5_Expanded;
+    /// use cryptocol::hash::MD5_Expanded;
     /// type myMD5 = MD5_Expanded<4, 0x1111_1111, 0x4444_4444, 0x8888_8888, 0xffff_ffff, 96>;
     /// let txt = "This is an example of the method get_HashValue_in_string().";
     /// let mut my_hash = myMD5::new();
@@ -798,7 +798,7 @@ MD5_Generic<N, H0, H1, H2, H3, ROUND,
     ///
     /// # Example for MD5
     /// ```
-    /// use Cryptocol::hash::MD5;
+    /// use cryptocol::hash::MD5;
     /// let txt = "This is an example of the method get_HashValue_in_array().";
     /// let mut hash = MD5::new();
     /// hash.digest_str(txt);
@@ -808,7 +808,7 @@ MD5_Generic<N, H0, H1, H2, H3, ROUND,
     /// 
     /// # Example for MD5_Expanded
     /// ```
-    /// use Cryptocol::hash::MD5_Expanded;
+    /// use cryptocol::hash::MD5_Expanded;
     /// type myMD5 = MD5_Expanded<4, 0x1111_1111, 0x4444_4444, 0x8888_8888, 0xffff_ffff, 96>;
     /// let txt = "This is an example of the method get_HashValue_in_array().";
     /// let mut my_hash = myMD5::new();
@@ -851,7 +851,7 @@ MD5_Generic<N, H0, H1, H2, H3, ROUND,
     ///
     /// # Example for MD5
     /// ```
-    /// use Cryptocol::hash::MD5;
+    /// use cryptocol::hash::MD5;
     /// let txt = "This is an example of the method get_HashValue_in_vec().";
     /// let mut hash = MD5::new();
     /// hash.digest_str(txt);
@@ -860,7 +860,7 @@ MD5_Generic<N, H0, H1, H2, H3, ROUND,
     /// ```
     /// # Example for MD5_Expanded
     /// ```
-    /// use Cryptocol::hash::MD5_Expanded;
+    /// use cryptocol::hash::MD5_Expanded;
     /// type myMD5 = MD5_Expanded<4, 0x1111_1111, 0x4444_4444, 0x8888_8888, 0xffff_ffff, 96>;
     /// let txt = "This is an example of the method get_HashValue_in_vec().";
     /// let mut my_hash = myMD5::new();
@@ -894,7 +894,7 @@ MD5_Generic<N, H0, H1, H2, H3, ROUND,
     ///
     /// # Example for MD5
     /// ```
-    /// use Cryptocol::hash::MD5;
+    /// use cryptocol::hash::MD5;
     /// let txt = "This is an example of the method put_HashValue_in_array().";
     /// let mut hash = MD5::new();
     /// let mut hash_code = [0_u32; 4];
@@ -906,7 +906,7 @@ MD5_Generic<N, H0, H1, H2, H3, ROUND,
     /// 
     /// # Example for MD5_Expanded
     /// ```
-    /// use Cryptocol::hash::MD5_Expanded;
+    /// use cryptocol::hash::MD5_Expanded;
     /// type myMD5 = MD5_Expanded<4, 0x1111_1111, 0x4444_4444, 0x8888_8888, 0xffff_ffff, 96>;
     /// let txt = "This is an example of the method put_HashValue_in_array().";
     /// let mut my_hash = myMD5::new();
@@ -941,7 +941,7 @@ MD5_Generic<N, H0, H1, H2, H3, ROUND,
     /// 
     /// Example for MD5
     /// ```
-    /// use Cryptocol::hash::MD5;
+    /// use cryptocol::hash::MD5;
     /// let txt = "TANGLING";
     /// let mut hash = MD5::new();
     /// hash.digest_str(txt);
@@ -957,7 +957,7 @@ MD5_Generic<N, H0, H1, H2, H3, ROUND,
     /// 
     /// Example for MD5_Expanded
     /// ```
-    /// use Cryptocol::hash::MD5_Expanded;
+    /// use cryptocol::hash::MD5_Expanded;
     /// type myMD5 = MD5_Expanded<4, 0x1111_1111, 0x4444_4444, 0x8888_8888, 0xffff_ffff, 96>;
     /// let txt = "TANGLING";
     /// let mut my_hash = myMD5::new();
@@ -1175,7 +1175,7 @@ Display for MD5_Generic<N, H0, H1, H2, H3, ROUND,
     /// 
     /// # Example 1 for the method to_string() for MD5
     /// ```
-    /// use Cryptocol::hash::MD5;
+    /// use cryptocol::hash::MD5;
     /// let mut hash = MD5::new();
     /// let txt = "Display::fmt() automagically implement to_string().";
     /// hash.digest_str(txt);
@@ -1185,7 +1185,7 @@ Display for MD5_Generic<N, H0, H1, H2, H3, ROUND,
     /// 
     /// # Example 2 for the method to_string() for MD5_Expanded
     /// ```
-    /// use Cryptocol::hash::MD5_Expanded;
+    /// use cryptocol::hash::MD5_Expanded;
     /// type myMD5 = MD5_Expanded<4, 0x1111_1111, 0x4444_4444, 0x8888_8888, 0xffff_ffff, 96>;
     /// let txt = "Display::fmt() automagically implement to_string().";
     /// let mut my_hash = myMD5::new();
@@ -1196,7 +1196,7 @@ Display for MD5_Generic<N, H0, H1, H2, H3, ROUND,
     /// 
     /// # Example 3 for the use in the macro println!() for MD5
     /// ```
-    /// use Cryptocol::hash::MD5;
+    /// use cryptocol::hash::MD5;
     /// let mut hash = MD5::new();
     /// let txt = "Display::fmt() enables the object to be printed in the macro println!() directly for example.";
     /// hash.digest_str(txt);
@@ -1206,7 +1206,7 @@ Display for MD5_Generic<N, H0, H1, H2, H3, ROUND,
     /// 
     /// # Example 4 for the use in the macro println!() for MD5_Expanded
     /// ```
-    /// use Cryptocol::hash::MD5_Expanded;
+    /// use cryptocol::hash::MD5_Expanded;
     /// type myMD5 = MD5_Expanded<4, 0x1111_1111, 0x4444_4444, 0x8888_8888, 0xffff_ffff, 96>;
     /// let mut my_hash = myMD5::new();
     /// let txt = "Display::fmt() enables the object to be printed in the macro println!() directly for example.";

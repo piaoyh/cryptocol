@@ -101,7 +101,7 @@
 //! ## Example 3
 //! ```
 //! [dependencies]
-//! Cryptocol = "0.10"
+//! cryptocol = "0.10"
 //! rand = { version = "0.8", features = ["getrandom"] }
 //! ```
 //! It is good if you keep the version number of each crate as latest version.
@@ -115,8 +115,8 @@
 //! use std::ops::*;
 //! use std::fmt::{ Display, Debug };
 //! use rand::{ rngs, RngCore };
-//! use Cryptocol::number::SmallUInt;
-//! use Cryptocol::random::{ Random_Engine, Random_Generic };
+//! use cryptocol::number::SmallUInt;
+//! use cryptocol::random::{ Random_Engine, Random_Generic };
 //! ```
 //! 
 //! Third, you have to make an empty struct `OsRng` as follows.

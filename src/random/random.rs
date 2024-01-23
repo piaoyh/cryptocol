@@ -823,7 +823,7 @@ impl<GenFunc: Random_Engine + 'static, const COUNT: u128> Random_Generic<GenFunc
     /// 
     /// # Example
     /// ```
-    /// use Cryptocol::random::{ Any, Random };
+    /// use cryptocol::random::{ Any, Random };
     /// define_utypes_with!(u128);
     /// println!("Random Number: {}", random_BigUInt::<u128, 8>::random_BigUInt());
     /// ```
@@ -897,8 +897,8 @@ impl<GenFunc: Random_Engine + 'static, const COUNT: u128> Random_Generic<GenFunc
     /// 
     /// # Example
     /// ```
-    /// use Cryptocol::number::*;
-    /// use Cryptocol::define_utypes_with;
+    /// use cryptocol::number::*;
+    /// use cryptocol::define_utypes_with;
     /// define_utypes_with!(u32);
     /// 
     /// let ceiling = u1024::max() / u1024::from_uint::<u32>(3);
@@ -992,7 +992,7 @@ impl<GenFunc: Random_Engine + 'static, const COUNT: u128> Random_Generic<GenFunc
     /// 
     /// # Example
     /// ```
-    /// use Cryptocol::define_utypes_with;
+    /// use cryptocol::define_utypes_with;
     /// define_utypes_with!(u64);
     /// let r = u1024::any_odd();
     /// println!("Random Odd Number: {}", r);
@@ -1072,8 +1072,8 @@ impl<GenFunc: Random_Engine + 'static, const COUNT: u128> Random_Generic<GenFunc
     /// 
     /// # Example
     /// ```
-    /// use Cryptocol::number::*;
-    /// use Cryptocol::define_utypes_with;
+    /// use cryptocol::number::*;
+    /// use cryptocol::define_utypes_with;
     /// define_utypes_with!(u16);
     /// 
     /// let ceiling = u1024::max() / u1024::from_uint::<u32>(3);
@@ -1155,8 +1155,8 @@ impl<GenFunc: Random_Engine + 'static, const COUNT: u128> Random_Generic<GenFunc
     /// 
     /// # Example
     /// ```
-    /// use Cryptocol::number::*;
-    /// use Cryptocol::define_utypes_with;
+    /// use cryptocol::number::*;
+    /// use cryptocol::define_utypes_with;
     /// define_utypes_with!(u16);
     /// 
     /// let ceiling = u1024::max() / u1024::from_uint::<u32>(3);
@@ -1248,7 +1248,7 @@ impl<GenFunc: Random_Engine + 'static, const COUNT: u128> Random_Generic<GenFunc
     /// 
     /// # Example
     /// ```
-    /// use Cryptocol::define_utypes_with;
+    /// use cryptocol::define_utypes_with;
     /// define_utypes_with!(u8);
     /// 
     /// let num = u1024::random_with_MSB_set();
@@ -1335,7 +1335,7 @@ impl<GenFunc: Random_Engine + 'static, const COUNT: u128> Random_Generic<GenFunc
     /// 
     /// # Example
     /// ```
-    /// use Cryptocol::define_utypes_with;
+    /// use cryptocol::define_utypes_with;
     /// define_utypes_with!(u128);
     /// 
     /// let num = u1024::random_odd_with_MSB_set();
@@ -1430,7 +1430,7 @@ impl<GenFunc: Random_Engine + 'static, const COUNT: u128> Random_Generic<GenFunc
     /// 
     /// # Example
     /// ```
-    /// use Cryptocol::define_utypes_with;
+    /// use cryptocol::define_utypes_with;
     /// define_utypes_with!(u64);
     ///
     /// let num = u256::random_prime_using_Miller_Rabin(5);
@@ -1528,7 +1528,7 @@ impl<GenFunc: Random_Engine + 'static, const COUNT: u128> Random_Generic<GenFunc
     /// 
     /// # Example
     /// ```
-    /// use Cryptocol::define_utypes_with;
+    /// use cryptocol::define_utypes_with;
     /// define_utypes_with!(u64);
     ///
     /// let num = u256::random_prime_using_Miller_Rabin(5);

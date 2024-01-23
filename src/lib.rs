@@ -9,7 +9,7 @@
 #![warn(missing_docs)]
 #![warn(missing_doc_code_examples)]
 
-//! Cryptocol crate provides libraries for cryptography.
+//! cryptocol crate provides libraries for cryptography.
 //! 
 //! This crate is optimized for Little-endian CPUs because Little-Endian CPUs
 //! are far more popular than Big-endian CPUs. For the information about

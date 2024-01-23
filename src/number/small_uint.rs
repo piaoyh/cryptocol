@@ -23,11 +23,11 @@ use std::mem::{ size_of, size_of_val };
 /// __The trait SmallUInt is meaningful when you use it in generic context.
 /// Otherwise, it is pretty hard to imagine its usability.__
 /// In order to use this trait, you have to import (use)
-/// `Cryptocol::number::SmallUInt`.
+/// `cryptocol::number::SmallUInt`.
 ///  
 /// Here, the generic type of primitive unsigned integral data types includes:
 /// `u8`, `u16`, `u32`, `u64`, `u128` and `usize`. In order to use this trait,
-/// you have to import (use) `Cryptocol::number::SmallUInt`.
+/// you have to import (use) `cryptocol::number::SmallUInt`.
 /// 
 /// You will, however, hardly use the trait SmallUInt unless you use primitive
 /// unsigned integral data types in generic context, or you improve or modify
@@ -60,7 +60,7 @@ pub trait SmallUInt: Copy + Clone + Sized //+ Display + Debug + ToString
     /// 
     /// # Example for u8
     /// ```
-    /// use Cryptocol::number::SmallUInt;
+    /// use cryptocol::number::SmallUInt;
     /// fn main()
     /// {
     ///     // a_u16: u16 === (a_high_u8, a_low_u8) == (100_u8, 101_u8) == 25701_u16
@@ -111,7 +111,7 @@ pub trait SmallUInt: Copy + Clone + Sized //+ Display + Debug + ToString
     /// 
     /// # Example for u128
     /// ```
-    /// use Cryptocol::number::SmallUInt;
+    /// use cryptocol::number::SmallUInt;
     /// fn main()
     /// {
     ///     let a_high_u128: u128;
@@ -154,7 +154,7 @@ pub trait SmallUInt: Copy + Clone + Sized //+ Display + Debug + ToString
     /// 
     /// # Collective Example
     /// ```
-    /// use Cryptocol::number::SmallUInt;
+    /// use cryptocol::number::SmallUInt;
     /// fn main()
     /// {
     ///     // a_u16: u16 === (a_high_u8, a_low_u8) == (100_u8, 101_u8) == 25701_u16
@@ -278,7 +278,7 @@ pub trait SmallUInt: Copy + Clone + Sized //+ Display + Debug + ToString
     /// 
     /// # Example for u8
     /// ```
-    /// use Cryptocol::number::SmallUInt;
+    /// use cryptocol::number::SmallUInt;
     /// fn main()
     /// {
     ///     let a_u8 = func(u8::MAX - 55_u8, 55_u8);
@@ -298,7 +298,7 @@ pub trait SmallUInt: Copy + Clone + Sized //+ Display + Debug + ToString
     /// 
     /// # Example for u16
     /// ```
-    /// use Cryptocol::number::SmallUInt;
+    /// use cryptocol::number::SmallUInt;
     /// fn main()
     /// {
     ///     let a_u16 = func(u16::MAX - 55_u16, 55_u16);
@@ -318,7 +318,7 @@ pub trait SmallUInt: Copy + Clone + Sized //+ Display + Debug + ToString
     /// 
     /// # Example for u32
     /// ```
-    /// use Cryptocol::number::SmallUInt;
+    /// use cryptocol::number::SmallUInt;
     /// fn main()
     /// {
     ///     let a_u32 = func(u32::MAX - 55_u32, 55_u32);
@@ -338,7 +338,7 @@ pub trait SmallUInt: Copy + Clone + Sized //+ Display + Debug + ToString
     /// 
     /// # Example for u64
     /// ```
-    /// use Cryptocol::number::SmallUInt;
+    /// use cryptocol::number::SmallUInt;
     /// fn main()
     /// {
     ///     let a_u64 = func(u64::MAX - 55_u64, 55_u64);
@@ -358,7 +358,7 @@ pub trait SmallUInt: Copy + Clone + Sized //+ Display + Debug + ToString
     /// 
     /// # Example for u128
     /// ```
-    /// use Cryptocol::number::SmallUInt;
+    /// use cryptocol::number::SmallUInt;
     /// fn main()
     /// {
     ///     let a_u128 = func(u128::MAX - 55_u128, 55_u128);
@@ -378,7 +378,7 @@ pub trait SmallUInt: Copy + Clone + Sized //+ Display + Debug + ToString
     /// 
     /// # Example for usize
     /// ```
-    /// use Cryptocol::number::SmallUInt;
+    /// use cryptocol::number::SmallUInt;
     /// fn main()
     /// {
     ///     let a_usize = func(usize::MAX - 55_usize, 55_usize);
@@ -400,7 +400,7 @@ pub trait SmallUInt: Copy + Clone + Sized //+ Display + Debug + ToString
     /// 
     /// # Collective Example
     /// ```
-    /// use Cryptocol::number::SmallUInt;
+    /// use cryptocol::number::SmallUInt;
     /// fn main()
     /// {
     ///     let a_u8 = func(u8::MAX - 55_u8, 55_u8);
@@ -500,7 +500,7 @@ pub trait SmallUInt: Copy + Clone + Sized //+ Display + Debug + ToString
     /// 
     /// # Example for u8
     /// ```
-    /// use Cryptocol::number::SmallUInt;
+    /// use cryptocol::number::SmallUInt;
     /// fn main()
     /// {
     ///     let a_u8 = func(u8::MAX - 55_u8, 55_u8);
@@ -522,7 +522,7 @@ pub trait SmallUInt: Copy + Clone + Sized //+ Display + Debug + ToString
     /// 
     /// # Example for u16
     /// ```
-    /// use Cryptocol::number::SmallUInt;
+    /// use cryptocol::number::SmallUInt;
     /// fn main()
     /// {
     ///     let a_u16 = func(u16::MAX - 55_u16, 55_u16);
@@ -544,7 +544,7 @@ pub trait SmallUInt: Copy + Clone + Sized //+ Display + Debug + ToString
     /// 
     /// # Example for u32
     /// ```
-    /// use Cryptocol::number::SmallUInt;
+    /// use cryptocol::number::SmallUInt;
     /// fn main()
     /// {
     ///     let a_u32 = func(u32::MAX - 55_u32, 55_u32);
@@ -566,7 +566,7 @@ pub trait SmallUInt: Copy + Clone + Sized //+ Display + Debug + ToString
     /// 
     /// # Example for u64
     /// ```
-    /// use Cryptocol::number::SmallUInt;
+    /// use cryptocol::number::SmallUInt;
     /// fn main()
     /// {
     ///     let a_u64 = func(u64::MAX - 55_u64, 55_u64);
@@ -588,7 +588,7 @@ pub trait SmallUInt: Copy + Clone + Sized //+ Display + Debug + ToString
     /// 
     /// # Example for u128
     /// ```
-    /// use Cryptocol::number::SmallUInt;
+    /// use cryptocol::number::SmallUInt;
     /// fn main()
     /// {
     ///     let a_u128 = func(u128::MAX - 55_u128, 55_u128);
@@ -610,7 +610,7 @@ pub trait SmallUInt: Copy + Clone + Sized //+ Display + Debug + ToString
     /// 
     /// # Example for usize
     /// ```
-    /// use Cryptocol::number::SmallUInt;
+    /// use cryptocol::number::SmallUInt;
     /// fn main()
     /// {
     ///     let a_usize = func(usize::MAX - 55_usize, 55_usize);
@@ -634,7 +634,7 @@ pub trait SmallUInt: Copy + Clone + Sized //+ Display + Debug + ToString
     /// 
     /// # Collective Example
     /// ```
-    /// use Cryptocol::number::SmallUInt;
+    /// use cryptocol::number::SmallUInt;
     /// fn main()
     /// {
     ///     let a_u8 = func(u8::MAX - 55_u8, 55_u8);
@@ -745,7 +745,7 @@ pub trait SmallUInt: Copy + Clone + Sized //+ Display + Debug + ToString
     /// 
     /// # Example for u8
     /// ```
-    /// use Cryptocol::number::SmallUInt;
+    /// use cryptocol::number::SmallUInt;
     /// fn main()
     /// {
     ///     let a_u8 = func(u8::MAX - 55_u8, 55_u8);
@@ -783,7 +783,7 @@ pub trait SmallUInt: Copy + Clone + Sized //+ Display + Debug + ToString
     /// 
     /// # Example for u16
     /// ```
-    /// use Cryptocol::number::SmallUInt;
+    /// use cryptocol::number::SmallUInt;
     /// fn main()
     /// {
     ///     let a_u16 = func(u16::MAX - 55_u16, 55_u16);
@@ -821,7 +821,7 @@ pub trait SmallUInt: Copy + Clone + Sized //+ Display + Debug + ToString
     /// 
     /// # Example for u32
     /// ```
-    /// use Cryptocol::number::SmallUInt;
+    /// use cryptocol::number::SmallUInt;
     /// fn main()
     /// {
     ///     let a_u32 = func(u32::MAX - 55_u32, 55_u32);
@@ -859,7 +859,7 @@ pub trait SmallUInt: Copy + Clone + Sized //+ Display + Debug + ToString
     /// 
     /// # Example for u64
     /// ```
-    /// use Cryptocol::number::SmallUInt;
+    /// use cryptocol::number::SmallUInt;
     /// fn main()
     /// {
     ///     let a_u64 = func(u64::MAX - 55_u64, 55_u64);
@@ -897,7 +897,7 @@ pub trait SmallUInt: Copy + Clone + Sized //+ Display + Debug + ToString
     /// 
     /// # Example for u128
     /// ```
-    /// use Cryptocol::number::SmallUInt;
+    /// use cryptocol::number::SmallUInt;
     /// fn main()
     /// {
     ///     let a_u128 = func(u128::MAX - 55_u128, 55_u128);
@@ -935,7 +935,7 @@ pub trait SmallUInt: Copy + Clone + Sized //+ Display + Debug + ToString
     /// 
     /// # Example for usize
     /// ```
-    /// use Cryptocol::number::SmallUInt;
+    /// use cryptocol::number::SmallUInt;
     /// fn main()
     /// {
     ///     let a_usize = func(usize::MAX - 55_usize, 55_usize);
@@ -975,7 +975,7 @@ pub trait SmallUInt: Copy + Clone + Sized //+ Display + Debug + ToString
     /// 
     /// # Collective Example
     /// ```
-    /// use Cryptocol::number::SmallUInt;
+    /// use cryptocol::number::SmallUInt;
     /// fn main()
     /// {
     ///     let a_u8 = func(u8::MAX - 55_u8, 55_u8);
@@ -1184,7 +1184,7 @@ pub trait SmallUInt: Copy + Clone + Sized //+ Display + Debug + ToString
     /// 
     /// # Example
     /// ```
-    /// use Cryptocol::number::SmallUInt;
+    /// use cryptocol::number::SmallUInt;
     /// fn main()
     /// {
     ///     let a_u8 = func(u8::MAX - 55_u8, 55_u8);
@@ -1283,7 +1283,7 @@ pub trait SmallUInt: Copy + Clone + Sized //+ Display + Debug + ToString
     /// 
     /// # Example
     /// ```
-    /// use Cryptocol::number::SmallUInt;
+    /// use cryptocol::number::SmallUInt;
     /// fn main()
     /// {
     ///     let a_u8 = func(u8::MAX - 55_u8, 55_u8);
@@ -1426,7 +1426,7 @@ pub trait SmallUInt: Copy + Clone + Sized //+ Display + Debug + ToString
     /// 
     /// # Example
     /// ```
-    /// use Cryptocol::number::SmallUInt;
+    /// use cryptocol::number::SmallUInt;
     /// fn main()
     /// {
     ///     // a_u16: u16 === (a_high_u8, a_low_u8) == (100_u8, 200_u8) == 25800_u16
@@ -1550,7 +1550,7 @@ pub trait SmallUInt: Copy + Clone + Sized //+ Display + Debug + ToString
     /// 
     /// # Example for u8
     /// ```
-    /// use Cryptocol::number::SmallUInt;
+    /// use cryptocol::number::SmallUInt;
     /// fn main()
     /// {
     ///     let a_u8 = func(55_u8, 55_u8);
@@ -1570,7 +1570,7 @@ pub trait SmallUInt: Copy + Clone + Sized //+ Display + Debug + ToString
     /// 
     /// # Example for u16
     /// ```
-    /// use Cryptocol::number::SmallUInt;
+    /// use cryptocol::number::SmallUInt;
     /// fn main()
     /// {
     ///     let a_u16 = func(55_u16, 55_u16);
@@ -1590,7 +1590,7 @@ pub trait SmallUInt: Copy + Clone + Sized //+ Display + Debug + ToString
     /// 
     /// # Example for u32
     /// ```
-    /// use Cryptocol::number::SmallUInt;
+    /// use cryptocol::number::SmallUInt;
     /// fn main()
     /// {
     /// 
@@ -1611,7 +1611,7 @@ pub trait SmallUInt: Copy + Clone + Sized //+ Display + Debug + ToString
     /// 
     /// # Example for u64
     /// ```
-    /// use Cryptocol::number::SmallUInt;
+    /// use cryptocol::number::SmallUInt;
     /// fn main()
     /// {
     ///     let a_u64 = func(55_u64, 55_u64);
@@ -1631,7 +1631,7 @@ pub trait SmallUInt: Copy + Clone + Sized //+ Display + Debug + ToString
     /// 
     /// # Example for u128
     /// ```
-    /// use Cryptocol::number::SmallUInt;
+    /// use cryptocol::number::SmallUInt;
     /// fn main()
     /// {
     ///     let a_u128 = func(55_u128, 55_u128);
@@ -1651,7 +1651,7 @@ pub trait SmallUInt: Copy + Clone + Sized //+ Display + Debug + ToString
     /// 
     /// # Example for usize
     /// ```
-    /// use Cryptocol::number::SmallUInt;
+    /// use cryptocol::number::SmallUInt;
     /// fn main()
     /// {
     ///     let a_usize = func(55_usize, 55_usize);
@@ -1673,7 +1673,7 @@ pub trait SmallUInt: Copy + Clone + Sized //+ Display + Debug + ToString
     /// 
     /// # Collective Example
     /// ```
-    /// use Cryptocol::number::SmallUInt;
+    /// use cryptocol::number::SmallUInt;
     /// fn main()
     /// {
     ///     let a_u8 = func(55_u8, 55_u8);
@@ -1774,7 +1774,7 @@ pub trait SmallUInt: Copy + Clone + Sized //+ Display + Debug + ToString
     /// 
     /// # Example
     /// ```
-    /// use Cryptocol::number::SmallUInt;
+    /// use cryptocol::number::SmallUInt;
     /// fn main()
     /// {
     ///     let a_u8 = func(55_u8, 55_u8);
@@ -1885,7 +1885,7 @@ pub trait SmallUInt: Copy + Clone + Sized //+ Display + Debug + ToString
     /// 
     /// # Example
     /// ```
-    /// use Cryptocol::number::SmallUInt;
+    /// use cryptocol::number::SmallUInt;
     /// fn main()
     /// {
     ///     let a_u8 = func(55_u8, 55_u8);
@@ -2095,7 +2095,7 @@ pub trait SmallUInt: Copy + Clone + Sized //+ Display + Debug + ToString
     /// 
     /// # Example
     /// ```
-    /// use Cryptocol::number::SmallUInt;
+    /// use cryptocol::number::SmallUInt;
     /// fn main()
     /// {
     ///     let a_u8 = func(55_u8, 55_u8);
@@ -2200,7 +2200,7 @@ pub trait SmallUInt: Copy + Clone + Sized //+ Display + Debug + ToString
     /// 
     /// # Example
     /// ```
-    /// use Cryptocol::number::SmallUInt;
+    /// use cryptocol::number::SmallUInt;
     /// fn main()
     /// {
     ///     let a_u8 = func(55_u8, 50_u8);
@@ -2297,7 +2297,7 @@ pub trait SmallUInt: Copy + Clone + Sized //+ Display + Debug + ToString
     /// 
     /// # Example for u8
     /// ```
-    /// use Cryptocol::number::SmallUInt;
+    /// use cryptocol::number::SmallUInt;
     /// fn main()
     /// {
     ///     let a_u8 = func(55_u8, 50_u8);
@@ -2317,7 +2317,7 @@ pub trait SmallUInt: Copy + Clone + Sized //+ Display + Debug + ToString
     /// 
     /// # Example for u16
     /// ```
-    /// use Cryptocol::number::SmallUInt;
+    /// use cryptocol::number::SmallUInt;
     /// fn main()
     /// {   
     ///     let a_u16 = func(5050_u16, 5000_u16);
@@ -2337,7 +2337,7 @@ pub trait SmallUInt: Copy + Clone + Sized //+ Display + Debug + ToString
     /// 
     /// # Example for u32
     /// ```
-    /// use Cryptocol::number::SmallUInt;
+    /// use cryptocol::number::SmallUInt;
     /// fn main()
     /// {
     ///     let a_u32 = func(500500_u32, 500000_u32);
@@ -2357,7 +2357,7 @@ pub trait SmallUInt: Copy + Clone + Sized //+ Display + Debug + ToString
     /// 
     /// # Example for u64
     /// ```
-    /// use Cryptocol::number::SmallUInt;
+    /// use cryptocol::number::SmallUInt;
     /// fn main()
     /// {
     ///     let a_u64 = func(5000050000_u64, 5000000000_u64);
@@ -2377,7 +2377,7 @@ pub trait SmallUInt: Copy + Clone + Sized //+ Display + Debug + ToString
     /// 
     /// # Example for u128
     /// ```
-    /// use Cryptocol::number::SmallUInt;
+    /// use cryptocol::number::SmallUInt;
     /// fn main()
     /// {
     ///     let a_u128 = func(500000000500000000_u128, 500000000000000000_u128);
@@ -2397,7 +2397,7 @@ pub trait SmallUInt: Copy + Clone + Sized //+ Display + Debug + ToString
     /// 
     /// # Example for usize
     /// ```
-    /// use Cryptocol::number::SmallUInt;
+    /// use cryptocol::number::SmallUInt;
     /// fn main()
     /// {
     ///     let a_usize = func(5000050000_usize, 5000000000_usize);
@@ -2419,7 +2419,7 @@ pub trait SmallUInt: Copy + Clone + Sized //+ Display + Debug + ToString
     /// 
     /// # Collective Example
     /// ```
-    /// use Cryptocol::number::SmallUInt;
+    /// use cryptocol::number::SmallUInt;
     /// fn main()
     /// {
     ///     let a_u8 = func(55_u8, 50_u8);
@@ -2705,7 +2705,7 @@ pub trait SmallUInt: Copy + Clone + Sized //+ Display + Debug + ToString
     /// 
     /// # Example
     /// ```
-    /// use Cryptocol::number::SmallUInt;
+    /// use cryptocol::number::SmallUInt;
     /// fn main()
     /// {
     ///     let a_u8 = func(u8::MAX / 3, 2_u8);
@@ -2804,7 +2804,7 @@ pub trait SmallUInt: Copy + Clone + Sized //+ Display + Debug + ToString
     /// 
     /// # Example
     /// ```
-    /// use Cryptocol::number::SmallUInt;
+    /// use cryptocol::number::SmallUInt;
     /// fn main()
     /// {
     ///     let a_u8 = func(u8::MAX / 3, 2_u8);
@@ -2915,7 +2915,7 @@ pub trait SmallUInt: Copy + Clone + Sized //+ Display + Debug + ToString
     /// 
     /// # Example
     /// ```
-    /// use Cryptocol::number::SmallUInt;
+    /// use cryptocol::number::SmallUInt;
     /// fn main()
     /// {
     ///     let a_u8 = func(u8::MAX / 3, 2_u8);
@@ -3125,7 +3125,7 @@ pub trait SmallUInt: Copy + Clone + Sized //+ Display + Debug + ToString
     /// 
     /// # Example
     /// ```
-    /// use Cryptocol::number::SmallUInt;
+    /// use cryptocol::number::SmallUInt;
     /// fn main()
     /// {
     ///     let a_u8 = func(u8::MAX / 3, 2_u8);
@@ -3230,7 +3230,7 @@ pub trait SmallUInt: Copy + Clone + Sized //+ Display + Debug + ToString
     /// 
     /// # Example
     /// ```
-    /// use Cryptocol::number::SmallUInt;
+    /// use cryptocol::number::SmallUInt;
     /// fn main()
     /// {
     ///     let a_u8 = func(u8::MAX / 3, 2_u8);
@@ -3365,7 +3365,7 @@ pub trait SmallUInt: Copy + Clone + Sized //+ Display + Debug + ToString
     /// 
     /// # Example
     /// ```
-    /// use Cryptocol::number::SmallUInt;
+    /// use cryptocol::number::SmallUInt;
     /// fn main()
     /// {
     ///     let a_u8 = func(u8::MAX / 3, 2_u8);
@@ -3446,7 +3446,7 @@ pub trait SmallUInt: Copy + Clone + Sized //+ Display + Debug + ToString
     /// 
     /// # Example
     /// ```
-    /// use Cryptocol::number::SmallUInt;
+    /// use cryptocol::number::SmallUInt;
     /// fn main()
     /// {
     ///     let a_u8 = func(u8::MAX / 3, 2_u8);
@@ -3556,7 +3556,7 @@ pub trait SmallUInt: Copy + Clone + Sized //+ Display + Debug + ToString
     /// 
     /// # Example
     /// ```
-    /// use Cryptocol::number::SmallUInt;
+    /// use cryptocol::number::SmallUInt;
     /// fn main()
     /// {
     ///     let a_u8 = UInt_checked_mul___func(u8::MAX / 3, 2_u8);
@@ -3745,7 +3745,7 @@ pub trait SmallUInt: Copy + Clone + Sized //+ Display + Debug + ToString
     /// 
     /// # Example
     /// ```
-    /// use Cryptocol::number::SmallUInt;
+    /// use cryptocol::number::SmallUInt;
     /// fn main()
     /// {
     ///     let a_u8 = func(u8::MAX / 3, 2_u8);
@@ -3830,7 +3830,7 @@ pub trait SmallUInt: Copy + Clone + Sized //+ Display + Debug + ToString
     /// 
     /// # Example
     /// ```
-    /// use Cryptocol::number::SmallUInt;
+    /// use cryptocol::number::SmallUInt;
     /// fn main()
     /// {
     ///     let a_u8 = func(u8::MAX / 3, 3_u8);
@@ -3911,7 +3911,7 @@ pub trait SmallUInt: Copy + Clone + Sized //+ Display + Debug + ToString
     /// 
     /// # Example
     /// ```
-    /// use Cryptocol::number::SmallUInt;
+    /// use cryptocol::number::SmallUInt;
     /// fn main()
     /// {
     ///     let a_u8 = func(u8::MAX / 3, 3_u8);
@@ -3994,7 +3994,7 @@ pub trait SmallUInt: Copy + Clone + Sized //+ Display + Debug + ToString
     /// 
     /// # Example
     /// ```
-    /// use Cryptocol::number::SmallUInt;
+    /// use cryptocol::number::SmallUInt;
     /// fn main()
     /// {
     ///     let a_u8 = func(u8::MAX / 3, 3_u8);
@@ -4188,7 +4188,7 @@ pub trait SmallUInt: Copy + Clone + Sized //+ Display + Debug + ToString
     /// 
     /// # Example for u8
     /// ```
-    /// use Cryptocol::number::*;
+    /// use cryptocol::number::*;
     /// fn main()
     /// {
     ///     let a_u8 = func(3_u8, 5_u32);
@@ -4206,7 +4206,7 @@ pub trait SmallUInt: Copy + Clone + Sized //+ Display + Debug + ToString
     /// 
     /// # Example for u16
     /// ```
-    /// use Cryptocol::number::*;
+    /// use cryptocol::number::*;
     /// fn main()
     /// {
     ///     let a_u16 = func(9_u16, 5_u32);
@@ -4224,7 +4224,7 @@ pub trait SmallUInt: Copy + Clone + Sized //+ Display + Debug + ToString
     /// 
     /// # Example for u32
     /// ```
-    /// use Cryptocol::number::*;
+    /// use cryptocol::number::*;
     /// fn main()
     /// {
     ///     let a_u32 = func(81_u32, 5_u32);
@@ -4242,7 +4242,7 @@ pub trait SmallUInt: Copy + Clone + Sized //+ Display + Debug + ToString
     /// 
     /// # Example for u64
     /// ```
-    /// use Cryptocol::number::*;
+    /// use cryptocol::number::*;
     /// fn main()
     /// {
     ///     let a_u64 = func(6561_u64, 5_u32);
@@ -4260,7 +4260,7 @@ pub trait SmallUInt: Copy + Clone + Sized //+ Display + Debug + ToString
     /// 
     /// # Example for u128
     /// ```
-    /// use Cryptocol::number::*;
+    /// use cryptocol::number::*;
     /// fn main()
     /// {
     ///     let a_u128 = func(43046721_u128, 5_u32);
@@ -4278,7 +4278,7 @@ pub trait SmallUInt: Copy + Clone + Sized //+ Display + Debug + ToString
     /// 
     /// # Example for usize
     /// ```
-    /// use Cryptocol::number::*;
+    /// use cryptocol::number::*;
     /// fn main()
     /// {
     ///     let a_usize = func(6561_usize, 5_u32);
@@ -4296,7 +4296,7 @@ pub trait SmallUInt: Copy + Clone + Sized //+ Display + Debug + ToString
     /// 
     /// # Example for ShortUnion
     /// ```
-    /// use Cryptocol::number::*;
+    /// use cryptocol::number::*;
     /// fn main()
     /// {
     ///     let a_Short = ShortUnion::new_with(9);
@@ -4315,7 +4315,7 @@ pub trait SmallUInt: Copy + Clone + Sized //+ Display + Debug + ToString
     /// 
     /// # Example for IntUnion
     /// ```
-    /// use Cryptocol::number::*;
+    /// use cryptocol::number::*;
     /// fn main()
     /// {
     ///     let a_uint = IntUnion::new_with(81);
@@ -4334,7 +4334,7 @@ pub trait SmallUInt: Copy + Clone + Sized //+ Display + Debug + ToString
     /// 
     /// # Example for LongUnion
     /// ```
-    /// use Cryptocol::number::*;
+    /// use cryptocol::number::*;
     /// fn main()
     /// {
     ///     let a_ulong = LongUnion::new_with(6561);
@@ -4353,7 +4353,7 @@ pub trait SmallUInt: Copy + Clone + Sized //+ Display + Debug + ToString
     /// 
     /// # Example for LongerUnion
     /// ```
-    /// use Cryptocol::number::*;
+    /// use cryptocol::number::*;
     /// fn main()
     /// {
     ///     let a_ulonger = LongerUnion::new_with(43046721);
@@ -4372,7 +4372,7 @@ pub trait SmallUInt: Copy + Clone + Sized //+ Display + Debug + ToString
     /// 
     /// # Example for SizeUnion
     /// ```
-    /// use Cryptocol::number::*;
+    /// use cryptocol::number::*;
     /// fn main()
     /// {
     ///     let a_size = SizeUnion::new_with(6561);
@@ -4391,7 +4391,7 @@ pub trait SmallUInt: Copy + Clone + Sized //+ Display + Debug + ToString
     /// 
     /// # Collective Example
     /// ```
-    /// use Cryptocol::number::*;
+    /// use cryptocol::number::*;
     /// fn main()
     /// {
     ///     let a_u8 = func(3_u8, 5_u32);
@@ -4511,7 +4511,7 @@ pub trait SmallUInt: Copy + Clone + Sized //+ Display + Debug + ToString
     /// 
     /// # Example
     /// ```
-    /// use Cryptocol::number::*;
+    /// use cryptocol::number::*;
     /// fn main()
     /// {
     ///     let a_u8 = func(3_u8, 5_u32);
@@ -4654,7 +4654,7 @@ pub trait SmallUInt: Copy + Clone + Sized //+ Display + Debug + ToString
     /// 
     /// # Example
     /// ```
-    /// use Cryptocol::number::*;
+    /// use cryptocol::number::*;
     /// 
     /// fn main()
     /// {
@@ -4706,7 +4706,7 @@ pub trait SmallUInt: Copy + Clone + Sized //+ Display + Debug + ToString
     /// 
     /// # Example
     /// ```
-    /// use Cryptocol::number::*;
+    /// use cryptocol::number::*;
     /// fn main()
     /// {
     ///     // Todo
@@ -4758,7 +4758,7 @@ pub trait SmallUInt: Copy + Clone + Sized //+ Display + Debug + ToString
     /// 
     /// # Example
     /// ```
-    /// use Cryptocol::number::*;
+    /// use cryptocol::number::*;
     /// fn main()
     /// {
     ///     // Todo
@@ -4822,7 +4822,7 @@ pub trait SmallUInt: Copy + Clone + Sized //+ Display + Debug + ToString
     /// 
     /// # Example
     /// ```
-    /// use Cryptocol::define_utypes_with;
+    /// use cryptocol::define_utypes_with;
     /// define_utypes_with!(u128);
     /// 
     /// let a = u256::from_uint(123_u8);
@@ -4883,7 +4883,7 @@ pub trait SmallUInt: Copy + Clone + Sized //+ Display + Debug + ToString
     /// 
     /// # Example
     /// ```
-    /// use Cryptocol::define_utypes_with;
+    /// use cryptocol::define_utypes_with;
     /// define_utypes_with!(u16);
     /// 
     /// let num = u1024::random();
@@ -4951,7 +4951,7 @@ pub trait SmallUInt: Copy + Clone + Sized //+ Display + Debug + ToString
     /// 
     /// # Example
     /// ```
-    /// use Cryptocol::define_utypes_with;
+    /// use cryptocol::define_utypes_with;
     /// define_utypes_with!(u16);
     /// 
     /// let mut a = u256::new();
@@ -4972,7 +4972,7 @@ pub trait SmallUInt: Copy + Clone + Sized //+ Display + Debug + ToString
     /// 
     /// # Example
     /// ```
-    /// use Cryptocol::define_utypes_with;
+    /// use cryptocol::define_utypes_with;
     /// define_utypes_with!(u128);
     /// let mut a = u1024::zero();
     /// if a.is_zero()
@@ -4995,7 +4995,7 @@ pub trait SmallUInt: Copy + Clone + Sized //+ Display + Debug + ToString
     /// 
     /// # Example
     /// ```
-    /// use Cryptocol::define_utypes_with;
+    /// use cryptocol::define_utypes_with;
     /// define_utypes_with!(u16);
     /// 
     /// let mut a = u256::new();
@@ -5016,7 +5016,7 @@ pub trait SmallUInt: Copy + Clone + Sized //+ Display + Debug + ToString
     /// 
     /// # Example
     /// ```
-    /// use Cryptocol::define_utypes_with;
+    /// use cryptocol::define_utypes_with;
     /// define_utypes_with!(u128);
     /// 
     /// let mut a = u256::one();
@@ -5044,7 +5044,7 @@ pub trait SmallUInt: Copy + Clone + Sized //+ Display + Debug + ToString
     /// 
     /// # Example
     /// ```
-    /// use Cryptocol::define_utypes_with;
+    /// use cryptocol::define_utypes_with;
     /// define_utypes_with!(u32);
     /// 
     /// let mut a = u256::zero();
@@ -5079,7 +5079,7 @@ pub trait SmallUInt: Copy + Clone + Sized //+ Display + Debug + ToString
     /// 
     /// # Examples
     /// ```
-    /// use Cryptocol::define_utypes_with;
+    /// use cryptocol::define_utypes_with;
     /// define_utypes_with!(u64);
     /// 
     /// let mut a = u256::new();
@@ -5101,7 +5101,7 @@ pub trait SmallUInt: Copy + Clone + Sized //+ Display + Debug + ToString
     /// 
     /// # Examples
     /// ```
-    /// use Cryptocol::define_utypes_with;
+    /// use cryptocol::define_utypes_with;
     /// define_utypes_with!(u16);
     /// 
     /// let mut a = u256::new();
@@ -5126,7 +5126,7 @@ pub trait SmallUInt: Copy + Clone + Sized //+ Display + Debug + ToString
     /// 
     /// # Examples
     /// ```
-    /// use Cryptocol::define_utypes_with;
+    /// use cryptocol::define_utypes_with;
     /// define_utypes_with!(u8);
     /// 
     /// let mut a = u256::new();
@@ -5146,7 +5146,7 @@ pub trait SmallUInt: Copy + Clone + Sized //+ Display + Debug + ToString
     /// 
     /// # Examples
     /// ```
-    /// use Cryptocol::define_utypes_with;
+    /// use cryptocol::define_utypes_with;
     /// define_utypes_with!(u128);
     /// 
     /// let a = u256::max();
@@ -5165,7 +5165,7 @@ pub trait SmallUInt: Copy + Clone + Sized //+ Display + Debug + ToString
     /// 
     /// # Examples
     /// ```
-    /// use Cryptocol::define_utypes_with;
+    /// use cryptocol::define_utypes_with;
     /// define_utypes_with!(u32);
     /// 
     /// let mut a = u256::new();
@@ -5186,7 +5186,7 @@ pub trait SmallUInt: Copy + Clone + Sized //+ Display + Debug + ToString
     /// 
     /// # Examples
     /// ```
-    /// use Cryptocol::define_utypes_with;
+    /// use cryptocol::define_utypes_with;
     /// define_utypes_with!(u64);
     /// 
     /// let mut a = u256::new();
@@ -5221,7 +5221,7 @@ pub trait SmallUInt: Copy + Clone + Sized //+ Display + Debug + ToString
     /// 
     /// # Example
     /// ```
-    /// use Cryptocol::define_utypes_with_u32;
+    /// use cryptocol::define_utypes_with_u32;
     /// define_utypes_with_u32!();
     /// 
     /// let a_0 = u256::generate_check_bits(0).unwrap();
@@ -5266,7 +5266,7 @@ pub trait SmallUInt: Copy + Clone + Sized //+ Display + Debug + ToString
     /// 
     /// # Example
     /// ```
-    /// use Cryptocol::define_utypes_with_u32;
+    /// use cryptocol::define_utypes_with_u32;
     /// define_utypes_with_u32!();
     /// 
     /// let a_0 = u256::generate_check_bits_(0);

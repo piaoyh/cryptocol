@@ -34,7 +34,7 @@ use super::small_uint::*;
 /// 
 /// # Example
 /// ```
-/// use Cryptocol::number::*;
+/// use cryptocol::number::*;
 /// let a = ShortUnion::new_with(55468_u16);
 /// println!("a.this = {}, {}", unsafe { a.this }, a.get());
 /// println!("a.that = {}, {}", unsafe { a.that }, a.get_signed());
@@ -126,7 +126,7 @@ pub union ShortUnion
 /// 
 /// # Example
 /// ```
-/// use Cryptocol::number::*;
+/// use cryptocol::number::*;
 /// let a = IntUnion::new_with_signed(-454688546_i32);
 /// println!("a.this = {}, {}", unsafe { a.this }, a.get());
 /// println!("a.that = {}, {}", unsafe { a.that }, a.get_signed());
@@ -252,7 +252,7 @@ pub union IntUnion
 /// 
 /// # Example
 /// ```
-/// use Cryptocol::number::*;
+/// use cryptocol::number::*;
 /// let a = LongUnion::new_with_signed(-1234567890987645_i64);
 /// println!("a.this = {}, {}", unsafe { a.this }, a.get());
 /// println!("a.that = {}, {}", unsafe { a.that }, a.get_signed());
@@ -420,7 +420,7 @@ pub union LongUnion
 /// 
 /// # Example
 /// ```
-/// use Cryptocol::number::*;
+/// use cryptocol::number::*;
 /// let a = LongerUnion::new_with_signed(-1234567890987654321012345678987654321_i128);
 /// println!("a.this = {}, {}", unsafe { a.this }, a.get());
 /// println!("a.that = {}, {}", unsafe { a.that }, a.get_signed());
@@ -646,7 +646,7 @@ pub union LongerUnion
 /// 
 /// # Example
 /// ```
-/// use Cryptocol::number::*;
+/// use cryptocol::number::*;
 /// let a = SizeUnion::new_with_signed(-1234567890987654321012345678987654321_isize);
 /// println!("a.this = {}, {}", unsafe { a.this }, a.get());
 /// println!("a.that = {}, {}", unsafe { a.that }, a.get_signed());
@@ -746,7 +746,7 @@ pub union SizeUnion
 /// 
 /// # Example
 /// ```
-/// use Cryptocol::number::*;
+/// use cryptocol::number::*;
 /// let a = SizeUnion::new_with_signed(-1234567890123456789_isize);
 /// println!("a.this = {}, {}", unsafe { a.this }, a.get());
 /// println!("a.that = {}, {}", unsafe { a.that }, a.get_signed());
@@ -872,7 +872,7 @@ pub union SizeUnion
 /// 
 /// # Example
 /// ```
-/// use Cryptocol::number::*;
+/// use cryptocol::number::*;
 /// let a = SizeUnion::new_with_signed(2112454933_isize);
 /// println!("a.this = {}, {}", unsafe { a.this }, a.get());
 /// println!("a.that = {}, {}", unsafe { a.that }, a.get_signed());
@@ -970,7 +970,7 @@ pub union SizeUnion
 /// 
 /// # Example
 /// ```
-/// use Cryptocol::number::*;
+/// use cryptocol::number::*;
 /// let a = SizeUnion::new_with_signed(32491_isize);
 /// println!("a.this = {}, {}", unsafe { a.this }, a.get());
 /// println!("a.that = {}, {}", unsafe { a.that }, a.get_signed());
@@ -1049,7 +1049,7 @@ pub union SizeUnion
 /// 
 /// # Example
 /// ```
-/// use Cryptocol::number::*;
+/// use cryptocol::number::*;
 /// let a = SizeUnion::new_with_signed(-21_isize);
 /// println!("a.this = {}, {}", unsafe { a.this }, a.get());
 /// println!("a.that = {}, {}", unsafe { a.that }, a.get_signed());
@@ -1120,7 +1120,7 @@ macro_rules! get_set_byte {
         /// 
         /// # Example for ShortUnion
         /// ```
-        /// use Cryptocol::number::*;
+        /// use cryptocol::number::*;
         /// let a_short = ShortUnion::new_with(2895_u16);
         /// let b_short_u8 = a_short.get_ubyte_(1);
         /// println!("a_short.get_ubyte_(1) = {}", b_short_u8);
@@ -1132,7 +1132,7 @@ macro_rules! get_set_byte {
         /// 
         /// # Example of LongerUnion
         /// ```
-        /// use Cryptocol::number::*;
+        /// use cryptocol::number::*;
         /// let a_longer = LongerUnion::new_with(339047799029950809142362261752780557135_u128);
         /// let b_longer_u8 = a_longer.get_ubyte_(3);
         /// println!("a_longer.get_ubyte_(3) = {}", b_longer_u8);
@@ -1169,7 +1169,7 @@ macro_rules! get_set_byte {
         /// 
         /// # Example for ShortUnion
         /// ```
-        /// use Cryptocol::number::*;
+        /// use cryptocol::number::*;
         /// let a_short = ShortUnion::new_with(2895_u16);
         /// let b_short_u8 = a_short.get_ubyte_(1);
         /// println!("a_short.get_ubyte_(1) = {}", b_short_u8);
@@ -1181,7 +1181,7 @@ macro_rules! get_set_byte {
         /// 
         /// # Example of LongerUnion
         /// ```
-        /// use Cryptocol::number::*;
+        /// use cryptocol::number::*;
         /// let a_longer = LongerUnion::new_with(339047799029950809142362261752780557135_u128);
         /// let b_longer_u8 = a_longer.get_ubyte_(3);
         /// println!("a_longer.get_ubyte_(3) = {}", b_longer_u8);
@@ -1223,7 +1223,7 @@ macro_rules! get_set_byte {
         /// 
         /// # Example for ShortUnion
         /// ```
-        /// use Cryptocol::number::*;
+        /// use cryptocol::number::*;
         /// let a_short = ShortUnion::new_with(2895_u16);
         /// let b_short_i8 = a_short.get_sbyte_(1);
         /// println!("a_short.get_sbyte_(1) = {}", b_short_i8);
@@ -1235,7 +1235,7 @@ macro_rules! get_set_byte {
         /// 
         /// # Example of LongerUnion
         /// ```
-        /// use Cryptocol::number::*;
+        /// use cryptocol::number::*;
         /// let a_longer = LongerUnion::new_with(339047799029950809142362261752780557135_u128);
         /// let b_longer_u8 = a_longer.get_sbyte_(3);
         /// println!("a_longer.get_sbyte_(3) = {}", b_longer_u8);
@@ -1272,7 +1272,7 @@ macro_rules! get_set_byte {
         /// 
         /// # Example for ShortUnion
         /// ```
-        /// use Cryptocol::number::*;
+        /// use cryptocol::number::*;
         /// let a_short = ShortUnion::new_with(2895_u16);
         /// let b_short_i8 = a_short.get_sbyte_(1);
         /// println!("a_short.get_sbyte_(1) = {}", b_short_i8);
@@ -1284,7 +1284,7 @@ macro_rules! get_set_byte {
         /// 
         /// # Example of LongerUnion
         /// ```
-        /// use Cryptocol::number::*;
+        /// use cryptocol::number::*;
         /// let a_longer = LongerUnion::new_with(339047799029950809142362261752780557135_u128);
         /// let b_longer_i8 = a_longer.get_sbyte_(3);
         /// println!("a_longer.get_sbyte_(3) = {}", b_longer_i8);
@@ -1317,7 +1317,7 @@ macro_rules! get_set_byte {
         /// 
         /// # Example for ShortUnion
         /// ```
-        /// use Cryptocol::number::*;
+        /// use cryptocol::number::*;
         /// let a_short = ShortUnion::new_with(2895_u16);
         /// 
         /// match a_short.get_ubyte(1)
@@ -1341,7 +1341,7 @@ macro_rules! get_set_byte {
         /// 
         /// # Example of LongerUnion
         /// ```
-        /// use Cryptocol::number::*;
+        /// use cryptocol::number::*;
         /// let a_longer = LongerUnion::new_with(339047799029950809142362261752780557135_u128);
         /// match a_longer.get_ubyte(3)
         /// {
@@ -1386,7 +1386,7 @@ macro_rules! get_set_byte {
         /// 
         /// # Example for ShortUnion
         /// ```
-        /// use Cryptocol::number::*;
+        /// use cryptocol::number::*;
         /// let a_short = ShortUnion::new_with(2895_u16);
         /// 
         /// match a_short.get_ubyte(1)
@@ -1410,7 +1410,7 @@ macro_rules! get_set_byte {
         /// 
         /// # Example of LongerUnion
         /// ```
-        /// use Cryptocol::number::*;
+        /// use cryptocol::number::*;
         /// let a_longer = LongerUnion::new_with(339047799029950809142362261752780557135_u128);
         /// match a_longer.get_ubyte(3)
         /// {
@@ -1461,7 +1461,7 @@ macro_rules! get_set_byte {
         /// 
         /// # Example for ShortUnion
         /// ```
-        /// use Cryptocol::number::*;
+        /// use cryptocol::number::*;
         /// let a_short = ShortUnion::new_with(2895_u16);
         /// 
         /// match a_short.get_sbyte(1)
@@ -1485,7 +1485,7 @@ macro_rules! get_set_byte {
         /// 
         /// # Example of LongerUnion
         /// ```
-        /// use Cryptocol::number::*;
+        /// use cryptocol::number::*;
         /// let a_longer = LongerUnion::new_with(339047799029950809142362261752780557135_u128);
         /// match a_longer.get_sbyte(3)
         /// {
@@ -1530,7 +1530,7 @@ macro_rules! get_set_byte {
         /// 
         /// # Example for ShortUnion
         /// ```
-        /// use Cryptocol::number::*;
+        /// use cryptocol::number::*;
         /// let a_short = ShortUnion::new_with(2895_u16);
         /// 
         /// match a_short.get_sbyte(1)
@@ -1554,7 +1554,7 @@ macro_rules! get_set_byte {
         /// 
         /// # Example of LongerUnion
         /// ```
-        /// use Cryptocol::number::*;
+        /// use cryptocol::number::*;
         /// let a_longer = LongerUnion::new_with(339047799029950809142362261752780557135_u128);
         /// match a_longer.get_sbyte(3)
         /// {
@@ -1613,7 +1613,7 @@ macro_rules! get_set_byte {
         /// 
         /// # Example for ShortUnion
         /// ```
-        /// use Cryptocol::number::*;
+        /// use cryptocol::number::*;
         /// let mut a_short = ShortUnion::new_with(2895_u16);
         /// let mut b_short_u8 = a_short.get_ubyte_(1);
         /// println!("a_short.get_ubyte_(1) = {}", b_short_u8);
@@ -1629,7 +1629,7 @@ macro_rules! get_set_byte {
         /// 
         /// # Example of LongerUnion
         /// ```
-        /// use Cryptocol::number::*;
+        /// use cryptocol::number::*;
         /// let mut a_longer = LongerUnion::new_with(339047799029950809142362261752780557135_u128);
         /// let mut b_longer_u8 = a_longer.get_ubyte_(3);
         /// println!("a_longer.get_ubyte_(3) = {}", b_longer_u8);
@@ -1669,7 +1669,7 @@ macro_rules! get_set_byte {
         /// 
         /// # Example for ShortUnion
         /// ```
-        /// use Cryptocol::number::*;
+        /// use cryptocol::number::*;
         /// let mut a_short = ShortUnion::new_with(2895_u16);
         /// let mut b_short_u8 = a_short.get_ubyte_(1);
         /// println!("a_short.get_ubyte_(1) = {}", b_short_u8);
@@ -1685,7 +1685,7 @@ macro_rules! get_set_byte {
         /// 
         /// # Example of LongerUnion
         /// ```
-        /// use Cryptocol::number::*;
+        /// use cryptocol::number::*;
         /// let mut a_longer = LongerUnion::new_with(339047799029950809142362261752780557135_u128);
         /// let mut b_longer_u8 = a_longer.get_ubyte_(3);
         /// println!("a_longer.get_ubyte_(3) = {}", b_longer_u8);
@@ -1730,7 +1730,7 @@ macro_rules! get_set_byte {
         /// 
         /// # Example for ShortUnion
         /// ```
-        /// use Cryptocol::number::*;
+        /// use cryptocol::number::*;
         /// let mut a_short = ShortUnion::new_with_signed(79_i16);
         /// let mut b_short_i8 = a_short.get_sbyte_(1);
         /// println!("a_short.get_sbyte_(1) = {}", b_short_i8);
@@ -1746,7 +1746,7 @@ macro_rules! get_set_byte {
         /// 
         /// # Example of LongerUnion
         /// ```
-        /// use Cryptocol::number::*;
+        /// use cryptocol::number::*;
         /// let mut a_longer = LongerUnion::new_with_signed(-123456789012345678901234567890123456789_i128);
         /// let mut b_longer_i8 = a_longer.get_sbyte_(3);
         /// println!("a_longer.get_sbyte_(3) = {}", b_longer_i8);
@@ -1787,7 +1787,7 @@ macro_rules! get_set_byte {
         /// 
         /// # Example for ShortUnion
         /// ```
-        /// use Cryptocol::number::*;
+        /// use cryptocol::number::*;
         /// let mut a_short = ShortUnion::new_with_signed(79_i16);
         /// let mut b_short_i8 = a_short.get_sbyte_(1);
         /// println!("a_short.get_sbyte_(1) = {}", b_short_i8);
@@ -1803,7 +1803,7 @@ macro_rules! get_set_byte {
         /// 
         /// # Example of LongerUnion
         /// ```
-        /// use Cryptocol::number::*;
+        /// use cryptocol::number::*;
         /// let mut a_longer = LongerUnion::new_with_signed(-123456789012345678901234567890123456789_i128);
         /// let mut b_longer_i8 = a_longer.get_sbyte_(3);
         /// println!("a_longer.get_sbyte_(3) = {}", b_longer_i8);
@@ -1840,7 +1840,7 @@ macro_rules! get_set_byte {
         /// 
         /// # Example for ShortUnion
         /// ```
-        /// use Cryptocol::number::*;
+        /// use cryptocol::number::*;
         /// let mut succ = a_short.set_sbyte(1, 11);
         /// let mut sbyte = a_short.get_sbyte(1);
         /// if succ
@@ -1870,7 +1870,7 @@ macro_rules! get_set_byte {
         /// 
         /// # Example of LongerUnion
         /// ```
-        /// use Cryptocol::number::*;
+        /// use cryptocol::number::*;
         /// let mut succ = a_longer.set_ubyte(3, 241_u8);
         /// let mut ubyte = a_longer.get_ubyte(3);
         /// if succ
@@ -1927,7 +1927,7 @@ macro_rules! get_set_byte {
         /// 
         /// # Example for ShortUnion
         /// ```
-        /// use Cryptocol::number::*;
+        /// use cryptocol::number::*;
         /// let mut succ = a_short.set_sbyte(1, 11);
         /// let mut sbyte = a_short.get_sbyte(1);
         /// if succ
@@ -1957,7 +1957,7 @@ macro_rules! get_set_byte {
         /// 
         /// # Example of LongerUnion
         /// ```
-        /// use Cryptocol::number::*;
+        /// use cryptocol::number::*;
         /// let mut succ = a_longer.set_ubyte(3, 241_u8);
         /// let mut ubyte = a_longer.get_ubyte(3);
         /// if succ
@@ -2019,7 +2019,7 @@ macro_rules! get_set_byte {
         /// 
         /// # Example for ShortUnion
         /// ```
-        /// use Cryptocol::number::*;
+        /// use cryptocol::number::*;
         /// let mut succ = a_short.set_sbyte(1, 11);
         /// let mut sbyte = a_short.get_sbyte(1);
         /// if succ
@@ -2049,7 +2049,7 @@ macro_rules! get_set_byte {
         /// 
         /// # Example of LongerUnion
         /// ```
-        /// use Cryptocol::number::*;
+        /// use cryptocol::number::*;
         /// let mut succ = a_longer.set_sbyte(3, 81_i8);
         /// let mut sbyte = a_longer.get_sbyte(3);
         /// if succ
@@ -2106,7 +2106,7 @@ macro_rules! get_set_byte {
         /// 
         /// # Example for ShortUnion
         /// ```
-        /// use Cryptocol::number::*;
+        /// use cryptocol::number::*;
         /// let mut succ = a_short.set_sbyte(1, 11);
         /// let mut sbyte = a_short.get_sbyte(1);
         /// if succ
@@ -2136,7 +2136,7 @@ macro_rules! get_set_byte {
         /// 
         /// # Example of LongerUnion
         /// ```
-        /// use Cryptocol::number::*;
+        /// use cryptocol::number::*;
         /// let mut succ = a_longer.set_sbyte(3, 81_i8);
         /// let mut sbyte = a_longer.get_sbyte(3);
         /// if succ
@@ -2216,13 +2216,13 @@ macro_rules! get_set_short {
         /// 
         /// # Example for ShortUnion
         /// ```
-        /// use Cryptocol::number::*;
+        /// use cryptocol::number::*;
         /// // to do
         /// ```
         /// 
         /// # Example of LongerUnion
         /// ```
-        /// use Cryptocol::number::*;
+        /// use cryptocol::number::*;
         /// // to do
         /// ```
         #[cfg(target_endian = "little")]
@@ -2255,13 +2255,13 @@ macro_rules! get_set_short {
         /// 
         /// # Example for ShortUnion
         /// ```
-        /// use Cryptocol::number::*;
+        /// use cryptocol::number::*;
         /// // to do
         /// ```
         /// 
         /// # Example of LongerUnion
         /// ```
-        /// use Cryptocol::number::*;
+        /// use cryptocol::number::*;
         /// // to do
         /// ```
         /// 
@@ -2299,13 +2299,13 @@ macro_rules! get_set_short {
         /// 
         /// # Example for ShortUnion
         /// ```
-        /// use Cryptocol::number::*;
+        /// use cryptocol::number::*;
         /// // to do
         /// ```
         /// 
         /// # Example of LongerUnion
         /// ```
-        /// use Cryptocol::number::*;
+        /// use cryptocol::number::*;
         /// // to do
         /// ```
         #[cfg(target_endian = "little")]
@@ -2338,13 +2338,13 @@ macro_rules! get_set_short {
         /// 
         /// # Example for ShortUnion
         /// ```
-        /// use Cryptocol::number::*;
+        /// use cryptocol::number::*;
         /// // to do
         /// ```
         /// 
         /// # Example of LongerUnion
         /// ```
-        /// use Cryptocol::number::*;
+        /// use cryptocol::number::*;
         /// // to do
         /// ```
         /// 
@@ -2371,13 +2371,13 @@ macro_rules! get_set_short {
         /// 
         /// # Example for ShortUnion
         /// ```
-        /// use Cryptocol::number::*;
+        /// use cryptocol::number::*;
         /// // to do
         /// ```
         /// 
         /// # Example of LongerUnion
         /// ```
-        /// use Cryptocol::number::*;
+        /// use cryptocol::number::*;
         /// // to do
         /// ```
         #[cfg(target_endian = "little")]
@@ -2405,13 +2405,13 @@ macro_rules! get_set_short {
         /// 
         /// # Example for ShortUnion
         /// ```
-        /// use Cryptocol::number::*;
+        /// use cryptocol::number::*;
         /// // to do
         /// ```
         /// 
         /// # Example of LongerUnion
         /// ```
-        /// use Cryptocol::number::*;
+        /// use cryptocol::number::*;
         /// // to do
         /// ```
         /// 
@@ -2444,13 +2444,13 @@ macro_rules! get_set_short {
         /// 
         /// # Example for ShortUnion
         /// ```
-        /// use Cryptocol::number::*;
+        /// use cryptocol::number::*;
         /// // to do
         /// ```
         /// 
         /// # Example of LongerUnion
         /// ```
-        /// use Cryptocol::number::*;
+        /// use cryptocol::number::*;
         /// // to do
         /// ```
         #[cfg(target_endian = "little")]
@@ -2478,13 +2478,13 @@ macro_rules! get_set_short {
         /// 
         /// # Example for ShortUnion
         /// ```
-        /// use Cryptocol::number::*;
+        /// use cryptocol::number::*;
         /// // to do
         /// ```
         /// 
         /// # Example of LongerUnion
         /// ```
-        /// use Cryptocol::number::*;
+        /// use cryptocol::number::*;
         /// // to do
         /// ```
         /// 
@@ -2527,13 +2527,13 @@ macro_rules! get_set_short {
         /// 
         /// # Example for ShortUnion
         /// ```
-        /// use Cryptocol::number::*;
+        /// use cryptocol::number::*;
         /// // to do
         /// ```
         /// 
         /// # Example of LongerUnion
         /// ```
-        /// use Cryptocol::number::*;
+        /// use cryptocol::number::*;
         /// // to do
         /// ```
         #[cfg(target_endian = "little")]
@@ -2565,13 +2565,13 @@ macro_rules! get_set_short {
         /// 
         /// # Example for ShortUnion
         /// ```
-        /// use Cryptocol::number::*;
+        /// use cryptocol::number::*;
         /// // to do
         /// ```
         /// 
         /// # Example of LongerUnion
         /// ```
-        /// use Cryptocol::number::*;
+        /// use cryptocol::number::*;
         /// // to do
         /// ```
         /// 
@@ -2608,13 +2608,13 @@ macro_rules! get_set_short {
         /// 
         /// # Example for ShortUnion
         /// ```
-        /// use Cryptocol::number::*;
+        /// use cryptocol::number::*;
         /// // to do
         /// ```
         /// 
         /// # Example of LongerUnion
         /// ```
-        /// use Cryptocol::number::*;
+        /// use cryptocol::number::*;
         /// // to do
         /// ```
         #[cfg(target_endian = "little")]
@@ -2646,13 +2646,13 @@ macro_rules! get_set_short {
         /// 
         /// # Example for ShortUnion
         /// ```
-        /// use Cryptocol::number::*;
+        /// use cryptocol::number::*;
         /// // to do
         /// ```
         /// 
         /// # Example of LongerUnion
         /// ```
-        /// use Cryptocol::number::*;
+        /// use cryptocol::number::*;
         /// // to do
         /// ```
         /// 
@@ -2679,13 +2679,13 @@ macro_rules! get_set_short {
         /// 
         /// # Example for ShortUnion
         /// ```
-        /// use Cryptocol::number::*;
+        /// use cryptocol::number::*;
         /// // todo
         /// ```
         /// 
         /// # Example of LongerUnion
         /// ```
-        /// use Cryptocol::number::*;
+        /// use cryptocol::number::*;
         /// // todo
         /// ```
         #[cfg(target_endian = "little")]
@@ -2718,13 +2718,13 @@ macro_rules! get_set_short {
         /// 
         /// # Example for ShortUnion
         /// ```
-        /// use Cryptocol::number::*;
+        /// use cryptocol::number::*;
         /// // todo
         /// ```
         /// 
         /// # Example of LongerUnion
         /// ```
-        /// use Cryptocol::number::*;
+        /// use cryptocol::number::*;
         /// // todo
         /// ```
         /// 
@@ -2762,13 +2762,13 @@ macro_rules! get_set_short {
         /// 
         /// # Example for ShortUnion
         /// ```
-        /// use Cryptocol::number::*;
+        /// use cryptocol::number::*;
         /// // todo
         /// ```
         /// 
         /// # Example of LongerUnion
         /// ```
-        /// use Cryptocol::number::*;
+        /// use cryptocol::number::*;
         /// // todo
         /// ```
         #[cfg(target_endian = "little")]
@@ -2801,13 +2801,13 @@ macro_rules! get_set_short {
         /// 
         /// # Example for ShortUnion
         /// ```
-        /// use Cryptocol::number::*;
+        /// use cryptocol::number::*;
         /// // todo
         /// ```
         /// 
         /// # Example of LongerUnion
         /// ```
-        /// use Cryptocol::number::*;
+        /// use cryptocol::number::*;
         /// // todo
         /// ```
         /// 
@@ -2863,13 +2863,13 @@ macro_rules! get_set_int {
         /// 
         /// # Example for ShortUnion
         /// ```
-        /// use Cryptocol::number::*;
+        /// use cryptocol::number::*;
         /// // to do
         /// ```
         /// 
         /// # Example of LongerUnion
         /// ```
-        /// use Cryptocol::number::*;
+        /// use cryptocol::number::*;
         /// // to do
         /// ```
         #[cfg(target_endian = "little")]
@@ -2902,13 +2902,13 @@ macro_rules! get_set_int {
         /// 
         /// # Example for ShortUnion
         /// ```
-        /// use Cryptocol::number::*;
+        /// use cryptocol::number::*;
         /// // to do
         /// ```
         /// 
         /// # Example of LongerUnion
         /// ```
-        /// use Cryptocol::number::*;
+        /// use cryptocol::number::*;
         /// // to do
         /// ```
         /// 
@@ -2946,13 +2946,13 @@ macro_rules! get_set_int {
         /// 
         /// # Example for ShortUnion
         /// ```
-        /// use Cryptocol::number::*;
+        /// use cryptocol::number::*;
         /// // to do
         /// ```
         /// 
         /// # Example of LongerUnion
         /// ```
-        /// use Cryptocol::number::*;
+        /// use cryptocol::number::*;
         /// // to do
         /// ```
         #[cfg(target_endian = "little")]
@@ -2985,13 +2985,13 @@ macro_rules! get_set_int {
         /// 
         /// # Example for ShortUnion
         /// ```
-        /// use Cryptocol::number::*;
+        /// use cryptocol::number::*;
         /// // to do
         /// ```
         /// 
         /// # Example of LongerUnion
         /// ```
-        /// use Cryptocol::number::*;
+        /// use cryptocol::number::*;
         /// // to do
         /// ```
         /// 
@@ -3018,13 +3018,13 @@ macro_rules! get_set_int {
         /// 
         /// # Example for ShortUnion
         /// ```
-        /// use Cryptocol::number::*;
+        /// use cryptocol::number::*;
         /// // to do
         /// ```
         /// 
         /// # Example of LongerUnion
         /// ```
-        /// use Cryptocol::number::*;
+        /// use cryptocol::number::*;
         /// // to do
         /// ```
         #[cfg(target_endian = "little")]
@@ -3052,13 +3052,13 @@ macro_rules! get_set_int {
         /// 
         /// # Example for ShortUnion
         /// ```
-        /// use Cryptocol::number::*;
+        /// use cryptocol::number::*;
         /// // to do
         /// ```
         /// 
         /// # Example of LongerUnion
         /// ```
-        /// use Cryptocol::number::*;
+        /// use cryptocol::number::*;
         /// // to do
         /// ```
         /// 
@@ -3091,13 +3091,13 @@ macro_rules! get_set_int {
         /// 
         /// # Example for ShortUnion
         /// ```
-        /// use Cryptocol::number::*;
+        /// use cryptocol::number::*;
         /// // to do
         /// ```
         /// 
         /// # Example of LongerUnion
         /// ```
-        /// use Cryptocol::number::*;
+        /// use cryptocol::number::*;
         /// // to do
         /// ```
         #[cfg(target_endian = "little")]
@@ -3125,13 +3125,13 @@ macro_rules! get_set_int {
         /// 
         /// # Example for ShortUnion
         /// ```
-        /// use Cryptocol::number::*;
+        /// use cryptocol::number::*;
         /// // to do
         /// ```
         /// 
         /// # Example of LongerUnion
         /// ```
-        /// use Cryptocol::number::*;
+        /// use cryptocol::number::*;
         /// // to do
         /// ```
         /// 
@@ -3174,13 +3174,13 @@ macro_rules! get_set_int {
         /// 
         /// # Example for ShortUnion
         /// ```
-        /// use Cryptocol::number::*;
+        /// use cryptocol::number::*;
         /// // to do
         /// ```
         /// 
         /// # Example of LongerUnion
         /// ```
-        /// use Cryptocol::number::*;
+        /// use cryptocol::number::*;
         /// // to do
         /// ```
         #[cfg(target_endian = "little")]
@@ -3212,13 +3212,13 @@ macro_rules! get_set_int {
         /// 
         /// # Example for ShortUnion
         /// ```
-        /// use Cryptocol::number::*;
+        /// use cryptocol::number::*;
         /// // to do
         /// ```
         /// 
         /// # Example of LongerUnion
         /// ```
-        /// use Cryptocol::number::*;
+        /// use cryptocol::number::*;
         /// // to do
         /// ```
         /// 
@@ -3255,13 +3255,13 @@ macro_rules! get_set_int {
         /// 
         /// # Example for ShortUnion
         /// ```
-        /// use Cryptocol::number::*;
+        /// use cryptocol::number::*;
         /// // to do
         /// ```
         /// 
         /// # Example of LongerUnion
         /// ```
-        /// use Cryptocol::number::*;
+        /// use cryptocol::number::*;
         /// // to do
         /// ```
         #[cfg(target_endian = "little")]
@@ -3293,13 +3293,13 @@ macro_rules! get_set_int {
         /// 
         /// # Example for ShortUnion
         /// ```
-        /// use Cryptocol::number::*;
+        /// use cryptocol::number::*;
         /// // to do
         /// ```
         /// 
         /// # Example of LongerUnion
         /// ```
-        /// use Cryptocol::number::*;
+        /// use cryptocol::number::*;
         /// // to do
         /// ```
         /// 
@@ -3326,13 +3326,13 @@ macro_rules! get_set_int {
         /// 
         /// # Example for ShortUnion
         /// ```
-        /// use Cryptocol::number::*;
+        /// use cryptocol::number::*;
         /// // todo
         /// ```
         /// 
         /// # Example of LongerUnion
         /// ```
-        /// use Cryptocol::number::*;
+        /// use cryptocol::number::*;
         /// // todo
         /// ```
         #[cfg(target_endian = "little")]
@@ -3365,13 +3365,13 @@ macro_rules! get_set_int {
         /// 
         /// # Example for ShortUnion
         /// ```
-        /// use Cryptocol::number::*;
+        /// use cryptocol::number::*;
         /// // todo
         /// ```
         /// 
         /// # Example of LongerUnion
         /// ```
-        /// use Cryptocol::number::*;
+        /// use cryptocol::number::*;
         /// // todo
         /// ```
         /// 
@@ -3409,13 +3409,13 @@ macro_rules! get_set_int {
         /// 
         /// # Example for ShortUnion
         /// ```
-        /// use Cryptocol::number::*;
+        /// use cryptocol::number::*;
         /// // todo
         /// ```
         /// 
         /// # Example of LongerUnion
         /// ```
-        /// use Cryptocol::number::*;
+        /// use cryptocol::number::*;
         /// // todo
         /// ```
         #[cfg(target_endian = "little")]
@@ -3448,13 +3448,13 @@ macro_rules! get_set_int {
         /// 
         /// # Example for ShortUnion
         /// ```
-        /// use Cryptocol::number::*;
+        /// use cryptocol::number::*;
         /// // todo
         /// ```
         /// 
         /// # Example of LongerUnion
         /// ```
-        /// use Cryptocol::number::*;
+        /// use cryptocol::number::*;
         /// // todo
         /// ```
         /// 
@@ -3510,13 +3510,13 @@ macro_rules! get_set_long {
         /// 
         /// # Example for ShortUnion
         /// ```
-        /// use Cryptocol::number::*;
+        /// use cryptocol::number::*;
         /// // to do
         /// ```
         /// 
         /// # Example of LongerUnion
         /// ```
-        /// use Cryptocol::number::*;
+        /// use cryptocol::number::*;
         /// // to do
         /// ```
         #[cfg(target_endian = "little")]
@@ -3549,13 +3549,13 @@ macro_rules! get_set_long {
         /// 
         /// # Example for ShortUnion
         /// ```
-        /// use Cryptocol::number::*;
+        /// use cryptocol::number::*;
         /// // to do
         /// ```
         /// 
         /// # Example of LongerUnion
         /// ```
-        /// use Cryptocol::number::*;
+        /// use cryptocol::number::*;
         /// // to do
         /// ```
         /// 
@@ -3593,13 +3593,13 @@ macro_rules! get_set_long {
         /// 
         /// # Example for ShortUnion
         /// ```
-        /// use Cryptocol::number::*;
+        /// use cryptocol::number::*;
         /// // to do
         /// ```
         /// 
         /// # Example of LongerUnion
         /// ```
-        /// use Cryptocol::number::*;
+        /// use cryptocol::number::*;
         /// // to do
         /// ```
         #[cfg(target_endian = "little")]
@@ -3632,13 +3632,13 @@ macro_rules! get_set_long {
         /// 
         /// # Example for ShortUnion
         /// ```
-        /// use Cryptocol::number::*;
+        /// use cryptocol::number::*;
         /// // to do
         /// ```
         /// 
         /// # Example of LongerUnion
         /// ```
-        /// use Cryptocol::number::*;
+        /// use cryptocol::number::*;
         /// // to do
         /// ```
         /// 
@@ -3666,13 +3666,13 @@ macro_rules! get_set_long {
         /// 
         /// # Example for ShortUnion
         /// ```
-        /// use Cryptocol::number::*;
+        /// use cryptocol::number::*;
         /// // to do
         /// ```
         /// 
         /// # Example of LongerUnion
         /// ```
-        /// use Cryptocol::number::*;
+        /// use cryptocol::number::*;
         /// // to do
         /// ```
         #[cfg(target_endian = "little")]
@@ -3701,13 +3701,13 @@ macro_rules! get_set_long {
         /// 
         /// # Example for ShortUnion
         /// ```
-        /// use Cryptocol::number::*;
+        /// use cryptocol::number::*;
         /// // to do
         /// ```
         /// 
         /// # Example of LongerUnion
         /// ```
-        /// use Cryptocol::number::*;
+        /// use cryptocol::number::*;
         /// // to do
         /// ```
         /// 
@@ -3740,13 +3740,13 @@ macro_rules! get_set_long {
         /// 
         /// # Example for ShortUnion
         /// ```
-        /// use Cryptocol::number::*;
+        /// use cryptocol::number::*;
         /// // to do
         /// ```
         /// 
         /// # Example of LongerUnion
         /// ```
-        /// use Cryptocol::number::*;
+        /// use cryptocol::number::*;
         /// // to do
         /// ```
         #[cfg(target_endian = "little")]
@@ -3774,13 +3774,13 @@ macro_rules! get_set_long {
         /// 
         /// # Example for ShortUnion
         /// ```
-        /// use Cryptocol::number::*;
+        /// use cryptocol::number::*;
         /// // to do
         /// ```
         /// 
         /// # Example of LongerUnion
         /// ```
-        /// use Cryptocol::number::*;
+        /// use cryptocol::number::*;
         /// // to do
         /// ```
         /// 
@@ -3823,13 +3823,13 @@ macro_rules! get_set_long {
         /// 
         /// # Example for ShortUnion
         /// ```
-        /// use Cryptocol::number::*;
+        /// use cryptocol::number::*;
         /// // to do
         /// ```
         /// 
         /// # Example of LongerUnion
         /// ```
-        /// use Cryptocol::number::*;
+        /// use cryptocol::number::*;
         /// // to do
         /// ```
         #[cfg(target_endian = "little")]
@@ -3861,13 +3861,13 @@ macro_rules! get_set_long {
         /// 
         /// # Example for ShortUnion
         /// ```
-        /// use Cryptocol::number::*;
+        /// use cryptocol::number::*;
         /// // to do
         /// ```
         /// 
         /// # Example of LongerUnion
         /// ```
-        /// use Cryptocol::number::*;
+        /// use cryptocol::number::*;
         /// // to do
         /// ```
         /// 
@@ -3904,13 +3904,13 @@ macro_rules! get_set_long {
         /// 
         /// # Example for ShortUnion
         /// ```
-        /// use Cryptocol::number::*;
+        /// use cryptocol::number::*;
         /// // to do
         /// ```
         /// 
         /// # Example of LongerUnion
         /// ```
-        /// use Cryptocol::number::*;
+        /// use cryptocol::number::*;
         /// // to do
         /// ```
         #[cfg(target_endian = "little")]
@@ -3942,13 +3942,13 @@ macro_rules! get_set_long {
         /// 
         /// # Example for ShortUnion
         /// ```
-        /// use Cryptocol::number::*;
+        /// use cryptocol::number::*;
         /// // to do
         /// ```
         /// 
         /// # Example of LongerUnion
         /// ```
-        /// use Cryptocol::number::*;
+        /// use cryptocol::number::*;
         /// // to do
         /// ```
         /// 
@@ -3975,13 +3975,13 @@ macro_rules! get_set_long {
         /// 
         /// # Example for ShortUnion
         /// ```
-        /// use Cryptocol::number::*;
+        /// use cryptocol::number::*;
         /// // todo
         /// ```
         /// 
         /// # Example of LongerUnion
         /// ```
-        /// use Cryptocol::number::*;
+        /// use cryptocol::number::*;
         /// // todo
         /// ```
         #[cfg(target_endian = "little")]
@@ -4014,13 +4014,13 @@ macro_rules! get_set_long {
         /// 
         /// # Example for ShortUnion
         /// ```
-        /// use Cryptocol::number::*;
+        /// use cryptocol::number::*;
         /// // todo
         /// ```
         /// 
         /// # Example of LongerUnion
         /// ```
-        /// use Cryptocol::number::*;
+        /// use cryptocol::number::*;
         /// // todo
         /// ```
         /// 
@@ -4058,13 +4058,13 @@ macro_rules! get_set_long {
         /// 
         /// # Example for ShortUnion
         /// ```
-        /// use Cryptocol::number::*;
+        /// use cryptocol::number::*;
         /// // todo
         /// ```
         /// 
         /// # Example of LongerUnion
         /// ```
-        /// use Cryptocol::number::*;
+        /// use cryptocol::number::*;
         /// // todo
         /// ```
         #[cfg(target_endian = "little")]
@@ -4097,13 +4097,13 @@ macro_rules! get_set_long {
         /// 
         /// # Example for ShortUnion
         /// ```
-        /// use Cryptocol::number::*;
+        /// use cryptocol::number::*;
         /// // todo
         /// ```
         /// 
         /// # Example of LongerUnion
         /// ```
-        /// use Cryptocol::number::*;
+        /// use cryptocol::number::*;
         /// // todo
         /// ```
         /// 
@@ -4158,13 +4158,13 @@ macro_rules! get_set_size {
         /// 
         /// # Example for ShortUnion
         /// ```
-        /// use Cryptocol::number::*;
+        /// use cryptocol::number::*;
         /// // to do
         /// ```
         /// 
         /// # Example of LongerUnion
         /// ```
-        /// use Cryptocol::number::*;
+        /// use cryptocol::number::*;
         /// // to do
         /// ```
         #[cfg(target_endian = "little")]
@@ -4196,13 +4196,13 @@ macro_rules! get_set_size {
         /// 
         /// # Example for ShortUnion
         /// ```
-        /// use Cryptocol::number::*;
+        /// use cryptocol::number::*;
         /// // to do
         /// ```
         /// 
         /// # Example of LongerUnion
         /// ```
-        /// use Cryptocol::number::*;
+        /// use cryptocol::number::*;
         /// // to do
         /// ```
         /// 
@@ -4239,13 +4239,13 @@ macro_rules! get_set_size {
         /// 
         /// # Example for ShortUnion
         /// ```
-        /// use Cryptocol::number::*;
+        /// use cryptocol::number::*;
         /// // to do
         /// ```
         /// 
         /// # Example of LongerUnion
         /// ```
-        /// use Cryptocol::number::*;
+        /// use cryptocol::number::*;
         /// // to do
         /// ```
         #[cfg(target_endian = "little")]
@@ -4277,13 +4277,13 @@ macro_rules! get_set_size {
         /// 
         /// # Example for ShortUnion
         /// ```
-        /// use Cryptocol::number::*;
+        /// use cryptocol::number::*;
         /// // to do
         /// ```
         /// 
         /// # Example of LongerUnion
         /// ```
-        /// use Cryptocol::number::*;
+        /// use cryptocol::number::*;
         /// // to do
         /// ```
         /// 
@@ -4312,13 +4312,13 @@ macro_rules! get_set_size {
         /// 
         /// # Example for ShortUnion
         /// ```
-        /// use Cryptocol::number::*;
+        /// use cryptocol::number::*;
         /// // to do
         /// ```
         /// 
         /// # Example of LongerUnion
         /// ```
-        /// use Cryptocol::number::*;
+        /// use cryptocol::number::*;
         /// // to do
         /// ```
         #[cfg(target_endian = "little")]
@@ -4348,13 +4348,13 @@ macro_rules! get_set_size {
         /// 
         /// # Example for ShortUnion
         /// ```
-        /// use Cryptocol::number::*;
+        /// use cryptocol::number::*;
         /// // to do
         /// ```
         /// 
         /// # Example of LongerUnion
         /// ```
-        /// use Cryptocol::number::*;
+        /// use cryptocol::number::*;
         /// // to do
         /// ```
         /// 
@@ -4389,13 +4389,13 @@ macro_rules! get_set_size {
         /// 
         /// # Example for ShortUnion
         /// ```
-        /// use Cryptocol::number::*;
+        /// use cryptocol::number::*;
         /// // to do
         /// ```
         /// 
         /// # Example of LongerUnion
         /// ```
-        /// use Cryptocol::number::*;
+        /// use cryptocol::number::*;
         /// // to do
         /// ```
         #[cfg(target_endian = "little")]
@@ -4425,13 +4425,13 @@ macro_rules! get_set_size {
         /// 
         /// # Example for ShortUnion
         /// ```
-        /// use Cryptocol::number::*;
+        /// use cryptocol::number::*;
         /// // to do
         /// ```
         /// 
         /// # Example of LongerUnion
         /// ```
-        /// use Cryptocol::number::*;
+        /// use cryptocol::number::*;
         /// // to do
         /// ```
         /// 
@@ -4470,13 +4470,13 @@ macro_rules! get_set_size {
         /// 
         /// # Example for ShortUnion
         /// ```
-        /// use Cryptocol::number::*;
+        /// use cryptocol::number::*;
         /// // todo
         /// ```
         /// 
         /// # Example of LongerUnion
         /// ```
-        /// use Cryptocol::number::*;
+        /// use cryptocol::number::*;
         /// // todo
         /// ```
         #[cfg(target_endian = "little")]
@@ -4504,13 +4504,13 @@ macro_rules! get_set_size {
         /// 
         /// # Example for ShortUnion
         /// ```
-        /// use Cryptocol::number::*;
+        /// use cryptocol::number::*;
         /// // todo
         /// ```
         /// 
         /// # Example of LongerUnion
         /// ```
-        /// use Cryptocol::number::*;
+        /// use cryptocol::number::*;
         /// // todo
         /// ```
         /// 
@@ -4543,13 +4543,13 @@ macro_rules! get_set_size {
         /// 
         /// # Example for ShortUnion
         /// ```
-        /// use Cryptocol::number::*;
+        /// use cryptocol::number::*;
         /// // todo
         /// ```
         /// 
         /// # Example of LongerUnion
         /// ```
-        /// use Cryptocol::number::*;
+        /// use cryptocol::number::*;
         /// // todo
         /// ```
         #[cfg(target_endian = "little")]
@@ -4577,13 +4577,13 @@ macro_rules! get_set_size {
         /// 
         /// # Example for ShortUnion
         /// ```
-        /// use Cryptocol::number::*;
+        /// use cryptocol::number::*;
         /// // todo
         /// ```
         /// 
         /// # Example of LongerUnion
         /// ```
-        /// use Cryptocol::number::*;
+        /// use cryptocol::number::*;
         /// // todo
         /// ```
         /// 
@@ -4612,13 +4612,13 @@ macro_rules! get_set_size {
         /// 
         /// # Example for ShortUnion
         /// ```
-        /// use Cryptocol::number::*;
+        /// use cryptocol::number::*;
         /// // todo
         /// ```
         /// 
         /// # Example of LongerUnion
         /// ```
-        /// use Cryptocol::number::*;
+        /// use cryptocol::number::*;
         /// // todo
         /// ```
         #[cfg(target_endian = "little")]
@@ -4653,13 +4653,13 @@ macro_rules! get_set_size {
         /// 
         /// # Example for ShortUnion
         /// ```
-        /// use Cryptocol::number::*;
+        /// use cryptocol::number::*;
         /// // todo
         /// ```
         /// 
         /// # Example of LongerUnion
         /// ```
-        /// use Cryptocol::number::*;
+        /// use cryptocol::number::*;
         /// // todo
         /// ```
         /// 
@@ -4699,13 +4699,13 @@ macro_rules! get_set_size {
         /// 
         /// # Example for ShortUnion
         /// ```
-        /// use Cryptocol::number::*;
+        /// use cryptocol::number::*;
         /// // todo
         /// ```
         /// 
         /// # Example of LongerUnion
         /// ```
-        /// use Cryptocol::number::*;
+        /// use cryptocol::number::*;
         /// // todo
         /// ```
         #[cfg(target_endian = "little")]
@@ -4740,13 +4740,13 @@ macro_rules! get_set_size {
         /// 
         /// # Example for ShortUnion
         /// ```
-        /// use Cryptocol::number::*;
+        /// use cryptocol::number::*;
         /// // todo
         /// ```
         /// 
         /// # Example of LongerUnion
         /// ```
-        /// use Cryptocol::number::*;
+        /// use cryptocol::number::*;
         /// // todo
         /// ```
         /// 
@@ -5814,7 +5814,7 @@ macro_rules! display_for_integer_unions_impl {
             /// 
             /// # Example
             /// ```
-            /// use Cryptocol::number::*;
+            /// use cryptocol::number::*;
             /// let a = ShortUnion::new_with(60521_u16);
             /// println!("{}", a);
             /// ```
@@ -5941,7 +5941,7 @@ impl Debug for ShortUnion
     /// 
     /// # Example for the format specifier :?
     /// ```
-    /// use Cryptocol::number::*;
+    /// use cryptocol::number::*;
     /// let a_short = ShortUnion::new_with_signed(-12345_i16);
     /// println!("a_short = {:?}", a_short);
     /// #[cfg(target_pointer_width = "64")] assert_eq!(format!("{a_short:?}"), "ShortUnion { this: 53191, that: -12345, ushort: 53191, sshort: -12345, ubyte: [199, 207], sbyte: [-57, -49] }");
@@ -5949,7 +5949,7 @@ impl Debug for ShortUnion
     /// 
     /// # Example for the format specifier :#?
     /// ```
-    /// use Cryptocol::number::*;
+    /// use cryptocol::number::*;
     /// let a_short = ShortUnion::new_with_signed(-12345_i16);
     /// println!("a_short = {:#?}", a_short);
     /// #[cfg(target_pointer_width = "64")] assert_eq!(format!("{a_short:#?}"), r#"ShortUnion {
@@ -6012,7 +6012,7 @@ impl Debug for IntUnion
     /// 
     /// # Example for the format specifier :?
     /// ```
-    /// use Cryptocol::number::*;
+    /// use cryptocol::number::*;
     /// let a_int = IntUnion::new_with_signed(-1234567890_i32);
     /// println!("a_int = {:?}", a_int);
     /// #[cfg(target_pointer_width = "64")] assert_eq!(format!("{a_int:?}"), "IntUnion { this: 3060399406, that: -1234567890, uint: 3060399406, sint: -1234567890, ushort: [64814, 46697], sshort: [-722, -18839], ubyte: [46, 253, 105, 182], sbyte: [46, -3, 105, -74] }");
@@ -6020,7 +6020,7 @@ impl Debug for IntUnion
     /// 
     /// # Example for the format specifier :#?
     /// ```
-    /// use Cryptocol::number::*;
+    /// use cryptocol::number::*;
     /// let a_int = IntUnion::new_with_signed(-1234567890_i32);
     /// println!("a_int = {:#?}", a_int);
     /// #[cfg(target_pointer_width = "64")] assert_eq!(format!("{a_int:#?}"), r#"IntUnion {
@@ -6098,7 +6098,7 @@ impl Debug for LongUnion
     /// 
     /// # Example for the format specifier :?
     /// ```
-    /// use Cryptocol::number::*;
+    /// use cryptocol::number::*;
     /// let a_long = LongUnion::new_with_signed(-1234567890123456789_i64);
     /// println!("a_long = {:?}", a_long);
     /// #[cfg(target_pointer_width = "64")] assert_eq!(format!("{a_long:?}"), "LongUnion { this: 17212176183586094827, that: -1234567890123456789, ulong: 17212176183586094827, slong: -1234567890123456789, uint: [2182512363, 4007522059], sint: [-2112454933, -287445237], ushort: [32491, 33302, 61195, 61149], sshort: [32491, -32234, -4341, -4387], ubyte: [235, 126, 22, 130, 11, 239, 221, 238], sbyte: [-21, 126, 22, -126, 11, -17, -35, -18], u_size: 17212176183586094827, s_size: -1234567890123456789 }");
@@ -6106,7 +6106,7 @@ impl Debug for LongUnion
     /// 
     /// # Example for the format specifier :#?
     /// ```
-    /// use Cryptocol::number::*;
+    /// use cryptocol::number::*;
     /// let a_long = LongUnion::new_with_signed(-1234567890123456789_i64);
     /// println!("a_long = {:#?}", a_long);
     /// #[cfg(target_pointer_width = "64")] assert_eq!(format!("{a_long:#?}"), r#"LongUnion {
@@ -6210,7 +6210,7 @@ impl Debug for LongerUnion
     /// 
     /// # Example for the format specifier :?
     /// ```
-    /// use Cryptocol::number::*;
+    /// use cryptocol::number::*;
     /// let a_longer = LongerUnion::new_with_signed(-123456789012345678901234567890123456789_i128);
     /// println!("a_longer = {:?}", a_longer);
     /// #[cfg(target_pointer_width = "64")] assert_eq!(format!("{a_longer:?}"), "LongerUnion { this: 216825577908592784562140039541644754667, that: -123456789012345678901234567890123456789, ulonger: 216825577908592784562140039541644754667, slonger: -123456789012345678901234567890123456789, ulong: [6134004772338302699, 11754138130946064698], slong: [6134004772338302699, -6692605942763486918], uint: [1371963115, 1428184279, 2682913082, 2736723546], sint: [1371963115, 1428184279, -1612054214, -1558243750], ushort: [32491, 20934, 23767, 21792, 314, 40938, 5722, 41759], sshort: [32491, 20934, 23767, 21792, 314, -24598, 5722, -23777], ubyte: [235, 126, 198, 81, 215, 92, 32, 85, 58, 1, 234, 159, 90, 22, 31, 163], sbyte: [-21, 126, -58, 81, -41, 92, 32, 85, 58, 1, -22, -97, 90, 22, 31, -93], u_size: [6134004772338302699, 11754138130946064698], s_size: [6134004772338302699, -6692605942763486918] }");
@@ -6218,7 +6218,7 @@ impl Debug for LongerUnion
     /// 
     /// # Example for the format specifier :#?
     /// ```
-    /// use Cryptocol::number::*;
+    /// use cryptocol::number::*;
     /// let a_longer = LongerUnion::new_with_signed(-123456789012345678901234567890123456789_i128);
     /// println!("a_longer = {:#?}", a_longer);
     /// #[cfg(target_pointer_width = "64")] assert_eq!(format!("{a_longer:#?}"), r#"LongerUnion {
@@ -6369,7 +6369,7 @@ impl Debug for SizeUnion
     /// 
     /// # Example for the format specifier :?
     /// ```
-    /// use Cryptocol::number::*;
+    /// use cryptocol::number::*;
     /// let a_size = SizeUnion::new_with_signed(-1234567890123456789_isize);
     /// println!("a_size = {:?}", a_size);
     /// #[cfg(target_pointer_width = "64")] assert_eq!(format!("{a_size:?}"), "SizeUnion { this: 17212176183586094827, that: -1234567890123456789, u_size: 17212176183586094827, s_size: -1234567890123456789, ulong: 17212176183586094827, slong: -1234567890123456789, uint: [2182512363, 4007522059], sint: [-2112454933, -287445237], ushort: [32491, 33302, 61195, 61149], sshort: [32491, -32234, -4341, -4387], ubyte: [235, 126, 22, 130, 11, 239, 221, 238], sbyte: [-21, 126, 22, -126, 11, -17, -35, -18] }");
@@ -6377,7 +6377,7 @@ impl Debug for SizeUnion
     /// 
     /// # Example for the format specifier :#?
     /// ```
-    /// use Cryptocol::number::*;
+    /// use cryptocol::number::*;
     /// let a_size = SizeUnion::new_with_signed(-1234567890123456789_isize);
     /// println!("a_size = {:#?}", a_size);
     /// #[cfg(target_pointer_width = "64")] assert_eq!(format!("{a_size:#?}"), r#"SizeUnion {

@@ -10,9 +10,9 @@
 use std::fmt::{Debug, Display};
 use std::ops::*;
 use std::convert::*;
-use Cryptocol::number::*;
-use Cryptocol::define_utypes_with;
-use Cryptocol::number::BigUInt;
+use cryptocol::number::*;
+use cryptocol::define_utypes_with;
+use cryptocol::number::BigUInt;
 
 fn main()
 {
@@ -173,7 +173,7 @@ fn test_BigUInt()
 {
     println!("test_BigUInt");
     use std::time::SystemTime;
-    use Cryptocol::number::*;
+    use cryptocol::number::*;
 
     let mut ti = [0_u128; 5];   // How many microseconds
     let dt = ["u128", "u64", "u32", "u16", "u8"];
@@ -630,7 +630,7 @@ macro_rules! performance_wrapping_mul
 pub fn test_wrapping_mul()
 {
     use std::time::SystemTime;
-    use Cryptocol::number::*;
+    use cryptocol::number::*;
 
     let dt = ["u128", "u64", "u32", "u16", "u8"];
     let op = ["multplication1", "multplication2" , "multplication3"];
@@ -713,7 +713,7 @@ macro_rules! performance_widening_mul_assign_uint
 pub fn test_widening_mul_assign_uint()
 {
     use std::time::SystemTime;
-    use Cryptocol::number::*;
+    use cryptocol::number::*;
 /*
     let mut sum = 0_u128;
     let mut high = 10_u128;

@@ -60,7 +60,7 @@
 /// use std::time::SystemTime;
 /// use std::fmt::{ Display, Debug };
 /// use std::ops::*;
-/// use Cryptocol::number::*;
+/// use cryptocol::number::*;
 /// 
 /// fn main()
 /// {
@@ -126,7 +126,7 @@
 /// 
 /// # Examples
 /// ```
-/// use Cryptocol::define_utypes_with;
+/// use cryptocol::define_utypes_with;
 /// define_utypes_with!(u128);
 /// let a = u256::from_string("1234567_1234567890_1234567890_1234567890_1234567890_1234567890_1234567890_1234567890").unwrap();
 /// let b = a << 1;
@@ -141,7 +141,7 @@
 /// The following example shows the different case that `u64`
 /// is used as a base type in the macro `define_utypes_with!(u64)`.
 /// ```
-/// use Cryptocol::define_utypes_with;
+/// use cryptocol::define_utypes_with;
 /// define_utypes_with!(u64);
 /// let a = u256::from_string("1234567_1234567890_1234567890_1234567890_1234567890_1234567890_1234567890_1234567890").unwrap();
 /// let b = a << 1;
@@ -153,27 +153,27 @@ macro_rules! define_utypes_with
 {
     (u128) =>
         {
-            use Cryptocol::define_utypes_with_u128;
+            use cryptocol::define_utypes_with_u128;
             define_utypes_with_u128!();
         };
     (u64) =>
         {
-            use Cryptocol::define_utypes_with_u64;
+            use cryptocol::define_utypes_with_u64;
             define_utypes_with_u64!();
         };
     (u32) =>
         {
-            use Cryptocol::define_utypes_with_u32;
+            use cryptocol::define_utypes_with_u32;
             define_utypes_with_u32!();
         };
     (u16) =>
         {
-            use Cryptocol::define_utypes_with_u16;
+            use cryptocol::define_utypes_with_u16;
             define_utypes_with_u16!();
         };
     (u8) =>
         {
-            use Cryptocol::define_utypes_with_u8;
+            use cryptocol::define_utypes_with_u8;
             define_utypes_with_u8!();
         };
 }
@@ -205,7 +205,7 @@ macro_rules! define_utypes_with
 /// 
 /// # Example
 /// ```
-/// use Cryptocol::define_utypes_with_u128;
+/// use cryptocol::define_utypes_with_u128;
 /// define_utypes_with_u128!();
 /// let a = u256::from_string("1234567_1234567890_1234567890_1234567890_1234567890_1234567890_1234567890_1234567890").unwrap();
 /// let b = a << 1;
@@ -222,10 +222,10 @@ macro_rules! define_utypes_with_u128
 {
     () =>
     {
-        use Cryptocol::number::{ u256_with_u128, u512_with_u128, u1024_with_u128, u2048_with_u128,
+        use cryptocol::number::{ u256_with_u128, u512_with_u128, u1024_with_u128, u2048_with_u128,
                                 u3072_with_u128, u4096_with_u128, u5120_with_u128, u6144_with_u128,
                                 u7168_with_u128, u8192_with_u128, u16384_with_u128 };
-        use Cryptocol::define_Utypes_with_utypes;
+        use cryptocol::define_Utypes_with_utypes;
 
         /// 256-bit unsigned integer, Synonym of `u256_with_u128`
         pub type u256 = u256_with_u128;
@@ -291,7 +291,7 @@ macro_rules! define_utypes_with_u128
 /// 
 /// # Example
 /// ```
-/// use Cryptocol::define_utypes_with_u64;
+/// use cryptocol::define_utypes_with_u64;
 /// define_utypes_with_u64!();
 /// let a = u256::from_string("1234567_1234567890_1234567890_1234567890_1234567890_1234567890_1234567890_1234567890").unwrap();
 /// let b = a << 1;
@@ -308,10 +308,10 @@ macro_rules! define_utypes_with_u64
 {
     () =>
     {
-        use Cryptocol::number::{ u256_with_u64, u512_with_u64, u1024_with_u64, u2048_with_u64,
+        use cryptocol::number::{ u256_with_u64, u512_with_u64, u1024_with_u64, u2048_with_u64,
                                 u3072_with_u64, u4096_with_u64, u5120_with_u64, u6144_with_u64,
                                 u7168_with_u64, u8192_with_u64, u16384_with_u64 };
-        use Cryptocol::define_Utypes_with_utypes;
+        use cryptocol::define_Utypes_with_utypes;
 
         /// 256-bit unsigned integer for 64-bit machines, Synonym of `u256_with_u64`
         pub type u256 = u256_with_u64;
@@ -377,7 +377,7 @@ macro_rules! define_utypes_with_u64
 /// 
 /// # Example
 /// ```
-/// use Cryptocol::define_utypes_with_u32;
+/// use cryptocol::define_utypes_with_u32;
 /// define_utypes_with_u32!();
 /// let a = u256::from_string("1234567_1234567890_1234567890_1234567890_1234567890_1234567890_1234567890_1234567890").unwrap();
 /// let b = a << 1;
@@ -394,10 +394,10 @@ macro_rules! define_utypes_with_u32
 {
     () =>
     {
-        use Cryptocol::number::{ u256_with_u32, u512_with_u32, u1024_with_u32, u2048_with_u32,
+        use cryptocol::number::{ u256_with_u32, u512_with_u32, u1024_with_u32, u2048_with_u32,
                                 u3072_with_u32, u4096_with_u32, u5120_with_u32, u6144_with_u32,
                                 u7168_with_u32, u8192_with_u32, u16384_with_u32 };
-        use Cryptocol::define_Utypes_with_utypes;
+        use cryptocol::define_Utypes_with_utypes;
 
         /// 256-bit unsigned integer for 32-bit machines, Synonym of `u256_with_u32`
         pub type u256 = u256_with_u32;
@@ -463,7 +463,7 @@ macro_rules! define_utypes_with_u32
 /// 
 /// # Example
 /// ```
-/// use Cryptocol::define_utypes_with_u16;
+/// use cryptocol::define_utypes_with_u16;
 /// define_utypes_with_u16!();
 /// let a = u256::from_string("1234567_1234567890_1234567890_1234567890_1234567890_1234567890_1234567890_1234567890").unwrap();
 /// let b = a << 1;
@@ -480,10 +480,10 @@ macro_rules! define_utypes_with_u16
 {
     () =>
     {
-        use Cryptocol::number::{ u256_with_u16, u512_with_u16, u1024_with_u16, u2048_with_u16,
+        use cryptocol::number::{ u256_with_u16, u512_with_u16, u1024_with_u16, u2048_with_u16,
                                 u3072_with_u16, u4096_with_u16, u5120_with_u16, u6144_with_u16,
                                 u7168_with_u16, u8192_with_u16, u16384_with_u16 };
-        use Cryptocol::define_Utypes_with_utypes;
+        use cryptocol::define_Utypes_with_utypes;
 
         /// 256-bit unsigned integer for 16-bit machines, Synonym of `u256_with_u16`
         pub type u256 = u256_with_u16;
@@ -549,7 +549,7 @@ macro_rules! define_utypes_with_u16
 /// 
 /// # Example
 /// ```
-/// use Cryptocol::define_utypes_with_u8;
+/// use cryptocol::define_utypes_with_u8;
 /// define_utypes_with_u8!();
 /// let a = u256::from_string("1234567_1234567890_1234567890_1234567890_1234567890_1234567890_1234567890_1234567890").unwrap();
 /// let b = a << 1;
@@ -566,10 +566,10 @@ macro_rules! define_utypes_with_u8
 {
     () =>
     {
-        use Cryptocol::number::{ u256_with_u8, u512_with_u8, u1024_with_u8, u2048_with_u8,
+        use cryptocol::number::{ u256_with_u8, u512_with_u8, u1024_with_u8, u2048_with_u8,
                                 u3072_with_u8, u4096_with_u8, u5120_with_u8, u6144_with_u8,
                                 u7168_with_u8, u8192_with_u8, u16384_with_u8 };
-        use Cryptocol::define_Utypes_with_utypes;
+        use cryptocol::define_Utypes_with_utypes;
 
         /// 256-bit unsigned integer for 8-bit machines, Synonym of `u256_with_u8`
         pub type u256 = u256_with_u8;
