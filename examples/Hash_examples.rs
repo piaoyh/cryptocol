@@ -3411,10 +3411,13 @@ fn Hash_OS_Rng_main()
     //     hash_code: [u64; 8]
     // }
 
-    impl PRNG for OsRng
+    impl Random_Engine for OsRng
     {
         #[inline]
-        fn new() -> Self    { Self }
+        fn new() -> Self
+        {
+            Self { hash_code: [0_u64; 8] }
+        }
 
         #[inline]
         fn new_with<T, const N: usize>(_: &[T; N]) -> Self
@@ -3426,7 +3429,9 @@ fn Hash_OS_Rng_main()
             + BitAnd<Output=T> + BitAndAssign + BitOr<Output=T> + BitOrAssign
             + BitXor<Output=T> + BitXorAssign + Not<Output=T>
             + PartialEq + PartialOrd
-        { Self::new() }
+        {
+            Self::new()
+        }
 
         #[inline]
         fn sow_array<T, const N: usize>(&mut self, _: &[T; N])

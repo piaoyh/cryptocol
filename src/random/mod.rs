@@ -118,7 +118,7 @@
 //! use std::fmt::{ Display, Debug };
 //! use rand::{ rngs, RngCore };
 //! use Cryptocol::number::SmallUInt;
-//! use Cryptocol::random::{ PRNG, Random_Generic };
+//! use Cryptocol::random::{ Random_Engine, Random_Generic };
 //! ```
 //! 
 //! Third, you have to make an empty struct `OsRng` as follows.
@@ -128,12 +128,12 @@
 //! pub struct OsRng;
 //! ```
 //! 
-//! Fourth, you are supposed to make implementation of trait PRNG for the
-//! empty struct `OsRng` as follows.
+//! Fourth, you are supposed to make implementation of trait Random_Engine
+//! for the empty struct `OsRng` as follows.
 //! 
 //! ## Example 6
 //! ```
-//! impl PRNG for OsRng
+//! impl Random_Engine for OsRng
 //! {
 //!     #[inline]
 //!     fn new() -> Self    { Self }
@@ -218,12 +218,15 @@
 
 
 pub mod random;
+pub mod any_number;
 pub mod trait_random_engine;
 pub mod trait_impl_for_MD4;
 pub mod trait_impl_for_MD5;
 pub mod trait_impl_for_SHA1;
 pub mod trait_impl_for_SHA2_256;
 pub mod trait_impl_for_SHA2_512;
+pub mod trait_impl_for_AnyNumber;
 
 pub use random::*;
 pub use trait_random_engine::*;
+pub use any_number::AnyNumber;

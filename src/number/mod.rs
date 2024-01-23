@@ -13,7 +13,6 @@
 //! than 128-bit integer and their arithmatic operations
 //! 
 //! # Background: Arithmatic operations of big numbers
-//! 
 //! Most of the modern programming languages do not support big numbers
 //! such as 256-bit, 512-bit, and 1024-bit integers or even bigger integers.
 //! Rust supports up to 128-bit integers such as u128 and i128
@@ -23,6 +22,14 @@
 //! 1024-bit or even longer bit integers especially for such as RSA
 //! cryptographic alogorithm. Then, we need special algorithms to calculate
 //! such big numbers. This is the library for such special purposes.
+//! 
+//! # Documentation
+//! In many cases, a lot of parts of the documentations of this module were made
+//! by taking (or copying and pasting) from pre-existing documentation and
+//! tweacking if the methods that this crate provides are very similar to the
+//! pre-existing ones in terms of their interfaces, functionalities and
+//! purposes, for example, operators `+`, `<<`, etc., methods `copy_within()`,
+//! from_str(), etc. Please don't think they are plagiarism for those cases.
 //! 
 //! # Three kinds of long bit integers
 //! This module provides three kinds of long bit integers: BigUInt, BigInt,

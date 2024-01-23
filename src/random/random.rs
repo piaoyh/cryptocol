@@ -17,58 +17,66 @@ use std::ops::*;
 use std::cmp::{ PartialEq, PartialOrd};
 use std::ptr::copy_nonoverlapping;
 use std::time::{ SystemTime, UNIX_EPOCH };
-use std::collections::hash_map::RandomState;
-use std::hash::{ BuildHasher, Hasher };
 use std::fs::File;
 use std::io::Read;
+use std::collections::hash_map::RandomState;
+use std::hash::{ BuildHasher, Hasher };
 
 use crate::number::{small_uint::*, BigUInt};
 use crate::number::small_int_unions::*;
 use crate::hash::{ MD4, MD5, SHA0, SHA1, SHA2_256, SHA2_512 };
 use super::Random_Engine;
+use super::AnyNumber;
 
 
-/// The struct `Any_MD4` which is a random number generator using a hash
+/// The struct `Any_MD4` which is a pseudo-random number generator using a hash
 /// algorithm MD4. It is a specific version of the generic struct
 /// [`Random_Generic`](struct@Random_Generic).
 #[allow(non_camel_case_types)] 
 pub type Any_MD4 = Random_Generic<MD4, 16383>;  // COUNT = 2^18 / 4 because of hashing 4 times for each random number generation
 
-/// The struct `Any_MD5` which is a random number generator using a hash
+/// The struct `Any_MD5` which is a pseudo-random number generator using a hash
 /// algorithm MD5. It is a specific version of the generic struct
 /// [`Random_Generic`](struct@Random_Generic).
 #[allow(non_camel_case_types)] 
 pub type Any_MD5 = Random_Generic<MD5, 16383>;  // COUNT = 2^18 / 4 because of hashing 4 times for each random number generation
 
-/// The struct `Any_SHA0` which is a random number generator using a hash
+/// The struct `Any_SHA0` which is a pseudo-random number generator using a hash
 /// algorithm SHA0. It is a specific version of the generic struct
 /// [`Random_Generic`](struct@Random_Generic).
 #[allow(non_camel_case_types)] 
 pub type Any_SHA0 = Random_Generic<SHA0, 2147483647>;   // COUNT = 2^33 / 4 because of hashing 4 times for each random number generation
 
-/// The struct `Any_SHA1` which is a random number generator using a hash
+/// The struct `Any_SHA1` which is a pseudo-random number generator using a hash
 /// algorithm SHA1. It is a specific version of the generic struct
 /// [`Random_Generic`](struct@Random_Generic).
 #[allow(non_camel_case_types)] 
 pub type Any_SHA1 = Random_Generic<SHA1, 4611686018427387903>;  // COUNT = 2^63 / 4 because of hashing 4 times for each random number generation
 
-/// The struct `Any_SHA2_256` which is a random number generator using a hash
-/// algorithm SHA-2-256. It is a specific version of the generic struct
+/// The struct `Any_SHA2_256` which is a pseudo-random number generator using
+/// a hash algorithm SHA-2-256. It is a specific version of the generic struct
 /// [`Random_Generic`](struct@Random_Generic).
 #[allow(non_camel_case_types)] 
 pub type Any_SHA2_256 = Random_Generic<SHA2_256, 170141183460469231731687303715884105727>;   // COUNT = 2^128 / 2 because of hashing 2 times for each random number generation
 
-/// The struct `Random_SHA2_512` which is a random number generator using
+/// The struct `Random_SHA2_512` which is a pseudo-random number generator using
 /// a hash algorithm SHA-2-512. It is a specific version of the generic struct
 /// [`Random_Generic`](struct@Random_Generic).
 #[allow(non_camel_case_types)] 
 pub type Any_SHA2_512 = Random_Generic<SHA2_512, 340282366920938463463374607431768211455>;   // COUNT = min(2^256, u128::MAX) because of hashing one time for each random number generation
 
-/// The struct `Random_SHA2_512` which is a random number generator using
+/// The struct `Random_SHA2_512` which is a pseudo-random number generator using
 /// a hash algorithm SHA-2-512. It is a specific version of the generic struct
 /// [`Random_Generic`](struct@Random_Generic).
 #[allow(non_camel_case_types)] 
 pub type Random_SHA2_512 = Random_Generic<SHA2_512, 100>;   // COUNT = 2^256 because of hashing one time for each random number generation
+
+/// The struct `Any_Num` which is a random number generator using an
+/// pseudo-random number generator algorithm of rand() of C standard library.
+/// It is a specific version of the generic struct
+/// [`Random_Generic`](struct@Random_Generic).
+#[allow(non_camel_case_types)] 
+pub type Any_Num = Random_Generic<AnyNumber,  2147483647>;   // COUNT = u32::MAX
 
 /// The struct `Random` which is a random number generator and is a synonym of
 /// [`Random_SHA2_512`](type@Random_SHA2_512). It means `Random` uses a hash
@@ -119,6 +127,8 @@ pub type Any = Any_SHA2_256;
 /// - Random_SHA2_512: uses a hash algorithm SHA2_512.
 /// - Any: uses a hash algorithm SHA2_256.
 /// - Random: uses a hash algorithm SHA2_512.
+/// - Any_Num: uses a pseudo-random number generator algorithm of the function
+/// rand() of C standard library.
 #[allow(non_camel_case_types)]
 pub struct Random_Generic<GenFunc: Random_Engine + 'static, const COUNT: u128 = 170141183460469231731687303715884105727>
 {
@@ -271,6 +281,11 @@ impl<GenFunc: Random_Engine + 'static, const COUNT: u128> Random_Generic<GenFunc
         seed_buffer
     }
 
+    // fn collect_seed_u8() -> u8
+    /// Collects seed from a system.
+    /// 
+    /// # Output
+    /// It returns a random number array `[u64; 8]` made by seeds.
     fn collect_seed_u8() -> u8
     {
         #[cfg(not(target_os = "windows"))]

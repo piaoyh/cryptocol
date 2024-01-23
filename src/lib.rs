@@ -11,13 +11,6 @@
 
 //! Cryptocol crate provides libraries for cryptography.
 //! 
-//! In many cases, a lot of parts of the documentations of this crate were made
-//! by taking (or copying and pasting) from pre-existing documentation and
-//! twicking if the methods that this crate provides are very similar to the
-//! pre-existing ones in terms of their interfaces, functionalities and
-//! purposes, for example, operators `+`, `<<`, etc., methods `copy_within()`,
-//! from_str(), etc. Please don't think they are plagiarism for those cases.
-//! 
 //! This crate is optimized for Little-endian CPUs because Little-Endian CPUs
 //! are far more popular than Big-endian CPUs. For the information about
 //! Endianness (including Little-endian and Big-endian)
@@ -88,11 +81,14 @@
 //!     --- struct [`Random_Generic`](random/random/struct.Random_Generic.html#struct.Random_Generic)
 //!     and trait
 //!     [Random_Engine](random/trait_random_engine/trait.Random_Engine.html#trait.Random_Engine)
-//! - [X] The implementation of `Random_Engine` for hash algorithm `MD4_Generic`
-//! - [X] The implementation of `Random_Engine` for hash algorithm `MD5_Generic`
-//! - [X] The implementation of `Random_Engine` for hash algorithm `SHA1_Generic`
-//! - [X] The implementation of `Random_Engine` for hash algorithm `SHA2_256_Generic`
-//! - [X] The implementation of `Random_Engine` for hash algorithm `SHA2_512_Generic`
+//! - [X] The implementation of `Random_Engine` for hash algorithms such as
+//!     [`MD4_Generic`](hash/md4/struct.MD4_Generic.html#struct.MD4_Generic),
+//!     [`MD5_Generic`](hash/md5/struct.MD5_Generic.html#struct.MD5_Generic),
+//!     [`SHA1_Generic`](hash/sha1/struct.SHA1_generic.html#struct.SHA1_generic),
+//!     [`SHA2_256_Generic`](hash/sha2_256/struct.SHA2_256_Generic.html#struct.SHA2_256_Generic), and
+//!     [`SHA2_512_Generic`](hash/sha2_512/struct.SHA2_512_Generic.html#struct.SHA2_512_Generic),
+//!     and for pseudo-random number generation algorithm such as
+//!     [`AnyNumber`](random/any_number/struct.AnyNumber.html#struct.AnyNumber)
 //! 
 //! ## Asymmetric-Key Cryptographic Algorithms
 //! - [ ] Diffie-Hellman
@@ -103,7 +99,7 @@
 //! the version number 1.0.0.0 will be given. After that whenever another
 //! functionality is added to this crate, the version number will get higher
 //! beyond 1.0.0.0. Before the version number 1.0.0.0, the maximum version
-//! number will be 0.30.x.x since there are all thirty functionalities
+//! number will be 0.26.x.x since there are all twenty-six functionalities
 //! listed above. So, for example, even if the version number is 0.5.0.0,
 //! it does not mean that 50% of all functionalities are implemented.
 

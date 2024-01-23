@@ -914,6 +914,14 @@ SHA2_256_Generic<N, H0, H1, H2, H3, H4, H5, H6, H7, ROUND,
     /// directly in Rust. This function is provided to be called from other
     /// programming languages such as C/C++.
     /// 
+    /// # Security Issue
+    /// The author doubts that the double hashing is securer than normal
+    /// hashing. The double hashing will be as secure as the normal hashing
+    /// at most because birthday paradox applies twice for the double hashing
+    /// while it applies only once for the normal hashing though the size of
+    /// the domain is the same size of the codomain for second hashing of the
+    /// double hashing.
+    /// 
     /// # Counterpart Methods
     /// - If you want to compute of the hash value of a string slice,
     /// you are highly recommended to use the method
@@ -955,10 +963,12 @@ SHA2_256_Generic<N, H0, H1, H2, H3, H4, H5, H6, H7, ROUND,
     /// 
     /// # Example 3 for SHA2_224
     /// ```
+    /// // Todo
     /// ```
     ///
     /// # Example 4 for SHA2_224_Expanded
     /// ```
+    /// // Todo
     /// ```
     /// 
     /// # Big-endian issue
@@ -989,6 +999,14 @@ SHA2_256_Generic<N, H0, H1, H2, H3, H4, H5, H6, H7, ROUND,
     /// # Features
     /// This function is a wrapping function of `ruminate()`.
     /// This function computes hash value of the content of string slice.
+    /// 
+    /// # Security Issue
+    /// The author doubts that the double hashing is securer than normal
+    /// hashing. The double hashing will be as secure as the normal hashing
+    /// at most because birthday paradox applies twice for the double hashing
+    /// while it applies only once for the normal hashing though the size of
+    /// the domain is the same size of the codomain for second hashing of the
+    /// double hashing.
     /// 
     /// # Counterpart Methods
     /// - If you want to compute of the hash value of the content of String
@@ -1050,6 +1068,14 @@ SHA2_256_Generic<N, H0, H1, H2, H3, H4, H5, H6, H7, ROUND,
     /// This function is a wrapping function of `ruminate()`.
     /// This function computes hash value of the content of String object.
     /// 
+    /// # Security Issue
+    /// The author doubts that the double hashing is securer than normal
+    /// hashing. The double hashing will be as secure as the normal hashing
+    /// at most because birthday paradox applies twice for the double hashing
+    /// while it applies only once for the normal hashing though the size of
+    /// the domain is the same size of the codomain for second hashing of the
+    /// double hashing.
+    /// 
     /// # Counterpart Methods
     /// - If you want to compute of the hash value of a string slice,
     /// you are highly recommended to use the method
@@ -1110,6 +1136,14 @@ SHA2_256_Generic<N, H0, H1, H2, H3, H4, H5, H6, H7, ROUND,
     /// # Features
     /// This function is a wrapping function of `ruminate()`.
     /// This function computes hash value of the content of Array object.
+    /// 
+    /// # Security Issue
+    /// The author doubts that the double hashing is securer than normal
+    /// hashing. The double hashing will be as secure as the normal hashing
+    /// at most because birthday paradox applies twice for the double hashing
+    /// while it applies only once for the normal hashing though the size of
+    /// the domain is the same size of the codomain for second hashing of the
+    /// double hashing.
     /// 
     /// # Argument
     /// - message is `&[T; M]`.
@@ -1175,6 +1209,14 @@ SHA2_256_Generic<N, H0, H1, H2, H3, H4, H5, H6, H7, ROUND,
     /// # Features
     /// This function is a wrapping function of `ruminate()`.
     /// This function computes hash value of the content of Vec object.
+    /// 
+    /// # Security Issue
+    /// The author doubts that the double hashing is securer than normal
+    /// hashing. The double hashing will be as secure as the normal hashing
+    /// at most because birthday paradox applies twice for the double hashing
+    /// while it applies only once for the normal hashing though the size of
+    /// the domain is the same size of the codomain for second hashing of the
+    /// double hashing.
     /// 
     /// # Argument
     /// - message is `&Vec<T>`.
