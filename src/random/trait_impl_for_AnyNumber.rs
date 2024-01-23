@@ -59,8 +59,9 @@ impl Random_Engine for AnyNumber
         + BitXor<Output=T> + BitXorAssign + Not<Output=T>
         + PartialEq + PartialOrd
     {
-        let n = if 8 <= N {8} else {N};
-        for i in 0..n
+        for i in 0..if 8 <= N {8} else {N}
+            { self.set_any_number_(i, message[i].into_u64()); }
+        for i in 0..8
         {
             self.set_any_number_(i, self.get_any_number_(i).wrapping_mul(1103515245));
             self.set_any_number_(i, self.get_any_number_(i).wrapping_add(12345));

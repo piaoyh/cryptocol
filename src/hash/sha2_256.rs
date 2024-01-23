@@ -978,7 +978,7 @@ SHA2_256_Generic<N, H0, H1, H2, H3, H4, H5, H6, H7, ROUND,
     pub fn ruminate(&mut self, n: usize, message: *const u8, length_in_bytes: u64)
     {
         self.digest(message, length_in_bytes);
-        for i in 1..n
+        for _ in 1..n
             { self.digest_array(&self.get_HashValue_in_array()); }
     }
 
