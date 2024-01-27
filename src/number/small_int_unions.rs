@@ -10,8 +10,10 @@
 //! data types used in a lot of modules of the crate Cryptocol.
 //! __These unions are for segmentation.__
 
-#![warn(missing_docs)]
-#![warn(missing_doc_code_examples)]
+// #![warn(missing_docs)]
+// #![warn(missing_doc_code_examples)]
+#![allow(missing_docs)]
+#![allow(rustdoc::missing_doc_code_examples)]
 
 use std::fmt::{ self, Debug, Display, Formatter };
 use std::mem::{ size_of, size_of_val };
@@ -5424,13 +5426,13 @@ macro_rules! SmallUInt_methods_for_integer_unions_impl {
 /***** METHODS FOR GENERATING RANDOM PRIME NUMBERS *****/
 
         /// Performs Millar Rabin method with a number less than `self`.
-        /// [Read more in detail](trait@SmallUInt#tymethod.is_prime_using_Miller_Rabin)
-        #[inline] fn is_prime_using_Miller_Rabin(self, repetition: usize) -> bool   { self.get().is_prime_using_Miller_Rabin(repetition) }
+        /// [Read more in detail](trait@SmallUInt#tymethod.is_prime_using_miller_rabin)
+        #[inline] fn is_prime_using_miller_rabin(self, repetition: usize) -> bool   { self.get().is_prime_using_miller_rabin(repetition) }
 
         /// Tests a `SmallUInt`-type object to find whether or not it is a
         /// prime number.
-        /// [Read more in detail](trait@SmallUInt#tymethod.test_Miller_Rabin)
-        #[inline] fn test_Miller_Rabin(self, a: Self) -> bool   { self.get().test_Miller_Rabin(a.get()) }
+        /// [Read more in detail](trait@SmallUInt#tymethod.test_miller_rabin)
+        #[inline] fn test_miller_rabin(self, a: Self) -> bool   { self.get().test_miller_rabin(a.get()) }
 
         #[inline] fn reverse_bits(self) -> Self     { self.reverse_bits() }
         #[inline] fn reverse_bits_assign(&mut self) { *self = self.reverse_bits(); }
@@ -5467,24 +5469,24 @@ macro_rules! SmallUInt_methods_for_integer_unions_impl {
         #[inline] fn one() -> Self              { Self::new_with(1) }
         #[inline] fn max() -> Self              { Self::new_with(<$g>::MAX) }
         #[inline] fn min() -> Self              { Self::new_with(<$g>::MIN) }
-        #[inline] fn u128_as_SmallUInt(n: u128) -> Self  { Self::new_with(n as $g) }
-        #[inline] fn u64_as_SmallUInt(n: u64) -> Self    { Self::new_with(n as $g) }
-        #[inline] fn u32_as_SmallUInt(n: u32) -> Self    { Self::new_with(n as $g) }
-        #[inline] fn u16_as_SmallUInt(n: u16) -> Self    { Self::new_with(n as $g) }
-        #[inline] fn u8_as_SmallUInt(n: u8) -> Self      { Self::new_with(n as $g) }
-        #[inline] fn usize_as_SmallUInt(n: usize) -> Self    { Self::new_with(n as $g) }
-        #[inline] fn bool_as_SmallUInt(n: bool) -> Self  { Self::new_with(n as $g) }
+        #[inline] fn u128_as_smalluint(n: u128) -> Self  { Self::new_with(n as $g) }
+        #[inline] fn u64_as_smalluint(n: u64) -> Self    { Self::new_with(n as $g) }
+        #[inline] fn u32_as_smalluint(n: u32) -> Self    { Self::new_with(n as $g) }
+        #[inline] fn u16_as_smalluint(n: u16) -> Self    { Self::new_with(n as $g) }
+        #[inline] fn u8_as_smalluint(n: u8) -> Self      { Self::new_with(n as $g) }
+        #[inline] fn usize_as_smalluint(n: usize) -> Self    { Self::new_with(n as $g) }
+        #[inline] fn bool_as_smalluint(n: bool) -> Self  { Self::new_with(n as $g) }
 
         #[inline]
         fn num<T: SmallUInt>(n: T) -> Self
         {
             match size_of::<T>()
             {
-                1 => { return Self::u8_as_SmallUInt(n.into_u8()); },
-                2 => { return Self::u16_as_SmallUInt(n.into_u16()); },
-                4 => { return Self::u32_as_SmallUInt(n.into_u32()); },
-                8 => { return Self::u64_as_SmallUInt(n.into_u64()); },
-                _ => { return Self::u128_as_SmallUInt(n.into_u128()); },
+                1 => { return Self::u8_as_smalluint(n.into_u8()); },
+                2 => { return Self::u16_as_smalluint(n.into_u16()); },
+                4 => { return Self::u32_as_smalluint(n.into_u32()); },
+                8 => { return Self::u64_as_smalluint(n.into_u64()); },
+                _ => { return Self::u128_as_smalluint(n.into_u128()); },
             }
         }
 
@@ -5520,13 +5522,13 @@ macro_rules! SmallUInt_methods_for_integer_unions_impl {
 
         /// Sets the MSB (Most Significant Bit) of `SmallUInt`-type
         /// number with `1`.
-        /// [Read more in detail](trait@SmallUInt#tymethod.set_MSB)
-        #[inline] fn set_MSB(&mut self)     { self.set(self.get() | !(Self::max().get() >> 1)); }
+        /// [Read more in detail](trait@SmallUInt#tymethod.set_msb)
+        #[inline] fn set_msb(&mut self)     { self.set(self.get() | !(Self::max().get() >> 1)); }
 
         /// Sets the LSB (Least Significant Bit) of `SmallUInt`-type
         /// number with `1`.
-        /// [Read more in detail](trait@SmallUInt#tymethod.set_LSB)
-        #[inline] fn set_LSB(&mut self)     { self.set(self.get() | 1); }
+        /// [Read more in detail](trait@SmallUInt#tymethod.set_lsb)
+        #[inline] fn set_lsb(&mut self)     { self.set(self.get() | 1); }
 /*
         /// Constucts a new `SmallUInt` which has the value zero and sets only
         /// the bit specified by the argument bit_pos to be 1.
@@ -5540,7 +5542,7 @@ macro_rules! SmallUInt_methods_for_integer_unions_impl {
 
         #[inline] fn is_odd(self) -> bool       { (self.get() & 1) != 0 }
         #[inline] fn is_even(self) -> bool      { !self.is_odd() }
-        #[inline] fn is_MSB_set(self) -> bool   { (self.get() & !(Self::max().get() >> 1)) != 0 }
+        #[inline] fn is_msb_set(self) -> bool   { (self.get() & !(Self::max().get() >> 1)) != 0 }
         #[inline] fn is_bit_set(self, bit_pos: usize) -> Option<bool>  { if bit_pos < Self::size_in_bits() { Some(self.is_bit_set_(bit_pos)) } else { None } }
         #[inline] fn is_bit_set_(self, bit_pos: usize) -> bool  { self.get() & Self::generate_check_bits_(bit_pos).get() != 0 }
 
@@ -6562,7 +6564,7 @@ where D: SmallUInt + Copy + Clone + Display + Debug + ToString
     pub fn into_des(&mut self, pos: usize) -> Option<D>
     {
         let bit_pos = pos * D::size_in_bits();
-        unsafe { self.src >>= S::usize_as_SmallUInt(bit_pos); }
+        unsafe { self.src >>= S::usize_as_smalluint(bit_pos); }
         if (bit_pos > 0) && self.is_src_zero()
             { None }
         else
@@ -6575,7 +6577,7 @@ where D: SmallUInt + Copy + Clone + Display + Debug + ToString
         let des_size = size_of::<D>();
         let src_size = size_of::<S>();
         let bit_pos = pos * D::size_in_bits();
-        unsafe { self.src <<= S::usize_as_SmallUInt(bit_pos); }
+        unsafe { self.src <<= S::usize_as_smalluint(bit_pos); }
         if des_size > src_size
             { unsafe { self.des >>= D::num((des_size - src_size).into_u128() * 8); } }
         else if src_size > des_size

@@ -216,14 +216,30 @@
 
 
 pub mod random;
+
+/// The module that contains struct AnyMumber
 pub mod any_number;
+
+/// The module that contains trait Random_Engine
 pub mod trait_random_engine;
-pub mod trait_impl_for_MD4;
-pub mod trait_impl_for_MD5;
-pub mod trait_impl_for_SHA1;
-pub mod trait_impl_for_SHA2_256;
-pub mod trait_impl_for_SHA2_512;
-pub mod trait_impl_for_AnyNumber;
+
+/// The module that contains implementation of trait Random_Engine for MD4
+pub mod trait_impl_for_md4;
+
+/// The module that contains implementation of trait Random_Engine for MD5
+pub mod trait_impl_for_md5;
+
+/// The module that contains implementation of trait Random_Engine for SHA1
+pub mod trait_impl_for_sha1;
+
+/// The module that contains implementation of trait Random_Engine for SHA2_256
+pub mod trait_impl_for_sha2_256;
+
+/// The module that contains implementation of trait Random_Engine for SHA2_512
+pub mod trait_impl_for_sha2_512;
+
+/// The module that contains implementation of trait Random_Engine for AnyNumber
+pub mod trait_impl_for_any_number;
 
 pub use random::*;
 pub use trait_random_engine::*;

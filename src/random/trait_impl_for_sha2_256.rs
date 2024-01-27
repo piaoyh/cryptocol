@@ -86,9 +86,9 @@ Random_Engine for SHA2_256_Generic<8, H0, H1, H2, H3, H4, H5, H6, H7, ROUND,
     fn harvest(&mut self, tangling: u64) -> [u64; 8]
     {
         self.tangle(tangling);
-        let a: [u32; 8] = self.get_HashValue_in_array();
+        let a: [u32; 8] = self.get_hash_value_in_array();
         self.tangle(tangling);
-        let b: [u32; 8] = self.get_HashValue_in_array();
+        let b: [u32; 8] = self.get_hash_value_in_array();
         let mut res = [0_u64; 8];
         for i in 0..8
             { res[i] = ((a[i] as u64) << 32) | (b[i] as u64); }

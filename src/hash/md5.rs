@@ -161,17 +161,17 @@ pub type MD5 = MD5_Expanded;
 /// let mut txt = "";
 /// hash.digest_str(txt);
 /// println!("Msg =\t\"{}\"\nHash =\t{}\n", txt, hash);
-/// assert_eq!(hash.get_HashValue_in_string(), "D41D8CD98F00B204E9800998ECF8427E");
+/// assert_eq!(hash.get_hash_value_in_string(), "D41D8CD98F00B204E9800998ECF8427E");
 /// 
-/// let txtStirng = String::from("A");
-/// hash.digest_string(&txtStirng);
-/// println!("Msg =\t\"{}\"\nHash =\t{}\n", txtStirng, hash);
+/// let txt_stirng = String::from("A");
+/// hash.digest_string(&txt_stirng);
+/// println!("Msg =\t\"{}\"\nHash =\t{}\n", txt_stirng, hash);
 /// assert_eq!(hash.to_string(), "7FC56270E7A70FA81A5935B72EACBE29");
 /// 
-/// let txtArray = ['W' as u8, 'o' as u8, 'w' as u8];
-/// hash.digest_array(&txtArray);
-/// println!("Msg =\t\"{:?}\"\nHash =\t{}\n", txtArray, hash);
-/// assert_eq!(hash.get_HashValue_in_string(), "49DC5E45FBEC1433E2C612E5AA809C10");
+/// let txt_array = ['W' as u8, 'o' as u8, 'w' as u8];
+/// hash.digest_array(&txt_array);
+/// println!("Msg =\t\"{:?}\"\nHash =\t{}\n", txt_array, hash);
+/// assert_eq!(hash.get_hash_value_in_string(), "49DC5E45FBEC1433E2C612E5AA809C10");
 /// 
 /// txt = "This data is 26-byte long.";
 /// hash.digest_str(txt);
@@ -181,7 +181,7 @@ pub type MD5 = MD5_Expanded;
 /// txt = "The unit of data length is not byte but bit.";
 /// hash.digest_str(txt);
 /// println!("Msg =\t\"{}\"\nHash =\t{}\n", txt, hash);
-/// assert_eq!(hash.get_HashValue_in_string(), "C3EB6D4A1071E1A9C5E08FEF6E8F3FBF");
+/// assert_eq!(hash.get_hash_value_in_string(), "C3EB6D4A1071E1A9C5E08FEF6E8F3FBF");
 /// 
 /// txt = "I am testing MD5 for the data whose length is sixty-two bytes.";
 /// hash.digest_str(txt);
@@ -191,7 +191,7 @@ pub type MD5 = MD5_Expanded;
 /// let mut txt = "I am testing MD5 for the message which is sixty-four bytes long.";
 /// hash.digest_str(txt);
 /// println!("Msg =\t\"{}\"\nHash =\t{}\n", txt, hash);
-/// assert_eq!(hash.get_HashValue_in_string(), "584D41C6837AC714275196E4FF14B2EF");
+/// assert_eq!(hash.get_hash_value_in_string(), "584D41C6837AC714275196E4FF14B2EF");
 /// 
 /// txt = "I am testing MD5 for the case data whose length is more than sixty-four bytes is given.";
 /// hash.digest_str(txt);
@@ -311,7 +311,7 @@ MD5_Generic<N, H0, H1, H2, H3, ROUND,
     /// # Example for MD5
     /// ```
     /// use cryptocol::hash::MD5;
-    /// let mut hash = MD5::new();
+    /// let hash = MD5::new();
     /// println!("Hash =\t{}", hash);
     /// assert_eq!(hash.to_string(), "0123456789ABCDEFFEDCBA9876543210");
     /// ```
@@ -319,8 +319,8 @@ MD5_Generic<N, H0, H1, H2, H3, ROUND,
     /// # Exmaple for MD5_Expanded
     /// ```
     /// use cryptocol::hash::MD5_Expanded;
-    /// type myMD5 = MD5_Expanded<4, 0x1111_1111, 0x4444_4444, 0x8888_8888, 0xffff_ffff, 128>;
-    /// let mut my_hash = myMD5::new();
+    /// type MyMD5 = MD5_Expanded<4, 0x1111_1111, 0x4444_4444, 0x8888_8888, 0xffff_ffff, 128>;
+    /// let my_hash = MyMD5::new();
     /// println!("Hash =\t{}", my_hash);
     /// assert_eq!(my_hash.to_string(), "111111114444444488888888FFFFFFFF");
     /// ```
@@ -374,8 +374,8 @@ MD5_Generic<N, H0, H1, H2, H3, ROUND,
     /// # Example for MD5
     /// ```
     /// use cryptocol::hash::MD5;
-    /// let txt = "This is an example of the method digest().";
     /// let mut hash = MD5::new();
+    /// let txt = "This is an example of the method digest().";
     /// hash.digest(txt.as_ptr(), txt.len() as u64);
     /// println!("Msg =\t\"{}\"\nHash =\t{}", txt, hash);
     /// assert_eq!(hash.to_string(), "336EA91DD3216BD0FC841E86F9E722D8");
@@ -384,9 +384,9 @@ MD5_Generic<N, H0, H1, H2, H3, ROUND,
     /// # Example for MD5_Expanded
     /// ```
     /// use cryptocol::hash::MD5_Expanded;
-    /// type myMD5 = MD5_Expanded<4, 0x1111_1111, 0x4444_4444, 0x8888_8888, 0xffff_ffff, 128>;
+    /// type MyMD5 = MD5_Expanded<4, 0x1111_1111, 0x4444_4444, 0x8888_8888, 0xffff_ffff, 128>;
+    /// let mut my_hash = MyMD5::new();
     /// let txt = "This is an example of the method digest().";
-    /// let mut my_hash = myMD5::new();
     /// my_hash.digest(txt.as_ptr(), txt.len() as u64);
     /// println!("Msg =\t\"{}\"\nHash =\t{}", txt, my_hash);
     /// assert_eq!(my_hash.to_string(), "51F4248FBEFBE0A00196F9F04DD07FF0");
@@ -437,8 +437,8 @@ MD5_Generic<N, H0, H1, H2, H3, ROUND,
     /// # Example for MD5
     /// ```
     /// use cryptocol::hash::MD5;
-    /// let txt = "This is an example of the method digest_str().";
     /// let mut hash = MD5::new();
+    /// let txt = "This is an example of the method digest_str().";
     /// hash.digest_str(txt);
     /// println!("Msg =\t\"{}\"\nHash =\t{}", txt, hash);
     /// assert_eq!(hash.to_string(), "F2E455CEB5FB993A980E67D3FA8A3961");
@@ -447,9 +447,9 @@ MD5_Generic<N, H0, H1, H2, H3, ROUND,
     /// # Example for MD5_Expanded
     /// ```
     /// use cryptocol::hash::MD5_Expanded;
-    /// type myMD5 = MD5_Expanded<4, 0x1111_1111, 0x4444_4444, 0x8888_8888, 0xffff_ffff, 96>;
+    /// type MyMD5 = MD5_Expanded<4, 0x1111_1111, 0x4444_4444, 0x8888_8888, 0xffff_ffff, 96>;
+    /// let mut my_hash = MyMD5::new();
     /// let txt = "This is an example of the method digest_str().";
-    /// let mut my_hash = myMD5::new();
     /// my_hash.digest_str(txt);
     /// println!("Msg =\t\"{}\"\nHash =\t{}", txt, my_hash);
     /// assert_eq!(my_hash.to_string(), "21EE03C8185BD65CDB8116D0E2714F09");
@@ -495,8 +495,8 @@ MD5_Generic<N, H0, H1, H2, H3, ROUND,
     /// # Example for MD5
     /// ```
     /// use cryptocol::hash::MD5;
-    /// let txt = "This is an example of the method digest_string().".to_string();
     /// let mut hash = MD5::new();
+    /// let txt = "This is an example of the method digest_string().".to_string();
     /// hash.digest_string(&txt);
     /// println!("Msg =\t\"{}\"\nHash =\t{}", txt, hash);
     /// assert_eq!(hash.to_string(), "40929E789D2F5880B85456E289F704C0");
@@ -505,9 +505,9 @@ MD5_Generic<N, H0, H1, H2, H3, ROUND,
     /// # Example for MD5_Expanded
     /// ```
     /// use cryptocol::hash::MD5_Expanded;
-    /// type myMD5 = MD5_Expanded<4, 0x1111_1111, 0x4444_4444, 0x8888_8888, 0xffff_ffff, 96>;
+    /// type MyMD5 = MD5_Expanded<4, 0x1111_1111, 0x4444_4444, 0x8888_8888, 0xffff_ffff, 96>;
+    /// let mut my_hash = MyMD5::new();
     /// let txt = "This is an example of the method digest_string().".to_string();
-    /// let mut my_hash = myMD5::new();
     /// my_hash.digest_string(&txt);
     /// println!("Msg =\t\"{}\"\nHash =\t{}", txt, my_hash);
     /// assert_eq!(my_hash.to_string(), "02BDBC510B949045A131C0C3302027BA");
@@ -553,6 +553,7 @@ MD5_Generic<N, H0, H1, H2, H3, ROUND,
     /// # Example for MD5
     /// ```
     /// use cryptocol::hash::MD5;
+    /// let mut hash = MD5::new();
     /// let data = [ 0x67452301_u32.to_le(), 0xefcdab89_u32.to_le(), 0x98badcfe_u32.to_le(), 0x10325476_u32.to_le() ];
     /// let mut hash = MD5::new();
     /// hash.digest_array(&data);
@@ -563,9 +564,9 @@ MD5_Generic<N, H0, H1, H2, H3, ROUND,
     /// # Example for MD5_Expanded
     /// ```
     /// use cryptocol::hash::MD5_Expanded;
-    /// type myMD5 = MD5_Expanded<4, 0x1111_1111, 0x4444_4444, 0x8888_8888, 0xffff_ffff, 96>;
+    /// type MyMD5 = MD5_Expanded<4, 0x1111_1111, 0x4444_4444, 0x8888_8888, 0xffff_ffff, 96>;
+    /// let mut my_hash = MyMD5::new();
     /// let data = [ 0x67452301_u32.to_le(), 0xefcdab89_u32.to_le(), 0x98badcfe_u32.to_le(), 0x10325476_u32.to_le() ];
-    /// let mut my_hash = myMD5::new();
     /// my_hash.digest_array(&data);
     /// println!("Msg =\t{:?}\nHash =\t{}", data, my_hash);
     /// assert_eq!(my_hash.to_string(), "A5DC1291539528723C6C3E6F7EFDAE94");
@@ -612,8 +613,8 @@ MD5_Generic<N, H0, H1, H2, H3, ROUND,
     /// # Example for MD5
     /// ```
     /// use cryptocol::hash::MD5;
-    /// let data = vec![ 0x67452301_u32.to_le(), 0xefcdab89_u32.to_le(), 0x98badcfe_u32.to_le(), 0x10325476_u32.to_le() ];
     /// let mut hash = MD5::new();
+    /// let data = vec![ 0x67452301_u32.to_le(), 0xefcdab89_u32.to_le(), 0x98badcfe_u32.to_le(), 0x10325476_u32.to_le() ];
     /// hash.digest_vec(&data);
     /// println!("Msg =\t{:?}\nHash =\t{}", data, hash);
     /// assert_eq!(hash.to_string(), "054DE9CF5F9EA623BBB8DC4781685A58");
@@ -622,9 +623,9 @@ MD5_Generic<N, H0, H1, H2, H3, ROUND,
     /// # Example for MD5_Expanded
     /// ```
     /// use cryptocol::hash::MD5_Expanded;
-    /// type myMD5 = MD5_Expanded<4, 0x1111_1111, 0x4444_4444, 0x8888_8888, 0xffff_ffff, 96>;
+    /// type MyMD5 = MD5_Expanded<4, 0x1111_1111, 0x4444_4444, 0x8888_8888, 0xffff_ffff, 96>;
+    /// let mut my_hash = MyMD5::new();
     /// let data = vec![ 0x67452301_u32.to_le(), 0xefcdab89_u32.to_le(), 0x98badcfe_u32.to_le(), 0x10325476_u32.to_le() ];
-    /// let mut my_hash = myMD5::new();
     /// my_hash.digest_vec(&data);
     /// println!("Msg =\t{:?}\nHash =\t{}", data, my_hash);
     /// assert_eq!(my_hash.to_string(), "A5DC1291539528723C6C3E6F7EFDAE94");
@@ -641,8 +642,306 @@ MD5_Generic<N, H0, H1, H2, H3, ROUND,
         self.digest(message.as_ptr() as *const u8, (message.len() * T::size_in_bytes()) as u64);
     }
 
-    // pub fn get_HashValue(&self, hashValue: *mut u8, length: usize)
-    /// Gives a hash value to the place where `hashValue` points to.
+    // pub fn ruminate(&mut self, n: usize, message: *const u8, length_in_bytes: u64)
+    /// Computes a hash value of `message`, and then computes a new hash value
+    /// of the hash value of the message, and then computes a hash value of the
+    /// previous hash value, and then ... `n` times repeatedly.
+    /// 
+    /// # Arguments
+    /// - `n` is the number of repetition of digestion
+    /// - `message` is pointer to const u8.
+    /// - `length_in_bytes` is the size of message in the unit of bytes, and
+    /// data type is `u64`.
+    /// 
+    /// # Origin
+    /// Double hashing is invented by Ferguson and Schneier in their book
+    /// Practical Cryptography to countermeasure against length extension
+    /// attacks. Plus, Bitcoin uses double hashing.
+    /// This is generalized version of it.
+    /// 
+    /// # Features
+    /// This function has the generalized interface (pointer, `*const u8`)
+    /// so as to enable other functions to wrap this function with any
+    /// convenient interface for uses. So, this function is usually not called
+    /// directly in Rust. This function is provided to be called from other
+    /// programming languages such as C/C++.
+    /// 
+    /// # Security Issue
+    /// The author doubts that the double hashing is securer than normal
+    /// hashing. The double hashing will be as secure as the normal hashing
+    /// at most because birthday paradox applies twice for the double hashing
+    /// though the size of the domain is the same size of the codomain for
+    /// second hashing of the double hashing, while the birthday paradox
+    /// applies only once for the normal hashing.
+    ///
+    /// # Example 1 for MD5
+    /// ```
+    /// use cryptocol::hash::MD5;
+    /// let mut hash = MD5::new();
+    /// let txt = "This is an example of the method ruminate().";
+    /// hash.ruminate(2, txt.as_ptr(), txt.len() as u64);
+    /// println!("Msg =\t\"{}\"\nHash =\t{}", txt, hash);
+    /// assert_eq!(hash.to_string(), "71F09FB7840FA1EB78A88ED071627C0D");
+    /// ```
+    /// 
+    /// # Example 2 for MD5_Expanded
+    /// ```
+    /// use cryptocol::hash::MD5_Expanded;
+    /// type MyMD5 = MD5_Expanded<4, 0x1111_1111, 0x4444_4444, 0x8888_8888, 0xffff_ffff, 128>;
+    /// let mut hash = MyMD5::new();
+    /// let txt = "This is an example of the method ruminate().";
+    /// hash.ruminate(2, txt.as_ptr(), txt.len() as u64);
+    /// println!("Msg =\t\"{}\"\nHash =\t{}", txt, hash);
+    /// assert_eq!(hash.to_string(), "CC179809A9DC1475EEF5E4810C272882");
+    /// ```
+    /// 
+    /// # Big-endian issue
+    /// It is just experimental for Big Endian CPUs. So, you are not encouraged
+    /// to use it for Big Endian CPUs for serious purpose. Only use this crate
+    /// for Big-endian CPUs with your own full responsibility.
+    pub fn ruminate(&mut self, n: usize, message: *const u8, length_in_bytes: u64)
+    {
+        self.digest(message, length_in_bytes);
+        for _ in 1..n
+            { self.digest_array(&self.get_hash_value_in_array()); }
+    }
+
+    // pub fn ruminate_str(&mut self, n: usize, message: &str)
+    /// Computes a hash value of `message`, and then computes a new hash value
+    /// of the hash value of the message, and then computes a hash value of the
+    /// previous hash value, and then ... `n` times repeatedly.
+    /// 
+    /// # Arguments
+    /// - `n` is the number of repetition of digestion
+    /// - `message` is `&str`.
+    /// 
+    /// # Origin
+    /// Double hashing is invented by Ferguson and Schneier in their book
+    /// Practical Cryptography to countermeasure against length extension
+    /// attacks. Plus, Bitcoin uses double hashing.
+    /// This is generalized version of it.
+    /// 
+    /// # Features
+    /// This function is a wrapping function of `ruminate()`.
+    /// This function computes hash value of the content of string slice.
+    /// 
+    /// # Security Issue
+    /// The author doubts that the double hashing is securer than normal
+    /// hashing. The double hashing will be as secure as the normal hashing
+    /// at most because birthday paradox applies twice for the double hashing
+    /// though the size of the domain is the same size of the codomain for
+    /// second hashing of the double hashing, while the birthday paradox
+    /// applies only once for the normal hashing.
+    ///
+    /// # Example 1 for MD5
+    /// ```
+    /// use cryptocol::hash::MD5;
+    /// let mut hash = MD5::new();
+    /// let txt = "This is an example of the method ruminate_str().";
+    /// hash.ruminate_str(3, txt);
+    /// println!("Msg =\t\"{}\"\nHash =\t{}", txt, hash);
+    /// assert_eq!(hash.to_string(), "68B3B09AE0EED0D15E744671E29824D4");
+    /// ```
+    /// 
+    /// # Example 2 for MD5_Expanded
+    /// ```
+    /// use cryptocol::hash::MD5_Expanded;
+    /// type MyMD5 = MD5_Expanded<4, 0x1111_1111, 0x4444_4444, 0x8888_8888, 0xffff_ffff, 128>;
+    /// let mut my_hash = MyMD5::new();
+    /// let txt = "This is an example of the method ruminate_str().";
+    /// my_hash.ruminate_str(3, txt);
+    /// println!("Msg =\t\"{}\"\nHash =\t{}", txt, my_hash);
+    /// assert_eq!(my_hash.to_string(), "7A460BDA766C6A7D4F9A23DCBDB71A4C");
+    /// ```
+    /// 
+    /// # Big-endian issue
+    /// It is just experimental for Big Endian CPUs. So, you are not encouraged
+    /// to use it for Big Endian CPUs for serious purpose. Only use this crate
+    /// for Big-endian CPUs with your own full responsibility.
+    #[inline]
+    pub fn ruminate_str(&mut self, n: usize, message: &str)
+    {
+        self.ruminate(n, message.as_ptr(), message.len() as u64);
+    }
+
+    // pub fn ruminate_string(&mut self, n: usize, message: &String)
+    /// Computes a hash value of `message`, and then computes a new hash value
+    /// of the hash value of the message, and then computes a hash value of the
+    /// previous hash value, and then ... `n` times repeatedly.
+    /// 
+    /// # Arguments
+    /// - `n` is the number of repetition of digestion
+    /// - `message` is `&String`.
+    /// 
+    /// # Origin
+    /// Double hashing is invented by Ferguson and Schneier in their book
+    /// Practical Cryptography to countermeasure against length extension
+    /// attacks. Plus, Bitcoin uses double hashing.
+    /// This is generalized version of it.
+    /// 
+    /// # Features
+    /// This function is a wrapping function of `ruminate()`.
+    /// This function computes hash value of the content of String object.
+    /// 
+    /// # Security Issue
+    /// The author doubts that the double hashing is securer than normal
+    /// hashing. The double hashing will be as secure as the normal hashing
+    /// at most because birthday paradox applies twice for the double hashing
+    /// though the size of the domain is the same size of the codomain for
+    /// second hashing of the double hashing, while the birthday paradox
+    /// applies only once for the normal hashing.
+    ///
+    /// # Example 1 for MD5
+    /// ```
+    /// use cryptocol::hash::MD5;
+    /// let mut hash = MD5::new();
+    /// let txt = "This is an example of the method ruminate_string().".to_string();
+    /// hash.ruminate_string(2, &txt);
+    /// println!("Msg =\t\"{}\"\nHash =\t{}", txt, hash);
+    /// assert_eq!(hash.to_string(), "E06B1A664322C1296D1FCD3F28428493");
+    /// ```
+    /// 
+    /// # Example 2 for MD5_Expanded
+    /// ```
+    /// use cryptocol::hash::MD5_Expanded;
+    /// type MyMD5 = MD5_Expanded<4, 0x1111_1111, 0x4444_4444, 0x8888_8888, 0xffff_ffff, 128>;
+    /// let mut my_hash = MyMD5::new();
+    /// let txt = "This is an example of the method ruminate_string().".to_string();
+    /// my_hash.ruminate_string(2, &txt);
+    /// println!("Msg =\t\"{}\"\nHash =\t{}", txt, my_hash);
+    /// assert_eq!(my_hash.to_string(), "5018AF48C7606F748073FC5255448BAB");
+    /// ```
+    /// 
+    /// # Big-endian issue
+    /// It is just experimental for Big Endian CPUs. So, you are not encouraged
+    /// to use it for Big Endian CPUs for serious purpose. Only use this crate
+    /// for Big-endian CPUs with your own full responsibility.
+    #[inline]
+    pub fn ruminate_string(&mut self, n: usize, message: &String)
+    {
+        self.ruminate(n, message.as_ptr(), message.len() as u64);
+    }
+
+    // pub fn ruminate_array<T, const M: usize>(&mut self, n: usize, message: &[T; M])
+    /// Computes a hash value of `message`, and then computes a new hash value
+    /// of the hash value of the message, and then computes a hash value of the
+    /// previous hash value, and then ... `n` times repeatedly.
+    /// 
+    /// # Arguments
+    /// - `n` is the number of repetition of digestion
+    /// - `message` is `&[T; M]`.
+    /// 
+    /// # Origin
+    /// Double hashing is invented by Ferguson and Schneier in their book
+    /// Practical Cryptography to countermeasure against length extension
+    /// attacks. Plus, Bitcoin uses double hashing.
+    /// This is generalized version of it.
+    /// 
+    /// # Features
+    /// This function is a wrapping function of `ruminate()`.
+    /// This function computes hash value of the content of Array object.
+    /// 
+    /// # Security Issue
+    /// The author doubts that the double hashing is securer than normal
+    /// hashing. The double hashing will be as secure as the normal hashing
+    /// at most because birthday paradox applies twice for the double hashing
+    /// though the size of the domain is the same size of the codomain for
+    /// second hashing of the double hashing, while the birthday paradox
+    /// applies only once for the normal hashing.
+    ///
+    /// # Example 1 for MD5
+    /// ```
+    /// use cryptocol::hash::MD5;
+    /// let mut hash = MD5::new();
+    /// let data = [ 0x67452301_u32.to_le(), 0xefcdab89_u32.to_le(), 0x98badcfe_u32.to_le(), 0x10325476_u32.to_le() ];
+    /// hash.ruminate_array(5,&data);
+    /// println!("Msg =\t{:?}\nHash =\t{}", data, hash);
+    /// assert_eq!(hash.to_string(), "4914D161AE665750248DF91B6E57C7BE");
+    /// ```
+    /// 
+    /// # Example 2 for MD5_Expanded
+    /// ```
+    /// use cryptocol::hash::MD5_Expanded;
+    /// type MyMD5 = MD5_Expanded<4, 0x1111_1111, 0x4444_4444, 0x8888_8888, 0xffff_ffff, 128>;
+    /// let mut my_hash = MyMD5::new();
+    /// let data = [ 0x67452301_u32.to_le(), 0xefcdab89_u32.to_le(), 0x98badcfe_u32.to_le(), 0x10325476_u32.to_le() ];
+    /// my_hash.ruminate_array(5,&data);
+    /// println!("Msg =\t{:?}\nHash =\t{}", data, my_hash);
+    /// assert_eq!(my_hash.to_string(), "1FBF755293909670FE66B8CA482BCF66");
+    /// ```
+    /// 
+    /// # Big-endian issue
+    /// It is just experimental for Big Endian CPUs. So, you are not encouraged
+    /// to use it for Big Endian CPUs for serious purpose. Only use this crate
+    /// for Big-endian CPUs with your own full responsibility.
+    #[inline]
+    pub fn ruminate_array<T, const M: usize>(&mut self, n: usize, message: &[T; M])
+    where T: SmallUInt + Copy + Clone
+    {
+        self.ruminate(n, message.as_ptr() as *const u8, (M * T::size_in_bytes()) as u64);
+    }
+
+    // pub fn ruminate_vec<T>(&mut self, n: usize, message: &Vec<T>)
+    /// Computes a hash value of `message`, and then computes a new hash value
+    /// of the hash value of the message, and then computes a hash value of the
+    /// previous hash value, and then ... `n` times repeatedly.
+    /// 
+    /// # Arguments
+    /// - `n` is the number of repetition of digestion
+    /// - `message` is `&Vec<T>`.
+    /// 
+    /// # Origin
+    /// Double hashing is invented by Ferguson and Schneier in their book
+    /// Practical Cryptography to countermeasure against length extension
+    /// attacks. Plus, Bitcoin uses double hashing.
+    /// This is generalized version of it.
+    /// 
+    /// # Features
+    /// This function is a wrapping function of `ruminate()`.
+    /// This function computes hash value of the content of Vec object.
+    /// 
+    /// # Security Issue
+    /// The author doubts that the double hashing is securer than normal
+    /// hashing. The double hashing will be as secure as the normal hashing
+    /// at most because birthday paradox applies twice for the double hashing
+    /// though the size of the domain is the same size of the codomain for
+    /// second hashing of the double hashing, while the birthday paradox
+    /// applies only once for the normal hashing.
+    ///
+    /// # Example 1 for MD5
+    /// ```
+    /// use cryptocol::hash::MD5;
+    /// let mut hash = MD5::new();
+    /// let data = vec![ 0x67452301_u32.to_le(), 0xefcdab89_u32.to_le(), 0x98badcfe_u32.to_le(), 0x10325476_u32.to_le() ];
+    /// hash.ruminate_vec(2, &data);
+    /// println!("Msg =\t{:?}\nHash =\t{}", data, hash);
+    /// assert_eq!(hash.to_string(), "BDEE5A3C5B2DB7B6F18B170C2E865FE0");
+    /// ```
+    /// 
+    /// # Example 2 for MD5_Expanded
+    /// ```
+    /// use cryptocol::hash::MD5_Expanded;
+    /// type MyMD5 = MD5_Expanded<4, 0x1111_1111, 0x4444_4444, 0x8888_8888, 0xffff_ffff, 128>;
+    /// let mut my_hash = MyMD5::new();
+    /// let data = vec![ 0x67452301_u32.to_le(), 0xefcdab89_u32.to_le(), 0x98badcfe_u32.to_le(), 0x10325476_u32.to_le() ];
+    /// my_hash.ruminate_vec(2, &data);
+    /// println!("Msg =\t{:?}\nHash =\t{}", data, my_hash);
+    /// assert_eq!(my_hash.to_string(), "DBFD74659889B373D90477B59A193CBD");
+    /// ```
+    /// 
+    /// # Big-endian issue
+    /// It is just experimental for Big Endian CPUs. So, you are not encouraged
+    /// to use it for Big Endian CPUs for serious purpose. Only use this crate
+    /// for Big-endian CPUs with your own full responsibility.
+    #[inline]
+    pub fn ruminate_vec<T>(&mut self, n: usize, message: &Vec<T>)
+    where T: SmallUInt + Copy + Clone
+    {
+        self.ruminate(n, message.as_ptr() as *const u8, (message.len() * T::size_in_bytes()) as u64);
+    }
+
+    // pub fn get_hash_value(&self, hash_value: *mut u8, length: usize)
+    /// Gives a hash value to the place where `hash_value` points to.
     /// 
     /// # Features
     /// This function has the generalized interface (pointer, `*mut u8`)
@@ -652,70 +951,70 @@ MD5_Generic<N, H0, H1, H2, H3, ROUND,
     /// programming languages such as C/C++.
     /// 
     /// # Arguments
-    /// - `hashValue` is the pointer to the place to hold the result hash value.
-    /// - `length` is the size of the place that `hashValue` points to. 
+    /// - `hash_value` is the pointer to the place to hold the result hash value.
+    /// - `length` is the size of the place that `hash_value` points to. 
     /// 
     /// # Counterpart Methods
     /// - If you want to get the hash value in the form of String object,
     /// you are highly recommended to use the method
-    /// [get_HashValue_string()](struct@MD5#method.get_HashValue_string)
+    /// [get_hash_value_string()](struct@MD5#method.get_hash_value_string)
     /// rather than this method.
     /// - If you want to get the hash value in the form of array object,
     /// you are highly recommended to use the method
-    /// [get_HashValue_in_array()](struct@MD5#method.get_HashValue_in_array)
+    /// [get_hash_value_in_array()](struct@MD5#method.get_hash_value_in_array)
     /// rather than this method.
     /// - If you want to get the hash value in the form of Vec object,
     /// you are highly recommended to use the method
-    /// [get_HashValue_in_vec()](struct@MD5#method.get_HashValue_in_vec)
+    /// [get_hash_value_in_vec()](struct@MD5#method.get_hash_value_in_vec)
     /// rather than this method.
     ///
     /// # Example for MD5
     /// ```
     /// use cryptocol::hash::MD5;
-    /// let txt = "This is an example of the method get_HashValue().";
-    /// let mut hashValue = [0_u8; 16];
     /// let mut hash = MD5::new();
+    /// let txt = "This is an example of the method get_hash_value().";
+    /// let hash_value = [0_u8; 16];
     /// hash.digest_str(txt);
-    /// hash.get_HashValue(hashValue.as_ptr() as *mut u8, hashValue.len());
-    /// println!("Msg =\t\"{}\"\nHash =\t{:02X?}", txt, hashValue);
-    /// assert_eq!(format!("{:02X?}", hashValue), "[D9, FB, 90, AB, DD, 2E, 1E, 48, D8, 5E, E5, 08, 4B, AE, 2C, 39]");
+    /// hash.get_hash_value(hash_value.as_ptr() as *mut u8, hash_value.len());
+    /// println!("Msg =\t\"{}\"\nHash =\t{:02X?}", txt, hash_value);
+    /// assert_eq!(format!("{:02X?}", hash_value), "[91, 57, 43, 58, C7, F9, 04, 83, 60, 63, 15, CD, 1B, 77, 2E, DD]");
     /// ```
     /// 
     /// # Example for MD5_Expanded
     /// ```
     /// use cryptocol::hash::MD5_Expanded;
-    /// type myMD5 = MD5_Expanded<4, 0x1111_1111, 0x4444_4444, 0x8888_8888, 0xffff_ffff, 96>;
-    /// let txt = "This is an example of the method get_HashValue().";
-    /// let mut hashValue = [0_u8; 16];
-    /// let mut my_hash = myMD5::new();
+    /// type MyMD5 = MD5_Expanded<4, 0x1111_1111, 0x4444_4444, 0x8888_8888, 0xffff_ffff, 96>;
+    /// let mut my_hash = MyMD5::new();
+    /// let txt = "This is an example of the method get_hash_value().";
+    /// let hash_value = [0_u8; 16];
     /// my_hash.digest_str(txt);
-    /// my_hash.get_HashValue(hashValue.as_ptr() as *mut u8, hashValue.len());
-    /// println!("Msg =\t\"{}\"\nHash =\t{:02X?}", txt, hashValue);
-    /// assert_eq!(format!("{:02X?}", hashValue), "[2F, E0, 49, D9, 9C, 33, C0, DC, 6A, 8B, 4F, 3B, C6, 31, 68, 71]");
+    /// my_hash.get_hash_value(hash_value.as_ptr() as *mut u8, hash_value.len());
+    /// println!("Msg =\t\"{}\"\nHash =\t{:02X?}", txt, hash_value);
+    /// assert_eq!(format!("{:02X?}", hash_value), "[A4, 5C, 46, 58, 29, BB, 83, 06, 32, 4D, 20, 20, 23, 9D, 41, AE]");
     /// ```
     /// 
     /// # Big-endian issue
     /// It is just experimental for Big Endian CPUs. So, you are not encouraged
     /// to use it for Big Endian CPUs for serious purpose. Only use this crate
     /// for Big-endian CPUs with your own full responsibility.
-    pub fn get_HashValue(&self, hashValue: *mut u8, length: usize)
+    pub fn get_hash_value(&self, hash_value: *mut u8, length: usize)
     {
         const BYTES: usize = 4;
         const N: usize = 4;
         let n_length = if length < (BYTES * N) {length} else {BYTES * N};
         #[cfg(target_endian = "little")]   // Because of MD5 is based on Little Endian
-        unsafe { copy_nonoverlapping(self.hash_code.as_ptr() as *const u8, hashValue, n_length); }
+        unsafe { copy_nonoverlapping(self.hash_code.as_ptr() as *const u8, hash_value, n_length); }
         #[cfg(target_endian = "big")]   // Because of MD5 is based on Little Endian
         {
             let mut hash_code = [IntUnion::new(); N];
             for i in 0..N
                 { hash_code[i].set(self.hash_code[i].get().to_le()); }
-            unsafe { copy_nonoverlapping(hash_code.as_ptr() as *const u8, hashValue, n_length); }
+            unsafe { copy_nonoverlapping(hash_code.as_ptr() as *const u8, hash_value, n_length); }
         }
     }
 
 
-    // pub fn get_HashValue_in_string(&self) -> String
+    // pub fn get_hash_value_in_string(&self) -> String
     /// Returns a hash value in the form of String object.
     /// 
     /// # Output
@@ -724,42 +1023,42 @@ MD5_Generic<N, H0, H1, H2, H3, ROUND,
     /// # Counterpart Methods
     /// - If you want to get the hash value in the form of array object,
     /// you are highly recommended to use the method
-    /// [get_HashValue_in_array()](struct@MD5#method.get_HashValue_in_array)
+    /// [get_hash_value_in_array()](struct@MD5#method.get_hash_value_in_array)
     /// rather than this method.
     /// - If you want to get the hash value in the form of Vec object,
     /// you are highly recommended to use the method
-    /// [get_HashValue_in_vec()](struct@MD5#method.get_HashValue_in_vec)
+    /// [get_hash_value_in_vec()](struct@MD5#method.get_hash_value_in_vec)
     /// rather than this method.
     /// - If you want to use this method from other programming languages such
     /// as C/C++, you are highly recommended to use the method
-    /// [get_HashValue()](struct@MD5#method.get_HashValue)
+    /// [get_hash_value()](struct@MD5#method.get_hash_value)
     /// rather than this method.
     ///
     /// # Example for MD5
     /// ```
     /// use cryptocol::hash::MD5;
-    /// let txt = "This is an example of the method get_HashValue_in_string().";
     /// let mut hash = MD5::new();
+    /// let txt = "This is an example of the method get_hash_value_in_string().";
     /// hash.digest_str(txt);
-    /// println!("Msg =\t\"{}\"\nHash =\t{}", txt, hash.get_HashValue_in_string());
-    /// assert_eq!(hash.get_HashValue_in_string(), "7BB1ED16E2E302AA3B16CD24EC3E3093");
+    /// println!("Msg =\t\"{}\"\nHash =\t{}", txt, hash.get_hash_value_in_string());
+    /// assert_eq!(hash.get_hash_value_in_string(), "5E9D7F0006214CB49D09FC846FBE2927");
     /// ```
     /// 
     /// # Example for MD5_Expanded
     /// ```
     /// use cryptocol::hash::MD5_Expanded;
-    /// type myMD5 = MD5_Expanded<4, 0x1111_1111, 0x4444_4444, 0x8888_8888, 0xffff_ffff, 96>;
-    /// let txt = "This is an example of the method get_HashValue_in_string().";
-    /// let mut my_hash = myMD5::new();
+    /// type MyMD5 = MD5_Expanded<4, 0x1111_1111, 0x4444_4444, 0x8888_8888, 0xffff_ffff, 96>;
+    /// let mut my_hash = MyMD5::new();
+    /// let txt = "This is an example of the method get_hash_value_in_string().";
     /// my_hash.digest_str(txt);
-    /// println!("Msg =\t\"{}\"\nHash =\t{}", txt, my_hash.get_HashValue_in_string());
-    /// assert_eq!(my_hash.get_HashValue_in_string(), "1D850D022B0B079C896180B796E7B424");
+    /// println!("Msg =\t\"{}\"\nHash =\t{}", txt, my_hash.get_hash_value_in_string());
+    /// assert_eq!(my_hash.get_hash_value_in_string(), "A8BA6619878AE3A8135B7FD2A6ECAE6D");
     /// ```
     /// # Big-endian issue
     /// It is just experimental for Big Endian CPUs. So, you are not encouraged
     /// to use it for Big Endian CPUs for serious purpose. Only use this crate
     /// for Big-endian CPUs with your own full responsibility.
-    pub fn get_HashValue_in_string(&self) -> String
+    pub fn get_hash_value_in_string(&self) -> String
     {
         const BYTES: usize = 4;
         let mut txt = String::new();
@@ -776,7 +1075,7 @@ MD5_Generic<N, H0, H1, H2, H3, ROUND,
         txt
     }
 
-    // pub fn get_HashValue_in_array(&self) -> [u32; N]
+    // pub fn get_hash_value_in_array(&self) -> [u32; N]
     /// Returns a hash value in the form of array object.
     /// 
     /// # Output
@@ -785,43 +1084,43 @@ MD5_Generic<N, H0, H1, H2, H3, ROUND,
     /// # Counterpart Methods
     /// - If you want to get the hash value in the form of String object,
     /// you are highly recommended to use the method
-    /// [get_HashValue_string()](struct@MD5#method.get_HashValue_string)
+    /// [get_hash_value_string()](struct@MD5#method.get_hash_value_string)
     /// rather than this method.
     /// - If you want to get the hash value in the form of Vec object,
     /// you are highly recommended to use the method
-    /// [get_HashValue_in_vec()](struct@MD5#method.get_HashValue_in_vec)
+    /// [get_hash_value_in_vec()](struct@MD5#method.get_hash_value_in_vec)
     /// rather than this method.
     /// - If you want to use this method from other programming languages such
     /// as C/C++, you are highly recommended to use the method
-    /// [get_HashValue()](struct@MD5#method.get_HashValue)
+    /// [get_hash_value()](struct@MD5#method.get_hash_value)
     /// rather than this method.
     ///
     /// # Example for MD5
     /// ```
     /// use cryptocol::hash::MD5;
-    /// let txt = "This is an example of the method get_HashValue_in_array().";
     /// let mut hash = MD5::new();
+    /// let txt = "This is an example of the method get_hash_value_in_array().";
     /// hash.digest_str(txt);
-    /// println!("Msg =\t\"{}\"\nHash =\t{:02X?}", txt, hash.get_HashValue_in_array());
-    /// assert_eq!(format!("{:02X?}", hash.get_HashValue_in_array()), "[A4BE6EEF, C9A5DFBA, 558B5ADF, 3B1035F9]");
+    /// println!("Msg =\t\"{}\"\nHash =\t{:02X?}", txt, hash.get_hash_value_in_array());
+    /// assert_eq!(format!("{:08X?}", hash.get_hash_value_in_array()), "[1FC84032, 1DFA906E, 911B468C, 66EDE0CE]");
     /// ```
     /// 
     /// # Example for MD5_Expanded
     /// ```
     /// use cryptocol::hash::MD5_Expanded;
-    /// type myMD5 = MD5_Expanded<4, 0x1111_1111, 0x4444_4444, 0x8888_8888, 0xffff_ffff, 96>;
-    /// let txt = "This is an example of the method get_HashValue_in_array().";
-    /// let mut my_hash = myMD5::new();
+    /// type MyMD5 = MD5_Expanded<4, 0x1111_1111, 0x4444_4444, 0x8888_8888, 0xffff_ffff, 96>;
+    /// let mut my_hash = MyMD5::new();
+    /// let txt = "This is an example of the method get_hash_value_in_array().";
     /// my_hash.digest_str(txt);
-    /// println!("Msg =\t\"{}\"\nHash =\t{:02X?}", txt, my_hash.get_HashValue_in_array());
-    /// assert_eq!(format!("{:08X?}", my_hash.get_HashValue_in_array()), "[67A6CAD6, 4B138BB8, 846C082C, 8ABDFE02]");
+    /// println!("Msg =\t\"{}\"\nHash =\t{:08X?}", txt, my_hash.get_hash_value_in_array());
+    /// assert_eq!(format!("{:08X?}", my_hash.get_hash_value_in_array()), "[06813E1E, DA7BA0BF, 4B48D110, 6B111859]");
     /// ```
     /// 
     /// # Big-endian issue
     /// It is just experimental for Big Endian CPUs. So, you are not encouraged
     /// to use it for Big Endian CPUs for serious purpose. Only use this crate
     /// for Big-endian CPUs with your own full responsibility.
-    pub fn get_HashValue_in_array(&self) -> [u32; N]
+    pub fn get_hash_value_in_array(&self) -> [u32; N]
     {
         let mut res = [0_u32; N];
         for i in 0..N
@@ -829,7 +1128,7 @@ MD5_Generic<N, H0, H1, H2, H3, ROUND,
         res
     }
 
-    // pub fn getHashValue_in_vec(&self) -> Vec
+    // pub fn get_hash_value_in_vec(&self) -> Vec<u32>
     /// Returns a hash value in the form of Vec object.
     /// 
     /// # Output
@@ -838,35 +1137,35 @@ MD5_Generic<N, H0, H1, H2, H3, ROUND,
     /// # Counterpart Methods
     /// - If you want to get the hash value in the form of String object,
     /// you are highly recommended to use the method
-    /// [get_HashValue_string()](struct@MD5#method.get_HashValue_string)
+    /// [get_hash_value_string()](struct@MD5#method.get_hash_value_string)
     /// rather than this method.
     /// - If you want to get the hash value in the form of array object,
     /// you are highly recommended to use the method
-    /// [get_HashValue_in_array()](struct@MD5#method.get_HashValue_in_array)
+    /// [get_hash_value_in_array()](struct@MD5#method.get_hash_value_in_array)
     /// rather than this method.
     /// - If you want to use this method from other programming languages such
     /// as C/C++, you are highly recommended to use the method
-    /// [get_HashValue()](struct@MD5#method.get_HashValue)
+    /// [get_hash_value()](struct@MD5#method.get_hash_value)
     /// rather than this method.
     ///
     /// # Example for MD5
     /// ```
     /// use cryptocol::hash::MD5;
-    /// let txt = "This is an example of the method get_HashValue_in_vec().";
     /// let mut hash = MD5::new();
+    /// let txt = "This is an example of the method get_hash_value_in_vec().";
     /// hash.digest_str(txt);
-    /// println!("Msg =\t\"{}\"\nHash =\t{:02X?}", txt, hash.get_HashValue_in_vec());
-    /// assert_eq!(format!("{:02X?}", hash.get_HashValue_in_vec()), "[C24C5F26, D87BBAC8, D66148F4, 4D7DE209]");
+    /// println!("Msg =\t\"{}\"\nHash =\t{:08X?}", txt, hash.get_hash_value_in_vec());
+    /// assert_eq!(format!("{:08X?}", hash.get_hash_value_in_vec()), "[D9A44F09, 27F51F07, 4517E390, 4CF17D73]");
     /// ```
     /// # Example for MD5_Expanded
     /// ```
     /// use cryptocol::hash::MD5_Expanded;
-    /// type myMD5 = MD5_Expanded<4, 0x1111_1111, 0x4444_4444, 0x8888_8888, 0xffff_ffff, 96>;
-    /// let txt = "This is an example of the method get_HashValue_in_vec().";
-    /// let mut my_hash = myMD5::new();
+    /// type MyMD5 = MD5_Expanded<4, 0x1111_1111, 0x4444_4444, 0x8888_8888, 0xffff_ffff, 96>;
+    /// let mut my_hash = MyMD5::new();
+    /// let txt = "This is an example of the method get_hash_value_in_vec().";
     /// my_hash.digest_str(txt);
-    /// println!("Msg =\t\"{}\"\nHash =\t{:08X?}", txt, my_hash.get_HashValue_in_vec());
-    /// assert_eq!(format!("{:08X?}", my_hash.get_HashValue_in_vec()), "[E02B8514, CC2B4041, 38CBFA58, 1E6B3F51]");
+    /// println!("Msg =\t\"{}\"\nHash =\t{:08X?}", txt, my_hash.get_hash_value_in_vec());
+    /// assert_eq!(format!("{:08X?}", my_hash.get_hash_value_in_vec()), "[5D9AB684, 090F7AEB, 31FD214E, F03D3032]");
     /// ```
     /// 
     /// # Big-endian issue
@@ -874,7 +1173,7 @@ MD5_Generic<N, H0, H1, H2, H3, ROUND,
     /// to use it for Big Endian CPUs for serious purpose. Only use this crate
     /// for Big-endian CPUs with your own full responsibility.
     #[inline]
-    pub fn get_HashValue_in_vec(&self) -> Vec<u32>
+    pub fn get_hash_value_in_vec(&self) -> Vec<u32>
     {
         let mut res = Vec::new();
         for i in 0..N
@@ -882,7 +1181,7 @@ MD5_Generic<N, H0, H1, H2, H3, ROUND,
         res
     }
 
-    // pub fn put_HashValue_in_array<T, const N: usize>(&self, out: &mut [T; N])
+    // pub fn put_hash_value_in_array<T, const N: usize>(&self, out: &mut [T; N])
     /// Puts a hash value in the form of array object.
     /// 
     /// # Argument
@@ -895,36 +1194,36 @@ MD5_Generic<N, H0, H1, H2, H3, ROUND,
     /// # Example for MD5
     /// ```
     /// use cryptocol::hash::MD5;
-    /// let txt = "This is an example of the method put_HashValue_in_array().";
     /// let mut hash = MD5::new();
+    /// let txt = "This is an example of the method put_hash_value_in_array().";
     /// let mut hash_code = [0_u32; 4];
     /// hash.digest_str(txt);
-    /// hash.put_HashValue_in_array(&mut hash_code);
+    /// hash.put_hash_value_in_array(&mut hash_code);
     /// println!("Msg =\t\"{}\"\nHash =\t{:08X?}", txt, hash_code);
-    /// assert_eq!(format!("{:08X?}", hash_code), "[A2D690F9, CA6253E5, 2CB87DC4, 0ADF1A33]");
+    /// assert_eq!(format!("{:08X?}", hash_code), "[512E75DE, 4525528D, 41E8D192, 5606EE3B]");
     /// ```
     /// 
     /// # Example for MD5_Expanded
     /// ```
     /// use cryptocol::hash::MD5_Expanded;
-    /// type myMD5 = MD5_Expanded<4, 0x1111_1111, 0x4444_4444, 0x8888_8888, 0xffff_ffff, 96>;
-    /// let txt = "This is an example of the method put_HashValue_in_array().";
-    /// let mut my_hash = myMD5::new();
+    /// type MyMD5 = MD5_Expanded<4, 0x1111_1111, 0x4444_4444, 0x8888_8888, 0xffff_ffff, 96>;
+    /// let mut my_hash = MyMD5::new();
+    /// let txt = "This is an example of the method put_hash_value_in_array().";
     /// let mut hash_code = [0_u32; 4];
     /// my_hash.digest_str(txt);
-    /// my_hash.put_HashValue_in_array(&mut hash_code);
+    /// my_hash.put_hash_value_in_array(&mut hash_code);
     /// println!("Msg =\t\"{}\"\nHash =\t{:08X?}", txt, hash_code);
-    /// assert_eq!(format!("{:08X?}", hash_code), "[39B83B83, C327EE5E, 621A0669, A43A572A]");
+    /// assert_eq!(format!("{:08X?}", hash_code), "[F8634B80, 96E02659, E26EA89D, EDA8E0C4]");
     /// ```
     /// 
     /// # Big-endian issue
     /// It is just experimental for Big Endian CPUs. So, you are not encouraged
     /// to use it for Big Endian CPUs for serious purpose. Only use this crate
     /// for Big-endian CPUs with your own full responsibility.
-    pub fn put_HashValue_in_array<T, const M: usize>(&self, out: &mut [T; M])
+    pub fn put_hash_value_in_array<T, const M: usize>(&self, out: &mut [T; M])
     where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     {
-        let res = self.get_HashValue_in_array();
+        let res = self.get_hash_value_in_array();
         let out_size = T::size_in_bytes() * M;
         let length = if out_size < 16 {out_size} else {16};
         unsafe { copy_nonoverlapping(res.as_ptr() as *const u8, out as *mut T as *mut u8, length); }
@@ -942,34 +1241,34 @@ MD5_Generic<N, H0, H1, H2, H3, ROUND,
     /// Example for MD5
     /// ```
     /// use cryptocol::hash::MD5;
-    /// let txt = "TANGLING";
     /// let mut hash = MD5::new();
+    /// let txt = "TANGLING";
     /// hash.digest_str(txt);
-    /// println!("Msg =\t\"{}\"\nHash =\t{:08X?}", txt, hash.get_HashValue_in_array());
-    /// assert_eq!(format!("{:08X?}", hash.get_HashValue_in_array()), "[E60545F6, 6DCF2B02, 8245048B, AE2A98C6]");
+    /// println!("Msg =\t\"{}\"\nHash =\t{:08X?}", txt, hash.get_hash_value_in_array());
+    /// assert_eq!(format!("{:08X?}", hash.get_hash_value_in_array()), "[E60545F6, 6DCF2B02, 8245048B, AE2A98C6]");
     /// hash.tangle(1);
-    /// println!("Hash =\t{:08X?}", hash.get_HashValue_in_array());
-    /// assert_eq!(format!("{:08X?}", hash.get_HashValue_in_array()), "[E0B5F1C0, 5C62629F, 68D44BC1, D384AB34]");
+    /// println!("Hash =\t{:08X?}", hash.get_hash_value_in_array());
+    /// assert_eq!(format!("{:08X?}", hash.get_hash_value_in_array()), "[E0B5F1C0, 5C62629F, 68D44BC1, D384AB34]");
     /// hash.tangle(1);
-    /// println!("Hash =\t{:08X?}", hash.get_HashValue_in_array());
-    /// assert_eq!(format!("{:08X?}", hash.get_HashValue_in_array()), "[C75EEA9C, 9D5CF62B, 0ABFA634, CD29C2D4]");
+    /// println!("Hash =\t{:08X?}", hash.get_hash_value_in_array());
+    /// assert_eq!(format!("{:08X?}", hash.get_hash_value_in_array()), "[C75EEA9C, 9D5CF62B, 0ABFA634, CD29C2D4]");
     /// ```
     /// 
     /// Example for MD5_Expanded
     /// ```
     /// use cryptocol::hash::MD5_Expanded;
-    /// type myMD5 = MD5_Expanded<4, 0x1111_1111, 0x4444_4444, 0x8888_8888, 0xffff_ffff, 96>;
+    /// type MyMD5 = MD5_Expanded<4, 0x1111_1111, 0x4444_4444, 0x8888_8888, 0xffff_ffff, 96>;
+    /// let mut my_hash = MyMD5::new();
     /// let txt = "TANGLING";
-    /// let mut my_hash = myMD5::new();
     /// my_hash.digest_str(txt);
-    /// println!("Msg =\t\"{}\"\nHash =\t{:08X?}", txt, my_hash.get_HashValue_in_array());
-    /// assert_eq!(format!("{:08X?}", my_hash.get_HashValue_in_array()), "[9CCE671A, 5366F625, 68056532, D6B0DA5C]");
+    /// println!("Msg =\t\"{}\"\nHash =\t{:08X?}", txt, my_hash.get_hash_value_in_array());
+    /// assert_eq!(format!("{:08X?}", my_hash.get_hash_value_in_array()), "[9CCE671A, 5366F625, 68056532, D6B0DA5C]");
     /// my_hash.tangle(1);
-    /// println!("Hash =\t{:08X?}", my_hash.get_HashValue_in_array());
-    /// assert_eq!(format!("{:08X?}", my_hash.get_HashValue_in_array()), "[A12380BC, DE74206D, C145732C, 4CAAD502]");
+    /// println!("Hash =\t{:08X?}", my_hash.get_hash_value_in_array());
+    /// assert_eq!(format!("{:08X?}", my_hash.get_hash_value_in_array()), "[A12380BC, DE74206D, C145732C, 4CAAD502]");
     /// my_hash.tangle(1);
-    /// println!("Hash =\t{:08X?}", my_hash.get_HashValue_in_array());
-    /// assert_eq!(format!("{:08X?}", my_hash.get_HashValue_in_array()), "[D9EB87F4, 00C2D299, A492A483, 1C24FCDD]");
+    /// println!("Hash =\t{:08X?}", my_hash.get_hash_value_in_array());
+    /// assert_eq!(format!("{:08X?}", my_hash.get_hash_value_in_array()), "[D9EB87F4, 00C2D299, A492A483, 1C24FCDD]");
     /// ```
     #[inline]
     pub fn tangle(&mut self, tangling: u64)
@@ -1007,9 +1306,9 @@ MD5_Generic<N, H0, H1, H2, H3, ROUND,
             let j = i & 0b11_1111;
             let (mut f, g) = Self::func(b, c, d, j);
             f = f.wrapping_add(a)
-                    .wrapping_add(Self::getK(j))
+                    .wrapping_add(Self::get_k(j))
                     .wrapping_add(message[g].to_le())
-                    .rotate_left(Self::getR(j));
+                    .rotate_left(Self::get_r(j));
             a = d;
             d = c;
             c = b;
@@ -1022,8 +1321,8 @@ MD5_Generic<N, H0, H1, H2, H3, ROUND,
         //
         // for i in 0..16_usize
         // {
-        //     let f = Self::Ff(b, c, d).wrapping_add(a)
-        //                         .wrapping_add(Self::getK(i))
+        //     let f = Self::ff(b, c, d).wrapping_add(a)
+        //                         .wrapping_add(Self::get_k(i))
         //                         .wrapping_add(message[i].to_le())
         //                         .rotate_left(Self::R[0][i & 0b11]);
         //     a = d;
@@ -1034,8 +1333,8 @@ MD5_Generic<N, H0, H1, H2, H3, ROUND,
         // for i in 16..32_usize
         // {
         //     let g = ((i << 2) + i + 1) & 0b1111;
-        //     let f = Self::Gg(b, c, d).wrapping_add(a)
-        //                         .wrapping_add(Self::getK(i))
+        //     let f = Self::gg(b, c, d).wrapping_add(a)
+        //                         .wrapping_add(Self::get_k(i))
         //                         .wrapping_add(message[g].to_le())
         //                         .rotate_left(Self::R[1][i & 0b11]);
         //     a = d;
@@ -1046,8 +1345,8 @@ MD5_Generic<N, H0, H1, H2, H3, ROUND,
         // for i in 32..48_usize
         // {
         //     let g = ((i << 1) + i + 5) & 0b1111;
-        //     let f = Self::Hh(b, c, d).wrapping_add(a)
-        //                         .wrapping_add(Self::getK(i))
+        //     let f = Self::hh(b, c, d).wrapping_add(a)
+        //                         .wrapping_add(Self::get_k(i))
         //                         .wrapping_add(message[g].to_le())
         //                         .rotate_left(Self::R[2][i & 0b11]);
         //     a = d;
@@ -1058,8 +1357,8 @@ MD5_Generic<N, H0, H1, H2, H3, ROUND,
         // for i in 48..64_usize
         // {
         //     let g = ((i << 3) - i) & 0b1111;
-        //     let f = Self::Ii(b, c, d).wrapping_add(a)
-        //                         .wrapping_add(Self::getK(i))
+        //     let f = Self::ii(b, c, d).wrapping_add(a)
+        //                         .wrapping_add(Self::get_k(i))
         //                         .wrapping_add(message[g].to_le())
         //                         .rotate_left(Self::R[3][i & 0b11]);
         //     a = d;
@@ -1112,21 +1411,21 @@ MD5_Generic<N, H0, H1, H2, H3, ROUND,
     {
         // ideally round &= 0b11_1111 equivalent to round %= 64;
         if round < 16
-            { (Self::Ff(x, y, z), round & 0b1111) }
+            { (Self::ff(x, y, z), round & 0b1111) }
         else if round < 32
-            { (Self::Gg(x, y, z), ((round << 2) + round + 1) & 0b1111) }    // equivalent to ((5 * round) + 1) % 16
+            { (Self::gg(x, y, z), ((round << 2) + round + 1) & 0b1111) }    // equivalent to ((5 * round) + 1) % 16
         else if round < 48
-            { (Self::Hh(x, y, z), ((round << 1) + round + 5) & 0b1111) }    // equivalent to ((3 * round) + 5) % 16
+            { (Self::hh(x, y, z), ((round << 1) + round + 5) & 0b1111) }    // equivalent to ((3 * round) + 5) % 16
         else
-            { (Self::Ii(x, y, z), ((round << 3) - round) & 0b1111) }        // equivalent to (7 * round) % 16
+            { (Self::ii(x, y, z), ((round << 3) - round) & 0b1111) }        // equivalent to (7 * round) % 16
     }
 
-	#[inline] fn getK(idx: usize) -> u32    { Self::K[idx] }    // ideally Self::K[idx & 0b11_1111] equivalent to Self::K[idx % 64]
-    #[inline] fn getR(idx: usize) -> u32    { Self::R[idx >> 4][idx & 0b11] }   // ideally Self::R[(idx & 0b11_1111) >> 4)][idx & 0b11] equivalent to Self::R[(idx % 16) / 4][idx % 4]
-    #[inline] fn Ff(x: u32, y: u32, z: u32) -> u32  { z ^ (x & (y ^ z)) }   // equivalent to { (x & y) | (!x & z) }
-	#[inline] fn Gg(x: u32, y: u32, z: u32) -> u32  { (x & z) | (y & !z) }
-	#[inline] fn Hh(x: u32, y: u32, z: u32) -> u32	{ x ^ y ^ z }
-    #[inline] fn Ii(x: u32, y: u32, z: u32) -> u32	{ y ^ (x | !z) }
+	#[inline] fn get_k(idx: usize) -> u32    { Self::K[idx] }    // ideally Self::K[idx & 0b11_1111] equivalent to Self::K[idx % 64]
+    #[inline] fn get_r(idx: usize) -> u32    { Self::R[idx >> 4][idx & 0b11] }   // ideally Self::R[(idx & 0b11_1111) >> 4)][idx & 0b11] equivalent to Self::R[(idx % 16) / 4][idx % 4]
+    #[inline] fn ff(x: u32, y: u32, z: u32) -> u32  { z ^ (x & (y ^ z)) }   // equivalent to { (x & y) | (!x & z) }
+	#[inline] fn gg(x: u32, y: u32, z: u32) -> u32  { (x & z) | (y & !z) }
+	#[inline] fn hh(x: u32, y: u32, z: u32) -> u32	{ x ^ y ^ z }
+    #[inline] fn ii(x: u32, y: u32, z: u32) -> u32	{ y ^ (x | !z) }
     #[inline] fn to_char(nibble: u8) -> char    { if nibble < 10  { ('0' as u8 + nibble) as u8 as char } else { ('A' as u8 - 10 + nibble) as char } }
 }
 
@@ -1179,16 +1478,16 @@ Display for MD5_Generic<N, H0, H1, H2, H3, ROUND,
     /// let mut hash = MD5::new();
     /// let txt = "Display::fmt() automagically implement to_string().";
     /// hash.digest_str(txt);
-    /// println!("Msg =\t\"{}\"\nHash =\t{}\n", txt, hash.to_string());
+    /// println!("Msg =\t\"{}\"\nHash =\t{}", txt, hash.to_string());
     /// assert_eq!(hash.to_string(), "ED085603C2CDE77DD0C6FED3EC1A8ADB");
     /// ```
     /// 
     /// # Example 2 for the method to_string() for MD5_Expanded
     /// ```
     /// use cryptocol::hash::MD5_Expanded;
-    /// type myMD5 = MD5_Expanded<4, 0x1111_1111, 0x4444_4444, 0x8888_8888, 0xffff_ffff, 96>;
+    /// type MyMD5 = MD5_Expanded<4, 0x1111_1111, 0x4444_4444, 0x8888_8888, 0xffff_ffff, 96>;
+    /// let mut my_hash = MyMD5::new();
     /// let txt = "Display::fmt() automagically implement to_string().";
-    /// let mut my_hash = myMD5::new();
     /// my_hash.digest_str(txt);
     /// println!("Msg =\t\"{}\"\nHash =\t{}", txt, my_hash.to_string());
     /// assert_eq!(my_hash.to_string(), "3FDFF3827C89F3C770A0863F069FE766");
@@ -1207,8 +1506,8 @@ Display for MD5_Generic<N, H0, H1, H2, H3, ROUND,
     /// # Example 4 for the use in the macro println!() for MD5_Expanded
     /// ```
     /// use cryptocol::hash::MD5_Expanded;
-    /// type myMD5 = MD5_Expanded<4, 0x1111_1111, 0x4444_4444, 0x8888_8888, 0xffff_ffff, 96>;
-    /// let mut my_hash = myMD5::new();
+    /// type MyMD5 = MD5_Expanded<4, 0x1111_1111, 0x4444_4444, 0x8888_8888, 0xffff_ffff, 96>;
+    /// let mut my_hash = MyMD5::new();
     /// let txt = "Display::fmt() enables the object to be printed in the macro println!() directly for example.";
     /// my_hash.digest_str(txt);
     /// println!("Msg =\t\"{}\"\nHash =\t{}", txt, my_hash);
@@ -1218,6 +1517,6 @@ Display for MD5_Generic<N, H0, H1, H2, H3, ROUND,
     {
         // `write!` is like `format!`, but it will write the formatted string
         // into a buffer (the first argument)
-        write!(f, "{}", self.get_HashValue_in_string())
+        write!(f, "{}", self.get_hash_value_in_string())
     }
 }

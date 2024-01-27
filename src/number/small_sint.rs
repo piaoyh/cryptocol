@@ -9,8 +9,10 @@
 //! The module that contains a trait Int for generic type of primitive signed
 //! integral data types for the counter part of uint.
 
-#![warn(missing_docs)]
-#![warn(missing_doc_code_examples)]
+// #![warn(missing_docs)]
+// #![warn(missing_doc_code_examples)]
+#![allow(missing_docs)]
+#![allow(missing_doc_code_examples)]
 
 use std::fmt::Debug;
 use std::mem::size_of;
@@ -47,8 +49,8 @@ pub trait SmallSInt: Copy + Debug
     fn into_bool(self) -> bool;
     fn zero() -> Self;
     fn one() -> Self;
-    fn Max() -> Self;
-    fn Min() -> Self;
+    fn max() -> Self;
+    fn min() -> Self;
     fn num(n: i128) -> Self;
     fn size_in_bytes() -> usize;
     fn size_in_bits() -> usize;
@@ -71,8 +73,8 @@ impl SmallSInt for i8
     fn into_bool(self) -> bool  { self != 0 }
     fn zero() -> Self           { 0 }
     fn one() -> Self            { 1 }
-    fn Max() -> Self            { Self::MAX }
-    fn Min() -> Self            { Self::MIN }
+    fn max() -> Self            { Self::MAX }
+    fn min() -> Self            { Self::MIN }
     fn num(n: i128) -> Self     { n as Self }
     fn size_in_bytes() -> usize { size_of::<Self>() }
     fn size_in_bits() -> usize  { size_of::<Self>() * 8 }
@@ -95,8 +97,8 @@ impl SmallSInt for i16
     fn into_bool(self) -> bool  { self != 0 }
     fn zero() -> Self           { 0 }
     fn one() -> Self            { 1 }
-    fn Max() -> Self            { Self::MAX }
-    fn Min() -> Self            { Self::MIN }
+    fn max() -> Self            { Self::MAX }
+    fn min() -> Self            { Self::MIN }
     fn num(n: i128) -> Self     { n as Self }
     fn size_in_bytes() -> usize { size_of::<Self>() }
     fn size_in_bits() -> usize  { size_of::<Self>() * 8 }
@@ -119,8 +121,8 @@ impl SmallSInt for i32
     fn into_bool(self) -> bool  { self != 0 }
     fn zero() -> Self           { 0 }
     fn one() -> Self            { 1 }
-    fn Max() -> Self            { Self::MAX }
-    fn Min() -> Self            { Self::MIN }
+    fn max() -> Self            { Self::MAX }
+    fn min() -> Self            { Self::MIN }
     fn num(n: i128) -> Self     { n as Self }
     fn size_in_bytes() -> usize { size_of::<Self>() }
     fn size_in_bits() -> usize  { size_of::<Self>() * 8 }
@@ -143,8 +145,8 @@ impl SmallSInt for i64
     fn into_bool(self) -> bool  { self != 0 }
     fn zero() -> Self           { 0 }
     fn one() -> Self            { 1 }
-    fn Max() -> Self            { Self::MAX }
-    fn Min() -> Self            { Self::MIN }
+    fn max() -> Self            { Self::MAX }
+    fn min() -> Self            { Self::MIN }
     fn num(n: i128) -> Self     { n as Self }
     fn size_in_bytes() -> usize { size_of::<Self>() }
     fn size_in_bits() -> usize  { size_of::<Self>() * 8 }
@@ -167,8 +169,8 @@ impl SmallSInt for i128
     fn into_bool(self) -> bool  { self != 0 }
     fn zero() -> Self           { 0 }
     fn one() -> Self            { 1 }
-    fn Max() -> Self            { Self::MAX }
-    fn Min() -> Self            { Self::MIN }
+    fn max() -> Self            { Self::MAX }
+    fn min() -> Self            { Self::MIN }
     fn num(n: i128) -> Self     { n as Self }
     fn size_in_bytes() -> usize { size_of::<Self>() }
     fn size_in_bits() -> usize  { size_of::<Self>() * 8 }
@@ -191,8 +193,8 @@ impl SmallSInt for isize
     fn into_bool(self) -> bool  { self != 0 }
     fn zero() -> Self           { 0 }
     fn one() -> Self            { 1 }
-    fn Max() -> Self            { Self::MAX }
-    fn Min() -> Self            { Self::MIN }
+    fn max() -> Self            { Self::MAX }
+    fn min() -> Self            { Self::MIN }
     fn num(n: i128) -> Self     { n as Self }
     fn size_in_bytes() -> usize { size_of::<Self>() }
     fn size_in_bits() -> usize  { size_of::<Self>() * 8 }

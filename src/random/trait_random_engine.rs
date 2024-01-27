@@ -25,6 +25,9 @@ pub trait Random_Engine
 {
     // fn new() -> Self;
     /// Constructs the object.
+    /// 
+    /// # Example
+    /// Refer to the souce codes of `Random` to see how to use this method.
     fn new() -> Self;
 
     // fn new_with<T, const N: usize>(message: &[T; N]) -> Self
@@ -32,6 +35,9 @@ pub trait Random_Engine
     /// 
     /// # Features
     /// How to use the argument `message` depends on the object.
+    /// 
+    /// # Example
+    /// Refer to the souce codes of `Random` to see how to use this method.
     fn new_with<T, const N: usize>(message: &[T; N]) -> Self
     where T: SmallUInt + Copy + Clone + Display + Debug + ToString
         + Add<Output=T> + AddAssign + Sub<Output=T> + SubAssign
@@ -47,6 +53,9 @@ pub trait Random_Engine
     /// 
     /// # Argument
     /// `message` is the new seeds for `self`.
+    /// 
+    /// # Example
+    /// Refer to the souce codes of `Random` to see how to use this method.
     fn sow_array<T, const N: usize>(&mut self, message: &[T; N])
     where T: SmallUInt + Copy + Clone + Display + Debug + ToString
         + Add<Output=T> + AddAssign + Sub<Output=T> + SubAssign
@@ -64,5 +73,8 @@ pub trait Random_Engine
     /// `sugar` is `u64`-typed unsigned integer that changes the direction of
     /// its pseudo-random number sequence so that the period of the
     /// pseudo-random number sequence may not repeated.
+    /// 
+    /// # Example
+    /// Refer to the souce codes of `Random` to see how to use this method.
     fn harvest(&mut self, sugar: u64) -> [u64; 8];
 }

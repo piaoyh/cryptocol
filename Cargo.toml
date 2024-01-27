@@ -1,13 +1,14 @@
 [package]
-name = "cryptocol"
-version = "0.5.0"
 authors = ["PARK Youngho"]
-edition = "2021"
-license = "MIT OR Apache-2.0"
-description = "A cryptographic library that includes big number arithmatic operation, Hash Algorithms, Symmetric-Key Cryptographic Algorithms, Asymmetric-Key Cryptographic Algorithms, Pseudo-random number generators, etc."
-keywords = ["cryptography", "security", "encryption", "hash", "number"]
 categories = ["algorithms", "cryptography", "mathematics"]
+description = "A cryptographic library that includes big number arithmatic operation, Hash Algorithms, Symmetric-Key Cryptographic Algorithms, Asymmetric-Key Cryptographic Algorithms, Pseudo-random number generators, etc."
+edition = "2021"
+keywords = ["cryptography", "security", "encryption", "hash", "number"]
+license = "MIT OR Apache-2.0"
+name = "cryptocol"
 readme = "README.md"
+version = "0.6.0"
+
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [profile.dev]

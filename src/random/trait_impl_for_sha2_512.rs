@@ -91,6 +91,6 @@ Random_Engine for SHA2_512_Generic<8, H0, H1, H2, H3, H4, H5, H6, H7, ROUND,
     fn harvest(&mut self, tangling: u64) -> [u64; 8]
     {
         self.tangle(tangling);
-        self.get_HashValue_in_array()
+        self.get_hash_value_in_array()
     }
 }

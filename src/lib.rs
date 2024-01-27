@@ -77,7 +77,7 @@
 //! - [ ] AES
 //! 
 //! ## Pseudo-Random Number Generator Algorithms
-//! - [ ] The Pseudo-random number generator wrappers
+//! - [X] The Pseudo-random number generator wrappers
 //!     --- struct [`Random_Generic`](random/random/struct.Random_Generic.html#struct.Random_Generic)
 //!     and trait
 //!     [Random_Engine](random/trait_random_engine/trait.Random_Engine.html#trait.Random_Engine)

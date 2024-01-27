@@ -9,11 +9,11 @@
 //! The module is for all test code of examples.
 //! 
 
-pub mod Unions_examples;
-pub mod SmallUInt_examples;
-pub mod BigUInt_examples;
+pub mod performance_test_biguint;
+pub mod unions_examples;
+pub mod small_uint_examples;
+pub mod biguint_examples;
+pub mod hash_examples;
+pub mod random_examples;
 
-pub use BigUInt_examples::*;
-
-fn main()
-{}
+fn main() {}

@@ -9,8 +9,10 @@
 //! The module that contains a big unsigned integer struct
 //! with user-defined fixed size and its methods.
 
-#![warn(missing_docs)]
-#![warn(missing_doc_code_examples)]
+// #![warn(missing_docs)]
+// #![warn(missing_doc_code_examples)]
+#![allow(missing_docs)]
+#![allow(missing_doc_code_examples)]
 
 use std::fmt::{ Display, Debug };
 use std::mem::{ size_of, transmute };
@@ -25,173 +27,173 @@ use super::NumberErr;
 
 
 /// 256-bit unsigned integer implemented by `BigUInt<u128, 2>` made with two `u128`s
-#[allow(non_camel_case_types)] pub type u256_with_u128 = BigUInt<u128, 2>;
+#[allow(non_camel_case_types)] pub type U256_with_u128 = BigUInt<u128, 2>;
 
 /// 512-bit unsigned integer implemented by `BigUInt<u128, 4>` made with four `u128`s
-#[allow(non_camel_case_types)] pub type u512_with_u128 = BigUInt<u128, 4>;
+#[allow(non_camel_case_types)] pub type U512_with_u128 = BigUInt<u128, 4>;
 
 /// 1024-bit unsigned integer implemented by `BigUInt<u128, 8>` made with eight `u128`s
-#[allow(non_camel_case_types)] pub type u1024_with_u128 = BigUInt<u128, 8>;
+#[allow(non_camel_case_types)] pub type U1024_with_u128 = BigUInt<u128, 8>;
 
 /// 2048-bit unsigned integer implemented by `BigUInt<u128, 4>` made with sixteen `u128`s
-#[allow(non_camel_case_types)] pub type u2048_with_u128 = BigUInt<u128, 16>;
+#[allow(non_camel_case_types)] pub type U2048_with_u128 = BigUInt<u128, 16>;
 
 /// 3072-bit unsigned integer implemented by `BigUInt<u128, 4>` made with twenty-four `u128`s
-#[allow(non_camel_case_types)] pub type u3072_with_u128 = BigUInt<u128, 24>;
+#[allow(non_camel_case_types)] pub type U3072_with_u128 = BigUInt<u128, 24>;
 
 /// 4096-bit unsigned integer implemented by `BigUInt<u128, 4>` made with thirty-two `u128`s
-#[allow(non_camel_case_types)] pub type u4096_with_u128 = BigUInt<u128, 32>;
+#[allow(non_camel_case_types)] pub type U4096_with_u128 = BigUInt<u128, 32>;
 
 /// 5120-bit unsigned integer implemented by `BigUInt<u128, 4>` made with forty `u128`s
-#[allow(non_camel_case_types)] pub type u5120_with_u128 = BigUInt<u128, 40>;
+#[allow(non_camel_case_types)] pub type U5120_with_u128 = BigUInt<u128, 40>;
 
 /// 6144-bit unsigned integer implemented by `BigUInt<u128, 4>` made with fory-eight `u128`s
-#[allow(non_camel_case_types)] pub type u6144_with_u128 = BigUInt<u128, 48>;
+#[allow(non_camel_case_types)] pub type U6144_with_u128 = BigUInt<u128, 48>;
 
 /// 7168-bit unsigned integer implemented by `BigUInt<u128, 4>` made with fifty-six `u128`s
-#[allow(non_camel_case_types)] pub type u7168_with_u128 = BigUInt<u128, 56>;
+#[allow(non_camel_case_types)] pub type U7168_with_u128 = BigUInt<u128, 56>;
 
 /// 8192-bit unsigned integer implemented by `BigUInt<u128, 4>` made with sixty-four `u128`s
-#[allow(non_camel_case_types)] pub type u8192_with_u128 = BigUInt<u128, 64>;
+#[allow(non_camel_case_types)] pub type U8192_with_u128 = BigUInt<u128, 64>;
 
 /// 16384-bit unsigned integer implemented by `BigUInt<u128, 4>` made with one hundred twenty-eight `u128`s
-#[allow(non_camel_case_types)] pub type u16384_with_u128 = BigUInt<u128, 128>;
+#[allow(non_camel_case_types)] pub type U16384_with_u128 = BigUInt<u128, 128>;
 
 
 /// 256-bit unsigned integer implemented by `BigUInt<u64, 4>` made with four `u64`s
-#[allow(non_camel_case_types)] pub type u256_with_u64 = BigUInt<u64, 4>;
+#[allow(non_camel_case_types)] pub type U256_with_u64 = BigUInt<u64, 4>;
 
 /// 512-bit unsigned integer implemented by `BigUInt<u64, 8>` made with eight `u64`s
-#[allow(non_camel_case_types)] pub type u512_with_u64 = BigUInt<u64, 8>;
+#[allow(non_camel_case_types)] pub type U512_with_u64 = BigUInt<u64, 8>;
 
 /// 1024-bit unsigned integer implemented by `BigUInt<u64, 16>` made with sixteen `u64`s
-#[allow(non_camel_case_types)] pub type u1024_with_u64 = BigUInt<u64, 16>;
+#[allow(non_camel_case_types)] pub type U1024_with_u64 = BigUInt<u64, 16>;
 
 /// 2048-bit unsigned integer implemented by `BigUInt<u64, 32>` made with thirty-two `u64`s
-#[allow(non_camel_case_types)] pub type u2048_with_u64 = BigUInt<u64, 32>;
+#[allow(non_camel_case_types)] pub type U2048_with_u64 = BigUInt<u64, 32>;
 
 /// 3072-bit unsigned integer implemented by `BigUInt<u64, 48>` made with fourty-eight `u64`s
-#[allow(non_camel_case_types)] pub type u3072_with_u64 = BigUInt<u64, 48>;
+#[allow(non_camel_case_types)] pub type U3072_with_u64 = BigUInt<u64, 48>;
 
 /// 4096-bit unsigned integer implemented by `BigUInt<u64, 64>` made with sixty-four `u64`s
-#[allow(non_camel_case_types)] pub type u4096_with_u64 = BigUInt<u64, 64>;
+#[allow(non_camel_case_types)] pub type U4096_with_u64 = BigUInt<u64, 64>;
 
 /// 5120-bit unsigned integer implemented by `BigUInt<u64, 80>` made with eighty `u64`s
-#[allow(non_camel_case_types)] pub type u5120_with_u64 = BigUInt<u64, 80>;
+#[allow(non_camel_case_types)] pub type U5120_with_u64 = BigUInt<u64, 80>;
 
 /// 6144-bit unsigned integer implemented by `BigUInt<u64, 96>` made with ninety-six `u64`s
-#[allow(non_camel_case_types)] pub type u6144_with_u64 = BigUInt<u64, 96>;
+#[allow(non_camel_case_types)] pub type U6144_with_u64 = BigUInt<u64, 96>;
 
 /// 7168-bit unsigned integer implemented by BigUInt<u64, 112> made with one hundred twelve `u64`s
-#[allow(non_camel_case_types)] pub type u7168_with_u64 = BigUInt<u64, 112>;
+#[allow(non_camel_case_types)] pub type U7168_with_u64 = BigUInt<u64, 112>;
 
 /// 8192-bit unsigned integer implemented by `BigUInt<u64, 128>` made with two hundred twenty-eight `u64`s
-#[allow(non_camel_case_types)] pub type u8192_with_u64 = BigUInt<u64, 128>;
+#[allow(non_camel_case_types)] pub type U8192_with_u64 = BigUInt<u64, 128>;
 
 /// 16384-bit unsigned integer implemented by `BigUInt<u64, 256>` made with two hundred fifty-six `u64`s
-#[allow(non_camel_case_types)] pub type u16384_with_u64 = BigUInt<u64, 256>;
+#[allow(non_camel_case_types)] pub type U16384_with_u64 = BigUInt<u64, 256>;
 
 
 /// 256-bit unsigned integer implemented by `BigUInt<u32, 8>` made with eight `u32`s
-#[allow(non_camel_case_types)] pub type u256_with_u32 = BigUInt<u32, 8>;
+#[allow(non_camel_case_types)] pub type U256_with_u32 = BigUInt<u32, 8>;
 
 /// 512-bit unsigned integer implemented by `BigUInt<u32, 8>` made with sixteen `u32`s
-#[allow(non_camel_case_types)] pub type u512_with_u32 = BigUInt<u32, 16>;
+#[allow(non_camel_case_types)] pub type U512_with_u32 = BigUInt<u32, 16>;
 
 /// 1024-bit unsigned integer implemented by `BigUInt<u32, 8>` made with thirty-two `u32`s
-#[allow(non_camel_case_types)] pub type u1024_with_u32 = BigUInt<u32, 32>;
+#[allow(non_camel_case_types)] pub type U1024_with_u32 = BigUInt<u32, 32>;
 
 /// 2048-bit unsigned integer implemented by `BigUInt<u32, 8>` made with sixty-four `u32`s
-#[allow(non_camel_case_types)] pub type u2048_with_u32 = BigUInt<u32, 64>;
+#[allow(non_camel_case_types)] pub type U2048_with_u32 = BigUInt<u32, 64>;
 
 /// 3072-bit unsigned integer implemented by `BigUInt<u32, 8>` made with ninety-six `u32`s
-#[allow(non_camel_case_types)] pub type u3072_with_u32 = BigUInt<u32, 96>;
+#[allow(non_camel_case_types)] pub type U3072_with_u32 = BigUInt<u32, 96>;
 
 /// 4096-bit unsigned integer implemented by `BigUInt<u32, 8>` made with one hundred twenty-eight `u32`s
-#[allow(non_camel_case_types)] pub type u4096_with_u32 = BigUInt<u32, 128>;
+#[allow(non_camel_case_types)] pub type U4096_with_u32 = BigUInt<u32, 128>;
 
 /// 5120-bit unsigned integer implemented by `BigUInt<u32, 8>` made with one hundred sixty `u32`s
-#[allow(non_camel_case_types)] pub type u5120_with_u32 = BigUInt<u32, 160>;
+#[allow(non_camel_case_types)] pub type U5120_with_u32 = BigUInt<u32, 160>;
 
 /// 6144-bit unsigned integer implemented by `BigUInt<u32, 8>` made with one hundred ninety-two `u32`s
-#[allow(non_camel_case_types)] pub type u6144_with_u32 = BigUInt<u32, 192>;
+#[allow(non_camel_case_types)] pub type U6144_with_u32 = BigUInt<u32, 192>;
 
 /// 7168-bit unsigned integer implemented by `BigUInt<u32, 8>` made with two hundred twenty-four `u32`s
-#[allow(non_camel_case_types)] pub type u7168_with_u32 = BigUInt<u32, 224>;
+#[allow(non_camel_case_types)] pub type U7168_with_u32 = BigUInt<u32, 224>;
 
 /// 8192-bit unsigned integer implemented by `BigUInt<u32, 8>` made with two hundred fifty-six `u32`s
-#[allow(non_camel_case_types)] pub type u8192_with_u32 = BigUInt<u32, 256>;
+#[allow(non_camel_case_types)] pub type U8192_with_u32 = BigUInt<u32, 256>;
 
 /// 16384-bit unsigned integer implemented by `BigUInt<u32, 8>` made with five hundred twelve `u32`s
-#[allow(non_camel_case_types)] pub type u16384_with_u32 = BigUInt<u32, 512>;
+#[allow(non_camel_case_types)] pub type U16384_with_u32 = BigUInt<u32, 512>;
 
 
 /// 256-bit unsigned integer implemented by `BigUInt<u16, 16>` made with sixteen `u16`s
-#[allow(non_camel_case_types)] pub type u256_with_u16 = BigUInt<u16, 16>;
+#[allow(non_camel_case_types)] pub type U256_with_u16 = BigUInt<u16, 16>;
 
 /// 512-bit unsigned integer implemented by `BigUInt<u16, 32>` made with thirty-two `u16`s
-#[allow(non_camel_case_types)] pub type u512_with_u16 = BigUInt<u16, 32>;
+#[allow(non_camel_case_types)] pub type U512_with_u16 = BigUInt<u16, 32>;
 
 /// 1024-bit unsigned integer implemented by `BigUInt<u16, 64>` made with sixty-four `u16`s
-#[allow(non_camel_case_types)] pub type u1024_with_u16 = BigUInt<u16, 64>;
+#[allow(non_camel_case_types)] pub type U1024_with_u16 = BigUInt<u16, 64>;
 
 /// 2048-bit unsigned integer implemented by `BigUInt<u16, 128>` made with one hundred twenty-eight `u16`s
-#[allow(non_camel_case_types)] pub type u2048_with_u16 = BigUInt<u16, 128>;
+#[allow(non_camel_case_types)] pub type U2048_with_u16 = BigUInt<u16, 128>;
 
 /// 3072-bit unsigned integer implemented by `BigUInt<u16, 192>` made with one hundred ninety-two `u16`s
-#[allow(non_camel_case_types)] pub type u3072_with_u16 = BigUInt<u16, 192>;
+#[allow(non_camel_case_types)] pub type U3072_with_u16 = BigUInt<u16, 192>;
 
 /// 4096-bit unsigned integer implemented by `BigUInt<u16, 256>` made with two hundred fifty-six `u16`s
-#[allow(non_camel_case_types)] pub type u4096_with_u16 = BigUInt<u16, 256>;
+#[allow(non_camel_case_types)] pub type U4096_with_u16 = BigUInt<u16, 256>;
 
 /// 5120-bit unsigned integer implemented by `BigUInt<u16, 320>` made with three hundred twenty `u16`s
-#[allow(non_camel_case_types)] pub type u5120_with_u16 = BigUInt<u16, 320>;
+#[allow(non_camel_case_types)] pub type U5120_with_u16 = BigUInt<u16, 320>;
 
 /// 6144-bit unsigned integer implemented by `BigUInt<u16, 384>` made with three hundred eighty-four `u16`s
-#[allow(non_camel_case_types)] pub type u6144_with_u16 = BigUInt<u16, 384>;
+#[allow(non_camel_case_types)] pub type U6144_with_u16 = BigUInt<u16, 384>;
 
 /// 7168-bit unsigned integer implemented by `BigUInt<u16, 448>` made with four hundred forty-eight `u16`s
-#[allow(non_camel_case_types)] pub type u7168_with_u16 = BigUInt<u16, 448>;
+#[allow(non_camel_case_types)] pub type U7168_with_u16 = BigUInt<u16, 448>;
 
 /// 8192-bit unsigned integer implemented by `BigUInt<u16, 512>` made with five hundred twelve `u16`s
-#[allow(non_camel_case_types)] pub type u8192_with_u16 = BigUInt<u16, 512>;
+#[allow(non_camel_case_types)] pub type U8192_with_u16 = BigUInt<u16, 512>;
 
 /// 16384-bit unsigned integer implemented by `BigUInt<u16, 1024>` made with one thousand twenty-four `u16`s
-#[allow(non_camel_case_types)] pub type u16384_with_u16 = BigUInt<u16, 1024>;
+#[allow(non_camel_case_types)] pub type U16384_with_u16 = BigUInt<u16, 1024>;
 
 
 /// 256-bit unsigned integer implemented by `BigUInt<u8, 32>` made with thirty-two `u8`s
-#[allow(non_camel_case_types)] pub type u256_with_u8 = BigUInt<u8, 32>;
+#[allow(non_camel_case_types)] pub type U256_with_u8 = BigUInt<u8, 32>;
 
 /// 512-bit unsigned integer implemented by `BigUInt<u8, 64>` made with sixty-four `u8`s
-#[allow(non_camel_case_types)] pub type u512_with_u8 = BigUInt<u8, 64>;
+#[allow(non_camel_case_types)] pub type U512_with_u8 = BigUInt<u8, 64>;
 
 /// 1024-bit unsigned integer implemented by `BigUInt<u8, 128>` made with one hundred twenty-eight `u8`s
-#[allow(non_camel_case_types)] pub type u1024_with_u8 = BigUInt<u8, 128>;
+#[allow(non_camel_case_types)] pub type U1024_with_u8 = BigUInt<u8, 128>;
 
 /// 2048-bit unsigned integer implemented by `BigUInt<u8, 256>` made with two hundred fifty-six `u8`s
-#[allow(non_camel_case_types)] pub type u2048_with_u8 = BigUInt<u8, 256>;
+#[allow(non_camel_case_types)] pub type U2048_with_u8 = BigUInt<u8, 256>;
 
 /// 3072-bit unsigned integer implemented by `BigUInt<u8, 384>` made with three hundred eighty-four `u8`s
-#[allow(non_camel_case_types)] pub type u3072_with_u8 = BigUInt<u8, 384>;
+#[allow(non_camel_case_types)] pub type U3072_with_u8 = BigUInt<u8, 384>;
 
 /// 4096-bit unsigned integer implemented by `BigUInt<u8, 512>` made with five hundred twelve `u8`s
-#[allow(non_camel_case_types)] pub type u4096_with_u8 = BigUInt<u8, 512>;
+#[allow(non_camel_case_types)] pub type U4096_with_u8 = BigUInt<u8, 512>;
 
 /// 5120-bit unsigned integer implemented by `BigUInt<u8, 640>` made with six hundred forty-eight `u8`s
-#[allow(non_camel_case_types)] pub type u5120_with_u8 = BigUInt<u8, 640>;
+#[allow(non_camel_case_types)] pub type U5120_with_u8 = BigUInt<u8, 640>;
 
 /// 6144-bit unsigned integer implemented by `BigUInt<u8, 768>` made with seven hundred sixty-eight `u8`s
-#[allow(non_camel_case_types)] pub type u6144_with_u8 = BigUInt<u8, 768>;
+#[allow(non_camel_case_types)] pub type U6144_with_u8 = BigUInt<u8, 768>;
 
 /// 7168-bit unsigned integer implemented by `BigUInt<u8, 896>` made with eight hundred ninety-six `u8`s
-#[allow(non_camel_case_types)] pub type u7168_with_u8 = BigUInt<u8, 896>;
+#[allow(non_camel_case_types)] pub type U7168_with_u8 = BigUInt<u8, 896>;
 
 /// 8192-bit unsigned integer implemented by `BigUInt<u8, 1024>` made with one thousand twenty-four `u8`s
-#[allow(non_camel_case_types)] pub type u8192_with_u8 = BigUInt<u8, 1024>;
+#[allow(non_camel_case_types)] pub type U8192_with_u8 = BigUInt<u8, 1024>;
 
 /// 16384-bit unsigned integer implemented by `BigUInt<u8, 2048>` made with two thousand forty-eight `u8`s
-#[allow(non_camel_case_types)] pub type u16384_with_u8 = BigUInt<u8, 2048>;
+#[allow(non_camel_case_types)] pub type U16384_with_u8 = BigUInt<u8, 2048>;
 
 
 /// # Introduction
@@ -229,26 +231,26 @@ use super::NumberErr;
 /// 
 /// # Quick Start
 /// It is generic data type. So, you can define 1024-bit unsigned integer
-/// as follows. Note that `u1024` is not keyword of Rust while `u128` is one
-/// of Rust keyword. So, you can use `u1024` as a user-defined datatype.
+/// as follows. Note that `U1024` is not keyword of Rust while `u128` is one
+/// of Rust keyword. So, you can use `U1024` as a user-defined datatype.
 /// 
 /// ## Example 1
 /// ```
 /// use cryptocol::number::*;
-/// type u1024 = BigUInt::<u128, 8>;
+/// type U1024 = BigUInt::<u128, 8>;
 /// ```
-/// Then, you can use `u1024` in the similar way to how to use `u8` or `u64`.
-/// And, `u1024` is composed of eight `u128`s inside.
-/// Of course, you can define the same `u1024` as follows.
+/// Then, you can use `U1024` in the similar way to how to use `u8` or `u64`.
+/// And, `U1024` is composed of eight `u128`s inside.
+/// Of course, you can define the same `U1024` as follows.
 /// 
 /// ## Example 2
 /// ```
 /// use cryptocol::number::*;
-/// type u1024 = BigUInt::<u64, 16>;
+/// type U1024 = BigUInt::<u64, 16>;
 /// ```
 /// Then, it is composed of sixteen `u64`s inside though it is the same size of
 /// type `BigUInt::<u128, 8>`. As you've already understood, you can define
-/// `u1024` as `BigUInt::<u8, 128>` too. It is totally up to you.
+/// `U1024` as `BigUInt::<u8, 128>` too. It is totally up to you.
 /// 
 /// ## Performance
 /// However, in both release mode and debug mode, if you consider performance
@@ -277,11 +279,11 @@ use super::NumberErr;
 /// use std::str::FromStr;
 /// use cryptocol::number::*;
 /// 
-/// type u1024 = BigUInt::<u128, 8>;
+/// type U1024 = BigUInt::<u128, 8>;
 /// 
-/// let a = u1024::from([1;8]);
-/// let b = u1024::from_str_radix("00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000001__00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000001__00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000001__00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000001__00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000001__00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000001__00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000001__00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000001", 2).unwrap();
-/// let c = u1024::from_str("1234567891234567879123456789111111111222222222333333333444444444555555555666666666777777777888888888999999999000000000").unwrap();
+/// let a = U1024::from([1;8]);
+/// let b = U1024::from_str_radix("00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000001__00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000001__00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000001__00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000001__00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000001__00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000001__00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000001__00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000001", 2).unwrap();
+/// let c = U1024::from_str("1234567891234567879123456789111111111222222222333333333444444444555555555666666666777777777888888888999999999000000000").unwrap();
 /// 
 /// println!("a = {:?}", a);
 /// assert_eq!(format!("{:?}", a), "BigUInt { number: [1, 1, 1, 1, 1, 1, 1, 1], flag: 0 }");
@@ -352,8 +354,8 @@ use super::NumberErr;
 /// Example 3.
 /// 
 /// ## Predefined Datatypes for Convenience
-/// You can use predefiend datatypes such as `u256`, `u512`, `u1024`, etc.,
-/// or `U32`, `U64`, `U128`, etc. All you have to do is to use (import)
+/// You can use predefiend datatypes such as `U256`, `U512`, `U1024`, etc.,
+/// or `UU32`, `UU64`, `UU128`, etc. All you have to do is to use (import)
 /// `cryptocol::define_utypes_with`, and use a `define_utypes_with!()` macro.
 /// The macro `define_utypes_with!()` requires base unsigned integer type such
 /// as `u128`, `u64`, `u32`, `u16`, and `u8`. `usize` is not supported as base
@@ -367,9 +369,9 @@ use super::NumberErr;
 /// 
 /// define_utypes_with!(u128);
 /// 
-/// let a = u1024::from([1;8]);
-/// let b = u1024::from_str_radix("00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000001__00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000001__00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000001__00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000001__00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000001__00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000001__00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000001__00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000001", 2).unwrap();
-/// let c = U128::from_str("1234567891234567879123456789111111111222222222333333333444444444555555555666666666777777777888888888999999999000000000").unwrap();
+/// let a = U1024::from([1;8]);
+/// let b = U1024::from_str_radix("00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000001__00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000001__00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000001__00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000001__00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000001__00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000001__00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000001__00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000001", 2).unwrap();
+/// let c = UU128::from_str("1234567891234567879123456789111111111222222222333333333444444444555555555666666666777777777888888888999999999000000000").unwrap();
 /// 
 /// println!("a = {:?}", a);
 /// assert_eq!(format!("{:?}", a), "BigUInt { number: [1, 1, 1, 1, 1, 1, 1, 1], flag: 0 }");
@@ -527,11 +529,11 @@ use super::NumberErr;
 ///     for operator in 0..4
 ///     {
 ///         println!("=== {} ===", op[operator]);
-///         performance!(u1024_with_u128, dt[0], ti[0], operator);
-///         performance!(u1024_with_u64, dt[1], ti[1], operator);
-///         performance!(u1024_with_u32, dt[2], ti[2], operator);
-///         performance!(u1024_with_u16, dt[3], ti[3], operator);
-///         performance!(u1024_with_u8, dt[4], ti[4], operator);
+///         performance!(U1024_with_u128, dt[0], ti[0], operator);
+///         performance!(U1024_with_u64, dt[1], ti[1], operator);
+///         performance!(U1024_with_u32, dt[2], ti[2], operator);
+///         performance!(U1024_with_u16, dt[3], ti[3], operator);
+///         performance!(U1024_with_u8, dt[4], ti[4], operator);
 ///     
 ///         let mut fastest = 0;
 ///         for i in 1..5
@@ -555,8 +557,8 @@ use super::NumberErr;
 ///     }
 /// }
 /// ```
-/// `u1024_with_u128`, `u1024_with_u64`, `u1024_with_u32`, `u1024_with_u16`,
-/// and `u1024_with_u128` are all predefined datatypes too.
+/// `U1024_with_u128`, `U1024_with_u64`, `U1024_with_u32`, `U1024_with_u16`,
+/// and `U1024_with_u128` are all predefined datatypes too.
 /// 
 /// So, if ypu calculate addition and subtraction mainly, you'd better use
 /// `u128`-based datatype such as `BigUInt<u128, N>`. Or use predefined
@@ -567,7 +569,7 @@ use super::NumberErr;
 /// use std::str::FromStr;
 /// use cryptocol::define_utypes_with;
 /// define_utypes_with!(u128);
-/// let a = u1024::new();
+/// let a = U1024::new();
 /// ```
 /// If you calculate multiplication and division mainly, you'd better use
 /// `u64`-based datatype such as `BigUInt<u64, N>`. Or use predefined
@@ -578,7 +580,7 @@ use super::NumberErr;
 /// use std::str::FromStr;
 /// use cryptocol::define_utypes_with;
 /// define_utypes_with!(u64);
-/// let a = u1024::new();
+/// let a = U1024::new();
 /// ```
 /// 
 /// # Big-endian issue
@@ -678,8 +680,8 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// use cryptocol::define_utypes_with;
     /// define_utypes_with!(u128);
     /// 
-    /// let obj = u256::new();
-    /// let zero = u256::zero();
+    /// let obj = U256::new();
+    /// let zero = U256::zero();
     /// println!("obj = {}", obj);
     /// assert_eq!(obj, zero);
     /// ```
@@ -730,8 +732,8 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// use cryptocol::define_utypes_with;
     /// define_utypes_with!(u64);
     /// 
-    /// let zero = u256::zero();
-    /// let obj = u256::new();
+    /// let zero = U256::zero();
+    /// let obj = U256::new();
     /// println!("zero = {}", zero);
     /// assert_eq!(zero, obj);
     /// ```
@@ -757,8 +759,8 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// use cryptocol::define_utypes_with;
     /// define_utypes_with!(u32);
     /// 
-    /// let one = u256::one();
-    /// let mut obj = u256::new();
+    /// let one = U256::one();
+    /// let mut obj = U256::new();
     /// obj.set_uint(1_u32);
     /// println!("one = {}", one);
     /// assert_eq!(one, obj);
@@ -790,9 +792,9 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// use cryptocol::define_utypes_with;
     /// define_utypes_with!(u16);
     /// 
-    /// let maximum = u256::max();
+    /// let maximum = U256::max();
     /// println!("maximum =\t{}", maximum);
-    /// assert_eq!(maximum, u256::from_str("115792089237316195423570985008687907853269984665640564039457584007913129639935").unwrap());
+    /// assert_eq!(maximum, U256::from_str("115792089237316195423570985008687907853269984665640564039457584007913129639935").unwrap());
     /// ```
     pub fn max() -> Self
     {
@@ -821,9 +823,9 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// use cryptocol::define_utypes_with;
     /// define_utypes_with!(u8);
     /// 
-    /// let half = u256::submax(128_usize);
+    /// let half = U256::submax(128_usize);
     /// println!("half maximum = \t{}", half);
-    /// assert_eq!(half, u256::from_str("340282366920938463463374607431768211455").unwrap());
+    /// assert_eq!(half, U256::from_str("340282366920938463463374607431768211455").unwrap());
     /// ```
     pub fn submax(size_in_bits: usize) -> Self
     {
@@ -851,9 +853,9 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// use cryptocol::define_utypes_with;
     /// define_utypes_with!(u128);
     /// 
-    /// let half = u256::halfmax();
+    /// let half = U256::halfmax();
     /// println!("half maximum = \t{}", half);
-    /// assert_eq!(half, u256::from_str("340282366920938463463374607431768211455").unwrap());
+    /// assert_eq!(half, U256::from_str("340282366920938463463374607431768211455").unwrap());
     /// ```
     #[inline]
     pub fn halfmax() -> Self
@@ -877,7 +879,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// use cryptocol::define_utypes_with_u16;
     /// define_utypes_with_u16!();
     /// 
-    /// let aa = u512::from_uint(123_u8);
+    /// let aa = U512::from_uint(123_u8);
     /// println!("aa = {}", aa);
     /// assert_eq!(aa.into_u8(), 123_u8);
     /// ```
@@ -888,7 +890,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// use cryptocol::define_utypes_with_u64;
     /// define_utypes_with_u64!();
     /// 
-    /// let bb = u512::from_uint(12345_u16);
+    /// let bb = U512::from_uint(12345_u16);
     /// println!("bb = {}", bb);
     /// assert_eq!(bb.into_u16(), 12345_u16);
     /// ```
@@ -899,7 +901,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// use cryptocol::define_utypes_with_u8;
     /// define_utypes_with_u8!();
     /// 
-    /// let cc = u512::from_uint(1234567890_u32);
+    /// let cc = U512::from_uint(1234567890_u32);
     /// println!("cc = {}", cc);
     /// assert_eq!(cc.into_u32(), 1234567890_u32);
     /// ```
@@ -910,7 +912,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// use cryptocol::define_utypes_with_u128;
     /// define_utypes_with_u128!();
     /// 
-    /// let dd = u512::from_uint(12345678901234567890_u64);
+    /// let dd = U512::from_uint(12345678901234567890_u64);
     /// println!("dd = {}", dd);
     /// assert_eq!(dd.into_u64(), 12345678901234567890_u64);
     /// ```
@@ -921,7 +923,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// use cryptocol::define_utypes_with_u128;
     /// define_utypes_with_u128!();
     /// 
-    /// let ee = u512::from_uint(123456789012345678901234567890123456789_u128);
+    /// let ee = U512::from_uint(123456789012345678901234567890123456789_u128);
     /// println!("ee = {}", ee);
     /// assert_eq!(ee.into_u128(), 123456789012345678901234567890123456789_u128);
     /// ```
@@ -932,7 +934,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// use cryptocol::define_utypes_with_u32;
     /// define_utypes_with_u32!();
     /// 
-    /// let ff = u512::from_uint(123_usize);
+    /// let ff = U512::from_uint(123_usize);
     /// println!("ff = {}", ff);
     /// assert_eq!(ff.into_usize(), 123_usize);
     /// ```
@@ -946,22 +948,22 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
             + BitXor<Output=U> + BitXorAssign + Not<Output=U>
             + PartialEq + PartialOrd
     {
-        let TSIZE = T::size_in_bytes();
-        let USIZE = U::size_in_bytes();
+        let size_t = T::size_in_bytes();
+        let size_u = U::size_in_bytes();
         let mut me = Self::zero();
         let mut share = Share::<T, U>::from_src(val);
-//        unsafe { copy_nonoverlapping(val.as_ptr() as *const u8, me.number.as_mut_ptr() as *mut u8, USIZE); }
-        if TSIZE >= USIZE
+//        unsafe { copy_nonoverlapping(val.as_ptr() as *const u8, me.number.as_mut_ptr() as *mut u8, size_u); }
+        if size_t >= size_u
         {
             unsafe { me.set_num_(0, share.des); }
         }
-        else    // if TSIZE < USIZE
+        else    // if size_t < size_u
         {
-            let TSIZE_BITS = TSIZE * 8;
-            for i in 0..USIZE/TSIZE
+            let size_t_bits = size_t * 8;
+            for i in 0..size_u/size_t
             {
                 unsafe { me.set_num_(i, share.des); }
-                unsafe { share.src >>= U::usize_as_SmallUInt(TSIZE_BITS); }
+                unsafe { share.src >>= U::usize_as_smalluint(size_t_bits); }
             }
         }
         return me;
@@ -983,9 +985,9 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// use cryptocol::define_utypes_with;
     /// define_utypes_with!(u8);
     /// 
-    /// let big_num = u256::from_array(&[1_u8;32]);
+    /// let big_num = U256::from_array(&[1_u8;32]);
     /// println!("big_num = {}", big_num.to_string_with_radix(2).unwrap());
-    /// assert_eq!(big_num, u256::from_str_radix("00000001_00000001_00000001_00000001_00000001_00000001_00000001_00000001_00000001_00000001_00000001_00000001_00000001_00000001_00000001_00000001_00000001_00000001_00000001_00000001_00000001_00000001_00000001_00000001_00000001_00000001_00000001_00000001_00000001_00000001_00000001_00000001", 2).unwrap());
+    /// assert_eq!(big_num, U256::from_str_radix("00000001_00000001_00000001_00000001_00000001_00000001_00000001_00000001_00000001_00000001_00000001_00000001_00000001_00000001_00000001_00000001_00000001_00000001_00000001_00000001_00000001_00000001_00000001_00000001_00000001_00000001_00000001_00000001_00000001_00000001_00000001_00000001", 2).unwrap());
     /// ```
     pub fn from_array(val: &[T; N]) -> Self
     {
@@ -1010,8 +1012,8 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// use std::str::FromStr;
     /// use cryptocol::number::*;
     /// 
-    /// let a = u256_with_u8::from_str("123456789123456789123456789123456789123456789123456789").unwrap();
-    /// let b = u256_with_u16::from_biguint(&a);
+    /// let a = U256_with_u8::from_str("123456789123456789123456789123456789123456789123456789").unwrap();
+    /// let b = U256_with_u16::from_biguint(&a);
     /// println!("a = {}", a);
     /// println!("b = {}", b);
     /// assert_eq!(a.to_string(), b.to_string());
@@ -1022,8 +1024,8 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// use std::str::FromStr;
     /// use cryptocol::number::*;
     /// 
-    /// let a = u256_with_u8::from_str("123456789123456789123456789123456789123456789123456789").unwrap();
-    /// let b = u512_with_u16::from_biguint(&a);
+    /// let a = U256_with_u8::from_str("123456789123456789123456789123456789123456789123456789").unwrap();
+    /// let b = U512_with_u16::from_biguint(&a);
     /// println!("a = {}", a);
     /// println!("b = {}", b);
     /// assert_eq!(a.to_string(), b.to_string());
@@ -1034,8 +1036,8 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// use std::str::FromStr;
     /// use cryptocol::number::*;
     /// 
-    /// let a = u512_with_u8::from_str("123456789123456789123456789123456789123456789123456789").unwrap();
-    /// let b = u256_with_u16::from_biguint(&a);
+    /// let a = U512_with_u8::from_str("123456789123456789123456789123456789123456789123456789").unwrap();
+    /// let b = U256_with_u16::from_biguint(&a);
     /// println!("a = {}", a);
     /// println!("b = {}", b);
     /// assert_eq!(a.to_string(), b.to_string());
@@ -1079,8 +1081,8 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// use std::str::FromStr;
     /// use cryptocol::number::*;
     /// 
-    /// let a = u256_with_u8::from_str("123456789123456789123456789123456789123456789123456789").unwrap();
-    /// let b = u256_with_u16::from_biguint(&a);
+    /// let a = U256_with_u8::from_str("123456789123456789123456789123456789123456789123456789").unwrap();
+    /// let b = U256_with_u16::from_biguint(&a);
     /// println!("a = {}", a);
     /// println!("b = {}", b);
     /// assert_eq!(a.to_string(), b.to_string());
@@ -1091,8 +1093,8 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// use std::str::FromStr;
     /// use cryptocol::number::*;
     /// 
-    /// let a = u256_with_u8::from_str("123456789123456789123456789123456789123456789123456789").unwrap();
-    /// let b = u512_with_u16::from_biguint(&a);
+    /// let a = U256_with_u8::from_str("123456789123456789123456789123456789123456789123456789").unwrap();
+    /// let b = U512_with_u16::from_biguint(&a);
     /// println!("a = {}", a);
     /// println!("b = {}", b);
     /// assert_eq!(a.to_string(), b.to_string());
@@ -1103,8 +1105,8 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// use std::str::FromStr;
     /// use cryptocol::number::*;
     /// 
-    /// let a = u512_with_u8::from_str("123456789123456789123456789123456789123456789123456789").unwrap();
-    /// let b = u256_with_u16::from_biguint(&a);
+    /// let a = U512_with_u8::from_str("123456789123456789123456789123456789123456789123456789").unwrap();
+    /// let b = U256_with_u16::from_biguint(&a);
     /// println!("a = {}", a);
     /// println!("b = {}", b);
     /// assert_eq!(a.to_string(), b.to_string());
@@ -1152,11 +1154,11 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// use cryptocol::define_utypes_with;
     /// define_utypes_with!(u8);
     /// 
-    /// let be = u256::from_array(&[0x12, 0x34, 0x56, 0x78, 0x90, 0xab, 0xcd, 0xef,
+    /// let be = U256::from_array(&[0x12, 0x34, 0x56, 0x78, 0x90, 0xab, 0xcd, 0xef,
     ///                             0x11, 0x22, 0x33, 0x44, 0x55, 0x66, 0x77, 0x88,
     ///                             0x99, 0x00, 0xaa, 0xbb, 0xcc, 0xdd, 0xee, 0xff,
     ///                             0x1f, 0x2e, 0x3d, 0x4c, 0x5b, 0x6a, 0x70, 0x89]);
-    /// let le = u256::from_be(&be);
+    /// let le = U256::from_be(&be);
     /// println!("be = 0x{}", be.to_string_with_radix(16).unwrap());
     /// println!("le = 0x{}", le.to_string_with_radix(16).unwrap());
     /// assert_eq!(be.to_string_with_radix(16).unwrap(), "89706A5B4C3D2E1FFFEEDDCCBBAA00998877665544332211EFCDAB9078563412");
@@ -1180,11 +1182,11 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// use cryptocol::define_utypes_with;
     /// define_utypes_with!(u8);
     /// 
-    /// let be1 = u256::from_array(&[0x12, 0x34, 0x56, 0x78, 0x90, 0xab, 0xcd, 0xef,
+    /// let be1 = U256::from_array(&[0x12, 0x34, 0x56, 0x78, 0x90, 0xab, 0xcd, 0xef,
     ///                             0x11, 0x22, 0x33, 0x44, 0x55, 0x66, 0x77, 0x88,
     ///                             0x99, 0x00, 0xaa, 0xbb, 0xcc, 0xdd, 0xee, 0xff,
     ///                             0x1f, 0x2e, 0x3d, 0x4c, 0x5b, 0x6a, 0x70, 0x89]);
-    /// let be2 = u256::from_be(&be);
+    /// let be2 = U256::from_be(&be);
     /// println!("be1 = 0x{}", be.to_string_with_radix(16).unwrap());
     /// println!("be2 = 0x{}", le.to_string_with_radix(16).unwrap());
     /// assert_eq!(be1.to_string_with_radix(16).unwrap(), "1234567890ABCDEF11223344556677889900AABBCCDDEEFF1F2E3D4C5B6A7089");
@@ -1213,7 +1215,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     ///                 0x11, 0x22, 0x33, 0x44, 0x55, 0x66, 0x77, 0x88,
     ///                 0x99, 0x00, 0xaa, 0xbb, 0xcc, 0xdd, 0xee, 0xff,
     ///                 0x1f, 0x2e, 0x3d, 0x4c, 0x5b, 0x6a, 0x70, 0x89];
-    /// let le = u256::from_be_bytes(&be_array);
+    /// let le = U256::from_be_bytes(&be_array);
     /// println!("be_array = {:?}", be_array);
     /// println!("le = {:?}", le);
     /// assert_eq!(le.to_string_with_radix(16).unwrap(), "1234567890ABCDEF11223344556677889900AABBCCDDEEFF1F2E3D4C5B6A7089");
@@ -1241,7 +1243,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     ///                 0x11, 0x22, 0x33, 0x44, 0x55, 0x66, 0x77, 0x88,
     ///                 0x99, 0x00, 0xaa, 0xbb, 0xcc, 0xdd, 0xee, 0xff,
     ///                 0x1f, 0x2e, 0x3d, 0x4c, 0x5b, 0x6a, 0x70, 0x89];
-    /// let be = u256::from_be_bytes(&be_array);
+    /// let be = U256::from_be_bytes(&be_array);
     /// println!("be_array = {:?}", be_array);
     /// println!("be = {:?}", be);
     /// assert_eq!(be.to_string_with_radix(16).unwrap(), "1234567890ABCDEF11223344556677889900AABBCCDDEEFF1F2E3D4C5B6A7089");
@@ -1264,11 +1266,11 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// use cryptocol::define_utypes_with;
     /// define_utypes_with!(u8);
     /// 
-    /// let le1 = u256::from_array(&[0x12, 0x34, 0x56, 0x78, 0x90, 0xab, 0xcd, 0xef,
+    /// let le1 = U256::from_array(&[0x12, 0x34, 0x56, 0x78, 0x90, 0xab, 0xcd, 0xef,
     ///                             0x11, 0x22, 0x33, 0x44, 0x55, 0x66, 0x77, 0x88,
     ///                             0x99, 0x00, 0xaa, 0xbb, 0xcc, 0xdd, 0xee, 0xff,
     ///                             0x1f, 0x2e, 0x3d, 0x4c, 0x5b, 0x6a, 0x70, 0x89]);
-    /// let le2 = u256::from_le(&le1);
+    /// let le2 = U256::from_le(&le1);
     /// println!("le1 = 0x{}", le1.to_string_with_radix(16).unwrap());
     /// println!("le2 = 0x{}", le2.to_string_with_radix(16).unwrap());
     /// assert_eq!(le1.to_string_with_radix(16).unwrap(), "89706A5B4C3D2E1FFFEEDDCCBBAA00998877665544332211EFCDAB9078563412");
@@ -1292,11 +1294,11 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// use cryptocol::define_utypes_with;
     /// define_utypes_with!(u8);
     /// 
-    /// let le = u256::from_array(&[0x12, 0x34, 0x56, 0x78, 0x90, 0xab, 0xcd, 0xef,
+    /// let le = U256::from_array(&[0x12, 0x34, 0x56, 0x78, 0x90, 0xab, 0xcd, 0xef,
     ///                             0x11, 0x22, 0x33, 0x44, 0x55, 0x66, 0x77, 0x88,
     ///                             0x99, 0x00, 0xaa, 0xbb, 0xcc, 0xdd, 0xee, 0xff,
     ///                             0x1f, 0x2e, 0x3d, 0x4c, 0x5b, 0x6a, 0x70, 0x89]);
-    /// let be = u256::from_le(&le);
+    /// let be = U256::from_le(&le);
     /// println!("le = 0x{}", le.to_string_with_radix(16).unwrap());
     /// println!("be = 0x{}", be.to_string_with_radix(16).unwrap());
     /// assert_eq!(le.to_string_with_radix(16).unwrap(), "1234567890ABCDEF11223344556677889900AABBCCDDEEFF1F2E3D4C5B6A7089");
@@ -1325,7 +1327,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     ///                 0x11, 0x22, 0x33, 0x44, 0x55, 0x66, 0x77, 0x88,
     ///                 0x99, 0x00, 0xaa, 0xbb, 0xcc, 0xdd, 0xee, 0xff,
     ///                 0x1f, 0x2e, 0x3d, 0x4c, 0x5b, 0x6a, 0x70, 0x89];
-    /// let le = u256::from_le_bytes(&le_array);
+    /// let le = U256::from_le_bytes(&le_array);
     /// println!("le_array = {:?}", le_array);
     /// println!("le = {:?}", le);
     /// assert_eq!(le.to_string_with_radix(16).unwrap(), "89706A5B4C3D2E1FFFEEDDCCBBAA00998877665544332211EFCDAB9078563412");
@@ -1353,7 +1355,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     ///                 0x11, 0x22, 0x33, 0x44, 0x55, 0x66, 0x77, 0x88,
     ///                 0x99, 0x00, 0xaa, 0xbb, 0xcc, 0xdd, 0xee, 0xff,
     ///                 0x1f, 0x2e, 0x3d, 0x4c, 0x5b, 0x6a, 0x70, 0x89];
-    /// let be = u256::from_le_bytes(&le_array);
+    /// let be = U256::from_le_bytes(&le_array);
     /// println!("le_array = {:?}", le_array);
     /// println!("be = {:?}", le);
     /// assert_eq!(be.to_string_with_radix(16).unwrap(), "89706A5B4C3D2E1FFFEEDDCCBBAA00998877665544332211EFCDAB9078563412");
@@ -1395,7 +1397,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// use cryptocol::define_utypes_with;
     /// define_utypes_with!(u64);
     /// 
-    /// let a = u256::from_string("1234567890_1234567890_1234567890_1234567890_1234567890_1234567890_1234567890").unwrap();
+    /// let a = U256::from_string("1234567890_1234567890_1234567890_1234567890_1234567890_1234567890_1234567890").unwrap();
     /// println!("a = {}", a);
     /// assert_eq!(a.to_string(), "1234567890123456789012345678901234567890123456789012345678901234567890");
     /// ```
@@ -1471,7 +1473,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// ```
     /// use cryptocol::define_utypes_with;
     /// define_utypes_with!(u16);
-    /// let a = u512::from_str_radix("1234_5678_9ABC_DEF0_1234_5678_9ABC_DEF0_1234_5678_9ABC_DEF0_1234_5678_9ABC_DEF0_1234_5678_9ABC_DEF0_1234_5678_9ABC_DEF0_1234_5678_9ABC_DEF0_1234_5678_9ABC_DEF0", 16).unwrap();
+    /// let a = U512::from_str_radix("1234_5678_9ABC_DEF0_1234_5678_9ABC_DEF0_1234_5678_9ABC_DEF0_1234_5678_9ABC_DEF0_1234_5678_9ABC_DEF0_1234_5678_9ABC_DEF0_1234_5678_9ABC_DEF0_1234_5678_9ABC_DEF0", 16).unwrap();
     /// println!("a = {}", a);
     /// assert_eq!(a.to_string(), "953444119462584670231660883005169236350945453535049253076624239367818227875140724454335257332337691463184490358643394140772086144551847644877923949534960");
     /// ```
@@ -1521,8 +1523,8 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
                             else
                                 { c as u32 - 'a' as u32 + 10 + 26 }
                         };
-            bignum.wrapping_mul_assign_uint(T::u32_as_SmallUInt(radix));
-            bignum.wrapping_add_assign_uint(T::u32_as_SmallUInt(num));
+            bignum.wrapping_mul_assign_uint(T::u32_as_smalluint(radix));
+            bignum.wrapping_add_assign_uint(T::u32_as_smalluint(num));
         }
         if bignum.is_overflow()
             { Err(NumberErr::TooBigNumber) }
@@ -1551,21 +1553,21 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// use cryptocol::define_utypes_with_u32;
     /// define_utypes_with_u32!();
     /// 
-    /// let a_0 = u256::generate_check_bits(0).unwrap();
+    /// let a_0 = U256::generate_check_bits(0).unwrap();
     /// println!("a_0 = {}", a_0.to_string_with_radix_and_stride(2, 10).unwrap());
     /// assert_eq!(a_0.to_string_with_radix_and_stride(2, 10).unwrap(), "1");
     /// 
-    /// let a_12 = u256::generate_check_bits(12).unwrap();
+    /// let a_12 = U256::generate_check_bits(12).unwrap();
     /// println!("a_12 = {}", a_12.to_string_with_radix_and_stride(2, 10).unwrap());
     /// assert_eq!(a_12.to_string_with_radix_and_stride(2, 10).unwrap(), "100_0000000000");
     /// 
-    /// let a_255 = u256::generate_check_bits(255).unwrap();
+    /// let a_255 = U256::generate_check_bits(255).unwrap();
     /// println!("a_255 = {}", a_255.to_string_with_radix_and_stride(2, 10).unwrap());
     /// assert_eq!(a_255.to_string_with_radix_and_stride(2, 10).unwrap(), "100000_0000000000_0000000000_0000000000_0000000000_0000000000_0000000000_0000000000_0000000000_0000000000_0000000000_0000000000_0000000000_0000000000_0000000000_0000000000_0000000000_0000000000_0000000000_0000000000_0000000000_0000000000_0000000000_0000000000_0000000000_0000000000");
     /// 
-    /// let a_256 = u256::generate_check_bits(256);
-    /// println!("a_255 = {:?}", a_255);
-    /// assert_eq!(a_255, None);
+    /// let a_256 = U256::generate_check_bits(256);
+    /// println!("a_256 = {:?}", a_256);
+    /// assert_eq!(a_256, None);
     /// ```
     /// 
     /// # Big-endian issue
@@ -1604,19 +1606,20 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// use cryptocol::define_utypes_with_u32;
     /// define_utypes_with_u32!();
     /// 
-    /// let a_0 = u256::generate_check_bits(0);
+    /// let a_0 = U256::generate_check_bits_(0);
     /// println!("a_0 = {}", a_0.to_string_with_radix_and_stride(2, 10).unwrap());
     /// assert_eq!(a_0.to_string_with_radix_and_stride(2, 10).unwrap(), "1");
     /// 
-    /// let a_12 = u256::generate_check_bits(12);
+    /// let a_12 = U256::generate_check_bits_(12);
     /// println!("a_12 = {}", a_12.to_string_with_radix_and_stride(2, 10).unwrap());
     /// assert_eq!(a_12.to_string_with_radix_and_stride(2, 10).unwrap(), "100_0000000000");
     /// 
-    /// let a_255 = u256::generate_check_bits(255);
+    /// let a_255 = U256::generate_check_bits_(255);
     /// println!("a_255 = {}", a_255.to_string_with_radix_and_stride(2, 10).unwrap());
     /// assert_eq!(a_255.to_string_with_radix_and_stride(2, 10).unwrap(), "100000_0000000000_0000000000_0000000000_0000000000_0000000000_0000000000_0000000000_0000000000_0000000000_0000000000_0000000000_0000000000_0000000000_0000000000_0000000000_0000000000_0000000000_0000000000_0000000000_0000000000_0000000000_0000000000_0000000000_0000000000_0000000000");
+    /// 
     /// // It will panic!
-    /// // let a_256 = u256::generate_check_bits(256);
+    /// // let a_256 = U256::generate_check_bits_(256);
     /// ```
     /// 
     /// # Big-endian issue
@@ -1648,8 +1651,8 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// use cryptocol::define_utypes_with;
     /// define_utypes_with!(u8);
     /// 
-    /// println!("u256 is {}-byte integer.", u256::size_in_bytes());
-    /// assert_eq!(u256::size_in_bytes(), 32);
+    /// println!("U256 is {}-byte integer.", U256::size_in_bytes());
+    /// assert_eq!(U256::size_in_bytes(), 32);
     /// ```
     #[inline]
     pub fn size_in_bytes() -> usize
@@ -1671,8 +1674,8 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// use cryptocol::define_utypes_with;
     /// define_utypes_with!(u32);
     /// 
-    /// println!("u256 is {}-bit integer.", u256::size_in_bits());
-    /// assert_eq!(u256::size_in_bits(), 256);
+    /// println!("U256 is {}-bit integer.", U256::size_in_bits());
+    /// assert_eq!(U256::size_in_bits(), 256);
     /// ```
     #[inline]
     pub fn size_in_bits() -> usize
@@ -1694,7 +1697,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// ```
     /// use cryptocol::define_utypes_with;
     /// define_utypes_with!(u16);
-    /// let a = u256::from_str_radix("A16F", 16).unwrap();
+    /// let a = U256::from_str_radix("A16F", 16).unwrap();
     /// println!("a is {}-byte integer.", a.length_in_bytes());
     /// assert_eq!(a.length_in_bytes(), 32);
     /// ```
@@ -1719,7 +1722,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// use cryptocol::define_utypes_with;
     /// define_utypes_with!(u64);
     /// 
-    /// let a = u256::from_str_radix("A16F", 16).unwrap();
+    /// let a = U256::from_str_radix("A16F", 16).unwrap();
     /// println!("a is {}-bit integer.", a.length_in_bits());
     /// assert_eq!(a.length_in_bits(), 256);
     /// ```
@@ -1752,13 +1755,14 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// ```
     /// use cryptocol::number::*;
     /// use cryptocol::define_utypes_with;
+    /// use cryptocol::random::Any;
     /// 
     /// define_utypes_with!(u128);
-    /// let mut a = u256::any();
+    /// let mut a: U256 = Any::new().random_biguint();
     /// println!("a = {}", a.to_string_with_radix_and_stride(2, 8).unwrap());
     /// a.turn_check_bits(102);
     /// println!("a = {}", a.to_string_with_radix_and_stride(2, 8).unwrap());
-    /// assert_eq!(a, u256::from_str_radix("1000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000", 2).unwrap());
+    /// assert_eq!(a, U256::from_str_radix("1000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000", 2).unwrap());
     /// ```
     /// 
     /// # Big-endian issue
@@ -1767,11 +1771,11 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// for Big-endian CPUs with your own full responsibility.
     pub fn turn_check_bits(&mut self, bit_pos: usize)
     {
-        let TSIZE_BITS = T::size_in_bits();
-        let chunk_num = bit_pos / TSIZE_BITS;
-        let piece_num = bit_pos % TSIZE_BITS;
+        let size_t_bits = T::size_in_bits();
+        let chunk_num = bit_pos / size_t_bits;
+        let piece_num = bit_pos % size_t_bits;
         let mut val = T::one();
-        val <<= T::usize_as_SmallUInt(piece_num);
+        val <<= T::usize_as_smalluint(piece_num);
         self.set_zero();
         self.set_num_(chunk_num, val);
     }
@@ -1802,8 +1806,8 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// use cryptocol::define_utypes_with;
     /// define_utypes_with!(u64);
     /// 
-    /// let a = u256::from_string("12345678912345678912345678912345678912345678912345678912345678912345678912345").unwrap();
-    /// println!("a = {}_u256", a.to_string_with_radix_and_stride(2, 10).unwrap());
+    /// let a = U256::from_string("12345678912345678912345678912345678912345678912345678912345678912345678912345").unwrap();
+    /// println!("a = {}_U256", a.to_string_with_radix_and_stride(2, 10).unwrap());
     /// let mut res = a.is_bit_set(151);
     /// match res
     /// {
@@ -1812,7 +1816,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     ///         assert_eq!(a.is_bit_set_(151), true);
     ///     },
     ///     None => {
-    ///         println!("{}_u256 does not have the {}th bit.", a, 151);
+    ///         println!("{}_U256 does not have the {}th bit.", a, 151);
     ///     }
     /// }
     /// 
@@ -1824,7 +1828,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     ///         assert_eq!(a.is_bit_set_(200), false);
     ///     },
     ///     None => {
-    ///         println!("{}_u256 does not have the {}th bit.", a, 200);
+    ///         println!("{}_U256 does not have the {}th bit.", a, 200);
     ///     }
     /// }
     /// 
@@ -1836,7 +1840,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     ///         assert_eq!(a.is_bit_set_(300), true);
     ///     },
     ///     None => {
-    ///         println!("{}_u256 does not have the {}th bit.", a, 300);
+    ///         println!("{}_U256 does not have the {}th bit.", a, 300);
     ///     }
     /// }
     /// ```
@@ -1886,8 +1890,8 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// use cryptocol::define_utypes_with;
     /// define_utypes_with!(u64);
     /// 
-    /// let a = u256::from_string("12345678912345678912345678912345678912345678912345678912345678912345678912345").unwrap();
-    /// println!("a = {}_u256", a.to_string_with_radix_and_stride(2, 10).unwrap());
+    /// let a = U256::from_string("12345678912345678912345678912345678912345678912345678912345678912345678912345").unwrap();
+    /// println!("a = {}_U256", a.to_string_with_radix_and_stride(2, 10).unwrap());
     /// println!("The {}th bit is set: {}", 151, a.is_bit_set_(151));
     /// assert_eq!(a.is_bit_set_(151), true);
     /// println!("The {}th bit is set: {}", 200, a.is_bit_set_(200));
@@ -1902,9 +1906,9 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// for Big-endian CPUs with your own full responsibility.
     pub fn is_bit_set_(&self, bit_pos: usize) -> bool
     {
-        let TSIZE_BITS = T::size_in_bits();
-        let chunk_num = bit_pos / TSIZE_BITS;
-        let piece_num = bit_pos % TSIZE_BITS;
+        let size_t_bits = T::size_in_bits();
+        let chunk_num = bit_pos / size_t_bits;
+        let piece_num = bit_pos % size_t_bits;
         self.get_num_(chunk_num).is_bit_set_(piece_num)
     }
 
@@ -1926,10 +1930,10 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// use cryptocol::define_utypes_with;
     /// define_utypes_with!(u32);
     /// 
-    /// let a = u256::from_string("12345678912345678912345678912345678912345678912345678912345678912345678912345").unwrap();
-    /// println!("a = {}_u256", a.to_string_with_radix_and_stride(2, 10).unwrap());
+    /// let a = U256::from_string("12345678912345678912345678912345678912345678912345678912345678912345678912345").unwrap();
+    /// println!("a = {}_U256", a.to_string_with_radix_and_stride(2, 10).unwrap());
     /// let b = a.get_upper_portion(10);
-    /// println!("The 10-bit upper portion of {}_u256 is {}_u256", a, b);
+    /// println!("The 10-bit upper portion of {}_U256 is {}_U256", a, b);
     /// assert_eq!(b.to_string(), "873");
     /// ```
     /// 
@@ -1966,10 +1970,10 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// use cryptocol::define_utypes_with;
     /// define_utypes_with!(u32);
     /// 
-    /// let a = u256::from_string("12345678912345678912345678912345678912345678912345678912345678912345678912345").unwrap();
-    /// println!("a = {}_u256", a.to_string_with_radix_and_stride(2, 10).unwrap());
+    /// let a = U256::from_string("12345678912345678912345678912345678912345678912345678912345678912345678912345").unwrap();
+    /// println!("a = {}_U256", a.to_string_with_radix_and_stride(2, 10).unwrap());
     /// let b = a.get_lower_portion(10);
-    /// println!("The 10-bit lower portion of {}_u256 is {}_u256", a, b);
+    /// println!("The 10-bit lower portion of {}_U256 is {}_U256", a, b);
     /// assert_eq!(b.to_string(), "857");
     /// ```
     /// 
@@ -1989,17 +1993,17 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
         }
         else if portion < available
         {
-            let TSIZE_IN_BITS = T::size_in_bits();
-            let chunk_num = (portion - 1) / TSIZE_IN_BITS;
-            let piece_num = portion % TSIZE_IN_BITS;
+            let size_t_bits = T::size_in_bits();
+            let chunk_num = (portion - 1) / size_t_bits;
+            let piece_num = portion % size_t_bits;
             if piece_num != 0
             {
                 let mut thing = ret.get_num_(chunk_num);
-                thing <<= T::usize_as_SmallUInt(T::size_in_bits() - piece_num);
-                thing >>= T::usize_as_SmallUInt(T::size_in_bits() - piece_num);
+                thing <<= T::usize_as_smalluint(T::size_in_bits() - piece_num);
+                thing >>= T::usize_as_smalluint(T::size_in_bits() - piece_num);
                 ret.set_num_(chunk_num, thing);
             }
-            for i in (chunk_num + 1)..(N - leading as usize / TSIZE_IN_BITS)
+            for i in (chunk_num + 1)..(N - leading as usize / size_t_bits)
                 { ret.set_num_(i, T::zero()); }
         }
         ret
@@ -2027,7 +2031,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// use cryptocol::define_utypes_with;
     /// define_utypes_with!(u32);
     /// 
-    /// let a = u256::from([0_u32, 10, 20, 30, 40, 50, 60, 70]);
+    /// let a = U256::from([0_u32, 10, 20, 30, 40, 50, 60, 70]);
     /// let e = a.get_num(3);
     /// match a.get_num(3)
     /// {
@@ -2094,7 +2098,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// use cryptocol::define_utypes_with;
     /// 
     /// define_utypes_with!(u32);
-    /// let a = u256::from([0_u32, 10, 20, 30, 40, 50, 60, 70]);
+    /// let a = U256::from([0_u32, 10, 20, 30, 40, 50, 60, 70]);
     /// let b = a.get_num_(3);
     /// println!("a.get_num_(3) = {}", b);
     /// assert_eq!(b, 30);
@@ -2140,7 +2144,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// use cryptocol::define_utypes_with;
     /// define_utypes_with!(u64);
     /// 
-    /// let mut a = u256::from([0_u64, 10, 20, 30]);
+    /// let mut a = U256::from([0_u64, 10, 20, 30]);
     /// let mut num = a.get_num_(3);
     /// println!("a.get_num(3).unwrap() = {}", num);
     /// let b = a.set_num(3, 0);
@@ -2199,7 +2203,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// use cryptocol::define_utypes_with;
     /// define_utypes_with!(u128);
     /// 
-    /// let mut a = u256::from([10_u128, 20]);
+    /// let mut a = U256::from([10_u128, 20]);
     /// let mut num = a.get_num_(1);
     /// println!("a.get_num(1).unwrap() = {}", num);
     /// let b = a.set_num_(1, 0);
@@ -2225,7 +2229,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// ```
     /// use cryptocol::define_utypes_with;
     /// define_utypes_with!(u32);
-    /// if let Ok(a) = "12345678909876543210123456789098765432101234567890987654321012345678909876543".parse::<u256>()
+    /// if let Ok(a) = "12345678909876543210123456789098765432101234567890987654321012345678909876543".parse::<U256>()
     /// {
     ///     let arr = a.get_number();
     ///     println!("arr = {:?}", arr);
@@ -2247,7 +2251,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// ```
     /// use cryptocol::define_utypes_with;
     /// define_utypes_with!(u32);
-    /// if let Ok(a) = "12345678909876543210123456789098765432101234567890987654321012345678909876543".parse::<u256>()
+    /// if let Ok(a) = "12345678909876543210123456789098765432101234567890987654321012345678909876543".parse::<U256>()
     /// {
     ///     let arr = a.get_number_mut();
     ///     println!("arr = {:?}", arr);
@@ -2276,7 +2280,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// ```
     /// use cryptocol::define_utypes_with;
     /// define_utypes_with!(u16);
-    /// let mut a = u256::new();
+    /// let mut a = U256::new();
     /// println!("arr = {:?}", a);
     /// a.set_number(&[1_u16, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16]);
     /// println!("arr = {:?}", a);
@@ -2311,7 +2315,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// ```
     /// use cryptocol::define_utypes_with;
     /// define_utypes_with!(u16);
-    /// let mut a = u256::new();
+    /// let mut a = U256::new();
     /// a.set_number(&[0_u16, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15]);
     /// println!("a = {:?}", a);
     /// a.copy_within(3..10, 6);
@@ -2352,7 +2356,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// ```
     /// use cryptocol::define_utypes_with;
     /// define_utypes_with!(u16);
-    /// let mut a = u256::new();
+    /// let mut a = U256::new();
     /// a.set_number(&[0_u16, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15]);
     /// println!("a = {:?}", a);
     /// a.copy_within(3..10, 6);
@@ -2397,12 +2401,12 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// use cryptocol::define_utypes_with;
     /// define_utypes_with!(u16);
     /// 
-    /// let mut a = u256::new();
+    /// let mut a = U256::new();
     /// a.set_number(&[1_u16, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16]);
     /// println!("a = {}", a);
     /// a.set_zero();
     /// println!("a = {}", a);
-    /// assert_eq!(a, u256::zero());
+    /// assert_eq!(a, U256::zero());
     /// ```
     pub fn set_zero(&mut self)
     {
@@ -2421,7 +2425,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// ```
     /// use cryptocol::define_utypes_with;
     /// define_utypes_with!(u128);
-    /// let mut a = u1024::zero();
+    /// let mut a = U1024::zero();
     /// if a.is_zero()
     ///     { println!("a is Zero"); }
     /// else
@@ -2453,12 +2457,12 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// use cryptocol::define_utypes_with;
     /// define_utypes_with!(u16);
     /// 
-    /// let mut a = u256::new();
+    /// let mut a = U256::new();
     /// a.set_number(&[1_u16, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16]);
     /// println!("a = {}", a);
     /// a.set_one();
     /// println!("a = {}", a);
-    /// assert_eq!(a, u256::one());
+    /// assert_eq!(a, U256::one());
     /// ```
     /// # Big-endian issue
     /// It is just experimental for Big Endian CPUs. So, you are not encouraged
@@ -2483,7 +2487,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// use cryptocol::define_utypes_with;
     /// define_utypes_with!(u128);
     /// 
-    /// let mut a = u256::one();
+    /// let mut a = U256::one();
     /// if a.is_one()
     ///     { println!("a is One"); }
     /// else
@@ -2522,7 +2526,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// use cryptocol::define_utypes_with;
     /// define_utypes_with!(u32);
     /// 
-    /// let mut a = u256::zero();
+    /// let mut a = U256::zero();
     /// println!("a = {}", a);
     /// if a.is_zero_or_one()
     ///     { println!("a is One or Zero."); }
@@ -2568,7 +2572,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// use cryptocol::define_utypes_with;
     /// define_utypes_with!(u64);
     /// 
-    /// let mut a = u256::new();
+    /// let mut a = U256::new();
     /// println!("a = {}", a);
     /// a.set_max();
     /// println!("a = {}", a);
@@ -2594,10 +2598,10 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// use cryptocol::define_utypes_with;
     /// define_utypes_with!(u16);
     /// 
-    /// let mut a = u256::new();
+    /// let mut a = U256::new();
     /// a.set_max();
     /// println!("a = {}", a);
-    /// assert_eq!(a, u256::max());
+    /// assert_eq!(a, U256::max());
     /// 
     /// a.set_submax(200_usize);
     /// println!("a = {}", a);
@@ -2605,7 +2609,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// ```
     pub fn set_submax(&mut self, size_in_bits: usize)
     {
-        let TSIZE_IN_BITS = T::size_in_bits();
+        let size_t_bits = T::size_in_bits();
         if size_in_bits >= self.length_in_bits()
         {
             self.set_max();
@@ -2617,8 +2621,8 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
             return;
         }
 
-        let chunk_num = size_in_bits / TSIZE_IN_BITS;
-        let piece_num = size_in_bits % TSIZE_IN_BITS;
+        let chunk_num = size_in_bits / size_t_bits;
+        let piece_num = size_in_bits % size_t_bits;
         let zero = T::zero();
         let max = T::max();
         self.reset_all_flags();
@@ -2627,7 +2631,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
         for i in chunk_num..N
             { self.set_num_(i, zero); }
         if piece_num != 0
-            { self.set_num_(chunk_num, max >> T::usize_as_SmallUInt(TSIZE_IN_BITS - piece_num)); }
+            { self.set_num_(chunk_num, max >> T::usize_as_smalluint(size_t_bits - piece_num)); }
     }
 
     // pub fn set_halfmax(&mut self)
@@ -2644,7 +2648,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// use cryptocol::define_utypes_with;
     /// define_utypes_with!(u8);
     /// 
-    /// let mut a = u256::new();
+    /// let mut a = U256::new();
     /// println!("a = {}", a);
     /// a.set_halfmax();
     /// println!("a = {}", a);
@@ -2668,7 +2672,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// use cryptocol::define_utypes_with;
     /// define_utypes_with!(u128);
     /// 
-    /// let a = u256::max();
+    /// let a = U256::max();
     /// println!("Is {} a 256-bit maximun? - {}", a, a.is_max());
     /// assert_eq!(a.is_max(), true);
     /// ```
@@ -2687,7 +2691,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
         true
     }
 
-    // pub fn set_MSB(&mut self)
+    // pub fn set_msb(&mut self)
     /// Sets the MSB (Most Significant Bit) of `BigUInt`-type number with `1`.
     /// 
     /// # Examples
@@ -2695,9 +2699,9 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// use cryptocol::define_utypes_with;
     /// define_utypes_with!(u32);
     /// 
-    /// let mut a = u256::new();
+    /// let mut a = U256::new();
     /// println!("a = {}", a);
-    /// a.set_MSB();
+    /// a.set_msb();
     /// println!("a = {}", a);
     /// assert_eq!(a.to_string_with_radix_and_stride(2, 8).unwrap(), "10000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000");
     /// ```
@@ -2706,14 +2710,14 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// It is just experimental for Big Endian CPUs. So, you are not encouraged
     /// to use it for Big Endian CPUs for serious purpose. Only use this crate
     /// for Big-endian CPUs with your own full responsibility.
-    pub fn set_MSB(&mut self)
+    pub fn set_msb(&mut self)
     {
         let highest = self.get_num_(N-1);
         let msb = !(T::max() >> T::one());
         self.set_num_(N-1, highest | msb);
     }
 
-    // pub fn set_LSB(&mut self)
+    // pub fn set_lsb(&mut self)
     /// Sets the LSB (Least Significant Bit) of `BigUInt`-type number with `1`.
     /// 
     /// # Examples
@@ -2721,9 +2725,9 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// use cryptocol::define_utypes_with;
     /// define_utypes_with!(u64);
     /// 
-    /// let mut a = u256::new();
+    /// let mut a = U256::new();
     /// println!("a = {}", a);
-    /// a.set_LSB();
+    /// a.set_lsb();
     /// println!("a = {}", a);
     /// assert_eq!(a.to_string_with_radix_and_stride(2, 8).unwrap(), "1");
     /// ```
@@ -2732,7 +2736,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// It is just experimental for Big Endian CPUs. So, you are not encouraged
     /// to use it for Big Endian CPUs for serious purpose. Only use this crate
     /// for Big-endian CPUs with your own full responsibility.
-    pub fn set_LSB(&mut self)
+    pub fn set_lsb(&mut self)
     {
         let lowest = self.get_num_(0);
         let lsb = T::one();
@@ -2756,7 +2760,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// use cryptocol::define_utypes_with;
     /// define_utypes_with!(u8);
     /// 
-    /// let mut a = u1024::new();
+    /// let mut a = U1024::new();
     /// println!("a = {}", a);
     /// a.set_uint(340282366920938463453374607431768211455_u128);
     /// println!("a = {}", a);
@@ -2776,31 +2780,31 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
             + BitXor<Output=U> + BitXorAssign + Not<Output=U>
             + PartialEq + PartialOrd
     {
-        let TSIZE = T::size_in_bytes();
-        let VSIZE = U::size_in_bytes();
+        let size_t = T::size_in_bytes();
+        let size_v = U::size_in_bytes();
         let mut share = Share::<T, U>::from_src(val);
         
         self.set_zero();
-        if TSIZE >= VSIZE
+        if size_t >= size_v
         {
             unsafe { self.set_num_(0, share.des); }
         }
-        else    // VSIZE is multiple of TSIZE.
+        else    // size_v is multiple of size_t.
         {
-            let TSIZE_BITS = TSIZE * 8;
+            let size_t_bits = size_t * 8;
             #[cfg(target_endian = "little")]
-            for i in 0..VSIZE/TSIZE
+            for i in 0..size_v/size_t
             {
                 unsafe { self.set_num_(i, share.des); }
-                unsafe { share.src >>= U::usize_as_SmallUInt(TSIZE_BITS); }
+                unsafe { share.src >>= U::usize_as_smalluint(size_t_bits); }
             }
             #[cfg(target_endian = "big")]
             {
-                let mut i = VSIZE/TSIZE - 1;
+                let mut i = size_v/size_t - 1;
                 loop
                 {
                     unsafe { self.set_num_(i, share.des); }
-                    unsafe { share.src <<= U::usize_as_SmallUInt(TSIZE_BITS); }
+                    unsafe { share.src <<= U::usize_as_smalluint(size_t_bits); }
                     if i == 0
                         { break; }
                     i -= 1;
@@ -2834,7 +2838,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// use cryptocol::define_utypes_with;
     /// define_utypes_with!(u16);
     /// 
-    /// let a = u1024::one() + 50_u16;
+    /// let a = U1024::one() + 50_u16;
     /// println!("Question: Is a 51?\nAnswer: {}", a.is_uint(51_u32));
     /// assert!(a.is_uint(51_u16));
     /// ```
@@ -2852,11 +2856,11 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
             + BitXor<Output=U> + BitXorAssign + Not<Output=U>
             + PartialEq + PartialOrd
     {
-        let TSIZE = T::size_in_bytes();
-        let VSIZE = U::size_in_bytes();
+        let size_t = T::size_in_bytes();
+        let size_v = U::size_in_bytes();
         let mut share = Share::<T, U>::from_src(val);
         
-        if TSIZE >= VSIZE
+        if size_t >= size_v
         {
             if unsafe { self.get_num_(0) != share.des }
                 { return false; }
@@ -2866,31 +2870,31 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
                     { return false; }
             }
         }
-        else    // VSIZE is multiple of TSIZE.
+        else    // size_v is multiple of size_t.
         {
-            let TSIZE_BITS = TSIZE * 8;
+            let size_t_bits = size_t * 8;
             #[cfg(target_endian = "little")]
-            for i in 0..VSIZE/TSIZE
+            for i in 0..size_v/size_t
             {
                 if unsafe { self.get_num_(i) != share.des }
                     { return false; }
-                unsafe { share.src >>= U::usize_as_SmallUInt(TSIZE_BITS); }
+                unsafe { share.src >>= U::usize_as_smalluint(size_t_bits); }
             }
             #[cfg(target_endian = "big")]
             {
-                let mut i = VSIZE/TSIZE - 1;
+                let mut i = size_v/size_t - 1;
                 loop
                 {
                     if unsafe { self.get_num_(i) != share.des }
                         { return false; }
                     if i == 0
                         { break; }
-                    unsafe { share.src <<= U::usize_as_SmallUInt(TSIZE_BITS); }     
+                    unsafe { share.src <<= U::usize_as_smalluint(size_t_bits); }     
      
                     i -= 1;          
                 }
             }
-            for i in VSIZE/TSIZE..N
+            for i in size_v/size_t..N
             {
                 if self.get_num_(i) != T::zero()
                     { return false; }
@@ -2910,7 +2914,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// use cryptocol::define_utypes_with;
     /// define_utypes_with!(u32);
     /// 
-    /// let mut a = u256::new();
+    /// let mut a = U256::new();
     /// a.set_uint(340282366920938463453374697431768211455_u128);
     /// if a.is_odd()
     ///     { println!("{} is odd", a); }
@@ -2942,7 +2946,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// use cryptocol::define_utypes_with;
     /// define_utypes_with!(u128);
     /// 
-    /// let mut a = u256::new();
+    /// let mut a = U256::new();
     /// a.set_uint(169743176821145534028236692093846345739_u128);
     /// if a.is_even()
     ///     { println!("{} is even", a); }
@@ -2963,7 +2967,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
         !self.is_odd()
     }
 
-    // pub fn is_MSB_set(&self) -> bool
+    // pub fn is_msb_set(&self) -> bool
     /// Checks whether the MSB (Most Segnificant Bit) of `self` is set to be
     /// one.
     /// 
@@ -2976,25 +2980,25 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// use cryptocol::define_utypes_with;
     /// define_utypes_with!(u128);
     /// 
-    /// let mut a = u256::new();
+    /// let mut a = U256::new();
     /// a.set_uint(169743176821145534028236692093846345739_u128);
-    /// if a.is_MSB_set()
-    ///     { println!("{} is greater than halfmax ({}).", a, Self::halfmax()); }
+    /// if a.is_msb_set()
+    ///     { println!("{} is greater than halfmax ({}).", a, U256::halfmax()); }
     /// else
-    ///     { println!("{} is less than or equal to halfmax ({}).", a, Self::halfmax()); }
-    /// assert!(!a.is_MSB_set());
+    ///     { println!("{} is less than or equal to halfmax ({}).", a, U256::halfmax()); }
+    /// assert!(!a.is_msb_set());
     /// 
     /// a <<= 1;
-    /// if a.is_MSB_set()
-    ///     { println!("{} is greater than halfmax ({}).", a, Self::halfmax()); }
+    /// if a.is_msb_set()
+    ///     { println!("{} is greater than halfmax ({}).", a, U256::halfmax()); }
     /// else
-    ///     { println!("{} is less than or equal to halfmax ({}).", a, Self::halfmax()); }
-    /// assert!(a.is_MSB_set());
+    ///     { println!("{} is less than or equal to halfmax ({}).", a, U256::halfmax()); }
+    /// assert!(a.is_msb_set());
     /// ```
     #[inline]
-    pub fn is_MSB_set(&self) -> bool
+    pub fn is_msb_set(&self) -> bool
     {
-        self.get_num_(N-1).is_MSB_set()
+        self.get_num_(N-1).is_msb_set()
     }
 
 
@@ -3014,7 +3018,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// use cryptocol::define_utypes_with;
     /// define_utypes_with!(u8);
     /// 
-    /// let a = u256::from_str("100000000000000000000000000000000000000000000000000000000000000000000000000000").unwrap();
+    /// let a = U256::from_str("100000000000000000000000000000000000000000000000000000000000000000000000000000").unwrap();
     /// println!("{} has {} ones in binary.", a, a.count_ones());
     /// assert_eq!(a.count_ones(), 107);
     /// ```
@@ -3038,7 +3042,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// use cryptocol::define_utypes_with;
     /// define_utypes_with!(u16);
     /// 
-    /// let a = "100000000000000000000000000000000000000000000000000000000000000000000000000000".parse::<u256>().unwrap();
+    /// let a = "100000000000000000000000000000000000000000000000000000000000000000000000000000".parse::<U256>().unwrap();
     /// println!("{} has {} zeros in binary.", a, a.count_zeros());
     /// assert_eq!(a.count_zeros(), 149);
     /// ```
@@ -3063,7 +3067,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// use cryptocol::define_utypes_with;
     /// define_utypes_with!(u32);
     /// 
-    /// let a = u256::from_str("100000000000000000000000000000000000000000000000000000000000000000000000000000").unwrap();
+    /// let a = U256::from_str("100000000000000000000000000000000000000000000000000000000000000000000000000000").unwrap();
     /// println!("{} has {} leading ones in binary.", a, a.leading_ones());
     /// assert_eq!(a.leading_ones(), 2);
     /// ```
@@ -3094,7 +3098,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// use cryptocol::define_utypes_with;
     /// define_utypes_with!(u64);
     /// 
-    /// let a = "100000000000000000000000000000000000000000000000000000000000000000000000000000".parse::<u256>().unwrap();
+    /// let a = "100000000000000000000000000000000000000000000000000000000000000000000000000000".parse::<U256>().unwrap();
     /// println!("{} has {} leading ones in binary.", a, a.leading_zeros());
     /// assert_eq!(a.leading_zeros(), 0);
     /// ```
@@ -3126,7 +3130,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// use std::str::FromStr;
     /// define_utypes_with!(u128);
     /// 
-    /// let a = u256::from_str("111111111111111111111111111111111111111111111111111111111111111111111111111111").unwrap();
+    /// let a = U256::from_str("111111111111111111111111111111111111111111111111111111111111111111111111111111").unwrap();
     /// println!("{} has {} trailing ones in binary.", a, a.trailing_ones());
     /// assert_eq!(a.trailing_ones(), 3);
     /// ```
@@ -3160,7 +3164,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// use cryptocol::define_utypes_with;
     /// define_utypes_with!(u16);
     /// 
-    /// let a = "111111111111111111111111111111111111111111111111111111111111111111111111111111".parse::<u256>().unwrap();
+    /// let a = "111111111111111111111111111111111111111111111111111111111111111111111111111111".parse::<U256>().unwrap();
     /// println!("{} has {} trailing zeros in binary.", a, a.trailing_zeros());
     /// assert_eq!(a.trailing_zeros(), 0);
     /// ```
@@ -3197,7 +3201,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// use cryptocol::define_utypes_with;
     /// define_utypes_with!(u8);
     /// 
-    /// let a = u256::from_str_radix("FFFFFFFF_EEEEEEEE_DDDDDDDD_CCCCCCCC_BBBBBBBB_AAAAAAAA_99999999_88888888", 16).unwrap();
+    /// let a = U256::from_str_radix("FFFFFFFF_EEEEEEEE_DDDDDDDD_CCCCCCCC_BBBBBBBB_AAAAAAAA_99999999_88888888", 16).unwrap();
     /// println!("{} has {} leading max elements in array.", a, a.leading_max_elements());
     /// assert_eq!(a.leading_max_elements(), 4);
     /// ```
@@ -3232,7 +3236,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// use cryptocol::define_utypes_with;
     /// define_utypes_with!(u32);
     /// 
-    /// let a = u256::from_str_radix("00000000_FFFFFFFF_EEEEEEEE_DDDDDDDD_CCCCCCCC_BBBBBBBB_AAAAAAAA_99999999", 16).unwrap();
+    /// let a = U256::from_str_radix("00000000_FFFFFFFF_EEEEEEEE_DDDDDDDD_CCCCCCCC_BBBBBBBB_AAAAAAAA_99999999", 16).unwrap();
     /// println!("{} has {} leading zero elements in array.", a, a.leading_zero_elements());
     /// assert_eq!(a.leading_zero_elements(), 1);
     /// ```
@@ -3269,7 +3273,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// use cryptocol::define_utypes_with;
     /// define_utypes_with!(u16);
     /// 
-    /// let a = u256::from_str_radix("88888888_99999999_AAAAAAAA_BBBBBBBB_CCCCCCCC_DDDDDDDD_EEEEEEEE_FFFFFFFF", 16).unwrap();
+    /// let a = U256::from_str_radix("88888888_99999999_AAAAAAAA_BBBBBBBB_CCCCCCCC_DDDDDDDD_EEEEEEEE_FFFFFFFF", 16).unwrap();
     /// println!("{} has {} leading max elements in array.", a, a.trailing_max_elements());
     /// assert_eq!(a.trailing_max_elements(), 2);
     /// ```
@@ -3298,7 +3302,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// use cryptocol::define_utypes_with;
     /// define_utypes_with!(u8);
     /// 
-    /// let a = u256::from_str_radix("FFFFFFFF_EEEEEEEE_DDDDDDDD_CCCCCCCC_BBBBBBBB_AAAAAAAA_9999999_900000000", 16).unwrap();
+    /// let a = U256::from_str_radix("FFFFFFFF_EEEEEEEE_DDDDDDDD_CCCCCCCC_BBBBBBBB_AAAAAAAA_9999999_900000000", 16).unwrap();
     /// println!("{} has {} leading zero elements in array.", a, a.trailing_zero_elements());
     /// assert_eq!(a.trailing_zero_elements(), 4);
     /// ```
@@ -3350,7 +3354,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// use cryptocol::define_utypes_with;
     /// define_utypes_with!(u8);
     /// 
-    /// let mut res = U32::from_uint(100_u8).partial_cmp_uint(90_u128).unwrap();
+    /// let mut res = UU32::from_uint(100_u8).partial_cmp_uint(90_u128).unwrap();
     /// match res
     /// {
     ///     Ordering::Greater => { println!("100 > 90"); }
@@ -3359,7 +3363,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// }
     /// assert_eq!(res, Ordering::Greater);
     /// 
-    /// res = U32::from_uint(100_u8).partial_cmp_uint(110_u128).unwrap();
+    /// res = UU32::from_uint(100_u8).partial_cmp_uint(110_u128).unwrap();
     /// match res
     /// {
     ///     Ordering::Greater => { println!("100 > 110"); }
@@ -3368,7 +3372,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// }
     /// assert_eq!(res, Ordering::Less);
     /// 
-    /// res = U32::from_uint(100_u8).partial_cmp_uint(100_u128).unwrap();
+    /// res = UU32::from_uint(100_u8).partial_cmp_uint(100_u128).unwrap();
     /// match res
     /// {
     ///     Ordering::Greater => { println!("100 > 100"); }
@@ -3438,14 +3442,14 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// use cryptocol::define_utypes_with;
     /// define_utypes_with!(u32);
     /// 
-    /// let mut res = U32::from_uint(100_u16).gt_uint(90_u64);
+    /// let mut res = UU32::from_uint(100_u16).gt_uint(90_u64);
     /// if res
     ///     { println!("100 > 90"); }
     /// else
     ///     { println!("100 <= 90"); }
     /// assert_eq!(res, true);
     /// 
-    /// res = U32::from_uint(100_u16).gt_uint(110_u64);
+    /// res = UU32::from_uint(100_u16).gt_uint(110_u64);
     /// if res
     ///     { println!("100 > 110"); }
     /// else
@@ -3484,14 +3488,14 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// use cryptocol::define_utypes_with;
     /// define_utypes_with!(u32);
     /// 
-    /// let mut res = U32::from_uint(100_u32).gt_uint(90_u32);
+    /// let mut res = UU32::from_uint(100_u32).gt_uint(90_u32);
     /// if res
     ///     { println!("100 > 90"); }
     /// else
     ///     { println!("100 <= 90"); }
     /// assert_eq!(res, true);
     /// 
-    /// res = U32::from_uint(100_u32).gt_uint(110_u32);
+    /// res = UU32::from_uint(100_u32).gt_uint(110_u32);
     /// if res
     ///     { println!("100 > 110"); }
     /// else
@@ -3530,14 +3534,14 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// use cryptocol::define_utypes_with;
     /// define_utypes_with!(u64);
     /// 
-    /// let mut res = U32::from_uint(100_u64).le_uint(110_u16);
+    /// let mut res = UU32::from_uint(100_u64).le_uint(110_u16);
     /// if res
     ///     { println!("100 <= 110"); }
     /// else
     ///     { println!("100 > 110"); }
     /// assert_eq!(res, true);
     /// 
-    /// res = U32::from_uint(100_u64).lt_uint(90_u16);
+    /// res = UU32::from_uint(100_u64).lt_uint(90_u16);
     /// if res
     ///     { println!("100 < 90"); }
     /// else
@@ -3576,14 +3580,14 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// use cryptocol::define_utypes_with;
     /// define_utypes_with!(u32);
     /// 
-    /// let mut res = U32::from_uint(100_u128).gt_uint(90_u8);
+    /// let mut res = UU32::from_uint(100_u128).gt_uint(90_u8);
     /// if res
     ///     { println!("100 >= 90"); }
     /// else
     ///     { println!("100 <= 90"); }
     /// assert_eq!(res, true);
     /// 
-    /// res = U32::from_uint(100_u128).gt_uint(110_u8);
+    /// res = UU32::from_uint(100_u128).gt_uint(110_u8);
     /// if res
     ///     { println!("100 > 110"); }
     /// else
@@ -3622,14 +3626,14 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// use cryptocol::define_utypes_with;
     /// define_utypes_with!(u8);
     /// 
-    /// let mut res = U32::from_uint(100_u32).eq_uint(100_u8);
+    /// let mut res = UU32::from_uint(100_u32).eq_uint(100_u8);
     /// if res
     ///     { println!("100 = 100"); }
     /// else
     ///     { println!("100 != 100"); }
     /// assert_eq!(res, true);
     /// 
-    /// res = U32::from_uint(100_u64).eq_uint(200_u16);
+    /// res = UU32::from_uint(100_u64).eq_uint(200_u16);
     /// if res
     ///     { println!("100 = 200"); }
     /// else
@@ -3667,14 +3671,14 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// define_utypes_with!(u128);
     /// 
     /// let num_str = "69743176821145534028236692093846345739169743176821145534028236692093846345739";
-    /// let mut res = U32::from_string(num_str).unwrap().eq(&U32::from_string(num_str).unwrap());
+    /// let mut res = UU32::from_string(num_str).unwrap().eq(&UU32::from_string(num_str).unwrap());
     /// if res
     ///     { println!("{0} = {0}", num_str); }
     /// else
     ///     { println!("{0} != {0}", num_str); }
     /// assert_eq!(res, true);
     /// 
-    /// res = U32::from_string(num_str).unwrap().eq(&U32::from_uint(100_u8));
+    /// res = UU32::from_string(num_str).unwrap().eq(&UU32::from_uint(100_u8));
     /// if res
     ///     { println!("{} = 100", num_str); }
     /// else
@@ -3715,9 +3719,9 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// let num_str1 = "70000000000000000000000000000000000000000000000000000000000000000000000000000";
     /// let num_str2 = "60000000000000000000000000000000000000000000000000000000000000000000000000000";
     /// let num_str3 = "80000000000000000000000000000000000000000000000000000000000000000000000000000";
-    /// let num1 = num_str1.parse::<U32>().unwrap();
-    /// let num2 = num_str2.parse::<U32>().unwrap();
-    /// let num3 = num_str3.parse::<U32>().unwrap();
+    /// let num1 = num_str1.parse::<UU32>().unwrap();
+    /// let num2 = num_str2.parse::<UU32>().unwrap();
+    /// let num3 = num_str3.parse::<UU32>().unwrap();
     /// 
     /// let mut res = num1.partial_cmp(&num2).unwrap();
     /// match res
@@ -3801,8 +3805,8 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// 
     /// let num_str1 = "FFEEDDBB_AA998877_66554433_221100FF_EEDDBBAA_99887766_55443322_1100FFEE";
     /// let num_str2 = "FFFFFFFF_FFFFFFFF_FFFFFFFF_FFFFFFFF_FFFFFFFF_FFFFFFFF_FFFFFFFF_FFFFFFFF";
-    /// let num1 = U32::from_str_radix(num_str1, 16).unwrap();
-    /// let num2 = U32::from_str_radix(num_str2, 16).unwrap();
+    /// let num1 = UU32::from_str_radix(num_str1, 16).unwrap();
+    /// let num2 = UU32::from_str_radix(num_str2, 16).unwrap();
     /// let num_uint = 0x11223344_55667788_9900AABB_CCDDEEFF_u128;
     /// 
     /// let (mut sum, mut carry) = num1.carrying_add_uint(num_uint, false);
@@ -3881,8 +3885,8 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// 
     /// let num_str1 = "FFEEDDBB_AA998877_66554433_221100FF_EEDDBBAA_99887766_55443322_1100FFEE";
     /// let num_str2 = "FFFFFFFF_FFFFFFFF_FFFFFFFF_FFFFFFFF_FFFFFFFF_FFFFFFFF_FFFFFFFF_FFFFFFFF";
-    /// let mut num1 = u256::from_str_radix(num_str1, 16).unwrap();
-    /// let mut num2 = u256::from_str_radix(num_str2, 16).unwrap();
+    /// let mut num1 = U256::from_str_radix(num_str1, 16).unwrap();
+    /// let mut num2 = U256::from_str_radix(num_str2, 16).unwrap();
     /// let num_uint = 0x9900AABB_CCDDEEFF_u64;
     /// 
     /// println!("Originally,\tnum1 = {}", num1);
@@ -3974,7 +3978,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// use cryptocol::define_utypes_with;
     /// define_utypes_with!(u32);
     /// 
-    /// let a = u512::max().wrapping_sub_uint(1_u8);
+    /// let a = U512::max().wrapping_sub_uint(1_u8);
     /// let b = a.wrapping_add_uint(1_u8);
     /// let c = a.wrapping_add_uint(2_u8);
     /// let d = a.wrapping_add_uint(3_u8);
@@ -4036,7 +4040,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// use cryptocol::define_utypes_with;
     /// define_utypes_with!(u16);
     /// 
-    /// let mut a = U64::max().wrapping_sub_uint(1_u8);
+    /// let mut a = UU64::max().wrapping_sub_uint(1_u8);
     /// println!("Originally,\ta = {}", a);
     /// assert_eq!(a.to_string(), "13407807929942597099574024998205846127479365820592393377723561443721764030073546976801874298166903427690031858186486050853753882811946569946433649006084094");
     /// 
@@ -4095,7 +4099,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// use cryptocol::define_utypes_with;
     /// define_utypes_with!(u8);
     /// 
-    /// let a = u512::max().wrapping_sub_uint(1_u8);
+    /// let a = U512::max().wrapping_sub_uint(1_u8);
     /// let (b, overflow) = a.overflowing_add_uint(1_u8);
     /// println!("{} + 1 = {}\noverflow = {}", a, b, overflow);
     /// assert_eq!(b.to_string(), "13407807929942597099574024998205846127479365820592393377723561443721764030073546976801874298166903427690031858186486050853753882811946569946433649006084095");
@@ -4158,7 +4162,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// use cryptocol::define_utypes_with;
     /// define_utypes_with!(u16);
     /// 
-    /// let mut a = U64::max().wrapping_sub_uint(1_u8);
+    /// let mut a = UU64::max().wrapping_sub_uint(1_u8);
     /// println!("Originally,\ta = {}", a);
     /// assert_eq!(a.to_string(), "13407807929942597099574024998205846127479365820592393377723561443721764030073546976801874298166903427690031858186486050853753882811946569946433649006084094");
     /// 
@@ -4221,7 +4225,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// use cryptocol::define_utypes_with;
     /// define_utypes_with!(u8);
     /// 
-    /// let a = u512::max().wrapping_sub_uint(1_u8);
+    /// let a = U512::max().wrapping_sub_uint(1_u8);
     /// let b = a.checked_add_uint(1_u8);
     /// match b
     /// {
@@ -4312,7 +4316,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// use cryptocol::define_utypes_with;
     /// define_utypes_with!(u32);
     /// 
-    /// let a = U64::max().wrapping_sub_uint(1_u8);
+    /// let a = UU64::max().wrapping_sub_uint(1_u8);
     /// let b = a.unchecked_add_uint(1_u8);
     /// println!("{} + 1 = {}", a, b);
     /// assert_eq!(b.to_string(), "13407807929942597099574024998205846127479365820592393377723561443721764030073546976801874298166903427690031858186486050853753882811946569946433649006084095");
@@ -4364,7 +4368,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// use cryptocol::define_utypes_with;
     /// define_utypes_with!(u64);
     /// 
-    /// let a = u512::max().wrapping_sub_uint(2_u8);
+    /// let a = U512::max().wrapping_sub_uint(2_u8);
     /// let b = a.saturating_add_uint(1_u8);
     /// let c = a.saturating_add_uint(2_u8);
     /// let d = a.saturating_add_uint(3_u8);
@@ -4423,7 +4427,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// use cryptocol::define_utypes_with;
     /// define_utypes_with!(u128);
     /// 
-    /// let mut a = U64::max().wrapping_sub_uint(2_u8);
+    /// let mut a = UU64::max().wrapping_sub_uint(2_u8);
     /// println!("Originally,\ta = {}", a);
     /// assert_eq!(a.to_string(), "13407807929942597099574024998205846127479365820592393377723561443721764030073546976801874298166903427690031858186486050853753882811946569946433649006084093");
     /// 
@@ -4497,7 +4501,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// use cryptocol::define_utypes_with;
     /// define_utypes_with!(u32);
     /// 
-    /// let a = u256::from_string("76801874298166903427690031858186486050853753882811946569946433649006").unwrap();
+    /// let a = U256::from_string("76801874298166903427690031858186486050853753882811946569946433649006").unwrap();
     /// let m = a.wrapping_add_uint(2_u8);
     /// let b = a.modular_add_uint(1_u8, &m);
     /// let c = a.modular_add_uint(2_u8, &m);
@@ -4570,7 +4574,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// use cryptocol::define_utypes_with;
     /// define_utypes_with!(u8);
     /// 
-    /// let mut a = u256::from_string("768018742981669034276900318581864860508537538828119465699464336490060").unwrap();
+    /// let mut a = U256::from_string("768018742981669034276900318581864860508537538828119465699464336490060").unwrap();
     /// let m = a.wrapping_add_uint(2_u8);
     /// println!("Originally,\ta = {}", a);
     /// assert_eq!(a.to_string(), "768018742981669034276900318581864860508537538828119465699464336490060");
@@ -4669,8 +4673,8 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// 
     /// let num_str1 = "FFEEDDBB_AA998877_66554433_221100FF_EEDDBBAA_99887766_55443322_1100FFEE";
     /// let num_str2 = "11223344_55667788_9900AABB_CCDDEEEe";
-    /// let num1 = U32::from_str_radix(num_str1, 16).unwrap();
-    /// let num2 = U32::from_str_radix(num_str2, 16).unwrap();
+    /// let num1 = UU32::from_str_radix(num_str1, 16).unwrap();
+    /// let num2 = UU32::from_str_radix(num_str2, 16).unwrap();
     /// let num_uint = 0x11223344_55667788_9900AABB_CCDDEEFf_u128;
     /// 
     /// let (mut dif, mut carry) = num1.borrowing_sub_uint(num_uint, false);
@@ -4754,8 +4758,8 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// 
     /// let num_str1 = "FFEEDDBB_AA998877_66554433_221100FF_EEDDBBAA_99887766_55443322_1100FFEE";
     /// let num_str2 = "9900AABB_CCDDEEFe";
-    /// let mut num1 = u256::from_str_radix(num_str1, 16).unwrap();
-    /// let mut num2 = u256::from_str_radix(num_str2, 16).unwrap();
+    /// let mut num1 = U256::from_str_radix(num_str1, 16).unwrap();
+    /// let mut num2 = U256::from_str_radix(num_str2, 16).unwrap();
     /// let num_uint = 0x9900AABB_CCDDEEFf_u64;
     /// 
     /// println!("Originally,\tnum1 = {}", num1);
@@ -4849,7 +4853,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// use cryptocol::define_utypes_with;
     /// define_utypes_with!(u32);
     /// 
-    /// let a = u512::one();
+    /// let a = U512::one();
     /// let b = a.wrapping_sub_uint(1_u8);
     /// let c = a.wrapping_sub_uint(2_u8);
     /// let d = a.wrapping_sub_uint(3_u8);
@@ -4910,7 +4914,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// use cryptocol::define_utypes_with;
     /// define_utypes_with!(u16);
     /// 
-    /// let mut a = U64::one();
+    /// let mut a = UU64::one();
     /// println!("Originally,\ta = {}", a);
     /// assert_eq!(a.to_string(), "1");
     /// 
@@ -4973,7 +4977,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// use cryptocol::define_utypes_with;
     /// define_utypes_with!(u8);
     /// 
-    /// let a = u512::one();
+    /// let a = U512::one();
     /// let (b, underflow) = a.overflowing_sub_uint(1_u8);
     /// println!("{} - 1 = {}\nunderflow = {}", a, b, underflow);
     /// assert_eq!(b.to_string(), "0");
@@ -5040,7 +5044,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// use cryptocol::define_utypes_with;
     /// define_utypes_with!(u16);
     /// 
-    /// let mut a = U64::one();
+    /// let mut a = UU64::one();
     /// println!("Originally,\ta = {}", a);
     /// assert_eq!(a.to_string(), "1");
     /// 
@@ -5109,7 +5113,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// use cryptocol::define_utypes_with;
     /// define_utypes_with!(u8);
     /// 
-    /// let a = u512::one();
+    /// let a = U512::one();
     /// let b = a.checked_sub_uint(1_u8);
     /// match b
     /// {
@@ -5196,7 +5200,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// use cryptocol::define_utypes_with;
     /// define_utypes_with!(u32);
     /// 
-    /// let a = U64::one();
+    /// let a = UU64::one();
     /// let b = a.unchecked_sub_uint(1_u8);
     /// println!("{} - 1 = {}", a, b);
     /// assert_eq!(b.to_string(), "0");
@@ -5249,7 +5253,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// use cryptocol::define_utypes_with;
     /// define_utypes_with!(u64);
     /// 
-    /// let a = u512::zero().wrapping_add_uint(2_u8);
+    /// let a = U512::zero().wrapping_add_uint(2_u8);
     /// let b = a.saturating_sub_uint(1_u8);
     /// let c = a.saturating_sub_uint(2_u8);
     /// let d = a.saturating_sub_uint(3_u8);
@@ -5312,7 +5316,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// use cryptocol::define_utypes_with;
     /// define_utypes_with!(u128);
     /// 
-    /// let mut a = U64::zero().wrapping_add_uint(2_u8);
+    /// let mut a = UU64::zero().wrapping_add_uint(2_u8);
     /// println!("Originally,\ta = {}", a);
     /// assert_eq!(a.to_string(), "2");
     /// 
@@ -5387,8 +5391,8 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// use cryptocol::define_utypes_with;
     /// define_utypes_with!(u64);
     /// 
-    /// let m = u256::from_string("76801874298166903427690031858186486050853753882811946569946433649006084094").unwrap();
-    /// let a = u256::from_uint(2_u8);
+    /// let m = U256::from_string("76801874298166903427690031858186486050853753882811946569946433649006084094").unwrap();
+    /// let a = U256::from_uint(2_u8);
     /// let b = a.modular_sub_uint(1_u8, &m);
     /// let c = a.modular_sub_uint(2_u8, &m);
     /// let d = a.modular_sub_uint(3_u8, &m);
@@ -5459,8 +5463,8 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// use cryptocol::define_utypes_with;
     /// define_utypes_with!(u32);
     /// 
-    /// let m = U32::from_string("76801874298166903427690031858186486050853753882811946569946433649006084094").unwrap();
-    /// let mut a = U32::from_uint(2_u8);
+    /// let m = UU32::from_string("76801874298166903427690031858186486050853753882811946569946433649006084094").unwrap();
+    /// let mut a = UU32::from_uint(2_u8);
     /// 
     /// println!("Originally,\ta = {}", a);
     /// assert_eq!(a.to_string(), "2");
@@ -5546,9 +5550,9 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// let num_str1 = "FFFFFFFF_FFFFFFFF_FFFFFFFF_FFFFFFFF_FFFFFFFF_FFFFFFFF_FFFFFFFF_FFFFFFFF";
     /// let num_str2 = "12345678_9ABCDEF0_12345678_9ABCDEF0";
     /// let num_str3 = "9900AABB_CCDDEEFF_9900AABB_CCDDEEFF";
-    /// let num1 = u256::from_str_radix(num_str1, 16).unwrap();
-    /// let num2 = u256::from_str_radix(num_str2, 16).unwrap();
-    /// let num3 = u256::from_str_radix(num_str3, 16).unwrap();
+    /// let num1 = U256::from_str_radix(num_str1, 16).unwrap();
+    /// let num2 = U256::from_str_radix(num_str2, 16).unwrap();
+    /// let num3 = U256::from_str_radix(num_str3, 16).unwrap();
     /// let num_uint = 0x9900AABB_CCDDEEFF_9900AABB_CCDDEEFF_u128;
     /// 
     /// let a = num1.abs_diff_uint(num_uint);
@@ -5637,10 +5641,10 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// use cryptocol::define_utypes_with;
     /// define_utypes_with!(u8);
     /// 
-    /// let a_low = u256::from_string("76801874298166903427690031858186486050853753882811946569946433649006084094").unwrap();
-    /// let a_high = U32::from_string("75388281194656994643364900608409476801874298166903427690031858186486050853").unwrap();
+    /// let a_low = U256::from_string("76801874298166903427690031858186486050853753882811946569946433649006084094").unwrap();
+    /// let a_high = UU32::from_string("75388281194656994643364900608409476801874298166903427690031858186486050853").unwrap();
     /// let b_uint = 225_u8;
-    /// let (mut res_low, mut res_high) = a_low.carrying_mul_uint(b_uint, U32::zero());
+    /// let (mut res_low, mut res_high) = a_low.carrying_mul_uint(b_uint, UU32::zero());
     /// let (mut res_high, mut res_higher) = a_high.carrying_mul_uint(b_uint, res_high);
     /// 
     /// println!("{}:{} X {} = {}:{}:{}", a_high, a_low, b_uint, res_higher, res_high, res_low);
@@ -5713,8 +5717,8 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// use cryptocol::define_utypes_with;
     /// define_utypes_with!(u16);
     /// 
-    /// let mut a_low = U32::from_string("76801874298166903427690031858186486050853753882811946569946433649006084094").unwrap();
-    /// let mut a_high = u256::from_string("75388281194656994643364900608409476801874298166903427690031858186486050853").unwrap();
+    /// let mut a_low = UU32::from_string("76801874298166903427690031858186486050853753882811946569946433649006084094").unwrap();
+    /// let mut a_high = U256::from_string("75388281194656994643364900608409476801874298166903427690031858186486050853").unwrap();
     /// let b_uint = 225_u8;
     /// 
     /// println!("Originally,\ta_low = {}", a_low);
@@ -5722,7 +5726,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// println!("Originally,\ta_high = {}\n", a_high);
     /// assert_eq!(a_high.to_string(), "75388281194656994643364900608409476801874298166903427690031858186486050853");
     /// 
-    /// let mut res_high = a_low.carrying_mul_assign_uint(b_uint, U32::zero());
+    /// let mut res_high = a_low.carrying_mul_assign_uint(b_uint, UU32::zero());
     /// println!("After a_low.carrying_mul_assign_uint(225_u8, 0),\na_low = {}\n", a_low);
     /// assert_eq!(a_low.to_string(), "17280421717087553271230257168091959361442094623632687978237947571026368921150");
     /// 
@@ -5791,7 +5795,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// use cryptocol::define_utypes_with;
     /// define_utypes_with!(u8);
     /// 
-    /// let a_biguint = u256::from_string("876801874298166903427690031858186486050853753882811946569946433649006084094").unwrap();
+    /// let a_biguint = U256::from_string("876801874298166903427690031858186486050853753882811946569946433649006084094").unwrap();
     /// let b_uint = 248_u8;
     /// let (res_low, res_high) = a_biguint.widening_mul_uint(b_uint);
     /// 
@@ -5862,7 +5866,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// use cryptocol::define_utypes_with;
     /// define_utypes_with!(u16);
     /// 
-    /// let mut a_biguint = U32::from_string("876801874298166903427690031858186486050853753882811946569946433649006084094").unwrap();
+    /// let mut a_biguint = UU32::from_string("876801874298166903427690031858186486050853753882811946569946433649006084094").unwrap();
     /// let b_uint = 248_u8;
     /// 
     /// println!("Originally,\ta_biguint = {}", a_biguint);
@@ -5907,19 +5911,19 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
             { return high; }
 
         let zero = T::zero();
-        let iN = N-self.leading_zero_elements() as usize;
+        let i_n = N-self.leading_zero_elements() as usize;
         let mut lower;
         let mut higher = zero;
-        for i in 0..iN
+        for i in 0..i_n
         {
             (lower, higher) = self.get_num_(i).carrying_mul(rhs, higher);
             self.set_num_(i, lower);
         }
         if !higher.is_zero()
         {
-            if iN < N
+            if i_n < N
             {
-                self.set_num_(iN, higher);
+                self.set_num_(i_n, higher);
             }
             else
             {
@@ -5981,7 +5985,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// use cryptocol::define_utypes_with;
     /// define_utypes_with!(u32);
     /// 
-    /// let a_biguint = u256::from_string("876801874298166903427690031858186486050853753882811946569946433649006084094").unwrap();
+    /// let a_biguint = U256::from_string("876801874298166903427690031858186486050853753882811946569946433649006084094").unwrap();
     /// let b_uint = 248_u16;
     /// let res = a_biguint.wrapping_mul_uint(b_uint);
     /// println!("{} X {} = {}", a_biguint, b_uint, res);
@@ -6031,7 +6035,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// use cryptocol::define_utypes_with;
     /// define_utypes_with!(u64);
     /// 
-    /// let mut a_biguint = U32::from_string("876801874298166903427690031858186486050853753882811946569946433649006084094").unwrap();
+    /// let mut a_biguint = UU32::from_string("876801874298166903427690031858186486050853753882811946569946433649006084094").unwrap();
     /// let b_uint = 248_u16;
     /// 
     /// println!("Originally,\ta_biguint = {}", a_biguint);
@@ -6077,16 +6081,16 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
         let zero = T::zero();
         let mut lower;
         let mut higher = zero;
-        let iN = N - self.leading_zero_elements() as usize;
-        for i in 0..iN
+        let i_n = N - self.leading_zero_elements() as usize;
+        for i in 0..i_n
         {
             (lower, higher) = self.get_num_(i).carrying_mul(rhs, higher);
             self.set_num_(i, lower);
         }
         if !higher.is_zero()
         {
-            if iN < N
-                { self.set_num_(iN, higher); }
+            if i_n < N
+                { self.set_num_(i_n, higher); }
             else
                 { self.set_overflow(); }
         }
@@ -6146,7 +6150,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// use cryptocol::define_utypes_with;
     /// define_utypes_with!(u128);
     /// 
-    /// let a_biguint = u256::from_string("876801874298166903427690031858186486050853753882811946569946433649006084094").unwrap();
+    /// let a_biguint = U256::from_string("876801874298166903427690031858186486050853753882811946569946433649006084094").unwrap();
     /// let b_uint = 248_u8;
     /// let (res, overflow) = a_biguint.overflowing_mul_uint(b_uint);
     /// println!("{} X {} = {}, {}", a_biguint, b_uint, res, overflow);
@@ -6202,7 +6206,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// use cryptocol::define_utypes_with;
     /// define_utypes_with!(u8);
     /// 
-    /// let mut a_biguint = U32::from_string("876801874298166903427690031858186486050853753882811946569946433649006084094").unwrap();
+    /// let mut a_biguint = UU32::from_string("876801874298166903427690031858186486050853753882811946569946433649006084094").unwrap();
     /// let b_uint = 248_u16;
     /// 
     /// println!("Originally,\ta_biguint = {}", a_biguint);
@@ -6257,7 +6261,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// use cryptocol::define_utypes_with;
     /// define_utypes_with!(u16);
     /// 
-    /// let a_biguint = u256::from_string("876801874298166903427690031858186486050853753882811946569946433649006084094").unwrap();
+    /// let a_biguint = U256::from_string("876801874298166903427690031858186486050853753882811946569946433649006084094").unwrap();
     /// let mut b_uint = 248_u8;
     /// let mut res = a_biguint.checked_mul_uint(b_uint);
     /// match &res
@@ -6322,7 +6326,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// use cryptocol::define_utypes_with;
     /// define_utypes_with!(u32);
     /// 
-    /// let a_biguint = U32::from_string("876801874298166903427690031858186486050853753882811946569946433649006084094").unwrap();
+    /// let a_biguint = UU32::from_string("876801874298166903427690031858186486050853753882811946569946433649006084094").unwrap();
     /// let mut res = a_biguint.unchecked_mul_uint(5_u8);
     /// println!("{} X {} = {}", a_biguint, 5_u8, res);
     /// assert_eq!(res.to_string(), "4384009371490834517138450159290932430254268769414059732849732168245030420470");
@@ -6375,7 +6379,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// use cryptocol::define_utypes_with;
     /// define_utypes_with!(u64);
     /// 
-    /// let a_biguint = u256::from_string("876801874298166903427690031858186486050853753882811946569946433649006084094").unwrap();
+    /// let a_biguint = U256::from_string("876801874298166903427690031858186486050853753882811946569946433649006084094").unwrap();
     /// let mut res = a_biguint.saturating_mul_uint(5_u8);
     /// println!("{} X {} = {}", a_biguint, 5_u8, res);
     /// assert_eq!(res.to_string(), "4384009371490834517138450159290932430254268769414059732849732168245030420470");
@@ -6383,7 +6387,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// res = a_biguint.saturating_mul_uint(248_u8);
     /// println!("{} X {} = {}", a_biguint, 248_u8, res);
     /// assert_eq!(res.to_string(), "115792089237316195423570985008687907853269984665640564039457584007913129639935");
-    /// assert_eq!(res, U32::max());
+    /// assert_eq!(res, UU32::max());
     /// ```
     /// 
     /// # Big-endian issue
@@ -6432,7 +6436,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// use cryptocol::define_utypes_with;
     /// define_utypes_with!(u128);
     /// 
-    /// let mut a_biguint = u256::from_string("876801874298166903427690031858186486050853753882811946569946433649006084094").unwrap();
+    /// let mut a_biguint = U256::from_string("876801874298166903427690031858186486050853753882811946569946433649006084094").unwrap();
     /// let mut b_biguint = a_biguint.clone();
     /// 
     /// println!("Originally, a_biguint = {}", a_biguint);
@@ -6443,7 +6447,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// b_biguint.saturating_mul_assign_uint(248_u8);
     /// println!("After b_biguint.saturating_mul_assign_uint(248_u8), b_biguint = {}", b_biguint);
     /// assert_eq!(b_biguint.to_string(), "115792089237316195423570985008687907853269984665640564039457584007913129639935");
-    /// assert_eq!(b_biguint, U32::max());
+    /// assert_eq!(b_biguint, UU32::max());
     /// ```
     /// 
     /// # Big-endian issue
@@ -6520,8 +6524,8 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// use cryptocol::define_utypes_with;
     /// define_utypes_with!(u8);
     /// 
-    /// let m = U32::from_string("76801874298166903427690031858186486050853753882811946569946433649006084094").unwrap();
-    /// let a_biguint = u256::from_string("31858186486050853753882811946768018742981669034276900586487291375468285").unwrap();
+    /// let m = UU32::from_string("76801874298166903427690031858186486050853753882811946569946433649006084094").unwrap();
+    /// let a_biguint = U256::from_string("31858186486050853753882811946768018742981669034276900586487291375468285").unwrap();
     /// let mut mul_uint = 5_u8;
     /// 
     /// let mut res = a_biguint.modular_mul_uint(mul_uint, &m);
@@ -6585,8 +6589,8 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// use cryptocol::define_utypes_with;
     /// define_utypes_with!(u32);
     /// 
-    /// let m = U32::from_string("76801874298166903427690031858186486050853753882811946569946433649006084094").unwrap();
-    /// let mut a_biguint = u256::from_string("31858186486050853753882811946768018742981669034276900586487291375468285").unwrap();
+    /// let m = UU32::from_string("76801874298166903427690031858186486050853753882811946569946433649006084094").unwrap();
+    /// let mut a_biguint = U256::from_string("31858186486050853753882811946768018742981669034276900586487291375468285").unwrap();
     /// let mut b_biguint = a_biguint.clone();
     /// let mut mul_uint = 5_u8;
     /// 
@@ -6681,7 +6685,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// use cryptocol::define_utypes_with;
     /// define_utypes_with!(u16);
     /// 
-    /// let dividend = U32::from_str("123456789015758942546236989636279846864825945392").unwrap();
+    /// let dividend = UU32::from_str("123456789015758942546236989636279846864825945392").unwrap();
     /// let mut divisor = 87_u8;
     /// let (mut quotient, mut remainder) = dividend.divide_fully_uint(divisor);
     /// println!("{} / {} => quotient = {} , remainder = {}", dividend, divisor, quotient, remainder);
@@ -6694,7 +6698,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// divisor = 0_u8;
     /// (quotient, remainder) = dividend.divide_fully_uint(divisor);
     /// println!("{} / {} => quotient = {} , remainder = {}", dividend, divisor, quotient, remainder);
-    /// assert_eq!(quotient, u256::max());
+    /// assert_eq!(quotient, U256::max());
     /// assert_eq!(remainder.to_string(), "0");
     /// assert_eq!(quotient.is_overflow(), true);
     /// assert_eq!(quotient.is_inifinity(), true);
@@ -6746,7 +6750,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
             {
                 if remainder >= rhs
                 {
-                    quotient.set_LSB();
+                    quotient.set_lsb();
                     remainder = remainder.wrapping_sub(rhs);
                 }
                 if position == 0
@@ -6755,7 +6759,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
                 quotient.shift_left_assign(1_u8);
                 remainder <<= U::one();
                 if self.is_bit_set_(position)
-                    { remainder.set_LSB(); }
+                    { remainder.set_lsb(); }
             }
             (quotient, remainder)
         }
@@ -6801,7 +6805,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// use cryptocol::define_utypes_with;
     /// define_utypes_with!(u64);
     /// 
-    /// let dividend = u256::from_str("123456789015758942546236989636279846864825945392").unwrap();
+    /// let dividend = U256::from_str("123456789015758942546236989636279846864825945392").unwrap();
     /// let mut divisor = 87_u8;
     /// let mut quotient = dividend.wrapping_div_uint(divisor);
     /// println!("{} / {} = {}", dividend, divisor, quotient);
@@ -6813,7 +6817,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// divisor = 0_u8;
     /// quotient = dividend.wrapping_div_uint(divisor);
     /// println!("{} / {} = {}", dividend, divisor, quotient);
-    /// assert_eq!(quotient, u256::max());
+    /// assert_eq!(quotient, U256::max());
     /// assert_eq!(quotient.is_overflow(), true);
     /// assert_eq!(quotient.is_inifinity(), true);
     /// assert_eq!(quotient.is_divided_by_zero(), true);
@@ -6873,7 +6877,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// use cryptocol::define_utypes_with;
     /// define_utypes_with!(u128);
     /// 
-    /// let mut a_biguint = U32::from_str("123456789015758942546236989636279846864825945392").unwrap();
+    /// let mut a_biguint = UU32::from_str("123456789015758942546236989636279846864825945392").unwrap();
     /// let mut divisor = 87_u8;
     /// println!("Originally,\na_biguint = {}", a_biguint);
     /// assert_eq!(a_biguint.is_overflow(), false);
@@ -6883,7 +6887,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// divisor = 0_u8;
     /// a_biguint.wrapping_div_assign_uint(divisor);
     /// println!("After a_biguint.wrapping_div_assign_uint({}),\na_biguint = {}", divisor, a_biguint);
-    /// assert_eq!(a_biguint, U32::max());
+    /// assert_eq!(a_biguint, UU32::max());
     /// assert_eq!(a_biguint.is_overflow(), true);
     /// assert_eq!(a_biguint.is_inifinity(), true);
     /// assert_eq!(a_biguint.is_divided_by_zero(), true);
@@ -6946,7 +6950,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// use cryptocol::define_utypes_with;
     /// define_utypes_with!(u8);
     /// 
-    /// let dividend = u256::from_str("123456789015758942546236989636279846864825945392").unwrap();
+    /// let dividend = U256::from_str("123456789015758942546236989636279846864825945392").unwrap();
     /// let mut divisor = 87_u8;
     /// let (mut quotient, mut overflow) = dividend.overflowing_div_uint(divisor);
     /// println!("{} / {} = {}", dividend, divisor, quotient);
@@ -6959,7 +6963,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// divisor = 0_u8;
     /// (quotient, overflow) = dividend.overflowing_div_uint(divisor);
     /// println!("{} / {} = {}", dividend, divisor, quotient);
-    /// assert_eq!(quotient, u256::max());
+    /// assert_eq!(quotient, U256::max());
     /// assert_eq!(overflow, true);
     /// assert_eq!(quotient.is_overflow(), true);
     /// assert_eq!(quotient.is_inifinity(), true);
@@ -7027,7 +7031,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// use cryptocol::define_utypes_with;
     /// define_utypes_with!(u16);
     /// 
-    /// let mut a_biguint = U32::from_str("123456789015758942546236989636279846864825945392").unwrap();
+    /// let mut a_biguint = UU32::from_str("123456789015758942546236989636279846864825945392").unwrap();
     /// let mut divisor = 87_u16;
     /// println!("Originally,\na_biguint = {}", a_biguint);
     /// let mut overflow = a_biguint.overflowing_div_assign_uint(divisor);
@@ -7041,7 +7045,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// divisor = 0_u16;
     /// overflow = a_biguint.overflowing_div_assign_uint(divisor);
     /// println!("After a_biguint.overflowing_div_assign_uint({}),\na_biguint = {}", divisor, a_biguint);
-    /// assert_eq!(a_biguint, U32::max());
+    /// assert_eq!(a_biguint, UU32::max());
     /// assert_eq!(overflow, true);
     /// assert_eq!(a_biguint.is_overflow(), true);
     /// assert_eq!(a_biguint.is_inifinity(), true);
@@ -7098,7 +7102,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// use cryptocol::define_utypes_with;
     /// define_utypes_with!(u32);
     /// 
-    /// let dividend = u256::from_str("123456789015758942546236989636279846864825945392").unwrap();
+    /// let dividend = U256::from_str("123456789015758942546236989636279846864825945392").unwrap();
     /// let mut divisor = 87_u8;
     /// let mut quotient = dividend.checked_div_uint(divisor);
     /// match quotient.clone()
@@ -7179,7 +7183,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// use cryptocol::define_utypes_with;
     /// define_utypes_with!(u64);
     /// 
-    /// let dividend = U32::from_str("123456789015758942546236989636279846864825945392").unwrap();
+    /// let dividend = UU32::from_str("123456789015758942546236989636279846864825945392").unwrap();
     /// let mut divisor = 87_u8;
     /// let mut quotient = dividend.unchecked_div_uint(divisor);
     /// println!("{} / {} = {}", dividend, divisor, quotient);
@@ -7246,7 +7250,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// use cryptocol::define_utypes_with;
     /// define_utypes_with!(u32);
     /// 
-    /// let dividend = u256::from_str("123456789015758942546236989636279846864825945392").unwrap();
+    /// let dividend = U256::from_str("123456789015758942546236989636279846864825945392").unwrap();
     /// let mut divisor = 87_u8;
     /// let mut quotient = dividend.saturating_div_uint(divisor);
     /// println!("{} / {} = {}", dividend, divisor, quotient);
@@ -7258,7 +7262,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// divisor = 0_u8;
     /// quotient = dividend.saturating_div_uint(divisor);
     /// println!("{} / {} = {}", dividend, divisor, quotient);
-    /// assert_eq!(quotient, u256::max());
+    /// assert_eq!(quotient, U256::max());
     /// assert_eq!(quotient.is_overflow(), false);
     /// assert_eq!(quotient.is_inifinity(), false);
     /// assert_eq!(quotient.is_divided_by_zero(), true);
@@ -7324,7 +7328,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// use cryptocol::define_utypes_with;
     /// define_utypes_with!(u128);
     /// 
-    /// let mut a_biguint = U32::from_str("123456789015758942546236989636279846864825945392").unwrap();
+    /// let mut a_biguint = UU32::from_str("123456789015758942546236989636279846864825945392").unwrap();
     /// let mut divisor = 87_u16;
     /// println!("Originally,\na_biguint = {}", a_biguint);
     /// a_biguint.saturating_div_assign_uint(divisor);
@@ -7337,7 +7341,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// divisor = 0_u16;
     /// a_biguint.saturating_div_assign_uint(divisor);
     /// println!("After a_biguint.saturating_div_assign_uint({}),\na_biguint = {}", divisor, a_biguint);
-    /// assert_eq!(a_biguint, U32::max());
+    /// assert_eq!(a_biguint, UU32::max());
     /// assert_eq!(a_biguint.is_overflow(), false);
     /// assert_eq!(a_biguint.is_inifinity(), false);
     /// assert_eq!(a_biguint.is_divided_by_zero(), true);
@@ -7397,9 +7401,9 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// use cryptocol::define_utypes_with;
     /// define_utypes_with!(u8);
     /// 
-    /// let dividend = u256::from_str("123456789015758942546236989636279846864825945392").unwrap();
+    /// let dividend = U256::from_str("123456789015758942546236989636279846864825945392").unwrap();
     /// let mut divisor = 128_u8;
-    /// let modulo = u256::from_uint(100_u8);
+    /// let modulo = U256::from_uint(100_u8);
     /// let mut quotient = dividend.modular_div_uint(divisor, &modulo);
     /// println!("{} / {} = {}", dividend, divisor, quotient);
     /// assert_eq!(quotient.to_string(), "3");
@@ -7410,7 +7414,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// divisor = 200_u8;
     /// quotient = dividend.modular_div_uint(divisor, &modulo);
     /// println!("{} / {} = {}", dividend, divisor, quotient);
-    /// assert_eq!(quotient, u256::max());
+    /// assert_eq!(quotient, U256::max());
     /// assert_eq!(quotient.is_overflow(), true);
     /// assert_eq!(quotient.is_inifinity(), true);
     /// assert_eq!(quotient.is_divided_by_zero(), true);
@@ -7467,9 +7471,9 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// use cryptocol::define_utypes_with;
     /// define_utypes_with!(u16);
     /// 
-    /// let mut a_biguint = U32::from_str("123456789015758942546236989636279846864825945392").unwrap();
+    /// let mut a_biguint = UU32::from_str("123456789015758942546236989636279846864825945392").unwrap();
     /// let mut divisor = 128_u8;
-    /// let modulo = U32::from_uint(100_u8);
+    /// let modulo = UU32::from_uint(100_u8);
     /// println!("Originally,\na_biguint = {}", a_biguint);
     /// a_biguint.modular_div_assign_uint(divisor, &modulo);
     /// println!("After a_biguint.modular_div_assign_uint({}),\na_biguint = {}", divisor, a_biguint);
@@ -7481,7 +7485,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// divisor = 200_u8;
     /// a_biguint.modular_div_assign_uint(divisor, &modulo);
     /// println!("After a_biguint.modular_div_assign_uint({}),\na_biguint = {}", divisor, a_biguint);
-    /// assert_eq!(a_biguint, u256::max());
+    /// assert_eq!(a_biguint, U256::max());
     /// assert_eq!(a_biguint.is_overflow(), true);
     /// assert_eq!(a_biguint.is_inifinity(), true);
     /// assert_eq!(a_biguint.is_divided_by_zero(), true);
@@ -7540,7 +7544,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// use cryptocol::define_utypes_with;
     /// define_utypes_with!(u8);
     /// 
-    /// let dividend = U32::from_str("123456789015758942546236989636279846864825945392").unwrap();
+    /// let dividend = UU32::from_str("123456789015758942546236989636279846864825945392").unwrap();
     /// let mut divisor = 87_u8;
     /// let mut remainder = dividend.wrapping_rem_uint(divisor);
     /// println!("{} % {} = {}", dividend, divisor, remainder);
@@ -7606,7 +7610,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// use cryptocol::define_utypes_with;
     /// define_utypes_with!(u16);
     /// 
-    /// let mut a_biguint = u256::from_str("123456789015758942546236989636279846864825945392").unwrap();
+    /// let mut a_biguint = U256::from_str("123456789015758942546236989636279846864825945392").unwrap();
     /// let mut divisor = 87_u8;
     /// println!("Originally,\na_biguint = {}", a_biguint);
     /// a_biguint.wrapping_rem_assign_uint(divisor);
@@ -7677,7 +7681,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// use cryptocol::define_utypes_with;
     /// define_utypes_with!(u32);
     /// 
-    /// let dividend = U32::from_str("123456789015758942546236989636279846864825945392").unwrap();
+    /// let dividend = UU32::from_str("123456789015758942546236989636279846864825945392").unwrap();
     /// let mut divisor = 87_u8;
     /// let (mut remainder, mut overflow) = dividend.overflowing_rem_uint(divisor);
     /// println!("{} % {} = {}", dividend, divisor, remainder);
@@ -7744,7 +7748,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// use cryptocol::define_utypes_with;
     /// define_utypes_with!(u64);
     /// 
-    /// let mut a_biguint = u256::from_str("123456789015758942546236989636279846864825945392").unwrap();
+    /// let mut a_biguint = U256::from_str("123456789015758942546236989636279846864825945392").unwrap();
     /// let mut divisor = 87_u16;
     /// println!("Originally,\na_biguint = {}", a_biguint);
     /// let mut overflow = a_biguint.overflowing_rem_assign_uint(divisor);
@@ -7758,7 +7762,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// divisor = 0_u16;
     /// overflow = a_biguint.overflowing_rem_assign_uint(divisor);
     /// println!("After a_biguint.overflowing_rem_assign_uint({}),\na_biguint = {}", divisor, a_biguint);
-    /// assert_eq!(a_biguint, u256::zero());
+    /// assert_eq!(a_biguint, U256::zero());
     /// assert_eq!(overflow, false);
     /// assert_eq!(a_biguint.is_overflow(), false);
     /// assert_eq!(a_biguint.is_inifinity(), false);
@@ -7815,7 +7819,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// use cryptocol::define_utypes_with;
     /// define_utypes_with!(u128);
     /// 
-    /// let dividend = U32::from_str("123456789015758942546236989636279846864825945392").unwrap();
+    /// let dividend = UU32::from_str("123456789015758942546236989636279846864825945392").unwrap();
     /// let mut divisor = 87_u8;
     /// let mut remainder = dividend.checked_rem_uint(divisor);
     /// match remainder
@@ -7890,7 +7894,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// use cryptocol::define_utypes_with;
     /// define_utypes_with!(u8);
     /// 
-    /// let dividend = u256::from_str("123456789015758942546236989636279846864825945392").unwrap();
+    /// let dividend = U256::from_str("123456789015758942546236989636279846864825945392").unwrap();
     /// let mut divisor = 87_u8;
     /// let mut remainder = dividend.unchecked_rem_uint(divisor);
     /// println!("{} % {} = {}", dividend, divisor, remainder);
@@ -7948,7 +7952,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// use cryptocol::define_utypes_with;
     /// define_utypes_with!(u16);
     /// 
-    /// let dividend = U32::from_str("123456789015758942546236989636279846864825945392").unwrap();
+    /// let dividend = UU32::from_str("123456789015758942546236989636279846864825945392").unwrap();
     /// let mut divisor = 87_u8;
     /// let mut remainder = dividend.saturating_rem_uint(divisor);
     /// println!("{} % {} = {}", dividend, divisor, remainder);
@@ -8008,7 +8012,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// use cryptocol::define_utypes_with;
     /// define_utypes_with!(u32);
     /// 
-    /// let mut a_biguint = u256::from_str("123456789015758942546236989636279846864825945392").unwrap();
+    /// let mut a_biguint = U256::from_str("123456789015758942546236989636279846864825945392").unwrap();
     /// let mut divisor = 87_u16;
     /// println!("Originally,\na_biguint = {}", a_biguint);
     /// a_biguint.saturating_rem_assign_uint(divisor);
@@ -8021,7 +8025,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// divisor = 0_u16;
     /// a_biguint.saturating_rem_assign_uint(divisor);
     /// println!("After a_biguint.saturating_rem_assign_uint({}),\na_biguint = {}", divisor, a_biguint);
-    /// assert_eq!(a_biguint, U32::zero());
+    /// assert_eq!(a_biguint, UU32::zero());
     /// assert_eq!(a_biguint.is_overflow(), false);
     /// assert_eq!(a_biguint.is_inifinity(), false);
     /// assert_eq!(a_biguint.is_divided_by_zero(), true);
@@ -8079,9 +8083,9 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// use cryptocol::define_utypes_with;
     /// define_utypes_with!(u32);
     /// 
-    /// let dividend = u256::from_str("123456789015758942546236989636279846864825945392").unwrap();
+    /// let dividend = U256::from_str("123456789015758942546236989636279846864825945392").unwrap();
     /// let mut divisor = 128_u8;
-    /// let modulo = u256::from_uint(100_u8);
+    /// let modulo = U256::from_uint(100_u8);
     /// let mut remainder = dividend.modular_rem_uint(divisor, &modulo);
     /// println!("{} % {} = {}", dividend, divisor, remainder);
     /// assert_eq!(remainder.to_string(), "8");
@@ -8142,9 +8146,9 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// use cryptocol::define_utypes_with;
     /// define_utypes_with!(u64);
     /// 
-    /// let mut a_biguint = U32::from_str("123456789015758942546236989636279846864825945392").unwrap();
+    /// let mut a_biguint = UU32::from_str("123456789015758942546236989636279846864825945392").unwrap();
     /// let mut divisor = 128_u8;
-    /// let modulo = U32::from_uint(100_u8);
+    /// let modulo = UU32::from_uint(100_u8);
     /// println!("Originally,\na_biguint = {}", a_biguint);
     /// a_biguint.modular_rem_assign_uint(divisor, &modulo);
     /// println!("After a_biguint.modular_rem_assign_uint({}),\na_biguint = {}", divisor, a_biguint);
@@ -8205,14 +8209,14 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// use cryptocol::define_utypes_with;
     /// define_utypes_with!(u64);
     /// 
-    /// let mut a_biguint = u256::from_str("123456789012345678901234567890123456789").unwrap();
+    /// let mut a_biguint = U256::from_str("123456789012345678901234567890123456789").unwrap();
     /// let mut num = 586478_u32;
     /// let mut multiple = a_biguint.next_multiple_of_uint(num);
     /// println!("The next multiple of {} is {}", a_biguint, multiple);
     /// assert_eq!(multiple.to_string(), "123456789012345678901234567890123697594");
     /// assert_eq!(multiple.is_overflow(), false);
     /// 
-    /// a_biguint = u256::from_str_radix("FFFFFFFF_FFFFFFFF_FFFFFFFF_FFFFFFFF_FFFFFFFF_FFFFFFFF_FFFFFFFF_FFFFFFFF", 16).unwrap();
+    /// a_biguint = U256::from_str_radix("FFFFFFFF_FFFFFFFF_FFFFFFFF_FFFFFFFF_FFFFFFFF_FFFFFFFF_FFFFFFFF_FFFFFFFF", 16).unwrap();
     /// multiple = a_biguint.next_multiple_of_uint(num);
     /// println!("The next multiple of {} is {}", a_biguint, multiple);
     /// assert_eq!(multiple.to_string(), "448670");
@@ -8272,7 +8276,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// use cryptocol::define_utypes_with;
     /// define_utypes_with!(u128);
     /// 
-    /// let mut a_biguint = U32::from_str("123456789012345678901234567890123456789").unwrap();
+    /// let mut a_biguint = UU32::from_str("123456789012345678901234567890123456789").unwrap();
     /// let mut num = 586478_u32;
     /// 
     /// println!("Originally,\na_biguint = {}", a_biguint);
@@ -8281,7 +8285,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// assert_eq!(a_biguint.to_string(), "123456789012345678901234567890123697594");
     /// assert_eq!(a_biguint.is_overflow(), false);
     /// 
-    /// a_biguint = U32::from_str_radix("FFFFFFFF_FFFFFFFF_FFFFFFFF_FFFFFFFF_FFFFFFFF_FFFFFFFF_FFFFFFFF_FFFFFFFF", 16).unwrap();
+    /// a_biguint = UU32::from_str_radix("FFFFFFFF_FFFFFFFF_FFFFFFFF_FFFFFFFF_FFFFFFFF_FFFFFFFF_FFFFFFFF_FFFFFFFF", 16).unwrap();
     /// println!("Originally,\na_biguint = {}", a_biguint);
     /// a_biguint.next_multiple_of_assign_uint(num);
     /// println!("After a_biguint.next_multiple_of_assign_uint({}),\na_biguint = {}", num, a_biguint);
@@ -8357,7 +8361,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// use cryptocol::define_utypes_with;
     /// define_utypes_with!(u8);
     /// 
-    /// let a_biguint = U32::from_str("10").unwrap();
+    /// let a_biguint = UU32::from_str("10").unwrap();
     /// let mut exp = 30_u16;
     /// let mut res = a_biguint.pow_uint(exp);
     /// println!("{} ** {} = {}", a_biguint, exp, res);
@@ -8420,7 +8424,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// use cryptocol::define_utypes_with;
     /// define_utypes_with!(u16);
     /// 
-    /// let mut a_biguint = u256::from_uint(10_u8);
+    /// let mut a_biguint = U256::from_uint(10_u8);
     /// let exp = 10_u8;
     /// 
     /// println!("Originally,\na_biguint = {}", a_biguint);
@@ -8482,7 +8486,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// use cryptocol::define_utypes_with;
     /// define_utypes_with!(u32);
     /// 
-    /// let a_biguint = U32::from_uint(10_u8);
+    /// let a_biguint = UU32::from_uint(10_u8);
     /// let mut exp = 30_u32;
     /// let mut res = a_biguint.wrapping_pow_uint(exp);
     /// println!("{} ** {} = {}", a_biguint, exp, res);
@@ -8546,7 +8550,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// use cryptocol::define_utypes_with;
     /// define_utypes_with!(u64);
     /// 
-    /// let mut a_biguint = u256::from_uint(10_u8);
+    /// let mut a_biguint = U256::from_uint(10_u8);
     /// let exp = 10_u8;
     /// 
     /// println!("Originally,\na_biguint = {}", a_biguint);
@@ -8585,7 +8589,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
         if exp == zero
             { return; }
 
-        let mut bit_check = one << U::usize_as_SmallUInt(exp.length_in_bits() - 1 - exp.leading_zeros() as usize);
+        let mut bit_check = one << U::usize_as_smalluint(exp.length_in_bits() - 1 - exp.leading_zeros() as usize);
         if bit_check != zero
         {
             self.wrapping_mul_assign(&multiplier);
@@ -8634,7 +8638,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// use cryptocol::define_utypes_with;
     /// define_utypes_with!(u128);
     /// 
-    /// let a_biguint = U32::from_uint(10_u8);
+    /// let a_biguint = UU32::from_uint(10_u8);
     /// let mut exp = 30_u32;
     /// let mut res = a_biguint.overflowing_pow_uint(exp);
     /// println!("{} ** {} = {}\noverflow = {}", a_biguint, exp, res.0, res.1);
@@ -8708,7 +8712,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// use cryptocol::define_utypes_with;
     /// define_utypes_with!(u8);
     /// 
-    /// let mut a_biguint = u256::from_uint(10_u8);
+    /// let mut a_biguint = U256::from_uint(10_u8);
     /// let mut exp = 30_u32;
     /// 
     /// println!("Originally,\na_biguint = {}", a_biguint);
@@ -8786,7 +8790,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// use cryptocol::define_utypes_with;
     /// define_utypes_with!(u16);
     /// 
-    /// let a_biguint = U32::from_uint(10_u8);
+    /// let a_biguint = UU32::from_uint(10_u8);
     /// let mut exp = 30_u32;
     /// let mut res = a_biguint.checked_pow_uint(exp);
     /// match res
@@ -8862,7 +8866,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// use cryptocol::define_utypes_with;
     /// define_utypes_with!(u32);
     /// 
-    /// let a_biguint = U32::from_uint(10_u8);
+    /// let a_biguint = UU32::from_uint(10_u8);
     /// let mut exp = 30_u32;
     /// let mut res = a_biguint.unchecked_pow_uint(exp);
     /// println!("{} ** {} = {}", a_biguint, exp, res);
@@ -8923,7 +8927,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// use cryptocol::define_utypes_with;
     /// define_utypes_with!(u64);
     /// 
-    /// let a_biguint = u256::from_uint(10_u8);
+    /// let a_biguint = U256::from_uint(10_u8);
     /// let mut exp = 30_u32;
     /// let mut res = a_biguint.saturating_pow_uint(exp);
     /// println!("{} ** {} = {}", a_biguint, exp, res);
@@ -8933,7 +8937,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// exp = 100_u32;
     /// res = a_biguint.saturating_pow_uint(exp);
     /// println!("{} ** {} = {}", a_biguint, exp, res);
-    /// assert_eq!(res, U32::max());
+    /// assert_eq!(res, UU32::max());
     /// assert_eq!(res.is_overflow(), false);
     /// ```
     /// 
@@ -8986,7 +8990,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// use cryptocol::define_utypes_with;
     /// define_utypes_with!(u128);
     /// 
-    /// let mut a_biguint = U32::from_uint(10_u8);
+    /// let mut a_biguint = UU32::from_uint(10_u8);
     /// let mut exp = 30_u32;
     /// println!("Originally,\na_biguint = {}", a_biguint);
     /// a_biguint.saturating_pow_assign_uint(exp);
@@ -8996,7 +9000,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// 
     /// a_biguint.saturating_pow_assign_uint(exp);
     /// println!("After a_biguint.overflowing_pow_assign_uint({}),\na_biguint = {}", exp, a_biguint);
-    /// assert_eq!(a_biguint, U32::max());
+    /// assert_eq!(a_biguint, UU32::max());
     /// assert_eq!(a_biguint.is_overflow(), false);
     /// ```
     /// 
@@ -9053,9 +9057,9 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// use cryptocol::define_utypes_with;
     /// define_utypes_with!(u8);
     /// 
-    /// let a_biguint = u256::from_uint(10_u8);
+    /// let a_biguint = U256::from_uint(10_u8);
     /// let mut exp = 30_u32;
-    /// let mut modulo = u256::halfmax();
+    /// let mut modulo = U256::halfmax();
     /// let mut res = a_biguint.modular_pow_uint(exp, &modulo);
     /// println!("{} ** {} (mod {}) = {}", a_biguint, exp, modulo, res);
     /// assert_eq!(res.to_string(), "1000000000000000000000000000000");
@@ -9070,7 +9074,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// modulo.set_zero();
     /// res = a_biguint.modular_pow_uint(exp, &modulo);
     /// println!("{} ** {} (mod {}) = {}", a_biguint, exp, modulo, res);
-    /// assert_eq!(res, u256::max());
+    /// assert_eq!(res, U256::max());
     /// assert_eq!(res.is_overflow(), true);
     /// assert_eq!(res.is_inifinity(), true);
     /// assert_eq!(res.is_divided_by_zero(), true);
@@ -9128,9 +9132,9 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// use cryptocol::define_utypes_with;
     /// define_utypes_with!(u16);
     /// 
-    /// let mut a_biguint = u256::from_uint(10_u8);
+    /// let mut a_biguint = U256::from_uint(10_u8);
     /// let mut exp = 30_u32;
-    /// let mut modulo = u256::halfmax();
+    /// let mut modulo = U256::halfmax();
     /// println!("Originally,\na_biguint = {}", a_biguint);
     /// a_biguint.modular_pow_assign_uint(exp, &modulo);
     /// println!("After a_biguint.modular_pow_assign_uint({}),\na_biguint = {}", exp, a_biguint);
@@ -9146,7 +9150,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// modulo.set_zero();
     /// a_biguint.modular_pow_assign_uint(exp, &modulo);
     /// println!("After a_biguint.modular_pow_assign_uint({}),\na_biguint = {}", exp, a_biguint);
-    /// assert_eq!(a_biguint, u256::max());
+    /// assert_eq!(a_biguint, U256::max());
     /// assert_eq!(a_biguint.is_overflow(), true);
     /// assert_eq!(a_biguint.is_inifinity(), true);
     /// assert_eq!(a_biguint.is_divided_by_zero(), true);
@@ -9758,10 +9762,10 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// use cryptocol::define_utypes_with;
     /// define_utypes_with!(u128);
     /// 
-    /// let a_hi = u256::from_str_radix("15D5_ECE4_41DB_7709_BA44_8C40_0DCF_7160_3CD4_F7FF_F0CF_476F_33FD_438B_0E1D_2086", 16).unwrap();
-    /// let a_lo = u256::from_str_radix("C9B4_EF7B_BBC9_F60E_45CB_EE41_B567_A641_7D69_A0EC_05F7_65A7_F81B_5C91_72DC_BAC0", 16).unwrap();
-    /// let b_hi = u256::from_str_radix("274_DDD9_4DAA_9405_B621_6BCA_AF43_78E3_0FA6_1D7D_86F4_0D17_2C18_A01C_80F9_DB46", 16).unwrap();
-    /// let b_lo = u256::from_str_radix("DF8A_DC5F_FDA5_6D18_0010_7A81_C337_17A1_BA3E_98EB_F6C6_AD17_2C18_A01C_80F9_DB46", 16).unwrap();
+    /// let a_hi = U256::from_str_radix("15D5_ECE4_41DB_7709_BA44_8C40_0DCF_7160_3CD4_F7FF_F0CF_476F_33FD_438B_0E1D_2086", 16).unwrap();
+    /// let a_lo = U256::from_str_radix("C9B4_EF7B_BBC9_F60E_45CB_EE41_B567_A641_7D69_A0EC_05F7_65A7_F81B_5C91_72DC_BAC0", 16).unwrap();
+    /// let b_hi = U256::from_str_radix("274_DDD9_4DAA_9405_B621_6BCA_AF43_78E3_0FA6_1D7D_86F4_0D17_2C18_A01C_80F9_DB46", 16).unwrap();
+    /// let b_lo = U256::from_str_radix("DF8A_DC5F_FDA5_6D18_0010_7A81_C337_17A1_BA3E_98EB_F6C6_AD17_2C18_A01C_80F9_DB46", 16).unwrap();
     /// 
     /// let (c_lo, carry) = a_lo.carrying_add(&b_lo, false);
     /// let (c_hi, overflow) = a_hi.carrying_add(&b_hi, carry);
@@ -9821,12 +9825,12 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// use cryptocol::define_utypes_with;
     /// define_utypes_with!(u16);
     /// 
-    /// let mut a_hi = u256::from_str_radix("15D5_ECE4_41DB_7709_BA44_8C40_0DCF_7160_3CD4_F7FF_F0CF_476F_33FD_438B_0E1D_2086", 16).unwrap();
-    /// let mut a_lo = u256::from_str_radix("C9B4_EF7B_BBC9_F60E_45CB_EE41_B567_A641_7D69_A0EC_05F7_65A7_F81B_5C91_72DC_BAC0", 16).unwrap();
-    /// let b_hi = u256::from_str_radix("274_DDD9_4DAA_9405_B621_6BCA_AF43_78E3_0FA6_1D7D_86F4_0D17_2C18_A01C_80F9_DB46", 16).unwrap();
-    /// let b_lo = u256::from_str_radix("DF8A_DC5F_FDA5_6D18_0010_7A81_C337_17A1_BA3E_98EB_F6C6_AD17_2C18_A01C_80F9_DB46", 16).unwrap();
-    /// let c_hi = u256::from(1_u8);
-    /// let c_lo = u256::from(1_u8);
+    /// let mut a_hi = U256::from_str_radix("15D5_ECE4_41DB_7709_BA44_8C40_0DCF_7160_3CD4_F7FF_F0CF_476F_33FD_438B_0E1D_2086", 16).unwrap();
+    /// let mut a_lo = U256::from_str_radix("C9B4_EF7B_BBC9_F60E_45CB_EE41_B567_A641_7D69_A0EC_05F7_65A7_F81B_5C91_72DC_BAC0", 16).unwrap();
+    /// let b_hi = U256::from_str_radix("274_DDD9_4DAA_9405_B621_6BCA_AF43_78E3_0FA6_1D7D_86F4_0D17_2C18_A01C_80F9_DB46", 16).unwrap();
+    /// let b_lo = U256::from_str_radix("DF8A_DC5F_FDA5_6D18_0010_7A81_C337_17A1_BA3E_98EB_F6C6_AD17_2C18_A01C_80F9_DB46", 16).unwrap();
+    /// let c_hi = U256::from(1_u8);
+    /// let c_lo = U256::from(1_u8);
     /// 
     /// print!("{}:{} + {}:{}", a_hi.to_string_with_radix_and_stride(16, 4).unwrap(), a_lo.to_string_with_radix_and_stride(16, 4).unwrap(), b_hi.to_string_with_radix_and_stride(16, 4).unwrap(), b_lo.to_string_with_radix_and_stride(16, 4).unwrap());
     /// let mut carry = a_lo.carrying_add_assign(&b_lo, false);
@@ -9862,19 +9866,19 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     {
         let mut c = carry;
         let mut num;
-        let iL = self.leading_zero_elements() as usize;
-        let jL = rhs.leading_zero_elements() as usize;
-        let ijN = N - if iL < jL {iL} else {jL};
-        for i in 0..ijN
+        let i_l = self.leading_zero_elements() as usize;
+        let j_l = rhs.leading_zero_elements() as usize;
+        let ij_n = N - if i_l < j_l {i_l} else {j_l};
+        for i in 0..ij_n
         {
             (num, c) = self.get_num_(i).carrying_add(rhs.get_num_(i), c);
             self.set_num_(i, num);
         }
         if c
         {
-            if ijN < N
+            if ij_n < N
             {
-                self.set_num_(ijN, T::one());
+                self.set_num_(ij_n, T::one());
                 c = false;
             }
             else
@@ -9907,17 +9911,17 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// use cryptocol::define_utypes_with;
     /// define_utypes_with!(u128);
     ///  
-    /// let zero = u512::zero();
-    /// let one = u512::one();
-    /// let two = u512::from(2_u8);
-    /// let three = u512::from(3_u8);
-    /// let a = u512::max() - &one;
+    /// let zero = U512::zero();
+    /// let one = U512::one();
+    /// let two = U512::from(2_u8);
+    /// let three = U512::from(3_u8);
+    /// let a = U512::max() - one.clone();
     /// let b = a.wrapping_add(&one);
     /// let c = a.wrapping_add(&two);
     /// let d = a.wrapping_add(&three);
     /// 
     /// println!("{} + 1 = {}", a, b);
-    /// assert_eq!(b, u512::max());
+    /// assert_eq!(b, U512::max());
     /// 
     /// println!("{} + 2 = {}", a, c);
     /// assert_eq!(c, zero);
@@ -9956,16 +9960,16 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// use cryptocol::define_utypes_with;
     /// define_utypes_with!(u128);
     /// 
-    /// let zero = u512::zero();
-    /// let one = u512::one();
+    /// let zero = U512::zero();
+    /// let one = U512::one();
     /// 
-    /// let mut a = u512::max().wrapping_sub(&one);
+    /// let mut a = U512::max().wrapping_sub(&one);
     /// println!("Originally,\ta = {}", a);
     /// assert_eq!(a.to_string(), "13407807929942597099574024998205846127479365820592393377723561443721764030073546976801874298166903427690031858186486050853753882811946569946433649006084094");
     /// 
     /// a.wrapping_add_assign(&one);
     /// println!("After a += 1,\ta = {}", a);
-    /// assert_eq!(a, u512::max());
+    /// assert_eq!(a, U512::max());
     /// 
     /// a.wrapping_add_assign(&one);
     /// println!("After a += 1,\ta = {}", a);
@@ -10386,17 +10390,17 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     {
         let mut	b = borrow;
         let mut num;
-        let iL = self.leading_zero_elements() as usize;
-        let jL = rhs.leading_zero_elements() as usize;
-        let ijN = if iL < jL {N-iL} else {N};
-        for i in 0..ijN
+        let i_l = self.leading_zero_elements() as usize;
+        let j_l = rhs.leading_zero_elements() as usize;
+        let ij_n = if i_l < j_l {N-i_l} else {N};
+        for i in 0..ij_n
         {
             (num, b) = self.get_num_(i).borrowing_sub(rhs.get_num_(i), b);
             self.set_num_(i, num);
         }
         if b
         {
-            for i in ijN..N
+            for i in ij_n..N
                 { self.set_num_(i, T::max()); }
             self.set_underflow();
         }
@@ -10707,14 +10711,14 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// use cryptocol::define_utypes_with;
     /// define_utypes_with!(u128);
     /// 
-    /// let a = u256::from_str("500000000000000000500000000500000000500000000500000000").unwrap();
-    /// let b = u256::from_str("500000000000000000000000000000000000000000000000000000").unwrap();
+    /// let a = U256::from_str("500000000000000000500000000500000000500000000500000000").unwrap();
+    /// let b = U256::from_str("500000000000000000000000000000000000000000000000000000").unwrap();
     /// let c = a.abs_diff(&b);
     /// let d = b.abs_diff(&a);
     /// println!("500000000000000000500000000500000000500000000500000000 <-> 500000000000000000000000000000000000000000000000000000 = {}", c);
     /// println!("500000000000000000000000000000000000000000000000000000 <-> 500000000000000000500000000500000000500000000500000000 = {}", d);
-    /// assert_eq!(c, u256::from_str("500000000500000000500000000500000000").unwrap());
-    /// assert_eq!(d, u256::from_str("500000000500000000500000000500000000").unwrap());
+    /// assert_eq!(c, U256::from_str("500000000500000000500000000500000000").unwrap());
+    /// assert_eq!(d, U256::from_str("500000000500000000500000000500000000").unwrap());
     /// ```
     pub fn abs_diff(&self, other: &Self) -> Self
     {
@@ -10941,10 +10945,10 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
         let zero = T::zero();
         let one = T::one();
         let adder = self.clone();
-        let TSIZE_BITS = T::size_in_bits();
+        let size_t_bits = T::size_in_bits();
         let mut multiply_first = |num: T| {
             let mut bit_check = one;
-            bit_check <<= T::usize_as_SmallUInt(TSIZE_BITS - 1);
+            bit_check <<= T::usize_as_smalluint(size_t_bits - 1);
             while (bit_check != zero) && (bit_check & num == zero)
                 { bit_check >>= one; }
 
@@ -10957,7 +10961,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
                 {
                     self.wrapping_add_assign(&adder);
                     if self.is_overflow()
-                        { high.wrapping_add_uint(T::u8_as_SmallUInt(1)); }
+                        { high.wrapping_add_uint(T::u8_as_smalluint(1)); }
                 }
                 bit_check >>= one;
             }
@@ -10974,22 +10978,22 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
         let mut multiply = |num: T| {
             if num == T::zero()
             {
-                *self <<= TSIZE_BITS as i32;
-                high <<= TSIZE_BITS as i32;
+                *self <<= size_t_bits as i32;
+                high <<= size_t_bits as i32;
                 return;
             }
             let mut bit_check = one;
-            bit_check <<= T::usize_as_SmallUInt(TSIZE_BITS - 1);
+            bit_check <<= T::usize_as_smalluint(size_t_bits - 1);
             while bit_check != zero
             {
                 *self <<= 1;
                 high <<= 1;
                 if self.is_overflow()
-                    { high.set_num_(0, high.get_num_(0) | T::u8_as_SmallUInt(1)) ; }
+                    { high.set_num_(0, high.get_num_(0) | T::u8_as_smalluint(1)) ; }
                 if bit_check & num != zero
                 {
                     self.wrapping_add_assign(&adder);
-                    high.wrapping_add_uint(T::bool_as_SmallUInt(self.is_overflow()));
+                    high.wrapping_add_uint(T::bool_as_smalluint(self.is_overflow()));
                 }
                 bit_check >>= one;
             }
@@ -11108,11 +11112,11 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
         let mut high = Self::zero();
         let mut lower = zero;
         let mut higher = zero;
-        let iN = N - rhs.leading_zero_elements() as usize;
-        let jN = N - operand.leading_zero_elements() as usize;
-        for i in 0..iN
+        let i_n = N - rhs.leading_zero_elements() as usize;
+        let j_n = N - operand.leading_zero_elements() as usize;
+        for i in 0..i_n
         {
-            for j in 0..jN
+            for j in 0..j_n
             {
                 (lower, higher) = operand.get_num_(j).carrying_mul(rhs.get_num_(i), higher);
                 let ij = i + j;
@@ -11121,7 +11125,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
                 else
                     { high.set_num_(ij - N, lower); }
             }
-            let c = i + jN;
+            let c = i + j_n;
             if c < N
                 { self.set_num_(c, lower); }
             else
@@ -11143,7 +11147,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
             { return Self::zero(); }
 
         let adder = self.clone();
-        let TSIZE_BITS_MINUS_ONE = T::size_in_bits() - 1;
+        let size_t_bits_minus_one = T::size_in_bits() - 1;
         let mut high = Self::zero();
         let mut chunk = N - 1 - rhs.leading_zero_elements() as usize;
         let mut piece = T::size_in_bits() - 1 - rhs.get_num_(chunk).leading_zeros() as usize;
@@ -11153,7 +11157,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
             let num = rhs.get_num_(chunk);
             if num.is_zero()
             {
-                self.shift_left_assign(TSIZE_BITS_MINUS_ONE);
+                self.shift_left_assign(size_t_bits_minus_one);
             }
             else
             {
@@ -11168,8 +11172,8 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
                         { break; }
                     piece -= 1;
                     high.shift_left_assign(1_u8);
-                    if self.is_MSB_set()
-                        { high.set_LSB(); }
+                    if self.is_msb_set()
+                        { high.set_lsb(); }
                     self.shift_left_assign(1_u8);
                 }
             }
@@ -11177,8 +11181,8 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
                 { break; }
             chunk -= 1;
             high.shift_left_assign(1_u8);
-            if self.is_MSB_set()
-                { high.set_LSB(); }
+            if self.is_msb_set()
+                { high.set_lsb(); }
             self.shift_left_assign(1_u8);
             piece = T::size_in_bits() - 1;
         }
@@ -11261,18 +11265,18 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
         let operand = Self::from_array(self.get_number());
         let zero = T::zero();
         let one = T::one();
-        let iN = N - rhs.leading_zero_elements() as usize;
-        let jN = N - operand.leading_zero_elements() as usize;
+        let i_n = N - rhs.leading_zero_elements() as usize;
+        let j_n = N - operand.leading_zero_elements() as usize;
         let mut lower;
         let mut higher;
         let mut sum;
         let mut overflow;
         let mut ij = 0_usize;
         self.set_zero();
-        for i in 0..iN
+        for i in 0..i_n
         {
             higher = zero;
-            for j in 0..jN
+            for j in 0..j_n
             {
                 ij = i + j;
                 if ij >= N
@@ -11326,7 +11330,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
             { return; }
 
         let adder = Self::from_array(self.get_number());
-        let TSIZE_BITS_MINUS_ONE = T::size_in_bits()-1;
+        let size_t_bits_minus_one = T::size_in_bits()-1;
         let mut chunk = N - 1 - rhs.leading_zero_elements() as usize;
         let mut piece = T::size_in_bits() - 1 - rhs.get_num_(chunk).leading_zeros() as usize;
         self.set_zero();
@@ -11335,7 +11339,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
             let num = rhs.get_num_(chunk);
             if num.is_zero()
             {
-                self.shift_left_assign(TSIZE_BITS_MINUS_ONE);
+                self.shift_left_assign(size_t_bits_minus_one);
             }
             else
             {
@@ -11677,8 +11681,8 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// use std::str::FromStr;
     /// use cryptocol::define_utypes_with;
     /// define_utypes_with!(u128);
-    /// let dividend = u256::from_str("1234567890157589425462369896").unwrap();
-    /// let divisor = u256::from_str("1234567890").unwrap();
+    /// let dividend = U256::from_str("1234567890157589425462369896").unwrap();
+    /// let divisor = U256::from_str("1234567890").unwrap();
     /// let (quotient, remainder) = dividend.divide_fully(&divisor);
     /// ```
     pub fn divide_fully(&self, rhs: &Self) -> (Self, Self)
@@ -11717,7 +11721,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
         {
             if *rhs <= remainder
             {
-                quotient.set_LSB();
+                quotient.set_lsb();
                 remainder.wrapping_sub_assign(rhs); 
             }
             if position == 0
@@ -11726,7 +11730,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
             quotient.shift_left_assign(1_u8);
             remainder.shift_left_assign(1_u8);
             if self.is_bit_set_(position)
-                { remainder.set_LSB(); }
+                { remainder.set_lsb(); }
         }
 
         (quotient, remainder)
@@ -12011,7 +12015,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// use cryptocol::define_utypes_with;
     /// define_utypes_with!(u32);
     /// 
-    /// let dividend = u256::from_str("123456789015758942546236989636279846864825945392").unwrap();
+    /// let dividend = U256::from_str("123456789015758942546236989636279846864825945392").unwrap();
     /// let mut divisor = 87_u8;
     /// let mut quotient = dividend.saturating_div_uint(divisor);
     /// println!("{} / {} = {}", dividend, divisor, quotient);
@@ -12022,7 +12026,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// divisor = 0_u8;
     /// quotient = dividend.saturating_div_uint(divisor);
     /// println!("{} / {} = {}", dividend, divisor, quotient);
-    /// assert_eq!(quotient, u256::max());
+    /// assert_eq!(quotient, U256::max());
     /// assert_eq!(quotient.is_overflow(), true);
     /// assert_eq!(quotient.is_inifinity(), true);
     /// assert_eq!(quotient.is_divided_by_zero(), true);
@@ -12089,7 +12093,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// use cryptocol::define_utypes_with;
     /// define_utypes_with!(u128);
     /// 
-    /// let mut a_biguint = U32::from_str("123456789015758942546236989636279846864825945392").unwrap();
+    /// let mut a_biguint = UU32::from_str("123456789015758942546236989636279846864825945392").unwrap();
     /// let mut divisor = 87_u16;
     /// println!("Originally,\na_biguint = {}", a_biguint);
     /// a_biguint.saturating_div_assign_uint(divisor);
@@ -12102,7 +12106,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// divisor = 0_u16;
     /// a_biguint.saturating_div_assign_uint(divisor);
     /// println!("After a_biguint.saturating_div_assign_uint({}),\na_biguint = {}", divisor, a_biguint);
-    /// assert_eq!(a_biguint, U32::max());
+    /// assert_eq!(a_biguint, UU32::max());
     /// assert_eq!(a_biguint.is_overflow(), true);
     /// assert_eq!(a_biguint.is_inifinity(), true);
     /// assert_eq!(a_biguint.is_divided_by_zero(), true);
@@ -12466,7 +12470,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// use cryptocol::define_utypes_with;
     /// define_utypes_with!(u32);
     /// 
-    /// let dividend = u256::from_str("123456789015758942546236989636279846864825945392").unwrap();
+    /// let dividend = U256::from_str("123456789015758942546236989636279846864825945392").unwrap();
     /// let mut divisor = 87_u8;
     /// let mut quotient = dividend.saturating_div_uint(divisor);
     /// println!("{} / {} = {}", dividend, divisor, quotient);
@@ -12477,7 +12481,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// divisor = 0_u8;
     /// quotient = dividend.saturating_div_uint(divisor);
     /// println!("{} / {} = {}", dividend, divisor, quotient);
-    /// assert_eq!(quotient, u256::max());
+    /// assert_eq!(quotient, U256::max());
     /// assert_eq!(quotient.is_overflow(), true);
     /// assert_eq!(quotient.is_inifinity(), true);
     /// assert_eq!(quotient.is_divided_by_zero(), true);
@@ -12544,7 +12548,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// use cryptocol::define_utypes_with;
     /// define_utypes_with!(u128);
     /// 
-    /// let mut a_biguint = U32::from_str("123456789015758942546236989636279846864825945392").unwrap();
+    /// let mut a_biguint = UU32::from_str("123456789015758942546236989636279846864825945392").unwrap();
     /// let mut divisor = 87_u16;
     /// println!("Originally,\na_biguint = {}", a_biguint);
     /// a_biguint.saturating_div_assign_uint(divisor);
@@ -12557,7 +12561,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// divisor = 0_u16;
     /// a_biguint.saturating_div_assign_uint(divisor);
     /// println!("After a_biguint.saturating_div_assign_uint({}),\na_biguint = {}", divisor, a_biguint);
-    /// assert_eq!(a_biguint, U32::max());
+    /// assert_eq!(a_biguint, UU32::max());
     /// assert_eq!(a_biguint.is_overflow(), true);
     /// assert_eq!(a_biguint.is_inifinity(), true);
     /// assert_eq!(a_biguint.is_divided_by_zero(), true);
@@ -12715,8 +12719,8 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// use cryptocol::define_utypes_with;
     /// define_utypes_with!(u128);
     /// 
-    /// let a = u256::from_uint(234_u8);
-    /// let mut exp = u256::from_uint(34_u8);
+    /// let a = U256::from_uint(234_u8);
+    /// let mut exp = U256::from_uint(34_u8);
     /// 
     /// // normal exponentiation
     /// let b = a.pow(&exp);
@@ -12762,8 +12766,8 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// use cryptocol::define_utypes_with;
     /// define_utypes_with!(u128);
     /// 
-    /// let mut a = u256::from_uint(234_u8);
-    /// let mut exp = u256::from_uint(34_u8);
+    /// let mut a = U256::from_uint(234_u8);
+    /// let mut exp = U256::from_uint(34_u8);
     /// 
     /// // normal exponentiation
     /// a.pow_assign(&exp);
@@ -12772,7 +12776,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// 
     /// // wrapping (modular) exponentiation
     /// let old = a.clone();
-    /// a = u256::from_uint(234_u8);
+    /// a = U256::from_uint(234_u8);
     /// exp += 1;
     /// a.pow_assign(&exp);
     /// println!("234 ** 35 = {}", a);
@@ -12815,8 +12819,8 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// use cryptocol::define_utypes_with;
     /// define_utypes_with!(u128);
     /// 
-    /// let a = u256::from_uint(234_u8);
-    /// let mut exp = u256::from_uint(34_u8);
+    /// let a = U256::from_uint(234_u8);
+    /// let mut exp = U256::from_uint(34_u8);
     /// 
     /// // normal exponentiation
     /// let b = a.wrapping_pow(&exp);
@@ -12864,8 +12868,8 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// use cryptocol::define_utypes_with;
     /// define_utypes_with!(u128);
     /// 
-    /// let mut a = u256::from_uint(234_u8);
-    /// let mut exp = u256::from_uint(34_u8);
+    /// let mut a = U256::from_uint(234_u8);
+    /// let mut exp = U256::from_uint(34_u8);
     /// 
     /// // normal exponentiation
     /// a.wrapping_pow_assign(&exp);
@@ -12874,7 +12878,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// 
     /// // wrapping (modular) exponentiation
     /// let old = a.clone();
-    /// a = u256::from_uint(234_u8);
+    /// a = U256::from_uint(234_u8);
     /// exp += 1;
     /// a.wrapping_pow_assign(&exp);
     /// println!("234 ** 35 = {}", a);
@@ -12937,8 +12941,8 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// use cryptocol::define_utypes_with;
     /// define_utypes_with!(u128);
     /// 
-    /// let a = u256::from_uint(234_u8);
-    /// let mut exp = u256::from_uint(34_u8);
+    /// let a = U256::from_uint(234_u8);
+    /// let mut exp = U256::from_uint(34_u8);
     /// 
     /// // normal exponentiation
     /// let (b, bb) = a.overflowing_pow(&exp);
@@ -12993,8 +12997,8 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// use cryptocol::define_utypes_with;
     /// define_utypes_with!(u128);
     /// 
-    /// let mut a = u256::from_uint(234_u8);
-    /// let mut exp = u256::from_uint(34_u8);
+    /// let mut a = U256::from_uint(234_u8);
+    /// let mut exp = U256::from_uint(34_u8);
     /// 
     /// // normal exponentiation
     /// let mut aa = a.overflowing_pow_assign(&exp);
@@ -13004,7 +13008,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// 
     /// // wrapping (modular) exponentiation
     /// let old = a.clone();
-    /// a = u256::from_uint(234_u8);
+    /// a = U256::from_uint(234_u8);
     /// exp += 1;
     /// aa = a.overflowing_pow_assign(&exp);
     /// println!("234 ** 35 = {}, overflow = {}", a, aa);
@@ -13055,8 +13059,8 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// use cryptocol::define_utypes_with;
     /// define_utypes_with!(u128);
     /// 
-    /// let a = u256::from_uint(234_u8);
-    /// let mut exp = u256::from_uint(34_u8);
+    /// let a = U256::from_uint(234_u8);
+    /// let mut exp = U256::from_uint(34_u8);
     /// 
     /// // normal exponentiation
     /// let b = a.checked_pow(&exp);
@@ -13178,10 +13182,10 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// use cryptocol::define_utypes_with;
     /// define_utypes_with!(u128);
     /// 
-    /// let a = u256::from_uint(2_u8);
+    /// let a = U256::from_uint(2_u8);
     /// let b = a.ilog2();
     /// println!("log_2(2) = {}", b);
-    /// assert_eq!(b, u256::from_uint(1_u8));
+    /// assert_eq!(b, U256::from_uint(1_u8));
     /// ```
     pub fn ilog2(&self) -> Self
     {
@@ -13243,10 +13247,10 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// use cryptocol::define_utypes_with;
     /// define_utypes_with!(u128);
     /// 
-    /// let a = u256::from_uint(2_u8);
+    /// let a = U256::from_uint(2_u8);
     /// let b = a.ilog2();
     /// println!("log_2(2) = {}", b);
-    /// assert_eq!(b, u256::from_uint(1_u8));
+    /// assert_eq!(b, U256::from_uint(1_u8));
     /// ```
     pub fn checked_ilog2(&self) -> Option<Self>
     {
@@ -13270,7 +13274,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     // pub fn saturating_pow() -> Self
     // pub fn saturating_pow_assign()
 
-    fn sqrt(&self) -> Self
+    pub fn sqrt(&self) -> Self
     {
         let mut adder;
         let mut highest = (Self::size_in_bits() - self.leading_zeros() as usize) >> 1;
@@ -13330,7 +13334,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
         }
     }
 
-    fn root(self, exp: Self) -> Self
+    pub fn root(self, exp: Self) -> Self
     {
         let mut adder;
         let mut highest = Self::from_uint(Self::size_in_bits() - self.leading_zeros() as usize).wrapping_add(&exp).into_usize();
@@ -13430,7 +13434,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
 
 
     /***** METHODS FOR TESTING PRIME NUMBER *****/
-    pub fn is_prime_using_Miller_Rabin(&self, repetition: usize) -> bool
+    pub fn is_prime_using_miller_rabin(&self, repetition: usize) -> bool
     {
         if self.is_zero_or_one() || self.is_even()
             { return false; }
@@ -13441,7 +13445,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
         if self.le_uint(u64::MAX)
         {
             let small_self = self.into_u64();
-            return small_self.is_prime_using_Miller_Rabin(repetition);
+            return small_self.is_prime_using_miller_rabin(repetition);
         }
 
         let a_list = [2_u64, 7, 61, 325, 9375, 28178, 450775, 9780504, 1795265022];
@@ -13450,7 +13454,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
         let mut i = 0;
         while i < common
         {
-            if !self.test_Miller_Rabin(&Self::from_uint(a_list[i]))
+            if !self.test_miller_rabin(&Self::from_uint(a_list[i]))
                 { return false; }
             i += 1;
         }
@@ -13458,7 +13462,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
         let mut a = a_list[len-1] + 1;
         for _ in i..repetition
         {
-            if !self.test_Miller_Rabin(&Self::from_uint(a))
+            if !self.test_miller_rabin(&Self::from_uint(a))
                 { return false; }
             a += 1;
         }
@@ -13466,7 +13470,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
      }
  
      /// Performs Millar Rabin method with a number less than `self`.
-     fn test_Miller_Rabin(&self, a: &Self) -> bool
+     fn test_miller_rabin(&self, a: &Self) -> bool
      {
          let self_minus_one = self.wrapping_sub_uint(1_u8);
          let mut d = self_minus_one.clone();
@@ -13548,9 +13552,9 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
             + BitXor<Output=U> + BitXorAssign + Not<Output=U>
             + PartialEq + PartialOrd
     {
-        let TSIZE_IN_BITS = T::size_in_bits();
-        let chunk_num = n.wrapping_div(U::usize_as_SmallUInt(TSIZE_IN_BITS)).into_usize();
-        let piece_num = n.wrapping_rem(U::usize_as_SmallUInt(TSIZE_IN_BITS)).into_usize();
+        let size_t_bits = T::size_in_bits();
+        let chunk_num = n.wrapping_div(U::usize_as_smalluint(size_t_bits)).into_usize();
+        let piece_num = n.wrapping_rem(U::usize_as_smalluint(size_t_bits)).into_usize();
         let zero = T::zero();
         if chunk_num > 0
         {
@@ -13575,8 +13579,8 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
         let mut carry = zero;
         for idx in chunk_num..N
         {
-            num = (self.get_num_(idx) << T::usize_as_SmallUInt(piece_num)) | carry;
-            carry = self.get_num_(idx) >> T::usize_as_SmallUInt(TSIZE_IN_BITS - piece_num);
+            num = (self.get_num_(idx) << T::usize_as_smalluint(piece_num)) | carry;
+            carry = self.get_num_(idx) >> T::usize_as_smalluint(size_t_bits - piece_num);
             self.set_num_(idx, num);
         }
         if !carry.is_zero()
@@ -13728,9 +13732,9 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
             + BitXor<Output=U> + BitXorAssign + Not<Output=U>
             + PartialEq + PartialOrd
     {
-        let TSIZE_IN_BITS = T::size_in_bits();
-        let chunk_num = (n / U::usize_as_SmallUInt(TSIZE_IN_BITS)).into_usize();
-        let piece_num = (n % U::usize_as_SmallUInt(TSIZE_IN_BITS)).into_usize();
+        let size_t_bits = T::size_in_bits();
+        let chunk_num = (n / U::usize_as_smalluint(size_t_bits)).into_usize();
+        let piece_num = (n % U::usize_as_smalluint(size_t_bits)).into_usize();
         let zero = T::zero();
         if chunk_num > 0
         {
@@ -13748,7 +13752,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
         }
         if piece_num == 0
             { return; }
-        if (self.get_num_(0) << T::usize_as_SmallUInt(TSIZE_IN_BITS - piece_num)) != zero
+        if (self.get_num_(0) << T::usize_as_smalluint(size_t_bits - piece_num)) != zero
             { self.set_underflow(); }
 
         let mut num: T;
@@ -13756,8 +13760,8 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
         let mut idx = N - 1 - chunk_num;
         loop
         {
-            num = (self.get_num_(idx) >> T::usize_as_SmallUInt(piece_num)) | carry;
-            carry = self.get_num_(idx) << T::usize_as_SmallUInt(TSIZE_IN_BITS - piece_num);
+            num = (self.get_num_(idx) >> T::usize_as_smalluint(piece_num)) | carry;
+            carry = self.get_num_(idx) << T::usize_as_smalluint(size_t_bits - piece_num);
             self.set_num_(idx, num);
             if idx == 0
                 { break; }
@@ -13976,8 +13980,8 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// 
     /// define_utypes_with!(u128);
     /// 
-    /// let a = u256::from_str_radix("11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101", 2).unwrap();
-    /// let b = u256::from_str_radix("11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000", 2).unwrap();
+    /// let a = U256::from_str_radix("11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101", 2).unwrap();
+    /// let b = U256::from_str_radix("11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000", 2).unwrap();
     /// let c = a.and(&b);
     /// 
     /// println!("a = {}", a.to_string_with_radix(2).unwrap());
@@ -13994,8 +13998,8 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// 
     /// define_utypes_with!(u128);
     /// 
-    /// let a = u256::from_str_radix("11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101", 2).unwrap();
-    /// let b = u256::zero();
+    /// let a = U256::from_str_radix("11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101", 2).unwrap();
+    /// let b = U256::zero();
     /// let c = a.and(&b);
     /// 
     /// println!("a = {}", a.to_string_with_radix(2).unwrap());
@@ -14022,13 +14026,13 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// 
     /// define_utypes_with!(u128);
     /// 
-    /// let mut a = u256::from_str_radix("11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101", 2).unwrap();
-    /// let b = u256::from_str_radix("11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000", 2).unwrap();
+    /// let mut a = U256::from_str_radix("11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101", 2).unwrap();
+    /// let b = U256::from_str_radix("11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000", 2).unwrap();
     /// a.and_assign(&b);
     /// 
     /// println!("a = {}", a.to_string_with_radix(2).unwrap());
     /// 
-    /// assert_eq!(a, u256::from_str_radix("1111000000000000110000000000001110001000000100011010101000000000111100000000000011000000000000111000100000010001101010100000000011110000000000001100000000000011100010000001000110101010000000001111000000000000110000000000001110001000000100011010101000000000", 2).unwrap());
+    /// assert_eq!(a, U256::from_str_radix("1111000000000000110000000000001110001000000100011010101000000000111100000000000011000000000000111000100000010001101010100000000011110000000000001100000000000011100010000001000110101010000000001111000000000000110000000000001110001000000100011010101000000000", 2).unwrap());
     /// ```
     /// 
     /// # Example 2
@@ -14038,13 +14042,13 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// 
     /// define_utypes_with!(u128);
     /// 
-    /// let mut a = u256::from_str_radix("11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101", 2).unwrap();
-    /// let b = u256::zero();
+    /// let mut a = U256::from_str_radix("11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101", 2).unwrap();
+    /// let b = U256::zero();
     /// a.and_assign(&b);
     /// 
     /// println!("a = {}", a.to_string_with_radix(2).unwrap());
     /// 
-    /// assert_eq!(a, u256::zero());
+    /// assert_eq!(a, U256::zero());
     /// ```
     pub fn and_assign(&mut self, rhs: &Self)
     {
@@ -14068,8 +14072,8 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// 
     /// define_utypes_with!(u128);
     /// 
-    /// let a = u256::from_str_radix("11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101", 2).unwrap();
-    /// let b = u256::from_str_radix("11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000", 2).unwrap();
+    /// let a = U256::from_str_radix("11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101", 2).unwrap();
+    /// let b = U256::from_str_radix("11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000", 2).unwrap();
     /// let c = a.or(&b);
     /// 
     /// println!("a = {}", a.to_string_with_radix(2).unwrap());
@@ -14086,15 +14090,15 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// 
     /// define_utypes_with!(u128);
     /// 
-    /// let a = u256::from_str_radix("11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101", 2).unwrap();
-    /// let b = u256::max();
+    /// let a = U256::from_str_radix("11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101", 2).unwrap();
+    /// let b = U256::max();
     /// let c = a.or(&b);
     /// 
     /// println!("a = {}", a.to_string_with_radix(2).unwrap());
     /// println!("b = {}", b.to_string_with_radix(2).unwrap());
     /// println!("a | b = {}", c.to_string_with_radix(2).unwrap());
     /// 
-    /// assert_eq!(c, u256::max());
+    /// assert_eq!(c, U256::max());
     /// ```
     pub fn or(&self, rhs: &Self) -> Self
     {
@@ -14114,13 +14118,13 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// 
     /// define_utypes_with!(u128);
     /// 
-    /// let mut a = u256::from_str_radix("11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101", 2).unwrap();
-    /// let b = u256::from_str_radix("11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000", 2).unwrap();
+    /// let mut a = U256::from_str_radix("11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101", 2).unwrap();
+    /// let b = U256::from_str_radix("11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000", 2).unwrap();
     /// a.or_assign(&b);
     /// 
     /// println!("a = {}", a.to_string_with_radix(2).unwrap());
     /// 
-    /// assert_eq!(a, u256::from_str_radix("1111111100001111111111000011111111101110011101111111111101010101111111110000111111111100001111111110111001110111111111110101010111111111000011111111110000111111111011100111011111111111010101011111111100001111111111000011111111101110011101111111111101010101", 2).unwrap());
+    /// assert_eq!(a, U256::from_str_radix("1111111100001111111111000011111111101110011101111111111101010101111111110000111111111100001111111110111001110111111111110101010111111111000011111111110000111111111011100111011111111111010101011111111100001111111111000011111111101110011101111111111101010101", 2).unwrap());
     /// ```
     /// 
     /// # Example 2
@@ -14130,13 +14134,13 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// 
     /// define_utypes_with!(u128);
     /// 
-    /// let mut a = u256::from_str_radix("11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101", 2).unwrap();
-    /// let b = u256::max();
+    /// let mut a = U256::from_str_radix("11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101", 2).unwrap();
+    /// let b = U256::max();
     /// a.or_assign(&b);
     /// 
     /// println!("a = {}", a.to_string_with_radix(2).unwrap());
     /// 
-    /// assert_eq!(a, u256::max());
+    /// assert_eq!(a, U256::max());
     /// ```
     pub fn or_assign(&mut self, rhs: &Self)
     {
@@ -14161,8 +14165,8 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// 
     /// define_utypes_with!(u128);
     /// 
-    /// let a = u256::from_str_radix("11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101", 2).unwrap();
-    /// let b = u256::from_str_radix("11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000", 2).unwrap();
+    /// let a = U256::from_str_radix("11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101", 2).unwrap();
+    /// let b = U256::from_str_radix("11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000", 2).unwrap();
     /// let c = a.xor(&b);
     /// 
     /// println!("a = {}", a.to_string_with_radix(2).unwrap());
@@ -14179,15 +14183,15 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// 
     /// define_utypes_with!(u128);
     /// 
-    /// let a = u256::from_str_radix("11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101", 2).unwrap();
-    /// let b = u256::max();
+    /// let a = U256::from_str_radix("11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101", 2).unwrap();
+    /// let b = U256::max();
     /// let c = a.xor(&b);
     /// 
     /// println!("a = {}", a.to_string_with_radix(2).unwrap());
     /// println!("b = {}", b.to_string_with_radix(2).unwrap());
     /// println!("a ^ b = {}", c.to_string_with_radix(2).unwrap());
     /// 
-    /// assert_eq!(c, u256::max());
+    /// assert_eq!(c, U256::max());
     /// ```
     pub fn xor(&self, rhs: &Self) -> Self
     {
@@ -14207,13 +14211,13 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// 
     /// define_utypes_with!(u128);
     /// 
-    /// let mut a = u256::from_str_radix("11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101", 2).unwrap();
-    /// let b = u256::from_str_radix("11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000", 2).unwrap();
+    /// let mut a = U256::from_str_radix("11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101", 2).unwrap();
+    /// let b = U256::from_str_radix("11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000", 2).unwrap();
     /// a.xor_assign(&b);
     /// 
     /// println!("a = {}", a.to_string_with_radix(2).unwrap());
     /// 
-    /// assert_eq!(a, u256::from_str_radix("1111111100001111111111000011111111101110011101111111111101010101111111110000111111111100001111111110111001110111111111110101010111111111000011111111110000111111111011100111011111111111010101011111111100001111111111000011111111101110011101111111111101010101", 2).unwrap());
+    /// assert_eq!(a, U256::from_str_radix("1111111100001111111111000011111111101110011101111111111101010101111111110000111111111100001111111110111001110111111111110101010111111111000011111111110000111111111011100111011111111111010101011111111100001111111111000011111111101110011101111111111101010101", 2).unwrap());
     /// ```
     /// 
     /// # Example 2
@@ -14223,13 +14227,13 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// 
     /// define_utypes_with!(u128);
     /// 
-    /// let mut a = u256::from_str_radix("11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101", 2).unwrap();
-    /// let b = u256::max();
+    /// let mut a = U256::from_str_radix("11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101", 2).unwrap();
+    /// let b = U256::max();
     /// a.xor_assign(&b);
     /// 
     /// println!("a = {}", a.to_string_with_radix(2).unwrap());
     /// 
-    /// assert_eq!(a, u256::max());
+    /// assert_eq!(a, U256::max());
     /// ```
     pub fn xor_assign(&mut self, rhs: &Self)
     {
@@ -14429,10 +14433,10 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
         {
             match U::size_in_bytes()
             {
-                2 => { U::u16_as_SmallUInt(self.into_u16()) },
-                4 => { U::u32_as_SmallUInt(self.into_u32()) },
-                8 => { U::u64_as_SmallUInt(self.into_u64()) },
-                _ => { U::u128_as_SmallUInt(self.into_u128()) },
+                2 => { U::u16_as_smalluint(self.into_u16()) },
+                4 => { U::u32_as_smalluint(self.into_u32()) },
+                8 => { U::u64_as_smalluint(self.into_u64()) },
+                _ => { U::u128_as_smalluint(self.into_u128()) },
             }
         }
     }
@@ -14922,7 +14926,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
             let mut remainder;
             loop
             {
-                (dividend, remainder) = dividend.divide_fully_uint(T::usize_as_SmallUInt(radix));
+                (dividend, remainder) = dividend.divide_fully_uint(T::usize_as_smalluint(radix));
                 let r = remainder.into_u32();
                 let c = if r < 10     { ('0' as u32 + r) as u8 as char }
                         else if r < 10 + 26 { ('A' as u32 - 10 + r) as u8 as char }
@@ -14996,7 +15000,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
         let mut remainder;
         loop
         {
-            (dividend, remainder) = dividend.divide_fully_uint(T::usize_as_SmallUInt(radix));
+            (dividend, remainder) = dividend.divide_fully_uint(T::usize_as_smalluint(radix));
             let r = remainder.into_u32();
             let c = if r < 10     { ('0' as u32 + r) as u8 as char }
                     else if r < 10 + 26 { ('A' as u32 - 10 + r) as u8 as char }

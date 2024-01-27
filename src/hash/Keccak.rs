@@ -6,9 +6,10 @@
 // This file may not be copied, modified, or distributed
 // except according to those terms.
 
-
-#![warn(missing_docs)]
-#![warn(missing_doc_code_examples)]
+#![allow(missing_docs)]
+#![allow(missing_doc_code_examples)]
+// #![warn(missing_docs)]
+// #![warn(missing_doc_code_examples)]
 
 
 use std::ptr::copy_nonoverlapping;

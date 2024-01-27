@@ -1,4 +1,4 @@
-// Copyright 2023, 2024 PARK Youngho.
+// Copyright 2023, 2024 PARK Youngho.hort_union_
 //
 // Licensed under the Apache License, Version 2.0 <LICENSE-APACHE or
 // https://www.apache.org/licenses/LICENSE-2.0> or the MIT license
@@ -8,42 +8,41 @@
 
 #![allow(missing_docs)]
 #![allow(missing_doc_code_examples)]
+#[allow(non_camel_case_types)]
 
 
-use cryptocol::number::*;
-// use rand_distr::num_traits::PrimInt; //{u256, BigInteger, HugeInteger};
-
-
-fn main()
+pub fn main()
 {
-    ShortUnion___main();
-    IntUnion___main();
-    LongUnion___main();
-    LongerUnion___main();
-    SizeUnion___main();
+    short_union_main();
+    int_union_main();
+    long_union_main();
+    longer_union_main();
+    size_union_main();
 
-    ShortUnion_debug_fmt___main();
-    IntUnion_debug_fmt___main();
-    LongUnion_debug_fmt___main();
-    LongerUnion_debug_fmt___main();
-    SizeUnion_debug_fmt___main();
+    short_union_debug_fmt_main();
+    int_union_debug_fmt_main();
+    long_union_debug_fmt_main();
+    longer_union_debug_fmt_main();
+    size_union_debug_fmt_main();
 
-    ShortUnion_get_ubyte___main();
-    ShortUnion_get_sbyte___main();
-    ShortUnion_set_ubyte___main();
-    ShortUnion_set_sbyte___main();
+    short_union_get_ubyte_main();
+    short_union_get_sbyte_main();
+    short_union_set_ubyte_main();
+    short_union_set_sbyte_main();
 
-    LongerUnion_get_ubyte___main();
-    LongerUnion_get_sbyte___main();
-    LongerUnion_set_ubyte___main();
-    LongerUnion_set_sbyte___main();
+    longer_union_get_ubyte_main();
+    longer_union_get_sbyte_main();
+    longer_union_set_ubyte_main();
+    longer_union_set_sbyte_main();
 }
 
 
 
-fn ShortUnion___main()
+fn short_union_main()
 {
-    println!("ShortUnion___main()");
+    println!("short_union_main()");
+    use cryptocol::number::*;
+    // use rand_distr::num_traits::PrimInt; //{u256, BigInteger, HugeInteger};
     let a = ShortUnion::new_with(55468_u16);
     println!("a.this = {}, {}", unsafe { a.this }, a.get());
     println!("a.that = {}, {}", unsafe { a.that }, a.get_signed());
@@ -85,9 +84,10 @@ fn ShortUnion___main()
     println!("--------------------------------------");
 }
 
-fn IntUnion___main()
+fn int_union_main()
 {
-    println!("IntUnion___main()");
+    println!("int_union_main()");
+    use cryptocol::number::IntUnion;
     let a = IntUnion::new_with_signed(-454688546_i32);
     println!("a.this = {}, {}", unsafe { a.this }, a.get());
     println!("a.that = {}, {}", unsafe { a.that }, a.get_signed());
@@ -149,9 +149,10 @@ fn IntUnion___main()
 }
 
 
-fn LongUnion___main()
+fn long_union_main()
 {
-    println!("LongUnion___main()");
+    println!("long_union_main()");
+    use cryptocol::number::LongUnion;
     let a = LongUnion::new_with_signed(-1234567890987645_i64);
     println!("a.this = {}, {}", unsafe { a.this }, a.get());
     println!("a.that = {}, {}", unsafe { a.that }, a.get_signed());
@@ -241,9 +242,10 @@ fn LongUnion___main()
 }
 
 
-fn LongerUnion___main()
+fn longer_union_main()
 {
-    println!("LongerUnion___main()");
+    println!("longer_union_main()");
+    use cryptocol::number::LongerUnion;
     let a = LongerUnion::new_with_signed(-1234567890987654321012345678987654321_i128);
     println!("a.this = {}, {}", unsafe { a.this }, a.get());
     println!("a.that = {}, {}", unsafe { a.that }, a.get_signed());
@@ -376,9 +378,10 @@ fn LongerUnion___main()
 }
 
 
-fn SizeUnion___main()
+fn size_union_main()
 {
-    println!("SizeUnion___main()");
+    println!("size_union_main()");
+    use cryptocol::number::SizeUnion;
     #[cfg(target_pointer_width = "128")]
     let a = SizeUnion::new_with_signed(-1234567890987654321012345678987654321_isize);
     #[cfg(target_pointer_width = "64")]
@@ -508,9 +511,10 @@ fn SizeUnion___main()
 }
 
 
-fn ShortUnion_debug_fmt___main()
+fn short_union_debug_fmt_main()
 {
-    println!("ShortUnion___main");
+    println!("short_union_main");
+    use cryptocol::number::ShortUnion;
     let a_short = ShortUnion::new_with_signed(-12345_i16);
     println!("a_short = {:?}", a_short);
     println!("a_short = {:#?}", a_short);
@@ -532,9 +536,10 @@ fn ShortUnion_debug_fmt___main()
     println!("--------------------------------------");
 }
 
-fn IntUnion_debug_fmt___main()
+fn int_union_debug_fmt_main()
 {
-    println!("IntUnion___main");
+    println!("int_union_main");
+    use cryptocol::number::IntUnion;
     let a_int = IntUnion::new_with_signed(-1234567890_i32);
     println!("a_int = {:?}", a_int);
     println!("a_int = {:#?}", a_int);
@@ -568,9 +573,10 @@ fn IntUnion_debug_fmt___main()
     println!("--------------------------------------");
 }
 
-fn LongUnion_debug_fmt___main()
+fn long_union_debug_fmt_main()
 {
-    println!("LongUnion___main");
+    println!("long_union_main");
+    use cryptocol::number::LongUnion;
     let a_long = LongUnion::new_with_signed(-1234567890123456789_i64);
     println!("a_long = {:?}", a_long);
     println!("a_long = {:#?}", a_long);
@@ -626,9 +632,10 @@ fn LongUnion_debug_fmt___main()
     println!("--------------------------------------");
 }
 
-fn LongerUnion_debug_fmt___main()
+fn longer_union_debug_fmt_main()
 {
-    println!("LongerUnion___main");
+    println!("longer_union_main");
+    use cryptocol::number::LongerUnion;
     let a_longer = LongerUnion::new_with_signed(-123456789012345678901234567890123456789_i128);
     println!("a_long = {:?}", a_longer);
     println!("a_long = {:#?}", a_longer);
@@ -727,9 +734,10 @@ fn LongerUnion_debug_fmt___main()
 }
 
 #[cfg(target_pointer_width = "64")]
-fn SizeUnion_debug_fmt___main()
+fn size_union_debug_fmt_main()
 {
-    println!("SizeUnion___main");
+    println!("size_union_main");
+    use cryptocol::number::SizeUnion;
     let a_size = SizeUnion::new_with_signed(-1234567890123456789_isize);
     println!("a_size = {:?}", a_size);
     println!("a_size = {:#?}", a_size);
@@ -786,9 +794,10 @@ fn SizeUnion_debug_fmt___main()
 }
 
 
-fn ShortUnion_get_ubyte___main()
+fn short_union_get_ubyte_main()
 {
-    println!("ShortUnion_get_ubyte___main");
+    println!("short_union_get_ubyte_main");
+    use cryptocol::number::ShortUnion;
     let a_short = ShortUnion::new_with(2895_u16);
     let b_short_u8 = a_short.get_ubyte_(1);
     println!("a_short.get_ubyte_(1) = {}", b_short_u8);
@@ -817,9 +826,10 @@ fn ShortUnion_get_ubyte___main()
 }
 
 
-fn ShortUnion_get_sbyte___main()
+fn short_union_get_sbyte_main()
 {
-    println!("ShortUnion_get_sbyte___main");
+    println!("short_union_get_sbyte_main");
+    use cryptocol::number::ShortUnion;
     let a_short = ShortUnion::new_with(2895_u16);
     let b_short_i8 = a_short.get_sbyte_(1);
     println!("a_short.get_sbyte_(1) = {}", b_short_i8);
@@ -848,9 +858,10 @@ fn ShortUnion_get_sbyte___main()
 }
 
 
-fn ShortUnion_set_ubyte___main()
+fn short_union_set_ubyte_main()
 {
-    println!("ShortUnion_set_ubyte___main");
+    println!("short_union_set_ubyte_main");
+    use cryptocol::number::ShortUnion;
     let mut a_short = ShortUnion::new_with(2895_u16);
     let mut b_short_u8 = a_short.get_ubyte_(1);
     println!("a_short.get_ubyte_(1) = {}", b_short_u8);
@@ -891,9 +902,10 @@ fn ShortUnion_set_ubyte___main()
 }
 
 
-fn ShortUnion_set_sbyte___main()
+fn short_union_set_sbyte_main()
 {
-    println!("ShortUnion_set_sbyte___main");
+    println!("short_union_set_sbyte_main");
+    use cryptocol::number::ShortUnion;
     let mut a_short = ShortUnion::new_with_signed(79_i16);
     let mut b_short_i8 = a_short.get_sbyte_(1);
     println!("a_short.get_sbyte_(1) = {}", b_short_i8);
@@ -935,9 +947,10 @@ fn ShortUnion_set_sbyte___main()
 }
 
 
-fn LongerUnion_get_ubyte___main()
+fn longer_union_get_ubyte_main()
 {
-    println!("LongerUnion_get_sbyte___main");
+    println!("longer_union_get_sbyte_main");
+    use cryptocol::number::LongerUnion;
     let a_longer = LongerUnion::new_with(339047799029950809142362261752780557135_u128);
     let b_longer_u8 = a_longer.get_ubyte_(3);
     println!("a_longer.get_ubyte_(3) = {}", b_longer_u8);
@@ -965,9 +978,10 @@ fn LongerUnion_get_ubyte___main()
     println!("--------------------------------------");
 }
 
-fn LongerUnion_get_sbyte___main()
+fn longer_union_get_sbyte_main()
 {
-    println!("LongerUnion_get_sbyte___main");
+    println!("longer_union_get_sbyte_main");
+    use cryptocol::number::LongerUnion;
     let a_longer = LongerUnion::new_with_signed(-123456789012345678901234567890123456789_i128);
     let b_longer_i8 = a_longer.get_sbyte_(3);
     println!("a_longer.get_sbyte_(3) = {}", b_longer_i8);
@@ -997,9 +1011,10 @@ fn LongerUnion_get_sbyte___main()
 }
 
 
-fn LongerUnion_set_ubyte___main()
+fn longer_union_set_ubyte_main()
 {
-    println!("LongerUnion_set_ubyte___main");
+    println!("longer_union_set_ubyte_main");
+    use cryptocol::number::LongerUnion;
     let mut a_longer = LongerUnion::new_with(339047799029950809142362261752780557135_u128);
     let mut b_longer_u8 = a_longer.get_ubyte_(3);
     println!("a_longer.get_ubyte_(3) = {}", b_longer_u8);
@@ -1041,9 +1056,10 @@ fn LongerUnion_set_ubyte___main()
 }
 
 
-fn LongerUnion_set_sbyte___main()
+fn longer_union_set_sbyte_main()
 {
-    println!("LongerUnion_set_sbyte___main");
+    println!("longer_union_set_sbyte_main");
+    use cryptocol::number::LongerUnion;
     let mut a_longer = LongerUnion::new_with_signed(-123456789012345678901234567890123456789_i128);
     let mut b_longer_i8 = a_longer.get_sbyte_(3);
     println!("a_longer.get_sbyte_(3) = {}", b_longer_i8);

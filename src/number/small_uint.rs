@@ -10,8 +10,10 @@
 //! data types used in a lot of modules of the crate Cryptocol.
 //! __The trait SmallUInt is meaningful when you use it in generic context.__
 
-#![warn(missing_docs)]
-#![warn(missing_doc_code_examples)]
+// #![warn(missing_docs)]
+// #![warn(missing_doc_code_examples)]
+#![allow(missing_docs)]
+#![allow(missing_doc_code_examples)]
 
 use std::mem::{ size_of, size_of_val };
 
@@ -4849,12 +4851,13 @@ pub trait SmallUInt: Copy + Clone + Sized //+ Display + Debug + ToString
     fn sqrt(self) -> Self;
     fn root(self, exp: Self) -> Self;
 
+    // fn test_miller_rabin(self, a: Self) -> bool
     /// Tests a `SmallUInt`-type object to find whether or not it is a
     /// prime number.
-    /// [Read more in detail](trait@SmallUInt#tymethod.is_prime_using_Miller_Rabin)
-    fn test_Miller_Rabin(self, a: Self) -> bool;
+    /// [Read more in detail](trait@SmallUInt#tymethod.is_prime_using_miller_rabin)
+    fn test_miller_rabin(self, a: Self) -> bool;
 
-    // fn is_prime_using_Miller_Rabin(&self, repetition: usize) -> bool
+    // fn is_prime_using_miller_rabin(&self, repetition: usize) -> bool
     /// Tests a `BigUInt<T, N>`-type object to find whether or not it is a
     /// primne number.
     /// 
@@ -4887,7 +4890,7 @@ pub trait SmallUInt: Copy + Clone + Sized //+ Display + Debug + ToString
     /// define_utypes_with!(u16);
     /// 
     /// let num = u1024::random();
-    /// let yes = num.is_prime_using_Miller_Rabin(5);
+    /// let yes = num.is_prime_using_miller_rabin(5);
     /// println!("Is {} a prime number? => {}", num, yes);
     /// if yes  { assert!(yes); }
     /// else    { assert!(!yes); }
@@ -4899,8 +4902,8 @@ pub trait SmallUInt: Copy + Clone + Sized //+ Display + Debug + ToString
     /// for Big-endian CPUs with your own full responsibility.
     /// Tests a `SmallUInt`-type object to find whether or not it is a
     /// prime number.
-    /// [Read more in detail](trait@SmallUInt#tymethod.is_prime_using_Miller_Rabin)
-    fn is_prime_using_Miller_Rabin(self, repetition: usize) -> bool;
+    /// [Read more in detail](trait@SmallUInt#tymethod.is_prime_using_miller_rabin)
+    fn is_prime_using_miller_rabin(self, repetition: usize) -> bool;
 
     fn reverse_bits(self) -> Self;
     fn reverse_bits_assign(&mut self);
@@ -4937,13 +4940,13 @@ pub trait SmallUInt: Copy + Clone + Sized //+ Display + Debug + ToString
     fn one() -> Self;
     fn max() -> Self;
     fn min() -> Self;
-    fn u128_as_SmallUInt(n: u128) -> Self;
-    fn u64_as_SmallUInt(n: u64) -> Self;
-    fn u32_as_SmallUInt(n: u32) -> Self;
-    fn u16_as_SmallUInt(n: u16) -> Self;
-    fn u8_as_SmallUInt(n: u8) -> Self;
-    fn usize_as_SmallUInt(n: usize) -> Self;
-    fn bool_as_SmallUInt(n: bool) -> Self;
+    fn u128_as_smalluint(n: u128) -> Self;
+    fn u64_as_smalluint(n: u64) -> Self;
+    fn u32_as_smalluint(n: u32) -> Self;
+    fn u16_as_smalluint(n: u16) -> Self;
+    fn u8_as_smalluint(n: u8) -> Self;
+    fn usize_as_smalluint(n: usize) -> Self;
+    fn bool_as_smalluint(n: bool) -> Self;
     fn num<T: SmallUInt>(n: T) -> Self;
 
     // pub fn set_zero(&mut self)
@@ -5160,7 +5163,7 @@ pub trait SmallUInt: Copy + Clone + Sized //+ Display + Debug + ToString
     /// for Big-endian CPUs with your own full responsibility.
     fn is_max(&self) -> bool;
 
-    // pub fn set_MSB(&mut self)
+    // pub fn set_msb(&mut self)
     /// Sets the MSB (Most Significant Bit) of `BigUInt`-type number with `1`.
     /// 
     /// # Examples
@@ -5170,7 +5173,7 @@ pub trait SmallUInt: Copy + Clone + Sized //+ Display + Debug + ToString
     /// 
     /// let mut a = u256::new();
     /// println!("a = {}", a);
-    /// a.set_MSB();
+    /// a.set_msb();
     /// println!("a = {}", a);
     /// assert_eq!(a.to_string_with_radix_and_stride(2, 8).unwrap(), "10000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000");
     /// ```
@@ -5179,9 +5182,9 @@ pub trait SmallUInt: Copy + Clone + Sized //+ Display + Debug + ToString
     /// It is just experimental for Big Endian CPUs. So, you are not encouraged
     /// to use it for Big Endian CPUs for serious purpose. Only use this crate
     /// for Big-endian CPUs with your own full responsibility.
-    fn set_MSB(&mut self);
+    fn set_msb(&mut self);
 
-    // pub fn set_LSB(&mut self)
+    // pub fn set_lsb(&mut self)
     /// Sets the LSB (Least Significant Bit) of `BigUInt`-type number with `1`.
     /// 
     /// # Examples
@@ -5191,7 +5194,7 @@ pub trait SmallUInt: Copy + Clone + Sized //+ Display + Debug + ToString
     /// 
     /// let mut a = u256::new();
     /// println!("a = {}", a);
-    /// a.set_LSB();
+    /// a.set_lsb();
     /// println!("a = {}", a);
     /// assert_eq!(a.to_string_with_radix_and_stride(2, 8).unwrap(), "1");
     /// ```
@@ -5200,7 +5203,7 @@ pub trait SmallUInt: Copy + Clone + Sized //+ Display + Debug + ToString
     /// It is just experimental for Big Endian CPUs. So, you are not encouraged
     /// to use it for Big Endian CPUs for serious purpose. Only use this crate
     /// for Big-endian CPUs with your own full responsibility.
-    fn set_LSB(&mut self);
+    fn set_lsb(&mut self);
 
     // fn generate_check_bits(bit_pos: usize) -> Option<Self>
     /// Constucts a new `BigUInt<T, N>` which has the value zero and sets only
@@ -5292,7 +5295,7 @@ pub trait SmallUInt: Copy + Clone + Sized //+ Display + Debug + ToString
 
     fn is_odd(self) -> bool;
     fn is_even(self) -> bool;
-    fn is_MSB_set(self) -> bool;
+    fn is_msb_set(self) -> bool;
     fn is_bit_set(self, bit_pos: usize) -> Option<bool>;
     fn is_bit_set_(self, bit_pos: usize) -> bool;
 
@@ -5444,8 +5447,8 @@ macro_rules! SmallUInt_methods_for_uint_impl {
                 while bit_check != 0
                 {
                     high <<= 1;
-                    if low.is_MSB_set()
-                        { high.set_LSB(); }
+                    if low.is_msb_set()
+                        { high.set_lsb(); }
                     low <<= 1;
                     if bit_check & rhs != 0
                     {
@@ -5698,7 +5701,7 @@ macro_rules! SmallUInt_methods_for_uint_impl {
                 }
             }
 
-            fn is_prime_using_Miller_Rabin(self, repetition: usize) -> bool
+            fn is_prime_using_miller_rabin(self, repetition: usize) -> bool
             {
                 if self.is_zero_or_one() || self.is_even()
                     { return false; }
@@ -5724,7 +5727,7 @@ macro_rules! SmallUInt_methods_for_uint_impl {
                     let a_list = [2_u8, 7, 61];
                     for a in a_list
                     {
-                        if !self.test_Miller_Rabin(a as Self)
+                        if !self.test_miller_rabin(a as Self)
                             { return false; }
                     }
                 }
@@ -5733,7 +5736,7 @@ macro_rules! SmallUInt_methods_for_uint_impl {
                     let a_list = [2_u64, 325, 9375, 28178, 450775, 9780504, 1795265022];
                     for a in a_list
                     {
-                        if !self.test_Miller_Rabin(a as Self)
+                        if !self.test_miller_rabin(a as Self)
                             { return false; }
                     }
                 }
@@ -5744,7 +5747,7 @@ macro_rules! SmallUInt_methods_for_uint_impl {
                 let mut i = 0;
                 while i < common
                 {
-                    if !self.test_Miller_Rabin(a_list[i] as Self)
+                    if !self.test_miller_rabin(a_list[i] as Self)
                         { return false; }
                     i += 1;
                 }
@@ -5752,7 +5755,7 @@ macro_rules! SmallUInt_methods_for_uint_impl {
                 let mut a = a_list[len-1] + 1;
                 for _ in i..repetition
                 {
-                    if !self.test_Miller_Rabin(a as Self)
+                    if !self.test_miller_rabin(a as Self)
                         { return false; }
                     a += 1;
                 }
@@ -5760,8 +5763,8 @@ macro_rules! SmallUInt_methods_for_uint_impl {
             }
 
             /// Performs Millar Rabin method with a number less than `self`.
-            /// [Read more in detail](trait@SmallUInt#tymethod.test_Miller_Rabin)
-            fn test_Miller_Rabin(self, a: Self) -> bool
+            /// [Read more in detail](trait@SmallUInt#tymethod.test_miller_rabin)
+            fn test_miller_rabin(self, a: Self) -> bool
             {
                 let self_minus_one = self.wrapping_sub(Self::one());
                 let mut d = self_minus_one;
@@ -5810,24 +5813,24 @@ macro_rules! SmallUInt_methods_for_uint_impl {
             #[inline] fn one() -> Self              { 1 }
             #[inline] fn max() -> Self              { Self::MAX }
             #[inline] fn min() -> Self              { Self::MIN }
-            #[inline] fn u128_as_SmallUInt(n: u128) -> Self  { n as Self }
-            #[inline] fn u64_as_SmallUInt(n: u64) -> Self    { n as Self }
-            #[inline] fn u32_as_SmallUInt(n: u32) -> Self    { n as Self }
-            #[inline] fn u16_as_SmallUInt(n: u16) -> Self    { n as Self }
-            #[inline] fn u8_as_SmallUInt(n: u8) -> Self      { n as Self }
-            #[inline] fn usize_as_SmallUInt(n: usize) -> Self    { n as Self }
-            #[inline] fn bool_as_SmallUInt(n: bool) -> Self    { n as Self }
+            #[inline] fn u128_as_smalluint(n: u128) -> Self  { n as Self }
+            #[inline] fn u64_as_smalluint(n: u64) -> Self    { n as Self }
+            #[inline] fn u32_as_smalluint(n: u32) -> Self    { n as Self }
+            #[inline] fn u16_as_smalluint(n: u16) -> Self    { n as Self }
+            #[inline] fn u8_as_smalluint(n: u8) -> Self      { n as Self }
+            #[inline] fn usize_as_smalluint(n: usize) -> Self    { n as Self }
+            #[inline] fn bool_as_smalluint(n: bool) -> Self    { n as Self }
 
             #[inline]
             fn num<T: SmallUInt>(n: T) -> Self
             {
                 match size_of::<T>()
                 {
-                    1 => { return Self::u8_as_SmallUInt(n.into_u8()); },
-                    2 => { return Self::u16_as_SmallUInt(n.into_u16()); },
-                    4 => { return Self::u32_as_SmallUInt(n.into_u32()); },
-                    8 => { return Self::u64_as_SmallUInt(n.into_u64()); },
-                    _ => { return Self::u128_as_SmallUInt(n.into_u128()); },
+                    1 => { return Self::u8_as_smalluint(n.into_u8()); },
+                    2 => { return Self::u16_as_smalluint(n.into_u16()); },
+                    4 => { return Self::u32_as_smalluint(n.into_u32()); },
+                    8 => { return Self::u64_as_smalluint(n.into_u64()); },
+                    _ => { return Self::u128_as_smalluint(n.into_u128()); },
                 }
             }
 
@@ -5865,13 +5868,13 @@ macro_rules! SmallUInt_methods_for_uint_impl {
 
             /// Sets the MSB (Most Significant Bit) of `SmallUInt`-type
             /// number with `1`.
-            /// [Read more in detail](trait@SmallUInt#tymethod.set_MSB)
-            #[inline] fn set_MSB(&mut self)     { *self |= !(Self::MAX >> 1); }
+            /// [Read more in detail](trait@SmallUInt#tymethod.set_msb)
+            #[inline] fn set_msb(&mut self)     { *self |= !(Self::MAX >> 1); }
 
             /// Sets the LSB (Least Significant Bit) of `SmallUInt`-type
             /// number with `1`.
-            /// [Read more in detail](trait@SmallUInt#tymethod.set_LSB)
-            #[inline] fn set_LSB(&mut self)     { *self |= 1; }
+            /// [Read more in detail](trait@SmallUInt#tymethod.set_lsb)
+            #[inline] fn set_lsb(&mut self)     { *self |= 1; }
     /*
             /// Constucts a new `SmallUInt` which has the value zero and sets only
             /// the bit specified by the argument bit_pos to be 1.
@@ -5885,7 +5888,7 @@ macro_rules! SmallUInt_methods_for_uint_impl {
 
             #[inline] fn is_odd(self) -> bool       { (self & 1) != 0 }
             #[inline] fn is_even(self) -> bool      { !self.is_odd() }
-            #[inline] fn is_MSB_set(self) -> bool   { (self & !(Self::MAX >> 1)) != 0 }
+            #[inline] fn is_msb_set(self) -> bool   { (self & !(Self::MAX >> 1)) != 0 }
             #[inline] fn is_bit_set(self, bit_pos: usize) -> Option<bool>  { if bit_pos < Self::size_in_bits() { Some(self & Self::generate_check_bits_(bit_pos) != 0) } else { None } }
             #[inline] fn is_bit_set_(self, bit_pos: usize) -> bool  { self & Self::generate_check_bits_(bit_pos) != 0 }
 

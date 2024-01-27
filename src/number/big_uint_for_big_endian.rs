@@ -6,6 +6,8 @@
 // This file may not be copied, modified, or distributed
 // except according to those terms.
 
+#![allow(missing_docs)]
+#![allow(missing_doc_code_examples)]
 
 /********** FOR BIG-ENDIANNESS ONLY **********/
 use std::fmt::{ self, Display, Formatter, Debug };

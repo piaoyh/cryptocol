@@ -7,30 +7,36 @@
 // except according to those terms.
 
 
-use std::fmt::{Debug, Display};
-use std::ops::*;
-use std::convert::*;
-use cryptocol::number::*;
-use cryptocol::define_utypes_with;
-use cryptocol::number::BigUInt;
+#![allow(missing_docs)]
+#![allow(missing_doc_code_examples)]
+#[allow(non_camel_case_types)]
 
-fn main()
+// use std::fmt::{Debug, Display};
+// use std::ops::*;
+// use std::convert::*;
+// use cryptocol::number::*;
+// use cryptocol::define_utypes_with;
+// use cryptocol::number::BigUInt;
+#[allow(dead_code)]
+pub fn main()
 {
-    // test_wrapping_mul();
-    // test_widening_mul_assign_uint();
+    test_wrapping_mul();
+    test_widening_mul_assign_uint();
     test_add();
     test_widening_mul();
+    test_biguint();
 }
 
 fn test_add()
 {
+    use cryptocol::define_utypes_with;
+    use cryptocol::number::LongerUnion;
     define_utypes_with!(u8);
 
     let mut c_uint: LongerUnion;
-    let mut a_biguint: u256;
-    let mut b_biguint: u256;
-    let mut c_biguint: u256;
-    let mut fine = true;
+    let mut a_biguint: U256;
+    let mut b_biguint: U256;
+    let mut c_biguint: U256;
 
     for a in 0..=u8::MAX as u128
     {
@@ -38,8 +44,8 @@ fn test_add()
         for b in 0..=u8::MAX as u128
         {
             c_uint = LongerUnion::new_with(a + b);
-            a_biguint = u256::from_uint(a);
-            b_biguint = u256::from_uint(b);
+            a_biguint = U256::from_uint(a);
+            b_biguint = U256::from_uint(b);
             c_biguint = a_biguint.wrapping_add(&b_biguint);
             for i in 0..3
             {
@@ -48,14 +54,12 @@ fn test_add()
                 if left != right
                 {
                     println!("{} + {} = uint {} <-> biguint {} => index {}: ubyte {} - num {}", a, b, c_uint, c_biguint, i, left, right);
-                    fine = false;
                     return;
                 }
             }
             if c_biguint.get_num_(3) > 1
             {
                 println!("{} + {} = uint {} <-> biguint {} => index {}: ubyte {} - num {}", a, b, c_uint, c_biguint, 3, c_uint.get_ubyte_(3), c_biguint.get_num_(3));
-                fine = false;
                 return;
             }
             for i in 4..32
@@ -64,27 +68,25 @@ fn test_add()
                 if !middle.is_zero()
                 {
                     println!("{} + {} = uint {} <-> biguint {} => index {}: num {}", a, b, c_uint, c_biguint, i, middle);
-                    fine = false;
                     return;
                 }
             }
         }
     }
-    if fine
-        { println!("No Problem found at carrying_add!"); }
+    println!("No Problem found at carrying_add!");
 }
 
 
 fn test_widening_mul()
 {
+    use cryptocol::define_utypes_with;
+    use cryptocol::number::LongerUnion;
     define_utypes_with!(u8);
 
     let mut c_uint: LongerUnion;
-    let mut a_biguint: u256;
-    let mut b_biguint: u256;
-    let mut c_biguint_high: u256;
-    let mut c_biguint_low: u256;
-    let mut fine = true;
+    let mut a_biguint: U256;
+    let mut b_biguint: U256;
+    let mut c_biguint_low: U256;
 
     for a in 0..=u8::MAX as u128
     {
@@ -92,9 +94,9 @@ fn test_widening_mul()
         for b in 0..=u8::MAX as u128
         {
             c_uint = LongerUnion::new_with(a * b);
-            a_biguint = u256::from_uint(a);
-            b_biguint = u256::from_uint(b);
-            (c_biguint_low, c_biguint_high) = a_biguint.widening_mul(&b_biguint);
+            a_biguint = U256::from_uint(a);
+            b_biguint = U256::from_uint(b);
+            (c_biguint_low, _) = a_biguint.widening_mul(&b_biguint);
             for i in 0..4
             {
                 let left = c_uint.get_ubyte_(i);
@@ -102,14 +104,12 @@ fn test_widening_mul()
                 if left != right
                 {
                     println!("{} * {} = uint {} <-> biguint {} => index {}: ubyte {} - num {}", a, b, c_uint, c_biguint_low, i, left, right);
-                    fine = false;
                     return;
                 }
             }
             if c_biguint_low.get_num_(3) > 1
             {
                 println!("{} * {} = uint {} <-> biguint {} => index {}: ubyte {} - num {}", a, b, c_uint, c_biguint_low, 3, c_uint.get_ubyte_(3), c_biguint_low.get_num_(3));
-                fine = false;
                 return;
             }
             for i in 4..32
@@ -118,18 +118,16 @@ fn test_widening_mul()
                 if !middle.is_zero()
                 {
                     println!("{} * {} = uint {} <-> biguint {} => index {}: num {}", a, b, c_uint, c_biguint_low, i, middle);
-                    fine = false;
                     return;
                 }
             }
         }
     }
-    if fine
-        { println!("No Problem found at widening_mul!"); }
+    println!("No Problem found at widening_mul!");
 }
 
 
-macro_rules! performance_BigUInt
+macro_rules! performance_biguint
 {
     ($t:ty, $b:expr, $ti:expr, $f:expr) => {
         let mut sum = <$t>::zero();
@@ -169,9 +167,9 @@ macro_rules! performance_BigUInt
     }
 }
 
-fn test_BigUInt()
+fn test_biguint()
 {
-    println!("test_BigUInt");
+    println!("test_biguint");
     use std::time::SystemTime;
     use cryptocol::number::*;
 
@@ -182,11 +180,11 @@ fn test_BigUInt()
     for operator in 0..4
     {
         println!("=== {} ===", op[operator]);
-        performance_BigUInt!(u1024_with_u128, dt[0], ti[0], operator);
-        performance_BigUInt!(u1024_with_u64, dt[1], ti[1], operator);
-        performance_BigUInt!(u1024_with_u32, dt[2], ti[2], operator);
-        performance_BigUInt!(u1024_with_u16, dt[3], ti[3], operator);
-        performance_BigUInt!(u1024_with_u8, dt[4], ti[4], operator);
+        performance_biguint!(U1024_with_u128, dt[0], ti[0], operator);
+        performance_biguint!(U1024_with_u64, dt[1], ti[1], operator);
+        performance_biguint!(U1024_with_u32, dt[2], ti[2], operator);
+        performance_biguint!(U1024_with_u16, dt[3], ti[3], operator);
+        performance_biguint!(U1024_with_u8, dt[4], ti[4], operator);
     
         let mut fastest = 0;
         for i in 1..5
@@ -207,6 +205,14 @@ fn test_BigUInt()
     }
 }
 
+
+use std::fmt::{ Display, Debug };
+use std::cmp::{ PartialEq, PartialOrd };
+use std::convert::From;
+use std::ops::*;
+
+use cryptocol::number::small_uint::*;
+use cryptocol::number::BigUInt;
 
 trait PerformanceTestForBigUint
     : Sized + Clone + Display + Debug + ToString
@@ -286,7 +292,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     {
         if U::size_in_bytes() > T::size_in_bytes()
             { return self.widening_mul_assign(&Self::from_uint(rhs)); }
-        let mut trhs = T::num::<U>(rhs);
+        let trhs = T::num::<U>(rhs);
         let zero = T::zero();
         let mut high = Self::zero();
         if trhs == zero
@@ -297,7 +303,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
         if self.is_zero()
             { return high; }
 
-        let mut lower = zero;
+        let mut lower: T;
         let mut higher = zero;
         for i in 0..N
         {
@@ -369,7 +375,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
         if self.is_zero()
             { return; }
 
-        let mut lower = zero;
+        let mut lower: T;
         let mut higher = zero;
         for i in 0..N-self.leading_zero_elements() as usize
         {
@@ -423,9 +429,9 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
             { return high; }
 
         let zero = T::zero();
-        let mut lower = zero;
+        let mut lower: T;
         let mut higher = zero;
-        let mut operand = self.clone();
+        let operand = self.clone();
         for i in 0..N
         {
             for j in 0..N
@@ -453,7 +459,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
             { return high; }
 
         let adder = self.clone();
-        let TSIZE_BITS = T::size_in_bits();
+        let size_t_bits = T::size_in_bits();
         let mut chunk = N - 1 - rhs.leading_zero_elements() as usize;
         let mut piece = T::size_in_bits() - 1 - rhs.get_num_(chunk).leading_zeros() as usize;
         self.set_zero();
@@ -462,11 +468,11 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
             let num = rhs.get_num_(chunk);
             if num.is_zero()
             {
-                high.shift_left_assign(TSIZE_BITS);
-                let MSByte = self.get_num_(N-1);
-                if !MSByte.is_zero()
-                    { high.set_num_(0, MSByte); }
-                self.shift_left_assign(TSIZE_BITS);
+                high.shift_left_assign(size_t_bits);
+                let msbyte = self.get_num_(N-1);
+                if !msbyte.is_zero()
+                    { high.set_num_(0, msbyte); }
+                self.shift_left_assign(size_t_bits);
             }
             else
             {
@@ -481,8 +487,8 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
                         { break; }
                     piece -= 1;
                     high.shift_left_assign(1_u8);
-                    if self.is_MSB_set()
-                        { high.set_LSB(); }
+                    if self.is_msb_set()
+                        { high.set_lsb(); }
                     self.shift_left_assign(1_u8);
                 }
             }
@@ -507,10 +513,10 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
         let zero = T::zero();
         let one = T::one();
         let adder = self.clone();
-        let TSIZE_BITS = T::size_in_bits();
+        let size_t_bits = T::size_in_bits();
         let mut multiply_first = |num: T| {
             let mut bit_check = one;
-            bit_check <<= T::usize_as_SmallUInt(TSIZE_BITS - 1);
+            bit_check <<= T::usize_as_smalluint(size_t_bits - 1);
             while (bit_check != zero) && (bit_check & num == zero)
                 { bit_check >>= one; }
 
@@ -535,11 +541,11 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
         let mut multiply = |num: T| {
             if num == T::zero()
             {
-                *self <<= TSIZE_BITS as i32;
+                *self <<= size_t_bits as i32;
                 return;
             }
             let mut bit_check = one;
-            bit_check <<= T::usize_as_SmallUInt(TSIZE_BITS - 1);
+            bit_check <<= T::usize_as_smalluint(size_t_bits - 1);
             while bit_check != zero
             {
                 *self <<= 1;
@@ -636,15 +642,15 @@ pub fn test_wrapping_mul()
     let op = ["multplication1", "multplication2" , "multplication3"];
     let mut ti = [[0_u128; 5]; 3];   // How many microseconds
 
-    performance_wrapping_mul!(u16384_with_u128, dt[0], ti[0][0], 0); // for warmming up
+    performance_wrapping_mul!(U16384_with_u128, dt[0], ti[0][0], 0); // for warmming up
     for operator in 0..op.len()
     {
         println!("=== {} ===", op[operator]);
-        performance_wrapping_mul!(u16384_with_u128, dt[0], ti[operator][0], operator);
-        performance_wrapping_mul!(u16384_with_u64, dt[1], ti[operator][1], operator);
-        performance_wrapping_mul!(u16384_with_u32, dt[2], ti[operator][2], operator);
-        performance_wrapping_mul!(u16384_with_u16, dt[3], ti[operator][3], operator);
-        performance_wrapping_mul!(u16384_with_u8, dt[4], ti[operator][4], operator);
+        performance_wrapping_mul!(U16384_with_u128, dt[0], ti[operator][0], operator);
+        performance_wrapping_mul!(U16384_with_u64, dt[1], ti[operator][1], operator);
+        performance_wrapping_mul!(U16384_with_u32, dt[2], ti[operator][2], operator);
+        performance_wrapping_mul!(U16384_with_u16, dt[3], ti[operator][3], operator);
+        performance_wrapping_mul!(U16384_with_u8, dt[4], ti[operator][4], operator);
     
         let mut fastest = 0;
         for i in 1..dt.len()
@@ -732,15 +738,15 @@ return;
     let op = ["multplication0", "multplication1", "multplication2"];
     let mut ti = [[0_u128; 5]; 3];   // How many microseconds
 
-    performance_widening_mul_assign_uint!(u16384_with_u128  , dt[0], ti[0][0], 0); // for warmming up
+    performance_widening_mul_assign_uint!(U16384_with_u128  , dt[0], ti[0][0], 0); // for warmming up
     for operator in 0..op.len()
     {
         println!("=== {} ===", op[operator]);
-        performance_widening_mul_assign_uint!(u16384_with_u128, dt[0], ti[operator][0], operator);
-        performance_widening_mul_assign_uint!(u16384_with_u64, dt[1], ti[operator][1], operator);
-        performance_widening_mul_assign_uint!(u16384_with_u32, dt[2], ti[operator][2], operator);
-        performance_widening_mul_assign_uint!(u16384_with_u16, dt[3], ti[operator][3], operator);
-        performance_widening_mul_assign_uint!(u16384_with_u8, dt[4], ti[operator][4], operator);
+        performance_widening_mul_assign_uint!(U16384_with_u128, dt[0], ti[operator][0], operator);
+        performance_widening_mul_assign_uint!(U16384_with_u64, dt[1], ti[operator][1], operator);
+        performance_widening_mul_assign_uint!(U16384_with_u32, dt[2], ti[operator][2], operator);
+        performance_widening_mul_assign_uint!(U16384_with_u16, dt[3], ti[operator][3], operator);
+        performance_widening_mul_assign_uint!(U16384_with_u8, dt[4], ti[operator][4], operator);
     
         let mut fastest = 0;
         for i in 1..dt.len()

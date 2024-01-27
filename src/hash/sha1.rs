@@ -166,22 +166,22 @@ pub type SHA0 = SHA0_Expanded;
 /// ```
 /// use std::string::*;
 /// use cryptocol::hash::SHA1;
-/// 
 /// let mut hash = SHA1::new();
+/// 
 /// let mut txt = "";
 /// hash.digest_str(txt);
-/// println!("Msg =\t\"{}\"\nHash =\t{}\n", txt, hash.get_HashValue_in_string());
-/// assert_eq!(hash.get_HashValue_in_string(), "DA39A3EE5E6B4B0D3255BFEF95601890AFD80709");
+/// println!("Msg =\t\"{}\"\nHash =\t{}\n", txt, hash.get_hash_value_in_string());
+/// assert_eq!(hash.get_hash_value_in_string(), "DA39A3EE5E6B4B0D3255BFEF95601890AFD80709");
 /// 
-/// let txtStirng = String::from("A");
-/// hash.digest_string(&txtStirng);
-/// println!("Msg =\t\"{}\"\nHash =\t{}\n", txtStirng, hash);
+/// let txt_stirng = String::from("A");
+/// hash.digest_string(&txt_stirng);
+/// println!("Msg =\t\"{}\"\nHash =\t{}\n", txt_stirng, hash);
 /// assert_eq!(hash.to_string(), "6DCD4CE23D88E2EE9568BA546C007C63D9131C1B");
 /// 
-/// let txtArray = ['W' as u8, 'o' as u8, 'w' as u8];
-/// hash.digest_array(&txtArray);
-/// println!("Msg =\t\"{:?}\"\nHash =\t{}\n", txtArray, hash);
-/// assert_eq!(hash.get_HashValue_in_string(), "0BBCDBD1616A1D2230100F629649DCF5B7A28B7F");
+/// let txt_array = ['W' as u8, 'o' as u8, 'w' as u8];
+/// hash.digest_array(&txt_array);
+/// println!("Msg =\t\"{:?}\"\nHash =\t{}\n", txt_array, hash);
+/// assert_eq!(hash.get_hash_value_in_string(), "0BBCDBD1616A1D2230100F629649DCF5B7A28B7F");
 /// 
 /// txt = "This data is 26-byte long.";
 /// hash.digest_str(txt);
@@ -191,17 +191,17 @@ pub type SHA0 = SHA0_Expanded;
 /// txt = "The unit of data length is not byte but bit.";
 /// hash.digest_str(txt);
 /// println!("Msg =\t\"{}\"\nHash =\t{}\n", txt, hash);
-/// assert_eq!(hash.get_HashValue_in_string(), "C6DC54281357FC16D357E1D730BFC313C585DAEC");
+/// assert_eq!(hash.get_hash_value_in_string(), "C6DC54281357FC16D357E1D730BFC313C585DAEC");
 /// 
 /// txt = "I am testing SHA1 for the data whose length is sixty-two bytes.";
 /// hash.digest_str(txt);
 /// println!("Msg =\t\"{}\"\nHash =\t{}\n", txt, hash);
 /// assert_eq!(hash.to_string(), "36CD36337097D764797091E5796B6FF45A9FA79F");
 /// 
-/// let mut txt = "I am testing SHA-1 for the data whose length is sixty-four bytes.";
+/// txt = "I am testing SHA-1 for the data whose length is sixty-four bytes.";
 /// hash.digest_str(txt);
 /// println!("Msg =\t\"{}\"\nHash =\t{}\n", txt, hash);
-/// assert_eq!(hash.get_HashValue_in_string(), "E408F6B82DCDDB5EE6613A759AC1B13D0FA1CEF1");
+/// assert_eq!(hash.get_hash_value_in_string(), "E408F6B82DCDDB5EE6613A759AC1B13D0FA1CEF1");
 /// 
 /// txt = "I am testing SHA1 for the case data whose length is more than sixty-four bytes is given.";
 /// hash.digest_str(txt);
@@ -245,19 +245,19 @@ SHA1_generic<N, H0, H1, H2, H3, H4, ROUND, K0, K1, K2, K3, RL1, RL5, RL30>
     /// value, will be initialized with
     /// `67452301EFCDAB8998BADCFE10325476C3D2E1F0`.
     /// 
-    /// # Example for SHA1
+    /// # Example 1 for SHA1
     /// ```
     /// use cryptocol::hash::SHA1;
-    /// let mut hash = SHA1::new();
+    /// let hash = SHA1::new();
     /// println!("Hash =\t{}", hash);
     /// assert_eq!(hash.to_string(), "67452301EFCDAB8998BADCFE10325476C3D2E1F0");
     /// ```
     /// 
-    /// # Exmaple for SHA1_Expanded
+    /// # Exmaple 2 for SHA1_Expanded
     /// ```
     /// use cryptocol::hash::SHA1_Expanded;
-    /// type mySHA1 = SHA1_Expanded<5, 0x1111_1111, 0x4444_4444, 0x8888_8888, 0xcccc_cccc, 0xffff_ffff, 160>;
-    /// let mut my_hash = mySHA1::new();
+    /// type MySHA1 = SHA1_Expanded<5, 0x1111_1111, 0x4444_4444, 0x8888_8888, 0xcccc_cccc, 0xffff_ffff, 160>;
+    /// let my_hash = MySHA1::new();
     /// println!("Hash =\t{}", my_hash);
     /// assert_eq!(my_hash.to_string(), "111111114444444488888888CCCCCCCCFFFFFFFF");
     /// ```
@@ -309,7 +309,7 @@ SHA1_generic<N, H0, H1, H2, H3, H4, ROUND, K0, K1, K2, K3, RL1, RL5, RL30>
     /// [digest_vec()](struct@SHA1#method.digest_array)
     /// rather than this method.
     ///
-    /// # Example for SHA1
+    /// # Example 1 for SHA1
     /// ```
     /// use cryptocol::hash::SHA1;
     /// let txt = "This is an example of the method digest().";
@@ -319,7 +319,7 @@ SHA1_generic<N, H0, H1, H2, H3, H4, ROUND, K0, K1, K2, K3, RL1, RL5, RL30>
     /// assert_eq!(hash.to_string(), "9631162DFDAEAB89821256D4585D66D35CD61FD6");
     /// ```
     /// 
-    /// # Example for SHA1_Expanded
+    /// # Example 2 for SHA1_Expanded
     /// ```
     /// use cryptocol::hash::SHA1_Expanded;
     /// type mySHA1 = SHA1_Expanded<5, 0x1111_1111, 0x4444_4444, 0x8888_8888, 0xcccc_cccc, 0xffff_ffff, 160>;
@@ -373,22 +373,22 @@ SHA1_generic<N, H0, H1, H2, H3, H4, ROUND, K0, K1, K2, K3, RL1, RL5, RL30>
     /// as C/C++, you are highly recommended to use the method
     /// [digest()](struct@SHA1#method.digest) rather than this method.
     ///
-    /// # Example for SHA1
+    /// # Example 1 for SHA1
     /// ```
     /// use cryptocol::hash::SHA1;
-    /// let txt = "This is an example of the method digest_str().";
     /// let mut hash = SHA1::new();
+    /// let txt = "This is an example of the method digest_str().";
     /// hash.digest_str(txt);
     /// println!("Msg =\t\"{}\"\nHash =\t{}", txt, hash);
     /// assert_eq!(hash.to_string(), "9FDE56BBB5028966CC2E7BDCD0758FE3121407E6");
     /// ```
     /// 
-    /// # Example for SHA1_Expanded
+    /// # Example 2 for SHA1_Expanded
     /// ```
     /// use cryptocol::hash::SHA1_Expanded;
-    /// type mySHA1 = SHA1_Expanded<5, 0x1111_1111, 0x4444_4444, 0x8888_8888, 0xcccc_cccc, 0xffff_ffff, 160>;
+    /// type MySHA1 = SHA1_Expanded<5, 0x1111_1111, 0x4444_4444, 0x8888_8888, 0xcccc_cccc, 0xffff_ffff, 160>;
+    /// let mut my_hash = MySHA1::new();
     /// let txt = "This is an example of the method digest_str().";
-    /// let mut my_hash = mySHA1::new();
     /// my_hash.digest_str(txt);
     /// println!("Msg =\t\"{}\"\nHash =\t{}", txt, my_hash);
     /// assert_eq!(my_hash.to_string(), "A6BE8FEA7E3F61508DC0A8BA85A0AEC77D0C0784");
@@ -431,22 +431,22 @@ SHA1_generic<N, H0, H1, H2, H3, H4, ROUND, K0, K1, K2, K3, RL1, RL5, RL30>
     /// as C/C++, you are highly recommended to use the method
     /// [digest()](struct@SHA1#method.digest) rather than this method.
     ///
-    /// # Example for SHA1
+    /// # Example 1 for SHA1
     /// ```
     /// use cryptocol::hash::SHA1;
-    /// let txt = "This is an example of the method digest_string().".to_string();
     /// let mut hash = SHA1::new();
+    /// let txt = "This is an example of the method digest_string().".to_string();
     /// hash.digest_string(&txt);
     /// println!("Msg =\t\"{}\"\nHash =\t{}", txt, hash);
     /// assert_eq!(hash.to_string(), "FDCDC0EBC9181B881BE1F15FECEBB9D70E4DDAAB");
     /// ```
     /// 
-    /// # Example for SHA1_Expanded
+    /// # Example 2 for SHA1_Expanded
     /// ```
     /// use cryptocol::hash::SHA1_Expanded;
-    /// type mySHA1 = SHA1_Expanded<5, 0x1111_1111, 0x4444_4444, 0x8888_8888, 0xcccc_cccc, 0xffff_ffff, 160>;
+    /// type MySHA1 = SHA1_Expanded<5, 0x1111_1111, 0x4444_4444, 0x8888_8888, 0xcccc_cccc, 0xffff_ffff, 160>;
+    /// let mut my_hash = MySHA1::new();
     /// let txt = "This is an example of the method digest_string().".to_string();
-    /// let mut my_hash = mySHA1::new();
     /// my_hash.digest_string(&txt);
     /// println!("Msg =\t\"{}\"\nHash =\t{}", txt, my_hash);
     /// assert_eq!(my_hash.to_string(), "F4FE5C5A4D2A4BD414DDDF1FD32B185F3ED8AA32");
@@ -489,22 +489,22 @@ SHA1_generic<N, H0, H1, H2, H3, H4, ROUND, K0, K1, K2, K3, RL1, RL5, RL30>
     /// as C/C++, you are highly recommended to use the method
     /// [digest()](struct@SHA1#method.digest) rather than this method.
     ///
-    /// # Example for SHA1
+    /// # Example 1 for SHA1
     /// ```
     /// use cryptocol::hash::SHA1;
-    /// let data = [ 0x67452301_u32.to_le(), 0xefcdab89_u32.to_le(), 0x98badcfe_u32.to_le(), 0x10325476_u32.to_le() ];
     /// let mut hash = SHA1::new();
+    /// let data = [ 0x67452301_u32.to_le(), 0xefcdab89_u32.to_le(), 0x98badcfe_u32.to_le(), 0x10325476_u32.to_le() ];
     /// hash.digest_array(&data);
     /// println!("Msg =\t{:?}\nHash =\t{}", data, hash);
     /// assert_eq!(hash.to_string(), "76BC87BAECA7725C948FD1C53766454FDA0867AF");
     /// ```
     /// 
-    /// # Example for SHA1_Expanded
+    /// # Example 2 for SHA1_Expanded
     /// ```
     /// use cryptocol::hash::SHA1_Expanded;
-    /// type mySHA1 = SHA1_Expanded<5, 0x1111_1111, 0x4444_4444, 0x8888_8888, 0xcccc_cccc, 0xffff_ffff, 160>;
+    /// type MySHA1 = SHA1_Expanded<5, 0x1111_1111, 0x4444_4444, 0x8888_8888, 0xcccc_cccc, 0xffff_ffff, 160>;
+    /// let mut my_hash = MySHA1::new();
     /// let data = [ 0x67452301_u32.to_le(), 0xefcdab89_u32.to_le(), 0x98badcfe_u32.to_le(), 0x10325476_u32.to_le() ];
-    /// let mut my_hash = mySHA1::new();
     /// my_hash.digest_array(&data);
     /// println!("Msg =\t{:?}\nHash =\t{}", data, my_hash);
     /// assert_eq!(my_hash.to_string(), "A6E00DB72776DEBB7C6DB235024BB3E237E24D18");
@@ -548,22 +548,22 @@ SHA1_generic<N, H0, H1, H2, H3, H4, ROUND, K0, K1, K2, K3, RL1, RL5, RL30>
     /// as C/C++, you are highly recommended to use the method
     /// [digest()](struct@SHA1#method.digest) rather than this method.
     ///
-    /// # Example for SHA1
+    /// # Example 1 for SHA1
     /// ```
     /// use cryptocol::hash::SHA1;
-    /// let data = vec![ 0x67452301_u32.to_le(), 0xefcdab89_u32.to_le(), 0x98badcfe_u32.to_le(), 0x10325476_u32.to_le() ];
     /// let mut hash = SHA1::new();
+    /// let data = vec![ 0x67452301_u32.to_le(), 0xefcdab89_u32.to_le(), 0x98badcfe_u32.to_le(), 0x10325476_u32.to_le() ];
     /// hash.digest_vec(&data);
     /// println!("Msg =\t{:?}\nHash =\t{}", data, hash);
     /// assert_eq!(hash.to_string(), "76BC87BAECA7725C948FD1C53766454FDA0867AF");
     /// ```
     /// 
-    /// # Example for SHA1_Expanded
+    /// # Example 2 for SHA1_Expanded
     /// ```
     /// use cryptocol::hash::SHA1_Expanded;
-    /// type mySHA1 = SHA1_Expanded<5, 0x1111_1111, 0x4444_4444, 0x8888_8888, 0xcccc_cccc, 0xffff_ffff, 160>;
+    /// type MySHA1 = SHA1_Expanded<5, 0x1111_1111, 0x4444_4444, 0x8888_8888, 0xcccc_cccc, 0xffff_ffff, 160>;
+    /// let mut my_hash = MySHA1::new();
     /// let data = vec![ 0x67452301_u32.to_le(), 0xefcdab89_u32.to_le(), 0x98badcfe_u32.to_le(), 0x10325476_u32.to_le() ];
-    /// let mut my_hash = mySHA1::new();
     /// my_hash.digest_vec(&data);
     /// println!("Msg =\t{:?}\nHash =\t{}", data, my_hash);
     /// assert_eq!(my_hash.to_string(), "A6E00DB72776DEBB7C6DB235024BB3E237E24D18");
@@ -580,8 +580,306 @@ SHA1_generic<N, H0, H1, H2, H3, H4, ROUND, K0, K1, K2, K3, RL1, RL5, RL30>
         self.digest(message.as_ptr() as *const u8, (message.len() * T::size_in_bytes()) as u64);
     }
 
-    // pub fn get_HashValue(&self, hashValue: *mut u8, length: usize)
-    /// Gives a hash value to the place where `hashValue` points to.
+    // pub fn ruminate(&mut self, n: usize, message: *const u8, length_in_bytes: u64)
+    /// Computes a hash value of `message`, and then computes a new hash value
+    /// of the hash value of the message, and then computes a hash value of the
+    /// previous hash value, and then ... `n` times repeatedly.
+    /// 
+    /// # Arguments
+    /// - `n` is the number of repetition of digestion
+    /// - `message` is pointer to const u8.
+    /// - `length_in_bytes` is the size of message in the unit of bytes, and
+    /// data type is `u64`.
+    /// 
+    /// # Origin
+    /// Double hashing is invented by Ferguson and Schneier in their book
+    /// Practical Cryptography to countermeasure against length extension
+    /// attacks. Plus, Bitcoin uses double hashing.
+    /// This is generalized version of it.
+    /// 
+    /// # Features
+    /// This function has the generalized interface (pointer, `*const u8`)
+    /// so as to enable other functions to wrap this function with any
+    /// convenient interface for uses. So, this function is usually not called
+    /// directly in Rust. This function is provided to be called from other
+    /// programming languages such as C/C++.
+    /// 
+    /// # Security Issue
+    /// The author doubts that the double hashing is securer than normal
+    /// hashing. The double hashing will be as secure as the normal hashing
+    /// at most because birthday paradox applies twice for the double hashing
+    /// though the size of the domain is the same size of the codomain for
+    /// second hashing of the double hashing, while the birthday paradox
+    /// applies only once for the normal hashing.
+    /// 
+    /// # Example 1 for SHA1
+    /// ```
+    /// use cryptocol::hash::SHA1;
+    /// let mut hash = SHA1::new();
+    /// let txt = "This is an example of the method ruminate().";
+    /// hash.ruminate(2, txt.as_ptr(), txt.len() as u64);
+    /// println!("Msg =\t\"{}\"\nHash =\t{}", txt, hash);
+    /// assert_eq!(hash.to_string(), "1E91427CF3BBB256A2BD44DA9F89D7406ED5D5FE");
+    /// ```
+    /// 
+    /// # Example 2 for SHA1_Expanded
+    /// ```
+    /// use cryptocol::hash::SHA1_Expanded;
+    /// type MySHA1 = SHA1_Expanded<5, 0x1111_1111, 0x4444_4444, 0x8888_8888, 0xcccc_cccc, 0xffff_ffff, 160>;
+    /// let mut hash = MySHA1::new();
+    /// let txt = "This is an example of the method ruminate().";
+    /// hash.ruminate(2, txt.as_ptr(), txt.len() as u64);
+    /// println!("Msg =\t\"{}\"\nHash =\t{}", txt, hash);
+    /// assert_eq!(hash.to_string(), "509038D0447A5D05F4AD62C25AD6F9E130E694F4");
+    /// ```
+    /// 
+    /// # Big-endian issue
+    /// It is just experimental for Big Endian CPUs. So, you are not encouraged
+    /// to use it for Big Endian CPUs for serious purpose. Only use this crate
+    /// for Big-endian CPUs with your own full responsibility.
+    pub fn ruminate(&mut self, n: usize, message: *const u8, length_in_bytes: u64)
+    {
+        self.digest(message, length_in_bytes);
+        for _ in 1..n
+            { self.digest_array(&self.get_hash_value_in_array()); }
+    }
+
+    // pub fn ruminate_str(&mut self, n: usize, message: &str)
+    /// Computes a hash value of `message`, and then computes a new hash value
+    /// of the hash value of the message, and then computes a hash value of the
+    /// previous hash value, and then ... `n` times repeatedly.
+    /// 
+    /// # Arguments
+    /// - `n` is the number of repetition of digestion
+    /// - `message` is `&str`.
+    /// 
+    /// # Origin
+    /// Double hashing is invented by Ferguson and Schneier in their book
+    /// Practical Cryptography to countermeasure against length extension
+    /// attacks. Plus, Bitcoin uses double hashing.
+    /// This is generalized version of it.
+    /// 
+    /// # Features
+    /// This function is a wrapping function of `ruminate()`.
+    /// This function computes hash value of the content of string slice.
+    /// 
+    /// # Security Issue
+    /// The author doubts that the double hashing is securer than normal
+    /// hashing. The double hashing will be as secure as the normal hashing
+    /// at most because birthday paradox applies twice for the double hashing
+    /// though the size of the domain is the same size of the codomain for
+    /// second hashing of the double hashing, while the birthday paradox
+    /// applies only once for the normal hashing.
+    /// 
+    /// # Example 1 for SHA1
+    /// ```
+    /// use cryptocol::hash::SHA1;
+    /// let mut hash = SHA1::new();
+    /// let txt = "This is an example of the method ruminate_str().";
+    /// hash.ruminate_str(3, txt);
+    /// println!("Msg =\t\"{}\"\nHash =\t{}", txt, hash);
+    /// assert_eq!(hash.to_string(), "778B3FF529024A46A3CC06F01CBE9078F6447BC0");
+    /// ```
+    /// 
+    /// # Example 2 for SHA1_Expanded
+    /// ```
+    /// use cryptocol::hash::SHA1_Expanded;
+    /// type MySHA1 = SHA1_Expanded<5, 0x1111_1111, 0x4444_4444, 0x8888_8888, 0xcccc_cccc, 0xffff_ffff, 160>;
+    /// let mut my_hash = MySHA1::new();
+    /// let txt = "This is an example of the method ruminate_str().";
+    /// my_hash.ruminate_str(3, txt);
+    /// println!("Msg =\t\"{}\"\nHash =\t{}", txt, my_hash);
+    /// assert_eq!(my_hash.to_string(), "0CFDD49B87B844C4C329C997C1FB650EBEEA4909");
+    /// ```
+    /// 
+    /// # Big-endian issue
+    /// It is just experimental for Big Endian CPUs. So, you are not encouraged
+    /// to use it for Big Endian CPUs for serious purpose. Only use this crate
+    /// for Big-endian CPUs with your own full responsibility.
+    #[inline]
+    pub fn ruminate_str(&mut self, n: usize, message: &str)
+    {
+        self.ruminate(n, message.as_ptr(), message.len() as u64);
+    }
+
+    // pub fn ruminate_string(&mut self, n: usize, message: &String)
+    /// Computes a hash value of `message`, and then computes a new hash value
+    /// of the hash value of the message, and then computes a hash value of the
+    /// previous hash value, and then ... `n` times repeatedly.
+    /// 
+    /// # Arguments
+    /// - `n` is the number of repetition of digestion
+    /// - `message` is `&String`.
+    /// 
+    /// # Origin
+    /// Double hashing is invented by Ferguson and Schneier in their book
+    /// Practical Cryptography to countermeasure against length extension
+    /// attacks. Plus, Bitcoin uses double hashing.
+    /// This is generalized version of it.
+    /// 
+    /// # Features
+    /// This function is a wrapping function of `ruminate()`.
+    /// This function computes hash value of the content of String object.
+    /// 
+    /// # Security Issue
+    /// The author doubts that the double hashing is securer than normal
+    /// hashing. The double hashing will be as secure as the normal hashing
+    /// at most because birthday paradox applies twice for the double hashing
+    /// though the size of the domain is the same size of the codomain for
+    /// second hashing of the double hashing, while the birthday paradox
+    /// applies only once for the normal hashing.
+    /// 
+    /// # Example 1 for SHA1
+    /// ```
+    /// use cryptocol::hash::SHA1;
+    /// let mut hash = SHA1::new();
+    /// let txt = "This is an example of the method ruminate_string().".to_string();
+    /// hash.ruminate_string(2, &txt);
+    /// println!("Msg =\t\"{}\"\nHash =\t{}", txt, hash);
+    /// assert_eq!(hash.to_string(), "F4CE0B5A8D93BEB1C0A99F6290B26661C212A8B3");
+    /// ```
+    /// 
+    /// # Example 2 for SHA1_Expanded
+    /// ```
+    /// use cryptocol::hash::SHA1_Expanded;
+    /// type MySHA1 = SHA1_Expanded<5, 0x1111_1111, 0x4444_4444, 0x8888_8888, 0xcccc_cccc, 0xffff_ffff, 160>;
+    /// let mut my_hash = MySHA1::new();
+    /// let txt = "This is an example of the method ruminate_string().".to_string();
+    /// my_hash.ruminate_string(2, &txt);
+    /// println!("Msg =\t\"{}\"\nHash =\t{}", txt, my_hash);
+    /// assert_eq!(my_hash.to_string(), "C4B55C59A15FCDFF6FFD39D3867665F67E89C8FC");
+    /// ```
+    /// 
+    /// # Big-endian issue
+    /// It is just experimental for Big Endian CPUs. So, you are not encouraged
+    /// to use it for Big Endian CPUs for serious purpose. Only use this crate
+    /// for Big-endian CPUs with your own full responsibility.
+    #[inline]
+    pub fn ruminate_string(&mut self, n: usize, message: &String)
+    {
+        self.ruminate(n, message.as_ptr(), message.len() as u64);
+    }
+
+    // pub fn ruminate_array<T, const M: usize>(&mut self, n: usize, message: &[T; M])
+    /// Computes a hash value of `message`, and then computes a new hash value
+    /// of the hash value of the message, and then computes a hash value of the
+    /// previous hash value, and then ... `n` times repeatedly.
+    /// 
+    /// # Arguments
+    /// - `n` is the number of repetition of digestion
+    /// - `message` is `&[T; M]`.
+    /// 
+    /// # Origin
+    /// Double hashing is invented by Ferguson and Schneier in their book
+    /// Practical Cryptography to countermeasure against length extension
+    /// attacks. Plus, Bitcoin uses double hashing.
+    /// This is generalized version of it.
+    /// 
+    /// # Features
+    /// This function is a wrapping function of `ruminate()`.
+    /// This function computes hash value of the content of Array object.
+    /// 
+    /// # Security Issue
+    /// The author doubts that the double hashing is securer than normal
+    /// hashing. The double hashing will be as secure as the normal hashing
+    /// at most because birthday paradox applies twice for the double hashing
+    /// though the size of the domain is the same size of the codomain for
+    /// second hashing of the double hashing, while the birthday paradox
+    /// applies only once for the normal hashing.
+    /// 
+    /// # Example 1 for SHA1
+    /// ```
+    /// use cryptocol::hash::SHA1;
+    /// let mut hash = SHA1::new();
+    /// let data = [ 0x67452301_u32.to_le(), 0xefcdab89_u32.to_le(), 0x98badcfe_u32.to_le(), 0x10325476_u32.to_le() ];
+    /// hash.ruminate_array(5,&data);
+    /// println!("Msg =\t{:?}\nHash =\t{}", data, hash);
+    /// assert_eq!(hash.to_string(), "35BC04C66EBA9751C482FD98BCD1CBDC2C5E56AF");
+    /// ```
+    /// 
+    /// # Example 2 for SHA1_Expanded
+    /// ```
+    /// use cryptocol::hash::SHA1_Expanded;
+    /// type MySHA1 = SHA1_Expanded<5, 0x1111_1111, 0x4444_4444, 0x8888_8888, 0xcccc_cccc, 0xffff_ffff, 160>;
+    /// let mut my_hash = MySHA1::new();
+    /// let data = [ 0x67452301_u32.to_le(), 0xefcdab89_u32.to_le(), 0x98badcfe_u32.to_le(), 0x10325476_u32.to_le() ];
+    /// my_hash.ruminate_array(5,&data);
+    /// println!("Msg =\t{:?}\nHash =\t{}", data, my_hash);
+    /// assert_eq!(my_hash.to_string(), "898835EC92B5F7818A25C6645673DED30DA5F78D");
+    /// ```
+    /// 
+    /// # Big-endian issue
+    /// It is just experimental for Big Endian CPUs. So, you are not encouraged
+    /// to use it for Big Endian CPUs for serious purpose. Only use this crate
+    /// for Big-endian CPUs with your own full responsibility.
+    #[inline]
+    pub fn ruminate_array<T, const M: usize>(&mut self, n: usize, message: &[T; M])
+    where T: SmallUInt + Copy + Clone
+    {
+        self.ruminate(n, message.as_ptr() as *const u8, (M * T::size_in_bytes()) as u64);
+    }
+
+    // pub fn ruminate_vec<T>(&mut self, n: usize, message: &Vec<T>)
+    /// Computes a hash value of `message`, and then computes a new hash value
+    /// of the hash value of the message, and then computes a hash value of the
+    /// previous hash value, and then ... `n` times repeatedly.
+    /// 
+    /// # Arguments
+    /// - `n` is the number of repetition of digestion
+    /// - `message` is `&Vec<T>`.
+    /// 
+    /// # Origin
+    /// Double hashing is invented by Ferguson and Schneier in their book
+    /// Practical Cryptography to countermeasure against length extension
+    /// attacks. Plus, Bitcoin uses double hashing.
+    /// This is generalized version of it.
+    /// 
+    /// # Features
+    /// This function is a wrapping function of `ruminate()`.
+    /// This function computes hash value of the content of Vec object.
+    /// 
+    /// # Security Issue
+    /// The author doubts that the double hashing is securer than normal
+    /// hashing. The double hashing will be as secure as the normal hashing
+    /// at most because birthday paradox applies twice for the double hashing
+    /// though the size of the domain is the same size of the codomain for
+    /// second hashing of the double hashing, while the birthday paradox
+    /// applies only once for the normal hashing.
+    /// 
+    /// # Example 1 for SHA1
+    /// ```
+    /// use cryptocol::hash::SHA1;
+    /// let mut hash = SHA1::new();
+    /// let data = vec![ 0x67452301_u32.to_le(), 0xefcdab89_u32.to_le(), 0x98badcfe_u32.to_le(), 0x10325476_u32.to_le() ];
+    /// hash.ruminate_vec(2, &data);
+    /// println!("Msg =\t{:?}\nHash =\t{}", data, hash);
+    /// assert_eq!(hash.to_string(), "042811212E91F341473A43BF71BD8DA035D23032");
+    /// ```
+    /// 
+    /// # Example 2 for SHA1_Expanded
+    /// ```
+    /// use cryptocol::hash::SHA1_Expanded;
+    /// type MySHA1 = SHA1_Expanded<5, 0x1111_1111, 0x4444_4444, 0x8888_8888, 0xcccc_cccc, 0xffff_ffff, 160>;
+    /// let mut my_hash = MySHA1::new();
+    /// let data = vec![ 0x67452301_u32.to_le(), 0xefcdab89_u32.to_le(), 0x98badcfe_u32.to_le(), 0x10325476_u32.to_le() ];
+    /// my_hash.ruminate_vec(2, &data);
+    /// println!("Msg =\t{:?}\nHash =\t{}", data, my_hash);
+    /// assert_eq!(my_hash.to_string(), "99B8709ACB93051C4CB238CE9CD9031BD40F2A2B");
+    /// ```
+    /// 
+    /// # Big-endian issue
+    /// It is just experimental for Big Endian CPUs. So, you are not encouraged
+    /// to use it for Big Endian CPUs for serious purpose. Only use this crate
+    /// for Big-endian CPUs with your own full responsibility.
+    #[inline]
+    pub fn ruminate_vec<T>(&mut self, n: usize, message: &Vec<T>)
+    where T: SmallUInt + Copy + Clone
+    {
+        self.ruminate(n, message.as_ptr() as *const u8, (message.len() * T::size_in_bytes()) as u64);
+    }
+
+    // pub fn get_hash_value(&self, hash_value: *mut u8, length: usize)
+    /// Gives a hash value to the place where `hash_value` points to.
     /// 
     /// # Features
     /// This function has the generalized interface (pointer, `*mut u8`)
@@ -591,53 +889,53 @@ SHA1_generic<N, H0, H1, H2, H3, H4, ROUND, K0, K1, K2, K3, RL1, RL5, RL30>
     /// programming languages such as C/C++.
     /// 
     /// # Arguments
-    /// - `hashValue` is the pointer to the place to hold the result hash value.
-    /// - `length` is the size of the place that `hashValue` points to. 
+    /// - `hash_value` is the pointer to the place to hold the result hash value.
+    /// - `length` is the size of the place that `hash_value` points to. 
     /// 
     /// # Counterpart Methods
     /// - If you want to get the hash value in the form of String object,
     /// you are highly recommended to use the method
-    /// [get_HashValue_string()](struct@SHA1#method.get_HashValue_string)
+    /// [get_hash_value_string()](struct@SHA1#method.get_hash_value_string)
     /// rather than this method.
     /// - If you want to get the hash value in the form of array object,
     /// you are highly recommended to use the method
-    /// [get_HashValue_in_array()](struct@SHA1#method.get_HashValue_in_array)
+    /// [get_hash_value_in_array()](struct@SHA1#method.get_hash_value_in_array)
     /// rather than this method.
     /// - If you want to get the hash value in the form of Vec object,
     /// you are highly recommended to use the method
-    /// [get_HashValue_in_vec()](struct@SHA1#method.get_HashValue_in_vec)
+    /// [get_hash_value_in_vec()](struct@SHA1#method.get_hash_value_in_vec)
     /// rather than this method.
     ///
-    /// # Example for SHA1
+    /// # Example 1 for SHA1
     /// ```
     /// use cryptocol::hash::SHA1;
-    /// let txt = "This is an example of the method get_HashValue().";
-    /// let mut hashValue = [0_u8; 20];
     /// let mut hash = SHA1::new();
+    /// let txt = "This is an example of the method get_hash_value().";
+    /// let hash_value = [0_u8; 20];
     /// hash.digest_str(txt);
-    /// hash.get_HashValue(hashValue.as_ptr() as *mut u8, hashValue.len());
-    /// println!("Msg =\t\"{}\"\nHash =\t{:02X?}", txt, hashValue);
-    /// assert_eq!(format!("{:02X?}", hashValue), "[E9, C6, F4, 3B, 77, AA, 27, A1, 6E, B4, F0, F5, 5B, F3, D8, C7, 3A, EB, 7F, 93]");
+    /// hash.get_hash_value(hash_value.as_ptr() as *mut u8, hash_value.len());
+    /// println!("Msg =\t\"{}\"\nHash =\t{:02X?}", txt, hash_value);
+    /// assert_eq!(format!("{:02X?}", hash_value), "[82, 62, 1B, E6, A6, 74, 88, 18, 12, 60, 5F, 27, C7, EF, 19, 38, 65, 39, 00, 8A]");
     /// ```
     /// 
-    /// # Example for MD5_Expanded
+    /// # Example 2 for MD5_Expanded
     /// ```
     /// use cryptocol::hash::SHA1_Expanded;
-    /// type mySHA1 = SHA1_Expanded<5, 0x1111_1111, 0x4444_4444, 0x8888_8888, 0xcccc_cccc, 0xffff_ffff, 160>;
-    /// let txt = "This is an example of the method get_HashValue().";
-    /// let mut hashValue = [0_u8; 20];
-    /// let mut my_hash = mySHA1::new();
+    /// type MySHA1 = SHA1_Expanded<5, 0x1111_1111, 0x4444_4444, 0x8888_8888, 0xcccc_cccc, 0xffff_ffff, 160>;
+    /// let mut my_hash = MySHA1::new();
+    /// let txt = "This is an example of the method get_hash_value().";
+    /// let hash_value = [0_u8; 20];
     /// my_hash.digest_str(txt);
-    /// my_hash.get_HashValue(hashValue.as_ptr() as *mut u8, hashValue.len());
-    /// println!("Msg =\t\"{}\"\nHash =\t{:02X?}", txt, hashValue);
-    /// assert_eq!(format!("{:02X?}", hashValue), "[2B, C2, AC, 74, 3D, 46, 91, 1C, 89, 40, F7, 54, FD, 25, 4F, 19, CC, 9B, 18, 61]");
+    /// my_hash.get_hash_value(hash_value.as_ptr() as *mut u8, hash_value.len());
+    /// println!("Msg =\t\"{}\"\nHash =\t{:02X?}", txt, hash_value);
+    /// assert_eq!(format!("{:02X?}", hash_value), "[F5, DD, 99, 0C, 9B, 5A, 4C, A3, 84, DF, B1, 3D, 73, 5A, CE, CF, 19, BB, 52, B4]");
     /// ```
     /// 
     /// # Big-endian issue
     /// It is just experimental for Big Endian CPUs. So, you are not encouraged
     /// to use it for Big Endian CPUs for serious purpose. Only use this crate
     /// for Big-endian CPUs with your own full responsibility.
-    pub fn get_HashValue(&self, hashValue: *mut u8, length: usize)
+    pub fn get_hash_value(&self, hash_value: *mut u8, length: usize)
     {
         const BYTES: usize = 4;
         let n_length = if length < (BYTES * N) {length} else {BYTES * N};
@@ -646,13 +944,13 @@ SHA1_generic<N, H0, H1, H2, H3, H4, ROUND, K0, K1, K2, K3, RL1, RL5, RL30>
             let mut hash_code = [IntUnion::new(); N];
             for i in 0..N
                 { hash_code[i].set(self.hash_code[i].get().to_be()); }
-            unsafe { copy_nonoverlapping(hash_code.as_ptr() as *const u8, hashValue, n_length); }
+            unsafe { copy_nonoverlapping(hash_code.as_ptr() as *const u8, hash_value, n_length); }
         }
         #[cfg(target_endian = "big")]
-        unsafe { copy_nonoverlapping(self.hash_code.as_ptr() as *const u8, hashValue, n_length); }
+        unsafe { copy_nonoverlapping(self.hash_code.as_ptr() as *const u8, hash_value, n_length); }
     }
 
-    // pub fn get_HashValue_in_string(&self) -> String
+    // pub fn get_hash_value_in_string(&self) -> String
     /// Returns a hash value in the form of String object.
     /// 
     /// # Output
@@ -661,43 +959,43 @@ SHA1_generic<N, H0, H1, H2, H3, H4, ROUND, K0, K1, K2, K3, RL1, RL5, RL30>
     /// # Counterpart Methods
     /// - If you want to get the hash value in the form of array object,
     /// you are highly recommended to use the method
-    /// [get_HashValue_in_array()](struct@SHA1#method.get_HashValue_in_array)
+    /// [get_hash_value_in_array()](struct@SHA1#method.get_hash_value_in_array)
     /// rather than this method.
     /// - If you want to get the hash value in the form of Vec object,
     /// you are highly recommended to use the method
-    /// [get_HashValue_in_vec()](struct@SHA1#method.get_HashValue_in_vec)
+    /// [get_hash_value_in_vec()](struct@SHA1#method.get_hash_value_in_vec)
     /// rather than this method.
     /// - If you want to use this method from other programming languages such
     /// as C/C++, you are highly recommended to use the method
-    /// [get_HashValue()](struct@SHA1#method.get_HashValue)
+    /// [get_hash_value()](struct@SHA1#method.get_hash_value)
     /// rather than this method.
     ///
-    /// # Example for SHA1
+    /// # Example 1 for SHA1
     /// ```
     /// use cryptocol::hash::SHA1;
-    /// let txt = "This is an example of the method get_HashValue_in_string().";
     /// let mut hash = SHA1::new();
+    /// let txt = "This is an example of the method get_hash_value_in_string().";
     /// hash.digest_str(txt);
-    /// println!("Msg =\t\"{}\"\nHash =\t{}", txt, hash.get_HashValue_in_string());
-    /// assert_eq!(hash.get_HashValue_in_string(), "899B9673103FCB06B237A5A6A7D04D749EA4BD92");
+    /// println!("Msg =\t\"{}\"\nHash =\t{}", txt, hash.get_hash_value_in_string());
+    /// assert_eq!(hash.get_hash_value_in_string(), "826621B45597FA1B58C855DFCDE111E7500BCC96");
     /// ```
     /// 
-    /// # Example for SHA1_Expanded
+    /// # Example 2 for SHA1_Expanded
     /// ```
     /// use cryptocol::hash::SHA1_Expanded;
-    /// type mySHA1 = SHA1_Expanded<5, 0x1111_1111, 0x4444_4444, 0x8888_8888, 0xcccc_cccc, 0xffff_ffff, 160>;
-    /// let txt = "This is an example of the method get_HashValue_in_string().";
-    /// let mut my_hash = mySHA1::new();
+    /// type MySHA1 = SHA1_Expanded<5, 0x1111_1111, 0x4444_4444, 0x8888_8888, 0xcccc_cccc, 0xffff_ffff, 160>;
+    /// let mut my_hash = MySHA1::new();
+    /// let txt = "This is an example of the method get_hash_value_in_string().";
     /// my_hash.digest_str(txt);
-    /// println!("Msg =\t\"{}\"\nHash =\t{}", txt, my_hash.get_HashValue_in_string());
-    /// assert_eq!(my_hash.get_HashValue_in_string(), "EA946E24D16483679986EEEA53271E2533AE1292");
+    /// println!("Msg =\t\"{}\"\nHash =\t{}", txt, my_hash.get_hash_value_in_string());
+    /// assert_eq!(my_hash.get_hash_value_in_string(), "72CEC05D49E2FA7206E2BF5A6C9D38F0404E7956");
     /// ```
     /// 
     /// # Big-endian issue
     /// It is just experimental for Big Endian CPUs. So, you are not encouraged
     /// to use it for Big Endian CPUs for serious purpose. Only use this crate
     /// for Big-endian CPUs with your own full responsibility.
-    pub fn get_HashValue_in_string(&self) -> String
+    pub fn get_hash_value_in_string(&self) -> String
     {
         const BYTES: usize = 4;
         let mut txt = String::new();
@@ -714,7 +1012,7 @@ SHA1_generic<N, H0, H1, H2, H3, H4, ROUND, K0, K1, K2, K3, RL1, RL5, RL30>
         txt
     }
 
-    // pub fn get_HashValue_in_array(&self) -> [u32; N]
+    // pub fn get_hash_value_in_array(&self) -> [u32; N]
     /// Returns a hash value in the form of array object.
     /// 
     /// # Output
@@ -727,43 +1025,43 @@ SHA1_generic<N, H0, H1, H2, H3, H4, ROUND, K0, K1, K2, K3, RL1, RL5, RL30>
     /// # Counterpart Methods
     /// - If you want to get the hash value in the form of String object,
     /// you are highly recommended to use the method
-    /// [get_HashValue_string()](struct@SHA1#method.get_HashValue_string)
+    /// [get_hash_value_string()](struct@SHA1#method.get_hash_value_string)
     /// rather than this method.
     /// - If you want to get the hash value in the form of Vec object,
     /// you are highly recommended to use the method
-    /// [get_HashValue_in_vec()](struct@SHA1#method.get_HashValue_in_vec)
+    /// [get_hash_value_in_vec()](struct@SHA1#method.get_hash_value_in_vec)
     /// rather than this method.
     /// - If you want to use this method from other programming languages such
     /// as C/C++, you are highly recommended to use the method
-    /// [get_HashValue()](struct@SHA1#method.get_HashValue)
+    /// [get_hash_value()](struct@SHA1#method.get_hash_value)
     /// rather than this method.
     ///
-    /// # Example for SHA1
+    /// # Example 1 for SHA1
     /// ```
     /// use cryptocol::hash::SHA1;
-    /// let txt = "This is an example of the method get_HashValue_in_array().";
     /// let mut hash = SHA1::new();
+    /// let txt = "This is an example of the method get_hash_value_in_array().";
     /// hash.digest_str(txt);
-    /// println!("Msg =\t\"{}\"\nHash =\t{:02X?}", txt, hash.get_HashValue_in_array());
-    /// assert_eq!(format!("{:02X?}", hash.get_HashValue_in_array()), "[E9840962, 837B21A9, D9321727, 74980B51, 364DD5A2]");
+    /// println!("Msg =\t\"{}\"\nHash =\t{:02X?}", txt, hash.get_hash_value_in_array());
+    /// assert_eq!(format!("{:02X?}", hash.get_hash_value_in_array()), "[7647F56F, 1508A320, 2303B1A8, D3BB7325, FC4497F8]");
     /// ```
     /// 
-    /// # Example for SHA1_Expanded
+    /// # Example 2 for SHA1_Expanded
     /// ```
     /// use cryptocol::hash::SHA1_Expanded;
-    /// type mySHA1 = SHA1_Expanded<5, 0x1111_1111, 0x4444_4444, 0x8888_8888, 0xcccc_cccc, 0xffff_ffff, 160>;
-    /// let txt = "This is an example of the method get_HashValue_in_array().";
-    /// let mut my_hash = mySHA1::new();
+    /// type MySHA1 = SHA1_Expanded<5, 0x1111_1111, 0x4444_4444, 0x8888_8888, 0xcccc_cccc, 0xffff_ffff, 160>;
+    /// let mut my_hash = MySHA1::new();
+    /// let txt = "This is an example of the method get_hash_value_in_array().";
     /// my_hash.digest_str(txt);
-    /// println!("Msg =\t\"{}\"\nHash =\t{:02X?}", txt, my_hash.get_HashValue_in_array());
-    /// assert_eq!(format!("{:08X?}", my_hash.get_HashValue_in_array()), "[D55C8BDE, 1B7102CD, C9827513, 7DCD2E46, E3DE8B12]");
+    /// println!("Msg =\t\"{}\"\nHash =\t{:02X?}", txt, my_hash.get_hash_value_in_array());
+    /// assert_eq!(format!("{:08X?}", my_hash.get_hash_value_in_array()), "[C7DD61D1, 4E88AC6C, FFFC2A7E, C8E2DA66, 01BD283D]");
     /// ```
     /// 
     /// # Big-endian issue
     /// It is just experimental for Big Endian CPUs. So, you are not encouraged
     /// to use it for Big Endian CPUs for serious purpose. Only use this crate
     /// for Big-endian CPUs with your own full responsibility.
-    pub fn get_HashValue_in_array(&self) -> [u32; N]
+    pub fn get_hash_value_in_array(&self) -> [u32; N]
     {
         let mut res = [0_u32; N];
         for i in 0..N
@@ -771,7 +1069,7 @@ SHA1_generic<N, H0, H1, H2, H3, H4, ROUND, K0, K1, K2, K3, RL1, RL5, RL30>
         res
     }
 
-    // pub fn getHashValue_in_vec(&self) -> Vec
+    // pub fn get_hash_value_in_vec(&self) -> Vec
     /// Returns a hash value in the form of Vec object.
     /// 
     /// # Output
@@ -780,42 +1078,42 @@ SHA1_generic<N, H0, H1, H2, H3, H4, ROUND, K0, K1, K2, K3, RL1, RL5, RL30>
     /// # Counterpart Methods
     /// - If you want to get the hash value in the form of String object,
     /// you are highly recommended to use the method
-    /// [get_HashValue_string()](struct@SHA1#method.get_HashValue_string)
+    /// [get_hash_value_string()](struct@SHA1#method.get_hash_value_string)
     /// rather than this method.
     /// - If you want to get the hash value in the form of array object,
     /// you are highly recommended to use the method
-    /// [get_HashValue_in_array()](struct@SHA1#method.get_HashValue_in_array)
+    /// [get_hash_value_in_array()](struct@SHA1#method.get_hash_value_in_array)
     /// rather than this method.
     /// - If you want to use this method from other programming languages such
     /// as C/C++, you are highly recommended to use the method
-    /// [get_HashValue()](struct@SHA1#method.get_HashValue)
+    /// [get_hash_value()](struct@SHA1#method.get_hash_value)
     /// rather than this method.
     ///
-    /// # Example
+    /// # Example 1 for SHA1
     /// ```
     /// use cryptocol::hash::SHA1;
-    /// let txt = "This is an example of the method get_HashValue_in_vec().";
     /// let mut hash = SHA1::new();
+    /// let txt = "This is an example of the method get_hash_value_in_vec().";
     /// hash.digest_str(txt);
-    /// println!("Msg =\t\"{}\"\nHash =\t{:02X?}", txt, hash.get_HashValue_in_vec());
-    /// assert_eq!(format!("{:02X?}", hash.get_HashValue_in_vec()), "[96E00128, E1E04E29, F65ABA7B, AD10C0A2, 1BC438DA]");
+    /// println!("Msg =\t\"{}\"\nHash =\t{:02X?}", txt, hash.get_hash_value_in_vec());
+    /// assert_eq!(format!("{:02X?}", hash.get_hash_value_in_vec()), "[58271E8F, 7E54E508, CF099E8F, 4D3B597B, D3BE3F42]");
     /// ```
-    /// # Example for MD5_Expanded
+    /// # Example 2 for SHA1_Expanded
     /// ```
-    /// use cryptocol::hash::MD5_Expanded;
-    /// type myMD5 = MD5_Expanded<0x1111_1111, 0x4444_4444, 0x8888_8888, 0xffff_ffff, 96>;
-    /// let txt = "This is an example of the method get_HashValue_in_vec().";
-    /// let mut my_hash = myMD5::new();
+    /// use cryptocol::hash::SHA1_Expanded;
+    /// type MySHA1 = SHA1_Expanded<5, 0x1111_1111, 0x4444_4444, 0x8888_8888, 0xcccc_cccc, 0xffff_ffff, 160>;
+    /// let mut my_hash = MySHA1::new();
+    /// let txt = "This is an example of the method get_hash_value_in_vec().";
     /// my_hash.digest_str(txt);
-    /// println!("Msg =\t\"{}\"\nHash =\t{:08X?}", txt, my_hash.get_HashValue_in_vec());
-    /// assert_eq!(format!("{:08X?}", my_hash.get_HashValue_in_vec()), "[E02B8514, CC2B4041, 38CBFA58, 1E6B3F51]");
+    /// println!("Msg =\t\"{}\"\nHash =\t{:08X?}", txt, my_hash.get_hash_value_in_vec());
+    /// assert_eq!(format!("{:08X?}", my_hash.get_hash_value_in_vec()), "[DA959A5F, A8B581AD, FC006FB0, 9CCB3BCF, 7F4732F3]");
     /// ```
     /// 
     /// # Big-endian issue
     /// It is just experimental for Big Endian CPUs. So, you are not encouraged
     /// to use it for Big Endian CPUs for serious purpose. Only use this crate
     /// for Big-endian CPUs with your own full responsibility.
-    pub fn get_HashValue_in_vec(&self) -> Vec<u32>
+    pub fn get_hash_value_in_vec(&self) -> Vec<u32>
     {
         let mut res = Vec::new();
         for i in 0..N
@@ -823,7 +1121,7 @@ SHA1_generic<N, H0, H1, H2, H3, H4, ROUND, K0, K1, K2, K3, RL1, RL5, RL30>
         res
     }
 
-    // pub fn put_HashValue_in_array<T, const M: usize>(&self, out: &mut [T; M])
+    // pub fn put_hash_value_in_array<T, const M: usize>(&self, out: &mut [T; M])
     /// Puts a hash value in the form of array object.
     /// 
     /// # Argument
@@ -836,36 +1134,36 @@ SHA1_generic<N, H0, H1, H2, H3, H4, ROUND, K0, K1, K2, K3, RL1, RL5, RL30>
     /// # Example 1 for SHA1
     /// ```
     /// use cryptocol::hash::SHA1;
-    /// let txt = "This is an example of the method put_HashValue_in_array().";
     /// let mut hash = SHA1::new();
+    /// let txt = "This is an example of the method put_hash_value_in_array().";
     /// let mut hash_code = [0_u32; 5];
     /// hash.digest_str(txt);
-    /// hash.put_HashValue_in_array(&mut hash_code);
+    /// hash.put_hash_value_in_array(&mut hash_code);
     /// println!("Msg =\t\"{}\"\nHash =\t{:08X?}", txt, hash_code);
-    /// assert_eq!(format!("{:08X?}", hash_code), "[43A03EAD, E239C73E, 239E1235, 55033CEE, 5603FDF8]");
+    /// assert_eq!(format!("{:08X?}", hash_code), "[BC02B27F, 99A5A1FB, A820CEC4, 19516BC8, E4D2A0D6]");
     /// ```
     /// 
     /// # Example 2 for SHA1_Expanded
     /// ```
     /// use cryptocol::hash::SHA1_Expanded;
-    /// type mySHA1 = SHA1_Expanded<5, 0x1111_1111, 0x4444_4444, 0x8888_8888, 0xffff_ffff, 96>;
-    /// let txt = "This is an example of the method put_HashValue_in_array().";
-    /// let mut my_hash = mySHA1::new();
+    /// type MySHA1 = SHA1_Expanded<5, 0x1111_1111, 0x4444_4444, 0x8888_8888, 0xffff_ffff, 96>;
+    /// let mut my_hash = MySHA1::new();
+    /// let txt = "This is an example of the method put_hash_value_in_array().";
     /// let mut hash_code = [0_u32; 5];
     /// my_hash.digest_str(txt);
-    /// my_hash.put_HashValue_in_array(&mut hash_code);
+    /// my_hash.put_hash_value_in_array(&mut hash_code);
     /// println!("Msg =\t\"{}\"\nHash =\t{:08X?}", txt, hash_code);
-    /// assert_eq!(format!("{:08X?}", hash_code), "[F1B38744, D331E027, C10A5B1E, 2E8869B9, 42BEF118]");
+    /// assert_eq!(format!("{:08X?}", hash_code), "[91EF4936, CFCF8F2D, C581EF30, 450E4E05, 0FBD39A7]");
     /// ```
     /// 
     /// # Big-endian issue
     /// It is just experimental for Big Endian CPUs. So, you are not encouraged
     /// to use it for Big Endian CPUs for serious purpose. Only use this crate
     /// for Big-endian CPUs with your own full responsibility.
-    pub fn put_HashValue_in_array<T, const M: usize>(&self, out: &mut [T; M])
+    pub fn put_hash_value_in_array<T, const M: usize>(&self, out: &mut [T; M])
     where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     {
-        let res = self.get_HashValue_in_array();
+        let res = self.get_hash_value_in_array();
         let out_size = T::size_in_bytes() * M;
         let length = if out_size < 20 {out_size} else {20};
         unsafe { copy_nonoverlapping(res.as_ptr() as *const u8, out as *mut T as *mut u8, length); }
@@ -880,37 +1178,37 @@ SHA1_generic<N, H0, H1, H2, H3, H4, ROUND, K0, K1, K2, K3, RL1, RL5, RL30>
     /// # Features
     /// It is for using this struct as random number generator.
     /// 
-    /// Example for SHA1
+    /// Example 1 for SHA1
     /// ```
     /// use cryptocol::hash::SHA1;
     /// let txt = "TANGLING";
     /// let mut hash = SHA1::new();
     /// hash.digest_str(txt);
-    /// println!("Msg =\t\"{}\"\nHash =\t{:08X?}", txt, hash.get_HashValue_in_array());
-    /// assert_eq!(format!("{:08X?}", hash.get_HashValue_in_array()), "[5B296514, 79D48A17, 1ADABF55, 09CC69B9, 83477776]");
+    /// println!("Msg =\t\"{}\"\nHash =\t{:08X?}", txt, hash.get_hash_value_in_array());
+    /// assert_eq!(format!("{:08X?}", hash.get_hash_value_in_array()), "[5B296514, 79D48A17, 1ADABF55, 09CC69B9, 83477776]");
     /// hash.tangle(1);
-    /// println!("Hash =\t{:08X?}", hash.get_HashValue_in_array());
-    /// assert_eq!(format!("{:08X?}", hash.get_HashValue_in_array()), "[6D00CD91, 2A9BAD37, 210A8909, B6A83E2F, 5D986325]");
+    /// println!("Hash =\t{:08X?}", hash.get_hash_value_in_array());
+    /// assert_eq!(format!("{:08X?}", hash.get_hash_value_in_array()), "[6D00CD91, 2A9BAD37, 210A8909, B6A83E2F, 5D986325]");
     /// hash.tangle(1);
-    /// println!("Hash =\t{:08X?}", hash.get_HashValue_in_array());
-    /// assert_eq!(format!("{:08X?}", hash.get_HashValue_in_array()), "[E41C001F, 476FDC14, 1166767C, 3C09AE4D, 447B9B2F]");
+    /// println!("Hash =\t{:08X?}", hash.get_hash_value_in_array());
+    /// assert_eq!(format!("{:08X?}", hash.get_hash_value_in_array()), "[E41C001F, 476FDC14, 1166767C, 3C09AE4D, 447B9B2F]");
     /// ```
     /// 
-    /// Example for SHA1_Expanded
+    /// Example 2 for SHA1_Expanded
     /// ```
     /// use cryptocol::hash::SHA1_Expanded;
-    /// type mySHA1 = SHA1_Expanded<5, 0x1111_1111, 0x4444_4444, 0x8888_8888, 0xcccc_cccc, 0xffff_ffff, 160>;
+    /// type MySHA1 = SHA1_Expanded<5, 0x1111_1111, 0x4444_4444, 0x8888_8888, 0xcccc_cccc, 0xffff_ffff, 160>;
     /// let txt = "TANGLING";
-    /// let mut my_hash = mySHA1::new();
+    /// let mut my_hash = MySHA1::new();
     /// my_hash.digest_str(txt);
-    /// println!("Msg =\t\"{}\"\nHash =\t{:08X?}", txt, my_hash.get_HashValue_in_array());
-    /// assert_eq!(format!("{:08X?}", my_hash.get_HashValue_in_array()), "[570C0960, 44388BBA, 0DD84AC9, 2F78A2F8, E514D1FD]");
+    /// println!("Msg =\t\"{}\"\nHash =\t{:08X?}", txt, my_hash.get_hash_value_in_array());
+    /// assert_eq!(format!("{:08X?}", my_hash.get_hash_value_in_array()), "[570C0960, 44388BBA, 0DD84AC9, 2F78A2F8, E514D1FD]");
     /// my_hash.tangle(1);
-    /// println!("Hash =\t{:08X?}", my_hash.get_HashValue_in_array());
-    /// assert_eq!(format!("{:08X?}", my_hash.get_HashValue_in_array()), "[AE8C42A9, 4CFC9130, FF606528, E4876633, 27FC359F]");
+    /// println!("Hash =\t{:08X?}", my_hash.get_hash_value_in_array());
+    /// assert_eq!(format!("{:08X?}", my_hash.get_hash_value_in_array()), "[AE8C42A9, 4CFC9130, FF606528, E4876633, 27FC359F]");
     /// my_hash.tangle(1);
-    /// println!("Hash =\t{:08X?}", my_hash.get_HashValue_in_array());
-    /// assert_eq!(format!("{:08X?}", my_hash.get_HashValue_in_array()), "[2E33CBCF, 800599AD, 98827D7A, 41AA8BCB, D2D011FD]");
+    /// println!("Hash =\t{:08X?}", my_hash.get_hash_value_in_array());
+    /// assert_eq!(format!("{:08X?}", my_hash.get_hash_value_in_array()), "[2E33CBCF, 800599AD, 98827D7A, 41AA8BCB, D2D011FD]");
     /// ```
     #[inline]
     pub fn tangle(&mut self, tangling: u64)
@@ -929,7 +1227,7 @@ SHA1_generic<N, H0, H1, H2, H3, H4, ROUND, K0, K1, K2, K3, RL1, RL5, RL30>
     fn initialize(&mut self)
     {
         for i in 0..5_usize
-            { self.hash_code[i] = IntUnion::new_with(Self::getH(i)); }
+            { self.hash_code[i] = IntUnion::new_with(Self::get_h(i)); }
     }
 
     // fn update(&mut self, message: &[u32])
@@ -938,7 +1236,7 @@ SHA1_generic<N, H0, H1, H2, H3, H4, ROUND, K0, K1, K2, K3, RL1, RL5, RL30>
     /// eighty rounds.
     fn update(&mut self, message: &[u32])
     {
-        let mut W = [0_u32; 16];
+        let mut w = [0_u32; 16];
         let mut a = self.hash_code[0].get();
         let mut b = self.hash_code[1].get();
         let mut c = self.hash_code[2].get();
@@ -947,10 +1245,10 @@ SHA1_generic<N, H0, H1, H2, H3, H4, ROUND, K0, K1, K2, K3, RL1, RL5, RL30>
 
         for i in 0..16_usize
         {
-            W[i] = message[i].to_be();
-            let f = Self::Ff(b, c, d).wrapping_add(e)
-                                .wrapping_add(Self::getK(0))
-                                .wrapping_add(W[i])
+            w[i] = message[i].to_be();
+            let f = Self::ff(b, c, d).wrapping_add(e)
+                                .wrapping_add(Self::get_k(0))
+                                .wrapping_add(w[i])
                                 .wrapping_add(a.rotate_left(RL5));
             e = d;
             d = c;
@@ -961,11 +1259,11 @@ SHA1_generic<N, H0, H1, H2, H3, H4, ROUND, K0, K1, K2, K3, RL1, RL5, RL30>
         for i in 16..ROUND
         {
             let j = i & 0b1111;
-            W[j] = Self::getW(&W, i);
+            w[j] = Self::get_w(&w, i);
             let (mut f, z) = Self::func(b, c, d, i);
             f = f.wrapping_add(e)
-                .wrapping_add(Self::getK(z))
-                .wrapping_add(W[j])
+                .wrapping_add(Self::get_k(z))
+                .wrapping_add(w[j])
                 .wrapping_add(a.rotate_left(RL5));
             e = d;
             d = c;
@@ -1020,18 +1318,18 @@ SHA1_generic<N, H0, H1, H2, H3, H4, ROUND, K0, K1, K2, K3, RL1, RL5, RL30>
         let r = (round / 20) & 0b11;
         match r
         {
-            0 => { (Self::Ff(x, y, z), r) }
-            2 => { (Self::Hh(x, y, z), r) }
-            _ => { (Self::Gg(x, y, z), r) }
+            0 => { (Self::ff(x, y, z), r) }
+            2 => { (Self::hh(x, y, z), r) }
+            _ => { (Self::gg(x, y, z), r) }
         }
     }
 
-	#[inline] fn getK(idx: usize) -> u32    { Self::K[idx] }
-	#[inline] fn getH(idx: usize) -> u32    { Self::H[idx] }
-    #[inline] fn getW(W: &[u32; 16], idx: usize) -> u32   { (W[(idx-3) & 0b1111] ^ W[(idx-8) & 0b1111] ^ W[(idx-14) & 0b1111] ^ W[(idx-16) & 0b1111]).rotate_left(RL1) }
-	#[inline] fn Ff(x: u32, y: u32, z: u32) -> u32  { z ^ (x & (y ^ z)) }   // equivalent to { (x & y) | (!x & z) }
-	#[inline] fn Gg(x: u32, y: u32, z: u32) -> u32	{ x ^ y ^ z }
-	#[inline] fn Hh(x: u32, y: u32, z: u32) -> u32  { (x & y) | (z & (x | y)) } // equivalent to { (x & y) | (y & z) | (z & x) }
+	#[inline] fn get_k(idx: usize) -> u32    { Self::K[idx] }
+	#[inline] fn get_h(idx: usize) -> u32    { Self::H[idx] }
+    #[inline] fn get_w(w: &[u32; 16], idx: usize) -> u32   { (w[(idx-3) & 0b1111] ^ w[(idx-8) & 0b1111] ^ w[(idx-14) & 0b1111] ^ w[(idx-16) & 0b1111]).rotate_left(RL1) }
+	#[inline] fn ff(x: u32, y: u32, z: u32) -> u32  { z ^ (x & (y ^ z)) }   // equivalent to { (x & y) | (!x & z) }
+	#[inline] fn gg(x: u32, y: u32, z: u32) -> u32	{ x ^ y ^ z }
+	#[inline] fn hh(x: u32, y: u32, z: u32) -> u32  { (x & y) | (z & (x | y)) } // equivalent to { (x & y) | (y & z) | (z & x) }
     #[inline] fn to_char(nibble: u8) -> char    { if nibble < 10  { ('0' as u8 + nibble) as u8 as char } else { ('A' as u8 - 10 + nibble) as char } }
 }
 
@@ -1055,15 +1353,15 @@ Display for SHA1_generic<N, H0, H1, H2, H3, H4, ROUND, K0, K1, K2, K3, RL1, RL5,
     /// let mut hash = SHA1::new();
     /// let txt = "Display::fmt() automagically implement to_string().";
     /// hash.digest_str(txt);
-    /// println!("Msg =\t\"{}\"\nHash =\t{}\n", txt, hash.to_string());
+    /// println!("Msg =\t\"{}\"\nHash =\t{}", txt, hash.to_string());
     /// assert_eq!(hash.to_string(), "8D0A6284BBFF4DE8D68962A924842C80959B0404");
     /// ```
     /// 
     /// # Example 2 for the method to_string() for SHA1_Expanded
     /// ```
     /// use cryptocol::hash::SHA1_Expanded;
-    /// type mySHA1 = SHA1_Expanded<5, 0x1111_1111, 0x4444_4444, 0x8888_8888, 0xcccc_cccc, 0xffff_ffff, 160>;
-    /// let mut my_hash = mySHA1::new();
+    /// type MySHA1 = SHA1_Expanded<5, 0x1111_1111, 0x4444_4444, 0x8888_8888, 0xcccc_cccc, 0xffff_ffff, 160>;
+    /// let mut my_hash = MySHA1::new();
     /// let txt = "Display::fmt() automagically implement to_string().";
     /// my_hash.digest_str(txt);
     /// println!("Msg =\t\"{}\"\nHash =\t{}", txt, my_hash.to_string());
@@ -1083,8 +1381,8 @@ Display for SHA1_generic<N, H0, H1, H2, H3, H4, ROUND, K0, K1, K2, K3, RL1, RL5,
     /// # Example 4 for the use in the macro println!() for SHA1_Expanded
     /// ```
     /// use cryptocol::hash::SHA1_Expanded;
-    /// type mySHA1 = SHA1_Expanded<5, 0x1111_1111, 0x4444_4444, 0x8888_8888, 0xcccc_cccc, 0xffff_ffff, 160>;
-    /// let mut my_hash = mySHA1::new();
+    /// type MySHA1 = SHA1_Expanded<5, 0x1111_1111, 0x4444_4444, 0x8888_8888, 0xcccc_cccc, 0xffff_ffff, 160>;
+    /// let mut my_hash = MySHA1::new();
     /// let txt = "Display::fmt() enables the object to be printed in the macro println!() directly for example.";
     /// my_hash.digest_str(txt);
     /// println!("Msg =\t\"{}\"\nHash =\t{}", txt, my_hash);
@@ -1094,6 +1392,6 @@ Display for SHA1_generic<N, H0, H1, H2, H3, H4, ROUND, K0, K1, K2, K3, RL1, RL5,
     {
         // `write!` is like `format!`, but it will write the formatted string
         // into a buffer (the first argument)
-        write!(f, "{}", self.get_HashValue_in_string())
+        write!(f, "{}", self.get_hash_value_in_string())
     }
 }
