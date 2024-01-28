@@ -978,7 +978,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// 
     /// # Counterpart Method
     /// You can also use the method [from()](struct@BigUInt#impl-From<[T;+N]>-for-BigUInt<T,+N>)
-    /// implemented by implementation of trait From<[T;N]>.
+    /// implemented by implementation of trait `From<[T;N]>`.
     /// 
     /// # Example
     /// ```
@@ -3007,7 +3007,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
 
     // pub fn count_ones(&self) -> u32
     /// Returns the number of ones in the binary representation
-    /// of the array number[T;N] of `self`.
+    /// of the array `number[T;N]` of `self`.
     /// 
     /// # Output
     /// It returns the total number of the bits that are set to be one.
@@ -3032,7 +3032,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
 
     // pub fn count_zeros(&self) -> u32
     /// Returns the number of zeros in the binary representation
-    /// of the array number[T;N] of `self`.
+    /// of the array `number[T;N]` of `self`.
     /// 
     /// # Output
     /// It returns the total number of the bits that are set to be zero.
@@ -3056,7 +3056,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
 
     // pub fn leading_ones(&self) -> u32
     /// Returns the number of leading ones in the binary representation
-    /// of the array number[T;N] of `self`.
+    /// of the array `number[T;N]` of `self`.
     /// 
     /// # Output
     /// It returns the total number of the leading bits that are set to be one.
@@ -3088,7 +3088,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
 
     // pub fn leading_zeros(&self) -> u32
     /// Returns the number of leading zeros in the binary representation
-    /// of the array number[T;N] of `self`.
+    /// of the array `number[T;N]` of `self`.
     /// 
     /// # Output
     /// It returns the total number of the leading bits that are set to be zero.
@@ -3119,7 +3119,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
 
     // pub fn trailing_ones(&self) -> u32
     /// Returns the number of trailing ones in the binary representation
-    /// of the array number[T;N] of `self`.
+    /// of the array `number[T;N]` of `self`.
     /// 
     /// # Output
     /// It returns the total number of the trailing bits that are set to be one.
@@ -3154,7 +3154,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
 
     // pub fn trailing_zeros(&self) -> u32
     /// Returns the number of trailing zeros in the binary representation
-    /// of the array number[T;N] of `self`.
+    /// of the array `number[T;N]` of `self`.
     /// 
     /// # Output
     /// It returns the total number of the trailing bits that are set to be zero.
@@ -3188,7 +3188,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
 
     // pub fn leading_max_elements(&self) -> u32
     /// Returns the number of leading maximum elements in the binary
-    /// representation of the array number[T;N] of `self`.
+    /// representation of the array `number[T;N]` of `self`.
     /// Here, 'maximum element' means the element that has all bits to be one.
     /// 
     /// # Output
@@ -3225,7 +3225,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
 
     // pub fn leading_zero_elements(&self) -> u32
     /// Returns the number of leading zero elements in the binary
-    /// representation of the array number[T;N] of `self`.
+    /// representation of the array `number[T;N]` of `self`.
     /// 
     /// # Output
     /// It returns the total number of the leading zero elemments
@@ -3260,7 +3260,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
 
     // pub fn trailing_max_elements(&self) -> u32
     /// Returns the number of trailing maximum elements in the binary
-    /// representation of the array number[T;N] of `self`.
+    /// representation of the array `number[T;N]` of `self`.
     /// Here, 'maximum element' means the element that has all bits to be one.
     /// 
     /// # Output
@@ -3292,7 +3292,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
 
     // pub fn trailing_zero_elements(&self) -> u32
     /// Returns the number of trailing zeros in the binary representation
-    /// of the array number[T;N] of `self`.
+    /// of the array `number[T;N]` of `self`.
     /// 
     /// # Output
     /// It returns the total number of the trailing bits that are set to be zero.
@@ -9193,7 +9193,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     }
 
     //////////////////////////////////////////////////
-    /// // pub fn root_uint<U>(&self, exp: U) -> Self
+    // pub fn root_uint<U>(&self, exp: U) -> Self
     /// 
     #[inline]
     pub fn root_uint<U>(&self, exp: U) -> Self
@@ -12639,7 +12639,8 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// It returns the smallest power of two greater than or equal to `self`.
     /// 
     /// # Features
-    /// When return value overflows (i.e., self > (1 << (size_of::<T>() * N - 1))),
+    /// When return value overflows
+    /// (i.e., self > `(1 << (size_of::<T>() * N - 1))`),
     /// it returns value wrapped around.
     /// 
     /// # Example

@@ -17,8 +17,6 @@
 
 use std::mem::{ size_of, size_of_val };
 
-// use rand::{ RngCore, thread_rng, Rng };
-// use rand::rngs::OsRng;
 
 /// Trait SmallUInt is for generic type of primitive unsigned integer data types
 /// for all modules of the crate Cryptocol.
@@ -60,7 +58,7 @@ pub trait SmallUInt: Copy + Clone + Sized //+ Display + Debug + ToString
     /// “ternary addition” of two integer operands and a carry-in bit, and
     /// returns an output integer and a carry-out bit.
     /// 
-    /// # Example for u8
+    /// # Example 1 for u8
     /// ```
     /// use cryptocol::number::SmallUInt;
     /// fn main()
@@ -111,7 +109,7 @@ pub trait SmallUInt: Copy + Clone + Sized //+ Display + Debug + ToString
     /// }
     /// ```
     /// 
-    /// # Example for u128
+    /// # Example 2 for u128
     /// ```
     /// use cryptocol::number::SmallUInt;
     /// fn main()

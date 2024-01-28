@@ -6,18 +6,18 @@ are far more popular than Big-endian CPUs. For the information about
 Endianness (including Little-endian and Big-endian)
 [Read more](https://en.wikipedia.org/wiki/Endianness).
 
-# Big-endian issue
+## Big-endian issue
 This crate is just experimental for Big-endian CPUs. So, you are not
 encouraged to use this crate for Big-endian CPUs for serious purpose.
 Only use this crate for Big-endian CPUs with your own full responsibility.
 
-# Road Map for Version 1.0
+## Road Map for Version 1.0
 This crate Cryptocol is planned to provide the following functionalities.
 The checked items have already been implemented including documentation
 at least 80%. The unchecked items have not yet been implemented including
 documentation more than 80% or have not yet even been started to implement.
 
-## Foundations mainly for Big Numbers and also for other modules
+### Foundations mainly for Big Numbers and also for other modules
 - [ ] Unions for primitive data types and their implementation ---
     [`ShortUnion`](number/small_int_unions/union.ShortUnion.html#union.ShortUnion),
     [`IntUnion`](number/small_int_unions/union.IntUnion.html#union.IntUnion),
@@ -29,13 +29,13 @@ documentation more than 80% or have not yet even been started to implement.
     [SmallUInt](number/small_uint/trait.SmallUInt.html#trait.SmallUInt)
 - [ ] Trait SmallSInt and its implementation of primitive data types
 
-## Big Numbers
+### Big Numbers
 - [ ] Fixed Sized Big Unsigned Integer Operation ---
     [`BigUInt`](number/big_uint/struct.BigUInt.html#struct.BigUInt)
 - [ ] Fixed Sized Big Signed Integer Operation --- BigSInt
 - [ ] Variable Sized Big Signed Integer Operation --- LargeInt
 
-## Hash Algorithms
+### Hash Algorithms
 - [X] MD4 hash algorithms based on 128 bits
     --- Includes MD4 and its expanded versions.
     [`MD4_Generic`](hash/md4/struct.MD4_Generic.html#struct.MD4_Generic)
@@ -61,12 +61,12 @@ documentation more than 80% or have not yet even been started to implement.
 - [ ] SHA-3 (SHAKE 128)
 - [ ] SHA-3 (SHAKE 256)
 
-## Symmetric-Key Cryptographic Algorithms
+### Symmetric-Key Cryptographic Algorithms
 - [ ] DES
 - [ ] 3DES
 - [ ] AES
 
-## Pseudo-Random Number Generator Algorithms
+### Pseudo-Random Number Generator Algorithms
 - [X] The Pseudo-random number generator wrappers
     --- struct [`Random_Generic`](random/random/struct.Random_Generic.html#struct.Random_Generic)
     and trait
@@ -80,7 +80,7 @@ documentation more than 80% or have not yet even been started to implement.
     and for pseudo-random number generation algorithm such as
     [`AnyNumber`](random/any_number/struct.AnyNumber.html#struct.AnyNumber)
 
-## Asymmetric-Key Cryptographic Algorithms
+### Asymmetric-Key Cryptographic Algorithms
 - [ ] Diffie-Hellman
 - [ ] RSA (Ron Rivest, Adi Shamir, Leonard Adleman)
 - [ ] ECC (Elliptic Curve Cryptosystem)
@@ -93,7 +93,10 @@ number will be 0.26.x.x since there are all twenty-six functionalities
 listed above. So, for example, even if the version number is 0.5.0.0,
 it does not mean that 50% of all functionalities are implemented.
 
-## trait SmallUInt and its implementation for u8, u16, u32, u64, u128, usize, ShortUnion, IntUnion, LongUnion, LongerUnion, and SizeUnion
+## Sorry for breaking changes from ver. 0.5.0 to ver. 0.6.0
+Breaking changes have been made to change the source code according to Rust convention and in order to remove all warnings.
+
+### trait SmallUInt and its implementation for u8, u16, u32, u64, u128, usize, ShortUnion, IntUnion, LongUnion, LongerUnion, and SizeUnion
 | Ver. 0.5.0                                                      | Ver. 0.6.0                                                      |
 |-----------------------------------------------------------------|-----------------------------------------------------------------|
 | fn test_Miller_Rabin(self, a: Self) -> bool                     | fn test_miller_rabin(self, a: Self) -> bool                     |
@@ -109,7 +112,7 @@ it does not mean that 50% of all functionalities are implemented.
 | fn set_LSB(&mut self)                                           | fn set_lsb(&mut self)                                           |
 | fn is_MSB_set(self) -> bool                                     | fn is_msb_set(self) -> bool                                     |
 
-## struct BigUInt
+### struct BigUInt
 | Ver. 0.5.0                                                      | Ver. 0.6.0                                                      |
 |-----------------------------------------------------------------|-----------------------------------------------------------------|
 | fn test_Miller_Rabin(self, a: Self) -> bool                     | fn test_miller_rabin(self, a: Self) -> bool                     |
@@ -201,7 +204,7 @@ it does not mean that 50% of all functionalities are implemented.
 | fn Max() -> Self                                                | fn max() -> Self                                                |
 | fn Min() -> Self                                                | fn min() -> Self                                                |
 
-## struct MD4_Generic, MD5_Generic, SHA1_Generic, SHA2_256_Generic, SHA2_512_Generic, and SHA2_512_t_Generic
+### struct MD4_Generic, MD5_Generic, SHA1_Generic, SHA2_256_Generic, SHA2_512_Generic, and SHA2_512_t_Generic
 | Ver. 0.5.0                                                      | Ver. 0.6.0                                                      |
 |-----------------------------------------------------------------|-----------------------------------------------------------------|
 | fn get_HashValue(&self, hashValue: *mut u8, length: usize)      | fn get_hash_value(&self, hash_value: *mut u8, length: usize)    |
@@ -211,14 +214,14 @@ it does not mean that 50% of all functionalities are implemented.
 | fn put_HashValue_in_array(&self, out: &mut [T; M])              | fn put_hash_value_in_array(&self, out: &mut [T; M])             |
 | fn digest_C(&mut self, ...)                                     | fn digest_c(&mut self, ...)                                     |
 
-## struct SHA2_512_t_Generic
+### struct SHA2_512_t_Generic
 | Ver. 0.5.0                                                      | Ver. 0.6.0                                                      |
 |-----------------------------------------------------------------|-----------------------------------------------------------------|
 | fn get_HashValue_in_array_TM(&self) -> [T; M]                   | fn get_hash_value_in_array_tm(&self) -> [T; M]                  |
-| fn new_with_seedText(seed_text: &str) -> Self                   | fn new_with_seedText(seed_text: &str) -> Self                   |
+| fn new_with_seedText(seed_text: &str) -> Self                   | fn new_with_seed_text(seed_text: &str) -> Self                   |
 | fn new_with_H(h: &[u64; 8]) -> Self                             | fn new_with_h(h: &[u64; 8]) -> Self                             |
 
-## struct Random
+### struct Random
 | Ver. 0.5.0                                                      | Ver. 0.6.0                                                      |
 |-----------------------------------------------------------------|-----------------------------------------------------------------|
 | fn random_with_MSB_set_uint(&mut self) -> T                     | fn random_with_msb_set_uint(&mut self) -> T                     |

@@ -86,13 +86,10 @@
 //! You can use either struct `Any` or `Random` depending on your purpose.
 //! `Any` is for normal non-cryptographical purpose while `Random` is for
 //! cryptographical purpose if you are fine to use hash algorithm for
-//! pseudo-random number generator for cryptographical purpose. Look into
-//! the following examples.
+//! pseudo-random number generator for cryptographical purpose.
 //! 
-//! ## Example 1
-//! ```
-//! //Todo
-//! ```
+//! - For `Random_Generic`, read [here](struct@Random_Generic#quick-start).
+//! 
 //! 
 //! # How to embed OsRng in this module
 //! First, you have to include additional dependencies in your Cargo.toml

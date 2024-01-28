@@ -63,6 +63,7 @@ pub type MD4 = MD4_Expanded;
 /// - Generating small number of IDs
 /// - Integrity test in some collision-free situations
 /// - Storing passwords with limited security
+/// - Key generation
 /// - Study of hash algorithms
 /// - Cryptanalysis Research to find the weakness of MD4 and Merkle-Damgard
 /// construction which MD2, MD4, MD5, SHA0, SHA1, and all SHA2 family use
@@ -265,19 +266,19 @@ MD4_Generic<N, H0, H1, H2, H3, ROUND, K0, K1, K2,
     /// # Counterpart Methods
     /// - If you want to compute of the hash value of a string slice,
     /// you are highly recommended to use the method
-    /// [digest_str()](struct@MD4#method.digest_str)
+    /// [digest_str()](struct@MD4_Generic#method.digest_str)
     /// rather than this method.
     /// - If you want to compute of the hash value of the content of String
     /// object, you are highly recommended to use the method
-    /// [digest_string()](struct@MD4#method.digest_string)
+    /// [digest_string()](struct@MD4_Generic#method.digest_string)
     /// rather than this method.
     /// - If you want to compute of the hash value of the content of Array
     /// object, you are highly recommended to use the method
-    /// [digest_array()](struct@MD4#method.digest_array)
+    /// [digest_array()](struct@MD4_Generic#method.digest_array)
     /// rather than this method.
     /// - If you want to compute of the hash value of the content of Vec
     /// object, you are highly recommended to use the method
-    /// [digest_vec()](struct@MD4#method.digest_array)
+    /// [digest_vec()](struct@MD4_Generic#method.digest_array)
     /// rather than this method.
     ///
     /// # Example for MD4
@@ -330,19 +331,19 @@ MD4_Generic<N, H0, H1, H2, H3, ROUND, K0, K1, K2,
     /// # Counterpart Methods
     /// - If you want to compute of the hash value of the content of String
     /// object, you are highly recommended to use the method
-    /// [digest_string()](struct@MD4#method.digest_string)
+    /// [digest_string()](struct@MD4_Generic#method.digest_string)
     /// rather than this method.
     /// - If you want to compute of the hash value of the content of Array
     /// object, you are highly recommended to use the method
-    /// [digest_array()](struct@MD4#method.digest_array)
+    /// [digest_array()](struct@MD4_Generic#method.digest_array)
     /// rather than this method.
     /// - If you want to compute of the hash value of the content of Vec
     /// object, you are highly recommended to use the method
-    /// [digest_vec()](struct@MD4#method.digest_array)
+    /// [digest_vec()](struct@MD4_Generic#method.digest_array)
     /// rather than this method.
     /// - If you want to use this method from other programming languages such
     /// as C/C++, you are highly recommended to use the method
-    /// [digest()](struct@MD4#method.digest) rather than this method.
+    /// [digest()](struct@MD4_Generic#method.digest) rather than this method.
     ///
     /// # Example for MD4
     /// ```
@@ -388,19 +389,19 @@ MD4_Generic<N, H0, H1, H2, H3, ROUND, K0, K1, K2,
     /// # Counterpart Methods
     /// - If you want to compute of the hash value of a string slice,
     /// you are highly recommended to use the method
-    /// [digest_str()](struct@MD4#method.digest_str)
+    /// [digest_str()](struct@MD4_Generic#method.digest_str)
     /// rather than this method.
     /// - If you want to compute of the hash value of the content of Array
     /// object, you are highly recommended to use the method
-    /// [digest_array()](struct@MD4#method.digest_array)
+    /// [digest_array()](struct@MD4_Generic#method.digest_array)
     /// rather than this method.
     /// - If you want to compute of the hash value of the content of Vec
     /// object, you are highly recommended to use the method
-    /// [digest_vec()](struct@MD4#method.digest_array)
+    /// [digest_vec()](struct@MD4_Generic#method.digest_array)
     /// rather than this method.
     /// - If you want to use this method from other programming languages such
     /// as C/C++, you are highly recommended to use the method
-    /// [digest()](struct@MD4#method.digest) rather than this method.
+    /// [digest()](struct@MD4_Generic#method.digest) rather than this method.
     ///
     /// # Example for MD4
     /// ```
@@ -446,19 +447,19 @@ MD4_Generic<N, H0, H1, H2, H3, ROUND, K0, K1, K2,
     /// # Counterpart Methods
     /// - If you want to compute of the hash value of a string slice,
     /// you are highly recommended to use the method
-    /// [digest_str()](struct@MD4#method.digest_str)
+    /// [digest_str()](struct@MD4_Generic#method.digest_str)
     /// rather than this method.
     /// - If you want to compute of the hash value of the content of String
     /// object, you are highly recommended to use the method
-    /// [digest_string()](struct@MD4#method.digest_string)
+    /// [digest_string()](struct@MD4_Generic#method.digest_string)
     /// rather than this method.
     /// - If you want to compute of the hash value of the content of Vec
     /// object, you are highly recommended to use the method
-    /// [digest_vec()](struct@MD4#method.digest_array)
+    /// [digest_vec()](struct@MD4_Generic#method.digest_array)
     /// rather than this method.
     /// - If you want to use this method from other programming languages such
     /// as C/C++, you are highly recommended to use the method
-    /// [digest()](struct@MD4#method.digest) rather than this method.
+    /// [digest()](struct@MD4_Generic#method.digest) rather than this method.
     ///
     /// # Example for MD4
     /// ```
@@ -505,19 +506,19 @@ MD4_Generic<N, H0, H1, H2, H3, ROUND, K0, K1, K2,
     /// # Counterpart Methods
     /// - If you want to compute of the hash value of a string slice,
     /// you are highly recommended to use the method
-    /// [digest_str()](struct@MD4#method.digest_str)
+    /// [digest_str()](struct@MD4_Generic#method.digest_str)
     /// rather than this method.
     /// - If you want to compute of the hash value of the content of String
     /// object, you are highly recommended to use the method
-    /// [digest_string()](struct@MD4#method.digest_string)
+    /// [digest_string()](struct@MD4_Generic#method.digest_string)
     /// rather than this method.
     /// - If you want to compute of the hash value of the content of Array
     /// object, you are highly recommended to use the method
-    /// [digest_array()](struct@MD4#method.digest_array)
+    /// [digest_array()](struct@MD4_Generic#method.digest_array)
     /// rather than this method.
     /// - If you want to use this method from other programming languages such
     /// as C/C++, you are highly recommended to use the method
-    /// [digest()](struct@MD4#method.digest) rather than this method.
+    /// [digest()](struct@MD4_Generic#method.digest) rather than this method.
     ///
     /// # Example for MD4
     /// ```
@@ -866,15 +867,15 @@ MD4_Generic<N, H0, H1, H2, H3, ROUND, K0, K1, K2,
     /// # Counterpart Methods
     /// - If you want to get the hash value in the form of String object,
     /// you are highly recommended to use the method
-    /// [get_hash_value_string()](struct@MD4#method.get_hash_value_string)
+    /// [get_hash_value_string()](struct@MD4_Generic#method.get_hash_value_string)
     /// rather than this method.
     /// - If you want to get the hash value in the form of array object,
     /// you are highly recommended to use the method
-    /// [get_hash_value_in_array()](struct@MD4#method.get_hash_value_in_array)
+    /// [get_hash_value_in_array()](struct@MD4_Generic#method.get_hash_value_in_array)
     /// rather than this method.
     /// - If you want to get the hash value in the form of Vec object,
     /// you are highly recommended to use the method
-    /// [get_hash_value_in_vec()](struct@MD4#method.get_hash_value_in_vec)
+    /// [get_hash_value_in_vec()](struct@MD4_Generic#method.get_hash_value_in_vec)
     /// rather than this method.
     ///
     /// # Example for MD4
@@ -930,15 +931,15 @@ MD4_Generic<N, H0, H1, H2, H3, ROUND, K0, K1, K2,
     /// # Counterpart Methods
     /// - If you want to get the hash value in the form of array object,
     /// you are highly recommended to use the method
-    /// [get_hash_value_in_array()](struct@MD4#method.get_hash_value_in_array)
+    /// [get_hash_value_in_array()](struct@MD4_Generic#method.get_hash_value_in_array)
     /// rather than this method.
     /// - If you want to get the hash value in the form of Vec object,
     /// you are highly recommended to use the method
-    /// [get_hash_value_in_vec()](struct@MD4#method.get_hash_value_in_vec)
+    /// [get_hash_value_in_vec()](struct@MD4_Generic#method.get_hash_value_in_vec)
     /// rather than this method.
     /// - If you want to use this method from other programming languages such
     /// as C/C++, you are highly recommended to use the method
-    /// [get_hash_value()](struct@MD4#method.get_hash_value)
+    /// [get_hash_value()](struct@MD4_Generic#method.get_hash_value)
     /// rather than this method.
     ///
     /// # Example for MD4
@@ -992,19 +993,19 @@ MD4_Generic<N, H0, H1, H2, H3, ROUND, K0, K1, K2,
     /// # Counterpart Methods
     /// - If you want to get the hash value in any form of Array object,
     /// you are highly recommended to use the method
-    /// [put_hash_value_in_array()](struct@MD4#method.put_hash_value_in_array)
+    /// [put_hash_value_in_array()](struct@MD4_Generic#method.put_hash_value_in_array)
     /// rather than this method.
     /// - If you want to get the hash value in the form of String object,
     /// you are highly recommended to use the method
-    /// [get_hash_value_in_string()](struct@MD4#method.get_hash_value_in_string)
+    /// [get_hash_value_in_string()](struct@MD4_Generic#method.get_hash_value_in_string)
     /// rather than this method.
     /// - If you want to get the hash value in the form of Vec object,
     /// you are highly recommended to use the method
-    /// [get_hash_value_in_vec()](struct@MD4#method.get_hash_value_in_vec)
+    /// [get_hash_value_in_vec()](struct@MD4_Generic#method.get_hash_value_in_vec)
     /// rather than this method.
     /// - If you want to use this method from other programming languages such
     /// as C/C++, you are highly recommended to use the method
-    /// [get_hash_value()](struct@MD4#method.get_hash_value)
+    /// [get_hash_value()](struct@MD4_Generic#method.get_hash_value)
     /// rather than this method.
     ///
     /// # Example for MD4
@@ -1044,20 +1045,20 @@ MD4_Generic<N, H0, H1, H2, H3, ROUND, K0, K1, K2,
     /// Returns a hash value in the form of Vec object.
     /// 
     /// # Output
-    /// It returns Vec<u32>.
+    /// It returns `Vec<u32>`.
     /// 
     /// # Counterpart Methods
     /// - If you want to get the hash value in the form of String object,
     /// you are highly recommended to use the method
-    /// [get_hash_value_string()](struct@MD4#method.get_hash_value_string)
+    /// [get_hash_value_string()](struct@MD4_Generic#method.get_hash_value_string)
     /// rather than this method.
     /// - If you want to get the hash value in the form of array object,
     /// you are highly recommended to use the method
-    /// [get_hash_value_in_array()](struct@MD4#method.get_hash_value_in_array)
+    /// [get_hash_value_in_array()](struct@MD4_Generic#method.get_hash_value_in_array)
     /// rather than this method.
     /// - If you want to use this method from other programming languages such
     /// as C/C++, you are highly recommended to use the method
-    /// [get_hash_value()](struct@MD4#method.get_hash_value)
+    /// [get_hash_value()](struct@MD4_Generic#method.get_hash_value)
     /// rather than this method.
     ///
     /// # Example for MD4
@@ -1101,8 +1102,8 @@ MD4_Generic<N, H0, H1, H2, H3, ROUND, K0, K1, K2,
     /// `out` is the array [T; M] which is the place to put the hash value.
     /// 
     /// # Features
-    /// If M * mem::size_of::<T>() > mem::size_of::<u32>() * N,
-    /// it pass the output as the amount of mem::size_of::<u32>() * N.
+    /// If `M * mem::size_of::<T>()` > `mem::size_of::<u32>() * N`,
+    /// it pass the output as the amount of `mem::size_of::<u32>() * N`.
     ///
     /// # Example for MD4
     /// ```

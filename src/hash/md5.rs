@@ -89,6 +89,7 @@ pub type MD5 = MD5_Expanded;
 /// - Generating small number of IDs
 /// - Integrity test in some collision-free situations
 /// - Storing passwords with limited security
+/// - Key generation
 /// - Study of hash algorithms
 /// - Cryptanalysis Research to find the weakness of MD5 and Merkle-Damgard
 /// construction which MD2, MD4, MD5, SHA0, SHA1, and all SHA2 family use
@@ -356,19 +357,19 @@ MD5_Generic<N, H0, H1, H2, H3, ROUND,
     /// # Counterpart Methods
     /// - If you want to compute of the hash value of a string slice,
     /// you are highly recommended to use the method
-    /// [digest_str()](struct@MD5#method.digest_str)
+    /// [digest_str()](struct@MD5_Generic#method.digest_str)
     /// rather than this method.
     /// - If you want to compute of the hash value of the content of String
     /// object, you are highly recommended to use the method
-    /// [digest_string()](struct@MD5#method.digest_string)
+    /// [digest_string()](struct@MD5_Generic#method.digest_string)
     /// rather than this method.
     /// - If you want to compute of the hash value of the content of Array
     /// object, you are highly recommended to use the method
-    /// [digest_array()](struct@MD5#method.digest_array)
+    /// [digest_array()](struct@MD5_Generic#method.digest_array)
     /// rather than this method.
     /// - If you want to compute of the hash value of the content of Vec
     /// object, you are highly recommended to use the method
-    /// [digest_vec()](struct@MD5#method.digest_array)
+    /// [digest_vec()](struct@MD5_Generic#method.digest_array)
     /// rather than this method.
     ///
     /// # Example for MD5
@@ -420,19 +421,19 @@ MD5_Generic<N, H0, H1, H2, H3, ROUND,
     /// # Counterpart Methods
     /// - If you want to compute of the hash value of the content of String
     /// object, you are highly recommended to use the method
-    /// [digest_string()](struct@MD5#method.digest_string)
+    /// [digest_string()](struct@MD5_Generic#method.digest_string)
     /// rather than this method.
     /// - If you want to compute of the hash value of the content of Array
     /// object, you are highly recommended to use the method
-    /// [digest_array()](struct@MD5#method.digest_array)
+    /// [digest_array()](struct@MD5_Generic#method.digest_array)
     /// rather than this method.
     /// - If you want to compute of the hash value of the content of Vec
     /// object, you are highly recommended to use the method
-    /// [digest_vec()](struct@MD5#method.digest_array)
+    /// [digest_vec()](struct@MD5_Generic#method.digest_array)
     /// rather than this method.
     /// - If you want to use this method from other programming languages such
     /// as C/C++, you are highly recommended to use the method
-    /// [digest()](struct@MD5#method.digest) rather than this method.
+    /// [digest()](struct@MD5_Generic#method.digest) rather than this method.
     ///
     /// # Example for MD5
     /// ```
@@ -478,19 +479,19 @@ MD5_Generic<N, H0, H1, H2, H3, ROUND,
     /// # Counterpart Methods
     /// - If you want to compute of the hash value of a string slice,
     /// you are highly recommended to use the method
-    /// [digest_str()](struct@MD5#method.digest_str)
+    /// [digest_str()](struct@MD5_Generic#method.digest_str)
     /// rather than this method.
     /// - If you want to compute of the hash value of the content of Array
     /// object, you are highly recommended to use the method
-    /// [digest_array()](struct@MD5#method.digest_array)
+    /// [digest_array()](struct@MD5_Generic#method.digest_array)
     /// rather than this method.
     /// - If you want to compute of the hash value of the content of Vec
     /// object, you are highly recommended to use the method
-    /// [digest_vec()](struct@MD5#method.digest_array)
+    /// [digest_vec()](struct@MD5_Generic#method.digest_array)
     /// rather than this method.
     /// - If you want to use this method from other programming languages such
     /// as C/C++, you are highly recommended to use the method
-    /// [digest()](struct@MD5#method.digest) rather than this method.
+    /// [digest()](struct@MD5_Generic#method.digest) rather than this method.
     ///
     /// # Example for MD5
     /// ```
@@ -536,19 +537,19 @@ MD5_Generic<N, H0, H1, H2, H3, ROUND,
     /// # Counterpart Methods
     /// - If you want to compute of the hash value of a string slice,
     /// you are highly recommended to use the method
-    /// [digest_str()](struct@MD5#method.digest_str)
+    /// [digest_str()](struct@MD5_Generic#method.digest_str)
     /// rather than this method.
     /// - If you want to compute of the hash value of the content of String
     /// object, you are highly recommended to use the method
-    /// [digest_string()](struct@MD5#method.digest_string)
+    /// [digest_string()](struct@MD5_Generic#method.digest_string)
     /// rather than this method.
     /// - If you want to compute of the hash value of the content of Vec
     /// object, you are highly recommended to use the method
-    /// [digest_vec()](struct@MD5#method.digest_array)
+    /// [digest_vec()](struct@MD5_Generic#method.digest_array)
     /// rather than this method.
     /// - If you want to use this method from other programming languages such
     /// as C/C++, you are highly recommended to use the method
-    /// [digest()](struct@MD5#method.digest) rather than this method.
+    /// [digest()](struct@MD5_Generic#method.digest) rather than this method.
     ///
     /// # Example for MD5
     /// ```
@@ -596,19 +597,19 @@ MD5_Generic<N, H0, H1, H2, H3, ROUND,
     /// # Counterpart Methods
     /// - If you want to compute of the hash value of a string slice,
     /// you are highly recommended to use the method
-    /// [digest_str()](struct@MD5#method.digest_str)
+    /// [digest_str()](struct@MD5_Generic#method.digest_str)
     /// rather than this method.
     /// - If you want to compute of the hash value of the content of String
     /// object, you are highly recommended to use the method
-    /// [digest_string()](struct@MD5#method.digest_string)
+    /// [digest_string()](struct@MD5_Generic#method.digest_string)
     /// rather than this method.
     /// - If you want to compute of the hash value of the content of Array
     /// object, you are highly recommended to use the method
-    /// [digest_array()](struct@MD5#method.digest_array)
+    /// [digest_array()](struct@MD5_Generic#method.digest_array)
     /// rather than this method.
     /// - If you want to use this method from other programming languages such
     /// as C/C++, you are highly recommended to use the method
-    /// [digest()](struct@MD5#method.digest) rather than this method.
+    /// [digest()](struct@MD5_Generic#method.digest) rather than this method.
     ///
     /// # Example for MD5
     /// ```
@@ -957,15 +958,15 @@ MD5_Generic<N, H0, H1, H2, H3, ROUND,
     /// # Counterpart Methods
     /// - If you want to get the hash value in the form of String object,
     /// you are highly recommended to use the method
-    /// [get_hash_value_string()](struct@MD5#method.get_hash_value_string)
+    /// [get_hash_value_string()](struct@MD5_Generic#method.get_hash_value_string)
     /// rather than this method.
     /// - If you want to get the hash value in the form of array object,
     /// you are highly recommended to use the method
-    /// [get_hash_value_in_array()](struct@MD5#method.get_hash_value_in_array)
+    /// [get_hash_value_in_array()](struct@MD5_Generic#method.get_hash_value_in_array)
     /// rather than this method.
     /// - If you want to get the hash value in the form of Vec object,
     /// you are highly recommended to use the method
-    /// [get_hash_value_in_vec()](struct@MD5#method.get_hash_value_in_vec)
+    /// [get_hash_value_in_vec()](struct@MD5_Generic#method.get_hash_value_in_vec)
     /// rather than this method.
     ///
     /// # Example for MD5
@@ -1023,15 +1024,15 @@ MD5_Generic<N, H0, H1, H2, H3, ROUND,
     /// # Counterpart Methods
     /// - If you want to get the hash value in the form of array object,
     /// you are highly recommended to use the method
-    /// [get_hash_value_in_array()](struct@MD5#method.get_hash_value_in_array)
+    /// [get_hash_value_in_array()](struct@MD5_Generic#method.get_hash_value_in_array)
     /// rather than this method.
     /// - If you want to get the hash value in the form of Vec object,
     /// you are highly recommended to use the method
-    /// [get_hash_value_in_vec()](struct@MD5#method.get_hash_value_in_vec)
+    /// [get_hash_value_in_vec()](struct@MD5_Generic#method.get_hash_value_in_vec)
     /// rather than this method.
     /// - If you want to use this method from other programming languages such
     /// as C/C++, you are highly recommended to use the method
-    /// [get_hash_value()](struct@MD5#method.get_hash_value)
+    /// [get_hash_value()](struct@MD5_Generic#method.get_hash_value)
     /// rather than this method.
     ///
     /// # Example for MD5
@@ -1084,15 +1085,15 @@ MD5_Generic<N, H0, H1, H2, H3, ROUND,
     /// # Counterpart Methods
     /// - If you want to get the hash value in the form of String object,
     /// you are highly recommended to use the method
-    /// [get_hash_value_string()](struct@MD5#method.get_hash_value_string)
+    /// [get_hash_value_string()](struct@MD5_Generic#method.get_hash_value_string)
     /// rather than this method.
     /// - If you want to get the hash value in the form of Vec object,
     /// you are highly recommended to use the method
-    /// [get_hash_value_in_vec()](struct@MD5#method.get_hash_value_in_vec)
+    /// [get_hash_value_in_vec()](struct@MD5_Generic#method.get_hash_value_in_vec)
     /// rather than this method.
     /// - If you want to use this method from other programming languages such
     /// as C/C++, you are highly recommended to use the method
-    /// [get_hash_value()](struct@MD5#method.get_hash_value)
+    /// [get_hash_value()](struct@MD5_Generic#method.get_hash_value)
     /// rather than this method.
     ///
     /// # Example for MD5
@@ -1132,20 +1133,20 @@ MD5_Generic<N, H0, H1, H2, H3, ROUND,
     /// Returns a hash value in the form of Vec object.
     /// 
     /// # Output
-    /// It returns Vec<u32>.
+    /// It returns `Vec<u32>`.
     /// 
     /// # Counterpart Methods
     /// - If you want to get the hash value in the form of String object,
     /// you are highly recommended to use the method
-    /// [get_hash_value_string()](struct@MD5#method.get_hash_value_string)
+    /// [get_hash_value_string()](struct@MD5_Generic#method.get_hash_value_string)
     /// rather than this method.
     /// - If you want to get the hash value in the form of array object,
     /// you are highly recommended to use the method
-    /// [get_hash_value_in_array()](struct@MD5#method.get_hash_value_in_array)
+    /// [get_hash_value_in_array()](struct@MD5_Generic#method.get_hash_value_in_array)
     /// rather than this method.
     /// - If you want to use this method from other programming languages such
     /// as C/C++, you are highly recommended to use the method
-    /// [get_hash_value()](struct@MD5#method.get_hash_value)
+    /// [get_hash_value()](struct@MD5_Generic#method.get_hash_value)
     /// rather than this method.
     ///
     /// # Example for MD5
@@ -1188,8 +1189,8 @@ MD5_Generic<N, H0, H1, H2, H3, ROUND,
     /// `out` is the array [T; M] which is the place to put the hash value.
     /// 
     /// # Features
-    /// If M * mem::size_of::<T>() > mem::size_of::<u32>() * N,
-    /// it pass the output as the amount of mem::size_of::<u32>() * N.
+    /// If `M * mem::size_of::<T>()` > `mem::size_of::<u32>() * N`,
+    /// it pass the output as the amount of `mem::size_of::<u32>() * N`.
     ///
     /// # Example for MD5
     /// ```

@@ -12,14 +12,14 @@ use std::ops::*;
 use std::cmp::{ PartialEq, PartialOrd};
 
 use crate::number::small_uint::*;
-use crate::hash::SHA1_generic;
+use crate::hash::SHA1_Generic;
 use super::Random_Engine;
 
 
 impl<const H0: u32, const H1: u32, const H2: u32, const H3: u32,
     const H4: u32, const ROUND: usize, const K0: u32, const K1: u32,
     const K2: u32, const K3: u32, const RL1: u32, const RL5: u32, const RL30: u32>
-Random_Engine for SHA1_generic<5, H0, H1, H2, H3, H4, ROUND, K0, K1, K2, K3, RL1, RL5, RL30>
+Random_Engine for SHA1_Generic<5, H0, H1, H2, H3, H4, ROUND, K0, K1, K2, K3, RL1, RL5, RL30>
 {
     fn new() -> Self
     {

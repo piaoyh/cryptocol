@@ -1503,7 +1503,8 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// The constructed object will be wrapped in `Ok(BigUInt<T, N>)` if it is
     /// successfully created. Otherwise, this method returns
     /// `Err(NumberErr::ParsingError)`. And, if you import (use)
-    /// std::str::FromStr, you can automagically use str::parse::<BigUInt>() too.
+    /// std::str::FromStr, you can automagically use `str::parse::<BigUInt>()`
+    /// too.
     /// 
     /// # Examples
     /// ```

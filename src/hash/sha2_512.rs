@@ -169,6 +169,7 @@ pub type SHA2_512_256 = SHA2_512_256_Expanded;
 /// - Integrity test
 /// - Storing passwords
 /// - Digital Signature
+/// - Key generation
 /// - Implementing proof of work for block chain.
 /// - Study of hash algorithms
 /// - Cryptanalysis Research to find the weakness of SHA-512 and Merkle-Damgard
@@ -2178,7 +2179,7 @@ SHA2_512_Generic<N, H0, H1, H2, H3, H4, H5, H6, H7, ROUND,
     /// Returns a hash value in the form of Vec object.
     /// 
     /// # Output
-    /// A hash value in the form of Vec object Vec<u64>
+    /// A hash value in the form of Vec object `Vec<u64>`
     /// 
     /// # Counterpart Methods
     /// - If you want to get the hash value in the form of String object,
@@ -2276,8 +2277,8 @@ SHA2_512_Generic<N, H0, H1, H2, H3, H4, H5, H6, H7, ROUND,
     /// `out` is the array [T; M] which is the place to put the hash value.
     /// 
     /// # Features
-    /// If M * mem::size_of::<T>() > mem::size_of::<u32>() * N,
-    /// it pass the output as the amount of mem::size_of::<u32>() * N.
+    /// If `M * mem::size_of::<T>()` > `mem::size_of::<u32>() * N`,
+    /// it pass the output as the amount of `mem::size_of::<u32>() * N`.
     /// 
     /// # Example 1 for SHA2_512
     /// ```

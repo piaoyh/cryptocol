@@ -56,7 +56,78 @@ fn random_random()
 
 fn random_quick_start()
 {
+    use cryptocol::random::Random;
+    use cryptocol::define_utypes_with;
+    define_utypes_with!(u64);
 
+    let mut rand = Random::new();
+    println!("Random number = {}", rand.random_u128());
+    println!("Random number = {}", rand.random_u64());
+    println!("Random number = {}", rand.random_u32());
+    println!("Random number = {}", rand.random_u16());
+    println!("Random number = {}", rand.random_u8());
+
+    if let Some(num) = rand.random_under_uint(1234567890123456_u64)
+        { println!("Random number u64 = {}", num); }
+
+    if let Some(num) = rand.random_minmax_uint(1234_u16, 6321)
+        { println!("Random number u16 = {}", num); }
+
+    println!("Random odd number usize = {}", rand.random_odd_uint::<usize>());
+    if let Some(num) = rand.random_odd_under_uint(1234_u16)
+        { println!("Random odd number u16 = {}", num); }
+
+    println!("Random 128-bit number u128 = {}", rand.random_with_msb_set_uint::<u128>());
+    println!("Random 16-bit odd number u16 = {}", rand.random_with_msb_set_uint::<u16>());
+    println!("Random prime number u64 = {}", rand.random_prime_using_miller_rabin_uint::<u64>(5));
+    println!("Random usize-sized prime number usize = {}", rand.random_prime_with_msb_set_using_miller_rabin_uint::<usize>(5));
+
+    let num: [u128; 20] = rand.random_array();
+    for i in 0..20
+        { println!("Random number {} => {}", i, num[i]); }
+
+    let mut num = [0_u64; 32];
+    rand.put_random_in_array(&mut num);
+    for i in 0..32
+        { println!("Random number {} => {}", i, num[i]); }
+
+    let mut biguint: U512 = rand.random_biguint();
+    println!("Random Number: {}", biguint);
+
+    let mut ceiling = U1024::max().wrapping_div_uint(3_u8);
+    if let Some(r) = rand.random_under_biguint(&ceiling)
+    {
+        println!("Random Number less than {} is\n{}", ceiling, r);
+        assert!(r < ceiling);
+    }
+
+    ceiling = U1024::max().wrapping_div_uint(5_u8);
+    let r = rand.random_under_biguint_(&ceiling);
+    println!("Random Number less than {} is\n{}", ceiling, r);
+    assert!(r < ceiling);
+
+    ceiling = U1024::max().wrapping_div_uint(4_u8);
+    if let Some(r) = rand.random_odd_under_biguint(&ceiling)
+    {
+        println!("Random odd Number less than {} is\n{}", ceiling, r);
+        assert!(r < ceiling);
+    }
+
+    biguint = rand.random_with_msb_set_biguint();
+    println!("Random Number: {}", biguint);
+
+    biguint = rand.random_odd_with_msb_set_biguint();
+    println!("512-bit Random Odd Number = {}", biguint);
+    assert!(biguint > U512::halfmax());
+    assert!(biguint.is_odd());
+
+    biguint = rand.random_prime_using_miller_rabin_biguint(5);
+    println!("Random Prime Number = {}", biguint);
+    assert!(biguint.is_odd());
+
+    biguint = rand.random_prime_with_msb_set_using_miller_rabin_biguint(5);
+    println!("512-bit Random Prime Number = {}", biguint);
+    assert!(biguint.is_odd());
 }
 
 fn random_new()
@@ -82,6 +153,7 @@ fn random_new_with_seeds()
     println!("Random number = {}", rand.random_u32());
     println!("Random number = {}", rand.random_u16());
     println!("Random number = {}", rand.random_u8());
+    println!("Random number = {}", rand.random_usize());
     println!("-------------------------------");
 }
 

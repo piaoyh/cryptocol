@@ -136,6 +136,7 @@ pub type SHA2_512_0 = SHA2_512_t;
 /// - Integrity test
 /// - Storing passwords
 /// - Digital Signature
+/// - Key generation
 /// - Implementing proof of work for block chain.
 /// - Study of hash algorithms
 /// - Cryptanalysis Research to find the weakness of SHA-512/t and Merkle-Damgard
@@ -502,7 +503,7 @@ SHA2_512_t_Generic<t, A5A5A5A5A5A5A5A5,
         Self::new_with_seed_text(format!("SHA-512/{}", t).as_str())
     }
 
-    // pub fn new_with_seed_text(seedText: &str) -> Self
+    // pub fn new_with_seed_text(seed_text: &str) -> Self
     /// Constructs a new object of `SHA2_256` or `SHA2_224`,
     /// or a new SHA2_256-based object with seed text
     /// 
@@ -511,7 +512,7 @@ SHA2_512_t_Generic<t, A5A5A5A5A5A5A5A5,
     /// or a new SHA2_512_t-based object.
     /// 
     /// # Argument
-    /// The seed text to make initial hash values.
+    /// The `seed_text` to make initial hash values.
     /// 
     /// # Example 1 for SHA2_512_t_256
     /// ```
@@ -2014,8 +2015,8 @@ SHA2_512_t_Generic<t, A5A5A5A5A5A5A5A5,
     /// `out` is the array [T; M] which is the place to put the hash value.
     /// 
     /// # Features
-    /// If M * mem::size_of::<T>() > mem::size_of::<u32>() * N,
-    /// it pass the output as the amount of mem::size_of::<u32>() * N.
+    /// If `M * mem::size_of::<T>()` > `mem::size_of::<u32>() * N`,
+    /// it pass the output as the amount of `mem::size_of::<u32>() * N`.
     /// 
     /// # Example 1 for SHA2_512_t_256
     /// ```

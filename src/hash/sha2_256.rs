@@ -129,6 +129,7 @@ pub type SHA2_224 = SHA2_224_Expanded;
 /// - Integrity test
 /// - Storing passwords
 /// - Digital Signature
+/// - Key generation
 /// - Implementing proof of work for block chain.
 /// - Study of hash algorithms
 /// - Cryptanalysis Research to find the weakness of SHA-256 and Merkle-Damgard
@@ -1718,8 +1719,8 @@ SHA2_256_Generic<N, H0, H1, H2, H3, H4, H5, H6, H7, ROUND,
     /// `out` is the array [T; M] which is the place to put the hash value.
     /// 
     /// # Features
-    /// If M * mem::size_of::<T>() > mem::size_of::<u32>() * N,
-    /// it pass the output as the amount of mem::size_of::<u32>() * N.
+    /// If `M * mem::size_of::<T>()` > `mem::size_of::<u32>() * N`,
+    /// it pass the output as the amount of `mem::size_of::<u32>() * N`.
     ///
     /// # Example 1 for SHA2_256
     /// ```

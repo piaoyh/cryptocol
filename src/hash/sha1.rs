@@ -24,7 +24,7 @@ pub type SHA1_Expanded<const N: usize = 5,
                         const H0: u32 = 0x67452301, const H1: u32 = 0xefcdab89,
                         const H2: u32 = 0x98badcfe, const H3: u32 = 0x10325476,
                         const H4: u32 = 0xc3d2e1f0, const ROUND: usize = 80>
-    = SHA1_generic<N, H0, H1, H2, H3, H4, ROUND>;
+    = SHA1_Generic<N, H0, H1, H2, H3, H4, ROUND>;
 
 /// You have freedom of changing H0 ~ H4, and ROUND.
 #[allow(non_camel_case_types)]
@@ -32,21 +32,21 @@ pub type SHA0_Expanded<const N: usize = 5,
                         const H0: u32 = 0x67452301, const H1: u32 = 0xefcdab89,
                         const H2: u32 = 0x98badcfe, const H3: u32 = 0x10325476,
                         const H4: u32 = 0xc3d2e1f0, const ROUND: usize = 80>
-        = SHA1_generic<N, H0, H1, H2, H3, H4, ROUND,
+        = SHA1_Generic<N, H0, H1, H2, H3, H4, ROUND,
                         0x5a827999, 0x6ed9eba1, 0x8f1bbcdc, 0xca62c1d6, 0>;
 
 /// You have freedom of changing ROUND, and K0 ~ K3.
 #[allow(non_camel_case_types)]
 pub type SHA1_Generic_HR_fixed<const N: usize, const ROUND: usize,
                         const K0: u32, const K1: u32, const K2: u32, const K3: u32>
-        = SHA1_generic<N, 0x67452301, 0xefcdab89, 0x98badcfe,
+        = SHA1_Generic<N, 0x67452301, 0xefcdab89, 0x98badcfe,
                         0x10325476, 0xc3d2e1f0, ROUND, K0, K1, K2, K3>;
 
 /// You have freedom of changing ROUND, and K0 ~ K3.
 #[allow(non_camel_case_types)]
 pub type SHA0_Generic_HR_fixed<const N: usize, const ROUND: usize,
                         const K0: u32, const K1: u32, const K2: u32, const K3: u32>
-        = SHA1_generic<N, 0x67452301, 0xefcdab89, 0x98badcfe, 0x10325476, 0xc3d2e1f0,
+        = SHA1_Generic<N, 0x67452301, 0xefcdab89, 0x98badcfe, 0x10325476, 0xc3d2e1f0,
                         ROUND, K0, K1, K2, K3, 0>;
 
 /// The official SHA-1 hash algorithm
@@ -86,6 +86,7 @@ pub type SHA0 = SHA0_Expanded;
 /// - Integrity test in some collision-free situations
 /// - Storing passwords with limited security
 /// - Digital Signature with limited security
+/// - Key generation
 /// - Study of hash algorithms
 /// - Cryptanalysis Research to find the weakness of SHA-1 and Merkle-Damgard
 /// construction which MD2, MD4, MD5, SHA0, SHA1, and all SHA2 family use
@@ -152,7 +153,7 @@ pub type SHA0 = SHA0_Expanded;
 /// use cryptocol::hash::SHA0_Expanded;
 /// use cryptocol::hash::SHA1_Generic_HR_fixed;
 /// use cryptocol::hash::SHA0_Generic_HR_fixed;
-/// use cryptocol::hash::SHA1_generic;
+/// use cryptocol::hash::SHA1_Generic;
 /// ```
 /// Then, you can create SHA1 object by the method SHA1::new() for example.
 /// Now, you are ready to use all prepared methods to hash any data. If you
@@ -215,7 +216,7 @@ pub type SHA0 = SHA0_Expanded;
 /// for Big-endian CPUs with your own full responsibility.
 #[derive(Debug, Clone)]
 #[allow(non_camel_case_types)]
-pub struct SHA1_generic<const N: usize = 5,
+pub struct SHA1_Generic<const N: usize = 5,
                         const H0: u32 = 0x67452301, const H1: u32 = 0xefcdab89,
                         const H2: u32 = 0x98badcfe, const H3: u32 = 0x10325476,
                         const H4: u32 = 0xc3d2e1f0, const ROUND: usize = 80, 
@@ -229,7 +230,7 @@ pub struct SHA1_generic<const N: usize = 5,
 impl<const N: usize, const H0: u32, const H1: u32, const H2: u32, const H3: u32,
         const H4: u32, const ROUND: usize, const K0: u32, const K1: u32,
         const K2: u32, const K3: u32, const RL1: u32, const RL5: u32, const RL30: u32>
-SHA1_generic<N, H0, H1, H2, H3, H4, ROUND, K0, K1, K2, K3, RL1, RL5, RL30>
+SHA1_Generic<N, H0, H1, H2, H3, H4, ROUND, K0, K1, K2, K3, RL1, RL5, RL30>
 {
     const K: [u32; 4] = [ K0, K1, K2, K3 ];
     const H: [u32; 5] = [ H0, H1, H2, H3, H4 ];
@@ -294,19 +295,19 @@ SHA1_generic<N, H0, H1, H2, H3, H4, ROUND, K0, K1, K2, K3, RL1, RL5, RL30>
     /// # Counterpart Methods
     /// - If you want to compute of the hash value of a string slice,
     /// you are highly recommended to use the method
-    /// [digest_str()](struct@SHA1#method.digest_str)
+    /// [digest_str()](struct@SHA1_Generic#method.digest_str)
     /// rather than this method.
     /// - If you want to compute of the hash value of the content of String
     /// object, you are highly recommended to use the method
-    /// [digest_string()](struct@SHA1#method.digest_string)
+    /// [digest_string()](struct@SHA1_Generic#method.digest_string)
     /// rather than this method.
     /// - If you want to compute of the hash value of the content of Array
     /// object, you are highly recommended to use the method
-    /// [digest_array()](struct@SHA1#method.digest_array)
+    /// [digest_array()](struct@SHA1_Generic#method.digest_array)
     /// rather than this method.
     /// - If you want to compute of the hash value of the content of Vec
     /// object, you are highly recommended to use the method
-    /// [digest_vec()](struct@SHA1#method.digest_array)
+    /// [digest_vec()](struct@SHA1_Generic#method.digest_array)
     /// rather than this method.
     ///
     /// # Example 1 for SHA1
@@ -359,19 +360,19 @@ SHA1_generic<N, H0, H1, H2, H3, H4, ROUND, K0, K1, K2, K3, RL1, RL5, RL30>
     /// # Counterpart Methods
     /// - If you want to compute of the hash value of the content of String
     /// object, you are highly recommended to use the method
-    /// [digest_string()](struct@SHA1#method.digest_string)
+    /// [digest_string()](struct@SHA1_Generic#method.digest_string)
     /// rather than this method.
     /// - If you want to compute of the hash value of the content of Array
     /// object, you are highly recommended to use the method
-    /// [digest_array()](struct@SHA1#method.digest_array)
+    /// [digest_array()](struct@SHA1_Generic#method.digest_array)
     /// rather than this method.
     /// - If you want to compute of the hash value of the content of Vec
     /// object, you are highly recommended to use the method
-    /// [digest_vec()](struct@SHA1#method.digest_array)
+    /// [digest_vec()](struct@SHA1_Generic#method.digest_array)
     /// rather than this method.
     /// - If you want to use this method from other programming languages such
     /// as C/C++, you are highly recommended to use the method
-    /// [digest()](struct@SHA1#method.digest) rather than this method.
+    /// [digest()](struct@SHA1_Generic#method.digest) rather than this method.
     ///
     /// # Example 1 for SHA1
     /// ```
@@ -417,19 +418,19 @@ SHA1_generic<N, H0, H1, H2, H3, H4, ROUND, K0, K1, K2, K3, RL1, RL5, RL30>
     /// # Counterpart Methods
     /// - If you want to compute of the hash value of a string slice,
     /// you are highly recommended to use the method
-    /// [digest_str()](struct@SHA1#method.digest_str)
+    /// [digest_str()](struct@SHA1_Generic#method.digest_str)
     /// rather than this method.
     /// - If you want to compute of the hash value of the content of Array
     /// object, you are highly recommended to use the method
-    /// [digest_array()](struct@SHA1#method.digest_array)
+    /// [digest_array()](struct@SHA1_Generic#method.digest_array)
     /// rather than this method.
     /// - If you want to compute of the hash value of the content of Vec
     /// object, you are highly recommended to use the method
-    /// [digest_vec()](struct@SHA1#method.digest_array)
+    /// [digest_vec()](struct@SHA1_Generic#method.digest_array)
     /// rather than this method.
     /// - If you want to use this method from other programming languages such
     /// as C/C++, you are highly recommended to use the method
-    /// [digest()](struct@SHA1#method.digest) rather than this method.
+    /// [digest()](struct@SHA1_Generic#method.digest) rather than this method.
     ///
     /// # Example 1 for SHA1
     /// ```
@@ -475,19 +476,19 @@ SHA1_generic<N, H0, H1, H2, H3, H4, ROUND, K0, K1, K2, K3, RL1, RL5, RL30>
     /// # Counterpart Methods
     /// - If you want to compute of the hash value of a string slice,
     /// you are highly recommended to use the method
-    /// [digest_str()](struct@SHA1#method.digest_str)
+    /// [digest_str()](struct@SHA1_Generic#method.digest_str)
     /// rather than this method.
     /// - If you want to compute of the hash value of the content of String
     /// object, you are highly recommended to use the method
-    /// [digest_string()](struct@SHA1#method.digest_string)
+    /// [digest_string()](struct@SHA1_Generic#method.digest_string)
     /// rather than this method.
     /// - If you want to compute of the hash value of the content of Vec
     /// object, you are highly recommended to use the method
-    /// [digest_vec()](struct@SHA1#method.digest_array)
+    /// [digest_vec()](struct@SHA1_Generic#method.digest_array)
     /// rather than this method.
     /// - If you want to use this method from other programming languages such
     /// as C/C++, you are highly recommended to use the method
-    /// [digest()](struct@SHA1#method.digest) rather than this method.
+    /// [digest()](struct@SHA1_Generic#method.digest) rather than this method.
     ///
     /// # Example 1 for SHA1
     /// ```
@@ -534,19 +535,19 @@ SHA1_generic<N, H0, H1, H2, H3, H4, ROUND, K0, K1, K2, K3, RL1, RL5, RL30>
     /// # Counterpart Methods
     /// - If you want to compute of the hash value of a string slice,
     /// you are highly recommended to use the method
-    /// [digest_str()](struct@SHA1#method.digest_str)
+    /// [digest_str()](struct@SHA1_Generic#method.digest_str)
     /// rather than this method.
     /// - If you want to compute of the hash value of the content of String
     /// object, you are highly recommended to use the method
-    /// [digest_string()](struct@SHA1#method.digest_string)
+    /// [digest_string()](struct@SHA1_Generic#method.digest_string)
     /// rather than this method.
     /// - If you want to compute of the hash value of the content of Array
     /// object, you are highly recommended to use the method
-    /// [digest_array()](struct@SHA1#method.digest_array)
+    /// [digest_array()](struct@SHA1_Generic#method.digest_array)
     /// rather than this method.
     /// - If you want to use this method from other programming languages such
     /// as C/C++, you are highly recommended to use the method
-    /// [digest()](struct@SHA1#method.digest) rather than this method.
+    /// [digest()](struct@SHA1_Generic#method.digest) rather than this method.
     ///
     /// # Example 1 for SHA1
     /// ```
@@ -895,15 +896,15 @@ SHA1_generic<N, H0, H1, H2, H3, H4, ROUND, K0, K1, K2, K3, RL1, RL5, RL30>
     /// # Counterpart Methods
     /// - If you want to get the hash value in the form of String object,
     /// you are highly recommended to use the method
-    /// [get_hash_value_string()](struct@SHA1#method.get_hash_value_string)
+    /// [get_hash_value_string()](struct@SHA1_Generic#method.get_hash_value_string)
     /// rather than this method.
     /// - If you want to get the hash value in the form of array object,
     /// you are highly recommended to use the method
-    /// [get_hash_value_in_array()](struct@SHA1#method.get_hash_value_in_array)
+    /// [get_hash_value_in_array()](struct@SHA1_Generic#method.get_hash_value_in_array)
     /// rather than this method.
     /// - If you want to get the hash value in the form of Vec object,
     /// you are highly recommended to use the method
-    /// [get_hash_value_in_vec()](struct@SHA1#method.get_hash_value_in_vec)
+    /// [get_hash_value_in_vec()](struct@SHA1_Generic#method.get_hash_value_in_vec)
     /// rather than this method.
     ///
     /// # Example 1 for SHA1
@@ -959,15 +960,15 @@ SHA1_generic<N, H0, H1, H2, H3, H4, ROUND, K0, K1, K2, K3, RL1, RL5, RL30>
     /// # Counterpart Methods
     /// - If you want to get the hash value in the form of array object,
     /// you are highly recommended to use the method
-    /// [get_hash_value_in_array()](struct@SHA1#method.get_hash_value_in_array)
+    /// [get_hash_value_in_array()](struct@SHA1_Generic#method.get_hash_value_in_array)
     /// rather than this method.
     /// - If you want to get the hash value in the form of Vec object,
     /// you are highly recommended to use the method
-    /// [get_hash_value_in_vec()](struct@SHA1#method.get_hash_value_in_vec)
+    /// [get_hash_value_in_vec()](struct@SHA1_Generic#method.get_hash_value_in_vec)
     /// rather than this method.
     /// - If you want to use this method from other programming languages such
     /// as C/C++, you are highly recommended to use the method
-    /// [get_hash_value()](struct@SHA1#method.get_hash_value)
+    /// [get_hash_value()](struct@SHA1_Generic#method.get_hash_value)
     /// rather than this method.
     ///
     /// # Example 1 for SHA1
@@ -1025,15 +1026,15 @@ SHA1_generic<N, H0, H1, H2, H3, H4, ROUND, K0, K1, K2, K3, RL1, RL5, RL30>
     /// # Counterpart Methods
     /// - If you want to get the hash value in the form of String object,
     /// you are highly recommended to use the method
-    /// [get_hash_value_string()](struct@SHA1#method.get_hash_value_string)
+    /// [get_hash_value_string()](struct@SHA1_Generic#method.get_hash_value_string)
     /// rather than this method.
     /// - If you want to get the hash value in the form of Vec object,
     /// you are highly recommended to use the method
-    /// [get_hash_value_in_vec()](struct@SHA1#method.get_hash_value_in_vec)
+    /// [get_hash_value_in_vec()](struct@SHA1_Generic#method.get_hash_value_in_vec)
     /// rather than this method.
     /// - If you want to use this method from other programming languages such
     /// as C/C++, you are highly recommended to use the method
-    /// [get_hash_value()](struct@SHA1#method.get_hash_value)
+    /// [get_hash_value()](struct@SHA1_Generic#method.get_hash_value)
     /// rather than this method.
     ///
     /// # Example 1 for SHA1
@@ -1073,20 +1074,20 @@ SHA1_generic<N, H0, H1, H2, H3, H4, ROUND, K0, K1, K2, K3, RL1, RL5, RL30>
     /// Returns a hash value in the form of Vec object.
     /// 
     /// # Output
-    /// It returns Vec<u32>.
+    /// It returns `Vec<u32>`.
     /// 
     /// # Counterpart Methods
     /// - If you want to get the hash value in the form of String object,
     /// you are highly recommended to use the method
-    /// [get_hash_value_string()](struct@SHA1#method.get_hash_value_string)
+    /// [get_hash_value_string()](struct@SHA1_Generic#method.get_hash_value_string)
     /// rather than this method.
     /// - If you want to get the hash value in the form of array object,
     /// you are highly recommended to use the method
-    /// [get_hash_value_in_array()](struct@SHA1#method.get_hash_value_in_array)
+    /// [get_hash_value_in_array()](struct@SHA1_Generic#method.get_hash_value_in_array)
     /// rather than this method.
     /// - If you want to use this method from other programming languages such
     /// as C/C++, you are highly recommended to use the method
-    /// [get_hash_value()](struct@SHA1#method.get_hash_value)
+    /// [get_hash_value()](struct@SHA1_Generic#method.get_hash_value)
     /// rather than this method.
     ///
     /// # Example 1 for SHA1
@@ -1128,8 +1129,8 @@ SHA1_generic<N, H0, H1, H2, H3, H4, ROUND, K0, K1, K2, K3, RL1, RL5, RL30>
     /// `out` is the array [T; M] which is the place to put the hash value.
     /// 
     /// # Features
-    /// If M * mem::size_of::<T>() > mem::size_of::<u32>() * N,
-    /// it pass the output as the amount of mem::size_of::<u32>() * N.
+    /// If `M * mem::size_of::<T>()` > `mem::size_of::<u32>() * N`,
+    /// it pass the output as the amount of `mem::size_of::<u32>() * N`.
     ///
     /// # Example 1 for SHA1
     /// ```
@@ -1337,7 +1338,7 @@ SHA1_generic<N, H0, H1, H2, H3, H4, ROUND, K0, K1, K2, K3, RL1, RL5, RL30>
 impl<const N: usize, const H0: u32, const H1: u32, const H2: u32, const H3: u32,
         const H4: u32, const ROUND: usize, const K0: u32, const K1: u32, const K2: u32,
         const K3: u32, const RL1: u32, const RL5: u32, const RL30: u32>
-Display for SHA1_generic<N, H0, H1, H2, H3, H4, ROUND, K0, K1, K2, K3, RL1, RL5, RL30>
+Display for SHA1_Generic<N, H0, H1, H2, H3, H4, ROUND, K0, K1, K2, K3, RL1, RL5, RL30>
 {
     /// Formats the value using the given formatter.
     /// You will hardly use this method directly.

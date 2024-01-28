@@ -34,18 +34,18 @@
 //! This module provides several kinds of cryptographic hash algorithms:
 //! - MD4 hash algorithms based on 128 bits --- Includes MD4 and its expanded versions. [`MD4_Generic`](struct@MD4_Generic)
 //! - MD5 hash algorithms based on 128 bits --- Includes MD5 and its expanded versions. [`MD5_Generic`](struct@MD5_Generic)
-//! - SHA-1 hash algorithms based on 160 bits --- Includes SHA-1, SHA-0, and their expanded versions. [`SHA1_Generic`](struct@SHA1_generic)
-//! - SHA-2 hash algorithms based on 256 bits --- Includes SHA-256, SHA-224, and their expanded versions. [`SHA2_Generic_256`](struct@SHA2_Generic_256)
-//! - SHA-2 hash algorithms based on 512 bits --- Includes SHA-512, SHA-384, SHA-512/256, and their expanded versions. [`SHA2_Generic_512`](struct@SHA2_Generic_512)
-//! - SHA-2 hash algorithms based on 512/t bits --- Includes 512/256, SHA-512/224, and their expanded versions. [`SHA2_Generic_512_t`](struct@SHA2_Generic_512_t)
+//! - SHA-1 hash algorithms based on 160 bits --- Includes SHA-1, SHA-0, and their expanded versions. [`SHA1_Generic`](struct@SHA1_Generic)
+//! - SHA-2 hash algorithms based on 256 bits --- Includes SHA-256, SHA-224, and their expanded versions. [`SHA2_Generic_256`](struct@SHA2_256_Generic)
+//! - SHA-2 hash algorithms based on 512 bits --- Includes SHA-512, SHA-384, SHA-512/256, and their expanded versions. [`SHA2_512_Generic`](struct@SHA2_512_Generic)
+//! - SHA-2 hash algorithms based on 512/t bits --- Includes 512/256, SHA-512/224, and their expanded versions. [`SHA2_512_t_Generic`](struct@SHA2_512_t_Generic)
 //! 
 //! # QUICK START
 //! - For `MD4`, read [here](struct@MD4_Generic#quick-start).
 //! - For `MD5`, read [here](struct@MD5_Generic#quick-start).
-//! - For `SHA-1`, read [here](struct@SHA1_generic#quick-start).
-//! - For `SHA-256`, read [here](struct@SHA2_Generic_256#quick-start).
-//! - For `SHA-512`, read [here](struct@SHA2_Generic_512#quick-start).
-//! - For `SHA-512/t`, read [here](struct@SHA2_Generic_512_t#quick-start).
+//! - For `SHA-1`, read [here](struct@SHA1_Generic#quick-start).
+//! - For `SHA-256`, read [here](struct@SHA2_256_Generic#quick-start).
+//! - For `SHA-512`, read [here](struct@SHA2_512_Generic#quick-start).
+//! - For `SHA-512/t`, read [here](struct@SHA2_512_t_Generic#quick-start).
 
 mod md4;
 mod md5;
