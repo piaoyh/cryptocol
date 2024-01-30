@@ -36,6 +36,7 @@ fn small_uint_add_main()
     small_uint_checked_add();
     small_uint_unchecked_add();
     small_uint_saturating_add();
+    small_uint_modular_add();
 }
 
 fn small_uint_carrying_add()
@@ -47,29 +48,26 @@ fn small_uint_carrying_add()
     // b_u16: u16 === (b_high_u8, b_low_u8) == (100_u8, 200_u8) == 25800_u16
     let b_high_u8 = 100_u8;
     let b_low_u8 = 200_u8;
-    // c: u16 === (c_high, c_low)
-    let c_high_u8: u8;
-    let c_low_u8: u8;
-    let mut carry: bool;
+
     // (100_u8, 101_u8) + (100_u8, 200_u8) == 25701_u16 + 25800_u16 == 51501_u16
     //   25701_u16 == (100_u8, 101_u8)
     // + 25800_u16 == (100_u8, 200_u8)
     // -------------------------------
     //   51501_u16 == (201_u8,  45_u8)
-    (c_high_u8, c_low_u8, carry) = small_uint_carrying_add_func(a_high_u8, a_low_u8, b_high_u8, b_low_u8);
+
+    // c: u16 === (c_high, c_low)
+    let (c_high_u8, c_low_u8, carry) = small_uint_carrying_add_func(a_high_u8, a_low_u8, b_high_u8, b_low_u8);
     println!("{}-{}, {}", c_high_u8, c_low_u8, carry);
     assert_eq!(c_high_u8, 201);
     assert_eq!(c_low_u8, 45);
     assert_eq!(carry, false);
 
-    let d_high_u8: u8;
-    let d_low_u8: u8;
     //  (201_u8,  45_u8) + (100_u8, 200_u8) == 25701_u16 + 25800_u16 == 51501_u16
     //   25701_u16 == (100_u8, 101_u8)
     // + 25800_u16 == (100_u8, 200_u8)
     // -------------------------------
     //   11765_u16 == ( 45_u8, 245_u8)
-    (d_high_u8, d_low_u8, carry) = small_uint_carrying_add_func(c_high_u8, c_low_u8, b_high_u8, b_low_u8);
+    let (d_high_u8, d_low_u8, carry) = small_uint_carrying_add_func(c_high_u8, c_low_u8, b_high_u8, b_low_u8);
     println!("{}-{}, {}", d_high_u8, d_low_u8, carry);
     assert_eq!(d_high_u8, 45_u8);
     assert_eq!(d_low_u8, 245_u8);
@@ -508,6 +506,64 @@ fn small_uint_saturating_add()
 fn small_uint_saturating_add_func<T: cryptocol::number::SmallUInt>(lhs: T, rhs: T) -> T
 {
     lhs.saturating_add(rhs)
+}
+
+fn small_uint_modular_add()
+{
+    println!("small_uint_modular_add()");
+    let a_u8 = small_uint_modular_add_func(60_u8, 15, 100);
+    println!("60 + 55 = {} (mod 100)", a_u8);
+    assert_eq!(a_u8, 75);
+
+    let b_u8 = small_uint_modular_add_func(a_u8, 55, 100);
+    println!("{} + 55 = {} (mod 100)", a_u8, b_u8);
+    assert_eq!(b_u8, 30);
+
+    let a_u16 = small_uint_modular_add_func(6000_u16, 1500, 1_0000);
+    println!("6000 + 1500 = {} (mod 1_0000)", a_u16);
+    assert_eq!(a_u16, 7500);
+
+    let b_u16 = small_uint_modular_add_func(a_u16, 5500, 1_0000);
+    println!("{} + 55 = {} (mod 1_0000)", a_u16, b_u16);
+    assert_eq!(b_u16, 3000);
+
+    let a_u32 = small_uint_modular_add_func(6_0000_0000_u32, 1_5000_0000, 10_0000_0000);
+    println!("6_0000_0000 + 1_5000_0000 = {} (mod 10_0000_0000)", a_u32);
+    assert_eq!(a_u32, 7_5000_0000);
+
+    let b_u32 = small_uint_modular_add_func(a_u32, 5_5000_0000, 10_0000_0000);
+    println!("{} + 5_5000_0000 = {} (mod 10_0000_0000)", a_u32, b_u32);
+    assert_eq!(b_u32, 3_0000_0000);
+
+    let a_u64 = small_uint_modular_add_func(6_0000_0000_0000_0000_u64, 1_5000_0000_0000_0000, 10_0000_0000_0000_0000);
+    println!("6_0000_0000_0000_0000 + 1_5000_0000_0000_0000 = {} (mod 10_0000_0000_0000_0000)", a_u64);
+    assert_eq!(a_u64, 7_5000_0000_0000_0000);
+
+    let b_u64 = small_uint_modular_add_func(a_u64, 5_5000_0000_0000_0000, 10_0000_0000_0000_0000);
+    println!("{} + 5_5000_0000_0000_0000 = {} (mod 10_0000_0000_0000_0000)", a_u64, b_u64);
+    assert_eq!(b_u64, 3_0000_0000_0000_0000);
+
+    let a_u128 = small_uint_modular_add_func(6_0000_0000_0000_0000_0000_0000_0000_0000_u128, 1_5000_0000_0000_0000_0000_0000_0000_0000, 10_0000_0000_0000_0000_0000_0000_0000_0000);
+    println!("6_0000_0000_0000_0000_0000_0000_0000_0000 + 1_5000_0000_0000_0000_0000_0000_0000_0000 = {} (mod 10_0000_0000_0000_0000_0000_0000_0000_0000)", a_u128);
+    assert_eq!(a_u128, 7_5000_0000_0000_0000_0000_0000_0000_0000);
+
+    let b_u128 = small_uint_modular_add_func(a_u128, 5_5000_0000_0000_0000_0000_0000_0000_0000, 10_0000_0000_0000_0000_0000_0000_0000_0000);
+    println!("{} + 5_5000_0000_0000_0000_0000_0000_0000_0000 = {}",a_u128, b_u128);
+    assert_eq!(b_u128, 3_0000_0000_0000_0000_0000_0000_0000_0000);
+
+    let a_usize = small_uint_modular_add_func(6_0000_0000_0000_0000_usize, 1_5000_0000_0000_0000, 10_0000_0000_0000_0000);
+    println!("6_0000_0000_0000_0000 + 1_5000_0000_0000_0000 = {} (mod 10_0000_0000_0000_0000)", a_usize);
+    assert_eq!(a_usize, 7_5000_0000_0000_0000);
+
+    let b_usize = small_uint_modular_add_func(a_usize, 5_5000_0000_0000_0000, 10_0000_0000_0000_0000);
+    println!("{} + 5_5000_0000_0000_0000 = {} (mod 10_0000_0000_0000_0000)", a_usize, b_usize);
+    assert_eq!(b_usize, 3_0000_0000_0000_0000);
+    println!("--------------------------------------");
+}
+
+fn small_uint_modular_add_func<T: cryptocol::number::SmallUInt>(lhs: T, rhs: T, modulo: T) -> T
+{
+    lhs.modular_add(rhs, modulo)
 }
 
 fn small_uint_sub_main()

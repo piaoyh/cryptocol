@@ -56,6 +56,7 @@ fn random_random()
 
 fn random_quick_start()
 {
+    println!("random_quick_start");
     use cryptocol::random::Random;
     use cryptocol::define_utypes_with;
     define_utypes_with!(u64);
@@ -128,6 +129,7 @@ fn random_quick_start()
     biguint = rand.random_prime_with_msb_set_using_miller_rabin_biguint(5);
     println!("512-bit Random Prime Number = {}", biguint);
     assert!(biguint.is_odd());
+    println!("-------------------------------");
 }
 
 fn random_new()

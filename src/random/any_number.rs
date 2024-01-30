@@ -8,11 +8,6 @@
 
 
 use std::fmt::Debug;
-use std::hash::{BuildHasher, Hasher};
-use std::time::{ SystemTime, UNIX_EPOCH };
-use std::collections::hash_map::RandomState;
-
-use crate::number::LongerUnion;
 
 /// This struct is for just creating pseudo-random numbers. The basic algorithm
 /// is taken from the rand() function of C standard library and treaked by the
@@ -35,20 +30,7 @@ impl AnyNumber
     /// Contructs a new AnyNumber object.
     pub fn new() -> Self
     {
-        let mut res = Self { any_numbers: [0_u64; 8] };
-        let mut read_long = 0_usize;
-        if let Ok(nanos) = SystemTime::now().duration_since(UNIX_EPOCH)
-        {
-            let common = LongerUnion::new_with(nanos.as_nanos());
-            res.set_any_number_(read_long, common.get_ulong_(0));
-            read_long += 1;
-            res.set_any_number_(read_long, common.get_ulong_(1));
-            read_long += 1;
-        }
-
-        for i in read_long..8
-            { res.set_any_number_(i, RandomState::new().build_hasher().finish()); }
-        res
+        Self { any_numbers: [0_u64; 8] }
     }
 
     // pub fn tangle(&mut self, tangling: u64)

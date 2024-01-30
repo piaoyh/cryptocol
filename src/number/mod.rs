@@ -62,6 +62,9 @@ pub mod trait_impl_for_big_uint;
 pub mod number_errors;
 pub mod macros_number;
 
+/// Implementaion of trait SmallUInt for u8, u16, u32, u64, u128, and usize
+pub mod trait_small_uint_impl;
+
 pub use small_uint::*;
 pub use small_int_unions::*;
 pub use small_sint::*;

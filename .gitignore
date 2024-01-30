@@ -1,0 +1,8 @@
+./target
+./.vscode
+./.idea
+./.git
+./.gitignore
+./Cargo.lock
+./git.txt
+./.rustc_info.json
