@@ -17,12 +17,12 @@ use std::ops::*;
 use std::cmp::{ PartialEq, PartialOrd};
 use std::ptr::copy_nonoverlapping;
 use std::time::{ SystemTime, UNIX_EPOCH };
-use std::fs::File;
 use std::io::Read;
 use std::collections::hash_map::RandomState;
 use std::hash::{ BuildHasher, Hasher };
+#[cfg(not(target_os = "windows"))] use std::fs::File;
 
-use crate::number::{small_uint::*, BigUInt};
+use crate::number::{ small_uint::*, BigUInt };
 use crate::number::small_int_unions::*;
 use crate::hash::{ MD4, MD5, SHA0, SHA1, SHA2_256, SHA2_512 };
 use super::Random_Engine;

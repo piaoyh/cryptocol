@@ -1469,6 +1469,7 @@ fn small_uint_widening_mul_func<T: cryptocol::number::SmallUInt>(lhs_low: T, lhs
 fn small_uint_wrapping_mul()
 {
     println!("small_uint_wrapping_mul()");
+    // Example for u8
     let a_u8 = small_uint_wrapping_mul_func(u8::MAX / 3, 2_u8);
     println!("{} * 2 = {}", u8::MAX / 3, a_u8);
     assert_eq!(a_u8, 170_u8);
@@ -1477,6 +1478,7 @@ fn small_uint_wrapping_mul()
     println!("{} * 2 = {}", a_u8, b_u8);
     assert_eq!(b_u8, 84_u8);
 
+    // Example for u16
     let a_u16 = small_uint_wrapping_mul_func(u16::MAX / 3, 2_u16);
     println!("{} * 2 = {}", u16::MAX / 3, a_u16);
     assert_eq!(a_u16, 43690_u16);
@@ -1485,6 +1487,7 @@ fn small_uint_wrapping_mul()
     println!("{} * 2 = {}", a_u16, b_u16);
     assert_eq!(b_u16, 21844_u16);
 
+    // Example for u32
     let a_u32 = small_uint_wrapping_mul_func(u32::MAX / 3, 2_u32);
     println!("{} * 2 = {}", u32::MAX / 3, a_u32);
     assert_eq!(a_u32, 2863311530_u32);
@@ -1493,6 +1496,7 @@ fn small_uint_wrapping_mul()
     println!("{} * 2 = {}", a_u32, b_u32);
     assert_eq!(b_u32, 1431655764_u32);
 
+    // Example for u64
     let a_u64 = small_uint_wrapping_mul_func(u64::MAX / 3, 2_u64);
     println!("{} * 2 = {}", u64::MAX / 3, a_u64);
     assert_eq!(a_u64, 12297829382473034410_u64);
@@ -1501,6 +1505,7 @@ fn small_uint_wrapping_mul()
     println!("{} * 2 = {}", a_u64, b_u64);
     assert_eq!(b_u64, 6148914691236517204_u64);
 
+    // Example for u128
     let a_u128 = small_uint_wrapping_mul_func(u128::MAX / 3, 2_u128);
     println!("{} * 2 = {}", u128::MAX / 3, a_u128);
     assert_eq!(a_u128,226854911280625642308916404954512140970_u128);
@@ -1509,6 +1514,7 @@ fn small_uint_wrapping_mul()
     println!("{} * 2 = {}", a_u128, b_u128);
     assert_eq!(b_u128, 113427455640312821154458202477256070484_u128);
 
+    // Example for usize
     let a_usize = small_uint_wrapping_mul_func(usize::MAX / 3, 2_usize);
     println!("{} * 2 = {}", usize::MAX / 3, a_usize);
     assert_eq!(a_usize, 12297829382473034410_usize);
@@ -1527,6 +1533,7 @@ fn small_uint_wrapping_mul_func<T: cryptocol::number::SmallUInt>(lhs: T, rhs: T)
 fn small_uint_overflowing_mul()
 {
     println!("small_uint_overflowing_mul()");
+    // Example for u8
     let a_u8 = small_uint_overflowing_mul_func(u8::MAX / 3, 2_u8);
     println!("{} * 2 = {}\nOverflow = {}", u8::MAX / 3, a_u8.0, a_u8.1);
     assert_eq!(a_u8.0, 170_u8);
@@ -1537,6 +1544,7 @@ fn small_uint_overflowing_mul()
     assert_eq!(b_u8.0, 84_u8);
     assert_eq!(b_u8.1, true);
 
+    // Example for u16
     let a_u16 = small_uint_overflowing_mul_func(u16::MAX / 3, 2_u16);
     println!("{} * 2 = {}\nOverflow = {}", u16::MAX / 3, a_u16.0, a_u16.1);
     assert_eq!(a_u16.0, 43690_u16);
@@ -1547,6 +1555,7 @@ fn small_uint_overflowing_mul()
     assert_eq!(b_u16.0, 21844_u16);
     assert_eq!(b_u16.1, true);
 
+    // Example for u32
     let a_u32 = small_uint_overflowing_mul_func(u32::MAX / 3, 2_u32);
     println!("{} * 2 = {}\nOverflow = {}", u32::MAX / 3, a_u32.0, a_u32.1);
     assert_eq!(a_u32.0, 2863311530_u32);
@@ -1557,6 +1566,7 @@ fn small_uint_overflowing_mul()
     assert_eq!(b_u32.0, 1431655764_u32);
     assert_eq!(b_u32.1, true);
 
+    // Example for u64
     let a_u64 = small_uint_overflowing_mul_func(u64::MAX / 3, 2_u64);
     println!("{} * 2 = {}\nOverflow = {}", u64::MAX / 3, a_u64.0, a_u64.1);
     assert_eq!(a_u64.0, 12297829382473034410_u64);
@@ -1567,6 +1577,7 @@ fn small_uint_overflowing_mul()
     assert_eq!(b_u64.0, 6148914691236517204_u64);
     assert_eq!(b_u64.1, true);
 
+    // Example for u128
     let a_u128 = small_uint_overflowing_mul_func(u128::MAX / 3, 2_u128);
     println!("{} * 2 = {}\nOverflow = {}", u128::MAX / 3, a_u128.0, a_u128.1);
     assert_eq!(a_u128.0, 226854911280625642308916404954512140970_u128);
@@ -1577,6 +1588,7 @@ fn small_uint_overflowing_mul()
     assert_eq!(b_u128.0, 113427455640312821154458202477256070484_u128);
     assert_eq!(b_u128.1, true);
 
+    // Example for usize
     let a_usize = small_uint_overflowing_mul_func(usize::MAX / 3, 2_usize);
     println!("{} * 2 = {}\nOverflow = {}", usize::MAX / 3, a_usize.0, a_usize.1);
     assert_eq!(a_usize.0, 12297829382473034410_usize);
@@ -1597,6 +1609,7 @@ fn small_uint_overflowing_mul_func<T: cryptocol::number::SmallUInt>(lhs: T, rhs:
 fn small_uint_checked_mul()
 {
     println!("small_uint_checked_mul()");
+    // Example for u8
     let a_u8 = small_uint_checked_mul_func(u8::MAX / 3, 2_u8);
     match a_u8
     {
@@ -1623,6 +1636,7 @@ fn small_uint_checked_mul()
             },
     }
 
+    // Example for u16
     let a_u16 = small_uint_checked_mul_func(u16::MAX / 3, 2_u16);
     match a_u16
     {
@@ -1649,6 +1663,7 @@ fn small_uint_checked_mul()
             },
     }
 
+    // Example for u32
     let a_u32 = small_uint_checked_mul_func(u32::MAX / 3, 2_u32);
     match a_u32
     {
@@ -1675,6 +1690,7 @@ fn small_uint_checked_mul()
             },
     }
 
+    // Example for u64
     let a_u64 = small_uint_checked_mul_func(u64::MAX / 3, 2_u64);
     match a_u64
     {
@@ -1701,6 +1717,7 @@ fn small_uint_checked_mul()
             },
     }
 
+    // Example for u128
     let a_u128 = small_uint_checked_mul_func(u128::MAX / 3, 2_u128);
     match a_u128
     {
@@ -1727,6 +1744,7 @@ fn small_uint_checked_mul()
             },
     }
 
+    // Example for usize
     let a_usize = small_uint_checked_mul_func(usize::MAX / 3, 2_usize);
     match a_usize
     {
@@ -1763,6 +1781,7 @@ fn small_uint_checked_mul_func<T: cryptocol::number::SmallUInt>(lhs: T, rhs: T) 
 fn small_uint_unchecked_mul()
 {
     println!("small_uint_unchecked_add()");
+    // Example for u8
     let a_u8 = small_uint_unchecked_mul_func(u8::MAX / 3, 2_u8);
     println!("{} * 2 = {}", u8::MAX / 3, a_u8);
     assert_eq!(a_u8, 170_u8);
@@ -1770,6 +1789,7 @@ fn small_uint_unchecked_mul()
     // It will panic
     // let b_u8 = small_uint_unchecked_mul_func(a_u8, 2_u8);
 
+    // Example for u16
     let a_u16 = small_uint_unchecked_mul_func(u16::MAX / 3, 2_u16);
     println!("{} * 2 = {}", u16::MAX / 3, a_u16);
     assert_eq!(a_u16, 43690_u16);
@@ -1777,6 +1797,7 @@ fn small_uint_unchecked_mul()
     // It will panic
     // let b_u16 = small_uint_unchecked_mul_func(a_u16, 2_u16);
 
+    // Example for u32
     let a_u32 = small_uint_unchecked_mul_func(u32::MAX / 3, 2_u32);
     println!("{} * 2 = {}", u32::MAX / 3, a_u32);
     assert_eq!(a_u32, 2863311530_u32);
@@ -1784,6 +1805,7 @@ fn small_uint_unchecked_mul()
     // It will panic
     // let b_u32 = small_uint_unchecked_mul_func(a_u32, 2_u32);
 
+    // Example for u64
     let a_u64 = small_uint_unchecked_mul_func(u64::MAX / 3, 2_u64);
     println!("{} * 2 = {}", u64::MAX / 3, a_u64);
     assert_eq!(a_u64, 12297829382473034410_u64);
@@ -1791,6 +1813,7 @@ fn small_uint_unchecked_mul()
     // It will panic
     // let b_u64 = small_uint_unchecked_mul_func(a_u64, 2_u64);
 
+    // Example for u128
     let a_u128 = small_uint_unchecked_mul_func(u128::MAX / 3, 2_u128);
     println!("{} * 2 = {}", u128::MAX / 3, a_u128);
     assert_eq!(a_u128, 226854911280625642308916404954512140970_u128);
@@ -1798,6 +1821,7 @@ fn small_uint_unchecked_mul()
     // It will panic
     // let b_u128 = small_uint_unchecked_mul_func(a_u128, 2_u128);
 
+    // Example for usize
     let a_usize = small_uint_unchecked_mul_func(usize::MAX / 3, 2_usize);
     println!("{} * 2 = {}", usize::MAX / 3, a_usize);
     assert_eq!(a_usize, 12297829382473034410_usize);
@@ -1815,6 +1839,7 @@ fn small_uint_unchecked_mul_func<T: cryptocol::number::SmallUInt>(lhs: T, rhs: T
 fn small_uint_saturating_mul()
 {
     println!("small_uint_saturating_mul()");
+    // Example for u8
     let a_u8 = small_uint_saturating_mul_func(u8::MAX / 3, 2_u8);
     println!("{} * 2 = {}", u8::MAX / 3, a_u8);
     assert_eq!(a_u8, 170_u8);
@@ -1823,6 +1848,7 @@ fn small_uint_saturating_mul()
     println!("{} * 2 = {}", a_u8, b_u8);
     assert_eq!(b_u8, u8::MAX);
 
+    // Example for u16
     let a_u16 = small_uint_saturating_mul_func(u16::MAX / 3, 2_u16);
     println!("{} * 2 = {}", u16::MAX / 3, a_u16);
     assert_eq!(a_u16, 43690_u16);
@@ -1831,6 +1857,7 @@ fn small_uint_saturating_mul()
     println!("{} * 2 = {}", a_u16, b_u16);
     assert_eq!(b_u16, u16::MAX);
 
+    // Example for u32
     let a_u32 = small_uint_saturating_mul_func(u32::MAX / 3, 2_u32);
     println!("{} * 2 = {}", u32::MAX / 3, a_u32);
     assert_eq!(a_u32, 2863311530_u32);
@@ -1839,6 +1866,7 @@ fn small_uint_saturating_mul()
     println!("{} * 2 = {}", a_u32, b_u32);
     assert_eq!(b_u32, u32::MAX);
 
+    // Example for u64
     let a_u64 = small_uint_saturating_mul_func(u64::MAX / 3, 2_u64);
     println!("{} * 2 = {}", u64::MAX / 3, a_u64);
     assert_eq!(a_u64, 12297829382473034410_u64);
@@ -1847,6 +1875,7 @@ fn small_uint_saturating_mul()
     println!("{} * 2 = {}", a_u64, b_u64);
     assert_eq!(b_u64, u64::MAX);
 
+    // Example for u128
     let a_u128 = small_uint_saturating_mul_func(u128::MAX / 3, 2_u128);
     println!("{} * 2 = {}", u128::MAX / 3, a_u128);
     assert_eq!(a_u128, 226854911280625642308916404954512140970_u128);
@@ -1855,6 +1884,7 @@ fn small_uint_saturating_mul()
     println!("{} * 2 = {}",a_u128, b_u128);
     assert_eq!(b_u128, u128::MAX);
 
+    // Example for usize
     let a_usize = small_uint_saturating_mul_func(usize::MAX / 3, 2_usize);
     println!("{} * 2 = {}", usize::MAX / 3, a_usize);
     assert_eq!(a_usize, 12297829382473034410_usize);

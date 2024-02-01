@@ -4445,7 +4445,7 @@ pub trait SmallUInt: Copy + Clone + Sized //+ Display + Debug + ToString
     fn widening_mul_for_internal_use(self, rhs: Self) -> (Self, Self);
 
     // fn wrapping_mul(self, rhs: Self) -> Self
-    /// Computes self * rhs, wrapping around at the boundary of the type.
+    /// Computes `self` * `rhs`, wrapping around at the boundary of the type.
     /// 
     /// # Features
     /// __The trait SmallUInt is meaningful when you use it in generic context.
@@ -4453,9 +4453,132 @@ pub trait SmallUInt: Copy + Clone + Sized //+ Display + Debug + ToString
     /// It multiplies two numbers with wrapping (modular) multiplication.
     /// 
     /// # Output
-    /// It returns the self * rhs in the type of `Self`.
+    /// It returns the `self` * `rhs` in the type of `Self`.
     /// 
-    /// # Example
+    /// # Example 1 for u8
+    /// ```
+    /// use cryptocol::number::SmallUInt;
+    /// fn main()
+    /// {
+    ///     let a_u8 = func(u8::MAX / 3, 2_u8);
+    ///     println!("{} * 2 = {}", u8::MAX / 3, a_u8);
+    ///     assert_eq!(a_u8, 170_u8);
+    /// 
+    ///     let b_u8 = func(a_u8, 2_u8);
+    ///     println!("{} * 2 = {}", a_u8, b_u8);
+    ///     assert_eq!(b_u8, 84_u8);
+    /// }
+    /// 
+    /// fn func<T: SmallUInt>(lhs: T, rhs: T) -> T
+    /// {
+    ///     lhs.wrapping_mul(rhs)
+    /// }
+    /// ```
+    /// 
+    /// # Example 2 for u16
+    /// ```
+    /// use cryptocol::number::SmallUInt;
+    /// fn main()
+    /// {
+    ///     let a_u16 = func(u16::MAX / 3, 2_u16);
+    ///     println!("{} * 2 = {}", u16::MAX / 3, a_u16);
+    ///     assert_eq!(a_u16, 43690_u16);
+    /// 
+    ///     let b_u16 = func(a_u16, 2_u16);
+    ///     println!("{} * 2 = {}", a_u16, b_u16);
+    ///     assert_eq!(b_u16, 21844_u16);
+    /// }
+    /// 
+    /// fn func<T: SmallUInt>(lhs: T, rhs: T) -> T
+    /// {
+    ///     lhs.wrapping_mul(rhs)
+    /// }
+    /// ```
+    /// 
+    /// # Example 3 for u32
+    /// ```
+    /// use cryptocol::number::SmallUInt;
+    /// fn main()
+    /// {
+    ///     let a_u32 = func(u32::MAX / 3, 2_u32);
+    ///     println!("{} * 2 = {}", u32::MAX / 3, a_u32);
+    ///     assert_eq!(a_u32, 2863311530_u32);
+    /// 
+    ///     let b_u32 = func(a_u32, 2_u32);
+    ///     println!("{} * 2 = {}", a_u32, b_u32);
+    ///     assert_eq!(b_u32, 1431655764_u32);
+    /// }
+    /// 
+    /// fn func<T: SmallUInt>(lhs: T, rhs: T) -> T
+    /// {
+    ///     lhs.wrapping_mul(rhs)
+    /// }
+    /// ```
+    /// 
+    /// # Example 4 for u64
+    /// ```
+    /// use cryptocol::number::SmallUInt;
+    /// fn main()
+    /// {
+    ///     let a_u64 = func(u64::MAX / 3, 2_u64);
+    ///     println!("{} * 2 = {}", u64::MAX / 3, a_u64);
+    ///     assert_eq!(a_u64, 12297829382473034410_u64);
+    /// 
+    ///     let b_u64 = func(a_u64, 2_u64);
+    ///     println!("{} * 2 = {}", a_u64, b_u64);
+    ///     assert_eq!(b_u64, 6148914691236517204_u64);
+    /// }
+    /// 
+    /// fn func<T: SmallUInt>(lhs: T, rhs: T) -> T
+    /// {
+    ///     lhs.wrapping_mul(rhs)
+    /// }
+    /// ```
+    /// 
+    /// # Example 5 for u128
+    /// ```
+    /// use cryptocol::number::SmallUInt;
+    /// fn main()
+    /// {
+    ///     let a_u128 = func(u128::MAX / 3, 2_u128);
+    ///     println!("{} * 2 = {}", u128::MAX / 3, a_u128);
+    ///     assert_eq!(a_u128,226854911280625642308916404954512140970_u128);
+    /// 
+    ///     let b_u128 = func(a_u128, 2_u128);
+    ///     println!("{} * 2 = {}", a_u128, b_u128);
+    ///     assert_eq!(b_u128, 113427455640312821154458202477256070484_u128);
+    /// }
+    /// 
+    /// fn func<T: SmallUInt>(lhs: T, rhs: T) -> T
+    /// {
+    ///     lhs.wrapping_mul(rhs)
+    /// }
+    /// ```
+    /// 
+    /// # Example 6 for usize
+    /// ```
+    /// use cryptocol::number::SmallUInt;
+    /// fn main()
+    /// {
+    ///     let a_usize = func(usize::MAX / 3, 2_usize);
+    ///     println!("{} * 2 = {}", usize::MAX / 3, a_usize);
+    ///     assert_eq!(a_usize, 12297829382473034410_usize);
+    /// 
+    ///     let b_usize = func(a_usize, 2_usize);
+    ///     println!("{} * 2 = {}", a_usize, b_usize);
+    ///     assert_eq!(b_usize, 6148914691236517204_usize);
+    /// }
+    /// 
+    /// fn func<T: SmallUInt>(lhs: T, rhs: T) -> T
+    /// {
+    ///     lhs.wrapping_mul(rhs)
+    /// }
+    /// ```
+    /// You can use the above generic function `func<>()` for all
+    /// SmallUInt-supported data types in a same scope.
+    /// Look into the following example.
+    /// 
+    /// # Collective Example
     /// ```
     /// use cryptocol::number::SmallUInt;
     /// fn main()
@@ -4542,7 +4665,8 @@ pub trait SmallUInt: Copy + Clone + Sized //+ Display + Debug + ToString
     /// for the primitive type `usize`, read [here](https://doc.rust-lang.org/core/primitive.usize.html#method.wrapping_mul).
     fn wrapping_mul(self, rhs: Self) -> Self;
 
-    /// Calculates self * rhs, wrapping around at the boundary of the type.
+    // fn overflowing_mul(self, rhs: Self) -> (Self, bool);
+    /// Calculates `self` * `rhs`, wrapping around at the boundary of the type.
     /// 
     /// # Features
     /// __The trait SmallUInt is meaningful when you use it in generic context.
@@ -4554,7 +4678,142 @@ pub trait SmallUInt: Copy + Clone + Sized //+ Display + Debug + ToString
     /// whether an arithmetic overflow would occur. If an overflow would
     /// have occurred then the wrapped value is returned.
     /// 
-    /// # Example
+    /// # Example 1 for u8
+    /// ```
+    /// use cryptocol::number::SmallUInt;
+    /// fn main()
+    /// {
+    ///     let a_u8 = func(u8::MAX / 3, 2_u8);
+    ///     println!("{} * 2 = {}\nOverflow = {}", u8::MAX / 3, a_u8.0, a_u8.1);
+    ///     assert_eq!(a_u8.0, 170_u8);
+    ///     assert_eq!(a_u8.1, false);
+    /// 
+    ///     let b_u8 = func(a_u8.0, 2_u8);
+    ///     println!("{} * 2 = {}\nOverflow = {}", a_u8.0, b_u8.0, b_u8.1);
+    ///     assert_eq!(b_u8.0, 84_u8);
+    ///     assert_eq!(b_u8.1, true);
+    /// }
+    /// 
+    /// fn func<T: SmallUInt>(lhs: T, rhs: T) -> (T, bool)
+    /// {
+    ///     lhs.overflowing_mul(rhs)
+    /// }
+    /// ```
+    /// 
+    /// # Example 2 for u16
+    /// ```
+    /// use cryptocol::number::SmallUInt;
+    /// fn main()
+    /// {
+    ///     let a_u16 = func(u16::MAX / 3, 2_u16);
+    ///     println!("{} * 2 = {}\nOverflow = {}", u16::MAX / 3, a_u16.0, a_u16.1);
+    ///     assert_eq!(a_u16.0, 43690_u16);
+    ///     assert_eq!(a_u16.1, false);
+    /// 
+    ///     let b_u16 = func(a_u16.0, 2_u16);
+    ///     println!("{} * 2 = {}\nOverflow = {}", a_u16.0, b_u16.0, b_u16.1);
+    ///     assert_eq!(b_u16.0, 21844_u16);
+    ///     assert_eq!(b_u16.1, true);
+    /// }
+    /// 
+    /// fn func<T: SmallUInt>(lhs: T, rhs: T) -> (T, bool)
+    /// {
+    ///     lhs.overflowing_mul(rhs)
+    /// }
+    /// ```
+    /// 
+    /// # Example 3 for u32
+    /// ```
+    /// use cryptocol::number::SmallUInt;
+    /// fn main()
+    /// {
+    ///     let a_u32 = func(u32::MAX / 3, 2_u32);
+    ///     println!("{} * 2 = {}\nOverflow = {}", u32::MAX / 3, a_u32.0, a_u32.1);
+    ///     assert_eq!(a_u32.0, 2863311530_u32);
+    ///     assert_eq!(a_u32.1, false);
+    /// 
+    ///     let b_u32 = func(a_u32.0, 2_u32);
+    ///     println!("{} * 2 = {}\nOverflow = {}", a_u32.0, b_u32.0, b_u32.1);
+    ///     assert_eq!(b_u32.0, 1431655764_u32);
+    ///     assert_eq!(b_u32.1, true);
+    /// }
+    /// 
+    /// fn func<T: SmallUInt>(lhs: T, rhs: T) -> (T, bool)
+    /// {
+    ///     lhs.overflowing_mul(rhs)
+    /// }
+    /// ```
+    /// 
+    /// # Example 4 for u64
+    /// ```
+    /// use cryptocol::number::SmallUInt;
+    /// fn main()
+    /// {
+    ///     let a_u64 = func(u64::MAX / 3, 2_u64);
+    ///     println!("{} * 2 = {}\nOverflow = {}", u64::MAX / 3, a_u64.0, a_u64.1);
+    ///     assert_eq!(a_u64.0, 12297829382473034410_u64);
+    ///     assert_eq!(a_u64.1, false);
+    /// 
+    ///     let b_u64 = func(a_u64.0, 2_u64);
+    ///     println!("{} * 2 = {}\nOverflow = {}", a_u64.0, b_u64.0, b_u64.1);
+    ///     assert_eq!(b_u64.0, 6148914691236517204_u64);
+    ///     assert_eq!(b_u64.1, true);
+    /// }
+    /// 
+    /// fn func<T: SmallUInt>(lhs: T, rhs: T) -> (T, bool)
+    /// {
+    ///     lhs.overflowing_mul(rhs)
+    /// }
+    /// ```
+    /// 
+    /// # Example 5 for u128
+    /// ```
+    /// use cryptocol::number::SmallUInt;
+    /// fn main()
+    /// {
+    ///     let a_u128 = func(u128::MAX / 3, 2_u128);
+    ///     println!("{} * 2 = {}\nOverflow = {}", u128::MAX / 3, a_u128.0, a_u128.1);
+    ///     assert_eq!(a_u128.0, 226854911280625642308916404954512140970_u128);
+    ///     assert_eq!(a_u128.1, false);
+    /// 
+    ///     let b_u128 = func(a_u128.0, 2_u128);
+    ///     println!("{} * 2 = {}\nOverflow = {}", a_u128.0, b_u128.0, b_u128.1);
+    ///     assert_eq!(b_u128.0, 113427455640312821154458202477256070484_u128);
+    ///     assert_eq!(b_u128.1, true);
+    /// }
+    /// 
+    /// fn func<T: SmallUInt>(lhs: T, rhs: T) -> (T, bool)
+    /// {
+    ///     lhs.overflowing_mul(rhs)
+    /// }
+    /// ```
+    /// 
+    /// # Example 6 for usize
+    /// ```
+    /// use cryptocol::number::SmallUInt;
+    /// fn main()
+    /// {
+    ///     let a_usize = func(usize::MAX / 3, 2_usize);
+    ///     println!("{} * 2 = {}\nOverflow = {}", usize::MAX / 3, a_usize.0, a_usize.1);
+    ///     assert_eq!(a_usize.0, 12297829382473034410_usize);
+    ///     assert_eq!(a_usize.1, false);
+    /// 
+    ///     let b_usize = func(a_usize.0, 2_usize);
+    ///     println!("{} * 2 = {}\nOverflow = {}", a_usize.0, b_usize.0, b_usize.1);
+    ///     assert_eq!(b_usize.0, 6148914691236517204_usize);
+    ///     assert_eq!(b_usize.1, true);
+    /// }
+    /// 
+    /// fn func<T: SmallUInt>(lhs: T, rhs: T) -> (T, bool)
+    /// {
+    ///     lhs.overflowing_mul(rhs)
+    /// }
+    /// ```
+    /// You can use the above generic function `func<>()` for all
+    /// SmallUInt-supported data types in a same scope.
+    /// Look into the following example.
+    /// 
+    /// # Collective Example
     /// ```
     /// use cryptocol::number::SmallUInt;
     /// fn main()
@@ -4654,18 +4913,250 @@ pub trait SmallUInt: Copy + Clone + Sized //+ Display + Debug + ToString
     /// for the primitive type `usize`, read [here](https://doc.rust-lang.org/core/primitive.usize.html#method.overflowing_mul).
     fn overflowing_mul(self, rhs: Self) -> (Self, bool);
 
-    /// Computes self * rhs.
+    // fn checked_mul(self, rhs: Self) -> Option<Self>;
+    /// Computes `self` * `rhs`.
     /// 
     /// # Feature
     /// __The trait SmallUInt is meaningful when you use it in generic context.
     /// Otherwise, it is pretty hard to imagine its usability.__
     /// 
     /// # Output
-    /// It returns self * rhs in the type `Self` wrapped by `Some`
+    /// It returns `self` * `rhs` in the type `Self` wrapped by `Some`
     /// of enum `Option` if overflow did not occur.
     /// And, it returns `None` if overflow occurred.
     /// 
-    /// # Example
+    /// # Example 1 for u8
+    /// ```
+    /// use cryptocol::number::SmallUInt;
+    /// fn main()
+    /// {
+    ///     let a_u8 = func(u8::MAX / 3, 2_u8);
+    ///     match a_u8
+    ///     {
+    ///         Some(a) => {
+    ///                 println!("{} * 2 = {}", u8::MAX / 3, a_u8.unwrap());
+    ///                 assert_eq!(a, 170_u8);
+    ///             },
+    ///         None => {
+    ///                 println!("Overflow happened.");
+    ///                 assert_eq!(a_u8, None);
+    ///             },
+    ///     }
+    ///     
+    ///     let b_u8 = func(a_u8.unwrap(), 2_u8);
+    ///     match b_u8
+    ///     {
+    ///         Some(b) => {
+    ///                 println!("{} * 2 = {}", a_u8.unwrap(), b_u8.unwrap());
+    ///                 assert_eq!(b, 84_u8);
+    ///             },
+    ///         None => {
+    ///                 println!("Overflow happened.");
+    ///                 assert_eq!(b_u8, None);
+    ///             },
+    ///     }
+    /// }
+    /// 
+    /// fn func<T: SmallUInt>(lhs: T, rhs: T) -> Option<T>
+    /// {
+    ///     lhs.checked_mul(rhs)
+    /// }
+    /// ```
+    /// 
+    /// # Example 2 for u16
+    /// ```
+    /// use cryptocol::number::SmallUInt;
+    /// fn main()
+    /// {
+    ///     let a_u16 = func(u16::MAX / 3, 2_u16);
+    ///     match a_u16
+    ///     {
+    ///         Some(a) => {
+    ///                 println!("{} * 2 = {}", u16::MAX / 3, a_u16.unwrap());
+    ///                 assert_eq!(a, 43690_u16);
+    ///             },
+    ///         None => {
+    ///                 println!("Overflow happened.");
+    ///                 assert_eq!(a_u16, None);
+    ///             },
+    ///     }
+    ///     
+    ///     let b_u16 = func(a_u16.unwrap(), 2_u16);
+    ///     match b_u16
+    ///     {
+    ///         Some(b) => {
+    ///                 println!("{} * 2 = {}", a_u16.unwrap(), b);
+    ///                 assert_eq!(b, 21844_u16);
+    ///             },
+    ///         None => {
+    ///                 println!("Overflow happened.");
+    ///                 assert_eq!(b_u16, None);
+    ///             },
+    ///     }
+    /// }
+    /// 
+    /// fn func<T: SmallUInt>(lhs: T, rhs: T) -> Option<T>
+    /// {
+    ///     lhs.checked_mul(rhs)
+    /// }
+    /// ```
+    /// 
+    /// # Example 3 for u32
+    /// ```
+    /// use cryptocol::number::SmallUInt;
+    /// fn main()
+    /// {
+    ///     let a_u32 = func(u32::MAX / 3, 2_u32);
+    ///     match a_u32
+    ///     {
+    ///         Some(a) => {
+    ///                 println!("{} * 2 = {}", u32::MAX / 3, a_u32.unwrap());
+    ///                 assert_eq!(a, 2863311530_u32);
+    ///             },
+    ///         None => {
+    ///                 println!("Overflow happened.");
+    ///                 assert_eq!(a_u32, None);
+    ///             },
+    ///     }
+    ///     
+    ///     let b_u32 = func(a_u32.unwrap(), 2_u32);
+    ///     match b_u32
+    ///     {
+    ///         Some(b) => {
+    ///                 println!("{} * 2 = {}", a_u32.unwrap(), b);
+    ///                 assert_eq!(b, 1431655764_u32);
+    ///             },
+    ///         None => {
+    ///                 println!("Overflow happened.");
+    ///                 assert_eq!(b_u32, None);
+    ///             },
+    ///     }
+    /// }
+    /// 
+    /// fn func<T: SmallUInt>(lhs: T, rhs: T) -> Option<T>
+    /// {
+    ///     lhs.checked_mul(rhs)
+    /// }
+    /// ```
+    /// 
+    /// # Example 4 for u64
+    /// ```
+    /// use cryptocol::number::SmallUInt;
+    /// fn main()
+    /// {
+    ///     let a_u64 = func(u64::MAX / 3, 2_u64);
+    ///     match a_u64
+    ///     {
+    ///         Some(a) => {
+    ///                 println!("{} * 2 = {}", u64::MAX / 3, a_u64.unwrap());
+    ///                 assert_eq!(a, 12297829382473034410_u64);
+    ///             },
+    ///         None => {
+    ///                 println!("Overflow happened.");
+    ///                 assert_eq!(a_u64, None);
+    ///             },
+    ///     }
+    ///     
+    ///     let b_u64 = func(a_u64.unwrap(), 2_u64);
+    ///     match b_u64
+    ///     {
+    ///         Some(b) => {
+    ///                 println!("{} * 2 = {}", a_u64.unwrap(), b);
+    ///                 assert_eq!(b, 6148914691236517204_u64);
+    ///             },
+    ///         None => {
+    ///                 println!("Overflow happened.");
+    ///                 assert_eq!(b_u64, None);
+    ///             },
+    ///     }
+    /// }
+    /// 
+    /// fn func<T: SmallUInt>(lhs: T, rhs: T) -> Option<T>
+    /// {
+    ///     lhs.checked_mul(rhs)
+    /// }
+    /// ```
+    /// 
+    /// # Example 5 for u128
+    /// ```
+    /// use cryptocol::number::SmallUInt;
+    /// fn main()
+    /// {
+    ///     let a_u128 = func(u128::MAX / 3, 2_u128);
+    ///     match a_u128
+    ///     {
+    ///         Some(a) => {
+    ///                 println!("{} * 2 = {}", u128::MAX / 3, a_u128.unwrap());
+    ///                 assert_eq!(a, 226854911280625642308916404954512140970_u128);
+    ///             },
+    ///         None => {
+    ///                 println!("Overflow happened.");
+    ///                 assert_eq!(a_u128, None);
+    ///             },
+    ///     }
+    ///     
+    ///     let b_u128 = func(a_u128.unwrap(), 2_u128);
+    ///     match b_u128
+    ///     {
+    ///         Some(b) => {
+    ///                 println!("{} * 2 = {}", a_u128.unwrap(), b);
+    ///                 assert_eq!(b, 113427455640312821154458202477256070484_u128);
+    ///             },
+    ///         None => {
+    ///                 println!("Overflow happened.");
+    ///                 assert_eq!(b_u128, None);
+    ///             },
+    ///     }
+    /// }
+    /// 
+    /// fn func<T: SmallUInt>(lhs: T, rhs: T) -> Option<T>
+    /// {
+    ///     lhs.checked_mul(rhs)
+    /// }
+    /// ```
+    /// 
+    /// # Example 6 for u128
+    /// ```
+    /// use cryptocol::number::SmallUInt;
+    /// fn main()
+    /// {
+    ///     let a_usize = func(usize::MAX / 3, 2_usize);
+    ///     match a_usize
+    ///     {
+    ///         Some(a) => {
+    ///                 println!("{} * 2 = {}", usize::MAX / 3, a_usize.unwrap());
+    ///                 assert_eq!(a, 12297829382473034410_usize);
+    ///             },
+    ///         None => {
+    ///                 println!("Overflow happened.");
+    ///                 assert_eq!(a_usize, None);
+    ///             },
+    ///     }
+    ///     
+    ///     let b_usize = func(a_usize.unwrap(), 2_usize);
+    ///     match b_usize
+    ///     {
+    ///         Some(b) => {
+    ///                 println!("{} * 2 = {}", a_usize.unwrap(), b);
+    ///                 assert_eq!(b, 6148914691236517204_usize);
+    ///             },
+    ///         None => {
+    ///                 println!("Overflow happened.");
+    ///                 assert_eq!(b_usize, None);
+    ///             },
+    ///     }
+    /// }
+    /// 
+    /// fn func<T: SmallUInt>(lhs: T, rhs: T) -> Option<T>
+    /// {
+    ///     lhs.checked_mul(rhs)
+    /// }
+    /// ```
+    /// You can use the above generic function `func<>()` for all
+    /// SmallUInt-supported data types in a same scope.
+    /// Look into the following example.
+    /// 
+    /// # Collective Example
     /// ```
     /// use cryptocol::number::SmallUInt;
     /// fn main()
@@ -4860,7 +5351,8 @@ pub trait SmallUInt: Copy + Clone + Sized //+ Display + Debug + ToString
     /// for the primitive type `usize`, read [here](https://doc.rust-lang.org/core/primitive.usize.html#method.checked_mul).
     fn checked_mul(self, rhs: Self) -> Option<Self>;
 
-    /// Computes self + rhs, assuming overflow cannot occur.
+    // fn unchecked_mul(self, rhs: Self) -> Self;
+    /// Computes `self` + `rhs`, assuming overflow cannot occur.
     /// 
     /// # Features
     /// __The trait SmallUInt is meaningful when you use it in generic context.
@@ -4872,10 +5364,127 @@ pub trait SmallUInt: Copy + Clone + Sized //+ Display + Debug + ToString
     /// If overflow occurs, this method will panic at this version.
     /// 
     /// # Output
-    /// It returns self + rhs in the type `Self` if overflow did not occur.
+    /// It returns `self` + `rhs` in the type `Self` if overflow did not occur.
     /// Otherwise, its behavior is not defined.
     /// 
-    /// # Example
+    /// # Example 1 for u8
+    /// ```
+    /// use cryptocol::number::SmallUInt;
+    /// fn main()
+    /// {
+    ///     let a_u8 = func(u8::MAX / 3, 2_u8);
+    ///     println!("{} * 2 = {}", u8::MAX / 3, a_u8);
+    ///     assert_eq!(a_u8, 170_u8);
+    /// 
+    ///     // It will panic
+    ///     // let b_u8 = func(a_u8, 2_u8);
+    /// }
+    ///     
+    /// fn func<T: SmallUInt>(lhs: T, rhs: T) -> T
+    /// {
+    ///     lhs.unchecked_mul(rhs)
+    /// }
+    /// ```
+    /// 
+    /// # Example 2 for u16
+    /// ```
+    /// use cryptocol::number::SmallUInt;
+    /// fn main()
+    /// {
+    ///     let a_u16 = func(u16::MAX / 3, 2_u16);
+    ///     println!("{} * 2 = {}", u16::MAX / 3, a_u16);
+    ///     assert_eq!(a_u16, 43690_u16);
+    /// 
+    ///     // It will panic
+    ///     // let b_u16 = func(a_u16, 2_u16);
+    /// }
+    ///     
+    /// fn func<T: SmallUInt>(lhs: T, rhs: T) -> T
+    /// {
+    ///     lhs.unchecked_mul(rhs)
+    /// }
+    /// ```
+    /// 
+    /// # Example 3 for u32
+    /// ```
+    /// use cryptocol::number::SmallUInt;
+    /// fn main()
+    /// {
+    ///     let a_u32 = func(u32::MAX / 3, 2_u32);
+    ///     println!("{} * 2 = {}", u32::MAX / 3, a_u32);
+    ///     assert_eq!(a_u32, 2863311530_u32);
+    /// 
+    ///     // It will panic
+    ///     // let b_u32 = func(a_u32, 2_u32);
+    /// }
+    ///     
+    /// fn func<T: SmallUInt>(lhs: T, rhs: T) -> T
+    /// {
+    ///     lhs.unchecked_mul(rhs)
+    /// }
+    /// ```
+    /// 
+    /// # Example 4 for u64
+    /// ```
+    /// use cryptocol::number::SmallUInt;
+    /// fn main()
+    /// {
+    ///     let a_u64 = func(u64::MAX / 3, 2_u64);
+    ///     println!("{} * 2 = {}", u64::MAX / 3, a_u64);
+    ///     assert_eq!(a_u64, 12297829382473034410_u64);
+    /// 
+    ///     // It will panic
+    ///     // let b_u64 = func(a_u64, 2_u64);
+    /// }
+    ///     
+    /// fn func<T: SmallUInt>(lhs: T, rhs: T) -> T
+    /// {
+    ///     lhs.unchecked_mul(rhs)
+    /// }
+    /// ```
+    /// 
+    /// # Example 5 for u128
+    /// ```
+    /// use cryptocol::number::SmallUInt;
+    /// fn main()
+    /// {
+    ///     let a_u128 = func(u128::MAX / 3, 2_u128);
+    ///     println!("{} * 2 = {}", u128::MAX / 3, a_u128);
+    ///     assert_eq!(a_u128, 226854911280625642308916404954512140970_u128);
+    /// 
+    ///     // It will panic
+    ///     // let b_u128 = func(a_u128, 2_u128);
+    /// }
+    ///     
+    /// fn func<T: SmallUInt>(lhs: T, rhs: T) -> T
+    /// {
+    ///     lhs.unchecked_mul(rhs)
+    /// }
+    /// ```
+    /// 
+    /// # Example 6 for usize
+    /// ```
+    /// use cryptocol::number::SmallUInt;
+    /// fn main()
+    /// {
+    ///     let a_usize = func(usize::MAX / 3, 2_usize);
+    ///     println!("{} * 2 = {}", usize::MAX / 3, a_usize);
+    ///     assert_eq!(a_usize, 12297829382473034410_usize);
+    /// 
+    ///     // It will panic
+    ///     // let b_usize = func(a_usize, 2_usize);
+    /// }
+    ///     
+    /// fn func<T: SmallUInt>(lhs: T, rhs: T) -> T
+    /// {
+    ///     lhs.unchecked_mul(rhs)
+    /// }
+    /// ```
+    /// You can use the above generic function `func<>()` for all
+    /// SmallUInt-supported data types in a same scope.
+    /// Look into the following example.
+    /// 
+    /// # Collective Example
     /// ```
     /// use cryptocol::number::SmallUInt;
     /// fn main()
