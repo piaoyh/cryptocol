@@ -4972,6 +4972,7 @@ impl ShortUnion
     pub fn new() -> Self                    { Self { ushort: 0 } }
     pub fn new_with(ushort: u16) -> Self    { Self { ushort } }
     pub fn new_with_signed(sshort: i16) -> Self { Self { sshort } }
+    pub fn new_with_ubytes(ubyte: [u8; 2]) -> Self  { Self { ubyte } }
     pub fn onoff(b: bool) -> Self           { Self { ushort: b as u16 } }
     pub fn onoff_signed(b: bool) -> Self    { Self { sshort: b as i16 } }
     pub fn new_with_u128(num: u128) -> Self { Self { ushort: LongerUnion::new_with(num).get_ushort_(0) } }
@@ -4994,6 +4995,8 @@ impl IntUnion
     pub fn new() -> Self                { Self { uint: 0 } }
     pub fn new_with(uint: u32) -> Self  { Self { uint } }
     pub fn new_with_signed(sint: i32) -> Self   { Self { sint } }
+    pub fn new_with_ubytes(ubyte: [u8; 4]) -> Self  { Self { ubyte } }
+    pub fn new_with_ushorts(ushort: [u16; 2]) -> Self   { Self { ushort } }
     pub fn onoff(b: bool) -> Self       { Self { uint: b as u32 } }
     pub fn onoff_signed(b: bool) -> Self    { Self { sint: b as i32 } }
     pub fn new_with_u128(num: u128) -> Self { Self { uint: LongerUnion::new_with(num).get_uint_(0) } }
@@ -5018,6 +5021,9 @@ impl LongUnion
     pub fn new() -> Self                    { Self { ulong: 0 } }
     pub fn new_with(ulong: u64) -> Self     { Self { ulong } }
     pub fn new_with_signed(slong: i64) -> Self  { Self { slong } }
+    pub fn new_with_ubytes(ubyte: [u8; 8])  -> Self { Self { ubyte } }
+    pub fn new_with_ushorts(ushort: [u16; 4])  -> Self  { Self { ushort } }
+    pub fn new_with_uints(uint: [u32; 2])  -> Self  { Self { uint } }
     pub fn onoff(b: bool) -> Self           { Self { ulong: b as u64 } }
     pub fn onoff_singed(b: bool) -> Self    { Self { slong: b as i64 } }
     pub fn new_with_u128(num: u128) -> Self { Self { ulong: LongerUnion::new_with(num).get_ulong_(0) } }
@@ -5044,6 +5050,10 @@ impl LongerUnion
     pub fn new() -> Self                    { Self { ulonger: 0 } }
     pub fn new_with(ulonger: u128) -> Self  { Self { ulonger } }
     pub fn new_with_signed(slonger: i128) -> Self   { Self { slonger } }
+    pub fn new_with_ubytes(ubyte: [u8; 16]) -> Self { Self { ubyte } }
+    pub fn new_with_ushorts(ushort: [u16; 8]) -> Self   { Self { ushort } }
+    pub fn new_with_uints(uint: [u32; 4]) -> Self   { Self { uint } }
+    pub fn new_with_ulongs(ulong: [u64; 2]) -> Self   { Self { ulong } }
     pub fn onoff(b: bool) -> Self           { Self { ulonger: b as u128 } }
     pub fn onoff_signed(b: bool) -> Self    { Self { slonger: b as i128 } }
     pub fn new_with_u128(num: u128) -> Self { Self { ulonger: num } }

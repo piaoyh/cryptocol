@@ -75,7 +75,7 @@ pub trait SmallUInt: Copy + Clone + Sized //+ Display + Debug + ToString
     ///     //   51501_u16 == (201_u8,  45_u8)
     ///     
     ///     // c: u16 === (c_high, c_low)
-    ///     let (c_high_u8, c_low_u8, carry) = small_uint_carrying_add_func(a_high_u8, a_low_u8, b_high_u8, b_low_u8);
+    ///     let (c_low_u8, c_high_u8, carry) = small_uint_carrying_add_func(a_low_u8, a_high_u8, b_low_u8, b_high_u8);
     ///     println!("{}-{}, {}", c_high_u8, c_low_u8, carry);
     ///     assert_eq!(c_high_u8, 201);
     ///     assert_eq!(c_low_u8, 45);
@@ -86,21 +86,21 @@ pub trait SmallUInt: Copy + Clone + Sized //+ Display + Debug + ToString
     ///     // + 25800_u16 == (100_u8, 200_u8)
     ///     // -------------------------------
     ///     //   11765_u16 == ( 45_u8, 245_u8)
-    ///     let (d_high_u8, d_low_u8, carry) = small_uint_carrying_add_func(c_high_u8, c_low_u8, b_high_u8, b_low_u8);
+    ///     let (d_low_u8, d_high_u8, carry) = small_uint_carrying_add_func(c_low_u8, c_high_u8, b_low_u8, b_high_u8);
     ///     println!("{}-{}, {}", d_high_u8, d_low_u8, carry);
     ///     assert_eq!(d_high_u8, 45_u8);
     ///     assert_eq!(d_low_u8, 245_u8);
     ///     assert_eq!(carry, true);
     /// }
     /// 
-    /// fn add_long<T: SmallUInt>(lhs_high: T, lhs_low: T, rhs_high: T, rhs_low: T) -> (T, T, bool)
+    /// fn add_long<T: SmallUInt>(lhs_low: T, lhs_high: T, rhs_low: T, rhs_high: T) -> (T, T, bool)
     /// {
     ///     let mut carry = false;
     ///     let mut sum_high: T;
     ///     let mut sum_low: T;
     ///     (sum_low, carry) = lhs_low.carrying_add(rhs_low, carry);
     ///     (sum_high, carry) = lhs_high.carrying_add(rhs_high, carry);
-    ///     (sum_high, sum_low, carry)
+    ///     (sum_low, sum_high, carry)
     /// }
     /// ```
     /// 
@@ -113,7 +113,7 @@ pub trait SmallUInt: Copy + Clone + Sized //+ Display + Debug + ToString
     ///     //+                 419908440780438063913804265570801972943493 == (                1234_u128,                6789_u128)
     ///     //---------------------------------------------------------------------------------------------------------------------
     ///     //  4201016837757990060220434389862048393050748461333959603678 == (12345678901234569124_u128, 6789012345678919134_u128)
-    ///     let (a_high_u128, a_low_u128, carry) = small_uint_carrying_add_func(12345678901234567890_u128, 6789012345678912345_u128, 1234_u128, 6789_u128);
+    ///     let (a_low_u128, a_high_u128, carry) = small_uint_carrying_add_func(6789012345678912345_u128, 12345678901234567890_u128, 6789_u128, 1234_u128);
     ///     println!("{}-{}, {}", a_high_u128, a_low_u128, carry);
     ///     assert_eq!(a_high_u128, 12345678901234569124_u128);
     ///     assert_eq!(a_low_u128, 6789012345678919134_u128);
@@ -123,25 +123,26 @@ pub trait SmallUInt: Copy + Clone + Sized //+ Display + Debug + ToString
     ///     //+  57896044618658097711785492504343953926307055644800578124155540853313808954190 == (170141183460469231731687303715884105727_u128, 12345678901234567890123456789012345678_u128)
     ///     //--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
     ///     //   19298681539552699237261830834781317975046994857318776714373108680289488156697 == ( 56713727820156410577229101238628035241_u128, 69134691246913480235802358023580235801_u128)
-    ///     let (b_high_u128, b_low_u128, carry) = small_uint_carrying_add_func(226854911280625642308916404954512140970_u128, 56789012345678912345678901234567890123_u128, 170141183460469231731687303715884105727_u128, 12345678901234567890123456789012345678_u128);
+    ///     let (b_low_u128, b_high_u128, carry) = small_uint_carrying_add_func(56789012345678912345678901234567890123_u128, 226854911280625642308916404954512140970_u128, 12345678901234567890123456789012345678_u128, 170141183460469231731687303715884105727_u128);
     ///     println!("{}-{}, {}", b_high_u128, b_low_u128, carry);
     ///     assert_eq!(b_high_u128, 56713727820156410577229101238628035241_u128);
     ///     assert_eq!(b_low_u128, 69134691246913480235802358023580235801_u128);
     ///     assert_eq!(carry, true);
     /// }
     /// 
-    /// fn add_long<T: SmallUInt>(lhs_high: T, lhs_low: T, rhs_high: T, rhs_low: T) -> (T, T, bool)
+    /// fn add_long<T: SmallUInt>(lhs_low: T, lhs_high: T, rhs_low: T, rhs_high: T) -> (T, T, bool)
     /// {
     ///     let mut carry = false;
     ///     let mut sum_high: T;
     ///     let mut sum_low: T;
     ///     (sum_low, carry) = lhs_low.carrying_add(rhs_low, carry);
     ///     (sum_high, carry) = lhs_high.carrying_add(rhs_high, carry);
-    ///     (sum_high, sum_low, carry)
+    ///     (sum_low, sum_high, carry)
     /// }
     /// ```
-    /// You can use the above generic function `add_long<>()` for all primitive
-    /// data types in a same scope. Look into the following example.
+    /// You can use the above generic function `func<>()` for all
+    /// SmallUInt-supported data types in a same scope.
+    /// Look into the following example.
     /// 
     /// # Collective Example
     /// ```
@@ -162,7 +163,7 @@ pub trait SmallUInt: Copy + Clone + Sized //+ Display + Debug + ToString
     ///     //   51501_u16 == (201_u8,  45_u8)
     ///     
     ///     // c: u16 === (c_high, c_low)
-    ///     let (c_high_u8, c_low_u8, carry) = small_uint_carrying_add_func(a_high_u8, a_low_u8, b_high_u8, b_low_u8);
+    ///     let (c_low_u8, c_high_u8, carry) = small_uint_carrying_add_func(a_low_u8, a_high_u8, b_low_u8, b_high_u8);
     ///     println!("{}-{}, {}", c_high_u8, c_low_u8, carry);
     ///     assert_eq!(c_high_u8, 201);
     ///     assert_eq!(c_low_u8, 45);
@@ -173,7 +174,7 @@ pub trait SmallUInt: Copy + Clone + Sized //+ Display + Debug + ToString
     ///     // + 25800_u16 == (100_u8, 200_u8)
     ///     // -------------------------------
     ///     //   11765_u16 == ( 45_u8, 245_u8)
-    ///     let (d_high_u8, d_low_u8, carry) = small_uint_carrying_add_func(c_high_u8, c_low_u8, b_high_u8, b_low_u8);
+    ///     let (d_low_u8, d_high_u8, carry) = small_uint_carrying_add_func(c_low_u8, c_high_u8, b_low_u8, b_high_u8);
     ///     println!("{}-{}, {}", d_high_u8, d_low_u8, carry);
     ///     assert_eq!(d_high_u8, 45_u8);
     ///     assert_eq!(d_low_u8, 245_u8);
@@ -183,7 +184,7 @@ pub trait SmallUInt: Copy + Clone + Sized //+ Display + Debug + ToString
     ///     //+                 419908440780438063913804265570801972943493 == (                1234_u128,                6789_u128)
     ///     //---------------------------------------------------------------------------------------------------------------------
     ///     //  4201016837757990060220434389862048393050748461333959603678 == (12345678901234569124_u128, 6789012345678919134_u128)
-    ///     let (a_high_u128, a_low_u128, carry) = small_uint_carrying_add_func(12345678901234567890_u128, 6789012345678912345_u128, 1234_u128, 6789_u128);
+    ///     let (a_low_u128, a_high_u128, carry) = small_uint_carrying_add_func(6789012345678912345_u128, 12345678901234567890_u128, 6789_u128, 1234_u128);
     ///     println!("{}-{}, {}", a_high_u128, a_low_u128, carry);
     ///     assert_eq!(a_high_u128, 12345678901234569124_u128);
     ///     assert_eq!(a_low_u128, 6789012345678919134_u128);
@@ -193,21 +194,21 @@ pub trait SmallUInt: Copy + Clone + Sized //+ Display + Debug + ToString
     ///     //+  57896044618658097711785492504343953926307055644800578124155540853313808954190 == (170141183460469231731687303715884105727_u128, 12345678901234567890123456789012345678_u128)
     ///     //--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
     ///     //   19298681539552699237261830834781317975046994857318776714373108680289488156697 == ( 56713727820156410577229101238628035241_u128, 69134691246913480235802358023580235801_u128)
-    ///     let (b_high_u128, b_low_u128, carry) = small_uint_carrying_add_func(226854911280625642308916404954512140970_u128, 56789012345678912345678901234567890123_u128, 170141183460469231731687303715884105727_u128, 12345678901234567890123456789012345678_u128);
+    ///     let (b_low_u128, b_high_u128, carry) = small_uint_carrying_add_func(56789012345678912345678901234567890123_u128, 226854911280625642308916404954512140970_u128, 12345678901234567890123456789012345678_u128, 170141183460469231731687303715884105727_u128);
     ///     println!("{}-{}, {}", b_high_u128, b_low_u128, carry);
     ///     assert_eq!(b_high_u128, 56713727820156410577229101238628035241_u128);
     ///     assert_eq!(b_low_u128, 69134691246913480235802358023580235801_u128);
     ///     assert_eq!(carry, true);
     /// }
     /// 
-    /// fn add_long<T: SmallUInt>(lhs_high: T, lhs_low: T, rhs_high: T, rhs_low: T) -> (T, T, bool)
+    /// fn add_long<T: SmallUInt>(lhs_low: T, lhs_high: T, rhs_low: T, rhs_high: T) -> (T, T, bool)
     /// {
     ///     let mut carry = false;
     ///     let mut sum_high: T;
     ///     let mut sum_low: T;
     ///     (sum_low, carry) = lhs_low.carrying_add(rhs_low, carry);
     ///     (sum_high, carry) = lhs_high.carrying_add(rhs_high, carry);
-    ///     (sum_high, sum_low, carry)
+    ///     (sum_low, sum_high, carry)
     /// }
     /// ```
     /// 
@@ -380,8 +381,9 @@ pub trait SmallUInt: Copy + Clone + Sized //+ Display + Debug + ToString
     ///     lhs.wrapping_add(rhs)
     /// }
     /// ```
-    /// You can use the above generic function `func<>()` for all SmallUInt-supported
-    /// data types in a same scope. Look into the next example.
+    /// You can use the above generic function `func<>()` for all
+    /// SmallUInt-supported data types in a same scope.
+    /// Look into the following example.
     /// 
     /// # Collective Example
     /// ```
@@ -1279,6 +1281,9 @@ pub trait SmallUInt: Copy + Clone + Sized //+ Display + Debug + ToString
     ///     lhs.unchecked_add(rhs)
     /// }
     /// ```
+    /// You can use the above generic function `func<>()` for all
+    /// SmallUInt-supported data types in a same scope.
+    /// Look into the following example.
     /// 
     /// # Collective Example
     /// ```
@@ -1729,6 +1734,9 @@ pub trait SmallUInt: Copy + Clone + Sized //+ Display + Debug + ToString
     ///     lhs.modular_add(rhs, modulo)
     /// }
     /// ```
+    /// You can use the above generic function `func<>()` for all
+    /// SmallUInt-supported data types in a same scope.
+    /// Look into the following example.
     /// 
     /// # Collective Example
     /// ```
@@ -1800,7 +1808,8 @@ pub trait SmallUInt: Copy + Clone + Sized //+ Display + Debug + ToString
 
     /***** SUBTRACTION *****/
 
-    /// Calculates self − rhs − borrow,
+    // fn borrowing_sub(self, rhs: Self, borrow: bool) -> (Self, bool);
+    /// Calculates `self` − `rhs` − `borrow`,
     /// wrapping around at the boundary of the type. 
     /// 
     /// # Features
@@ -1820,7 +1829,7 @@ pub trait SmallUInt: Copy + Clone + Sized //+ Display + Debug + ToString
     /// and a borrow-in bit from self, and returns an output integer and a
     /// borrow-out bit.
     /// 
-    /// # Example
+    /// # Example 1 for u8
     /// ```
     /// use cryptocol::number::SmallUInt;
     /// fn main()
@@ -1840,7 +1849,7 @@ pub trait SmallUInt: Copy + Clone + Sized //+ Display + Debug + ToString
     ///     // - 25701_u16 == (100_u8, 101_u8)
     ///     // -------------------------------
     ///     //      99_u16 == (  0_u8,  99_u8)
-    ///     (c_high_u8, c_low_u8, borrow) = sub_long(a_high_u8, a_low_u8, b_high_u8, b_low_u8);
+    ///     (c_low_u8, c_high_u8, borrow) = sub_long(a_low_u8, a_high_u8, b_low_u8, b_high_u8);
     ///     println!("{}-{}, {}", c_high_u8, c_low_u8, borrow);
     ///     assert_eq!(c_high_u8, 0_u8);
     ///     assert_eq!(c_low_u8, 99_u8);
@@ -1853,19 +1862,36 @@ pub trait SmallUInt: Copy + Clone + Sized //+ Display + Debug + ToString
     ///     // - 25701_u16 == (100_u8, 101_u8)
     ///     // -------------------------------
     ///     //   39934_u16 == (155_u8, 254_u8)
-    ///     (d_high_u8, d_low_u8, borrow) = sub_long(c_high_u8, c_low_u8, b_high_u8, b_low_u8);
+    ///     (d_low_u8, d_high_u8, borrow) = sub_long(c_low_u8, c_high_u8, b_low_u8, b_high_u8);
     ///     println!("{}-{}, {}", d_high_u8, d_low_u8, borrow);
     ///     assert_eq!(d_high_u8, 155_u8);
     ///     assert_eq!(d_low_u8, 254_u8);
     ///     assert_eq!(borrow, true);
+    /// }
     /// 
+    /// fn sub_long<T: SmallUInt>(lhs_low: T, lhs_high: T, rhs_low: T, rhs_high: T) -> (T, T, bool)
+    /// {
+    ///     let mut borrow = false;
+    ///     let mut dif_high: T;
+    ///     let mut dif_low: T;
+    ///     (sum_low, borrow) = lhs_low.borrowing_sub(rhs_low, borrow);
+    ///     (dif_high, borrow) = lhs_high.borrowing_sub(rhs_high, borrow);
+    ///     (dif_low, dif_high, borrow)
+    /// }
+    /// ```
+    /// 
+    /// # Example 2 for u128
+    /// ```
+    /// use cryptocol::number::SmallUInt;
+    /// fn main()
+    /// {
     ///     let a_high_u128: u128;
     ///     let a_low_u128: u128;
     ///     //   4201016837757989640311993609423984479246482890531986660185 == (12345678901234567890_u128, 6789012345678912345_u128)
     ///     // -                 419908440780438063913804265570801972943493 == (                1234_u128,                6789_u128)
     ///     // ---------------------------------------------------------------------------------------------------------------------
     ///     //   4201016837757989220403552828985920565442217319730013716692 == (12345678901234566656_u128, 6789012345678905556_u128)
-    ///     (a_high_u128, a_low_u128, borrow) = sub_long(12345678901234567890_u128, 6789012345678912345_u128, 1234_u128, 6789_u128);
+    ///     (a_low_u128, a_high_u128, borrow) = sub_long(6789012345678912345_u128, 12345678901234567890_u128, 6789_u128, 1234_u128);
     ///     println!("{}-{}, {}", a_high_u128, a_low_u128, borrow);
     ///     assert_eq!(a_high_u128, 12345678901234566656_u128);
     ///     assert_eq!(a_low_u128, 6789012345678905556_u128);
@@ -1877,21 +1903,99 @@ pub trait SmallUInt: Copy + Clone + Sized //+ Display + Debug + ToString
     ///     // - 308778904632843187796189293356501087608549893209439890708590319850715068122315 == (226854911280625642308916404954512140970_u128,  56789012345678912345678901234567890123_u128)
     ///     // --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
     ///     //   328077586172395887033451124191282405584107085763563507612853141042164389031555 == (283568639100782052886145506193140176212_u128, 295839033476494119007819162986212667011_u128)
-    ///     (b_high_u128, b_low_u128, borrow) = sub_long(170141183460469231731687303715884105727_u128, 12345678901234567890123456789012345678_u128, 226854911280625642308916404954512140970_u128, 56789012345678912345678901234567890123_u128);
+    ///     (b_low_u128, b_high_u128, borrow) = sub_long(12345678901234567890123456789012345678_u128, 170141183460469231731687303715884105727_u128, 56789012345678912345678901234567890123_u128, 226854911280625642308916404954512140970_u128);
     ///     println!("{}-{}, {}", b_high_u128, b_low_u128, carry);
     ///     assert_eq!(b_high_u128, 283568639100782052886145506193140176212_u128);
     ///     assert_eq!(b_low_u128, 295839033476494119007819162986212667011_u128);
     ///     assert_eq!(borrow, true);
     /// }
     /// 
-    /// fn sub_long<T: SmallUInt>(lhs_high: T, lhs_low: T, rhs_high: T, rhs_low: T) -> (T, T, bool)
+    /// fn sub_long<T: SmallUInt>(lhs_low: T, lhs_high: T, rhs_low: T, rhs_high: T) -> (T, T, bool)
     /// {
     ///     let mut borrow = false;
-    ///     let mut sum_high: T;
-    ///     let mut sum_low: T;
+    ///     let mut dif_high: T;
+    ///     let mut dif_low: T;
     ///     (sum_low, borrow) = lhs_low.borrowing_sub(rhs_low, borrow);
-    ///     (sum_high, borrow) = lhs_high.borrowing_sub(rhs_high, borrow);
-    ///     (sum_high, sum_low, borrow)
+    ///     (dif_high, borrow) = lhs_high.borrowing_sub(rhs_high, borrow);
+    ///     (dif_low, dif_high, borrow)
+    /// }
+    /// ```
+    /// You can use the above generic function `func<>()` for all
+    /// SmallUInt-supported data types in a same scope.
+    /// Look into the following example.
+    /// 
+    /// # Collective Example
+    /// ```
+    /// use cryptocol::number::SmallUInt;
+    /// fn main()
+    /// {
+    ///     // a_u16: u16 === (a_high_u8, a_low_u8) == (100_u8, 200_u8) == 25800_u16
+    ///     let a_high_u8 = 100_u8;
+    ///     let a_low_u8 = 200_u8;
+    ///     // b_u16: u16 === (b_high_u8, b_low_u8) == (100_u8, 101_u8) == 25701_u16
+    ///     let b_high_u8 = 100_u8;
+    ///     let b_low_u8 = 101_u8;
+    ///     // c_u16: u16 === (c_high_u8, c_low_u8)
+    ///     let c_high_u8: u8;
+    ///     let c_low_u8: u8;
+    ///     let mut borrow: bool;
+    ///     // (100_u8, 200_u8) - (100_u8, 101_u8) == 25800_u16 - 25701_u16 == 99_u16
+    ///     //   25800_u16 == (100_u8, 200_u8)
+    ///     // - 25701_u16 == (100_u8, 101_u8)
+    ///     // -------------------------------
+    ///     //      99_u16 == (  0_u8,  99_u8)
+    ///     (c_low_u8, c_high_u8, borrow) = sub_long(a_low_u8, a_high_u8, b_low_u8, b_high_u8);
+    ///     println!("{}-{}, {}", c_high_u8, c_low_u8, borrow);
+    ///     assert_eq!(c_high_u8, 0_u8);
+    ///     assert_eq!(c_low_u8, 99_u8);
+    ///     assert_eq!(borrow, false);
+    /// 
+    ///     let d_high_u8: u8;
+    ///     let d_low_u8: u8;
+    ///     //  (  0_u8,  99_u8) - (100_u8, 101_u8) == 99_u16 - 25701_u16 == 51501_u16
+    ///     //      99_u16 == (  0_u8,  99_u8)
+    ///     // - 25701_u16 == (100_u8, 101_u8)
+    ///     // -------------------------------
+    ///     //   39934_u16 == (155_u8, 254_u8)
+    ///     (d_low_u8, d_high_u8, borrow) = sub_long(c_low_u8, c_high_u8, b_low_u8, b_high_u8);
+    ///     println!("{}-{}, {}", d_high_u8, d_low_u8, borrow);
+    ///     assert_eq!(d_high_u8, 155_u8);
+    ///     assert_eq!(d_low_u8, 254_u8);
+    ///     assert_eq!(borrow, true);
+    /// 
+    ///     let a_high_u128: u128;
+    ///     let a_low_u128: u128;
+    ///     //   4201016837757989640311993609423984479246482890531986660185 == (12345678901234567890_u128, 6789012345678912345_u128)
+    ///     // -                 419908440780438063913804265570801972943493 == (                1234_u128,                6789_u128)
+    ///     // ---------------------------------------------------------------------------------------------------------------------
+    ///     //   4201016837757989220403552828985920565442217319730013716692 == (12345678901234566656_u128, 6789012345678905556_u128)
+    ///     (a_low_u128, a_high_u128, borrow) = sub_long(6789012345678912345_u128, 12345678901234567890_u128, 6789_u128, 1234_u128);
+    ///     println!("{}-{}, {}", a_high_u128, a_low_u128, borrow);
+    ///     assert_eq!(a_high_u128, 12345678901234566656_u128);
+    ///     assert_eq!(a_low_u128, 6789012345678905556_u128);
+    ///     assert_eq!(borrow, false);
+    /// 
+    ///     let b_high_u128: u128;
+    ///     let b_low_u128: u128;
+    ///     //    57896044618658097711785492504343953926307055644800578124155540853313808954190 == (170141183460469231731687303715884105727_u128,  12345678901234567890123456789012345678_u128)
+    ///     // - 308778904632843187796189293356501087608549893209439890708590319850715068122315 == (226854911280625642308916404954512140970_u128,  56789012345678912345678901234567890123_u128)
+    ///     // --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+    ///     //   328077586172395887033451124191282405584107085763563507612853141042164389031555 == (283568639100782052886145506193140176212_u128, 295839033476494119007819162986212667011_u128)
+    ///     (b_low_u128, b_high_u128, borrow) = sub_long(12345678901234567890123456789012345678_u128, 170141183460469231731687303715884105727_u128, 56789012345678912345678901234567890123_u128, 226854911280625642308916404954512140970_u128);
+    ///     println!("{}-{}, {}", b_high_u128, b_low_u128, carry);
+    ///     assert_eq!(b_high_u128, 283568639100782052886145506193140176212_u128);
+    ///     assert_eq!(b_low_u128, 295839033476494119007819162986212667011_u128);
+    ///     assert_eq!(borrow, true);
+    /// }
+    /// 
+    /// fn sub_long<T: SmallUInt>(lhs_low: T, lhs_high: T, rhs_low: T, rhs_high: T) -> (T, T, bool)
+    /// {
+    ///     let mut borrow = false;
+    ///     let mut dif_high: T;
+    ///     let mut dif_low: T;
+    ///     (dif_low, borrow) = lhs_low.borrowing_sub(rhs_low, borrow);
+    ///     (dif_high, borrow) = lhs_high.borrowing_sub(rhs_high, borrow);
+    ///     (dif_low, dif_high, borrow)
     /// }
     /// ```
     /// 
@@ -1934,7 +2038,8 @@ pub trait SmallUInt: Copy + Clone + Sized //+ Display + Debug + ToString
     /// for the primitive type `usize`, read [here](https://doc.rust-lang.org/core/primitive.usize.html#method.borrowing_sub).
     fn borrowing_sub(self, rhs: Self, borrow: bool) -> (Self, bool);
 
-    /// Computes self - rhs, wrapping around at the boundary of the type.
+    // fn wrapping_sub(self, rhs: Self) -> Self;
+    /// Computes `self` - `rhs`, wrapping around at the boundary of the type.
     /// 
     /// # Features
     /// __The trait SmallUInt is meaningful when you use it in generic context.
@@ -1942,9 +2047,9 @@ pub trait SmallUInt: Copy + Clone + Sized //+ Display + Debug + ToString
     /// It subtracts rhs from self with wrapping (modular) subtraction.
     /// 
     /// # Output
-    /// It returns the self - rhs in the type of `Self`.
+    /// It returns the `self` - `rhs` in the type of `Self`.
     /// 
-    /// # Example for u8
+    /// # Example 1 for u8
     /// ```
     /// use cryptocol::number::SmallUInt;
     /// fn main()
@@ -1964,7 +2069,7 @@ pub trait SmallUInt: Copy + Clone + Sized //+ Display + Debug + ToString
     /// }
     /// ```
     /// 
-    /// # Example for u16
+    /// # Example 2 for u16
     /// ```
     /// use cryptocol::number::SmallUInt;
     /// fn main()
@@ -1984,7 +2089,7 @@ pub trait SmallUInt: Copy + Clone + Sized //+ Display + Debug + ToString
     /// }
     /// ```
     /// 
-    /// # Example for u32
+    /// # Example 3 for u32
     /// ```
     /// use cryptocol::number::SmallUInt;
     /// fn main()
@@ -2005,7 +2110,7 @@ pub trait SmallUInt: Copy + Clone + Sized //+ Display + Debug + ToString
     /// }
     /// ```
     /// 
-    /// # Example for u64
+    /// # Example 4 for u64
     /// ```
     /// use cryptocol::number::SmallUInt;
     /// fn main()
@@ -2025,7 +2130,7 @@ pub trait SmallUInt: Copy + Clone + Sized //+ Display + Debug + ToString
     /// }
     /// ```
     /// 
-    /// # Example for u128
+    /// # Example 5 for u128
     /// ```
     /// use cryptocol::number::SmallUInt;
     /// fn main()
@@ -2045,7 +2150,7 @@ pub trait SmallUInt: Copy + Clone + Sized //+ Display + Debug + ToString
     /// }
     /// ```
     /// 
-    /// # Example for usize
+    /// # Example 6 for usize
     /// ```
     /// use cryptocol::number::SmallUInt;
     /// fn main()
@@ -2154,14 +2259,15 @@ pub trait SmallUInt: Copy + Clone + Sized //+ Display + Debug + ToString
     /// - If you want to know about the definition of the method `wrapping_sub()`
     /// for the primitive type `usize`, read [here](https://doc.rust-lang.org/core/primitive.usize.html#method.wrapping_sub).
     fn wrapping_sub(self, rhs: Self) -> Self;
-    
-    /// Calculates self - rhs, wrapping around at the boundary of the type.
+
+    // fn overflowing_sub(self, rhs: Self) -> (Self, bool);
+    /// Calculates `self` - `rhs`, wrapping around at the boundary of the type.
     /// 
     /// # Features
     /// __The trait SmallUInt is meaningful when you use it in generic context.
     /// Otherwise, it is pretty hard to imagine its usability.__
     /// It subtracts rhs from self with wrapping (modular) subtraction.
-    /// It is the same as the method carrying_sub() with the imput carry which
+    /// It is the same as the method borrowing_sub() with the imput carry which
     /// is false.
     /// 
     /// # Output
@@ -2169,7 +2275,142 @@ pub trait SmallUInt: Copy + Clone + Sized //+ Display + Debug + ToString
     /// whether an arithmetic underflow would occur. If an underflow would
     /// have occurred then the wrapped value is returned.
     /// 
-    /// # Example
+    /// # Example 1 for u8
+    /// ```
+    /// use cryptocol::number::SmallUInt;
+    /// fn main()
+    /// {
+    ///     let a_u8 = func(55_u8, 55_u8);
+    ///     println!("55 - 55 = {}\nUnderflow = {}", a_u8.0, a_u8.1);
+    ///     assert_eq!(a_u8.0, 0_u8);
+    ///     assert_eq!(a_u8.1, false);
+    ///  
+    ///     let b_u8 = func(a_u8.0, 1_u8);
+    ///     println!("{} - 1 = {}\nUnderflow = {}", a_u8.0, b_u8.0, b_u8.1);
+    ///     assert_eq!(b_u8.0, u8::MAX);
+    ///     assert_eq!(b_u8.1, true);
+    /// }
+    /// 
+    /// fn func<T: SmallUInt>(lhs: T, rhs: T) -> (T, bool)
+    /// {
+    ///     lhs.overflowing_sub(rhs)
+    /// }
+    /// ```
+    /// 
+    /// # Example 2 for u16
+    /// ```
+    /// use cryptocol::number::SmallUInt;
+    /// fn main()
+    /// {
+    ///     let a_u16 = func(55_u16, 55_u16);
+    ///     println!("55 - 55 = {}\nUnderflow = {}", a_u16.0, a_u16.1);
+    ///     assert_eq!(a_u16.0, 0_u16);
+    ///     assert_eq!(a_u16.1, false);
+    ///  
+    ///     let b_u16 = func(a_u16.0, 1_u16);
+    ///     println!("{} - 1 = {}\nUnderflow = {}", a_u16.0, b_u16.0, b_u16.1);
+    ///     assert_eq!(b_u16.0, u16::MAX);
+    ///     assert_eq!(b_u16.1, true);
+    /// }
+    /// 
+    /// fn func<T: SmallUInt>(lhs: T, rhs: T) -> (T, bool)
+    /// {
+    ///     lhs.overflowing_sub(rhs)
+    /// }
+    /// ```
+    /// 
+    /// # Example 3 for u32
+    /// ```
+    /// use cryptocol::number::SmallUInt;
+    /// fn main()
+    /// {
+    ///     let a_u32 = func(55_u32, 55_u32);
+    ///     println!("55 - 55 = {}\nUnderflow = {}", a_u32.0, a_u32.1);
+    ///     assert_eq!(a_u32.0, 0_u32);
+    ///     assert_eq!(a_u32.1, false);
+    ///  
+    ///     let b_u32 = func(a_u32.0, 1_u32);
+    ///     println!("{} - 1 = {}\nUnderflow = {}", a_u32.0, b_u32.0, b_u32.1);
+    ///     assert_eq!(b_u32.0, u32::MAX);
+    ///     assert_eq!(b_u32.1, true);
+    /// }
+    /// 
+    /// fn func<T: SmallUInt>(lhs: T, rhs: T) -> (T, bool)
+    /// {
+    ///     lhs.overflowing_sub(rhs)
+    /// }
+    /// ```
+    /// 
+    /// # Example 4 for u64
+    /// ```
+    /// use cryptocol::number::SmallUInt;
+    /// fn main()
+    /// {
+    ///     let a_u64 = func(55_u64, 55_u64);
+    ///     println!("55 - 55 = {}\nUnderflow = {}", a_u64.0, a_u64.1);
+    ///     assert_eq!(a_u64.0, 0_u64);
+    ///     assert_eq!(a_u64.1, false);
+    ///  
+    ///     let b_u64 = func(a_u64.0, 1_u64);
+    ///     println!("{} - 1 = {}\nUnderflow = {}", a_u64.0, b_u64.0, b_u64.1);
+    ///     assert_eq!(b_u64.0, u64::MAX);
+    ///     assert_eq!(b_u64.1, true);
+    /// }
+    /// 
+    /// fn func<T: SmallUInt>(lhs: T, rhs: T) -> (T, bool)
+    /// {
+    ///     lhs.overflowing_sub(rhs)
+    /// }
+    /// ```
+    /// 
+    /// # Example 5 for u128
+    /// ```
+    /// use cryptocol::number::SmallUInt;
+    /// fn main()
+    /// {
+    ///     let a_u128 = func(55_u128, 55_u128);
+    ///     println!("55 - 55 = {}\nUnderflow = {}", a_u128.0, a_u128.1);
+    ///     assert_eq!(a_u128.0, 0_u128);
+    ///     assert_eq!(a_u128.1, false);
+    ///  
+    ///     let b_u128 = func(a_u128.0, 1_u128);
+    ///     println!("{} - 1 = {}\nUnderflow = {}", a_u128.0, b_u128.0, b_u128.1);
+    ///     assert_eq!(b_u128.0, u128::MAX);
+    ///     assert_eq!(b_u128.1, true);
+    /// }
+    /// 
+    /// fn func<T: SmallUInt>(lhs: T, rhs: T) -> (T, bool)
+    /// {
+    ///     lhs.overflowing_sub(rhs)
+    /// }
+    /// ```
+    /// 
+    /// # Example 6 for usize
+    /// ```
+    /// use cryptocol::number::SmallUInt;
+    /// fn main()
+    /// {
+    ///     let a_usize = func(55_usize, 55_usize);
+    ///     println!("55 - 55 = {}\nUnderflow = {}", a_usize.0, a_usize.1);
+    ///     assert_eq!(a_usize.0, 0_usize);
+    ///     assert_eq!(a_usize.1, false);
+    ///  
+    ///     let b_usize = func(a_usize.0, 1_usize);
+    ///     println!("{} - 1 = {}\nUnderflow = {}", a_usize.0, b_usize.0, b_usize.1);
+    ///     assert_eq!(b_usize.0, usize::MAX);
+    ///     assert_eq!(b_usize.1, true);
+    /// }
+    /// 
+    /// fn func<T: SmallUInt>(lhs: T, rhs: T) -> (T, bool)
+    /// {
+    ///     lhs.overflowing_sub(rhs)
+    /// }        
+    /// ```
+    /// You can use the above generic function `func<>()` for all
+    /// SmallUInt-supported data types in a same scope.
+    /// Look into the following example.
+    /// 
+    /// # Collective Example
     /// ```
     /// use cryptocol::number::SmallUInt;
     /// fn main()
@@ -2268,19 +2509,251 @@ pub trait SmallUInt: Copy + Clone + Sized //+ Display + Debug + ToString
     /// - If you want to know about the definition of the method `overflowing_sub()`
     /// for the primitive type `usize`, read [here](https://doc.rust-lang.org/core/primitive.usize.html#method.overflowing_sub).
     fn overflowing_sub(self, rhs: Self) -> (Self, bool);
-    
-    /// Computes self - rhs.
+
+    // fn checked_sub(self, rhs: Self) -> Option<Self>;
+    /// Computes `self` - `rhs`.
     /// 
     /// # Feature
     /// __The trait SmallUInt is meaningful when you use it in generic context.
     /// Otherwise, it is pretty hard to imagine its usability.__
     /// 
     /// # Output
-    /// It returns self - rhs in the type `Self` wrapped by `Some`
+    /// It returns `self` - `rhs` in the type `Self` wrapped by `Some`
     /// of enum `Option` if overflow did not occur.
     /// And, it returns `None` if overflow occurred.
     /// 
-    /// # Example
+    /// # Example 1 for u8
+    /// ```
+    /// use cryptocol::number::SmallUInt;
+    /// fn main()
+    /// {
+    ///     let a_u8 = func(55_u8, 55_u8);
+    ///     match a_u8
+    ///     {
+    ///         Some(a) => {
+    ///                 println!("55 - 55 = {}", a);
+    ///                 assert_eq!(a, 0_u8);
+    ///             },
+    ///         None => {
+    ///                 println!("Underflow happened.");
+    ///                 assert_eq!(a_u8, None);
+    ///             },
+    ///     }
+    ///  
+    ///     let b_u8 = func(a_u8.unwrap(), 1_u8);
+    ///     match b_u8
+    ///     {
+    ///         Some(b) => {
+    ///                 println!("{} - 1 = {}", a_u8.unwrap(), b);
+    ///                 assert_eq!(b, u8::MAX);
+    ///             },
+    ///         None => {
+    ///                 println!("Underflow happened.");
+    ///                 assert_eq!(b_u8, None);
+    ///             },
+    ///     }
+    /// }
+    /// 
+    /// fn func<T: SmallUInt>(lhs: T, rhs: T) -> Option<T>
+    /// {
+    ///     lhs.checked_sub(rhs)
+    /// }
+    /// ```
+    /// 
+    /// # Example 2 for u16
+    /// ```
+    /// use cryptocol::number::SmallUInt;
+    /// fn main()
+    /// {
+    ///     let a_u16 = func(55_u16, 55_u16);
+    ///     match a_u16
+    ///     {
+    ///         Some(a) => {
+    ///                 println!("55 - 55 = {}", a);
+    ///                 assert_eq!(a, 0_u16);
+    ///             },
+    ///         None => {
+    ///                 println!("Underflow happened.");
+    ///                 assert_eq!(a_u16, None);
+    ///             },
+    ///     }
+    /// 
+    ///     let b_u16 = func(a_u16.unwrap(), 1_u16);
+    ///     match b_u16
+    ///     {
+    ///         Some(b) => {
+    ///                 println!("{} - 1 = {}", a_u16.unwrap(), b);
+    ///                 assert_eq!(b, u16::MAX);
+    ///             },
+    ///         None => {
+    ///                 println!("Underflow happened.");
+    ///                 assert_eq!(b_u16, None);
+    ///             },
+    ///     }
+    /// }
+    /// 
+    /// fn func<T: SmallUInt>(lhs: T, rhs: T) -> Option<T>
+    /// {
+    ///     lhs.checked_sub(rhs)
+    /// }
+    /// ```
+    /// 
+    /// # Example 3 for u32
+    /// ```
+    /// use cryptocol::number::SmallUInt;
+    /// fn main()
+    /// {
+    ///     let a_u32 = func(55_u32, 55_u32);
+    ///     match a_u32
+    ///     {
+    ///         Some(a) => {
+    ///                 println!("55 - 55 = {}", a);
+    ///                 assert_eq!(a, 0_u32);
+    ///             },
+    ///         None => {
+    ///                 println!("Underflow happened.");
+    ///                 assert_eq!(a_u32, None);
+    ///             },
+    ///     }
+    /// 
+    ///     let b_u32 = func(a_u32.unwrap(), 1_u32);
+    ///     match b_u32
+    ///     {
+    ///         Some(b) => {
+    ///                 println!("{} - 1 = {}", a_u32.unwrap(), b);
+    ///                 assert_eq!(b, u32::MAX);
+    ///             },
+    ///         None => {
+    ///                 println!("Underflow happened.");
+    ///                 assert_eq!(b_u32, None);
+    ///             },
+    ///     }
+    /// }
+    /// 
+    /// fn func<T: SmallUInt>(lhs: T, rhs: T) -> Option<T>
+    /// {
+    ///     lhs.checked_sub(rhs)
+    /// }
+    /// ```
+    /// 
+    /// # Example 4 for u64
+    /// ```
+    /// use cryptocol::number::SmallUInt;
+    /// fn main()
+    /// {
+    ///     let a_u64 = func(55_u64, 55_u64);
+    ///     match a_u64
+    ///     {
+    ///         Some(a) => {
+    ///                 println!("55 - 55 = {}", a);
+    ///                 assert_eq!(a, 0_u64);
+    ///             },
+    ///         None => {
+    ///                 println!("Underflow happened.");
+    ///                 assert_eq!(a_u64, None);
+    ///             },
+    ///     }
+    /// 
+    ///     let b_u64 = func(a_u64.unwrap(), 1_u64);
+    ///     match b_u64
+    ///     {
+    ///         Some(b) => {
+    ///                 println!("{} + 1 = {}", a_u64.unwrap(), b);
+    ///                 assert_eq!(b, u64::MAX);
+    ///             },
+    ///         None => {
+    ///                 println!("Underflow happened.");
+    ///                 assert_eq!(b_u64, None);
+    ///             },
+    ///     }
+    /// }
+    /// 
+    /// fn func<T: SmallUInt>(lhs: T, rhs: T) -> Option<T>
+    /// {
+    ///     lhs.checked_sub(rhs)
+    /// }
+    /// ```
+    /// 
+    /// # Example 5 for u128
+    /// ```
+    /// use cryptocol::number::SmallUInt;
+    /// fn main()
+    /// {
+    ///     let a_u128 = func(55_u128, 55_u128);
+    ///     match a_u128
+    ///     {
+    ///         Some(a) => {
+    ///                 println!("55 - 55 = {}", a);
+    ///                 assert_eq!(a, 0_u128);
+    ///             },
+    ///         None => {
+    ///                 println!("Underflow happened.");
+    ///                 assert_eq!(a_u128, None);
+    ///             },
+    ///     }
+    /// 
+    ///     let b_u128 = func(a_u128.unwrap(), 1_u128);
+    ///     match b_u128
+    ///     {
+    ///         Some(b) => {
+    ///                 println!("{} - 1 = {}", a_u128.unwrap(), b);
+    ///                 assert_eq!(b, u128::MAX);
+    ///             },
+    ///         None => {
+    ///                 println!("Underflow happened.");
+    ///                 assert_eq!(b_u128, None);
+    ///             },
+    ///     }
+    /// }
+    /// 
+    /// fn func<T: SmallUInt>(lhs: T, rhs: T) -> Option<T>
+    /// {
+    ///     lhs.checked_sub(rhs)
+    /// }
+    /// ```
+    /// 
+    /// # Example 6 for usize
+    /// ```
+    /// use cryptocol::number::SmallUInt;
+    /// fn main()
+    /// {
+    ///     let a_usize = func(55_usize, 55_usize);
+    ///     match a_usize
+    ///     {
+    ///         Some(a) => {
+    ///                 println!("55 - 55 = {}", a);
+    ///                 assert_eq!(a, 0_usize);
+    ///             },
+    ///         None => {
+    ///                 println!("Underflow happened.");
+    ///                 assert_eq!(a_usize, None);
+    ///             },
+    ///     }
+    /// 
+    ///     let b_usize = func(a_usize.unwrap(), 1_usize);
+    ///     match b_usize
+    ///     {
+    ///         Some(b) => {
+    ///                 println!("{} - 1 = {}", a_usize.unwrap(), b);
+    ///                 assert_eq!(b, usize::MAX);
+    ///             },
+    ///         None => {
+    ///                 println!("Underflow happened.");
+    ///                 assert_eq!(b_usize, None);
+    ///             },
+    ///     }
+    /// }
+    /// 
+    /// fn func<T: SmallUInt>(lhs: T, rhs: T) -> Option<T>
+    /// {
+    ///     lhs.checked_sub(rhs)
+    /// }    
+    /// ```
+    /// You can use the above generic function `func<>()` for all
+    /// SmallUInt-supported data types in a same scope.
+    /// Look into the following example.
+    /// 
+    /// # Collective Example
     /// ```
     /// use cryptocol::number::SmallUInt;
     /// fn main()
@@ -2475,7 +2948,8 @@ pub trait SmallUInt: Copy + Clone + Sized //+ Display + Debug + ToString
     /// for the primitive type `usize`, read [here](https://doc.rust-lang.org/core/primitive.usize.html#method.checked_sub).
     fn checked_sub(self, rhs: Self) -> Option<Self>;
 
-    /// Computes self - rhs, assuming overflow cannot occur.
+    /// fn unchecked_sub(self, rhs: Self) -> Self;
+    /// Computes `self` - `rhs`, assuming overflow cannot occur.
     /// 
     /// # Features
     /// __The trait SmallUInt is meaningful when you use it in generic context.
@@ -2487,10 +2961,127 @@ pub trait SmallUInt: Copy + Clone + Sized //+ Display + Debug + ToString
     /// If underflow occurs, this method will panic at this version.
     /// 
     /// # Output
-    /// It returns self - rhs in the type `Self` if underflow did not occur.
+    /// It returns `self` - `rhs` in the type `Self` if underflow did not occur.
     /// Otherwise, its behavior is not defined.
     /// 
-    /// # Example
+    /// # Example 1 for u8
+    /// ```
+    /// use cryptocol::number::SmallUInt;
+    /// fn main()
+    /// {
+    ///     let a_u8 = func(55_u8, 55_u8);
+    ///     println!("55 - 55 = {}", a_u8);
+    ///     assert_eq!(a_u8, 0_u8);
+    /// 
+    ///     // It will panic
+    ///     // let b_u8 = func(a_u8, 1_u8);
+    /// }
+    /// 
+    /// fn func<T: SmallUInt>(lhs: T, rhs: T) -> T
+    /// {
+    ///     lhs.unchecked_sub(rhs)
+    /// }
+    /// ```
+    /// 
+    /// # Example 2 for u16
+    /// ```
+    /// use cryptocol::number::SmallUInt;
+    /// fn main()
+    /// {
+    ///     let a_u16 = func(55_u16, 55_u16);
+    ///     println!("55 - 55 = {}", a_u16);
+    ///     assert_eq!(a_u16, 0_u16);
+    /// 
+    ///     // It will panic
+    ///     // let b_u16 = func(a_u16, 1_u16);
+    /// }
+    /// 
+    /// fn func<T: SmallUInt>(lhs: T, rhs: T) -> T
+    /// {
+    ///     lhs.unchecked_sub(rhs)
+    /// }
+    /// ```
+    /// 
+    /// # Example 3 for u32
+    /// ```
+    /// use cryptocol::number::SmallUInt;
+    /// fn main()
+    /// {
+    ///     let a_u32 = func(55_u32, 55_u32);
+    ///     println!("55 - 55 = {}", a_u32);
+    ///     assert_eq!(a_u32, 0_u32);
+    /// 
+    ///     // It will panic
+    ///     // let b_u32 = func(a_u32, 1_u32);
+    /// }
+    /// 
+    /// fn func<T: SmallUInt>(lhs: T, rhs: T) -> T
+    /// {
+    ///     lhs.unchecked_sub(rhs)
+    /// }
+    /// ```
+    /// 
+    /// # Example 4 for u64
+    /// ```
+    /// use cryptocol::number::SmallUInt;
+    /// fn main()
+    /// {
+    ///     let a_u64 = func(55_u64, 55_u64);
+    ///     println!("55 - 55 = {}", a_u64);
+    ///     assert_eq!(a_u64, 0_u64);
+    /// 
+    ///     // It will panic
+    ///     // let b_u64 = func(a_u64, 1_u64);
+    /// }
+    /// 
+    /// fn func<T: SmallUInt>(lhs: T, rhs: T) -> T
+    /// {
+    ///     lhs.unchecked_sub(rhs)
+    /// }
+    /// ```
+    /// 
+    /// # Example 5 for u128
+    /// ```
+    /// use cryptocol::number::SmallUInt;
+    /// fn main()
+    /// {
+    ///     let a_u128 = func(55_u128, 55_u128);
+    ///     println!("55 - 55 = {}", a_u128);
+    ///     assert_eq!(a_u128, 0_u128);
+    /// 
+    ///     // It will panic
+    ///     // let b_u128 = func(a_u128, 1_u128);
+    /// }
+    /// 
+    /// fn func<T: SmallUInt>(lhs: T, rhs: T) -> T
+    /// {
+    ///     lhs.unchecked_sub(rhs)
+    /// }
+    /// ```
+    /// 
+    /// # Example 6 for usize
+    /// ```
+    /// use cryptocol::number::SmallUInt;
+    /// fn main()
+    /// {
+    ///     let a_usize = func(55_usize, 55_usize);
+    ///     println!("55 - 55 = {}", a_usize);
+    ///     assert_eq!(a_usize, 0_usize);
+    /// 
+    ///     // It will panic
+    ///     // let b_usize = func(a_usize, 1_usize);
+    /// }
+    /// 
+    /// fn func<T: SmallUInt>(lhs: T, rhs: T) -> T
+    /// {
+    ///     lhs.unchecked_sub(rhs)
+    /// }
+    /// ```
+    /// You can use the above generic function `func<>()` for all
+    /// SmallUInt-supported data types in a same scope.
+    /// Look into the following example.
+    /// 
+    /// # Collective Example
     /// ```
     /// use cryptocol::number::SmallUInt;
     /// fn main()
@@ -2582,8 +3173,9 @@ pub trait SmallUInt: Copy + Clone + Sized //+ Display + Debug + ToString
     /// - If you want to know about the definition of the method `unchecked_sub()`
     /// for the primitive type `usize`, read [here](https://doc.rust-lang.org/core/primitive.usize.html#method.unchecked_sub).
     fn unchecked_sub(self, rhs: Self) -> Self;
-    
-    /// Computes self - rhs, saturating at the numeric bounds
+
+    // fn saturating_sub(self, rhs: Self) -> Self;
+    /// Computes `self` - `rhs`, saturating at the numeric bounds
     /// instead of underflowing.
     /// 
     /// # Features
@@ -2592,10 +3184,133 @@ pub trait SmallUInt: Copy + Clone + Sized //+ Display + Debug + ToString
     /// It subtracts rhs from self with saturating integer subtraction.
     /// 
     /// # Output
-    /// It returns the bigger one of self - rhs and the zero
+    /// It returns the bigger one of `self` - `rhs` and the zero
     /// of the type of `Self`.
     /// 
-    /// # Example
+    /// # Example 1 for u8
+    /// ```
+    /// use cryptocol::number::SmallUInt;
+    /// fn main()
+    /// {
+    ///     let a_u8 = func(55_u8, 50_u8);
+    ///     println!("55 - 50 = {}", a_u8);
+    ///     assert_eq!(a_u8, 5_u8);
+    /// 
+    ///     let b_u8 = func(a_u8, 55_u8);
+    ///     println!("5 - 55 = {}", b_u8);
+    ///     assert_eq!(b_u8, 0_u8);
+    /// }
+    /// 
+    /// fn func<T: SmallUInt>(lhs: T, rhs: T) -> T
+    /// {
+    ///     lhs.saturating_sub(rhs)
+    /// }
+    /// ```
+    /// 
+    /// # Example 2 for u16
+    /// ```
+    /// use cryptocol::number::SmallUInt;
+    /// fn main()
+    /// {
+    ///     let a_u16 = func(55_u16, 50_u16);
+    ///     println!("55 - 50 = {}", a_u16);
+    ///     assert_eq!(a_u16, 5_u16);
+    /// 
+    ///     let b_u16 = func(a_u16, 55_u16);
+    ///     println!("5 - 55 = {}", b_u16);
+    ///     assert_eq!(b_u16, 0_u16);
+    /// }
+    /// 
+    /// fn func<T: SmallUInt>(lhs: T, rhs: T) -> T
+    /// {
+    ///     lhs.saturating_sub(rhs)
+    /// }
+    /// ```
+    /// 
+    /// # Example 3 for u32
+    /// ```
+    /// use cryptocol::number::SmallUInt;
+    /// fn main()
+    /// {
+    ///     let a_u32 = func(55_u32, 50_u32);
+    ///     println!("55 - 50 = {}", a_u32);
+    ///     assert_eq!(a_u32, 5_u32);
+    /// 
+    ///     let b_u32 = func(a_u32, 55_u32);
+    ///     println!("{} - 55 = {}", a_u32, b_u32);
+    ///     assert_eq!(b_u32, 0_u32);
+    /// }
+    /// 
+    /// fn func<T: SmallUInt>(lhs: T, rhs: T) -> T
+    /// {
+    ///     lhs.saturating_sub(rhs)
+    /// }
+    /// ```
+    /// 
+    /// # Example 4 for u64
+    /// ```
+    /// use cryptocol::number::SmallUInt;
+    /// fn main()
+    /// {
+    ///     let a_u64 = func(55_u64, 50_u64);
+    ///     println!("55 - 50 = {}", a_u64);
+    ///     assert_eq!(a_u64, 5_u64);
+    /// 
+    ///     let b_u64 = func(a_u64, 55_u64);
+    ///     println!("{} - 55 = {}", a_u64, b_u64);
+    ///     assert_eq!(b_u64, 0_u64);
+    /// }
+    /// 
+    /// fn func<T: SmallUInt>(lhs: T, rhs: T) -> T
+    /// {
+    ///     lhs.saturating_sub(rhs)
+    /// }
+    /// ```
+    /// 
+    /// # Example 5 for u128
+    /// ```
+    /// use cryptocol::number::SmallUInt;
+    /// fn main()
+    /// {
+    ///     let a_u128 = func(55_u128, 50_u128);
+    ///     println!("55 - 50 = {}", a_u128);
+    ///     assert_eq!(a_u128, 5_u128);
+    /// 
+    ///     let b_u128 = func(a_u128, 55_u128);
+    ///     println!("{} - 55 = {}", a_u128, b_u128);
+    ///     assert_eq!(b_u128, 0_u128);
+    /// }
+    /// 
+    /// fn func<T: SmallUInt>(lhs: T, rhs: T) -> T
+    /// {
+    ///     lhs.saturating_sub(rhs)
+    /// }
+    /// ```
+    /// 
+    /// # Example 6 for usize
+    /// ```
+    /// use cryptocol::number::SmallUInt;
+    /// fn main()
+    /// {
+    ///     let a_usize = func(55_usize, 50_usize);
+    ///     println!("55 - 50 = {}", a_usize);
+    ///     assert_eq!(a_usize, 5_usize);
+    /// 
+    ///     let b_usize = func(a_usize, 55_usize);
+    ///     println!("{} - 55 = {}", a_usize, b_usize);
+    ///     assert_eq!(b_usize, 0_usize);
+    /// }
+    /// 
+    /// fn func<T: SmallUInt>(lhs: T, rhs: T) -> T
+    /// {
+    ///     lhs.saturating_sub(rhs)
+    /// }
+    /// ```
+    /// You can use the above generic function `func<>()` for all
+    /// SmallUInt-supported data types in a same scope.
+    /// Look into the following example.
+    /// 
+    /// # Collective Example
     /// ```
     /// use cryptocol::number::SmallUInt;
     /// fn main()
@@ -2682,7 +3397,7 @@ pub trait SmallUInt: Copy + Clone + Sized //+ Display + Debug + ToString
     /// for the primitive type `usize`, read [here](https://doc.rust-lang.org/core/primitive.usize.html#method.saturating_sub).
     fn saturating_sub(self, rhs: Self) -> Self;
 
-
+    // fn abs_diff(self, other: Self) -> Self;
     /// Computes the absolute difference between `self` and `other`.
     /// 
     /// # Feature
@@ -2811,8 +3526,9 @@ pub trait SmallUInt: Copy + Clone + Sized //+ Display + Debug + ToString
     ///     lhs.abs_diff(rhs)
     /// }
     /// ```
-    /// You can use the above generic function func<>() for all SmallUInt-supported
-    /// data types in a same scope. Look into the next example.
+    /// You can use the above generic function `func<>()` for all
+    /// SmallUInt-supported data types in a same scope.
+    /// Look into the following example.
     /// 
     /// # Collective Example
     /// ```
@@ -2923,9 +3639,187 @@ pub trait SmallUInt: Copy + Clone + Sized //+ Display + Debug + ToString
     /// If `rhs` is bigger than `u128`, the method `modular_sub_uint()` is
     /// proper rather than this method.
     /// 
-    /// # Example
+    /// # Example 1 for u8
     /// ```
-    /// // Todo
+    /// use cryptocol::number::SmallUInt;
+    /// fn main()
+    /// {
+    ///     let a_u8 = func(60_u8, 55, 100);
+    ///     println!("60 - 55 = {} (mod 100)", a_u8);
+    ///     assert_eq!(a_u8, 5);
+    ///     
+    ///     let b_u8 = func(a_u8, 15, 100);
+    ///     println!("{} - 15 = {} (mod 100)", a_u8, b_u8);
+    ///     assert_eq!(b_u8, 90);
+    /// }
+    /// 
+    /// fn func<T: SmallUInt>(lhs: T, rhs: T, modulo: T) -> T
+    /// {
+    ///     lhs.modular_sub(rhs, modulo)
+    /// }
+    /// ```
+    /// 
+    /// # Example 2 for u16
+    /// ```
+    /// use cryptocol::number::SmallUInt;
+    /// fn main()
+    /// {
+    ///     let a_u16 = func(6000_u16, 5500, 1_0000);
+    ///     println!("6000 - 5500 = {} (mod 1_0000)", a_u16);
+    ///     assert_eq!(a_u16, 500);
+    ///     
+    ///     let b_u16 = func(a_u16, 1500, 1_0000);
+    ///     println!("{} - 1500 = {} (mod 1_0000)", a_u16, b_u16);
+    ///     assert_eq!(b_u16, 9000);
+    /// }
+    /// 
+    /// fn func<T: SmallUInt>(lhs: T, rhs: T, modulo: T) -> T
+    /// {
+    ///     lhs.modular_sub(rhs, modulo)
+    /// }
+    /// ```
+    /// 
+    /// # Example 3 for u32
+    /// ```
+    /// use cryptocol::number::SmallUInt;
+    /// fn main()
+    /// {
+    ///     let a_u32 = func(6_0000_0000_u32, 5_5000_0000, 10_0000_0000);
+    ///     println!("6_0000_0000 - 5_5000_0000 = {} (mod 10_0000_0000)", a_u32);
+    ///     assert_eq!(a_u32, 5000_0000);
+    ///     
+    ///     let b_u32 = func(a_u32, 1_5000_0000, 10_0000_0000);
+    ///     println!("{} - 1_5000_0000 = {} (mod 10_0000_0000)", a_u32, b_u32);
+    ///     assert_eq!(b_u32, 9_0000_0000);
+    /// }
+    /// 
+    /// fn func<T: SmallUInt>(lhs: T, rhs: T, modulo: T) -> T
+    /// {
+    ///     lhs.modular_sub(rhs, modulo)
+    /// }
+    /// ```
+    /// 
+    /// # Example 4 for u64
+    /// ```
+    /// use cryptocol::number::SmallUInt;
+    /// fn main()
+    /// {
+    ///     let a_u64 = func(6_0000_0000_0000_0000_u64, 5_5000_0000_0000_0000, 10_0000_0000_0000_0000);
+    ///     println!("6_0000_0000_0000_0000 - 5_5000_0000_0000_0000 = {} (mod 10_0000_0000_0000_0000)", a_u64);
+    ///     assert_eq!(a_u64, 5000_0000_0000_0000);
+    ///     
+    ///     let b_u64 = func(a_u64, 1_5000_0000_0000_0000, 10_0000_0000_0000_0000);
+    ///     println!("{} - 1_5000_0000_0000_0000 = {} (mod 10_0000_0000_0000_0000)", a_u64, b_u64);
+    ///     assert_eq!(b_u64, 9_0000_0000_0000_0000);
+    /// }
+    /// 
+    /// fn func<T: SmallUInt>(lhs: T, rhs: T, modulo: T) -> T
+    /// {
+    ///     lhs.modular_sub(rhs, modulo)
+    /// }
+    /// ```
+    /// 
+    /// # Example 5 for u128
+    /// ```
+    /// use cryptocol::number::SmallUInt;
+    /// fn main()
+    /// {
+    ///     let a_u128 = func(6_0000_0000_0000_0000_0000_0000_0000_0000_u128, 5_5000_0000_0000_0000_0000_0000_0000_0000, 10_0000_0000_0000_0000_0000_0000_0000_0000);
+    ///     println!("6_0000_0000_0000_0000_0000_0000_0000_0000 - 5_5000_0000_0000_0000_0000_0000_0000_0000 = {} (mod 10_0000_0000_0000_0000_0000_0000_0000_0000)", a_u128);
+    ///     assert_eq!(a_u128, 5000_0000_0000_0000_0000_0000_0000_0000);
+    ///     
+    ///     let b_u128 = func(a_u128, 1_5000_0000_0000_0000_0000_0000_0000_0000, 10_0000_0000_0000_0000_0000_0000_0000_0000);
+    ///     println!("{} - 1_5000_0000_0000_0000_0000_0000_0000_0000 = {}",a_u128, b_u128);
+    ///     assert_eq!(b_u128, 9_0000_0000_0000_0000_0000_0000_0000_0000);
+    /// }
+    /// 
+    /// fn func<T: SmallUInt>(lhs: T, rhs: T, modulo: T) -> T
+    /// {
+    ///     lhs.modular_sub(rhs, modulo)
+    /// }
+    /// ```
+    /// 
+    /// # Example 6 for usize
+    /// ```
+    /// use cryptocol::number::SmallUInt;
+    /// fn main()
+    /// {
+    ///     let a_usize = func(6_0000_0000_0000_0000_usize, 5_5000_0000_0000_0000, 10_0000_0000_0000_0000);
+    ///     println!("6_0000_0000_0000_0000 - 5_5000_0000_0000_0000 = {} (mod 10_0000_0000_0000_0000)", a_usize);
+    ///     assert_eq!(a_usize, 5000_0000_0000_0000);
+    ///     
+    ///     let b_usize = func(a_usize, 1_5000_0000_0000_0000, 10_0000_0000_0000_0000);
+    ///     println!("{} - 1_5000_0000_0000_0000 = {} (mod 10_0000_0000_0000_0000)", a_usize, b_usize);
+    ///     assert_eq!(b_usize, 9_0000_0000_0000_0000);
+    /// }
+    /// 
+    /// fn func<T: SmallUInt>(lhs: T, rhs: T, modulo: T) -> T
+    /// {
+    ///     lhs.modular_sub(rhs, modulo)
+    /// }
+    /// ```
+    /// You can use the above generic function `func<>()` for all
+    /// SmallUInt-supported data types in a same scope.
+    /// Look into the following example.
+    /// 
+    /// # Collective Example
+    /// ```
+    /// use cryptocol::number::SmallUInt;
+    /// fn main()
+    /// {
+    ///     let a_u8 = func(60_u8, 55, 100);
+    ///     println!("60 - 55 = {} (mod 100)", a_u8);
+    ///     assert_eq!(a_u8, 5);
+    ///     
+    ///     let b_u8 = func(a_u8, 15, 100);
+    ///     println!("{} - 15 = {} (mod 100)", a_u8, b_u8);
+    ///     assert_eq!(b_u8, 90);
+    ///     
+    ///     let a_u16 = func(6000_u16, 5500, 1_0000);
+    ///     println!("6000 - 5500 = {} (mod 1_0000)", a_u16);
+    ///     assert_eq!(a_u16, 500);
+    ///     
+    ///     let b_u16 = func(a_u16, 1500, 1_0000);
+    ///     println!("{} - 1500 = {} (mod 1_0000)", a_u16, b_u16);
+    ///     assert_eq!(b_u16, 9000);
+    ///     
+    ///     let a_u32 = func(6_0000_0000_u32, 5_5000_0000, 10_0000_0000);
+    ///     println!("6_0000_0000 - 5_5000_0000 = {} (mod 10_0000_0000)", a_u32);
+    ///     assert_eq!(a_u32, 5000_0000);
+    ///     
+    ///     let b_u32 = func(a_u32, 1_5000_0000, 10_0000_0000);
+    ///     println!("{} - 1_5000_0000 = {} (mod 10_0000_0000)", a_u32, b_u32);
+    ///     assert_eq!(b_u32, 9_0000_0000);
+    ///     
+    ///     let a_u64 = func(6_0000_0000_0000_0000_u64, 5_5000_0000_0000_0000, 10_0000_0000_0000_0000);
+    ///     println!("6_0000_0000_0000_0000 - 5_5000_0000_0000_0000 = {} (mod 10_0000_0000_0000_0000)", a_u64);
+    ///     assert_eq!(a_u64, 5000_0000_0000_0000);
+    ///     
+    ///     let b_u64 = func(a_u64, 1_5000_0000_0000_0000, 10_0000_0000_0000_0000);
+    ///     println!("{} - 1_5000_0000_0000_0000 = {} (mod 10_0000_0000_0000_0000)", a_u64, b_u64);
+    ///     assert_eq!(b_u64, 9_0000_0000_0000_0000);
+    ///     
+    ///     let a_u128 = func(6_0000_0000_0000_0000_0000_0000_0000_0000_u128, 5_5000_0000_0000_0000_0000_0000_0000_0000, 10_0000_0000_0000_0000_0000_0000_0000_0000);
+    ///     println!("6_0000_0000_0000_0000_0000_0000_0000_0000 - 5_5000_0000_0000_0000_0000_0000_0000_0000 = {} (mod 10_0000_0000_0000_0000_0000_0000_0000_0000)", a_u128);
+    ///     assert_eq!(a_u128, 5000_0000_0000_0000_0000_0000_0000_0000);
+    ///     
+    ///     let b_u128 = func(a_u128, 1_5000_0000_0000_0000_0000_0000_0000_0000, 10_0000_0000_0000_0000_0000_0000_0000_0000);
+    ///     println!("{} - 1_5000_0000_0000_0000_0000_0000_0000_0000 = {}",a_u128, b_u128);
+    ///     assert_eq!(b_u128, 9_0000_0000_0000_0000_0000_0000_0000_0000);
+    ///     
+    ///     let a_usize = func(6_0000_0000_0000_0000_usize, 5_5000_0000_0000_0000, 10_0000_0000_0000_0000);
+    ///     println!("6_0000_0000_0000_0000 - 5_5000_0000_0000_0000 = {} (mod 10_0000_0000_0000_0000)", a_usize);
+    ///     assert_eq!(a_usize, 5000_0000_0000_0000);
+    ///     
+    ///     let b_usize = func(a_usize, 1_5000_0000_0000_0000, 10_0000_0000_0000_0000);
+    ///     println!("{} - 1_5000_0000_0000_0000 = {} (mod 10_0000_0000_0000_0000)", a_usize, b_usize);
+    ///     assert_eq!(b_usize, 9_0000_0000_0000_0000);
+    /// }
+    /// 
+    /// fn func<T: SmallUInt>(lhs: T, rhs: T, modulo: T) -> T
+    /// {
+    ///     lhs.modular_sub(rhs, modulo)
+    /// }
     /// ```
     /// 
     /// # Big-endian issue
@@ -2960,9 +3854,228 @@ pub trait SmallUInt: Copy + Clone + Sized //+ Display + Debug + ToString
     /// `self.wrapping_mul(rhs).wrapping_add(carry)`. So,
     /// `self.carrying_mul(rhs, carry).0` == `self.wrapping_mul(rhs).wrapping_add(carry)`
     /// 
-    /// # Example
+    /// # Example 1 for u8
     /// ```
-    /// // Todo
+    /// use cryptocol::number::SmallUInt;
+    /// fn main()
+    /// {
+    ///     use cryptocol::number::IntUnion;
+    ///     // a_u16: u16 === (a_high_u8, a_low_u8) == (100_u8, 101_u8) == 25701_u16
+    ///     let a_high_u8 = 100_u8;
+    ///     let a_low_u8 = 101_u8;
+    ///     // b_u16: u16 === (b_high_u8, b_low_u8) == (100_u8, 200_u8) == 25800_u16
+    ///     let b_high_u8 = 100_u8;
+    ///     let b_low_u8 = 200_u8;
+    /// 
+    ///     // (100_u8, 101_u8) X (100_u8, 200_u8) == 25701_u16 X 25800_u16 == 663085800_u32
+    ///     //
+    ///     //                  (100_u8, 101_u8) == 25701_u16
+    ///     // X                (100_u8, 200_u8) == 25800_u16
+    ///     // ---------------------------------
+    ///     //                  ( 78_u8, 232_u8)
+    ///     //          ( 78_u8,  32_u8)
+    ///     //          ( 39_u8, 116_u8)
+    ///     // + (39_u8,  16_u8)
+    ///     // ---------------------------------
+    ///     //   (39_u8, 133_u8, 226_u8, 232_u8) == 663085800_u32
+    ///     let (c_lower_u8, c_low_u8, c_high_u8, c_higher_u8 ) = func(a_low_u8, a_high_u8, b_low_u8, b_high_u8);
+    ///     println!("{}-{}-{}-{}", c_higher_u8, c_high_u8, c_low_u8, c_lower_u8);
+    ///     assert_eq!(c_higher_u8, 39);
+    ///     assert_eq!(c_high_u8, 133);
+    ///     assert_eq!(c_low_u8, 226);
+    ///     assert_eq!(c_lower_u8, 232);
+    /// 
+    ///     let a = IntUnion::new_with_ubytes([a_low_u8, a_high_u8, 0, 0]);
+    ///     let b = IntUnion::new_with_ubytes([b_low_u8, b_high_u8, 0, 0]);
+    ///     let c = a * b;
+    ///     println!("{} * {} = {}", a.get(), b.get(), c.get());
+    ///     assert_eq!(c_higher_u8, c.get_ubyte_(3));
+    ///     assert_eq!(c_high_u8, c.get_ubyte_(2));
+    ///     assert_eq!(c_low_u8, c.get_ubyte_(1));
+    ///     assert_eq!(c_lower_u8, c.get_ubyte_(0));
+    /// }
+    /// 
+    /// fn func<T: SmallUInt>(lhs_low: T, lhs_high: T, rhs_low: T, rhs_high: T) -> (T, T, T, T)
+    /// {
+    ///     let (c_low, c_high ) = rhs_low.carrying_mul(lhs_low, T::zero());
+    ///     let (d_low, d_high ) = rhs_low.carrying_mul(lhs_high, c_high);
+    ///     let (mut e_low, e_high ) = rhs_high.carrying_mul(lhs_low, T::zero());
+    ///     let (mut f_low, mut f_high ) = rhs_high.carrying_mul(lhs_high, e_high);
+    /// 
+    ///     let mut overflow: bool;
+    ///     (e_low, overflow) = e_low.overflowing_add(d_low);
+    ///     if overflow
+    ///         { (f_low, overflow) = f_low.overflowing_add(T::one()); }
+    ///     if overflow
+    ///         { f_high = f_high.wrapping_add(T::one()); }
+    /// 
+    ///     (f_low, overflow) = f_low.overflowing_add(d_high);
+    ///     if overflow
+    ///         { f_high = f_high.wrapping_add(T::one()); }
+    ///     (c_low, e_low, f_low, f_high)
+    /// }
+    /// ```
+    /// 
+    /// # Example for u16
+    /// ```
+    /// use cryptocol::number::SmallUInt;
+    /// fn main()
+    /// {
+    ///     use cryptocol::number::LongUnion;
+    ///     // a_u32: u32 === (a_high_u16, a_low_u16) == (10000_u16, 10100_u16) == 257010000_u32
+    ///     let a_high_u16 = 10000_u16;
+    ///     let a_low_u16 = 10100_u16;
+    ///     // b_u32: u32 === (b_high_u16, b_low_u16) == (10000_u16, 20000_u16) == 258000000_u32
+    ///     let b_high_u16 = 10000_u16;
+    ///     let b_low_u16 = 20000_u16;
+    ///     
+    ///     // (10000_u16, 10100_u16) X (10000_u16, 20000_u16) == 257010000_u32 X 258000000_u32 == 66308580000000000_u32
+    ///     //
+    ///     //                        (10000_u16, 10100_u16) == 655370100_u32
+    ///     // X                      (10000_u16, 20000_u16) == 655380000_u32
+    ///     // ---------------------------------------------
+    ///     //                       (  3082_u16, 18048_u16)
+    ///     //            (  3051_u16, 49664_u16)
+    ///     //            (  1541_u16,  9024_u16)
+    ///     // + (1525_u16, 57600_u16)
+    ///     // ---------------------------------
+    ///     //   (1525_u16, 62192_u16, 61770_u16, 18048_u16) == 429516456138000000_u64
+    ///     let (c_lower_u16, c_low_u16, c_high_u16, c_higher_u16 ) = func(a_low_u16, a_high_u16, b_low_u16, b_high_u16);
+    ///     println!("{}-{}-{}-{}", c_higher_u16, c_high_u16, c_low_u16, c_lower_u16);
+    ///     assert_eq!(c_higher_u16, 1525);
+    ///     assert_eq!(c_high_u16, 62192);
+    ///     assert_eq!(c_low_u16, 61770);
+    ///     assert_eq!(c_lower_u16, 18048);
+    /// 
+    ///     let a = LongUnion::new_with_ushorts([a_low_u16, a_high_u16, 0, 0]);
+    ///     let b = LongUnion::new_with_ushorts([b_low_u16, b_high_u16, 0, 0]);
+    ///     let c = a * b;
+    ///     println!("{} * {} = {}", a.get(), b.get(), c.get());
+    ///     assert_eq!(c_higher_u16, c.get_ushort_(3));
+    ///     assert_eq!(c_high_u16, c.get_ushort_(2));
+    ///     assert_eq!(c_low_u16, c.get_ushort_(1));
+    ///     assert_eq!(c_lower_u16, c.get_ushort_(0));
+    /// }
+    /// 
+    /// fn func<T: SmallUInt>(lhs_low: T, lhs_high: T, rhs_low: T, rhs_high: T) -> (T, T, T, T)
+    /// {
+    ///     let (c_low, c_high ) = rhs_low.carrying_mul(lhs_low, T::zero());
+    ///     let (d_low, d_high ) = rhs_low.carrying_mul(lhs_high, c_high);
+    ///     let (mut e_low, e_high ) = rhs_high.carrying_mul(lhs_low, T::zero());
+    ///     let (mut f_low, mut f_high ) = rhs_high.carrying_mul(lhs_high, e_high);
+    /// 
+    ///     let mut overflow: bool;
+    ///     (e_low, overflow) = e_low.overflowing_add(d_low);
+    ///     if overflow
+    ///         { (f_low, overflow) = f_low.overflowing_add(T::one()); }
+    ///     if overflow
+    ///         { f_high = f_high.wrapping_add(T::one()); }
+    /// 
+    ///     (f_low, overflow) = f_low.overflowing_add(d_high);
+    ///     if overflow
+    ///         { f_high = f_high.wrapping_add(T::one()); }
+    ///     (c_low, e_low, f_low, f_high)
+    /// }
+    /// ```
+    /// You can use the above generic function `func<>()` for all
+    /// SmallUInt-supported data types in a same scope.
+    /// Look into the following example.
+    /// 
+    /// # Collective Example
+    /// ```
+    /// use cryptocol::number::SmallUInt;
+    /// fn main()
+    /// {
+    ///     use cryptocol::number::IntUnion;
+    ///     // a_u16: u16 === (a_high_u8, a_low_u8) == (100_u8, 101_u8) == 25701_u16
+    ///     let a_high_u8 = 100_u8;
+    ///     let a_low_u8 = 101_u8;
+    ///     // b_u16: u16 === (b_high_u8, b_low_u8) == (100_u8, 200_u8) == 25800_u16
+    ///     let b_high_u8 = 100_u8;
+    ///     let b_low_u8 = 200_u8;
+    /// 
+    ///     // (100_u8, 101_u8) X (100_u8, 200_u8) == 25701_u16 X 25800_u16 == 663085800_u32
+    ///     //
+    ///     //                  (100_u8, 101_u8) == 25701_u16
+    ///     // X                (100_u8, 200_u8) == 25800_u16
+    ///     // ---------------------------------
+    ///     //                  ( 78_u8, 232_u8)
+    ///     //          ( 78_u8,  32_u8)
+    ///     //          ( 39_u8, 116_u8)
+    ///     // + (39_u8,  16_u8)
+    ///     // ---------------------------------
+    ///     //   (39_u8, 133_u8, 226_u8, 232_u8) == 663085800_u32
+    ///     let (c_lower_u8, c_low_u8, c_high_u8, c_higher_u8 ) = func(a_low_u8, a_high_u8, b_low_u8, b_high_u8);
+    ///     println!("{}-{}-{}-{}", c_higher_u8, c_high_u8, c_low_u8, c_lower_u8);
+    ///     assert_eq!(c_higher_u8, 39);
+    ///     assert_eq!(c_high_u8, 133);
+    ///     assert_eq!(c_low_u8, 226);
+    ///     assert_eq!(c_lower_u8, 232);
+    /// 
+    ///     let a = IntUnion::new_with_ubytes([a_low_u8, a_high_u8, 0, 0]);
+    ///     let b = IntUnion::new_with_ubytes([b_low_u8, b_high_u8, 0, 0]);
+    ///     let c = a * b;
+    ///     println!("{} * {} = {}", a.get(), b.get(), c.get());
+    ///     assert_eq!(c_higher_u8, c.get_ubyte_(3));
+    ///     assert_eq!(c_high_u8, c.get_ubyte_(2));
+    ///     assert_eq!(c_low_u8, c.get_ubyte_(1));
+    ///     assert_eq!(c_lower_u8, c.get_ubyte_(0));
+    /// 
+    ///     use cryptocol::number::LongUnion;
+    ///     // a_u32: u32 === (a_high_u16, a_low_u16) == (10000_u16, 10100_u16) == 257010000_u32
+    ///     let a_high_u16 = 10000_u16;
+    ///     let a_low_u16 = 10100_u16;
+    ///     // b_u32: u32 === (b_high_u16, b_low_u16) == (10000_u16, 20000_u16) == 258000000_u32
+    ///     let b_high_u16 = 10000_u16;
+    ///     let b_low_u16 = 20000_u16;
+    ///     
+    ///     // (10000_u16, 10100_u16) X (10000_u16, 20000_u16) == 257010000_u32 X 258000000_u32 == 66308580000000000_u32
+    ///     //
+    ///     //                        (10000_u16, 10100_u16) == 655370100_u32
+    ///     // X                      (10000_u16, 20000_u16) == 655380000_u32
+    ///     // ---------------------------------------------
+    ///     //                       (  3082_u16, 18048_u16)
+    ///     //            (  3051_u16, 49664_u16)
+    ///     //            (  1541_u16,  9024_u16)
+    ///     // + (1525_u16, 57600_u16)
+    ///     // ---------------------------------
+    ///     //   (1525_u16, 62192_u16, 61770_u16, 18048_u16) == 429516456138000000_u64
+    ///     let (c_lower_u16, c_low_u16, c_high_u16, c_higher_u16 ) = func(a_low_u16, a_high_u16, b_low_u16, b_high_u16);
+    ///     println!("{}-{}-{}-{}", c_higher_u16, c_high_u16, c_low_u16, c_lower_u16);
+    ///     assert_eq!(c_higher_u16, 1525);
+    ///     assert_eq!(c_high_u16, 62192);
+    ///     assert_eq!(c_low_u16, 61770);
+    ///     assert_eq!(c_lower_u16, 18048);
+    /// 
+    ///     let a = LongUnion::new_with_ushorts([a_low_u16, a_high_u16, 0, 0]);
+    ///     let b = LongUnion::new_with_ushorts([b_low_u16, b_high_u16, 0, 0]);
+    ///     let c = a * b;
+    ///     println!("{} * {} = {}", a.get(), b.get(), c.get());
+    ///     assert_eq!(c_higher_u16, c.get_ushort_(3));
+    ///     assert_eq!(c_high_u16, c.get_ushort_(2));
+    ///     assert_eq!(c_low_u16, c.get_ushort_(1));
+    ///     assert_eq!(c_lower_u16, c.get_ushort_(0));
+    /// }
+    /// 
+    /// fn func<T: SmallUInt>(lhs_low: T, lhs_high: T, rhs_low: T, rhs_high: T) -> (T, T, T, T)
+    /// {
+    ///     let (c_low, c_high ) = rhs_low.carrying_mul(lhs_low, T::zero());
+    ///     let (d_low, d_high ) = rhs_low.carrying_mul(lhs_high, c_high);
+    ///     let (mut e_low, e_high ) = rhs_high.carrying_mul(lhs_low, T::zero());
+    ///     let (mut f_low, mut f_high ) = rhs_high.carrying_mul(lhs_high, e_high);
+    /// 
+    ///     let mut overflow: bool;
+    ///     (e_low, overflow) = e_low.overflowing_add(d_low);
+    ///     if overflow
+    ///         { (f_low, overflow) = f_low.overflowing_add(T::one()); }
+    ///     if overflow
+    ///         { f_high = f_high.wrapping_add(T::one()); }
+    /// 
+    ///     (f_low, overflow) = f_low.overflowing_add(d_high);
+    ///     if overflow
+    ///         { f_high = f_high.wrapping_add(T::one()); }
+    ///     (c_low, e_low, f_low, f_high)
+    /// }
     /// ```
     /// 
     /// # Plagiarism in descryption
@@ -3010,7 +4123,8 @@ pub trait SmallUInt: Copy + Clone + Sized //+ Display + Debug + ToString
     fn carrying_mul(self, rhs: Self, carry: Self) -> (Self, Self);
 
     // fn carrying_mul_for_internal_use(self, rhs: Self, carry: Self) -> (Self, Self);
-    /// It is for internal use. You are recommended to use [carrying_mul()](trait@SmallUInt#tymethod.carrying_mul) instead.
+    /// It is for internal use only. You are supposed to use
+    /// [carrying_mul()](trait@SmallUInt#tymethod.carrying_mul) instead.
     fn carrying_mul_for_internal_use(self, rhs: Self, carry: Self) -> (Self, Self);
     
     // pub fn widening_mul(self, rhs: Self) -> (Self, Self)
@@ -3022,23 +4136,264 @@ pub trait SmallUInt: Copy + Clone + Sized //+ Display + Debug + ToString
     /// (wrapping) bits and the high-order (overflow) bits of the result as
     /// two separate values, in that order.
     /// 
-    /// /// # Feature
+    /// # Feature
     /// It performs “long multiplication” which takes in an extra amount to add,
     /// and may return an additional amount of overflow. This allows for
     /// chaining together multiple multiplications to create “big integers”
     /// which represent larger values.
     /// 
     /// # Counterpart Methods
-    /// If you also need to add a carry to the wide result, then you want to use
-    /// `carrying_mul()` instead.
+    /// If you also need to add a carry to the wide result,
+    /// then you may want to use
+    /// [carrying_mul()](trait@SmallUInt#tymethod.carrying_mul) instead.
     ///     
     /// The value of the first field in the returned tuple matches what you’d
     /// get the `wrapping_mul()` methods.
     /// `self.widening_mul(rhs).0` == `self.wrapping_mul(rhs)`
     /// 
-    /// # Example
+    /// # Example 1 for u8
     /// ```
-    /// // Todo
+    /// fn main()
+    /// {
+    ///     use cryptocol::number::IntUnion;
+    ///     // a_u16: u16 === (a_high_u8, a_low_u8) == (100_u8, 101_u8) == 25701_u16
+    ///     let a_high_u8 = 100_u8;
+    ///     let a_low_u8 = 101_u8;
+    ///     // b_u16: u16 === (b_high_u8, b_low_u8) == (100_u8, 200_u8) == 25800_u16
+    ///     let b_high_u8 = 100_u8;
+    ///     let b_low_u8 = 200_u8;
+    /// 
+    ///     // (100_u8, 101_u8) X (100_u8, 200_u8) == 25701_u16 X 25800_u16 == 663085800_u32
+    ///     //
+    ///     //                  (100_u8, 101_u8) == 25701_u16
+    ///     // X                (100_u8, 200_u8) == 25800_u16
+    ///     // ---------------------------------
+    ///     //                  ( 78_u8, 232_u8)
+    ///     //          ( 78_u8,  32_u8)
+    ///     //          ( 39_u8, 116_u8)
+    ///     // + (39_u8,  16_u8)
+    ///     // ---------------------------------
+    ///     //   (39_u8, 133_u8, 226_u8, 232_u8) == 663085800_u32
+    ///     let (c_lower_u8, c_low_u8, c_high_u8, c_higher_u8 ) = func(a_low_u8, a_high_u8, b_low_u8, b_high_u8);
+    ///     println!("{}-{}-{}-{}", c_higher_u8, c_high_u8, c_low_u8, c_lower_u8);
+    ///     assert_eq!(c_higher_u8, 39);
+    ///     assert_eq!(c_high_u8, 133);
+    ///     assert_eq!(c_low_u8, 226);
+    ///     assert_eq!(c_lower_u8, 232);
+    /// 
+    ///     let a = IntUnion::new_with_ubytes([a_low_u8, a_high_u8, 0, 0]);
+    ///     let b = IntUnion::new_with_ubytes([b_low_u8, b_high_u8, 0, 0]);
+    ///     let c = a * b;
+    ///     println!("{} * {} = {}", a.get(), b.get(), c.get());
+    ///     assert_eq!(c_higher_u8, c.get_ubyte_(3));
+    ///     assert_eq!(c_high_u8, c.get_ubyte_(2));
+    ///     assert_eq!(c_low_u8, c.get_ubyte_(1));
+    ///     assert_eq!(c_lower_u8, c.get_ubyte_(0));
+    /// }
+    /// 
+    /// fn func<T: cryptocol::number::SmallUInt>(lhs_low: T, lhs_high: T, rhs_low: T, rhs_high: T) -> (T, T, T, T)
+    /// {
+    ///     let (c_low, c_high ) = rhs_low.widening_mul(lhs_low);
+    ///     let (d_low, d_high ) = rhs_low.widening_mul(lhs_high);
+    ///     let (mut e_low, e_high ) = rhs_high.widening_mul(lhs_low);
+    ///     let (mut f_low, mut f_high ) = rhs_high.widening_mul(lhs_high);
+    /// 
+    ///     let mut overflow: bool;
+    ///     (e_low, overflow) = e_low.overflowing_add(d_low);
+    ///     if overflow
+    ///         { (f_low, overflow) = f_low.overflowing_add(T::one()); }
+    ///     if overflow
+    ///         { f_high = f_high.wrapping_add(T::one()); }
+    ///     (e_low, overflow) = e_low.overflowing_add(c_high);
+    ///     if overflow
+    ///         { (f_low, overflow) = f_low.overflowing_add(T::one()); }
+    ///     if overflow
+    ///         { f_high = f_high.wrapping_add(T::one()); }
+    /// 
+    ///     (f_low, overflow) = f_low.overflowing_add(d_high);
+    ///     if overflow
+    ///         { f_high = f_high.wrapping_add(T::one()); }
+    ///     (f_low, overflow) = f_low.overflowing_add(e_high);
+    ///     if overflow
+    ///         { f_high = f_high.wrapping_add(T::one()); }
+    ///     (c_low, e_low, f_low, f_high)
+    /// }
+    /// ```
+    /// 
+    /// # Example 2 for u16
+    /// ```
+    /// fn main()
+    /// {
+    ///     use cryptocol::number::LongUnion;
+    ///     // a_u32: u32 === (a_high_u16, a_low_u16) == (10000_u16, 10100_u16) == 257010000_u32
+    ///     let a_high_u16 = 10000_u16;
+    ///     let a_low_u16 = 10100_u16;
+    ///     // b_u32: u32 === (b_high_u16, b_low_u16) == (10000_u16, 20000_u16) == 258000000_u32
+    ///     let b_high_u16 = 10000_u16;
+    ///     let b_low_u16 = 20000_u16;
+    ///     
+    ///     // (10000_u16, 10100_u16) X (10000_u16, 20000_u16) == 257010000_u32 X 258000000_u32 == 66308580000000000_u32
+    ///     //
+    ///     //                        (10000_u16, 10100_u16) == 655370100_u32
+    ///     // X                      (10000_u16, 20000_u16) == 655380000_u32
+    ///     // ---------------------------------------------
+    ///     //                       (  3082_u16, 18048_u16)
+    ///     //            (  3051_u16, 49664_u16)
+    ///     //            (  1541_u16,  9024_u16)
+    ///     // + (1525_u16, 57600_u16)
+    ///     // ---------------------------------
+    ///     //   (1525_u16, 62192_u16, 61770_u16, 18048_u16) == 429516456138000000_u64
+    ///     let (c_lower_u16, c_low_u16, c_high_u16, c_higher_u16 ) = func(a_low_u16, a_high_u16, b_low_u16, b_high_u16);
+    ///     println!("{}-{}-{}-{}", c_higher_u16, c_high_u16, c_low_u16, c_lower_u16);
+    ///     assert_eq!(c_higher_u16, 1525);
+    ///     assert_eq!(c_high_u16, 62192);
+    ///     assert_eq!(c_low_u16, 61770);
+    ///     assert_eq!(c_lower_u16, 18048);
+    /// 
+    ///     let a = LongUnion::new_with_ushorts([a_low_u16, a_high_u16, 0, 0]);
+    ///     let b = LongUnion::new_with_ushorts([b_low_u16, b_high_u16, 0, 0]);
+    ///     let c = a * b;
+    ///     println!("{} * {} = {}", a.get(), b.get(), c.get());
+    ///     assert_eq!(c_higher_u16, c.get_ushort_(3));
+    ///     assert_eq!(c_high_u16, c.get_ushort_(2));
+    ///     assert_eq!(c_low_u16, c.get_ushort_(1));
+    ///     assert_eq!(c_lower_u16, c.get_ushort_(0));
+    /// }
+    /// 
+    /// fn func<T: cryptocol::number::SmallUInt>(lhs_low: T, lhs_high: T, rhs_low: T, rhs_high: T) -> (T, T, T, T)
+    /// {
+    ///     let (c_low, c_high ) = rhs_low.widening_mul(lhs_low);
+    ///     let (d_low, d_high ) = rhs_low.widening_mul(lhs_high);
+    ///     let (mut e_low, e_high ) = rhs_high.widening_mul(lhs_low);
+    ///     let (mut f_low, mut f_high ) = rhs_high.widening_mul(lhs_high);
+    /// 
+    ///     let mut overflow: bool;
+    ///     (e_low, overflow) = e_low.overflowing_add(d_low);
+    ///     if overflow
+    ///         { (f_low, overflow) = f_low.overflowing_add(T::one()); }
+    ///     if overflow
+    ///         { f_high = f_high.wrapping_add(T::one()); }
+    ///     (e_low, overflow) = e_low.overflowing_add(c_high);
+    ///     if overflow
+    ///         { (f_low, overflow) = f_low.overflowing_add(T::one()); }
+    ///     if overflow
+    ///         { f_high = f_high.wrapping_add(T::one()); }
+    /// 
+    ///     (f_low, overflow) = f_low.overflowing_add(d_high);
+    ///     if overflow
+    ///         { f_high = f_high.wrapping_add(T::one()); }
+    ///     (f_low, overflow) = f_low.overflowing_add(e_high);
+    ///     if overflow
+    ///         { f_high = f_high.wrapping_add(T::one()); }
+    ///     (c_low, e_low, f_low, f_high)
+    /// }
+    /// ```
+    /// You can use the above generic function `func<>()` for all
+    /// SmallUInt-supported data types in a same scope.
+    /// Look into the following example.
+    /// 
+    /// # Collective Example
+    /// ```
+    /// fn small_uint_widening_mul()
+    /// {
+    ///     use cryptocol::number::IntUnion;
+    ///     // a_u16: u16 === (a_high_u8, a_low_u8) == (100_u8, 101_u8) == 25701_u16
+    ///     let a_high_u8 = 100_u8;
+    ///     let a_low_u8 = 101_u8;
+    ///     // b_u16: u16 === (b_high_u8, b_low_u8) == (100_u8, 200_u8) == 25800_u16
+    ///     let b_high_u8 = 100_u8;
+    ///     let b_low_u8 = 200_u8;
+    /// 
+    ///     // (100_u8, 101_u8) X (100_u8, 200_u8) == 25701_u16 X 25800_u16 == 663085800_u32
+    ///     //
+    ///     //                  (100_u8, 101_u8) == 25701_u16
+    ///     // X                (100_u8, 200_u8) == 25800_u16
+    ///     // ---------------------------------
+    ///     //                  ( 78_u8, 232_u8)
+    ///     //          ( 78_u8,  32_u8)
+    ///     //          ( 39_u8, 116_u8)
+    ///     // + (39_u8,  16_u8)
+    ///     // ---------------------------------
+    ///     //   (39_u8, 133_u8, 226_u8, 232_u8) == 663085800_u32
+    ///     let (c_lower_u8, c_low_u8, c_high_u8, c_higher_u8 ) = func(a_low_u8, a_high_u8, b_low_u8, b_high_u8);
+    ///     println!("{}-{}-{}-{}", c_higher_u8, c_high_u8, c_low_u8, c_lower_u8);
+    ///     assert_eq!(c_higher_u8, 39);
+    ///     assert_eq!(c_high_u8, 133);
+    ///     assert_eq!(c_low_u8, 226);
+    ///     assert_eq!(c_lower_u8, 232);
+    /// 
+    ///     let a = IntUnion::new_with_ubytes([a_low_u8, a_high_u8, 0, 0]);
+    ///     let b = IntUnion::new_with_ubytes([b_low_u8, b_high_u8, 0, 0]);
+    ///     let c = a * b;
+    ///     println!("{} * {} = {}", a.get(), b.get(), c.get());
+    ///     assert_eq!(c_higher_u8, c.get_ubyte_(3));
+    ///     assert_eq!(c_high_u8, c.get_ubyte_(2));
+    ///     assert_eq!(c_low_u8, c.get_ubyte_(1));
+    ///     assert_eq!(c_lower_u8, c.get_ubyte_(0));
+    /// 
+    ///     use cryptocol::number::LongUnion;
+    ///     // a_u32: u32 === (a_high_u16, a_low_u16) == (10000_u16, 10100_u16) == 257010000_u32
+    ///     let a_high_u16 = 10000_u16;
+    ///     let a_low_u16 = 10100_u16;
+    ///     // b_u32: u32 === (b_high_u16, b_low_u16) == (10000_u16, 20000_u16) == 258000000_u32
+    ///     let b_high_u16 = 10000_u16;
+    ///     let b_low_u16 = 20000_u16;
+    ///     
+    ///     // (10000_u16, 10100_u16) X (10000_u16, 20000_u16) == 257010000_u32 X 258000000_u32 == 66308580000000000_u32
+    ///     //
+    ///     //                        (10000_u16, 10100_u16) == 655370100_u32
+    ///     // X                      (10000_u16, 20000_u16) == 655380000_u32
+    ///     // ---------------------------------------------
+    ///     //                       (  3082_u16, 18048_u16)
+    ///     //            (  3051_u16, 49664_u16)
+    ///     //            (  1541_u16,  9024_u16)
+    ///     // + (1525_u16, 57600_u16)
+    ///     // ---------------------------------
+    ///     //   (1525_u16, 62192_u16, 61770_u16, 18048_u16) == 429516456138000000_u64
+    ///     let (c_lower_u16, c_low_u16, c_high_u16, c_higher_u16 ) = func(a_low_u16, a_high_u16, b_low_u16, b_high_u16);
+    ///     println!("{}-{}-{}-{}", c_higher_u16, c_high_u16, c_low_u16, c_lower_u16);
+    ///     assert_eq!(c_higher_u16, 1525);
+    ///     assert_eq!(c_high_u16, 62192);
+    ///     assert_eq!(c_low_u16, 61770);
+    ///     assert_eq!(c_lower_u16, 18048);
+    /// 
+    ///     let a = LongUnion::new_with_ushorts([a_low_u16, a_high_u16, 0, 0]);
+    ///     let b = LongUnion::new_with_ushorts([b_low_u16, b_high_u16, 0, 0]);
+    ///     let c = a * b;
+    ///     println!("{} * {} = {}", a.get(), b.get(), c.get());
+    ///     assert_eq!(c_higher_u16, c.get_ushort_(3));
+    ///     assert_eq!(c_high_u16, c.get_ushort_(2));
+    ///     assert_eq!(c_low_u16, c.get_ushort_(1));
+    ///     assert_eq!(c_lower_u16, c.get_ushort_(0));
+    /// }
+    /// 
+    /// fn func<T: cryptocol::number::SmallUInt>(lhs_low: T, lhs_high: T, rhs_low: T, rhs_high: T) -> (T, T, T, T)
+    /// {
+    ///     let (c_low, c_high ) = rhs_low.widening_mul(lhs_low);
+    ///     let (d_low, d_high ) = rhs_low.widening_mul(lhs_high);
+    ///     let (mut e_low, e_high ) = rhs_high.widening_mul(lhs_low);
+    ///     let (mut f_low, mut f_high ) = rhs_high.widening_mul(lhs_high);
+    /// 
+    ///     let mut overflow: bool;
+    ///     (e_low, overflow) = e_low.overflowing_add(d_low);
+    ///     if overflow
+    ///         { (f_low, overflow) = f_low.overflowing_add(T::one()); }
+    ///     if overflow
+    ///         { f_high = f_high.wrapping_add(T::one()); }
+    ///     (e_low, overflow) = e_low.overflowing_add(c_high);
+    ///     if overflow
+    ///         { (f_low, overflow) = f_low.overflowing_add(T::one()); }
+    ///     if overflow
+    ///         { f_high = f_high.wrapping_add(T::one()); }
+    /// 
+    ///     (f_low, overflow) = f_low.overflowing_add(d_high);
+    ///     if overflow
+    ///         { f_high = f_high.wrapping_add(T::one()); }
+    ///     (f_low, overflow) = f_low.overflowing_add(e_high);
+    ///     if overflow
+    ///         { f_high = f_high.wrapping_add(T::one()); }
+    ///     (c_low, e_low, f_low, f_high)
+    /// }
     /// ```
     /// 
     /// # Plagiarism in descryption
@@ -4785,6 +6140,9 @@ pub trait SmallUInt: Copy + Clone + Sized //+ Display + Debug + ToString
     ///     lhs.pow(rhs)
     /// }
     /// ```
+    /// You can use the above generic function `func<>()` for all
+    /// SmallUInt-supported data types in a same scope.
+    /// Look into the following example.
     /// 
     /// # Collective Example
     /// ```

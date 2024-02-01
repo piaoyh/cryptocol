@@ -18,42 +18,32 @@ at least 80%. The unchecked items have not yet been implemented including
 documentation more than 80% or have not yet even been started to implement.
 
 ### Foundations mainly for Big Numbers and also for other modules
-- [ ] Unions for primitive data types and their implementation ---
-    [`ShortUnion`](number/small_int_unions/union.ShortUnion.html#union.ShortUnion),
-    [`IntUnion`](number/small_int_unions/union.IntUnion.html#union.IntUnion),
-    [`LongUnion`](number/small_int_unions/union.LongUnion.html#union.LongUnion),
-    [`LongerUnion`](number/small_int_unions/union.LongerUnion.html#union.LongerUnion),
-    and
-    [`SizeUnion`](number/small_int_unions/union.SizeUnion.html#union.SizeUnion)
-- [ ] Trait SmallUInt and its implementation of primitive data types ---
-    [SmallUInt](number/small_uint/trait.SmallUInt.html#trait.SmallUInt)
-- [ ] Trait SmallSInt and its implementation of primitive data types
+- [ ] Unions for primitive data types and their implementation
+    --- `ShortUnion`, `IntUnion`, `LongUnion`, `LongerUnion`, and `SizeUnion`
+- [ ] Trait SmallUInt and its implementation for primitive data types --- SmallUInt
+- [ ] Trait SmallSInt and its implementation for primitive data types --- SmallSInt
+    _--> Thinking about postponing to Roadmap for ver. 2.0_
 
 ### Big Numbers
-- [ ] Fixed Sized Big Unsigned Integer Operation ---
-    [`BigUInt`](number/big_uint/struct.BigUInt.html#struct.BigUInt)
-- [ ] Fixed Sized Big Signed Integer Operation --- BigSInt
-- [ ] Variable Sized Big Signed Integer Operation --- LargeInt
+- [ ] Fixed Sized Big Unsigned Integer Operation --- `BigUInt`
+- [ ] Fixed Sized Big Signed Integer Operation --- `BigSInt`
+    _--> Thinking about postponing to Roadmap for ver. 2.0_
+- [ ] Variable Sized Big Signed Integer Operation --- `LargeInt`
+    _--> Thinking about postponing to Roadmap for ver. 2.0 or higher_
 
 ### Hash Algorithms
 - [X] MD4 hash algorithms based on 128 bits
-    --- Includes MD4 and its expanded versions.
-    [`MD4_Generic`](hash/md4/struct.MD4_Generic.html#struct.MD4_Generic)
+    --- Includes MD4 and its expanded versions. `MD4_Generic`
 - [X] MD5 hash algorithms based on 128 bits
-    --- Includes MD5 and its expanded versions.
-    [`MD5_Generic`](hash/md5/struct.MD5_Generic.html#struct.MD5_Generic)
+    --- Includes MD5 and its expanded versions. `MD5_Generic`
 - [X] SHA-1 hash algorithms based on 160 bits
-    --- Includes SHA-1, SHA-0, and their expanded versions.
-    [`SHA1_Generic`](hash/sha1/struct.SHA1_generic.html#struct.SHA1_generic)
+    --- Includes SHA-1, SHA-0, and their expanded versions. `SHA1_Generic`
 - [X] SHA-2 hash algorithms based on 256 bits
-    --- Includes SHA-256, SHA-224, and their expanded versions.
-    [`SHA2_256_Generic`](hash/sha2_256/struct.SHA2_256_Generic.html#struct.SHA2_256_Generic)
+    --- Includes SHA-256, SHA-224, and their expanded versions. `SHA2_256_Generic`
 - [X] SHA-2 hash algorithms based on 512 bits
-    --- Includes SHA-512, SHA-384, SHA-512/256, and their expanded versions.
-    [`SHA2_512_Generic`](hash/sha2_512/struct.SHA2_512_Generic.html#struct.SHA2_512_Generic)
+    --- Includes SHA-512, SHA-384, SHA-512/256, and their expanded versions. `SHA2_512_Generic`
 - [X] SHA-2 hash algorithms based on 512/t bits
-    --- Includes 512/256, SHA-512/224, and their expanded versions.
-    [`SHA2_512_t_Generic`](hash/sha2_512_t/struct.SHA2_512_t_Generic.html#struct.SHA2_512_t_Generic)
+    --- Includes 512/256, SHA-512/224, and their expanded versions. `SHA2_512_t_Generic`
 - [ ] SHA-3 (SHA3-224)
 - [ ] SHA-3 (SHA3-256)
 - [ ] SHA-3 (SHA3-384)
@@ -68,20 +58,14 @@ documentation more than 80% or have not yet even been started to implement.
 
 ### Pseudo-Random Number Generator Algorithms
 - [X] The Pseudo-random number generator wrappers
-    --- struct [`Random_Generic`](random/random/struct.Random_Generic.html#struct.Random_Generic)
-    and trait
-    [Random_Engine](random/trait_random_engine/trait.Random_Engine.html#trait.Random_Engine)
+    --- struct `Random_Generic` and trait `Random_Engine`
 - [X] The implementation of `Random_Engine` for hash algorithms such as
-    [`MD4_Generic`](hash/md4/struct.MD4_Generic.html#struct.MD4_Generic),
-    [`MD5_Generic`](hash/md5/struct.MD5_Generic.html#struct.MD5_Generic),
-    [`SHA1_Generic`](hash/sha1/struct.SHA1_generic.html#struct.SHA1_generic),
-    [`SHA2_256_Generic`](hash/sha2_256/struct.SHA2_256_Generic.html#struct.SHA2_256_Generic), and
-    [`SHA2_512_Generic`](hash/sha2_512/struct.SHA2_512_Generic.html#struct.SHA2_512_Generic),
-    and for pseudo-random number generation algorithm such as
-    [`AnyNumber`](random/any_number/struct.AnyNumber.html#struct.AnyNumber)
+    `MD4_Generic`, `MD5_Generic`, `SHA1_Generic`, `SHA2_256_Generic`,
+    and`SHA2_512_Generic`,
+    and for pseudo-random number generation algorithm such as `AnyNumber`
 
 ### Asymmetric-Key Cryptographic Algorithms
-- [ ] Diffie-Hellman
+- [ ] Diffie-Hellman _--> Thinking about postponing to Roadmap for ver. 2.0_
 - [ ] RSA (Ron Rivest, Adi Shamir, Leonard Adleman)
 - [ ] ECC (Elliptic Curve Cryptosystem)
 

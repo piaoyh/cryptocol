@@ -35,15 +35,19 @@
 //!     [`LongerUnion`](number/small_int_unions/union.LongerUnion.html#union.LongerUnion),
 //!     and
 //!     [`SizeUnion`](number/small_int_unions/union.SizeUnion.html#union.SizeUnion)
-//! - [ ] Trait SmallUInt and its implementation of primitive data types ---
+//! - [ ] Trait SmallUInt and its implementation for primitive data types ---
 //!     [SmallUInt](number/small_uint/trait.SmallUInt.html#trait.SmallUInt)
-//! - [ ] Trait SmallSInt and its implementation of primitive data types
+//! - [ ] Trait SmallSInt and its implementation for primitive data types ---
+//!     [SmallSInt](number/small_sint/trait.SmallSInt.html#trait.SmallSInt)
+//!     _--> Thinking about postponing to Roadmap for ver. 2.0_
 //! 
 //! ## Big Numbers
 //! - [ ] Fixed Sized Big Unsigned Integer Operation ---
 //!     [`BigUInt`](number/big_uint/struct.BigUInt.html#struct.BigUInt)
 //! - [ ] Fixed Sized Big Signed Integer Operation --- BigSInt
+//!     _--> Thinking about postponing to Roadmap for ver. 2.0_
 //! - [ ] Variable Sized Big Signed Integer Operation --- LargeInt
+//!     _--> Thinking about postponing to Roadmap for ver. 2.0 or higher_
 //! 
 //! ## Hash Algorithms
 //! - [X] MD4 hash algorithms based on 128 bits
@@ -91,7 +95,7 @@
 //!     [`AnyNumber`](random/any_number/struct.AnyNumber.html#struct.AnyNumber)
 //! 
 //! ## Asymmetric-Key Cryptographic Algorithms
-//! - [ ] Diffie-Hellman
+//! - [ ] Diffie-Hellman _--> Thinking about postponing to Roadmap for ver. 2.0_
 //! - [ ] RSA (Ron Rivest, Adi Shamir, Leonard Adleman)
 //! - [ ] ECC (Elliptic Curve Cryptosystem)
 //! 

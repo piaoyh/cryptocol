@@ -42,6 +42,7 @@ fn small_uint_add_main()
 fn small_uint_carrying_add()
 {
     println!("small_uint_carrying_add()");
+    // Example for u8
     // a_u16: u16 === (a_high_u8, a_low_u8) == (100_u8, 101_u8) == 25701_u16
     let a_high_u8 = 100_u8;
     let a_low_u8 = 101_u8;
@@ -56,7 +57,7 @@ fn small_uint_carrying_add()
     //   51501_u16 == (201_u8,  45_u8)
 
     // c: u16 === (c_high, c_low)
-    let (c_high_u8, c_low_u8, carry) = small_uint_carrying_add_func(a_high_u8, a_low_u8, b_high_u8, b_low_u8);
+    let (c_low_u8, c_high_u8, carry) = small_uint_carrying_add_func(a_low_u8, a_high_u8, b_low_u8, b_high_u8);
     println!("{}-{}, {}", c_high_u8, c_low_u8, carry);
     assert_eq!(c_high_u8, 201);
     assert_eq!(c_low_u8, 45);
@@ -67,17 +68,18 @@ fn small_uint_carrying_add()
     // + 25800_u16 == (100_u8, 200_u8)
     // -------------------------------
     //   11765_u16 == ( 45_u8, 245_u8)
-    let (d_high_u8, d_low_u8, carry) = small_uint_carrying_add_func(c_high_u8, c_low_u8, b_high_u8, b_low_u8);
+    let (d_low_u8, d_high_u8, carry) = small_uint_carrying_add_func(c_low_u8, c_high_u8, b_low_u8, b_high_u8);
     println!("{}-{}, {}", d_high_u8, d_low_u8, carry);
     assert_eq!(d_high_u8, 45_u8);
     assert_eq!(d_low_u8, 245_u8);
     assert_eq!(carry, true);
 
+    // Example for u128
     //  4201016837757989640311993609423984479246482890531986660185 == (12345678901234567890_u128, 6789012345678912345_u128)
     //+                 419908440780438063913804265570801972943493 == (                1234_u128,                6789_u128)
     //---------------------------------------------------------------------------------------------------------------------
     //  4201016837757990060220434389862048393050748461333959603678 == (12345678901234569124_u128, 6789012345678919134_u128)
-    let (a_high_u128, a_low_u128, carry) = small_uint_carrying_add_func(12345678901234567890_u128, 6789012345678912345_u128, 1234_u128, 6789_u128);
+    let (a_low_u128, a_high_u128, carry) = small_uint_carrying_add_func(6789012345678912345_u128, 12345678901234567890_u128, 6789_u128, 1234_u128);
     println!("{}-{}, {}", a_high_u128, a_low_u128, carry);
     assert_eq!(a_high_u128, 12345678901234569124_u128);
     assert_eq!(a_low_u128, 6789012345678919134_u128);
@@ -87,26 +89,28 @@ fn small_uint_carrying_add()
     //+  57896044618658097711785492504343953926307055644800578124155540853313808954190 == (170141183460469231731687303715884105727_u128, 12345678901234567890123456789012345678_u128)
     //--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
     //   19298681539552699237261830834781317975046994857318776714373108680289488156697 == ( 56713727820156410577229101238628035241_u128, 69134691246913480235802358023580235801_u128)
-    let (b_high_u128, b_low_u128, carry) = small_uint_carrying_add_func(226854911280625642308916404954512140970_u128, 56789012345678912345678901234567890123_u128, 170141183460469231731687303715884105727_u128, 12345678901234567890123456789012345678_u128);
+    let (b_low_u128, b_high_u128, carry) = small_uint_carrying_add_func(56789012345678912345678901234567890123_u128, 226854911280625642308916404954512140970_u128, 12345678901234567890123456789012345678_u128, 170141183460469231731687303715884105727_u128);
     println!("{}-{}, {}", b_high_u128, b_low_u128, carry);
     assert_eq!(b_high_u128, 56713727820156410577229101238628035241_u128);
     assert_eq!(b_low_u128, 69134691246913480235802358023580235801_u128);
     assert_eq!(carry, true);
+    println!("--------------------------------------");
 }
 
-fn small_uint_carrying_add_func<T: cryptocol::number::SmallUInt>(lhs_high: T, lhs_low: T, rhs_high: T, rhs_low: T) -> (T, T, bool)
+fn small_uint_carrying_add_func<T: cryptocol::number::SmallUInt>(lhs_low: T, lhs_high: T, rhs_low: T, rhs_high: T) -> (T, T, bool)
 {
     let mut carry = false;
     let sum_high: T;
     let sum_low: T;
     (sum_low, carry) = lhs_low.carrying_add(rhs_low, carry);
     (sum_high, carry) = lhs_high.carrying_add(rhs_high, carry);
-    (sum_high, sum_low, carry)
+    (sum_low, sum_high, carry)
 }
 
 fn small_uint_wrapping_add()
 {
     println!("small_uint_wrapping_add()");
+    // Example for u8
     let a_u8 = small_uint_wrapping_add_func(u8::MAX - 55_u8, 55_u8);
     println!("{} + 55 = {}", u8::MAX - 55_u8, a_u8);
     assert_eq!(a_u8, u8::MAX);
@@ -115,6 +119,7 @@ fn small_uint_wrapping_add()
     println!("{} + 1 = {}", a_u8, b_u8);
     assert_eq!(b_u8, 0_u8);
 
+    // Example for u16
     let a_u16 = small_uint_wrapping_add_func(u16::MAX - 55_u16, 55_u16);
     println!("{} + 55 = {}", u16::MAX - 55_u16, a_u16);
     assert_eq!(a_u16, u16::MAX);
@@ -123,6 +128,7 @@ fn small_uint_wrapping_add()
     println!("{} + 1 = {}", a_u16, b_u16);
     assert_eq!(b_u16, 0_u16);
 
+    // Example for u32
     let a_u32 = small_uint_wrapping_add_func(u32::MAX - 55_u32, 55_u32);
     println!("{} + 55 = {}", u32::MAX - 55_u32, a_u32);
     assert_eq!(a_u32, u32::MAX);
@@ -131,6 +137,7 @@ fn small_uint_wrapping_add()
     println!("{} + 1 = {}", a_u32, b_u32);
     assert_eq!(b_u32, 0_u32);
 
+    // Example for u64
     let a_u64 = small_uint_wrapping_add_func(u64::MAX - 55_u64, 55_u64);
     println!("{} + 55 = {}", u64::MAX - 55_u64, a_u64);
     assert_eq!(a_u64, u64::MAX);
@@ -139,6 +146,7 @@ fn small_uint_wrapping_add()
     println!("{} + 1 = {}", a_u64, b_u64);
     assert_eq!(b_u64, 0_u64);
 
+    // Example for u128
     let a_u128 = small_uint_wrapping_add_func(u128::MAX - 55_u128, 55_u128);
     println!("{} + 55 = {}", u128::MAX - 55_u128, a_u128);
     assert_eq!(a_u128, u128::MAX);
@@ -147,6 +155,7 @@ fn small_uint_wrapping_add()
     println!("{} + 1 = {}",a_u128, b_u128);
     assert_eq!(b_u128, 0_u128);
 
+    // Example for usize
     let a_usize = small_uint_wrapping_add_func(usize::MAX - 55_usize, 55_usize);
     println!("{} + 55 = {}", usize::MAX - 55_usize, a_usize);
     assert_eq!(a_usize, usize::MAX);
@@ -165,6 +174,7 @@ fn small_uint_wrapping_add_func<T: cryptocol::number::SmallUInt>(lhs: T, rhs: T)
 fn small_uint_overflowing_add()
 {
     println!("small_uint_overflowing_add()");
+    // Example for u8
     let a_u8 = small_uint_overflowing_add_func(u8::MAX - 55_u8, 55_u8);
     println!("{} + 55 = {}\nOverflow = {}", u8::MAX - 55_u8, a_u8.0, a_u8.1);
     assert_eq!(a_u8.0, u8::MAX);
@@ -175,6 +185,7 @@ fn small_uint_overflowing_add()
     assert_eq!(b_u8.0, 0_u8);
     assert_eq!(b_u8.1, true);
 
+    // Example for u16
     let a_u16 = small_uint_overflowing_add_func(u16::MAX - 55_u16, 55_u16);
     println!("{} + 55 = {}\nOverflow = {}", u16::MAX - 55_u16, a_u16.0, a_u16.1);
     assert_eq!(a_u16.0, u16::MAX);
@@ -185,6 +196,7 @@ fn small_uint_overflowing_add()
     assert_eq!(b_u16.0, 0_u16);
     assert_eq!(b_u16.1, true);
 
+    // Example for u32
     let a_u32 = small_uint_overflowing_add_func(u32::MAX - 55_u32, 55_u32);
     println!("{} + 55 = {}\nOverflow = {}", u32::MAX - 55_u32, a_u32.0, a_u32.1);
     assert_eq!(a_u32.0, u32::MAX);
@@ -195,6 +207,7 @@ fn small_uint_overflowing_add()
     assert_eq!(b_u32.0, 0_u32);
     assert_eq!(b_u32.1, true);
 
+    // Example for u64
     let a_u64 = small_uint_overflowing_add_func(u64::MAX - 55_u64, 55_u64);
     println!("{} + 55 = {}\nOverflow = {}", u64::MAX - 55_u64, a_u64.0, a_u64.1);
     assert_eq!(a_u64.0, u64::MAX);
@@ -205,6 +218,7 @@ fn small_uint_overflowing_add()
     assert_eq!(b_u64.0, 0_u64);
     assert_eq!(b_u64.1, true);
 
+    // Example for u128
     let a_u128 = small_uint_overflowing_add_func(u128::MAX - 55_u128, 55_u128);
     println!("{} + 55 = {}\nOverflow = {}", u128::MAX - 55_u128, a_u128.0, a_u128.1);
     assert_eq!(a_u128.0, u128::MAX);
@@ -215,6 +229,7 @@ fn small_uint_overflowing_add()
     assert_eq!(b_u128.0, 0_u128);
     assert_eq!(b_u128.1, true);
 
+    // Example for usize
     let a_usize = small_uint_overflowing_add_func(usize::MAX - 55_usize, 55_usize);
     println!("{} + 55 = {}\nOverflow = {}", usize::MAX - 55_usize, a_usize.0, a_usize.1);
     assert_eq!(a_usize.0, usize::MAX);
@@ -235,6 +250,7 @@ fn small_uint_overflowing_add_func<T: cryptocol::number::SmallUInt>(lhs: T, rhs:
 fn small_uint_checked_add()
 {
     println!("small_uint_checked_add()");
+    // Example for u8
     let a_u8 = small_uint_checked_add_func(u8::MAX - 55_u8, 55_u8);
     match a_u8
     {
@@ -261,6 +277,7 @@ fn small_uint_checked_add()
             },
     }
 
+    // Example for u16
     let a_u16 = small_uint_checked_add_func(u16::MAX - 55_u16, 55_u16);
     match a_u16
     {
@@ -287,6 +304,7 @@ fn small_uint_checked_add()
             },
     }
 
+    // Example for u32
     let a_u32 = small_uint_checked_add_func(u32::MAX - 55_u32, 55_u32);
     match a_u32
     {
@@ -313,6 +331,7 @@ fn small_uint_checked_add()
             },
     }
 
+    // Example for u64
     let a_u64 = small_uint_checked_add_func(u64::MAX - 55_u64, 55_u64);
     match a_u64
     {
@@ -339,6 +358,7 @@ fn small_uint_checked_add()
             },
     }
 
+    // Example for u128
     let a_u128 = small_uint_checked_add_func(u128::MAX - 55_u128, 55_u128);
     match a_u128
     {
@@ -365,6 +385,7 @@ fn small_uint_checked_add()
             },
     }
 
+    // Example for usize
     let a_usize = small_uint_checked_add_func(usize::MAX - 55_usize, 55_usize);
     match a_usize
     {
@@ -401,6 +422,7 @@ fn small_uint_checked_add_func<T: cryptocol::number::SmallUInt>(lhs: T, rhs: T) 
 fn small_uint_unchecked_add()
 {
     println!("small_uint_unchecked_add()");
+    // Example for u8
     let a_u8 = small_uint_unchecked_add_func(u8::MAX - 55_u8, 55_u8);
     println!("{} + 55 = {}", u8::MAX - 55_u8, a_u8);
     assert_eq!(a_u8, u8::MAX);
@@ -408,6 +430,7 @@ fn small_uint_unchecked_add()
     // It will panic
     // let b_u8 = small_uint_unchecked_add_func(a_u8, 1_u8);
 
+    // Example for u16
     let a_u16 = small_uint_unchecked_add_func(u16::MAX - 55_u16, 55_u16);
     println!("{} + 55 = {}", u16::MAX - 55_u16, a_u16);
     assert_eq!(a_u16, u16::MAX);
@@ -415,6 +438,7 @@ fn small_uint_unchecked_add()
     // It will panic
     // let b_u16 = small_uint_unchecked_add_func(a_u16, 1_u16);
 
+    // Example for u32
     let a_u32 = small_uint_unchecked_add_func(u32::MAX - 55_u32, 55_u32);
     println!("{} + 55 = {}", u32::MAX - 55_u32, a_u32);
     assert_eq!(a_u32, u32::MAX);
@@ -422,6 +446,7 @@ fn small_uint_unchecked_add()
     // It will panic
     // let b_u32 = small_uint_unchecked_add_func(a_u32, 1_u32);
 
+    // Example for u64
     let a_u64 = small_uint_unchecked_add_func(u64::MAX - 55_u64, 55_u64);
     println!("{} + 55 = {}", u64::MAX - 55_u64, a_u64);
     assert_eq!(a_u64, u64::MAX);
@@ -429,6 +454,7 @@ fn small_uint_unchecked_add()
     // It will panic
     // let b_u64 = small_uint_unchecked_add_func(a_u64, 1_u64);
 
+    // Example for u128
     let a_u128 = small_uint_unchecked_add_func(u128::MAX - 55_u128, 55_u128);
     println!("{} + 55 = {}", u128::MAX - 55_u128, a_u128);
     assert_eq!(a_u128, u128::MAX);
@@ -436,6 +462,7 @@ fn small_uint_unchecked_add()
     // It will panic
     // let b_u128 = small_uint_unchecked_add_func(a_u128, 1_u128);
 
+    // Example for usize
     let a_usize = small_uint_unchecked_add_func(usize::MAX - 55_usize, 55_usize);
     println!("{} + 55 = {}", usize::MAX - 55_usize, a_usize);
     assert_eq!(a_usize, usize::MAX);
@@ -453,6 +480,7 @@ fn small_uint_unchecked_add_func<T: cryptocol::number::SmallUInt>(lhs: T, rhs: T
 fn small_uint_saturating_add()
 {
     println!("small_uint_saturating_add()");
+    // Example for u8
     let a_u8 = small_uint_saturating_add_func(u8::MAX - 55_u8, 55_u8);
     println!("{} + 55 = {}", u8::MAX - 55_u8, a_u8);
     assert_eq!(a_u8, u8::MAX);
@@ -461,6 +489,7 @@ fn small_uint_saturating_add()
     println!("{} + 55 = {}", a_u8, b_u8);
     assert_eq!(b_u8, u8::MAX);
 
+    // Example for u16
     let a_u16 = small_uint_saturating_add_func(u16::MAX - 55_u16, 55_u16);
     println!("{} + 55 = {}", u16::MAX - 55_u16, a_u16);
     assert_eq!(a_u16, u16::MAX);
@@ -469,6 +498,7 @@ fn small_uint_saturating_add()
     println!("{} + 55 = {}", a_u16, b_u16);
     assert_eq!(b_u16, u16::MAX);
 
+    // Example for u32
     let a_u32 = small_uint_saturating_add_func(u32::MAX - 55_u32, 55_u32);
     println!("{} + 55 = {}", u32::MAX - 55_u32, a_u32);
     assert_eq!(a_u32, u32::MAX);
@@ -477,6 +507,7 @@ fn small_uint_saturating_add()
     println!("{} + 55 = {}", a_u32, b_u32);
     assert_eq!(b_u32, u32::MAX);
 
+    // Example for u64
     let a_u64 = small_uint_saturating_add_func(u64::MAX - 55_u64, 55_u64);
     println!("{} + 55 = {}", u64::MAX - 55_u64, a_u64);
     assert_eq!(a_u64, u64::MAX);
@@ -485,6 +516,7 @@ fn small_uint_saturating_add()
     println!("{} + 55 = {}", a_u64, b_u64);
     assert_eq!(b_u64, u64::MAX);
 
+    // Example for u128
     let a_u128 = small_uint_saturating_add_func(u128::MAX - 55_u128, 55_u128);
     println!("{} + 55 = {}", u128::MAX - 55_u128, a_u128);
     assert_eq!(a_u128, u128::MAX);
@@ -493,6 +525,7 @@ fn small_uint_saturating_add()
     println!("{} + 55 = {}",a_u128, b_u128);
     assert_eq!(b_u128, u128::MAX);
 
+    // Example for usize
     let a_usize = small_uint_saturating_add_func(usize::MAX - 55_usize, 55_usize);
     println!("{} + 55 = {}", usize::MAX - 55_usize, a_usize);
     assert_eq!(a_usize, usize::MAX);
@@ -511,6 +544,7 @@ fn small_uint_saturating_add_func<T: cryptocol::number::SmallUInt>(lhs: T, rhs: 
 fn small_uint_modular_add()
 {
     println!("small_uint_modular_add()");
+    // Example for u8
     let a_u8 = small_uint_modular_add_func(60_u8, 15, 100);
     println!("60 + 55 = {} (mod 100)", a_u8);
     assert_eq!(a_u8, 75);
@@ -519,6 +553,7 @@ fn small_uint_modular_add()
     println!("{} + 55 = {} (mod 100)", a_u8, b_u8);
     assert_eq!(b_u8, 30);
 
+    // Example for u16
     let a_u16 = small_uint_modular_add_func(6000_u16, 1500, 1_0000);
     println!("6000 + 1500 = {} (mod 1_0000)", a_u16);
     assert_eq!(a_u16, 7500);
@@ -527,6 +562,7 @@ fn small_uint_modular_add()
     println!("{} + 55 = {} (mod 1_0000)", a_u16, b_u16);
     assert_eq!(b_u16, 3000);
 
+    // Example for u32
     let a_u32 = small_uint_modular_add_func(6_0000_0000_u32, 1_5000_0000, 10_0000_0000);
     println!("6_0000_0000 + 1_5000_0000 = {} (mod 10_0000_0000)", a_u32);
     assert_eq!(a_u32, 7_5000_0000);
@@ -535,6 +571,7 @@ fn small_uint_modular_add()
     println!("{} + 5_5000_0000 = {} (mod 10_0000_0000)", a_u32, b_u32);
     assert_eq!(b_u32, 3_0000_0000);
 
+    // Example for u64
     let a_u64 = small_uint_modular_add_func(6_0000_0000_0000_0000_u64, 1_5000_0000_0000_0000, 10_0000_0000_0000_0000);
     println!("6_0000_0000_0000_0000 + 1_5000_0000_0000_0000 = {} (mod 10_0000_0000_0000_0000)", a_u64);
     assert_eq!(a_u64, 7_5000_0000_0000_0000);
@@ -543,6 +580,7 @@ fn small_uint_modular_add()
     println!("{} + 5_5000_0000_0000_0000 = {} (mod 10_0000_0000_0000_0000)", a_u64, b_u64);
     assert_eq!(b_u64, 3_0000_0000_0000_0000);
 
+    // Example for u128
     let a_u128 = small_uint_modular_add_func(6_0000_0000_0000_0000_0000_0000_0000_0000_u128, 1_5000_0000_0000_0000_0000_0000_0000_0000, 10_0000_0000_0000_0000_0000_0000_0000_0000);
     println!("6_0000_0000_0000_0000_0000_0000_0000_0000 + 1_5000_0000_0000_0000_0000_0000_0000_0000 = {} (mod 10_0000_0000_0000_0000_0000_0000_0000_0000)", a_u128);
     assert_eq!(a_u128, 7_5000_0000_0000_0000_0000_0000_0000_0000);
@@ -551,6 +589,7 @@ fn small_uint_modular_add()
     println!("{} + 5_5000_0000_0000_0000_0000_0000_0000_0000 = {}",a_u128, b_u128);
     assert_eq!(b_u128, 3_0000_0000_0000_0000_0000_0000_0000_0000);
 
+    // Example for usize
     let a_usize = small_uint_modular_add_func(6_0000_0000_0000_0000_usize, 1_5000_0000_0000_0000, 10_0000_0000_0000_0000);
     println!("6_0000_0000_0000_0000 + 1_5000_0000_0000_0000 = {} (mod 10_0000_0000_0000_0000)", a_usize);
     assert_eq!(a_usize, 7_5000_0000_0000_0000);
@@ -575,11 +614,13 @@ fn small_uint_sub_main()
     small_uint_unchecked_sub();
     small_uint_saturating_sub();
     small_uint_abs_diff();
+    small_uint_modular_sub();
 }
 
 fn small_uint_borrowing_sub()
 {
     println!("small_uint_borrowing_sub()");
+    // Example for u8
     // a_u16: u16 === (a_high_u8, a_low_u8) == (100_u8, 200_u8) == 25800_u16
     let a_high_u8 = 100_u8;
     let a_low_u8 = 200_u8;
@@ -595,7 +636,7 @@ fn small_uint_borrowing_sub()
     // - 25701_u16 == (100_u8, 101_u8)
     // -------------------------------
     //      99_u16 == (  0_u8,  99_u8)
-    (c_high_u8, c_low_u8, borrow) = small_uint_borrowing_sub_func(a_high_u8, a_low_u8, b_high_u8, b_low_u8);
+    (c_low_u8, c_high_u8, borrow) = small_uint_borrowing_sub_func(a_low_u8, a_high_u8, b_low_u8, b_high_u8);
     println!("{}-{}, {}", c_high_u8, c_low_u8, borrow);
     assert_eq!(c_high_u8, 0_u8);
     assert_eq!(c_low_u8, 99_u8);
@@ -608,19 +649,20 @@ fn small_uint_borrowing_sub()
     // - 25701_u16 == (100_u8, 101_u8)
     // -------------------------------
     //   39934_u16 == (155_u8, 254_u8)
-    (d_high_u8, d_low_u8, borrow) = small_uint_borrowing_sub_func(c_high_u8, c_low_u8, b_high_u8, b_low_u8);
+    (d_low_u8, d_high_u8, borrow) = small_uint_borrowing_sub_func(c_low_u8, c_high_u8, b_low_u8, b_high_u8);
     println!("{}-{}, {}", d_high_u8, d_low_u8, borrow);
     assert_eq!(d_high_u8, 155_u8);
     assert_eq!(d_low_u8, 254_u8);
     assert_eq!(borrow, true);
 
+    // Example for u128
     let a_high_u128: u128;
     let a_low_u128: u128;
     //   4201016837757989640311993609423984479246482890531986660185 == (12345678901234567890_u128, 6789012345678912345_u128)
     // -                 419908440780438063913804265570801972943493 == (                1234_u128,                6789_u128)
     // ---------------------------------------------------------------------------------------------------------------------
     //   4201016837757989220403552828985920565442217319730013716692 == (12345678901234566656_u128, 6789012345678905556_u128)
-    (a_high_u128, a_low_u128, borrow) = small_uint_borrowing_sub_func(12345678901234567890_u128, 6789012345678912345_u128, 1234_u128, 6789_u128);
+    (a_low_u128, a_high_u128, borrow) = small_uint_borrowing_sub_func(6789012345678912345_u128, 12345678901234567890_u128, 6789_u128, 1234_u128);
     println!("{}-{}, {}", a_high_u128, a_low_u128, borrow);
     assert_eq!(a_high_u128, 12345678901234566656_u128);
     assert_eq!(a_low_u128, 6789012345678905556_u128);
@@ -632,7 +674,7 @@ fn small_uint_borrowing_sub()
     // - 308778904632843187796189293356501087608549893209439890708590319850715068122315 == (226854911280625642308916404954512140970_u128,  56789012345678912345678901234567890123_u128)
     // --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
     //   328077586172395887033451124191282405584107085763563507612853141042164389031555 == (283568639100782052886145506193140176212_u128, 295839033476494119007819162986212667011_u128)
-    (b_high_u128, b_low_u128, borrow) = small_uint_borrowing_sub_func(170141183460469231731687303715884105727_u128, 12345678901234567890123456789012345678_u128, 226854911280625642308916404954512140970_u128, 56789012345678912345678901234567890123_u128);
+    (b_low_u128, b_high_u128, borrow) = small_uint_borrowing_sub_func(12345678901234567890123456789012345678_u128, 170141183460469231731687303715884105727_u128, 56789012345678912345678901234567890123_u128, 226854911280625642308916404954512140970_u128);
     println!("{}-{}, {}", b_high_u128, b_low_u128, borrow);
     assert_eq!(b_high_u128, 283568639100782052886145506193140176212_u128);
     assert_eq!(b_low_u128, 295839033476494119007819162986212667011_u128);
@@ -640,19 +682,20 @@ fn small_uint_borrowing_sub()
     println!("--------------------------------------");
 }
 
-fn small_uint_borrowing_sub_func<T: cryptocol::number::SmallUInt>(lhs_high: T, lhs_low: T, rhs_high: T, rhs_low: T) -> (T, T, bool)
+fn small_uint_borrowing_sub_func<T: cryptocol::number::SmallUInt>(lhs_low: T, lhs_high: T, rhs_low: T, rhs_high: T) -> (T, T, bool)
 {
     let mut borrow = false;
-    let sum_high: T;
-    let sum_low: T;
-    (sum_low, borrow) = lhs_low.borrowing_sub(rhs_low, borrow);
-    (sum_high, borrow) = lhs_high.borrowing_sub(rhs_high, borrow);
-    (sum_high, sum_low, borrow)
+    let dif_high: T;
+    let dif_low: T;
+    (dif_low, borrow) = lhs_low.borrowing_sub(rhs_low, borrow);
+    (dif_high, borrow) = lhs_high.borrowing_sub(rhs_high, borrow);
+    (dif_low, dif_high, borrow)
 }
 
 fn small_uint_wrapping_sub()
 {
     println!("small_uint_wrapping_sub()");
+    // Example for u8
     let a_u8 = small_uint_wrapping_sub_func(55_u8, 55_u8);
     println!("55 - 55 = {}", a_u8);
     assert_eq!(a_u8, 0_u8);
@@ -661,6 +704,7 @@ fn small_uint_wrapping_sub()
     println!("{} - 1 = {}", a_u8, b_u8);
     assert_eq!(b_u8, u8::MAX);
 
+    // Example for u16
     let a_u16 = small_uint_wrapping_sub_func(55_u16, 55_u16);
     println!("55 - 55 = {}", a_u16);
     assert_eq!(a_u16, 0_u16);
@@ -669,6 +713,7 @@ fn small_uint_wrapping_sub()
     println!("{} - 1 = {}", a_u16, b_u16);
     assert_eq!(b_u16, u16::MAX);
 
+    // Example for u32
     let a_u32 = small_uint_wrapping_sub_func(55_u32, 55_u32);
     println!("55 - 55 = {}", a_u32);
     assert_eq!(a_u32, 0_u32);
@@ -677,6 +722,7 @@ fn small_uint_wrapping_sub()
     println!("{} - 1 = {}", a_u32, b_u32);
     assert_eq!(b_u32, u32::MAX);
 
+    // Example for u64
     let a_u64 = small_uint_wrapping_sub_func(55_u64, 55_u64);
     println!("55 - 55 = {}", a_u64);
     assert_eq!(a_u64, 0_u64);
@@ -685,6 +731,7 @@ fn small_uint_wrapping_sub()
     println!("{} - 1 = {}", a_u64, b_u64);
     assert_eq!(b_u64, u64::MAX);
 
+    // Example for u128
     let a_u128 = small_uint_wrapping_sub_func(55_u128, 55_u128);
     println!("55 - 55 = {}", a_u128);
     assert_eq!(a_u128, 0_u128);
@@ -693,6 +740,7 @@ fn small_uint_wrapping_sub()
     println!("{} - 1 = {}",a_u128, b_u128);
     assert_eq!(b_u128, u128::MAX);
 
+    // Example for usize
     let a_usize = small_uint_wrapping_sub_func(55_usize, 55_usize);
     println!("55 - 55 = {}", a_usize);
     assert_eq!(a_usize, 0_usize);
@@ -711,6 +759,7 @@ fn small_uint_wrapping_sub_func<T: cryptocol::number::SmallUInt>(lhs: T, rhs: T)
 fn small_uint_overflowing_sub()
 {
     println!("small_uint_overflowing_sub()");
+    // Example for u8
     let a_u8 = small_uint_overflowing_sub_func(55_u8, 55_u8);
     println!("55 - 55 = {}\nUnderflow = {}", a_u8.0, a_u8.1);
     assert_eq!(a_u8.0, 0_u8);
@@ -721,6 +770,7 @@ fn small_uint_overflowing_sub()
     assert_eq!(b_u8.0, u8::MAX);
     assert_eq!(b_u8.1, true);
 
+    // Example for u16
     let a_u16 = small_uint_overflowing_sub_func(55_u16, 55_u16);
     println!("55 - 55 = {}\nUnderflow = {}", a_u16.0, a_u16.1);
     assert_eq!(a_u16.0, 0_u16);
@@ -731,6 +781,7 @@ fn small_uint_overflowing_sub()
     assert_eq!(b_u16.0, u16::MAX);
     assert_eq!(b_u16.1, true);
 
+    // Example for u32
     let a_u32 = small_uint_overflowing_sub_func(55_u32, 55_u32);
     println!("55 - 55 = {}\nUnderflow = {}", a_u32.0, a_u32.1);
     assert_eq!(a_u32.0, 0_u32);
@@ -741,6 +792,7 @@ fn small_uint_overflowing_sub()
     assert_eq!(b_u32.0, u32::MAX);
     assert_eq!(b_u32.1, true);
 
+    // Example for u64
     let a_u64 = small_uint_overflowing_sub_func(55_u64, 55_u64);
     println!("55 - 55 = {}\nUnderflow = {}", a_u64.0, a_u64.1);
     assert_eq!(a_u64.0, 0_u64);
@@ -751,6 +803,7 @@ fn small_uint_overflowing_sub()
     assert_eq!(b_u64.0, u64::MAX);
     assert_eq!(b_u64.1, true);
 
+    // Example for u128
     let a_u128 = small_uint_overflowing_sub_func(55_u128, 55_u128);
     println!("55 - 55 = {}\nUnderflow = {}", a_u128.0, a_u128.1);
     assert_eq!(a_u128.0, 0_u128);
@@ -761,6 +814,7 @@ fn small_uint_overflowing_sub()
     assert_eq!(b_u128.0, u128::MAX);
     assert_eq!(b_u128.1, true);
 
+    // Example for usize
     let a_usize = small_uint_overflowing_sub_func(55_usize, 55_usize);
     println!("55 - 55 = {}\nUnderflow = {}", a_usize.0, a_usize.1);
     assert_eq!(a_usize.0, 0_usize);
@@ -781,6 +835,7 @@ fn small_uint_overflowing_sub_func<T: cryptocol::number::SmallUInt>(lhs: T, rhs:
 fn small_uint_checked_sub()
 {
     println!("small_uint_checked_sub()");
+    // Example for u8
     let a_u8 = small_uint_checked_sub_func(55_u8, 55_u8);
     match a_u8
     {
@@ -807,6 +862,7 @@ fn small_uint_checked_sub()
             },
     }
 
+    // Example for u16
     let a_u16 = small_uint_checked_sub_func(55_u16, 55_u16);
     match a_u16
     {
@@ -833,6 +889,7 @@ fn small_uint_checked_sub()
             },
     }
 
+    // Example for u32
     let a_u32 = small_uint_checked_sub_func(55_u32, 55_u32);
     match a_u32
     {
@@ -859,6 +916,7 @@ fn small_uint_checked_sub()
             },
     }
 
+    // Example for u64
     let a_u64 = small_uint_checked_sub_func(55_u64, 55_u64);
     match a_u64
     {
@@ -885,6 +943,7 @@ fn small_uint_checked_sub()
             },
     }
 
+    // Example for u128
     let a_u128 = small_uint_checked_sub_func(55_u128, 55_u128);
     match a_u128
     {
@@ -911,6 +970,7 @@ fn small_uint_checked_sub()
             },
     }
 
+    // Example for usize
     let a_usize = small_uint_checked_sub_func(55_usize, 55_usize);
     match a_usize
     {
@@ -947,6 +1007,7 @@ fn small_uint_checked_sub_func<T: cryptocol::number::SmallUInt>(lhs: T, rhs: T) 
 fn small_uint_unchecked_sub()
 {
     println!("small_uint_unchecked_sub()");
+    // Example for u8
     let a_u8 = small_uint_unchecked_sub_func(55_u8, 55_u8);
     println!("55 - 55 = {}", a_u8);
     assert_eq!(a_u8, 0_u8);
@@ -954,6 +1015,7 @@ fn small_uint_unchecked_sub()
     // It will panic
     // let b_u8 = small_uint_unchecked_sub_func(a_u8, 1_u8);
 
+    // Example for u16
     let a_u16 = small_uint_unchecked_sub_func(55_u16, 55_u16);
     println!("55 - 55 = {}", a_u16);
     assert_eq!(a_u16, 0_u16);
@@ -961,6 +1023,7 @@ fn small_uint_unchecked_sub()
     // It will panic
     // let b_u16 = small_uint_unchecked_sub_func(a_u16, 1_u16);
 
+    // Example for u32
     let a_u32 = small_uint_unchecked_sub_func(55_u32, 55_u32);
     println!("55 - 55 = {}", a_u32);
     assert_eq!(a_u32, 0_u32);
@@ -968,6 +1031,7 @@ fn small_uint_unchecked_sub()
     // It will panic
     // let b_u32 = small_uint_unchecked_sub_func(a_u32, 1_u32);
 
+    // Example for u64
     let a_u64 = small_uint_unchecked_sub_func(55_u64, 55_u64);
     println!("55 - 55 = {}", a_u64);
     assert_eq!(a_u64, 0_u64);
@@ -975,6 +1039,7 @@ fn small_uint_unchecked_sub()
     // It will panic
     // let b_u64 = small_uint_unchecked_sub_func(a_u64, 1_u64);
 
+    // Example for u128
     let a_u128 = small_uint_unchecked_sub_func(55_u128, 55_u128);
     println!("55 - 55 = {}", a_u128);
     assert_eq!(a_u128, 0_u128);
@@ -982,6 +1047,7 @@ fn small_uint_unchecked_sub()
     // It will panic
     // let b_u128 = small_uint_unchecked_sub_func(a_u128, 1_u128);
 
+    // Example for usize
     let a_usize = small_uint_unchecked_sub_func(55_usize, 55_usize);
     println!("55 - 55 = {}", a_usize);
     assert_eq!(a_usize, 0_usize);
@@ -999,6 +1065,7 @@ fn small_uint_unchecked_sub_func<T: cryptocol::number::SmallUInt>(lhs: T, rhs: T
 fn small_uint_saturating_sub()
 {
     println!("small_uint_saturating_sub()");
+    // Example for u8
     let a_u8 = small_uint_saturating_sub_func(55_u8, 50_u8);
     println!("55 - 50 = {}", a_u8);
     assert_eq!(a_u8, 5_u8);
@@ -1007,6 +1074,7 @@ fn small_uint_saturating_sub()
     println!("5 - 55 = {}", b_u8);
     assert_eq!(b_u8, 0_u8);
 
+    // Example for u16
     let a_u16 = small_uint_saturating_sub_func(55_u16, 50_u16);
     println!("55 - 50 = {}", a_u16);
     assert_eq!(a_u16, 5_u16);
@@ -1015,6 +1083,7 @@ fn small_uint_saturating_sub()
     println!("5 - 55 = {}", b_u16);
     assert_eq!(b_u16, 0_u16);
 
+    // Example for u32
     let a_u32 = small_uint_saturating_sub_func(55_u32, 50_u32);
     println!("55 - 50 = {}", a_u32);
     assert_eq!(a_u32, 5_u32);
@@ -1023,6 +1092,7 @@ fn small_uint_saturating_sub()
     println!("{} - 55 = {}", a_u32, b_u32);
     assert_eq!(b_u32, 0_u32);
 
+    // Example for u64
     let a_u64 = small_uint_saturating_sub_func(55_u64, 50_u64);
     println!("55 - 50 = {}", a_u64);
     assert_eq!(a_u64, 5_u64);
@@ -1031,6 +1101,7 @@ fn small_uint_saturating_sub()
     println!("{} - 55 = {}", a_u64, b_u64);
     assert_eq!(b_u64, 0_u64);
 
+    // Example for u128
     let a_u128 = small_uint_saturating_sub_func(55_u128, 50_u128);
     println!("55 - 50 = {}", a_u128);
     assert_eq!(a_u128, 5_u128);
@@ -1039,6 +1110,7 @@ fn small_uint_saturating_sub()
     println!("{} - 55 = {}", a_u128, b_u128);
     assert_eq!(b_u128, 0_u128);
 
+    // Example for usize
     let a_usize = small_uint_saturating_sub_func(55_usize, 50_usize);
     println!("55 - 50 = {}", a_usize);
     assert_eq!(a_usize, 5_usize);
@@ -1054,10 +1126,10 @@ fn small_uint_saturating_sub_func<T: cryptocol::number::SmallUInt>(lhs: T, rhs: 
     lhs.saturating_sub(rhs)
 }
 
-
 fn small_uint_abs_diff()
 {
     println!("small_uint_abs_diff()");
+    // Example for u8
     let a_u8 = small_uint_abs_diff_func(55_u8, 50_u8);
     println!("55 <-> 50 = {}", a_u8);
     assert_eq!(a_u8, 5_u8);
@@ -1066,6 +1138,7 @@ fn small_uint_abs_diff()
     println!("50 <-> 55 = {}", b_u8);
     assert_eq!(b_u8, 5_u8);
 
+    // Example for u16
     let a_u16 = small_uint_abs_diff_func(5050_u16, 5000_u16);
     println!("5050 <-> 5000 = {}", a_u16);
     assert_eq!(a_u16, 50_u16);
@@ -1074,6 +1147,7 @@ fn small_uint_abs_diff()
     println!("5000 <-> 5050 = {}", b_u16);
     assert_eq!(b_u16, 50_u16);
 
+    // Example for u32
     let a_u32 = small_uint_abs_diff_func(500500_u32, 500000_u32);
     println!("500500 <-> 500000 = {}", a_u32);
     assert_eq!(a_u32, 500_u32);
@@ -1082,6 +1156,7 @@ fn small_uint_abs_diff()
     println!("500000 <-> 500500 = {}", b_u32);
     assert_eq!(b_u32, 500_u32);
 
+    // Example for u64
     let a_u64 = small_uint_abs_diff_func(5000050000_u64, 5000000000_u64);
     println!("5000050000 <-> 5000000000 = {}", a_u64);
     assert_eq!(a_u64, 50000_u64);
@@ -1090,6 +1165,7 @@ fn small_uint_abs_diff()
     println!("5000000000 <-> 5000050000 = {}", b_u64);
     assert_eq!(b_u64, 50000_u64);
 
+    // Example for u128
     let a_u128 = small_uint_abs_diff_func(500000000500000000_u128, 500000000000000000_u128);
     println!("500000000500000000 <-> 500000000000000000 = {}", a_u128);
     assert_eq!(a_u128, 500000000_u128);
@@ -1098,6 +1174,7 @@ fn small_uint_abs_diff()
     println!("500000000000000000 <-> 500000000500000000 = {}", b_u128);
     assert_eq!(b_u128, 500000000_u128);
 
+    // Example for usize
     let a_usize = small_uint_abs_diff_func(5000050000_usize, 5000000000_usize);
     println!("5000050000 <-> 5000000000 = {}", a_usize);
     assert_eq!(a_usize, 50000_usize);
@@ -1113,15 +1190,281 @@ fn small_uint_abs_diff_func<T: cryptocol::number::SmallUInt>(lhs: T, rhs: T) -> 
     lhs.abs_diff(rhs)
 }
 
+fn small_uint_modular_sub()
+{
+    println!("small_uint_modular_sub()");
+    // Example for u8
+    let a_u8 = small_uint_modular_sub_func(60_u8, 55, 100);
+    println!("60 - 55 = {} (mod 100)", a_u8);
+    assert_eq!(a_u8, 5);
+
+    let b_u8 = small_uint_modular_sub_func(a_u8, 15, 100);
+    println!("{} - 15 = {} (mod 100)", a_u8, b_u8);
+    assert_eq!(b_u8, 90);
+
+    // Example for u16
+    let a_u16 = small_uint_modular_sub_func(6000_u16, 5500, 1_0000);
+    println!("6000 - 5500 = {} (mod 1_0000)", a_u16);
+    assert_eq!(a_u16, 500);
+
+    let b_u16 = small_uint_modular_sub_func(a_u16, 1500, 1_0000);
+    println!("{} - 1500 = {} (mod 1_0000)", a_u16, b_u16);
+    assert_eq!(b_u16, 9000);
+
+    // Example for u32
+    let a_u32 = small_uint_modular_sub_func(6_0000_0000_u32, 5_5000_0000, 10_0000_0000);
+    println!("6_0000_0000 - 5_5000_0000 = {} (mod 10_0000_0000)", a_u32);
+    assert_eq!(a_u32, 5000_0000);
+
+    let b_u32 = small_uint_modular_sub_func(a_u32, 1_5000_0000, 10_0000_0000);
+    println!("{} - 1_5000_0000 = {} (mod 10_0000_0000)", a_u32, b_u32);
+    assert_eq!(b_u32, 9_0000_0000);
+
+    // Example for u64
+    let a_u64 = small_uint_modular_sub_func(6_0000_0000_0000_0000_u64, 5_5000_0000_0000_0000, 10_0000_0000_0000_0000);
+    println!("6_0000_0000_0000_0000 - 5_5000_0000_0000_0000 = {} (mod 10_0000_0000_0000_0000)", a_u64);
+    assert_eq!(a_u64, 5000_0000_0000_0000);
+
+    let b_u64 = small_uint_modular_sub_func(a_u64, 1_5000_0000_0000_0000, 10_0000_0000_0000_0000);
+    println!("{} - 1_5000_0000_0000_0000 = {} (mod 10_0000_0000_0000_0000)", a_u64, b_u64);
+    assert_eq!(b_u64, 9_0000_0000_0000_0000);
+
+    // Example for u128
+    let a_u128 = small_uint_modular_sub_func(6_0000_0000_0000_0000_0000_0000_0000_0000_u128, 5_5000_0000_0000_0000_0000_0000_0000_0000, 10_0000_0000_0000_0000_0000_0000_0000_0000);
+    println!("6_0000_0000_0000_0000_0000_0000_0000_0000 - 5_5000_0000_0000_0000_0000_0000_0000_0000 = {} (mod 10_0000_0000_0000_0000_0000_0000_0000_0000)", a_u128);
+    assert_eq!(a_u128, 5000_0000_0000_0000_0000_0000_0000_0000);
+
+    let b_u128 = small_uint_modular_sub_func(a_u128, 1_5000_0000_0000_0000_0000_0000_0000_0000, 10_0000_0000_0000_0000_0000_0000_0000_0000);
+    println!("{} - 1_5000_0000_0000_0000_0000_0000_0000_0000 = {}",a_u128, b_u128);
+    assert_eq!(b_u128, 9_0000_0000_0000_0000_0000_0000_0000_0000);
+
+    // Example for usize
+    let a_usize = small_uint_modular_sub_func(6_0000_0000_0000_0000_usize, 5_5000_0000_0000_0000, 10_0000_0000_0000_0000);
+    println!("6_0000_0000_0000_0000 - 5_5000_0000_0000_0000 = {} (mod 10_0000_0000_0000_0000)", a_usize);
+    assert_eq!(a_usize, 5000_0000_0000_0000);
+
+    let b_usize = small_uint_modular_sub_func(a_usize, 1_5000_0000_0000_0000, 10_0000_0000_0000_0000);
+    println!("{} - 1_5000_0000_0000_0000 = {} (mod 10_0000_0000_0000_0000)", a_usize, b_usize);
+    assert_eq!(b_usize, 9_0000_0000_0000_0000);
+    println!("--------------------------------------");
+}
+
+fn small_uint_modular_sub_func<T: cryptocol::number::SmallUInt>(lhs: T, rhs: T, modulo: T) -> T
+{
+    lhs.modular_sub(rhs, modulo)
+}
+
 fn small_uint_mul_main()
 {
+    small_uint_carrying_mul();
+    small_uint_widening_mul();
     small_uint_wrapping_mul();
     small_uint_overflowing_mul();
     small_uint_checked_mul();
     small_uint_unchecked_mul();
     small_uint_saturating_mul();    
 }
+fn small_uint_carrying_mul()
+{
+    println!("small_uint_carrying_mul()");
+    // Example for u8
+    use cryptocol::number::IntUnion;
+    // a_u16: u16 === (a_high_u8, a_low_u8) == (100_u8, 101_u8) == 25701_u16
+    let a_high_u8 = 100_u8;
+    let a_low_u8 = 101_u8;
+    // b_u16: u16 === (b_high_u8, b_low_u8) == (100_u8, 200_u8) == 25800_u16
+    let b_high_u8 = 100_u8;
+    let b_low_u8 = 200_u8;
 
+    // (100_u8, 101_u8) X (100_u8, 200_u8) == 25701_u16 X 25800_u16 == 663085800_u32
+    //
+    //                  (100_u8, 101_u8) == 25701_u16
+    // X                (100_u8, 200_u8) == 25800_u16
+    // ---------------------------------
+    //                  ( 78_u8, 232_u8)
+    //          ( 78_u8,  32_u8)
+    //          ( 39_u8, 116_u8)
+    // + (39_u8,  16_u8)
+    // ---------------------------------
+    //   (39_u8, 133_u8, 226_u8, 232_u8) == 663085800_u32
+    let (c_lower_u8, c_low_u8, c_high_u8, c_higher_u8 ) = small_uint_carrying_mul_func(a_low_u8, a_high_u8, b_low_u8, b_high_u8);
+    println!("{}-{}-{}-{}", c_higher_u8, c_high_u8, c_low_u8, c_lower_u8);
+    assert_eq!(c_higher_u8, 39);
+    assert_eq!(c_high_u8, 133);
+    assert_eq!(c_low_u8, 226);
+    assert_eq!(c_lower_u8, 232);
+
+    let a = IntUnion::new_with_ubytes([a_low_u8, a_high_u8, 0, 0]);
+    let b = IntUnion::new_with_ubytes([b_low_u8, b_high_u8, 0, 0]);
+    let c = a * b;
+    println!("{} * {} = {}", a.get(), b.get(), c.get());
+    assert_eq!(c_higher_u8, c.get_ubyte_(3));
+    assert_eq!(c_high_u8, c.get_ubyte_(2));
+    assert_eq!(c_low_u8, c.get_ubyte_(1));
+    assert_eq!(c_lower_u8, c.get_ubyte_(0));
+
+    // Example for u16
+    use cryptocol::number::LongUnion;
+    // a_u32: u32 === (a_high_u16, a_low_u16) == (10000_u16, 10100_u16) == 257010000_u32
+    let a_high_u16 = 10000_u16;
+    let a_low_u16 = 10100_u16;
+    // b_u32: u32 === (b_high_u16, b_low_u16) == (10000_u16, 20000_u16) == 258000000_u32
+    let b_high_u16 = 10000_u16;
+    let b_low_u16 = 20000_u16;
+    
+    // (10000_u16, 10100_u16) X (10000_u16, 20000_u16) == 257010000_u32 X 258000000_u32 == 66308580000000000_u32
+    //
+    //                        (10000_u16, 10100_u16) == 655370100_u32
+    // X                      (10000_u16, 20000_u16) == 655380000_u32
+    // ---------------------------------------------
+    //                       (  3082_u16, 18048_u16)
+    //            (  3051_u16, 49664_u16)
+    //            (  1541_u16,  9024_u16)
+    // + (1525_u16, 57600_u16)
+    // ---------------------------------
+    //   (1525_u16, 62192_u16, 61770_u16, 18048_u16) == 429516456138000000_u64
+    let (c_lower_u16, c_low_u16, c_high_u16, c_higher_u16 ) = small_uint_carrying_mul_func(a_low_u16, a_high_u16, b_low_u16, b_high_u16);
+    println!("{}-{}-{}-{}", c_higher_u16, c_high_u16, c_low_u16, c_lower_u16);
+    assert_eq!(c_higher_u16, 1525);
+    assert_eq!(c_high_u16, 62192);
+    assert_eq!(c_low_u16, 61770);
+    assert_eq!(c_lower_u16, 18048);
+
+    let a = LongUnion::new_with_ushorts([a_low_u16, a_high_u16, 0, 0]);
+    let b = LongUnion::new_with_ushorts([b_low_u16, b_high_u16, 0, 0]);
+    let c = a * b;
+    println!("{} * {} = {}", a.get(), b.get(), c.get());
+    assert_eq!(c_higher_u16, c.get_ushort_(3));
+    assert_eq!(c_high_u16, c.get_ushort_(2));
+    assert_eq!(c_low_u16, c.get_ushort_(1));
+    assert_eq!(c_lower_u16, c.get_ushort_(0));
+    println!("--------------------------------------");
+}
+
+fn small_uint_carrying_mul_func<T: cryptocol::number::SmallUInt>(lhs_low: T, lhs_high: T, rhs_low: T, rhs_high: T) -> (T, T, T, T)
+{
+    let (c_low, c_high ) = rhs_low.carrying_mul(lhs_low, T::zero());
+    let (d_low, d_high ) = rhs_low.carrying_mul(lhs_high, c_high);
+    let (mut e_low, e_high ) = rhs_high.carrying_mul(lhs_low, T::zero());
+    let (mut f_low, mut f_high ) = rhs_high.carrying_mul(lhs_high, e_high);
+
+    let mut overflow: bool;
+    (e_low, overflow) = e_low.overflowing_add(d_low);
+    if overflow
+        { (f_low, overflow) = f_low.overflowing_add(T::one()); }
+    if overflow
+        { f_high = f_high.wrapping_add(T::one()); }
+
+    (f_low, overflow) = f_low.overflowing_add(d_high);
+    if overflow
+        { f_high = f_high.wrapping_add(T::one()); }
+    (c_low, e_low, f_low, f_high)
+}
+
+fn small_uint_widening_mul()
+{
+    println!("small_uint_widening_mul()");
+    // Example for u8
+    use cryptocol::number::IntUnion;
+    // a_u16: u16 === (a_high_u8, a_low_u8) == (100_u8, 101_u8) == 25701_u16
+    let a_high_u8 = 100_u8;
+    let a_low_u8 = 101_u8;
+    // b_u16: u16 === (b_high_u8, b_low_u8) == (100_u8, 200_u8) == 25800_u16
+    let b_high_u8 = 100_u8;
+    let b_low_u8 = 200_u8;
+
+    // (100_u8, 101_u8) X (100_u8, 200_u8) == 25701_u16 X 25800_u16 == 663085800_u32
+    //
+    //                  (100_u8, 101_u8) == 25701_u16
+    // X                (100_u8, 200_u8) == 25800_u16
+    // ---------------------------------
+    //                  ( 78_u8, 232_u8)
+    //          ( 78_u8,  32_u8)
+    //          ( 39_u8, 116_u8)
+    // + (39_u8,  16_u8)
+    // ---------------------------------
+    //   (39_u8, 133_u8, 226_u8, 232_u8) == 663085800_u32
+    let (c_lower_u8, c_low_u8, c_high_u8, c_higher_u8 ) = small_uint_widening_mul_func(a_low_u8, a_high_u8, b_low_u8, b_high_u8);
+    println!("{}-{}-{}-{}", c_higher_u8, c_high_u8, c_low_u8, c_lower_u8);
+    assert_eq!(c_higher_u8, 39);
+    assert_eq!(c_high_u8, 133);
+    assert_eq!(c_low_u8, 226);
+    assert_eq!(c_lower_u8, 232);
+
+    let a = IntUnion::new_with_ubytes([a_low_u8, a_high_u8, 0, 0]);
+    let b = IntUnion::new_with_ubytes([b_low_u8, b_high_u8, 0, 0]);
+    let c = a * b;
+    println!("{} * {} = {}", a.get(), b.get(), c.get());
+    assert_eq!(c_higher_u8, c.get_ubyte_(3));
+    assert_eq!(c_high_u8, c.get_ubyte_(2));
+    assert_eq!(c_low_u8, c.get_ubyte_(1));
+    assert_eq!(c_lower_u8, c.get_ubyte_(0));
+
+    // Example for u16
+    use cryptocol::number::LongUnion;
+    // a_u32: u32 === (a_high_u16, a_low_u16) == (10000_u16, 10100_u16) == 257010000_u32
+    let a_high_u16 = 10000_u16;
+    let a_low_u16 = 10100_u16;
+    // b_u32: u32 === (b_high_u16, b_low_u16) == (10000_u16, 20000_u16) == 258000000_u32
+    let b_high_u16 = 10000_u16;
+    let b_low_u16 = 20000_u16;
+    
+    // (10000_u16, 10100_u16) X (10000_u16, 20000_u16) == 257010000_u32 X 258000000_u32 == 66308580000000000_u32
+    //
+    //                        (10000_u16, 10100_u16) == 655370100_u32
+    // X                      (10000_u16, 20000_u16) == 655380000_u32
+    // ---------------------------------------------
+    //                       (  3082_u16, 18048_u16)
+    //            (  3051_u16, 49664_u16)
+    //            (  1541_u16,  9024_u16)
+    // + (1525_u16, 57600_u16)
+    // ---------------------------------
+    //   (1525_u16, 62192_u16, 61770_u16, 18048_u16) == 429516456138000000_u64
+    let (c_lower_u16, c_low_u16, c_high_u16, c_higher_u16 ) = small_uint_widening_mul_func(a_low_u16, a_high_u16, b_low_u16, b_high_u16);
+    println!("{}-{}-{}-{}", c_higher_u16, c_high_u16, c_low_u16, c_lower_u16);
+    assert_eq!(c_higher_u16, 1525);
+    assert_eq!(c_high_u16, 62192);
+    assert_eq!(c_low_u16, 61770);
+    assert_eq!(c_lower_u16, 18048);
+
+    let a = LongUnion::new_with_ushorts([a_low_u16, a_high_u16, 0, 0]);
+    let b = LongUnion::new_with_ushorts([b_low_u16, b_high_u16, 0, 0]);
+    let c = a * b;
+    println!("{} * {} = {}", a.get(), b.get(), c.get());
+    assert_eq!(c_higher_u16, c.get_ushort_(3));
+    assert_eq!(c_high_u16, c.get_ushort_(2));
+    assert_eq!(c_low_u16, c.get_ushort_(1));
+    assert_eq!(c_lower_u16, c.get_ushort_(0));
+    println!("--------------------------------------");
+}
+
+fn small_uint_widening_mul_func<T: cryptocol::number::SmallUInt>(lhs_low: T, lhs_high: T, rhs_low: T, rhs_high: T) -> (T, T, T, T)
+{
+    let (c_low, c_high ) = rhs_low.widening_mul(lhs_low);
+    let (d_low, d_high ) = rhs_low.widening_mul(lhs_high);
+    let (mut e_low, e_high ) = rhs_high.widening_mul(lhs_low);
+    let (mut f_low, mut f_high ) = rhs_high.widening_mul(lhs_high);
+
+    let mut overflow: bool;
+    (e_low, overflow) = e_low.overflowing_add(d_low);
+    if overflow
+        { (f_low, overflow) = f_low.overflowing_add(T::one()); }
+    if overflow
+        { f_high = f_high.wrapping_add(T::one()); }
+    (e_low, overflow) = e_low.overflowing_add(c_high);
+    if overflow
+        { (f_low, overflow) = f_low.overflowing_add(T::one()); }
+    if overflow
+        { f_high = f_high.wrapping_add(T::one()); }
+
+    (f_low, overflow) = f_low.overflowing_add(d_high);
+    if overflow
+        { f_high = f_high.wrapping_add(T::one()); }
+    (f_low, overflow) = f_low.overflowing_add(e_high);
+    if overflow
+        { f_high = f_high.wrapping_add(T::one()); }
+    (c_low, e_low, f_low, f_high)
+}
 
 fn small_uint_wrapping_mul()
 {
