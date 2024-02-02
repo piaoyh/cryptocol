@@ -5577,7 +5577,8 @@ pub trait SmallUInt: Copy + Clone + Sized //+ Display + Debug + ToString
     /// for the primitive type `usize`, read [here](https://doc.rust-lang.org/core/primitive.usize.html#method.unchecked_mul).
     fn unchecked_mul(self, rhs: Self) -> Self;
 
-    /// Computes self * rhs, saturating at the numeric bounds
+    // fn saturating_mul(self, rhs: Self) -> Self;
+    /// Computes `self` * `rhs`, saturating at the numeric bounds
     /// instead of overflowing.
     /// 
     /// # Features
@@ -5586,10 +5587,133 @@ pub trait SmallUInt: Copy + Clone + Sized //+ Display + Debug + ToString
     /// It multiplies two numbers with saturating integer multiplication
     /// 
     /// # Output
-    /// It returns the smaller one of self * rhs and the maxium
+    /// It returns the smaller one of `self` * `rhs` and the maxium
     /// of the type of `Self`.
     /// 
-    /// # Example
+    /// # Example 1 for u8
+    /// ```
+    /// use cryptocol::number::SmallUInt;
+    /// fn main()
+    /// {
+    ///     let a_u8 = func(u8::MAX / 3, 2_u8);
+    ///     println!("{} * 2 = {}", u8::MAX / 3, a_u8);
+    ///     assert_eq!(a_u8, 170_u8);
+    /// 
+    ///     let b_u8 = func(a_u8, 2_u8);
+    ///     println!("{} * 2 = {}", a_u8, b_u8);
+    ///     assert_eq!(b_u8, u8::MAX);
+    /// }
+    /// 
+    /// fn func<T: SmallUInt>(lhs: T, rhs: T) -> T
+    /// {
+    ///     lhs.saturating_mul(rhs)
+    /// }
+    /// ```
+    /// 
+    /// # Example 2 for u16
+    /// ```
+    /// use cryptocol::number::SmallUInt;
+    /// fn main()
+    /// {
+    ///     let a_u16 = func(u16::MAX / 3, 2_u16);
+    ///     println!("{} * 2 = {}", u16::MAX / 3, a_u16);
+    ///     assert_eq!(a_u16, 43690_u16);
+    /// 
+    ///     let b_u16 = func(a_u16, 2_u16);
+    ///     println!("{} * 2 = {}", a_u16, b_u16);
+    ///     assert_eq!(b_u16, u16::MAX);
+    /// }
+    /// 
+    /// fn func<T: SmallUInt>(lhs: T, rhs: T) -> T
+    /// {
+    ///     lhs.saturating_mul(rhs)
+    /// }
+    /// ```
+    /// 
+    /// # Example 3 for u32
+    /// ```
+    /// use cryptocol::number::SmallUInt;
+    /// fn main()
+    /// {
+    ///     let a_u32 = func(u32::MAX / 3, 2_u32);
+    ///     println!("{} * 2 = {}", u32::MAX / 3, a_u32);
+    ///     assert_eq!(a_u32, 2863311530_u32);
+    /// 
+    ///     let b_u32 = func(a_u32, 2_u32);
+    ///     println!("{} * 2 = {}", a_u32, b_u32);
+    ///     assert_eq!(b_u32, u32::MAX);
+    /// }
+    /// 
+    /// fn func<T: SmallUInt>(lhs: T, rhs: T) -> T
+    /// {
+    ///     lhs.saturating_mul(rhs)
+    /// }
+    /// ```
+    /// 
+    /// # Example 4 for u64
+    /// ```
+    /// use cryptocol::number::SmallUInt;
+    /// fn main()
+    /// {
+    ///     let a_u64 = func(u64::MAX / 3, 2_u64);
+    ///     println!("{} * 2 = {}", u64::MAX / 3, a_u64);
+    ///     assert_eq!(a_u64, 12297829382473034410_u64);
+    /// 
+    ///     let b_u64 = func(a_u64, 2_u64);
+    ///     println!("{} * 2 = {}", a_u64, b_u64);
+    ///     assert_eq!(b_u64, u64::MAX);
+    /// }
+    /// 
+    /// fn func<T: SmallUInt>(lhs: T, rhs: T) -> T
+    /// {
+    ///     lhs.saturating_mul(rhs)
+    /// }
+    /// ```
+    /// 
+    /// # Example 5 for u128
+    /// ```
+    /// use cryptocol::number::SmallUInt;
+    /// fn main()
+    /// {
+    ///     let a_u128 = func(u128::MAX / 3, 2_u128);
+    ///     println!("{} * 2 = {}", u128::MAX / 3, a_u128);
+    ///     assert_eq!(a_u128, 226854911280625642308916404954512140970_u128);
+    /// 
+    ///     let b_u128 = func(a_u128, 2_u128);
+    ///     println!("{} * 2 = {}",a_u128, b_u128);
+    ///     assert_eq!(b_u128, u128::MAX);
+    /// }
+    /// 
+    /// fn func<T: SmallUInt>(lhs: T, rhs: T) -> T
+    /// {
+    ///     lhs.saturating_mul(rhs)
+    /// }
+    /// ```
+    /// 
+    /// # Example 6 for usize
+    /// ```
+    /// use cryptocol::number::SmallUInt;
+    /// fn main()
+    /// {
+    ///     let a_usize = func(usize::MAX / 3, 2_usize);
+    ///     println!("{} * 2 = {}", usize::MAX / 3, a_usize);
+    ///     assert_eq!(a_usize, 12297829382473034410_usize);
+    /// 
+    ///     let b_usize = func(a_usize, 2_usize);
+    ///     println!("{} * 2 = {}", a_usize, b_usize);
+    ///     assert_eq!(b_usize, usize::MAX);
+    /// }
+    /// 
+    /// fn func<T: SmallUInt>(lhs: T, rhs: T) -> T
+    /// {
+    ///     lhs.saturating_mul(rhs)
+    /// }
+    /// ```
+    /// You can use the above generic function `func<>()` for all
+    /// SmallUInt-supported data types in a same scope.
+    /// Look into the following example.
+    /// 
+    /// # Collective Example
     /// ```
     /// use cryptocol::number::SmallUInt;
     /// fn main()
@@ -5648,7 +5772,6 @@ pub trait SmallUInt: Copy + Clone + Sized //+ Display + Debug + ToString
     ///     lhs.saturating_mul(rhs)
     /// }    
     /// ```
-    /// 
     /// # Plagiarism in descryption
     /// It calls the method saturating_mul() of implementation of the primitive
     /// unsigned integer types such as`u8`, `u16`, `u32`, `u64`, `u128` and
@@ -5695,9 +5818,203 @@ pub trait SmallUInt: Copy + Clone + Sized //+ Display + Debug + ToString
     /// If `rhs` is bigger than `u128`, the method `modular_mul()` is proper
     /// rather than this method.
     /// 
-    /// # Example
+    /// You can use the above generic function `func<>()` for all
+    /// SmallUInt-supported data types in a same scope.
+    /// Look into the following example.
+    /// 
+    /// # Example 1 for u8
     /// ```
-    /// // Todo
+    /// use cryptocol::number::SmallUInt;
+    /// fn small_uint_modular_mul()
+    /// {
+    ///     let a_u8 = 90_u8;
+    ///     let b_u8 = func(a_u8, 2, 200);
+    ///     println!("{} * 2 = {} (mod 200)", a_u8, b_u8);
+    ///     assert_eq!(b_u8, 180_u8);
+    /// 
+    ///     let c_u8 = func(b_u8, 2, 200);
+    ///     println!("{} * 2 = {} (mod 200)", b_u8, c_u8);
+    ///     assert_eq!(c_u8, 160_u8);
+    /// }
+    /// 
+    /// fn func<T: SmallUInt>(lhs: T, rhs: T, modulo: T) -> T
+    /// {
+    ///     lhs.modular_mul(rhs, modulo)
+    /// }
+    /// ```
+    /// 
+    /// # Example 2 for u16
+    /// ```
+    /// use cryptocol::number::SmallUInt;
+    /// fn small_uint_modular_mul()
+    /// {
+    ///     let a_u16 = 9000_u16;
+    ///     let b_u16 = func(a_u16, 2, 20000);
+    ///     println!("{} * 2 = {}", a_u16, b_u16);
+    ///     assert_eq!(b_u16, 18000_u16);
+    /// 
+    ///     let c_u16 = func(b_u16, 2, 20000);
+    ///     println!("{} * 2 = {}", b_u16, c_u16);
+    ///     assert_eq!(c_u16, 16000_u16);
+    /// }
+    /// 
+    /// fn func<T: SmallUInt>(lhs: T, rhs: T, modulo: T) -> T
+    /// {
+    ///     lhs.modular_mul(rhs, modulo)
+    /// }
+    /// ```
+    /// 
+    /// # Example 3 for u32
+    /// ```
+    /// use cryptocol::number::SmallUInt;
+    /// fn small_uint_modular_mul()
+    /// {
+    ///     let a_u32 = 9000000_u32;
+    ///     let b_u32 = func(a_u32, 2, 20000000);
+    ///     println!("{} * 2 = {}", a_u32, b_u32);
+    ///     assert_eq!(b_u32, 18000000_u32);
+    /// 
+    ///     let c_u32 = func(b_u32, 2, 20000000);
+    ///     println!("{} * 2 = {}", b_u32, c_u32);
+    ///     assert_eq!(c_u32, 16000000_u32);
+    /// }
+    /// 
+    /// fn func<T: SmallUInt>(lhs: T, rhs: T, modulo: T) -> T
+    /// {
+    ///     lhs.modular_mul(rhs, modulo)
+    /// }
+    /// ```
+    /// 
+    /// # Example 4 for u64
+    /// ```
+    /// use cryptocol::number::SmallUInt;
+    /// fn small_uint_modular_mul()
+    /// {
+    ///     let a_u64 = 900000000000_u64;
+    ///     let b_u64 = func(a_u64, 2, 2000000000000);
+    ///     println!("{} * 2 = {}", a_u64, b_u64);
+    ///     assert_eq!(b_u64, 1800000000000_u64);
+    /// 
+    ///     let c_u64 = func(b_u64, 2, 2000000000000);
+    ///     println!("{} * 2 = {}", b_u64, c_u64);
+    ///     assert_eq!(c_u64, 1600000000000_u64);
+    /// }
+    /// 
+    /// fn func<T: SmallUInt>(lhs: T, rhs: T, modulo: T) -> T
+    /// {
+    ///     lhs.modular_mul(rhs, modulo)
+    /// }
+    /// ```
+    /// 
+    /// # Example 5 for u128
+    /// ```
+    /// use cryptocol::number::SmallUInt;
+    /// fn small_uint_modular_mul()
+    /// {
+    ///     let a_u128 = 90000000000000000000000_u128;
+    ///     let b_u128 = func(a_u128, 2, 200000000000000000000000);
+    ///     println!("{} * 2 = {}", a_u128, b_u128);
+    ///     assert_eq!(b_u128, 180000000000000000000000_u128);
+    /// 
+    ///     let c_u128 = func(b_u128, 2, 200000000000000000000000);
+    ///     println!("{} * 2 = {}", b_u128, c_u128);
+    ///     assert_eq!(c_u128, 160000000000000000000000_u128);
+    /// }
+    /// 
+    /// fn func<T: SmallUInt>(lhs: T, rhs: T, modulo: T) -> T
+    /// {
+    ///     lhs.modular_mul(rhs, modulo)
+    /// }
+    /// ```
+    /// 
+    /// # Example 6 for usize
+    /// ```
+    /// use cryptocol::number::SmallUInt;
+    /// fn small_uint_modular_mul()
+    /// {
+    ///     let a_usize = 900000000000_usize;
+    ///     let b_usize = func(a_usize, 2, 2000000000000);
+    ///     println!("{} * 2 = {}", a_usize, b_usize);
+    ///     assert_eq!(b_usize, 1800000000000_usize);
+    /// 
+    ///     let c_usize = func(b_usize, 2, 2000000000000);
+    ///     println!("{} * 2 = {}", b_u64, c_u64);
+    ///     assert_eq!(c_usize, 1600000000000_usize);
+    /// }
+    /// 
+    /// fn func<T: SmallUInt>(lhs: T, rhs: T, modulo: T) -> T
+    /// {
+    ///     lhs.modular_mul(rhs, modulo)
+    /// }
+    /// ```
+    /// You can use the above generic function `func<>()` for all
+    /// SmallUInt-supported data types in a same scope.
+    /// Look into the following example.
+    /// 
+    /// # Collective Example
+    /// ```
+    /// use cryptocol::number::SmallUInt;
+    /// fn small_uint_modular_mul()
+    /// {
+    ///     let a_u8 = 90_u8;
+    ///     let b_u8 = func(a_u8, 2, 200);
+    ///     println!("{} * 2 = {} (mod 200)", a_u8, b_u8);
+    ///     assert_eq!(b_u8, 180_u8);
+    /// 
+    ///     let c_u8 = func(b_u8, 2, 200);
+    ///     println!("{} * 2 = {} (mod 200)", b_u8, c_u8);
+    ///     assert_eq!(c_u8, 160_u8);
+    /// 
+    ///     let a_u16 = 9000_u16;
+    ///     let b_u16 = func(a_u16, 2, 20000);
+    ///     println!("{} * 2 = {}", a_u16, b_u16);
+    ///     assert_eq!(b_u16, 18000_u16);
+    /// 
+    ///     let c_u16 = func(b_u16, 2, 20000);
+    ///     println!("{} * 2 = {}", b_u16, c_u16);
+    ///     assert_eq!(c_u16, 16000_u16);
+    /// 
+    ///     let a_u32 = 9000000_u32;
+    ///     let b_u32 = func(a_u32, 2, 20000000);
+    ///     println!("{} * 2 = {}", a_u32, b_u32);
+    ///     assert_eq!(b_u32, 18000000_u32);
+    /// 
+    ///     let c_u32 = func(b_u32, 2, 20000000);
+    ///     println!("{} * 2 = {}", b_u32, c_u32);
+    ///     assert_eq!(c_u32, 16000000_u32);
+    /// 
+    ///     let a_u64 = 900000000000_u64;
+    ///     let b_u64 = func(a_u64, 2, 2000000000000);
+    ///     println!("{} * 2 = {}", a_u64, b_u64);
+    ///     assert_eq!(b_u64, 1800000000000_u64);
+    /// 
+    ///     let c_u64 = func(b_u64, 2, 2000000000000);
+    ///     println!("{} * 2 = {}", b_u64, c_u64);
+    ///     assert_eq!(c_u64, 1600000000000_u64);
+    /// 
+    ///     let a_u128 = 90000000000000000000000_u128;
+    ///     let b_u128 = func(a_u128, 2, 200000000000000000000000);
+    ///     println!("{} * 2 = {}", a_u128, b_u128);
+    ///     assert_eq!(b_u128, 180000000000000000000000_u128);
+    /// 
+    ///     let c_u128 = func(b_u128, 2, 200000000000000000000000);
+    ///     println!("{} * 2 = {}", b_u128, c_u128);
+    ///     assert_eq!(c_u128, 160000000000000000000000_u128);
+    /// 
+    ///     let a_usize = 900000000000_usize;
+    ///     let b_usize = func(a_usize, 2, 2000000000000);
+    ///     println!("{} * 2 = {}", a_usize, b_usize);
+    ///     assert_eq!(b_usize, 1800000000000_usize);
+    /// 
+    ///     let c_usize = func(b_usize, 2, 2000000000000);
+    ///     println!("{} * 2 = {}", b_u64, c_u64);
+    ///     assert_eq!(c_usize, 1600000000000_usize);
+    /// }
+    /// 
+    /// fn func<T: SmallUInt>(lhs: T, rhs: T, modulo: T) -> T
+    /// {
+    ///     lhs.modular_mul(rhs, modulo)
+    /// }
     /// ```
     /// 
     /// # Big-endian issue
@@ -5709,7 +6026,8 @@ pub trait SmallUInt: Copy + Clone + Sized //+ Display + Debug + ToString
 
     /***** DIVISION *****/
 
-    /// Computes self / rhs.
+    // fn wrapping_div(self, rhs: Self) -> Self
+    /// Computes `self`/ `rhs`.
     /// 
     /// # Features
     /// __The trait SmallUInt is meaningful when you use it in generic context.
@@ -5719,12 +6037,130 @@ pub trait SmallUInt: Copy + Clone + Sized //+ Display + Debug + ToString
     /// operations are accounted for in the wrapping operations.
     /// 
     /// # Output
-    /// It returns the self / rhs in the type of `Self`.
+    /// It returns the `self` / `rhs` in the type of `Self`.
     /// 
     /// # Panics
     /// It will panic if rhs is zero.
     /// 
-    /// # Example
+    /// # Example 1 for u8
+    /// ```
+    /// use cryptocol::number::SmallUInt;
+    /// fn main()
+    /// {
+    ///     let a_u8 = func(u8::MAX / 3, 2_u8);
+    ///     println!("{} / 2 = {}", u8::MAX / 3, a_u8);
+    ///     assert_eq!(a_u8, 42_u8);
+    /// 
+    ///     // It will panic.
+    ///     // let a_panic = func(u8::MAX / 3, 0_u8);
+    /// }
+    /// 
+    /// fn func<T: SmallUInt>(lhs: T, rhs: T) -> T
+    /// {
+    ///     lhs.wrapping_div(rhs)
+    /// }
+    /// ```
+    /// 
+    /// # Example 2 for u16
+    /// ```
+    /// use cryptocol::number::SmallUInt;
+    /// fn main()
+    /// {
+    ///     let a_u16 = func(u16::MAX / 3, 2_u16);
+    ///     println!("{} / 2 = {}", u16::MAX / 3, a_u16);
+    ///     assert_eq!(a_u16, 10922_u16);
+    /// 
+    ///     // It will panic.
+    ///     // let a_panic = func(u16::MAX / 3, 0_u16);
+    /// }
+    /// 
+    /// fn func<T: SmallUInt>(lhs: T, rhs: T) -> T
+    /// {
+    ///     lhs.wrapping_div(rhs)
+    /// }
+    /// ```
+    /// 
+    /// # Example 3 for u32
+    /// ```
+    /// use cryptocol::number::SmallUInt;
+    /// fn main()
+    /// {
+    ///     let a_u32 = func(u32::MAX / 3, 2_u32);
+    ///     println!("{} / 2 = {}", u32::MAX / 3, a_u32);
+    ///     assert_eq!(a_u32, 715827882_u32);
+    /// 
+    ///     // It will panic.
+    ///     // let a_panic = func(u32::MAX / 3, 0_u32);
+    /// }
+    /// 
+    /// fn func<T: SmallUInt>(lhs: T, rhs: T) -> T
+    /// {
+    ///     lhs.wrapping_div(rhs)
+    /// }
+    /// ```
+    /// 
+    /// # Example 4 for u64
+    /// ```
+    /// use cryptocol::number::SmallUInt;
+    /// fn main()
+    /// {
+    ///     let a_u64 = func(u64::MAX / 3, 2_u64);
+    ///     println!("{} / 2 = {}", u64::MAX / 3, a_u64);
+    ///     assert_eq!(a_u64, 3074457345618258602_u64);
+    /// 
+    ///     // It will panic.
+    ///     // let a_panic = func(u64::MAX / 3, 0_u64);
+    /// }
+    /// 
+    /// fn func<T: SmallUInt>(lhs: T, rhs: T) -> T
+    /// {
+    ///     lhs.wrapping_div(rhs)
+    /// }
+    /// ```
+    /// 
+    /// # Example 5 for u128
+    /// ```
+    /// use cryptocol::number::SmallUInt;
+    /// fn main()
+    /// {
+    ///     let a_u128 = func(u128::MAX / 3, 2_u128);
+    ///     println!("{} / 2 = {}", u128::MAX / 3, a_u128);
+    ///     assert_eq!(a_u128, 56713727820156410577229101238628035242_u128);
+    /// 
+    ///     // It will panic.
+    ///     // let a_panic = func(u128::MAX / 3, 0_u128);
+    /// }
+    /// 
+    /// fn func<T: SmallUInt>(lhs: T, rhs: T) -> T
+    /// {
+    ///     lhs.wrapping_div(rhs)
+    /// }
+    /// ```
+    /// 
+    /// # Example 6 for usize
+    /// ```
+    /// use cryptocol::number::SmallUInt;
+    /// fn main()
+    /// {
+    ///     let a_usize = func(usize::MAX / 3, 2_usize);
+    ///     println!("{} / 2 = {}", usize::MAX / 3, a_usize);
+    ///     assert_eq!(a_usize, 3074457345618258602_usize);
+    /// 
+    ///     // It will panic.
+    ///     // let a_panic = func(usize::MAX / 3, 0_usize);
+    /// }
+    /// 
+    /// fn func<T: SmallUInt>(lhs: T, rhs: T) -> T
+    /// {
+    ///     lhs.wrapping_div(rhs)
+    /// }
+    /// ```
+    /// 
+    /// You can use the above generic function `func<>()` for all
+    /// SmallUInt-supported data types in a same scope.
+    /// Look into the following example.
+    /// 
+    /// # Collective Example
     /// ```
     /// use cryptocol::number::SmallUInt;
     /// fn main()
@@ -5790,22 +6226,155 @@ pub trait SmallUInt: Copy + Clone + Sized //+ Display + Debug + ToString
     /// for the primitive type `usize`, read [here](https://doc.rust-lang.org/core/primitive.usize.html#method.wrapping_div).
     fn wrapping_div(self, rhs: Self) -> Self;
 
-    /// Calculates self / rhs.
+    // fn overflowing_div(self, rhs: Self) -> (Self, bool)
+    /// Calculates `self` / `rhs`.
     /// 
     /// # Features
     /// __The trait SmallUInt is meaningful when you use it in generic context.
     /// Otherwise, it is pretty hard to imagine its usability.__
-    /// It divides self by rhs.
+    /// It divides `self` by `rhs`.
     /// 
     /// # Output
     /// It returns a tuple of the quotient along with a boolean indicating
     /// whether an arithmetic overflow would occur. Note that for unsigned
-    /// integers overflow never occurs, so the second value is always false.
+    /// integers overflow never occurs, so the second value is always `false`.
     /// 
     /// # Panics
-    /// It will panic if rhs is zero.
+    /// It will panic if `rhs` is zero.
     /// 
-    /// # Example
+    /// # Example 1 for u8
+    /// ```
+    /// use cryptocol::number::SmallUInt;
+    /// fn main()
+    /// {
+    ///     let a_u8 = func(u8::MAX / 3, 2_u8);
+    ///     println!("{} * 2 = {}\nOverflow = {}", u8::MAX / 3, a_u8.0, a_u8.1);
+    ///     assert_eq!(a_u8.0, 170_u8);
+    ///     assert_eq!(a_u8.1, false);
+    /// 
+    ///     let b_u8 = func(a_u8.0, 2_u8);
+    ///     println!("{} * 2 = {}\nOverflow = {}", a_u8.0, b_u8.0, b_u8.1);
+    ///     assert_eq!(b_u8.0, 84_u8);
+    ///     assert_eq!(b_u8.1, true);
+    /// }
+    /// 
+    /// fn func<T: SmallUInt>(lhs: T, rhs: T) -> (T, bool)
+    /// {
+    ///     lhs.overflowing_div(rhs)
+    /// }
+    /// ```
+    /// 
+    /// # Example 2 for u16
+    /// ```
+    /// use cryptocol::number::SmallUInt;
+    /// fn main()
+    /// {
+    ///     let a_u16 = func(u16::MAX / 3, 2_u16);
+    ///     println!("{} * 2 = {}\nOverflow = {}", u16::MAX / 3, a_u16.0, a_u16.1);
+    ///     assert_eq!(a_u16.0, 43690_u16);
+    ///     assert_eq!(a_u16.1, false);
+    /// 
+    ///     let b_u16 = func(a_u16.0, 2_u16);
+    ///     println!("{} * 2 = {}\nOverflow = {}", a_u16.0, b_u16.0, b_u16.1);
+    ///     assert_eq!(b_u16.0, 21844_u16);
+    ///     assert_eq!(b_u16.1, true);
+    /// }
+    /// 
+    /// fn func<T: SmallUInt>(lhs: T, rhs: T) -> (T, bool)
+    /// {
+    ///     lhs.overflowing_div(rhs)
+    /// }
+    /// ```
+    /// 
+    /// # Example 3 for u32
+    /// ```
+    /// use cryptocol::number::SmallUInt;
+    /// fn main()
+    /// {
+    ///     let a_u32 = func(u32::MAX / 3, 2_u32);
+    ///     println!("{} * 2 = {}\nOverflow = {}", u32::MAX / 3, a_u32.0, a_u32.1);
+    ///     assert_eq!(a_u32.0, 2863311530_u32);
+    ///     assert_eq!(a_u32.1, false);
+    /// 
+    ///     let b_u32 = func(a_u32.0, 2_u32);
+    ///     println!("{} * 2 = {}\nOverflow = {}", a_u32.0, b_u32.0, b_u32.1);
+    ///     assert_eq!(b_u32.0, 1431655764_u32);
+    ///     assert_eq!(b_u32.1, true);
+    /// }
+    /// 
+    /// fn func<T: SmallUInt>(lhs: T, rhs: T) -> (T, bool)
+    /// {
+    ///     lhs.overflowing_div(rhs)
+    /// }
+    /// ```
+    /// 
+    /// # Example 4 for u64
+    /// ```
+    /// use cryptocol::number::SmallUInt;
+    /// fn main()
+    /// {
+    ///     let a_u64 = func(u64::MAX / 3, 2_u64);
+    ///     println!("{} * 2 = {}\nOverflow = {}", u64::MAX / 3, a_u64.0, a_u64.1);
+    ///     assert_eq!(a_u64.0, 12297829382473034410_u64);
+    ///     assert_eq!(a_u64.1, false);
+    /// 
+    ///     let b_u64 = func(a_u64.0, 2_u64);
+    ///     println!("{} * 2 = {}\nOverflow = {}", a_u64.0, b_u64.0, b_u64.1);
+    ///     assert_eq!(b_u64.0, 6148914691236517204_u64);
+    ///     assert_eq!(b_u64.1, true);
+    /// }
+    /// 
+    /// fn func<T: SmallUInt>(lhs: T, rhs: T) -> (T, bool)
+    /// {
+    ///     lhs.overflowing_div(rhs)
+    /// }
+    /// ```
+    /// 
+    /// # Example 5 for u128
+    /// ```
+    /// use cryptocol::number::SmallUInt;
+    /// fn main()
+    /// {
+    ///     let a_u128 = func(u128::MAX / 3, 2_u128);
+    ///     println!("{} * 2 = {}\nOverflow = {}", u128::MAX / 3, a_u128.0, a_u128.1);
+    ///     assert_eq!(a_u128.0, 226854911280625642308916404954512140970_u128);
+    ///     assert_eq!(a_u128.1, false);
+    /// 
+    ///     let b_u128 = func(a_u128.0, 2_u128);
+    ///     println!("{} * 2 = {}\nOverflow = {}", a_u128.0, b_u128.0, b_u128.1);
+    ///     assert_eq!(b_u128.0, 113427455640312821154458202477256070484_u128);
+    ///     assert_eq!(b_u128.1, true);
+    /// }
+    /// 
+    /// fn func<T: SmallUInt>(lhs: T, rhs: T) -> (T, bool)
+    /// {
+    ///     lhs.overflowing_div(rhs)
+    /// }
+    /// ```
+    /// 
+    /// # Example 6 for u128
+    /// ```
+    /// use cryptocol::number::SmallUInt;
+    /// fn main()
+    /// {
+    ///     let a_usize = func(usize::MAX / 3, 2_usize);
+    ///     println!("{} * 2 = {}\nOverflow = {}", usize::MAX / 3, a_usize.0, a_usize.1);
+    ///     assert_eq!(a_usize.0, 12297829382473034410_usize);
+    ///     assert_eq!(a_usize.1, false);
+    /// 
+    ///     let b_usize = func(a_usize.0, 2_usize);
+    ///     println!("{} * 2 = {}\nOverflow = {}", a_usize.0, b_usize.0, b_usize.1);
+    ///     assert_eq!(b_usize.0, 6148914691236517204_usize);
+    ///     assert_eq!(b_usize.1, true);
+    /// }
+    /// 
+    /// fn func<T: SmallUInt>(lhs: T, rhs: T) -> (T, bool)
+    /// {
+    ///     lhs.overflowing_div(rhs)
+    /// }
+    /// ```
+    /// 
+    /// # Collective Example
     /// ```
     /// use cryptocol::number::SmallUInt;
     /// fn main()
@@ -5905,22 +6474,23 @@ pub trait SmallUInt: Copy + Clone + Sized //+ Display + Debug + ToString
     /// for the primitive type `usize`, read [here](https://doc.rust-lang.org/core/primitive.usize.html#method.overflowing_div).
     fn overflowing_div(self, rhs: Self) -> (Self, bool);
 
-    /// Computes self / rhs.
+    // fn checked_div(self, rhs: Self) -> Option<Self>;
+    /// Computes `self` / `rhs`.
     /// 
     /// # Feature
     /// __The trait SmallUInt is meaningful when you use it in generic context.
     /// Otherwise, it is pretty hard to imagine its usability.__
     /// 
     /// # Output
-    /// It returns self / rhs in the type `Self` wrapped by `Some`
+    /// It returns `self` / `rhs` in the type `Self` wrapped by `Some`
     /// of enum `Option`. And, it returns `None` if rhs is zero.
     /// 
-    /// # Example
+    /// # Example 1 for u8
     /// ```
     /// use cryptocol::number::SmallUInt;
     /// fn main()
     /// {
-    ///     let a_u8 = UInt_checked_mul___func(u8::MAX / 3, 2_u8);
+    ///     let a_u8 = func(u8::MAX / 3, 2_u8);
     ///     match a_u8
     ///     {
     ///         Some(a) => {
@@ -5933,7 +6503,7 @@ pub trait SmallUInt: Copy + Clone + Sized //+ Display + Debug + ToString
     ///             },
     ///     }
     /// 
-    ///     let b_u8 = UInt_checked_mul___func(u8::MAX / 3, 0_u8);
+    ///     let b_u8 = func(u8::MAX / 3, 0_u8);
     ///     match b_u8
     ///     {
     ///         Some(b) => { println!("{} / 2 = {}", u8::MAX / 3, b); },
@@ -5942,8 +6512,20 @@ pub trait SmallUInt: Copy + Clone + Sized //+ Display + Debug + ToString
     ///                 assert_eq!(b_u8, None);
     ///             },
     ///     }
+    /// }
     /// 
-    ///     let a_u16 = UInt_checked_mul___func(u16::MAX / 3, 2_u16);
+    /// fn func<T: SmallUInt>(lhs: T, rhs: T) -> Option<T>
+    /// {
+    ///     lhs.checked_div(rhs)
+    /// }
+    /// ```
+    /// 
+    /// # Example 2 for u16
+    /// ```
+    /// use cryptocol::number::SmallUInt;
+    /// fn main()
+    /// {
+    ///     let a_u16 = func(u16::MAX / 3, 2_u16);
     ///     match a_u16
     ///     {
     ///         Some(a) => {
@@ -5956,7 +6538,7 @@ pub trait SmallUInt: Copy + Clone + Sized //+ Display + Debug + ToString
     ///             },
     ///     }
     /// 
-    ///     let b_u16 = UInt_checked_mul___func(u16::MAX / 3, 0_u16);
+    ///     let b_u16 = func(u16::MAX / 3, 0_u16);
     ///     match b_u16
     ///     {
     ///         Some(b) => { println!("{} / 2 = {}", u16::MAX / 3, b); },
@@ -5965,8 +6547,20 @@ pub trait SmallUInt: Copy + Clone + Sized //+ Display + Debug + ToString
     ///                 assert_eq!(b_u16, None);
     ///             },
     ///     }
+    /// }
     /// 
-    ///     let a_u32 = UInt_checked_mul___func(u32::MAX / 3, 2_u32);
+    /// fn func<T: SmallUInt>(lhs: T, rhs: T) -> Option<T>
+    /// {
+    ///     lhs.checked_div(rhs)
+    /// }
+    /// ```
+    /// 
+    /// # Example 3 for u32
+    /// ```
+    /// use cryptocol::number::SmallUInt;
+    /// fn main()
+    /// {
+    ///     let a_u32 = func(u32::MAX / 3, 2_u32);
     ///     match a_u32
     ///     {
     ///         Some(a) => {
@@ -5979,7 +6573,7 @@ pub trait SmallUInt: Copy + Clone + Sized //+ Display + Debug + ToString
     ///             },
     ///     }
     /// 
-    ///     let b_u32 = UInt_checked_mul___func(u32::MAX / 3, 0_u32);
+    ///     let b_u32 = func(u32::MAX / 3, 0_u32);
     ///     match b_u32
     ///     {
     ///         Some(b) => { println!("{} / 2 = {}", u32::MAX / 3, b); },
@@ -5988,8 +6582,20 @@ pub trait SmallUInt: Copy + Clone + Sized //+ Display + Debug + ToString
     ///                 assert_eq!(b_u32, None);
     ///             },
     ///     }
+    /// }
     /// 
-    ///     let a_u64 = UInt_checked_mul___func(u64::MAX / 3, 2_u64);
+    /// fn func<T: SmallUInt>(lhs: T, rhs: T) -> Option<T>
+    /// {
+    ///     lhs.checked_div(rhs)
+    /// }
+    /// ```
+    /// 
+    /// # Example 4 for u64
+    /// ```
+    /// use cryptocol::number::SmallUInt;
+    /// fn main()
+    /// {
+    ///     let a_u64 = func(u64::MAX / 3, 2_u64);
     ///     match a_u64
     ///     {
     ///         Some(a) => {
@@ -6002,7 +6608,7 @@ pub trait SmallUInt: Copy + Clone + Sized //+ Display + Debug + ToString
     ///             },
     ///     }
     /// 
-    ///     let b_u64 = UInt_checked_mul___func(u64::MAX / 3, 0_u64);
+    ///     let b_u64 = func(u64::MAX / 3, 0_u64);
     ///     match b_u64
     ///     {
     ///         Some(b) => { println!("{} / 2 = {}", u64::MAX / 3, b); },
@@ -6011,8 +6617,20 @@ pub trait SmallUInt: Copy + Clone + Sized //+ Display + Debug + ToString
     ///                 assert_eq!(b_u64, None);
     ///             },
     ///     }
+    /// }
     /// 
-    ///     let a_u128 = UInt_checked_mul___func(u128::MAX / 3, 2_u128);
+    /// fn func<T: SmallUInt>(lhs: T, rhs: T) -> Option<T>
+    /// {
+    ///     lhs.checked_div(rhs)
+    /// }
+    /// ```
+    /// 
+    /// # Example 5 for u128
+    /// ```
+    /// use cryptocol::number::SmallUInt;
+    /// fn main()
+    /// {
+    ///     let a_u128 = func(u128::MAX / 3, 2_u128);
     ///     match a_u128
     ///     {
     ///         Some(a) => {
@@ -6025,7 +6643,7 @@ pub trait SmallUInt: Copy + Clone + Sized //+ Display + Debug + ToString
     ///             },
     ///     }
     /// 
-    ///     let b_u128 = UInt_checked_mul___func(u128::MAX / 3, 0_u128);
+    ///     let b_u128 = func(u128::MAX / 3, 0_u128);
     ///     match b_u128
     ///     {
     ///         Some(b) => { println!("{} / 2 = {}", u128::MAX / 3, b); },
@@ -6034,8 +6652,20 @@ pub trait SmallUInt: Copy + Clone + Sized //+ Display + Debug + ToString
     ///                 assert_eq!(b_u128, None);
     ///             },
     ///     }
+    /// }
     /// 
-    ///     let a_usize = UInt_checked_mul___func(usize::MAX / 3, 2_usize);
+    /// fn func<T: SmallUInt>(lhs: T, rhs: T) -> Option<T>
+    /// {
+    ///     lhs.checked_div(rhs)
+    /// }
+    /// ```
+    /// 
+    /// # Example 6 for usize
+    /// ```
+    /// use cryptocol::number::SmallUInt;
+    /// fn main()
+    /// {
+    ///     let a_usize = func(usize::MAX / 3, 2_usize);
     ///     match a_usize
     ///     {
     ///         Some(a) => {
@@ -6048,7 +6678,157 @@ pub trait SmallUInt: Copy + Clone + Sized //+ Display + Debug + ToString
     ///             },
     ///     }
     /// 
-    ///     let b_usize = UInt_checked_mul___func(usize::MAX / 3, 0_usize);
+    ///     let b_usize = func(usize::MAX / 3, 0_usize);
+    ///     match b_usize
+    ///     {
+    ///         Some(b) => { println!("{} / 2 = {}", usize::MAX / 3, b); },
+    ///         None => {
+    ///                 println!("Divided by zero.");
+    ///                 assert_eq!(b_usize, None);
+    ///             },
+    ///     }
+    /// }
+    /// 
+    /// fn func<T: SmallUInt>(lhs: T, rhs: T) -> Option<T>
+    /// {
+    ///     lhs.checked_div(rhs)
+    /// }
+    /// ```
+    /// 
+    /// # Collective Example
+    /// ```
+    /// use cryptocol::number::SmallUInt;
+    /// fn main()
+    /// {
+    ///     let a_u8 = func(u8::MAX / 3, 2_u8);
+    ///     match a_u8
+    ///     {
+    ///         Some(a) => {
+    ///                 println!("{} / 2 = {}", u8::MAX / 3, a);
+    ///                 assert_eq!(a, 42_u8);
+    ///             },
+    ///         None => {
+    ///                 println!("Divided by zero.");
+    ///                 assert_eq!(a_u8, None);
+    ///             },
+    ///     }
+    /// 
+    ///     let b_u8 = func(u8::MAX / 3, 0_u8);
+    ///     match b_u8
+    ///     {
+    ///         Some(b) => { println!("{} / 2 = {}", u8::MAX / 3, b); },
+    ///         None => {
+    ///                 println!("Divided by zero.");
+    ///                 assert_eq!(b_u8, None);
+    ///             },
+    ///     }
+    /// 
+    ///     let a_u16 = func(u16::MAX / 3, 2_u16);
+    ///     match a_u16
+    ///     {
+    ///         Some(a) => {
+    ///                 println!("{} / 2 = {}", u16::MAX / 3, a);
+    ///                 assert_eq!(a, 10922_u16);
+    ///             },
+    ///         None => {
+    ///                 println!("Divided by zero.");
+    ///                 assert_eq!(a_u16, None);
+    ///             },
+    ///     }
+    /// 
+    ///     let b_u16 = func(u16::MAX / 3, 0_u16);
+    ///     match b_u16
+    ///     {
+    ///         Some(b) => { println!("{} / 2 = {}", u16::MAX / 3, b); },
+    ///         None => {
+    ///                 println!("Divided by zero.");
+    ///                 assert_eq!(b_u16, None);
+    ///             },
+    ///     }
+    /// 
+    ///     let a_u32 = func(u32::MAX / 3, 2_u32);
+    ///     match a_u32
+    ///     {
+    ///         Some(a) => {
+    ///                 println!("{} / 2 = {}", u32::MAX / 3, a);
+    ///                 assert_eq!(a, 715827882_u32);
+    ///             },
+    ///         None => {
+    ///                 println!("Divided by zero.");
+    ///                 assert_eq!(a_u32, None);
+    ///             },
+    ///     }
+    /// 
+    ///     let b_u32 = func(u32::MAX / 3, 0_u32);
+    ///     match b_u32
+    ///     {
+    ///         Some(b) => { println!("{} / 2 = {}", u32::MAX / 3, b); },
+    ///         None => {
+    ///                 println!("Divided by zero.");
+    ///                 assert_eq!(b_u32, None);
+    ///             },
+    ///     }
+    /// 
+    ///     let a_u64 = func(u64::MAX / 3, 2_u64);
+    ///     match a_u64
+    ///     {
+    ///         Some(a) => {
+    ///                 println!("{} / 2 = {}", u64::MAX / 3, a);
+    ///                 assert_eq!(a, 3074457345618258602_u64);
+    ///             },
+    ///         None => {
+    ///                 println!("Divided by zero.");
+    ///                 assert_eq!(a_u64, None);
+    ///             },
+    ///     }
+    /// 
+    ///     let b_u64 = func(u64::MAX / 3, 0_u64);
+    ///     match b_u64
+    ///     {
+    ///         Some(b) => { println!("{} / 2 = {}", u64::MAX / 3, b); },
+    ///         None => {
+    ///                 println!("Divided by zero.");
+    ///                 assert_eq!(b_u64, None);
+    ///             },
+    ///     }
+    /// 
+    ///     let a_u128 = func(u128::MAX / 3, 2_u128);
+    ///     match a_u128
+    ///     {
+    ///         Some(a) => {
+    ///                 println!("{} / 2 = {}", u128::MAX / 3, a);
+    ///                 assert_eq!(a, 56713727820156410577229101238628035242_u128);
+    ///             },
+    ///         None => {
+    ///                 println!("Divided by zero.");
+    ///                 assert_eq!(a_u128, None);
+    ///             },
+    ///     }
+    /// 
+    ///     let b_u128 = func(u128::MAX / 3, 0_u128);
+    ///     match b_u128
+    ///     {
+    ///         Some(b) => { println!("{} / 2 = {}", u128::MAX / 3, b); },
+    ///         None => {
+    ///                 println!("Divided by zero.");
+    ///                 assert_eq!(b_u128, None);
+    ///             },
+    ///     }
+    /// 
+    ///     let a_usize = func(usize::MAX / 3, 2_usize);
+    ///     match a_usize
+    ///     {
+    ///         Some(a) => {
+    ///                 println!("{} / 2 = {}", usize::MAX / 3, a);
+    ///                 assert_eq!(a, 3074457345618258602_usize);
+    ///             },
+    ///         None => {
+    ///                 println!("Divided by zero.");
+    ///                 assert_eq!(a_usize, None);
+    ///             },
+    ///     }
+    /// 
+    ///     let b_usize = func(usize::MAX / 3, 0_usize);
     ///     match b_usize
     ///     {
     ///         Some(b) => { println!("{} / 2 = {}", usize::MAX / 3, b); },
@@ -6091,6 +6871,194 @@ pub trait SmallUInt: Copy + Clone + Sized //+ Display + Debug + ToString
     /// - If you want to know about the definition of the method `checked_div()`
     /// for the primitive type `usize`, read [here](https://doc.rust-lang.org/core/primitive.usize.html#method.checked_div).
     fn checked_div(self, rhs: Self) -> Option<Self>;
+
+    // fn unchecked_div(self, rhs: Self) -> Self;
+    /// Computes `self` / `rhs`.
+    /// 
+    /// # Feature
+    /// __The trait SmallUInt is meaningful when you use it in generic context.
+    /// Otherwise, it is pretty hard to imagine its usability.__
+    /// 
+    /// # Output
+    /// It returns `self` / `rhs` in the type `Self`, if `rhs` is not zero.
+    /// And, if `rhs` is zero, this method will panic.
+    /// 
+    /// # Example 1 for u8
+    /// ```
+    /// fn main()
+    /// {
+    ///     let a_u8 = func(u8::MAX / 3, 2_u8);
+    ///     println!("{} / 2 = {}", u8::MAX / 3, a_u8);
+    ///     assert_eq!(a_u8, 42_u8);
+    ///     // It will panic.
+    ///     // let b_u8 = func(u8::MAX / 3, 0_u8);
+    /// }
+    /// 
+    /// fn func<T: cryptocol::number::SmallUInt>(lhs: T, rhs: T) -> T
+    /// {
+    ///     lhs.unchecked_div(rhs)
+    /// }
+    /// ```
+    /// 
+    /// # Example 2 for u16
+    /// ```
+    /// fn main()
+    /// {
+    ///     let a_u16 = func(u16::MAX / 3, 2_u16);
+    ///     println!("{} / 2 = {}", u16::MAX / 3, a_u16);
+    ///     assert_eq!(a_u16, 10922_u16);
+    ///     // It will panic.
+    ///     // let b_u16 = func(u16::MAX / 3, 0_u16);
+    /// }
+    /// 
+    /// fn func<T: cryptocol::number::SmallUInt>(lhs: T, rhs: T) -> T
+    /// {
+    ///     lhs.unchecked_div(rhs)
+    /// }
+    /// ```
+    /// 
+    /// # Example 3 for u32
+    /// ```
+    /// fn main()
+    /// {
+    ///     let a_u32 = func(u32::MAX / 3, 2_u32);
+    ///     println!("{} / 2 = {}", u32::MAX / 3, a_u32);
+    ///     assert_eq!(a_u32, 715827882_u32);
+    ///     // It will panic.
+    ///     // let b_u32 = func(u32::MAX / 3, 0_u32);
+    /// }
+    /// 
+    /// fn func<T: cryptocol::number::SmallUInt>(lhs: T, rhs: T) -> T
+    /// {
+    ///     lhs.unchecked_div(rhs)
+    /// }
+    /// ```
+    /// 
+    /// # Example 4 for u64
+    /// ```
+    /// fn main()
+    /// {
+    ///     let a_u64 = func(u64::MAX / 3, 2_u64);
+    ///     println!("{} / 2 = {}", u64::MAX / 3, a_u64);
+    ///     assert_eq!(a_u64, 3074457345618258602_u64);
+    ///     // It will panic.
+    ///     // let b_u64 = func(u64::MAX / 3, 0_u64);
+    /// }
+    /// 
+    /// fn func<T: cryptocol::number::SmallUInt>(lhs: T, rhs: T) -> T
+    /// {
+    ///     lhs.unchecked_div(rhs)
+    /// }
+    /// ```
+    /// 
+    /// # Example 5 for u128
+    /// ```
+    /// fn main()
+    /// {
+    ///     let a_u128 = func(u128::MAX / 3, 2_u128);
+    ///     println!("{} / 2 = {}", u128::MAX / 3, a_u128);
+    ///     assert_eq!(a_u128, 56713727820156410577229101238628035242_u128);
+    ///     // It will panic.
+    ///     // let b_u128 = func(u128::MAX / 3, 0_u128);
+    /// }
+    /// 
+    /// fn func<T: cryptocol::number::SmallUInt>(lhs: T, rhs: T) -> T
+    /// {
+    ///     lhs.unchecked_div(rhs)
+    /// }
+    /// ```
+    /// 
+    /// # Example 6 for usize
+    /// ```
+    /// fn main()
+    /// {
+    ///     let a_usize = func(usize::MAX / 3, 2_usize);
+    ///     println!("{} / 2 = {}", usize::MAX / 3, a_usize);
+    ///     // It will panic.
+    ///     // let b_usize = func(usize::MAX / 3, 0_usize);
+    /// }
+    /// 
+    /// fn func<T: cryptocol::number::SmallUInt>(lhs: T, rhs: T) -> T
+    /// {
+    ///     lhs.unchecked_div(rhs)
+    /// }
+    /// ```
+    /// You can use the above generic function `func<>()` for all
+    /// SmallUInt-supported data types in a same scope.
+    /// Look into the following example.
+    /// 
+    /// # Collective Example
+    /// ```
+    /// fn main()
+    /// {
+    ///     let a_u8 = func(u8::MAX / 3, 2_u8);
+    ///     println!("{} / 2 = {}", u8::MAX / 3, a_u8);
+    ///     assert_eq!(a_u8, 42_u8);
+    ///     // It will panic.
+    ///     // let b_u8 = func(u8::MAX / 3, 0_u8);
+    /// 
+    ///     let a_u16 = func(u16::MAX / 3, 2_u16);
+    ///     println!("{} / 2 = {}", u16::MAX / 3, a_u16);
+    ///     assert_eq!(a_u16, 10922_u16);
+    ///     // It will panic.
+    ///     // let b_u16 = func(u16::MAX / 3, 0_u16);
+    /// 
+    ///     let a_u32 = func(u32::MAX / 3, 2_u32);
+    ///     println!("{} / 2 = {}", u32::MAX / 3, a_u32);
+    ///     assert_eq!(a_u32, 715827882_u32);
+    ///     // It will panic.
+    ///     // let b_u32 = func(u32::MAX / 3, 0_u32);
+    /// 
+    ///     let a_u64 = func(u64::MAX / 3, 2_u64);
+    ///     println!("{} / 2 = {}", u64::MAX / 3, a_u64);
+    ///     assert_eq!(a_u64, 3074457345618258602_u64);
+    ///     // It will panic.
+    ///     // let b_u64 = func(u64::MAX / 3, 0_u64);
+    /// 
+    ///     let a_u128 = func(u128::MAX / 3, 2_u128);
+    ///     println!("{} / 2 = {}", u128::MAX / 3, a_u128);
+    ///     assert_eq!(a_u128, 56713727820156410577229101238628035242_u128);
+    ///     // It will panic.
+    ///     // let b_u128 = func(u128::MAX / 3, 0_u128);
+    /// 
+    ///     let a_usize = func(usize::MAX / 3, 2_usize);
+    ///     println!("{} / 2 = {}", usize::MAX / 3, a_usize);
+    ///     // It will panic.
+    ///     // let b_usize = func(usize::MAX / 3, 0_usize);
+    /// }
+    /// 
+    /// fn func<T: cryptocol::number::SmallUInt>(lhs: T, rhs: T) -> T
+    /// {
+    ///     lhs.unchecked_div(rhs)
+    /// }
+    /// ```
+    /// 
+    /// # Plagiarism in descryption
+    /// It calls the method checked_div() of implementation of the primitive
+    /// unsigned integer types such as`u8`, `u16`, `u32`, `u64`, `u128` and
+    /// `usize` directly. So, all the description of this method is mainly the
+    /// same as that of the method checked_div() of implementation of the
+    /// primitive unsigned integer types except example codes. Confer to the
+    /// descryptions that are linked to in the section _Reference_. This
+    /// plagiarism is not made maliciously but is made for the reason of
+    /// effectiveness and efficiency so that users may understand better and
+    /// easily how to use this method with simiilarity to the method
+    /// checked_div() of implementation of the primitive unsigned integer types.
+    /// 
+    /// # References
+    /// - If you want to know about the definition of the method `checked_div()`
+    /// for the primitive type `u8`, read [here](https://doc.rust-lang.org/core/primitive.u8.html#method.checked_div).
+    /// - If you want to know about the definition of the method `checked_div()`
+    /// for the primitive type `u16`, read [here](https://doc.rust-lang.org/core/primitive.u16.html#method.checked_div).
+    /// - If you want to know about the definition of the method `checked_div()`
+    /// for the primitive type `u32`, read [here](https://doc.rust-lang.org/core/primitive.u32.html#method.checked_div).
+    /// - If you want to know about the definition of the method `checked_div()`
+    /// for the primitive type `u64`, read [here](https://doc.rust-lang.org/core/primitive.u64.html#method.checked_div).
+    /// - If you want to know about the definition of the method `checked_div()`
+    /// for the primitive type `u128`, read [here](https://doc.rust-lang.org/core/primitive.u128.html#method.checked_div).
+    /// - If you want to know about the definition of the method `checked_div()`
+    /// for the primitive type `usize`, read [here](https://doc.rust-lang.org/core/primitive.usize.html#method.checked_div).
+    fn unchecked_div(self, rhs: Self) -> Self;
 
     /// Computes self / rhs.
     /// 
@@ -6343,6 +7311,195 @@ pub trait SmallUInt: Copy + Clone + Sized //+ Display + Debug + ToString
     /// for the primitive type `usize`, read [here](https://doc.rust-lang.org/core/primitive.usize.html#method.overflowing_rem).
     fn overflowing_rem(self, rhs: Self) -> (Self, bool);
 
+    // fn checked_rem(self, rhs: Self) -> Option<Self>;
+    /// Computes `self` % `rhs`.
+    /// 
+    /// # Feature
+    /// __The trait SmallUInt is meaningful when you use it in generic context.
+    /// Otherwise, it is pretty hard to imagine its usability.__
+    /// 
+    /// # Output
+    /// It returns `self` % `rhs` in the type `Self` wrapped by `Some`
+    /// of enum `Option`. And, it returns `None` if rhs is zero.
+    /// 
+    /// # Example
+    /// ```
+    /// use cryptocol::number::SmallUInt;
+    /// fn main()
+    /// {
+    ///     let a_u8 = func(u8::MAX / 3, 3_u8);
+    ///     match a_u8
+    ///     {
+    ///         Some(a) => {
+    ///                 println!("{} % 3 = {}", u8::MAX / 3, a);
+    ///                 assert_eq!(a, 1_u8);
+    ///             },
+    ///         None => {
+    ///                 println!("Divided by zero.");
+    ///                 assert_eq!(a_u8, None);
+    ///             },
+    ///     }
+    /// 
+    ///     let b_u8 = func(u8::MAX / 3, 0_u8);
+    ///     match b_u8
+    ///     {
+    ///         Some(b) => { println!("{} % 3 = {}", u8::MAX / 3, b); },
+    ///         None => {
+    ///                 println!("Divided by zero.");
+    ///                 assert_eq!(b_u8, None);
+    ///             },
+    ///     }
+    /// 
+    ///     let a_u16 = func(u16::MAX / 3, 3_u16);
+    ///     match a_u16
+    ///     {
+    ///         Some(a) => {
+    ///                 println!("{} % 3 = {}", u16::MAX / 3, a);
+    ///                 assert_eq!(a, 2_u16);
+    ///             },
+    ///         None => {
+    ///                 println!("Divided by zero.");
+    ///                 assert_eq!(a_u16, None);
+    ///             },
+    ///     }
+    /// 
+    ///     let b_u16 = func(u16::MAX / 3, 0_u16);
+    ///     match b_u16
+    ///     {
+    ///         Some(b) => { println!("{} % 3 = {}", u16::MAX / 3, b); },
+    ///         None => {
+    ///                 println!("Divided by zero.");
+    ///                 assert_eq!(b_u16, None);
+    ///             },
+    ///     }
+    /// 
+    ///     let a_u32 = func(u32::MAX / 3, 3_u32);
+    ///     match a_u32
+    ///     {
+    ///         Some(a) => {
+    ///                 println!("{} % 3 = {}", u32::MAX / 3, a);
+    ///                 assert_eq!(a, 1_u32);
+    ///             },
+    ///         None => {
+    ///                 println!("Divided by zero.");
+    ///                 assert_eq!(a_u32, None);
+    ///             },
+    ///     }
+    /// 
+    ///     let b_u32 = func(u32::MAX / 3, 0_u32);
+    ///     match b_u32
+    ///     {
+    ///         Some(b) => { println!("{} % 3 = {}", u32::MAX / 3, b); },
+    ///         None => {
+    ///                 println!("Divided by zero.");
+    ///                 assert_eq!(b_u32, None);
+    ///             },
+    ///     }
+    /// 
+    ///     let a_u64 = func(u64::MAX / 3, 3_u64);
+    ///     match a_u64
+    ///     {
+    ///         Some(a) => {
+    ///                 println!("{} % 3 = {}", u64::MAX / 3, a);
+    ///                 assert_eq!(a, 2_u64);
+    ///             },
+    ///         None => {
+    ///                 println!("Divided by zero.");
+    ///                 assert_eq!(a_u64, None);
+    ///             },
+    ///     }
+    /// 
+    ///     let b_u64 = func(u64::MAX / 3, 0_u64);
+    ///     match b_u64
+    ///     {
+    ///         Some(b) => { println!("{} % 3 = {}", u64::MAX / 3, b); },
+    ///         None => {
+    ///                 println!("Divided by zero.");
+    ///                 assert_eq!(b_u64, None);
+    ///             },
+    ///     }
+    /// 
+    ///     let a_u128 = func(u128::MAX / 3, 3_u128);
+    ///     match a_u128
+    ///     {
+    ///         Some(a) => {
+    ///                 println!("{} % 3 = {}", u128::MAX / 3, a);
+    ///                 assert_eq!(a, 1_u128);
+    ///             },
+    ///         None => {
+    ///                 println!("Divided by zero.");
+    ///                 assert_eq!(a_u128, None);
+    ///             },
+    ///     }
+    /// 
+    ///     let b_u128 = func(u128::MAX / 3, 0_u128);
+    ///     match b_u128
+    ///     {
+    ///         Some(b) => { println!("{} % 3 = {}", u128::MAX / 3, b); },
+    ///         None => {
+    ///                 println!("Divided by zero.");
+    ///                 assert_eq!(b_u128, None);
+    ///             },
+    ///     }
+    /// 
+    ///     let a_usize = func(usize::MAX / 3, 3_usize);
+    ///     match a_usize
+    ///     {
+    ///         Some(a) => {
+    ///                 println!("{} % 3 = {}", usize::MAX / 3, a);
+    ///                 assert_eq!(a, 2_usize);
+    ///             },
+    ///         None => {
+    ///                 println!("Divided by zero.");
+    ///                 assert_eq!(a_usize, None);
+    ///             },
+    ///     }
+    /// 
+    ///     let b_usize = func(usize::MAX / 3, 0_usize);
+    ///     match b_usize
+    ///     {
+    ///         Some(b) => { println!("{} % 3 = {}", usize::MAX / 3, b); },
+    ///         None => {
+    ///                 println!("Divided by zero.");
+    ///                 assert_eq!(b_usize, None);
+    ///             },
+    ///     }
+    /// }
+    /// 
+    /// fn func<T: SmallUInt>(lhs: T, rhs: T) -> Option<T>
+    /// {
+    ///     lhs.checked_rem(rhs)
+    /// }
+    /// ```
+    /// 
+    /// # Plagiarism in descryption
+    /// It calls the method checked_rem() of implementation of the primitive
+    /// unsigned integer types such as`u8`, `u16`, `u32`, `u64`, `u128` and
+    /// `usize` directly. So, all the description of this method is mainly the
+    /// same as that of the method checked_rem() of implementation of the
+    /// primitive unsigned integer types except example codes. Confer to the
+    /// descryptions that are linked to in the section _Reference_. This
+    /// plagiarism is not made maliciously but is made for the reason of
+    /// effectiveness and efficiency so that users may understand better and
+    /// easily how to use this method with simiilarity to the method
+    /// checked_rem() of implementation of the primitive unsigned integer types.
+    /// 
+    /// # References
+    /// - If you want to know about the definition of the method `checked_rem()`
+    /// for the primitive type `u8`, read [here](https://doc.rust-lang.org/core/primitive.u8.html#method.checked_rem).
+    /// - If you want to know about the definition of the method `checked_rem()`
+    /// for the primitive type `u16`, read [here](https://doc.rust-lang.org/core/primitive.u16.html#method.checked_rem).
+    /// - If you want to know about the definition of the method `checked_rem()`
+    /// for the primitive type `u32`, read [here](https://doc.rust-lang.org/core/primitive.u32.html#method.checked_rem).
+    /// - If you want to know about the definition of the method `checked_rem()`
+    /// for the primitive type `u64`, read [here](https://doc.rust-lang.org/core/primitive.u64.html#method.checked_rem).
+    /// - If you want to know about the definition of the method `checked_rem()`
+    /// for the primitive type `u128`, read [here](https://doc.rust-lang.org/core/primitive.u128.html#method.checked_rem).
+    /// - If you want to know about the definition of the method `checked_rem()`
+    /// for the primitive type `usize`, read [here](https://doc.rust-lang.org/core/primitive.usize.html#method.checked_rem).
+    fn checked_rem(self, rhs: Self) -> Option<Self>;
+
+    // fn unchecked_rem(self, rhs: Self) -> Option<Self>;
     /// Computes self % rhs.
     /// 
     /// # Feature
@@ -6528,7 +7685,7 @@ pub trait SmallUInt: Copy + Clone + Sized //+ Display + Debug + ToString
     /// for the primitive type `u128`, read [here](https://doc.rust-lang.org/core/primitive.u128.html#method.checked_rem).
     /// - If you want to know about the definition of the method `checked_rem()`
     /// for the primitive type `usize`, read [here](https://doc.rust-lang.org/core/primitive.usize.html#method.checked_rem).
-    fn checked_rem(self, rhs: Self) -> Option<Self>;
+    fn unchecked_rem(self, rhs: Self) -> Self;
 
 
     /*** Power ***/

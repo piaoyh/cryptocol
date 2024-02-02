@@ -5363,6 +5363,10 @@ macro_rules! SmallUInt_methods_for_integer_unions_impl {
         /// [Read more in detail](trait@SmallUInt#tymethod.checked_div)
         #[inline] fn checked_div(self, rhs: Self) -> Option<Self>   { self.checked_div(rhs) }
 
+        /// Computes `self` / `rhs`, returning None if `rhs`` == 0.
+        /// [Read more in detail](trait@SmallUInt#tymethod.unchecked_div)
+        #[inline] fn unchecked_div(self, rhs: Self) -> Self   { self.checked_div(rhs).unwrap() }
+
         /// Computes self / rhs, saturating at the numeric bounds
         /// instead of overflowing.
         /// [Read more in detail](trait@SmallUInt#tymethod.saturating_div)
@@ -5384,6 +5388,9 @@ macro_rules! SmallUInt_methods_for_integer_unions_impl {
         /// [Read more in detail](trait@SmallUInt#tymethod.checked_rem)
         #[inline] fn checked_rem(self, rhs: Self) -> Option<Self>   { self.checked_rem(rhs) }
 
+        /// Computes `self` % `rhs`, if `rhs` != 0.
+        /// [Read more in detail](trait@SmallUInt#tymethod.unchecked_rem)
+        #[inline] fn unchecked_rem(self, rhs: Self) -> Self         { self.checked_rem(rhs).unwrap() }
 
         /// Raises `self` to the power of `exp`, using exponentiation by squaring.
         /// [Read more in detail](trait@SmallUInt#tymethod.pow)
