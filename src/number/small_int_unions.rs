@@ -5482,6 +5482,11 @@ macro_rules! SmallUInt_methods_for_integer_unions_impl {
         #[inline] fn into_u8(self) -> u8        { unsafe { self.this as u8 } }
         #[inline] fn into_usize(self) -> usize  { unsafe { self.this as usize } }
         #[inline] fn into_bool(self) -> bool    { unsafe { self.this != 0 } }
+        #[inline] fn into_shortunion(self) -> ShortUnion   { ShortUnion::new_with(self.into_u16() ) }
+        #[inline] fn into_intunion(self) -> IntUnion        { IntUnion::new_with(self.into_u32() ) }
+        #[inline] fn into_longunion(self) -> LongUnion      { LongUnion::new_with(self.into_u64() ) }
+        #[inline] fn into_longerunion(self) -> LongerUnion  { LongerUnion::new_with(self.into_u128() ) }
+        #[inline] fn into_sizeunion(self) -> SizeUnion      { SizeUnion::new_with(self.into_usize() ) }
         #[inline] fn zero() -> Self             { Self::new_with(0) }
         #[inline] fn one() -> Self              { Self::new_with(1) }
         #[inline] fn max() -> Self              { Self::new_with(<$g>::MAX) }

@@ -12,9 +12,6 @@
 #[allow(non_camel_case_types)]
 
 
-//use cryptocol::number::SmallUInt;
-// use rand_distr::num_traits::PrimInt; //{u256, BigInteger, HugeInteger};
-
 
 pub fn main()
 {
@@ -42,6 +39,7 @@ fn small_uint_add_main()
 fn small_uint_carrying_add()
 {
     println!("small_uint_carrying_add()");
+    use cryptocol::number::SmallUInt;
     // Example for u8
     // a_u16: u16 === (a_high_u8, a_low_u8) == (100_u8, 101_u8) == 25701_u16
     let a_high_u8 = 100_u8;
@@ -74,6 +72,38 @@ fn small_uint_carrying_add()
     assert_eq!(d_low_u8, 245_u8);
     assert_eq!(carry, true);
 
+    // Example for u16
+    // a_u32: u32 === (a_high_u16, a_low_u16) == (10000_u16, 10100_u16) == 655370100_u32
+    let a_high_u16 = 10000_u16;
+    let a_low_u16 = 10100_u16;
+    // b_u32: u32 === (b_high_u16, b_low_u16) == (10000_u16, 20000_u16) == 3276830000_u32
+    let b_high_u16 = 50000_u16;
+    let b_low_u16 = 30000_u16;
+
+    // (10000_u16, 10100_u16) + (50000_u16, 30000_u16) == 655370100_u32 + 655380000_u32 == 51501_u16
+    //    655370100_u32 == (10000_u16, 10100_u16)
+    // + 3276830000_u32 == (50000_u16, 30000_u16)
+    // ------------------------------------------
+    //   3932200100_u32 == (60000_u16, 40100_u16)
+
+    // c: u16 === (c_high, c_low)
+    let (c_low_u16, c_high_u16, carry) = small_uint_carrying_add_func(a_low_u16, a_high_u16, b_low_u16, b_high_u16);
+    println!("{}-{}, {}", c_high_u16, c_low_u16, carry);
+    assert_eq!(c_high_u16, 60000_u16);
+    assert_eq!(c_low_u16, 40100_u16);
+    assert_eq!(carry, false);
+
+    // (10000_u16, 10100_u16) + (50000_u16, 30000_u16) == 3932200100_u32 + 3276830000_u32 == 51501_u16
+    //   3932200100_u32 == (60000_u16, 40100_u16)
+    // + 3276830000_u32 == (50000_u16, 30000_u16)
+    // ------------------------------------------
+    //   2914062804_u32 == (44465_u16,  4564_u16)
+    let (d_low_u16, d_high_u16, carry) = small_uint_carrying_add_func(c_low_u16, c_high_u16, b_low_u16, b_high_u16);
+    println!("{}-{}, {}", d_high_u16, d_low_u16, carry);
+    assert_eq!(d_high_u16, 44465_u16);
+    assert_eq!(d_low_u16, 4564_u16);
+    assert_eq!(carry, true);
+
     // Example for u128
     //  4201016837757989640311993609423984479246482890531986660185 == (12345678901234567890_u128, 6789012345678912345_u128)
     //+                 419908440780438063913804265570801972943493 == (                1234_u128,                6789_u128)
@@ -94,6 +124,59 @@ fn small_uint_carrying_add()
     assert_eq!(b_high_u128, 56713727820156410577229101238628035241_u128);
     assert_eq!(b_low_u128, 69134691246913480235802358023580235801_u128);
     assert_eq!(carry, true);
+
+    // Example for ShortUnion for Little Endian
+    // a_intunion: IntUnion === (a_high_shortunion, a_low_shortunion) == (10000_u16, 10100_u16) == 25701_u16
+    let a_high_shortunion = 10000_u16.into_shortunion();
+    let a_low_shortunion = 10100_u16.into_shortunion();
+    // b_intunion: IntUnion === (b_high_shortunion, b_low_shortunion) == (10000_u16, 20000_u16) == 25800_u16
+    let b_high_shortunion = 50000_u16.into_shortunion();
+    let b_low_shortunion = 30000_u16.into_shortunion();
+
+    // (10000_u16, 10100_u16) + (50000_u16, 30000_u16) == 655370100_u32 + 655380000_u32 == 51501_u16
+    //    655370100_u32 == (10000_u16, 10100_u16)
+    // + 3276830000_u32 == (50000_u16, 30000_u16)
+    // ------------------------------------------
+    //   3932200100_u32 == (60000_u16, 40100_u16)
+
+    // c: u16 === (c_high, c_low)
+    let (c_low_shortunion, c_high_shortunion, carry) = small_uint_carrying_add_func(a_low_shortunion, a_high_shortunion, b_low_shortunion, b_high_shortunion);
+    println!("{}-{}, {}", c_high_shortunion, c_low_shortunion, carry);
+    assert_eq!(c_high_shortunion.get(), 60000_u16);
+    assert_eq!(c_low_shortunion.get(), 40100_u16);
+    assert_eq!(carry, false);
+
+    // (10000_u16, 10100_u16) + (50000_u16, 30000_u16) == 3932200100_u32 + 3276830000_u32 == 51501_u16
+    //   3932200100_u32 == (60000_u16, 40100_u16)
+    // + 3276830000_u32 == (50000_u16, 30000_u16)
+    // ------------------------------------------
+    //   2914062804_u32 == (44465_u16,  4564_u16)
+    let (d_low_shortunion, d_high_shortunion, carry) = small_uint_carrying_add_func(c_low_shortunion, c_high_shortunion, b_low_shortunion, b_high_shortunion);
+    println!("{}-{}, {}", d_high_shortunion, d_low_shortunion, carry);
+    assert_eq!(d_high_shortunion.get(), 44465_u16);
+    assert_eq!(d_low_shortunion.get(), 4564_u16);
+    assert_eq!(carry, true);
+
+    // Example for LongerUnion for Little Endian
+    //  4201016837757989640311993609423984479246482890531986660185 == (12345678901234567890_u128, 6789012345678912345_u128)
+    //+                 419908440780438063913804265570801972943493 == (                1234_u128,                6789_u128)
+    //---------------------------------------------------------------------------------------------------------------------
+    //  4201016837757990060220434389862048393050748461333959603678 == (12345678901234569124_u128, 6789012345678919134_u128)
+    let (a_low_longerunion, a_high_longerunion, carry) = small_uint_carrying_add_func(6789012345678912345_u128.into_longerunion(), 12345678901234567890_u128.into_longerunion(), 6789_u128.into_longerunion(), 1234_u128.into_longerunion());
+    println!("{}-{}, {}", a_high_longerunion, a_low_longerunion, carry);
+    assert_eq!(a_high_longerunion.get(), 12345678901234569124_u128);
+    assert_eq!(a_low_longerunion.get(), 6789012345678919134_u128);
+    assert_eq!(carry, false);
+
+    //  308778904632843187796189293356501087608549893209439890708590319850715068122315 == (226854911280625642308916404954512140970_u128, 56789012345678912345678901234567890123_u128)
+    //+  57896044618658097711785492504343953926307055644800578124155540853313808954190 == (170141183460469231731687303715884105727_u128, 12345678901234567890123456789012345678_u128)
+    //--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+    //   19298681539552699237261830834781317975046994857318776714373108680289488156697 == ( 56713727820156410577229101238628035241_u128, 69134691246913480235802358023580235801_u128)
+    let (b_low_longerunion, b_high_longerunion, carry) = small_uint_carrying_add_func(56789012345678912345678901234567890123_u128.into_longerunion(), 226854911280625642308916404954512140970_u128.into_longerunion(), 12345678901234567890123456789012345678_u128.into_longerunion(), 170141183460469231731687303715884105727_u128.into_longerunion());
+    println!("{}-{}, {}", b_high_longerunion, b_low_longerunion, carry);
+    assert_eq!(b_high_longerunion.get(), 56713727820156410577229101238628035241_u128);
+    assert_eq!(b_low_longerunion.get(), 69134691246913480235802358023580235801_u128);
+    assert_eq!(carry, true);
     println!("--------------------------------------");
 }
 
@@ -110,6 +193,7 @@ fn small_uint_carrying_add_func<T: cryptocol::number::SmallUInt>(lhs_low: T, lhs
 fn small_uint_wrapping_add()
 {
     println!("small_uint_wrapping_add()");
+    use cryptocol::number::{ SmallUInt, ShortUnion, IntUnion, LongUnion, LongerUnion, SizeUnion };
     // Example for u8
     let a_u8 = small_uint_wrapping_add_func(u8::MAX - 55_u8, 55_u8);
     println!("{} + 55 = {}", u8::MAX - 55_u8, a_u8);
@@ -163,6 +247,61 @@ fn small_uint_wrapping_add()
     let b_usize = small_uint_wrapping_add_func(a_usize, 1_usize);
     println!("{} + 1 = {}", a_usize, b_usize);
     assert_eq!(b_usize, 0_usize);
+
+    // Example for ShortUnion
+    let a_shortunion = ShortUnion::new_with(u16::MAX - 55_u16);
+    let b_shortunion = ShortUnion::new_with(55);
+    let c_shortunion = small_uint_wrapping_add_func(a_shortunion, b_shortunion);
+    println!("{} + {} = {}", a_shortunion, b_shortunion, c_shortunion);
+    assert_eq!(c_shortunion.get(), u16::MAX);
+
+    let d_shortunion = small_uint_wrapping_add_func(c_shortunion, 1_u16.into_shortunion());
+    println!("{} + 1 = {}", a_shortunion, d_shortunion);
+    assert_eq!(d_shortunion.get(), 0_u16);
+
+    // Example for IntUnion
+    let a_intunion = IntUnion::new_with(u32::MAX - 55_u32);
+    let b_intunion = IntUnion::new_with(55);
+    let c_intunion = small_uint_wrapping_add_func(a_intunion, b_intunion);
+    println!("{} + {} = {}", a_intunion, b_intunion, c_intunion);
+    assert_eq!(c_intunion.get(), u32::MAX);
+
+    let d_intunion = small_uint_wrapping_add_func(c_intunion, 1_u32.into_intunion());
+    println!("{} + 1 = {}", a_intunion, d_intunion);
+    assert_eq!(d_intunion.get(), 0_u32);
+
+    // Example for LongUnion
+    let a_longunion = LongUnion::new_with(u64::MAX - 55_u64);
+    let b_longunion = LongUnion::new_with(55);
+    let c_longunion = small_uint_wrapping_add_func(a_longunion, b_longunion);
+    println!("{} + {} = {}", a_longunion, b_longunion, c_longunion);
+    assert_eq!(c_longunion.get(), u64::MAX);
+
+    let d_longunion = small_uint_wrapping_add_func(c_longunion, 1_u32.into_longunion());
+    println!("{} + 1 = {}", a_intunion, d_longunion);
+    assert_eq!(d_longunion.get(), 0_u64);
+
+    // Example for LongerUnion
+    let a_longerunion = LongerUnion::new_with(u128::MAX - 55_u128);
+    let b_longerunion = LongerUnion::new_with(55);
+    let c_longerunion = small_uint_wrapping_add_func(a_longerunion, b_longerunion);
+    println!("{} + {} = {}", a_longerunion, b_longerunion, c_longerunion);
+    assert_eq!(c_longerunion.get(), u128::MAX);
+
+    let d_longerunion = small_uint_wrapping_add_func(c_longerunion, 1_u128.into_longerunion());
+    println!("{} + 1 = {}", a_intunion, d_longunion);
+    assert_eq!(d_longerunion.get(), 0_u128);
+
+    // Example for SizeUnion
+    let a_sizeunion = SizeUnion::new_with(usize::MAX - 55_usize);
+    let b_sizeunion = SizeUnion::new_with(55);
+    let c_sizeunion = small_uint_wrapping_add_func(a_sizeunion, b_sizeunion);
+    println!("{} + {} = {}", a_sizeunion, b_sizeunion, c_sizeunion);
+    assert_eq!(c_sizeunion.get(), usize::MAX);
+
+    let d_sizeunion = small_uint_wrapping_add_func(c_sizeunion, 1_usize.into_sizeunion());
+    println!("{} + 1 = {}", a_sizeunion, d_sizeunion);
+    assert_eq!(d_sizeunion.get(), 0_usize);
     println!("--------------------------------------");
 }
 
@@ -174,6 +313,7 @@ fn small_uint_wrapping_add_func<T: cryptocol::number::SmallUInt>(lhs: T, rhs: T)
 fn small_uint_overflowing_add()
 {
     println!("small_uint_overflowing_add()");
+    use cryptocol::number::{ SmallUInt, ShortUnion, IntUnion, LongUnion, LongerUnion, SizeUnion };
     // Example for u8
     let a_u8 = small_uint_overflowing_add_func(u8::MAX - 55_u8, 55_u8);
     println!("{} + 55 = {}\nOverflow = {}", u8::MAX - 55_u8, a_u8.0, a_u8.1);
@@ -239,6 +379,71 @@ fn small_uint_overflowing_add()
     println!("{} + 1 = {}\nOverflow = {}", a_usize.0, b_usize.0, b_usize.1);
     assert_eq!(b_usize.0, 0_usize);
     assert_eq!(b_usize.1, true);
+
+    // Example for ShortUnion
+    let a_shortunion = (u16::MAX - 55_u16).into_shortunion();
+    let (b_shortunion, mut overflow) = small_uint_overflowing_add_func(a_shortunion, 55_u16.into_shortunion());
+    println!("{} + 55 = {}\nOverflow = {}", a_shortunion, b_shortunion, overflow);
+    assert_eq!(b_shortunion.into_u16(), u16::MAX);
+    assert_eq!(overflow, false);
+ 
+    let c_shortunion: ShortUnion;
+    (c_shortunion, overflow) = small_uint_overflowing_add_func(b_shortunion, 1_u16.into_shortunion());
+    println!("{} + 1 = {}\nOverflow = {}", b_shortunion, c_shortunion, overflow);
+    assert_eq!(c_shortunion.into_u16(), 0_u16);
+    assert_eq!(overflow, true);
+
+    // Example for IntUnion
+    let a_intunion = (u32::MAX - 55_u32).into_intunion();
+    let (b_intunion, mut overflow) = small_uint_overflowing_add_func(a_intunion, 55_u32.into_intunion());
+    println!("{} + 55 = {}\nOverflow = {}", a_intunion, b_intunion, overflow);
+    assert_eq!(b_intunion.into_u32(), u32::MAX);
+    assert_eq!(overflow, false);
+ 
+    let c_intunion: IntUnion;
+    (c_intunion, overflow) = small_uint_overflowing_add_func(b_intunion, 1_u32.into_intunion());
+    println!("{} + 1 = {}\nOverflow = {}", b_intunion, c_intunion, overflow);
+    assert_eq!(c_intunion.into_u32(), 0_u32);
+    assert_eq!(overflow, true);
+
+    // Example for LongUnion
+    let a_longunion = (u64::MAX - 55_u64).into_longunion();
+    let (b_longunion, mut overflow) = small_uint_overflowing_add_func(a_longunion, 55_u64.into_longunion());
+    println!("{} + 55 = {}\nOverflow = {}", a_longunion, b_longunion, overflow);
+    assert_eq!(b_longunion.into_u64(), u64::MAX);
+    assert_eq!(overflow, false);
+ 
+    let c_longunion: LongUnion;
+    (c_longunion, overflow) = small_uint_overflowing_add_func(b_longunion, 1_u64.into_longunion());
+    println!("{} + 1 = {}\nOverflow = {}", b_longunion, c_longunion, overflow);
+    assert_eq!(c_longunion.into_u64(), 0_u64);
+    assert_eq!(overflow, true);
+
+    // Example for LongerUnion
+    let a_longerunion = (u128::MAX - 55_u128).into_longerunion();
+    let (b_longerunion, mut overflow) = small_uint_overflowing_add_func(a_longerunion, 55_u128.into_longerunion());
+    println!("{} + 55 = {}\nOverflow = {}", a_longerunion, b_longerunion, overflow);
+    assert_eq!(b_longerunion.into_u128(), u128::MAX);
+    assert_eq!(overflow, false);
+ 
+    let c_longerunion: LongerUnion;
+    (c_longerunion, overflow) = small_uint_overflowing_add_func(b_longerunion, 1_u128.into_longerunion());
+    println!("{} + 1 = {}\nOverflow = {}", b_longerunion, c_longerunion, overflow);
+    assert_eq!(c_longerunion.into_u128(), 0_u128);
+    assert_eq!(overflow, true);
+
+    // Example for SizeUnion
+    let a_sizeunion = (usize::MAX - 55_usize).into_sizeunion();
+    let (b_sizeunion, mut overflow) = small_uint_overflowing_add_func(a_sizeunion, 55_usize.into_sizeunion());
+    println!("{} + 55 = {}\nOverflow = {}", a_sizeunion, b_sizeunion, overflow);
+    assert_eq!(b_sizeunion.into_usize(), usize::MAX);
+    assert_eq!(overflow, false);
+ 
+    let c_sizeunion: SizeUnion;
+    (c_sizeunion, overflow) = small_uint_overflowing_add_func(b_sizeunion, 1_usize.into_sizeunion());
+    println!("{} + 1 = {}\nOverflow = {}", b_sizeunion, c_sizeunion, overflow);
+    assert_eq!(c_sizeunion.into_usize(), 0_usize);
+    assert_eq!(overflow, true);
     println!("--------------------------------------");
 }
 
@@ -250,6 +455,7 @@ fn small_uint_overflowing_add_func<T: cryptocol::number::SmallUInt>(lhs: T, rhs:
 fn small_uint_checked_add()
 {
     println!("small_uint_checked_add()");
+    use cryptocol::number::SmallUInt;
     // Example for u8
     let a_u8 = small_uint_checked_add_func(u8::MAX - 55_u8, 55_u8);
     match a_u8
@@ -409,6 +615,151 @@ fn small_uint_checked_add()
         None => {
                 println!("Overflow happened.");
                 assert_eq!(b_usize, None);
+            },
+    }
+
+    // Example for ShortUnion
+    let a_shortunion = (u16::MAX - 55_u16).into_shortunion();
+    let b_shortunion = 55_u16.into_shortunion();
+    let c_shortunion = small_uint_checked_add_func(a_shortunion, b_shortunion);
+    match c_shortunion
+    {
+        Some(c) => {
+                println!("{} + 55 = {}", a_shortunion, c);
+                assert_eq!(c.get(), u16::MAX);
+            },
+        None => {
+                println!("Overflow happened.");
+                assert_eq!(c_shortunion, None);
+            },
+    }
+
+    let d_shortunion = small_uint_checked_add_func(c_shortunion.unwrap(), 1_u16.into_shortunion());
+    match d_shortunion
+    {
+        Some(d) => {
+                println!("{} + 1 = {}", a_shortunion, d);
+                assert_eq!(d.get(), 0_u16);
+            },
+        None => {
+                println!("Overflow happened.");
+                assert_eq!(d_shortunion, None);
+            },
+    }
+
+    // Example for IntUnion
+    let a_intunion = (u32::MAX - 55_u32).into_intunion();
+    let b_intunion = 55_u32.into_intunion();
+    let c_intunion = small_uint_checked_add_func(a_intunion, b_intunion);
+    match c_intunion
+    {
+        Some(c) => {
+                println!("{} + 55 = {}", a_intunion, c);
+                assert_eq!(c.get(), u32::MAX);
+            },
+        None => {
+                println!("Overflow happened.");
+                assert_eq!(c_intunion, None);
+            },
+    }
+
+    let d_intunion = small_uint_checked_add_func(c_intunion.unwrap(), 1_u32.into_intunion());
+    match d_intunion
+    {
+        Some(d) => {
+                println!("{} + 1 = {}", a_intunion, d);
+                assert_eq!(d.get(), 0_u32);
+            },
+        None => {
+                println!("Overflow happened.");
+                assert_eq!(d_shortunion, None);
+            },
+    }
+
+    // Example for LongUnion
+    let a_longunion = (u64::MAX - 55_u64).into_longunion();
+    let b_longunion = 55_u64.into_longunion();
+    let c_longunion = small_uint_checked_add_func(a_longunion, b_longunion);
+    match c_longunion
+    {
+        Some(c) => {
+                println!("{} + 55 = {}", a_longunion, c);
+                assert_eq!(c.get(), u64::MAX);
+            },
+        None => {
+                println!("Overflow happened.");
+                assert_eq!(c_intunion, None);
+            },
+    }
+
+    let d_longunion = small_uint_checked_add_func(c_longunion.unwrap(), 1_u64.into_longunion());
+    match d_longunion
+    {
+        Some(d) => {
+                println!("{} + 1 = {}", a_longunion, d);
+                assert_eq!(d.get(), 0_u64);
+            },
+        None => {
+                println!("Overflow happened.");
+                assert_eq!(d_longunion, None);
+            },
+    }
+
+    // Example for LongerUnion
+    let a_longerunion = (u128::MAX - 55_u128).into_longerunion();
+    let b_longerunion = 55_u128.into_longerunion();
+    let c_longerunion = small_uint_checked_add_func(a_longerunion, b_longerunion);
+    match c_longerunion
+    {
+        Some(c) => {
+                println!("{} + 55 = {}", a_longerunion, c);
+                assert_eq!(c.get(), u128::MAX);
+            },
+        None => {
+                println!("Overflow happened.");
+                assert_eq!(c_intunion, None);
+            },
+    }
+
+    let d_longerunion = small_uint_checked_add_func(c_longerunion.unwrap(), 1_u128.into_longerunion());
+    match d_longerunion
+    {
+        Some(d) => {
+                println!("{} + 1 = {}", a_longerunion, d);
+                assert_eq!(d.get(), 0_u128);
+            },
+        None => {
+                println!("Overflow happened.");
+                assert_eq!(d_longerunion, None);
+            },
+    }
+
+    // Example for SizeUnion
+    let a_sizeunion = (usize::MAX - 55_usize).into_sizeunion();
+    let b_sizeunion = 55_usize.into_sizeunion();
+    let c_sizeunion = small_uint_checked_add_func(a_sizeunion, b_sizeunion);
+    match c_sizeunion
+    {
+        Some(c) => {
+                println!("{} + 55 = {}", a_sizeunion, c);
+                assert_eq!(c.get(), usize::MAX);
+            },
+        None => {
+                println!("Overflow happened.");
+                assert_eq!(c_sizeunion, None);
+            },
+    }
+
+    let d_sizeunion = small_uint_checked_add_func(c_sizeunion.unwrap(), 1_usize.into_sizeunion());
+    match d_sizeunion
+    {
+        Some(d) => {
+                println!("{} + 1 = {}", a_sizeunion, d);
+                assert_eq!(d.get(), 0_usize);
+            },
+        None => {
+                println!("Overflow happened.");
+                assert_eq!(d_sizeunion, None);
             },
     }
     println!("--------------------------------------");
@@ -2325,31 +2676,38 @@ fn small_uint_rem_main()
     small_uint_wrapping_rem();
     small_uint_overflowing_rem();
     small_uint_checked_rem();
+    small_uint_unchecked_rem();
 }
 
 fn small_uint_wrapping_rem()
 {
     println!("small_uint_wrapping_rem()");
+    // Example for u8
     let a_u8 = small_uint_wrapping_rem_func(u8::MAX / 3, 3_u8);
     println!("{} % 3 = {}", u8::MAX / 3, a_u8);
     assert_eq!(a_u8, 1_u8);
 
+    // Example for u16
     let a_u16 = small_uint_wrapping_rem_func(u16::MAX / 3, 3_u16);
     println!("{} % 3 = {}", u16::MAX / 3, a_u16);
     assert_eq!(a_u16, 2_u16);
 
+    // Example for u32
     let a_u32 = small_uint_wrapping_rem_func(u32::MAX / 3, 3_u32);
     println!("{} % 3 = {}", u32::MAX / 3, a_u32);
     assert_eq!(a_u32, 1_u32);
 
+    // Example for u64
     let a_u64 = small_uint_wrapping_rem_func(u64::MAX / 3, 3_u64);
     println!("{} % 3 = {}", u64::MAX / 3, a_u64);
     assert_eq!(a_u64, 2_u64);
 
+    // Example for u128
     let a_u128 = small_uint_wrapping_rem_func(u128::MAX / 3, 3_u128);
     println!("{} % 3 = {}", u128::MAX / 3, a_u128);
     assert_eq!(a_u128, 1_u128);
 
+    // Example for usize
     let a_usize = small_uint_wrapping_rem_func(usize::MAX / 3, 3_usize);
     println!("{} % 3 = {}", usize::MAX / 3, a_usize);
     assert_eq!(a_usize, 2_usize);
@@ -2367,31 +2725,37 @@ fn small_uint_wrapping_rem_func<T: cryptocol::number::SmallUInt>(lhs: T, rhs: T)
 fn small_uint_overflowing_rem()
 {
     println!("small_uint_overflowing_rem()");
+    // Example for u8
     let a_u8 = small_uint_overflowing_rem_func(u8::MAX / 3, 3_u8);
     println!("{} % 3 = {}\nOverflow = {}", u8::MAX / 3, a_u8.0, a_u8.1);
     assert_eq!(a_u8.0, 1_u8);
     assert_eq!(a_u8.1, false);
 
+    // Example for u16
     let a_u16 = small_uint_overflowing_rem_func(u16::MAX / 3, 3_u16);
     println!("{} % 3 = {}\nOverflow = {}", u16::MAX / 3, a_u16.0, a_u16.1);
     assert_eq!(a_u16.0, 2_u16);
     assert_eq!(a_u16.1, false);
  
+    // Example for u32
     let a_u32 = small_uint_overflowing_rem_func(u32::MAX / 3, 3_u32);
     println!("{} % 3 = {}\nOverflow = {}", u32::MAX / 3, a_u32.0, a_u32.1);
     assert_eq!(a_u32.0, 1_u32);
     assert_eq!(a_u32.1, false);
  
+    // Example for u64
     let a_u64 = small_uint_overflowing_rem_func(u64::MAX / 3, 3_u64);
     println!("{} % 3 = {}\nOverflow = {}", u64::MAX / 3, a_u64.0, a_u64.1);
     assert_eq!(a_u64.0, 2_u64);
     assert_eq!(a_u64.1, false);
  
+    // Example for u128
     let a_u128 = small_uint_overflowing_rem_func(u128::MAX / 3, 3_u128);
     println!("{} % 3 = {}\nOverflow = {}", u128::MAX / 3, a_u128.0, a_u128.1);
     assert_eq!(a_u128.0, 1_u128);
     assert_eq!(a_u128.1, false);
  
+    // Example for usize
     let a_usize = small_uint_overflowing_rem_func(usize::MAX / 3, 3_usize);
     println!("{} % 3 = {}\nOverflow = {}", usize::MAX / 3, a_usize.0, a_usize.1);
     assert_eq!(a_usize.0, 2_usize);
@@ -2410,6 +2774,7 @@ fn small_uint_overflowing_rem_func<T: cryptocol::number::SmallUInt>(lhs: T, rhs:
 fn small_uint_checked_rem()
 {
     println!("small_uint_checked_rem()");
+    // Example for u8
     let a_u8 = small_uint_checked_rem_func(u8::MAX / 3, 3_u8);
     match a_u8
     {
@@ -2433,6 +2798,7 @@ fn small_uint_checked_rem()
             },
     }
 
+    // Example for u16
     let a_u16 = small_uint_checked_rem_func(u16::MAX / 3, 3_u16);
     match a_u16
     {
@@ -2456,6 +2822,7 @@ fn small_uint_checked_rem()
             },
     }
 
+    // Example for u32
     let a_u32 = small_uint_checked_rem_func(u32::MAX / 3, 3_u32);
     match a_u32
     {
@@ -2479,6 +2846,7 @@ fn small_uint_checked_rem()
             },
     }
 
+    // Example for u64
     let a_u64 = small_uint_checked_rem_func(u64::MAX / 3, 3_u64);
     match a_u64
     {
@@ -2502,6 +2870,7 @@ fn small_uint_checked_rem()
             },
     }
 
+    // Example for u128
     let a_u128 = small_uint_checked_rem_func(u128::MAX / 3, 3_u128);
     match a_u128
     {
@@ -2525,6 +2894,7 @@ fn small_uint_checked_rem()
             },
     }
 
+    // Example for usize
     let a_usize = small_uint_checked_rem_func(usize::MAX / 3, 3_usize);
     match a_usize
     {
@@ -2555,23 +2925,72 @@ fn small_uint_checked_rem_func<T: cryptocol::number::SmallUInt>(lhs: T, rhs: T) 
     lhs.checked_rem(rhs)
 }
 
+fn small_uint_unchecked_rem()
+{
+    println!("small_uint_checked_rem()");
+    // Example for u8
+    let a_u8 = small_uint_unchecked_rem_func(u8::MAX / 3, 3_u8);
+    println!("{} % 3 = {}", u8::MAX / 3, a_u8);
+    assert_eq!(a_u8, 1_u8);
+
+    // It will panic.
+    // let b_u8 = small_uint_unchecked_rem_func(u8::MAX / 3, 0_u8);
+
+    // Example for u16
+    let a_u16 = small_uint_unchecked_rem_func(u16::MAX / 3, 3_u16);
+    println!("{} % 3 = {}", u16::MAX / 3, a_u16);
+    assert_eq!(a_u16, 2_u16);
+
+    // It will panic.
+    // let b_u16 = small_uint_unchecked_rem_func(u16::MAX / 3, 0_u16);
+
+    // Example for u32
+    let a_u32 = small_uint_unchecked_rem_func(u32::MAX / 3, 3_u32);
+    println!("{} % 3 = {}", u32::MAX / 3, a_u32);
+    assert_eq!(a_u32, 1_u32);
+    // It will panic.
+    // let b_u32 = small_uint_unchecked_rem_func(u32::MAX / 3, 0_u32);
+
+    // Example for u64
+    let a_u64 = small_uint_unchecked_rem_func(u64::MAX / 3, 3_u64);
+    println!("{} % 3 = {}", u64::MAX / 3, a_u64);
+    assert_eq!(a_u64, 2_u64);
+
+    // It will panic.
+    // let b_u64 = small_uint_unchecked_rem_func(u64::MAX / 3, 0_u64);
+
+    // Example for u128
+    let a_u128 = small_uint_unchecked_rem_func(u128::MAX / 3, 3_u128);
+    println!("{} % 3 = {}", u128::MAX / 3, a_u128);
+    assert_eq!(a_u128, 1_u128);
+
+    // It will panic.
+    // let b_u128 = small_uint_unchecked_rem_func(u128::MAX / 3, 0_u128);
+
+    // Example for u128
+    let a_usize = small_uint_unchecked_rem_func(usize::MAX / 3, 3_usize);
+    println!("{} % 3 = {}", usize::MAX / 3, a_usize);
+    assert_eq!(a_usize, 2_usize);
+
+    // It will panic.
+    // let b_usize = small_uint_unchecked_rem_func(usize::MAX / 3, 0_usize);
+    println!("--------------------------------------");
+}
+
+fn small_uint_unchecked_rem_func<T: cryptocol::number::SmallUInt>(lhs: T, rhs: T) -> T
+{
+    lhs.unchecked_rem(rhs)
+}
+
 fn small_uint_pow_main()
 {
-    println!("Small");
-    use cryptocol::number::SmallUInt;
-    let a = 2_u128;
-    let d = 4776913109852041418248056622882488318_u128;
-    let modulo = 4776913109852041418248056622882488319_u128;
-    let res = a.modular_pow(d, modulo);
-    println!("res = {}", res);
-    println!("{}.modular_pow({}, {}) = {}", a, d, modulo, res);
-
     small_uint_pow();
     small_uint_wrapping_pow();
     small_uint_overflowing_pow();
     small_uint_checked_pow();
+    small_uint_unchecked_pow();
     small_uint_saturating_pow();
-
+    small_uint_modular_pow();
 }
 
 fn small_uint_pow()
@@ -2579,42 +2998,49 @@ fn small_uint_pow()
     println!("small_uint_pow()");
     use cryptocol::number::*;
 
+    // Example for u8
     let a_u8 = small_uint_pow_func(3_u8, 5_u32);
     println!("3 ** 5 = {}", a_u8);
     assert_eq!(a_u8, 243_u8);
     // It will panic.
     // println!("3 ** 6 = {}", small_uint_pow_func(3_u8, 6_u32));
-    
+
+    // Example for u16
     let a_u16 = small_uint_pow_func(9_u16, 5_u32);
     println!("9 ** 5 = {}", a_u16);
     assert_eq!(a_u16, 59049_u16);
     // It will panic.
     // println!("9 ** 6 = {}", small_uint_pow_func(9_u16, 6_u32));
 
+    // Example for u32
     let a_u32 = small_uint_pow_func(81_u32, 5_u32);
     println!("81 ** 5 = {}", a_u32);
     assert_eq!(a_u32, 3486784401_u32);
     // It will panic.
     // println!("81 ** 6 = {}", small_uint_pow_func(81_u32, 6_u32));
 
+    // Example for u64
     let a_u64 = small_uint_pow_func(6561_u64, 5_u32);
     println!("6561 ** 5 = {}", a_u64);
     assert_eq!(a_u64, 12157665459056928801_u64);
     // It will panic.
     // println!("6561 ** 6 = {}", small_uint_pow_func(6561_u64, 6_u32));
 
+    // Example for u128
     let a_u128 = small_uint_pow_func(43046721_u128, 5_u32);
     println!("43046721 ** 5 = {}", a_u128);
     assert_eq!(a_u128, 147808829414345923316083210206383297601_u128);
     // It will panic.
     // println!("43046721 ** 6 = {}", small_uint_pow_func(43046721_u64, 6_u32));
 
+    // Example for usize
     let a_usize = small_uint_pow_func(6561_usize, 5_u32);
     println!("6561 ** 5 = {}", a_usize);
     assert_eq!(a_usize, 12157665459056928801_usize);
     // It will panic.
     // println!("6561 ** 6 = {}", small_uint_pow_func(6561_usize, 6_u32));
 
+    // Example for ShortUnion
     let a_ushort = ShortUnion::new_with(9);
     let b_ushort = small_uint_pow_func(a_ushort, 5_u32);
     println!("9 ** 5 = {}", b_ushort);
@@ -2622,6 +3048,7 @@ fn small_uint_pow()
     // It will panic.
     // println!("9 ** 5 = {}", small_uint_pow_func(a_ushort, 6_u32));
 
+    // Example for IntUnion
     let a_uint = IntUnion::new_with(81);
     let b_uint = small_uint_pow_func(a_uint, 5_u32);
     println!("81 ** 5 = {}", b_uint);
@@ -2629,6 +3056,7 @@ fn small_uint_pow()
     // It will panic.
     // println!("81 ** 6 = {}", small_uint_pow_func(a_uint, 6_u32));
 
+    // Example for LongUnion
     let a_ulong = LongUnion::new_with(6561);
     let b_ulong = small_uint_pow_func(a_ulong, 5_u32);
     println!("6561 ** 5 = {}", b_ulong);
@@ -2636,6 +3064,7 @@ fn small_uint_pow()
     // It will panic.
     // println!("6561 ** 6 = {}", small_uint_pow_func(a_ulong, 6_u32));
 
+    // Example for LongerUnion
     let a_ulonger = LongerUnion::new_with(43046721);
     let b_ulonger = small_uint_pow_func(a_ulonger, 5_u32);
     println!("43046721 ** 5 = {}", b_ulonger);
@@ -2643,9 +3072,10 @@ fn small_uint_pow()
     // It will panic.
     // println!("43046721 ** 6 = {}", small_uint_pow_func(a_ulonger, 6_u32));
 
+    // Example for SizeUnion
     let a_size = SizeUnion::new_with(6561);
     let b_size = small_uint_pow_func(a_size, 5_u32);
-    println!("6561 ** 5 = {}",b_size);
+    println!("6561 ** 5 = {}", b_size);
     assert_eq!(b_size.get(), 12157665459056928801_usize);
     // It will panic.
     // println!("6561 ** 6 = {}", small_uint_pow_func(a_size, 6_u32));
@@ -2656,7 +3086,6 @@ fn small_uint_pow_func<T: cryptocol::number::SmallUInt>(base: T, exp: u32) -> T
 {
     base.pow(exp)
 }
-
 
 fn small_uint_wrapping_pow()
 {
@@ -2766,15 +3195,15 @@ fn small_uint_wrapping_pow_func<T: cryptocol::number::SmallUInt>(base: T, exp: u
 fn small_uint_overflowing_pow()
 {
     println!("small_uint_overflowing_pow()");
-    let a_u8 = small_uint_overflowing_pow_func(u8::MAX / 3, 2_u32);
-    println!("{} / 2 = {}\nOverflow = {}", u8::MAX / 3, a_u8.0, a_u8.1);
-    assert_eq!(a_u8.0, 42_u8);
-    assert_eq!(a_u8.1, false);
+    let (a_u8, overflow) = small_uint_overflowing_pow_func(6_u8, 3);
+    println!("{} ** 3 = {}\nOverflow = {}", 6, a_u8, overflow);
+    assert_eq!(a_u8, 216_u8);
+    assert_eq!(overflow, false);
 
-    let a_u16 = small_uint_overflowing_pow_func(u16::MAX / 3, 2_u32);
-    println!("{} / 2 = {}\nOverflow = {}", u16::MAX / 3, a_u16.0, a_u16.1);
-    assert_eq!(a_u16.0, 10922_u16);
-    assert_eq!(a_u16.1, false);
+    let (a_u16, overflow) = small_uint_overflowing_pow_func(12_u16, 5);
+    println!("{} ** 4 = {}\nOverflow = {}", 12_u16, a_u16, overflow);
+    assert_eq!(a_u16, 52224_u16);
+    assert_eq!(overflow, true);
  
     let a_u32 = small_uint_overflowing_pow_func(u32::MAX / 3, 2_u32);
     println!("{} / 2 = {}\nOverflow = {}", u32::MAX / 3, a_u32.0, a_u32.1);
@@ -2954,6 +3383,154 @@ fn small_uint_checked_pow_func<T: cryptocol::number::SmallUInt>(base: T, exp: u3
     base.checked_pow(exp)
 }
 
+fn small_uint_unchecked_pow()
+{
+    println!("small_uint_unchecked_pow()");
+    let a_u8 = small_uint_unchecked_pow_func(u8::MAX / 3, 2_u32);
+    match a_u8
+    {
+        Some(a) => {
+                println!("{} / 2 = {}", u8::MAX / 3, a);
+                assert_eq!(a, 42_u8);
+            },
+        None => {
+                println!("Divided by zero.");
+                assert_eq!(a_u8, None);
+            },
+    }
+
+    let b_u8 = small_uint_unchecked_pow_func(u8::MAX / 3, 0_u32);
+    match b_u8
+    {
+        Some(b) => { println!("{} / 2 = {}", u8::MAX / 3, b); },
+        None => {
+                println!("Divided by zero.");
+                assert_eq!(b_u8, None);
+            },
+    }
+
+    let a_u16 = small_uint_unchecked_pow_func(u16::MAX / 3, 2_u32);
+    match a_u16
+    {
+        Some(a) => {
+                println!("{} / 2 = {}", u16::MAX / 3, a);
+                assert_eq!(a, 10922_u16);
+            },
+        None => {
+                println!("Divided by zero.");
+                assert_eq!(a_u16, None);
+            },
+    }
+
+    let b_u16 = small_uint_unchecked_pow_func(u16::MAX / 3, 0_u32);
+    match b_u16
+    {
+        Some(b) => { println!("{} / 2 = {}", u16::MAX / 3, b); },
+        None => {
+                println!("Divided by zero.");
+                assert_eq!(b_u16, None);
+            },
+    }
+
+    let a_u32 = small_uint_unchecked_pow_func(u32::MAX / 3, 2_u32);
+    match a_u32
+    {
+        Some(a) => {
+                println!("{} / 2 = {}", u32::MAX / 3, a);
+                assert_eq!(a, 715827882_u32);
+            },
+        None => {
+                println!("Divided by zero.");
+                assert_eq!(a_u32, None);
+            },
+    }
+
+    let b_u32 = small_uint_unchecked_pow_func(u32::MAX / 3, 0_u32);
+    match b_u32
+    {
+        Some(b) => { println!("{} / 2 = {}", u32::MAX / 3, b); },
+        None => {
+                println!("Divided by zero.");
+                assert_eq!(b_u32, None);
+            },
+    }
+
+    let a_u64 = small_uint_unchecked_pow_func(u64::MAX / 3, 2_u32);
+    match a_u64
+    {
+        Some(a) => {
+                println!("{} / 2 = {}", u64::MAX / 3, a);
+                assert_eq!(a, 3074457345618258602_u64);
+            },
+        None => {
+                println!("Divided by zero.");
+                assert_eq!(a_u64, None);
+            },
+    }
+
+    let b_u64 = small_uint_unchecked_pow_func(u64::MAX / 3, 0_u32);
+    match b_u64
+    {
+        Some(b) => { println!("{} / 2 = {}", u64::MAX / 3, b); },
+        None => {
+                println!("Divided by zero.");
+                assert_eq!(b_u64, None);
+            },
+    }
+
+    let a_u128 = small_uint_unchecked_pow_func(u128::MAX / 3, 2_u32);
+    match a_u128
+    {
+        Some(a) => {
+                println!("{} / 2 = {}", u128::MAX / 3, a);
+                assert_eq!(a, 56713727820156410577229101238628035242_u128);
+            },
+        None => {
+                println!("Divided by zero.");
+                assert_eq!(a_u128, None);
+            },
+    }
+
+    let b_u128 = small_uint_unchecked_pow_func(u128::MAX / 3, 0_u32);
+    match b_u128
+    {
+        Some(b) => { println!("{} / 2 = {}", u128::MAX / 3, b); },
+        None => {
+                println!("Divided by zero.");
+                assert_eq!(b_u128, None);
+            },
+    }
+
+    let a_usize = small_uint_unchecked_pow_func(usize::MAX / 3, 2_u32);
+    match a_usize
+    {
+        Some(a) => {
+                println!("{} / 2 = {}", usize::MAX / 3, a);
+                assert_eq!(a, 3074457345618258602_usize);
+            },
+        None => {
+                println!("Divided by zero.");
+                assert_eq!(a_usize, None);
+            },
+    }
+
+    let b_usize = small_uint_unchecked_pow_func(usize::MAX / 3, 0_u32);
+    match b_usize
+    {
+        Some(b) => { println!("{} / 2 = {}", usize::MAX / 3, b); },
+        None => {
+                println!("Divided by zero.");
+                assert_eq!(b_usize, None);
+            },
+    }
+    println!("--------------------------------------");
+}
+
+fn small_uint_unchecked_pow_func<T: cryptocol::number::SmallUInt>(base: T, exp: u32) -> Option<T>
+{
+    base.checked_pow(exp)
+}
+
 fn small_uint_saturating_pow()
 {
     println!("small_uint_saturating_pow()");
@@ -2989,6 +3566,19 @@ fn small_uint_saturating_pow()
 fn small_uint_saturating_pow_func<T: cryptocol::number::SmallUInt>(lhs: T, rhs: u32) -> T
 {
     lhs.saturating_pow(rhs)
+}
+
+fn small_uint_modular_pow()
+{
+    println!("small_uint_modular_pow");
+    use cryptocol::number::SmallUInt;
+    let a = 2_u128;
+    let d = 4776913109852041418248056622882488318_u128;
+    let modulo = 4776913109852041418248056622882488319_u128;
+    let res = a.modular_pow(d, modulo);
+    println!("res = {}", res);
+    assert_eq!(res, 8);
+    println!("--------------------------------------");
 }
 
 fn small_uint_root_main()
