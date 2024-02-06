@@ -182,7 +182,7 @@ Breaking changes have been made to change the source code according to Rust conv
 | type u8192_with_u128                                            | type U8192_with_u128                                            |
 | type u16384_with_u128                                           | type U16384_with_u128                                           |
 
-## trait SmallSInt and its implementation for i8, i16, i32, i64, i128, and isize
+### trait SmallSInt and its implementation for i8, i16, i32, i64, i128, and isize
 | Ver. 0.5.0                                                      | Ver. 0.6.0                                                      |
 |-----------------------------------------------------------------|-----------------------------------------------------------------|
 | fn Max() -> Self                                                | fn max() -> Self                                                |
@@ -222,8 +222,4 @@ Breaking changes have been made to change the source code according to Rust conv
 | fn random_odd_with_MSB_set_BigUInt(&mut self) -> BigUInt<T, N>  | fn random_odd_with_msb_set_biguint(&mut self) -> BigUInt<T, N>  |
 | fn random_prime_using_Miller_Rabin_BigUInt(..) -> BigUInt<T, N> | fn random_prime_using_miller_rabin_biguint(..) -> BigUInt<T, N> |
 | fn random_prime_with_MSB_set_using_Miller_Rabin_BigUInt(.)-> .. | fn random_prime_with_msb_set_using_miller_rabin_biguint(.)-> .. |
-
-
-
-
 

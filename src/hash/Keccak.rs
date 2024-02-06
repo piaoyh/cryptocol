@@ -30,14 +30,17 @@ use crate::number::{ SmallUInt, IntUnion, LongUnion };
 /// but they are all incomplete attacks.
 /// Read [more](https://en.wikipedia.org/wiki/SHA-2#Cryptanalysis_and_validation)
 /// 
-/// # Use of MD4 and their variants
-/// Keccak and its variants can be still used for non-cryptograpic purposes such as:
+/// # Use of SHA3 and their variants
+/// You can use Keccak and its variants for cryptograpic purposes such as:
 /// - Generating IDs
 /// - Integrity test
 /// - Storing passwords
 /// - Digital Signature
+/// - Key generation
 /// - Implementing proof of work for block chain.
 /// - Study of hash algorithms
+/// - Cryptanalysis Research to find the weakness of SHA-3 and Keccak
+/// construction which SHA3 family uses
 /// 
 /// # Generic Parameters
 /// You can create your own expanded version of MD4 by changing the generic
