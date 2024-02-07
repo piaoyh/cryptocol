@@ -1033,7 +1033,7 @@ pub trait SmallUInt: Copy + Clone + Sized //+ Display + Debug + ToString
     ///     println!("{} + 55 = {}\nOverflow = {}", a_shortunion, b_shortunion, overflow);
     ///     assert_eq!(b_shortunion.into_u16(), u16::MAX);
     ///     assert_eq!(overflow, false);
-    ///        
+    /// 
     ///     let c_shortunion: ShortUnion;
     ///     (c_shortunion, overflow) = small_uint_overflowing_add_func(b_shortunion, 1_u16.into_shortunion());
     ///     println!("{} + 1 = {}\nOverflow = {}", b_shortunion, c_shortunion, overflow);
@@ -1057,7 +1057,7 @@ pub trait SmallUInt: Copy + Clone + Sized //+ Display + Debug + ToString
     ///     println!("{} + 55 = {}\nOverflow = {}", a_intunion, b_intunion, overflow);
     ///     assert_eq!(b_intunion.into_u32(), u32::MAX);
     ///     assert_eq!(overflow, false);
-    ///        
+    /// 
     ///     let c_intunion: IntUnion;
     ///     (c_intunion, overflow) = small_uint_overflowing_add_func(b_intunion, 1_u32.into_intunion());
     ///     println!("{} + 1 = {}\nOverflow = {}", b_intunion, c_intunion, overflow);
@@ -1081,7 +1081,7 @@ pub trait SmallUInt: Copy + Clone + Sized //+ Display + Debug + ToString
     ///     println!("{} + 55 = {}\nOverflow = {}", a_longunion, b_longunion, overflow);
     ///     assert_eq!(b_longunion.into_u64(), u64::MAX);
     ///     assert_eq!(overflow, false);
-    ///        
+    /// 
     ///     let c_longunion: LongUnion;
     ///     (c_longunion, overflow) = small_uint_overflowing_add_func(b_longunion, 1_u64.into_longunion());
     ///     println!("{} + 1 = {}\nOverflow = {}", b_longunion, c_longunion, overflow);
@@ -1105,7 +1105,7 @@ pub trait SmallUInt: Copy + Clone + Sized //+ Display + Debug + ToString
     ///     println!("{} + 55 = {}\nOverflow = {}", a_longerunion, b_longerunion, overflow);
     ///     assert_eq!(b_longerunion.into_u128(), u128::MAX);
     ///     assert_eq!(overflow, false);
-    ///        
+    /// 
     ///     let c_longerunion: LongerUnion;
     ///     (c_longerunion, overflow) = small_uint_overflowing_add_func(b_longerunion, 1_u128.into_longerunion());
     ///     println!("{} + 1 = {}\nOverflow = {}", b_longerunion, c_longerunion, overflow);
@@ -1129,7 +1129,7 @@ pub trait SmallUInt: Copy + Clone + Sized //+ Display + Debug + ToString
     ///     println!("{} + 55 = {}\nOverflow = {}", a_sizeunion, b_sizeunion, overflow);
     ///     assert_eq!(b_sizeunion.into_usize(), usize::MAX);
     ///     assert_eq!(overflow, false);
-    ///        
+    /// 
     ///     let c_sizeunion: SizeUnion;
     ///     (c_sizeunion, overflow) = small_uint_overflowing_add_func(b_sizeunion, 1_usize.into_sizeunion());
     ///     println!("{} + 1 = {}\nOverflow = {}", b_sizeunion, c_sizeunion, overflow);
@@ -1216,7 +1216,7 @@ pub trait SmallUInt: Copy + Clone + Sized //+ Display + Debug + ToString
     ///     println!("{} + 55 = {}\nOverflow = {}", a_shortunion, b_shortunion, overflow);
     ///     assert_eq!(b_shortunion.into_u16(), u16::MAX);
     ///     assert_eq!(overflow, false);
-    ///        
+    /// 
     ///     let c_shortunion: ShortUnion;
     ///     (c_shortunion, overflow) = small_uint_overflowing_add_func(b_shortunion, 1_u16.into_shortunion());
     ///     println!("{} + 1 = {}\nOverflow = {}", b_shortunion, c_shortunion, overflow);
@@ -1228,7 +1228,7 @@ pub trait SmallUInt: Copy + Clone + Sized //+ Display + Debug + ToString
     ///     println!("{} + 55 = {}\nOverflow = {}", a_intunion, b_intunion, overflow);
     ///     assert_eq!(b_intunion.into_u32(), u32::MAX);
     ///     assert_eq!(overflow, false);
-    ///        
+    /// 
     ///     let c_intunion: IntUnion;
     ///     (c_intunion, overflow) = small_uint_overflowing_add_func(b_intunion, 1_u32.into_intunion());
     ///     println!("{} + 1 = {}\nOverflow = {}", b_intunion, c_intunion, overflow);
@@ -1240,7 +1240,7 @@ pub trait SmallUInt: Copy + Clone + Sized //+ Display + Debug + ToString
     ///     println!("{} + 55 = {}\nOverflow = {}", a_longunion, b_longunion, overflow);
     ///     assert_eq!(b_longunion.into_u64(), u64::MAX);
     ///     assert_eq!(overflow, false);
-    ///        
+    /// 
     ///     let c_longunion: LongUnion;
     ///     (c_longunion, overflow) = small_uint_overflowing_add_func(b_longunion, 1_u64.into_longunion());
     ///     println!("{} + 1 = {}\nOverflow = {}", b_longunion, c_longunion, overflow);
@@ -1252,7 +1252,7 @@ pub trait SmallUInt: Copy + Clone + Sized //+ Display + Debug + ToString
     ///     println!("{} + 55 = {}\nOverflow = {}", a_longerunion, b_longerunion, overflow);
     ///     assert_eq!(b_longerunion.into_u128(), u128::MAX);
     ///     assert_eq!(overflow, false);
-    ///        
+    /// 
     ///     let c_longerunion: LongerUnion;
     ///     (c_longerunion, overflow) = small_uint_overflowing_add_func(b_longerunion, 1_u128.into_longerunion());
     ///     println!("{} + 1 = {}\nOverflow = {}", b_longerunion, c_longerunion, overflow);
@@ -1264,7 +1264,7 @@ pub trait SmallUInt: Copy + Clone + Sized //+ Display + Debug + ToString
     ///     println!("{} + 55 = {}\nOverflow = {}", a_sizeunion, b_sizeunion, overflow);
     ///     assert_eq!(b_sizeunion.into_usize(), usize::MAX);
     ///     assert_eq!(overflow, false);
-    ///        
+    /// 
     ///     let c_sizeunion: SizeUnion;
     ///     (c_sizeunion, overflow) = small_uint_overflowing_add_func(b_sizeunion, 1_usize.into_sizeunion());
     ///     println!("{} + 1 = {}\nOverflow = {}", b_sizeunion, c_sizeunion, overflow);
@@ -3782,7 +3782,7 @@ pub trait SmallUInt: Copy + Clone + Sized //+ Display + Debug + ToString
     ///     let a_shortunion = small_uint_wrapping_sub_func(55_u16.into_shortunion(), 55_u16.into_shortunion());
     ///     println!("55 - 55 = {}", a_shortunion);
     ///     assert_eq!(a_shortunion.get(), 0_u16);
-    ///     
+    /// 
     ///     let b_shortunion = small_uint_wrapping_sub_func(a_shortunion, 1_u16.into_shortunion());
     ///     println!("{} - 1 = {}", a_shortunion, b_shortunion);
     ///     assert_eq!(b_shortunion.get(), u16::MAX);
@@ -3802,7 +3802,7 @@ pub trait SmallUInt: Copy + Clone + Sized //+ Display + Debug + ToString
     ///     let a_intunion = small_uint_wrapping_sub_func(55_u32.into_intunion(), 55_u32.into_intunion());
     ///     println!("55 - 55 = {}", a_intunion);
     ///     assert_eq!(a_intunion.get(), 0_u32);
-    ///     
+    /// 
     ///     let b_intunion = small_uint_wrapping_sub_func(a_intunion, 1_u32.into_intunion());
     ///     println!("{} - 1 = {}", a_intunion, b_intunion);
     ///     assert_eq!(b_intunion.get(), u32::MAX);
@@ -3822,7 +3822,7 @@ pub trait SmallUInt: Copy + Clone + Sized //+ Display + Debug + ToString
     ///     let a_longunion = small_uint_wrapping_sub_func(55_u64.into_longunion(), 55_u64.into_longunion());
     ///     println!("55 - 55 = {}", a_longunion);
     ///     assert_eq!(a_longunion.get(), 0_u64);
-    ///     
+    /// 
     ///     let b_longunion = small_uint_wrapping_sub_func(a_longunion, 1_u64.into_longunion());
     ///     println!("{} - 1 = {}", a_longunion, b_longunion);
     ///     assert_eq!(b_longunion.get(), u64::MAX);
@@ -3842,7 +3842,7 @@ pub trait SmallUInt: Copy + Clone + Sized //+ Display + Debug + ToString
     ///     let a_longerunion = small_uint_wrapping_sub_func(55_u128.into_longerunion(), 55_u128.into_longerunion());
     ///     println!("55 - 55 = {}", a_longerunion);
     ///     assert_eq!(a_longerunion.get(), 0_u128);
-    ///     
+    /// 
     ///     let b_longerunion = small_uint_wrapping_sub_func(a_longerunion, 1_u128.into_longerunion());
     ///     println!("{} - 1 = {}", a_longerunion, b_longerunion);
     ///     assert_eq!(b_longerunion.get(), u128::MAX);
@@ -3862,7 +3862,7 @@ pub trait SmallUInt: Copy + Clone + Sized //+ Display + Debug + ToString
     ///     let a_sizeunion = small_uint_wrapping_sub_func(55_usize.into_sizeunion(), 55_usize.into_sizeunion());
     ///     println!("55 - 55 = {}", a_sizeunion);
     ///     assert_eq!(a_sizeunion.get(), 0_usize);
-    ///     
+    /// 
     ///     let b_sizeunion = small_uint_wrapping_sub_func(a_sizeunion, 1_usize.into_sizeunion());
     ///     println!("{} - 1 = {}", a_sizeunion, b_sizeunion);
     ///     assert_eq!(b_sizeunion.get(), usize::MAX);
@@ -3933,7 +3933,7 @@ pub trait SmallUInt: Copy + Clone + Sized //+ Display + Debug + ToString
     ///     let a_shortunion = small_uint_wrapping_sub_func(55_u16.into_shortunion(), 55_u16.into_shortunion());
     ///     println!("55 - 55 = {}", a_shortunion);
     ///     assert_eq!(a_shortunion.get(), 0_u16);
-    ///     
+    /// 
     ///     let b_shortunion = small_uint_wrapping_sub_func(a_shortunion, 1_u16.into_shortunion());
     ///     println!("{} - 1 = {}", a_shortunion, b_shortunion);
     ///     assert_eq!(b_shortunion.get(), u16::MAX);
@@ -3941,7 +3941,7 @@ pub trait SmallUInt: Copy + Clone + Sized //+ Display + Debug + ToString
     ///     let a_intunion = small_uint_wrapping_sub_func(55_u32.into_intunion(), 55_u32.into_intunion());
     ///     println!("55 - 55 = {}", a_intunion);
     ///     assert_eq!(a_intunion.get(), 0_u32);
-    ///     
+    /// 
     ///     let b_intunion = small_uint_wrapping_sub_func(a_intunion, 1_u32.into_intunion());
     ///     println!("{} - 1 = {}", a_intunion, b_intunion);
     ///     assert_eq!(b_intunion.get(), u32::MAX);
@@ -3949,7 +3949,7 @@ pub trait SmallUInt: Copy + Clone + Sized //+ Display + Debug + ToString
     ///     let a_longunion = small_uint_wrapping_sub_func(55_u64.into_longunion(), 55_u64.into_longunion());
     ///     println!("55 - 55 = {}", a_longunion);
     ///     assert_eq!(a_longunion.get(), 0_u64);
-    ///     
+    /// 
     ///     let b_longunion = small_uint_wrapping_sub_func(a_longunion, 1_u64.into_longunion());
     ///     println!("{} - 1 = {}", a_longunion, b_longunion);
     ///     assert_eq!(b_longunion.get(), u64::MAX);
@@ -3957,7 +3957,7 @@ pub trait SmallUInt: Copy + Clone + Sized //+ Display + Debug + ToString
     ///     let a_longerunion = small_uint_wrapping_sub_func(55_u128.into_longerunion(), 55_u128.into_longerunion());
     ///     println!("55 - 55 = {}", a_longerunion);
     ///     assert_eq!(a_longerunion.get(), 0_u128);
-    ///     
+    /// 
     ///     let b_longerunion = small_uint_wrapping_sub_func(a_longerunion, 1_u128.into_longerunion());
     ///     println!("{} - 1 = {}", a_longerunion, b_longerunion);
     ///     assert_eq!(b_longerunion.get(), u128::MAX);
@@ -3965,7 +3965,7 @@ pub trait SmallUInt: Copy + Clone + Sized //+ Display + Debug + ToString
     ///     let a_sizeunion = small_uint_wrapping_sub_func(55_usize.into_sizeunion(), 55_usize.into_sizeunion());
     ///     println!("55 - 55 = {}", a_sizeunion);
     ///     assert_eq!(a_sizeunion.get(), 0_usize);
-    ///     
+    /// 
     ///     let b_sizeunion = small_uint_wrapping_sub_func(a_sizeunion, 1_usize.into_sizeunion());
     ///     println!("{} - 1 = {}", a_sizeunion, b_sizeunion);
     ///     assert_eq!(b_sizeunion.get(), usize::MAX);
@@ -4150,6 +4150,117 @@ pub trait SmallUInt: Copy + Clone + Sized //+ Display + Debug + ToString
     ///     lhs.overflowing_sub(rhs)
     /// }
     /// ```
+    /// 
+    /// # Example 7 for ShortUnion
+    /// ```
+    /// use cryptocol::number::SmallUInt;
+    /// fn main()
+    /// {
+    ///     let (a_shortunion, overflow) = func(55_u16.into_shortunion(), 55_u16.into_shortunion());
+    ///     println!("55 - 55 = {}\nUnderflow = {}", a_shortunion, overflow);
+    ///     assert_eq!(a_shortunion.get(), 0_u16);
+    ///     assert_eq!(overflow, false);
+    /// 
+    ///     let (b_shortunion, overflow) = func(a_shortunion, 1_u16.into_shortunion());
+    ///     println!("{} - 1 = {}\nUnderflow = {}", b_shortunion, b_shortunion, overflow);
+    ///     assert_eq!(b_shortunion.get(), u16::MAX);
+    ///     assert_eq!(overflow, true);
+    /// 
+    /// }
+    /// 
+    /// fn func<T: SmallUInt>(lhs: T, rhs: T) -> (T, bool)
+    /// {
+    ///     lhs.overflowing_sub(rhs)
+    /// }
+    /// ```
+    /// 
+    /// # Example 8 for IntUnion
+    /// ```
+    /// use cryptocol::number::SmallUInt;
+    /// fn main()
+    /// {
+    ///     let (a_intunion, overflow) = func(55_u32.into_intunion(), 55_u32.into_intunion());
+    ///     println!("55 - 55 = {}\nUnderflow = {}", a_intunion, overflow);
+    ///     assert_eq!(a_intunion.get(), 0_u32);
+    ///     assert_eq!(overflow, false);
+    /// 
+    ///     let (b_intunion, overflow) = func(a_intunion, 1_u32.into_intunion());
+    ///     println!("{} - 1 = {}\nUnderflow = {}", a_intunion, b_intunion, overflow);
+    ///     assert_eq!(b_intunion.get(), u32::MAX);
+    ///     assert_eq!(overflow, true);
+    /// }
+    /// 
+    /// fn func<T: SmallUInt>(lhs: T, rhs: T) -> (T, bool)
+    /// {
+    ///     lhs.overflowing_sub(rhs)
+    /// }
+    /// ```
+    /// 
+    /// # Example 9 for LongUnion
+    /// ```
+    /// use cryptocol::number::SmallUInt;
+    /// fn main()
+    /// {
+    ///     let (a_longunion, overflow) = func(55_u64.into_longunion(), 55_u64.into_longunion());
+    ///     println!("55 - 55 = {}\nUnderflow = {}", a_longunion, overflow);
+    ///     assert_eq!(a_longunion.get(), 0_u64);
+    ///     assert_eq!(overflow, false);
+    /// 
+    ///     let (b_longunion, overflow) = func(a_longunion, 1_u64.into_longunion());
+    ///     println!("{} - 1 = {}\nUnderflow = {}", a_longunion, b_longunion, overflow);
+    ///     assert_eq!(b_longunion.get(), u64::MAX);
+    ///     assert_eq!(overflow, true);
+    /// }
+    /// 
+    /// fn func<T: SmallUInt>(lhs: T, rhs: T) -> (T, bool)
+    /// {
+    ///     lhs.overflowing_sub(rhs)
+    /// }
+    /// ```
+    /// 
+    /// # Example 10 for LongerUnion
+    /// ```
+    /// use cryptocol::number::SmallUInt;
+    /// fn main()
+    /// {
+    ///     let (a_longerunion, overflow) = func(55_u128.into_longerunion(), 55_u128.into_longerunion());
+    ///     println!("55 - 55 = {}\nUnderflow = {}", a_longerunion, a_longerunion);
+    ///     assert_eq!(a_longerunion.get(), 0_u128);
+    ///     assert_eq!(overflow, false);
+    /// 
+    ///     let (b_longerunion, overflow) = func(a_longerunion, 1_u128.into_longerunion());
+    ///     println!("{} - 1 = {}\nUnderflow = {}", a_longerunion, b_longerunion, overflow);
+    ///     assert_eq!(b_longerunion.get(), u128::MAX);
+    ///     assert_eq!(overflow, true);
+    /// }
+    /// 
+    /// fn func<T: SmallUInt>(lhs: T, rhs: T) -> (T, bool)
+    /// {
+    ///     lhs.overflowing_sub(rhs)
+    /// }
+    /// ```
+    /// 
+    /// # Example 11 for SizeUnion
+    /// ```
+    /// use cryptocol::number::SmallUInt;
+    /// fn main()
+    /// {
+    ///     let (a_sizeunion, overflow) = func(55_usize.into_sizeunion(), 55_usize.intinto_sizeuniono_usize());
+    ///     println!("55 - 55 = {}\nUnderflow = {}", a_sizeunion, overflow);
+    ///     assert_eq!(a_sizeunion.get(), 0_usize);
+    ///     assert_eq!(overflow, false);
+    /// 
+    ///     let (b_sizeunion, overflow) = func(a_sizeunion, 1_usize.into_sizeunion());
+    ///     println!("{} - 1 = {}\nUnderflow = {}", a_sizeunion, b_sizeunion, overflow);
+    ///     assert_eq!(b_sizeunion.get(), usize::MAX);
+    ///     assert_eq!(overflow, true);
+    /// }
+    /// 
+    /// fn func<T: SmallUInt>(lhs: T, rhs: T) -> (T, bool)
+    /// {
+    ///     lhs.overflowing_sub(rhs)
+    /// }
+    /// ```
     /// You can use the above generic function `func<>()` for all
     /// SmallUInt-supported data types in a same scope.
     /// Look into the following example.
@@ -4218,6 +4329,56 @@ pub trait SmallUInt: Copy + Clone + Sized //+ Display + Debug + ToString
     ///     println!("{} - 1 = {}\nUnderflow = {}", a_usize.0, b_usize.0, b_usize.1);
     ///     assert_eq!(b_usize.0, usize::MAX);
     ///     assert_eq!(b_usize.1, true);
+    /// 
+    ///     let (a_shortunion, overflow) = func(55_u16.into_shortunion(), 55_u16.into_shortunion());
+    ///     println!("55 - 55 = {}\nUnderflow = {}", a_shortunion, overflow);
+    ///     assert_eq!(a_shortunion.get(), 0_u16);
+    ///     assert_eq!(overflow, false);
+    /// 
+    ///     let (b_shortunion, overflow) = func(a_shortunion, 1_u16.into_shortunion());
+    ///     println!("{} - 1 = {}\nUnderflow = {}", b_shortunion, b_shortunion, overflow);
+    ///     assert_eq!(b_shortunion.get(), u16::MAX);
+    ///     assert_eq!(overflow, true);
+    /// 
+    ///     let (a_intunion, overflow) = func(55_u32.into_intunion(), 55_u32.into_intunion());
+    ///     println!("55 - 55 = {}\nUnderflow = {}", a_intunion, overflow);
+    ///     assert_eq!(a_intunion.get(), 0_u32);
+    ///     assert_eq!(overflow, false);
+    /// 
+    ///     let (b_intunion, overflow) = func(a_intunion, 1_u32.into_intunion());
+    ///     println!("{} - 1 = {}\nUnderflow = {}", a_intunion, b_intunion, overflow);
+    ///     assert_eq!(b_intunion.get(), u32::MAX);
+    ///     assert_eq!(overflow, true);
+    /// 
+    ///     let (a_longunion, overflow) = func(55_u64.into_longunion(), 55_u64.into_longunion());
+    ///     println!("55 - 55 = {}\nUnderflow = {}", a_longunion, overflow);
+    ///     assert_eq!(a_longunion.get(), 0_u64);
+    ///     assert_eq!(overflow, false);
+    /// 
+    ///     let (b_longunion, overflow) = func(a_longunion, 1_u64.into_longunion());
+    ///     println!("{} - 1 = {}\nUnderflow = {}", a_longunion, b_longunion, overflow);
+    ///     assert_eq!(b_longunion.get(), u64::MAX);
+    ///     assert_eq!(overflow, true);
+    /// 
+    ///     let (a_longerunion, overflow) = func(55_u128.into_longerunion(), 55_u128.into_longerunion());
+    ///     println!("55 - 55 = {}\nUnderflow = {}", a_longerunion, a_longerunion);
+    ///     assert_eq!(a_longerunion.get(), 0_u128);
+    ///     assert_eq!(overflow, false);
+    /// 
+    ///     let (b_longerunion, overflow) = func(a_longerunion, 1_u128.into_longerunion());
+    ///     println!("{} - 1 = {}\nUnderflow = {}", a_longerunion, b_longerunion, overflow);
+    ///     assert_eq!(b_longerunion.get(), u128::MAX);
+    ///     assert_eq!(overflow, true);
+    /// 
+    ///     let (a_sizeunion, overflow) = func(55_usize.into_sizeunion(), 55_usize.intinto_sizeuniono_usize());
+    ///     println!("55 - 55 = {}\nUnderflow = {}", a_sizeunion, overflow);
+    ///     assert_eq!(a_sizeunion.get(), 0_usize);
+    ///     assert_eq!(overflow, false);
+    /// 
+    ///     let (b_sizeunion, overflow) = func(a_sizeunion, 1_usize.into_sizeunion());
+    ///     println!("{} - 1 = {}\nUnderflow = {}", a_sizeunion, b_sizeunion, overflow);
+    ///     assert_eq!(b_sizeunion.get(), usize::MAX);
+    ///     assert_eq!(overflow, true);
     /// }
     /// 
     /// fn func<T: SmallUInt>(lhs: T, rhs: T) -> (T, bool)

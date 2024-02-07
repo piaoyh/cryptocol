@@ -1416,6 +1416,7 @@ fn small_uint_wrapping_sub_func<T: cryptocol::number::SmallUInt>(lhs: T, rhs: T)
 fn small_uint_overflowing_sub()
 {
     println!("small_uint_overflowing_sub()");
+    use cryptocol::number::SmallUInt;
     // Example for u8
     let a_u8 = small_uint_overflowing_sub_func(55_u8, 55_u8);
     println!("55 - 55 = {}\nUnderflow = {}", a_u8.0, a_u8.1);
@@ -1481,6 +1482,61 @@ fn small_uint_overflowing_sub()
     println!("{} - 1 = {}\nUnderflow = {}", a_usize.0, b_usize.0, b_usize.1);
     assert_eq!(b_usize.0, usize::MAX);
     assert_eq!(b_usize.1, true);
+
+    // Example for ShortUnion
+    let (a_shortunion, overflow) = small_uint_overflowing_sub_func(55_u16.into_shortunion(), 55_u16.into_shortunion());
+    println!("55 - 55 = {}\nUnderflow = {}", a_shortunion, overflow);
+    assert_eq!(a_shortunion.get(), 0_u16);
+    assert_eq!(overflow, false);
+ 
+    let (b_shortunion, overflow) = small_uint_overflowing_sub_func(a_shortunion, 1_u16.into_shortunion());
+    println!("{} - 1 = {}\nUnderflow = {}", b_shortunion, b_shortunion, overflow);
+    assert_eq!(b_shortunion.get(), u16::MAX);
+    assert_eq!(overflow, true);
+
+    // Example for IntUnion
+    let (a_intunion, overflow) = small_uint_overflowing_sub_func(55_u32.into_intunion(), 55_u32.into_intunion());
+    println!("55 - 55 = {}\nUnderflow = {}", a_intunion, overflow);
+    assert_eq!(a_intunion.get(), 0_u32);
+    assert_eq!(overflow, false);
+ 
+    let (b_intunion, overflow) = small_uint_overflowing_sub_func(a_intunion, 1_u32.into_intunion());
+    println!("{} - 1 = {}\nUnderflow = {}", a_intunion, b_intunion, overflow);
+    assert_eq!(b_intunion.get(), u32::MAX);
+    assert_eq!(overflow, true);
+
+    // Example for LongUnion
+    let (a_longunion, overflow) = small_uint_overflowing_sub_func(55_u64.into_longunion(), 55_u64.into_longunion());
+    println!("55 - 55 = {}\nUnderflow = {}", a_longunion, overflow);
+    assert_eq!(a_longunion.get(), 0_u64);
+    assert_eq!(overflow, false);
+ 
+    let (b_longunion, overflow) = small_uint_overflowing_sub_func(a_longunion, 1_u64.into_longunion());
+    println!("{} - 1 = {}\nUnderflow = {}", a_longunion, b_longunion, overflow);
+    assert_eq!(b_longunion.get(), u64::MAX);
+    assert_eq!(overflow, true);
+
+    // Example for LongerUnion
+    let (a_longerunion, overflow) = small_uint_overflowing_sub_func(55_u128.into_longerunion(), 55_u128.into_longerunion());
+    println!("55 - 55 = {}\nUnderflow = {}", a_longerunion, a_longerunion);
+    assert_eq!(a_longerunion.get(), 0_u128);
+    assert_eq!(overflow, false);
+ 
+    let (b_longerunion, overflow) = small_uint_overflowing_sub_func(a_longerunion, 1_u128.into_longerunion());
+    println!("{} - 1 = {}\nUnderflow = {}", a_longerunion, b_longerunion, overflow);
+    assert_eq!(b_longerunion.get(), u128::MAX);
+    assert_eq!(overflow, true);
+
+    // Example for SizeUnion
+    let (a_sizeunion, overflow) = small_uint_overflowing_sub_func(55_usize.into_sizeunion(), 55_usize.into_sizeunion());
+    println!("55 - 55 = {}\nUnderflow = {}", a_sizeunion, overflow);
+    assert_eq!(a_sizeunion.get(), 0_usize);
+    assert_eq!(overflow, false);
+ 
+    let (b_sizeunion, overflow) = small_uint_overflowing_sub_func(a_sizeunion, 1_usize.into_sizeunion());
+    println!("{} - 1 = {}\nUnderflow = {}", a_sizeunion, b_sizeunion, overflow);
+    assert_eq!(b_sizeunion.get(), usize::MAX);
+    assert_eq!(overflow, true);
     println!("--------------------------------------");
 }
 
