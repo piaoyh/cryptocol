@@ -4654,6 +4654,196 @@ pub trait SmallUInt: Copy + Clone + Sized //+ Display + Debug + ToString
     ///     lhs.checked_sub(rhs)
     /// }
     /// ```
+    /// 
+    /// # Example 7 for ShortUnion
+    /// ```
+    /// use cryptocol::number::SmallUInt;
+    /// fn main()
+    /// {
+    ///     let a_shortunion = small_uint_checked_sub_func(55_u16.into_shortunion(), 55_u16.into_shortunion());
+    ///     match a_shortunion
+    ///     {
+    ///         Some(a) => {
+    ///                 println!("55 - 55 = {}", a);
+    ///                 assert_eq!(a.get(), 0_u16);
+    ///             },
+    ///         None => {
+    ///                 println!("Underflow happened.");
+    ///                 assert_eq!(a_shortunion, None);
+    ///             },
+    ///     }
+    /// 
+    ///     let b_shortunion = small_uint_checked_sub_func(a_shortunion.unwrap(), 1_u16.into_shortunion());
+    ///     match b_shortunion
+    ///     {
+    ///         Some(b) => {
+    ///                 println!("{} - 1 = {}", a_shortunion.unwrap(), b);
+    ///                 assert_eq!(b.get(), u16::MAX);
+    ///             },
+    ///         None => {
+    ///                 println!("Underflow happened.");
+    ///                 assert_eq!(b_shortunion, None);
+    ///             },
+    ///     }
+    /// }
+    /// 
+    /// fn func<T: SmallUInt>(lhs: T, rhs: T) -> Option<T>
+    /// {
+    ///     lhs.checked_sub(rhs)
+    /// }
+    /// ```
+    /// 
+    /// # Example 8 for IntUnion
+    /// ```
+    /// use cryptocol::number::SmallUInt;
+    /// fn main()
+    /// {
+    ///     let a_intunion = small_uint_checked_sub_func(55_u32.into_intunion(), 55_u32.into_intunion());
+    ///     match a_intunion
+    ///     {
+    ///         Some(a) => {
+    ///                 println!("55 - 55 = {}", a);
+    ///                 assert_eq!(a.get(), 0_u32);
+    ///             },
+    ///         None => {
+    ///                 println!("Underflow happened.");
+    ///                 assert_eq!(a_intunion, None);
+    ///             },
+    ///     }
+    /// 
+    ///     let b_intunion = small_uint_checked_sub_func(a_intunion.unwrap(), 1_u32.into_intunion());
+    ///     match b_intunion
+    ///     {
+    ///         Some(b) => {
+    ///                 println!("{} - 1 = {}", a_u32.unwrap(), b);
+    ///                 assert_eq!(b.get(), u32::MAX);
+    ///             },
+    ///         None => {
+    ///                 println!("Underflow happened.");
+    ///                 assert_eq!(b_intunion, None);
+    ///             },
+    ///     }
+    /// }
+    /// 
+    /// fn func<T: SmallUInt>(lhs: T, rhs: T) -> Option<T>
+    /// {
+    ///     lhs.checked_sub(rhs)
+    /// }
+    /// ```
+    /// 
+    /// # Example 9 for LongUnion
+    /// ```
+    /// use cryptocol::number::SmallUInt;
+    /// fn main()
+    /// {
+    ///     let a_longunion = small_uint_checked_sub_func(55_u64.into_longunion(), 55_u64.into_longunion());
+    ///     match a_longunion
+    ///     {
+    ///         Some(a) => {
+    ///                 println!("55 - 55 = {}", a);
+    ///                 assert_eq!(a.get(), 0_u64);
+    ///             },
+    ///         None => {
+    ///                 println!("Underflow happened.");
+    ///                 assert_eq!(a_longunion, None);
+    ///             },
+    ///     }
+    /// 
+    ///     let b_longunion = small_uint_checked_sub_func(a_longunion.unwrap(), 1_u64.into_longunion());
+    ///     match b_longunion
+    ///     {
+    ///         Some(b) => {
+    ///                 println!("{} + 1 = {}", a_longunion.unwrap(), b);
+    ///                 assert_eq!(b.get(), u64::MAX);
+    ///             },
+    ///         None => {
+    ///                 println!("Underflow happened.");
+    ///                 assert_eq!(b_longunion, None);
+    ///             },
+    ///     }
+    /// }
+    /// 
+    /// fn func<T: SmallUInt>(lhs: T, rhs: T) -> Option<T>
+    /// {
+    ///     lhs.checked_sub(rhs)
+    /// }
+    /// ```
+    /// 
+    /// # Example 10 for LongerUnion
+    /// ```
+    /// use cryptocol::number::SmallUInt;
+    /// fn main()
+    /// {
+    ///     let a_longerunion = small_uint_checked_sub_func(55_u128.into_longerunion(), 55_u128.into_longerunion());
+    ///     match a_longerunion
+    ///     {
+    ///         Some(a) => {
+    ///                 println!("55 - 55 = {}", a);
+    ///                 assert_eq!(a.get(), 0_u128);
+    ///             },
+    ///         None => {
+    ///                 println!("Underflow happened.");
+    ///                 assert_eq!(a_longerunion, None);
+    ///             },
+    ///     }
+    /// 
+    ///     let b_longerunion = small_uint_checked_sub_func(a_longerunion.unwrap(), 1_u128.into_longerunion());
+    ///     match b_longerunion
+    ///     {
+    ///         Some(b) => {
+    ///                 println!("{} - 1 = {}", a_longerunion.unwrap(), b);
+    ///                 assert_eq!(b.get(), u128::MAX);
+    ///             },
+    ///         None => {
+    ///                 println!("Underflow happened.");
+    ///                 assert_eq!(b_longerunion, None);
+    ///             },
+    ///     }
+    /// }
+    /// 
+    /// fn func<T: SmallUInt>(lhs: T, rhs: T) -> Option<T>
+    /// {
+    ///     lhs.checked_sub(rhs)
+    /// }
+    /// ```
+    /// 
+    /// # Example 11 for SizeUnion
+    /// ```
+    /// use cryptocol::number::SmallUInt;
+    /// fn main()
+    /// {
+    ///     let a_sizeunion = small_uint_checked_sub_func(55_usize.into_sizeunion(), 55_usize.into_sizeunion());
+    ///     match a_sizeunion
+    ///     {
+    ///         Some(a) => {
+    ///                 println!("55 - 55 = {}", a);
+    ///                 assert_eq!(a.get(), 0_usize);
+    ///             },
+    ///         None => {
+    ///                 println!("Underflow happened.");
+    ///                 assert_eq!(a_sizeunion, None);
+    ///             },
+    ///     }
+    /// 
+    ///     let b_sizeunion = small_uint_checked_sub_func(a_sizeunion.unwrap(), 1_usize.into_sizeunion());
+    ///     match b_sizeunion
+    ///     {
+    ///         Some(b) => {
+    ///                 println!("{} - 1 = {}", a_sizeunion.unwrap(), b);
+    ///                 assert_eq!(b.get(), usize::MAX);
+    ///             },
+    ///         None => {
+    ///                 println!("Underflow happened.");
+    ///                 assert_eq!(b_sizeunion, None);
+    ///             },
+    ///     }
+    /// }
+    /// 
+    /// fn func<T: SmallUInt>(lhs: T, rhs: T) -> Option<T>
+    /// {
+    ///     lhs.checked_sub(rhs)
+    /// }
+    /// ```
     /// You can use the above generic function `func<>()` for all
     /// SmallUInt-supported data types in a same scope.
     /// Look into the following example.
@@ -4816,6 +5006,141 @@ pub trait SmallUInt: Copy + Clone + Sized //+ Display + Debug + ToString
     ///         None => {
     ///                 println!("Underflow happened.");
     ///                 assert_eq!(b_usize, None);
+    ///             },
+    ///     }
+    /// 
+    ///     // Example for ShortUnion
+    ///     let a_shortunion = small_uint_checked_sub_func(55_u16.into_shortunion(), 55_u16.into_shortunion());
+    ///     match a_shortunion
+    ///     {
+    ///         Some(a) => {
+    ///                 println!("55 - 55 = {}", a);
+    ///                 assert_eq!(a.get(), 0_u16);
+    ///             },
+    ///         None => {
+    ///                 println!("Underflow happened.");
+    ///                 assert_eq!(a_shortunion, None);
+    ///             },
+    ///     }
+    /// 
+    ///     let b_shortunion = small_uint_checked_sub_func(a_shortunion.unwrap(), 1_u16.into_shortunion());
+    ///     match b_shortunion
+    ///     {
+    ///         Some(b) => {
+    ///                 println!("{} - 1 = {}", a_shortunion.unwrap(), b);
+    ///                 assert_eq!(b.get(), u16::MAX);
+    ///             },
+    ///         None => {
+    ///                 println!("Underflow happened.");
+    ///                 assert_eq!(b_shortunion, None);
+    ///             },
+    ///     }
+    /// 
+    ///     // Example for IntUnion
+    ///     let a_intunion = small_uint_checked_sub_func(55_u32.into_intunion(), 55_u32.into_intunion());
+    ///     match a_intunion
+    ///     {
+    ///         Some(a) => {
+    ///                 println!("55 - 55 = {}", a);
+    ///                 assert_eq!(a.get(), 0_u32);
+    ///             },
+    ///         None => {
+    ///                 println!("Underflow happened.");
+    ///                 assert_eq!(a_intunion, None);
+    ///             },
+    ///     }
+    /// 
+    ///     let b_intunion = small_uint_checked_sub_func(a_intunion.unwrap(), 1_u32.into_intunion());
+    ///     match b_intunion
+    ///     {
+    ///         Some(b) => {
+    ///                 println!("{} - 1 = {}", a_u32.unwrap(), b);
+    ///                 assert_eq!(b.get(), u32::MAX);
+    ///             },
+    ///         None => {
+    ///                 println!("Underflow happened.");
+    ///                 assert_eq!(b_intunion, None);
+    ///             },
+    ///     }
+    /// 
+    ///     // Example for LongUnion
+    ///     let a_longunion = small_uint_checked_sub_func(55_u64.into_longunion(), 55_u64.into_longunion());
+    ///     match a_longunion
+    ///     {
+    ///         Some(a) => {
+    ///                 println!("55 - 55 = {}", a);
+    ///                 assert_eq!(a.get(), 0_u64);
+    ///             },
+    ///         None => {
+    ///                 println!("Underflow happened.");
+    ///                 assert_eq!(a_longunion, None);
+    ///             },
+    ///     }
+    /// 
+    ///     let b_longunion = small_uint_checked_sub_func(a_longunion.unwrap(), 1_u64.into_longunion());
+    ///     match b_longunion
+    ///     {
+    ///         Some(b) => {
+    ///                 println!("{} + 1 = {}", a_longunion.unwrap(), b);
+    ///                 assert_eq!(b.get(), u64::MAX);
+    ///             },
+    ///         None => {
+    ///                 println!("Underflow happened.");
+    ///                 assert_eq!(b_longunion, None);
+    ///             },
+    ///     }
+    /// 
+    ///     // Example for LongerUnion
+    ///     let a_longerunion = small_uint_checked_sub_func(55_u128.into_longerunion(), 55_u128.into_longerunion());
+    ///     match a_longerunion
+    ///     {
+    ///         Some(a) => {
+    ///                 println!("55 - 55 = {}", a);
+    ///                 assert_eq!(a.get(), 0_u128);
+    ///             },
+    ///         None => {
+    ///                 println!("Underflow happened.");
+    ///                 assert_eq!(a_longerunion, None);
+    ///             },
+    ///     }
+    /// 
+    ///     let b_longerunion = small_uint_checked_sub_func(a_longerunion.unwrap(), 1_u128.into_longerunion());
+    ///     match b_longerunion
+    ///     {
+    ///         Some(b) => {
+    ///                 println!("{} - 1 = {}", a_longerunion.unwrap(), b);
+    ///                 assert_eq!(b.get(), u128::MAX);
+    ///             },
+    ///         None => {
+    ///                 println!("Underflow happened.");
+    ///                 assert_eq!(b_longerunion, None);
+    ///             },
+    ///     }
+    /// 
+    ///     // Example for SizeUnion
+    ///     let a_sizeunion = small_uint_checked_sub_func(55_usize.into_sizeunion(), 55_usize.into_sizeunion());
+    ///     match a_sizeunion
+    ///     {
+    ///         Some(a) => {
+    ///                 println!("55 - 55 = {}", a);
+    ///                 assert_eq!(a.get(), 0_usize);
+    ///             },
+    ///         None => {
+    ///                 println!("Underflow happened.");
+    ///                 assert_eq!(a_sizeunion, None);
+    ///             },
+    ///     }
+    /// 
+    ///     let b_sizeunion = small_uint_checked_sub_func(a_sizeunion.unwrap(), 1_usize.into_sizeunion());
+    ///     match b_sizeunion
+    ///     {
+    ///         Some(b) => {
+    ///                 println!("{} - 1 = {}", a_sizeunion.unwrap(), b);
+    ///                 assert_eq!(b.get(), usize::MAX);
+    ///             },
+    ///         None => {
+    ///                 println!("Underflow happened.");
+    ///                 assert_eq!(b_sizeunion, None);
     ///             },
     ///     }
     /// }
