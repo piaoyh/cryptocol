@@ -2746,6 +2746,61 @@ fn small_uint_overflowing_mul()
     println!("{} * 2 = {}\nOverflow = {}", a_usize.0, b_usize.0, b_usize.1);
     assert_eq!(b_usize.0, 6148914691236517204_usize);
     assert_eq!(b_usize.1, true);
+
+    // Example for ShortUnion
+    let (a_shortunion, overflow) = small_uint_overflowing_mul_func((u16::MAX / 3).into_shortunion(), 2_u16.into_shortunion());
+    println!("{} * 2 = {}\nOverflow = {}", (u16::MAX / 3).into_shortunion(), a_shortunion, overflow);
+    assert_eq!(a_shortunion.get(), 43690_u16);
+    assert_eq!(overflow, false);
+ 
+    let (b_shortunion, overflow) = small_uint_overflowing_mul_func(a_shortunion, 2_u16.into_shortunion());
+    println!("{} * 2 = {}\nOverflow = {}", a_shortunion, b_shortunion, overflow);
+    assert_eq!(b_shortunion.get(), 21844_u16);
+    assert_eq!(overflow, true);
+
+    // Example for IntUnion
+    let (a_intunion, overflow) = small_uint_overflowing_mul_func((u32::MAX / 3).into_intunion(), 2_u32.into_intunion());
+    println!("{} * 2 = {}\nOverflow = {}", (u32::MAX / 3).into_intunion(), a_intunion, overflow);
+    assert_eq!(a_intunion.get(), 2863311530_u32);
+    assert_eq!(overflow, false);
+ 
+    let (b_intunion, overflow) = small_uint_overflowing_mul_func(a_intunion, 2_u32.into_intunion());
+    println!("{} * 2 = {}\nOverflow = {}", a_intunion, b_intunion, overflow);
+    assert_eq!(b_intunion.get(), 1431655764_u32);
+    assert_eq!(overflow, true);
+
+    // Example for LongUnion
+    let (a_longunion, overflow) = small_uint_overflowing_mul_func((u64::MAX / 3).into_longunion(), 2_u64.into_longunion());
+    println!("{} * 2 = {}\nOverflow = {}", u64::MAX / 3, a_longunion, a_u64.1);
+    assert_eq!(a_longunion.get(), 12297829382473034410_u64);
+    assert_eq!(overflow, false);
+ 
+    let (b_longunion, overflow) = small_uint_overflowing_mul_func(a_longunion, 2_u64.into_longunion());
+    println!("{} * 2 = {}\nOverflow = {}", a_longunion, b_longunion, overflow);
+    assert_eq!(b_longunion.get(), 6148914691236517204_u64);
+    assert_eq!(overflow, true);
+
+    // Example for LongerUnion
+    let (a_longerunion, overflow) = small_uint_overflowing_mul_func((u128::MAX / 3).into_longerunion(), 2_u128.into_longerunion());
+    println!("{} * 2 = {}\nOverflow = {}", (u128::MAX / 3).into_longerunion(), a_longerunion, overflow);
+    assert_eq!(a_longerunion.get(), 226854911280625642308916404954512140970_u128);
+    assert_eq!(overflow, false);
+ 
+    let (b_longerunion, overflow)= small_uint_overflowing_mul_func(a_longerunion, 2_u128.into_longerunion());
+    println!("{} * 2 = {}\nOverflow = {}", a_longerunion, b_longerunion, overflow);
+    assert_eq!(b_longerunion.get(), 113427455640312821154458202477256070484_u128);
+    assert_eq!(overflow, true);
+
+    // Example for SizeUnion
+    let (a_sizeunion, overflow) = small_uint_overflowing_mul_func((usize::MAX / 3).into_sizeunion(), 2_usize.into_sizeunion());
+    println!("{} * 2 = {}\nOverflow = {}", usize::MAX / 3, a_sizeunion, overflow);
+    assert_eq!(a_sizeunion.get(), 12297829382473034410_usize);
+    assert_eq!(overflow, false);
+ 
+    let (b_sizeunion, overflow) = small_uint_overflowing_mul_func(a_sizeunion, 2_usize.into_sizeunion());
+    println!("{} * 2 = {}\nOverflow = {}", a_sizeunion, b_sizeunion, overflow);
+    assert_eq!(b_sizeunion.get(), 6148914691236517204_usize);
+    assert_eq!(overflow, true);
     println!("--------------------------------------");
 }
 
@@ -2917,6 +2972,141 @@ fn small_uint_checked_mul()
         None => {
                 println!("Overflow happened.");
                 assert_eq!(b_usize, None);
+            },
+    }
+
+    // Example for ShortUnion
+    let a_shortunion = small_uint_checked_mul_func((u16::MAX / 3).into_shortunion(), 2_u16.into_shortunion());
+    match a_shortunion
+    {
+        Some(a) => {
+                println!("{} * 2 = {}", (u16::MAX / 3).into_shortunion(), a);
+                assert_eq!(a.get(), 43690_u16);
+            },
+        None => {
+                println!("Overflow happened.");
+                assert_eq!(a_shortunion, None);
+            },
+    }
+
+    let b_shortunion = small_uint_checked_mul_func(a_shortunion.unwrap(), 2_u16.into_shortunion());
+    match b_shortunion
+    {
+        Some(b) => {
+                println!("{} * 2 = {}", a_shortunion.unwrap(), b);
+                assert_eq!(b.get(), 21844_u16);
+            },
+        None => {
+                println!("Overflow happened.");
+                assert_eq!(b_shortunion, None);
+            },
+    }
+
+    // Example for IntUnion
+    let a_intunion = small_uint_checked_mul_func((u32::MAX / 3).into_intunion(), 2_u32.into_intunion());
+    match a_intunion
+    {
+        Some(a) => {
+                println!("{} * 2 = {}", (u32::MAX / 3).into_intunion(), a);
+                assert_eq!(a.get(), 2863311530_u32);
+            },
+        None => {
+                println!("Overflow happened.");
+                assert_eq!(a_intunion, None);
+            },
+    }
+
+    let b_intunion = small_uint_checked_mul_func(a_intunion.unwrap(), 2_u32.into_intunion());
+    match b_intunion
+    {
+        Some(b) => {
+                println!("{} * 2 = {}", a_intunion.unwrap(), b);
+                assert_eq!(b.get(), 1431655764_u32);
+            },
+        None => {
+                println!("Overflow happened.");
+                assert_eq!(b_intunion, None);
+            },
+    }
+
+    // Example for LongUnion
+    let a_longunion = small_uint_checked_mul_func((u64::MAX / 3).into_longunion(), 2_u64.into_longunion());
+    match a_longunion
+    {
+        Some(a) => {
+                println!("{} * 2 = {}", (u64::MAX / 3).into_longunion(), a);
+                assert_eq!(a.get(), 12297829382473034410_u64);
+            },
+        None => {
+                println!("Overflow happened.");
+                assert_eq!(a_longunion, None);
+            },
+    }
+
+    let b_longunion = small_uint_checked_mul_func(a_longunion.unwrap(), 2_u64.into_longunion());
+    match b_longunion
+    {
+        Some(b) => {
+                println!("{} * 2 = {}", a_longunion.unwrap(), b);
+                assert_eq!(b.get(), 6148914691236517204_u64);
+            },
+        None => {
+                println!("Overflow happened.");
+                assert_eq!(b_longunion, None);
+            },
+    }
+
+    // Example for LongerUnion
+    let a_longerunion = small_uint_checked_mul_func((u128::MAX / 3).into_longerunion(), 2_u128.into_longerunion());
+    match a_longerunion
+    {
+        Some(a) => {
+                println!("{} * 2 = {}", (u128::MAX / 3).into_longerunion(), a);
+                assert_eq!(a.get(), 226854911280625642308916404954512140970_u128);
+            },
+        None => {
+                println!("Overflow happened.");
+                assert_eq!(a_longerunion, None);
+            },
+    }
+
+    let b_longerunion = small_uint_checked_mul_func(a_longerunion.unwrap(), 2_u128.into_longerunion());
+    match b_longerunion
+    {
+        Some(b) => {
+                println!("{} * 2 = {}", a_longerunion.unwrap(), b);
+                assert_eq!(b.get(), 113427455640312821154458202477256070484_u128);
+            },
+        None => {
+                println!("Overflow happened.");
+                assert_eq!(b_longerunion, None);
+            },
+    }
+
+    // Example for SizeUnion
+    let a_sizeunion = small_uint_checked_mul_func((usize::MAX / 3).into_sizeunion(), 2_usize.into_sizeunion());
+    match a_sizeunion
+    {
+        Some(a) => {
+                println!("{} * 2 = {}", (usize::MAX / 3).into_sizeunion(), a.into_sizeunion());
+                assert_eq!(a.get(), 12297829382473034410_usize);
+            },
+        None => {
+                println!("Overflow happened.");
+                assert_eq!(a_sizeunion, None);
+            },
+    }
+
+    let b_sizeunion = small_uint_checked_mul_func(a_sizeunion.unwrap(), 2_usize.into_sizeunion());
+    match b_sizeunion
+    {
+        Some(b) => {
+                println!("{} * 2 = {}", a_sizeunion.unwrap(), b);
+                assert_eq!(b.get(), 6148914691236517204_usize);
+            },
+        None => {
+                println!("Overflow happened.");
+                assert_eq!(b_sizeunion, None);
             },
     }
     println!("--------------------------------------");
