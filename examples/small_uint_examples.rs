@@ -3120,6 +3120,7 @@ fn small_uint_checked_mul_func<T: cryptocol::number::SmallUInt>(lhs: T, rhs: T) 
 fn small_uint_unchecked_mul()
 {
     println!("small_uint_unchecked_add()");
+    use cryptocol::number::SmallUInt;
     // Example for u8
     let a_u8 = small_uint_unchecked_mul_func(u8::MAX / 3, 2_u8);
     println!("{} * 2 = {}", u8::MAX / 3, a_u8);
@@ -3167,6 +3168,47 @@ fn small_uint_unchecked_mul()
 
     // It will panic
     // let b_usize = small_uint_unchecked_mul_func(a_usize, 2_usize);
+
+    // Example for ShortUnion
+    let a_shortunion = small_uint_unchecked_mul_func((u16::MAX / 3).into_shortunion(), 2_u16.into_shortunion());
+    println!("{} * 2 = {}", (u16::MAX / 3).into_shortunion(), a_shortunion);
+    assert_eq!(a_shortunion.get(), 43690_u16);
+
+
+    // It will panic
+    // let b_shortunion = small_uint_unchecked_mul_func(a_shortunion, 2_u16.into_shortunion());
+
+    // Example for IntUnion
+    let a_intunion = small_uint_unchecked_mul_func((u32::MAX / 3).into_intunion(), 2_u32.into_intunion());
+    println!("{} * 2 = {}", (u32::MAX / 3).into_intunion(), a_intunion);
+    assert_eq!(a_intunion.get(), 2863311530_u32);
+
+    // It will panic
+    // let b_intunion = small_uint_unchecked_mul_func(a_intunion, 2_u32.into_intunion());
+
+    // Example for LongUnion
+    let a_longunion = small_uint_unchecked_mul_func((u64::MAX / 3).into_longunion(), 2_u64.into_longunion());
+    println!("{} * 2 = {}", (u64::MAX / 3).into_longunion(), a_longunion);
+    assert_eq!(a_longunion.get(), 12297829382473034410_u64);
+
+    // It will panic
+    // let b_longunion = small_uint_unchecked_mul_func(a_longunion, 2_u64.into_longunion());
+
+    // Example for LongerUnion
+    let a_longerunion = small_uint_unchecked_mul_func((u128::MAX / 3).into_longerunion(), 2_u128.into_longerunion());
+    println!("{} * 2 = {}", (u128::MAX / 3).into_longerunion(), a_longerunion);
+    assert_eq!(a_longerunion.get(), 226854911280625642308916404954512140970_u128);
+
+    // It will panic
+    // let b_longerunion = small_uint_unchecked_mul_func(a_longerunion, 2_u128.into_longerunion());
+
+    // Example for SizeUnion
+    let a_sizeunion = small_uint_unchecked_mul_func((usize::MAX / 3).into_sizeunion(), 2_usize.into_sizeunion());
+    println!("{} * 2 = {}", (usize::MAX / 3).into_sizeunion(), a_sizeunion);
+    assert_eq!(a_sizeunion.get(), 12297829382473034410_usize);
+
+    // It will panic
+    // let b_sizeunion = small_uint_unchecked_mul_func(a_sizeunion, 2_usize.into_sizeunion());
     println!("--------------------------------------");
 }
 
