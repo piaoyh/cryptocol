@@ -98,7 +98,7 @@ pub type SHA2_224_Generic_HRS_fixed<const ROUND: usize,
 
 /// The official SHA-256 hash algorithm
 #[allow(non_camel_case_types)]
-pub type SHA2_256 = SHA2_256_Expanded;
+pub type SHA2_256 = SHA2_256_Generic;   // equivalent to `pub type SHA2_256 = SHA2_256_Expanded;`
 
 /// The official SHA-224 hash algorithm
 #[allow(non_camel_case_types)]

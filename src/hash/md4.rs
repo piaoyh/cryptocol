@@ -33,7 +33,7 @@ pub type MD4_Generic_HR_fixed<const N: usize, const ROUND: usize,
 
 /// The official MD4 hash algorithm
 #[allow(non_camel_case_types)]
-pub type MD4 = MD4_Expanded;
+pub type MD4 = MD4_Generic;     // equivalent to `pub type MD4 = MD4_Expanded;`
 
 /// A MD4 message-digest algorithm that lossily compresses data of arbitrary
 /// length into a 128-bit hash value, and its flexible variants that allows

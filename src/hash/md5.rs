@@ -58,8 +58,7 @@ pub type MD5_Generic_HR_fixed<const N: usize, const ROUND: usize,
 
 /// The official MD5 hash algorithm
 #[allow(non_camel_case_types)]
-pub type MD5 = MD5_Expanded;
-
+pub type MD5 = MD5_Generic;     // equivalent to `pub type MD5 = MD5_Expanded;`
 
 /// A MD5 message-digest algorithm that lossily compresses data of arbitrary
 /// length into a 128-bit hash value, and its flexible variants that allows

@@ -75,10 +75,23 @@
 //! - [ ] SHA-3 (SHAKE 128)
 //! - [ ] SHA-3 (SHAKE 256)
 //! 
-//! ## Symmetric-Key Cryptographic Algorithms
-//! - [ ] DES
-//! - [ ] 3DES
-//! - [ ] AES
+//! ## Symmetric-key Algorithms for the Encryption/Decryption of digital data
+//! - [ ] DES symmetric-key encryption/decryption algorithm
+//!     --- Includes DES and its expanded versions.
+//!     `DES_Generic`
+// ! (symmetric/des/struct.DES_Generic.html#struct.DES_Generic)
+//! - [ ] NDES symmetric-key encryption/decryption algorithm
+//!     --- Includes 2DES, 3DES, 4DES, etc., and their expanded versions.
+//!     `NDES_Generic`
+// ! (symmetric/ndes/struct.NDES_Generic.html#struct.NDES_Generic)
+//! - [ ] AES symmetric-key encryption/decryption algorithm
+//!     --- Includes AES and its expanded versions.
+//!     `AES_Generic`
+// ! (symmetric/des/struct.AES_Generic.html#struct.AES_Generic)
+//! - [ ] NAES symmetric-key encryption/decryption algorithm
+//!     --- Includes 2AES, 3AES, 4AES, etc., and their expanded versions.
+//!     `NAES_Generic`
+// ! (symmetric/naes/struct.NAES_Generic.html#struct.NAES_Generic)
 //! 
 //! ## Pseudo-Random Number Generator Algorithms
 //! - [X] The Pseudo-random number generator wrappers
@@ -94,7 +107,7 @@
 //!     and for pseudo-random number generation algorithm such as
 //!     [`AnyNumber`](random/any_number/struct.AnyNumber.html#struct.AnyNumber)
 //! 
-//! ## Asymmetric-Key Cryptographic Algorithms
+//! ## Asymmetric-Key Algorithms for the Encryption/Decryption of digital data
 //! - [ ] Diffie-Hellman _--> Thinking about postponing to Roadmap for ver. 2.0_
 //! - [ ] RSA (Ron Rivest, Adi Shamir, Leonard Adleman)
 //! - [ ] ECC (Elliptic Curve Cryptosystem)
@@ -103,7 +116,7 @@
 //! the version number 1.0.0.0 will be given. After that whenever another
 //! functionality is added to this crate, the version number will get higher
 //! beyond 1.0.0.0. Before the version number 1.0.0.0, the maximum version
-//! number will be 0.26.x.x since there are all twenty-six functionalities
+//! number will be 0.27.x.x since there are all twenty-six functionalities
 //! listed above. So, for example, even if the version number is 0.5.0.0,
 //! it does not mean that 50% of all functionalities are implemented.
 
@@ -116,4 +129,5 @@
 
 pub mod number;
 pub mod hash;
+pub mod symmetric;
 pub mod random;

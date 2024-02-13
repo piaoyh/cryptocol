@@ -50,7 +50,7 @@ pub type SHA0_Generic_HR_fixed<const N: usize, const ROUND: usize,
                         ROUND, K0, K1, K2, K3, 0>;
 
 /// The official SHA-1 hash algorithm
-pub type SHA1 = SHA1_Expanded;
+pub type SHA1 = SHA1_Generic;   // equivalent to `pub type SHA1 = SHA1_Expanded;`
 
 /// The official SHA-0 hash algorithm
 pub type SHA0 = SHA0_Expanded;

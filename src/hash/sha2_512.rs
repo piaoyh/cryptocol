@@ -126,7 +126,7 @@ pub type SHA2_384_Generic_HRS_fixed<const ROUND: usize,
                     K72, K73, K74, K75, K76, K77, K78, K79>;
 /// The official SHA-512 hash algorithm
 #[allow(non_camel_case_types)]
-pub type SHA2_512 = SHA2_512_Expanded;
+pub type SHA2_512 = SHA2_512_Generic;   // equivalent to `pub type SHA2_512 = SHA2_512_Expanded;`
 
 /// The official SHA-384 hash algorithm
 #[allow(non_camel_case_types)]

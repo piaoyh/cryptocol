@@ -10,7 +10,7 @@
 //! 
 //! # Introduction
 //! The module that contains a few sub-modules
-//! to define Cryptographic hash functions
+//! to define cryptographic hash functions
 //! 
 //! # Background: Cryptographic hash functions
 //! What if we can make a kind of finger print of data and the finger print is
