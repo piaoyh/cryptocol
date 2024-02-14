@@ -47,6 +47,21 @@ pub type DES = DES_Generic;    // equivalent to `pub type DES = DES_Expanded;`
 /// // Todo
 /// 
 /// # Generic Parameters
+/// - IP01 ~ IP64: Inital permutation constants, and is 1-based.
+/// For example, `IP01 = 58` means that the 58th bit of data from the first
+/// bit is moved to the first bit of the data at initial permutation.
+/// You can change inital permutation wire by changing these constants
+/// The change of these constants does not change the security level.
+/// - FP01 ~ FP64: Final permutation constants, and is 1-based.
+/// For example, `FP01 = 40` means that the 40th bit of data from the first
+/// bit is moved to the first bit of the data at final permutation.
+/// You can change final permutation wire by changing these constants
+/// The change of these constants does not change the security level.
+/// - S000 ~ S763: S-Box constants, and its index such as 000, 212, etc. is
+/// 0-based. S0XX means S-Box 0, S1XX means S-Box 1, and so on. S000 is the
+/// first element of S-Box 0. You cange S-Box by changing these constants.
+/// The change of these constants DOES change the security level a lot.
+/// 
 /// // Todo
 /// 
 /// About the parameters and their default values,
@@ -64,40 +79,40 @@ pub type DES = DES_Generic;    // equivalent to `pub type DES = DES_Expanded;`
 /// 
 #[allow(non_camel_case_types)]
 pub struct DES_Generic<
-const IP00: u8 = 6,  const IP01: u8 = 14, const IP02: u8 = 22, const IP03: u8 = 30,
-const IP04: u8 = 38, const IP05: u8 = 46, const IP06: u8 = 54, const IP07: u8 = 62,
-const IP08: u8 = 4,  const IP09: u8 = 12, const IP10: u8 = 20, const IP11: u8 = 28,
-const IP12: u8 = 36, const IP13: u8 = 44, const IP14: u8 = 52, const IP15: u8 = 60,
-const IP16: u8 = 2,  const IP17: u8 = 10, const IP18: u8 = 18, const IP19: u8 = 26,
-const IP20: u8 = 34, const IP21: u8 = 42, const IP22: u8 = 50, const IP23: u8 = 58,
-const IP24: u8 = 0,  const IP25: u8 =  8, const IP26: u8 = 16, const IP27: u8 = 24,
-const IP28: u8 = 32, const IP29: u8 = 40, const IP30: u8 = 48, const IP31: u8 = 56,
-const IP32: u8 = 7,  const IP33: u8 = 15, const IP34: u8 = 23, const IP35: u8 = 31,
-const IP36: u8 = 39, const IP37: u8 = 47, const IP38: u8 = 55, const IP39: u8 = 63,
-const IP40: u8 = 5,  const IP41: u8 = 13, const IP42: u8 = 21, const IP43: u8 = 29,
-const IP44: u8 = 37, const IP45: u8 = 45, const IP46: u8 = 53, const IP47: u8 = 61,
-const IP48: u8 = 3,  const IP49: u8 = 11, const IP50: u8 = 19, const IP51: u8 = 27,
-const IP52: u8 = 35, const IP53: u8 = 43, const IP54: u8 = 51, const IP55: u8 = 59,
-const IP56: u8 = 1,  const IP57: u8 =  9, const IP58: u8 = 17, const IP59: u8 = 25,
-const IP60: u8 = 33, const IP61: u8 = 41, const IP62: u8 = 49, const IP63: u8 = 57,
-const FP00: u8 = 24, const FP01: u8 = 56, const FP02: u8 = 16, const FP03: u8 = 48,
-const FP04: u8 = 8,  const FP05: u8 = 40, const FP06: u8 = 0,  const FP07: u8 = 32,
-const FP08: u8 = 25, const FP09: u8 = 57, const FP10: u8 = 17, const FP11: u8 = 49,
+const IP01: u8 = 58, const IP02: u8 = 50, const IP03: u8 = 42, const IP04: u8 = 34,
+const IP05: u8 = 26, const IP06: u8 = 18, const IP07: u8 = 10, const IP08: u8 = 2,
+const IP09: u8 = 60, const IP10: u8 = 52, const IP11: u8 = 44, const IP12: u8 = 36,
+const IP13: u8 = 28, const IP14: u8 = 20, const IP15: u8 = 12, const IP16: u8 = 4,
+const IP17: u8 = 62, const IP18: u8 = 54, const IP19: u8 = 46, const IP20: u8 = 38,
+const IP21: u8 = 30, const IP22: u8 = 22, const IP23: u8 = 14, const IP24: u8 = 6,
+const IP25: u8 = 64, const IP26: u8 = 56, const IP27: u8 = 48, const IP28: u8 = 40,
+const IP29: u8 = 32, const IP30: u8 = 24, const IP31: u8 = 16, const IP32: u8 = 8,
+const IP33: u8 = 57, const IP34: u8 = 49, const IP35: u8 = 41, const IP36: u8 = 33,
+const IP37: u8 = 25, const IP38: u8 = 17, const IP39: u8 = 9,  const IP40: u8 = 1,
+const IP41: u8 = 59, const IP42: u8 = 51, const IP43: u8 = 43, const IP44: u8 = 35,
+const IP45: u8 = 27, const IP46: u8 = 19, const IP47: u8 = 11, const IP48: u8 = 3,
+const IP49: u8 = 61, const IP50: u8 = 53, const IP51: u8 = 45, const IP52: u8 = 37,
+const IP53: u8 = 29, const IP54: u8 = 21, const IP55: u8 = 13, const IP56: u8 = 5,
+const IP57: u8 = 63, const IP58: u8 = 55, const IP59: u8 = 47, const IP60: u8 = 39,
+const IP61: u8 = 31, const IP62: u8 = 23, const IP63: u8 = 15, const IP64: u8 = 7,
 // https://page.math.tu-berlin.de/~kant/teaching/hess/krypto-ws2006/des.htm
 // https://m.blog.naver.com/wnrjsxo/221708511553
-const FP12: u8 = 36, const FP13: u8 = 44, const FP14: u8 = 52, const FP15: u8 = 60,
-const FP16: u8 = 2,  const FP17: u8 = 10, const FP18: u8 = 18, const FP19: u8 = 26,
-const FP20: u8 = 34, const FP21: u8 = 42, const FP22: u8 = 50, const FP23: u8 = 58,
-const FP24: u8 = 0,  const FP25: u8 =  8, const FP26: u8 = 16, const FP27: u8 = 24,
-const FP28: u8 = 32, const FP29: u8 = 40, const FP30: u8 = 48, const FP31: u8 = 56,
-const FP32: u8 = 7,  const FP33: u8 = 15, const FP34: u8 = 23, const FP35: u8 = 31,
-const FP36: u8 = 39, const FP37: u8 = 47, const FP38: u8 = 55, const FP39: u8 = 63,
-const FP40: u8 = 5,  const FP41: u8 = 13, const FP42: u8 = 21, const FP43: u8 = 29,
-const FP44: u8 = 37, const FP45: u8 = 45, const FP46: u8 = 53, const FP47: u8 = 61,
-const FP48: u8 = 3,  const FP49: u8 = 11, const FP50: u8 = 19, const FP51: u8 = 27,
-const FP52: u8 = 35, const FP53: u8 = 43, const FP54: u8 = 51, const FP55: u8 = 59,
-const FP56: u8 = 1,  const FP57: u8 =  9, const FP58: u8 = 17, const FP59: u8 = 25,
-const FP60: u8 = 33, const FP61: u8 = 41, const FP62: u8 = 49, const FP63: u8 = 57,
+const FP01: u8 = 40, const FP02: u8 = 8,  const FP03: u8 = 48, const FP04: u8 = 16,
+const FP05: u8 = 56, const FP06: u8 = 24, const FP07: u8 = 64, const FP08: u8 = 32,
+const FP09: u8 = 39, const FP10: u8 = 7,  const FP11: u8 = 47, const FP12: u8 = 15,
+const FP13: u8 = 55, const FP14: u8 = 23, const FP15: u8 = 63, const FP16: u8 = 31,
+const FP17: u8 = 38, const FP18: u8 = 6,  const FP19: u8 = 46, const FP20: u8 = 14,
+const FP21: u8 = 54, const FP22: u8 = 22, const FP23: u8 = 62, const FP24: u8 = 30,
+const FP25: u8 = 37, const FP26: u8 = 5,  const FP27: u8 = 45, const FP28: u8 = 13,
+const FP29: u8 = 53, const FP30: u8 = 21, const FP31: u8 = 61, const FP32: u8 = 29,
+const FP33: u8 = 36, const FP34: u8 = 4,  const FP35: u8 = 44, const FP36: u8 = 12,
+const FP37: u8 = 52, const FP38: u8 = 20, const FP39: u8 = 60, const FP40: u8 = 28,
+const FP41: u8 = 35, const FP42: u8 = 3,  const FP43: u8 = 43, const FP44: u8 = 11,
+const FP45: u8 = 51, const FP46: u8 = 19, const FP47: u8 = 59, const FP48: u8 = 27,
+const FP49: u8 = 34, const FP50: u8 = 2,  const FP51: u8 = 42, const FP52: u8 = 10,
+const FP53: u8 = 50, const FP54: u8 = 18, const FP55: u8 = 58, const FP56: u8 = 26,
+const FP57: u8 = 33, const FP58: u8 = 1,  const FP59: u8 = 41, const FP60: u8 = 9,
+const FP61: u8 = 49, const FP62: u8 = 17, const FP63: u8 = 57, const FP64: u8 = 25,
 const S000: u8 = 0xe, const S001: u8 = 0x0, const S002: u8 = 0x4, const S003: u8 = 0xf,
 const S004: u8 = 0xd, const S005: u8 = 0x7, const S006: u8 = 0x1, const S007: u8 = 0x4,
 const S008: u8 = 0x2, const S009: u8 = 0xe, const S010: u8 = 0xf, const S011: u8 = 0x2,
@@ -233,38 +248,38 @@ const S760: u8 = 0x5, const S761: u8 = 0x6, const S762: u8 = 0x8, const S763: u8
 }
 
 impl <
-const IP00: u8, const IP01: u8, const IP02: u8, const IP03: u8,
-const IP04: u8, const IP05: u8, const IP06: u8, const IP07: u8,
-const IP08: u8, const IP09: u8, const IP10: u8, const IP11: u8,
-const IP12: u8, const IP13: u8, const IP14: u8, const IP15: u8,
-const IP16: u8, const IP17: u8, const IP18: u8, const IP19: u8,
-const IP20: u8, const IP21: u8, const IP22: u8, const IP23: u8,
-const IP24: u8, const IP25: u8, const IP26: u8, const IP27: u8,
-const IP28: u8, const IP29: u8, const IP30: u8, const IP31: u8,
-const IP32: u8, const IP33: u8, const IP34: u8, const IP35: u8,
-const IP36: u8, const IP37: u8, const IP38: u8, const IP39: u8,
-const IP40: u8, const IP41: u8, const IP42: u8, const IP43: u8,
-const IP44: u8, const IP45: u8, const IP46: u8, const IP47: u8,
-const IP48: u8, const IP49: u8, const IP50: u8, const IP51: u8,
-const IP52: u8, const IP53: u8, const IP54: u8, const IP55: u8,
-const IP56: u8, const IP57: u8, const IP58: u8, const IP59: u8,
-const IP60: u8, const IP61: u8, const IP62: u8, const IP63: u8,
-const FP00: u8, const FP01: u8, const FP02: u8, const FP03: u8,
-const FP04: u8, const FP05: u8, const FP06: u8, const FP07: u8,
-const FP08: u8, const FP09: u8, const FP10: u8, const FP11: u8,
-const FP12: u8, const FP13: u8, const FP14: u8, const FP15: u8,
-const FP16: u8, const FP17: u8, const FP18: u8, const FP19: u8,
-const FP20: u8, const FP21: u8, const FP22: u8, const FP23: u8,
-const FP24: u8, const FP25: u8, const FP26: u8, const FP27: u8,
-const FP28: u8, const FP29: u8, const FP30: u8, const FP31: u8,
-const FP32: u8, const FP33: u8, const FP34: u8, const FP35: u8,
-const FP36: u8, const FP37: u8, const FP38: u8, const FP39: u8,
-const FP40: u8, const FP41: u8, const FP42: u8, const FP43: u8,
-const FP44: u8, const FP45: u8, const FP46: u8, const FP47: u8,
-const FP48: u8, const FP49: u8, const FP50: u8, const FP51: u8,
-const FP52: u8, const FP53: u8, const FP54: u8, const FP55: u8,
-const FP56: u8, const FP57: u8, const FP58: u8, const FP59: u8,
-const FP60: u8, const FP61: u8, const FP62: u8, const FP63: u8,
+const IP01: u8, const IP02: u8, const IP03: u8, const IP04: u8,
+const IP05: u8, const IP06: u8, const IP07: u8, const IP08: u8,
+const IP09: u8, const IP10: u8, const IP11: u8, const IP12: u8,
+const IP13: u8, const IP14: u8, const IP15: u8, const IP16: u8,
+const IP17: u8, const IP18: u8, const IP19: u8, const IP20: u8,
+const IP21: u8, const IP22: u8, const IP23: u8, const IP24: u8,
+const IP25: u8, const IP26: u8, const IP27: u8, const IP28: u8,
+const IP29: u8, const IP30: u8, const IP31: u8, const IP32: u8,
+const IP33: u8, const IP34: u8, const IP35: u8, const IP36: u8,
+const IP37: u8, const IP38: u8, const IP39: u8, const IP40: u8,
+const IP41: u8, const IP42: u8, const IP43: u8, const IP44: u8,
+const IP45: u8, const IP46: u8, const IP47: u8, const IP48: u8,
+const IP49: u8, const IP50: u8, const IP51: u8, const IP52: u8,
+const IP53: u8, const IP54: u8, const IP55: u8, const IP56: u8,
+const IP57: u8, const IP58: u8, const IP59: u8, const IP60: u8,
+const IP61: u8, const IP62: u8, const IP63: u8, const IP64: u8,
+const FP01: u8, const FP02: u8, const FP03: u8, const FP04: u8,
+const FP05: u8, const FP06: u8, const FP07: u8, const FP08: u8,
+const FP09: u8, const FP10: u8, const FP11: u8, const FP12: u8,
+const FP13: u8, const FP14: u8, const FP15: u8, const FP16: u8,
+const FP17: u8, const FP18: u8, const FP19: u8, const FP20: u8,
+const FP21: u8, const FP22: u8, const FP23: u8, const FP24: u8,
+const FP25: u8, const FP26: u8, const FP27: u8, const FP28: u8,
+const FP29: u8, const FP30: u8, const FP31: u8, const FP32: u8,
+const FP33: u8, const FP34: u8, const FP35: u8, const FP36: u8,
+const FP37: u8, const FP38: u8, const FP39: u8, const FP40: u8,
+const FP41: u8, const FP42: u8, const FP43: u8, const FP44: u8,
+const FP45: u8, const FP46: u8, const FP47: u8, const FP48: u8,
+const FP49: u8, const FP50: u8, const FP51: u8, const FP52: u8,
+const FP53: u8, const FP54: u8, const FP55: u8, const FP56: u8,
+const FP57: u8, const FP58: u8, const FP59: u8, const FP60: u8,
+const FP61: u8, const FP62: u8, const FP63: u8, const FP64: u8,
 const S000: u8, const S001: u8, const S002: u8, const S003: u8,
 const S004: u8, const S005: u8, const S006: u8, const S007: u8,
 const S008: u8, const S009: u8, const S010: u8, const S011: u8,
@@ -395,22 +410,22 @@ const S756: u8, const S757: u8, const S758: u8, const S759: u8,
 const S760: u8, const S761: u8, const S762: u8, const S763: u8,
 >
 DES_Generic<
-IP00, IP01, IP02, IP03, IP04, IP05, IP06, IP07,
-IP08, IP09, IP10, IP11, IP12, IP13, IP14, IP15,
-IP16, IP17, IP18, IP19, IP20, IP21, IP22, IP23,
-IP24, IP25, IP26, IP27, IP28, IP29, IP30, IP31,
-IP32, IP33, IP34, IP35, IP36, IP37, IP38, IP39,
-IP40, IP41, IP42, IP43, IP44, IP45, IP46, IP47,
-IP48, IP49, IP50, IP51, IP52, IP53, IP54, IP55,
-IP56, IP57, IP58, IP59, IP60, IP61, IP62, IP63,
-FP00, FP01, FP02, FP03, FP04, FP05, FP06, FP07,
-FP08, FP09, FP10, FP11, FP12, FP13, FP14, FP15,
-FP16, FP17, FP18, FP19, FP20, FP21, FP22, FP23,
-FP24, FP25, FP26, FP27, FP28, FP29, FP30, FP31,
-FP32, FP33, FP34, FP35, FP36, FP37, FP38, FP39,
-FP40, FP41, FP42, FP43, FP44, FP45, FP46, FP47,
-FP48, FP49, FP50, FP51, FP52, FP53, FP54, FP55,
-FP56, FP57, FP58, FP59, FP60, FP61, FP62, FP63,
+IP01, IP02, IP03, IP04, IP05, IP06, IP07, IP08,
+IP09, IP10, IP11, IP12, IP13, IP14, IP15, IP16,
+IP17, IP18, IP19, IP20, IP21, IP22, IP23, IP24,
+IP25, IP26, IP27, IP28, IP29, IP30, IP31, IP32,
+IP33, IP34, IP35, IP36, IP37, IP38, IP39, IP40,
+IP41, IP42, IP43, IP44, IP45, IP46, IP47, IP48,
+IP49, IP50, IP51, IP52, IP53, IP54, IP55, IP56,
+IP57, IP58, IP59, IP60, IP61, IP62, IP63, IP64,
+FP01, FP02, FP03, FP04, FP05, FP06, FP07, FP08,
+FP09, FP10, FP11, FP12, FP13, FP14, FP15, FP16,
+FP17, FP18, FP19, FP20, FP21, FP22, FP23, FP24,
+FP25, FP26, FP27, FP28, FP29, FP30, FP31, FP32,
+FP33, FP34, FP35, FP36, FP37, FP38, FP39, FP40,
+FP41, FP42, FP43, FP44, FP45, FP46, FP47, FP48,
+FP49, FP50, FP51, FP52, FP53, FP54, FP55, FP56,
+FP57, FP58, FP59, FP60, FP61, FP62, FP63, FP64,
 S000, S001, S002, S003, S004, S005, S006, S007,
 S008, S009, S010, S011, S012, S013, S014, S015,
 S016, S017, S018, S019, S020, S021, S022, S023,
@@ -541,22 +556,25 @@ S756, S757, S758, S759, S760, S761, S762, S763,
                                     S740, S741, S742, S743, S744, S745, S746, S747,
                                     S748, S749, S750, S751, S752, S753, S754, S755,
                                     S756, S757, S758, S759, S760, S761, S762, S763 ] ];
-    const IP: [u8; 64] = [  IP00, IP01, IP02, IP03, IP04, IP05, IP06, IP07,
-                            IP08, IP09, IP10, IP11, IP12, IP13, IP14, IP15,
-                            IP16, IP17, IP18, IP19, IP20, IP21, IP22, IP23,
-                            IP24, IP25, IP26, IP27, IP28, IP29, IP30, IP31,
-                            IP32, IP33, IP34, IP35, IP36, IP37, IP38, IP39,
-                            IP40, IP41, IP42, IP43, IP44, IP45, IP46, IP47,
-                            IP48, IP49, IP50, IP51, IP52, IP53, IP54, IP55,
-                            IP56, IP57, IP58, IP59, IP60, IP61, IP62, IP63  ];
-    const FP: [u8; 64] = [  FP00, FP01, FP02, FP03, FP04, FP05, FP06, FP07,
-                            FP08, FP09, FP10, FP11, FP12, FP13, FP14, FP15,
-                            FP16, FP17, FP18, FP19, FP20, FP21, FP22, FP23,
-                            FP24, FP25, FP26, FP27, FP28, FP29, FP30, FP31,
-                            FP32, FP33, FP34, FP35, FP36, FP37, FP38, FP39,
-                            FP40, FP41, FP42, FP43, FP44, FP45, FP46, FP47,
-                            FP48, FP49, FP50, FP51, FP52, FP53, FP54, FP55,
-                            FP56, FP57, FP58, FP59, FP60, FP61, FP62, FP63  ];
+
+    const IP: [u8; 64] = [  IP01, IP02, IP03, IP04, IP05, IP06, IP07, IP08,
+                            IP09, IP10, IP11, IP12, IP13, IP14, IP15, IP16,
+                            IP17, IP18, IP19, IP20, IP21, IP22, IP23, IP24,
+                            IP25, IP26, IP27, IP28, IP29, IP30, IP31, IP32,
+                            IP33, IP34, IP35, IP36, IP37, IP38, IP39, IP40,
+                            IP41, IP42, IP43, IP44, IP45, IP46, IP47, IP48,
+                            IP49, IP50, IP51, IP52, IP53, IP54, IP55, IP56,
+                            IP57, IP58, IP59, IP60, IP61, IP62, IP63, IP64  ];
+ 
+    const FP: [u8; 64] = [  FP01, FP02, FP03, FP04, FP05, FP06, FP07, FP08,
+                            FP09, FP10, FP11, FP12, FP13, FP14, FP15, FP16,
+                            FP17, FP18, FP19, FP20, FP21, FP22, FP23, FP24,
+                            FP25, FP26, FP27, FP28, FP29, FP30, FP31, FP32,
+                            FP33, FP34, FP35, FP36, FP37, FP38, FP39, FP40,
+                            FP41, FP42, FP43, FP44, FP45, FP46, FP47, FP48,
+                            FP49, FP50, FP51, FP52, FP53, FP54, FP55, FP56,
+                            FP57, FP58, FP59, FP60, FP61, FP62, FP63, FP64  ];
+
     /// Constructs a new object DES_Generic.
     /// 
     #[inline]
@@ -572,7 +590,7 @@ S756, S757, S758, S759, S760, S761, S762, S763,
         for pos in Self::IP
         {
             permuted <<= 1;
-            permuted |= data.is_bit_set_(pos as usize) as u64;
+            permuted |= data.is_bit_set_((64 - pos) as usize) as u64;
         }
         permuted.to_be()
     }
@@ -584,7 +602,7 @@ S756, S757, S758, S759, S760, S761, S762, S763,
         for pos in Self::FP
         {
             permuted <<= 1;
-            permuted |= data.is_bit_set_(pos as usize) as u64;
+            permuted |= data.is_bit_set_((64 - pos) as usize) as u64;
         }
         permuted.to_be()
     }
