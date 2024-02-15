@@ -12469,7 +12469,7 @@ pub trait SmallUInt: Copy + Clone + Sized //+ Display + Debug + ToString
     /// # Panics
     /// It will panic if rhs is zero.
     /// 
-    /// # Example for u8
+    /// # Example 1 for u8
     /// ```
     /// use cryptocol::number::SmallUInt;
     /// fn main()
@@ -12478,6 +12478,8 @@ pub trait SmallUInt: Copy + Clone + Sized //+ Display + Debug + ToString
     ///     println!("{} % 3 = {}\nOverflow = {}", u8::MAX / 3, a_u8.0, a_u8.1);
     ///     assert_eq!(a_u8.0, 1_u8);
     ///     assert_eq!(a_u8.1, false);
+    ///     // It will panic.
+    ///     // let a_panic = func(a_u8.0, 0_u8);
     /// }
     /// 
     /// fn func<T: SmallUInt>(lhs: T, rhs: T) -> (T, bool)
@@ -12486,7 +12488,7 @@ pub trait SmallUInt: Copy + Clone + Sized //+ Display + Debug + ToString
     /// }
     /// ```
     /// 
-    /// # Example for u16
+    /// # Example 2 for u16
     /// ```
     /// use cryptocol::number::SmallUInt;
     /// fn main()
@@ -12495,6 +12497,8 @@ pub trait SmallUInt: Copy + Clone + Sized //+ Display + Debug + ToString
     ///     println!("{} % 3 = {}\nOverflow = {}", u16::MAX / 3, a_u16.0, a_u16.1);
     ///     assert_eq!(a_u16.0, 2_u16);
     ///     assert_eq!(a_u16.1, false);
+    ///     // It will panic.
+    ///     // let a_panic = func(a_u16.0, 0_u16);
     /// }
     /// 
     /// fn func<T: SmallUInt>(lhs: T, rhs: T) -> (T, bool)
@@ -12503,7 +12507,7 @@ pub trait SmallUInt: Copy + Clone + Sized //+ Display + Debug + ToString
     /// }
     /// ```
     /// 
-    /// # Example for u32
+    /// # Example 3 for u32
     /// ```
     /// use cryptocol::number::SmallUInt;
     /// fn main()
@@ -12512,6 +12516,8 @@ pub trait SmallUInt: Copy + Clone + Sized //+ Display + Debug + ToString
     ///     println!("{} % 3 = {}\nOverflow = {}", u32::MAX / 3, a_u32.0, a_u32.1);
     ///     assert_eq!(a_u32.0, 1_u32);
     ///     assert_eq!(a_u32.1, false);
+    ///     // It will panic.
+    ///     // let a_panic = func(a_u32.0, 0_u32);
     /// }
     /// 
     /// fn func<T: SmallUInt>(lhs: T, rhs: T) -> (T, bool)
@@ -12520,7 +12526,7 @@ pub trait SmallUInt: Copy + Clone + Sized //+ Display + Debug + ToString
     /// }
     /// ```
     /// 
-    /// # Example for u64
+    /// # Example 4 for u64
     /// ```
     /// use cryptocol::number::SmallUInt;
     /// fn main()
@@ -12529,6 +12535,8 @@ pub trait SmallUInt: Copy + Clone + Sized //+ Display + Debug + ToString
     ///     println!("{} % 3 = {}\nOverflow = {}", u64::MAX / 3, a_u64.0, a_u64.1);
     ///     assert_eq!(a_u64.0, 2_u64);
     ///     assert_eq!(a_u64.1, false);
+    ///     // It will panic.
+    ///     // let a_panic = func(a_u62.0, 0_u62);
     /// }
     /// 
     /// fn func<T: SmallUInt>(lhs: T, rhs: T) -> (T, bool)
@@ -12537,7 +12545,7 @@ pub trait SmallUInt: Copy + Clone + Sized //+ Display + Debug + ToString
     /// }
     /// ```
     /// 
-    /// # Example for u128
+    /// # Example 5 for u128
     /// ```
     /// use cryptocol::number::SmallUInt;
     /// fn main()
@@ -12546,6 +12554,8 @@ pub trait SmallUInt: Copy + Clone + Sized //+ Display + Debug + ToString
     ///     println!("{} % 3 = {}\nOverflow = {}", u128::MAX / 3, a_u128.0, a_u128.1);
     ///     assert_eq!(a_u128.0, 1_u128);
     ///     assert_eq!(a_u128.1, false);
+    ///     // It will panic.
+    ///     // let a_panic = func(a_u128.0, 0_u128);
     /// }
     /// 
     /// fn func<T: SmallUInt>(lhs: T, rhs: T) -> (T, bool)
@@ -12554,7 +12564,7 @@ pub trait SmallUInt: Copy + Clone + Sized //+ Display + Debug + ToString
     /// }
     /// ```
     /// 
-    /// # Example for usize
+    /// # Example 6 for usize
     /// ```
     /// use cryptocol::number::SmallUInt;
     /// fn main()
@@ -12563,9 +12573,103 @@ pub trait SmallUInt: Copy + Clone + Sized //+ Display + Debug + ToString
     ///     println!("{} % 3 = {}\nOverflow = {}", usize::MAX / 3, a_usize.0, a_usize.1);
     ///     assert_eq!(a_usize.0, 2_usize);
     ///     assert_eq!(a_usize.1, false);
-    /// 
     ///     // It will panic.
     ///     // let a_panic = func(a_usize.0, 0_usize);
+    /// }
+    /// 
+    /// fn func<T: SmallUInt>(lhs: T, rhs: T) -> (T, bool)
+    /// {
+    ///     lhs.overflowing_rem(rhs)
+    /// }
+    /// ```
+    /// 
+    /// # Example 7 for ShortUnion
+    /// ```
+    /// use cryptocol::number::SmallUInt;
+    /// fn main()
+    /// {
+    ///     let (a_shortunion, overflow) = func((u16::MAX / 3).into_shortunion(), 3_u16.into_shortunion());
+    ///     println!("{} % 3 = {}\nOverflow = {}", (u16::MAX / 3).into_shortunion(), a_shortunion.into_shortunion(), overflow);
+    ///     assert_eq!(a_shortunion.get(), 2_u16);
+    ///     assert_eq!(overflow, false);
+    ///     // It will panic.
+    ///     // let a_panic = func(a_shortunion, 0_u16.into_shortunion());
+    /// }
+    /// 
+    /// fn func<T: SmallUInt>(lhs: T, rhs: T) -> (T, bool)
+    /// {
+    ///     lhs.overflowing_rem(rhs)
+    /// }
+    /// ```
+    /// 
+    /// # Example 8 for IntUnion
+    /// ```
+    /// use cryptocol::number::SmallUInt;
+    /// fn main()
+    /// {
+    ///     let (a_intunion, overflow) = func((u32::MAX / 3).into_intunion(), 3_u32.into_intunion());
+    ///     println!("{} % 3 = {}\nOverflow = {}", (u32::MAX / 3).into_intunion(), a_intunion, overflow);
+    ///     assert_eq!(a_intunion.get(), 1_u32);
+    ///     assert_eq!(overflow, false);
+    ///     // It will panic.
+    ///     // let a_panic = func(a_intunion, 0_u32.into_intunion());
+    /// }
+    /// 
+    /// fn func<T: SmallUInt>(lhs: T, rhs: T) -> (T, bool)
+    /// {
+    ///     lhs.overflowing_rem(rhs)
+    /// }
+    /// ```
+    /// 
+    /// # Example 9 for LongUnion
+    /// ```
+    /// use cryptocol::number::SmallUInt;
+    /// fn main()
+    /// {
+    ///     let (a_longunion, overflow) = func((u64::MAX / 3).into_longunion(), 3_u64.into_longunion());
+    ///     println!("{} % 3 = {}\nOverflow = {}", (u64::MAX / 3).into_longunion(), a_longunion, overflow);
+    ///     assert_eq!(a_longunion.get(), 2_u64);
+    ///     assert_eq!(overflow, false);
+    ///     // It will panic.
+    ///     // let a_panic = func(a_longunion, 0_u62.into_longunion());
+    /// }
+    /// 
+    /// fn func<T: SmallUInt>(lhs: T, rhs: T) -> (T, bool)
+    /// {
+    ///     lhs.overflowing_rem(rhs)
+    /// }
+    /// ```
+    /// 
+    /// # Example 10 for LongerUnion
+    /// ```
+    /// use cryptocol::number::SmallUInt;
+    /// fn main()
+    /// {
+    ///     let (a_longerunion, overflow) = func((u128::MAX / 3).into_longerunion(), 3_u128.into_longerunion());
+    ///     println!("{} % 3 = {}\nOverflow = {}", (u128::MAX / 3).into_longerunion(), a_longerunion, overflow);
+    ///     assert_eq!(a_longerunion.get(), 1_u128);
+    ///     assert_eq!(overflow, false);
+    ///     // It will panic.
+    ///     // let a_panic = func(a_longerunion, 0_u128.into_longerunion());
+    /// }
+    /// 
+    /// fn func<T: SmallUInt>(lhs: T, rhs: T) -> (T, bool)
+    /// {
+    ///     lhs.overflowing_rem(rhs)
+    /// }
+    /// ```
+    /// 
+    /// # Example 11 for SizeUnion
+    /// ```
+    /// use cryptocol::number::SmallUInt;
+    /// fn main()
+    /// {
+    ///     let (a_sizeunion, overflow) = func((usize::MAX / 3).into_sizeunion(), 3_usize.into_sizeunion());
+    ///     println!("{} % 3 = {}\nOverflow = {}", (usize::MAX / 3).into_sizeunion(), a_sizeunion, overflow);
+    ///     assert_eq!(a_sizeunion.get(), 2_usize);
+    ///     assert_eq!(overflow, false);
+    ///     // It will panic.
+    ///     // let a_panic = func(a_sizeunion, 0_usize.into_sizeunion());
     /// }
     /// 
     /// fn func<T: SmallUInt>(lhs: T, rhs: T) -> (T, bool)
@@ -12586,26 +12690,36 @@ pub trait SmallUInt: Copy + Clone + Sized //+ Display + Debug + ToString
     ///     println!("{} % 3 = {}\nOverflow = {}", u8::MAX / 3, a_u8.0, a_u8.1);
     ///     assert_eq!(a_u8.0, 1_u8);
     ///     assert_eq!(a_u8.1, false);
+    ///     // It will panic.
+    ///     // let a_panic = func(a_u8.0, 0_u8);
     /// 
     ///     let a_u16 = func(u16::MAX / 3, 3_u16);
     ///     println!("{} % 3 = {}\nOverflow = {}", u16::MAX / 3, a_u16.0, a_u16.1);
     ///     assert_eq!(a_u16.0, 2_u16);
     ///     assert_eq!(a_u16.1, false);
+    ///     // It will panic.
+    ///     // let a_panic = func(a_u16.0, 0_u16);
     /// 
     ///     let a_u32 = func(u32::MAX / 3, 3_u32);
     ///     println!("{} % 3 = {}\nOverflow = {}", u32::MAX / 3, a_u32.0, a_u32.1);
     ///     assert_eq!(a_u32.0, 1_u32);
     ///     assert_eq!(a_u32.1, false);
+    ///     // It will panic.
+    ///     // let a_panic = func(a_u32.0, 0_u32);
     /// 
     ///     let a_u64 = func(u64::MAX / 3, 3_u64);
     ///     println!("{} % 3 = {}\nOverflow = {}", u64::MAX / 3, a_u64.0, a_u64.1);
     ///     assert_eq!(a_u64.0, 2_u64);
     ///     assert_eq!(a_u64.1, false);
+    ///     // It will panic.
+    ///     // let a_panic = func(a_u62.0, 0_u62);
     /// 
     ///     let a_u128 = func(u128::MAX / 3, 3_u128);
     ///     println!("{} % 3 = {}\nOverflow = {}", u128::MAX / 3, a_u128.0, a_u128.1);
     ///     assert_eq!(a_u128.0, 1_u128);
     ///     assert_eq!(a_u128.1, false);
+    ///     // It will panic.
+    ///     // let a_panic = func(a_u128.0, 0_u128);
     /// 
     ///     let a_usize = func(usize::MAX / 3, 3_usize);
     ///     println!("{} % 3 = {}\nOverflow = {}", usize::MAX / 3, a_usize.0, a_usize.1);
@@ -12613,6 +12727,41 @@ pub trait SmallUInt: Copy + Clone + Sized //+ Display + Debug + ToString
     ///     assert_eq!(a_usize.1, false);
     ///     // It will panic.
     ///     // let a_panic = func(a_usize.0, 0_usize);
+    /// 
+    ///     let (a_shortunion, overflow) = func((u16::MAX / 3).into_shortunion(), 3_u16.into_shortunion());
+    ///     println!("{} % 3 = {}\nOverflow = {}", (u16::MAX / 3).into_shortunion(), a_shortunion.into_shortunion(), overflow);
+    ///     assert_eq!(a_shortunion.get(), 2_u16);
+    ///     assert_eq!(overflow, false);
+    ///     // It will panic.
+    ///     // let a_panic = func(a_shortunion, 0_u16.into_shortunion());
+    /// 
+    ///     let (a_intunion, overflow) = func((u32::MAX / 3).into_intunion(), 3_u32.into_intunion());
+    ///     println!("{} % 3 = {}\nOverflow = {}", (u32::MAX / 3).into_intunion(), a_intunion, overflow);
+    ///     assert_eq!(a_intunion.get(), 1_u32);
+    ///     assert_eq!(overflow, false);
+    ///     // It will panic.
+    ///     // let a_panic = func(a_intunion, 0_u32.into_intunion());
+    /// 
+    ///     let (a_longunion, overflow) = func((u64::MAX / 3).into_longunion(), 3_u64.into_longunion());
+    ///     println!("{} % 3 = {}\nOverflow = {}", (u64::MAX / 3).into_longunion(), a_longunion, overflow);
+    ///     assert_eq!(a_longunion.get(), 2_u64);
+    ///     assert_eq!(overflow, false);
+    ///     // It will panic.
+    ///     // let a_panic = func(a_longunion, 0_u62.into_longunion());
+    /// 
+    ///     let (a_longerunion, overflow) = func((u128::MAX / 3).into_longerunion(), 3_u128.into_longerunion());
+    ///     println!("{} % 3 = {}\nOverflow = {}", (u128::MAX / 3).into_longerunion(), a_longerunion, overflow);
+    ///     assert_eq!(a_longerunion.get(), 1_u128);
+    ///     assert_eq!(overflow, false);
+    ///     // It will panic.
+    ///     // let a_panic = func(a_longerunion, 0_u128.into_longerunion());
+    /// 
+    ///     let (a_sizeunion, overflow) = func((usize::MAX / 3).into_sizeunion(), 3_usize.into_sizeunion());
+    ///     println!("{} % 3 = {}\nOverflow = {}", (usize::MAX / 3).into_sizeunion(), a_sizeunion, overflow);
+    ///     assert_eq!(a_sizeunion.get(), 2_usize);
+    ///     assert_eq!(overflow, false);
+    ///     // It will panic.
+    ///     // let a_panic = func(a_sizeunion, 0_usize.into_sizeunion());
     /// }
     /// 
     /// fn func<T: SmallUInt>(lhs: T, rhs: T) -> (T, bool)
@@ -13261,7 +13410,7 @@ pub trait SmallUInt: Copy + Clone + Sized //+ Display + Debug + ToString
     fn unchecked_rem(self, rhs: Self) -> Self;
 
     /*** Negation ***/
-    /// // pub const fn wrapping_neg(self) -> Self;
+    // pub const fn wrapping_neg(self) -> Self;
     /// Computes `-self`, wrapping around at the boundary of the type.
     /// 
     /// # Feature

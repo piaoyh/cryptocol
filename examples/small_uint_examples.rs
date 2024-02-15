@@ -4192,44 +4192,94 @@ fn small_uint_wrapping_rem_func<T: cryptocol::number::SmallUInt>(lhs: T, rhs: T)
 fn small_uint_overflowing_rem()
 {
     println!("small_uint_overflowing_rem()");
+    use cryptocol::number::SmallUInt;
     // Example for u8
     let a_u8 = small_uint_overflowing_rem_func(u8::MAX / 3, 3_u8);
     println!("{} % 3 = {}\nOverflow = {}", u8::MAX / 3, a_u8.0, a_u8.1);
     assert_eq!(a_u8.0, 1_u8);
     assert_eq!(a_u8.1, false);
+    // It will panic.
+    // let a_panic = small_uint_overflowing_rem_func(a_u8.0, 0_u8);
 
     // Example for u16
     let a_u16 = small_uint_overflowing_rem_func(u16::MAX / 3, 3_u16);
     println!("{} % 3 = {}\nOverflow = {}", u16::MAX / 3, a_u16.0, a_u16.1);
     assert_eq!(a_u16.0, 2_u16);
     assert_eq!(a_u16.1, false);
+    // It will panic.
+    // let a_panic = small_uint_overflowing_rem_func(a_u16.0, 0_u16);
  
     // Example for u32
     let a_u32 = small_uint_overflowing_rem_func(u32::MAX / 3, 3_u32);
     println!("{} % 3 = {}\nOverflow = {}", u32::MAX / 3, a_u32.0, a_u32.1);
     assert_eq!(a_u32.0, 1_u32);
     assert_eq!(a_u32.1, false);
+    // It will panic.
+    // let a_panic = small_uint_overflowing_rem_func(a_u32.0, 0_u32);
  
     // Example for u64
     let a_u64 = small_uint_overflowing_rem_func(u64::MAX / 3, 3_u64);
     println!("{} % 3 = {}\nOverflow = {}", u64::MAX / 3, a_u64.0, a_u64.1);
     assert_eq!(a_u64.0, 2_u64);
     assert_eq!(a_u64.1, false);
+    // It will panic.
+    // let a_panic = small_uint_overflowing_rem_func(a_u62.0, 0_u62);
  
     // Example for u128
     let a_u128 = small_uint_overflowing_rem_func(u128::MAX / 3, 3_u128);
     println!("{} % 3 = {}\nOverflow = {}", u128::MAX / 3, a_u128.0, a_u128.1);
     assert_eq!(a_u128.0, 1_u128);
     assert_eq!(a_u128.1, false);
+    // It will panic.
+    // let a_panic = small_uint_overflowing_rem_func(a_u128.0, 0_u128);
  
     // Example for usize
     let a_usize = small_uint_overflowing_rem_func(usize::MAX / 3, 3_usize);
     println!("{} % 3 = {}\nOverflow = {}", usize::MAX / 3, a_usize.0, a_usize.1);
     assert_eq!(a_usize.0, 2_usize);
     assert_eq!(a_usize.1, false);
- 
     // It will panic.
     // let a_panic = small_uint_overflowing_rem_func(a_usize.0, 0_usize);
+
+    // Example for ShortUnion
+    let (a_shortunion, overflow) = small_uint_overflowing_rem_func((u16::MAX / 3).into_shortunion(), 3_u16.into_shortunion());
+    println!("{} % 3 = {}\nOverflow = {}", (u16::MAX / 3).into_shortunion(), a_shortunion.into_shortunion(), overflow);
+    assert_eq!(a_shortunion.get(), 2_u16);
+    assert_eq!(overflow, false);
+    // It will panic.
+    // let a_panic = small_uint_overflowing_rem_func(a_shortunion, 0_u16.into_shortunion());
+ 
+    // Example for IntUnion
+    let (a_intunion, overflow) = small_uint_overflowing_rem_func((u32::MAX / 3).into_intunion(), 3_u32.into_intunion());
+    println!("{} % 3 = {}\nOverflow = {}", (u32::MAX / 3).into_intunion(), a_intunion, overflow);
+    assert_eq!(a_intunion.get(), 1_u32);
+    assert_eq!(overflow, false);
+    // It will panic.
+    // let a_panic = small_uint_overflowing_rem_func(a_intunion, 0_u32.into_intunion());
+ 
+    // Example for LongUnion
+    let (a_longunion, overflow) = small_uint_overflowing_rem_func((u64::MAX / 3).into_longunion(), 3_u64.into_longunion());
+    println!("{} % 3 = {}\nOverflow = {}", (u64::MAX / 3).into_longunion(), a_longunion, overflow);
+    assert_eq!(a_longunion.get(), 2_u64);
+    assert_eq!(overflow, false);
+    // It will panic.
+    // let a_panic = small_uint_overflowing_rem_func(a_longunion, 0_u62.into_longunion());
+ 
+    // Example for LongerUnion
+    let (a_longerunion, overflow) = small_uint_overflowing_rem_func((u128::MAX / 3).into_longerunion(), 3_u128.into_longerunion());
+    println!("{} % 3 = {}\nOverflow = {}", (u128::MAX / 3).into_longerunion(), a_longerunion, overflow);
+    assert_eq!(a_longerunion.get(), 1_u128);
+    assert_eq!(overflow, false);
+    // It will panic.
+    // let a_panic = small_uint_overflowing_rem_func(a_longerunion, 0_u128.into_longerunion());
+ 
+    // Example for SizeUnion
+    let (a_sizeunion, overflow) = small_uint_overflowing_rem_func((usize::MAX / 3).into_sizeunion(), 3_usize.into_sizeunion());
+    println!("{} % 3 = {}\nOverflow = {}", (usize::MAX / 3).into_sizeunion(), a_sizeunion, overflow);
+    assert_eq!(a_sizeunion.get(), 2_usize);
+    assert_eq!(overflow, false);
+    // It will panic.
+    // let a_panic = small_uint_overflowing_rem_func(a_sizeunion, 0_usize.into_sizeunion());
     println!("--------------------------------------");
 }
 
