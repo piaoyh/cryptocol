@@ -79,14 +79,32 @@ pub type DES = DES_Generic;    // equivalent to `pub type DES = DES_Expanded;`
 /// 
 #[allow(non_camel_case_types)]
 pub struct DES_Generic<
-// 57   49    41   33    25    17   9  
-// 1    58    50   42    34    26   18
-// 10   2     59   51    43    35   27
-// 19   11    3    60    52    44   36
-// 63   55    47   39    31    23   15
-// 7    62    54   46    38    30   22
-// 14   6     61   53    45    37   29
-// 21   13    5    28    20    12   4  
+const PC101: u8 = 57, const PC102: u8 = 49, const PC103: u8 = 41, const PC104: u8 = 33,
+const PC105: u8 = 25, const PC106: u8 = 17, const PC107: u8 = 9,  const PC108: u8 = 1,
+const PC109: u8 = 58, const PC110: u8 = 50, const PC111: u8 = 42, const PC112: u8 = 34,
+const PC113: u8 = 26, const PC114: u8 = 18, const PC115: u8 = 10, const PC116: u8 = 2,
+const PC117: u8 = 59, const PC118: u8 = 51, const PC119: u8 = 43, const PC120: u8 = 35,
+const PC121: u8 = 27, const PC122: u8 = 19, const PC123: u8 = 11, const PC124: u8 = 3,
+const PC125: u8 = 60, const PC126: u8 = 52, const PC127: u8 = 44, const PC128: u8 = 36,
+const PC129: u8 = 63, const PC130: u8 = 55, const PC131: u8 = 47, const PC132: u8 = 39,
+const PC133: u8 = 31, const PC134: u8 = 23, const PC135: u8 = 15, const PC136: u8 = 7,
+const PC137: u8 = 62, const PC138: u8 = 54, const PC139: u8 = 46, const PC140: u8 = 38,
+const PC141: u8 = 30, const PC142: u8 = 22, const PC143: u8 = 14, const PC144: u8 = 6,
+const PC145: u8 = 61, const PC146: u8 = 53, const PC147: u8 = 45, const PC148: u8 = 37,
+const PC149: u8 = 29, const PC150: u8 = 21, const PC151: u8 = 13, const PC152: u8 = 5,
+const PC153: u8 = 28, const PC154: u8 = 20, const PC155: u8 = 12, const PC156: u8 = 4,
+const PC201: u8 = 14, const PC202: u8 = 17, const PC203: u8 = 11, const PC204: u8 = 24,
+const PC205: u8 = 1,  const PC206: u8 = 5,  const PC207: u8 = 3,  const PC208: u8 = 28,
+const PC209: u8 = 15, const PC210: u8 = 6,  const PC211: u8 = 21, const PC212: u8 = 10,
+const PC213: u8 = 23, const PC214: u8 = 19, const PC215: u8 = 12, const PC216: u8 = 4,
+const PC217: u8 = 26, const PC218: u8 = 8,  const PC219: u8 = 16, const PC220: u8 = 7,
+const PC221: u8 = 27, const PC222: u8 = 20, const PC223: u8 = 13, const PC224: u8 = 2,
+const PC225: u8 = 41, const PC226: u8 = 52, const PC227: u8 = 31, const PC228: u8 = 37,
+const PC229: u8 = 47, const PC230: u8 = 55, const PC231: u8 = 30, const PC232: u8 = 40,
+const PC233: u8 = 51, const PC234: u8 = 45, const PC235: u8 = 33, const PC236: u8 = 48,
+const PC237: u8 = 44, const PC238: u8 = 49, const PC239: u8 = 39, const PC240: u8 = 56,
+const PC241: u8 = 34, const PC242: u8 = 53, const PC243: u8 = 46, const PC244: u8 = 42,
+const PC245: u8 = 50, const PC246: u8 = 36, const PC247: u8 = 29, const PC248: u8 = 32,
 const IP01: u8 = 58, const IP02: u8 = 50, const IP03: u8 = 42, const IP04: u8 = 34,
 const IP05: u8 = 26, const IP06: u8 = 18, const IP07: u8 = 10, const IP08: u8 = 2,
 const IP09: u8 = 60, const IP10: u8 = 52, const IP11: u8 = 44, const IP12: u8 = 36,
@@ -251,11 +269,37 @@ const S756: u8 = 0xf, const S757: u8 = 0x3, const S758: u8 = 0x3, const S759: u8
 const S760: u8 = 0x5, const S761: u8 = 0x6, const S762: u8 = 0x8, const S763: u8 = 0xb,
 >
 {
-    key: u64,
+    key: LongUnion,
     block: LongUnion,
 }
 
 impl <
+const PC101: u8, const PC102: u8, const PC103: u8, const PC104: u8,
+const PC105: u8, const PC106: u8, const PC107: u8, const PC108: u8,
+const PC109: u8, const PC110: u8, const PC111: u8, const PC112: u8,
+const PC113: u8, const PC114: u8, const PC115: u8, const PC116: u8,
+const PC117: u8, const PC118: u8, const PC119: u8, const PC120: u8,
+const PC121: u8, const PC122: u8, const PC123: u8, const PC124: u8,
+const PC125: u8, const PC126: u8, const PC127: u8, const PC128: u8,
+const PC129: u8, const PC130: u8, const PC131: u8, const PC132: u8,
+const PC133: u8, const PC134: u8, const PC135: u8, const PC136: u8,
+const PC137: u8, const PC138: u8, const PC139: u8, const PC140: u8,
+const PC141: u8, const PC142: u8, const PC143: u8, const PC144: u8,
+const PC145: u8, const PC146: u8, const PC147: u8, const PC148: u8,
+const PC149: u8, const PC150: u8, const PC151: u8, const PC152: u8,
+const PC153: u8, const PC154: u8, const PC155: u8, const PC156: u8,
+const PC201: u8, const PC202: u8, const PC203: u8, const PC204: u8,
+const PC205: u8, const PC206: u8, const PC207: u8, const PC208: u8,
+const PC209: u8, const PC210: u8, const PC211: u8, const PC212: u8,
+const PC213: u8, const PC214: u8, const PC215: u8, const PC216: u8,
+const PC217: u8, const PC218: u8, const PC219: u8, const PC220: u8,
+const PC221: u8, const PC222: u8, const PC223: u8, const PC224: u8,
+const PC225: u8, const PC226: u8, const PC227: u8, const PC228: u8,
+const PC229: u8, const PC230: u8, const PC231: u8, const PC232: u8,
+const PC233: u8, const PC234: u8, const PC235: u8, const PC236: u8,
+const PC237: u8, const PC238: u8, const PC239: u8, const PC240: u8,
+const PC241: u8, const PC242: u8, const PC243: u8, const PC244: u8,
+const PC245: u8, const PC246: u8, const PC247: u8, const PC248: u8,
 const IP01: u8, const IP02: u8, const IP03: u8, const IP04: u8,
 const IP05: u8, const IP06: u8, const IP07: u8, const IP08: u8,
 const IP09: u8, const IP10: u8, const IP11: u8, const IP12: u8,
@@ -418,6 +462,19 @@ const S756: u8, const S757: u8, const S758: u8, const S759: u8,
 const S760: u8, const S761: u8, const S762: u8, const S763: u8,
 >
 DES_Generic<
+PC101, PC102, PC103, PC104, PC105, PC106, PC107, PC108,
+PC109, PC110, PC111, PC112, PC113, PC114, PC115, PC116,
+PC117, PC118, PC119, PC120, PC121, PC122, PC123, PC124,
+PC125, PC126, PC127, PC128, PC129, PC130, PC131, PC132,
+PC133, PC134, PC135, PC136, PC137, PC138, PC139, PC140,
+PC141, PC142, PC143, PC144, PC145, PC146, PC147, PC148,
+PC149, PC150, PC151, PC152, PC153, PC154, PC155, PC156,
+PC201, PC202, PC203, PC204, PC205, PC206, PC207, PC208,
+PC209, PC210, PC211, PC212, PC213, PC214, PC215, PC216,
+PC217, PC218, PC219, PC220, PC221, PC222, PC223, PC224,
+PC225, PC226, PC227, PC228, PC229, PC230, PC231, PC232,
+PC233, PC234, PC235, PC236, PC237, PC238, PC239, PC240,
+PC241, PC242, PC243, PC244, PC245, PC246, PC247, PC248,
 IP01, IP02, IP03, IP04, IP05, IP06, IP07, IP08,
 IP09, IP10, IP11, IP12, IP13, IP14, IP15, IP16,
 IP17, IP18, IP19, IP20, IP21, IP22, IP23, IP24,
@@ -589,15 +646,33 @@ S756, S757, S758, S759, S760, S761, S762, S763,
               64-FP57, 64-FP58, 64-FP59, 64-FP60, 64-FP61, 64-FP62, 64-FP63, 64-FP64
     ];
 
+    const PC1: [u8; 56] = [
+        64-PC101, 64-PC102, 64-PC103, 64-PC104, 64-PC105, 64-PC106, 64-PC107, 64-PC108,
+        64-PC109, 64-PC110, 64-PC111, 64-PC112, 64-PC113, 64-PC114, 64-PC115, 64-PC116,
+        64-PC117, 64-PC118, 64-PC119, 64-PC120, 64-PC121, 64-PC122, 64-PC123, 64-PC124,
+        64-PC125, 64-PC126, 64-PC127, 64-PC128, 64-PC129, 64-PC130, 64-PC131, 64-PC132,
+        64-PC133, 64-PC134, 64-PC135, 64-PC136, 64-PC137, 64-PC138, 64-PC139, 64-PC140,
+        64-PC141, 64-PC142, 64-PC143, 64-PC144, 64-PC145, 64-PC146, 64-PC147, 64-PC148,
+        64-PC149, 64-PC150, 64-PC151, 64-PC152, 64-PC153, 64-PC154, 64-PC155, 64-PC156,
+    ];
+
+    const PC2: [u8; 48] = [
+        64-PC201, 64-PC202, 64-PC203, 64-PC204, 64-PC205, 64-PC206, 64-PC207, 64-PC208,
+        64-PC209, 64-PC210, 64-PC211, 64-PC212, 64-PC213, 64-PC214, 64-PC215, 64-PC216,
+        64-PC217, 64-PC218, 64-PC219, 64-PC220, 64-PC221, 64-PC222, 64-PC223, 64-PC224,
+        64-PC225, 64-PC226, 64-PC227, 64-PC228, 64-PC229, 64-PC230, 64-PC231, 64-PC232,
+        64-PC233, 64-PC234, 64-PC235, 64-PC236, 64-PC237, 64-PC238, 64-PC239, 64-PC240,
+        64-PC241, 64-PC242, 64-PC243, 64-PC244, 64-PC245, 64-PC246, 64-PC247, 64-PC248,
+    ];
     /// Constructs a new object DES_Generic.
     /// 
     #[inline]
     pub fn new(key: [u8; 8]) -> Self
     {
-        Self { key: LongUnion::new_with_ubytes(key).get(), block: LongUnion::new(), }
+        Self { key: LongUnion::new_with_ubytes(key), block: LongUnion::new(), }
     }
 
-    fn initial_permutation(&mut self)
+    fn permutate_initially(&mut self)
     {
         let data = self.block.get().to_be();
         let mut permuted = 0_u64;
@@ -609,7 +684,7 @@ S756, S757, S758, S759, S760, S761, S762, S763,
         self.block.set(permuted.to_be());
     }
 
-    fn final_permutation(&mut self)
+    fn permutate_finally(&mut self)
     {
         let data = self.block.get().to_be();
         let mut permuted = 0_u64;
@@ -619,6 +694,37 @@ S756, S757, S758, S759, S760, S761, S762, S763,
             permuted |= data.is_bit_set_(pos as usize) as u64;
         }
         self.block.set(permuted.to_be());
+    }
+
+    fn permutate_key1(&mut self)
+    {
+        let key = self.key.get().to_be();
+        let mut permuted = 0_u64;
+        for pos in Self::PC1
+        {
+            permuted <<= 1;
+            permuted |= key.is_bit_set_(pos as usize) as u64;
+        }
+        self.key.set(permuted.to_be());
+    }
+
+    fn permutate_key2(&self, key: [u8; 7]) -> [u8; 6]
+    {
+        let mut key_union = LongUnion::new();
+        for i in 0..7
+            { key_union.set_ubyte_(i, key[i]); }
+        let key_bar = key_union.get().to_be();
+        let mut permuted = 0_u64;
+        for pos in Self::PC2
+        {
+            permuted <<= 1;
+            permuted |= key_bar.is_bit_set_(pos as usize) as u64;
+        }
+        let key_out = LongUnion::new_with((permuted << 16).to_be());
+        let mut out = [0_u8; 6];
+        for i in 0..6
+            { out[i] = key_out.get_ubyte_(i); }
+        out
     }
 
 

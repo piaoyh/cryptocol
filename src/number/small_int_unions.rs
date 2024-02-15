@@ -4894,6 +4894,8 @@ macro_rules! integer_union_methods {
             }
         }
 
+        #[inline] pub fn wrapping_neg(self) -> Self             { Self::new_with( self.get().wrapping_neg() ) }
+
         #[inline] pub fn wrapping_pow(self, exp: u32) -> Self   { Self::new_with( self.get().wrapping_pow(exp) ) }
         
         pub fn checked_pow(self, exp: u32) -> Option<Self>
@@ -5392,6 +5394,10 @@ macro_rules! SmallUInt_methods_for_integer_unions_impl {
         /// [Read more in detail](trait@SmallUInt#tymethod.unchecked_rem)
         #[inline] fn unchecked_rem(self, rhs: Self) -> Self         { self.checked_rem(rhs).unwrap() }
 
+        /// Computes `-self`, wrapping around at the boundary of the type.
+        /// [Read more in detail](trait@SmallUInt#tymethod.wrapping_neg)
+        #[inline] fn wrapping_neg(self) -> Self                     { self.wrapping_neg() }
+        
         /// Raises `self` to the power of `exp`, using exponentiation by squaring.
         /// [Read more in detail](trait@SmallUInt#tymethod.pow)
         #[inline] fn pow(self, exp: u32) -> Self    { self.pow(exp) }

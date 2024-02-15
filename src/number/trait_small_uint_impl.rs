@@ -251,6 +251,10 @@ macro_rules! SmallUInt_methods_for_uint_impl {
             /// [Read more in detail](trait@SmallUInt#tymethod.checked_rem)
             #[inline] fn unchecked_rem(self, rhs: Self) -> Self             { self.checked_rem(rhs).unwrap() }
 
+            /// Computes `-self`, wrapping around at the boundary of the type.
+            /// [Read more in detail](trait@SmallUInt#tymethod.wrapping_neg)
+            #[inline] fn wrapping_neg(self) -> Self                         { self.wrapping_neg() }
+
             /// Computes self.pow(exp), wrapping around at the boundary of the type.
             /// [Read more in detail](trait@SmallUInt#tymethod.wrapping_pow)
             #[inline] fn wrapping_pow(self, exp: u32) -> Self               { self.wrapping_pow(exp) }
