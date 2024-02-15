@@ -7,7 +7,7 @@ keywords = ["number", "encryption", "security", "hash", "cryptography"]
 license = "MIT OR Apache-2.0"
 name = "cryptocol"
 readme = "README.md"
-version = "0.6.2"
+version = "0.6.3"
 repository = "https://github.com/piaoyh/cryptocol"
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html

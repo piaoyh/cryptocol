@@ -12681,7 +12681,7 @@ pub trait SmallUInt: Copy + Clone + Sized //+ Display + Debug + ToString
     /// SmallUInt-supported data types in a same scope.
     /// Look into the following example.
     /// 
-    /// # Collected Example
+    /// # Collective Example
     /// ```
     /// use cryptocol::number::SmallUInt;
     /// fn main()
