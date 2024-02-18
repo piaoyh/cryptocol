@@ -82,6 +82,14 @@ number will be 0.27.x.x since there are all twenty-six functionalities
 listed above. So, for example, even if the version number is 0.5.0.0,
 it does not mean that 50% of all functionalities are implemented.
 
+## Sorry for breaking changes from ver. 0.6.2 to ver. 0.6.3
+A breaking change has been made to change the function `number::BigUInt::copy_within<R>(&mut self, src: R, dest: usize)` from public to private since it should have been private from the beginning for security reason because it is high chance that this function will be missused or even abused.
+
+### struct BigUInt
+| Ver. 0.6.2                                                      | Ver. 0.6.3                                                      |
+|-----------------------------------------------------------------|-----------------------------------------------------------------|
+| pub fn copy_within<R>(&mut self, src: R, dest: usize)           | fn copy_within<R>(&mut self, src: R, dest: usize)               |
+
 ## Sorry for breaking changes from ver. 0.5.0 to ver. 0.6.0
 Breaking changes have been made to change the source code according to Rust convention and in order to remove all warnings.
 

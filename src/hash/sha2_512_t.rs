@@ -946,7 +946,7 @@ SHA2_512_t_Generic<t, A5A5A5A5A5A5A5A5,
     /// This function computes hash value of the content of Array object.
     /// 
     /// # Argument
-    /// - message is `&[T; N]`.
+    /// - message is `&[T; M]`.
     /// 
     /// # Counterpart Methods
     /// - If you want to compute of the hash value of a string slice,
@@ -1779,7 +1779,7 @@ SHA2_512_t_Generic<t, A5A5A5A5A5A5A5A5,
         txt
     }
 
-    // pub fn get_hash_value_in_array(&self) -> [u64; N]
+    // pub fn get_hash_value_in_array(&self) -> [u64; 8]
     /// Returns a hash value in the form of array object.
     /// 
     /// # Counterpart Methods
@@ -1859,7 +1859,7 @@ SHA2_512_t_Generic<t, A5A5A5A5A5A5A5A5,
     /// 
     /// # Generic Parameters
     /// - `T`: primitive datatype of each element.
-    /// - `N`: the number of elements
+    /// - `M`: the number of elements
     /// 
     /// # Counterpart Methods
     /// - If you want to get the hash value in the form of String object,
@@ -2015,8 +2015,8 @@ SHA2_512_t_Generic<t, A5A5A5A5A5A5A5A5,
     /// `out` is the array [T; M] which is the place to put the hash value.
     /// 
     /// # Features
-    /// If `M * mem::size_of::<T>()` > `mem::size_of::<u32>() * N`,
-    /// it pass the output as the amount of `mem::size_of::<u32>() * N`.
+    /// If `M * mem::size_of::<T>()` > `64`,
+    /// it pass the output as the amount of `64`.
     /// 
     /// # Example 1 for SHA2_512_t_256
     /// ```

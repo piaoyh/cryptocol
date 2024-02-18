@@ -14,8 +14,89 @@
 // use std::ptr::copy_nonoverlapping;
 // use std::slice::from_raw_parts;
 // use std::fmt::{ self, Debug, Display, Formatter };
+// use std::collections::HashMap;
 
 use crate::number::{ SmallUInt, LongUnion };
+
+macro_rules! make_FP {
+    () => {
+        if true
+        {
+            let mut out = [0_u8; 64];
+            out[Self::IP[0] as usize] = 0;
+            out[Self::IP[1] as usize] = 1;
+            out[Self::IP[2] as usize] = 2;
+            out[Self::IP[3] as usize] = 3;
+            out[Self::IP[4] as usize] = 4;
+            out[Self::IP[5] as usize] = 5;
+            out[Self::IP[6] as usize] = 6;
+            out[Self::IP[7] as usize] = 7;
+            out[Self::IP[8] as usize] = 8;
+            out[Self::IP[9] as usize] = 9;
+            out[Self::IP[10] as usize] = 10;
+            out[Self::IP[11] as usize] = 11;
+            out[Self::IP[12] as usize] = 12;
+            out[Self::IP[13] as usize] = 13;
+            out[Self::IP[14] as usize] = 14;
+            out[Self::IP[15] as usize] = 15;
+            out[Self::IP[16] as usize] = 16;
+            out[Self::IP[17] as usize] = 17;
+            out[Self::IP[18] as usize] = 18;
+            out[Self::IP[19] as usize] = 19;
+            out[Self::IP[20] as usize] = 20;
+            out[Self::IP[21] as usize] = 21;
+            out[Self::IP[22] as usize] = 22;
+            out[Self::IP[23] as usize] = 23;
+            out[Self::IP[24] as usize] = 24;
+            out[Self::IP[25] as usize] = 25;
+            out[Self::IP[26] as usize] = 26;
+            out[Self::IP[27] as usize] = 27;
+            out[Self::IP[28] as usize] = 28;
+            out[Self::IP[29] as usize] = 29;
+            out[Self::IP[30] as usize] = 30;
+            out[Self::IP[31] as usize] = 31;
+            out[Self::IP[32] as usize] = 32;
+            out[Self::IP[33] as usize] = 33;
+            out[Self::IP[34] as usize] = 34;
+            out[Self::IP[35] as usize] = 35;
+            out[Self::IP[36] as usize] = 36;
+            out[Self::IP[37] as usize] = 37;
+            out[Self::IP[38] as usize] = 38;
+            out[Self::IP[39] as usize] = 39;
+            out[Self::IP[40] as usize] = 40;
+            out[Self::IP[41] as usize] = 41;
+            out[Self::IP[42] as usize] = 42;
+            out[Self::IP[43] as usize] = 43;
+            out[Self::IP[44] as usize] = 44;
+            out[Self::IP[45] as usize] = 45;
+            out[Self::IP[46] as usize] = 46;
+            out[Self::IP[47] as usize] = 47;
+            out[Self::IP[48] as usize] = 48;
+            out[Self::IP[49] as usize] = 49;
+            out[Self::IP[50] as usize] = 50;
+            out[Self::IP[51] as usize] = 51;
+            out[Self::IP[52] as usize] = 52;
+            out[Self::IP[53] as usize] = 53;
+            out[Self::IP[54] as usize] = 54;
+            out[Self::IP[55] as usize] = 55;
+            out[Self::IP[56] as usize] = 56;
+            out[Self::IP[57] as usize] = 57;
+            out[Self::IP[58] as usize] = 58;
+            out[Self::IP[59] as usize] = 59;
+            out[Self::IP[60] as usize] = 60;
+            out[Self::IP[61] as usize] = 61;
+            out[Self::IP[62] as usize] = 62;
+            out[Self::IP[63] as usize] = 63;
+            out
+        }
+        else
+        {
+            let out = [0_u8; 64];
+            out
+        }
+    };
+}
+
 
 // /// You have freedom of changing H0 ~ H3, and ROUND.
 // #[allow(non_camel_case_types)]
@@ -29,7 +110,7 @@ use crate::number::{ SmallUInt, LongUnion };
 // #[allow(non_camel_case_types)]
 // pub type DES_Generic_HR_fixed<const N: usize, const ROUND: usize,
 //                                 const K0: u32, const K1: u32, const K2: u32>
-//     = MD4_Generic<N, const S700: u8 = 0x67452301, const S700: u8 = 0xefcdab89, const S700: u8 = 0x98badcfe, const S700: u8 = 0x10325476, ROUND, K0, K1, K2>;
+//     = DES_Generic<N, const S700: u8 = 0x67452301, const S700: u8 = 0xefcdab89, const S700: u8 = 0x98badcfe, const S700: u8 = 0x10325476, ROUND, K0, K1, K2>;
 
 /// The official DES symmetric-key algorithm for the encryption of digital data
 #[allow(non_camel_case_types)]
@@ -123,22 +204,22 @@ const IP57: u8 = 63, const IP58: u8 = 55, const IP59: u8 = 47, const IP60: u8 = 
 const IP61: u8 = 31, const IP62: u8 = 23, const IP63: u8 = 15, const IP64: u8 = 7,
 // https://page.math.tu-berlin.de/~kant/teaching/hess/krypto-ws2006/des.htm
 // https://m.blog.naver.com/wnrjsxo/221708511553
-const FP01: u8 = 40, const FP02: u8 = 8,  const FP03: u8 = 48, const FP04: u8 = 16,
-const FP05: u8 = 56, const FP06: u8 = 24, const FP07: u8 = 64, const FP08: u8 = 32,
-const FP09: u8 = 39, const FP10: u8 = 7,  const FP11: u8 = 47, const FP12: u8 = 15,
-const FP13: u8 = 55, const FP14: u8 = 23, const FP15: u8 = 63, const FP16: u8 = 31,
-const FP17: u8 = 38, const FP18: u8 = 6,  const FP19: u8 = 46, const FP20: u8 = 14,
-const FP21: u8 = 54, const FP22: u8 = 22, const FP23: u8 = 62, const FP24: u8 = 30,
-const FP25: u8 = 37, const FP26: u8 = 5,  const FP27: u8 = 45, const FP28: u8 = 13,
-const FP29: u8 = 53, const FP30: u8 = 21, const FP31: u8 = 61, const FP32: u8 = 29,
-const FP33: u8 = 36, const FP34: u8 = 4,  const FP35: u8 = 44, const FP36: u8 = 12,
-const FP37: u8 = 52, const FP38: u8 = 20, const FP39: u8 = 60, const FP40: u8 = 28,
-const FP41: u8 = 35, const FP42: u8 = 3,  const FP43: u8 = 43, const FP44: u8 = 11,
-const FP45: u8 = 51, const FP46: u8 = 19, const FP47: u8 = 59, const FP48: u8 = 27,
-const FP49: u8 = 34, const FP50: u8 = 2,  const FP51: u8 = 42, const FP52: u8 = 10,
-const FP53: u8 = 50, const FP54: u8 = 18, const FP55: u8 = 58, const FP56: u8 = 26,
-const FP57: u8 = 33, const FP58: u8 = 1,  const FP59: u8 = 41, const FP60: u8 = 9,
-const FP61: u8 = 49, const FP62: u8 = 17, const FP63: u8 = 57, const FP64: u8 = 25,
+// const FP01: u8 = 40, const FP02: u8 = 8,  const FP03: u8 = 48, const FP04: u8 = 16,
+// const FP05: u8 = 56, const FP06: u8 = 24, const FP07: u8 = 64, const FP08: u8 = 32,
+// const FP09: u8 = 39, const FP10: u8 = 7,  const FP11: u8 = 47, const FP12: u8 = 15,
+// const FP13: u8 = 55, const FP14: u8 = 23, const FP15: u8 = 63, const FP16: u8 = 31,
+// const FP17: u8 = 38, const FP18: u8 = 6,  const FP19: u8 = 46, const FP20: u8 = 14,
+// const FP21: u8 = 54, const FP22: u8 = 22, const FP23: u8 = 62, const FP24: u8 = 30,
+// const FP25: u8 = 37, const FP26: u8 = 5,  const FP27: u8 = 45, const FP28: u8 = 13,
+// const FP29: u8 = 53, const FP30: u8 = 21, const FP31: u8 = 61, const FP32: u8 = 29,
+// const FP33: u8 = 36, const FP34: u8 = 4,  const FP35: u8 = 44, const FP36: u8 = 12,
+// const FP37: u8 = 52, const FP38: u8 = 20, const FP39: u8 = 60, const FP40: u8 = 28,
+// const FP41: u8 = 35, const FP42: u8 = 3,  const FP43: u8 = 43, const FP44: u8 = 11,
+// const FP45: u8 = 51, const FP46: u8 = 19, const FP47: u8 = 59, const FP48: u8 = 27,
+// const FP49: u8 = 34, const FP50: u8 = 2,  const FP51: u8 = 42, const FP52: u8 = 10,
+// const FP53: u8 = 50, const FP54: u8 = 18, const FP55: u8 = 58, const FP56: u8 = 26,
+// const FP57: u8 = 33, const FP58: u8 = 1,  const FP59: u8 = 41, const FP60: u8 = 9,
+// const FP61: u8 = 49, const FP62: u8 = 17, const FP63: u8 = 57, const FP64: u8 = 25,
 const S000: u8 = 0xe, const S001: u8 = 0x0, const S002: u8 = 0x4, const S003: u8 = 0xf,
 const S004: u8 = 0xd, const S005: u8 = 0x7, const S006: u8 = 0x1, const S007: u8 = 0x4,
 const S008: u8 = 0x2, const S009: u8 = 0xe, const S010: u8 = 0xf, const S011: u8 = 0x2,
@@ -316,22 +397,22 @@ const IP49: u8, const IP50: u8, const IP51: u8, const IP52: u8,
 const IP53: u8, const IP54: u8, const IP55: u8, const IP56: u8,
 const IP57: u8, const IP58: u8, const IP59: u8, const IP60: u8,
 const IP61: u8, const IP62: u8, const IP63: u8, const IP64: u8,
-const FP01: u8, const FP02: u8, const FP03: u8, const FP04: u8,
-const FP05: u8, const FP06: u8, const FP07: u8, const FP08: u8,
-const FP09: u8, const FP10: u8, const FP11: u8, const FP12: u8,
-const FP13: u8, const FP14: u8, const FP15: u8, const FP16: u8,
-const FP17: u8, const FP18: u8, const FP19: u8, const FP20: u8,
-const FP21: u8, const FP22: u8, const FP23: u8, const FP24: u8,
-const FP25: u8, const FP26: u8, const FP27: u8, const FP28: u8,
-const FP29: u8, const FP30: u8, const FP31: u8, const FP32: u8,
-const FP33: u8, const FP34: u8, const FP35: u8, const FP36: u8,
-const FP37: u8, const FP38: u8, const FP39: u8, const FP40: u8,
-const FP41: u8, const FP42: u8, const FP43: u8, const FP44: u8,
-const FP45: u8, const FP46: u8, const FP47: u8, const FP48: u8,
-const FP49: u8, const FP50: u8, const FP51: u8, const FP52: u8,
-const FP53: u8, const FP54: u8, const FP55: u8, const FP56: u8,
-const FP57: u8, const FP58: u8, const FP59: u8, const FP60: u8,
-const FP61: u8, const FP62: u8, const FP63: u8, const FP64: u8,
+// const FP01: u8, const FP02: u8, const FP03: u8, const FP04: u8,
+// const FP05: u8, const FP06: u8, const FP07: u8, const FP08: u8,
+// const FP09: u8, const FP10: u8, const FP11: u8, const FP12: u8,
+// const FP13: u8, const FP14: u8, const FP15: u8, const FP16: u8,
+// const FP17: u8, const FP18: u8, const FP19: u8, const FP20: u8,
+// const FP21: u8, const FP22: u8, const FP23: u8, const FP24: u8,
+// const FP25: u8, const FP26: u8, const FP27: u8, const FP28: u8,
+// const FP29: u8, const FP30: u8, const FP31: u8, const FP32: u8,
+// const FP33: u8, const FP34: u8, const FP35: u8, const FP36: u8,
+// const FP37: u8, const FP38: u8, const FP39: u8, const FP40: u8,
+// const FP41: u8, const FP42: u8, const FP43: u8, const FP44: u8,
+// const FP45: u8, const FP46: u8, const FP47: u8, const FP48: u8,
+// const FP49: u8, const FP50: u8, const FP51: u8, const FP52: u8,
+// const FP53: u8, const FP54: u8, const FP55: u8, const FP56: u8,
+// const FP57: u8, const FP58: u8, const FP59: u8, const FP60: u8,
+// const FP61: u8, const FP62: u8, const FP63: u8, const FP64: u8,
 const S000: u8, const S001: u8, const S002: u8, const S003: u8,
 const S004: u8, const S005: u8, const S006: u8, const S007: u8,
 const S008: u8, const S009: u8, const S010: u8, const S011: u8,
@@ -483,14 +564,14 @@ IP33, IP34, IP35, IP36, IP37, IP38, IP39, IP40,
 IP41, IP42, IP43, IP44, IP45, IP46, IP47, IP48,
 IP49, IP50, IP51, IP52, IP53, IP54, IP55, IP56,
 IP57, IP58, IP59, IP60, IP61, IP62, IP63, IP64,
-FP01, FP02, FP03, FP04, FP05, FP06, FP07, FP08,
-FP09, FP10, FP11, FP12, FP13, FP14, FP15, FP16,
-FP17, FP18, FP19, FP20, FP21, FP22, FP23, FP24,
-FP25, FP26, FP27, FP28, FP29, FP30, FP31, FP32,
-FP33, FP34, FP35, FP36, FP37, FP38, FP39, FP40,
-FP41, FP42, FP43, FP44, FP45, FP46, FP47, FP48,
-FP49, FP50, FP51, FP52, FP53, FP54, FP55, FP56,
-FP57, FP58, FP59, FP60, FP61, FP62, FP63, FP64,
+// FP01, FP02, FP03, FP04, FP05, FP06, FP07, FP08,
+// FP09, FP10, FP11, FP12, FP13, FP14, FP15, FP16,
+// FP17, FP18, FP19, FP20, FP21, FP22, FP23, FP24,
+// FP25, FP26, FP27, FP28, FP29, FP30, FP31, FP32,
+// FP33, FP34, FP35, FP36, FP37, FP38, FP39, FP40,
+// FP41, FP42, FP43, FP44, FP45, FP46, FP47, FP48,
+// FP49, FP50, FP51, FP52, FP53, FP54, FP55, FP56,
+// FP57, FP58, FP59, FP60, FP61, FP62, FP63, FP64,
 S000, S001, S002, S003, S004, S005, S006, S007,
 S008, S009, S010, S011, S012, S013, S014, S015,
 S016, S017, S018, S019, S020, S021, S022, S023,
@@ -635,16 +716,17 @@ S756, S757, S758, S759, S760, S761, S762, S763,
               64-IP57, 64-IP58, 64-IP59, 64-IP60, 64-IP61, 64-IP62, 64-IP63, 64-IP64
     ];
  
-    const FP: [u8; 64] = [  
-              64-FP01, 64-FP02, 64-FP03, 64-FP04, 64-FP05, 64-FP06, 64-FP07, 64-FP08,
-              64-FP09, 64-FP10, 64-FP11, 64-FP12, 64-FP13, 64-FP14, 64-FP15, 64-FP16,
-              64-FP17, 64-FP18, 64-FP19, 64-FP20, 64-FP21, 64-FP22, 64-FP23, 64-FP24,
-              64-FP25, 64-FP26, 64-FP27, 64-FP28, 64-FP29, 64-FP30, 64-FP31, 64-FP32,
-              64-FP33, 64-FP34, 64-FP35, 64-FP36, 64-FP37, 64-FP38, 64-FP39, 64-FP40,
-              64-FP41, 64-FP42, 64-FP43, 64-FP44, 64-FP45, 64-FP46, 64-FP47, 64-FP48,
-              64-FP49, 64-FP50, 64-FP51, 64-FP52, 64-FP53, 64-FP54, 64-FP55, 64-FP56,
-              64-FP57, 64-FP58, 64-FP59, 64-FP60, 64-FP61, 64-FP62, 64-FP63, 64-FP64
-    ];
+    const FP: [u8; 64] = make_FP!();
+    // const FP: [u8; 64] = [  
+    //           64-FP01, 64-FP02, 64-FP03, 64-FP04, 64-FP05, 64-FP06, 64-FP07, 64-FP08,
+    //           64-FP09, 64-FP10, 64-FP11, 64-FP12, 64-FP13, 64-FP14, 64-FP15, 64-FP16,
+    //           64-FP17, 64-FP18, 64-FP19, 64-FP20, 64-FP21, 64-FP22, 64-FP23, 64-FP24,
+    //           64-FP25, 64-FP26, 64-FP27, 64-FP28, 64-FP29, 64-FP30, 64-FP31, 64-FP32,
+    //           64-FP33, 64-FP34, 64-FP35, 64-FP36, 64-FP37, 64-FP38, 64-FP39, 64-FP40,
+    //           64-FP41, 64-FP42, 64-FP43, 64-FP44, 64-FP45, 64-FP46, 64-FP47, 64-FP48,
+    //           64-FP49, 64-FP50, 64-FP51, 64-FP52, 64-FP53, 64-FP54, 64-FP55, 64-FP56,
+    //           64-FP57, 64-FP58, 64-FP59, 64-FP60, 64-FP61, 64-FP62, 64-FP63, 64-FP64
+    // ];
 
     const PC1: [u8; 56] = [
         64-PC101, 64-PC102, 64-PC103, 64-PC104, 64-PC105, 64-PC106, 64-PC107, 64-PC108,

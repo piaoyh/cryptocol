@@ -1330,19 +1330,13 @@ pub trait SmallUInt: Copy + Clone + Sized //+ Display + Debug + ToString
     ///                 println!("{} + 55 = {}", u8::MAX - 55_u8, a);
     ///                 assert_eq!(a, u8::MAX);
     ///             },
-    ///         None => {
-    ///                 println!("Overflow happened.");
-    ///                 assert_eq!(a_u8, None);
-    ///             },
+    ///         None => { println!("Overflow happened."); },
     ///     }
     /// 
     ///     let b_u8 = func(a_u8.unwrap(), 1_u8);
     ///     match b_u8
     ///     {
-    ///         Some(b) => {
-    ///                 println!("{} + 1 = {}", a_u8.unwrap(), b);
-    ///                 assert_eq!(b, 0_u8);
-    ///             },
+    ///         Some(b) => { println!("{} + 1 = {}", a_u8.unwrap(), b); },
     ///         None => {
     ///                 println!("Overflow happened.");
     ///                 assert_eq!(b_u8, None);
@@ -1368,19 +1362,13 @@ pub trait SmallUInt: Copy + Clone + Sized //+ Display + Debug + ToString
     ///                 println!("{} + 55 = {}", u16::MAX - 55_u16, a);
     ///                 assert_eq!(a, u16::MAX);
     ///             },
-    ///         None => {
-    ///                 println!("Overflow happened.");
-    ///                 assert_eq!(a_u16, None);
-    ///             },
+    ///         None => { println!("Overflow happened."); },
     ///     }
     /// 
     ///     let b_u16 = func(a_u16.unwrap(), 1_u16);
     ///     match b_u16
     ///     {
-    ///         Some(b) => {
-    ///                 println!("{} + 1 = {}", a_u16.unwrap(), b);
-    ///                 assert_eq!(b, 0_u16);
-    ///             },
+    ///         Some(b) => { println!("{} + 1 = {}", a_u16.unwrap(), b); },
     ///         None => {
     ///                 println!("Overflow happened.");
     ///                 assert_eq!(b_u16, None);
@@ -1406,19 +1394,13 @@ pub trait SmallUInt: Copy + Clone + Sized //+ Display + Debug + ToString
     ///                 println!("{} + 55 = {}", u32::MAX - 55_u32, a);
     ///                 assert_eq!(a, u32::MAX);
     ///             },
-    ///         None => {
-    ///                 println!("Overflow happened.");
-    ///                 assert_eq!(a_u32, None);
-    ///             },
+    ///         None => { println!("Overflow happened."); },
     ///     }
     /// 
     ///     let b_u32 = func(a_u32.unwrap(), 1_u32);
     ///     match b_u32
     ///     {
-    ///         Some(b) => {
-    ///                 println!("{} + 1 = {}", a_u32.unwrap(), b);
-    ///                 assert_eq!(b, 0_u32);
-    ///             },
+    ///         Some(b) => { println!("{} + 1 = {}", a_u32.unwrap(), b); },
     ///         None => {
     ///                 println!("Overflow happened.");
     ///                 assert_eq!(b_u32, None);
@@ -1444,10 +1426,7 @@ pub trait SmallUInt: Copy + Clone + Sized //+ Display + Debug + ToString
     ///                 println!("{} + 55 = {}", u64::MAX - 55_u64, a);
     ///                 assert_eq!(a, u64::MAX);
     ///             },
-    ///         None => {
-    ///                 println!("Overflow happened.");
-    ///                 assert_eq!(a_u64, None);
-    ///             },
+    ///         None => { println!("Overflow happened."); },
     ///     }
     /// 
     ///     let b_u64 = func(a_u64.unwrap(), 1_u64);
@@ -1457,10 +1436,7 @@ pub trait SmallUInt: Copy + Clone + Sized //+ Display + Debug + ToString
     ///                 println!("{} + 1 = {}", a_u64.unwrap(), b);
     ///                 assert_eq!(b, 0_u64);
     ///             },
-    ///         None => {
-    ///                 println!("Overflow happened.");
-    ///                 assert_eq!(b_u64, None);
-    ///             },
+    ///         None => { println!("Overflow happened."); },
     ///     }
     /// }
     /// 
@@ -1482,19 +1458,13 @@ pub trait SmallUInt: Copy + Clone + Sized //+ Display + Debug + ToString
     ///                 println!("{} + 55 = {}", u128::MAX - 55_u128, a);
     ///                 assert_eq!(a, u128::MAX);
     ///             },
-    ///         None => {
-    ///                 println!("Overflow happened.");
-    ///                 assert_eq!(a_u128, None);
-    ///             },
+    ///         None => { println!("Overflow happened."); },
     ///     }
     /// 
     ///     let b_u128 = func(a_u128.unwrap(), 1_u128);
     ///     match b_u128
     ///     {
-    ///         Some(b) => {
-    ///                 println!("{} + 1 = {}", a_u128.unwrap(), b);
-    ///                 assert_eq!(b, 0_u128);
-    ///             },
+    ///         Some(b) => { println!("{} + 1 = {}", a_u128.unwrap(), b); },
     ///         None => {
     ///                 println!("Overflow happened.");
     ///                 assert_eq!(b_u128, None);
@@ -1520,19 +1490,13 @@ pub trait SmallUInt: Copy + Clone + Sized //+ Display + Debug + ToString
     ///                 println!("{} + 55 = {}", usize::MAX - 55_usize, a);
     ///                 assert_eq!(a, usize::MAX);
     ///             },
-    ///         None => {
-    ///                 println!("Overflow happened.");
-    ///                 assert_eq!(a_usize, None);
-    ///             },
+    ///         None => { println!("Overflow happened."); },
     ///     }
     /// 
     ///     let b_usize = func(a_usize.unwrap(), 1_usize);
     ///     match b_usize
     ///     {
-    ///         Some(b) => {
-    ///                 println!("{} + 1 = {}", a_usize.unwrap(), b);
-    ///                 assert_eq!(b, 0_usize);
-    ///             },
+    ///         Some(b) => { println!("{} + 1 = {}", a_usize.unwrap(), b); },
     ///         None => {
     ///                 println!("Overflow happened.");
     ///                 assert_eq!(b_usize, None);
@@ -1560,19 +1524,13 @@ pub trait SmallUInt: Copy + Clone + Sized //+ Display + Debug + ToString
     ///                 println!("{} + 55 = {}", a_shortunion, c);
     ///                 assert_eq!(c.get(), u16::MAX);
     ///             },
-    ///         None => {
-    ///                 println!("Overflow happened.");
-    ///                 assert_eq!(c_shortunion, None);
-    ///             },
+    ///         None => { println!("Overflow happened."); },
     ///     }
     /// 
     ///     let d_shortunion = small_uint_checked_add_func(c_shortunion.unwrap(), 1_u16.into_shortunion());
     ///     match d_shortunion
     ///     {
-    ///         Some(d) => {
-    ///                 println!("{} + 1 = {}", a_shortunion, d);
-    ///                 assert_eq!(d.get(), 0_u16);
-    ///             },
+    ///         Some(d) => { println!("{} + 1 = {}", a_shortunion, d); },
     ///         None => {
     ///                 println!("Overflow happened.");
     ///                 assert_eq!(d_shortunion, None);
@@ -1600,19 +1558,13 @@ pub trait SmallUInt: Copy + Clone + Sized //+ Display + Debug + ToString
     ///                 println!("{} + 55 = {}", a_intunion, c);
     ///                 assert_eq!(c.get(), u32::MAX);
     ///             },
-    ///         None => {
-    ///                 println!("Overflow happened.");
-    ///                 assert_eq!(c_intunion, None);
-    ///             },
+    ///         None => { println!("Overflow happened."); },
     ///     }
     /// 
     ///     let d_intunion = small_uint_checked_add_func(c_intunion.unwrap(), 1_u32.into_intunion());
     ///     match d_intunion
     ///     {
-    ///         Some(d) => {
-    ///                 println!("{} + 1 = {}", a_intunion, d);
-    ///                 assert_eq!(d.get(), 0_u32);
-    ///             },
+    ///         Some(d) => { println!("{} + 1 = {}", a_intunion, d); },
     ///         None => {
     ///                 println!("Overflow happened.");
     ///                 assert_eq!(d_shortunion, None);
@@ -1640,19 +1592,13 @@ pub trait SmallUInt: Copy + Clone + Sized //+ Display + Debug + ToString
     ///                 println!("{} + 55 = {}", a_longunion, c);
     ///                 assert_eq!(c.get(), u64::MAX);
     ///             },
-    ///         None => {
-    ///                 println!("Overflow happened.");
-    ///                 assert_eq!(c_intunion, None);
-    ///             },
+    ///         None => { println!("Overflow happened."); },
     ///     }
     /// 
     ///     let d_longunion = small_uint_checked_add_func(c_longunion.unwrap(), 1_u64.into_longunion());
     ///     match d_longunion
     ///     {
-    ///         Some(d) => {
-    ///                 println!("{} + 1 = {}", a_longunion, d);
-    ///                 assert_eq!(d.get(), 0_u64);
-    ///             },
+    ///         Some(d) => { println!("{} + 1 = {}", a_longunion, d); },
     ///         None => {
     ///                 println!("Overflow happened.");
     ///                 assert_eq!(d_longunion, None);
@@ -1680,19 +1626,13 @@ pub trait SmallUInt: Copy + Clone + Sized //+ Display + Debug + ToString
     ///                 println!("{} + 55 = {}", a_longerunion, c);
     ///                 assert_eq!(c.get(), u128::MAX);
     ///             },
-    ///         None => {
-    ///                 println!("Overflow happened.");
-    ///                 assert_eq!(c_intunion, None);
-    ///             },
+    ///         None => { println!("Overflow happened."); },
     ///     }
     /// 
     ///     let d_longerunion = small_uint_checked_add_func(c_longerunion.unwrap(), 1_u128.into_longerunion());
     ///     match d_longerunion
     ///     {
-    ///         Some(d) => {
-    ///                 println!("{} + 1 = {}", a_longerunion, d);
-    ///                 assert_eq!(d.get(), 0_u128);
-    ///             },
+    ///         Some(d) => { println!("{} + 1 = {}", a_longerunion, d); },
     ///         None => {
     ///                 println!("Overflow happened.");
     ///                 assert_eq!(d_longerunion, None);
@@ -1720,19 +1660,13 @@ pub trait SmallUInt: Copy + Clone + Sized //+ Display + Debug + ToString
     ///                 println!("{} + 55 = {}", a_sizeunion, c);
     ///                 assert_eq!(c.get(), usize::MAX);
     ///             },
-    ///         None => {
-    ///                 println!("Overflow happened.");
-    ///                 assert_eq!(c_sizeunion, None);
-    ///             },
+    ///         None => { println!("Overflow happened."); },
     ///     }
     ///
     ///     let d_sizeunion = small_uint_checked_add_func(c_sizeunion.unwrap(), 1_usize.into_sizeunion());
     ///     match d_sizeunion
     ///     {
-    ///         Some(d) => {
-    ///                 println!("{} + 1 = {}", a_sizeunion, d);
-    ///                 assert_eq!(d.get(), 0_usize);
-    ///             },
+    ///         Some(d) => { println!("{} + 1 = {}", a_sizeunion, d); },
     ///         None => {
     ///                 println!("Overflow happened.");
     ///                 assert_eq!(d_sizeunion, None);
@@ -1761,19 +1695,13 @@ pub trait SmallUInt: Copy + Clone + Sized //+ Display + Debug + ToString
     ///                 println!("{} + 55 = {}", u8::MAX - 55_u8, a);
     ///                 assert_eq!(a, u8::MAX);
     ///             },
-    ///         None => {
-    ///                 println!("Overflow happened.");
-    ///                 assert_eq!(a_u8, None);
-    ///             },
+    ///         None => { println!("Overflow happened."); },
     ///     }
     /// 
     ///     let b_u8 = func(a_u8.unwrap(), 1_u8);
     ///     match b_u8
     ///     {
-    ///         Some(b) => {
-    ///                 println!("{} + 1 = {}", a_u8.unwrap(), b);
-    ///                 assert_eq!(b, 0_u8);
-    ///             },
+    ///         Some(b) => { println!("{} + 1 = {}", a_u8.unwrap(), b); },
     ///         None => {
     ///                 println!("Overflow happened.");
     ///                 assert_eq!(b_u8, None);
@@ -1787,19 +1715,13 @@ pub trait SmallUInt: Copy + Clone + Sized //+ Display + Debug + ToString
     ///                 println!("{} + 55 = {}", u16::MAX - 55_u16, a);
     ///                 assert_eq!(a, u16::MAX);
     ///             },
-    ///         None => {
-    ///                 println!("Overflow happened.");
-    ///                 assert_eq!(a_u16, None);
-    ///             },
+    ///         None => { println!("Overflow happened."); },
     ///     }
     /// 
     ///     let b_u16 = func(a_u16.unwrap(), 1_u16);
     ///     match b_u16
     ///     {
-    ///         Some(b) => {
-    ///                 println!("{} + 1 = {}", a_u16.unwrap(), b);
-    ///                 assert_eq!(b, 0_u16);
-    ///             },
+    ///         Some(b) => { println!("{} + 1 = {}", a_u16.unwrap(), b); },
     ///         None => {
     ///                 println!("Overflow happened.");
     ///                 assert_eq!(b_u16, None);
@@ -1813,19 +1735,13 @@ pub trait SmallUInt: Copy + Clone + Sized //+ Display + Debug + ToString
     ///                 println!("{} + 55 = {}", u32::MAX - 55_u32, a);
     ///                 assert_eq!(a, u32::MAX);
     ///             },
-    ///         None => {
-    ///                 println!("Overflow happened.");
-    ///                 assert_eq!(a_u32, None);
-    ///             },
+    ///         None => { println!("Overflow happened."); },
     ///     }
     /// 
     ///     let b_u32 = func(a_u32.unwrap(), 1_u32);
     ///     match b_u32
     ///     {
-    ///         Some(b) => {
-    ///                 println!("{} + 1 = {}", a_u32.unwrap(), b);
-    ///                 assert_eq!(b, 0_u32);
-    ///             },
+    ///         Some(b) => { println!("{} + 1 = {}", a_u32.unwrap(), b); },
     ///         None => {
     ///                 println!("Overflow happened.");
     ///                 assert_eq!(b_u32, None);
@@ -1839,19 +1755,13 @@ pub trait SmallUInt: Copy + Clone + Sized //+ Display + Debug + ToString
     ///                 println!("{} + 55 = {}", u64::MAX - 55_u64, a);
     ///                 assert_eq!(a, u64::MAX);
     ///             },
-    ///         None => {
-    ///                 println!("Overflow happened.");
-    ///                 assert_eq!(a_u64, None);
-    ///             },
+    ///         None => { println!("Overflow happened."); },
     ///     }
     /// 
     ///     let b_u64 = func(a_u64.unwrap(), 1_u64);
     ///     match b_u64
     ///     {
-    ///         Some(b) => {
-    ///                 println!("{} + 1 = {}", a_u64.unwrap(), b);
-    ///                 assert_eq!(b, 0_u64);
-    ///             },
+    ///         Some(b) => { println!("{} + 1 = {}", a_u64.unwrap(), b); },
     ///         None => {
     ///                 println!("Overflow happened.");
     ///                 assert_eq!(b_u64, None);
@@ -1865,19 +1775,13 @@ pub trait SmallUInt: Copy + Clone + Sized //+ Display + Debug + ToString
     ///                 println!("{} + 55 = {}", u128::MAX - 55_u128, a);
     ///                 assert_eq!(a, u128::MAX);
     ///             },
-    ///         None => {
-    ///                 println!("Overflow happened.");
-    ///                 assert_eq!(a_u128, None);
-    ///             },
+    ///         None => { println!("Overflow happened."); },
     ///     }
     /// 
     ///     let b_u128 = func(a_u128.unwrap(), 1_u128);
     ///     match b_u128
     ///     {
-    ///         Some(b) => {
-    ///                 println!("{} + 1 = {}", a_u128.unwrap(), b);
-    ///                 assert_eq!(b, 0_u128);
-    ///             },
+    ///         Some(b) => { println!("{} + 1 = {}", a_u128.unwrap(), b); },
     ///         None => {
     ///                 println!("Overflow happened.");
     ///                 assert_eq!(b_u128, None);
@@ -1891,19 +1795,13 @@ pub trait SmallUInt: Copy + Clone + Sized //+ Display + Debug + ToString
     ///                 println!("{} + 55 = {}", usize::MAX - 55_usize, a);
     ///                 assert_eq!(a, usize::MAX);
     ///             },
-    ///         None => {
-    ///                 println!("Overflow happened.");
-    ///                 assert_eq!(a_usize, None);
-    ///             },
+    ///         None => { println!("Overflow happened."); },
     ///     }
     /// 
     ///     let b_usize = func(a_usize.unwrap(), 1_usize);
     ///     match b_usize
     ///     {
-    ///         Some(b) => {
-    ///                 println!("{} + 1 = {}", a_usize.unwrap(), b);
-    ///                 assert_eq!(b, 0_usize);
-    ///             },
+    ///         Some(b) => { println!("{} + 1 = {}", a_usize.unwrap(), b); },
     ///         None => {
     ///                 println!("Overflow happened.");
     ///                 assert_eq!(b_usize, None);
@@ -1919,19 +1817,13 @@ pub trait SmallUInt: Copy + Clone + Sized //+ Display + Debug + ToString
     ///                 println!("{} + 55 = {}", a_shortunion, c);
     ///                 assert_eq!(c.get(), u16::MAX);
     ///             },
-    ///         None => {
-    ///                 println!("Overflow happened.");
-    ///                 assert_eq!(c_shortunion, None);
-    ///             },
+    ///         None => { println!("Overflow happened."); },
     ///     }
     /// 
     ///     let d_shortunion = small_uint_checked_add_func(c_shortunion.unwrap(), 1_u16.into_shortunion());
     ///     match d_shortunion
     ///     {
-    ///         Some(d) => {
-    ///                 println!("{} + 1 = {}", a_shortunion, d);
-    ///                 assert_eq!(d.get(), 0_u16);
-    ///             },
+    ///         Some(d) => { println!("{} + 1 = {}", a_shortunion, d); },
     ///         None => {
     ///                 println!("Overflow happened.");
     ///                 assert_eq!(d_shortunion, None);
@@ -1947,19 +1839,13 @@ pub trait SmallUInt: Copy + Clone + Sized //+ Display + Debug + ToString
     ///                 println!("{} + 55 = {}", a_intunion, c);
     ///                 assert_eq!(c.get(), u32::MAX);
     ///             },
-    ///         None => {
-    ///                 println!("Overflow happened.");
-    ///                 assert_eq!(c_intunion, None);
-    ///             },
+    ///         None => { println!("Overflow happened."); },
     ///     }
     /// 
     ///     let d_intunion = small_uint_checked_add_func(c_intunion.unwrap(), 1_u32.into_intunion());
     ///     match d_intunion
     ///     {
-    ///         Some(d) => {
-    ///                 println!("{} + 1 = {}", a_intunion, d);
-    ///                 assert_eq!(d.get(), 0_u32);
-    ///             },
+    ///         Some(d) => { println!("{} + 1 = {}", a_intunion, d); },
     ///         None => {
     ///                 println!("Overflow happened.");
     ///                 assert_eq!(d_shortunion, None);
@@ -1975,19 +1861,13 @@ pub trait SmallUInt: Copy + Clone + Sized //+ Display + Debug + ToString
     ///                 println!("{} + 55 = {}", a_longunion, c);
     ///                 assert_eq!(c.get(), u64::MAX);
     ///             },
-    ///         None => {
-    ///                 println!("Overflow happened.");
-    ///                 assert_eq!(c_intunion, None);
-    ///             },
+    ///         None => { println!("Overflow happened."); },
     ///     }
     /// 
     ///     let d_longunion = small_uint_checked_add_func(c_longunion.unwrap(), 1_u64.into_longunion());
     ///     match d_longunion
     ///     {
-    ///         Some(d) => {
-    ///                 println!("{} + 1 = {}", a_longunion, d);
-    ///                 assert_eq!(d.get(), 0_u64);
-    ///             },
+    ///         Some(d) => { println!("{} + 1 = {}", a_longunion, d); },
     ///         None => {
     ///                 println!("Overflow happened.");
     ///                 assert_eq!(d_longunion, None);
@@ -2003,19 +1883,13 @@ pub trait SmallUInt: Copy + Clone + Sized //+ Display + Debug + ToString
     ///                 println!("{} + 55 = {}", a_longerunion, c);
     ///                 assert_eq!(c.get(), u128::MAX);
     ///             },
-    ///         None => {
-    ///                 println!("Overflow happened.");
-    ///                 assert_eq!(c_intunion, None);
-    ///             },
+    ///         None => { println!("Overflow happened."); },
     ///     }
     /// 
     ///     let d_longerunion = small_uint_checked_add_func(c_longerunion.unwrap(), 1_u128.into_longerunion());
     ///     match d_longerunion
     ///     {
-    ///         Some(d) => {
-    ///                 println!("{} + 1 = {}", a_longerunion, d);
-    ///                 assert_eq!(d.get(), 0_u128);
-    ///             },
+    ///         Some(d) => { println!("{} + 1 = {}", a_longerunion, d); },
     ///         None => {
     ///                 println!("Overflow happened.");
     ///                 assert_eq!(d_longerunion, None);
@@ -2031,19 +1905,13 @@ pub trait SmallUInt: Copy + Clone + Sized //+ Display + Debug + ToString
     ///                 println!("{} + 55 = {}", a_sizeunion, c);
     ///                 assert_eq!(c.get(), usize::MAX);
     ///             },
-    ///         None => {
-    ///                 println!("Overflow happened.");
-    ///                 assert_eq!(c_sizeunion, None);
-    ///             },
+    ///         None => { println!("Overflow happened."); },
     ///     }
     ///
     ///     let d_sizeunion = small_uint_checked_add_func(c_sizeunion.unwrap(), 1_usize.into_sizeunion());
     ///     match d_sizeunion
     ///     {
-    ///         Some(d) => {
-    ///                 println!("{} + 1 = {}", a_sizeunion, d);
-    ///                 assert_eq!(d.get(), 0_usize);
-    ///             },
+    ///         Some(d) => { println!("{} + 1 = {}", a_sizeunion, d); },
     ///         None => {
     ///                 println!("Overflow happened.");
     ///                 assert_eq!(d_sizeunion, None);
@@ -4439,19 +4307,13 @@ pub trait SmallUInt: Copy + Clone + Sized //+ Display + Debug + ToString
     ///                 println!("55 - 55 = {}", a);
     ///                 assert_eq!(a, 0_u8);
     ///             },
-    ///         None => {
-    ///                 println!("Underflow happened.");
-    ///                 assert_eq!(a_u8, None);
-    ///             },
+    ///         None => { println!("Underflow happened."); },
     ///     }
     /// 
     ///     let b_u8 = func(a_u8.unwrap(), 1_u8);
     ///     match b_u8
     ///     {
-    ///         Some(b) => {
-    ///                 println!("{} - 1 = {}", a_u8.unwrap(), b);
-    ///                 assert_eq!(b, u8::MAX);
-    ///             },
+    ///         Some(b) => { println!("{} - 1 = {}", a_u8.unwrap(), b); },
     ///         None => {
     ///                 println!("Underflow happened.");
     ///                 assert_eq!(b_u8, None);
@@ -4477,19 +4339,13 @@ pub trait SmallUInt: Copy + Clone + Sized //+ Display + Debug + ToString
     ///                 println!("55 - 55 = {}", a);
     ///                 assert_eq!(a, 0_u16);
     ///             },
-    ///         None => {
-    ///                 println!("Underflow happened.");
-    ///                 assert_eq!(a_u16, None);
-    ///             },
+    ///         None => { println!("Underflow happened."); },
     ///     }
     /// 
     ///     let b_u16 = func(a_u16.unwrap(), 1_u16);
     ///     match b_u16
     ///     {
-    ///         Some(b) => {
-    ///                 println!("{} - 1 = {}", a_u16.unwrap(), b);
-    ///                 assert_eq!(b, u16::MAX);
-    ///             },
+    ///         Some(b) => { println!("{} - 1 = {}", a_u16.unwrap(), b); },
     ///         None => {
     ///                 println!("Underflow happened.");
     ///                 assert_eq!(b_u16, None);
@@ -4515,19 +4371,13 @@ pub trait SmallUInt: Copy + Clone + Sized //+ Display + Debug + ToString
     ///                 println!("55 - 55 = {}", a);
     ///                 assert_eq!(a, 0_u32);
     ///             },
-    ///         None => {
-    ///                 println!("Underflow happened.");
-    ///                 assert_eq!(a_u32, None);
-    ///             },
+    ///         None => { println!("Underflow happened."); },
     ///     }
     /// 
     ///     let b_u32 = func(a_u32.unwrap(), 1_u32);
     ///     match b_u32
     ///     {
-    ///         Some(b) => {
-    ///                 println!("{} - 1 = {}", a_u32.unwrap(), b);
-    ///                 assert_eq!(b, u32::MAX);
-    ///             },
+    ///         Some(b) => { println!("{} - 1 = {}", a_u32.unwrap(), b); },
     ///         None => {
     ///                 println!("Underflow happened.");
     ///                 assert_eq!(b_u32, None);
@@ -4553,19 +4403,13 @@ pub trait SmallUInt: Copy + Clone + Sized //+ Display + Debug + ToString
     ///                 println!("55 - 55 = {}", a);
     ///                 assert_eq!(a, 0_u64);
     ///             },
-    ///         None => {
-    ///                 println!("Underflow happened.");
-    ///                 assert_eq!(a_u64, None);
-    ///             },
+    ///         None => { println!("Underflow happened."); },
     ///     }
     /// 
     ///     let b_u64 = func(a_u64.unwrap(), 1_u64);
     ///     match b_u64
     ///     {
-    ///         Some(b) => {
-    ///                 println!("{} + 1 = {}", a_u64.unwrap(), b);
-    ///                 assert_eq!(b, u64::MAX);
-    ///             },
+    ///         Some(b) => { println!("{} + 1 = {}", a_u64.unwrap(), b); },
     ///         None => {
     ///                 println!("Underflow happened.");
     ///                 assert_eq!(b_u64, None);
@@ -4591,19 +4435,13 @@ pub trait SmallUInt: Copy + Clone + Sized //+ Display + Debug + ToString
     ///                 println!("55 - 55 = {}", a);
     ///                 assert_eq!(a, 0_u128);
     ///             },
-    ///         None => {
-    ///                 println!("Underflow happened.");
-    ///                 assert_eq!(a_u128, None);
-    ///             },
+    ///         None => { println!("Underflow happened."); },
     ///     }
     /// 
     ///     let b_u128 = func(a_u128.unwrap(), 1_u128);
     ///     match b_u128
     ///     {
-    ///         Some(b) => {
-    ///                 println!("{} - 1 = {}", a_u128.unwrap(), b);
-    ///                 assert_eq!(b, u128::MAX);
-    ///             },
+    ///         Some(b) => { println!("{} - 1 = {}", a_u128.unwrap(), b); },
     ///         None => {
     ///                 println!("Underflow happened.");
     ///                 assert_eq!(b_u128, None);
@@ -4629,19 +4467,13 @@ pub trait SmallUInt: Copy + Clone + Sized //+ Display + Debug + ToString
     ///                 println!("55 - 55 = {}", a);
     ///                 assert_eq!(a, 0_usize);
     ///             },
-    ///         None => {
-    ///                 println!("Underflow happened.");
-    ///                 assert_eq!(a_usize, None);
-    ///             },
+    ///         None => { println!("Underflow happened."); },
     ///     }
     /// 
     ///     let b_usize = func(a_usize.unwrap(), 1_usize);
     ///     match b_usize
     ///     {
-    ///         Some(b) => {
-    ///                 println!("{} - 1 = {}", a_usize.unwrap(), b);
-    ///                 assert_eq!(b, usize::MAX);
-    ///             },
+    ///         Some(b) => { println!("{} - 1 = {}", a_usize.unwrap(), b); },
     ///         None => {
     ///                 println!("Underflow happened.");
     ///                 assert_eq!(b_usize, None);
@@ -4667,19 +4499,13 @@ pub trait SmallUInt: Copy + Clone + Sized //+ Display + Debug + ToString
     ///                 println!("55 - 55 = {}", a);
     ///                 assert_eq!(a.get(), 0_u16);
     ///             },
-    ///         None => {
-    ///                 println!("Underflow happened.");
-    ///                 assert_eq!(a_shortunion, None);
-    ///             },
+    ///         None => { println!("Underflow happened."); },
     ///     }
     /// 
     ///     let b_shortunion = small_uint_checked_sub_func(a_shortunion.unwrap(), 1_u16.into_shortunion());
     ///     match b_shortunion
     ///     {
-    ///         Some(b) => {
-    ///                 println!("{} - 1 = {}", a_shortunion.unwrap(), b);
-    ///                 assert_eq!(b.get(), u16::MAX);
-    ///             },
+    ///         Some(b) => { println!("{} - 1 = {}", a_shortunion.unwrap(), b); },
     ///         None => {
     ///                 println!("Underflow happened.");
     ///                 assert_eq!(b_shortunion, None);
@@ -4705,19 +4531,13 @@ pub trait SmallUInt: Copy + Clone + Sized //+ Display + Debug + ToString
     ///                 println!("55 - 55 = {}", a);
     ///                 assert_eq!(a.get(), 0_u32);
     ///             },
-    ///         None => {
-    ///                 println!("Underflow happened.");
-    ///                 assert_eq!(a_intunion, None);
-    ///             },
+    ///         None => { println!("Underflow happened."); },
     ///     }
     /// 
     ///     let b_intunion = small_uint_checked_sub_func(a_intunion.unwrap(), 1_u32.into_intunion());
     ///     match b_intunion
     ///     {
-    ///         Some(b) => {
-    ///                 println!("{} - 1 = {}", a_u32.unwrap(), b);
-    ///                 assert_eq!(b.get(), u32::MAX);
-    ///             },
+    ///         Some(b) => { println!("{} - 1 = {}", a_u32.unwrap(), b); },
     ///         None => {
     ///                 println!("Underflow happened.");
     ///                 assert_eq!(b_intunion, None);
@@ -4743,19 +4563,13 @@ pub trait SmallUInt: Copy + Clone + Sized //+ Display + Debug + ToString
     ///                 println!("55 - 55 = {}", a);
     ///                 assert_eq!(a.get(), 0_u64);
     ///             },
-    ///         None => {
-    ///                 println!("Underflow happened.");
-    ///                 assert_eq!(a_longunion, None);
-    ///             },
+    ///         None => { println!("Underflow happened."); },
     ///     }
     /// 
     ///     let b_longunion = small_uint_checked_sub_func(a_longunion.unwrap(), 1_u64.into_longunion());
     ///     match b_longunion
     ///     {
-    ///         Some(b) => {
-    ///                 println!("{} + 1 = {}", a_longunion.unwrap(), b);
-    ///                 assert_eq!(b.get(), u64::MAX);
-    ///             },
+    ///         Some(b) => { println!("{} - 1 = {}", a_longunion.unwrap(), b); },
     ///         None => {
     ///                 println!("Underflow happened.");
     ///                 assert_eq!(b_longunion, None);
@@ -4781,19 +4595,13 @@ pub trait SmallUInt: Copy + Clone + Sized //+ Display + Debug + ToString
     ///                 println!("55 - 55 = {}", a);
     ///                 assert_eq!(a.get(), 0_u128);
     ///             },
-    ///         None => {
-    ///                 println!("Underflow happened.");
-    ///                 assert_eq!(a_longerunion, None);
-    ///             },
+    ///         None => { println!("Underflow happened."); },
     ///     }
     /// 
     ///     let b_longerunion = small_uint_checked_sub_func(a_longerunion.unwrap(), 1_u128.into_longerunion());
     ///     match b_longerunion
     ///     {
-    ///         Some(b) => {
-    ///                 println!("{} - 1 = {}", a_longerunion.unwrap(), b);
-    ///                 assert_eq!(b.get(), u128::MAX);
-    ///             },
+    ///         Some(b) => { println!("{} - 1 = {}", a_longerunion.unwrap(), b); },
     ///         None => {
     ///                 println!("Underflow happened.");
     ///                 assert_eq!(b_longerunion, None);
@@ -4819,19 +4627,13 @@ pub trait SmallUInt: Copy + Clone + Sized //+ Display + Debug + ToString
     ///                 println!("55 - 55 = {}", a);
     ///                 assert_eq!(a.get(), 0_usize);
     ///             },
-    ///         None => {
-    ///                 println!("Underflow happened.");
-    ///                 assert_eq!(a_sizeunion, None);
-    ///             },
+    ///         None => { println!("Underflow happened."); },
     ///     }
     /// 
     ///     let b_sizeunion = small_uint_checked_sub_func(a_sizeunion.unwrap(), 1_usize.into_sizeunion());
     ///     match b_sizeunion
     ///     {
-    ///         Some(b) => {
-    ///                 println!("{} - 1 = {}", a_sizeunion.unwrap(), b);
-    ///                 assert_eq!(b.get(), usize::MAX);
-    ///             },
+    ///         Some(b) => { println!("{} - 1 = {}", a_sizeunion.unwrap(), b); },
     ///         None => {
     ///                 println!("Underflow happened.");
     ///                 assert_eq!(b_sizeunion, None);
@@ -4860,19 +4662,13 @@ pub trait SmallUInt: Copy + Clone + Sized //+ Display + Debug + ToString
     ///                 println!("55 - 55 = {}", a);
     ///                 assert_eq!(a, 0_u8);
     ///             },
-    ///         None => {
-    ///                 println!("Underflow happened.");
-    ///                 assert_eq!(a_u8, None);
-    ///             },
+    ///         None => { println!("Underflow happened."); },
     ///     }
     /// 
     ///     let b_u8 = func(a_u8.unwrap(), 1_u8);
     ///     match b_u8
     ///     {
-    ///         Some(b) => {
-    ///                 println!("{} - 1 = {}", a_u8.unwrap(), b);
-    ///                 assert_eq!(b, u8::MAX);
-    ///             },
+    ///         Some(b) => { println!("{} - 1 = {}", a_u8.unwrap(), b); },
     ///         None => {
     ///                 println!("Underflow happened.");
     ///                 assert_eq!(b_u8, None);
@@ -4886,19 +4682,13 @@ pub trait SmallUInt: Copy + Clone + Sized //+ Display + Debug + ToString
     ///                 println!("55 - 55 = {}", a);
     ///                 assert_eq!(a, 0_u16);
     ///             },
-    ///         None => {
-    ///                 println!("Underflow happened.");
-    ///                 assert_eq!(a_u16, None);
-    ///             },
+    ///         None => { println!("Underflow happened."); },
     ///     }
     /// 
     ///     let b_u16 = func(a_u16.unwrap(), 1_u16);
     ///     match b_u16
     ///     {
-    ///         Some(b) => {
-    ///                 println!("{} - 1 = {}", a_u16.unwrap(), b);
-    ///                 assert_eq!(b, u16::MAX);
-    ///             },
+    ///         Some(b) => { println!("{} - 1 = {}", a_u16.unwrap(), b); },
     ///         None => {
     ///                 println!("Underflow happened.");
     ///                 assert_eq!(b_u16, None);
@@ -4912,19 +4702,13 @@ pub trait SmallUInt: Copy + Clone + Sized //+ Display + Debug + ToString
     ///                 println!("55 - 55 = {}", a);
     ///                 assert_eq!(a, 0_u32);
     ///             },
-    ///         None => {
-    ///                 println!("Underflow happened.");
-    ///                 assert_eq!(a_u32, None);
-    ///             },
+    ///         None => { println!("Underflow happened."); },
     ///     }
     /// 
     ///     let b_u32 = func(a_u32.unwrap(), 1_u32);
     ///     match b_u32
     ///     {
-    ///         Some(b) => {
-    ///                 println!("{} - 1 = {}", a_u32.unwrap(), b);
-    ///                 assert_eq!(b, u32::MAX);
-    ///             },
+    ///         Some(b) => { println!("{} - 1 = {}", a_u32.unwrap(), b); },
     ///         None => {
     ///                 println!("Underflow happened.");
     ///                 assert_eq!(b_u32, None);
@@ -4938,19 +4722,13 @@ pub trait SmallUInt: Copy + Clone + Sized //+ Display + Debug + ToString
     ///                 println!("55 - 55 = {}", a);
     ///                 assert_eq!(a, 0_u64);
     ///             },
-    ///         None => {
-    ///                 println!("Underflow happened.");
-    ///                 assert_eq!(a_u64, None);
-    ///             },
+    ///         None => { println!("Underflow happened."); },
     ///     }
     /// 
     ///     let b_u64 = func(a_u64.unwrap(), 1_u64);
     ///     match b_u64
     ///     {
-    ///         Some(b) => {
-    ///                 println!("{} + 1 = {}", a_u64.unwrap(), b);
-    ///                 assert_eq!(b, u64::MAX);
-    ///             },
+    ///         Some(b) => { println!("{} - 1 = {}", a_u64.unwrap(), b); },
     ///         None => {
     ///                 println!("Underflow happened.");
     ///                 assert_eq!(b_u64, None);
@@ -4964,19 +4742,13 @@ pub trait SmallUInt: Copy + Clone + Sized //+ Display + Debug + ToString
     ///                 println!("55 - 55 = {}", a);
     ///                 assert_eq!(a, 0_u128);
     ///             },
-    ///         None => {
-    ///                 println!("Underflow happened.");
-    ///                 assert_eq!(a_u128, None);
-    ///             },
+    ///         None => { println!("Underflow happened."); },
     ///     }
     /// 
     ///     let b_u128 = func(a_u128.unwrap(), 1_u128);
     ///     match b_u128
     ///     {
-    ///         Some(b) => {
-    ///                 println!("{} - 1 = {}", a_u128.unwrap(), b);
-    ///                 assert_eq!(b, u128::MAX);
-    ///             },
+    ///         Some(b) => { println!("{} - 1 = {}", a_u128.unwrap(), b); },
     ///         None => {
     ///                 println!("Underflow happened.");
     ///                 assert_eq!(b_u128, None);
@@ -4990,19 +4762,13 @@ pub trait SmallUInt: Copy + Clone + Sized //+ Display + Debug + ToString
     ///                 println!("55 - 55 = {}", a);
     ///                 assert_eq!(a, 0_usize);
     ///             },
-    ///         None => {
-    ///                 println!("Underflow happened.");
-    ///                 assert_eq!(a_usize, None);
-    ///             },
+    ///         None => { println!("Underflow happened."); },
     ///     }
     /// 
     ///     let b_usize = func(a_usize.unwrap(), 1_usize);
     ///     match b_usize
     ///     {
-    ///         Some(b) => {
-    ///                 println!("{} - 1 = {}", a_usize.unwrap(), b);
-    ///                 assert_eq!(b, usize::MAX);
-    ///             },
+    ///         Some(b) => { println!("{} - 1 = {}", a_usize.unwrap(), b); },
     ///         None => {
     ///                 println!("Underflow happened.");
     ///                 assert_eq!(b_usize, None);
@@ -5017,19 +4783,13 @@ pub trait SmallUInt: Copy + Clone + Sized //+ Display + Debug + ToString
     ///                 println!("55 - 55 = {}", a);
     ///                 assert_eq!(a.get(), 0_u16);
     ///             },
-    ///         None => {
-    ///                 println!("Underflow happened.");
-    ///                 assert_eq!(a_shortunion, None);
-    ///             },
+    ///         None => { println!("Underflow happened."); },
     ///     }
     /// 
     ///     let b_shortunion = small_uint_checked_sub_func(a_shortunion.unwrap(), 1_u16.into_shortunion());
     ///     match b_shortunion
     ///     {
-    ///         Some(b) => {
-    ///                 println!("{} - 1 = {}", a_shortunion.unwrap(), b);
-    ///                 assert_eq!(b.get(), u16::MAX);
-    ///             },
+    ///         Some(b) => { println!("{} - 1 = {}", a_shortunion.unwrap(), b); },
     ///         None => {
     ///                 println!("Underflow happened.");
     ///                 assert_eq!(b_shortunion, None);
@@ -5044,19 +4804,13 @@ pub trait SmallUInt: Copy + Clone + Sized //+ Display + Debug + ToString
     ///                 println!("55 - 55 = {}", a);
     ///                 assert_eq!(a.get(), 0_u32);
     ///             },
-    ///         None => {
-    ///                 println!("Underflow happened.");
-    ///                 assert_eq!(a_intunion, None);
-    ///             },
+    ///         None => { println!("Underflow happened."); },
     ///     }
     /// 
     ///     let b_intunion = small_uint_checked_sub_func(a_intunion.unwrap(), 1_u32.into_intunion());
     ///     match b_intunion
     ///     {
-    ///         Some(b) => {
-    ///                 println!("{} - 1 = {}", a_u32.unwrap(), b);
-    ///                 assert_eq!(b.get(), u32::MAX);
-    ///             },
+    ///         Some(b) => { println!("{} - 1 = {}", a_u32.unwrap(), b); },
     ///         None => {
     ///                 println!("Underflow happened.");
     ///                 assert_eq!(b_intunion, None);
@@ -5071,19 +4825,13 @@ pub trait SmallUInt: Copy + Clone + Sized //+ Display + Debug + ToString
     ///                 println!("55 - 55 = {}", a);
     ///                 assert_eq!(a.get(), 0_u64);
     ///             },
-    ///         None => {
-    ///                 println!("Underflow happened.");
-    ///                 assert_eq!(a_longunion, None);
-    ///             },
+    ///         None => { println!("Underflow happened."); },
     ///     }
     /// 
     ///     let b_longunion = small_uint_checked_sub_func(a_longunion.unwrap(), 1_u64.into_longunion());
     ///     match b_longunion
     ///     {
-    ///         Some(b) => {
-    ///                 println!("{} + 1 = {}", a_longunion.unwrap(), b);
-    ///                 assert_eq!(b.get(), u64::MAX);
-    ///             },
+    ///         Some(b) => { println!("{} - 1 = {}", a_longunion.unwrap(), b); },
     ///         None => {
     ///                 println!("Underflow happened.");
     ///                 assert_eq!(b_longunion, None);
@@ -5098,19 +4846,13 @@ pub trait SmallUInt: Copy + Clone + Sized //+ Display + Debug + ToString
     ///                 println!("55 - 55 = {}", a);
     ///                 assert_eq!(a.get(), 0_u128);
     ///             },
-    ///         None => {
-    ///                 println!("Underflow happened.");
-    ///                 assert_eq!(a_longerunion, None);
-    ///             },
+    ///         None => { println!("Underflow happened."); },
     ///     }
     /// 
     ///     let b_longerunion = small_uint_checked_sub_func(a_longerunion.unwrap(), 1_u128.into_longerunion());
     ///     match b_longerunion
     ///     {
-    ///         Some(b) => {
-    ///                 println!("{} - 1 = {}", a_longerunion.unwrap(), b);
-    ///                 assert_eq!(b.get(), u128::MAX);
-    ///             },
+    ///         Some(b) => { println!("{} - 1 = {}", a_longerunion.unwrap(), b); },
     ///         None => {
     ///                 println!("Underflow happened.");
     ///                 assert_eq!(b_longerunion, None);
@@ -5125,19 +4867,13 @@ pub trait SmallUInt: Copy + Clone + Sized //+ Display + Debug + ToString
     ///                 println!("55 - 55 = {}", a);
     ///                 assert_eq!(a.get(), 0_usize);
     ///             },
-    ///         None => {
-    ///                 println!("Underflow happened.");
-    ///                 assert_eq!(a_sizeunion, None);
-    ///             },
+    ///         None => { println!("Underflow happened."); },
     ///     }
     /// 
     ///     let b_sizeunion = small_uint_checked_sub_func(a_sizeunion.unwrap(), 1_usize.into_sizeunion());
     ///     match b_sizeunion
     ///     {
-    ///         Some(b) => {
-    ///                 println!("{} - 1 = {}", a_sizeunion.unwrap(), b);
-    ///                 assert_eq!(b.get(), usize::MAX);
-    ///             },
+    ///         Some(b) => { println!("{} - 1 = {}", a_sizeunion.unwrap(), b); },
     ///         None => {
     ///                 println!("Underflow happened.");
     ///                 assert_eq!(b_sizeunion, None);
@@ -8235,19 +7971,13 @@ pub trait SmallUInt: Copy + Clone + Sized //+ Display + Debug + ToString
     ///                 println!("{} * 2 = {}", u8::MAX / 3, a_u8.unwrap());
     ///                 assert_eq!(a, 170_u8);
     ///             },
-    ///         None => {
-    ///                 println!("Overflow happened.");
-    ///                 assert_eq!(a_u8, None);
-    ///             },
+    ///         None => { println!("Overflow happened."); },
     ///     }
     /// 
     ///     let b_u8 = func(a_u8.unwrap(), 2_u8);
     ///     match b_u8
     ///     {
-    ///         Some(b) => {
-    ///                 println!("{} * 2 = {}", a_u8.unwrap(), b_u8.unwrap());
-    ///                 assert_eq!(b, 84_u8);
-    ///             },
+    ///         Some(b) => { println!("{} * 2 = {}", a_u8.unwrap(), b_u8.unwrap()); },
     ///         None => {
     ///                 println!("Overflow happened.");
     ///                 assert_eq!(b_u8, None);
@@ -8273,19 +8003,13 @@ pub trait SmallUInt: Copy + Clone + Sized //+ Display + Debug + ToString
     ///                 println!("{} * 2 = {}", u16::MAX / 3, a_u16.unwrap());
     ///                 assert_eq!(a, 43690_u16);
     ///             },
-    ///         None => {
-    ///                 println!("Overflow happened.");
-    ///                 assert_eq!(a_u16, None);
-    ///             },
+    ///         None => { println!("Overflow happened."); },
     ///     }
     /// 
     ///     let b_u16 = func(a_u16.unwrap(), 2_u16);
     ///     match b_u16
     ///     {
-    ///         Some(b) => {
-    ///                 println!("{} * 2 = {}", a_u16.unwrap(), b);
-    ///                 assert_eq!(b, 21844_u16);
-    ///             },
+    ///         Some(b) => { println!("{} * 2 = {}", a_u16.unwrap(), b); },
     ///         None => {
     ///                 println!("Overflow happened.");
     ///                 assert_eq!(b_u16, None);
@@ -8311,19 +8035,13 @@ pub trait SmallUInt: Copy + Clone + Sized //+ Display + Debug + ToString
     ///                 println!("{} * 2 = {}", u32::MAX / 3, a_u32.unwrap());
     ///                 assert_eq!(a, 2863311530_u32);
     ///             },
-    ///         None => {
-    ///                 println!("Overflow happened.");
-    ///                 assert_eq!(a_u32, None);
-    ///             },
+    ///         None => { println!("Overflow happened."); },
     ///     }
     /// 
     ///     let b_u32 = func(a_u32.unwrap(), 2_u32);
     ///     match b_u32
     ///     {
-    ///         Some(b) => {
-    ///                 println!("{} * 2 = {}", a_u32.unwrap(), b);
-    ///                 assert_eq!(b, 1431655764_u32);
-    ///             },
+    ///         Some(b) => { println!("{} * 2 = {}", a_u32.unwrap(), b); },
     ///         None => {
     ///                 println!("Overflow happened.");
     ///                 assert_eq!(b_u32, None);
@@ -8349,19 +8067,13 @@ pub trait SmallUInt: Copy + Clone + Sized //+ Display + Debug + ToString
     ///                 println!("{} * 2 = {}", u64::MAX / 3, a_u64.unwrap());
     ///                 assert_eq!(a, 12297829382473034410_u64);
     ///             },
-    ///         None => {
-    ///                 println!("Overflow happened.");
-    ///                 assert_eq!(a_u64, None);
-    ///             },
+    ///         None => { println!("Overflow happened."); },
     ///     }
     /// 
     ///     let b_u64 = func(a_u64.unwrap(), 2_u64);
     ///     match b_u64
     ///     {
-    ///         Some(b) => {
-    ///                 println!("{} * 2 = {}", a_u64.unwrap(), b);
-    ///                 assert_eq!(b, 6148914691236517204_u64);
-    ///             },
+    ///         Some(b) => { println!("{} * 2 = {}", a_u64.unwrap(), b); },
     ///         None => {
     ///                 println!("Overflow happened.");
     ///                 assert_eq!(b_u64, None);
@@ -8387,19 +8099,13 @@ pub trait SmallUInt: Copy + Clone + Sized //+ Display + Debug + ToString
     ///                 println!("{} * 2 = {}", u128::MAX / 3, a_u128.unwrap());
     ///                 assert_eq!(a, 226854911280625642308916404954512140970_u128);
     ///             },
-    ///         None => {
-    ///                 println!("Overflow happened.");
-    ///                 assert_eq!(a_u128, None);
-    ///             },
+    ///         None => { println!("Overflow happened."); },
     ///     }
     /// 
     ///     let b_u128 = func(a_u128.unwrap(), 2_u128);
     ///     match b_u128
     ///     {
-    ///         Some(b) => {
-    ///                 println!("{} * 2 = {}", a_u128.unwrap(), b);
-    ///                 assert_eq!(b, 113427455640312821154458202477256070484_u128);
-    ///             },
+    ///         Some(b) => { println!("{} * 2 = {}", a_u128.unwrap(), b); },
     ///         None => {
     ///                 println!("Overflow happened.");
     ///                 assert_eq!(b_u128, None);
@@ -8425,19 +8131,13 @@ pub trait SmallUInt: Copy + Clone + Sized //+ Display + Debug + ToString
     ///                 println!("{} * 2 = {}", usize::MAX / 3, a_usize.unwrap());
     ///                 assert_eq!(a, 12297829382473034410_usize);
     ///             },
-    ///         None => {
-    ///                 println!("Overflow happened.");
-    ///                 assert_eq!(a_usize, None);
-    ///             },
+    ///         None => { println!("Overflow happened."); },
     ///     }
     /// 
     ///     let b_usize = func(a_usize.unwrap(), 2_usize);
     ///     match b_usize
     ///     {
-    ///         Some(b) => {
-    ///                 println!("{} * 2 = {}", a_usize.unwrap(), b);
-    ///                 assert_eq!(b, 6148914691236517204_usize);
-    ///             },
+    ///         Some(b) => { println!("{} * 2 = {}", a_usize.unwrap(), b); },
     ///         None => {
     ///                 println!("Overflow happened.");
     ///                 assert_eq!(b_usize, None);
@@ -8463,19 +8163,13 @@ pub trait SmallUInt: Copy + Clone + Sized //+ Display + Debug + ToString
     ///                 println!("{} * 2 = {}", (u16::MAX / 3).into_shortunion(), a);
     ///                 assert_eq!(a.get(), 43690_u16);
     ///             },
-    ///         None => {
-    ///                 println!("Overflow happened.");
-    ///                 assert_eq!(a_shortunion, None);
-    ///             },
+    ///         None => { println!("Overflow happened."); },
     ///     }
     /// 
     ///     let b_shortunion = func(a_shortunion.unwrap(), 2_u16.into_shortunion());
     ///     match b_shortunion
     ///     {
-    ///         Some(b) => {
-    ///                 println!("{} * 2 = {}", a_shortunion.unwrap(), b);
-    ///                 assert_eq!(b.get(), 21844_u16);
-    ///             },
+    ///         Some(b) => { println!("{} * 2 = {}", a_shortunion.unwrap(), b); },
     ///         None => {
     ///                 println!("Overflow happened.");
     ///                 assert_eq!(b_shortunion, None);
@@ -8501,19 +8195,13 @@ pub trait SmallUInt: Copy + Clone + Sized //+ Display + Debug + ToString
     ///                 println!("{} * 2 = {}", (u32::MAX / 3).into_intunion(), a);
     ///                 assert_eq!(a.get(), 2863311530_u32);
     ///             },
-    ///         None => {
-    ///                 println!("Overflow happened.");
-    ///                 assert_eq!(a_intunion, None);
-    ///             },
+    ///         None => { println!("Overflow happened."); },
     ///     }
     /// 
     ///     let b_intunion = func(a_intunion.unwrap(), 2_u32.into_intunion());
     ///     match b_intunion
     ///     {
-    ///         Some(b) => {
-    ///                 println!("{} * 2 = {}", a_intunion.unwrap(), b);
-    ///                 assert_eq!(b.get(), 1431655764_u32);
-    ///             },
+    ///         Some(b) => { println!("{} * 2 = {}", a_intunion.unwrap(), b); },
     ///         None => {
     ///                 println!("Overflow happened.");
     ///                 assert_eq!(b_intunion, None);
@@ -8539,19 +8227,13 @@ pub trait SmallUInt: Copy + Clone + Sized //+ Display + Debug + ToString
     ///                 println!("{} * 2 = {}", (u64::MAX / 3).into_longunion(), a);
     ///                 assert_eq!(a.get(), 12297829382473034410_u64);
     ///             },
-    ///         None => {
-    ///                 println!("Overflow happened.");
-    ///                 assert_eq!(a_longunion, None);
-    ///             },
+    ///         None => { println!("Overflow happened."); },
     ///     }
     /// 
     ///     let b_longunion = func(a_longunion.unwrap(), 2_u64.into_longunion());
     ///     match b_longunion
     ///     {
-    ///         Some(b) => {
-    ///                 println!("{} * 2 = {}", a_longunion.unwrap(), b);
-    ///                 assert_eq!(b.get(), 6148914691236517204_u64);
-    ///             },
+    ///         Some(b) => { println!("{} * 2 = {}", a_longunion.unwrap(), b); },
     ///         None => {
     ///                 println!("Overflow happened.");
     ///                 assert_eq!(b_longunion, None);
@@ -8577,19 +8259,13 @@ pub trait SmallUInt: Copy + Clone + Sized //+ Display + Debug + ToString
     ///                 println!("{} * 2 = {}", (u128::MAX / 3).into_longerunion(), a);
     ///                 assert_eq!(a.get(), 226854911280625642308916404954512140970_u128);
     ///             },
-    ///         None => {
-    ///                 println!("Overflow happened.");
-    ///                 assert_eq!(a_longerunion, None);
-    ///             },
+    ///         None => { println!("Overflow happened."); },
     ///     }
     /// 
     ///     let b_longerunion = func(a_longerunion.unwrap(), 2_u128.into_longerunion());
     ///     match b_longerunion
     ///     {
-    ///         Some(b) => {
-    ///                 println!("{} * 2 = {}", a_longerunion.unwrap(), b);
-    ///                 assert_eq!(b.get(), 113427455640312821154458202477256070484_u128);
-    ///             },
+    ///         Some(b) => { println!("{} * 2 = {}", a_longerunion.unwrap(), b); },
     ///         None => {
     ///                 println!("Overflow happened.");
     ///                 assert_eq!(b_longerunion, None);
@@ -8615,19 +8291,13 @@ pub trait SmallUInt: Copy + Clone + Sized //+ Display + Debug + ToString
     ///                 println!("{} * 2 = {}", (usize::MAX / 3).into_sizeunion(), a.into_sizeunion());
     ///                 assert_eq!(a.get(), 12297829382473034410_usize);
     ///             },
-    ///         None => {
-    ///                 println!("Overflow happened.");
-    ///                 assert_eq!(a_sizeunion, None);
-    ///             },
+    ///         None => { println!("Overflow happened."); },
     ///     }
     /// 
     ///     let b_sizeunion = func(a_sizeunion.unwrap(), 2_usize.into_sizeunion());
     ///     match b_sizeunion
     ///     {
-    ///         Some(b) => {
-    ///                 println!("{} * 2 = {}", a_sizeunion.unwrap(), b);
-    ///                 assert_eq!(b.get(), 6148914691236517204_usize);
-    ///             },
+    ///         Some(b) => { println!("{} * 2 = {}", a_sizeunion.unwrap(), b); },
     ///         None => {
     ///                 println!("Overflow happened.");
     ///                 assert_eq!(b_sizeunion, None);
@@ -8656,19 +8326,13 @@ pub trait SmallUInt: Copy + Clone + Sized //+ Display + Debug + ToString
     ///                 println!("{} * 2 = {}", u8::MAX / 3, a_u8.unwrap());
     ///                 assert_eq!(a, 170_u8);
     ///             },
-    ///         None => {
-    ///                 println!("Overflow happened.");
-    ///                 assert_eq!(a_u8, None);
-    ///             },
+    ///         None => { println!("Overflow happened."); },
     ///     }
     /// 
     ///     let b_u8 = func(a_u8.unwrap(), 2_u8);
     ///     match b_u8
     ///     {
-    ///         Some(b) => {
-    ///                 println!("{} * 2 = {}", a_u8.unwrap(), b_u8.unwrap());
-    ///                 assert_eq!(b, 84_u8);
-    ///             },
+    ///         Some(b) => { println!("{} * 2 = {}", a_u8.unwrap(), b_u8.unwrap()); },
     ///         None => {
     ///                 println!("Overflow happened.");
     ///                 assert_eq!(b_u8, None);
@@ -8682,19 +8346,13 @@ pub trait SmallUInt: Copy + Clone + Sized //+ Display + Debug + ToString
     ///                 println!("{} * 2 = {}", u16::MAX / 3, a_u16.unwrap());
     ///                 assert_eq!(a, 43690_u16);
     ///             },
-    ///         None => {
-    ///                 println!("Overflow happened.");
-    ///                 assert_eq!(a_u16, None);
-    ///             },
+    ///         None => { println!("Overflow happened."); },
     ///     }
     /// 
     ///     let b_u16 = func(a_u16.unwrap(), 2_u16);
     ///     match b_u16
     ///     {
-    ///         Some(b) => {
-    ///                 println!("{} * 2 = {}", a_u16.unwrap(), b);
-    ///                 assert_eq!(b, 21844_u16);
-    ///             },
+    ///         Some(b) => { println!("{} * 2 = {}", a_u16.unwrap(), b); },
     ///         None => {
     ///                 println!("Overflow happened.");
     ///                 assert_eq!(b_u16, None);
@@ -8708,19 +8366,13 @@ pub trait SmallUInt: Copy + Clone + Sized //+ Display + Debug + ToString
     ///                 println!("{} * 2 = {}", u32::MAX / 3, a_u32.unwrap());
     ///                 assert_eq!(a, 2863311530_u32);
     ///             },
-    ///         None => {
-    ///                 println!("Overflow happened.");
-    ///                 assert_eq!(a_u32, None);
-    ///             },
+    ///         None => { println!("Overflow happened."); },
     ///     }
     /// 
     ///     let b_u32 = func(a_u32.unwrap(), 2_u32);
     ///     match b_u32
     ///     {
-    ///         Some(b) => {
-    ///                 println!("{} * 2 = {}", a_u32.unwrap(), b);
-    ///                 assert_eq!(b, 1431655764_u32);
-    ///             },
+    ///         Some(b) => { println!("{} * 2 = {}", a_u32.unwrap(), b); },
     ///         None => {
     ///                 println!("Overflow happened.");
     ///                 assert_eq!(b_u32, None);
@@ -8734,19 +8386,13 @@ pub trait SmallUInt: Copy + Clone + Sized //+ Display + Debug + ToString
     ///                 println!("{} * 2 = {}", u64::MAX / 3, a_u64.unwrap());
     ///                 assert_eq!(a, 12297829382473034410_u64);
     ///             },
-    ///         None => {
-    ///                 println!("Overflow happened.");
-    ///                 assert_eq!(a_u64, None);
-    ///             },
+    ///         None => { println!("Overflow happened."); },
     ///     }
     /// 
     ///     let b_u64 = func(a_u64.unwrap(), 2_u64);
     ///     match b_u64
     ///     {
-    ///         Some(b) => {
-    ///                 println!("{} * 2 = {}", a_u64.unwrap(), b);
-    ///                 assert_eq!(b, 6148914691236517204_u64);
-    ///             },
+    ///         Some(b) => { println!("{} * 2 = {}", a_u64.unwrap(), b); },
     ///         None => {
     ///                 println!("Overflow happened.");
     ///                 assert_eq!(b_u64, None);
@@ -8760,19 +8406,13 @@ pub trait SmallUInt: Copy + Clone + Sized //+ Display + Debug + ToString
     ///                 println!("{} * 2 = {}", u128::MAX / 3, a_u128.unwrap());
     ///                 assert_eq!(a, 226854911280625642308916404954512140970_u128);
     ///             },
-    ///         None => {
-    ///                 println!("Overflow happened.");
-    ///                 assert_eq!(a_u128, None);
-    ///             },
+    ///         None => { println!("Overflow happened."); },
     ///     }
     /// 
     ///     let b_u128 = func(a_u128.unwrap(), 2_u128);
     ///     match b_u128
     ///     {
-    ///         Some(b) => {
-    ///                 println!("{} * 2 = {}", a_u128.unwrap(), b);
-    ///                 assert_eq!(b, 113427455640312821154458202477256070484_u128);
-    ///             },
+    ///         Some(b) => { println!("{} * 2 = {}", a_u128.unwrap(), b); },
     ///         None => {
     ///                 println!("Overflow happened.");
     ///                 assert_eq!(b_u128, None);
@@ -8786,19 +8426,13 @@ pub trait SmallUInt: Copy + Clone + Sized //+ Display + Debug + ToString
     ///                 println!("{} * 2 = {}", usize::MAX / 3, a_usize.unwrap());
     ///                 assert_eq!(a, 12297829382473034410_usize);
     ///             },
-    ///         None => {
-    ///                 println!("Overflow happened.");
-    ///                 assert_eq!(a_usize, None);
-    ///             },
+    ///         None => { println!("Overflow happened."); },
     ///     }
     /// 
     ///     let b_usize = func(a_usize.unwrap(), 2_usize);
     ///     match b_usize
     ///     {
-    ///         Some(b) => {
-    ///                 println!("{} * 2 = {}", a_usize.unwrap(), b);
-    ///                 assert_eq!(b, 6148914691236517204_usize);
-    ///             },
+    ///         Some(b) => { println!("{} * 2 = {}", a_usize.unwrap(), b); },
     ///         None => {
     ///                 println!("Overflow happened.");
     ///                 assert_eq!(b_usize, None);
@@ -8812,19 +8446,13 @@ pub trait SmallUInt: Copy + Clone + Sized //+ Display + Debug + ToString
     ///                 println!("{} * 2 = {}", (u16::MAX / 3).into_shortunion(), a);
     ///                 assert_eq!(a.get(), 43690_u16);
     ///             },
-    ///         None => {
-    ///                 println!("Overflow happened.");
-    ///                 assert_eq!(a_shortunion, None);
-    ///             },
+    ///         None => { println!("Overflow happened."); },
     ///     }
     /// 
     ///     let b_shortunion = func(a_shortunion.unwrap(), 2_u16.into_shortunion());
     ///     match b_shortunion
     ///     {
-    ///         Some(b) => {
-    ///                 println!("{} * 2 = {}", a_shortunion.unwrap(), b);
-    ///                 assert_eq!(b.get(), 21844_u16);
-    ///             },
+    ///         Some(b) => { println!("{} * 2 = {}", a_shortunion.unwrap(), b); },
     ///         None => {
     ///                 println!("Overflow happened.");
     ///                 assert_eq!(b_shortunion, None);
@@ -8838,19 +8466,13 @@ pub trait SmallUInt: Copy + Clone + Sized //+ Display + Debug + ToString
     ///                 println!("{} * 2 = {}", (u32::MAX / 3).into_intunion(), a);
     ///                 assert_eq!(a.get(), 2863311530_u32);
     ///             },
-    ///         None => {
-    ///                 println!("Overflow happened.");
-    ///                 assert_eq!(a_intunion, None);
-    ///             },
+    ///         None => { println!("Overflow happened."); },
     ///     }
     /// 
     ///     let b_intunion = func(a_intunion.unwrap(), 2_u32.into_intunion());
     ///     match b_intunion
     ///     {
-    ///         Some(b) => {
-    ///                 println!("{} * 2 = {}", a_intunion.unwrap(), b);
-    ///                 assert_eq!(b.get(), 1431655764_u32);
-    ///             },
+    ///         Some(b) => { println!("{} * 2 = {}", a_intunion.unwrap(), b); },
     ///         None => {
     ///                 println!("Overflow happened.");
     ///                 assert_eq!(b_intunion, None);
@@ -8864,19 +8486,13 @@ pub trait SmallUInt: Copy + Clone + Sized //+ Display + Debug + ToString
     ///                 println!("{} * 2 = {}", (u64::MAX / 3).into_longunion(), a);
     ///                 assert_eq!(a.get(), 12297829382473034410_u64);
     ///             },
-    ///         None => {
-    ///                 println!("Overflow happened.");
-    ///                 assert_eq!(a_longunion, None);
-    ///             },
+    ///         None => { println!("Overflow happened."); },
     ///     }
     /// 
     ///     let b_longunion = func(a_longunion.unwrap(), 2_u64.into_longunion());
     ///     match b_longunion
     ///     {
-    ///         Some(b) => {
-    ///                 println!("{} * 2 = {}", a_longunion.unwrap(), b);
-    ///                 assert_eq!(b.get(), 6148914691236517204_u64);
-    ///             },
+    ///         Some(b) => { println!("{} * 2 = {}", a_longunion.unwrap(), b); },
     ///         None => {
     ///                 println!("Overflow happened.");
     ///                 assert_eq!(b_longunion, None);
@@ -8890,19 +8506,13 @@ pub trait SmallUInt: Copy + Clone + Sized //+ Display + Debug + ToString
     ///                 println!("{} * 2 = {}", (u128::MAX / 3).into_longerunion(), a);
     ///                 assert_eq!(a.get(), 226854911280625642308916404954512140970_u128);
     ///             },
-    ///         None => {
-    ///                 println!("Overflow happened.");
-    ///                 assert_eq!(a_longerunion, None);
-    ///             },
+    ///         None => { println!("Overflow happened."); },
     ///     }
     /// 
     ///     let b_longerunion = func(a_longerunion.unwrap(), 2_u128.into_longerunion());
     ///     match b_longerunion
     ///     {
-    ///         Some(b) => {
-    ///                 println!("{} * 2 = {}", a_longerunion.unwrap(), b);
-    ///                 assert_eq!(b.get(), 113427455640312821154458202477256070484_u128);
-    ///             },
+    ///         Some(b) => { println!("{} * 2 = {}", a_longerunion.unwrap(), b); },
     ///         None => {
     ///                 println!("Overflow happened.");
     ///                 assert_eq!(b_longerunion, None);
@@ -8916,19 +8526,13 @@ pub trait SmallUInt: Copy + Clone + Sized //+ Display + Debug + ToString
     ///                 println!("{} * 2 = {}", (usize::MAX / 3).into_sizeunion(), a.into_sizeunion());
     ///                 assert_eq!(a.get(), 12297829382473034410_usize);
     ///             },
-    ///         None => {
-    ///                 println!("Overflow happened.");
-    ///                 assert_eq!(a_sizeunion, None);
-    ///             },
+    ///         None => { println!("Overflow happened."); },
     ///     }
     /// 
     ///     let b_sizeunion = func(a_sizeunion.unwrap(), 2_usize.into_sizeunion());
     ///     match b_sizeunion
     ///     {
-    ///         Some(b) => {
-    ///                 println!("{} * 2 = {}", a_sizeunion.unwrap(), b);
-    ///                 assert_eq!(b.get(), 6148914691236517204_usize);
-    ///             },
+    ///         Some(b) => { println!("{} * 2 = {}", a_sizeunion.unwrap(), b); },
     ///         None => {
     ///                 println!("Overflow happened.");
     ///                 assert_eq!(b_sizeunion, None);
@@ -10837,10 +10441,7 @@ pub trait SmallUInt: Copy + Clone + Sized //+ Display + Debug + ToString
     ///                 println!("{} / 2 = {}", u8::MAX / 3, a);
     ///                 assert_eq!(a, 42_u8);
     ///             },
-    ///         None => {
-    ///                 println!("Divided by zero.");
-    ///                 assert_eq!(a_u8, None);
-    ///             },
+    ///         None => { println!("Divided by zero."); },
     ///     }
     /// 
     ///     let b_u8 = func(u8::MAX / 3, 0_u8);
@@ -10872,10 +10473,7 @@ pub trait SmallUInt: Copy + Clone + Sized //+ Display + Debug + ToString
     ///                 println!("{} / 2 = {}", u16::MAX / 3, a);
     ///                 assert_eq!(a, 10922_u16);
     ///             },
-    ///         None => {
-    ///                 println!("Divided by zero.");
-    ///                 assert_eq!(a_u16, None);
-    ///             },
+    ///         None => { println!("Divided by zero."); },
     ///     }
     /// 
     ///     let b_u16 = func(u16::MAX / 3, 0_u16);
@@ -10907,10 +10505,7 @@ pub trait SmallUInt: Copy + Clone + Sized //+ Display + Debug + ToString
     ///                 println!("{} / 2 = {}", u32::MAX / 3, a);
     ///                 assert_eq!(a, 715827882_u32);
     ///             },
-    ///         None => {
-    ///                 println!("Divided by zero.");
-    ///                 assert_eq!(a_u32, None);
-    ///             },
+    ///         None => { println!("Divided by zero."); },
     ///     }
     /// 
     ///     let b_u32 = func(u32::MAX / 3, 0_u32);
@@ -10942,10 +10537,7 @@ pub trait SmallUInt: Copy + Clone + Sized //+ Display + Debug + ToString
     ///                 println!("{} / 2 = {}", u64::MAX / 3, a);
     ///                 assert_eq!(a, 3074457345618258602_u64);
     ///             },
-    ///         None => {
-    ///                 println!("Divided by zero.");
-    ///                 assert_eq!(a_u64, None);
-    ///             },
+    ///         None => { println!("Divided by zero."); },
     ///     }
     /// 
     ///     let b_u64 = func(u64::MAX / 3, 0_u64);
@@ -10977,10 +10569,7 @@ pub trait SmallUInt: Copy + Clone + Sized //+ Display + Debug + ToString
     ///                 println!("{} / 2 = {}", u128::MAX / 3, a);
     ///                 assert_eq!(a, 56713727820156410577229101238628035242_u128);
     ///             },
-    ///         None => {
-    ///                 println!("Divided by zero.");
-    ///                 assert_eq!(a_u128, None);
-    ///             },
+    ///         None => { println!("Divided by zero."); },
     ///     }
     /// 
     ///     let b_u128 = func(u128::MAX / 3, 0_u128);
@@ -11012,10 +10601,7 @@ pub trait SmallUInt: Copy + Clone + Sized //+ Display + Debug + ToString
     ///                 println!("{} / 2 = {}", usize::MAX / 3, a);
     ///                 assert_eq!(a, 3074457345618258602_usize);
     ///             },
-    ///         None => {
-    ///                 println!("Divided by zero.");
-    ///                 assert_eq!(a_usize, None);
-    ///             },
+    ///         None => { println!("Divided by zero."); },
     ///     }
     /// 
     ///     let b_usize = func(usize::MAX / 3, 0_usize);
@@ -11047,10 +10633,7 @@ pub trait SmallUInt: Copy + Clone + Sized //+ Display + Debug + ToString
     ///                 println!("{} / 2 = {}", (u16::MAX / 3).into_shortunion(), a);
     ///                 assert_eq!(a.get(), 10922_u16);
     ///             },
-    ///         None => {
-    ///                 println!("Divided by zero.");
-    ///                 assert_eq!(a_shortunion, None);
-    ///             },
+    ///         None => { println!("Divided by zero."); },
     ///     }
     /// 
     ///     let b_shortunion = func((u16::MAX / 3).into_shortunion(), 0_u16.into_shortunion());
@@ -11082,10 +10665,7 @@ pub trait SmallUInt: Copy + Clone + Sized //+ Display + Debug + ToString
     ///                 println!("{} / 2 = {}", (u32::MAX / 3).into_intunion(), a);
     ///                 assert_eq!(a.get(), 715827882_u32);
     ///             },
-    ///         None => {
-    ///                 println!("Divided by zero.");
-    ///                 assert_eq!(a_intunion, None);
-    ///             },
+    ///         None => { println!("Divided by zero."); },
     ///     }
     /// 
     ///     let b_intunion = func((u32::MAX / 3).into_intunion(), 0_u32.into_intunion());
@@ -11117,10 +10697,7 @@ pub trait SmallUInt: Copy + Clone + Sized //+ Display + Debug + ToString
     ///                 println!("{} / 2 = {}", (u64::MAX / 3).into_longunion(), a);
     ///                 assert_eq!(a.get(), 3074457345618258602_u64);
     ///             },
-    ///         None => {
-    ///                 println!("Divided by zero.");
-    ///                 assert_eq!(a_longunion, None);
-    ///             },
+    ///         None => { println!("Divided by zero."); },
     ///     }
     /// 
     ///     let b_longunion = func(u64::MAX / 3, 0_u64);
@@ -11152,10 +10729,7 @@ pub trait SmallUInt: Copy + Clone + Sized //+ Display + Debug + ToString
     ///                 println!("{} / 2 = {}", (u128::MAX / 3).into_longerunion(), a);
     ///                 assert_eq!(a.get(), 56713727820156410577229101238628035242_u128);
     ///             },
-    ///         None => {
-    ///                 println!("Divided by zero.");
-    ///                 assert_eq!(a_longerunion, None);
-    ///             },
+    ///         None => { println!("Divided by zero."); },
     ///     }
     /// 
     ///     let b_longerunion = func((u128::MAX / 3).into_longerunion(), 0_u128.into_longerunion());
@@ -11187,10 +10761,7 @@ pub trait SmallUInt: Copy + Clone + Sized //+ Display + Debug + ToString
     ///                 println!("{} / 2 = {}", (usize::MAX / 3).into_sizeunion(), a);
     ///                 assert_eq!(a.get(), 3074457345618258602_usize);
     ///             },
-    ///         None => {
-    ///                 println!("Divided by zero.");
-    ///                 assert_eq!(a_sizeunion, None);
-    ///             },
+    ///         None => { println!("Divided by zero."); },
     ///     }
     /// 
     ///     let b_sizeunion = func((usize::MAX / 3).into_sizeunion(), 0_usize.into_sizeunion());
@@ -11222,10 +10793,7 @@ pub trait SmallUInt: Copy + Clone + Sized //+ Display + Debug + ToString
     ///                 println!("{} / 2 = {}", u8::MAX / 3, a);
     ///                 assert_eq!(a, 42_u8);
     ///             },
-    ///         None => {
-    ///                 println!("Divided by zero.");
-    ///                 assert_eq!(a_u8, None);
-    ///             },
+    ///         None => { println!("Divided by zero."); },
     ///     }
     /// 
     ///     let b_u8 = func(u8::MAX / 3, 0_u8);
@@ -11245,10 +10813,7 @@ pub trait SmallUInt: Copy + Clone + Sized //+ Display + Debug + ToString
     ///                 println!("{} / 2 = {}", u16::MAX / 3, a);
     ///                 assert_eq!(a, 10922_u16);
     ///             },
-    ///         None => {
-    ///                 println!("Divided by zero.");
-    ///                 assert_eq!(a_u16, None);
-    ///             },
+    ///         None => { println!("Divided by zero."); },
     ///     }
     /// 
     ///     let b_u16 = func(u16::MAX / 3, 0_u16);
@@ -11268,10 +10833,7 @@ pub trait SmallUInt: Copy + Clone + Sized //+ Display + Debug + ToString
     ///                 println!("{} / 2 = {}", u32::MAX / 3, a);
     ///                 assert_eq!(a, 715827882_u32);
     ///             },
-    ///         None => {
-    ///                 println!("Divided by zero.");
-    ///                 assert_eq!(a_u32, None);
-    ///             },
+    ///         None => { println!("Divided by zero."); },
     ///     }
     /// 
     ///     let b_u32 = func(u32::MAX / 3, 0_u32);
@@ -11291,10 +10853,7 @@ pub trait SmallUInt: Copy + Clone + Sized //+ Display + Debug + ToString
     ///                 println!("{} / 2 = {}", u64::MAX / 3, a);
     ///                 assert_eq!(a, 3074457345618258602_u64);
     ///             },
-    ///         None => {
-    ///                 println!("Divided by zero.");
-    ///                 assert_eq!(a_u64, None);
-    ///             },
+    ///         None => { println!("Divided by zero."); },
     ///     }
     /// 
     ///     let b_u64 = func(u64::MAX / 3, 0_u64);
@@ -11314,10 +10873,7 @@ pub trait SmallUInt: Copy + Clone + Sized //+ Display + Debug + ToString
     ///                 println!("{} / 2 = {}", u128::MAX / 3, a);
     ///                 assert_eq!(a, 56713727820156410577229101238628035242_u128);
     ///             },
-    ///         None => {
-    ///                 println!("Divided by zero.");
-    ///                 assert_eq!(a_u128, None);
-    ///             },
+    ///         None => { println!("Divided by zero."); },
     ///     }
     /// 
     ///     let b_u128 = func(u128::MAX / 3, 0_u128);
@@ -11337,10 +10893,7 @@ pub trait SmallUInt: Copy + Clone + Sized //+ Display + Debug + ToString
     ///                 println!("{} / 2 = {}", usize::MAX / 3, a);
     ///                 assert_eq!(a, 3074457345618258602_usize);
     ///             },
-    ///         None => {
-    ///                 println!("Divided by zero.");
-    ///                 assert_eq!(a_usize, None);
-    ///             },
+    ///         None => { println!("Divided by zero."); },
     ///     }
     /// 
     ///     let b_usize = func(usize::MAX / 3, 0_usize);
@@ -11360,10 +10913,7 @@ pub trait SmallUInt: Copy + Clone + Sized //+ Display + Debug + ToString
     ///                 println!("{} / 2 = {}", (u16::MAX / 3).into_shortunion(), a);
     ///                 assert_eq!(a.get(), 10922_u16);
     ///             },
-    ///         None => {
-    ///                 println!("Divided by zero.");
-    ///                 assert_eq!(a_shortunion, None);
-    ///             },
+    ///         None => { println!("Divided by zero."); },
     ///     }
     /// 
     ///     let b_shortunion = func((u16::MAX / 3).into_shortunion(), 0_u16.into_shortunion());
@@ -11383,10 +10933,7 @@ pub trait SmallUInt: Copy + Clone + Sized //+ Display + Debug + ToString
     ///                 println!("{} / 2 = {}", (u32::MAX / 3).into_intunion(), a);
     ///                 assert_eq!(a.get(), 715827882_u32);
     ///             },
-    ///         None => {
-    ///                 println!("Divided by zero.");
-    ///                 assert_eq!(a_intunion, None);
-    ///             },
+    ///         None => { println!("Divided by zero."); },
     ///     }
     /// 
     ///     let b_intunion = func((u32::MAX / 3).into_intunion(), 0_u32.into_intunion());
@@ -11406,10 +10953,7 @@ pub trait SmallUInt: Copy + Clone + Sized //+ Display + Debug + ToString
     ///                 println!("{} / 2 = {}", (u64::MAX / 3).into_longunion(), a);
     ///                 assert_eq!(a.get(), 3074457345618258602_u64);
     ///             },
-    ///         None => {
-    ///                 println!("Divided by zero.");
-    ///                 assert_eq!(a_longunion, None);
-    ///             },
+    ///         None => { println!("Divided by zero."); },
     ///     }
     /// 
     ///     let b_longunion = func(u64::MAX / 3, 0_u64);
@@ -11429,10 +10973,7 @@ pub trait SmallUInt: Copy + Clone + Sized //+ Display + Debug + ToString
     ///                 println!("{} / 2 = {}", (u128::MAX / 3).into_longerunion(), a);
     ///                 assert_eq!(a.get(), 56713727820156410577229101238628035242_u128);
     ///             },
-    ///         None => {
-    ///                 println!("Divided by zero.");
-    ///                 assert_eq!(a_longerunion, None);
-    ///             },
+    ///         None => { println!("Divided by zero."); },
     ///     }
     /// 
     ///     let b_longerunion = func((u128::MAX / 3).into_longerunion(), 0_u128.into_longerunion());
@@ -11452,10 +10993,7 @@ pub trait SmallUInt: Copy + Clone + Sized //+ Display + Debug + ToString
     ///                 println!("{} / 2 = {}", (usize::MAX / 3).into_sizeunion(), a);
     ///                 assert_eq!(a.get(), 3074457345618258602_usize);
     ///             },
-    ///         None => {
-    ///                 println!("Divided by zero.");
-    ///                 assert_eq!(a_sizeunion, None);
-    ///             },
+    ///         None => { println!("Divided by zero."); },
     ///     }
     /// 
     ///     let b_sizeunion = func((usize::MAX / 3).into_sizeunion(), 0_usize.into_sizeunion());
@@ -12821,10 +12359,7 @@ pub trait SmallUInt: Copy + Clone + Sized //+ Display + Debug + ToString
     ///                 println!("{} % 3 = {}", u8::MAX / 3, a);
     ///                 assert_eq!(a, 1_u8);
     ///             },
-    ///         None => {
-    ///                 println!("Divided by zero.");
-    ///                 assert_eq!(a_u8, None);
-    ///             },
+    ///         None => { println!("Divided by zero."); },
     ///     }
     /// 
     ///     let b_u8 = func(u8::MAX / 3, 0_u8);
@@ -12856,10 +12391,7 @@ pub trait SmallUInt: Copy + Clone + Sized //+ Display + Debug + ToString
     ///                 println!("{} % 3 = {}", u16::MAX / 3, a);
     ///                 assert_eq!(a, 2_u16);
     ///             },
-    ///         None => {
-    ///                 println!("Divided by zero.");
-    ///                 assert_eq!(a_u16, None);
-    ///             },
+    ///         None => { println!("Divided by zero."); },
     ///     }
     /// 
     ///     let b_u16 = func(u16::MAX / 3, 0_u16);
@@ -12891,10 +12423,7 @@ pub trait SmallUInt: Copy + Clone + Sized //+ Display + Debug + ToString
     ///                 println!("{} % 3 = {}", u32::MAX / 3, a);
     ///                 assert_eq!(a, 1_u32);
     ///             },
-    ///         None => {
-    ///                 println!("Divided by zero.");
-    ///                 assert_eq!(a_u32, None);
-    ///             },
+    ///         None => { println!("Divided by zero."); },
     ///     }
     /// 
     ///     let b_u32 = func(u32::MAX / 3, 0_u32);
@@ -12926,10 +12455,7 @@ pub trait SmallUInt: Copy + Clone + Sized //+ Display + Debug + ToString
     ///                 println!("{} % 3 = {}", u64::MAX / 3, a);
     ///                 assert_eq!(a, 2_u64);
     ///             },
-    ///         None => {
-    ///                 println!("Divided by zero.");
-    ///                 assert_eq!(a_u64, None);
-    ///             },
+    ///         None => { println!("Divided by zero."); },
     ///     }
     /// 
     ///     let b_u64 = func(u64::MAX / 3, 0_u64);
@@ -12961,10 +12487,7 @@ pub trait SmallUInt: Copy + Clone + Sized //+ Display + Debug + ToString
     ///                 println!("{} % 3 = {}", u128::MAX / 3, a);
     ///                 assert_eq!(a, 1_u128);
     ///             },
-    ///         None => {
-    ///                 println!("Divided by zero.");
-    ///                 assert_eq!(a_u128, None);
-    ///             },
+    ///         None => { println!("Divided by zero."); },
     ///     }
     /// 
     ///     let b_u128 = func(u128::MAX / 3, 0_u128);
@@ -12996,10 +12519,7 @@ pub trait SmallUInt: Copy + Clone + Sized //+ Display + Debug + ToString
     ///                 println!("{} % 3 = {}", usize::MAX / 3, a);
     ///                 assert_eq!(a, 2_usize);
     ///             },
-    ///         None => {
-    ///                 println!("Divided by zero.");
-    ///                 assert_eq!(a_usize, None);
-    ///             },
+    ///         None => { println!("Divided by zero."); },
     ///     }
     /// 
     ///     let b_usize = func(usize::MAX / 3, 0_usize);
@@ -13031,10 +12551,7 @@ pub trait SmallUInt: Copy + Clone + Sized //+ Display + Debug + ToString
     ///                 println!("{} % 3 = {}", (u16::MAX / 3).into_shortunion(), a);
     ///                 assert_eq!(a.get(), 2_u16);
     ///             },
-    ///         None => {
-    ///                 println!("Divided by zero.");
-    ///                 assert_eq!(a_shortunion, None);
-    ///             },
+    ///         None => { println!("Divided by zero."); },
     ///     }
     /// 
     ///     let b_shortunion = func((u16::MAX / 3).into_shortunion(), 0_u16.into_shortunion());
@@ -13066,10 +12583,7 @@ pub trait SmallUInt: Copy + Clone + Sized //+ Display + Debug + ToString
     ///                 println!("{} % 3 = {}", (u32::MAX / 3).into_intunion(), a);
     ///                 assert_eq!(a.get(), 1_u32);
     ///             },
-    ///         None => {
-    ///                 println!("Divided by zero.");
-    ///                 assert_eq!(a_intunion, None);
-    ///             },
+    ///         None => { println!("Divided by zero."); },
     ///     }
     /// 
     ///     let b_intunion = func((u32::MAX / 3).into_intunion(), 0_u32.into_intunion());
@@ -13101,10 +12615,7 @@ pub trait SmallUInt: Copy + Clone + Sized //+ Display + Debug + ToString
     ///                 println!("{} % 3 = {}", (u64::MAX / 3).into_longunion(), a);
     ///                 assert_eq!(a.get(), 2_u64);
     ///             },
-    ///         None => {
-    ///                 println!("Divided by zero.");
-    ///                 assert_eq!(a_longunion, None);
-    ///             },
+    ///         None => { println!("Divided by zero."); },
     ///     }
     /// 
     ///     let b_longunion = func(u64::MAX / 3, 0_u64);
@@ -13136,10 +12647,7 @@ pub trait SmallUInt: Copy + Clone + Sized //+ Display + Debug + ToString
     ///                 println!("{} % 3 = {}", (u128::MAX / 3).into_longerunion(), a);
     ///                 assert_eq!(a.get(), 1_u128);
     ///             },
-    ///         None => {
-    ///                 println!("Divided by zero.");
-    ///                 assert_eq!(a_longerunion, None);
-    ///             },
+    ///         None => { println!("Divided by zero."); },
     ///     }
     /// 
     ///     let b_longerunion = func(u128::MAX / 3, 0_u128);
@@ -13171,10 +12679,7 @@ pub trait SmallUInt: Copy + Clone + Sized //+ Display + Debug + ToString
     ///                 println!("{} % 3 = {}", (usize::MAX / 3).into_sizeunion(), a);
     ///                 assert_eq!(a.get(), 2_usize);
     ///             },
-    ///         None => {
-    ///                 println!("Divided by zero.");
-    ///                 assert_eq!(a_sizeunion, None);
-    ///             },
+    ///         None => { println!("Divided by zero."); },
     ///     }
     /// 
     ///     let b_sizeunion = func((usize::MAX / 3).into_sizeunion(), 0_usize.into_sizeunion());
@@ -13209,10 +12714,7 @@ pub trait SmallUInt: Copy + Clone + Sized //+ Display + Debug + ToString
     ///                 println!("{} % 3 = {}", u8::MAX / 3, a);
     ///                 assert_eq!(a, 1_u8);
     ///             },
-    ///         None => {
-    ///                 println!("Divided by zero.");
-    ///                 assert_eq!(a_u8, None);
-    ///             },
+    ///         None => { println!("Divided by zero."); },
     ///     }
     /// 
     ///     let b_u8 = func(u8::MAX / 3, 0_u8);
@@ -13232,10 +12734,7 @@ pub trait SmallUInt: Copy + Clone + Sized //+ Display + Debug + ToString
     ///                 println!("{} % 3 = {}", u16::MAX / 3, a);
     ///                 assert_eq!(a, 2_u16);
     ///             },
-    ///         None => {
-    ///                 println!("Divided by zero.");
-    ///                 assert_eq!(a_u16, None);
-    ///             },
+    ///         None => { println!("Divided by zero."); },
     ///     }
     /// 
     ///     let b_u16 = func(u16::MAX / 3, 0_u16);
@@ -13255,10 +12754,7 @@ pub trait SmallUInt: Copy + Clone + Sized //+ Display + Debug + ToString
     ///                 println!("{} % 3 = {}", u32::MAX / 3, a);
     ///                 assert_eq!(a, 1_u32);
     ///             },
-    ///         None => {
-    ///                 println!("Divided by zero.");
-    ///                 assert_eq!(a_u32, None);
-    ///             },
+    ///         None => { println!("Divided by zero."); },
     ///     }
     /// 
     ///     let b_u32 = func(u32::MAX / 3, 0_u32);
@@ -13278,10 +12774,7 @@ pub trait SmallUInt: Copy + Clone + Sized //+ Display + Debug + ToString
     ///                 println!("{} % 3 = {}", u64::MAX / 3, a);
     ///                 assert_eq!(a, 2_u64);
     ///             },
-    ///         None => {
-    ///                 println!("Divided by zero.");
-    ///                 assert_eq!(a_u64, None);
-    ///             },
+    ///         None => { println!("Divided by zero."); },
     ///     }
     /// 
     ///     let b_u64 = func(u64::MAX / 3, 0_u64);
@@ -13301,10 +12794,7 @@ pub trait SmallUInt: Copy + Clone + Sized //+ Display + Debug + ToString
     ///                 println!("{} % 3 = {}", u128::MAX / 3, a);
     ///                 assert_eq!(a, 1_u128);
     ///             },
-    ///         None => {
-    ///                 println!("Divided by zero.");
-    ///                 assert_eq!(a_u128, None);
-    ///             },
+    ///         None => { println!("Divided by zero."); },
     ///     }
     /// 
     ///     let b_u128 = func(u128::MAX / 3, 0_u128);
@@ -13324,10 +12814,7 @@ pub trait SmallUInt: Copy + Clone + Sized //+ Display + Debug + ToString
     ///                 println!("{} % 3 = {}", usize::MAX / 3, a);
     ///                 assert_eq!(a, 2_usize);
     ///             },
-    ///         None => {
-    ///                 println!("Divided by zero.");
-    ///                 assert_eq!(a_usize, None);
-    ///             },
+    ///         None => { println!("Divided by zero."); },
     ///     }
     /// 
     ///     let b_usize = func(usize::MAX / 3, 0_usize);
@@ -13347,10 +12834,7 @@ pub trait SmallUInt: Copy + Clone + Sized //+ Display + Debug + ToString
     ///                 println!("{} % 3 = {}", (u16::MAX / 3).into_shortunion(), a);
     ///                 assert_eq!(a.get(), 2_u16);
     ///             },
-    ///         None => {
-    ///                 println!("Divided by zero.");
-    ///                 assert_eq!(a_shortunion, None);
-    ///             },
+    ///         None => { println!("Divided by zero."); },
     ///     }
     /// 
     ///     let b_shortunion = func((u16::MAX / 3).into_shortunion(), 0_u16.into_shortunion());
@@ -13370,10 +12854,7 @@ pub trait SmallUInt: Copy + Clone + Sized //+ Display + Debug + ToString
     ///                 println!("{} % 3 = {}", (u32::MAX / 3).into_intunion(), a);
     ///                 assert_eq!(a.get(), 1_u32);
     ///             },
-    ///         None => {
-    ///                 println!("Divided by zero.");
-    ///                 assert_eq!(a_intunion, None);
-    ///             },
+    ///         None => { println!("Divided by zero."); },
     ///     }
     /// 
     ///     let b_intunion = func((u32::MAX / 3).into_intunion(), 0_u32.into_intunion());
@@ -13393,10 +12874,7 @@ pub trait SmallUInt: Copy + Clone + Sized //+ Display + Debug + ToString
     ///                 println!("{} % 3 = {}", (u64::MAX / 3).into_longunion(), a);
     ///                 assert_eq!(a.get(), 2_u64);
     ///             },
-    ///         None => {
-    ///                 println!("Divided by zero.");
-    ///                 assert_eq!(a_longunion, None);
-    ///             },
+    ///         None => { println!("Divided by zero."); },
     ///     }
     /// 
     ///     let b_longunion = func(u64::MAX / 3, 0_u64);
@@ -13416,10 +12894,7 @@ pub trait SmallUInt: Copy + Clone + Sized //+ Display + Debug + ToString
     ///                 println!("{} % 3 = {}", (u128::MAX / 3).into_longerunion(), a);
     ///                 assert_eq!(a.get(), 1_u128);
     ///             },
-    ///         None => {
-    ///                 println!("Divided by zero.");
-    ///                 assert_eq!(a_longerunion, None);
-    ///             },
+    ///         None => { println!("Divided by zero."); },
     ///     }
     /// 
     ///     let b_longerunion = func(u128::MAX / 3, 0_u128);
@@ -13439,10 +12914,7 @@ pub trait SmallUInt: Copy + Clone + Sized //+ Display + Debug + ToString
     ///                 println!("{} % 3 = {}", (usize::MAX / 3).into_sizeunion(), a);
     ///                 assert_eq!(a.get(), 2_usize);
     ///             },
-    ///         None => {
-    ///                 println!("Divided by zero.");
-    ///                 assert_eq!(a_sizeunion, None);
-    ///             },
+    ///         None => { println!("Divided by zero."); },
     ///     }
     /// 
     ///     let b_sizeunion = func((usize::MAX / 3).into_sizeunion(), 0_usize.into_sizeunion());
@@ -13865,7 +13337,7 @@ pub trait SmallUInt: Copy + Clone + Sized //+ Display + Debug + ToString
     /// 
     /// # Example 1 for u8
     /// ```
-    /// use cryptocol::number::*;
+    /// use cryptocol::number::SmallUInt;
     /// fn main()
     /// {
     ///     let a_u8 = func(3_u8, 5_u32);
@@ -13883,7 +13355,7 @@ pub trait SmallUInt: Copy + Clone + Sized //+ Display + Debug + ToString
     /// 
     /// # Example 2 for u16
     /// ```
-    /// use cryptocol::number::*;
+    /// use cryptocol::number::SmallUInt;
     /// fn main()
     /// {
     ///     let a_u16 = func(9_u16, 5_u32);
@@ -13901,7 +13373,7 @@ pub trait SmallUInt: Copy + Clone + Sized //+ Display + Debug + ToString
     /// 
     /// # Example 3 for u32
     /// ```
-    /// use cryptocol::number::*;
+    /// use cryptocol::number::SmallUInt;
     /// fn main()
     /// {
     ///     let a_u32 = func(81_u32, 5_u32);
@@ -13919,7 +13391,7 @@ pub trait SmallUInt: Copy + Clone + Sized //+ Display + Debug + ToString
     /// 
     /// # Example 4 for u64
     /// ```
-    /// use cryptocol::number::*;
+    /// use cryptocol::number::SmallUInt;
     /// fn main()
     /// {
     ///     let a_u64 = func(6561_u64, 5_u32);
@@ -13937,7 +13409,7 @@ pub trait SmallUInt: Copy + Clone + Sized //+ Display + Debug + ToString
     /// 
     /// # Example 5 for u128
     /// ```
-    /// use cryptocol::number::*;
+    /// use cryptocol::number::SmallUInt;
     /// fn main()
     /// {
     ///     let a_u128 = func(43046721_u128, 5_u32);
@@ -13955,7 +13427,7 @@ pub trait SmallUInt: Copy + Clone + Sized //+ Display + Debug + ToString
     /// 
     /// # Example 6 for usize
     /// ```
-    /// use cryptocol::number::*;
+    /// use cryptocol::number::SmallUInt;
     /// fn main()
     /// {
     ///     let a_usize = func(6561_usize, 5_u32);
@@ -13973,7 +13445,7 @@ pub trait SmallUInt: Copy + Clone + Sized //+ Display + Debug + ToString
     /// 
     /// # Example 7 for ShortUnion
     /// ```
-    /// use cryptocol::number::*;
+    /// use cryptocol::number::{ SmallUInt, ShortUnion };
     /// fn main()
     /// {
     ///     let a_shortunion = ShortUnion::new_with(9);
@@ -13992,7 +13464,7 @@ pub trait SmallUInt: Copy + Clone + Sized //+ Display + Debug + ToString
     /// 
     /// # Example 8 for IntUnion
     /// ```
-    /// use cryptocol::number::*;
+    /// use cryptocol::number::{ SmallUInt, IntUnion };
     /// fn main()
     /// {
     ///     let a_intunion = IntUnion::new_with(81);
@@ -14011,7 +13483,7 @@ pub trait SmallUInt: Copy + Clone + Sized //+ Display + Debug + ToString
     /// 
     /// # Example 9 for LongUnion
     /// ```
-    /// use cryptocol::number::*;
+    /// use cryptocol::number::{ SmallUInt, LongUnion };
     /// fn main()
     /// {
     ///     let a_longunion = LongUnion::new_with(6561);
@@ -14030,7 +13502,7 @@ pub trait SmallUInt: Copy + Clone + Sized //+ Display + Debug + ToString
     /// 
     /// # Example 10 for LongerUnion
     /// ```
-    /// use cryptocol::number::*;
+    /// use cryptocol::number::{ SmallUInt, LongerUnion };
     /// fn main()
     /// {
     ///     let a_longerunion = LongerUnion::new_with(43046721);
@@ -14049,7 +13521,7 @@ pub trait SmallUInt: Copy + Clone + Sized //+ Display + Debug + ToString
     /// 
     /// # Example 11 for SizeUnion
     /// ```
-    /// use cryptocol::number::*;
+    /// use cryptocol::number::{ SmallUInt, SizeUnion };
     /// fn main()
     /// {
     ///     let a_sizeunion = SizeUnion::new_with(6561);
@@ -14071,7 +13543,7 @@ pub trait SmallUInt: Copy + Clone + Sized //+ Display + Debug + ToString
     /// 
     /// # Collective Example
     /// ```
-    /// use cryptocol::number::*;
+    /// use cryptocol::number::{ SmallUInt, ShortUnion, IntUnion, LongUnion, LongerUnion, SizeUnion };
     /// fn main()
     /// {
     ///     let a_u8 = func(3_u8, 5_u32);
@@ -14559,18 +14031,367 @@ pub trait SmallUInt: Copy + Clone + Sized //+ Display + Debug + ToString
     /// It returns a tuple of the exponentiation along with a bool indicating
     /// whether an overflow happened.
     /// 
-    /// # Example
+    /// # Example 1 for u8
     /// ```
-    /// use cryptocol::number::*;
-    /// 
+    /// use cryptocol::number::SmallUInt;
     /// fn main()
     /// {
-    ///     // Todo
+    ///     let (a_u8, overflow) = func(6_u8, 3);
+    ///     println!("{} ** 3 = {}\nOverflow = {}", 6, a_u8, overflow);
+    ///     assert_eq!(a_u8, 216_u8);
+    ///     assert_eq!(overflow, false);
+    /// 
+    ///     let (b_u8, overflow) = func(6_u8, 4);
+    ///     println!("{} ** 4 = {}\nOverflow = {}", 6, b_u8, overflow);
+    ///     assert_eq!(b_u8, 16_u8);
+    ///     assert_eq!(overflow, true);
     /// }
     /// 
-    /// fn func<T: SmallUInt>(lhs: T, rhs: u32) -> (T, bool)
+    /// fn func<T: SmallUInt>(base: T, rhs: u32) -> (T, bool)
     /// {
-    ///     lhs.overflowing_pow(rhs)
+    ///     base.overflowing_pow(exp)
+    /// }
+    /// ```
+    /// 
+    /// # Example 2 for u16
+    /// ```
+    /// use cryptocol::number::SmallUInt;
+    /// fn main()
+    /// {
+    ///     let (a_u16, overflow) = func(12_u16, 4);
+    ///     println!("{} ** 4 = {}\nOverflow = {}", 12_u16, a_u16, overflow);
+    ///     assert_eq!(a_u16, 20736_u16);
+    ///     assert_eq!(overflow, false);
+    /// 
+    ///     let (b_u16, overflow) = func(12_u16, 5);
+    ///     println!("{} ** 5 = {}\nOverflow = {}", 12_u16, b_u16, overflow);
+    ///     assert_eq!(b_u16, 52224_u16);
+    ///     assert_eq!(overflow, true);
+    /// }
+    /// 
+    /// fn func<T: SmallUInt>(base: T, rhs: u32) -> (T, bool)
+    /// {
+    ///     base.overflowing_pow(exp)
+    /// }
+    /// ```
+    /// 
+    /// # Example 3 for u32
+    /// ```
+    /// use cryptocol::number::SmallUInt;
+    /// fn main()
+    /// {
+    ///     let (a_u32, overflow) = func(38_u32, 6);
+    ///     println!("{} ** 6 = {}\nOverflow = {}", 38_u32, a_u32, overflow);
+    ///     assert_eq!(a_u32, 3010936384_u32);
+    ///     assert_eq!(overflow, false);
+    /// 
+    ///     let (b_u32, overflow) = func(38_u32, 7);
+    ///     println!("{} ** 7 = {}\nOverflow = {}", 38_u32, b_u32, overflow);
+    ///     assert_eq!(b_u32, 2746432896_u32);
+    ///     assert_eq!(overflow, true);
+    /// }
+    /// 
+    /// fn func<T: SmallUInt>(base: T, rhs: u32) -> (T, bool)
+    /// {
+    ///     base.overflowing_pow(exp)
+    /// }
+    /// ```
+    /// 
+    /// # Example 4 for u64
+    /// ```
+    /// use cryptocol::number::SmallUInt;
+    /// fn main()
+    /// {
+    ///     let (a_u64, overflow) = func(1004_u64, 6);
+    ///     println!("{} ** 6 = {}\nOverflow = {}", 1004_u64, a_u64, overflow);
+    ///     assert_eq!(a_u64, 1024241283846148096_u64);
+    ///     assert_eq!(overflow, false);
+    /// 
+    ///     let (b_u64, overflow) = func(1004_u64, 7);
+    ///     println!("{} ** 7 = {}\nOverflow = {}", 1004_u64, b_u64, overflow);
+    ///     assert_eq!(b_u64, 13767324927507349504_u64);
+    ///     assert_eq!(overflow, true);
+    /// }
+    /// 
+    /// fn func<T: SmallUInt>(base: T, rhs: u32) -> (T, bool)
+    /// {
+    ///     base.overflowing_pow(exp)
+    /// }
+    /// ```
+    /// 
+    /// # Example 5 for u128
+    /// ```
+    /// use cryptocol::number::SmallUInt;
+    /// fn main()
+    /// {
+    ///     let (a_u128, overflow) = func(10003_u128, 9);
+    ///     println!("{} ** 9 = {}\nOverflow = {}", 10003_u128, a_u128, overflow);
+    ///     assert_eq!(a_u128, 1002703242269020906241243873790509683_u128);
+    ///     assert_eq!(overflow, false);
+    /// 
+    ///     let (b_u128, overflow) = func(10003_u128, 10);
+    ///     println!("{} ** 10 = {}\nOverflow = {}", 10003_u128, b_u128, overflow);
+    ///     assert_eq!(b_u128, 161851891709800684693298854005190226825_u128);
+    ///     assert_eq!(overflow, true);
+    /// }
+    /// 
+    /// fn func<T: SmallUInt>(base: T, rhs: u32) -> (T, bool)
+    /// {
+    ///     base.overflowing_pow(exp)
+    /// }
+    /// ```
+    /// 
+    /// # Example 6 for usize
+    /// ```
+    /// use cryptocol::number::SmallUInt;
+    /// fn main()
+    /// {
+    ///     let (a_usize, overflow) = func(1004_usize, 6);
+    ///     println!("{} ** 6 = {}\nOverflow = {}", 1004_u64, a_usize, overflow);
+    ///     assert_eq!(a_usize, 1024241283846148096_usize);
+    ///     assert_eq!(overflow, false);
+    /// 
+    ///     let (b_usize, overflow) = func(1004_usize, 7);
+    ///     println!("{} ** 7 = {}\nOverflow = {}", 1004_u64, b_usize, overflow);
+    ///     assert_eq!(b_usize, 13767324927507349504_usize);
+    ///     assert_eq!(overflow, true);
+    /// }
+    /// 
+    /// fn func<T: SmallUInt>(base: T, rhs: u32) -> (T, bool)
+    /// {
+    ///     base.overflowing_pow(exp)
+    /// }
+    /// ```
+    /// 
+    /// # Example 7 for ShortUnion
+    /// ```
+    /// use cryptocol::number::SmallUInt;
+    /// fn main()
+    /// {
+    ///     let (a_shortunion, overflow) = func(12_u16.into_shortunion(), 4);
+    ///     println!("{} ** 4 = {}\nOverflow = {}", 12_u16, a_shortunion, overflow);
+    ///     assert_eq!(a_shortunion.get(), 20736_u16);
+    ///     assert_eq!(overflow, false);
+    /// 
+    ///     let (b_shortunion, overflow) = func(12_u16.into_shortunion(), 5);
+    ///     println!("{} ** 5 = {}\nOverflow = {}", 12_u16, b_shortunion, overflow);
+    ///     assert_eq!(b_shortunion.get(), 52224_u16);
+    ///     assert_eq!(overflow, true);
+    /// }
+    /// 
+    /// fn func<T: SmallUInt>(base: T, rhs: u32) -> (T, bool)
+    /// {
+    ///     base.overflowing_pow(exp)
+    /// }
+    /// ```
+    /// 
+    /// # Example 8 for IntUnion
+    /// ```
+    /// use cryptocol::number::SmallUInt;
+    /// fn main()
+    /// {
+    ///     let (a_intunion, overflow) = func(38_u32.into_intunion(), 6);
+    ///     println!("{} ** 6 = {}\nOverflow = {}", 38_u32, a_intunion, overflow);
+    ///     assert_eq!(a_intunion.get(), 3010936384_u32);
+    ///     assert_eq!(overflow, false);
+    /// 
+    ///     let (b_intunion, overflow) = func(38_u32.into_intunion(), 7);
+    ///     println!("{} ** 7 = {}\nOverflow = {}", 38_u32, b_intunion, overflow);
+    ///     assert_eq!(b_intunion.get(), 2746432896_u32);
+    ///     assert_eq!(overflow, true);
+    /// }
+    /// 
+    /// fn func<T: SmallUInt>(base: T, rhs: u32) -> (T, bool)
+    /// {
+    ///     base.overflowing_pow(exp)
+    /// }
+    /// ```
+    /// 
+    /// # Example 9 for LongUnion
+    /// ```
+    /// use cryptocol::number::SmallUInt;
+    /// fn main()
+    /// {
+    ///     let (a_longunion, overflow) = func(1004_u64.into_longunion(), 6);
+    ///     println!("{} ** 6 = {}\nOverflow = {}", 1004_u64, a_longunion, overflow);
+    ///     assert_eq!(a_longunion.get(), 1024241283846148096_u64);
+    ///     assert_eq!(overflow, false);
+    /// 
+    ///     let (b_longunion, overflow) = func(1004_u64.into_longunion(), 7);
+    ///     println!("{} ** 7 = {}\nOverflow = {}", 1004_u64, b_longunion, overflow);
+    ///     assert_eq!(b_longunion.get(), 13767324927507349504_u64);
+    ///     assert_eq!(overflow, true);
+    /// }
+    /// 
+    /// fn func<T: SmallUInt>(base: T, rhs: u32) -> (T, bool)
+    /// {
+    ///     base.overflowing_pow(exp)
+    /// }
+    /// ```
+    /// 
+    /// # Example 10 for LongerUnion
+    /// ```
+    /// use cryptocol::number::SmallUInt;
+    /// fn main()
+    /// {
+    ///     let (a_longerunion, overflow) = func(10003_u128.into_longerunion(), 9);
+    ///     println!("{} ** 9 = {}\nOverflow = {}", 10003_u128, a_longerunion, overflow);
+    ///     assert_eq!(a_longerunion.get(), 1002703242269020906241243873790509683_u128);
+    ///     assert_eq!(overflow, false);
+    /// 
+    ///     let (b_longerunion, overflow) = func(10003_u128.into_longerunion(), 10);
+    ///     println!("{} ** 10 = {}\nOverflow = {}", 10003_u128, b_longerunion, overflow);
+    ///     assert_eq!(b_longerunion.get(), 161851891709800684693298854005190226825_u128);
+    ///     assert_eq!(overflow, true);
+    /// }
+    /// 
+    /// fn func<T: SmallUInt>(base: T, rhs: u32) -> (T, bool)
+    /// {
+    ///     base.overflowing_pow(exp)
+    /// }
+    /// ```
+    /// 
+    /// # Example 11 for SizeUnion
+    /// ```
+    /// use cryptocol::number::SmallUInt;
+    /// fn main()
+    /// {
+    ///     let (a_sizeunion, overflow) = func(1004_usize.into_sizeunion(), 6);
+    ///     println!("{} ** 6 = {}\nOverflow = {}", 1004_u64, a_sizeunion, overflow);
+    ///     assert_eq!(a_sizeunion.get(), 1024241283846148096_usize);
+    ///     assert_eq!(overflow, false);
+    /// 
+    ///     let (b_sizeunion, overflow) = func(1004_usize.into_sizeunion(), 7);
+    ///     println!("{} ** 7 = {}\nOverflow = {}", 1004_u64, b_sizeunion, overflow);
+    ///     assert_eq!(b_sizeunion.get(), 13767324927507349504_usize);
+    ///     assert_eq!(overflow, true);
+    /// }
+    /// 
+    /// fn func<T: SmallUInt>(base: T, rhs: u32) -> (T, bool)
+    /// {
+    ///     base.overflowing_pow(exp)
+    /// }
+    /// ```
+    /// 
+    /// # Collective Example
+    /// ```
+    /// use cryptocol::number::SmallUInt;
+    /// fn main()
+    /// {
+    ///     let (a_u8, overflow) = func(6_u8, 3);
+    ///     println!("{} ** 3 = {}\nOverflow = {}", 6, a_u8, overflow);
+    ///     assert_eq!(a_u8, 216_u8);
+    ///     assert_eq!(overflow, false);
+    /// 
+    ///     let (b_u8, overflow) = func(6_u8, 4);
+    ///     println!("{} ** 4 = {}\nOverflow = {}", 6, b_u8, overflow);
+    ///     assert_eq!(b_u8, 16_u8);
+    ///     assert_eq!(overflow, true);
+    /// 
+    ///     let (a_u16, overflow) = func(12_u16, 4);
+    ///     println!("{} ** 4 = {}\nOverflow = {}", 12_u16, a_u16, overflow);
+    ///     assert_eq!(a_u16, 20736_u16);
+    ///     assert_eq!(overflow, false);
+    /// 
+    ///     let (b_u16, overflow) = func(12_u16, 5);
+    ///     println!("{} ** 5 = {}\nOverflow = {}", 12_u16, b_u16, overflow);
+    ///     assert_eq!(b_u16, 52224_u16);
+    ///     assert_eq!(overflow, true);
+    /// 
+    ///     let (a_u32, overflow) = func(38_u32, 6);
+    ///     println!("{} ** 6 = {}\nOverflow = {}", 38_u32, a_u32, overflow);
+    ///     assert_eq!(a_u32, 3010936384_u32);
+    ///     assert_eq!(overflow, false);
+    /// 
+    ///     let (b_u32, overflow) = func(38_u32, 7);
+    ///     println!("{} ** 7 = {}\nOverflow = {}", 38_u32, b_u32, overflow);
+    ///     assert_eq!(b_u32, 2746432896_u32);
+    ///     assert_eq!(overflow, true);
+    /// 
+    ///     let (a_u64, overflow) = func(1004_u64, 6);
+    ///     println!("{} ** 6 = {}\nOverflow = {}", 1004_u64, a_u64, overflow);
+    ///     assert_eq!(a_u64, 1024241283846148096_u64);
+    ///     assert_eq!(overflow, false);
+    /// 
+    ///     let (b_u64, overflow) = func(1004_u64, 7);
+    ///     println!("{} ** 7 = {}\nOverflow = {}", 1004_u64, b_u64, overflow);
+    ///     assert_eq!(b_u64, 13767324927507349504_u64);
+    ///     assert_eq!(overflow, true);
+    /// 
+    ///     let (a_u128, overflow) = func(10003_u128, 9);
+    ///     println!("{} ** 9 = {}\nOverflow = {}", 10003_u128, a_u128, overflow);
+    ///     assert_eq!(a_u128, 1002703242269020906241243873790509683_u128);
+    ///     assert_eq!(overflow, false);
+    /// 
+    ///     let (b_u128, overflow) = func(10003_u128, 10);
+    ///     println!("{} ** 10 = {}\nOverflow = {}", 10003_u128, b_u128, overflow);
+    ///     assert_eq!(b_u128, 161851891709800684693298854005190226825_u128);
+    ///     assert_eq!(overflow, true);
+    /// 
+    ///     let (a_usize, overflow) = func(1004_usize, 6);
+    ///     println!("{} ** 6 = {}\nOverflow = {}", 1004_u64, a_usize, overflow);
+    ///     assert_eq!(a_usize, 1024241283846148096_usize);
+    ///     assert_eq!(overflow, false);
+    /// 
+    ///     let (b_usize, overflow) = func(1004_usize, 7);
+    ///     println!("{} ** 7 = {}\nOverflow = {}", 1004_u64, b_usize, overflow);
+    ///     assert_eq!(b_usize, 13767324927507349504_usize);
+    ///     assert_eq!(overflow, true);
+    /// 
+    ///     let (a_shortunion, overflow) = func(12_u16.into_shortunion(), 4);
+    ///     println!("{} ** 4 = {}\nOverflow = {}", 12_u16, a_shortunion, overflow);
+    ///     assert_eq!(a_shortunion.get(), 20736_u16);
+    ///     assert_eq!(overflow, false);
+    /// 
+    ///     let (b_shortunion, overflow) = func(12_u16.into_shortunion(), 5);
+    ///     println!("{} ** 5 = {}\nOverflow = {}", 12_u16, b_shortunion, overflow);
+    ///     assert_eq!(b_shortunion.get(), 52224_u16);
+    ///     assert_eq!(overflow, true);
+    /// 
+    ///     let (a_intunion, overflow) = func(38_u32.into_intunion(), 6);
+    ///     println!("{} ** 6 = {}\nOverflow = {}", 38_u32, a_intunion, overflow);
+    ///     assert_eq!(a_intunion.get(), 3010936384_u32);
+    ///     assert_eq!(overflow, false);
+    /// 
+    ///     let (b_intunion, overflow) = func(38_u32.into_intunion(), 7);
+    ///     println!("{} ** 7 = {}\nOverflow = {}", 38_u32, b_intunion, overflow);
+    ///     assert_eq!(b_intunion.get(), 2746432896_u32);
+    ///     assert_eq!(overflow, true);
+    /// 
+    ///     let (a_longunion, overflow) = func(1004_u64.into_longunion(), 6);
+    ///     println!("{} ** 6 = {}\nOverflow = {}", 1004_u64, a_longunion, overflow);
+    ///     assert_eq!(a_longunion.get(), 1024241283846148096_u64);
+    ///     assert_eq!(overflow, false);
+    /// 
+    ///     let (b_longunion, overflow) = func(1004_u64.into_longunion(), 7);
+    ///     println!("{} ** 7 = {}\nOverflow = {}", 1004_u64, b_longunion, overflow);
+    ///     assert_eq!(b_longunion.get(), 13767324927507349504_u64);
+    ///     assert_eq!(overflow, true);
+    /// 
+    ///     let (a_longerunion, overflow) = func(10003_u128.into_longerunion(), 9);
+    ///     println!("{} ** 9 = {}\nOverflow = {}", 10003_u128, a_longerunion, overflow);
+    ///     assert_eq!(a_longerunion.get(), 1002703242269020906241243873790509683_u128);
+    ///     assert_eq!(overflow, false);
+    /// 
+    ///     let (b_longerunion, overflow) = func(10003_u128.into_longerunion(), 10);
+    ///     println!("{} ** 10 = {}\nOverflow = {}", 10003_u128, b_longerunion, overflow);
+    ///     assert_eq!(b_longerunion.get(), 161851891709800684693298854005190226825_u128);
+    ///     assert_eq!(overflow, true);
+    /// 
+    ///     let (a_sizeunion, overflow) = func(1004_usize.into_sizeunion(), 6);
+    ///     println!("{} ** 6 = {}\nOverflow = {}", 1004_u64, a_sizeunion, overflow);
+    ///     assert_eq!(a_sizeunion.get(), 1024241283846148096_usize);
+    ///     assert_eq!(overflow, false);
+    /// 
+    ///     let (b_sizeunion, overflow) = func(1004_usize.into_sizeunion(), 7);
+    ///     println!("{} ** 7 = {}\nOverflow = {}", 1004_u64, b_sizeunion, overflow);
+    ///     assert_eq!(b_sizeunion.get(), 13767324927507349504_usize);
+    ///     assert_eq!(overflow, true);
+    /// }
+    /// 
+    /// fn func<T: SmallUInt>(base: T, rhs: u32) -> (T, bool)
+    /// {
+    ///     base.overflowing_pow(exp)
     /// }
     /// ```
     /// 
@@ -14816,8 +14637,28 @@ pub trait SmallUInt: Copy + Clone + Sized //+ Display + Debug + ToString
     fn rotate_left(self, n: u32) -> Self;
     fn rotate_right(self, n: u32) -> Self;
 
+    // pub fn count_ones(&self) -> u32
+    /// Returns the number of ones in the binary representation
+    /// of the array `number[T;N]` of `self`.
+    /// 
+    /// # Output
+    /// It returns the total number of the bits that are set to be one.
     fn count_ones(self) -> u32;
+
+    // pub fn count_zeros(&self) -> u32
+    /// Returns the number of zeros in the binary representation
+    /// of `self`.
+    /// 
+    /// # Output
+    /// It returns the total number of the bits that are set to be zero.
     fn count_zeros(self) -> u32;
+
+    // pub fn leading_ones(&self) -> u32
+    /// Returns the number of leading ones in the binary representation
+    /// of `self`.
+    /// 
+    /// # Output
+    /// It returns the total number of the leading bits that are set to be one.
     fn leading_ones(self) -> u32;
     fn leading_zeros(self) -> u32;
     fn trailing_ones(self) -> u32;
@@ -15205,9 +15046,30 @@ pub trait SmallUInt: Copy + Clone + Sized //+ Display + Debug + ToString
     /// for Big-endian CPUs with your own full responsibility.
     fn generate_check_bits_(bit_pos: usize) -> Self;
 
+    // pub fn is_odd(&self) -> bool
+    /// Checks whether the `SmallUInt`-type number is an odd number.
+    /// 
+    /// # Output
+    /// It will return `true`, if it is odd. Otherwise, it will return `false`.
     fn is_odd(self) -> bool;
+
+    // pub fn is_even(&self) -> bool
+    /// Checks whether the `SmallUInt`-type number is an even number.
+    /// 
+    /// # Output
+    /// It will return `true`, if it is even. Otherwise, it will return `false`.
     fn is_even(self) -> bool;
+
+    // pub fn is_msb_set(&self) -> bool
+    /// Checks whether the MSB (Most Segnificant Bit) of `self` is set to be
+    /// one.
+    /// 
+    /// # Output
+    /// It will return `true`, if the MSB of `self` is set to be one.
+    /// Otherwise, it will return `false`.
     fn is_msb_set(self) -> bool;
+
+
     fn is_bit_set(self, bit_pos: usize) -> Option<bool>;
     fn is_bit_set_(self, bit_pos: usize) -> bool;
 

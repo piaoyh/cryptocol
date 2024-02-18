@@ -622,10 +622,10 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
         + BitXor<Output=T> + BitXorAssign + Not<Output=T>
         + PartialEq + PartialOrd
 {
-    method_widening_mul_assign_uint: fn(&mut Self, T) -> Self,
-    method_wrapping_mul_assign_uint: fn(&mut Self, T),
-    method_widening_mul_assign: fn(&mut Self, &Self) -> Self,
-    method_wrapping_mul_assign: fn(&mut Self, &Self),
+    // method_widening_mul_assign_uint: fn(&mut Self, T) -> Self,
+    // method_wrapping_mul_assign_uint: fn(&mut Self, T),
+    // method_widening_mul_assign: fn(&mut Self, &Self) -> Self,
+    // method_wrapping_mul_assign: fn(&mut Self, &Self),
     number: [T; N],
     flag: u8,
 }
@@ -685,7 +685,33 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// the flags `DIVIDED_BY_ZERO`, `INFINITY` and `OVERFLOW` will be set.
     const DIVIDED_BY_ZERO: u8   = 0b0000_1000;
 
+    #[allow(non_upper_case_globals)]
+    const method_widening_mul_assign_uint: fn(&mut Self, T) -> Self
+            =   if N > 16
+                    { Self::widening_mul_assign_uint_1 }
+                else
+                    { Self::widening_mul_assign_uint_2 };
 
+    #[allow(non_upper_case_globals)]
+    const method_wrapping_mul_assign_uint: fn(&mut Self, T)
+            =   if N > 16
+                    { Self::wrapping_mul_assign_uint_1 }
+                else
+                    { Self::wrapping_mul_assign_uint_2 };
+
+    #[allow(non_upper_case_globals)]
+    const method_widening_mul_assign: fn(&mut Self, &Self) -> Self
+            =   if N > 16
+                    { Self::widening_mul_assign_1 }
+                else
+                    { Self::widening_mul_assign_2 };
+
+    #[allow(non_upper_case_globals)]
+    const method_wrapping_mul_assign: fn(&mut Self, &Self)
+            =   if N > 16
+                    { Self::wrapping_mul_assign_1 }
+                else
+                    { Self::wrapping_mul_assign_2 };
 
     /***** CONSTRUCTORS *****/
 
@@ -713,24 +739,6 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     {
         Self
         {
-            method_widening_mul_assign_uint: if N > 16
-                                                { Self::widening_mul_assign_uint_1 }
-                                            else
-                                                { Self::widening_mul_assign_uint_2 },
-
-            method_wrapping_mul_assign_uint: if N > 16
-                                                { Self::wrapping_mul_assign_uint_1 }
-                                            else
-                                                { Self::wrapping_mul_assign_uint_2 },
-            method_widening_mul_assign: if N > 16
-                                            { Self::widening_mul_assign_1 }
-                                        else
-                                            { Self::widening_mul_assign_2 },
-
-            method_wrapping_mul_assign: if N > 16
-                                            { Self::wrapping_mul_assign_1 }
-                                        else
-                                            { Self::wrapping_mul_assign_2 },
             number: [T::zero(); N],
             flag: 0,
         }
@@ -5919,7 +5927,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
         if U::size_in_bytes() > T::size_in_bytes()
             { self.widening_mul_assign(&Self::from_uint(rhs)) }
         else // if U::size_in_bytes() <= T::size_in_bytes()
-            { (self.method_widening_mul_assign_uint)(self, T::num::<U>(rhs)) }
+            { (Self::method_widening_mul_assign_uint)(self, T::num::<U>(rhs)) }
     }
 
     // Using carrying_mul()
@@ -6088,7 +6096,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
         if U::size_in_bytes() > T::size_in_bytes()
             { self.wrapping_mul_assign(&Self::from_uint(rhs)) }
         else // if U::size_in_bytes() <= T::size_in_bytes()
-            { (self.method_wrapping_mul_assign_uint)(self, T::num::<U>(rhs)) }
+            { (Self::method_wrapping_mul_assign_uint)(self, T::num::<U>(rhs)) }
     }
 
     // Using carrying_mul()
@@ -11118,7 +11126,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     #[inline]
     pub fn widening_mul_assign(&mut self, rhs: &Self) -> Self
     {
-        (self.method_widening_mul_assign)(self, rhs)
+        (Self::method_widening_mul_assign)(self, rhs)
     }
 
     fn widening_mul_assign_1(&mut self, rhs: &Self) -> Self
@@ -11273,7 +11281,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     #[inline]
     pub fn wrapping_mul_assign(&mut self, rhs: &Self)
     {
-        (self.method_wrapping_mul_assign)(self, rhs);
+        (Self::method_wrapping_mul_assign)(self, rhs);
     }
 
     fn wrapping_mul_assign_1(&mut self, rhs: &Self)
