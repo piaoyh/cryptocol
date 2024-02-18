@@ -13347,9 +13347,9 @@ pub trait SmallUInt: Copy + Clone + Sized //+ Display + Debug + ToString
     ///     // println!("3 ** 5 = {}", func(3_u8, 6_u32));
     /// }
     /// 
-    /// fn func<T: SmallUInt>(lhs: T, rhs: u32) -> T
+    /// fn func<T: SmallUInt>(base: T, exp: u32) -> T
     /// {
-    ///     lhs.pow(rhs)
+    ///     base.pow(exp)
     /// }
     /// ```
     /// 
@@ -13365,9 +13365,9 @@ pub trait SmallUInt: Copy + Clone + Sized //+ Display + Debug + ToString
     ///     // println!("9 ** 5 = {}", func(9_u16, 6_u32));
     /// }
     /// 
-    /// fn func<T: SmallUInt>(lhs: T, rhs: u32) -> T
+    /// fn func<T: SmallUInt>(base: T, exp: u32) -> T
     /// {
-    ///     lhs.pow(rhs)
+    ///     base.pow(exp)
     /// }
     /// ```
     /// 
@@ -13383,9 +13383,9 @@ pub trait SmallUInt: Copy + Clone + Sized //+ Display + Debug + ToString
     ///     // println!("81 ** 6 = {}", func(81_u32, 6_u32));
     /// }
     /// 
-    /// fn func<T: SmallUInt>(lhs: T, rhs: u32) -> T
+    /// fn func<T: SmallUInt>(base: T, exp: u32) -> T
     /// {
-    ///     lhs.pow(rhs)
+    ///     base.pow(exp)
     /// }
     /// ```
     /// 
@@ -13401,9 +13401,9 @@ pub trait SmallUInt: Copy + Clone + Sized //+ Display + Debug + ToString
     ///     // println!("6561 ** 6 = {}", func(6561_u64, 6_u32));
     /// }
     /// 
-    /// fn func<T: SmallUInt>(lhs: T, rhs: u32) -> T
+    /// fn func<T: SmallUInt>(base: T, exp: u32) -> T
     /// {
-    ///     lhs.pow(rhs)
+    ///     base.pow(exp)
     /// }
     /// ```
     /// 
@@ -13419,9 +13419,9 @@ pub trait SmallUInt: Copy + Clone + Sized //+ Display + Debug + ToString
     ///     // println!("43046721 ** 6 = {}", func(43046721_u64, 6_u32));
     /// }
     /// 
-    /// fn func<T: SmallUInt>(lhs: T, rhs: u32) -> T
+    /// fn func<T: SmallUInt>(base: T, exp: u32) -> T
     /// {
-    ///     lhs.pow(rhs)
+    ///     base.pow(exp)
     /// }
     /// ```
     /// 
@@ -13437,9 +13437,9 @@ pub trait SmallUInt: Copy + Clone + Sized //+ Display + Debug + ToString
     ///     // println!("6561 ** 6 = {}", func(6561_usize, 6_u32));
     /// }
     /// 
-    /// fn func<T: SmallUInt>(lhs: T, rhs: u32) -> T
+    /// fn func<T: SmallUInt>(base: T, exp: u32) -> T
     /// {
-    ///     lhs.pow(rhs)
+    ///     base.pow(exp)
     /// }
     /// ```
     /// 
@@ -13456,9 +13456,9 @@ pub trait SmallUInt: Copy + Clone + Sized //+ Display + Debug + ToString
     ///     // println!("9 ** 5 = {}", func(a_shortunion, 6_u32));
     /// }
     /// 
-    /// fn func<T: SmallUInt>(lhs: T, rhs: u32) -> T
+    /// fn func<T: SmallUInt>(base: T, exp: u32) -> T
     /// {
-    ///     lhs.pow(rhs)
+    ///     base.pow(exp)
     /// }
     /// ```
     /// 
@@ -13475,9 +13475,9 @@ pub trait SmallUInt: Copy + Clone + Sized //+ Display + Debug + ToString
     ///     // println!("81 ** 6 = {}", small_uint_pow_func(a_intunion, 6_u32));
     /// }
     /// 
-    /// fn func<T: SmallUInt>(lhs: T, rhs: u32) -> T
+    /// fn func<T: SmallUInt>(base: T, exp: u32) -> T
     /// {
-    ///     lhs.pow(rhs)
+    ///     base.pow(exp)
     /// }
     /// ```
     /// 
@@ -13494,9 +13494,9 @@ pub trait SmallUInt: Copy + Clone + Sized //+ Display + Debug + ToString
     ///     // println!("6561 ** 6 = {}", small_uint_pow_func(a_longunion, 6_u32));
     /// }
     /// 
-    /// fn func<T: SmallUInt>(lhs: T, rhs: u32) -> T
+    /// fn func<T: SmallUInt>(base: T, exp: u32) -> T
     /// {
-    ///     lhs.pow(rhs)
+    ///     base.pow(exp)
     /// }
     /// ```
     /// 
@@ -13513,9 +13513,9 @@ pub trait SmallUInt: Copy + Clone + Sized //+ Display + Debug + ToString
     ///     // println!("43046721 ** 6 = {}", small_uint_pow_func(a_longerunion, 6_u32));
     /// }
     /// 
-    /// fn func<T: SmallUInt>(lhs: T, rhs: u32) -> T
+    /// fn func<T: SmallUInt>(base: T, exp: u32) -> T
     /// {
-    ///     lhs.pow(rhs)
+    ///     base.pow(exp)
     /// }
     /// ```
     /// 
@@ -13532,9 +13532,9 @@ pub trait SmallUInt: Copy + Clone + Sized //+ Display + Debug + ToString
     ///     // println!("6561 ** 6 = {}", small_uint_pow_func(a_sizeunion, 6_u32));
     /// }
     /// 
-    /// fn func<T: SmallUInt>(lhs: T, rhs: u32) -> T
+    /// fn func<T: SmallUInt>(base: T, exp: u32) -> T
     /// {
-    ///     lhs.pow(rhs)
+    ///     base.pow(exp)
     /// }
     /// ```
     /// You can use the above generic function `func<>()` for all
@@ -13618,9 +13618,9 @@ pub trait SmallUInt: Copy + Clone + Sized //+ Display + Debug + ToString
     ///     // println!("6561 ** 6 = {}", small_uint_pow_func(a_sizeunion, 6_u32));
     /// }
     /// 
-    /// fn func<T: SmallUInt>(lhs: T, rhs: u32) -> T
+    /// fn func<T: SmallUInt>(base: T, exp: u32) -> T
     /// {
-    ///     lhs.pow(rhs)
+    ///     base.pow(exp)
     /// }
     /// ```
     /// 
@@ -13676,9 +13676,9 @@ pub trait SmallUInt: Copy + Clone + Sized //+ Display + Debug + ToString
     ///     assert_eq!(b_u8, 217_u8);
     /// }
     /// 
-    /// fn func<T: SmallUInt>(lhs: T, rhs: u32) -> T
+    /// fn func<T: SmallUInt>(base: T, exp: u32) -> T
     /// {
-    ///     lhs.wrapping_pow(rhs)
+    ///     base.wrapping_pow(exp)
     /// }
     /// ```
     /// 
@@ -13696,9 +13696,9 @@ pub trait SmallUInt: Copy + Clone + Sized //+ Display + Debug + ToString
     ///     assert_eq!(b_u16, 7153_u16);
     /// }
     /// 
-    /// fn func<T: SmallUInt>(lhs: T, rhs: u32) -> T
+    /// fn func<T: SmallUInt>(base: T, exp: u32) -> T
     /// {
-    ///     lhs.wrapping_pow(rhs)
+    ///     base.wrapping_pow(exp)
     /// }
     /// ```
     /// 
@@ -13716,9 +13716,9 @@ pub trait SmallUInt: Copy + Clone + Sized //+ Display + Debug + ToString
     ///     assert_eq!(b_u32, 3256662241_u32);
     /// }
     /// 
-    /// fn func<T: SmallUInt>(lhs: T, rhs: u32) -> T
+    /// fn func<T: SmallUInt>(base: T, exp: u32) -> T
     /// {
-    ///     lhs.wrapping_pow(rhs)
+    ///     base.wrapping_pow(exp)
     /// }
     /// ```
     /// 
@@ -13736,9 +13736,9 @@ pub trait SmallUInt: Copy + Clone + Sized //+ Display + Debug + ToString
     ///     assert_eq!(b_u64, 2721702152408675777_u64);
     /// }
     /// 
-    /// fn func<T: SmallUInt>(lhs: T, rhs: u32) -> T
+    /// fn func<T: SmallUInt>(base: T, exp: u32) -> T
     /// {
-    ///     lhs.wrapping_pow(rhs)
+    ///     base.wrapping_pow(exp)
     /// }
     /// ```
     /// 
@@ -13756,9 +13756,9 @@ pub trait SmallUInt: Copy + Clone + Sized //+ Display + Debug + ToString
     ///     assert_eq!(b_u128, 333574137813082321045752866839264852865_u128);
     /// }
     /// 
-    /// fn func<T: SmallUInt>(lhs: T, rhs: u32) -> T
+    /// fn func<T: SmallUInt>(base: T, exp: u32) -> T
     /// {
-    ///     lhs.wrapping_pow(rhs)
+    ///     base.wrapping_pow(exp)
     /// }
     /// ```
     /// 
@@ -13776,9 +13776,9 @@ pub trait SmallUInt: Copy + Clone + Sized //+ Display + Debug + ToString
     ///     assert_eq!(b_usize, 2721702152408675777_usize);
     /// }
     /// 
-    /// fn func<T: SmallUInt>(lhs: T, rhs: u32) -> T
+    /// fn func<T: SmallUInt>(base: T, exp: u32) -> T
     /// {
-    ///     lhs.wrapping_pow(rhs)
+    ///     base.wrapping_pow(exp)
     /// }
     /// ```
     /// 
@@ -13797,9 +13797,9 @@ pub trait SmallUInt: Copy + Clone + Sized //+ Display + Debug + ToString
     ///     assert_eq!(c_shortunion.get(), 7153_u16);
     /// }
     /// 
-    /// fn func<T: SmallUInt>(lhs: T, rhs: u32) -> T
+    /// fn func<T: SmallUInt>(base: T, exp: u32) -> T
     /// {
-    ///     lhs.wrapping_pow(rhs)
+    ///     base.wrapping_pow(exp)
     /// }
     /// ```
     /// 
@@ -13818,9 +13818,9 @@ pub trait SmallUInt: Copy + Clone + Sized //+ Display + Debug + ToString
     ///     assert_eq!(c_intunion.get(), 3256662241_u32);
     /// }
     /// 
-    /// fn func<T: SmallUInt>(lhs: T, rhs: u32) -> T
+    /// fn func<T: SmallUInt>(base: T, exp: u32) -> T
     /// {
-    ///     lhs.wrapping_pow(rhs)
+    ///     base.wrapping_pow(exp)
     /// }
     /// ```
     /// 
@@ -13839,9 +13839,9 @@ pub trait SmallUInt: Copy + Clone + Sized //+ Display + Debug + ToString
     ///     assert_eq!(c_longunion.get(), 2721702152408675777_u64);
     /// }
     /// 
-    /// fn func<T: SmallUInt>(lhs: T, rhs: u32) -> T
+    /// fn func<T: SmallUInt>(base: T, exp: u32) -> T
     /// {
-    ///     lhs.wrapping_pow(rhs)
+    ///     base.wrapping_pow(exp)
     /// }
     /// ```
     /// 
@@ -13860,9 +13860,9 @@ pub trait SmallUInt: Copy + Clone + Sized //+ Display + Debug + ToString
     ///     assert_eq!(c_longerunion.get(), 333574137813082321045752866839264852865_u128);
     /// }
     /// 
-    /// fn func<T: SmallUInt>(lhs: T, rhs: u32) -> T
+    /// fn func<T: SmallUInt>(base: T, exp: u32) -> T
     /// {
-    ///     lhs.wrapping_pow(rhs)
+    ///     base.wrapping_pow(exp)
     /// }
     /// ```
     /// 
@@ -13881,11 +13881,14 @@ pub trait SmallUInt: Copy + Clone + Sized //+ Display + Debug + ToString
     ///     assert_eq!(c_sizeunion.get(), 2721702152408675777_usize);
     /// }
     /// 
-    /// fn func<T: SmallUInt>(lhs: T, rhs: u32) -> T
+    /// fn func<T: SmallUInt>(base: T, exp: u32) -> T
     /// {
-    ///     lhs.wrapping_pow(rhs)
+    ///     base.wrapping_pow(exp)
     /// }
     /// ```
+    /// You can use the above generic function `func<>()` for all
+    /// SmallUInt-supported data types in a same scope.
+    /// Look into the following example.
     /// 
     /// # Collective Example
     /// ```
@@ -13986,9 +13989,9 @@ pub trait SmallUInt: Copy + Clone + Sized //+ Display + Debug + ToString
     ///     assert_eq!(c_sizeunion.get(), 2721702152408675777_usize);
     /// }
     /// 
-    /// fn func<T: SmallUInt>(lhs: T, rhs: u32) -> T
+    /// fn func<T: SmallUInt>(base: T, exp: u32) -> T
     /// {
-    ///     lhs.wrapping_pow(rhs)
+    ///     base.wrapping_pow(exp)
     /// }
     /// ```
     /// 
@@ -14047,7 +14050,7 @@ pub trait SmallUInt: Copy + Clone + Sized //+ Display + Debug + ToString
     ///     assert_eq!(overflow, true);
     /// }
     /// 
-    /// fn func<T: SmallUInt>(base: T, rhs: u32) -> (T, bool)
+    /// fn func<T: SmallUInt>(base: T, exp: u32) -> (T, bool)
     /// {
     ///     base.overflowing_pow(exp)
     /// }
@@ -14069,7 +14072,7 @@ pub trait SmallUInt: Copy + Clone + Sized //+ Display + Debug + ToString
     ///     assert_eq!(overflow, true);
     /// }
     /// 
-    /// fn func<T: SmallUInt>(base: T, rhs: u32) -> (T, bool)
+    /// fn func<T: SmallUInt>(base: T, exp: u32) -> (T, bool)
     /// {
     ///     base.overflowing_pow(exp)
     /// }
@@ -14091,7 +14094,7 @@ pub trait SmallUInt: Copy + Clone + Sized //+ Display + Debug + ToString
     ///     assert_eq!(overflow, true);
     /// }
     /// 
-    /// fn func<T: SmallUInt>(base: T, rhs: u32) -> (T, bool)
+    /// fn func<T: SmallUInt>(base: T, exp: u32) -> (T, bool)
     /// {
     ///     base.overflowing_pow(exp)
     /// }
@@ -14113,7 +14116,7 @@ pub trait SmallUInt: Copy + Clone + Sized //+ Display + Debug + ToString
     ///     assert_eq!(overflow, true);
     /// }
     /// 
-    /// fn func<T: SmallUInt>(base: T, rhs: u32) -> (T, bool)
+    /// fn func<T: SmallUInt>(base: T, exp: u32) -> (T, bool)
     /// {
     ///     base.overflowing_pow(exp)
     /// }
@@ -14135,7 +14138,7 @@ pub trait SmallUInt: Copy + Clone + Sized //+ Display + Debug + ToString
     ///     assert_eq!(overflow, true);
     /// }
     /// 
-    /// fn func<T: SmallUInt>(base: T, rhs: u32) -> (T, bool)
+    /// fn func<T: SmallUInt>(base: T, exp: u32) -> (T, bool)
     /// {
     ///     base.overflowing_pow(exp)
     /// }
@@ -14157,7 +14160,7 @@ pub trait SmallUInt: Copy + Clone + Sized //+ Display + Debug + ToString
     ///     assert_eq!(overflow, true);
     /// }
     /// 
-    /// fn func<T: SmallUInt>(base: T, rhs: u32) -> (T, bool)
+    /// fn func<T: SmallUInt>(base: T, exp: u32) -> (T, bool)
     /// {
     ///     base.overflowing_pow(exp)
     /// }
@@ -14179,7 +14182,7 @@ pub trait SmallUInt: Copy + Clone + Sized //+ Display + Debug + ToString
     ///     assert_eq!(overflow, true);
     /// }
     /// 
-    /// fn func<T: SmallUInt>(base: T, rhs: u32) -> (T, bool)
+    /// fn func<T: SmallUInt>(base: T, exp: u32) -> (T, bool)
     /// {
     ///     base.overflowing_pow(exp)
     /// }
@@ -14201,7 +14204,7 @@ pub trait SmallUInt: Copy + Clone + Sized //+ Display + Debug + ToString
     ///     assert_eq!(overflow, true);
     /// }
     /// 
-    /// fn func<T: SmallUInt>(base: T, rhs: u32) -> (T, bool)
+    /// fn func<T: SmallUInt>(base: T, exp: u32) -> (T, bool)
     /// {
     ///     base.overflowing_pow(exp)
     /// }
@@ -14223,7 +14226,7 @@ pub trait SmallUInt: Copy + Clone + Sized //+ Display + Debug + ToString
     ///     assert_eq!(overflow, true);
     /// }
     /// 
-    /// fn func<T: SmallUInt>(base: T, rhs: u32) -> (T, bool)
+    /// fn func<T: SmallUInt>(base: T, exp: u32) -> (T, bool)
     /// {
     ///     base.overflowing_pow(exp)
     /// }
@@ -14245,7 +14248,7 @@ pub trait SmallUInt: Copy + Clone + Sized //+ Display + Debug + ToString
     ///     assert_eq!(overflow, true);
     /// }
     /// 
-    /// fn func<T: SmallUInt>(base: T, rhs: u32) -> (T, bool)
+    /// fn func<T: SmallUInt>(base: T, exp: u32) -> (T, bool)
     /// {
     ///     base.overflowing_pow(exp)
     /// }
@@ -14267,11 +14270,14 @@ pub trait SmallUInt: Copy + Clone + Sized //+ Display + Debug + ToString
     ///     assert_eq!(overflow, true);
     /// }
     /// 
-    /// fn func<T: SmallUInt>(base: T, rhs: u32) -> (T, bool)
+    /// fn func<T: SmallUInt>(base: T, exp: u32) -> (T, bool)
     /// {
     ///     base.overflowing_pow(exp)
     /// }
     /// ```
+    /// You can use the above generic function `func<>()` for all
+    /// SmallUInt-supported data types in a same scope.
+    /// Look into the following example.
     /// 
     /// # Collective Example
     /// ```
@@ -14389,7 +14395,7 @@ pub trait SmallUInt: Copy + Clone + Sized //+ Display + Debug + ToString
     ///     assert_eq!(overflow, true);
     /// }
     /// 
-    /// fn func<T: SmallUInt>(base: T, rhs: u32) -> (T, bool)
+    /// fn func<T: SmallUInt>(base: T, exp: u32) -> (T, bool)
     /// {
     ///     base.overflowing_pow(exp)
     /// }
@@ -14433,17 +14439,591 @@ pub trait SmallUInt: Copy + Clone + Sized //+ Display + Debug + ToString
     /// It returns None if overflow occurred. Otherwise, it returns 'self
     /// raised to the power of exp' wrapped by `Some` of enum `Option`.
     /// 
-    /// # Example
+    /// # Example 1 for u8
     /// ```
-    /// use cryptocol::number::*;
+    /// use cryptocol::number::SmallUInt;
     /// fn main()
     /// {
-    ///     // Todo
+    ///     // Example for u8
+    ///     let a_u8 = func(6_u8, 3);
+    ///     match a_u8
+    ///     {
+    ///         Some(a) => {
+    ///                 println!("{} ** 3 = {}, where ** is the power operator", 6_u8, a);
+    ///                 assert_eq!(a, 216_u8);
+    ///             },
+    ///         None => { println!("Overflow happened."); },
+    ///     }
+    /// 
+    ///     let b_u8 = func(6_u8, 4);
+    ///     match b_u8
+    ///     {
+    ///         Some(b) => { println!("{} ** 4 = {}, where ** is the power operator", 6_u8, b); },
+    ///         None => {
+    ///                 println!("Overflow happened.");
+    ///                 assert_eq!(b_u8, None);
+    ///             },
+    ///     }
     /// }
     /// 
-    /// fn func<T: SmallUInt>(lhs: T, rhs: u32) -> Option<T>
+    /// fn func<T: SmallUInt>(base: T, exp: u32) -> Option<T>
     /// {
-    ///     lhs.checked_pow(rhs)
+    ///     base.checked_pow(exp)
+    /// }
+    /// ```
+    /// 
+    /// # Example 2 for u16
+    /// ```
+    /// use cryptocol::number::SmallUInt;
+    /// fn main()
+    /// {
+    ///     let a_u16 = func(12_u16, 4);
+    ///     match a_u16
+    ///     {
+    ///         Some(a) => {
+    ///                 println!("{} ** 4 = {}, where ** is the power operator", 12_u16, a);
+    ///                 assert_eq!(a, 20736_u16);
+    ///             },
+    ///         None => { println!("Overflow happened."); },
+    ///     }
+    /// 
+    ///     let b_u16 = func(12_u16, 5);
+    ///     match b_u16
+    ///     {
+    ///         Some(b) => { println!("{} ** 5 = {}, where ** is the power operator", 12_u16, b); },
+    ///         None => {
+    ///                 println!("Overflow happened.");
+    ///                 assert_eq!(b_u16, None);
+    ///             },
+    ///     }
+    /// }
+    /// 
+    /// fn func<T: SmallUInt>(base: T, exp: u32) -> Option<T>
+    /// {
+    ///     base.checked_pow(exp)
+    /// }
+    /// ```
+    /// 
+    /// # Example 3 for u32
+    /// ```
+    /// use cryptocol::number::SmallUInt;
+    /// fn main()
+    /// {
+    ///     let a_u32 = func(38_u32, 6);
+    ///     match a_u32
+    ///     {
+    ///         Some(a) => {
+    ///                 println!("{} ** 6 = {}, where ** is the power operator", 38_u32, a);
+    ///                 assert_eq!(a, 3010936384_u32);
+    ///             },
+    ///         None => { println!("Overflow happened."); },
+    ///     }
+    /// 
+    ///     let b_u32 = func(38_u32, 7);
+    ///     match b_u32
+    ///     {
+    ///         Some(b) => { println!("{} ** 7 = {}, where ** is the power operator", 38_u32, b); },
+    ///         None => {
+    ///                 println!("Overflow happened.");
+    ///                 assert_eq!(b_u32, None);
+    ///             },
+    ///     }
+    /// }
+    /// 
+    /// fn func<T: SmallUInt>(base: T, exp: u32) -> Option<T>
+    /// {
+    ///     base.checked_pow(exp)
+    /// }
+    /// ```
+    /// 
+    /// # Example 4 for u64
+    /// ```
+    /// use cryptocol::number::SmallUInt;
+    /// fn main()
+    /// {
+    ///     let a_u64 = func(1004_u64, 6);
+    ///     match a_u64
+    ///     {
+    ///         Some(a) => {
+    ///                 println!("{} ** 6 = {}, where ** is the power operator", 1004_u64, a);
+    ///                 assert_eq!(a, 1024241283846148096_u64);
+    ///             },
+    ///         None => { println!("Overflow happened."); },
+    ///     }
+    /// 
+    ///     let b_u64 = func(1004_u64, 7);
+    ///     match b_u64
+    ///     {
+    ///         Some(b) => { println!("{} ** 7 = {}, where ** is the power operator", 1004_u64, b); },
+    ///         None => {
+    ///                 println!("Overflow happened.");
+    ///                 assert_eq!(b_u64, None);
+    ///             },
+    ///     }
+    /// }
+    /// 
+    /// fn func<T: SmallUInt>(base: T, exp: u32) -> Option<T>
+    /// {
+    ///     base.checked_pow(exp)
+    /// }
+    /// ```
+    /// 
+    /// # Example 5 for u128
+    /// ```
+    /// use cryptocol::number::SmallUInt;
+    /// fn main()
+    /// {
+    ///     let a_u128 = func(10003_u128, 9);
+    ///     match a_u128
+    ///     {
+    ///         Some(a) => {
+    ///                 println!("{} ** 9 = {}, where ** is the power operator", 10003_u128, a);
+    ///                 assert_eq!(a, 1002703242269020906241243873790509683_u128);
+    ///             },
+    ///         None => { println!("Overflow happened."); },
+    ///     }
+    /// 
+    ///     let b_u128 = func(10003_u128, 10);
+    ///     match b_u128
+    ///     {
+    ///         Some(b) => { println!("{} ** 10 = {}, where ** is the power operator", 10003_u128, b); },
+    ///         None => {
+    ///                 println!("Overflow happened.");
+    ///                 assert_eq!(b_u128, None);
+    ///             },
+    ///     }
+    /// }
+    /// 
+    /// fn func<T: SmallUInt>(base: T, exp: u32) -> Option<T>
+    /// {
+    ///     base.checked_pow(exp)
+    /// }
+    /// ```
+    /// 
+    /// # Example 6 for usize
+    /// ```
+    /// use cryptocol::number::SmallUInt;
+    /// fn main()
+    /// {
+    ///     let a_usize = func(1004_usize, 6);
+    ///     match a_usize
+    ///     {
+    ///         Some(a) => {
+    ///                 println!("{} ** 6 = {}, where ** is the power operator", 1004_usize, a);
+    ///                 assert_eq!(a, 1024241283846148096_usize);
+    ///             },
+    ///         None => { println!("Overflow happened."); },
+    ///     }
+    /// 
+    ///     let b_usize = func(1004_usize, 7);
+    ///     match b_usize
+    ///     {
+    ///         Some(b) => { println!("{} ** 7 = {}, where ** is the power operator", 1004_usize, b); },
+    ///         None => {
+    ///                 println!("Overflow happened.");
+    ///                 assert_eq!(b_usize, None);
+    ///             },
+    ///     }
+    /// }
+    /// 
+    /// fn func<T: SmallUInt>(base: T, exp: u32) -> Option<T>
+    /// {
+    ///     base.checked_pow(exp)
+    /// }
+    /// ```
+    /// 
+    /// # Example 7 for ShortUnion
+    /// ```
+    /// use cryptocol::number::SmallUInt;
+    /// fn main()
+    /// {
+    ///     let a_shortunion = func(12_u16.into_shortunion(), 4);
+    ///     match a_shortunion
+    ///     {
+    ///         Some(a) => {
+    ///                 println!("{} ** 4 = {}, where ** is the power operator", 12_u16.into_shortunion(), a);
+    ///                 assert_eq!(a.get(), 20736_u16);
+    ///             },
+    ///         None => { println!("Overflow happened."); },
+    ///     }
+    /// 
+    ///     let b_shortunion = func(12_u16.into_shortunion(), 5);
+    ///     match b_shortunion
+    ///     {
+    ///         Some(b) => { println!("{} ** 5 = {}, where ** is the power operator", 12_u16.into_shortunion(), b); },
+    ///         None => {
+    ///                 println!("Overflow happened.");
+    ///                 assert_eq!(b_shortunion, None);
+    ///             },
+    ///     }
+    /// }
+    /// 
+    /// fn func<T: SmallUInt>(base: T, exp: u32) -> Option<T>
+    /// {
+    ///     base.checked_pow(exp)
+    /// }
+    /// ```
+    /// 
+    /// # Example 8 for IntUnion
+    /// ```
+    /// use cryptocol::number::SmallUInt;
+    /// fn main()
+    /// {
+    ///     let a_intunion = func(38_u32.into_intunion(), 6);
+    ///     match a_intunion
+    ///     {
+    ///         Some(a) => {
+    ///                 println!("{} ** 6 = {}, where ** is the power operator", 38_u32.into_intunion(), a);
+    ///                 assert_eq!(a.get(), 3010936384_u32);
+    ///             },
+    ///         None => { println!("Overflow happened."); },
+    ///     }
+    /// 
+    ///     let b_intunion = func(38_u32.into_intunion(), 7);
+    ///     match b_intunion
+    ///     {
+    ///         Some(b) => { println!("{} ** 7 = {}, where ** is the power operator", 38_u32.into_intunion(), b); },
+    ///         None => {
+    ///                 println!("Overflow happened.");
+    ///                 assert_eq!(b_intunion, None);
+    ///             },
+    ///     }
+    /// }
+    /// 
+    /// fn func<T: SmallUInt>(base: T, exp: u32) -> Option<T>
+    /// {
+    ///     base.checked_pow(exp)
+    /// }
+    /// ```
+    /// 
+    /// # Example 9 for LongUnion
+    /// ```
+    /// use cryptocol::number::SmallUInt;
+    /// fn main()
+    /// {
+    ///     let a_longunion = func(1004_u64.into_longunion(), 6);
+    ///     match a_longunion
+    ///     {
+    ///         Some(a) => {
+    ///                 println!("{} ** 6 = {}, where ** is the power operator", 1004_u64.into_longunion(), a);
+    ///                 assert_eq!(a.get(), 1024241283846148096_u64);
+    ///             },
+    ///         None => { println!("Overflow happened."); },
+    ///     }
+    /// 
+    ///     let b_longunion = func(1004_u64.into_longunion(), 7);
+    ///     match b_longunion
+    ///     {
+    ///         Some(b) => { println!("{} ** 7 = {}, where ** is the power operator", 1004_u64.into_longunion(), b); },
+    ///         None => {
+    ///                 println!("Overflow happened.");
+    ///                 assert_eq!(b_longunion, None);
+    ///             },
+    ///     }
+    /// }
+    /// 
+    /// fn func<T: SmallUInt>(base: T, exp: u32) -> Option<T>
+    /// {
+    ///     base.checked_pow(exp)
+    /// }
+    /// ```
+    /// 
+    /// # Example 10 for LongerUnion
+    /// ```
+    /// use cryptocol::number::SmallUInt;
+    /// fn main()
+    /// {
+    ///     let a_longerunion = func(10003_u128.into_longerunion(), 9);
+    ///     match a_longerunion
+    ///     {
+    ///         Some(a) => {
+    ///                 println!("{} ** 9 = {}, where ** is the power operator", 10003_u128.into_longerunion(), a);
+    ///                 assert_eq!(a.get(), 1002703242269020906241243873790509683_u128);
+    ///             },
+    ///         None => { println!("Overflow happened."); },
+    ///     }
+    /// 
+    ///     let b_longerunion = func(10003_u128.into_longerunion(), 10);
+    ///     match b_longerunion
+    ///     {
+    ///         Some(b) => { println!("{} ** 10 = {}, where ** is the power operator", 10003_u128.into_longerunion(), b); },
+    ///         None => {
+    ///                 println!("Overflow happened.");
+    ///                 assert_eq!(b_longerunion, None);
+    ///             },
+    ///     }
+    /// }
+    /// 
+    /// fn func<T: SmallUInt>(base: T, exp: u32) -> Option<T>
+    /// {
+    ///     base.checked_pow(exp)
+    /// }
+    /// ```
+    /// 
+    /// # Example 11 for SizeUnion
+    /// ```
+    /// use cryptocol::number::SmallUInt;
+    /// fn main()
+    /// {
+    ///     let a_sizeunion = func(1004_usize.into_sizeunion(), 6);
+    ///     match a_sizeunion
+    ///     {
+    ///         Some(a) => {
+    ///                 println!("{} ** 6 = {}, where ** is the power operator", 1004_usize.into_sizeunion(), a);
+    ///                 assert_eq!(a.get(), 1024241283846148096_usize);
+    ///             },
+    ///         None => { println!("Overflow happened."); },
+    ///     }
+    /// 
+    ///     let b_sizeunion = func(1004_usize.into_sizeunion(), 7);
+    ///     match b_sizeunion
+    ///     {
+    ///         Some(b) => { println!("{} ** 7 = {}, where ** is the power operator", 1004_usize.into_sizeunion(), b); },
+    ///         None => {
+    ///                 println!("Overflow happened.");
+    ///                 assert_eq!(b_sizeunion, None);
+    ///             },
+    ///     }
+    /// }
+    /// 
+    /// fn func<T: SmallUInt>(base: T, exp: u32) -> Option<T>
+    /// {
+    ///     base.checked_pow(exp)
+    /// }
+    /// ```
+    /// You can use the above generic function `func<>()` for all
+    /// SmallUInt-supported data types in a same scope.
+    /// Look into the following example.
+    /// 
+    /// # Collective Example
+    /// ```
+    /// use cryptocol::number::SmallUInt;
+    /// fn main()
+    /// {
+    ///     let a_u8 = func(6_u8, 3);
+    ///     match a_u8
+    ///     {
+    ///         Some(a) => {
+    ///                 println!("{} ** 3 = {}, where ** is the power operator", 6_u8, a);
+    ///                 assert_eq!(a, 216_u8);
+    ///             },
+    ///         None => { println!("Overflow happened."); },
+    ///     }
+    /// 
+    ///     let b_u8 = func(6_u8, 4);
+    ///     match b_u8
+    ///     {
+    ///         Some(b) => { println!("{} ** 4 = {}, where ** is the power operator", 6_u8, b); },
+    ///         None => {
+    ///                 println!("Overflow happened.");
+    ///                 assert_eq!(b_u8, None);
+    ///             },
+    ///     }
+    /// 
+    ///     let a_u16 = func(12_u16, 4);
+    ///     match a_u16
+    ///     {
+    ///         Some(a) => {
+    ///                 println!("{} ** 4 = {}, where ** is the power operator", 12_u16, a);
+    ///                 assert_eq!(a, 20736_u16);
+    ///             },
+    ///         None => { println!("Overflow happened."); },
+    ///     }
+    /// 
+    ///     let b_u16 = func(12_u16, 5);
+    ///     match b_u16
+    ///     {
+    ///         Some(b) => { println!("{} ** 5 = {}, where ** is the power operator", 12_u16, b); },
+    ///         None => {
+    ///                 println!("Overflow happened.");
+    ///                 assert_eq!(b_u16, None);
+    ///             },
+    ///     }
+    /// 
+    ///     let a_u32 = func(38_u32, 6);
+    ///     match a_u32
+    ///     {
+    ///         Some(a) => {
+    ///                 println!("{} ** 6 = {}, where ** is the power operator", 38_u32, a);
+    ///                 assert_eq!(a, 3010936384_u32);
+    ///             },
+    ///         None => { println!("Overflow happened."); },
+    ///     }
+    /// 
+    ///     let b_u32 = func(38_u32, 7);
+    ///     match b_u32
+    ///     {
+    ///         Some(b) => { println!("{} ** 7 = {}, where ** is the power operator", 38_u32, b); },
+    ///         None => {
+    ///                 println!("Overflow happened.");
+    ///                 assert_eq!(b_u32, None);
+    ///             },
+    ///     }
+    /// 
+    ///     let a_u64 = func(1004_u64, 6);
+    ///     match a_u64
+    ///     {
+    ///         Some(a) => {
+    ///                 println!("{} ** 6 = {}, where ** is the power operator", 1004_u64, a);
+    ///                 assert_eq!(a, 1024241283846148096_u64);
+    ///             },
+    ///         None => { println!("Overflow happened."); },
+    ///     }
+    /// 
+    ///     let b_u64 = func(1004_u64, 7);
+    ///     match b_u64
+    ///     {
+    ///         Some(b) => { println!("{} ** 7 = {}, where ** is the power operator", 1004_u64, b); },
+    ///         None => {
+    ///                 println!("Overflow happened.");
+    ///                 assert_eq!(b_u64, None);
+    ///             },
+    ///     }
+    /// 
+    ///     let a_u128 = func(10003_u128, 9);
+    ///     match a_u128
+    ///     {
+    ///         Some(a) => {
+    ///                 println!("{} ** 9 = {}, where ** is the power operator", 10003_u128, a);
+    ///                 assert_eq!(a, 1002703242269020906241243873790509683_u128);
+    ///             },
+    ///         None => { println!("Overflow happened."); },
+    ///     }
+    /// 
+    ///     let b_u128 = func(10003_u128, 10);
+    ///     match b_u128
+    ///     {
+    ///         Some(b) => { println!("{} ** 10 = {}, where ** is the power operator", 10003_u128, b); },
+    ///         None => {
+    ///                 println!("Overflow happened.");
+    ///                 assert_eq!(b_u128, None);
+    ///             },
+    ///     }
+    /// 
+    ///     let a_usize = func(1004_usize, 6);
+    ///     match a_usize
+    ///     {
+    ///         Some(a) => {
+    ///                 println!("{} ** 6 = {}, where ** is the power operator", 1004_usize, a);
+    ///                 assert_eq!(a, 1024241283846148096_usize);
+    ///             },
+    ///         None => { println!("Overflow happened."); },
+    ///     }
+    /// 
+    ///     let b_usize = func(1004_usize, 7);
+    ///     match b_usize
+    ///     {
+    ///         Some(b) => { println!("{} ** 7 = {}, where ** is the power operator", 1004_usize, b); },
+    ///         None => {
+    ///                 println!("Overflow happened.");
+    ///                 assert_eq!(b_usize, None);
+    ///             },
+    ///     }
+    /// 
+    ///     let a_shortunion = func(12_u16.into_shortunion(), 4);
+    ///     match a_shortunion
+    ///     {
+    ///         Some(a) => {
+    ///                 println!("{} ** 4 = {}, where ** is the power operator", 12_u16.into_shortunion(), a);
+    ///                 assert_eq!(a.get(), 20736_u16);
+    ///             },
+    ///         None => { println!("Overflow happened."); },
+    ///     }
+    /// 
+    ///     let b_shortunion = func(12_u16.into_shortunion(), 5);
+    ///     match b_shortunion
+    ///     {
+    ///         Some(b) => { println!("{} ** 5 = {}, where ** is the power operator", 12_u16.into_shortunion(), b); },
+    ///         None => {
+    ///                 println!("Overflow happened.");
+    ///                 assert_eq!(b_shortunion, None);
+    ///             },
+    ///     }
+    /// 
+    ///     let a_intunion = func(38_u32.into_intunion(), 6);
+    ///     match a_intunion
+    ///     {
+    ///         Some(a) => {
+    ///                 println!("{} ** 6 = {}, where ** is the power operator", 38_u32.into_intunion(), a);
+    ///                 assert_eq!(a.get(), 3010936384_u32);
+    ///             },
+    ///         None => { println!("Overflow happened."); },
+    ///     }
+    /// 
+    ///     let b_intunion = func(38_u32.into_intunion(), 7);
+    ///     match b_intunion
+    ///     {
+    ///         Some(b) => { println!("{} ** 7 = {}, where ** is the power operator", 38_u32.into_intunion(), b); },
+    ///         None => {
+    ///                 println!("Overflow happened.");
+    ///                 assert_eq!(b_intunion, None);
+    ///             },
+    ///     }
+    /// 
+    ///     let a_longunion = func(1004_u64.into_longunion(), 6);
+    ///     match a_longunion
+    ///     {
+    ///         Some(a) => {
+    ///                 println!("{} ** 6 = {}, where ** is the power operator", 1004_u64.into_longunion(), a);
+    ///                 assert_eq!(a.get(), 1024241283846148096_u64);
+    ///             },
+    ///         None => { println!("Overflow happened."); },
+    ///     }
+    /// 
+    ///     let b_longunion = func(1004_u64.into_longunion(), 7);
+    ///     match b_longunion
+    ///     {
+    ///         Some(b) => { println!("{} ** 7 = {}, where ** is the power operator", 1004_u64.into_longunion(), b); },
+    ///         None => {
+    ///                 println!("Overflow happened.");
+    ///                 assert_eq!(b_longunion, None);
+    ///             },
+    ///     }
+    /// 
+    ///     let a_longerunion = func(10003_u128.into_longerunion(), 9);
+    ///     match a_longerunion
+    ///     {
+    ///         Some(a) => {
+    ///                 println!("{} ** 9 = {}, where ** is the power operator", 10003_u128.into_longerunion(), a);
+    ///                 assert_eq!(a.get(), 1002703242269020906241243873790509683_u128);
+    ///             },
+    ///         None => { println!("Overflow happened."); },
+    ///     }
+    /// 
+    ///     let b_longerunion = func(10003_u128.into_longerunion(), 10);
+    ///     match b_longerunion
+    ///     {
+    ///         Some(b) => { println!("{} ** 10 = {}, where ** is the power operator", 10003_u128.into_longerunion(), b); },
+    ///         None => {
+    ///                 println!("Overflow happened.");
+    ///                 assert_eq!(b_longerunion, None);
+    ///             },
+    ///     }
+    /// 
+    ///     let a_sizeunion = func(1004_usize.into_sizeunion(), 6);
+    ///     match a_sizeunion
+    ///     {
+    ///         Some(a) => {
+    ///                 println!("{} ** 6 = {}, where ** is the power operator", 1004_usize.into_sizeunion(), a);
+    ///                 assert_eq!(a.get(), 1024241283846148096_usize);
+    ///             },
+    ///         None => { println!("Overflow happened."); },
+    ///     }
+    /// 
+    ///     let b_sizeunion = func(1004_usize.into_sizeunion(), 7);
+    ///     match b_sizeunion
+    ///     {
+    ///         Some(b) => { println!("{} ** 7 = {}, where ** is the power operator", 1004_usize.into_sizeunion(), b); },
+    ///         None => {
+    ///                 println!("Overflow happened.");
+    ///                 assert_eq!(b_sizeunion, None);
+    ///             },
+    ///     }
+    /// }
+    /// 
+    /// fn func<T: SmallUInt>(base: T, exp: u32) -> Option<T>
+    /// {
+    ///     base.checked_pow(exp)
     /// }
     /// ```
     /// 
@@ -14474,28 +15054,615 @@ pub trait SmallUInt: Copy + Clone + Sized //+ Display + Debug + ToString
     /// for the primitive type `usize`, read [here](https://doc.rust-lang.org/core/primitive.usize.html#method.checked_pow).
     fn checked_pow(self, exp: u32) -> Option<Self>;
 
+    // fn unchecked_pow(self, exp: u32) -> Self;
+    /// Computes self.pow(exp), unless overflow does not occcurred.
+    /// Otherwise, it will panic.
+    /// 
+    /// # Panics
+    /// This method will be panic if overflow occurred.
+    /// Use this method only when you are sure that overflow won't occur.
+    /// 
+    /// # Output
+    /// It returns the result of `self` raised to the power of `exp`
+    /// if overflow does not occur.
+    /// 
+    /// # Argument
+    /// The argument `exp` is the primitive unsigned integer type u32.
+    /// 
+    /// # Features
+    /// Wrapping (modular) exponentiation.
+    /// __The trait SmallUInt is meaningful when you use it in generic context.
+    /// Otherwise, it is pretty hard to imagine its usability.__
+    /// 
+    /// # Example 1 for u8
+    /// ```
+    /// use cryptocol::number::SmallUInt;
+    /// fn main()
+    /// {
+    ///     // Example for u8
+    ///     let a_u8 = func(6_u8, 3);
+    ///     println!("{} ** 3 = {}, where ** is the power operator", 6_u8, a_u8);
+    ///     assert_eq!(a_u8, 216_u8);
+    ///     // It will panic.
+    ///     // let b_u8 = func(6_u8, 4);
+    /// }
+    /// 
+    /// fn func<T: SmallUInt>(base: T, exp: u32) -> Option<T>
+    /// {
+    ///     base.unchecked_pow(exp)
+    /// }
+    /// ```
+    /// 
+    /// # Example 2 for u16
+    /// ```
+    /// use cryptocol::number::SmallUInt;
+    /// fn main()
+    /// {
+    ///     let a_u16 = func(12_u16, 4);
+    ///     println!("{} ** 4 = {}, where ** is the power operator", 12_u16, a_u16);
+    ///     assert_eq!(a_u16, 20736_u16);
+    ///     // It will panic.
+    ///     // let b_u16 = func(12_u16, 5);
+    /// }
+    /// 
+    /// fn func<T: SmallUInt>(base: T, exp: u32) -> Option<T>
+    /// {
+    ///     base.unchecked_pow(exp)
+    /// }
+    /// ```
+    /// 
+    /// # Example 3 for u32
+    /// ```
+    /// use cryptocol::number::SmallUInt;
+    /// fn main()
+    /// {
+    ///     let a_u32 = func(38_u32, 6);
+    ///     println!("{} ** 6 = {}, where ** is the power operator", 38_u32, a_u32);
+    ///     assert_eq!(a_u32, 3010936384_u32);
+    ///     // It will panic.
+    ///     // let b_u32 = func(38_u32, 7);
+    /// }
+    /// 
+    /// fn func<T: SmallUInt>(base: T, exp: u32) -> Option<T>
+    /// {
+    ///     base.unchecked_pow(exp)
+    /// }
+    /// ```
+    /// 
+    /// # Example 4 for u64
+    /// ```
+    /// use cryptocol::number::SmallUInt;
+    /// fn main()
+    /// {
+    ///     let a_u64 = func(1004_u64, 6);
+    ///     println!("{} ** 6 = {}, where ** is the power operator", 1004_u64, a_u64);
+    ///     // It will panic.
+    ///     // let b_u64 = func(1004_u64, 7);
+    /// }
+    /// 
+    /// fn func<T: SmallUInt>(base: T, exp: u32) -> Option<T>
+    /// {
+    ///     base.unchecked_pow(exp)
+    /// }
+    /// ```
+    /// 
+    /// # Example 5 for u128
+    /// ```
+    /// use cryptocol::number::SmallUInt;
+    /// fn main()
+    /// {
+    ///     let a_u128 = func(10003_u128, 9);
+    ///     println!("{} ** 9 = {}, where ** is the power operator", 10003_u128, a_u128);
+    ///     assert_eq!(a_u128, 1002703242269020906241243873790509683_u128);
+    ///     // It will panic.
+    ///     // let b_u128 = func(10003_u128, 10);
+    /// }
+    /// 
+    /// fn func<T: SmallUInt>(base: T, exp: u32) -> Option<T>
+    /// {
+    ///     base.unchecked_pow(exp)
+    /// }
+    /// ```
+    /// 
+    /// # Example 6 for usize
+    /// ```
+    /// use cryptocol::number::SmallUInt;
+    /// fn main()
+    /// {
+    ///     let a_usize = func(1004_usize, 6);
+    ///     println!("{} ** 6 = {}, where ** is the power operator", 1004_usize, a_usize);
+    ///     assert_eq!(a_usize, 1024241283846148096_usize);
+    ///     // It will panic.
+    ///     // let b_usize = func(1004_usize, 7);
+    /// }
+    /// 
+    /// fn func<T: SmallUInt>(base: T, exp: u32) -> Option<T>
+    /// {
+    ///     base.unchecked_pow(exp)
+    /// }
+    /// ```
+    /// 
+    /// # Example 7 for ShortUnion
+    /// ```
+    /// use cryptocol::number::SmallUInt;
+    /// fn main()
+    /// {
+    ///     let a_shortunion = func(12_u16.into_shortunion(), 4);
+    ///     println!("{} ** 4 = {}, where ** is the power operator", 12_u16.into_shortunion(), a_shortunion);
+    ///     assert_eq!(a_shortunion.get(), 20736_u16);
+    ///     // It will panic.
+    ///     // let b_shortunion = func(12_u16.into_shortunion(), 5);
+    /// }
+    /// 
+    /// fn func<T: SmallUInt>(base: T, exp: u32) -> Option<T>
+    /// {
+    ///     base.unchecked_pow(exp)
+    /// }
+    /// ```
+    /// 
+    /// # Example 8 for IntUnion
+    /// ```
+    /// use cryptocol::number::SmallUInt;
+    /// fn main()
+    /// {
+    ///     let a_intunion = func(38_u32.into_intunion(), 6);
+    ///     println!("{} ** 6 = {}, where ** is the power operator", 38_u32.into_intunion(), a_intunion);
+    ///     assert_eq!(a_intunion.get(), 3010936384_u32);
+    ///     // It will panic.
+    ///     // let b_intunion = func(38_u32.into_intunion(), 7);
+    /// }
+    /// 
+    /// fn func<T: SmallUInt>(base: T, exp: u32) -> Option<T>
+    /// {
+    ///     base.unchecked_pow(exp)
+    /// }
+    /// ```
+    /// 
+    /// # Example 9 for LongUnion
+    /// ```
+    /// use cryptocol::number::SmallUInt;
+    /// fn main()
+    /// {
+    ///     let a_longunion = func(1004_u64.into_longunion(), 6);
+    ///     println!("{} ** 6 = {}, where ** is the power operator", 1004_u64.into_longunion(), a_longunion);
+    ///     assert_eq!(a_longunion.get(), 1024241283846148096_u64);
+    ///     // It will panic.
+    ///     // let b_longunion = func(1004_u64.into_longunion(), 7);
+    /// }
+    /// 
+    /// fn func<T: SmallUInt>(base: T, exp: u32) -> Option<T>
+    /// {
+    ///     base.unchecked_pow(exp)
+    /// }
+    /// ```
+    /// 
+    /// # Example 10 for LongerUnion
+    /// ```
+    /// use cryptocol::number::SmallUInt;
+    /// fn main()
+    /// {
+    ///     let a_longerunion = func(10003_u128.into_longerunion(), 9);
+    ///     println!("{} ** 9 = {}, where ** is the power operator", 10003_u128.into_longerunion(), a_longerunion);
+    ///     assert_eq!(a_longerunion.get(), 1002703242269020906241243873790509683_u128);
+    ///     // It will panic.
+    ///     // let b_longerunion = func(10003_u128.into_longerunion(), 10);
+    /// }
+    /// 
+    /// fn func<T: SmallUInt>(base: T, exp: u32) -> Option<T>
+    /// {
+    ///     base.unchecked_pow(exp)
+    /// }
+    /// ```
+    /// 
+    /// # Example 11 for SizeUnion
+    /// ```
+    /// use cryptocol::number::SmallUInt;
+    /// fn main()
+    /// {
+    ///     let a_sizeunion = func(1004_usize.into_sizeunion(), 6);
+    ///     println!("{} ** 6 = {}, where ** is the power operator", 1004_usize.into_sizeunion(), a_sizeunion);
+    ///     assert_eq!(a_sizeunion.get(), 1024241283846148096_usize);
+    ///     // It will panic.
+    ///     // let b_sizeunion = small_uint_checked_pow_func(1004_usize.into_sizeunion(), 7);
+    /// }
+    /// 
+    /// fn func<T: SmallUInt>(base: T, exp: u32) -> Option<T>
+    /// {
+    ///     base.unchecked_pow(exp)
+    /// }
+    /// ```
+    /// You can use the above generic function `func<>()` for all
+    /// SmallUInt-supported data types in a same scope.
+    /// Look into the following example.
+    /// 
+    /// # Collective Example
+    /// ```
+    /// use cryptocol::number::SmallUInt;
+    /// fn main()
+    /// {
+    ///     let a_u8 = func(6_u8, 3);
+    ///     println!("{} ** 3 = {}, where ** is the power operator", 6_u8, a_u8);
+    ///     assert_eq!(a_u8, 216_u8);
+    ///     // It will panic.
+    ///     // let b_u8 = func(6_u8, 4);
+    /// 
+    ///     let a_u16 = func(12_u16, 4);
+    ///     println!("{} ** 4 = {}, where ** is the power operator", 12_u16, a_u16);
+    ///     assert_eq!(a_u16, 20736_u16);
+    ///     // It will panic.
+    ///     // let b_u16 = func(12_u16, 5);
+    /// 
+    ///     let a_u32 = func(38_u32, 6);
+    ///     println!("{} ** 6 = {}, where ** is the power operator", 38_u32, a_u32);
+    ///     assert_eq!(a_u32, 3010936384_u32);
+    ///     // It will panic.
+    ///     // let b_u32 = func(38_u32, 7);
+    /// 
+    ///     let a_u64 = func(1004_u64, 6);
+    ///     println!("{} ** 6 = {}, where ** is the power operator", 1004_u64, a_u64);
+    ///     // It will panic.
+    ///     // let b_u64 = func(1004_u64, 7);
+    /// 
+    ///     let a_u128 = func(10003_u128, 9);
+    ///     println!("{} ** 9 = {}, where ** is the power operator", 10003_u128, a_u128);
+    ///     assert_eq!(a_u128, 1002703242269020906241243873790509683_u128);
+    ///     // It will panic.
+    ///     // let b_u128 = func(10003_u128, 10);
+    /// 
+    ///     let a_usize = func(1004_usize, 6);
+    ///     println!("{} ** 6 = {}, where ** is the power operator", 1004_usize, a_usize);
+    ///     assert_eq!(a_usize, 1024241283846148096_usize);
+    ///     // It will panic.
+    ///     // let b_usize = func(1004_usize, 7);
+    /// 
+    ///     let a_shortunion = func(12_u16.into_shortunion(), 4);
+    ///     println!("{} ** 4 = {}, where ** is the power operator", 12_u16.into_shortunion(), a_shortunion);
+    ///     assert_eq!(a_shortunion.get(), 20736_u16);
+    ///     // It will panic.
+    ///     // let b_shortunion = func(12_u16.into_shortunion(), 5);
+    /// 
+    ///     let a_intunion = func(38_u32.into_intunion(), 6);
+    ///     println!("{} ** 6 = {}, where ** is the power operator", 38_u32.into_intunion(), a_intunion);
+    ///     assert_eq!(a_intunion.get(), 3010936384_u32);
+    ///     // It will panic.
+    ///     // let b_intunion = func(38_u32.into_intunion(), 7);
+    /// 
+    ///     let a_longunion = func(1004_u64.into_longunion(), 6);
+    ///     println!("{} ** 6 = {}, where ** is the power operator", 1004_u64.into_longunion(), a_longunion);
+    ///     assert_eq!(a_longunion.get(), 1024241283846148096_u64);
+    ///     // It will panic.
+    ///     // let b_longunion = func(1004_u64.into_longunion(), 7);
+    /// 
+    ///     let a_longerunion = func(10003_u128.into_longerunion(), 9);
+    ///     println!("{} ** 9 = {}, where ** is the power operator", 10003_u128.into_longerunion(), a_longerunion);
+    ///     assert_eq!(a_longerunion.get(), 1002703242269020906241243873790509683_u128);
+    ///     // It will panic.
+    ///     // let b_longerunion = func(10003_u128.into_longerunion(), 10);
+    /// 
+    ///     let a_sizeunion = func(1004_usize.into_sizeunion(), 6);
+    ///     println!("{} ** 6 = {}, where ** is the power operator", 1004_usize.into_sizeunion(), a_sizeunion);
+    ///     assert_eq!(a_sizeunion.get(), 1024241283846148096_usize);
+    ///     // It will panic.
+    ///     // let b_sizeunion = small_uint_checked_pow_func(1004_usize.into_sizeunion(), 7);
+    /// }
+    /// 
+    /// fn func<T: SmallUInt>(base: T, exp: u32) -> Option<T>
+    /// {
+    ///     base.unchecked_pow(exp)
+    /// }
+    /// ```
+    fn unchecked_pow(self, exp: u32) -> Self;
+
+    // fn saturating_pow(self, exp: u32) -> Self;
     /// Computes self.pow(exp), saturating at the numeric bounds instead of overflowing.
     /// 
     /// # Features
+    /// Saturating integer exponentiation. 
     /// __The trait SmallUInt is meaningful when you use it in generic context.
     /// Otherwise, it is pretty hard to imagine its usability.__
     /// 
     /// # Output
-    /// It returns 'self raised to the power of exp' in the type of `Self`
-    /// if overflow does not happen. Otherwise, it returns the maximum value
-    /// of the type `Self`.
+    /// It returns 'self raised to the power of exp' if overflow does not happen.
+    /// Otherwise, it returns the maximum value.
     /// 
-    /// # Example
+    /// # Example 1 for u8
     /// ```
-    /// use cryptocol::number::*;
+    /// use cryptocol::number::SmallUInt;
     /// fn main()
     /// {
-    ///     // Todo
+    ///     use cryptocol::number::SmallUInt;
+    ///     // Example for u8
+    ///     let a_u8 = func(6_u8, 3);
+    ///     println!("{} ** 3 = {}, where ** is the power operator", 6_u8, a_u8);
+    ///     assert_eq!(a_u8, 216_u8);
+    ///     let b_u8 = func(6_u8, 4);
+    ///     println!("{} ** 4 = {}, where ** is the power operator", 6_u8, b_u8);
+    ///     assert_eq!(b_u8, u8::MAX);
     /// }
     /// 
-    /// fn func<T: SmallUInt>(lhs: T, rhs: u32) -> T
+    /// fn func<T: SmallUInt>(base: T, exp: u32) -> T
     /// {
-    ///     lhs.saturating_pow(rhs)
+    ///     base.saturating_pow(exp)
+    /// }
+    /// ```
+    /// 
+    /// # Example 2 for u16
+    /// ```
+    /// use cryptocol::number::SmallUInt;
+    /// fn main()
+    /// {
+    ///     let a_u16 = func(12_u16, 4);
+    ///     println!("{} ** 4 = {}, where ** is the power operator", 12_u16, a_u16);
+    ///     assert_eq!(a_u16, 20736_u16);
+    ///     let b_u16 = func(12_u16, 5);
+    ///     println!("{} ** 5 = {}, where ** is the power operator", 12_u16, b_u16);
+    ///     assert_eq!(b_u16, u16::MAX);
+    /// }
+    /// 
+    /// fn func<T: SmallUInt>(base: T, exp: u32) -> T
+    /// {
+    ///     base.saturating_pow(exp)
+    /// }
+    /// ```
+    /// 
+    /// # Example 3 for u32
+    /// ```
+    /// use cryptocol::number::SmallUInt;
+    /// fn main()
+    /// {
+    ///     let a_u32 = func(38_u32, 6);
+    ///     println!("{} ** 6 = {}, where ** is the power operator", 38_u32, a_u32);
+    ///     assert_eq!(a_u32, 3010936384_u32);
+    ///     let b_u32 = func(38_u32, 7);
+    ///     println!("{} ** 7 = {}, where ** is the power operator", 38_u32, b_u32);
+    ///     assert_eq!(b_u32, u32::MAX);
+    /// }
+    /// 
+    /// fn func<T: SmallUInt>(base: T, exp: u32) -> T
+    /// {
+    ///     base.saturating_pow(exp)
+    /// }
+    /// ```
+    /// 
+    /// # Example 4 for u64
+    /// ```
+    /// use cryptocol::number::SmallUInt;
+    /// fn main()
+    /// {
+    ///     let a_u64 = func(1004_u64, 6);
+    ///     println!("{} ** 6 = {}, where ** is the power operator", 1004_u64, a_u64);
+    ///     let b_u64 = func(1004_u64, 7);
+    ///     println!("{} ** 7 = {}, where ** is the power operator", 1004_u64, b_u64);
+    ///     assert_eq!(b_u64, u64::MAX);
+    /// }
+    /// 
+    /// fn func<T: SmallUInt>(base: T, exp: u32) -> T
+    /// {
+    ///     base.saturating_pow(exp)
+    /// }
+    /// ```
+    /// 
+    /// # Example 5 for u128
+    /// ```
+    /// use cryptocol::number::SmallUInt;
+    /// fn main()
+    /// {
+    ///     let a_u128 = func(10003_u128, 9);
+    ///     println!("{} ** 9 = {}, where ** is the power operator", 10003_u128, a_u128);
+    ///     assert_eq!(a_u128, 1002703242269020906241243873790509683_u128);
+    ///     let b_u128 = func(10003_u128, 10);
+    ///     println!("{} ** 10 = {}, where ** is the power operator", 10003_u128, b_u128);
+    ///     assert_eq!(b_u128, u128::MAX);
+    /// }
+    /// 
+    /// fn func<T: SmallUInt>(base: T, exp: u32) -> T
+    /// {
+    ///     base.saturating_pow(exp)
+    /// }
+    /// ```
+    /// 
+    /// # Example 6 for usize
+    /// ```
+    /// use cryptocol::number::SmallUInt;
+    /// fn main()
+    /// {
+    ///     let a_usize = func(1004_usize, 6);
+    ///     println!("{} ** 6 = {}, where ** is the power operator", 1004_usize, a_usize);
+    ///     assert_eq!(a_usize, 1024241283846148096_usize);
+    ///     let b_u128 = func(1004_usize, 7);
+    ///     println!("{} ** 7 = {}, where ** is the power operator", 1004_usize, b_u128);
+    ///     assert_eq!(b_u128, usize::MAX);
+    /// }
+    /// 
+    /// fn func<T: SmallUInt>(base: T, exp: u32) -> T
+    /// {
+    ///     base.saturating_pow(exp)
+    /// }
+    /// ```
+    /// 
+    /// # Example 7 for ShortUnion
+    /// ```
+    /// use cryptocol::number::SmallUInt;
+    /// fn main()
+    /// {
+    ///     let a_shortunion = func(12_u16.into_shortunion(), 4);
+    ///     println!("{} ** 4 = {}, where ** is the power operator", 12_u16.into_shortunion(), a_shortunion);
+    ///     assert_eq!(a_shortunion.get(), 20736_u16);
+    ///     let b_shortunion = func(12_u16.into_shortunion(), 5);
+    ///     println!("{} ** 5 = {}, where ** is the power operator", 12_u16.into_shortunion(), b_shortunion);
+    ///     assert_eq!(b_shortunion.get(), u16::MAX);
+    /// }
+    /// 
+    /// fn func<T: SmallUInt>(base: T, exp: u32) -> T
+    /// {
+    ///     base.saturating_pow(exp)
+    /// }
+    /// ```
+    /// 
+    /// # Example 8 for IntUnion
+    /// ```
+    /// use cryptocol::number::SmallUInt;
+    /// fn main()
+    /// {
+    ///     let a_intunion = func(38_u32.into_intunion(), 6);
+    ///     println!("{} ** 6 = {}, where ** is the power operator", 38_u32.into_intunion(), a_intunion);
+    ///     assert_eq!(a_intunion.get(), 3010936384_u32);
+    ///     let b_intunion = func(38_u32.into_intunion(), 7);
+    ///     println!("{} ** 7 = {}, where ** is the power operator", 38_u32.into_intunion(), b_intunion);
+    ///     assert_eq!(b_intunion.get(), u32::MAX);
+    /// }
+    /// 
+    /// fn func<T: SmallUInt>(base: T, exp: u32) -> T
+    /// {
+    ///     base.saturating_pow(exp)
+    /// }
+    /// ```
+    /// 
+    /// # Example 9 for LongUnion
+    /// ```
+    /// use cryptocol::number::SmallUInt;
+    /// fn main()
+    /// {
+    ///     let a_longunion = func(1004_u64.into_longunion(), 6);
+    ///     println!("{} ** 6 = {}, where ** is the power operator", 1004_u64.into_longunion(), a_longunion);
+    ///     assert_eq!(a_longunion.get(), 1024241283846148096_u64);
+    ///     let b_longunion = func(1004_u64.into_longunion(), 7);
+    ///     println!("{} ** 7 = {}, where ** is the power operator", 1004_u64.into_longunion(), b_longunion);
+    ///     assert_eq!(b_longunion.get(), u64::MAX);
+    /// }
+    /// 
+    /// fn func<T: SmallUInt>(base: T, exp: u32) -> T
+    /// {
+    ///     base.saturating_pow(exp)
+    /// }
+    /// ```
+    /// 
+    /// # Example 10 for LongerUnion
+    /// ```
+    /// use cryptocol::number::SmallUInt;
+    /// fn main()
+    /// {
+    ///     let a_longerunion = func(10003_u128.into_longerunion(), 9);
+    ///     println!("{} ** 9 = {}, where ** is the power operator", 10003_u128.into_longerunion(), a_longerunion);
+    ///     assert_eq!(a_longerunion.get(), 1002703242269020906241243873790509683_u128);
+    ///     let b_longerunion = func(10003_u128.into_longerunion(), 10);
+    ///     println!("{} ** 10 = {}, where ** is the power operator", 10003_u128.into_longunion(), b_longerunion);
+    ///     assert_eq!(b_longerunion.get(), u128::MAX);
+    /// }
+    /// 
+    /// fn func<T: SmallUInt>(base: T, exp: u32) -> T
+    /// {
+    ///     base.saturating_pow(exp)
+    /// }
+    /// ```
+    /// 
+    /// # Example 11 for SizeUnion
+    /// ```
+    /// use cryptocol::number::SmallUInt;
+    /// fn main()
+    /// {
+    ///     let a_sizeunion = func(1004_usize.into_sizeunion(), 6);
+    ///     println!("{} ** 6 = {}, where ** is the power operator", 1004_usize.into_sizeunion(), a_sizeunion);
+    ///     assert_eq!(a_sizeunion.get(), 1024241283846148096_usize);
+    ///     let b_sizeunion = func(1004_usize.into_sizeunion(), 7);
+    ///     println!("{} ** 7 = {}, where ** is the power operator", 1004_usize.into_longunion(), b_sizeunion);
+    ///     assert_eq!(b_sizeunion.get(), usize::MAX);
+    /// }
+    /// 
+    /// fn func<T: SmallUInt>(base: T, exp: u32) -> T
+    /// {
+    ///     base.saturating_pow(exp)
+    /// }
+    /// ```
+    /// You can use the above generic function `func<>()` for all
+    /// SmallUInt-supported data types in a same scope.
+    /// Look into the following example.
+    /// 
+    /// # Collective Example
+    /// ```
+    /// use cryptocol::number::SmallUInt;
+    /// fn main()
+    /// {
+    ///     let a_u8 = func(6_u8, 3);
+    ///     println!("{} ** 3 = {}, where ** is the power operator", 6_u8, a_u8);
+    ///     assert_eq!(a_u8, 216_u8);
+    ///     let b_u8 = func(6_u8, 4);
+    ///     println!("{} ** 4 = {}, where ** is the power operator", 6_u8, b_u8);
+    ///     assert_eq!(b_u8, u8::MAX);
+    /// 
+    ///     let a_u16 = func(12_u16, 4);
+    ///     println!("{} ** 4 = {}, where ** is the power operator", 12_u16, a_u16);
+    ///     assert_eq!(a_u16, 20736_u16);
+    ///     let b_u16 = func(12_u16, 5);
+    ///     println!("{} ** 5 = {}, where ** is the power operator", 12_u16, b_u16);
+    ///     assert_eq!(b_u16, u16::MAX);
+    /// 
+    ///     let a_u32 = func(38_u32, 6);
+    ///     println!("{} ** 6 = {}, where ** is the power operator", 38_u32, a_u32);
+    ///     assert_eq!(a_u32, 3010936384_u32);
+    ///     let b_u32 = func(38_u32, 7);
+    ///     println!("{} ** 7 = {}, where ** is the power operator", 38_u32, b_u32);
+    ///     assert_eq!(b_u32, u32::MAX);
+    /// 
+    ///     let a_u64 = func(1004_u64, 6);
+    ///     println!("{} ** 6 = {}, where ** is the power operator", 1004_u64, a_u64);
+    ///     let b_u64 = func(1004_u64, 7);
+    ///     println!("{} ** 7 = {}, where ** is the power operator", 1004_u64, b_u64);
+    ///     assert_eq!(b_u64, u64::MAX);
+    /// 
+    ///     let a_u128 = func(10003_u128, 9);
+    ///     println!("{} ** 9 = {}, where ** is the power operator", 10003_u128, a_u128);
+    ///     assert_eq!(a_u128, 1002703242269020906241243873790509683_u128);
+    ///     let b_u128 = func(10003_u128, 10);
+    ///     println!("{} ** 10 = {}, where ** is the power operator", 10003_u128, b_u128);
+    ///     assert_eq!(b_u128, u128::MAX);
+    /// 
+    ///     let a_usize = func(1004_usize, 6);
+    ///     println!("{} ** 6 = {}, where ** is the power operator", 1004_usize, a_usize);
+    ///     assert_eq!(a_usize, 1024241283846148096_usize);
+    ///     let b_u128 = func(1004_usize, 7);
+    ///     println!("{} ** 7 = {}, where ** is the power operator", 1004_usize, b_u128);
+    ///     assert_eq!(b_u128, usize::MAX);
+    /// 
+    ///     let a_shortunion = func(12_u16.into_shortunion(), 4);
+    ///     println!("{} ** 4 = {}, where ** is the power operator", 12_u16.into_shortunion(), a_shortunion);
+    ///     assert_eq!(a_shortunion.get(), 20736_u16);
+    ///     let b_shortunion = func(12_u16.into_shortunion(), 5);
+    ///     println!("{} ** 5 = {}, where ** is the power operator", 12_u16.into_shortunion(), b_shortunion);
+    ///     assert_eq!(b_shortunion.get(), u16::MAX);
+    /// 
+    ///     let a_intunion = func(38_u32.into_intunion(), 6);
+    ///     println!("{} ** 6 = {}, where ** is the power operator", 38_u32.into_intunion(), a_intunion);
+    ///     assert_eq!(a_intunion.get(), 3010936384_u32);
+    ///     let b_intunion = func(38_u32.into_intunion(), 7);
+    ///     println!("{} ** 7 = {}, where ** is the power operator", 38_u32.into_intunion(), b_intunion);
+    ///     assert_eq!(b_intunion.get(), u32::MAX);
+    /// 
+    ///     let a_longunion = func(1004_u64.into_longunion(), 6);
+    ///     println!("{} ** 6 = {}, where ** is the power operator", 1004_u64.into_longunion(), a_longunion);
+    ///     assert_eq!(a_longunion.get(), 1024241283846148096_u64);
+    ///     let b_longunion = func(1004_u64.into_longunion(), 7);
+    ///     println!("{} ** 7 = {}, where ** is the power operator", 1004_u64.into_longunion(), b_longunion);
+    ///     assert_eq!(b_longunion.get(), u64::MAX);
+    /// 
+    ///     let a_longerunion = func(10003_u128.into_longerunion(), 9);
+    ///     println!("{} ** 9 = {}, where ** is the power operator", 10003_u128.into_longerunion(), a_longerunion);
+    ///     assert_eq!(a_longerunion.get(), 1002703242269020906241243873790509683_u128);
+    ///     let b_longerunion = func(10003_u128.into_longerunion(), 10);
+    ///     println!("{} ** 10 = {}, where ** is the power operator", 10003_u128.into_longunion(), b_longerunion);
+    ///     assert_eq!(b_longerunion.get(), u128::MAX);
+    /// 
+    ///     let a_sizeunion = func(1004_usize.into_sizeunion(), 6);
+    ///     println!("{} ** 6 = {}, where ** is the power operator", 1004_usize.into_sizeunion(), a_sizeunion);
+    ///     assert_eq!(a_sizeunion.get(), 1024241283846148096_usize);
+    ///     let b_sizeunion = func(1004_usize.into_sizeunion(), 7);
+    ///     println!("{} ** 7 = {}, where ** is the power operator", 1004_usize.into_longunion(), b_sizeunion);
+    ///     assert_eq!(b_sizeunion.get(), usize::MAX);
+    /// }
+    /// 
+    /// fn func<T: SmallUInt>(base: T, exp: u32) -> T
+    /// {
+    ///     base.saturating_pow(exp)
     /// }
     /// ```
     /// 
@@ -14526,48 +15693,322 @@ pub trait SmallUInt: Copy + Clone + Sized //+ Display + Debug + ToString
     /// for the primitive type `usize`, read [here](https://doc.rust-lang.org/core/primitive.usize.html#method.saturating_pow).
     fn saturating_pow(self, exp: u32) -> Self;
 
-
     // fn modular_pow(self, exp: Self, modulo: Self) -> Self
-    /// Raises `BigUInt` type number to the power of exp, using exponentiation
-    /// of type `U` by squaring, wrapping around at `modulo` of the
-    /// type `U`. The type `U` has the trait `SmallUInt`.
-    /// 
-    /// # Panics
-    /// If `size_of::<T>() * N` < `size_of::<U>()`, This method may panic
-    /// or its behavior may undefined though it may not panic.
+    /// Raises `self` to the power of `exp`, using exponentiation by squaring,
+    /// wrapping around at `modulo`.
     /// 
     /// # Output
     /// It returns the result of `self` raised to the power of `exp`, wrapping
     /// around at `modulo`.
     /// 
-    /// # Argument
-    /// The argument `exp` is the primitive unsigned integer type.
+    /// # Arguments
+    /// The argument `exp` is `Self` data type which is the primitive unsigned
+    /// integer type, while the argument `exp` of the other power functions
+    /// such as `pow()`, `wrapping_pow()`, `checked_pow()`, `unchecked_pow()`,
+    /// `overflowing_pow()`, and `saturating_pow()` is `u32` data type.
     /// 
     /// # Feature
     /// Wrapping (modular) exponentiation, wrapping around at `modulo`.
     /// 
-    /// # Counterpart Method
-    /// If `rhs` is bigger than `u128`, use the method `modular_pow()` instead.
-    /// 
-    /// # Example
+    /// # Example 1 for u8
     /// ```
-    /// use cryptocol::define_utypes_with;
-    /// define_utypes_with!(u128);
+    /// use cryptocol::number::SmallUInt;
+    /// fn main()
+    /// {
+    ///     let a_u8 = 74_u8;
+    ///     let d_u8 = 18_u8;
+    ///     let modulo_u8 = 100_u8;
+    ///     let res_u8 = func(a_u8, d_u8, modulo_u8);
+    ///     println!("{} ** {} = {} (mod {}), where ** is the power operator", a_u8, d_u8, res_u8, modulo_u8);
+    ///     assert_eq!(res_u8, 76_u8);
+    /// }
+    ///     
+    /// fn func<T: SmallUInt>(base: T, exp: T, modulo: T) -> T
+    /// {
+    ///     base.modular_pow(exp, modulo)
+    /// }
+    /// ```
     /// 
-    /// let a = u256::from_uint(123_u8);
+    /// # Example 2 for u16
+    /// ```
+    /// use cryptocol::number::SmallUInt;
+    /// fn main()
+    /// {
+    ///     let a_u16 = 741_u16;
+    ///     let d_u16 = 185_u16;
+    ///     let modulo_u16 = 10000_u16;
+    ///     let res_u16 = func(a_u16, d_u16, modulo_u16);
+    ///     println!("{} ** {} = {} (mod {}), where ** is the power operator", a_u16, d_u16, res_u16, modulo_u16);
+    ///     assert_eq!(res_u16, 8901_u16);
+    /// }
+    ///     
+    /// fn func<T: SmallUInt>(base: T, exp: T, modulo: T) -> T
+    /// {
+    ///     base.modular_pow(exp, modulo)
+    /// }
+    /// ```
     /// 
-    /// // normal exponentiation
-    /// let b = a.wrapping_pow_uint(37_u8);
-    /// println!("123 ** 37 = {}", b);
-    /// assert_eq!(b.to_string(), "96282738670724731919703551810636030185721623691319861614277235426286836107467");
+    /// # Example 3 for u32
+    /// ```
+    /// use cryptocol::number::SmallUInt;
+    /// fn main()
+    /// { 
+    ///     let a_u32 = 78541_u32;
+    ///     let d_u32 = 18575_u32;
+    ///     let modulo_u32 = 10000000_u32;
+    ///     let res_u32 = func(a_u32, d_u32, modulo_u32);
+    ///     println!("{} ** {} = {} (mod {}), where ** is the power operator", a_u32, d_u32, res_u32, modulo_u32);
+    ///     assert_eq!(res_u32, 4370501_u32);
+    /// }
+    ///     
+    /// fn func<T: SmallUInt>(base: T, exp: T, modulo: T) -> T
+    /// {
+    ///     base.modular_pow(exp, modulo)
+    /// }
+    /// ```
     /// 
-    /// // wrapping (modular) exponentiation
-    /// let c = a.wrapping_pow_uint(38_u8);
-    /// println!("123 ** 38 = {}", c);
-    /// assert_eq!(c.to_string(), "31983754292890092919296401822065111810221278137005446531426388626141617944969");
+    /// # Example 4 for u64
+    /// ```
+    /// use cryptocol::number::SmallUInt;
+    /// fn main()
+    /// {
+    ///     let a_u64 = 123456789_u64;
+    ///     let d_u64 = 9876543_u64;
+    ///     let modulo_u64 = 100000000000_u64;
+    ///     let res_u64 = func(a_u64, d_u64, modulo_u64);
+    ///     println!("{} ** {} = {} (mod {}), where ** is the power operator", a_u64, d_u64, res_u64, modulo_u64);
+    ///     assert_eq!(res_u64, 75010148669_u64);
+    /// }
+    ///     
+    /// fn func<T: SmallUInt>(base: T, exp: T, modulo: T) -> T
+    /// {
+    ///     base.modular_pow(exp, modulo)
+    /// }
+    /// ```
     /// 
-    /// // evidence of wrapping (modular) exponentiation
-    /// assert!(b > c);
+    /// # Example 5 for u128
+    /// ```
+    /// use cryptocol::number::SmallUInt;
+    /// fn main()
+    /// {
+    ///     let a = 258974_u128;
+    ///     let d = 6622882488318_u128;
+    ///     let modulo = 4776913109852041418248056622882488319_u128;
+    ///     let res = func(a, d, modulo);
+    ///     println!("{} ** {} = {} (mod {}), where ** is the power operator", a, d, res, modulo);
+    ///     assert_eq!(res, 2843356730633772030492705275006525566_u128);
+    /// }
+    ///     
+    /// fn func<T: SmallUInt>(base: T, exp: T, modulo: T) -> T
+    /// {
+    ///     base.modular_pow(exp, modulo)
+    /// }
+    /// ```
+    /// 
+    /// # Example 6 for usize
+    /// ```
+    /// use cryptocol::number::SmallUInt;
+    /// fn main()
+    /// {
+    ///     let a_usize = 123456789_usize;
+    ///     let d_usize = 9876543_usize;
+    ///     let modulo_usize = 100000000000_usize;
+    ///     let res_usize = func(a_usize, d_usize, modulo_usize);
+    ///     println!("{} ** {} = {} (mod {}), where ** is the power operator", a_usize, d_usize, res_usize, modulo_usize);
+    ///     assert_eq!(res_usize, 75010148669_usize);
+    /// }
+    ///     
+    /// fn func<T: SmallUInt>(base: T, exp: T, modulo: T) -> T
+    /// {
+    ///     base.modular_pow(exp, modulo)
+    /// }
+    /// ```
+    /// 
+    /// # Example 7 for ShortUnion
+    /// ```
+    /// use cryptocol::number::SmallUInt;
+    /// fn main()
+    /// {
+    ///     let a_shortunion = 741_u16.into_shortunion();
+    ///     let d_shortunion = 185_u16.into_shortunion();
+    ///     let modulo_shortunion = 10000_u16.into_shortunion();
+    ///     let res_shortunion = func(a_shortunion, d_shortunion, modulo_shortunion);
+    ///     println!("{} ** {} = {} (mod {}), where ** is the power operator", a_shortunion, d_shortunion, res_shortunion, modulo_shortunion);
+    ///     assert_eq!(res_shortunion.get(), 8901_u16);
+    /// }
+    ///     
+    /// fn func<T: SmallUInt>(base: T, exp: T, modulo: T) -> T
+    /// {
+    ///     base.modular_pow(exp, modulo)
+    /// }
+    /// ```
+    /// 
+    /// # Example 8 for IntUnion
+    /// ```
+    /// use cryptocol::number::SmallUInt;
+    /// fn main()
+    /// {
+    ///     let a_intunion = 78541_u32.into_intunion();
+    ///     let d_intunion = 18575_u32.into_intunion();
+    ///     let modulo_intunion = 10000000_u32.into_intunion();
+    ///     let res_intunion = func(a_intunion, d_intunion, modulo_intunion);
+    ///     println!("{} ** {} = {} (mod {}), where ** is the power operator", a_intunion, d_intunion, res_intunion, modulo_intunion);
+    ///     assert_eq!(res_intunion.get(), 4370501_u32);
+    /// }
+    ///     
+    /// fn func<T: SmallUInt>(base: T, exp: T, modulo: T) -> T
+    /// {
+    ///     base.modular_pow(exp, modulo)
+    /// }
+    /// ```
+    /// 
+    /// # Example 9 for LongUnion
+    /// ```
+    /// use cryptocol::number::SmallUInt;
+    /// fn main()
+    /// {
+    ///     let a_longunion = 123456789_u64.into_longunion();
+    ///     let d_longunion = 9876543_u64.into_longunion();
+    ///     let modulo_longunion = 100000000000_u64.into_longunion();
+    ///     let res_longunion = func(a_longunion, d_longunion, modulo_longunion);
+    ///     println!("{} ** {} = {} (mod {}), where ** is the power operator", a_longunion, d_longunion, res_longunion, modulo_longunion);
+    ///     assert_eq!(res_longunion.get(), 75010148669_u64);
+    /// }
+    ///     
+    /// fn func<T: SmallUInt>(base: T, exp: T, modulo: T) -> T
+    /// {
+    ///     base.modular_pow(exp, modulo)
+    /// }
+    /// ```
+    /// 
+    /// # Example 10 for LongerUnion
+    /// ```
+    /// use cryptocol::number::SmallUInt;
+    /// fn main()
+    /// {
+    ///     let a_longerunion = 258974_u128.into_longerunion();
+    ///     let d_longerunion = 6622882488318_u128.into_longerunion();
+    ///     let modulo_longerunion = 4776913109852041418248056622882488319_u128.into_longerunion();
+    ///     let res_longerunion = func(a_longerunion, d_longerunion, modulo_longerunion);
+    ///     println!("{} ** {} = {} (mod {}), where ** is the power operator", a_longerunion, d_longerunion, res_longerunion, modulo_longerunion);
+    ///     assert_eq!(res_longerunion.get(), 2843356730633772030492705275006525566_u128);
+    /// }
+    ///     
+    /// fn func<T: SmallUInt>(base: T, exp: T, modulo: T) -> T
+    /// {
+    ///     base.modular_pow(exp, modulo)
+    /// }
+    /// ```
+    /// 
+    /// # Example 11 for SizeUnion
+    /// ```
+    /// use cryptocol::number::SmallUInt;
+    /// fn main()
+    /// {
+    ///     let a_sizeunion = 123456789_usize.into_sizeunion();
+    ///     let d_sizeunion = 9876543_usize.into_sizeunion();
+    ///     let modulo_sizeunion = 100000000000_usize.into_sizeunion();
+    ///     let res_sizeunion = func(a_sizeunion, d_sizeunion, modulo_sizeunion);
+    ///     println!("{} ** {} = {} (mod {}), where ** is the power operator", a_sizeunion, d_sizeunion, res_sizeunion, modulo_sizeunion);
+    ///     assert_eq!(res_sizeunion.get(), 75010148669_usize);
+    /// }
+    ///     
+    /// fn func<T: SmallUInt>(base: T, exp: T, modulo: T) -> T
+    /// {
+    ///     base.modular_pow(exp, modulo)
+    /// }
+    /// ```
+    /// You can use the above generic function `func<>()` for all
+    /// SmallUInt-supported data types in a same scope.
+    /// Look into the following example.
+    /// 
+    /// # Collective Example
+    /// ```
+    /// use cryptocol::number::SmallUInt;
+    /// fn main()
+    /// {
+    ///     let a_u8 = 74_u8;
+    ///     let d_u8 = 18_u8;
+    ///     let modulo_u8 = 100_u8;
+    ///     let res_u8 = func(a_u8, d_u8, modulo_u8);
+    ///     println!("{} ** {} = {} (mod {}), where ** is the power operator", a_u8, d_u8, res_u8, modulo_u8);
+    ///     assert_eq!(res_u8, 76_u8);
+    /// 
+    ///     let a_u16 = 741_u16;
+    ///     let d_u16 = 185_u16;
+    ///     let modulo_u16 = 10000_u16;
+    ///     let res_u16 = func(a_u16, d_u16, modulo_u16);
+    ///     println!("{} ** {} = {} (mod {}), where ** is the power operator", a_u16, d_u16, res_u16, modulo_u16);
+    ///     assert_eq!(res_u16, 8901_u16);
+    /// 
+    ///     let a_u32 = 78541_u32;
+    ///     let d_u32 = 18575_u32;
+    ///     let modulo_u32 = 10000000_u32;
+    ///     let res_u32 = func(a_u32, d_u32, modulo_u32);
+    ///     println!("{} ** {} = {} (mod {}), where ** is the power operator", a_u32, d_u32, res_u32, modulo_u32);
+    ///     assert_eq!(res_u32, 4370501_u32);
+    /// 
+    ///     let a_u64 = 123456789_u64;
+    ///     let d_u64 = 9876543_u64;
+    ///     let modulo_u64 = 100000000000_u64;
+    ///     let res_u64 = func(a_u64, d_u64, modulo_u64);
+    ///     println!("{} ** {} = {} (mod {}), where ** is the power operator", a_u64, d_u64, res_u64, modulo_u64);
+    ///     assert_eq!(res_u64, 75010148669_u64);
+    /// 
+    ///     let a = 258974_u128;
+    ///     let d = 6622882488318_u128;
+    ///     let modulo = 4776913109852041418248056622882488319_u128;
+    ///     let res = func(a, d, modulo);
+    ///     println!("{} ** {} = {} (mod {}), where ** is the power operator", a, d, res, modulo);
+    ///     assert_eq!(res, 2843356730633772030492705275006525566_u128);
+    /// 
+    ///     let a_usize = 123456789_usize;
+    ///     let d_usize = 9876543_usize;
+    ///     let modulo_usize = 100000000000_usize;
+    ///     let res_usize = func(a_usize, d_usize, modulo_usize);
+    ///     println!("{} ** {} = {} (mod {}), where ** is the power operator", a_usize, d_usize, res_usize, modulo_usize);
+    ///     assert_eq!(res_usize, 75010148669_usize);
+    /// 
+    ///     let a_shortunion = 741_u16.into_shortunion();
+    ///     let d_shortunion = 185_u16.into_shortunion();
+    ///     let modulo_shortunion = 10000_u16.into_shortunion();
+    ///     let res_shortunion = func(a_shortunion, d_shortunion, modulo_shortunion);
+    ///     println!("{} ** {} = {} (mod {}), where ** is the power operator", a_shortunion, d_shortunion, res_shortunion, modulo_shortunion);
+    ///     assert_eq!(res_shortunion.get(), 8901_u16);
+    /// 
+    ///     let a_intunion = 78541_u32.into_intunion();
+    ///     let d_intunion = 18575_u32.into_intunion();
+    ///     let modulo_intunion = 10000000_u32.into_intunion();
+    ///     let res_intunion = func(a_intunion, d_intunion, modulo_intunion);
+    ///     println!("{} ** {} = {} (mod {}), where ** is the power operator", a_intunion, d_intunion, res_intunion, modulo_intunion);
+    ///     assert_eq!(res_intunion.get(), 4370501_u32);
+    /// 
+    ///     let a_longunion = 123456789_u64.into_longunion();
+    ///     let d_longunion = 9876543_u64.into_longunion();
+    ///     let modulo_longunion = 100000000000_u64.into_longunion();
+    ///     let res_longunion = func(a_longunion, d_longunion, modulo_longunion);
+    ///     println!("{} ** {} = {} (mod {}), where ** is the power operator", a_longunion, d_longunion, res_longunion, modulo_longunion);
+    ///     assert_eq!(res_longunion.get(), 75010148669_u64);
+    /// 
+    ///     let a_longerunion = 258974_u128.into_longerunion();
+    ///     let d_longerunion = 6622882488318_u128.into_longerunion();
+    ///     let modulo_longerunion = 4776913109852041418248056622882488319_u128.into_longerunion();
+    ///     let res_longerunion = func(a_longerunion, d_longerunion, modulo_longerunion);
+    ///     println!("{} ** {} = {} (mod {}), where ** is the power operator", a_longerunion, d_longerunion, res_longerunion, modulo_longerunion);
+    ///     assert_eq!(res_longerunion.get(), 2843356730633772030492705275006525566_u128);
+    /// 
+    ///     let a_sizeunion = 123456789_usize.into_sizeunion();
+    ///     let d_sizeunion = 9876543_usize.into_sizeunion();
+    ///     let modulo_sizeunion = 100000000000_usize.into_sizeunion();
+    ///     let res_sizeunion = func(a_sizeunion, d_sizeunion, modulo_sizeunion);
+    ///     println!("{} ** {} = {} (mod {}), where ** is the power operator", a_sizeunion, d_sizeunion, res_sizeunion, modulo_sizeunion);
+    ///     assert_eq!(res_sizeunion.get(), 75010148669_usize);
+    /// }
+    ///     
+    /// fn func<T: SmallUInt>(base: T, exp: T, modulo: T) -> T
+    /// {
+    ///     base.modular_pow(exp, modulo)
+    /// }
     /// ```
     fn modular_pow(self, exp: Self, modulo: Self) -> Self;
 

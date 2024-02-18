@@ -46,6 +46,8 @@
 //! - For `SHA-256`, read [here](struct@SHA2_256_Generic#quick-start).
 //! - For `SHA-512`, read [here](struct@SHA2_512_Generic#quick-start).
 //! - For `SHA-512/t`, read [here](struct@SHA2_512_t_Generic#quick-start).
+//! 
+//! # Application
 
 mod md4;
 mod md5;

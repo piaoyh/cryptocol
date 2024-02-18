@@ -267,6 +267,11 @@ macro_rules! SmallUInt_methods_for_uint_impl {
             /// [Read more in detail](trait@SmallUInt#tymethod.checked_pow)
             #[inline] fn checked_pow(self, exp: u32) -> Option<Self>        { self.checked_pow(exp) }
 
+            /// Computes self.pow(exp), unless overflow does not occcurred.
+            /// Otherwise, it will panic.
+            /// [Read more in detail](trait@SmallUInt#tymethod.unchecked_pow)
+            #[inline] fn unchecked_pow(self, exp: u32) -> Self              { self.checked_pow(exp).unwrap() }
+
             /// Computes self.pow(exp), saturating at the numeric bounds
             /// instead of overflowing.
             /// [Read more in detail](trait@SmallUInt#tymethod.saturating_pow)
