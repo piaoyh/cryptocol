@@ -13272,16 +13272,18 @@ pub trait SmallUInt: Copy + Clone + Sized //+ Display + Debug + ToString
     /// for the primitive type `usize`, read [here](https://doc.rust-lang.org/core/primitive.usize.html#method.checked_rem).
     fn unchecked_rem(self, rhs: Self) -> Self;
 
+
     /*** Negation ***/
+
     // pub const fn wrapping_neg(self) -> Self;
     /// Computes `-self`, wrapping around at the boundary of the type.
     /// 
     /// # Feature
-    /// Wrapping (modular) negation. Since unsigned types do not have negative
+    /// - Wrapping (modular) negation. Since unsigned types do not have negative
     /// equivalents all applications of this function will wrap (except for -0).
-    /// For values smaller than the corresponding signed type’s maximum the
+    /// - For values smaller than the corresponding signed type’s maximum the
     /// result is the same as casting the corresponding signed value.
-    /// Any larger values are equivalent to MAX + 1 - (val - MAX - 1)
+    /// - Any larger values are equivalent to MAX + 1 - (val - MAX - 1)
     /// where MAX is the corresponding signed type’s maximum.
     /// 
     /// # Output
@@ -13289,35 +13291,291 @@ pub trait SmallUInt: Copy + Clone + Sized //+ Display + Debug + ToString
     /// 
     /// # Example for u8
     /// ```
-    /// Todo!();
+    /// use cryptocol::number::SmallUInt;
+    /// fn main()
+    /// {
+    ///     // Example for u8
+    ///     let a_u8 = 123_u8;
+    ///     let b_u8 = func(a_u8);
+    ///     println!("-{} = {}", a_u8, b_u8);
+    ///     assert_eq!(b_u8, 133_u8);
+    /// }
+    /// 
+    /// fn func<T: SmallUInt>(me: T) -> T
+    /// {
+    ///     me.wrapping_neg()
+    /// }
+    /// ```
+    /// 
+    /// # Example for u16
+    /// ```
+    /// use cryptocol::number::SmallUInt;
+    /// fn main()
+    /// {
+    ///     let a_u16 = 12345_u16;
+    ///     let b_u16 = func(a_u16);
+    ///     println!("-{} = {}", a_u16, b_u16);
+    ///     assert_eq!(b_u16, 53191_u16);
+    /// }
+    /// 
+    /// fn func<T: SmallUInt>(me: T) -> T
+    /// {
+    ///     me.wrapping_neg()
+    /// }
+    /// ```
+    /// 
+    /// # Example for u32
+    /// ```
+    /// use cryptocol::number::SmallUInt;
+    /// fn main()
+    /// {
+    ///     let a_u32 = 1234567890_u32;
+    ///     let b_u32 = func(a_u32);
+    ///     println!("-{} = {}", a_u32, b_u32);
+    ///     assert_eq!(b_u32, 3060399406_u32);
+    /// }
+    /// 
+    /// fn func<T: SmallUInt>(me: T) -> T
+    /// {
+    ///     me.wrapping_neg()
+    /// }
+    /// ```
+    /// 
+    /// # Example for u64
+    /// ```
+    /// use cryptocol::number::SmallUInt;
+    /// fn main()
+    /// {
+    ///     let a_u64 = 12345678901234567890_u64;
+    ///     let b_u64 = func(a_u64);
+    ///     println!("-{} = {}", a_u64, b_u64);
+    ///     assert_eq!(b_u64, 6101065172474983726_u64);
+    /// }
+    /// 
+    /// fn func<T: SmallUInt>(me: T) -> T
+    /// {
+    ///     me.wrapping_neg()
+    /// }
+    /// ```
+    /// 
+    /// # Example for u128
+    /// ```
+    /// use cryptocol::number::SmallUInt;
+    /// fn main()
+    /// {
+    ///     let a_u128 = 123456789012345678901234567890123456789_u128;
+    ///     let b_u128 = func(a_u128);
+    ///     println!("-{} = {}", a_u128, b_u128);
+    ///     assert_eq!(b_u128, 216825577908592784562140039541644754667_u128);
+    /// }
+    /// 
+    /// fn func<T: SmallUInt>(me: T) -> T
+    /// {
+    ///     me.wrapping_neg()
+    /// }
+    /// ```
+    /// 
+    /// # Example for usize
+    /// ```
+    /// use cryptocol::number::SmallUInt;
+    /// fn main()
+    /// {
+    ///     let a_usize = 1234567890123456789_usize;
+    ///     let b_usize = func(a_usize);
+    ///     println!("-{} = {}", a_usize, b_usize);
+    ///     assert_eq!(b_usize, 17212176183586094827_usize);
+    /// }
+    /// 
+    /// fn func<T: SmallUInt>(me: T) -> T
+    /// {
+    ///     me.wrapping_neg()
+    /// }
+    /// ```
+    /// 
+    /// # Example for ShortUnion
+    /// ```
+    /// use cryptocol::number::SmallUInt;
+    /// fn main()
+    /// {
+    ///     let a_shortunion = 12345_u16.into_shortunion();
+    ///     let b_shortunion = func(a_shortunion);
+    ///     println!("-{} = {}", a_shortunion, b_shortunion);
+    ///     assert_eq!(b_shortunion.get(), 53191_u16);
+    /// }
+    /// 
+    /// fn func<T: SmallUInt>(me: T) -> T
+    /// {
+    ///     me.wrapping_neg()
+    /// }
+    /// ```
+    /// 
+    /// # Example for IntUnion
+    /// ```
+    /// use cryptocol::number::SmallUInt;
+    /// fn main()
+    /// {
+    ///     let a_intunion = 1234567890_u32.into_intunion();
+    ///     let b_intunion = func(a_intunion);
+    ///     println!("-{} = {}", a_intunion, b_intunion);
+    ///     assert_eq!(b_intunion.get(), 3060399406_u32);
+    /// }
+    /// 
+    /// fn func<T: cryptocol::number::SmallUInt>(me: T) -> T
+    /// {
+    ///     me.wrapping_neg()
+    /// }
+    /// ```
+    /// 
+    /// # Example for LongUnion
+    /// ```
+    /// use cryptocol::number::SmallUInt;
+    /// fn main()
+    /// {
+    ///     let a_longunion = 12345678901234567890_u64.into_longunion();
+    ///     let b_longunion = func(a_longunion);
+    ///     println!("-{} = {}", a_longunion, b_longunion);
+    ///     assert_eq!(b_longunion.get(), 6101065172474983726_u64);
+    /// }
+    /// 
+    /// fn func<T: cryptocol::number::SmallUInt>(me: T) -> T
+    /// {
+    ///     me.wrapping_neg()
+    /// }
+    /// ```
+    /// 
+    /// # Example for LongerUnion
+    /// ```
+    /// use cryptocol::number::SmallUInt;
+    /// fn main()
+    /// {
+    ///     let a_longerunion = 123456789012345678901234567890123456789_u128.into_longerunion();
+    ///     let b_longerunion = func(a_longerunion);
+    ///     println!("-{} = {}", a_longerunion, b_longerunion);
+    ///     assert_eq!(b_longerunion.get(), 216825577908592784562140039541644754667_u128);
+    /// }
+    /// 
+    /// fn func<T: cryptocol::number::SmallUInt>(me: T) -> T
+    /// {
+    ///     me.wrapping_neg()
+    /// }
+    /// ```
+    /// 
+    /// # Example for SizeUnion
+    /// ```
+    /// use cryptocol::number::SmallUInt;
+    /// fn main()
+    /// {
+    ///     let a_sizeunion = 1234567890123456789_usize.into_sizeunion();
+    ///     let b_sizeunion = func(a_sizeunion);
+    ///     println!("-{} = {}", a_sizeunion, a_sizeunion);
+    ///     assert_eq!(b_sizeunion.get(), 17212176183586094827_usize);
+    /// 
+    /// }
+    /// 
+    /// fn func<T: cryptocol::number::SmallUInt>(me: T) -> T
+    /// {
+    ///     me.wrapping_neg()
+    /// }
+    /// ```
+    /// You can use the above generic function `func<>()` for all
+    /// SmallUInt-supported data types in a same scope.
+    /// Look into the following example.
+    /// 
+    /// # Collective Example
+    /// ```
+    /// use cryptocol::number::{ SmallUInt, ShortUnion, IntUnion, LongUnion, LongerUnion, SizeUnion };
+    /// fn main()
+    /// {
+    ///     let a_u8 = 123_u8;
+    ///     let b_u8 = func(a_u8);
+    ///     println!("-{} = {}", a_u8, b_u8);
+    ///     assert_eq!(b_u8, 133_u8);
+    ///     
+    ///     let a_u16 = 12345_u16;
+    ///     let b_u16 = func(a_u16);
+    ///     println!("-{} = {}", a_u16, b_u16);
+    ///     assert_eq!(b_u16, 53191_u16);
+    ///     
+    ///     let a_u32 = 1234567890_u32;
+    ///     let b_u32 = func(a_u32);
+    ///     println!("-{} = {}", a_u32, b_u32);
+    ///     assert_eq!(b_u32, 3060399406_u32);
+    ///     
+    ///     let a_u64 = 12345678901234567890_u64;
+    ///     let b_u64 = func(a_u64);
+    ///     println!("-{} = {}", a_u64, b_u64);
+    ///     assert_eq!(b_u64, 6101065172474983726_u64);
+    ///     
+    ///     let a_u128 = 123456789012345678901234567890123456789_u128;
+    ///     let b_u128 = func(a_u128);
+    ///     println!("-{} = {}", a_u128, b_u128);
+    ///     assert_eq!(b_u128, 216825577908592784562140039541644754667_u128);
+    ///     
+    ///     let a_usize = 1234567890123456789_usize;
+    ///     let b_usize = func(a_usize);
+    ///     println!("-{} = {}", a_usize, b_usize);
+    ///     assert_eq!(b_usize, 17212176183586094827_usize);
+    ///     
+    ///     let a_shortunion = 12345_u16.into_shortunion();
+    ///     let b_shortunion = func(a_shortunion);
+    ///     println!("-{} = {}", a_shortunion, b_shortunion);
+    ///     assert_eq!(b_shortunion.get(), 53191_u16);
+    ///     
+    ///     let a_intunion = 1234567890_u32.into_intunion();
+    ///     let b_intunion = func(a_intunion);
+    ///     println!("-{} = {}", a_intunion, b_intunion);
+    ///     assert_eq!(b_intunion.get(), 3060399406_u32);
+    ///     
+    ///     let a_longunion = 12345678901234567890_u64.into_longunion();
+    ///     let b_longunion = func(a_longunion);
+    ///     println!("-{} = {}", a_longunion, b_longunion);
+    ///     assert_eq!(b_longunion.get(), 6101065172474983726_u64);
+    ///     
+    ///     let a_longerunion = 123456789012345678901234567890123456789_u128.into_longerunion();
+    ///     let b_longerunion = func(a_longerunion);
+    ///     println!("-{} = {}", a_longerunion, b_longerunion);
+    ///     assert_eq!(b_longerunion.get(), 216825577908592784562140039541644754667_u128);
+    ///     
+    ///     let a_sizeunion = 1234567890123456789_usize.into_sizeunion();
+    ///     let b_sizeunion = func(a_sizeunion);
+    ///     println!("-{} = {}", a_sizeunion, a_sizeunion);
+    ///     assert_eq!(b_sizeunion.get(), 17212176183586094827_usize);
+    /// 
+    /// }
+    /// 
+    /// fn func<T: cryptocol::number::SmallUInt>(me: T) -> T
+    /// {
+    ///     me.wrapping_neg()
+    /// }
     /// ```
     /// 
     /// # Plagiarism in descryption
-    /// It calls the method checked_rem() of implementation of the primitive
+    /// It calls the method wrapping_neg() of implementation of the primitive
     /// unsigned integer types such as`u8`, `u16`, `u32`, `u64`, `u128` and
     /// `usize` directly. So, all the description of this method is mainly the
-    /// same as that of the method checked_rem() of implementation of the
+    /// same as that of the method wrapping_neg() of implementation of the
     /// primitive unsigned integer types except example codes. Confer to the
     /// descryptions that are linked to in the section _Reference_. This
     /// plagiarism is not made maliciously but is made for the reason of
     /// effectiveness and efficiency so that users may understand better and
     /// easily how to use this method with simiilarity to the method
-    /// checked_rem() of implementation of the primitive unsigned integer types.
+    /// wrapping_neg() of implementation of the primitive unsigned integer types.
     /// 
     /// # References
     /// - If you want to know about the definition of the method `wrapping_neg()`
     /// for the primitive type `u8`, read [here](https://doc.rust-lang.org/core/primitive.u8.html#method.wrapping_neg).
-    /// - If you want to know about the definition of the method `checked_rem()`
+    /// - If you want to know about the definition of the method `wrapping_neg()`
     /// for the primitive type `u16`, read [here](https://doc.rust-lang.org/core/primitive.u16.html#method.wrapping_neg).
-    /// - If you want to know about the definition of the method `checked_rem()`
+    /// - If you want to know about the definition of the method `wrapping_neg()`
     /// for the primitive type `u32`, read [here](https://doc.rust-lang.org/core/primitive.u32.html#method.wrapping_neg).
-    /// - If you want to know about the definition of the method `checked_rem()`
+    /// - If you want to know about the definition of the method `wrapping_neg()`
     /// for the primitive type `u64`, read [here](https://doc.rust-lang.org/core/primitive.u64.html#method.wrapping_neg).
-    /// - If you want to know about the definition of the method `checked_rem()`
+    /// - If you want to know about the definition of the method `wrapping_neg()`
     /// for the primitive type `u128`, read [here](https://doc.rust-lang.org/core/primitive.u128.html#method.wrapping_neg).
-    /// - If you want to know about the definition of the method `checked_rem()`
+    /// - If you want to know about the definition of the method `wrapping_neg()`
     /// for the primitive type `usize`, read [here](https://doc.rust-lang.org/core/primitive.usize.html#method.wrapping_neg).
     fn wrapping_neg(self) -> Self;
+
 
     /*** Power ***/
 

@@ -18,6 +18,7 @@ pub fn main()
     small_uint_mul_main();
     small_uint_div_main();
     small_uint_rem_main();
+    small_uint_neg_main();
     small_uint_pow_main();
     small_uint_root_main();
     small_uint_prime_main();
@@ -2695,7 +2696,7 @@ fn small_uint_checked_mul()
     let b_u8 = small_uint_checked_mul_func(a_u8.unwrap(), 2_u8);
     match b_u8
     {
-        Some(b) => { println!("{} * 2 = {}", a_u8.unwrap(), b_u8.unwrap()); },
+        Some(b) => { println!("{} * 2 = {}", a_u8.unwrap(), b); },
         None => {
                 println!("Overflow happened.");
                 assert_eq!(b_u8, None);
@@ -4387,6 +4388,107 @@ fn small_uint_unchecked_rem_func<T: cryptocol::number::SmallUInt>(lhs: T, rhs: T
     lhs.unchecked_rem(rhs)
 }
 
+fn small_uint_neg_main()
+{
+    small_uint_wrapping_neg();
+    // small_uint_overflowing_neg();
+    // small_uint_checked_neg();
+    // small_uint_unchecked_neg();
+}
+
+fn small_uint_wrapping_neg()
+{
+    println!("small_uint_wrapping_neg()");
+    use cryptocol::number::SmallUInt;
+    // Example for u8
+    let a_u8 = 123_u8;
+    let b_u8 = small_uint_wrapping_neg_func(a_u8);
+    println!("-{} = {}", a_u8, b_u8);
+    assert_eq!(b_u8, 133_u8);
+    
+    // Example for u16
+    let a_u16 = 12345_u16;
+    let b_u16 = small_uint_wrapping_neg_func(a_u16);
+    println!("-{} = {}", a_u16, b_u16);
+    assert_eq!(b_u16, 53191_u16);
+    
+    // Example for u32
+    let a_u32 = 1234567890_u32;
+    let b_u32 = small_uint_wrapping_neg_func(a_u32);
+    println!("-{} = {}", a_u32, b_u32);
+    assert_eq!(b_u32, 3060399406_u32);
+    
+    // Example for u64
+    let a_u64 = 12345678901234567890_u64;
+    let b_u64 = small_uint_wrapping_neg_func(a_u64);
+    println!("-{} = {}", a_u64, b_u64);
+    assert_eq!(b_u64, 6101065172474983726_u64);
+    
+    // Example for u128
+    let a_u128 = 123456789012345678901234567890123456789_u128;
+    let b_u128 = small_uint_wrapping_neg_func(a_u128);
+    println!("-{} = {}", a_u128, b_u128);
+    assert_eq!(b_u128, 216825577908592784562140039541644754667_u128);
+    
+    // Example for usize
+    let a_usize = 1234567890123456789_usize;
+    let b_usize = small_uint_wrapping_neg_func(a_usize);
+    println!("-{} = {}", a_usize, b_usize);
+    assert_eq!(b_usize, 17212176183586094827_usize);
+    
+    // Example for ShortUnion
+    let a_shortunion = 12345_u16.into_shortunion();
+    let b_shortunion = small_uint_wrapping_neg_func(a_shortunion);
+    println!("-{} = {}", a_shortunion, b_shortunion);
+    assert_eq!(b_shortunion.get(), 53191_u16);
+    
+    // Example for IntUnion
+    let a_intunion = 1234567890_u32.into_intunion();
+    let b_intunion = small_uint_wrapping_neg_func(a_intunion);
+    println!("-{} = {}", a_intunion, b_intunion);
+    assert_eq!(b_intunion.get(), 3060399406_u32);
+    
+    // Example for LongUnion
+    let a_longunion = 12345678901234567890_u64.into_longunion();
+    let b_longunion = small_uint_wrapping_neg_func(a_longunion);
+    println!("-{} = {}", a_longunion, b_longunion);
+    assert_eq!(b_longunion.get(), 6101065172474983726_u64);
+    
+    // Example for LongerUnion
+    let a_longerunion = 123456789012345678901234567890123456789_u128.into_longerunion();
+    let b_longerunion = small_uint_wrapping_neg_func(a_longerunion);
+    println!("-{} = {}", a_longerunion, b_longerunion);
+    assert_eq!(b_longerunion.get(), 216825577908592784562140039541644754667_u128);
+    
+    // Example for SizeUnion
+    let a_sizeunion = 1234567890123456789_usize.into_sizeunion();
+    let b_sizeunion = small_uint_wrapping_neg_func(a_sizeunion);
+    println!("-{} = {}", a_sizeunion, a_sizeunion);
+    assert_eq!(b_sizeunion.get(), 17212176183586094827_usize);
+    println!("--------------------------------------");
+
+}
+
+fn small_uint_wrapping_neg_func<T: cryptocol::number::SmallUInt>(me: T) -> T
+{
+    me.wrapping_neg()
+}
+
+// fn small_uint_overflowing_neg()
+// {
+
+// }
+
+// fn small_uint_checked_neg()
+// {
+
+// }
+
+// fn small_uint_unchecked_neg()
+// {
+
+// }
+
 fn small_uint_pow_main()
 {
     small_uint_pow();
@@ -4759,7 +4861,7 @@ fn small_uint_checked_pow()
     {
         Some(b) => { println!("{} ** 4 = {}, where ** is the power operator", 6_u8, b); },
         None => {
-                println!("Overflow");
+                println!("Overflow happened.");
                 assert_eq!(b_u8, None);
             },
     }
@@ -4772,204 +4874,204 @@ fn small_uint_checked_pow()
                 println!("{} ** 4 = {}, where ** is the power operator", 12_u16, a);
                 assert_eq!(a, 20736_u16);
             },
-        None => { println!("Divided by zero."); },
+        None => { println!("Overflow happened."); },
     }
 
-    let b_u16 = small_uint_checked_pow_func(u16::MAX / 3, 0_u32);
+    let b_u16 = small_uint_checked_pow_func(12_u16, 5);
     match b_u16
     {
-        Some(b) => { println!("{} / 2 = {}, where ** is the power operator", u16::MAX / 3, b); },
+        Some(b) => { println!("{} ** 5 = {}, where ** is the power operator", 12_u16, b); },
         None => {
-                println!("Divided by zero.");
+                println!("Overflow happened.");
                 assert_eq!(b_u16, None);
             },
     }
 
     // Example for u32
-    let a_u32 = small_uint_checked_pow_func(u32::MAX / 3, 2_u32);
+    let a_u32 = small_uint_checked_pow_func(38_u32, 6);
     match a_u32
     {
         Some(a) => {
-                println!("{} / 2 = {}", u32::MAX / 3, a);
-                assert_eq!(a, 715827882_u32);
+                println!("{} ** 6 = {}, where ** is the power operator", 38_u32, a);
+                assert_eq!(a, 3010936384_u32);
             },
-        None => { println!("Divided by zero."); },
+        None => { println!("Overflow happened."); },
     }
 
-    let b_u32 = small_uint_checked_pow_func(u32::MAX / 3, 0_u32);
+    let b_u32 = small_uint_checked_pow_func(38_u32, 7);
     match b_u32
     {
-        Some(b) => { println!("{} / 2 = {}", u32::MAX / 3, b); },
+        Some(b) => { println!("{} ** 7 = {}, where ** is the power operator", 38_u32, b); },
         None => {
-                println!("Divided by zero.");
+                println!("Overflow happened.");
                 assert_eq!(b_u32, None);
             },
     }
 
     // Example for u64
-    let a_u64 = small_uint_checked_pow_func(u64::MAX / 3, 2_u32);
+    let a_u64 = small_uint_checked_pow_func(1004_u64, 6);
     match a_u64
     {
         Some(a) => {
-                println!("{} / 2 = {}", u64::MAX / 3, a);
-                assert_eq!(a, 3074457345618258602_u64);
+                println!("{} ** 6 = {}, where ** is the power operator", 1004_u64, a);
+                assert_eq!(a, 1024241283846148096_u64);
             },
-        None => { println!("Divided by zero."); },
+        None => { println!("Overflow happened."); },
     }
 
-    let b_u64 = small_uint_checked_pow_func(u64::MAX / 3, 0_u32);
+    let b_u64 = small_uint_checked_pow_func(1004_u64, 7);
     match b_u64
     {
-        Some(b) => { println!("{} / 2 = {}", u64::MAX / 3, b); },
+        Some(b) => { println!("{} ** 7 = {}, where ** is the power operator", 1004_u64, b); },
         None => {
-                println!("Divided by zero.");
+                println!("Overflow happened.");
                 assert_eq!(b_u64, None);
             },
     }
 
     // Example for u128
-    let a_u128 = small_uint_checked_pow_func(u128::MAX / 3, 2_u32);
+    let a_u128 = small_uint_checked_pow_func(10003_u128, 9);
     match a_u128
     {
         Some(a) => {
-                println!("{} / 2 = {}", u128::MAX / 3, a);
-                assert_eq!(a, 56713727820156410577229101238628035242_u128);
+                println!("{} ** 9 = {}, where ** is the power operator", 10003_u128, a);
+                assert_eq!(a, 1002703242269020906241243873790509683_u128);
             },
-        None => { println!("Divided by zero."); },
+        None => { println!("Overflow happened."); },
     }
 
-    let b_u128 = small_uint_checked_pow_func(u128::MAX / 3, 0_u32);
+    let b_u128 = small_uint_checked_pow_func(10003_u128, 10);
     match b_u128
     {
-        Some(b) => { println!("{} / 2 = {}", u128::MAX / 3, b); },
+        Some(b) => { println!("{} ** 10 = {}, where ** is the power operator", 10003_u128, b); },
         None => {
-                println!("Divided by zero.");
+                println!("Overflow happened.");
                 assert_eq!(b_u128, None);
             },
     }
 
     // Example for usize
-    let a_usize = small_uint_checked_pow_func(usize::MAX / 3, 2_u32);
+    let a_usize = small_uint_checked_pow_func(1004_usize, 6);
     match a_usize
     {
         Some(a) => {
-                println!("{} / 2 = {}", usize::MAX / 3, a);
-                assert_eq!(a, 3074457345618258602_usize);
+                println!("{} ** 6 = {}, where ** is the power operator", 1004_usize, a);
+                assert_eq!(a, 1024241283846148096_usize);
             },
-        None => { println!("Divided by zero."); },
+        None => { println!("Overflow happened."); },
     }
 
-    let b_usize = small_uint_checked_pow_func(usize::MAX / 3, 0_u32);
+    let b_usize = small_uint_checked_pow_func(1004_usize, 7);
     match b_usize
     {
-        Some(b) => { println!("{} / 2 = {}", usize::MAX / 3, b); },
+        Some(b) => { println!("{} ** 7 = {}, where ** is the power operator", 1004_usize, b); },
         None => {
-                println!("Divided by zero.");
+                println!("Overflow happened.");
                 assert_eq!(b_usize, None);
             },
     }
 
     // Example for ShortUnion
-    let a_shortunion = small_uint_checked_pow_func((u16::MAX / 3).into_shortunion(), 2_u32);
+    let a_shortunion = small_uint_checked_pow_func(12_u16.into_shortunion(), 4);
     match a_shortunion
     {
         Some(a) => {
-                println!("{} / 2 = {}", (u16::MAX / 3).into_shortunion(), a);
-                assert_eq!(a.get(), 10922_u16);
+                println!("{} ** 4 = {}, where ** is the power operator", 12_u16.into_shortunion(), a);
+                assert_eq!(a.get(), 20736_u16);
             },
-        None => { println!("Divided by zero."); },
+        None => { println!("Overflow happened."); },
     }
 
-    let b_shortunion = small_uint_checked_pow_func((u16::MAX / 3).into_shortunion(), 0_u32);
+    let b_shortunion = small_uint_checked_pow_func(12_u16.into_shortunion(), 5);
     match b_shortunion
     {
-        Some(b) => { println!("{} / 2 = {}", (u16::MAX / 3).into_shortunion(), b); },
+        Some(b) => { println!("{} ** 5 = {}, where ** is the power operator", 12_u16.into_shortunion(), b); },
         None => {
-                println!("Divided by zero.");
+                println!("Overflow happened.");
                 assert_eq!(b_shortunion, None);
             },
     }
 
     // Example for IntUnion
-    let a_intunion = small_uint_checked_pow_func((u32::MAX / 3).into_intunion(), 2_u32);
+    let a_intunion = small_uint_checked_pow_func(38_u32.into_intunion(), 6);
     match a_intunion
     {
         Some(a) => {
-                println!("{} / 2 = {}", (u32::MAX / 3).into_intunion(), a);
-                assert_eq!(a.get(), 715827882_u32);
+                println!("{} ** 6 = {}, where ** is the power operator", 38_u32.into_intunion(), a);
+                assert_eq!(a.get(), 3010936384_u32);
             },
-        None => { println!("Divided by zero."); },
+        None => { println!("Overflow happened."); },
     }
 
-    let b_intunion = small_uint_checked_pow_func((u32::MAX / 3).into_intunion(), 0_u32);
+    let b_intunion = small_uint_checked_pow_func(38_u32.into_intunion(), 7);
     match b_intunion
     {
-        Some(b) => { println!("{} / 2 = {}", (u32::MAX / 3).into_intunion(), b); },
+        Some(b) => { println!("{} ** 7 = {}, where ** is the power operator", 38_u32.into_intunion(), b); },
         None => {
-                println!("Divided by zero.");
+                println!("Overflow happened.");
                 assert_eq!(b_intunion, None);
             },
     }
 
     // Example for LongUnion
-    let a_longunion = small_uint_checked_pow_func((u64::MAX / 3).into_longunion(), 2_u32);
+    let a_longunion = small_uint_checked_pow_func(1004_u64.into_longunion(), 6);
     match a_longunion
     {
         Some(a) => {
-                println!("{} / 2 = {}", (u64::MAX / 3).into_longunion(), a);
-                assert_eq!(a.get(), 3074457345618258602_u64);
+                println!("{} ** 6 = {}, where ** is the power operator", 1004_u64.into_longunion(), a);
+                assert_eq!(a.get(), 1024241283846148096_u64);
             },
-        None => { println!("Divided by zero."); },
+        None => { println!("Overflow happened."); },
     }
 
-    let b_longunion = small_uint_checked_pow_func((u64::MAX / 3).into_longunion(), 0_u32);
+    let b_longunion = small_uint_checked_pow_func(1004_u64.into_longunion(), 7);
     match b_longunion
     {
-        Some(b) => { println!("{} / 2 = {}", (u64::MAX / 3).into_longunion(), b); },
+        Some(b) => { println!("{} ** 7 = {}, where ** is the power operator", 1004_u64.into_longunion(), b); },
         None => {
-                println!("Divided by zero.");
+                println!("Overflow happened.");
                 assert_eq!(b_longunion, None);
             },
     }
 
     // Example for LongerUnion
-    let a_longerunion = small_uint_checked_pow_func((u128::MAX / 3).into_longerunion(), 2_u32);
+    let a_longerunion = small_uint_checked_pow_func(10003_u128.into_longerunion(), 9);
     match a_longerunion
     {
         Some(a) => {
-                println!("{} / 2 = {}", (u128::MAX / 3).into_longerunion(), a);
-                assert_eq!(a.get(), 56713727820156410577229101238628035242_u128);
+                println!("{} ** 9 = {}, where ** is the power operator", 10003_u128.into_longerunion(), a);
+                assert_eq!(a.get(), 1002703242269020906241243873790509683_u128);
             },
-        None => { println!("Divided by zero."); },
+        None => { println!("Overflow happened."); },
     }
 
-    let b_longerunion = small_uint_checked_pow_func((u128::MAX / 3).into_longerunion(), 0_u32);
+    let b_longerunion = small_uint_checked_pow_func(10003_u128.into_longerunion(), 10);
     match b_longerunion
     {
-        Some(b) => { println!("{} / 2 = {}", (u128::MAX / 3).into_longerunion(), b); },
+        Some(b) => { println!("{} ** 10 = {}, where ** is the power operator", 10003_u128.into_longerunion(), b); },
         None => {
-                println!("Divided by zero.");
+                println!("Overflow happened.");
                 assert_eq!(b_longerunion, None);
             },
     }
 
     // Example for SizeUnion
-    let a_sizeunion = small_uint_checked_pow_func((usize::MAX / 3).into_sizeunion(), 2_u32);
+    let a_sizeunion = small_uint_checked_pow_func(1004_usize.into_sizeunion(), 6);
     match a_sizeunion
     {
         Some(a) => {
-                println!("{} / 2 = {}", (usize::MAX / 3).into_sizeunion(), a);
-                assert_eq!(a.get(), 3074457345618258602_usize);
+                println!("{} ** 6 = {}, where ** is the power operator", 1004_usize.into_sizeunion(), a);
+                assert_eq!(a.get(), 1024241283846148096_usize);
             },
-        None => { println!("Divided by zero."); },
+        None => { println!("Overflow happened."); },
     }
 
-    let b_sizeunion = small_uint_checked_pow_func((usize::MAX / 3).into_sizeunion(), 0_u32);
+    let b_sizeunion = small_uint_checked_pow_func(1004_usize.into_sizeunion(), 7);
     match b_sizeunion
     {
-        Some(b) => { println!("{} / 2 = {}", (usize::MAX / 3).into_sizeunion(), b); },
+        Some(b) => { println!("{} ** 7 = {}, where ** is the power operator", 1004_usize.into_sizeunion(), b); },
         None => {
-                println!("Divided by zero.");
+                println!("Overflow happened.");
                 assert_eq!(b_sizeunion, None);
             },
     }
@@ -4984,180 +5086,180 @@ fn small_uint_checked_pow_func<T: cryptocol::number::SmallUInt>(base: T, exp: u3
 fn small_uint_unchecked_pow()
 {
     println!("small_uint_unchecked_pow()");
-    let a_u8 = small_uint_unchecked_pow_func(u8::MAX / 3, 2_u32);
-    match a_u8
-    {
-        Some(a) => {
-                println!("{} / 2 = {}", u8::MAX / 3, a);
-                assert_eq!(a, 42_u8);
-            },
-        None => {
-                println!("Divided by zero.");
-                assert_eq!(a_u8, None);
-            },
-    }
+    use cryptocol::number::SmallUInt;
+    // Example for u8
+    let a_u8 = small_uint_unchecked_pow_func(6_u8, 3);
+    println!("{} ** 3 = {}, where ** is the power operator", 6_u8, a_u8);
+    assert_eq!(a_u8, 216_u8);
+    // It will panic.
+    // let b_u8 = small_uint_unchecked_pow_func(6_u8, 4);
 
-    let b_u8 = small_uint_unchecked_pow_func(u8::MAX / 3, 0_u32);
-    match b_u8
-    {
-        Some(b) => { println!("{} / 2 = {}", u8::MAX / 3, b); },
-        None => {
-                println!("Divided by zero.");
-                assert_eq!(b_u8, None);
-            },
-    }
+    // Example for u16
+    let a_u16 = small_uint_unchecked_pow_func(12_u16, 4);
+    println!("{} ** 4 = {}, where ** is the power operator", 12_u16, a_u16);
+    assert_eq!(a_u16, 20736_u16);
+    // It will panic.
+    // let b_u16 = small_uint_unchecked_pow_func(12_u16, 5);
 
-    let a_u16 = small_uint_unchecked_pow_func(u16::MAX / 3, 2_u32);
-    match a_u16
-    {
-        Some(a) => {
-                println!("{} / 2 = {}", u16::MAX / 3, a);
-                assert_eq!(a, 10922_u16);
-            },
-        None => {
-                println!("Divided by zero.");
-                assert_eq!(a_u16, None);
-            },
-    }
+    // Example for u32
+    let a_u32 = small_uint_unchecked_pow_func(38_u32, 6);
+    println!("{} ** 6 = {}, where ** is the power operator", 38_u32, a_u32);
+    assert_eq!(a_u32, 3010936384_u32);
+    // It will panic.
+    // let b_u32 = small_uint_unchecked_pow_func(38_u32, 7);
 
-    let b_u16 = small_uint_unchecked_pow_func(u16::MAX / 3, 0_u32);
-    match b_u16
-    {
-        Some(b) => { println!("{} / 2 = {}", u16::MAX / 3, b); },
-        None => {
-                println!("Divided by zero.");
-                assert_eq!(b_u16, None);
-            },
-    }
+    // Example for u64
+    let a_u64 = small_uint_unchecked_pow_func(1004_u64, 6);
+    println!("{} ** 6 = {}, where ** is the power operator", 1004_u64, a_u64);
+    // It will panic.
+    // let b_u64 = small_uint_unchecked_pow_func(1004_u64, 7);
 
-    let a_u32 = small_uint_unchecked_pow_func(u32::MAX / 3, 2_u32);
-    match a_u32
-    {
-        Some(a) => {
-                println!("{} / 2 = {}", u32::MAX / 3, a);
-                assert_eq!(a, 715827882_u32);
-            },
-        None => {
-                println!("Divided by zero.");
-                assert_eq!(a_u32, None);
-            },
-    }
+    // Example for u128
+    let a_u128 = small_uint_unchecked_pow_func(10003_u128, 9);
+    println!("{} ** 9 = {}, where ** is the power operator", 10003_u128, a_u128);
+    assert_eq!(a_u128, 1002703242269020906241243873790509683_u128);
+    // It will panic.
+    // let b_u128 = small_uint_unchecked_pow_func(10003_u128, 10);
 
-    let b_u32 = small_uint_unchecked_pow_func(u32::MAX / 3, 0_u32);
-    match b_u32
-    {
-        Some(b) => { println!("{} / 2 = {}", u32::MAX / 3, b); },
-        None => {
-                println!("Divided by zero.");
-                assert_eq!(b_u32, None);
-            },
-    }
+    // Example for usize
+    let a_usize = small_uint_unchecked_pow_func(1004_usize, 6);
+    println!("{} ** 6 = {}, where ** is the power operator", 1004_usize, a_usize);
+    assert_eq!(a_usize, 1024241283846148096_usize);
+    // It will panic.
+    // let b_usize = small_uint_unchecked_pow_func(1004_usize, 7);
 
-    let a_u64 = small_uint_unchecked_pow_func(u64::MAX / 3, 2_u32);
-    match a_u64
-    {
-        Some(a) => {
-                println!("{} / 2 = {}", u64::MAX / 3, a);
-                assert_eq!(a, 3074457345618258602_u64);
-            },
-        None => {
-                println!("Divided by zero.");
-                assert_eq!(a_u64, None);
-            },
-    }
+    // Example for ShortUnion
+    let a_shortunion = small_uint_unchecked_pow_func(12_u16.into_shortunion(), 4);
+    println!("{} ** 4 = {}, where ** is the power operator", 12_u16.into_shortunion(), a_shortunion);
+    assert_eq!(a_shortunion.get(), 20736_u16);
+    // It will panic.
+    // let b_shortunion = small_uint_unchecked_pow_func(12_u16.into_shortunion(), 5);
 
-    let b_u64 = small_uint_unchecked_pow_func(u64::MAX / 3, 0_u32);
-    match b_u64
-    {
-        Some(b) => { println!("{} / 2 = {}", u64::MAX / 3, b); },
-        None => {
-                println!("Divided by zero.");
-                assert_eq!(b_u64, None);
-            },
-    }
+    // Example for IntUnion
+    let a_intunion = small_uint_unchecked_pow_func(38_u32.into_intunion(), 6);
+    println!("{} ** 6 = {}, where ** is the power operator", 38_u32.into_intunion(), a_intunion);
+    assert_eq!(a_intunion.get(), 3010936384_u32);
+    // It will panic.
+    // let b_intunion = small_uint_unchecked_pow_func(38_u32.into_intunion(), 7);
 
-    let a_u128 = small_uint_unchecked_pow_func(u128::MAX / 3, 2_u32);
-    match a_u128
-    {
-        Some(a) => {
-                println!("{} / 2 = {}", u128::MAX / 3, a);
-                assert_eq!(a, 56713727820156410577229101238628035242_u128);
-            },
-        None => {
-                println!("Divided by zero.");
-                assert_eq!(a_u128, None);
-            },
-    }
+    // Example for LongUnion
+    let a_longunion = small_uint_unchecked_pow_func(1004_u64.into_longunion(), 6);
+    println!("{} ** 6 = {}, where ** is the power operator", 1004_u64.into_longunion(), a_longunion);
+    assert_eq!(a_longunion.get(), 1024241283846148096_u64);
+    // It will panic.
+    // let b_longunion = small_uint_unchecked_pow_func(1004_u64.into_longunion(), 7);
 
-    let b_u128 = small_uint_unchecked_pow_func(u128::MAX / 3, 0_u32);
-    match b_u128
-    {
-        Some(b) => { println!("{} / 2 = {}", u128::MAX / 3, b); },
-        None => {
-                println!("Divided by zero.");
-                assert_eq!(b_u128, None);
-            },
-    }
+    // Example for LongerUnion
+    let a_longerunion = small_uint_unchecked_pow_func(10003_u128.into_longerunion(), 9);
+    println!("{} ** 9 = {}, where ** is the power operator", 10003_u128.into_longerunion(), a_longerunion);
+    assert_eq!(a_longerunion.get(), 1002703242269020906241243873790509683_u128);
+    // It will panic.
+    // let b_longerunion = small_uint_unchecked_pow_func(10003_u128.into_longerunion(), 10);
 
-    let a_usize = small_uint_unchecked_pow_func(usize::MAX / 3, 2_u32);
-    match a_usize
-    {
-        Some(a) => {
-                println!("{} / 2 = {}", usize::MAX / 3, a);
-                assert_eq!(a, 3074457345618258602_usize);
-            },
-        None => {
-                println!("Divided by zero.");
-                assert_eq!(a_usize, None);
-            },
-    }
-
-    let b_usize = small_uint_unchecked_pow_func(usize::MAX / 3, 0_u32);
-    match b_usize
-    {
-        Some(b) => { println!("{} / 2 = {}", usize::MAX / 3, b); },
-        None => {
-                println!("Divided by zero.");
-                assert_eq!(b_usize, None);
-            },
-    }
+    // Example for SizeUnion
+    let a_sizeunion = small_uint_unchecked_pow_func(1004_usize.into_sizeunion(), 6);
+    println!("{} ** 6 = {}, where ** is the power operator", 1004_usize.into_sizeunion(), a_sizeunion);
+    assert_eq!(a_sizeunion.get(), 1024241283846148096_usize);
+    // It will panic.
+    // let b_sizeunion = small_uint_checked_pow_func(1004_usize.into_sizeunion(), 7);
     println!("--------------------------------------");
 }
 
-fn small_uint_unchecked_pow_func<T: cryptocol::number::SmallUInt>(base: T, exp: u32) -> Option<T>
+fn small_uint_unchecked_pow_func<T: cryptocol::number::SmallUInt>(base: T, exp: u32) -> T
 {
-    base.checked_pow(exp)
+    base.unchecked_pow(exp)
 }
 
 fn small_uint_saturating_pow()
 {
     println!("small_uint_saturating_pow()");
-    let a_u8 = small_uint_saturating_pow_func(u8::MAX / 3, 2_u32);
-    println!("{} / 2 = {}", u8::MAX / 3, a_u8);
-    assert_eq!(a_u8, 42_u8);
+    use cryptocol::number::SmallUInt;
+    // Example for u8
+    let a_u8 = small_uint_saturating_pow_func(6_u8, 3);
+    println!("{} ** 3 = {}, where ** is the power operator", 6_u8, a_u8);
+    assert_eq!(a_u8, 216_u8);
+    let b_u8 = small_uint_saturating_pow_func(6_u8, 4);
+    println!("{} ** 4 = {}, where ** is the power operator", 6_u8, b_u8);
+    assert_eq!(b_u8, u8::MAX);
 
-    let a_u16 = small_uint_saturating_pow_func(u16::MAX / 3, 2_u32);
-    println!("{} / 2 = {}", u16::MAX / 3, a_u16);
-    assert_eq!(a_u16, 10922_u16);
+    // Example for u16
+    let a_u16 = small_uint_saturating_pow_func(12_u16, 4);
+    println!("{} ** 4 = {}, where ** is the power operator", 12_u16, a_u16);
+    assert_eq!(a_u16, 20736_u16);
+    let b_u16 = small_uint_saturating_pow_func(12_u16, 5);
+    println!("{} ** 5 = {}, where ** is the power operator", 12_u16, b_u16);
+    assert_eq!(b_u16, u16::MAX);
 
-    let a_u32 = small_uint_saturating_pow_func(u32::MAX / 3, 2_u32);
-    println!("{} / 2 = {}", u32::MAX / 3, a_u32);
-    assert_eq!(a_u32, 715827882_u32);
+    // Example for u32
+    let a_u32 = small_uint_saturating_pow_func(38_u32, 6);
+    println!("{} ** 6 = {}, where ** is the power operator", 38_u32, a_u32);
+    assert_eq!(a_u32, 3010936384_u32);
+    let b_u32 = small_uint_saturating_pow_func(38_u32, 7);
+    println!("{} ** 7 = {}, where ** is the power operator", 38_u32, b_u32);
+    assert_eq!(b_u32, u32::MAX);
 
-    let a_u64 = small_uint_saturating_pow_func(u64::MAX / 3, 2_u32);
-    println!("{} / 2 = {}", u64::MAX / 3, a_u64);
-    assert_eq!(a_u64, 3074457345618258602_u64);
+    // Example for u64
+    let a_u64 = small_uint_saturating_pow_func(1004_u64, 6);
+    println!("{} ** 6 = {}, where ** is the power operator", 1004_u64, a_u64);
+    let b_u64 = small_uint_saturating_pow_func(1004_u64, 7);
+    println!("{} ** 7 = {}, where ** is the power operator", 1004_u64, b_u64);
+    assert_eq!(b_u64, u64::MAX);
 
-    let a_u128 = small_uint_saturating_pow_func(u128::MAX / 3, 2_u32);
-    println!("{} / 2 = {}", u128::MAX / 3, a_u128);
-    assert_eq!(a_u128, 56713727820156410577229101238628035242_u128);
+    // Example for u128
+    let a_u128 = small_uint_saturating_pow_func(10003_u128, 9);
+    println!("{} ** 9 = {}, where ** is the power operator", 10003_u128, a_u128);
+    assert_eq!(a_u128, 1002703242269020906241243873790509683_u128);
+    let b_u128 = small_uint_saturating_pow_func(10003_u128, 10);
+    println!("{} ** 10 = {}, where ** is the power operator", 10003_u128, b_u128);
+    assert_eq!(b_u128, u128::MAX);
 
-    let a_usize = small_uint_saturating_pow_func(usize::MAX / 3, 2_u32);
-    println!("{} / 2 = {}", usize::MAX / 3, a_usize);
-    assert_eq!(a_usize, 3074457345618258602_usize);
+    // Example for usize
+    let a_usize = small_uint_saturating_pow_func(1004_usize, 6);
+    println!("{} ** 6 = {}, where ** is the power operator", 1004_usize, a_usize);
+    assert_eq!(a_usize, 1024241283846148096_usize);
+    let b_u128 = small_uint_saturating_pow_func(1004_usize, 7);
+    println!("{} ** 7 = {}, where ** is the power operator", 1004_usize, b_u128);
+    assert_eq!(b_u128, usize::MAX);
 
-    // It will panic.
-    // let a_panic = small_uint_saturating_pow_func(usize::MAX / 3, 0_usize);
+    // Example for ShortUnion
+    let a_shortunion = small_uint_saturating_pow_func(12_u16.into_shortunion(), 4);
+    println!("{} ** 4 = {}, where ** is the power operator", 12_u16.into_shortunion(), a_shortunion);
+    assert_eq!(a_shortunion.get(), 20736_u16);
+    let b_shortunion = small_uint_saturating_pow_func(12_u16.into_shortunion(), 5);
+    println!("{} ** 5 = {}, where ** is the power operator", 12_u16.into_shortunion(), b_shortunion);
+    assert_eq!(b_shortunion.get(), u16::MAX);
+
+    // Example for IntUnion
+    let a_intunion = small_uint_saturating_pow_func(38_u32.into_intunion(), 6);
+    println!("{} ** 6 = {}, where ** is the power operator", 38_u32.into_intunion(), a_intunion);
+    assert_eq!(a_intunion.get(), 3010936384_u32);
+    let b_intunion = small_uint_saturating_pow_func(38_u32.into_intunion(), 7);
+    println!("{} ** 7 = {}, where ** is the power operator", 38_u32.into_intunion(), b_intunion);
+    assert_eq!(b_intunion.get(), u32::MAX);
+
+    // Example for LongUnion
+    let a_longunion = small_uint_saturating_pow_func(1004_u64.into_longunion(), 6);
+    println!("{} ** 6 = {}, where ** is the power operator", 1004_u64.into_longunion(), a_longunion);
+    assert_eq!(a_longunion.get(), 1024241283846148096_u64);
+    let b_longunion = small_uint_saturating_pow_func(1004_u64.into_longunion(), 7);
+    println!("{} ** 7 = {}, where ** is the power operator", 1004_u64.into_longunion(), b_longunion);
+    assert_eq!(b_longunion.get(), u64::MAX);
+
+    // Example for LongerUnion
+    let a_longerunion = small_uint_saturating_pow_func(10003_u128.into_longerunion(), 9);
+    println!("{} ** 9 = {}, where ** is the power operator", 10003_u128.into_longerunion(), a_longerunion);
+    assert_eq!(a_longerunion.get(), 1002703242269020906241243873790509683_u128);
+    let b_longerunion = small_uint_saturating_pow_func(10003_u128.into_longerunion(), 10);
+    println!("{} ** 10 = {}, where ** is the power operator", 10003_u128.into_longunion(), b_longerunion);
+    assert_eq!(b_longerunion.get(), u128::MAX);
+
+    // Example for SizeUnion
+    let a_sizeunion = small_uint_saturating_pow_func(1004_usize.into_sizeunion(), 6);
+    println!("{} ** 6 = {}, where ** is the power operator", 1004_usize.into_sizeunion(), a_sizeunion);
+    assert_eq!(a_sizeunion.get(), 1024241283846148096_usize);
+    let b_sizeunion = small_uint_saturating_pow_func(1004_usize.into_sizeunion(), 7);
+    println!("{} ** 7 = {}, where ** is the power operator", 1004_usize.into_longunion(), b_sizeunion);
+    assert_eq!(b_sizeunion.get(), usize::MAX);
     println!("--------------------------------------");
 }
 
@@ -5170,13 +5272,99 @@ fn small_uint_modular_pow()
 {
     println!("small_uint_modular_pow");
     use cryptocol::number::SmallUInt;
-    let a = 2_u128;
-    let d = 4776913109852041418248056622882488318_u128;
+    // Example for u8
+    let a_u8 = 74_u8;
+    let d_u8 = 18_u8;
+    let modulo_u8 = 100_u8;
+    let res_u8 = small_uint_modular_pow_func(a_u8, d_u8, modulo_u8);
+    println!("{} ** {} = {} (mod {}), where ** is the power operator", a_u8, d_u8, res_u8, modulo_u8);
+    assert_eq!(res_u8, 76_u8);
+
+    // Example for u16
+    let a_u16 = 741_u16;
+    let d_u16 = 185_u16;
+    let modulo_u16 = 10000_u16;
+    let res_u16 = small_uint_modular_pow_func(a_u16, d_u16, modulo_u16);
+    println!("{} ** {} = {} (mod {}), where ** is the power operator", a_u16, d_u16, res_u16, modulo_u16);
+    assert_eq!(res_u16, 8901_u16);
+
+    // Example for u32
+    let a_u32 = 78541_u32;
+    let d_u32 = 18575_u32;
+    let modulo_u32 = 10000000_u32;
+    let res_u32 = small_uint_modular_pow_func(a_u32, d_u32, modulo_u32);
+    println!("{} ** {} = {} (mod {}), where ** is the power operator", a_u32, d_u32, res_u32, modulo_u32);
+    assert_eq!(res_u32, 4370501_u32);
+
+    // Example for u64
+    let a_u64 = 123456789_u64;
+    let d_u64 = 9876543_u64;
+    let modulo_u64 = 100000000000_u64;
+    let res_u64 = small_uint_modular_pow_func(a_u64, d_u64, modulo_u64);
+    println!("{} ** {} = {} (mod {}), where ** is the power operator", a_u64, d_u64, res_u64, modulo_u64);
+    assert_eq!(res_u64, 75010148669_u64);
+
+    // Example for u128
+    let a = 258974_u128;
+    let d = 6622882488318_u128;
     let modulo = 4776913109852041418248056622882488319_u128;
-    let res = a.modular_pow(d, modulo);
-    println!("res = {}", res);
-    assert_eq!(res, 8);
+    let res = small_uint_modular_pow_func(a, d, modulo);
+    println!("{} ** {} = {} (mod {}), where ** is the power operator", a, d, res, modulo);
+    assert_eq!(res, 2843356730633772030492705275006525566_u128);
+
+    // Example for usize
+    let a_usize = 123456789_usize;
+    let d_usize = 9876543_usize;
+    let modulo_usize = 100000000000_usize;
+    let res_usize = small_uint_modular_pow_func(a_usize, d_usize, modulo_usize);
+    println!("{} ** {} = {} (mod {}), where ** is the power operator", a_usize, d_usize, res_usize, modulo_usize);
+    assert_eq!(res_usize, 75010148669_usize);
+
+    // Example for ShortUnion
+    let a_shortunion = 741_u16.into_shortunion();
+    let d_shortunion = 185_u16.into_shortunion();
+    let modulo_shortunion = 10000_u16.into_shortunion();
+    let res_shortunion = small_uint_modular_pow_func(a_shortunion, d_shortunion, modulo_shortunion);
+    println!("{} ** {} = {} (mod {}), where ** is the power operator", a_shortunion, d_shortunion, res_shortunion, modulo_shortunion);
+    assert_eq!(res_shortunion.get(), 8901_u16);
+
+    // Example for IntUnion
+    let a_intunion = 78541_u32.into_intunion();
+    let d_intunion = 18575_u32.into_intunion();
+    let modulo_intunion = 10000000_u32.into_intunion();
+    let res_intunion = small_uint_modular_pow_func(a_intunion, d_intunion, modulo_intunion);
+    println!("{} ** {} = {} (mod {}), where ** is the power operator", a_intunion, d_intunion, res_intunion, modulo_intunion);
+    assert_eq!(res_intunion.get(), 4370501_u32);
+
+    // Example for LongUnion
+    let a_longunion = 123456789_u64.into_longunion();
+    let d_longunion = 9876543_u64.into_longunion();
+    let modulo_longunion = 100000000000_u64.into_longunion();
+    let res_longunion = small_uint_modular_pow_func(a_longunion, d_longunion, modulo_longunion);
+    println!("{} ** {} = {} (mod {}), where ** is the power operator", a_longunion, d_longunion, res_longunion, modulo_longunion);
+    assert_eq!(res_longunion.get(), 75010148669_u64);
+
+    // Example for LongerUnion
+    let a_longerunion = 258974_u128.into_longerunion();
+    let d_longerunion = 6622882488318_u128.into_longerunion();
+    let modulo_longerunion = 4776913109852041418248056622882488319_u128.into_longerunion();
+    let res_longerunion = small_uint_modular_pow_func(a_longerunion, d_longerunion, modulo_longerunion);
+    println!("{} ** {} = {} (mod {}), where ** is the power operator", a_longerunion, d_longerunion, res_longerunion, modulo_longerunion);
+    assert_eq!(res_longerunion.get(), 2843356730633772030492705275006525566_u128);
+
+    // Example for SizeUnion
+    let a_sizeunion = 123456789_usize.into_sizeunion();
+    let d_sizeunion = 9876543_usize.into_sizeunion();
+    let modulo_sizeunion = 100000000000_usize.into_sizeunion();
+    let res_sizeunion = small_uint_modular_pow_func(a_sizeunion, d_sizeunion, modulo_sizeunion);
+    println!("{} ** {} = {} (mod {}), where ** is the power operator", a_sizeunion, d_sizeunion, res_sizeunion, modulo_sizeunion);
+    assert_eq!(res_sizeunion.get(), 75010148669_usize);
     println!("--------------------------------------");
+}
+
+fn small_uint_modular_pow_func<T: cryptocol::number::SmallUInt>(base: T, exp: T, modulo: T) -> T
+{
+    base.modular_pow(exp, modulo)
 }
 
 fn small_uint_root_main()
