@@ -275,11 +275,17 @@ pub type SHA2_512 = SHA2_512_Generic;   // equivalent to `pub type SHA2_512 = SH
 
 /// The official SHA-384 hash algorithm
 #[allow(non_camel_case_types)]
-pub type SHA2_384 = SHA2_384_Expanded;
+pub type SHA2_384 = SHA2_512_Generic<6, 0xcbbb9d5dc1059ed8, 0x629a292a367cd507,
+                        0x9159015a3070dd17, 0x152fecd8f70e5939, 0x67332667ffc00b31,
+                        0x8eb44a8768581511, 0xdb0c2e0d64f98fa7, 0x47b5481dbefa4fa4, 80>;
+                        // equivalent to `pub type SHA2_384 = SHA2_384_Expanded;`
 
 /// The official SHA-512/256 hash algorithm
 #[allow(non_camel_case_types)]
-pub type SHA2_512_256 = SHA2_512_256_Expanded;
+pub type SHA2_512_256 = SHA2_512_Generic<4, 0x22312194FC2BF72C, 0x9F555FA3C84C64C2,
+                        0x2393B86B6F53B151, 0x963877195940EABD, 0x96283EE2A88EFFE3,
+                        0xBE5E1E2553863992, 0x2B0199FC2C85B8AA, 0x0EB72DDC81C52CA2, 80>;
+                        // equivalent to `pub type SHA2_512_256 = SHA2_512_256_Expanded;`
 
 // /// The official SHA-512/224 hash algorithm
 // #[allow(non_camel_case_types)]

@@ -195,19 +195,23 @@ pub type SHA2_512_t_Generic_HRS_fixed<const t: usize = 512, const ROUND: usize =
 /// to make a multiple of eight. The default value of t is 512.
 #[allow(non_camel_case_types)]
 #[allow(non_upper_case_globals)]
-pub type SHA2_512_t<const t: usize = 512> = SHA2_512_t_Expanded<t>;
+pub type SHA2_512_t<const t: usize = 512> = SHA2_512_t_Generic<t>;
+// equivalent to `pub type SHA2_512_t<const t: usize = 512> = SHA2_512_t_Expanded<t>;`
 
 /// The official SHA-512/256 hash algorithm
 #[allow(non_camel_case_types)]
-pub type SHA2_512_t_256 = SHA2_512_t_256_Expanded;
+pub type SHA2_512_t_256 = SHA2_512_t_Generic<256>;
+// equivalent to `pub type SHA2_512_t_256 = SHA2_512_t_256_Expanded;`
 
 /// The official SHA-512/224 hash algorithm
 #[allow(non_camel_case_types)]
-pub type SHA2_512_t_224 = SHA2_512_t_224_Expanded;
+pub type SHA2_512_t_224 = SHA2_512_t_Generic<224>;
+// equivalent to `pub type SHA2_512_t_224 = SHA2_512_t_224_Expanded;`
 
 /// The simulation of the official SHA-512 hash algorithm
 #[allow(non_camel_case_types)]
-pub type SHA2_512_0 = SHA2_512_t;
+pub type SHA2_512_0 = SHA2_512_t_Generic;
+// equivalent to `pub type SHA2_512_0 = SHA2_512_t;`
 
 
 /// SHA-2-512/t message-digest algorithm that lossily compresses data of

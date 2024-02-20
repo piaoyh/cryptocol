@@ -107,8 +107,12 @@ pub type SHA0_Generic_HR_fixed<const N: usize = 5, const ROUND: usize = 80,
 pub type SHA1 = SHA1_Generic;   // equivalent to `pub type SHA1 = SHA1_Expanded;`
 
 /// The official SHA-0 hash algorithm
-pub type SHA0 = SHA0_Expanded;
+pub type SHA0 = SHA1_Generic<5, 0x67452301, 0xefcdab89,
+                            0x98badcfe, 0x10325476, 0xc3d2e1f0, 80,
+                            0x5a827999, 0x6ed9eba1, 0x8f1bbcdc,
+                            0xca62c1d6, 0>; // equivalent to `pub type SHA0  = SHA0_Expanded;`
 
+      
 
 /// A SHA-1 and SHA-0 message-digest algorithms that lossily compress data
 /// of arbitrary length into a 160-bit hash value, and their flexible variants

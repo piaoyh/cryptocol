@@ -59,6 +59,7 @@ pub mod small_sint;
 pub mod small_int_unions;
 pub mod big_uint;
 pub mod trait_impl_for_big_uint;
+pub mod trait_impl_for_small_int_unions;
 pub mod number_errors;
 pub mod macros_number;
 

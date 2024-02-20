@@ -5377,9 +5377,9 @@ fn small_uint_sqrt()
 {
     use cryptocol::number::SmallUInt;
     let a = 100000000000000_u64;
-    let b = a.sqrt();
+    let b = a.isqrt();
     let c = b.pow(2);
-    let d = (a + 1).sqrt();
+    let d = (a + 1).isqrt();
     let e = (b + 1).pow(2);
     println!("sqrt({}) = {}\t{} ** 2 = {}", a, b, b, c);
     println!("sqrt({}) = {}\t{} ** 2 = {}", a + 1, d, b + 1, e);

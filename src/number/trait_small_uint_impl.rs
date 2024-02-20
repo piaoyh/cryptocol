@@ -120,14 +120,14 @@ macro_rules! SmallUInt_methods_for_uint_impl {
             /// Calculates the “full multiplication” `self` * `rhs` + `carry` without
             /// the possibility to overflow.
             /// [Read more in detail](trait@SmallUInt#tymethod.carrying_mul)
-            #[inline] fn carrying_mul(self, rhs: Self, carry: Self) -> (Self, Self) { self.carrying_mul_for_internal_use(rhs, carry) }
+            #[inline] fn carrying_mul(self, rhs: Self, carry: Self) -> (Self, Self) { self._carrying_mul(rhs, carry) }
 
             // fn carrying_mul_for_internal_use(self, rhs: Self, carry: Self) -> (Self, Self);
             /// It is for internal use. You are recommended to use [carrying_mul()](trait@SmallUInt#tymethod.carrying_mul) instead.
-            fn carrying_mul_for_internal_use(self, rhs: Self, carry: Self) -> (Self, Self)
+            fn _carrying_mul(self, rhs: Self, carry: Self) -> (Self, Self)
             {
                 let overflow;
-                let (mut low, mut high) = self.widening_mul_for_internal_use(rhs);
+                let (mut low, mut high) = self._widening_mul(rhs);
                 (low, overflow) = low.overflowing_add(carry);
                 if overflow
                     { high = high.wrapping_add(1); }
@@ -136,11 +136,11 @@ macro_rules! SmallUInt_methods_for_uint_impl {
 
             /// Calculates the complete product `self` * `rhs` without the possibility
             /// to overflow. [Read more in detail](trait@SmallUInt#tymethod.widening_mul)
-            #[inline] fn widening_mul(self, rhs: Self) -> (Self, Self) { self.widening_mul_for_internal_use(rhs) }
+            #[inline] fn widening_mul(self, rhs: Self) -> (Self, Self) { self._widening_mul(rhs) }
 
             // fn carrying_mul_for_internal_use(self, rhs: Self, carry: Self) -> (Self, Self);
             /// It is for internal use. You are recommended to use [carrying_mul()](trait@SmallUInt#tymethod.widening_mul) instead.
-            fn widening_mul_for_internal_use(self, rhs: Self) -> (Self, Self)
+            fn _widening_mul(self, rhs: Self) -> (Self, Self)
             {
                 if (rhs == 0) || (self == 0)
                     { return (0, 0); }
@@ -303,7 +303,8 @@ macro_rules! SmallUInt_methods_for_uint_impl {
             #[inline] fn ilog10(self) -> u32            { self.ilog10() }
             #[inline] fn ilog2(self) -> u32             { self.ilog2() }
 
-            fn isqrt(self) -> Self
+            #[inline] fn isqrt(self) -> Self            { self._isqrt() }
+            fn _isqrt(self) -> Self
             {
                 let mut adder;
                 let mut highest = (Self::size_in_bits() - self.leading_zeros() as usize) >> 1;
@@ -434,7 +435,7 @@ macro_rules! SmallUInt_methods_for_uint_impl {
                 if (self as u128) < (10000 as u128)
                 {
                     let small_self = self.into_u32();
-                    let sqrt = small_self.sqrt();
+                    let sqrt = small_self._isqrt();
                     let mut i = 3_u32;
                     while i < 100 || i <= sqrt
                     {

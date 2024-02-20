@@ -199,7 +199,9 @@ pub type SHA2_256 = SHA2_256_Generic;   // equivalent to `pub type SHA2_256 = SH
 
 /// The official SHA-224 hash algorithm
 #[allow(non_camel_case_types)]
-pub type SHA2_224 = SHA2_224_Expanded;
+pub type SHA2_224 = SHA2_256_Generic<7, 0xc1059ed8, 0x367cd507, 0x3070dd17,
+                        0xf70e5939, 0xffc00b31, 0x68581511, 0x64f98fa7, 
+                        0xbefa4fa4, 64>;    // equivalent to `pub type SHA2_224 = SHA2_224_Expanded;``
 
 /// SHA-2-256 and SHA-2-224 message-digest algorithms that lossily compress
 /// data of arbitrary length into a 256-bit hash value and 224-bit hash value,
