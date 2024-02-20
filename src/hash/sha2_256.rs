@@ -19,40 +19,99 @@ use std::fmt::{ self, Debug, Display, Formatter };
 use crate::number::{ SmallUInt, IntUnion, LongUnion };
 
 
-/// You have freedom of changing H0 ~ H7, and ROUND.
+/// You have freedom of changing H0 ~ H7, and ROUND for SHA-2-256.
+/// 
+/// # Generic Parameters
+/// You can create your own expanded version of SHA-2-256 by
+/// changing the generic parameters H0 ~ H7, and ROUND.
+/// - H0 ~ H7 : the initial hash values, eight u32 values.
+/// The default values of H0 ~ H7 for SHA-2-256 are defined to be first 32 bits
+/// of the fractional parts of the square roots of the first 8 primes 2..19.
+/// So, H0 ~ H7 for SHA-2-256 are 0x6a09e667, 0xbb67ae85, 0x3c6ef372,
+/// 0xa54ff53a, 0x510e527f, 0x9b05688c, 0x1f83d9ab, and 0x5be0cd19,
+/// respectively (in big endian representation).
+/// The values of H0 ~ H7 for SHA-2-224 is defined to be the second 32 bits of
+/// the fractional parts of the square roots of the 9th through 16th primes
+/// 23..53.  So, H0 ~ H7 for SHA-2-224 should be changed to be 0xc1059ed8,
+/// 0x367cd507, 0x3070dd17, 0xf70e5939, 0xffc00b31, 0x68581511, 0x64f98fa7,
+/// 0xbefa4fa4, respectively (in big endian representation).
+/// - ROUND : the number of rounds. The default value of it is `64` (= 16 * 4).
 #[allow(non_camel_case_types)]
 pub type SHA2_256_Expanded<const H0: u32 = 0x6a09e667, const H1: u32 = 0xbb67ae85,
-                            const H2: u32 = 0x3c6ef372, const H3: u32 = 0xa54ff53a,
-                            const H4: u32 = 0x510e527f, const H5: u32 = 0x9b05688c,
-                            const H6: u32 = 0x1f83d9ab, const H7: u32 = 0x5be0cd19,
-                            const ROUND: usize = 64>
+                        const H2: u32 = 0x3c6ef372, const H3: u32 = 0xa54ff53a,
+                        const H4: u32 = 0x510e527f, const H5: u32 = 0x9b05688c,
+                        const H6: u32 = 0x1f83d9ab, const H7: u32 = 0x5be0cd19,
+                        const ROUND: usize = 64>
         = SHA2_256_Generic<8, H0, H1, H2, H3, H4, H5, H6, H7, ROUND>;
 
-/// You have freedom of changing ROUND.
+/// You have freedom of changing ROUND for SHA-2-224.
+/// 
+/// # Generic Parameters
+/// You can create your own expanded version of SHA-2-224 by
+/// changing the generic parameters ROUND, and K00 ~ K63.
+/// - ROUND : the number of rounds. The default value of it is `64` (= 16 * 4).
 #[allow(non_camel_case_types)]
 pub type SHA2_224_Expanded<const ROUND: usize = 64>
         = SHA2_256_Generic<7, 0xc1059ed8, 0x367cd507, 0x3070dd17, 0xf70e5939,
                             0xffc00b31, 0x68581511, 0x64f98fa7, 0xbefa4fa4, ROUND>;
 
-/// You have freedom of changing ROUND, and K00 ~ K63.
+/// You have freedom of changing ROUND, and K00 ~ K63 for SHA-2-256.
+/// 
+/// # Generic Parameters
+/// You can create your own expanded version of SHA-2-256 by
+/// changing the generic parameters ROUND, and K00 ~ K63.
+/// - ROUND : the number of rounds. The default value of it is `64` (= 16 * 4).
+/// - K0 ~ K63 : the added values in hashing process, which are sixty-four u32
+/// values and called round constants.
+/// The default values of K0 ~ K63 are defined to be first 32 bits of the
+/// fractional parts of the cube roots of the first 64 primes 2..311,
+/// respectivey (in big endian representation). So, K0 ~ K63 are 0x428a2f98,
+/// 0x71374491, 0xb5c0fbcf, 0xe9b5dba5, 0x3956c25b, 0x59f111f1, 0x923f82a4,
+/// 0xab1c5ed5, 0xd807aa98, 0x12835b01, 0x243185be, 0x550c7dc3, 0x72be5d74,
+/// 0x80deb1fe, 0x9bdc06a7, 0xc19bf174, 0xe49b69c1, 0xefbe4786, 0x0fc19dc6,
+/// 0x240ca1cc, 0x2de92c6f, 0x4a7484aa, 0x5cb0a9dc, 0x76f988da, 0x983e5152,
+/// 0xa831c66d, 0xb00327c8, 0xbf597fc7, 0xc6e00bf3, 0xd5a79147, 0x06ca6351,
+/// 0x14292967, 0x27b70a85, 0x2e1b2138, 0x4d2c6dfc, 0x53380d13, 0x650a7354,
+/// 0x766a0abb, 0x81c2c92e, 0x92722c85, 0xa2bfe8a1, 0xa81a664b, 0xc24b8b70,
+/// 0xc76c51a3, 0xd192e819, 0xd6990624, 0xf40e3585, 0x106aa070, 0x19a4c116,
+/// 0x1e376c08, 0x2748774c, 0x34b0bcb5, 0x391c0cb3, 0x4ed8aa4a, 0x5b9cca4f,
+/// 0x682e6ff3, 0x748f82ee, 0x78a5636f, 0x84c87814, 0x8cc70208, 0x90befffa,
+/// 0xa4506ceb, 0xbef9a3f7, 0xc67178f2, respectively (in big endian
+/// representation).
 #[allow(non_camel_case_types)]
-pub type SHA2_256_Generic_HRS_fixed<const ROUND: usize,
-                    const K00: u32, const K01: u32, const K02: u32, const K03: u32,
-                    const K04: u32, const K05: u32, const K06: u32, const K07: u32,
-                    const K08: u32, const K09: u32, const K10: u32, const K11: u32,
-                    const K12: u32, const K13: u32, const K14: u32, const K15: u32,
-                    const K16: u32, const K17: u32, const K18: u32, const K19: u32,
-                    const K20: u32, const K21: u32, const K22: u32, const K23: u32,
-                    const K24: u32, const K25: u32, const K26: u32, const K27: u32,
-                    const K28: u32, const K29: u32, const K30: u32, const K31: u32,
-                    const K32: u32, const K33: u32, const K34: u32, const K35: u32,
-                    const K36: u32, const K37: u32, const K38: u32, const K39: u32,
-                    const K40: u32, const K41: u32, const K42: u32, const K43: u32,
-                    const K44: u32, const K45: u32, const K46: u32, const K47: u32,
-                    const K48: u32, const K49: u32, const K50: u32, const K51: u32,
-                    const K52: u32, const K53: u32, const K54: u32, const K55: u32,
-                    const K56: u32, const K57: u32, const K58: u32, const K59: u32,
-                    const K60: u32, const K61: u32, const K62: u32, const K63: u32>
+pub type SHA2_256_Generic_HRS_fixed<const ROUND: usize = 64,
+                        const K00: u32 = 0x428a2f98, const K01: u32 = 0x71374491,
+                        const K02: u32 = 0xb5c0fbcf, const K03: u32 = 0xe9b5dba5,
+                        const K04: u32 = 0x3956c25b, const K05: u32 = 0x59f111f1,
+                        const K06: u32 = 0x923f82a4, const K07: u32 = 0xab1c5ed5,
+                        const K08: u32 = 0xd807aa98, const K09: u32 = 0x12835b01,
+                        const K10: u32 = 0x243185be, const K11: u32 = 0x550c7dc3,
+                        const K12: u32 = 0x72be5d74, const K13: u32 = 0x80deb1fe,
+                        const K14: u32 = 0x9bdc06a7, const K15: u32 = 0xc19bf174,
+                        const K16: u32 = 0xe49b69c1, const K17: u32 = 0xefbe4786,
+                        const K18: u32 = 0x0fc19dc6, const K19: u32 = 0x240ca1cc,
+                        const K20: u32 = 0x2de92c6f, const K21: u32 = 0x4a7484aa,
+                        const K22: u32 = 0x5cb0a9dc, const K23: u32 = 0x76f988da,
+                        const K24: u32 = 0x983e5152, const K25: u32 = 0xa831c66d,
+                        const K26: u32 = 0xb00327c8, const K27: u32 = 0xbf597fc7,
+                        const K28: u32 = 0xc6e00bf3, const K29: u32 = 0xd5a79147,
+                        const K30: u32 = 0x06ca6351, const K31: u32 = 0x14292967,
+                        const K32: u32 = 0x27b70a85, const K33: u32 = 0x2e1b2138,
+                        const K34: u32 = 0x4d2c6dfc, const K35: u32 = 0x53380d13,
+                        const K36: u32 = 0x650a7354, const K37: u32 = 0x766a0abb,
+                        const K38: u32 = 0x81c2c92e, const K39: u32 = 0x92722c85,
+                        const K40: u32 = 0xa2bfe8a1, const K41: u32 = 0xa81a664b,
+                        const K42: u32 = 0xc24b8b70, const K43: u32 = 0xc76c51a3,
+                        const K44: u32 = 0xd192e819, const K45: u32 = 0xd6990624,
+                        const K46: u32 = 0xf40e3585, const K47: u32 = 0x106aa070,
+                        const K48: u32 = 0x19a4c116, const K49: u32 = 0x1e376c08,
+                        const K50: u32 = 0x2748774c, const K51: u32 = 0x34b0bcb5,
+                        const K52: u32 = 0x391c0cb3, const K53: u32 = 0x4ed8aa4a,
+                        const K54: u32 = 0x5b9cca4f, const K55: u32 = 0x682e6ff3,
+                        const K56: u32 = 0x748f82ee, const K57: u32 = 0x78a5636f,
+                        const K58: u32 = 0x84c87814, const K59: u32 = 0x8cc70208,
+                        const K60: u32 = 0x90befffa, const K61: u32 = 0xa4506ceb,
+                        const K62: u32 = 0xbef9a3f7, const K63: u32 = 0xc67178f2>
     = SHA2_256_Generic<8, 0x6a09e667, 0xbb67ae85, 0x3c6ef372, 0xa54ff53a,
                         0x510e527f, 0x9b05688c, 0x1f83d9ab, 0x5be0cd19, ROUND,
                         K00, K01, K02, K03, K04, K05, K06, K07,
@@ -65,25 +124,63 @@ pub type SHA2_256_Generic_HRS_fixed<const ROUND: usize,
                         K56, K57, K58, K59,K60, K61, K62, K63,
                         2, 6, 7, 11, 13, 17, 18, 19, 22, 25, 3, 10>;
 
-/// You have freedom of changing ROUND, and K00 ~ K63.
+/// You have freedom of changing ROUND, and K00 ~ K63 for SHA-2-224.
+/// 
+/// # Generic Parameters
+/// You can create your own expanded version of SHA-2-224 by
+/// changing the generic parameters ROUND, and K00 ~ K63.
+/// - ROUND : the number of rounds. The default value of it is `64` (= 16 * 4).
+/// - K0 ~ K63 : the added values in hashing process, which are sixty-four u32
+/// values and called round constants.
+/// The default values of K0 ~ K63 are defined to be first 32 bits of the
+/// fractional parts of the cube roots of the first 64 primes 2..311,
+/// respectivey (in big endian representation). So, K0 ~ K63 are 0x428a2f98,
+/// 0x71374491, 0xb5c0fbcf, 0xe9b5dba5, 0x3956c25b, 0x59f111f1, 0x923f82a4,
+/// 0xab1c5ed5, 0xd807aa98, 0x12835b01, 0x243185be, 0x550c7dc3, 0x72be5d74,
+/// 0x80deb1fe, 0x9bdc06a7, 0xc19bf174, 0xe49b69c1, 0xefbe4786, 0x0fc19dc6,
+/// 0x240ca1cc, 0x2de92c6f, 0x4a7484aa, 0x5cb0a9dc, 0x76f988da, 0x983e5152,
+/// 0xa831c66d, 0xb00327c8, 0xbf597fc7, 0xc6e00bf3, 0xd5a79147, 0x06ca6351,
+/// 0x14292967, 0x27b70a85, 0x2e1b2138, 0x4d2c6dfc, 0x53380d13, 0x650a7354,
+/// 0x766a0abb, 0x81c2c92e, 0x92722c85, 0xa2bfe8a1, 0xa81a664b, 0xc24b8b70,
+/// 0xc76c51a3, 0xd192e819, 0xd6990624, 0xf40e3585, 0x106aa070, 0x19a4c116,
+/// 0x1e376c08, 0x2748774c, 0x34b0bcb5, 0x391c0cb3, 0x4ed8aa4a, 0x5b9cca4f,
+/// 0x682e6ff3, 0x748f82ee, 0x78a5636f, 0x84c87814, 0x8cc70208, 0x90befffa,
+/// 0xa4506ceb, 0xbef9a3f7, 0xc67178f2, respectively (in big endian
+/// representation).
 #[allow(non_camel_case_types)]
-pub type SHA2_224_Generic_HRS_fixed<const ROUND: usize,
-                    const K00: u32, const K01: u32, const K02: u32, const K03: u32,
-                    const K04: u32, const K05: u32, const K06: u32, const K07: u32,
-                    const K08: u32, const K09: u32, const K10: u32, const K11: u32,
-                    const K12: u32, const K13: u32, const K14: u32, const K15: u32,
-                    const K16: u32, const K17: u32, const K18: u32, const K19: u32,
-                    const K20: u32, const K21: u32, const K22: u32, const K23: u32,
-                    const K24: u32, const K25: u32, const K26: u32, const K27: u32,
-                    const K28: u32, const K29: u32, const K30: u32, const K31: u32,
-                    const K32: u32, const K33: u32, const K34: u32, const K35: u32,
-                    const K36: u32, const K37: u32, const K38: u32, const K39: u32,
-                    const K40: u32, const K41: u32, const K42: u32, const K43: u32,
-                    const K44: u32, const K45: u32, const K46: u32, const K47: u32,
-                    const K48: u32, const K49: u32, const K50: u32, const K51: u32,
-                    const K52: u32, const K53: u32, const K54: u32, const K55: u32,
-                    const K56: u32, const K57: u32, const K58: u32, const K59: u32,
-                    const K60: u32, const K61: u32, const K62: u32, const K63: u32>
+pub type SHA2_224_Generic_HRS_fixed<const ROUND: usize = 64,
+                        const K00: u32 = 0x428a2f98, const K01: u32 = 0x71374491,
+                        const K02: u32 = 0xb5c0fbcf, const K03: u32 = 0xe9b5dba5,
+                        const K04: u32 = 0x3956c25b, const K05: u32 = 0x59f111f1,
+                        const K06: u32 = 0x923f82a4, const K07: u32 = 0xab1c5ed5,
+                        const K08: u32 = 0xd807aa98, const K09: u32 = 0x12835b01,
+                        const K10: u32 = 0x243185be, const K11: u32 = 0x550c7dc3,
+                        const K12: u32 = 0x72be5d74, const K13: u32 = 0x80deb1fe,
+                        const K14: u32 = 0x9bdc06a7, const K15: u32 = 0xc19bf174,
+                        const K16: u32 = 0xe49b69c1, const K17: u32 = 0xefbe4786,
+                        const K18: u32 = 0x0fc19dc6, const K19: u32 = 0x240ca1cc,
+                        const K20: u32 = 0x2de92c6f, const K21: u32 = 0x4a7484aa,
+                        const K22: u32 = 0x5cb0a9dc, const K23: u32 = 0x76f988da,
+                        const K24: u32 = 0x983e5152, const K25: u32 = 0xa831c66d,
+                        const K26: u32 = 0xb00327c8, const K27: u32 = 0xbf597fc7,
+                        const K28: u32 = 0xc6e00bf3, const K29: u32 = 0xd5a79147,
+                        const K30: u32 = 0x06ca6351, const K31: u32 = 0x14292967,
+                        const K32: u32 = 0x27b70a85, const K33: u32 = 0x2e1b2138,
+                        const K34: u32 = 0x4d2c6dfc, const K35: u32 = 0x53380d13,
+                        const K36: u32 = 0x650a7354, const K37: u32 = 0x766a0abb,
+                        const K38: u32 = 0x81c2c92e, const K39: u32 = 0x92722c85,
+                        const K40: u32 = 0xa2bfe8a1, const K41: u32 = 0xa81a664b,
+                        const K42: u32 = 0xc24b8b70, const K43: u32 = 0xc76c51a3,
+                        const K44: u32 = 0xd192e819, const K45: u32 = 0xd6990624,
+                        const K46: u32 = 0xf40e3585, const K47: u32 = 0x106aa070,
+                        const K48: u32 = 0x19a4c116, const K49: u32 = 0x1e376c08,
+                        const K50: u32 = 0x2748774c, const K51: u32 = 0x34b0bcb5,
+                        const K52: u32 = 0x391c0cb3, const K53: u32 = 0x4ed8aa4a,
+                        const K54: u32 = 0x5b9cca4f, const K55: u32 = 0x682e6ff3,
+                        const K56: u32 = 0x748f82ee, const K57: u32 = 0x78a5636f,
+                        const K58: u32 = 0x84c87814, const K59: u32 = 0x8cc70208,
+                        const K60: u32 = 0x90befffa, const K61: u32 = 0xa4506ceb,
+                        const K62: u32 = 0xbef9a3f7, const K63: u32 = 0xc67178f2>
     = SHA2_256_Generic<7, 0xc1059ed8, 0x367cd507, 0x3070dd17, 0xf70e5939,
                         0xffc00b31, 0x68581511, 0x64f98fa7, 0xbefa4fa4, ROUND,
                         K00, K01, K02, K03, K04, K05, K06, K07,

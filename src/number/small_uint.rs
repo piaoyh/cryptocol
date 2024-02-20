@@ -1924,6 +1924,7 @@ pub trait SmallUInt: Copy + Clone + Sized //+ Display + Debug + ToString
     ///     lhs.checked_add(rhs)
     /// }
     /// ```
+    /// 
     /// # Plagiarism in descryption
     /// It calls the method checked_add() of implementation of the primitive
     /// unsigned integer types such as`u8`, `u16`, `u32`, `u64`, `u128` and
@@ -16270,16 +16271,293 @@ pub trait SmallUInt: Copy + Clone + Sized //+ Display + Debug + ToString
     /// ```
     fn modular_pow(self, exp: Self, modulo: Self) -> Self;
 
+    // fn ilog(self, base: Self) -> u32;
+    /// Returns the logarithm of the number with respect to an arbitrary base.
+    /// 
+    /// # Arguments
+    /// `base` is the base of the logarithm.
+    /// 
+    /// # Output
+    /// The logarithm of the number with respect to an arbitrary base,
+    /// rounded down
+    /// 
+    /// # Features
+    /// - Usually the result of logarithm is float point number. So, it rounds
+    /// down the logarithm result if it is not fit to interger.
+    /// - This method might not be optimized owing to implementation details;
+    /// ilog2 can produce results more efficiently for base 2, and
+    /// ilog10 can produce results more efficiently for base 10.
+    /// 
+    /// # Panics
+    /// This function will panic if `self` is zero, or if `base` is less than 2.
+    /// So, use this method only when `self` is non-zero and `base` is not less
+    /// than 2.
+    /// 
+    /// # Examples
+    /// ```
+    /// ```
+    /// You can use the above generic function `func<>()` for all
+    /// SmallUInt-supported data types in a same scope.
+    /// Look into the following example.
+    /// 
+    /// # Big-endian issue
+    /// It is just experimental for Big Endian CPUs. So, you are not encouraged
+    /// to use it for Big Endian CPUs for serious purpose. Only use this crate
+    /// for Big-endian CPUs with your own full responsibility.
+    /// Tests a `SmallUInt`-type object to find whether or not it is a
+    /// prime number.
+    /// 
+    /// # Plagiarism in descryption
+    /// It calls the method ilog() of implementation of the primitive
+    /// unsigned integer types such as`u8`, `u16`, `u32`, `u64`, `u128` and
+    /// `usize` directly. So, all the description of this method is mainly the
+    /// same as that of the method ilog() of implementation of the
+    /// primitive unsigned integer types except example codes. Confer to the
+    /// descryptions that are linked to in the section _Reference_. This
+    /// plagiarism is not made maliciously but is made for the reason of
+    /// effectiveness and efficiency so that users may understand better and
+    /// easily how to use this method with simiilarity to the method
+    /// ilog() of implementation of the primitive unsigned integer types.
+    /// 
+    /// # References
+    /// - If you want to know about the definition of the method `ilog()`
+    /// for the primitive type `u8`, read [here](https://doc.rust-lang.org/core/primitive.u8.html#method.ilog).
+    /// - If you want to know about the definition of the method `ilog()`
+    /// for the primitive type `u16`, read [here](https://doc.rust-lang.org/core/primitive.u16.html#method.ilog).
+    /// - If you want to know about the definition of the method `ilog()`
+    /// for the primitive type `u32`, read [here](https://doc.rust-lang.org/core/primitive.u32.html#method.ilog).
+    /// - If you want to know about the definition of the method `ilog()`
+    /// for the primitive type `u64`, read [here](https://doc.rust-lang.org/core/primitive.u64.html#method.ilog).
+    /// - If you want to know about the definition of the method `ilog()`
+    /// for the primitive type `u128`, read [here](https://doc.rust-lang.org/core/primitive.u128.html#method.ilog).
+    /// - If you want to know about the definition of the method `ilog()`
+    /// for the primitive type `usize`, read [here](https://doc.rust-lang.org/core/primitive.usize.html#method.ilog).
     fn ilog(self, base: Self) -> u32;
+
+    // fn ilog10(self) -> u32;
+    /// Returns the base 10 logarithm of the number.
+    /// 
+    /// # Output
+    /// The logarithm of the number with respect to an arbitrary base,
+    /// rounded down.
+    /// 
+    /// # Features
+    /// - Usually the result of logarithm is float point number.
+    /// So, it rounds down the logarithm result if it is not fit to interger.
+    /// 
+    /// # Panics
+    /// This function will panic if `self` is zero.
+    /// So, use this method only when `self` is non-zero.
+    /// 
+    /// 
+    /// # Examples
+    /// ```
+    /// ```
+    /// You can use the above generic function `func<>()` for all
+    /// SmallUInt-supported data types in a same scope.
+    /// Look into the following example.
+    /// 
+    /// # Big-endian issue
+    /// It is just experimental for Big Endian CPUs. So, you are not encouraged
+    /// to use it for Big Endian CPUs for serious purpose. Only use this crate
+    /// for Big-endian CPUs with your own full responsibility.
+    /// Tests a `SmallUInt`-type object to find whether or not it is a
+    /// prime number.
+    /// 
+    /// # Plagiarism in descryption
+    /// It calls the method ilog10() of implementation of the primitive
+    /// unsigned integer types such as`u8`, `u16`, `u32`, `u64`, `u128` and
+    /// `usize` directly. So, all the description of this method is mainly the
+    /// same as that of the method ilog10() of implementation of the
+    /// primitive unsigned integer types except example codes. Confer to the
+    /// descryptions that are linked to in the section _Reference_. This
+    /// plagiarism is not made maliciously but is made for the reason of
+    /// effectiveness and efficiency so that users may understand better and
+    /// easily how to use this method with simiilarity to the method
+    /// ilog10() of implementation of the primitive unsigned integer types.
+    /// 
+    /// # References
+    /// - If you want to know about the definition of the method `ilog10()`
+    /// for the primitive type `u8`, read [here](https://doc.rust-lang.org/core/primitive.u8.html#method.ilog10).
+    /// - If you want to know about the definition of the method `ilog10()`
+    /// for the primitive type `u16`, read [here](https://doc.rust-lang.org/core/primitive.u16.html#method.ilog10).
+    /// - If you want to know about the definition of the method `ilog10()`
+    /// for the primitive type `u32`, read [here](https://doc.rust-lang.org/core/primitive.u32.html#method.ilog10).
+    /// - If you want to know about the definition of the method `ilog10()`
+    /// for the primitive type `u64`, read [here](https://doc.rust-lang.org/core/primitive.u64.html#method.ilog10).
+    /// - If you want to know about the definition of the method `ilog10()`
+    /// for the primitive type `u128`, read [here](https://doc.rust-lang.org/core/primitive.u128.html#method.ilog10).
+    /// - If you want to know about the definition of the method `ilog10()`
+    /// for the primitive type `usize`, read [here](https://doc.rust-lang.org/core/primitive.usize.html#method.ilog10).
     fn ilog10(self) -> u32;
+
+    // fn ilog2(self) -> u32;
+    /// Returns the base 2 logarithm of the number, rounded down.
+    /// 
+    /// # Output
+    /// The logarithm of the number with respect to an arbitrary base,
+    /// rounded down
+    /// 
+    /// # Features
+    /// - Usually the result of logarithm is float point number. So, it rounds
+    /// down the logarithm result if it is not fit to interger.
+    /// 
+    /// # Panics
+    /// This function will panic if `self` is zero.
+    /// So, use this method only when `self` is non-zero.
+    /// 
+    /// # Examples
+    /// ```
+    /// ```
+    /// You can use the above generic function `func<>()` for all
+    /// SmallUInt-supported data types in a same scope.
+    /// Look into the following example.
+    /// 
+    /// # Big-endian issue
+    /// It is just experimental for Big Endian CPUs. So, you are not encouraged
+    /// to use it for Big Endian CPUs for serious purpose. Only use this crate
+    /// for Big-endian CPUs with your own full responsibility.
+    /// Tests a `SmallUInt`-type object to find whether or not it is a
+    /// prime number.
+    /// 
+    /// # Plagiarism in descryption
+    /// It calls the method ilog2() of implementation of the primitive
+    /// unsigned integer types such as`u8`, `u16`, `u32`, `u64`, `u128` and
+    /// `usize` directly. So, all the description of this method is mainly the
+    /// same as that of the method ilog2() of implementation of the
+    /// primitive unsigned integer types except example codes. Confer to the
+    /// descryptions that are linked to in the section _Reference_. This
+    /// plagiarism is not made maliciously but is made for the reason of
+    /// effectiveness and efficiency so that users may understand better and
+    /// easily how to use this method with simiilarity to the method
+    /// ilog2() of implementation of the primitive unsigned integer types.
+    /// 
+    /// # References
+    /// - If you want to know about the definition of the method `ilog2()`
+    /// for the primitive type `u8`, read [here](https://doc.rust-lang.org/core/primitive.u8.html#method.ilog2).
+    /// - If you want to know about the definition of the method `ilog2()`
+    /// for the primitive type `u16`, read [here](https://doc.rust-lang.org/core/primitive.u16.html#method.ilog2).
+    /// - If you want to know about the definition of the method `ilog2()`
+    /// for the primitive type `u32`, read [here](https://doc.rust-lang.org/core/primitive.u32.html#method.ilog2).
+    /// - If you want to know about the definition of the method `ilog2()`
+    /// for the primitive type `u64`, read [here](https://doc.rust-lang.org/core/primitive.u64.html#method.ilog2).
+    /// - If you want to know about the definition of the method `ilog2()`
+    /// for the primitive type `u128`, read [here](https://doc.rust-lang.org/core/primitive.u128.html#method.ilog2).
+    /// - If you want to know about the definition of the method `ilog2()`
+    /// for the primitive type `usize`, read [here](https://doc.rust-lang.org/core/primitive.usize.html#method.ilog2).
     fn ilog2(self) -> u32;
 
-    fn sqrt(self) -> Self;
+    // fn isqrt(self) -> Self;
+    /// Returns the square root of the number.
+    /// 
+    /// # Output
+    /// The square root of the number, rounded down
+    /// 
+    /// # Features
+    /// - Usually the result of square root is float point number.
+    /// So, it rounds down the square root result if it is not fit to interger.
+    /// 
+    /// # Examples
+    /// ```
+    /// ```
+    /// You can use the above generic function `func<>()` for all
+    /// SmallUInt-supported data types in a same scope.
+    /// Look into the following example.
+    /// 
+    /// # Big-endian issue
+    /// It is just experimental for Big Endian CPUs. So, you are not encouraged
+    /// to use it for Big Endian CPUs for serious purpose. Only use this crate
+    /// for Big-endian CPUs with your own full responsibility.
+    /// Tests a `SmallUInt`-type object to find whether or not it is a
+    /// prime number.
+    /// 
+    /// # Plagiarism in descryption
+    /// It calls the method isqrt() of implementation of the primitive
+    /// unsigned integer types such as`u8`, `u16`, `u32`, `u64`, `u128` and
+    /// `usize` directly. So, all the description of this method is mainly the
+    /// same as that of the method isqrt() of implementation of the
+    /// primitive unsigned integer types except example codes. Confer to the
+    /// descryptions that are linked to in the section _Reference_. This
+    /// plagiarism is not made maliciously but is made for the reason of
+    /// effectiveness and efficiency so that users may understand better and
+    /// easily how to use this method with simiilarity to the method
+    /// isqrt() of implementation of the primitive unsigned integer types.
+    /// 
+    /// # References
+    /// - If you want to know about the definition of the method `isqrt()`
+    /// for the primitive type `u8`, read [here](https://doc.rust-lang.org/core/primitive.u8.html#method.isqrt).
+    /// - If you want to know about the definition of the method `isqrt()`
+    /// for the primitive type `u16`, read [here](https://doc.rust-lang.org/core/primitive.u16.html#method.isqrt).
+    /// - If you want to know about the definition of the method `isqrt()`
+    /// for the primitive type `u32`, read [here](https://doc.rust-lang.org/core/primitive.u32.html#method.isqrt).
+    /// - If you want to know about the definition of the method `isqrt()`
+    /// for the primitive type `u64`, read [here](https://doc.rust-lang.org/core/primitive.u64.html#method.isqrt).
+    /// - If you want to know about the definition of the method `isqrt()`
+    /// for the primitive type `u128`, read [here](https://doc.rust-lang.org/core/primitive.u128.html#method.isqrt).
+    /// - If you want to know about the definition of the method `isqrt()`
+    /// for the primitive type `usize`, read [here](https://doc.rust-lang.org/core/primitive.usize.html#method.isqrt).
+    fn isqrt(self) -> Self;
+
+    // fn root(self, exp: Self) -> Self;
+    /// Returns the `exp`-th root of the number.
+    /// 
+    /// # Output
+    /// The `exp`-th root of the number, rounded down
+    /// 
+    /// # Features
+    /// - Usually the result of `exp`-th root root is float point number.
+    /// So, it rounds down the `exp`-th root root result
+    /// if it is not fit to interger.
+    /// 
+    /// # Examples
+    /// ```
+    /// ```
+    /// You can use the above generic function `func<>()` for all
+    /// SmallUInt-supported data types in a same scope.
+    /// Look into the following example.
+    /// 
+    /// # Big-endian issue
+    /// It is just experimental for Big Endian CPUs. So, you are not encouraged
+    /// to use it for Big Endian CPUs for serious purpose. Only use this crate
+    /// for Big-endian CPUs with your own full responsibility.
+    /// Tests a `SmallUInt`-type object to find whether or not it is a
+    /// prime number.
     fn root(self, exp: Self) -> Self;
 
     // fn test_miller_rabin(self, a: Self) -> bool
+    /// Tests a `SmallUInt`-type object to find whether or not `self` is a
+    /// prime number.
+    /// 
+    /// # Output
+    /// `true` if `self` is considered to be a prime number.
+    /// Otherwise, it returns `false`.
+    /// 
+    /// # Features
+    /// - This test is done by the
+    /// [Miller-Rabin algorithm](https://en.wikipedia.org/wiki/Miller%E2%80%93Rabin_primality_test).
+    /// - If this test results in composite number, the tested number is surely
+    /// a composite number. If this test results in prime number, the
+    /// probability that the tested number is not a prime number is 1/4. So,
+    /// if the test results in prime number twice, the probability that the
+    /// tested number is not a prime number is 1/16 (= 1/4 * 1/4).
+    /// Therefore, if you test any number with this method 5 times and they
+    /// all result in a prime number, it is 99.9% that the number is a prime
+    /// number. This method is used by `is_prime_using_miller_rabin(...)`.
+    /// 
+    /// # Examples
+    /// ```
+    /// ```
+    /// You can use the above generic function `func<>()` for all
+    /// SmallUInt-supported data types in a same scope.
+    /// Look into the following example.
+    /// 
+    /// # Big-endian issue
+    /// It is just experimental for Big Endian CPUs. So, you are not encouraged
+    /// to use it for Big Endian CPUs for serious purpose. Only use this crate
+    /// for Big-endian CPUs with your own full responsibility.
     /// Tests a `SmallUInt`-type object to find whether or not it is a
     /// prime number.
+    /// 
     /// [Read more in detail](trait@SmallUInt#tymethod.is_prime_using_miller_rabin)
     fn test_miller_rabin(self, a: Self) -> bool;
 
@@ -16292,23 +16570,21 @@ pub trait SmallUInt: Copy + Clone + Sized //+ Display + Debug + ToString
     /// Otherwise, it returns `false`.
     /// 
     /// # Features
-    /// It uses [Miller Rabin algorithm](https://en.wikipedia.org/wiki/Miller%E2%80%93Rabin_primality_test).
-    /// If this test results in composite number, the tested number is surely a
+    /// - It uses the method `test_miller_rabin()` which uses
+    /// [Miller Rabin algorithm](https://en.wikipedia.org/wiki/Miller%E2%80%93Rabin_primality_test).
+    /// - If this test results in composite number, the tested number is surely a
     /// composite number. If this test results in prime number, the probability
-    /// that the tested number is not a prime number is 1/4. So, if the test
-    /// results in prime number twice, the probability that the tested number
-    /// is not a prime number is 1/16 (= 1/4 * 1/4). Therefore, if you test any
-    /// number 5 times and they all result in a prime number, it is 99.9% that
+    /// that the tested number is not a prime number is (1/4) ^ `repeatition`.
+    /// So, if `repeatition` is two and it results in prime number the
+    /// probability that the tested number is not a prime number is
+    /// 1/16 (= 1/4 * 1/4). Therefore, if you test any number with `repeatition`
+    /// (= 5) and they all result in a prime number, it is 99.9% that
     /// the number is a prime number.
     /// 
     /// # Argument
     /// The argument `repetition` defines how many times it tests whether the
     /// generated random number is prime. Usually, `repetition` is given to be
     /// 5 to have 99.9% accuracy.
-    /// 
-    /// # Panics
-    /// If `size_of::<T>() * N` <= `128`, This method may panic
-    /// or its behavior may undefined though it may not panic.
     /// 
     /// # Example
     /// ```
@@ -16331,9 +16607,71 @@ pub trait SmallUInt: Copy + Clone + Sized //+ Display + Debug + ToString
     /// [Read more in detail](trait@SmallUInt#tymethod.is_prime_using_miller_rabin)
     fn is_prime_using_miller_rabin(self, repetition: usize) -> bool;
 
+    // fn reverse_bits(self) -> Self;
+    /// Reverses the order of bits in the integer.
+    /// 
+    /// # Features
+    /// The least significant bit becomes the most significant bit, second
+    /// least-significant bit becomes second most-significant bit, etc.
+    /// 
+    /// # Output
+    /// the number that has the bit order opposite to that of `self`.
+    /// 
+    /// # Examples
+    /// ```
+    /// ```
+    /// You can use the above generic function `func<>()` for all
+    /// SmallUInt-supported data types in a same scope.
+    /// Look into the following example.
+    /// 
+    /// 
+    /// 
+    /// # Plagiarism in descryption
+    /// It calls the method reverse_bits() of implementation of the primitive
+    /// unsigned integer types such as`u8`, `u16`, `u32`, `u64`, `u128` and
+    /// `usize` directly. So, all the description of this method is mainly the
+    /// same as that of the method reverse_bits() of implementation of the
+    /// primitive unsigned integer types except example codes. Confer to the
+    /// descryptions that are linked to in the section _Reference_. This
+    /// plagiarism is not made maliciously but is made for the reason of
+    /// effectiveness and efficiency so that users may understand better and
+    /// easily how to use this method with simiilarity to the method
+    /// reverse_bits() of implementation of the primitive unsigned integer types.
+    /// 
+    /// # References
+    /// - If you want to know about the definition of the method `reverse_bits()`
+    /// for the primitive type `u8`, read [here](https://doc.rust-lang.org/core/primitive.u8.html#method.reverse_bits).
+    /// - If you want to know about the definition of the method `reverse_bits()`
+    /// for the primitive type `u16`, read [here](https://doc.rust-lang.org/core/primitive.u16.html#method.reverse_bits).
+    /// - If you want to know about the definition of the method `reverse_bits()`
+    /// for the primitive type `u32`, read [here](https://doc.rust-lang.org/core/primitive.u32.html#method.reverse_bits).
+    /// - If you want to know about the definition of the method `reverse_bits()`
+    /// for the primitive type `u64`, read [here](https://doc.rust-lang.org/core/primitive.u64.html#method.reverse_bits).
+    /// - If you want to know about the definition of the method `reverse_bits()`
+    /// for the primitive type `u128`, read [here](https://doc.rust-lang.org/core/primitive.u128.html#method.reverse_bits).
+    /// - If you want to know about the definition of the method `reverse_bits()`
+    /// for the primitive type `usize`, read [here](https://doc.rust-lang.org/core/primitive.usize.html#method.reverse_bits).
     fn reverse_bits(self) -> Self;
+
+    // fn reverse_bits_assign(&mut self);
+    /// Reverses the order of bits in the integer.
+    /// 
+    /// # Features
+    /// The least significant bit becomes the most significant bit, second
+    /// least-significant bit becomes second most-significant bit, etc.
+    /// 
+    /// # Examples
+    /// ```
+    /// ```
+    /// You can use the above generic function `func<>()` for all
+    /// SmallUInt-supported data types in a same scope.
+    /// Look into the following example.
     fn reverse_bits_assign(&mut self);
+
+    // fn rotate_left(self, n: u32) -> Self;
     fn rotate_left(self, n: u32) -> Self;
+
+    // fn rotate_right(self, n: u32) -> Self;
     fn rotate_right(self, n: u32) -> Self;
 
     // pub fn count_ones(&self) -> u32

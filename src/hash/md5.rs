@@ -19,7 +19,17 @@ use std::fmt::{ self, Debug, Display, Formatter };
 use crate::number::{ SmallUInt, IntUnion, LongUnion };
 
 
-/// You have freedom of changing H0 ~ H3, and ROUND.
+/// You have freedom of changing N, H0 ~ H3, and ROUND for MD5.
+/// 
+/// # Generic Parameters
+/// You can create your own expanded version of MD5 by changing the generic
+/// parameters N, H0 ~ H3, and ROUND.
+/// - N : the size of output. N cannot be 0 or greater than 4. If N is 4, the
+/// output is 128 bits, while if N is 1, the output is 32 bits.
+/// - H0 ~ H3 : the initial hash values, four u32 values.
+/// The default values of H0, H1, H2, and H3 are 0x67452301, 0xefcdab89,
+/// 0x98badcfe, and 0x10325476, respectively (in little endian representation).
+/// - ROUND : the number of rounds. The default value of it is `64` (= 16 * 4).
 #[allow(non_camel_case_types)]
 pub type MD5_Expanded<const N: usize = 4,
                         const H0: u32 = 0x67452301, const H1: u32 = 0xefcdab89,
@@ -27,25 +37,65 @@ pub type MD5_Expanded<const N: usize = 4,
                         const ROUND: usize = 64>
     = MD5_Generic<N, H0, H1, H2, H3, ROUND>;
 
-/// You have freedom of changing ROUND, and K00 ~ K63.
+/// You have freedom of changing N, ROUND, and K00 ~ K63 for MD5.
+/// 
+/// # Generic Parameters
+/// You can create your own expanded version of MD5 by changing the generic
+/// parameters N, ROUND, and K00 ~ K63.
+/// - N : the size of output. N cannot be 0 or greater than 4. If N is 4, the
+/// output is 128 bits, while if N is 1, the output is 32 bits.
+/// - ROUND : the number of rounds. The default value of it is `64` (= 16 * 4).
+/// - K00 ~ K63 : the added values in hashing process, sixty-four u32 values.
+/// The default values of K00 ~ K63 are defined to be the integer part of
+/// 4294967296 times abs(sin(i)), where i is in radians. So, K00 = 4294967296
+/// times abs(sin(1)), K01 = 4294967296 times abs(sin(2)), K02 = 4294967296
+/// times abs(sin(3)), and so on (in little endian representation).
+/// So, the default values of K00 ~ K63 are
+/// 0xd76aa478, 0xe8c7b756, 0x242070db, 0xc1bdceee, 0xf57c0faf, 0x4787c62a,
+/// 0xa8304613, 0xfd469501, 0x698098d8, 0x8b44f7af, 0xffff5bb1, 0x895cd7be,
+/// 0x6b901122, 0xfd987193, 0xa679438e, 0x49b40821, 0xf61e2562, 0xc040b340,
+/// 0x265e5a51, 0xe9b6c7aa, 0xd62f105d, 0x02441453, 0xd8a1e681, 0xe7d3fbc8,
+/// 0x21e1cde6, 0xc33707d6, 0xf4d50d87, 0x455a14ed, 0xa9e3e905, 0xfcefa3f8,
+/// 0x676f02d9, 0x8d2a4c8a, 0xfffa3942, 0x8771f681, 0x6d9d6122, 0xfde5380c,
+/// 0xa4beea44, 0x4bdecfa9, 0xf6bb4b60, 0xbebfbc70, 0x289b7ec6, 0xeaa127fa,
+/// 0xd4ef3085, 0x04881d05, 0xd9d4d039, 0xe6db99e5, 0x1fa27cf8, 0xc4ac5665,
+/// 0xf4292244, 0x432aff97, 0xab9423a7, 0xfc93a039, 0x655b59c3, 0x8f0ccc92,
+/// 0xffeff47d, 0x85845dd1, 0x6fa87e4f, 0xfe2ce6e0, 0xa3014314, 0x4e0811a1,
+/// 0xf7537e82, 0xbd3af235, 0x2ad7d2bb, and 0xeb86d391.
 #[allow(non_camel_case_types)]
-pub type MD5_Generic_HR_fixed<const N: usize, const ROUND: usize,
-                    const K00: u32, const K01: u32, const K02: u32, const K03: u32,
-                    const K04: u32, const K05: u32, const K06: u32, const K07: u32,
-                    const K08: u32, const K09: u32, const K10: u32, const K11: u32,
-                    const K12: u32, const K13: u32, const K14: u32, const K15: u32,
-                    const K16: u32, const K17: u32, const K18: u32, const K19: u32,
-                    const K20: u32, const K21: u32, const K22: u32, const K23: u32,
-                    const K24: u32, const K25: u32, const K26: u32, const K27: u32,
-                    const K28: u32, const K29: u32, const K30: u32, const K31: u32,
-                    const K32: u32, const K33: u32, const K34: u32, const K35: u32,
-                    const K36: u32, const K37: u32, const K38: u32, const K39: u32,
-                    const K40: u32, const K41: u32, const K42: u32, const K43: u32,
-                    const K44: u32, const K45: u32, const K46: u32, const K47: u32,
-                    const K48: u32, const K49: u32, const K50: u32, const K51: u32,
-                    const K52: u32, const K53: u32, const K54: u32, const K55: u32,
-                    const K56: u32, const K57: u32, const K58: u32, const K59: u32,
-                    const K60: u32, const K61: u32, const K62: u32, const K63: u32>
+pub type MD5_Generic_HR_fixed<const N: usize = 4, const ROUND: usize = 64,
+                    const K00: u32 = 0xd76aa478, const K01: u32 = 0xe8c7b756,
+                    const K02: u32 = 0x242070db, const K03: u32 = 0xc1bdceee,
+                    const K04: u32 = 0xf57c0faf, const K05: u32 = 0x4787c62a,
+                    const K06: u32 = 0xa8304613, const K07: u32 = 0xfd469501,
+                    const K08: u32 = 0x698098d8, const K09: u32 = 0x8b44f7af,
+                    const K10: u32 = 0xffff5bb1, const K11: u32 = 0x895cd7be,
+                    const K12: u32 = 0x6b901122, const K13: u32 = 0xfd987193,
+                    const K14: u32 = 0xa679438e, const K15: u32 = 0x49b40821,
+                    const K16: u32 = 0xf61e2562, const K17: u32 = 0xc040b340,
+                    const K18: u32 = 0x265e5a51, const K19: u32 = 0xe9b6c7aa,
+                    const K20: u32 = 0xd62f105d, const K21: u32 = 0x02441453,
+                    const K22: u32 = 0xd8a1e681, const K23: u32 = 0xe7d3fbc8,
+                    const K24: u32 = 0x21e1cde6, const K25: u32 = 0xc33707d6,
+                    const K26: u32 = 0xf4d50d87, const K27: u32 = 0x455a14ed,
+                    const K28: u32 = 0xa9e3e905, const K29: u32 = 0xfcefa3f8,
+                    const K30: u32 = 0x676f02d9, const K31: u32 = 0x8d2a4c8a,
+                    const K32: u32 = 0xfffa3942, const K33: u32 = 0x8771f681,
+                    const K34: u32 = 0x6d9d6122, const K35: u32 = 0xfde5380c,
+                    const K36: u32 = 0xa4beea44, const K37: u32 = 0x4bdecfa9,
+                    const K38: u32 = 0xf6bb4b60, const K39: u32 = 0xbebfbc70,
+                    const K40: u32 = 0x289b7ec6, const K41: u32 = 0xeaa127fa,
+                    const K42: u32 = 0xd4ef3085, const K43: u32 = 0x04881d05,
+                    const K44: u32 = 0xd9d4d039, const K45: u32 = 0xe6db99e5,
+                    const K46: u32 = 0x1fa27cf8, const K47: u32 = 0xc4ac5665,
+                    const K48: u32 = 0xf4292244, const K49: u32 = 0x432aff97,
+                    const K50: u32 = 0xab9423a7, const K51: u32 = 0xfc93a039,
+                    const K52: u32 = 0x655b59c3, const K53: u32 = 0x8f0ccc92,
+                    const K54: u32 = 0xffeff47d, const K55: u32 = 0x85845dd1,
+                    const K56: u32 = 0x6fa87e4f, const K57: u32 = 0xfe2ce6e0,
+                    const K58: u32 = 0xa3014314, const K59: u32 = 0x4e0811a1,
+                    const K60: u32 = 0xf7537e82, const K61: u32 = 0xbd3af235,
+                    const K62: u32 = 0x2ad7d2bb, const K63: u32 = 0xeb86d391>
     = MD5_Generic<N, 0x67452301, 0xefcdab89, 0x98badcfe, 0x10325476, ROUND, 
                     K00, K01, K02, K03, K04, K05, K06, K07,
                     K08, K09, K10, K11, K12, K13, K14, K15,
@@ -95,8 +145,8 @@ pub type MD5 = MD5_Generic;     // equivalent to `pub type MD5 = MD5_Expanded;`
 /// 
 /// # Generic Parameters
 /// You can create your own expanded version of MD5 by changing the generic
-/// parameters H0 ~ H3, ROUND, K00 ~ K63, R00 ~ R03, R10 ~ R13, and R20 ~ R23,
-/// and R30 ~ R33.
+/// parameters N, H0 ~ H3, ROUND, K00 ~ K63, R00 ~ R03, R10 ~ R13,
+/// R20 ~ R23, and R30 ~ R33.
 /// - N : the size of output. N cannot be 0 or greater than 4. If N is 4, the
 /// output is 128 bits, while if N is 1, the output is 32 bits.
 /// - H0 ~ H3 : the initial hash values, four u32 values.
@@ -108,6 +158,18 @@ pub type MD5 = MD5_Generic;     // equivalent to `pub type MD5 = MD5_Expanded;`
 /// 4294967296 times abs(sin(i)), where i is in radians. So, K00 = 4294967296
 /// times abs(sin(1)), K01 = 4294967296 times abs(sin(2)), K02 = 4294967296
 /// times abs(sin(3)), and so on (in little endian representation).
+/// So, the default values of K00 ~ K63 are
+/// 0xd76aa478, 0xe8c7b756, 0x242070db, 0xc1bdceee, 0xf57c0faf, 0x4787c62a,
+/// 0xa8304613, 0xfd469501, 0x698098d8, 0x8b44f7af, 0xffff5bb1, 0x895cd7be,
+/// 0x6b901122, 0xfd987193, 0xa679438e, 0x49b40821, 0xf61e2562, 0xc040b340,
+/// 0x265e5a51, 0xe9b6c7aa, 0xd62f105d, 0x02441453, 0xd8a1e681, 0xe7d3fbc8,
+/// 0x21e1cde6, 0xc33707d6, 0xf4d50d87, 0x455a14ed, 0xa9e3e905, 0xfcefa3f8,
+/// 0x676f02d9, 0x8d2a4c8a, 0xfffa3942, 0x8771f681, 0x6d9d6122, 0xfde5380c,
+/// 0xa4beea44, 0x4bdecfa9, 0xf6bb4b60, 0xbebfbc70, 0x289b7ec6, 0xeaa127fa,
+/// 0xd4ef3085, 0x04881d05, 0xd9d4d039, 0xe6db99e5, 0x1fa27cf8, 0xc4ac5665,
+/// 0xf4292244, 0x432aff97, 0xab9423a7, 0xfc93a039, 0x655b59c3, 0x8f0ccc92,
+/// 0xffeff47d, 0x85845dd1, 0x6fa87e4f, 0xfe2ce6e0, 0xa3014314, 0x4e0811a1,
+/// 0xf7537e82, 0xbd3af235, 0x2ad7d2bb, and 0xeb86d391.
 /// - R00 ~ R03, R10 ~ R13, R20 ~ R23, and R30 ~ R33 : the amounts of rotate
 /// left in the hashing process.
 /// The default values of R00, R01, R02, and R03 are 7, 12, 17, and 22, respectively.

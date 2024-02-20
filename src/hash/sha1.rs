@@ -18,7 +18,19 @@ use std::fmt::{ self, Debug, Display, Formatter };
 use crate::number::{ SmallUInt, IntUnion, LongUnion };
 
 
-/// You have freedom of changing H0 ~ H4, and ROUND.
+/// You have freedom of changing N, H0 ~ H4, and ROUND for SHA-1.
+/// 
+/// # Generic Parameters
+/// You can create your own expanded version of SHA-1 by changing the generic
+/// parameters N, H0 ~ H4, and ROUND.
+/// - N : the size of output. N cannot be 0 or greater than 5. If N is 5, the
+/// output is 160 bits, while if N is 1, the output is 32 bits.
+/// The default value of N is `5`.
+/// - H0 ~ H4 : the initial hash values, five u32 values.
+/// The default values of H0, H1, H2, and H3 are 0x67452301, 0xefcdab89,
+/// 0x98badcfe, 0x10325476, and 0xc3d2e1f0, (in big endian representation),
+/// respectively.
+/// - ROUND : the number of rounds. The default value of it is `80` (= 20 * 4).
 #[allow(non_camel_case_types)]
 pub type SHA1_Expanded<const N: usize = 5,
                         const H0: u32 = 0x67452301, const H1: u32 = 0xefcdab89,
@@ -26,7 +38,19 @@ pub type SHA1_Expanded<const N: usize = 5,
                         const H4: u32 = 0xc3d2e1f0, const ROUND: usize = 80>
     = SHA1_Generic<N, H0, H1, H2, H3, H4, ROUND>;
 
-/// You have freedom of changing H0 ~ H4, and ROUND.
+/// You have freedom of changing N, H0 ~ H4, and ROUND for SHA-0.
+/// 
+/// # Generic Parameters
+/// You can create your own expanded version of SHA-0 by changing the generic
+/// parameters N, H0 ~ H4, and ROUND.
+/// - N : the size of output. N cannot be 0 or greater than 5. If N is 5, the
+/// output is 160 bits, while if N is 1, the output is 32 bits.
+/// The default value of N is `5`.
+/// - H0 ~ H4 : the initial hash values, five u32 values.
+/// The default values of H0, H1, H2, and H3 are 0x67452301, 0xefcdab89,
+/// 0x98badcfe, 0x10325476, and 0xc3d2e1f0, (in big endian representation),
+/// respectively.
+/// - ROUND : the number of rounds. The default value of it is `80` (= 20 * 4).
 #[allow(non_camel_case_types)]
 pub type SHA0_Expanded<const N: usize = 5,
                         const H0: u32 = 0x67452301, const H1: u32 = 0xefcdab89,
@@ -35,17 +59,47 @@ pub type SHA0_Expanded<const N: usize = 5,
         = SHA1_Generic<N, H0, H1, H2, H3, H4, ROUND,
                         0x5a827999, 0x6ed9eba1, 0x8f1bbcdc, 0xca62c1d6, 0>;
 
-/// You have freedom of changing ROUND, and K0 ~ K3.
+/// You have freedom of changing N, ROUND, and K0 ~ K3 for SHA-1.
+/// 
+/// # Generic Parameters
+/// You can create your own expanded version of SHA-1 by changing the generic
+/// parameters N, ROUND, and K0 ~ K3.
+/// - N : the size of output. N cannot be 0 or greater than 5. If N is 5, the
+/// output is 160 bits, while if N is 1, the output is 32 bits.
+/// The default value of N is `5`.
+/// - ROUND : the number of rounds. The default value of it is `80` (= 20 * 4).
+/// - K0 ~ K3 : the added values in hashing process, which are four u32 values
+/// and called round constants.
+/// The default values of K0 ~ K3 are defined to be 2^30 times the square roots
+/// of 2, 3, 5 and 10, respectivey.
+/// The default values of K0, K1, K2, and K3 are 0x5a827999, 0x6ed9eba1,
+/// 0x8f1bbcdc, and 0xca62c1d6 (in big endian representation), respecively.
 #[allow(non_camel_case_types)]
-pub type SHA1_Generic_HR_fixed<const N: usize, const ROUND: usize,
-                        const K0: u32, const K1: u32, const K2: u32, const K3: u32>
+pub type SHA1_Generic_HR_fixed<const N: usize = 5, const ROUND: usize = 80,
+                    const K0: u32 = 0x5a827999, const K1: u32 = 0x6ed9eba1,
+                    const K2: u32 = 0x8f1bbcdc, const K3: u32 = 0xca62c1d6>
         = SHA1_Generic<N, 0x67452301, 0xefcdab89, 0x98badcfe,
                         0x10325476, 0xc3d2e1f0, ROUND, K0, K1, K2, K3>;
 
-/// You have freedom of changing ROUND, and K0 ~ K3.
+/// You have freedom of changing N, ROUND, and K0 ~ K3 for SHA-0.
+/// 
+/// # Generic Parameters
+/// You can create your own expanded version of SHA-0 by changing the generic
+/// parameters N, ROUND, and K0 ~ K3.
+/// - N : the size of output. N cannot be 0 or greater than 5. If N is 5, the
+/// output is 160 bits, while if N is 1, the output is 32 bits.
+/// The default value of N is `5`.
+/// - ROUND : the number of rounds. The default value of it is `80` (= 20 * 4).
+/// - K0 ~ K3 : the added values in hashing process, which are four u32 values
+/// and called round constants.
+/// The default values of K0 ~ K3 are defined to be 2^30 times the square roots
+/// of 2, 3, 5 and 10, respectivey. So, the default values of K0, K1, K2, and
+/// K3 are 0x5a827999, 0x6ed9eba1, 0x8f1bbcdc, and 0xca62c1d6
+/// (in big endian representation), respecively.
 #[allow(non_camel_case_types)]
-pub type SHA0_Generic_HR_fixed<const N: usize, const ROUND: usize,
-                        const K0: u32, const K1: u32, const K2: u32, const K3: u32>
+pub type SHA0_Generic_HR_fixed<const N: usize = 5, const ROUND: usize = 80,
+                    const K0: u32 = 0x5a827999, const K1: u32 = 0x6ed9eba1,
+                    const K2: u32 = 0x8f1bbcdc, const K3: u32 = 0xca62c1d6>
         = SHA1_Generic<N, 0x67452301, 0xefcdab89, 0x98badcfe, 0x10325476, 0xc3d2e1f0,
                         ROUND, K0, K1, K2, K3, 0>;
 
@@ -93,13 +147,14 @@ pub type SHA0 = SHA0_Expanded;
 /// 
 /// # Generic Parameters
 /// You can create your own expanded version of SHA-1 by changing the generic
-/// parameters H0 ~ H4, ROUND, K0 ~ K3, RL1, RL5, and R30.
+/// parameters N, H0 ~ H4, ROUND, K0 ~ K3, RL1, RL5, and R30.
 /// - N : the size of output. N cannot be 0 or greater than 5. If N is 5, the
 /// output is 160 bits, while if N is 1, the output is 32 bits.
+/// The default value of N is `5`.
 /// - H0 ~ H4 : the initial hash values, five u32 values.
 /// The default values of H0, H1, H2, and H3 are 0x67452301, 0xefcdab89,
-/// 0x98badcfe, 0x10325476, and 0xc3d2e1f0, respectively (in big endian
-/// representation).
+/// 0x98badcfe, 0x10325476, and 0xc3d2e1f0 (in big endian representation),
+/// respectively.
 /// - ROUND : the number of rounds. The default value of it is `80` (= 20 * 4).
 /// - K0 ~ K3 : the added values in hashing process, which are four u32 values
 /// and called round constants.
@@ -112,8 +167,8 @@ pub type SHA0 = SHA0_Expanded;
 /// arithmetic properties across successive rounds, reducing the strength
 /// of the algorithm against finding collisions on some bits._
 /// (quoted from [Wikipedia](https://en.wikipedia.org/wiki/SHA-1#SHA-1_pseudocode))
-/// So, K0 = 0x5a827999, K1 = 0x6ed9eba1, K2 = 0x8f1bbcdc, and K2 = 0xca62c1d6
-/// (in big endian representation).
+/// So, the default values of K0, K1, K2, and K3 are 0x5a827999, 0x6ed9eba1,
+/// 0x8f1bbcdc, and 0xca62c1d6 (in big endian representation), respecively.
 /// - RL1, RL5, and RL30 : the amounts of rotate left in the hashing process.
 /// The default values of RL1, RL5, and RL30 are 1, 5, and 30, respecively.
 /// RL1 is 1 for SHA-1 while RL1 is 0 for SHA-0.

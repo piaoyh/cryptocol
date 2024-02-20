@@ -54,6 +54,8 @@
 //! - For `SHA-256`, try [this](struct@SHA2_256_Generic#a-simple-but-useful-application-using-cryptocol).
 //! - For `SHA-512`, try [this](struct@SHA2_512_Generic#a-simple-but-useful-application-using-cryptocol).
 //! - For `SHA-512/t`, try [this](struct@SHA2_512_t_Generic#a-simple-but-useful-application-using-cryptocol).
+//! 
+//! The following application is made by combining above all applications.
 //! ## A Simple but Useful Integrated Hash Application using cryptocol
 //! The following is the source code of the commandline integrated hash value
 //! extractor using the above modules. You can get the hash value from a text

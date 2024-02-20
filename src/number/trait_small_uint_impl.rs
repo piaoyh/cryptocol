@@ -303,7 +303,7 @@ macro_rules! SmallUInt_methods_for_uint_impl {
             #[inline] fn ilog10(self) -> u32            { self.ilog10() }
             #[inline] fn ilog2(self) -> u32             { self.ilog2() }
 
-            fn sqrt(self) -> Self
+            fn isqrt(self) -> Self
             {
                 let mut adder;
                 let mut highest = (Self::size_in_bits() - self.leading_zeros() as usize) >> 1;

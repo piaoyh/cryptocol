@@ -4921,7 +4921,7 @@ macro_rules! integer_union_methods {
         #[inline] pub fn ilog10(self) -> u32            { self.get().ilog10() }
         #[inline] pub fn ilog2(self) -> u32             { self.get().ilog2() }
 
-        #[inline] pub fn sqrt(self) -> Self             { Self::new_with( self.get().sqrt() ) }
+        #[inline] pub fn isqrt(self) -> Self             { Self::new_with( self.get().isqrt() ) }
         #[inline] pub fn root(self, exp: Self) -> Self  { Self::new_with( self.get().root(exp.get()) ) }
 
         #[inline] pub fn reverse_bits(self) -> Self     { Self::new_with( self.get().reverse_bits() ) }
@@ -5446,7 +5446,7 @@ macro_rules! SmallUInt_methods_for_integer_unions_impl {
         #[inline] fn ilog10(self) -> u32            { self.ilog10() }
         #[inline] fn ilog2(self) -> u32             { self.ilog2() }
 
-        #[inline] fn sqrt(self) -> Self             { self.sqrt() }
+        #[inline] fn isqrt(self) -> Self             { self.sqrt() }
         #[inline] fn root(self, exp: Self) -> Self  { self.root(exp) }
 
 

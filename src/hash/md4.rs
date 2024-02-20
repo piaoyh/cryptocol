@@ -17,7 +17,17 @@ use std::fmt::{ self, Debug, Display, Formatter };
 
 use crate::number::{ SmallUInt, IntUnion, LongUnion };
 
-/// You have freedom of changing H0 ~ H3, and ROUND.
+/// You have freedom of changing N, H0 ~ H3, and ROUND for MD4.
+/// 
+/// # Generic Parameters
+/// You can create your own expanded version of MD4 by changing the generic
+/// parameters N, H0 ~ H3, and ROUND.
+/// - N : the size of output. N cannot be 0 or greater than 4. If N is 4, the
+/// output is 128 bits, while if N is 1, the output is 32 bits.
+/// - H0 ~ H3 : the initial hash values, four u32 values.
+/// The default values of H0, H1, H2, and H3 are 0x67452301, 0xefcdab89,
+/// 0x98badcfe, and 0x10325476, respectively (in little endian representation).
+/// - ROUND : the number of rounds. The default value of it is `48` (= 16 * 3).
 #[allow(non_camel_case_types)]
 pub type MD4_Expanded<const N: usize = 4,
                         const H0: u32 = 0x67452301, const H1: u32 = 0xefcdab89,
@@ -25,12 +35,23 @@ pub type MD4_Expanded<const N: usize = 4,
                         const ROUND: usize = 48>
                 = MD4_Generic<N, H0, H1, H2, H3, ROUND>;
 
-/// You have freedom of changing ROUND, and K0 ~ K2.
+/// You have freedom of changing N, ROUND, and K0 ~ K2 for MD4.
+/// 
+/// # Generic Parameters
+/// You can create your own expanded version of MD4 by changing the generic
+/// parameters N, H0 ~ H3, ROUND, K0 ~ K2, R00 ~ R03, R10 ~ R13, and R20 ~ R23.
+/// - N : the size of output. N cannot be 0 or greater than 4. If N is 4, the
+/// output is 128 bits, while if N is 1, the output is 32 bits.
+/// - ROUND : the number of rounds. The default value of it is `48` (= 16 * 3).
+/// - K0 ~ K2 : the added values in hashing process, three u32 values.
+/// The default values of K0, K1, and K2 are 0x00000000, 0x5A827999, and
+/// 0x6ED9EBA1, respectively (in little endian representation).
 #[allow(non_camel_case_types)]
-pub type MD4_Generic_HR_fixed<const N: usize, const ROUND: usize,
-                                const K0: u32, const K1: u32, const K2: u32>
+pub type MD4_Generic_HR_fixed<const N: usize = 4, const ROUND: usize = 48,
+                        const K0: u32 = 0x00000000, const K1: u32 = 0x5A827999,
+                        const K2: u32 = 0x6ED9EBA1>
     = MD4_Generic<N, 0x67452301, 0xefcdab89, 0x98badcfe, 0x10325476, ROUND, K0, K1, K2>;
-
+    
 /// The official MD4 hash algorithm
 #[allow(non_camel_case_types)]
 pub type MD4 = MD4_Generic;     // equivalent to `pub type MD4 = MD4_Expanded;`
@@ -70,7 +91,7 @@ pub type MD4 = MD4_Generic;     // equivalent to `pub type MD4 = MD4_Expanded;`
 /// 
 /// # Generic Parameters
 /// You can create your own expanded version of MD4 by changing the generic
-/// parameters H0 ~ H3, ROUND, K0 ~ K2, R00 ~ R03, R10 ~ R13, and R20 ~ R23.
+/// parameters N, H0 ~ H3, ROUND, K0 ~ K2, R00 ~ R03, R10 ~ R13, and R20 ~ R23.
 /// - N : the size of output. N cannot be 0 or greater than 4. If N is 4, the
 /// output is 128 bits, while if N is 1, the output is 32 bits.
 /// - H0 ~ H3 : the initial hash values, four u32 values.
