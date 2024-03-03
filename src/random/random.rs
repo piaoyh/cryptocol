@@ -15,12 +15,12 @@
 use std::fmt::{ Debug, Display };
 use std::ops::*;
 use std::cmp::{ PartialEq, PartialOrd};
-use std::ptr::copy_nonoverlapping;
 use std::time::{ SystemTime, UNIX_EPOCH };
-use std::io::Read;
 use std::collections::hash_map::RandomState;
 use std::hash::{ BuildHasher, Hasher };
 #[cfg(not(target_os = "windows"))] use std::fs::File;
+use std::ptr::copy_nonoverlapping;
+use std::io::Read;
 
 use crate::number::{ small_uint::*, BigUInt };
 use crate::number::small_int_unions::*;

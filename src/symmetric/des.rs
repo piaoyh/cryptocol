@@ -128,16 +128,14 @@ pub type DES = DES_Generic;    // equivalent to `pub type DES = DES_Expanded;`
 /// // Todo
 /// 
 /// # Generic Parameters
+/// - PC101 ~ PC248: 
 /// - IP01 ~ IP64: Inital permutation constants, and is 1-based.
 /// For example, `IP01 = 58` means that the 58th bit of data from the first
 /// bit is moved to the first bit of the data at initial permutation.
 /// You can change inital permutation wire by changing these constants
 /// The change of these constants does not change the security level.
-/// - FP01 ~ FP64: Final permutation constants, and is 1-based.
-/// For example, `FP01 = 40` means that the 40th bit of data from the first
-/// bit is moved to the first bit of the data at final permutation.
-/// You can change final permutation wire by changing these constants
-/// The change of these constants does not change the security level.
+/// Final permutation constants is automatically calculated from Inital
+/// permutation constants.
 /// - S000 ~ S763: S-Box constants, and its index such as 000, 212, etc. is
 /// 0-based. S0XX means S-Box 0, S1XX means S-Box 1, and so on. S000 is the
 /// first element of S-Box 0. You cange S-Box by changing these constants.
@@ -350,7 +348,9 @@ const S756: u8 = 0xf, const S757: u8 = 0x3, const S758: u8 = 0x3, const S759: u8
 const S760: u8 = 0x5, const S761: u8 = 0x6, const S762: u8 = 0x8, const S763: u8 = 0xb,
 >
 {
+#[allow(dead_code)]
     key: LongUnion,
+#[allow(dead_code)]
     block: LongUnion,
 }
 
@@ -638,6 +638,7 @@ S748, S749, S750, S751, S752, S753, S754, S755,
 S756, S757, S758, S759, S760, S761, S762, S763,
 >
 {
+    #[allow(dead_code)]
     const SBOX: [[u8; 64]; 8] = [
               [ S000, S001, S002, S003, S004, S005, S006, S007,
                 S008, S009, S010, S011, S012, S013, S014, S015,
@@ -704,7 +705,7 @@ S756, S757, S758, S759, S760, S761, S762, S763,
                 S748, S749, S750, S751, S752, S753, S754, S755,
                 S756, S757, S758, S759, S760, S761, S762, S763 ]
     ];
-
+    #[allow(dead_code)]
     const IP: [u8; 64] = [
               64-IP01, 64-IP02, 64-IP03, 64-IP04, 64-IP05, 64-IP06, 64-IP07, 64-IP08,
               64-IP09, 64-IP10, 64-IP11, 64-IP12, 64-IP13, 64-IP14, 64-IP15, 64-IP16,
@@ -715,7 +716,7 @@ S756, S757, S758, S759, S760, S761, S762, S763,
               64-IP49, 64-IP50, 64-IP51, 64-IP52, 64-IP53, 64-IP54, 64-IP55, 64-IP56,
               64-IP57, 64-IP58, 64-IP59, 64-IP60, 64-IP61, 64-IP62, 64-IP63, 64-IP64
     ];
- 
+    #[allow(dead_code)]
     const FP: [u8; 64] = make_FP!();
     // const FP: [u8; 64] = [  
     //           64-FP01, 64-FP02, 64-FP03, 64-FP04, 64-FP05, 64-FP06, 64-FP07, 64-FP08,
@@ -727,7 +728,7 @@ S756, S757, S758, S759, S760, S761, S762, S763,
     //           64-FP49, 64-FP50, 64-FP51, 64-FP52, 64-FP53, 64-FP54, 64-FP55, 64-FP56,
     //           64-FP57, 64-FP58, 64-FP59, 64-FP60, 64-FP61, 64-FP62, 64-FP63, 64-FP64
     // ];
-
+    #[allow(dead_code)]
     const PC1: [u8; 56] = [
         64-PC101, 64-PC102, 64-PC103, 64-PC104, 64-PC105, 64-PC106, 64-PC107, 64-PC108,
         64-PC109, 64-PC110, 64-PC111, 64-PC112, 64-PC113, 64-PC114, 64-PC115, 64-PC116,
@@ -737,7 +738,7 @@ S756, S757, S758, S759, S760, S761, S762, S763,
         64-PC141, 64-PC142, 64-PC143, 64-PC144, 64-PC145, 64-PC146, 64-PC147, 64-PC148,
         64-PC149, 64-PC150, 64-PC151, 64-PC152, 64-PC153, 64-PC154, 64-PC155, 64-PC156,
     ];
-
+    #[allow(dead_code)]
     const PC2: [u8; 48] = [
         64-PC201, 64-PC202, 64-PC203, 64-PC204, 64-PC205, 64-PC206, 64-PC207, 64-PC208,
         64-PC209, 64-PC210, 64-PC211, 64-PC212, 64-PC213, 64-PC214, 64-PC215, 64-PC216,
@@ -749,11 +750,13 @@ S756, S757, S758, S759, S760, S761, S762, S763,
     /// Constructs a new object DES_Generic.
     /// 
     #[inline]
+    #[allow(dead_code)]
     pub fn new(key: [u8; 8]) -> Self
     {
         Self { key: LongUnion::new_with_ubytes(key), block: LongUnion::new(), }
     }
 
+    #[allow(dead_code)]
     fn permutate_initially(&mut self)
     {
         let data = self.block.get().to_be();
@@ -766,6 +769,7 @@ S756, S757, S758, S759, S760, S761, S762, S763,
         self.block.set(permuted.to_be());
     }
 
+    #[allow(dead_code)]
     fn permutate_finally(&mut self)
     {
         let data = self.block.get().to_be();
@@ -778,6 +782,7 @@ S756, S757, S758, S759, S760, S761, S762, S763,
         self.block.set(permuted.to_be());
     }
 
+    #[allow(dead_code)]
     fn permutate_key1(&mut self)
     {
         let key = self.key.get().to_be();
@@ -790,6 +795,7 @@ S756, S757, S758, S759, S760, S761, S762, S763,
         self.key.set(permuted.to_be());
     }
 
+    #[allow(dead_code)]
     fn permutate_key2(&self, key: [u8; 7]) -> [u8; 6]
     {
         let mut key_union = LongUnion::new();

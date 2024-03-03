@@ -18,11 +18,11 @@ at least 80%. The unchecked items have not yet been implemented including
 documentation more than 80% or have not yet even been started to implement.
 
 ### Foundations mainly for Big Numbers and also for other modules
-- [ ] Unions for primitive data types and their implementation
-    --- `ShortUnion`, `IntUnion`, `LongUnion`, `LongerUnion`, and `SizeUnion`
-- [ ] Trait SmallUInt and its implementation for primitive data types --- SmallUInt
+- [X] Trait SmallUInt and its implementation for primitive data types --- SmallUInt
 - [ ] Trait SmallSInt and its implementation for primitive data types --- SmallSInt
     _--> Thinking about postponing to Roadmap for ver. 2.0_
+- [ ] Unions for primitive data types and their implementation
+    --- `ShortUnion`, `IntUnion`, `LongUnion`, `LongerUnion`, and `SizeUnion`
 
 ### Big Numbers
 - [ ] Fixed Sized Big Unsigned Integer Operation --- `BigUInt`
@@ -82,13 +82,58 @@ number will be 0.27.x.x since there are all twenty-six functionalities
 listed above. So, for example, even if the version number is 0.5.0.0,
 it does not mean that 50% of all functionalities are implemented.
 
+## Sorry for breaking changes from ver. 0.6.3 to ver. 0.7.0
+
+### trait SmallUInt
+| Ver. 0.6.3                        | Ver. 0.7.0               |
+|-----------------------------------|--------------------------|
+| fn sqrt(self) -> Self             | fn isqrt(self) -> Self   |
+| fn is_max(&self) -> bool          | fn is_max(self) -> bool  |
+| fn is_zero(&self) -> bool         | fn is_zero(self) -> bool |
+| fn is_one(&self) -> bool          | fn is_one(self) -> bool  |
+| fn reverse_bits_assign(&mut self) | removed                  |
+- A breaking change has been made to change the function name from `number::SmallUInt::sqrt(self) -> Self;` to `number::SmallUInt::isqrt(self) -> Self;` in order to keep consistancy with primitive data types such as `u8`, `u16`, `u32`, `u64`, `u128`, and `usize`.
+- Breaking changes has been made to change the function arguement from `&self` into `self` in order to keep consistancy with other functions.
+- reverse_bits_assign(&mut self) has been removed to keep consistancy with primitive data types such as `u8`, `u16`, `u32`, `u64`, `u128`, and `usize`.
+
+### unions ShortUnion, IntUnion, LongUnion, LongerUnion, and SizeUnion
+| Ver. 0.6.3                                       | Ver. 0.7.0 |
+|--------------------------------------------------|------------|
+| pub fn num(n: u128) -> Self                      | removed    |
+| pub fn zero() -> Self                            | removed    |
+| pub fn one() -> Self                             | removed    |
+| pub fn max() -> Self                             | removed    |
+| pub fn min() -> Self                             | removed    |
+| pub fn reverse_bits_assign(&mut self)            | removed    |
+| pub fn wrapping_add_assign(&mut self, rhs: Self) | removed    |
+| pub fn wrapping_sub_assign(&mut self, rhs: Self) | removed    |
+| pub fn wrapping_mul_assign(&mut self, rhs: Self) | removed    |
+| pub fn wrapping_div_assign(&mut self, rhs: Self) | removed    |
+| pub fn wrapping_rem_assign(&mut self, rhs: Self) | removed    |
+| pub fn root(self, exp: Self) -> Self             | removed    |
+| pub fn into_f64(self) -> f64                     | removed    |
+| pub fn into_f32(self) -> f32                     | removed    |
+| pub fn into_u128(self) -> u128                   | removed    |
+| pub fn into_u64(self) -> u64                     | removed    |
+| pub fn into_u32(self) -> u32                     | removed    |
+| pub fn into_u16(self) -> u16                     | removed    |
+| pub fn into_u8(self) -> u8                       | removed    |
+| pub fn into_usize(self) -> usize                 | removed    |
+| pub fn into_bool(self) -> bool                   | removed    |
+| pub fn size_in_bytes() -> usize                  | removed    |
+| pub fn size_in_bits() -> usize                   | removed    |
+| pub fn length_in_bytes(self) -> usize            | removed    |
+| pub fn length_in_bits(self) -> usize             | removed    |
+| pub fn is_odd(self) -> bool                      | removed    |
+Breaking changes have been made to remove the redundant methods from `ShortUnion`, `IntUnion`, `LongUnion`, `LongerUnion`, and `SizeUnions` since there are the same methods in the trait `number::SmallUInt` and its implementation, and/or in order to keep consistancy with primitive data types such as `u8`, `u16`, `u32`, `u64`, `u128`, and `usize`.
+
 ## Sorry for a breaking change from ver. 0.6.2 to ver. 0.6.3
 A breaking change has been made to change the function `number::BigUInt::copy_within<R>(&mut self, src: R, dest: usize)` from public to private since it should have been private from the beginning for security reason because it is high chance that this function will be missused or even abused.
 
 ### struct BigUInt
-| Ver. 0.6.2                                                      | Ver. 0.6.3                                                      |
-|-----------------------------------------------------------------|-----------------------------------------------------------------|
-| pub fn copy_within<R>(&mut self, src: R, dest: usize)           | fn copy_within<R>(&mut self, src: R, dest: usize)               |
+| Ver. 0.6.2                                            | Ver. 0.6.3                                        |
+|-------------------------------------------------------|---------------------------------------------------|
+| pub fn copy_within<R>(&mut self, src: R, dest: usize) | fn copy_within<R>(&mut self, src: R, dest: usize) |
 
 ## Sorry for breaking changes from ver. 0.5.0 to ver. 0.6.0
 Breaking changes have been made to change the source code according to Rust convention and in order to remove all warnings.
@@ -109,7 +154,7 @@ Breaking changes have been made to change the source code according to Rust conv
 | fn set_LSB(&mut self)                                           | fn set_lsb(&mut self)                                           |
 | fn is_MSB_set(self) -> bool                                     | fn is_msb_set(self) -> bool                                     |
 
-### struct BigUInt
+### struct BigUInt functions
 | Ver. 0.5.0                                                      | Ver. 0.6.0                                                      |
 |-----------------------------------------------------------------|-----------------------------------------------------------------|
 | fn test_Miller_Rabin(self, a: Self) -> bool                     | fn test_miller_rabin(self, a: Self) -> bool                     |
@@ -117,106 +162,110 @@ Breaking changes have been made to change the source code according to Rust conv
 | fn set_MSB(&mut self)                                           | fn set_msb(&mut self)                                           |
 | fn set_LSB(&mut self)                                           | fn set_lsb(&mut self)                                           |
 | fn is_MSB_set(self) -> bool                                     | fn is_msb_set(self) -> bool                                     |
-| type U32                                                        | type UU32                                                       |
-| type U64                                                        | type UU64                                                       |
-| type U128                                                       | type UU128                                                      |
-| type U256                                                       | type UU256                                                      |
-| type U384                                                       | type UU384                                                      |
-| type U512                                                       | type UU512                                                      |
-| type U640                                                       | type UU640                                                      |
-| type U768                                                       | type UU768                                                      |
-| type U896                                                       | type UU896                                                      |
-| type U1024                                                      | type UU1024                                                     |
-| type U2048                                                      | type UU2048                                                     |
-| type u256                                                       | type U256                                                       |
-| type u512                                                       | type U512                                                       |
-| type u1024                                                      | type U1024                                                      |
-| type u2048                                                      | type U2048                                                      |
-| type u3072                                                      | type U3072                                                      |
-| type u4096                                                      | type U4096                                                      |
-| type u5120                                                      | type U5120                                                      |
-| type u6144                                                      | type U6144                                                      |
-| type u7168                                                      | type U7168                                                      |
-| type u8192                                                      | type U8192                                                      |
-| type u16384                                                     | type U16384                                                     |
-| type u256_with_u8                                               | type U256_with_u8                                               |
-| type u512_with_u8                                               | type U512_with_u8                                               |
-| type u1024_with_u8                                              | type U1024_with_u8                                              |
-| type u2048_with_u8                                              | type U2048_with_u8                                              |
-| type u3072_with_u8                                              | type U3072_with_u8                                              |
-| type u4096_with_u8                                              | type U4096_with_u8                                              |
-| type u5120_with_u8                                              | type U5120_with_u8                                              |
-| type u6144_with_u8                                              | type U6144_with_u8                                              |
-| type u7168_with_u8                                              | type U7168_with_u8                                              |
-| type u8192_with_u8                                              | type U8192_with_u8                                              |
-| type u16384_with_u8                                             | type U16384_with_u8                                             |
-| type u256_with_u16                                              | type U256_with_u16                                              |
-| type u512_with_u16                                              | type U512_with_u16                                              |
-| type u1024_with_u16                                             | type U1024_with_u16                                             |
-| type u2048_with_u16                                             | type U2048_with_u16                                             |
-| type u3072_with_u16                                             | type U3072_with_u16                                             |
-| type u4096_with_u16                                             | type U4096_with_u16                                             |
-| type u5120_with_u16                                             | type U5120_with_u16                                             |
-| type u6144_with_u16                                             | type U6144_with_u16                                             |
-| type u7168_with_u16                                             | type U7168_with_u16                                             |
-| type u8192_with_u16                                             | type U8192_with_u16                                             |
-| type u16384_with_u16                                            | type U16384_with_u16                                            |
-| type u256_with_u32                                              | type U256_with_u32                                              |
-| type u512_with_u32                                              | type U512_with_u32                                              |
-| type u1024_with_u32                                             | type U1024_with_u32                                             |
-| type u2048_with_u32                                             | type U2048_with_u32                                             |
-| type u3072_with_u32                                             | type U3072_with_u32                                             |
-| type u4096_with_u32                                             | type U4096_with_u32                                             |
-| type u5120_with_u32                                             | type U5120_with_u32                                             |
-| type u6144_with_u32                                             | type U6144_with_u32                                             |
-| type u7168_with_u32                                             | type U7168_with_u32                                             |
-| type u8192_with_u32                                             | type U8192_with_u32                                             |
-| type u16384_with_u32                                            | type U16384_with_u32                                            |
-| type u256_with_u64                                              | type U256_with_u64                                              |
-| type u512_with_u64                                              | type U512_with_u64                                              |
-| type u1024_with_u64                                             | type U1024_with_u64                                             |
-| type u2048_with_u64                                             | type U2048_with_u64                                             |
-| type u3072_with_u64                                             | type U3072_with_u64                                             |
-| type u4096_with_u64                                             | type U4096_with_u64                                             |
-| type u5120_with_u64                                             | type U5120_with_u64                                             |
-| type u6144_with_u64                                             | type U6144_with_u64                                             |
-| type u7168_with_u64                                             | type U7168_with_u64                                             |
-| type u8192_with_u64                                             | type U8192_with_u64                                             |
-| type u16384_with_u64                                            | type U16384_with_u64                                            |
-| type u256_with_u128                                             | type U256_with_u128                                             |
-| type u512_with_u128                                             | type U512_with_u128                                             |
-| type u1024_with_u128                                            | type U1024_with_u128                                            |
-| type u2048_with_u128                                            | type U2048_with_u128                                            |
-| type u3072_with_u128                                            | type U3072_with_u128                                            |
-| type u4096_with_u128                                            | type U4096_with_u128                                            |
-| type u5120_with_u128                                            | type U5120_with_u128                                            |
-| type u6144_with_u128                                            | type U6144_with_u128                                            |
-| type u7168_with_u128                                            | type U7168_with_u128                                            |
-| type u8192_with_u128                                            | type U8192_with_u128                                            |
-| type u16384_with_u128                                           | type U16384_with_u128                                           |
+
+### struct BigUInt types
+| Ver. 0.5.0            | Ver. 0.6.0            |
+|-----------------------|-----------------------|
+| type U32              | type UU32             |
+| type U64              | type UU64             |
+| type U128             | type UU128            |
+| type U256             | type UU256            |
+| type U384             | type UU384            |
+| type U512             | type UU512            |
+| type U640             | type UU640            |
+| type U768             | type UU768            |
+| type U896             | type UU896            |
+| type U1024            | type UU1024           |
+| type U2048            | type UU2048           |
+| type u256             | type U256             |
+| type u512             | type U512             |
+| type u1024            | type U1024            |
+| type u2048            | type U2048            |
+| type u3072            | type U3072            |
+| type u4096            | type U4096            |
+| type u5120            | type U5120            |
+| type u6144            | type U6144            |
+| type u7168            | type U7168            |
+| type u8192            | type U8192            |
+| type u16384           | type U16384           |
+| type u256_with_u8     | type U256_with_u8     |
+| type u512_with_u8     | type U512_with_u8     |
+| type u1024_with_u8    | type U1024_with_u8    |
+| type u2048_with_u8    | type U2048_with_u8    |
+| type u3072_with_u8    | type U3072_with_u8    |
+| type u4096_with_u8    | type U4096_with_u8    |
+| type u5120_with_u8    | type U5120_with_u8    |
+| type u6144_with_u8    | type U6144_with_u8    |
+| type u7168_with_u8    | type U7168_with_u8    |
+| type u8192_with_u8    | type U8192_with_u8    |
+| type u16384_with_u8   | type U16384_with_u8   |
+| type u256_with_u16    | type U256_with_u16    |
+| type u512_with_u16    | type U512_with_u16    |
+| type u1024_with_u16   | type U1024_with_u16   |
+| type u2048_with_u16   | type U2048_with_u16   |
+| type u3072_with_u16   | type U3072_with_u16   |
+| type u4096_with_u16   | type U4096_with_u16   |
+| type u5120_with_u16   | type U5120_with_u16   |
+| type u6144_with_u16   | type U6144_with_u16   |
+| type u7168_with_u16   | type U7168_with_u16   |
+| type u8192_with_u16   | type U8192_with_u16   |
+| type u16384_with_u16  | type U16384_with_u16  |
+| type u256_with_u32    | type U256_with_u32    |
+| type u512_with_u32    | type U512_with_u32    |
+| type u1024_with_u32   | type U1024_with_u32   |
+| type u2048_with_u32   | type U2048_with_u32   |
+| type u3072_with_u32   | type U3072_with_u32   |
+| type u4096_with_u32   | type U4096_with_u32   |
+| type u5120_with_u32   | type U5120_with_u32   |
+| type u6144_with_u32   | type U6144_with_u32   |
+| type u7168_with_u32   | type U7168_with_u32   |
+| type u8192_with_u32   | type U8192_with_u32   |
+| type u16384_with_u32  | type U16384_with_u32  |
+| type u256_with_u64    | type U256_with_u64    |
+| type u512_with_u64    | type U512_with_u64    |
+| type u1024_with_u64   | type U1024_with_u64   |
+| type u2048_with_u64   | type U2048_with_u64   |
+| type u3072_with_u64   | type U3072_with_u64   |
+| type u4096_with_u64   | type U4096_with_u64   |
+| type u5120_with_u64   | type U5120_with_u64   |
+| type u6144_with_u64   | type U6144_with_u64   |
+| type u7168_with_u64   | type U7168_with_u64   |
+| type u8192_with_u64   | type U8192_with_u64   |
+| type u16384_with_u64  | type U16384_with_u64  |
+| type u256_with_u128   | type U256_with_u128   |
+| type u512_with_u128   | type U512_with_u128   |
+| type u1024_with_u128  | type U1024_with_u128  |
+| type u2048_with_u128  | type U2048_with_u128  |
+| type u3072_with_u128  | type U3072_with_u128  |
+| type u4096_with_u128  | type U4096_with_u128  |
+| type u5120_with_u128  | type U5120_with_u128  |
+| type u6144_with_u128  | type U6144_with_u128  |
+| type u7168_with_u128  | type U7168_with_u128  |
+| type u8192_with_u128  | type U8192_with_u128  |
+| type u16384_with_u128 | type U16384_with_u128 |
 
 ### trait SmallSInt and its implementation for i8, i16, i32, i64, i128, and isize
-| Ver. 0.5.0                                                      | Ver. 0.6.0                                                      |
-|-----------------------------------------------------------------|-----------------------------------------------------------------|
-| fn Max() -> Self                                                | fn max() -> Self                                                |
-| fn Min() -> Self                                                | fn min() -> Self                                                |
+| Ver. 0.5.0       | Ver. 0.6.0       |
+|------------------|------------------|
+| fn Max() -> Self | fn max() -> Self |
+| fn Min() -> Self | fn min() -> Self |
 
 ### struct MD4_Generic, MD5_Generic, SHA1_Generic, SHA2_256_Generic, SHA2_512_Generic, and SHA2_512_t_Generic
-| Ver. 0.5.0                                                      | Ver. 0.6.0                                                      |
-|-----------------------------------------------------------------|-----------------------------------------------------------------|
-| fn get_HashValue(&self, hashValue: *mut u8, length: usize)      | fn get_hash_value(&self, hash_value: *mut u8, length: usize)    |
-| fn get_HashValue_in_string(&self) -> String                     | fn get_hash_value_in_string(&self) -> String                    |
-| fn get_HashValue_in_array(&self) -> [u32; N]                    | fn get_hash_value_in_array(&self) -> [u32; N]                   |
-| fn get_HashValue_in_vec(&self) -> Vec                           | fn get_hash_value_in_vec(&self) -> Vec                          |
-| fn put_HashValue_in_array(&self, out: &mut [T; M])              | fn put_hash_value_in_array(&self, out: &mut [T; M])             |
-| fn digest_C(&mut self, ...)                                     | fn digest_c(&mut self, ...)                                     |
+| Ver. 0.5.0                                                 | Ver. 0.6.0                                                   |
+|------------------------------------------------------------|--------------------------------------------------------------|
+| fn get_HashValue(&self, hashValue: *mut u8, length: usize) | fn get_hash_value(&self, hash_value: *mut u8, length: usize) |
+| fn get_HashValue_in_string(&self) -> String                | fn get_hash_value_in_string(&self) -> String                 |
+| fn get_HashValue_in_array(&self) -> [u32; N]               | fn get_hash_value_in_array(&self) -> [u32; N]                |
+| fn get_HashValue_in_vec(&self) -> Vec                      | fn get_hash_value_in_vec(&self) -> Vec                       |
+| fn put_HashValue_in_array(&self, out: &mut [T; M])         | fn put_hash_value_in_array(&self, out: &mut [T; M])          |
+| fn digest_C(&mut self, ...)                                | fn digest_c(&mut self, ...)                                  |
 
 ### struct SHA2_512_t_Generic
-| Ver. 0.5.0                                                      | Ver. 0.6.0                                                      |
-|-----------------------------------------------------------------|-----------------------------------------------------------------|
-| fn get_HashValue_in_array_TM(&self) -> [T; M]                   | fn get_hash_value_in_array_tm(&self) -> [T; M]                  |
-| fn new_with_seedText(seed_text: &str) -> Self                   | fn new_with_seed_text(seed_text: &str) -> Self                   |
-| fn new_with_H(h: &[u64; 8]) -> Self                             | fn new_with_h(h: &[u64; 8]) -> Self                             |
+| Ver. 0.5.0                                    | Ver. 0.6.0                                     |
+|-----------------------------------------------|------------------------------------------------|
+| fn get_HashValue_in_array_TM(&self) -> [T; M] | fn get_hash_value_in_array_tm(&self) -> [T; M] |
+| fn new_with_seedText(seed_text: &str) -> Self | fn new_with_seed_text(seed_text: &str) -> Self |
+| fn new_with_H(h: &[u64; 8]) -> Self           | fn new_with_h(h: &[u64; 8]) -> Self            |
 
 ### struct Random
 | Ver. 0.5.0                                                      | Ver. 0.6.0                                                      |

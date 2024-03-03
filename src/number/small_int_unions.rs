@@ -6,7 +6,7 @@
 // This file may not be copied, modified, or distributed
 // except according to those terms.
 
-//! The module that contains generic types of primitive unsigned integral
+//! The module that contains unions of primitive signed/unsigned integral
 //! data types used in a lot of modules of the crate Cryptocol.
 //! __These unions are for segmentation.__
 
@@ -16,7 +16,7 @@
 #![allow(rustdoc::missing_doc_code_examples)]
 
 use std::fmt::{ Debug, Display };
-use std::mem::{ size_of, size_of_val };
+use std::mem::size_of;
 use std::cmp::{ PartialEq, PartialOrd };
 use std::ops::*;
 use super::small_uint::*;
@@ -1093,14 +1093,15 @@ macro_rules! get_set_byte {
     ($f:expr) => {
         const N: usize = $f;
 
+        // pub fn get_ubyte_(&self, i: usize) -> u8
         /// Returns i-th element of array `ubyte` of type `u8`
         /// if `i` is less than the size of this Union in bytes.
         /// Otherwise, it will panic.
         /// 
-        /// # Argument i
-        /// 0-th element contains LSB (Least Significant Bit), while (the size
-        /// of this Union in bytes - 1)-th element contains MSB (Most
-        /// Significant Bit) regardless endianness.
+        /// # Argument
+        /// `i` indicates 0-th element contains LSB (Least Significant Bit),
+        /// while (the size of this Union in bytes - 1)-th element contains
+        /// MSB (Most Significant Bit) regardless endianness.
         /// 
         /// # Panics
         /// So, if `i` is greater than or equal to the size of this Union in
@@ -1735,7 +1736,7 @@ macro_rules! get_set_byte {
         /// a_short.set_sbyte_(1, 0);
         /// b_short_i8 = a_short.get_sbyte_(1);
         /// println!("a_short.get_signed() = {}, a_short.get_sbyte_(1) = {}", a_short.get_signed(), b_short_i8);
-        /// assert_eq!(a_short.get(), 79_i16);
+        /// assert_eq!(a_short.get_signed(), 79_i16);
         /// assert_eq!(b_short_i8, 0_i8);
         /// 
         /// // It will panic.
@@ -1839,6 +1840,7 @@ macro_rules! get_set_byte {
         /// # Example for ShortUnion
         /// ```
         /// use cryptocol::number::*;
+        /// let mut a_short = ShortUnion::new();
         /// let mut succ = a_short.set_sbyte(1, 11);
         /// let mut sbyte = a_short.get_sbyte(1);
         /// if succ
@@ -1869,6 +1871,7 @@ macro_rules! get_set_byte {
         /// # Example of LongerUnion
         /// ```
         /// use cryptocol::number::*;
+        /// let mut a_longer = LongerUnion::new();
         /// let mut succ = a_longer.set_ubyte(3, 241_u8);
         /// let mut ubyte = a_longer.get_ubyte(3);
         /// if succ
@@ -1926,6 +1929,7 @@ macro_rules! get_set_byte {
         /// # Example for ShortUnion
         /// ```
         /// use cryptocol::number::*;
+        /// let mut a_short = ShortUnion::new();
         /// let mut succ = a_short.set_sbyte(1, 11);
         /// let mut sbyte = a_short.get_sbyte(1);
         /// if succ
@@ -1956,6 +1960,7 @@ macro_rules! get_set_byte {
         /// # Example of LongerUnion
         /// ```
         /// use cryptocol::number::*;
+        /// let mut a_longer = LongerUnion::new();
         /// let mut succ = a_longer.set_ubyte(3, 241_u8);
         /// let mut ubyte = a_longer.get_ubyte(3);
         /// if succ
@@ -2018,6 +2023,7 @@ macro_rules! get_set_byte {
         /// # Example for ShortUnion
         /// ```
         /// use cryptocol::number::*;
+        /// let mut a_short = ShortUnion::new();
         /// let mut succ = a_short.set_sbyte(1, 11);
         /// let mut sbyte = a_short.get_sbyte(1);
         /// if succ
@@ -2048,6 +2054,7 @@ macro_rules! get_set_byte {
         /// # Example of LongerUnion
         /// ```
         /// use cryptocol::number::*;
+        /// let mut a_longer = LongerUnion::new();
         /// let mut succ = a_longer.set_sbyte(3, 81_i8);
         /// let mut sbyte = a_longer.get_sbyte(3);
         /// if succ
@@ -2135,6 +2142,7 @@ macro_rules! get_set_byte {
         /// # Example of LongerUnion
         /// ```
         /// use cryptocol::number::*;
+        /// let mut a_longer = LongerUnion::new();
         /// let mut succ = a_longer.set_sbyte(3, 81_i8);
         /// let mut sbyte = a_longer.get_sbyte(3);
         /// if succ
@@ -4781,7 +4789,7 @@ macro_rules! integer_union_methods {
         }
 
         #[inline] pub fn wrapping_add(self, rhs: Self) -> Self      { Self::new_with( self.get().wrapping_add(rhs.get()) ) }
-        #[inline] pub fn wrapping_add_assign(&mut self, rhs: Self)  { self.set(self.get().wrapping_add(rhs.get())); }
+        // #[inline] pub fn wrapping_add_assign(&mut self, rhs: Self)  { self.set(self.get().wrapping_add(rhs.get())); }
 
         pub fn overflowing_add(self, rhs: Self) -> (Self, bool)
         {
@@ -4809,7 +4817,7 @@ macro_rules! integer_union_methods {
         }
 
         #[inline] pub fn wrapping_sub(self, rhs: Self) -> Self      { Self::new_with( self.get().wrapping_sub(rhs.get()) ) }
-        #[inline] pub fn wrapping_sub_assign(&mut self, rhs: Self)  { self.set(self.get().wrapping_sub(rhs.get())); }
+        // #[inline] pub fn wrapping_sub_assign(&mut self, rhs: Self)  { self.set(self.get().wrapping_sub(rhs.get())); }
         
         pub fn overflowing_sub(self, rhs: Self) -> (Self, bool)
         {
@@ -4832,7 +4840,7 @@ macro_rules! integer_union_methods {
         #[inline] pub fn abs_diff(self, other: Self) -> Self    { Self::new_with( self.get().abs_diff(other.get()) ) }
 
         #[inline] pub fn wrapping_mul(self, rhs: Self) -> Self      { Self::new_with( self.get().wrapping_mul(rhs.get()) ) }
-        #[inline] pub fn wrapping_mul_assign(&mut self, rhs: Self)  { self.set(self.get().wrapping_mul(rhs.get())); }
+        // #[inline] pub fn wrapping_mul_assign(&mut self, rhs: Self)  { self.set(self.get().wrapping_mul(rhs.get())); }
         
         pub fn overflowing_mul(self, rhs: Self) -> (Self, bool)
         {
@@ -4853,7 +4861,7 @@ macro_rules! integer_union_methods {
         #[inline] pub fn saturating_mul(self, rhs: Self) -> Self    { Self::new_with( self.get().saturating_mul(rhs.get()) ) }
 
         #[inline] pub fn wrapping_div(self, rhs: Self) -> Self      { Self::new_with( self.get().wrapping_div(rhs.get()) ) }
-        #[inline] pub fn wrapping_div_assign(&mut self, rhs: Self)  { self.this = self.get().wrapping_div(rhs.get()); }
+        // #[inline] pub fn wrapping_div_assign(&mut self, rhs: Self)  { self.this = self.get().wrapping_div(rhs.get()); }
         
         pub fn overflowing_div(self, rhs: Self) -> (Self, bool)
         {
@@ -4873,7 +4881,7 @@ macro_rules! integer_union_methods {
         #[inline] pub fn saturating_div(self, rhs: Self) -> Self    { Self::new_with( self.get().saturating_div(rhs.get()) ) }
 
         #[inline] pub fn wrapping_rem(self, rhs: Self) -> Self      { Self::new_with( self.get().wrapping_rem(rhs.get()) ) }
-        #[inline] pub fn wrapping_rem_assign(&mut self, rhs: Self)  { self.set(self.get().wrapping_rem(rhs.get())); }
+        // #[inline] pub fn wrapping_rem_assign(&mut self, rhs: Self)  { self.set(self.get().wrapping_rem(rhs.get())); }
 
         pub fn overflowing_rem(self, rhs: Self) -> (Self, bool)
         {
@@ -4921,7 +4929,7 @@ macro_rules! integer_union_methods {
         #[inline] pub fn root(self, exp: Self) -> Self  { Self::new_with( self.get().root(exp.get()) ) }
 
         #[inline] pub fn reverse_bits(self) -> Self     { Self::new_with( self.get().reverse_bits() ) }
-        #[inline] pub fn reverse_bits_assign(&mut self) { self.get().reverse_bits_assign(); }
+        // #[inline] pub fn reverse_bits_assign(&mut self) { self.get().reverse_bits_assign(); }
         #[inline] pub fn rotate_left(self, n: u32) -> Self  { Self::new_with( self.get().rotate_left(n) ) }
         #[inline] pub fn rotate_right(self, n: u32) -> Self { Self::new_with( self.get().rotate_right(n) ) }
 
@@ -4941,25 +4949,25 @@ macro_rules! integer_union_methods {
         #[inline] pub fn is_power_of_two(self) -> bool    { self.get().is_power_of_two() }
         #[inline] pub fn next_power_of_two(self) -> Self  { Self::new_with( self.get().next_power_of_two() ) }
 
-        #[inline] pub fn into_f64(self) -> f64      { self.get() as f64 }
-        #[inline] pub fn into_f32(self) -> f32      { self.get() as f32 }
-        #[inline] pub fn into_u128(self) -> u128    { self.get() as u128 }
-        #[inline] pub fn into_u64(self) -> u64      { self.get() as u64 }
-        #[inline] pub fn into_u32(self) -> u32      { self.get() as u32 }
-        #[inline] pub fn into_u16(self) -> u16      { self.get() as u16 }
-        #[inline] pub fn into_u8(self) -> u8        { self.get() as u8 }
-        #[inline] pub fn into_usize(self) -> usize  { self.get() as usize }
-        #[inline] pub fn into_bool(self) -> bool    { self.get() != 0 }
-        #[inline] pub fn zero() -> Self             { Self::new_with(0 as $f) }
-        #[inline] pub fn one() -> Self              { Self::new_with(1 as $f) }
-        #[inline] pub fn max() -> Self              { Self::new_with(<$f>::MAX) }
-        #[inline] pub fn min() -> Self              { Self::new_with(<$f>::MIN) }
-        #[inline] pub fn num(n: u128) -> Self       { Self::new_with(n as $f) }
-        #[inline] pub fn size_in_bytes() -> usize   { size_of::<Self>() }
-        #[inline] pub fn size_in_bits() -> usize    { size_of::<Self>() * 8 }
-        #[inline] pub fn length_in_bytes(self) -> usize    { size_of_val(&self) }
-        #[inline] pub fn length_in_bits(self) -> usize     { size_of_val(&self) * 8 }
-        #[inline] pub fn is_odd(self) -> bool       { (self.get() & 1) != 0 }
+        // #[inline] pub fn into_f64(self) -> f64      { self.get() as f64 }
+        // #[inline] pub fn into_f32(self) -> f32      { self.get() as f32 }
+        // #[inline] pub fn into_u128(self) -> u128    { self.get() as u128 }
+        // #[inline] pub fn into_u64(self) -> u64      { self.get() as u64 }
+        // #[inline] pub fn into_u32(self) -> u32      { self.get() as u32 }
+        // #[inline] pub fn into_u16(self) -> u16      { self.get() as u16 }
+        // #[inline] pub fn into_u8(self) -> u8        { self.get() as u8 }
+        // #[inline] pub fn into_usize(self) -> usize  { self.get() as usize }
+        // #[inline] pub fn into_bool(self) -> bool    { self.get() != 0 }
+        // #[inline] pub fn zero() -> Self             { Self::new_with(0 as $f) }
+        // #[inline] pub fn one() -> Self              { Self::new_with(1 as $f) }
+        // #[inline] pub fn max() -> Self              { Self::new_with(<$f>::MAX) }
+        // #[inline] pub fn min() -> Self              { Self::new_with(<$f>::MIN) }
+        // #[inline] pub fn num(n: u128) -> Self       { Self::new_with(n as $f) }
+        // #[inline] pub fn size_in_bytes() -> usize   { size_of::<Self>() }
+        // #[inline] pub fn size_in_bits() -> usize    { size_of::<Self>() * 8 }
+        // #[inline] pub fn length_in_bytes(self) -> usize    { size_of_val(&self) }
+        // #[inline] pub fn length_in_bits(self) -> usize     { size_of_val(&self) * 8 }
+        // #[inline] pub fn is_odd(self) -> bool       { (self.get() & 1) != 0 }
     }
 }
 
