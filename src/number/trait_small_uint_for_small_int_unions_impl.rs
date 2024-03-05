@@ -315,16 +315,16 @@ macro_rules! SmallUInt_methods_for_integer_unions_impl {
             #[inline] fn is_power_of_two(self) -> bool      { self.is_power_of_two() }
             #[inline] fn next_power_of_two(self) -> Self    { self.next_power_of_two() }
 
-            #[inline] fn into_f64(self) -> f64      { unsafe { self.this as f64 } }
-            #[inline] fn into_f32(self) -> f32      { unsafe { self.this as f32 } }
-            #[inline] fn into_u128(self) -> u128    { unsafe { self.this as u128 } }
-            #[inline] fn into_u64(self) -> u64      { unsafe { self.this as u64 } }
-            #[inline] fn into_u32(self) -> u32      { unsafe { self.this as u32 } }
-            #[inline] fn into_u16(self) -> u16      { unsafe { self.this as u16 } }
-            #[inline] fn into_u8(self) -> u8        { unsafe { self.this as u8 } }
-            #[inline] fn into_usize(self) -> usize  { unsafe { self.this as usize } }
-            #[inline] fn into_bool(self) -> bool    { unsafe { self.this != 0 } }
-            #[inline] fn into_shortunion(self) -> ShortUnion   { ShortUnion::new_with(self.into_u16() ) }
+            #[inline] fn into_f64(self) -> f64      { self.get() as f64 }
+            #[inline] fn into_f32(self) -> f32      { self.get() as f32 }
+            #[inline] fn into_u128(self) -> u128    { self.get() as u128 }
+            #[inline] fn into_u64(self) -> u64      { self.get() as u64 }
+            #[inline] fn into_u32(self) -> u32      { self.get() as u32 }
+            #[inline] fn into_u16(self) -> u16      { self.get() as u16 }
+            #[inline] fn into_u8(self) -> u8        { self.get() as u8 }
+            #[inline] fn into_usize(self) -> usize  { self.get() as usize }
+            #[inline] fn into_bool(self) -> bool    { self.get() != 0 }
+            #[inline] fn into_shortunion(self) -> ShortUnion    { ShortUnion::new_with(self.into_u16() ) }
             #[inline] fn into_intunion(self) -> IntUnion        { IntUnion::new_with(self.into_u32() ) }
             #[inline] fn into_longunion(self) -> LongUnion      { LongUnion::new_with(self.into_u64() ) }
             #[inline] fn into_longerunion(self) -> LongerUnion  { LongerUnion::new_with(self.into_u128() ) }
@@ -521,7 +521,7 @@ macro_rules! operators_for_integer_unions_impl {
             #[inline]
             fn div_assign(&mut self, rhs: Self)
             {
-                self.this = self.get().wrapping_div(rhs.get());
+                self.set(self.get().wrapping_div(rhs.get()));
             }
         }
 
@@ -563,7 +563,7 @@ macro_rules! operators_for_integer_unions_impl {
             #[inline]
             fn bitand_assign(&mut self, rhs: Self)
             {
-                unsafe { self.this &= rhs.this; }
+                self.set(self.get() & rhs.get());
             }
         }
 
@@ -584,7 +584,7 @@ macro_rules! operators_for_integer_unions_impl {
             #[inline]
             fn bitor_assign(&mut self, rhs: Self)
             {
-                unsafe { self.this |= rhs.this; }
+                self.set(self.get() | rhs.get());
             }
         }
 
@@ -605,7 +605,7 @@ macro_rules! operators_for_integer_unions_impl {
             #[inline]
             fn bitxor_assign(&mut self, rhs: Self)
             {
-                unsafe { self.this ^= rhs.this; }
+                self.set(self.get() ^ rhs.get());
             }
         }
 
@@ -616,7 +616,7 @@ macro_rules! operators_for_integer_unions_impl {
             #[inline]
             fn not(self) -> Self
             {
-                Self::new_with(! unsafe { self.this })
+                Self::new_with(!self.get())
             }
         }
 
@@ -625,7 +625,7 @@ macro_rules! operators_for_integer_unions_impl {
             #[inline]
             fn eq(&self, other: &Self) -> bool
             {
-                unsafe { self.this == other.this }
+                self.get() == other.get()
             }
         }
 
@@ -633,9 +633,9 @@ macro_rules! operators_for_integer_unions_impl {
         {
             fn partial_cmp(&self, other: &Self) -> Option<Ordering>
             {
-                if unsafe { self.this > other.this }
+                if self.get() > other.get()
                     { return Some(Ordering::Greater); }
-                else if unsafe { self.this < other.this }
+                else if self.get() < other.get()
                     { return Some(Ordering::Less); }
                 else
                     { Some(Ordering::Equal) }
@@ -665,7 +665,7 @@ macro_rules! shift_ops_for_integer_unions_impl {
             #[inline]
             fn shl_assign(&mut self, rhs: $f)
             {
-                unsafe { self.this <<= rhs }
+                self.set(self.get() << rhs)
             }
         }
 
@@ -686,7 +686,7 @@ macro_rules! shift_ops_for_integer_unions_impl {
             #[inline]
             fn shr_assign(&mut self, rhs: $f)
             {
-                unsafe { self.this >>= rhs }
+                self.set(self.get() >> rhs)
             }
         }
     }
@@ -853,16 +853,16 @@ impl Debug for ShortUnion
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result
     {
         let mut ff = f.debug_struct("ShortUnion");
-        ff.field("this", unsafe { &self.this } )
-            .field("that", unsafe { &self.that } )
-            .field("ushort", unsafe { &self.ushort } )
-            .field("sshort", unsafe { &self.sshort } )
-            .field("ubyte", unsafe { &self.ubyte } )
-            .field("sbyte", unsafe { &self.sbyte } );
-         #[cfg(target_pointer_width = "16")] ff.field("u_size", unsafe { &self.u_size } )
-                                                .field("s_size", unsafe { &self.s_size } );
-         #[cfg(target_pointer_width = "8")] ff.field("u_size", unsafe { &self.u_size } )
-                                                .field("s_size", unsafe { &self.s_size } );
+        ff.field("this", &self.get())
+            .field("that", &self.get_signed())
+            .field("ushort", &self.get_ushort())
+            .field("sshort", &self.get_sshort())
+            .field("ubyte",  &[self.get_ubyte_(0), self.get_ubyte_(1)])
+            .field("sbyte",  &[self.get_sbyte_(0), self.get_sbyte_(1)]);
+         #[cfg(target_pointer_width = "16")] ff.field("u_size", unsafe { &self.get_usize() } )
+                                                .field("s_size", unsafe { &self.get_ssize() } );
+         #[cfg(target_pointer_width = "8")] ff.field("u_size", unsafe { &[self.get_usize(0), self.get_usize(1)] } )
+                                                .field("s_size", unsafe { &[self.get_ssize(0), self.get_isize(1)] } );
          ff.finish()
     }
 }
@@ -936,20 +936,20 @@ impl Debug for IntUnion
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result
     {
         let mut ff = f.debug_struct("IntUnion");
-        ff.field("this", unsafe { &self.this } )
-            .field("that", unsafe { &self.that } )
-            .field("uint", unsafe { &self.uint } )
-            .field("sint", unsafe { &self.sint } )
-            .field("ushort", unsafe { &self.ushort } )
-            .field("sshort", unsafe { &self.sshort } )
-            .field("ubyte", unsafe { &self.ubyte } )
-            .field("sbyte", unsafe { &self.sbyte } );
-        #[cfg(target_pointer_width = "32")] ff.field("u_size", unsafe { &self.u_size } )
-                                                .field("s_size", unsafe { &self.s_size } );
-        #[cfg(target_pointer_width = "16")] ff.field("u_size", unsafe { &self.u_size } )
-                                                .field("s_size", unsafe { &self.s_size } );
-        #[cfg(target_pointer_width = "8")] ff.field("u_size", unsafe { &self.u_size } )
-                                                .field("s_size", unsafe { &self.s_size } );
+        ff.field("this", &self.get())
+            .field("that", &self.get_signed())
+            .field("uint", &self.get_uint())
+            .field("sint", &self.get_sint())
+            .field("ushort", &[self.get_ushort_(0), self.get_ushort_(1)])
+            .field("sshort", &[self.get_sshort_(0),  self.get_sshort_(1)])
+            .field("ubyte", &[self.get_ubyte_(0), self.get_ubyte_(1), self.get_ubyte_(2), self.get_ubyte_(3)])
+            .field("sbyte", &[self.get_sbyte_(0), self.get_sbyte_(1), self.get_sbyte_(2), self.get_sbyte_(3)]);
+        #[cfg(target_pointer_width = "32")] ff.field("u_size", &self.get_usize())
+                                                .field("s_size", &self.get_ssize());
+        #[cfg(target_pointer_width = "16")] ff.field("u_size", &[self.get_usize_(0), self.get_usize_(1)])
+                                                .field("s_size", &[self.get_ssize_(0), self.get_ssize_(1)]);
+        #[cfg(target_pointer_width = "8")] ff.field("u_size", &[self.get_usize_(0), self.get_usize_(1), self.get_usize_(2), self.get_usize_(3)])
+                                                .field("s_size", &[self.get_ssize_(0), self.get_ssize_(1), self.get_ssize_(2), self.get_ssize_(3)]);
         ff.finish()
     }
 }
@@ -1044,24 +1044,24 @@ impl Debug for LongUnion
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result
     {
         let mut ff = f.debug_struct("LongUnion");
-        ff.field("this", unsafe { &self.this } )
-            .field("that", unsafe { &self.that } )
-            .field("ulong", unsafe { &self.ulong } )
-            .field("slong", unsafe { &self.slong } )
-            .field("uint", unsafe { &self.uint } )
-            .field("sint", unsafe { &self.sint } )
-            .field("ushort", unsafe { &self.ushort } )
-            .field("sshort", unsafe { &self.sshort } )
-            .field("ubyte", unsafe { &self.ubyte } )
-            .field("sbyte", unsafe { &self.sbyte } );
-        #[cfg(target_pointer_width = "64")] ff.field("u_size", unsafe { &self.u_size } )
-                                                .field("s_size", unsafe { &self.s_size } );
-        #[cfg(target_pointer_width = "32")] ff.field("u_size", unsafe { &self.u_size } )
-                                                .field("s_size", unsafe { &self.s_size } );
-        #[cfg(target_pointer_width = "16")] ff.field("u_size", unsafe { &self.u_size } )
-                                                .field("s_size", unsafe { &self.s_size } );
-        #[cfg(target_pointer_width = "8")] ff.field("u_size", unsafe { &self.u_size } )
-                                                .field("s_size", unsafe { &self.s_size } );
+        ff.field("this", &self.get())
+            .field("that", &self.get_signed())
+            .field("ulong", &self.get_ulong())
+            .field("slong", &self.get_slong())
+            .field("uint", &[self.get_uint_(0), self.get_uint_(1)])
+            .field("sint", &[self.get_sint_(0), self.get_sint_(1)])
+            .field("ushort", &[self.get_ushort_(0), self.get_ushort_(1), self.get_ushort_(2), self.get_ushort_(3)])
+            .field("sshort", &[self.get_sshort_(0), self.get_sshort_(1), self.get_sshort_(2), self.get_sshort_(3)])
+            .field("ubyte", &[self.get_ubyte_(0), self.get_ubyte_(1), self.get_ubyte_(2), self.get_ubyte_(3), self.get_ubyte_(4), self.get_ubyte_(5), self.get_ubyte_(6), self.get_ubyte_(7)])
+            .field("sbyte", &[self.get_sbyte_(0), self.get_sbyte_(1), self.get_sbyte_(2), self.get_sbyte_(3), self.get_sbyte_(4), self.get_sbyte_(5), self.get_sbyte_(6), self.get_sbyte_(7)]);
+        #[cfg(target_pointer_width = "64")] ff.field("u_size", &self.get_usize())
+                                                .field("s_size", &self.get_ssize());
+        #[cfg(target_pointer_width = "32")] ff.field("u_size", &[self.get_usize_(0), self.get_usize_(1)])
+                                                .field("s_size", &[self.get_ssize_(0), self.get_ssize_(1)]);
+        #[cfg(target_pointer_width = "16")] ff.field("u_size", &[self.get_usize_(0), self.get_usize_(1), self.get_usize_(2), self.get_usize_(3)])
+                                                .field("s_size", &[self.get_ssize_(0), self.get_ssize_(1), self.get_ssize_(2), self.get_ssize_(3)]);
+        #[cfg(target_pointer_width = "8")] ff.field("u_size", &[self.get_usize_(0), self.get_usize_(1), self.get_usize_(2), self.get_usize_(3), self.get_usize_(4), self.get_usize_(5), self.get_usize_(6), self.get_usize_(7)])
+                                                .field("s_size", &[self.get_ssize_(0), self.get_ssize_(1), self.get_ssize_(2), self.get_ssize_(3), self.get_ssize_(4), self.get_ssize_(5), self.get_ssize_(6), self.get_ssize_(7)]);
         ff.finish()
     }
 }
@@ -1198,28 +1198,28 @@ impl Debug for LongerUnion
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result
     {
         let mut ff = f.debug_struct("LongerUnion");
-        ff.field("this", unsafe { &self.this } )
-            .field("that", unsafe { &self.that } )
-            .field("ulonger", unsafe { &self.ulonger } )
-            .field("slonger", unsafe { &self.slonger } )
-            .field("ulong", unsafe { &self.ulong } )
-            .field("slong", unsafe { &self.slong } )
-            .field("uint", unsafe { &self.uint } )
-            .field("sint", unsafe { &self.sint } )
-            .field("ushort", unsafe { &self.ushort } )
-            .field("sshort", unsafe { &self.sshort } )
-            .field("ubyte", unsafe { &self.ubyte } )
-            .field("sbyte", unsafe { &self.sbyte } );
-        #[cfg(target_pointer_width = "128")] ff.field("u_size", unsafe { &self.u_size } )
-                                                .field("s_size", unsafe { &self.s_size } );
-        #[cfg(target_pointer_width = "64")] ff.field("u_size", unsafe { &self.u_size } )
-                                                .field("s_size", unsafe { &self.s_size } );
-        #[cfg(target_pointer_width = "32")] ff.field("u_size", unsafe { &self.u_size } )
-                                                .field("s_size", unsafe { &self.s_size } );
-        #[cfg(target_pointer_width = "16")] ff.field("u_size", unsafe { &self.u_size } )
-                                                .field("s_size", unsafe { &self.s_size } );
-        #[cfg(target_pointer_width = "8")] ff.field("u_size", unsafe { &self.u_size } )
-                                                .field("s_size", unsafe { &self.s_size } );
+        ff.field("this", &self.get())
+            .field("that", &self.get_signed())
+            .field("ulonger", &self.get_ulonger())
+            .field("slonger", &self.get_slonger())
+            .field("ulong", &[self.get_ulong_(0), self.get_ulong_(1)])
+            .field("slong", &[self.get_slong_(0), self.get_slong_(1)])
+            .field("uint", &[self.get_uint_(0), self.get_uint_(1), self.get_uint_(2), self.get_uint_(3)])
+            .field("sint", &[self.get_sint_(0), self.get_sint_(1), self.get_sint_(2), self.get_sint_(3)])
+            .field("ushort", &[self.get_ushort_(0), self.get_ushort_(1), self.get_ushort_(2), self.get_ushort_(3), self.get_ushort_(4), self.get_ushort_(5), self.get_ushort_(6), self.get_ushort_(7)])
+            .field("sshort", &[self.get_sshort_(0), self.get_sshort_(1), self.get_sshort_(2), self.get_sshort_(3), self.get_sshort_(4), self.get_sshort_(5), self.get_sshort_(6), self.get_sshort_(7)])
+            .field("ubyte", &[self.get_ubyte_(0), self.get_ubyte_(1), self.get_ubyte_(2), self.get_ubyte_(3), self.get_ubyte_(4), self.get_ubyte_(5), self.get_ubyte_(6), self.get_ubyte_(7), self.get_ubyte_(8), self.get_ubyte_(9), self.get_ubyte_(10), self.get_ubyte_(11), self.get_ubyte_(12), self.get_ubyte_(13), self.get_ubyte_(14), self.get_ubyte_(15)])
+            .field("sbyte", &[self.get_sbyte_(0), self.get_sbyte_(1), self.get_sbyte_(2), self.get_sbyte_(3), self.get_sbyte_(4), self.get_sbyte_(5), self.get_sbyte_(6), self.get_sbyte_(7), self.get_sbyte_(8), self.get_sbyte_(9), self.get_sbyte_(10), self.get_sbyte_(11), self.get_sbyte_(12), self.get_sbyte_(13), self.get_sbyte_(14), self.get_sbyte_(15)]);
+        #[cfg(target_pointer_width = "128")] ff.field("u_size",  &self.get_usize())
+                                                .field("s_size", &self.get_ssize());
+        #[cfg(target_pointer_width = "64")] ff.field("u_size", &[self.get_usize_(0), self.get_usize_(1)])
+                                                .field("s_size", &[self.get_ssize_(0), self.get_ssize_(1)]);
+        #[cfg(target_pointer_width = "32")] ff.field("u_size", &[self.get_usize_(0), self.get_usize_(1), self.get_usize_(2), self.get_usize_(3)])
+                                                .field("s_size", &[self.get_ssize_(0), self.get_ssize_(1), self.get_ssize_(2), self.get_ssize_(3)]);
+        #[cfg(target_pointer_width = "16")] ff.field("u_size", &[self.get_usize_(0), self.get_usize_(1), self.get_usize_(2), self.get_usize_(3), self.get_usize_(4), self.get_usize_(5), self.get_usize_(6), self.get_usize_(7)])
+                                                .field("s_size", &[self.get_ssize_(0), self.get_ssize_(1), self.get_ssize_(2), self.get_ssize_(3), self.get_ssize_(4), self.get_ssize_(5), self.get_ssize_(6), self.get_ssize_(7)]);
+        #[cfg(target_pointer_width = "8")] ff.field("u_size", &[self.get_usize_(0), self.get_usize_(1), self.get_usize_(2), self.get_usize_(3), self.get_usize_(4), self.get_usize_(5), self.get_usize_(6), self.get_usize_(7), self.get_usize_(8), self.get_usize_(9), self.get_usize_(10), self.get_usize_(11), self.get_usize_(12), self.get_usize_(13), self.get_usize_(14), self.get_usize_(15)])
+                                                .field("s_size", &[self.get_ssize_(0), self.get_ssize_(1), self.get_ssize_(2), self.get_ssize_(3), self.get_ssize_(4), self.get_ssize_(5), self.get_ssize_(6), self.get_ssize_(7), self.get_ssize_(8), self.get_ssize_(9), self.get_ssize_(10), self.get_ssize_(11), self.get_ssize_(12), self.get_ssize_(13), self.get_ssize_(14), self.get_ssize_(15)]);
         ff.finish()
     }
 }
@@ -1315,10 +1315,10 @@ impl Debug for SizeUnion
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result
     {
         let mut ff = f.debug_struct("SizeUnion");
-        ff.field("this", unsafe { &self.this } )
-            .field("that", unsafe { &self.that } )
-            .field("u_size", unsafe { &self.u_size } )
-            .field("s_size", unsafe { &self.s_size } );
+        ff.field("this", &self.get())
+            .field("that", &self.get_signed())
+            .field("u_size", &self.get_usize())
+            .field("s_size", &self.get_ssize());
 
         #[cfg(target_pointer_width = "128")]
         ff.field("ulonger", unsafe { &self.ulonger } )

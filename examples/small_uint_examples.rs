@@ -13,6 +13,7 @@
 
 pub fn main()
 {
+    small_uint_quick_start();
     small_uint_add_main();
     small_uint_sub_main();
     small_uint_mul_main();
@@ -29,6 +30,22 @@ pub fn main()
     small_uint_conversion();
     small_uint_constants();
     small_uint_size();
+}
+
+fn small_uint_quick_start();
+{
+    small_uint_quick_start1();
+    small_uint_quick_start2();
+}
+
+fn small_uint_quick_start1()
+{
+
+}
+
+fn small_uint_quick_start2()
+{
+    
 }
 
 fn small_uint_add_main()

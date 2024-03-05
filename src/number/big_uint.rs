@@ -21,8 +21,8 @@ use std::convert::From;
 use std::str::FromStr;
 use std::ops::*;
 
-use super::small_uint::*;
-use super::small_int_unions::*;
+use super::small_uint::SmallUInt;
+use super::small_int_unions::{ LongerUnion, Common, Share };
 use super::NumberErr;
 
 

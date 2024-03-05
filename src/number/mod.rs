@@ -105,7 +105,7 @@
 //! # QUICK START
 //! - For `SmallUInt`, read [here](trait@SmallUInt#quick-start).
 // ! - For `SmallSInt`, read [here](trait@SmallSInt#quick-start).
-// ! - For `ShortUnion`, read [here](union@ShortUnion#quick-start).
+//! - For `ShortUnion`, read [here](union@ShortUnion#quick-start).
 // ! - For `IntUnion`, read [here](union@IntUnion#quick-start).
 // ! - For `LongUnion`, read [here](union@LongUnion#quick-start).
 // ! - For `LongUnion`, read [here](union@LongerUnion#quick-start).
@@ -119,14 +119,13 @@ pub mod small_uint;
 pub mod small_sint;
 pub mod small_int_unions;
 pub mod big_uint;
-pub mod trait_impl_for_big_uint;
-pub mod trait_impl_for_small_int_unions;
+pub mod traits_for_big_uint_impl;
+pub mod trait_small_uint_for_small_int_unions_impl;
 pub mod number_errors;
 pub mod macros_number;
 
 /// Implementaion of trait SmallUInt for u8, u16, u32, u64, u128, and usize
-pub mod trait_impl_small_uint;
-
+pub mod trait_small_uint_for_unsigned_impl;
 pub use small_uint::*;
 pub use small_int_unions::*;
 pub use small_sint::*;
@@ -137,8 +136,8 @@ pub use number_errors::*;
 /********** FOR BIG-ENDIANNESS ONLY **********/
 
 #[cfg(target_endian = "big")]
-pub mod big_uint_for_big_endian;
+pub mod traits_for_big_uint_for_big_endian_impl;
 
 #[cfg(target_endian = "big")]
-pub use big_uint_for_big_endian::*;
+pub use traits_for_big_uint_for_big_endian_impl::*;
 

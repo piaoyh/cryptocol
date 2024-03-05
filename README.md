@@ -1,30 +1,37 @@
-# cryptocol crate provides libraries for cryptography.
+# cryptocol crate provides libraries for cryptography
 
 ## Endianness
+
 This crate is optimized for Little-endian CPUs because Little-Endian CPUs
 are far more popular than Big-endian CPUs. For the information about
 Endianness (including Little-endian and Big-endian)
 [Read more](https://en.wikipedia.org/wiki/Endianness).
 
 ## Big-endian issue
+
 This crate is just experimental for Big-endian CPUs. So, you are not
 encouraged to use this crate for Big-endian CPUs for serious purpose.
 Only use this crate for Big-endian CPUs with your own full responsibility.
 
 ## Road Map for Version 1.0
+
 This crate Cryptocol is planned to provide the following functionalities.
 The checked items have already been implemented including documentation
 at least 80%. The unchecked items have not yet been implemented including
 documentation more than 80% or have not yet even been started to implement.
 
 ### Foundations mainly for Big Numbers and also for other modules
-- [X] Trait SmallUInt and its implementation for primitive data types --- SmallUInt
-- [ ] Trait SmallSInt and its implementation for primitive data types --- SmallSInt
-    _--> Thinking about postponing to Roadmap for ver. 2.0_
-- [ ] Unions for primitive data types and their implementation
-    --- `ShortUnion`, `IntUnion`, `LongUnion`, `LongerUnion`, and `SizeUnion`
 
-### Big Numbers
+- [ ] Unions for primitive data types and their implementation ---
+    `ShortUnion`, `IntUnion`, `LongUnion`, `LongerUnion`, and `SizeUnion`
+- [X] Trait SmallUInt, its implementation for primitive data types, and the
+    implementation of it for the Unions --- SmallUInt
+- [ ] Trait SmallSInt, its implementation for primitive data types, and the
+    implementation of it for the Unions --- SmallSInt
+    _--> Thinking about postponing to Roadmap for ver. 2.0_
+
+### Big Numbers: meaningful as itself and also the foundation for Asymmetric-Key Algorithms
+
 - [ ] Fixed Sized Big Unsigned Integer Operation --- `BigUInt`
 - [ ] Fixed Sized Big Signed Integer Operation --- `BigSInt`
     _--> Thinking about postponing to Roadmap for ver. 2.0_
@@ -32,6 +39,7 @@ documentation more than 80% or have not yet even been started to implement.
     _--> Thinking about postponing to Roadmap for ver. 2.0 or higher_
 
 ### Hash Algorithms
+
 - [X] MD4 hash algorithms based on 128 bits
     --- Includes MD4 and its expanded versions. `MD4_Generic`
 - [X] MD5 hash algorithms based on 128 bits
@@ -52,6 +60,7 @@ documentation more than 80% or have not yet even been started to implement.
 - [ ] SHA-3 (SHAKE 256)
 
 ### Symmetric-key Algorithms for the Encryption/Decryption of digital data
+
 - [ ] DES symmetric-key encryption/decryption algorithm
     --- Includes DES and its expanded versions. `DES_Generic`
 - [ ] NDES symmetric-key encryption/decryption algorithm
@@ -62,6 +71,7 @@ documentation more than 80% or have not yet even been started to implement.
     --- Includes 2DES, 3DES, 4AES, etc., and their expanded versions. `NAES_Generic`
 
 ### Pseudo-Random Number Generator Algorithms
+
 - [X] The Pseudo-random number generator wrappers
     --- struct `Random_Generic` and trait `Random_Engine`
 - [X] The implementation of `Random_Engine` for hash algorithms such as
@@ -70,6 +80,7 @@ documentation more than 80% or have not yet even been started to implement.
     and for pseudo-random number generation algorithm such as `AnyNumber`
 
 ### Asymmetric-key Algorithms for the Encryption/Decryption of digital data
+
 - [ ] Diffie-Hellman _--> Thinking about postponing to Roadmap for ver. 2.0_
 - [ ] RSA (Ron Rivest, Adi Shamir, Leonard Adleman)
 - [ ] ECC (Elliptic Curve Cryptosystem)
@@ -82,9 +93,43 @@ number will be 0.27.x.x since there are all twenty-six functionalities
 listed above. So, for example, even if the version number is 0.5.0.0,
 it does not mean that 50% of all functionalities are implemented.
 
+## Sorry for breaking changes from ver. 0.7.0 to ver. 0.7.1
+
+### macros for BigUInt
+
+| Ver. 0.7.0                | Ver. 0.7.1                 |
+|---------------------------|----------------------------|
+| define_Utypes_with_utypes | define_uutypes_with_utypes |
+
+- The macro name `define_Utypes_with_utypes` should have been changed to `define_uutypes_with_utypes` for consistency with the changed type name `UU*` when tje breaking changes was made from `U*` into `UU*` at the update from ver. 0.5.0 to ver. 0.6.0.
+
+### fields of ShortUnion, IntUnion, LongUnion, LongerUnion, SizeUnion
+
+| Ver. 0.7.0  | Ver. 0.7.1 |
+|-------------|------------|
+| pub this    | this       |
+| pub that    | that       |
+| pub ubyte   | ubyte      |
+| pub sbyte   | sbyte      |
+| pub ushort  | ushort     |
+| pub sshort  | sshort     |
+| pub uint    | uint       |
+| pub sint    | sint       |
+| pub ulong   | ulong      |
+| pub slong   | slong      |
+| pub ulonger | ulonger    |
+| pub slonger | slonger    |
+| pub u_size  | u_size     |
+| pub s_size  | s_size     |
+| pub u_size  | u_size     |
+| pub s_size  | s_size     |
+
+- All the fields of all the unions such as ShortUnion, IntUnion, LongUnion, LongerUnion, and SizeUnion are changed from public into private in order that users cannot access them directly instead of warning users not to access them directly in documentation.
+
 ## Sorry for breaking changes from ver. 0.6.3 to ver. 0.7.0
 
 ### trait SmallUInt
+
 | Ver. 0.6.3                        | Ver. 0.7.0               |
 |-----------------------------------|--------------------------|
 | fn sqrt(self) -> Self             | fn isqrt(self) -> Self   |
@@ -92,11 +137,13 @@ it does not mean that 50% of all functionalities are implemented.
 | fn is_zero(&self) -> bool         | fn is_zero(self) -> bool |
 | fn is_one(&self) -> bool          | fn is_one(self) -> bool  |
 | fn reverse_bits_assign(&mut self) | removed                  |
-- A breaking change has been made to change the function name from `number::SmallUInt::sqrt(self) -> Self;` to `number::SmallUInt::isqrt(self) -> Self;` in order to keep consistancy with primitive data types such as `u8`, `u16`, `u32`, `u64`, `u128`, and `usize`.
-- Breaking changes has been made to change the function arguement from `&self` into `self` in order to keep consistancy with other functions.
-- reverse_bits_assign(&mut self) has been removed to keep consistancy with primitive data types such as `u8`, `u16`, `u32`, `u64`, `u128`, and `usize`.
+
+- A breaking change has been made to change the function name from `number::SmallUInt::sqrt(self) -> Self;` to `number::SmallUInt::isqrt(self) -> Self;` in order to keep consistency with primitive data types such as `u8`, `u16`, `u32`, `u64`, `u128`, and `usize`.
+- Breaking changes has been made to change the function arguement from `&self` into `self` in order to keep consistency with other functions.
+- reverse_bits_assign(&mut self) has been removed to keep consistency with primitive data types such as `u8`, `u16`, `u32`, `u64`, `u128`, and `usize`.
 
 ### unions ShortUnion, IntUnion, LongUnion, LongerUnion, and SizeUnion
+
 | Ver. 0.6.3                                       | Ver. 0.7.0 |
 |--------------------------------------------------|------------|
 | pub fn num(n: u128) -> Self                      | removed    |
@@ -125,20 +172,25 @@ it does not mean that 50% of all functionalities are implemented.
 | pub fn length_in_bytes(self) -> usize            | removed    |
 | pub fn length_in_bits(self) -> usize             | removed    |
 | pub fn is_odd(self) -> bool                      | removed    |
-Breaking changes have been made to remove the redundant methods from `ShortUnion`, `IntUnion`, `LongUnion`, `LongerUnion`, and `SizeUnions` since there are the same methods in the trait `number::SmallUInt` and its implementation, and/or in order to keep consistancy with primitive data types such as `u8`, `u16`, `u32`, `u64`, `u128`, and `usize`.
+
+- Breaking changes have been made to remove the redundant methods from `ShortUnion`, `IntUnion`, `LongUnion`, `LongerUnion`, and `SizeUnions` since there are the same methods in the trait `number::SmallUInt` and its implementation, and/or in order to keep consistency with primitive data types such as `u8`, `u16`, `u32`, `u64`, `u128`, and `usize`.
 
 ## Sorry for a breaking change from ver. 0.6.2 to ver. 0.6.3
+
 A breaking change has been made to change the function `number::BigUInt::copy_within<R>(&mut self, src: R, dest: usize)` from public to private since it should have been private from the beginning for security reason because it is high chance that this function will be missused or even abused.
 
 ### struct BigUInt
+
 | Ver. 0.6.2                                            | Ver. 0.6.3                                        |
 |-------------------------------------------------------|---------------------------------------------------|
-| pub fn copy_within<R>(&mut self, src: R, dest: usize) | fn copy_within<R>(&mut self, src: R, dest: usize) |
+| pub fn copy_within&lt;R&gt;(&mut self, src: R, dest: usize) | fn copy_within&lt;R&gt;(&mut self, src: R, dest: usize) |
 
 ## Sorry for breaking changes from ver. 0.5.0 to ver. 0.6.0
+
 Breaking changes have been made to change the source code according to Rust convention and in order to remove all warnings.
 
 ### trait SmallUInt and its implementation for u8, u16, u32, u64, u128, usize, ShortUnion, IntUnion, LongUnion, LongerUnion, and SizeUnion
+
 | Ver. 0.5.0                                                      | Ver. 0.6.0                                                      |
 |-----------------------------------------------------------------|-----------------------------------------------------------------|
 | fn test_Miller_Rabin(self, a: Self) -> bool                     | fn test_miller_rabin(self, a: Self) -> bool                     |
@@ -155,6 +207,7 @@ Breaking changes have been made to change the source code according to Rust conv
 | fn is_MSB_set(self) -> bool                                     | fn is_msb_set(self) -> bool                                     |
 
 ### struct BigUInt functions
+
 | Ver. 0.5.0                                                      | Ver. 0.6.0                                                      |
 |-----------------------------------------------------------------|-----------------------------------------------------------------|
 | fn test_Miller_Rabin(self, a: Self) -> bool                     | fn test_miller_rabin(self, a: Self) -> bool                     |
@@ -164,6 +217,7 @@ Breaking changes have been made to change the source code according to Rust conv
 | fn is_MSB_set(self) -> bool                                     | fn is_msb_set(self) -> bool                                     |
 
 ### struct BigUInt types
+
 | Ver. 0.5.0            | Ver. 0.6.0            |
 |-----------------------|-----------------------|
 | type U32              | type UU32             |
@@ -245,12 +299,14 @@ Breaking changes have been made to change the source code according to Rust conv
 | type u16384_with_u128 | type U16384_with_u128 |
 
 ### trait SmallSInt and its implementation for i8, i16, i32, i64, i128, and isize
+
 | Ver. 0.5.0       | Ver. 0.6.0       |
 |------------------|------------------|
 | fn Max() -> Self | fn max() -> Self |
 | fn Min() -> Self | fn min() -> Self |
 
 ### struct MD4_Generic, MD5_Generic, SHA1_Generic, SHA2_256_Generic, SHA2_512_Generic, and SHA2_512_t_Generic
+
 | Ver. 0.5.0                                                 | Ver. 0.6.0                                                   |
 |------------------------------------------------------------|--------------------------------------------------------------|
 | fn get_HashValue(&self, hashValue: *mut u8, length: usize) | fn get_hash_value(&self, hash_value: *mut u8, length: usize) |
@@ -261,6 +317,7 @@ Breaking changes have been made to change the source code according to Rust conv
 | fn digest_C(&mut self, ...)                                | fn digest_c(&mut self, ...)                                  |
 
 ### struct SHA2_512_t_Generic
+
 | Ver. 0.5.0                                    | Ver. 0.6.0                                     |
 |-----------------------------------------------|------------------------------------------------|
 | fn get_HashValue_in_array_TM(&self) -> [T; M] | fn get_hash_value_in_array_tm(&self) -> [T; M] |
@@ -268,6 +325,7 @@ Breaking changes have been made to change the source code according to Rust conv
 | fn new_with_H(h: &[u64; 8]) -> Self           | fn new_with_h(h: &[u64; 8]) -> Self            |
 
 ### struct Random
+
 | Ver. 0.5.0                                                      | Ver. 0.6.0                                                      |
 |-----------------------------------------------------------------|-----------------------------------------------------------------|
 | fn random_with_MSB_set_uint(&mut self) -> T                     | fn random_with_msb_set_uint(&mut self) -> T                     |
@@ -284,4 +342,3 @@ Breaking changes have been made to change the source code according to Rust conv
 | fn random_odd_with_MSB_set_BigUInt(&mut self) -> BigUInt<T, N>  | fn random_odd_with_msb_set_biguint(&mut self) -> BigUInt<T, N>  |
 | fn random_prime_using_Miller_Rabin_BigUInt(..) -> BigUInt<T, N> | fn random_prime_using_miller_rabin_biguint(..) -> BigUInt<T, N> |
 | fn random_prime_with_MSB_set_using_Miller_Rabin_BigUInt(.)-> .. | fn random_prime_with_msb_set_using_miller_rabin_biguint(.)-> .. |
-

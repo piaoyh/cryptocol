@@ -8,82 +8,124 @@
 
 #![allow(missing_docs)]
 #![allow(missing_doc_code_examples)]
+
+use cryptocol::number::SmallUInt;
 #[allow(non_camel_case_types)]
 
 
 pub fn main()
 {
-    short_union_main();
-    int_union_main();
-    long_union_main();
-    longer_union_main();
-    size_union_main();
+    short_union_quick_start();
+    // int_union_main();
+    // long_union_main();
+    // longer_union_main();
+    // size_union_main();
 
-    short_union_debug_fmt_main();
-    int_union_debug_fmt_main();
-    long_union_debug_fmt_main();
-    longer_union_debug_fmt_main();
-    size_union_debug_fmt_main();
+    // short_union_debug_fmt_main();
+    // int_union_debug_fmt_main();
+    // long_union_debug_fmt_main();
+    // longer_union_debug_fmt_main();
+    // size_union_debug_fmt_main();
 
-    short_union_get_ubyte_main();
-    short_union_get_sbyte_main();
-    short_union_set_ubyte_main();
-    short_union_set_sbyte_main();
+    // short_union_get_ubyte_main();
+    // short_union_get_sbyte_main();
+    // short_union_set_ubyte_main();
+    // short_union_set_sbyte_main();
 
-    longer_union_get_ubyte_main();
-    longer_union_get_sbyte_main();
-    longer_union_set_ubyte_main();
-    longer_union_set_sbyte_main();
+    // longer_union_get_ubyte_main();
+    // longer_union_get_sbyte_main();
+    // longer_union_set_ubyte_main();
+    // longer_union_set_sbyte_main();
 }
 
-
-
-fn short_union_main()
+fn short_union_quick_start()
 {
-    println!("short_union_main()");
-    use cryptocol::number::*;
-    // use rand_distr::num_traits::PrimInt; //{u256, BigInteger, HugeInteger};
-    let a = ShortUnion::new_with(55468_u16);
-    println!("a.this = {}, {}", unsafe { a.this }, a.get());
-    println!("a.that = {}, {}", unsafe { a.that }, a.get_signed());
-    println!("a.ushort = {}", unsafe { a.ushort });
-    println!("a.sshort = {}", unsafe { a.sshort });
+    short_union_quick_start1();
+    short_union_quick_start2();
+}
 
-    #[cfg(target_endian = "little")]
+fn short_union_quick_start1()
+{
+    println!("short_union_quick_start1()");
+    use cryptocol::number::ShortUnion;
+    let a = ShortUnion::new_with(55468_u16);
+    println!("a.get() = {}", a.get());
+    println!("a.get_signed() = {}", a.get_signed());
+    println!("a.get_ushort() = {}", a.get_ushort());
+    println!("a.get_sshort() = {}", a.get_sshort());
+    assert_eq!(a.get(), 55468_u16);
+    assert_eq!(a.get_signed(), -10068_i16);
+    assert_eq!(a.get_ushort(), 55468_u16);
+    assert_eq!(a.get_sshort(), -10068_i16);
+
+    for i in 0..2
+        { println!("a.get_ubyte_({}) = {}", i, a.get_ubyte_(i)); }
+    for i in 0..2
+        { println!("a.get_sbyte_({}) = {}", i, a.get_sbyte_(i)); }
+    assert_eq!(a.get_ubyte_(0), 172_u8);
+    assert_eq!(a.get_ubyte_(1), 216_u8);
+    assert_eq!(a.get_sbyte_(0), -84_i8);
+    assert_eq!(a.get_sbyte_(1), -40_i8);
+    
+    #[cfg(target_pointer_width = "8")]
     {
-        for i in 0..2
-            { println!("a.ubyte[{}] = {}, {}", i, unsafe { a.ubyte[i] }, a.get_ubyte_(i)); }
-        for i in 0..2
-            { println!("a.sbyte[{}] = {}, {}", i, unsafe { a.sbyte[i] }, a.get_sbyte_(i)); }
-        #[cfg(target_pointer_width = "8")]
-        {
-            const N: usize = 2;
-            for i in 0..N
-                { println!("a.u_size[{}] = {}, {}", i, unsafe { a.u_size[i] }, a.get_usize_(i)); }
-            for i in 0..N
-                { println!("a.s_size[{}] = {}, {}", i, unsafe { a.s_size[i] }, a.get_ssize_(i)); }
-        }
+        const N: usize = 2;
+        for i in 0..N
+            { println!("a.get_usize_({}) = {}", i, a.get_usize_(i)); }
+        for i in 0..N
+            { println!("a.get_ssize_({}) = {}", i, a.get_ssize_(i)); }
+        assert_eq!(a.get_usize_(0), 172_u8);
+        assert_eq!(a.get_usize_(1), 216_u8);
+        assert_eq!(a.get_usize_(0), -84_i8);
+        assert_eq!(a.get_usize_(1), -40_i8);
     }
+
     #[cfg(target_pointer_width = "16")]
     {
-        println!("a.u_size = {}", unsafe { a.u_size });
-        println!("a.s_size = {}", unsafe { a.s_size });
-    }
-
-    assert_eq!(unsafe { a.this }, 55468_u16);
-    assert_eq!(unsafe { a.that }, -10068_i16);
-    assert_eq!(unsafe { a.ushort }, 55468_u16);
-    assert_eq!(unsafe { a.sshort }, -10068_i16);
-    #[cfg(target_endian = "little")]
-    {
-        assert_eq!(unsafe { a.ubyte[0] }, 172_u8);
-        assert_eq!(unsafe { a.ubyte[1] }, 216_u8);
-        assert_eq!(unsafe { a.sbyte[0] }, -84_i8);
-        assert_eq!(unsafe { a.sbyte[1] }, -40_i8);
+        println!("a.get_usize() = {}", a.get_usize());
+        println!("a.get_ssize() = {}", a.get_ssize());
+        assert_eq!(a.get_usize(), 55468_u16);
+        assert_eq!(a.get_ssize(), -10068_i16);
     }
     println!("--------------------------------------");
 }
 
+fn short_union_quick_start2()
+{
+    println!("short_union_quick_start2()");
+    let a_shortunion = 1234_u16.into_shortunion();
+    let b_shortunion = 4321_u16.into_shortunion();
+    let c_shortunion = a_shortunion.wrapping_add(b_shortunion);
+    println!("{} + {} = {}", a_shortunion, b_shortunion, c_shortunion);
+    assert_eq!(c_shortunion.get(), 5555_u16);
+    for i in 0..2
+        { println!("c_shortunion.get_ubyte_({}) = {}", i, c_shortunion.get_ubyte_(i)); }
+    assert_eq!(c_shortunion.get_ubyte_(0), 179_u8);
+    assert_eq!(c_shortunion.get_ubyte_(1), 21_u8);
+
+    let d_shortunion = b_shortunion - a_shortunion;
+    println!("{} - {} = {}", b_shortunion, a_shortunion, d_shortunion);
+    assert_eq!(d_shortunion.get(), 3087_u16);
+    for i in 0..2
+        { println!("d_shortunion.get_ubyte_({}) = {}", i, d_shortunion.get_ubyte_(i)); }
+    assert_eq!(d_shortunion.get_ubyte_(0), 15_u8);
+    assert_eq!(d_shortunion.get_ubyte_(1), 12_u8);
+
+    let e_shortunion = d_shortunion * 3_u16.into_shortunion();
+    println!("{} * {} = {}", d_shortunion, 3_u16.into_shortunion(), e_shortunion);
+    assert_eq!(e_shortunion.get(), 9261_u16);
+
+    let f_shortunion = c_shortunion / 10_u16.into_shortunion();
+    println!("{} / {} = {}", c_shortunion, 10_u16.into_shortunion(), f_shortunion);
+    assert_eq!(f_shortunion.get(), 555_u16);
+
+    let g_shortunion = c_shortunion % 10_u16.into_shortunion();
+    println!("{} % {} = {}", c_shortunion, 10_u16.into_shortunion(), g_shortunion);
+    assert_eq!(g_shortunion.get(), 5_u16);
+    println!("--------------------------------------");
+}
+
+/*
 fn int_union_main()
 {
     println!("int_union_main()");
@@ -1099,3 +1141,4 @@ fn longer_union_set_sbyte_main()
     }
     println!("--------------------------------------");
 }
+*/

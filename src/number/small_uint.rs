@@ -17,6 +17,7 @@
 
 use super::{ ShortUnion, IntUnion, LongUnion, LongerUnion, SizeUnion };
 
+/// # Introduction
 /// Trait `SmallUInt` is for generic type of primitive unsigned integer data
 /// types for all modules of the crate Cryptocol.
 /// __The trait `SmallUInt` is found useful and meaningful especially when you
@@ -38,7 +39,34 @@ use super::{ ShortUnion, IntUnion, LongUnion, LongerUnion, SizeUnion };
 /// about how to write your own traits and their implementation to add your
 /// own methods to primitive data types.
 ///
-// / # Quick start
+/// # Quick start
+/// In order to use this union, you have to import (use)
+/// `cryptocol::number::SmallUInt` as follows.
+/// 
+/// ## Example 1
+/// ```
+/// use cryptocol::number::SmallUInt;
+/// ```
+/// If you import (use) `cryptocol::number::SmallUInt`, all the methods of
+/// `SmallUInt` are available immediately and automagically, as if such
+/// primitive data types had the methods from the begining.
+/// 
+/// ## Example 2
+/// ```
+/// 
+/// ```
+/// When SmallUInt is used in the generic context for primitive unsigned
+/// integer, you can reduce a lot of lines.
+/// 
+/// ## Example 3
+/// ```
+/// 
+/// ```
+/// 
+/// # Big-endian issue
+/// It is just experimental for big-endian CPUs. So, you are not encouraged
+/// to use it for big-endian CPUs for serious purpose.
+/// Only use this crate for big-endian CPUs with your own full responsibility.
 pub trait SmallUInt: Copy + Clone + Sized //+ Display + Debug + ToString
 {
     /***** ADDITION *****/
