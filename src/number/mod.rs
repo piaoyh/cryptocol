@@ -117,20 +117,40 @@
 
 pub mod small_uint;
 pub mod small_sint;
-pub mod small_int_unions;
+pub mod short_union;
+pub mod int_union;
+pub mod long_union;
+pub mod longer_union;
+pub mod size_union;
+pub mod share;
+pub mod common;
 pub mod big_uint;
-pub mod traits_for_big_uint_impl;
-pub mod trait_small_uint_for_small_int_unions_impl;
 pub mod number_errors;
-pub mod macros_number;
+pub mod macros_for_types;
+pub mod macros_for_integer_unions;
 
 /// Implementaion of trait SmallUInt for u8, u16, u32, u64, u128, and usize
 pub mod trait_small_uint_for_unsigned_impl;
+
+/// Implementaion of trait SmallUInt for ShortUnion, IntUnion, LongUnion, LongerUnion, and SizeUnion
+pub mod trait_small_uint_for_integer_unions_impl;
+
+/// Implementaion of various traits for BigUInt
+pub mod traits_for_big_uint_impl;
+
 pub use small_uint::*;
-pub use small_int_unions::*;
 pub use small_sint::*;
+pub use short_union::*;
+pub use int_union::*;
+pub use long_union::*;
+pub use longer_union::*;
+pub use size_union::*;
+pub use share::*;
+pub use common::*;
 pub use big_uint::*;
 pub use number_errors::*;
+use macros_for_integer_unions::*;
+
 
 
 /********** FOR BIG-ENDIANNESS ONLY **********/

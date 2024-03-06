@@ -9,17 +9,6 @@
 #![allow(missing_docs)]
 #![allow(missing_doc_code_examples)]
 #[allow(non_camel_case_types)]
-/*
-use cryptocol::number::*;
-use cryptocol::define_utypes_with;
-use cryptocol::define_Utypes_with_utypes;
-use cryptocol::define_utypes_with_u128;
-use cryptocol::define_utypes_with_u64;
-use cryptocol::define_utypes_with_u32;
-use cryptocol::define_utypes_with_u16;
-use cryptocol::define_utypes_with_u8;
-*/
-
 #[allow(dead_code)]
 pub fn main()
 {

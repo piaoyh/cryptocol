@@ -22,7 +22,9 @@ use std::str::FromStr;
 use std::ops::*;
 
 use super::small_uint::SmallUInt;
-use super::small_int_unions::{ LongerUnion, Common, Share };
+use super::longer_union::LongerUnion;
+use super::share::Share;
+use super::common::Common;
 use super::NumberErr;
 
 

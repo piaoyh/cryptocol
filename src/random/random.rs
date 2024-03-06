@@ -22,8 +22,7 @@ use std::hash::{ BuildHasher, Hasher };
 #[cfg(not(target_os = "windows"))] use std::ptr::copy_nonoverlapping;
 #[cfg(not(target_os = "windows"))] use std::io::Read;
 
-use crate::number::{ small_uint::*, BigUInt };
-use crate::number::small_int_unions::*;
+use crate::number::{ SmallUInt, LongUnion, LongerUnion, BigUInt };
 use crate::hash::{ MD4, MD5, SHA0, SHA1, SHA2_256, SHA2_512 };
 use super::Random_Engine;
 use super::AnyNumber;

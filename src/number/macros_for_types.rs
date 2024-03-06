@@ -228,7 +228,6 @@ macro_rules! define_utypes_with_u128
         use cryptocol::number::{ U256_with_u128, U512_with_u128, U1024_with_u128, U2048_with_u128,
                                 U3072_with_u128, U4096_with_u128, U5120_with_u128, U6144_with_u128,
                                 U7168_with_u128, U8192_with_u128, U16384_with_u128 };
-        use cryptocol::define_uutypes_with_utypes;
 
         /// 256-bit unsigned integer, Synonym of `U256_with_u128`
         pub type U256 = U256_with_u128;
@@ -263,7 +262,38 @@ macro_rules! define_utypes_with_u128
         /// 16384-bit unsigned integer for 128-bit machines, Synonym of `U16384_with_u128`
         pub type U16384 = U16384_with_u128;
 
-        define_uutypes_with_utypes!();
+        /// 32-byte unsigned integer, Synonym of `U256`
+        pub type UU32 = U256;
+
+        /// 64-byte unsigned integer, Synonym of `U512`
+        pub type UU64 = U512;
+
+        /// 128-byte unsigned integer, Synonym of `U1024`
+        pub type UU128 = U1024;
+
+        /// 256-byte unsigned integer, Synonym of `U2048`
+        pub type UU256 = U2048;
+
+        /// 384-byte unsigned integer, Synonym of `U3072`
+        pub type UU384 = U3072;
+
+        /// 512-byte unsigned integer, Synonym of `U4096`
+        pub type UU512 = U4096;
+
+        /// 640-byte unsigned integer, Synonym of `U5120`
+        pub type UU640 = U5120;
+
+        /// 760-byte unsigned integer, Synonym of `U6144`
+        pub type UU768 = U6144;
+
+        /// 896-byte unsigned integer, Synonym of `U7168`
+        pub type UU896 = U7168;
+
+        /// 1024-byte unsigned integer, Synonym of `U8192`
+        pub type UU1024 = U8192;
+
+        /// 2048-byte unsigned integer, Synonym of `U16384`
+        pub type UU2048 = U16384;
     }
 }
 
@@ -314,7 +344,6 @@ macro_rules! define_utypes_with_u64
         use cryptocol::number::{ U256_with_u64, U512_with_u64, U1024_with_u64, U2048_with_u64,
                                 U3072_with_u64, U4096_with_u64, U5120_with_u64, U6144_with_u64,
                                 U7168_with_u64, U8192_with_u64, U16384_with_u64 };
-        use cryptocol::define_uutypes_with_utypes;
 
         /// 256-bit unsigned integer for 64-bit machines, Synonym of `U256_with_u64`
         pub type U256 = U256_with_u64;
@@ -349,7 +378,38 @@ macro_rules! define_utypes_with_u64
         /// 16384-bit unsigned integer for 64-bit machines, Synonym of `U16384_with_u64`
         pub type U16384 = U16384_with_u64;
 
-        define_uutypes_with_utypes!();
+        /// 32-byte unsigned integer, Synonym of `U256`
+        pub type UU32 = U256;
+
+        /// 64-byte unsigned integer, Synonym of `U512`
+        pub type UU64 = U512;
+
+        /// 128-byte unsigned integer, Synonym of `U1024`
+        pub type UU128 = U1024;
+
+        /// 256-byte unsigned integer, Synonym of `U2048`
+        pub type UU256 = U2048;
+
+        /// 384-byte unsigned integer, Synonym of `U3072`
+        pub type UU384 = U3072;
+
+        /// 512-byte unsigned integer, Synonym of `U4096`
+        pub type UU512 = U4096;
+
+        /// 640-byte unsigned integer, Synonym of `U5120`
+        pub type UU640 = U5120;
+
+        /// 760-byte unsigned integer, Synonym of `U6144`
+        pub type UU768 = U6144;
+
+        /// 896-byte unsigned integer, Synonym of `U7168`
+        pub type UU896 = U7168;
+
+        /// 1024-byte unsigned integer, Synonym of `U8192`
+        pub type UU1024 = U8192;
+
+        /// 2048-byte unsigned integer, Synonym of `U16384`
+        pub type UU2048 = U16384;
     };
 }
 
@@ -400,7 +460,6 @@ macro_rules! define_utypes_with_u32
         use cryptocol::number::{ U256_with_u32, U512_with_u32, U1024_with_u32, U2048_with_u32,
                                 U3072_with_u32, U4096_with_u32, U5120_with_u32, U6144_with_u32,
                                 U7168_with_u32, U8192_with_u32, U16384_with_u32 };
-        use cryptocol::define_uutypes_with_utypes;
 
         /// 256-bit unsigned integer for 32-bit machines, Synonym of `U256_with_u32`
         pub type U256 = U256_with_u32;
@@ -435,7 +494,38 @@ macro_rules! define_utypes_with_u32
         /// 16384-bit unsigned integer for 32-bit machines, Synonym of `U16384_with_u32`
         pub type U16384 = U16384_with_u32;
 
-        define_uutypes_with_utypes!();
+        /// 32-byte unsigned integer, Synonym of `U256`
+        pub type UU32 = U256;
+
+        /// 64-byte unsigned integer, Synonym of `U512`
+        pub type UU64 = U512;
+
+        /// 128-byte unsigned integer, Synonym of `U1024`
+        pub type UU128 = U1024;
+
+        /// 256-byte unsigned integer, Synonym of `U2048`
+        pub type UU256 = U2048;
+
+        /// 384-byte unsigned integer, Synonym of `U3072`
+        pub type UU384 = U3072;
+
+        /// 512-byte unsigned integer, Synonym of `U4096`
+        pub type UU512 = U4096;
+
+        /// 640-byte unsigned integer, Synonym of `U5120`
+        pub type UU640 = U5120;
+
+        /// 760-byte unsigned integer, Synonym of `U6144`
+        pub type UU768 = U6144;
+
+        /// 896-byte unsigned integer, Synonym of `U7168`
+        pub type UU896 = U7168;
+
+        /// 1024-byte unsigned integer, Synonym of `U8192`
+        pub type UU1024 = U8192;
+
+        /// 2048-byte unsigned integer, Synonym of `U16384`
+        pub type UU2048 = U16384;
     };
 }
 
@@ -486,7 +576,6 @@ macro_rules! define_utypes_with_u16
         use cryptocol::number::{ U256_with_u16, U512_with_u16, U1024_with_u16, U2048_with_u16,
                                 U3072_with_u16, U4096_with_u16, U5120_with_u16, U6144_with_u16,
                                 U7168_with_u16, U8192_with_u16, U16384_with_u16 };
-        use cryptocol::define_uutypes_with_utypes;
 
         /// 256-bit unsigned integer for 16-bit machines, Synonym of `U256_with_u16`
         pub type U256 = U256_with_u16;
@@ -521,7 +610,38 @@ macro_rules! define_utypes_with_u16
         /// 16384-bit unsigned integer for 16-bit machines, Synonym of `U16384_with_u16`
         pub type U16384 = U16384_with_u16;
 
-        define_uutypes_with_utypes!();
+        /// 32-byte unsigned integer, Synonym of `U256`
+        pub type UU32 = U256;
+
+        /// 64-byte unsigned integer, Synonym of `U512`
+        pub type UU64 = U512;
+
+        /// 128-byte unsigned integer, Synonym of `U1024`
+        pub type UU128 = U1024;
+
+        /// 256-byte unsigned integer, Synonym of `U2048`
+        pub type UU256 = U2048;
+
+        /// 384-byte unsigned integer, Synonym of `U3072`
+        pub type UU384 = U3072;
+
+        /// 512-byte unsigned integer, Synonym of `U4096`
+        pub type UU512 = U4096;
+
+        /// 640-byte unsigned integer, Synonym of `U5120`
+        pub type UU640 = U5120;
+
+        /// 760-byte unsigned integer, Synonym of `U6144`
+        pub type UU768 = U6144;
+
+        /// 896-byte unsigned integer, Synonym of `U7168`
+        pub type UU896 = U7168;
+
+        /// 1024-byte unsigned integer, Synonym of `U8192`
+        pub type UU1024 = U8192;
+
+        /// 2048-byte unsigned integer, Synonym of `U16384`
+        pub type UU2048 = U16384;
     };
 }
 
@@ -572,7 +692,6 @@ macro_rules! define_utypes_with_u8
         use cryptocol::number::{ U256_with_u8, U512_with_u8, U1024_with_u8, U2048_with_u8,
                                 U3072_with_u8, U4096_with_u8, U5120_with_u8, U6144_with_u8,
                                 U7168_with_u8, U8192_with_u8, U16384_with_u8 };
-        use cryptocol::define_uutypes_with_utypes;
 
         /// 256-bit unsigned integer for 8-bit machines, Synonym of `U256_with_u8`
         pub type U256 = U256_with_u8;
@@ -607,45 +726,6 @@ macro_rules! define_utypes_with_u8
         /// 16384-bit unsigned integer for 8-bit machines, Synonym of `U16384_with_u8`
         pub type U16384 = U16384_with_u8;
 
-        define_uutypes_with_utypes!();
-    };
-}
-
-
-/// The macro that defines the types `UU32`, `UU64`, `UU128`, `UU256`, `UU384`,
-/// `UU512`, `UU640`, `UU768`, `UU896`, `UU1024`, and `UU2048`.
-/// 
-/// In order to use this macro `define_uutypes_with_utypes!()`, the types `U256`,
-/// `U512`, `U1024`, `U2048`, `U3072`, `U4096`, `U5120`, `U6144`, `U7168`,
-/// `U8192`, and `U16384` should have been defined beforehand.
-/// 
-/// The types `UU32`, `UU64`, `UU128`, `UU256`, `UU384`, `UU512`, `UU640`, `UU768`,
-/// `UU896`, `UU1024`, and `UU2048` are 32-byte, 64-byte, 128-byte, 256-byte,
-/// 384-byte, 512-byte, 640-byte, 768-byte, 896-byte, 1024-byte, and 2048-byte
-/// big unsigned integer types, respectively.
-/// 
-/// `UU32`, `UU64`, `UU128`, `UU256`, `UU384`, `UU512`, `UU640`, `UU768`, `UU896`,
-/// `UU1024`, and `UU2048` will be defined to be `U256`, `U512`, `U1024`,
-/// `U2048`, `U3072`, `U4096`, `U5120`, `U6144`, `U7168`, `U8192`, and `U16384`,
-/// respectively. That is, `UU32` is a synonym of `U256`, `UU64` is a synonym of
-/// `U512`, and so on.
-/// 
-/// Actually, this macro `define_uutypes_with_utypes!()` is
-/// used in the macros `define_utypes_with_u8!()`, `define_utypes_with_u16!()`,
-/// `define_utypes_with_u32!()`, `define_utypes_with_u64!()`, and
-/// `define_utypes_with_u128!()` which are used in the macro 
-/// `define_utypes_with!(...)`.
-/// 
-/// You are highly recommended not use this macro `define_uutypes_with_utypes!()`
-/// unless you really need to use it in your code. Instead, use
-/// `define_utypes_with_u8!()`, `define_utypes_with_u16!()`,
-/// `define_utypes_with_u32!()`, `define_utypes_with_u64!()`,
-/// `define_utypes_with_u128!()` or `define_utypes_with!(...)` if you need.
-#[macro_export]
-macro_rules! define_uutypes_with_utypes
-{
-    () =>
-    {
         /// 32-byte unsigned integer, Synonym of `U256`
         pub type UU32 = U256;
 
@@ -680,3 +760,73 @@ macro_rules! define_uutypes_with_utypes
         pub type UU2048 = U16384;
     };
 }
+
+
+// /// The macro that defines the types `UU32`, `UU64`, `UU128`, `UU256`, `UU384`,
+// /// `UU512`, `UU640`, `UU768`, `UU896`, `UU1024`, and `UU2048`.
+// /// 
+// /// In order to use this macro `define_uutypes_with_utypes!()`, the types `U256`,
+// /// `U512`, `U1024`, `U2048`, `U3072`, `U4096`, `U5120`, `U6144`, `U7168`,
+// /// `U8192`, and `U16384` should have been defined beforehand.
+// /// 
+// /// The types `UU32`, `UU64`, `UU128`, `UU256`, `UU384`, `UU512`, `UU640`, `UU768`,
+// /// `UU896`, `UU1024`, and `UU2048` are 32-byte, 64-byte, 128-byte, 256-byte,
+// /// 384-byte, 512-byte, 640-byte, 768-byte, 896-byte, 1024-byte, and 2048-byte
+// /// big unsigned integer types, respectively.
+// /// 
+// /// `UU32`, `UU64`, `UU128`, `UU256`, `UU384`, `UU512`, `UU640`, `UU768`, `UU896`,
+// /// `UU1024`, and `UU2048` will be defined to be `U256`, `U512`, `U1024`,
+// /// `U2048`, `U3072`, `U4096`, `U5120`, `U6144`, `U7168`, `U8192`, and `U16384`,
+// /// respectively. That is, `UU32` is a synonym of `U256`, `UU64` is a synonym of
+// /// `U512`, and so on.
+// /// 
+// /// Actually, this macro `define_uutypes_with_utypes!()` is
+// /// used in the macros `define_utypes_with_u8!()`, `define_utypes_with_u16!()`,
+// /// `define_utypes_with_u32!()`, `define_utypes_with_u64!()`, and
+// /// `define_utypes_with_u128!()` which are used in the macro 
+// /// `define_utypes_with!(...)`.
+// /// 
+// /// You are highly recommended not use this macro `define_uutypes_with_utypes!()`
+// /// unless you really need to use it in your code. Instead, use
+// /// `define_utypes_with_u8!()`, `define_utypes_with_u16!()`,
+// /// `define_utypes_with_u32!()`, `define_utypes_with_u64!()`,
+// /// `define_utypes_with_u128!()` or `define_utypes_with!(...)` if you need.
+// #[macro_export]
+// macro_rules! define_uutypes_with_utypes
+// {
+//     () =>
+//     {
+//         /// 32-byte unsigned integer, Synonym of `U256`
+//         pub type UU32 = U256;
+
+//         /// 64-byte unsigned integer, Synonym of `U512`
+//         pub type UU64 = U512;
+
+//         /// 128-byte unsigned integer, Synonym of `U1024`
+//         pub type UU128 = U1024;
+
+//         /// 256-byte unsigned integer, Synonym of `U2048`
+//         pub type UU256 = U2048;
+
+//         /// 384-byte unsigned integer, Synonym of `U3072`
+//         pub type UU384 = U3072;
+
+//         /// 512-byte unsigned integer, Synonym of `U4096`
+//         pub type UU512 = U4096;
+
+//         /// 640-byte unsigned integer, Synonym of `U5120`
+//         pub type UU640 = U5120;
+
+//         /// 760-byte unsigned integer, Synonym of `U6144`
+//         pub type UU768 = U6144;
+
+//         /// 896-byte unsigned integer, Synonym of `U7168`
+//         pub type UU896 = U7168;
+
+//         /// 1024-byte unsigned integer, Synonym of `U8192`
+//         pub type UU1024 = U8192;
+
+//         /// 2048-byte unsigned integer, Synonym of `U16384`
+//         pub type UU2048 = U16384;
+//     };
+// }

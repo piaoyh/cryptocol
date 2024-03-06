@@ -97,11 +97,11 @@ it does not mean that 50% of all functionalities are implemented.
 
 ### macros for BigUInt
 
-| Ver. 0.7.0                | Ver. 0.7.1                 |
-|---------------------------|----------------------------|
-| define_Utypes_with_utypes | define_uutypes_with_utypes |
+| Ver. 0.7.0                | Ver. 0.7.1 |
+|---------------------------|------------|
+| define_Utypes_with_utypes | removed    |
 
-- The macro name `define_Utypes_with_utypes` should have been changed to `define_uutypes_with_utypes` for consistency with the changed type name `UU*` when tje breaking changes was made from `U*` into `UU*` at the update from ver. 0.5.0 to ver. 0.6.0.
+- The macro name `define_Utypes_with_utypes` should not have been exposed to the outside of this crate so it was removed rather than recommending not to use it at documentation.
 
 ### fields of ShortUnion, IntUnion, LongUnion, LongerUnion, SizeUnion
 

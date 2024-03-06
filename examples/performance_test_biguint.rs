@@ -10,13 +10,6 @@
 #![allow(missing_docs)]
 #![allow(missing_doc_code_examples)]
 #[allow(non_camel_case_types)]
-
-// use std::fmt::{Debug, Display};
-// use std::ops::*;
-// use std::convert::*;
-// use cryptocol::number::*;
-// use cryptocol::define_utypes_with;
-// use cryptocol::number::BigUInt;
 #[allow(dead_code)]
 pub fn main()
 {

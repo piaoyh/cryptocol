@@ -15,1145 +15,11 @@
 #![allow(missing_docs)]
 #![allow(rustdoc::missing_doc_code_examples)]
 
-use std::fmt::{ Debug, Display };
-use std::mem::size_of;
-use std::cmp::{ PartialEq, PartialOrd };
-use std::ops::*;
-use super::small_uint::SmallUInt;
-
-/// # Introduction
-/// This union `ShortUnion` is for slicing `u16` into two `u8`s.
-/// 
-/// Sometimes, we need to slice `u16` data into two `u8` pieces which includes
-/// a higher byte and a lower byte. In that purpose, `ShortUnion` will be very
-/// helpful.
-/// 
-/// # Quick Start
-/// In order to use this union, you have to import (use)
-/// `cryptocol::number::ShortUnion` as follows.
-/// 
-/// ## Example 1
-/// ```
-/// use cryptocol::number::ShortUnion;
-/// ```
-/// You can use the methods `get()`, `get_signed()`, `get_ushort()`, and
-/// `get_sshort()` in order to obtain the data of `u16` in various types.
-/// And, you can also slice the data of `u16` into two `u8` type data by
-/// using the methods `get_ubyte()`, `get_sbyte()`, `get_ubyte_()`, and
-/// `get_sbyte_()`. If your machine does not have 8-bit CPU or 16-bit CPU,
-/// `ShortUnion` does not have the method `get_usize()` nor `get_ssize()`.
-/// 
-/// ## Example 2
-/// ```
-/// use cryptocol::number::ShortUnion;
-/// let a = ShortUnion::new_with(55468_u16);
-/// println!("a.get() = {}", a.get());
-/// println!("a.get_signed() = {}", a.get_signed());
-/// println!("a.get_ushort() = {}", a.get_ushort());
-/// println!("a.get_sshort() = {}", a.get_sshort());
-/// assert_eq!(a.get(), 55468_u16);
-/// assert_eq!(a.get_signed(), -10068_i16);
-/// assert_eq!(a.get_ushort(), 55468_u16);
-/// assert_eq!(a.get_sshort(), -10068_i16);
-/// 
-/// for i in 0..2
-///     { println!("a.get_ubyte_({}) = {}", i, a.get_ubyte_(i)); }
-/// for i in 0..2
-///     { println!("a.get_sbyte_({}) = {}", i, a.get_sbyte_(i)); }
-/// assert_eq!(a.get_ubyte_(0), 172_u8);
-/// assert_eq!(a.get_ubyte_(1), 216_u8);
-/// assert_eq!(a.get_sbyte_(0), -84_i8);
-/// assert_eq!(a.get_sbyte_(1), -40_i8);
-/// 
-/// #[cfg(target_pointer_width = "8")]
-/// {
-///     const N: usize = 2;
-///     for i in 0..N
-///         { println!("a.get_usize_({}) = {}", i, a.get_usize_(i)); }
-///     for i in 0..N
-///         { println!("a.get_ssize_({}) = {}", i, a.get_ssize_(i)); }
-///     assert_eq!(a.get_usize_(0), 172_u8);
-///     assert_eq!(a.get_usize_(1), 216_u8);
-///     assert_eq!(a.get_usize_(0), -84_i8);
-///     assert_eq!(a.get_usize_(1), -40_i8);
-/// }
-/// #[cfg(target_pointer_width = "16")]
-/// {
-///     println!("a.get_usize() = {}", a.get_usize());
-///     println!("a.get_ssize() = {}", a.get_ssize());
-///     assert_eq!(a.get_usize(), 55468_u16);
-///     assert_eq!(a.get_ssize(), -10068_i16);
-/// }
-/// ```
-/// You can use `ShortUnion` as if you used `u16`. You can perform all kinds of
-/// arithmetic operations such as addition, subtraction, multiplication, and
-/// division (div and rem), and other operations which are available for
-/// `u16`. If you use `ShortUnion` with the help of `SmallUInt`, it will be
-/// even more powerful and convenient. In this case, you don't even have to
-/// import (use) `cryptocol::number::ShortUnion`.
-/// 
-/// ## Example 3
-/// ```
-/// let a_shortunion = 1234_u16.into_shortunion();
-/// let b_shortunion = 4321_u16.into_shortunion();
-/// let c_shortunion = a_shortunion.wrapping_add(b_shortunion);
-/// println!("{} + {} = {}", a_shortunion, b_shortunion, c_shortunion);
-/// assert_eq!(c_shortunion.get(), 5555_u16);
-/// for i in 0..2
-///     { println!("c_shortunion.get_ubyte_({}) = {}", i, c_shortunion.get_ubyte_(i)); }
-/// assert_eq!(c_shortunion.get_ubyte_(0), 179_u8);
-/// assert_eq!(c_shortunion.get_ubyte_(1), 21_u8);
-/// 
-/// let d_shortunion = b_shortunion - a_shortunion;
-/// println!("{} - {} = {}", b_shortunion, a_shortunion, d_shortunion);
-/// assert_eq!(d_shortunion.get(), 3087_u16);
-/// for i in 0..2
-///     { println!("d_shortunion.get_ubyte_({}) = {}", i, d_shortunion.get_ubyte_(i)); }
-/// assert_eq!(d_shortunion.get_ubyte_(0), 15_u8);
-/// assert_eq!(d_shortunion.get_ubyte_(1), 12_u8);
-/// 
-/// let e_shortunion = d_shortunion * 3_u16.into_shortunion();
-/// println!("{} * {} = {}", d_shortunion, 3_u16.into_shortunion(), e_shortunion);
-/// assert_eq!(e_shortunion.get(), 9261_u16);
-/// 
-/// let f_shortunion = c_shortunion / 10_u16.into_shortunion();
-/// println!("{} / {} = {}", c_shortunion, 10_u16.into_shortunion(), f_shortunion);
-/// assert_eq!(f_shortunion.get(), 555_u16);
-/// 
-/// let g_shortunion = c_shortunion % 10_u16.into_shortunion();
-/// println!("{} % {} = {}", c_shortunion, 10_u16.into_shortunion(), g_shortunion);
-/// assert_eq!(g_shortunion.get(), 5_u16);
-/// ```
-/// 
-/// # Big-endian issue
-/// It is just experimental for big-endian CPUs. So, you are not encouraged
-/// to use it for big-endian CPUs for serious purpose.
-/// Only use this crate for big-endian CPUs with your own full responsibility.
-#[derive(Copy, Clone)]
-#[allow(dead_code)]
-pub union ShortUnion
-{
-    /// The biggest unsigned element for compatibility with other unions
-    this: u16,
-
-    /// The biggest signed element for compatibility with other unions
-    that: i16,
-
-    /// The biggest unsigned element which is 16-bit unsigned integer
-    ushort: u16,
-
-    /// The biggest signed element which is 16-bit unsigned integer
-    sshort: i16,
-
-    /// The secondly biggest unsigned element array whose elements are
-    /// 8-bit unsigned integer
-    ubyte: [u8; 2],
-
-    /// The secondly biggest signed element array whose elements are
-    /// 8-bit unsigned integer
-    sbyte: [i8; 2],
-
-    /// The usize type element whose size is the same as the ShortUnion
-    #[cfg(target_pointer_width = "16")] pub u_size: usize,
-
-    /// The isize type element whose size is the same as the ShortUnion
-    #[cfg(target_pointer_width = "16")] pub s_size: isize,
-
-    /// The usize type array whose elements's size is 8-bit size
-    #[cfg(target_pointer_width = "8")] pub u_size: [usize; 2],
-
-    /// The isize type array whose elements's size is 8-bit size
-    #[cfg(target_pointer_width = "8")] pub s_size: [isize; 2],
-}
-
-
-/// This union is for converting one primitive integral type into another
-/// integeral type within 32-bit long type.
-/// 
-/// # Feature
-/// All the fields are pubic but it is highly encouraged to get/set methods
-/// instead of accessing to each field directly. The simple get/set methods are
-/// all inline methods so that you hardly lose the performance benefit because
-/// of using get/set methods.
-/// 
-/// # Example
-/// ```
-/// use cryptocol::number::*;
-/// let a = IntUnion::new_with_signed(-454688546_i32);
-/// println!("a.this = {}, {}", unsafe { a.this }, a.get());
-/// println!("a.that = {}, {}", unsafe { a.that }, a.get_signed());
-/// println!("a.uint = {}", unsafe { a.uint });
-/// println!("a.sint = {}", unsafe { a.uint });
-/// #[cfg(target_endian = "little")]
-/// {
-///     for i in 0..2
-///         { println!("a.ushort[{}] = {}, {}", i, unsafe { a.ushort[i] }, a.get_ushort_(i)); }
-///     for i in 0..2
-///         { println!("a.sshort[{}] = {}, {}", i, unsafe { a.sshort[i] }, a.get_sshort_(i)); }
-///     for i in 0..4
-///         { println!("a.ubyte[{}] = {}, {}", i, unsafe { a.ubyte[i] }, a.get_ubyte_(i)); }
-///     for i in 0..4
-///         { println!("a.sbyte[{}] = {}, {}", i, unsafe { a.sbyte[i] }, a.get_sbyte_(i)); }
-///     #[cfg(target_pointer_width = "16")]
-///     {
-///         const N: usize = 2;
-///         for i in 0..N
-///             { println!("a.u_size[{}] = {}, {}", i, unsafe { a.u_size[i] }, a.get_usize_(i)); }
-///         for i in 0..N
-///             { println!("a.s_size[{}] = {}, {}", i, unsafe { a.s_size[i] }, a.get_ssize_(i)); }
-///     }
-///     #[cfg(target_pointer_width = "8")]
-///     {
-///         const N: usize = 4;
-///         for i in 0..N
-///             { println!("a.u_size[{}] = {}, {}", i, unsafe { a.u_size[i] }, a.get_usize_(i)); }
-///         for i in 0..N
-///             { println!("a.s_size[{}] = {}, {}", i, unsafe { a.s_size[i] }, a.get_ssize_(i)); }
-///     }
-/// }
-/// #[cfg(target_pointer_width = "32")]
-/// {
-///     println!("a.u_size = {}", unsafe { a.u_size });
-///     println!("a.s_size = {}", unsafe { a.s_size });
-/// }
-/// 
-/// assert_eq!(unsafe { a.this }, 3840278750_u32);
-/// assert_eq!(unsafe { a.that }, -454688546_i32);
-/// assert_eq!(unsafe { a.uint }, 3840278750_u32);
-/// assert_eq!(unsafe { a.sint }, -454688546_i32);
-/// #[cfg(target_endian = "little")]
-/// {
-///     assert_eq!(unsafe { a.ushort[0] }, 222_u16);
-///     assert_eq!(unsafe { a.ushort[1] }, 58598_u16);
-///     assert_eq!(unsafe { a.sshort[0] }, 222_i16);
-///     assert_eq!(unsafe { a.sshort[1] }, -6938_i16);
-///     assert_eq!(unsafe { a.ubyte[0] }, 222_u8);
-///     assert_eq!(unsafe { a.ubyte[1] }, 0_u8);
-///     assert_eq!(unsafe { a.ubyte[2] }, 230_u8);
-///     assert_eq!(unsafe { a.ubyte[3] }, 228_u8);
-///     assert_eq!(unsafe { a.sbyte[0] }, -34_i8);
-///     assert_eq!(unsafe { a.sbyte[1] }, 0_i8);
-///     assert_eq!(unsafe { a.sbyte[2] }, -26_i8);
-///     assert_eq!(unsafe { a.sbyte[3] }, -28_i8);
-/// }
-/// ```
-///  
-/// # Big-endian issue
-/// It is just experimental for Big Endian CPUs. So, you are not encouraged
-/// to use it for serious purpose. Only use this crate for Big-endian CPUs
-/// with your own full responsibility.
-#[derive(Copy, Clone)]
-#[allow(dead_code)]
-pub union IntUnion
-{
-    /// The biggest unsigned element for compatibility with other unions
-    this: u32,
-
-    /// The biggest signed element for compatibility with other unions
-    that: i32,
-
-    /// The biggest unsigned element which is 32-bit unsigned integer
-    uint: u32,
-
-    /// The biggest signed element which is 32-bit unsigned integer
-    sint: i32,
-
-    /// The secondly biggest unsigned element array whose elements are
-    /// 16-bit unsigned integer
-    ushort: [u16; 2],
-
-    /// The secondly biggest signed element array whose elements are
-    /// 16-bit unsigned integer
-    sshort: [i16; 2],
-
-    /// The thirdly biggest unsigned element array whose elements are
-    /// 8-bit unsigned integer
-    ubyte: [u8; 4],
-
-    /// The thirdly biggest signed element array whose elements are
-    /// 8-bit unsigned integer
-    sbyte: [i8; 4],
-
-    /// The usize type element whose size is the same as the IntUnion
-    #[cfg(target_pointer_width = "32")] pub u_size: usize,
-
-    /// The isize type element whose size is the same as the IntUnion
-    #[cfg(target_pointer_width = "32")] pub s_size: isize,
-
-    /// The usize type array whose elements's size is 16-bit size
-    #[cfg(target_pointer_width = "16")] pub u_size: [usize; 2],
-
-    /// The isize type array whose elements's size is 16-bit size
-    #[cfg(target_pointer_width = "16")] pub s_size: [isize; 2],
-
-    /// The usize type array whose elements's size is 8-bit size
-    #[cfg(target_pointer_width = "8")] pub u_size: [usize; 4],
-
-    /// The isize type array whose elements's size is 8-bit size
-    #[cfg(target_pointer_width = "8")] pub s_size: [isize; 4],
-}
-
-
-/// This union is for converting one primitive integral type into another
-/// integeral type within 64-bit long type.
-/// 
-/// # Feature
-/// All the fields are pubic but it is highly encouraged to get/set methods
-/// instead of accessing to each field directly. The simple get/set methods are
-/// all inline methods so that you hardly lose the performance benefit because
-/// of using get/set methods.
-/// 
-/// # Example
-/// ```
-/// use cryptocol::number::*;
-/// let a = LongUnion::new_with_signed(-1234567890987645_i64);
-/// println!("a.this = {}, {}", unsafe { a.this }, a.get());
-/// println!("a.that = {}, {}", unsafe { a.that }, a.get_signed());
-/// println!("a.ulong = {}", unsafe { a.ulong });
-/// println!("a.slong = {}", unsafe { a.slong });
-/// #[cfg(target_endian = "little")]
-/// {
-///     for i in 0..2
-///         { println!("a.uint[{}] = {}, {}", i, unsafe { a.uint[i] }, a.get_uint_(i)); }
-///     for i in 0..2
-///         { println!("a.sint[{}] = {}, {}", i, unsafe { a.sint[i] }, a.get_sint_(i)); }
-///     for i in 0..4
-///         { println!("a.ushort[{}] = {}, {}", i, unsafe { a.ushort[i] }, a.get_ushort_(i)); }
-///     for i in 0..4
-///         { println!("a.sshort[{}] = {}, {}", i, unsafe { a.sshort[i] }, a.get_sshort_(i)); }
-///     for i in 0..8
-///         { println!("a.ubyte[{}] = {}, {}", i, unsafe { a.ubyte[i] }, a.get_ubyte_(i)); }
-///     for i in 0..8
-///         { println!("a.sbyte[{}] = {}, {}", i, unsafe { a.sbyte[i] }, a.get_sbyte_(i)); }
-///     #[cfg(target_pointer_width = "32")]
-///     {
-///         const N: usize = 2;
-///         for i in 0..N
-///             { println!("a.u_size[{}] = {}, {}", i, unsafe { a.u_size[i] }, a.get_usize_(i)); }
-///         for i in 0..N
-///             { println!("a.s_size[{}] = {}, {}", i, unsafe { a.s_size[i] }, a.get_ssize_(i)); }
-///     }
-///     #[cfg(target_pointer_width = "16")]
-///     {
-///         const N: usize = 4;
-///         for i in 0..N
-///             { println!("a.u_size[{}] = {}, {}", i, unsafe { a.u_size[i] }, a.get_usize_(i)); }
-///         for i in 0..N
-///             { println!("a.s_size[{}] = {}, {}", i, unsafe { a.s_size[i] }, a.get_ssize_(i)); }
-///     }
-///     #[cfg(target_pointer_width = "8")]
-///     {
-///         const N: usize = 8;
-///         for i in 0..N
-///             { println!("a.u_size[{}] = {}, {}", i, unsafe { a.u_size[i] }, a.get_usize_(i)); }
-///         for i in 0..N
-///             { println!("a.s_size[{}] = {}, {}", i, unsafe { a.s_size[i] }, a.get_ssize_(i)); }
-///     }
-/// }
-/// #[cfg(target_pointer_width = "64")]
-/// {
-///     println!("a.u_size = {}", unsafe { a.u_size });
-///     println!("a.s_size = {}", unsafe { a.s_size });
-/// }
-/// 
-/// assert_eq!(unsafe { a.this }, 18445509505818563971_u64);
-/// assert_eq!(unsafe { a.that }, -1234567890987645_i64);
-/// assert_eq!(unsafe { a.ulong }, 18445509505818563971_u64);
-/// assert_eq!(unsafe { a.slong }, -1234567890987645_i64);
-/// #[cfg(target_endian = "little")]
-/// {
-///     assert_eq!(unsafe { a.uint[0] }, 3278378371_u32);
-///     assert_eq!(unsafe { a.uint[1] }, 4294679850_u32);
-///     assert_eq!(unsafe { a.sint[0] }, -1016588925_i32);
-///     assert_eq!(unsafe { a.sint[1] }, -287446_i32);
-///     assert_eq!(unsafe { a.ushort[0] }, 5507_u16);
-///     assert_eq!(unsafe { a.ushort[1] }, 50024_u16);
-///     assert_eq!(unsafe { a.ushort[2] }, 40234_u16);
-///     assert_eq!(unsafe { a.ushort[3] }, 65531_u16);
-///     assert_eq!(unsafe { a.sshort[0] }, 5507_i16);
-///     assert_eq!(unsafe { a.sshort[1] }, -15512_i16);
-///     assert_eq!(unsafe { a.sshort[2] }, -25302_i16);
-///     assert_eq!(unsafe { a.sshort[3] }, -5_i16);
-///     assert_eq!(unsafe { a.ubyte[0] }, 131_u8);
-///     assert_eq!(unsafe { a.ubyte[1] }, 21_u8);
-///     assert_eq!(unsafe { a.ubyte[2] }, 104_u8);
-///     assert_eq!(unsafe { a.ubyte[3] }, 195_u8);
-///     assert_eq!(unsafe { a.ubyte[4] }, 42_u8);
-///     assert_eq!(unsafe { a.ubyte[5] }, 157_u8);
-///     assert_eq!(unsafe { a.ubyte[6] }, 251_u8);
-///     assert_eq!(unsafe { a.ubyte[7] }, 255_u8);
-///     assert_eq!(unsafe { a.sbyte[0] }, -125_i8);
-///     assert_eq!(unsafe { a.sbyte[1] }, 21_i8);
-///     assert_eq!(unsafe { a.sbyte[2] }, 104_i8);
-///     assert_eq!(unsafe { a.sbyte[3] }, -61_i8);
-///     assert_eq!(unsafe { a.sbyte[4] }, 42_i8);
-///     assert_eq!(unsafe { a.sbyte[5] }, -99_i8);
-///     assert_eq!(unsafe { a.sbyte[6] }, -5_i8);
-///     assert_eq!(unsafe { a.sbyte[7] }, -1_i8);
-/// }
-/// ```
-///  
-/// # Big-endian issue
-/// It is just experimental for Big Endian CPUs. So, you are not encouraged
-/// to use it for serious purpose. Only use this crate for Big-endian CPUs
-/// with your own full responsibility.
-#[derive(Copy, Clone)]
-#[allow(dead_code)]
-pub union LongUnion
-{
-    /// The biggest unsigned element for compatibility with other unions
-    this: u64,
-
-    /// The biggest signed element for compatibility with other unions
-    that: i64,
-
-    /// The biggest unsigned element which is 64-bit unsigned integer
-    ulong: u64,
-
-    /// The biggest signed element which is 64-bit unsigned integer
-    slong: i64,
-
-    /// The secondly biggest unsigned element array whose elements are
-    /// 32-bit unsigned integer
-    uint: [u32; 2],
-
-    /// The secondly biggest signed element array whose elements are
-    /// 32-bit unsigned integer
-    sint: [i32; 2],
-
-    /// The thirdly biggest unsigned element array whose elements are
-    /// 16-bit unsigned integer
-    ushort: [u16; 4],
-
-    /// The thirdly biggest signed element array whose elements are
-    /// 16-bit unsigned integer
-    sshort: [i16; 4],
-
-    /// The fourthly biggest unsigned element array whose elements are
-    /// 8-bit unsigned integer
-    ubyte: [u8; 8],
-
-    /// The fourthly biggest unsigned element array whose elements are
-    /// 8-bit signed integer
-    sbyte: [i8; 8],
-
-    /// The usize type element whose size is the same as the LongUnion
-    #[cfg(target_pointer_width = "64")] u_size: usize,
-
-    /// The isize type element whose size is the same as the LongUnion
-    #[cfg(target_pointer_width = "64")] s_size: isize,
-
-    /// The usize type array whose elements's size is 32-bit size
-    #[cfg(target_pointer_width = "32")] u_size: [usize; 2],
-
-    /// The isize type array whose elements's size is 32-bit size
-    #[cfg(target_pointer_width = "32")] s_size: [isize; 2],
-
-    /// The usize type array whose elements's size is 16-bit size
-    #[cfg(target_pointer_width = "16")] u_size: [usize; 4],
-
-    /// The isize type array whose elements's size is 16-bit size
-    #[cfg(target_pointer_width = "16")] s_size: [isize; 4],
-
-    /// The usize type array whose elements's size is 8-bit size
-    #[cfg(target_pointer_width = "8")] u_size: [usize; 8],
-
-    /// The isize type array whose elements's size is 8-bit size
-    #[cfg(target_pointer_width = "8")] s_size: [isize; 8],
-}
-
-
-/// This union is for converting one primitive integral type into another
-/// integeral type within 128-bit long type.
-/// 
-/// # Feature
-/// All the fields are pubic but it is highly encouraged to get/set methods
-/// instead of accessing to each field directly. The simple get/set methods are
-/// all inline methods so that you hardly lose the performance benefit because
-/// of using get/set methods.
-/// 
-/// # Example
-/// ```
-/// use cryptocol::number::*;
-/// let a = LongerUnion::new_with_signed(-1234567890987654321012345678987654321_i128);
-/// println!("a.this = {}, {}", unsafe { a.this }, a.get());
-/// println!("a.that = {}, {}", unsafe { a.that }, a.get_signed());
-/// println!("a.ulonger = {}", unsafe { a.ulonger });
-/// println!("a.slonger = {}", unsafe { a.slonger });
-/// #[cfg(target_endian = "little")]
-/// {
-///     for i in 0..2
-///         { println!("a.ulong[{}] = {}, {}", i, unsafe { a.ulong[i] }, a.get_ulong_(i)); }
-///     for i in 0..2
-///         { println!("a.slong[{}] = {}, {}", i, unsafe { a.slong[i] }, a.get_slong_(i)); }
-///     for i in 0..4
-///         { println!("a.uint[{}] = {}, {}", i, unsafe { a.uint[i] }, a.get_uint_(i)); }
-///     for i in 0..4
-///         { println!("a.sint[{}] = {}, {}", i, unsafe { a.sint[i] }, a.get_sint_(i)); }
-///     for i in 0..8
-///         { println!("a.ushort[{}] = {}, {}", i, unsafe { a.ushort[i] }, a.get_ushort_(i)); }
-///     for i in 0..8
-///         { println!("a.sshort[{}] = {}, {}", i, unsafe { a.sshort[i] }, a.get_sshort_(i)); }
-///     for i in 0..16
-///         { println!("a.ubyte[{}] = {}, {}", i, unsafe { a.ubyte[i] }, a.get_ubyte_(i)); }
-///     for i in 0..16
-///         { println!("a.sbyte[{}] = {}, {}", i, unsafe { a.sbyte[i] }, a.get_sbyte_(i)); }
-///     #[cfg(target_pointer_width = "64")]
-///     {
-///         const N: usize = 2;
-///         for i in 0..N
-///             { println!("a.u_size[{}] = {}, {}", i, unsafe { a.u_size[i] }, a.get_usize_(i)); }
-///         for i in 0..N
-///             { println!("a.s_size[{}] = {}, {}", i, unsafe { a.s_size[i] }, a.get_ssize_(i)); }
-///     }
-///     #[cfg(target_pointer_width = "32")]
-///     {
-///         const N: usize = 4;
-///         for i in 0..N
-///             { println!("a.u_size[{}] = {}, {}", i, unsafe { a.u_size[i] }, a.get_usize_(i)); }
-///         for i in 0..N
-///             { println!("a.s_size[{}] = {}, {}", i, unsafe { a.s_size[i] }, a.get_ssize_(i)); }
-///     }
-///     #[cfg(target_pointer_width = "16")]
-///     {
-///         const N: usize = 8;
-///         for i in 0..N
-///             { println!("a.u_size[{}] = {}, {}", i, unsafe { a.u_size[i] }, a.get_usize_(i)); }
-///         for i in 0..N
-///             { println!("a.s_size[{}] = {}, {}", i, unsafe { a.s_size[i] }, a.get_ssize_(i)); }
-///     }
-///     #[cfg(target_pointer_width = "8")]
-///     {
-///         const N: usize = 16;
-///         for i in 0..N
-///             { println!("a.u_size[{}] = {}, {}", i, unsafe { a.u_size[i] }, a.get_usize_(i)); }
-///         for i in 0..N
-///             { println!("a.s_size[{}] = {}, {}", i, unsafe { a.s_size[i] }, a.get_ssize_(i)); }
-///     }
-/// }
-/// #[cfg(target_pointer_width = "128")]
-/// {
-///     println!("a.u_size = {}", unsafe { a.u_size });
-///     println!("a.s_size = {}", unsafe { a.s_size });
-/// }
-/// 
-/// assert_eq!(unsafe { a.this }, 339047799029950809142362261752780557135_u128);
-/// assert_eq!(unsafe { a.that }, -1234567890987654321012345678987654321_i128);
-/// assert_eq!(unsafe { a.ulonger }, 339047799029950809142362261752780557135_u128);
-/// assert_eq!(unsafe { a.slonger }, -1234567890987654321012345678987654321_i128);
-/// #[cfg(target_endian = "little")]
-/// {
-///     assert_eq!(unsafe { a.ulong[0] }, 13664881099896654671_u64);
-///     assert_eq!(unsafe { a.ulong[1] }, 18379818014235068504_u64);
-///     assert_eq!(unsafe { a.slong[0] }, -4781862973812896945_i64);
-///     assert_eq!(unsafe { a.slong[1] }, -66926059474483112_i64);
-///     assert_eq!(unsafe { a.uint[0] }, 4048161615_u32);
-///     assert_eq!(unsafe { a.uint[1] }, 3181603061_u32);
-///     assert_eq!(unsafe { a.uint[2] }, 2127464536_u32);
-///     assert_eq!(unsafe { a.uint[3] }, 4279384858_u32);
-///     assert_eq!(unsafe { a.sint[0] }, -246805681_i32);
-///     assert_eq!(unsafe { a.sint[1] }, -1113364235_i32);
-///     assert_eq!(unsafe { a.sint[2] }, 2127464536_i32);
-///     assert_eq!(unsafe { a.sint[3] }, -15582438_i32);
-///     assert_eq!(unsafe { a.ushort[0] }, 2895_u16);
-///     assert_eq!(unsafe { a.ushort[1] }, 61770_u16);
-///     assert_eq!(unsafe { a.ushort[2] }, 26869_u16);
-///     assert_eq!(unsafe { a.ushort[3] }, 48547_u16);
-///     assert_eq!(unsafe { a.ushort[4] }, 34904_u16);
-///     assert_eq!(unsafe { a.ushort[5] }, 32462_u16);
-///     assert_eq!(unsafe { a.ushort[6] }, 15130_u16);
-///     assert_eq!(unsafe { a.ushort[7] }, 65298_u16);
-///     assert_eq!(unsafe { a.sshort[0] }, 2895_i16);
-///     assert_eq!(unsafe { a.sshort[1] }, -3766_i16);
-///     assert_eq!(unsafe { a.sshort[2] }, 26869_i16);
-///     assert_eq!(unsafe { a.sshort[3] }, -16989_i16);
-///     assert_eq!(unsafe { a.sshort[4] }, -30632_i16);
-///     assert_eq!(unsafe { a.sshort[5] }, 32462_i16);
-///     assert_eq!(unsafe { a.sshort[6] }, 15130_i16);
-///     assert_eq!(unsafe { a.sshort[7] }, -238_i16);
-///     assert_eq!(unsafe { a.ubyte[0] }, 79_u8);
-///     assert_eq!(unsafe { a.ubyte[1] }, 11_u8);
-///     assert_eq!(unsafe { a.ubyte[2] }, 74_u8);
-///     assert_eq!(unsafe { a.ubyte[3] }, 241_u8);
-///     assert_eq!(unsafe { a.ubyte[4] }, 245_u8);
-///     assert_eq!(unsafe { a.ubyte[5] }, 104_u8);
-///     assert_eq!(unsafe { a.ubyte[6] }, 163_u8);
-///     assert_eq!(unsafe { a.ubyte[7] }, 189_u8);
-///     assert_eq!(unsafe { a.ubyte[8] }, 88_u8);
-///     assert_eq!(unsafe { a.ubyte[9] }, 136_u8);
-///     assert_eq!(unsafe { a.ubyte[10] }, 206_u8);
-///     assert_eq!(unsafe { a.ubyte[11] }, 126_u8);
-///     assert_eq!(unsafe { a.ubyte[12] }, 26_u8);
-///     assert_eq!(unsafe { a.ubyte[13] }, 59_u8);
-///     assert_eq!(unsafe { a.ubyte[14] }, 18_u8);
-///     assert_eq!(unsafe { a.ubyte[15] }, 255_u8);
-///     assert_eq!(unsafe { a.sbyte[0] }, 79_i8);
-///     assert_eq!(unsafe { a.sbyte[1] }, 11_i8);
-///     assert_eq!(unsafe { a.sbyte[2] }, 74_i8);
-///     assert_eq!(unsafe { a.sbyte[3] }, -15_i8);
-///     assert_eq!(unsafe { a.sbyte[4] }, -11_i8);
-///     assert_eq!(unsafe { a.sbyte[5] }, 104_i8);
-///     assert_eq!(unsafe { a.sbyte[6] }, -93_i8);
-///     assert_eq!(unsafe { a.sbyte[7] }, -67_i8);
-///     assert_eq!(unsafe { a.sbyte[8] }, 88_i8);
-///     assert_eq!(unsafe { a.sbyte[9] }, -120_i8);
-///     assert_eq!(unsafe { a.sbyte[10] }, -50_i8);
-///     assert_eq!(unsafe { a.sbyte[11] }, 126_i8);
-///     assert_eq!(unsafe { a.sbyte[12] }, 26_i8);
-///     assert_eq!(unsafe { a.sbyte[13] }, 59_i8);
-///     assert_eq!(unsafe { a.sbyte[14] }, 18_i8);
-///     assert_eq!(unsafe { a.sbyte[15] }, -1_i8);
-/// }
-/// ```
-///  
-/// # Big-endian issue
-/// It is just experimental for Big Endian CPUs. So, you are not encouraged
-/// to use it for serious purpose. Only use this crate for Big-endian CPUs
-/// with your own full responsibility.
-#[derive(Copy, Clone)]
-#[allow(dead_code)]
-pub union LongerUnion
-{
-    /// The biggest unsigned element for compatibility with other unions
-    this: u128,
-
-    /// The biggest signed element for compatibility with other unions
-    that: i128,
-
-    /// The biggest unsigned element which is 128-bit unsigned integer
-    ulonger: u128,
-
-    /// The biggest signed element which is 128-bit unsigned integer
-    slonger: i128,
-
-    /// The secondly biggest unsigned element array whose elements are
-    /// 64-bit unsigned integer
-    ulong: [u64; 2],
-
-    /// The secondly biggest signed element array whose elements are
-    /// 64-bit unsigned integer
-    slong: [i64; 2],
-
-    /// The thirdly biggest unsigned element array whose elements are
-    /// 32-bit unsigned integer
-    uint: [u32; 4],
-
-    /// The thirdly biggest signed element array whose elements are
-    /// 32-bit unsigned integer
-    sint: [i32; 4],
-
-    /// The fourthly biggest unsigned element array whose elements are
-    /// 16-bit unsigned integer
-    ushort: [u16; 8],
-
-    /// The fourthly biggest unsigned element array whose elements are
-    /// 16-bit unsigned integer
-    sshort: [i16; 8],
-
-    /// The fifthly biggest unsigned element array whose elements are
-    /// 8-bit unsigned integer
-    ubyte: [u8; 16],
-
-    /// The fifthly biggest signed element array whose elements are
-    /// 8-bit unsigned integer
-    sbyte: [i8; 16],
-
-    /// The usize type element whose size is the same as the LongerUnion
-    #[cfg(target_pointer_width = "128")] u_size: usize,
-
-    /// The isize type element whose size is the same as the LongerUnion
-    #[cfg(target_pointer_width = "128")] s_size: isize,
-
-    /// The isize type array whose elements's size is 64-bit size
-    #[cfg(target_pointer_width = "64")] u_size: [usize; 2],
-
-    /// The isize type array whose elements's size is 64-bit size
-    #[cfg(target_pointer_width = "64")] s_size: [isize; 2],
-
-    /// The usize type array whose elements's size is 32-bit size
-    #[cfg(target_pointer_width = "32")] u_size: [usize; 4],
-
-    /// The isize type array whose elements's size is 32-bit size
-    #[cfg(target_pointer_width = "32")] s_size: [isize; 4],
-
-    /// The usize type array whose elements's size is 16-bit size
-    #[cfg(target_pointer_width = "16")] u_size: [usize; 8],
-
-    /// The isize type array whose elements's size is 16-bit size
-    #[cfg(target_pointer_width = "16")] s_size: [isize; 8],
-
-    /// The usize type array whose elements's size is 8-bit size
-    #[cfg(target_pointer_width = "8")] u_size: [usize; 16],
-
-    /// The isize type array whose elements's size is 8-bit size
-    #[cfg(target_pointer_width = "8")] s_size: [isize; 16],
-}
-
-
-/// This union is for converting one primitive integral type into another
-/// integeral type within machine-dependent long type.
-/// 
-/// # Feature
-/// All the fields are pubic but it is highly encouraged to get/set methods
-/// instead of accessing to each field directly. The simple get/set methods are
-/// all inline methods so that you hardly lose the performance benefit because
-/// of using get/set methods.
-/// 
-/// # Example
-/// ```
-/// use cryptocol::number::*;
-/// let a = SizeUnion::new_with_signed(-1234567890987654321012345678987654321_isize);
-/// println!("a.this = {}, {}", unsafe { a.this }, a.get());
-/// println!("a.that = {}, {}", unsafe { a.that }, a.get_signed());
-/// println!("a.u_size = {}, {}", unsafe { a.u_size }, a.get());
-/// println!("a.s_size = {}, {}", unsafe { a.s_size }, a.get_signed()));
-/// println!("a.ulonger = {}, {}", unsafe { a.ulonger }, a.get());
-/// println!("a.slonger = {}, {}", unsafe { a.slonger }, a.get_signed());
-/// #[cfg(target_endian = "little")]
-/// {
-///     for i in 0..2
-///         { println!("a.ulong[{}] = {}, {}", i, unsafe { a.ulong[i] }, a.get_ulong_(i)); }
-///     for i in 0..2
-///         { println!("a.slong[{}] = {}, {}", i, unsafe { a.slong[i] }, a.get_slong_(i)); }
-///     for i in 0..4
-///         { println!("a.uint[{}] = {}, {}", i, unsafe { a.uint[i] }, a.get_uint_(i)); }
-///     for i in 0..4
-///         { println!("a.sint[{}] = {}, {}", i, unsafe { a.sint[i] }, a.get_sint_(i)); }
-///     for i in 0..8
-///         { println!("a.ushort[{}] = {}, {}", i, unsafe { a.ushort[i] }, a.get_ushort_(i)); }
-///     for i in 0..8
-///         { println!("a.sshort[{}] = {}, {}", i, unsafe { a.sshort[i] }, a.get_sshort_(i)); }
-///     for i in 0..16
-///         { println!("a.ubyte[{}] = {}, {}", i, unsafe { a.ubyte[i] }, a.get_ubyte_(i)); }
-///     for i in 0..16
-///         { println!("a.sbyte[{}] = {}, {}", i, unsafe { a.sbyte[i] }, a.get_sbyte_(i)); }
-/// }
-/// ```
-///  
-/// # Big-endian issue
-/// It is just experimental for Big Endian CPUs. So, you are not encouraged
-/// to use it for serious purpose. Only use this crate for Big-endian CPUs
-/// with your own full responsibility.
-#[cfg(target_pointer_width = "128")]
-#[derive(Copy, Clone)]
-#[allow(dead_code)]
-pub union SizeUnion
-{
-    /// The biggest unsigned element for compatibility with other unions
-    this: usize,
-
-    /// The biggest signed element for compatibility with other unions
-    that: isize,
-
-    /// The usize type element whose size is the same as the SizeUnion
-    pub u_size: usize,
-
-    /// The isize type element whose size is the same as the SizeUnion
-    pub s_size: isize,
-
-    /// The biggest unsigned element which is 128-bit unsigned integer
-    pub ulonger: u128,
-
-    /// The biggest signed element which is 128-bit unsigned integer
-    pub slonger: i128,
-
-    /// The secondly biggest unsigned element array whose elements are
-    /// 64-bit unsigned integer
-    pub ulong: [u64; 2],
-
-    /// The secondly biggest unsigned element array whose elements are
-    /// 64-bit signed integer
-    pub slong: [i64; 2],
-
-    /// The thirdly biggest unsigned element array whose elements are
-    /// 32-bit unsigned integer
-    pub uint: [u32; 4],
-
-    /// The thirdly biggest unsigned element array whose elements are
-    /// 32-bit signed integer
-    pub sint: [i32; 4],
-
-    /// The fourthly biggest unsigned element array whose elements are
-    /// 16-bit unsigned integer
-    pub ushort: [u16; 8],
-
-    /// The fourthly biggest unsigned element array whose elements are
-    /// 16-bit signed integer
-    pub sshort: [i16; 8],
-
-    /// The fifthly biggest unsigned element array whose elements are
-    /// 8-bit unsigned integer
-    pub ubyte: [u8; 16],
-
-    /// The fifthly biggest unsigned element array whose elements are
-    /// 8-bit signed integer
-    pub sbyte: [i8; 16],
-}
-
-
-/// This union is for converting one primitive integral type into another
-/// integeral type within machine-dependent long type.
-/// 
-/// # Feature
-/// All the fields are pubic but it is highly encouraged to get/set methods
-/// instead of accessing to each field directly. The simple get/set methods are
-/// all inline methods so that you hardly lose the performance benefit because
-/// of using get/set methods.
-/// 
-/// # Example
-/// ```
-/// use cryptocol::number::*;
-/// let a = SizeUnion::new_with_signed(-1234567890123456789_isize);
-/// println!("a.this = {}, {}", unsafe { a.this }, a.get());
-/// println!("a.that = {}, {}", unsafe { a.that }, a.get_signed());
-/// println!("a.u_size = {}, {}", unsafe { a.u_size }, a.get());
-/// println!("a.s_size = {}, {}", unsafe { a.s_size }, a.get_signed()));
-/// println!("a.ulong = {}, {}", unsafe { a.ulong }, a.get());
-/// println!("a.slong = {}, {}", unsafe { a.slong }, a.get_signed());
-/// #[cfg(target_endian = "little")]
-/// {
-///     for i in 0..2
-///         { println!("a.uint[{}] = {}, {}", i, unsafe { a.uint[i] }, a.get_uint_(i)); }
-///     for i in 0..2
-///         { println!("a.sint[{}] = {}, {}", i, unsafe { a.sint[i] }, a.get_sint_(i)); }
-///     for i in 0..4
-///         { println!("a.ushort[{}] = {}, {}", i, unsafe { a.ushort[i] }, a.get_ushort_(i)); }
-///     for i in 0..4
-///         { println!("a.sshort[{}] = {}, {}", i, unsafe { a.sshort[i] }, a.get_sshort_(i)); }
-///     for i in 0..8
-///         { println!("a.ubyte[{}] = {}, {}", i, unsafe { a.ubyte[i] }, a.get_ubyte_(i)); }
-///     for i in 0..8
-///         { println!("a.sbyte[{}] = {}, {}", i, unsafe { a.sbyte[i] }, a.get_sbyte_(i)); }
-/// }
-/// 
-/// assert_eq!(unsafe { a.this }, 17212176183586094827_usize);
-/// assert_eq!(unsafe { a.that }, -1234567890123456789_isize);
-/// assert_eq!(unsafe { a.u_size }, 17212176183586094827_usize);
-/// assert_eq!(unsafe { a.s_size }, -1234567890123456789_isize);
-/// assert_eq!(unsafe { a.ulong }, 17212176183586094827_u64);
-/// assert_eq!(unsafe { a.slong }, -1234567890123456789_i64);
-/// #[cfg(target_endian = "little")]
-/// {
-///     assert_eq!(unsafe { a.uint[0] }, 2182512363_u32);
-///     assert_eq!(unsafe { a.uint[1] }, 4007522059_u32);
-///     assert_eq!(unsafe { a.sint[0] }, -2112454933_i32);
-///     assert_eq!(unsafe { a.sint[1] }, -287445237_i32);
-///     assert_eq!(unsafe { a.ushort[0] }, 32491_u16);
-///     assert_eq!(unsafe { a.ushort[1] }, 33302_u16);
-///     assert_eq!(unsafe { a.ushort[2] }, 61195_u16);
-///     assert_eq!(unsafe { a.ushort[3] }, 61149_u16);
-///     assert_eq!(unsafe { a.sshort[0] }, 32491_i16);
-///     assert_eq!(unsafe { a.sshort[1] }, -32234_i16);
-///     assert_eq!(unsafe { a.sshort[2] }, -4341_i16);
-///     assert_eq!(unsafe { a.sshort[3] }, -4387_i16);
-///     assert_eq!(unsafe { a.ubyte[0] }, 235_u8);
-///     assert_eq!(unsafe { a.ubyte[1] }, 126_u8);
-///     assert_eq!(unsafe { a.ubyte[2] }, 22_u8);
-///     assert_eq!(unsafe { a.ubyte[3] }, 130_u8);
-///     assert_eq!(unsafe { a.ubyte[4] }, 11_u8);
-///     assert_eq!(unsafe { a.ubyte[5] }, 239_u8);
-///     assert_eq!(unsafe { a.ubyte[6] }, 221_u8);
-///     assert_eq!(unsafe { a.ubyte[7] }, 238_u8);
-///     assert_eq!(unsafe { a.sbyte[0] }, -21_i8);
-///     assert_eq!(unsafe { a.sbyte[1] }, 126_i8);
-///     assert_eq!(unsafe { a.sbyte[2] }, 22_i8);
-///     assert_eq!(unsafe { a.sbyte[3] }, -126_i8);
-///     assert_eq!(unsafe { a.sbyte[4] }, 11_i8);
-///     assert_eq!(unsafe { a.sbyte[5] }, -17_i8);
-///     assert_eq!(unsafe { a.sbyte[6] }, -35_i8);
-///     assert_eq!(unsafe { a.sbyte[7] }, -18_i8);
-/// }
-/// ```
-/// 
-/// # Big-endian issue
-/// It is just experimental for Big Endian CPUs. So, you are not encouraged
-/// to use it for serious purpose. Only use this crate for Big-endian CPUs
-/// with your own full responsibility.
-#[cfg(target_pointer_width = "64")]
-#[derive(Copy, Clone)]
-#[allow(dead_code)]
-pub union SizeUnion
-{
-    /// The biggest unsigned element for compatibility with other unions
-    this: usize,
-
-    /// The biggest signed element for compatibility with other unions
-    that: isize,
-
-    /// The usize type element whose size is the same as the SizeUnion
-    pub u_size: usize,
-
-    /// The isize type element whose size is the same as the SizeUnion
-    pub s_size: isize,
-
-    /// The biggest unsigned element which is 64-bit unsigned integer
-    pub ulong: u64,
-
-    /// The biggest signed element which is 64-bit unsigned integer
-    pub slong: i64,
-
-    /// The secondly biggest unsigned element array whose elements are
-    /// 32-bit unsigned integer
-    pub uint: [u32; 2],
-
-    /// The secondly biggest unsigned element array whose elements are
-    /// 32-bit signed integer
-    pub sint: [i32; 2],
-
-    /// The thirdly biggest unsigned element array whose elements are
-    /// 16-bit unsigned integer
-    pub ushort: [u16; 4],
-
-    /// The thirdly biggest unsigned element array whose elements are
-    /// 16-bit signed integer
-    pub sshort: [i16; 4],
-
-    /// The fourthly biggest unsigned element array whose elements are
-    /// 8-bit unsigned integer
-    pub ubyte: [u8; 8],
-
-    /// The fourthly biggest unsigned element array whose elements are
-    /// 8-bit signed integer
-    pub sbyte: [i8; 8],
-}
-
-
-/// This union is for converting one primitive integral type into another
-/// integeral type within machine-dependent long type.
-/// 
-/// # Feature
-/// All the fields are pubic but it is highly encouraged to get/set methods
-/// instead of accessing to each field directly. The simple get/set methods are
-/// all inline methods so that you hardly lose the performance benefit because
-/// of using get/set methods.
-/// 
-/// # Example
-/// ```
-/// use cryptocol::number::*;
-/// let a = SizeUnion::new_with_signed(2112454933_isize);
-/// println!("a.this = {}, {}", unsafe { a.this }, a.get());
-/// println!("a.that = {}, {}", unsafe { a.that }, a.get_signed());
-/// println!("a.u_size = {}, {}", unsafe { a.u_size }, a.get());
-/// println!("a.s_size = {}, {}", unsafe { a.s_size }, a.get_signed()));
-/// println!("a.uint = {}, {}", unsafe { a.uint }, a.get());
-/// println!("a.sint = {}, {}", unsafe { a.sint }, a.get_signed());
-/// #[cfg(target_endian = "little")]
-/// {
-///     for i in 0..2
-///         { println!("a.ushort[{}] = {}, {}", i, unsafe { a.ushort[i] }, a.get_ushort_(i)); }
-///     for i in 0..2
-///         { println!("a.sshort[{}] = {}, {}", i, unsafe { a.sshort[i] }, a.get_sshort_(i)); }
-///     for i in 0..4
-///         { println!("a.ubyte[{}] = {}, {}", i, unsafe { a.ubyte[i] }, a.get_ubyte_(i)); }
-///     for i in 0..4
-///         { println!("a.sbyte[{}] = {}, {}", i, unsafe { a.sbyte[i] }, a.get_sbyte_(i)); }
-/// }
-/// 
-/// assert_eq!(unsafe { a.this }, 2182512363_usize);
-/// assert_eq!(unsafe { a.that }, -2112454933_isize);
-/// assert_eq!(unsafe { a.u_size }, 2182512363_usize);
-/// assert_eq!(unsafe { a.s_size }, -2112454933_isize);
-/// assert_eq!(unsafe { a.uint }, 2182512363_u32);
-/// assert_eq!(unsafe { a.sint }, -2112454933_i32);
-/// #[cfg(target_endian = "little")]
-/// {
-///     assert_eq!(unsafe { a.ushort[0] }, 32491_u16);
-///     assert_eq!(unsafe { a.ushort[1] }, 33302_u16);
-///     assert_eq!(unsafe { a.sshort[0] }, 32491_i16);
-///     assert_eq!(unsafe { a.sshort[1] }, -32234_i16);
-///     assert_eq!(unsafe { a.ubyte[0] }, 235_u8);
-///     assert_eq!(unsafe { a.ubyte[1] }, 126_u8);
-///     assert_eq!(unsafe { a.ubyte[2] }, 22_u8);
-///     assert_eq!(unsafe { a.ubyte[3] }, 130_u8);
-///     assert_eq!(unsafe { a.sbyte[0] }, -21_i8);
-///     assert_eq!(unsafe { a.sbyte[1] }, 126_i8);
-///     assert_eq!(unsafe { a.sbyte[2] }, 22_i8);
-///     assert_eq!(unsafe { a.sbyte[3] }, -126_i8);
-/// }
-/// ```
-/// 
-/// # Big-endian issue
-/// It is just experimental for Big Endian CPUs. So, you are not encouraged
-/// to use it for serious purpose. Only use this crate for Big-endian CPUs
-/// with your own full responsibility.
-#[cfg(target_pointer_width = "32")]
-#[derive(Copy, Clone)]
-#[allow(dead_code)]
-pub union SizeUnion
-{
-    /// The biggest unsigned element for compatibility with other unions
-    this: usize,
-
-    /// The biggest signed element for compatibility with other unions
-    that: isize,
-
-    /// The usize type element whose size is the same as the SizeUnion
-    pub u_size: usize,
-
-    /// The isize type element whose size is the same as the SizeUnion
-    pub s_size: isize,
-
-    /// The biggest unsigned element which is 32-bit unsigned integer
-    pub uint: u32,
-
-    /// The biggest signed element which is 32-bit unsigned integer
-    pub sint: i32,
-
-    /// The secondly biggest unsigned element array whose elements are
-    /// 16-bit unsigned integer
-    pub ushort: [u16; 2],
-
-    /// The secondly biggest unsigned element array whose elements are
-    /// 16-bit signed integer
-    pub sshort: [i16; 2],
-
-    /// The thirdly biggest unsigned element array whose elements are
-    /// 8-bit unsigned integer
-    pub ubyte: [u8; 4],
-
-    /// The thirdly biggest unsigned element array whose elements are
-    /// 8-bit signed integer
-    pub sbyte: [i8; 4],
-}
-
-
-/// This union is for converting one primitive integral type into another
-/// integeral type within machine-dependent long type.
-/// 
-/// # Feature
-/// All the fields are pubic but it is highly encouraged to get/set methods
-/// instead of accessing to each field directly. The simple get/set methods are
-/// all inline methods so that you hardly lose the performance benefit because
-/// of using get/set methods.
-/// 
-/// # Example
-/// ```
-/// use cryptocol::number::*;
-/// let a = SizeUnion::new_with_signed(32491_isize);
-/// println!("a.this = {}, {}", unsafe { a.this }, a.get());
-/// println!("a.that = {}, {}", unsafe { a.that }, a.get_signed());
-/// println!("a.u_size = {}, {}", unsafe { a.u_size }, a.get());
-/// println!("a.s_size = {}, {}", unsafe { a.s_size }, a.get_signed());
-/// println!("a.ushort = {}, {}", unsafe { a.ushort }, a.get());
-/// println!("a.sshort = {}, {}", unsafe { a.sshort }, a.get_signed());
-/// #[cfg(target_endian = "little")]
-/// {
-///     for i in 0..2
-///         { println!("a.ubyte[{}] = {}, {}", i, unsafe { a.ubyte[i] }, a.get_ubyte_(i)); }
-///     for i in 0..2
-///         { println!("a.sbyte[{}] = {}, {}", i, unsafe { a.sbyte[i] }, a.get_sbyte_(i)); }
-/// }
-/// 
-/// assert_eq!(unsafe { a.this }, 32491_usize);
-/// assert_eq!(unsafe { a.that }, 32491_isize);
-/// assert_eq!(unsafe { a.u_size }, 32491_usize);
-/// assert_eq!(unsafe { a.s_size }, 32491_isize);
-/// assert_eq!(unsafe { a.ushort }, 32491_u16);
-/// assert_eq!(unsafe { a.sshort }, 32491_i16);
-/// #[cfg(target_endian = "little")]
-/// {
-///     assert_eq!(unsafe { a.ubyte[0] }, 235_u8);
-///     assert_eq!(unsafe { a.ubyte[1] }, 126_u8);
-///     assert_eq!(unsafe { a.sbyte[0] }, -21_i8);
-///     assert_eq!(unsafe { a.sbyte[1] }, 126_i8);
-/// }
-/// ```
-/// 
-/// # Big-endian issue
-/// It is just experimental for Big Endian CPUs. So, you are not encouraged
-/// to use it for serious purpose. Only use this crate for Big-endian CPUs
-/// with your own full responsibility.
-#[cfg(target_pointer_width = "16")]
-#[derive(Copy, Clone)]
-#[allow(dead_code)]
-#[allow(non_camel_case_types)]
-pub union SizeUnion
-{
-    /// The biggest unsigned element for compatibility with other unions
-    this: usize,
-
-    /// The biggest signed element for compatibility with other unions
-    pub that: isize,
-
-    /// The usize type element whose size is the same as the SizeUnion
-    pub u_size: usize,
-
-    /// The isize type element whose size is the same as the SizeUnion
-    pub s_size: isize,
-
-    /// The biggest unsigned element which is 16-bit unsigned integer
-    pub ushort: u16,
-
-    /// The biggest signed element which is 16-bit unsigned integer
-    pub sshort: i16,
-
-    /// The secondly biggest unsigned element array whose elements are
-    /// 8-bit unsigned integer
-    pub ubyte: [u8; 2],
-
-    /// The secondly biggest signed element array whose elements are
-    /// 8-bit unsigned integer
-    pub sbyte: [i8; 2],
-}
-
-
-/// This union is for converting one primitive integral type into another
-/// integeral type within machine-dependent long type.
-/// 
-/// # Feature
-/// All the fields are pubic but it is highly encouraged to get/set methods
-/// instead of accessing to each field directly. The simple get/set methods are
-/// all inline methods so that you hardly lose the performance benefit because
-/// of using get/set methods.
-/// 
-/// # Example
-/// ```
-/// use cryptocol::number::*;
-/// let a = SizeUnion::new_with_signed(-21_isize);
-/// println!("a.this = {}, {}", unsafe { a.this }, a.get());
-/// println!("a.that = {}, {}", unsafe { a.that }, a.get_signed());
-/// println!("a.u_size = {}, {}", unsafe { a.u_size }, a.get());
-/// println!("a.s_size = {}, {}", unsafe { a.s_size }, a.get_signed()));
-/// println!("a.ubyte = {}, {}", unsafe { a.ubyte }, a.get());
-/// println!("a.sbyte = {}, {}", unsafe { a.sbyte }, a.get_signed());
-/// 
-/// assert_eq!(unsafe { a.this }, 235_usize);
-/// assert_eq!(unsafe { a.that }, -21_isize);
-/// assert_eq!(unsafe { a.u_size }, 235_usize);
-/// assert_eq!(unsafe { a.s_size }, -21_isize);
-/// assert_eq!(unsafe { a.ubyte }, 235_u8);
-/// assert_eq!(unsafe { a.sbyte }, -21_i8);
-/// ```
-#[cfg(target_pointer_width = "8")]
-#[derive(Copy, Clone)]
-#[allow(dead_code)]
-#[allow(non_camel_case_types)]
-pub union SizeUnion
-{
-    /// The biggest unsigned element for compatibility with other unions
-    pub this: usize,
-
-    /// The biggest signed element for compatibility with other unions
-    pub that: isize,
-
-    /// The usize type element whose size is the same as the SizeUnion
-    pub u_size: usize,
-
-    /// The isize type element whose size is the same as the SizeUnion
-    pub s_size: isize,
-
-    /// The biggest unsigned element which is 8-bit unsigned integer
-    pub ubyte: u8,
-
-    /// The biggest signed element which is 8-bit unsigned integer
-    pub sbyte: i8,
-}
-
 
 
 macro_rules! get_set_byte {
     ($f:expr) => {
-        const N: usize = $f;
+        const N: usize = $f - 1;
 
         // pub fn get_ubyte_(&self, i: usize) -> u8
         /// Returns i-th element of array `ubyte` of type `u8`
@@ -2251,11 +1117,11 @@ macro_rules! get_set_byte {
         }
     }
 }
-
+pub(super) use get_set_byte;
 
 macro_rules! get_set_short {
     ($f:expr) => {
-        const M: usize = $f;
+        const M: usize = $f - 1;
 
         /// Returns i-th element of array `ushort` of type `u16`
         /// if `i` is less than a half of the size of this Union in bytes.
@@ -2898,11 +1764,11 @@ macro_rules! get_set_short {
         }
     }
 }
-
+pub(crate) use get_set_short;
 
 macro_rules! get_set_int {
     ($f:expr) => {
-        const L: usize = $f;
+        const L: usize = $f - 1;
 
         /// Returns i-th element of array `uint` of type `u32`
         /// if `i` is less than a quarter of the size of this Union in bytes.
@@ -3545,11 +2411,11 @@ macro_rules! get_set_int {
         }
     }
 }
-
+pub(super) use get_set_int;
 
 macro_rules! get_set_long {
     ($f:expr) => {
-        const K: usize = $f;
+        const K: usize = $f - 1;
 
         /// Returns i-th element of array `ulong` of type `u64`
         /// if `i` is less than an eighth of the size of this Union in bytes.
@@ -4194,11 +3060,24 @@ macro_rules! get_set_long {
         }
     }
 }
+pub(super) use get_set_long;
 
+macro_rules! get_set_size_fit {
+    () => {
+        #[inline] pub fn get_usize(self) -> usize           { unsafe { self.u_size } }
+    
+        #[inline] pub fn set_usize(&mut self, val: usize)   { self.u_size = val; }
+    
+        #[inline] pub fn get_ssize(self) -> isize           { unsafe { self.s_size } }
+    
+        #[inline] pub fn set_ssize(&mut self, val: isize)   { self.s_size = val; }
+    };
+}
+pub(super) use get_set_size_fit;
 
 macro_rules! get_set_size {
     ($f:expr) => {
-        const J: usize = $f;
+        const J: usize = $f - 1;
 
         /// Returns i-th element of array `u_size` of type `usize`
         /// if `i` is less than the size of this Union in bytes divided by
@@ -4837,7 +3716,7 @@ macro_rules! get_set_size {
         }
     }
 }
-
+pub(super) use get_set_size;
 
 macro_rules! integer_union_methods {
     ($f:ty) => {
@@ -5032,220 +3911,291 @@ macro_rules! integer_union_methods {
         // #[inline] pub fn is_odd(self) -> bool       { (self.get() & 1) != 0 }
     }
 }
+pub(super) use integer_union_methods;
 
 
+macro_rules! operators_for_integer_unions_impl {
+    ($f:ty) => {
+        impl Add for $f
+        {
+            type Output = Self;
 
-impl ShortUnion
-{
-    pub fn new() -> Self                    { Self { ushort: 0 } }
-    pub fn new_with(ushort: u16) -> Self    { Self { ushort } }
-    pub fn new_with_signed(sshort: i16) -> Self { Self { sshort } }
-    pub fn new_with_ubytes(ubyte: [u8; 2]) -> Self  { Self { ubyte } }
-    pub fn onoff(b: bool) -> Self           { Self { ushort: b as u16 } }
-    pub fn onoff_signed(b: bool) -> Self    { Self { sshort: b as i16 } }
-    pub fn new_with_u128(num: u128) -> Self { Self { ushort: LongerUnion::new_with(num).get_ushort_(0) } }
+            #[inline]
+            fn add(self, rhs: Self) -> Self
+            {
+                self.wrapping_add(rhs)
+            }
+        }
 
-    #[inline] pub fn get(self) -> u16                   { unsafe { self.this } }
-    #[inline] pub fn set(&mut self, val: u16)           { self.this = val; }
-    #[inline] pub fn get_signed(self) -> i16            { unsafe { self.that } }
-    #[inline] pub fn set_signed(&mut self, val: i16)    { self.that = val; }
-    #[inline] pub fn get_ushort(self) -> u16            { unsafe { self.ushort } }
-    #[inline] pub fn set_ushort(&mut self, val: u16)    { self.ushort = val; }
-    #[inline] pub fn get_sshort(self) -> i16            { unsafe { self.sshort } }
-    #[inline] pub fn set_sshort(&mut self, val: i16)    { self.sshort = val; }
-    get_set_byte!(2-1);
+        impl AddAssign for $f
+        {
+            #[inline]
+            fn add_assign(&mut self, rhs: Self)
+            {
+                self.set(self.get().wrapping_add(rhs.get()));
+            }
+        }
 
-    #[cfg(target_pointer_width = "8")]
-    get_set_size!(2-1);
+        impl Sub for $f
+        {
+            type Output = Self;
 
-    #[cfg(target_pointer_width = "16")]
-    #[inline] pub fn get_usize(self) -> usize       { unsafe { self.u_size } }
+            #[inline]
+            fn sub(self, rhs: Self) -> Self
+            {
+                self.wrapping_sub(rhs)
+            }
+        }
 
-    #[cfg(target_pointer_width = "16")]
-    #[inline] pub fn set_usize(self, val: usize)    { self.u_size = val; }
+        impl SubAssign for $f
+        {
+            #[inline]
+            fn sub_assign(&mut self, rhs: Self)
+            {
+                self.set(self.get().wrapping_sub(rhs.get()));
+            }
+        }
 
-    #[cfg(target_pointer_width = "16")]
-    #[inline] pub fn get_ssize(self) -> isize       { unsafe { self.s_size } }
+        impl Mul for $f
+        {
+            type Output = Self;
 
-    #[cfg(target_pointer_width = "16")]
-    #[inline] pub fn set_ssize(self, val: isize)    { self.s_size = val; }
+            #[inline]
+            fn mul(self, rhs: Self) -> Self
+            {
+                self.wrapping_mul(rhs)
+            }
+        }
 
-    integer_union_methods!(u16);
+        impl MulAssign for $f
+        {
+            #[inline]
+            fn mul_assign(&mut self, rhs: Self)
+            {
+                self.set(self.get().wrapping_mul(rhs.get()));
+            }
+        }
+
+        impl Div for $f
+        {
+            type Output = Self;
+
+            #[inline]
+            fn div(self, rhs: Self) -> Self
+            {
+                self.wrapping_div(rhs)
+            }
+        }
+
+        impl DivAssign for $f
+        {
+            #[inline]
+            fn div_assign(&mut self, rhs: Self)
+            {
+                self.set(self.get().wrapping_div(rhs.get()));
+            }
+        }
+
+        impl Rem for $f
+        {
+            type Output = Self;
+
+            #[inline]
+            fn rem(self, rhs: Self) -> Self
+            {
+                self.wrapping_rem(rhs)
+            }
+        }
+
+        impl RemAssign for $f
+        {
+            #[inline]
+            fn rem_assign(&mut self, rhs: Self)
+            {
+                self.set(self.get().wrapping_rem(rhs.get()));
+            }
+        }
+
+        impl BitAnd for $f
+        {
+            type Output = Self;
+
+            #[inline]
+            fn bitand(self, rhs: Self) -> Self
+            {
+                let mut s = self.clone();
+                s &= rhs;
+                s
+            }
+        }
+
+        impl BitAndAssign for $f
+        {
+            #[inline]
+            fn bitand_assign(&mut self, rhs: Self)
+            {
+                self.set(self.get() & rhs.get());
+            }
+        }
+
+        impl BitOr for $f
+        {
+            type Output = Self;
+
+            fn bitor(self, rhs: Self) -> Self
+            {
+                let mut s = self.clone();
+                s |= rhs;
+                s
+            }
+        }
+
+        impl BitOrAssign for $f
+        {
+            #[inline]
+            fn bitor_assign(&mut self, rhs: Self)
+            {
+                self.set(self.get() | rhs.get());
+            }
+        }
+
+        impl BitXor for $f
+        {
+            type Output = Self;
+
+            fn bitxor(self, rhs: Self) -> Self
+            {
+                let mut s = self.clone();
+                s ^= rhs;
+                s
+            }
+        }
+
+        impl BitXorAssign for $f
+        {
+            #[inline]
+            fn bitxor_assign(&mut self, rhs: Self)
+            {
+                self.set(self.get() ^ rhs.get());
+            }
+        }
+
+        impl Not for $f
+        {
+            type Output = Self;
+
+            #[inline]
+            fn not(self) -> Self
+            {
+                Self::new_with(!self.get())
+            }
+        }
+
+        impl PartialEq for $f
+        {
+            #[inline]
+            fn eq(&self, other: &Self) -> bool
+            {
+                self.get() == other.get()
+            }
+        }
+
+        impl PartialOrd for $f
+        {
+            fn partial_cmp(&self, other: &Self) -> Option<Ordering>
+            {
+                if self.get() > other.get()
+                    { return Some(Ordering::Greater); }
+                else if self.get() < other.get()
+                    { return Some(Ordering::Less); }
+                else
+                    { Some(Ordering::Equal) }
+            }
+        }
+    }
 }
+pub(super) use operators_for_integer_unions_impl;
 
 
+macro_rules! shift_ops_for_integer_unions_impl {
+    ($u:ty, $f:ty) => {
+        impl Shl<$f> for $u
+        {
+            type Output = Self;
 
-impl IntUnion
-{
-    pub fn new() -> Self                { Self { uint: 0 } }
-    pub fn new_with(uint: u32) -> Self  { Self { uint } }
-    pub fn new_with_signed(sint: i32) -> Self   { Self { sint } }
-    pub fn new_with_ubytes(ubyte: [u8; 4]) -> Self  { Self { ubyte } }
-    pub fn new_with_ushorts(ushort: [u16; 2]) -> Self   { Self { ushort } }
-    pub fn onoff(b: bool) -> Self       { Self { uint: b as u32 } }
-    pub fn onoff_signed(b: bool) -> Self    { Self { sint: b as i32 } }
-    pub fn new_with_u128(num: u128) -> Self { Self { uint: LongerUnion::new_with(num).get_uint_(0) } }
+            fn shl(self, rhs: $f) -> Self
+            {
+                let mut s = self.clone();
+                s <<= rhs;
+                s
+            }
+        }
 
-    #[inline] pub fn get(self) -> u32               { unsafe { self.this } }
-    #[inline] pub fn set(&mut self, val: u32)       { self.this = val; }
-    #[inline] pub fn get_signed(self) -> i32        { unsafe { self.that } }
-    #[inline] pub fn set_signed(&mut self, val: i32)    { self.that = val; }
-    #[inline] pub fn get_uint(self) -> u32          { unsafe { self.uint } }
-    #[inline] pub fn set_uint(&mut self, val: u32)  { self.uint = val; }
-    #[inline] pub fn get_sint(self) -> i32          { unsafe { self.sint } }
-    #[inline] pub fn set_sint(&mut self, val: i32)  { self.sint = val; }
+        impl ShlAssign<$f> for $u
+        {
+            #[inline]
+            fn shl_assign(&mut self, rhs: $f)
+            {
+                self.set(self.get() << rhs)
+            }
+        }
 
-    get_set_byte!(4-1);
+        impl Shr<$f> for $u
+        {
+            type Output = Self;
 
-    get_set_short!(2-1);
+            fn shr(self, rhs: $f) -> Self
+            {
+                let mut s = self.clone();
+                s >>= rhs;
+                s
+            }
+        }
 
-    #[cfg(target_pointer_width = "32")]
-    #[inline] pub fn get_usize(self) -> usize   { unsafe { self.u_size } }
-
-    #[cfg(target_pointer_width = "32")]
-    #[inline] pub fn set_usize(&mut self, val: usize)   { self.u_size = val; }
-
-    #[cfg(target_pointer_width = "32")]
-    #[inline] pub fn get_ssize(self) -> isize   { unsafe { self.s_size } }
-
-    #[cfg(target_pointer_width = "32")]
-    #[inline] pub fn set_ssize(&mut self, val: isize)   { self.s_size = val; }
-
-    #[cfg(target_pointer_width = "16")]     get_set_usize!(2-1);
-    #[cfg(target_pointer_width = "8")]      get_set_usize!(4-1);
-
-    integer_union_methods!(u32);
+        impl ShrAssign<$f> for $u
+        {
+            #[inline]
+            fn shr_assign(&mut self, rhs: $f)
+            {
+                self.set(self.get() >> rhs)
+            }
+        }
+    }
 }
+pub(super) use shift_ops_for_integer_unions_impl;
 
 
-
-impl LongUnion
-{
-    pub fn new() -> Self                    { Self { ulong: 0 } }
-    pub fn new_with(ulong: u64) -> Self     { Self { ulong } }
-    pub fn new_with_signed(slong: i64) -> Self  { Self { slong } }
-    pub fn new_with_ubytes(ubyte: [u8; 8])  -> Self { Self { ubyte } }
-    pub fn new_with_ushorts(ushort: [u16; 4])  -> Self  { Self { ushort } }
-    pub fn new_with_uints(uint: [u32; 2])  -> Self  { Self { uint } }
-    pub fn onoff(b: bool) -> Self           { Self { ulong: b as u64 } }
-    pub fn onoff_singed(b: bool) -> Self    { Self { slong: b as i64 } }
-    pub fn new_with_u128(num: u128) -> Self { Self { ulong: LongerUnion::new_with(num).get_ulong_(0) } }
-
-    #[inline] pub fn get(self) -> u64           { unsafe { self.this } }
-    #[inline] pub fn get_signed(self) -> i64    { unsafe { self.that } }
-    #[inline] pub fn set(&mut self, val: u64)   { self.this = val; }
-    #[inline] pub fn set_signed(&mut self, val: i64)    { self.that = val; }
-    #[inline] pub fn get_ulong(self) -> u64             { unsafe { self.ulong } }
-    #[inline] pub fn set_ulong(&mut self, val: u64)     { self.ulong = val; }
-    #[inline] pub fn get_slong(self) -> i64             { unsafe { self.slong } }
-    #[inline] pub fn set_slong(&mut self, val: i64)     { self.slong = val; }
-    get_set_byte!(8-1);
-    get_set_short!(4-1);
-    get_set_int!(2-1);
-
-    #[cfg(target_pointer_width = "64")]
-    #[inline] pub fn get_usize(self) -> usize           { unsafe { self.u_size } }
-
-    #[cfg(target_pointer_width = "64")]
-    #[inline] pub fn set_usize(&mut self, val: usize)   { self.u_size = val; }
-
-    #[cfg(target_pointer_width = "64")]
-    #[inline] pub fn get_ssize(self) -> isize           { unsafe { self.s_size } }
-
-    #[cfg(target_pointer_width = "64")]
-    #[inline] pub fn set_ssize(&mut self, val: isize)   { self.s_size = val; }
-
-    #[cfg(target_pointer_width = "32")]     get_set_usize!(2-1);
-    #[cfg(target_pointer_width = "16")]     get_set_usize!(4-1);
-    #[cfg(target_pointer_width = "8")]      get_set_usize!(8-1);
-
-    integer_union_methods!(u64);
+macro_rules! display_for_integer_unions_impl {
+    ($f:ty) => {
+        impl Display for $f
+        {
+            /// Formats the value using the given formatter.
+            /// Automagically the function `to_string()` will be implemented. So, you
+            /// can use the function `to_string()` and the macro `println!()`.
+            /// `f` is a buffer, this method must write the formatted string into it.
+            /// [Read more](https://doc.rust-lang.org/core/fmt/trait.Display.html#tymethod.fmt)
+            /// 
+            /// # Example
+            /// ```
+            /// use cryptocol::number::*;
+            /// let a = ShortUnion::new_with(60521_u16);
+            /// println!("{}", a);
+            /// ```
+            fn fmt(&self, f: &mut Formatter) -> fmt::Result
+            {
+                // `write!` is like `format!`, but it will write the formatted string
+                // into a buffer (the first argument)
+                write!(f, "{}", self.get())
+            }
+        }
+    }
 }
+pub(super) use display_for_integer_unions_impl;
 
 
 
-impl LongerUnion
-{
-    pub fn new() -> Self                    { Self { ulonger: 0 } }
-    pub fn new_with(ulonger: u128) -> Self  { Self { ulonger } }
-    pub fn new_with_signed(slonger: i128) -> Self   { Self { slonger } }
-    pub fn new_with_ubytes(ubyte: [u8; 16]) -> Self { Self { ubyte } }
-    pub fn new_with_ushorts(ushort: [u16; 8]) -> Self   { Self { ushort } }
-    pub fn new_with_uints(uint: [u32; 4]) -> Self   { Self { uint } }
-    pub fn new_with_ulongs(ulong: [u64; 2]) -> Self   { Self { ulong } }
-    pub fn onoff(b: bool) -> Self           { Self { ulonger: b as u128 } }
-    pub fn onoff_signed(b: bool) -> Self    { Self { slonger: b as i128 } }
-    pub fn new_with_u128(num: u128) -> Self { Self { ulonger: num } }
-
-    #[inline] pub fn get(self) -> u128          { unsafe { self.ulonger } }
-    #[inline] pub fn get_signed(self) -> i128   { unsafe { self.slonger } }
-    #[inline] pub fn set(&mut self, val: u128)  { self.ulonger = val; }
-    #[inline] pub fn set_signed(&mut self, val: i128)   { self.slonger = val; }
-    #[inline] pub fn get_ulonger(self) -> u128          { unsafe { self.ulonger } }
-    #[inline] pub fn set_ulonger(&mut self, val: u128)  { self.ulonger = val; }
-    #[inline] pub fn get_slonger(self) -> i128          { unsafe { self.slonger } }
-    #[inline] pub fn set_slonger(&mut self, val: i128)  { self.slonger = val; }
-    get_set_byte!(16-1);
-    get_set_short!(8-1);
-    get_set_int!(4-1);
-    get_set_long!(2-1);
-
-    #[cfg(target_pointer_width = "128")]
-    #[inline] pub fn get_usize(self) -> usize           { unsafe { self.u_size } }
-
-    #[cfg(target_pointer_width = "128")]
-    #[inline] pub fn set_usize(&mut self, val: usize)   { self.u_size = val; }
-
-    #[cfg(target_pointer_width = "128")]
-    #[inline] pub fn get_ssize(self) -> isize           { unsafe { self.s_size } }
-
-    #[cfg(target_pointer_width = "128")]
-    #[inline] pub fn set_ssize(&mut self, val: isize)   { self.s_size = val; }
-
-    #[cfg(target_pointer_width = "64")]     get_set_size!(2-1);
-    #[cfg(target_pointer_width = "32")]     get_set_size!(4-1);
-    #[cfg(target_pointer_width = "16")]     get_set_size!(8-1);
-    #[cfg(target_pointer_width = "8")]      get_set_size!(16-1);
-
-    integer_union_methods!(u128);
-}
 
 
-
-impl SizeUnion
-{
-    pub fn new() -> Self                    { Self { u_size: 0 } }
-    pub fn new_with(u_size: usize) -> Self  { Self { u_size } }
-    pub fn new_with_signed(s_size: isize) -> Self   { Self { s_size } }
-    pub fn onoff(b: bool) -> Self           { Self { u_size: b as usize } }
-    pub fn onoff_signed(b: bool) -> Self    { Self { s_size: b as isize } }
-    pub fn new_with_u128(num: u128) -> Self { Self { u_size: LongerUnion::new_with(num).get_usize_(0) } }
-
-    #[inline] pub fn get(self) -> usize         { unsafe { self.u_size } }
-    #[inline] pub fn get_signed(self) -> isize  { unsafe { self.s_size } }
-    #[inline] pub fn set(&mut self, val: usize) { self.u_size = val; }
-    #[inline] pub fn set_signed(&mut self, val: isize)   { self.s_size = val; }
-    #[cfg(target_pointer_width = "128")]    get_set_byte!(16-1);
-    #[cfg(target_pointer_width = "64")]     get_set_byte!(8-1);
-    #[cfg(target_pointer_width = "32")]     get_set_byte!(4-1);
-    #[cfg(target_pointer_width = "16")]     get_set_byte!(2-1);
-
-    #[cfg(target_pointer_width = "128")]    get_set_short!(8-1);
-    #[cfg(target_pointer_width = "64")]     get_set_short!(4-1);
-    #[cfg(target_pointer_width = "32")]     get_set_short!(2-1);
-
-    #[cfg(target_pointer_width = "128")]    get_set_int!(4-1);
-    #[cfg(target_pointer_width = "64")]     get_set_int!(2-1);
-
-    #[cfg(target_pointer_width = "128")]    get_set_long!(2-1);
-
-    pub fn set_usize(&mut self, val: usize)     { self.u_size = val; }
-    pub fn get_usize(self) -> usize             { unsafe { self.u_size } }
-    pub fn set_ssize(&mut self, val: isize)     { self.s_size = val; }
-    pub fn get_ssize(&self) -> isize            { unsafe { self.s_size } }
-
-    integer_union_methods!(usize);
-}
 
 
 /*
@@ -5330,226 +4280,3 @@ macro_rules! random_for_unions_impl {
     };
 }
 */
-
-
-/// union array for transforming from one type into anther type
-pub union Share<D, S>
-where D: SmallUInt + Copy + Clone + Display + Debug + ToString
-        + Add<Output=D> + AddAssign + Sub<Output=D> + SubAssign
-        + Mul<Output=D> + MulAssign + Div<Output=D> + DivAssign
-        + Rem<Output=D> + RemAssign
-        + Shl<Output=D> + ShlAssign + Shr<Output=D> + ShrAssign
-        + BitAnd<Output=D> + BitAndAssign + BitOr<Output=D> + BitOrAssign
-        + BitXor<Output=D> + BitXorAssign + Not<Output=D>
-        + PartialEq + PartialOrd,
-      S: SmallUInt + Copy + Clone + Display + Debug + ToString
-        + Add<Output=S> + AddAssign + Sub<Output=S> + SubAssign
-        + Mul<Output=S> + MulAssign + Div<Output=S> + DivAssign
-        + Rem<Output=S> + RemAssign
-        + Shl<Output=S> + ShlAssign + Shr<Output=S> + ShrAssign
-        + BitAnd<Output=S> + BitAndAssign + BitOr<Output=S> + BitOrAssign
-        + BitXor<Output=S> + BitXorAssign + Not<Output=S>
-        + PartialEq + PartialOrd
-{
-    pub des: D,
-    pub src: S,
-}
-
-impl<D, S> Share<D, S>
-where D: SmallUInt + Copy + Clone + Display + Debug + ToString
-        + Add<Output=D> + AddAssign + Sub<Output=D> + SubAssign
-        + Mul<Output=D> + MulAssign + Div<Output=D> + DivAssign
-        + Rem<Output=D> + RemAssign
-        + Shl<Output=D> + ShlAssign + Shr<Output=D> + ShrAssign
-        + BitAnd<Output=D> + BitAndAssign + BitOr<Output=D> + BitOrAssign
-        + BitXor<Output=D> + BitXorAssign + Not<Output=D>
-        + PartialEq + PartialOrd,
-      S: SmallUInt + Copy + Clone + Display + Debug + ToString
-        + Add<Output=S> + AddAssign + Sub<Output=S> + SubAssign
-        + Mul<Output=S> + MulAssign + Div<Output=S> + DivAssign
-        + Rem<Output=S> + RemAssign
-        + Shl<Output=S> + ShlAssign + Shr<Output=S> + ShrAssign
-        + BitAnd<Output=S> + BitAndAssign + BitOr<Output=S> + BitOrAssign
-        + BitXor<Output=S> + BitXorAssign + Not<Output=S>
-        + PartialEq + PartialOrd
-{
-    pub fn new() -> Self
-    {
-        if size_of::<D>() >= size_of::<S>()
-            { Self { des: D::zero() } }
-        else
-            { Self { src: S::zero() } }
-    }
-
-    pub fn from_src(src: S) -> Self
-    {
-        let mut me = Share::<D, S>::new();
-        me.src = src;
-        me
-    }
-
-    #[inline] pub fn get_des(&self) -> D  { unsafe { self.des } }
-    #[inline] pub fn get_src(&self) -> S  { unsafe { self.src } }
-
-    #[cfg(target_endian = "little")]
-    pub fn into_des(&mut self, pos: usize) -> Option<D>
-    {
-        let bit_pos = pos * D::size_in_bits();
-        unsafe { self.src >>= S::usize_as_smalluint(bit_pos); }
-        if (bit_pos > 0) && self.is_src_zero()
-            { None }
-        else
-            { unsafe { Some(self.des) } }
-    }
-
-    #[cfg(target_endian = "big")]
-    pub fn into_des(&mut self, pos: usize) -> Option<D>
-    {
-        let des_size = size_of::<D>();
-        let src_size = size_of::<S>();
-        let bit_pos = pos * D::size_in_bits();
-        unsafe { self.src <<= S::usize_as_smalluint(bit_pos); }
-        if des_size > src_size
-            { unsafe { self.des >>= D::num((des_size - src_size).into_u128() * 8); } }
-        else if src_size > des_size
-            { unsafe { self.src <<= S::num((src_size - des_size).into_u128() * 8); } }
-        Some( unsafe { self.des } )
-    }
-
-    pub fn is_src_zero(&self) -> bool    { unsafe { self.src == S::zero() } }
-}
-
-/// union array for transforming from one type into anther type
-pub union Common<D, const N: usize, S, const M: usize>
-where D: SmallUInt + Add<Output=D> + AddAssign + Sub<Output=D> + SubAssign
-        + Mul<Output=D> + MulAssign + Div<Output=D> + DivAssign
-        + Rem<Output=D> + RemAssign
-        + Shl<Output=D> + ShlAssign + Shr<Output=D> + ShrAssign
-        + BitAnd<Output=D> + BitAndAssign + BitOr<Output=D> + BitOrAssign
-        + BitXor<Output=D> + BitXorAssign + Not<Output=D>
-        + PartialEq + PartialOrd
-        + Display + ToString,
-      S: SmallUInt + Add<Output=S> + AddAssign + Sub<Output=S> + SubAssign
-        + Mul<Output=S> + MulAssign + Div<Output=S> + DivAssign
-        + Shl<Output=S> + ShlAssign + Shr<Output=S> + ShrAssign
-        + Rem<Output=S> + RemAssign
-        + BitAnd<Output=S> + BitAndAssign + BitOr<Output=S> + BitOrAssign
-        + BitXor<Output=S> + BitXorAssign + Not<Output=S>
-        + PartialEq + PartialOrd
-        + Display + ToString
-{
-    pub des: [D; N],
-    pub src: [S; M],
-}
-
-impl<D, const N: usize, S, const M: usize> Common<D, N, S, M>
-where D: SmallUInt + Add<Output=D> + AddAssign + Sub<Output=D> + SubAssign
-        + Mul<Output=D> + MulAssign + Div<Output=D> + DivAssign
-        + Rem<Output=D> + RemAssign
-        + Shl<Output=D> + ShlAssign + Shr<Output=D> + ShrAssign
-        + BitAnd<Output=D> + BitAndAssign + BitOr<Output=D> + BitOrAssign
-        + BitXor<Output=D> + BitXorAssign + Not<Output=D>
-        + PartialEq + PartialOrd
-        + Display + ToString,
-      S: SmallUInt + Add<Output=S> + AddAssign + Sub<Output=S> + SubAssign
-        + Mul<Output=S> + MulAssign + Div<Output=S> + DivAssign
-        + Rem<Output=S> + RemAssign
-        + Shl<Output=S> + ShlAssign + Shr<Output=S> + ShrAssign
-        + BitAnd<Output=S> + BitAndAssign + BitOr<Output=S> + BitOrAssign
-        + BitXor<Output=S> + BitXorAssign + Not<Output=S>
-        + PartialEq + PartialOrd
-        + Display + ToString
-{
-    pub fn new() -> Self
-    {
-        if Self::size_of_des() >= Self::size_of_src()
-            { Self { des: [D::zero(); N] } }
-        else
-            { Self { src: [S::zero(); M] } }
-    }
-
-    pub fn from_src(src: &[S; M]) -> Self
-    {
-        let mut me = Common::<D, N, S, M>::new();
-        unsafe { me.src.copy_from_slice(src); }
-        me
-    }
-
-    #[cfg(target_endian = "little")]
-    #[inline]
-    pub fn into_des(&mut self, des: &mut [D; N])
-    {
-        unsafe { des.copy_from_slice(&self.des); }
-    }
-
-    #[cfg(target_endian = "big")]
-    pub fn into_des(&mut self, des: &mut [D; N])
-    {
-        let des_size = Self::size_of_des();
-        let src_size = Self::size_of_src();
-        if src_size > des_size
-            { self.shl_assign_src((src_size - des_size) * 8); }
-        else
-            { self.shr_assign_des((des_size - src_size) * 8); }
-        des.copy_from_slice(&self.des);
-    }
-
-    #[cfg(target_endian = "big")]
-    fn shl_assign_src(&mut self, rhs: usize)
-    {
-        let TSIZE_BIT = size_of::<D>() * 8;
-        let chunk_num = rhs as usize / TSIZE_BIT as usize;
-        let piece_num = rhs as usize % TSIZE_BIT as usize;
-        let zero = S::zero();
-        if chunk_num > 0
-        {
-            self.src.copy_within(chunk_num..N, 0);
-            for idx in N-chunk_num..N
-                { self.src[idx] = zero; }
-        }
-        if piece_num == 0
-            { return; }
-
-        let mut num: S;
-        let mut carry = zero;
-        for idx in 0..N-chunk_num
-        {
-            num = (self.src[idx] << S::num(piece_num.into_u128())) | carry;
-            carry = self.src[idx] >> S::num((TSIZE_BIT - piece_num).into_u128());
-            self.src[idx] = num;
-        }
-    }
-
-    #[cfg(target_endian = "big")]
-    fn shr_assign_des(&mut self, rhs: usize)
-    {
-        let TSIZE_BIT = size_of::<T>() * 8;
-        let chunk_num = rhs as usize / TSIZE_BIT as usize;
-        let piece_num = rhs as usize % TSIZE_BIT as usize;
-        let zero = D::zero();
-        if chunk_num > 0
-        {
-            self.des.copy_within(0..N-chunk_num, chunk_num);
-            for idx in 0..chunk_num
-                { self.des[idx] = zero; }
-        }
-        if piece_num == 0
-            { return; }
-
-        let mut num: D;
-        let mut carry = D::zero();
-        let mut idx = 0;
-        loop
-        {
-            num = (self.des[idx] >> D::num(piece_num.into_u128())) | carry;
-            carry = self.des[idx] << D::num((TSIZE_BIT - piece_num).into_u128());
-            self.des[idx] = num;
-            if idx == N - 1 - chunk_num
-                { break; }
-            idx += 1;
-        }
-    }
-
-    pub fn size_of_des() -> usize   { size_of::<D>() * N }
-    pub fn size_of_src() -> usize   { size_of::<S>() * M }
-}
