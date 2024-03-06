@@ -19,8 +19,8 @@ use std::time::{ SystemTime, UNIX_EPOCH };
 use std::collections::hash_map::RandomState;
 use std::hash::{ BuildHasher, Hasher };
 #[cfg(not(target_os = "windows"))] use std::fs::File;
-use std::ptr::copy_nonoverlapping;
-use std::io::Read;
+#[cfg(not(target_os = "windows"))] use std::ptr::copy_nonoverlapping;
+#[cfg(not(target_os = "windows"))] use std::io::Read;
 
 use crate::number::{ small_uint::*, BigUInt };
 use crate::number::small_int_unions::*;

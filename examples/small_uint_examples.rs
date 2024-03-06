@@ -32,7 +32,7 @@ pub fn main()
     small_uint_size();
 }
 
-fn small_uint_quick_start();
+fn small_uint_quick_start()
 {
     small_uint_quick_start1();
     small_uint_quick_start2();
@@ -40,13 +40,95 @@ fn small_uint_quick_start();
 
 fn small_uint_quick_start1()
 {
+    println!("small_uint_quick_start1");
+    use cryptocol::number::SmallUInt;
 
+    let a_u8 = 60_u8.modular_add(15, 100);
+    println!("60 + 55 = {} (mod 100)", a_u8);
+    assert_eq!(a_u8, 75);
+
+    let b_u8 = a_u8.modular_add(55, 100);
+    println!("{} + 55 = {} (mod 100)", a_u8, b_u8);
+    assert_eq!(b_u8, 30);
+
+    let a_u64 = 6_0000_0000_0000_0000_u64.modular_add(1_5000_0000_0000_0000, 10_0000_0000_0000_0000);
+    println!("6_0000_0000_0000_0000 + 1_5000_0000_0000_0000 = {} (mod 10_0000_0000_0000_0000)", a_u64);
+    assert_eq!(a_u64, 7_5000_0000_0000_0000);
+
+    let b_u64 = a_u64.modular_add(5_5000_0000_0000_0000, 10_0000_0000_0000_0000);
+    println!("{} + 5_5000_0000_0000_0000 = {} (mod 10_0000_0000_0000_0000)", a_u64, b_u64);
+    assert_eq!(b_u64, 3_0000_0000_0000_0000);
+
+    let a_u16 = 25469_u16;
+    // If the number is less than u32::MAX (= 4294967295_u32),
+    // 3 is enough for `repetition` with 2, 7, and 61
+    // for 100% certainty for determination of prime number. 
+    let prime = a_u16.is_prime_using_miller_rabin(3_usize);
+    if prime
+        { println!("It is 100% certain that {} is a prime number.", a_u16); }
+    else
+        { println!("It is 100% certain that {} is a composite number.", a_u16); }
+
+    let a_u128 = 2341058314661067957826634487913509653_u128;
+    let prime = a_u128.is_prime_using_miller_rabin(5_usize);
+    if prime
+        { println!("It is 99.9% certain that {} is a prime number.", a_u128); }
+    else
+        { println!("It is 100% certain that {} is a composite number.", a_u128); }
+    println!("--------------------------------------");
 }
 
 fn small_uint_quick_start2()
 {
+    println!("small_uint_quick_start2");
+    #[allow(unused_imports)] use cryptocol::number::SmallUInt;
+
+    let c_u8 = small_uint_quick_start_func1(60_u8, 15, 100);
+    println!("60 + 55 = {} (mod 100)", c_u8);
+    assert_eq!(c_u8, 75);
+
+    let d_u8 = small_uint_quick_start_func1(c_u8, 55, 100);
+    println!("{} + 55 = {} (mod 100)", c_u8, d_u8);
+    assert_eq!(d_u8, 30);
+
+    let c_u64 = small_uint_quick_start_func1(6_0000_0000_0000_0000_u64, 1_5000_0000_0000_0000, 10_0000_0000_0000_0000);
+    println!("6_0000_0000_0000_0000 + 1_5000_0000_0000_0000 = {} (mod 10_0000_0000_0000_0000)", c_u64);
+    assert_eq!(c_u64, 7_5000_0000_0000_0000);
+
+    let d_u64 = small_uint_quick_start_func1(c_u64, 5_5000_0000_0000_0000, 10_0000_0000_0000_0000);
+    println!("{} + 5_5000_0000_0000_0000 = {} (mod 10_0000_0000_0000_0000)", c_u64, d_u64);
+    assert_eq!(d_u64, 3_0000_0000_0000_0000);
+
+    let b_u16 = 25469_u16;
+    // If the number is less than u32::MAX (= 4294967295_u32),
+    // 3 is enough for `repetition` with 2, 7, and 61
+    // for 100% certainty for determination of prime number. 
+    let prime = small_uint_quick_start_func2(b_u16, 3_usize);
+    if prime
+        { println!("It is 100% certain that {} is a prime number.", b_u16); }
+    else
+        { println!("It is 100% certain that {} is a composite number.", b_u16); }
+
+    let b_u128 = 2341058314661067957826634487913509653_u128;
+    let prime = small_uint_quick_start_func2(b_u128, 5_usize);
+    if prime
+        { println!("It is 75% certain that {} is a prime number.", b_u128); }
+    else
+        { println!("It is 100% certain that {} is a composite number.", b_u128); }
     
+    println!("--------------------------------------");
 }
+
+fn small_uint_quick_start_func1<T: cryptocol::number::SmallUInt>(lhs: T, rhs: T, modulo: T) -> T
+{
+    lhs.modular_add(rhs, modulo)
+}
+
+fn small_uint_quick_start_func2<T: cryptocol::number::SmallUInt>(num: T, repetition: usize) -> bool
+{
+    num.is_prime_using_miller_rabin(repetition)
+}
+
 
 fn small_uint_add_main()
 {

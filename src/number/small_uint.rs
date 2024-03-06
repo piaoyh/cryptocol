@@ -53,14 +53,95 @@ use super::{ ShortUnion, IntUnion, LongUnion, LongerUnion, SizeUnion };
 /// 
 /// ## Example 2
 /// ```
+/// use cryptocol::number::SmallUInt;
 /// 
+/// let a_u8 = 60_u8.modular_add(15, 100);
+/// println!("60 + 55 = {} (mod 100)", a_u8);
+/// assert_eq!(a_u8, 75);
+/// 
+/// let b_u8 = a_u8.modular_add(55, 100);
+/// println!("{} + 55 = {} (mod 100)", a_u8, b_u8);
+/// assert_eq!(b_u8, 30);
+/// 
+/// let a_u64 = 6_0000_0000_0000_0000_u64.modular_add(1_5000_0000_0000_0000, 10_0000_0000_0000_0000);
+/// println!("6_0000_0000_0000_0000 + 1_5000_0000_0000_0000 = {} (mod 10_0000_0000_0000_0000)", a_u64);
+/// assert_eq!(a_u64, 7_5000_0000_0000_0000);
+/// 
+/// let b_u64 = a_u64.modular_add(5_5000_0000_0000_0000, 10_0000_0000_0000_0000);
+/// println!("{} + 5_5000_0000_0000_0000 = {} (mod 10_0000_0000_0000_0000)", a_u64, b_u64);
+/// assert_eq!(b_u64, 3_0000_0000_0000_0000);
+/// 
+/// let a_u16 = 25469_u16;
+/// // If the number is less than u32::MAX (= 4294967295_u32),
+/// // 3 is enough for `repetition` with 2, 7, and 61
+/// // for 100% certainty for determination of prime number. 
+/// let prime = a_u16.is_prime_using_miller_rabin(3_usize);
+/// if prime
+///     { println!("It is 100% certain that {} is a prime number.", a_u16); }
+/// else
+///     { println!("It is 100% certain that {} is a composite number.", a_u16); }
+/// 
+/// let a_u128 = 2341058314661067957826634487913509653_u128;
+/// let prime = a_u128.is_prime_using_miller_rabin(5_usize);
+/// if prime
+///     { println!("It is 99.9% certain that {} is a prime number.", a_u128); }
+/// else
+///     { println!("It is 100% certain that {} is a composite number.", a_u128); }
 /// ```
-/// When SmallUInt is used in the generic context for primitive unsigned
-/// integer, you can reduce a lot of lines.
+/// When `SmallUInt` is used in the generic context for primitive unsigned
+/// integer, you can simplify your code. However, without trait `SmallUInt`,
+/// you will find that it is tricky to write generic code with primitive
+/// data types, unless you newly write your own trait like `SmallUInt`.
 /// 
 /// ## Example 3
 /// ```
+/// use cryptocol::number::SmallUInt;
+/// fn main()
+/// {
+///     let c_u8 = func1(60_u8, 15, 100);
+///     println!("60 + 55 = {} (mod 100)", c_u8);
+///     assert_eq!(c_u8, 75);
 /// 
+///     let d_u8 = func1(c_u8, 55, 100);
+///     println!("{} + 55 = {} (mod 100)", c_u8, d_u8);
+///     assert_eq!(d_u8, 30);
+/// 
+///     let c_u64 = func1(6_0000_0000_0000_0000_u64, 1_5000_0000_0000_0000, 10_0000_0000_0000_0000);
+///     println!("6_0000_0000_0000_0000 + 1_5000_0000_0000_0000 = {} (mod 10_0000_0000_0000_0000)", c_u64);
+///     assert_eq!(c_u64, 7_5000_0000_0000_0000);
+/// 
+///     let d_u64 = func1(c_u64, 5_5000_0000_0000_0000, 10_0000_0000_0000_0000);
+///     println!("{} + 5_5000_0000_0000_0000 = {} (mod 10_0000_0000_0000_0000)", c_u64, d_u64);
+///     assert_eq!(d_u64, 3_0000_0000_0000_0000);
+/// 
+///     let b_u16 = 25469_u16;
+///     // If the number is less than u32::MAX (= 4294967295_u32),
+///     // 3 is enough for `repetition` with 2, 7, and 61
+///     // for 100% certainty for determination of prime number. 
+///     let prime = func2(b_u16, 3_usize);
+///     if prime
+///         { println!("It is 100% certain that {} is a prime number.", b_u16); }
+///     else
+///         { println!("It is 100% certain that {} is a composite number.", b_u16); }
+/// 
+///     let b_u128 = 2341058314661067957826634487913509653_u128;
+///     let prime = func2(b_u128, 5_usize);
+///     if prime
+///         { println!("It is 75% certain that {} is a prime number.", b_u128); }
+///     else
+///         { println!("It is 100% certain that {} is a composite number.", b_u128); }
+///     println!("--------------------------------------");
+/// }
+/// 
+/// fn func1<T: SmallUInt>(lhs: T, rhs: T, modulo: T) -> T
+/// {
+///     lhs.modular_add(rhs, modulo)
+/// }
+/// 
+/// fn func2<T: SmallUInt>(num: T, repetition: usize) -> bool
+/// {
+///     num.is_prime_using_miller_rabin(repetition)
+/// }
 /// ```
 /// 
 /// # Big-endian issue
@@ -20409,427 +20490,7 @@ pub trait SmallUInt: Copy + Clone + Sized //+ Display + Debug + ToString
     /// - If you want to know about the definition of the method `reverse_bits()`
     /// for the primitive type `usize`, read [here](https://doc.rust-lang.org/core/primitive.usize.html#method.reverse_bits).
     fn reverse_bits(self) -> Self;
-/*
-    // fn reverse_bits_assign(&mut self);
-    /// Reverses the order of bits in the integer.
-    /// 
-    /// # Features
-    /// The least significant bit becomes the most significant bit, second
-    /// least-significant bit becomes second most-significant bit, etc.
-    /// 
-    /// # Example 1 for u8
-    /// ```
-    /// use cryptocol::number::SmallUInt;
-    /// fn main()
-    /// {
-    ///     let mut a_u8 = 0b10110011_u8;
-    ///     println!("origianl a_u8 : {:08b}", a_u8);
-    ///     a_u8.reverse_bits_assign();
-    ///     println!("after a_u8.reverse_bits_assign : {:08b}", a_u8);
-    ///     assert_eq!(a_u8, 0b11001101_u8);
-    /// 
-    ///     let mut b_u8 = 0b10110011_u8;
-    ///     println!("origianl b_u8 : {:08b}", b_u8);
-    ///     func(&mut b_u8);
-    ///     println!("after b_u8.reverse_bits_assign : {:08b}", b_u8);
-    ///     assert_eq!(b_u8, 0b11001101_u8);
-    /// }
-    /// 
-    /// fn func<T: SmallUInt>(num: &mut T)
-    /// {
-    ///     num.reverse_bits_assign();
-    /// }
-    /// ```
-    /// 
-    /// # Example 2 for u16
-    /// ```
-    /// use cryptocol::number::SmallUInt;
-    /// fn main()
-    /// {
-    ///     let mut a_u16 = 0b1011001110001111_u16;
-    ///     println!("origianl a_u16 : {:016b}", a_u16);
-    ///     a_u16.reverse_bits_assign();
-    ///     println!("after a_u16.reverse_bits_assign : {:016b}",  a_u16);
-    ///     assert_eq!(a_u16, 0b1111000111001101_u16);
-    /// 
-    ///     let mut b_u16 = 0b1011001110001111_u16;
-    ///     println!("origianl b_u16 : {:016b}", b_u16);
-    ///     func(&mut b_u16);
-    ///     println!("after b_u16.reverse_bits_assign : {:016b}",  b_u16);
-    ///     assert_eq!(b_u16, 0b1111000111001101_u16);
-    /// }
-    /// 
-    /// fn func<T: SmallUInt>(num: &mut T)
-    /// {
-    ///     num.reverse_bits_assign();
-    /// }
-    /// ```
-    /// 
-    /// # Example 3 for u32
-    /// ```
-    /// use cryptocol::number::SmallUInt;
-    /// fn main()
-    /// {
-    ///     let mut a_u32 = 0b10110011100011110000111110000011_u32;
-    ///     println!("origianl a_u32 : {:032b}", a_u32);
-    ///     a_u32.reverse_bits_assign();
-    ///     println!("after a_u32.reverse_bits_assign : {:032b}",  a_u32);
-    ///     assert_eq!(a_u32, 0b11000001111100001111000111001101_u32);
-    /// 
-    ///     let mut b_u32 = 0b10110011100011110000111110000011_u32;
-    ///     println!("origianl b_u32 : {:032b}", b_u32);
-    ///     func(&mut b_u32);
-    ///     println!("after b_u32.reverse_bits_assign : {:032b}",  b_u32);
-    ///     assert_eq!(b_u32, 0b11000001111100001111000111001101_u32);
-    /// }
-    /// 
-    /// fn func<T: SmallUInt>(num: &mut T)
-    /// {
-    ///     num.reverse_bits_assign();
-    /// }
-    /// ```
-    /// 
-    /// # Example 4 for u64
-    /// ```
-    /// use cryptocol::number::SmallUInt;
-    /// fn main()
-    /// {
-    ///     let mut a_u64 = 0b1011001110001111000011111000001111110000001111111000000011111111_u64;
-    ///     println!("origianl a_u64 : {:064b}", a_u64);
-    ///     a_u64.reverse_bits_assign();
-    ///     println!("after a_u64.reverse_bits_assign : {:064b}", a_u64);
-    ///     assert_eq!(a_u64, 0b1111111100000001111111000000111111000001111100001111000111001101_u64);
-    /// 
-    ///     let mut b_u64 = 0b1011001110001111000011111000001111110000001111111000000011111111_u64;
-    ///     println!("origianl b_u64 : {:064b}", b_u64);
-    ///     func(&mut b_u64);
-    ///     println!("after b_u64.reverse_bits_assign : {:064b}", b_u64);
-    ///     assert_eq!(b_u64, 0b1111111100000001111111000000111111000001111100001111000111001101_u64);
-    /// }
-    /// 
-    /// fn func<T: SmallUInt>(num: &mut T)
-    /// {
-    ///     num.reverse_bits_assign();
-    /// }
-    /// ```
-    /// 
-    /// # Example 5 for u128
-    /// ```
-    /// use cryptocol::number::SmallUInt;
-    /// fn main()
-    /// {
-    ///     let mut a_u128 = 0b10110011100011110000111110000011111100000011111110000000111111110000000011111111100000000011111111110000000000111111111110000000_u128;
-    ///     println!("origianl a_u128 : {:0128b}", a_u128);
-    ///     a_u128.reverse_bits_assign();
-    ///     println!("after a_u128.reverse_bits_assign : {:0128b}", a_u128);
-    ///     assert_eq!(a_u128, 0b00000001111111111100000000001111111111000000000111111111000000001111111100000001111111000000111111000001111100001111000111001101_u128);
-    /// 
-    ///     let mut b_u128 = 0b10110011100011110000111110000011111100000011111110000000111111110000000011111111100000000011111111110000000000111111111110000000_u128;
-    ///     println!("origianl b_u128 : {:0128b}", b_u128);
-    ///     func(&mut b_u128);
-    ///     println!("after b_u128.reverse_bits_assign : {:0128b}", b_u128);
-    ///     assert_eq!(b_u128, 0b00000001111111111100000000001111111111000000000111111111000000001111111100000001111111000000111111000001111100001111000111001101_u128);
-    /// }
-    /// 
-    /// fn func<T: SmallUInt>(num: &mut T)
-    /// {
-    ///     num.reverse_bits_assign();
-    /// }
-    /// ```
-    /// 
-    /// # Example 6 for usize
-    /// ```
-    /// use cryptocol::number::SmallUInt;
-    /// fn main()
-    /// {
-    ///     let mut a_usize = 0b1011001110001111000011111000001111110000001111111000000011111111_usize;
-    ///     println!("origianl a_usize : {:064b}", a_usize);
-    ///     a_usize.reverse_bits_assign();
-    ///     println!("after a_usize.reverse_bits_assign : {:064b}", a_usize);
-    ///     assert_eq!(a_usize, 0b1111111100000001111111000000111111000001111100001111000111001101_usize);
-    /// 
-    ///     let mut b_usize = 0b1011001110001111000011111000001111110000001111111000000011111111_usize;
-    ///     println!("origianl b_usize : {:064b}", b_usize);
-    ///     func(&mut b_usize);
-    ///     println!("after b_usize.reverse_bits_assign : {:064b}", b_usize);
-    ///     assert_eq!(b_usize, 0b1111111100000001111111000000111111000001111100001111000111001101_usize);
-    /// }
-    /// 
-    /// fn func<T: SmallUInt>(num: &mut T)
-    /// {
-    ///     num.reverse_bits_assign();
-    /// }
-    /// ```
-    /// 
-    /// # Example 7 for ShortUnion
-    /// ```
-    /// use cryptocol::number::SmallUInt;
-    /// fn main()
-    /// {
-    ///     let mut a_shortunion = 0b1011001110001111_u16.into_shortunion();
-    ///     println!("origianl a_shortunion : {:016b}", a_shortunion.get());
-    ///     a_shortunion.reverse_bits_assign();
-    ///     println!("after a_shortunion.reverse_bits_assign : {:016b}", a_shortunion.get());
-    ///     assert_eq!(a_shortunion.get(), 0b1111000111001101_u16);
-    /// 
-    ///     let mut b_shortunion = 0b1011001110001111_u16.into_shortunion();
-    ///     println!("origianl b_shortunion : {:016b}", b_shortunion.get());
-    ///     func(&mut b_shortunion);
-    ///     println!("after b_shortunion.reverse_bits_assign : {:016b}", b_shortunion.get());
-    ///     assert_eq!(b_shortunion.get(), 0b1111000111001101_u16);
-    /// }
-    /// 
-    /// fn func<T: SmallUInt>(num: &mut T)
-    /// {
-    ///     num.reverse_bits_assign();
-    /// }
-    /// ```
-    /// 
-    /// # Example 8 for IntUnion
-    /// ```
-    /// use cryptocol::number::SmallUInt;
-    /// fn main()
-    /// {
-    ///     let mut a_intunion = 0b10110011100011110000111110000011_u32.into_intunion();
-    ///     println!("origianl a_intunion : {:032b}", a_intunion.get());
-    ///     a_intunion.reverse_bits_assign();
-    ///     println!("after a_intunion.reverse_bits_assign : {:032b}", a_intunion.get());
-    ///     assert_eq!(a_intunion.get(), 0b11000001111100001111000111001101_u32);
-    /// 
-    ///     let mut b_intunion = 0b10110011100011110000111110000011_u32.into_intunion();
-    ///     println!("origianl b_intunion : {:032b}", b_intunion.get());
-    ///     func(&mut b_intunion);
-    ///     println!("after b_intunion.reverse_bits_assign : {:032b}", b_intunion.get());
-    ///     assert_eq!(b_intunion.get(), 0b11000001111100001111000111001101_u32);
-    /// }
-    /// 
-    /// fn func<T: SmallUInt>(num: &mut T)
-    /// {
-    ///     num.reverse_bits_assign();
-    /// }
-    /// ```
-    /// 
-    /// # Example 9 for LongUnion
-    /// ```
-    /// use cryptocol::number::SmallUInt;
-    /// fn main()
-    /// {
-    ///     let mut a_longunion = 0b1011001110001111000011111000001111110000001111111000000011111111_u64.into_longunion();
-    ///     println!("origianl a_longunion : {:064b}", a_intunion.get());
-    ///     a_longunion.reverse_bits_assign();
-    ///     println!("after a_longunion.reverse_bits_assign : {:064b}", a_longunion.get());
-    ///     assert_eq!(a_longunion.get(), 0b1111111100000001111111000000111111000001111100001111000111001101_u64);
-    /// 
-    ///     let mut b_longunion = 0b1011001110001111000011111000001111110000001111111000000011111111_u64.into_longunion();
-    ///     println!("origianl b_longunion : {:064b}", b_intunion.get());
-    ///     func(&mut b_longunion);
-    ///     println!("after b_longunion.reverse_bits_assign : {:064b}", b_longunion.get());
-    ///     assert_eq!(b_longunion.get(), 0b1111111100000001111111000000111111000001111100001111000111001101_u64);
-    /// }
-    /// 
-    /// fn func<T: SmallUInt>(num: &mut T)
-    /// {
-    ///     num.reverse_bits_assign();
-    /// }
-    /// ```
-    /// 
-    /// # Example 10 for LongerUnion
-    /// ```
-    /// use cryptocol::number::SmallUInt;
-    /// fn main()
-    /// {
-    ///     let mut a_longerunion = 0b10110011100011110000111110000011111100000011111110000000111111110000000011111111100000000011111111110000000000111111111110000000_u128.into_longerunion();
-    ///     println!("origianl a_longerunion : {:0128b}", a_longerunion.get());
-    ///     a_longerunion.reverse_bits_assign();
-    ///     println!("after a_longerunion.reverse_bits_assign : {:0128b}", a_longerunion.get());
-    ///     assert_eq!(a_longerunion.get(), 0b00000001111111111100000000001111111111000000000111111111000000001111111100000001111111000000111111000001111100001111000111001101_u128);
-    /// 
-    ///     let mut b_longerunion = 0b10110011100011110000111110000011111100000011111110000000111111110000000011111111100000000011111111110000000000111111111110000000_u128.into_longerunion();
-    ///     println!("origianl b_longerunion : {:0128b}", b_longerunion.get());
-    ///     func(&mut b_longerunion);
-    ///     println!("after b_longerunion.reverse_bits_assign : {:0128b}", b_longerunion.get());
-    ///     assert_eq!(b_longerunion.get(), 0b00000001111111111100000000001111111111000000000111111111000000001111111100000001111111000000111111000001111100001111000111001101_u128);
-    /// }
-    /// 
-    /// fn func<T: SmallUInt>(num: &mut T)
-    /// {
-    ///     num.reverse_bits_assign();
-    /// }
-    /// ```
-    /// 
-    /// # Example 11 for SizeUnion
-    /// ```
-    /// use cryptocol::number::SmallUInt;
-    /// fn main()
-    /// {
-    ///     let mut a_sizeunion = 0b1011001110001111000011111000001111110000001111111000000011111111_usize.into_sizeunion();
-    ///     println!("origianl a_sizeunion : {:064b}", a_sizeunion.get());
-    ///     a_sizeunion.reverse_bits_assign();
-    ///     println!("after a_sizeunion.reverse_bits_assign : {:064b}", a_sizeunion.get());
-    ///     assert_eq!(a_sizeunion.get(), 0b1111111100000001111111000000111111000001111100001111000111001101_usize);
-    /// 
-    ///     let mut b_sizeunion = 0b1011001110001111000011111000001111110000001111111000000011111111_usize.into_sizeunion();
-    ///     println!("origianl b_sizeunion : {:064b}", b_sizeunion.get());
-    ///     func(&mut b_sizeunion);
-    ///     println!("after b_sizeunion.reverse_bits_assign : {:064b}", b_sizeunion.get());
-    ///     assert_eq!(b_sizeunion.get(), 0b1111111100000001111111000000111111000001111100001111000111001101_usize);
-    /// }
-    /// 
-    /// fn func<T: SmallUInt>(num: &mut T)
-    /// {
-    ///     num.reverse_bits_assign();
-    /// }
-    /// ```
-    /// You can use the above generic function `func<>()` for all
-    /// SmallUInt-supported data types in a same scope.
-    /// Look into the following example.
-    /// 
-    /// # Collective Example
-    /// ```
-    /// use cryptocol::number::SmallUInt;
-    /// fn main()
-    /// {
-    ///     let mut a_u8 = 0b10110011_u8;
-    ///     println!("origianl a_u8 : {:08b}", a_u8);
-    ///     a_u8.reverse_bits_assign();
-    ///     println!("after a_u8.reverse_bits_assign : {:08b}", a_u8);
-    ///     assert_eq!(a_u8, 0b11001101_u8);
-    /// 
-    ///     let mut b_u8 = 0b10110011_u8;
-    ///     println!("origianl b_u8 : {:08b}", b_u8);
-    ///     func(&mut b_u8);
-    ///     println!("after b_u8.reverse_bits_assign : {:08b}", b_u8);
-    ///     assert_eq!(b_u8, 0b11001101_u8);
-    /// 
-    ///     let mut a_u16 = 0b1011001110001111_u16;
-    ///     println!("origianl a_u16 : {:016b}", a_u16);
-    ///     a_u16.reverse_bits_assign();
-    ///     println!("after a_u16.reverse_bits_assign : {:016b}",  a_u16);
-    ///     assert_eq!(a_u16, 0b1111000111001101_u16);
-    /// 
-    ///     let mut b_u16 = 0b1011001110001111_u16;
-    ///     println!("origianl b_u16 : {:016b}", b_u16);
-    ///     func(&mut b_u16);
-    ///     println!("after b_u16.reverse_bits_assign : {:016b}",  b_u16);
-    ///     assert_eq!(b_u16, 0b1111000111001101_u16);
-    /// 
-    ///     let mut a_u32 = 0b10110011100011110000111110000011_u32;
-    ///     println!("origianl a_u32 : {:032b}", a_u32);
-    ///     a_u32.reverse_bits_assign();
-    ///     println!("after a_u32.reverse_bits_assign : {:032b}",  a_u32);
-    ///     assert_eq!(a_u32, 0b11000001111100001111000111001101_u32);
-    /// 
-    ///     let mut b_u32 = 0b10110011100011110000111110000011_u32;
-    ///     println!("origianl b_u32 : {:032b}", b_u32);
-    ///     func(&mut b_u32);
-    ///     println!("after b_u32.reverse_bits_assign : {:032b}",  b_u32);
-    ///     assert_eq!(b_u32, 0b11000001111100001111000111001101_u32);
-    /// 
-    ///     let mut a_u64 = 0b1011001110001111000011111000001111110000001111111000000011111111_u64;
-    ///     println!("origianl a_u64 : {:064b}", a_u64);
-    ///     a_u64.reverse_bits_assign();
-    ///     println!("after a_u64.reverse_bits_assign : {:064b}", a_u64);
-    ///     assert_eq!(a_u64, 0b1111111100000001111111000000111111000001111100001111000111001101_u64);
-    /// 
-    ///     let mut b_u64 = 0b1011001110001111000011111000001111110000001111111000000011111111_u64;
-    ///     println!("origianl b_u64 : {:064b}", b_u64);
-    ///     func(&mut b_u64);
-    ///     println!("after b_u64.reverse_bits_assign : {:064b}", b_u64);
-    ///     assert_eq!(b_u64, 0b1111111100000001111111000000111111000001111100001111000111001101_u64);
-    /// 
-    ///     let mut a_u128 = 0b10110011100011110000111110000011111100000011111110000000111111110000000011111111100000000011111111110000000000111111111110000000_u128;
-    ///     println!("origianl a_u128 : {:0128b}", a_u128);
-    ///     a_u128.reverse_bits_assign();
-    ///     println!("after a_u128.reverse_bits_assign : {:0128b}", a_u128);
-    ///     assert_eq!(a_u128, 0b00000001111111111100000000001111111111000000000111111111000000001111111100000001111111000000111111000001111100001111000111001101_u128);
-    /// 
-    ///     let mut b_u128 = 0b10110011100011110000111110000011111100000011111110000000111111110000000011111111100000000011111111110000000000111111111110000000_u128;
-    ///     println!("origianl b_u128 : {:0128b}", b_u128);
-    ///     func(&mut b_u128);
-    ///     println!("after b_u128.reverse_bits_assign : {:0128b}", b_u128);
-    ///     assert_eq!(b_u128, 0b00000001111111111100000000001111111111000000000111111111000000001111111100000001111111000000111111000001111100001111000111001101_u128);
-    /// 
-    ///     let mut a_usize = 0b1011001110001111000011111000001111110000001111111000000011111111_usize;
-    ///     println!("origianl a_usize : {:064b}", a_usize);
-    ///     a_usize.reverse_bits_assign();
-    ///     println!("after a_usize.reverse_bits_assign : {:064b}", a_usize);
-    ///     assert_eq!(a_usize, 0b1111111100000001111111000000111111000001111100001111000111001101_usize);
-    /// 
-    ///     let mut b_usize = 0b1011001110001111000011111000001111110000001111111000000011111111_usize;
-    ///     println!("origianl b_usize : {:064b}", b_usize);
-    ///     func(&mut b_usize);
-    ///     println!("after b_usize.reverse_bits_assign : {:064b}", b_usize);
-    ///     assert_eq!(b_usize, 0b1111111100000001111111000000111111000001111100001111000111001101_usize);
-    /// 
-    ///     let mut a_shortunion = 0b1011001110001111_u16.into_shortunion();
-    ///     println!("origianl a_shortunion : {:016b}", a_shortunion.get());
-    ///     a_shortunion.reverse_bits_assign();
-    ///     println!("after a_shortunion.reverse_bits_assign : {:016b}", a_shortunion.get());
-    ///     assert_eq!(a_shortunion.get(), 0b1111000111001101_u16);
-    /// 
-    ///     let mut b_shortunion = 0b1011001110001111_u16.into_shortunion();
-    ///     println!("origianl b_shortunion : {:016b}", b_shortunion.get());
-    ///     func(&mut b_shortunion);
-    ///     println!("after b_shortunion.reverse_bits_assign : {:016b}", b_shortunion.get());
-    ///     assert_eq!(b_shortunion.get(), 0b1111000111001101_u16);
-    /// 
-    ///     let mut a_intunion = 0b10110011100011110000111110000011_u32.into_intunion();
-    ///     println!("origianl a_intunion : {:032b}", a_intunion.get());
-    ///     a_intunion.reverse_bits_assign();
-    ///     println!("after a_intunion.reverse_bits_assign : {:032b}", a_intunion.get());
-    ///     assert_eq!(a_intunion.get(), 0b11000001111100001111000111001101_u32);
-    /// 
-    ///     let mut b_intunion = 0b10110011100011110000111110000011_u32.into_intunion();
-    ///     println!("origianl b_intunion : {:032b}", b_intunion.get());
-    ///     func(&mut b_intunion);
-    ///     println!("after b_intunion.reverse_bits_assign : {:032b}", b_intunion.get());
-    ///     assert_eq!(b_intunion.get(), 0b11000001111100001111000111001101_u32);
-    /// 
-    ///     let mut a_longunion = 0b1011001110001111000011111000001111110000001111111000000011111111_u64.into_longunion();
-    ///     println!("origianl a_longunion : {:064b}", a_longunion.get());
-    ///     a_longunion.reverse_bits_assign();
-    ///     println!("after a_longunion.reverse_bits_assign : {:064b}", a_longunion.get());
-    ///     assert_eq!(a_longunion.get(), 0b1111111100000001111111000000111111000001111100001111000111001101_u64);
-    /// 
-    ///     let mut b_longunion = 0b1011001110001111000011111000001111110000001111111000000011111111_u64.into_longunion();
-    ///     println!("origianl b_longunion : {:064b}", a_longunion999999999999999999999.get());
-    ///     func(&mut b_longunion);
-    ///     println!("after b_longunion.reverse_bits_assign : {:064b}", b_longunion.get());
-    ///     assert_eq!(b_longunion.get(), 0b1111111100000001111111000000111111000001111100001111000111001101_u64);
-    /// 
-    ///     let mut a_longerunion = 0b10110011100011110000111110000011111100000011111110000000111111110000000011111111100000000011111111110000000000111111111110000000_u128.into_longerunion();
-    ///     println!("origianl a_longerunion : {:0128b}", a_longerunion.get());
-    ///     a_longerunion.reverse_bits_assign();
-    ///     println!("after a_longerunion.reverse_bits_assign : {:0128b}", a_longerunion.get());
-    ///     assert_eq!(a_longerunion.get(), 0b00000001111111111100000000001111111111000000000111111111000000001111111100000001111111000000111111000001111100001111000111001101_u128);
-    /// 
-    ///     let mut b_longerunion = 0b10110011100011110000111110000011111100000011111110000000111111110000000011111111100000000011111111110000000000111111111110000000_u128.into_longerunion();
-    ///     println!("origianl b_longerunion : {:0128b}", b_longerunion.get());
-    ///     func(&mut b_longerunion);
-    ///     println!("after b_longerunion.reverse_bits_assign : {:0128b}", b_longerunion.get());
-    ///     assert_eq!(b_longerunion.get(), 0b00000001111111111100000000001111111111000000000111111111000000001111111100000001111111000000111111000001111100001111000111001101_u128);
-    /// 
-    ///     let mut a_sizeunion = 0b1011001110001111000011111000001111110000001111111000000011111111_usize.into_sizeunion();
-    ///     println!("origianl a_sizeunion : {:064b}", a_sizeunion.get());
-    ///     a_sizeunion.reverse_bits_assign();
-    ///     println!("after a_sizeunion.reverse_bits_assign : {:064b}", a_sizeunion.get());
-    ///     assert_eq!(a_sizeunion.get(), 0b1111111100000001111111000000111111000001111100001111000111001101_usize);
-    /// 
-    ///     let mut b_sizeunion = 0b1011001110001111000011111000001111110000001111111000000011111111_usize.into_sizeunion();
-    ///     println!("origianl b_sizeunion : {:064b}", b_sizeunion.get());
-    ///     func(&mut b_sizeunion);
-    ///     println!("after b_sizeunion.reverse_bits_assign : {:064b}", b_sizeunion.get());
-    ///     assert_eq!(b_sizeunion.get(), 0b1111111100000001111111000000111111000001111100001111000111001101_usize);
-    ///     println!("--------------------------------------");
-    /// }
-    /// 
-    /// fn func<T: SmallUInt>(num: &mut T)
-    /// {
-    ///     num.reverse_bits_assign();
-    /// }
-    /// ```
-    fn reverse_bits_assign(&mut self);
-*/
+
     // fn rotate_left(self, n: u32) -> Self;
     /// Shifts the bits to the left by a specified amount, `n`, wrapping the
     /// truncated bits to the end of the resulting integer.
@@ -48137,3 +47798,422 @@ pub trait SmallUInt: Copy + Clone + Sized //+ Display + Debug + ToString
     fn length_in_bits(self) -> usize;
 }
 
+    // fn reverse_bits_assign(&mut self);
+    // / Reverses the order of bits in the integer.
+    // / 
+    // / # Features
+    // / The least significant bit becomes the most significant bit, second
+    // / least-significant bit becomes second most-significant bit, etc.
+    // / 
+    // / # Example 1 for u8
+    // / ```
+    // / use cryptocol::number::SmallUInt;
+    // / fn main()
+    // / {
+    // /     let mut a_u8 = 0b10110011_u8;
+    // /     println!("origianl a_u8 : {:08b}", a_u8);
+    // /     a_u8.reverse_bits_assign();
+    // /     println!("after a_u8.reverse_bits_assign : {:08b}", a_u8);
+    // /     assert_eq!(a_u8, 0b11001101_u8);
+    // / 
+    // /     let mut b_u8 = 0b10110011_u8;
+    // /     println!("origianl b_u8 : {:08b}", b_u8);
+    // /     func(&mut b_u8);
+    // /     println!("after b_u8.reverse_bits_assign : {:08b}", b_u8);
+    // /     assert_eq!(b_u8, 0b11001101_u8);
+    // / }
+    // / 
+    // / fn func<T: SmallUInt>(num: &mut T)
+    // / {
+    // /     num.reverse_bits_assign();
+    // / }
+    // / ```
+    // / 
+    // / # Example 2 for u16
+    // / ```
+    // / use cryptocol::number::SmallUInt;
+    // / fn main()
+    // / {
+    // /     let mut a_u16 = 0b1011001110001111_u16;
+    // /     println!("origianl a_u16 : {:016b}", a_u16);
+    // /     a_u16.reverse_bits_assign();
+    // /     println!("after a_u16.reverse_bits_assign : {:016b}",  a_u16);
+    // /     assert_eq!(a_u16, 0b1111000111001101_u16);
+    // / 
+    // /     let mut b_u16 = 0b1011001110001111_u16;
+    // /     println!("origianl b_u16 : {:016b}", b_u16);
+    // /     func(&mut b_u16);
+    // /     println!("after b_u16.reverse_bits_assign : {:016b}",  b_u16);
+    // /     assert_eq!(b_u16, 0b1111000111001101_u16);
+    // / }
+    // / 
+    // / fn func<T: SmallUInt>(num: &mut T)
+    // / {
+    // /     num.reverse_bits_assign();
+    // / }
+    // / ```
+    // / 
+    // / # Example 3 for u32
+    // / ```
+    // / use cryptocol::number::SmallUInt;
+    // / fn main()
+    // / {
+    // /     let mut a_u32 = 0b10110011100011110000111110000011_u32;
+    // /     println!("origianl a_u32 : {:032b}", a_u32);
+    // /     a_u32.reverse_bits_assign();
+    // /     println!("after a_u32.reverse_bits_assign : {:032b}",  a_u32);
+    // /     assert_eq!(a_u32, 0b11000001111100001111000111001101_u32);
+    // / 
+    // /     let mut b_u32 = 0b10110011100011110000111110000011_u32;
+    // /     println!("origianl b_u32 : {:032b}", b_u32);
+    // /     func(&mut b_u32);
+    // /     println!("after b_u32.reverse_bits_assign : {:032b}",  b_u32);
+    // /     assert_eq!(b_u32, 0b11000001111100001111000111001101_u32);
+    // / }
+    // / 
+    // / fn func<T: SmallUInt>(num: &mut T)
+    // / {
+    // /     num.reverse_bits_assign();
+    // / }
+    // / ```
+    // / 
+    // / # Example 4 for u64
+    // / ```
+    // / use cryptocol::number::SmallUInt;
+    // / fn main()
+    // / {
+    // /     let mut a_u64 = 0b1011001110001111000011111000001111110000001111111000000011111111_u64;
+    // /     println!("origianl a_u64 : {:064b}", a_u64);
+    // /     a_u64.reverse_bits_assign();
+    // /     println!("after a_u64.reverse_bits_assign : {:064b}", a_u64);
+    // /     assert_eq!(a_u64, 0b1111111100000001111111000000111111000001111100001111000111001101_u64);
+    // / 
+    // /     let mut b_u64 = 0b1011001110001111000011111000001111110000001111111000000011111111_u64;
+    // /     println!("origianl b_u64 : {:064b}", b_u64);
+    // /     func(&mut b_u64);
+    // /     println!("after b_u64.reverse_bits_assign : {:064b}", b_u64);
+    // /     assert_eq!(b_u64, 0b1111111100000001111111000000111111000001111100001111000111001101_u64);
+    // / }
+    // / 
+    // / fn func<T: SmallUInt>(num: &mut T)
+    // / {
+    // /     num.reverse_bits_assign();
+    // / }
+    // / ```
+    // / 
+    // / # Example 5 for u128
+    // / ```
+    // / use cryptocol::number::SmallUInt;
+    // / fn main()
+    // / {
+    // /     let mut a_u128 = 0b10110011100011110000111110000011111100000011111110000000111111110000000011111111100000000011111111110000000000111111111110000000_u128;
+    // /     println!("origianl a_u128 : {:0128b}", a_u128);
+    // /     a_u128.reverse_bits_assign();
+    // /     println!("after a_u128.reverse_bits_assign : {:0128b}", a_u128);
+    // /     assert_eq!(a_u128, 0b00000001111111111100000000001111111111000000000111111111000000001111111100000001111111000000111111000001111100001111000111001101_u128);
+    // / 
+    // /     let mut b_u128 = 0b10110011100011110000111110000011111100000011111110000000111111110000000011111111100000000011111111110000000000111111111110000000_u128;
+    // /     println!("origianl b_u128 : {:0128b}", b_u128);
+    // /     func(&mut b_u128);
+    // /     println!("after b_u128.reverse_bits_assign : {:0128b}", b_u128);
+    // /     assert_eq!(b_u128, 0b00000001111111111100000000001111111111000000000111111111000000001111111100000001111111000000111111000001111100001111000111001101_u128);
+    // / }
+    // / 
+    // / fn func<T: SmallUInt>(num: &mut T)
+    // / {
+    // /     num.reverse_bits_assign();
+    // / }
+    // / ```
+    // / 
+    // / # Example 6 for usize
+    // / ```
+    // / use cryptocol::number::SmallUInt;
+    // / fn main()
+    // / {
+    // /     let mut a_usize = 0b1011001110001111000011111000001111110000001111111000000011111111_usize;
+    // /     println!("origianl a_usize : {:064b}", a_usize);
+    // /     a_usize.reverse_bits_assign();
+    // /     println!("after a_usize.reverse_bits_assign : {:064b}", a_usize);
+    // /     assert_eq!(a_usize, 0b1111111100000001111111000000111111000001111100001111000111001101_usize);
+    // / 
+    // /     let mut b_usize = 0b1011001110001111000011111000001111110000001111111000000011111111_usize;
+    // /     println!("origianl b_usize : {:064b}", b_usize);
+    // /     func(&mut b_usize);
+    // /     println!("after b_usize.reverse_bits_assign : {:064b}", b_usize);
+    // /     assert_eq!(b_usize, 0b1111111100000001111111000000111111000001111100001111000111001101_usize);
+    // / }
+    // / 
+    // / fn func<T: SmallUInt>(num: &mut T)
+    // / {
+    // /     num.reverse_bits_assign();
+    // / }
+    // / ```
+    // / 
+    // / # Example 7 for ShortUnion
+    // / ```
+    // / use cryptocol::number::SmallUInt;
+    // / fn main()
+    // / {
+    // /     let mut a_shortunion = 0b1011001110001111_u16.into_shortunion();
+    // /     println!("origianl a_shortunion : {:016b}", a_shortunion.get());
+    // /     a_shortunion.reverse_bits_assign();
+    // /     println!("after a_shortunion.reverse_bits_assign : {:016b}", a_shortunion.get());
+    // /     assert_eq!(a_shortunion.get(), 0b1111000111001101_u16);
+    // / 
+    // /     let mut b_shortunion = 0b1011001110001111_u16.into_shortunion();
+    // /     println!("origianl b_shortunion : {:016b}", b_shortunion.get());
+    // /     func(&mut b_shortunion);
+    // /     println!("after b_shortunion.reverse_bits_assign : {:016b}", b_shortunion.get());
+    // /     assert_eq!(b_shortunion.get(), 0b1111000111001101_u16);
+    // / }
+    // / 
+    // / fn func<T: SmallUInt>(num: &mut T)
+    // / {
+    // /     num.reverse_bits_assign();
+    // / }
+    // / ```
+    // / 
+    // / # Example 8 for IntUnion
+    // / ```
+    // / use cryptocol::number::SmallUInt;
+    // / fn main()
+    // / {
+    // /     let mut a_intunion = 0b10110011100011110000111110000011_u32.into_intunion();
+    // /     println!("origianl a_intunion : {:032b}", a_intunion.get());
+    // /     a_intunion.reverse_bits_assign();
+    // /     println!("after a_intunion.reverse_bits_assign : {:032b}", a_intunion.get());
+    // /     assert_eq!(a_intunion.get(), 0b11000001111100001111000111001101_u32);
+    // / 
+    // /     let mut b_intunion = 0b10110011100011110000111110000011_u32.into_intunion();
+    // /     println!("origianl b_intunion : {:032b}", b_intunion.get());
+    // /     func(&mut b_intunion);
+    // /     println!("after b_intunion.reverse_bits_assign : {:032b}", b_intunion.get());
+    // /     assert_eq!(b_intunion.get(), 0b11000001111100001111000111001101_u32);
+    // / }
+    // / 
+    // / fn func<T: SmallUInt>(num: &mut T)
+    // / {
+    // /     num.reverse_bits_assign();
+    // / }
+    // / ```
+    // / 
+    // / # Example 9 for LongUnion
+    // / ```
+    // / use cryptocol::number::SmallUInt;
+    // / fn main()
+    // / {
+    // /     let mut a_longunion = 0b1011001110001111000011111000001111110000001111111000000011111111_u64.into_longunion();
+    // /     println!("origianl a_longunion : {:064b}", a_intunion.get());
+    // /     a_longunion.reverse_bits_assign();
+    // /     println!("after a_longunion.reverse_bits_assign : {:064b}", a_longunion.get());
+    // /     assert_eq!(a_longunion.get(), 0b1111111100000001111111000000111111000001111100001111000111001101_u64);
+    // / 
+    // /     let mut b_longunion = 0b1011001110001111000011111000001111110000001111111000000011111111_u64.into_longunion();
+    // /     println!("origianl b_longunion : {:064b}", b_intunion.get());
+    // /     func(&mut b_longunion);
+    // /     println!("after b_longunion.reverse_bits_assign : {:064b}", b_longunion.get());
+    // /     assert_eq!(b_longunion.get(), 0b1111111100000001111111000000111111000001111100001111000111001101_u64);
+    // / }
+    // / 
+    // / fn func<T: SmallUInt>(num: &mut T)
+    // / {
+    // /     num.reverse_bits_assign();
+    // / }
+    // / ```
+    // / 
+    // / # Example 10 for LongerUnion
+    // / ```
+    // / use cryptocol::number::SmallUInt;
+    // / fn main()
+    // / {
+    // /     let mut a_longerunion = 0b10110011100011110000111110000011111100000011111110000000111111110000000011111111100000000011111111110000000000111111111110000000_u128.into_longerunion();
+    // /     println!("origianl a_longerunion : {:0128b}", a_longerunion.get());
+    // /     a_longerunion.reverse_bits_assign();
+    // /     println!("after a_longerunion.reverse_bits_assign : {:0128b}", a_longerunion.get());
+    // /     assert_eq!(a_longerunion.get(), 0b00000001111111111100000000001111111111000000000111111111000000001111111100000001111111000000111111000001111100001111000111001101_u128);
+    // / 
+    // /     let mut b_longerunion = 0b10110011100011110000111110000011111100000011111110000000111111110000000011111111100000000011111111110000000000111111111110000000_u128.into_longerunion();
+    // /     println!("origianl b_longerunion : {:0128b}", b_longerunion.get());
+    // /     func(&mut b_longerunion);
+    // /     println!("after b_longerunion.reverse_bits_assign : {:0128b}", b_longerunion.get());
+    // /     assert_eq!(b_longerunion.get(), 0b00000001111111111100000000001111111111000000000111111111000000001111111100000001111111000000111111000001111100001111000111001101_u128);
+    // / }
+    // / 
+    // / fn func<T: SmallUInt>(num: &mut T)
+    // / {
+    // /     num.reverse_bits_assign();
+    // / }
+    // / ```
+    // / 
+    // / # Example 11 for SizeUnion
+    // / ```
+    // / use cryptocol::number::SmallUInt;
+    // / fn main()
+    // / {
+    // /     let mut a_sizeunion = 0b1011001110001111000011111000001111110000001111111000000011111111_usize.into_sizeunion();
+    // /     println!("origianl a_sizeunion : {:064b}", a_sizeunion.get());
+    // /     a_sizeunion.reverse_bits_assign();
+    // /     println!("after a_sizeunion.reverse_bits_assign : {:064b}", a_sizeunion.get());
+    // /     assert_eq!(a_sizeunion.get(), 0b1111111100000001111111000000111111000001111100001111000111001101_usize);
+    // / 
+    // /     let mut b_sizeunion = 0b1011001110001111000011111000001111110000001111111000000011111111_usize.into_sizeunion();
+    // /     println!("origianl b_sizeunion : {:064b}", b_sizeunion.get());
+    // /     func(&mut b_sizeunion);
+    // /     println!("after b_sizeunion.reverse_bits_assign : {:064b}", b_sizeunion.get());
+    // /     assert_eq!(b_sizeunion.get(), 0b1111111100000001111111000000111111000001111100001111000111001101_usize);
+    // / }
+    // / 
+    // / fn func<T: SmallUInt>(num: &mut T)
+    // / {
+    // /     num.reverse_bits_assign();
+    // / }
+    // / ```
+    // / You can use the above generic function `func<>()` for all
+    // / SmallUInt-supported data types in a same scope.
+    // / Look into the following example.
+    // / 
+    // / # Collective Example
+    // / ```
+    // / use cryptocol::number::SmallUInt;
+    // / fn main()
+    // / {
+    // /     let mut a_u8 = 0b10110011_u8;
+    // /     println!("origianl a_u8 : {:08b}", a_u8);
+    // /     a_u8.reverse_bits_assign();
+    // /     println!("after a_u8.reverse_bits_assign : {:08b}", a_u8);
+    // /     assert_eq!(a_u8, 0b11001101_u8);
+    // / 
+    // /     let mut b_u8 = 0b10110011_u8;
+    // /     println!("origianl b_u8 : {:08b}", b_u8);
+    // /     func(&mut b_u8);
+    // /     println!("after b_u8.reverse_bits_assign : {:08b}", b_u8);
+    // /     assert_eq!(b_u8, 0b11001101_u8);
+    // / 
+    // /     let mut a_u16 = 0b1011001110001111_u16;
+    // /     println!("origianl a_u16 : {:016b}", a_u16);
+    // /     a_u16.reverse_bits_assign();
+    // /     println!("after a_u16.reverse_bits_assign : {:016b}",  a_u16);
+    // /     assert_eq!(a_u16, 0b1111000111001101_u16);
+    // / 
+    // /     let mut b_u16 = 0b1011001110001111_u16;
+    // /     println!("origianl b_u16 : {:016b}", b_u16);
+    // /     func(&mut b_u16);
+    // /     println!("after b_u16.reverse_bits_assign : {:016b}",  b_u16);
+    // /     assert_eq!(b_u16, 0b1111000111001101_u16);
+    // / 
+    // /     let mut a_u32 = 0b10110011100011110000111110000011_u32;
+    // /     println!("origianl a_u32 : {:032b}", a_u32);
+    // /     a_u32.reverse_bits_assign();
+    // /     println!("after a_u32.reverse_bits_assign : {:032b}",  a_u32);
+    // /     assert_eq!(a_u32, 0b11000001111100001111000111001101_u32);
+    // / 
+    // /     let mut b_u32 = 0b10110011100011110000111110000011_u32;
+    // /     println!("origianl b_u32 : {:032b}", b_u32);
+    // /     func(&mut b_u32);
+    // /     println!("after b_u32.reverse_bits_assign : {:032b}",  b_u32);
+    // /     assert_eq!(b_u32, 0b11000001111100001111000111001101_u32);
+    // / 
+    // /     let mut a_u64 = 0b1011001110001111000011111000001111110000001111111000000011111111_u64;
+    // /     println!("origianl a_u64 : {:064b}", a_u64);
+    // /     a_u64.reverse_bits_assign();
+    // /     println!("after a_u64.reverse_bits_assign : {:064b}", a_u64);
+    // /     assert_eq!(a_u64, 0b1111111100000001111111000000111111000001111100001111000111001101_u64);
+    // / 
+    // /     let mut b_u64 = 0b1011001110001111000011111000001111110000001111111000000011111111_u64;
+    // /     println!("origianl b_u64 : {:064b}", b_u64);
+    // /     func(&mut b_u64);
+    // /     println!("after b_u64.reverse_bits_assign : {:064b}", b_u64);
+    // /     assert_eq!(b_u64, 0b1111111100000001111111000000111111000001111100001111000111001101_u64);
+    // / 
+    // /     let mut a_u128 = 0b10110011100011110000111110000011111100000011111110000000111111110000000011111111100000000011111111110000000000111111111110000000_u128;
+    // /     println!("origianl a_u128 : {:0128b}", a_u128);
+    // /     a_u128.reverse_bits_assign();
+    // /     println!("after a_u128.reverse_bits_assign : {:0128b}", a_u128);
+    // /     assert_eq!(a_u128, 0b00000001111111111100000000001111111111000000000111111111000000001111111100000001111111000000111111000001111100001111000111001101_u128);
+    // / 
+    // /     let mut b_u128 = 0b10110011100011110000111110000011111100000011111110000000111111110000000011111111100000000011111111110000000000111111111110000000_u128;
+    // /     println!("origianl b_u128 : {:0128b}", b_u128);
+    // /     func(&mut b_u128);
+    // /     println!("after b_u128.reverse_bits_assign : {:0128b}", b_u128);
+    // /     assert_eq!(b_u128, 0b00000001111111111100000000001111111111000000000111111111000000001111111100000001111111000000111111000001111100001111000111001101_u128);
+    // / 
+    // /     let mut a_usize = 0b1011001110001111000011111000001111110000001111111000000011111111_usize;
+    // /     println!("origianl a_usize : {:064b}", a_usize);
+    // /     a_usize.reverse_bits_assign();
+    // /     println!("after a_usize.reverse_bits_assign : {:064b}", a_usize);
+    // /     assert_eq!(a_usize, 0b1111111100000001111111000000111111000001111100001111000111001101_usize);
+    // / 
+    // /     let mut b_usize = 0b1011001110001111000011111000001111110000001111111000000011111111_usize;
+    // /     println!("origianl b_usize : {:064b}", b_usize);
+    // /     func(&mut b_usize);
+    // /     println!("after b_usize.reverse_bits_assign : {:064b}", b_usize);
+    // /     assert_eq!(b_usize, 0b1111111100000001111111000000111111000001111100001111000111001101_usize);
+    // / 
+    // /     let mut a_shortunion = 0b1011001110001111_u16.into_shortunion();
+    // /     println!("origianl a_shortunion : {:016b}", a_shortunion.get());
+    // /     a_shortunion.reverse_bits_assign();
+    // /     println!("after a_shortunion.reverse_bits_assign : {:016b}", a_shortunion.get());
+    // /     assert_eq!(a_shortunion.get(), 0b1111000111001101_u16);
+    // / 
+    // /     let mut b_shortunion = 0b1011001110001111_u16.into_shortunion();
+    // /     println!("origianl b_shortunion : {:016b}", b_shortunion.get());
+    // /     func(&mut b_shortunion);
+    // /     println!("after b_shortunion.reverse_bits_assign : {:016b}", b_shortunion.get());
+    // /     assert_eq!(b_shortunion.get(), 0b1111000111001101_u16);
+    // / 
+    // /     let mut a_intunion = 0b10110011100011110000111110000011_u32.into_intunion();
+    // /     println!("origianl a_intunion : {:032b}", a_intunion.get());
+    // /     a_intunion.reverse_bits_assign();
+    // /     println!("after a_intunion.reverse_bits_assign : {:032b}", a_intunion.get());
+    // /     assert_eq!(a_intunion.get(), 0b11000001111100001111000111001101_u32);
+    // / 
+    // /     let mut b_intunion = 0b10110011100011110000111110000011_u32.into_intunion();
+    // /     println!("origianl b_intunion : {:032b}", b_intunion.get());
+    // /     func(&mut b_intunion);
+    // /     println!("after b_intunion.reverse_bits_assign : {:032b}", b_intunion.get());
+    // /     assert_eq!(b_intunion.get(), 0b11000001111100001111000111001101_u32);
+    // / 
+    // /     let mut a_longunion = 0b1011001110001111000011111000001111110000001111111000000011111111_u64.into_longunion();
+    // /     println!("origianl a_longunion : {:064b}", a_longunion.get());
+    // /     a_longunion.reverse_bits_assign();
+    // /     println!("after a_longunion.reverse_bits_assign : {:064b}", a_longunion.get());
+    // /     assert_eq!(a_longunion.get(), 0b1111111100000001111111000000111111000001111100001111000111001101_u64);
+    // / 
+    // /     let mut b_longunion = 0b1011001110001111000011111000001111110000001111111000000011111111_u64.into_longunion();
+    // /     println!("origianl b_longunion : {:064b}", a_longunion999999999999999999999.get());
+    // /     func(&mut b_longunion);
+    // /     println!("after b_longunion.reverse_bits_assign : {:064b}", b_longunion.get());
+    // /     assert_eq!(b_longunion.get(), 0b1111111100000001111111000000111111000001111100001111000111001101_u64);
+    // / 
+    // /     let mut a_longerunion = 0b10110011100011110000111110000011111100000011111110000000111111110000000011111111100000000011111111110000000000111111111110000000_u128.into_longerunion();
+    // /     println!("origianl a_longerunion : {:0128b}", a_longerunion.get());
+    // /     a_longerunion.reverse_bits_assign();
+    // /     println!("after a_longerunion.reverse_bits_assign : {:0128b}", a_longerunion.get());
+    // /     assert_eq!(a_longerunion.get(), 0b00000001111111111100000000001111111111000000000111111111000000001111111100000001111111000000111111000001111100001111000111001101_u128);
+    // / 
+    // /     let mut b_longerunion = 0b10110011100011110000111110000011111100000011111110000000111111110000000011111111100000000011111111110000000000111111111110000000_u128.into_longerunion();
+    // /     println!("origianl b_longerunion : {:0128b}", b_longerunion.get());
+    // /     func(&mut b_longerunion);
+    // /     println!("after b_longerunion.reverse_bits_assign : {:0128b}", b_longerunion.get());
+    // /     assert_eq!(b_longerunion.get(), 0b00000001111111111100000000001111111111000000000111111111000000001111111100000001111111000000111111000001111100001111000111001101_u128);
+    // / 
+    // /     let mut a_sizeunion = 0b1011001110001111000011111000001111110000001111111000000011111111_usize.into_sizeunion();
+    // /     println!("origianl a_sizeunion : {:064b}", a_sizeunion.get());
+    // /     a_sizeunion.reverse_bits_assign();
+    // /     println!("after a_sizeunion.reverse_bits_assign : {:064b}", a_sizeunion.get());
+    // /     assert_eq!(a_sizeunion.get(), 0b1111111100000001111111000000111111000001111100001111000111001101_usize);
+    // / 
+    // /     let mut b_sizeunion = 0b1011001110001111000011111000001111110000001111111000000011111111_usize.into_sizeunion();
+    // /     println!("origianl b_sizeunion : {:064b}", b_sizeunion.get());
+    // /     func(&mut b_sizeunion);
+    // /     println!("after b_sizeunion.reverse_bits_assign : {:064b}", b_sizeunion.get());
+    // /     assert_eq!(b_sizeunion.get(), 0b1111111100000001111111000000111111000001111100001111000111001101_usize);
+    // /     println!("--------------------------------------");
+    // / }
+    // / 
+    // / fn func<T: SmallUInt>(num: &mut T)
+    // / {
+    // /     num.reverse_bits_assign();
+    // / }
+    // / ```
+    // fn reverse_bits_assign(&mut self);
