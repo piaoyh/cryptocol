@@ -22,8 +22,8 @@ use std::ops::*;
 use super::small_uint::SmallUInt;
 
 
-/// union array for transforming from one type into anther type
-pub union Common<D, const N: usize, S, const M: usize>
+/// union for transforming from an array of one type into another array of anther type
+pub union SharedArrays<D, const N: usize, S, const M: usize>
 where D: SmallUInt + Add<Output=D> + AddAssign + Sub<Output=D> + SubAssign
         + Mul<Output=D> + MulAssign + Div<Output=D> + DivAssign
         + Rem<Output=D> + RemAssign
@@ -45,7 +45,7 @@ where D: SmallUInt + Add<Output=D> + AddAssign + Sub<Output=D> + SubAssign
     pub src: [S; M],
 }
 
-impl<D, const N: usize, S, const M: usize> Common<D, N, S, M>
+impl<D, const N: usize, S, const M: usize> SharedArrays<D, N, S, M>
 where D: SmallUInt + Add<Output=D> + AddAssign + Sub<Output=D> + SubAssign
         + Mul<Output=D> + MulAssign + Div<Output=D> + DivAssign
         + Rem<Output=D> + RemAssign
@@ -73,7 +73,7 @@ where D: SmallUInt + Add<Output=D> + AddAssign + Sub<Output=D> + SubAssign
 
     pub fn from_src(src: &[S; M]) -> Self
     {
-        let mut me = Common::<D, N, S, M>::new();
+        let mut me = SharedArrays::<D, N, S, M>::new();
         unsafe { me.src.copy_from_slice(src); }
         me
     }

@@ -23,8 +23,8 @@ use std::ops::*;
 
 use super::small_uint::SmallUInt;
 use super::longer_union::LongerUnion;
-use super::share::Share;
-use super::common::Common;
+use super::shared_values::SharedValues;
+use super::shared_arrays::SharedArrays;
 use super::NumberErr;
 
 
@@ -985,7 +985,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
         let size_t = T::size_in_bytes();
         let size_u = U::size_in_bytes();
         let mut me = Self::zero();
-        let mut share = Share::<T, U>::from_src(val);
+        let mut share = SharedValues::<T, U>::from_src(val);
 //        unsafe { copy_nonoverlapping(val.as_ptr() as *const u8, me.number.as_mut_ptr() as *mut u8, size_u); }
         if size_t >= size_u
         {
@@ -1098,7 +1098,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
         }
         else //if my_size > src_size
         {
-            let common = Common::<T, N, U, M>::from_src(&biguint.number);
+            let common = SharedArrays::<T, N, U, M>::from_src(&biguint.number);
             unsafe { Self::from_array(&common.des) }
         }
     }
@@ -1171,7 +1171,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
         }
         else
         {
-            let mut common = Common::<T, N, U, M>::from_src(&biguint.number);
+            let mut common = SharedArrays::<T, N, U, M>::from_src(&biguint.number);
             common.into_des(&mut me.number);
         }
         me
@@ -2816,7 +2816,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     {
         let size_t = T::size_in_bytes();
         let size_v = U::size_in_bytes();
-        let mut share = Share::<T, U>::from_src(val);
+        let mut share = SharedValues::<T, U>::from_src(val);
         
         self.set_zero();
         if size_t >= size_v
@@ -2892,7 +2892,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     {
         let size_t = T::size_in_bytes();
         let size_v = U::size_in_bytes();
-        let mut share = Share::<T, U>::from_src(val);
+        let mut share = SharedValues::<T, U>::from_src(val);
         
         if size_t >= size_v
         {
@@ -6767,7 +6767,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
         }
         else if self.lt_uint(rhs)
         {
-            (Self::zero(), Share::<U, T>::from_src(self.get_num_(0)).get_des())
+            (Self::zero(), SharedValues::<U, T>::from_src(self.get_num_(0)).get_des())
         }
         else if self.eq_uint(rhs)
         {
@@ -6778,7 +6778,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
             let mut quotient = Self::zero();
             let size_rhs = rhs.length_in_bits() - rhs.leading_zeros() as usize;
             let size_self = self.length_in_bits() - self.leading_zeros() as usize;
-            let mut remainder = Share::<U, T>::from_src(self.get_upper_portion(size_rhs).get_num_(0)).get_des();
+            let mut remainder = SharedValues::<U, T>::from_src(self.get_upper_portion(size_rhs).get_num_(0)).get_des();
             let mut position = size_self - size_rhs;
             loop
             {
@@ -14462,7 +14462,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     {
         if T::size_in_bytes() >= U::size_in_bytes()
         {
-            Share::<U, T>::from_src(self.get_num_(0)).get_des()
+            SharedValues::<U, T>::from_src(self.get_num_(0)).get_des()
         }
         else
         {

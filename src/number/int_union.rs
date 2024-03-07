@@ -22,76 +22,153 @@ use std::ops::*;
 use super::small_uint::SmallUInt;
 use super::longer_union::LongerUnion;
 
-
-/// This union is for converting one primitive integral type into another
-/// integeral type within 32-bit long type.
+/// # Introduction
+/// This union `IntUnion` is for slicing `u32` into two `u16`s, two `i16`,
+/// four `u8`s, and/or four `i8`.
 /// 
-/// # Feature
-/// All the fields are pubic but it is highly encouraged to get/set methods
-/// instead of accessing to each field directly. The simple get/set methods are
-/// all inline methods so that you hardly lose the performance benefit because
-/// of using get/set methods.
+/// Sometimes, for example, we need to slice `u32` data into two `u16` pieces
+/// which include a higher two-byte word and a lower two-byte word, and/or
+/// into four `u8` pieces which include a first byte, a second byte, a third
+/// byte and a fourth. In that case, `IntUnion` will be very helpful.
 /// 
-/// # Example
+/// # Quick Start
+/// In order to use this union, you have to import (use)
+/// `cryptocol::number::IntUnion` as follows.
+/// 
+/// ## Example 1
 /// ```
-/// use cryptocol::number::*;
+/// use cryptocol::number::IntUnion;
+/// ```
+/// You can use the methods `get()`, `get_signed()`, `get_uint()`, and
+/// `get_sint()` in order to obtain the data of `u32` in various types.
+/// And, you can also slice the data of `u32` into two `u16` type data by
+/// using the methods `get_ushort()`, `get_sshort()`, `get_ushort_()`, and
+/// `get_sshort_()`, Or, you can also slice the data of `u32` into four 
+/// `u8` type data by using the methods `get_ubyte()`, `get_sbyte()`,
+/// `get_ubyte_()`, and `get_sbyte_()`. If your machine is neither 8-bit,
+/// 16-bit, nor 32-bit machine, `IntUnion` does not have the method
+/// `get_usize()` nor `get_ssize()`.
+/// 
+/// ## Example 2
+/// ```
+/// use cryptocol::number::IntUnion;
+/// 
 /// let a = IntUnion::new_with_signed(-454688546_i32);
-/// println!("a.this = {}, {}", unsafe { a.this }, a.get());
-/// println!("a.that = {}, {}", unsafe { a.that }, a.get_signed());
-/// println!("a.uint = {}", unsafe { a.uint });
-/// println!("a.sint = {}", unsafe { a.uint });
-/// #[cfg(target_endian = "little")]
+/// println!("a.get() = {}", a.get());
+/// println!("a.get_signed() = {}", a.get_signed());
+/// println!("a.get_uint() = {}", a.get_uint());
+/// println!("a.get_sint() = {}", a.get_sint());
+/// assert_eq!(a.get(), 3840278750_u32);
+/// assert_eq!(a.get_signed(), -454688546_i32);
+/// assert_eq!(a.get_uint(), 3840278750_u32);
+/// assert_eq!(a.get_sint(), -454688546_i32);
+/// 
+/// for i in 0..2
+///     { println!("a.get_ushort_({}) = {}", i, a.get_ushort_(i)); }
+/// for i in 0..2
+///     { println!("a.get_sshort_({}) = {}", i, a.get_sshort_(i)); }
+/// for i in 0..4
+///     { println!("a.get_ubyte_({}) = {}", i, a.get_ubyte_(i)); }
+/// for i in 0..4
+///     { println!("a.get_sbyte_({}) = {}", i, a.get_sbyte_(i)); }
+/// assert_eq!(a.get_ushort_(0), 222_u16);
+/// assert_eq!(a.get_ushort_(1), 58598_u16);
+/// assert_eq!(a.get_sshort_(0), 222_i16);
+/// assert_eq!(a.get_sshort_(1), -6938_i16);
+/// assert_eq!(a.get_ubyte_(0), 222_u8);
+/// assert_eq!(a.get_ubyte_(1), 0_u8);
+/// assert_eq!(a.get_ubyte_(2), 230_u8);
+/// assert_eq!(a.get_ubyte_(3), 228_u8);
+/// assert_eq!(a.get_sbyte_(0), -34_i8);
+/// assert_eq!(a.get_sbyte_(1), 0_i8);
+/// assert_eq!(a.get_sbyte_(2), -26_i8);
+/// assert_eq!(a.get_sbyte_(3), -28_i8);
+/// #[cfg(target_pointer_width = "16")]
 /// {
-///     for i in 0..2
-///         { println!("a.ushort[{}] = {}, {}", i, unsafe { a.ushort[i] }, a.get_ushort_(i)); }
-///     for i in 0..2
-///         { println!("a.sshort[{}] = {}, {}", i, unsafe { a.sshort[i] }, a.get_sshort_(i)); }
-///     for i in 0..4
-///         { println!("a.ubyte[{}] = {}, {}", i, unsafe { a.ubyte[i] }, a.get_ubyte_(i)); }
-///     for i in 0..4
-///         { println!("a.sbyte[{}] = {}, {}", i, unsafe { a.sbyte[i] }, a.get_sbyte_(i)); }
-///     #[cfg(target_pointer_width = "16")]
-///     {
-///         const N: usize = 2;
-///         for i in 0..N
-///             { println!("a.u_size[{}] = {}, {}", i, unsafe { a.u_size[i] }, a.get_usize_(i)); }
-///         for i in 0..N
-///             { println!("a.s_size[{}] = {}, {}", i, unsafe { a.s_size[i] }, a.get_ssize_(i)); }
-///     }
-///     #[cfg(target_pointer_width = "8")]
-///     {
-///         const N: usize = 4;
-///         for i in 0..N
-///             { println!("a.u_size[{}] = {}, {}", i, unsafe { a.u_size[i] }, a.get_usize_(i)); }
-///         for i in 0..N
-///             { println!("a.s_size[{}] = {}, {}", i, unsafe { a.s_size[i] }, a.get_ssize_(i)); }
-///     }
+///     const N: usize = 2;
+///     for i in 0..N
+///         { println!("a.get_usize_({}) = {}", i, a.get_usize_(i)); }
+///     for i in 0..N
+///         { println!("a.get_ssize_({}) = {}", i, a.get_ssize_(i)); }
+///     assert_eq!(a.get_usize_(0), 222_u16);
+///     assert_eq!(a.get_usize_(1), 58598_u16);
+///     assert_eq!(a.get_ssize_(0), 222_i16);
+///     assert_eq!(a.get_ssize_(1), -6938_i16);
+/// }
+/// #[cfg(target_pointer_width = "8")]
+/// {
+///     const N: usize = 4;
+///     for i in 0..N
+///         { println!("a.get_usize_({}) = {}", i, a.get_usize_(i)); }
+///     for i in 0..N
+///         { println!("a.get_ssize_({}) = {}", i, a.get_ssize_(i)); }
+///     assert_eq!(a.get_usize_(0), 222_u8);
+///     assert_eq!(a.get_usize_(1), 0_u8);
+///     assert_eq!(a.get_usize_(2), 230_u8);
+///     assert_eq!(a.get_usize_(3), 228_u8);
+///     assert_eq!(a.get_ssize_(0), -34_i8);
+///     assert_eq!(a.get_ssize_(1), 0_i8);
+///     assert_eq!(a.get_ssize_(2), -26_i8);
+///     assert_eq!(a.get_ssize_(3), -28_i8);
 /// }
 /// #[cfg(target_pointer_width = "32")]
 /// {
-///     println!("a.u_size = {}", unsafe { a.u_size });
-///     println!("a.s_size = {}", unsafe { a.s_size });
+///     println!("a.get_usize() = {}", a.get_usize());
+///     println!("a.get_ssize() = {}", a.get_ssize());
+///     assert_eq!(a.get_usize(), 3840278750_u32);
+///     assert_eq!(a.get_ssize(), -454688546_i32);
 /// }
+/// ```
+/// You can use `IntUnion` as if you used `u32`. You can perform all kinds of
+/// arithmetic operations such as addition, subtraction, multiplication, and
+/// division (div and rem), and other operations which are available for
+/// `u32`. If you use `IntUnion` with the help of `SmallUInt`, it will be
+/// even more powerful and convenient. In this case, you don't even have to
+/// import (use) `cryptocol::number::IntUnion`.
 /// 
-/// assert_eq!(unsafe { a.this }, 3840278750_u32);
-/// assert_eq!(unsafe { a.that }, -454688546_i32);
-/// assert_eq!(unsafe { a.uint }, 3840278750_u32);
-/// assert_eq!(unsafe { a.sint }, -454688546_i32);
-/// #[cfg(target_endian = "little")]
-/// {
-///     assert_eq!(unsafe { a.ushort[0] }, 222_u16);
-///     assert_eq!(unsafe { a.ushort[1] }, 58598_u16);
-///     assert_eq!(unsafe { a.sshort[0] }, 222_i16);
-///     assert_eq!(unsafe { a.sshort[1] }, -6938_i16);
-///     assert_eq!(unsafe { a.ubyte[0] }, 222_u8);
-///     assert_eq!(unsafe { a.ubyte[1] }, 0_u8);
-///     assert_eq!(unsafe { a.ubyte[2] }, 230_u8);
-///     assert_eq!(unsafe { a.ubyte[3] }, 228_u8);
-///     assert_eq!(unsafe { a.sbyte[0] }, -34_i8);
-///     assert_eq!(unsafe { a.sbyte[1] }, 0_i8);
-///     assert_eq!(unsafe { a.sbyte[2] }, -26_i8);
-///     assert_eq!(unsafe { a.sbyte[3] }, -28_i8);
-/// }
+/// ## Example 3
+/// ```
+/// let a_intunion = 12345678_u32.into_intunion();
+/// let b_intunion = 87654321_u32.into_intunion();
+/// let c_intunion = a_intunion.wrapping_add(b_intunion);
+/// println!("{} + {} = {}", a_intunion, b_intunion, c_intunion);
+/// assert_eq!(c_intunion.get(), 99999999_u32);
+/// for i in 0..2
+///     { println!("c_intunion.get_ushort_({}) = {}", i, c_intunion.get_ushort_(i)); }
+/// assert_eq!(c_intunion.get_ushort_(0), 57599_u16);
+/// assert_eq!(c_intunion.get_ushort_(1), 1525_u16);
+/// for i in 0..4
+///     { println!("c_intunion.get_ubyte_({}) = {}", i, c_intunion.get_ubyte_(i)); }
+/// assert_eq!(c_intunion.get_ubyte_(0), 255_u8);
+/// assert_eq!(c_intunion.get_ubyte_(1), 224_u8);
+/// assert_eq!(c_intunion.get_ubyte_(2), 245_u8);
+/// assert_eq!(c_intunion.get_ubyte_(3), 5_u8);
+/// 
+/// let d_intunion = b_intunion - a_intunion;
+/// println!("{} - {} = {}", b_intunion, a_intunion, d_intunion);
+/// assert_eq!(d_intunion.get(), 75308643_u32);
+/// for i in 0..2
+///     { println!("d_shortunion.get_ushort_({}) = {}", i, d_intunion.get_ushort_(i)); }
+/// assert_eq!(d_intunion.get_ushort_(0), 7779_u16);
+/// assert_eq!(d_intunion.get_ushort_(1), 1149_u16);
+/// for i in 0..4
+///     { println!("d_shortunion.get_ubyte_({}) = {}", i, d_intunion.get_ubyte_(i)); }
+/// assert_eq!(d_intunion.get_ubyte_(0), 99_u8);
+/// assert_eq!(d_intunion.get_ubyte_(1), 30_u8);
+/// assert_eq!(d_intunion.get_ubyte_(2), 125_u8);
+/// assert_eq!(d_intunion.get_ubyte_(3), 4_u8);
+/// 
+/// let e_intunion = d_intunion * 3_u32.into_intunion();
+/// println!("{} * {} = {}", d_intunion, 3_u32.into_intunion(), e_intunion);
+/// assert_eq!(e_intunion.get(), 225925929_u32);
+/// 
+/// let f_intunion = c_intunion / 10_u32.into_intunion();
+/// println!("{} / {} = {}", c_intunion, 10_u16.into_intunion(), f_intunion);
+/// assert_eq!(f_intunion.get(), 9999999_u32);
+/// 
+/// let g_intunion = c_intunion % 10_u32.into_intunion();
+/// println!("{} % {} = {}", c_intunion, 10_u16.into_intunion(), g_intunion);
+/// assert_eq!(g_intunion.get(), 9_u32);
 /// ```
 ///  
 /// # Big-endian issue

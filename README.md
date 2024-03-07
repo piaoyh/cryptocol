@@ -20,15 +20,16 @@ The checked items have already been implemented including documentation
 at least 80%. The unchecked items have not yet been implemented including
 documentation more than 80% or have not yet even been started to implement.
 
-### Foundations mainly for Big Numbers and also for other modules
+### Small Numbers: meaningful itself, and also the foundations mainly for Big Numbers as well as for other modules
 
-- [ ] Unions for primitive data types and their implementation ---
-    `ShortUnion`, `IntUnion`, `LongUnion`, `LongerUnion`, and `SizeUnion`
-- [X] Trait SmallUInt, its implementation for primitive data types, and the
-    implementation of it for the Unions --- SmallUInt
-- [ ] Trait SmallSInt, its implementation for primitive data types, and the
-    implementation of it for the Unions --- SmallSInt
-    _--> Thinking about postponing to Roadmap for ver. 2.0_
+- [ ] Unions for primitive data types and their implementation, and the implementation
+      of trait SmallUInt for the Unions --- `ShortUnion`, `IntUnion`, `LongUnion`,
+      `LongerUnion`, `SizeUnion`, `SharedValues`, and `SharedArrays`
+- [X] Trait SmallUInt, its implementation for primitive data types, and the implementation
+      of it for the Unions --- `SmallUInt`
+- [ ] Trait SmallSInt, its implementation for primitive data types, and the implementation
+      of it for the Unions --- SmallSInt
+      _--> Thinking about postponing to Roadmap for ver. 2.0_
 
 ### Big Numbers: meaningful as itself and also the foundation for Asymmetric-Key Algorithms
 
@@ -95,6 +96,8 @@ it does not mean that 50% of all functionalities are implemented.
 
 ## Sorry for breaking changes from ver. 0.7.0 to ver. 0.7.1
 
+I think that if breaking changes are inevitable and have to be made, the sooner, the better even before more people will be using my crate.
+
 ### macros for BigUInt
 
 | Ver. 0.7.0                | Ver. 0.7.1 |
@@ -125,6 +128,15 @@ it does not mean that 50% of all functionalities are implemented.
 | pub s_size  | s_size     |
 
 - All the fields of all the unions such as ShortUnion, IntUnion, LongUnion, LongerUnion, and SizeUnion are changed from public into private in order that users cannot access them directly instead of warning users not to access them directly in documentation.
+
+### Names of struct `Share` and `Common`
+
+| Ver. 0.7.0 | Ver. 0.7.1   |
+|------------|--------------|
+| Share      | SharedValues |
+| Common     | SharedArrays |
+
+- The new names `SharedValues` and `SharedArrays` are more intuitive and more explanary than old names `Share` and `Common`. Actually, even the author is often confused with `Share` and `Common` in terms of their goals and roles.
 
 ## Sorry for breaking changes from ver. 0.6.3 to ver. 0.7.0
 

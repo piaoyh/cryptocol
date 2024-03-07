@@ -70,20 +70,34 @@
 //! - `ShortUnion` --- a union that `u16`, `i16`, `[u8; 2]`, and `[i8; 2]`
 //! share with one another for type conversion and picking specific data
 //! [Read more](union@ShortUnion)
-//! - `IntUnion` --- a union that `u32`, `i32`, `[u16; 2]`, and `[i16; 2]`,
-//! `[u8; 4]`, `[i8; 4]`, etc. share with one another for type conversion
+//! - `IntUnion` --- a union that `u32`, `i32`, `[u16; 2]`, `[i16; 2]`,
+//! `[u8; 4]`, and `[i8; 4]` share with one another for type conversion
 //! and picking specific data [Read more](union@IntUnion)
-//! - `LongUnion` --- a union that `u64`, `i64`, `[u32; 2]`, and `[i32; 2]`,
-//! `[u16; 4]`, `[i16; 4]`, `[u8; 8]`, `[i8; 8]`, etc. share with one another
-//! for type conversion and picking specific data [Read more](union@LongUnion)
-//! - `LongerUnion` --- a union that `u128`, `i128`, `[u64; 2]`, and `[i64; 2]`,
-//! `[u32; 4]`, `[i32; 4]`, `[u16; 8]`, `[i16; 8]`, `[u8; 16]`, `[i8; 16]`, etc.
-//! share with one another for type conversion and picking specific data
-//! [Read more](union@LongerUnion)
-//! - `SizeUnion` --- a union that `usize`, `isize`, `[u32; 2]`, and `[i32; 2]`,
-//! `[u16; 4]`, `[i16; 4]`, `[u8; 8]`, and `[i8; 8]` share with one another
-//! for type conversion and picking specific data in the case of 64-bit machine
-//! for example [Read more](union@SizeUnion)
+//! - `LongUnion` --- a union that `u64`, `i64`, `[u32; 2]`, `[i32; 2]`,
+//! `[u16; 4]`, `[i16; 4]`, `[u8; 8]`, and `[i8; 8]` share with one
+//! another for type conversion and picking specific data
+//! [Read more](union@LongUnion)
+//! - `LongerUnion` --- a union that `u128`, `i128`, `[u64; 2]`, and
+//! `[i64; 2]`, `[u32; 4]`, `[i32; 4]`, `[u16; 8]`, `[i16; 8]`, `[u8; 16]`,
+//! and `[i8; 16]` share with one another for type conversion and picking
+//! specific data [Read more](union@LongerUnion)
+//! - `SizeUnion` --- a union that `usize`, `isize`, `[u32; 2]`, and
+//! `[i32; 2]`, `[u16; 4]`, `[i16; 4]`, `[u8; 8]`, and `[i8; 8]` share with
+//! one another for type conversion and picking specific data in the case of
+//! 64-bit machine for example [Read more](union@SizeUnion)
+//! - `SharedValues` --- a union that source primitive data type and destination data
+//! type share memory with each other. You can use this union to convert data
+//! from one data type to another data type by truncating (if destination data
+//! type is smaller than source data type) or by filling zeros (if destination
+//! data type is bigger than source data type).  [Read more](union@SharedValues)
+//! - `SharedArrays` --- a union that the array of source primitive data type and
+//! the array of destination data type share memory with each other. You can
+//! use this union to convert array data from one array of a certain data type
+//! to another array of another data type by truncating (if the total size of
+//! array of destination data type is smaller than the total size of array of
+//! source data type) or by filling zeros (the total size of array of
+//! destination data type is smaller than the total size of array of source
+//! data type).  [Read more](union@SharedArrays)
 //! 
 //! # Three kinds of big-sized bit integers
 //! This module provides three kinds of long bit integers: BigUInt, BigInt,
@@ -106,10 +120,12 @@
 //! - For `SmallUInt`, read [here](trait@SmallUInt#quick-start).
 // ! - For `SmallSInt`, read [here](trait@SmallSInt#quick-start).
 //! - For `ShortUnion`, read [here](union@ShortUnion#quick-start).
-// ! - For `IntUnion`, read [here](union@IntUnion#quick-start).
-// ! - For `LongUnion`, read [here](union@LongUnion#quick-start).
-// ! - For `LongUnion`, read [here](union@LongerUnion#quick-start).
-// ! - For `SizeUnion`, read [here](union@SizeUnion#quick-start).
+//! - For `IntUnion`, read [here](union@IntUnion#quick-start).
+//! - For `LongUnion`, read [here](union@LongUnion#quick-start).
+//! - For `LongUnion`, read [here](union@LongerUnion#quick-start).
+//! - For `SizeUnion`, read [here](union@SizeUnion#quick-start).
+//! - For `SharedValues`, read [here](union@SharedValues#quick-start).
+//! - For `SharedArrays`, read [here](union@SharedArrays#quick-start).
 //! - For `BigUInt`, read [here](struct@BigUInt#quick-start).
 // ! - For `BigSInt`, read [here](struct@BigSInt#quick-start).
 // ! - For `LargeInt`, read [here](struct@LargeInt#quick-start).
@@ -122,8 +138,8 @@ pub mod int_union;
 pub mod long_union;
 pub mod longer_union;
 pub mod size_union;
-pub mod share;
-pub mod common;
+pub mod shared_values;
+pub mod shared_arrays;
 pub mod big_uint;
 pub mod number_errors;
 pub mod macros_for_types;
@@ -145,8 +161,8 @@ pub use int_union::*;
 pub use long_union::*;
 pub use longer_union::*;
 pub use size_union::*;
-pub use share::*;
-pub use common::*;
+pub use shared_values::*;
+pub use shared_arrays::*;
 pub use big_uint::*;
 pub use number_errors::*;
 use macros_for_integer_unions::*;

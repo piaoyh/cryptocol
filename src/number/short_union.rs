@@ -23,11 +23,12 @@ use super::small_uint::SmallUInt;
 use super::longer_union::LongerUnion;
 
 /// # Introduction
-/// This union `ShortUnion` is for slicing `u16` into two `u8`s.
+/// This union `ShortUnion` is for slicing `u16` into two `u8`s,
+/// and/or two `i8`.
 /// 
-/// Sometimes, we need to slice `u16` data into two `u8` pieces which includes
-/// a higher byte and a lower byte. In that purpose, `ShortUnion` will be very
-/// helpful.
+/// Sometimes, for example, we need to slice `u16` data into two `u8`
+/// pieces which include a higher byte and a lower byte.
+/// In such case, `ShortUnion` will be very helpful.
 /// 
 /// # Quick Start
 /// In order to use this union, you have to import (use)
@@ -41,7 +42,7 @@ use super::longer_union::LongerUnion;
 /// `get_sshort()` in order to obtain the data of `u16` in various types.
 /// And, you can also slice the data of `u16` into two `u8` type data by
 /// using the methods `get_ubyte()`, `get_sbyte()`, `get_ubyte_()`, and
-/// `get_sbyte_()`. If your machine does not have 8-bit CPU or 16-bit CPU,
+/// `get_sbyte_()`. If your machine is not either 8-bit nor 16-bit machine,
 /// `ShortUnion` does not have the method `get_usize()` nor `get_ssize()`.
 /// 
 /// ## Example 2

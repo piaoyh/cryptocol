@@ -21,8 +21,8 @@ use std::ops::*;
 use std::mem::size_of;
 use super::small_uint::SmallUInt;
 
-/// union array for transforming from one type into anther type
-pub union Share<D, S>
+/// union for transforming from one type into anther type
+pub union SharedValues<D, S>
 where D: SmallUInt + Copy + Clone + Display + Debug + ToString
         + Add<Output=D> + AddAssign + Sub<Output=D> + SubAssign
         + Mul<Output=D> + MulAssign + Div<Output=D> + DivAssign
@@ -44,7 +44,7 @@ where D: SmallUInt + Copy + Clone + Display + Debug + ToString
     pub src: S,
 }
 
-impl<D, S> Share<D, S>
+impl<D, S> SharedValues<D, S>
 where D: SmallUInt + Copy + Clone + Display + Debug + ToString
         + Add<Output=D> + AddAssign + Sub<Output=D> + SubAssign
         + Mul<Output=D> + MulAssign + Div<Output=D> + DivAssign
@@ -72,7 +72,7 @@ where D: SmallUInt + Copy + Clone + Display + Debug + ToString
 
     pub fn from_src(src: S) -> Self
     {
-        let mut me = Share::<D, S>::new();
+        let mut me = SharedValues::<D, S>::new();
         me.src = src;
         me
     }
