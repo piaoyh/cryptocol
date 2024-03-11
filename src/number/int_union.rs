@@ -242,10 +242,8 @@ impl IntUnion
     #[inline] pub fn set(&mut self, val: u32)       { self.this = val; }
     #[inline] pub fn get_signed(self) -> i32        { unsafe { self.that } }
     #[inline] pub fn set_signed(&mut self, val: i32)    { self.that = val; }
-    #[inline] pub fn get_uint(self) -> u32          { unsafe { self.uint } }
-    #[inline] pub fn set_uint(&mut self, val: u32)  { self.uint = val; }
-    #[inline] pub fn get_sint(self) -> i32          { unsafe { self.sint } }
-    #[inline] pub fn set_sint(&mut self, val: i32)  { self.sint = val; }
+
+    crate::number::get_set_int_fit!();
 
     crate::number::get_set_byte!(4);
 

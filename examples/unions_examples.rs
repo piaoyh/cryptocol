@@ -19,7 +19,7 @@ pub fn main()
     int_union_quick_start();
     long_union_quick_start();
     longer_union_quick_start();
-    // size_union_main();
+    size_union_quick_start();
 
     // short_union_debug_fmt_main();
     // int_union_debug_fmt_main();
@@ -265,8 +265,8 @@ fn long_union_quick_start1()
     let a = LongUnion::new_with_signed(-1234567890987645_i64);
     println!("a.get() = {}", a.get());
     println!("a.get_signed() = {}", a.get_signed());
-    println!("a.get_ulong_() = {}", a.get_ulong());
-    println!("a.get_slong_() = {}", a.get_slong());
+    println!("a.get_ulong() = {}", a.get_ulong());
+    println!("a.get_slong() = {}", a.get_slong());
     assert_eq!(a.get(), 18445509505818563971_u64);
     assert_eq!(a.get_signed(), -1234567890987645_i64);
     assert_eq!(a.get_ulong(), 18445509505818563971_u64);
@@ -431,12 +431,12 @@ fn long_union_quick_start2()
     println!("{} * {} = {}", d_longunion, 3_u64.into_longunion(), e_longunion);
     assert_eq!(e_longunion.get(), 225925926074074071_u64);
 
-    let f_longunion = c_longunion / 10_u32.into_longunion();
-    println!("{} / {} = {}", c_longunion, 10_u16.into_longunion(), f_longunion);
+    let f_longunion = c_longunion / 10_u64.into_longunion();
+    println!("{} / {} = {}", c_longunion, 10_u64.into_longunion(), f_longunion);
     assert_eq!(f_longunion.get(), 9999999999999999_u64);
 
     let g_longunion = c_longunion % 10_u64.into_longunion();
-    println!("{} % {} = {}", c_longunion, 10_u16.into_intunion(), g_longunion);
+    println!("{} % {} = {}", c_longunion, 10_u64.into_longunion(), g_longunion);
     assert_eq!(g_longunion.get(), 9_u64);
     println!("--------------------------------------");
 }
@@ -457,8 +457,8 @@ fn longer_union_quick_start1()
 
     println!("a.get() = {}", a.get());
     println!("a.get_signed() = {}", a.get_signed());
-    println!("a.get_ulonger_() = {}", a.get_ulonger());
-    println!("a.get_slonger_() = {}", a.get_slonger());
+    println!("a.get_ulonger() = {}", a.get_ulonger());
+    println!("a.get_slonger() = {}", a.get_slonger());
     assert_eq!(a.get(), 339047799029950809142362261752780557135_u128);
     assert_eq!(a.get_signed(), -1234567890987654321012345678987654321_i128);
     assert_eq!(a.get_ulonger(), 339047799029950809142362261752780557135_u128);
@@ -736,288 +736,335 @@ fn longer_union_quick_start2()
     assert_eq!(d_longerunion.get_ubyte_(15), 0_u8);
 
     let e_longerunion = d_longerunion * 3_u128.into_longerunion();
-    println!("{} * {} = {}", d_longerunion, 3_u64.into_longerunion(), e_longerunion);
+    println!("{} * {} = {}", d_longerunion, 3_u128.into_longerunion(), e_longerunion);
     assert_eq!(e_longerunion.get(), 2259259260740740725925926074074071_u128);
 
     let f_longerunion = c_longerunion / 10_u128.into_longerunion();
-    println!("{} / {} = {}", c_longerunion, 10_u16.into_longerunion(), f_longerunion);
+    println!("{} / {} = {}", c_longerunion, 10_u128.into_longerunion(), f_longerunion);
     assert_eq!(f_longerunion.get(), 99999999999999999999999999999999_u128);
 
-    let g_longerunion = c_longerunion % 10_u64.into_longerunion();
-    println!("{} % {} = {}", c_longerunion, 10_u16.into_longerunion(), g_longerunion);
+    let g_longerunion = c_longerunion % 10_u128.into_longerunion();
+    println!("{} % {} = {}", c_longerunion, 10_u128.into_longerunion(), g_longerunion);
     assert_eq!(g_longerunion.get(), 9_u128);
     println!("--------------------------------------");
 }
 
-/*
-fn longer_union_main()
+fn size_union_quick_start()
 {
-    println!("longer_union_main()");
-    use cryptocol::number::LongerUnion;
-    let a = LongerUnion::new_with_signed(-1234567890987654321012345678987654321_i128);
-    println!("a.this = {}, {}", unsafe { a.this }, a.get());
-    println!("a.that = {}, {}", unsafe { a.that }, a.get_signed());
-    println!("a.ulonger = {}", unsafe { a.ulonger });
-    println!("a.slonger = {}", unsafe { a.slonger });
-    #[cfg(target_endian = "little")]
-    {
-        for i in 0..2
-            { println!("a.ulong[{}] = {}, {}", i, unsafe { a.ulong[i] }, a.get_ulong_(i)); }
-        for i in 0..2
-            { println!("a.slong[{}] = {}, {}", i, unsafe { a.slong[i] }, a.get_slong_(i)); }
-        for i in 0..4
-            { println!("a.uint[{}] = {}, {}", i, unsafe { a.uint[i] }, a.get_uint_(i)); }
-        for i in 0..4
-            { println!("a.sint[{}] = {}, {}", i, unsafe { a.sint[i] }, a.get_sint_(i)); }
-        for i in 0..8
-            { println!("a.ushort[{}] = {}, {}", i, unsafe { a.ushort[i] }, a.get_ushort_(i)); }
-        for i in 0..8
-            { println!("a.sshort[{}] = {}, {}", i, unsafe { a.sshort[i] }, a.get_sshort_(i)); }
-        for i in 0..16
-            { println!("a.ubyte[{}] = {}, {}", i, unsafe { a.ubyte[i] }, a.get_ubyte_(i)); }
-        for i in 0..16
-            { println!("a.sbyte[{}] = {}, {}", i, unsafe { a.sbyte[i] }, a.get_sbyte_(i)); }
-        #[cfg(target_pointer_width = "64")]
-        {
-            const N: usize = 2;
-            for i in 0..N
-                { println!("a.u_size[{}] = {}, {}", i, unsafe { a.u_size[i] }, a.get_usize_(i)); }
-            for i in 0..N
-                { println!("a.s_size[{}] = {}, {}", i, unsafe { a.s_size[i] }, a.get_ssize_(i)); }
-        }
-        #[cfg(target_pointer_width = "32")]
-        {
-            const N: usize = 4;
-            for i in 0..N
-                { println!("a.u_size[{}] = {}, {}", i, unsafe { a.u_size[i] }, a.get_usize_(i)); }
-            for i in 0..N
-                { println!("a.s_size[{}] = {}, {}", i, unsafe { a.s_size[i] }, a.get_ssize_(i)); }
-        }
-        #[cfg(target_pointer_width = "16")]
-        {
-            const N: usize = 8;
-            for i in 0..N
-                { println!("a.u_size[{}] = {}, {}", i, unsafe { a.u_size[i] }, a.get_usize_(i)); }
-            for i in 0..N
-                { println!("a.s_size[{}] = {}, {}", i, unsafe { a.s_size[i] }, a.get_ssize_(i)); }
-        }
-        #[cfg(target_pointer_width = "8")]
-        {
-            const N: usize = 16;
-            for i in 0..N
-                { println!("a.u_size[{}] = {}, {}", i, unsafe { a.u_size[i] }, a.get_usize_(i)); }
-            for i in 0..N
-                { println!("a.s_size[{}] = {}, {}", i, unsafe { a.s_size[i] }, a.get_ssize_(i)); }
-        }
-    }
-    #[cfg(target_pointer_width = "128")]
-    {
-        println!("a.u_size = {}", unsafe { a.u_size });
-        println!("a.s_size = {}", unsafe { a.s_size });
-    }
-    assert_eq!(unsafe { a.this }, 339047799029950809142362261752780557135_u128);
-    assert_eq!(unsafe { a.that }, -1234567890987654321012345678987654321_i128);
-    assert_eq!(unsafe { a.ulonger }, 339047799029950809142362261752780557135_u128);
-    assert_eq!(unsafe { a.slonger }, -1234567890987654321012345678987654321_i128);
-    #[cfg(target_endian = "little")]
-    {
-        assert_eq!(unsafe { a.ulong[0] }, 13664881099896654671_u64);
-        assert_eq!(unsafe { a.ulong[1] }, 18379818014235068504_u64);
-        assert_eq!(unsafe { a.slong[0] }, -4781862973812896945_i64);
-        assert_eq!(unsafe { a.slong[1] }, -66926059474483112_i64);
-        assert_eq!(unsafe { a.uint[0] }, 4048161615_u32);
-        assert_eq!(unsafe { a.uint[1] }, 3181603061_u32);
-        assert_eq!(unsafe { a.uint[2] }, 2127464536_u32);
-        assert_eq!(unsafe { a.uint[3] }, 4279384858_u32);
-        assert_eq!(unsafe { a.sint[0] }, -246805681_i32);
-        assert_eq!(unsafe { a.sint[1] }, -1113364235_i32);
-        assert_eq!(unsafe { a.sint[2] }, 2127464536_i32);
-        assert_eq!(unsafe { a.sint[3] }, -15582438_i32);
-        assert_eq!(unsafe { a.ushort[0] }, 2895_u16);
-        assert_eq!(unsafe { a.ushort[1] }, 61770_u16);
-        assert_eq!(unsafe { a.ushort[2] }, 26869_u16);
-        assert_eq!(unsafe { a.ushort[3] }, 48547_u16);
-        assert_eq!(unsafe { a.ushort[4] }, 34904_u16);
-        assert_eq!(unsafe { a.ushort[5] }, 32462_u16);
-        assert_eq!(unsafe { a.ushort[6] }, 15130_u16);
-        assert_eq!(unsafe { a.ushort[7] }, 65298_u16);
-        assert_eq!(unsafe { a.sshort[0] }, 2895_i16);
-        assert_eq!(unsafe { a.sshort[1] }, -3766_i16);
-        assert_eq!(unsafe { a.sshort[2] }, 26869_i16);
-        assert_eq!(unsafe { a.sshort[3] }, -16989_i16);
-        assert_eq!(unsafe { a.sshort[4] }, -30632_i16);
-        assert_eq!(unsafe { a.sshort[5] }, 32462_i16);
-        assert_eq!(unsafe { a.sshort[6] }, 15130_i16);
-        assert_eq!(unsafe { a.sshort[7] }, -238_i16);
-        assert_eq!(unsafe { a.ubyte[0] }, 79_u8);
-        assert_eq!(unsafe { a.ubyte[1] }, 11_u8);
-        assert_eq!(unsafe { a.ubyte[2] }, 74_u8);
-        assert_eq!(unsafe { a.ubyte[3] }, 241_u8);
-        assert_eq!(unsafe { a.ubyte[4] }, 245_u8);
-        assert_eq!(unsafe { a.ubyte[5] }, 104_u8);
-        assert_eq!(unsafe { a.ubyte[6] }, 163_u8);
-        assert_eq!(unsafe { a.ubyte[7] }, 189_u8);
-        assert_eq!(unsafe { a.ubyte[8] }, 88_u8);
-        assert_eq!(unsafe { a.ubyte[9] }, 136_u8);
-        assert_eq!(unsafe { a.ubyte[10] }, 206_u8);
-        assert_eq!(unsafe { a.ubyte[11] }, 126_u8);
-        assert_eq!(unsafe { a.ubyte[12] }, 26_u8);
-        assert_eq!(unsafe { a.ubyte[13] }, 59_u8);
-        assert_eq!(unsafe { a.ubyte[14] }, 18_u8);
-        assert_eq!(unsafe { a.ubyte[15] }, 255_u8);
-        assert_eq!(unsafe { a.sbyte[0] }, 79_i8);
-        assert_eq!(unsafe { a.sbyte[1] }, 11_i8);
-        assert_eq!(unsafe { a.sbyte[2] }, 74_i8);
-        assert_eq!(unsafe { a.sbyte[3] }, -15_i8);
-        assert_eq!(unsafe { a.sbyte[4] }, -11_i8);
-        assert_eq!(unsafe { a.sbyte[5] }, 104_i8);
-        assert_eq!(unsafe { a.sbyte[6] }, -93_i8);
-        assert_eq!(unsafe { a.sbyte[7] }, -67_i8);
-        assert_eq!(unsafe { a.sbyte[8] }, 88_i8);
-        assert_eq!(unsafe { a.sbyte[9] }, -120_i8);
-        assert_eq!(unsafe { a.sbyte[10] }, -50_i8);
-        assert_eq!(unsafe { a.sbyte[11] }, 126_i8);
-        assert_eq!(unsafe { a.sbyte[12] }, 26_i8);
-        assert_eq!(unsafe { a.sbyte[13] }, 59_i8);
-        assert_eq!(unsafe { a.sbyte[14] }, 18_i8);
-        assert_eq!(unsafe { a.sbyte[15] }, -1_i8);
-    }
-    println!("--------------------------------------");
+    size_union_quick_start1();
+    // size_union_quick_start2();
 }
 
-
-fn size_union_main()
+fn size_union_quick_start1()
 {
-    println!("size_union_main()");
+    println!("size_union_quick_start1()");
     use cryptocol::number::SizeUnion;
+
+    #[cfg(target_pointer_width = "128")]    let a = SizeUnion::new_with_signed(-1234567890987654321012345678987654321_isize);
+    #[cfg(target_pointer_width = "64")]     let a = SizeUnion::new_with_signed(-4781862973812896945_isize);
+    #[cfg(target_pointer_width = "32")]     let a = SizeUnion::new_with_signed(-246805681_isize);
+    #[cfg(target_pointer_width = "16")]     let a = SizeUnion::new_with_signed(2895_isize);
+    #[cfg(target_pointer_width = "8")]      let a = SizeUnion::new_with_signed(79_isize);
+    println!("a.get() = {}", a.get());
+    println!("a.get_signed() = {}", a.get_signed());
+    println!("a.get_usize() = {}", a.get_usize());
+    println!("a.get_ssize() = {}", a.get_ssize());
+    #[cfg(target_pointer_width = "128")]    println!("a.get_ulonger() = {}", a.get_ulonger());
+    #[cfg(target_pointer_width = "128")]    println!("a.get_slonger() = {}", a.get_slonger());
+    #[cfg(target_pointer_width = "64")]     println!("a.get_ulong() = {}", a.get_ulong());
+    #[cfg(target_pointer_width = "64")]     println!("a.get_slong() = {}", a.get_slong());
+    #[cfg(target_pointer_width = "32")]     println!("a.get_uint() = {}", a.get_uint());
+    #[cfg(target_pointer_width = "32")]     println!("a.get_sint() = {}", a.get_sint());
+    #[cfg(target_pointer_width = "16")]     println!("a.get_ushort() = {}", a.get_ushort());
+    #[cfg(target_pointer_width = "16")]     println!("a.get_sshort() = {}", a.get_sshort());
     #[cfg(target_pointer_width = "128")]
-    let a = SizeUnion::new_with_signed(-1234567890987654321012345678987654321_isize);
+    {
+        assert_eq!(a.get(), 339047799029950809142362261752780557135_usize);
+        assert_eq!(a.get_signed(), -1234567890987654321012345678987654321_isize);
+        assert_eq!(a.get_usize(), 339047799029950809142362261752780557135_usize);
+        assert_eq!(a.get_ssize(), -1234567890987654321012345678987654321_isize);
+    }
     #[cfg(target_pointer_width = "64")]
-    let a = SizeUnion::new_with_signed(-1234567890123456789_isize);
+    {
+        assert_eq!(a.get(), 13664881099896654671_usize);
+        assert_eq!(a.get_signed(), -4781862973812896945_isize);
+        assert_eq!(a.get_usize(), 13664881099896654671_usize);
+        assert_eq!(a.get_ssize(), -4781862973812896945_isize);
+    }
     #[cfg(target_pointer_width = "32")]
-    let a = SizeUnion::new_with_signed(2112454933_isize);
+    {
+        assert_eq!(a.get(), 4048161615_usize);
+        assert_eq!(a.get_signed(), -246805681_isize);
+        assert_eq!(a.get_usize(), 4048161615_usize);
+        assert_eq!(a.get_ssize(), -246805681_isize);
+    }
     #[cfg(target_pointer_width = "16")]
-    let a = SizeUnion::new_with_signed(32491_isize);
-    #[cfg(target_pointer_width = "8")]
-    let a = SizeUnion::new_with_signed(-21_isize);
-    println!("a.this = {}, {}", unsafe { a.this }, a.get());
-    println!("a.that = {}, {}", unsafe { a.that }, a.get_signed());
-    println!("a.u_size = {}, {}", unsafe { a.u_size }, a.get());
-    println!("a.s_size = {}, {}", unsafe { a.s_size }, a.get_signed());
-    #[cfg(target_endian = "little")]
     {
-        #[cfg(target_pointer_width = "128")]
-        {
-            println!("a.ulonger = {}, {}", unsafe { a.ulonger }, a.get());
-            println!("a.slonger = {}, {}", unsafe { a.slonger }, a.get_signed());
-            for i in 0..2
-                { println!("a.ulong[{}] = {}, {}", i, unsafe { a.ulong[i] }, a.get_ulong_(i)); }
-            for i in 0..2
-                { println!("a.slong[{}] = {}, {}", i, unsafe { a.slong[i] }, a.get_slong_(i)); }
-            for i in 0..4
-                { println!("a.uint[{}] = {}, {}", i, unsafe { a.uint[i] }, a.get_uint_(i)); }
-            for i in 0..4
-                { println!("a.sint[{}] = {}, {}", i, unsafe { a.sint[i] }, a.get_sint_(i)); }
-            for i in 0..8
-                { println!("a.ushort[{}] = {}, {}", i, unsafe { a.ushort[i] }, a.get_ushort_(i)); }
-            for i in 0..8
-                { println!("a.sshort[{}] = {}, {}", i, unsafe { a.sshort[i] }, a.get_sshort_(i)); }
-            for i in 0..16
-                { println!("a.ubyte[{}] = {}, {}", i, unsafe { a.ubyte[i] }, a.get_ubyte_(i)); }
-            for i in 0..16
-                { println!("a.sbyte[{}] = {}, {}", i, unsafe { a.sbyte[i] }, a.get_sbyte_(i)); }
-        }
-        #[cfg(target_pointer_width = "64")]
-        {
-            println!("a.ulong = {}, {}", unsafe { a.ulong }, a.get());
-            println!("a.slong = {}, {}", unsafe { a.slong }, a.get_signed());
-            for i in 0..2
-                { println!("a.uint[{}] = {}, {}", i, unsafe { a.uint[i] }, a.get_uint_(i)); }
-            for i in 0..2
-                { println!("a.sint[{}] = {}, {}", i, unsafe { a.sint[i] }, a.get_sint_(i)); }
-            for i in 0..4
-                { println!("a.ushort[{}] = {}, {}", i, unsafe { a.ushort[i] }, a.get_ushort_(i)); }
-            for i in 0..4
-                { println!("a.sshort[{}] = {}, {}", i, unsafe { a.sshort[i] }, a.get_sshort_(i)); }
-            for i in 0..8
-                { println!("a.ubyte[{}] = {}, {}", i, unsafe { a.ubyte[i] }, a.get_ubyte_(i)); }
-            for i in 0..8
-                { println!("a.sbyte[{}] = {}, {}", i, unsafe { a.sbyte[i] }, a.get_sbyte_(i)); }
-        }
-        #[cfg(target_pointer_width = "32")]
-        {
-            println!("a.uint = {}, {}", unsafe { a.uint }, a.get());
-            println!("a.sint = {}, {}", unsafe { a.sint }, a.get_signed());
-            for i in 0..2
-                { println!("a.ushort[{}] = {}, {}", i, unsafe { a.ushort[i] }, a.get_ushort_(i)); }
-            for i in 0..2
-                { println!("a.sshort[{}] = {}, {}", i, unsafe { a.sshort[i] }, a.get_sshort_(i)); }
-            for i in 0..4
-                { println!("a.ubyte[{}] = {}, {}", i, unsafe { a.ubyte[i] }, a.get_ubyte_(i)); }
-            for i in 0..4
-                { println!("a.sbyte[{}] = {}, {}", i, unsafe { a.sbyte[i] }, a.get_sbyte_(i)); }
-        }
-        #[cfg(target_pointer_width = "16")]
-        {
-            println!("a.ushort = {}, {}", unsafe { a.ushort }, a.get());
-            println!("a.sshort = {}, {}", unsafe { a.sshort }, a.get_signed());
-            for i in 0..2
-                { println!("a.ubyte[{}] = {}, {}", i, unsafe { a.ubyte[i] }, a.get_ubyte_(i)); }
-            for i in 0..2
-                { println!("a.sbyte[{}] = {}, {}", i, unsafe { a.sbyte[i] }, a.get_sbyte_(i)); }
-        }
+        assert_eq!(a.get(), 2895_usize);
+        assert_eq!(a.get_signed(), 2895_isize);
+        assert_eq!(a.get_usize(), 2895_usize);
+        assert_eq!(a.get_ssize(), 2895_isize);
     }
     #[cfg(target_pointer_width = "8")]
     {
-        println!("a.ubyte = {}, {}", unsafe { a.ubyte }, a.get());
-        println!("a.sbyte = {}, {}", unsafe { a.sbyte }, a.get_signed());
+        assert_eq!(a.get(), 79_usize);
+        assert_eq!(a.get_signed(), 79_isize);
+        assert_eq!(a.get_usize(), 79_usize);
+        assert_eq!(a.get_ssize(), 79_isize);
     }
 
-    #[cfg(target_pointer_width = "64")]
-    {
-        assert_eq!(unsafe { a.this }, 17212176183586094827_usize);
-        assert_eq!(unsafe { a.that }, -1234567890123456789_isize);
-        assert_eq!(unsafe { a.u_size }, 17212176183586094827_usize);
-        assert_eq!(unsafe { a.s_size }, -1234567890123456789_isize);
-        assert_eq!(unsafe { a.ulong }, 17212176183586094827_u64);
-        assert_eq!(unsafe { a.slong }, -1234567890123456789_i64);
-    }
+    #[cfg(target_pointer_width = "128")]    assert_eq!(a.get_ulonger(), 339047799029950809142362261752780557135_u128);
+    #[cfg(target_pointer_width = "128")]    assert_eq!(a.get_slonger(), -1234567890987654321012345678987654321_i128);
+    #[cfg(target_pointer_width = "64")]     assert_eq!(a.get_ulong(), 13664881099896654671_u64);
+    #[cfg(target_pointer_width = "64")]     assert_eq!(a.get_slong(), -4781862973812896945_i64);
+    #[cfg(target_pointer_width = "32")]     assert_eq!(a.get_uint(), 4048161615_u32);
+    #[cfg(target_pointer_width = "32")]     assert_eq!(a.get_sint(), -246805681_i32);
+    #[cfg(target_pointer_width = "16")]     assert_eq!(a.get_ushort(), 2895_u16);
+    #[cfg(target_pointer_width = "16")]     assert_eq!(a.get_sshort(), 2895_i16);
+    #[cfg(target_pointer_width = "8")]      assert_eq!(a.get_ubyte(), 79_u8);
+    #[cfg(target_pointer_width = "8")]      assert_eq!(a.get_sbyte(), 79_u8);
 
-    #[cfg(target_endian = "little")]
+    #[cfg(target_pointer_width = "128")]
+    {
+        for i in 0..2
+            { println!("a.get_ulong_({}) = {}", i, a.get_ulong_(i)); }
+        for i in 0..2
+            { println!("a.get_slong_({}) = {}", i, a.get_slong_(i)); }
+        for i in 0..4
+            { println!("a.get_uint_({}) = {}", i, a.get_uint_(i)); }
+        for i in 0..4
+            { println!("a.get_sint_({}) = {}", i, a.get_sint_(i)); }
+        for i in 0..8
+            { println!("a.get_ushort_({}) = {}", i, a.get_ushort_(i)); }
+        for i in 0..8
+            { println!("a.get_sshort_({}) = {}", i, a.get_sshort_(i)); }
+        for i in 0..16
+            { println!("a.get_ubyte_({}) = {}", i, a.get_ubyte_(i)); }
+        for i in 0..16
+            { println!("a.get_sbyte_({}) = {}", i, a.get_sbyte_(i)); }
+    }
     #[cfg(target_pointer_width = "64")]
     {
-        assert_eq!(unsafe { a.uint[0] }, 2182512363_u32);
-        assert_eq!(unsafe { a.uint[1] }, 4007522059_u32);
-        assert_eq!(unsafe { a.sint[0] }, -2112454933_i32);
-        assert_eq!(unsafe { a.sint[1] }, -287445237_i32);
-        assert_eq!(unsafe { a.ushort[0] }, 32491_u16);
-        assert_eq!(unsafe { a.ushort[1] }, 33302_u16);
-        assert_eq!(unsafe { a.ushort[2] }, 61195_u16);
-        assert_eq!(unsafe { a.ushort[3] }, 61149_u16);
-        assert_eq!(unsafe { a.sshort[0] }, 32491_i16);
-        assert_eq!(unsafe { a.sshort[1] }, -32234_i16);
-        assert_eq!(unsafe { a.sshort[2] }, -4341_i16);
-        assert_eq!(unsafe { a.sshort[3] }, -4387_i16);
-        assert_eq!(unsafe { a.ubyte[0] }, 235_u8);
-        assert_eq!(unsafe { a.ubyte[1] }, 126_u8);
-        assert_eq!(unsafe { a.ubyte[2] }, 22_u8);
-        assert_eq!(unsafe { a.ubyte[3] }, 130_u8);
-        assert_eq!(unsafe { a.ubyte[4] }, 11_u8);
-        assert_eq!(unsafe { a.ubyte[5] }, 239_u8);
-        assert_eq!(unsafe { a.ubyte[6] }, 221_u8);
-        assert_eq!(unsafe { a.ubyte[7] }, 238_u8);
-        assert_eq!(unsafe { a.sbyte[0] }, -21_i8);
-        assert_eq!(unsafe { a.sbyte[1] }, 126_i8);
-        assert_eq!(unsafe { a.sbyte[2] }, 22_i8);
-        assert_eq!(unsafe { a.sbyte[3] }, -126_i8);
-        assert_eq!(unsafe { a.sbyte[4] }, 11_i8);
-        assert_eq!(unsafe { a.sbyte[5] }, -17_i8);
-        assert_eq!(unsafe { a.sbyte[6] }, -35_i8);
-        assert_eq!(unsafe { a.sbyte[7] }, -18_i8);
+    for i in 0..2
+        { println!("a.get_uint_({}) = {}", i, a.get_uint_(i)); }
+    for i in 0..2
+        { println!("a.get_sint_({}) = {}", i, a.get_sint_(i)); }
+    for i in 0..4
+        { println!("a.get_ushort_({}) = {}", i, a.get_ushort_(i)); }
+    for i in 0..4
+        { println!("a.get_sshort_({}) = {}", i, a.get_sshort_(i)); }
+    for i in 0..8
+        { println!("a.get_ubyte_({}) = {}", i, a.get_ubyte_(i)); }
+    for i in 0..8
+        { println!("a.get_sbyte_({}) = {}", i, a.get_sbyte_(i)); }
+    }
+    #[cfg(target_pointer_width = "32")]
+    {
+        for i in 0..2
+            { println!("a.get_ushort_({}) = {}", i, a.get_ushort_(i)); }
+        for i in 0..2
+            { println!("a.get_sshort_({}) = {}", i, a.get_sshort_(i)); }
+        for i in 0..4
+            { println!("a.get_ubyte_({}) = {}", i, a.get_ubyte_(i)); }
+        for i in 0..4
+            { println!("a.get_sbyte_({}) = {}", i, a.get_sbyte_(i)); }
+    }
+    #[cfg(target_pointer_width = "16")]
+    {
+        for i in 0..2
+            { println!("a.get_ubyte_({}) = {}", i, a.get_ubyte_(i)); }
+        for i in 0..2
+            { println!("a.get_sbyte_({}) = {}", i, a.get_sbyte_(i)); }
+    }
+    #[cfg(target_pointer_width = "128")]
+    {
+        assert_eq!(a.get_ulong_(0), 13664881099896654671_u64);
+        assert_eq!(a.get_ulong_(1), 18379818014235068504_u64);
+        assert_eq!(a.get_slong_(0), -4781862973812896945_i64);
+        assert_eq!(a.get_slong_(1), -66926059474483112_i64);
+        assert_eq!(a.get_uint_(0), 4048161615_u32);
+        assert_eq!(a.get_uint_(1), 3181603061_u32);
+        assert_eq!(a.get_uint_(2), 2127464536_u32);
+        assert_eq!(a.get_uint_(3), 4279384858_u32);
+        assert_eq!(a.get_sint_(0), -246805681_i32);
+        assert_eq!(a.get_sint_(1), -1113364235_i32);
+        assert_eq!(a.get_sint_(2), 2127464536_i32);
+        assert_eq!(a.get_sint_(3), -15582438_i32);
+        assert_eq!(a.get_ushort_(0), 2895_u16);
+        assert_eq!(a.get_ushort_(1), 61770_u16);
+        assert_eq!(a.get_ushort_(2), 26869_u16);
+        assert_eq!(a.get_ushort_(3), 48547_u16);
+        assert_eq!(a.get_ushort_(4), 34904_u16);
+        assert_eq!(a.get_ushort_(5), 32462_u16);
+        assert_eq!(a.get_ushort_(6), 15130_u16);
+        assert_eq!(a.get_ushort_(7), 65298_u16);
+        assert_eq!(a.get_sshort_(0), 2895_i16);
+        assert_eq!(a.get_sshort_(1), -3766_i16);
+        assert_eq!(a.get_sshort_(2), 26869_i16);
+        assert_eq!(a.get_sshort_(3), -16989_i16);
+        assert_eq!(a.get_sshort_(4), -30632_i16);
+        assert_eq!(a.get_sshort_(5), 32462_i16);
+        assert_eq!(a.get_sshort_(6), 15130_i16);
+        assert_eq!(a.get_sshort_(7), -238_i16);
+        assert_eq!(a.get_ubyte_(0), 79_u8);
+        assert_eq!(a.get_ubyte_(1), 11_u8);
+        assert_eq!(a.get_ubyte_(2), 74_u8);
+        assert_eq!(a.get_ubyte_(3), 241_u8);
+        assert_eq!(a.get_ubyte_(4), 245_u8);
+        assert_eq!(a.get_ubyte_(5), 104_u8);
+        assert_eq!(a.get_ubyte_(6), 163_u8);
+        assert_eq!(a.get_ubyte_(7), 189_u8);
+        assert_eq!(a.get_ubyte_(8), 88_u8);
+        assert_eq!(a.get_ubyte_(9), 136_u8);
+        assert_eq!(a.get_ubyte_(10), 206_u8);
+        assert_eq!(a.get_ubyte_(11), 126_u8);
+        assert_eq!(a.get_ubyte_(12), 26_u8);
+        assert_eq!(a.get_ubyte_(13), 59_u8);
+        assert_eq!(a.get_ubyte_(14), 18_u8);
+        assert_eq!(a.get_ubyte_(15), 255_u8);
+        assert_eq!(a.get_sbyte_(0), 79_i8);
+        assert_eq!(a.get_sbyte_(1), 11_i8);
+        assert_eq!(a.get_sbyte_(2), 74_i8);
+        assert_eq!(a.get_sbyte_(3), -15_i8);
+        assert_eq!(a.get_sbyte_(4), -11_i8);
+        assert_eq!(a.get_sbyte_(5), 104_i8);
+        assert_eq!(a.get_sbyte_(6), -93_i8);
+        assert_eq!(a.get_sbyte_(7), -67_i8);
+        assert_eq!(a.get_sbyte_(8), 88_i8);
+        assert_eq!(a.get_sbyte_(9), -120_i8);
+        assert_eq!(a.get_sbyte_(10), -50_i8);
+        assert_eq!(a.get_sbyte_(11), 126_i8);
+        assert_eq!(a.get_sbyte_(12), 26_i8);
+        assert_eq!(a.get_sbyte_(13), 59_i8);
+        assert_eq!(a.get_sbyte_(14), 18_i8);
+        assert_eq!(a.get_sbyte_(15), -1_i8);
+    }
+    #[cfg(target_pointer_width = "64")]
+    {
+        assert_eq!(a.get_uint_(0), 4048161615_u32);
+        assert_eq!(a.get_uint_(1), 3181603061_u32);
+        assert_eq!(a.get_sint_(0), -246805681_i32);
+        assert_eq!(a.get_sint_(1), -1113364235_i32);
+        assert_eq!(a.get_ushort_(0), 2895_u16);
+        assert_eq!(a.get_ushort_(1), 61770_u16);
+        assert_eq!(a.get_ushort_(2), 26869_u16);
+        assert_eq!(a.get_ushort_(3), 48547_u16);
+        assert_eq!(a.get_sshort_(0), 2895_i16);
+        assert_eq!(a.get_sshort_(1), -3766_i16);
+        assert_eq!(a.get_sshort_(2), 26869_i16);
+        assert_eq!(a.get_sshort_(3), -16989_i16);
+        assert_eq!(a.get_ubyte_(0), 79_u8);
+        assert_eq!(a.get_ubyte_(1), 11_u8);
+        assert_eq!(a.get_ubyte_(2), 74_u8);
+        assert_eq!(a.get_ubyte_(3), 241_u8);
+        assert_eq!(a.get_ubyte_(4), 245_u8);
+        assert_eq!(a.get_ubyte_(5), 104_u8);
+        assert_eq!(a.get_ubyte_(6), 163_u8);
+        assert_eq!(a.get_ubyte_(7), 189_u8);
+        assert_eq!(a.get_sbyte_(0), 79_i8);
+        assert_eq!(a.get_sbyte_(1), 11_i8);
+        assert_eq!(a.get_sbyte_(2), 74_i8);
+        assert_eq!(a.get_sbyte_(3), -15_i8);
+        assert_eq!(a.get_sbyte_(4), -11_i8);
+        assert_eq!(a.get_sbyte_(5), 104_i8);
+        assert_eq!(a.get_sbyte_(6), -93_i8);
+        assert_eq!(a.get_sbyte_(7), -67_i8);
+    }
+    #[cfg(target_pointer_width = "32")]
+    {
+        assert_eq!(a.get_ushort_(0), 2895_u16);
+        assert_eq!(a.get_ushort_(1), 61770_u16);
+        assert_eq!(a.get_sshort_(0), 2895_i16);
+        assert_eq!(a.get_sshort_(1), -3766_i16);
+        assert_eq!(a.get_ubyte_(0), 79_u8);
+        assert_eq!(a.get_ubyte_(1), 11_u8);
+        assert_eq!(a.get_ubyte_(2), 74_u8);
+        assert_eq!(a.get_ubyte_(3), 241_u8);
+        assert_eq!(a.get_sbyte_(0), 79_i8);
+        assert_eq!(a.get_sbyte_(1), 11_i8);
+        assert_eq!(a.get_sbyte_(2), 74_i8);
+        assert_eq!(a.get_sbyte_(3), -15_i8);
+    }
+    #[cfg(target_pointer_width = "16")]
+    {
+        assert_eq!(a.get_ubyte_(0), 79_u8);
+        assert_eq!(a.get_ubyte_(1), 11_u8);
+        assert_eq!(a.get_sbyte_(0), 79_i8);
+        assert_eq!(a.get_sbyte_(1), 11_i8);
     }
     println!("--------------------------------------");
 }
 
+fn size_union_quick_start2()
+{
+    println!("long_union_quick_start2()");
+    let a_longunion = 12345678987654321_u64.into_longunion();
+    let b_longunion = 87654321012345678_u64.into_longunion();
+    let c_longunion = a_longunion.wrapping_add(b_longunion);
+    println!("{} + {} = {}", a_longunion, b_longunion, c_longunion);
+    assert_eq!(c_longunion.get(), 99999999999999999_u64);
+    for i in 0..2
+        { println!("c_longunion.get_uint_({}) = {}", i, c_longunion.get_uint_(i)); }
+    assert_eq!(c_longunion.get_uint_(0), 1569325055_u32);
+    assert_eq!(c_longunion.get_uint_(1), 23283064_u32);
+    for i in 0..4
+        { println!("c_longunion.get_ushort_({}) = {}", i, c_longunion.get_ushort_(i)); }
+    assert_eq!(c_longunion.get_ushort_(0), 65535_u16);
+    assert_eq!(c_longunion.get_ushort_(1), 23945_u16);
+    assert_eq!(c_longunion.get_ushort_(2), 17784_u16);
+    assert_eq!(c_longunion.get_ushort_(3), 355_u16);
+    for i in 0..8
+        { println!("c_longunion.get_ubyte_({}) = {}", i, c_longunion.get_ubyte_(i)); }
+    assert_eq!(c_longunion.get_ubyte_(0), 255_u8);
+    assert_eq!(c_longunion.get_ubyte_(1), 255_u8);
+    assert_eq!(c_longunion.get_ubyte_(2), 137_u8);
+    assert_eq!(c_longunion.get_ubyte_(3), 93_u8);
+    assert_eq!(c_longunion.get_ubyte_(4), 120_u8);
+    assert_eq!(c_longunion.get_ubyte_(5), 69_u8);
+    assert_eq!(c_longunion.get_ubyte_(6), 99_u8);
+    assert_eq!(c_longunion.get_ubyte_(7), 1_u8);
+
+    let d_longunion = b_longunion - a_longunion;
+    println!("{} - {} = {}", b_longunion, a_longunion, d_longunion);
+    assert_eq!(d_longunion.get(), 75308642024691357_u64);
+    for i in 0..2
+        { println!("d_longunion.get_uint_({}) = {}", i, d_longunion.get_uint_(i)); }
+    assert_eq!(d_longunion.get_uint_(0), 2556827293_u32);
+    assert_eq!(d_longunion.get_uint_(1), 17534159_u32);
+    for i in 0..4
+        { println!("d_longunion.get_ushort_({}) = {}", i, d_longunion.get_ushort_(i)); }
+    assert_eq!(d_longunion.get_ushort_(0), 5789_u16);
+    assert_eq!(d_longunion.get_ushort_(1), 39014_u16);
+    assert_eq!(d_longunion.get_ushort_(2), 36047_u16);
+    assert_eq!(d_longunion.get_ushort_(3), 267_u16);
+    for i in 0..8
+        { println!("d_longunion.get_ubyte_({}) = {}", i, d_longunion.get_ubyte_(i)); }
+    assert_eq!(d_longunion.get_ubyte_(0), 157_u8);
+    assert_eq!(d_longunion.get_ubyte_(1), 22_u8);
+    assert_eq!(d_longunion.get_ubyte_(2), 102_u8);
+    assert_eq!(d_longunion.get_ubyte_(3), 152_u8);
+    assert_eq!(d_longunion.get_ubyte_(4), 207_u8);
+    assert_eq!(d_longunion.get_ubyte_(5), 140_u8);
+    assert_eq!(d_longunion.get_ubyte_(6), 11_u8);
+    assert_eq!(d_longunion.get_ubyte_(7), 1_u8);
+
+    let e_longunion = d_longunion * 3_u64.into_longunion();
+    println!("{} * {} = {}", d_longunion, 3_u64.into_longunion(), e_longunion);
+    assert_eq!(e_longunion.get(), 225925926074074071_u64);
+
+    let f_longunion = c_longunion / 10_u64.into_longunion();
+    println!("{} / {} = {}", c_longunion, 10_u64.into_longunion(), f_longunion);
+    assert_eq!(f_longunion.get(), 9999999999999999_u64);
+
+    let g_longunion = c_longunion % 10_u64.into_longunion();
+    println!("{} % {} = {}", c_longunion, 10_u64.into_longunion(), g_longunion);
+    assert_eq!(g_longunion.get(), 9_u64);
+    println!("--------------------------------------");
+}
+
+
+
+/*
 
 fn short_union_debug_fmt_main()
 {

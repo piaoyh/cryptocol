@@ -59,8 +59,8 @@ use super::longer_union::LongerUnion;
 /// let a = LongUnion::new_with_signed(-1234567890987645_i64);
 /// println!("a.get() = {}", a.get());
 /// println!("a.get_signed() = {}", a.get_signed());
-/// println!("a.get_ulong_() = {}", a.get_ulong());
-/// println!("a.get_slong_() = {}", a.get_slong());
+/// println!("a.get_ulong() = {}", a.get_ulong());
+/// println!("a.get_slong() = {}", a.get_slong());
 /// assert_eq!(a.get(), 18445509505818563971_u64);
 /// assert_eq!(a.get_signed(), -1234567890987645_i64);
 /// assert_eq!(a.get_ulong(), 18445509505818563971_u64);
@@ -235,10 +235,10 @@ use super::longer_union::LongerUnion;
 /// assert_eq!(f_longunion.get(), 9999999999999999_u64);
 /// 
 /// let g_longunion = c_longunion % 10_u64.into_longunion();
-/// println!("{} % {} = {}", c_longunion, 10_u16.into_intunion(), g_longunion);
+/// println!("{} % {} = {}", c_longunion, 10_u64.into_longunion(), g_longunion);
 /// assert_eq!(g_longunion.get(), 9_u64);
 /// ```
-///  
+/// 
 /// # Big-endian issue
 /// It is just experimental for Big Endian CPUs. So, you are not encouraged
 /// to use it for serious purpose. Only use this crate for Big-endian CPUs
@@ -324,10 +324,8 @@ impl LongUnion
     #[inline] pub fn get_signed(self) -> i64    { unsafe { self.that } }
     #[inline] pub fn set(&mut self, val: u64)   { self.this = val; }
     #[inline] pub fn set_signed(&mut self, val: i64)    { self.that = val; }
-    #[inline] pub fn get_ulong(self) -> u64             { unsafe { self.ulong } }
-    #[inline] pub fn set_ulong(&mut self, val: u64)     { self.ulong = val; }
-    #[inline] pub fn get_slong(self) -> i64             { unsafe { self.slong } }
-    #[inline] pub fn set_slong(&mut self, val: i64)     { self.slong = val; }
+
+    crate::number::get_set_long_fit!();
 
     crate::number::get_set_byte!(8);
 

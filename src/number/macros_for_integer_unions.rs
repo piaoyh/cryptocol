@@ -16,6 +16,16 @@
 #![allow(rustdoc::missing_doc_code_examples)]
 
 
+#[allow(unused_macros)]
+macro_rules! get_set_byte_fit {
+    () => {
+        #[inline] pub fn get_ubyte(self) -> u8          { unsafe { self.ubyte } }
+        #[inline] pub fn set_ubyte(&mut self, val: u8)  { self.ubyte = val; }
+        #[inline] pub fn get_sbyte(self) -> i8          { unsafe { self.sbyte } }
+        #[inline] pub fn set_sbyte(&mut self, val: i8)  { self.sbyte = val; }
+    };
+}
+pub(super) use get_set_byte_fit;
 
 macro_rules! get_set_byte {
     ($f:expr) => {
@@ -1119,6 +1129,17 @@ macro_rules! get_set_byte {
 }
 pub(super) use get_set_byte;
 
+
+macro_rules! get_set_short_fit {
+    () => {
+        #[inline] pub fn get_ushort(self) -> u16            { unsafe { self.ushort } }
+        #[inline] pub fn set_ushort(&mut self, val: u16)    { self.ushort = val; }
+        #[inline] pub fn get_sshort(self) -> i16            { unsafe { self.sshort } }
+        #[inline] pub fn set_sshort(&mut self, val: i16)    { self.sshort = val; }
+    };
+}
+pub(super) use get_set_short_fit;
+
 macro_rules! get_set_short {
     ($f:expr) => {
         const M: usize = $f - 1;
@@ -1766,6 +1787,17 @@ macro_rules! get_set_short {
 }
 pub(crate) use get_set_short;
 
+
+macro_rules! get_set_int_fit {
+    () => {
+        #[inline] pub fn get_uint(self) -> u32          { unsafe { self.uint } }
+        #[inline] pub fn set_uint(&mut self, val: u32)  { self.uint = val; }
+        #[inline] pub fn get_sint(self) -> i32          { unsafe { self.sint } }
+        #[inline] pub fn set_sint(&mut self, val: i32)  { self.sint = val; }
+    };
+}
+pub(super) use get_set_int_fit;
+
 macro_rules! get_set_int {
     ($f:expr) => {
         const L: usize = $f - 1;
@@ -2412,6 +2444,18 @@ macro_rules! get_set_int {
     }
 }
 pub(super) use get_set_int;
+
+
+
+macro_rules! get_set_long_fit {
+    () => {
+        #[inline] pub fn get_ulong(self) -> u64         { unsafe { self.ulong } }
+        #[inline] pub fn set_ulong(&mut self, val: u64) { self.ulong = val; }
+        #[inline] pub fn get_slong(self) -> i64         { unsafe { self.slong } }
+        #[inline] pub fn set_slong(&mut self, val: i64) { self.slong = val; }
+    };
+}
+pub(super) use get_set_long_fit;
 
 macro_rules! get_set_long {
     ($f:expr) => {
@@ -3062,14 +3106,23 @@ macro_rules! get_set_long {
 }
 pub(super) use get_set_long;
 
+
+macro_rules! get_set_longer_fit {
+    () => {
+        #[inline] pub fn get_ulonger(self) -> u128          { unsafe { self.ulonger } }
+        #[inline] pub fn set_ulonger(&mut self, val: u128)  { self.ulonger = val; }
+        #[inline] pub fn get_slonger(self) -> i128          { unsafe { self.slonger } }
+        #[inline] pub fn set_slonger(&mut self, val: i128)  { self.slonger = val; }
+    };
+}
+pub(super) use get_set_longer_fit;
+
+
 macro_rules! get_set_size_fit {
     () => {
         #[inline] pub fn get_usize(self) -> usize           { unsafe { self.u_size } }
-    
         #[inline] pub fn set_usize(&mut self, val: usize)   { self.u_size = val; }
-    
         #[inline] pub fn get_ssize(self) -> isize           { unsafe { self.s_size } }
-    
         #[inline] pub fn set_ssize(&mut self, val: isize)   { self.s_size = val; }
     };
 }

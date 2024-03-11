@@ -183,10 +183,8 @@ impl ShortUnion
     #[inline] pub fn set(&mut self, val: u16)           { self.this = val; }
     #[inline] pub fn get_signed(self) -> i16            { unsafe { self.that } }
     #[inline] pub fn set_signed(&mut self, val: i16)    { self.that = val; }
-    #[inline] pub fn get_ushort(self) -> u16            { unsafe { self.ushort } }
-    #[inline] pub fn set_ushort(&mut self, val: u16)    { self.ushort = val; }
-    #[inline] pub fn get_sshort(self) -> i16            { unsafe { self.sshort } }
-    #[inline] pub fn set_sshort(&mut self, val: i16)    { self.sshort = val; }
+
+    crate::number::get_set_short_fit!();
 
     crate::number::get_set_byte!(2);
 

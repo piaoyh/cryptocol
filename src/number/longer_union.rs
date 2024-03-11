@@ -58,8 +58,8 @@ use super::small_uint::SmallUInt;
 /// 
 /// println!("a.get() = {}", a.get());
 /// println!("a.get_signed() = {}", a.get_signed());
-/// println!("a.get_ulonger_() = {}", a.get_ulonger());
-/// println!("a.get_slonger_() = {}", a.get_slonger());
+/// println!("a.get_ulonger() = {}", a.get_ulonger());
+/// println!("a.get_slonger() = {}", a.get_slonger());
 /// assert_eq!(a.get(), 339047799029950809142362261752780557135_u128);
 /// assert_eq!(a.get_signed(), -1234567890987654321012345678987654321_i128);
 /// assert_eq!(a.get_ulonger(), 339047799029950809142362261752780557135_u128);
@@ -341,15 +341,15 @@ use super::small_uint::SmallUInt;
 /// assert_eq!(d_longerunion.get_ubyte_(15), 0_u8);
 /// 
 /// let e_longerunion = d_longerunion * 3_u128.into_longerunion();
-/// println!("{} * {} = {}", d_longerunion, 3_u64.into_longerunion(), e_longerunion);
+/// println!("{} * {} = {}", d_longerunion, 3_u128.into_longerunion(), e_longerunion);
 /// assert_eq!(e_longerunion.get(), 2259259260740740725925926074074071_u128);
 /// 
 /// let f_longerunion = c_longerunion / 10_u128.into_longerunion();
-/// println!("{} / {} = {}", c_longerunion, 10_u16.into_longerunion(), f_longerunion);
+/// println!("{} / {} = {}", c_longerunion, 10_u128.into_longerunion(), f_longerunion);
 /// assert_eq!(f_longerunion.get(), 99999999999999999999999999999999_u128);
 /// 
-/// let g_longerunion = c_longerunion % 10_u64.into_longerunion();
-/// println!("{} % {} = {}", c_longerunion, 10_u16.into_longerunion(), g_longerunion);
+/// let g_longerunion = c_longerunion % 10_u128.into_longerunion();
+/// println!("{} % {} = {}", c_longerunion, 10_u128.into_longerunion(), g_longerunion);
 /// assert_eq!(g_longerunion.get(), 9_u128);
 /// ```
 ///  
@@ -454,10 +454,8 @@ impl LongerUnion
     #[inline] pub fn get_signed(self) -> i128   { unsafe { self.slonger } }
     #[inline] pub fn set(&mut self, val: u128)  { self.ulonger = val; }
     #[inline] pub fn set_signed(&mut self, val: i128)   { self.slonger = val; }
-    #[inline] pub fn get_ulonger(self) -> u128          { unsafe { self.ulonger } }
-    #[inline] pub fn set_ulonger(&mut self, val: u128)  { self.ulonger = val; }
-    #[inline] pub fn get_slonger(self) -> i128          { unsafe { self.slonger } }
-    #[inline] pub fn set_slonger(&mut self, val: i128)  { self.slonger = val; }
+    crate::number::get_set_longer_fit!();
+
     crate::number::get_set_byte!(16);
 
     crate::number::get_set_short!(8);
