@@ -176,6 +176,8 @@ use super::longer_union::LongerUnion;
 /// 
 /// ## Example 3
 /// ```
+/// use cryptocol::number::SmallUInt;
+/// 
 /// let a_longunion = 12345678987654321_u64.into_longunion();
 /// let b_longunion = 87654321012345678_u64.into_longunion();
 /// let c_longunion = a_longunion.wrapping_add(b_longunion);

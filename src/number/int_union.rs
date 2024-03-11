@@ -128,6 +128,8 @@ use super::longer_union::LongerUnion;
 /// 
 /// ## Example 3
 /// ```
+/// use cryptocol::number::SmallUInt;
+/// 
 /// let a_intunion = 12345678_u32.into_intunion();
 /// let b_intunion = 87654321_u32.into_intunion();
 /// let c_intunion = a_intunion.wrapping_add(b_intunion);

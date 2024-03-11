@@ -8,9 +8,7 @@
 
 #![allow(missing_docs)]
 #![allow(missing_doc_code_examples)]
-
-use cryptocol::number::SmallUInt;
-#[allow(non_camel_case_types)]
+#![allow(non_camel_case_types)]
 
 
 pub fn main()
@@ -93,6 +91,8 @@ fn short_union_quick_start1()
 fn short_union_quick_start2()
 {
     println!("short_union_quick_start2()");
+    use cryptocol::number::SmallUInt;
+
     let a_shortunion = 1234_u16.into_shortunion();
     let b_shortunion = 4321_u16.into_shortunion();
     let c_shortunion = a_shortunion.wrapping_add(b_shortunion);
@@ -207,6 +207,8 @@ fn int_union_quick_start1()
 fn int_union_quick_start2()
 {
     println!("int_union_quick_start2()");
+    use cryptocol::number::SmallUInt;
+
     let a_intunion = 12345678_u32.into_intunion();
     let b_intunion = 87654321_u32.into_intunion();
     let c_intunion = a_intunion.wrapping_add(b_intunion);
@@ -377,6 +379,8 @@ fn long_union_quick_start1()
 fn long_union_quick_start2()
 {
     println!("long_union_quick_start2()");
+    use cryptocol::number::SmallUInt;
+
     let a_longunion = 12345678987654321_u64.into_longunion();
     let b_longunion = 87654321012345678_u64.into_longunion();
     let c_longunion = a_longunion.wrapping_add(b_longunion);
@@ -649,6 +653,8 @@ fn longer_union_quick_start1()
 fn longer_union_quick_start2()
 {
     println!("longer_union_quick_start2()");
+    use cryptocol::number::SmallUInt;
+
     let a_longerunion = 123456789876543212345678987654321_u128.into_longerunion();
     let b_longerunion = 876543210123456787654321012345678_u128.into_longerunion();
     let c_longerunion = a_longerunion.wrapping_add(b_longerunion);
@@ -752,7 +758,7 @@ fn longer_union_quick_start2()
 fn size_union_quick_start()
 {
     size_union_quick_start1();
-    // size_union_quick_start2();
+    size_union_quick_start2();
 }
 
 fn size_union_quick_start1()
@@ -845,19 +851,19 @@ fn size_union_quick_start1()
     }
     #[cfg(target_pointer_width = "64")]
     {
-    for i in 0..2
-        { println!("a.get_uint_({}) = {}", i, a.get_uint_(i)); }
-    for i in 0..2
-        { println!("a.get_sint_({}) = {}", i, a.get_sint_(i)); }
-    for i in 0..4
-        { println!("a.get_ushort_({}) = {}", i, a.get_ushort_(i)); }
-    for i in 0..4
-        { println!("a.get_sshort_({}) = {}", i, a.get_sshort_(i)); }
-    for i in 0..8
-        { println!("a.get_ubyte_({}) = {}", i, a.get_ubyte_(i)); }
-    for i in 0..8
-        { println!("a.get_sbyte_({}) = {}", i, a.get_sbyte_(i)); }
-    }
+        for i in 0..2
+            { println!("a.get_uint_({}) = {}", i, a.get_uint_(i)); }
+        for i in 0..2
+            { println!("a.get_sint_({}) = {}", i, a.get_sint_(i)); }
+        for i in 0..4
+            { println!("a.get_ushort_({}) = {}", i, a.get_ushort_(i)); }
+        for i in 0..4
+            { println!("a.get_sshort_({}) = {}", i, a.get_sshort_(i)); }
+        for i in 0..8
+            { println!("a.get_ubyte_({}) = {}", i, a.get_ubyte_(i)); }
+        for i in 0..8
+            { println!("a.get_sbyte_({}) = {}", i, a.get_sbyte_(i)); }
+        }
     #[cfg(target_pointer_width = "32")]
     {
         for i in 0..2
@@ -997,68 +1003,288 @@ fn size_union_quick_start1()
 
 fn size_union_quick_start2()
 {
-    println!("long_union_quick_start2()");
-    let a_longunion = 12345678987654321_u64.into_longunion();
-    let b_longunion = 87654321012345678_u64.into_longunion();
-    let c_longunion = a_longunion.wrapping_add(b_longunion);
-    println!("{} + {} = {}", a_longunion, b_longunion, c_longunion);
-    assert_eq!(c_longunion.get(), 99999999999999999_u64);
-    for i in 0..2
-        { println!("c_longunion.get_uint_({}) = {}", i, c_longunion.get_uint_(i)); }
-    assert_eq!(c_longunion.get_uint_(0), 1569325055_u32);
-    assert_eq!(c_longunion.get_uint_(1), 23283064_u32);
-    for i in 0..4
-        { println!("c_longunion.get_ushort_({}) = {}", i, c_longunion.get_ushort_(i)); }
-    assert_eq!(c_longunion.get_ushort_(0), 65535_u16);
-    assert_eq!(c_longunion.get_ushort_(1), 23945_u16);
-    assert_eq!(c_longunion.get_ushort_(2), 17784_u16);
-    assert_eq!(c_longunion.get_ushort_(3), 355_u16);
-    for i in 0..8
-        { println!("c_longunion.get_ubyte_({}) = {}", i, c_longunion.get_ubyte_(i)); }
-    assert_eq!(c_longunion.get_ubyte_(0), 255_u8);
-    assert_eq!(c_longunion.get_ubyte_(1), 255_u8);
-    assert_eq!(c_longunion.get_ubyte_(2), 137_u8);
-    assert_eq!(c_longunion.get_ubyte_(3), 93_u8);
-    assert_eq!(c_longunion.get_ubyte_(4), 120_u8);
-    assert_eq!(c_longunion.get_ubyte_(5), 69_u8);
-    assert_eq!(c_longunion.get_ubyte_(6), 99_u8);
-    assert_eq!(c_longunion.get_ubyte_(7), 1_u8);
+    println!("size_union_quick_start2()");
+    use cryptocol::number::{ SmallUInt, SizeUnion };
 
-    let d_longunion = b_longunion - a_longunion;
-    println!("{} - {} = {}", b_longunion, a_longunion, d_longunion);
-    assert_eq!(d_longunion.get(), 75308642024691357_u64);
-    for i in 0..2
-        { println!("d_longunion.get_uint_({}) = {}", i, d_longunion.get_uint_(i)); }
-    assert_eq!(d_longunion.get_uint_(0), 2556827293_u32);
-    assert_eq!(d_longunion.get_uint_(1), 17534159_u32);
-    for i in 0..4
-        { println!("d_longunion.get_ushort_({}) = {}", i, d_longunion.get_ushort_(i)); }
-    assert_eq!(d_longunion.get_ushort_(0), 5789_u16);
-    assert_eq!(d_longunion.get_ushort_(1), 39014_u16);
-    assert_eq!(d_longunion.get_ushort_(2), 36047_u16);
-    assert_eq!(d_longunion.get_ushort_(3), 267_u16);
-    for i in 0..8
-        { println!("d_longunion.get_ubyte_({}) = {}", i, d_longunion.get_ubyte_(i)); }
-    assert_eq!(d_longunion.get_ubyte_(0), 157_u8);
-    assert_eq!(d_longunion.get_ubyte_(1), 22_u8);
-    assert_eq!(d_longunion.get_ubyte_(2), 102_u8);
-    assert_eq!(d_longunion.get_ubyte_(3), 152_u8);
-    assert_eq!(d_longunion.get_ubyte_(4), 207_u8);
-    assert_eq!(d_longunion.get_ubyte_(5), 140_u8);
-    assert_eq!(d_longunion.get_ubyte_(6), 11_u8);
-    assert_eq!(d_longunion.get_ubyte_(7), 1_u8);
+    let a_sizeunion: SizeUnion;
+    let b_sizeunion: SizeUnion;
+    let c_sizeunion: SizeUnion;
+    #[cfg(target_pointer_width = "128")]
+    {
+        a_sizeunion = 123456789876543212345678987654321_usize.into_sizeunion();
+        b_sizeunion = 876543210123456787654321012345678_usize.into_sizeunion();
+        c_sizeunion = a_sizeunion.wrapping_add(b_sizeunion);
+    }
+    #[cfg(target_pointer_width = "64")]
+    {
+        a_sizeunion = 12345678987654321_usize.into_sizeunion();
+        b_sizeunion = 87654321012345678_usize.into_sizeunion();
+        c_sizeunion = a_sizeunion.wrapping_add(b_sizeunion);
+    }
+    #[cfg(target_pointer_width = "32")]
+    {
+        a_sizeunion = 12345678_usize.into_sizeunion();
+        b_sizeunion = 87654321_usize.into_sizeunion();
+        c_sizeunion = a_sizeunion.wrapping_add(b_sizeunion);
+    }
+    #[cfg(target_pointer_width = "16")]
+    {
+        a_sizeunion = 1234_usize.into_sizeunion();
+        b_sizeunion = 4321_usize.into_sizeunion();
+        c_sizeunion = a_sizeunion.wrapping_add(b_sizeunion);
+    }
+    #[cfg(target_pointer_width = "8")]
+    {
+        a_sizeunion = 12_usize.into_sizeunion();
+        b_sizeunion = 87_usize.into_sizeunion();
+        c_sizeunion = a_sizeunion.wrapping_add(b_sizeunion);
+    }
+    println!("{} + {} = {}", a_sizeunion, b_sizeunion, c_sizeunion);
+    #[cfg(target_pointer_width = "128")]    assert_eq!(c_sizeunion.get(), 999999999999999999999999999999999_usize);
+    #[cfg(target_pointer_width = "64")]     assert_eq!(c_sizeunion.get(), 99999999999999999_usize);
+    #[cfg(target_pointer_width = "32")]     assert_eq!(c_sizeunion.get(), 99999999_usize);
+    #[cfg(target_pointer_width = "16")]     assert_eq!(c_sizeunion.get(), 5555_usize);
+    #[cfg(target_pointer_width = "8")]      assert_eq!(c_sizeunion.get(), 55_usize);
 
-    let e_longunion = d_longunion * 3_u64.into_longunion();
-    println!("{} * {} = {}", d_longunion, 3_u64.into_longunion(), e_longunion);
-    assert_eq!(e_longunion.get(), 225925926074074071_u64);
+    #[cfg(target_pointer_width = "128")]
+    {
+        for i in 0..2
+            { println!("c_sizeunion.get_ulong_({}) = {}", i, c_sizeunion.get_ulong_(i)); }
+        assert_eq!(c_sizeunion.get_ulong_(0), 4089650035136921599_u64);
+        assert_eq!(c_sizeunion.get_ulong_(1), 54210108624275_u64);
+    }
+    #[cfg(target_pointer_width = "64")]
+    {
+        for i in 0..2
+            { println!("c_sizeunion.get_uint_({}) = {}", i, c_sizeunion.get_uint_(i)); }
+        assert_eq!(c_sizeunion.get_uint_(0), 1569325055_u32);
+        assert_eq!(c_sizeunion.get_uint_(1), 23283064_u32);
+    }
+    #[cfg(target_pointer_width = "32")]
+    {
+        for i in 0..2
+            { println!("c_sizeunion.get_ushort_({}) = {}", i, c_sizeunion.get_ushort_(i)); }
+        assert_eq!(c_sizeunion.get_ushort_(0), 57599_u16);
+        assert_eq!(c_sizeunion.get_ushort_(1), 1525_u16);
+    }
+    #[cfg(target_pointer_width = "16")]
+    {
+        for i in 0..2
+            { println!("c_sizeunion.get_ubyte_({}) = {}", i, c_sizeunion.get_ubyte_(i)); }
+        assert_eq!(c_sizeunion.get_ubyte_(0), 179_u8);
+        assert_eq!(c_sizeunion.get_ubyte_(1), 21_u8);
+    }
 
-    let f_longunion = c_longunion / 10_u64.into_longunion();
-    println!("{} / {} = {}", c_longunion, 10_u64.into_longunion(), f_longunion);
-    assert_eq!(f_longunion.get(), 9999999999999999_u64);
+    #[cfg(target_pointer_width = "128")]
+    {
+        for i in 0..4
+            { println!("c_sizeunion.get_uint_({}) = {}", i, c_sizeunion.get_uint_(i)); }
+        assert_eq!(c_sizeunion.get_uint_(0), 4294967295_u32);
+        assert_eq!(c_sizeunion.get_uint_(1), 952195849_u32);
+        assert_eq!(c_sizeunion.get_uint_(2), 3326381459_u32);
+        assert_eq!(c_sizeunion.get_uint_(3), 12621_u32);
+    }
+    #[cfg(target_pointer_width = "64")]
+    {
+        for i in 0..4
+            { println!("c_sizeunion.get_ushort_({}) = {}", i, c_sizeunion.get_ushort_(i)); }
+        assert_eq!(c_sizeunion.get_ushort_(0), 65535_u16);
+        assert_eq!(c_sizeunion.get_ushort_(1), 23945_u16);
+        assert_eq!(c_sizeunion.get_ushort_(2), 17784_u16);
+        assert_eq!(c_sizeunion.get_ushort_(3), 355_u16);
+    }
+    #[cfg(target_pointer_width = "32")]
+    {
+        for i in 0..4
+            { println!("c_sizeunion.get_ubyte_({}) = {}", i, c_sizeunion.get_ubyte_(i)); }
+        assert_eq!(c_sizeunion.get_ubyte_(0), 255_u8);
+        assert_eq!(c_sizeunion.get_ubyte_(1), 224_u8);
+        assert_eq!(c_sizeunion.get_ubyte_(2), 245_u8);
+        assert_eq!(c_sizeunion.get_ubyte_(3), 5_u8);
+    }
+    #[cfg(target_pointer_width = "128")]
+    {
+        for i in 0..8
+            { println!("c_sizeunion.get_ushort_({}) = {}", i, c_sizeunion.get_ushort_(i)); }
+        assert_eq!(c_sizeunion.get_ushort_(0), 65535_u16);
+        assert_eq!(c_sizeunion.get_ushort_(1), 65535_u16);
+        assert_eq!(c_sizeunion.get_ushort_(2), 23305_u16);
+        assert_eq!(c_sizeunion.get_ushort_(3), 14529_u16);
+        assert_eq!(c_sizeunion.get_ushort_(4), 36243_u16);
+        assert_eq!(c_sizeunion.get_ushort_(5), 50756_u16);
+        assert_eq!(c_sizeunion.get_ushort_(6), 12621_u16);
+        assert_eq!(c_sizeunion.get_ushort_(7), 0_u16);
+    }
+    #[cfg(target_pointer_width = "64")]
+    {
+        for i in 0..8
+            { println!("c_sizeunion.get_ubyte_({}) = {}", i, c_sizeunion.get_ubyte_(i)); }
+        assert_eq!(c_sizeunion.get_ubyte_(0), 255_u8);
+        assert_eq!(c_sizeunion.get_ubyte_(1), 255_u8);
+        assert_eq!(c_sizeunion.get_ubyte_(2), 137_u8);
+        assert_eq!(c_sizeunion.get_ubyte_(3), 93_u8);
+        assert_eq!(c_sizeunion.get_ubyte_(4), 120_u8);
+        assert_eq!(c_sizeunion.get_ubyte_(5), 69_u8);
+        assert_eq!(c_sizeunion.get_ubyte_(6), 99_u8);
+        assert_eq!(c_sizeunion.get_ubyte_(7), 1_u8);
+    }
+    #[cfg(target_pointer_width = "128")]
+    {
+        for i in 0..16
+            { println!("c_sizeunion.get_ubyte_({}) = {}", i, c_sizeunion.get_ubyte_(i)); }
+        assert_eq!(c_sizeunion.get_ubyte_(0), 255_u8);
+        assert_eq!(c_sizeunion.get_ubyte_(1), 255_u8);
+        assert_eq!(c_sizeunion.get_ubyte_(2), 255_u8);
+        assert_eq!(c_sizeunion.get_ubyte_(3), 255_u8);
+        assert_eq!(c_sizeunion.get_ubyte_(4), 9_u8);
+        assert_eq!(c_sizeunion.get_ubyte_(5), 91_u8);
+        assert_eq!(c_sizeunion.get_ubyte_(6), 193_u8);
+        assert_eq!(c_sizeunion.get_ubyte_(7), 56_u8);
+        assert_eq!(c_sizeunion.get_ubyte_(8), 147_u8);
+        assert_eq!(c_sizeunion.get_ubyte_(9), 141_u8);
+        assert_eq!(c_sizeunion.get_ubyte_(10), 68_u8);
+        assert_eq!(c_sizeunion.get_ubyte_(11), 198_u8);
+        assert_eq!(c_sizeunion.get_ubyte_(12), 77_u8);
+        assert_eq!(c_sizeunion.get_ubyte_(13), 49_u8);
+        assert_eq!(c_sizeunion.get_ubyte_(14), 0_u8);
+        assert_eq!(c_sizeunion.get_ubyte_(15), 0_u8);
+    }
 
-    let g_longunion = c_longunion % 10_u64.into_longunion();
-    println!("{} % {} = {}", c_longunion, 10_u64.into_longunion(), g_longunion);
-    assert_eq!(g_longunion.get(), 9_u64);
+    let d_sizeunion = b_sizeunion - a_sizeunion;
+    println!("{} - {} = {}", b_sizeunion, a_sizeunion, d_sizeunion);
+    #[cfg(target_pointer_width = "128")]
+    {
+        assert_eq!(d_sizeunion.get(), 753086420246913575308642024691357_usize);
+        for i in 0..2
+            { println!("d_sizeunion.get_ulong_({}) = {}", i, d_sizeunion.get_ulong_(i)); }
+        assert_eq!(d_sizeunion.get_ulong_(0), 14084888390109238941_u64);
+        assert_eq!(d_sizeunion.get_ulong_(1), 40824896645051_u64);
+    }
+    #[cfg(target_pointer_width = "64")]
+    {
+        assert_eq!(d_sizeunion.get(), 75308642024691357_usize);
+        for i in 0..2
+            { println!("d_longunion.get_uint_({}) = {}", i, d_sizeunion.get_uint_(i)); }
+        assert_eq!(d_sizeunion.get_uint_(0), 2556827293_u32);
+        assert_eq!(d_sizeunion.get_uint_(1), 17534159_u32);
+    }
+    #[cfg(target_pointer_width = "32")]
+    {
+        assert_eq!(d_sizeunion.get(), 75308643_usize);
+        for i in 0..2
+            { println!("d_sizeunion.get_ushort_({}) = {}", i, d_sizeunion.get_ushort_(i)); }
+        assert_eq!(d_sizeunion.get_ushort_(0), 7779_u16);
+        assert_eq!(d_sizeunion.get_ushort_(1), 1149_u16);
+    }
+    #[cfg(target_pointer_width = "16")]
+    {
+        assert_eq!(d_sizeunion.get(), 3087_usize);
+        for i in 0..2
+            { println!("d_sizeunion.get_ubyte_({}) = {}", i, d_sizeunion.get_ubyte_(i)); }
+        assert_eq!(d_sizeunion.get_ubyte_(0), 15_u8);
+        assert_eq!(d_sizeunion.get_ubyte_(1), 12_u8);
+    }
+    #[cfg(target_pointer_width = "8")]  assert_eq!(d_sizeunion.get(), 75_usize);
+
+    #[cfg(target_pointer_width = "128")]
+    {
+        for i in 0..4
+            { println!("d_sizeunion.get_uint_({}) = {}", i, d_sizeunion.get_uint_(i)); }
+        assert_eq!(d_sizeunion.get_uint_(0), 2843481757_u32);
+        assert_eq!(d_sizeunion.get_uint_(1), 3279393629_u32);
+        assert_eq!(d_sizeunion.get_uint_(2), 1232496571_u32);
+        assert_eq!(d_sizeunion.get_uint_(3), 9505_u32);
+    }
+    #[cfg(target_pointer_width = "64")]
+    {
+        for i in 0..4
+            { println!("d_sizeunion.get_ushort_({}) = {}", i, d_sizeunion.get_ushort_(i)); }
+        assert_eq!(d_sizeunion.get_ushort_(0), 5789_u16);
+        assert_eq!(d_sizeunion.get_ushort_(1), 39014_u16);
+        assert_eq!(d_sizeunion.get_ushort_(2), 36047_u16);
+        assert_eq!(d_sizeunion.get_ushort_(3), 267_u16);
+    }
+    #[cfg(target_pointer_width = "32")]
+    {
+        for i in 0..4
+            { println!("d_sizeunion.get_ubyte_({}) = {}", i, d_sizeunion.get_ubyte_(i)); }
+        assert_eq!(d_sizeunion.get_ubyte_(0), 99_u8);
+        assert_eq!(d_sizeunion.get_ubyte_(1), 30_u8);
+        assert_eq!(d_sizeunion.get_ubyte_(2), 125_u8);
+        assert_eq!(d_sizeunion.get_ubyte_(3), 4_u8);
+    }
+
+    #[cfg(target_pointer_width = "128")]
+    {
+        for i in 0..8
+            { println!("d_sizeunion.get_ushort_({}) = {}", i, d_sizeunion.get_ushort_(i)); }
+        assert_eq!(d_sizeunion.get_ushort_(0), 5789_u16);
+        assert_eq!(d_sizeunion.get_ushort_(1), 43388_u16);
+        assert_eq!(d_sizeunion.get_ushort_(2), 37725_u16);
+        assert_eq!(d_sizeunion.get_ushort_(3), 50039_u16);
+        assert_eq!(d_sizeunion.get_ushort_(4), 26555_u16);
+        assert_eq!(d_sizeunion.get_ushort_(5), 18806_u16);
+        assert_eq!(d_sizeunion.get_ushort_(6), 9505_u16);
+        assert_eq!(d_sizeunion.get_ushort_(7), 0_u16);
+    }
+    #[cfg(target_pointer_width = "64")]
+    {
+        for i in 0..8
+            { println!("d_sizeunion.get_ubyte_({}) = {}", i, d_sizeunion.get_ubyte_(i)); }
+        assert_eq!(d_sizeunion.get_ubyte_(0), 157_u8);
+        assert_eq!(d_sizeunion.get_ubyte_(1), 22_u8);
+        assert_eq!(d_sizeunion.get_ubyte_(2), 102_u8);
+        assert_eq!(d_sizeunion.get_ubyte_(3), 152_u8);
+        assert_eq!(d_sizeunion.get_ubyte_(4), 207_u8);
+        assert_eq!(d_sizeunion.get_ubyte_(5), 140_u8);
+        assert_eq!(d_sizeunion.get_ubyte_(6), 11_u8);
+        assert_eq!(d_sizeunion.get_ubyte_(7), 1_u8);
+    }
+    #[cfg(target_pointer_width = "128")]
+    {
+        for i in 0..16
+            { println!("d_sizeunion.get_ubyte_({}) = {}", i, d_sizeunion.get_ubyte_(i)); }
+        assert_eq!(d_sizeunion.get_ubyte_(0), 157_u8);
+        assert_eq!(d_sizeunion.get_ubyte_(1), 22_u8);
+        assert_eq!(d_sizeunion.get_ubyte_(2), 124_u8);
+        assert_eq!(d_sizeunion.get_ubyte_(3), 169_u8);
+        assert_eq!(d_sizeunion.get_ubyte_(4), 93_u8);
+        assert_eq!(d_sizeunion.get_ubyte_(5), 147_u8);
+        assert_eq!(d_sizeunion.get_ubyte_(6), 119_u8);
+        assert_eq!(d_sizeunion.get_ubyte_(7), 195_u8);
+        assert_eq!(d_sizeunion.get_ubyte_(8), 187_u8);
+        assert_eq!(d_sizeunion.get_ubyte_(9), 103_u8);
+        assert_eq!(d_sizeunion.get_ubyte_(10), 118_u8);
+        assert_eq!(d_sizeunion.get_ubyte_(11), 73_u8);
+        assert_eq!(d_sizeunion.get_ubyte_(12), 33_u8);
+        assert_eq!(d_sizeunion.get_ubyte_(13), 37_u8);
+        assert_eq!(d_sizeunion.get_ubyte_(14), 0_u8);
+        assert_eq!(d_sizeunion.get_ubyte_(15), 0_u8);
+    }
+
+    let e_sizeunion = d_sizeunion * 3_usize.into_sizeunion();
+    println!("{} * {} = {}", d_sizeunion, 3_usize.into_sizeunion(), e_sizeunion);
+    #[cfg(target_pointer_width = "128")]    assert_eq!(e_sizeunion.get(), 2259259260740740725925926074074071_usize);
+    #[cfg(target_pointer_width = "64")]     assert_eq!(e_sizeunion.get(), 225925926074074071_usize);
+    #[cfg(target_pointer_width = "32")]     assert_eq!(e_sizeunion.get(), 225925929_usize);
+    #[cfg(target_pointer_width = "16")]     assert_eq!(e_sizeunion.get(), 9261_usize);
+    #[cfg(target_pointer_width = "8")]      assert_eq!(e_sizeunion.get(), 225_usize);
+
+    let f_sizeunion = c_sizeunion / 10_usize.into_sizeunion();
+    println!("{} / {} = {}", c_sizeunion, 10_usize.into_sizeunion(), f_sizeunion);
+    #[cfg(target_pointer_width = "128")]    assert_eq!(f_sizeunion.get(), 99999999999999999999999999999999_usize);
+    #[cfg(target_pointer_width = "64")]     assert_eq!(f_sizeunion.get(), 9999999999999999_usize);
+    #[cfg(target_pointer_width = "32")]     assert_eq!(f_sizeunion.get(), 9999999_usize);
+    #[cfg(target_pointer_width = "16")]     assert_eq!(f_shortunion.get(), 555_usize);
+    #[cfg(target_pointer_width = "8")]      assert_eq!(f_shortunion.get(), 9_usize);
+
+    let g_sizeunion = c_sizeunion % 10_usize.into_sizeunion();
+    println!("{} % {} = {}", c_sizeunion, 10_usize.into_sizeunion(), g_sizeunion);
+    #[cfg(target_pointer_width = "128")]    assert_eq!(g_sizeunion.get(), 9_usize);
+    #[cfg(target_pointer_width = "64")]     assert_eq!(g_sizeunion.get(), 9_usize);
+    #[cfg(target_pointer_width = "32")]     assert_eq!(g_sizeunion.get(), 9_usize);
+    #[cfg(target_pointer_width = "16")]     assert_eq!(g_sizeunion.get(), 5_usize);
+    #[cfg(target_pointer_width = "8")]      assert_eq!(g_sizeunion.get(), 9_usize);
     println!("--------------------------------------");
 }
 

@@ -96,6 +96,8 @@ use super::longer_union::LongerUnion;
 /// 
 /// ## Example 3
 /// ```
+/// use cryptocol::number::SmallUInt;
+/// 
 /// let a_shortunion = 1234_u16.into_shortunion();
 /// let b_shortunion = 4321_u16.into_shortunion();
 /// let c_shortunion = a_shortunion.wrapping_add(b_shortunion);

@@ -254,6 +254,8 @@ use super::small_uint::SmallUInt;
 /// 
 /// ## Example 3
 /// ```
+/// use cryptocol::number::SmallUInt;
+/// 
 /// let a_longerunion = 123456789876543212345678987654321_u128.into_longerunion();
 /// let b_longerunion = 876543210123456787654321012345678_u128.into_longerunion();
 /// let c_longerunion = a_longerunion.wrapping_add(b_longerunion);
