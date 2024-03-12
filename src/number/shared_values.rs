@@ -22,6 +22,23 @@ use std::mem::size_of;
 use super::small_uint::SmallUInt;
 
 /// union for transforming from one type into anther type
+/// 
+/// The type S is the source type while the type D is the destination type.
+/// The type S and D should have `SmallUInt`. In this crate, `u8`, `u16`,
+/// `u32`, `u64`, `u128`, `i8`, `i16`, `i32`, `i64`, `i128`, `ShortUnion`,
+/// `IntUnion`, `LongUnion`, `LongerUnion`, and `SizeUnion` have the trait
+/// `SmallUInt`.
+/// 
+/// Unlike `ShortUnion`, `IntUnion`, `LongUnion`, `LongerUnion`, and
+/// `SizeUnion`, the fields of `SharedValues` are all public. So,
+/// `SharedValues` is very flexible and gives you the full control of itself.
+/// You can convert data from one type into another type freely by means of
+/// `SharedValues` if the data has the trait `SmallUInt`.
+/// 
+/// # Quick Start
+/// ```
+/// // Todo
+/// ```
 pub union SharedValues<D, S>
 where D: SmallUInt + Copy + Clone + Display + Debug + ToString
         + Add<Output=D> + AddAssign + Sub<Output=D> + SubAssign

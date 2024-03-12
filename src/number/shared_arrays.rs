@@ -22,7 +22,29 @@ use std::ops::*;
 use super::small_uint::SmallUInt;
 
 
-/// union for transforming from an array of one type into another array of anther type
+/// union for transforming from an array of one type into another array of
+/// anther type
+/// 
+/// The type S is the source type while the type D is the destination type.
+/// The type S and D should have `SmallUInt`. In this crate, `u8`, `u16`,
+/// `u32`, `u64`, `u128`, `i8`, `i16`, `i32`, `i64`, `i128`, `ShortUnion`,
+/// `IntUnion`, `LongUnion`, `LongerUnion`, and `SizeUnion` have the trait
+/// `SmallUInt`.
+/// 
+/// N is the number of elements of D type while M is the number of elements
+/// of S.
+/// 
+/// Unlike `ShortUnion`, `IntUnion`, `LongUnion`, `LongerUnion`, and
+/// `SizeUnion`, the fields of `SharedArrays` are all public. So,
+/// `SharedArrays` is very flexible and gives you the full control of itself.
+/// You can convert data array from one type into another type freely by
+/// means of `SharedArrays` if the element of the data array has the trait
+/// `SmallUInt`.
+/// 
+/// # Quick Start
+/// ```
+/// // Todo
+/// ```
 pub union SharedArrays<D, const N: usize, S, const M: usize>
 where D: SmallUInt + Add<Output=D> + AddAssign + Sub<Output=D> + SubAssign
         + Mul<Output=D> + MulAssign + Div<Output=D> + DivAssign
