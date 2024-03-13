@@ -10,7 +10,6 @@
 #![allow(missing_doc_code_examples)]
 #![allow(non_camel_case_types)]
 
-
 pub fn main()
 {
     short_union_quick_start();
@@ -18,6 +17,8 @@ pub fn main()
     long_union_quick_start();
     longer_union_quick_start();
     size_union_quick_start();
+    shared_values_quick_start();
+    shared_arrays_quick_start();
 
     // short_union_debug_fmt_main();
     // int_union_debug_fmt_main();
@@ -1288,7 +1289,120 @@ fn size_union_quick_start2()
     println!("--------------------------------------");
 }
 
+fn shared_values_quick_start()
+{
+    println!("shared_values_quick_start()");
+    use cryptocol::number::{ SmallUInt, SharedValues, IntUnion, LongerUnion };
 
+    let a = SharedValues::<u16, u128> { src: 123456789123456789123456789123456789123_u128 };
+    println!("source = {}, Destination = {}", unsafe {a.src}, unsafe {a.des});
+    assert_eq!(unsafe { a.src }, 123456789123456789123456789123456789123_u128);
+    assert_eq!(unsafe { a.des }, 27267_u16);
+    
+    let b = SharedValues::<IntUnion, u128> { src: 123456789123456789123456789123456789123_u128 };
+    println!("source = {}, Destination = {}", unsafe {b.src}, unsafe {b.des});
+    assert_eq!(unsafe { b.src }, 123456789123456789123456789123456789123_u128);
+    assert_eq!(unsafe { b.des.get() }, 2970839683_u32);
+
+    let c = SharedValues::<u16, LongerUnion> { src: 123456789123456789123456789123456789123_u128.into_longerunion() };
+    println!("source = {}, Destination = {}", unsafe {c.src}, unsafe {c.des});
+    assert_eq!(unsafe { c.src.get() }, 123456789123456789123456789123456789123_u128);
+    assert_eq!(unsafe { c.des }, 27267_u16);
+    
+    let d = SharedValues::<IntUnion, LongerUnion> { src: 123456789123456789123456789123456789123_u128.into_longerunion() };
+    println!("source = {}, Destination = {}", unsafe {d.src}, unsafe {d.des});
+    assert_eq!(unsafe { d.src.get() }, 123456789123456789123456789123456789123_u128);
+    assert_eq!(unsafe { d.des.get() }, 2970839683_u32);
+    println!("--------------------------------------");
+}
+
+fn shared_arrays_quick_start()
+{
+    println!("shared_arrays_quick_start()");
+    use cryptocol::number::{ SmallUInt, SharedArrays, IntUnion, LongUnion };
+
+    let a = SharedArrays::<u16, 8, u64, 2> { src: [123456789123456789_u64, 987654321987654321_u64] };
+    print!("source = [ ");
+    for i in 0..2
+        { print!("{} ", unsafe {a.src[i]}); }
+    println!("]");
+    print!("Destination = [ ");
+    for i in 0..8
+        { print!("{} ", unsafe {a.des[i]}); }
+    println!("]");
+    assert_eq!(unsafe { a.src[0] }, 123456789123456789_u64);
+    assert_eq!(unsafe { a.src[1] }, 987654321987654321_u64);
+    assert_eq!(unsafe { a.des[0] }, 24341_u16);
+    assert_eq!(unsafe { a.des[1] }, 44240_u16);
+    assert_eq!(unsafe { a.des[2] }, 39755_u16);
+    assert_eq!(unsafe { a.des[3] }, 438_u16);
+    assert_eq!(unsafe { a.des[4] }, 4785_u16);
+    assert_eq!(unsafe { a.des[5] }, 32500_u16);
+    assert_eq!(unsafe { a.des[6] }, 55903_u16);
+    assert_eq!(unsafe { a.des[7] }, 3508_u16);
+
+    let b = SharedArrays::<IntUnion, 8, u64, 2> { src: [123456789123456789_u64, 987654321987654321_u64] };
+    print!("source = [ ");
+    for i in 0..2
+        { print!("{} ", unsafe {b.src[i]}); }
+    println!("]");
+    print!("Destination = [ ");
+    for i in 0..8
+        { print!("{} ", unsafe {b.des[i]}); }
+    println!("]");
+    assert_eq!(unsafe { b.src[0] }, 123456789123456789_u64);
+    assert_eq!(unsafe { b.src[1] }, 987654321987654321_u64);
+    assert_eq!(unsafe { b.des[0].get() }, 2899336981_u32);
+    assert_eq!(unsafe { b.des[1].get() }, 28744523_u32);
+    assert_eq!(unsafe { b.des[2].get() }, 2129924785_u32);
+    assert_eq!(unsafe { b.des[3].get() }, 229956191_u32);
+    assert_eq!(unsafe { b.des[4].get() }, 229956191_u32);
+    assert_eq!(unsafe { b.des[5].get() }, 229956191_u32);
+    assert_eq!(unsafe { b.des[6].get() }, 229956191_u32);
+    assert_eq!(unsafe { b.des[7].get() }, 229956191_u32);
+    
+    let c = SharedArrays::<u16, 8, LongUnion, 2> { src: [123456789123456789_u64.into_longunion(), 987654321987654321_u64.into_longunion()] };
+    print!("source = [ ");
+    for i in 0..2
+        { print!("{} ", unsafe {c.src[i]}); }
+    println!("]");
+    print!("Destination = [ ");
+    for i in 0..8
+        { print!("{} ", unsafe {c.des[i]}); }
+    println!("]");
+    assert_eq!(unsafe { c.src[0].get() }, 123456789123456789_u64);
+    assert_eq!(unsafe { c.src[1].get() }, 987654321987654321_u64);
+    assert_eq!(unsafe { c.des[0] }, 24341_u16);
+    assert_eq!(unsafe { c.des[1] }, 44240_u16);
+    assert_eq!(unsafe { c.des[2] }, 39755_u16);
+    assert_eq!(unsafe { c.des[3] }, 438_u16);
+    assert_eq!(unsafe { c.des[4] }, 4785_u16);
+    assert_eq!(unsafe { c.des[5] }, 32500_u16);
+    assert_eq!(unsafe { c.des[6] }, 55903_u16);
+    assert_eq!(unsafe { c.des[7] }, 3508_u16);
+        
+    let d = SharedArrays::<IntUnion, 8, LongUnion, 2> { src: [123456789123456789_u64.into_longunion(), 987654321987654321_u64.into_longunion()] };
+    print!("source = [ ");
+    for i in 0..2
+        { print!("{} ", unsafe {d.src[i]}); }
+    println!("]");
+    print!("Destination = [ ");
+    for i in 0..8
+        { print!("{} ", unsafe {d.des[i]}); }
+    println!("]");
+    assert_eq!(unsafe { d.src[0].get() }, 123456789123456789_u64);
+    assert_eq!(unsafe { d.src[1].get() }, 987654321987654321_u64);
+    assert_eq!(unsafe { d.des[0].get() }, 2899336981_u32);
+    assert_eq!(unsafe { d.des[1].get() }, 28744523_u32);
+    assert_eq!(unsafe { d.des[2].get() }, 2129924785_u32);
+    assert_eq!(unsafe { d.des[3].get() }, 229956191_u32);
+    assert_eq!(unsafe { d.des[4].get() }, 229956191_u32);
+    assert_eq!(unsafe { d.des[5].get() }, 229956191_u32);
+    assert_eq!(unsafe { d.des[6].get() }, 229956191_u32);
+    assert_eq!(unsafe { d.des[7].get() }, 229956191_u32);
+    println!();
+    println!("--------------------------------------");
+}
 
 /*
 

@@ -1010,7 +1010,7 @@ crate::number::shift_ops_for_integer_unions_impl! { SizeUnion, usize }
 crate::number::display_for_integer_unions_impl! { SizeUnion }
 
 
-
+crate::number::shift_ops_for_integer_unions_by_self_impl! { SizeUnion }
 
 impl Debug for SizeUnion
 {

@@ -4217,6 +4217,52 @@ macro_rules! shift_ops_for_integer_unions_impl {
 }
 pub(super) use shift_ops_for_integer_unions_impl;
 
+macro_rules! shift_ops_for_integer_unions_by_self_impl {
+    ($f:ty) => {
+        impl Shl<$f> for $f
+        {
+            type Output = Self;
+
+            fn shl(self, rhs: $f) -> Self
+            {
+                let mut s = self.clone();
+                s <<= rhs.get();
+                s
+            }
+        }
+
+        impl ShlAssign<$f> for $f
+        {
+            #[inline]
+            fn shl_assign(&mut self, rhs: $f)
+            {
+                self.set(self.get() << rhs.get())
+            }
+        }
+
+        impl Shr<$f> for $f
+        {
+            type Output = Self;
+
+            fn shr(self, rhs: $f) -> Self
+            {
+                let mut s = self.clone();
+                s >>= rhs.get();
+                s
+            }
+        }
+
+        impl ShrAssign<$f> for $f
+        {
+            #[inline]
+            fn shr_assign(&mut self, rhs: $f)
+            {
+                self.set(self.get() >> rhs.get())
+            }
+        }
+    }
+}
+pub(super) use shift_ops_for_integer_unions_by_self_impl;
 
 macro_rules! display_for_integer_unions_impl {
     ($f:ty) => {

@@ -217,6 +217,8 @@ crate::number::shift_ops_for_integer_unions_impl! { ShortUnion, u64 }
 crate::number::shift_ops_for_integer_unions_impl! { ShortUnion, u128 }
 crate::number::shift_ops_for_integer_unions_impl! { ShortUnion, usize }
 
+crate::number::shift_ops_for_integer_unions_by_self_impl! { ShortUnion }
+
 crate::number::display_for_integer_unions_impl! { ShortUnion }
 
 

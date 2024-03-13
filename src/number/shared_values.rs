@@ -34,11 +34,40 @@ use super::small_uint::SmallUInt;
 /// `SharedValues` is very flexible and gives you the full control of itself.
 /// You can convert data from one type into another type freely by means of
 /// `SharedValues` if the data has the trait `SmallUInt`.
+/// However, you have to use unsafe {...}.
 /// 
 /// # Quick Start
+/// You can freely convert from a primitive type or a union type into another
+/// primitive type or a union type.
+/// 
+/// ## Example
 /// ```
-/// // Todo
+/// use cryptocol::number::{ SmallUInt, SharedValues, IntUnion, LongerUnion };
+/// 
+/// let a = SharedValues::<u16, u128> { src: 123456789123456789123456789123456789123_u128 };
+/// println!("source = {}, Destination = {}", unsafe {a.src}, unsafe {a.des});
+/// assert_eq!(unsafe { a.src }, 123456789123456789123456789123456789123_u128);
+/// assert_eq!(unsafe { a.des }, 27267_u16);
+/// 
+/// let b = SharedValues::<IntUnion, u128> { src: 123456789123456789123456789123456789123_u128 };
+/// println!("source = {}, Destination = {}", unsafe {b.src}, unsafe {b.des});
+/// assert_eq!(unsafe { b.src }, 123456789123456789123456789123456789123_u128);
+/// assert_eq!(unsafe { b.des.get() }, 2970839683_u32);
+/// 
+/// let c = SharedValues::<u16, LongerUnion> { src: 123456789123456789123456789123456789123_u128.into_longerunion() };
+/// println!("source = {}, Destination = {}", unsafe {c.src}, unsafe {c.des});
+/// assert_eq!(unsafe { c.src.get() }, 123456789123456789123456789123456789123_u128);
+/// assert_eq!(unsafe { c.des }, 27267_u16);
+/// 
+/// let d = SharedValues::<IntUnion, LongerUnion> { src: 123456789123456789123456789123456789123_u128.into_longerunion() };
+/// println!("source = {}, Destination = {}", unsafe {d.src}, unsafe {d.des});
+/// assert_eq!(unsafe { d.src.get() }, 123456789123456789123456789123456789123_u128);
 /// ```
+///  
+/// # Big-endian issue
+/// It is just experimental for Big Endian CPUs. So, you are not encouraged
+/// to use it for serious purpose. Only use this crate for Big-endian CPUs
+/// with your own full responsibility.
 pub union SharedValues<D, S>
 where D: SmallUInt + Copy + Clone + Display + Debug + ToString
         + Add<Output=D> + AddAssign + Sub<Output=D> + SubAssign

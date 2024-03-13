@@ -276,6 +276,8 @@ crate::number::shift_ops_for_integer_unions_impl! { IntUnion, u64 }
 crate::number::shift_ops_for_integer_unions_impl! { IntUnion, u128 }
 crate::number::shift_ops_for_integer_unions_impl! { IntUnion, usize }
 
+crate::number::shift_ops_for_integer_unions_by_self_impl! { IntUnion }
+
 crate::number::display_for_integer_unions_impl! { IntUnion }
 
 

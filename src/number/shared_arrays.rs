@@ -39,12 +39,101 @@ use super::small_uint::SmallUInt;
 /// `SharedArrays` is very flexible and gives you the full control of itself.
 /// You can convert data array from one type into another type freely by
 /// means of `SharedArrays` if the element of the data array has the trait
-/// `SmallUInt`.
+/// `SmallUInt`. However, you have to use unsafe {...}.
 /// 
 /// # Quick Start
+/// You can freely convert from an array of primitive type or another union type
+/// into an array of another primitive type or anther union type.
+/// 
+/// ## Example
 /// ```
-/// // Todo
+/// use cryptocol::number::{ SmallUInt, SharedArrays, IntUnion, LongUnion };
+/// 
+/// let a = SharedArrays::<u16, 8, u64, 2> { src: [123456789123456789_u64, 987654321987654321_u64] };
+/// print!("source = [ ");
+/// for i in 0..2
+///     { print!("{} ", unsafe {a.src[i]}); }
+/// println!("]");
+/// print!("Destination = [ ");
+/// for i in 0..8
+///     { print!("{} ", unsafe {a.des[i]}); }
+/// println!("]");
+/// assert_eq!(unsafe { a.src[0] }, 123456789123456789_u64);
+/// assert_eq!(unsafe { a.src[1] }, 987654321987654321_u64);
+/// assert_eq!(unsafe { a.des[0] }, 24341_u16);
+/// assert_eq!(unsafe { a.des[1] }, 44240_u16);
+/// assert_eq!(unsafe { a.des[2] }, 39755_u16);
+/// assert_eq!(unsafe { a.des[3] }, 438_u16);
+/// assert_eq!(unsafe { a.des[4] }, 4785_u16);
+/// assert_eq!(unsafe { a.des[5] }, 32500_u16);
+/// assert_eq!(unsafe { a.des[6] }, 55903_u16);
+/// assert_eq!(unsafe { a.des[7] }, 3508_u16);
+/// 
+/// let b = SharedArrays::<IntUnion, 8, u64, 2> { src: [123456789123456789_u64, 987654321987654321_u64] };
+/// print!("source = [ ");
+/// for i in 0..2
+///     { print!("{} ", unsafe {b.src[i]}); }
+/// println!("]");
+/// print!("Destination = [ ");
+/// for i in 0..8
+///     { print!("{} ", unsafe {b.des[i]}); }
+/// println!("]");
+/// assert_eq!(unsafe { b.src[0] }, 123456789123456789_u64);
+/// assert_eq!(unsafe { b.src[1] }, 987654321987654321_u64);
+/// assert_eq!(unsafe { b.des[0].get() }, 2899336981_u32);
+/// assert_eq!(unsafe { b.des[1].get() }, 28744523_u32);
+/// assert_eq!(unsafe { b.des[2].get() }, 2129924785_u32);
+/// assert_eq!(unsafe { b.des[3].get() }, 229956191_u32);
+/// assert_eq!(unsafe { b.des[4].get() }, 229956191_u32);
+/// assert_eq!(unsafe { b.des[5].get() }, 229956191_u32);
+/// assert_eq!(unsafe { b.des[6].get() }, 229956191_u32);
+/// assert_eq!(unsafe { b.des[7].get() }, 229956191_u32);
+/// 
+/// let c = SharedArrays::<u16, 8, LongUnion, 2> { src: [123456789123456789_u64.into_longunion(), 987654321987654321_u64.into_longunion()] };
+/// print!("source = [ ");
+/// for i in 0..2
+///     { print!("{} ", unsafe {c.src[i]}); }
+/// println!("]");
+/// print!("Destination = [ ");
+/// for i in 0..8
+///     { print!("{} ", unsafe {c.des[i]}); }
+/// println!("]");
+/// assert_eq!(unsafe { c.src[0].get() }, 123456789123456789_u64);
+/// assert_eq!(unsafe { c.src[1].get() }, 987654321987654321_u64);
+/// assert_eq!(unsafe { c.des[0] }, 24341_u16);
+/// assert_eq!(unsafe { c.des[1] }, 44240_u16);
+/// assert_eq!(unsafe { c.des[2] }, 39755_u16);
+/// assert_eq!(unsafe { c.des[3] }, 438_u16);
+/// assert_eq!(unsafe { c.des[4] }, 4785_u16);
+/// assert_eq!(unsafe { c.des[5] }, 32500_u16);
+/// assert_eq!(unsafe { c.des[6] }, 55903_u16);
+/// assert_eq!(unsafe { c.des[7] }, 3508_u16);
+///     
+/// let d = SharedArrays::<IntUnion, 8, LongUnion, 2> { src: [123456789123456789_u64.into_longunion(), 987654321987654321_u64.into_longunion()] };
+/// print!("source = [ ");
+/// for i in 0..2
+///     { print!("{} ", unsafe {d.src[i]}); }
+/// println!("]");
+/// print!("Destination = [ ");
+/// for i in 0..8
+///     { print!("{} ", unsafe {d.des[i]}); }
+/// println!("]");
+/// assert_eq!(unsafe { d.src[0].get() }, 123456789123456789_u64);
+/// assert_eq!(unsafe { d.src[1].get() }, 987654321987654321_u64);
+/// assert_eq!(unsafe { d.des[0].get() }, 2899336981_u32);
+/// assert_eq!(unsafe { d.des[1].get() }, 28744523_u32);
+/// assert_eq!(unsafe { d.des[2].get() }, 2129924785_u32);
+/// assert_eq!(unsafe { d.des[3].get() }, 229956191_u32);
+/// assert_eq!(unsafe { d.des[4].get() }, 229956191_u32);
+/// assert_eq!(unsafe { d.des[5].get() }, 229956191_u32);
+/// assert_eq!(unsafe { d.des[6].get() }, 229956191_u32);
+/// assert_eq!(unsafe { d.des[7].get() }, 229956191_u32);
 /// ```
+///  
+/// # Big-endian issue
+/// It is just experimental for Big Endian CPUs. So, you are not encouraged
+/// to use it for serious purpose. Only use this crate for Big-endian CPUs
+/// with your own full responsibility.
 pub union SharedArrays<D, const N: usize, S, const M: usize>
 where D: SmallUInt + Add<Output=D> + AddAssign + Sub<Output=D> + SubAssign
         + Mul<Output=D> + MulAssign + Div<Output=D> + DivAssign

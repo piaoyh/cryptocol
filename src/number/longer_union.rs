@@ -493,6 +493,8 @@ crate::number::shift_ops_for_integer_unions_impl! { LongerUnion, u64 }
 crate::number::shift_ops_for_integer_unions_impl! { LongerUnion, u128 }
 crate::number::shift_ops_for_integer_unions_impl! { LongerUnion, usize }
 
+crate::number::shift_ops_for_integer_unions_by_self_impl! { LongerUnion }
+
 crate::number::display_for_integer_unions_impl! { LongerUnion }
 
 
