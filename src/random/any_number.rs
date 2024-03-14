@@ -10,9 +10,10 @@
 use std::fmt::Debug;
 
 /// This struct is for just creating pseudo-random numbers. The basic algorithm
-/// is taken from the rand() function of C standard library and treaked by the
-/// author. So, it is light weight. It is designed to be used as embedded as
-/// `Random_Engine` in the struct `Random_Generic`.
+/// is taken from the rand() function of C standard library and tweaked by the
+/// author. However, the internal algorithm may be changed to a better
+/// algorithm in the future. So, it is light weight. It is designed to be used
+/// to plug as `Random_Engine` in the struct `Random_Generic`.
 /// It is __for non-cryptographic purpose__. So, normally it is OK to use this
 /// struct as `Random_Engine` embedded in the struct `Random_Generic` for
 /// pseudo-random number generator. However, __DO NOT USE THIS STRUCT FOR

@@ -61,7 +61,7 @@
 //!     [`MD5_Generic`](hash/md5/struct.MD5_Generic.html#struct.MD5_Generic)
 //! - [X] SHA-1 hash algorithms based on 160 bits
 //!     --- Includes SHA-1, SHA-0, and their expanded versions.
-//!     [`SHA1_Generic`](hash/sha1/struct.SHA1_generic.html#struct.SHA1_generic)
+//!     [`SHA1_Generic`](hash/sha1/struct.SHA1_Generic.html#struct.SHA1_Generic)
 //! - [X] SHA-2 hash algorithms based on 256 bits
 //!     --- Includes SHA-256, SHA-224, and their expanded versions.
 //!     [`SHA2_256_Generic`](hash/sha2_256/struct.SHA2_256_Generic.html#struct.SHA2_256_Generic)

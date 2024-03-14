@@ -64,70 +64,55 @@ use super::small_uint::SmallUInt;
 /// assert_eq!(unsafe { a.des[1] }, 44240_u16);
 /// assert_eq!(unsafe { a.des[2] }, 39755_u16);
 /// assert_eq!(unsafe { a.des[3] }, 438_u16);
-/// assert_eq!(unsafe { a.des[4] }, 4785_u16);
-/// assert_eq!(unsafe { a.des[5] }, 32500_u16);
-/// assert_eq!(unsafe { a.des[6] }, 55903_u16);
-/// assert_eq!(unsafe { a.des[7] }, 3508_u16);
 /// 
-/// let b = SharedArrays::<IntUnion, 8, u64, 2> { src: [123456789123456789_u64, 987654321987654321_u64] };
+/// let mut b = SharedArrays::<IntUnion, 8, u64, 2>::new();
+/// b.src = [123456789123456789_u64, 987654321987654321_u64];
 /// print!("source = [ ");
 /// for i in 0..2
-///     { print!("{} ", unsafe {b.src[i]}); }
+///     { print!("{} ", b.get_src()[i]); }
 /// println!("]");
 /// print!("Destination = [ ");
-/// for i in 0..8
-///     { print!("{} ", unsafe {b.des[i]}); }
+/// for i in 0..4
+///     { print!("{} ", b.get_des()[i]); }
 /// println!("]");
-/// assert_eq!(unsafe { b.src[0] }, 123456789123456789_u64);
-/// assert_eq!(unsafe { b.src[1] }, 987654321987654321_u64);
-/// assert_eq!(unsafe { b.des[0].get() }, 2899336981_u32);
-/// assert_eq!(unsafe { b.des[1].get() }, 28744523_u32);
-/// assert_eq!(unsafe { b.des[2].get() }, 2129924785_u32);
-/// assert_eq!(unsafe { b.des[3].get() }, 229956191_u32);
-/// assert_eq!(unsafe { b.des[4].get() }, 229956191_u32);
-/// assert_eq!(unsafe { b.des[5].get() }, 229956191_u32);
-/// assert_eq!(unsafe { b.des[6].get() }, 229956191_u32);
-/// assert_eq!(unsafe { b.des[7].get() }, 229956191_u32);
+/// assert_eq!(b.get_src()[0], 123456789123456789_u64);
+/// assert_eq!(b.get_src()[1], 987654321987654321_u64);
+/// assert_eq!(b.get_des()[0].get(), 2899336981_u32);
+/// assert_eq!(b.get_des()[1].get(), 28744523_u32);
+/// assert_eq!(b.get_des()[2].get(), 2129924785_u32);
+/// assert_eq!(b.get_des()[3].get(), 229956191_u32);
 /// 
-/// let c = SharedArrays::<u16, 8, LongUnion, 2> { src: [123456789123456789_u64.into_longunion(), 987654321987654321_u64.into_longunion()] };
+/// let c = SharedArrays::<u16, 8, LongUnion, 2>::from_src(&[123456789123456789_u64.into_longunion(), 987654321987654321_u64.into_longunion()]);
 /// print!("source = [ ");
 /// for i in 0..2
-///     { print!("{} ", unsafe {c.src[i]}); }
+///     { print!("{} ", c.get_src_elem_(i)); }
 /// println!("]");
 /// print!("Destination = [ ");
-/// for i in 0..8
-///     { print!("{} ", unsafe {c.des[i]}); }
+/// for i in 0..4
+///     { print!("{} ", c.get_des_elem_(i)); }
 /// println!("]");
-/// assert_eq!(unsafe { c.src[0].get() }, 123456789123456789_u64);
-/// assert_eq!(unsafe { c.src[1].get() }, 987654321987654321_u64);
-/// assert_eq!(unsafe { c.des[0] }, 24341_u16);
-/// assert_eq!(unsafe { c.des[1] }, 44240_u16);
-/// assert_eq!(unsafe { c.des[2] }, 39755_u16);
-/// assert_eq!(unsafe { c.des[3] }, 438_u16);
-/// assert_eq!(unsafe { c.des[4] }, 4785_u16);
-/// assert_eq!(unsafe { c.des[5] }, 32500_u16);
-/// assert_eq!(unsafe { c.des[6] }, 55903_u16);
-/// assert_eq!(unsafe { c.des[7] }, 3508_u16);
-///     
-/// let d = SharedArrays::<IntUnion, 8, LongUnion, 2> { src: [123456789123456789_u64.into_longunion(), 987654321987654321_u64.into_longunion()] };
+/// assert_eq!(c.get_src_elem_(0).get(), 123456789123456789_u64);
+/// assert_eq!(c.get_src_elem_(1).get(), 987654321987654321_u64);
+/// assert_eq!(c.get_des_elem_(0), 24341_u16);
+/// assert_eq!(c.get_des_elem_(1), 44240_u16);
+/// assert_eq!(c.get_des_elem_(2), 39755_u16);
+/// assert_eq!(c.get_des_elem_(3), 438_u16);
+/// 
+/// let d = SharedArrays::<IntUnion, 8, LongUnion, 2>::from_src(&[123456789123456789_u64.into_longunion(), 987654321987654321_u64.into_longunion()]);
 /// print!("source = [ ");
 /// for i in 0..2
-///     { print!("{} ", unsafe {d.src[i]}); }
+///     { print!("{} ", d.get_src_elem_(i)); }
 /// println!("]");
 /// print!("Destination = [ ");
-/// for i in 0..8
-///     { print!("{} ", unsafe {d.des[i]}); }
+/// for i in 0..4
+///     { print!("{} ", d.get_des_elem_(i)); }
 /// println!("]");
-/// assert_eq!(unsafe { d.src[0].get() }, 123456789123456789_u64);
-/// assert_eq!(unsafe { d.src[1].get() }, 987654321987654321_u64);
-/// assert_eq!(unsafe { d.des[0].get() }, 2899336981_u32);
-/// assert_eq!(unsafe { d.des[1].get() }, 28744523_u32);
-/// assert_eq!(unsafe { d.des[2].get() }, 2129924785_u32);
-/// assert_eq!(unsafe { d.des[3].get() }, 229956191_u32);
-/// assert_eq!(unsafe { d.des[4].get() }, 229956191_u32);
-/// assert_eq!(unsafe { d.des[5].get() }, 229956191_u32);
-/// assert_eq!(unsafe { d.des[6].get() }, 229956191_u32);
-/// assert_eq!(unsafe { d.des[7].get() }, 229956191_u32);
+/// assert_eq!(d.get_src_elem_(0).get(), 123456789123456789_u64);
+/// assert_eq!(d.get_src_elem_(1).get(), 987654321987654321_u64);
+/// assert_eq!(d.get_des_elem_(0).get(), 2899336981_u32);
+/// assert_eq!(d.get_des_elem_(1).get(), 28744523_u32);
+/// assert_eq!(d.get_des_elem_(2).get(), 2129924785_u32);
+/// assert_eq!(d.get_des_elem_(3).get(), 229956191_u32);
 /// ```
 ///  
 /// # Big-endian issue
@@ -189,15 +174,53 @@ where D: SmallUInt + Add<Output=D> + AddAssign + Sub<Output=D> + SubAssign
         me
     }
 
+    pub fn get_src(&self) -> &[S; M]
+    {
+        unsafe { &self.src }
+    }
+
+    pub fn get_src_elem(&self, i: usize) -> Option<S>
+    {
+        if i < M
+            { Some(self.get_src_elem_(i)) }
+        else
+            { None }
+    }
+
+    pub fn get_src_elem_(&self, i: usize) -> S
+    {
+        #[cfg(target_endian = "little")]    unsafe { self.src[i] }
+        #[cfg(target_endian = "big")]       unsafe { self.src[M-i-1] }
+    }
+
+    pub fn get_des_elem(&self, i: usize) -> Option<D>
+    {
+        if i < N
+            { Some(self.get_des_elem_(i)) }
+        else
+            { None }
+    }
+
+    pub fn get_des_elem_(&self, i: usize) -> D
+    {
+        #[cfg(target_endian = "little")]    unsafe { self.des[i] }
+        #[cfg(target_endian = "big")]       unsafe { self.des[N-i-1] }
+    }
+
+    pub fn get_des(&self) -> &[D; N]
+    {
+        unsafe { &self.des }
+    }
+
     #[cfg(target_endian = "little")]
     #[inline]
-    pub fn into_des(&mut self, des: &mut [D; N])
+    pub fn put_des_in_array(&mut self, des: &mut [D; N])
     {
         unsafe { des.copy_from_slice(&self.des); }
     }
 
     #[cfg(target_endian = "big")]
-    pub fn into_des(&mut self, des: &mut [D; N])
+    pub fn put_des_in_array(&mut self, des: &mut [D; N])
     {
         let des_size = Self::size_of_des();
         let src_size = Self::size_of_src();

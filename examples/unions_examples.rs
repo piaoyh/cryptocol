@@ -1299,20 +1299,21 @@ fn shared_values_quick_start()
     assert_eq!(unsafe { a.src }, 123456789123456789123456789123456789123_u128);
     assert_eq!(unsafe { a.des }, 27267_u16);
     
-    let b = SharedValues::<IntUnion, u128> { src: 123456789123456789123456789123456789123_u128 };
-    println!("source = {}, Destination = {}", unsafe {b.src}, unsafe {b.des});
-    assert_eq!(unsafe { b.src }, 123456789123456789123456789123456789123_u128);
-    assert_eq!(unsafe { b.des.get() }, 2970839683_u32);
+    let mut b = SharedValues::<IntUnion, u128>::new();
+    b.src = 123456789123456789123456789123456789123_u128;
+    println!("source = {}, Destination = {}", b.get_src(), b.get_des().get());
+    assert_eq!(b.get_src(), 123456789123456789123456789123456789123_u128);
+    assert_eq!(b.get_des().get(), 2970839683_u32);
 
-    let c = SharedValues::<u16, LongerUnion> { src: 123456789123456789123456789123456789123_u128.into_longerunion() };
+    let c = SharedValues::<u16, LongerUnion>::from_src(123456789123456789123456789123456789123_u128.into_longerunion());
     println!("source = {}, Destination = {}", unsafe {c.src}, unsafe {c.des});
     assert_eq!(unsafe { c.src.get() }, 123456789123456789123456789123456789123_u128);
     assert_eq!(unsafe { c.des }, 27267_u16);
     
-    let d = SharedValues::<IntUnion, LongerUnion> { src: 123456789123456789123456789123456789123_u128.into_longerunion() };
-    println!("source = {}, Destination = {}", unsafe {d.src}, unsafe {d.des});
-    assert_eq!(unsafe { d.src.get() }, 123456789123456789123456789123456789123_u128);
-    assert_eq!(unsafe { d.des.get() }, 2970839683_u32);
+    let d = SharedValues::<IntUnion, LongerUnion>::from_src(123456789123456789123456789123456789123_u128.into_longerunion());
+    println!("source = {}, Destination = {}", d.get_src().get(), d.get_des().get());
+    assert_eq!(d.get_src().get(), 123456789123456789123456789123456789123_u128);
+    assert_eq!(d.get_des().get(), 2970839683_u32);
     println!("--------------------------------------");
 }
 
@@ -1327,7 +1328,7 @@ fn shared_arrays_quick_start()
         { print!("{} ", unsafe {a.src[i]}); }
     println!("]");
     print!("Destination = [ ");
-    for i in 0..8
+    for i in 0..4
         { print!("{} ", unsafe {a.des[i]}); }
     println!("]");
     assert_eq!(unsafe { a.src[0] }, 123456789123456789_u64);
@@ -1336,71 +1337,55 @@ fn shared_arrays_quick_start()
     assert_eq!(unsafe { a.des[1] }, 44240_u16);
     assert_eq!(unsafe { a.des[2] }, 39755_u16);
     assert_eq!(unsafe { a.des[3] }, 438_u16);
-    assert_eq!(unsafe { a.des[4] }, 4785_u16);
-    assert_eq!(unsafe { a.des[5] }, 32500_u16);
-    assert_eq!(unsafe { a.des[6] }, 55903_u16);
-    assert_eq!(unsafe { a.des[7] }, 3508_u16);
 
-    let b = SharedArrays::<IntUnion, 8, u64, 2> { src: [123456789123456789_u64, 987654321987654321_u64] };
+    let mut b = SharedArrays::<IntUnion, 8, u64, 2>::new();
+    b.src = [123456789123456789_u64, 987654321987654321_u64];
     print!("source = [ ");
     for i in 0..2
-        { print!("{} ", unsafe {b.src[i]}); }
+        { print!("{} ", b.get_src()[i]); }
     println!("]");
     print!("Destination = [ ");
-    for i in 0..8
-        { print!("{} ", unsafe {b.des[i]}); }
+    for i in 0..4
+        { print!("{} ", b.get_des()[i]); }
     println!("]");
-    assert_eq!(unsafe { b.src[0] }, 123456789123456789_u64);
-    assert_eq!(unsafe { b.src[1] }, 987654321987654321_u64);
-    assert_eq!(unsafe { b.des[0].get() }, 2899336981_u32);
-    assert_eq!(unsafe { b.des[1].get() }, 28744523_u32);
-    assert_eq!(unsafe { b.des[2].get() }, 2129924785_u32);
-    assert_eq!(unsafe { b.des[3].get() }, 229956191_u32);
-    assert_eq!(unsafe { b.des[4].get() }, 229956191_u32);
-    assert_eq!(unsafe { b.des[5].get() }, 229956191_u32);
-    assert_eq!(unsafe { b.des[6].get() }, 229956191_u32);
-    assert_eq!(unsafe { b.des[7].get() }, 229956191_u32);
+    assert_eq!(b.get_src()[0], 123456789123456789_u64);
+    assert_eq!(b.get_src()[1], 987654321987654321_u64);
+    assert_eq!(b.get_des()[0].get(), 2899336981_u32);
+    assert_eq!(b.get_des()[1].get(), 28744523_u32);
+    assert_eq!(b.get_des()[2].get(), 2129924785_u32);
+    assert_eq!(b.get_des()[3].get(), 229956191_u32);
     
-    let c = SharedArrays::<u16, 8, LongUnion, 2> { src: [123456789123456789_u64.into_longunion(), 987654321987654321_u64.into_longunion()] };
+    let c = SharedArrays::<u16, 4, LongUnion, 2>::from_src(&[123456789123456789_u64.into_longunion(), 987654321987654321_u64.into_longunion()]);
     print!("source = [ ");
     for i in 0..2
-        { print!("{} ", unsafe {c.src[i]}); }
+        { print!("{} ", c.get_src_elem_(i)); }
     println!("]");
     print!("Destination = [ ");
-    for i in 0..8
-        { print!("{} ", unsafe {c.des[i]}); }
+    for i in 0..4
+        { print!("{} ", c.get_des_elem_(i)); }
     println!("]");
-    assert_eq!(unsafe { c.src[0].get() }, 123456789123456789_u64);
-    assert_eq!(unsafe { c.src[1].get() }, 987654321987654321_u64);
-    assert_eq!(unsafe { c.des[0] }, 24341_u16);
-    assert_eq!(unsafe { c.des[1] }, 44240_u16);
-    assert_eq!(unsafe { c.des[2] }, 39755_u16);
-    assert_eq!(unsafe { c.des[3] }, 438_u16);
-    assert_eq!(unsafe { c.des[4] }, 4785_u16);
-    assert_eq!(unsafe { c.des[5] }, 32500_u16);
-    assert_eq!(unsafe { c.des[6] }, 55903_u16);
-    assert_eq!(unsafe { c.des[7] }, 3508_u16);
+    assert_eq!(c.get_src_elem_(0).get(), 123456789123456789_u64);
+    assert_eq!(c.get_src_elem_(1).get(), 987654321987654321_u64);
+    assert_eq!(c.get_des_elem_(0), 24341_u16);
+    assert_eq!(c.get_des_elem_(1), 44240_u16);
+    assert_eq!(c.get_des_elem_(2), 39755_u16);
+    assert_eq!(c.get_des_elem_(3), 438_u16);
         
-    let d = SharedArrays::<IntUnion, 8, LongUnion, 2> { src: [123456789123456789_u64.into_longunion(), 987654321987654321_u64.into_longunion()] };
+    let d = SharedArrays::<IntUnion, 4, LongUnion, 2>::from_src(&[123456789123456789_u64.into_longunion(), 987654321987654321_u64.into_longunion()]);
     print!("source = [ ");
     for i in 0..2
-        { print!("{} ", unsafe {d.src[i]}); }
+        { print!("{} ", d.get_src_elem_(i)); }
     println!("]");
     print!("Destination = [ ");
-    for i in 0..8
-        { print!("{} ", unsafe {d.des[i]}); }
+    for i in 0..4
+        { print!("{} ", d.get_des_elem_(i)); }
     println!("]");
-    assert_eq!(unsafe { d.src[0].get() }, 123456789123456789_u64);
-    assert_eq!(unsafe { d.src[1].get() }, 987654321987654321_u64);
-    assert_eq!(unsafe { d.des[0].get() }, 2899336981_u32);
-    assert_eq!(unsafe { d.des[1].get() }, 28744523_u32);
-    assert_eq!(unsafe { d.des[2].get() }, 2129924785_u32);
-    assert_eq!(unsafe { d.des[3].get() }, 229956191_u32);
-    assert_eq!(unsafe { d.des[4].get() }, 229956191_u32);
-    assert_eq!(unsafe { d.des[5].get() }, 229956191_u32);
-    assert_eq!(unsafe { d.des[6].get() }, 229956191_u32);
-    assert_eq!(unsafe { d.des[7].get() }, 229956191_u32);
-    println!();
+    assert_eq!(d.get_src_elem_(0).get(), 123456789123456789_u64);
+    assert_eq!(d.get_src_elem_(1).get(), 987654321987654321_u64);
+    assert_eq!(d.get_des_elem_(0).get(), 2899336981_u32);
+    assert_eq!(d.get_des_elem_(1).get(), 28744523_u32);
+    assert_eq!(d.get_des_elem_(2).get(), 2129924785_u32);
+    assert_eq!(d.get_des_elem_(3).get(), 229956191_u32);
     println!("--------------------------------------");
 }
 

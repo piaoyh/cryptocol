@@ -94,9 +94,19 @@ number will be 0.27.x.x since there are all twenty-six functionalities
 listed above. So, for example, even if the version number is 0.5.0.0,
 it does not mean that 50% of all functionalities are implemented.
 
-## Sorry for breaking changes from ver. 0.7.0 to ver. 0.7.1
+## Sorry for breaking changes from ver. 0.7.1 to ver. 0.7.2
 
 I think that if breaking changes are inevitable and have to be made, the sooner, the better even before more people will be using my crate.
+
+### union SharedArray
+
+| Ver. 0.7.1                                   | Ver. 0.7.2                                           |
+|----------------------------------------------|------------------------------------------------------|
+| pub fn into_des(&mut self, des: &mut [D; N]) | pub fn put_des_in_array(&mut self, des: &mut [D; N]) |
+
+- The function name `into_des()` does not show its functionality very clearly. It is desirable that the function name `into_des()` is changed to put_des_in_array() for the name consistency with the methods such as put_hash_value_in_array() in hash modules.
+
+## Sorry for breaking changes from ver. 0.7.0 to ver. 0.7.1
 
 ### macros for BigUInt
 

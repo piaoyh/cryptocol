@@ -28,7 +28,11 @@
 //! 
 //! Read [this article](https://en.wikipedia.org/wiki/Cryptographic_hash_function)
 //! and/or Watch [this lecture](https://www.youtube.com/watch?v=bDIc3jcLlOE)
-//! to learn cryptographic hash functions more in detail.
+//! or [this lecture](https://www.youtube.com/watch?v=tLkHk__-M6Q)
+//! to learn cryptographic hash functions more in detail. However, the last
+//! video lecture has a synch problem that the video and its audio are not
+//! synchronized, though this lecture is so good that I would like to highly
+//! encourage you to watch even with suffering from mis-synchronization.
 //! 
 //! # The algorithms of cryptographic hash functions
 //! This module provides several kinds of cryptographic hash algorithms:

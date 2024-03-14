@@ -49,21 +49,23 @@ use super::small_uint::SmallUInt;
 /// assert_eq!(unsafe { a.src }, 123456789123456789123456789123456789123_u128);
 /// assert_eq!(unsafe { a.des }, 27267_u16);
 /// 
-/// let b = SharedValues::<IntUnion, u128> { src: 123456789123456789123456789123456789123_u128 };
-/// println!("source = {}, Destination = {}", unsafe {b.src}, unsafe {b.des});
-/// assert_eq!(unsafe { b.src }, 123456789123456789123456789123456789123_u128);
-/// assert_eq!(unsafe { b.des.get() }, 2970839683_u32);
+/// let mut b = SharedValues::<IntUnion, u128>::new();
+/// b.src = 123456789123456789123456789123456789123_u128;
+/// println!("source = {}, Destination = {}", b.get_src(), b.get_des().get());
+/// assert_eq!(b.get_src(), 123456789123456789123456789123456789123_u128);
+/// assert_eq!(b.get_des().get(), 2970839683_u32);
 /// 
-/// let c = SharedValues::<u16, LongerUnion> { src: 123456789123456789123456789123456789123_u128.into_longerunion() };
+/// let c = c = SharedValues::<u16, LongerUnion>::from_src(123456789123456789123456789123456789123_u128.into_longerunion());
 /// println!("source = {}, Destination = {}", unsafe {c.src}, unsafe {c.des});
 /// assert_eq!(unsafe { c.src.get() }, 123456789123456789123456789123456789123_u128);
 /// assert_eq!(unsafe { c.des }, 27267_u16);
 /// 
-/// let d = SharedValues::<IntUnion, LongerUnion> { src: 123456789123456789123456789123456789123_u128.into_longerunion() };
-/// println!("source = {}, Destination = {}", unsafe {d.src}, unsafe {d.des});
-/// assert_eq!(unsafe { d.src.get() }, 123456789123456789123456789123456789123_u128);
+/// let d = SharedValues::<IntUnion, LongerUnion>::from_src(123456789123456789123456789123456789123_u128.into_longerunion());
+/// println!("source = {}, Destination = {}", d.get_src().get(), d.get_des().get());
+/// assert_eq!(d.get_src().get(), 123456789123456789123456789123456789123_u128);
+/// assert_eq!(d.get_des().get(), 2970839683_u32);
 /// ```
-///  
+/// 
 /// # Big-endian issue
 /// It is just experimental for Big Endian CPUs. So, you are not encouraged
 /// to use it for serious purpose. Only use this crate for Big-endian CPUs
