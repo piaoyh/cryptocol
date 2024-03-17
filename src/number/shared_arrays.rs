@@ -307,7 +307,7 @@ where D: SmallUInt + Add<Output=D> + AddAssign + Sub<Output=D> + SubAssign
     /// `i` is the index of the source element to get
     /// 
     /// # Output
-    /// - If `i` is less than `M` which is the index range, the value of
+    /// If `i` is less than `M` which is the index range, the value of
     /// the source element that `i` indicates.
     /// 
     /// # Panics
@@ -404,7 +404,7 @@ where D: SmallUInt + Add<Output=D> + AddAssign + Sub<Output=D> + SubAssign
     /// `i` is the index of the destination element to get
     /// 
     /// # Output
-    /// - If `i` is less than `M` which is the index range, the value of
+    /// If `i` is less than `M` which is the index range, the value of
     /// the destination element that `i` indicates.
     /// 
     /// # Panics
