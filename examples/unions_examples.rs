@@ -12,32 +12,16 @@
 
 pub fn main()
 {
-    short_union_quick_start();
-    int_union_quick_start();
-    long_union_quick_start();
-    longer_union_quick_start();
-    size_union_quick_start();
-    shared_values_quick_start();
-    shared_arrays_quick_start();
-
-    // short_union_debug_fmt_main();
-    // int_union_debug_fmt_main();
-    // long_union_debug_fmt_main();
-    // longer_union_debug_fmt_main();
-    // size_union_debug_fmt_main();
-
-    // short_union_get_ubyte_main();
-    // short_union_get_sbyte_main();
-    // short_union_set_ubyte_main();
-    // short_union_set_sbyte_main();
-
-    // longer_union_get_ubyte_main();
-    // longer_union_get_sbyte_main();
-    // longer_union_set_ubyte_main();
-    // longer_union_set_sbyte_main();
+    short_union_main();
+    int_union_main();
+    long_union_main();
+    longer_union_main();
+    size_union_main();
+    shared_values_main();
+    shared_arrays_main();
 }
 
-fn short_union_quick_start()
+fn short_union_main()
 {
     short_union_quick_start1();
     short_union_quick_start2();
@@ -126,7 +110,7 @@ fn short_union_quick_start2()
     println!("--------------------------------------");
 }
 
-fn int_union_quick_start()
+fn int_union_main()
 {
     int_union_quick_start1();
     int_union_quick_start2();
@@ -254,7 +238,7 @@ fn int_union_quick_start2()
     println!("--------------------------------------");
 }
 
-fn long_union_quick_start()
+fn long_union_main()
 {
     long_union_quick_start1();
     long_union_quick_start2();
@@ -447,7 +431,7 @@ fn long_union_quick_start2()
 }
 
 
-fn longer_union_quick_start()
+fn longer_union_main()
 {
     longer_union_quick_start1();
     longer_union_quick_start2();
@@ -756,7 +740,7 @@ fn longer_union_quick_start2()
     println!("--------------------------------------");
 }
 
-fn size_union_quick_start()
+fn size_union_main()
 {
     size_union_quick_start1();
     size_union_quick_start2();
@@ -1289,6 +1273,16 @@ fn size_union_quick_start2()
     println!("--------------------------------------");
 }
 
+fn shared_values_main()
+{
+    shared_values_quick_start();
+    shared_values_new();
+    shared_values_from_src();
+    shared_values_get_des();
+    shared_values_get_src();
+    shared_values_is_src_zero();
+}
+
 fn shared_values_quick_start()
 {
     println!("shared_values_quick_start()");
@@ -1317,43 +1311,117 @@ fn shared_values_quick_start()
     println!("--------------------------------------");
 }
 
+fn shared_values_new()
+{
+    println!("shared_values_new()");
+    use cryptocol::number::SharedValues;    
+    let a = SharedValues::<u16, u128>::new();
+    println!("source = {}, Destination = {}", a.get_src(), a.get_des());
+    assert_eq!(a.get_src(), 0_u128);
+    assert_eq!(a.get_des(), 0_u16);
+    println!("--------------------------------------");
+}
+
+fn shared_values_from_src()
+{
+    println!("shared_values_from_src()");
+    use cryptocol::number::SharedValues;
+    let a = SharedValues::<u32, u128>::from_src(123456789123456789123456789123456789123_u128);
+    println!("source = {}, Destination = {}", a.get_src(), a.get_des());
+    assert_eq!(a.get_src(), 123456789123456789123456789123456789123_u128);
+    assert_eq!(a.get_des(), 2970839683_u32);
+    println!("--------------------------------------");
+}
+
+fn shared_values_get_des()
+{
+    println!("shared_values_get_des()");
+    use cryptocol::number::SharedValues;
+    let a = SharedValues::<u16, u128>::from_src(123456789123456789123456789123456789123_u128);
+    println!("source = {}, Destination = {}", a.get_src(), a.get_des());
+    assert_eq!(a.get_src(), 123456789123456789123456789123456789123_u128);
+    assert_eq!(a.get_des(), 27267_u16);
+    println!("--------------------------------------");
+}
+
+fn shared_values_get_src()
+{
+    println!("shared_values_get_src()");
+    use cryptocol::number::SharedValues;
+    let a = SharedValues::<u32, u64>::from_src(123456789123456789_u64);
+    println!("source = {}, Destination = {}", a.get_src(), a.get_des());
+    assert_eq!(a.get_src(), 123456789123456789_u64);
+    assert_eq!(a.get_des(), 2899336981_u32);
+    println!("--------------------------------------");
+}
+
+fn shared_values_is_src_zero()
+{
+    println!("shared_values_is_src_zero()");
+    use cryptocol::number::SharedValues;
+    let a = SharedValues::<u32, u64>::new();
+    println!("Is a.src zero? {}", if a.is_src_zero() {"yes"} else {"no"});
+    assert_eq!(a.is_src_zero(), true);
+
+    let b = SharedValues::<u16, u128>::from_src(123456789123456789123456789123456789123_u128);
+    println!("Is b.src zero? {}", if b.is_src_zero() {"yes"} else {"no"});
+    assert_eq!(b.is_src_zero(), false);
+    println!("--------------------------------------");
+}
+
+fn shared_arrays_main()
+{
+    shared_arrays_quick_start();
+    shared_arrays_new();
+    shared_arrays_from_src();
+    shared_arrays_get_src();
+    shared_arrays_get_src_elem();
+    shared_arrays_get_src_elem_();
+    shared_arrays_get_des();
+    shared_arrays_get_des_elem();
+    shared_arrays_get_des_elem_();
+    shared_arrays_put_des();
+    shared_arrays_size_of_src();
+    shared_arrays_size_of_des();
+}
+
 fn shared_arrays_quick_start()
 {
     println!("shared_arrays_quick_start()");
     use cryptocol::number::{ SmallUInt, SharedArrays, IntUnion, LongUnion };
 
-    let a = SharedArrays::<u16, 8, u64, 2> { src: [123456789123456789_u64, 987654321987654321_u64] };
+    let a = SharedArrays::<u16, 4, u64, 2> { src: [123456789123456789_u64, 987654321987654321_u64] };
     print!("source = [ ");
     for i in 0..2
-        { print!("{} ", unsafe {a.src[i]}); }
+        { print!("{} ", a.get_src_elem_(i)); }
     println!("]");
     print!("Destination = [ ");
     for i in 0..4
-        { print!("{} ", unsafe {a.des[i]}); }
+        { print!("{} ", a.get_des_elem_(i)); }
     println!("]");
-    assert_eq!(unsafe { a.src[0] }, 123456789123456789_u64);
-    assert_eq!(unsafe { a.src[1] }, 987654321987654321_u64);
-    assert_eq!(unsafe { a.des[0] }, 24341_u16);
-    assert_eq!(unsafe { a.des[1] }, 44240_u16);
-    assert_eq!(unsafe { a.des[2] }, 39755_u16);
-    assert_eq!(unsafe { a.des[3] }, 438_u16);
+    assert_eq!(a.get_src_elem_(0), 123456789123456789_u64);
+    assert_eq!(a.get_src_elem_(1), 987654321987654321_u64);
+    assert_eq!(a.get_des_elem_(0), 24341_u16);
+    assert_eq!(a.get_des_elem_(1), 44240_u16);
+    assert_eq!(a.get_des_elem_(2), 39755_u16);
+    assert_eq!(a.get_des_elem_(3), 438_u16);
 
-    let mut b = SharedArrays::<IntUnion, 8, u64, 2>::new();
+    let mut b = SharedArrays::<IntUnion, 4, u64, 2>::new();
     b.src = [123456789123456789_u64, 987654321987654321_u64];
     print!("source = [ ");
     for i in 0..2
-        { print!("{} ", b.get_src()[i]); }
+        { print!("{} ", b.get_src_elem_(i)); }
     println!("]");
     print!("Destination = [ ");
     for i in 0..4
-        { print!("{} ", b.get_des()[i]); }
+        { print!("{} ", b.get_des_elem_(i)); }
     println!("]");
-    assert_eq!(b.get_src()[0], 123456789123456789_u64);
-    assert_eq!(b.get_src()[1], 987654321987654321_u64);
-    assert_eq!(b.get_des()[0].get(), 2899336981_u32);
-    assert_eq!(b.get_des()[1].get(), 28744523_u32);
-    assert_eq!(b.get_des()[2].get(), 2129924785_u32);
-    assert_eq!(b.get_des()[3].get(), 229956191_u32);
+    assert_eq!(b.get_src_elem_(0), 123456789123456789_u64);
+    assert_eq!(b.get_src_elem_(1), 987654321987654321_u64);
+    assert_eq!(b.get_des_elem_(0).get(), 2899336981_u32);
+    assert_eq!(b.get_des_elem_(1).get(), 28744523_u32);
+    assert_eq!(b.get_des_elem_(2).get(), 2129924785_u32);
+    assert_eq!(b.get_des_elem_(3).get(), 229956191_u32);
     
     let c = SharedArrays::<u16, 4, LongUnion, 2>::from_src(&[123456789123456789_u64.into_longunion(), 987654321987654321_u64.into_longunion()]);
     print!("source = [ ");
@@ -1386,6 +1454,194 @@ fn shared_arrays_quick_start()
     assert_eq!(d.get_des_elem_(1).get(), 28744523_u32);
     assert_eq!(d.get_des_elem_(2).get(), 2129924785_u32);
     assert_eq!(d.get_des_elem_(3).get(), 229956191_u32);
+    println!("--------------------------------------");
+}
+
+fn shared_arrays_new()
+{
+    println!("shared_arrays_new()");
+    use cryptocol::number::SharedArrays;    
+    let a = SharedArrays::<u32, 4, u64, 2>::new();
+    print!("source = [ ");
+    for i in 0..2
+        { print!("{} ", a.get_src_elem_(i)); }
+    println!("]");
+    print!("Destination = [ ");
+    for i in 0..4
+        { print!("{} ", a.get_des_elem_(i)); }
+    println!("]");
+    assert_eq!(a.get_src_elem_(0), 0_u64);
+    assert_eq!(a.get_src_elem_(1), 0_u64);
+    assert_eq!(a.get_des_elem_(0), 0_u32);
+    assert_eq!(a.get_des_elem_(1), 0_u32);
+    assert_eq!(a.get_des_elem_(2), 0_u32);
+    assert_eq!(a.get_des_elem_(3), 0_u32);
+    println!("--------------------------------------");
+}
+
+fn shared_arrays_from_src()
+{
+    println!("shared_arrays_from_src()");
+    use cryptocol::number::SharedArrays;
+    let a = SharedArrays::<u32, 4, u64, 2>::from_src(&[123456789123456789_u64, 987654321987654321_u64]);
+    print!("source = [ ");
+    for i in 0..2
+        { print!("{} ", a.get_src_elem_(i)); }
+    println!("]");
+    print!("Destination = [ ");
+    for i in 0..4
+        { print!("{} ", a.get_des_elem_(i)); }
+    println!("]");
+    assert_eq!(a.get_src_elem_(0), 123456789123456789_u64);
+    assert_eq!(a.get_src_elem_(1), 987654321987654321_u64);
+    assert_eq!(a.get_des_elem_(0), 2899336981_u32);
+    assert_eq!(a.get_des_elem_(1), 28744523_u32);
+    assert_eq!(a.get_des_elem_(2), 2129924785_u32);
+    assert_eq!(a.get_des_elem_(3), 229956191_u32);
+    println!("--------------------------------------");
+}
+
+fn shared_arrays_get_src()
+{
+    println!("shared_arrays_get_src()");
+    use cryptocol::number::SharedArrays;
+    let a = SharedArrays::<u32, 4, u64, 2>::from_src(&[123456789123456789_u64, 987654321987654321_u64]);
+    let b = a.get_src();
+    print!("source = [ ");
+    for i in 0..2
+        { print!("{} ", b[i]); }
+    println!("]");
+    assert_eq!(b[0], 123456789123456789_u64);
+    assert_eq!(b[1], 987654321987654321_u64);
+    println!("--------------------------------------");
+}
+
+fn shared_arrays_get_src_elem()
+{
+    println!("shared_arrays_get_src_elem()");
+    use cryptocol::number::SharedArrays;
+    let a = SharedArrays::<u32, 4, u64, 2>::from_src(&[123456789123456789_u64, 987654321987654321_u64]);
+    print!("source = [ ");
+    for i in 0..2
+    {
+        match a.get_src_elem(i)
+        {
+            Some(b) =>  { print!("{} ", b); }
+            None =>     { print!("None "); }
+        }
+    }
+    println!("]");
+    assert_eq!(a.get_src_elem(0).unwrap(), 123456789123456789_u64);
+    assert_eq!(a.get_src_elem(1).unwrap(), 987654321987654321_u64);
+    println!("--------------------------------------");
+}
+
+fn shared_arrays_get_src_elem_()
+{
+    println!("shared_arrays_get_src_elem_()");
+    use cryptocol::number::SharedArrays;
+    let a = SharedArrays::<u32, 4, u64, 2>::from_src(&[123456789123456789_u64, 987654321987654321_u64]);
+    print!("source = [ ");
+    for i in 0..2
+        { print!("{} ", a.get_src_elem_(i)); }
+    println!("]");
+    assert_eq!(a.get_src_elem_(0), 123456789123456789_u64);
+    assert_eq!(a.get_src_elem_(1), 987654321987654321_u64);
+    println!("--------------------------------------");
+}
+
+fn shared_arrays_get_des()
+{
+    println!("shared_arrays_get_des()");
+    use cryptocol::number::SharedArrays;
+    let a = SharedArrays::<u32, 4, u64, 2>::from_src(&[123456789123456789_u64, 987654321987654321_u64]);
+    let b = a.get_des();
+    print!("Destination = [ ");
+    for i in 0..4
+        { print!("{} ", b[i]); }
+    println!("]");
+    assert_eq!(b[0], 2899336981_u32);
+    assert_eq!(b[1], 28744523_u32);
+    assert_eq!(b[2], 2129924785_u32);
+    assert_eq!(b[3], 229956191_u32);
+    println!("--------------------------------------");
+}
+
+fn shared_arrays_get_des_elem()
+{
+    println!("shared_arrays_get_des_elem()");
+    use cryptocol::number::SharedArrays;
+    let a = SharedArrays::<u32, 4, u64, 2>::from_src(&[123456789123456789_u64, 987654321987654321_u64]);
+    print!("destination = [ ");
+    for i in 0..4
+    {
+        match a.get_des_elem(i)
+        {
+            Some(b) =>  { print!("{} ", b); }
+            None =>     { print!("None "); }
+        }
+    }
+    println!("]");
+    assert_eq!(a.get_des_elem(0).unwrap(), 2899336981_u32);
+    assert_eq!(a.get_des_elem(1).unwrap(), 28744523_u32);
+    assert_eq!(a.get_des_elem(2).unwrap(), 2129924785_u32);
+    assert_eq!(a.get_des_elem(3).unwrap(), 229956191_u32);
+    println!("--------------------------------------");
+}
+
+fn shared_arrays_get_des_elem_()
+{
+    println!("shared_arrays_get_des_elem_()");
+    use cryptocol::number::SharedArrays;
+    let a = SharedArrays::<u32, 4, u64, 2>::from_src(&[123456789123456789_u64, 987654321987654321_u64]);
+    print!("destination = [ ");
+    for i in 0..4
+        { print!("{} ", a.get_des_elem_(i)); }
+    println!("]");
+    assert_eq!(a.get_des_elem_(0), 2899336981_u32);
+    assert_eq!(a.get_des_elem_(1), 28744523_u32);
+    assert_eq!(a.get_des_elem_(2), 2129924785_u32);
+    assert_eq!(a.get_des_elem_(3), 229956191_u32);
+    println!("--------------------------------------");
+}
+
+fn shared_arrays_put_des()
+{
+    println!("shared_arrays_put_des()");
+    use cryptocol::number::SharedArrays;
+    let a = SharedArrays::<u32, 4, u64, 2>::from_src(&[123456789123456789_u64, 987654321987654321_u64]);
+    let mut b = [0_u32; 4];
+    a.put_des_in_array(&mut b);
+    print!("destination = [ ");
+    for i in 0..4
+        { print!("{} ", b[i]); }
+    println!("]");
+    assert_eq!(b[0], 2899336981_u32);
+    assert_eq!(b[1], 28744523_u32);
+    assert_eq!(b[2], 2129924785_u32);
+    assert_eq!(b[3], 229956191_u32);
+    println!("--------------------------------------");
+}
+
+fn shared_arrays_size_of_src()
+{
+    println!("shared_arrays_size_of_src()");
+    use cryptocol::number::SharedArrays;
+    type Shared = SharedArrays::<u32, 5, u64, 3>;
+    let a = Shared::from_src(&[123456789123456789_u64, 987654321987654321_u64, 13579246801357924680_u64]);
+    println!("The size of src is {}.",  Shared::size_of_src());
+    assert_eq!(Shared::size_of_src(), 24);
+    println!("--------------------------------------");
+}
+
+fn shared_arrays_size_of_des()
+{
+    println!("shared_arrays_size_of_des()");
+    use cryptocol::number::SharedArrays;
+    type Shared = SharedArrays::<u32, 5, u64, 3>;
+    let a = Shared::from_src(&[123456789123456789_u64, 987654321987654321_u64, 13579246801357924680_u64]);
+    println!("The size of des is {}.",  Shared::size_of_des());
+    assert_eq!(Shared::size_of_des(), 20);
     println!("--------------------------------------");
 }
 

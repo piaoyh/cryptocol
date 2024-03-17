@@ -98,13 +98,19 @@ it does not mean that 50% of all functionalities are implemented.
 
 I think that if breaking changes are inevitable and have to be made, the sooner, the better even before more people will be using my crate.
 
+### union SharedValues
+
+| Ver. 0.7.1                                          | Ver. 0.7.2 |
+|-----------------------------------------------------|------------|
+| pub fn into_des(&mut self, pos: usize) -> Option<D> | removed    |
+
 ### union SharedArray
 
 | Ver. 0.7.1                                   | Ver. 0.7.2                                           |
 |----------------------------------------------|------------------------------------------------------|
-| pub fn into_des(&mut self, des: &mut [D; N]) | pub fn put_des_in_array(&mut self, des: &mut [D; N]) |
+| pub fn into_des(&mut self, des: &mut [D; N]) | pub fn put_des_in_array(&self, des: &mut [D; N]) |
 
-- The function name `into_des()` does not show its functionality very clearly. It is desirable that the function name `into_des()` is changed to put_des_in_array() for the name consistency with the methods such as put_hash_value_in_array() in hash modules.
+- The function name `into_des()` does not show its functionality very clearly. It is desirable that the function name `into_des()` is changed to put_des_in_array() for the name consistency with the methods such as put_hash_value_in_array() in hash modules. The argument `&mut self` does not have to be `&mut self` so that it was changed to `&self`
 
 ## Sorry for breaking changes from ver. 0.7.0 to ver. 0.7.1
 
