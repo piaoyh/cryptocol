@@ -173,13 +173,31 @@ pub union ShortUnion
 
 impl ShortUnion
 {
-    pub fn new() -> Self                    { Self { ushort: 0 } }
-    pub fn new_with(ushort: u16) -> Self    { Self { ushort } }
-    pub fn new_with_signed(sshort: i16) -> Self { Self { sshort } }
-    pub fn new_with_ubytes(ubyte: [u8; 2]) -> Self  { Self { ubyte } }
-    pub fn onoff(b: bool) -> Self           { Self { ushort: b as u16 } }
-    pub fn onoff_signed(b: bool) -> Self    { Self { sshort: b as i16 } }
-    pub fn new_with_u128(num: u128) -> Self { Self { ushort: LongerUnion::new_with(num).get_ushort_(0) } }
+    /// Constructs a new `ShortUnion`.
+    /// 
+    /// # Output
+    /// A new object of `ShortUnion`.
+    /// 
+    /// # Initialization
+    /// All the fields of the constructed object will be
+    /// initialized with `0`.
+    /// 
+    /// # Example
+    /// ```
+    /// use cryptocol::number::ShortUnion;    
+    /// let a = ShortUnion::new();
+    /// println!("a = {}", a.get());
+    /// assert_eq!(a.get(), 0_u16);
+    /// ```
+    #[inline] pub fn new() -> Self  { Self { ushort: 0 } }
+
+
+    #[inline] pub fn new_with(ushort: u16) -> Self    { Self { ushort } }
+    #[inline] pub fn new_with_signed(sshort: i16) -> Self { Self { sshort } }
+    #[inline] pub fn new_with_ubytes(ubyte: [u8; 2]) -> Self  { Self { ubyte } }
+    #[inline] pub fn onoff(b: bool) -> Self           { Self { ushort: b as u16 } }
+    #[inline] pub fn onoff_signed(b: bool) -> Self    { Self { sshort: b as i16 } }
+    #[inline] pub fn new_with_u128(num: u128) -> Self { Self { ushort: LongerUnion::new_with(num).get_ushort_(0) } }
 
     #[inline] pub fn get(self) -> u16                   { unsafe { self.this } }
     #[inline] pub fn set(&mut self, val: u16)           { self.this = val; }

@@ -441,16 +441,32 @@ pub union LongerUnion
 
 impl LongerUnion
 {
-    pub fn new() -> Self                    { Self { ulonger: 0 } }
-    pub fn new_with(ulonger: u128) -> Self  { Self { ulonger } }
-    pub fn new_with_signed(slonger: i128) -> Self   { Self { slonger } }
-    pub fn new_with_ubytes(ubyte: [u8; 16]) -> Self { Self { ubyte } }
-    pub fn new_with_ushorts(ushort: [u16; 8]) -> Self   { Self { ushort } }
-    pub fn new_with_uints(uint: [u32; 4]) -> Self   { Self { uint } }
-    pub fn new_with_ulongs(ulong: [u64; 2]) -> Self   { Self { ulong } }
-    pub fn onoff(b: bool) -> Self           { Self { ulonger: b as u128 } }
-    pub fn onoff_signed(b: bool) -> Self    { Self { slonger: b as i128 } }
-    pub fn new_with_u128(num: u128) -> Self { Self { ulonger: num } }
+    /// Constructs a new `LongerUnion`.
+    /// 
+    /// # Output
+    /// A new object of `LongerUnion`.
+    /// 
+    /// # Initialization
+    /// All the fields of the constructed object will be
+    /// initialized with `0`.
+    /// 
+    /// # Example
+    /// ```
+    /// use cryptocol::number::LongerUnion;    
+    /// let a = LongerUnion::new();
+    /// println!("a = {}", a.get());
+    /// assert_eq!(a.get(), 0_u128);
+    /// ```
+    #[inline] pub fn new() -> Self  { Self { ulonger: 0 } }
+    #[inline] pub fn new_with(ulonger: u128) -> Self  { Self { ulonger } }
+    #[inline] pub fn new_with_signed(slonger: i128) -> Self   { Self { slonger } }
+    #[inline] pub fn new_with_ubytes(ubyte: [u8; 16]) -> Self { Self { ubyte } }
+    #[inline] pub fn new_with_ushorts(ushort: [u16; 8]) -> Self   { Self { ushort } }
+    #[inline] pub fn new_with_uints(uint: [u32; 4]) -> Self   { Self { uint } }
+    #[inline] pub fn new_with_ulongs(ulong: [u64; 2]) -> Self   { Self { ulong } }
+    #[inline] pub fn onoff(b: bool) -> Self           { Self { ulonger: b as u128 } }
+    #[inline] pub fn onoff_signed(b: bool) -> Self    { Self { slonger: b as i128 } }
+    #[inline] pub fn new_with_u128(num: u128) -> Self { Self { ulonger: num } }
 
     #[inline] pub fn get(self) -> u128          { unsafe { self.ulonger } }
     #[inline] pub fn get_signed(self) -> i128   { unsafe { self.slonger } }

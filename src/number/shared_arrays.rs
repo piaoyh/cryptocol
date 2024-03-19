@@ -16,7 +16,7 @@
 #![allow(rustdoc::missing_doc_code_examples)]
 
 use std::fmt::Display;
-use std::mem::size_of;
+use std::mem::{ size_of, size_of_val };
 use std::cmp::{ PartialEq, PartialOrd };
 use std::ops::*;
 use super::small_uint::SmallUInt;
@@ -535,10 +535,40 @@ where D: SmallUInt + Add<Output=D> + AddAssign + Sub<Output=D> + SubAssign
     /// use cryptocol::number::SharedArrays;
     /// type Shared = SharedArrays::<u32, 5, u64, 3>;
     /// let a = Shared::from_src(&[123456789123456789_u64, 987654321987654321_u64, 13579246801357924680_u64]);
-    /// println!("The size of src is {}.",  Shared::size_of_src());
+    /// println!("The size of src is {}.", Shared::size_of_src());
     /// assert_eq!(Shared::size_of_src(), 24);
     /// ```
-    #[inline] pub fn size_of_src() -> usize   { size_of::<S>() * M }
+    #[inline] pub fn size_of_src() -> usize   { size_of::<[S; M]>() }
+
+    /// Returns the size of `des`.
+    /// 
+    /// # Output
+    /// `size_of::<D>() * N`
+    /// 
+    /// # Example
+    /// ```
+    /// use cryptocol::number::SharedArrays;
+    /// type Shared = SharedArrays::<u32, 5, u64, 3>;
+    /// let a = Shared::from_src(&[123456789123456789_u64, 987654321987654321_u64, 13579246801357924680_u64]);
+    /// println!("The size of des is {}.",  Shared::size_of_des());
+    /// assert_eq!(Shared::size_of_des(), 20);
+    /// ```
+    #[inline] pub fn size_of_des() -> usize   { size_of::<[D; N]>() }
+
+    /// Returns the size of `src`.
+    /// 
+    /// # Output
+    /// `size_of::<S>() * M`
+    /// 
+    /// # Example
+    /// ```
+    /// use cryptocol::number::SharedArrays;
+    /// type Shared = SharedArrays::<u32, 5, u64, 3>;
+    /// let a = Shared::from_src(&[123456789123456789_u64, 987654321987654321_u64, 13579246801357924680_u64]);
+    /// println!("The size of src is {}.", Shared::size_of_src());
+    /// assert_eq!(Shared::size_of_src(), 24);
+    /// ```
+    #[inline] pub fn length_of_src(&self) -> usize   { size_of_val(unsafe { &self.src }) }
 
     /// Returns the size of `des`.
     /// 
@@ -553,5 +583,5 @@ where D: SmallUInt + Add<Output=D> + AddAssign + Sub<Output=D> + SubAssign
     /// println!("The size of des is {}.",  Shared::size_of_des());
     /// assert_eq!(Shared::size_of_des(), 20);
     /// ```
-    #[inline] pub fn size_of_des() -> usize   { size_of::<D>() * N }
+    #[inline] pub fn length_of_des(&self) -> usize   { size_of_val(unsafe { &self.des }) }
 }

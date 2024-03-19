@@ -231,14 +231,32 @@ pub union IntUnion
 
 impl IntUnion
 {
-    pub fn new() -> Self                { Self { uint: 0 } }
-    pub fn new_with(uint: u32) -> Self  { Self { uint } }
-    pub fn new_with_signed(sint: i32) -> Self   { Self { sint } }
-    pub fn new_with_ubytes(ubyte: [u8; 4]) -> Self  { Self { ubyte } }
-    pub fn new_with_ushorts(ushort: [u16; 2]) -> Self   { Self { ushort } }
-    pub fn onoff(b: bool) -> Self       { Self { uint: b as u32 } }
-    pub fn onoff_signed(b: bool) -> Self    { Self { sint: b as i32 } }
-    pub fn new_with_u128(num: u128) -> Self { Self { uint: LongerUnion::new_with(num).get_uint_(0) } }
+    /// Constructs a new `IntUnion`.
+    /// 
+    /// # Output
+    /// A new object of `IntUnion`.
+    /// 
+    /// # Initialization
+    /// All the fields of the constructed object will be
+    /// initialized with `0`.
+    /// 
+    /// # Example
+    /// ```
+    /// use cryptocol::number::IntUnion;    
+    /// let a = IntUnion::new();
+    /// println!("a = {}", a.get());
+    /// assert_eq!(a.get(), 0_u32);
+    /// ```
+    #[inline] pub fn new() -> Self  { Self { uint: 0 } }
+
+
+    #[inline] pub fn new_with(uint: u32) -> Self  { Self { uint } }
+    #[inline] pub fn new_with_signed(sint: i32) -> Self   { Self { sint } }
+    #[inline] pub fn new_with_ubytes(ubyte: [u8; 4]) -> Self  { Self { ubyte } }
+    #[inline] pub fn new_with_ushorts(ushort: [u16; 2]) -> Self   { Self { ushort } }
+    #[inline] pub fn onoff(b: bool) -> Self       { Self { uint: b as u32 } }
+    #[inline] pub fn onoff_signed(b: bool) -> Self    { Self { sint: b as i32 } }
+    #[inline] pub fn new_with_u128(num: u128) -> Self { Self { uint: LongerUnion::new_with(num).get_uint_(0) } }
 
     #[inline] pub fn get(self) -> u32               { unsafe { self.this } }
     #[inline] pub fn set(&mut self, val: u32)       { self.this = val; }

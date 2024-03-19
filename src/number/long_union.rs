@@ -312,15 +312,33 @@ pub union LongUnion
 
 impl LongUnion
 {
-    pub fn new() -> Self                    { Self { ulong: 0 } }
-    pub fn new_with(ulong: u64) -> Self     { Self { ulong } }
-    pub fn new_with_signed(slong: i64) -> Self  { Self { slong } }
-    pub fn new_with_ubytes(ubyte: [u8; 8])  -> Self { Self { ubyte } }
-    pub fn new_with_ushorts(ushort: [u16; 4])  -> Self  { Self { ushort } }
-    pub fn new_with_uints(uint: [u32; 2])  -> Self  { Self { uint } }
-    pub fn onoff(b: bool) -> Self           { Self { ulong: b as u64 } }
-    pub fn onoff_singed(b: bool) -> Self    { Self { slong: b as i64 } }
-    pub fn new_with_u128(num: u128) -> Self { Self { ulong: LongerUnion::new_with(num).get_ulong_(0) } }
+    /// Constructs a new `LongUnion`.
+    /// 
+    /// # Output
+    /// A new object of `LongUnion`.
+    /// 
+    /// # Initialization
+    /// All the fields of the constructed object will be
+    /// initialized with `0`.
+    /// 
+    /// # Example
+    /// ```
+    /// use cryptocol::number::LongUnion;    
+    /// let a = LongUnion::new();
+    /// println!("a = {}", a.get());
+    /// assert_eq!(a.get(), 0_u64);
+    /// ```
+    #[inline] pub fn new() -> Self  { Self { ulong: 0 } }
+
+
+    #[inline] pub fn new_with(ulong: u64) -> Self     { Self { ulong } }
+    #[inline] pub fn new_with_signed(slong: i64) -> Self  { Self { slong } }
+    #[inline] pub fn new_with_ubytes(ubyte: [u8; 8])  -> Self { Self { ubyte } }
+    #[inline] pub fn new_with_ushorts(ushort: [u16; 4])  -> Self  { Self { ushort } }
+    #[inline] pub fn new_with_uints(uint: [u32; 2])  -> Self  { Self { uint } }
+    #[inline] pub fn onoff(b: bool) -> Self           { Self { ulong: b as u64 } }
+    #[inline] pub fn onoff_singed(b: bool) -> Self    { Self { slong: b as i64 } }
+    #[inline] pub fn new_with_u128(num: u128) -> Self { Self { ulong: LongerUnion::new_with(num).get_ulong_(0) } }
 
     #[inline] pub fn get(self) -> u64           { unsafe { self.this } }
     #[inline] pub fn get_signed(self) -> i64    { unsafe { self.that } }

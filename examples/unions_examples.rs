@@ -25,6 +25,7 @@ fn short_union_main()
 {
     short_union_quick_start1();
     short_union_quick_start2();
+    short_union_new();
 }
 
 fn short_union_quick_start1()
@@ -110,10 +111,22 @@ fn short_union_quick_start2()
     println!("--------------------------------------");
 }
 
+fn short_union_new()
+{
+    println!("short_union_new()");
+    use cryptocol::number::ShortUnion;    
+    let a = ShortUnion::new();
+    println!("a = {}", a.get());
+    assert_eq!(a.get(), 0_u16);
+    println!("--------------------------------------");
+}
+
+
 fn int_union_main()
 {
     int_union_quick_start1();
     int_union_quick_start2();
+    int_union_new();
 }
 
 fn int_union_quick_start1()
@@ -238,10 +251,22 @@ fn int_union_quick_start2()
     println!("--------------------------------------");
 }
 
+fn int_union_new()
+{
+    println!("int_union_new()");
+    use cryptocol::number::IntUnion;    
+    let a = IntUnion::new();
+    println!("a = {}", a.get());
+    assert_eq!(a.get(), 0_u32);
+    println!("--------------------------------------");
+}
+
+
 fn long_union_main()
 {
     long_union_quick_start1();
     long_union_quick_start2();
+    long_union_new();
 }
 
 fn long_union_quick_start1()
@@ -430,11 +455,22 @@ fn long_union_quick_start2()
     println!("--------------------------------------");
 }
 
+fn long_union_new()
+{
+    println!("long_union_new()");
+    use cryptocol::number::LongUnion;    
+    let a = LongUnion::new();
+    println!("a = {}", a.get());
+    assert_eq!(a.get(), 0_u64);
+    println!("--------------------------------------");
+}
+
 
 fn longer_union_main()
 {
     longer_union_quick_start1();
     longer_union_quick_start2();
+    longer_union_new();
 }
 
 fn longer_union_quick_start1()
@@ -740,10 +776,22 @@ fn longer_union_quick_start2()
     println!("--------------------------------------");
 }
 
+fn longer_union_new()
+{
+    println!("longer_union_new()");
+    use cryptocol::number::LongerUnion;    
+    let a = LongerUnion::new();
+    println!("a = {}", a.get());
+    assert_eq!(a.get(), 0_u128);
+    println!("--------------------------------------");
+}
+
+
 fn size_union_main()
 {
     size_union_quick_start1();
     size_union_quick_start2();
+    size_union_new();
 }
 
 fn size_union_quick_start1()
@@ -1273,6 +1321,17 @@ fn size_union_quick_start2()
     println!("--------------------------------------");
 }
 
+fn size_union_new()
+{
+    println!("size_union_new()");
+    use cryptocol::number::SizeUnion;    
+    let a = SizeUnion::new();
+    println!("a = {}", a.get());
+    assert_eq!(a.get(), 0_usize);
+    println!("--------------------------------------");
+}
+
+
 fn shared_values_main()
 {
     shared_values_quick_start();
@@ -1383,6 +1442,8 @@ fn shared_arrays_main()
     shared_arrays_put_des();
     shared_arrays_size_of_src();
     shared_arrays_size_of_des();
+    shared_arrays_length_of_src();
+    shared_arrays_length_of_des();
 }
 
 fn shared_arrays_quick_start()
@@ -1628,7 +1689,6 @@ fn shared_arrays_size_of_src()
     println!("shared_arrays_size_of_src()");
     use cryptocol::number::SharedArrays;
     type Shared = SharedArrays::<u32, 5, u64, 3>;
-    let a = Shared::from_src(&[123456789123456789_u64, 987654321987654321_u64, 13579246801357924680_u64]);
     println!("The size of src is {}.",  Shared::size_of_src());
     assert_eq!(Shared::size_of_src(), 24);
     println!("--------------------------------------");
@@ -1639,9 +1699,30 @@ fn shared_arrays_size_of_des()
     println!("shared_arrays_size_of_des()");
     use cryptocol::number::SharedArrays;
     type Shared = SharedArrays::<u32, 5, u64, 3>;
-    let a = Shared::from_src(&[123456789123456789_u64, 987654321987654321_u64, 13579246801357924680_u64]);
     println!("The size of des is {}.",  Shared::size_of_des());
     assert_eq!(Shared::size_of_des(), 20);
+    println!("--------------------------------------");
+}
+
+fn shared_arrays_length_of_src()
+{
+    println!("shared_arrays_length_of_src()");
+    use cryptocol::number::SharedArrays;
+    type Shared = SharedArrays::<u32, 5, u64, 3>;
+    let a = Shared::from_src(&[123456789123456789_u64, 987654321987654321_u64, 13579246801357924680_u64]);
+    println!("The size of src is {}.", a.length_of_src());
+    assert_eq!(a.length_of_src(), 24);
+    println!("--------------------------------------");
+}
+
+fn shared_arrays_length_of_des()
+{
+    println!("shared_arrays_length_of_des()");
+    use cryptocol::number::SharedArrays;
+    type Shared = SharedArrays::<u32, 5, u64, 3>;
+    let a = Shared::from_src(&[123456789123456789_u64, 987654321987654321_u64, 13579246801357924680_u64]);
+    println!("The size of des is {}.", a.length_of_des());
+    assert_eq!(a.length_of_des(), 20);
     println!("--------------------------------------");
 }
 

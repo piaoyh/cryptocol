@@ -953,12 +953,28 @@ pub union SizeUnion
 
 impl SizeUnion
 {
-    pub fn new() -> Self                    { Self { u_size: 0 } }
-    pub fn new_with(u_size: usize) -> Self  { Self { u_size } }
-    pub fn new_with_signed(s_size: isize) -> Self   { Self { s_size } }
-    pub fn onoff(b: bool) -> Self           { Self { u_size: b as usize } }
-    pub fn onoff_signed(b: bool) -> Self    { Self { s_size: b as isize } }
-    pub fn new_with_u128(num: u128) -> Self { Self { u_size: LongerUnion::new_with(num).get_usize_(0) } }
+    /// Constructs a new `SizeUnion`.
+    /// 
+    /// # Output
+    /// A new object of `SizeUnion`.
+    /// 
+    /// # Initialization
+    /// All the fields of the constructed object will be
+    /// initialized with `0`.
+    /// 
+    /// # Example
+    /// ```
+    /// use cryptocol::number::SizeUnion;    
+    /// let a = SizeUnion::new();
+    /// println!("a = {}", a.get());
+    /// assert_eq!(a.get(), 0_usize);
+    /// ```
+    #[inline] pub fn new() -> Self  { Self { u_size: 0 } }
+    #[inline] pub fn new_with(u_size: usize) -> Self  { Self { u_size } }
+    #[inline] pub fn new_with_signed(s_size: isize) -> Self   { Self { s_size } }
+    #[inline] pub fn onoff(b: bool) -> Self           { Self { u_size: b as usize } }
+    #[inline] pub fn onoff_signed(b: bool) -> Self    { Self { s_size: b as isize } }
+    #[inline] pub fn new_with_u128(num: u128) -> Self { Self { u_size: LongerUnion::new_with(num).get_usize_(0) } }
 
     #[inline] pub fn get(self) -> usize         { unsafe { self.u_size } }
     #[inline] pub fn get_signed(self) -> isize  { unsafe { self.s_size } }
