@@ -19,8 +19,8 @@ macro_rules! SmallUInt_methods_for_uint_impl {
     ($f:ty) => {
         impl SmallUInt for $f
         {
-            /// Calculates `self` + `rhs` + `carry` and returns a tuple containing
-            /// the sum and the output carry.
+            /// Calculates `self` + `rhs` + `carry` and returns a tuple
+            /// containing the sum and the output carry.
             /// [Read more](trait@SmallUInt#tymethod.carrying_add) in detail.
             fn carrying_add(self, rhs: Self, carry: bool) -> (Self, bool)
             {
@@ -29,13 +29,15 @@ macro_rules! SmallUInt_methods_for_uint_impl {
                 (r2, c1 || c2)
             }
 
-            /// Computes `self` + `rhs`, wrapping around at the boundary of the type.
+            /// Computes `self` + `rhs`, wrapping around at the boundary of
+            /// the type.
             /// [Read more](trait@SmallUInt#tymethod.wrapping_add) in detail.
             #[inline] fn wrapping_add(self, rhs: Self) -> Self  { self.wrapping_add(rhs) }
 
-            /// Calculates `self` + `rhs` and returns a tuple of the addition along
-            /// with a boolean indicating whether an arithmetic overflow would
-            /// occur. [Read more](trait@SmallUInt#tymethod.overflowing_add) in detail.
+            /// Calculates `self` + `rhs` and returns a tuple of the addition
+            /// along with a boolean indicating whether an arithmetic overflow
+            /// would occur.
+            /// [Read more](trait@SmallUInt#tymethod.overflowing_add) in detail.
             #[inline] fn overflowing_add(self, rhs: Self) -> (Self, bool)   { self.overflowing_add(rhs) }
 
             /// Computes `self` + `rhs` and returns None if overflow occurred.
@@ -75,8 +77,9 @@ macro_rules! SmallUInt_methods_for_uint_impl {
                 (r2, b1 || b2)
             }
 
-            /// Computes `self` - `rhs`, wrapping around at the boundary of the type.
-            /// [Read more](trait@SmallUInt#tymethod.wrapping_sub) in detail.
+            /// Computes `self` - `rhs`, wrapping around at the boundary of
+            /// the type. [Read more](trait@SmallUInt#tymethod.wrapping_sub)
+            /// in detail.
             #[inline] fn wrapping_sub(self, rhs: Self) -> Self  { self.wrapping_sub(rhs) }
 
             /// Calculates `self` - `rhs` and returns a tuple of the subtraction
@@ -138,8 +141,8 @@ macro_rules! SmallUInt_methods_for_uint_impl {
                 (low, high)
             }
 
-            /// Calculates the complete product `self` * `rhs` without the possibility
-            /// to overflow.
+            /// Calculates the complete product `self` * `rhs` without the
+            /// possibility to overflow.
             /// [Read more](trait@SmallUInt#tymethod.widening_mul) in detail.
             #[inline] fn widening_mul(self, rhs: Self) -> (Self, Self)  { self._widening_mul(rhs) }
 
@@ -173,13 +176,14 @@ macro_rules! SmallUInt_methods_for_uint_impl {
                 (low, high)
             }
 
-            /// Computes `self` * `rhs`, wrapping around at the boundary of the type.
-            /// [Read more](trait@SmallUInt#tymethod.wrapping_mul) in detail.
+            /// Computes `self` * `rhs`, wrapping around at the boundary of
+            /// the type. [Read more](trait@SmallUInt#tymethod.wrapping_mul)
+            /// in detail.
             #[inline] fn wrapping_mul(self, rhs: Self) -> Self  { self.wrapping_mul(rhs) }
 
-            /// Calculates the multiplication of `self` and `rhs` and returns a tuple
-            /// of the multiplication along with a boolean indicating whether an
-            /// arithmetic overflow would occur.
+            /// Calculates the multiplication of `self` and `rhs` and returns
+            /// a tuple of the multiplication along with a boolean indicating
+            /// whether an arithmetic overflow would occur.
             /// [Read more](trait@SmallUInt#tymethod.overflowing_mul) in detail.
             #[inline] fn overflowing_mul(self, rhs: Self) -> (Self, bool)   { self.overflowing_mul(rhs) }
 
@@ -214,14 +218,14 @@ macro_rules! SmallUInt_methods_for_uint_impl {
                 res
             }
 
-            /// Computes `self` / `rhs`. Wrapped division on unsigned types is just
-            /// normal division.
+            /// Computes `self` / `rhs`. Wrapped division on unsigned types is
+            /// just normal division.
             /// [Read more](trait@SmallUInt#tymethod.wrapping_div) in detail.
             #[inline] fn wrapping_div(self, rhs: Self) -> Self  { self.wrapping_div(rhs) }
 
-            /// Calculates the divisor when `self` is divided by `rhs` and returns
-            /// a tuple of the divisor along with a boolean indicating whether
-            /// an arithmetic overflow would occur.
+            /// Calculates the divisor when `self` is divided by `rhs` and
+            /// returns a tuple of the divisor along with a boolean indicating
+            /// whether an arithmetic overflow would occur.
             /// [Read more](trait@SmallUInt#tymethod.overflowing_div) in detail.
             #[inline] fn overflowing_div(self, rhs: Self) -> (Self, bool)   { self.overflowing_div(rhs) }
 
@@ -237,7 +241,6 @@ macro_rules! SmallUInt_methods_for_uint_impl {
             /// instead of overflowing.
             /// [Read more](trait@SmallUInt#tymethod.saturating_div) in detail.
             #[inline] fn saturating_div(self, rhs: Self) -> Self    { self.saturating_div(rhs) }
-
 
             /// Computes `self` % `rhs`. Wrapped remainder calculation on unsigned
             /// types is just the regular remainder calculation.
@@ -262,15 +265,17 @@ macro_rules! SmallUInt_methods_for_uint_impl {
             /// [Read more](trait@SmallUInt#tymethod.wrapping_neg) in detail.
             #[inline] fn wrapping_neg(self) -> Self     { self.wrapping_neg() }
 
-            /// Computes `self.pow(exp)`, wrapping around at the boundary of the type.
-            /// [Read more](trait@SmallUInt#tymethod.wrapping_pow) in detail.
+            /// Computes `self.pow(exp)`, wrapping around at the boundary of
+            /// the type. [Read more](trait@SmallUInt#tymethod.wrapping_pow)
+            /// in detail.
             #[inline] fn wrapping_pow(self, exp: u32) -> Self   { self.wrapping_pow(exp) }
 
-            /// Raises `self` to the power of `exp`, using exponentiation by squaring.
-            /// [Read more](trait@SmallUInt#tymethod.overflowing_pow) in detail.
+            /// Raises `self` to the power of `exp`, using exponentiation by
+            /// squaring. [Read more](trait@SmallUInt#tymethod.overflowing_pow)
+            /// in detail.
             #[inline] fn overflowing_pow(self, exp: u32) -> (Self, bool)    { self.overflowing_pow(exp) }
 
-            /// Computes `self`.pow(exp), returning None if overflow occurred.
+            /// Computes `self.pow(exp)`, returning None if overflow occurred.
             /// [Read more](trait@SmallUInt#tymethod.checked_pow) in detail.
             #[inline] fn checked_pow(self, exp: u32) -> Option<Self>    { self.checked_pow(exp) }
 
@@ -284,8 +289,9 @@ macro_rules! SmallUInt_methods_for_uint_impl {
             /// [Read more](trait@SmallUInt#tymethod.saturating_pow) in detail.
             #[inline] fn saturating_pow(self, exp: u32) -> Self     { self.saturating_pow(exp) }
 
-            /// Raises `self` to the power of `exp`, using exponentiation by squaring.
-            /// [Read more](trait@SmallUInt#tymethod.pow) in detail.
+            /// Raises `self` to the power of `exp`, using exponentiation
+            /// by squaring. [Read more](trait@SmallUInt#tymethod.pow)
+            /// in detail.
             #[inline] fn pow(self, exp: u32) -> Self    { self.pow(exp) }
 
             /// Computes `self.pow(exp)`, saturating at `modulo`
@@ -307,8 +313,9 @@ macro_rules! SmallUInt_methods_for_uint_impl {
                 res
             }
 
-            /// Returns the logarithm of the number with respect to an arbitrary base.
-            /// [Read more](trait@SmallUInt#tymethod.ilog) in detail.
+            /// Returns the logarithm of the number with respect to an
+            /// arbitrary base. [Read more](trait@SmallUInt#tymethod.ilog)
+            /// in detail.
             #[inline] fn ilog(self, base: Self) -> u32  { self.ilog(base) }
 
             /// Returns the base 10 logarithm of the number.
@@ -322,6 +329,9 @@ macro_rules! SmallUInt_methods_for_uint_impl {
             /// Returns the square root of the number.
             /// [Read more](trait@SmallUInt#tymethod.isqrt) in detail.
             #[inline] fn isqrt(self) -> Self    { self._isqrt() }
+
+            /// Returns the square root of the number.
+            /// [Read more](trait@SmallUInt#tymethod.isqrt) in detail.
             fn _isqrt(self) -> Self
             {
                 let mut adder;
@@ -446,7 +456,8 @@ macro_rules! SmallUInt_methods_for_uint_impl {
 
             /// Tests a `SmallUInt`-type object to find whether or not it is a
             /// primne number.
-            /// [Read more](trait@SmallUInt#tymethod.is_prime_using_miller_rabin) in detail.
+            /// [Read more](trait@SmallUInt#tymethod.is_prime_using_miller_rabin)
+            /// in detail.
             fn is_prime_using_miller_rabin(self, repetition: usize) -> bool
             {
                 if self == 2 ||  self == 3
@@ -510,10 +521,10 @@ macro_rules! SmallUInt_methods_for_uint_impl {
                 true
             }
 
-            
-            /// Tests a `SmallUInt`-type object to find whether or not `self` is a
-            /// prime number.
-            /// [Read more](trait@SmallUInt#tymethod.test_miller_rabin) in detail.
+            /// Tests a `SmallUInt`-type object to find whether or not `self`
+            /// is a prime number.
+            /// [Read more](trait@SmallUInt#tymethod.test_miller_rabin)
+            /// in detail.
             fn test_miller_rabin(self, a: Self) -> bool
             {
                 let self_minus_one = self.wrapping_sub(Self::one());
@@ -533,22 +544,24 @@ macro_rules! SmallUInt_methods_for_uint_impl {
             #[inline] fn reverse_bits(self) -> Self { self.reverse_bits() }
             // #[inline] fn reverse_bits_assign(&mut self) { *self = self.reverse_bits(); }
 
-            /// Shifts the bits to the left by a specified amount, `n`, wrapping the
-            /// truncated bits to the end of the resulting integer.
+            /// Shifts the bits to the left by a specified amount, `n`,
+            /// wrapping the truncated bits to the end of the resulting integer.
             /// [Read more](trait@SmallUInt#tymethod.rotate_left) in detail.
             #[inline] fn rotate_left(self, n: u32) -> Self  { self.rotate_left(n) }
 
-            /// Shifts the bits to the right by a specified amount, `n`, wrapping the
-            /// truncated bits to the end of the resulting integer.
+            /// Shifts the bits to the right by a specified amount, `n`,
+            /// wrapping the truncated bits to the end of the resulting integer.
             /// [Read more](trait@SmallUInt#tymethod.rotate_right) in detail.
             #[inline] fn rotate_right(self, n: u32) -> Self { self.rotate_right(n) }
 
-            /// Returns the number of ones in the binary representation of `self`.
-            /// [Read more](trait@SmallUInt#tymethod.count_ones) in detail.
+            /// Returns the number of ones in the binary representation of
+            /// `self`. [Read more](trait@SmallUInt#tymethod.count_ones)
+            /// in detail.
             #[inline] fn count_ones(self) -> u32        { self.count_ones() }
 
-            /// Returns the number of zeros in the binary representation of `self`.
-            /// [Read more](trait@SmallUInt#tymethod.count_zeros) in detail.
+            /// Returns the number of zeros in the binary representation of
+            /// `self`. [Read more](trait@SmallUInt#tymethod.count_zeros)
+            /// in detail.
             #[inline] fn count_zeros(self) -> u32       { self.count_zeros() }
 
             /// Returns the number of leading ones
@@ -575,8 +588,9 @@ macro_rules! SmallUInt_methods_for_uint_impl {
             /// [Read more](trait@SmallUInt#tymethod.from_be) in detail.
             #[inline] fn from_be(x: Self) -> Self   { Self::from_be(x) }
 
-            /// Converts an integer from little endian to the target’s endianness.
-            /// [Read more](trait@SmallUInt#tymethod.from_le) in detail.
+            /// Converts an integer from little endian to the target’s
+            /// endianness. [Read more](trait@SmallUInt#tymethod.from_le)
+            /// in detail.
             #[inline] fn from_le(x: Self) -> Self   { Self::from_le(x) }
 
             /// Converts `self` to big endian from the target’s endianness.
@@ -595,8 +609,9 @@ macro_rules! SmallUInt_methods_for_uint_impl {
             /// [Read more](trait@SmallUInt#tymethod.is_power_of_two) in detail.
             #[inline] fn is_power_of_two(self) -> bool  { self.is_power_of_two() }
 
-            /// Returns the smallest power of two greater than or equal to `self`.
-            /// [Read more](trait@SmallUInt#tymethod.next_power_of_two) in detail.
+            /// Returns the smallest power of two greater than or equal to
+            /// `self`. [Read more](trait@SmallUInt#tymethod.next_power_of_two)
+            /// in detail.
             #[inline] fn next_power_of_two(self) -> Self    { self.next_power_of_two() }
 
             /// Converts `self` into `f64` and return it.
@@ -636,7 +651,8 @@ macro_rules! SmallUInt_methods_for_uint_impl {
             #[inline] fn into_bool(self) -> bool    { self != 0 }
 
             /// Converts `self` into `ShortUnion` and return it.
-            /// [Read more](trait@SmallUInt#tymethod.into_shortunion) in detail.
+            /// [Read more](trait@SmallUInt#tymethod.into_shortunion)
+            /// in detail.
             #[inline] fn into_shortunion(self) -> ShortUnion    { ShortUnion::new_with(self.into_u16() ) }
 
             /// Converts `self` into `IntUnion` and return it.
@@ -648,7 +664,8 @@ macro_rules! SmallUInt_methods_for_uint_impl {
             #[inline] fn into_longunion(self) -> LongUnion  { LongUnion::new_with(self.into_u64() ) }
 
             /// Converts `self` into `LongerUnion` and return it.
-            /// [Read more](trait@SmallUInt#tymethod.into_longerunion) in detail.
+            /// [Read more](trait@SmallUInt#tymethod.into_longerunion)
+            /// in detail.
             #[inline] fn into_longerunion(self) -> LongerUnion  { LongerUnion::new_with(self.into_u128() ) }
 
             /// Converts `self` into `SizeUnion` and return it.
@@ -672,31 +689,38 @@ macro_rules! SmallUInt_methods_for_uint_impl {
             #[inline] fn min() -> Self      { Self::MIN }
 
             /// Converts `u128`-typed number `n` into `Self`-type.
-            /// [Read more](trait@SmallUInt#tymethod.u128_as_smalluint) in detail.
+            /// [Read more](trait@SmallUInt#tymethod.u128_as_smalluint)
+            /// in detail.
             #[inline] fn u128_as_smalluint(n: u128) -> Self  { n as Self }
 
             /// Converts `u64`-typed number `n` into `Self`-type.
-            /// [Read more](trait@SmallUInt#tymethod.u64_as_smalluint) in detail.
+            /// [Read more](trait@SmallUInt#tymethod.u64_as_smalluint)
+            /// in detail.
             #[inline] fn u64_as_smalluint(n: u64) -> Self    { n as Self }
 
             /// Converts `u32`-typed number `n` into `Self`-type.
-            /// [Read more](trait@SmallUInt#tymethod.u32_as_smalluint) in detail.
+            /// [Read more](trait@SmallUInt#tymethod.u32_as_smalluint)
+            /// in detail.
             #[inline] fn u32_as_smalluint(n: u32) -> Self    { n as Self }
 
             /// Converts `u16`-typed number `n` into `Self`-type.
-            /// [Read more](trait@SmallUInt#tymethod.u16_as_smalluint) in detail.
+            /// [Read more](trait@SmallUInt#tymethod.u16_as_smalluint)
+            /// in detail.
             #[inline] fn u16_as_smalluint(n: u16) -> Self    { n as Self }
 
             /// Converts `u8`-typed number `n` into `Self`-type.
-            /// [Read more](trait@SmallUInt#tymethod.u8_as_smalluint) in detail.
+            /// [Read more](trait@SmallUInt#tymethod.u8_as_smalluint)
+            /// in detail.
             #[inline] fn u8_as_smalluint(n: u8) -> Self     { n as Self }
 
             /// Converts `usize`-typed number `n` into `Self`-type.
-            /// [Read more](trait@SmallUInt#tymethod.usize_as_smalluint) in detail.
+            /// [Read more](trait@SmallUInt#tymethod.usize_as_smalluint)
+            /// in detail.
             #[inline] fn usize_as_smalluint(n: usize) -> Self   { n as Self }
 
             /// Converts `bool`-typed number `n` into `Self`-type.
-            /// [Read more](trait@SmallUInt#tymethod.bool_as_smalluint) in detail.
+            /// [Read more](trait@SmallUInt#tymethod.bool_as_smalluint)
+            /// in detail.
             #[inline] fn bool_as_smalluint(n: bool) -> Self     { n as Self }
 
             /// Converts `T`-typed number `n` into `Self`-type.
@@ -713,18 +737,19 @@ macro_rules! SmallUInt_methods_for_uint_impl {
                 }
             }
 
-            /// Checks whether `SmallUInt` to be zero, and returns true if it is
-            /// zero, and returns false if it is not zero.
+            /// Checks whether `SmallUInt` to be zero, and returns true
+            /// if it is zero, and returns false if it is not zero.
             /// [Read more](trait@SmallUInt#tymethod.is_zero) in detail.
             #[inline] fn is_zero(self) -> bool     { self == 0 }
 
-            /// Checks whether `SmallUInt` to be one, and returns true if it is
-            /// one, and returns false if it is not one.
+            /// Checks whether `SmallUInt` to be one, and returns true
+            /// if it is one, and returns false if it is not one.
             /// [Read more](trait@SmallUInt#tymethod.is_one) in detail.
             #[inline] fn is_one(self) -> bool      { self ==  1 }
 
-            /// Checks whether or not `self` is either zero or one, and returns true
-            /// if it is either zero or one. Otherwise, it returns false.
+            /// Checks whether or not `self` is either zero or one,
+            /// and returns true if it is either zero or one.
+            /// Otherwise, it returns false.
             /// [Read more](trait@SmallUInt#tymethod.is_zero_or_one) in detail.
             #[inline] fn is_zero_or_one(self) -> bool   { self < 2 }
 
@@ -738,14 +763,16 @@ macro_rules! SmallUInt_methods_for_uint_impl {
             /// [Read more](trait@SmallUInt#tymethod.set_lsb) in detail.
             #[inline] fn set_lsb(&mut self)     { *self |= 1; }
 
-            /// Constucts a new `SmallUInt` which has the value zero and sets only
-            /// the bit specified by the argument bit_pos to be 1.
-            /// [Read more](trait@SmallUInt#tymethod.generate_check_bits) in detail.
+            /// Constucts a new `SmallUInt` which has the value zero and sets
+            /// only the bit specified by the argument bit_pos to be 1.
+            /// [Read more](trait@SmallUInt#tymethod.generate_check_bits)
+            /// in detail.
             #[inline] fn generate_check_bits(bit_pos: usize) -> Option<Self>    { if bit_pos < Self::size_in_bits() { Some(Self::generate_check_bits_(bit_pos)) } else { None } }
 
-            /// Constucts a new `SmallUInt` which has the value zero and sets only
-            /// the bit specified by the argument bit_pos to be 1.
-            /// [Read more](trait@SmallUInt#tymethod.generate_check_bits_) in detail.
+            /// Constucts a new `SmallUInt` which has the value zero and sets
+            /// only the bit specified by the argument bit_pos to be 1.
+            /// [Read more](trait@SmallUInt#tymethod.generate_check_bits_)
+            /// in detail.
             #[inline] fn generate_check_bits_(bit_pos: usize) -> Self    { Self::one() << bit_pos }
 
             /// Checks whether or not `Self` is an odd number.
@@ -771,8 +798,8 @@ macro_rules! SmallUInt_methods_for_uint_impl {
             /// [Read more](trait@SmallUInt#tymethod.is_bit_set_) in detail.
             #[inline] fn is_bit_set_(self, bit_pos: usize) -> bool  { self & Self::generate_check_bits_(bit_pos) != 0 }
 
-            /// Sets `Self`-type number to be maximum value in which all bits are
-            /// set to be `1`.
+            /// Sets `Self`-type number to be maximum value in which all bits
+            /// are set to be `1`.
             /// [Read more](trait@SmallUInt#tymethod.set_max) in detail.
             #[inline] fn set_max(&mut self)     { *self = Self::MAX }
 
@@ -780,8 +807,9 @@ macro_rules! SmallUInt_methods_for_uint_impl {
             /// [Read more](trait@SmallUInt#tymethod.is_max)
             #[inline] fn is_max(self) -> bool { self == Self::MAX }
 
-            /// Sets `Self`-type number to be `size_in_bits`-bit long maximum value
-            /// in which all bits are set to be `1`.
+            /// Sets `Self`-type number to be `size_in_bits`-bit long maximum
+            /// value in which all bits of `size_in_bits`-bit long lower part
+            /// are set to be `1`.
             /// [Read more](trait@SmallUInt#tymethod.set_submax) in detail.
             fn set_submax(&mut self, size_in_bits: usize)
             {
@@ -797,11 +825,11 @@ macro_rules! SmallUInt_methods_for_uint_impl {
             }
 
             /// Sets `Self`-type number to be half long maximum value
-            /// in which all bits are set to be `1`.
+            /// in which all bits of half-lower part are set to be `1`.
             /// [Read more](trait@SmallUInt#tymethod.set_halfmax) in detail.
             #[inline] fn set_halfmax(&mut self) { self.set_submax(self.length_in_bits() >> 1); }
 
-            /// Sets `self` to be zero.
+            /// Sets `self` to be one.
             /// [Read more](trait@SmallUInt#tymethod.set_one) in detail.
             #[inline] fn set_one(&mut self)     { *self = Self::one(); }
 

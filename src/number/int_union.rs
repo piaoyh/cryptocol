@@ -231,6 +231,7 @@ pub union IntUnion
 
 impl IntUnion
 {
+    // pub fn new() -> Self
     /// Constructs a new `IntUnion`.
     /// 
     /// # Output
@@ -249,7 +250,22 @@ impl IntUnion
     /// ```
     #[inline] pub fn new() -> Self  { Self { uint: 0 } }
 
-
+    // pub fn new_with(uint: u32) -> Self
+    /// Constructs a new `IntUnion` with initializing it with `uint`.
+    /// 
+    /// # Output
+    /// A new object of `IntUnion` initialized with the value `uint`.
+    /// 
+    /// # Initialization
+    /// The field of the constructed object will be initialized with `uint`.
+    /// 
+    /// Example
+    /// ```
+    /// use cryptocol::number::IntUnion;    
+    /// let a = IntUnion::new_with(1234567890_u32);
+    /// println!("a = {}", a.get());
+    /// assert_eq!(a.get(), 1234567890_u32);
+    /// ```
     #[inline] pub fn new_with(uint: u32) -> Self  { Self { uint } }
     #[inline] pub fn new_with_signed(sint: i32) -> Self   { Self { sint } }
     #[inline] pub fn new_with_ubytes(ubyte: [u8; 4]) -> Self  { Self { ubyte } }

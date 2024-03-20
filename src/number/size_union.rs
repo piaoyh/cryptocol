@@ -436,9 +436,9 @@ pub union SizeUnion
 /// assert_eq!(c_sizeunion.get(), 99999999999999999_usize);
 /// 
 /// for i in 0..2
-///     { println!("c_sizeunion.get_ulong_({}) = {}", i, c_sizeunion.get_ulong_(i)); }
-/// assert_eq!(c_sizeunion.get_ulong_(0), 4089650035136921599_u64);
-/// assert_eq!(c_sizeunion.get_ulong_(1), 54210108624275_u64);
+///     { println!("c_sizeunion.get_uint_({}) = {}", i, c_sizeunion.get_uint_(i)); }
+/// assert_eq!(c_sizeunion.get_uint_(0), 1569325055_u32);
+/// assert_eq!(c_sizeunion.get_uint_(1), 23283064_u32);
 /// 
 /// for i in 0..4
 ///     { println!("c_sizeunion.get_ushort_({}) = {}", i, c_sizeunion.get_ushort_(i)); }
@@ -953,6 +953,7 @@ pub union SizeUnion
 
 impl SizeUnion
 {
+    // pub fn new() -> Self
     /// Constructs a new `SizeUnion`.
     /// 
     /// # Output
@@ -970,6 +971,23 @@ impl SizeUnion
     /// assert_eq!(a.get(), 0_usize);
     /// ```
     #[inline] pub fn new() -> Self  { Self { u_size: 0 } }
+
+    // pub fn new_with(u_size: usize) -> Self
+    /// Constructs a new `SizeUnion` with initializing it with `u_size`.
+    /// 
+    /// # Output
+    /// A new object of `SizeUnion` initialized with the value `u_size`.
+    /// 
+    /// # Initialization
+    /// The field of the constructed object will be initialized with `u_size`.
+    /// 
+    /// Example
+    /// ```
+    /// use cryptocol::number::SizeUnion;    
+    /// let a = SizeUnion::new_with(1234_usize);
+    /// println!("a = {}", a.get());
+    /// assert_eq!(a.get(), 1234_usize);
+    /// ```
     #[inline] pub fn new_with(u_size: usize) -> Self  { Self { u_size } }
     #[inline] pub fn new_with_signed(s_size: isize) -> Self   { Self { s_size } }
     #[inline] pub fn onoff(b: bool) -> Self           { Self { u_size: b as usize } }

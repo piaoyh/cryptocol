@@ -441,6 +441,7 @@ pub union LongerUnion
 
 impl LongerUnion
 {
+    // pub fn new() -> Self
     /// Constructs a new `LongerUnion`.
     /// 
     /// # Output
@@ -458,6 +459,23 @@ impl LongerUnion
     /// assert_eq!(a.get(), 0_u128);
     /// ```
     #[inline] pub fn new() -> Self  { Self { ulonger: 0 } }
+
+    // pub fn new_with(ulonger: u128) -> Self
+    /// Constructs a new `LongerUnion` with initializing it with `ulonger`.
+    /// 
+    /// # Output
+    /// A new object of `LongerUnion` initialized with the value `ulonger`.
+    /// 
+    /// # Initialization
+    /// The field of the constructed object will be initialized with `ulonger`.
+    /// 
+    /// Example
+    /// ```
+    /// use cryptocol::number::LongerUnion;    
+    /// let a = LongerUnion::new_with(1234567890987654321012345678987654321_u128);
+    /// println!("a = {}", a.get());
+    /// assert_eq!(a.get(), 1234567890987654321012345678987654321_u128);
+    /// ```
     #[inline] pub fn new_with(ulonger: u128) -> Self  { Self { ulonger } }
     #[inline] pub fn new_with_signed(slonger: i128) -> Self   { Self { slonger } }
     #[inline] pub fn new_with_ubytes(ubyte: [u8; 16]) -> Self { Self { ubyte } }

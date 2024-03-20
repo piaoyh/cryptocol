@@ -173,6 +173,7 @@ pub union ShortUnion
 
 impl ShortUnion
 {
+    // pub fn new() -> Self
     /// Constructs a new `ShortUnion`.
     /// 
     /// # Output
@@ -191,7 +192,22 @@ impl ShortUnion
     /// ```
     #[inline] pub fn new() -> Self  { Self { ushort: 0 } }
 
-
+    // pub fn new_with(ushort: u16) -> Self
+    /// Constructs a new `ShortUnion` with initializing it with `ushort`.
+    /// 
+    /// # Output
+    /// A new object of `ShortUnion` initialized with the value `ushort`.
+    /// 
+    /// # Initialization
+    /// The field of the constructed object will be initialized with `ushort`.
+    /// 
+    /// Example
+    /// ```
+    /// use cryptocol::number::ShortUnion;    
+    /// let a = ShortUnion::new_with(1234_u16);
+    /// println!("a = {}", a.get());
+    /// assert_eq!(a.get(), 1234_u16);
+    /// ```
     #[inline] pub fn new_with(ushort: u16) -> Self    { Self { ushort } }
     #[inline] pub fn new_with_signed(sshort: i16) -> Self { Self { sshort } }
     #[inline] pub fn new_with_ubytes(ubyte: [u8; 2]) -> Self  { Self { ubyte } }

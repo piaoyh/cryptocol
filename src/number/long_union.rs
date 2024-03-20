@@ -312,6 +312,7 @@ pub union LongUnion
 
 impl LongUnion
 {
+    // pub fn new() -> Self
     /// Constructs a new `LongUnion`.
     /// 
     /// # Output
@@ -330,7 +331,22 @@ impl LongUnion
     /// ```
     #[inline] pub fn new() -> Self  { Self { ulong: 0 } }
 
-
+    // pub fn new_with(ulong: u64) -> Self
+    /// Constructs a new `LongUnion` with initializing it with `ulong`.
+    /// 
+    /// # Output
+    /// A new object of `LongUnion` initialized with the value `ulong`.
+    /// 
+    /// # Initialization
+    /// The field of the constructed object will be initialized with `ulong`.
+    /// 
+    /// Example
+    /// ```
+    /// use cryptocol::number::LongUnion;    
+    /// let a = LongUnion::new_with(12345678909876456_u64);
+    /// println!("a = {}", a.get());
+    /// assert_eq!(a.get(), 12345678909876456_u64);
+    /// ```
     #[inline] pub fn new_with(ulong: u64) -> Self     { Self { ulong } }
     #[inline] pub fn new_with_signed(slong: i64) -> Self  { Self { slong } }
     #[inline] pub fn new_with_ubytes(ubyte: [u8; 8])  -> Self { Self { ubyte } }
