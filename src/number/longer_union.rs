@@ -476,12 +476,47 @@ impl LongerUnion
     /// println!("a = {}", a.get());
     /// assert_eq!(a.get(), 1234567890987654321012345678987654321_u128);
     /// ```
-    #[inline] pub fn new_with(ulonger: u128) -> Self  { Self { ulonger } }
-    #[inline] pub fn new_with_signed(slonger: i128) -> Self   { Self { slonger } }
-    #[inline] pub fn new_with_ubytes(ubyte: [u8; 16]) -> Self { Self { ubyte } }
-    #[inline] pub fn new_with_ushorts(ushort: [u16; 8]) -> Self   { Self { ushort } }
-    #[inline] pub fn new_with_uints(uint: [u32; 4]) -> Self   { Self { uint } }
-    #[inline] pub fn new_with_ulongs(ulong: [u64; 2]) -> Self   { Self { ulong } }
+    #[inline] pub fn new_with(ulonger: u128) -> Self    { Self { ulonger } }
+
+    // pub fn new_with_signed(slonger: i128) -> Self
+    /// Constructs a new `LongerUnion` with initializing it with `slonger`.
+    /// 
+    /// # Output
+    /// A new object of `LongerUnion` initialized with the value `slonger`.
+    /// 
+    /// # Initialization
+    /// The field of the constructed object will be initialized with `slonger`.
+    /// 
+    /// Example
+    /// ```
+    /// use cryptocol::number::LongerUnion;    
+    /// let a = LongerUnion::new_with_signed(-1234567890987654321012345678987654321_i128);
+    /// println!("a = {}", a.get_signed());
+    /// assert_eq!(a.get_signed(), -1234567890987654321012345678987654321_i128);
+    /// ```
+    #[inline] pub fn new_with_signed(slonger: i128) -> Self     { Self { slonger } }
+
+    // pub fn new_with_ubytes(ubyte: &[u8; 16]) -> Self
+    /// Constructs a new `LongerUnion` with initializing it with `ubyte`.
+    /// 
+    /// # Output
+    /// A new object of `LongerUnion` initialized with the value `ubyte`.
+    /// 
+    /// # Initialization
+    /// The field of the constructed object will be initialized with `ubyte`.
+    /// 
+    /// Example
+    /// ```
+    /// use cryptocol::number::LongerUnion;
+    /// let arr = [79_u8, 11_u8, 74_u8, 241_u8, 245_u8, 104_u8, 163_u8, 189_u8, 88_u8, 136_u8, 206_u8, 126_u8, 26_u8, 59_u8, 18_u8, 255_u8];
+    /// let a = LongerUnion::new_with_ubytes(&arr);
+    /// println!("a = {}", a.get());
+    /// assert_eq!(a.get(), 339047799029950809142362261752780557135_u128);
+    /// ```
+    #[inline] pub fn new_with_ubytes(ubyte: &[u8; 16]) -> Self  { Self { ubyte: [ubyte[0], ubyte[1], ubyte[2], ubyte[3], ubyte[4], ubyte[5], ubyte[6], ubyte[7], ubyte[8], ubyte[9], ubyte[10], ubyte[11], ubyte[12], ubyte[13], ubyte[14], ubyte[15]] } }
+    #[inline] pub fn new_with_ushorts(ushort: &[u16; 8]) -> Self    { Self { ushort: [ushort[0], ushort[1], ushort[2], ushort[3], ushort[4], ushort[5], ushort[6], ushort[7]] } }
+    #[inline] pub fn new_with_uints(uint: &[u32; 4]) -> Self    { Self { uint: [uint[0], uint[1], uint[2], uint[3]] } }
+    #[inline] pub fn new_with_ulongs(ulong: &[u64; 2]) -> Self  { Self { ulong: [ulong[0], ulong[1]] } }
     #[inline] pub fn onoff(b: bool) -> Self           { Self { ulonger: b as u128 } }
     #[inline] pub fn onoff_signed(b: bool) -> Self    { Self { slonger: b as i128 } }
     #[inline] pub fn new_with_u128(num: u128) -> Self { Self { ulonger: num } }

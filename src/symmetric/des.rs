@@ -751,7 +751,7 @@ S756, S757, S758, S759, S760, S761, S762, S763,
     /// 
     #[inline]
     #[allow(dead_code)]
-    pub fn new(key: [u8; 8]) -> Self
+    pub fn new(key: &[u8; 8]) -> Self
     {
         Self { key: LongUnion::new_with_ubytes(key), block: LongUnion::new(), }
     }
@@ -796,7 +796,7 @@ S756, S757, S758, S759, S760, S761, S762, S763,
     }
 
     #[allow(dead_code)]
-    fn permutate_key2(&self, key: [u8; 7]) -> [u8; 6]
+    fn permutate_key2(&self, key: &[u8; 7]) -> [u8; 6]
     {
         let mut key_union = LongUnion::new();
         for i in 0..7

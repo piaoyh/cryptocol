@@ -94,15 +94,38 @@ number will be 0.27.x.x since there are all twenty-six functionalities
 listed above. So, for example, even if the version number is 0.5.0.0,
 it does not mean that 50% of all functionalities are implemented.
 
-## Sorry for breaking changes from ver. 0.7.1 to ver. 0.7.2
+## Sorry for breaking changes from ver. 0.7.2 to ver. 0.7.3
 
 I think that if breaking changes are inevitable and have to be made, the sooner, the better even before more people will be using my crate.
+
+### methods of ShortUnion, IntUnion, LongUnion, LongerUnion, SizeUnion
+
+| Ver. 0.7.2                                        | Ver. 0.7.3                                         |
+|---------------------------------------------------|----------------------------------------------------|
+| pub fn new_with_ubytes(ubyte: [u8; 2]) -> Self    | pub fn new_with_ubytes(ubyte: &[u8; 2]) -> Self    |
+| pub fn new_with_ubytes(ubyte: [u8; 4]) -> Self    | pub fn new_with_ubytes(ubyte: &[u8; 4]) -> Self    |
+| pub fn new_with_ubytes(ubyte: [u8; 8]) -> Self    | pub fn new_with_ubytes(ubyte: &[u8; 8]) -> Self    |
+| pub fn new_with_ubytes(ubyte: [u8; 16]) -> Self   | pub fn new_with_ubytes(ubyte: &[u8; 16]) -> Self   |
+| pub fn new_with_ushorts(ushort: [u16; 2]) -> Self | pub fn new_with_ushorts(ushort: &[u16; 2]) -> Self |
+| pub fn new_with_ushorts(ushort: [u16; 4]) -> Self | pub fn new_with_ushorts(ushort: &[u16; 4]) -> Self |
+| pub fn new_with_ushorts(ushort: [u16; 8]) -> Self | pub fn new_with_ushorts(ushort: &[u16; 8]) -> Self |
+| pub fn new_with_uints(uint: [u32; 2])  -> Self    | pub fn new_with_uints(uint: &[u32; 2])  -> Self    |
+| pub fn new_with_uints(uint: [u32; 4])  -> Self    | pub fn new_with_uints(uint: &[u32; 4])  -> Self    |
+| pub fn new_with_ulongs(ulong: [u64; 2]) -> Self   | pub fn new_with_ulongs(ulong: &[u64; 2]) -> Self   |
+
+### methods of DES_Generic
+
+| Ver. 0.7.2                       | Ver. 0.7.3                        |
+|----------------------------------|-----------------------------------|
+| pub fn new(key: [u8; 8]) -> Self | pub fn new(key: &[u8; 8]) -> Self |
+
+## Sorry for breaking changes from ver. 0.7.1 to ver. 0.7.2
 
 ### union SharedValues
 
 | Ver. 0.7.1                                          | Ver. 0.7.2 |
 |-----------------------------------------------------|------------|
-| pub fn into_des(&mut self, pos: usize) -> Option<D> | removed    |
+| pub fn into_des(&mut self, pos: usize) -> Option&lt;D&gt; | removed    |
 
 ### union SharedArray
 
@@ -209,8 +232,8 @@ A breaking change has been made to change the function `number::BigUInt::copy_wi
 
 ### struct BigUInt
 
-| Ver. 0.6.2                                            | Ver. 0.6.3                                        |
-|-------------------------------------------------------|---------------------------------------------------|
+| Ver. 0.6.2                                                  | Ver. 0.6.3                                              |
+|-------------------------------------------------------------|---------------------------------------------------------|
 | pub fn copy_within&lt;R&gt;(&mut self, src: R, dest: usize) | fn copy_within&lt;R&gt;(&mut self, src: R, dest: usize) |
 
 ## Sorry for breaking changes from ver. 0.5.0 to ver. 0.6.0

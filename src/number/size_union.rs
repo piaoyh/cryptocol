@@ -989,7 +989,24 @@ impl SizeUnion
     /// assert_eq!(a.get(), 1234_usize);
     /// ```
     #[inline] pub fn new_with(u_size: usize) -> Self  { Self { u_size } }
-    #[inline] pub fn new_with_signed(s_size: isize) -> Self   { Self { s_size } }
+
+    // pub fn new_with_signed(s_size: isize) -> Self
+    /// Constructs a new `SizeUnion` with initializing it with `isize`.
+    /// 
+    /// # Output
+    /// A new object of `SizeUnion` initialized with the value `isize`.
+    /// 
+    /// # Initialization
+    /// The field of the constructed object will be initialized with `isize`.
+    /// 
+    /// Example
+    /// ```
+    /// use cryptocol::number::SizeUnion;    
+    /// let a = SizeUnion::new_with_signed(-1234_isize);
+    /// println!("a = {}", a.get_signed());
+    /// assert_eq!(a.get_signed(), -1234_isize);
+    /// ```
+    #[inline] pub fn new_with_signed(s_size: isize) -> Self     { Self { s_size } }
     #[inline] pub fn onoff(b: bool) -> Self           { Self { u_size: b as usize } }
     #[inline] pub fn onoff_signed(b: bool) -> Self    { Self { s_size: b as isize } }
     #[inline] pub fn new_with_u128(num: u128) -> Self { Self { u_size: LongerUnion::new_with(num).get_usize_(0) } }

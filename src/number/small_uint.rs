@@ -6847,8 +6847,8 @@ pub trait SmallUInt: Copy + Clone + Sized //+ Display + Debug + ToString
     ///     assert_eq!(c_low_u8, 226);
     ///     assert_eq!(c_lower_u8, 232);
     /// 
-    ///     let a = IntUnion::new_with_ubytes([a_low_u8, a_high_u8, 0, 0]);
-    ///     let b = IntUnion::new_with_ubytes([b_low_u8, b_high_u8, 0, 0]);
+    ///     let a = IntUnion::new_with_ubytes(&[a_low_u8, a_high_u8, 0, 0]);
+    ///     let b = IntUnion::new_with_ubytes(&[b_low_u8, b_high_u8, 0, 0]);
     ///     let c = a * b;
     ///     println!("{} * {} = {}", a.get(), b.get(), c.get());
     ///     assert_eq!(c_higher_u8, c.get_ubyte_(3));
@@ -6909,8 +6909,8 @@ pub trait SmallUInt: Copy + Clone + Sized //+ Display + Debug + ToString
     ///     assert_eq!(c_low_u16, 61770);
     ///     assert_eq!(c_lower_u16, 18048);
     /// 
-    ///     let a = LongUnion::new_with_ushorts([a_low_u16, a_high_u16, 0, 0]);
-    ///     let b = LongUnion::new_with_ushorts([b_low_u16, b_high_u16, 0, 0]);
+    ///     let a = LongUnion::new_with_ushorts(&[a_low_u16, a_high_u16, 0, 0]);
+    ///     let b = LongUnion::new_with_ushorts(&[b_low_u16, b_high_u16, 0, 0]);
     ///     let c = a * b;
     ///     println!("{} * {} = {}", a.get(), b.get(), c.get());
     ///     assert_eq!(c_higher_u16, c.get_ushort_(3));
@@ -6971,8 +6971,8 @@ pub trait SmallUInt: Copy + Clone + Sized //+ Display + Debug + ToString
     ///     assert_eq!(c_low_shortunion.get(), 61770);
     ///     assert_eq!(c_lower_shortunion.get(), 18048);
     /// 
-    ///     let a = LongUnion::new_with_ushorts([a_low_shortunion.get(), a_high_shortunion.get(), 0, 0]);
-    ///     let b = LongUnion::new_with_ushorts([b_low_shortunion.get(), b_high_shortunion.get(), 0, 0]);
+    ///     let a = LongUnion::new_with_ushorts(&[a_low_shortunion.get(), a_high_shortunion.get(), 0, 0]);
+    ///     let b = LongUnion::new_with_ushorts(&[b_low_shortunion.get(), b_high_shortunion.get(), 0, 0]);
     ///     let c = a * b;
     ///     println!("{} * {} = {}", a.get(), b.get(), c.get());
     ///     assert_eq!(c_higher_shortunion.get(), c.get_ushort_(3));
@@ -7037,8 +7037,8 @@ pub trait SmallUInt: Copy + Clone + Sized //+ Display + Debug + ToString
     ///     assert_eq!(c_low_u8, 226);
     ///     assert_eq!(c_lower_u8, 232);
     /// 
-    ///     let a = IntUnion::new_with_ubytes([a_low_u8, a_high_u8, 0, 0]);
-    ///     let b = IntUnion::new_with_ubytes([b_low_u8, b_high_u8, 0, 0]);
+    ///     let a = IntUnion::new_with_ubytes(&[a_low_u8, a_high_u8, 0, 0]);
+    ///     let b = IntUnion::new_with_ubytes(&[b_low_u8, b_high_u8, 0, 0]);
     ///     let c = a * b;
     ///     println!("{} * {} = {}", a.get(), b.get(), c.get());
     ///     assert_eq!(c_higher_u8, c.get_ubyte_(3));
@@ -7071,8 +7071,8 @@ pub trait SmallUInt: Copy + Clone + Sized //+ Display + Debug + ToString
     ///     assert_eq!(c_low_u16, 61770);
     ///     assert_eq!(c_lower_u16, 18048);
     /// 
-    ///     let a = LongUnion::new_with_ushorts([a_low_u16, a_high_u16, 0, 0]);
-    ///     let b = LongUnion::new_with_ushorts([b_low_u16, b_high_u16, 0, 0]);
+    ///     let a = LongUnion::new_with_ushorts(&[a_low_u16, a_high_u16, 0, 0]);
+    ///     let b = LongUnion::new_with_ushorts(&[b_low_u16, b_high_u16, 0, 0]);
     ///     let c = a * b;
     ///     println!("{} * {} = {}", a.get(), b.get(), c.get());
     ///     assert_eq!(c_higher_u16, c.get_ushort_(3));
@@ -7105,8 +7105,8 @@ pub trait SmallUInt: Copy + Clone + Sized //+ Display + Debug + ToString
     ///     assert_eq!(c_low_shortunion.get(), 61770);
     ///     assert_eq!(c_lower_shortunion.get(), 18048);
     /// 
-    ///     let a = LongUnion::new_with_ushorts([a_low_shortunion.get(), a_high_shortunion.get(), 0, 0]);
-    ///     let b = LongUnion::new_with_ushorts([b_low_shortunion.get(), b_high_shortunion.get(), 0, 0]);
+    ///     let a = LongUnion::new_with_ushorts(&[a_low_shortunion.get(), a_high_shortunion.get(), 0, 0]);
+    ///     let b = LongUnion::new_with_ushorts(&[b_low_shortunion.get(), b_high_shortunion.get(), 0, 0]);
     ///     let c = a * b;
     ///     println!("{} * {} = {}", a.get(), b.get(), c.get());
     ///     assert_eq!(c_higher_shortunion.get(), c.get_ushort_(3));

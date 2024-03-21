@@ -266,10 +266,45 @@ impl IntUnion
     /// println!("a = {}", a.get());
     /// assert_eq!(a.get(), 1234567890_u32);
     /// ```
-    #[inline] pub fn new_with(uint: u32) -> Self  { Self { uint } }
-    #[inline] pub fn new_with_signed(sint: i32) -> Self   { Self { sint } }
-    #[inline] pub fn new_with_ubytes(ubyte: [u8; 4]) -> Self  { Self { ubyte } }
-    #[inline] pub fn new_with_ushorts(ushort: [u16; 2]) -> Self   { Self { ushort } }
+    #[inline] pub fn new_with(uint: u32) -> Self    { Self { uint } }
+
+    // pub fn new_with_signed(sint: i32) -> Self
+    /// Constructs a new `IntUnion` with initializing it with `sint`.
+    /// 
+    /// # Output
+    /// A new object of `IntUnion` initialized with the value `sint`.
+    /// 
+    /// # Initialization
+    /// The field of the constructed object will be initialized with `sint`.
+    /// 
+    /// Example
+    /// ```
+    /// use cryptocol::number::IntUnion;    
+    /// let a = IntUnion::new_with_signed(-1234567890_i32);
+    /// println!("a = {}", a.get_signed());
+    /// assert_eq!(a.get_signed(), -1234567890_i32);
+    /// ```
+    #[inline] pub fn new_with_signed(sint: i32) -> Self     { Self { sint } }
+
+    // pub fn new_with_ubytes(ubyte: &[u8; 4]) -> Self
+    /// Constructs a new `IntUnion` with initializing it with `ubyte`.
+    /// 
+    /// # Output
+    /// A new object of `IntUnion` initialized with the value `ubyte`.
+    /// 
+    /// # Initialization
+    /// The field of the constructed object will be initialized with `ubyte`.
+    /// 
+    /// Example
+    /// ```
+    /// use cryptocol::number::IntUnion;
+    /// let arr = [222_u8, 0_u8, 230_u8, 228_u8];
+    /// let a = IntUnion::new_with_ubytes(&arr);
+    /// println!("a = {}", a.get());
+    /// assert_eq!(a.get(), 3840278750_u32);
+    /// ```
+    #[inline] pub fn new_with_ubytes(ubyte: &[u8; 4]) -> Self   { Self { ubyte: [ubyte[0], ubyte[1], ubyte[2], ubyte[3]] } }
+    #[inline] pub fn new_with_ushorts(ushort: &[u16; 2]) -> Self    { Self { ushort: [ushort[0], ushort[1]] } }
     #[inline] pub fn onoff(b: bool) -> Self       { Self { uint: b as u32 } }
     #[inline] pub fn onoff_signed(b: bool) -> Self    { Self { sint: b as i32 } }
     #[inline] pub fn new_with_u128(num: u128) -> Self { Self { uint: LongerUnion::new_with(num).get_uint_(0) } }
