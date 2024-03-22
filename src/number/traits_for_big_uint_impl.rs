@@ -1482,7 +1482,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// ```
     fn from(val: [T; N]) -> Self
     {
-        Self::from_array(&val)
+        Self::from_array(val)
     }
 }
 

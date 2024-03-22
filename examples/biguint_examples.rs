@@ -385,7 +385,7 @@ fn biguint_from_array()
     use cryptocol::define_utypes_with;
     define_utypes_with!(u8);
 
-    let big_num = U256::from_array(&[1_u8;32]);
+    let big_num = U256::from_array([1_u8;32]);
     println!("big_num = {}", big_num.to_string_with_radix(2).unwrap());
     assert_eq!(big_num, U256::from_str_radix("00000001_00000001_00000001_00000001_00000001_00000001_00000001_00000001_00000001_00000001_00000001_00000001_00000001_00000001_00000001_00000001_00000001_00000001_00000001_00000001_00000001_00000001_00000001_00000001_00000001_00000001_00000001_00000001_00000001_00000001_00000001_00000001", 2).unwrap());
     println!("---------------------------");
@@ -446,11 +446,11 @@ fn biguint_from_be()
     use cryptocol::define_utypes_with;
     define_utypes_with!(u8);
 
-    let be = U256::from_array(&[0x12, 0x34, 0x56, 0x78, 0x90, 0xab, 0xcd, 0xef,
+    let be = U256::from_array([0x12, 0x34, 0x56, 0x78, 0x90, 0xab, 0xcd, 0xef,
                                 0x11, 0x22, 0x33, 0x44, 0x55, 0x66, 0x77, 0x88,
                                 0x99, 0x00, 0xaa, 0xbb, 0xcc, 0xdd, 0xee, 0xff,
                                 0x1f, 0x2e, 0x3d, 0x4c, 0x5b, 0x6a, 0x70, 0x89]);
-    let le = U256::from_be(&be);
+    let le = U256::from_be(be.clone());
     println!("be = 0x{}", be.to_string_with_radix(16).unwrap());
     println!("le = 0x{}", le.to_string_with_radix(16).unwrap());
     assert_eq!(be.to_string_with_radix(16).unwrap(), "89706A5B4C3D2E1FFFEEDDCCBBAA00998877665544332211EFCDAB9078563412");
@@ -468,7 +468,7 @@ fn biguint_from_be_bytes()
                     0x11, 0x22, 0x33, 0x44, 0x55, 0x66, 0x77, 0x88,
                     0x99, 0x00, 0xaa, 0xbb, 0xcc, 0xdd, 0xee, 0xff,
                     0x1f, 0x2e, 0x3d, 0x4c, 0x5b, 0x6a, 0x70, 0x89];
-    let le = U256::from_be_bytes(&be_array);
+    let le = U256::from_be_bytes(be_array.clone());
     println!("be_array = {:?}", be_array);
     println!("le = {:?}", le);
     assert_eq!(le.to_string_with_radix(16).unwrap(), "1234567890ABCDEF11223344556677889900AABBCCDDEEFF1F2E3D4C5B6A7089");
@@ -481,11 +481,11 @@ fn biguint_from_le()
     use cryptocol::define_utypes_with;
     define_utypes_with!(u8);
 
-    let le1 = U256::from_array(&[0x12, 0x34, 0x56, 0x78, 0x90, 0xab, 0xcd, 0xef,
+    let le1 = U256::from_array([0x12, 0x34, 0x56, 0x78, 0x90, 0xab, 0xcd, 0xef,
                                 0x11, 0x22, 0x33, 0x44, 0x55, 0x66, 0x77, 0x88,
                                 0x99, 0x00, 0xaa, 0xbb, 0xcc, 0xdd, 0xee, 0xff,
                                 0x1f, 0x2e, 0x3d, 0x4c, 0x5b, 0x6a, 0x70, 0x89]);
-    let le2 = U256::from_le(&le1);
+    let le2 = U256::from_le(le1.clone());
     println!("le1 = 0x{}", le1.to_string_with_radix(16).unwrap());
     println!("le2 = 0x{}", le2.to_string_with_radix(16).unwrap());
     assert_eq!(le1.to_string_with_radix(16).unwrap(), "89706A5B4C3D2E1FFFEEDDCCBBAA00998877665544332211EFCDAB9078563412");
@@ -503,7 +503,7 @@ fn biguint_from_le_bytes()
                     0x11, 0x22, 0x33, 0x44, 0x55, 0x66, 0x77, 0x88,
                     0x99, 0x00, 0xaa, 0xbb, 0xcc, 0xdd, 0xee, 0xff,
                     0x1f, 0x2e, 0x3d, 0x4c, 0x5b, 0x6a, 0x70, 0x89];
-    let le = U256::from_le_bytes(&le_array);
+    let le = U256::from_le_bytes(le_array.clone());
     println!("le_array = {:?}", le_array);
     println!("le = {:?}", le);
     assert_eq!(le.to_string_with_radix(16).unwrap(), "89706A5B4C3D2E1FFFEEDDCCBBAA00998877665544332211EFCDAB9078563412");

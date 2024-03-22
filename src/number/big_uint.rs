@@ -15,7 +15,7 @@
 #![allow(missing_doc_code_examples)]
 
 use std::fmt::{ Display, Debug };
-use std::mem::{ size_of, transmute };
+use std::mem::size_of;
 use std::cmp::{ PartialEq, PartialOrd, Ordering };
 use std::convert::From;
 use std::str::FromStr;
@@ -1003,7 +1003,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
         return me;
     }
 
-    // pub fn from_array(val: &[T; N]) -> Self
+    // pub fn from_array(val: [T; N]) -> Self
     /// Constructs a new `BigUInt<T, N>` from an array of type `T` with `N`
     /// elements.
     /// 
@@ -1019,15 +1019,13 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// use cryptocol::define_utypes_with;
     /// define_utypes_with!(u8);
     /// 
-    /// let big_num = U256::from_array(&[1_u8;32]);
+    /// let big_num = U256::from_array([1_u8;32]);
     /// println!("big_num = {}", big_num.to_string_with_radix(2).unwrap());
     /// assert_eq!(big_num, U256::from_str_radix("00000001_00000001_00000001_00000001_00000001_00000001_00000001_00000001_00000001_00000001_00000001_00000001_00000001_00000001_00000001_00000001_00000001_00000001_00000001_00000001_00000001_00000001_00000001_00000001_00000001_00000001_00000001_00000001_00000001_00000001_00000001_00000001", 2).unwrap());
     /// ```
-    pub fn from_array(val: &[T; N]) -> Self
+    pub fn from_array(val: [T; N]) -> Self
     {
-        let mut s = Self::new();
-        s.set_number(val);
-        s
+        Self { number: val, flag: 0 }
     }
 
     // pub fn from_biguint<U, const M: usize>(biguint: &BigUInt<U, M>) -> Self
@@ -1076,7 +1074,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// println!("b = {}", b);
     /// assert_eq!(a.to_string(), b.to_string());
     /// ```
-    #[cfg(target_endian = "little")]
+    #[inline]
     pub fn from_biguint<U, const M: usize>(biguint: &BigUInt<U, M>) -> Self
     where U: SmallUInt + Copy + Clone + Display + Debug + ToString
             + Add<Output=U> + AddAssign + Sub<Output=U> + SubAssign
@@ -1087,97 +1085,10 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
             + BitXor<Output=U> + BitXorAssign + Not<Output=U>
             + PartialEq + PartialOrd
     {
-        let my_size = Self::size_in_bytes();
-        let src_size = BigUInt::<U, M>::size_in_bytes();
-        if my_size <= src_size
-        {
-            let mut me = Self::new();
-            let src = unsafe { transmute::<&[U;M], &[T;N]>(&biguint.number) };
-            me.number.copy_from_slice(src);
-            me
-        }
-        else //if my_size > src_size
-        {
-            let common = SharedArrays::<T, N, U, M>::from_src(&biguint.number);
-            unsafe { Self::from_array(&common.des) }
-        }
+        Self::from_array(unsafe {SharedArrays::<T, N, U, M>::from_src(biguint.get_number()).des})
     }
 
-    // pub fn from_biguint<U, const M: usize>(biguint: &BigUInt<U, M>) -> Self
-    /// Constructs a new `BigUInt<T, N>` from another kind of `BigUInt<U, M>`.
-    /// 
-    /// # Output
-    /// A new object of `BigUInt<T, N>` that represents the same value of another
-    /// kind of `BigUInt<U, M>`.
-    /// 
-    /// # Example for the same length
-    /// ```
-    /// use std::str::FromStr;
-    /// use cryptocol::number::*;
-    /// 
-    /// let a = U256_with_u8::from_str("123456789123456789123456789123456789123456789123456789").unwrap();
-    /// let b = U256_with_u16::from_biguint(&a);
-    /// println!("a = {}", a);
-    /// println!("b = {}", b);
-    /// assert_eq!(a.to_string(), b.to_string());
-    /// ```
-    /// 
-    /// # Example for the shorter length
-    /// ```
-    /// use std::str::FromStr;
-    /// use cryptocol::number::*;
-    /// 
-    /// let a = U256_with_u8::from_str("123456789123456789123456789123456789123456789123456789").unwrap();
-    /// let b = U512_with_u16::from_biguint(&a);
-    /// println!("a = {}", a);
-    /// println!("b = {}", b);
-    /// assert_eq!(a.to_string(), b.to_string());
-    /// ```
-    /// 
-    /// # Example for the longer length
-    /// ```
-    /// use std::str::FromStr;
-    /// use cryptocol::number::*;
-    /// 
-    /// let a = U512_with_u8::from_str("123456789123456789123456789123456789123456789123456789").unwrap();
-    /// let b = U256_with_u16::from_biguint(&a);
-    /// println!("a = {}", a);
-    /// println!("b = {}", b);
-    /// assert_eq!(a.to_string(), b.to_string());
-    /// ```
-    /// 
-    /// # Big-endian issue
-    /// It is just experimental for Big Endian CPUs. So, you are not encouraged
-    /// to use it for Big Endian CPUs for serious purpose. Only use this crate
-    /// for Big-endian CPUs with your own full responsibility.
-    #[cfg(target_endian = "big")]
-    pub fn from_biguint<U, const M: usize>(biguint: &BigUInt<U, M>) -> Self
-    where U: SmallUInt + Copy + Clone + Display + Debug + ToString
-            + Add<Output=U> + AddAssign + Sub<Output=U> + SubAssign
-            + Mul<Output=U> + MulAssign + Div<Output=U> + DivAssign
-            + Rem<Output=U> + RemAssign
-            + Shl<Output=U> + ShlAssign + Shr<Output=U> + ShrAssign
-            + BitAnd<Output=U> + BitAndAssign + BitOr<Output=U> + BitOrAssign
-            + BitXor<Output=U> + BitXorAssign + Not<Output=U>
-            + PartialEq + PartialOrd
-    {
-        let my_size = Self::size_in_bytes();
-        let src_size = BigUInt::<U, M>::size_in_bytes();
-        let mut me = Self::new();
-        if my_size == src_size
-        {
-            let src = unsafe { transmute::<&[U;M], &[T;N]>(&biguint.number) };
-            me.number.copy_from_slice(src);
-        }
-        else
-        {
-            let mut common = SharedArrays::<T, N, U, M>::from_src(&biguint.number);
-            common.into_des(&mut me.number);
-        }
-        me
-    }
-
-    // pub fn from_be(be: &Self) -> Self
+    // pub fn from_be(be: Self) -> Self
     /// Converts a big integer from big endian to the target’s endianness.
     /// 
     /// # Features
@@ -1188,11 +1099,11 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// use cryptocol::define_utypes_with;
     /// define_utypes_with!(u8);
     /// 
-    /// let be = U256::from_array(&[0x12, 0x34, 0x56, 0x78, 0x90, 0xab, 0xcd, 0xef,
+    /// let be = U256::from_array([0x12, 0x34, 0x56, 0x78, 0x90, 0xab, 0xcd, 0xef,
     ///                             0x11, 0x22, 0x33, 0x44, 0x55, 0x66, 0x77, 0x88,
     ///                             0x99, 0x00, 0xaa, 0xbb, 0xcc, 0xdd, 0xee, 0xff,
     ///                             0x1f, 0x2e, 0x3d, 0x4c, 0x5b, 0x6a, 0x70, 0x89]);
-    /// let le = U256::from_be(&be);
+    /// let le = U256::from_be(be.clone());
     /// println!("be = 0x{}", be.to_string_with_radix(16).unwrap());
     /// println!("le = 0x{}", le.to_string_with_radix(16).unwrap());
     /// assert_eq!(be.to_string_with_radix(16).unwrap(), "89706A5B4C3D2E1FFFEEDDCCBBAA00998877665544332211EFCDAB9078563412");
@@ -1200,12 +1111,12 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// ```
     #[cfg(target_endian = "little")]
     #[inline]
-    pub fn from_be(be: &Self) -> Self
+    pub fn from_be(be: Self) -> Self
     {
         be.swap_bytes()
     }
 
-    // pub fn from_be(be: &Self) -> Self
+    // pub fn from_be(be: Self) -> Self
     /// Converts a big integer from big endian to the target’s endianness.
     /// 
     /// # Features
@@ -1216,11 +1127,11 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// use cryptocol::define_utypes_with;
     /// define_utypes_with!(u8);
     /// 
-    /// let be1 = U256::from_array(&[0x12, 0x34, 0x56, 0x78, 0x90, 0xab, 0xcd, 0xef,
+    /// let be1 = U256::from_array([0x12, 0x34, 0x56, 0x78, 0x90, 0xab, 0xcd, 0xef,
     ///                             0x11, 0x22, 0x33, 0x44, 0x55, 0x66, 0x77, 0x88,
     ///                             0x99, 0x00, 0xaa, 0xbb, 0xcc, 0xdd, 0xee, 0xff,
     ///                             0x1f, 0x2e, 0x3d, 0x4c, 0x5b, 0x6a, 0x70, 0x89]);
-    /// let be2 = U256::from_be(&be);
+    /// let be2 = U256::from_be(be.clone());
     /// println!("be1 = 0x{}", be.to_string_with_radix(16).unwrap());
     /// println!("be2 = 0x{}", le.to_string_with_radix(16).unwrap());
     /// assert_eq!(be1.to_string_with_radix(16).unwrap(), "1234567890ABCDEF11223344556677889900AABBCCDDEEFF1F2E3D4C5B6A7089");
@@ -1228,12 +1139,12 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// ```
     #[cfg(target_endian = "big")]
     #[inline]
-    pub fn from_be(be: &Self) -> Self
+    pub fn from_be(be: Self) -> Self
     {
         be.clone()
     }
 
-    // pub fn from_be_bytes(be_bytes: &[T; N]) -> Self
+    // pub fn from_be_bytes(be_bytes: [T; N]) -> Self
     /// Create a native endian integer value from its representation
     /// as a byte array in big endian.
     /// 
@@ -1249,19 +1160,19 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     ///                 0x11, 0x22, 0x33, 0x44, 0x55, 0x66, 0x77, 0x88,
     ///                 0x99, 0x00, 0xaa, 0xbb, 0xcc, 0xdd, 0xee, 0xff,
     ///                 0x1f, 0x2e, 0x3d, 0x4c, 0x5b, 0x6a, 0x70, 0x89];
-    /// let le = U256::from_be_bytes(&be_array);
+    /// let le = U256::from_be_bytes(be_array.clone());
     /// println!("be_array = {:?}", be_array);
     /// println!("le = {:?}", le);
     /// assert_eq!(le.to_string_with_radix(16).unwrap(), "1234567890ABCDEF11223344556677889900AABBCCDDEEFF1F2E3D4C5B6A7089");
     /// ```
     #[cfg(target_endian = "little")]
     #[inline]
-    pub fn from_be_bytes(be_bytes: &[T; N]) -> Self
+    pub fn from_be_bytes(be_bytes: [T; N]) -> Self
     {
         Self::from_array(be_bytes).swap_bytes()
     }
 
-    // pub fn from_be_bytes(be_bytes: &[T; N]) -> Self
+    // pub fn from_be_bytes(be_bytes: [T; N]) -> Self
     /// Create a native endian integer value from its representation
     /// as a byte array in big endian.
     /// 
@@ -1277,19 +1188,19 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     ///                 0x11, 0x22, 0x33, 0x44, 0x55, 0x66, 0x77, 0x88,
     ///                 0x99, 0x00, 0xaa, 0xbb, 0xcc, 0xdd, 0xee, 0xff,
     ///                 0x1f, 0x2e, 0x3d, 0x4c, 0x5b, 0x6a, 0x70, 0x89];
-    /// let be = U256::from_be_bytes(&be_array);
+    /// let be = U256::from_be_bytes(be_array.clone());
     /// println!("be_array = {:?}", be_array);
     /// println!("be = {:?}", be);
     /// assert_eq!(be.to_string_with_radix(16).unwrap(), "1234567890ABCDEF11223344556677889900AABBCCDDEEFF1F2E3D4C5B6A7089");
     /// ```
     #[cfg(target_endian = "big")]
     #[inline]
-    pub fn from_be_bytes(be_bytes: &[T; N]) -> Self
+    pub fn from_be_bytes(be_bytes: [T; N]) -> Self
     {
         Self::from_array(be_bytes)
     }
 
-    // pub fn from_le(le: &Self) -> Self
+    // pub fn from_le(le: Self) -> Self
     /// Converts a little integer from little endian to the target’s endianness.
     /// 
     /// # Features
@@ -1300,11 +1211,11 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// use cryptocol::define_utypes_with;
     /// define_utypes_with!(u8);
     /// 
-    /// let le1 = U256::from_array(&[0x12, 0x34, 0x56, 0x78, 0x90, 0xab, 0xcd, 0xef,
+    /// let le1 = U256::from_array([0x12, 0x34, 0x56, 0x78, 0x90, 0xab, 0xcd, 0xef,
     ///                             0x11, 0x22, 0x33, 0x44, 0x55, 0x66, 0x77, 0x88,
     ///                             0x99, 0x00, 0xaa, 0xbb, 0xcc, 0xdd, 0xee, 0xff,
     ///                             0x1f, 0x2e, 0x3d, 0x4c, 0x5b, 0x6a, 0x70, 0x89]);
-    /// let le2 = U256::from_le(&le1);
+    /// let le2 = U256::from_le(le1.clone());
     /// println!("le1 = 0x{}", le1.to_string_with_radix(16).unwrap());
     /// println!("le2 = 0x{}", le2.to_string_with_radix(16).unwrap());
     /// assert_eq!(le1.to_string_with_radix(16).unwrap(), "89706A5B4C3D2E1FFFEEDDCCBBAA00998877665544332211EFCDAB9078563412");
@@ -1312,12 +1223,12 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// ```
     #[cfg(target_endian = "little")]
     #[inline]
-    pub fn from_le(le: &Self) -> Self
+    pub fn from_le(le: Self) -> Self
     {
-        le.clone()
+        le
     }
 
-    // pub fn from_le(le: &Self) -> Self
+    // pub fn from_le(le: Self) -> Self
     /// Converts a little integer from little endian to the target’s endianness.
     /// 
     /// # Features
@@ -1332,7 +1243,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     ///                             0x11, 0x22, 0x33, 0x44, 0x55, 0x66, 0x77, 0x88,
     ///                             0x99, 0x00, 0xaa, 0xbb, 0xcc, 0xdd, 0xee, 0xff,
     ///                             0x1f, 0x2e, 0x3d, 0x4c, 0x5b, 0x6a, 0x70, 0x89]);
-    /// let be = U256::from_le(&le);
+    /// let be = U256::from_le(le);
     /// println!("le = 0x{}", le.to_string_with_radix(16).unwrap());
     /// println!("be = 0x{}", be.to_string_with_radix(16).unwrap());
     /// assert_eq!(le.to_string_with_radix(16).unwrap(), "1234567890ABCDEF11223344556677889900AABBCCDDEEFF1F2E3D4C5B6A7089");
@@ -1340,12 +1251,12 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// ```
     #[cfg(target_endian = "big")]
     #[inline]
-    pub fn from_le(le: &Self) -> Self
+    pub fn from_le(le: Self) -> Self
     {
         le.swap_bytes()
     }
 
-    // pub fn from_le_bytes(le_bytes: &[T; N]) -> Self
+    // pub fn from_le_bytes(le_bytes: [T; N]) -> Self
     /// Create a native endian integer value from its representation
     /// as a byte array in little endian.
     /// 
@@ -1361,19 +1272,19 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     ///                 0x11, 0x22, 0x33, 0x44, 0x55, 0x66, 0x77, 0x88,
     ///                 0x99, 0x00, 0xaa, 0xbb, 0xcc, 0xdd, 0xee, 0xff,
     ///                 0x1f, 0x2e, 0x3d, 0x4c, 0x5b, 0x6a, 0x70, 0x89];
-    /// let le = U256::from_le_bytes(&le_array);
+    /// let le = U256::from_le_bytes(le_array);
     /// println!("le_array = {:?}", le_array);
     /// println!("le = {:?}", le);
     /// assert_eq!(le.to_string_with_radix(16).unwrap(), "89706A5B4C3D2E1FFFEEDDCCBBAA00998877665544332211EFCDAB9078563412");
     /// ```
     #[cfg(target_endian = "little")]
     #[inline]
-    pub fn from_le_bytes(le_bytes: &[T; N]) -> Self
+    pub fn from_le_bytes(le_bytes: [T; N]) -> Self
     {
         Self::from_array(le_bytes)
     }
 
-    // pub fn from_le_bytes(le_bytes: &[T; N]) -> Self
+    // pub fn from_le_bytes(le_bytes: [T; N]) -> Self
     /// Create a native endian integer value from its representation
     /// as a byte array in little endian.
     /// 
@@ -1396,7 +1307,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// ```
     #[cfg(target_endian = "big")]
     #[inline]
-    pub fn from_le_bytes(le_bytes: &[T; N]) -> Self
+    pub fn from_le_bytes(le_bytes: [T; N]) -> Self
     {
         Self::from_array(le_bytes).swap_bytes()
     }
@@ -3878,7 +3789,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
             + BitXor<Output=U> + BitXorAssign + Not<Output=U>
             + PartialEq + PartialOrd
     {
-        let mut res = Self::from_array(self.get_number());
+        let mut res = Self::from_array(self.get_number().clone());
         let c = res.carrying_add_assign_uint(rhs, carry);
         (res, c)
     }
@@ -4164,7 +4075,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
             + BitXor<Output=U> + BitXorAssign + Not<Output=U>
             + PartialEq + PartialOrd
     {
-        let mut res = Self::from_array(self.get_number());
+        let mut res = Self::from_array(self.get_number().clone());
         let current_overflow = res.overflowing_add_assign_uint(rhs);
         (res, current_overflow)
     }
@@ -4320,7 +4231,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
         {
             trhs = T::num::<U>(rhs);
         }
-        let mut res = Self::from_array(self.get_number());
+        let mut res = Self::from_array(self.get_number().clone());
         let overflow = res.overflowing_add_assign_uint(trhs);
         if overflow
             { None }
@@ -4431,7 +4342,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
             + BitXor<Output=U> + BitXorAssign + Not<Output=U>
             + PartialEq + PartialOrd
     {
-        let mut res = Self::from_array(self.get_number());
+        let mut res = Self::from_array(self.get_number().clone());
         res.saturating_add_assign_uint(rhs);
         res
     }
@@ -4566,7 +4477,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
             + PartialEq + PartialOrd
 
     {
-        let mut res = Self::from_array(self.get_number());
+        let mut res = Self::from_array(self.get_number().clone());
         res.modular_add_assign_uint(rhs, modulo);
         res
     }
@@ -4746,7 +4657,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
             + BitXor<Output=U> + BitXorAssign + Not<Output=U>
             + PartialEq + PartialOrd
     {
-        let mut res = Self::from_array(self.get_number());
+        let mut res = Self::from_array(self.get_number().clone());
         let b = res.borrowing_sub_assign_uint(rhs, borrow);
         (res, b)
     }
@@ -5043,7 +4954,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
             + BitXor<Output=U> + BitXorAssign + Not<Output=U>
             + PartialEq + PartialOrd
     {
-        let mut res = Self::from_array(self.get_number());
+        let mut res = Self::from_array(self.get_number().clone());
         let current_underflow = res.overflowing_sub_assign_uint(rhs);
         (res, current_underflow)
     }
@@ -5199,7 +5110,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
             + BitXor<Output=U> + BitXorAssign + Not<Output=U>
             + PartialEq + PartialOrd
     {
-        let mut res = Self::from_array(self.get_number());
+        let mut res = Self::from_array(self.get_number().clone());
         let underflow = res.overflowing_sub_assign_uint(rhs);
         if underflow
             { None }
@@ -5316,7 +5227,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
             + BitXor<Output=U> + BitXorAssign + Not<Output=U>
             + PartialEq + PartialOrd
     {
-        let mut res = Self::from_array(self.get_number());
+        let mut res = Self::from_array(self.get_number().clone());
         res.saturating_sub_assign_uint(rhs);
         res
     }
@@ -5455,7 +5366,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
             + BitXor<Output=U> + BitXorAssign + Not<Output=U>
             + PartialEq + PartialOrd
     {
-        let mut res = Self::from_array(self.get_number());
+        let mut res = Self::from_array(self.get_number().clone());
         res.modular_sub_assign_uint(rhs, modulo);
         res
     }
@@ -5701,7 +5612,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
             + BitXor<Output=U> + BitXorAssign + Not<Output=U>
             + PartialEq + PartialOrd
     {
-        let mut low = Self::from_array(self.get_number());
+        let mut low = Self::from_array(self.get_number().clone());
         let high = low.carrying_mul_assign_uint(rhs, carry);
         (low, high)
     }
@@ -5853,7 +5764,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
             + BitXor<Output=U> + BitXorAssign + Not<Output=U>
             + PartialEq + PartialOrd
     {
-        let mut low = Self::from_array(self.get_number());
+        let mut low = Self::from_array(self.get_number().clone());
         let high = low.widening_mul_assign_uint(rhs);
         (low, high)
     }
@@ -6041,7 +5952,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
             + BitXor<Output=U> + BitXorAssign + Not<Output=U>
             + PartialEq + PartialOrd
     {
-        let mut res = Self::from_array(self.get_number());
+        let mut res = Self::from_array(self.get_number().clone());
         res.wrapping_mul_assign_uint(rhs);
         res
     }
@@ -6142,7 +6053,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
             { return; }
 
         let mut trhs = rhs;
-        let mut adder = Self::from_array(self.get_number());
+        let mut adder = Self::from_array(self.get_number().clone());
         self.set_zero();
         loop
         {
@@ -6206,7 +6117,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
             + BitXor<Output=U> + BitXorAssign + Not<Output=U>
             + PartialEq + PartialOrd
     {
-        let mut res = Self::from_array(self.get_number());
+        let mut res = Self::from_array(self.get_number().clone());
         let current_overflow = res.overflowing_mul_assign_uint(rhs);
         (res, current_overflow)
     }
@@ -6329,7 +6240,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
             + BitXor<Output=U> + BitXorAssign + Not<Output=U>
             + PartialEq + PartialOrd
     {
-        let mut res = Self::from_array(self.get_number());
+        let mut res = Self::from_array(self.get_number().clone());
         let overflow = res.overflowing_mul_assign_uint(rhs);
         if overflow
             { None }
@@ -6438,7 +6349,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
             + BitXor<Output=U> + BitXorAssign + Not<Output=U>
             + PartialEq + PartialOrd
     {
-        let mut res = Self::from_array(self.get_number());
+        let mut res = Self::from_array(self.get_number().clone());
         res.saturating_mul_assign_uint(rhs);
         res
     }
@@ -6586,7 +6497,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
             + BitXor<Output=U> + BitXorAssign + Not<Output=U>
             + PartialEq + PartialOrd
     {
-        let mut res = Self::from_array(self.get_number());
+        let mut res = Self::from_array(self.get_number().clone());
         res.modular_mul_assign_uint(rhs, modulo);
         res
     }
@@ -8548,7 +8459,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
             + BitXor<Output=U> + BitXorAssign + Not<Output=U>
             + PartialEq + PartialOrd
     {
-        let mut res = Self::from_array(self.get_number());
+        let mut res = Self::from_array(self.get_number().clone());
         res.wrapping_pow_assign_uint(exp);
         res
     }
@@ -8702,7 +8613,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
             + BitXor<Output=U> + BitXorAssign + Not<Output=U>
             + PartialEq + PartialOrd
     {
-        let mut res = Self::from_array(self.get_number());
+        let mut res = Self::from_array(self.get_number().clone());
         let overflow = res.overflowing_pow_assign_uint(exp);
         (res, overflow)
     }
@@ -8989,7 +8900,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
             + BitXor<Output=U> + BitXorAssign + Not<Output=U>
             + PartialEq + PartialOrd
     {
-        let mut res = Self::from_array(self.get_number());
+        let mut res = Self::from_array(self.get_number().clone());
         res.saturating_pow_assign_uint(exp);
         res
     }
@@ -9128,7 +9039,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
             + BitXor<Output=U> + BitXorAssign + Not<Output=U>
             + PartialEq + PartialOrd
     {
-        let mut res = Self::from_array(self.get_number());
+        let mut res = Self::from_array(self.get_number().clone());
         res.modular_pow_assign_uint(exp, modulo);
         res
     }
@@ -9214,7 +9125,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
         }
         if *self >= *modulo
             { self.wrapping_rem_assign(modulo); }
-        let mut acc = Self::from_array(self.get_number());
+        let mut acc = Self::from_array(self.get_number().clone());
         self.set_one();
         let mut mexp = exp;
         while mexp > U::zero()
@@ -9510,7 +9421,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
             + BitXor<Output=U> + BitXorAssign + Not<Output=U>
             + PartialEq + PartialOrd
     {
-        let mut res = Self::from_array(self.get_number());
+        let mut res = Self::from_array(self.get_number().clone());
         let overflow = res.overflowing_ilog_assign_uint(base);
         (res, overflow)
     }
@@ -9631,7 +9542,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
 
     pub fn overflowing_ilog2_uint(&self) -> (Self, bool)
     {
-        let mut res = Self::from_array(self.get_number());
+        let mut res = Self::from_array(self.get_number().clone());
         let overflow = res.overflowing_ilog2_assign_uint();
         (res, overflow)
     }
@@ -9707,7 +9618,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
 
     pub fn overflowing_ilog10_uint(&self) -> (Self, bool)
     {
-        let mut res = Self::from_array(self.get_number());
+        let mut res = Self::from_array(self.get_number().clone());
         let overflow = res.overflowing_ilog10_assign_uint();
         (res, overflow)
     }
@@ -9821,7 +9732,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// for Big-endian CPUs with your own full responsibility.
     pub fn carrying_add(&self, rhs: &Self, carry: bool) -> (Self, bool)
     {
-        let mut res = Self::from_array(self.get_number());
+        let mut res = Self::from_array(self.get_number().clone());
         let c = res.carrying_add_assign(rhs, carry);
         (res, c)
     }
@@ -10067,7 +9978,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// for Big-endian CPUs with your own full responsibility.
     pub fn overflowing_add(&self, rhs: &Self) -> (Self, bool)
     {
-        let mut res = Self::from_array(self.get_number());
+        let mut res = Self::from_array(self.get_number().clone());
         let current_overflow = res.overflowing_add_assign(rhs);
         (res, current_overflow)
     }
@@ -10134,7 +10045,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// for Big-endian CPUs with your own full responsibility.
     pub fn checked_add(&self, rhs: &Self) -> Option<Self>
     {
-        let mut res = Self::from_array(self.get_number());
+        let mut res = Self::from_array(self.get_number().clone());
         let overflow = res.overflowing_add_assign(rhs);
         if overflow
             { None }
@@ -10205,7 +10116,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// for Big-endian CPUs with your own full responsibility.
     pub fn saturating_add(&self, rhs: &Self) -> Self
     {
-        let mut res = Self::from_array(self.get_number());
+        let mut res = Self::from_array(self.get_number().clone());
         res.saturating_add_assign(rhs);
         res
     }
@@ -10276,7 +10187,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// for Big-endian CPUs with your own full responsibility.
     pub fn modular_add(&self, rhs: &Self, modulo: &Self) -> Self
     {
-        let mut res = Self::from_array(self.get_number());
+        let mut res = Self::from_array(self.get_number().clone());
         res.modular_add_assign(rhs, modulo);
         res
     }
@@ -10382,7 +10293,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// for Big-endian CPUs with your own full responsibility.
     pub fn borrowing_sub(&self, rhs: &Self, borrow: bool) -> (Self, bool)
     {
-        let mut res = Self::from_array(self.get_number());
+        let mut res = Self::from_array(self.get_number().clone());
         let b = res.borrowing_sub_assign(rhs, borrow);
         (res, b)
     }
@@ -10550,7 +10461,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     #[inline]
     pub fn overflowing_sub(&self, rhs: &Self) -> (Self, bool)
     {
-        let mut res = Self::from_array(self.get_number());
+        let mut res = Self::from_array(self.get_number().clone());
         let current_overflow = res.overflowing_sub_assign(rhs);
         (res, current_overflow)
     }
@@ -10618,7 +10529,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// for Big-endian CPUs with your own full responsibility.
     pub fn checked_sub(&self, rhs: &Self) -> Option<Self>
     {
-        let mut res = Self::from_array(self.get_number());
+        let mut res = Self::from_array(self.get_number().clone());
         let underflow = res.overflowing_sub_assign(rhs);
         if underflow
             { None }
@@ -10689,7 +10600,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// for Big-endian CPUs with your own full responsibility.
     pub fn saturating_sub(&self, rhs: &Self) -> Self
     {
-        let mut res = Self::from_array(self.get_number());
+        let mut res = Self::from_array(self.get_number().clone());
         res.saturating_sub_assign(rhs);
         res
     }
@@ -10801,7 +10712,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// for Big-endian CPUs with your own full responsibility.
     pub fn modular_sub(&self, rhs: &Self, modulo: &Self) -> Self
     {
-        let mut res = Self::from_array(self.get_number());
+        let mut res = Self::from_array(self.get_number().clone());
         res.modular_sub_assign(rhs, modulo);
         res
     }
@@ -10921,7 +10832,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// for Big-endian CPUs with your own full responsibility.
     pub fn carrying_mul(&self, rhs: &Self, carry: Self) -> (Self, Self)
     {
-        let mut low = Self::from_array(self.get_number());
+        let mut low = Self::from_array(self.get_number().clone());
         let high = low.carrying_mul_assign(rhs, carry);
         (low, high)
     }
@@ -11083,7 +10994,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     #[inline]
     pub fn widening_mul(&self, rhs: &Self) -> (Self, Self)
     {
-        let mut low = Self::from_array(self.get_number());
+        let mut low = Self::from_array(self.get_number().clone());
         let high = low.widening_mul_assign(rhs);
         (low, high)
     }
@@ -11251,7 +11162,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// for Big-endian CPUs with your own full responsibility.
     pub fn wrapping_mul(&self, rhs: &Self) -> Self
     {
-        let mut res = Self::from_array(self.get_number());
+        let mut res = Self::from_array(self.get_number().clone());
         res.wrapping_mul_assign(rhs);
         res
     }
@@ -11296,7 +11207,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
         if self.is_zero()
             { return; }
 
-        let operand = Self::from_array(self.get_number());
+        let operand = Self::from_array(self.get_number().clone());
         let zero = T::zero();
         let one = T::one();
         let i_n = N - rhs.leading_zero_elements() as usize;
@@ -11363,7 +11274,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
         if self.is_zero()
             { return; }
 
-        let adder = Self::from_array(self.get_number());
+        let adder = Self::from_array(self.get_number().clone());
         let size_t_bits_minus_one = T::size_in_bits()-1;
         let mut chunk = N - 1 - rhs.leading_zero_elements() as usize;
         let mut piece = T::size_in_bits() - 1 - rhs.get_num_(chunk).leading_zeros() as usize;
@@ -11423,7 +11334,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// for Big-endian CPUs with your own full responsibility.
     pub fn overflowing_mul(&self, rhs: &Self) -> (Self, bool)
     {
-        let mut res = Self::from_array(self.get_number());
+        let mut res = Self::from_array(self.get_number().clone());
         let overflow = res.overflowing_mul_assign(rhs);
         (res, overflow)
     }
@@ -11488,7 +11399,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// for Big-endian CPUs with your own full responsibility.
     pub fn checked_mul(&self, rhs: &Self) -> Option<Self>
     {
-        let mut res = Self::from_array(self.get_number());
+        let mut res = Self::from_array(self.get_number().clone());
         let overflow = res.overflowing_mul_assign(rhs);
         if overflow
             { None }
@@ -11559,7 +11470,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// for Big-endian CPUs with your own full responsibility.
     pub fn saturating_mul(&self, rhs: &Self) -> Self
     {
-        let mut res = Self::from_array(self.get_number());
+        let mut res = Self::from_array(self.get_number().clone());
         res.saturating_mul_assign(rhs);
         res
     }
@@ -11625,7 +11536,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// for Big-endian CPUs with your own full responsibility.
     pub fn modular_mul(&self, rhs: &Self, modulo: &Self) -> Self
     {
-        let mut res = Self::from_array(self.get_number());
+        let mut res = Self::from_array(self.get_number().clone());
         res.modular_mul_assign(rhs, modulo);
         res
     }
@@ -12073,7 +11984,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     #[inline]
     pub fn modular_div(&self, rhs: &Self, modulo: &Self) -> Self
     {
-        let mut lhs = Self::from_array(self.get_number());
+        let mut lhs = Self::from_array(self.get_number().clone());
         lhs.modular_div_assign(rhs, modulo);
         lhs
     }
@@ -12528,7 +12439,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     #[inline]
     pub fn modular_rem(&self, rhs: &Self, modulo: &Self) -> Self
     {
-        let mut lhs = Self::from_array(self.get_number());
+        let mut lhs = Self::from_array(self.get_number().clone());
         lhs.modular_rem_assign(rhs, modulo);
         lhs
     }
@@ -12873,7 +12784,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// ```
     pub fn wrapping_pow(&self, exp: &Self) -> Self
     {
-        let mut res = Self::from_array(self.get_number());
+        let mut res = Self::from_array(self.get_number().clone());
         res.wrapping_pow_assign(exp);
         res
     }
@@ -12997,7 +12908,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// ```
     pub fn overflowing_pow(&self, exp: &Self) -> (Self, bool)
     {
-        let mut res = Self::from_array(self.get_number());
+        let mut res = Self::from_array(self.get_number().clone());
         let overflow = res.overflowing_pow_assign(exp);
         (res, overflow)
     }
@@ -13126,7 +13037,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
 
     pub fn saturating_pow(&self, exp: &Self) -> Self
     {
-        let mut res = Self::from_array(self.get_number());
+        let mut res = Self::from_array(self.get_number().clone());
         res.saturating_pow_assign(exp);
         res
     }
@@ -13139,7 +13050,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
 
     pub fn modular_pow(&self, exp: &Self, modulo: &Self) -> Self
     {
-        let mut res = Self::from_array(self.get_number());
+        let mut res = Self::from_array(self.get_number().clone());
         res.modular_pow_assign(exp, modulo);
         res
     }
@@ -13554,7 +13465,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
             + BitXor<Output=U> + BitXorAssign + Not<Output=U>
             + PartialEq + PartialOrd
     {
-        let mut res = Self::from_array(self.get_number());
+        let mut res = Self::from_array(self.get_number().clone());
         res.shift_left_assign(n);
         res
     }
@@ -13734,7 +13645,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
             + BitXor<Output=U> + BitXorAssign + Not<Output=U>
             + PartialEq + PartialOrd
     {
-        let mut res = Self::from_array(self.get_number());
+        let mut res = Self::from_array(self.get_number().clone());
         res.shift_right_assign(n);
         res
     }
@@ -14759,7 +14670,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
         self.get_number().clone()
     }
 
-    // pub fn from_le(le: &Self) -> Self
+    // pub fn to_le(&self) -> Self
     /// Converts `self` to little endian from the target’s endianness.
     /// 
     /// # Features
@@ -14776,7 +14687,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
         self.clone()
     }
 
-    // pub fn from_le(le: &Self) -> Self
+    // pub fn to_le(&self) -> Self
     /// Converts `self` to little endian from the target’s endianness.
     /// 
     /// # Features

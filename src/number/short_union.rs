@@ -228,7 +228,7 @@ impl ShortUnion
     /// ```
     #[inline] pub fn new_with_signed(sshort: i16) -> Self   { Self { sshort } }
 
-    // pub fn new_with_ubytes(ubyte: &[u8; 2]) -> Self
+    // pub fn new_with_ubytes(ubyte: [u8; 2]) -> Self
     /// Constructs a new `ShortUnion` with initializing it with `ubyte`.
     /// 
     /// # Output
@@ -239,13 +239,12 @@ impl ShortUnion
     /// 
     /// Example
     /// ```
-    /// use cryptocol::number::ShortUnion;    
-    /// let arr = [172_u8, 216_u8];
-    /// let a = ShortUnion::new_with_ubytes(&arr);
+    /// use cryptocol::number::ShortUnion;
+    /// let a = ShortUnion::new_with_ubytes([172_u8, 216_u8]);
     /// println!("a = {}", a.get());
     /// assert_eq!(a.get(), 55468_u16);
     /// ```
-    #[inline] pub fn new_with_ubytes(ubyte: &[u8; 2]) -> Self    { Self { ubyte: [ubyte[0], ubyte[1]] } }
+    #[inline] pub fn new_with_ubytes(ubyte: [u8; 2]) -> Self    { Self { ubyte } }
     #[inline] pub fn onoff(b: bool) -> Self             { Self { ushort: b as u16 } }
     #[inline] pub fn onoff_signed(b: bool) -> Self      { Self { sshort: b as i16 } }
     #[inline] pub fn new_with_u128(num: u128) -> Self   { Self { ushort: LongerUnion::new_with(num).get_ushort_(0) } }

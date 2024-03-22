@@ -1495,7 +1495,7 @@ impl<GenFunc: Random_Engine + 'static, const COUNT: u128> Random_Generic<GenFunc
             + BitXor<Output=T> + BitXorAssign + Not<Output=T>
             + PartialEq + PartialOrd
     {
-        BigUInt::<T, N>::from_array(&self.random_array::<T, N>())
+        BigUInt::<T, N>::from_array(self.random_array::<T, N>().clone())
     }
 
     // pub fn random_under_biguint<T, const N: usize>(&mut self, ceiling: &BigUInt<T, N>) -> Option<BigUInt<T, N>>

@@ -367,7 +367,7 @@ impl LongUnion
     /// ```
     #[inline] pub fn new_with_signed(slong: i64) -> Self    { Self { slong } }
 
-    // pub fn new_with_ubytes(ubyte: &[u8; 8])  -> Self
+    // pub fn new_with_ubytes(ubyte: [u8; 8])  -> Self
     /// Constructs a new `LongUnion` with initializing it with `ubyte`.
     /// 
     /// # Output
@@ -380,12 +380,12 @@ impl LongUnion
     /// ```
     /// use cryptocol::number::LongUnion;
     /// let arr = [131_u8, 21_u8, 104_u8, 195_u8, 42_u8, 157_u8, 251_u8, 255_u8];
-    /// let a = LongUnion::new_with_ubytes(&arr);
+    /// let a = LongUnion::new_with_ubytes(arr);
     /// println!("a = {}", a.get());
     /// assert_eq!(a.get(), 18445509505818563971_u64);
     /// ```
-    #[inline] pub fn new_with_ubytes(ubyte: &[u8; 8])  -> Self  { Self { ubyte: [ubyte[0], ubyte[1], ubyte[2], ubyte[3], ubyte[4], ubyte[5], ubyte[6], ubyte[7]] } }
-    #[inline] pub fn new_with_ushorts(ushort: &[u16; 4])  -> Self   { Self { ushort: [ushort[0], ushort[1], ushort[2], ushort[3]] } }
+    #[inline] pub fn new_with_ubytes(ubyte: [u8; 8])  -> Self  { Self { ubyte } }
+    #[inline] pub fn new_with_ushorts(ushort: [u16; 4])  -> Self   { Self { ushort } }
     #[inline] pub fn new_with_uints(uint: &[u32; 2])  -> Self   { Self { uint: [uint[0], uint[1]] } }
     #[inline] pub fn onoff(b: bool) -> Self           { Self { ulong: b as u64 } }
     #[inline] pub fn onoff_singed(b: bool) -> Self    { Self { slong: b as i64 } }

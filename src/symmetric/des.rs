@@ -751,7 +751,7 @@ S756, S757, S758, S759, S760, S761, S762, S763,
     /// 
     #[inline]
     #[allow(dead_code)]
-    pub fn new(key: &[u8; 8]) -> Self
+    pub fn new(key: [u8; 8]) -> Self
     {
         Self { key: LongUnion::new_with_ubytes(key), block: LongUnion::new(), }
     }

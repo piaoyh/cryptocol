@@ -147,9 +147,8 @@ fn short_union_new_with_signed()
 fn short_union_new_with_ubytes()
 {
     println!("short_union_new_with_ubytes()");
-    use cryptocol::number::ShortUnion;    
-    let arr = [172_u8, 216_u8];
-    let a = ShortUnion::new_with_ubytes(&arr);
+    use cryptocol::number::ShortUnion;
+    let a = ShortUnion::new_with_ubytes([172_u8, 216_u8]);
     println!("a = {}", a.get());
     assert_eq!(a.get(), 55468_u16);
     println!("--------------------------------------");
@@ -322,8 +321,7 @@ fn int_union_new_with_ubytes()
 {
     println!("int_union_new_with_ubytes()");
     use cryptocol::number::IntUnion;
-    let arr = [222_u8, 0_u8, 230_u8, 228_u8];
-    let a = IntUnion::new_with_ubytes(&arr);
+    let a = IntUnion::new_with_ubytes([222_u8, 0_u8, 230_u8, 228_u8]);
     println!("a = {}", a.get());
     assert_eq!(a.get(), 3840278750_u32);
     println!("--------------------------------------");
@@ -561,7 +559,7 @@ fn long_union_new_with_ubytes()
     println!("long_union_new_with_ubytes()");
     use cryptocol::number::LongUnion;
     let arr = [131_u8, 21_u8, 104_u8, 195_u8, 42_u8, 157_u8, 251_u8, 255_u8];
-    let a = LongUnion::new_with_ubytes(&arr);
+    let a = LongUnion::new_with_ubytes(arr);
     println!("a = {}", a.get());
     assert_eq!(a.get(), 18445509505818563971_u64);
     println!("--------------------------------------");
@@ -916,7 +914,7 @@ fn longer_union_new_with_ubytes()
     println!("longer_union_new_with_ubytes()");
     use cryptocol::number::LongerUnion;
     let arr = [79_u8, 11_u8, 74_u8, 241_u8, 245_u8, 104_u8, 163_u8, 189_u8, 88_u8, 136_u8, 206_u8, 126_u8, 26_u8, 59_u8, 18_u8, 255_u8];
-    let a = LongerUnion::new_with_ubytes(&arr);
+    let a = LongerUnion::new_with_ubytes(arr);
     println!("a = {}", a.get());
     assert_eq!(a.get(), 339047799029950809142362261752780557135_u128);
     println!("--------------------------------------");

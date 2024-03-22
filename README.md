@@ -98,26 +98,15 @@ it does not mean that 50% of all functionalities are implemented.
 
 I think that if breaking changes are inevitable and have to be made, the sooner, the better even before more people will be using my crate.
 
-### methods of ShortUnion, IntUnion, LongUnion, LongerUnion, SizeUnion
+### methods of BigUInt
 
-| Ver. 0.7.2                                        | Ver. 0.7.3                                         |
-|---------------------------------------------------|----------------------------------------------------|
-| pub fn new_with_ubytes(ubyte: [u8; 2]) -> Self    | pub fn new_with_ubytes(ubyte: &[u8; 2]) -> Self    |
-| pub fn new_with_ubytes(ubyte: [u8; 4]) -> Self    | pub fn new_with_ubytes(ubyte: &[u8; 4]) -> Self    |
-| pub fn new_with_ubytes(ubyte: [u8; 8]) -> Self    | pub fn new_with_ubytes(ubyte: &[u8; 8]) -> Self    |
-| pub fn new_with_ubytes(ubyte: [u8; 16]) -> Self   | pub fn new_with_ubytes(ubyte: &[u8; 16]) -> Self   |
-| pub fn new_with_ushorts(ushort: [u16; 2]) -> Self | pub fn new_with_ushorts(ushort: &[u16; 2]) -> Self |
-| pub fn new_with_ushorts(ushort: [u16; 4]) -> Self | pub fn new_with_ushorts(ushort: &[u16; 4]) -> Self |
-| pub fn new_with_ushorts(ushort: [u16; 8]) -> Self | pub fn new_with_ushorts(ushort: &[u16; 8]) -> Self |
-| pub fn new_with_uints(uint: [u32; 2])  -> Self    | pub fn new_with_uints(uint: &[u32; 2])  -> Self    |
-| pub fn new_with_uints(uint: [u32; 4])  -> Self    | pub fn new_with_uints(uint: &[u32; 4])  -> Self    |
-| pub fn new_with_ulongs(ulong: [u64; 2]) -> Self   | pub fn new_with_ulongs(ulong: &[u64; 2]) -> Self   |
-
-### methods of DES_Generic
-
-| Ver. 0.7.2                       | Ver. 0.7.3                        |
-|----------------------------------|-----------------------------------|
-| pub fn new(key: [u8; 8]) -> Self | pub fn new(key: &[u8; 8]) -> Self |
+| Ver. 0.7.2                                      | Ver. 0.7.3                                     |
+|-------------------------------------------------|------------------------------------------------|
+| pub fn from_array(val: &[T; N]) -> Self         | pub fn from_array(val: [T; N]) -> Self         |
+| pub fn from_be(be: &Self) -> Self               | pub fn from_be(be: Self) -> Self               |
+| pub fn from_le(le: S&elf) -> Self               | pub fn from_le(le: Self) -> Self               |
+| pub fn from_be_bytes(be_bytes: &[T; N]) -> Self | pub fn from_be_bytes(be_bytes: [T; N]) -> Self |
+| pub fn from_le_bytes(le_bytes: &[T; N]) -> Self | pub fn from_le_bytes(le_bytes: [T; N]) -> Self |
 
 ## Sorry for breaking changes from ver. 0.7.1 to ver. 0.7.2
 
