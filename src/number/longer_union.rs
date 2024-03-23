@@ -514,12 +514,105 @@ impl LongerUnion
     /// assert_eq!(a.get(), 339047799029950809142362261752780557135_u128);
     /// ```
     #[inline] pub fn new_with_ubytes(ubyte: [u8; 16]) -> Self  { Self { ubyte } }
-    #[inline] pub fn new_with_ushorts(ushort: [u16; 8]) -> Self    { Self { ushort } }
-    #[inline] pub fn new_with_uints(uint: [u32; 4]) -> Self    { Self { uint } }
-    #[inline] pub fn new_with_ulongs(ulong: [u64; 2]) -> Self  { Self { ulong } }
-    #[inline] pub fn onoff(b: bool) -> Self           { Self { ulonger: b as u128 } }
-    #[inline] pub fn onoff_signed(b: bool) -> Self    { Self { slonger: b as i128 } }
-    #[inline] pub fn new_with_u128(num: u128) -> Self { Self { ulonger: num } }
+
+    // pub fn new_with_ushorts(ushort: [u16; 8]) -> Self
+    /// Constructs a new `LongerUnion` with initializing it with `ushort`.
+    /// 
+    /// # Output
+    /// A new object of `LongerUnion` initialized with the value `ushort`.
+    /// 
+    /// # Initialization
+    /// The field of the constructed object will be initialized with `ushort`.
+    /// 
+    /// Example
+    /// ```
+    /// use cryptocol::number::LongerUnion;
+    /// let arr = [2895_u16, 61770_u16, 26869_u16, 48547_u16, 34904_u16, 32462_u16, 15130_u16, 65298_u16];
+    /// let a = LongerUnion::new_with_ushorts(arr);
+    /// println!("a = {}", a.get());
+    /// assert_eq!(a.get(), 339047799029950809142362261752780557135_u128);
+    /// ```
+    #[inline] pub fn new_with_ushorts(ushort: [u16; 8]) -> Self     { Self { ushort } }
+
+    // pub fn new_with_uints(uint: [u32; 4]) -> Self
+    /// Constructs a new `LongerUnion` with initializing it with `uint`.
+    /// 
+    /// # Output
+    /// A new object of `LongerUnion` initialized with the value `uint`.
+    /// 
+    /// # Initialization
+    /// The field of the constructed object will be initialized with `uint`.
+    /// 
+    /// Example
+    /// ```
+    /// use cryptocol::number::LongerUnion;
+    /// let arr = [4048161615_u32, 3181603061_u32, 2127464536_u32, 4279384858_u32];
+    /// let a = LongerUnion::new_with_uints(arr);
+    /// println!("a = {}", a.get());
+    /// assert_eq!(a.get(), 339047799029950809142362261752780557135_u128);
+    /// ```
+    #[inline] pub fn new_with_uints(uint: [u32; 4]) -> Self     { Self { uint } }
+
+    // pub fn new_with_ulongs(ulong: [u64; 2]) -> Self
+    /// Constructs a new `LongerUnion` with initializing it with `ulong`.
+    /// 
+    /// # Output
+    /// A new object of `LongerUnion` initialized with the value `ulong`.
+    /// 
+    /// # Initialization
+    /// The field of the constructed object will be initialized with `ulong`.
+    /// 
+    /// Example
+    /// ```
+    /// use cryptocol::number::LongerUnion;
+    /// let a = LongerUnion::new_with_ulongs([13664881099896654671_u64, 18379818014235068504_u64]);
+    /// println!("a = {}", a.get());
+    /// assert_eq!(a.get(), 339047799029950809142362261752780557135_u128);
+    /// ```
+    #[inline] pub fn new_with_ulongs(ulong: [u64; 2]) -> Self   { Self { ulong } }
+
+    // pub fn new_with_u128(num: u128) -> Self
+    /// Constructs a new `LongerUnion` with initializing it with `num`.
+    /// 
+    /// # Output
+    /// A new object of `LongerUnion` initialized with the value of `num`.
+    /// 
+    /// # Initialization
+    /// The field of the constructed object will be initialized with `num`.
+    /// 
+    /// Example
+    /// ```
+    /// use cryptocol::number::LongerUnion;
+    /// let a = LongerUnion::new_with_u128(123456789012345678901234567890123456789_u128);
+    /// println!("a = {}", a.get());
+    /// assert_eq!(a.get(), 123456789012345678901234567890123456789_u128);
+    /// ```
+    #[inline] pub fn new_with_u128(num: u128) -> Self   { Self { ulonger: num } }
+
+    // pub fn new_with_bool(b: bool) -> Self
+    /// Constructs a new `LongerUnion` with initializing it
+    /// with the value of `b`.
+    /// 
+    /// # Output
+    /// A new object of `LongerUnion` initialized with the value of `b`
+    /// 
+    /// # Initialization
+    /// The field of the constructed object will be initialized with
+    /// the value of `b`.
+    /// If `b` is `true`, `self` will have the value `1`.
+    /// If `b` is `false`, `self` will have the value `0`.
+    /// 
+    /// Example
+    /// ```
+    /// use cryptocol::number::LongerUnion;
+    /// let a = LongerUnion::new_with_bool(true);
+    /// let b = LongerUnion::new_with_bool(false);
+    /// println!("a = {}", a.get());
+    /// println!("b = {}", b.get());
+    /// assert_eq!(a.get(), 1_u128);
+    /// assert_eq!(b.get(), 0_u128);
+    /// ```
+    #[inline] pub fn new_with_bool(b: bool) -> Self     { Self { ulonger: b as u128 } }
 
     #[inline] pub fn get(self) -> u128          { unsafe { self.ulonger } }
     #[inline] pub fn get_signed(self) -> i128   { unsafe { self.slonger } }

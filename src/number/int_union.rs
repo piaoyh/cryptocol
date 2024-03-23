@@ -20,7 +20,6 @@ use std::cmp::{ PartialEq, PartialOrd, Ordering };
 use std::ops::*;
 
 use super::small_uint::SmallUInt;
-use super::longer_union::LongerUnion;
 
 /// # Introduction
 /// This union `IntUnion` is for slicing `u32` into two `u16`s, two `i16`,
@@ -303,14 +302,77 @@ impl IntUnion
     /// assert_eq!(a.get(), 3840278750_u32);
     /// ```
     #[inline] pub fn new_with_ubytes(ubyte: [u8; 4]) -> Self   { Self { ubyte } }
-    #[inline] pub fn new_with_ushorts(ushort: [u16; 2]) -> Self    { Self { ushort } }
-    #[inline] pub fn onoff(b: bool) -> Self       { Self { uint: b as u32 } }
-    #[inline] pub fn onoff_signed(b: bool) -> Self    { Self { sint: b as i32 } }
-    #[inline] pub fn new_with_u128(num: u128) -> Self { Self { uint: LongerUnion::new_with(num).get_uint_(0) } }
 
-    #[inline] pub fn get(self) -> u32               { unsafe { self.this } }
-    #[inline] pub fn set(&mut self, val: u32)       { self.this = val; }
-    #[inline] pub fn get_signed(self) -> i32        { unsafe { self.that } }
+    // pub fn new_with_ushorts(ushort: [u16; 2]) -> Self
+    /// Constructs a new `IntUnion` with initializing it with `ushort`.
+    /// 
+    /// # Output
+    /// A new object of `IntUnion` initialized with the value `ushort`.
+    /// 
+    /// # Initialization
+    /// The field of the constructed object will be initialized with `ushort`.
+    /// 
+    /// Example
+    /// ```
+    /// use cryptocol::number::IntUnion;
+    /// let a = IntUnion::new_with_ushorts([222_u16, 58598_u16]);
+    /// println!("a = {}", a.get());
+    /// assert_eq!(a.get(), 3840278750_u32);
+    /// ```
+    #[inline] pub fn new_with_ushorts(ushort: [u16; 2]) -> Self    { Self { ushort } }
+
+    // pub fn new_with_u128(num: u128) -> Self
+    /// Constructs a new `IntUnion` with initializing it with the lowest
+    /// 32-bit part of `num`.
+    /// 
+    /// # Output
+    /// A new object of `IntUnion` initialized with the value of
+    /// the lowest 32-bit part of `num`.
+    /// 
+    /// # Initialization
+    /// The field of the constructed object will be initialized with
+    /// the value of the lowest 32-bit part of `num`.
+    /// 
+    /// Example
+    /// ```
+    /// use cryptocol::number::IntUnion;
+    /// let a = IntUnion::new_with_u128(3840278750_u128);
+    /// let b = IntUnion::new_with_u128(123456789012345678901234567890123456789_u128);
+    /// println!("a = {}", a.get());
+    /// println!("b = {}", b.get());
+    /// assert_eq!(a.get(), 3840278750_u32);
+    /// assert_eq!(b.get(), 2923004181_u32);
+    /// ```
+    #[inline] pub fn new_with_u128(num: u128) -> Self { Self { uint: num as u32 } }
+
+    // pub fn new_with_bool(b: bool) -> Self
+    /// Constructs a new `IntUnion` with initializing it
+    /// with the value of `b`.
+    /// 
+    /// # Output
+    /// A new object of `IntUnion` initialized with the value of `b`
+    /// 
+    /// # Initialization
+    /// The field of the constructed object will be initialized with
+    /// the value of `b`.
+    /// If `b` is `true`, `self` will have the value `1`.
+    /// If `b` is `false`, `self` will have the value `0`.
+    /// 
+    /// Example
+    /// ```
+    /// use cryptocol::number::IntUnion;
+    /// let a = IntUnion::new_with_bool(true);
+    /// let b = IntUnion::new_with_bool(false);
+    /// println!("a = {}", a.get());
+    /// println!("b = {}", b.get());
+    /// assert_eq!(a.get(), 1_u32);
+    /// assert_eq!(b.get(), 0_u32);
+    /// ```
+    #[inline] pub fn new_with_bool(b: bool) -> Self     { Self { uint: b as u32 } }
+
+    #[inline] pub fn get(self) -> u32           { unsafe { self.this } }
+    #[inline] pub fn set(&mut self, val: u32)   { self.this = val; }
+    #[inline] pub fn get_signed(self) -> i32    { unsafe { self.that } }
     #[inline] pub fn set_signed(&mut self, val: i32)    { self.that = val; }
 
     crate::number::get_set_int_fit!();

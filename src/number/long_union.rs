@@ -20,7 +20,6 @@ use std::cmp::{ PartialEq, PartialOrd, Ordering };
 use std::ops::*;
 
 use super::small_uint::SmallUInt;
-use super::longer_union::LongerUnion;
 
 /// # Introduction
 /// This union `LongUnion` is for slicing `u64` into two `u32`s, two `i32`s,
@@ -367,7 +366,7 @@ impl LongUnion
     /// ```
     #[inline] pub fn new_with_signed(slong: i64) -> Self    { Self { slong } }
 
-    // pub fn new_with_ubytes(ubyte: [u8; 8])  -> Self
+    // pub fn new_with_ubytes(ubyte: [u8; 8]) -> Self
     /// Constructs a new `LongUnion` with initializing it with `ubyte`.
     /// 
     /// # Output
@@ -384,12 +383,92 @@ impl LongUnion
     /// println!("a = {}", a.get());
     /// assert_eq!(a.get(), 18445509505818563971_u64);
     /// ```
-    #[inline] pub fn new_with_ubytes(ubyte: [u8; 8])  -> Self  { Self { ubyte } }
+    #[inline] pub fn new_with_ubytes(ubyte: [u8; 8]) -> Self    { Self { ubyte } }
+
+    // pub fn new_with_ushorts(ushort: [u16; 2]) -> Self
+    /// Constructs a new `LongUnion` with initializing it with `ushort`.
+    /// 
+    /// # Output
+    /// A new object of `LongUnion` initialized with the value `ushort`.
+    /// 
+    /// # Initialization
+    /// The field of the constructed object will be initialized with `ushort`.
+    /// 
+    /// Example
+    /// ```
+    /// use cryptocol::number::LongUnion;
+    /// let a = LongUnion::new_with_ushorts([5507_u16, 50024_u16, 40234_u16, 65531_u16]);
+    /// println!("a = {}", a.get());
+    /// assert_eq!(a.get(), 18445509505818563971_u64);
+    /// ```
     #[inline] pub fn new_with_ushorts(ushort: [u16; 4])  -> Self   { Self { ushort } }
-    #[inline] pub fn new_with_uints(uint: &[u32; 2])  -> Self   { Self { uint: [uint[0], uint[1]] } }
-    #[inline] pub fn onoff(b: bool) -> Self           { Self { ulong: b as u64 } }
-    #[inline] pub fn onoff_singed(b: bool) -> Self    { Self { slong: b as i64 } }
-    #[inline] pub fn new_with_u128(num: u128) -> Self { Self { ulong: LongerUnion::new_with(num).get_ulong_(0) } }
+
+    // pub fn new_with_uints(uint: [u32; 2]) -> Self
+    /// Constructs a new `LongUnion` with initializing it with `uint`.
+    /// 
+    /// # Output
+    /// A new object of `LongUnion` initialized with the value `uint`.
+    /// 
+    /// # Initialization
+    /// The field of the constructed object will be initialized with `uint`.
+    /// 
+    /// Example
+    /// ```
+    /// use cryptocol::number::LongUnion;
+    /// let a = LongUnion::new_with_uints([3278378371_u32, 4294679850_u32]);
+    /// println!("a = {}", a.get());
+    /// assert_eq!(a.get(), 18445509505818563971_u64);
+    /// ```
+    #[inline] pub fn new_with_uints(uint: [u32; 2]) -> Self     { Self { uint } }
+
+    // pub fn new_with_u128(num: u128) -> Self
+    /// Constructs a new `LongUnion` with initializing it with the lower
+    /// 64-bit part of `num`.
+    /// 
+    /// # Output
+    /// A new object of `LongUnion` initialized with the value of
+    /// the lower 64-bit part of `num`.
+    /// 
+    /// # Initialization
+    /// The field of the constructed object will be initialized with
+    /// the value of the lower 64-bit part of `num`.
+    /// 
+    /// Example
+    /// ```
+    /// use cryptocol::number::LongUnion;
+    /// let a = LongUnion::new_with_u128(18445509505818563971_u128);
+    /// let b = LongUnion::new_with_u128(123456789012345678901234567890123456789_u128);
+    /// println!("a = {}", a.get());
+    /// println!("b = {}", b.get());
+    /// assert_eq!(a.get(), 18445509505818563971_u64);
+    /// assert_eq!(b.get(), 12312739301371248917_u64);
+    /// ```
+    #[inline] pub fn new_with_u128(num: u128) -> Self   { Self { ulong: num as u64 } }
+
+    // pub fn new_with_bool(b: bool) -> Self
+    /// Constructs a new `LongUnion` with initializing it
+    /// with the value of `b`.
+    /// 
+    /// # Output
+    /// A new object of `LongUnion` initialized with the value of `b`
+    /// 
+    /// # Initialization
+    /// The field of the constructed object will be initialized with
+    /// the value of `b`.
+    /// If `b` is `true`, `self` will have the value `1`.
+    /// If `b` is `false`, `self` will have the value `0`.
+    /// 
+    /// Example
+    /// ```
+    /// use cryptocol::number::LongUnion;
+    /// let a = LongUnion::new_with_bool(true);
+    /// let b = LongUnion::new_with_bool(false);
+    /// println!("a = {}", a.get());
+    /// println!("b = {}", b.get());
+    /// assert_eq!(a.get(), 1_u64);
+    /// assert_eq!(b.get(), 0_u64);
+    /// ```
+    #[inline] pub fn new_with_bool(b: bool) -> Self     { Self { ulong: b as u64 } }
 
     #[inline] pub fn get(self) -> u64           { unsafe { self.this } }
     #[inline] pub fn get_signed(self) -> i64    { unsafe { self.that } }

@@ -1007,14 +1007,60 @@ impl SizeUnion
     /// assert_eq!(a.get_signed(), -1234_isize);
     /// ```
     #[inline] pub fn new_with_signed(s_size: isize) -> Self     { Self { s_size } }
-    #[inline] pub fn onoff(b: bool) -> Self           { Self { u_size: b as usize } }
-    #[inline] pub fn onoff_signed(b: bool) -> Self    { Self { s_size: b as isize } }
-    #[inline] pub fn new_with_u128(num: u128) -> Self { Self { u_size: LongerUnion::new_with(num).get_usize_(0) } }
 
-    #[inline] pub fn get(self) -> usize         { unsafe { self.u_size } }
-    #[inline] pub fn get_signed(self) -> isize  { unsafe { self.s_size } }
-    #[inline] pub fn set(&mut self, val: usize) { self.u_size = val; }
-    #[inline] pub fn set_signed(&mut self, val: isize)   { self.s_size = val; }
+    // pub fn new_with_u128(num: u128) -> Self
+    /// Constructs a new `SizeUnion` with initializing it with the lowest
+    /// `usize`-length part of `num`.
+    /// 
+    /// # Output
+    /// A new object of `SizeUnion` initialized with the value of
+    /// the lowest `usize`-length part of `num`.
+    /// 
+    /// # Initialization
+    /// The field of the constructed object will be initialized with
+    /// the value of the lowest `usize`-length part of `num`.
+    /// 
+    /// Example
+    /// ```
+    /// use cryptocol::number::SizeUnion;
+    /// let a = SizeUnion::new_with_u128(123456789012345678901234567890123456789_u128);
+    /// println!("a = {}", a.get());
+    /// #[cfg(target_pointer_width = "128")]    assert_eq!(a.get(), 123456789012345678901234567890123456789_usize);
+    /// #[cfg(target_pointer_width = "64")]     assert_eq!(a.get(), 12312739301371248917_usize);
+    /// #[cfg(target_pointer_width = "32")]     assert_eq!(a.get(), 2923004181_usize);
+    /// #[cfg(target_pointer_width = "16")]     assert_eq!(a.get(), 33045_usize);
+    /// #[cfg(target_pointer_width = "8")]      assert_eq!(a.get(), 21_usize);
+    /// ```
+    #[inline] pub fn new_with_u128(num: u128) -> Self   { Self { u_size: num as usize } }
+
+    // pub fn new_with_bool(b: bool) -> Self
+    /// Constructs a new `SizeUnion` with initializing it with the value of `b`.
+    /// 
+    /// # Output
+    /// A new object of `SizeUnion` initialized with the value of `b`
+    /// 
+    /// # Initialization
+    /// The field of the constructed object will be initialized with
+    /// the value of `b`.
+    /// If `b` is `true`, `self` will have the value `1`.
+    /// If `b` is `false`, `self` will have the value `0`.
+    /// 
+    /// Example
+    /// ```
+    /// use cryptocol::number::SizeUnion;
+    /// let a = SizeUnion::new_with_bool(true);
+    /// let b = SizeUnion::new_with_bool(false);
+    /// println!("a = {}", a.get());
+    /// println!("b = {}", b.get());
+    /// assert_eq!(a.get(), 1_usize);
+    /// assert_eq!(b.get(), 0_usize);
+    /// ```
+    #[inline] pub fn new_with_bool(b: bool) -> Self     { Self { u_size: b as usize } }
+
+    #[inline] pub fn get(self) -> usize             { unsafe { self.u_size } }
+    #[inline] pub fn get_signed(self) -> isize      { unsafe { self.s_size } }
+    #[inline] pub fn set(&mut self, val: usize)     { self.u_size = val; }
+    #[inline] pub fn set_signed(&mut self, val: isize)  { self.s_size = val; }
     #[cfg(target_pointer_width = "128")]    crate::number::get_set_byte!(16);
     #[cfg(target_pointer_width = "64")]     crate::number::get_set_byte!(8);
     #[cfg(target_pointer_width = "32")]     crate::number::get_set_byte!(4);

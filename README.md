@@ -108,9 +108,24 @@ I think that if breaking changes are inevitable and have to be made, the sooner,
 | pub fn from_be_bytes(be_bytes: &[T; N]) -> Self | pub fn from_be_bytes(be_bytes: [T; N]) -> Self |
 | pub fn from_le_bytes(le_bytes: &[T; N]) -> Self | pub fn from_le_bytes(le_bytes: [T; N]) -> Self |
 
+- The arguments of all the constructors to be borrowed are changed to be moved except BigUInt::from_string(), BigUInt::from_str_radix(), BigUInt::from_biguint(), and SharedArrays::from_src().
+- The reason of the exception to keep the arguments of BigUInt::from_string() and BigUInt::from_str_radix() to be borrowed is to keep the consistency with String::from().
+- The reason of the exception to keep the arguments of BigUInt::from_biguint() to be borrowed is for the performance and the convenience.
+- The reason of the exception to keep the arguments of SharedArrays::from_src() to be borrowed is for its purpose and the convenience.
+
+### unions ShortUnion, IntUnion, LongUnion, LongerUnion, and SizeUnion
+
+| Ver. 0.7.2                           | Ver. 0.7.3                            |
+|--------------------------------------|---------------------------------------|
+| pub fn onoff(b: bool) -> Self        | pub fn new_with_bool(b: bool) -> Self |
+| pub fn onoff_signed(b: bool) -> Self | removed                               |
+
+- The method name `onoff` is not intuitive so that it was changed into more intuitive name `new_with_bool`.
+- The method `onoff_signed()` is redundant because it is the same as the method `onoff()` or `new_with_bool()`.
+
 ## Sorry for breaking changes from ver. 0.7.1 to ver. 0.7.2
 
-### union SharedValues
+### unions SharedValues
 
 | Ver. 0.7.1                                          | Ver. 0.7.2 |
 |-----------------------------------------------------|------------|
@@ -134,7 +149,7 @@ I think that if breaking changes are inevitable and have to be made, the sooner,
 
 - The macro name `define_Utypes_with_utypes` should not have been exposed to the outside of this crate so it was removed rather than recommending not to use it at documentation.
 
-### fields of ShortUnion, IntUnion, LongUnion, LongerUnion, SizeUnion
+### fields of ShortUnion, IntUnion, LongUnion, LongerUnion, and SizeUnion
 
 | Ver. 0.7.0  | Ver. 0.7.1 |
 |-------------|------------|

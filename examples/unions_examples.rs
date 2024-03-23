@@ -29,6 +29,8 @@ fn short_union_main()
     short_union_new_with();
     short_union_new_with_signed();
     short_union_new_with_ubytes();
+    short_union_new_with_u128();
+    short_union_new_with_bool();
 }
 
 fn short_union_quick_start1()
@@ -154,6 +156,32 @@ fn short_union_new_with_ubytes()
     println!("--------------------------------------");
 }
 
+fn short_union_new_with_u128()
+{
+    println!("short_union_new_with_u128()");
+    use cryptocol::number::ShortUnion;
+    let a = ShortUnion::new_with_u128(55468_u128);
+    let b = ShortUnion::new_with_u128(123456789012345678901234567890123456789_u128);
+    println!("a = {}", a.get());
+    println!("b = {}", b.get());
+    assert_eq!(a.get(), 55468_u16);
+    assert_eq!(b.get(), 33045_u16);
+    println!("--------------------------------------");
+}
+
+fn short_union_new_with_bool()
+{
+    println!("short_union_new_with_bool()");
+    use cryptocol::number::ShortUnion;
+    let a = ShortUnion::new_with_bool(true);
+    let b = ShortUnion::new_with_bool(false);
+    println!("a = {}", a.get());
+    println!("b = {}", b.get());
+    assert_eq!(a.get(), 1_u16);
+    assert_eq!(b.get(), 0_u16);
+    println!("--------------------------------------");
+}
+
 
 fn int_union_main()
 {
@@ -163,6 +191,9 @@ fn int_union_main()
     int_union_new_with();
     int_union_new_with_signed();
     int_union_new_with_ubytes();
+    int_union_new_with_ushorts();
+    int_union_new_with_u128();
+    int_union_new_with_bool();
 }
 
 fn int_union_quick_start1()
@@ -327,6 +358,42 @@ fn int_union_new_with_ubytes()
     println!("--------------------------------------");
 }
 
+fn int_union_new_with_ushorts()
+{
+    println!("int_union_new_with_ushorts()");
+    use cryptocol::number::IntUnion;
+    let a = IntUnion::new_with_ushorts([222_u16, 58598_u16]);
+    println!("a = {}", a.get());
+    assert_eq!(a.get(), 3840278750_u32);
+    println!("--------------------------------------");
+}
+
+fn int_union_new_with_u128()
+{
+    println!("int_union_new_with_u128()");
+    use cryptocol::number::IntUnion;
+    let a = IntUnion::new_with_u128(3840278750_u128);
+    let b = IntUnion::new_with_u128(123456789012345678901234567890123456789_u128);
+    println!("a = {}", a.get());
+    println!("b = {}", b.get());
+    assert_eq!(a.get(), 3840278750_u32);
+    assert_eq!(b.get(), 2923004181_u32);
+    println!("--------------------------------------");
+}
+
+fn int_union_new_with_bool()
+{
+    println!("int_union_new_with_bool()");
+    use cryptocol::number::IntUnion;
+    let a = IntUnion::new_with_bool(true);
+    let b = IntUnion::new_with_bool(false);
+    println!("a = {}", a.get());
+    println!("b = {}", b.get());
+    assert_eq!(a.get(), 1_u32);
+    assert_eq!(b.get(), 0_u32);
+    println!("--------------------------------------");
+}
+
 
 fn long_union_main()
 {
@@ -336,6 +403,10 @@ fn long_union_main()
     long_union_new_with();
     long_union_new_with_signed();
     long_union_new_with_ubytes();
+    long_union_new_with_ushorts();
+    long_union_new_with_uints();
+    long_union_new_with_u128();
+    long_union_new_with_bool();
 }
 
 fn long_union_quick_start1()
@@ -565,6 +636,52 @@ fn long_union_new_with_ubytes()
     println!("--------------------------------------");
 }
 
+fn long_union_new_with_ushorts()
+{
+    println!("long_union_new_with_ushorts()");
+    use cryptocol::number::LongUnion;
+    let a = LongUnion::new_with_ushorts([5507_u16, 50024_u16, 40234_u16, 65531_u16]);
+    println!("a = {}", a.get());
+    assert_eq!(a.get(), 18445509505818563971_u64);
+    println!("--------------------------------------");
+}
+
+fn long_union_new_with_uints()
+{
+    println!("long_union_new_with_uints()");
+    use cryptocol::number::LongUnion;
+    let a = LongUnion::new_with_uints([3278378371_u32, 4294679850_u32]);
+    println!("a = {}", a.get());
+    assert_eq!(a.get(), 18445509505818563971_u64);
+    println!("--------------------------------------");
+}
+
+fn long_union_new_with_u128()
+{
+    println!("long_union_new_with_u128()");
+    use cryptocol::number::LongUnion;
+    let a = LongUnion::new_with_u128(18445509505818563971_u128);
+    let b = LongUnion::new_with_u128(123456789012345678901234567890123456789_u128);
+    println!("a = {}", a.get());
+    println!("b = {}", b.get());
+    assert_eq!(a.get(), 18445509505818563971_u64);
+    assert_eq!(b.get(), 12312739301371248917_u64);
+    println!("--------------------------------------");
+}
+
+fn long_union_new_with_bool()
+{
+    println!("long_union_new_with_bool()");
+    use cryptocol::number::LongUnion;
+    let a = LongUnion::new_with_bool(true);
+    let b = LongUnion::new_with_bool(false);
+    println!("a = {}", a.get());
+    println!("b = {}", b.get());
+    assert_eq!(a.get(), 1_u64);
+    assert_eq!(b.get(), 0_u64);
+    println!("--------------------------------------");
+}
+
 
 fn longer_union_main()
 {
@@ -574,6 +691,11 @@ fn longer_union_main()
     longer_union_new_with();
     longer_union_new_with_signed();
     longer_union_new_with_ubytes();
+    longer_union_new_with_ushorts();
+    longer_union_new_with_uints();
+    longer_union_new_with_ulongs();
+    longer_union_new_with_u128();
+    longer_union_new_with_bool();
 }
 
 fn longer_union_quick_start1()
@@ -920,6 +1042,61 @@ fn longer_union_new_with_ubytes()
     println!("--------------------------------------");
 }
 
+fn longer_union_new_with_ushorts()
+{
+    println!("longer_union_new_with_ushorts()");
+    use cryptocol::number::LongerUnion;
+    let arr = [2895_u16, 61770_u16, 26869_u16, 48547_u16, 34904_u16, 32462_u16, 15130_u16, 65298_u16];
+    let a = LongerUnion::new_with_ushorts(arr);
+    println!("a = {}", a.get());
+    assert_eq!(a.get(), 339047799029950809142362261752780557135_u128);
+    println!("--------------------------------------");
+}
+
+fn longer_union_new_with_uints()
+{
+    println!("longer_union_new_with_uints()");
+    use cryptocol::number::LongerUnion;
+    let arr = [4048161615_u32, 3181603061_u32, 2127464536_u32, 4279384858_u32];
+    let a = LongerUnion::new_with_uints(arr);
+    println!("a = {}", a.get());
+    assert_eq!(a.get(), 339047799029950809142362261752780557135_u128);
+    println!("--------------------------------------");
+}
+
+fn longer_union_new_with_ulongs()
+{
+    println!("longer_union_new_with_ulongs()");
+    use cryptocol::number::LongerUnion;
+    let a = LongerUnion::new_with_ulongs([13664881099896654671_u64, 18379818014235068504_u64]);
+    println!("a = {}", a.get());
+    assert_eq!(a.get(), 339047799029950809142362261752780557135_u128);
+    println!("--------------------------------------");
+}
+
+fn longer_union_new_with_u128()
+{
+    println!("longer_union_new_with_u128()");
+    use cryptocol::number::LongerUnion;
+    let a = LongerUnion::new_with_u128(123456789012345678901234567890123456789_u128);
+    println!("a = {}", a.get());
+    assert_eq!(a.get(), 123456789012345678901234567890123456789_u128);
+    println!("--------------------------------------");
+}
+
+fn longer_union_new_with_bool()
+{
+    println!("longer_union_new_with_bool()");
+    use cryptocol::number::LongerUnion;
+    let a = LongerUnion::new_with_bool(true);
+    let b = LongerUnion::new_with_bool(false);
+    println!("a = {}", a.get());
+    println!("b = {}", b.get());
+    assert_eq!(a.get(), 1_u128);
+    assert_eq!(b.get(), 0_u128);
+    println!("--------------------------------------");
+}
+
 
 fn size_union_main()
 {
@@ -928,6 +1105,8 @@ fn size_union_main()
     size_union_new();
     size_union_new_with();
     size_union_new_with_signed();
+    size_union_new_with_u128();
+    size_union_new_with_bool();
 }
 
 fn size_union_quick_start1()
@@ -1484,6 +1663,33 @@ fn size_union_new_with_signed()
     let a = SizeUnion::new_with_signed(-1234_isize);
     println!("a = {}", a.get_signed());
     assert_eq!(a.get_signed(), -1234_isize);
+    println!("--------------------------------------");
+}
+
+fn size_union_new_with_u128()
+{
+    println!("size_union_new_with_u128()");
+    use cryptocol::number::SizeUnion;
+    let a = SizeUnion::new_with_u128(123456789012345678901234567890123456789_u128);
+    println!("a = {}", a.get());
+    #[cfg(target_pointer_width = "128")]    assert_eq!(a.get(), 123456789012345678901234567890123456789_usize);
+    #[cfg(target_pointer_width = "64")]     assert_eq!(a.get(), 12312739301371248917_usize);
+    #[cfg(target_pointer_width = "32")]     assert_eq!(a.get(), 2923004181_usize);
+    #[cfg(target_pointer_width = "16")]     assert_eq!(a.get(), 33045_usize);
+    #[cfg(target_pointer_width = "8")]      assert_eq!(a.get(), 21_usize);
+    println!("--------------------------------------");
+}
+
+fn size_union_new_with_bool()
+{
+    println!("size_union_new_with_bool()");
+    use cryptocol::number::SizeUnion;
+    let a = SizeUnion::new_with_bool(true);
+    let b = SizeUnion::new_with_bool(false);
+    println!("a = {}", a.get());
+    println!("b = {}", b.get());
+    assert_eq!(a.get(), 1_usize);
+    assert_eq!(b.get(), 0_usize);
     println!("--------------------------------------");
 }
 

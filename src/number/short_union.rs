@@ -20,7 +20,6 @@ use std::cmp::{ PartialEq, PartialOrd, Ordering };
 use std::ops::*;
 
 use super::small_uint::SmallUInt;
-use super::longer_union::LongerUnion;
 
 /// # Introduction
 /// This union `ShortUnion` is for slicing `u16` into two `u8`s,
@@ -245,9 +244,55 @@ impl ShortUnion
     /// assert_eq!(a.get(), 55468_u16);
     /// ```
     #[inline] pub fn new_with_ubytes(ubyte: [u8; 2]) -> Self    { Self { ubyte } }
-    #[inline] pub fn onoff(b: bool) -> Self             { Self { ushort: b as u16 } }
-    #[inline] pub fn onoff_signed(b: bool) -> Self      { Self { sshort: b as i16 } }
-    #[inline] pub fn new_with_u128(num: u128) -> Self   { Self { ushort: LongerUnion::new_with(num).get_ushort_(0) } }
+
+    // pub fn new_with_u128(num: u128) -> Self
+    /// Constructs a new `ShortUnion` with initializing it with the lowest
+    /// 16-bit part of `num`.
+    /// 
+    /// # Output
+    /// A new object of `ShortUnion` initialized with the value of
+    /// the lowest 16-bit part of `num`.
+    /// 
+    /// # Initialization
+    /// The field of the constructed object will be initialized with
+    /// the value of the lowest 16-bit part of `num`.
+    /// 
+    /// Example
+    /// ```
+    /// use cryptocol::number::ShortUnion;
+    /// let a = ShortUnion::new_with_u128(55468_u128);
+    /// let b = ShortUnion::new_with_u128(123456789012345678901234567890123456789_u128);
+    /// println!("a = {}", a.get());
+    /// println!("b = {}", b.get());
+    /// assert_eq!(a.get(), 55468_u16);
+    /// assert_eq!(b.get(), 33045_u16);
+    /// ```
+    #[inline] pub fn new_with_u128(num: u128) -> Self   { Self { ushort: num as u16 } }
+
+    // pub fn new_with_bool(b: bool) -> Self
+    /// Constructs a new `ShortUnion` with initializing it
+    /// with the value of `b`.
+    /// 
+    /// # Output
+    /// A new object of `ShortUnion` initialized with the value of `b`
+    /// 
+    /// # Initialization
+    /// The field of the constructed object will be initialized with
+    /// the value of `b`.
+    /// If `b` is `true`, `self` will have the value `1`.
+    /// If `b` is `false`, `self` will have the value `0`.
+    /// 
+    /// Example
+    /// ```
+    /// use cryptocol::number::ShortUnion;
+    /// let a = ShortUnion::new_with_bool(true);
+    /// let b = ShortUnion::new_with_bool(false);
+    /// println!("a = {}", a.get());
+    /// println!("b = {}", b.get());
+    /// assert_eq!(a.get(), 1_u16);
+    /// assert_eq!(b.get(), 0_u16);
+    /// ```
+    #[inline] pub fn new_with_bool(b: bool) -> Self     { Self { ushort: b as u16 } }
 
     #[inline] pub fn get(self) -> u16                   { unsafe { self.this } }
     #[inline] pub fn set(&mut self, val: u16)           { self.this = val; }
