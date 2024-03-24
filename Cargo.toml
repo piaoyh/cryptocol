@@ -1,7 +1,7 @@
 [package]
 authors = ["PARK Youngho"]
 categories = ["algorithms", "cryptography", "mathematics"]
-description = "A cryptographic library that includes big number arithmatic operation, hash algorithms, symmetric-key cryptographic encryption/decryption algorithms, asymmetric-key (public-key) cryptographic encryption/decryption algorithms, pseudo random number generators, etc."
+description = "A cryptographic library that includes big number arithmatic operation, hash algorithms, symmetric-key cryptographic encryption/decryption algorithms, asymmetric-key (public-key) cryptographic encryption/decryption algorithms, pseudo random number generators, etc. Hash algorithms includes MD4, MD5, SHA224, SHA256, SHA384, SHA512, SHA3, etc. Symmetric key encryption algorithms include DES, AES, etc. Public key encryption algrorithms include RSA, ECC, etc."
 edition = "2021"
 keywords = ["number", "hash", "sha2", "sha512", "random"]
 #keywords = ["number", "hash", "encryption", "random", "cryptography"]

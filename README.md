@@ -96,7 +96,7 @@ it does not mean that 50% of all functionalities are implemented.
 
 ## Sorry for breaking changes from ver. 0.7.2 to ver. 0.7.3
 
-I think that if breaking changes are inevitable and have to be made, the sooner, the better even before more people will be using my crate.
+I think that if breaking changes are inevitable and have to be made, the sooner, the better especially before more people will be using my crate.
 
 ### methods of BigUInt
 

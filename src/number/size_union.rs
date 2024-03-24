@@ -20,7 +20,6 @@ use std::cmp::{ PartialEq, PartialOrd, Ordering };
 use std::ops::*;
 
 use super::small_uint::SmallUInt;
-use super::longer_union::LongerUnion;
 
 /// # Introduction
 /// This union `SizeUnion` is for slicing `usize` into two `u64`s, two `i64`s,
