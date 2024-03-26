@@ -309,6 +309,19 @@ impl ShortUnion
     /// ```
     #[inline] pub fn get(self) -> u16   { unsafe { self.this } }
 
+    // pub fn set(&mut self, val: u16)
+    /// Sets its value with `val` of type `u16`.
+    /// 
+    /// Example
+    /// ```
+    /// use cryptocol::number::ShortUnion;    
+    /// let mut a = ShortUnion::new();
+    /// a.set(54321_u16);
+    /// println!("a = {}", a.get());
+    /// assert_eq!(a.get(), 54321_u16);
+    /// ```
+    #[inline] pub fn set(&mut self, val: u16)   { self.this = val; }
+
     // pub fn get_signed(self) -> i16
     /// Returns its value as `i16`.
     /// 
@@ -323,19 +336,6 @@ impl ShortUnion
     /// assert_eq!(a.get_signed(), -11215_i16);
     /// ```
     #[inline] pub fn get_signed(self) -> i16    { unsafe { self.that } }
-
-    // pub fn set(&mut self, val: u16)
-    /// Sets its value with `val` of type `u16`.
-    /// 
-    /// Example
-    /// ```
-    /// use cryptocol::number::ShortUnion;    
-    /// let mut a = ShortUnion::new();
-    /// a.set(54321_u16);
-    /// println!("a = {}", a.get());
-    /// assert_eq!(a.get(), 54321_u16);
-    /// ```
-    #[inline] pub fn set(&mut self, val: u16)   { self.this = val; }
 
     // pub fn set_signed(&mut self, val: i16)
     /// Sets its value with `val` of type `i16`.

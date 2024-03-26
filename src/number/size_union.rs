@@ -1056,7 +1056,6 @@ impl SizeUnion
     /// ```
     #[inline] pub fn new_with_bool(b: bool) -> Self     { Self { u_size: b as usize } }
 
-
     // pub fn get(self) -> usize
     /// Returns its value as `usize`.
     /// 
@@ -1065,12 +1064,25 @@ impl SizeUnion
     /// 
     /// Example
     /// ```
-    /// use cryptocol::number::ShortUnion;
-    /// let a = ShortUnion::new_with(55468_u16);
+    /// use cryptocol::number::SizeUnion;
+    /// let a = SizeUnion::new_with(250_usize);
     /// println!("a = {}", a.get());
-    /// assert_eq!(a.get(), 55468_u16);
+    /// assert_eq!(a.get(), 250_usize);
     /// ```
-    #[inline] pub fn get(self) -> usize             { unsafe { self.u_size } }
+    #[inline] pub fn get(self) -> usize     { unsafe { self.u_size } }
+
+    // pub fn set(&mut self, val: usize)
+    /// Sets its value with `val` of type `usize`
+    /// 
+    /// Example
+    /// ```
+    /// use cryptocol::number::SizeUnion;    
+    /// let mut a = SizeUnion::new();
+    /// a.set(234_usize);
+    /// println!("a = {}", a.get());
+    /// assert_eq!(a.get(), 234_usize);
+    /// ```
+    #[inline] pub fn set(&mut self, val: usize)     { self.u_size = val; }
 
     // pub fn get_signed(self) -> isize
     /// Returns its value as `isize`.
@@ -1087,25 +1099,14 @@ impl SizeUnion
     /// ```
     #[inline] pub fn get_signed(self) -> isize      { unsafe { self.s_size } }
 
-    // pub fn set(&mut self, val: usize)
-    /// Sets its value with `val` of type `usize`
-    /// 
-    /// Example
-    /// ```
-    /// use cryptocol::number::SizeUnion;    
-    /// let a = SizeUnion::new_with(234_usize);
-    /// println!("a = {}", a.get());
-    /// assert_eq!(a.get(), 234_usize);
-    /// ```
-    #[inline] pub fn set(&mut self, val: usize)     { self.u_size = val; }
-
     // pub fn set_signed(&mut self, val: isize)
     /// Sets its value with `val` of type `isize`
     /// 
     /// Example
     /// ```
     /// use cryptocol::number::SizeUnion;    
-    /// let a = SizeUnion::new_with_signed(-123_isize);
+    /// let mut a = SizeUnion::new();
+    /// a.set_signed(-123_isize);
     /// println!("a = {}", a.get_signed());
     /// assert_eq!(a.get_signed(), -123_isize);
     /// ```

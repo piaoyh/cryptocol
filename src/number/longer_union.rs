@@ -629,6 +629,19 @@ impl LongerUnion
     /// ```
     #[inline] pub fn get(self) -> u128          { unsafe { self.ulonger } }
 
+    // pub fn set(&mut self, val: u128)
+    /// Sets its value with `val` of type `u128`
+    /// 
+    /// Example
+    /// ```
+    /// use cryptocol::number::LongerUnion;    
+    /// let mut a = LongerUnion::new();
+    /// a.set(98765432101234567898765432101234546789_u128);
+    /// println!("a = {}", a.get());
+    /// assert_eq!(a.get(), 98765432101234567898765432101234546789_u128);
+    /// ```
+    #[inline] pub fn set(&mut self, val: u128)  { self.ulonger = val; }
+
     // pub fn get_signed(self) -> i128
     /// Returns its value as `i128`.
     /// 
@@ -644,29 +657,16 @@ impl LongerUnion
     /// ```
     #[inline] pub fn get_signed(self) -> i128   { unsafe { self.slonger } }
 
-    // pub fn set(&mut self, val: u128)
-    /// Sets its value with `val` of type `u128`
-    /// 
-    /// Example
-    /// ```
-    /// use cryptocol::number::IntUnion;    
-    /// let mut a = IntUnion::new();
-    /// a.set(987654321_u32);
-    /// println!("a = {}", a.get());
-    /// assert_eq!(a.get(), 987654321_u32);
-    /// ```
-    #[inline] pub fn set(&mut self, val: u128)  { self.ulonger = val; }
-
     // pub fn set_signed(&mut self, val: i128)
     /// Sets its value with `val` of type `i128`
     /// 
     /// Example
     /// ```
-    /// use cryptocol::number::IntUnion;    
-    /// let mut a = IntUnion::new();
-    /// a.set_signed(-1949288395_i32);
+    /// use cryptocol::number::LongerUnion;    
+    /// let mut a = LongerUnion::new();
+    /// a.set_signed(-105714475933284142451028928444113890222_i128);
     /// println!("a = {}", a.get_signed());
-    /// assert_eq!(a.get_signed(), -1949288395_i32);
+    /// assert_eq!(a.get_signed(), -105714475933284142451028928444113890222_i128);
     /// ```
     #[inline] pub fn set_signed(&mut self, val: i128)   { self.slonger = val; }
 

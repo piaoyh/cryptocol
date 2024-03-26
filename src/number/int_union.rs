@@ -385,6 +385,19 @@ impl IntUnion
     /// ```
     #[inline] pub fn get(self) -> u32           { unsafe { self.this } }
 
+    // pub fn set(&mut self, val: u32)
+    /// Sets its value with `val` of type `u32`
+    /// 
+    /// Example
+    /// ```
+    /// use cryptocol::number::IntUnion;    
+    /// let mut a = IntUnion::new();
+    /// a.set(987654321_u32);
+    /// println!("a = {}", a.get());
+    /// assert_eq!(a.get(), 987654321_u32);
+    /// ```
+    #[inline] pub fn set(&mut self, val: u32)   { self.this = val; }
+
     // pub fn get_signed(self) -> i32
     /// Returns its value as `i32`.
     /// 
@@ -399,19 +412,6 @@ impl IntUnion
     /// assert_eq!(a.get_signed(), -1949288395_i32);
     /// ```
     #[inline] pub fn get_signed(self) -> i32    { unsafe { self.that } }
-
-    // pub fn set(&mut self, val: u32)
-    /// Sets its value with `val` of type `u32`
-    /// 
-    /// Example
-    /// ```
-    /// use cryptocol::number::IntUnion;    
-    /// let mut a = IntUnion::new();
-    /// a.set(987654321_u32);
-    /// println!("a = {}", a.get());
-    /// assert_eq!(a.get(), 987654321_u32);
-    /// ```
-    #[inline] pub fn set(&mut self, val: u32)   { self.this = val; }
 
     // pub fn set_signed(&mut self, val: i32)
     /// Sets its value with `val` of type `i32`

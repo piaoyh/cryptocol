@@ -1132,9 +1132,60 @@ pub(super) use get_set_byte;
 
 macro_rules! get_set_short_fit {
     () => {
-        #[inline] pub fn get_ushort(self) -> u16            { unsafe { self.ushort } }
+        // pub fn get_ushort(self) -> u16
+        /// Returns its value as `u16`.
+        /// 
+        /// # Output
+        /// Its value as `u16`
+        /// 
+        /// Example
+        /// ```
+        /// use cryptocol::number::ShortUnion;
+        /// let a = ShortUnion::new_with(55468_u16);
+        /// println!("a = {}", a.get_ushort());
+        /// assert_eq!(a.get_ushort(), 55468_u16);
+        /// ```
+        #[inline] pub fn get_ushort(self) -> u16    { unsafe { self.ushort } }
+
+        // pub fn set_ushort(&mut self, val: u16)
+        /// Sets its value with `val` of type `u16`.
+        /// 
+        /// Example
+        /// ```
+        /// use cryptocol::number::ShortUnion;    
+        /// let mut a = ShortUnion::new();
+        /// a.set_ushort(54321_u16);
+        /// println!("a = {}", a.get_ushort());
+        /// assert_eq!(a.get_ushort(), 54321_u16);
+        /// ```
         #[inline] pub fn set_ushort(&mut self, val: u16)    { self.ushort = val; }
-        #[inline] pub fn get_sshort(self) -> i16            { unsafe { self.sshort } }
+
+        // pub fn get_sshort(self) -> i16
+        /// Returns its value as `i16`.
+        /// 
+        /// # Output
+        /// Its value as `i16`
+        /// 
+        /// Example
+        /// ```
+        /// use cryptocol::number::ShortUnion;    
+        /// let a = ShortUnion::new_with(54321_u16);
+        /// println!("a = {}", a.get_sshort());
+        /// assert_eq!(a.get_sshort(), -11215_i16);
+        /// ```
+        #[inline] pub fn get_sshort(self) -> i16    { unsafe { self.sshort } }
+
+        // pub fn set_sshort(&mut self, val: i16)
+        /// Sets its value with `val` of type `i16`.
+        /// 
+        /// Example
+        /// ```
+        /// use cryptocol::number::ShortUnion;    
+        /// let mut a = ShortUnion::new();
+        /// a.set_sshort(-11215_i16);
+        /// println!("a = {}", a.get_sshort());
+        /// assert_eq!(a.get_sshort(), -11215_i16);
+        /// ```
         #[inline] pub fn set_sshort(&mut self, val: i16)    { self.sshort = val; }
     };
 }
@@ -1790,9 +1841,60 @@ pub(crate) use get_set_short;
 
 macro_rules! get_set_int_fit {
     () => {
-        #[inline] pub fn get_uint(self) -> u32          { unsafe { self.uint } }
+        // pub fn get_uint(self) -> u32
+        /// Returns its value as `u32`.
+        /// 
+        /// # Output
+        /// Its value as `u32`
+        /// 
+        /// Example
+        /// ```
+        /// use cryptocol::number::IntUnion;    
+        /// let a = IntUnion::new_with(987654321_u32);
+        /// println!("a = {}", a.get_uint());
+        /// assert_eq!(a.get_uint(), 987654321_u32);
+        /// ```
+        #[inline] pub fn get_uint(self) -> u32      { unsafe { self.uint } }
+
+        // pub fn set_uint(&mut self, val: u32)
+        /// Sets its value with `val` of type `u32`
+        /// 
+        /// Example
+        /// ```
+        /// use cryptocol::number::IntUnion;    
+        /// let mut a = IntUnion::new();
+        /// a.set_uint(987654321_u32);
+        /// println!("a = {}", a.get_uint());
+        /// assert_eq!(a.get_uint(), 987654321_u32);
+        /// ```
         #[inline] pub fn set_uint(&mut self, val: u32)  { self.uint = val; }
-        #[inline] pub fn get_sint(self) -> i32          { unsafe { self.sint } }
+
+        // pub fn get_sint(self) -> i32
+        /// Returns its value as `i32`.
+        /// 
+        /// # Output
+        /// Its value as `i32`
+        /// 
+        /// Example
+        /// ```
+        /// use cryptocol::number::IntUnion;    
+        /// let a = IntUnion::new_with(2345678901_u32);
+        /// println!("a = {}", a.get_sint());
+        /// assert_eq!(a.get_sint(), -1949288395_i32);
+        /// ```
+        #[inline] pub fn get_sint(self) -> i32      { unsafe { self.sint } }
+
+        // pub fn set_sint(&mut self, val: i32)
+        /// Sets its value with `val` of type `i32`
+        /// 
+        /// Example
+        /// ```
+        /// use cryptocol::number::IntUnion;    
+        /// let mut a = IntUnion::new();
+        /// a.set_sint(-1949288395_i32);
+        /// println!("a = {}", a.get_sint());
+        /// assert_eq!(a.get_sint(), -1949288395_i32);
+        /// ```
         #[inline] pub fn set_sint(&mut self, val: i32)  { self.sint = val; }
     };
 }
@@ -2449,10 +2551,61 @@ pub(super) use get_set_int;
 
 macro_rules! get_set_long_fit {
     () => {
+        // pub fn get_ulong(self) -> u64
+        /// Returns its value as `u64`.
+        /// 
+        /// # Output
+        /// Its value as `u64`
+        /// 
+        /// Example
+        /// ```
+        /// use cryptocol::number::LongUnion;    
+        /// let a = LongUnion::new_with(654321987654321_u64);
+        /// println!("a = {}", a.get_ulong());
+        /// assert_eq!(a.get_ulong(), 654321987654321_u64);
+        /// ```
         #[inline] pub fn get_ulong(self) -> u64         { unsafe { self.ulong } }
-        #[inline] pub fn set_ulong(&mut self, val: u64) { self.ulong = val; }
-        #[inline] pub fn get_slong(self) -> i64         { unsafe { self.slong } }
-        #[inline] pub fn set_slong(&mut self, val: i64) { self.slong = val; }
+
+        // pub fn set_ulong(&mut self, val: u64)
+        /// Sets its value with `val` of type `u64`
+        /// 
+        /// Example
+        /// ```
+        /// use cryptocol::number::LongUnion;    
+        /// let mut a = LongUnion::new();
+        /// a.set_ulong(654321987654321_u64);
+        /// println!("a = {}", a.get_ulong());
+        /// assert_eq!(a.get_ulong(), 654321987654321_u64);
+        /// ```
+        #[inline] pub fn set_ulong(&mut self, val: u64)     { self.ulong = val; }
+
+        // pub fn get_slong(self) -> i64
+        /// Returns its value as `i64`.
+        /// 
+        /// # Output
+        /// Its value as `i64`
+        /// 
+        /// Example
+        /// ```
+        /// use cryptocol::number::LongUnion;    
+        /// let a = LongUnion::new_with(12345678909876456789_u64);
+        /// println!("a = {}", a.get_slong());
+        /// assert_eq!(a.get_slong(), -6101065163833094827_i64);
+        /// ```
+        #[inline] pub fn get_slong(self) -> i64     { unsafe { self.slong } }
+
+        // pub fn set_slong(&mut self, val: i64)
+        /// Sets its value with `val` of type `i64`
+        /// 
+        /// Example
+        /// ```
+        /// use cryptocol::number::LongUnion;    
+        /// let mut a = LongUnion::new();
+        /// a.set_slong(-6101065163833094827_i64);
+        /// println!("a = {}", a.get_slong());
+        /// assert_eq!(a.get_slong(), -6101065163833094827_i64);
+        /// ```
+        #[inline] pub fn set_slong(&mut self, val: i64)     { self.slong = val; }
     };
 }
 pub(super) use get_set_long_fit;
@@ -3109,9 +3262,60 @@ pub(super) use get_set_long;
 
 macro_rules! get_set_longer_fit {
     () => {
-        #[inline] pub fn get_ulonger(self) -> u128          { unsafe { self.ulonger } }
+        // pub fn get_ulonger(self) -> u128
+        /// Returns its value as `u128`.
+        /// 
+        /// # Output
+        /// Its value as `u128`
+        /// 
+        /// Example
+        /// ```
+        /// use cryptocol::number::LongerUnion;    
+        /// let a = LongerUnion::new_with(98765432101234567898765432101234546789_u128);
+        /// println!("a = {}", a.get_ulonger());
+        /// assert_eq!(a.get_ulonger(), 98765432101234567898765432101234546789_u128);
+        /// ```
+        #[inline] pub fn get_ulonger(self) -> u128      { unsafe { self.ulonger } }
+
+        // pub fn set_ulonger(&mut self, val: u128)
+        /// Sets its value with `val` of type `u128`
+        /// 
+        /// Example
+        /// ```
+        /// use cryptocol::number::LongerUnion;    
+        /// let mut a = LongerUnion::new();
+        /// a.set_ulonger(98765432101234567898765432101234546789_u128);
+        /// println!("a = {}", a.get_ulonger());
+        /// assert_eq!(a.get_ulonger(), 98765432101234567898765432101234546789_u128);
+        /// ```
         #[inline] pub fn set_ulonger(&mut self, val: u128)  { self.ulonger = val; }
-        #[inline] pub fn get_slonger(self) -> i128          { unsafe { self.slonger } }
+
+        // pub fn get_slonger(self) -> i128
+        /// Returns its value as `i128`.
+        /// 
+        /// # Output
+        /// Its value as `i128`
+        /// 
+        /// Example
+        /// ```
+        /// use cryptocol::number::LongerUnion;    
+        /// let a = LongerUnion::new_with(234567890987654321012345678987654321234_u128);
+        /// println!("a = {}", a.get_slonger());
+        /// assert_eq!(a.get_slonger(), -105714475933284142451028928444113890222_i128);
+        /// ```
+        #[inline] pub fn get_slonger(self) -> i128      { unsafe { self.slonger } }
+
+        // pub fn set_slonger(&mut self, val: i128)
+        /// Sets its value with `val` of type `i128`
+        /// 
+        /// Example
+        /// ```
+        /// use cryptocol::number::LongerUnion;    
+        /// let mut a = LongerUnion::new();
+        /// a.set_slonger(-105714475933284142451028928444113890222_i128);
+        /// println!("a = {}", a.get_slonger());
+        /// assert_eq!(a.get_slonger(), -105714475933284142451028928444113890222_i128);
+        /// ```
         #[inline] pub fn set_slonger(&mut self, val: i128)  { self.slonger = val; }
     };
 }
@@ -3120,9 +3324,60 @@ pub(super) use get_set_longer_fit;
 
 macro_rules! get_set_size_fit {
     () => {
-        #[inline] pub fn get_usize(self) -> usize           { unsafe { self.u_size } }
+        // pub fn get_usize(self) -> usize
+        /// Returns its value as `usize`.
+        /// 
+        /// # Output
+        /// Its value as `usize`
+        /// 
+        /// Example
+        /// ```
+        /// use cryptocol::number::SizeUnion;    
+        /// let a = SizeUnion::new_with(250_usize);
+        /// println!("a = {}", a.get_usize());
+        /// assert_eq!(a.get_usize(), 250_usize);
+        /// ```
+        #[inline] pub fn get_usize(self) -> usize   { unsafe { self.u_size } }
+
+        // pub fn set_usize(&mut self, val: usize)
+        /// Sets its value with `val` of type `usize`
+        /// 
+        /// Example
+        /// ```
+        /// use cryptocol::number::SizeUnion;    
+        /// let mut a = SizeUnion::new();
+        /// a.set_usize(234_usize);
+        /// println!("a = {}", a.get_usize());
+        /// assert_eq!(a.get_usize(), 234_usize);
+        /// ```
         #[inline] pub fn set_usize(&mut self, val: usize)   { self.u_size = val; }
-        #[inline] pub fn get_ssize(self) -> isize           { unsafe { self.s_size } }
+
+        // pub fn get_ssize(self) -> isize
+        /// Returns its value as `isize`.
+        /// 
+        /// # Output
+        /// Its value as `isize`
+        /// 
+        /// Example
+        /// ```
+        /// use cryptocol::number::SizeUnion;    
+        /// let a = SizeUnion::new_with_signed(-123_isize);
+        /// println!("a = {}", a.get_ssize());
+        /// assert_eq!(a.get_ssize(), -123_isize);
+        /// ```
+        #[inline] pub fn get_ssize(self) -> isize   { unsafe { self.s_size } }
+
+        // pub fn set_ssize(&mut self, val: isize)
+        /// Sets its value with `val` of type `isize`
+        /// 
+        /// Example
+        /// ```
+        /// use cryptocol::number::SizeUnion;    
+        /// let mut a = SizeUnion::new();
+        /// a.set_ssize(-123_isize);
+        /// println!("a = {}", a.get_ssize());
+        /// assert_eq!(a.get_ssize(), -123_isize);
+        /// ```
         #[inline] pub fn set_ssize(&mut self, val: isize)   { self.s_size = val; }
     };
 }
