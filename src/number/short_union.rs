@@ -294,20 +294,68 @@ impl ShortUnion
     /// ```
     #[inline] pub fn new_with_bool(b: bool) -> Self     { Self { ushort: b as u16 } }
 
-    #[inline] pub fn get(self) -> u16                   { unsafe { self.this } }
-    #[inline] pub fn set(&mut self, val: u16)           { self.this = val; }
-    #[inline] pub fn get_signed(self) -> i16            { unsafe { self.that } }
+    // pub fn get(self) -> u16
+    /// Returns its value as `u16`.
+    /// 
+    /// # Output
+    /// Its value as `u16`
+    /// 
+    /// Example
+    /// ```
+    /// use cryptocol::number::ShortUnion;
+    /// let a = ShortUnion::new_with(55468_u16);
+    /// println!("a = {}", a.get());
+    /// assert_eq!(a.get(), 55468_u16);
+    /// ```
+    #[inline] pub fn get(self) -> u16   { unsafe { self.this } }
+
+    // pub fn get_signed(self) -> i16
+    /// Returns its value as `i16`.
+    /// 
+    /// # Output
+    /// Its value as `i16`
+    /// 
+    /// Example
+    /// ```
+    /// use cryptocol::number::ShortUnion;    
+    /// let a = ShortUnion::new_with(54321_u16);
+    /// println!("a = {}", a.get_signed());
+    /// assert_eq!(a.get_signed(), -11215_i16);
+    /// ```
+    #[inline] pub fn get_signed(self) -> i16    { unsafe { self.that } }
+
+    // pub fn set(&mut self, val: u16)
+    /// Sets its value with `val` of type `u16`.
+    /// 
+    /// Example
+    /// ```
+    /// use cryptocol::number::ShortUnion;    
+    /// let mut a = ShortUnion::new();
+    /// a.set(54321_u16);
+    /// println!("a = {}", a.get());
+    /// assert_eq!(a.get(), 54321_u16);
+    /// ```
+    #[inline] pub fn set(&mut self, val: u16)   { self.this = val; }
+
+    // pub fn set_signed(&mut self, val: i16)
+    /// Sets its value with `val` of type `i16`.
+    /// 
+    /// Example
+    /// ```
+    /// use cryptocol::number::ShortUnion;    
+    /// let mut a = ShortUnion::new();
+    /// a.set_signed(-11215_i16);
+    /// println!("a = {}", a.get_signed());
+    /// assert_eq!(a.get_signed(), -11215_i16);
+    /// ```
     #[inline] pub fn set_signed(&mut self, val: i16)    { self.that = val; }
 
     crate::number::get_set_short_fit!();
 
     crate::number::get_set_byte!(2);
 
-    #[cfg(target_pointer_width = "8")]
-    crate::number::get_set_size!(2);
-
-    #[cfg(target_pointer_width = "16")]
-    crate::number::get_set_size_fit!();
+    #[cfg(target_pointer_width = "8")]  crate::number::get_set_size!(2);
+    #[cfg(target_pointer_width = "16")] crate::number::get_set_size_fit!();
 
     crate::number::integer_union_methods!(u16);
 }

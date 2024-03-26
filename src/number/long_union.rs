@@ -470,9 +470,60 @@ impl LongUnion
     /// ```
     #[inline] pub fn new_with_bool(b: bool) -> Self     { Self { ulong: b as u64 } }
 
+    // pub fn get(self) -> u64
+    /// Returns its value as `u64`.
+    /// 
+    /// # Output
+    /// Its value as `u64`
+    /// 
+    /// Example
+    /// ```
+    /// use cryptocol::number::LongUnion;    
+    /// let a = LongUnion::new_with(654321987654321_u64);
+    /// println!("a = {}", a.get());
+    /// assert_eq!(a.get(), 654321987654321_u64);
+    /// ```
     #[inline] pub fn get(self) -> u64           { unsafe { self.this } }
+
+    // pub fn get_signed(self) -> i64
+    /// Returns its value as `i64`.
+    /// 
+    /// # Output
+    /// Its value as `i64`
+    /// 
+    /// Example
+    /// ```
+    /// use cryptocol::number::LongUnion;    
+    /// let a = LongUnion::new_with(12345678909876456789_u64);
+    /// println!("a = {}", a.get_signed());
+    /// assert_eq!(a.get_signed(), -6101065163833094827_i64);
+    /// ```
     #[inline] pub fn get_signed(self) -> i64    { unsafe { self.that } }
+
+    // pub fn set(&mut self, val: u64)
+    /// Sets its value with `val` of type `u64`
+    /// 
+    /// Example
+    /// ```
+    /// use cryptocol::number::LongUnion;    
+    /// let mut a = LongUnion::new();
+    /// a.set(654321987654321_u64);
+    /// println!("a = {}", a.get());
+    /// assert_eq!(a.get(), 654321987654321_u64);
+    /// ```
     #[inline] pub fn set(&mut self, val: u64)   { self.this = val; }
+
+    // pub fn set_signed(&mut self, val: i64)
+    /// Sets its value with `val` of type `i64`
+    /// 
+    /// Example
+    /// ```
+    /// use cryptocol::number::LongUnion;    
+    /// let mut a = LongUnion::new();
+    /// a.set_signed(-6101065163833094827_i64);
+    /// println!("a = {}", a.get_signed());
+    /// assert_eq!(a.get_signed(), -6101065163833094827_i64);
+    /// ```
     #[inline] pub fn set_signed(&mut self, val: i64)    { self.that = val; }
 
     crate::number::get_set_long_fit!();
