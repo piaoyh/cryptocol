@@ -19,13 +19,64 @@
 #[allow(unused_macros)]
 macro_rules! get_set_byte_fit {
     () => {
-        #[inline] pub fn get_ubyte(self) -> u8          { unsafe { self.ubyte } }
+        // pub fn get_ubyte(self) -> u8
+        /// Returns its value as `u8`.
+        /// 
+        /// # Output
+        /// Its value as `u8`
+        /// 
+        /// Example
+        /// ```
+        /// use cryptocol::number::SizeUnion;
+        /// let a = SizeUnion::new_with(250_usize);
+        /// println!("a = {}", a.get_ubyte());
+        /// assert_eq!(a.get_ubyte(), 250_usize);
+        /// ```
+        #[inline] pub fn get_ubyte(self) -> u8  { unsafe { self.ubyte } }
+
+        // pub fn set_ubyte(&mut self, val: u8)
+        /// Sets its value with `val` of type `u8`
+        /// 
+        /// Example
+        /// ```
+        /// use cryptocol::number::SizeUnion;    
+        /// let mut a = SizeUnion::new();
+        /// a.set_ubyte(234_u8);
+        /// println!("a = {}", a.get_ubyte());
+        /// assert_eq!(a.get_ubyte(), 234_u8);
+        /// ```
         #[inline] pub fn set_ubyte(&mut self, val: u8)  { self.ubyte = val; }
-        #[inline] pub fn get_sbyte(self) -> i8          { unsafe { self.sbyte } }
+
+        // pub fn get_sbyte(self) -> i8
+        /// Returns its value as `i8`.
+        /// 
+        /// # Output
+        /// Its value as `i8`
+        /// 
+        /// Example
+        /// ```
+        /// use cryptocol::number::SizeUnion;    
+        /// let a = SizeUnion::new_with_signed(-123_i8);
+        /// println!("a = {}", a.get_sbyte());
+        /// assert_eq!(a.get_sbyte(), -123_i8);
+        /// ```
+        #[inline] pub fn get_sbyte(self) -> i8      { unsafe { self.sbyte } }
+
+        // pub fn set_sbyte(&mut self, val: i8)
+        /// Sets its value with `val` of type `isize`
+        /// 
+        /// Example
+        /// ```
+        /// use cryptocol::number::SizeUnion;    
+        /// let mut a = SizeUnion::new();
+        /// a.set_sbyte(-123_isize);
+        /// println!("a = {}", a.get_sbyte());
+        /// assert_eq!(a.get_sbyte(), -123_isize);
+        /// ```
         #[inline] pub fn set_sbyte(&mut self, val: i8)  { self.sbyte = val; }
     };
 }
-pub(super) use get_set_byte_fit;
+#[allow(unused_imports)] pub(super) use get_set_byte_fit;
 
 macro_rules! get_set_byte {
     ($f:expr) => {
