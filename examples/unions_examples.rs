@@ -19,6 +19,7 @@ pub fn main()
     size_union_main();
     shared_values_main();
     shared_arrays_main();
+    unions_get_set_byte_main();
 }
 
 fn short_union_main()
@@ -2548,302 +2549,651 @@ fn shared_arrays_length_of_des()
     println!("--------------------------------------");
 }
 
-/*
 
-fn short_union_debug_fmt_main()
+fn unions_get_set_byte_main()
 {
-    println!("short_union_main");
+    unions_get_ubyte_();
+    unions_set_ubyte_();
+    unions_get_ubyte();
+    unions_set_ubyte();
+    unions_get_sbyte_();
+    unions_set_sbyte_();
+    unions_get_sbyte();
+    unions_set_sbyte();
+}
+
+fn unions_get_ubyte_()
+{
+    println!("unions_get_ubyte_()");
+    // Example for ShortUnion
     use cryptocol::number::ShortUnion;
-    let a_short = ShortUnion::new_with_signed(-12345_i16);
-    println!("a_short = {:?}", a_short);
-    println!("a_short = {:#?}", a_short);
-    assert_eq!(format!("{a_short:?}"), "ShortUnion { this: 53191, that: -12345, ushort: 53191, sshort: -12345, ubyte: [199, 207], sbyte: [-57, -49] }");
-    assert_eq!(format!("{a_short:#?}"), r#"ShortUnion {
-    this: 53191,
-    that: -12345,
-    ushort: 53191,
-    sshort: -12345,
-    ubyte: [
-        199,
-        207,
-    ],
-    sbyte: [
-        -57,
-        -49,
-    ],
-}"#);
-    println!("--------------------------------------");
-}
+    let a_shortunion = ShortUnion::new_with(2895_u16);
+    for i in 0..2
+        { println!("a_shortunion.get_ubyte_({}) = {}", i, a_shortunion.get_ubyte_(i)); }
+    assert_eq!(a_shortunion.get_ubyte_(0), 79_u8);
+    assert_eq!(a_shortunion.get_ubyte_(1), 11_u8);
 
-fn int_union_debug_fmt_main()
-{
-    println!("int_union_main");
-    use cryptocol::number::IntUnion;
-    let a_int = IntUnion::new_with_signed(-1234567890_i32);
-    println!("a_int = {:?}", a_int);
-    println!("a_int = {:#?}", a_int);
-    #[cfg(target_pointer_width = "64")] assert_eq!(format!("{a_int:?}"), "IntUnion { this: 3060399406, that: -1234567890, uint: 3060399406, sint: -1234567890, ushort: [64814, 46697], sshort: [-722, -18839], ubyte: [46, 253, 105, 182], sbyte: [46, -3, 105, -74] }");
-    #[cfg(target_pointer_width = "64")] assert_eq!(format!("{a_int:#?}"), r#"IntUnion {
-    this: 3060399406,
-    that: -1234567890,
-    uint: 3060399406,
-    sint: -1234567890,
-    ushort: [
-        64814,
-        46697,
-    ],
-    sshort: [
-        -722,
-        -18839,
-    ],
-    ubyte: [
-        46,
-        253,
-        105,
-        182,
-    ],
-    sbyte: [
-        46,
-        -3,
-        105,
-        -74,
-    ],
-}"#);
-    println!("--------------------------------------");
-}
-
-fn long_union_debug_fmt_main()
-{
-    println!("long_union_main");
-    use cryptocol::number::LongUnion;
-    let a_long = LongUnion::new_with_signed(-1234567890123456789_i64);
-    println!("a_long = {:?}", a_long);
-    println!("a_long = {:#?}", a_long);
-    #[cfg(target_pointer_width = "64")] assert_eq!(format!("{a_long:?}"), "LongUnion { this: 17212176183586094827, that: -1234567890123456789, ulong: 17212176183586094827, slong: -1234567890123456789, uint: [2182512363, 4007522059], sint: [-2112454933, -287445237], ushort: [32491, 33302, 61195, 61149], sshort: [32491, -32234, -4341, -4387], ubyte: [235, 126, 22, 130, 11, 239, 221, 238], sbyte: [-21, 126, 22, -126, 11, -17, -35, -18], u_size: 17212176183586094827, s_size: -1234567890123456789 }");
-    #[cfg(target_pointer_width = "64")] assert_eq!(format!("{a_long:#?}"), r#"LongUnion {
-    this: 17212176183586094827,
-    that: -1234567890123456789,
-    ulong: 17212176183586094827,
-    slong: -1234567890123456789,
-    uint: [
-        2182512363,
-        4007522059,
-    ],
-    sint: [
-        -2112454933,
-        -287445237,
-    ],
-    ushort: [
-        32491,
-        33302,
-        61195,
-        61149,
-    ],
-    sshort: [
-        32491,
-        -32234,
-        -4341,
-        -4387,
-    ],
-    ubyte: [
-        235,
-        126,
-        22,
-        130,
-        11,
-        239,
-        221,
-        238,
-    ],
-    sbyte: [
-        -21,
-        126,
-        22,
-        -126,
-        11,
-        -17,
-        -35,
-        -18,
-    ],
-    u_size: 17212176183586094827,
-    s_size: -1234567890123456789,
-}"#);
-    println!("--------------------------------------");
-}
-
-fn longer_union_debug_fmt_main()
-{
-    println!("longer_union_main");
-    use cryptocol::number::LongerUnion;
-    let a_longer = LongerUnion::new_with_signed(-123456789012345678901234567890123456789_i128);
-    println!("a_long = {:?}", a_longer);
-    println!("a_long = {:#?}", a_longer);
-    #[cfg(target_pointer_width = "64")] assert_eq!(format!("{a_longer:?}"), "LongerUnion { this: 216825577908592784562140039541644754667, that: -123456789012345678901234567890123456789, ulonger: 216825577908592784562140039541644754667, slonger: -123456789012345678901234567890123456789, ulong: [6134004772338302699, 11754138130946064698], slong: [6134004772338302699, -6692605942763486918], uint: [1371963115, 1428184279, 2682913082, 2736723546], sint: [1371963115, 1428184279, -1612054214, -1558243750], ushort: [32491, 20934, 23767, 21792, 314, 40938, 5722, 41759], sshort: [32491, 20934, 23767, 21792, 314, -24598, 5722, -23777], ubyte: [235, 126, 198, 81, 215, 92, 32, 85, 58, 1, 234, 159, 90, 22, 31, 163], sbyte: [-21, 126, -58, 81, -41, 92, 32, 85, 58, 1, -22, -97, 90, 22, 31, -93], u_size: [6134004772338302699, 11754138130946064698], s_size: [6134004772338302699, -6692605942763486918] }");
-    #[cfg(target_pointer_width = "64")] assert_eq!(format!("{a_longer:#?}"), r#"LongerUnion {
-    this: 216825577908592784562140039541644754667,
-    that: -123456789012345678901234567890123456789,
-    ulonger: 216825577908592784562140039541644754667,
-    slonger: -123456789012345678901234567890123456789,
-    ulong: [
-        6134004772338302699,
-        11754138130946064698,
-    ],
-    slong: [
-        6134004772338302699,
-        -6692605942763486918,
-    ],
-    uint: [
-        1371963115,
-        1428184279,
-        2682913082,
-        2736723546,
-    ],
-    sint: [
-        1371963115,
-        1428184279,
-        -1612054214,
-        -1558243750,
-    ],
-    ushort: [
-        32491,
-        20934,
-        23767,
-        21792,
-        314,
-        40938,
-        5722,
-        41759,
-    ],
-    sshort: [
-        32491,
-        20934,
-        23767,
-        21792,
-        314,
-        -24598,
-        5722,
-        -23777,
-    ],
-    ubyte: [
-        235,
-        126,
-        198,
-        81,
-        215,
-        92,
-        32,
-        85,
-        58,
-        1,
-        234,
-        159,
-        90,
-        22,
-        31,
-        163,
-    ],
-    sbyte: [
-        -21,
-        126,
-        -58,
-        81,
-        -41,
-        92,
-        32,
-        85,
-        58,
-        1,
-        -22,
-        -97,
-        90,
-        22,
-        31,
-        -93,
-    ],
-    u_size: [
-        6134004772338302699,
-        11754138130946064698,
-    ],
-    s_size: [
-        6134004772338302699,
-        -6692605942763486918,
-    ],
-}"#);
-    println!("--------------------------------------");
-}
-
-#[cfg(target_pointer_width = "64")]
-fn size_union_debug_fmt_main()
-{
-    println!("size_union_main");
-    use cryptocol::number::SizeUnion;
-    let a_size = SizeUnion::new_with_signed(-1234567890123456789_isize);
-    println!("a_size = {:?}", a_size);
-    println!("a_size = {:#?}", a_size);
-    assert_eq!(format!("{a_size:?}"), "SizeUnion { this: 17212176183586094827, that: -1234567890123456789, u_size: 17212176183586094827, s_size: -1234567890123456789, ulong: 17212176183586094827, slong: -1234567890123456789, uint: [2182512363, 4007522059], sint: [-2112454933, -287445237], ushort: [32491, 33302, 61195, 61149], sshort: [32491, -32234, -4341, -4387], ubyte: [235, 126, 22, 130, 11, 239, 221, 238], sbyte: [-21, 126, 22, -126, 11, -17, -35, -18] }");
-    assert_eq!(format!("{a_size:#?}"), r#"SizeUnion {
-    this: 17212176183586094827,
-    that: -1234567890123456789,
-    u_size: 17212176183586094827,
-    s_size: -1234567890123456789,
-    ulong: 17212176183586094827,
-    slong: -1234567890123456789,
-    uint: [
-        2182512363,
-        4007522059,
-    ],
-    sint: [
-        -2112454933,
-        -287445237,
-    ],
-    ushort: [
-        32491,
-        33302,
-        61195,
-        61149,
-    ],
-    sshort: [
-        32491,
-        -32234,
-        -4341,
-        -4387,
-    ],
-    ubyte: [
-        235,
-        126,
-        22,
-        130,
-        11,
-        239,
-        221,
-        238,
-    ],
-    sbyte: [
-        -21,
-        126,
-        22,
-        -126,
-        11,
-        -17,
-        -35,
-        -18,
-    ],
-}"#);
-    println!("--------------------------------------");
-}
-
-
-fn short_union_get_ubyte_main()
-{
-    println!("short_union_get_ubyte_main");
-    use cryptocol::number::ShortUnion;
-    let a_short = ShortUnion::new_with(2895_u16);
-    let b_short_u8 = a_short.get_ubyte_(1);
-    println!("a_short.get_ubyte_(1) = {}", b_short_u8);
-    assert_eq!(b_short_u8, 11_u8);
     // It will panic.
-    // let c_short = a_short.get_ubyte_(2);
+    // println!("a_shortunion.get_ubyte_(2) = {}", a_shortunion.get_ubyte_(2));
 
+    // Example for IntUnion
+    use cryptocol::number::IntUnion;
+    let a_intunion = IntUnion::new_with(4048161615_u32);
+    for i in 0..4
+        { println!("a_intunion.get_ubyte_({}) = {}", i, a_intunion.get_ubyte_(i)); }
+    assert_eq!(a_intunion.get_ubyte_(0), 79_u8);
+    assert_eq!(a_intunion.get_ubyte_(1), 11_u8);
+    assert_eq!(a_intunion.get_ubyte_(2), 74_u8);
+    assert_eq!(a_intunion.get_ubyte_(3), 241_u8);
+
+    // It will panic.
+    // println!("a_intunion.get_ubyte_(4) = {}", a_intunion.get_ubyte_(4));
+
+    // Example for LongUnion
+    use cryptocol::number::LongUnion;
+    let a_longunion = LongUnion::new_with(13664881099896654671_u64);
+    for i in 0..8
+        { println!("a_longunion.get_ubyte_({}) = {}", i, a_longunion.get_ubyte_(i)); }
+    assert_eq!(a_longunion.get_ubyte_(0), 79_u8);
+    assert_eq!(a_longunion.get_ubyte_(1), 11_u8);
+    assert_eq!(a_longunion.get_ubyte_(2), 74_u8);
+    assert_eq!(a_longunion.get_ubyte_(3), 241_u8);
+    assert_eq!(a_longunion.get_ubyte_(4), 245_u8);
+    assert_eq!(a_longunion.get_ubyte_(5), 104_u8);
+    assert_eq!(a_longunion.get_ubyte_(6), 163_u8);
+    assert_eq!(a_longunion.get_ubyte_(7), 189_u8);
+
+    // It will panic.
+    // println!("a_longunion.get_ubyte_(8) = {}", a_longunion.get_ubyte_(8));
+
+    // Example for LongerUnion
+    use cryptocol::number::LongerUnion;
+    let a_longerunion = LongerUnion::new_with(339047799029950809142362261752780557135_u128);
+    for i in 0..16
+        { println!("a_longerunion.get_ubyte_({}) = {}", i, a_longerunion.get_ubyte_(i)); }
+    assert_eq!(a_longerunion.get_ubyte_(0), 79_u8);
+    assert_eq!(a_longerunion.get_ubyte_(1), 11_u8);
+    assert_eq!(a_longerunion.get_ubyte_(2), 74_u8);
+    assert_eq!(a_longerunion.get_ubyte_(3), 241_u8);
+    assert_eq!(a_longerunion.get_ubyte_(4), 245_u8);
+    assert_eq!(a_longerunion.get_ubyte_(5), 104_u8);
+    assert_eq!(a_longerunion.get_ubyte_(6), 163_u8);
+    assert_eq!(a_longerunion.get_ubyte_(7), 189_u8);
+    assert_eq!(a_longerunion.get_ubyte_(8), 88_u8);
+    assert_eq!(a_longerunion.get_ubyte_(9), 136_u8);
+    assert_eq!(a_longerunion.get_ubyte_(10), 206_u8);
+    assert_eq!(a_longerunion.get_ubyte_(11), 126_u8);
+    assert_eq!(a_longerunion.get_ubyte_(12), 26_u8);
+    assert_eq!(a_longerunion.get_ubyte_(13), 59_u8);
+    assert_eq!(a_longerunion.get_ubyte_(14), 18_u8);
+    assert_eq!(a_longerunion.get_ubyte_(15), 255_u8);
+
+    // It will panic.
+    // println!("a_longerunion.get_ubyte_(16) = {}", a_longerunion.get_ubyte_(16));
+
+    // Example for SizeUnion for 64-bit CPU
+    #[cfg(target_pointer_width = "64")]
+    {
+        use cryptocol::number::SizeUnion;
+        let a_sizeunion = SizeUnion::new_with(13664881099896654671_usize);
+        for i in 0..8
+            { println!("a_sizeunion.get_ubyte_({}) = {}", i, a_sizeunion.get_ubyte_(i)); }
+        assert_eq!(a_sizeunion.get_ubyte_(0), 79_u8);
+        assert_eq!(a_sizeunion.get_ubyte_(1), 11_u8);
+        assert_eq!(a_sizeunion.get_ubyte_(2), 74_u8);
+        assert_eq!(a_sizeunion.get_ubyte_(3), 241_u8);
+        assert_eq!(a_sizeunion.get_ubyte_(4), 245_u8);
+        assert_eq!(a_sizeunion.get_ubyte_(5), 104_u8);
+        assert_eq!(a_sizeunion.get_ubyte_(6), 163_u8);
+        assert_eq!(a_sizeunion.get_ubyte_(7), 189_u8);
+    
+        // It will panic.
+        // println!("a_sizeunion.get_ubyte_(8) = {}", a_sizeunion.get_ubyte_(8));
+    }
+    println!("--------------------------------------");
+}
+
+fn unions_set_ubyte_()
+{
+    println!("unions_set_ubyte_()");
+    // Example for ShortUnion
+    use cryptocol::number::ShortUnion;
+    let mut a_shortunion = ShortUnion::new();
+    a_shortunion.set_ubyte_(0, 79_u8);
+    a_shortunion.set_ubyte_(1, 11_u8);
+    // It will panic.
+    // a_shortunion.set_ubyte_(2, 100_u8);
+    println!("a_shortunion.get() = {}", a_shortunion.get());
+    for i in 0..2
+        { println!("a_shortunion.get_ubyte_({}) = {}", i, a_shortunion.get_ubyte_(i)); }
+    assert_eq!(a_shortunion.get_ubyte_(0), 79_u8);
+    assert_eq!(a_shortunion.get_ubyte_(1), 11_u8);
+    assert_eq!(a_shortunion.get(), 2895_u16);
+
+    // Example for IntUnion
+    use cryptocol::number::IntUnion;
+    let mut a_intunion = IntUnion::new();
+    a_intunion.set_ubyte_(0, 79_u8);
+    a_intunion.set_ubyte_(1, 11_u8);
+    a_intunion.set_ubyte_(2, 74_u8);
+    a_intunion.set_ubyte_(3, 241_u8);
+    // It will panic.
+    // a_intunion.set_ubyte_(4, 100_u8);
+    println!("a_intunion.get() = {}", a_intunion.get());
+    for i in 0..4
+        { println!("a_intunion.get_ubyte_({}) = {}", i, a_intunion.get_ubyte_(i)); }
+    assert_eq!(a_intunion.get_ubyte_(0), 79_u8);
+    assert_eq!(a_intunion.get_ubyte_(1), 11_u8);
+    assert_eq!(a_intunion.get_ubyte_(2), 74_u8);
+    assert_eq!(a_intunion.get_ubyte_(3), 241_u8);
+    assert_eq!(a_intunion.get(), 4048161615_u32);
+
+    // Example for LongUnion
+    use cryptocol::number::LongUnion;
+    let mut a_longunion = LongUnion::new();
+    a_longunion.set_ubyte_(0, 79_u8);
+    a_longunion.set_ubyte_(1, 11_u8);
+    a_longunion.set_ubyte_(2, 74_u8);
+    a_longunion.set_ubyte_(3, 241_u8);
+    a_longunion.set_ubyte_(4, 245_u8);
+    a_longunion.set_ubyte_(5, 104_u8);
+    a_longunion.set_ubyte_(6, 163_u8);
+    a_longunion.set_ubyte_(7, 189_u8);
+    // It will panic.
+    // a_longunion.set_ubyte_(8, 100_u8);
+    for i in 0..8
+        { println!("a_longunion.get_ubyte_({}) = {}", i, a_longunion.get_ubyte_(i)); }
+    assert_eq!(a_longunion.get_ubyte_(0), 79_u8);
+    assert_eq!(a_longunion.get_ubyte_(1), 11_u8);
+    assert_eq!(a_longunion.get_ubyte_(2), 74_u8);
+    assert_eq!(a_longunion.get_ubyte_(3), 241_u8);
+    assert_eq!(a_longunion.get_ubyte_(4), 245_u8);
+    assert_eq!(a_longunion.get_ubyte_(5), 104_u8);
+    assert_eq!(a_longunion.get_ubyte_(6), 163_u8);
+    assert_eq!(a_longunion.get_ubyte_(7), 189_u8);
+    assert_eq!(a_longunion.get(), 13664881099896654671_u64);
+
+    // Example for LongerUnion
+    use cryptocol::number::LongerUnion;
+    let mut a_longerunion = LongerUnion::new();
+    a_longerunion.set_ubyte_(0, 79_u8);
+    a_longerunion.set_ubyte_(1, 11_u8);
+    a_longerunion.set_ubyte_(2, 74_u8);
+    a_longerunion.set_ubyte_(3, 241_u8);
+    a_longerunion.set_ubyte_(4, 245_u8);
+    a_longerunion.set_ubyte_(5, 104_u8);
+    a_longerunion.set_ubyte_(6, 163_u8);
+    a_longerunion.set_ubyte_(7, 189_u8);
+    a_longerunion.set_ubyte_(8, 88_u8);
+    a_longerunion.set_ubyte_(9, 136_u8);
+    a_longerunion.set_ubyte_(10, 206_u8);
+    a_longerunion.set_ubyte_(11, 126_u8);
+    a_longerunion.set_ubyte_(12, 26_u8);
+    a_longerunion.set_ubyte_(13, 59_u8);
+    a_longerunion.set_ubyte_(14, 18_u8);
+    a_longerunion.set_ubyte_(15, 255_u8);
+    // It will panic.
+    // a_longerunion.set_ubyte_(16, 100_u8);
+    for i in 0..16
+        { println!("a_longerunion.get_ubyte_({}) = {}", i, a_longerunion.get_ubyte_(i)); }
+    assert_eq!(a_longerunion.get_ubyte_(0), 79_u8);
+    assert_eq!(a_longerunion.get_ubyte_(1), 11_u8);
+    assert_eq!(a_longerunion.get_ubyte_(2), 74_u8);
+    assert_eq!(a_longerunion.get_ubyte_(3), 241_u8);
+    assert_eq!(a_longerunion.get_ubyte_(4), 245_u8);
+    assert_eq!(a_longerunion.get_ubyte_(5), 104_u8);
+    assert_eq!(a_longerunion.get_ubyte_(6), 163_u8);
+    assert_eq!(a_longerunion.get_ubyte_(7), 189_u8);
+    assert_eq!(a_longerunion.get_ubyte_(8), 88_u8);
+    assert_eq!(a_longerunion.get_ubyte_(9), 136_u8);
+    assert_eq!(a_longerunion.get_ubyte_(10), 206_u8);
+    assert_eq!(a_longerunion.get_ubyte_(11), 126_u8);
+    assert_eq!(a_longerunion.get_ubyte_(12), 26_u8);
+    assert_eq!(a_longerunion.get_ubyte_(13), 59_u8);
+    assert_eq!(a_longerunion.get_ubyte_(14), 18_u8);
+    assert_eq!(a_longerunion.get_ubyte_(15), 255_u8);
+    assert_eq!(a_longerunion.get(), 339047799029950809142362261752780557135_u128);
+
+    // Example for SizeUnion for 64-bit CPU
+    #[cfg(target_pointer_width = "64")]
+    {
+        use cryptocol::number::SizeUnion;
+        let mut a_sizeunion = SizeUnion::new();
+        a_sizeunion.set_ubyte_(0, 79_u8);
+        a_sizeunion.set_ubyte_(1, 11_u8);
+        a_sizeunion.set_ubyte_(2, 74_u8);
+        a_sizeunion.set_ubyte_(3, 241_u8);
+        a_sizeunion.set_ubyte_(4, 245_u8);
+        a_sizeunion.set_ubyte_(5, 104_u8);
+        a_sizeunion.set_ubyte_(6, 163_u8);
+        a_sizeunion.set_ubyte_(7, 189_u8);
+        // It will panic.
+        // a_sizeunion.set_ubyte_(8, 100_u8);
+        for i in 0..8
+            { println!("a_longunion.get_ubyte_({}) = {}", i, a_longunion.get_ubyte_(i)); }
+        assert_eq!(a_sizeunion.get_ubyte_(0), 79_u8);
+        assert_eq!(a_sizeunion.get_ubyte_(1), 11_u8);
+        assert_eq!(a_sizeunion.get_ubyte_(2), 74_u8);
+        assert_eq!(a_sizeunion.get_ubyte_(3), 241_u8);
+        assert_eq!(a_sizeunion.get_ubyte_(4), 245_u8);
+        assert_eq!(a_sizeunion.get_ubyte_(5), 104_u8);
+        assert_eq!(a_sizeunion.get_ubyte_(6), 163_u8);
+        assert_eq!(a_sizeunion.get_ubyte_(7), 189_u8);
+        assert_eq!(a_sizeunion.get(), 13664881099896654671_usize);
+    }
+    println!("--------------------------------------");
+}
+
+fn unions_get_ubyte()
+{
+    println!("unions_get_ubyte()");
+    // Example for ShortUnion
+    use cryptocol::number::ShortUnion;
+    let a_shortunion = ShortUnion::new_with(2895_u16);
+    for i in 0..2
+    {
+        match a_shortunion.get_ubyte(i)
+        {
+            Some(a) => { println!("a_shortunion.get_ubyte({}) = {}", i, a); },
+            _ => {},
+        }
+    }
+    assert_eq!(a_shortunion.get_ubyte(0), Some(79_u8));
+    assert_eq!(a_shortunion.get_ubyte(1), Some(11_u8));
+    assert_eq!(a_shortunion.get_ubyte(2), None);
+
+    // Example for IntUnion
+    use cryptocol::number::IntUnion;
+    let a_intunion = IntUnion::new_with(4048161615_u32);
+    for i in 0..4
+    {
+        match a_intunion.get_ubyte(i)
+        {
+            Some(a) => { println!("a_intunion.get_ubyte({}) = {}", i, a); },
+            _ => {},
+        }
+    }
+    assert_eq!(a_intunion.get_ubyte(0), Some(79_u8));
+    assert_eq!(a_intunion.get_ubyte(1), Some(11_u8));
+    assert_eq!(a_intunion.get_ubyte(2), Some(74_u8));
+    assert_eq!(a_intunion.get_ubyte(3), Some(241_u8));
+    assert_eq!(a_intunion.get_ubyte(4), None);
+
+    // Example for LongUnion
+    use cryptocol::number::LongUnion;
+    let a_longunion = LongUnion::new_with(13664881099896654671_u64);
+    for i in 0..8
+    {
+        match a_longunion.get_ubyte(i)
+        {
+            Some(a) => { println!("a_longunion.get_ubyte({}) = {}", i, a); },
+            _ => {},
+        }
+    }
+    assert_eq!(a_longunion.get_ubyte(0), Some(79_u8));
+    assert_eq!(a_longunion.get_ubyte(1), Some(11_u8));
+    assert_eq!(a_longunion.get_ubyte(2), Some(74_u8));
+    assert_eq!(a_longunion.get_ubyte(3), Some(241_u8));
+    assert_eq!(a_longunion.get_ubyte(4), Some(245_u8));
+    assert_eq!(a_longunion.get_ubyte(5), Some(104_u8));
+    assert_eq!(a_longunion.get_ubyte(6), Some(163_u8));
+    assert_eq!(a_longunion.get_ubyte(7), Some(189_u8));
+    assert_eq!(a_longunion.get_ubyte(8), None);
+
+    // Example for LongerUnion
+    use cryptocol::number::LongerUnion;
+    let a_longerunion = LongerUnion::new_with(339047799029950809142362261752780557135_u128);
+    for i in 0..16
+    {
+        match a_longerunion.get_ubyte(i)
+        {
+            Some(a) => { println!("a_longerunion.get_ubyte({}) = {}", i, a); },
+            _ => {},
+        }
+    }
+    assert_eq!(a_longerunion.get_ubyte(0), Some(79_u8));
+    assert_eq!(a_longerunion.get_ubyte(1), Some(11_u8));
+    assert_eq!(a_longerunion.get_ubyte(2), Some(74_u8));
+    assert_eq!(a_longerunion.get_ubyte(3), Some(241_u8));
+    assert_eq!(a_longerunion.get_ubyte(4), Some(245_u8));
+    assert_eq!(a_longerunion.get_ubyte(5), Some(104_u8));
+    assert_eq!(a_longerunion.get_ubyte(6), Some(163_u8));
+    assert_eq!(a_longerunion.get_ubyte(7), Some(189_u8));
+    assert_eq!(a_longerunion.get_ubyte(8), Some(88_u8));
+    assert_eq!(a_longerunion.get_ubyte(9), Some(136_u8));
+    assert_eq!(a_longerunion.get_ubyte(10), Some(206_u8));
+    assert_eq!(a_longerunion.get_ubyte(11), Some(126_u8));
+    assert_eq!(a_longerunion.get_ubyte(12), Some(26_u8));
+    assert_eq!(a_longerunion.get_ubyte(13), Some(59_u8));
+    assert_eq!(a_longerunion.get_ubyte(14), Some(18_u8));
+    assert_eq!(a_longerunion.get_ubyte(15), Some(255_u8));
+    assert_eq!(a_longerunion.get_ubyte(16), None);
+
+    // Example for SizeUnion for 64-bit CPU
+    #[cfg(target_pointer_width = "64")]
+    {
+        use cryptocol::number::SizeUnion;
+        let a_sizeunion = SizeUnion::new_with(13664881099896654671_usize);
+        for i in 0..8
+        {
+            match a_sizeunion.get_ubyte(i)
+            {
+                Some(a) => { println!("a_sizeunion.get_ubyte({}) = {}", i, a); },
+                _ => {},
+            }
+        }
+        assert_eq!(a_sizeunion.get_ubyte(0), Some(79_u8));
+        assert_eq!(a_sizeunion.get_ubyte(1), Some(11_u8));
+        assert_eq!(a_sizeunion.get_ubyte(2), Some(74_u8));
+        assert_eq!(a_sizeunion.get_ubyte(3), Some(241_u8));
+        assert_eq!(a_sizeunion.get_ubyte(4), Some(245_u8));
+        assert_eq!(a_sizeunion.get_ubyte(5), Some(104_u8));
+        assert_eq!(a_sizeunion.get_ubyte(6), Some(163_u8));
+        assert_eq!(a_sizeunion.get_ubyte(7), Some(189_u8));
+        assert_eq!(a_sizeunion.get_ubyte(8), None);
+    }
+    println!("--------------------------------------");
+}
+
+fn unions_set_ubyte()
+{
+    println!("unions_set_ubyte()");
+    // Example for ShortUnion
+    use cryptocol::number::ShortUnion;
+    let mut a_shortunion = ShortUnion::new();
+    let b0 = a_shortunion.set_ubyte(0, 79_u8);
+    let b1 = a_shortunion.set_ubyte(1, 11_u8);
+    let b2 = a_shortunion.set_ubyte(2, 100_u8);  // Nothing will be done
+    assert_eq!(b0, true);
+    assert_eq!(b1, true);
+    assert_eq!(b2, false);
+    println!("a_shortunion.get() = {}", a_shortunion.get());
+    for i in 0..2
+    {
+        match a_shortunion.get_ubyte(i)
+        {
+            Some(a) => { println!("a_shortunion.get_ubyte({}) = {}", i, a); },
+            _ => {},
+        }
+    }
+    assert_eq!(a_shortunion.get_ubyte(0), Some(79_u8));
+    assert_eq!(a_shortunion.get_ubyte(1), Some(11_u8));
+    assert_eq!(a_shortunion.get(), 2895_u16);
+
+    // Example for IntUnion
+    use cryptocol::number::IntUnion;
+    let mut a_intunion = IntUnion::new();
+    let b0 = a_intunion.set_ubyte(0, 79_u8);
+    let b1 = a_intunion.set_ubyte(1, 11_u8);
+    let b2 = a_intunion.set_ubyte(2, 74_u8);
+    let b3 = a_intunion.set_ubyte(3, 241_u8);
+    let b4 = a_intunion.set_ubyte(4, 100_u8);
+    assert_eq!(b0, true);
+    assert_eq!(b1, true);
+    assert_eq!(b2, true);
+    assert_eq!(b3, true);
+    assert_eq!(b4, false);
+    println!("a_intunion.get() = {}", a_intunion.get());
+    for i in 0..4
+    {
+        match a_intunion.get_ubyte(i)
+        {
+            Some(a) => { println!("a_intunion.get_ubyte({}) = {}", i, a); },
+            _ => {},
+        }
+    }
+    assert_eq!(a_intunion.get_ubyte(0), Some(79_u8));
+    assert_eq!(a_intunion.get_ubyte(1), Some(11_u8));
+    assert_eq!(a_intunion.get_ubyte(2), Some(74_u8));
+    assert_eq!(a_intunion.get_ubyte(3), Some(241_u8));
+    assert_eq!(a_intunion.get(), 4048161615_u32);
+
+    // Example for LongUnion
+    use cryptocol::number::LongUnion;
+    let mut a_longunion = LongUnion::new();
+    let b0 = a_longunion.set_ubyte(0, 79_u8);
+    let b1 = a_longunion.set_ubyte(1, 11_u8);
+    let b2 = a_longunion.set_ubyte(2, 74_u8);
+    let b3 = a_longunion.set_ubyte(3, 241_u8);
+    let b4 = a_longunion.set_ubyte(4, 245_u8);
+    let b5 = a_longunion.set_ubyte(5, 104_u8);
+    let b6 = a_longunion.set_ubyte(6, 163_u8);
+    let b7 = a_longunion.set_ubyte(7, 189_u8);
+    let b8 = a_longunion.set_ubyte(8, 100_u8);
+    assert_eq!(b0, true);
+    assert_eq!(b1, true);
+    assert_eq!(b2, true);
+    assert_eq!(b3, true);
+    assert_eq!(b4, true);
+    assert_eq!(b5, true);
+    assert_eq!(b6, true);
+    assert_eq!(b7, true);
+    assert_eq!(b8, false);
+    println!("a_longunion.get() = {}", a_longunion.get());
+    for i in 0..8
+    {
+        match a_longunion.get_ubyte(i)
+        {
+            Some(a) => { println!("a_longunion.get_ubyte({}) = {}", i, a); },
+            _ => {},
+        }
+    }
+    assert_eq!(a_longunion.get_ubyte(0), Some(79_u8));
+    assert_eq!(a_longunion.get_ubyte(1), Some(11_u8));
+    assert_eq!(a_longunion.get_ubyte(2), Some(74_u8));
+    assert_eq!(a_longunion.get_ubyte(3), Some(241_u8));
+    assert_eq!(a_longunion.get_ubyte(4), Some(245_u8));
+    assert_eq!(a_longunion.get_ubyte(5), Some(104_u8));
+    assert_eq!(a_longunion.get_ubyte(6), Some(163_u8));
+    assert_eq!(a_longunion.get_ubyte(7), Some(189_u8));
+    assert_eq!(a_longunion.get(), 13664881099896654671_u64);
+
+    // Example for LongerUnion
+    use cryptocol::number::LongerUnion;
+    let mut a_longerunion = LongerUnion::new();
+    let b0 = a_longerunion.set_ubyte(0, 79_u8);
+    let b1 = a_longerunion.set_ubyte(1, 11_u8);
+    let b2 = a_longerunion.set_ubyte(2, 74_u8);
+    let b3 = a_longerunion.set_ubyte(3, 241_u8);
+    let b4 = a_longerunion.set_ubyte(4, 245_u8);
+    let b5 = a_longerunion.set_ubyte(5, 104_u8);
+    let b6 = a_longerunion.set_ubyte(6, 163_u8);
+    let b7 = a_longerunion.set_ubyte(7, 189_u8);
+    let b8 = a_longerunion.set_ubyte(8, 88_u8);
+    let b9 = a_longerunion.set_ubyte(9, 136_u8);
+    let b10 = a_longerunion.set_ubyte(10, 206_u8);
+    let b11 = a_longerunion.set_ubyte(11, 126_u8);
+    let b12 = a_longerunion.set_ubyte(12, 26_u8);
+    let b13 = a_longerunion.set_ubyte(13, 59_u8);
+    let b14 = a_longerunion.set_ubyte(14, 18_u8);
+    let b15 = a_longerunion.set_ubyte(15, 255_u8);
+    let b16 = a_longerunion.set_ubyte(16, 100_u8);
+    assert_eq!(b0, true);
+    assert_eq!(b1, true);
+    assert_eq!(b2, true);
+    assert_eq!(b3, true);
+    assert_eq!(b4, true);
+    assert_eq!(b5, true);
+    assert_eq!(b6, true);
+    assert_eq!(b7, true);
+    assert_eq!(b8, true);
+    assert_eq!(b9, true);
+    assert_eq!(b10, true);
+    assert_eq!(b11, true);
+    assert_eq!(b12, true);
+    assert_eq!(b13, true);
+    assert_eq!(b14, true);
+    assert_eq!(b15, true);
+    assert_eq!(b16, false);
+    println!("a_longerunion.get() = {}", a_longerunion.get());
+    for i in 0..16
+    {
+        match a_longerunion.get_ubyte(i)
+        {
+            Some(a) => { println!("a_longerunion.get_ubyte({}) = {}", i, a); },
+            _ => {},
+        }
+    }
+    assert_eq!(a_longerunion.get_ubyte(0), Some(79_u8));
+    assert_eq!(a_longerunion.get_ubyte(1), Some(11_u8));
+    assert_eq!(a_longerunion.get_ubyte(2), Some(74_u8));
+    assert_eq!(a_longerunion.get_ubyte(3), Some(241_u8));
+    assert_eq!(a_longerunion.get_ubyte(4), Some(245_u8));
+    assert_eq!(a_longerunion.get_ubyte(5), Some(104_u8));
+    assert_eq!(a_longerunion.get_ubyte(6), Some(163_u8));
+    assert_eq!(a_longerunion.get_ubyte(7), Some(189_u8));
+    assert_eq!(a_longerunion.get_ubyte(8), Some(88_u8));
+    assert_eq!(a_longerunion.get_ubyte(9), Some(136_u8));
+    assert_eq!(a_longerunion.get_ubyte(10), Some(206_u8));
+    assert_eq!(a_longerunion.get_ubyte(11), Some(126_u8));
+    assert_eq!(a_longerunion.get_ubyte(12), Some(26_u8));
+    assert_eq!(a_longerunion.get_ubyte(13), Some(59_u8));
+    assert_eq!(a_longerunion.get_ubyte(14), Some(18_u8));
+    assert_eq!(a_longerunion.get_ubyte(15), Some(255_u8));
+    assert_eq!(a_longerunion.get(), 339047799029950809142362261752780557135_u128);
+
+    // Example for SizeUnion for 64-bit CPU
+    #[cfg(target_pointer_width = "64")]
+    {
+        use cryptocol::number::SizeUnion;
+        let mut a_sizeunion = SizeUnion::new();
+        let b0 = a_sizeunion.set_ubyte(0, 79_u8);
+        let b1 = a_sizeunion.set_ubyte(1, 11_u8);
+        let b2 = a_sizeunion.set_ubyte(2, 74_u8);
+        let b3 = a_sizeunion.set_ubyte(3, 241_u8);
+        let b4 = a_sizeunion.set_ubyte(4, 245_u8);
+        let b5 = a_sizeunion.set_ubyte(5, 104_u8);
+        let b6 = a_sizeunion.set_ubyte(6, 163_u8);
+        let b7 = a_sizeunion.set_ubyte(7, 189_u8);
+        let b8 = a_sizeunion.set_ubyte(8, 100_u8);
+        assert_eq!(b0, true);
+        assert_eq!(b1, true);
+        assert_eq!(b2, true);
+        assert_eq!(b3, true);
+        assert_eq!(b4, true);
+        assert_eq!(b5, true);
+        assert_eq!(b6, true);
+        assert_eq!(b7, true);
+        assert_eq!(b8, false);
+        println!("a_sizeunion.get() = {}", a_sizeunion.get());
+        for i in 0..8
+        {
+            match a_sizeunion.get_ubyte(i)
+            {
+                Some(a) => { println!("a_sizeunion.get_ubyte({}) = {}", i, a); },
+                _ => {},
+            }
+        }
+        assert_eq!(a_sizeunion.get_ubyte(0), Some(79_u8));
+        assert_eq!(a_sizeunion.get_ubyte(1), Some(11_u8));
+        assert_eq!(a_sizeunion.get_ubyte(2), Some(74_u8));
+        assert_eq!(a_sizeunion.get_ubyte(3), Some(241_u8));
+        assert_eq!(a_sizeunion.get_ubyte(4), Some(245_u8));
+        assert_eq!(a_sizeunion.get_ubyte(5), Some(104_u8));
+        assert_eq!(a_sizeunion.get_ubyte(6), Some(163_u8));
+        assert_eq!(a_sizeunion.get_ubyte(7), Some(189_u8));
+        assert_eq!(a_sizeunion.get(), 13664881099896654671_usize);
+    }
+    println!("--------------------------------------");
+}
+
+
+fn unions_get_sbyte_()
+{
+    println!("unions_get_sbyte_()");
+    // Example for ShortUnion
+    use cryptocol::number::ShortUnion;
+    let a_shortunion = ShortUnion::new_with(2895_u16);
+    for i in 0..2
+        { println!("a_shortunion.get_sbyte_({}) = {}", i, a_shortunion.get_sbyte_(i)); }
+    assert_eq!(a_shortunion.get_sbyte_(0), 79_i8);
+    assert_eq!(a_shortunion.get_sbyte_(1), 11_i8);
+
+    // It will panic.
+    // println!("a_shortunion.get_sbyte_(2) = {}", a_shortunion.get_sbyte_(2));
+
+    // Example for IntUnion
+    use cryptocol::number::IntUnion;
+    let a_intunion = IntUnion::new_with(4048161615_u32);
+    for i in 0..4
+        { println!("a_intunion.get_sbyte_({}) = {}", i, a_intunion.get_sbyte_(i)); }
+    assert_eq!(a_intunion.get_sbyte_(0), 79_i8);
+    assert_eq!(a_intunion.get_sbyte_(1), 11_i8);
+    assert_eq!(a_intunion.get_sbyte_(2), 74_i8);
+    assert_eq!(a_intunion.get_sbyte_(3), -15_i8);
+
+    // It will panic.
+    // println!("a_intunion.get_sbyte_(4) = {}", a_intunion.get_sbyte_(4));
+
+    // Example for LongUnion
+    use cryptocol::number::LongUnion;
+    let a_longunion = LongUnion::new_with(13664881099896654671_u64);
+    for i in 0..8
+        { println!("a_longunion.get_sbyte_({}) = {}", i, a_longunion.get_sbyte_(i)); }
+    assert_eq!(a_longunion.get_sbyte_(0), 79_i8);
+    assert_eq!(a_longunion.get_sbyte_(1), 11_i8);
+    assert_eq!(a_longunion.get_sbyte_(2), 74_i8);
+    assert_eq!(a_longunion.get_sbyte_(3), -15_i8);
+    assert_eq!(a_longunion.get_sbyte_(4), -11_i8);
+    assert_eq!(a_longunion.get_sbyte_(5), 104_i8);
+    assert_eq!(a_longunion.get_sbyte_(6), -93_i8);
+    assert_eq!(a_longunion.get_sbyte_(7), -67_i8);
+
+    // It will panic.
+    // println!("a_longunion.get_sbyte_(8) = {}", a_longunion.get_sbyte_(8));
+
+    // Example for LongerUnion
+    use cryptocol::number::LongerUnion;
+    let a_longerunion = LongerUnion::new_with(339047799029950809142362261752780557135_u128);
+    for i in 0..16
+        { println!("a_longerunion.get_sbyte_({}) = {}", i, a_longerunion.get_sbyte_(i)); }
+    assert_eq!(a_longerunion.get_sbyte_(0), 79_i8);
+    assert_eq!(a_longerunion.get_sbyte_(1), 11_i8);
+    assert_eq!(a_longerunion.get_sbyte_(2), 74_i8);
+    assert_eq!(a_longerunion.get_sbyte_(3), -15_i8);
+    assert_eq!(a_longerunion.get_sbyte_(4), -11_i8);
+    assert_eq!(a_longerunion.get_sbyte_(5), 104_i8);
+    assert_eq!(a_longerunion.get_sbyte_(6), -93_i8);
+    assert_eq!(a_longerunion.get_sbyte_(7), -67_i8);
+    assert_eq!(a_longerunion.get_sbyte_(8), 88_i8);
+    assert_eq!(a_longerunion.get_sbyte_(9), -120_i8);
+    assert_eq!(a_longerunion.get_sbyte_(10), -50_i8);
+    assert_eq!(a_longerunion.get_sbyte_(11), 126_i8);
+    assert_eq!(a_longerunion.get_sbyte_(12), 26_i8);
+    assert_eq!(a_longerunion.get_sbyte_(13), 59_i8);
+    assert_eq!(a_longerunion.get_sbyte_(14), 18_i8);
+    assert_eq!(a_longerunion.get_sbyte_(15), -1_i8);
+
+    // It will panic.
+    // println!("a_longerunion.get_sbyte_(16) = {}", a_longerunion.get_sbyte_(16));
+
+    // Example for SizeUnion for 64-bit CPU
+    #[cfg(target_pointer_width = "64")]
+    {
+        use cryptocol::number::SizeUnion;
+        let a_sizeunion = SizeUnion::new_with(13664881099896654671_usize);
+        for i in 0..8
+            { println!("a_sizeunion.get_ubyte_({}) = {}", i, a_sizeunion.get_ubyte_(i)); }
+        assert_eq!(a_sizeunion.get_sbyte_(0), 79_i8);
+        assert_eq!(a_sizeunion.get_sbyte_(1), 11_i8);
+        assert_eq!(a_sizeunion.get_sbyte_(2), 74_i8);
+        assert_eq!(a_sizeunion.get_sbyte_(3), -15_i8);
+        assert_eq!(a_sizeunion.get_sbyte_(4), -11_i8);
+        assert_eq!(a_sizeunion.get_sbyte_(5), 104_i8);
+        assert_eq!(a_sizeunion.get_sbyte_(6), -93_i8);
+        assert_eq!(a_sizeunion.get_sbyte_(7), -67_i8);
+    
+        // It will panic.
+        // println!("a_sizeunion.get_sbyte_(8) = {}", a_sizeunion.get_sbyte_(8));
+    }
+    println!("--------------------------------------");
+}
+
+fn unions_set_sbyte_() {}
+fn unions_get_sbyte() {}
+fn unions_set_sbyte() {}
+
+/*
     match a_short.get_ubyte(1)
     {
         Some(b) =>  {
@@ -3136,6 +3486,289 @@ fn longer_union_set_sbyte_main()
         println!("Out of range");
         assert_eq!(sbyte, None);
     }
+    println!("--------------------------------------");
+}
+
+
+fn short_union_debug_fmt_main()
+{
+    println!("short_union_main");
+    use cryptocol::number::ShortUnion;
+    let a_short = ShortUnion::new_with_signed(-12345_i16);
+    println!("a_short = {:?}", a_short);
+    println!("a_short = {:#?}", a_short);
+    assert_eq!(format!("{a_short:?}"), "ShortUnion { this: 53191, that: -12345, ushort: 53191, sshort: -12345, ubyte: [199, 207], sbyte: [-57, -49] }");
+    assert_eq!(format!("{a_short:#?}"), r#"ShortUnion {
+    this: 53191,
+    that: -12345,
+    ushort: 53191,
+    sshort: -12345,
+    ubyte: [
+        199,
+        207,
+    ],
+    sbyte: [
+        -57,
+        -49,
+    ],
+}"#);
+    println!("--------------------------------------");
+}
+
+fn int_union_debug_fmt_main()
+{
+    println!("int_union_main");
+    use cryptocol::number::IntUnion;
+    let a_int = IntUnion::new_with_signed(-1234567890_i32);
+    println!("a_int = {:?}", a_int);
+    println!("a_int = {:#?}", a_int);
+    #[cfg(target_pointer_width = "64")] assert_eq!(format!("{a_int:?}"), "IntUnion { this: 3060399406, that: -1234567890, uint: 3060399406, sint: -1234567890, ushort: [64814, 46697], sshort: [-722, -18839], ubyte: [46, 253, 105, 182], sbyte: [46, -3, 105, -74] }");
+    #[cfg(target_pointer_width = "64")] assert_eq!(format!("{a_int:#?}"), r#"IntUnion {
+    this: 3060399406,
+    that: -1234567890,
+    uint: 3060399406,
+    sint: -1234567890,
+    ushort: [
+        64814,
+        46697,
+    ],
+    sshort: [
+        -722,
+        -18839,
+    ],
+    ubyte: [
+        46,
+        253,
+        105,
+        182,
+    ],
+    sbyte: [
+        46,
+        -3,
+        105,
+        -74,
+    ],
+}"#);
+    println!("--------------------------------------");
+}
+
+fn long_union_debug_fmt_main()
+{
+    println!("long_union_main");
+    use cryptocol::number::LongUnion;
+    let a_long = LongUnion::new_with_signed(-1234567890123456789_i64);
+    println!("a_long = {:?}", a_long);
+    println!("a_long = {:#?}", a_long);
+    #[cfg(target_pointer_width = "64")] assert_eq!(format!("{a_long:?}"), "LongUnion { this: 17212176183586094827, that: -1234567890123456789, ulong: 17212176183586094827, slong: -1234567890123456789, uint: [2182512363, 4007522059], sint: [-2112454933, -287445237], ushort: [32491, 33302, 61195, 61149], sshort: [32491, -32234, -4341, -4387], ubyte: [235, 126, 22, 130, 11, 239, 221, 238], sbyte: [-21, 126, 22, -126, 11, -17, -35, -18], u_size: 17212176183586094827, s_size: -1234567890123456789 }");
+    #[cfg(target_pointer_width = "64")] assert_eq!(format!("{a_long:#?}"), r#"LongUnion {
+    this: 17212176183586094827,
+    that: -1234567890123456789,
+    ulong: 17212176183586094827,
+    slong: -1234567890123456789,
+    uint: [
+        2182512363,
+        4007522059,
+    ],
+    sint: [
+        -2112454933,
+        -287445237,
+    ],
+    ushort: [
+        32491,
+        33302,
+        61195,
+        61149,
+    ],
+    sshort: [
+        32491,
+        -32234,
+        -4341,
+        -4387,
+    ],
+    ubyte: [
+        235,
+        126,
+        22,
+        130,
+        11,
+        239,
+        221,
+        238,
+    ],
+    sbyte: [
+        -21,
+        126,
+        22,
+        -126,
+        11,
+        -17,
+        -35,
+        -18,
+    ],
+    u_size: 17212176183586094827,
+    s_size: -1234567890123456789,
+}"#);
+    println!("--------------------------------------");
+}
+
+fn longer_union_debug_fmt_main()
+{
+    println!("longer_union_main");
+    use cryptocol::number::LongerUnion;
+    let a_longer = LongerUnion::new_with_signed(-123456789012345678901234567890123456789_i128);
+    println!("a_long = {:?}", a_longer);
+    println!("a_long = {:#?}", a_longer);
+    #[cfg(target_pointer_width = "64")] assert_eq!(format!("{a_longer:?}"), "LongerUnion { this: 216825577908592784562140039541644754667, that: -123456789012345678901234567890123456789, ulonger: 216825577908592784562140039541644754667, slonger: -123456789012345678901234567890123456789, ulong: [6134004772338302699, 11754138130946064698], slong: [6134004772338302699, -6692605942763486918], uint: [1371963115, 1428184279, 2682913082, 2736723546], sint: [1371963115, 1428184279, -1612054214, -1558243750], ushort: [32491, 20934, 23767, 21792, 314, 40938, 5722, 41759], sshort: [32491, 20934, 23767, 21792, 314, -24598, 5722, -23777], ubyte: [235, 126, 198, 81, 215, 92, 32, 85, 58, 1, 234, 159, 90, 22, 31, 163], sbyte: [-21, 126, -58, 81, -41, 92, 32, 85, 58, 1, -22, -97, 90, 22, 31, -93], u_size: [6134004772338302699, 11754138130946064698], s_size: [6134004772338302699, -6692605942763486918] }");
+    #[cfg(target_pointer_width = "64")] assert_eq!(format!("{a_longer:#?}"), r#"LongerUnion {
+    this: 216825577908592784562140039541644754667,
+    that: -123456789012345678901234567890123456789,
+    ulonger: 216825577908592784562140039541644754667,
+    slonger: -123456789012345678901234567890123456789,
+    ulong: [
+        6134004772338302699,
+        11754138130946064698,
+    ],
+    slong: [
+        6134004772338302699,
+        -6692605942763486918,
+    ],
+    uint: [
+        1371963115,
+        1428184279,
+        2682913082,
+        2736723546,
+    ],
+    sint: [
+        1371963115,
+        1428184279,
+        -1612054214,
+        -1558243750,
+    ],
+    ushort: [
+        32491,
+        20934,
+        23767,
+        21792,
+        314,
+        40938,
+        5722,
+        41759,
+    ],
+    sshort: [
+        32491,
+        20934,
+        23767,
+        21792,
+        314,
+        -24598,
+        5722,
+        -23777,
+    ],
+    ubyte: [
+        235,
+        126,
+        198,
+        81,
+        215,
+        92,
+        32,
+        85,
+        58,
+        1,
+        234,
+        159,
+        90,
+        22,
+        31,
+        163,
+    ],
+    sbyte: [
+        -21,
+        126,
+        -58,
+        81,
+        -41,
+        92,
+        32,
+        85,
+        58,
+        1,
+        -22,
+        -97,
+        90,
+        22,
+        31,
+        -93,
+    ],
+    u_size: [
+        6134004772338302699,
+        11754138130946064698,
+    ],
+    s_size: [
+        6134004772338302699,
+        -6692605942763486918,
+    ],
+}"#);
+    println!("--------------------------------------");
+}
+
+#[cfg(target_pointer_width = "64")]
+fn size_union_debug_fmt_main()
+{
+    println!("size_union_main");
+    use cryptocol::number::SizeUnion;
+    let a_size = SizeUnion::new_with_signed(-1234567890123456789_isize);
+    println!("a_size = {:?}", a_size);
+    println!("a_size = {:#?}", a_size);
+    assert_eq!(format!("{a_size:?}"), "SizeUnion { this: 17212176183586094827, that: -1234567890123456789, u_size: 17212176183586094827, s_size: -1234567890123456789, ulong: 17212176183586094827, slong: -1234567890123456789, uint: [2182512363, 4007522059], sint: [-2112454933, -287445237], ushort: [32491, 33302, 61195, 61149], sshort: [32491, -32234, -4341, -4387], ubyte: [235, 126, 22, 130, 11, 239, 221, 238], sbyte: [-21, 126, 22, -126, 11, -17, -35, -18] }");
+    assert_eq!(format!("{a_size:#?}"), r#"SizeUnion {
+    this: 17212176183586094827,
+    that: -1234567890123456789,
+    u_size: 17212176183586094827,
+    s_size: -1234567890123456789,
+    ulong: 17212176183586094827,
+    slong: -1234567890123456789,
+    uint: [
+        2182512363,
+        4007522059,
+    ],
+    sint: [
+        -2112454933,
+        -287445237,
+    ],
+    ushort: [
+        32491,
+        33302,
+        61195,
+        61149,
+    ],
+    sshort: [
+        32491,
+        -32234,
+        -4341,
+        -4387,
+    ],
+    ubyte: [
+        235,
+        126,
+        22,
+        130,
+        11,
+        239,
+        221,
+        238,
+    ],
+    sbyte: [
+        -21,
+        126,
+        22,
+        -126,
+        11,
+        -17,
+        -35,
+        -18,
+    ],
+}"#);
     println!("--------------------------------------");
 }
 */
