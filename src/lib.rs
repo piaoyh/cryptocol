@@ -29,11 +29,11 @@
 //! 
 //! ## Small Numbers: meaningful itself, and also foundations mainly for Big Numbers as well as for other modules
 //! - [ ] Unions for primitive data types and their implementation, and the implementation of trait SmallUInt for the Unions ---
-//!     [`ShortUnion`](number/short_unions/union.ShortUnion.html#union.ShortUnion),
-//!     [`IntUnion`](number/int_unions/union.IntUnion.html#union.IntUnion),
-//!     [`LongUnion`](number/long_unions/union.LongUnion.html#union.LongUnion),
-//!     [`LongerUnion`](number/longer_unions/union.LongerUnion.html#union.LongerUnion),
-//!     [`SizeUnion`](number/size_unions/union.SizeUnion.html#union.SizeUnion),
+//!     [`ShortUnion`](number/short_union/union.ShortUnion.html#union.ShortUnion),
+//!     [`IntUnion`](number/int_union/union.IntUnion.html#union.IntUnion),
+//!     [`LongUnion`](number/long_union/union.LongUnion.html#union.LongUnion),
+//!     [`LongerUnion`](number/longer_union/union.LongerUnion.html#union.LongerUnion),
+//!     [`SizeUnion`](number/size_union/union.SizeUnion.html#union.SizeUnion),
 //!     [`SharedValues`](number/shared_values/union.SharedValues.html#union.SharedValues), and
 //!     [`SharedArrays`](number/shared_arrays/union.SharedArrays.html#union.SharedArrays)
 //! - [X] Trait SmallUInt, its implementation for primitive data types, and the
