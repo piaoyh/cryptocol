@@ -27,7 +27,7 @@
 //! at least 80%. The unchecked items have not yet been implemented including
 //! documentation more than 80% or have not yet even been started to implement.
 //! 
-//! ## Small Numbers: meaningful itself, and also foundations mainly for Big Numbers as well as for other modules
+//! ## Small Numbers: meaningful as itself, and also foundations mainly for Big Numbers as well as for other modules
 //! - [ ] Unions for primitive data types and their implementation, and the implementation of trait SmallUInt for the Unions ---
 //!     [`ShortUnion`](number/short_union/union.ShortUnion.html#union.ShortUnion),
 //!     [`IntUnion`](number/int_union/union.IntUnion.html#union.IntUnion),
