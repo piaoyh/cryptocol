@@ -1007,6 +1007,8 @@ impl SizeUnion
     /// ```
     #[inline] pub fn new_with_signed(s_size: isize) -> Self     { Self { s_size } }
 
+    crate::number::new_with_small_uint!();
+
     // pub fn new_with_u128(num: u128) -> Self
     /// Constructs a new `SizeUnion` with initializing it with the lowest
     /// `usize`-length part of `num`.

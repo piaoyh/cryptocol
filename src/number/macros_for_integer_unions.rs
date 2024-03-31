@@ -15,6 +15,203 @@
 #![allow(missing_docs)]
 #![allow(rustdoc::missing_doc_code_examples)]
 
+#[allow(unused_macros)]
+macro_rules! new_with_small_uint {
+    () => {
+        // pub fn new_with_ubyte(ubyte: [u8; 2]) -> Self
+        /// Constructs a new `SizeUnion` with initializing it with `ubyte`.
+        /// 
+        /// # Output
+        /// A new object of `SizeUnion` initialized with the value `ubyte`.
+        /// 
+        /// # Initialization
+        /// The field of the constructed object will be initialized with `ubyte`.
+        /// 
+        /// Example
+        /// ```
+        /// use cryptocol::number::SizeUnion;
+        /// let a = SizeUnion::new_with_ubyte([172_u8, 216_u8]);
+        /// println!("a = {}", a.get());
+        /// assert_eq!(a.get(), 55468_u16);
+        /// ```
+        #[cfg(target_pointer_width = "16")]
+        #[inline] pub fn new_with_ubytes(ubyte: [u8; 2]) -> Self    { Self { ubyte } }
+
+        // pub fn new_with_ubytes(ubyte: [u8; 4]) -> Self
+        /// Constructs a new `SizeUnion` with initializing it with `ubyte`.
+        /// 
+        /// # Output
+        /// A new object of `SizeUnion` initialized with the value `ubyte`.
+        /// 
+        /// # Initialization
+        /// The field of the constructed object will be initialized with `ubyte`.
+        /// 
+        /// Example
+        /// ```
+        /// use cryptocol::number::SizeUnion;
+        /// let a = SizeUnion::new_with_ubytes([222_u8, 0_u8, 230_u8, 228_u8]);
+        /// println!("a = {}", a.get());
+        /// assert_eq!(a.get(), 3840278750_usize);
+        /// ```
+        #[cfg(target_pointer_width = "32")] 
+        #[inline] pub fn new_with_ubytes(ubyte: [u8; 4]) -> Self    { Self { ubyte } }
+
+        // pub fn new_with_ubytes(ubyte: [u8; 8]) -> Self
+        /// Constructs a new `SizeUnion` with initializing it with `ubyte`.
+        /// 
+        /// # Output
+        /// A new object of `SizeUnion` initialized with the value `ubyte`.
+        /// 
+        /// # Initialization
+        /// The field of the constructed object will be initialized with `ubyte`.
+        /// 
+        /// Example
+        /// ```
+        /// use cryptocol::number::SizeUnion;
+        /// let a = SizeUnion::new_with_ubytes([131_u8, 21_u8, 104_u8, 195_u8, 42_u8, 157_u8, 251_u8, 255_u8]);
+        /// println!("a = {}", a.get());
+        /// assert_eq!(a.get(), 18445509505818563971_usize);
+        /// ```
+        #[cfg(target_pointer_width = "64")] 
+        #[inline] pub fn new_with_ubytes(ubyte: [u8; 8]) -> Self    { Self { ubyte } }
+
+        // pub fn new_with_ubytes(ubyte: [u8; 16]) -> Self
+        /// Constructs a new `SizeUnion` with initializing it with `ubyte`.
+        /// 
+        /// # Output
+        /// A new object of `SizeUnion` initialized with the value `ubyte`.
+        /// 
+        /// # Initialization
+        /// The field of the constructed object will be initialized with `ubyte`.
+        /// 
+        /// Example
+        /// ```
+        /// use cryptocol::number::SizeUnion;
+        /// let a = SizeUnion::new_with_ubytes([79_u8, 11_u8, 74_u8, 241_u8, 245_u8, 104_u8, 163_u8, 189_u8, 88_u8, 136_u8, 206_u8, 126_u8, 26_u8, 59_u8, 18_u8, 255_u8]);
+        /// println!("a = {}", a.get());
+        /// assert_eq!(a.get(), 339047799029950809142362261752780557135_usize);
+        /// ```
+        #[cfg(target_pointer_width = "128")] 
+        #[inline] pub fn new_with_ubytes(ubyte: [u8; 16]) -> Self    { Self { ubyte } }
+
+        // pub fn new_with_ushorts(ushort: [u16; 2]) -> Self
+        /// Constructs a new `SizeUnion` with initializing it with `ushort`.
+        /// 
+        /// # Output
+        /// A new object of `SizeUnion` initialized with the value `ushort`.
+        /// 
+        /// # Initialization
+        /// The field of the constructed object will be initialized with `ushort`.
+        /// 
+        /// Example
+        /// ```
+        /// use cryptocol::number::SizeUnion;
+        /// let a = SizeUnion::new_with_ushorts([222_u16, 58598_u16]);
+        /// println!("a = {}", a.get());
+        /// assert_eq!(a.get(), 3840278750_usize);
+        /// ```
+        #[cfg(target_pointer_width = "32")]
+        #[inline] pub fn new_with_ushorts(ushort: [u16; 2]) -> Self  { Self { ushort } }
+
+        // pub fn new_with_ushorts(ushort: [u16; 4]) -> Self
+        /// Constructs a new `SizeUnion` with initializing it with `ushort`.
+        /// 
+        /// # Output
+        /// A new object of `SizeUnion` initialized with the value `ushort`.
+        /// 
+        /// # Initialization
+        /// The field of the constructed object will be initialized with `ushort`.
+        /// 
+        /// Example
+        /// ```
+        /// use cryptocol::number::SizeUnion;
+        /// let a = SizeUnion::new_with_ushorts([5507_u16, 50024_u16, 40234_u16, 65531_u16]);
+        /// println!("a = {}", a.get());
+        /// assert_eq!(a.get(), 18445509505818563971_usize);
+        /// ```
+        #[cfg(target_pointer_width = "64")] 
+        #[inline] pub fn new_with_ushorts(ushort: [u16; 4]) -> Self  { Self { ushort } }
+
+        // pub fn new_with_ushorts(ushort: [u16; 8]) -> Self
+        /// Constructs a new `SizeUnion` with initializing it with `ushort`.
+        /// 
+        /// # Output
+        /// A new object of `SizeUnion` initialized with the value `ushort`.
+        /// 
+        /// # Initialization
+        /// The field of the constructed object will be initialized with `ushort`.
+        /// 
+        /// Example
+        /// ```
+        /// use cryptocol::number::SizeUnion;
+        /// let arr = [2895_u16, 61770_u16, 26869_u16, 48547_u16, 34904_u16, 32
+        /// let a = SizeUnion::new_with_ushorts(arr);
+        /// println!("a = {}", a.get());
+        /// assert_eq!(a.get(), 339047799029950809142362261752780557135_usize);
+        /// ```
+        #[cfg(target_pointer_width = "128")] 
+        #[inline] pub fn new_with_ushorts(ushort: [u16; 8]) -> Self  { Self { ushort } }
+
+        // pub fn new_with_uints(uint: [u32; 2]) -> Self
+        /// Constructs a new `SizeUnion` with initializing it with `uint`.
+        /// 
+        /// # Output
+        /// A new object of `SizeUnion` initialized with the value `uint`.
+        /// 
+        /// # Initialization
+        /// The field of the constructed object will be initialized with `uint`.
+        /// 
+        /// Example
+        /// ```
+        /// use cryptocol::number::SizeUnion;
+        /// let a = SizeUnion::new_with_uints([3278378371_u32, 4294679850_u32]);
+        /// println!("a = {}", a.get());
+        /// assert_eq!(a.get(), 18445509505818563971_usize);
+        /// ```
+        #[cfg(target_pointer_width = "64")] 
+        #[inline] pub fn new_with_uints(uint: [u32; 2]) -> Self     { Self { uint } }
+
+        // pub fn new_with_uints(uint: [u32; 4]) -> Self
+        /// Constructs a new `SizeUnion` with initializing it with `uint`.
+        /// 
+        /// # Output
+        /// A new object of `SizeUnion` initialized with the value `uint`.
+        /// 
+        /// # Initialization
+        /// The field of the constructed object will be initialized with `uint`.
+        /// 
+        /// Example
+        /// ```
+        /// use cryptocol::number::SizeUnion;
+        /// let arr = [4048161615_u32, 3181603061_u32, 2127464536_u32, 4279384858_u32];
+        /// let a = SizeUnion::new_with_uints(arr);
+        /// println!("a = {}", a.get());
+        /// assert_eq!(a.get(), 339047799029950809142362261752780557135_usize);
+        /// ```
+        #[cfg(target_pointer_width = "128")] 
+        #[inline] pub fn new_with_uints(uint: [u32; 4]) -> Self     { Self { uint } }
+
+        // pub fn new_with_ulongs(ulong: [u64; 4]) -> Self
+        /// Constructs a new `SizeUnion` with initializing it with `ulong`.
+        /// 
+        /// # Output
+        /// A new object of `SizeUnion` initialized with the value `ulong`.
+        /// 
+        /// # Initialization
+        /// The field of the constructed object will be initialized with `ulong`.
+        /// 
+        /// Example
+        /// ```
+        /// use cryptocol::number::SizeUnion;
+        /// let arr = [13664881099896654671_u64, 18379818014235068504_u64];
+        /// let a = SizeUnion::new_with_ulongs(arr);
+        /// println!("a = {}", a.get());
+        /// assert_eq!(a.get(), 339047799029950809142362261752780557135_usize);
+        /// ```
+        #[cfg(target_pointer_width = "128")] 
+        #[inline] pub fn new_with_ulongs(ulong: [u64; 4]) -> Self   { Self { ulong } }    }
+}
+#[allow(unused_imports)] pub(super) use new_with_small_uint;
 
 #[allow(unused_macros)]
 macro_rules! get_set_byte_fit {

@@ -1478,6 +1478,10 @@ fn size_union_main()
     size_union_new();
     size_union_new_with();
     size_union_new_with_signed();
+    size_union_new_with_bytes();
+    size_union_new_with_shorts();
+    size_union_new_with_ints();
+    size_union_new_with_longs();
     size_union_new_with_u128();
     size_union_new_with_bool();
     size_union_get();
@@ -2044,6 +2048,103 @@ fn size_union_new_with_signed()
     let a = SizeUnion::new_with_signed(-123_isize);
     println!("a = {}", a.get_signed());
     assert_eq!(a.get_signed(), -123_isize);
+    println!("--------------------------------------");
+}
+
+fn size_union_new_with_bytes()
+{
+    println!("size_union_new_with_bytes()");
+    #[cfg(target_pointer_width = "16")]
+    {
+        use cryptocol::number::SizeUnion;
+        let a = SizeUnion::new_with_ubytes([172_u8, 216_u8]);
+        println!("a = {}", a.get());
+        assert_eq!(a.get(), 55468_usize);
+    }
+    #[cfg(target_pointer_width = "32")]
+    {
+        use cryptocol::number::SizeUnion;
+        let a = SizeUnion::new_with_ubytes([222_u8, 0_u8, 230_u8, 228_u8]);
+        println!("a = {}", a.get());
+        assert_eq!(a.get(), 3840278750_usize);
+    }
+    #[cfg(target_pointer_width = "64")]
+    {
+        use cryptocol::number::SizeUnion;
+        let a = SizeUnion::new_with_ubytes([131_u8, 21_u8, 104_u8, 195_u8, 42_u8, 157_u8, 251_u8, 255_u8]);
+        println!("a = {}", a.get());
+        assert_eq!(a.get(), 18445509505818563971_usize);
+    }
+    #[cfg(target_pointer_width = "128")]
+    {
+        use cryptocol::number::SizeUnion;
+        let a = SizeUnion::new_with_ubytes([79_u8, 11_u8, 74_u8, 241_u8, 245_u8, 104_u8, 163_u8, 189_u8, 88_u8, 136_u8, 206_u8, 126_u8, 26_u8, 59_u8, 18_u8, 255_u8]);
+        println!("a = {}", a.get());
+        assert_eq!(a.get(), 339047799029950809142362261752780557135_usize);
+    }
+    println!("--------------------------------------");
+}
+
+fn size_union_new_with_shorts()
+{
+    println!("size_union_new_with_shorts()");
+    #[cfg(target_pointer_width = "32")]
+    {
+        use cryptocol::number::SizeUnion;
+        let a = SizeUnion::new_with_ushorts([222_u16, 58598_u16]);
+        println!("a = {}", a.get());
+        assert_eq!(a.get(), 3840278750_usize);
+    }
+    #[cfg(target_pointer_width = "64")]
+    {
+        use cryptocol::number::SizeUnion;
+        let a = SizeUnion::new_with_ushorts([5507_u16, 50024_u16, 40234_u16, 65531_u16]);
+        println!("a = {}", a.get());
+        assert_eq!(a.get(), 18445509505818563971_usize);
+    }
+    #[cfg(target_pointer_width = "128")]
+    {
+        use cryptocol::number::SizeUnion;
+        let arr = [2895_u16, 61770_u16, 26869_u16, 48547_u16, 34904_u16, 32462_u16, 15130_u16, 65298_u16];
+        let a = SizeUnion::new_with_ushorts(arr);
+        println!("a = {}", a.get());
+        assert_eq!(a.get(), 339047799029950809142362261752780557135_usize);
+    }
+    println!("--------------------------------------");
+}
+
+fn size_union_new_with_ints()
+{
+    println!("size_union_new_with_ints()");
+    #[cfg(target_pointer_width = "64")]
+    {
+        use cryptocol::number::SizeUnion;
+        let a = SizeUnion::new_with_uints([3278378371_u32, 4294679850_u32]);
+        println!("a = {}", a.get());
+        assert_eq!(a.get(), 18445509505818563971_usize);
+    }
+    #[cfg(target_pointer_width = "128")]
+    {
+        use cryptocol::number::SizeUnion;
+        let arr = [4048161615_u32, 3181603061_u32, 2127464536_u32, 4279384858_u32];
+        let a = SizeUnion::new_with_uints(arr);
+        println!("a = {}", a.get());
+        assert_eq!(a.get(), 339047799029950809142362261752780557135_usize);
+    }
+    println!("--------------------------------------");
+}
+
+fn size_union_new_with_longs()
+{
+    println!("size_union_new_with_longs()");
+    #[cfg(target_pointer_width = "128")]
+    {
+        use cryptocol::number::SizeUnion;
+        let arr = [13664881099896654671_u64, 18379818014235068504_u64];
+        let a = SizeUnion::new_with_ulongs(arr);
+        println!("a = {}", a.get());
+        assert_eq!(a.get(), 339047799029950809142362261752780557135_usize);
+    }
     println!("--------------------------------------");
 }
 
