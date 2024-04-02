@@ -7705,6 +7705,199 @@ pub(super) use get_set_size;
 
 macro_rules! integer_union_methods {
     ($f:ty) => {
+        // pub fn carrying_add(self, rhs: Self, carry: bool) -> (Self, bool)
+        /// Calculates `self` + `rhs` + `carry`,
+        /// wrapping around at the boundary of the type.
+        /// 
+        /// # Features
+        /// - This allows chaining together multiple additions to create a wider
+        /// addition, and can be useful for big integer type addition.
+        /// - This can be thought of as a 8-bit “full adder”, in the electronics
+        /// sense.
+        /// - If the input carry is false, this method is equivalent to
+        /// `overflowing_add()`.
+        /// 
+        /// # Outputs
+        /// It returns a tuple containing the sum and the output `carry`.
+        /// It performs “ternary addition” of two integer operands and a
+        /// carry-in bit, and returns an output integer and a carry-out bit.
+        /// 
+        /// # Example 1 for ShortUnion
+        /// ```
+        /// use cryptocol::number::ShortUnion;
+        /// // a_intunion: IntUnion === (a_high_shortunion, a_low_shortunion) === (10000_u16, 10100_u16) === 655370100_u32
+        /// let a_high_shortunion = ShortUnion::new_with(10000_u16);
+        /// let a_low_shortunion = ShortUnion::new_with(10100_u16);
+        /// // b_shortunion: IntUnion === (b_high_shortunion, b_low_shortunion) === (10000_u16, 20000_u16) === 3276830000_u32
+        /// let b_high_shortunion = ShortUnion::new_with(50000_u16);
+        /// let b_low_shortunion = ShortUnion::new_with(30000_u16);
+        /// 
+        /// // (10000_u16, 10100_u16) + (50000_u16, 30000_u16) == 655370100_u32 + 3276830000_u32 == 3932200100_u32
+        /// //    655370100_u32 == (10000_u16, 10100_u16)
+        /// // + 3276830000_u32 == (50000_u16, 30000_u16)
+        /// // ------------------------------------------
+        /// //   3932200100_u32 == (60000_u16, 40100_u16)
+        /// 
+        /// // c_u32: u32 === (c_high_shortunion, c_low_shortunion)
+        /// let (c_low_shortunion, carry) = a_low_shortunion.carrying_add(b_low_shortunion, false);
+        /// let (c_high_shortunion, carry) = a_high_shortunion.carrying_add(b_high_shortunion, carry);
+        /// println!("{}-{}, {}", c_high_shortunion, c_low_shortunion, carry);
+        /// assert_eq!(c_high_shortunion.get(), 60000_u16);
+        /// assert_eq!(c_low_shortunion.get(), 40100_u16);
+        /// assert_eq!(carry, false);
+        /// 
+        /// // (10000_u16, 10100_u16) + (50000_u16, 30000_u16) == 3932200100_u32 + 3276830000_u32 == 51501_u16
+        /// //   3932200100_u32 == (60000_u16, 40100_u16)
+        /// // + 3276830000_u32 == (50000_u16, 30000_u16)
+        /// // ------------------------------------------
+        /// //   2914062804_u32 == (44465_u16,  4564_u16)
+        /// 
+        /// // d: u32 === (d_high_shortunion, d_low_shortunion)
+        /// let (d_low_shortunion, carry) = c_low_shortunion.carrying_add(b_low_shortunion, false);
+        /// let (d_high_shortunion, carry) = c_high_shortunion.carrying_add(b_high_shortunion, carry);
+        /// println!("{}-{}, {}", d_high_shortunion, d_low_shortunion, carry);
+        /// assert_eq!(d_high_shortunion.get(), 44465_u16);
+        /// assert_eq!(d_low_shortunion.get(), 4564_u16);
+        /// assert_eq!(carry, true);
+        /// ```
+        /// 
+        /// # Example 2 for IntUnion
+        /// ```
+        /// use cryptocol::number::IntUnion;
+        /// //  1234567890123456789_u64 == ( 287445236_u16, 2112454933_u16)
+        /// //+ 9876543210123456789_u64 == (2299561912_u16, 2956226837_u16)
+        /// //-------------------------------------------------------------
+        /// // 11111111100246913578_u64 == (2587007149_u16,  773714474_u16)
+        /// 
+        /// // a: u256 === (a_high_longerunion, a_low_longerunion)
+        /// let (a_low_intunion, carry) = IntUnion::new_with(2112454933_u32).carrying_add(IntUnion::new_with(2956226837_u32), false);
+        /// let (a_high_intunion, carry) = IntUnion::new_with(287445236_u32).carrying_add(IntUnion::new_with(2299561912_u32), carry);
+        /// println!("{}-{}, {}", a_high_intunion, a_low_intunion, carry);
+        /// assert_eq!(a_high_intunion.get(), 2587007149_u32);
+        /// assert_eq!(a_low_intunion.get(), 773714474_u32);
+        /// assert_eq!(carry, false);
+        /// 
+        /// //  11111111100246913578_u64 == (2587007149_u32,  773714474_u32)
+        /// //+  9876543210123456789_u64 == (2299561912_u32, 2956226837_u32)
+        /// //--------------------------------------------------------------
+        /// //   2540910236660818751_u64 == ( 591601765_u32, 3729941311_u32)
+        /// 
+        /// // b: u256 === (b_high_longerunion, b_low_longerunion)
+        /// let (b_low_intunion, carry) = IntUnion::new_with(773714474_u32).carrying_add(IntUnion::new_with(2956226837_u32), false);
+        /// let (b_high_intunion, carry) = IntUnion::new_with(2587007149_u32).carrying_add(IntUnion::new_with(2299561912_u32), carry);
+        /// println!("{}-{}, {}", b_high_intunion, b_low_intunion, carry);
+        /// assert_eq!(b_high_intunion.get(), 591601765_u32);
+        /// assert_eq!(b_low_intunion.get(), 3729941311_u32);
+        /// assert_eq!(carry, true);
+        /// ```
+        /// 
+        /// # Example 3 for LongUnion
+        /// ```
+        /// use cryptocol::number::LongUnion;
+        /// // a_longerunion: LongerUnion === (a_high_longunion, a_low_longunion) === (6692605942763486917_u64, 12312739301371248917_u64) === 322222221211111111100000000088888888987_u128
+        /// let a_high_longunion = LongUnion::new_with(6692605942763486917_u64);
+        /// let a_low_longunion = LongUnion::new_with(12312739301371248917_u64);
+        /// // b_longunion: LongerUnion === (b_high_longunion, b_low_longunion) === (10775095670246085798_u64, 7681743649119882630_u64) === 198765432198765432198765432198765432198_u128
+        /// let b_high_longunion = LongUnion::new_with(10775095670246085798_u64);
+        /// let b_low_longunion = LongUnion::new_with(7681743649119882630_u64);
+        /// 
+        /// // (6692605942763486917_u64, 12312739301371248917_u64) + (10775095670246085798_u64, 7681743649119882630_u64) == 123456789012345678901234567890123456789_u128 + 198765432198765432198765432198765432198_u128 == 322222221211111111100000000088888888987_u128
+        /// //   123456789012345678901234567890123456789_u128 == (6692605942763486917_u64, 12312739301371248917_u64)
+        /// // + 198765432198765432198765432198765432198_u128 == (10775095670246085798_u64, 7681743649119882630_u64)
+        /// // -----------------------------------------------------------------------------------------------------
+        /// //   322222221211111111100000000088888888987_u128 == (17467701613009572716_u64, 1547738876781579931_u64)
+        /// 
+        /// // c_u128: u128 === (c_high_longunion, c_low_longunion)
+        /// let (c_low_longunion, carry) = a_low_longunion.carrying_add(b_low_longunion, false);
+        /// let (c_high_longunion, carry) = a_high_longunion.carrying_add(b_high_longunion, carry);
+        /// println!("{}-{}, {}", c_high_longunion, c_low_longunion, carry);
+        /// assert_eq!(c_high_longunion.get(), 17467701613009572716_u64);
+        /// assert_eq!(c_low_longunion.get(), 1547738876781579931_u64);
+        /// assert_eq!(carry, false);
+        /// 
+        /// // (17467701613009572716_u64, 1547738876781579931_u64) + (10775095670246085798_u64, 7681743649119882630_u64) == 322222221211111111100000000088888888987_u128 + 198765432198765432198765432198765432198_u128 == 180705286488938079835390824855886109729_u64
+        /// //   322222221211111111100000000088888888987_u128 == (17467701613009572716_u64, 1547738876781579931_u64)
+        /// // + 198765432198765432198765432198765432198_u128 == (10775095670246085798_u64, 7681743649119882630_u64)
+        /// // -----------------------------------------------------------------------------------------------------
+        /// //   180705286488938079835390824855886109729_u128 == ( 9796053209546106898_u64, 9229482525901462561_u64)
+        /// 
+        /// // d: u128 === (d_high_longunion, d_low_longunion)
+        /// let (d_low_longunion, carry) = c_low_longunion.carrying_add(b_low_longunion, false);
+        /// let (d_high_longunion, carry) = c_high_longunion.carrying_add(b_high_longunion, carry);
+        /// println!("{}-{}, {}", d_high_longunion, d_low_longunion, carry);
+        /// assert_eq!(d_high_longunion.get(), 9796053209546106898_u64);
+        /// assert_eq!(d_low_longunion.get(), 9229482525901462561_u64);
+        /// assert_eq!(carry, true);
+        /// ```
+        /// 
+        /// # Example 4 for LongerUnion
+        /// ```
+        /// use cryptocol::number::LongerUnion;
+        /// //  4201016837757989640311993609423984479246482890531986660185_u256 == (12345678901234567890_u128, 6789012345678912345_u128)
+        /// //+                 419908440780438063913804265570801972943493_u256 == (                1234_u128,                6789_u128)
+        /// //--------------------------------------------------------------------------------------------------------------------------
+        /// //  4201016837757990060220434389862048393050748461333959603678_u256 == (12345678901234569124_u128, 6789012345678919134_u128)
+        /// 
+        /// // a: u256 === (a_high_longerunion, a_low_longerunion)
+        /// let (a_low_longerunion, carry) = LongerUnion::new_with(6789012345678912345_u128).carrying_add(LongerUnion::new_with(6789_u128), false);
+        /// let (a_high_longerunion, carry) = LongerUnion::new_with(12345678901234567890_u128).carrying_add(LongerUnion::new_with(1234_u128), carry);
+        /// println!("{}-{}, {}", a_high_longerunion, a_low_longerunion, carry);
+        /// assert_eq!(a_high_longerunion.get(), 12345678901234569124_u128);
+        /// assert_eq!(a_low_longerunion.get(), 6789012345678919134_u128);
+        /// assert_eq!(carry, false);
+        /// 
+        /// //  308778904632843187796189293356501087608549893209439890708590319850715068122315 == (226854911280625642308916404954512140970_u128, 56789012345678912345678901234567890123_u128)
+        /// //+  57896044618658097711785492504343953926307055644800578124155540853313808954190 == (170141183460469231731687303715884105727_u128, 12345678901234567890123456789012345678_u128)
+        /// //-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+        /// //   19298681539552699237261830834781317975046994857318776714373108680289488156697 == ( 56713727820156410577229101238628035241_u128, 69134691246913480235802358023580235801_u128)
+        /// 
+        /// // b: u256 === (b_high_longerunion, b_low_longerunion)
+        /// let (b_low_longerunion, carry) = LongerUnion::new_with(56789012345678912345678901234567890123_u128).carrying_add(LongerUnion::new_with(12345678901234567890123456789012345678_u128), false);
+        /// let (b_high_longerunion, carry) = LongerUnion::new_with(226854911280625642308916404954512140970_u128).carrying_add(LongerUnion::new_with(170141183460469231731687303715884105727_u128), carry);
+        /// println!("{}-{}, {}", b_high_longerunion, b_low_longerunion, carry);
+        /// assert_eq!(b_high_longerunion.get(), 56713727820156410577229101238628035241_u128);
+        /// assert_eq!(b_low_longerunion.get(), 69134691246913480235802358023580235801_u128);
+        /// assert_eq!(carry, true);
+        /// ```
+        /// 
+        /// # Example 5 for SizeUnion for 64-bitn CPU
+        /// ```
+        /// use cryptocol::number::SizeUnion;
+        /// // a_longerunion: LongerUnion === (a_high_sizeunion, a_low_sizeunion) === (6692605942763486917_usize, 12312739301371248917_usize) === 322222221211111111100000000088888888987_u128
+        /// let a_high_sizeunion = SizeUnion::new_with(6692605942763486917_usize);
+        /// let a_low_sizeunion = SizeUnion::new_with(12312739301371248917_usize);
+        /// // b_sizeunion: LongerUnion === (b_high_sizeunion, b_low_sizeunion) === (10775095670246085798_usize, 7681743649119882630_usize) === 198765432198765432198765432198765432198_u128
+        /// let b_high_sizeunion = SizeUnion::new_with(10775095670246085798_usize);
+        /// let b_low_sizeunion = SizeUnion::new_with(7681743649119882630_usize);
+        /// 
+        /// // (6692605942763486917_usize, 12312739301371248917_usize) + (10775095670246085798_usize, 7681743649119882630_usize) == 123456789012345678901234567890123456789_u128 + 198765432198765432198765432198765432198_u128 == 322222221211111111100000000088888888987_u128
+        /// //   123456789012345678901234567890123456789_u128 == (6692605942763486917_usize, 12312739301371248917_usize)
+        /// // + 198765432198765432198765432198765432198_u128 == (10775095670246085798_usize, 7681743649119882630_usize)
+        /// // ---------------------------------------------------------------------------------------------------------
+        /// //   322222221211111111100000000088888888987_u128 == (17467701613009572716_usize, 1547738876781579931_usize)
+        /// 
+        /// // c_u128: u128 === (c_high_sizeunion, c_low_sizeunion)
+        /// let (c_low_sizeunion, carry) = a_low_sizeunion.carrying_add(b_low_sizeunion, false);
+        /// let (c_high_sizeunion, carry) = a_high_sizeunion.carrying_add(b_high_sizeunion, carry);
+        /// println!("{}-{}, {}", c_high_sizeunion, c_low_sizeunion, carry);
+        /// assert_eq!(c_high_sizeunion.get(), 17467701613009572716_usize);
+        /// assert_eq!(c_low_sizeunion.get(), 1547738876781579931_usize);
+        /// assert_eq!(carry, false);
+        /// 
+        /// // (17467701613009572716_usize, 1547738876781579931_usize) + (10775095670246085798_usize, 7681743649119882630_usize) == 322222221211111111100000000088888888987_u128 + 198765432198765432198765432198765432198_u128 == 180705286488938079835390824855886109729_usize
+        /// //   322222221211111111100000000088888888987_u128 == (17467701613009572716_usize, 1547738876781579931_usize)
+        /// // + 198765432198765432198765432198765432198_u128 == (10775095670246085798_usize, 7681743649119882630_usize)
+        /// // ---------------------------------------------------------------------------------------------------------
+        /// //   180705286488938079835390824855886109729_u128 == ( 9796053209546106898_usize, 9229482525901462561_usize)
+        /// 
+        /// // d: u128 === (d_high_sizeunion, d_low_sizeunion)
+        /// let (d_low_sizeunion, carry) = c_low_sizeunion.carrying_add(b_low_sizeunion, false);
+        /// let (d_high_sizeunion, carry) = c_high_sizeunion.carrying_add(b_high_sizeunion, carry);
+        /// println!("{}-{}, {}", d_high_sizeunion, d_low_sizeunion, carry);
+        /// assert_eq!(d_high_sizeunion.get(), 9796053209546106898_usize);
+        /// assert_eq!(d_low_sizeunion.get(), 9229482525901462561_usize);
+        /// assert_eq!(carry, true);
+        /// ```
         pub fn carrying_add(self, rhs: Self, carry: bool) -> (Self, bool)
         {
             let (r_this, c1) = self.get().overflowing_add(rhs.get());
