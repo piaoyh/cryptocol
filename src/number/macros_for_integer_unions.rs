@@ -7705,16 +7705,24 @@ pub(super) use get_set_size;
 
 macro_rules! integer_union_methods {
     ($f:ty) => {
+        /***** ADDITION *****/
+
         // pub fn carrying_add(self, rhs: Self, carry: bool) -> (Self, bool)
         /// Calculates `self` + `rhs` + `carry`,
         /// wrapping around at the boundary of the type.
+        /// 
+        /// # Arguments
+        /// - `rhs` is the operand of `Self` type.
+        /// - `carry` is the carry overflowed from the previous operation.
+        /// If there is no overflowed carry from the previous operation,
+        /// `carry` is `false`. Otherwise, it is `true`.
         /// 
         /// # Features
         /// - This allows chaining together multiple additions to create a wider
         /// addition, and can be useful for big integer type addition.
         /// - This can be thought of as a 8-bit “full adder”, in the electronics
         /// sense.
-        /// - If the input carry is false, this method is equivalent to
+        /// - If `carry` is `false`, this method is equivalent to
         /// `overflowing_add()`.
         /// 
         /// # Outputs
@@ -7898,6 +7906,30 @@ macro_rules! integer_union_methods {
         /// assert_eq!(d_low_sizeunion.get(), 9229482525901462561_usize);
         /// assert_eq!(carry, true);
         /// ```
+        /// 
+        /// # Plagiarism in descryption
+        /// Even though it does not call the method carrying_add() of implementation
+        /// of the primitive unsigned integer types such as `u8`, `u16`, `u32`,
+        /// `u64`, `u128` and `usize` directly, all the description of this method
+        /// is mainly the same as that of the method carrying_add() of
+        /// implementation of the primitive unsigned integer types for nightly
+        /// version except example codes. Confer to the descryptions that are linked
+        /// to in the section _Reference_. This plagiarism is not made maliciously
+        /// but is made for the reason of effectiveness and efficiency so that users
+        /// may understand better and easily how to use this method with simiilarity
+        /// to the method carrying_add() of implementation of the primitive unsigned
+        /// integer types.
+        /// 
+        /// # Possiible Changes in Future
+        /// This method does not call the method carrying_add() of the primitive
+        /// unsigned integer types directly. Instead, it is implemented to perform
+        /// the same thing as that of carrying_add() of the primitive unsigned
+        /// integer types because the methods carrying_add() of the primitive
+        /// unsigned integer types are only for nightly version. So, when the method
+        /// carrying_add() of the primitive unsigned integer types will become a
+        /// part of non-nightly normal version, the implementation of this method
+        /// will be changed to call the method carrying_add() of the primitive
+        /// unsigned integer types directly.
         pub fn carrying_add(self, rhs: Self, carry: bool) -> (Self, bool)
         {
             let (r_this, c1) = self.get().overflowing_add(rhs.get());
@@ -7907,15 +7939,361 @@ macro_rules! integer_union_methods {
             (res, c1 || c2)
         }
 
+        // pub fn wrapping_add(self, rhs: Self) -> Self
+        /// Computes `self` + `rhs`, wrapping around at the boundary of the type.
+        /// 
+        /// # Arguments
+        /// - `rhs` is the operand of `Self` type.
+        /// 
+        /// # Features
+        /// It adds two numbers with wrapping (modular) addition.
+        /// 
+        /// # Output
+        /// It returns the `self` + `rhs` in the type of `Self`.
+        /// 
+        /// # Example 1 for ShortUnion
+        /// ```
+        /// use cryptocol::number::{ SmallUInt, ShortUnion };
+        /// let a_shortunion = ShortUnion::new_with(u16::MAX - 55_u16);
+        /// let b_shortunion = ShortUnion::new_with(55);
+        /// let c_shortunion = a_shortunion.wrapping_add(b_shortunion);
+        /// println!("{} + {} = {}", a_shortunion, b_shortunion, c_shortunion);
+        /// assert_eq!(c_shortunion.get(), u16::MAX);
+        /// 
+        /// let d_shortunion = c_shortunion.wrapping_add(1_u16.into_shortunion());
+        /// println!("{} + 1 = {}", a_shortunion, d_shortunion);
+        /// assert_eq!(d_shortunion.get(), 0_u16);
+        /// ```
+        /// 
+        /// # Example 2 for IntUnion
+        /// ```
+        /// use cryptocol::number::{ SmallUInt, IntUnion };
+        /// let a_intunion = IntUnion::new_with(u32::MAX - 55_u32);
+        /// let b_intunion = IntUnion::new_with(55);
+        /// let c_intunion = a_intunion.wrapping_add(b_intunion);
+        /// println!("{} + {} = {}", a_intunion, b_intunion, c_intunion);
+        /// assert_eq!(c_intunion.get(), u32::MAX);
+        /// 
+        /// let d_intunion = c_intunion.wrapping_add(1_u32.into_intunion());
+        /// println!("{} + 1 = {}", a_intunion, d_intunion);
+        /// assert_eq!(d_intunion.get(), 0_u32);
+        /// ```
+        /// 
+        /// # Example 3 for LongUnion
+        /// ```
+        /// use cryptocol::number::{ SmallUInt, LongUnion };
+        /// let a_longunion = LongUnion::new_with(u64::MAX - 55_u64);
+        /// let b_longunion = LongUnion::new_with(55);
+        /// let c_longunion = a_longunion.wrapping_add(b_longunion);
+        /// println!("{} + {} = {}", a_longunion, b_longunion, c_longunion);
+        /// assert_eq!(c_longunion.get(), u64::MAX);
+        /// 
+        /// let d_longunion = c_longunion.wrapping_add(1_u32.into_longunion());
+        /// println!("{} + 1 = {}", a_longunion, d_longunion);
+        /// assert_eq!(d_longunion.get(), 0_u64);
+        /// ```
+        /// 
+        /// # Example 4 for LongerUnion
+        /// ```
+        /// use cryptocol::number::{ SmallUInt, LongerUnion };
+        /// let a_longerunion = LongerUnion::new_with(u128::MAX - 55_u128);
+        /// let b_longerunion = LongerUnion::new_with(55);
+        /// let c_longerunion = a_longerunion.wrapping_add(b_longerunion);
+        /// println!("{} + {} = {}", a_longerunion, b_longerunion, c_longerunion);
+        /// assert_eq!(c_longerunion.get(), u128::MAX);
+        /// 
+        /// let d_longerunion = c_longerunion.wrapping_add(1_u128.into_longerunion());
+        /// println!("{} + 1 = {}", a_longerunion, d_longerunion);
+        /// assert_eq!(d_longerunion.get(), 0_u128);
+        /// ```
+        /// 
+        /// # Example 5 for SizeUnion
+        /// ```
+        /// use cryptocol::number::{ SmallUInt, SizeUnion };
+        /// let a_sizeunion = SizeUnion::new_with(usize::MAX - 55_usize);
+        /// let b_sizeunion = SizeUnion::new_with(55);
+        /// let c_sizeunion = a_sizeunion.wrapping_add(b_sizeunion);
+        /// println!("{} + {} = {}", a_sizeunion, b_sizeunion, c_sizeunion);
+        /// assert_eq!(c_sizeunion.get(), usize::MAX);
+        /// 
+        /// let d_sizeunion = c_sizeunion.wrapping_add(1_usize.into_sizeunion());
+        /// println!("{} + 1 = {}", a_sizeunion, d_sizeunion);
+        /// assert_eq!(d_sizeunion.get(), 0_usize);
+        /// ```
+        /// 
+        /// # Plagiarism in descryption
+        /// It calls the method wrapping_add() of implementation of the primitive
+        /// unsigned integer types such as`u8`, `u16`, `u32`, `u64`, `u128` and
+        /// `usize` directly. So, all the description of this method is mainly the
+        /// same as that of the method wrapping_add() of implementation of the
+        /// primitive unsigned integer types except example codes. Confer to the
+        /// descryptions that are linked to in the section _Reference_. This
+        /// plagiarism is not made maliciously but is made for the reason of
+        /// effectiveness and efficiency so that users may understand better and
+        /// easily how to use this method with simiilarity to the method
+        /// wrapping_add() of implementation of the primitive unsigned integer types.
         #[inline] pub fn wrapping_add(self, rhs: Self) -> Self      { Self::new_with( self.get().wrapping_add(rhs.get()) ) }
-        // #[inline] pub fn wrapping_add_assign(&mut self, rhs: Self)  { self.set(self.get().wrapping_add(rhs.get())); }
 
+        // pub fn overflowing_add(self, rhs: Self) -> (Self, bool)
+        /// Calculates `self` + `rhs`, wrapping around at the boundary of the type.
+        /// 
+        /// # Arguments
+        /// - `rhs` is the operand of `Self` type.
+        /// 
+        /// # Features
+        /// It adds two numbers with wrapping (modular) addition. It is the same
+        /// as the method carrying_add() with the imput carry which is false.
+        /// 
+        /// # Output
+        /// It returns a tuple of the addition along with a boolean indicating
+        /// whether an arithmetic overflow would occur. If an overflow would
+        /// have occurred then the wrapped value is returned.
+        /// 
+        /// # Example 1 for ShortUnion
+        /// ```
+        /// use cryptocol::number::{ SmallUInt, ShortUnion };
+        /// let a_shortunion = ShortUnion::new_with(u16::MAX - 55_u16);
+        /// let (b_shortunion, overflow) = a_shortunion.overflowing_add(55_u16.into_shortunion());
+        /// println!("{} + 55 = {}\nOverflow = {}", a_shortunion, b_shortunion, overflow);
+        /// assert_eq!(b_shortunion.get(), u16::MAX);
+        /// assert_eq!(overflow, false);
+        /// 
+        /// let (c_shortunion, overflow) = b_shortunion.overflowing_add(1_u16.into_shortunion());
+        /// println!("{} + 1 = {}\nOverflow = {}", b_shortunion, c_shortunion, overflow);
+        /// assert_eq!(c_shortunion.get(), 0_u16);
+        /// assert_eq!(overflow, true);
+        /// ```
+        /// 
+        /// # Example 2 for IntUnion
+        /// ```
+        /// use cryptocol::number::{ SmallUInt, IntUnion };
+        /// let a_intunion = IntUnion::new_with(u32::MAX - 55_u32);
+        /// let (b_intunion, overflow) = a_intunion.overflowing_add(55_u32.into_intunion());
+        /// println!("{} + 55 = {}\nOverflow = {}", a_intunion, b_intunion, overflow);
+        /// assert_eq!(b_intunion.get(), u32::MAX);
+        /// assert_eq!(overflow, false);
+        ///    
+        /// let (c_intunion, overflow) = b_intunion.overflowing_add(1_u32.into_intunion());
+        /// println!("{} + 1 = {}\nOverflow = {}", b_intunion, c_intunion, overflow);
+        /// assert_eq!(c_intunion.get(), 0_u32);
+        /// assert_eq!(overflow, true);
+        /// ```
+        /// 
+        /// # Example 3 for LongUnion
+        /// ```
+        /// use cryptocol::number::{ SmallUInt, LongUnion };
+        /// let a_longunion = LongUnion::new_with(u64::MAX - 55_u64);
+        /// let (b_longunion, overflow) = a_longunion.overflowing_add(55_u64.into_longunion());
+        /// println!("{} + 55 = {}\nOverflow = {}", a_longunion, b_longunion, overflow);
+        /// assert_eq!(b_longunion.get(), u64::MAX);
+        /// assert_eq!(overflow, false);
+        ///    
+        /// let (c_longunion, overflow) = b_longunion.overflowing_add(1_u64.into_longunion());
+        /// println!("{} + 1 = {}\nOverflow = {}", b_longunion, c_longunion, overflow);
+        /// assert_eq!(c_longunion.get(), 0_u64);
+        /// assert_eq!(overflow, true);
+        /// ```
+        /// 
+        /// # Example 4 for LongerUnion
+        /// ```
+        /// use cryptocol::number::{ SmallUInt, LongerUnion };
+        /// let a_longerunion = LongerUnion::new_with(u128::MAX - 55_u128);
+        /// let (b_longerunion, overflow) = a_longerunion.overflowing_add(55_u128.into_longerunion());
+        /// println!("{} + 55 = {}\nOverflow = {}", a_longerunion, b_longerunion, overflow);
+        /// assert_eq!(b_longerunion.get(), u128::MAX);
+        /// assert_eq!(overflow, false);
+        ///    
+        /// let (c_longerunion, overflow) = b_longerunion.overflowing_add(1_u128.into_longerunion());
+        /// println!("{} + 1 = {}\nOverflow = {}", b_longerunion, c_longerunion, overflow);
+        /// assert_eq!(c_longerunion.into_u128(), 0_u128);
+        /// assert_eq!(overflow, true);
+        /// ```
+        /// 
+        /// # Example 5 for SizeUnion
+        /// ```
+        /// use cryptocol::number::{ SmallUInt, SizeUnion };
+        /// let a_sizeunion = SizeUnion::new_with(usize::MAX - 55_usize);
+        /// let (b_sizeunion, overflow) = a_sizeunion.overflowing_add(55_usize.into_sizeunion());
+        /// println!("{} + 55 = {}\nOverflow = {}", a_sizeunion, b_sizeunion, overflow);
+        /// assert_eq!(b_sizeunion.get(), usize::MAX);
+        /// assert_eq!(overflow, false);
+        ///    
+        /// let (c_sizeunion, overflow) = b_sizeunion.overflowing_add(1_usize.into_sizeunion());
+        /// println!("{} + 1 = {}\nOverflow = {}", b_sizeunion, c_sizeunion, overflow);
+        /// assert_eq!(c_sizeunion.get(), 0_usize);
+        /// assert_eq!(overflow, true);
+        /// ```
+        /// 
+        /// # Plagiarism in descryption
+        /// It calls the method overflowing_add() of implementation of the primitive
+        /// unsigned integer types such as`u8`, `u16`, `u32`, `u64`, `u128` and
+        /// `usize` directly. So, all the description of this method is mainly the
+        /// same as that of the method overflowing_add() of implementation of the
+        /// primitive unsigned integer types except example codes. Confer to the
+        /// descryptions that are linked to in the section _Reference_. This
+        /// plagiarism is not made maliciously but is made for the reason of
+        /// effectiveness and efficiency so that users may understand better and
+        /// easily how to use this method with simiilarity to the method
+        /// overflowing_add() of implementation of the primitive unsigned integer
+        /// types.
         pub fn overflowing_add(self, rhs: Self) -> (Self, bool)
         {
             let (res_this, carry) = self.get().overflowing_add(rhs.get());
             (Self::new_with(res_this), carry)
         }
 
+        // fn checked_add(self, rhs: Self) -> Option<Self>;
+        /// Computes `self` + `rhs`.
+        /// 
+        /// # Arguments
+        /// - `rhs` is the operand of `Self` type.
+        /// 
+        /// # Output
+        /// It returns self + rhs in the type `Self` wrapped by `Some`
+        /// of enum `Option` if overflow did not occur.
+        /// And, it returns `None` if overflow occurred.
+        /// 
+        /// # Example 1 for ShortUnion
+        /// ```
+        /// use cryptocol::number::{ SmallUInt, ShortUnion };
+        /// let a_shortunion = ShortUnion::new_with(u16::MAX - 55_u16);
+        /// let b_shortunion = 55_u16.into_shortunion();
+        /// let c_shortunion = a_shortunion.checked_add(b_shortunion);
+        /// match c_shortunion
+        /// {
+        ///     Some(c) => {
+        ///             println!("{} + 55 = {}", a_shortunion, c);
+        ///             assert_eq!(c.get(), u16::MAX);
+        ///         },
+        ///     None => { println!("Overflow happened."); },
+        /// }
+        /// 
+        /// let d_shortunion = c_shortunion.unwrap().checked_add(1_u16.into_shortunion());
+        /// match d_shortunion
+        /// {
+        ///     Some(d) => { println!("{} + 1 = {}", a_shortunion, d); },
+        ///     None => {
+        ///             println!("Overflow happened.");
+        ///             assert_eq!(d_shortunion, None);
+        ///         },
+        /// }
+        /// ```
+        /// 
+        /// # Example 2 for IntUnion
+        /// ```
+        /// use cryptocol::number::{ SmallUInt, IntUnion };
+        /// let a_intunion = IntUnion::new_with(u32::MAX - 55_u32);
+        /// let b_intunion = 55_u32.into_intunion();
+        /// let c_intunion = a_intunion.checked_add(b_intunion);
+        /// match c_intunion
+        /// {
+        ///     Some(c) => {
+        ///             println!("{} + 55 = {}", a_intunion, c);
+        ///             assert_eq!(c.get(), u32::MAX);
+        ///         },
+        ///     None => { println!("Overflow happened."); },
+        /// }
+        /// 
+        /// let d_intunion = c_intunion.unwrap().checked_add(1_u32.into_intunion());
+        /// match d_intunion
+        /// {
+        ///     Some(d) => { println!("{} + 1 = {}", a_intunion, d); },
+        ///     None => {
+        ///             println!("Overflow happened.");
+        ///             assert_eq!(d_intunion, None);
+        ///         },
+        /// }
+        /// ```
+        /// 
+        /// # Example 3 for LongUnion
+        /// ```
+        /// use cryptocol::number::{ SmallUInt, LongUnion };
+        /// let a_longunion = LongUnion::new_with(u64::MAX - 55_u64);
+        /// let b_longunion = 55_u64.into_longunion();
+        /// let c_longunion = a_longunion.checked_add(b_longunion);
+        /// match c_longunion
+        /// {
+        ///     Some(c) => {
+        ///             println!("{} + 55 = {}", a_longunion, c);
+        ///             assert_eq!(c.get(), u64::MAX);
+        ///         },
+        ///     None => { println!("Overflow happened."); },
+        /// }
+        /// 
+        /// let d_longunion = c_longunion.unwrap().checked_add(1_u64.into_longunion());
+        /// match d_longunion
+        /// {
+        ///     Some(d) => { println!("{} + 1 = {}", a_longunion, d); },
+        ///     None => {
+        ///             println!("Overflow happened.");
+        ///             assert_eq!(d_longunion, None);
+        ///         },
+        /// }
+        /// ```
+        /// 
+        /// # Example 4 for LongerUnion
+        /// ```
+        /// use cryptocol::number::{ SmallUInt, LongerUnion };
+        /// let a_longerunion = LongerUnion::new_with(u128::MAX - 55_u128);
+        /// let b_longerunion = 55_u128.into_longerunion();
+        /// let c_longerunion = a_longerunion.checked_add(b_longerunion);
+        /// match c_longerunion
+        /// {
+        ///     Some(c) => {
+        ///             println!("{} + 55 = {}", a_longerunion, c);
+        ///             assert_eq!(c.get(), u128::MAX);
+        ///         },
+        ///     None => { println!("Overflow happened."); },
+        /// }
+        /// 
+        /// let d_longerunion = c_longerunion.unwrap().checked_add(1_u128.into_longerunion());
+        /// match d_longerunion
+        /// {
+        ///     Some(d) => { println!("{} + 1 = {}", a_longerunion, d); },
+        ///     None => {
+        ///             println!("Overflow happened.");
+        ///             assert_eq!(d_longerunion, None);
+        ///         },
+        /// }
+        /// ```
+        /// 
+        /// # Example 5 for SizeUnion
+        /// ```
+        /// use cryptocol::number::{ SmallUInt, SizeUnion };
+        /// let a_sizeunion = SizeUnion::new_with(usize::MAX - 55_usize);
+        /// let b_sizeunion = 55_usize.into_sizeunion();
+        /// let c_sizeunion = a_sizeunion.checked_add(b_sizeunion);
+        /// match c_sizeunion
+        /// {
+        ///     Some(c) => {
+        ///             println!("{} + 55 = {}", a_sizeunion, c);
+        ///             assert_eq!(c.get(), usize::MAX);
+        ///         },
+        ///     None => { println!("Overflow happened."); },
+        /// }
+        /// 
+        /// let d_sizeunion = c_sizeunion.unwrap().checked_add(1_usize.into_sizeunion());
+        /// match d_sizeunion
+        /// {
+        ///     Some(d) => { println!("{} + 1 = {}", a_sizeunion, d); },
+        ///     None => {
+        ///             println!("Overflow happened.");
+        ///             assert_eq!(d_sizeunion, None);
+        ///         },
+        /// }
+        /// ```
+        /// 
+        /// # Plagiarism in descryption
+        /// It calls the method checked_add() of implementation of the primitive
+        /// unsigned integer types such as`u8`, `u16`, `u32`, `u64`, `u128` and
+        /// `usize` directly. So, all the description of this method is mainly the
+        /// same as that of the method checked_add() of implementation of the
+        /// primitive unsigned integer types except example codes. Confer to the
+        /// descryptions that are linked to in the section _Reference_. This
+        /// plagiarism is not made maliciously but is made for the reason of
+        /// effectiveness and efficiency so that users may understand better and
+        /// easily how to use this method with simiilarity to the method
+        /// checked_add() of implementation of the primitive unsigned integer types.
         pub fn checked_add(self, rhs: Self) -> Option<Self>
         {
             match self.get().checked_add(rhs.get())
@@ -7925,9 +8303,254 @@ macro_rules! integer_union_methods {
             }
         }
 
+        // fn unchecked_add(self, rhs: Self) -> Self;
+        /// Computes `self` + `rhs`, assuming overflow cannot occur.
+        /// 
+        /// # Arguments
+        /// `rhs` is the operand of `Self` type.
+        /// 
+        /// # Features
+        /// It is virtually same as self.checked_add(rhs).unwrap().
+        /// Use this method only when it is sure that overflow will never happen.
+        /// 
+        /// # Panics
+        /// If overflow occurs, this method will panic at this version.
+        /// 
+        /// # Output
+        /// It returns `self` + `rhs` in the type `Self` if overflow did not occur.
+        /// Otherwise, its behavior is not defined.
+        /// 
+        /// # Example 1 for ShortUnion
+        /// ```
+        /// use cryptocol::number::ShortUnion;
+        /// let a_shortunion = ShortUnion::new_with(u16::MAX - 55_u16);
+        /// let b_shortunion = ShortUnion::new_with(55_u16);
+        /// let c_shortunion = a_shortunion.saturating_add(b_shortunion);
+        /// println!("{} + 55 = {}", a_shortunion, c_shortunion);
+        /// assert_eq!(c_shortunion.get(), u16::MAX);
+        /// 
+        /// // It will panic
+        /// // let d_shortunion = small_uint_unchecked_add_func(c_shortunion, 1_u16);
+        /// ```
+        /// 
+        /// # Example 2 for IntUnion
+        /// ```
+        /// use cryptocol::number::IntUnion;
+        /// let a_intunion = IntUnion::new_with(u32::MAX - 55_u32);
+        /// let b_intunion = IntUnion::new_with(55_u32);
+        /// let c_intunion = a_intunion.saturating_add(b_intunion);
+        /// println!("{} + 55 = {}", a_intunion, c_intunion);
+        /// assert_eq!(c_intunion.get(), u32::MAX);
+        /// 
+        /// // It will panic
+        /// // let d_intunion = small_uint_unchecked_add_func(c_intunion, 1_u32);
+        /// ```
+        /// 
+        /// # Example 3 for LongUnion
+        /// ```
+        /// use cryptocol::number::LongUnion;
+        /// let a_longunion = LongUnion::new_with(u64::MAX - 55_u64);
+        /// let b_longunion = LongUnion::new_with(55_u64);
+        /// let c_longunion = a_longunion.saturating_add(b_longunion);
+        /// println!("{} + 55 = {}", a_longunion, c_longunion);
+        /// assert_eq!(c_longunion.get(), u64::MAX);
+        /// 
+        /// // It will panic
+        /// // let d_longunion = small_uint_unchecked_add_func(c_longunion, 1_u64);
+        /// ```
+        /// 
+        /// # Example 4 for LongerUnion
+        /// ```
+        /// use cryptocol::number::LongerUnion;
+        /// let a_longerunion = LongerUnion::new_with(u128::MAX - 55_u128);
+        /// let b_longerunion = LongerUnion::new_with(55_u128);
+        /// let c_longerunion = a_longerunion.saturating_add(b_longerunion);
+        /// println!("{} + 55 = {}", a_longerunion, c_longerunion);
+        /// assert_eq!(c_longerunion.get(), u128::MAX);
+        /// 
+        /// // It will panic
+        /// // let d_longerunion = small_uint_unchecked_add_func(c_longerunion, 1_u128);
+        /// ```
+        /// 
+        /// # Example 5 for SizeUnion
+        /// ```
+        /// use cryptocol::number::SizeUnion;
+        /// let a_sizeunion = SizeUnion::new_with(usize::MAX - 55_usize);
+        /// let b_sizeunion = SizeUnion::new_with(55_usize);
+        /// let c_sizeunion = a_sizeunion.saturating_add(b_sizeunion);
+        /// println!("{} + 55 = {}", a_sizeunion, c_sizeunion);
+        /// assert_eq!(c_sizeunion.get(), usize::MAX);
+        /// 
+        /// // It will panic
+        /// // let d_sizeunion = small_uint_unchecked_add_func(c_sizeunion, 1_usize);
+        /// ```
+        /// 
+        /// # Plagiarism in descryption
+        /// Even though it does not call the method unchecked_add() of implementation
+        /// of the primitive unsigned integer types such as `u8`, `u16`, `u32`,
+        /// `u64`, `u128` and `usize` directly, all the description of this method
+        /// is mainly the same as that of the method unchecked_add() of
+        /// implementation of the primitive unsigned integer types for nightly
+        /// version except example codes. Confer to the descryptions that are linked
+        /// to in the section _Reference_. This plagiarism is not made maliciously
+        /// but is made for the reason of effectiveness and efficiency so that users
+        /// may understand better and easily how to use this method with simiilarity
+        /// to the method unchecked_add() of implementation of the primitive unsigned
+        /// integer types.
         #[inline] pub fn unchecked_add(self, rhs: Self) -> Self     { Self::new_with( self.get().checked_add(rhs.get()).unwrap() ) }
+
+        // fn saturating_add(self, rhs: Self) -> Self;
+        /// Computes `self` + `rhs`, saturating at the numeric bounds
+        /// instead of overflowing.
+        /// 
+        /// # Arguments
+        /// `rhs` is the operand of `Self` type.
+        /// 
+        /// # Features
+        /// It adds two numbers with saturating integer addition
+        /// 
+        /// # Output
+        /// It returns the smaller one of `self` + `rhs` and the maxium
+        /// of the type of `Self`.
+        /// 
+        /// # Example 1 for ShortUnion
+        /// ```
+        /// use cryptocol::number::ShortUnion;
+        /// let a_shortunion = ShortUnion::new_with(u16::MAX - 55_u16);
+        /// let b_shortunion = ShortUnion::new_with(55_u16);
+        /// let c_shortunion = a_shortunion.saturating_add(b_shortunion);
+        /// println!("{} + 55 = {}", a_shortunion, c_shortunion);
+        /// assert_eq!(c_shortunion.get(), u16::MAX);
+        /// 
+        /// let d_shortunion = c_shortunion.saturating_add(b_shortunion);
+        /// println!("{} + 55 = {}", c_shortunion, d_shortunion);
+        /// assert_eq!(d_shortunion.get(), u16::MAX);
+        /// ```
+        /// 
+        /// # Example 2 for IntUnion
+        /// ```
+        /// use cryptocol::number::IntUnion;
+        /// let a_intunion = IntUnion::new_with(u32::MAX - 55_u32);
+        /// let b_intunion = IntUnion::new_with(55_u32);
+        /// let c_intunion = a_intunion.saturating_add(b_intunion);
+        /// println!("{} + 55 = {}", a_intunion, c_intunion);
+        /// assert_eq!(c_intunion.get(), u32::MAX);
+        /// 
+        /// let d_intunion = c_intunion.saturating_add(b_intunion);
+        /// println!("{} + 55 = {}", c_intunion, d_intunion);
+        /// assert_eq!(d_intunion.get(), u32::MAX);
+        /// ```
+        /// 
+        /// # Example 3 for LongUnion
+        /// ```
+        /// use cryptocol::number::LongUnion;
+        /// let a_longunion = LongUnion::new_with(u64::MAX - 55_u64);
+        /// let b_longunion = LongUnion::new_with(55_u64);
+        /// let c_longunion = a_longunion.saturating_add(b_longunion);
+        /// println!("{} + 55 = {}", a_longunion, c_longunion);
+        /// assert_eq!(c_longunion.get(), u64::MAX);
+        /// 
+        /// let d_longunion = c_longunion.saturating_add(b_longunion);
+        /// println!("{} + 55 = {}", c_longunion, d_longunion);
+        /// assert_eq!(d_longunion.get(), u64::MAX);
+        /// ```
+        /// 
+        /// # Example 4 for LongerUnion
+        /// ```
+        /// use cryptocol::number::LongerUnion;
+        /// let a_longerunion = LongerUnion::new_with(u128::MAX - 55_u128);
+        /// let b_longerunion = LongerUnion::new_with(55_u128);
+        /// let c_longerunion = a_longerunion.saturating_add(b_longerunion);
+        /// println!("{} + 55 = {}", a_longerunion, c_longerunion);
+        /// assert_eq!(c_longerunion.get(), u128::MAX);
+        /// 
+        /// let d_longerunion = c_longerunion.saturating_add(b_longerunion);
+        /// println!("{} + 55 = {}", c_longerunion, d_longerunion);
+        /// assert_eq!(d_longerunion.get(), u128::MAX);
+        /// ```
+        /// 
+        /// # Example 5 for SizeUnion
+        /// ```
+        /// use cryptocol::number::SizeUnion;
+        /// let a_sizeunion = SizeUnion::new_with(usize::MAX - 55_usize);
+        /// let b_sizeunion = SizeUnion::new_with(55_usize);
+        /// let c_sizeunion = a_sizeunion.saturating_add(b_sizeunion);
+        /// println!("{} + 55 = {}", a_sizeunion, c_sizeunion);
+        /// assert_eq!(c_sizeunion.get(), usize::MAX);
+        /// 
+        /// let d_sizeunion = c_sizeunion.saturating_add(b_sizeunion);
+        /// println!("{} + 55 = {}", c_sizeunion, d_sizeunion);
+        /// assert_eq!(d_sizeunion.get(), usize::MAX);
+        /// ```
+        /// 
+        /// # Plagiarism in descryption
+        /// It calls the method saturating_add() of implementation of the primitive
+        /// unsigned integer types such as`u8`, `u16`, `u32`, `u64`, `u128` and
+        /// `usize` directly. So, all the description of this method is mainly the
+        /// same as that of the method saturating_add() of implementation of the
+        /// primitive unsigned integer types except example codes. Confer to the
+        /// descryptions that are linked to in the section _Reference_. This
+        /// plagiarism is not made maliciously but is made for the reason of
+        /// effectiveness and efficiency so that users may understand better and
+        /// easily how to use this method with simiilarity to the method
+        /// saturating_add() of implementation of the primitive unsigned integer types.
         #[inline] pub fn saturating_add(self, rhs: Self) -> Self    { Self::new_with( self.get().saturating_add(rhs.get()) ) }
 
+
+        /***** SUBTRACTION *****/
+
+        // fn borrowing_sub(self, rhs: Self, borrow: bool) -> (Self, bool);
+        /// Calculates `self` - `rhs` - `borrow`,
+        /// wrapping around at the boundary of the type.
+        /// 
+        /// # Arguments
+        /// - `rhs` is the operand of `Self` type.
+        /// - `borrow` is the borrow overflowed from the previous operation.
+        /// If there is no overflowed borrow from the previous operation,
+        /// `borrow` is `false`. Otherwise, it is `true`.
+        /// 
+        /// # Features
+        /// This allows chaining together multiple subtractions to create a wider
+        /// subtraction, and can be useful for big integer type subtraction.
+        /// This can be thought of as a 8-bit “full subtracter”, in the electronics
+        /// sense.
+        /// 
+        /// If the input borrow is false, this method is equivalent to
+        /// overflowing_sub, and the output borrow is equal to the underflow flag.
+        /// 
+        /// # Outputs
+        /// It returns a tuple containing the difference and the output borrow.
+        /// It performs “ternary subtraction” by subtracting both an integer operand
+        /// and a borrow-in bit from self, and returns an output integer and a
+        /// borrow-out bit.
+        /// 
+        /// # Example 1 for ShortUnion
+        /// ```
+        /// ```
+        /// 
+        /// # Plagiarism in descryption
+        /// Even though it does not call the method borrowing_sub() of implementation
+        /// of the primitive unsigned integer types such as `u8`, `u16`, `u32`,
+        /// `u64`, `u128` and `usize` directly, all the description of this method
+        /// is mainly the same as that of the method borrowing_sub() of
+        /// implementation of the primitive unsigned integer types for nightly
+        /// version except example codes. Confer to the descryptions that are linked
+        /// to in the section _Reference_. This plagiarism is not made maliciously
+        /// but is made for the reason of effectiveness and efficiency so that users
+        /// may understand better and easily how to use this method with simiilarity
+        /// to the method borrowing_sub() of implementation of the primitive unsigned
+        /// integer types.
+        /// 
+        /// # Possiible Changes in Future
+        /// This method does not call the method borrowing_sub() of the primitive
+        /// unsigned integer types directly. Instead, it is implemented to perform
+        /// the same thing as that of borrowing_sub() of the primitive unsigned
+        /// integer types because the methods borrowing_sub() of the primitive
+        /// unsigned integer types are only for nightly version. So, when the method
+        /// borrowing_sub() of the primitive unsigned integer types will become a
+        /// part of non-nightly normal version, the implementation of this method
+        /// will be changed to call the method borrowing_sub() of the primitive
+        /// unsigned integer types directly.
         pub fn borrowing_sub(self, rhs: Self, borrow: bool) -> (Self, bool)
         {
             let (r_this, b1) = self.get().overflowing_sub(rhs.get());

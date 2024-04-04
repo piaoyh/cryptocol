@@ -156,12 +156,18 @@ pub trait SmallUInt: Copy + Clone + Sized //+ Display + Debug + ToString
     /// Calculates `self` + `rhs` + `carry`,
     /// wrapping around at the boundary of the type.
     /// 
+    /// # Arguments
+    /// - `rhs` is the operand of `Self` type.
+    /// - `carry` is the carry overflowed from the previous operation.
+    /// If there is no overflowed carry from the previous operation,
+    /// `carry` is `false`. Otherwise, it is `true`.
+    /// 
     /// # Features
     /// - This allows chaining together multiple additions to create a wider
     /// addition, and can be useful for big integer type addition.
     /// - This can be thought of as a 8-bit “full adder”, in the electronics
     /// sense.
-    /// - If the input carry is false, this method is equivalent to
+    /// - If `carry` is `false`, this method is equivalent to
     /// `overflowing_add()`.
     /// 
     /// # Outputs
@@ -420,7 +426,7 @@ pub trait SmallUInt: Copy + Clone + Sized //+ Display + Debug + ToString
     ///     //   322222221211111111100000000088888888987_u128 == (17467701613009572716_usize,  1547738876781579931_usize)
     ///     
     ///     // c_u128: u128 === (c_high_longunion, c_low_longunion)
-    ///     let (c_low_usize, c_high_usize, carry) = small_uint_carrying_add_func(a_low_usize, a_high_usize, b_low_usize, b_high_usize);
+    ///     let (c_low_usize, c_high_usize, carry) = func(a_low_usize, a_high_usize, b_low_usize, b_high_usize);
     ///     println!("{}-{}, {}", c_high_usize, c_low_usize, carry);
     ///     assert_eq!(c_high_usize, 17467701613009572716_usize);
     ///     assert_eq!(c_low_usize, 1547738876781579931_usize);
@@ -433,7 +439,7 @@ pub trait SmallUInt: Copy + Clone + Sized //+ Display + Debug + ToString
     ///     //   180705286488938079835390824855886109729_u128 == ( 9796053209546106898_usize, 9229482525901462561_usize)
     ///     
     ///     // d: u128 === (d_high_usize, d_low_usize)
-    ///     let (d_low_usize, d_high_usize, carry) = small_uint_carrying_add_func(c_low_usize, c_high_usize, b_low_usize, b_high_usize);
+    ///     let (d_low_usize, d_high_usize, carry) = func(c_low_usize, c_high_usize, b_low_usize, b_high_usize);
     ///     println!("{}-{}, {}", d_high_usize, d_low_usize, carry);
     ///     assert_eq!(d_high_usize, 9796053209546106898_usize);
     ///     assert_eq!(d_low_usize, 9229482525901462561_usize);
@@ -636,7 +642,7 @@ pub trait SmallUInt: Copy + Clone + Sized //+ Display + Debug + ToString
     /// 
     /// # Example 11 for SizeUnion for 64-bit CPU
     /// ```
-    /// use cryptocol::number::SmallUInt;
+    /// use cryptocol::number::{ SmallUInt, SizeUnion };
     /// fn main()
     /// {
     ///     // a_longerunion: LongerUnion === (a_high_sizeunion, a_low_sizeunion) === (6692605942763486917_usize, 12312739301371248917_usize) === 322222221211111111100000000088888888987_u128
@@ -653,7 +659,7 @@ pub trait SmallUInt: Copy + Clone + Sized //+ Display + Debug + ToString
     ///     //   322222221211111111100000000088888888987_u128 == (17467701613009572716_usize,  1547738876781579931_usize)
     ///     
     ///     // c_u128: u128 === (c_high_sizeunion, c_low_sizeunion)
-    ///     let (c_low_sizeunion, c_high_sizeunion, carry) = small_uint_carrying_add_func(a_low_sizeunion, a_high_sizeunion, b_low_sizeunion, b_high_sizeunion);
+    ///     let (c_low_sizeunion, c_high_sizeunion, carry) = func(a_low_sizeunion, a_high_sizeunion, b_low_sizeunion, b_high_sizeunion);
     ///     println!("{}-{}, {}", c_high_sizeunion, c_low_sizeunion, carry);
     ///     assert_eq!(c_high_sizeunion.get(), 17467701613009572716_usize);
     ///     assert_eq!(c_low_sizeunion.get(), 1547738876781579931_usize);
@@ -666,7 +672,7 @@ pub trait SmallUInt: Copy + Clone + Sized //+ Display + Debug + ToString
     ///     //   180705286488938079835390824855886109729_u128 == ( 9796053209546106898_usize, 9229482525901462561_usize)
     ///     
     ///     // d: u128 === (d_high_sizeunion, d_low_sizeunion)
-    ///     let (d_low_sizeunion, d_high_sizeunion, carry) = small_uint_carrying_add_func(c_low_sizeunion, c_high_sizeunion, b_low_sizeunion, b_high_sizeunion);
+    ///     let (d_low_sizeunion, d_high_sizeunion, carry) = func(c_low_sizeunion, c_high_sizeunion, b_low_sizeunion, b_high_sizeunion);
     ///     println!("{}-{}, {}", d_high_sizeunion, d_low_sizeunion, carry);
     ///     assert_eq!(d_high_sizeunion.get(), 9796053209546106898_usize);
     ///     assert_eq!(d_low_sizeunion.get(), 9229482525901462561_usize);
@@ -689,7 +695,7 @@ pub trait SmallUInt: Copy + Clone + Sized //+ Display + Debug + ToString
     /// 
     /// # Collective Example
     /// ```
-    /// use cryptocol::number::SmallUInt;
+    /// use cryptocol::number::{ SmallUInt, ShortUnion, IntUnion, LongUnion, LongerUnion, SizeUnion };
     /// fn main()
     /// {
     ///     // Example for u8
@@ -1013,7 +1019,7 @@ pub trait SmallUInt: Copy + Clone + Sized //+ Display + Debug + ToString
     ///     //   322222221211111111100000000088888888987_u128 == (17467701613009572716_usize,  1547738876781579931_usize)
     ///     
     ///     // c_u128: u128 === (c_high_sizeunion, c_low_sizeunion)
-    ///     let (c_low_sizeunion, c_high_sizeunion, carry) = small_uint_carrying_add_func(a_low_sizeunion, a_high_sizeunion, b_low_sizeunion, b_high_sizeunion);
+    ///     let (c_low_sizeunion, c_high_sizeunion, carry) = func(a_low_sizeunion, a_high_sizeunion, b_low_sizeunion, b_high_sizeunion);
     ///     println!("{}-{}, {}", c_high_sizeunion, c_low_sizeunion, carry);
     ///     assert_eq!(c_high_sizeunion.get(), 17467701613009572716_usize);
     ///     assert_eq!(c_low_sizeunion.get(), 1547738876781579931_usize);
@@ -1026,7 +1032,7 @@ pub trait SmallUInt: Copy + Clone + Sized //+ Display + Debug + ToString
     ///     //   180705286488938079835390824855886109729_u128 == ( 9796053209546106898_usize, 9229482525901462561_usize)
     ///     
     ///     // d: u128 === (d_high_sizeunion, d_low_sizeunion)
-    ///     let (d_low_sizeunion, d_high_sizeunion, carry) = small_uint_carrying_add_func(c_low_sizeunion, c_high_sizeunion, b_low_sizeunion, b_high_sizeunion);
+    ///     let (d_low_sizeunion, d_high_sizeunion, carry) = func(c_low_sizeunion, c_high_sizeunion, b_low_sizeunion, b_high_sizeunion);
     ///     println!("{}-{}, {}", d_high_sizeunion, d_low_sizeunion, carry);
     ///     assert_eq!(d_high_sizeunion.get(), 9796053209546106898_usize);
     ///     assert_eq!(d_low_sizeunion.get(), 9229482525901462561_usize);
@@ -1085,6 +1091,9 @@ pub trait SmallUInt: Copy + Clone + Sized //+ Display + Debug + ToString
 
     // fn wrapping_add(self, rhs: Self) -> Self;
     /// Computes `self` + `rhs`, wrapping around at the boundary of the type.
+    /// 
+    /// # Arguments
+    /// `rhs` is the operand of `Self` type.
     /// 
     /// # Features
     /// It adds two numbers with wrapping (modular) addition.
@@ -1464,6 +1473,9 @@ pub trait SmallUInt: Copy + Clone + Sized //+ Display + Debug + ToString
 
     // fn overflowing_add(self, rhs: Self) -> (Self, bool);
     /// Calculates `self` + `rhs`, wrapping around at the boundary of the type.
+    /// 
+    /// # Arguments
+    /// `rhs` is the operand of `Self` type.
     /// 
     /// # Features
     /// It adds two numbers with wrapping (modular) addition. It is the same as
@@ -1892,8 +1904,8 @@ pub trait SmallUInt: Copy + Clone + Sized //+ Display + Debug + ToString
     // fn checked_add(self, rhs: Self) -> Option<Self>;
     /// Computes `self` + `rhs`.
     /// 
-    /// # Feature
-    /// 
+    /// # Arguments
+    /// `rhs` is the operand of `Self` type.
     /// 
     /// # Output
     /// It returns self + rhs in the type `Self` wrapped by `Some`
@@ -2537,6 +2549,9 @@ pub trait SmallUInt: Copy + Clone + Sized //+ Display + Debug + ToString
     // fn unchecked_add(self, rhs: Self) -> Self;
     /// Computes `self` + `rhs`, assuming overflow cannot occur.
     /// 
+    /// # Arguments
+    /// `rhs` is the operand of `Self` type.
+    /// 
     /// # Features
     /// It is virtually same as self.checked_add(rhs).unwrap().
     /// Use this method only when it is sure that overflow will never happen.
@@ -2899,6 +2914,9 @@ pub trait SmallUInt: Copy + Clone + Sized //+ Display + Debug + ToString
     // fn saturating_add(self, rhs: Self) -> Self;
     /// Computes `self` + `rhs`, saturating at the numeric bounds
     /// instead of overflowing.
+    /// 
+    /// # Arguments
+    /// `rhs` is the operand of `Self` type.
     /// 
     /// # Features
     /// It adds two numbers with saturating integer addition
@@ -3809,7 +3827,13 @@ pub trait SmallUInt: Copy + Clone + Sized //+ Display + Debug + ToString
 
     // fn borrowing_sub(self, rhs: Self, borrow: bool) -> (Self, bool);
     /// Calculates `self` - `rhs` - `borrow`,
-    /// wrapping around at the boundary of the type. 
+    /// wrapping around at the boundary of the type.
+    /// 
+    /// # Arguments
+    /// - `rhs` is the operand of `Self` type.
+    /// - `borrow` is the borrow overflowed from the previous operation.
+    /// If there is no overflowed borrow from the previous operation,
+    /// `borrow` is `false`. Otherwise, it is `true`.
     /// 
     /// # Features
     /// This allows chaining together multiple subtractions to create a wider
@@ -11129,7 +11153,7 @@ pub trait SmallUInt: Copy + Clone + Sized //+ Display + Debug + ToString
     ///     assert_eq!(a_u8.0, 42_u8);
     ///     assert_eq!(a_u8.1, false);
     ///     // It will panic.
-    ///     // let a_panic = small_uint_overflowing_div_func(a_u8.0, 0_u8);
+    ///     // let a_panic = func(a_u8.0, 0_u8);
     /// }
     /// 
     /// fn func<T: SmallUInt>(lhs: T, rhs: T) -> (T, bool)
@@ -11148,7 +11172,7 @@ pub trait SmallUInt: Copy + Clone + Sized //+ Display + Debug + ToString
     ///     assert_eq!(a_u16.0, 10922_u16);
     ///     assert_eq!(a_u16.1, false);
     ///     // It will panic.
-    ///     // let a_panic = small_uint_overflowing_div_func(a_u16.0, 0_u16);
+    ///     // let a_panic = func(a_u16.0, 0_u16);
     /// }
     /// 
     /// fn func<T: SmallUInt>(lhs: T, rhs: T) -> (T, bool)
@@ -11167,7 +11191,7 @@ pub trait SmallUInt: Copy + Clone + Sized //+ Display + Debug + ToString
     ///     assert_eq!(a_u32.0, 715827882_u32);
     ///     assert_eq!(a_u32.1, false);
     ///     // It will panic.
-    ///     // let a_panic = small_uint_overflowing_div_func(a_u32.0, 0_u32);
+    ///     // let a_panic = func(a_u32.0, 0_u32);
     /// }
     /// 
     /// fn func<T: SmallUInt>(lhs: T, rhs: T) -> (T, bool)
@@ -11186,7 +11210,7 @@ pub trait SmallUInt: Copy + Clone + Sized //+ Display + Debug + ToString
     ///     assert_eq!(a_u64.0, 3074457345618258602_u64);
     ///     assert_eq!(a_u64.1, false);
     ///     // It will panic.
-    ///     // let a_panic = small_uint_overflowing_div_func(a_u64.0, 0_u64);
+    ///     // let a_panic = func(a_u64.0, 0_u64);
     /// }
     /// 
     /// fn func<T: SmallUInt>(lhs: T, rhs: T) -> (T, bool)
@@ -11205,7 +11229,7 @@ pub trait SmallUInt: Copy + Clone + Sized //+ Display + Debug + ToString
     ///     assert_eq!(a_u128.0, 56713727820156410577229101238628035242_u128);
     ///     assert_eq!(a_u128.1, false);
     ///     // It will panic.
-    ///     // let a_panic = small_uint_overflowing_div_func(a_u128.0, 0_u128);
+    ///     // let a_panic = func(a_u128.0, 0_u128);
     /// }
     /// 
     /// fn func<T: SmallUInt>(lhs: T, rhs: T) -> (T, bool)
@@ -11224,7 +11248,7 @@ pub trait SmallUInt: Copy + Clone + Sized //+ Display + Debug + ToString
     ///     assert_eq!(a_usize.0, 3074457345618258602_usize);
     ///     assert_eq!(a_usize.1, false);
     ///     // It will panic.
-    ///     // let a_panic = small_uint_overflowing_div_func(a_usize.0, 0_usize);
+    ///     // let a_panic = func(a_usize.0, 0_usize);
     /// }
     /// 
     /// fn func<T: SmallUInt>(lhs: T, rhs: T) -> (T, bool)
@@ -16375,7 +16399,7 @@ pub trait SmallUInt: Copy + Clone + Sized //+ Display + Debug + ToString
     /// It returns the result of `self` raised to the power of `exp`
     /// if overflow does not occur.
     /// 
-    /// # Argument
+    /// # Arguments
     /// The argument `exp` is the primitive unsigned integer type u32.
     /// 
     /// # Features
@@ -19973,7 +19997,7 @@ pub trait SmallUInt: Copy + Clone + Sized //+ Display + Debug + ToString
     /// prime number. This method tests the number with 2, 325, 9375, 28178,
     /// 450775, 9780504, and 1795265022.
     /// 
-    /// # Argument
+    /// # Arguments
     /// The argument `repetition` defines how many times it tests whether the
     /// generated random number is prime. Usually, `repetition` is given to be
     /// 5 to have 99.9% accuracy.
@@ -20945,7 +20969,7 @@ pub trait SmallUInt: Copy + Clone + Sized //+ Display + Debug + ToString
     /// The number whose bits are shifted to the left by a specified amount,
     /// `n`, wrapping the truncated bits to the end of the resulting integer
     /// 
-    /// # Argument
+    /// # Arguments
     /// `n` indicates how many bits will be shifted to the left
     /// 
     /// # Caution
@@ -21245,7 +21269,7 @@ pub trait SmallUInt: Copy + Clone + Sized //+ Display + Debug + ToString
     /// The number whose bits are shifted to the right by a specified amount,
     /// `n`, wrapping the truncated bits to the end of the resulting integer
     /// 
-    /// # Argument
+    /// # Arguments
     /// `n` indicates how many bits will be shifted to the right
     /// 
     /// # Caution

@@ -585,7 +585,7 @@ fn small_uint_wrapping_add()
     assert_eq!(c_longunion.get(), u64::MAX);
 
     let d_longunion = small_uint_wrapping_add_func(c_longunion, 1_u32.into_longunion());
-    println!("{} + 1 = {}", a_intunion, d_longunion);
+    println!("{} + 1 = {}", a_longunion, d_longunion);
     assert_eq!(d_longunion.get(), 0_u64);
 
     // Example for LongerUnion
@@ -596,7 +596,7 @@ fn small_uint_wrapping_add()
     assert_eq!(c_longerunion.get(), u128::MAX);
 
     let d_longerunion = small_uint_wrapping_add_func(c_longerunion, 1_u128.into_longerunion());
-    println!("{} + 1 = {}", a_intunion, d_longunion);
+    println!("{} + 1 = {}", a_longerunion, d_longerunion);
     assert_eq!(d_longerunion.get(), 0_u128);
 
     // Example for SizeUnion
@@ -931,7 +931,7 @@ fn small_uint_checked_add()
         Some(d) => { println!("{} + 1 = {}", a_intunion, d); },
         None => {
                 println!("Overflow happened.");
-                assert_eq!(d_shortunion, None);
+                assert_eq!(d_intunion, None);
             },
     }
 
@@ -1178,7 +1178,7 @@ fn small_uint_saturating_add()
     println!("{} + 55 = {}", a_usize, b_usize);
     assert_eq!(b_usize, usize::MAX);
 
-    // Example for SortUnion
+    // Example for ShortUnion
     let a_shortunion = (u16::MAX - 55_u16).into_shortunion();
     let b_shortunion = 55_u16.into_shortunion();
     let c_shortunion = small_uint_saturating_add_func(a_shortunion, b_shortunion);
@@ -1612,11 +1612,8 @@ fn small_uint_borrowing_sub()
 
 fn small_uint_borrowing_sub_func<T: cryptocol::number::SmallUInt>(lhs_low: T, lhs_high: T, rhs_low: T, rhs_high: T) -> (T, T, bool)
 {
-    let mut borrow = false;
-    let dif_high: T;
-    let dif_low: T;
-    (dif_low, borrow) = lhs_low.borrowing_sub(rhs_low, borrow);
-    (dif_high, borrow) = lhs_high.borrowing_sub(rhs_high, borrow);
+    let (dif_low, borrow) = lhs_low.borrowing_sub(rhs_low, false);
+    let (dif_high, borrow) = lhs_high.borrowing_sub(rhs_high, borrow);
     (dif_low, dif_high, borrow)
 }
 
