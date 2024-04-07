@@ -233,6 +233,10 @@ macro_rules! SmallUInt_methods_for_integer_unions_impl {
             /// [Read more](trait@SmallUInt#tymethod.wrapping_neg) in detail.
             #[inline] fn wrapping_neg(self) -> Self     { self.wrapping_neg() }
 
+            /// Negates `self` in an overflowing fashion.
+            /// [Read more](trait@SmallUInt#tymethod.overflowing_neg) in detail.
+            #[inline] fn overflowing_neg(self) -> (Self, bool)  { self.overflowing_neg() }
+
             /// Computes `self.pow(exp)`, wrapping around at the boundary of
             /// the type. [Read more](trait@SmallUInt#tymethod.wrapping_pow)
             /// in detail.

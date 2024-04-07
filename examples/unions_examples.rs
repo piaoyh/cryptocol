@@ -41,6 +41,7 @@ pub fn main()
     unions_conversion();
     unions_constants();
     unions_size();
+    end();
 }
 
 fn short_union_main()
@@ -7539,14 +7540,15 @@ fn unions_sub_main()
 fn unions_borrowing_sub()
 {
     println!("unions_borrowing_sub");
-    use cryptocol::number::SmallUInt;
-    // Example for IntUnion
-    // a_u32: u32 === (a_high_u16, a_low_u16) == (50000_u16, 30000_u16) == 3276830000_u32
-    let a_high_shortunion = 50000_u16.into_shortunion();
-    let a_low_shortunion = 30000_u16.into_shortunion();
-    // b_u32: u32 === (b_high_u16, b_low_u16) == (10000_u16, 10100_u16) == 655370100_u32
-    let b_high_shortunion = 10000_u16.into_shortunion();
-    let b_low_shortunion = 10100_u16.into_shortunion();
+    use cryptocol::number::{ ShortUnion, IntUnion, LongUnion, LongerUnion, SizeUnion };
+
+    // Example for ShortUnion
+    // a_u32: u32 === (a_high_shortunion, a_low_shortunion) == (50000_u16, 30000_u16) == 3276830000_u32
+    let a_high_shortunion = ShortUnion::new_with(50000_u16);
+    let a_low_shortunion = ShortUnion::new_with(30000_u16);
+    // b_u32: u32 === (b_high_shortunion, b_low_shortunion) == (10000_u16, 10100_u16) == 655370100_u32
+    let b_high_shortunion = ShortUnion::new_with(10000_u16);
+    let b_low_shortunion = ShortUnion::new_with(10100_u16);
 
     // (50000_u16, 30000_u16) - (10000_u16, 10100_u16) == 3276830000_u32 - 655370100_u32 == 99_u16
     //   3276830000_u32 == (50000_u16, 30000_u16)
@@ -7554,8 +7556,9 @@ fn unions_borrowing_sub()
     // ------------------------------------------
     //   2621459900_u32 == (40000_u16, 19900_u16)
 
-    // c: u32 === (c_high_intunion, c_low_intunion)
-    let (c_low_shortunion, c_high_shortunion, borrow) = small_uint_borrowing_sub_func(a_low_shortunion, a_high_shortunion, b_low_shortunion, b_high_shortunion);
+    // c: u32 === (c_high_shortunion, c_low_shortunion)
+    let (c_low_shortunion, borrow) = a_low_shortunion.borrowing_sub(b_low_shortunion, false);
+    let (c_high_shortunion, borrow) = a_high_shortunion.borrowing_sub(b_high_shortunion, borrow);
     println!("{}-{}, {}", c_high_shortunion, c_low_shortunion, borrow);
     assert_eq!(c_high_shortunion.get(), 40000_u16);
     assert_eq!(c_low_shortunion.get(), 19900_u16);
@@ -7567,13 +7570,85 @@ fn unions_borrowing_sub()
     // ------------------------------------------
     //   1673507396_u32 == (25535_u16, 45636_u16)
 
-    // d: u32 === (d_high_u16, d_low_shortunion)
-    let (d_low_shortunion, d_high_shortunion, carry) = small_uint_borrowing_sub_func(b_low_shortunion, b_high_shortunion, a_low_shortunion, a_high_shortunion);
-    println!("{}-{}, {}", d_low_shortunion, d_low_shortunion, carry);
-    println!("{}", 655370100_u32.wrapping_sub(3276830000_u32));
+    // d: u32 === (d_high_shortunion, d_low_shortunion)
+    let (d_low_shortunion, borrow) = b_low_shortunion.borrowing_sub(a_low_shortunion, false);
+    let (d_high_shortunion, borrow) = b_high_shortunion.borrowing_sub(a_high_shortunion, borrow);
+    println!("{}-{}, {}", d_high_shortunion, d_low_shortunion, borrow);
     assert_eq!(d_high_shortunion.get(), 25535_u16);
     assert_eq!(d_low_shortunion.get(), 45636_u16);
-    assert_eq!(carry, true);
+    assert_eq!(borrow, true);
+
+    // Example for IntUnion
+    // a_u64: u64 === (a_high_intunion, a_low_intunion) == (2299561912_u32, 2956226837_u32) == 9876543210123456789_u64
+    let a_high_intunion = IntUnion::new_with(2299561912_u32);
+    let a_low_intunion = IntUnion::new_with(2956226837_u32);
+    // b_u64: u64 === (b_high_intunion, b_low_intunion) == (1782160508_u32, 682685733_u32) == 7654321098765432101_u64
+    let b_high_intunion = IntUnion::new_with(1782160508_u32);
+    let b_low_intunion = IntUnion::new_with(682685733_u32);
+
+    // (2299561912_u32, 2956226837_u32) - (1782160508_u32, 682685733_u32) == 9876543210123456789_u64 - 7654321098765432101_u64 == 2222222111358024688_u64
+    //   9876543210123456789_u64 == (2299561912_u32, 2956226837_u32)
+    // - 7654321098765432101_u64 == (1782160508_u32,  682685733_u32)
+    // -------------------------------------------------------------
+    //   2222222111358024688_u64 == ( 517401404_u32, 2273541104_u32)
+
+    // c: u64 === (c_high_intunion, c_low_intunion)
+    let (c_low_intunion, borrow) = a_low_intunion.borrowing_sub(b_low_intunion, false);
+    let (c_high_intunion, borrow) = a_high_intunion.borrowing_sub(b_high_intunion, borrow);
+    println!("{}-{}, {}", c_high_intunion, c_low_intunion, borrow);
+    assert_eq!(c_high_intunion.get(), 517401404_u32);
+    assert_eq!(c_low_intunion.get(), 2273541104_u32);
+    assert_eq!(borrow, false);
+
+    // (517401404_u32, 2273541104_u32) - (1782160508_u32,  682685733_u32) == 2222222111358024688_u32 - 7654321098765432101_u32 == 13014645086302144203_u16
+    //   2222222111358024688_u64 == ( 517401404_u32, 2273541104_u32)
+    // - 7654321098765432101_u64 == (1782160508_u32,  682685733_u32)
+    // -------------------------------------------------------------
+    //  13014645086302144203_u64 == (3030208192_u32, 1590855371_u32)
+
+    // d: u64 === (d_high_intunion, d_low_intunion)
+    let (d_low_intunion, borrow) = c_low_intunion.borrowing_sub(b_low_intunion, false);
+    let (d_high_intunion, borrow) = c_high_intunion.borrowing_sub(b_high_intunion, borrow);
+    println!("{}-{}, {}", d_high_intunion, d_low_intunion, borrow);
+    assert_eq!(d_high_intunion.get(), 3030208192_u32);
+    assert_eq!(d_low_intunion.get(), 1590855371_u32);
+    assert_eq!(borrow, true);
+
+    // Example for LongUnion
+    // a_u128: u128 === (a_high_longunion, a_low_longunion) == (10775095670246085798_u64, 7681743649119882630_u64) == 198765432198765432198765432198765432198_u128
+    let a_high_longunion = LongUnion::new_with(10775095670246085798_u64);
+    let a_low_longunion = LongUnion::new_with(7681743649119882630_u64);
+    // b_u128: u128 === (b_high_longunion, b_low_longunion) == (6692605942763486917_u64, 12312739301371248917_u64) == 123456789012345678901234567890123456789_u128
+    let b_high_longunion = LongUnion::new_with(6692605942763486917_u64);
+    let b_low_longunion = LongUnion::new_with(12312739301371248917_u64);
+
+    // (10775095670246085798_u64, 7681743649119882630_u64) - (6692605942763486917_u64, 12312739301371248917_u64) == 198765432198765432198765432198765432198_u128 - 123456789012345678901234567890123456789_u128 == 75308643186419753297530864308641975409_u128
+    //   198765432198765432198765432198765432198_u128 == (10775095670246085798_u64,  7681743649119882630_u64)
+    // - 123456789012345678901234567890123456789_u128 == ( 6692605942763486917_u64, 12312739301371248917_u64)
+    // ------------------------------------------------------------------------------------------------------
+    //    75308643186419753297530864308641975409_u128 == (10775095670246085798_u64,  7681743649119882630_u64)
+
+    // c: u32 === (c_high_u16, c_low_u16)
+    let (c_low_longunion, borrow) = a_low_longunion.borrowing_sub(b_low_longunion, false);
+    let (c_high_longunion, borrow) = a_high_longunion.borrowing_sub(b_high_longunion, borrow);
+    println!("{}-{}, {}", c_high_longunion, c_low_longunion, borrow);
+    assert_eq!(c_high_longunion.get(), 4082489727482598880_u64);
+    assert_eq!(c_low_longunion.get(), 13815748421458185329_u64);
+    assert_eq!(borrow, false);
+
+    // (10775095670246085798_u64, 7681743649119882630_u64) - (6692605942763486917_u64, 12312739301371248917_u64) == 75308643186419753297530864308641975409_u128 - 123456789012345678901234567890123456789_u128 == 292134221095012537859670903850286730076_u128
+    //    75308643186419753297530864308641975409_u128 == (10775095670246085798_u64,  7681743649119882630_u64)
+    // - 123456789012345678901234567890123456789_u128 == ( 6692605942763486917_u64, 12312739301371248917_u64)
+    // ------------------------------------------------------------------------------------------------------
+    //   292134221095012537859670903850286730076_u128 == (15836627858428663579_u64,  1503009120086936412_u64)
+
+    // d: u128 === (d_high_u64, d_low_u64)
+    let (d_low_longunion, borrow) = c_low_longunion.borrowing_sub(b_low_longunion, false);
+    let (d_high_longunion, borrow) = c_high_longunion.borrowing_sub(b_high_longunion, borrow);
+    println!("{}-{}, {}", d_high_longunion, d_low_longunion, borrow);
+    assert_eq!(d_high_longunion.get(), 15836627858428663579_u64);
+    assert_eq!(d_low_longunion.get(), 1503009120086936412_u64);
+    assert_eq!(borrow, true);
 
     // Example for LongerUnion
     //   4201016837757989640311993609423984479246482890531986660185 == (12345678901234567890_u128, 6789012345678912345_u128)
@@ -7582,7 +7657,8 @@ fn unions_borrowing_sub()
     //   4201016837757989220403552828985920565442217319730013716692 == (12345678901234566656_u128, 6789012345678905556_u128)
 
     // a_u256: u256 === (a_high_longerunion, a_low_longerunion)
-    let (a_low_longerunion, a_high_longerunion, borrow) = small_uint_borrowing_sub_func(6789012345678912345_u128.into_longerunion(), 12345678901234567890_u128.into_longerunion(), 6789_u128.into_longerunion(), 1234_u128.into_longerunion());
+    let (a_low_longerunion, borrow) = LongerUnion::new_with(6789012345678912345_u128).borrowing_sub(LongerUnion::new_with(6789_u128), false);
+    let (a_high_longerunion, borrow) = LongerUnion::new_with(12345678901234567890_u128).borrowing_sub(LongerUnion::new_with(1234_u128), borrow);
     println!("{}-{}, {}", a_low_longerunion, a_high_longerunion, borrow);
     assert_eq!(a_high_longerunion.get(), 12345678901234566656_u128);
     assert_eq!(a_low_longerunion.get(), 6789012345678905556_u128);
@@ -7594,10 +7670,47 @@ fn unions_borrowing_sub()
     //   328077586172395887033451124191282405584107085763563507612853141042164389031555 == (283568639100782052886145506193140176212_u128, 295839033476494119007819162986212667011_u128)
 
     // b_u256: u256 === (b_high_longerunion, b_low_longerunion)
-    let (b_low_longerunion, b_high_longerunion, borrow) = small_uint_borrowing_sub_func(12345678901234567890123456789012345678_u128.into_longerunion(), 170141183460469231731687303715884105727_u128.into_longerunion(), 56789012345678912345678901234567890123_u128.into_longerunion(), 226854911280625642308916404954512140970_u128.into_longerunion());
+    let (b_low_longerunion, borrow) = LongerUnion::new_with(12345678901234567890123456789012345678_u128).borrowing_sub(LongerUnion::new_with(56789012345678912345678901234567890123_u128), false);
+    let (b_high_longerunion, borrow) = LongerUnion::new_with(170141183460469231731687303715884105727_u128).borrowing_sub(LongerUnion::new_with(226854911280625642308916404954512140970_u128), borrow);
     println!("{}-{}, {}", b_high_longerunion, b_low_longerunion, borrow);
     assert_eq!(b_high_longerunion.get(), 283568639100782052886145506193140176212_u128);
     assert_eq!(b_low_longerunion.get(), 295839033476494119007819162986212667011_u128);
+    assert_eq!(borrow, true);
+
+    // Example for SizeUnion for 64-bit CPU
+    // a_u128: u128 === (a_high_usize, a_low_usize) == (10775095670246085798_usize, 7681743649119882630_usize) == 198765432198765432198765432198765432198_u128
+    let a_high_sizeunion = SizeUnion::new_with(10775095670246085798_usize);
+    let a_low_sizeunion = SizeUnion::new_with(7681743649119882630_usize);
+    // b_u128: u128 === (b_high_usize, b_low_usize) == (6692605942763486917_usize, 12312739301371248917_usize) == 123456789012345678901234567890123456789_u128
+    let b_high_sizeunion = SizeUnion::new_with(6692605942763486917_usize);
+    let b_low_sizeunion = SizeUnion::new_with(12312739301371248917_usize);
+
+    // (10775095670246085798_usize, 7681743649119882630_usize) - (6692605942763486917_usize, 12312739301371248917_usize) == 198765432198765432198765432198765432198_u128 - 123456789012345678901234567890123456789_u128 == 75308643186419753297530864308641975409_u128
+    //   198765432198765432198765432198765432198_u128 == (10775095670246085798_usize,  7681743649119882630_usize)
+    // - 123456789012345678901234567890123456789_u128 == ( 6692605942763486917_usize, 12312739301371248917_usize)
+    // ------------------------------------------------------------------------------------------------------
+    //    75308643186419753297530864308641975409_u128 == ( 4082489727482598880_usize, 13815748421458185329_usize)
+
+    // c: u128 === (c_high_usize, c_low_usize)
+    let (c_low_sizeunion, borrow) = a_low_sizeunion.borrowing_sub(b_low_sizeunion, false);
+    let (c_high_sizeunion, borrow) = a_high_sizeunion.borrowing_sub(b_high_sizeunion, borrow);
+    println!("{}-{}, {}", c_high_sizeunion, c_low_sizeunion, borrow);
+    assert_eq!(c_high_sizeunion.get(), 4082489727482598880_usize);
+    assert_eq!(c_low_sizeunion.get(), 13815748421458185329_usize);
+    assert_eq!(borrow, false);
+
+    // (4082489727482598880_usize, 13815748421458185329_usize) - (6692605942763486917_usize, 12312739301371248917_usize) == 75308643186419753297530864308641975409_u128 - 123456789012345678901234567890123456789_u128 == 292134221095012537859670903850286730076_u128
+    //    75308643186419753297530864308641975409_u128 == ( 4082489727482598880_usize, 13815748421458185329_usize)
+    // - 123456789012345678901234567890123456789_u128 == ( 6692605942763486917_usize, 12312739301371248917_usize)
+    // ------------------------------------------------------------------------------------------------------
+    //   292134221095012537859670903850286730076_u128 == (14364254346226952735_usize,  4630995652251366287_usize)
+
+    // d: u128 === (d_high_usize, d_low_usize)
+    let (d_low_sizeunion, borrow) = c_low_sizeunion.borrowing_sub(b_low_sizeunion, false);
+    let (d_high_sizeunion, borrow) = c_high_sizeunion.borrowing_sub(b_high_sizeunion, borrow);
+    println!("{}-{}, {}", d_high_sizeunion, d_low_sizeunion, borrow);
+    assert_eq!(d_high_sizeunion.get(), 15836627858428663579_usize);
+    assert_eq!(d_low_sizeunion.get(), 1503009120086936412_usize);
     assert_eq!(borrow, true);
     println!("--------------------------------------");
 }
@@ -7618,7 +7731,118 @@ fn unions_div_main(){}
 fn unions_rem_main(){}
 
 
-fn unions_neg_main(){}
+fn unions_neg_main()
+{
+    unions_wrapping_neg();
+    unions_overflowing_neg();
+}
+
+fn unions_wrapping_neg()
+{
+    println!("unions_wrapping_neg");
+    use cryptocol::number::{ ShortUnion, IntUnion, LongUnion, LongerUnion, SizeUnion };
+    // Example for ShortUnion
+    let a_shortunion = ShortUnion::new_with(12345_u16);
+    let b_shortunion = a_shortunion.wrapping_neg();
+    println!("-{} = {}", a_shortunion, b_shortunion);
+    assert_eq!(b_shortunion.get(), 53191_u16);
+    
+    // Example for IntUnion
+    let a_intunion = IntUnion::new_with(1234567890_u32);
+    let b_intunion = a_intunion.wrapping_neg();
+    println!("-{} = {}", a_intunion, b_intunion);
+    assert_eq!(b_intunion.get(), 3060399406_u32);
+    
+    // Example for LongUnion
+    let a_longunion = LongUnion::new_with(12345678901234567890_u64);
+    let b_longunion = a_longunion.wrapping_neg();
+    println!("-{} = {}", a_longunion, b_longunion);
+    assert_eq!(b_longunion.get(), 6101065172474983726_u64);
+    
+    // Example for LongerUnion
+    let a_longerunion = LongerUnion::new_with(123456789012345678901234567890123456789_u128);
+    let b_longerunion = a_longerunion.wrapping_neg();
+    println!("-{} = {}", a_longerunion, b_longerunion);
+    assert_eq!(b_longerunion.get(), 216825577908592784562140039541644754667_u128);
+    
+    // Example for SizeUnion for 64-bit CPU
+    let a_sizeunion = SizeUnion::new_with(1234567890123456789_usize);
+    let b_sizeunion = a_sizeunion.wrapping_neg();
+    println!("-{} = {}", a_sizeunion, a_sizeunion);
+    assert_eq!(b_sizeunion.get(), 17212176183586094827_usize);
+    println!("--------------------------------------");
+}
+
+fn unions_overflowing_neg()
+{
+    println!("unions_overflowing_neg");
+    use cryptocol::number::{ ShortUnion, IntUnion, LongUnion, LongerUnion, SizeUnion };
+    // Example for ShortUnion
+    let a_shortunion = ShortUnion::new_with(0_u16);
+    let (b_shortunion, overflow) = a_shortunion.overflowing_neg();
+    println!("-{} = {}, {}", a_shortunion, b_shortunion, overflow);
+    assert_eq!(b_shortunion.get(), 0_u16);
+    assert_eq!(overflow, false);
+
+    let c_shortunion = ShortUnion::new_with(12345_u16);
+    let (d_shortunion, overflow) = c_shortunion.overflowing_neg();
+    println!("-{} = {}, {}", c_shortunion, d_shortunion, overflow);
+    assert_eq!(d_shortunion.get(), 53191_u16);
+    assert_eq!(overflow, true);
+    
+    // Example for IntUnion
+    let a_intunion = IntUnion::new_with(0_u32);
+    let (b_intunion, overflow) = a_intunion.overflowing_neg();
+    println!("-{} = {}, {}", a_intunion, b_intunion, overflow);
+    assert_eq!(b_intunion.get(), 0_u32);
+    assert_eq!(overflow, false);
+
+    let c_intunion = IntUnion::new_with(1234567890_u32);
+    let (d_intunion, overflow) = c_intunion.overflowing_neg();
+    println!("-{} = {}, {}", c_intunion, d_intunion, overflow);
+    assert_eq!(d_intunion.get(), 3060399406_u32);
+    assert_eq!(overflow, true);
+    
+    // Example for LongUnion
+    let a_longunion = LongUnion::new_with(0_u64);
+    let (b_longunion , overflow) = a_longunion.overflowing_neg();
+    println!("-{} = {}, {}", a_longunion, b_longunion, overflow);
+    assert_eq!(b_longunion.get(), 0_u64);
+    assert_eq!(overflow, false);
+
+    let c_longunion = LongUnion::new_with(12345678901234567890_u64);
+    let (d_longunion, overflow) = c_longunion.overflowing_neg();
+    println!("-{} = {}, {}", c_longunion, d_longunion, overflow);
+    assert_eq!(d_longunion.get(), 6101065172474983726_u64);
+    assert_eq!(overflow, true);
+    
+    // Example for LongerUnion
+    let a_longerunion = LongerUnion::new_with(0_u128);
+    let (b_longerunion, overflow) = a_longerunion.overflowing_neg();
+    println!("-{} = {}, {}", a_longerunion, b_longerunion, overflow);
+    assert_eq!(b_longerunion.get(), 0_u128);
+    assert_eq!(overflow, false);
+
+    let c_longerunion = LongerUnion::new_with(123456789012345678901234567890123456789_u128);
+    let (d_longerunion, overflow) = c_longerunion.overflowing_neg();
+    println!("-{} = {}, {}", c_longerunion, d_longerunion, overflow);
+    assert_eq!(d_longerunion.get(), 216825577908592784562140039541644754667_u128);
+    assert_eq!(overflow, true);
+    
+    // Example for SizeUnion
+    let a_sizeunion = SizeUnion::new_with(0_usize);
+    let (b_sizeunion, overflow) = a_sizeunion.overflowing_neg();
+    println!("-{} = {}, {}", a_sizeunion, a_sizeunion, overflow);
+    assert_eq!(b_sizeunion.get(), 0_usize);
+    assert_eq!(overflow, false);
+
+    let c_sizeunion = SizeUnion::new_with(1234567890123456789_usize);
+    let (d_sizeunion, overflow) = c_sizeunion.overflowing_neg();
+    println!("-{} = {}, {}", c_sizeunion, d_sizeunion, overflow);
+    assert_eq!(d_sizeunion.get(), 17212176183586094827_usize);
+    assert_eq!(overflow, true);
+    println!("--------------------------------------");
+}
 
 
 fn unions_pow_main(){}
@@ -7649,7 +7873,6 @@ fn unions_constants(){}
 
 
 fn unions_size(){}
-
 
 
 /*
@@ -7937,33 +8160,43 @@ fn size_union_debug_fmt_main()
 */
 
 
-// fn calc()
-// {
-//     println!("For IntUnion");
-//     use cryptocol::number::LongUnion;
-//     let a = LongUnion::new_with(1234567890123456789_u64);
-//     let b = LongUnion::new_with(9876543210123456789_u64);
-//     let (c, z) = a.carrying_add(b, false);
-//     println!("{} + {} = {}, {}", a, b, c, z);
-//     println!("low:  {} + {} = {}", a.get_uint_(0), b.get_uint_(0), c.get_uint_(0));
-//     println!("high: {} + {} = {}", a.get_uint_(1), b.get_uint_(1), c.get_uint_(1));
+fn end()
+{
+    // calc();
+}
+/*
+fn calc()
+{
+    println!("For IntUnion");
+    use cryptocol::number::LongUnion;
+    let a = LongUnion::new_with(9876543210123456789_u64);
+    let b = LongUnion::new_with(7654321098765432101_u64);
+    let (c, z) = a.borrowing_sub(b, false);
+    println!("{}_u64 - {}_u64 = {}_u64, {}", a, b, c, z);
+    println!("a: {}_u32 - {}_u32 = {}_u64", a.get_uint_(1), a.get_uint_(0), a);
+    println!("b: {}_u32 - {}_u32 = {}_u64", b.get_uint_(1), b.get_uint_(0), b);
+    println!("c: {}_u32 - {}_u32 = {}_u64", c.get_uint_(1), c.get_uint_(0), c);
 
-//     let (d, z) = c.carrying_add(b, false);
-//     println!("{} + {} = {}, {}", c, b, d, z);
-//     println!("low:  {} + {} = {}", c.get_uint_(0), b.get_uint_(0), d.get_uint_(0));
-//     println!("high: {} + {} = {}", c.get_uint_(1), b.get_uint_(1), d.get_uint_(1));
+    let (d, z) = c.borrowing_sub(b, false);
+    println!("{}_u64 - {}_u64 = {}_u64, {}", c, b, d, z);
+    println!("c: {}_u32 - {}_u32 = {}_u64", c.get_uint_(1), c.get_uint_(0), c);
+    println!("b: {}_u32 - {}_u32 = {}_u64", b.get_uint_(1), b.get_uint_(0), b);
+    println!("d: {}_u32 - {}_u32 = {}_u64", d.get_uint_(1), d.get_uint_(0), d);
 
-//     println!("\nFor LongUnion");
-//     use cryptocol::number::LongerUnion;
-//     let a = LongerUnion::new_with(123456789012345678901234567890123456789_u128);
-//     let b = LongerUnion::new_with(198765432198765432198765432198765432198_u128);
-//     let (c, z) = a.carrying_add(b, false);
-//     println!("{} + {} = {}, {}", a, b, c, z);
-//     println!("low:  {} + {} = {}", a.get_ulong_(0), b.get_ulong_(0), c.get_ulong_(0));
-//     println!("high: {} + {} = {}", a.get_ulong_(1), b.get_ulong_(1), c.get_ulong_(1));
+    println!("\nFor LongUnion");
+    use cryptocol::number::LongerUnion;
+    let a = LongerUnion::new_with(198765432198765432198765432198765432198_u128);
+    let b = LongerUnion::new_with(123456789012345678901234567890123456789_u128);
+    let (c, z) = a.borrowing_sub(b, false);
+    println!("{}_u128 - {}_u128 = {}_u128, {}", a, b, c, z);
+    println!("a: {}_u64 - {}_u64 = {}_u128", a.get_ulong_(1), a.get_ulong_(0), a);
+    println!("b: {}_u64 - {}_u64 = {}_u128", b.get_ulong_(1), b.get_ulong_(0), b);
+    println!("c: {}_u64 - {}_u64 = {}_u128", c.get_ulong_(1), c.get_ulong_(0), c);
 
-//     let (d, z) = c.carrying_add(b, false);
-//     println!("{} + {} = {}, {}", c, b, d, z);
-//     println!("low:  {} + {} = {}", c.get_ulong_(0), b.get_ulong_(0), d.get_ulong_(0));
-//     println!("high: {} + {} = {}", c.get_ulong_(1), b.get_ulong_(1), d.get_ulong_(1));
-// }
+    let (d, z) = c.borrowing_sub(b, false);
+    println!("{}_u128 - {}_u128 = {}_u128, {}", c, b, d, z);
+    println!("c: {}_u64 - {}_u64 = {}_u128", c.get_ulong_(1), c.get_ulong_(0), c);
+    println!("b: {}_u64 - {}_u64 = {}_u128", b.get_ulong_(1), b.get_ulong_(0), b);
+    println!("d: {}_u64 - {}_u64 = {}_u128", d.get_ulong_(1), d.get_ulong_(0), d);
+}
+*/
