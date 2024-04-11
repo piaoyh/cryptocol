@@ -3794,7 +3794,7 @@ pub trait SmallUInt: Copy + Clone + Sized //+ Display + Debug + ToString
     /// wrapping around at the boundary of the type.
     /// 
     /// # Arguments
-    /// - `rhs` is the operand of `Self` type.
+    /// - `rhs` is the subtractor from `self`.
     /// - `borrow` is the borrow overflowed from the previous operation.
     /// If there is no overflowed borrow from the previous operation,
     /// `borrow` is `false`. Otherwise, it is `true`.
@@ -4728,6 +4728,9 @@ pub trait SmallUInt: Copy + Clone + Sized //+ Display + Debug + ToString
     // fn wrapping_sub(self, rhs: Self) -> Self;
     /// Computes `self` - `rhs`, wrapping around at the boundary of the type.
     /// 
+    /// # Arguments
+    /// `rhs` is the subtractor from `self`.
+    /// 
     /// # Features
     /// It subtracts rhs from self with wrapping (modular) subtraction.
     /// 
@@ -5087,6 +5090,9 @@ pub trait SmallUInt: Copy + Clone + Sized //+ Display + Debug + ToString
 
     // fn overflowing_sub(self, rhs: Self) -> (Self, bool);
     /// Calculates `self` - `rhs`, wrapping around at the boundary of the type.
+    /// 
+    /// # Arguments
+    /// `rhs` is the subtractor from `self`.
     /// 
     /// # Features
     /// It subtracts rhs from self with wrapping (modular) subtraction.
@@ -5497,8 +5503,8 @@ pub trait SmallUInt: Copy + Clone + Sized //+ Display + Debug + ToString
     // fn checked_sub(self, rhs: Self) -> Option<Self>;
     /// Computes `self` - `rhs`.
     /// 
-    /// # Feature
-    /// 
+    /// # Arguments
+    /// `rhs` is the subtractor from `self`.
     /// 
     /// # Output
     /// It returns `self` - `rhs` in the type `Self` wrapped by `Some`
@@ -6127,6 +6133,9 @@ pub trait SmallUInt: Copy + Clone + Sized //+ Display + Debug + ToString
     /// fn unchecked_sub(self, rhs: Self) -> Self;
     /// Computes `self` - `rhs`, assuming overflow cannot occur.
     /// 
+    /// # Arguments
+    /// `rhs` is the subtractor from `self`.
+    /// 
     /// # Features
     /// It is virtually same as self.checked_sub(rhs).unwrap().
     /// Use this method only when it is sure that underflow will never happen.
@@ -6487,6 +6496,9 @@ pub trait SmallUInt: Copy + Clone + Sized //+ Display + Debug + ToString
     // fn saturating_sub(self, rhs: Self) -> Self;
     /// Computes `self` - `rhs`, saturating at the numeric bounds
     /// instead of underflowing.
+    /// 
+    /// # Arguments
+    /// `rhs` is the subtractor from `self`.
     /// 
     /// # Features
     /// It subtracts rhs from self with saturating integer subtraction.

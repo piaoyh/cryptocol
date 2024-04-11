@@ -8740,15 +8740,353 @@ macro_rules! integer_union_methods {
             (Self::new_with(res_this), b1 || b2)
         }
 
+        // fn wrapping_sub(self, rhs: Self) -> Self;
+        /// Computes `self` - `rhs`, wrapping around at the boundary of the type.
+        /// 
+        /// # Arguments
+        /// `rhs` is the subtractor from `self`.
+        /// 
+        /// # Features
+        /// It subtracts rhs from self with wrapping (modular) subtraction.
+        /// 
+        /// # Output
+        /// It returns the `self` - `rhs` in the type of `Self`.
+        /// 
+        /// # Example 1 for ShortUnion
+        /// ```
+        /// use cryptocol::number::ShortUnion;
+        /// 
+        /// let a_shortunion = ShortUnion::new_with(55_u16).wrapping_sub(ShortUnion::new_with(55_u16));
+        /// println!("55 - 55 = {}", a_shortunion);
+        /// assert_eq!(a_shortunion.get(), 0_u16);
+        /// 
+        /// let b_shortunion = a_shortunion.wrapping_sub(ShortUnion::new_with(1_u16));
+        /// println!("{} - 1 = {}", a_shortunion, b_shortunion);
+        /// assert_eq!(b_shortunion.get(), u16::MAX);
+        /// ```
+        /// 
+        /// # Example 2 for IntUnion
+        /// ```
+        /// use cryptocol::number::IntUnion;
+        /// 
+        /// let a_intunion = IntUnion::new_with(55_u32).wrapping_sub(IntUnion::new_with(55_u32));
+        /// println!("55 - 55 = {}", a_intunion);
+        /// assert_eq!(a_intunion.get(), 0_u32);
+        /// 
+        /// let b_intunion = a_intunion.wrapping_sub(IntUnion::new_with(1_u32));
+        /// println!("{} - 1 = {}", a_intunion, b_intunion);
+        /// assert_eq!(b_intunion.get(), u32::MAX);
+        /// ```
+        /// 
+        /// # Example 3 for LongUnion
+        /// ```
+        /// use cryptocol::number::LongUnion;
+        /// 
+        /// let a_longunion = LongUnion::new_with(55_u64).wrapping_sub(LongUnion::new_with(55_u64));
+        /// println!("55 - 55 = {}", a_longunion);
+        /// assert_eq!(a_longunion.get(), 0_u64);
+        /// 
+        /// let b_longunion = a_longunion.wrapping_sub(LongUnion::new_with(1_u64));
+        /// println!("{} - 1 = {}", a_longunion, b_longunion);
+        /// assert_eq!(b_longunion.get(), u64::MAX);
+        /// ```
+        /// 
+        /// # Example 4 for LongerUnion
+        /// ```
+        /// use cryptocol::number::LongerUnion;
+        /// 
+        /// let a_longerunion = LongerUnion::new_with(55_u128).wrapping_sub(LongerUnion::new_with(55_u128));
+        /// println!("55 - 55 = {}", a_longerunion);
+        /// assert_eq!(a_longerunion.get(), 0_u128);
+        /// 
+        /// let b_longerunion = a_longerunion.wrapping_sub(LongerUnion::new_with(1_u128));
+        /// println!("{} - 1 = {}", a_longerunion, b_longerunion);
+        /// assert_eq!(b_longerunion.get(), u128::MAX);
+        /// ```
+        /// 
+        /// # Example 5 for SizeUnion
+        /// ```
+        /// use cryptocol::number::SizeUnion;
+        /// 
+        /// let a_sizeunion = SizeUnion::new_with(55_usize).wrapping_sub(SizeUnion::new_with(55_usize));
+        /// println!("55 - 55 = {}", a_sizeunion);
+        /// assert_eq!(a_sizeunion.get(), 0_usize);
+        /// 
+        /// let b_sizeunion = a_sizeunion.wrapping_sub(SizeUnion::new_with(1_usize));
+        /// println!("{} - 1 = {}", a_sizeunion, b_sizeunion);
+        /// assert_eq!(b_sizeunion.get(), usize::MAX);
+        /// ```
+        /// 
+        /// # Plagiarism in descryption
+        /// It calls the method wrapping_sub() of implementation of the primitive
+        /// unsigned integer types such as`u8`, `u16`, `u32`, `u64`, `u128` and
+        /// `usize` directly. So, all the description of this method is mainly the
+        /// same as that of the method wrapping_sub() of implementation of the
+        /// primitive unsigned integer types except example codes. Confer to the
+        /// descryptions that are linked to in the section _Reference_. This
+        /// plagiarism is not made maliciously but is made for the reason of
+        /// effectiveness and efficiency so that users may understand better and
+        /// easily how to use this method with simiilarity to the method
+        /// wrapping_sub() of implementation of the primitive unsigned integer types.
         #[inline] pub fn wrapping_sub(self, rhs: Self) -> Self      { Self::new_with( self.get().wrapping_sub(rhs.get()) ) }
         // #[inline] pub fn wrapping_sub_assign(&mut self, rhs: Self)  { self.set(self.get().wrapping_sub(rhs.get())); }
-        
+
+
+        // fn overflowing_sub(self, rhs: Self) -> (Self, bool);
+        /// Calculates `self` - `rhs`, wrapping around at the boundary of the type.
+        /// 
+        /// # Arguments
+        /// `rhs` is the subtractor from `self`.
+        /// 
+        /// # Features
+        /// It subtracts rhs from self with wrapping (modular) subtraction.
+        /// It is the same as the method borrowing_sub() with the imput carry which
+        /// is false.
+        /// 
+        /// # Output
+        /// It returns a tuple of the subtraction along with a boolean indicating
+        /// whether an arithmetic underflow would occur. If an underflow would
+        /// have occurred then the wrapped value is returned.
+        /// 
+        /// # Example 1 for ShortUnion
+        /// ```
+        /// use cryptocol::number::ShortUnion;
+        /// 
+        /// let (a_shortunion, overflow) = ShortUnion::new_with(55_u16).overflowing_sub(ShortUnion::new_with(55_u16));
+        /// println!("55 - 55 = {}\nUnderflow = {}", a_shortunion, overflow);
+        /// assert_eq!(a_shortunion.get(), 0_u16);
+        /// assert_eq!(overflow, false);
+        ///    
+        /// let (b_shortunion, overflow) = a_shortunion.overflowing_sub(ShortUnion::new_with(1_u16));
+        /// println!("{} - 1 = {}\nUnderflow = {}", b_shortunion, b_shortunion, overflow);
+        /// assert_eq!(b_shortunion.get(), u16::MAX);
+        /// assert_eq!(overflow, true);
+        /// ```
+        /// 
+        /// # Example 2 for IntUnion
+        /// ```
+        /// use cryptocol::number::IntUnion;
+        /// 
+        /// let (a_intunion, overflow) = IntUnion::new_with(55_u32).overflowing_sub(IntUnion::new_with(55_u32));
+        /// println!("55 - 55 = {}\nUnderflow = {}", a_intunion, overflow);
+        /// assert_eq!(a_intunion.get(), 0_u32);
+        /// assert_eq!(overflow, false);
+        ///    
+        /// let (b_intunion, overflow) = a_intunion.overflowing_sub(IntUnion::new_with(1_u32));
+        /// println!("{} - 1 = {}\nUnderflow = {}", a_intunion, b_intunion, overflow);
+        /// assert_eq!(b_intunion.get(), u32::MAX);
+        /// assert_eq!(overflow, true);
+        /// ```
+        /// 
+        /// # Example 3 for LongUnion
+        /// ```
+        /// use cryptocol::number::LongUnion;
+        /// 
+        /// let (a_longunion, overflow) = LongUnion::new_with(55_u64).overflowing_sub(LongUnion::new_with(55_u64));
+        /// println!("55 - 55 = {}\nUnderflow = {}", a_longunion, overflow);
+        /// assert_eq!(a_longunion.get(), 0_u64);
+        /// assert_eq!(overflow, false);
+        ///    
+        /// let (b_longunion, overflow) = a_longunion.overflowing_sub(LongUnion::new_with(1_u64));
+        /// println!("{} - 1 = {}\nUnderflow = {}", a_longunion, b_longunion, overflow);
+        /// assert_eq!(b_longunion.get(), u64::MAX);
+        /// assert_eq!(overflow, true);
+        /// ```
+        /// 
+        /// # Example 4 for LongerUnion
+        /// ```
+        /// use cryptocol::number::LongerUnion;
+        /// 
+        /// let (a_longerunion, overflow) = LongerUnion::new_with(55_u128).overflowing_sub(LongerUnion::new_with(55_u128));
+        /// println!("55 - 55 = {}\nUnderflow = {}", a_longerunion, a_longerunion);
+        /// assert_eq!(a_longerunion.get(), 0_u128);
+        /// assert_eq!(overflow, false);
+        ///    
+        /// let (b_longerunion, overflow) = a_longerunion.overflowing_sub(LongerUnion::new_with(1_u128));
+        /// println!("{} - 1 = {}\nUnderflow = {}", a_longerunion, b_longerunion, overflow);
+        /// assert_eq!(b_longerunion.get(), u128::MAX);
+        /// assert_eq!(overflow, true);
+        /// 
+        /// # Example 5 for SizeUnion
+        /// ```
+        /// use cryptocol::number::SizeUnion;
+        /// 
+        /// let (a_sizeunion, overflow) = SizeUnion::new_with(55_usize).overflowing_sub(SizeUnion::new_with(55_usize));
+        /// println!("55 - 55 = {}\nUnderflow = {}", a_sizeunion, overflow);
+        /// assert_eq!(a_sizeunion.get(), 0_usize);
+        /// assert_eq!(overflow, false);
+        ///    
+        /// let (b_sizeunion, overflow) = a_sizeunion.overflowing_sub(SizeUnion::new_with(1_usize));
+        /// println!("{} - 1 = {}\nUnderflow = {}", a_sizeunion, b_sizeunion, overflow);
+        /// assert_eq!(b_sizeunion.get(), usize::MAX);
+        /// assert_eq!(overflow, true);
+        /// ```
+        /// 
+        /// # Plagiarism in descryption
+        /// It calls the method overflowing_sub() of implementation of the primitive
+        /// unsigned integer types such as`u8`, `u16`, `u32`, `u64`, `u128` and
+        /// `usize` directly. So, all the description of this method is mainly the
+        /// same as that of the method overflowing_sub() of implementation of the
+        /// primitive unsigned integer types except example codes. Confer to the
+        /// descryptions that are linked to in the section _Reference_. This
+        /// plagiarism is not made maliciously but is made for the reason of
+        /// effectiveness and efficiency so that users may understand better and
+        /// easily how to use this method with simiilarity to the method
+        /// overflowing_sub() of implementation of the primitive unsigned integer
+        /// types.
         pub fn overflowing_sub(self, rhs: Self) -> (Self, bool)
         {
             let (res_this, borrow) = self.get().overflowing_sub(rhs.get());
             (Self::new_with(res_this), borrow)
         }
 
+        // fn checked_sub(self, rhs: Self) -> Option<Self>;
+        /// Computes `self` - `rhs`.
+        /// 
+        /// # Arguments
+        /// `rhs` is the subtractor from `self`.
+        /// 
+        /// # Output
+        /// It returns `self` - `rhs` in the type `Self` wrapped by `Some`
+        /// of enum `Option` if overflow did not occur.
+        /// And, it returns `None` if overflow occurred.
+        /// 
+        /// # Example 1 for ShortUnion
+        /// ```
+        /// use cryptocol::number::ShortUnion;
+        /// 
+        /// let a_shortunion = ShortUnion::new_with(55_u16).checked_sub(ShortUnion::new_with(55_u16));
+        /// match a_shortunion
+        /// {
+        ///     Some(a) => {
+        ///             println!("55 - 55 = {}", a);
+        ///             assert_eq!(a.get(), 0_u16);
+        ///         },
+        ///     None => { println!("Underflow happened."); },
+        /// }
+        /// 
+        /// let b_shortunion = a_shortunion.unwrap().checked_sub(ShortUnion::new_with(1_u16));
+        /// match b_shortunion
+        /// {
+        ///     Some(b) => { println!("{} - 1 = {}", a_shortunion.unwrap(), b); },
+        ///     None => {
+        ///             println!("Underflow happened.");
+        ///             assert_eq!(b_shortunion, None);
+        ///         },
+        /// }
+        /// ```
+        /// 
+        /// # Example 2 for IntUnion
+        /// ```
+        /// use cryptocol::number::IntUnion;
+        /// 
+        /// let a_intunion = IntUnion::new_with(55_u32).checked_sub(IntUnion::new_with(55_u32));
+        /// match a_intunion
+        /// {
+        ///     Some(a) => {
+        ///             println!("55 - 55 = {}", a);
+        ///             assert_eq!(a.get(), 0_u32);
+        ///         },
+        ///     None => { println!("Underflow happened."); },
+        /// }
+        /// 
+        /// let b_intunion = a_intunion.unwrap().checked_sub(IntUnion::new_with(1_u32));
+        /// match b_intunion
+        /// {
+        ///     Some(b) => { println!("{} - 1 = {}", a_intunion.unwrap(), b); },
+        ///     None => {
+        ///             println!("Underflow happened.");
+        ///             assert_eq!(b_intunion, None);
+        ///         },
+        /// }
+        /// ```
+        /// 
+        /// # Example 3 for LongUnion
+        /// ```
+        /// use cryptocol::number::LongUnion;
+        /// 
+        /// let a_longunion = LongUnion::new_with(55_u64).checked_sub(LongUnion::new_with(55_u64));
+        /// match a_longunion
+        /// {
+        ///     Some(a) => {
+        ///             println!("55 - 55 = {}", a);
+        ///             assert_eq!(a.get(), 0_u64);
+        ///         },
+        ///     None => { println!("Underflow happened."); },
+        /// }
+        /// 
+        /// let b_longunion = a_longunion.unwrap().checked_sub(LongUnion::new_with(1_u64));
+        /// match b_longunion
+        /// {
+        ///     Some(b) => { println!("{} - 1 = {}", a_longunion.unwrap(), b); },
+        ///     None => {
+        ///             println!("Underflow happened.");
+        ///             assert_eq!(b_longunion, None);
+        ///         },
+        /// }
+        /// ```
+        /// 
+        /// # Example 4 for LongerUnion
+        /// ```
+        /// use cryptocol::number::LongerUnion;
+        /// 
+        /// let a_longerunion = LongerUnion::new_with(55_u128).checked_sub(LongerUnion::new_with(55_u128));
+        /// match a_longerunion
+        /// {
+        ///     Some(a) => {
+        ///             println!("55 - 55 = {}", a);
+        ///             assert_eq!(a.get(), 0_u128);
+        ///         },
+        ///     None => { println!("Underflow happened."); },
+        /// }
+        /// 
+        /// let b_longerunion = a_longerunion.unwrap().checked_sub(LongerUnion::new_with(1_u128));
+        /// match b_longerunion
+        /// {
+        ///     Some(b) => { println!("{} - 1 = {}", a_longerunion.unwrap(), b); },
+        ///     None => {
+        ///             println!("Underflow happened.");
+        ///             assert_eq!(b_longerunion, None);
+        ///         },
+        /// }
+        /// ```
+        /// 
+        /// # Example 5 for SizeUnion
+        /// ```
+        /// use cryptocol::number::SizeUnion;
+        /// 
+        /// let a_sizeunion = SizeUnion::new_with(55_usize).checked_sub(SizeUnion::new_with(55_usize));
+        /// match a_sizeunion
+        /// {
+        ///     Some(a) => {
+        ///             println!("55 - 55 = {}", a);
+        ///             assert_eq!(a.get(), 0_usize);
+        ///         },
+        ///     None => { println!("Underflow happened."); },
+        /// }
+        /// 
+        /// let b_sizeunion = a_sizeunion.unwrap().checked_sub(SizeUnion::new_with(1_usize));
+        /// match b_sizeunion
+        /// {
+        ///     Some(b) => { println!("{} - 1 = {}", a_sizeunion.unwrap(), b); },
+        ///     None => {
+        ///             println!("Underflow happened.");
+        ///             assert_eq!(b_sizeunion, None);
+        ///         },
+        /// }
+        /// ```
+        /// 
+        /// # Plagiarism in descryption
+        /// It calls the method checked_sub() of implementation of the primitive
+        /// unsigned integer types such as`u8`, `u16`, `u32`, `u64`, `u128` and
+        /// `usize` directly. So, all the description of this method is mainly the
+        /// same as that of the method checked_sub() of implementation of the
+        /// primitive unsigned integer types except example codes. Confer to the
+        /// descryptions that are linked to in the section _Reference_. This
+        /// plagiarism is not made maliciously but is made for the reason of
+        /// effectiveness and efficiency so that users may understand better and
+        /// easily how to use this method with simiilarity to the method
+        /// checked_sub() of implementation of the primitive unsigned integer types.
         pub fn checked_sub(self, rhs: Self) -> Option<Self>
         {
             match self.get().checked_sub(rhs.get())
@@ -8757,8 +9095,74 @@ macro_rules! integer_union_methods {
                 None =>             { None },
             }
         }
-        
+
+        /// fn unchecked_sub(self, rhs: Self) -> Self;
+        /// Computes `self` - `rhs`, assuming overflow cannot occur.
+        /// 
+        /// # Arguments
+        /// `rhs` is the subtractor from `self`.
+        /// 
+        /// # Features
+        /// It is virtually same as self.checked_sub(rhs).unwrap().
+        /// Use this method only when it is sure that underflow will never happen.
+        /// 
+        /// # Panics
+        /// If underflow occurs, this method will panic at this version.
+        /// 
+        /// # Output
+        /// It returns `self` - `rhs` in the type `Self` if underflow did not occur.
+        /// Otherwise, its behavior is not defined.
+        /// 
+        /// # Example 1 for u8
+        /// ```
+        /// 
+        /// ```
+        /// 
+        /// # Plagiarism in descryption
+        /// Even though it does not call the method unchecked_sub() of implementation
+        /// of the primitive unsigned integer types such as `u8`, `u16`, `u32`,
+        /// `u64`, `u128` and `usize` directly, all the description of this method
+        /// is mainly the same as that of the method unchecked_sub() of
+        /// implementation of the primitive unsigned integer types for nightly
+        /// version except example codes. Confer to the descryptions that are linked
+        /// to in the section _Reference_. This plagiarism is not made maliciously
+        /// but is made for the reason of effectiveness and efficiency so that users
+        /// may understand better and easily how to use this method with simiilarity
+        /// to the method unchecked_sub() of implementation of the primitive unsigned
+        /// integer types.
         #[inline] pub fn unchecked_sub(self, rhs: Self) -> Self     { Self::new_with( self.get().checked_sub(rhs.get()).unwrap() ) }
+
+        // fn saturating_sub(self, rhs: Self) -> Self;
+        /// Computes `self` - `rhs`, saturating at the numeric bounds
+        /// instead of underflowing.
+        /// 
+        /// # Arguments
+        /// `rhs` is the subtractor from `self`.
+        /// 
+        /// # Features
+        /// It subtracts rhs from self with saturating integer subtraction.
+        /// 
+        /// # Output
+        /// It returns the bigger one of `self` - `rhs` and the zero
+        /// of the type of `Self`.
+        /// 
+        /// # Example 1 for u8
+        /// ```
+        /// 
+        /// ```
+        /// 
+        /// # Plagiarism in descryption
+        /// Even though it does not call the method unchecked_sub() of implementation
+        /// of the primitive unsigned integer types such as `u8`, `u16`, `u32`,
+        /// `u64`, `u128` and `usize` directly, all the description of this method
+        /// is mainly the same as that of the method unchecked_sub() of
+        /// implementation of the primitive unsigned integer types for nightly
+        /// version except example codes. Confer to the descryptions that are linked
+        /// to in the section _Reference_. This plagiarism is not made maliciously
+        /// but is made for the reason of effectiveness and efficiency so that users
+        /// may understand better and easily how to use this method with simiilarity
+        /// to the method unchecked_sub() of implementation of the primitive unsigned
+        /// integer types.
         #[inline] pub fn saturating_sub(self, rhs: Self) -> Self    { Self::new_with( self.get().saturating_sub(rhs.get()) ) }
 
         #[inline] pub fn abs_diff(self, other: Self) -> Self    { Self::new_with( self.get().abs_diff(other.get()) ) }

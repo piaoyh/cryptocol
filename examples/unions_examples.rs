@@ -7715,11 +7715,239 @@ fn unions_borrowing_sub()
     println!("--------------------------------------");
 }
 
-fn unions_wrapping_sub(){}
-fn unions_overflowing_sub(){}
-fn unions_checked_sub(){}
-fn unions_unchecked_sub(){}
-fn unions_saturating_sub(){}
+fn unions_wrapping_sub()
+{
+    println!("unions_wrapping_sub");
+    use cryptocol::number::{ ShortUnion, IntUnion, LongUnion, LongerUnion, SizeUnion };
+    // Example for ShortUnion
+    let a_shortunion = ShortUnion::new_with(55_u16).wrapping_sub(ShortUnion::new_with(55_u16));
+    println!("55 - 55 = {}", a_shortunion);
+    assert_eq!(a_shortunion.get(), 0_u16);
+
+    let b_shortunion = a_shortunion.wrapping_sub(ShortUnion::new_with(1_u16));
+    println!("{} - 1 = {}", a_shortunion, b_shortunion);
+    assert_eq!(b_shortunion.get(), u16::MAX);
+
+    // Example for IntUnion
+    let a_intunion = IntUnion::new_with(55_u32).wrapping_sub(IntUnion::new_with(55_u32));
+    println!("55 - 55 = {}", a_intunion);
+    assert_eq!(a_intunion.get(), 0_u32);
+
+    let b_intunion = a_intunion.wrapping_sub(IntUnion::new_with(1_u32));
+    println!("{} - 1 = {}", a_intunion, b_intunion);
+    assert_eq!(b_intunion.get(), u32::MAX);
+
+    // Example for LongUnion
+    let a_longunion = LongUnion::new_with(55_u64).wrapping_sub(LongUnion::new_with(55_u64));
+    println!("55 - 55 = {}", a_longunion);
+    assert_eq!(a_longunion.get(), 0_u64);
+
+    let b_longunion = a_longunion.wrapping_sub(LongUnion::new_with(1_u64));
+    println!("{} - 1 = {}", a_longunion, b_longunion);
+    assert_eq!(b_longunion.get(), u64::MAX);
+
+    // Example for LongerUnion
+    let a_longerunion = LongerUnion::new_with(55_u128).wrapping_sub(LongerUnion::new_with(55_u128));
+    println!("55 - 55 = {}", a_longerunion);
+    assert_eq!(a_longerunion.get(), 0_u128);
+
+    let b_longerunion = a_longerunion.wrapping_sub(LongerUnion::new_with(1_u128));
+    println!("{} - 1 = {}", a_longerunion, b_longerunion);
+    assert_eq!(b_longerunion.get(), u128::MAX);
+
+    // Example for SizeUnion
+    let a_sizeunion = SizeUnion::new_with(55_usize).wrapping_sub(SizeUnion::new_with(55_usize));
+    println!("55 - 55 = {}", a_sizeunion);
+    assert_eq!(a_sizeunion.get(), 0_usize);
+
+    let b_sizeunion = a_sizeunion.wrapping_sub(SizeUnion::new_with(1_usize));
+    println!("{} - 1 = {}", a_sizeunion, b_sizeunion);
+    assert_eq!(b_sizeunion.get(), usize::MAX);
+    println!("--------------------------------------");
+}
+
+fn unions_overflowing_sub()
+{
+    println!("small_uint_overflowing_sub");
+    use cryptocol::number::{ ShortUnion, IntUnion, LongUnion, LongerUnion, SizeUnion };
+
+    // Example for ShortUnion
+    let (a_shortunion, overflow) = ShortUnion::new_with(55_u16).overflowing_sub(ShortUnion::new_with(55_u16));
+    println!("55 - 55 = {}\nUnderflow = {}", a_shortunion, overflow);
+    assert_eq!(a_shortunion.get(), 0_u16);
+    assert_eq!(overflow, false);
+ 
+    let (b_shortunion, overflow) = a_shortunion.overflowing_sub(ShortUnion::new_with(1_u16));
+    println!("{} - 1 = {}\nUnderflow = {}", b_shortunion, b_shortunion, overflow);
+    assert_eq!(b_shortunion.get(), u16::MAX);
+    assert_eq!(overflow, true);
+
+    // Example for IntUnion
+    let (a_intunion, overflow) = IntUnion::new_with(55_u32).overflowing_sub(IntUnion::new_with(55_u32));
+    println!("55 - 55 = {}\nUnderflow = {}", a_intunion, overflow);
+    assert_eq!(a_intunion.get(), 0_u32);
+    assert_eq!(overflow, false);
+ 
+    let (b_intunion, overflow) = a_intunion.overflowing_sub(IntUnion::new_with(1_u32));
+    println!("{} - 1 = {}\nUnderflow = {}", a_intunion, b_intunion, overflow);
+    assert_eq!(b_intunion.get(), u32::MAX);
+    assert_eq!(overflow, true);
+
+    // Example for LongUnion
+    let (a_longunion, overflow) = LongUnion::new_with(55_u64).overflowing_sub(LongUnion::new_with(55_u64));
+    println!("55 - 55 = {}\nUnderflow = {}", a_longunion, overflow);
+    assert_eq!(a_longunion.get(), 0_u64);
+    assert_eq!(overflow, false);
+ 
+    let (b_longunion, overflow) = a_longunion.overflowing_sub(LongUnion::new_with(1_u64));
+    println!("{} - 1 = {}\nUnderflow = {}", a_longunion, b_longunion, overflow);
+    assert_eq!(b_longunion.get(), u64::MAX);
+    assert_eq!(overflow, true);
+
+    // Example for LongerUnion
+    let (a_longerunion, overflow) = LongerUnion::new_with(55_u128).overflowing_sub(LongerUnion::new_with(55_u128));
+    println!("55 - 55 = {}\nUnderflow = {}", a_longerunion, a_longerunion);
+    assert_eq!(a_longerunion.get(), 0_u128);
+    assert_eq!(overflow, false);
+ 
+    let (b_longerunion, overflow) = a_longerunion.overflowing_sub(LongerUnion::new_with(1_u128));
+    println!("{} - 1 = {}\nUnderflow = {}", a_longerunion, b_longerunion, overflow);
+    assert_eq!(b_longerunion.get(), u128::MAX);
+    assert_eq!(overflow, true);
+
+    // Example for SizeUnion
+    let (a_sizeunion, overflow) = SizeUnion::new_with(55_usize).overflowing_sub(SizeUnion::new_with(55_usize));
+    println!("55 - 55 = {}\nUnderflow = {}", a_sizeunion, overflow);
+    assert_eq!(a_sizeunion.get(), 0_usize);
+    assert_eq!(overflow, false);
+ 
+    let (b_sizeunion, overflow) = a_sizeunion.overflowing_sub(SizeUnion::new_with(1_usize));
+    println!("{} - 1 = {}\nUnderflow = {}", a_sizeunion, b_sizeunion, overflow);
+    assert_eq!(b_sizeunion.get(), usize::MAX);
+    assert_eq!(overflow, true);
+    println!("--------------------------------------");
+}
+
+fn unions_checked_sub()
+{
+    println!("unions_checked_sub");
+    use cryptocol::number::{ ShortUnion, IntUnion, LongUnion, LongerUnion, SizeUnion };
+    // Example for ShortUnion
+    let a_shortunion = ShortUnion::new_with(55_u16).checked_sub(ShortUnion::new_with(55_u16));
+    match a_shortunion
+    {
+        Some(a) => {
+                println!("55 - 55 = {}", a);
+                assert_eq!(a.get(), 0_u16);
+            },
+        None => { println!("Underflow happened."); },
+    }
+
+    let b_shortunion = a_shortunion.unwrap().checked_sub(ShortUnion::new_with(1_u16));
+    match b_shortunion
+    {
+        Some(b) => { println!("{} - 1 = {}", a_shortunion.unwrap(), b); },
+        None => {
+                println!("Underflow happened.");
+                assert_eq!(b_shortunion, None);
+            },
+    }
+
+    // Example for IntUnion
+    let a_intunion = IntUnion::new_with(55_u32).checked_sub(IntUnion::new_with(55_u32));
+    match a_intunion
+    {
+        Some(a) => {
+                println!("55 - 55 = {}", a);
+                assert_eq!(a.get(), 0_u32);
+            },
+        None => { println!("Underflow happened."); },
+    }
+
+    let b_intunion = a_intunion.unwrap().checked_sub(IntUnion::new_with(1_u32));
+    match b_intunion
+    {
+        Some(b) => { println!("{} - 1 = {}", a_intunion.unwrap(), b); },
+        None => {
+                println!("Underflow happened.");
+                assert_eq!(b_intunion, None);
+            },
+    }
+
+    // Example for LongUnion
+    let a_longunion = LongUnion::new_with(55_u64).checked_sub(LongUnion::new_with(55_u64));
+    match a_longunion
+    {
+        Some(a) => {
+                println!("55 - 55 = {}", a);
+                assert_eq!(a.get(), 0_u64);
+            },
+        None => { println!("Underflow happened."); },
+    }
+
+    let b_longunion = a_longunion.unwrap().checked_sub(LongUnion::new_with(1_u64));
+    match b_longunion
+    {
+        Some(b) => { println!("{} - 1 = {}", a_longunion.unwrap(), b); },
+        None => {
+                println!("Underflow happened.");
+                assert_eq!(b_longunion, None);
+            },
+    }
+
+    // Example for LongerUnion
+    let a_longerunion = LongerUnion::new_with(55_u128).checked_sub(LongerUnion::new_with(55_u128));
+    match a_longerunion
+    {
+        Some(a) => {
+                println!("55 - 55 = {}", a);
+                assert_eq!(a.get(), 0_u128);
+            },
+        None => { println!("Underflow happened."); },
+    }
+
+    let b_longerunion = a_longerunion.unwrap().checked_sub(LongerUnion::new_with(1_u128));
+    match b_longerunion
+    {
+        Some(b) => { println!("{} - 1 = {}", a_longerunion.unwrap(), b); },
+        None => {
+                println!("Underflow happened.");
+                assert_eq!(b_longerunion, None);
+            },
+    }
+
+    // Example for SizeUnion
+    let a_sizeunion = SizeUnion::new_with(55_usize).checked_sub(SizeUnion::new_with(55_usize));
+    match a_sizeunion
+    {
+        Some(a) => {
+                println!("55 - 55 = {}", a);
+                assert_eq!(a.get(), 0_usize);
+            },
+        None => { println!("Underflow happened."); },
+    }
+
+    let b_sizeunion = a_sizeunion.unwrap().checked_sub(SizeUnion::new_with(1_usize));
+    match b_sizeunion
+    {
+        Some(b) => { println!("{} - 1 = {}", a_sizeunion.unwrap(), b); },
+        None => {
+                println!("Underflow happened.");
+                assert_eq!(b_sizeunion, None);
+            },
+    }
+    println!("--------------------------------------");
+}
+
+fn unions_unchecked_sub()
+{
+
+}
+
+fn unions_saturating_sub()
+{
+
+}
 
 
 fn unions_mul_main(){}

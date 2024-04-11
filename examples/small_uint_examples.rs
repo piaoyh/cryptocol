@@ -2223,7 +2223,7 @@ fn small_uint_checked_sub()
     let b_intunion = small_uint_checked_sub_func(a_intunion.unwrap(), 1_u32.into_intunion());
     match b_intunion
     {
-        Some(b) => { println!("{} - 1 = {}", a_u32.unwrap(), b); },
+        Some(b) => { println!("{} - 1 = {}", a_intunion.unwrap(), b); },
         None => {
                 println!("Underflow happened.");
                 assert_eq!(b_intunion, None);
