@@ -6796,7 +6796,7 @@ pub trait SmallUInt: Copy + Clone + Sized //+ Display + Debug + ToString
     ///     assert_eq!(a_intunion.get(), 5_u32);
     /// 
     ///     let b_intunion = func(a_intunion, 55_u32.into_intunion());
-    ///     println!("{} - 55 = {}", a_u32, b_intunion);
+    ///     println!("{} - 55 = {}", a_intunion, b_intunion);
     ///     assert_eq!(b_intunion.get(), 0_u32);
     /// 
     ///     let a_longunion = func(55_u64.into_longunion(), 50_u64.into_longunion());
@@ -6808,7 +6808,7 @@ pub trait SmallUInt: Copy + Clone + Sized //+ Display + Debug + ToString
     ///     assert_eq!(b_longunion.get(), 0_u64);
     /// 
     ///     let a_longerunion = func(55_u128.into_longerunion(), 50_u128.into_longerunion());
-    ///     println!("55 - 50 = {}", a_u128);
+    ///     println!("55 - 50 = {}", a_longerunion);
     ///     assert_eq!(a_longerunion.get(), 5_u128);
     /// 
     ///     let b_longerunion = func(a_longerunion, 55_u128.into_longerunion());

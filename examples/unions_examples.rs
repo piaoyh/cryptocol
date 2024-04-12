@@ -7941,12 +7941,100 @@ fn unions_checked_sub()
 
 fn unions_unchecked_sub()
 {
+    println!("unions_unchecked_sub");
+    use cryptocol::number::{ ShortUnion, IntUnion, LongUnion, LongerUnion, SizeUnion };
+    
+    // Example for ShortUnion
+    let a_ushortunion = ShortUnion::new_with(55_u16).unchecked_sub(ShortUnion::new_with(55_u16));
+    println!("55 - 55 = {}", a_ushortunion);
+    assert_eq!(a_ushortunion.get(), 0_u16);
 
+    // It will panic
+    // let b_ushortunion = ShortUnion::new_with(a_ushortunion.unchecked_sub(ShortUnion::new_with(1_u16);
+
+    // Example for IntUnion
+    let a_intunion = IntUnion::new_with(55_u32).unchecked_sub(IntUnion::new_with(55_u32));
+    println!("55 - 55 = {}", a_intunion);
+    assert_eq!(a_intunion.get(), 0_u32);
+
+    // It will panic
+    // let b_intunion = IntUnion::new_with(a_intunion.unchecked_sub(IntUnion::new_with(1_u32));
+
+    // Example for LongUnion
+    let a_longunion = LongUnion::new_with(55_u64).unchecked_sub(LongUnion::new_with(55_u64));
+    println!("55 - 55 = {}", a_longunion);
+    assert_eq!(a_longunion.get(), 0_u64);
+
+    // It will panic
+    // let b_u64 = LongUnion::new_with(a_longunion.unchecked_sub(LongUnion::new_with(1_u64);
+
+    // Example for LongerUnion
+    let a_longerunion = LongerUnion::new_with(55_u128).unchecked_sub(LongerUnion::new_with(55_u128));
+    println!("55 - 55 = {}", a_longerunion);
+    assert_eq!(a_longerunion.get(), 0_u128);
+
+    // It will panic
+    // let b_longerunion = LongerUnion::new_with(a_longerunion.unchecked_sub(LongerUnion::new_with(1_u128));
+
+    // Example for SizeUnion
+    let a_sizeunion = SizeUnion::new_with(55_usize).unchecked_sub(SizeUnion::new_with(55_usize));
+    println!("55 - 55 = {}", a_sizeunion);
+    assert_eq!(a_sizeunion.get(), 0_usize);
+
+    // It will panic
+    // let b_sizeunion = SizeUnion::new_with(a_sizeunion.unchecked_sub(SizeUnion::new_with(1_usize));
+    println!("--------------------------------------");
 }
 
 fn unions_saturating_sub()
 {
+    println!("unions_saturating_sub");
+    use cryptocol::number::{ ShortUnion, IntUnion, LongUnion, LongerUnion, SizeUnion };
+    // Example for ShortUnion
+    let a_shortunion = ShortUnion::new_with(55_u16).saturating_sub(ShortUnion::new_with(50_u16));
+    println!("55 - 50 = {}", a_shortunion);
+    assert_eq!(a_shortunion.get(), 5_u16);
 
+    let b_u16 = a_shortunion.saturating_sub(ShortUnion::new_with(55_u16));
+    println!("5 - 55 = {}", b_u16);
+    assert_eq!(b_u16.get(), 0_u16);
+
+    // Example for IntUnion
+    let a_intunion = IntUnion::new_with(55_u32).saturating_sub(IntUnion::new_with(50_u32));
+    println!("55 - 50 = {}", a_intunion);
+    assert_eq!(a_intunion.get(), 5_u32);
+
+    let b_intunion = a_intunion.saturating_sub(IntUnion::new_with(55_u32));
+    println!("{} - 55 = {}", a_intunion, b_intunion);
+    assert_eq!(b_intunion.get(), 0_u32);
+
+    // Example for LongUnion
+    let a_longunion = LongUnion::new_with(55_u64).saturating_sub(LongUnion::new_with(50_u64));
+    println!("55 - 50 = {}", a_longunion);
+    assert_eq!(a_longunion.get(), 5_u64);
+
+    let b_longunion = a_longunion.saturating_sub(LongUnion::new_with(55_u64));
+    println!("{} - 55 = {}", a_longunion, b_longunion);
+    assert_eq!(b_longunion.get(), 0_u64);
+
+    // Example for LongerUnion
+    let a_longerunion = LongerUnion::new_with(55_u128).saturating_sub(LongerUnion::new_with(50_u128));
+    println!("55 - 50 = {}", a_longerunion);
+    assert_eq!(a_longerunion.get(), 5_u128);
+
+    let b_longerunion = a_longerunion.saturating_sub(LongerUnion::new_with(55_u128));
+    println!("{} - 55 = {}", a_longerunion, b_longerunion);
+    assert_eq!(b_longerunion.get(), 0_u128);
+
+    // Example for SizeUnion
+    let a_sizeunion = SizeUnion::new_with(55_usize).saturating_sub(SizeUnion::new_with(50_usize));
+    println!("55 - 50 = {}", a_sizeunion);
+    assert_eq!(a_sizeunion.get(), 5_usize);
+
+    let b_sizeunion = a_sizeunion.saturating_sub(SizeUnion::new_with(55_usize));
+    println!("{} - 55 = {}", a_sizeunion, b_sizeunion);
+    assert_eq!(b_sizeunion.get(), 0_usize);
+    println!("--------------------------------------");
 }
 
 

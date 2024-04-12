@@ -431,7 +431,7 @@ impl Debug for ShortUnion
     /// plagiarism is not made maliciously but is made for the reason of
     /// effectiveness and efficiency so that users may understand better and
     /// easily how to use this method with simiilarity to the method
-    /// Debug() of implementation for the primitive unsigned integer
+    /// Debug() of implementation for the primitive unsigned integer 
     /// types.
     /// 
     /// # References

@@ -2386,7 +2386,7 @@ fn small_uint_unchecked_sub()
 
     // Example for SizeUnion
     let a_sizeunion = small_uint_unchecked_sub_func(55_usize.into_sizeunion(), 55_usize.into_sizeunion());
-    println!("55 - 55 = {}", a_usize);
+    println!("55 - 55 = {}", a_sizeunion);
     assert_eq!(a_sizeunion.get(), 0_usize);
 
     // It will panic
@@ -2472,7 +2472,7 @@ fn small_uint_saturating_sub()
     assert_eq!(a_intunion.get(), 5_u32);
 
     let b_intunion = small_uint_saturating_sub_func(a_intunion, 55_u32.into_intunion());
-    println!("{} - 55 = {}", a_u32, b_intunion);
+    println!("{} - 55 = {}", a_intunion, b_intunion);
     assert_eq!(b_intunion.get(), 0_u32);
 
     // Example for LongUnion
@@ -2486,7 +2486,7 @@ fn small_uint_saturating_sub()
 
     // Example for LongerUnion
     let a_longerunion = small_uint_saturating_sub_func(55_u128.into_longerunion(), 50_u128.into_longerunion());
-    println!("55 - 50 = {}", a_u128);
+    println!("55 - 50 = {}", a_longerunion);
     assert_eq!(a_longerunion.get(), 5_u128);
 
     let b_longerunion = small_uint_saturating_sub_func(a_longerunion, 55_u128.into_longerunion());
