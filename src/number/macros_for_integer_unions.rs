@@ -9280,7 +9280,156 @@ macro_rules! integer_union_methods {
         /// integer types.
         #[inline] pub fn saturating_sub(self, rhs: Self) -> Self    { Self::new_with( self.get().saturating_sub(rhs.get()) ) }
 
+        // fn abs_diff(self, other: Self) -> Self
+        /// Computes the absolute difference between `self` and `other`.
+        /// 
+        /// # Arguments
+        /// `other` is of type `Self` 
+        /// 
+        /// # Output
+        /// It returns the absolute difference between `self` and `other`.
+        /// 
+        /// # Example 1 for ShortUnion
+        /// ```
+        /// use cryptocol::number::ShortUnion;
+        /// let a_shortunion = ShortUnion::new_with(5050_u16);
+        /// let b_shortunion = ShortUnion::new_with(5000_u16);
+        /// let c_shortunion = a_shortunion.abs_diff(b_shortunion);
+        /// let d_shortunion = b_shortunion.abs_diff(a_shortunion);
+        /// println!("{} <-> {} = {}", a_shortunion, b_shortunion, c_shortunion);
+        /// assert_eq!(c_shortunion.get(), 50_u16);
+        /// println!("{} <-> {} = {}", b_shortunion, a_shortunion, d_shortunion);
+        /// assert_eq!(d_shortunion.get(), 50_u16);
+        /// ```
+        /// 
+        /// # Example 2 for IntUnion
+        /// ```
+        /// use cryptocol::number::IntUnion;
+        /// let a_intunion = IntUnion::new_with(500500_u32);
+        /// let b_intunion = IntUnion::new_with(500000_u32);
+        /// let c_intunion = a_intunion.abs_diff(b_intunion);
+        /// let d_intunion = b_intunion.abs_diff(a_intunion);
+        /// println!("{} <-> {} = {}", a_intunion, b_intunion, c_intunion);
+        /// assert_eq!(c_intunion.get(), 500_u32);
+        /// println!("{} <-> {} = {}", b_intunion, a_intunion, d_intunion);
+        /// assert_eq!(d_intunion.get(), 500_u32);
+        /// ```
+        /// 
+        /// # Example 3 for LongUnion
+        /// ```
+        /// use cryptocol::number::LongUnion;
+        /// let a_longunion = LongUnion::new_with(5000050000_u64);
+        /// let b_longunion = LongUnion::new_with(5000000000_u64);
+        /// let c_longunion = a_longunion.abs_diff(b_longunion);
+        /// let d_longunion = b_longunion.abs_diff(a_longunion);
+        /// println!("{} <-> {} = {}", a_longunion, b_longunion, c_longunion);
+        /// assert_eq!(c_longunion.get(), 50000_u64);
+        /// println!("{} <-> {} = {}", b_longunion, a_longunion, d_longunion);
+        /// assert_eq!(d_longunion.get(), 50000_u64);
+        /// ```
+        /// 
+        /// # Example 4 for LongerUnion
+        /// ```
+        /// use cryptocol::number::LongerUnion;
+        /// let a_longerunion = LongerUnion::new_with(500000000500000000_u128);
+        /// let b_longerunion = LongerUnion::new_with(500000000000000000_u128);
+        /// let c_longerunion = a_longerunion.abs_diff(b_longerunion);
+        /// let d_longerunion = b_longerunion.abs_diff(a_longerunion);
+        /// println!("{} <-> {} = {}", a_longerunion, b_longerunion, c_longerunion);
+        /// assert_eq!(c_longerunion.get(), 500000000_u128);
+        /// println!("{} <-> {} = {}", b_longerunion, a_longerunion, d_longerunion);
+        /// assert_eq!(d_longerunion.get(), 500000000_u128);
+        /// ```
+        /// 
+        /// # Example 5 for SizeUnion
+        /// ```
+        /// use cryptocol::number::SizeUnion;
+        /// let a_sizeunion = SizeUnion::new_with(105_usize);
+        /// let b_sizeunion = SizeUnion::new_with(100_usize);
+        /// let c_sizeunion = a_sizeunion.abs_diff(b_sizeunion);
+        /// let d_sizeunion = b_sizeunion.abs_diff(a_sizeunion);
+        /// println!("{} <-> {} = {}", a_sizeunion, b_sizeunion, c_sizeunion);
+        /// assert_eq!(c_sizeunion.get(), 5_usize);
+        /// println!("{} <-> {} = {}", b_sizeunion, a_sizeunion, d_sizeunion);
+        /// assert_eq!(d_sizeunion.get(), 5_usize);
+        /// ```
+        /// 
+        /// # Plagiarism in descryption
+        /// It calls the method abs_diff() of implementation of the primitive
+        /// unsigned integer types such as`u8`, `u16`, `u32`, `u64`, `u128` and
+        /// `usize` directly. So, all the description of this method is mainly the
+        /// same as that of the method abs_diff() of implementation of the
+        /// primitive unsigned integer types except example codes. Confer to the
+        /// descryptions that are linked to in the section _Reference_. This
+        /// plagiarism is not made maliciously but is made for the reason of
+        /// effectiveness and efficiency so that users may understand better and
+        /// easily how to use this method with simiilarity to the method
+        /// abs_diff() of implementation of the primitive unsigned integer types.
         #[inline] pub fn abs_diff(self, other: Self) -> Self    { Self::new_with( self.get().abs_diff(other.get()) ) }
+
+        // pub fn carrying_mul(self, rhs: Self, carry: Self) -> (Self, Self)
+        /// Calculates the “full multiplication” `self` * `rhs` + `carry` without
+        /// the possibility to overflow.
+        /// 
+        /// # Arguments
+        /// - `rhs` is a multiplier of the type `Self`
+        /// - `carry` is a carry overflowed from a previous multiplication operation.
+        /// 
+        /// # Output
+        /// It returns `self` * `rhs` + `carry` in the form of a tuple of the
+        /// low-order (wrapping) bits and the high-order (overflow) bits of the
+        /// result as two separate values, in that order.
+        /// 
+        /// # Feature
+        /// It performs “long multiplication” which takes in an extra amount to add,
+        /// and may return an additional amount of overflow. This allows for
+        /// chaining together multiple multiplications to create “big integers”
+        /// which represent larger values.
+        /// 
+        /// # Counterpart Methods
+        /// If you don’t need the carry, then you can use `widening_mul()` instead.
+        /// 
+        /// The value of the first field in the returned tuple matches what you’d
+        /// get by combining the `wrapping_mul()` and `wrapping_add()` methods:
+        /// `self.wrapping_mul(rhs).wrapping_add(carry)`. So,
+        /// `self.carrying_mul(rhs, carry).0` == `self.wrapping_mul(rhs).wrapping_add(carry)`
+        /// 
+        /// # Example 1 for ShortUnion for Little Endian
+        /// ```
+        /// ```
+        /// # Plagiarism in descryption
+        /// Even though it does not call the method `carrying_mul()` of
+        /// implementation of the primitive unsigned integer types such as `u8`,
+        /// `u16`, `u32`, `u64`, `u128` and `usize` directly, all the description
+        /// of this method is mainly the same as that of the method `carrying_mul()`
+        /// of implementation of the primitive unsigned integer types for nightly
+        /// version except example codes. Confer to the descryptions that are linked
+        /// to in the section _Reference_. This plagiarism is not made maliciously
+        /// but is made for the reason of effectiveness and efficiency so that users
+        /// may understand better and easily how to use this method with simiilarity
+        /// to the method `carrying_mul()` of implementation of the primitive
+        /// unsigned integer types.
+        /// 
+        /// # Possiible Changes in Future
+        /// This method does not call the method `carrying_mul()` of the primitive
+        /// unsigned integer types directly. Instead, it is implemented to perform
+        /// the same thing as that of `carrying_mul()` of the primitive unsigned
+        /// integer types because the methods `carrying_mul()` of the primitive
+        /// unsigned integer types are only for nightly version. So, when the method
+        /// `carrying_mul()` of the primitive unsigned integer types will become a
+        /// part of non-nightly normal version, the implementation of this method
+        /// will be changed to call the method `carrying_mul()` of the primitive
+        /// unsigned integer types directly.
+        /// 
+        /// # Big-endian issue
+        /// It is just experimental for Big Endian CPUs. So, you are not encouraged
+        /// to use it for Big Endian CPUs for serious purpose. Only use this crate
+        /// for Big-endian CPUs with your own full responsibility.
+        #[inline] pub fn carrying_mul(self, rhs: Self, carry: Self) -> (Self, Self)
+        {
+            let (low, high) = self.get()._carrying_mul(rhs.get(), carry.get());
+            (Self::new_with(low), Self::new_with(high))
+        }
 
         #[inline] pub fn wrapping_mul(self, rhs: Self) -> Self      { Self::new_with( self.get().wrapping_mul(rhs.get()) ) }
         // #[inline] pub fn wrapping_mul_assign(&mut self, rhs: Self)  { self.set(self.get().wrapping_mul(rhs.get())); }

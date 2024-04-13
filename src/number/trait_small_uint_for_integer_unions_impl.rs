@@ -119,15 +119,16 @@ macro_rules! SmallUInt_methods_for_integer_unions_impl {
             /// Calculates the “full multiplication” `self` * `rhs` + `carry` without
             /// the possibility to overflow.
             /// [Read more](trait@SmallUInt#tymethod.carrying_mul) in detail.
-            #[inline] fn carrying_mul(self, rhs: Self, carry: Self) -> (Self, Self) { self._carrying_mul(rhs, carry) }
+            #[inline] fn carrying_mul(self, rhs: Self, carry: Self) -> (Self, Self) { self.carrying_mul(rhs, carry) }
 
             // fn carrying_mul_for_internal_use(self, rhs: Self, carry: Self) -> (Self, Self);
             /// It is for internal use. You are recommended to use
             /// [carrying_mul()](trait@SmallUInt#tymethod.carrying_mul) instead.
             fn _carrying_mul(self, rhs: Self, carry: Self) -> (Self, Self)
             {
-                let (low, high) = self.get()._carrying_mul(rhs.get(), carry.get());
-                (Self::new_with(low), Self::new_with(high))
+                self.carrying_mul(rhs, carry)
+                // let (low, high) = self.get()._carrying_mul(rhs.get(), carry.get());
+                // (Self::new_with(low), Self::new_with(high))
             }
 
             /// Calculates the complete product `self` * `rhs` without the

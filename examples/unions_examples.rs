@@ -7535,6 +7535,7 @@ fn unions_sub_main()
     unions_checked_sub();
     unions_unchecked_sub();
     unions_saturating_sub();
+    unions_abs_diff();
 }
 
 fn unions_borrowing_sub()
@@ -8038,7 +8039,116 @@ fn unions_saturating_sub()
 }
 
 
-fn unions_mul_main(){}
+fn unions_abs_diff()
+{
+    println!("union_abs_diff");
+    use cryptocol::number::{ ShortUnion, IntUnion, LongUnion, LongerUnion, SizeUnion };
+    // Example for ShortUnion
+    let a_shortunion = ShortUnion::new_with(5050_u16);
+    let b_shortunion = ShortUnion::new_with(5000_u16);
+    let c_shortunion = a_shortunion.abs_diff(b_shortunion);
+    let d_shortunion = b_shortunion.abs_diff(a_shortunion);
+    println!("{} <-> {} = {}", a_shortunion, b_shortunion, c_shortunion);
+    assert_eq!(c_shortunion.get(), 50_u16);
+    println!("{} <-> {} = {}", b_shortunion, a_shortunion, d_shortunion);
+    assert_eq!(d_shortunion.get(), 50_u16);
+
+    // Example for IntUnion
+    let a_intunion = IntUnion::new_with(500500_u32);
+    let b_intunion = IntUnion::new_with(500000_u32);
+    let c_intunion = a_intunion.abs_diff(b_intunion);
+    let d_intunion = b_intunion.abs_diff(a_intunion);
+    println!("{} <-> {} = {}", a_intunion, b_intunion, c_intunion);
+    assert_eq!(c_intunion.get(), 500_u32);
+    println!("{} <-> {} = {}", b_intunion, a_intunion, d_intunion);
+    assert_eq!(d_intunion.get(), 500_u32);
+
+    // Example for LongUnion
+    let a_longunion = LongUnion::new_with(5000050000_u64);
+    let b_longunion = LongUnion::new_with(5000000000_u64);
+    let c_longunion = a_longunion.abs_diff(b_longunion);
+    let d_longunion = b_longunion.abs_diff(a_longunion);
+    println!("{} <-> {} = {}", a_longunion, b_longunion, c_longunion);
+    assert_eq!(c_longunion.get(), 50000_u64);
+    println!("{} <-> {} = {}", b_longunion, a_longunion, d_longunion);
+    assert_eq!(d_longunion.get(), 50000_u64);
+
+    // Example for LongerUnion
+    let a_longerunion = LongerUnion::new_with(500000000500000000_u128);
+    let b_longerunion = LongerUnion::new_with(500000000000000000_u128);
+    let c_longerunion = a_longerunion.abs_diff(b_longerunion);
+    let d_longerunion = b_longerunion.abs_diff(a_longerunion);
+    println!("{} <-> {} = {}", a_longerunion, b_longerunion, c_longerunion);
+    assert_eq!(c_longerunion.get(), 500000000_u128);
+    println!("{} <-> {} = {}", b_longerunion, a_longerunion, d_longerunion);
+    assert_eq!(d_longerunion.get(), 500000000_u128);
+
+    // Example for SizeUnion
+    let a_sizeunion = SizeUnion::new_with(105_usize);
+    let b_sizeunion = SizeUnion::new_with(100_usize);
+    let c_sizeunion = a_sizeunion.abs_diff(b_sizeunion);
+    let d_sizeunion = b_sizeunion.abs_diff(a_sizeunion);
+    println!("{} <-> {} = {}", a_sizeunion, b_sizeunion, c_sizeunion);
+    assert_eq!(c_sizeunion.get(), 5_usize);
+    println!("{} <-> {} = {}", b_sizeunion, a_sizeunion, d_sizeunion);
+    assert_eq!(d_sizeunion.get(), 5_usize);
+    println!("--------------------------------------");
+}
+
+
+fn unions_mul_main()
+{
+    unions_carrying_mul();
+    unions_widening_mul();
+    unions_wrapping_mul();
+    unions_overflowing_mul();
+    unions_checked_mul();
+    unions_unchecked_mul();
+    unions_saturating_mul();
+}
+
+fn unions_carrying_mul()
+{
+    println!("unions_carrying_mul");
+
+    println!("--------------------------------------");
+}
+
+fn unions_widening_mul()
+{
+    println!("unions_widening_mul");
+    println!("--------------------------------------");
+}
+
+fn unions_wrapping_mul()
+{
+    println!("unions_wrapping_mul");
+    println!("--------------------------------------");
+}
+
+fn unions_overflowing_mul()
+{
+    println!("unions_overflowing_mul");
+    println!("--------------------------------------");
+}
+
+fn unions_checked_mul()
+{
+    println!("unions_checked_mul");
+    println!("--------------------------------------");
+}
+
+fn unions_unchecked_mul()
+{
+    println!("unions_unchecked_mul");
+    println!("--------------------------------------");
+}
+
+fn unions_saturating_mul()
+{
+    println!("unions_saturating_mul");
+    println!("--------------------------------------");
+}
 
 
 fn unions_div_main(){}
@@ -8480,39 +8590,40 @@ fn end()
 {
     // calc();
 }
-/*
-fn calc()
-{
-    println!("For IntUnion");
-    use cryptocol::number::LongUnion;
-    let a = LongUnion::new_with(9876543210123456789_u64);
-    let b = LongUnion::new_with(7654321098765432101_u64);
-    let (c, z) = a.borrowing_sub(b, false);
-    println!("{}_u64 - {}_u64 = {}_u64, {}", a, b, c, z);
-    println!("a: {}_u32 - {}_u32 = {}_u64", a.get_uint_(1), a.get_uint_(0), a);
-    println!("b: {}_u32 - {}_u32 = {}_u64", b.get_uint_(1), b.get_uint_(0), b);
-    println!("c: {}_u32 - {}_u32 = {}_u64", c.get_uint_(1), c.get_uint_(0), c);
 
-    let (d, z) = c.borrowing_sub(b, false);
-    println!("{}_u64 - {}_u64 = {}_u64, {}", c, b, d, z);
-    println!("c: {}_u32 - {}_u32 = {}_u64", c.get_uint_(1), c.get_uint_(0), c);
-    println!("b: {}_u32 - {}_u32 = {}_u64", b.get_uint_(1), b.get_uint_(0), b);
-    println!("d: {}_u32 - {}_u32 = {}_u64", d.get_uint_(1), d.get_uint_(0), d);
+// fn calc()
+// {
+//     println!("For IntUnion");
+//     use cryptocol::number::{SmallUInt, LongUnion};
+//     let a = LongUnion::new_with(9876543210123456789_u64);
+//     let b = LongUnion::new_with(7654321098765432101_u64);
+//     let (c, d) = a.carrying_mul(b, 0_u64.into_longunion());
+//     println!("{}_u64 X {}_u64 = ({}_u64, {}_u64)", a, b, d, c);
+//     println!("a: {}_u32 - {}_u32 = {}_u64", a.get_uint_(1), a.get_uint_(0), a);
+//     println!("b: {}_u32 - {}_u32 = {}_u64", b.get_uint_(1), b.get_uint_(0), b);
+//     println!("c: {}_u32 - {}_u32 = {}_u64", c.get_uint_(1), c.get_uint_(0), c);
+//     println!("d: {}_u32 - {}_u32 = {}_u64", d.get_uint_(1), d.get_uint_(0), d);
+//     let e = LongerUnion::new_with_ulongs([c.get(), d.get()]);
+//     println!("e: {}_u128", e);
+//     for i in 0..2
+//     {
+//         for j in 0..2
+//         {
+//             #[allow(unstable_name_collisions)]
+//             let (e, f) = a.get_uint_(j).carrying_mul(b.get_uint_(i), 0_u32);
+//             println!("{}_u32 X {}_u32 = ({}_u32, {}_u32)", a.get_uint_(j), b.get_uint_(i), f, e);
+//         }
+//     }
 
-    println!("\nFor LongUnion");
-    use cryptocol::number::LongerUnion;
-    let a = LongerUnion::new_with(198765432198765432198765432198765432198_u128);
-    let b = LongerUnion::new_with(123456789012345678901234567890123456789_u128);
-    let (c, z) = a.borrowing_sub(b, false);
-    println!("{}_u128 - {}_u128 = {}_u128, {}", a, b, c, z);
-    println!("a: {}_u64 - {}_u64 = {}_u128", a.get_ulong_(1), a.get_ulong_(0), a);
-    println!("b: {}_u64 - {}_u64 = {}_u128", b.get_ulong_(1), b.get_ulong_(0), b);
-    println!("c: {}_u64 - {}_u64 = {}_u128", c.get_ulong_(1), c.get_ulong_(0), c);
 
-    let (d, z) = c.borrowing_sub(b, false);
-    println!("{}_u128 - {}_u128 = {}_u128, {}", c, b, d, z);
-    println!("c: {}_u64 - {}_u64 = {}_u128", c.get_ulong_(1), c.get_ulong_(0), c);
-    println!("b: {}_u64 - {}_u64 = {}_u128", b.get_ulong_(1), b.get_ulong_(0), b);
-    println!("d: {}_u64 - {}_u64 = {}_u128", d.get_ulong_(1), d.get_ulong_(0), d);
-}
-*/
+//     println!("\nFor LongUnion");
+//     use cryptocol::number::LongerUnion;
+//     let a = LongerUnion::new_with(198765432198765432198765432198765432198_u128);
+//     let b = LongerUnion::new_with(123456789012345678901234567890123456789_u128);
+//     let (c, d) = a.carrying_mul(b, 0_u128.into_longerunion());
+//     println!("{}_u128 X {}_u128 = ({}_u128, {}_u128)", a, b, d, c);
+//     println!("a: {}_u64 - {}_u64 = {}_u128", a.get_ulong_(1), a.get_ulong_(0), a);
+//     println!("b: {}_u64 - {}_u64 = {}_u128", b.get_ulong_(1), b.get_ulong_(0), b);
+//     println!("c: {}_u64 - {}_u64 = {}_u128", c.get_ulong_(1), c.get_ulong_(0), c);
+//     println!("d: {}_u64 - {}_u64 = {}_u128", d.get_ulong_(1), d.get_ulong_(0), d);
+// }

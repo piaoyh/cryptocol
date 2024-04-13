@@ -6857,11 +6857,11 @@ pub trait SmallUInt: Copy + Clone + Sized //+ Display + Debug + ToString
     /// for the primitive type `usize`, read [here](https://doc.rust-lang.org/core/primitive.usize.html#method.saturating_sub).
     fn saturating_sub(self, rhs: Self) -> Self;
 
-    // fn abs_diff(self, other: Self) -> Self;
+    // fn abs_diff(self, other: Self) -> Self
     /// Computes the absolute difference between `self` and `other`.
     /// 
-    /// # Feature
-    /// 
+    /// # Arguments
+    /// `other` is of type `Self` 
     /// 
     /// # Output
     /// It returns the absolute difference between `self` and `other`.
@@ -6971,13 +6971,13 @@ pub trait SmallUInt: Copy + Clone + Sized //+ Display + Debug + ToString
     /// use cryptocol::number::SmallUInt;
     /// fn main()
     /// {
-    ///     let a_usize = func(5000050000_usize, 5000000000_usize);
-    ///     println!("5000050000 <-> 5000000000 = {}", a_usize);
-    ///     assert_eq!(a_usize, 50000_usize);
+    ///     let a_usize = small_uint_abs_diff_func(55_usize, 50_usize);
+    ///     println!("55 <-> 50 = {}", a_usize);
+    ///     assert_eq!(a_usize, 5_usize);
     /// 
-    ///     let b_usize = func(5000000000_usize, 5000050000_usize);
-    ///     println!("5000000000 <-> 5000050000 = {}", b_usize);
-    ///     assert_eq!(b_usize, 50000_usize);
+    ///     let b_usize = small_uint_abs_diff_func(50_usize, 55_usize);
+    ///     println!("50 <-> 55 = {}", b_u8);
+    ///     assert_eq!(b_usize, 5_usize);
     /// }
     /// 
     /// fn func<T: SmallUInt>(lhs: T, rhs: T) -> T
@@ -7071,13 +7071,13 @@ pub trait SmallUInt: Copy + Clone + Sized //+ Display + Debug + ToString
     /// use cryptocol::number::SmallUInt;
     /// fn main()
     /// {
-    ///     let a_sizeunion = func(5000050000_usize.into_sizeunion(), 5000000000_usize.into_sizeunion());
-    ///     println!("5000050000 <-> 5000000000 = {}", a_sizeunion);
-    ///     assert_eq!(a_sizeunion.get(), 50000_usize);
+    ///     let a_sizeunion = small_uint_abs_diff_func(55_usize.into_sizeunion(), 50_usize.into_sizeunion());
+    ///     println!("55 <-> 50 = {}", a_sizeunion);
+    ///     assert_eq!(a_sizeunion.get(), 5_usize);
     /// 
-    ///     let b_sizeunion = func(5000000000_usize.into_sizeunion(), 5000050000_usize.into_sizeunion());
-    ///     println!("5000000000 <-> 5000050000 = {}", b_sizeunion);
-    ///     assert_eq!(b_sizeunion.get(), 50000_usize);
+    ///     let b_sizeunion = small_uint_abs_diff_func(50_usize.into_sizeunion(), 55_usize.into_sizeunion());
+    ///     println!("50 <-> 55 = {}", b_sizeunion);
+    ///     assert_eq!(b_sizeunion.get(), 5_usize);
     /// }
     /// 
     /// fn func<T: SmallUInt>(lhs: T, rhs: T) -> T
@@ -7134,13 +7134,13 @@ pub trait SmallUInt: Copy + Clone + Sized //+ Display + Debug + ToString
     ///     println!("500000000000000000 <-> 500000000500000000 = {}", b_u128);
     ///     assert_eq!(b_u128, 500000000_u128);
     /// 
-    ///     let a_usize = func(5000050000_usize, 5000000000_usize);
-    ///     println!("5000050000 <-> 5000000000 = {}", a_usize);
-    ///     assert_eq!(a_usize, 50000_usize);
+    ///     let a_usize = func(55_usize, 50_usize);
+    ///     println!("55 <-> 50 = {}", a_usize);
+    ///     assert_eq!(a_usize, 5_usize);
     /// 
-    ///     let b_usize = func(5000000000_usize, 5000050000_usize);
-    ///     println!("5000000000 <-> 5000050000 = {}", b_usize);
-    ///     assert_eq!(b_usize, 50000_usize);
+    ///     let b_usize = func(50_usize, 55_usize);
+    ///     println!("50 <-> 55 = {}", b_u8);
+    ///     assert_eq!(b_usize, 5_usize);
     /// 
     ///     let a_shortunion = func(5050_u16.into_shortunion(), 5000_u16.into_shortunion());
     ///     println!("5050 <-> 5000 = {}", a_shortunion);
@@ -7174,13 +7174,13 @@ pub trait SmallUInt: Copy + Clone + Sized //+ Display + Debug + ToString
     ///     println!("500000000000000000 <-> 500000000500000000 = {}", b_longerunion);
     ///     assert_eq!(b_longerunion.get(), 500000000_u128);
     /// 
-    ///     let a_sizeunion = func(5000050000_usize.into_sizeunion(), 5000000000_usize.into_sizeunion());
-    ///     println!("5000050000 <-> 5000000000 = {}", a_sizeunion);
-    ///     assert_eq!(a_sizeunion.get(), 50000_usize);
+    ///     let a_sizeunion = small_uint_abs_diff_func(55_usize.into_sizeunion(), 50_usize.into_sizeunion());
+    ///     println!("55 <-> 50 = {}", a_sizeunion);
+    ///     assert_eq!(a_sizeunion.get(), 5_usize);
     /// 
-    ///     let b_sizeunion = func(5000000000_usize.into_sizeunion(), 5000050000_usize.into_sizeunion());
-    ///     println!("5000000000 <-> 5000050000 = {}", b_sizeunion);
-    ///     assert_eq!(b_sizeunion.get(), 50000_usize);
+    ///     let b_sizeunion = small_uint_abs_diff_func(50_usize.into_sizeunion(), 55_usize.into_sizeunion());
+    ///     println!("50 <-> 55 = {}", b_sizeunion);
+    ///     assert_eq!(b_sizeunion.get(), 5_usize);
     /// }
     /// 
     /// fn func<T: SmallUInt>(lhs: T, rhs: T) -> T
@@ -7749,6 +7749,10 @@ pub trait SmallUInt: Copy + Clone + Sized //+ Display + Debug + ToString
     // pub fn carrying_mul(self, rhs: Self, carry: Self) -> (Self, Self)
     /// Calculates the “full multiplication” `self` * `rhs` + `carry` without
     /// the possibility to overflow.
+    /// 
+    /// # Arguments
+    /// - `rhs` is a multiplier of the type `Self`
+    /// - `carry` is a carry overflowed from a previous multiplication operation.
     /// 
     /// # Output
     /// It returns `self` * `rhs` + `carry` in the form of a tuple of the
