@@ -8588,42 +8588,58 @@ fn size_union_debug_fmt_main()
 
 fn end()
 {
-    // calc();
+    calc();
 }
 
-// fn calc()
-// {
-//     println!("For IntUnion");
-//     use cryptocol::number::{SmallUInt, LongUnion};
-//     let a = LongUnion::new_with(9876543210123456789_u64);
-//     let b = LongUnion::new_with(7654321098765432101_u64);
-//     let (c, d) = a.carrying_mul(b, 0_u64.into_longunion());
-//     println!("{}_u64 X {}_u64 = ({}_u64, {}_u64)", a, b, d, c);
-//     println!("a: {}_u32 - {}_u32 = {}_u64", a.get_uint_(1), a.get_uint_(0), a);
-//     println!("b: {}_u32 - {}_u32 = {}_u64", b.get_uint_(1), b.get_uint_(0), b);
-//     println!("c: {}_u32 - {}_u32 = {}_u64", c.get_uint_(1), c.get_uint_(0), c);
-//     println!("d: {}_u32 - {}_u32 = {}_u64", d.get_uint_(1), d.get_uint_(0), d);
-//     let e = LongerUnion::new_with_ulongs([c.get(), d.get()]);
-//     println!("e: {}_u128", e);
-//     for i in 0..2
-//     {
-//         for j in 0..2
-//         {
-//             #[allow(unstable_name_collisions)]
-//             let (e, f) = a.get_uint_(j).carrying_mul(b.get_uint_(i), 0_u32);
-//             println!("{}_u32 X {}_u32 = ({}_u32, {}_u32)", a.get_uint_(j), b.get_uint_(i), f, e);
-//         }
-//     }
+fn calc()
+{
+    println!("For IntUnion");
+    use cryptocol::number::{SmallUInt, LongUnion};
+    let a = LongUnion::new_with(9876543210123456789_u64);
+    let b = LongUnion::new_with(7654321098765432101_u64);
+    let (c, d) = a.carrying_mul(b, 0_u64.into_longunion());
+    println!("{}_u64 X {}_u64 = ({}_u64, {}_u64)", a, b, d, c);
+    println!("a: {}_u32 - {}_u32 = {}_u64", a.get_uint_(1), a.get_uint_(0), a);
+    println!("b: {}_u32 - {}_u32 = {}_u64", b.get_uint_(1), b.get_uint_(0), b);
+    println!("c: {}_u32 - {}_u32 = {}_u64", c.get_uint_(1), c.get_uint_(0), c);
+    println!("d: {}_u32 - {}_u32 = {}_u64", d.get_uint_(1), d.get_uint_(0), d);
+    let z = LongerUnion::new_with_ulongs([c.get(), d.get()]);
+    println!("z: {}_u128", z);
+    for i in 0..4
+        { print!("{}_u32 - ", z.get_uint_(3-i)); }
+    println!();
+    for i in 0..2
+    {
+        for j in 0..2
+        {
+            #[allow(unstable_name_collisions)]
+            let (e, f) = a.get_uint_(j).carrying_mul(b.get_uint_(i), 0_u32);
+            println!("{}_u32 X {}_u32 = ({}_u32, {}_u32)", a.get_uint_(j), b.get_uint_(i), f, e);
+        }
+    }
 
-
-//     println!("\nFor LongUnion");
-//     use cryptocol::number::LongerUnion;
-//     let a = LongerUnion::new_with(198765432198765432198765432198765432198_u128);
-//     let b = LongerUnion::new_with(123456789012345678901234567890123456789_u128);
-//     let (c, d) = a.carrying_mul(b, 0_u128.into_longerunion());
-//     println!("{}_u128 X {}_u128 = ({}_u128, {}_u128)", a, b, d, c);
-//     println!("a: {}_u64 - {}_u64 = {}_u128", a.get_ulong_(1), a.get_ulong_(0), a);
-//     println!("b: {}_u64 - {}_u64 = {}_u128", b.get_ulong_(1), b.get_ulong_(0), b);
-//     println!("c: {}_u64 - {}_u64 = {}_u128", c.get_ulong_(1), c.get_ulong_(0), c);
-//     println!("d: {}_u64 - {}_u64 = {}_u128", d.get_ulong_(1), d.get_ulong_(0), d);
-// }
+    println!("\nFor LongUnion");
+    use cryptocol::number::{ LongerUnion, BigUInt };
+    let a = LongerUnion::new_with(198765432198765432198765432198765432198_u128);
+    let b = LongerUnion::new_with(123456789012345678901234567890123456789_u128);
+    let (c, d) = a.carrying_mul(b, 0_u128.into_longerunion());
+    println!("{}_u128 X {}_u128 = ({}_u128, {}_u128)", a, b, d, c);
+    println!("a: {}_u64 - {}_u64 = {}_u128", a.get_ulong_(1), a.get_ulong_(0), a);
+    println!("b: {}_u64 - {}_u64 = {}_u128", b.get_ulong_(1), b.get_ulong_(0), b);
+    println!("c: {}_u64 - {}_u64 = {}_u128", c.get_ulong_(1), c.get_ulong_(0), c);
+    println!("d: {}_u64 - {}_u64 = {}_u128", d.get_ulong_(1), d.get_ulong_(0), d);
+    let z = BigUInt::<u64, 4>::from_array([c.get_ulong_(0), c.get_ulong_(1), d.get_ulong_(0), d.get_ulong_(1)]);
+    println!("z: {}_u256", z);
+    for i in 0..4
+        { print!("{}_u64 - ", z.get_num_(3-i)); }
+    println!();
+    for i in 0..2
+    {
+        for j in 0..2
+        {
+            #[allow(unstable_name_collisions)]
+            let (e, f) = a.get_ulong_(j).carrying_mul(b.get_ulong_(i), 0_u64);
+            println!("{}_u64 X {}_u64 = ({}_u64, {}_u64)", a.get_ulong_(j), b.get_ulong_(i), f, e);
+        }
+    }
+}

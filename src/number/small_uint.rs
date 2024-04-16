@@ -8137,10 +8137,10 @@ pub trait SmallUInt: Copy + Clone + Sized //+ Display + Debug + ToString
     /// for the primitive type `usize`, read [here](https://doc.rust-lang.org/core/primitive.usize.html#method.carrying_mul).
     fn carrying_mul(self, rhs: Self, carry: Self) -> (Self, Self);
 
-    // fn carrying_mul(self, rhs: Self, carry: Self) -> (Self, Self);
-    /// __It is for internal use only.__ You are supposed to use
-    /// [carrying_mul()](trait@SmallUInt#tymethod.carrying_mul) instead.
-    fn _carrying_mul(self, rhs: Self, carry: Self) -> (Self, Self);
+    // // fn carrying_mul(self, rhs: Self, carry: Self) -> (Self, Self);
+    // /// __It is for internal use only.__ You are supposed to use
+    // /// [carrying_mul()](trait@SmallUInt#tymethod.carrying_mul) instead.
+    // fn _carrying_mul(self, rhs: Self, carry: Self) -> (Self, Self);
     
     // pub fn widening_mul(self, rhs: Self) -> (Self, Self)
     /// Calculates the complete product `self` * `rhs` without the possibility
@@ -8562,9 +8562,9 @@ pub trait SmallUInt: Copy + Clone + Sized //+ Display + Debug + ToString
     /// for the primitive type `usize`, read [here](https://doc.rust-lang.org/core/primitive.usize.html#method.widening_mul).
     fn widening_mul(self, rhs: Self) -> (Self, Self);
 
-    // fn _widening_mul(self, rhs: Self, carry: Self) -> (Self, Self);
-    /// It is for internal use. You are recommended to use [widening_mul()](trait@SmallUInt#tymethod.widening_mul) instead.
-    fn _widening_mul(self, rhs: Self) -> (Self, Self);
+    // // fn _widening_mul(self, rhs: Self, carry: Self) -> (Self, Self);
+    // /// It is for internal use. You are recommended to use [widening_mul()](trait@SmallUInt#tymethod.widening_mul) instead.
+    // fn _widening_mul(self, rhs: Self) -> (Self, Self);
 
     // fn wrapping_mul(self, rhs: Self) -> Self
     /// Computes `self` * `rhs`, wrapping around at the boundary of the type.
@@ -19960,10 +19960,10 @@ pub trait SmallUInt: Copy + Clone + Sized //+ Display + Debug + ToString
     /// for the primitive type `usize`, read [here](https://doc.rust-lang.org/core/primitive.usize.html#method.isqrt).
     fn isqrt(self) -> Self;
 
-    // fn _isqrt(self, rhs: Self, carry: Self) -> (Self, Self);
-    /// __It is for internal use only.__ You are supposed to use
-    /// [isqrt()](trait@SmallUInt#tymethod.isqrt) instead.
-    fn _isqrt(self) -> Self;
+    // // fn _isqrt(self, rhs: Self, carry: Self) -> (Self, Self);
+    // /// __It is for internal use only.__ You are supposed to use
+    // /// [isqrt()](trait@SmallUInt#tymethod.isqrt) instead.
+    // fn _isqrt(self) -> Self;
 
     // fn root(self, exp: Self) -> Self;
     /// Returns the `exp`-th root of the number.

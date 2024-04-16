@@ -2921,7 +2921,7 @@ fn small_uint_carrying_mul()
     //                  (1226661429_u32,  771527212_u32)
     // + (954183848_u32, 3735936288_u32)
     // -----------------------------------------------------------------
-    //   (954183849_u32, 1033146151_u32, 4190455352_u32, 2923262217_u32) == 429516456138000000_u64
+    //   (954183849_u32, 1033146151_u32, 4190455352_u32, 2923262217_u32) == 75598233076116445704676116321386983689_u128
     let (c_lower_u32, c_low_u32, c_high_u32, c_higher_u32 ) = small_uint_carrying_mul_func(a_low_u32, a_high_u32, b_low_u32, b_high_u32);
     println!("{}-{}-{}-{}", c_higher_u32, c_high_u32, c_low_u32, c_lower_u32);
     assert_eq!(c_higher_u32, 954183849_u32);
@@ -2933,10 +2933,38 @@ fn small_uint_carrying_mul()
     let b = LongerUnion::new_with_uints([b_low_u32, b_high_u32, 0, 0]);
     let c = a * b;
     println!("{} * {} = {}", a.get(), b.get(), c.get());
-    assert_eq!(c_higher_u16, c.get_ushort_(3));
-    assert_eq!(c_high_u16, c.get_ushort_(2));
-    assert_eq!(c_low_u16, c.get_ushort_(1));
-    assert_eq!(c_lower_u16, c.get_ushort_(0));
+    assert_eq!(c_higher_u32, c.get_uint_(3));
+    assert_eq!(c_high_u32, c.get_uint_(2));
+    assert_eq!(c_low_u32, c.get_uint_(1));
+    assert_eq!(c_lower_u32, c.get_uint_(0));
+
+    // Example for u64 for Little Endian
+    // a_u128: u128 === (a_high_u64, a_low_u64) == (10775095670246085798_u64, 7681743649119882630_u64) == 198765432198765432198765432198765432198_u128
+    let a_high_u64 = 10775095670246085798_u64;
+    let a_low_u64 = 7681743649119882630_u64;
+    // b_u64: u64 === (b_high_u64, b_low_u64) == (6692605942763486917_u64, 12312739301371248917_u64) == 123456789012345678901234567890123456789_u128
+    let b_high_u64 = 6692605942763486917_u64;
+    let b_low_u64 = 12312739301371248917_u64;
+
+    // (10775095670246085798_u64, 7681743649119882630_u64) X (6692605942763486917_u64, 12312739301371248917_u64) == 198765432198765432198765432198765432198_u128 X 123456789012345678901234567890123456789_u128 == (72113469316534070997571940237811086202_u128, 284839445932509422190795104397182362110_u128) == 24538942025910684226047858446061575867965995914594253912457079712243362292222_u256
+    //
+    //                                                     (10775095670246085798_u64,  7681743649119882630_u64) == 198765432198765432198765432198765432198_u128
+    // X                                                   ( 6692605942763486917_u64, 12312739301371248917_u64) == 123456789012345678901234567890123456789_u128
+    // ---------------------------------------------------------------------------------------------------------
+    //                                                     (  5127371342803972846_u64, 9393535397455192574_u64)
+    //                             (7192106282005498115_u64,  3473120370613376926_u64)
+    //                             (2786989562573083321_u64,  6840685591062354974_u64)
+    // + (3909279004922650219_u64,  1464703988338300862_u64)
+    // --------------------------------------------------------------------------------------------------------
+    //   (3909279004922650219_u64, 11443799832916882298_u64, 15441177304479704746_u64, 9393535397455192574_u64) == 429516456138000000_u64
+    let (c_lower_u64, c_low_u64, c_high_u64, c_higher_u64 ) = small_uint_carrying_mul_func(a_low_u64, a_high_u64, b_low_u64, b_high_u64);
+    println!("{}-{}-{}-{}", c_higher_u64, c_high_u64, c_low_u64, c_lower_u64);
+    assert_eq!(c_higher_u64, 3909279004922650219_u64);
+    assert_eq!(c_high_u64, 11443799832916882298_u64);
+    assert_eq!(c_low_u64, 15441177304479704746_u64);
+    assert_eq!(c_lower_u64, 9393535397455192574_u64);
+
+    // Example for u128 for Little Endian
 
     // Example for ShortUnion for Little Endian
     // a_u64: u32 === (a_high_u16, a_low_u16) == (10000_u16, 10100_u16) == 257010000_u32
@@ -2972,6 +3000,41 @@ fn small_uint_carrying_mul()
     assert_eq!(c_high_shortunion.get(), c.get_ushort_(2));
     assert_eq!(c_low_shortunion.get(), c.get_ushort_(1));
     assert_eq!(c_lower_shortunion.get(), c.get_ushort_(0));
+
+    // Example for IntUnion for Little Endian
+    // a_u64: u64 === (a_high_u32, a_low_u32) == (2299561912_u32, 2956226837_u32) == 9876543210123456789_u64
+    let a_high_intunion = 2299561912_u32.into_intunion();
+    let a_low_intunion = 2956226837_u32.into_intunion();
+    // b_u64: u64 === (b_high_u32, b_low_u32) == (1782160508_u32, 682685733_u32) == 7654321098765432101_u64
+    let b_high_intunion = 1782160508_u32.into_intunion();
+    let b_low_intunion = 682685733_u32.into_intunion();
+
+    // (2299561912_u32, 2956226837_u32) X (1782160508_u32, 682685733_u32) == 9876543210123456789_u64 X 7654321098765432101_u64 == (4098188426859548455_u64, 17997868695111430409_u64) == 75598233076116445704676116321386983689_u128
+    //
+    //                                  (2299561912_u32, 2956226837_u32) == 9876543210123456789_u64
+    // X                                (1782160508_u32,  682685733_u32) == 7654321098765432101_u64
+    // -----------------------------------------------------------------
+    //                                  ( 469892724_u32, 2923262217_u32)
+    //                  ( 365515730_u32, 2949035416_u32)
+    //                  (1226661429_u32,  771527212_u32)
+    // + (954183848_u32, 3735936288_u32)
+    // -----------------------------------------------------------------
+    //   (954183849_u32, 1033146151_u32, 4190455352_u32, 2923262217_u32) == 429516456138000000_u64
+    let (c_lower_intunion, c_low_intunion, c_high_intunion, c_higher_intunion ) = small_uint_carrying_mul_func(a_low_intunion, a_high_intunion, b_low_intunion, b_high_intunion);
+    println!("{}-{}-{}-{}", c_higher_intunion, c_high_intunion, c_low_intunion, c_lower_intunion);
+    assert_eq!(c_higher_intunion.get(), 954183849_u32);
+    assert_eq!(c_high_intunion.get(), 1033146151_u32);
+    assert_eq!(c_low_intunion.get(), 4190455352_u32);
+    assert_eq!(c_lower_intunion.get(), 2923262217_u32);
+
+    let a = LongerUnion::new_with_uints([a_low_intunion.get(), a_high_intunion.get(), 0, 0]);
+    let b = LongerUnion::new_with_uints([b_low_intunion.get(), b_high_intunion.get(), 0, 0]);
+    let c = a * b;
+    println!("{} * {} = {}", a.get(), b.get(), c.get());
+    assert_eq!(c_higher_intunion.get(), c.get_uint_(3));
+    assert_eq!(c_high_intunion.get(), c.get_uint_(2));
+    assert_eq!(c_low_intunion.get(), c.get_uint_(1));
+    assert_eq!(c_lower_intunion.get(), c.get_uint_(0));
     println!("--------------------------------------");
 }
 

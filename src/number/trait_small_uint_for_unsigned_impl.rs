@@ -12,7 +12,6 @@
 #![allow(rustdoc::missing_doc_code_examples)]
 
 use std::mem::{ size_of, size_of_val };
-
 use super::{ SmallUInt, ShortUnion, IntUnion, LongUnion, LongerUnion, SizeUnion };
 
 macro_rules! SmallUInt_methods_for_uint_impl {
@@ -126,38 +125,44 @@ macro_rules! SmallUInt_methods_for_uint_impl {
             /// Calculates the “full multiplication” `self` * `rhs` + `carry` without
             /// the possibility to overflow.
             /// [Read more](trait@SmallUInt#tymethod.carrying_mul) in detail.
-            #[inline] fn carrying_mul(self, rhs: Self, carry: Self) -> (Self, Self) { self._carrying_mul(rhs, carry) }
-
-            // fn carrying_mul_for_internal_use(self, rhs: Self, carry: Self) -> (Self, Self);
-            /// It is for internal use. You are recommended to use
-            /// [carrying_mul()](trait@SmallUInt#tymethod.carrying_mul) instead.
-            fn _carrying_mul(self, rhs: Self, carry: Self) -> (Self, Self)
+            #[inline] fn carrying_mul(self, rhs: Self, carry: Self) -> (Self, Self)
             {
+                //  _carrying_mul(self, rhs, carry)
                 let overflow;
-                let (mut low, mut high) = self._widening_mul(rhs);
+                let (mut low, mut high) = SmallUInt::widening_mul(self, rhs);
                 (low, overflow) = low.overflowing_add(carry);
                 if overflow
                     { high = high.wrapping_add(1); }
                 (low, high)
             }
 
+            // // fn carrying_mul_for_internal_use(self, rhs: Self, carry: Self) -> (Self, Self);
+            // /// It is for internal use. You are recommended to use
+            // /// [carrying_mul()](trait@SmallUInt#tymethod.carrying_mul) instead.
+            // fn _carrying_mul(self, rhs: Self, carry: Self) -> (Self, Self)
+            // {
+            //     let overflow;
+            //     let (mut low, mut high) = self._widening_mul(rhs);
+            //     (low, overflow) = low.overflowing_add(carry);
+            //     if overflow
+            //         { high = high.wrapping_add(1); }
+            //     (low, high)
+            // }
+
             /// Calculates the complete product `self` * `rhs` without the
             /// possibility to overflow.
             /// [Read more](trait@SmallUInt#tymethod.widening_mul) in detail.
-            #[inline] fn widening_mul(self, rhs: Self) -> (Self, Self)  { self._widening_mul(rhs) }
-
-            // fn carrying_mul_for_internal_use(self, rhs: Self, carry: Self) -> (Self, Self);
-            /// It is for internal use. You are recommended to use
-            /// [carrying_mul()](trait@SmallUInt#tymethod.widening_mul) instead.
-            fn _widening_mul(self, rhs: Self) -> (Self, Self)
+            #[inline] fn widening_mul(self, rhs: Self) -> (Self, Self)
             {
-                if (rhs == 0) || (self == 0)
-                    { return (0, 0); }
-
-                let mut low: Self = 0;
-                let mut high: Self = 0;
+                // _widening_mul(self, rhs)
+                let zero = SmallUInt::zero();
+                if rhs.is_zero() || self.is_zero()
+                    { return (zero, zero); }
+        
+                let mut low = zero;
+                let mut high = zero;
                 let mut overflow: bool;
-                let mut bit_check: Self = 1 << (Self::size_in_bits() - 1 - rhs.leading_zeros() as usize);
+                let mut bit_check = Self::one() << (Self::size_in_bits() - 1 - rhs.leading_zeros() as usize);
                 let adder = self;
                 while bit_check != 0
                 {
@@ -169,12 +174,42 @@ macro_rules! SmallUInt_methods_for_uint_impl {
                     {
                         (low, overflow) = low.overflowing_add(adder);
                         if overflow
-                            { high = high.wrapping_add(1); }
+                            { high = high.wrapping_add(Self::one()); }
                     }
                     bit_check >>= 1;
                 }
                 (low, high)
             }
+
+            // // fn carrying_mul_for_internal_use(self, rhs: Self, carry: Self) -> (Self, Self);
+            // /// It is for internal use. You are recommended to use
+            // /// [carrying_mul()](trait@SmallUInt#tymethod.widening_mul) instead.
+            // fn _widening_mul(self, rhs: Self) -> (Self, Self)
+            // {
+            //     if (rhs == 0) || (self == 0)
+            //         { return (0, 0); }
+
+            //     let mut low: Self = 0;
+            //     let mut high: Self = 0;
+            //     let mut overflow: bool;
+            //     let mut bit_check: Self = 1 << (Self::size_in_bits() - 1 - rhs.leading_zeros() as usize);
+            //     let adder = self;
+            //     while bit_check != 0
+            //     {
+            //         high <<= 1;
+            //         if low.is_msb_set()
+            //             { high.set_lsb(); }
+            //         low <<= 1;
+            //         if bit_check & rhs != 0
+            //         {
+            //             (low, overflow) = low.overflowing_add(adder);
+            //             if overflow
+            //                 { high = high.wrapping_add(1); }
+            //         }
+            //         bit_check >>= 1;
+            //     }
+            //     (low, high)
+            // }
 
             /// Computes `self` * `rhs`, wrapping around at the boundary of
             /// the type. [Read more](trait@SmallUInt#tymethod.wrapping_mul)
@@ -332,12 +367,9 @@ macro_rules! SmallUInt_methods_for_uint_impl {
 
             /// Returns the square root of the number.
             /// [Read more](trait@SmallUInt#tymethod.isqrt) in detail.
-            #[inline] fn isqrt(self) -> Self    { self._isqrt() }
-
-            /// Returns the square root of the number.
-            /// [Read more](trait@SmallUInt#tymethod.isqrt) in detail.
-            fn _isqrt(self) -> Self
+            #[inline] fn isqrt(self) -> Self
             {
+                // _isqrt(self)
                 let mut adder;
                 let mut highest = (Self::size_in_bits() - self.leading_zeros() as usize) >> 1;
                 let mut high;
@@ -395,6 +427,68 @@ macro_rules! SmallUInt_methods_for_uint_impl {
                     }
                 }
             }
+
+            // /// Returns the square root of the number.
+            // /// [Read more](trait@SmallUInt#tymethod.isqrt) in detail.
+            // fn _isqrt(self) -> Self
+            // {
+            //     let mut adder;
+            //     let mut highest = (Self::size_in_bits() - self.leading_zeros() as usize) >> 1;
+            //     let mut high;
+            //     let mut low;
+            //     let mut mid;
+            //     let mut res = Self::zero();
+            //     let mut sum;
+            //     let maximum = highest - 1;
+            //     loop
+            //     {
+            //         high = highest;
+            //         low = 0;
+            //         if high == 0
+            //         {
+            //             return res;
+            //         }
+            //         else    // if high > 0
+            //         {
+            //             loop
+            //             {
+            //                 mid = (high + low) >> 1;
+            //                 adder = Self::generate_check_bits_(mid);
+            //                 sum = res + adder;
+            //                 let (sq, b_overflow) = sum.overflowing_mul(sum);
+            //                 if !b_overflow && (sq < self)
+            //                 {
+            //                     if mid == maximum
+            //                     {
+            //                         res = sum;
+            //                         break;
+            //                     }
+            //                     else if mid == low
+            //                     { 
+            //                         res = sum;
+            //                         if mid == 0
+            //                             { highest = 0; }
+            //                         break;
+            //                     }
+            //                     low = mid;
+            //                 }
+            //                 else if b_overflow || (sq > self)
+            //                 {
+            //                     if mid == low
+            //                     { 
+            //                         highest = mid;
+            //                         break;
+            //                     }
+            //                     high = mid;
+            //                 }
+            //                 else    // if sq == self
+            //                 {
+            //                     return sum;
+            //                 }
+            //             }
+            //         }
+            //     }
+            // }
 
             /// Returns the `exp`-th root of the number.
             /// [Read more](trait@SmallUInt#tymethod.root) in detail.
@@ -473,7 +567,7 @@ macro_rules! SmallUInt_methods_for_uint_impl {
                 if (self as u128) < 10000_u128
                 {
                     let small_self = self.into_u16();
-                    let sqrt = small_self._isqrt();
+                    let sqrt = SmallUInt::isqrt(small_self);
                     for p in [3_u16, 5, 7, 11, 13, 17, 19, 23, 29, 31, 37, 41, 43, 47, 53, 59, 61, 67, 71, 73, 79, 83, 89, 97]
                     {
                         if (p > sqrt) || (small_self.wrapping_rem(p) == 0)

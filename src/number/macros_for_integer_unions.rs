@@ -9427,7 +9427,7 @@ macro_rules! integer_union_methods {
         /// for Big-endian CPUs with your own full responsibility.
         #[inline] pub fn carrying_mul(self, rhs: Self, carry: Self) -> (Self, Self)
         {
-            let (low, high) = self.get()._carrying_mul(rhs.get(), carry.get());
+            let (low, high) = SmallUInt::carrying_mul(self.get(), rhs.get(), carry.get());
             (Self::new_with(low), Self::new_with(high))
         }
 
@@ -9693,7 +9693,7 @@ macro_rules! integer_union_methods {
         #[inline] pub fn ilog10(self) -> u32            { self.get().ilog10() }
         #[inline] pub fn ilog2(self) -> u32             { self.get().ilog2() }
 
-        #[inline] pub fn isqrt(self) -> Self             { Self::new_with( self.get()._isqrt() ) }
+        #[inline] pub fn isqrt(self) -> Self             { Self::new_with(SmallUInt::isqrt(self.get()) ) }
         #[inline] pub fn root(self, exp: Self) -> Self  { Self::new_with( self.get().root(exp.get()) ) }
 
         #[inline] pub fn reverse_bits(self) -> Self     { Self::new_with( self.get().reverse_bits() ) }
