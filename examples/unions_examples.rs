@@ -8642,4 +8642,27 @@ fn calc()
             println!("{}_u64 X {}_u64 = ({}_u64, {}_u64)", a.get_ulong_(j), b.get_ulong_(i), f, e);
         }
     }
+
+    println!("\nFor LongerUnion");
+    let a = BigUInt::<u128, 4>::from_array([198765432198765432198765432198765432198_u128, 123456789012345678901234567890123456789_u128, 0_u128, 0_u128]);
+    let b = BigUInt::<u128, 4>::from_array([135792468013579246801357924680135792468_u128, 75318642097531864209753186420975318642_u128, 0_u128, 0_u128]);
+    let c = a.wrapping_mul(&b);
+    println!("{}_u256 X {}_u256 = ({}_u256, {}_u256)", a, b, c.get_num_(1), c.get_num_(0));
+    println!("a: {}_u128 - {}_u128 = {}_u256", a.get_num_(1), a.get_num_(0), a);
+    println!("b: {}_u128 - {}_u128 = {}_u256", b.get_num_(1), b.get_num_(0), b);
+    println!("c: {}_u128 - {}_u128 = {}_u256", c.get_num_(1), c.get_num_(0), BigUInt::<u128, 2>::from_array([c.get_num_(0), c.get_num_(1)]));
+    println!("d: {}_u128 - {}_u128 = {}_u256", c.get_num_(3), c.get_num_(2), BigUInt::<u128, 2>::from_array([c.get_num_(2), c.get_num_(3)]));
+    println!("z: {}_u512", c);
+    for i in 0..4
+        { print!("{}_u128 - ", c.get_num_(3-i)); }
+    println!();
+    for i in 0..2
+    {
+        for j in 0..2
+        {
+            #[allow(unstable_name_collisions)]
+            let (e, f) = a.get_num_(j).carrying_mul(b.get_num_(i), 0_u128);
+            println!("{}_u128 X {}_u128 = ({}_u128, {}_u128)", a.get_num_(j), b.get_num_(i), f, e);
+        }
+    }
 }
