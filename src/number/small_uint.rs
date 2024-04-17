@@ -6971,12 +6971,12 @@ pub trait SmallUInt: Copy + Clone + Sized //+ Display + Debug + ToString
     /// use cryptocol::number::SmallUInt;
     /// fn main()
     /// {
-    ///     let a_usize = small_uint_abs_diff_func(55_usize, 50_usize);
+    ///     let a_usize = func(55_usize, 50_usize);
     ///     println!("55 <-> 50 = {}", a_usize);
     ///     assert_eq!(a_usize, 5_usize);
     /// 
-    ///     let b_usize = small_uint_abs_diff_func(50_usize, 55_usize);
-    ///     println!("50 <-> 55 = {}", b_u8);
+    ///     let b_usize = func(50_usize, 55_usize);
+    ///     println!("50 <-> 55 = {}", b_usize);
     ///     assert_eq!(b_usize, 5_usize);
     /// }
     /// 
@@ -7071,11 +7071,11 @@ pub trait SmallUInt: Copy + Clone + Sized //+ Display + Debug + ToString
     /// use cryptocol::number::SmallUInt;
     /// fn main()
     /// {
-    ///     let a_sizeunion = small_uint_abs_diff_func(55_usize.into_sizeunion(), 50_usize.into_sizeunion());
+    ///     let a_sizeunion = func(55_usize.into_sizeunion(), 50_usize.into_sizeunion());
     ///     println!("55 <-> 50 = {}", a_sizeunion);
     ///     assert_eq!(a_sizeunion.get(), 5_usize);
     /// 
-    ///     let b_sizeunion = small_uint_abs_diff_func(50_usize.into_sizeunion(), 55_usize.into_sizeunion());
+    ///     let b_sizeunion = func(50_usize.into_sizeunion(), 55_usize.into_sizeunion());
     ///     println!("50 <-> 55 = {}", b_sizeunion);
     ///     assert_eq!(b_sizeunion.get(), 5_usize);
     /// }
@@ -7174,11 +7174,11 @@ pub trait SmallUInt: Copy + Clone + Sized //+ Display + Debug + ToString
     ///     println!("500000000000000000 <-> 500000000500000000 = {}", b_longerunion);
     ///     assert_eq!(b_longerunion.get(), 500000000_u128);
     /// 
-    ///     let a_sizeunion = small_uint_abs_diff_func(55_usize.into_sizeunion(), 50_usize.into_sizeunion());
+    ///     let a_sizeunion = func(55_usize.into_sizeunion(), 50_usize.into_sizeunion());
     ///     println!("55 <-> 50 = {}", a_sizeunion);
     ///     assert_eq!(a_sizeunion.get(), 5_usize);
     /// 
-    ///     let b_sizeunion = small_uint_abs_diff_func(50_usize.into_sizeunion(), 55_usize.into_sizeunion());
+    ///     let b_sizeunion = func(50_usize.into_sizeunion(), 55_usize.into_sizeunion());
     ///     println!("50 <-> 55 = {}", b_sizeunion);
     ///     assert_eq!(b_sizeunion.get(), 5_usize);
     /// }
@@ -7970,15 +7970,15 @@ pub trait SmallUInt: Copy + Clone + Sized //+ Display + Debug + ToString
     /// 
     ///     // (10775095670246085798_u64, 7681743649119882630_u64) X (6692605942763486917_u64, 12312739301371248917_u64) == 198765432198765432198765432198765432198_u128 X 123456789012345678901234567890123456789_u128 == (72113469316534070997571940237811086202_u128, 284839445932509422190795104397182362110_u128) == 24538942025910684226047858446061575867965995914594253912457079712243362292222_u256
     ///     //
-    ///     //                                                     (10775095670246085798_u64,  7681743649119882630_u64) == 198765432198765432198765432198765432198_u128
-    ///     // X                                                   ( 6692605942763486917_u64, 12312739301371248917_u64) == 123456789012345678901234567890123456789_u128
+    ///     //                                                      (10775095670246085798_u64,  7681743649119882630_u64) == 198765432198765432198765432198765432198_u128
+    ///     // X                                                    ( 6692605942763486917_u64, 12312739301371248917_u64) == 123456789012345678901234567890123456789_u128
     ///     // ---------------------------------------------------------------------------------------------------------
-    ///     //                                                     (  5127371342803972846_u64, 9393535397455192574_u64)
+    ///     //                                                      ( 5127371342803972846_u64,  9393535397455192574_u64)
     ///     //                             (7192106282005498115_u64,  3473120370613376926_u64)
     ///     //                             (2786989562573083321_u64,  6840685591062354974_u64)
     ///     // + (3909279004922650219_u64,  1464703988338300862_u64)
-    ///     // --------------------------------------------------------------------------------------------------------
-    ///     //   (3909279004922650219_u64, 11443799832916882298_u64, 15441177304479704746_u64, 9393535397455192574_u64) == 429516456138000000_u64
+    ///     // ---------------------------------------------------------------------------------------------------------
+    ///     //   (3909279004922650219_u64, 11443799832916882298_u64, 15441177304479704746_u64,  9393535397455192574_u64) == 24538942025910684226047858446061575867965995914594253912457079712243362292222_u256
     ///     let (c_lower_u64, c_low_u64, c_high_u64, c_higher_u64 ) = func(a_low_u64, a_high_u64, b_low_u64, b_high_u64);
     ///     println!("{}-{}-{}-{}", c_higher_u64, c_high_u64, c_low_u64, c_lower_u64);
     ///     assert_eq!(c_higher_u64, 3909279004922650219_u64);
@@ -8079,12 +8079,12 @@ pub trait SmallUInt: Copy + Clone + Sized //+ Display + Debug + ToString
     ///         //                                                          (10775095670246085798_usize,  7681743649119882630_usize) == 198765432198765432198765432198765432198_u128
     ///         // X                                                        ( 6692605942763486917_usize, 12312739301371248917_usize) == 123456789012345678901234567890123456789_u128
     ///         // -----------------------------------------------------------------------------------------------------------------
-    ///         //                                                         (  5127371342803972846_usize,  9393535397455192574_usize)
+    ///         //                                                          ( 5127371342803972846_usize,  9393535397455192574_usize)
     ///         //                               (7192106282005498115_usize,  3473120370613376926_usize)
     ///         //                               (2786989562573083321_usize,  6840685591062354974_usize)
     ///         // + (3909279004922650219_usize,  1464703988338300862_usize)
     ///         // -----------------------------------------------------------------------------------------------------------------
-    ///         //   (3909279004922650219_usize, 11443799832916882298_usize, 15441177304479704746_usize,  9393535397455192574_usize) == 429516456138000000_usize
+    ///         //   (3909279004922650219_usize, 11443799832916882298_usize, 15441177304479704746_usize,  9393535397455192574_usize) == 24538942025910684226047858446061575867965995914594253912457079712243362292222_u256
     ///         let (c_lower_usize, c_low_usize, c_high_usize, c_higher_usize ) = func(a_low_usize, a_high_usize, b_low_usize, b_high_usize);
     ///         println!("{}-{}-{}-{}", c_higher_usize, c_high_usize, c_low_usize, c_lower_usize);
     ///         assert_eq!(c_higher_usize, 3909279004922650219_usize);
@@ -8140,10 +8140,10 @@ pub trait SmallUInt: Copy + Clone + Sized //+ Display + Debug + ToString
     ///     //   (1525_u16, 62192_u16, 61770_u16, 18048_u16) == 429516456138000000_u64
     ///     let (c_lower_shortunion, c_low_shortunion, c_high_shortunion, c_higher_shortunion ) = func(a_low_shortunion, a_high_shortunion, b_low_shortunion, b_high_shortunion);
     ///     println!("{}-{}-{}-{}", c_higher_shortunion, c_high_shortunion, c_low_shortunion, c_lower_shortunion);
-    ///     assert_eq!(c_higher_shortunion.get(), 1525);
-    ///     assert_eq!(c_high_shortunion.get(), 62192);
-    ///     assert_eq!(c_low_shortunion.get(), 61770);
-    ///     assert_eq!(c_lower_shortunion.get(), 18048);
+    ///     assert_eq!(c_higher_shortunion.get(), 1525_u16);
+    ///     assert_eq!(c_high_shortunion.get(), 62192_u16);
+    ///     assert_eq!(c_low_shortunion.get(), 61770_u16);
+    ///     assert_eq!(c_lower_shortunion.get(), 18048_u16);
     ///     
     ///     let a = LongUnion::new_with_ushorts([a_low_shortunion.get(), a_high_shortunion.get(), 0, 0]);
     ///     let b = LongUnion::new_with_ushorts([b_low_shortunion.get(), b_high_shortunion.get(), 0, 0]);
@@ -8199,7 +8199,7 @@ pub trait SmallUInt: Copy + Clone + Sized //+ Display + Debug + ToString
     ///     // + (954183848_u32, 3735936288_u32)
     ///     // -----------------------------------------------------------------
     ///     //   (954183849_u32, 1033146151_u32, 4190455352_u32, 2923262217_u32) == 429516456138000000_u64
-    ///     let (c_lower_intunion, c_low_intunion, c_high_intunion, c_higher_intunion ) = small_uint_carrying_mul_func(a_low_intunion, a_high_intunion, b_low_intunion, b_high_intunion);
+    ///     let (c_lower_intunion, c_low_intunion, c_high_intunion, c_higher_intunion) = func(a_low_intunion, a_high_intunion, b_low_intunion, b_high_intunion);
     ///     println!("{}-{}-{}-{}", c_higher_intunion, c_high_intunion, c_low_intunion, c_lower_intunion);
     ///     assert_eq!(c_higher_intunion.get(), 954183849_u32);
     ///     assert_eq!(c_high_intunion.get(), 1033146151_u32);
@@ -8251,16 +8251,16 @@ pub trait SmallUInt: Copy + Clone + Sized //+ Display + Debug + ToString
     /// 
     ///     // (10775095670246085798_u64, 7681743649119882630_u64) X (6692605942763486917_u64, 12312739301371248917_u64) == 198765432198765432198765432198765432198_u128 X 123456789012345678901234567890123456789_u128 == (72113469316534070997571940237811086202_u128, 284839445932509422190795104397182362110_u128) == 24538942025910684226047858446061575867965995914594253912457079712243362292222_u256
     ///     //
-    ///     //                                                     (10775095670246085798_u64,  7681743649119882630_u64) == 198765432198765432198765432198765432198_u128
-    ///     // X                                                   ( 6692605942763486917_u64, 12312739301371248917_u64) == 123456789012345678901234567890123456789_u128
+    ///     //                                                      (10775095670246085798_u64,  7681743649119882630_u64) == 198765432198765432198765432198765432198_u128
+    ///     // X                                                    ( 6692605942763486917_u64, 12312739301371248917_u64) == 123456789012345678901234567890123456789_u128
     ///     // ---------------------------------------------------------------------------------------------------------
-    ///     //                                                     (  5127371342803972846_u64, 9393535397455192574_u64)
+    ///     //                                                      ( 5127371342803972846_u64,  9393535397455192574_u64)
     ///     //                             (7192106282005498115_u64,  3473120370613376926_u64)
     ///     //                             (2786989562573083321_u64,  6840685591062354974_u64)
     ///     // + (3909279004922650219_u64,  1464703988338300862_u64)
-    ///     // --------------------------------------------------------------------------------------------------------
-    ///     //   (3909279004922650219_u64, 11443799832916882298_u64, 15441177304479704746_u64, 9393535397455192574_u64) == 429516456138000000_u64
-    ///     let (c_lower_longunion, c_low_longunion, c_high_longunion, c_higher_longunion ) = small_uint_carrying_mul_func(a_low_longunion, a_high_longunion, b_low_longunion, b_high_longunion);
+    ///     // ---------------------------------------------------------------------------------------------------------
+    ///     //   (3909279004922650219_u64, 11443799832916882298_u64, 15441177304479704746_u64,  9393535397455192574_u64) == 24538942025910684226047858446061575867965995914594253912457079712243362292222_u256
+    ///     let (c_lower_longunion, c_low_longunion, c_high_longunion, c_higher_longunion ) = func(a_low_longunion, a_high_longunion, b_low_longunion, b_high_longunion);
     ///     println!("{}-{}-{}-{}", c_higher_longunion, c_high_longunion, c_low_longunion, c_lower_longunion);
     ///     assert_eq!(c_higher_longunion.get(), 3909279004922650219_u64);
     ///     assert_eq!(c_high_longunion.get(), 11443799832916882298_u64);
@@ -8312,7 +8312,7 @@ pub trait SmallUInt: Copy + Clone + Sized //+ Display + Debug + ToString
     ///     // + (27326122685316262062508597076325453266_u128, 184240100967607654057575481238459345242_u128)
     ///     // -----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
     ///     //   (27326122685316262062508597076325453266_u128, 277501602612009932494507905696437247705_u128,  75658536124021560573913567605711708949_u128, 305933135181961371815664194362919418360_u128) == 1076704055370267103358067448344494207403929951418850598311166733254725709101675518708273284527051744761749874770306207984521811586513200762632500980546040_u512
-    ///     let (c_lower_longerunion, c_low_longerunion, c_high_longerunion, c_higher_longerunion ) = small_uint_carrying_mul_func(a_low_longerunion, a_high_longerunion, b_low_longerunion, b_high_longerunion);
+    ///     let (c_lower_longerunion, c_low_longerunion, c_high_longerunion, c_higher_longerunion ) = func(a_low_longerunion, a_high_longerunion, b_low_longerunion, b_high_longerunion);
     ///     println!("{}-{}-{}-{}", c_higher_longerunion, c_high_longerunion, c_low_longerunion, c_lower_longerunion);
     ///     assert_eq!(c_higher_longerunion.get(), 27326122685316262062508597076325453266_u128);
     ///     assert_eq!(c_high_longerunion.get(), 277501602612009932494507905696437247705_u128);
@@ -8357,16 +8357,16 @@ pub trait SmallUInt: Copy + Clone + Sized //+ Display + Debug + ToString
     /// 
     ///         // (10775095670246085798_usize, 7681743649119882630_usize) X (6692605942763486917_usize, 12312739301371248917_usize) == 198765432198765432198765432198765432198_u128 X 123456789012345678901234567890123456789_u128 == (72113469316534070997571940237811086202_u128, 284839445932509422190795104397182362110_u128) == 24538942025910684226047858446061575867965995914594253912457079712243362292222_u256
     ///         //
-    ///         //                                                     (10775095670246085798_usize,  7681743649119882630_usize) == 198765432198765432198765432198765432198_u128
-    ///         // X                                                   ( 6692605942763486917_usize, 12312739301371248917_usize) == 123456789012345678901234567890123456789_u128
-    ///         // ---------------------------------------------------------------------------------------------------------
-    ///         //                                                     (  5127371342803972846_usize, 9393535397455192574_usize)
-    ///         //                             (7192106282005498115_usize,  3473120370613376926_usize)
-    ///         //                             (2786989562573083321_usize,  6840685591062354974_usize)
+    ///         //                                                          (10775095670246085798_usize,  7681743649119882630_usize) == 198765432198765432198765432198765432198_u128
+    ///         // X                                                        ( 6692605942763486917_usize, 12312739301371248917_usize) == 123456789012345678901234567890123456789_u128
+    ///         // -----------------------------------------------------------------------------------------------------------------
+    ///         //                                                          ( 5127371342803972846_usize,  9393535397455192574_usize)
+    ///         //                               (7192106282005498115_usize,  3473120370613376926_usize)
+    ///         //                               (2786989562573083321_usize,  6840685591062354974_usize)
     ///         // + (3909279004922650219_usize,  1464703988338300862_usize)
-    ///         // --------------------------------------------------------------------------------------------------------
-    ///         //   (3909279004922650219_usize, 11443799832916882298_usize, 15441177304479704746_usize, 9393535397455192574_usize) == 429516456138000000_usize
-    ///         let (c_lower_sizeunion, c_low_sizeunion, c_high_sizeunion, c_higher_sizeunion ) = small_uint_carrying_mul_func(a_low_sizeunion, a_high_sizeunion, b_low_sizeunion, b_high_sizeunion);
+    ///         // -----------------------------------------------------------------------------------------------------------------
+    ///         //   (3909279004922650219_usize, 11443799832916882298_usize, 15441177304479704746_usize,  9393535397455192574_usize) == 24538942025910684226047858446061575867965995914594253912457079712243362292222_u256
+    ///         let (c_lower_sizeunion, c_low_sizeunion, c_high_sizeunion, c_higher_sizeunion ) = func(a_low_sizeunion, a_high_sizeunion, b_low_sizeunion, b_high_sizeunion);
     ///         println!("{}-{}-{}-{}", c_higher_sizeunion, c_high_sizeunion, c_low_sizeunion, c_lower_sizeunion);
     ///         assert_eq!(c_higher_sizeunion.get(), 3909279004922650219_usize);
     ///         assert_eq!(c_high_sizeunion.get(), 11443799832916882298_usize);
@@ -8402,7 +8402,7 @@ pub trait SmallUInt: Copy + Clone + Sized //+ Display + Debug + ToString
     /// 
     /// # Collective Example
     /// ```
-    /// use cryptocol::number::{ SmallUInt, IntUnion, LongUnion };
+    /// use cryptocol::number::{ SmallUInt, IntUnion, LongUnion, LongerUnion };
     /// fn main()
     /// {
     ///     // a_u16: u16 === (a_high_u8, a_low_u8) == (100_u8, 101_u8) == 25701_u16
@@ -8459,10 +8459,10 @@ pub trait SmallUInt: Copy + Clone + Sized //+ Display + Debug + ToString
     ///     //   (1525_u16, 62192_u16, 61770_u16, 18048_u16) == 429516456138000000_u64
     ///     let (c_lower_u16, c_low_u16, c_high_u16, c_higher_u16 ) = func(a_low_u16, a_high_u16, b_low_u16, b_high_u16);
     ///     println!("{}-{}-{}-{}", c_higher_u16, c_high_u16, c_low_u16, c_lower_u16);
-    ///     assert_eq!(c_higher_u16, 1525);
-    ///     assert_eq!(c_high_u16, 62192);
-    ///     assert_eq!(c_low_u16, 61770);
-    ///     assert_eq!(c_lower_u16, 18048);
+    ///     assert_eq!(c_higher_u16, 1525_u16);
+    ///     assert_eq!(c_high_u16, 62192_u16);
+    ///     assert_eq!(c_low_u16, 61770_u16);
+    ///     assert_eq!(c_lower_u16, 18048_u16);
     /// 
     ///     let a = LongUnion::new_with_ushorts([a_low_u16, a_high_u16, 0, 0]);
     ///     let b = LongUnion::new_with_ushorts([b_low_u16, b_high_u16, 0, 0]);
@@ -8491,7 +8491,7 @@ pub trait SmallUInt: Copy + Clone + Sized //+ Display + Debug + ToString
     ///     // + (954183848_u32, 3735936288_u32)
     ///     // -----------------------------------------------------------------
     ///     //   (954183849_u32, 1033146151_u32, 4190455352_u32, 2923262217_u32) == 75598233076116445704676116321386983689_u128
-    ///     let (c_lower_u32, c_low_u32, c_high_u32, c_higher_u32 ) = small_uint_carrying_mul_func(a_low_u32, a_high_u32, b_low_u32, b_high_u32);
+    ///     let (c_lower_u32, c_low_u32, c_high_u32, c_higher_u32 ) = func(a_low_u32, a_high_u32, b_low_u32, b_high_u32);
     ///     println!("{}-{}-{}-{}", c_higher_u32, c_high_u32, c_low_u32, c_lower_u32);
     ///     assert_eq!(c_higher_u32, 954183849_u32);
     ///     assert_eq!(c_high_u32, 1033146151_u32);
@@ -8516,16 +8516,16 @@ pub trait SmallUInt: Copy + Clone + Sized //+ Display + Debug + ToString
     ///     
     ///     // (10775095670246085798_u64, 7681743649119882630_u64) X (6692605942763486917_u64, 12312739301371248917_u64) == 198765432198765432198765432198765432198_u128 X 123456789012345678901234567890123456789_u128 == (72113469316534070997571940237811086202_u128, 284839445932509422190795104397182362110_u128) == 24538942025910684226047858446061575867965995914594253912457079712243362292222_u256
     ///     //
-    ///     //                                                     (10775095670246085798_u64,  7681743649119882630_u64) == 198765432198765432198765432198765432198_u128
-    ///     // X                                                   ( 6692605942763486917_u64, 12312739301371248917_u64) == 123456789012345678901234567890123456789_u128
+    ///     //                                                      (10775095670246085798_u64,  7681743649119882630_u64) == 198765432198765432198765432198765432198_u128
+    ///     // X                                                    ( 6692605942763486917_u64, 12312739301371248917_u64) == 123456789012345678901234567890123456789_u128
     ///     // ---------------------------------------------------------------------------------------------------------
-    ///     //                                                     (  5127371342803972846_u64, 9393535397455192574_u64)
+    ///     //                                                      ( 5127371342803972846_u64,  9393535397455192574_u64)
     ///     //                             (7192106282005498115_u64,  3473120370613376926_u64)
     ///     //                             (2786989562573083321_u64,  6840685591062354974_u64)
     ///     // + (3909279004922650219_u64,  1464703988338300862_u64)
-    ///     // --------------------------------------------------------------------------------------------------------
-    ///     //   (3909279004922650219_u64, 11443799832916882298_u64, 15441177304479704746_u64, 9393535397455192574_u64) == 429516456138000000_u64
-    ///     let (c_lower_u64, c_low_u64, c_high_u64, c_higher_u64 ) = small_uint_carrying_mul_func(a_low_u64, a_high_u64, b_low_u64, b_high_u64);
+    ///     // ---------------------------------------------------------------------------------------------------------
+    ///     //   (3909279004922650219_u64, 11443799832916882298_u64, 15441177304479704746_u64,  9393535397455192574_u64) == 24538942025910684226047858446061575867965995914594253912457079712243362292222_u256
+    ///     let (c_lower_u64, c_low_u64, c_high_u64, c_higher_u64 ) = func(a_low_u64, a_high_u64, b_low_u64, b_high_u64);
     ///     println!("{}-{}-{}-{}", c_higher_u64, c_high_u64, c_low_u64, c_lower_u64);
     ///     assert_eq!(c_higher_u64, 3909279004922650219_u64);
     ///     assert_eq!(c_high_u64, 11443799832916882298_u64);
@@ -8550,7 +8550,7 @@ pub trait SmallUInt: Copy + Clone + Sized //+ Display + Debug + ToString
     ///     // + (27326122685316262062508597076325453266_u128, 184240100967607654057575481238459345242_u128)
     ///     // -----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
     ///     //   (27326122685316262062508597076325453266_u128, 277501602612009932494507905696437247705_u128,  75658536124021560573913567605711708949_u128, 305933135181961371815664194362919418360_u128) == 1076704055370267103358067448344494207403929951418850598311166733254725709101675518708273284527051744761749874770306207984521811586513200762632500980546040_u512
-    ///     let (c_lower_u128, c_low_u128, c_high_u128, c_higher_u128 ) = small_uint_carrying_mul_func(a_low_u128, a_high_u128, b_low_u128, b_high_u128);
+    ///     let (c_lower_u128, c_low_u128, c_high_u128, c_higher_u128 ) = func(a_low_u128, a_high_u128, b_low_u128, b_high_u128);
     ///     println!("{}-{}-{}-{}", c_higher_u128, c_high_u128, c_low_u128, c_lower_u128);
     ///     assert_eq!(c_higher_u128, 27326122685316262062508597076325453266_u128);
     ///     assert_eq!(c_high_u128, 277501602612009932494507905696437247705_u128);
@@ -8572,13 +8572,13 @@ pub trait SmallUInt: Copy + Clone + Sized //+ Display + Debug + ToString
     ///         //                                                          (10775095670246085798_usize,  7681743649119882630_usize) == 198765432198765432198765432198765432198_u128
     ///         // X                                                        ( 6692605942763486917_usize, 12312739301371248917_usize) == 123456789012345678901234567890123456789_u128
     ///         // -----------------------------------------------------------------------------------------------------------------
-    ///         //                                                         (  5127371342803972846_usize,  9393535397455192574_usize)
+    ///         //                                                          ( 5127371342803972846_usize,  9393535397455192574_usize)
     ///         //                               (7192106282005498115_usize,  3473120370613376926_usize)
     ///         //                               (2786989562573083321_usize,  6840685591062354974_usize)
     ///         // + (3909279004922650219_usize,  1464703988338300862_usize)
     ///         // -----------------------------------------------------------------------------------------------------------------
-    ///         //   (3909279004922650219_usize, 11443799832916882298_usize, 15441177304479704746_usize,  9393535397455192574_usize) == 429516456138000000_usize
-    ///         let (c_lower_usize, c_low_usize, c_high_usize, c_higher_usize ) = small_uint_carrying_mul_func(a_low_usize, a_high_usize, b_low_usize, b_high_usize);
+    ///         //   (3909279004922650219_usize, 11443799832916882298_usize, 15441177304479704746_usize,  9393535397455192574_usize) == 24538942025910684226047858446061575867965995914594253912457079712243362292222_u256
+    ///         let (c_lower_usize, c_low_usize, c_high_usize, c_higher_usize ) = func(a_low_usize, a_high_usize, b_low_usize, b_high_usize);
     ///         println!("{}-{}-{}-{}", c_higher_usize, c_high_usize, c_low_usize, c_lower_usize);
     ///         assert_eq!(c_higher_usize, 3909279004922650219_usize);
     ///         assert_eq!(c_high_usize, 11443799832916882298_usize);
@@ -8606,10 +8606,10 @@ pub trait SmallUInt: Copy + Clone + Sized //+ Display + Debug + ToString
     ///     //   (1525_u16, 62192_u16, 61770_u16, 18048_u16) == 429516456138000000_u64
     ///     let (c_lower_shortunion, c_low_shortunion, c_high_shortunion, c_higher_shortunion ) = func(a_low_shortunion, a_high_shortunion, b_low_shortunion, b_high_shortunion);
     ///     println!("{}-{}-{}-{}", c_higher_shortunion, c_high_shortunion, c_low_shortunion, c_lower_shortunion);
-    ///     assert_eq!(c_higher_shortunion.get(), 1525);
-    ///     assert_eq!(c_high_shortunion.get(), 62192);
-    ///     assert_eq!(c_low_shortunion.get(), 61770);
-    ///     assert_eq!(c_lower_shortunion.get(), 18048);
+    ///     assert_eq!(c_higher_shortunion.get(), 1525_u16);
+    ///     assert_eq!(c_high_shortunion.get(), 62192_u16);
+    ///     assert_eq!(c_low_shortunion.get(), 61770_u16);
+    ///     assert_eq!(c_lower_shortunion.get(), 18048_u16);
     /// 
     ///     let a = LongUnion::new_with_ushorts([a_low_shortunion.get(), a_high_shortunion.get(), 0, 0]);
     ///     let b = LongUnion::new_with_ushorts([b_low_shortunion.get(), b_high_shortunion.get(), 0, 0]);
@@ -8638,7 +8638,7 @@ pub trait SmallUInt: Copy + Clone + Sized //+ Display + Debug + ToString
     ///     // + (954183848_u32, 3735936288_u32)
     ///     // -----------------------------------------------------------------
     ///     //   (954183849_u32, 1033146151_u32, 4190455352_u32, 2923262217_u32) == 429516456138000000_u64
-    ///     let (c_lower_intunion, c_low_intunion, c_high_intunion, c_higher_intunion ) = small_uint_carrying_mul_func(a_low_intunion, a_high_intunion, b_low_intunion, b_high_intunion);
+    ///     let (c_lower_intunion, c_low_intunion, c_high_intunion, c_higher_intunion ) = func(a_low_intunion, a_high_intunion, b_low_intunion, b_high_intunion);
     ///     println!("{}-{}-{}-{}", c_higher_intunion, c_high_intunion, c_low_intunion, c_lower_intunion);
     ///     assert_eq!(c_higher_intunion.get(), 954183849_u32);
     ///     assert_eq!(c_high_intunion.get(), 1033146151_u32);
@@ -8671,8 +8671,8 @@ pub trait SmallUInt: Copy + Clone + Sized //+ Display + Debug + ToString
     ///     //                             (2786989562573083321_u64,  6840685591062354974_u64)
     ///     // + (3909279004922650219_u64,  1464703988338300862_u64)
     ///     // --------------------------------------------------------------------------------------------------------
-    ///     //   (3909279004922650219_u64, 11443799832916882298_u64, 15441177304479704746_u64, 9393535397455192574_u64) == 429516456138000000_u64
-    ///     let (c_lower_longunion, c_low_longunion, c_high_longunion, c_higher_longunion ) = small_uint_carrying_mul_func(a_low_longunion, a_high_longunion, b_low_longunion, b_high_longunion);
+    ///     //   (3909279004922650219_u64, 11443799832916882298_u64, 15441177304479704746_u64, 9393535397455192574_u64) == 24538942025910684226047858446061575867965995914594253912457079712243362292222_u256
+    ///     let (c_lower_longunion, c_low_longunion, c_high_longunion, c_higher_longunion ) = func(a_low_longunion, a_high_longunion, b_low_longunion, b_high_longunion);
     ///     println!("{}-{}-{}-{}", c_higher_longunion, c_high_longunion, c_low_longunion, c_lower_longunion);
     ///     assert_eq!(c_higher_longunion.get(), 3909279004922650219_u64);
     ///     assert_eq!(c_high_longunion.get(), 11443799832916882298_u64);
@@ -8696,7 +8696,7 @@ pub trait SmallUInt: Copy + Clone + Sized //+ Display + Debug + ToString
     ///     // + (27326122685316262062508597076325453266_u128, 184240100967607654057575481238459345242_u128)
     ///     // -----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
     ///     //   (27326122685316262062508597076325453266_u128, 277501602612009932494507905696437247705_u128,  75658536124021560573913567605711708949_u128, 305933135181961371815664194362919418360_u128) == 1076704055370267103358067448344494207403929951418850598311166733254725709101675518708273284527051744761749874770306207984521811586513200762632500980546040_u512
-    ///     let (c_lower_longerunion, c_low_longerunion, c_high_longerunion, c_higher_longerunion ) = small_uint_carrying_mul_func(a_low_longerunion, a_high_longerunion, b_low_longerunion, b_high_longerunion);
+    ///     let (c_lower_longerunion, c_low_longerunion, c_high_longerunion, c_higher_longerunion ) = func(a_low_longerunion, a_high_longerunion, b_low_longerunion, b_high_longerunion);
     ///     println!("{}-{}-{}-{}", c_higher_longerunion, c_high_longerunion, c_low_longerunion, c_lower_longerunion);
     ///     assert_eq!(c_higher_longerunion.get(), 27326122685316262062508597076325453266_u128);
     ///     assert_eq!(c_high_longerunion.get(), 277501602612009932494507905696437247705_u128);
@@ -8714,16 +8714,16 @@ pub trait SmallUInt: Copy + Clone + Sized //+ Display + Debug + ToString
     /// 
     ///         // (10775095670246085798_usize, 7681743649119882630_usize) X (6692605942763486917_usize, 12312739301371248917_usize) == 198765432198765432198765432198765432198_u128 X 123456789012345678901234567890123456789_u128 == (72113469316534070997571940237811086202_u128, 284839445932509422190795104397182362110_u128) == 24538942025910684226047858446061575867965995914594253912457079712243362292222_u256
     ///         //
-    ///         //                                                     (10775095670246085798_usize,  7681743649119882630_usize) == 198765432198765432198765432198765432198_u128
-    ///         // X                                                   ( 6692605942763486917_usize, 12312739301371248917_usize) == 123456789012345678901234567890123456789_u128
-    ///         // ---------------------------------------------------------------------------------------------------------
-    ///         //                                                     (  5127371342803972846_usize, 9393535397455192574_usize)
-    ///         //                             (7192106282005498115_usize,  3473120370613376926_usize)
-    ///         //                             (2786989562573083321_usize,  6840685591062354974_usize)
+    ///         //                                                          (10775095670246085798_usize,  7681743649119882630_usize) == 198765432198765432198765432198765432198_u128
+    ///         // X                                                        ( 6692605942763486917_usize, 12312739301371248917_usize) == 123456789012345678901234567890123456789_u128
+    ///         // -----------------------------------------------------------------------------------------------------------------
+    ///         //                                                          ( 5127371342803972846_usize,  9393535397455192574_usize)
+    ///         //                               (7192106282005498115_usize,  3473120370613376926_usize)
+    ///         //                               (2786989562573083321_usize,  6840685591062354974_usize)
     ///         // + (3909279004922650219_usize,  1464703988338300862_usize)
-    ///         // --------------------------------------------------------------------------------------------------------
-    ///         //   (3909279004922650219_usize, 11443799832916882298_usize, 15441177304479704746_usize, 9393535397455192574_usize) == 429516456138000000_usize
-    ///         let (c_lower_sizeunion, c_low_sizeunion, c_high_sizeunion, c_higher_sizeunion ) = small_uint_carrying_mul_func(a_low_sizeunion, a_high_sizeunion, b_low_sizeunion, b_high_sizeunion);
+    ///         // -----------------------------------------------------------------------------------------------------------------
+    ///         //   (3909279004922650219_usize, 11443799832916882298_usize, 15441177304479704746_usize,  9393535397455192574_usize) == 24538942025910684226047858446061575867965995914594253912457079712243362292222_u256
+    ///         let (c_lower_sizeunion, c_low_sizeunion, c_high_sizeunion, c_higher_sizeunion ) = func(a_low_sizeunion, a_high_sizeunion, b_low_sizeunion, b_high_sizeunion);
     ///         println!("{}-{}-{}-{}", c_higher_sizeunion, c_high_sizeunion, c_low_sizeunion, c_lower_sizeunion);
     ///         assert_eq!(c_higher_sizeunion.get(), 3909279004922650219_usize);
     ///         assert_eq!(c_high_sizeunion.get(), 11443799832916882298_usize);

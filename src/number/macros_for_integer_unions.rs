@@ -9396,6 +9396,7 @@ macro_rules! integer_union_methods {
         /// 
         /// # Example 1 for ShortUnion for Little Endian
         /// ```
+        /// 
         /// ```
         /// # Plagiarism in descryption
         /// Even though it does not call the method `carrying_mul()` of
