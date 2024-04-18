@@ -8131,7 +8131,23 @@ fn unions_carrying_mul()
     // + (1525_u16, 57600_u16)
     // ---------------------------------
     //   (1525_u16, 62192_u16, 61770_u16, 18048_u16) == 429516456138000000_u64
-    let (c_lower_shortunion, c_low_shortunion, c_high_shortunion, c_higher_shortunion ) = unions_carrying_mul_func(a_low_shortunion, a_high_shortunion, b_low_shortunion, b_high_shortunion);
+    let zero_shortunion = ShortUnion::new_with(0);
+    let one_shortunion = ShortUnion::new_with(1);
+    let (c_lower_shortunion, c_tmp_shortunion) = b_low_shortunion.carrying_mul(a_low_shortunion, zero_shortunion);
+    let (d_low_shortunion, d_high_shortunion) = b_low_shortunion.carrying_mul(a_high_shortunion, c_tmp_shortunion);
+    let (mut c_low_shortunion, e_high_shortunion) = b_high_shortunion.carrying_mul(a_low_shortunion, zero_shortunion);
+    let (mut c_high_shortunion, mut c_higher_shortunion) = b_high_shortunion.carrying_mul(a_high_shortunion, e_high_shortunion);
+
+    let mut overflow: bool;
+    (c_low_shortunion, overflow) = c_low_shortunion.overflowing_add(d_low_shortunion);
+    if overflow
+        { (c_high_shortunion, overflow) = c_high_shortunion.overflowing_add(one_shortunion); }
+    if overflow
+        { c_higher_shortunion = c_higher_shortunion.wrapping_add(one_shortunion); }
+
+    (c_high_shortunion, overflow) = c_high_shortunion.overflowing_add(d_high_shortunion);
+    if overflow
+        { c_higher_shortunion = c_higher_shortunion.wrapping_add(one_shortunion); }
     println!("{}-{}-{}-{}", c_higher_shortunion, c_high_shortunion, c_low_shortunion, c_lower_shortunion);
     assert_eq!(c_higher_shortunion.get(), 1525_u16);
     assert_eq!(c_high_shortunion.get(), 62192_u16);
@@ -8166,7 +8182,23 @@ fn unions_carrying_mul()
     // + (954183848_u32, 3735936288_u32)
     // -----------------------------------------------------------------
     //   (954183849_u32, 1033146151_u32, 4190455352_u32, 2923262217_u32) == 429516456138000000_u64
-    let (c_lower_intunion, c_low_intunion, c_high_intunion, c_higher_intunion ) = unions_carrying_mul_func(a_low_intunion, a_high_intunion, b_low_intunion, b_high_intunion);
+    let zero_intunion = IntUnion::new_with(0);
+    let one_intunion = IntUnion::new_with(1);
+    let (c_lower_intunion, c_tmp_intunion) = b_low_intunion.carrying_mul(a_low_intunion, zero_intunion);
+    let (d_low_intunion, d_high_intunion) = b_low_intunion.carrying_mul(a_high_intunion, c_tmp_intunion);
+    let (mut c_low_intunion, e_high_intunion) = b_high_intunion.carrying_mul(a_low_intunion, zero_intunion);
+    let (mut c_high_intunion, mut c_higher_intunion) = b_high_intunion.carrying_mul(a_high_intunion, e_high_intunion);
+
+    let mut overflow: bool;
+    (c_low_intunion, overflow) = c_low_intunion.overflowing_add(d_low_intunion);
+    if overflow
+        { (c_high_intunion, overflow) = c_high_intunion.overflowing_add(one_intunion); }
+    if overflow
+        { c_higher_intunion = c_higher_intunion.wrapping_add(one_intunion); }
+
+    (c_high_intunion, overflow) = c_high_intunion.overflowing_add(d_high_intunion);
+    if overflow
+        { c_higher_intunion = c_higher_intunion.wrapping_add(one_intunion); }
     println!("{}-{}-{}-{}", c_higher_intunion, c_high_intunion, c_low_intunion, c_lower_intunion);
     assert_eq!(c_higher_intunion.get(), 954183849_u32);
     assert_eq!(c_high_intunion.get(), 1033146151_u32);
@@ -8201,7 +8233,23 @@ fn unions_carrying_mul()
     // + (3909279004922650219_u64,  1464703988338300862_u64)
     // ---------------------------------------------------------------------------------------------------------
     //   (3909279004922650219_u64, 11443799832916882298_u64, 15441177304479704746_u64,  9393535397455192574_u64) == 24538942025910684226047858446061575867965995914594253912457079712243362292222_u256
-    let (c_lower_longunion, c_low_longunion, c_high_longunion, c_higher_longunion ) = unions_carrying_mul_func(a_low_longunion, a_high_longunion, b_low_longunion, b_high_longunion);
+    let zero_longunion = LongUnion::new_with(0);
+    let one_longunion = LongUnion::new_with(1);
+    let (c_lower_longunion, c_tmp_longunion) = b_low_longunion.carrying_mul(a_low_longunion, zero_longunion);
+    let (d_low_longunion, d_high_longunion) = b_low_longunion.carrying_mul(a_high_longunion, c_tmp_longunion);
+    let (mut c_low_longunion, e_high_longunion) = b_high_longunion.carrying_mul(a_low_longunion, zero_longunion);
+    let (mut c_high_longunion, mut c_higher_longunion) = b_high_longunion.carrying_mul(a_high_longunion, e_high_longunion);
+
+    let mut overflow: bool;
+    (c_low_longunion, overflow) = c_low_longunion.overflowing_add(d_low_longunion);
+    if overflow
+        { (c_high_longunion, overflow) = c_high_longunion.overflowing_add(one_longunion); }
+    if overflow
+        { c_higher_longunion = c_higher_longunion.wrapping_add(one_longunion); }
+
+    (c_high_longunion, overflow) = c_high_longunion.overflowing_add(d_high_longunion);
+    if overflow
+        { c_higher_longunion = c_higher_longunion.wrapping_add(one_longunion); }
     println!("{}-{}-{}-{}", c_higher_longunion, c_high_longunion, c_low_longunion, c_lower_longunion);
     assert_eq!(c_higher_longunion.get(), 3909279004922650219_u64);
     assert_eq!(c_high_longunion.get(), 11443799832916882298_u64);
@@ -8227,7 +8275,23 @@ fn unions_carrying_mul()
     // + (27326122685316262062508597076325453266_u128, 184240100967607654057575481238459345242_u128)
     // -----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
     //   (27326122685316262062508597076325453266_u128, 277501602612009932494507905696437247705_u128,  75658536124021560573913567605711708949_u128, 305933135181961371815664194362919418360_u128) == 1076704055370267103358067448344494207403929951418850598311166733254725709101675518708273284527051744761749874770306207984521811586513200762632500980546040_u512
-    let (c_lower_longerunion, c_low_longerunion, c_high_longerunion, c_higher_longerunion ) = unions_carrying_mul_func(a_low_longerunion, a_high_longerunion, b_low_longerunion, b_high_longerunion);
+    let zero_longerunion = LongerUnion::new_with(0);
+    let one_longerunion = LongerUnion::new_with(1);
+    let (c_lower_longerunion, c_tmp_longerunion) = b_low_longerunion.carrying_mul(a_low_longerunion, zero_longerunion);
+    let (d_low_longerunion, d_high_longerunion) = b_low_longerunion.carrying_mul(a_high_longerunion, c_tmp_longerunion);
+    let (mut c_low_longerunion, e_high_longerunion) = b_high_longerunion.carrying_mul(a_low_longerunion, zero_longerunion);
+    let (mut c_high_longerunion, mut c_higher_longerunion) = b_high_longerunion.carrying_mul(a_high_longerunion, e_high_longerunion);
+
+    let mut overflow: bool;
+    (c_low_longerunion, overflow) = c_low_longerunion.overflowing_add(d_low_longerunion);
+    if overflow
+        { (c_high_longerunion, overflow) = c_high_longerunion.overflowing_add(one_longerunion); }
+    if overflow
+        { c_higher_longerunion = c_higher_longerunion.wrapping_add(one_longerunion); }
+
+    (c_high_longerunion, overflow) = c_high_longerunion.overflowing_add(d_high_longerunion);
+    if overflow
+        { c_higher_longerunion = c_higher_longerunion.wrapping_add(one_longerunion); }
     println!("{}-{}-{}-{}", c_higher_longerunion, c_high_longerunion, c_low_longerunion, c_lower_longerunion);
     assert_eq!(c_higher_longerunion.get(), 27326122685316262062508597076325453266_u128);
     assert_eq!(c_high_longerunion.get(), 277501602612009932494507905696437247705_u128);
@@ -8255,34 +8319,30 @@ fn unions_carrying_mul()
         // + (3909279004922650219_usize,  1464703988338300862_usize)
         // -----------------------------------------------------------------------------------------------------------------
         //   (3909279004922650219_usize, 11443799832916882298_usize, 15441177304479704746_usize,  9393535397455192574_usize) == 24538942025910684226047858446061575867965995914594253912457079712243362292222_u256
-        let (c_lower_sizeunion, c_low_sizeunion, c_high_sizeunion, c_higher_sizeunion ) = unions_carrying_mul_func(a_low_sizeunion, a_high_sizeunion, b_low_sizeunion, b_high_sizeunion);
-        println!("{}-{}-{}-{}", c_higher_sizeunion, c_high_sizeunion, c_low_sizeunion, c_lower_sizeunion);
+        let zero_sizeunion = SizeUnion::new_with(0);
+        let one_sizeunion = SizeUnion::new_with(1);
+        let (c_lower_sizeunion, c_tmp_sizeunion) = b_low_sizeunion.carrying_mul(a_low_sizeunion, zero_sizeunion);
+        let (d_low_sizeunion, d_high_sizeunion) = b_low_sizeunion.carrying_mul(a_high_sizeunion, c_tmp_sizeunion);
+        let (mut c_low_sizeunion, e_high_sizeunion) = b_high_sizeunion.carrying_mul(a_low_sizeunion, zero_sizeunion);
+        let (mut c_high_sizeunion, mut c_higher_sizeunion) = b_high_sizeunion.carrying_mul(a_high_sizeunion, e_high_sizeunion);
+    
+        let mut overflow: bool;
+        (c_low_sizeunion, overflow) = c_low_sizeunion.overflowing_add(d_low_sizeunion);
+        if overflow
+            { (c_high_sizeunion, overflow) = c_high_sizeunion.overflowing_add(one_sizeunion); }
+        if overflow
+            { c_higher_sizeunion = c_higher_sizeunion.wrapping_add(one_sizeunion); }
+    
+        (c_high_sizeunion, overflow) = c_high_sizeunion.overflowing_add(d_high_sizeunion);
+        if overflow
+            { c_higher_sizeunion = c_higher_sizeunion.wrapping_add(one_sizeunion); }
+            println!("{}-{}-{}-{}", c_higher_sizeunion, c_high_sizeunion, c_low_sizeunion, c_lower_sizeunion);
         assert_eq!(c_higher_sizeunion.get(), 3909279004922650219_usize);
         assert_eq!(c_high_sizeunion.get(), 11443799832916882298_usize);
         assert_eq!(c_low_sizeunion.get(), 15441177304479704746_usize);
         assert_eq!(c_lower_sizeunion.get(), 9393535397455192574_usize);
     }
     println!("--------------------------------------");
-}
-// Todo : Move to main()
-fn unions_carrying_mul_func<T: cryptocol::number::SmallUInt>(lhs_low: T, lhs_high: T, rhs_low: T, rhs_high: T) -> (T, T, T, T)
-{
-    let (c_low, c_high ) = rhs_low.carrying_mul(lhs_low, T::zero());
-    let (d_low, d_high ) = rhs_low.carrying_mul(lhs_high, c_high);
-    let (mut e_low, e_high ) = rhs_high.carrying_mul(lhs_low, T::zero());
-    let (mut f_low, mut f_high ) = rhs_high.carrying_mul(lhs_high, e_high);
-
-    let mut overflow: bool;
-    (e_low, overflow) = e_low.overflowing_add(d_low);
-    if overflow
-        { (f_low, overflow) = f_low.overflowing_add(T::one()); }
-    if overflow
-        { f_high = f_high.wrapping_add(T::one()); }
-
-    (f_low, overflow) = f_low.overflowing_add(d_high);
-    if overflow
-        { f_high = f_high.wrapping_add(T::one()); }
-    (c_low, e_low, f_low, f_high)
 }
 
 fn unions_widening_mul()

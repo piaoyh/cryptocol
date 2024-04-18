@@ -2852,7 +2852,7 @@ fn small_uint_carrying_mul()
     // + (39_u8,  16_u8)
     // ---------------------------------
     //   (39_u8, 133_u8, 226_u8, 232_u8) == 663085800_u32
-    let (c_lower_u8, c_low_u8, c_high_u8, c_higher_u8 ) = small_uint_carrying_mul_func(a_low_u8, a_high_u8, b_low_u8, b_high_u8);
+    let (c_lower_u8, c_low_u8, c_high_u8, c_higher_u8) = small_uint_carrying_mul_func(a_low_u8, a_high_u8, b_low_u8, b_high_u8);
     println!("{}-{}-{}-{}", c_higher_u8, c_high_u8, c_low_u8, c_lower_u8);
     assert_eq!(c_higher_u8, 39);
     assert_eq!(c_high_u8, 133);
@@ -2887,7 +2887,7 @@ fn small_uint_carrying_mul()
     // + (1525_u16, 57600_u16)
     // ---------------------------------
     //   (1525_u16, 62192_u16, 61770_u16, 18048_u16) == 429516456138000000_u64
-    let (c_lower_u16, c_low_u16, c_high_u16, c_higher_u16 ) = small_uint_carrying_mul_func(a_low_u16, a_high_u16, b_low_u16, b_high_u16);
+    let (c_lower_u16, c_low_u16, c_high_u16, c_higher_u16) = small_uint_carrying_mul_func(a_low_u16, a_high_u16, b_low_u16, b_high_u16);
     println!("{}-{}-{}-{}", c_higher_u16, c_high_u16, c_low_u16, c_lower_u16);
     assert_eq!(c_higher_u16, 1525);
     assert_eq!(c_high_u16, 62192);
@@ -2922,7 +2922,7 @@ fn small_uint_carrying_mul()
     // + (954183848_u32, 3735936288_u32)
     // -----------------------------------------------------------------
     //   (954183849_u32, 1033146151_u32, 4190455352_u32, 2923262217_u32) == 75598233076116445704676116321386983689_u128
-    let (c_lower_u32, c_low_u32, c_high_u32, c_higher_u32 ) = small_uint_carrying_mul_func(a_low_u32, a_high_u32, b_low_u32, b_high_u32);
+    let (c_lower_u32, c_low_u32, c_high_u32, c_higher_u32) = small_uint_carrying_mul_func(a_low_u32, a_high_u32, b_low_u32, b_high_u32);
     println!("{}-{}-{}-{}", c_higher_u32, c_high_u32, c_low_u32, c_lower_u32);
     assert_eq!(c_higher_u32, 954183849_u32);
     assert_eq!(c_high_u32, 1033146151_u32);
@@ -2957,7 +2957,7 @@ fn small_uint_carrying_mul()
     // + (3909279004922650219_u64,  1464703988338300862_u64)
     // ---------------------------------------------------------------------------------------------------------
     //   (3909279004922650219_u64, 11443799832916882298_u64, 15441177304479704746_u64,  9393535397455192574_u64) == 24538942025910684226047858446061575867965995914594253912457079712243362292222_u256
-    let (c_lower_u64, c_low_u64, c_high_u64, c_higher_u64 ) = small_uint_carrying_mul_func(a_low_u64, a_high_u64, b_low_u64, b_high_u64);
+    let (c_lower_u64, c_low_u64, c_high_u64, c_higher_u64) = small_uint_carrying_mul_func(a_low_u64, a_high_u64, b_low_u64, b_high_u64);
     println!("{}-{}-{}-{}", c_higher_u64, c_high_u64, c_low_u64, c_lower_u64);
     assert_eq!(c_higher_u64, 3909279004922650219_u64);
     assert_eq!(c_high_u64, 11443799832916882298_u64);
@@ -2983,7 +2983,7 @@ fn small_uint_carrying_mul()
     // + (27326122685316262062508597076325453266_u128, 184240100967607654057575481238459345242_u128)
     // -----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
     //   (27326122685316262062508597076325453266_u128, 277501602612009932494507905696437247705_u128,  75658536124021560573913567605711708949_u128, 305933135181961371815664194362919418360_u128) == 1076704055370267103358067448344494207403929951418850598311166733254725709101675518708273284527051744761749874770306207984521811586513200762632500980546040_u512
-    let (c_lower_u128, c_low_u128, c_high_u128, c_higher_u128 ) = small_uint_carrying_mul_func(a_low_u128, a_high_u128, b_low_u128, b_high_u128);
+    let (c_lower_u128, c_low_u128, c_high_u128, c_higher_u128) = small_uint_carrying_mul_func(a_low_u128, a_high_u128, b_low_u128, b_high_u128);
     println!("{}-{}-{}-{}", c_higher_u128, c_high_u128, c_low_u128, c_lower_u128);
     assert_eq!(c_higher_u128, 27326122685316262062508597076325453266_u128);
     assert_eq!(c_high_u128, 277501602612009932494507905696437247705_u128);
@@ -3011,7 +3011,7 @@ fn small_uint_carrying_mul()
         // + (3909279004922650219_usize,  1464703988338300862_usize)
         // -----------------------------------------------------------------------------------------------------------------
         //   (3909279004922650219_usize, 11443799832916882298_usize, 15441177304479704746_usize,  9393535397455192574_usize) == 24538942025910684226047858446061575867965995914594253912457079712243362292222_u256
-        let (c_lower_usize, c_low_usize, c_high_usize, c_higher_usize ) = small_uint_carrying_mul_func(a_low_usize, a_high_usize, b_low_usize, b_high_usize);
+        let (c_lower_usize, c_low_usize, c_high_usize, c_higher_usize) = small_uint_carrying_mul_func(a_low_usize, a_high_usize, b_low_usize, b_high_usize);
         println!("{}-{}-{}-{}", c_higher_usize, c_high_usize, c_low_usize, c_lower_usize);
         assert_eq!(c_higher_usize, 3909279004922650219_usize);
         assert_eq!(c_high_usize, 11443799832916882298_usize);
@@ -3038,7 +3038,7 @@ fn small_uint_carrying_mul()
     // + (1525_u16, 57600_u16)
     // ---------------------------------
     //   (1525_u16, 62192_u16, 61770_u16, 18048_u16) == 429516456138000000_u64
-    let (c_lower_shortunion, c_low_shortunion, c_high_shortunion, c_higher_shortunion ) = small_uint_carrying_mul_func(a_low_shortunion, a_high_shortunion, b_low_shortunion, b_high_shortunion);
+    let (c_lower_shortunion, c_low_shortunion, c_high_shortunion, c_higher_shortunion) = small_uint_carrying_mul_func(a_low_shortunion, a_high_shortunion, b_low_shortunion, b_high_shortunion);
     println!("{}-{}-{}-{}", c_higher_shortunion, c_high_shortunion, c_low_shortunion, c_lower_shortunion);
     assert_eq!(c_higher_shortunion.get(), 1525_u16);
     assert_eq!(c_high_shortunion.get(), 62192_u16);
@@ -3073,7 +3073,7 @@ fn small_uint_carrying_mul()
     // + (954183848_u32, 3735936288_u32)
     // -----------------------------------------------------------------
     //   (954183849_u32, 1033146151_u32, 4190455352_u32, 2923262217_u32) == 429516456138000000_u64
-    let (c_lower_intunion, c_low_intunion, c_high_intunion, c_higher_intunion ) = small_uint_carrying_mul_func(a_low_intunion, a_high_intunion, b_low_intunion, b_high_intunion);
+    let (c_lower_intunion, c_low_intunion, c_high_intunion, c_higher_intunion) = small_uint_carrying_mul_func(a_low_intunion, a_high_intunion, b_low_intunion, b_high_intunion);
     println!("{}-{}-{}-{}", c_higher_intunion, c_high_intunion, c_low_intunion, c_lower_intunion);
     assert_eq!(c_higher_intunion.get(), 954183849_u32);
     assert_eq!(c_high_intunion.get(), 1033146151_u32);
@@ -3108,7 +3108,7 @@ fn small_uint_carrying_mul()
     // + (3909279004922650219_u64,  1464703988338300862_u64)
     // ---------------------------------------------------------------------------------------------------------
     //   (3909279004922650219_u64, 11443799832916882298_u64, 15441177304479704746_u64,  9393535397455192574_u64) == 24538942025910684226047858446061575867965995914594253912457079712243362292222_u256
-    let (c_lower_longunion, c_low_longunion, c_high_longunion, c_higher_longunion ) = small_uint_carrying_mul_func(a_low_longunion, a_high_longunion, b_low_longunion, b_high_longunion);
+    let (c_lower_longunion, c_low_longunion, c_high_longunion, c_higher_longunion) = small_uint_carrying_mul_func(a_low_longunion, a_high_longunion, b_low_longunion, b_high_longunion);
     println!("{}-{}-{}-{}", c_higher_longunion, c_high_longunion, c_low_longunion, c_lower_longunion);
     assert_eq!(c_higher_longunion.get(), 3909279004922650219_u64);
     assert_eq!(c_high_longunion.get(), 11443799832916882298_u64);
@@ -3134,7 +3134,7 @@ fn small_uint_carrying_mul()
     // + (27326122685316262062508597076325453266_u128, 184240100967607654057575481238459345242_u128)
     // -----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
     //   (27326122685316262062508597076325453266_u128, 277501602612009932494507905696437247705_u128,  75658536124021560573913567605711708949_u128, 305933135181961371815664194362919418360_u128) == 1076704055370267103358067448344494207403929951418850598311166733254725709101675518708273284527051744761749874770306207984521811586513200762632500980546040_u512
-    let (c_lower_longerunion, c_low_longerunion, c_high_longerunion, c_higher_longerunion ) = small_uint_carrying_mul_func(a_low_longerunion, a_high_longerunion, b_low_longerunion, b_high_longerunion);
+    let (c_lower_longerunion, c_low_longerunion, c_high_longerunion, c_higher_longerunion) = small_uint_carrying_mul_func(a_low_longerunion, a_high_longerunion, b_low_longerunion, b_high_longerunion);
     println!("{}-{}-{}-{}", c_higher_longerunion, c_high_longerunion, c_low_longerunion, c_lower_longerunion);
     assert_eq!(c_higher_longerunion.get(), 27326122685316262062508597076325453266_u128);
     assert_eq!(c_high_longerunion.get(), 277501602612009932494507905696437247705_u128);
@@ -3162,7 +3162,7 @@ fn small_uint_carrying_mul()
         // + (3909279004922650219_usize,  1464703988338300862_usize)
         // -----------------------------------------------------------------------------------------------------------------
         //   (3909279004922650219_usize, 11443799832916882298_usize, 15441177304479704746_usize,  9393535397455192574_usize) == 24538942025910684226047858446061575867965995914594253912457079712243362292222_u256
-        let (c_lower_sizeunion, c_low_sizeunion, c_high_sizeunion, c_higher_sizeunion ) = small_uint_carrying_mul_func(a_low_sizeunion, a_high_sizeunion, b_low_sizeunion, b_high_sizeunion);
+        let (c_lower_sizeunion, c_low_sizeunion, c_high_sizeunion, c_higher_sizeunion) = small_uint_carrying_mul_func(a_low_sizeunion, a_high_sizeunion, b_low_sizeunion, b_high_sizeunion);
         println!("{}-{}-{}-{}", c_higher_sizeunion, c_high_sizeunion, c_low_sizeunion, c_lower_sizeunion);
         assert_eq!(c_higher_sizeunion.get(), 3909279004922650219_usize);
         assert_eq!(c_high_sizeunion.get(), 11443799832916882298_usize);
@@ -3174,10 +3174,10 @@ fn small_uint_carrying_mul()
 
 fn small_uint_carrying_mul_func<T: cryptocol::number::SmallUInt>(lhs_low: T, lhs_high: T, rhs_low: T, rhs_high: T) -> (T, T, T, T)
 {
-    let (c_low, c_high ) = rhs_low.carrying_mul(lhs_low, T::zero());
-    let (d_low, d_high ) = rhs_low.carrying_mul(lhs_high, c_high);
-    let (mut e_low, e_high ) = rhs_high.carrying_mul(lhs_low, T::zero());
-    let (mut f_low, mut f_high ) = rhs_high.carrying_mul(lhs_high, e_high);
+    let (c_low, c_high) = rhs_low.carrying_mul(lhs_low, T::zero());
+    let (d_low, d_high) = rhs_low.carrying_mul(lhs_high, c_high);
+    let (mut e_low, e_high) = rhs_high.carrying_mul(lhs_low, T::zero());
+    let (mut f_low, mut f_high) = rhs_high.carrying_mul(lhs_high, e_high);
 
     let mut overflow: bool;
     (e_low, overflow) = e_low.overflowing_add(d_low);
@@ -3217,7 +3217,7 @@ fn small_uint_widening_mul()
     // + (39_u8,  16_u8)
     // ---------------------------------
     //   (39_u8, 133_u8, 226_u8, 232_u8) == 663085800_u32
-    let (c_lower_u8, c_low_u8, c_high_u8, c_higher_u8 ) = small_uint_widening_mul_func(a_low_u8, a_high_u8, b_low_u8, b_high_u8);
+    let (c_lower_u8, c_low_u8, c_high_u8, c_higher_u8) = small_uint_widening_mul_func(a_low_u8, a_high_u8, b_low_u8, b_high_u8);
     println!("{}-{}-{}-{}", c_higher_u8, c_high_u8, c_low_u8, c_lower_u8);
     assert_eq!(c_higher_u8, 39);
     assert_eq!(c_high_u8, 133);
@@ -3252,7 +3252,7 @@ fn small_uint_widening_mul()
     // + (1525_u16, 57600_u16)
     // ---------------------------------------------
     //   (1525_u16, 62192_u16, 61770_u16, 18048_u16) == 429516456138000000_u64
-    let (c_lower_u16, c_low_u16, c_high_u16, c_higher_u16 ) = small_uint_widening_mul_func(a_low_u16, a_high_u16, b_low_u16, b_high_u16);
+    let (c_lower_u16, c_low_u16, c_high_u16, c_higher_u16) = small_uint_widening_mul_func(a_low_u16, a_high_u16, b_low_u16, b_high_u16);
     println!("{}-{}-{}-{}", c_higher_u16, c_high_u16, c_low_u16, c_lower_u16);
     assert_eq!(c_higher_u16, 1525);
     assert_eq!(c_high_u16, 62192);
@@ -3287,7 +3287,7 @@ fn small_uint_widening_mul()
     // + (1525_u16, 57600_u16)
     // ---------------------------------------------
     //   (1525_u16, 62192_u16, 61770_u16, 18048_u16) == 429516456138000000_u64
-    let (c_lower_shortunion, c_low_shortunion, c_high_shortunion, c_higher_shortunion ) = small_uint_widening_mul_func(a_low_shortunion, a_high_shortunion, b_low_shortunion, b_high_shortunion);
+    let (c_lower_shortunion, c_low_shortunion, c_high_shortunion, c_higher_shortunion) = small_uint_widening_mul_func(a_low_shortunion, a_high_shortunion, b_low_shortunion, b_high_shortunion);
     println!("{}-{}-{}-{}", c_higher_shortunion, c_high_shortunion, c_low_shortunion, c_lower_shortunion);
     assert_eq!(c_higher_shortunion.get(), 1525);
     assert_eq!(c_high_shortunion.get(), 62192);
@@ -3307,10 +3307,10 @@ fn small_uint_widening_mul()
 
 fn small_uint_widening_mul_func<T: cryptocol::number::SmallUInt>(lhs_low: T, lhs_high: T, rhs_low: T, rhs_high: T) -> (T, T, T, T)
 {
-    let (c_low, c_high ) = rhs_low.widening_mul(lhs_low);
-    let (d_low, d_high ) = rhs_low.widening_mul(lhs_high);
-    let (mut e_low, e_high ) = rhs_high.widening_mul(lhs_low);
-    let (mut f_low, mut f_high ) = rhs_high.widening_mul(lhs_high);
+    let (c_low, c_high) = rhs_low.widening_mul(lhs_low);
+    let (d_low, d_high) = rhs_low.widening_mul(lhs_high);
+    let (mut e_low, e_high) = rhs_high.widening_mul(lhs_low);
+    let (mut f_low, mut f_high) = rhs_high.widening_mul(lhs_high);
 
     let mut overflow: bool;
     (e_low, overflow) = e_low.overflowing_add(d_low);
@@ -6595,7 +6595,7 @@ fn small_uint_ilog()
     let a_u8 = 100_u8;
     let base_u8 = 3_u8;
     let res = small_uint_ilog_func(a_u8, base_u8);
-    println!("log_{}( {} ) = {}", base_u8, a_u8, res);
+    println!("log_{}( {}) = {}", base_u8, a_u8, res);
     assert_eq!(res, 4_u32);
 
     // It will panic.
@@ -6611,7 +6611,7 @@ fn small_uint_ilog()
     let a_u16 = 10000_u16;
     let base_u16 = 5_u16;
     let res = small_uint_ilog_func(a_u16, base_u16);
-    println!("log_{}( {} ) = {}", base_u16, a_u16, res);
+    println!("log_{}( {}) = {}", base_u16, a_u16, res);
     assert_eq!(res, 5_u32);
 
     // It will panic.
@@ -6627,7 +6627,7 @@ fn small_uint_ilog()
     let a_u32 = 1000000000_u32;
     let base_u32 = 7_u32;
     let res = small_uint_ilog_func(a_u32, base_u32);
-    println!("log_{}( {} ) = {}", base_u32, a_u32, res);
+    println!("log_{}( {}) = {}", base_u32, a_u32, res);
     assert_eq!(res, 10_u32);
 
     // It will panic.
@@ -6643,7 +6643,7 @@ fn small_uint_ilog()
     let a_u64 = 10000000000000000000_u64;
     let base_u64 = 11_u64;
     let res = small_uint_ilog_func(a_u64, base_u64);
-    println!("log_{}( {} ) = {}", base_u64, a_u64, res);
+    println!("log_{}( {}) = {}", base_u64, a_u64, res);
     assert_eq!(res, 18_u32);
 
     // It will panic.
@@ -6660,7 +6660,7 @@ fn small_uint_ilog()
     let a_u128 = 100000000000000000000000000000000000000_u128;
     let base_u128 = 13_u128;
     let res = small_uint_ilog_func(a_u128, base_u128);
-    println!("log_{}( {} ) = {}", base_u128, a_u128, res);
+    println!("log_{}( {}) = {}", base_u128, a_u128, res);
     assert_eq!(res, 34_u32);
 
     // It will panic.
@@ -6675,7 +6675,7 @@ fn small_uint_ilog()
     let a_usize = 10000000000000000000_usize;
     let base_usize = 17_usize;
     let res = small_uint_ilog_func(a_usize, base_usize);
-    println!("log_{}( {} ) = {}", base_usize, a_usize, res);
+    println!("log_{}( {}) = {}", base_usize, a_usize, res);
     assert_eq!(res, 15_u32);
 
     // It will panic.
@@ -6691,7 +6691,7 @@ fn small_uint_ilog()
     let a_shortunion = 10000_u16.into_shortunion();
     let base_shortunion = 5_u16.into_shortunion();
     let res = small_uint_ilog_func(a_shortunion, base_shortunion);
-    println!("log_{}( {} ) = {}", base_shortunion, a_shortunion, res);
+    println!("log_{}( {}) = {}", base_shortunion, a_shortunion, res);
     assert_eq!(res, 5_u32);
 
     // It will panic.
@@ -6707,7 +6707,7 @@ fn small_uint_ilog()
     let a_intunion = 1000000000_u32.into_intunion();
     let base_intunion = 7_u32.into_intunion();
     let res = small_uint_ilog_func(a_intunion, base_intunion);
-    println!("log_{}( {} ) = {}", base_intunion, a_intunion, res);
+    println!("log_{}( {}) = {}", base_intunion, a_intunion, res);
     assert_eq!(res, 10_u32);
 
     // It will panic.
@@ -6723,7 +6723,7 @@ fn small_uint_ilog()
     let a_longunion = 10000000000000000000_u64.into_longunion();
     let base_longunion = 11_u64.into_longunion();
     let res = small_uint_ilog_func(a_longunion, base_longunion);
-    println!("log_{}( {} ) = {}", base_longunion, a_longunion, res);
+    println!("log_{}( {}) = {}", base_longunion, a_longunion, res);
     assert_eq!(res, 18_u32);
 
     // It will panic.
@@ -6739,7 +6739,7 @@ fn small_uint_ilog()
     let a_longerunion = 100000000000000000000000000000000000000_u128.into_longerunion();
     let base_longerunion = 13_u128.into_longerunion();
     let res = small_uint_ilog_func(a_longerunion, base_longerunion);
-    println!("log_{}( {} ) = {}", base_longerunion, a_longerunion, res);
+    println!("log_{}( {}) = {}", base_longerunion, a_longerunion, res);
     assert_eq!(res, 34_u32);
 
     // It will panic.
@@ -6755,7 +6755,7 @@ fn small_uint_ilog()
     let a_sizeunion = 10000000000000000000_usize.into_sizeunion();
     let base_sizeunion = 17_usize.into_sizeunion();
     let res = small_uint_ilog_func(a_sizeunion, base_sizeunion);
-    println!("log_{}( {} ) = {}", base_sizeunion, a_sizeunion, res);
+    println!("log_{}( {}) = {}", base_sizeunion, a_sizeunion, res);
     assert_eq!(res, 15_u32);
 
     // It will panic.
@@ -6781,7 +6781,7 @@ fn small_uint_ilog10()
     // Example for u8
     let a_u8 = 100_u8;
     let res = small_uint_ilog10_func(a_u8);
-    println!("log_10( {} ) = {}", a_u8, res);
+    println!("log_10( {}) = {}", a_u8, res);
     assert_eq!(res, 2_u32);
     // It will panic.
     // let res = small_uint_ilog10_func(0_u8);
@@ -6789,7 +6789,7 @@ fn small_uint_ilog10()
     // Example for u16
     let a_u16 = 10000_u16;
     let res = small_uint_ilog10_func(a_u16);
-    println!("log_10( {} ) = {}", a_u16, res);
+    println!("log_10( {}) = {}", a_u16, res);
     assert_eq!(res, 4_u32);
     // It will panic.
     // let res = small_uint_ilog10_func(0_u16);
@@ -6797,7 +6797,7 @@ fn small_uint_ilog10()
     // Example for u32
     let a_u32 = 1000000000_u32;
     let res = small_uint_ilog10_func(a_u32);
-    println!("log_10( {} ) = {}", a_u32, res);
+    println!("log_10( {}) = {}", a_u32, res);
     assert_eq!(res, 9_u32);
     // It will panic.
     // let res = small_uint_ilog10_func(0_u32);
@@ -6805,7 +6805,7 @@ fn small_uint_ilog10()
     // Example for u64
     let a_u64 = 10000000000000000000_u64;
     let res = small_uint_ilog10_func(a_u64);
-    println!("log_10( {} ) = {}", a_u64, res);
+    println!("log_10( {}) = {}", a_u64, res);
     assert_eq!(res, 19_u32);
     // It will panic.
     // let res = small_uint_ilog10_func(0_u64);
@@ -6813,7 +6813,7 @@ fn small_uint_ilog10()
     // Example for u128
     let a_u128 = 100000000000000000000000000000000000000_u128;
     let res = small_uint_ilog10_func(a_u128);
-    println!("log_10( {} ) = {}", a_u128, res);
+    println!("log_10( {}) = {}", a_u128, res);
     assert_eq!(res, 38_u32);
     // It will panic.
     // let res = small_uint_ilog10_func(0_u128);
@@ -6821,7 +6821,7 @@ fn small_uint_ilog10()
     // Example for usize
     let a_usize = 10000000000000000000_usize;
     let res = small_uint_ilog10_func(a_usize);
-    println!("log_10( {} ) = {}", a_usize, res);
+    println!("log_10( {}) = {}", a_usize, res);
     assert_eq!(res, 19_u32);
     // It will panic.
     // let res = small_uint_ilog10_func(0_usize);
@@ -6829,7 +6829,7 @@ fn small_uint_ilog10()
     // Example for ShortUnion
     let a_shortunion = 10000_u16.into_shortunion();
     let res = small_uint_ilog10_func(a_shortunion);
-    println!("log_10( {} ) = {}", a_shortunion, res);
+    println!("log_10( {}) = {}", a_shortunion, res);
     assert_eq!(res, 4_u32);
     // It will panic.
     // let res = small_uint_ilog10_func(0_u16.into_shortunion());
@@ -6837,7 +6837,7 @@ fn small_uint_ilog10()
     // Example for IntUnion
     let a_intunion = 1000000000_u32.into_intunion();
     let res = small_uint_ilog10_func(a_intunion);
-    println!("log_10( {} ) = {}", a_intunion, res);
+    println!("log_10( {}) = {}", a_intunion, res);
     assert_eq!(res, 9_u32);
     // It will panic.
     // let res = small_uint_ilog10_func(0_u32.into_shortunion());
@@ -6845,7 +6845,7 @@ fn small_uint_ilog10()
     // Example for LongUnion
     let a_longunion = 10000000000000000000_u64.into_longunion();
     let res = small_uint_ilog10_func(a_longunion);
-    println!("log_10( {} ) = {}", a_longunion, res);
+    println!("log_10( {}) = {}", a_longunion, res);
     assert_eq!(res, 19_u32);
     // It will panic.
     // let res = small_uint_ilog10_func(0_u64.into_longunion());
@@ -6853,7 +6853,7 @@ fn small_uint_ilog10()
     // Example for LongerUnion
     let a_longerunion = 100000000000000000000000000000000000000_u128.into_longerunion();
     let res = small_uint_ilog10_func(a_longerunion);
-    println!("log_10( {} ) = {}", a_longerunion, res);
+    println!("log_10( {}) = {}", a_longerunion, res);
     assert_eq!(res, 38_u32);
     // It will panic.
     // let res = small_uint_ilog10_func(0_u128.into_longerunion());
@@ -6861,7 +6861,7 @@ fn small_uint_ilog10()
     // Example for SizeUnion
     let a_sizeunion = 10000000000000000000_usize.into_sizeunion();
     let res = small_uint_ilog10_func(a_sizeunion);
-    println!("log_10( {} ) = {}", a_sizeunion, res);
+    println!("log_10( {}) = {}", a_sizeunion, res);
     assert_eq!(res, 19_u32);
     // It will panic.
     // let res = small_uint_ilog10_func(0_usize.into_sizeunion());
@@ -6880,7 +6880,7 @@ fn small_uint_ilog2()
     // Example for u8
     let a_u8 = 100_u8;
     let res = small_uint_ilog2_func(a_u8);
-    println!("log_10( {} ) = {}", a_u8, res);
+    println!("log_10( {}) = {}", a_u8, res);
     assert_eq!(res, 6_u32);
     // It will panic.
     // let res = small_uint_ilog2_func(0_u8);
@@ -6888,7 +6888,7 @@ fn small_uint_ilog2()
     // Example for u16
     let a_u16 = 10000_u16;
     let res = small_uint_ilog2_func(a_u16);
-    println!("log_10( {} ) = {}", a_u16, res);
+    println!("log_10( {}) = {}", a_u16, res);
     assert_eq!(res, 13_u32);
     // It will panic.
     // let res = small_uint_ilog2_func(0_u16);
@@ -6896,7 +6896,7 @@ fn small_uint_ilog2()
     // Example for u32
     let a_u32 = 1000000000_u32;
     let res = small_uint_ilog2_func(a_u32);
-    println!("log_10( {} ) = {}", a_u32, res);
+    println!("log_10( {}) = {}", a_u32, res);
     assert_eq!(res, 29_u32);
     // It will panic.
     // let res = small_uint_ilog2_func(0_u32);
@@ -6904,7 +6904,7 @@ fn small_uint_ilog2()
     // Example for u64
     let a_u64 = 10000000000000000000_u64;
     let res = small_uint_ilog2_func(a_u64);
-    println!("log_10( {} ) = {}", a_u64, res);
+    println!("log_10( {}) = {}", a_u64, res);
     assert_eq!(res, 63_u32);
     // It will panic.
     // let res = small_uint_ilog2_func(0_u64);
@@ -6912,7 +6912,7 @@ fn small_uint_ilog2()
     // Example for u128
     let a_u128 = 100000000000000000000000000000000000000_u128;
     let res = small_uint_ilog2_func(a_u128);
-    println!("log_10( {} ) = {}", a_u128, res);
+    println!("log_10( {}) = {}", a_u128, res);
     assert_eq!(res, 126_u32);
     // It will panic.
     // let res = small_uint_ilog2_func(0_u128);
@@ -6920,7 +6920,7 @@ fn small_uint_ilog2()
     // Example for usize
     let a_usize = 10000000000000000000_usize;
     let res = small_uint_ilog2_func(a_usize);
-    println!("log_10( {} ) = {}", a_usize, res);
+    println!("log_10( {}) = {}", a_usize, res);
     assert_eq!(res, 63_u32);
     // It will panic.
     // let res = small_uint_ilog2_func(0_usize);
@@ -6928,7 +6928,7 @@ fn small_uint_ilog2()
     // Example for ShortUnion
     let a_shortunion = 10000_u16.into_shortunion();
     let res = small_uint_ilog2_func(a_shortunion);
-    println!("log_10( {} ) = {}", a_shortunion, res);
+    println!("log_10( {}) = {}", a_shortunion, res);
     assert_eq!(res, 13_u32);
     // It will panic.
     // let res = small_uint_ilog2_func(0_u16.into_shortunion());
@@ -6936,7 +6936,7 @@ fn small_uint_ilog2()
     // Example for IntUnion
     let a_intunion = 1000000000_u32.into_intunion();
     let res = small_uint_ilog2_func(a_intunion);
-    println!("log_10( {} ) = {}", a_intunion, res);
+    println!("log_10( {}) = {}", a_intunion, res);
     assert_eq!(res, 29_u32);
     // It will panic.
     // let res = small_uint_ilog2_func(0_u32.into_shortunion());
@@ -6944,7 +6944,7 @@ fn small_uint_ilog2()
     // Example for LongUnion
     let a_longunion = 10000000000000000000_u64.into_longunion();
     let res = small_uint_ilog2_func(a_longunion);
-    println!("log_10( {} ) = {}", a_longunion, res);
+    println!("log_10( {}) = {}", a_longunion, res);
     assert_eq!(res, 63_u32);
     // It will panic.
     // let res = small_uint_ilog2_func(0_u64.into_longunion());
@@ -6952,7 +6952,7 @@ fn small_uint_ilog2()
     // Example for LongerUnion
     let a_longerunion = 100000000000000000000000000000000000000_u128.into_longerunion();
     let res = small_uint_ilog2_func(a_longerunion);
-    println!("log_10( {} ) = {}", a_longerunion, res);
+    println!("log_10( {}) = {}", a_longerunion, res);
     assert_eq!(res, 126_u32);
     // It will panic.
     // let res = small_uint_ilog2_func(0_u128.into_longerunion());
@@ -6960,7 +6960,7 @@ fn small_uint_ilog2()
     // Example for SizeUnion
     let a_sizeunion = 10000000000000000000_usize.into_sizeunion();
     let res = small_uint_ilog2_func(a_sizeunion);
-    println!("log_10( {} ) = {}", a_sizeunion, res);
+    println!("log_10( {}) = {}", a_sizeunion, res);
     assert_eq!(res, 63_u32);
     // It will panic.
     // let res = small_uint_ilog2_func(0_usize.into_sizeunion());
@@ -6985,67 +6985,67 @@ fn small_uint_isqrt()
     // Example for u8
     let a_u8 = 100_u8;
     let res_u8 = small_uint_isqrt_func(a_u8);
-    println!("isqrt( {} ) = {}", a_u8, res_u8);
+    println!("isqrt( {}) = {}", a_u8, res_u8);
     assert_eq!(res_u8, 10_u8);
 
     // Example for u16
     let a_u16 = 10000_u16;
     let res_u16 = small_uint_isqrt_func(a_u16);
-    println!("isqrt( {} ) = {}", a_u16, res_u16);
+    println!("isqrt( {}) = {}", a_u16, res_u16);
     assert_eq!(res_u16, 100_u16);
 
     // Example for u32
     let a_u32 = 1000000000_u32;
     let res_u32 = small_uint_isqrt_func(a_u32);
-    println!("isqrt( {} ) = {}", a_u32, res_u32);
+    println!("isqrt( {}) = {}", a_u32, res_u32);
     assert_eq!(res_u32, 31622_u32);
 
     // Example for u64
     let a_u64 = 10000000000000000000_u64;
     let res_u64 = small_uint_isqrt_func(a_u64);
-    println!("isqrt( {} ) = {}", a_u64, res_u64);
+    println!("isqrt( {}) = {}", a_u64, res_u64);
     assert_eq!(res_u64, 3162277660_u64);
 
     // Example for u128
     let a_u128 = 100000000000000000000000000000000000000_u128;
     let res_u128 = small_uint_isqrt_func(a_u128);
-    println!("isqrt( {} ) = {}", a_u128, res_u128);
+    println!("isqrt( {}) = {}", a_u128, res_u128);
     assert_eq!(res_u128, 10000000000000000000_u128);
 
     // Example for usize
     let a_usize = 10000000000000000000_usize;
     let res_usize = small_uint_isqrt_func(a_usize);
-    println!("isqrt( {} ) = {}", a_usize, res_usize);
+    println!("isqrt( {}) = {}", a_usize, res_usize);
     assert_eq!(res_usize, 3162277660_usize);
 
     // Example for ShortUnion
     let a_shortunion = 10000_u16.into_shortunion();
     let res_shortunion = small_uint_isqrt_func(a_shortunion);
-    println!("isqrt( {} ) = {}", a_shortunion, res_shortunion);
+    println!("isqrt( {}) = {}", a_shortunion, res_shortunion);
     assert_eq!(res_shortunion.get(), 100_u16);
 
     // Example for IntUnion
     let a_intunion = 1000000000_u32.into_intunion();
     let res_intunion = small_uint_isqrt_func(a_intunion);
-    println!("isqrt( {} ) = {}", a_intunion, res_intunion);
+    println!("isqrt( {}) = {}", a_intunion, res_intunion);
     assert_eq!(res_intunion.get(), 31622_u32);
 
     // Example for LongUnion
     let a_longunion = 10000000000000000000_u64.into_longunion();
     let res_longunion = small_uint_isqrt_func(a_longunion);
-    println!("isqrt( {} ) = {}", a_longunion, res_longunion);
+    println!("isqrt( {}) = {}", a_longunion, res_longunion);
     assert_eq!(res_longunion.get(), 3162277660_u64);
 
     // Example for LongerUnion
     let a_longerunion = 100000000000000000000000000000000000000_u128.into_longerunion();
     let res_longerunion = small_uint_isqrt_func(a_longerunion);
-    println!("isqrt( {} ) = {}", a_longerunion, res_longerunion);
+    println!("isqrt( {}) = {}", a_longerunion, res_longerunion);
     assert_eq!(res_longerunion.get(), 10000000000000000000_u128);
 
     // Example for SizeUnion
     let a_sizeunion = 10000000000000000000_usize.into_sizeunion();
     let res_sizeunion = small_uint_isqrt_func(a_sizeunion);
-    println!("isqrt( {} ) = {}", a_sizeunion, res_sizeunion);
+    println!("isqrt( {}) = {}", a_sizeunion, res_sizeunion);
     assert_eq!(res_sizeunion.get(), 3162277660_usize);
     println!("--------------------------------------");
 }
@@ -7062,122 +7062,122 @@ fn small_uint_root()
     // Example for u8
     let a_u8 = 100_u8;
     let res_u8 = a_u8.root(3_u8);
-    println!("root_3( {} ) = {}", a_u8, res_u8);
+    println!("root_3( {}) = {}", a_u8, res_u8);
     assert_eq!(res_u8, 4_u8);
 
     let b_u8 = 100_u8;
     let res_u8 = small_uint_root_func(b_u8, 3_u8);
-    println!("root_3( {} ) = {}", b_u8, res_u8);
+    println!("root_3( {}) = {}", b_u8, res_u8);
     assert_eq!(res_u8, 4_u8);
 
     // Example for u16
     let a_u16 = 10000_u16;
     let res_u16 = a_u16.root(3_u16);
-    println!("root_3( {} ) = {}", a_u16, res_u16);
+    println!("root_3( {}) = {}", a_u16, res_u16);
     assert_eq!(res_u16, 21_u16);
 
     let b_u16 = 10000_u16;
     let res_u16 = small_uint_root_func(b_u16, 3_u16);
-    println!("root_3( {} ) = {}", b_u16, res_u16);
+    println!("root_3( {}) = {}", b_u16, res_u16);
     assert_eq!(res_u16, 21_u16);
 
     // Example for u32
     let a_u32 = 1000000000_u32;
     let res_u32 = a_u32.root(3_u32);
-    println!("root_3( {} ) = {}", a_u32, res_u32);
+    println!("root_3( {}) = {}", a_u32, res_u32);
     assert_eq!(res_u32, 1000_u32);
 
     let b_u32 = 1000000000_u32;
     let res_u32 = small_uint_root_func(b_u32, 3_u32);
-    println!("root_3( {} ) = {}", b_u32, res_u32);
+    println!("root_3( {}) = {}", b_u32, res_u32);
     assert_eq!(res_u32, 1000_u32);
 
     // Example for u64
     let a_u64 = 10000000000000000000_u64;
     let res_u64 = a_u64.root(3_u64);
-    println!("root_3( {} ) = {}", a_u64, res_u64);
+    println!("root_3( {}) = {}", a_u64, res_u64);
     assert_eq!(res_u64, 2154434_u64);
 
     let b_u64 = 10000000000000000000_u64;
     let res_u64 = small_uint_root_func(b_u64, 3_u64);
-    println!("root_3( {} ) = {}", b_u64, res_u64);
+    println!("root_3( {}) = {}", b_u64, res_u64);
     assert_eq!(res_u64, 2154434_u64);
 
     // Example for u128
     let a_u128 = 100000000000000000000000000000000000000_u128;
     let res_u128 = a_u128.root(3_u128);
-    println!("root_3( {} ) = {}", a_u128, res_u128);
+    println!("root_3( {}) = {}", a_u128, res_u128);
     assert_eq!(res_u128, 4641588833612_u128);
 
     let b_u128 = 100000000000000000000000000000000000000_u128;
     let res_u128 = small_uint_root_func(b_u128, 3_u128);
-    println!("root_3( {} ) = {}", b_u128, res_u128);
+    println!("root_3( {}) = {}", b_u128, res_u128);
     assert_eq!(res_u128, 4641588833612_u128);
 
     // Example for usize
     let a_usize = 10000000000000000000_usize;
     let res_usize = a_usize.root(3_usize);
-    println!("root_3( {} ) = {}", a_usize, res_usize);
+    println!("root_3( {}) = {}", a_usize, res_usize);
     assert_eq!(res_usize, 2154434_usize);
 
     let b_usize = 10000000000000000000_usize;
     let res_usize = small_uint_root_func(b_usize, 3_usize);
-    println!("root_3( {} ) = {}", b_usize, res_usize);
+    println!("root_3( {}) = {}", b_usize, res_usize);
     assert_eq!(res_usize, 2154434_usize);
 
     // Example for ShortUnion
     let a_shortunion = 10000_u16.into_shortunion();
     let res_shortunion = a_shortunion.root(3_u16.into_shortunion());
-    println!("root_3( {} ) = {}", a_shortunion, res_shortunion);
+    println!("root_3( {}) = {}", a_shortunion, res_shortunion);
     assert_eq!(res_shortunion.get(), 21_u16);
 
     let b_shortunion = 10000_u16.into_shortunion();
     let res_shortunion = small_uint_root_func(b_shortunion, 3_u16.into_shortunion());
-    println!("root_3( {} ) = {}", b_shortunion, res_shortunion);
+    println!("root_3( {}) = {}", b_shortunion, res_shortunion);
     assert_eq!(res_shortunion.get(), 21_u16);
 
     // Example for IntUnion
     let a_intunion = 1000000000_u32.into_intunion();
     let res_intunion = a_intunion.root(3_u32.into_intunion());
-    println!("root_3( {} ) = {}", a_intunion, res_intunion);
+    println!("root_3( {}) = {}", a_intunion, res_intunion);
     assert_eq!(res_intunion.get(), 1000_u32);
 
     let b_intunion = 1000000000_u32.into_intunion();
     let res_intunion = small_uint_root_func(b_intunion, 3_u32.into_intunion());
-    println!("root_3( {} ) = {}", b_intunion, res_intunion);
+    println!("root_3( {}) = {}", b_intunion, res_intunion);
     assert_eq!(res_intunion.get(), 1000_u32);
 
     // Example for LongUnion
     let a_longunion = 10000000000000000000_u64.into_longunion();
     let res_longunion = a_longunion.root(3_u64.into_longunion());
-    println!("root_3( {} ) = {}", a_longunion, res_longunion);
+    println!("root_3( {}) = {}", a_longunion, res_longunion);
     assert_eq!(res_longunion.get(), 2154434_u64);
 
     let b_longunion = 10000000000000000000_u64.into_longunion();
     let res_longunion = small_uint_root_func(b_longunion, 3_u64.into_longunion());
-    println!("root_3( {} ) = {}", b_longunion, res_longunion);
+    println!("root_3( {}) = {}", b_longunion, res_longunion);
     assert_eq!(res_longunion.get(), 2154434_u64);
 
     // Example for LongerUnion
     let a_longerunion = 100000000000000000000000000000000000000_u128.into_longerunion();
     let res_longerunion = a_longerunion.root(3_u128.into_longerunion());
-    println!("root_3( {} ) = {}", a_longerunion, res_longerunion);
+    println!("root_3( {}) = {}", a_longerunion, res_longerunion);
     assert_eq!(res_longerunion.get(), 4641588833612_u128);
 
     let b_longerunion = 100000000000000000000000000000000000000_u128.into_longerunion();
     let res_longerunion = small_uint_root_func(b_longerunion, 3_u128.into_longerunion());
-    println!("root_3( {} ) = {}", b_longerunion, res_longerunion);
+    println!("root_3( {}) = {}", b_longerunion, res_longerunion);
     assert_eq!(res_longerunion.get(), 4641588833612_u128);
 
     // Example for SizeUnion
     let a_sizeunion = 10000000000000000000_usize.into_sizeunion();
     let res_sizeunion = a_sizeunion.root(3_usize.into_sizeunion());
-    println!("root_3( {} ) = {}", a_sizeunion, res_sizeunion);
+    println!("root_3( {}) = {}", a_sizeunion, res_sizeunion);
     assert_eq!(res_sizeunion.get(), 2154434_usize);
 
     let b_sizeunion = 10000000000000000000_usize.into_sizeunion();
     let res_sizeunion = small_uint_root_func(b_sizeunion, 3_usize.into_sizeunion());
-    println!("root_3( {} ) = {}", b_sizeunion, res_sizeunion);
+    println!("root_3( {}) = {}", b_sizeunion, res_sizeunion);
     assert_eq!(res_sizeunion.get(), 2154434_usize);
     println!("--------------------------------------");
 }
