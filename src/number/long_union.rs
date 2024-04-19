@@ -470,9 +470,37 @@ impl LongUnion
     /// ```
     #[inline] pub fn new_with_bool(b: bool) -> Self     { Self { ulong: b as u64 } }
 
-    #[inline] pub fn zero() -> Self     { Self { ulong: 0} }
+    // pub fn zero() -> Self
+    /// Constructs a new `LongUnion` with initializing it
+    /// with the value of `0`.
+    /// 
+    /// # Output
+    /// A new object of `Self` initialized with the value of `0`
+    /// 
+    /// Example
+    /// ```
+    /// use cryptocol::number::LongUnion;
+    /// let a = LongUnion::zero();
+    /// println!("a = {}", a.get());
+    /// assert_eq!(a.get(), 0_u64);
+    /// ```
+    #[inline] pub fn zero() -> Self     { Self { ulong: 0 } }
 
-    #[inline] pub fn one() -> Self      { Self { ulong: 1} }
+    // pub fn one() -> Self
+    /// Constructs a new `LongUnion` with initializing it
+    /// with the value of `1`.
+    /// 
+    /// # Output
+    /// A new object of `Self` initialized with the value of `1`
+    /// 
+    /// Example
+    /// ```
+    /// use cryptocol::number::LongUnion;
+    /// let a = LongUnion::one();
+    /// println!("a = {}", a.get());
+    /// assert_eq!(a.get(), 1_u64);
+    /// ```
+    #[inline] pub fn one() -> Self      { Self { ulong: 1 } }
 
     // pub fn get(self) -> u64
     /// Returns its value as `u64`.

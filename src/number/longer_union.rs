@@ -614,9 +614,37 @@ impl LongerUnion
     /// ```
     #[inline] pub fn new_with_bool(b: bool) -> Self     { Self { ulonger: b as u128 } }
 
-    #[inline] pub fn zero() -> Self     { Self { ulonger: 0} }
+    // pub fn zero() -> Self
+    /// Constructs a new `LongerUnion` with initializing it
+    /// with the value of `0`.
+    /// 
+    /// # Output
+    /// A new object of `Self` initialized with the value of `0`
+    /// 
+    /// Example
+    /// ```
+    /// use cryptocol::number::LongerUnion;
+    /// let a = LongerUnion::zero();
+    /// println!("a = {}", a.get());
+    /// assert_eq!(a.get(), 0_u128);
+    /// ```
+    #[inline] pub fn zero() -> Self     { Self { ulonger: 0 } }
 
-    #[inline] pub fn one() -> Self      { Self { ulonger: 1} }
+    // pub fn one() -> Self
+    /// Constructs a new `LongerUnion` with initializing it
+    /// with the value of `1`.
+    /// 
+    /// # Output
+    /// A new object of `Self` initialized with the value of `1`
+    /// 
+    /// Example
+    /// ```
+    /// use cryptocol::number::LongerUnion;
+    /// let a = LongerUnion::one();
+    /// println!("a = {}", a.get());
+    /// assert_eq!(a.get(), 1_u128);
+    /// ```
+    #[inline] pub fn one() -> Self      { Self { ulonger: 1 } }
 
     // pub fn get(self) -> u128
     /// Returns its value as `u128`.

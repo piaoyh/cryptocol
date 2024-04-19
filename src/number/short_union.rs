@@ -294,9 +294,37 @@ impl ShortUnion
     /// ```
     #[inline] pub fn new_with_bool(b: bool) -> Self     { Self { ushort: b as u16 } }
 
-    #[inline] pub fn zero() -> Self     { Self { ushort: 0} }
+    // pub fn zero() -> Self
+    /// Constructs a new `ShortUnion` with initializing it
+    /// with the value of `0`.
+    /// 
+    /// # Output
+    /// A new object of `Self` initialized with the value of `0`
+    /// 
+    /// Example
+    /// ```
+    /// use cryptocol::number::ShortUnion;
+    /// let a = ShortUnion::zero();
+    /// println!("a = {}", a.get());
+    /// assert_eq!(a.get(), 0_u16);
+    /// ```
+    #[inline] pub fn zero() -> Self     { Self { ushort: 0 } }
 
-    #[inline] pub fn one() -> Self      { Self { ushort: 1} }
+    // pub fn one() -> Self
+    /// Constructs a new `ShortUnion` with initializing it
+    /// with the value of `1`.
+    /// 
+    /// # Output
+    /// A new object of `Self` initialized with the value of `1`
+    /// 
+    /// Example
+    /// ```
+    /// use cryptocol::number::ShortUnion;
+    /// let a = ShortUnion::one();
+    /// println!("a = {}", a.get());
+    /// assert_eq!(a.get(), 1_u16);
+    /// ```
+    #[inline] pub fn one() -> Self      { Self { ushort: 1 } }
 
     // pub fn get(self) -> u16
     /// Returns its value as `u16`.
