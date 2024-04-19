@@ -370,6 +370,10 @@ impl IntUnion
     /// ```
     #[inline] pub fn new_with_bool(b: bool) -> Self     { Self { uint: b as u32 } }
 
+    #[inline] pub fn zero() -> Self     { Self { uint: 0} }
+
+    #[inline] pub fn one() -> Self      { Self { uint: 1} }
+
     // pub fn get(self) -> u32
     /// Returns its value as `u32`.
     /// 

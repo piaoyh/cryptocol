@@ -614,6 +614,10 @@ impl LongerUnion
     /// ```
     #[inline] pub fn new_with_bool(b: bool) -> Self     { Self { ulonger: b as u128 } }
 
+    #[inline] pub fn zero() -> Self     { Self { ulonger: 0} }
+
+    #[inline] pub fn one() -> Self      { Self { ulonger: 1} }
+
     // pub fn get(self) -> u128
     /// Returns its value as `u128`.
     /// 

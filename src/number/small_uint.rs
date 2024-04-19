@@ -8801,7 +8801,7 @@ pub trait SmallUInt: Copy + Clone + Sized //+ Display + Debug + ToString
     // /// __It is for internal use only.__ You are supposed to use
     // /// [carrying_mul()](trait@SmallUInt#tymethod.carrying_mul) instead.
     // fn _carrying_mul(self, rhs: Self, carry: Self) -> (Self, Self);
-    
+
     // pub fn widening_mul(self, rhs: Self) -> (Self, Self)
     /// Calculates the complete product `self` * `rhs` without the possibility
     /// to overflow.
@@ -8826,10 +8826,9 @@ pub trait SmallUInt: Copy + Clone + Sized //+ Display + Debug + ToString
     /// get the `wrapping_mul()` methods.
     /// `self.widening_mul(rhs).0` == `self.wrapping_mul(rhs)`
     /// 
-    /// # Example 1 for u8 for Little Endian
+    /// # Example 1 for u8
     /// ```
-    /// use cryptocol::number::SmallUInt;
-    /// use cryptocol::number::IntUnion;
+    /// use cryptocol::number::{ SmallUInt, IntUnion };
     /// fn main()
     /// {
     ///     // a_u16: u16 === (a_high_u8, a_low_u8) == (100_u8, 101_u8) == 25701_u16
@@ -8898,7 +8897,7 @@ pub trait SmallUInt: Copy + Clone + Sized //+ Display + Debug + ToString
     /// 
     /// # Example 2 for u16 for Little Endian
     /// ```
-    /// use cryptocol::number::SmallUInt;
+    /// use cryptocol::number::{ SmallUInt, LongUnion };
     /// fn main()
     /// {
     ///     use cryptocol::number::LongUnion;
@@ -8966,12 +8965,263 @@ pub trait SmallUInt: Copy + Clone + Sized //+ Display + Debug + ToString
     /// }
     /// ```
     /// 
-    /// # Example 3 for ShortUnion for Little Endian
+    /// # Example 3 for u32 for Little Endian
+    /// ```
+    /// use cryptocol::number::{ SmallUInt, LongerUnion };
+    /// fn main()
+    /// {
+    ///     // a_u64: u64 === (a_high_u32, a_low_u32) == (2299561912_u32, 2956226837_u32) == 9876543210123456789_u64
+    ///     let a_high_u32 = 2299561912_u32;
+    ///     let a_low_u32 = 2956226837_u32;
+    ///     // b_u64: u64 === (b_high_u32, b_low_u32) == (1782160508_u32, 682685733_u32) == 7654321098765432101_u64
+    ///     let b_high_u32 = 1782160508_u32;
+    ///     let b_low_u32 = 682685733_u32;
+    /// 
+    ///     // (2299561912_u32, 2956226837_u32) X (1782160508_u32, 682685733_u32) == 9876543210123456789_u64 X 7654321098765432101_u64 == (4098188426859548455_u64, 17997868695111430409_u64) == 75598233076116445704676116321386983689_u128
+    ///     //
+    ///     //                                  (2299561912_u32, 2956226837_u32) == 9876543210123456789_u64
+    ///     // X                                (1782160508_u32,  682685733_u32) == 7654321098765432101_u64
+    ///     // -----------------------------------------------------------------
+    ///     //                                  ( 469892724_u32, 2923262217_u32)
+    ///     //                  ( 365515730_u32, 2949035416_u32)
+    ///     //                  (1226661429_u32,  771527212_u32)
+    ///     // + (954183848_u32, 3735936288_u32)
+    ///     // -----------------------------------------------------------------
+    ///     //   (954183849_u32, 1033146151_u32, 4190455352_u32, 2923262217_u32) == 75598233076116445704676116321386983689_u128
+    ///     let (c_lower_u32, c_low_u32, c_high_u32, c_higher_u32) = func(a_low_u32, a_high_u32, b_low_u32, b_high_u32);
+    ///     println!("{}-{}-{}-{}", c_higher_u32, c_high_u32, c_low_u32, c_lower_u32);
+    ///     assert_eq!(c_higher_u32, 954183849_u32);
+    ///     assert_eq!(c_high_u32, 1033146151_u32);
+    ///     assert_eq!(c_low_u32, 4190455352_u32);
+    ///     assert_eq!(c_lower_u32, 2923262217_u32);
+    /// 
+    ///     let a = LongerUnion::new_with_uints([a_low_u32, a_high_u32, 0, 0]);
+    ///     let b = LongerUnion::new_with_uints([b_low_u32, b_high_u32, 0, 0]);
+    ///     let c = a * b;
+    ///     println!("{} * {} = {}", a.get(), b.get(), c.get());
+    ///     assert_eq!(c_higher_u32, c.get_uint_(3));
+    ///     assert_eq!(c_high_u32, c.get_uint_(2));
+    ///     assert_eq!(c_low_u32, c.get_uint_(1));
+    ///     assert_eq!(c_lower_u32, c.get_uint_(0));
+    /// }
+    /// 
+    /// fn func<T: SmallUInt>(lhs_low: T, lhs_high: T, rhs_low: T, rhs_high: T) -> (T, T, T, T)
+    /// {
+    ///     let (c_low, c_high) = rhs_low.widening_mul(lhs_low);
+    ///     let (d_low, d_high) = rhs_low.widening_mul(lhs_high);
+    ///     let (mut e_low, e_high) = rhs_high.widening_mul(lhs_low);
+    ///     let (mut f_low, mut f_high) = rhs_high.widening_mul(lhs_high);
+    /// 
+    ///     let mut overflow: bool;
+    ///     (e_low, overflow) = e_low.overflowing_add(d_low);
+    ///     if overflow
+    ///         { (f_low, overflow) = f_low.overflowing_add(T::one()); }
+    ///     if overflow
+    ///         { f_high = f_high.wrapping_add(T::one()); }
+    ///     (e_low, overflow) = e_low.overflowing_add(c_high);
+    ///     if overflow
+    ///         { (f_low, overflow) = f_low.overflowing_add(T::one()); }
+    ///     if overflow
+    ///         { f_high = f_high.wrapping_add(T::one()); }
+    /// 
+    ///     (f_low, overflow) = f_low.overflowing_add(d_high);
+    ///     if overflow
+    ///         { f_high = f_high.wrapping_add(T::one()); }
+    ///     (f_low, overflow) = f_low.overflowing_add(e_high);
+    ///     if overflow
+    ///         { f_high = f_high.wrapping_add(T::one()); }
+    ///     (c_low, e_low, f_low, f_high)
+    /// }
+    /// ```
+    /// 
+    /// # Example 4 for u64 for Little Endian
     /// ```
     /// use cryptocol::number::SmallUInt;
     /// fn main()
     /// {
-    ///     use cryptocol::number::LongUnion;
+    ///     // a_u128: u128 === (a_high_u64, a_low_u64) == (10775095670246085798_u64, 7681743649119882630_u64) == 198765432198765432198765432198765432198_u128
+    ///     let a_high_u64 = 10775095670246085798_u64;
+    ///     let a_low_u64 = 7681743649119882630_u64;
+    ///     // b_u64: u64 === (b_high_u64, b_low_u64) == (6692605942763486917_u64, 12312739301371248917_u64) == 123456789012345678901234567890123456789_u128
+    ///     let b_high_u64 = 6692605942763486917_u64;
+    ///     let b_low_u64 = 12312739301371248917_u64;
+    /// 
+    ///     // (10775095670246085798_u64, 7681743649119882630_u64) X (6692605942763486917_u64, 12312739301371248917_u64) == 198765432198765432198765432198765432198_u128 X 123456789012345678901234567890123456789_u128 == (72113469316534070997571940237811086202_u128, 284839445932509422190795104397182362110_u128) == 24538942025910684226047858446061575867965995914594253912457079712243362292222_u256
+    ///     //
+    ///     //                                                      (10775095670246085798_u64,  7681743649119882630_u64) == 198765432198765432198765432198765432198_u128
+    ///     // X                                                    ( 6692605942763486917_u64, 12312739301371248917_u64) == 123456789012345678901234567890123456789_u128
+    ///     // ---------------------------------------------------------------------------------------------------------
+    ///     //                                                      ( 5127371342803972846_u64,  9393535397455192574_u64)
+    ///     //                             (7192106282005498115_u64,  3473120370613376926_u64)
+    ///     //                             (2786989562573083321_u64,  6840685591062354974_u64)
+    ///     // + (3909279004922650219_u64,  1464703988338300862_u64)
+    ///     // ---------------------------------------------------------------------------------------------------------
+    ///     //   (3909279004922650219_u64, 11443799832916882298_u64, 15441177304479704746_u64,  9393535397455192574_u64) == 24538942025910684226047858446061575867965995914594253912457079712243362292222_u256
+    ///     let (c_lower_u64, c_low_u64, c_high_u64, c_higher_u64) = func(a_low_u64, a_high_u64, b_low_u64, b_high_u64);
+    ///     println!("{}-{}-{}-{}", c_higher_u64, c_high_u64, c_low_u64, c_lower_u64);
+    ///     assert_eq!(c_higher_u64, 3909279004922650219_u64);
+    ///     assert_eq!(c_high_u64, 11443799832916882298_u64);
+    ///     assert_eq!(c_low_u64, 15441177304479704746_u64);
+    ///     assert_eq!(c_lower_u64, 9393535397455192574_u64);
+    /// }
+    /// 
+    /// fn func<T: SmallUInt>(lhs_low: T, lhs_high: T, rhs_low: T, rhs_high: T) -> (T, T, T, T)
+    /// {
+    ///     let (c_low, c_high) = rhs_low.widening_mul(lhs_low);
+    ///     let (d_low, d_high) = rhs_low.widening_mul(lhs_high);
+    ///     let (mut e_low, e_high) = rhs_high.widening_mul(lhs_low);
+    ///     let (mut f_low, mut f_high) = rhs_high.widening_mul(lhs_high);
+    /// 
+    ///     let mut overflow: bool;
+    ///     (e_low, overflow) = e_low.overflowing_add(d_low);
+    ///     if overflow
+    ///         { (f_low, overflow) = f_low.overflowing_add(T::one()); }
+    ///     if overflow
+    ///         { f_high = f_high.wrapping_add(T::one()); }
+    ///     (e_low, overflow) = e_low.overflowing_add(c_high);
+    ///     if overflow
+    ///         { (f_low, overflow) = f_low.overflowing_add(T::one()); }
+    ///     if overflow
+    ///         { f_high = f_high.wrapping_add(T::one()); }
+    /// 
+    ///     (f_low, overflow) = f_low.overflowing_add(d_high);
+    ///     if overflow
+    ///         { f_high = f_high.wrapping_add(T::one()); }
+    ///     (f_low, overflow) = f_low.overflowing_add(e_high);
+    ///     if overflow
+    ///         { f_high = f_high.wrapping_add(T::one()); }
+    ///     (c_low, e_low, f_low, f_high)
+    /// }
+    /// ```
+    /// 
+    /// # Example 5 for u128 for Little Endian
+    /// ```
+    /// use cryptocol::number::SmallUInt;
+    /// fn main()
+    /// {
+    ///     // a_u256: u256 === (a_high_u128, a_low_u128) == (123456789012345678901234567890123456789_u128, 198765432198765432198765432198765432198_u128) == 42010168377579896403540037778015643756626903575004241358522734820017396206982_u256
+    ///     let a_high_u128 = 123456789012345678901234567890123456789_u128;
+    ///     let a_low_u128 = 198765432198765432198765432198765432198_u128;
+    ///     // b_u256: u256 === (b_high_u128, b_low_u128) == (75318642097531864209753186420975318642_u128, 135792468013579246801357924680135792468_u128) == 25629605806219180037134371884461041203042609997744073457419340831856170555220_u256
+    ///     let b_high_u128 = 75318642097531864209753186420975318642_u128;
+    ///     let b_low_u128 = 135792468013579246801357924680135792468_u128;
+    /// 
+    ///     // (123456789012345678901234567890123456789_u128, 198765432198765432198765432198765432198_u128) X (75318642097531864209753186420975318642_u128 - 135792468013579246801357924680135792468_u128) == 42010168377579896403540037778015643756626903575004241358522734820017396206982_u256 X 25629605806219180037134371884461041203042609997744073457419340831856170555220_u256 = 1076704055370267103358067448344494207403929951418850598311166733254725709101675518708273284527051744761749874770306207984521811586513200762632500980546040_u512
+    ///     //
+    ///     //                                                                                              (123456789012345678901234567890123456789_u128, 198765432198765432198765432198765432198_u128) == 42010168377579896403540037778015643756626903575004241358522734820017396206982_u256
+    ///     // X                                                                                            ( 75318642097531864209753186420975318642_u128, 135792468013579246801357924680135792468_u128) == 25629605806219180037134371884461041203042609997744073457419340831856170555220_u256
+    ///     // -----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+    ///     //                                                                                              ( 79318975115531594676802389315672824709_u128, 305933135181961371815664194362919418360_u128)
+    ///     //                                                ( 49266443702953415606417933871327680361_u128, 301235724958848324675382352967843249636_u128)
+    ///     //                                                ( 43995057941448862830514490586650222101_u128,  35386202970580104685103432753963846060_u128)
+    ///     // + (27326122685316262062508597076325453266_u128, 184240100967607654057575481238459345242_u128)
+    ///     // -----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+    ///     //   (27326122685316262062508597076325453266_u128, 277501602612009932494507905696437247705_u128,  75658536124021560573913567605711708949_u128, 305933135181961371815664194362919418360_u128) == 1076704055370267103358067448344494207403929951418850598311166733254725709101675518708273284527051744761749874770306207984521811586513200762632500980546040_u512
+    ///     let (c_lower_u128, c_low_u128, c_high_u128, c_higher_u128) = func(a_low_u128, a_high_u128, b_low_u128, b_high_u128);
+    ///     println!("{}-{}-{}-{}", c_higher_u128, c_high_u128, c_low_u128, c_lower_u128);
+    ///     assert_eq!(c_higher_u128, 27326122685316262062508597076325453266_u128);
+    ///     assert_eq!(c_high_u128, 277501602612009932494507905696437247705_u128);
+    ///     assert_eq!(c_low_u128, 75658536124021560573913567605711708949_u128);
+    ///     assert_eq!(c_lower_u128, 305933135181961371815664194362919418360_u128);
+    /// }
+    /// 
+    /// fn func<T: SmallUInt>(lhs_low: T, lhs_high: T, rhs_low: T, rhs_high: T) -> (T, T, T, T)
+    /// {
+    ///     let (c_low, c_high) = rhs_low.widening_mul(lhs_low);
+    ///     let (d_low, d_high) = rhs_low.widening_mul(lhs_high);
+    ///     let (mut e_low, e_high) = rhs_high.widening_mul(lhs_low);
+    ///     let (mut f_low, mut f_high) = rhs_high.widening_mul(lhs_high);
+    /// 
+    ///     let mut overflow: bool;
+    ///     (e_low, overflow) = e_low.overflowing_add(d_low);
+    ///     if overflow
+    ///         { (f_low, overflow) = f_low.overflowing_add(T::one()); }
+    ///     if overflow
+    ///         { f_high = f_high.wrapping_add(T::one()); }
+    ///     (e_low, overflow) = e_low.overflowing_add(c_high);
+    ///     if overflow
+    ///         { (f_low, overflow) = f_low.overflowing_add(T::one()); }
+    ///     if overflow
+    ///         { f_high = f_high.wrapping_add(T::one()); }
+    /// 
+    ///     (f_low, overflow) = f_low.overflowing_add(d_high);
+    ///     if overflow
+    ///         { f_high = f_high.wrapping_add(T::one()); }
+    ///     (f_low, overflow) = f_low.overflowing_add(e_high);
+    ///     if overflow
+    ///         { f_high = f_high.wrapping_add(T::one()); }
+    ///     (c_low, e_low, f_low, f_high)
+    /// }
+    /// ```
+    /// 
+    /// # Example 6 for usize for 64-bit CPUs for Little Endian
+    /// ```
+    /// use cryptocol::number::SmallUInt;
+    /// fn main()
+    /// {
+    ///     #[cfg(target_pointer_width = "64")]
+    ///     {
+    ///         // a_u128: u128 === (a_high_usize, a_low_usize) == (10775095670246085798_usize, 7681743649119882630_usize) == 198765432198765432198765432198765432198_u128
+    ///         let a_high_usize = 10775095670246085798_usize;
+    ///         let a_low_usize = 7681743649119882630_usize;
+    ///         // b_usize: usize === (b_high_usize, b_low_usize) == (6692605942763486917_usize, 12312739301371248917_usize) == 123456789012345678901234567890123456789_u128
+    ///         let b_high_usize = 6692605942763486917_usize;
+    ///         let b_low_usize = 12312739301371248917_usize;
+    /// 
+    ///         // (10775095670246085798_usize, 7681743649119882630_usize) X (6692605942763486917_usize, 12312739301371248917_usize) == 198765432198765432198765432198765432198_u128 X 123456789012345678901234567890123456789_u128 == (72113469316534070997571940237811086202_u128, 284839445932509422190795104397182362110_u128) == 24538942025910684226047858446061575867965995914594253912457079712243362292222_u256
+    ///         //
+    ///         //                                                          (10775095670246085798_usize,  7681743649119882630_usize) == 198765432198765432198765432198765432198_u128
+    ///         // X                                                        ( 6692605942763486917_usize, 12312739301371248917_usize) == 123456789012345678901234567890123456789_u128
+    ///         // -----------------------------------------------------------------------------------------------------------------
+    ///         //                                                          ( 5127371342803972846_usize,  9393535397455192574_usize)
+    ///         //                               (7192106282005498115_usize,  3473120370613376926_usize)
+    ///         //                               (2786989562573083321_usize,  6840685591062354974_usize)
+    ///         // + (3909279004922650219_usize,  1464703988338300862_usize)
+    ///         // -----------------------------------------------------------------------------------------------------------------
+    ///         //   (3909279004922650219_usize, 11443799832916882298_usize, 15441177304479704746_usize,  9393535397455192574_usize) == 24538942025910684226047858446061575867965995914594253912457079712243362292222_u256
+    ///         let (c_lower_usize, c_low_usize, c_high_usize, c_higher_usize) = func(a_low_usize, a_high_usize, b_low_usize, b_high_usize);
+    ///         println!("{}-{}-{}-{}", c_higher_usize, c_high_usize, c_low_usize, c_lower_usize);
+    ///         assert_eq!(c_higher_usize, 3909279004922650219_usize);
+    ///         assert_eq!(c_high_usize, 11443799832916882298_usize);
+    ///         assert_eq!(c_low_usize, 15441177304479704746_usize);
+    ///         assert_eq!(c_lower_usize, 9393535397455192574_usize);
+    ///     }
+    /// }
+    /// 
+    /// fn func<T: SmallUInt>(lhs_low: T, lhs_high: T, rhs_low: T, rhs_high: T) -> (T, T, T, T)
+    /// {
+    ///     let (c_low, c_high) = rhs_low.widening_mul(lhs_low);
+    ///     let (d_low, d_high) = rhs_low.widening_mul(lhs_high);
+    ///     let (mut e_low, e_high) = rhs_high.widening_mul(lhs_low);
+    ///     let (mut f_low, mut f_high) = rhs_high.widening_mul(lhs_high);
+    /// 
+    ///     let mut overflow: bool;
+    ///     (e_low, overflow) = e_low.overflowing_add(d_low);
+    ///     if overflow
+    ///         { (f_low, overflow) = f_low.overflowing_add(T::one()); }
+    ///     if overflow
+    ///         { f_high = f_high.wrapping_add(T::one()); }
+    ///     (e_low, overflow) = e_low.overflowing_add(c_high);
+    ///     if overflow
+    ///         { (f_low, overflow) = f_low.overflowing_add(T::one()); }
+    ///     if overflow
+    ///         { f_high = f_high.wrapping_add(T::one()); }
+    /// 
+    ///     (f_low, overflow) = f_low.overflowing_add(d_high);
+    ///     if overflow
+    ///         { f_high = f_high.wrapping_add(T::one()); }
+    ///     (f_low, overflow) = f_low.overflowing_add(e_high);
+    ///     if overflow
+    ///         { f_high = f_high.wrapping_add(T::one()); }
+    ///     (c_low, e_low, f_low, f_high)
+    /// }
+    /// ```
+    /// 
+    /// # Example 7 for ShortUnion for Little Endian
+    /// ```
+    /// use cryptocol::number::{ SmallUInt, LongUnion };
+    /// fn main()
+    /// {
     ///     // a_u64: u32 === (a_high_u16, a_low_u16) == (10000_u16, 10100_u16) == 257010000_u32
     ///     let a_high_shortunion = 10000_u16.into_shortunion();
     ///     let a_low_shortunion = 10100_u16.into_shortunion();
@@ -8992,11 +9242,11 @@ pub trait SmallUInt: Copy + Clone + Sized //+ Display + Debug + ToString
     ///     //   (1525_u16, 62192_u16, 61770_u16, 18048_u16) == 429516456138000000_u64
     ///     let (c_lower_shortunion, c_low_shortunion, c_high_shortunion, c_higher_shortunion) = func(a_low_shortunion, a_high_shortunion, b_low_shortunion, b_high_shortunion);
     ///     println!("{}-{}-{}-{}", c_higher_shortunion, c_high_shortunion, c_low_shortunion, c_lower_shortunion);
-    ///     assert_eq!(c_higher_shortunion.get(), 1525);
-    ///     assert_eq!(c_high_shortunion.get(), 62192);
-    ///     assert_eq!(c_low_shortunion.get(), 61770);
-    ///     assert_eq!(c_lower_shortunion.get(), 18048);
-    /// 
+    ///     assert_eq!(c_higher_shortunion.get(), 1525_u16);
+    ///     assert_eq!(c_high_shortunion.get(), 62192_u16);
+    ///     assert_eq!(c_low_shortunion.get(), 61770_u16);
+    ///     assert_eq!(c_lower_shortunion.get(), 18048_u16);
+    ///     
     ///     let a = LongUnion::new_with_ushorts([a_low_shortunion.get(), a_high_shortunion.get(), 0, 0]);
     ///     let b = LongUnion::new_with_ushorts([b_low_shortunion.get(), b_high_shortunion.get(), 0, 0]);
     ///     let c = a * b;
@@ -9005,6 +9255,258 @@ pub trait SmallUInt: Copy + Clone + Sized //+ Display + Debug + ToString
     ///     assert_eq!(c_high_shortunion.get(), c.get_ushort_(2));
     ///     assert_eq!(c_low_shortunion.get(), c.get_ushort_(1));
     ///     assert_eq!(c_lower_shortunion.get(), c.get_ushort_(0));
+    /// }
+    /// 
+    /// fn func<T: SmallUInt>(lhs_low: T, lhs_high: T, rhs_low: T, rhs_high: T) -> (T, T, T, T)
+    /// {
+    ///     let (c_low, c_high) = rhs_low.widening_mul(lhs_low);
+    ///     let (d_low, d_high) = rhs_low.widening_mul(lhs_high);
+    ///     let (mut e_low, e_high) = rhs_high.widening_mul(lhs_low);
+    ///     let (mut f_low, mut f_high) = rhs_high.widening_mul(lhs_high);
+    /// 
+    ///     let mut overflow: bool;
+    ///     (e_low, overflow) = e_low.overflowing_add(d_low);
+    ///     if overflow
+    ///         { (f_low, overflow) = f_low.overflowing_add(T::one()); }
+    ///     if overflow
+    ///         { f_high = f_high.wrapping_add(T::one()); }
+    ///     (e_low, overflow) = e_low.overflowing_add(c_high);
+    ///     if overflow
+    ///         { (f_low, overflow) = f_low.overflowing_add(T::one()); }
+    ///     if overflow
+    ///         { f_high = f_high.wrapping_add(T::one()); }
+    /// 
+    ///     (f_low, overflow) = f_low.overflowing_add(d_high);
+    ///     if overflow
+    ///         { f_high = f_high.wrapping_add(T::one()); }
+    ///     (f_low, overflow) = f_low.overflowing_add(e_high);
+    ///     if overflow
+    ///         { f_high = f_high.wrapping_add(T::one()); }
+    ///     (c_low, e_low, f_low, f_high)
+    /// }
+    /// ```
+    /// 
+    /// # Example 8 for IntUnion for Little Endian
+    /// ```
+    /// use cryptocol::number::{ SmallUInt, LongerUnion };
+    /// fn main()
+    /// {
+    ///     // a_u64: u64 === (a_high_u32, a_low_u32) == (2299561912_u32, 2956226837_u32) == 9876543210123456789_u64
+    ///     let a_high_intunion = 2299561912_u32.into_intunion();
+    ///     let a_low_intunion = 2956226837_u32.into_intunion();
+    ///     // b_u64: u64 === (b_high_u32, b_low_u32) == (1782160508_u32, 682685733_u32) == 7654321098765432101_u64
+    ///     let b_high_intunion = 1782160508_u32.into_intunion();
+    ///     let b_low_intunion = 682685733_u32.into_intunion();
+    ///     
+    ///     // (2299561912_u32, 2956226837_u32) X (1782160508_u32, 682685733_u32) == 9876543210123456789_u64 X 7654321098765432101_u64 == (4098188426859548455_u64, 17997868695111430409_u64) == 75598233076116445704676116321386983689_u128
+    ///     //
+    ///     //                                  (2299561912_u32, 2956226837_u32) == 9876543210123456789_u64
+    ///     // X                                (1782160508_u32,  682685733_u32) == 7654321098765432101_u64
+    ///     // -----------------------------------------------------------------
+    ///     //                                  ( 469892724_u32, 2923262217_u32)
+    ///     //                  ( 365515730_u32, 2949035416_u32)
+    ///     //                  (1226661429_u32,  771527212_u32)
+    ///     // + (954183848_u32, 3735936288_u32)
+    ///     // -----------------------------------------------------------------
+    ///     //   (954183849_u32, 1033146151_u32, 4190455352_u32, 2923262217_u32) == 429516456138000000_u64
+    ///     let (c_lower_intunion, c_low_intunion, c_high_intunion, c_higher_intunion) = func(a_low_intunion, a_high_intunion, b_low_intunion, b_high_intunion);
+    ///     println!("{}-{}-{}-{}", c_higher_intunion, c_high_intunion, c_low_intunion, c_lower_intunion);
+    ///     assert_eq!(c_higher_intunion.get(), 954183849_u32);
+    ///     assert_eq!(c_high_intunion.get(), 1033146151_u32);
+    ///     assert_eq!(c_low_intunion.get(), 4190455352_u32);
+    ///     assert_eq!(c_lower_intunion.get(), 2923262217_u32);
+    ///     
+    ///     let a = LongerUnion::new_with_uints([a_low_intunion.get(), a_high_intunion.get(), 0, 0]);
+    ///     let b = LongerUnion::new_with_uints([b_low_intunion.get(), b_high_intunion.get(), 0, 0]);
+    ///     let c = a * b;
+    ///     println!("{} * {} = {}", a.get(), b.get(), c.get());
+    ///     assert_eq!(c_higher_intunion.get(), c.get_uint_(3));
+    ///     assert_eq!(c_high_intunion.get(), c.get_uint_(2));
+    ///     assert_eq!(c_low_intunion.get(), c.get_uint_(1));
+    ///     assert_eq!(c_lower_intunion.get(), c.get_uint_(0));
+    /// }
+    /// 
+    /// fn func<T: SmallUInt>(lhs_low: T, lhs_high: T, rhs_low: T, rhs_high: T) -> (T, T, T, T)
+    /// {
+    ///     let (c_low, c_high) = rhs_low.widening_mul(lhs_low);
+    ///     let (d_low, d_high) = rhs_low.widening_mul(lhs_high);
+    ///     let (mut e_low, e_high) = rhs_high.widening_mul(lhs_low);
+    ///     let (mut f_low, mut f_high) = rhs_high.widening_mul(lhs_high);
+    /// 
+    ///     let mut overflow: bool;
+    ///     (e_low, overflow) = e_low.overflowing_add(d_low);
+    ///     if overflow
+    ///         { (f_low, overflow) = f_low.overflowing_add(T::one()); }
+    ///     if overflow
+    ///         { f_high = f_high.wrapping_add(T::one()); }
+    ///     (e_low, overflow) = e_low.overflowing_add(c_high);
+    ///     if overflow
+    ///         { (f_low, overflow) = f_low.overflowing_add(T::one()); }
+    ///     if overflow
+    ///         { f_high = f_high.wrapping_add(T::one()); }
+    /// 
+    ///     (f_low, overflow) = f_low.overflowing_add(d_high);
+    ///     if overflow
+    ///         { f_high = f_high.wrapping_add(T::one()); }
+    ///     (f_low, overflow) = f_low.overflowing_add(e_high);
+    ///     if overflow
+    ///         { f_high = f_high.wrapping_add(T::one()); }
+    ///     (c_low, e_low, f_low, f_high)
+    /// }
+    /// ```
+    /// 
+    /// # Example 9 for LongUnion for Little Endian
+    /// ```
+    /// use cryptocol::number::SmallUInt;
+    /// fn main()
+    /// {
+    ///     // a_u128: u128 === (a_high_u64, a_low_u64) == (10775095670246085798_u64, 7681743649119882630_u64) == 198765432198765432198765432198765432198_u128
+    ///     let a_high_longunion = 10775095670246085798_u64.into_longunion();
+    ///     let a_low_longunion = 7681743649119882630_u64.into_longunion();
+    ///     // b_u64: u64 === (b_high_u64, b_low_u64) == (6692605942763486917_u64, 12312739301371248917_u64) == 123456789012345678901234567890123456789_u128
+    ///     let b_high_longunion = 6692605942763486917_u64.into_longunion();
+    ///     let b_low_longunion = 12312739301371248917_u64.into_longunion();
+    /// 
+    ///     // (10775095670246085798_u64, 7681743649119882630_u64) X (6692605942763486917_u64, 12312739301371248917_u64) == 198765432198765432198765432198765432198_u128 X 123456789012345678901234567890123456789_u128 == (72113469316534070997571940237811086202_u128, 284839445932509422190795104397182362110_u128) == 24538942025910684226047858446061575867965995914594253912457079712243362292222_u256
+    ///     //
+    ///     //                                                      (10775095670246085798_u64,  7681743649119882630_u64) == 198765432198765432198765432198765432198_u128
+    ///     // X                                                    ( 6692605942763486917_u64, 12312739301371248917_u64) == 123456789012345678901234567890123456789_u128
+    ///     // ---------------------------------------------------------------------------------------------------------
+    ///     //                                                      ( 5127371342803972846_u64,  9393535397455192574_u64)
+    ///     //                             (7192106282005498115_u64,  3473120370613376926_u64)
+    ///     //                             (2786989562573083321_u64,  6840685591062354974_u64)
+    ///     // + (3909279004922650219_u64,  1464703988338300862_u64)
+    ///     // ---------------------------------------------------------------------------------------------------------
+    ///     //   (3909279004922650219_u64, 11443799832916882298_u64, 15441177304479704746_u64,  9393535397455192574_u64) == 24538942025910684226047858446061575867965995914594253912457079712243362292222_u256
+    ///     let (c_lower_longunion, c_low_longunion, c_high_longunion, c_higher_longunion) = func(a_low_longunion, a_high_longunion, b_low_longunion, b_high_longunion);
+    ///     println!("{}-{}-{}-{}", c_higher_longunion, c_high_longunion, c_low_longunion, c_lower_longunion);
+    ///     assert_eq!(c_higher_longunion.get(), 3909279004922650219_u64);
+    ///     assert_eq!(c_high_longunion.get(), 11443799832916882298_u64);
+    ///     assert_eq!(c_low_longunion.get(), 15441177304479704746_u64);
+    ///     assert_eq!(c_lower_longunion.get(), 9393535397455192574_u64);
+    /// }
+    /// 
+    /// fn func<T: SmallUInt>(lhs_low: T, lhs_high: T, rhs_low: T, rhs_high: T) -> (T, T, T, T)
+    /// {
+    ///     let (c_low, c_high) = rhs_low.widening_mul(lhs_low);
+    ///     let (d_low, d_high) = rhs_low.widening_mul(lhs_high);
+    ///     let (mut e_low, e_high) = rhs_high.widening_mul(lhs_low);
+    ///     let (mut f_low, mut f_high) = rhs_high.widening_mul(lhs_high);
+    /// 
+    ///     let mut overflow: bool;
+    ///     (e_low, overflow) = e_low.overflowing_add(d_low);
+    ///     if overflow
+    ///         { (f_low, overflow) = f_low.overflowing_add(T::one()); }
+    ///     if overflow
+    ///         { f_high = f_high.wrapping_add(T::one()); }
+    ///     (e_low, overflow) = e_low.overflowing_add(c_high);
+    ///     if overflow
+    ///         { (f_low, overflow) = f_low.overflowing_add(T::one()); }
+    ///     if overflow
+    ///         { f_high = f_high.wrapping_add(T::one()); }
+    /// 
+    ///     (f_low, overflow) = f_low.overflowing_add(d_high);
+    ///     if overflow
+    ///         { f_high = f_high.wrapping_add(T::one()); }
+    ///     (f_low, overflow) = f_low.overflowing_add(e_high);
+    ///     if overflow
+    ///         { f_high = f_high.wrapping_add(T::one()); }
+    ///     (c_low, e_low, f_low, f_high)
+    /// }
+    /// ```
+    /// 
+    /// # Example 10 for LongerUnion for Little Endian
+    /// ```
+    /// use cryptocol::number::SmallUInt;
+    /// fn main()
+    /// {
+    ///     // a_u256: u256 === (a_high_u128, a_low_u128) == (123456789012345678901234567890123456789_u128, 198765432198765432198765432198765432198_u128) == 42010168377579896403540037778015643756626903575004241358522734820017396206982_u256
+    ///     let a_high_longerunion = 123456789012345678901234567890123456789_u128.into_longerunion();
+    ///     let a_low_longerunion = 198765432198765432198765432198765432198_u128.into_longerunion();
+    ///     // b_u256: u256 === (b_high_u128, b_low_u128) == (75318642097531864209753186420975318642_u128, 135792468013579246801357924680135792468_u128) == 25629605806219180037134371884461041203042609997744073457419340831856170555220_u256
+    ///     let b_high_longerunion = 75318642097531864209753186420975318642_u128.into_longerunion();
+    ///     let b_low_longerunion = 135792468013579246801357924680135792468_u128.into_longerunion();
+    /// 
+    ///     // (123456789012345678901234567890123456789_u128, 198765432198765432198765432198765432198_u128) X (75318642097531864209753186420975318642_u128 - 135792468013579246801357924680135792468_u128) == 42010168377579896403540037778015643756626903575004241358522734820017396206982_u256 X 25629605806219180037134371884461041203042609997744073457419340831856170555220_u256 = 1076704055370267103358067448344494207403929951418850598311166733254725709101675518708273284527051744761749874770306207984521811586513200762632500980546040_u512
+    ///     //
+    ///     //                                                                                              (123456789012345678901234567890123456789_u128, 198765432198765432198765432198765432198_u128) == 42010168377579896403540037778015643756626903575004241358522734820017396206982_u256
+    ///     // X                                                                                            ( 75318642097531864209753186420975318642_u128, 135792468013579246801357924680135792468_u128) == 25629605806219180037134371884461041203042609997744073457419340831856170555220_u256
+    ///     // -----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+    ///     //                                                                                              ( 79318975115531594676802389315672824709_u128, 305933135181961371815664194362919418360_u128)
+    ///     //                                                ( 49266443702953415606417933871327680361_u128, 301235724958848324675382352967843249636_u128)
+    ///     //                                                ( 43995057941448862830514490586650222101_u128,  35386202970580104685103432753963846060_u128)
+    ///     // + (27326122685316262062508597076325453266_u128, 184240100967607654057575481238459345242_u128)
+    ///     // -----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+    ///     //   (27326122685316262062508597076325453266_u128, 277501602612009932494507905696437247705_u128,  75658536124021560573913567605711708949_u128, 305933135181961371815664194362919418360_u128) == 1076704055370267103358067448344494207403929951418850598311166733254725709101675518708273284527051744761749874770306207984521811586513200762632500980546040_u512
+    ///     let (c_lower_longerunion, c_low_longerunion, c_high_longerunion, c_higher_longerunion) = func(a_low_longerunion, a_high_longerunion, b_low_longerunion, b_high_longerunion);
+    ///     println!("{}-{}-{}-{}", c_higher_longerunion, c_high_longerunion, c_low_longerunion, c_lower_longerunion);
+    ///     assert_eq!(c_higher_longerunion.get(), 27326122685316262062508597076325453266_u128);
+    ///     assert_eq!(c_high_longerunion.get(), 277501602612009932494507905696437247705_u128);
+    ///     assert_eq!(c_low_longerunion.get(), 75658536124021560573913567605711708949_u128);
+    ///     assert_eq!(c_lower_longerunion.get(), 305933135181961371815664194362919418360_u128);
+    /// }
+    /// 
+    /// fn func<T: SmallUInt>(lhs_low: T, lhs_high: T, rhs_low: T, rhs_high: T) -> (T, T, T, T)
+    /// {
+    ///     let (c_low, c_high) = rhs_low.widening_mul(lhs_low);
+    ///     let (d_low, d_high) = rhs_low.widening_mul(lhs_high);
+    ///     let (mut e_low, e_high) = rhs_high.widening_mul(lhs_low);
+    ///     let (mut f_low, mut f_high) = rhs_high.widening_mul(lhs_high);
+    /// 
+    ///     let mut overflow: bool;
+    ///     (e_low, overflow) = e_low.overflowing_add(d_low);
+    ///     if overflow
+    ///         { (f_low, overflow) = f_low.overflowing_add(T::one()); }
+    ///     if overflow
+    ///         { f_high = f_high.wrapping_add(T::one()); }
+    ///     (e_low, overflow) = e_low.overflowing_add(c_high);
+    ///     if overflow
+    ///         { (f_low, overflow) = f_low.overflowing_add(T::one()); }
+    ///     if overflow
+    ///         { f_high = f_high.wrapping_add(T::one()); }
+    /// 
+    ///     (f_low, overflow) = f_low.overflowing_add(d_high);
+    ///     if overflow
+    ///         { f_high = f_high.wrapping_add(T::one()); }
+    ///     (f_low, overflow) = f_low.overflowing_add(e_high);
+    ///     if overflow
+    ///         { f_high = f_high.wrapping_add(T::one()); }
+    ///     (c_low, e_low, f_low, f_high)
+    /// }
+    /// ```
+    /// 
+    /// # Example 11 for SizeUnion for 64-bit CPUs for Little Endian
+    /// ```
+    /// use cryptocol::number::SmallUInt;
+    /// fn main()
+    /// {
+    ///     #[cfg(target_pointer_width = "64")]
+    ///     {
+    ///         // a_u128: u128 === (a_high_usize, a_low_usize) == (10775095670246085798_usize, 7681743649119882630_usize) == 198765432198765432198765432198765432198_u128
+    ///         let a_high_sizeunion = 10775095670246085798_usize.into_sizeunion();
+    ///         let a_low_sizeunion = 7681743649119882630_usize.into_sizeunion();
+    ///         // b_usize: usize === (b_high_usize, b_low_usize) == (6692605942763486917_usize, 12312739301371248917_usize) == 123456789012345678901234567890123456789_u128
+    ///         let b_high_sizeunion = 6692605942763486917_usize.into_sizeunion();
+    ///         let b_low_sizeunion = 12312739301371248917_usize.into_sizeunion();
+    /// 
+    ///         // (10775095670246085798_usize, 7681743649119882630_usize) X (6692605942763486917_usize, 12312739301371248917_usize) == 198765432198765432198765432198765432198_u128 X 123456789012345678901234567890123456789_u128 == (72113469316534070997571940237811086202_u128, 284839445932509422190795104397182362110_u128) == 24538942025910684226047858446061575867965995914594253912457079712243362292222_u256
+    ///         //
+    ///         //                                                          (10775095670246085798_usize,  7681743649119882630_usize) == 198765432198765432198765432198765432198_u128
+    ///         // X                                                        ( 6692605942763486917_usize, 12312739301371248917_usize) == 123456789012345678901234567890123456789_u128
+    ///         // -----------------------------------------------------------------------------------------------------------------
+    ///         //                                                          ( 5127371342803972846_usize,  9393535397455192574_usize)
+    ///         //                               (7192106282005498115_usize,  3473120370613376926_usize)
+    ///         //                               (2786989562573083321_usize,  6840685591062354974_usize)
+    ///         // + (3909279004922650219_usize,  1464703988338300862_usize)
+    ///         // -----------------------------------------------------------------------------------------------------------------
+    ///         //   (3909279004922650219_usize, 11443799832916882298_usize, 15441177304479704746_usize,  9393535397455192574_usize) == 24538942025910684226047858446061575867965995914594253912457079712243362292222_u256
+    ///         let (c_lower_sizeunion, c_low_sizeunion, c_high_sizeunion, c_higher_sizeunion) = func(a_low_sizeunion, a_high_sizeunion, b_low_sizeunion, b_high_sizeunion);
+    ///         println!("{}-{}-{}-{}", c_higher_sizeunion, c_high_sizeunion, c_low_sizeunion, c_lower_sizeunion);
+    ///         assert_eq!(c_higher_sizeunion.get(), 3909279004922650219_usize);
+    ///         assert_eq!(c_high_sizeunion.get(), 11443799832916882298_usize);
+    ///         assert_eq!(c_low_sizeunion.get(), 15441177304479704746_usize);
+    ///         assert_eq!(c_lower_sizeunion.get(), 9393535397455192574_usize);
+    ///     }
     /// }
     /// 
     /// fn func<T: SmallUInt>(lhs_low: T, lhs_high: T, rhs_low: T, rhs_high: T) -> (T, T, T, T)

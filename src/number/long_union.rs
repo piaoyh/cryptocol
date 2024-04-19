@@ -470,6 +470,10 @@ impl LongUnion
     /// ```
     #[inline] pub fn new_with_bool(b: bool) -> Self     { Self { ulong: b as u64 } }
 
+    #[inline] pub fn zero() -> Self     { Self { ulong: 0} }
+
+    #[inline] pub fn one() -> Self      { Self { ulong: 1} }
+
     // pub fn get(self) -> u64
     /// Returns its value as `u64`.
     /// 

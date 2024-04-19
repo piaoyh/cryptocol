@@ -9416,8 +9416,8 @@ macro_rules! integer_union_methods {
         /// // + (1525_u16, 57600_u16)
         /// // ---------------------------------
         /// //   (1525_u16, 62192_u16, 61770_u16, 18048_u16) == 429516456138000000_u64
-        /// let zero_shortunion = ShortUnion::new_with(0);
-        /// let one_shortunion = ShortUnion::new_with(1);
+        /// let zero_shortunion = ShortUnion::zero();
+        /// let one_shortunion = ShortUnion::one();
         /// let (c_lower_shortunion, c_tmp_shortunion) = b_low_shortunion.carrying_mul(a_low_shortunion, zero_shortunion);
         /// let (d_low_shortunion, d_high_shortunion) = b_low_shortunion.carrying_mul(a_high_shortunion, c_tmp_shortunion);
         /// let (mut c_low_shortunion, e_high_shortunion) = b_high_shortunion.carrying_mul(a_low_shortunion, zero_shortunion);
@@ -9471,8 +9471,8 @@ macro_rules! integer_union_methods {
         /// // + (954183848_u32, 3735936288_u32)
         /// // -----------------------------------------------------------------
         /// //   (954183849_u32, 1033146151_u32, 4190455352_u32, 2923262217_u32) == 429516456138000000_u64
-        /// let zero_intunion = IntUnion::new_with(0);
-        /// let one_intunion = IntUnion::new_with(1);
+        /// let zero_intunion = IntUnion::zero();
+        /// let one_intunion = IntUnion::one();
         /// let (c_lower_intunion, c_tmp_intunion) = b_low_intunion.carrying_mul(a_low_intunion, zero_intunion);
         /// let (d_low_intunion, d_high_intunion) = b_low_intunion.carrying_mul(a_high_intunion, c_tmp_intunion);
         /// let (mut c_low_intunion, e_high_intunion) = b_high_intunion.carrying_mul(a_low_intunion, zero_intunion);
@@ -9526,8 +9526,8 @@ macro_rules! integer_union_methods {
         /// // + (3909279004922650219_u64,  1464703988338300862_u64)
         /// // ---------------------------------------------------------------------------------------------------------
         /// //   (3909279004922650219_u64, 11443799832916882298_u64, 15441177304479704746_u64,  9393535397455192574_u64) == 24538942025910684226047858446061575867965995914594253912457079712243362292222_u256
-        /// let zero_longunion = LongUnion::new_with(0);
-        /// let one_longunion = LongUnion::new_with(1);
+        /// let zero_longunion = LongUnion::zero();
+        /// let one_longunion = LongUnion::one();
         /// let (c_lower_longunion, c_tmp_longunion) = b_low_longunion.carrying_mul(a_low_longunion, zero_longunion);
         /// let (d_low_longunion, d_high_longunion) = b_low_longunion.carrying_mul(a_high_longunion, c_tmp_longunion);
         /// let (mut c_low_longunion, e_high_longunion) = b_high_longunion.carrying_mul(a_low_longunion, zero_longunion);
@@ -9572,8 +9572,8 @@ macro_rules! integer_union_methods {
         /// // + (27326122685316262062508597076325453266_u128, 184240100967607654057575481238459345242_u128)
         /// // -----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
         /// //   (27326122685316262062508597076325453266_u128, 277501602612009932494507905696437247705_u128,  75658536124021560573913567605711708949_u128, 305933135181961371815664194362919418360_u128) == 1076704055370267103358067448344494207403929951418850598311166733254725709101675518708273284527051744761749874770306207984521811586513200762632500980546040_u512
-        /// let zero_longerunion = LongerUnion::new_with(0);
-        /// let one_longerunion = LongerUnion::new_with(1);
+        /// let zero_longerunion = LongerUnion::zero();
+        /// let one_longerunion = LongerUnion::one();
         /// let (c_lower_longerunion, c_tmp_longerunion) = b_low_longerunion.carrying_mul(a_low_longerunion, zero_longerunion);
         /// let (d_low_longerunion, d_high_longerunion) = b_low_longerunion.carrying_mul(a_high_longerunion, c_tmp_longerunion);
         /// let (mut c_low_longerunion, e_high_longerunion) = b_high_longerunion.carrying_mul(a_low_longerunion, zero_longerunion);
@@ -9620,8 +9620,8 @@ macro_rules! integer_union_methods {
         ///     // + (3909279004922650219_usize,  1464703988338300862_usize)
         ///     // -----------------------------------------------------------------------------------------------------------------
         ///     //   (3909279004922650219_usize, 11443799832916882298_usize, 15441177304479704746_usize,  9393535397455192574_usize) == 24538942025910684226047858446061575867965995914594253912457079712243362292222_u256
-        ///     let zero_sizeunion = SizeUnion::new_with(0);
-        ///     let one_sizeunion = SizeUnion::new_with(1);
+        ///     let zero_sizeunion = SizeUnion::zero();
+        ///     let one_sizeunion = SizeUnion::one();
         ///     let (c_lower_sizeunion, c_tmp_sizeunion) = b_low_sizeunion.carrying_mul(a_low_sizeunion, zero_sizeunion);
         ///     let (d_low_sizeunion, d_high_sizeunion) = b_low_sizeunion.carrying_mul(a_high_sizeunion, c_tmp_sizeunion);
         ///     let (mut c_low_sizeunion, e_high_sizeunion) = b_high_sizeunion.carrying_mul(a_low_sizeunion, zero_sizeunion);
@@ -9676,6 +9676,373 @@ macro_rules! integer_union_methods {
         {
             let (low, high) = SmallUInt::carrying_mul(self.get(), rhs.get(), carry.get());
             (Self::new_with(low), Self::new_with(high))
+        }
+
+        // pub fn widening_mul(self, rhs: Self) -> (Self, Self)
+        /// Calculates the complete product `self` * `rhs` without the possibility
+        /// to overflow.
+        /// 
+        /// # Output
+        /// It returns `self` * `rhs` in the form of a tuple of the low-order
+        /// (wrapping) bits and the high-order (overflow) bits of the result as
+        /// two separate values, in that order.
+        /// 
+        /// # Feature
+        /// It performs “long multiplication” which takes in an extra amount to add,
+        /// and may return an additional amount of overflow. This allows for
+        /// chaining together multiple multiplications to create “big integers”
+        /// which represent larger values.
+        /// 
+        /// # Counterpart Methods
+        /// If you also need to add a carry to the wide result,
+        /// then you may want to use
+        /// [carrying_mul()](trait@SmallUInt#tymethod.carrying_mul) instead.
+        /// 
+        /// The value of the first field in the returned tuple matches what you’d
+        /// get the `wrapping_mul()` methods.
+        /// `self.widening_mul(rhs).0` == `self.wrapping_mul(rhs)`
+        /// 
+        /// # Example 1 for ShortUnion for Little Endian
+        /// ```
+        /// use cryptocol::number::{ ShortUnion, LongUnion };
+        /// 
+        /// // a_u64: u32 === (a_high_u16, a_low_u16) == (10000_u16, 10100_u16) == 257010000_u32
+        /// let a_high_shortunion = ShortUnion::new_with(10000_u16);
+        /// let a_low_shortunion = ShortUnion::new_with(10100_u16);
+        /// // b_u32: u32 === (b_high_u16, b_low_u16) == (10000_u16, 20000_u16) == 258000000_u32
+        /// let b_high_shortunion = ShortUnion::new_with(10000_u16);
+        /// let b_low_shortunion = ShortUnion::new_with(20000_u16);
+        /// 
+        /// // (10000_u16, 10100_u16) X (10000_u16, 20000_u16) == 257010000_u32 X 258000000_u32 == 66308580000000000_u32
+        /// //
+        /// //                        (10000_u16, 10100_u16) == 655370100_u32
+        /// // X                      (10000_u16, 20000_u16) == 655380000_u32
+        /// // ---------------------------------------------
+        /// //                       (  3082_u16, 18048_u16)
+        /// //            (  3051_u16, 49664_u16)
+        /// //            (  1541_u16,  9024_u16)
+        /// // + (1525_u16, 57600_u16)
+        /// // ---------------------------------
+        /// //   (1525_u16, 62192_u16, 61770_u16, 18048_u16) == 429516456138000000_u64
+        /// let one_shortunion = ShortUnion::one();
+        /// let (c_lower_shortunion, c_temp_shortunion) = b_low_shortunion.widening_mul(a_low_shortunion);
+        /// let (d_low_shortunion, d_high_shortunion) = b_low_shortunion.widening_mul(a_high_shortunion);
+        /// let (mut c_low_shortunion, e_high_shortunion) = b_high_shortunion.widening_mul(a_low_shortunion);
+        /// let (mut c_high_shortunion, mut c_higher_shortunion) = b_high_shortunion.widening_mul(a_high_shortunion);
+        /// 
+        /// let mut overflow: bool;
+        /// (c_low_shortunion, overflow) = c_low_shortunion.overflowing_add(d_low_shortunion);
+        /// if overflow
+        ///     { (c_high_shortunion, overflow) = c_high_shortunion.overflowing_add(one_shortunion); }
+        /// if overflow
+        ///     { c_higher_shortunion = c_higher_shortunion.wrapping_add(one_shortunion); }
+        /// (c_low_shortunion, overflow) = c_low_shortunion.overflowing_add(c_temp_shortunion);
+        /// if overflow
+        ///     { (c_high_shortunion, overflow) = c_high_shortunion.overflowing_add(one_shortunion); }
+        /// if overflow
+        ///     { c_higher_shortunion = c_higher_shortunion.wrapping_add(one_shortunion); }
+        /// 
+        /// (c_high_shortunion, overflow) = c_high_shortunion.overflowing_add(d_high_shortunion);
+        /// if overflow
+        ///     { c_higher_shortunion = c_higher_shortunion.wrapping_add(one_shortunion); }
+        /// (c_high_shortunion, overflow) = c_high_shortunion.overflowing_add(e_high_shortunion);
+        /// if overflow
+        ///     { c_higher_shortunion = c_higher_shortunion.wrapping_add(one_shortunion); }
+        /// println!("{}-{}-{}-{}", c_higher_shortunion, c_high_shortunion, c_low_shortunion, c_lower_shortunion);
+        /// assert_eq!(c_higher_shortunion.get(), 1525_u16);
+        /// assert_eq!(c_high_shortunion.get(), 62192_u16);
+        /// assert_eq!(c_low_shortunion.get(), 61770_u16);
+        /// assert_eq!(c_lower_shortunion.get(), 18048_u16);
+        /// 
+        /// let a = LongUnion::new_with_ushorts([a_low_shortunion.get(), a_high_shortunion.get(), 0, 0]);
+        /// let b = LongUnion::new_with_ushorts([b_low_shortunion.get(), b_high_shortunion.get(), 0, 0]);
+        /// let c = a * b;
+        /// println!("{} * {} = {}", a.get(), b.get(), c.get());
+        /// assert_eq!(c_higher_shortunion.get(), c.get_ushort_(3));
+        /// assert_eq!(c_high_shortunion.get(), c.get_ushort_(2));
+        /// assert_eq!(c_low_shortunion.get(), c.get_ushort_(1));
+        /// assert_eq!(c_lower_shortunion.get(), c.get_ushort_(0));
+        /// ```
+        /// 
+        /// # Example 2 for IntUnion for Little Endian
+        /// ```
+        /// use cryptocol::number::{ IntUnion, LongerUnion };
+        /// 
+        /// // a_u64: u64 === (a_high_u32, a_low_u32) == (2299561912_u32, 2956226837_u32) == 9876543210123456789_u64
+        /// let a_high_intunion = IntUnion::new_with(2299561912_u32);
+        /// let a_low_intunion = IntUnion::new_with(2956226837_u32);
+        /// // b_u64: u64 === (b_high_u32, b_low_u32) == (1782160508_u32, 682685733_u32) == 7654321098765432101_u64
+        /// let b_high_intunion = IntUnion::new_with(1782160508_u32);
+        /// let b_low_intunion = IntUnion::new_with(682685733_u32);
+        /// 
+        /// // (2299561912_u32, 2956226837_u32) X (1782160508_u32, 682685733_u32) == 9876543210123456789_u64 X 7654321098765432101_u64 == (4098188426859548455_u64, 17997868695111430409_u64) == 75598233076116445704676116321386983689_u128
+        /// //
+        /// //                                  (2299561912_u32, 2956226837_u32) == 9876543210123456789_u64
+        /// // X                                (1782160508_u32,  682685733_u32) == 7654321098765432101_u64
+        /// // -----------------------------------------------------------------
+        /// //                                  ( 469892724_u32, 2923262217_u32)
+        /// //                  ( 365515730_u32, 2949035416_u32)
+        /// //                  (1226661429_u32,  771527212_u32)
+        /// // + (954183848_u32, 3735936288_u32)
+        /// // -----------------------------------------------------------------
+        /// //   (954183849_u32, 1033146151_u32, 4190455352_u32, 2923262217_u32) == 429516456138000000_u64
+        /// let one_intunion = IntUnion::one();
+        /// let (c_lower_intunion, c_temp_intunion) = b_low_intunion.widening_mul(a_low_intunion);
+        /// let (d_low_intunion, d_high_intunion) = b_low_intunion.widening_mul(a_high_intunion);
+        /// let (mut c_low_intunion, e_high_intunion) = b_high_intunion.widening_mul(a_low_intunion);
+        /// let (mut c_high_intunion, mut c_higher_intunion) = b_high_intunion.widening_mul(a_high_intunion);
+        /// 
+        /// let mut overflow: bool;
+        /// (c_low_intunion, overflow) = c_low_intunion.overflowing_add(d_low_intunion);
+        /// if overflow
+        ///     { (c_high_intunion, overflow) = c_high_intunion.overflowing_add(one_intunion); }
+        /// if overflow
+        ///     { c_higher_intunion = c_higher_intunion.wrapping_add(one_intunion); }
+        /// (c_low_intunion, overflow) = c_low_intunion.overflowing_add(c_temp_intunion);
+        /// if overflow
+        ///     { (c_high_intunion, overflow) = c_high_intunion.overflowing_add(one_intunion); }
+        /// if overflow
+        ///     { c_higher_intunion = c_higher_intunion.wrapping_add(one_intunion); }
+        /// 
+        /// (c_high_intunion, overflow) = c_high_intunion.overflowing_add(d_high_intunion);
+        /// if overflow
+        ///     { c_higher_intunion = c_higher_intunion.wrapping_add(one_intunion); }
+        /// (c_high_intunion, overflow) = c_high_intunion.overflowing_add(e_high_intunion);
+        /// if overflow
+        ///     { c_higher_intunion = c_higher_intunion.wrapping_add(one_intunion); }
+        /// println!("{}-{}-{}-{}", c_higher_intunion, c_high_intunion, c_low_intunion, c_lower_intunion);
+        /// assert_eq!(c_higher_intunion.get(), 954183849_u32);
+        /// assert_eq!(c_high_intunion.get(), 1033146151_u32);
+        /// assert_eq!(c_low_intunion.get(), 4190455352_u32);
+        /// assert_eq!(c_lower_intunion.get(), 2923262217_u32);
+        /// 
+        /// let a = LongerUnion::new_with_uints([a_low_intunion.get(), a_high_intunion.get(), 0, 0]);
+        /// let b = LongerUnion::new_with_uints([b_low_intunion.get(), b_high_intunion.get(), 0, 0]);
+        /// let c = a * b;
+        /// println!("{} * {} = {}", a.get(), b.get(), c.get());
+        /// assert_eq!(c_higher_intunion.get(), c.get_uint_(3));
+        /// assert_eq!(c_high_intunion.get(), c.get_uint_(2));
+        /// assert_eq!(c_low_intunion.get(), c.get_uint_(1));
+        /// assert_eq!(c_lower_intunion.get(), c.get_uint_(0));
+        /// ```
+        /// 
+        /// # Example 3 for LongUnion for Little Endian
+        /// ```
+        /// use cryptocol::number::LongUnion;
+        /// 
+        /// // a_u128: u128 === (a_high_u64, a_low_u64) == (10775095670246085798_u64, 7681743649119882630_u64) == 198765432198765432198765432198765432198_u128
+        /// let a_high_longunion = LongUnion::new_with(10775095670246085798_u64);
+        /// let a_low_longunion = LongUnion::new_with(7681743649119882630_u64);
+        /// // b_u64: u64 === (b_high_u64, b_low_u64) == (6692605942763486917_u64, 12312739301371248917_u64) == 123456789012345678901234567890123456789_u128
+        /// let b_high_longunion = LongUnion::new_with(6692605942763486917_u64);
+        /// let b_low_longunion = LongUnion::new_with(12312739301371248917_u64);
+        /// 
+        /// // (10775095670246085798_u64, 7681743649119882630_u64) X (6692605942763486917_u64, 12312739301371248917_u64) == 198765432198765432198765432198765432198_u128 X 123456789012345678901234567890123456789_u128 == (72113469316534070997571940237811086202_u128, 284839445932509422190795104397182362110_u128) == 24538942025910684226047858446061575867965995914594253912457079712243362292222_u256
+        /// //
+        /// //                                                      (10775095670246085798_u64,  7681743649119882630_u64) == 198765432198765432198765432198765432198_u128
+        /// // X                                                    ( 6692605942763486917_u64, 12312739301371248917_u64) == 123456789012345678901234567890123456789_u128
+        /// // ---------------------------------------------------------------------------------------------------------
+        /// //                                                      ( 5127371342803972846_u64,  9393535397455192574_u64)
+        /// //                             (7192106282005498115_u64,  3473120370613376926_u64)
+        /// //                             (2786989562573083321_u64,  6840685591062354974_u64)
+        /// // + (3909279004922650219_u64,  1464703988338300862_u64)
+        /// // ---------------------------------------------------------------------------------------------------------
+        /// //   (3909279004922650219_u64, 11443799832916882298_u64, 15441177304479704746_u64,  9393535397455192574_u64) == 24538942025910684226047858446061575867965995914594253912457079712243362292222_u256
+        /// let one_longunion = LongUnion::one();
+        /// let (c_lower_longunion, c_temp_longunion) = b_low_longunion.widening_mul(a_low_longunion);
+        /// let (d_low_longunion, d_high_longunion) = b_low_longunion.widening_mul(a_high_longunion);
+        /// let (mut c_low_longunion, e_high_longunion) = b_high_longunion.widening_mul(a_low_longunion);
+        /// let (mut c_high_longunion, mut c_higher_longunion) = b_high_longunion.widening_mul(a_high_longunion);
+        /// 
+        /// let mut overflow: bool;
+        /// (c_low_longunion, overflow) = c_low_longunion.overflowing_add(d_low_longunion);
+        /// if overflow
+        ///     { (c_high_longunion, overflow) = c_high_longunion.overflowing_add(one_longunion); }
+        /// if overflow
+        ///     { c_higher_longunion = c_higher_longunion.wrapping_add(one_longunion); }
+        /// (c_low_longunion, overflow) = c_low_longunion.overflowing_add(c_temp_longunion);
+        /// if overflow
+        ///     { (c_high_longunion, overflow) = c_high_longunion.overflowing_add(one_longunion); }
+        /// if overflow
+        ///     { c_higher_longunion = c_higher_longunion.wrapping_add(one_longunion); }
+        /// 
+        /// (c_high_longunion, overflow) = c_high_longunion.overflowing_add(d_high_longunion);
+        /// if overflow
+        ///     { c_higher_longunion = c_higher_longunion.wrapping_add(one_longunion); }
+        /// (c_high_longunion, overflow) = c_high_longunion.overflowing_add(e_high_longunion);
+        /// if overflow
+        ///     { c_higher_longunion = c_higher_longunion.wrapping_add(one_longunion); }
+        /// println!("{}-{}-{}-{}", c_higher_longunion, c_high_longunion, c_low_longunion, c_lower_longunion);
+        /// assert_eq!(c_higher_longunion.get(), 3909279004922650219_u64);
+        /// assert_eq!(c_high_longunion.get(), 11443799832916882298_u64);
+        /// assert_eq!(c_low_longunion.get(), 15441177304479704746_u64);
+        /// assert_eq!(c_lower_longunion.get(), 9393535397455192574_u64);
+        /// ```
+        /// 
+        /// # Example 4 for LongerUnion for Little Endian
+        /// ```
+        /// use cryptocol::number::LongerUnion;
+        /// 
+        /// // a_u256: u256 === (a_high_u128, a_low_u128) == (123456789012345678901234567890123456789_u128, 198765432198765432198765432198765432198_u128) == 42010168377579896403540037778015643756626903575004241358522734820017396206982_u256
+        /// let a_high_longerunion = LongerUnion::new_with(123456789012345678901234567890123456789_u128);
+        /// let a_low_longerunion = LongerUnion::new_with(198765432198765432198765432198765432198_u128);
+        /// // b_u256: u256 === (b_high_u128, b_low_u128) == (75318642097531864209753186420975318642_u128, 135792468013579246801357924680135792468_u128) == 25629605806219180037134371884461041203042609997744073457419340831856170555220_u256
+        /// let b_high_longerunion = LongerUnion::new_with(75318642097531864209753186420975318642_u128);
+        /// let b_low_longerunion = LongerUnion::new_with(135792468013579246801357924680135792468_u128);
+        /// 
+        /// // (123456789012345678901234567890123456789_u128, 198765432198765432198765432198765432198_u128) X (75318642097531864209753186420975318642_u128 - 135792468013579246801357924680135792468_u128) == 42010168377579896403540037778015643756626903575004241358522734820017396206982_u256 X 25629605806219180037134371884461041203042609997744073457419340831856170555220_u256 = 1076704055370267103358067448344494207403929951418850598311166733254725709101675518708273284527051744761749874770306207984521811586513200762632500980546040_u512
+        /// //
+        /// //                                                                                              (123456789012345678901234567890123456789_u128, 198765432198765432198765432198765432198_u128) == 42010168377579896403540037778015643756626903575004241358522734820017396206982_u256
+        /// // X                                                                                            ( 75318642097531864209753186420975318642_u128, 135792468013579246801357924680135792468_u128) == 25629605806219180037134371884461041203042609997744073457419340831856170555220_u256
+        /// // -----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+        /// //                                                                                              ( 79318975115531594676802389315672824709_u128, 305933135181961371815664194362919418360_u128)
+        /// //                                                ( 49266443702953415606417933871327680361_u128, 301235724958848324675382352967843249636_u128)
+        /// //                                                ( 43995057941448862830514490586650222101_u128,  35386202970580104685103432753963846060_u128)
+        /// // + (27326122685316262062508597076325453266_u128, 184240100967607654057575481238459345242_u128)
+        /// // -----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+        /// //   (27326122685316262062508597076325453266_u128, 277501602612009932494507905696437247705_u128,  75658536124021560573913567605711708949_u128, 305933135181961371815664194362919418360_u128) == 1076704055370267103358067448344494207403929951418850598311166733254725709101675518708273284527051744761749874770306207984521811586513200762632500980546040_u512
+        /// let one_longerunion = LongerUnion::one();
+        /// let (c_lower_longerunion, c_temp_longerunion) = b_low_longerunion.widening_mul(a_low_longerunion);
+        /// let (d_low_longerunion, d_high_longerunion) = b_low_longerunion.widening_mul(a_high_longerunion);
+        /// let (mut c_low_longerunion, e_high_longerunion) = b_high_longerunion.widening_mul(a_low_longerunion);
+        /// let (mut c_high_longerunion, mut c_higher_longerunion) = b_high_longerunion.widening_mul(a_high_longerunion);
+        /// 
+        /// let mut overflow: bool;
+        /// (c_low_longerunion, overflow) = c_low_longerunion.overflowing_add(d_low_longerunion);
+        /// if overflow
+        ///     { (c_high_longerunion, overflow) = c_high_longerunion.overflowing_add(one_longerunion); }
+        /// if overflow
+        ///     { c_higher_longerunion = c_higher_longerunion.wrapping_add(one_longerunion); }
+        /// (c_low_longerunion, overflow) = c_low_longerunion.overflowing_add(c_temp_longerunion);
+        /// if overflow
+        ///     { (c_high_longerunion, overflow) = c_high_longerunion.overflowing_add(one_longerunion); }
+        /// if overflow
+        ///     { c_higher_longerunion = c_higher_longerunion.wrapping_add(one_longerunion); }
+        /// 
+        /// (c_high_longerunion, overflow) = c_high_longerunion.overflowing_add(d_high_longerunion);
+        /// if overflow
+        ///     { c_higher_longerunion = c_higher_longerunion.wrapping_add(one_longerunion); }
+        /// (c_high_longerunion, overflow) = c_high_longerunion.overflowing_add(e_high_longerunion);
+        /// if overflow
+        ///     { c_higher_longerunion = c_higher_longerunion.wrapping_add(one_longerunion); }
+        /// println!("{}-{}-{}-{}", c_higher_longerunion, c_high_longerunion, c_low_longerunion, c_lower_longerunion);
+        /// assert_eq!(c_higher_longerunion.get(), 27326122685316262062508597076325453266_u128);
+        /// assert_eq!(c_high_longerunion.get(), 277501602612009932494507905696437247705_u128);
+        /// assert_eq!(c_low_longerunion.get(), 75658536124021560573913567605711708949_u128);
+        /// assert_eq!(c_lower_longerunion.get(), 305933135181961371815664194362919418360_u128);
+        /// ```
+        /// 
+        /// # Example 5 for SizeUnion for Little Endian
+        /// ```
+        /// use cryptocol::number::SizeUnion;
+        /// 
+        /// #[cfg(target_pointer_width = "64")]
+        /// {
+        ///     // a_u128: u128 === (a_high_usize, a_low_usize) == (10775095670246085798_usize, 7681743649119882630_usize) == 198765432198765432198765432198765432198_u128
+        ///     let a_high_sizeunion = SizeUnion::new_with(10775095670246085798_usize);
+        ///     let a_low_sizeunion = SizeUnion::new_with(7681743649119882630_usize);
+        ///     // b_usize: usize === (b_high_usize, b_low_usize) == (6692605942763486917_usize, 12312739301371248917_usize) == 123456789012345678901234567890123456789_u128
+        ///     let b_high_sizeunion = SizeUnion::new_with(6692605942763486917_usize);
+        ///     let b_low_sizeunion = SizeUnion::new_with(12312739301371248917_usize);
+        /// 
+        ///     // (10775095670246085798_usize, 7681743649119882630_usize) X (6692605942763486917_usize, 12312739301371248917_usize) == 198765432198765432198765432198765432198_u128 X 123456789012345678901234567890123456789_u128 == (72113469316534070997571940237811086202_u128, 284839445932509422190795104397182362110_u128) == 24538942025910684226047858446061575867965995914594253912457079712243362292222_u256
+        ///     //
+        ///     //                                                          (10775095670246085798_usize,  7681743649119882630_usize) == 198765432198765432198765432198765432198_u128
+        ///     // X                                                        ( 6692605942763486917_usize, 12312739301371248917_usize) == 123456789012345678901234567890123456789_u128
+        ///     // -----------------------------------------------------------------------------------------------------------------
+        ///     //                                                          ( 5127371342803972846_usize,  9393535397455192574_usize)
+        ///     //                               (7192106282005498115_usize,  3473120370613376926_usize)
+        ///     //                               (2786989562573083321_usize,  6840685591062354974_usize)
+        ///     // + (3909279004922650219_usize,  1464703988338300862_usize)
+        ///     // -----------------------------------------------------------------------------------------------------------------
+        ///     //   (3909279004922650219_usize, 11443799832916882298_usize, 15441177304479704746_usize,  9393535397455192574_usize) == 24538942025910684226047858446061575867965995914594253912457079712243362292222_u256
+        ///     let one_sizeunion = SizeUnion::one();
+        ///     let (c_lower_sizeunion, c_temp_sizeunion) = b_low_sizeunion.widening_mul(a_low_sizeunion);
+        ///     let (d_low_sizeunion, d_high_sizeunion) = b_low_sizeunion.widening_mul(a_high_sizeunion);
+        ///     let (mut c_low_sizeunion, e_high_sizeunion) = b_high_sizeunion.widening_mul(a_low_sizeunion);
+        ///     let (mut c_high_sizeunion, mut c_higher_sizeunion) = b_high_sizeunion.widening_mul(a_high_sizeunion);
+        /// 
+        ///     let mut overflow: bool;
+        ///     (c_low_sizeunion, overflow) = c_low_sizeunion.overflowing_add(d_low_sizeunion);
+        ///     if overflow
+        ///         { (c_high_sizeunion, overflow) = c_high_sizeunion.overflowing_add(one_sizeunion); }
+        ///     if overflow
+        ///         { c_higher_sizeunion = c_higher_sizeunion.wrapping_add(one_sizeunion); }
+        ///     (c_low_sizeunion, overflow) = c_low_sizeunion.overflowing_add(c_temp_sizeunion);
+        ///     if overflow
+        ///         { (c_high_sizeunion, overflow) = c_high_sizeunion.overflowing_add(one_sizeunion); }
+        ///     if overflow
+        ///         { c_higher_sizeunion = c_higher_sizeunion.wrapping_add(one_sizeunion); }
+        /// 
+        ///     (c_high_sizeunion, overflow) = c_high_sizeunion.overflowing_add(d_high_sizeunion);
+        ///     if overflow
+        ///         { c_higher_sizeunion = c_higher_sizeunion.wrapping_add(one_sizeunion); }
+        ///     (c_high_sizeunion, overflow) = c_high_sizeunion.overflowing_add(e_high_sizeunion);
+        ///     if overflow
+        ///         { c_higher_sizeunion = c_higher_sizeunion.wrapping_add(one_sizeunion); }
+        ///     println!("{}-{}-{}-{}", c_higher_sizeunion, c_high_sizeunion, c_low_sizeunion, c_lower_sizeunion);
+        ///     assert_eq!(c_higher_sizeunion.get(), 3909279004922650219_usize);
+        ///     assert_eq!(c_high_sizeunion.get(), 11443799832916882298_usize);
+        ///     assert_eq!(c_low_sizeunion.get(), 15441177304479704746_usize);
+        ///     assert_eq!(c_lower_sizeunion.get(), 9393535397455192574_usize);
+        /// }
+        /// ```
+        /// 
+        /// # Plagiarism in descryption
+        /// Even though it does not call the method `widening_mul()` of
+        /// implementation of the primitive unsigned integer types such as `u8`,
+        /// `u16`, `u32`, `u64`, `u128` and `usize` directly, all the description
+        /// of this method is mainly the same as that of the method `widening_mul()`
+        /// of implementation of the primitive unsigned integer types for nightly
+        /// version except example codes. Confer to the descryptions that are linked
+        /// to in the section _Reference_. This plagiarism is not made maliciously
+        /// but is made for the reason of effectiveness and efficiency so that users
+        /// may understand better and easily how to use this method with simiilarity
+        /// to the method `widening_mul()` of implementation of the primitive
+        /// unsigned integer types.
+        /// 
+        /// # Possiible Changes in Future
+        /// This method does not call the method widening_mul() of the primitive
+        /// unsigned integer types directly. Instead, it is implemented to perform
+        /// the same thing as that of widening_mul() of the primitive unsigned
+        /// integer types because the methods widening_mul() of the primitive
+        /// unsigned integer types are only for nightly version. So, when the method
+        /// widening_mul() of the primitive unsigned integer types will become a
+        /// part of non-nightly normal version, the implementation of this method
+        /// will be changed to call the method widening_mul() of the primitive
+        /// unsigned integer types directly.
+        /// 
+        /// # Big-endian issue
+        /// It is just experimental for Big Endian CPUs. So, you are not encouraged
+        /// to use it for Big Endian CPUs for serious purpose. Only use this crate
+        /// for Big-endian CPUs with your own full responsibility.
+        pub fn widening_mul(self, rhs: Self) -> (Self, Self)
+        {
+            let zero = Self::zero();
+            let one = Self::one();
+            if rhs.is_zero() || self.is_zero()
+                { return (zero, zero); }
+    
+            let mut low = zero;
+            let mut high = zero;
+            let mut overflow: bool;
+            let mut bit_check = one << (Self::size_in_bits() - 1 - rhs.leading_zeros() as usize);
+            let adder = self;
+            while !bit_check.is_zero()
+            {
+                high <<= 1;
+                if low.is_msb_set()
+                    { high.set_lsb(); }
+                low <<= 1;
+                if (bit_check.get() & rhs.get()) != 0
+                {
+                    (low, overflow) = low.overflowing_add(adder);
+                    if overflow
+                        { high = high.wrapping_add(one); }
+                }
+                bit_check >>= 1;
+            }
+            (low, high)
         }
 
         #[inline] pub fn wrapping_mul(self, rhs: Self) -> Self      { Self::new_with( self.get().wrapping_mul(rhs.get()) ) }

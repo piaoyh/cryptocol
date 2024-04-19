@@ -1058,6 +1058,10 @@ impl SizeUnion
     /// ```
     #[inline] pub fn new_with_bool(b: bool) -> Self     { Self { u_size: b as usize } }
 
+    #[inline] pub fn zero() -> Self     { Self { u_size: 0} }
+
+    #[inline] pub fn one() -> Self      { Self { u_size: 1} }
+
     // pub fn get(self) -> usize
     /// Returns its value as `usize`.
     /// 

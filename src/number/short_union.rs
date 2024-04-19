@@ -294,6 +294,10 @@ impl ShortUnion
     /// ```
     #[inline] pub fn new_with_bool(b: bool) -> Self     { Self { ushort: b as u16 } }
 
+    #[inline] pub fn zero() -> Self     { Self { ushort: 0} }
+
+    #[inline] pub fn one() -> Self      { Self { ushort: 1} }
+
     // pub fn get(self) -> u16
     /// Returns its value as `u16`.
     /// 
