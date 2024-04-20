@@ -9682,6 +9682,9 @@ macro_rules! integer_union_methods {
         /// Calculates the complete product `self` * `rhs` without the possibility
         /// to overflow.
         /// 
+        /// # Arguments
+        /// - `rhs` is a multiplier of the type `Self`
+        /// 
         /// # Output
         /// It returns `self` * `rhs` in the form of a tuple of the low-order
         /// (wrapping) bits and the high-order (overflow) bits of the result as
@@ -10045,15 +10048,336 @@ macro_rules! integer_union_methods {
             (low, high)
         }
 
+        // fn wrapping_mul(self, rhs: Self) -> Self
+        /// Computes `self` * `rhs`, wrapping around at the boundary of the type.
+        /// 
+        /// # Arguments
+        /// - `rhs` is a multiplier of the type `Self`
+        /// 
+        /// # Features
+        /// It multiplies two numbers with wrapping (modular) multiplication.
+        /// 
+        /// # Output
+        /// It returns the `self` * `rhs` in the type of `Self`.
+        /// 
+        /// # Example 1 for ShortUnion
+        /// ```
+        /// use cryptocol::number::ShortUnion;
+        /// 
+        /// let a_shortunion = ShortUnion::new_with(u16::MAX / 3).wrapping_mul(ShortUnion::new_with(2_u16));
+        /// println!("{} * 2 = {}", ShortUnion::new_with(u16::MAX / 3), a_shortunion);
+        /// assert_eq!(a_shortunion.get(), 43690_u16);
+        /// 
+        /// let b_shortunion = a_shortunion.wrapping_mul(ShortUnion::new_with(2_u16));
+        /// println!("{} * 2 = {}", a_shortunion, b_shortunion);
+        /// assert_eq!(b_shortunion.get(), 21844_u16);
+        /// ```
+        /// 
+        /// # Example 2 for IntUnion
+        /// ```
+        /// use cryptocol::number::IntUnion;
+        /// 
+        /// let a_intunion = IntUnion::new_with(u32::MAX / 3).wrapping_mul(IntUnion::new_with(2_u32));
+        /// println!("{} * 2 = {}", IntUnion::new_with(u32::MAX / 3), a_intunion);
+        /// assert_eq!(a_intunion.get(), 2863311530_u32);
+        /// 
+        /// let b_intunion = a_intunion.wrapping_mul(IntUnion::new_with(2_u32));
+        /// println!("{} * 2 = {}", a_intunion, b_intunion);
+        /// assert_eq!(b_intunion.get(), 1431655764_u32);
+        /// ```
+        /// 
+        /// # Example 3 for LongUnion
+        /// ```
+        /// use cryptocol::number::LongUnion;
+        /// 
+        /// let a_longunion = LongUnion::new_with(u64::MAX / 3).wrapping_mul(LongUnion::new_with(2_u64));
+        /// println!("{} * 2 = {}", LongUnion::new_with(u64::MAX / 3), a_longunion);
+        /// assert_eq!(a_longunion.get(), 12297829382473034410_u64);
+        /// 
+        /// let b_longunion = a_longunion.wrapping_mul(LongUnion::new_with(2_u64));
+        /// println!("{} * 2 = {}", a_longunion, b_longunion);
+        /// assert_eq!(b_longunion.get(), 6148914691236517204_u64);
+        /// ```
+        /// 
+        /// # Example 4 for LongerUnion
+        /// ```
+        /// use cryptocol::number::LongerUnion;
+        /// 
+        /// let a_longerunion = LongerUnion::new_with(u128::MAX / 3).wrapping_mul(LongerUnion::new_with(2_u128));
+        /// println!("{} * 2 = {}", LongerUnion::new_with(u128::MAX / 3), a_longerunion);
+        /// assert_eq!(a_longerunion.get(), 226854911280625642308916404954512140970_u128);
+        /// 
+        /// let b_longerunion = a_longerunion.wrapping_mul(LongerUnion::new_with(2_u128));
+        /// println!("{} * 2 = {}", a_longerunion, b_longerunion);
+        /// assert_eq!(b_longerunion.get(), 113427455640312821154458202477256070484_u128);
+        /// ```
+        /// 
+        /// # Example 4 for SizeUnion for 64-bit CPUs
+        /// ```
+        /// use cryptocol::number::SizeUnion;
+        /// 
+        /// let a_sizeunion = SizeUnion::new_with(usize::MAX / 3).wrapping_mul(SizeUnion::new_with(2_usize));
+        /// println!("{} * 2 = {}", SizeUnion::new_with(usize::MAX / 3), a_sizeunion);
+        /// #[cfg(target_pointer_width = "64")] assert_eq!(a_sizeunion.get(), 12297829382473034410_usize);
+        /// 
+        /// let b_sizeunion = a_sizeunion.wrapping_mul(SizeUnion::new_with(2_usize));
+        /// println!("{} * 2 = {}", a_sizeunion, b_sizeunion);
+        /// #[cfg(target_pointer_width = "64")] assert_eq!(b_sizeunion.get(), 6148914691236517204_usize);
+        /// ```
+        /// 
+        /// # Plagiarism in descryption
+        /// It calls the method wrapping_mul() of implementation of the primitive
+        /// unsigned integer types such as`u8`, `u16`, `u32`, `u64`, `u128` and
+        /// `usize` directly. So, all the description of this method is mainly the
+        /// same as that of the method wrapping_mul() of implementation of the
+        /// primitive unsigned integer types except example codes. Confer to the
+        /// descryptions that are linked to in the section _Reference_. This
+        /// plagiarism is not made maliciously but is made for the reason of
+        /// effectiveness and efficiency so that users may understand better and
+        /// easily how to use this method with simiilarity to the method
+        /// wrapping_mul() of implementation of the primitive unsigned integer types.
         #[inline] pub fn wrapping_mul(self, rhs: Self) -> Self      { Self::new_with( self.get().wrapping_mul(rhs.get()) ) }
         // #[inline] pub fn wrapping_mul_assign(&mut self, rhs: Self)  { self.set(self.get().wrapping_mul(rhs.get())); }
-        
+    
+        // fn overflowing_mul(self, rhs: Self) -> (Self, bool);
+        /// Calculates `self` * `rhs`, wrapping around at the boundary of the type.
+        /// 
+        /// # Arguments
+        /// - `rhs` is a multiplier of the type `Self`
+        /// 
+        /// # Features
+        /// It multiplies two numbers with wrapping (modular) multiplication.
+        /// 
+        /// # Output
+        /// It returns a tuple of the multiplication along with a boolean indicating
+        /// whether an arithmetic overflow would occur. If an overflow would
+        /// have occurred then the wrapped value is returned.
+        /// 
+        /// # Example 1 for ShortUnion
+        /// ```
+        /// use cryptocol::number::ShortUnion;
+        /// 
+        /// let (a_shortunion, overflow) = ShortUnion::new_with(u16::MAX / 3).overflowing_mul(ShortUnion::new_with(2_u16));
+        /// println!("{} * 2 = {}\nOverflow = {}", ShortUnion::new_with(u16::MAX / 3), a_shortunion, overflow);
+        /// assert_eq!(a_shortunion.get(), 43690_u16);
+        /// assert_eq!(overflow, false);
+        /// 
+        /// let (b_shortunion, overflow) = a_shortunion.overflowing_mul(ShortUnion::new_with(2_u16));
+        /// println!("{} * 2 = {}\nOverflow = {}", a_shortunion, b_shortunion, overflow);
+        /// assert_eq!(b_shortunion.get(), 21844_u16);
+        /// assert_eq!(overflow, true);
+        /// ```
+        /// 
+        /// # Example 2 for IntUnion
+        /// ```
+        /// use cryptocol::number::IntUnion;
+        /// 
+        /// let (a_intunion, overflow) = IntUnion::new_with(u32::MAX / 3).overflowing_mul(IntUnion::new_with(2_u32));
+        /// println!("{} * 2 = {}\nOverflow = {}", IntUnion::new_with(u32::MAX / 3), a_intunion, overflow);
+        /// assert_eq!(a_intunion.get(), 2863311530_u32);
+        /// assert_eq!(overflow, false);
+        /// 
+        /// let (b_intunion, overflow) = a_intunion.overflowing_mul(IntUnion::new_with(2_u32));
+        /// println!("{} * 2 = {}\nOverflow = {}", a_intunion, b_intunion, overflow);
+        /// assert_eq!(b_intunion.get(), 1431655764_u32);
+        /// assert_eq!(overflow, true);
+        /// ```
+        /// 
+        /// # Example 3 for LongUnion
+        /// ```
+        /// use cryptocol::number::LongUnion;
+        /// 
+        /// let (a_longunion, overflow) = LongUnion::new_with(u64::MAX / 3).overflowing_mul(LongUnion::new_with(2_u64));
+        /// println!("{} * 2 = {}\nOverflow = {}", LongUnion::new_with(u64::MAX / 3), a_longunion, overflow);
+        /// assert_eq!(a_longunion.get(), 12297829382473034410_u64);
+        /// assert_eq!(overflow, false);
+        /// 
+        /// let (b_longunion, overflow) = a_longunion.overflowing_mul(LongUnion::new_with(2_u64));
+        /// println!("{} * 2 = {}\nOverflow = {}", a_longunion, b_longunion, overflow);
+        /// assert_eq!(b_longunion.get(), 6148914691236517204_u64);
+        /// assert_eq!(overflow, true);
+        /// ```
+        /// 
+        /// # Example 4 for LongerUnion
+        /// ```
+        /// use cryptocol::number::LongerUnion;
+        /// 
+        /// let (a_longerunion, overflow) = LongerUnion::new_with(u128::MAX / 3).overflowing_mul(LongerUnion::new_with(2_u128));
+        /// println!("{} * 2 = {}\nOverflow = {}", LongerUnion::new_with(u128::MAX / 3), a_longerunion, overflow);
+        /// assert_eq!(a_longerunion.get(), 226854911280625642308916404954512140970_u128);
+        /// assert_eq!(overflow, false);
+        /// 
+        /// let (b_longerunion, overflow)= a_longerunion.overflowing_mul(LongerUnion::new_with(2_u128));
+        /// println!("{} * 2 = {}\nOverflow = {}", a_longerunion, b_longerunion, overflow);
+        /// assert_eq!(b_longerunion.get(), 113427455640312821154458202477256070484_u128);
+        /// assert_eq!(overflow, true);
+        /// ```
+        /// 
+        /// # Example 5 for SizeUnion
+        /// ```
+        /// use cryptocol::number::SizeUnion;
+        /// 
+        /// let (a_sizeunion, overflow) = SizeUnion::new_with(usize::MAX / 3).overflowing_mul(SizeUnion::new_with(2_usize));
+        /// println!("{} * 2 = {}\nOverflow = {}", SizeUnion::new_with(usize::MAX / 3), a_sizeunion, overflow);
+        /// #[cfg(target_pointer_width = "64")] assert_eq!(a_sizeunion.get(), 12297829382473034410_usize);
+        /// assert_eq!(overflow, false);
+        /// 
+        /// let (b_sizeunion, overflow) = a_sizeunion.overflowing_mul(SizeUnion::new_with(2_usize));
+        /// println!("{} * 2 = {}\nOverflow = {}", a_sizeunion, b_sizeunion, overflow);
+        /// #[cfg(target_pointer_width = "64")] assert_eq!(b_sizeunion.get(), 6148914691236517204_usize);
+        /// assert_eq!(overflow, true);
+        /// ```
+        /// 
+        /// # Plagiarism in descryption
+        /// It calls the method overflowing_mul() of implementation of the primitive
+        /// unsigned integer types such as`u8`, `u16`, `u32`, `u64`, `u128` and
+        /// `usize` directly. So, all the description of this method is mainly the
+        /// same as that of the method overflowing_mul() of implementation of the
+        /// primitive unsigned integer types except example codes. Confer to the
+        /// descryptions that are linked to in the section _Reference_. This
+        /// plagiarism is not made maliciously but is made for the reason of
+        /// effectiveness and efficiency so that users may understand better and
+        /// easily how to use this method with simiilarity to the method
+        /// overflowing_mul() of implementation of the primitive unsigned integer
+        /// types.
         pub fn overflowing_mul(self, rhs: Self) -> (Self, bool)
         {
             let (res_this, carry) = self.get().overflowing_mul(rhs.get());
             (Self::new_with(res_this), carry)
         }
 
+        // fn checked_mul(self, rhs: Self) -> Option<Self>;
+        /// Computes `self` * `rhs`.
+        /// 
+        /// # Arguments
+        /// - `rhs` is a multiplier of the type `Self`
+        /// 
+        /// # Output
+        /// It returns `self` * `rhs` in the type `Self` wrapped by `Some`
+        /// of enum `Option` if overflow did not occur.
+        /// And, it returns `None` if overflow occurred.
+        /// 
+        /// # Example 1 for u8
+        /// ```
+        /// use cryptocol::number::{ ShortUnion, IntUnion, LongUnion, LongerUnion, SizeUnion };
+        /// 
+        /// // Example for ShortUnion
+        /// let a_shortunion = ShortUnion::new_with(u16::MAX / 3).checked_mul(ShortUnion::new_with(2_u16));
+        /// match a_shortunion
+        /// {
+        ///     Some(a) => {
+        ///             println!("{} * 2 = {}", ShortUnion::new_with(u16::MAX / 3), a);
+        ///             assert_eq!(a.get(), 43690_u16);
+        ///         },
+        ///     None => { println!("Overflow happened."); },
+        /// }
+        /// 
+        /// let b_shortunion = a_shortunion.unwrap().checked_mul(ShortUnion::new_with(2_u16));
+        /// match b_shortunion
+        /// {
+        ///     Some(b) => { println!("{} * 2 = {}", a_shortunion.unwrap(), b); },
+        ///     None => {
+        ///             println!("Overflow happened.");
+        ///             assert_eq!(b_shortunion, None);
+        ///         },
+        /// }
+        /// 
+        /// // Example for IntUnion
+        /// let a_intunion = IntUnion::new_with(u32::MAX / 3).checked_mul(IntUnion::new_with(2_u32));
+        /// match a_intunion
+        /// {
+        ///     Some(a) => {
+        ///             println!("{} * 2 = {}", IntUnion::new_with(u32::MAX / 3), a);
+        ///             assert_eq!(a.get(), 2863311530_u32);
+        ///         },
+        ///     None => { println!("Overflow happened."); },
+        /// }
+        /// 
+        /// let b_intunion = a_intunion.unwrap().checked_mul(IntUnion::new_with(2_u32));
+        /// match b_intunion
+        /// {
+        ///     Some(b) => { println!("{} * 2 = {}", a_intunion.unwrap(), b); },
+        ///     None => {
+        ///             println!("Overflow happened.");
+        ///             assert_eq!(b_intunion, None);
+        ///         },
+        /// }
+        /// 
+        /// // Example for LongUnion
+        /// let a_longunion = LongUnion::new_with(u64::MAX / 3).checked_mul(LongUnion::new_with(2_u64));
+        /// match a_longunion
+        /// {
+        ///     Some(a) => {
+        ///             println!("{} * 2 = {}", LongUnion::new_with(u64::MAX / 3), a);
+        ///             assert_eq!(a.get(), 12297829382473034410_u64);
+        ///         },
+        ///     None => { println!("Overflow happened."); },
+        /// }
+        /// 
+        /// let b_longunion = a_longunion.unwrap().checked_mul(LongUnion::new_with(2_u64));
+        /// match b_longunion
+        /// {
+        ///     Some(b) => { println!("{} * 2 = {}", a_longunion.unwrap(), b); },
+        ///     None => {
+        ///             println!("Overflow happened.");
+        ///             assert_eq!(b_longunion, None);
+        ///         },
+        /// }
+        /// 
+        /// // Example for LongerUnion
+        /// let a_longerunion = LongerUnion::new_with(u128::MAX / 3).checked_mul(LongerUnion::new_with(2_u128));
+        /// match a_longerunion
+        /// {
+        ///     Some(a) => {
+        ///             println!("{} * 2 = {}", LongerUnion::new_with(u128::MAX / 3), a);
+        ///             assert_eq!(a.get(), 226854911280625642308916404954512140970_u128);
+        ///         },
+        ///     None => { println!("Overflow happened."); },
+        /// }
+        /// 
+        /// let b_longerunion = a_longerunion.unwrap().checked_mul(LongerUnion::new_with(2_u128));
+        /// match b_longerunion
+        /// {
+        ///     Some(b) => { println!("{} * 2 = {}", a_longerunion.unwrap(), b); },
+        ///     None => {
+        ///             println!("Overflow happened.");
+        ///             assert_eq!(b_longerunion, None);
+        ///         },
+        /// }
+        /// 
+        /// // Example for SizeUnion
+        /// let a_sizeunion = SizeUnion::new_with(usize::MAX / 3).checked_mul(SizeUnion::new_with(2_usize));
+        /// match a_sizeunion
+        /// {
+        ///     Some(a) => {
+        ///             println!("{} * 2 = {}", SizeUnion::new_with(usize::MAX / 3), a);
+        ///             #[cfg(target_pointer_width = "64")] assert_eq!(a.get(), 12297829382473034410_usize);
+        ///         },
+        ///     None => { println!("Overflow happened."); },
+        /// }
+        /// 
+        /// let b_sizeunion = a_sizeunion.unwrap().checked_mul(SizeUnion::new_with(2_usize));
+        /// match b_sizeunion
+        /// {
+        ///     Some(b) => { println!("{} * 2 = {}", a_sizeunion.unwrap(), b); },
+        ///     None => {
+        ///             println!("Overflow happened.");
+        ///             assert_eq!(b_sizeunion, None);
+        ///         },
+        /// }
+        /// ```
+        /// 
+        /// # Plagiarism in descryption
+        /// It calls the method checked_mul() of implementation of the primitive
+        /// unsigned integer types such as`u8`, `u16`, `u32`, `u64`, `u128` and
+        /// `usize` directly. So, all the description of this method is mainly the
+        /// same as that of the method checked_mul() of implementation of the
+        /// primitive unsigned integer types except example codes. Confer to the
+        /// descryptions that are linked to in the section _Reference_. This
+        /// plagiarism is not made maliciously but is made for the reason of
+        /// effectiveness and efficiency so that users may understand better and
+        /// easily how to use this method with simiilarity to the method
+        /// checked_mul() of implementation of the primitive unsigned integer types.
         pub fn checked_mul(self, rhs: Self) -> Option<Self>
         {
             match self.get().checked_mul(rhs.get())
@@ -10063,18 +10387,526 @@ macro_rules! integer_union_methods {
             }
         }
 
+        // fn unchecked_mul(self, rhs: Self) -> Self;
+        /// Computes `self` + `rhs`, assuming overflow cannot occur.
+        /// 
+        /// # Arguments
+        /// - `rhs` is a multiplier of the type `Self`
+        /// 
+        /// # Features
+        /// It is virtually same as self.checked_add(rhs).unwrap().
+        /// Use this method only when it is sure that overflow will never happen.
+        /// 
+        /// # Panics
+        /// If overflow occurs, this method will panic at this version.
+        /// 
+        /// # Output
+        /// It returns `self` + `rhs` in the type `Self` if overflow did not occur.
+        /// Otherwise, its behavior is not defined.
+        /// 
+        /// # Example 1 for ShortUnion
+        /// ```
+        /// use cryptocol::number::ShortUnion;
+        /// 
+        /// let a_shortunion = ShortUnion::new_with(u16::MAX / 3).unchecked_mul(ShortUnion::new_with(2_u16));
+        /// println!("{} * 2 = {}", ShortUnion::new_with(u16::MAX / 3), a_shortunion);
+        /// assert_eq!(a_shortunion.get(), 43690_u16);
+        /// 
+        /// // It will panic
+        /// // let b_shortunion = a_shortunion.unchecked_mul(ShortUnion::new_with(2_u16));
+        /// ```
+        /// 
+        /// # Example 2 for IntUnion
+        /// ```
+        /// use cryptocol::number::IntUnion;
+        /// 
+        /// let a_intunion = IntUnion::new_with(u32::MAX / 3).unchecked_mul(IntUnion::new_with(2_u32));
+        /// println!("{} * 2 = {}", IntUnion::new_with(u32::MAX / 3), a_intunion);
+        /// assert_eq!(a_intunion.get(), 2863311530_u32);
+        /// 
+        /// // It will panic
+        /// // let b_intunion = a_intunion.unchecked_mul(IntUnion::new_with(2_u32));
+        /// ```
+        /// 
+        /// # Example 3 for LongUnion
+        /// ```
+        /// use cryptocol::number::LongUnion;
+        /// 
+        /// let a_longunion = LongUnion::new_with(u64::MAX / 3).unchecked_mul(LongUnion::new_with(2_u64));
+        /// println!("{} * 2 = {}", LongUnion::new_with(u64::MAX / 3), a_longunion);
+        /// assert_eq!(a_longunion.get(), 12297829382473034410_u64);
+        /// 
+        /// // It will panic
+        /// // let b_longunion = a_longunion.unchecked_mul(LongUnion::new_with(2_u64));
+        /// ```
+        /// 
+        /// # Example 4 for LongerUnion
+        /// ```
+        /// use cryptocol::number::LongerUnion;
+        /// 
+        /// let a_longerunion = LongerUnion::new_with(u128::MAX / 3).unchecked_mul(LongerUnion::new_with(2_u128));
+        /// println!("{} * 2 = {}", LongerUnion::new_with(u128::MAX / 3), a_longerunion);
+        /// assert_eq!(a_longerunion.get(), 226854911280625642308916404954512140970_u128);
+        /// 
+        /// // It will panic
+        /// // let b_longerunion = a_longerunion.unchecked_mul(LongerUnion::new_with(2_u128));
+        /// ```
+        /// 
+        /// # Example 5 for SizeUnion
+        /// ```
+        /// use cryptocol::number::SizeUnion;
+        /// 
+        /// let a_sizeunion = SizeUnion::new_with(usize::MAX / 3).unchecked_mul(SizeUnion::new_with(2_usize));
+        /// println!("{} * 2 = {}", SizeUnion::new_with(usize::MAX / 3), a_sizeunion);
+        /// #[cfg(target_pointer_width = "64")] assert_eq!(a_sizeunion.get(), 12297829382473034410_usize);
+        /// 
+        /// // It will panic
+        /// // let b_sizeunion = a_sizeunion.unchecked_mul(SizeUnion::new_with(2_usize));
+        /// ```
+        /// 
+        /// # Plagiarism in descryption
+        /// Even though it does not call the method unchecked_mul() of implementation
+        /// of the primitive unsigned integer types such as `u8`, `u16`, `u32`,
+        /// `u64`, `u128` and `usize` directly, all the description of this method
+        /// is mainly the same as that of the method unchecked_mul() of
+        /// implementation of the primitive unsigned integer types for nightly
+        /// version except example codes. Confer to the descryptions that are linked
+        /// to in the section _Reference_. This plagiarism is not made maliciously
+        /// but is made for the reason of effectiveness and efficiency so that users
+        /// may understand better and easily how to use this method with simiilarity
+        /// to the method unchecked_mul() of implementation of the primitive unsigned
+        /// integer types.
         #[inline] pub fn unchecked_mul(self, rhs: Self) -> Self     { Self::new_with( self.get().checked_mul(rhs.get()).unwrap() ) }
+
+        // fn saturating_mul(self, rhs: Self) -> Self
+        /// Computes `self` * `rhs`, saturating at the numeric bounds
+        /// instead of overflowing.
+        /// 
+        /// # Arguments
+        /// - `rhs` is a multiplier of the type `Self`
+        /// 
+        /// # Features
+        /// It multiplies two numbers with saturating integer multiplication
+        /// 
+        /// # Output
+        /// It returns the smaller one of `self` * `rhs` and the maxium
+        /// of the type of `Self`.
+        /// 
+        /// # Example 1 for ShortUnion
+        /// ```
+        /// use cryptocol::number::ShortUnion;
+        /// 
+        /// let a_shortunion = ShortUnion::new_with(u16::MAX / 3).saturating_mul(ShortUnion::new_with(2_u16));
+        /// println!("{} * 2 = {}", ShortUnion::new_with(u16::MAX / 3), a_shortunion);
+        /// assert_eq!(a_shortunion.get(), 43690_u16);
+        /// 
+        /// let b_shortunion = a_shortunion.saturating_mul(ShortUnion::new_with(2_u16));
+        /// println!("{} * 2 = {}", a_shortunion, b_shortunion);
+        /// assert_eq!(b_shortunion.get(), u16::MAX);
+        /// ```
+        /// 
+        /// # Example 2 for IntUnion
+        /// ```
+        /// use cryptocol::number::IntUnion;
+        /// 
+        /// let a_intunion = IntUnion::new_with(u32::MAX / 3).saturating_mul(IntUnion::new_with(2_u32));
+        /// println!("{} * 2 = {}", IntUnion::new_with(u32::MAX / 3), a_intunion);
+        /// assert_eq!(a_intunion.get(), 2863311530_u32);
+        /// 
+        /// let b_intunion = a_intunion.saturating_mul(IntUnion::new_with(2_u32));
+        /// println!("{} * 2 = {}", a_intunion, b_intunion);
+        /// assert_eq!(b_intunion.get(), u32::MAX);
+        /// ```
+        /// 
+        /// # Example 3 for LongUnion
+        /// ```
+        /// use cryptocol::number::LongUnion;
+        /// 
+        /// let a_longunion = LongUnion::new_with(u64::MAX / 3).saturating_mul(LongUnion::new_with(2_u64));
+        /// println!("{} * 2 = {}", LongUnion::new_with(u64::MAX / 3), a_longunion);
+        /// assert_eq!(a_longunion.get(), 12297829382473034410_u64);
+        /// 
+        /// let b_longunion = a_longunion.saturating_mul(LongUnion::new_with(2_u64));
+        /// println!("{} * 2 = {}", a_longunion, b_longunion);
+        /// assert_eq!(b_longunion.get(), u64::MAX);
+        /// ```
+        /// 
+        /// # Example 4 for LongerUnion
+        /// ```
+        /// use cryptocol::number::LongerUnion;
+        /// 
+        /// let a_longerunion = LongerUnion::new_with(u128::MAX / 3).saturating_mul(LongerUnion::new_with(2_u128));
+        /// println!("{} * 2 = {}", LongerUnion::new_with(u128::MAX / 3), a_longerunion);
+        /// assert_eq!(a_longerunion.get(), 226854911280625642308916404954512140970_u128);
+        /// 
+        /// let b_longerunion = a_longerunion.saturating_mul(LongerUnion::new_with(2_u128));
+        /// println!("{} * 2 = {}", a_longerunion, b_longerunion);
+        /// assert_eq!(b_longerunion.get(), u128::MAX);
+        /// ```
+        /// 
+        /// # Example 5 for SizeUnion
+        /// ```
+        /// use cryptocol::number::SizeUnion;
+        /// 
+        /// let a_sizeunion = SizeUnion::new_with(usize::MAX / 3).saturating_mul(SizeUnion::new_with(2_usize));
+        /// println!("{} * 2 = {}", SizeUnion::new_with(usize::MAX / 3), a_sizeunion);
+        /// #[cfg(target_pointer_width = "64")] assert_eq!(a_sizeunion.get(), 12297829382473034410_usize);
+        /// 
+        /// let b_sizeunion = a_sizeunion.saturating_mul(SizeUnion::new_with(2_usize));
+        /// println!("{} * 2 = {}", a_sizeunion, b_sizeunion);
+        /// assert_eq!(b_sizeunion.get(), usize::MAX);
+        /// ```
+        /// 
+        /// # Plagiarism in descryption
+        /// It calls the method saturating_mul() of implementation of the primitive
+        /// unsigned integer types such as`u8`, `u16`, `u32`, `u64`, `u128` and
+        /// `usize` directly. So, all the description of this method is mainly the
+        /// same as that of the method saturating_mul() of implementation of the
+        /// primitive unsigned integer types except example codes. Confer to the
+        /// descryptions that are linked to in the section _Reference_. This
+        /// plagiarism is not made maliciously but is made for the reason of
+        /// effectiveness and efficiency so that users may understand better and
+        /// easily how to use this method with simiilarity to the method
+        /// saturating_mul() of implementation of the primitive unsigned integer types.
         #[inline] pub fn saturating_mul(self, rhs: Self) -> Self    { Self::new_with( self.get().saturating_mul(rhs.get()) ) }
 
+        // fn wrapping_div(self, rhs: Self) -> Self
+        /// Computes `self`/ `rhs`.
+        /// 
+        /// # Arguments
+        /// `rhs` is a divisor of the type `Self`.
+        /// 
+        /// # Features
+        /// Wrapped division on unsigned types is just normal division. There’s no
+        /// way wrapping could ever happen. This function exists, so that all
+        /// operations are accounted for in the wrapping operations.
+        /// 
+        /// # Output
+        /// It returns the `self` / `rhs` in the type of `Self`.
+        /// 
+        /// # Panics
+        /// It will panic if rhs is zero.
+        /// 
+        /// # Example 1 for ShortUnion
+        /// ```
+        /// use cryptocol::number::ShortUnion;
+        /// 
+        /// let a_shortunion = ShortUnion::new_with(u16::MAX / 3).wrapping_div(ShortUnion::new_with(2_u16));
+        /// println!("{} / 2 = {}", ShortUnion::new_with(u16::MAX / 3), a_shortunion);
+        /// assert_eq!(a_shortunion.get(), 10922_u16);
+        /// 
+        /// // It will panic.
+        /// // let a_panic = ShortUnion::new_with(u16::MAX / 3).wrapping_div(ShortUnion::zero());
+        /// ```
+        /// 
+        /// # Example 2 for IntUnion
+        /// ```
+        /// use cryptocol::number::IntUnion;
+        /// 
+        /// let a_intunion = IntUnion::new_with(u32::MAX / 3).wrapping_div(IntUnion::new_with(2_u32));
+        /// println!("{} / 2 = {}", IntUnion::new_with(u32::MAX / 3), a_intunion);
+        /// assert_eq!(a_intunion.get(), 715827882_u32);
+        /// 
+        /// // It will panic.
+        /// // let a_panic = IntUnion::new_with(u32::MAX / 3).wrapping_div(IntUnion::zero());
+        /// ```
+        /// 
+        /// # Example 3 for LongUnion
+        /// ```
+        /// use cryptocol::number::LongUnion;
+        /// 
+        /// let a_longunion = LongUnion::new_with(u64::MAX / 3).wrapping_div(LongUnion::new_with(2_u64));
+        /// println!("{} / 2 = {}", LongUnion::new_with(u64::MAX / 3), a_longunion);
+        /// assert_eq!(a_longunion.get(), 3074457345618258602_u64);
+        /// 
+        /// // It will panic.
+        /// // let a_panic = LongUnion::new_with(u64::MAX / 3).wrapping_div(LongUnion::zero());
+        /// ```
+        /// 
+        /// # Example 4 for LongerUnion
+        /// ```
+        /// use cryptocol::number::LongerUnion;
+        /// 
+        /// let a_longerunion = LongerUnion::new_with(u128::MAX / 3).wrapping_div(LongerUnion::new_with(2_u128));
+        /// println!("{} / 2 = {}", LongerUnion::new_with(u128::MAX / 3), a_longerunion);
+        /// assert_eq!(a_longerunion.get(), 56713727820156410577229101238628035242_u128);
+        /// 
+        /// // It will panic.
+        /// // let a_panic = LongUnion::new_with(u128::MAX / 3).wrapping_div(LongerUnion::zero());
+        /// ```
+        /// 
+        /// # Example 5 for SizeUnion for 64-bit CPUs
+        /// ```
+        /// use cryptocol::number::SizeUnion;
+        /// 
+        /// let a_sizeunion = SizeUnion::new_with(usize::MAX / 3).wrapping_div(SizeUnion::new_with(2_usize));
+        /// println!("{} / 2 = {}", SizeUnion::new_with(usize::MAX / 3), a_sizeunion);
+        /// #[cfg(target_pointer_width = "64")] assert_eq!(a_sizeunion.get(), 3074457345618258602_usize);
+        /// 
+        /// // It will panic.
+        /// // let a_panic = SizeUnion::new_with(usize::MAX / 3).wrapping_div(SizeUnion::zero());
+        /// ```
+        /// 
+        /// # Plagiarism in descryption
+        /// It calls the method wrapping_div() of implementation of the primitive
+        /// unsigned integer types such as`u8`, `u16`, `u32`, `u64`, `u128` and
+        /// `usize` directly. So, all the description of this method is mainly the
+        /// same as that of the method wrapping_div() of implementation of the
+        /// primitive unsigned integer types except example codes. Confer to the
+        /// descryptions that are linked to in the section _Reference_. This
+        /// plagiarism is not made maliciously but is made for the reason of
+        /// effectiveness and efficiency so that users may understand better and
+        /// easily how to use this method with simiilarity to the method
+        /// wrapping_div() of implementation of the primitive unsigned integer types.
         #[inline] pub fn wrapping_div(self, rhs: Self) -> Self      { Self::new_with( self.get().wrapping_div(rhs.get()) ) }
         // #[inline] pub fn wrapping_div_assign(&mut self, rhs: Self)  { self.this = self.get().wrapping_div(rhs.get()); }
-        
+
+        // fn overflowing_div(self, rhs: Self) -> (Self, bool)
+        /// Calculates `self` / `rhs`.
+        /// 
+        /// # Arguments
+        /// `rhs` is a divisor of the type `Self`.
+        /// 
+        /// # Features
+        /// It divides `self` by `rhs`.
+        /// 
+        /// # Output
+        /// It returns a tuple of the quotient along with a boolean indicating
+        /// whether an arithmetic overflow would occur. Note that for unsigned
+        /// integers overflow never occurs, so the second value is always `false`.
+        /// 
+        /// # Panics
+        /// It will panic if `rhs` is zero.
+        /// 
+        /// # Example 1 for ShortUnion
+        /// ```
+        /// use cryptocol::number::ShortUnion;
+        /// 
+        /// let (a_shortunion, overflow) = ShortUnion::new_with(u16::MAX / 3).overflowing_div(ShortUnion::new_with(2_u16));
+        /// println!("{} / 2 = {}\nOverflow = {}", ShortUnion::new_with(u16::MAX / 3), a_shortunion, overflow);
+        /// assert_eq!(a_shortunion.get(), 10922_u16);
+        /// assert_eq!(overflow, false);
+        /// 
+        /// // It will panic.
+        /// // let a_panic = a_shortunion.overflowing_div(ShortUnion::zero());
+        /// ```
+        /// 
+        /// # Example 2 for IntUnion
+        /// ```
+        /// use cryptocol::number::IntUnion;
+        /// 
+        /// let (a_intunion, overflow) = IntUnion::new_with(u32::MAX / 3).overflowing_div(IntUnion::new_with(2_u32));
+        /// println!("{} / 2 = {}\nOverflow = {}", IntUnion::new_with(u32::MAX / 3), a_intunion, overflow);
+        /// assert_eq!(a_intunion.get(), 715827882_u32);
+        /// assert_eq!(overflow, false);
+        /// 
+        /// // It will panic.
+        /// // let a_panic = a_intunion.overflowing_div(IntUnion::zero());
+        /// ```
+        /// 
+        /// # Example 3 for LongUnion
+        /// ```
+        /// use cryptocol::number::LongUnion;
+        /// 
+        /// let (a_longunion, overflow) = LongUnion::new_with(u64::MAX / 3).overflowing_div(LongUnion::new_with(2_u64));
+        /// println!("{} / 2 = {}\nOverflow = {}", LongUnion::new_with(u64::MAX / 3), a_longunion, overflow);
+        /// assert_eq!(a_longunion.get(), 3074457345618258602_u64);
+        /// assert_eq!(overflow, false);
+        /// 
+        /// // It will panic.
+        /// // let a_panic = a_longunion.overflowing_div(LongUnion::zero());
+        /// ```
+        /// 
+        /// # Example 4 for LongerUnion
+        /// ```
+        /// use cryptocol::number::LongerUnion;
+        /// 
+        /// let (a_longerunion, overflow) = LongerUnion::new_with(u128::MAX / 3).overflowing_div(LongerUnion::new_with(2_u128));
+        /// println!("{} / 2 = {}\nOverflow = {}", LongerUnion::new_with(u128::MAX / 3), a_longerunion, overflow);
+        /// assert_eq!(a_longerunion.get(), 56713727820156410577229101238628035242_u128);
+        /// assert_eq!(overflow, false);
+        /// 
+        /// // It will panic.
+        /// // let a_panic = a_longerunion.overflowing_div(LongerUnion::zero());
+        /// ```
+        /// 
+        /// # Example 5 for SizeUnion for 64-bit CPUs
+        /// ```
+        /// use cryptocol::number::SizeUnion;
+        /// 
+        /// let (a_sizeunion, overflow) = SizeUnion::new_with(usize::MAX / 3).overflowing_div(SizeUnion::new_with(2_usize));
+        /// println!("{} / 2 = {}\nOverflow = {}", SizeUnion::new_with(usize::MAX / 3), a_sizeunion, overflow);
+        /// #[cfg(target_pointer_width = "64")] assert_eq!(a_sizeunion.get(), 3074457345618258602_usize);
+        /// assert_eq!(overflow, false);
+        /// 
+        /// // It will panic.
+        /// // let a_panic = a_sizeunion.overflowing_div(SizeUnion::zero());
+        /// ```
+        /// 
+        /// # Plagiarism in descryption
+        /// It calls the method overflowing_div() of implementation of the primitive
+        /// unsigned integer types such as`u8`, `u16`, `u32`, `u64`, `u128` and
+        /// `usize` directly. So, all the description of this method is mainly the
+        /// same as that of the method overflowing_div() of implementation of the
+        /// primitive unsigned integer types except example codes. Confer to the
+        /// descryptions that are linked to in the section _Reference_. This
+        /// plagiarism is not made maliciously but is made for the reason of
+        /// effectiveness and efficiency so that users may understand better and
+        /// easily how to use this method with simiilarity to the method
+        /// overflowing_div() of implementation of the primitive unsigned integer
+        /// types.
         pub fn overflowing_div(self, rhs: Self) -> (Self, bool)
         {
             let (res_this, carry) = self.get().overflowing_div(rhs.get());
             (Self::new_with(res_this), carry)
         }
 
+        // fn checked_div(self, rhs: Self) -> Option<Self>;
+        /// Computes `self` / `rhs`.
+        /// 
+        /// # Arguments
+        /// `rhs` is a divisor of the type `Self`.
+        /// 
+        /// # Output
+        /// It returns `self` / `rhs` in the type `Self` wrapped by `Some`
+        /// of enum `Option`. And, it returns `None` if rhs is zero.
+        /// 
+        /// # Example 1 for ShortUnion
+        /// ```
+        /// use cryptocol::number::ShortUnion;
+        /// 
+        /// let a_shortunion = ShortUnion::new_with(u16::MAX / 3).checked_div(ShortUnion::new_with(2_u16));
+        /// match a_shortunion
+        /// {
+        ///     Some(a) => {
+        ///             println!("{} / 2 = {}", ShortUnion::new_with(u16::MAX / 3), a);
+        ///             assert_eq!(a.get(), 10922_u16);
+        ///         },
+        ///     None => { println!("Divided by zero."); },
+        /// }
+        /// 
+        /// let b_shortunion = ShortUnion::new_with(u16::MAX / 3).checked_div(ShortUnion::zero());
+        /// match b_shortunion
+        /// {
+        ///     Some(b) => { println!("{} / 2 = {}", ShortUnion::new_with(u16::MAX / 3), b); },
+        ///     None => {
+        ///             println!("Divided by zero.");
+        ///             assert_eq!(b_shortunion, None);
+        ///         },
+        /// }
+        /// ```
+        /// 
+        /// # Example 2 for IntUnion
+        /// ```
+        /// use cryptocol::number::IntUnion;
+        /// 
+        /// let a_intunion = IntUnion::new_with(u32::MAX / 3).checked_div(IntUnion::new_with(2_u32));
+        /// match a_intunion
+        /// {
+        ///     Some(a) => {
+        ///             println!("{} / 2 = {}", IntUnion::new_with(u32::MAX / 3), a);
+        ///             assert_eq!(a.get(), 715827882_u32);
+        ///         },
+        ///     None => { println!("Divided by zero."); },
+        /// }
+        /// 
+        /// let b_intunion = IntUnion::new_with(u32::MAX / 3).checked_div(IntUnion::zero());
+        /// match b_intunion
+        /// {
+        ///     Some(b) => { println!("{} / 2 = {}", IntUnion::new_with(u32::MAX / 3), b); },
+        ///     None => {
+        ///             println!("Divided by zero.");
+        ///             assert_eq!(b_intunion, None);
+        ///         },
+        /// }
+        /// ```
+        /// 
+        /// # Example 3 for LongUnion
+        /// ```
+        /// use cryptocol::number::LongUnion;
+        /// 
+        /// let a_longunion = LongUnion::new_with(u64::MAX / 3).checked_div(LongUnion::new_with(2_u64));
+        /// match a_longunion
+        /// {
+        ///     Some(a) => {
+        ///             println!("{} / 2 = {}", LongUnion::new_with(u64::MAX / 3), a);
+        ///             assert_eq!(a.get(), 3074457345618258602_u64);
+        ///         },
+        ///     None => { println!("Divided by zero."); },
+        /// }
+        /// 
+        /// let b_longunion = LongUnion::new_with(u64::MAX / 3).checked_div(LongUnion::zero());
+        /// match b_longunion
+        /// {
+        ///     Some(b) => { println!("{} / 2 = {}", LongUnion::new_with(u64::MAX / 3), b); },
+        ///     None => {
+        ///             println!("Divided by zero.");
+        ///             assert_eq!(b_longunion, None);
+        ///         },
+        /// }
+        /// ```
+        /// 
+        /// # Example 4 for LongerUnion
+        /// ```
+        /// use cryptocol::number::LongerUnion;
+        /// 
+        /// let a_longerunion = LongerUnion::new_with(u128::MAX / 3).checked_div(LongerUnion::new_with(2_u128));
+        /// match a_longerunion
+        /// {
+        ///     Some(a) => {
+        ///             println!("{} / 2 = {}", LongerUnion::new_with(u128::MAX / 3), a);
+        ///             assert_eq!(a.get(), 56713727820156410577229101238628035242_u128);
+        ///         },
+        ///     None => { println!("Divided by zero."); },
+        /// }
+        /// 
+        /// let b_longerunion = LongerUnion::new_with(u128::MAX / 3).checked_div(LongerUnion::zero());
+        /// match b_longerunion
+        /// {
+        ///     Some(b) => { println!("{} / 2 = {}", LongerUnion::new_with(u128::MAX / 3), b); },
+        ///     None => {
+        ///             println!("Divided by zero.");
+        ///             assert_eq!(b_longerunion, None);
+        ///         },
+        /// }
+        /// ```
+        /// 
+        /// # Example 5 for SizeUnion for 64-bit CPUs
+        /// ```
+        /// use cryptocol::number::SizeUnion;
+        /// 
+        /// let a_sizeunion = SizeUnion::new_with(usize::MAX / 3).checked_div(SizeUnion::new_with(2_usize));
+        /// match a_sizeunion
+        /// {
+        ///     Some(a) => {
+        ///             println!("{} / 2 = {}", SizeUnion::new_with(usize::MAX / 3), a);
+        ///             #[cfg(target_pointer_width = "64")] assert_eq!(a.get(), 3074457345618258602_usize);
+        ///         },
+        ///     None => { println!("Divided by zero."); },
+        /// }
+        /// 
+        /// let b_sizeunion = SizeUnion::new_with(usize::MAX / 3).checked_div(SizeUnion::zero());
+        /// match b_sizeunion
+        /// {
+        ///     Some(b) => { println!("{} / 2 = {}", SizeUnion::new_with(usize::MAX / 3), b); },
+        ///     None => {
+        ///             println!("Divided by zero.");
+        ///             assert_eq!(b_sizeunion, None);
+        ///         },
+        /// }
+        /// ```
+        /// 
+        /// # Plagiarism in descryption
+        /// It calls the method checked_div() of implementation of the primitive
+        /// unsigned integer types such as`u8`, `u16`, `u32`, `u64`, `u128` and
+        /// `usize` directly. So, all the description of this method is mainly the
+        /// same as that of the method checked_div() of implementation of the
+        /// primitive unsigned integer types except example codes. Confer to the
+        /// descryptions that are linked to in the section _Reference_. This
+        /// plagiarism is not made maliciously but is made for the reason of
+        /// effectiveness and efficiency so that users may understand better and
+        /// easily how to use this method with simiilarity to the method
+        /// checked_div() of implementation of the primitive unsigned integer types.
         pub fn checked_div(self, rhs: Self) -> Option<Self>
         {
             match self.get().checked_div(rhs.get())
@@ -10084,17 +10916,428 @@ macro_rules! integer_union_methods {
             }
         }
 
+        // fn saturating_div(self, rhs: Self) -> Self
+        /// Computes `self` / `rhs`.
+        /// 
+        /// # Features
+        /// 
+        /// # Output
+        /// It returns `self` / `rhs` in the type `Self`.
+        /// 
+        /// # Panics
+        /// It will panic if rhs is zero.
+        /// 
+        /// # Example 1 for ShortUnion
+        /// ```
+        /// use cryptocol::number::ShortUnion;
+        /// 
+        /// let a_shortunion = ShortUnion::new_with(u16::MAX / 3).saturating_div(ShortUnion::new_with(2_u16));
+        /// println!("{} / 2 = {}", ShortUnion::new_with(u16::MAX / 3), a_shortunion);
+        /// assert_eq!(a_shortunion.get(), 10922_u16);
+        /// 
+        /// // It will panic.
+        /// // let a_panic = ShortUnion::new_with(u16::MAX / 3).saturating_div(ShortUnion::zero());
+        /// ```
+        /// 
+        /// # Example 2 for IntUnion
+        /// ```
+        /// use cryptocol::number::IntUnion;
+        /// 
+        /// let a_intunion = IntUnion::new_with(u32::MAX / 3).saturating_div(IntUnion::new_with(2_u32));
+        /// println!("{} / 2 = {}", IntUnion::new_with(u32::MAX / 3), a_intunion);
+        /// assert_eq!(a_intunion.get(), 715827882_u32);
+        /// 
+        /// // It will panic.
+        /// // let a_panic = IntUnion::new_with(u32::MAX / 3).saturating_div(IntUnion::zero()));
+        /// ```
+        /// 
+        /// # Example 3 for LongUnion
+        /// ```
+        /// use cryptocol::number::LongUnion;
+        /// 
+        /// let a_longunion = LongUnion::new_with(u64::MAX / 3).saturating_div(LongUnion::new_with(2_u64));
+        /// println!("{} / 2 = {}", LongUnion::new_with(u64::MAX / 3), a_longunion);
+        /// assert_eq!(a_longunion.get(), 3074457345618258602_u64);
+        /// 
+        /// // It will panic.
+        /// // let a_panic = LongUnion::new_with(u64::MAX / 3).saturating_div(LongUnion::zero());
+        /// ```
+        /// 
+        /// # Example 4 for LongerUnion
+        /// ```
+        /// use cryptocol::number::LongerUnion;
+        /// 
+        /// let a_longerunion = LongerUnion::new_with(u128::MAX / 3).saturating_div(LongerUnion::new_with(2_u128));
+        /// println!("{} / 2 = {}", LongerUnion::new_with(u128::MAX / 3), a_longerunion);
+        /// assert_eq!(a_longerunion.get(), 56713727820156410577229101238628035242_u128);
+        /// 
+        /// // It will panic.
+        /// // let a_panic = LongerUnion::new_with(u128::MAX / 3).saturating_div(LongerUnion::zero());
+        /// ```
+        /// 
+        /// # Example 5 for SizeUnion for 64-bit CPUs
+        /// ```
+        /// use cryptocol::number::SizeUnion;
+        /// 
+        /// let a_sizeunion = SizeUnion::new_with(usize::MAX / 3).saturating_div(SizeUnion::new_with(2_usize));
+        /// println!("{} / 2 = {}", SizeUnion::new_with(usize::MAX / 3), a_sizeunion);
+        /// #[cfg(target_pointer_width = "64")] assert_eq!(a_sizeunion.get(), 3074457345618258602_usize);
+        /// 
+        /// // It will panic.
+        /// // let a_panic = SizeUnion::new_with(usize::MAX / 3).saturating_div(SizeUnion::zero());
+        /// ```
+        /// 
+        /// # Plagiarism in descryption
+        /// It calls the method checked_div() of implementation of the primitive
+        /// unsigned integer types such as`u8`, `u16`, `u32`, `u64`, `u128` and
+        /// `usize` directly. So, all the description of this method is mainly the
+        /// same as that of the method checked_div() of implementation of the
+        /// primitive unsigned integer types except example codes. Confer to the
+        /// descryptions that are linked to in the section _Reference_. This
+        /// plagiarism is not made maliciously but is made for the reason of
+        /// effectiveness and efficiency so that users may understand better and
+        /// easily how to use this method with simiilarity to the method
+        /// checked_div() of implementation of the primitive unsigned integer types.
         #[inline] pub fn saturating_div(self, rhs: Self) -> Self    { Self::new_with( self.get().saturating_div(rhs.get()) ) }
+
+        // fn wrapping_rem(self, rhs: Self) -> Self
+        /// Computes `self` % `rhs`.
+        /// 
+        /// # Arguments
+        /// `rhs` is divisor of the type `Self`.
+        /// 
+        /// # Features
+        /// Wrapped remainder calculation on unsigned types is just the regular
+        /// remainder calculation. There’s no way wrapping could ever happen.
+        /// This function exists, so that all operations are accounted for in the
+        /// wrapping operations.
+        /// 
+        /// # Output
+        /// It returns the `self` % `rhs` in the type of `Self`.
+        /// 
+        /// # Panics
+        /// It will panic if rhs is zero.
+        /// 
+        /// # Example 1 for ShortUnion
+        /// ```
+        /// use cryptocol::number::ShortUnion;
+        /// 
+        /// let a_shortunion = ShortUnion::new_with(u16::MAX / 3).wrapping_rem(ShortUnion::new_with(3_u16));
+        /// println!("{} % 3 = {}", ShortUnion::new_with(u16::MAX / 3), a_shortunion);
+        /// assert_eq!(a_shortunion.get(), 2_u16);
+        /// 
+        /// // It will panic.
+        /// // let a_panic = ShortUnion::new_with(u16::MAX / 3).wrapping_rem(ShortUnion::zero());
+        /// ```
+        /// 
+        /// # Example 2 for IntUnion
+        /// ```
+        /// use cryptocol::number::IntUnion;
+        /// 
+        /// let a_intunion = IntUnion::new_with(u32::MAX / 3).wrapping_rem(IntUnion::new_with(3_u32));
+        /// println!("{} % 3 = {}", IntUnion::new_with(u32::MAX / 3), a_intunion);
+        /// assert_eq!(a_intunion.get(), 1_u32);
+        /// 
+        /// // It will panic.
+        /// // let a_panic = IntUnion::new_with(u32::MAX / 3).wrapping_rem(IntUnion::zero());
+        /// ```
+        /// 
+        /// # Example 3 for LongUnion
+        /// ```
+        /// use cryptocol::number::LongUnion;
+        /// 
+        /// let a_longunion = LongUnion::new_with(u64::MAX / 3).wrapping_rem(LongUnion::new_with(3_u64));
+        /// println!("{} % 3 = {}", LongUnion::new_with(u64::MAX / 3), a_longunion);
+        /// assert_eq!(a_longunion.get(), 2_u64);
+        /// 
+        /// // It will panic.
+        /// // let a_panic = LongUnion::new_with(u64::MAX / 3).wrapping_rem(IntUnion::zero());
+        /// ```
+        /// 
+        /// # Example 4 for LongerUnion
+        /// ```
+        /// use cryptocol::number::LongerUnion;
+        /// 
+        /// let a_longerunion = LongerUnion::new_with(u128::MAX / 3).wrapping_rem(LongerUnion::new_with(3_u128));
+        /// println!("{} % 3 = {}", LongerUnion::new_with(u128::MAX / 3), a_longerunion);
+        /// assert_eq!(a_longerunion.get(), 1_u128);
+        /// 
+        /// // It will panic.
+        /// // let a_panic = LongerUnion::new_with(u128::MAX / 3).wrapping_rem(LongerUnion::zero());
+        /// ```
+        /// 
+        /// # Example 5 for SizeUnion
+        /// ```
+        /// use cryptocol::number::SizeUnion;
+        /// 
+        /// let a_sizeunion = SizeUnion::new_with(usize::MAX / 3).wrapping_rem(SizeUnion::new_with(3_usize));
+        /// println!("{} % 3 = {}", SizeUnion::new_with(usize::MAX / 3), a_sizeunion);
+        /// assert_eq!(a_sizeunion.get(), 2_usize);
+        /// 
+        /// // It will panic.
+        /// // let a_panic = sSizeUnion::new_with(usize::MAX / 3).wrapping_rem(SizeUnion::zero());
+        /// ```
+        /// # Plagiarism in descryption
+        /// It calls the method wrapping_rem() of implementation of the primitive
+        /// unsigned integer types such as`u8`, `u16`, `u32`, `u64`, `u128` and
+        /// `usize` directly. So, all the description of this method is mainly the
+        /// same as that of the method wrapping_rem() of implementation of the
+        /// primitive unsigned integer types except example codes. Confer to the
+        /// descryptions that are linked to in the section _Reference_. This
+        /// plagiarism is not made maliciously but is made for the reason of
+        /// effectiveness and efficiency so that users may understand better and
+        /// easily how to use this method with simiilarity to the method
+        /// wrapping_rem() of implementation of the primitive unsigned integer types.
 
         #[inline] pub fn wrapping_rem(self, rhs: Self) -> Self      { Self::new_with( self.get().wrapping_rem(rhs.get()) ) }
         // #[inline] pub fn wrapping_rem_assign(&mut self, rhs: Self)  { self.set(self.get().wrapping_rem(rhs.get())); }
 
+        // fn overflowing_rem(self, rhs: Self) -> (Self, bool)
+        /// Calculates `self` % `rhs`.
+        /// 
+        /// # Arguments
+        /// `rhs` is divisor of the type `Self`.
+        /// 
+        /// # Features
+        /// It calculates the remainder when self is divided by rhs.
+        /// 
+        /// # Output
+        /// It returns a tuple of the remainder along with a boolean indicating
+        /// whether an arithmetic overflow would occur. Note that for unsigned
+        /// integers overflow never occurs, so the second value is always `false`.
+        /// 
+        /// # Panics
+        /// It will panic if rhs is zero.
+        /// 
+        /// # Example 1 for ShortUnion
+        /// ```
+        /// use cryptocol::number::ShortUnion;
+        /// 
+        /// let (a_shortunion, overflow) = ShortUnion::new_with(u16::MAX / 3).overflowing_rem(ShortUnion::new_with(3_u16));
+        /// println!("{} % 3 = {}\nOverflow = {}", ShortUnion::new_with(u16::MAX / 3), a_shortunion, overflow);
+        /// assert_eq!(a_shortunion.get(), 2_u16);
+        /// assert_eq!(overflow, false);
+        /// 
+        /// // It will panic.
+        /// // let a_panic = ShortUnion::new_with(u16::MAX / 3).overflowing_rem(ShortUnion::zero());
+        /// ```
+        /// 
+        /// # Example 2 for IntUnion
+        /// ```
+        /// use cryptocol::number::IntUnion;
+        /// 
+        /// let (a_intunion, overflow) = IntUnion::new_with(u32::MAX / 3).overflowing_rem(IntUnion::new_with(3_u32));
+        /// println!("{} % 3 = {}\nOverflow = {}", IntUnion::new_with(u32::MAX / 3), a_intunion, overflow);
+        /// assert_eq!(a_intunion.get(), 1_u32);
+        /// assert_eq!(overflow, false);
+        /// 
+        /// // It will panic.
+        /// // let a_panic = IntUnion::new_with(u32::MAX / 3).overflowing_rem(IntUnion::zero());
+        /// ```
+        /// 
+        /// # Example 3 for LongUnion
+        /// ```
+        /// use cryptocol::number::LongUnion;
+        /// 
+        /// let (a_longunion, overflow) = LongUnion::new_with(u64::MAX / 3).overflowing_rem(LongUnion::new_with(3_u64));
+        /// println!("{} % 3 = {}\nOverflow = {}", LongUnion::new_with(u64::MAX / 3), a_longunion, overflow);
+        /// assert_eq!(a_longunion.get(), 2_u64);
+        /// assert_eq!(overflow, false);
+        /// 
+        /// // It will panic.
+        /// // let a_panic = LongUnion::new_with(u64::MAX / 3).overflowing_rem(LongUnion::zero());
+        /// ```
+        /// 
+        /// # Example 4 for LongerUnion
+        /// ```
+        /// use cryptocol::number::LongerUnion;
+        /// 
+        /// let (a_longerunion, overflow) = LongerUnion::new_with(u128::MAX / 3).overflowing_rem(LongerUnion::new_with(3_u128));
+        /// println!("{} % 3 = {}\nOverflow = {}", LongerUnion::new_with(u128::MAX / 3), a_longerunion, overflow);
+        /// assert_eq!(a_longerunion.get(), 1_u128);
+        /// assert_eq!(overflow, false);
+        /// 
+        /// // It will panic.
+        /// // let a_panic = LongerUnion::new_with(u128::MAX / 3).overflowing_rem(LongerUnion::zero());
+        /// ```
+        /// 
+        /// # Example 5 for SizeUnion
+        /// ```
+        /// use cryptocol::number::SizeUnion;
+        /// 
+        /// let (a_sizeunion, overflow) = SizeUnion::new_with(usize::MAX / 3).overflowing_rem(SizeUnion::new_with(3_usize));
+        /// println!("{} % 3 = {}\nOverflow = {}", SizeUnion::new_with(usize::MAX / 3), a_sizeunion, overflow);
+        /// assert_eq!(a_sizeunion.get(), 2_usize);
+        /// assert_eq!(overflow, false);
+        /// 
+        /// // It will panic.
+        /// // let a_panic = SizeUnion::new_with(usize::MAX / 3).overflowing_rem(SizeUnion::zero());
+        /// ```
+        /// 
+        /// # Plagiarism in descryption
+        /// It calls the method overflowing_rem() of implementation of the primitive
+        /// unsigned integer types such as`u8`, `u16`, `u32`, `u64`, `u128` and
+        /// `usize` directly. So, all the description of this method is mainly the
+        /// same as that of the method overflowing_rem() of implementation of the
+        /// primitive unsigned integer types except example codes. Confer to the
+        /// descryptions that are linked to in the section _Reference_. This
+        /// plagiarism is not made maliciously but is made for the reason of
+        /// effectiveness and efficiency so that users may understand better and
+        /// easily how to use this method with simiilarity to the method
+        /// overflowing_rem() of implementation of the primitive unsigned integer
+        /// types.
         pub fn overflowing_rem(self, rhs: Self) -> (Self, bool)
         {
             let (res_this, carry) = self.get().overflowing_rem(rhs.get());
             (Self::new_with(res_this), carry)
         }
 
+        // fn checked_rem(self, rhs: Self) -> Option<Self>
+        /// Computes `self` % `rhs`.
+        /// 
+        /// # Arguments
+        /// `rhs` is divisor of the type `Self`.
+        /// 
+        /// # Output
+        /// It returns `self` % `rhs` in the type `Self` wrapped by `Some`
+        /// of enum `Option`. And, it returns `None` if rhs is zero.
+        /// 
+        /// # Example 1 for ShortUnion
+        /// ```
+        /// use cryptocol::number::ShortUnion;
+        /// 
+        /// let a_shortunion = ShortUnion::new_with(u16::MAX / 3).checked_rem(ShortUnion::new_with(3_u16));
+        /// match a_shortunion
+        /// {
+        ///     Some(a) => {
+        ///             println!("{} % 3 = {}", ShortUnion::new_with(u16::MAX / 3), a);
+        ///             assert_eq!(a.get(), 2_u16);
+        ///         },
+        ///     None => { println!("Divided by zero."); },
+        /// }
+        /// 
+        /// let b_shortunion = ShortUnion::new_with(u16::MAX / 3).checked_rem(ShortUnion::zero());
+        /// match b_shortunion
+        /// {
+        ///     Some(b) => { println!("{} % 3 = {}", ShortUnion::new_with(u16::MAX / 3), b); },
+        ///     None => {
+        ///             println!("Divided by zero.");
+        ///             assert_eq!(b_shortunion, None);
+        ///         },
+        /// }
+        /// ```
+        /// 
+        /// # Example 2 for IntUnion
+        /// ```
+        /// use cryptocol::number::IntUnion;
+        /// 
+        /// let a_intunion = IntUnion::new_with(u32::MAX / 3).checked_rem(IntUnion::new_with(3_u32));
+        /// match a_intunion
+        /// {
+        ///     Some(a) => {
+        ///             println!("{} % 3 = {}", IntUnion::new_with(u32::MAX / 3), a);
+        ///             assert_eq!(a.get(), 1_u32);
+        ///         },
+        ///     None => { println!("Divided by zero."); },
+        /// }
+        /// 
+        /// let b_intunion = IntUnion::new_with(u32::MAX / 3).checked_rem(IntUnion::zero());
+        /// match b_intunion
+        /// {
+        ///     Some(b) => { println!("{} % 3 = {}", IntUnion::new_with(u32::MAX / 3), b); },
+        ///     None => {
+        ///             println!("Divided by zero.");
+        ///             assert_eq!(b_intunion, None);
+        ///         },
+        /// }
+        /// ```
+        /// 
+        /// # Example 3 for LongUnion
+        /// ```
+        /// use cryptocol::number::LongUnion;
+        /// 
+        /// let a_longunion = LongUnion::new_with(u64::MAX / 3).checked_rem(LongUnion::new_with(3_u64));
+        /// match a_longunion
+        /// {
+        ///     Some(a) => {
+        ///             println!("{} % 3 = {}", LongUnion::new_with(u64::MAX / 3), a);
+        ///             assert_eq!(a.get(), 2_u64);
+        ///         },
+        ///     None => { println!("Divided by zero."); },
+        /// }
+        /// 
+        /// let b_longunion = LongUnion::new_with(u64::MAX / 3).checked_rem(LongUnion::zero());
+        /// match b_longunion
+        /// {
+        ///     Some(b) => { println!("{} % 3 = {}", LongUnion::new_with(u64::MAX / 3), b); },
+        ///     None => {
+        ///             println!("Divided by zero.");
+        ///             assert_eq!(b_longunion, None);
+        ///         },
+        /// }
+        /// ```
+        /// 
+        /// # Example 4 for LongerUnion
+        /// ```
+        /// use cryptocol::number::LongerUnion;
+        /// 
+        /// let a_longerunion = LongerUnion::new_with(u128::MAX / 3).checked_rem(LongerUnion::new_with(3_u128));
+        /// match a_longerunion
+        /// {
+        ///     Some(a) => {
+        ///             println!("{} % 3 = {}", LongerUnion::new_with(u128::MAX / 3), a);
+        ///             assert_eq!(a.get(), 1_u128);
+        ///         },
+        ///     None => { println!("Divided by zero."); },
+        /// }
+        /// 
+        /// let b_longerunion = LongerUnion::new_with(u128::MAX / 3).checked_rem(LongerUnion::zero());
+        /// match b_longerunion
+        /// {
+        ///     Some(b) => { println!("{} % 3 = {}", LongerUnion::new_with(u128::MAX / 3), b); },
+        ///     None => {
+        ///             println!("Divided by zero.");
+        ///             assert_eq!(b_longerunion, None);
+        ///         },
+        /// }
+        /// ```
+        /// 
+        /// # Example 5 for SizeUnion
+        /// ```
+        /// use cryptocol::number::SizeUnion;
+        /// 
+        /// let a_sizeunion = SizeUnion::new_with(usize::MAX / 3).checked_rem(SizeUnion::new_with(3_usize));
+        /// match a_sizeunion
+        /// {
+        ///     Some(a) => {
+        ///             println!("{} % 3 = {}", SizeUnion::new_with(usize::MAX / 3), a);
+        ///             assert_eq!(a.get(), 2_usize);
+        ///         },
+        ///     None => { println!("Divided by zero."); },
+        /// }
+        /// 
+        /// let b_sizeunion = SizeUnion::new_with(usize::MAX / 3).checked_rem(SizeUnion::zero());
+        /// match b_sizeunion
+        /// {
+        ///     Some(b) => { println!("{} % 3 = {}", SizeUnion::new_with(usize::MAX / 3), b); },
+        ///     None => {
+        ///             println!("Divided by zero.");
+        ///             assert_eq!(b_sizeunion, None);
+        ///         },
+        /// }
+        /// ```
+        /// 
+        /// # Plagiarism in descryption
+        /// It calls the method checked_rem() of implementation of the primitive
+        /// unsigned integer types such as`u8`, `u16`, `u32`, `u64`, `u128` and
+        /// `usize` directly. So, all the description of this method is mainly the
+        /// same as that of the method checked_rem() of implementation of the
+        /// primitive unsigned integer types except example codes. Confer to the
+        /// descryptions that are linked to in the section _Reference_. This
+        /// plagiarism is not made maliciously but is made for the reason of
+        /// effectiveness and efficiency so that users may understand better and
+        /// easily how to use this method with simiilarity to the method
+        /// checked_rem() of implementation of the primitive unsigned integer types.
         pub fn checked_rem(self, rhs: Self) -> Option<Self>
         {
             match self.get().checked_rem(rhs.get())

@@ -1329,7 +1329,7 @@ fn small_uint_modular_add()
     // Example for usize
     let a_usize = 6_0000_0000_0000_0000_usize.modular_add(1_5000_0000_0000_0000, 10_0000_0000_0000_0000);
     println!("6_0000_0000_0000_0000 + 1_5000_0000_0000_0000 = {} (mod 10_0000_0000_0000_0000)", a_usize);
-    assert_eq!(a_usize, 7_5000_0000_0000_0000);
+    #[cfg(target_pointer_width = "64")] assert_eq!(a_usize, 7_5000_0000_0000_0000);
 
     let b_usize = a_usize.modular_add(5_5000_0000_0000_0000, 10_0000_0000_0000_0000);
     println!("{} + 5_5000_0000_0000_0000 = {} (mod 10_0000_0000_0000_0000)", a_usize, b_usize);
@@ -2711,7 +2711,7 @@ fn small_uint_modular_sub()
     // Example for usize
     let a_usize = 6_0000_0000_0000_0000_usize.modular_sub(5_5000_0000_0000_0000, 10_0000_0000_0000_0000);
     println!("6_0000_0000_0000_0000 - 5_5000_0000_0000_0000 = {} (mod 10_0000_0000_0000_0000)", a_usize);
-    assert_eq!(a_usize, 5000_0000_0000_0000);
+    #[cfg(target_pointer_width = "64")] assert_eq!(a_usize, 5000_0000_0000_0000);
 
     let b_usize = a_usize.modular_sub(1_5000_0000_0000_0000, 10_0000_0000_0000_0000);
     println!("{} - 1_5000_0000_0000_0000 = {} (mod 10_0000_0000_0000_0000)", a_usize, b_usize);
@@ -3615,7 +3615,7 @@ fn small_uint_wrapping_mul()
     // Example for usize
     let a_usize = small_uint_wrapping_mul_func(usize::MAX / 3, 2_usize);
     println!("{} * 2 = {}", usize::MAX / 3, a_usize);
-    assert_eq!(a_usize, 12297829382473034410_usize);
+    #[cfg(target_pointer_width = "64")] assert_eq!(a_usize, 12297829382473034410_usize);
 
     let b_usize = small_uint_wrapping_mul_func(a_usize, 2_usize);
     println!("{} * 2 = {}", a_usize, b_usize);
@@ -3632,7 +3632,7 @@ fn small_uint_wrapping_mul()
 
     // Example for IntUnion
     let a_intunion = small_uint_wrapping_mul_func((u32::MAX / 3).into_intunion(), 2_u32.into_intunion());
-    println!("{} * 2 = {}", u32::MAX / 3, a_intunion);
+    println!("{} * 2 = {}", (u32::MAX / 3).into_intunion(), a_intunion);
     assert_eq!(a_intunion.get(), 2863311530_u32);
 
     let b_intunion = small_uint_wrapping_mul_func(a_intunion, 2_u32.into_intunion());
@@ -3640,7 +3640,7 @@ fn small_uint_wrapping_mul()
     assert_eq!(b_intunion.get(), 1431655764_u32);
 
     // Example for LongUnion
-    let a_longunion: cryptocol::number::LongUnion = small_uint_wrapping_mul_func((u64::MAX / 3).into_longunion(), 2_u64.into_longunion());
+    let a_longunion = small_uint_wrapping_mul_func((u64::MAX / 3).into_longunion(), 2_u64.into_longunion());
     println!("{} * 2 = {}", (u64::MAX / 3).into_longunion(), a_longunion);
     assert_eq!(a_longunion.get(), 12297829382473034410_u64);
 
@@ -3650,7 +3650,7 @@ fn small_uint_wrapping_mul()
 
     // Example for LongerUnion
     let a_longerunion = small_uint_wrapping_mul_func((u128::MAX / 3).into_longerunion(), 2_u128.into_longerunion());
-    println!("{} * 2 = {}", u128::MAX / 3, a_longerunion);
+    println!("{} * 2 = {}", (u128::MAX / 3).into_longerunion(), a_longerunion);
     assert_eq!(a_longerunion.get(), 226854911280625642308916404954512140970_u128);
 
     let b_longerunion = small_uint_wrapping_mul_func(a_longerunion, 2_u128.into_longerunion());
@@ -3735,7 +3735,7 @@ fn small_uint_overflowing_mul()
     // Example for usize
     let a_usize = small_uint_overflowing_mul_func(usize::MAX / 3, 2_usize);
     println!("{} * 2 = {}\nOverflow = {}", usize::MAX / 3, a_usize.0, a_usize.1);
-    assert_eq!(a_usize.0, 12297829382473034410_usize);
+    #[cfg(target_pointer_width = "64")] assert_eq!(a_usize.0, 12297829382473034410_usize);
     assert_eq!(a_usize.1, false);
  
     let b_usize = small_uint_overflowing_mul_func(a_usize.0, 2_usize);
@@ -3767,7 +3767,7 @@ fn small_uint_overflowing_mul()
 
     // Example for LongUnion
     let (a_longunion, overflow) = small_uint_overflowing_mul_func((u64::MAX / 3).into_longunion(), 2_u64.into_longunion());
-    println!("{} * 2 = {}\nOverflow = {}", u64::MAX / 3, a_longunion, a_u64.1);
+    println!("{} * 2 = {}\nOverflow = {}", u64::MAX / 3, a_longunion, overflow);
     assert_eq!(a_longunion.get(), 12297829382473034410_u64);
     assert_eq!(overflow, false);
  
@@ -4094,7 +4094,7 @@ fn small_uint_unchecked_mul()
     // Example for usize
     let a_usize = small_uint_unchecked_mul_func(usize::MAX / 3, 2_usize);
     println!("{} * 2 = {}", usize::MAX / 3, a_usize);
-    assert_eq!(a_usize, 12297829382473034410_usize);
+    #[cfg(target_pointer_width = "64")] assert_eq!(a_usize, 12297829382473034410_usize);
 
     // It will panic 
     // let b_usize = small_uint_unchecked_mul_func(a_usize, 2_usize);
@@ -4198,7 +4198,7 @@ fn small_uint_saturating_mul()
     // Example for usize
     let a_usize = small_uint_saturating_mul_func(usize::MAX / 3, 2_usize);
     println!("{} * 2 = {}", usize::MAX / 3, a_usize);
-    assert_eq!(a_usize, 12297829382473034410_usize);
+    #[cfg(target_pointer_width = "64")] assert_eq!(a_usize, 12297829382473034410_usize);
 
     let b_usize = small_uint_saturating_mul_func(a_usize, 2_usize);
     println!("{} * 2 = {}", a_usize, b_usize);
@@ -4527,7 +4527,7 @@ fn small_uint_wrapping_div()
     // Example for usize
     let a_usize = small_uint_wrapping_div_func(usize::MAX / 3, 2_usize);
     println!("{} / 2 = {}", usize::MAX / 3, a_usize);
-    assert_eq!(a_usize, 3074457345618258602_usize);
+    #[cfg(target_pointer_width = "64")] assert_eq!(a_usize, 3074457345618258602_usize);
     // It will panic.
     // let a_panic = small_uint_wrapping_div_func(usize::MAX / 3, 0_usize);
 
@@ -4540,7 +4540,7 @@ fn small_uint_wrapping_div()
 
     // Example for IntUnion
     let a_intunion = small_uint_wrapping_div_func((u32::MAX / 3).into_intunion(), 2_u32.into_intunion());
-    println!("{} / 2 = {}", (u32::MAX / 3).into_intunion(), a_intunion.into_intunion());
+    println!("{} / 2 = {}", (u32::MAX / 3).into_intunion(), a_intunion);
     assert_eq!(a_intunion.get(), 715827882_u32);
     // It will panic.
     // let a_panic = small_uint_wrapping_div_func((u32::MAX / 3).into_intunion(), 0_u32.into_intunion());
@@ -4612,15 +4612,15 @@ fn small_uint_overflowing_div()
     // Example for u128
     let a_u128 = small_uint_overflowing_div_func(u128::MAX / 3, 2_u128);
     println!("{} / 2 = {}\nOverflow = {}", u128::MAX / 3, a_u128.0, a_u128.1);
-    assert_eq!(a_u128.0, 56713727820156410577229101238628035242_u128);
+    #[cfg(target_pointer_width = "64")] assert_eq!(a_u128.0, 56713727820156410577229101238628035242_u128);
     assert_eq!(a_u128.1, false);
     // It will panic.
     // let a_panic = small_uint_overflowing_div_func(a_u128.0, 0_u128);
 
-    // Example for usize
+    // Example for usize for 64-bit CPUs
     let a_usize = small_uint_overflowing_div_func(usize::MAX / 3, 2_usize);
     println!("{} / 2 = {}\nOverflow = {}", usize::MAX / 3, a_usize.0, a_usize.1);
-    assert_eq!(a_usize.0, 3074457345618258602_usize);
+    #[cfg(target_pointer_width = "64")] assert_eq!(a_usize.0, 3074457345618258602_usize);
     assert_eq!(a_usize.1, false);
     // It will panic.
     // let a_panic = small_uint_overflowing_div_func(a_usize.0, 0_usize);
@@ -4657,10 +4657,10 @@ fn small_uint_overflowing_div()
     // It will panic.
     // let a_panic = small_uint_overflowing_div_func(a_longerunion, 0_u128.into_longerunion());
 
-    // Example for SizeUnion
+    // Example for SizeUnion for 64-bit CPUs
     let (a_sizeunion, overflow) = small_uint_overflowing_div_func((usize::MAX / 3).into_sizeunion(), 2_usize.into_sizeunion());
     println!("{} / 2 = {}\nOverflow = {}", (usize::MAX / 3).into_sizeunion(), a_sizeunion, overflow);
-    assert_eq!(a_sizeunion.get(), 3074457345618258602_usize);
+    #[cfg(target_pointer_width = "64")] assert_eq!(a_sizeunion.get(), 3074457345618258602_usize);
     assert_eq!(overflow, false);
     // It will panic.
     // let a_panic = small_uint_overflowing_div_func(a_sizeunion, 0_usize.into_sizeunion());
@@ -4781,13 +4781,13 @@ fn small_uint_checked_div()
             },
     }
 
-    // Example for usize
+    // Example for usize for 64-bit CPUs
     let a_usize = small_uint_checked_div_func(usize::MAX / 3, 2_usize);
     match a_usize
     {
         Some(a) => {
                 println!("{} / 2 = {}", usize::MAX / 3, a);
-                assert_eq!(a, 3074457345618258602_usize);
+                #[cfg(target_pointer_width = "64")] assert_eq!(a, 3074457345618258602_usize);
             },
         None => { println!("Divided by zero."); },
     }
@@ -4886,13 +4886,13 @@ fn small_uint_checked_div()
             },
     }
 
-    // Example for SizeUnion
+    // Example for SizeUnion for 64-bit CPUs
     let a_sizeunion = small_uint_checked_div_func((usize::MAX / 3).into_sizeunion(), 2_usize.into_sizeunion());
     match a_sizeunion
     {
         Some(a) => {
                 println!("{} / 2 = {}", (usize::MAX / 3).into_sizeunion(), a);
-                assert_eq!(a.get(), 3074457345618258602_usize);
+                #[cfg(target_pointer_width = "64")] assert_eq!(a.get(), 3074457345618258602_usize);
             },
         None => { println!("Divided by zero."); },
     }
@@ -4918,6 +4918,7 @@ fn small_uint_unchecked_div()
 {
     println!("small_uint_unchecked_div");
     use cryptocol::number::SmallUInt;
+
     // Example for u8
     let a_u8 = small_uint_unchecked_div_func(u8::MAX / 3, 2_u8);
     println!("{} / 2 = {}", u8::MAX / 3, a_u8);
@@ -4953,9 +4954,10 @@ fn small_uint_unchecked_div()
     // It will panic.
     // let b_u128 = small_uint_unchecked_div_func(u128::MAX / 3, 0_u128);
 
-    // Example for usize
+    // Example for usize for 64-bit CPUs
     let a_usize = small_uint_unchecked_div_func(usize::MAX / 3, 2_usize);
     println!("{} / 2 = {}", usize::MAX / 3, a_usize);
+    #[cfg(target_pointer_width = "64")] assert_eq!(a_usize, 3074457345618258602_usize);
     // It will panic.
     // let b_usize = small_uint_unchecked_div_func(usize::MAX / 3, 0_usize);
 
@@ -4990,7 +4992,7 @@ fn small_uint_unchecked_div()
     // Example for SizeUnion
     let a_sizeunion = small_uint_unchecked_div_func((usize::MAX / 3).into_sizeunion(), 2_usize.into_sizeunion());
     println!("{} / 2 = {}", (usize::MAX / 3).into_sizeunion(), a_sizeunion);
-    assert_eq!(a_sizeunion.get(), 3074457345618258602_usize);
+    #[cfg(target_pointer_width = "64")] assert_eq!(a_sizeunion.get(), 3074457345618258602_usize);
     // It will panic.
     // let b_sizeunion = small_uint_unchecked_div_func((usize::MAX / 3).into_sizeunion(), 0_usize.into_sizeunion());
     println!("--------------------------------------");
@@ -5040,10 +5042,10 @@ fn small_uint_saturating_div()
     // It will panic.
     // let a_panic = small_uint_saturating_div_func(u128::MAX / 3, 0_u128);
 
-    // Example for usize
+    // Example for usize for 64-bit CPUs
     let a_usize = small_uint_saturating_div_func(usize::MAX / 3, 2_usize);
     println!("{} / 2 = {}", usize::MAX / 3, a_usize);
-    assert_eq!(a_usize, 3074457345618258602_usize);
+    #[cfg(target_pointer_width = "64")] assert_eq!(a_usize, 3074457345618258602_usize);
     // It will panic.
     // let a_panic = small_uint_saturating_div_func(usize::MAX / 3, 0_usize);
 
@@ -5075,10 +5077,10 @@ fn small_uint_saturating_div()
     // It will panic.
     // let a_panic = small_uint_saturating_div_func((u128::MAX / 3).into_longerunion(), 0_u128.into_longerunion());
 
-    // Example for SizeUnion
+    // Example for SizeUnion for 64-bit CPUs
     let a_sizeunion = small_uint_saturating_div_func((usize::MAX / 3).into_sizeunion(), 2_usize.into_sizeunion());
     println!("{} / 2 = {}", (usize::MAX / 3).into_sizeunion(), a_sizeunion);
-    assert_eq!(a_sizeunion.get(), 3074457345618258602_usize);
+    #[cfg(target_pointer_width = "64")] assert_eq!(a_sizeunion.get(), 3074457345618258602_usize);
     // It will panic.
     // let a_panic = small_uint_saturating_div_func((usize::MAX / 3).into_sizeunion(), 0_usize.into_sizeunion());
     println!("--------------------------------------");
@@ -5167,14 +5169,14 @@ fn small_uint_wrapping_rem()
     // Example for LongerUnion
     let a_longerunion = small_uint_wrapping_rem_func((u128::MAX / 3).into_longerunion(), 3_u128.into_longerunion());
     println!("{} % 3 = {}", (u128::MAX / 3).into_longerunion(), a_longerunion);
-    assert_eq!(a_longerunion, 1_u128.into_longerunion());
+    assert_eq!(a_longerunion.get(), 1_u128);
     // It will panic.
     // let a_panic = small_uint_wrapping_rem_func((u128::MAX / 3).into_longerunion(), 0_u128.into_longerunion());
 
     // Example for SizeUnion
     let a_sizeunion = small_uint_wrapping_rem_func((usize::MAX / 3).into_sizeunion(), 3_usize.into_sizeunion());
     println!("{} % 3 = {}", (usize::MAX / 3).into_sizeunion(), a_sizeunion);
-    assert_eq!(a_sizeunion, 2_usize.into_sizeunion());
+    assert_eq!(a_sizeunion.get(), 2_usize);
     // It will panic.
     // let a_panic = small_uint_wrapping_rem_func(usize::MAX / 3, 0_usize);
     println!("--------------------------------------");
@@ -5239,7 +5241,7 @@ fn small_uint_overflowing_rem()
 
     // Example for ShortUnion
     let (a_shortunion, overflow) = small_uint_overflowing_rem_func((u16::MAX / 3).into_shortunion(), 3_u16.into_shortunion());
-    println!("{} % 3 = {}\nOverflow = {}", (u16::MAX / 3).into_shortunion(), a_shortunion.into_shortunion(), overflow);
+    println!("{} % 3 = {}\nOverflow = {}", (u16::MAX / 3).into_shortunion(), a_shortunion, overflow);
     assert_eq!(a_shortunion.get(), 2_u16);
     assert_eq!(overflow, false);
     // It will panic.
@@ -5467,10 +5469,10 @@ fn small_uint_checked_rem()
         None => { println!("Divided by zero."); },
     }
 
-    let b_longunion = small_uint_checked_rem_func(u64::MAX / 3, 0_u64);
+    let b_longunion = small_uint_checked_rem_func((u64::MAX / 3).into_longunion(), 0_u64.into_longunion());
     match b_longunion
     {
-        Some(b) => { println!("{} % 3 = {}", u64::MAX / 3, b); },
+        Some(b) => { println!("{} % 3 = {}", (u64::MAX / 3).into_longunion(), b); },
         None => {
                 println!("Divided by zero.");
                 assert_eq!(b_longunion, None);
@@ -5488,7 +5490,7 @@ fn small_uint_checked_rem()
         None => { println!("Divided by zero."); },
     }
 
-    let b_longerunion = small_uint_checked_rem_func(u128::MAX / 3, 0_u128);
+    let b_longerunion = small_uint_checked_rem_func((u128::MAX / 3).into_longerunion(), 0_u128.into_longerunion());
     match b_longerunion
     {
         Some(b) => { println!("{} % 3 = {}", (u128::MAX / 3).into_longerunion(), b); },
@@ -5918,7 +5920,7 @@ fn small_uint_pow()
     // Example for usize
     let a_usize = small_uint_pow_func(6561_usize, 5_u32);
     println!("6561 ** 5 = {}, where ** is the power operator", a_usize);
-    assert_eq!(a_usize, 12157665459056928801_usize);
+    #[cfg(target_pointer_width = "64")] assert_eq!(a_usize, 12157665459056928801_usize);
     // It will panic.
     // println!("6561 ** 6 = {}, where ** is the power operator", small_uint_pow_func(6561_usize, 6_u32));
 
@@ -6022,11 +6024,11 @@ fn small_uint_wrapping_pow()
     // Example for usize
     let a_usize = small_uint_wrapping_pow_func(6561_usize, 5_u32);
     println!("6561 ** 5 = {}, where ** is the power operator", a_usize);
-    assert_eq!(a_usize, 12157665459056928801_usize);
+    #[cfg(target_pointer_width = "64")] assert_eq!(a_usize, 12157665459056928801_usize);
 
     let b_usize = small_uint_wrapping_pow_func(6561_usize, 6_u32);
     println!("6561 ** 6 = {}, where ** is the power operator", b_usize);
-    assert_eq!(b_usize, 2721702152408675777_usize);
+    #[cfg(target_pointer_width = "64")] assert_eq!(b_usize, 2721702152408675777_usize);
 
     // Example for ShortUnion
     let a_shortunion = ShortUnion::new_with(9);
@@ -6147,12 +6149,12 @@ fn small_uint_overflowing_pow()
     // Example for usize
     let (a_usize, overflow) = small_uint_overflowing_pow_func(1004_usize, 6);
     println!("{} ** 6 = {}, where ** is the power operator\nOverflow = {}", 1004_u64, a_usize, overflow);
-    assert_eq!(a_usize, 1024241283846148096_usize);
+    #[cfg(target_pointer_width = "64")] assert_eq!(a_usize, 1024241283846148096_usize);
     assert_eq!(overflow, false);
  
     let (b_usize, overflow) = small_uint_overflowing_pow_func(1004_usize, 7);
     println!("{} ** 7 = {}, where ** is the power operator\nOverflow = {}", 1004_u64, b_usize, overflow);
-    assert_eq!(b_usize, 13767324927507349504_usize);
+    #[cfg(target_pointer_width = "64")] assert_eq!(b_usize, 13767324927507349504_usize);
     assert_eq!(overflow, true);
 
     // Example for ShortUnion
@@ -6500,7 +6502,7 @@ fn small_uint_unchecked_pow()
     // Example for usize
     let a_usize = small_uint_unchecked_pow_func(1004_usize, 6);
     println!("{} ** 6 = {}, where ** is the power operator", 1004_usize, a_usize);
-    assert_eq!(a_usize, 1024241283846148096_usize);
+    #[cfg(target_pointer_width = "64")] assert_eq!(a_usize, 1024241283846148096_usize);
     // It will panic.
     // let b_usize = small_uint_unchecked_pow_func(1004_usize, 7);
 
@@ -6592,7 +6594,7 @@ fn small_uint_saturating_pow()
     // Example for usize
     let a_usize = small_uint_saturating_pow_func(1004_usize, 6);
     println!("{} ** 6 = {}, where ** is the power operator", 1004_usize, a_usize);
-    assert_eq!(a_usize, 1024241283846148096_usize);
+    #[cfg(target_pointer_width = "64")] assert_eq!(a_usize, 1024241283846148096_usize);
     let b_u128 = small_uint_saturating_pow_func(1004_usize, 7);
     println!("{} ** 7 = {}, where ** is the power operator", 1004_usize, b_u128);
     assert_eq!(b_u128, usize::MAX);
@@ -8069,7 +8071,7 @@ fn small_uint_reverse_bits_assign()
     println!("origianl a_usize : {:064b}", a_usize);
     a_usize.reverse_bits_assign();
     println!("after a_usize.reverse_bits_assign : {:064b}", a_usize);
-    assert_eq!(a_usize, 0b1111111100000001111111000000111111000001111100001111000111001101_usize);
+    #[cfg(target_pointer_width = "64")] assert_eq!(a_usize, 0b1111111100000001111111000000111111000001111100001111000111001101_usize);
 
     let mut b_usize = 0b1011001110001111000011111000001111110000001111111000000011111111_usize;
     println!("origianl b_usize : {:0128b}", b_usize);
@@ -8900,13 +8902,13 @@ fn small_uint_set_msb()
     println!("Originally, a_usize = {:064b}", a_usize);
     a_usize.set_msb();
     println!("After a_usize.set_msb(), a_usize = {:064b}.", a_usize);
-    assert_eq!(a_usize, 0b1000111110000011111100000011111110000000111111111011001110001111_usize);
+    #[cfg(target_pointer_width = "64")] assert_eq!(a_usize, 0b1000111110000011111100000011111110000000111111111011001110001111_usize);
 
     let mut b_usize = 0b1000111110000011111100000011111110000000111111111011001110001111_usize;
     println!("Originally, b_usize = {:064b}", b_usize);
     b_usize.set_msb();
     println!("After b_usize.set_msb(), b_usize = {:064b}.", b_usize);
-    assert_eq!(b_usize, 0b1000111110000011111100000011111110000000111111111011001110001111_usize);
+    #[cfg(target_pointer_width = "64")] assert_eq!(b_usize, 0b1000111110000011111100000011111110000000111111111011001110001111_usize);
 
     let mut c_usize = 0b0000111110000011111100000011111110000000111111111011001110001111_usize;
     println!("Originally, c_usize = {:064b}", c_usize);
@@ -9186,7 +9188,7 @@ fn small_uint_set_lsb()
     println!("Originally, a_usize = {:064b}", a_usize);
     small_uint_set_lsb_func(&mut a_usize);
     println!("After a_usize.set_lsb(), a_usize = {:064b}.", a_usize);
-    assert_eq!(a_usize, 0b0000111110000011111100000011111110000000111111111011001110001111_usize);
+    #[cfg(target_pointer_width = "64")] assert_eq!(a_usize, 0b0000111110000011111100000011111110000000111111111011001110001111_usize);
 
     let mut b_usize = 0b0000111110000011111100000011111110000000111111111011001110001111_usize;
     println!("Originally, b_usize = {:064b}", b_usize);
@@ -9872,7 +9874,7 @@ fn small_uint_generate_check_bits_()
     // Example for usize
     let a_usize = usize::generate_check_bits_(30);
     println!("a_usize = {:064b}", a_usize);
-    assert_eq!(a_usize, 0b0000000000000000000000000000000001000000000000000000000000000000_usize);
+    #[cfg(target_pointer_width = "64")] assert_eq!(a_usize, 0b0000000000000000000000000000000001000000000000000000000000000000_usize);
     // It will panic.
     // let b_usize = usize::generate_check_bits_(72);
 
@@ -14869,11 +14871,11 @@ fn small_uint_u128_as_smalluint()
     // Example for usize
     let a_usize = usize::u128_as_smalluint(val_u128);
     println!("{} -> {}", val_u128, a_usize);
-    assert_eq!(a_usize, 12312739301371248917_usize);
+    #[cfg(target_pointer_width = "64")] assert_eq!(a_usize, 12312739301371248917_usize);
 
     let b_usize = small_uint_u128_as_smalluint_func::<usize>(val_u128);
     println!("{} -> {}", val_u128, b_usize);
-    assert_eq!(b_usize, 12312739301371248917_usize);
+    #[cfg(target_pointer_width = "64")] assert_eq!(b_usize, 12312739301371248917_usize);
 
     // Example for ShortUnion
     let a_shortunion = ShortUnion::u128_as_smalluint(val_u128);
@@ -14980,11 +14982,11 @@ fn small_uint_u64_as_smalluint()
     // Example for usize
     let a_usize = usize::u64_as_smalluint(val_u64);
     println!("{} -> {}", val_u64, a_usize);
-    assert_eq!(a_usize, 12312739301371248917_usize);
+    #[cfg(target_pointer_width = "64")] assert_eq!(a_usize, 12312739301371248917_usize);
 
     let b_usize = small_uint_u64_as_smalluint_func::<usize>(val_u64);
     println!("{} -> {}", val_u64, b_usize);
-    assert_eq!(b_usize, 12312739301371248917_usize);
+    #[cfg(target_pointer_width = "64")] assert_eq!(b_usize, 12312739301371248917_usize);
 
     // Example for ShortUnion
     let a_shortunion = ShortUnion::u64_as_smalluint(val_u64);
@@ -15424,11 +15426,11 @@ fn small_uint_usize_as_smalluint()
     // Example for usize
     let a_usize = usize::usize_as_smalluint(val_usize);
     println!("{} -> {}", val_usize, a_usize);
-    assert_eq!(a_usize, 12312739301371248917_usize);
+    #[cfg(target_pointer_width = "64")] assert_eq!(a_usize, 12312739301371248917_usize);
 
     let b_usize = small_uint_usize_as_smalluint_func::<usize>(val_usize);
     println!("{} -> {}", val_usize, b_usize);
-    assert_eq!(b_usize, 12312739301371248917_usize);
+    #[cfg(target_pointer_width = "64")] assert_eq!(b_usize, 12312739301371248917_usize);
 
     // Example for ShortUnion
     let a_shortunion = ShortUnion::usize_as_smalluint(val_usize);
@@ -17033,17 +17035,20 @@ fn small_uint_set_max()
     assert_eq!(b_u128, u128::MAX);
 
     // Example for usize
-    let mut a_usize = 10000000000000000000_usize;
-    println!("Originally, a_usize = {}", a_usize);
-    a_usize.set_max();
-    println!("After a_usize.set_max(), a_usize = {}", a_usize);
-    assert_eq!(a_usize, usize::MAX);
+    #[cfg(target_pointer_width = "64")]
+    {
+        let mut a_usize = 10000000000000000000_usize;
+        println!("Originally, a_usize = {}", a_usize);
+        a_usize.set_max();
+        println!("After a_usize.set_max(), a_usize = {}", a_usize);
+        assert_eq!(a_usize, usize::MAX);
 
-    let mut b_usize = 15000000000000000000_usize;
-    println!("Originally, b_usize = {}", b_usize);
-    small_uint_set_max_func(&mut b_usize);
-    println!("After b_usize.set_max(), b_usize = {}", b_usize);
-    assert_eq!(b_usize, usize::MAX);
+        let mut b_usize = 15000000000000000000_usize;
+        println!("Originally, b_usize = {}", b_usize);
+        small_uint_set_max_func(&mut b_usize);
+        println!("After b_usize.set_max(), b_usize = {}", b_usize);
+        assert_eq!(b_usize, usize::MAX);
+    }
 
     // Example for ShortUnion
     let mut a_shortunion = 10000_u16.into_shortunion();
@@ -17315,7 +17320,7 @@ fn small_uint_set_submax()
     println!("Originally, a_usize = {}", a_usize);
     a_usize.set_submax(50);
     println!("After a_usize.set_submax(50), a_usize = {}", a_usize);
-    assert_eq!(a_usize, 1125899906842623_usize);
+    #[cfg(target_pointer_width = "64")] assert_eq!(a_usize, 1125899906842623_usize);
 
     let mut b_usize = 15000000000000000000_usize;
     println!("Originally, b_usize = {}", b_usize);
@@ -17465,17 +17470,20 @@ fn small_uint_set_halfmax()
     assert_eq!(b_u128, u128::MAX >> 64);
 
     // Example for usize
-    let mut a_usize = 10000000000000000000_usize;
-    println!("Originally, a_usize = {}", a_usize);
-    a_usize.set_halfmax();
-    println!("After a_usize.set_halfmax(), a_usize = {}", a_usize);
-    assert_eq!(a_usize, usize::MAX >> 32);
+    #[cfg(target_pointer_width = "64")]
+    {
+        let mut a_usize = 10000000000000000000_usize;
+        println!("Originally, a_usize = {}", a_usize);
+        a_usize.set_halfmax();
+        println!("After a_usize.set_halfmax(), a_usize = {}", a_usize);
+        assert_eq!(a_usize, usize::MAX >> 32);
 
-    let mut b_usize = 15000000000000000000_usize;
-    println!("Originally, b_usize = {}", b_usize);
-    small_uint_set_halfmax_func(&mut b_usize);
-    println!("After b_usize.set_halfmax(), b_usize = {}", b_usize);
-    assert_eq!(b_usize, usize::MAX >> 32);
+        let mut b_usize = 15000000000000000000_usize;
+        println!("Originally, b_usize = {}", b_usize);
+        small_uint_set_halfmax_func(&mut b_usize);
+        println!("After b_usize.set_halfmax(), b_usize = {}", b_usize);
+        assert_eq!(b_usize, usize::MAX >> 32);
+    }
 
     // Example for ShortUnion
     let mut a_shortunion = 10000_u16.into_shortunion();

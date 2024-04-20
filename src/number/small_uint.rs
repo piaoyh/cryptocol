@@ -7216,7 +7216,7 @@ pub trait SmallUInt: Copy + Clone + Sized //+ Display + Debug + ToString
     /// for the primitive type `usize`, read [here](https://doc.rust-lang.org/core/primitive.usize.html#method.abs_diff).
     fn abs_diff(self, other: Self) -> Self;
 
-    // pub fn modular_sub(self, rhs: Self, modulo: Self) -> Self
+    // fn modular_sub(self, rhs: Self, modulo: Self) -> Self
     /// Computes (`self` - `rhs`) % `modulo`, wrapping around at `modulo` of the
     /// type `Self` instead of underflowing.
     /// 
@@ -7746,7 +7746,7 @@ pub trait SmallUInt: Copy + Clone + Sized //+ Display + Debug + ToString
 
     /***** MULTIPLICATION *****/
 
-    // pub fn carrying_mul(self, rhs: Self, carry: Self) -> (Self, Self)
+    // fn carrying_mul(self, rhs: Self, carry: Self) -> (Self, Self)
     /// Calculates the “full multiplication” `self` * `rhs` + `carry` without
     /// the possibility to overflow.
     /// 
@@ -8802,9 +8802,12 @@ pub trait SmallUInt: Copy + Clone + Sized //+ Display + Debug + ToString
     // /// [carrying_mul()](trait@SmallUInt#tymethod.carrying_mul) instead.
     // fn _carrying_mul(self, rhs: Self, carry: Self) -> (Self, Self);
 
-    // pub fn widening_mul(self, rhs: Self) -> (Self, Self)
+    // fn widening_mul(self, rhs: Self) -> (Self, Self)
     /// Calculates the complete product `self` * `rhs` without the possibility
     /// to overflow.
+    /// 
+    /// # Arguments
+    /// - `rhs` is a multiplier of the type `Self`
     /// 
     /// # Output
     /// It returns `self` * `rhs` in the form of a tuple of the low-order
@@ -9731,6 +9734,9 @@ pub trait SmallUInt: Copy + Clone + Sized //+ Display + Debug + ToString
     // fn wrapping_mul(self, rhs: Self) -> Self
     /// Computes `self` * `rhs`, wrapping around at the boundary of the type.
     /// 
+    /// # Arguments
+    /// - `rhs` is a multiplier of the type `Self`
+    /// 
     /// # Features
     /// It multiplies two numbers with wrapping (modular) multiplication.
     /// 
@@ -9884,7 +9890,7 @@ pub trait SmallUInt: Copy + Clone + Sized //+ Display + Debug + ToString
     /// fn main()
     /// {
     ///     let a_intunion = func((u32::MAX / 3).into_intunion(), 2_u32.into_intunion());
-    ///     println!("{} * 2 = {}", u32::MAX / 3, a_intunion);
+    ///     println!("{} * 2 = {}", (u32::MAX / 3).into_intunion(), a_intunion);
     ///     assert_eq!(a_intunion.get(), 2863311530_u32);
     /// 
     ///     let b_intunion = func(a_intunion, 2_u32.into_intunion());
@@ -9926,7 +9932,7 @@ pub trait SmallUInt: Copy + Clone + Sized //+ Display + Debug + ToString
     /// fn main()
     /// {
     ///     let a_longerunion = func((u128::MAX / 3).into_longerunion(), 2_u128.into_longerunion());
-    ///     println!("{} * 2 = {}", u128::MAX / 3, a_longerunion);
+    ///     println!("{} * 2 = {}", (u128::MAX / 3).into_longerunion(), a_longerunion);
     ///     assert_eq!(a_longerunion.get(), 226854911280625642308916404954512140970_u128);
     /// 
     ///     let b_longerunion = func(a_longerunion, 2_u128.into_longerunion());
@@ -10026,14 +10032,14 @@ pub trait SmallUInt: Copy + Clone + Sized //+ Display + Debug + ToString
     ///     assert_eq!(b_shortunion.get(), 21844_u16);
     /// 
     ///     let a_intunion = func((u32::MAX / 3).into_intunion(), 2_u32.into_intunion());
-    ///     println!("{} * 2 = {}", u32::MAX / 3, a_intunion);
+    ///     println!("{} * 2 = {}", (u32::MAX / 3).into_intunion(), a_intunion);
     ///     assert_eq!(a_intunion.get(), 2863311530_u32);
     /// 
     ///     let b_intunion = func(a_intunion, 2_u32.into_intunion());
     ///     println!("{} * 2 = {}", a_intunion, b_intunion);
     ///     assert_eq!(b_intunion.get(), 1431655764_u32);
     /// 
-    ///     let a_longunion: cryptocol::number::LongUnion = func((u64::MAX / 3).into_longunion(), 2_u64.into_longunion());
+    ///     let a_longunion = func((u64::MAX / 3).into_longunion(), 2_u64.into_longunion());
     ///     println!("{} * 2 = {}", (u64::MAX / 3).into_longunion(), a_longunion);
     ///     assert_eq!(a_longunion.get(), 12297829382473034410_u64);
     /// 
@@ -10042,7 +10048,7 @@ pub trait SmallUInt: Copy + Clone + Sized //+ Display + Debug + ToString
     ///     assert_eq!(b_longunion.get(), 6148914691236517204_u64);
     /// 
     ///     let a_longerunion = func((u128::MAX / 3).into_longerunion(), 2_u128.into_longerunion());
-    ///     println!("{} * 2 = {}", u128::MAX / 3, a_longerunion);
+    ///     println!("{} * 2 = {}", (u128::MAX / 3).into_longerunion(), a_longerunion);
     ///     assert_eq!(a_longerunion.get(), 226854911280625642308916404954512140970_u128);
     /// 
     ///     let b_longerunion = func(a_longerunion, 2_u128.into_longerunion());
@@ -10093,6 +10099,9 @@ pub trait SmallUInt: Copy + Clone + Sized //+ Display + Debug + ToString
 
     // fn overflowing_mul(self, rhs: Self) -> (Self, bool);
     /// Calculates `self` * `rhs`, wrapping around at the boundary of the type.
+    /// 
+    /// # Arguments
+    /// - `rhs` is a multiplier of the type `Self`
     /// 
     /// # Features
     /// It multiplies two numbers with wrapping (modular) multiplication.
@@ -10500,8 +10509,8 @@ pub trait SmallUInt: Copy + Clone + Sized //+ Display + Debug + ToString
     // fn checked_mul(self, rhs: Self) -> Option<Self>;
     /// Computes `self` * `rhs`.
     /// 
-    /// # Feature
-    /// 
+    /// # Arguments
+    /// - `rhs` is a multiplier of the type `Self`
     /// 
     /// # Output
     /// It returns `self` * `rhs` in the type `Self` wrapped by `Some`
@@ -11125,6 +11134,9 @@ pub trait SmallUInt: Copy + Clone + Sized //+ Display + Debug + ToString
     // fn unchecked_mul(self, rhs: Self) -> Self;
     /// Computes `self` + `rhs`, assuming overflow cannot occur.
     /// 
+    /// # Arguments
+    /// - `rhs` is a multiplier of the type `Self`
+    /// 
     /// # Features
     /// It is virtually same as self.checked_add(rhs).unwrap().
     /// Use this method only when it is sure that overflow will never happen.
@@ -11450,17 +11462,6 @@ pub trait SmallUInt: Copy + Clone + Sized //+ Display + Debug + ToString
     /// to the method unchecked_mul() of implementation of the primitive unsigned
     /// integer types.
     /// 
-    /// # Possiible Changes in Future
-    /// This method does not call the method unchecked_mul() of the primitive
-    /// unsigned integer types directly. Instead, it is implemented to perform
-    /// the same thing as that of unchecked_mul() of the primitive unsigned
-    /// integer types because the methods unchecked_mul() of the primitive
-    /// unsigned integer types are only for nightly version. So, when the method
-    /// unchecked_mul() of the primitive unsigned integer types will become a
-    /// part of non-nightly normal version, the implementation of this method
-    /// will be changed to call the method unchecked_mul() of the primitive
-    /// unsigned integer types directly.
-    /// 
     /// # References
     /// - If you want to know about the definition of the method `unchecked_mul()`
     /// for the primitive type `u8`, read [here](https://doc.rust-lang.org/core/primitive.u8.html#method.unchecked_mul).
@@ -11479,6 +11480,9 @@ pub trait SmallUInt: Copy + Clone + Sized //+ Display + Debug + ToString
     // fn saturating_mul(self, rhs: Self) -> Self;
     /// Computes `self` * `rhs`, saturating at the numeric bounds
     /// instead of overflowing.
+    /// 
+    /// # Arguments
+    /// - `rhs` is a multiplier of the type `Self`
     /// 
     /// # Features
     /// It multiplies two numbers with saturating integer multiplication
@@ -12414,6 +12418,9 @@ pub trait SmallUInt: Copy + Clone + Sized //+ Display + Debug + ToString
     // fn wrapping_div(self, rhs: Self) -> Self
     /// Computes `self`/ `rhs`.
     /// 
+    /// # Arguments
+    /// `rhs` is a divisor of the type `Self`.
+    /// 
     /// # Features
     /// Wrapped division on unsigned types is just normal division. There’s no
     /// way wrapping could ever happen. This function exists, so that all
@@ -12564,7 +12571,7 @@ pub trait SmallUInt: Copy + Clone + Sized //+ Display + Debug + ToString
     /// fn main()
     /// {
     ///    let a_intunion = func((u32::MAX / 3).into_intunion(), 2_u32.into_intunion());
-    ///    println!("{} / 2 = {}", (u32::MAX / 3).into_intunion(), a_intunion.into_intunion());
+    ///    println!("{} / 2 = {}", (u32::MAX / 3).into_intunion(), a_intunion);
     ///    assert_eq!(a_intunion.get(), 715827882_u32);
     ///
     ///    // It will panic.
@@ -12615,7 +12622,7 @@ pub trait SmallUInt: Copy + Clone + Sized //+ Display + Debug + ToString
     /// }
     /// ```
     /// 
-    /// # Example 11 for SizeUnion
+    /// # Example 11 for SizeUnion for 64-bit CPUs
     /// ```
     /// use cryptocol::number::SmallUInt;
     /// fn main()
@@ -12701,7 +12708,7 @@ pub trait SmallUInt: Copy + Clone + Sized //+ Display + Debug + ToString
     ///
     ///    // Example for IntUnion
     ///    let a_intunion = func((u32::MAX / 3).into_intunion(), 2_u32.into_intunion());
-    ///    println!("{} / 2 = {}", (u32::MAX / 3).into_intunion(), a_intunion.into_intunion());
+    ///    println!("{} / 2 = {}", (u32::MAX / 3).into_intunion(), a_intunion);
     ///    assert_eq!(a_intunion.get(), 715827882_u32);
     ///
     ///    // It will panic.
@@ -12767,6 +12774,9 @@ pub trait SmallUInt: Copy + Clone + Sized //+ Display + Debug + ToString
 
     // fn overflowing_div(self, rhs: Self) -> (Self, bool)
     /// Calculates `self` / `rhs`.
+    /// 
+    /// # Arguments
+    /// `rhs` is a divisor of the type `Self`.
     /// 
     /// # Features
     /// It divides `self` by `rhs`.
@@ -12874,14 +12884,14 @@ pub trait SmallUInt: Copy + Clone + Sized //+ Display + Debug + ToString
     /// }
     /// ```
     /// 
-    /// # Example 6 for usize
+    /// # Example 6 for usize for 64-bit CPUs
     /// ```
     /// use cryptocol::number::SmallUInt;
     /// fn main()
     /// {
     ///     let a_usize = func(usize::MAX / 3, 2_usize);
     ///     println!("{} / 2 = {}\nOverflow = {}", usize::MAX / 3, a_usize.0, a_usize.1);
-    ///     assert_eq!(a_usize.0, 3074457345618258602_usize);
+    ///     #[cfg(target_pointer_width = "64")] assert_eq!(a_usize.0, 3074457345618258602_usize);
     ///     assert_eq!(a_usize.1, false);
     ///     // It will panic.
     ///     // let a_panic = func(a_usize.0, 0_usize);
@@ -12973,14 +12983,14 @@ pub trait SmallUInt: Copy + Clone + Sized //+ Display + Debug + ToString
     /// }
     /// ```
     /// 
-    /// # Example 11 for SizeUnion
+    /// # Example 11 for SizeUnion for 64-bit CPUs
     /// ```
     /// use cryptocol::number::SmallUInt;
     /// fn main()
     /// {
     ///     let (a_sizeunion, overflow) = func((usize::MAX / 3).into_sizeunion(), 2_usize.into_sizeunion());
     ///     println!("{} / 2 = {}\nOverflow = {}", (usize::MAX / 3).into_sizeunion(), a_sizeunion, overflow);
-    ///     assert_eq!(a_sizeunion.get(), 3074457345618258602_usize);
+    ///     #[cfg(target_pointer_width = "64")] assert_eq!(a_sizeunion.get(), 3074457345618258602_usize);
     ///     assert_eq!(overflow, false);
     /// 
     ///     // It will panic.
@@ -13043,7 +13053,7 @@ pub trait SmallUInt: Copy + Clone + Sized //+ Display + Debug + ToString
     /// 
     ///     let a_usize = func(usize::MAX / 3, 2_usize);
     ///     println!("{} / 2 = {}\nOverflow = {}", usize::MAX / 3, a_usize.0, a_usize.1);
-    ///     assert_eq!(a_usize.0, 3074457345618258602_usize);
+    ///     #[cfg(target_pointer_width = "64")] assert_eq!(a_usize.0, 3074457345618258602_usize);
     ///     assert_eq!(a_usize.1, false);
     /// 
     ///     // It will panic.
@@ -13083,7 +13093,7 @@ pub trait SmallUInt: Copy + Clone + Sized //+ Display + Debug + ToString
     /// 
     ///     let (a_sizeunion, overflow) = func((usize::MAX / 3).into_sizeunion(), 2_usize.into_sizeunion());
     ///     println!("{} / 2 = {}\nOverflow = {}", (usize::MAX / 3).into_sizeunion(), a_sizeunion, overflow);
-    ///     assert_eq!(a_sizeunion.get(), 3074457345618258602_usize);
+    ///     #[cfg(target_pointer_width = "64")] assert_eq!(a_sizeunion.get(), 3074457345618258602_usize);
     ///     assert_eq!(overflow, false);
     /// 
     ///     // It will panic.
@@ -13127,8 +13137,8 @@ pub trait SmallUInt: Copy + Clone + Sized //+ Display + Debug + ToString
     // fn checked_div(self, rhs: Self) -> Option<Self>;
     /// Computes `self` / `rhs`.
     /// 
-    /// # Feature
-    /// 
+    /// # Arguments
+    /// `rhs` is a divisor of the type `Self`.
     /// 
     /// # Output
     /// It returns `self` / `rhs` in the type `Self` wrapped by `Some`
@@ -13294,7 +13304,7 @@ pub trait SmallUInt: Copy + Clone + Sized //+ Display + Debug + ToString
     /// }
     /// ```
     /// 
-    /// # Example 6 for usize
+    /// # Example 6 for usize for 64-bit CPUs
     /// ```
     /// use cryptocol::number::SmallUInt;
     /// fn main()
@@ -13304,7 +13314,7 @@ pub trait SmallUInt: Copy + Clone + Sized //+ Display + Debug + ToString
     ///     {
     ///         Some(a) => {
     ///                 println!("{} / 2 = {}", usize::MAX / 3, a);
-    ///                 assert_eq!(a, 3074457345618258602_usize);
+    ///                 #[cfg(target_pointer_width = "64")] assert_eq!(a, 3074457345618258602_usize);
     ///             },
     ///         None => { println!("Divided by zero."); },
     ///     }
@@ -13454,7 +13464,7 @@ pub trait SmallUInt: Copy + Clone + Sized //+ Display + Debug + ToString
     /// }
     /// ```
     /// 
-    /// # Example 11 for SizeUnion
+    /// # Example 11 for SizeUnion for 64-bit CPUs
     /// ```
     /// use cryptocol::number::SmallUInt;
     /// fn main()
@@ -13464,7 +13474,7 @@ pub trait SmallUInt: Copy + Clone + Sized //+ Display + Debug + ToString
     ///     {
     ///         Some(a) => {
     ///                 println!("{} / 2 = {}", (usize::MAX / 3).into_sizeunion(), a);
-    ///                 assert_eq!(a.get(), 3074457345618258602_usize);
+    ///                 #[cfg(target_pointer_width = "64")] assert_eq!(a.get(), 3074457345618258602_usize);
     ///             },
     ///         None => { println!("Divided by zero."); },
     ///     }
@@ -13599,7 +13609,7 @@ pub trait SmallUInt: Copy + Clone + Sized //+ Display + Debug + ToString
     ///     {
     ///         Some(a) => {
     ///                 println!("{} / 2 = {}", usize::MAX / 3, a);
-    ///                 assert_eq!(a, 3074457345618258602_usize);
+    ///                 #[cfg(target_pointer_width = "64")] assert_eq!(a, 3074457345618258602_usize);
     ///             },
     ///         None => { println!("Divided by zero."); },
     ///     }
@@ -13699,7 +13709,7 @@ pub trait SmallUInt: Copy + Clone + Sized //+ Display + Debug + ToString
     ///     {
     ///         Some(a) => {
     ///                 println!("{} / 2 = {}", (usize::MAX / 3).into_sizeunion(), a);
-    ///                 assert_eq!(a.get(), 3074457345618258602_usize);
+    ///                 #[cfg(target_pointer_width = "64")] assert_eq!(a.get(), 3074457345618258602_usize);
     ///             },
     ///         None => { println!("Divided by zero."); },
     ///     }
@@ -13751,8 +13761,8 @@ pub trait SmallUInt: Copy + Clone + Sized //+ Display + Debug + ToString
     // fn unchecked_div(self, rhs: Self) -> Self;
     /// Computes `self` / `rhs`.
     /// 
-    /// # Feature
-    /// 
+    /// # Arguments
+    /// `rhs` is a divisor of the type `Self`.
     /// 
     /// # Output
     /// It returns `self` / `rhs` in the type `Self`, if `rhs` is not zero.
@@ -13848,13 +13858,14 @@ pub trait SmallUInt: Copy + Clone + Sized //+ Display + Debug + ToString
     /// }
     /// ```
     /// 
-    /// # Example 6 for usize
+    /// # Example 6 for usize for 64-bit CPUs
     /// ```
     /// use cryptocol::number::SmallUInt;
     /// fn main()
     /// {
     ///     let a_usize = func(usize::MAX / 3, 2_usize);
     ///     println!("{} / 2 = {}", usize::MAX / 3, a_usize);
+    ///     #[cfg(target_pointer_width = "64")] assert_eq!(a_usize, 3074457345618258602_usize);
     ///     // It will panic.
     ///     // let b_usize = func(usize::MAX / 3, 0_usize);
     /// }
@@ -13937,14 +13948,14 @@ pub trait SmallUInt: Copy + Clone + Sized //+ Display + Debug + ToString
     /// }
     /// ```
     /// 
-    /// # Example 11 for SizeUnion
+    /// # Example 11 for SizeUnion for 64-bit CPUs
     /// ```
     /// use cryptocol::number::SmallUInt;
     /// fn main()
     /// {
     ///     let a_sizeunion = func((usize::MAX / 3).into_sizeunion(), 2_usize.into_sizeunion());
     ///     println!("{} / 2 = {}", (usize::MAX / 3).into_sizeunion(), a_sizeunion);
-    ///     assert_eq!(a_sizeunion.get(), 3074457345618258602_usize);
+    ///     #[cfg(target_pointer_width = "64")] assert_eq!(a_sizeunion.get(), 3074457345618258602_usize);
     ///     // It will panic.
     ///     // let b_sizeunion = func((usize::MAX / 3).into_sizeunion(), 0_usize.into_sizeunion());
     /// }
@@ -13995,6 +14006,7 @@ pub trait SmallUInt: Copy + Clone + Sized //+ Display + Debug + ToString
     /// 
     ///     let a_usize = func(usize::MAX / 3, 2_usize);
     ///     println!("{} / 2 = {}", usize::MAX / 3, a_usize);
+    ///     #[cfg(target_pointer_width = "64")] assert_eq!(a_usize, 3074457345618258602_usize);
     ///     // It will panic.
     ///     // let b_usize = func(usize::MAX / 3, 0_usize);
     /// 
@@ -14024,7 +14036,7 @@ pub trait SmallUInt: Copy + Clone + Sized //+ Display + Debug + ToString
     /// 
     ///     let a_sizeunion = func((usize::MAX / 3).into_sizeunion(), 2_usize.into_sizeunion());
     ///     println!("{} / 2 = {}", (usize::MAX / 3).into_sizeunion(), a_sizeunion);
-    ///     assert_eq!(a_sizeunion.get(), 3074457345618258602_usize);
+    ///     #[cfg(target_pointer_width = "64")] assert_eq!(a_sizeunion.get(), 3074457345618258602_usize);
     ///     // It will panic.
     ///     // let b_sizeunion = func((usize::MAX / 3).into_sizeunion(), 0_usize.into_sizeunion());
     /// }
@@ -14163,14 +14175,14 @@ pub trait SmallUInt: Copy + Clone + Sized //+ Display + Debug + ToString
     /// }
     /// ```
     /// 
-    /// # Example 6 for usize
+    /// # Example 6 for usize for 64-bit CPUs
     /// ```
     /// use cryptocol::number::SmallUInt;
     /// fn main()
     /// {
     ///     let a_usize = func(usize::MAX / 3, 2_usize);
     ///     println!("{} / 2 = {}", usize::MAX / 3, a_usize);
-    ///     assert_eq!(a_usize, 3074457345618258602_usize);
+    ///     #[cfg(target_pointer_width = "64")] assert_eq!(a_usize, 3074457345618258602_usize);
     /// 
     ///     // It will panic.
     ///     // let a_panic = UInt_saturating_div___func(usize::MAX / 3, 0_usize);
@@ -14190,6 +14202,7 @@ pub trait SmallUInt: Copy + Clone + Sized //+ Display + Debug + ToString
     ///     let a_shortunion = func((u16::MAX / 3).into_shortunion(), 2_u16.into_shortunion());
     ///     println!("{} / 2 = {}", (u16::MAX / 3).into_shortunion(), a_shortunion);
     ///     assert_eq!(a_shortunion.get(), 10922_u16);
+    /// 
     ///     // It will panic.
     ///     // let a_panic = func((u16::MAX / 3).into_shortunion(), 0_u16.into_shortunion());
     /// }
@@ -14208,6 +14221,7 @@ pub trait SmallUInt: Copy + Clone + Sized //+ Display + Debug + ToString
     ///     let a_intunion = func((u32::MAX / 3).into_intunion(), 2_u32.into_intunion());
     ///     println!("{} / 2 = {}", (u32::MAX / 3).into_intunion(), a_intunion);
     ///     assert_eq!(a_intunion.get(), 715827882_u32);
+    /// 
     ///     // It will panic.
     ///     // let a_panic = func((u32::MAX / 3).into_intunion(), 0_u32.into_intunion());
     /// }
@@ -14226,6 +14240,7 @@ pub trait SmallUInt: Copy + Clone + Sized //+ Display + Debug + ToString
     ///     let a_longunion = func((u64::MAX / 3).into_longunion(), 2_u64.into_longunion());
     ///     println!("{} / 2 = {}", (u64::MAX / 3).into_longunion(), a_longunion);
     ///     assert_eq!(a_longunion.get(), 3074457345618258602_u64);
+    /// 
     ///     // It will panic.
     ///     // let a_panic = func((u64::MAX / 3).into_longunion(), 0_u64.into_longunion());
     /// }
@@ -14244,6 +14259,7 @@ pub trait SmallUInt: Copy + Clone + Sized //+ Display + Debug + ToString
     ///     let a_longerunion = func((u128::MAX / 3).into_longerunion(), 2_u128.into_longerunion());
     ///     println!("{} / 2 = {}", (u128::MAX / 3).into_longerunion(), a_longerunion);
     ///     assert_eq!(a_longerunion.get(), 56713727820156410577229101238628035242_u128);
+    /// 
     ///     // It will panic.
     ///     // let a_panic = func((u128::MAX / 3).into_longerunion(), 0_u128.into_longerunion());
     /// }
@@ -14254,14 +14270,15 @@ pub trait SmallUInt: Copy + Clone + Sized //+ Display + Debug + ToString
     /// }
     /// ```
     /// 
-    /// # Example 11 for SizeUnion
+    /// # Example 11 for SizeUnion for 64-bit CPUs
     /// ```
     /// use cryptocol::number::SmallUInt;
     /// fn main()
     /// {
     ///     let a_sizeunion = func((usize::MAX / 3).into_sizeunion(), 2_usize.into_sizeunion());
     ///     println!("{} / 2 = {}", (usize::MAX / 3).into_sizeunion(), a_sizeunion);
-    ///     assert_eq!(a_sizeunion.get(), 3074457345618258602_usize);
+    ///     #[cfg(target_pointer_width = "64")] assert_eq!(a_sizeunion.get(), 3074457345618258602_usize);
+    /// 
     ///     // It will panic.
     ///     // let a_panic = func((usize::MAX / 3).into_sizeunion(), 0_usize.into_sizeunion());
     /// }
@@ -14313,7 +14330,7 @@ pub trait SmallUInt: Copy + Clone + Sized //+ Display + Debug + ToString
     /// 
     ///     let a_usize = func(usize::MAX / 3, 2_usize);
     ///     println!("{} / 2 = {}", usize::MAX / 3, a_usize);
-    ///     assert_eq!(a_usize, 3074457345618258602_usize);
+    ///     #[cfg(target_pointer_width = "64")] assert_eq!(a_usize, 3074457345618258602_usize);
     ///     // It will panic.
     ///     // let a_panic = func(usize::MAX / 3, 0_usize);
     /// 
@@ -14343,7 +14360,7 @@ pub trait SmallUInt: Copy + Clone + Sized //+ Display + Debug + ToString
     /// 
     ///     let a_sizeunion = func((usize::MAX / 3).into_sizeunion(), 2_usize.into_sizeunion());
     ///     println!("{} / 2 = {}", (usize::MAX / 3).into_sizeunion(), a_sizeunion);
-    ///     assert_eq!(a_sizeunion.get(), 3074457345618258602_usize);
+    ///     #[cfg(target_pointer_width = "64")] assert_eq!(a_sizeunion.get(), 3074457345618258602_usize);
     ///     // It will panic.
     ///     // let a_panic = func((usize::MAX / 3).into_sizeunion(), 0_usize.into_sizeunion());
     /// }
@@ -14386,6 +14403,9 @@ pub trait SmallUInt: Copy + Clone + Sized //+ Display + Debug + ToString
 
     // fn wrapping_rem(self, rhs: Self) -> Self
     /// Computes `self` % `rhs`.
+    /// 
+    /// # Arguments
+    /// `rhs` is divisor of the type `Self`.
     /// 
     /// # Features
     /// Wrapped remainder calculation on unsigned types is just the regular
@@ -14568,7 +14588,7 @@ pub trait SmallUInt: Copy + Clone + Sized //+ Display + Debug + ToString
     /// {
     ///     let a_longerunion = func((u128::MAX / 3).into_longerunion(), 3_u128.into_longerunion());
     ///     println!("{} % 3 = {}", (u128::MAX / 3).into_longerunion(), a_longerunion);
-    ///     assert_eq!(a_longerunion, 1_u128.into_longerunion());
+    ///     assert_eq!(a_longerunion.get(), 1_u128);
     ///     // It will panic.
     ///     // let a_panic = func((u128::MAX / 3).into_longerunion(), 0_u128.into_longerunion());
     /// }
@@ -14586,7 +14606,7 @@ pub trait SmallUInt: Copy + Clone + Sized //+ Display + Debug + ToString
     /// {
     ///     let a_sizeunion = func((usize::MAX / 3).into_sizeunion(), 3_usize.into_sizeunion());
     ///     println!("{} % 3 = {}", (usize::MAX / 3).into_sizeunion(), a_sizeunion);
-    ///     assert_eq!(a_sizeunion, 2_usize.into_sizeunion());
+    ///     assert_eq!(a_sizeunion.get(), 2_usize);
     ///     // It will panic.
     ///     // let a_panic = func(usize::MAX / 3, 0_usize);
     /// }
@@ -14661,13 +14681,13 @@ pub trait SmallUInt: Copy + Clone + Sized //+ Display + Debug + ToString
     /// 
     ///     let a_longerunion = func((u128::MAX / 3).into_longerunion(), 3_u128.into_longerunion());
     ///     println!("{} % 3 = {}", (u128::MAX / 3).into_longerunion(), a_longerunion);
-    ///     assert_eq!(a_longerunion, 1_u128.into_longerunion());
+    ///     assert_eq!(a_longerunion.get(), 1_u128);
     ///     // It will panic.
     ///     // let a_panic = func((u128::MAX / 3).into_longerunion(), 0_u128.into_longerunion());
     /// 
     ///     let a_sizeunion = func((usize::MAX / 3).into_sizeunion(), 3_usize.into_sizeunion());
     ///     println!("{} % 3 = {}", (usize::MAX / 3).into_sizeunion(), a_sizeunion);
-    ///     assert_eq!(a_sizeunion, 2_usize.into_sizeunion());
+    ///     assert_eq!(a_sizeunion.get(), 2_usize);
     ///     // It will panic.
     ///     // let a_panic = func(usize::MAX / 3, 0_usize);
     /// }
@@ -14707,6 +14727,9 @@ pub trait SmallUInt: Copy + Clone + Sized //+ Display + Debug + ToString
 
     // fn overflowing_rem(self, rhs: Self) -> (Self, bool)
     /// Calculates `self` % `rhs`.
+    /// 
+    /// # Arguments
+    /// `rhs` is divisor of the type `Self`.
     /// 
     /// # Features
     /// It calculates the remainder when self is divided by rhs.
@@ -14839,7 +14862,7 @@ pub trait SmallUInt: Copy + Clone + Sized //+ Display + Debug + ToString
     /// fn main()
     /// {
     ///     let (a_shortunion, overflow) = func((u16::MAX / 3).into_shortunion(), 3_u16.into_shortunion());
-    ///     println!("{} % 3 = {}\nOverflow = {}", (u16::MAX / 3).into_shortunion(), a_shortunion.into_shortunion(), overflow);
+    ///     println!("{} % 3 = {}\nOverflow = {}", (u16::MAX / 3).into_shortunion(), a_shortunion, overflow);
     ///     assert_eq!(a_shortunion.get(), 2_u16);
     ///     assert_eq!(overflow, false);
     ///     // It will panic.
@@ -14979,7 +15002,7 @@ pub trait SmallUInt: Copy + Clone + Sized //+ Display + Debug + ToString
     ///     // let a_panic = func(a_usize.0, 0_usize);
     /// 
     ///     let (a_shortunion, overflow) = func((u16::MAX / 3).into_shortunion(), 3_u16.into_shortunion());
-    ///     println!("{} % 3 = {}\nOverflow = {}", (u16::MAX / 3).into_shortunion(), a_shortunion.into_shortunion(), overflow);
+    ///     println!("{} % 3 = {}\nOverflow = {}", (u16::MAX / 3).into_shortunion(), a_shortunion, overflow);
     ///     assert_eq!(a_shortunion.get(), 2_u16);
     ///     assert_eq!(overflow, false);
     ///     // It will panic.
@@ -15051,8 +15074,8 @@ pub trait SmallUInt: Copy + Clone + Sized //+ Display + Debug + ToString
     // fn checked_rem(self, rhs: Self) -> Option<Self>
     /// Computes `self` % `rhs`.
     /// 
-    /// # Feature
-    /// 
+    /// # Arguments
+    /// `rhs` is divisor of the type `Self`.
     /// 
     /// # Output
     /// It returns `self` % `rhs` in the type `Self` wrapped by `Some`
@@ -15329,10 +15352,10 @@ pub trait SmallUInt: Copy + Clone + Sized //+ Display + Debug + ToString
     ///         None => { println!("Divided by zero."); },
     ///     }
     /// 
-    ///     let b_longunion = func(u64::MAX / 3, 0_u64);
+    ///     let b_longunion = func((u64::MAX / 3).into_longunion(), 0_u64.into_longunion());
     ///     match b_longunion
     ///     {
-    ///         Some(b) => { println!("{} % 3 = {}", u64::MAX / 3, b); },
+    ///         Some(b) => { println!("{} % 3 = {}", (u64::MAX / 3).into_longunion(), b); },
     ///         None => {
     ///                 println!("Divided by zero.");
     ///                 assert_eq!(b_longunion, None);
@@ -15361,7 +15384,7 @@ pub trait SmallUInt: Copy + Clone + Sized //+ Display + Debug + ToString
     ///         None => { println!("Divided by zero."); },
     ///     }
     /// 
-    ///     let b_longerunion = func(u128::MAX / 3, 0_u128);
+    ///     let b_longerunion = func((u128::MAX / 3).into_longerunion(), 0_u128.into_longerunion());
     ///     match b_longerunion
     ///     {
     ///         Some(b) => { println!("{} % 3 = {}", (u128::MAX / 3).into_longerunion(), b); },
@@ -15588,10 +15611,10 @@ pub trait SmallUInt: Copy + Clone + Sized //+ Display + Debug + ToString
     ///         None => { println!("Divided by zero."); },
     ///     }
     /// 
-    ///     let b_longunion = func(u64::MAX / 3, 0_u64);
+    ///     let b_longunion = func((u64::MAX / 3).into_longunion(), 0_u64.into_longunion());
     ///     match b_longunion
     ///     {
-    ///         Some(b) => { println!("{} % 3 = {}", u64::MAX / 3, b); },
+    ///         Some(b) => { println!("{} % 3 = {}", (u64::MAX / 3).into_longunion(), b); },
     ///         None => {
     ///                 println!("Divided by zero.");
     ///                 assert_eq!(b_longunion, None);
@@ -15608,7 +15631,7 @@ pub trait SmallUInt: Copy + Clone + Sized //+ Display + Debug + ToString
     ///         None => { println!("Divided by zero."); },
     ///     }
     /// 
-    ///     let b_longerunion = func(u128::MAX / 3, 0_u128);
+    ///     let b_longerunion = func((u128::MAX / 3).into_longerunion(), 0_u128.into_longerunion());
     ///     match b_longerunion
     ///     {
     ///         Some(b) => { println!("{} % 3 = {}", (u128::MAX / 3).into_longerunion(), b); },
@@ -23962,7 +23985,7 @@ pub trait SmallUInt: Copy + Clone + Sized //+ Display + Debug + ToString
     /// for the primitive type `usize`, read [here](https://doc.rust-lang.org/core/primitive.usize.html#method.count_ones).
     fn count_ones(self) -> u32;
 
-    // pub fn count_zeros(&self) -> u32
+    // fn count_zeros(&self) -> u32
     /// Returns the number of zeros in the binary representation of `self`.
     /// 
     /// # Output
@@ -24255,7 +24278,7 @@ pub trait SmallUInt: Copy + Clone + Sized //+ Display + Debug + ToString
     /// for the primitive type `usize`, read [here](https://doc.rust-lang.org/core/primitive.usize.html#method.count_zeros).
     fn count_zeros(self) -> u32;
 
-    // pub fn leading_ones(&self) -> u32
+    // fn leading_ones(&self) -> u32
     /// Returns the number of leading ones
     /// in the binary representation of `self`.
     /// 
@@ -24548,7 +24571,7 @@ pub trait SmallUInt: Copy + Clone + Sized //+ Display + Debug + ToString
     /// for the primitive type `usize`, read [here](https://doc.rust-lang.org/core/primitive.usize.html#method.leading_ones).
     fn leading_ones(self) -> u32;
     
-    // pub fn leading_zeros(&self) -> u32
+    // fn leading_zeros(&self) -> u32
     /// Returns the number of leading zeros
     /// in the binary representation of `self`.
     /// 
@@ -25429,7 +25452,7 @@ pub trait SmallUInt: Copy + Clone + Sized //+ Display + Debug + ToString
     /// for the primitive type `usize`, read [here](https://doc.rust-lang.org/core/primitive.usize.html#method.trailing_zeros).
     fn trailing_zeros(self) -> u32;
 
-    // pub fn set_msb(&mut self)
+    // fn set_msb(&mut self)
     /// Sets the MSB (Most Significant Bit) of `Self`-type number with `1`.
     /// 
     /// # Example 1 for u8
@@ -26108,7 +26131,7 @@ pub trait SmallUInt: Copy + Clone + Sized //+ Display + Debug + ToString
     /// ```
     fn set_msb(&mut self);
 
-    // pub fn set_lsb(&mut self)
+    // fn set_lsb(&mut self)
     /// Sets the LSB (Least Significant Bit) of `Self`-type number with `1`.
     /// 
     /// # Example 1 for u8
@@ -28032,7 +28055,7 @@ pub trait SmallUInt: Copy + Clone + Sized //+ Display + Debug + ToString
     /// ```
     fn generate_check_bits_(bit_pos: usize) -> Self;
 
-    // pub fn is_odd(&self) -> bool
+    // fn is_odd(&self) -> bool
     /// Checks whether or not `Self` is an odd number.
     /// 
     /// # Output
@@ -28626,7 +28649,7 @@ pub trait SmallUInt: Copy + Clone + Sized //+ Display + Debug + ToString
     /// ```
     fn is_odd(self) -> bool;
 
-    // pub fn is_even(&self) -> bool
+    // fn is_even(&self) -> bool
     /// Checks whether or not `Self` is an even number.
     /// 
     /// # Output
@@ -29219,7 +29242,7 @@ pub trait SmallUInt: Copy + Clone + Sized //+ Display + Debug + ToString
     /// ```
     fn is_even(self) -> bool;
 
-    // pub fn is_msb_set(&self) -> bool
+    // fn is_msb_set(&self) -> bool
     /// Checks whether or not the MSB (Most Segnificant Bit) of
     /// `self` is set to be one.
     /// 
@@ -45237,7 +45260,7 @@ pub trait SmallUInt: Copy + Clone + Sized //+ Display + Debug + ToString
     /// ```
     fn num<T: SmallUInt>(n: T) -> Self;
 
-    // pub fn set_zero(&mut self)
+    // fn set_zero(&mut self)
     /// Sets `self` to be zero.
     /// 
     /// # Example 1 for u8
@@ -45652,7 +45675,7 @@ pub trait SmallUInt: Copy + Clone + Sized //+ Display + Debug + ToString
     /// ```
     fn set_zero(&mut self);
 
-    // pub fn is_zero(self) -> bool
+    // fn is_zero(self) -> bool
     /// Checks whether or not `self` is zero and returns true if it is
     /// zero and returns false if it is not zero.
     /// 
@@ -46053,7 +46076,7 @@ pub trait SmallUInt: Copy + Clone + Sized //+ Display + Debug + ToString
     /// ```
     fn is_zero(self) -> bool;
 
-    // pub fn set_one(&mut self)
+    // fn set_one(&mut self)
     /// Sets `self` to be one.
     /// 
     /// # Example 1 for u8
@@ -46468,7 +46491,7 @@ pub trait SmallUInt: Copy + Clone + Sized //+ Display + Debug + ToString
     /// ```
     fn set_one(&mut self);
 
-    // pub fn is_one(self) -> bool
+    // fn is_one(self) -> bool
     /// Checks whether or not `self` is one and returns true if it is
     /// one, and returns false if it is not one.
     /// 
@@ -46857,7 +46880,7 @@ pub trait SmallUInt: Copy + Clone + Sized //+ Display + Debug + ToString
     /// ```
     fn is_one(self) -> bool;
 
-    // pub fn is_zero_or_one(&self) -> bool
+    // fn is_zero_or_one(&self) -> bool
     /// Checks whether or not `self` is either zero or one, and returns true
     /// if it is either zero or one. Otherwise, it returns false.
     /// 
@@ -47334,7 +47357,7 @@ pub trait SmallUInt: Copy + Clone + Sized //+ Display + Debug + ToString
     /// ```
     fn is_zero_or_one(self) -> bool;
 
-    // pub fn set_max(&mut self)
+    // fn set_max(&mut self)
     /// Sets `Self`-type number to be maximum value in which all bits are
     /// set to be `1`.
     /// 
@@ -47750,7 +47773,7 @@ pub trait SmallUInt: Copy + Clone + Sized //+ Display + Debug + ToString
     /// ```
     fn set_max(&mut self);
 
-    // pub fn is_max(self) -> bool
+    // fn is_max(self) -> bool
     /// Checks whether or not `Self`-type number to be maximum value.
     /// 
     /// # Output
@@ -48139,7 +48162,7 @@ pub trait SmallUInt: Copy + Clone + Sized //+ Display + Debug + ToString
     /// ```
     fn is_max(self) -> bool;
 
-    // pub fn set_submax(&mut self, size_in_bits: usize)
+    // fn set_submax(&mut self, size_in_bits: usize)
     /// Sets `Self`-type number to be `size_in_bits`-bit long maximum value
     /// in which all bits are set to be `1`.
     /// 
@@ -48575,7 +48598,7 @@ pub trait SmallUInt: Copy + Clone + Sized //+ Display + Debug + ToString
     /// ```
     fn set_submax(&mut self, size_in_bits: usize);
 
-    // pub fn set_halfmax(&mut self)
+    // fn set_halfmax(&mut self)
     /// Sets `Self`-type number to be half long maximum value
     /// in which all bits are set to be `1`.
     /// 

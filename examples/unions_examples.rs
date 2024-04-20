@@ -8731,38 +8731,781 @@ fn unions_widening_mul()
 fn unions_wrapping_mul()
 {
     println!("unions_wrapping_mul");
+    use cryptocol::number::{ ShortUnion, IntUnion, LongUnion, LongerUnion, SizeUnion };
+
+    // Example for ShortUnion
+    let a_shortunion = ShortUnion::new_with(u16::MAX / 3).wrapping_mul(ShortUnion::new_with(2_u16));
+    println!("{} * 2 = {}", ShortUnion::new_with(u16::MAX / 3), a_shortunion);
+    assert_eq!(a_shortunion.get(), 43690_u16);
+
+    let b_shortunion = a_shortunion.wrapping_mul(ShortUnion::new_with(2_u16));
+    println!("{} * 2 = {}", a_shortunion, b_shortunion);
+    assert_eq!(b_shortunion.get(), 21844_u16);
+
+    // Example for IntUnion
+    let a_intunion = IntUnion::new_with(u32::MAX / 3).wrapping_mul(IntUnion::new_with(2_u32));
+    println!("{} * 2 = {}", IntUnion::new_with(u32::MAX / 3), a_intunion);
+    assert_eq!(a_intunion.get(), 2863311530_u32);
+
+    let b_intunion = a_intunion.wrapping_mul(IntUnion::new_with(2_u32));
+    println!("{} * 2 = {}", a_intunion, b_intunion);
+    assert_eq!(b_intunion.get(), 1431655764_u32);
+
+    // Example for LongUnion
+    let a_longunion = LongUnion::new_with(u64::MAX / 3).wrapping_mul(LongUnion::new_with(2_u64));
+    println!("{} * 2 = {}", LongUnion::new_with(u64::MAX / 3), a_longunion);
+    assert_eq!(a_longunion.get(), 12297829382473034410_u64);
+
+    let b_longunion = a_longunion.wrapping_mul(LongUnion::new_with(2_u64));
+    println!("{} * 2 = {}", a_longunion, b_longunion);
+    assert_eq!(b_longunion.get(), 6148914691236517204_u64);
+
+    // Example for LongerUnion
+    let a_longerunion = LongerUnion::new_with(u128::MAX / 3).wrapping_mul(LongerUnion::new_with(2_u128));
+    println!("{} * 2 = {}", LongerUnion::new_with(u128::MAX / 3), a_longerunion);
+    assert_eq!(a_longerunion.get(), 226854911280625642308916404954512140970_u128);
+
+    let b_longerunion = a_longerunion.wrapping_mul(LongerUnion::new_with(2_u128));
+    println!("{} * 2 = {}", a_longerunion, b_longerunion);
+    assert_eq!(b_longerunion.get(), 113427455640312821154458202477256070484_u128);
+
+    // Example for SizeUnion
+    let a_sizeunion = SizeUnion::new_with(usize::MAX / 3).wrapping_mul(SizeUnion::new_with(2_usize));
+    println!("{} * 2 = {}", SizeUnion::new_with(usize::MAX / 3), a_sizeunion);
+    #[cfg(target_pointer_width = "64")] assert_eq!(a_sizeunion.get(), 12297829382473034410_usize);
+
+    let b_sizeunion = a_sizeunion.wrapping_mul(SizeUnion::new_with(2_usize));
+    println!("{} * 2 = {}", a_sizeunion, b_sizeunion);
+    #[cfg(target_pointer_width = "64")] assert_eq!(b_sizeunion.get(), 6148914691236517204_usize);
     println!("--------------------------------------");
 }
 
 fn unions_overflowing_mul()
 {
     println!("unions_overflowing_mul");
+    use cryptocol::number::{ ShortUnion, IntUnion, LongUnion, LongerUnion, SizeUnion };
+
+    // Example for ShortUnion
+    let (a_shortunion, overflow) = ShortUnion::new_with(u16::MAX / 3).overflowing_mul(ShortUnion::new_with(2_u16));
+    println!("{} * 2 = {}\nOverflow = {}", ShortUnion::new_with(u16::MAX / 3), a_shortunion, overflow);
+    assert_eq!(a_shortunion.get(), 43690_u16);
+    assert_eq!(overflow, false);
+    
+    let (b_shortunion, overflow) = a_shortunion.overflowing_mul(ShortUnion::new_with(2_u16));
+    println!("{} * 2 = {}\nOverflow = {}", a_shortunion, b_shortunion, overflow);
+    assert_eq!(b_shortunion.get(), 21844_u16);
+    assert_eq!(overflow, true);
+
+    // Example for IntUnion
+    let (a_intunion, overflow) = IntUnion::new_with(u32::MAX / 3).overflowing_mul(IntUnion::new_with(2_u32));
+    println!("{} * 2 = {}\nOverflow = {}", IntUnion::new_with(u32::MAX / 3), a_intunion, overflow);
+    assert_eq!(a_intunion.get(), 2863311530_u32);
+    assert_eq!(overflow, false);
+    
+    let (b_intunion, overflow) = a_intunion.overflowing_mul(IntUnion::new_with(2_u32));
+    println!("{} * 2 = {}\nOverflow = {}", a_intunion, b_intunion, overflow);
+    assert_eq!(b_intunion.get(), 1431655764_u32);
+    assert_eq!(overflow, true);
+
+    // Example for LongUnion
+    let (a_longunion, overflow) = LongUnion::new_with(u64::MAX / 3).overflowing_mul(LongUnion::new_with(2_u64));
+    println!("{} * 2 = {}\nOverflow = {}", LongUnion::new_with(u64::MAX / 3), a_longunion, overflow);
+    assert_eq!(a_longunion.get(), 12297829382473034410_u64);
+    assert_eq!(overflow, false);
+    
+    let (b_longunion, overflow) = a_longunion.overflowing_mul(LongUnion::new_with(2_u64));
+    println!("{} * 2 = {}\nOverflow = {}", a_longunion, b_longunion, overflow);
+    assert_eq!(b_longunion.get(), 6148914691236517204_u64);
+    assert_eq!(overflow, true);
+
+    // Example for LongerUnion
+    let (a_longerunion, overflow) = LongerUnion::new_with(u128::MAX / 3).overflowing_mul(LongerUnion::new_with(2_u128));
+    println!("{} * 2 = {}\nOverflow = {}", LongerUnion::new_with(u128::MAX / 3), a_longerunion, overflow);
+    assert_eq!(a_longerunion.get(), 226854911280625642308916404954512140970_u128);
+    assert_eq!(overflow, false);
+    
+    let (b_longerunion, overflow)= a_longerunion.overflowing_mul(LongerUnion::new_with(2_u128));
+    println!("{} * 2 = {}\nOverflow = {}", a_longerunion, b_longerunion, overflow);
+    assert_eq!(b_longerunion.get(), 113427455640312821154458202477256070484_u128);
+    assert_eq!(overflow, true);
+
+    // Example for SizeUnion
+    let (a_sizeunion, overflow) = SizeUnion::new_with(usize::MAX / 3).overflowing_mul(SizeUnion::new_with(2_usize));
+    println!("{} * 2 = {}\nOverflow = {}", SizeUnion::new_with(usize::MAX / 3), a_sizeunion, overflow);
+    #[cfg(target_pointer_width = "64")] assert_eq!(a_sizeunion.get(), 12297829382473034410_usize);
+    assert_eq!(overflow, false);
+    
+    let (b_sizeunion, overflow) = a_sizeunion.overflowing_mul(SizeUnion::new_with(2_usize));
+    println!("{} * 2 = {}\nOverflow = {}", a_sizeunion, b_sizeunion, overflow);
+    #[cfg(target_pointer_width = "64")] assert_eq!(b_sizeunion.get(), 6148914691236517204_usize);
+    assert_eq!(overflow, true);
     println!("--------------------------------------");
 }
 
 fn unions_checked_mul()
 {
     println!("unions_checked_mul");
+    use cryptocol::number::{ ShortUnion, IntUnion, LongUnion, LongerUnion, SizeUnion };
+
+    // Example for ShortUnion
+    let a_shortunion = ShortUnion::new_with(u16::MAX / 3).checked_mul(ShortUnion::new_with(2_u16));
+    match a_shortunion
+    {
+        Some(a) => {
+                println!("{} * 2 = {}", ShortUnion::new_with(u16::MAX / 3), a);
+                assert_eq!(a.get(), 43690_u16);
+            },
+        None => { println!("Overflow happened."); },
+    }
+
+    let b_shortunion = a_shortunion.unwrap().checked_mul(ShortUnion::new_with(2_u16));
+    match b_shortunion
+    {
+        Some(b) => { println!("{} * 2 = {}", a_shortunion.unwrap(), b); },
+        None => {
+                println!("Overflow happened.");
+                assert_eq!(b_shortunion, None);
+            },
+    }
+
+    // Example for IntUnion
+    let a_intunion = IntUnion::new_with(u32::MAX / 3).checked_mul(IntUnion::new_with(2_u32));
+    match a_intunion
+    {
+        Some(a) => {
+                println!("{} * 2 = {}", IntUnion::new_with(u32::MAX / 3), a);
+                assert_eq!(a.get(), 2863311530_u32);
+            },
+        None => { println!("Overflow happened."); },
+    }
+
+    let b_intunion = a_intunion.unwrap().checked_mul(IntUnion::new_with(2_u32));
+    match b_intunion
+    {
+        Some(b) => { println!("{} * 2 = {}", a_intunion.unwrap(), b); },
+        None => {
+                println!("Overflow happened.");
+                assert_eq!(b_intunion, None);
+            },
+    }
+
+    // Example for LongUnion
+    let a_longunion = LongUnion::new_with(u64::MAX / 3).checked_mul(LongUnion::new_with(2_u64));
+    match a_longunion
+    {
+        Some(a) => {
+                println!("{} * 2 = {}", LongUnion::new_with(u64::MAX / 3), a);
+                assert_eq!(a.get(), 12297829382473034410_u64);
+            },
+        None => { println!("Overflow happened."); },
+    }
+
+    let b_longunion = a_longunion.unwrap().checked_mul(LongUnion::new_with(2_u64));
+    match b_longunion
+    {
+        Some(b) => { println!("{} * 2 = {}", a_longunion.unwrap(), b); },
+        None => {
+                println!("Overflow happened.");
+                assert_eq!(b_longunion, None);
+            },
+    }
+
+    // Example for LongerUnion
+    let a_longerunion = LongerUnion::new_with(u128::MAX / 3).checked_mul(LongerUnion::new_with(2_u128));
+    match a_longerunion
+    {
+        Some(a) => {
+                println!("{} * 2 = {}", LongerUnion::new_with(u128::MAX / 3), a);
+                assert_eq!(a.get(), 226854911280625642308916404954512140970_u128);
+            },
+        None => { println!("Overflow happened."); },
+    }
+
+    let b_longerunion = a_longerunion.unwrap().checked_mul(LongerUnion::new_with(2_u128));
+    match b_longerunion
+    {
+        Some(b) => { println!("{} * 2 = {}", a_longerunion.unwrap(), b); },
+        None => {
+                println!("Overflow happened.");
+                assert_eq!(b_longerunion, None);
+            },
+    }
+
+    // Example for SizeUnion
+    let a_sizeunion = SizeUnion::new_with(usize::MAX / 3).checked_mul(SizeUnion::new_with(2_usize));
+    match a_sizeunion
+    {
+        Some(a) => {
+                println!("{} * 2 = {}", SizeUnion::new_with(usize::MAX / 3), a);
+                #[cfg(target_pointer_width = "64")] assert_eq!(a.get(), 12297829382473034410_usize);
+            },
+        None => { println!("Overflow happened."); },
+    }
+
+    let b_sizeunion = a_sizeunion.unwrap().checked_mul(SizeUnion::new_with(2_usize));
+    match b_sizeunion
+    {
+        Some(b) => { println!("{} * 2 = {}", a_sizeunion.unwrap(), b); },
+        None => {
+                println!("Overflow happened.");
+                assert_eq!(b_sizeunion, None);
+            },
+    }
     println!("--------------------------------------");
 }
 
 fn unions_unchecked_mul()
 {
     println!("unions_unchecked_mul");
+    use cryptocol::number::{ ShortUnion, IntUnion, LongUnion, LongerUnion, SizeUnion };
+
+    // Example for ShortUnion
+    let a_shortunion = ShortUnion::new_with(u16::MAX / 3).unchecked_mul(ShortUnion::new_with(2_u16));
+    println!("{} * 2 = {}", ShortUnion::new_with(u16::MAX / 3), a_shortunion);
+    assert_eq!(a_shortunion.get(), 43690_u16);
+
+    // It will panic
+    // let b_shortunion = a_shortunion.unchecked_mul(ShortUnion::new_with(2_u16));
+
+    // Example for IntUnion
+    let a_intunion = IntUnion::new_with(u32::MAX / 3).unchecked_mul(IntUnion::new_with(2_u32));
+    println!("{} * 2 = {}", IntUnion::new_with(u32::MAX / 3), a_intunion);
+    assert_eq!(a_intunion.get(), 2863311530_u32);
+
+    // It will panic
+    // let b_intunion = a_intunion.unchecked_mul(IntUnion::new_with(2_u32));
+
+    // Example for LongUnion
+    let a_longunion = LongUnion::new_with(u64::MAX / 3).unchecked_mul(LongUnion::new_with(2_u64));
+    println!("{} * 2 = {}", LongUnion::new_with(u64::MAX / 3), a_longunion);
+    assert_eq!(a_longunion.get(), 12297829382473034410_u64);
+
+    // It will panic
+    // let b_longunion = a_longunion.unchecked_mul(LongUnion::new_with(2_u64));
+
+    // Example for LongerUnion
+    let a_longerunion = LongerUnion::new_with(u128::MAX / 3).unchecked_mul(LongerUnion::new_with(2_u128));
+    println!("{} * 2 = {}", LongerUnion::new_with(u128::MAX / 3), a_longerunion);
+    assert_eq!(a_longerunion.get(), 226854911280625642308916404954512140970_u128);
+
+    // It will panic
+    // let b_longerunion = a_longerunion.unchecked_mul(LongerUnion::new_with(2_u128));
+
+    // Example for SizeUnion
+    let a_sizeunion = SizeUnion::new_with(usize::MAX / 3).unchecked_mul(SizeUnion::new_with(2_usize));
+    println!("{} * 2 = {}", SizeUnion::new_with(usize::MAX / 3), a_sizeunion);
+    #[cfg(target_pointer_width = "64")] assert_eq!(a_sizeunion.get(), 12297829382473034410_usize);
+
+    // It will panic
+    // let b_sizeunion = a_sizeunion.unchecked_mul(SizeUnion::new_with(2_usize));
     println!("--------------------------------------");
 }
 
 fn unions_saturating_mul()
 {
     println!("unions_saturating_mul");
+    use cryptocol::number::{ ShortUnion, IntUnion, LongUnion, LongerUnion, SizeUnion };
+
+    // Example for ShortUnion
+    let a_shortunion = ShortUnion::new_with(u16::MAX / 3).saturating_mul(ShortUnion::new_with(2_u16));
+    println!("{} * 2 = {}", ShortUnion::new_with(u16::MAX / 3), a_shortunion);
+    assert_eq!(a_shortunion.get(), 43690_u16);
+
+    let b_shortunion = a_shortunion.saturating_mul(ShortUnion::new_with(2_u16));
+    println!("{} * 2 = {}", a_shortunion, b_shortunion);
+    assert_eq!(b_shortunion.get(), u16::MAX);
+
+    // Example for IntUnion
+    let a_intunion = IntUnion::new_with(u32::MAX / 3).saturating_mul(IntUnion::new_with(2_u32));
+    println!("{} * 2 = {}", IntUnion::new_with(u32::MAX / 3), a_intunion);
+    assert_eq!(a_intunion.get(), 2863311530_u32);
+
+    let b_intunion = a_intunion.saturating_mul(IntUnion::new_with(2_u32));
+    println!("{} * 2 = {}", a_intunion, b_intunion);
+    assert_eq!(b_intunion.get(), u32::MAX);
+
+    // Example for LongUnion
+    let a_longunion = LongUnion::new_with(u64::MAX / 3).saturating_mul(LongUnion::new_with(2_u64));
+    println!("{} * 2 = {}", LongUnion::new_with(u64::MAX / 3), a_longunion);
+    assert_eq!(a_longunion.get(), 12297829382473034410_u64);
+
+    let b_longunion = a_longunion.saturating_mul(LongUnion::new_with(2_u64));
+    println!("{} * 2 = {}", a_longunion, b_longunion);
+    assert_eq!(b_longunion.get(), u64::MAX);
+
+    // Example for LongerUnion
+    let a_longerunion = LongerUnion::new_with(u128::MAX / 3).saturating_mul(LongerUnion::new_with(2_u128));
+    println!("{} * 2 = {}", LongerUnion::new_with(u128::MAX / 3), a_longerunion);
+    assert_eq!(a_longerunion.get(), 226854911280625642308916404954512140970_u128);
+
+    let b_longerunion = a_longerunion.saturating_mul(LongerUnion::new_with(2_u128));
+    println!("{} * 2 = {}", a_longerunion, b_longerunion);
+    assert_eq!(b_longerunion.get(), u128::MAX);
+
+    // Example for SizeUnion
+    let a_sizeunion = SizeUnion::new_with(usize::MAX / 3).saturating_mul(SizeUnion::new_with(2_usize));
+    println!("{} * 2 = {}", SizeUnion::new_with(usize::MAX / 3), a_sizeunion);
+    #[cfg(target_pointer_width = "64")] assert_eq!(a_sizeunion.get(), 12297829382473034410_usize);
+
+    let b_sizeunion = a_sizeunion.saturating_mul(SizeUnion::new_with(2_usize));
+    println!("{} * 2 = {}", a_sizeunion, b_sizeunion);
+    assert_eq!(b_sizeunion.get(), usize::MAX);
     println!("--------------------------------------");
 }
 
 
-fn unions_div_main(){}
+fn unions_div_main()
+{
+    unions_wrapping_div();
+    unions_overflowing_div();
+    unions_checked_div();
+    unions_saturating_div();
+}
 
+fn unions_wrapping_div()
+{
+    println!("unions_wrapping_div");
+    use cryptocol::number::{ ShortUnion, IntUnion, LongUnion, LongerUnion, SizeUnion };
 
-fn unions_rem_main(){}
+    // Example for ShortUnion
+    let a_shortunion = ShortUnion::new_with(u16::MAX / 3).wrapping_div(ShortUnion::new_with(2_u16));
+    println!("{} / 2 = {}", ShortUnion::new_with(u16::MAX / 3), a_shortunion);
+    assert_eq!(a_shortunion.get(), 10922_u16);
+    // It will panic.
+    // let a_panic = ShortUnion::new_with(u16::MAX / 3).wrapping_div(ShortUnion::zero());
+
+    // Example for IntUnion
+    let a_intunion = IntUnion::new_with(u32::MAX / 3).wrapping_div(IntUnion::new_with(2_u32));
+    println!("{} / 2 = {}", IntUnion::new_with(u32::MAX / 3), a_intunion);
+    assert_eq!(a_intunion.get(), 715827882_u32);
+    // It will panic.
+    // let a_panic = IntUnion::new_with(u32::MAX / 3).wrapping_div(IntUnion::zero());
+
+    // Example for LongUnion
+    let a_longunion = LongUnion::new_with(u64::MAX / 3).wrapping_div(LongUnion::new_with(2_u64));
+    println!("{} / 2 = {}", LongUnion::new_with(u64::MAX / 3), a_longunion);
+    assert_eq!(a_longunion.get(), 3074457345618258602_u64);
+    // It will panic.
+    // let a_panic = LongUnion::new_with(u64::MAX / 3).wrapping_div(LongUnion::zero());
+
+    // Example for LongerUnion
+    let a_longerunion = LongerUnion::new_with(u128::MAX / 3).wrapping_div(LongerUnion::new_with(2_u128));
+    println!("{} / 2 = {}", LongerUnion::new_with(u128::MAX / 3), a_longerunion);
+    assert_eq!(a_longerunion.get(), 56713727820156410577229101238628035242_u128);
+    // It will panic.
+    // let a_panic = LongUnion::new_with(u128::MAX / 3).wrapping_div(LongerUnion::zero());
+
+    // Example for SizeUnion for 64-bit CPUs
+    let a_sizeunion = SizeUnion::new_with(usize::MAX / 3).wrapping_div(SizeUnion::new_with(2_usize));
+    println!("{} / 2 = {}", SizeUnion::new_with(usize::MAX / 3), a_sizeunion);
+    #[cfg(target_pointer_width = "64")] assert_eq!(a_sizeunion.get(), 3074457345618258602_usize);
+    // It will panic.
+    // let a_panic = SizeUnion::new_with(usize::MAX / 3).wrapping_div(SizeUnion::zero());
+    println!("--------------------------------------");
+}
+
+fn unions_overflowing_div()
+{
+    println!("unions_overflowing_div");
+    use cryptocol::number::{ ShortUnion, IntUnion, LongUnion, LongerUnion, SizeUnion };
+
+    // Example for ShortUnion
+    let (a_shortunion, overflow) = ShortUnion::new_with(u16::MAX / 3).overflowing_div(ShortUnion::new_with(2_u16));
+    println!("{} / 2 = {}\nOverflow = {}", ShortUnion::new_with(u16::MAX / 3), a_shortunion, overflow);
+    assert_eq!(a_shortunion.get(), 10922_u16);
+    assert_eq!(overflow, false);
+    // It will panic.
+    // let a_panic = a_shortunion.overflowing_div(ShortUnion::zero());
+
+    // Example for IntUnion
+    let (a_intunion, overflow) = IntUnion::new_with(u32::MAX / 3).overflowing_div(IntUnion::new_with(2_u32));
+    println!("{} / 2 = {}\nOverflow = {}", IntUnion::new_with(u32::MAX / 3), a_intunion, overflow);
+    assert_eq!(a_intunion.get(), 715827882_u32);
+    assert_eq!(overflow, false);
+    // It will panic.
+    // let a_panic = a_intunion.overflowing_div(IntUnion::zero());
+
+    // Example for LongUnion
+    let (a_longunion, overflow) = LongUnion::new_with(u64::MAX / 3).overflowing_div(LongUnion::new_with(2_u64));
+    println!("{} / 2 = {}\nOverflow = {}", LongUnion::new_with(u64::MAX / 3), a_longunion, overflow);
+    assert_eq!(a_longunion.get(), 3074457345618258602_u64);
+    assert_eq!(overflow, false);
+    // It will panic.
+    // let a_panic = a_longunion.overflowing_div(LongUnion::zero());
+
+    // Example for LongerUnion
+    let (a_longerunion, overflow) = LongerUnion::new_with(u128::MAX / 3).overflowing_div(LongerUnion::new_with(2_u128));
+    println!("{} / 2 = {}\nOverflow = {}", LongerUnion::new_with(u128::MAX / 3), a_longerunion, overflow);
+    assert_eq!(a_longerunion.get(), 56713727820156410577229101238628035242_u128);
+    assert_eq!(overflow, false);
+    // It will panic.
+    // let a_panic = a_longerunion.overflowing_div(LongerUnion::zero());
+
+    // Example for SizeUnion for 64-bit CPUs
+    let (a_sizeunion, overflow) = SizeUnion::new_with(usize::MAX / 3).overflowing_div(SizeUnion::new_with(2_usize));
+    println!("{} / 2 = {}\nOverflow = {}", SizeUnion::new_with(usize::MAX / 3), a_sizeunion, overflow);
+    #[cfg(target_pointer_width = "64")] assert_eq!(a_sizeunion.get(), 3074457345618258602_usize);
+    assert_eq!(overflow, false);
+    // It will panic.
+    // let a_panic = a_sizeunion.overflowing_div(SizeUnion::zero());
+    println!("--------------------------------------");
+}
+
+fn unions_checked_div()
+{
+    println!("unions_checked_div");
+    use cryptocol::number::{ ShortUnion, IntUnion, LongUnion, LongerUnion, SizeUnion };
+
+    // Example for ShortUnion
+    let a_shortunion = ShortUnion::new_with(u16::MAX / 3).checked_div(ShortUnion::new_with(2_u16));
+    match a_shortunion
+    {
+        Some(a) => {
+                println!("{} / 2 = {}", ShortUnion::new_with(u16::MAX / 3), a);
+                assert_eq!(a.get(), 10922_u16);
+            },
+        None => { println!("Divided by zero."); },
+    }
+
+    let b_shortunion = ShortUnion::new_with(u16::MAX / 3).checked_div(ShortUnion::zero());
+    match b_shortunion
+    {
+        Some(b) => { println!("{} / 2 = {}", ShortUnion::new_with(u16::MAX / 3), b); },
+        None => {
+                println!("Divided by zero.");
+                assert_eq!(b_shortunion, None);
+            },
+    }
+
+    // Example for IntUnion
+    let a_intunion = IntUnion::new_with(u32::MAX / 3).checked_div(IntUnion::new_with(2_u32));
+    match a_intunion
+    {
+        Some(a) => {
+                println!("{} / 2 = {}", IntUnion::new_with(u32::MAX / 3), a);
+                assert_eq!(a.get(), 715827882_u32);
+            },
+        None => { println!("Divided by zero."); },
+    }
+
+    let b_intunion = IntUnion::new_with(u32::MAX / 3).checked_div(IntUnion::zero());
+    match b_intunion
+    {
+        Some(b) => { println!("{} / 2 = {}", IntUnion::new_with(u32::MAX / 3), b); },
+        None => {
+                println!("Divided by zero.");
+                assert_eq!(b_intunion, None);
+            },
+    }
+
+    // Example for LongUnion
+    let a_longunion = LongUnion::new_with(u64::MAX / 3).checked_div(LongUnion::new_with(2_u64));
+    match a_longunion
+    {
+        Some(a) => {
+                println!("{} / 2 = {}", LongUnion::new_with(u64::MAX / 3), a);
+                assert_eq!(a.get(), 3074457345618258602_u64);
+            },
+        None => { println!("Divided by zero."); },
+    }
+
+    let b_longunion = LongUnion::new_with(u64::MAX / 3).checked_div(LongUnion::zero());
+    match b_longunion
+    {
+        Some(b) => { println!("{} / 2 = {}", LongUnion::new_with(u64::MAX / 3), b); },
+        None => {
+                println!("Divided by zero.");
+                assert_eq!(b_longunion, None);
+            },
+    }
+
+    // Example for LongerUnion
+    let a_longerunion = LongerUnion::new_with(u128::MAX / 3).checked_div(LongerUnion::new_with(2_u128));
+    match a_longerunion
+    {
+        Some(a) => {
+                println!("{} / 2 = {}", LongerUnion::new_with(u128::MAX / 3), a);
+                assert_eq!(a.get(), 56713727820156410577229101238628035242_u128);
+            },
+        None => { println!("Divided by zero."); },
+    }
+
+    let b_longerunion = LongerUnion::new_with(u128::MAX / 3).checked_div(LongerUnion::zero());
+    match b_longerunion
+    {
+        Some(b) => { println!("{} / 2 = {}", LongerUnion::new_with(u128::MAX / 3), b); },
+        None => {
+                println!("Divided by zero.");
+                assert_eq!(b_longerunion, None);
+            },
+    }
+
+    // Example for SizeUnion for 64-bit CPUs
+    let a_sizeunion = SizeUnion::new_with(usize::MAX / 3).checked_div(SizeUnion::new_with(2_usize));
+    match a_sizeunion
+    {
+        Some(a) => {
+                println!("{} / 2 = {}", SizeUnion::new_with(usize::MAX / 3), a);
+                #[cfg(target_pointer_width = "64")] assert_eq!(a.get(), 3074457345618258602_usize);
+            },
+        None => { println!("Divided by zero."); },
+    }
+
+    let b_sizeunion = SizeUnion::new_with(usize::MAX / 3).checked_div(SizeUnion::zero());
+    match b_sizeunion
+    {
+        Some(b) => { println!("{} / 2 = {}", SizeUnion::new_with(usize::MAX / 3), b); },
+        None => {
+                println!("Divided by zero.");
+                assert_eq!(b_sizeunion, None);
+            },
+    }
+    println!("--------------------------------------");
+}
+
+fn unions_saturating_div()
+{
+    println!("unions_saturating_div");
+    use cryptocol::number::{ ShortUnion, IntUnion, LongUnion, LongerUnion, SizeUnion };
+
+    // Example for ShortUnion
+    let a_shortunion = ShortUnion::new_with(u16::MAX / 3).saturating_div(ShortUnion::new_with(2_u16));
+    println!("{} / 2 = {}", ShortUnion::new_with(u16::MAX / 3), a_shortunion);
+    assert_eq!(a_shortunion.get(), 10922_u16);
+    // It will panic.
+    // let a_panic = ShortUnion::new_with(u16::MAX / 3).saturating_div(ShortUnion::zero());
+
+    // Example for IntUnion
+    let a_intunion = IntUnion::new_with(u32::MAX / 3).saturating_div(IntUnion::new_with(2_u32));
+    println!("{} / 2 = {}", IntUnion::new_with(u32::MAX / 3), a_intunion);
+    assert_eq!(a_intunion.get(), 715827882_u32);
+    // It will panic.
+    // let a_panic = IntUnion::new_with(u32::MAX / 3).saturating_div(IntUnion::zero()));
+
+    // Example for LongUnion
+    let a_longunion = LongUnion::new_with(u64::MAX / 3).saturating_div(LongUnion::new_with(2_u64));
+    println!("{} / 2 = {}", LongUnion::new_with(u64::MAX / 3), a_longunion);
+    assert_eq!(a_longunion.get(), 3074457345618258602_u64);
+    // It will panic.
+    // let a_panic = LongUnion::new_with(u64::MAX / 3).saturating_div(LongUnion::zero());
+
+    // Example for LongerUnion
+    let a_longerunion = LongerUnion::new_with(u128::MAX / 3).saturating_div(LongerUnion::new_with(2_u128));
+    println!("{} / 2 = {}", LongerUnion::new_with(u128::MAX / 3), a_longerunion);
+    assert_eq!(a_longerunion.get(), 56713727820156410577229101238628035242_u128);
+    // It will panic.
+    // let a_panic = LongerUnion::new_with(u128::MAX / 3).saturating_div(LongerUnion::zero());
+
+    // Example for SizeUnion for 64-bit CPUs
+    let a_sizeunion = SizeUnion::new_with(usize::MAX / 3).saturating_div(SizeUnion::new_with(2_usize));
+    println!("{} / 2 = {}", SizeUnion::new_with(usize::MAX / 3), a_sizeunion);
+    #[cfg(target_pointer_width = "64")] assert_eq!(a_sizeunion.get(), 3074457345618258602_usize);
+    // It will panic.
+    // let a_panic = SizeUnion::new_with(usize::MAX / 3).saturating_div(SizeUnion::zero());
+    println!("--------------------------------------");
+}
+
+fn unions_rem_main()
+{
+    unions_wrapping_rem();
+    unions_overflowing_rem();
+    unions_checked_rem();
+}
+
+fn unions_wrapping_rem()
+{
+    use cryptocol::number::{ ShortUnion, IntUnion, LongUnion, LongerUnion, SizeUnion };
+
+    // Example for ShortUnion
+    let a_shortunion = ShortUnion::new_with(u16::MAX / 3).wrapping_rem(ShortUnion::new_with(3_u16));
+    println!("{} % 3 = {}", ShortUnion::new_with(u16::MAX / 3), a_shortunion);
+    assert_eq!(a_shortunion.get(), 2_u16);
+    // It will panic.
+    // let a_panic = ShortUnion::new_with(u16::MAX / 3).wrapping_rem(ShortUnion::zero());
+
+    // Example for IntUnion
+    let a_intunion = IntUnion::new_with(u32::MAX / 3).wrapping_rem(IntUnion::new_with(3_u32));
+    println!("{} % 3 = {}", IntUnion::new_with(u32::MAX / 3), a_intunion);
+    assert_eq!(a_intunion.get(), 1_u32);
+    // It will panic.
+    // let a_panic = IntUnion::new_with(u32::MAX / 3).wrapping_rem(IntUnion::zero());
+
+    // Example for LongUnion
+    let a_longunion = LongUnion::new_with(u64::MAX / 3).wrapping_rem(LongUnion::new_with(3_u64));
+    println!("{} % 3 = {}", LongUnion::new_with(u64::MAX / 3), a_longunion);
+    assert_eq!(a_longunion.get(), 2_u64);
+    // It will panic.
+    // let a_panic = LongUnion::new_with(u64::MAX / 3).wrapping_rem(IntUnion::zero());
+
+    // Example for LongerUnion
+    let a_longerunion = LongerUnion::new_with(u128::MAX / 3).wrapping_rem(LongerUnion::new_with(3_u128));
+    println!("{} % 3 = {}", LongerUnion::new_with(u128::MAX / 3), a_longerunion);
+    assert_eq!(a_longerunion.get(), 1_u128);
+    // It will panic.
+    // let a_panic = LongerUnion::new_with(u128::MAX / 3).wrapping_rem(LongerUnion::zero());
+
+    // Example for SizeUnion
+    let a_sizeunion = SizeUnion::new_with(usize::MAX / 3).wrapping_rem(SizeUnion::new_with(3_usize));
+    println!("{} % 3 = {}", SizeUnion::new_with(usize::MAX / 3), a_sizeunion);
+    assert_eq!(a_sizeunion.get(), 2_usize);
+    // It will panic.
+    // let a_panic = sSizeUnion::new_with(usize::MAX / 3).wrapping_rem(SizeUnion::zero());
+}
+
+fn unions_overflowing_rem()
+{
+    use cryptocol::number::{ ShortUnion, IntUnion, LongUnion, LongerUnion, SizeUnion };
+
+    // Example for ShortUnion
+    let (a_shortunion, overflow) = ShortUnion::new_with(u16::MAX / 3).overflowing_rem(ShortUnion::new_with(3_u16));
+    println!("{} % 3 = {}\nOverflow = {}", ShortUnion::new_with(u16::MAX / 3), a_shortunion, overflow);
+    assert_eq!(a_shortunion.get(), 2_u16);
+    assert_eq!(overflow, false);
+    // It will panic.
+    // let a_panic = ShortUnion::new_with(u16::MAX / 3).overflowing_rem(ShortUnion::zero());
+ 
+    // Example for IntUnion
+    let (a_intunion, overflow) = IntUnion::new_with(u32::MAX / 3).overflowing_rem(IntUnion::new_with(3_u32));
+    println!("{} % 3 = {}\nOverflow = {}", IntUnion::new_with(u32::MAX / 3), a_intunion, overflow);
+    assert_eq!(a_intunion.get(), 1_u32);
+    assert_eq!(overflow, false);
+    // It will panic.
+    // let a_panic = IntUnion::new_with(u32::MAX / 3).overflowing_rem(IntUnion::zero());
+ 
+    // Example for LongUnion
+    let (a_longunion, overflow) = LongUnion::new_with(u64::MAX / 3).overflowing_rem(LongUnion::new_with(3_u64));
+    println!("{} % 3 = {}\nOverflow = {}", LongUnion::new_with(u64::MAX / 3), a_longunion, overflow);
+    assert_eq!(a_longunion.get(), 2_u64);
+    assert_eq!(overflow, false);
+    // It will panic.
+    // let a_panic = LongUnion::new_with(u64::MAX / 3).overflowing_rem(LongUnion::zero());
+ 
+    // Example for LongerUnion
+    let (a_longerunion, overflow) = LongerUnion::new_with(u128::MAX / 3).overflowing_rem(LongerUnion::new_with(3_u128));
+    println!("{} % 3 = {}\nOverflow = {}", LongerUnion::new_with(u128::MAX / 3), a_longerunion, overflow);
+    assert_eq!(a_longerunion.get(), 1_u128);
+    assert_eq!(overflow, false);
+    // It will panic.
+    // let a_panic = LongerUnion::new_with(u128::MAX / 3).overflowing_rem(LongerUnion::zero());
+ 
+    // Example for SizeUnion
+    let (a_sizeunion, overflow) = SizeUnion::new_with(usize::MAX / 3).overflowing_rem(SizeUnion::new_with(3_usize));
+    println!("{} % 3 = {}\nOverflow = {}", SizeUnion::new_with(usize::MAX / 3), a_sizeunion, overflow);
+    assert_eq!(a_sizeunion.get(), 2_usize);
+    assert_eq!(overflow, false);
+    // It will panic.
+    // let a_panic = SizeUnion::new_with(usize::MAX / 3).overflowing_rem(SizeUnion::zero());
+}
+
+fn unions_checked_rem()
+{
+    use cryptocol::number::{ ShortUnion, IntUnion, LongUnion, LongerUnion, SizeUnion };
+
+    // Example for ShortUnion
+    let a_shortunion = ShortUnion::new_with(u16::MAX / 3).checked_rem(ShortUnion::new_with(3_u16));
+    match a_shortunion
+    {
+        Some(a) => {
+                println!("{} % 3 = {}", ShortUnion::new_with(u16::MAX / 3), a);
+                assert_eq!(a.get(), 2_u16);
+            },
+        None => { println!("Divided by zero."); },
+    }
+
+    let b_shortunion = ShortUnion::new_with(u16::MAX / 3).checked_rem(ShortUnion::zero());
+    match b_shortunion
+    {
+        Some(b) => { println!("{} % 3 = {}", ShortUnion::new_with(u16::MAX / 3), b); },
+        None => {
+                println!("Divided by zero.");
+                assert_eq!(b_shortunion, None);
+            },
+    }
+
+    // Example for IntUnion
+    let a_intunion = IntUnion::new_with(u32::MAX / 3).checked_rem(IntUnion::new_with(3_u32));
+    match a_intunion
+    {
+        Some(a) => {
+                println!("{} % 3 = {}", IntUnion::new_with(u32::MAX / 3), a);
+                assert_eq!(a.get(), 1_u32);
+            },
+        None => { println!("Divided by zero."); },
+    }
+
+    let b_intunion = IntUnion::new_with(u32::MAX / 3).checked_rem(IntUnion::zero());
+    match b_intunion
+    {
+        Some(b) => { println!("{} % 3 = {}", IntUnion::new_with(u32::MAX / 3), b); },
+        None => {
+                println!("Divided by zero.");
+                assert_eq!(b_intunion, None);
+            },
+    }
+
+    // Example for LongUnion
+    let a_longunion = LongUnion::new_with(u64::MAX / 3).checked_rem(LongUnion::new_with(3_u64));
+    match a_longunion
+    {
+        Some(a) => {
+                println!("{} % 3 = {}", LongUnion::new_with(u64::MAX / 3), a);
+                assert_eq!(a.get(), 2_u64);
+            },
+        None => { println!("Divided by zero."); },
+    }
+
+    let b_longunion = LongUnion::new_with(u64::MAX / 3).checked_rem(LongUnion::zero());
+    match b_longunion
+    {
+        Some(b) => { println!("{} % 3 = {}", LongUnion::new_with(u64::MAX / 3), b); },
+        None => {
+                println!("Divided by zero.");
+                assert_eq!(b_longunion, None);
+            },
+    }
+
+    // Example for LongerUnion
+    let a_longerunion = LongerUnion::new_with(u128::MAX / 3).checked_rem(LongerUnion::new_with(3_u128));
+    match a_longerunion
+    {
+        Some(a) => {
+                println!("{} % 3 = {}", LongerUnion::new_with(u128::MAX / 3), a);
+                assert_eq!(a.get(), 1_u128);
+            },
+        None => { println!("Divided by zero."); },
+    }
+
+    let b_longerunion = LongerUnion::new_with(u128::MAX / 3).checked_rem(LongerUnion::zero());
+    match b_longerunion
+    {
+        Some(b) => { println!("{} % 3 = {}", LongerUnion::new_with(u128::MAX / 3), b); },
+        None => {
+                println!("Divided by zero.");
+                assert_eq!(b_longerunion, None);
+            },
+    }
+
+    // Example for SizeUnion
+    let a_sizeunion = SizeUnion::new_with(usize::MAX / 3).checked_rem(SizeUnion::new_with(3_usize));
+    match a_sizeunion
+    {
+        Some(a) => {
+                println!("{} % 3 = {}", SizeUnion::new_with(usize::MAX / 3), a);
+                assert_eq!(a.get(), 2_usize);
+            },
+        None => { println!("Divided by zero."); },
+    }
+
+    let b_sizeunion = SizeUnion::new_with(usize::MAX / 3).checked_rem(SizeUnion::zero());
+    match b_sizeunion
+    {
+        Some(b) => { println!("{} % 3 = {}", SizeUnion::new_with(usize::MAX / 3), b); },
+        None => {
+                println!("Divided by zero.");
+                assert_eq!(b_sizeunion, None);
+            },
+    }
+}
 
 
 fn unions_neg_main()
