@@ -16783,11 +16783,16 @@ pub trait SmallUInt: Copy + Clone + Sized //+ Display + Debug + ToString
     // fn pow(self, exp: u32) -> Self;
     /// Raises `self` to the power of `exp`, using exponentiation by squaring.
     /// 
+    /// # Arguments
+    /// `exp` is the exponential of the type of `u32`.
+    /// 
     /// # Features
+    /// In release mode, it does not panic but works with wrapping (modular)
+    /// exponentiation in the same way of wrapping_pow().
     /// 
     /// # Panics
-    /// It will panic if the result of this method is more than
-    /// the possible maximum value.
+    /// In debug mode, it will panic if the result of this method is more
+    /// than the possible maximum value.
     /// 
     /// # Output
     /// It returns the self raised to the power of exp, in the type of `Self`.
@@ -16800,8 +16805,6 @@ pub trait SmallUInt: Copy + Clone + Sized //+ Display + Debug + ToString
     ///     let a_u8 = func(3_u8, 5_u32);
     ///     println!("3 ** 5 = {}", a_u8);
     ///     assert_eq!(a_u8, 243_u8);
-    ///     // It will panic.
-    ///     // println!("3 ** 5 = {}", func(3_u8, 6_u32));
     /// }
     /// 
     /// fn func<T: SmallUInt>(base: T, exp: u32) -> T
@@ -16818,8 +16821,6 @@ pub trait SmallUInt: Copy + Clone + Sized //+ Display + Debug + ToString
     ///     let a_u16 = func(9_u16, 5_u32);
     ///     println!("9 ** 5 = {}", a_u16);
     ///     assert_eq!(a_u16, 59049_u16);
-    ///     // It will panic.
-    ///     // println!("9 ** 5 = {}", func(9_u16, 6_u32));
     /// }
     /// 
     /// fn func<T: SmallUInt>(base: T, exp: u32) -> T
@@ -16836,8 +16837,6 @@ pub trait SmallUInt: Copy + Clone + Sized //+ Display + Debug + ToString
     ///     let a_u32 = func(81_u32, 5_u32);
     ///     println!("81 ** 5 = {}", a_u32);
     ///     assert_eq!(a_u32, 3486784401_u32);
-    ///     // It will panic.
-    ///     // println!("81 ** 6 = {}", func(81_u32, 6_u32));
     /// }
     /// 
     /// fn func<T: SmallUInt>(base: T, exp: u32) -> T
@@ -16854,8 +16853,6 @@ pub trait SmallUInt: Copy + Clone + Sized //+ Display + Debug + ToString
     ///     let a_u64 = func(6561_u64, 5_u32);
     ///     println!("6561 ** 5 = {}", a_u64);
     ///     assert_eq!(a_u64, 12157665459056928801_u64);
-    ///     // It will panic.
-    ///     // println!("6561 ** 6 = {}", func(6561_u64, 6_u32));
     /// }
     /// 
     /// fn func<T: SmallUInt>(base: T, exp: u32) -> T
@@ -16872,8 +16869,6 @@ pub trait SmallUInt: Copy + Clone + Sized //+ Display + Debug + ToString
     ///     let a_u128 = func(43046721_u128, 5_u32);
     ///     println!("43046721 ** 5 = {}", a_u128);
     ///     assert_eq!(a_u128, 147808829414345923316083210206383297601_u128);
-    ///     // It will panic.
-    ///     // println!("43046721 ** 6 = {}", func(43046721_u64, 6_u32));
     /// }
     /// 
     /// fn func<T: SmallUInt>(base: T, exp: u32) -> T
@@ -16890,8 +16885,6 @@ pub trait SmallUInt: Copy + Clone + Sized //+ Display + Debug + ToString
     ///     let a_usize = func(6561_usize, 5_u32);
     ///     println!("6561 ** 5 = {}", a_usize);
     ///     assert_eq!(a_usize, 12157665459056928801_usize);
-    ///     // It will panic.
-    ///     // println!("6561 ** 6 = {}", func(6561_usize, 6_u32));
     /// }
     /// 
     /// fn func<T: SmallUInt>(base: T, exp: u32) -> T
@@ -16909,8 +16902,6 @@ pub trait SmallUInt: Copy + Clone + Sized //+ Display + Debug + ToString
     ///     let b_shortunion = func(a_shortunion, 5_u32);
     ///     println!("9 ** 5 = {}", b_shortunion);
     ///     assert_eq!(b_shortunion.get(), 59049_u16);
-    ///     // It will panic.
-    ///     // println!("9 ** 5 = {}", func(a_shortunion, 6_u32));
     /// }
     /// 
     /// fn func<T: SmallUInt>(base: T, exp: u32) -> T
@@ -16928,8 +16919,6 @@ pub trait SmallUInt: Copy + Clone + Sized //+ Display + Debug + ToString
     ///     let b_intunion = func(a_intunion, 5_u32);
     ///     println!("81 ** 5 = {}", b_intunion);
     ///     assert_eq!(b_intunion.get(), 3486784401_u32);
-    ///     // It will panic.
-    ///     // println!("81 ** 6 = {}", func(a_intunion, 6_u32));
     /// }
     /// 
     /// fn func<T: SmallUInt>(base: T, exp: u32) -> T
@@ -16947,8 +16936,6 @@ pub trait SmallUInt: Copy + Clone + Sized //+ Display + Debug + ToString
     ///     let b_longunion = func(a_longunion, 5_u32);
     ///     println!("6561 ** 5 = {}", b_longunion);
     ///     assert_eq!(b_longunion.get(), 12157665459056928801_u64);
-    ///     // It will panic.
-    ///     // println!("6561 ** 6 = {}", func(a_longunion, 6_u32));
     /// }
     /// 
     /// fn func<T: SmallUInt>(base: T, exp: u32) -> T
@@ -16966,8 +16953,6 @@ pub trait SmallUInt: Copy + Clone + Sized //+ Display + Debug + ToString
     ///     let b_longerunion = func(a_longerunion, 5_u32);
     ///     println!("43046721 ** 5 = {}", b_longerunion);
     ///     assert_eq!(b_longerunion.get(), 147808829414345923316083210206383297601_u128);
-    ///     // It will panic.
-    ///     // println!("43046721 ** 6 = {}", func(a_longerunion, 6_u32));
     /// }
     /// 
     /// fn func<T: SmallUInt>(base: T, exp: u32) -> T
@@ -16981,12 +16966,10 @@ pub trait SmallUInt: Copy + Clone + Sized //+ Display + Debug + ToString
     /// use cryptocol::number::{ SmallUInt, SizeUnion };
     /// fn main()
     /// {
-    ///     let a_sizeunion = SizeUnion::new_with(6561);
+    ///     let a_sizeunion = SizeUnion::new_with(3);
     ///     let b_sizeunion = func(a_sizeunion, 5_u32);
     ///     println!("6561 ** 5 = {}", b_sizeunion);
-    ///     assert_eq!(b_sizeunion.get(), 12157665459056928801_usize);
-    ///     // It will panic.
-    ///     // println!("6561 ** 6 = {}", func(a_sizeunion, 6_u32));
+    ///     assert_eq!(b_sizeunion.get(), 243_usize);
     /// }
     /// 
     /// fn func<T: SmallUInt>(base: T, exp: u32) -> T
@@ -17006,73 +16989,51 @@ pub trait SmallUInt: Copy + Clone + Sized //+ Display + Debug + ToString
     ///     let a_u8 = func(3_u8, 5_u32);
     ///     println!("3 ** 5 = {}", a_u8);
     ///     assert_eq!(a_u8, 243_u8);
-    ///     // It will panic.
-    ///     // println!("3 ** 5 = {}", func(3_u8, 6_u32));
     /// 
     ///     let a_u16 = func(9_u16, 5_u32);
     ///     println!("9 ** 5 = {}", a_u16);
     ///     assert_eq!(a_u16, 59049_u16);
-    ///     // It will panic.
-    ///     // println!("9 ** 5 = {}", func(9_u16, 6_u32));
     /// 
     ///     let a_u32 = func(81_u32, 5_u32);
     ///     println!("81 ** 5 = {}", a_u32);
     ///     assert_eq!(a_u32, 3486784401_u32);
-    ///     // It will panic.
-    ///     // println!("81 ** 6 = {}", func(81_u32, 6_u32));
     /// 
     ///     let a_u64 = func(6561_u64, 5_u32);
     ///     println!("6561 ** 5 = {}", a_u64);
     ///     assert_eq!(a_u64, 12157665459056928801_u64);
-    ///     // It will panic.
-    ///     // println!("6561 ** 6 = {}", func(6561_u64, 6_u32));
     /// 
     ///     let a_u128 = func(43046721_u128, 5_u32);
     ///     println!("43046721 ** 5 = {}", a_u128);
     ///     assert_eq!(a_u128, 147808829414345923316083210206383297601_u128);
-    ///     // It will panic.
-    ///     // println!("43046721 ** 6 = {}", func(43046721_u64, 6_u32));
     /// 
     ///     let a_usize = func(6561_usize, 5_u32);
     ///     println!("6561 ** 5 = {}", a_usize);
     ///     assert_eq!(a_usize, 12157665459056928801_usize);
-    ///     // It will panic.
-    ///     // println!("6561 ** 6 = {}", func(6561_usize, 6_u32));
     /// 
     ///     let a_shortunion = ShortUnion::new_with(9);
     ///     let b_shortunion = func(a_shortunion, 5_u32);
     ///     println!("9 ** 5 = {}", b_shortunion);
     ///     assert_eq!(b_shortunion.get(), 59049_u16);
-    ///     // It will panic.
-    ///     // println!("9 ** 5 = {}", func(a_shortunion, 6_u32));
     /// 
     ///     let a_intunion = IntUnion::new_with(81);
     ///     let b_intunion = func(a_intunion, 5_u32);
     ///     println!("81 ** 5 = {}", b_intunion);
     ///     assert_eq!(b_intunion.get(), 3486784401_u32);
-    ///     // It will panic.
-    ///     // println!("81 ** 6 = {}", func(a_intunion, 6_u32));
     /// 
     ///     let a_longunion = LongUnion::new_with(6561);
     ///     let b_longunion = func(a_longunion, 5_u32);
     ///     println!("6561 ** 5 = {}", b_longunion);
     ///     assert_eq!(b_longunion.get(), 12157665459056928801_u64);
-    ///     // It will panic.
-    ///     // println!("6561 ** 6 = {}", func(a_longunion, 6_u32));
     /// 
     ///     let a_longerunion = LongerUnion::new_with(43046721);
     ///     let b_longerunion = func(a_longerunion, 5_u32);
     ///     println!("43046721 ** 5 = {}", b_longerunion);
     ///     assert_eq!(b_longerunion.get(), 147808829414345923316083210206383297601_u128);
-    ///     // It will panic.
-    ///     // println!("43046721 ** 6 = {}", func(a_longerunion, 6_u32));
     /// 
-    ///     let a_sizeunion = SizeUnion::new_with(6561);
+    ///     let a_sizeunion = SizeUnion::new_with(3);
     ///     let b_sizeunion = func(a_sizeunion, 5_u32);
     ///     println!("6561 ** 5 = {}", b_sizeunion);
-    ///     assert_eq!(b_sizeunion.get(), 12157665459056928801_usize);
-    ///     // It will panic.
-    ///     // println!("6561 ** 6 = {}", func(a_sizeunion, 6_u32));
+    ///     assert_eq!(b_sizeunion.get(), 243_usize);
     /// }
     /// 
     /// fn func<T: SmallUInt>(base: T, exp: u32) -> T
@@ -17111,9 +17072,11 @@ pub trait SmallUInt: Copy + Clone + Sized //+ Display + Debug + ToString
     // fn wrapping_pow(self, exp: u32) -> Self;
     /// Computes self.pow(exp) with wrapping around at the boundary of the type.
     /// 
+    /// # Arguments
+    /// `exp` is the exponential of the type of `u32`.
+    /// 
     /// # Features
     /// Wrapping (modular) exponentiation.
-    /// 
     /// 
     /// # Output
     /// It returns the self raised to the power of exp, in the type of `Self`.
@@ -17223,13 +17186,17 @@ pub trait SmallUInt: Copy + Clone + Sized //+ Display + Debug + ToString
     /// use cryptocol::number::SmallUInt;
     /// fn main()
     /// {
-    ///     let a_usize = func(6561_usize, 5_u32);
-    ///     println!("6561 ** 5 = {}", a_usize);
-    ///     assert_eq!(a_usize, 12157665459056928801_usize);
+    ///     let a_usize = func(3_usize, 5_u32);
+    ///     println!("3 ** 5 = {}, where ** is the power operator", a_usize);
+    ///     assert_eq!(a_usize, 243_usize);
     /// 
-    ///     let b_usize = func(6561_usize, 6_u32);
-    ///     println!("6561 ** 6 = {}", b_usize);
-    ///     assert_eq!(b_usize, 2721702152408675777_usize);
+    ///     let b_usize = func(3_usize, 128_u32);
+    ///     println!("3 ** 128 = {}, where ** is the power operator", b_usize);
+    ///     #[cfg(target_pointer_width = "8")] assert_eq!(b_usize, 1_usize);
+    ///     #[cfg(target_pointer_width = "16")] assert_eq!(b_usize, 31233_usize);
+    ///     #[cfg(target_pointer_width = "32")] assert_eq!(b_usize, 2324068865_usize);
+    ///     #[cfg(target_pointer_width = "64")] assert_eq!(b_usize, 9241971931925084673_usize);
+    ///     #[cfg(target_pointer_width = "128")] assert_eq!(b_usize, 303523815449207866983105381828026333697_usize);
     /// }
     /// 
     /// fn func<T: SmallUInt>(base: T, exp: u32) -> T
@@ -17327,14 +17294,18 @@ pub trait SmallUInt: Copy + Clone + Sized //+ Display + Debug + ToString
     /// use cryptocol::number::{ SmallUInt, SizeUnion};
     /// fn main()
     /// {
-    ///     let a_sizeunion = SizeUnion::new_with(6561);
+    ///     let a_sizeunion = SizeUnion::new_with(3);
     ///     let b_sizeunion = func(a_sizeunion, 5_u32);
-    ///     println!("6561 ** 5 = {}", b_sizeunion);
-    ///     assert_eq!(b_sizeunion.get(), 12157665459056928801_usize);
+    ///     println!("3 ** 5 = {}, where ** is the power operator", b_sizeunion);
+    ///     assert_eq!(b_sizeunion.get(), 243_usize);
     /// 
-    ///     let c_sizeunion = func(a_sizeunion, 6_u32);
-    ///     println!("6561 ** 6 = {}", c_sizeunion);
-    ///     assert_eq!(c_sizeunion.get(), 2721702152408675777_usize);
+    ///     let c_sizeunion = func(a_sizeunion, 128_u32);
+    ///     println!("3 ** 128 = {}, where ** is the power operator", c_sizeunion);
+    ///     #[cfg(target_pointer_width = "8")] assert_eq!(c_sizeunion.get(), 1_usize);
+    ///     #[cfg(target_pointer_width = "16")] assert_eq!(c_sizeunion.get(), 31233_usize);
+    ///     #[cfg(target_pointer_width = "32")] assert_eq!(c_sizeunion.get(), 2324068865_usize);
+    ///     #[cfg(target_pointer_width = "64")] assert_eq!(c_sizeunion.get(), 9241971931925084673_usize);
+    ///     #[cfg(target_pointer_width = "128")] assert_eq!(c_sizeunion.get(), 303523815449207866983105381828026333697_usize);
     /// }
     /// 
     /// fn func<T: SmallUInt>(base: T, exp: u32) -> T
@@ -17391,13 +17362,17 @@ pub trait SmallUInt: Copy + Clone + Sized //+ Display + Debug + ToString
     ///     println!("43046721 ** 6 = {}", b_u128);
     ///     assert_eq!(b_u128, 333574137813082321045752866839264852865_u128);
     /// 
-    ///     let a_usize = func(6561_usize, 5_u32);
-    ///     println!("6561 ** 5 = {}", a_usize);
-    ///     assert_eq!(a_usize, 12157665459056928801_usize);
+    ///     let a_usize = func(3_usize, 5_u32);
+    ///     println!("3 ** 5 = {}, where ** is the power operator", a_usize);
+    ///     assert_eq!(a_usize, 243_usize);
     /// 
-    ///     let b_usize = func(6561_usize, 6_u32);
-    ///     println!("6561 ** 6 = {}", b_usize);
-    ///     assert_eq!(b_usize, 2721702152408675777_usize);
+    ///     let b_usize = func(3_usize, 128_u32);
+    ///     println!("3 ** 128 = {}, where ** is the power operator", b_usize);
+    ///     #[cfg(target_pointer_width = "8")] assert_eq!(b_usize, 1_usize);
+    ///     #[cfg(target_pointer_width = "16")] assert_eq!(b_usize, 31233_usize);
+    ///     #[cfg(target_pointer_width = "32")] assert_eq!(b_usize, 2324068865_usize);
+    ///     #[cfg(target_pointer_width = "64")] assert_eq!(b_usize, 9241971931925084673_usize);
+    ///     #[cfg(target_pointer_width = "128")] assert_eq!(b_usize, 303523815449207866983105381828026333697_usize);
     /// 
     ///     let a_shortunion = ShortUnion::new_with(9);
     ///     let b_shortunion = func(a_shortunion, 5_u32);
@@ -17435,14 +17410,18 @@ pub trait SmallUInt: Copy + Clone + Sized //+ Display + Debug + ToString
     ///     println!("43046721 ** 6 = {}", c_longerunion);
     ///     assert_eq!(c_longerunion.get(), 333574137813082321045752866839264852865_u128);
     /// 
-    ///     let a_sizeunion = SizeUnion::new_with(6561);
+    ///     let a_sizeunion = SizeUnion::new_with(3);
     ///     let b_sizeunion = func(a_sizeunion, 5_u32);
-    ///     println!("6561 ** 5 = {}", b_sizeunion);
-    ///     assert_eq!(b_sizeunion.get(), 12157665459056928801_usize);
+    ///     println!("3 ** 5 = {}, where ** is the power operator", b_sizeunion);
+    ///     assert_eq!(b_sizeunion.get(), 243_usize);
     /// 
-    ///     let c_sizeunion = func(a_sizeunion, 6_u32);
-    ///     println!("6561 ** 6 = {}", c_sizeunion);
-    ///     assert_eq!(c_sizeunion.get(), 2721702152408675777_usize);
+    ///     let c_sizeunion = func(a_sizeunion, 128_u32);
+    ///     println!("3 ** 128 = {}, where ** is the power operator", c_sizeunion);
+    ///     #[cfg(target_pointer_width = "8")] assert_eq!(c_sizeunion.get(), 1_usize);
+    ///     #[cfg(target_pointer_width = "16")] assert_eq!(c_sizeunion.get(), 31233_usize);
+    ///     #[cfg(target_pointer_width = "32")] assert_eq!(c_sizeunion.get(), 2324068865_usize);
+    ///     #[cfg(target_pointer_width = "64")] assert_eq!(c_sizeunion.get(), 9241971931925084673_usize);
+    ///     #[cfg(target_pointer_width = "128")] assert_eq!(c_sizeunion.get(), 303523815449207866983105381828026333697_usize);
     /// }
     /// 
     /// fn func<T: SmallUInt>(base: T, exp: u32) -> T
@@ -17480,6 +17459,9 @@ pub trait SmallUInt: Copy + Clone + Sized //+ Display + Debug + ToString
 
     // fn overflowing_pow(self, exp: u32) -> (Self, bool);
     /// Raises self to the power of exp, using exponentiation by squaring.
+    /// 
+    /// # Arguments
+    /// `exp` is the exponential of the type of `u32`.
     /// 
     /// # Features
     /// Exponentiation by squaring.
@@ -17604,14 +17586,18 @@ pub trait SmallUInt: Copy + Clone + Sized //+ Display + Debug + ToString
     /// use cryptocol::number::SmallUInt;
     /// fn main()
     /// {
-    ///     let (a_usize, overflow) = func(1004_usize, 6);
-    ///     println!("{} ** 6 = {}\nOverflow = {}", 1004_u64, a_usize, overflow);
-    ///     assert_eq!(a_usize, 1024241283846148096_usize);
+    ///     let (a_usize, overflow) = func(3_usize, 5);
+    ///     println!("{} ** 5 = {}, where ** is the power operator\nOverflow = {}", 3_u64, a_usize, overflow);
+    ///     assert_eq!(a_usize, 243_usize);
     ///     assert_eq!(overflow, false);
     /// 
-    ///     let (b_usize, overflow) = func(1004_usize, 7);
-    ///     println!("{} ** 7 = {}\nOverflow = {}", 1004_u64, b_usize, overflow);
-    ///     assert_eq!(b_usize, 13767324927507349504_usize);
+    ///     let (b_usize, overflow) = func(3_usize, 128);
+    ///     println!("{} ** 128 = {}, where ** is the power operator\nOverflow = {}", 3_usize, b_usize, overflow);
+    ///     #[cfg(target_pointer_width = "8")] assert_eq!(b_usize, 1_usize);
+    ///     #[cfg(target_pointer_width = "16")] assert_eq!(b_usize, 31233_usize);
+    ///     #[cfg(target_pointer_width = "32")] assert_eq!(b_usize, 2324068865_usize);
+    ///     #[cfg(target_pointer_width = "64")] assert_eq!(b_usize, 9241971931925084673_usize);
+    ///     #[cfg(target_pointer_width = "128")] assert_eq!(b_usize, 303523815449207866983105381828026333697_usize);
     ///     assert_eq!(overflow, true);
     /// }
     /// 
@@ -17714,14 +17700,18 @@ pub trait SmallUInt: Copy + Clone + Sized //+ Display + Debug + ToString
     /// use cryptocol::number::SmallUInt;
     /// fn main()
     /// {
-    ///     let (a_sizeunion, overflow) = func(1004_usize.into_sizeunion(), 6);
-    ///     println!("{} ** 6 = {}\nOverflow = {}", 1004_u64, a_sizeunion, overflow);
-    ///     assert_eq!(a_sizeunion.get(), 1024241283846148096_usize);
+    ///     let (a_sizeunion, overflow) = func(3_usize.into_sizeunion(), 5);
+    ///     println!("{} ** 5 = {}, where ** is the power operator\nOverflow = {}", 3_usize, a_sizeunion, overflow);
+    ///     assert_eq!(a_sizeunion.get(), 243_usize);
     ///     assert_eq!(overflow, false);
     /// 
-    ///     let (b_sizeunion, overflow) = func(1004_usize.into_sizeunion(), 7);
-    ///     println!("{} ** 7 = {}\nOverflow = {}", 1004_u64, b_sizeunion, overflow);
-    ///     assert_eq!(b_sizeunion.get(), 13767324927507349504_usize);
+    ///     let (b_sizeunion, overflow) = func(3_usize.into_sizeunion(), 128);
+    ///     println!("{} ** 128 = {}, where ** is the power operator\nOverflow = {}", 3_u64, b_sizeunion, overflow);
+    ///     #[cfg(target_pointer_width = "8")] assert_eq!(b_sizeunion.get(), 1_usize);
+    ///     #[cfg(target_pointer_width = "16")] assert_eq!(b_sizeunion.get(), 31233_usize);
+    ///     #[cfg(target_pointer_width = "32")] assert_eq!(b_sizeunion.get(), 2324068865_usize);
+    ///     #[cfg(target_pointer_width = "64")] assert_eq!(b_sizeunion.get(), 9241971931925084673_usize);
+    ///     #[cfg(target_pointer_width = "128")] assert_eq!(b_sizeunion.get(), 303523815449207866983105381828026333697_usize);
     ///     assert_eq!(overflow, true);
     /// }
     /// 
@@ -17789,14 +17779,18 @@ pub trait SmallUInt: Copy + Clone + Sized //+ Display + Debug + ToString
     ///     assert_eq!(b_u128, 161851891709800684693298854005190226825_u128);
     ///     assert_eq!(overflow, true);
     /// 
-    ///     let (a_usize, overflow) = func(1004_usize, 6);
-    ///     println!("{} ** 6 = {}\nOverflow = {}", 1004_u64, a_usize, overflow);
-    ///     assert_eq!(a_usize, 1024241283846148096_usize);
+    ///     let (a_usize, overflow) = func(3_usize, 5);
+    ///     println!("{} ** 5 = {}, where ** is the power operator\nOverflow = {}", 3_u64, a_usize, overflow);
+    ///     assert_eq!(a_usize, 243_usize);
     ///     assert_eq!(overflow, false);
     /// 
-    ///     let (b_usize, overflow) = func(1004_usize, 7);
-    ///     println!("{} ** 7 = {}\nOverflow = {}", 1004_u64, b_usize, overflow);
-    ///     assert_eq!(b_usize, 13767324927507349504_usize);
+    ///     let (b_usize, overflow) = func(3_usize, 128);
+    ///     println!("{} ** 128 = {}, where ** is the power operator\nOverflow = {}", 3_usize, b_usize, overflow);
+    ///     #[cfg(target_pointer_width = "8")] assert_eq!(b_usize, 1_usize);
+    ///     #[cfg(target_pointer_width = "16")] assert_eq!(b_usize, 31233_usize);
+    ///     #[cfg(target_pointer_width = "32")] assert_eq!(b_usize, 2324068865_usize);
+    ///     #[cfg(target_pointer_width = "64")] assert_eq!(b_usize, 9241971931925084673_usize);
+    ///     #[cfg(target_pointer_width = "128")] assert_eq!(b_usize, 303523815449207866983105381828026333697_usize);
     ///     assert_eq!(overflow, true);
     /// 
     ///     let (a_shortunion, overflow) = func(12_u16.into_shortunion(), 4);
@@ -17839,14 +17833,18 @@ pub trait SmallUInt: Copy + Clone + Sized //+ Display + Debug + ToString
     ///     assert_eq!(b_longerunion.get(), 161851891709800684693298854005190226825_u128);
     ///     assert_eq!(overflow, true);
     /// 
-    ///     let (a_sizeunion, overflow) = func(1004_usize.into_sizeunion(), 6);
-    ///     println!("{} ** 6 = {}\nOverflow = {}", 1004_u64, a_sizeunion, overflow);
-    ///     assert_eq!(a_sizeunion.get(), 1024241283846148096_usize);
+    ///     let (a_sizeunion, overflow) = func(3_usize.into_sizeunion(), 5);
+    ///     println!("{} ** 5 = {}, where ** is the power operator\nOverflow = {}", 3_usize, a_sizeunion, overflow);
+    ///     assert_eq!(a_sizeunion.get(), 243_usize);
     ///     assert_eq!(overflow, false);
     /// 
-    ///     let (b_sizeunion, overflow) = func(1004_usize.into_sizeunion(), 7);
-    ///     println!("{} ** 7 = {}\nOverflow = {}", 1004_u64, b_sizeunion, overflow);
-    ///     assert_eq!(b_sizeunion.get(), 13767324927507349504_usize);
+    ///     let (b_sizeunion, overflow) = func(3_usize.into_sizeunion(), 128);
+    ///     println!("{} ** 128 = {}, where ** is the power operator\nOverflow = {}", 3_u64, b_sizeunion, overflow);
+    ///     #[cfg(target_pointer_width = "8")] assert_eq!(b_sizeunion.get(), 1_usize);
+    ///     #[cfg(target_pointer_width = "16")] assert_eq!(b_sizeunion.get(), 31233_usize);
+    ///     #[cfg(target_pointer_width = "32")] assert_eq!(b_sizeunion.get(), 2324068865_usize);
+    ///     #[cfg(target_pointer_width = "64")] assert_eq!(b_sizeunion.get(), 9241971931925084673_usize);
+    ///     #[cfg(target_pointer_width = "128")] assert_eq!(b_sizeunion.get(), 303523815449207866983105381828026333697_usize);
     ///     assert_eq!(overflow, true);
     /// }
     /// 
@@ -17886,7 +17884,8 @@ pub trait SmallUInt: Copy + Clone + Sized //+ Display + Debug + ToString
     // fn checked_pow(self, exp: u32) -> Option<Self>;
     /// Computes self.pow(exp), returning None if overflow occurred.
     /// 
-    /// # Features
+    /// # Arguments
+    /// `exp` is the exponential of the type of `u32`.
     /// 
     /// # Output
     /// It returns None if overflow occurred. Otherwise, it returns 'self
@@ -18057,20 +18056,20 @@ pub trait SmallUInt: Copy + Clone + Sized //+ Display + Debug + ToString
     /// use cryptocol::number::SmallUInt;
     /// fn main()
     /// {
-    ///     let a_usize = func(1004_usize, 6);
+    ///     let a_usize = func(3_usize, 5);
     ///     match a_usize
     ///     {
     ///         Some(a) => {
-    ///                 println!("{} ** 6 = {}, where ** is the power operator", 1004_usize, a);
-    ///                 assert_eq!(a, 1024241283846148096_usize);
+    ///                 println!("{} ** 5 = {}, where ** is the power operator", 3_usize, a);
+    ///                 assert_eq!(a, 243_usize);
     ///             },
     ///         None => { println!("Overflow happened."); },
     ///     }
     /// 
-    ///     let b_usize = func(1004_usize, 7);
+    ///     let b_usize = func(3_usize, 128);
     ///     match b_usize
     ///     {
-    ///         Some(b) => { println!("{} ** 7 = {}, where ** is the power operator", 1004_usize, b); },
+    ///         Some(b) => { println!("{} ** 128 = {}, where ** is the power operator", 3_usize, b); },
     ///         None => {
     ///                 println!("Overflow happened.");
     ///                 assert_eq!(b_usize, None);
@@ -18217,20 +18216,20 @@ pub trait SmallUInt: Copy + Clone + Sized //+ Display + Debug + ToString
     /// use cryptocol::number::SmallUInt;
     /// fn main()
     /// {
-    ///     let a_sizeunion = func(1004_usize.into_sizeunion(), 6);
+    ///     let a_sizeunion = func(3_usize.into_sizeunion(), 5);
     ///     match a_sizeunion
     ///     {
     ///         Some(a) => {
-    ///                 println!("{} ** 6 = {}, where ** is the power operator", 1004_usize.into_sizeunion(), a);
-    ///                 assert_eq!(a.get(), 1024241283846148096_usize);
+    ///                 println!("{} ** 5 = {}, where ** is the power operator", 3_usize.into_sizeunion(), a);
+    ///                 assert_eq!(a.get(), 243_usize);
     ///             },
     ///         None => { println!("Overflow happened."); },
     ///     }
     /// 
-    ///     let b_sizeunion = func(1004_usize.into_sizeunion(), 7);
+    ///     let b_sizeunion = func(3_usize.into_sizeunion(), 128);
     ///     match b_sizeunion
     ///     {
-    ///         Some(b) => { println!("{} ** 7 = {}, where ** is the power operator", 1004_usize.into_sizeunion(), b); },
+    ///         Some(b) => { println!("{} ** 128 = {}, where ** is the power operator", 3_usize.into_sizeunion(), b); },
     ///         None => {
     ///                 println!("Overflow happened.");
     ///                 assert_eq!(b_sizeunion, None);
@@ -18352,20 +18351,20 @@ pub trait SmallUInt: Copy + Clone + Sized //+ Display + Debug + ToString
     ///             },
     ///     }
     /// 
-    ///     let a_usize = func(1004_usize, 6);
+    ///     let a_usize = func(3_usize, 5);
     ///     match a_usize
     ///     {
     ///         Some(a) => {
-    ///                 println!("{} ** 6 = {}, where ** is the power operator", 1004_usize, a);
-    ///                 assert_eq!(a, 1024241283846148096_usize);
+    ///                 println!("{} ** 5 = {}, where ** is the power operator", 3_usize, a);
+    ///                 assert_eq!(a, 243_usize);
     ///             },
     ///         None => { println!("Overflow happened."); },
     ///     }
     /// 
-    ///     let b_usize = func(1004_usize, 7);
+    ///     let b_usize = func(1004_usize, 128);
     ///     match b_usize
     ///     {
-    ///         Some(b) => { println!("{} ** 7 = {}, where ** is the power operator", 1004_usize, b); },
+    ///         Some(b) => { println!("{} ** 128 = {}, where ** is the power operator", 3_usize, b); },
     ///         None => {
     ///                 println!("Overflow happened.");
     ///                 assert_eq!(b_usize, None);
@@ -18452,20 +18451,20 @@ pub trait SmallUInt: Copy + Clone + Sized //+ Display + Debug + ToString
     ///             },
     ///     }
     /// 
-    ///     let a_sizeunion = func(1004_usize.into_sizeunion(), 6);
+    ///     let a_sizeunion = func(3_usize.into_sizeunion(), 5);
     ///     match a_sizeunion
     ///     {
     ///         Some(a) => {
-    ///                 println!("{} ** 6 = {}, where ** is the power operator", 1004_usize.into_sizeunion(), a);
-    ///                 assert_eq!(a.get(), 1024241283846148096_usize);
+    ///                 println!("{} ** 5 = {}, where ** is the power operator", 3_usize.into_sizeunion(), a);
+    ///                 assert_eq!(a.get(), 243_usize);
     ///             },
     ///         None => { println!("Overflow happened."); },
     ///     }
     /// 
-    ///     let b_sizeunion = func(1004_usize.into_sizeunion(), 7);
+    ///     let b_sizeunion = func(3_usize.into_sizeunion(), 7);
     ///     match b_sizeunion
     ///     {
-    ///         Some(b) => { println!("{} ** 7 = {}, where ** is the power operator", 1004_usize.into_sizeunion(), b); },
+    ///         Some(b) => { println!("{} ** 128 = {}, where ** is the power operator", 3_usize.into_sizeunion(), b); },
     ///         None => {
     ///                 println!("Overflow happened.");
     ///                 assert_eq!(b_sizeunion, None);
@@ -18509,6 +18508,9 @@ pub trait SmallUInt: Copy + Clone + Sized //+ Display + Debug + ToString
     // fn unchecked_pow(self, exp: u32) -> Self;
     /// Computes self.pow(exp), unless overflow does not occcurred.
     /// Otherwise, it will panic.
+    /// 
+    /// # Arguments
+    /// `exp` is the exponential of the type of `u32`.
     /// 
     /// # Panics
     /// This method will be panic if overflow occurred.
@@ -18619,11 +18621,11 @@ pub trait SmallUInt: Copy + Clone + Sized //+ Display + Debug + ToString
     /// use cryptocol::number::SmallUInt;
     /// fn main()
     /// {
-    ///     let a_usize = func(1004_usize, 6);
-    ///     println!("{} ** 6 = {}, where ** is the power operator", 1004_usize, a_usize);
-    ///     assert_eq!(a_usize, 1024241283846148096_usize);
+    ///     let a_usize = func(3_usize, 5);
+    ///     println!("{} ** 5 = {}, where ** is the power operator", 3_usize, a_usize);
+    ///     assert_eq!(a_usize, 243_usize);
     ///     // It will panic.
-    ///     // let b_usize = func(1004_usize, 7);
+    ///     // let b_usize = func(3_usize, 128);
     /// }
     /// 
     /// fn func<T: SmallUInt>(base: T, exp: u32) -> T
@@ -18709,11 +18711,11 @@ pub trait SmallUInt: Copy + Clone + Sized //+ Display + Debug + ToString
     /// use cryptocol::number::SmallUInt;
     /// fn main()
     /// {
-    ///     let a_sizeunion = func(1004_usize.into_sizeunion(), 6);
-    ///     println!("{} ** 6 = {}, where ** is the power operator", 1004_usize.into_sizeunion(), a_sizeunion);
-    ///     assert_eq!(a_sizeunion.get(), 1024241283846148096_usize);
+    ///     let a_sizeunion = func(3_usize.into_sizeunion(), 5);
+    ///     println!("{} ** 5 = {}, where ** is the power operator", 3_usize.into_sizeunion(), a_sizeunion);
+    ///     assert_eq!(a_sizeunion.get(), 243_usize);
     ///     // It will panic.
-    ///     // let b_sizeunion = func(1004_usize.into_sizeunion(), 7);
+    ///     // let b_sizeunion = func(3_usize.into_sizeunion(), 128);
     /// }
     /// 
     /// fn func<T: SmallUInt>(base: T, exp: u32) -> T
@@ -18759,11 +18761,11 @@ pub trait SmallUInt: Copy + Clone + Sized //+ Display + Debug + ToString
     ///     // It will panic.
     ///     // let b_u128 = func(10003_u128, 10);
     /// 
-    ///     let a_usize = func(1004_usize, 6);
-    ///     println!("{} ** 6 = {}, where ** is the power operator", 1004_usize, a_usize);
-    ///     assert_eq!(a_usize, 1024241283846148096_usize);
+    ///     let a_usize = func(3_usize, 5);
+    ///     println!("{} ** 5 = {}, where ** is the power operator", 3_usize, a_usize);
+    ///     assert_eq!(a_usize, 243_usize);
     ///     // It will panic.
-    ///     // let b_usize = func(1004_usize, 7);
+    ///     // let b_usize = func(3_usize, 128);
     /// 
     ///     let a_shortunion = func(12_u16.into_shortunion(), 4);
     ///     println!("{} ** 4 = {}, where ** is the power operator", 12_u16.into_shortunion(), a_shortunion);
@@ -18789,11 +18791,11 @@ pub trait SmallUInt: Copy + Clone + Sized //+ Display + Debug + ToString
     ///     // It will panic.
     ///     // let b_longerunion = func(10003_u128.into_longerunion(), 10);
     /// 
-    ///     let a_sizeunion = func(1004_usize.into_sizeunion(), 6);
-    ///     println!("{} ** 6 = {}, where ** is the power operator", 1004_usize.into_sizeunion(), a_sizeunion);
-    ///     assert_eq!(a_sizeunion.get(), 1024241283846148096_usize);
+    ///     let a_sizeunion = func(3_usize.into_sizeunion(), 5);
+    ///     println!("{} ** 5 = {}, where ** is the power operator", 3_usize.into_sizeunion(), a_sizeunion);
+    ///     assert_eq!(a_sizeunion.get(), 243_usize);
     ///     // It will panic.
-    ///     // let b_sizeunion = func(1004_usize.into_sizeunion(), 7);
+    ///     // let b_sizeunion = func(3_usize.into_sizeunion(), 128);
     /// }
     /// 
     /// fn func<T: SmallUInt>(base: T, exp: u32) -> T
@@ -18805,6 +18807,9 @@ pub trait SmallUInt: Copy + Clone + Sized //+ Display + Debug + ToString
 
     // fn saturating_pow(self, exp: u32) -> Self;
     /// Computes self.pow(exp), saturating at the numeric bounds instead of overflowing.
+    /// 
+    /// # Arguments
+    /// `exp` is the exponential of the type of `u32`.
     /// 
     /// # Features
     /// Saturating integer exponentiation. 
@@ -18914,12 +18919,12 @@ pub trait SmallUInt: Copy + Clone + Sized //+ Display + Debug + ToString
     /// use cryptocol::number::SmallUInt;
     /// fn main()
     /// {
-    ///     let a_usize = func(1004_usize, 6);
-    ///     println!("{} ** 6 = {}, where ** is the power operator", 1004_usize, a_usize);
-    ///     assert_eq!(a_usize, 1024241283846148096_usize);
-    ///     let b_u128 = func(1004_usize, 7);
-    ///     println!("{} ** 7 = {}, where ** is the power operator", 1004_usize, b_u128);
-    ///     assert_eq!(b_u128, usize::MAX);
+    ///     let a_usize = func(3_usize, 5);
+    ///     println!("{} ** 5 = {}, where ** is the power operator", 3_usize, a_usize);
+    ///     assert_eq!(a_usize, 243_usize);
+    ///     let b_usize = func(3_usize, 128);
+    ///     println!("{} ** 128 = {}, where ** is the power operator", 3_usize, b_usize);
+    ///     assert_eq!(b_usize, usize::MAX);
     /// }
     /// 
     /// fn func<T: SmallUInt>(base: T, exp: u32) -> T
@@ -19009,11 +19014,11 @@ pub trait SmallUInt: Copy + Clone + Sized //+ Display + Debug + ToString
     /// use cryptocol::number::SmallUInt;
     /// fn main()
     /// {
-    ///     let a_sizeunion = func(1004_usize.into_sizeunion(), 6);
-    ///     println!("{} ** 6 = {}, where ** is the power operator", 1004_usize.into_sizeunion(), a_sizeunion);
-    ///     assert_eq!(a_sizeunion.get(), 1024241283846148096_usize);
-    ///     let b_sizeunion = func(1004_usize.into_sizeunion(), 7);
-    ///     println!("{} ** 7 = {}, where ** is the power operator", 1004_usize.into_longunion(), b_sizeunion);
+    ///     let a_sizeunion = func(3_usize.into_sizeunion(), 5);
+    ///     println!("{} ** 5 = {}, where ** is the power operator", 3_usize.into_sizeunion(), a_sizeunion);
+    ///     assert_eq!(a_sizeunion.get(), 243_usize);
+    ///     let b_sizeunion = func(3_usize.into_sizeunion(), 128);
+    ///     println!("{} ** 128 = {}, where ** is the power operator", 3_usize.into_longunion(), b_sizeunion);
     ///     assert_eq!(b_sizeunion.get(), usize::MAX);
     /// }
     /// 
@@ -19065,12 +19070,12 @@ pub trait SmallUInt: Copy + Clone + Sized //+ Display + Debug + ToString
     ///     println!("{} ** 10 = {}, where ** is the power operator", 10003_u128, b_u128);
     ///     assert_eq!(b_u128, u128::MAX);
     /// 
-    ///     let a_usize = func(1004_usize, 6);
-    ///     println!("{} ** 6 = {}, where ** is the power operator", 1004_usize, a_usize);
-    ///     assert_eq!(a_usize, 1024241283846148096_usize);
-    ///     let b_u128 = func(1004_usize, 7);
-    ///     println!("{} ** 7 = {}, where ** is the power operator", 1004_usize, b_u128);
-    ///     assert_eq!(b_u128, usize::MAX);
+    ///     let a_usize = func(3_usize, 5);
+    ///     println!("{} ** 5 = {}, where ** is the power operator", 3_usize, a_usize);
+    ///     assert_eq!(a_usize, 243_usize);
+    ///     let b_usize = func(3_usize, 128);
+    ///     println!("{} ** 128 = {}, where ** is the power operator", 3_usize, b_u128);
+    ///     assert_eq!(b_usize, usize::MAX);
     /// 
     ///     let a_shortunion = func(12_u16.into_shortunion(), 4);
     ///     println!("{} ** 4 = {}, where ** is the power operator", 12_u16.into_shortunion(), a_shortunion);
@@ -19100,11 +19105,11 @@ pub trait SmallUInt: Copy + Clone + Sized //+ Display + Debug + ToString
     ///     println!("{} ** 10 = {}, where ** is the power operator", 10003_u128.into_longunion(), b_longerunion);
     ///     assert_eq!(b_longerunion.get(), u128::MAX);
     /// 
-    ///     let a_sizeunion = func(1004_usize.into_sizeunion(), 6);
-    ///     println!("{} ** 6 = {}, where ** is the power operator", 1004_usize.into_sizeunion(), a_sizeunion);
-    ///     assert_eq!(a_sizeunion.get(), 1024241283846148096_usize);
-    ///     let b_sizeunion = func(1004_usize.into_sizeunion(), 7);
-    ///     println!("{} ** 7 = {}, where ** is the power operator", 1004_usize.into_longunion(), b_sizeunion);
+    ///     let a_sizeunion = func(3_usize.into_sizeunion(), 5);
+    ///     println!("{} ** 5 = {}, where ** is the power operator", 3_usize.into_sizeunion(), a_sizeunion);
+    ///     assert_eq!(a_sizeunion.get(), 243_usize);
+    ///     let b_sizeunion = func(3_usize.into_sizeunion(), 128);
+    ///     println!("{} ** 128 = {}, where ** is the power operator", 3_usize.into_longunion(), b_sizeunion);
     ///     assert_eq!(b_sizeunion.get(), usize::MAX);
     /// }
     /// 
@@ -19267,19 +19272,19 @@ pub trait SmallUInt: Copy + Clone + Sized //+ Display + Debug + ToString
     /// use cryptocol::number::SmallUInt;
     /// fn main()
     /// {
-    ///     let a = 258974_u128;
-    ///     let d = 6622882488318_u128;
-    ///     let modulo = 4776913109852041418248056622882488319_u128;
-    ///     let res = func(a, d, modulo);
-    ///     println!("{} ** {} = {} (mod {}), where ** is the power operator", a, d, res, modulo);
-    ///     assert_eq!(res, 2843356730633772030492705275006525566_u128);
+    ///     let a_u128 = 258974_u128;
+    ///     let b_u128 = 6622882488318_u128;
+    ///     let modulo_u128 = 4776913109852041418248056622882488319_u128;
+    ///     let res_u128 = a_u128.modular_pow(b_u128, modulo_u128);
+    ///     println!("{} ** {} = {} (mod {}), where ** is the power operator", a_u128, b_u128, res_u128, modulo_u128);
+    ///     assert_eq!(res_u128, 2843356730633772030492705275006525566_u128);
     /// 
-    ///     let a = 258974_u128;
-    ///     let d = 6622882488318_u128;
-    ///     let modulo = 4776913109852041418248056622882488319_u128;
-    ///     let res = func(a, d, modulo);
-    ///     println!("{} ** {} = {} (mod {}), where ** is the power operator", a, d, res, modulo);
-    ///     assert_eq!(res, 2843356730633772030492705275006525566_u128);
+    ///     let c_u128 = 258974_u128;
+    ///     let d_u128 = 6622882488318_u128;
+    ///     let modulo_u128 = 4776913109852041418248056622882488319_u128;
+    ///     let res_u128 = func(c_u128, d_u128, modulo_u128);
+    ///     println!("{} ** {} = {} (mod {}), where ** is the power operator", c_u128, d_u128, res_u128, modulo_u128);
+    ///     assert_eq!(res_u128, 2843356730633772030492705275006525566_u128);
     /// }
     /// 
     /// fn func<T: SmallUInt>(base: T, exp: T, modulo: T) -> T
@@ -19293,19 +19298,19 @@ pub trait SmallUInt: Copy + Clone + Sized //+ Display + Debug + ToString
     /// use cryptocol::number::SmallUInt;
     /// fn main()
     /// {
-    ///     let a_usize = 123456789_usize;
-    ///     let b_usize = 9876543_usize;
-    ///     let modulo_usize = 100000000000_usize;
+    ///     let a_usize = 74_usize;
+    ///     let b_usize = 18_usize;
+    ///     let modulo_usize = 100_usize;
     ///     let res_usize = a_usize.modular_pow(b_usize, modulo_usize);
     ///     println!("{} ** {} = {} (mod {}), where ** is the power operator", a_usize, b_usize, res_usize, modulo_usize);
-    ///     assert_eq!(res_usize, 75010148669_usize);
+    ///     assert_eq!(res_usize, 76_usize);
     /// 
-    ///     let c_usize = 123456789_usize;
-    ///     let d_usize = 9876543_usize;
-    ///     let modulo_usize = 100000000000_usize;
+    ///     let c_usize = 74_usize;
+    ///     let d_usize = 18_usize;
+    ///     let modulo_usize = 100_usize;
     ///     let res_usize = func(c_usize, d_usize, modulo_usize);
     ///     println!("{} ** {} = {} (mod {}), where ** is the power operator", c_usize, d_usize, res_usize, modulo_usize);
-    ///     assert_eq!(res_usize, 75010148669_usize);
+    ///     assert_eq!(res_usize, 76_usize);
     /// }
     /// 
     /// fn func<T: SmallUInt>(base: T, exp: T, modulo: T) -> T
@@ -19423,19 +19428,19 @@ pub trait SmallUInt: Copy + Clone + Sized //+ Display + Debug + ToString
     /// use cryptocol::number::SmallUInt;
     /// fn main()
     /// {
-    ///     let a_sizeunion = 123456789_usize.into_sizeunion();
-    ///     let b_sizeunion = 9876543_usize.into_sizeunion();
-    ///     let modulo_sizeunion = 100000000000_usize.into_sizeunion();
+    ///     let a_sizeunion = 74_usize.into_sizeunion();
+    ///     let b_sizeunion = 18_usize.into_sizeunion();
+    ///     let modulo_sizeunion = 100_usize.into_sizeunion();
     ///     let res_sizeunion = a_sizeunion.modular_pow(b_sizeunion, modulo_sizeunion);
     ///     println!("{} ** {} = {} (mod {}), where ** is the power operator", a_sizeunion, b_sizeunion, res_sizeunion, modulo_sizeunion);
-    ///     assert_eq!(res_sizeunion.get(), 75010148669_usize);
+    ///     assert_eq!(res_sizeunion.get(), 76_usize);
     /// 
-    ///     let c_sizeunion = 123456789_usize.into_sizeunion();
-    ///     let d_sizeunion = 9876543_usize.into_sizeunion();
-    ///     let modulo_sizeunion = 100000000000_usize.into_sizeunion();
+    ///     let c_sizeunion = 74_usize.into_sizeunion();
+    ///     let d_sizeunion = 18_usize.into_sizeunion();
+    ///     let modulo_sizeunion = 100_usize.into_sizeunion();
     ///     let res_sizeunion = func(c_sizeunion, d_sizeunion, modulo_sizeunion);
     ///     println!("{} ** {} = {} (mod {}), where ** is the power operator", c_sizeunion, d_sizeunion, res_sizeunion, modulo_sizeunion);
-    ///     assert_eq!(res_sizeunion.get(), 75010148669_usize);
+    ///     assert_eq!(res_sizeunion.get(), 76_usize);
     /// }
     /// 
     /// fn func<T: SmallUInt>(base: T, exp: T, modulo: T) -> T
@@ -19513,34 +19518,34 @@ pub trait SmallUInt: Copy + Clone + Sized //+ Display + Debug + ToString
     ///     assert_eq!(res_u64, 75010148669_u64);
     /// 
     ///     // Example for u128
-    ///     let a = 258974_u128;
-    ///     let d = 6622882488318_u128;
-    ///     let modulo = 4776913109852041418248056622882488319_u128;
-    ///     let res = func(a, d, modulo);
-    ///     println!("{} ** {} = {} (mod {}), where ** is the power operator", a, d, res, modulo);
-    ///     assert_eq!(res, 2843356730633772030492705275006525566_u128);
+    ///     let a_u128 = 258974_u128;
+    ///     let b_u128 = 6622882488318_u128;
+    ///     let modulo_u128 = 4776913109852041418248056622882488319_u128;
+    ///     let res_u128 = a_u128.modular_pow(b_u128, modulo_u128);
+    ///     println!("{} ** {} = {} (mod {}), where ** is the power operator", a_u128, b_u128, res_u128, modulo_u128);
+    ///     assert_eq!(res_u128, 2843356730633772030492705275006525566_u128);
     /// 
-    ///     let a = 258974_u128;
-    ///     let d = 6622882488318_u128;
-    ///     let modulo = 4776913109852041418248056622882488319_u128;
-    ///     let res = func(a, d, modulo);
-    ///     println!("{} ** {} = {} (mod {}), where ** is the power operator", a, d, res, modulo);
-    ///     assert_eq!(res, 2843356730633772030492705275006525566_u128);
+    ///     let c_u128 = 258974_u128;
+    ///     let d_u128 = 6622882488318_u128;
+    ///     let modulo_u128 = 4776913109852041418248056622882488319_u128;
+    ///     let res_u128 = func(c_u128, d_u128, modulo_u128);
+    ///     println!("{} ** {} = {} (mod {}), where ** is the power operator", c_u128, d_u128, res_u128, modulo_u128);
+    ///     assert_eq!(res_u128, 2843356730633772030492705275006525566_u128);
     /// 
     ///     // Example for usize
-    ///     let a_usize = 123456789_usize;
-    ///     let b_usize = 9876543_usize;
-    ///     let modulo_usize = 100000000000_usize;
+    ///     let a_usize = 74_usize;
+    ///     let b_usize = 18_usize;
+    ///     let modulo_usize = 100_usize;
     ///     let res_usize = a_usize.modular_pow(b_usize, modulo_usize);
     ///     println!("{} ** {} = {} (mod {}), where ** is the power operator", a_usize, b_usize, res_usize, modulo_usize);
-    ///     assert_eq!(res_usize, 75010148669_usize);
+    ///     assert_eq!(res_usize, 76_usize);
     /// 
-    ///     let c_usize = 123456789_usize;
-    ///     let d_usize = 9876543_usize;
-    ///     let modulo_usize = 100000000000_usize;
+    ///     let c_usize = 74_usize;
+    ///     let d_usize = 18_usize;
+    ///     let modulo_usize = 100_usize;
     ///     let res_usize = func(c_usize, d_usize, modulo_usize);
     ///     println!("{} ** {} = {} (mod {}), where ** is the power operator", c_usize, d_usize, res_usize, modulo_usize);
-    ///     assert_eq!(res_usize, 75010148669_usize);
+    ///     assert_eq!(res_usize, 76_usize);
     /// 
     ///     // Example for ShortUnion
     ///     let a_shortunion = 741_u16.into_shortunion();
@@ -19603,19 +19608,19 @@ pub trait SmallUInt: Copy + Clone + Sized //+ Display + Debug + ToString
     ///     assert_eq!(res_longerunion.get(), 2843356730633772030492705275006525566_u128);
     /// 
     ///     // Example for SizeUnion
-    ///     let a_sizeunion = 123456789_usize.into_sizeunion();
-    ///     let b_sizeunion = 9876543_usize.into_sizeunion();
-    ///     let modulo_sizeunion = 100000000000_usize.into_sizeunion();
+    ///     let a_sizeunion = 74_usize.into_sizeunion();
+    ///     let b_sizeunion = 18_usize.into_sizeunion();
+    ///     let modulo_sizeunion = 100_usize.into_sizeunion();
     ///     let res_sizeunion = a_sizeunion.modular_pow(b_sizeunion, modulo_sizeunion);
     ///     println!("{} ** {} = {} (mod {}), where ** is the power operator", a_sizeunion, b_sizeunion, res_sizeunion, modulo_sizeunion);
-    ///     assert_eq!(res_sizeunion.get(), 75010148669_usize);
+    ///     assert_eq!(res_sizeunion.get(), 76_usize);
     /// 
-    ///     let c_sizeunion = 123456789_usize.into_sizeunion();
-    ///     let d_sizeunion = 9876543_usize.into_sizeunion();
-    ///     let modulo_sizeunion = 100000000000_usize.into_sizeunion();
+    ///     let c_sizeunion = 74_usize.into_sizeunion();
+    ///     let d_sizeunion = 18_usize.into_sizeunion();
+    ///     let modulo_sizeunion = 100_usize.into_sizeunion();
     ///     let res_sizeunion = func(c_sizeunion, d_sizeunion, modulo_sizeunion);
     ///     println!("{} ** {} = {} (mod {}), where ** is the power operator", c_sizeunion, d_sizeunion, res_sizeunion, modulo_sizeunion);
-    ///     assert_eq!(res_sizeunion.get(), 75010148669_usize);
+    ///     assert_eq!(res_sizeunion.get(), 76_usize);
     /// }
     /// 
     /// fn func<T: SmallUInt>(base: T, exp: T, modulo: T) -> T
@@ -19655,7 +19660,7 @@ pub trait SmallUInt: Copy + Clone + Sized //+ Display + Debug + ToString
     ///     let a_u8 = 100_u8;
     ///     let base_u8 = 3_u8;
     ///     let res = func(a_u8, base_u8);
-    ///     println!("log_{}( {}) = {}", base_u8, a_u8, res);
+    ///     println!("log_{} ({}) = {}", base_u8, a_u8, res);
     ///     assert_eq!(res, 4_u32);
     /// 
     ///     // It will panic.
@@ -19682,7 +19687,7 @@ pub trait SmallUInt: Copy + Clone + Sized //+ Display + Debug + ToString
     ///     let a_u16 = 10000_u16;
     ///     let base_u16 = 5_u16;
     ///     let res = func(a_u16, base_u16);
-    ///     println!("log_{}( {}) = {}", base_u16, a_u16, res);
+    ///     println!("log_{} ({}) = {}", base_u16, a_u16, res);
     ///     assert_eq!(res, 5_u32);
     /// 
     ///     // It will panic.
@@ -19709,7 +19714,7 @@ pub trait SmallUInt: Copy + Clone + Sized //+ Display + Debug + ToString
     ///     let a_u32 = 1000000000_u32;
     ///     let base_u32 = 7_u32;
     ///     let res = func(a_u32, base_u32);
-    ///     println!("log_{}( {}) = {}", base_u32, a_u32, res);
+    ///     println!("log_{} ({}) = {}", base_u32, a_u32, res);
     ///     assert_eq!(res, 10_u32);
     /// 
     ///     // It will panic.
@@ -19736,7 +19741,7 @@ pub trait SmallUInt: Copy + Clone + Sized //+ Display + Debug + ToString
     ///     let a_u64 = 10000000000000000000_u64;
     ///     let base_u64 = 11_u64;
     ///     let res = func(a_u64, base_u64);
-    ///     println!("log_{}( {}) = {}", base_u64, a_u64, res);
+    ///     println!("log_{} ({}) = {}", base_u64, a_u64, res);
     ///     assert_eq!(res, 18_u32);
     /// 
     ///     // It will panic.
@@ -19763,7 +19768,7 @@ pub trait SmallUInt: Copy + Clone + Sized //+ Display + Debug + ToString
     ///     let a_u128 = 100000000000000000000000000000000000000_u128;
     ///     let base_u128 = 13_u128;
     ///     let res = func(a_u128, base_u128);
-    ///     println!("log_{}( {}) = {}", base_u128, a_u128, res);
+    ///     println!("log_{} ({}) = {}", base_u128, a_u128, res);
     ///     assert_eq!(res, 34_u32);
     /// 
     ///     // It will panic.
@@ -19787,11 +19792,11 @@ pub trait SmallUInt: Copy + Clone + Sized //+ Display + Debug + ToString
     /// use cryptocol::number::SmallUInt;
     /// fn main()
     /// {
-    ///     let a_usize = 10000000000000000000_usize;
-    ///     let base_usize = 17_usize;
+    ///     let a_usize = 100_usize;
+    ///     let base_usize = 3_usize;
     ///     let res = func(a_usize, base_usize);
-    ///     println!("log_{}( {}) = {}", base_usize, a_usize, res);
-    ///     assert_eq!(res, 15_u32);
+    ///     println!("log_{} ({}) = {}", base_usize, a_usize, res);
+    ///     assert_eq!(res, 4_u32);
     /// 
     ///     // It will panic.
     ///     // let res = func(0_usize, base_usize);
@@ -19817,7 +19822,7 @@ pub trait SmallUInt: Copy + Clone + Sized //+ Display + Debug + ToString
     ///     let a_shortunion = 10000_u16.into_shortunion();
     ///     let base_shortunion = 5_u16.into_shortunion();
     ///     let res = func(a_shortunion, base_shortunion);
-    ///     println!("log_{}( {}) = {}", base_shortunion, a_shortunion, res);
+    ///     println!("log_{} ({}) = {}", base_shortunion, a_shortunion, res);
     ///     assert_eq!(res, 5_u32);
     /// 
     ///     // It will panic.
@@ -19844,7 +19849,7 @@ pub trait SmallUInt: Copy + Clone + Sized //+ Display + Debug + ToString
     ///     let a_intunion = 1000000000_u32.into_intunion();
     ///     let base_intunion = 7_u32.into_intunion();
     ///     let res = func(a_intunion, base_intunion);
-    ///     println!("log_{}( {}) = {}", base_intunion, a_intunion, res);
+    ///     println!("log_{} ({}) = {}", base_intunion, a_intunion, res);
     ///     assert_eq!(res, 10_u32);
     /// 
     ///     // It will panic.
@@ -19871,7 +19876,7 @@ pub trait SmallUInt: Copy + Clone + Sized //+ Display + Debug + ToString
     ///     let a_longunion = 10000000000000000000_u64.into_longunion();
     ///     let base_longunion = 11_u64.into_longunion();
     ///     let res = func(a_longunion, base_longunion);
-    ///     println!("log_{}( {}) = {}", base_longunion, a_longunion, res);
+    ///     println!("log_{} ({}) = {}", base_longunion, a_longunion, res);
     ///     assert_eq!(res, 18_u32);
     /// 
     ///     // It will panic.
@@ -19898,7 +19903,7 @@ pub trait SmallUInt: Copy + Clone + Sized //+ Display + Debug + ToString
     ///     let a_longerunion = 100000000000000000000000000000000000000_u128.into_longerunion();
     ///     let base_longerunion = 13_u128.into_longerunion();
     ///     let res = func(a_longerunion, base_longerunion);
-    ///     println!("log_{}( {}) = {}", base_longerunion, a_longerunion, res);
+    ///     println!("log_{} ({}) = {}", base_longerunion, a_longerunion, res);
     ///     assert_eq!(res, 34_u32);
     /// 
     ///     // It will panic.
@@ -19922,11 +19927,11 @@ pub trait SmallUInt: Copy + Clone + Sized //+ Display + Debug + ToString
     /// use cryptocol::number::SmallUInt;
     /// fn main()
     /// {
-    ///     let a_sizeunion = 10000000000000000000_usize.into_sizeunion();
-    ///     let base_sizeunion = 17_usize.into_sizeunion();
+    ///     let a_sizeunion = 100_usize.into_sizeunion();
+    ///     let base_sizeunion = 3_usize.into_sizeunion();
     ///     let res = func(a_sizeunion, base_sizeunion);
-    ///     println!("log_{}( {}) = {}", base_sizeunion, a_sizeunion, res);
-    ///     assert_eq!(res, 15_u32);
+    ///     println!("log_{} ({}) = {}", base_sizeunion, a_sizeunion, res);
+    ///     assert_eq!(res, 4_u32);
     /// 
     ///     // It will panic.
     ///     // let res = func(0_usize.into_sizeunion(), base_sizeunion);
@@ -19955,7 +19960,7 @@ pub trait SmallUInt: Copy + Clone + Sized //+ Display + Debug + ToString
     ///     let a_u8 = 100_u8;
     ///     let base_u8 = 3_u8;
     ///     let res = func(a_u8, base_u8);
-    ///     println!("log_{}( {}) = {}", base_u8, a_u8, res);
+    ///     println!("log_{} ({}) = {}", base_u8, a_u8, res);
     ///     assert_eq!(res, 4_u32);
     /// 
     ///     // It will panic.
@@ -19970,7 +19975,7 @@ pub trait SmallUInt: Copy + Clone + Sized //+ Display + Debug + ToString
     ///     let a_u16 = 10000_u16;
     ///     let base_u16 = 5_u16;
     ///     let res = func(a_u16, base_u16);
-    ///     println!("log_{}( {}) = {}", base_u16, a_u16, res);
+    ///     println!("log_{} ({}) = {}", base_u16, a_u16, res);
     ///     assert_eq!(res, 5_u32);
     /// 
     ///     // It will panic.
@@ -19985,7 +19990,7 @@ pub trait SmallUInt: Copy + Clone + Sized //+ Display + Debug + ToString
     ///     let a_u32 = 1000000000_u32;
     ///     let base_u32 = 7_u32;
     ///     let res = func(a_u32, base_u32);
-    ///     println!("log_{}( {}) = {}", base_u32, a_u32, res);
+    ///     println!("log_{} ({}) = {}", base_u32, a_u32, res);
     ///     assert_eq!(res, 10_u32);
     /// 
     ///     // It will panic.
@@ -20000,7 +20005,7 @@ pub trait SmallUInt: Copy + Clone + Sized //+ Display + Debug + ToString
     ///     let a_u64 = 10000000000000000000_u64;
     ///     let base_u64 = 11_u64;
     ///     let res = func(a_u64, base_u64);
-    ///     println!("log_{}( {}) = {}", base_u64, a_u64, res);
+    ///     println!("log_{} ({}) = {}", base_u64, a_u64, res);
     ///     assert_eq!(res, 18_u32);
     /// 
     ///     // It will panic.
@@ -20015,7 +20020,7 @@ pub trait SmallUInt: Copy + Clone + Sized //+ Display + Debug + ToString
     ///     let a_u128 = 100000000000000000000000000000000000000_u128;
     ///     let base_u128 = 13_u128;
     ///     let res = func(a_u128, base_u128);
-    ///     println!("log_{}( {}) = {}", base_u128, a_u128, res);
+    ///     println!("log_{} ({}) = {}", base_u128, a_u128, res);
     ///     assert_eq!(res, 34_u32);
     /// 
     ///     // It will panic.
@@ -20027,11 +20032,11 @@ pub trait SmallUInt: Copy + Clone + Sized //+ Display + Debug + ToString
     ///     // It will panic.
     ///     // let res = func(0_u128, 0_u128);
     /// 
-    ///     let a_usize = 10000000000000000000_usize;
-    ///     let base_usize = 17_usize;
+    ///     let a_usize = 100_usize;
+    ///     let base_usize = 3_usize;
     ///     let res = func(a_usize, base_usize);
-    ///     println!("log_{}( {}) = {}", base_usize, a_usize, res);
-    ///     assert_eq!(res, 15_u32);
+    ///     println!("log_{} ({}) = {}", base_usize, a_usize, res);
+    ///     assert_eq!(res, 4_u32);
     /// 
     ///     // It will panic.
     ///     // let res = func(0_usize, base_usize);
@@ -20045,7 +20050,7 @@ pub trait SmallUInt: Copy + Clone + Sized //+ Display + Debug + ToString
     ///     let a_shortunion = 10000_u16.into_shortunion();
     ///     let base_shortunion = 5_u16.into_shortunion();
     ///     let res = func(a_shortunion, base_shortunion);
-    ///     println!("log_{}( {}) = {}", base_shortunion, a_shortunion, res);
+    ///     println!("log_{} ({}) = {}", base_shortunion, a_shortunion, res);
     ///     assert_eq!(res, 5_u32);
     /// 
     ///     // It will panic.
@@ -20060,7 +20065,7 @@ pub trait SmallUInt: Copy + Clone + Sized //+ Display + Debug + ToString
     ///     let a_intunion = 1000000000_u32.into_intunion();
     ///     let base_intunion = 7_u32.into_intunion();
     ///     let res = func(a_intunion, base_intunion);
-    ///     println!("log_{}( {}) = {}", base_intunion, a_intunion, res);
+    ///     println!("log_{} ({}) = {}", base_intunion, a_intunion, res);
     ///     assert_eq!(res, 10_u32);
     /// 
     ///     // It will panic.
@@ -20075,7 +20080,7 @@ pub trait SmallUInt: Copy + Clone + Sized //+ Display + Debug + ToString
     ///     let a_longunion = 10000000000000000000_u64.into_longunion();
     ///     let base_longunion = 11_u64.into_longunion();
     ///     let res = func(a_longunion, base_longunion);
-    ///     println!("log_{}( {}) = {}", base_longunion, a_longunion, res);
+    ///     println!("log_{} ({}) = {}", base_longunion, a_longunion, res);
     ///     assert_eq!(res, 18_u32);
     /// 
     ///     // It will panic.
@@ -20090,7 +20095,7 @@ pub trait SmallUInt: Copy + Clone + Sized //+ Display + Debug + ToString
     ///     let a_longerunion = 100000000000000000000000000000000000000_u128.into_longerunion();
     ///     let base_longerunion = 13_u128.into_longerunion();
     ///     let res = func(a_longerunion, base_longerunion);
-    ///     println!("log_{}( {}) = {}", base_longerunion, a_longerunion, res);
+    ///     println!("log_{} ({}) = {}", base_longerunion, a_longerunion, res);
     ///     assert_eq!(res, 34_u32);
     /// 
     ///     // It will panic.
@@ -20102,11 +20107,11 @@ pub trait SmallUInt: Copy + Clone + Sized //+ Display + Debug + ToString
     ///     // It will panic.
     ///     // let res = func(0_u128.into_longerunion(), 0_u128.into_longerunion());
     /// 
-    ///     let a_sizeunion = 10000000000000000000_usize.into_sizeunion();
-    ///     let base_sizeunion = 17_usize.into_sizeunion();
+    ///     let a_sizeunion = 100_usize.into_sizeunion();
+    ///     let base_sizeunion = 3_usize.into_sizeunion();
     ///     let res = func(a_sizeunion, base_sizeunion);
-    ///     println!("log_{}( {}) = {}", base_sizeunion, a_sizeunion, res);
-    ///     assert_eq!(res, 15_u32);
+    ///     println!("log_{} ({}) = {}", base_sizeunion, a_sizeunion, res);
+    ///     assert_eq!(res, 4_u32);
     /// 
     ///     // It will panic.
     ///     // let res = func(0_usize.into_sizeunion(), base_sizeunion);
@@ -20173,7 +20178,7 @@ pub trait SmallUInt: Copy + Clone + Sized //+ Display + Debug + ToString
     /// {
     ///     let a_u8 = 100_u8;
     ///     let res = func(a_u8);
-    ///     println!("log_10( {}) = {}", a_u8, res);
+    ///     println!("log_10 ({}) = {}", a_u8, res);
     ///     assert_eq!(res, 2_u32);
     ///     // It will panic.
     ///     // let res = func(0_u8);
@@ -20192,7 +20197,7 @@ pub trait SmallUInt: Copy + Clone + Sized //+ Display + Debug + ToString
     /// {
     ///     let a_u16 = 10000_u16;
     ///     let res = func(a_u16);
-    ///     println!("log_10( {}) = {}", a_u16, res);
+    ///     println!("log_10 ({}) = {}", a_u16, res);
     ///     assert_eq!(res, 4_u32);
     ///     // It will panic.
     ///     // let res = func(0_u16);
@@ -20211,7 +20216,7 @@ pub trait SmallUInt: Copy + Clone + Sized //+ Display + Debug + ToString
     /// {
     ///     let a_u32 = 1000000000_u32;
     ///     let res = func(a_u32);
-    ///     println!("log_10( {}) = {}", a_u32, res);
+    ///     println!("log_10 ({}) = {}", a_u32, res);
     ///     assert_eq!(res, 9_u32);
     ///     // It will panic.
     ///     // let res = func(0_u32);
@@ -20230,7 +20235,7 @@ pub trait SmallUInt: Copy + Clone + Sized //+ Display + Debug + ToString
     /// {
     ///     let a_u64 = 10000000000000000000_u64;
     ///     let res = func(a_u64);
-    ///     println!("log_10( {}) = {}", a_u64, res);
+    ///     println!("log_10 ({}) = {}", a_u64, res);
     ///     assert_eq!(res, 19_u32);
     ///     // It will panic.
     ///     // let res = func(0_u64);
@@ -20249,7 +20254,7 @@ pub trait SmallUInt: Copy + Clone + Sized //+ Display + Debug + ToString
     /// {
     ///     let a_u128 = 100000000000000000000000000000000000000_u128;
     ///     let res = func(a_u128);
-    ///     println!("log_10( {}) = {}", a_u128, res);
+    ///     println!("log_10 ({}) = {}", a_u128, res);
     ///     assert_eq!(res, 38_u32);
     ///     // It will panic.
     ///     // let res = func(0_u128);
@@ -20266,10 +20271,10 @@ pub trait SmallUInt: Copy + Clone + Sized //+ Display + Debug + ToString
     /// use cryptocol::number::SmallUInt;
     /// fn main()
     /// {
-    ///     let a_usize = 10000000000000000000_usize;
+    ///     let a_usize = 100_usize;
     ///     let res = func(a_usize);
-    ///     println!("log_10( {}) = {}", a_usize, res);
-    ///     assert_eq!(res, 19_u32);
+    ///     println!("log_10 ({}) = {}", a_usize, res);
+    ///     assert_eq!(res, 2_u32);
     ///     // It will panic.
     ///     // let res = func(0_usize);
     /// }
@@ -20287,7 +20292,7 @@ pub trait SmallUInt: Copy + Clone + Sized //+ Display + Debug + ToString
     /// {
     ///     let a_shortunion = 10000_u16.into_shortunion();
     ///     let res = func(a_shortunion);
-    ///     println!("log_10( {}) = {}", a_shortunion, res);
+    ///     println!("log_10 ({}) = {}", a_shortunion, res);
     ///     assert_eq!(res, 4_u32);
     ///     // It will panic.
     ///     // let res = func(0_u16.into_shortunion());
@@ -20306,7 +20311,7 @@ pub trait SmallUInt: Copy + Clone + Sized //+ Display + Debug + ToString
     /// {
     ///     let a_intunion = 1000000000_u32.into_intunion();
     ///     let res = func(a_intunion);
-    ///     println!("log_10( {}) = {}", a_intunion, res);
+    ///     println!("log_10 ({}) = {}", a_intunion, res);
     ///     assert_eq!(res, 9_u32);
     ///     // It will panic.
     ///     // let res = func(0_u32.into_shortunion());
@@ -20325,7 +20330,7 @@ pub trait SmallUInt: Copy + Clone + Sized //+ Display + Debug + ToString
     /// {
     ///     let a_longunion = 10000000000000000000_u64.into_longunion();
     ///     let res = func(a_longunion);
-    ///     println!("log_10( {}) = {}", a_longunion, res);
+    ///     println!("log_10 ({}) = {}", a_longunion, res);
     ///     assert_eq!(res, 19_u32);
     ///     // It will panic.
     ///     // let res = func(0_u64.into_longunion());
@@ -20344,7 +20349,7 @@ pub trait SmallUInt: Copy + Clone + Sized //+ Display + Debug + ToString
     /// {
     ///     let a_longerunion = 100000000000000000000000000000000000000_u128.into_longerunion();
     ///     let res = func(a_longerunion);
-    ///     println!("log_10( {}) = {}", a_longerunion, res);
+    ///     println!("log_10 ({}) = {}", a_longerunion, res);
     ///     assert_eq!(res, 38_u32);
     ///     // It will panic.
     ///     // let res = func(0_u128.into_longerunion());
@@ -20361,10 +20366,10 @@ pub trait SmallUInt: Copy + Clone + Sized //+ Display + Debug + ToString
     /// use cryptocol::number::SmallUInt;
     /// fn main()
     /// {
-    ///     let a_sizeunion = 10000000000000000000_usize.into_sizeunion();
+    ///     let a_sizeunion = 100_usize.into_sizeunion();
     ///     let res = func(a_sizeunion);
-    ///     println!("log_10( {}) = {}", a_sizeunion, res);
-    ///     assert_eq!(res, 19_u32);
+    ///     println!("log_10 ({}) = {}", a_sizeunion, res);
+    ///     assert_eq!(res, 2_u32);
     ///     // It will panic.
     ///     // let res = func(0_usize.into_sizeunion());
     /// }
@@ -20385,78 +20390,78 @@ pub trait SmallUInt: Copy + Clone + Sized //+ Display + Debug + ToString
     /// {
     ///     let a_u8 = 100_u8;
     ///     let res = func(a_u8);
-    ///     println!("log_10( {}) = {}", a_u8, res);
+    ///     println!("log_10 ({}) = {}", a_u8, res);
     ///     assert_eq!(res, 2_u32);
     ///     // It will panic.
     ///     // let res = func(0_u8);
     /// 
     ///     let a_u16 = 10000_u16;
     ///     let res = func(a_u16);
-    ///     println!("log_10( {}) = {}", a_u16, res);
+    ///     println!("log_10 ({}) = {}", a_u16, res);
     ///     assert_eq!(res, 4_u32);
     ///     // It will panic.
     ///     // let res = func(0_u16);
     /// 
     ///     let a_u32 = 1000000000_u32;
     ///     let res = func(a_u32);
-    ///     println!("log_10( {}) = {}", a_u32, res);
+    ///     println!("log_10 ({}) = {}", a_u32, res);
     ///     assert_eq!(res, 9_u32);
     ///     // It will panic.
     ///     // let res = func(0_u32);
     /// 
     ///     let a_u64 = 10000000000000000000_u64;
     ///     let res = func(a_u64);
-    ///     println!("log_10( {}) = {}", a_u64, res);
+    ///     println!("log_10 ({}) = {}", a_u64, res);
     ///     assert_eq!(res, 19_u32);
     ///     // It will panic.
     ///     // let res = func(0_u64);
     /// 
     ///     let a_u128 = 100000000000000000000000000000000000000_u128;
     ///     let res = func(a_u128);
-    ///     println!("log_10( {}) = {}", a_u128, res);
+    ///     println!("log_10 ({}) = {}", a_u128, res);
     ///     assert_eq!(res, 38_u32);
     ///     // It will panic.
     ///     // let res = func(0_u128);
     /// 
-    ///     let a_usize = 10000000000000000000_usize;
+    ///     let a_usize = 100_usize;
     ///     let res = func(a_usize);
-    ///     println!("log_10( {}) = {}", a_usize, res);
-    ///     assert_eq!(res, 19_u32);
+    ///     println!("log_10 ({}) = {}", a_usize, res);
+    ///     assert_eq!(res, 2_u32);
     ///     // It will panic.
     ///     // let res = func(0_usize);
     /// 
     ///     let a_shortunion = 10000_u16.into_shortunion();
     ///     let res = func(a_shortunion);
-    ///     println!("log_10( {}) = {}", a_shortunion, res);
+    ///     println!("log_10 ({}) = {}", a_shortunion, res);
     ///     assert_eq!(res, 4_u32);
     ///     // It will panic.
     ///     // let res = func(0_u16.into_shortunion());
     /// 
     ///     let a_intunion = 1000000000_u32.into_intunion();
     ///     let res = func(a_intunion);
-    ///     println!("log_10( {}) = {}", a_intunion, res);
+    ///     println!("log_10 ({}) = {}", a_intunion, res);
     ///     assert_eq!(res, 9_u32);
     ///     // It will panic.
     ///     // let res = func(0_u32.into_shortunion());
     /// 
     ///     let a_longunion = 10000000000000000000_u64.into_longunion();
     ///     let res = func(a_longunion);
-    ///     println!("log_10( {}) = {}", a_longunion, res);
+    ///     println!("log_10 ({}) = {}", a_longunion, res);
     ///     assert_eq!(res, 19_u32);
     ///     // It will panic.
     ///     // let res = func(0_u64.into_longunion());
     /// 
     ///     let a_longerunion = 100000000000000000000000000000000000000_u128.into_longerunion();
     ///     let res = func(a_longerunion);
-    ///     println!("log_10( {}) = {}", a_longerunion, res);
+    ///     println!("log_10 ({}) = {}", a_longerunion, res);
     ///     assert_eq!(res, 38_u32);
     ///     // It will panic.
     ///     // let res = func(0_u128.into_longerunion());
     /// 
-    ///     let a_sizeunion = 10000000000000000000_usize.into_sizeunion();
+    ///     let a_sizeunion = 100_usize.into_sizeunion();
     ///     let res = func(a_sizeunion);
-    ///     println!("log_10( {}) = {}", a_sizeunion, res);
-    ///     assert_eq!(res, 19_u32);
+    ///     println!("log_10 ({}) = {}", a_sizeunion, res);
+    ///     assert_eq!(res, 2_u32);
     ///     // It will panic.
     ///     // let res = func(0_usize.into_sizeunion());
     /// }
@@ -20516,8 +20521,9 @@ pub trait SmallUInt: Copy + Clone + Sized //+ Display + Debug + ToString
     /// {
     ///     let a_u8 = 100_u8;
     ///     let res = func(a_u8);
-    ///     println!("log_10( {}) = {}", a_u8, res);
+    ///     println!("log_2 ({}) = {}", a_u8, res);
     ///     assert_eq!(res, 6_u32);
+    /// 
     ///     // It will panic.
     ///     // let res = func(0_u8);
     /// }
@@ -20535,8 +20541,9 @@ pub trait SmallUInt: Copy + Clone + Sized //+ Display + Debug + ToString
     /// {
     ///     let a_u16 = 10000_u16;
     ///     let res = func(a_u16);
-    ///     println!("log_10( {}) = {}", a_u16, res);
+    ///     println!("log_2 ({}) = {}", a_u16, res);
     ///     assert_eq!(res, 13_u32);
+    /// 
     ///     // It will panic.
     ///     // let res = func(0_u16);
     /// }
@@ -20554,8 +20561,9 @@ pub trait SmallUInt: Copy + Clone + Sized //+ Display + Debug + ToString
     /// {
     ///     let a_u32 = 1000000000_u32;
     ///     let res = func(a_u32);
-    ///     println!("log_10( {}) = {}", a_u32, res);
+    ///     println!("log_2 ({}) = {}", a_u32, res);
     ///     assert_eq!(res, 29_u32);
+    /// 
     ///     // It will panic.
     ///     // let res = func(0_u32);
     /// }
@@ -20573,8 +20581,9 @@ pub trait SmallUInt: Copy + Clone + Sized //+ Display + Debug + ToString
     /// {
     ///     let a_u64 = 10000000000000000000_u64;
     ///     let res = func(a_u64);
-    ///     println!("log_10( {}) = {}", a_u64, res);
+    ///     println!("log_2 ({}) = {}", a_u64, res);
     ///     assert_eq!(res, 63_u32);
+    /// 
     ///     // It will panic.
     ///     // let res = func(0_u64);
     /// }
@@ -20592,8 +20601,9 @@ pub trait SmallUInt: Copy + Clone + Sized //+ Display + Debug + ToString
     /// {
     ///     let a_u128 = 100000000000000000000000000000000000000_u128;
     ///     let res = func(a_u128);
-    ///     println!("log_10( {}) = {}", a_u128, res);
+    ///     println!("log_2 ({}) = {}", a_u128, res);
     ///     assert_eq!(res, 126_u32);
+    /// 
     ///     // It will panic.
     ///     // let res = func(0_u128);
     /// }
@@ -20609,10 +20619,11 @@ pub trait SmallUInt: Copy + Clone + Sized //+ Display + Debug + ToString
     /// use cryptocol::number::SmallUInt;
     /// fn main()
     /// {
-    ///     let a_usize = 10000000000000000000_usize;
+    ///     let a_usize = 100_usize;
     ///     let res = func(a_usize);
-    ///     println!("log_10( {}) = {}", a_usize, res);
-    ///     assert_eq!(res, 63_u32);
+    ///     println!("log_2 ({}) = {}", a_usize, res);
+    ///     assert_eq!(res, 6_u32);
+    /// 
     ///     // It will panic.
     ///     // let res = func(0_usize);
     /// }
@@ -20630,8 +20641,9 @@ pub trait SmallUInt: Copy + Clone + Sized //+ Display + Debug + ToString
     /// {
     ///     let a_shortunion = 10000_u16.into_shortunion();
     ///     let res = func(a_shortunion);
-    ///     println!("log_10( {}) = {}", a_shortunion, res);
+    ///     println!("log_2 ({}) = {}", a_shortunion, res);
     ///     assert_eq!(res, 13_u32);
+    /// 
     ///     // It will panic.
     ///     // let res = func(0_u16.into_shortunion());
     /// }
@@ -20649,8 +20661,9 @@ pub trait SmallUInt: Copy + Clone + Sized //+ Display + Debug + ToString
     /// {
     ///     let a_intunion = 1000000000_u32.into_intunion();
     ///     let res = func(a_intunion);
-    ///     println!("log_10( {}) = {}", a_intunion, res);
+    ///     println!("log_2 ({}) = {}", a_intunion, res);
     ///     assert_eq!(res, 29_u32);
+    /// 
     ///     // It will panic.
     ///     // let res = func(0_u32.into_shortunion());
     /// }
@@ -20668,8 +20681,9 @@ pub trait SmallUInt: Copy + Clone + Sized //+ Display + Debug + ToString
     /// {
     ///     let a_longunion = 10000000000000000000_u64.into_longunion();
     ///     let res = func(a_longunion);
-    ///     println!("log_10( {}) = {}", a_longunion, res);
+    ///     println!("log_2 ({}) = {}", a_longunion, res);
     ///     assert_eq!(res, 63_u32);
+    /// 
     ///     // It will panic.
     ///     // let res = func(0_u64.into_longunion());
     /// }
@@ -20687,8 +20701,9 @@ pub trait SmallUInt: Copy + Clone + Sized //+ Display + Debug + ToString
     /// {
     ///     let a_longerunion = 100000000000000000000000000000000000000_u128.into_longerunion();
     ///     let res = func(a_longerunion);
-    ///     println!("log_10( {}) = {}", a_longerunion, res);
+    ///     println!("log_2 ({}) = {}", a_longerunion, res);
     ///     assert_eq!(res, 126_u32);
+    /// 
     ///     // It will panic.
     ///     // let res = func(0_u128.into_longerunion());
     /// }
@@ -20704,10 +20719,11 @@ pub trait SmallUInt: Copy + Clone + Sized //+ Display + Debug + ToString
     /// use cryptocol::number::SmallUInt;
     /// fn main()
     /// {
-    ///     let a_sizeunion = 10000000000000000000_usize.into_sizeunion();
+    ///     let a_sizeunion = 100_usize.into_sizeunion();
     ///     let res = func(a_sizeunion);
-    ///     println!("log_10( {}) = {}", a_sizeunion, res);
-    ///     assert_eq!(res, 63_u32);
+    ///     println!("log_2 ({}) = {}", a_sizeunion, res);
+    ///     assert_eq!(res, 6_u32);
+    /// 
     ///     // It will panic.
     ///     // let res = func(0_usize.into_sizeunion());
     /// }
@@ -20728,78 +20744,78 @@ pub trait SmallUInt: Copy + Clone + Sized //+ Display + Debug + ToString
     /// {
     ///     let a_u8 = 100_u8;
     ///     let res = func(a_u8);
-    ///     println!("log_10( {}) = {}", a_u8, res);
+    ///     println!("log_2 ({}) = {}", a_u8, res);
     ///     assert_eq!(res, 6_u32);
     ///     // It will panic.
     ///     // let res = func(0_u8);
     /// 
     ///     let a_u16 = 10000_u16;
     ///     let res = func(a_u16);
-    ///     println!("log_10( {}) = {}", a_u16, res);
+    ///     println!("log_2 ({}) = {}", a_u16, res);
     ///     assert_eq!(res, 13_u32);
     ///     // It will panic.
     ///     // let res = func(0_u16);
     /// 
     ///     let a_u32 = 1000000000_u32;
     ///     let res = func(a_u32);
-    ///     println!("log_10( {}) = {}", a_u32, res);
+    ///     println!("log_2 ({}) = {}", a_u32, res);
     ///     assert_eq!(res, 29_u32);
     ///     // It will panic.
     ///     // let res = func(0_u32);
     /// 
     ///     let a_u64 = 10000000000000000000_u64;
     ///     let res = func(a_u64);
-    ///     println!("log_10( {}) = {}", a_u64, res);
+    ///     println!("log_2 ({}) = {}", a_u64, res);
     ///     assert_eq!(res, 63_u32);
     ///     // It will panic.
     ///     // let res = func(0_u64);
     /// 
     ///     let a_u128 = 100000000000000000000000000000000000000_u128;
     ///     let res = func(a_u128);
-    ///     println!("log_10( {}) = {}", a_u128, res);
+    ///     println!("log_2 ({}) = {}", a_u128, res);
     ///     assert_eq!(res, 126_u32);
     ///     // It will panic.
     ///     // let res = func(0_u128);
     /// 
-    ///     let a_usize = 10000000000000000000_usize;
+    ///     let a_usize = 100_usize;
     ///     let res = func(a_usize);
-    ///     println!("log_10( {}) = {}", a_usize, res);
-    ///     assert_eq!(res, 63_u32);
+    ///     println!("log_2 ({}) = {}", a_usize, res);
+    ///     assert_eq!(res, 6_u32);
     ///     // It will panic.
     ///     // let res = func(0_usize);
     /// 
     ///     let a_shortunion = 10000_u16.into_shortunion();
     ///     let res = func(a_shortunion);
-    ///     println!("log_10( {}) = {}", a_shortunion, res);
+    ///     println!("log_2 ({}) = {}", a_shortunion, res);
     ///     assert_eq!(res, 13_u32);
     ///     // It will panic.
     ///     // let res = func(0_u16.into_shortunion());
     /// 
     ///     let a_intunion = 1000000000_u32.into_intunion();
     ///     let res = func(a_intunion);
-    ///     println!("log_10( {}) = {}", a_intunion, res);
+    ///     println!("log_2 ({}) = {}", a_intunion, res);
     ///     assert_eq!(res, 29_u32);
     ///     // It will panic.
     ///     // let res = func(0_u32.into_shortunion());
     /// 
     ///     let a_longunion = 10000000000000000000_u64.into_longunion();
     ///     let res = func(a_longunion);
-    ///     println!("log_10( {}) = {}", a_longunion, res);
+    ///     println!("log_2 ({}) = {}", a_longunion, res);
     ///     assert_eq!(res, 63_u32);
     ///     // It will panic.
     ///     // let res = func(0_u64.into_longunion());
     /// 
     ///     let a_longerunion = 100000000000000000000000000000000000000_u128.into_longerunion();
     ///     let res = func(a_longerunion);
-    ///     println!("log_10( {}) = {}", a_longerunion, res);
+    ///     println!("log_2 ({}) = {}", a_longerunion, res);
     ///     assert_eq!(res, 126_u32);
     ///     // It will panic.
     ///     // let res = func(0_u128.into_longerunion());
     /// 
-    ///     let a_sizeunion = 10000000000000000000_usize.into_sizeunion();
+    ///     let a_sizeunion = 100_usize.into_sizeunion();
     ///     let res = func(a_sizeunion);
-    ///     println!("log_10( {}) = {}", a_sizeunion, res);
-    ///     assert_eq!(res, 63_u32);
+    ///     println!("log_2 ({}) = {}", a_sizeunion, res);
+    ///     assert_eq!(res, 6_u32);
     ///     // It will panic.
     ///     // let res = func(0_usize.into_sizeunion());
     /// }

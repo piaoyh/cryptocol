@@ -9543,10 +9543,13 @@ fn unions_wrapping_neg()
     assert_eq!(b_longerunion.get(), 216825577908592784562140039541644754667_u128);
     
     // Example for SizeUnion for 64-bit CPU
-    let a_sizeunion = SizeUnion::new_with(1234567890123456789_usize);
-    let b_sizeunion = a_sizeunion.wrapping_neg();
-    println!("-{} = {}", a_sizeunion, a_sizeunion);
-    assert_eq!(b_sizeunion.get(), 17212176183586094827_usize);
+    #[cfg(target_pointer_width = "64")]
+    {
+        let a_sizeunion = SizeUnion::new_with(1234567890123456789_usize);
+        let b_sizeunion = a_sizeunion.wrapping_neg();
+        println!("-{} = {}", a_sizeunion, a_sizeunion);
+        assert_eq!(b_sizeunion.get(), 17212176183586094827_usize);
+    }
     println!("--------------------------------------");
 }
 
@@ -9613,19 +9616,537 @@ fn unions_overflowing_neg()
     assert_eq!(b_sizeunion.get(), 0_usize);
     assert_eq!(overflow, false);
 
-    let c_sizeunion = SizeUnion::new_with(1234567890123456789_usize);
-    let (d_sizeunion, overflow) = c_sizeunion.overflowing_neg();
-    println!("-{} = {}, {}", c_sizeunion, d_sizeunion, overflow);
-    assert_eq!(d_sizeunion.get(), 17212176183586094827_usize);
-    assert_eq!(overflow, true);
+    #[cfg(target_pointer_width = "64")]
+    {
+        let c_sizeunion = SizeUnion::new_with(1234567890123456789_usize);
+        let (d_sizeunion, overflow) = c_sizeunion.overflowing_neg();
+        println!("-{} = {}, {}", c_sizeunion, d_sizeunion, overflow);
+        assert_eq!(d_sizeunion.get(), 17212176183586094827_usize);
+        assert_eq!(overflow, true);
+    }
     println!("--------------------------------------");
 }
 
 
-fn unions_pow_main(){}
+fn unions_pow_main()
+{
+    unions_pow();
+    unions_wrapping_pow();
+    unions_overflowing_pow();
+    unions_checked_pow();
+    unions_saturating_pow();
+}
+
+fn unions_pow()
+{
+    println!("unions_pow");
+    use cryptocol::number::{ ShortUnion, IntUnion, LongUnion, LongerUnion, SizeUnion };
+
+    // Example for ShortUnion
+    let a_shortunion = ShortUnion::new_with(9);
+    let b_shortunion = a_shortunion.pow(5_u32);
+    println!("9 ** 5 = {}, where ** is the power operator", b_shortunion);
+    assert_eq!(b_shortunion.get(), 59049_u16);
+
+    // Example for IntUnion
+    let a_intunion = IntUnion::new_with(81);
+    let b_intunion = a_intunion.pow(5_u32);
+    println!("81 ** 5 = {}, where ** is the power operator", b_intunion);
+    assert_eq!(b_intunion.get(), 3486784401_u32);
+
+    // Example for LongUnion
+    let a_longunion = LongUnion::new_with(6561);
+    let b_longunion = a_longunion.pow(5_u32);
+    println!("6561 ** 5 = {}, where ** is the power operator", b_longunion);
+    assert_eq!(b_longunion.get(), 12157665459056928801_u64);
+
+    // Example for LongerUnion
+    let a_longerunion = LongerUnion::new_with(43046721);
+    let b_longerunion = a_longerunion.pow(5_u32);
+    println!("43046721 ** 5 = {}, where ** is the power operator", b_longerunion);
+    assert_eq!(b_longerunion.get(), 147808829414345923316083210206383297601_u128);
+
+    // Example for SizeUnion for 64-bit CPUs
+    let a_sizeunion = SizeUnion::new_with(3);
+    let b_sizeunion = a_sizeunion.pow(5_u32);
+    println!("3 ** 5 = {}, where ** is the power operator", b_sizeunion);
+    assert_eq!(b_sizeunion.get(), 243_usize);
+}
+
+fn unions_wrapping_pow()
+{
+    println!("unions_wrapping_pow");
+    use cryptocol::number::{ ShortUnion, IntUnion, LongUnion, LongerUnion, SizeUnion };
+
+    // Example for ShortUnion
+    let a_shortunion = ShortUnion::new_with(9);
+    let b_shortunion = a_shortunion.wrapping_pow(5_u32);
+    println!("9 ** 5 = {}, where ** is the power operator", b_shortunion);
+    assert_eq!(b_shortunion.get(), 59049_u16);
+
+    let c_shortunion = a_shortunion.wrapping_pow(6_u32);
+    println!("9 ** 6 = {}, where ** is the power operator", c_shortunion);
+    assert_eq!(c_shortunion.get(), 7153_u16);
+
+    // Example for IntUnion
+    let a_intunion = IntUnion::new_with(81);
+    let b_intunion = a_intunion.wrapping_pow(5_u32);
+    println!("81 ** 5 = {}, where ** is the power operator", b_intunion);
+    assert_eq!(b_intunion.get(), 3486784401_u32);
+
+    let c_intunion = a_intunion.wrapping_pow(6_u32);
+    println!("81 ** 6 = {}, where ** is the power operator", c_intunion);
+    assert_eq!(c_intunion.get(), 3256662241_u32);
+
+    // Example for LongUnion
+    let a_longunion = LongUnion::new_with(6561);
+    let b_longunion = a_longunion.wrapping_pow(5_u32);
+    println!("6561 ** 5 = {}, where ** is the power operator", b_longunion);
+    assert_eq!(b_longunion.get(), 12157665459056928801_u64);
+
+    let c_longunion = a_longunion.wrapping_pow(6_u32);
+    println!("6561 ** 6 = {}, where ** is the power operator", c_longunion);
+    assert_eq!(c_longunion.get(), 2721702152408675777_u64);
+
+    // Example for LongerUnion
+    let a_longerunion = LongerUnion::new_with(43046721_u128);
+    let b_longerunion = a_longerunion.wrapping_pow(5_u32);
+    println!("43046721 ** 5 = {}, where ** is the power operator", b_longerunion);
+    assert_eq!(b_longerunion.get(), 147808829414345923316083210206383297601_u128);
+
+    let c_longerunion = a_longerunion.wrapping_pow(6_u32);
+    println!("43046721 ** 6 = {}, where ** is the power operator", c_longerunion);
+    assert_eq!(c_longerunion.get(), 333574137813082321045752866839264852865_u128);
+
+    // Example for SizeUnion
+    let a_sizeunion = SizeUnion::new_with(3);
+    let b_sizeunion = a_sizeunion.wrapping_pow(5_u32);
+    println!("3 ** 5 = {}, where ** is the power operator", b_sizeunion);
+    assert_eq!(b_sizeunion.get(), 243_usize);
+
+    let c_sizeunion = a_sizeunion.wrapping_pow(128_u32);
+    println!("3 ** 128 = {}, where ** is the power operator", c_sizeunion);
+    #[cfg(target_pointer_width = "8")] assert_eq!(c_sizeunion.get(), 1_usize);
+    #[cfg(target_pointer_width = "16")] assert_eq!(c_sizeunion.get(), 31233_usize);
+    #[cfg(target_pointer_width = "32")] assert_eq!(c_sizeunion.get(), 2324068865_usize);
+    #[cfg(target_pointer_width = "64")] assert_eq!(c_sizeunion.get(), 9241971931925084673_usize);
+    #[cfg(target_pointer_width = "128")] assert_eq!(c_sizeunion.get(), 303523815449207866983105381828026333697_usize);
+    println!("--------------------------------------");
+}
+
+fn unions_overflowing_pow()
+{
+    println!("unions_overflowing_pow");
+    use cryptocol::number::{ ShortUnion, IntUnion, LongUnion, LongerUnion, SizeUnion };
+
+    // Example for ShortUnion
+    let (a_shortunion, overflow) = ShortUnion::new_with(12_u16).overflowing_pow(4);
+    println!("{} ** 4 = {}, where ** is the power operator\nOverflow = {}", 12_u16, a_shortunion, overflow);
+    assert_eq!(a_shortunion.get(), 20736_u16);
+    assert_eq!(overflow, false);
+ 
+    let (b_shortunion, overflow) = ShortUnion::new_with(12_u16).overflowing_pow(5);
+    println!("{} ** 5 = {}, where ** is the power operator\nOverflow = {}", 12_u16, b_shortunion, overflow);
+    assert_eq!(b_shortunion.get(), 52224_u16);
+    assert_eq!(overflow, true);
+
+    // Example for IntUnion
+    let (a_intunion, overflow) = IntUnion::new_with(38_u32).overflowing_pow(6);
+    println!("{} ** 6 = {}, where ** is the power operator\nOverflow = {}", 38_u32, a_intunion, overflow);
+    assert_eq!(a_intunion.get(), 3010936384_u32);
+    assert_eq!(overflow, false);
+ 
+    let (b_intunion, overflow) = IntUnion::new_with(38_u32).overflowing_pow(7);
+    println!("{} ** 7 = {}, where ** is the power operator\nOverflow = {}", 38_u32, b_intunion, overflow);
+    assert_eq!(b_intunion.get(), 2746432896_u32);
+    assert_eq!(overflow, true);
+
+    // Example for LongUnion
+    let (a_longunion, overflow) = LongUnion::new_with(1004_u64).overflowing_pow(6);
+    println!("{} ** 6 = {}, where ** is the power operator\nOverflow = {}", 1004_u64, a_longunion, overflow);
+    assert_eq!(a_longunion.get(), 1024241283846148096_u64);
+    assert_eq!(overflow, false);
+ 
+    let (b_longunion, overflow) = LongUnion::new_with(1004_u64).overflowing_pow(7);
+    println!("{} ** 7 = {}, where ** is the power operator\nOverflow = {}", 1004_u64, b_longunion, overflow);
+    assert_eq!(b_longunion.get(), 13767324927507349504_u64);
+    assert_eq!(overflow, true);
+
+    // Example for LongerUnion
+    let (a_longerunion, overflow) = LongerUnion::new_with(10003_u128).overflowing_pow(9);
+    println!("{} ** 9 = {}, where ** is the power operator\nOverflow = {}", 10003_u128, a_longerunion, overflow);
+    assert_eq!(a_longerunion.get(), 1002703242269020906241243873790509683_u128);
+    assert_eq!(overflow, false);
+ 
+    let (b_longerunion, overflow) = LongerUnion::new_with(10003_u128).overflowing_pow(10);
+    println!("{} ** 10 = {}, where ** is the power operator\nOverflow = {}", 10003_u128, b_longerunion, overflow);
+    assert_eq!(b_longerunion.get(), 161851891709800684693298854005190226825_u128);
+    assert_eq!(overflow, true);
+
+    // Example for SizeUnion
+    let (a_sizeunion, overflow) = SizeUnion::new_with(3_usize).overflowing_pow(5);
+    println!("{} ** 5 = {}, where ** is the power operator\nOverflow = {}", 3_usize, a_sizeunion, overflow);
+    assert_eq!(a_sizeunion.get(), 243_usize);
+    assert_eq!(overflow, false);
+ 
+    let (b_sizeunion, overflow) = SizeUnion::new_with(3_usize).overflowing_pow(128);
+    println!("{} ** 128 = {}, where ** is the power operator\nOverflow = {}", 3_u64, b_sizeunion, overflow);
+    #[cfg(target_pointer_width = "8")] assert_eq!(b_sizeunion.get(), 1_usize);
+    #[cfg(target_pointer_width = "16")] assert_eq!(b_sizeunion.get(), 31233_usize);
+    #[cfg(target_pointer_width = "32")] assert_eq!(b_sizeunion.get(), 2324068865_usize);
+    #[cfg(target_pointer_width = "64")] assert_eq!(b_sizeunion.get(), 9241971931925084673_usize);
+    #[cfg(target_pointer_width = "128")] assert_eq!(b_sizeunion.get(), 303523815449207866983105381828026333697_usize);
+    assert_eq!(overflow, true);
+    println!("--------------------------------------");
+}
+
+fn unions_checked_pow()
+{
+    println!("unions_checked_pow");
+    use cryptocol::number::{ ShortUnion, IntUnion, LongUnion, LongerUnion, SizeUnion };
+
+    // Example for ShortUnion
+    let a_shortunion = ShortUnion::new_with(12_u16).checked_pow(4);
+    match a_shortunion
+    {
+        Some(a) => {
+                println!("{} ** 4 = {}, where ** is the power operator", ShortUnion::new_with(12_u16), a);
+                assert_eq!(a.get(), 20736_u16);
+            },
+        None => { println!("Overflow happened."); },
+    }
+
+    let b_shortunion = ShortUnion::new_with(12_u16).checked_pow(5);
+    match b_shortunion
+    {
+        Some(b) => { println!("{} ** 5 = {}, where ** is the power operator", ShortUnion::new_with(12_u16), b); },
+        None => {
+                println!("Overflow happened.");
+                assert_eq!(b_shortunion, None);
+            },
+    }
+
+    // Example for IntUnion
+    let a_intunion = IntUnion::new_with(38_u32).checked_pow(6);
+    match a_intunion
+    {
+        Some(a) => {
+                println!("{} ** 6 = {}, where ** is the power operator", IntUnion::new_with(38_u32), a);
+                assert_eq!(a.get(), 3010936384_u32);
+            },
+        None => { println!("Overflow happened."); },
+    }
+
+    let b_intunion = IntUnion::new_with(38_u32).checked_pow(7);
+    match b_intunion
+    {
+        Some(b) => { println!("{} ** 7 = {}, where ** is the power operator", IntUnion::new_with(38_u32), b); },
+        None => {
+                println!("Overflow happened.");
+                assert_eq!(b_intunion, None);
+            },
+    }
+
+    // Example for LongUnion
+    let a_longunion = LongUnion::new_with(1004_u64).checked_pow(6);
+    match a_longunion
+    {
+        Some(a) => {
+                println!("{} ** 6 = {}, where ** is the power operator", LongUnion::new_with(1004_u64), a);
+                assert_eq!(a.get(), 1024241283846148096_u64);
+            },
+        None => { println!("Overflow happened."); },
+    }
+
+    let b_longunion = LongUnion::new_with(1004_u64).checked_pow(7);
+    match b_longunion
+    {
+        Some(b) => { println!("{} ** 7 = {}, where ** is the power operator", LongUnion::new_with(1004_u64), b); },
+        None => {
+                println!("Overflow happened.");
+                assert_eq!(b_longunion, None);
+            },
+    }
+
+    // Example for LongerUnion
+    let a_longerunion = LongerUnion::new_with(10003_u128).checked_pow(9);
+    match a_longerunion
+    {
+        Some(a) => {
+                println!("{} ** 9 = {}, where ** is the power operator", LongerUnion::new_with(10003_u128), a);
+                assert_eq!(a.get(), 1002703242269020906241243873790509683_u128);
+            },
+        None => { println!("Overflow happened."); },
+    }
+
+    let b_longerunion = LongerUnion::new_with(10003_u128).checked_pow(10);
+    match b_longerunion
+    {
+        Some(b) => { println!("{} ** 10 = {}, where ** is the power operator", LongerUnion::new_with(10003_u128), b); },
+        None => {
+                println!("Overflow happened.");
+                assert_eq!(b_longerunion, None);
+            },
+    }
+
+    // Example for SizeUnion
+    let a_sizeunion = SizeUnion::new_with(3_usize).checked_pow(5);
+    match a_sizeunion
+    {
+        Some(a) => {
+                println!("{} ** 6 = {}, where ** is the power operator", SizeUnion::new_with(3_usize), a);
+                assert_eq!(a.get(), 243_usize);
+            },
+        None => { println!("Overflow happened."); },
+    }
+
+    let b_sizeunion = SizeUnion::new_with(3_usize).checked_pow(128);
+    match b_sizeunion
+    {
+        Some(b) => { println!("{} ** 128 = {}, where ** is the power operator", SizeUnion::new_with(3_usize), b); },
+        None => {
+                println!("Overflow happened.");
+                assert_eq!(b_sizeunion, None);
+            },
+    }
+    println!("--------------------------------------");
+}
+
+fn unions_saturating_pow()
+{
+    println!("unions_saturating_pow");
+    use cryptocol::number::{ ShortUnion, IntUnion, LongUnion, LongerUnion, SizeUnion };
+
+    // Example for ShortUnion
+    let a_shortunion = ShortUnion::new_with(12_u16).saturating_pow(4);
+    println!("{} ** 4 = {}, where ** is the power operator", ShortUnion::new_with(12_u16), a_shortunion);
+    assert_eq!(a_shortunion.get(), 20736_u16);
+    let b_shortunion = ShortUnion::new_with(12_u16).saturating_pow(5);
+    println!("{} ** 5 = {}, where ** is the power operator", ShortUnion::new_with(12_u16), b_shortunion);
+    assert_eq!(b_shortunion.get(), u16::MAX);
+
+    // Example for IntUnion
+    let a_intunion = IntUnion::new_with(38_u32).saturating_pow(6);
+    println!("{} ** 6 = {}, where ** is the power operator", IntUnion::new_with(38_u32), a_intunion);
+    assert_eq!(a_intunion.get(), 3010936384_u32);
+    let b_intunion = IntUnion::new_with(38_u32).saturating_pow(7);
+    println!("{} ** 7 = {}, where ** is the power operator", IntUnion::new_with(38_u32), b_intunion);
+    assert_eq!(b_intunion.get(), u32::MAX);
+
+    // Example for LongUnion
+    let a_longunion = LongUnion::new_with(1004_u64).saturating_pow(6);
+    println!("{} ** 6 = {}, where ** is the power operator", LongUnion::new_with(1004_u64), a_longunion);
+    assert_eq!(a_longunion.get(), 1024241283846148096_u64);
+    let b_longunion =  LongUnion::new_with(1004_u64).saturating_pow(7);
+    println!("{} ** 7 = {}, where ** is the power operator", LongUnion::new_with(1004_u64), b_longunion);
+    assert_eq!(b_longunion.get(), u64::MAX);
+
+    // Example for LongerUnion
+    let a_longerunion = LongerUnion::new_with(10003_u128).saturating_pow(9);
+    println!("{} ** 9 = {}, where ** is the power operator", LongerUnion::new_with(10003_u128), a_longerunion);
+    assert_eq!(a_longerunion.get(), 1002703242269020906241243873790509683_u128);
+    let b_longerunion = LongerUnion::new_with(10003_u128).saturating_pow(10);
+    println!("{} ** 10 = {}, where ** is the power operator", LongerUnion::new_with(10003_u128), b_longerunion);
+    assert_eq!(b_longerunion.get(), u128::MAX);
+
+    // Example for SizeUnion
+    let a_sizeunion = SizeUnion::new_with(3_usize).saturating_pow(5);
+    println!("{} ** 5 = {}, where ** is the power operator", SizeUnion::new_with(3_usize), a_sizeunion);
+    assert_eq!(a_sizeunion.get(), 243_usize);
+    let b_sizeunion = SizeUnion::new_with(3_usize).saturating_pow(128);
+    println!("{} ** 128 = {}, where ** is the power operator", SizeUnion::new_with(3_usize), b_sizeunion);
+    assert_eq!(b_sizeunion.get(), usize::MAX);
+    println!("--------------------------------------");
+}
 
 
-fn unions_log_main(){}
+fn unions_log_main()
+{
+    unions_ilog();
+    unions_ilog10();
+    unions_ilog2();
+}
+
+fn unions_ilog()
+{
+    println!("unions_ilog");
+    use cryptocol::number::{ ShortUnion, IntUnion, LongUnion, LongerUnion, SizeUnion };
+
+    // Example for ShortUnion
+    let a_shortunion = ShortUnion::new_with(10000_u16);
+    let base_shortunion = ShortUnion::new_with(5_u16);
+    let res = a_shortunion.ilog(base_shortunion);
+    println!("log_{} ({}) = {}", base_shortunion, a_shortunion, res);
+    assert_eq!(res, 5_u32);
+
+    // It will panic.
+    // let res =ShortUnion::zero().ilog(base_shortunion);
+
+    // It will panic.
+    // let res = a_shortunion.ilog(ShortUnion::zero());
+
+    // It will panic.
+    // let res = ShortUnion::zero().ilog(ShortUnion::zero());
+
+    // Example for IntUnion
+    let a_intunion = IntUnion::new_with(1000000000_u32);
+    let base_intunion = IntUnion::new_with(7_u32);
+    let res = a_intunion.ilog(base_intunion);
+    println!("log_{} ({}) = {}", base_intunion, a_intunion, res);
+    assert_eq!(res, 10_u32);
+
+    // It will panic.
+    // let res = IntUnion::zero().ilog(base_intunion);
+
+    // It will panic.
+    // let res = a_intunion.ilog(IntUnion::zero());
+
+    // It will panic.
+    // let res = IntUnion::zero().ilog(IntUnion::zero());
+
+    // Example for LongUnion
+    let a_longunion = LongUnion::new_with(10000000000000000000_u64);
+    let base_longunion = LongUnion::new_with(11_u64);
+    let res = a_longunion.ilog(base_longunion);
+    println!("log_{} ({}) = {}", base_longunion, a_longunion, res);
+    assert_eq!(res, 18_u32);
+
+    // It will panic.
+    // let res = LongUnion::zero().ilog(base_longunion);
+
+    // It will panic.
+    // let res = a_longunion.ilog(LongUnion::zero());
+
+    // It will panic.
+    // let res = LongUnion::zero().ilog(LongUnion::zero());
+
+    // Example for LongerUnion
+    let a_longerunion = LongerUnion::new_with(100000000000000000000000000000000000000_u128);
+    let base_longerunion = LongerUnion::new_with(13_u128);
+    let res = a_longerunion.ilog(base_longerunion);
+    println!("log_{} ({}) = {}", base_longerunion, a_longerunion, res);
+    assert_eq!(res, 34_u32);
+
+    // It will panic.
+    // let res = LongerUnion::zero().ilog(base_longerunion);
+
+    // It will panic.
+    // let res = a_longerunion.ilog(LongerUnion::zero());
+
+    // It will panic.
+    // let res = LongerUnion::zero().ilog(LongerUnion::zero());
+
+    // Example for SizeUnion
+    let a_sizeunion = SizeUnion::new_with(100_usize);
+    let base_sizeunion = SizeUnion::new_with(3_usize);
+    let res = a_sizeunion.ilog(base_sizeunion);
+    println!("log_{} ({}) = {}", base_sizeunion, a_sizeunion, res);
+    assert_eq!(res, 4_u32);
+
+    // It will panic.
+    // let res = SizeUnion::zero().ilog(base_sizeunion);
+
+    // It will panic.
+    // let res = a_sizeunion.ilog(SizeUnion::zero());
+
+    // It will panic.
+    // let res = SizeUnion::zero().ilog(SizeUnion::zero());
+    println!("--------------------------------------");
+}
+
+fn unions_ilog10()
+{
+    println!("unions_ilog10");
+    use cryptocol::number::{ ShortUnion, IntUnion, LongUnion, LongerUnion, SizeUnion };
+
+    // Example for ShortUnion
+    let a_shortunion = ShortUnion::new_with(10000_u16);
+    let res = a_shortunion.ilog10();
+    println!("log_10 ({}) = {}", a_shortunion, res);
+    assert_eq!(res, 4_u32);
+    // It will panic.
+    // let res = ShortUnion::zero().ilog10();
+
+    // Example for IntUnion
+    let a_intunion = IntUnion::new_with(1000000000_u32);
+    let res = a_intunion.ilog10();
+    println!("log_10 ({}) = {}", a_intunion, res);
+    assert_eq!(res, 9_u32);
+    // It will panic.
+    // let res = IntUnion::zero().ilog10();
+
+    // Example for LongUnion
+    let a_longunion = LongUnion::new_with(10000000000000000000_u64);
+    let res = a_longunion.ilog10();
+    println!("log_10 ({}) = {}", a_longunion, res);
+    assert_eq!(res, 19_u32);
+    // It will panic.
+    // let res = LongUnion::zero().ilog10();
+
+    // Example for LongerUnion
+    let a_longerunion = LongerUnion::new_with(100000000000000000000000000000000000000_u128);
+    let res = a_longerunion.ilog10();
+    println!("log_10 ({}) = {}", a_longerunion, res);
+    assert_eq!(res, 38_u32);
+    // It will panic.
+    // let res = LongerUnion::zero().ilog10();
+
+    // Example for SizeUnion
+    let a_sizeunion = SizeUnion::new_with(100_usize);
+    let res = a_sizeunion.ilog10();
+    println!("log_10 ({}) = {}", a_sizeunion, res);
+    assert_eq!(res, 2_u32);
+    // It will panic.
+    // let res = SizeUnion::zero().ilog10();
+    println!("--------------------------------------");
+}
+
+fn unions_ilog2()
+{
+    println!("small_uint_ilog2");
+    use cryptocol::number::{ ShortUnion, IntUnion, LongUnion, LongerUnion, SizeUnion };
+
+    // Example for ShortUnion
+    let a_shortunion = ShortUnion::new_with(10000_u16);
+    let res = a_shortunion.ilog2();
+    println!("log_2 ({}) = {}", a_shortunion, res);
+    assert_eq!(res, 13_u32);
+    // It will panic.
+    // let res = ShortUnion::zero().ilog2();
+
+    // Example for IntUnion
+    let a_intunion = IntUnion::new_with(1000000000_u32);
+    let res = a_intunion.ilog2();
+    println!("log_2 ({}) = {}", a_intunion, res);
+    assert_eq!(res, 29_u32);
+    // It will panic.
+    // let res = IntUnion::zero().ilog2();
+
+    // Example for LongUnion
+    let a_longunion = LongUnion::new_with(10000000000000000000_u64);
+    let res = a_longunion.ilog2();
+    println!("log_2 ({}) = {}", a_longunion, res);
+    assert_eq!(res, 63_u32);
+    // It will panic.
+    // let res = LongUnion::zero().ilog2();
+
+    // Example for LongerUnion
+    let a_longerunion = LongerUnion::new_with(100000000000000000000000000000000000000_u128);
+    let res = a_longerunion.ilog2();
+    println!("log_2 ({}) = {}", a_longerunion, res);
+    assert_eq!(res, 126_u32);
+    // It will panic.
+    // let res = LongerUnion::zero().ilog2();
+
+    // Example for SizeUnion
+    let a_sizeunion = SizeUnion::new_with(100_usize);
+    let res = a_sizeunion.ilog2();
+    println!("log_2 ({}) = {}", a_sizeunion, res);
+    assert_eq!(res, 6_u32);
+    // It will panic.
+    // let res = SizeUnion::zero().ilog2();
+    println!("--------------------------------------");
+}
 
 
 fn unions_root_main(){}
