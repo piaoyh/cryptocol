@@ -16,9 +16,7 @@ Only use this crate for Big-endian CPUs with your own full responsibility.
 ## Road Map for Version 1.0
 
 This crate Cryptocol is planned to provide the following functionalities.
-The checked items have already been implemented including documentation
-at least 80%. The unchecked items have not yet been implemented including
-documentation more than 80% or have not yet even been started to implement.
+The checked items have already been implemented including documentation. The unchecked items have not yet been implemented including documentation or have not yet even been started to implement.
 
 ### Small Numbers: meaningful as itself, and also the foundations mainly for Big Numbers as well as for other modules
 
@@ -27,17 +25,10 @@ documentation more than 80% or have not yet even been started to implement.
       `LongerUnion`, `SizeUnion`, `SharedValues`, and `SharedArrays`
 - [X] Trait SmallUInt, its implementation for primitive data types, and the implementation
       of it for the Unions --- `SmallUInt`
-- [ ] Trait SmallSInt, its implementation for primitive data types, and the implementation
-      of it for the Unions --- SmallSInt
-      _--> Thinking about postponing to Roadmap for ver. 2.0_
 
 ### Big Numbers: meaningful as itself and also the foundation for Asymmetric-Key Algorithms
 
 - [ ] Fixed Sized Big Unsigned Integer Operation --- `BigUInt`
-- [ ] Fixed Sized Big Signed Integer Operation --- `BigSInt`
-    _--> Thinking about postponing to Roadmap for ver. 2.0_
-- [ ] Variable Sized Big Signed Integer Operation --- `LargeInt`
-    _--> Thinking about postponing to Roadmap for ver. 2.0 or higher_
 
 ### Hash Algorithms
 
@@ -73,16 +64,16 @@ documentation more than 80% or have not yet even been started to implement.
 
 ### Pseudo-Random Number Generator Algorithms
 
-- [X] The Pseudo-random number generator wrappers
-    --- struct `Random_Generic` and trait `Random_Engine`
-- [X] The implementation of `Random_Engine` for hash algorithms such as
-    `MD4_Generic`, `MD5_Generic`, `SHA1_Generic`, `SHA2_256_Generic`,
-    and`SHA2_512_Generic`,
-    and for pseudo-random number generation algorithm such as `AnyNumber`
+- [X] Pseudo-random number generator --- struct `Random_Generic` and trait `Random_Engine`
+- [X] Pseudo-random number generator engines using hash algorithms ---
+    `Any_MD4`, `Any_MD5`, `Any_SHA0`, `Any_SHA1`, `Any_SHA2_256`, `Any_SHA2_512`, and `Random_SHA2_512`.
+- [ ] Pseudo-random number generator engines using symmetric-key encryption algorithms ---
+    `Any_DES`, `Any_NDES`, `Any_AES`, `Any_NAES`, `Random_AES`, and `Random_NAES`.
+- [X] Pseudo-random number generator engines using simple randomization algorithm ---
+    `Any_Num`
 
 ### Asymmetric-key Algorithms for the Encryption/Decryption of digital data
 
-- [ ] Diffie-Hellman _--> Thinking about postponing to Roadmap for ver. 2.0_
 - [ ] RSA (Ron Rivest, Adi Shamir, Leonard Adleman)
 - [ ] ECC (Elliptic Curve Cryptosystem)
 
@@ -90,7 +81,7 @@ When the implementation of all the above functionalitis are completed,
 the version number 1.0.0.0 will be given. After that whenever another
 functionality is added to this crate, the version number will get higher
 beyond 1.0.0.0. Before the version number 1.0.0.0, the maximum version
-number will be 0.27.x.x since there are all twenty-six functionalities
+number will be 0.25.x.x since there are all twenty-five functionalities
 listed above. So, for example, even if the version number is 0.5.0.0,
 it does not mean that 50% of all functionalities are implemented.
 

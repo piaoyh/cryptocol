@@ -23,9 +23,9 @@
 //! 
 //! # Road Map for Version 1.0
 //! This crate Cryptocol is planned to provide the following functionalities.
-//! The checked items have already been implemented including documentation
-//! at least 80%. The unchecked items have not yet been implemented including
-//! documentation more than 80% or have not yet even been started to implement.
+//! The checked items have already been implemented including documentation.
+//! The unchecked items have not yet been implemented including documentation
+//! or have not yet even been started to implement.
 //! 
 //! ## Small Numbers: meaningful as itself, and also foundations mainly for Big Numbers as well as for other modules
 //! - [ ] Unions for primitive data types and their implementation, and the implementation of trait SmallUInt for the Unions ---
@@ -39,18 +39,18 @@
 //! - [X] Trait SmallUInt, its implementation for primitive data types, and the
 //!     implementation of it for the Unions ---
 //!     [`SmallUInt`](number/small_uint/trait.SmallUInt.html#trait.SmallUInt)
-//! - [ ] Trait SmallSInt, its implementation for primitive data types, and the
-//!     implementation of it for the Unions ---
-//!     [`SmallSInt`](number/small_sint/trait.SmallSInt.html#trait.SmallSInt)
-//!     _--> Thinking about postponing to Roadmap for ver. 2.0_
+// ! - [ ] Trait SmallSInt, its implementation for primitive data types, and the
+// !     implementation of it for the Unions ---
+// !     [`SmallSInt`](number/small_sint/trait.SmallSInt.html#trait.SmallSInt)
+// !     _--> Thinking about postponing to Roadmap for ver. 2.0_
 //! 
 //! ## Big Numbers: meaningful as itself and also the foundation for Asymmetric-Key Algorithms
 //! - [ ] Fixed Sized Big Unsigned Integer Operation ---
 //!     [`BigUInt`](number/big_uint/struct.BigUInt.html#struct.BigUInt)
-//! - [ ] Fixed Sized Big Signed Integer Operation --- BigSInt
-//!     _--> Thinking about postponing to Roadmap for ver. 2.0_
-//! - [ ] Variable Sized Big Signed Integer Operation --- LargeInt
-//!     _--> Thinking about postponing to Roadmap for ver. 2.0 or higher_
+// ! - [ ] Fixed Sized Big Signed Integer Operation --- BigSInt
+// !     _--> Thinking about postponing to Roadmap for ver. 2.0_
+// ! - [ ] Variable Sized Big Signed Integer Operation --- LargeInt
+// !     _--> Thinking about postponing to Roadmap for ver. 2.0 or higher_
 //! 
 //! ## Hash Algorithms
 //! - [X] MD4 hash algorithms based on 128 bits
@@ -97,21 +97,25 @@
 // ! (symmetric/naes/struct.NAES_Generic.html#struct.NAES_Generic)
 //! 
 //! ## Pseudo-Random Number Generator Algorithms
-//! - [X] The Pseudo-random number generator wrappers
-//!     --- struct [`Random_Generic`](random/random/struct.Random_Generic.html#struct.Random_Generic)
+//! - [X] Pseudo-random number generator --- struct
+//!     [`Random_Generic`](random/random/struct.Random_Generic.html#struct.Random_Generic)
 //!     and trait
 //!     [Random_Engine](random/trait_random_engine/trait.Random_Engine.html#trait.Random_Engine)
-//! - [X] The implementation of `Random_Engine` for hash algorithms such as
-//!     [`MD4_Generic`](hash/md4/struct.MD4_Generic.html#struct.MD4_Generic),
-//!     [`MD5_Generic`](hash/md5/struct.MD5_Generic.html#struct.MD5_Generic),
-//!     [`SHA1_Generic`](hash/sha1/struct.SHA1_generic.html#struct.SHA1_generic),
-//!     [`SHA2_256_Generic`](hash/sha2_256/struct.SHA2_256_Generic.html#struct.SHA2_256_Generic), and
-//!     [`SHA2_512_Generic`](hash/sha2_512/struct.SHA2_512_Generic.html#struct.SHA2_512_Generic),
-//!     and for pseudo-random number generation algorithm such as
-//!     [`AnyNumber`](random/any_number/struct.AnyNumber.html#struct.AnyNumber)
+//! - [X] Pseudo-random number generator engines using hash algorithms ---
+//!     [`Any_MD4`](random/random/type.Any_MD4.html#type.Any_MD4),
+//!     [`Any_MD5`](random/random/type.Any_MD5.html#type.Any_MD5),
+//!     [`Any_SHA0`](random/random/type.Any_SHA0.html#type.Any_SHA0),
+//!     [`Any_SHA1`](random/random/type.Any_SHA1.html#type.Any_SHA1),
+//!     [`Any_SHA2_256`](random/random/type.Any_SHA2_256.html#type.Any_SHA2_256)
+//!     [`Any_SHA2_512`](random/random/type.Any_SHA2_512.html#type.Any_SHA2_512), and
+//!     [`Random_SHA2_512`](random/random/type.Random_SHA2_512.html#type.Random_SHA2_512).
+//! - [ ] Pseudo-random number generator engines using symmetric-key encryption algorithms ---
+//!     `Any_DES`, `Any_NDES`, `Any_AES`, `Any_NAES`, `Random_AES`, and `Random_NAES`.
+//! - [X] Pseudo-random number generator engines using simple randomization algorithm
+//!     --- [`Any_Num`](random/random/type.Any_Num.html#type.Any_Num)
 //! 
 //! ## Asymmetric-Key Algorithms for the Encryption/Decryption of digital data
-//! - [ ] Diffie-Hellman _--> Thinking about postponing to Roadmap for ver. 2.0_
+// ! - [ ] Diffie-Hellman _--> Thinking about postponing to Roadmap for ver. 2.0_
 //! - [ ] RSA (Ron Rivest, Adi Shamir, Leonard Adleman)
 //! - [ ] ECC (Elliptic Curve Cryptosystem)
 //! 
@@ -119,7 +123,7 @@
 //! the version number 1.0.0.0 will be given. After that whenever another
 //! functionality is added to this crate, the version number will get higher
 //! beyond 1.0.0.0. Before the version number 1.0.0.0, the maximum version
-//! number will be 0.27.x.x since there are all twenty-six functionalities
+//! number will be 0.25.x.x since there are all twenty-five functionalities
 //! listed above. So, for example, even if the version number is 0.5.0.0,
 //! it does not mean that 50% of all functionalities are implemented.
 
