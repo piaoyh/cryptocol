@@ -21,15 +21,21 @@
 //! 
 //! # Predefined pseudo-random number generators
 //! There are provided predefined pseudo-random number generators:
-//! - Any_MD4: uses a hash algorithm MD4.
-//! - Any_MD5: uses a hash algorithm MD5.
-//! - Any_SHA0: uses a hash algorithm SHA0.
-//! - Any_SHA1: uses a hash algorithm SHA1.
-//! - Any_SHA2_256: uses a hash algorithm SHA2_256.
-//! - Random_SHA2_512: uses a hash algorithm SHA2_512.
-//! - Any: uses a hash algorithm SHA2_256.
-//! - Random: uses a hash algorithm SHA2_512.
-//! - Any_Num: uses a pseudo-random number generator algorithm of the function
+//! - Any: uses a hash algorithm SHA2_256. Read [here](random/random/type.Any.html#type.Any).
+//! - Random: uses a hash algorithm SHA2_512. Read [here](random/random/type.Random.html#type.Random).
+//! - Any_Num: uses a pseudo-random number generator algorithm of the function. Read [here](random/random/type.Any_Num.html#type.Any_Num).
+//! - Any_MD4: uses a hash algorithm MD4. Read [here](random/random/type.Any_MD4.html#type.Any_MD4).
+//! - Any_MD5: uses a hash algorithm MD5. Read [here](random/random/type.Any_MD5.html#type.Any_MD5),
+//! - Any_SHA0: uses a hash algorithm SHA0. Read [here](random/random/type.Any_SHA0.html#type.Any_SHA0),
+//! - Any_SHA1: uses a hash algorithm SHA1. Read [here](random/random/type.Any_SHA1.html#type.Any_SHA1),
+//! - Any_SHA2_256: uses a hash algorithm SHA2_256. Read [here](random/random/type.Any_SHA2_256.html#type.Any_SHA2_256)
+//! - Any_SHA2_512: uses a hash algorithm SHA2_512. Read [here](random/random/type.Any_SHA2_512.html#type.Any_SHA2_512), and
+//! - Random_SHA2_512: uses a hash algorithm SHA2_512. Read [here](random/random/type.Random_SHA2_512.html#type.Random_SHA2_512).
+// ! - Any_DES: uses a symmetric-key encryption algorithm DES algorithm DES.
+// ! - Any_NDES: uses a symmetric-key encryption algorithm NDES algorithm NDES.
+// ! - Any_AES: uses a symmetric-key encryption algorithm AES algorithm AES.
+// ! - Any_NAES: uses a symmetric-key encryption algorithm NAES algorithm NAES.
+// ! - Random_AES: uses a symmetric-key encryption algorithm AES algorithm AES.
 //! 
 //! # Quality Issues and Debate
 //! The pseudo-random number generators in this module use hash algorithms,
@@ -89,7 +95,21 @@
 //! pseudo-random number generator for cryptographical purpose.
 //! 
 //! - For `Random_Generic`, read [here](struct@Random_Generic#quick-start).
-//! 
+//! - For `Any`, read [here](random/random/type.Any.html#type.Any).
+//! - For `Random`, read [here](random/type.Random.html#type.Random).
+//! - For `Any_Num`, read [here](random/type.Any_Num.html#type.Any_Num).
+//! - For `Any_MD4`, read [here](random/type.Any_MD4.html#type.Any_MD4).
+//! - For `Any_MD5`, read [here](random/type.Any_MD5.html#type.Any_MD5),
+//! - For `Any_SHA0`, read [here](random/type.Any_SHA0.html#type.Any_SHA0),
+//! - For `Any_SHA1`, read [here](random/type.Any_SHA1.html#type.Any_SHA1),
+//! - For `Any_SHA2_256`, read [here](random/type.Any_SHA2_256.html#type.Any_SHA2_256)
+//! - For `Any_SHA2_512`, read [here](random/type.Any_SHA2_512.html#type.Any_SHA2_512), and
+//! - For `Random_SHA2_512`, read [here](random/type.Random_SHA2_512.html#type.Random_SHA2_512).
+// ! - For `Any_DES`, read [head]
+// ! - For `Any_NDES`, read [head]
+// ! - For `Any_AES`, read [head]
+// ! - For `Any_NAES`, read [head]
+// ! - For `Random_AES`, read [head]
 //! 
 //! # How to embed OsRng in this module
 //! First, you have to include additional dependencies in your Cargo.toml

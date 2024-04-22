@@ -97,11 +97,11 @@
 // ! (symmetric/naes/struct.NAES_Generic.html#struct.NAES_Generic)
 //! 
 //! ## Pseudo-Random Number Generator Algorithms
-//! - [X] Pseudo-random number generator --- struct
+//! - [ ] Pseudo-random number generator --- struct
 //!     [`Random_Generic`](random/random/struct.Random_Generic.html#struct.Random_Generic)
 //!     and trait
 //!     [Random_Engine](random/trait_random_engine/trait.Random_Engine.html#trait.Random_Engine)
-//! - [X] Pseudo-random number generator engines using hash algorithms ---
+//! - [ ] Pseudo-random number generator engines using hash algorithms ---
 //!     [`Any_MD4`](random/random/type.Any_MD4.html#type.Any_MD4),
 //!     [`Any_MD5`](random/random/type.Any_MD5.html#type.Any_MD5),
 //!     [`Any_SHA0`](random/random/type.Any_SHA0.html#type.Any_SHA0),
@@ -111,7 +111,7 @@
 //!     [`Random_SHA2_512`](random/random/type.Random_SHA2_512.html#type.Random_SHA2_512).
 //! - [ ] Pseudo-random number generator engines using symmetric-key encryption algorithms ---
 //!     `Any_DES`, `Any_NDES`, `Any_AES`, `Any_NAES`, `Random_AES`, and `Random_NAES`.
-//! - [X] Pseudo-random number generator engines using simple randomization algorithm
+//! - [ ] Pseudo-random number generator engines using simple randomization algorithm
 //!     --- [`Any_Num`](random/random/type.Any_Num.html#type.Any_Num)
 //! 
 //! ## Asymmetric-Key Algorithms for the Encryption/Decryption of digital data

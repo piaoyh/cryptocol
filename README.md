@@ -64,12 +64,12 @@ The checked items have already been implemented including documentation. The unc
 
 ### Pseudo-Random Number Generator Algorithms
 
-- [X] Pseudo-random number generator --- struct `Random_Generic` and trait `Random_Engine`
-- [X] Pseudo-random number generator engines using hash algorithms ---
+- [ ] Pseudo-random number generator --- struct `Random_Generic` and trait `Random_Engine`
+- [ ] Pseudo-random number generator engines using hash algorithms ---
     `Any_MD4`, `Any_MD5`, `Any_SHA0`, `Any_SHA1`, `Any_SHA2_256`, `Any_SHA2_512`, and `Random_SHA2_512`.
 - [ ] Pseudo-random number generator engines using symmetric-key encryption algorithms ---
     `Any_DES`, `Any_NDES`, `Any_AES`, `Any_NAES`, `Random_AES`, and `Random_NAES`.
-- [X] Pseudo-random number generator engines using simple randomization algorithm ---
+- [ ] Pseudo-random number generator engines using simple randomization algorithm ---
     `Any_Num`
 
 ### Asymmetric-key Algorithms for the Encryption/Decryption of digital data

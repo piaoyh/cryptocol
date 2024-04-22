@@ -31,6 +31,9 @@ use super::AnyNumber;
 /// The struct `Any_MD4` which is a pseudo-random number generator using a hash
 /// algorithm MD4. It is a specific version of the generic struct
 /// [`Random_Generic`](struct@Random_Generic).
+/// 
+// / # Quick Start
+// / 어쩌구 저쩌구
 #[allow(non_camel_case_types)] 
 pub type Any_MD4 = Random_Generic<MD4, 16383>;  // COUNT = 2^18 / 4 because of hashing 4 times for each random number generation
 
