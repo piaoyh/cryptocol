@@ -370,38 +370,6 @@ impl IntUnion
     /// ```
     #[inline] pub fn new_with_bool(b: bool) -> Self     { Self { uint: b as u32 } }
 
-    // pub fn zero() -> Self
-    /// Constructs a new `IntUnion` with initializing it
-    /// with the value of `0`.
-    /// 
-    /// # Output
-    /// A new object of `Self` initialized with the value of `0`
-    /// 
-    /// Example
-    /// ```
-    /// use cryptocol::number::IntUnion;
-    /// let a = IntUnion::zero();
-    /// println!("a = {}", a.get());
-    /// assert_eq!(a.get(), 0_u32);
-    /// ```
-    #[inline] pub fn zero() -> Self     { Self { uint: 0 } }
-
-    // pub fn one() -> Self
-    /// Constructs a new `IntUnion` with initializing it
-    /// with the value of `1`.
-    /// 
-    /// # Output
-    /// A new object of `Self` initialized with the value of `1`
-    /// 
-    /// Example
-    /// ```
-    /// use cryptocol::number::IntUnion;
-    /// let a = IntUnion::one();
-    /// println!("a = {}", a.get());
-    /// assert_eq!(a.get(), 1_u32);
-    /// ```
-    #[inline] pub fn one() -> Self      { Self { uint: 1 } }
-
     // pub fn get(self) -> u32
     /// Returns its value as `u32`.
     /// 

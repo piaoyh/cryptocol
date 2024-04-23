@@ -9396,7 +9396,7 @@ macro_rules! integer_union_methods {
         /// 
         /// # Example 1 for ShortUnion for Little Endian
         /// ```
-        /// use cryptocol::number::{ ShortUnion, LongUnion };
+        /// use cryptocol::number::{ SmallUInt, ShortUnion, LongUnion };
         /// 
         /// // a_u64: u32 === (a_high_u16, a_low_u16) == (10000_u16, 10100_u16) == 257010000_u32
         /// let a_high_shortunion = ShortUnion::new_with(10000_u16);
@@ -9451,7 +9451,7 @@ macro_rules! integer_union_methods {
         /// 
         /// # Example 2 for IntUnion for Little Endian
         /// ```
-        /// use cryptocol::number::{ IntUnion, LongerUnion };
+        /// use cryptocol::number::{ SmallUInt, IntUnion, LongerUnion };
         /// 
         /// // a_u64: u64 === (a_high_u32, a_low_u32) == (2299561912_u32, 2956226837_u32) == 9876543210123456789_u64
         /// let a_high_intunion = IntUnion::new_with(2299561912_u32);
@@ -9506,7 +9506,7 @@ macro_rules! integer_union_methods {
         /// 
         /// # Example 3 for LongUnion for Little Endian
         /// ```
-        /// use cryptocol::number::LongUnion;
+        /// use cryptocol::number::{ SmallUInt, LongUnion };
         /// 
         /// // a_u128: u128 === (a_high_u64, a_low_u64) == (10775095670246085798_u64, 7681743649119882630_u64) == 198765432198765432198765432198765432198_u128
         /// let a_high_longunion = LongUnion::new_with(10775095670246085798_u64);
@@ -9552,7 +9552,7 @@ macro_rules! integer_union_methods {
         /// 
         /// # Example 4 for LongerUnion for Little Endian
         /// ```
-        /// use cryptocol::number::LongerUnion;
+        /// use cryptocol::number::{ SmallUInt, LongerUnion };
         /// 
         /// // a_u256: u256 === (a_high_u128, a_low_u128) == (123456789012345678901234567890123456789_u128, 198765432198765432198765432198765432198_u128) == 42010168377579896403540037778015643756626903575004241358522734820017396206982_u256
         /// let a_high_longerunion = LongerUnion::new_with(123456789012345678901234567890123456789_u128);
@@ -9598,7 +9598,7 @@ macro_rules! integer_union_methods {
         /// 
         /// # Example 5 for SizeUnion for Little Endian
         /// ```
-        /// use cryptocol::number::SizeUnion;
+        /// use cryptocol::number::{ SmallUInt, SizeUnion };
         /// 
         /// #[cfg(target_pointer_width = "64")]
         /// {
@@ -9707,7 +9707,7 @@ macro_rules! integer_union_methods {
         /// 
         /// # Example 1 for ShortUnion for Little Endian
         /// ```
-        /// use cryptocol::number::{ ShortUnion, LongUnion };
+        /// use cryptocol::number::{ SmallUInt, ShortUnion, LongUnion };
         /// 
         /// // a_u64: u32 === (a_high_u16, a_low_u16) == (10000_u16, 10100_u16) == 257010000_u32
         /// let a_high_shortunion = ShortUnion::new_with(10000_u16);
@@ -9769,7 +9769,7 @@ macro_rules! integer_union_methods {
         /// 
         /// # Example 2 for IntUnion for Little Endian
         /// ```
-        /// use cryptocol::number::{ IntUnion, LongerUnion };
+        /// use cryptocol::number::{ SmallUInt, IntUnion, LongerUnion };
         /// 
         /// // a_u64: u64 === (a_high_u32, a_low_u32) == (2299561912_u32, 2956226837_u32) == 9876543210123456789_u64
         /// let a_high_intunion = IntUnion::new_with(2299561912_u32);
@@ -9831,7 +9831,7 @@ macro_rules! integer_union_methods {
         /// 
         /// # Example 3 for LongUnion for Little Endian
         /// ```
-        /// use cryptocol::number::LongUnion;
+        /// use cryptocol::number::{ SmallUInt, LongUnion };
         /// 
         /// // a_u128: u128 === (a_high_u64, a_low_u64) == (10775095670246085798_u64, 7681743649119882630_u64) == 198765432198765432198765432198765432198_u128
         /// let a_high_longunion = LongUnion::new_with(10775095670246085798_u64);
@@ -9884,7 +9884,7 @@ macro_rules! integer_union_methods {
         /// 
         /// # Example 4 for LongerUnion for Little Endian
         /// ```
-        /// use cryptocol::number::LongerUnion;
+        /// use cryptocol::number::{ SmallUInt, LongerUnion };
         /// 
         /// // a_u256: u256 === (a_high_u128, a_low_u128) == (123456789012345678901234567890123456789_u128, 198765432198765432198765432198765432198_u128) == 42010168377579896403540037778015643756626903575004241358522734820017396206982_u256
         /// let a_high_longerunion = LongerUnion::new_with(123456789012345678901234567890123456789_u128);
@@ -9937,7 +9937,7 @@ macro_rules! integer_union_methods {
         /// 
         /// # Example 5 for SizeUnion for Little Endian
         /// ```
-        /// use cryptocol::number::SizeUnion;
+        /// use cryptocol::number::{ SmallUInt, SizeUnion };
         /// 
         /// #[cfg(target_pointer_width = "64")]
         /// {
@@ -10589,7 +10589,7 @@ macro_rules! integer_union_methods {
         /// 
         /// # Example 1 for ShortUnion
         /// ```
-        /// use cryptocol::number::ShortUnion;
+        /// use cryptocol::number::{ SmallUInt, ShortUnion };
         /// 
         /// let a_shortunion = ShortUnion::new_with(u16::MAX / 3).wrapping_div(ShortUnion::new_with(2_u16));
         /// println!("{} / 2 = {}", ShortUnion::new_with(u16::MAX / 3), a_shortunion);
@@ -10601,7 +10601,7 @@ macro_rules! integer_union_methods {
         /// 
         /// # Example 2 for IntUnion
         /// ```
-        /// use cryptocol::number::IntUnion;
+        /// use cryptocol::number::{ SmallUInt, IntUnion };
         /// 
         /// let a_intunion = IntUnion::new_with(u32::MAX / 3).wrapping_div(IntUnion::new_with(2_u32));
         /// println!("{} / 2 = {}", IntUnion::new_with(u32::MAX / 3), a_intunion);
@@ -10613,7 +10613,7 @@ macro_rules! integer_union_methods {
         /// 
         /// # Example 3 for LongUnion
         /// ```
-        /// use cryptocol::number::LongUnion;
+        /// use cryptocol::number::{ SmallUInt, LongUnion };
         /// 
         /// let a_longunion = LongUnion::new_with(u64::MAX / 3).wrapping_div(LongUnion::new_with(2_u64));
         /// println!("{} / 2 = {}", LongUnion::new_with(u64::MAX / 3), a_longunion);
@@ -10625,7 +10625,7 @@ macro_rules! integer_union_methods {
         /// 
         /// # Example 4 for LongerUnion
         /// ```
-        /// use cryptocol::number::LongerUnion;
+        /// use cryptocol::number::{ SmallUInt, LongerUnion };
         /// 
         /// let a_longerunion = LongerUnion::new_with(u128::MAX / 3).wrapping_div(LongerUnion::new_with(2_u128));
         /// println!("{} / 2 = {}", LongerUnion::new_with(u128::MAX / 3), a_longerunion);
@@ -10637,7 +10637,7 @@ macro_rules! integer_union_methods {
         /// 
         /// # Example 5 for SizeUnion for 64-bit CPUs
         /// ```
-        /// use cryptocol::number::SizeUnion;
+        /// use cryptocol::number::{ SmallUInt, SizeUnion };
         /// 
         /// let a_sizeunion = SizeUnion::new_with(usize::MAX / 3).wrapping_div(SizeUnion::new_with(2_usize));
         /// println!("{} / 2 = {}", SizeUnion::new_with(usize::MAX / 3), a_sizeunion);
@@ -10680,7 +10680,7 @@ macro_rules! integer_union_methods {
         /// 
         /// # Example 1 for ShortUnion
         /// ```
-        /// use cryptocol::number::ShortUnion;
+        /// use cryptocol::number::{ SmallUInt, ShortUnion };
         /// 
         /// let (a_shortunion, overflow) = ShortUnion::new_with(u16::MAX / 3).overflowing_div(ShortUnion::new_with(2_u16));
         /// println!("{} / 2 = {}\nOverflow = {}", ShortUnion::new_with(u16::MAX / 3), a_shortunion, overflow);
@@ -10693,7 +10693,7 @@ macro_rules! integer_union_methods {
         /// 
         /// # Example 2 for IntUnion
         /// ```
-        /// use cryptocol::number::IntUnion;
+        /// use cryptocol::number::{ SmallUInt, IntUnion };
         /// 
         /// let (a_intunion, overflow) = IntUnion::new_with(u32::MAX / 3).overflowing_div(IntUnion::new_with(2_u32));
         /// println!("{} / 2 = {}\nOverflow = {}", IntUnion::new_with(u32::MAX / 3), a_intunion, overflow);
@@ -10706,7 +10706,7 @@ macro_rules! integer_union_methods {
         /// 
         /// # Example 3 for LongUnion
         /// ```
-        /// use cryptocol::number::LongUnion;
+        /// use cryptocol::number::{ SmallUInt, LongUnion };
         /// 
         /// let (a_longunion, overflow) = LongUnion::new_with(u64::MAX / 3).overflowing_div(LongUnion::new_with(2_u64));
         /// println!("{} / 2 = {}\nOverflow = {}", LongUnion::new_with(u64::MAX / 3), a_longunion, overflow);
@@ -10719,7 +10719,7 @@ macro_rules! integer_union_methods {
         /// 
         /// # Example 4 for LongerUnion
         /// ```
-        /// use cryptocol::number::LongerUnion;
+        /// use cryptocol::number::{ SmallUInt, LongerUnion };
         /// 
         /// let (a_longerunion, overflow) = LongerUnion::new_with(u128::MAX / 3).overflowing_div(LongerUnion::new_with(2_u128));
         /// println!("{} / 2 = {}\nOverflow = {}", LongerUnion::new_with(u128::MAX / 3), a_longerunion, overflow);
@@ -10732,7 +10732,7 @@ macro_rules! integer_union_methods {
         /// 
         /// # Example 5 for SizeUnion for 64-bit CPUs
         /// ```
-        /// use cryptocol::number::SizeUnion;
+        /// use cryptocol::number::{ SmallUInt, SizeUnion };
         /// 
         /// let (a_sizeunion, overflow) = SizeUnion::new_with(usize::MAX / 3).overflowing_div(SizeUnion::new_with(2_usize));
         /// println!("{} / 2 = {}\nOverflow = {}", SizeUnion::new_with(usize::MAX / 3), a_sizeunion, overflow);
@@ -10773,7 +10773,7 @@ macro_rules! integer_union_methods {
         /// 
         /// # Example 1 for ShortUnion
         /// ```
-        /// use cryptocol::number::ShortUnion;
+        /// use cryptocol::number::{ SmallUInt, ShortUnion };
         /// 
         /// let a_shortunion = ShortUnion::new_with(u16::MAX / 3).checked_div(ShortUnion::new_with(2_u16));
         /// match a_shortunion
@@ -10798,7 +10798,7 @@ macro_rules! integer_union_methods {
         /// 
         /// # Example 2 for IntUnion
         /// ```
-        /// use cryptocol::number::IntUnion;
+        /// use cryptocol::number::{ SmallUInt, IntUnion };
         /// 
         /// let a_intunion = IntUnion::new_with(u32::MAX / 3).checked_div(IntUnion::new_with(2_u32));
         /// match a_intunion
@@ -10823,7 +10823,7 @@ macro_rules! integer_union_methods {
         /// 
         /// # Example 3 for LongUnion
         /// ```
-        /// use cryptocol::number::LongUnion;
+        /// use cryptocol::number::{ SmallUInt, LongUnion };
         /// 
         /// let a_longunion = LongUnion::new_with(u64::MAX / 3).checked_div(LongUnion::new_with(2_u64));
         /// match a_longunion
@@ -10848,7 +10848,7 @@ macro_rules! integer_union_methods {
         /// 
         /// # Example 4 for LongerUnion
         /// ```
-        /// use cryptocol::number::LongerUnion;
+        /// use cryptocol::number::{ SmallUInt, LongerUnion };
         /// 
         /// let a_longerunion = LongerUnion::new_with(u128::MAX / 3).checked_div(LongerUnion::new_with(2_u128));
         /// match a_longerunion
@@ -10873,7 +10873,7 @@ macro_rules! integer_union_methods {
         /// 
         /// # Example 5 for SizeUnion for 64-bit CPUs
         /// ```
-        /// use cryptocol::number::SizeUnion;
+        /// use cryptocol::number::{ SmallUInt, SizeUnion };
         /// 
         /// let a_sizeunion = SizeUnion::new_with(usize::MAX / 3).checked_div(SizeUnion::new_with(2_usize));
         /// match a_sizeunion
@@ -10929,7 +10929,7 @@ macro_rules! integer_union_methods {
         /// 
         /// # Example 1 for ShortUnion
         /// ```
-        /// use cryptocol::number::ShortUnion;
+        /// use cryptocol::number::{ SmallUInt, ShortUnion };
         /// 
         /// let a_shortunion = ShortUnion::new_with(u16::MAX / 3).saturating_div(ShortUnion::new_with(2_u16));
         /// println!("{} / 2 = {}", ShortUnion::new_with(u16::MAX / 3), a_shortunion);
@@ -10941,7 +10941,7 @@ macro_rules! integer_union_methods {
         /// 
         /// # Example 2 for IntUnion
         /// ```
-        /// use cryptocol::number::IntUnion;
+        /// use cryptocol::number::{ SmallUInt, IntUnion };
         /// 
         /// let a_intunion = IntUnion::new_with(u32::MAX / 3).saturating_div(IntUnion::new_with(2_u32));
         /// println!("{} / 2 = {}", IntUnion::new_with(u32::MAX / 3), a_intunion);
@@ -10953,7 +10953,7 @@ macro_rules! integer_union_methods {
         /// 
         /// # Example 3 for LongUnion
         /// ```
-        /// use cryptocol::number::LongUnion;
+        /// use cryptocol::number::{ SmallUInt, LongUnion };
         /// 
         /// let a_longunion = LongUnion::new_with(u64::MAX / 3).saturating_div(LongUnion::new_with(2_u64));
         /// println!("{} / 2 = {}", LongUnion::new_with(u64::MAX / 3), a_longunion);
@@ -10965,7 +10965,7 @@ macro_rules! integer_union_methods {
         /// 
         /// # Example 4 for LongerUnion
         /// ```
-        /// use cryptocol::number::LongerUnion;
+        /// use cryptocol::number::{ SmallUInt, LongerUnion };
         /// 
         /// let a_longerunion = LongerUnion::new_with(u128::MAX / 3).saturating_div(LongerUnion::new_with(2_u128));
         /// println!("{} / 2 = {}", LongerUnion::new_with(u128::MAX / 3), a_longerunion);
@@ -10977,7 +10977,7 @@ macro_rules! integer_union_methods {
         /// 
         /// # Example 5 for SizeUnion for 64-bit CPUs
         /// ```
-        /// use cryptocol::number::SizeUnion;
+        /// use cryptocol::number::{ SmallUInt, SizeUnion };
         /// 
         /// let a_sizeunion = SizeUnion::new_with(usize::MAX / 3).saturating_div(SizeUnion::new_with(2_usize));
         /// println!("{} / 2 = {}", SizeUnion::new_with(usize::MAX / 3), a_sizeunion);
@@ -11020,7 +11020,7 @@ macro_rules! integer_union_methods {
         /// 
         /// # Example 1 for ShortUnion
         /// ```
-        /// use cryptocol::number::ShortUnion;
+        /// use cryptocol::number::{ SmallUInt, ShortUnion };
         /// 
         /// let a_shortunion = ShortUnion::new_with(u16::MAX / 3).wrapping_rem(ShortUnion::new_with(3_u16));
         /// println!("{} % 3 = {}", ShortUnion::new_with(u16::MAX / 3), a_shortunion);
@@ -11032,7 +11032,7 @@ macro_rules! integer_union_methods {
         /// 
         /// # Example 2 for IntUnion
         /// ```
-        /// use cryptocol::number::IntUnion;
+        /// use cryptocol::number::{ SmallUInt, IntUnion };
         /// 
         /// let a_intunion = IntUnion::new_with(u32::MAX / 3).wrapping_rem(IntUnion::new_with(3_u32));
         /// println!("{} % 3 = {}", IntUnion::new_with(u32::MAX / 3), a_intunion);
@@ -11044,7 +11044,7 @@ macro_rules! integer_union_methods {
         /// 
         /// # Example 3 for LongUnion
         /// ```
-        /// use cryptocol::number::LongUnion;
+        /// use cryptocol::number::{ SmallUInt, LongUnion };
         /// 
         /// let a_longunion = LongUnion::new_with(u64::MAX / 3).wrapping_rem(LongUnion::new_with(3_u64));
         /// println!("{} % 3 = {}", LongUnion::new_with(u64::MAX / 3), a_longunion);
@@ -11056,7 +11056,7 @@ macro_rules! integer_union_methods {
         /// 
         /// # Example 4 for LongerUnion
         /// ```
-        /// use cryptocol::number::LongerUnion;
+        /// use cryptocol::number::{ SmallUInt, LongerUnion };
         /// 
         /// let a_longerunion = LongerUnion::new_with(u128::MAX / 3).wrapping_rem(LongerUnion::new_with(3_u128));
         /// println!("{} % 3 = {}", LongerUnion::new_with(u128::MAX / 3), a_longerunion);
@@ -11068,7 +11068,7 @@ macro_rules! integer_union_methods {
         /// 
         /// # Example 5 for SizeUnion
         /// ```
-        /// use cryptocol::number::SizeUnion;
+        /// use cryptocol::number::{ SmallUInt, SizeUnion };
         /// 
         /// let a_sizeunion = SizeUnion::new_with(usize::MAX / 3).wrapping_rem(SizeUnion::new_with(3_usize));
         /// println!("{} % 3 = {}", SizeUnion::new_with(usize::MAX / 3), a_sizeunion);
@@ -11111,7 +11111,7 @@ macro_rules! integer_union_methods {
         /// 
         /// # Example 1 for ShortUnion
         /// ```
-        /// use cryptocol::number::ShortUnion;
+        /// use cryptocol::number::{ SmallUInt, ShortUnion };
         /// 
         /// let (a_shortunion, overflow) = ShortUnion::new_with(u16::MAX / 3).overflowing_rem(ShortUnion::new_with(3_u16));
         /// println!("{} % 3 = {}\nOverflow = {}", ShortUnion::new_with(u16::MAX / 3), a_shortunion, overflow);
@@ -11124,7 +11124,7 @@ macro_rules! integer_union_methods {
         /// 
         /// # Example 2 for IntUnion
         /// ```
-        /// use cryptocol::number::IntUnion;
+        /// use cryptocol::number::{ SmallUInt, IntUnion };
         /// 
         /// let (a_intunion, overflow) = IntUnion::new_with(u32::MAX / 3).overflowing_rem(IntUnion::new_with(3_u32));
         /// println!("{} % 3 = {}\nOverflow = {}", IntUnion::new_with(u32::MAX / 3), a_intunion, overflow);
@@ -11137,7 +11137,7 @@ macro_rules! integer_union_methods {
         /// 
         /// # Example 3 for LongUnion
         /// ```
-        /// use cryptocol::number::LongUnion;
+        /// use cryptocol::number::{ SmallUInt, LongUnion };
         /// 
         /// let (a_longunion, overflow) = LongUnion::new_with(u64::MAX / 3).overflowing_rem(LongUnion::new_with(3_u64));
         /// println!("{} % 3 = {}\nOverflow = {}", LongUnion::new_with(u64::MAX / 3), a_longunion, overflow);
@@ -11150,7 +11150,7 @@ macro_rules! integer_union_methods {
         /// 
         /// # Example 4 for LongerUnion
         /// ```
-        /// use cryptocol::number::LongerUnion;
+        /// use cryptocol::number::{ SmallUInt, LongerUnion };
         /// 
         /// let (a_longerunion, overflow) = LongerUnion::new_with(u128::MAX / 3).overflowing_rem(LongerUnion::new_with(3_u128));
         /// println!("{} % 3 = {}\nOverflow = {}", LongerUnion::new_with(u128::MAX / 3), a_longerunion, overflow);
@@ -11163,7 +11163,7 @@ macro_rules! integer_union_methods {
         /// 
         /// # Example 5 for SizeUnion
         /// ```
-        /// use cryptocol::number::SizeUnion;
+        /// use cryptocol::number::{ SmallUInt, SizeUnion };
         /// 
         /// let (a_sizeunion, overflow) = SizeUnion::new_with(usize::MAX / 3).overflowing_rem(SizeUnion::new_with(3_usize));
         /// println!("{} % 3 = {}\nOverflow = {}", SizeUnion::new_with(usize::MAX / 3), a_sizeunion, overflow);
@@ -11204,7 +11204,7 @@ macro_rules! integer_union_methods {
         /// 
         /// # Example 1 for ShortUnion
         /// ```
-        /// use cryptocol::number::ShortUnion;
+        /// use cryptocol::number::{ SmallUInt, ShortUnion };
         /// 
         /// let a_shortunion = ShortUnion::new_with(u16::MAX / 3).checked_rem(ShortUnion::new_with(3_u16));
         /// match a_shortunion
@@ -11229,7 +11229,7 @@ macro_rules! integer_union_methods {
         /// 
         /// # Example 2 for IntUnion
         /// ```
-        /// use cryptocol::number::IntUnion;
+        /// use cryptocol::number::{ SmallUInt, IntUnion };
         /// 
         /// let a_intunion = IntUnion::new_with(u32::MAX / 3).checked_rem(IntUnion::new_with(3_u32));
         /// match a_intunion
@@ -11254,7 +11254,7 @@ macro_rules! integer_union_methods {
         /// 
         /// # Example 3 for LongUnion
         /// ```
-        /// use cryptocol::number::LongUnion;
+        /// use cryptocol::number::{ SmallUInt, LongUnion };
         /// 
         /// let a_longunion = LongUnion::new_with(u64::MAX / 3).checked_rem(LongUnion::new_with(3_u64));
         /// match a_longunion
@@ -11279,7 +11279,7 @@ macro_rules! integer_union_methods {
         /// 
         /// # Example 4 for LongerUnion
         /// ```
-        /// use cryptocol::number::LongerUnion;
+        /// use cryptocol::number::{ SmallUInt, LongerUnion };
         /// 
         /// let a_longerunion = LongerUnion::new_with(u128::MAX / 3).checked_rem(LongerUnion::new_with(3_u128));
         /// match a_longerunion
@@ -11304,7 +11304,7 @@ macro_rules! integer_union_methods {
         /// 
         /// # Example 5 for SizeUnion
         /// ```
-        /// use cryptocol::number::SizeUnion;
+        /// use cryptocol::number::{ SmallUInt, SizeUnion };
         /// 
         /// let a_sizeunion = SizeUnion::new_with(usize::MAX / 3).checked_rem(SizeUnion::new_with(3_usize));
         /// match a_sizeunion
@@ -11968,6 +11968,95 @@ macro_rules! integer_union_methods {
             }
         }
 
+        // fn unchecked_pow(self, exp: u32) -> Self
+        /// Computes self.pow(exp), unless overflow does not occcurred.
+        /// Otherwise, it will panic.
+        /// 
+        /// # Arguments
+        /// `exp` is the exponential of the type of `u32`.
+        /// 
+        /// # Panics
+        /// This method will be panic if overflow occurred.
+        /// Use this method only when you are sure that overflow won't occur.
+        /// 
+        /// # Output
+        /// It returns the result of `self` raised to the power of `exp`
+        /// if overflow does not occur.
+        /// 
+        /// # Arguments
+        /// The argument `exp` is the primitive unsigned integer type u32.
+        /// 
+        /// # Features
+        /// Wrapping (modular) exponentiation.
+        /// 
+        /// # Example 1 for ShortUnion
+        /// ```
+        /// use cryptocol::number::ShortUnion;
+        /// 
+        /// let a_shortunion = ShortUnion::new_with(12_u16).unchecked_pow(4);
+        /// println!("{} ** 4 = {}, where ** is the power operator", ShortUnion::new_with(12_u16), a_shortunion);
+        /// assert_eq!(a_shortunion.get(), 20736_u16);
+        /// // It will panic.
+        /// // let b_shortunion = ShortUnion::new_with(12_u16).unchecked_pow(5);
+        /// ```
+        /// 
+        /// # Example 2 for IntUnion
+        /// ```
+        /// use cryptocol::number::IntUnion;
+        /// 
+        /// let a_intunion = IntUnion::new_with(38_u32).unchecked_pow(6);
+        /// println!("{} ** 6 = {}, where ** is the power operator", IntUnion::new_with(38_u32), a_intunion);
+        /// assert_eq!(a_intunion.get(), 3010936384_u32);
+        /// // It will panic.
+        /// // let b_intunion = IntUnion::new_with(38_u32).unchecked_pow(7);
+        /// ```
+        /// 
+        /// # Example 3 for LongUnion
+        /// ```
+        /// use cryptocol::number::LongUnion;
+        /// 
+        /// let a_longunion = LongUnion::new_with(1004_u64).unchecked_pow(6);
+        /// println!("{} ** 6 = {}, where ** is the power operator", LongUnion::new_with(1004_u64), a_longunion);
+        /// assert_eq!(a_longunion.get(), 1024241283846148096_u64);
+        /// // It will panic.
+        /// // let b_longunion = LongUnion::new_with(1004_u64).unchecked_pow(7);
+        /// ```
+        /// 
+        /// # Example 4 for LongerUnion
+        /// ```
+        /// use cryptocol::number::LongerUnion;
+        /// 
+        /// let a_longerunion = LongerUnion::new_with(10003_u128).unchecked_pow(9);
+        /// println!("{} ** 9 = {}, where ** is the power operator", LongerUnion::new_with(10003_u128), a_longerunion);
+        /// assert_eq!(a_longerunion.get(), 1002703242269020906241243873790509683_u128);
+        /// // It will panic.
+        /// // let b_longerunion = LongerUnion::new_with(10003_u128).unchecked_pow(10);
+        /// ```
+        /// 
+        /// # Example 5 for SizeUnion
+        /// ```
+        /// use cryptocol::number::SizeUnion;
+        /// 
+        /// let a_sizeunion = SizeUnion::new_with(3_usize).unchecked_pow(5);
+        /// println!("{} ** 5 = {}, where ** is the power operator", SizeUnion::new_with(3_usize), a_sizeunion);
+        /// assert_eq!(a_sizeunion.get(), 243_usize);
+        /// // It will panic.
+        /// // let b_sizeunion = SizeUnion::new_with(3_usize).unchecked_pow(128);
+        /// ```
+        /// 
+        /// # Plagiarism in descryption
+        /// It calls the method pow() of implementation of the primitive
+        /// unsigned integer types such as`u8`, `u16`, `u32`, `u64`, `u128` and
+        /// `usize` directly. So, all the description of this method is mainly the
+        /// same as that of the method pow() of implementation of the
+        /// primitive unsigned integer types except example codes. Confer to the
+        /// descryptions that are linked to in the section _Reference_. This
+        /// plagiarism is not made maliciously but is made for the reason of
+        /// effectiveness and efficiency so that users may understand better and
+        /// easily how to use this method with simiilarity to the method
+        /// pow() of implementation of the primitive unsigned integer types.
+        pub fn unchecked_pow(self, exp: u32) -> Self    { self.checked_pow(exp).unwrap() }
+
         // fn saturating_pow(self, exp: u32) -> Self;
         /// Computes self.pow(exp), saturating at the numeric bounds instead of overflowing.
         /// 
@@ -12084,7 +12173,7 @@ macro_rules! integer_union_methods {
         /// 
         /// # Example 1 for ShortUnion
         /// ```
-        /// use cryptocol::number::ShortUnion;
+        /// use cryptocol::number::{ SmallUInt, ShortUnion };
         /// 
         /// let a_shortunion = ShortUnion::new_with(10000_u16);
         /// let base_shortunion = ShortUnion::new_with(5_u16);
@@ -12104,7 +12193,7 @@ macro_rules! integer_union_methods {
         /// 
         /// # Example 2 for IntUnion
         /// ```
-        /// use cryptocol::number::IntUnion;
+        /// use cryptocol::number::{ SmallUInt, IntUnion };
         /// 
         /// let a_intunion = IntUnion::new_with(1000000000_u32);
         /// let base_intunion = IntUnion::new_with(7_u32);
@@ -12124,7 +12213,7 @@ macro_rules! integer_union_methods {
         /// 
         /// # Example 3 for LongUnion
         /// ```
-        /// use cryptocol::number::LongUnion;
+        /// use cryptocol::number::{ SmallUInt, LongUnion };
         /// 
         /// let a_longunion = LongUnion::new_with(10000000000000000000_u64);
         /// let base_longunion = LongUnion::new_with(11_u64);
@@ -12144,7 +12233,7 @@ macro_rules! integer_union_methods {
         /// 
         /// # Example 4 for LongerUnion
         /// ```
-        /// use cryptocol::number::LongerUnion;
+        /// use cryptocol::number::{ SmallUInt, LongerUnion };
         /// 
         /// let a_longerunion = LongerUnion::new_with(100000000000000000000000000000000000000_u128);
         /// let base_longerunion = LongerUnion::new_with(13_u128);
@@ -12164,7 +12253,7 @@ macro_rules! integer_union_methods {
         /// 
         /// # Example 5 for SizeUnion
         /// ```
-        /// use cryptocol::number::SizeUnion;
+        /// use cryptocol::number::{ SmallUInt, SizeUnion };
         /// 
         /// let a_sizeunion = SizeUnion::new_with(100_usize);
         /// let base_sizeunion = SizeUnion::new_with(3_usize);
@@ -12212,7 +12301,7 @@ macro_rules! integer_union_methods {
         /// 
         /// # Example 1 for ShortUnion
         /// ```
-        /// use cryptocol::number::ShortUnion;
+        /// use cryptocol::number::{ SmallUInt, ShortUnion };
         /// 
         /// let a_shortunion = ShortUnion::new_with(10000_u16);
         /// let res = a_shortunion.ilog10();
@@ -12225,7 +12314,7 @@ macro_rules! integer_union_methods {
         /// 
         /// # Example 2 for IntUnion
         /// ```
-        /// use cryptocol::number::IntUnion;
+        /// use cryptocol::number::{ SmallUInt, IntUnion };
         /// 
         /// let a_intunion = IntUnion::new_with(1000000000_u32);
         /// let res = a_intunion.ilog10();
@@ -12238,7 +12327,7 @@ macro_rules! integer_union_methods {
         /// 
         /// # Example 3 for LongUnion
         /// ```
-        /// use cryptocol::number::LongUnion;
+        /// use cryptocol::number::{ SmallUInt, LongUnion };
         /// 
         /// let a_longunion = LongUnion::new_with(10000000000000000000_u64);
         /// let res = a_longunion.ilog10();
@@ -12251,7 +12340,7 @@ macro_rules! integer_union_methods {
         /// 
         /// # Example 4 for LongerUnion
         /// ```
-        /// use cryptocol::number::LongerUnion;
+        /// use cryptocol::number::{ SmallUInt, LongerUnion };
         /// 
         /// let a_longerunion = LongerUnion::new_with(100000000000000000000000000000000000000_u128);
         /// let res = a_longerunion.ilog10();
@@ -12264,7 +12353,7 @@ macro_rules! integer_union_methods {
         /// 
         /// # Example 5 for SizeUnion
         /// ```
-        /// use cryptocol::number::SizeUnion;
+        /// use cryptocol::number::{ SmallUInt, SizeUnion };
         /// 
         /// let a_sizeunion = SizeUnion::new_with(100_usize);
         /// let res = a_sizeunion.ilog10();
@@ -12305,7 +12394,7 @@ macro_rules! integer_union_methods {
         /// 
         /// # Example 1 for ShortUnion
         /// ```
-        /// use cryptocol::number::ShortUnion;
+        /// use cryptocol::number::{ SmallUInt, ShortUnion };
         /// 
         /// let a_shortunion = ShortUnion::new_with(10000_u16);
         /// let res = a_shortunion.ilog2();
@@ -12318,7 +12407,7 @@ macro_rules! integer_union_methods {
         /// 
         /// # Example 2 for IntUnion
         /// ```
-        /// use cryptocol::number::IntUnion;
+        /// use cryptocol::number::{ SmallUInt, IntUnion };
         /// 
         /// let a_intunion = IntUnion::new_with(1000000000_u32);
         /// let res = a_intunion.ilog2();
@@ -12331,7 +12420,7 @@ macro_rules! integer_union_methods {
         /// 
         /// # Example 3 for LongUnion
         /// ```
-        /// use cryptocol::number::LongUnion;
+        /// use cryptocol::number::{ SmallUInt, LongUnion };
         /// 
         /// let a_longunion = LongUnion::new_with(10000000000000000000_u64);
         /// let res = a_longunion.ilog2();
@@ -12344,7 +12433,7 @@ macro_rules! integer_union_methods {
         /// 
         /// # Example 4 for LongerUnion
         /// ```
-        /// use cryptocol::number::LongerUnion;
+        /// use cryptocol::number::{ SmallUInt, LongerUnion };
         /// 
         /// let a_longerunion = LongerUnion::new_with(100000000000000000000000000000000000000_u128);
         /// let res = a_longerunion.ilog2();
@@ -12357,7 +12446,7 @@ macro_rules! integer_union_methods {
         /// 
         /// # Example 5 for SizeUnion
         /// ```
-        /// use cryptocol::number::SizeUnion;
+        /// use cryptocol::number::{ SmallUInt, SizeUnion };
         /// 
         /// let a_sizeunion = SizeUnion::new_with(100_usize);
         /// let res = a_sizeunion.ilog2();
@@ -12388,49 +12477,1327 @@ macro_rules! integer_union_methods {
         /// ilog2() of implementation of the primitive unsigned integer types.
         #[inline] pub fn ilog2(self) -> u32             { self.get().ilog2() }
 
-        #[inline] pub fn isqrt(self) -> Self            { Self::new_with(SmallUInt::isqrt(self.get()) ) }
-        #[inline] pub fn root(self, exp: Self) -> Self  { Self::new_with( self.get().root(exp.get()) ) }
+        // fn isqrt(self) -> Self;
+        /// Returns the square root of the number.
+        /// 
+        /// # Output
+        /// The square root of the number, rounded down
+        /// 
+        /// # Features
+        /// - Usually the result of square root is float point number.
+        /// So, it rounds down the square root result if it is not fit to interger.
+        /// 
+        /// # Example 1 for ShortUnion
+        /// ```
+        /// use cryptocol::number::ShortUnion;
+        /// 
+        /// let a_shortunion = ShortUnion::new_with(10000_u16);
+        /// let res_shortunion = a_shortunion.isqrt();
+        /// println!("isqrt( {} ) = {}", a_shortunion, res_shortunion);
+        /// assert_eq!(res_shortunion.get(), 100_u16);
+        /// ```
+        /// 
+        /// # Example 2 for IntUnion
+        /// ```
+        /// use cryptocol::number::IntUnion;
+        /// 
+        /// let a_intunion = IntUnion::new_with(1000000000_u32);
+        /// let res_intunion = a_intunion.isqrt();
+        /// println!("isqrt( {} ) = {}", a_intunion, res_intunion);
+        /// assert_eq!(res_intunion.get(), 31622_u32);
+        /// ```
+        /// 
+        /// # Example 3 for LongUnion
+        /// ```
+        /// use cryptocol::number::LongUnion;
+        /// 
+        /// let a_longunion = LongUnion::new_with(10000000000000000000_u64);
+        /// let res_longunion = a_longunion.isqrt();
+        /// println!("isqrt( {} ) = {}", a_longunion, res_longunion);
+        /// assert_eq!(res_longunion.get(), 3162277660_u64);
+        /// ```
+        /// 
+        /// # Example 4 for LongerUnion
+        /// ```
+        /// use cryptocol::number::LongerUnion;
+        /// 
+        /// let a_longerunion = LongerUnion::new_with(100000000000000000000000000000000000000_u128);
+        /// let res_longerunion = a_longerunion.isqrt();
+        /// println!("isqrt( {} ) = {}", a_longerunion, res_longerunion);
+        /// assert_eq!(res_longerunion.get(), 10000000000000000000_u128);
+        /// ```
+        /// 
+        /// # Example 5 for SizeUnion
+        /// ```
+        /// use cryptocol::number::SizeUnion;
+        /// 
+        /// let a_sizeunion = SizeUnion::new_with(100_usize);
+        /// let res_sizeunion = a_sizeunion.isqrt();
+        /// println!("isqrt( {} ) = {}", a_sizeunion, res_sizeunion);
+        /// assert_eq!(res_sizeunion.get(), 10_usize);
+        /// ```
+        /// 
+        /// # Big-endian issue
+        /// It is just experimental for Big Endian CPUs. So, you are not encouraged
+        /// to use it for Big Endian CPUs for serious purpose. Only use this crate
+        /// for Big-endian CPUs with your own full responsibility.
+        /// Tests a `SmallUInt`-type object to find whether or not it is a
+        /// prime number.
+        /// 
+        /// # Plagiarism in descryption
+        /// It calls the method isqrt() of implementation of the primitive
+        /// unsigned integer types such as`u8`, `u16`, `u32`, `u64`, `u128` and
+        /// `usize` directly. So, all the description of this method is mainly the
+        /// same as that of the method isqrt() of implementation of the
+        /// primitive unsigned integer types except example codes. Confer to the
+        /// descryptions that are linked to in the section _Reference_. This
+        /// plagiarism is not made maliciously but is made for the reason of
+        /// effectiveness and efficiency so that users may understand better and
+        /// easily how to use this method with simiilarity to the method
+        /// isqrt() of implementation of the primitive unsigned integer types.
+        #[inline] pub fn isqrt(self) -> Self            { Self::new_with( SmallUInt::isqrt(self.get()) ) }
 
+        // fn reverse_bits(self) -> Self;
+        /// Reverses the order of bits in the integer.
+        /// 
+        /// # Features
+        /// The (LSB) least significant bit becomes the most significant bit,
+        /// secondly least significant bit becomes secondly most significant bit,
+        /// etc.
+        /// 
+        /// # Output
+        /// the number that has the bit order opposite to that of `self`.
+        /// 
+        /// # Example 1 for ShortUnion
+        /// ```
+        /// use cryptocol::number::ShortUnion;
+        /// 
+        /// let c_shortunion = ShortUnion::new_with(0b1011001110001111_u16);
+        /// let d_shortunion = c_shortunion.reverse_bits();
+        /// println!("{:016b} -> {:016b}", c_shortunion.get(), d_shortunion.get());
+        /// assert_eq!(d_shortunion.get(), 0b1111000111001101_u16);
+        /// ```
+        /// 
+        /// # Example 2 for IntUnion
+        /// ```
+        /// use cryptocol::number::IntUnion;
+        /// 
+        /// let c_intunion = IntUnion::new_with(0b10110011100011110000111110000011_u32);
+        /// let d_intunion = c_intunion.reverse_bits();
+        /// println!("{:032b} -> {:032b}", c_intunion.get(), d_intunion.get());
+        /// assert_eq!(d_intunion.get(), 0b11000001111100001111000111001101_u32);
+        /// ```
+        /// 
+        /// # Example 3 for LongUnion
+        /// ```
+        /// use cryptocol::number::LongUnion;
+        /// 
+        /// let c_longunion = LongUnion::new_with(0b1011001110001111000011111000001111110000001111111000000011111111_u64);
+        /// let d_longunion = c_longunion.reverse_bits();
+        /// println!("{:064b} -> {:064b}", c_longunion.get(), d_longunion.get());
+        /// assert_eq!(d_longunion.get(), 0b1111111100000001111111000000111111000001111100001111000111001101_u64);
+        /// ```
+        /// 
+        /// # Example 4 for LongerUnion
+        /// ```
+        /// use cryptocol::number::LongerUnion;
+        /// 
+        /// let c_longerunion = LongerUnion::new_with(0b10110011100011110000111110000011111100000011111110000000111111110000000011111111100000000011111111110000000000111111111110000000_u128);
+        /// let d_longerunion = c_longerunion.reverse_bits();
+        /// println!("{:0128b} -> {:0128b}", c_longerunion.get(), d_longerunion.get());
+        /// assert_eq!(d_longerunion.get(), 0b00000001111111111100000000001111111111000000000111111111000000001111111100000001111111000000111111000001111100001111000111001101_u128);
+        /// ```
+        /// 
+        /// # Example 5 for SizeUnion for 64-bit CPUs
+        /// ```
+        /// use cryptocol::number::SizeUnion;
+        /// 
+        /// #[cfg(target_pointer_width = "64")]
+        /// {
+        ///     let c_sizeunion = SizeUnion::new_with(0b1011001110001111000011111000001111110000001111111000000011111111_usize);
+        ///     let d_sizeunion = c_sizeunion.reverse_bits();
+        ///     println!("{:064b} -> {:064b}", c_sizeunion.get(), d_sizeunion.get());
+        ///     assert_eq!(d_sizeunion.get(), 0b1111111100000001111111000000111111000001111100001111000111001101_usize);
+        /// }
+        /// ```
+        /// 
+        /// # Plagiarism in descryption
+        /// It calls the method reverse_bits() of implementation of the primitive
+        /// unsigned integer types such as`u8`, `u16`, `u32`, `u64`, `u128` and
+        /// `usize` directly. So, all the description of this method is mainly the
+        /// same as that of the method reverse_bits() of implementation of the
+        /// primitive unsigned integer types except example codes. Confer to the
+        /// descryptions that are linked to in the section _Reference_. This
+        /// plagiarism is not made maliciously but is made for the reason of
+        /// effectiveness and efficiency so that users may understand better and
+        /// easily how to use this method with simiilarity to the method
+        /// reverse_bits() of implementation of the primitive unsigned integer types.
         #[inline] pub fn reverse_bits(self) -> Self     { Self::new_with( self.get().reverse_bits() ) }
-        // #[inline] pub fn reverse_bits_assign(&mut self) { self.get().reverse_bits_assign(); }
+
+        // fn rotate_left(self, n: u32) -> Self
+        /// Shifts the bits to the left by a specified amount, `n`, wrapping the
+        /// truncated bits to the end of the resulting integer.
+        /// 
+        /// # Output
+        /// The number whose bits are shifted to the left by a specified amount,
+        /// `n`, wrapping the truncated bits to the end of the resulting integer
+        /// 
+        /// # Arguments
+        /// `n` indicates how many bits will be shifted to the left
+        /// 
+        /// # Caution
+        /// Please note this method does not perform the same operation as the
+        /// `<<` shifting operator!
+        /// 
+        /// # Example 1 for ShortUnion
+        /// ```
+        /// use cryptocol::number::ShortUnion;
+        /// 
+        /// let a_shortunion = ShortUnion::new_with(0b1011001110001111_u16);
+        /// let b_shortunion = a_shortunion.rotate_left(4);
+        /// println!("{:016b} -> {:016b}", a_shortunion.get(), b_shortunion.get());
+        /// assert_eq!(b_shortunion.get(), 0b0011100011111011_u16);
+        /// ```
+        /// 
+        /// # Example 2 for IntUnion
+        /// ```
+        /// use cryptocol::number::IntUnion;
+        /// 
+        /// let a_intunion = IntUnion::new_with(0b10110011100011110000111110000011_u32);
+        /// let b_intunion = a_intunion.rotate_left(8);
+        /// println!("{:032b} -> {:032b}", a_intunion.get(), b_intunion.get());
+        /// assert_eq!(b_intunion.get(), 0b10001111000011111000001110110011_u32);
+        /// ```
+        /// 
+        /// # Example 3 for LongUnion
+        /// ```
+        /// use cryptocol::number::LongUnion;
+        /// 
+        /// let a_longunion = LongUnion::new_with(0b1011001110001111000011111000001111110000001111111000000011111111_u64);
+        /// let b_longunion = a_longunion.rotate_left(16);
+        /// println!("{:064b} -> {:064b}", a_longunion.get(), b_longunion.get());
+        /// assert_eq!(b_longunion.get(), 0b0000111110000011111100000011111110000000111111111011001110001111_u64);
+        /// ```
+        /// 
+        /// # Example 4 for LongerUnion
+        /// ```
+        /// use cryptocol::number::LongerUnion;
+        /// 
+        /// let a_longerunion = LongerUnion::new_with(0b10110011100011110000111110000011111100000011111110000000111111110000000011111111100000000011111111110000000000111111111110000000_u128);
+        /// let b_longerunion = a_longerunion.rotate_left(32);
+        /// println!("{:0128b} -> {:0128b}", a_longerunion.get(), b_longerunion.get());
+        /// assert_eq!(b_longerunion.get(), 0b11110000001111111000000011111111000000001111111110000000001111111111000000000011111111111000000010110011100011110000111110000011_u128);
+        /// ```
+        /// 
+        /// # Example 5 for SizeUnion for 64-bit CPUs
+        /// ```
+        /// use cryptocol::number::SizeUnion;
+        /// 
+        /// #[cfg(target_pointer_width = "64")]
+        /// {
+        ///     let a_sizeunion = SizeUnion::new_with(0b1011001110001111000011111000001111110000001111111000000011111111_usize);
+        ///     let b_sizeunion = a_sizeunion.rotate_left(16);
+        ///     println!("{:064b} -> {:064b}", a_sizeunion.get(), b_sizeunion.get());
+        ///     assert_eq!(b_sizeunion.get(), 0b0000111110000011111100000011111110000000111111111011001110001111_usize);
+        /// }
+        /// ```
+        /// 
+        /// # Plagiarism in descryption
+        /// It calls the method rotate_left() of implementation of the primitive
+        /// unsigned integer types such as`u8`, `u16`, `u32`, `u64`, `u128` and
+        /// `usize` directly. So, all the description of this method is mainly the
+        /// same as that of the method rotate_left() of implementation of the
+        /// primitive unsigned integer types except example codes. Confer to the
+        /// descryptions that are linked to in the section _Reference_. This
+        /// plagiarism is not made maliciously but is made for the reason of
+        /// effectiveness and efficiency so that users may understand better and
+        /// easily how to use this method with simiilarity to the method
+        /// rotate_left() of implementation of the primitive unsigned integer types.
         #[inline] pub fn rotate_left(self, n: u32) -> Self  { Self::new_with( self.get().rotate_left(n) ) }
+
+        // fn rotate_right(self, n: u32) -> Self
+        /// Shifts the bits to the right by a specified amount, `n`, wrapping the
+        /// truncated bits to the end of the resulting integer.
+        /// 
+        /// # Output
+        /// The number whose bits are shifted to the right by a specified amount,
+        /// `n`, wrapping the truncated bits to the end of the resulting integer
+        /// 
+        /// # Arguments
+        /// `n` indicates how many bits will be shifted to the right
+        /// 
+        /// # Caution
+        /// Please note this method does not perform the same operation as the
+        /// `>>` shifting operator!
+        /// 
+        /// # Example 1 for ShortUnion
+        /// ```
+        /// use cryptocol::number::ShortUnion;
+        /// 
+        /// let a_shortunion = ShortUnion::new_with(0b1011001110001111_u16);
+        /// let b_shortunion = a_shortunion.rotate_right(4);
+        /// println!("{:016b} -> {:016b}", a_shortunion.get(), b_shortunion.get());
+        /// assert_eq!(b_shortunion.get(), 0b1111101100111000_u16);
+        /// ```
+        /// 
+        /// # Example 2 for IntUnion
+        /// ```
+        /// use cryptocol::number::IntUnion;
+        /// 
+        /// let a_intunion = IntUnion::new_with(0b10110011100011110000111110000011_u32);
+        /// let b_intunion = a_intunion.rotate_right(8);
+        /// println!("{:032b} -> {:032b}", a_intunion.get(), b_intunion.get());
+        /// assert_eq!(b_intunion.get(), 0b10000011101100111000111100001111_u32);
+        /// ```
+        /// 
+        /// # Example 3 for LongUnion
+        /// ```
+        /// use cryptocol::number::LongUnion;
+        /// 
+        /// let a_longunion = LongUnion::new_with(0b1011001110001111000011111000001111110000001111111000000011111111_u64);
+        /// let b_longunion = a_longunion.rotate_right(16);
+        /// println!("{:064b} -> {:064b}", a_longunion.get(), b_longunion.get());
+        /// assert_eq!(b_longunion.get(), 0b1000000011111111101100111000111100001111100000111111000000111111_u64);
+        /// ```
+        /// 
+        /// # Example 4 for LongerUnion
+        /// ```
+        /// use cryptocol::number::LongerUnion;
+        /// 
+        /// let a_longerunion = LongerUnion::new_with(0b10110011100011110000111110000011111100000011111110000000111111110000000011111111100000000011111111110000000000111111111110000000_u128);
+        /// let b_longerunion = a_longerunion.rotate_right(32);
+        /// println!("{:0128b} -> {:0128b}", a_longerunion.get(), b_longerunion.get());
+        /// assert_eq!(b_longerunion.get(), 0b11110000000000111111111110000000101100111000111100001111100000111111000000111111100000001111111100000000111111111000000000111111_u128);
+        /// ```
+        /// 
+        /// # Example 5 for SizeUnion for 64-bit CPUs
+        /// ```
+        /// use cryptocol::number::SizeUnion;
+        /// 
+        /// #[cfg(target_pointer_width = "64")]
+        /// {
+        ///     let a_sizeunion = SizeUnion::new_with(0b1011001110001111000011111000001111110000001111111000000011111111_usize);
+        ///     let b_sizeunion = a_sizeunion.rotate_right(16);
+        ///     println!("{:064b} -> {:064b}", a_sizeunion.get(), b_sizeunion.get());
+        ///     assert_eq!(b_sizeunion.get(), 0b1000000011111111101100111000111100001111100000111111000000111111_usize);
+        /// }
+        /// ```
+        /// 
+        /// # Plagiarism in descryption
+        /// It calls the method rotate_right() of implementation of the primitive
+        /// unsigned integer types such as`u8`, `u16`, `u32`, `u64`, `u128` and
+        /// `usize` directly. So, all the description of this method is mainly the
+        /// same as that of the method rotate_right() of implementation of the
+        /// primitive unsigned integer types except example codes. Confer to the
+        /// descryptions that are linked to in the section _Reference_. This
+        /// plagiarism is not made maliciously but is made for the reason of
+        /// effectiveness and efficiency so that users may understand better and
+        /// easily how to use this method with simiilarity to the method
+        /// rotate_right() of implementation of the primitive unsigned integer
+        /// types.
         #[inline] pub fn rotate_right(self, n: u32) -> Self { Self::new_with( self.get().rotate_right(n) ) }
 
+        // fn count_ones(self) -> u32;
+        /// Returns the number of ones in the binary representation of `self`.
+        /// 
+        /// # Output
+        /// The total number of the bits that are set to be one in the binary
+        /// representation of `self`.
+        /// 
+        /// # Example 1 for ShortUnion
+        /// ```
+        /// use cryptocol::number::ShortUnion;
+        /// 
+        /// let a_shortunion = ShortUnion::new_with(0b1011001110001111_u16);
+        /// let ones = a_shortunion.count_ones();
+        /// println!("The number of ones of {:016b} is {}.", a_shortunion.get(), ones);
+        /// assert_eq!(ones, 10_u32);
+        /// ```
+        /// 
+        /// # Example 2 for IntUnion
+        /// ```
+        /// use cryptocol::number::IntUnion;
+        /// 
+        /// let a_intunion = IntUnion::new_with(0b10110011100011110000111110000011_u32);
+        /// let ones = a_intunion.count_ones();
+        /// println!("The number of ones of {:032b} is {}.", a_intunion.get(), ones);
+        /// assert_eq!(ones, 17_u32);
+        /// ```
+        /// 
+        /// # Example 3 for LongUnion
+        /// ```
+        /// use cryptocol::number::LongUnion;
+        /// 
+        /// let a_longunion = LongUnion::new_with(0b1011001110001111000011111000001111110000001111111000000011111111_u64);
+        /// let ones = a_longunion.count_ones();
+        /// println!("The number of ones of {:064b} is {}.", a_longunion.get(), ones);
+        /// assert_eq!(ones, 36_u32);
+        /// ```
+        /// 
+        /// # Example 4 for LongerUnion
+        /// ```
+        /// use cryptocol::number::LongerUnion;
+        /// 
+        /// let a_longerunion = LongerUnion::new_with(0b10110011100011110000111110000011111100000011111110000000111111110000000011111111100000000011111111110000000000111111111110000000_u128);
+        /// let ones = a_longerunion.count_ones();
+        /// println!("The number of ones of {:0128b} is {}.", a_longerunion.get(), ones);
+        /// assert_eq!(ones, 66_u32);
+        /// ```
+        /// 
+        /// # Example 5 for SizeUnion
+        /// ```
+        /// use cryptocol::number::SizeUnion;
+        /// 
+        /// let a_sizeunion = SizeUnion::new_with(0b10110011_usize);
+        /// let ones = a_sizeunion.count_ones();
+        /// println!("The number of ones of {:064b} is {}.", a_sizeunion.get(), ones);
+        /// assert_eq!(ones, 5_u32);
+        /// ```
+        /// 
+        /// # Plagiarism in descryption
+        /// It calls the method count_ones() of implementation of the primitive
+        /// unsigned integer types such as`u8`, `u16`, `u32`, `u64`, `u128` and
+        /// `usize` directly. So, all the description of this method is mainly the
+        /// same as that of the method count_ones() of implementation of the
+        /// primitive unsigned integer types except example codes. Confer to the
+        /// descryptions that are linked to in the section _Reference_. This
+        /// plagiarism is not made maliciously but is made for the reason of
+        /// effectiveness and efficiency so that users may understand better and
+        /// easily how to use this method with simiilarity to the method
+        /// count_ones() of implementation of the primitive unsigned integer
+        /// types.
         #[inline] pub fn count_ones(self) -> u32        { self.get().count_ones() }
+
+        // fn count_zeros(&self) -> u32
+        /// Returns the number of zeros in the binary representation of `self`.
+        /// 
+        /// # Output
+        /// The total number of the bits that are set to be zero in the binary
+        /// representation of `self`.
+        /// 
+        /// # Example 1 for ShortUnion
+        /// ```
+        /// use cryptocol::number::ShortUnion;
+        /// 
+        /// let a_shortunion = ShortUnion::new_with(0b1011001110001111_u16);
+        /// let zeros = a_shortunion.count_zeros();
+        /// println!("The number of zeros of {:016b} is {}.", a_shortunion.get(), zeros);
+        /// assert_eq!(zeros, 6_u32);
+        /// ```
+        /// 
+        /// # Example 2 for IntUnion
+        /// ```
+        /// use cryptocol::number::IntUnion;
+        /// 
+        /// let a_intunion = IntUnion::new_with(0b10110011100011110000111110000011_u32);
+        /// let zeros = a_intunion.count_zeros();
+        /// println!("The number of zeros of {:032b} is {}.", a_intunion.get(), zeros);
+        /// assert_eq!(zeros, 15_u32);
+        /// ```
+        /// 
+        /// # Example 3 for LongUnion
+        /// ```
+        /// use cryptocol::number::LongUnion;
+        /// 
+        /// let a_longunion = LongUnion::new_with(0b1011001110001111000011111000001111110000001111111000000011111111_u64);
+        /// let zeros = a_longunion.count_zeros();
+        /// println!("The number of zeros of {:064b} is {}.", a_longunion.get(), zeros);
+        /// assert_eq!(zeros, 28_u32);
+        /// ```
+        /// 
+        /// # Example 4 for LongerUnion
+        /// ```
+        /// use cryptocol::number::LongerUnion;
+        /// 
+        /// let a_longerunion = LongerUnion::new_with(0b10110011100011110000111110000011111100000011111110000000111111110000000011111111100000000011111111110000000000111111111110000000_u128);
+        /// let zeros = a_longerunion.count_zeros();
+        /// println!("The number of zeros of {:0128b} is {}.", a_longerunion.get(), zeros);
+        /// assert_eq!(zeros, 62_u32);
+        /// ```
+        /// 
+        /// # Example 5 for SizeUnion for 64-bit CPUs
+        /// ```
+        /// use cryptocol::number::SizeUnion;
+        /// 
+        /// #[cfg(target_pointer_width = "64")]
+        /// {
+        ///     let a_sizeunion = SizeUnion::new_with(0b1011001110001111000011111000001111110000001111111000000011111111_usize);
+        ///     let zeros = a_sizeunion.count_zeros();
+        ///     println!("The number of zeros of {:064b} is {}.", a_sizeunion.get(), zeros);
+        ///     assert_eq!(zeros, 28_u32);
+        /// }
+        /// ```
+        /// 
+        /// # Plagiarism in descryption
+        /// It calls the method count_zeros() of implementation of the primitive
+        /// unsigned integer types such as`u8`, `u16`, `u32`, `u64`, `u128` and
+        /// `usize` directly. So, all the description of this method is mainly the
+        /// same as that of the method count_zeros() of implementation of the
+        /// primitive unsigned integer types except example codes. Confer to the
+        /// descryptions that are linked to in the section _Reference_. This
+        /// plagiarism is not made maliciously but is made for the reason of
+        /// effectiveness and efficiency so that users may understand better and
+        /// easily how to use this method with simiilarity to the method
+        /// count_zeros() of implementation of the primitive unsigned integer
+        /// types.
         #[inline] pub fn count_zeros(self) -> u32       { self.get().count_zeros() }
+
+        // fn leading_ones(&self) -> u32
+        /// Returns the number of leading ones
+        /// in the binary representation of `self`.
+        /// 
+        /// # Output
+        /// The total number of the leading bits that are set to be one
+        /// in the binary representation of `self`.
+        /// 
+        /// # Example 1 for ShortUnion
+        /// ```
+        /// use cryptocol::number::ShortUnion;
+        /// 
+        /// let a_shortunion = ShortUnion::new_with(0b1100111000111110_u16);
+        /// let ones = a_shortunion.leading_ones();
+        /// println!("The number of leading ones of {:016b} is {}.", a_shortunion.get(), ones);
+        /// assert_eq!(ones, 2_u32);
+        /// ```
+        /// 
+        /// # Example 2 for IntUnion
+        /// ```
+        /// use cryptocol::number::IntUnion;
+        /// 
+        /// let a_intunion = IntUnion::new_with(0b11110000111110000011101100111000_u32);
+        /// let ones = a_intunion.leading_ones();
+        /// println!("The number of leading ones of {:032b} is {}.", a_intunion.get(), ones);
+        /// assert_eq!(ones, 4_u32);
+        /// ```
+        /// 
+        /// # Example 3 for LongUnion
+        /// ```
+        /// use cryptocol::number::LongUnion;
+        /// 
+        /// let a_longunion = LongUnion::new_with(0b1111100000111111000000111111100000001111111110110011100011110000_u64);
+        /// let ones = a_longunion.leading_ones();
+        /// println!("The number of leading ones of {:064b} is {}.", a_longunion.get(), ones);
+        /// assert_eq!(ones, 5_u32);
+        /// ```
+        /// 
+        /// # Example 4 for LongerUnion
+        /// ```
+        /// use cryptocol::number::LongerUnion;
+        /// 
+        /// let a_longerunion = LongerUnion::new_with(0b11111111111000000010110011100011110000111110000011111100000011111110000000111111110000000011111111100000000011111111110000000000_u128);
+        /// let ones = a_longerunion.leading_ones();
+        /// println!("The number of leading ones of {:0128b} is {}.", a_longerunion.get(), ones);
+        /// assert_eq!(ones, 11_u32);
+        /// ```
+        /// 
+        /// # Example 5 for SizeUnion for 64-bit CPUs
+        /// ```
+        /// use cryptocol::number::SizeUnion;
+        /// 
+        /// #[cfg(target_pointer_width = "64")]
+        /// {
+        ///     let a_sizeunion = SizeUnion::new_with(0b1111111000000011111111101100111000111100001111100000111111000000_usize);
+        ///     let ones = a_sizeunion.leading_ones();
+        ///     println!("The number of leading ones of {:064b} is {}.", a_sizeunion.get(), ones);
+        ///     assert_eq!(ones, 7_u32);
+        /// }
+        /// ```
+        /// 
+        /// # Plagiarism in descryption
+        /// It calls the method leading_ones() of implementation of the primitive
+        /// unsigned integer types such as`u8`, `u16`, `u32`, `u64`, `u128` and
+        /// `usize` directly. So, all the description of this method is mainly the
+        /// same as that of the method leading_ones() of implementation of the
+        /// primitive unsigned integer types except example codes. Confer to the
+        /// descryptions that are linked to in the section _Reference_. This
+        /// plagiarism is not made maliciously but is made for the reason of
+        /// effectiveness and efficiency so that users may understand better and
+        /// easily how to use this method with simiilarity to the method
+        /// leading_ones() of implementation of the primitive unsigned integer
+        /// types.
         #[inline] pub fn leading_ones(self) -> u32      { self.get().leading_ones() }
+    
+        // fn leading_zeros(&self) -> u32
+        /// Returns the number of leading zeros
+        /// in the binary representation of `self`.
+        /// 
+        /// # Output
+        /// The total number of the leading bits that are set to be zero
+        /// in the binary representation of `self`.
+        /// 
+        /// # Example 1 for ShortUnion
+        /// ```
+        /// use cryptocol::number::ShortUnion;
+        /// 
+        /// let a_shortunion = ShortUnion::new_with(0b0011100011111011_u16);
+        /// let zeros = a_shortunion.leading_zeros();
+        /// println!("The number of leading zeros of {:016b} is {}.", a_shortunion.get(), zeros);
+        /// assert_eq!(zeros, 2_u32);
+        /// ```
+        /// 
+        /// # Example 2 for IntUnion
+        /// ```
+        /// use cryptocol::number::IntUnion;
+        /// 
+        /// let a_intunion = IntUnion::new_with(0b01100111000111100001111100000111_u32);
+        /// let zeros = a_intunion.leading_zeros();
+        /// println!("The number of leading zeros of {:032b} is {}.", a_intunion.get(), zeros);
+        /// assert_eq!(zeros, 1_u32);
+        /// ```
+        /// 
+        /// # Example 3 for LongUnion
+        /// ```
+        /// use cryptocol::number::LongUnion;
+        /// 
+        /// let a_longunion = LongUnion::new_with(0b0000011111100000011111110000000111111111011001110001111000011111_u64);
+        /// let zeros = a_longunion.leading_zeros();
+        /// println!("The number of leading zeros of {:064b} is {}.", a_longunion.get(), zeros);
+        /// assert_eq!(zeros, 5_u32);
+        /// ```
+        /// 
+        /// # Example 4 for LongerUnion
+        /// ```
+        /// use cryptocol::number::LongerUnion;
+        /// 
+        /// let a_longerunion = LongerUnion::new_with(0b00000001111111100000000111111111000000000111111111100000000001111111111100000001011001110001111000011111000001111110000001111111_u128);
+        /// let zeros = a_longerunion.leading_zeros();
+        /// println!("The number of leading zeros of {:0128b} is {}.", a_longerunion.get(), zeros);
+        /// assert_eq!(zeros, 7_u32);
+        /// ```
+        /// 
+        /// # Example 5 for SizeUnion for 64-bit CPUs
+        /// ```
+        /// use cryptocol::number::SizeUnion;
+        /// 
+        /// #[cfg(target_pointer_width = "64")]
+        /// {
+        ///     let a_sizeunion = SizeUnion::new_with(0b0000111110000011111100000011111110000000111111111011001110001111_usize);
+        ///     let zeros = a_sizeunion.leading_zeros();
+        ///     println!("The number of leading zeros of {:064b} is {}.", a_sizeunion.get(), zeros);
+        ///     assert_eq!(zeros, 4_u32);
+        /// }
+        /// ```
+        /// 
+        /// # Plagiarism in descryption
+        /// It calls the method leading_zeros() of implementation of the primitive
+        /// unsigned integer types such as`u8`, `u16`, `u32`, `u64`, `u128` and
+        /// `usize` directly. So, all the description of this method is mainly the
+        /// same as that of the method leading_zeros() of implementation of the
+        /// primitive unsigned integer types except example codes. Confer to the
+        /// descryptions that are linked to in the section _Reference_. This
+        /// plagiarism is not made maliciously but is made for the reason of
+        /// effectiveness and efficiency so that users may understand better and
+        /// easily how to use this method with simiilarity to the method
+        /// leading_zeros() of implementation of the primitive unsigned integer
+        /// types.
         #[inline] pub fn leading_zeros(self) -> u32     { self.get().leading_zeros() }
+
+        // fn trailing_ones(self) -> u32;
+        /// Returns the number of trailing ones
+        /// in the binary representation of `self`.
+        /// 
+        /// # Output
+        /// The total number of the trailing bits that are set to be one
+        /// in the binary representation of `self`.
+        /// 
+        /// # Example 1 for ShortUnion
+        /// ```
+        /// use cryptocol::number::ShortUnion;
+        /// 
+        /// let a_shortunion = ShortUnion::new_with(0b1111011001110001_u16);
+        /// let ones = a_shortunion.trailing_ones();
+        /// println!("The number of trailing ones of {:016b} is {}.", a_shortunion.get(), ones);
+        /// assert_eq!(ones, 1_u32);
+        /// ```
+        /// 
+        /// # Example 2 for IntUnion
+        /// ```
+        /// use cryptocol::number::IntUnion;
+        /// 
+        /// let a_intunion = IntUnion::new_with(0b00000111011001110001111000011111_u32);
+        /// let ones = a_intunion.trailing_ones();
+        /// println!("The number of trailing ones of {:032b} is {}.", a_intunion.get(), ones);
+        /// assert_eq!(ones, 5_u32);
+        /// ```
+        /// 
+        /// # Example 3 for LongUnion
+        /// ```
+        /// use cryptocol::number::LongUnion;
+        /// 
+        /// let a_longunion = LongUnion::new_with(0b1011001110001111000011111000001111110000001111111000000011111111_u64);
+        /// let ones = a_longunion.trailing_ones();
+        /// println!("The number of trailing ones of {:064b} is {}.", a_longunion.get(), ones);
+        /// assert_eq!(ones, 8_u32);
+        /// ```
+        /// 
+        /// # Example 4 for LongerUnion
+        /// ```
+        /// use cryptocol::number::LongerUnion;
+        /// 
+        /// let a_longerunion = LongerUnion::new_with(0b00000000001111111111100000001011001110001111000011111000001111110000001111111000000011111111000000001111111110000000001111111111_u128);
+        /// let ones = a_longerunion.trailing_ones();
+        /// println!("The number of trailing ones of {:0128b} is {}.", a_longerunion.get(), ones);
+        /// assert_eq!(ones, 10_u32);
+        /// ```
+        /// 
+        /// # Example 5 for SizeUnion
+        /// ```
+        /// use cryptocol::number::SizeUnion;
+        /// 
+        /// let a_sizeunion = SizeUnion::new_with(0b10110011_usize);
+        /// let ones = a_sizeunion.trailing_ones();
+        /// println!("The number of trailing ones of {:064b} is {}.", a_sizeunion.get(), ones);
+        /// assert_eq!(ones, 2_u32);
+        /// ```
+        /// 
+        /// # Plagiarism in descryption
+        /// It calls the method trailing_ones() of implementation of the primitive
+        /// unsigned integer types such as`u8`, `u16`, `u32`, `u64`, `u128` and
+        /// `usize` directly. So, all the description of this method is mainly the
+        /// same as that of the method trailing_ones() of implementation of the
+        /// primitive unsigned integer types except example codes. Confer to the
+        /// descryptions that are linked to in the section _Reference_. This
+        /// plagiarism is not made maliciously but is made for the reason of
+        /// effectiveness and efficiency so that users may understand better and
+        /// easily how to use this method with simiilarity to the method
+        /// trailing_ones() of implementation of the primitive unsigned integer
+        /// types.
         #[inline] pub fn trailing_ones(self) -> u32     { self.get().trailing_ones() }
+
+        // fn trailing_zeros(self) -> u32;
+        /// Returns the number of trailing zeros
+        /// in the binary representation of `self`.
+        /// 
+        /// # Output
+        /// The total number of the trailing bits that are set to be zero
+        /// in the binary representation of `self`.
+        /// 
+        /// # Example 1 for ShortUnion
+        /// ```
+        /// use cryptocol::number::ShortUnion;
+        /// 
+        /// let a_shortunion = ShortUnion::new_with(0b1111101100111000_u16);
+        /// let zeros = a_shortunion.trailing_zeros();
+        /// println!("The number of trailing zeros of {:016b} is {}.", a_shortunion.get(), zeros);
+        /// assert_eq!(zeros, 3_u32);
+        /// ```
+        /// 
+        /// # Example 2 for IntUnion
+        /// ```
+        /// use cryptocol::number::IntUnion;
+        /// 
+        /// let a_intunion = IntUnion::new_with(0b11101100111000111100001111100000_u32);
+        /// let zeros = a_intunion.trailing_zeros();
+        /// println!("The number of trailing zeros of {:032b} is {}.", a_intunion.get(), zeros);
+        /// assert_eq!(zeros, 5_u32);
+        /// ```
+        /// 
+        /// # Example 3 for LongUnion
+        /// ```
+        /// use cryptocol::number::LongUnion;
+        /// 
+        /// let a_longunion = LongUnion::new_with(0b1111111000000011111111101100111000111100001111100000111111000000_u64);
+        /// let zeros = a_longunion.trailing_zeros();
+        /// println!("The number of trailing zeros of {:064b} is {}.", a_longunion.get(), zeros);
+        /// assert_eq!(zeros, 6_u32);
+        /// ```
+        /// 
+        /// # Example 4 for LongerUnion
+        /// ```
+        /// use cryptocol::number::LongerUnion;
+        /// 
+        /// let a_longerunion = LongerUnion::new_with(0b10110011100011110000111110000011111100000011111110000000111111110000000011111111100000000011111111110000000000111111111110000000_u128);
+        /// let zeros = a_longerunion.trailing_zeros();
+        /// println!("The number of trailing zeros of {:0128b} is {}.", a_longerunion.get(), zeros);
+        /// assert_eq!(zeros, 7_u32);
+        /// ```
+        /// 
+        /// # Example 5 for SizeUnion
+        /// ```
+        /// use cryptocol::number::SizeUnion;
+        /// 
+        /// let a_sizeunion = SizeUnion::new_with(0b10110000_usize);
+        /// let zeros = a_sizeunion.trailing_zeros();
+        /// println!("The number of trailing zeros of {:064b} is {}.", a_sizeunion.get(), zeros);
+        /// assert_eq!(zeros, 4_u32);
+        /// ```
+        /// 
+        /// # Plagiarism in descryption
+        /// It calls the method trailing_zeros() of implementation of the primitive
+        /// unsigned integer types such as`u8`, `u16`, `u32`, `u64`, `u128` and
+        /// `usize` directly. So, all the description of this method is mainly the
+        /// same as that of the method trailing_zeros() of implementation of the
+        /// primitive unsigned integer types except example codes. Confer to the
+        /// descryptions that are linked to in the section _Reference_. This
+        /// plagiarism is not made maliciously but is made for the reason of
+        /// effectiveness and efficiency so that users may understand better and
+        /// easily how to use this method with simiilarity to the method
+        /// trailing_zeros() of implementation of the primitive unsigned integer
+        /// types.
         #[inline] pub fn trailing_zeros(self) -> u32    { self.get().trailing_zeros() }
 
+        // fn from_be(x: Self) -> Self;
+        /// Converts an integer from big endian to the target’s endianness.
+        /// 
+        /// # Arguments
+        /// `x` is an integer stored in the form of big endianness.
+        /// 
+        /// # Features
+        /// On big endian machine, this function does nothing, which is a no-op.
+        /// On little endian machine, the bytes are swapped.
+        /// 
+        /// # Output
+        /// An integer conveted from big endian to the target’s endianness.
+        /// 
+        /// # Example 1 for ShortUnion for Little Endianness
+        /// ```
+        /// use cryptocol::number::ShortUnion;
+        /// 
+        /// let a_shortunionbe = ShortUnion::new_with(0x1234_u16);
+        /// let b_shortunionle = ShortUnion::from_be(a_shortunionbe);
+        /// println!("{:04x} -> {:04x}", a_shortunionbe.get(), b_shortunionle.get());
+        /// assert_eq!(b_shortunionle.get(), 0x3412_u16);
+        /// ```
+        /// 
+        /// # Example 2 for IntUnion for Little Endianness
+        /// ```
+        /// use cryptocol::number::IntUnion;
+        /// 
+        /// let a_intunionbe = IntUnion::new_with(0x12345678_u32);
+        /// let b_intunionle = IntUnion::from_be(a_intunionbe);
+        /// println!("{:08x} -> {:08x}", a_intunionbe.get(), b_intunionle.get());
+        /// assert_eq!(b_intunionle.get(), 0x78563412_u32);
+        /// ```
+        /// 
+        /// # Example 3 for LongUnion for Little Endianness
+        /// ```
+        /// use cryptocol::number::LongUnion;
+        /// 
+        /// let a_longunionbe = LongUnion::new_with(0x123456789ABCDEF0_u64);
+        /// let b_longunionle = LongUnion::from_be(a_longunionbe);
+        /// println!("{:016x} -> {:016x}", a_longunionbe.get(), b_longunionle.get());
+        /// assert_eq!(b_longunionle.get(), 0xf0debc9a78563412_u64);
+        /// ```
+        /// 
+        /// # Example 4 for LongerUnion for Little Endianness
+        /// ```
+        /// use cryptocol::number::LongerUnion;
+        /// 
+        /// let a_longerunionbe = LongerUnion::new_with(0x123456789ABCDEF0123456789ABCDEF0_u128);
+        /// let b_longerunionle = LongerUnion::from_be(a_longerunionbe);
+        /// println!("{:032x} -> {:032x}", a_longerunionbe.get(), b_longerunionle.get());
+        /// assert_eq!(b_longerunionle.get(), 0xf0debc9a78563412f0debc9a78563412_u128);
+        /// ```
+        /// 
+        /// # Example 5 for SizeUnion for 64-bit Little Endian CPUs
+        /// ```
+        /// use cryptocol::number::SizeUnion;
+        /// 
+        /// #[cfg(target_pointer_width = "64")]
+        /// {
+        ///     let a_sizeunionbe = SizeUnion::new_with(0x123456789ABCDEF0_usize);
+        ///     let b_sizeunionle = SizeUnion::from_be(a_sizeunionbe);
+        ///     println!("{:016x} -> {:016x}", a_sizeunionbe.get(), b_sizeunionle.get());
+        ///     assert_eq!(b_sizeunionle.get(), 0xf0debc9a78563412_usize);
+        /// }
+        /// ```
+        /// 
+        /// # Plagiarism in descryption
+        /// It calls the method from_be() of implementation of the primitive
+        /// unsigned integer types such as`u8`, `u16`, `u32`, `u64`, `u128` and
+        /// `usize` directly. So, all the description of this method is mainly the
+        /// same as that of the method from_be() of implementation of the
+        /// primitive unsigned integer types except example codes. Confer to the
+        /// descryptions that are linked to in the section _Reference_. This
+        /// plagiarism is not made maliciously but is made for the reason of
+        /// effectiveness and efficiency so that users may understand better and
+        /// easily how to use this method with simiilarity to the method
+        /// from_be() of implementation of the primitive unsigned integer
+        /// types.
         #[inline] pub fn from_be(x: Self) -> Self   { Self::new_with( <$f>::from_be(x.get()) ) }
+
+        // fn from_le(x: Self) -> Self;
+        /// Converts an integer from little endian to the target’s endianness.
+        /// 
+        /// # Arguments
+        /// `x` is an integer stored in the form of big endianness.
+        /// 
+        /// # Features
+        /// On little endian machine, this function does nothing, which is a no-op.
+        /// On big endian machine, the bytes are swapped.
+        /// 
+        /// # Output
+        /// An integer conveted from little endian to the target’s endianness.
+        /// 
+        /// # Example 1 for ShortUnion for Little Endianness
+        /// ```
+        /// use cryptocol::number::ShortUnion;
+        /// 
+        /// let a_shortunionle = ShortUnion::new_with(0x1234_u16);
+        /// let b_shortunionle = ShortUnion::from_le(a_shortunionle);
+        /// println!("{:04x} -> {:04x}", a_shortunionle.get(), b_shortunionle.get());
+        /// assert_eq!(b_shortunionle.get(), 0x1234_u16);
+        /// ```
+        /// 
+        /// # Example 2 for IntUnion for Little Endianness
+        /// ```
+        /// use cryptocol::number::IntUnion;
+        /// 
+        /// let a_intunionle = IntUnion::new_with(0x12345678_u32);
+        /// let b_intunionle = IntUnion::from_le(a_intunionle);
+        /// println!("{:08x} -> {:08x}", a_intunionle.get(), b_intunionle.get());
+        /// assert_eq!(b_intunionle.get(), 0x12345678_u32);
+        /// ```
+        /// 
+        /// # Example 3 for LongUnion for Little Endianness
+        /// ```
+        /// use cryptocol::number::LongUnion;
+        /// 
+        /// let a_longunionle = LongUnion::new_with(0x123456789ABCDEF0_u64);
+        /// let b_longunionle = LongUnion::from_le(a_longunionle);
+        /// println!("{:016x} -> {:016x}", a_longunionle.get(), b_longunionle.get());
+        /// assert_eq!(b_longunionle.get(), 0x123456789ABCDEF0_u64);
+        /// ```
+        /// 
+        /// # Example 4 for LongerUnion for Little Endianness
+        /// ```
+        /// use cryptocol::number::LongerUnion;
+        /// 
+        /// let a_longerunionle = LongerUnion::new_with(0x123456789ABCDEF0123456789ABCDEF0_u128);
+        /// let b_longerunionle = LongerUnion::from_le(a_longerunionle);
+        /// println!("{:032x} -> {:032x}", a_longerunionle.get(), b_longerunionle.get());
+        /// assert_eq!(b_longerunionle.get(), 0x123456789ABCDEF0123456789ABCDEF0_u128);
+        /// ```
+        /// 
+        /// # Example 5 for SizeUnion for Little Endianness
+        /// ```
+        /// use cryptocol::number::SizeUnion;
+        /// 
+        /// #[cfg(target_pointer_width = "64")]
+        /// {
+        ///     let a_sizeunionle = SizeUnion::new_with(0x123456789ABCDEF0_usize);
+        ///     let b_sizeunionle = SizeUnion::from_le(a_sizeunionle);
+        ///     println!("{:016x} -> {:016x}", a_sizeunionle.get(), b_sizeunionle.get());
+        ///     assert_eq!(b_sizeunionle.get(), 0x123456789ABCDEF0_usize);
+        /// }
+        /// ```
+        /// 
+        /// # Plagiarism in descryption
+        /// It calls the method from_le() of implementation of the primitive
+        /// unsigned integer types such as`u8`, `u16`, `u32`, `u64`, `u128` and
+        /// `usize` directly. So, all the description of this method is mainly the
+        /// same as that of the method from_le() of implementation of the
+        /// primitive unsigned integer types except example codes. Confer to the
+        /// descryptions that are linked to in the section _Reference_. This
+        /// plagiarism is not made maliciously but is made for the reason of
+        /// effectiveness and efficiency so that users may understand better and
+        /// easily how to use this method with simiilarity to the method
+        /// from_le() of implementation of the primitive unsigned integer
+        /// types.
         #[inline] pub fn from_le(x: Self) -> Self   { Self::new_with( <$f>::from_le(x.get()) ) }
+
+        // fn to_be(self) -> Self;
+        /// Converts `self` to big endian from the target’s endianness.
+        /// 
+        /// # Features
+        /// On big endian machine, this method does nothing, which is a no-op.
+        /// On little endian the bytes are swapped.
+        /// 
+        /// # Output
+        /// An integer converted to big endian from the target’s endianness
+        /// 
+        /// # Example 1 for ShortUnion for Little Endianness
+        /// ```
+        /// use cryptocol::number::ShortUnion;
+        /// 
+        /// let a_shortunionle = ShortUnion::new_with(0x1234_u16);
+        /// let b_shortunionbe = ShortUnion::to_be(a_shortunionle);
+        /// println!("{:04x} -> {:04x}", a_shortunionle.get(), b_shortunionbe.get());
+        /// assert_eq!(b_shortunionbe.get(), 0x3412_u16);
+        /// ```
+        /// 
+        /// # Example 2 for IntUnion for Little Endianness
+        /// ```
+        /// use cryptocol::number::IntUnion;
+        /// 
+        /// let a_intunionle = IntUnion::new_with(0x12345678_u32);
+        /// let b_intunionbe = IntUnion::to_be(a_intunionle);
+        /// println!("{:08x} -> {:08x}", a_intunionle.get(), b_intunionbe.get());
+        /// assert_eq!(b_intunionbe.get(), 0x78563412_u32);
+        /// ```
+        /// 
+        /// # Example 3 for LongUnion for Little Endianness
+        /// ```
+        /// use cryptocol::number::LongUnion;
+        /// 
+        /// let a_longunionle = LongUnion::new_with(0x123456789ABCDEF0_u64);
+        /// let b_longunionbe = LongUnion::to_be(a_longunionle);
+        /// println!("{:016x} -> {:016x}", a_longunionle.get(), b_longunionbe.get());
+        /// assert_eq!(b_longunionbe.get(), 0xf0debc9a78563412_u64);
+        /// ```
+        /// 
+        /// # Example 4 for LongerUnion for Little Endianness
+        /// ```
+        /// use cryptocol::number::LongerUnion;
+        /// 
+        /// let a_longerunionle = LongerUnion::new_with(0x123456789ABCDEF0123456789ABCDEF0_u128);
+        /// let b_longerunionbe = LongerUnion::to_be(a_longerunionle);
+        /// println!("{:032x} -> {:032x}", a_longerunionle.get(), b_longerunionbe.get());
+        /// assert_eq!(b_longerunionbe.get(), 0xf0debc9a78563412f0debc9a78563412_u128);
+        /// ```
+        /// 
+        /// # Example 4 for SizeUnion for 64-bit Little Endian CPUs
+        /// ```
+        /// use cryptocol::number::SizeUnion;
+        /// 
+        /// #[cfg(target_pointer_width = "64")]
+        /// {
+        ///     let a_sizeunionle = SizeUnion::new_with(0x123456789ABCDEF0_usize);
+        ///     let b_sizeunionbe = SizeUnion::to_be(a_sizeunionle);
+        ///     println!("{:016x} -> {:016x}", a_sizeunionle.get(), b_sizeunionbe.get());
+        ///     assert_eq!(b_sizeunionbe.get(), 0xf0debc9a78563412_usize);
+        /// }
+        /// ```
+        /// 
+        /// # Plagiarism in descryption
+        /// It calls the method to_be() of implementation of the primitive
+        /// unsigned integer types such as`u8`, `u16`, `u32`, `u64`, `u128` and
+        /// `usize` directly. So, all the description of this method is mainly the
+        /// same as that of the method to_be() of implementation of the
+        /// primitive unsigned integer types except example codes. Confer to the
+        /// descryptions that are linked to in the section _Reference_. This
+        /// plagiarism is not made maliciously but is made for the reason of
+        /// effectiveness and efficiency so that users may understand better and
+        /// easily how to use this method with simiilarity to the method
+        /// to_be() of implementation of the primitive unsigned integer
+        /// types.
         #[inline] pub fn to_be(self) -> Self        { Self::new_with( self.get().to_be() ) }
+
+        // fn to_le(self) -> Self;
+        /// Converts self to little endian from the target’s endianness.
+        /// 
+        /// # Features
+        /// On little endian machine, this method does nothing, which is a no-op.
+        /// On big endian the bytes are swapped.
+        /// 
+        /// # Output
+        /// An integer converted to little endian from the target’s endianness
+        /// 
+        /// # Example 1 for ShortUnion for Little Endianness
+        /// ```
+        /// use cryptocol::number::ShortUnion;
+        /// 
+        /// let a_shortunionle = ShortUnion::new_with(0x1234_u16);
+        /// let b_shortunionle = ShortUnion::to_le(a_shortunionle);
+        /// println!("{:04x} -> {:04x}", a_shortunionle.get(), b_shortunionle.get());
+        /// assert_eq!(b_shortunionle.get(), 0x1234_u16);
+        /// ```
+        /// 
+        /// # Example 2 for IntUnion for Little Endianness
+        /// ```
+        /// use cryptocol::number::IntUnion;
+        /// 
+        /// let a_intunionle = IntUnion::new_with(0x12345678_u32);
+        /// let b_intunionle = IntUnion::to_le(a_intunionle);
+        /// println!("{:08x} -> {:08x}", a_intunionle.get(), b_intunionle.get());
+        /// assert_eq!(b_intunionle.get(), 0x12345678_u32);
+        /// ```
+        /// 
+        /// # Example 3 for LongUnion for Little Endianness
+        /// ```
+        /// use cryptocol::number::LongUnion;
+        /// 
+        /// let a_longunionle = LongUnion::new_with(0x123456789ABCDEF0_u64);
+        /// let b_longunionle = LongUnion::to_le(a_longunionle);
+        /// println!("{:016x} -> {:016x}", a_longunionle.get(), b_longunionle.get());
+        /// assert_eq!(b_longunionle.get(), 0x123456789ABCDEF0_u64);
+        /// ```
+        /// 
+        /// # Example 4 for LongerUnion for Little Endianness
+        /// ```
+        /// use cryptocol::number::LongerUnion;
+        /// 
+        /// let a_longerunionle = LongerUnion::new_with(0x123456789ABCDEF0123456789ABCDEF0_u128);
+        /// let b_longerunionle = LongerUnion::to_le(a_longerunionle);
+        /// println!("{:032x} -> {:032x}", a_longerunionle.get(), b_longerunionle.get());
+        /// assert_eq!(b_longerunionle.get(), 0x123456789ABCDEF0123456789ABCDEF0_u128);
+        /// ```
+        /// 
+        /// # Example 5 for SizeUnion for 64-bit Little Endian CPUs
+        /// ```
+        /// use cryptocol::number::SizeUnion;
+        /// 
+        /// #[cfg(target_pointer_width = "64")]
+        /// {
+        ///     let a_sizeunionle = SizeUnion::new_with(0x123456789ABCDEF0_usize);
+        ///     let b_sizeunionle = SizeUnion::to_le(a_sizeunionle);
+        ///     println!("{:016x} -> {:016x}", a_sizeunionle.get(), b_sizeunionle.get());
+        ///     assert_eq!(b_sizeunionle.get(), 0x123456789ABCDEF0_usize);
+        /// }
+        /// ```
+        /// 
+        /// # Plagiarism in descryption
+        /// It calls the method to_le() of implementation of the primitive
+        /// unsigned integer types such as`u8`, `u16`, `u32`, `u64`, `u128` and
+        /// `usize` directly. So, all the description of this method is mainly the
+        /// same as that of the method to_le() of implementation of the
+        /// primitive unsigned integer types except example codes. Confer to the
+        /// descryptions that are linked to in the section _Reference_. This
+        /// plagiarism is not made maliciously but is made for the reason of
+        /// effectiveness and efficiency so that users may understand better and
+        /// easily how to use this method with simiilarity to the method
+        /// to_le() of implementation of the primitive unsigned integer
+        /// types.
         #[inline] pub fn to_le(self) -> Self        { Self::new_with( self.get().to_le() ) }
+
+        // fn swap_bytes(self) -> Self;
+        /// Reverses the byte order of the integer.
+        /// 
+        /// # Features
+        /// The least significant byte becomes the most significant byte, second
+        /// least-significant byte becomes second most-significant byte, etc.
+        /// 
+        /// # Output
+        /// An integer whose byte order was reversed to opposite endian.
+        /// 
+        /// # Example 1 for ShortUnion
+        /// ```
+        /// use cryptocol::number::ShortUnion;
+        /// 
+        /// let a_shortunion = ShortUnion::new_with(0x1234_u16);
+        /// let b_shortunion = ShortUnion::swap_bytes(a_shortunion);
+        /// println!("{:04x} -> {:04x}", a_shortunion.get(), b_shortunion.get());
+        /// assert_eq!(b_shortunion.get(), 0x3412_u16);
+        /// ```
+        /// 
+        /// # Example 2 for IntUnion
+        /// ```
+        /// use cryptocol::number::IntUnion;
+        /// 
+        /// let a_intunion = IntUnion::new_with(0x12345678_u32);
+        /// let b_intunion = IntUnion::swap_bytes(a_intunion);
+        /// println!("{:08x} -> {:08x}", a_intunion.get(), b_intunion.get());
+        /// assert_eq!(b_intunion.get(), 0x78563412_u32);
+        /// ```
+        /// 
+        /// # Example 3 for LongUnion
+        /// ```
+        /// use cryptocol::number::LongUnion;
+        /// 
+        /// let a_longunion = LongUnion::new_with(0x123456789ABCDEF0_u64);
+        /// let b_longunion = LongUnion::swap_bytes(a_longunion);
+        /// println!("{:016x} -> {:016x}", a_longunion.get(), b_longunion.get());
+        /// assert_eq!(b_longunion.get(), 0xf0debc9a78563412_u64);
+        /// ```
+        /// 
+        /// # Example 4 for LongerUnion
+        /// ```
+        /// use cryptocol::number::LongerUnion;
+        /// 
+        /// let a_longerunion = LongerUnion::new_with(0x123456789ABCDEF0123456789ABCDEF0_u128);
+        /// let b_longerunion = LongerUnion::swap_bytes(a_longerunion);
+        /// println!("{:032x} -> {:032x}", a_longerunion.get(), b_longerunion.get());
+        /// assert_eq!(b_longerunion.get(), 0xf0debc9a78563412f0debc9a78563412_u128);
+        /// ```
+        /// 
+        /// # Example 5 for SizeUnion for 64-bit CPUs
+        /// ```
+        /// use cryptocol::number::SizeUnion;
+        /// 
+        /// #[cfg(target_pointer_width = "64")]
+        /// {
+        ///     let a_sizeunion = SizeUnion::new_with(0x123456789ABCDEF0_usize);
+        ///     let b_sizeunion = SizeUnion::swap_bytes(a_sizeunion);
+        ///     println!("{:016x} -> {:016x}", a_sizeunion.get(), b_sizeunion.get());
+        ///     assert_eq!(b_sizeunion.get(), 0xf0debc9a78563412_usize);
+        /// }
+        /// ```
+        /// 
+        /// # Plagiarism in descryption
+        /// It calls the method swap_bytes() of implementation of the primitive
+        /// unsigned integer types such as`u8`, `u16`, `u32`, `u64`, `u128` and
+        /// `usize` directly. So, all the description of this method is mainly the
+        /// same as that of the method swap_bytes() of implementation of the
+        /// primitive unsigned integer types except example codes. Confer to the
+        /// descryptions that are linked to in the section _Reference_. This
+        /// plagiarism is not made maliciously but is made for the reason of
+        /// effectiveness and efficiency so that users may understand better and
+        /// easily how to use this method with simiilarity to the method
+        /// swap_bytes() of implementation of the primitive unsigned integer
+        /// types.
         #[inline] pub fn swap_bytes(self) -> Self   { Self::new_with( self.get().swap_bytes() ) }
 
+        // fn is_power_of_two(self) -> bool;
+        /// Returns `true` if and only if `self` == `2^k` for some `k`.
+        /// 
+        /// # Output
+        /// If and only if `self` == `2^k` for some `k`, `true` is returned.
+        /// Otherwise, it returns `false`.
+        /// 
+        /// # Example 1 for ShortUnion
+        /// ```
+        /// use cryptocol::number::ShortUnion;
+        /// 
+        /// let a_shortunion = ShortUnion::new_with(32768_u16);
+        /// let a_two = a_shortunion.is_power_of_two();
+        /// println!("{} is {}power of two..", a_shortunion, if a_two {""} else {"not "});
+        /// assert!(a_two);
+        /// 
+        /// let b_shortunion = ShortUnion::new_with(65432_u16);
+        /// let b_two = b_shortunion.is_power_of_two();
+        /// println!("{} is {}power of two..", b_shortunion, if b_two {""} else {"not "});
+        /// assert!(!b_two);
+        /// ```
+        /// 
+        /// # Example 2 for IntUnion
+        /// ```
+        /// use cryptocol::number::IntUnion;
+        /// 
+        /// let a_intunion = IntUnion::new_with(2147483648_u32);
+        /// let a_two = a_intunion.is_power_of_two();
+        /// println!("{} is {}power of two..", a_intunion, if a_two {""} else {"not "});
+        /// assert!(a_two);
+        /// 
+        /// let b_intunion = IntUnion::new_with(876543210_u32);
+        /// let b_two = b_intunion.is_power_of_two();
+        /// println!("{} is {}power of two..", b_intunion, if b_two {""} else {"not "});
+        /// assert!(!b_two);
+        /// ```
+        /// 
+        /// # Example 3 for LongUnion
+        /// ```
+        /// use cryptocol::number::LongUnion;
+        /// 
+        /// let a_longunion = LongUnion::new_with(9223372036854775808_u64);
+        /// let a_two = a_longunion.is_power_of_two();
+        /// println!("{} is {}power of two..", a_longunion, if a_two {""} else {"not "});
+        /// assert!(a_two);
+        /// 
+        /// let b_longunion = LongUnion::new_with(2468135791234567892_u64);
+        /// let b_two = b_longunion.is_power_of_two();
+        /// println!("{} is {}power of two..", b_longunion, if b_two {""} else {"not "});
+        /// assert!(!b_two);
+        /// ```
+        /// 
+        /// # Example 4 for LongerUnion
+        /// ```
+        /// use cryptocol::number::LongerUnion;
+        /// 
+        /// let a_longerunion = LongerUnion::new_with(170141183460469231731687303715884105728_u128);
+        /// let a_two = a_longerunion.is_power_of_two();
+        /// println!("{} is {}power of two..", a_longerunion, if a_two {""} else {"not "});
+        /// assert!(a_two);
+        /// 
+        /// let b_longerunion = LongerUnion::new_with(200000000000000000000000000000000000000_u128);
+        /// let b_two = b_longerunion.is_power_of_two();
+        /// println!("{} is {}power of two..", b_longerunion, if b_two {""} else {"not "});
+        /// assert!(!b_two);
+        /// ```
+        /// 
+        /// # Example 5 for SizeUnion
+        /// ```
+        /// use cryptocol::number::SizeUnion;
+        /// 
+        /// let a_sizeunion = SizeUnion::new_with(128_usize);
+        /// let a_two = a_sizeunion.is_power_of_two();
+        /// println!("{} is {}power of two..", a_sizeunion, if a_two {""} else {"not "});
+        /// assert!(a_two);
+        /// 
+        /// let b_sizeunion = SizeUnion::new_with(200_usize);
+        /// let b_two = b_sizeunion.is_power_of_two();
+        /// println!("{} is {}power of two..", b_sizeunion, if b_two {""} else {"not "});
+        /// assert!(!b_two);
+        /// ```
+        /// 
+        /// # Plagiarism in descryption
+        /// It calls the method is_power_of_two() of implementation of the primitive
+        /// unsigned integer types such as`u8`, `u16`, `u32`, `u64`, `u128` and
+        /// `usize` directly. So, all the description of this method is mainly the
+        /// same as that of the method is_power_of_two() of implementation of the
+        /// primitive unsigned integer types except example codes. Confer to the
+        /// descryptions that are linked to in the section _Reference_. This
+        /// plagiarism is not made maliciously but is made for the reason of
+        /// effectiveness and efficiency so that users may understand better and
+        /// easily how to use this method with simiilarity to the method
+        /// is_power_of_two() of implementation of the primitive unsigned integer
+        /// types.
         #[inline] pub fn is_power_of_two(self) -> bool    { self.get().is_power_of_two() }
-        #[inline] pub fn next_power_of_two(self) -> Self  { Self::new_with( self.get().next_power_of_two() ) }
 
-        // #[inline] pub fn into_f64(self) -> f64      { self.get() as f64 }
-        // #[inline] pub fn into_f32(self) -> f32      { self.get() as f32 }
-        // #[inline] pub fn into_u128(self) -> u128    { self.get() as u128 }
-        // #[inline] pub fn into_u64(self) -> u64      { self.get() as u64 }
-        // #[inline] pub fn into_u32(self) -> u32      { self.get() as u32 }
-        // #[inline] pub fn into_u16(self) -> u16      { self.get() as u16 }
-        // #[inline] pub fn into_u8(self) -> u8        { self.get() as u8 }
-        // #[inline] pub fn into_usize(self) -> usize  { self.get() as usize }
-        // #[inline] pub fn into_bool(self) -> bool    { self.get() != 0 }
-        // #[inline] pub fn zero() -> Self             { Self::new_with(0 as $f) }
-        // #[inline] pub fn one() -> Self              { Self::new_with(1 as $f) }
-        // #[inline] pub fn max() -> Self              { Self::new_with(<$f>::MAX) }
-        // #[inline] pub fn min() -> Self              { Self::new_with(<$f>::MIN) }
-        // #[inline] pub fn num(n: u128) -> Self       { Self::new_with(n as $f) }
-        // #[inline] pub fn size_in_bytes() -> usize   { size_of::<Self>() }
-        // #[inline] pub fn size_in_bits() -> usize    { size_of::<Self>() * 8 }
-        // #[inline] pub fn length_in_bytes(self) -> usize    { size_of_val(&self) }
-        // #[inline] pub fn length_in_bits(self) -> usize     { size_of_val(&self) * 8 }
-        // #[inline] pub fn is_odd(self) -> bool       { (self.get() & 1) != 0 }
+        // fn next_power_of_two(self) -> Self;
+        /// Returns the smallest power of two greater than or equal to `self`.
+        /// 
+        /// # Output
+        /// The smallest power of two greater than or equal to `self`
+        /// 
+        /// # Features
+        /// When return value overflows i.e., `self > (1 << (N-1) for type uN`,
+        /// it panics in debug mode and the return value is wrapped to 0 in release
+        /// mode (the only situation in which method can return 0).
+        /// 
+        /// # Example 1 for ShortUnion
+        /// ```
+        /// use cryptocol::number::ShortUnion;
+        /// 
+        /// // Example for ShortUnion
+        /// let a_shortunion = ShortUnion::new_with(400_u16);
+        /// let b_shortunion = a_shortunion.next_power_of_two();
+        /// println!("{} => {}", a_shortunion.get(), b_shortunion.get());
+        /// assert_eq!(b_shortunion.get(), 512_u16);
+        /// ```
+        /// 
+        /// # Example 2 for IntUnion
+        /// ```
+        /// use cryptocol::number::IntUnion;
+        /// 
+        /// let a_intunion = IntUnion::new_with(400000_u32);
+        /// let b_intunion = a_intunion.next_power_of_two();
+        /// println!("{} => {}", a_intunion.get(), b_intunion.get());
+        /// assert_eq!(b_intunion.get(), 524288_u32);
+        /// ```
+        /// 
+        /// # Example 3 for LongUnion
+        /// ```
+        /// use cryptocol::number::LongUnion;
+        /// 
+        /// let a_longunion = LongUnion::new_with(400000000000_u64);
+        /// let b_longunion = a_longunion.next_power_of_two();
+        /// println!("{} => {}", a_longunion.get(), b_longunion.get());
+        /// assert_eq!(b_longunion.get(), 549755813888_u64);
+        /// ```
+        /// 
+        /// # Example 4 for LongerUnion
+        /// ```
+        /// use cryptocol::number::LongerUnion;
+        /// 
+        /// let a_longerunion = LongerUnion::new_with(4000000000000000000000000000_u128);
+        /// let b_longerunion = a_longerunion.next_power_of_two();
+        /// println!("{} => {}", a_longerunion.get(), b_longerunion.get());
+        /// assert_eq!(b_longerunion.get(), 4951760157141521099596496896_u128);
+        /// ```
+        /// 
+        /// # Example 5 for SizeUnion
+        /// ```
+        /// use cryptocol::number::SizeUnion;
+        /// 
+        /// let a_sizeunion = SizeUnion::new_with(4000000000000000_usize);
+        /// let b_sizeunion = a_sizeunion.next_power_of_two();
+        /// println!("{} => {}", a_sizeunion.get(), b_sizeunion.get());
+        /// assert_eq!(b_sizeunion.get(), 4503599627370496_usize);
+        /// ```
+        /// 
+        /// # Plagiarism in descryption
+        /// It calls the method next_power_of_two() of implementation of the
+        /// primitive unsigned integer types such as`u8`, `u16`, `u32`, `u64`,
+        /// `u128` and `usize` directly. So, all the description of this method
+        /// is mainly the same as that of the method next_power_of_two() of
+        /// implementation of the primitive unsigned integer types except example
+        /// codes. Confer to the descryptions that are linked to in the section
+        /// _Reference_. This plagiarism is not made maliciously but is made for
+        /// the reason of effectiveness and efficiency so that users may understand
+        /// better and easily how to use this method with simiilarity to the method
+        /// next_power_of_two() of implementation of the primitive unsigned integer
+        /// types.
+        #[inline] pub fn next_power_of_two(self) -> Self  { Self::new_with( self.get().next_power_of_two() ) }
     }
 }
 pub(super) use integer_union_methods;

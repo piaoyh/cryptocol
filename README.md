@@ -85,9 +85,29 @@ number will be 0.25.x.x since there are all twenty-five functionalities
 listed above. So, for example, even if the version number is 0.5.0.0,
 it does not mean that 50% of all functionalities are implemented.
 
-## Sorry for breaking changes from ver. 0.7.2 to ver. 0.7.3
+
+## Sorry for breaking changes from ver. 0.7.6 to ver. 0.7.7
 
 I think that if breaking changes are inevitable and have to be made, the sooner, the better especially before more people will be using my crate.
+
+### trait SmallUInt
+
+| Ver. 0.7.6                             | Ver. 0.7.7                            |
+|----------------------------------------|---------------------------------------|
+| pub fn root(self, exp: Self) -> Self   | pub fn iroot(self, exp: Self) -> Self |
+
+- The method name root has been changed into iroot for the name consistancy with the methods isqrt, ilog, ilog10, ilog2, etc.
+
+### unions ShortUnion, IntUnion, LongUnion, LongerUnion, and SizeUnion
+
+| Ver. 0.7.6                             | Ver. 0.7.7     |
+|----------------------------------------|----------------|
+| pub fn root(self, exp: Self) -> Self   | removed        |
+| pub fn reverse_bits(self) -> Self      | removed        |
+
+- The above methods has been removed removed since they were found redundant since if you import SmallUInt, you can use the above methods.
+
+## Sorry for breaking changes from ver. 0.7.2 to ver. 0.7.3
 
 ### methods of BigUInt
 

@@ -491,8 +491,8 @@ macro_rules! SmallUInt_methods_for_uint_impl {
             // }
 
             /// Returns the `exp`-th root of the number.
-            /// [Read more](trait@SmallUInt#tymethod.root) in detail.
-            fn root(self, exp: Self) -> Self
+            /// [Read more](trait@SmallUInt#tymethod.iroot) in detail.
+            fn iroot(self, exp: Self) -> Self
             {
                 let mut adder;
                 let mut highest = (Self::size_in_bits() - self.leading_zeros() as usize) / (exp as usize);

@@ -1058,38 +1058,6 @@ impl SizeUnion
     /// ```
     #[inline] pub fn new_with_bool(b: bool) -> Self     { Self { u_size: b as usize } }
 
-    // pub fn zero() -> Self
-    /// Constructs a new `SizeUnion` with initializing it
-    /// with the value of `0`.
-    /// 
-    /// # Output
-    /// A new object of `Self` initialized with the value of `0`
-    /// 
-    /// Example
-    /// ```
-    /// use cryptocol::number::SizeUnion;
-    /// let a = SizeUnion::zero();
-    /// println!("a = {}", a.get());
-    /// assert_eq!(a.get(), 0_usize);
-    /// ```
-    #[inline] pub fn zero() -> Self     { Self { u_size: 0 } }
-
-    // pub fn one() -> Self
-    /// Constructs a new `SizeUnion` with initializing it
-    /// with the value of `1`.
-    /// 
-    /// # Output
-    /// A new object of `Self` initialized with the value of `1`
-    /// 
-    /// Example
-    /// ```
-    /// use cryptocol::number::SizeUnion;
-    /// let a = SizeUnion::one();
-    /// println!("a = {}", a.get());
-    /// assert_eq!(a.get(), 1_usize);
-    /// ```
-    #[inline] pub fn one() -> Self      { Self { u_size: 1 } }
-
     // pub fn get(self) -> usize
     /// Returns its value as `usize`.
     /// 

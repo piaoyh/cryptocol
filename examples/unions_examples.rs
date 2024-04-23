@@ -34,13 +34,9 @@ pub fn main()
     unions_pow_main();
     unions_log_main();
     unions_root_main();
-    unions_prime_main();
     unions_bits_operation();
     unions_bytes_operation();
     unions_find_power();
-    unions_conversion();
-    unions_constants();
-    unions_size();
     end();
 }
 
@@ -54,8 +50,6 @@ fn short_union_main()
     short_union_new_with_ubytes();
     short_union_new_with_u128();
     short_union_new_with_bool();
-    short_union_zero();
-    short_union_one();
     short_union_get();
     short_union_get_signed();
     short_union_set();
@@ -215,26 +209,6 @@ fn short_union_new_with_bool()
     println!("--------------------------------------");
 }
 
-fn short_union_zero()
-{
-    println!("short_union_zero()");
-    use cryptocol::number::ShortUnion;
-    let a = ShortUnion::zero();
-    println!("a = {}", a.get());
-    assert_eq!(a.get(), 0_u16);
-    println!("--------------------------------------");
-}
-
-fn short_union_one()
-{
-    println!("short_union_one()");
-    use cryptocol::number::ShortUnion;
-    let a = ShortUnion::one();
-    println!("a = {}", a.get());
-    assert_eq!(a.get(), 1_u16);
-    println!("--------------------------------------");
-}
-
 fn short_union_get()
 {
     println!("short_union_get()");
@@ -331,8 +305,6 @@ fn int_union_main()
     int_union_new_with_ushorts();
     int_union_new_with_u128();
     int_union_new_with_bool();
-    int_union_zero();
-    int_union_one();
     int_union_get();
     int_union_get_signed();
     int_union_set();
@@ -541,26 +513,6 @@ fn int_union_new_with_bool()
     println!("--------------------------------------");
 }
 
-fn int_union_zero()
-{
-    println!("int_union_zero()");
-    use cryptocol::number::IntUnion;
-    let a = IntUnion::zero();
-    println!("a = {}", a.get());
-    assert_eq!(a.get(), 0_u32);
-    println!("--------------------------------------");
-}
-
-fn int_union_one()
-{
-    println!("int_union_one()");
-    use cryptocol::number::IntUnion;
-    let a = IntUnion::one();
-    println!("a = {}", a.get());
-    assert_eq!(a.get(), 1_u32);
-    println!("--------------------------------------");
-}
-
 fn int_union_get()
 {
     println!("int_union_get()");
@@ -658,8 +610,6 @@ fn long_union_main()
     long_union_new_with_uints();
     long_union_new_with_u128();
     long_union_new_with_bool();
-    long_union_zero();
-    long_union_one();
     long_union_get();
     long_union_set();
     long_union_get_signed();
@@ -943,26 +893,6 @@ fn long_union_new_with_bool()
     println!("--------------------------------------");
 }
 
-fn long_union_zero()
-{
-    println!("long_union_zero()");
-    use cryptocol::number::LongUnion;
-    let a = LongUnion::zero();
-    println!("a = {}", a.get());
-    assert_eq!(a.get(), 0_u64);
-    println!("--------------------------------------");
-}
-
-fn long_union_one()
-{
-    println!("long_union_one()");
-    use cryptocol::number::LongUnion;
-    let a = LongUnion::one();
-    println!("a = {}", a.get());
-    assert_eq!(a.get(), 1_u64);
-    println!("--------------------------------------");
-}
-
 fn long_union_get()
 {
     println!("long_union_get()");
@@ -1061,8 +991,6 @@ fn longer_union_main()
     longer_union_new_with_ulongs();
     longer_union_new_with_u128();
     longer_union_new_with_bool();
-    longer_union_zero();
-    longer_union_one();
     longer_union_get();
     longer_union_set();
     longer_union_get_signed();
@@ -1472,26 +1400,6 @@ fn longer_union_new_with_bool()
     println!("--------------------------------------");
 }
 
-fn longer_union_zero()
-{
-    println!("longer_union_zero()");
-    use cryptocol::number::LongerUnion;
-    let a = LongerUnion::zero();
-    println!("a = {}", a.get());
-    assert_eq!(a.get(), 0_u128);
-    println!("--------------------------------------");
-}
-
-fn longer_union_one()
-{
-    println!("longer_union_one()");
-    use cryptocol::number::LongerUnion;
-    let a = LongerUnion::one();
-    println!("a = {}", a.get());
-    assert_eq!(a.get(), 1_u128);
-    println!("--------------------------------------");
-}
-
 fn longer_union_get()
 {
     println!("longer_union_get()");
@@ -1590,8 +1498,6 @@ fn size_union_main()
     size_union_new_with_longs();
     size_union_new_with_u128();
     size_union_new_with_bool();
-    size_union_zero();
-    size_union_one();
     size_union_get();
     size_union_set();
     size_union_get_signed();
@@ -2280,26 +2186,6 @@ fn size_union_new_with_bool()
     println!("b = {}", b.get());
     assert_eq!(a.get(), 1_usize);
     assert_eq!(b.get(), 0_usize);
-    println!("--------------------------------------");
-}
-
-fn size_union_zero()
-{
-    println!("size_union_zero()");
-    use cryptocol::number::SizeUnion;
-    let a = SizeUnion::zero();
-    println!("a = {}", a.get());
-    assert_eq!(a.get(), 0_usize);
-    println!("--------------------------------------");
-}
-
-fn size_union_one()
-{
-    println!("size_union_one()");
-    use cryptocol::number::SizeUnion;
-    let a = SizeUnion::one();
-    println!("a = {}", a.get());
-    assert_eq!(a.get(), 1_usize);
     println!("--------------------------------------");
 }
 
@@ -8220,7 +8106,7 @@ fn unions_mul_main()
 fn unions_carrying_mul()
 {
     println!("unions_carrying_mul");
-    use cryptocol::number::{ ShortUnion, IntUnion, LongUnion, LongerUnion, SizeUnion };
+    use cryptocol::number::{ SmallUInt, ShortUnion, IntUnion, LongUnion, LongerUnion, SizeUnion };
 
     // Example for ShortUnion for Little Endian
     // a_u64: u32 === (a_high_u16, a_low_u16) == (10000_u16, 10100_u16) == 257010000_u32
@@ -8458,7 +8344,7 @@ fn unions_carrying_mul()
 fn unions_widening_mul()
 {
     println!("unions_widening_mul");
-    use cryptocol::number::{ ShortUnion, IntUnion, LongUnion, LongerUnion, SizeUnion };
+    use cryptocol::number::{ SmallUInt, ShortUnion, IntUnion, LongUnion, LongerUnion, SizeUnion };
 
     // Example for ShortUnion for Little Endian
     // a_u64: u32 === (a_high_u16, a_low_u16) == (10000_u16, 10100_u16) == 257010000_u32
@@ -9066,6 +8952,7 @@ fn unions_wrapping_div()
 {
     println!("unions_wrapping_div");
     use cryptocol::number::{ ShortUnion, IntUnion, LongUnion, LongerUnion, SizeUnion };
+    // use cryptocol::number::SmallUInt;
 
     // Example for ShortUnion
     let a_shortunion = ShortUnion::new_with(u16::MAX / 3).wrapping_div(ShortUnion::new_with(2_u16));
@@ -9108,6 +8995,7 @@ fn unions_overflowing_div()
 {
     println!("unions_overflowing_div");
     use cryptocol::number::{ ShortUnion, IntUnion, LongUnion, LongerUnion, SizeUnion };
+    // use cryptocol::number::SmallUInt;
 
     // Example for ShortUnion
     let (a_shortunion, overflow) = ShortUnion::new_with(u16::MAX / 3).overflowing_div(ShortUnion::new_with(2_u16));
@@ -9154,7 +9042,7 @@ fn unions_overflowing_div()
 fn unions_checked_div()
 {
     println!("unions_checked_div");
-    use cryptocol::number::{ ShortUnion, IntUnion, LongUnion, LongerUnion, SizeUnion };
+    use cryptocol::number::{ SmallUInt, ShortUnion, IntUnion, LongUnion, LongerUnion, SizeUnion };
 
     // Example for ShortUnion
     let a_shortunion = ShortUnion::new_with(u16::MAX / 3).checked_div(ShortUnion::new_with(2_u16));
@@ -9267,6 +9155,7 @@ fn unions_saturating_div()
 {
     println!("unions_saturating_div");
     use cryptocol::number::{ ShortUnion, IntUnion, LongUnion, LongerUnion, SizeUnion };
+    // use cryptocol::number::SmallUInt;
 
     // Example for ShortUnion
     let a_shortunion = ShortUnion::new_with(u16::MAX / 3).saturating_div(ShortUnion::new_with(2_u16));
@@ -9315,6 +9204,7 @@ fn unions_rem_main()
 fn unions_wrapping_rem()
 {
     use cryptocol::number::{ ShortUnion, IntUnion, LongUnion, LongerUnion, SizeUnion };
+    // use cryptocol::number::SmallUInt;
 
     // Example for ShortUnion
     let a_shortunion = ShortUnion::new_with(u16::MAX / 3).wrapping_rem(ShortUnion::new_with(3_u16));
@@ -9355,6 +9245,7 @@ fn unions_wrapping_rem()
 fn unions_overflowing_rem()
 {
     use cryptocol::number::{ ShortUnion, IntUnion, LongUnion, LongerUnion, SizeUnion };
+    // use cryptocol::number::SmallUInt;
 
     // Example for ShortUnion
     let (a_shortunion, overflow) = ShortUnion::new_with(u16::MAX / 3).overflowing_rem(ShortUnion::new_with(3_u16));
@@ -9399,7 +9290,7 @@ fn unions_overflowing_rem()
 
 fn unions_checked_rem()
 {
-    use cryptocol::number::{ ShortUnion, IntUnion, LongUnion, LongerUnion, SizeUnion };
+    use cryptocol::number::{ SmallUInt, ShortUnion, IntUnion, LongUnion, LongerUnion, SizeUnion };
 
     // Example for ShortUnion
     let a_shortunion = ShortUnion::new_with(u16::MAX / 3).checked_rem(ShortUnion::new_with(3_u16));
@@ -9634,6 +9525,7 @@ fn unions_pow_main()
     unions_wrapping_pow();
     unions_overflowing_pow();
     unions_checked_pow();
+    unions_unchecked_pow();
     unions_saturating_pow();
 }
 
@@ -9912,6 +9804,48 @@ fn unions_checked_pow()
     println!("--------------------------------------");
 }
 
+fn unions_unchecked_pow()
+{
+    println!("unions_unchecked_pow");
+    use cryptocol::number::{ ShortUnion, IntUnion, LongUnion, LongerUnion, SizeUnion };
+
+    // Example for ShortUnion
+    let a_shortunion = ShortUnion::new_with(12_u16).unchecked_pow(4);
+    println!("{} ** 4 = {}, where ** is the power operator", ShortUnion::new_with(12_u16), a_shortunion);
+    assert_eq!(a_shortunion.get(), 20736_u16);
+    // It will panic.
+    // let b_shortunion = ShortUnion::new_with(12_u16).unchecked_pow(5);
+
+    // Example for IntUnion
+    let a_intunion = IntUnion::new_with(38_u32).unchecked_pow(6);
+    println!("{} ** 6 = {}, where ** is the power operator", IntUnion::new_with(38_u32), a_intunion);
+    assert_eq!(a_intunion.get(), 3010936384_u32);
+    // It will panic.
+    // let b_intunion = IntUnion::new_with(38_u32).unchecked_pow(7);
+
+    // Example for LongUnion
+    let a_longunion = LongUnion::new_with(1004_u64).unchecked_pow(6);
+    println!("{} ** 6 = {}, where ** is the power operator", LongUnion::new_with(1004_u64), a_longunion);
+    assert_eq!(a_longunion.get(), 1024241283846148096_u64);
+    // It will panic.
+    // let b_longunion = LongUnion::new_with(1004_u64).unchecked_pow(7);
+
+    // Example for LongerUnion
+    let a_longerunion = LongerUnion::new_with(10003_u128).unchecked_pow(9);
+    println!("{} ** 9 = {}, where ** is the power operator", LongerUnion::new_with(10003_u128), a_longerunion);
+    assert_eq!(a_longerunion.get(), 1002703242269020906241243873790509683_u128);
+    // It will panic.
+    // let b_longerunion = LongerUnion::new_with(10003_u128).unchecked_pow(10);
+
+    // Example for SizeUnion
+    let a_sizeunion = SizeUnion::new_with(3_usize).unchecked_pow(5);
+    println!("{} ** 5 = {}, where ** is the power operator", SizeUnion::new_with(3_usize), a_sizeunion);
+    assert_eq!(a_sizeunion.get(), 243_usize);
+    // It will panic.
+    // let b_sizeunion = SizeUnion::new_with(3_usize).unchecked_pow(128);
+    println!("--------------------------------------");
+}
+
 fn unions_saturating_pow()
 {
     println!("unions_saturating_pow");
@@ -9971,6 +9905,7 @@ fn unions_ilog()
 {
     println!("unions_ilog");
     use cryptocol::number::{ ShortUnion, IntUnion, LongUnion, LongerUnion, SizeUnion };
+    // use cryptocol::number::SmallUInt;
 
     // Example for ShortUnion
     let a_shortunion = ShortUnion::new_with(10000_u16);
@@ -10058,6 +9993,7 @@ fn unions_ilog10()
 {
     println!("unions_ilog10");
     use cryptocol::number::{ ShortUnion, IntUnion, LongUnion, LongerUnion, SizeUnion };
+    // use cryptocol::number::SmallUInt;
 
     // Example for ShortUnion
     let a_shortunion = ShortUnion::new_with(10000_u16);
@@ -10105,6 +10041,7 @@ fn unions_ilog2()
 {
     println!("small_uint_ilog2");
     use cryptocol::number::{ ShortUnion, IntUnion, LongUnion, LongerUnion, SizeUnion };
+    // use cryptocol::number::SmallUInt;
 
     // Example for ShortUnion
     let a_shortunion = ShortUnion::new_with(10000_u16);
@@ -10149,28 +10086,728 @@ fn unions_ilog2()
 }
 
 
-fn unions_root_main(){}
+fn unions_root_main()
+{
+    unions_isqrt();
+}
+
+fn unions_isqrt()
+{
+    println!("unions_isqrt");
+    use cryptocol::number::{ ShortUnion, IntUnion, LongUnion, LongerUnion, SizeUnion };
+
+    // Example for ShortUnion
+    let a_shortunion = ShortUnion::new_with(10000_u16);
+    let res_shortunion = a_shortunion.isqrt();
+    println!("isqrt( {} ) = {}", a_shortunion, res_shortunion);
+    assert_eq!(res_shortunion.get(), 100_u16);
+
+    // Example for IntUnion
+    let a_intunion = IntUnion::new_with(1000000000_u32);
+    let res_intunion = a_intunion.isqrt();
+    println!("isqrt( {} ) = {}", a_intunion, res_intunion);
+    assert_eq!(res_intunion.get(), 31622_u32);
+
+    // Example for LongUnion
+    let a_longunion = LongUnion::new_with(10000000000000000000_u64);
+    let res_longunion = a_longunion.isqrt();
+    println!("isqrt( {} ) = {}", a_longunion, res_longunion);
+    assert_eq!(res_longunion.get(), 3162277660_u64);
+
+    // Example for LongerUnion
+    let a_longerunion = LongerUnion::new_with(100000000000000000000000000000000000000_u128);
+    let res_longerunion = a_longerunion.isqrt();
+    println!("isqrt( {} ) = {}", a_longerunion, res_longerunion);
+    assert_eq!(res_longerunion.get(), 10000000000000000000_u128);
+
+    // Example for SizeUnion
+    let a_sizeunion = SizeUnion::new_with(100_usize);
+    let res_sizeunion = a_sizeunion.isqrt();
+    println!("isqrt( {} ) = {}", a_sizeunion, res_sizeunion);
+    assert_eq!(res_sizeunion.get(), 10_usize);
+    println!("--------------------------------------");
+}
 
 
-fn unions_prime_main(){}
+fn unions_bits_operation()
+{
+    unions_reverse_bits();
+    unions_rotate_left();
+    unions_rotate_right();
+    unions_count_ones();
+    unions_count_zeros();
+    unions_leading_ones();
+    unions_leading_zeros();
+    unions_trailing_ones();
+    unions_trailing_zeros();
+}
+
+fn unions_reverse_bits()
+{
+    println!("unions_reverse_bits");
+    use cryptocol::number::{ ShortUnion, IntUnion, LongUnion, LongerUnion, SizeUnion };
+
+    // Examples for ShortUnion
+    let c_shortunion = ShortUnion::new_with(0b1011001110001111_u16);
+    let d_shortunion = c_shortunion.reverse_bits();
+    println!("{:016b} -> {:016b}", c_shortunion.get(), d_shortunion.get());
+    assert_eq!(d_shortunion.get(), 0b1111000111001101_u16);
+
+    // Examples for IntUnion
+    let c_intunion = IntUnion::new_with(0b10110011100011110000111110000011_u32);
+    let d_intunion = c_intunion.reverse_bits();
+    println!("{:032b} -> {:032b}", c_intunion.get(), d_intunion.get());
+    assert_eq!(d_intunion.get(), 0b11000001111100001111000111001101_u32);
+
+    // Examples for LongUnion
+    let c_longunion = LongUnion::new_with(0b1011001110001111000011111000001111110000001111111000000011111111_u64);
+    let d_longunion = c_longunion.reverse_bits();
+    println!("{:064b} -> {:064b}", c_longunion.get(), d_longunion.get());
+    assert_eq!(d_longunion.get(), 0b1111111100000001111111000000111111000001111100001111000111001101_u64);
+
+    // Examples for LongerUnion
+    let c_longerunion = LongerUnion::new_with(0b10110011100011110000111110000011111100000011111110000000111111110000000011111111100000000011111111110000000000111111111110000000_u128);
+    let d_longerunion = c_longerunion.reverse_bits();
+    println!("{:0128b} -> {:0128b}", c_longerunion.get(), d_longerunion.get());
+    assert_eq!(d_longerunion.get(), 0b00000001111111111100000000001111111111000000000111111111000000001111111100000001111111000000111111000001111100001111000111001101_u128);
+
+    // Examples for SizeUnion for 64-bit CPUs
+    #[cfg(target_pointer_width = "64")]
+    {
+        let c_sizeunion = SizeUnion::new_with(0b1011001110001111000011111000001111110000001111111000000011111111_usize);
+        let d_sizeunion = c_sizeunion.reverse_bits();
+        println!("{:064b} -> {:064b}", c_sizeunion.get(), d_sizeunion.get());
+        assert_eq!(d_sizeunion.get(), 0b1111111100000001111111000000111111000001111100001111000111001101_usize);
+    }
+    println!("--------------------------------------");
+}
+
+fn unions_rotate_left()
+{
+    println!("unions_rotate_left");
+    use cryptocol::number::{ ShortUnion, IntUnion, LongUnion, LongerUnion, SizeUnion };
+
+    // Examples for ShortUnion
+    let a_shortunion = ShortUnion::new_with(0b1011001110001111_u16);
+    let b_shortunion = a_shortunion.rotate_left(4);
+    println!("{:016b} -> {:016b}", a_shortunion.get(), b_shortunion.get());
+    assert_eq!(b_shortunion.get(), 0b0011100011111011_u16);
+
+    // Examples for IntUnion
+    let a_intunion = IntUnion::new_with(0b10110011100011110000111110000011_u32);
+    let b_intunion = a_intunion.rotate_left(8);
+    println!("{:032b} -> {:032b}", a_intunion.get(), b_intunion.get());
+    assert_eq!(b_intunion.get(), 0b10001111000011111000001110110011_u32);
+
+    // Examples for LongUnion
+    let a_longunion = LongUnion::new_with(0b1011001110001111000011111000001111110000001111111000000011111111_u64);
+    let b_longunion = a_longunion.rotate_left(16);
+    println!("{:064b} -> {:064b}", a_longunion.get(), b_longunion.get());
+    assert_eq!(b_longunion.get(), 0b0000111110000011111100000011111110000000111111111011001110001111_u64);
+
+    // Examples for LongerUnion
+    let a_longerunion = LongerUnion::new_with(0b10110011100011110000111110000011111100000011111110000000111111110000000011111111100000000011111111110000000000111111111110000000_u128);
+    let b_longerunion = a_longerunion.rotate_left(32);
+    println!("{:0128b} -> {:0128b}", a_longerunion.get(), b_longerunion.get());
+    assert_eq!(b_longerunion.get(), 0b11110000001111111000000011111111000000001111111110000000001111111111000000000011111111111000000010110011100011110000111110000011_u128);
+
+    // Examples for SizeUnion for 64-bit CPUs
+    #[cfg(target_pointer_width = "64")]
+    {
+        let a_sizeunion = SizeUnion::new_with(0b1011001110001111000011111000001111110000001111111000000011111111_usize);
+        let b_sizeunion = a_sizeunion.rotate_left(16);
+        println!("{:064b} -> {:064b}", a_sizeunion.get(), b_sizeunion.get());
+        assert_eq!(b_sizeunion.get(), 0b0000111110000011111100000011111110000000111111111011001110001111_usize);
+    }
+    println!("--------------------------------------");
+}
+
+fn unions_rotate_right()
+{
+    println!("unions_rotate_right");
+    use cryptocol::number::{ ShortUnion, IntUnion, LongUnion, LongerUnion, SizeUnion };
+
+    // Examples for ShortUnion
+    let a_shortunion = ShortUnion::new_with(0b1011001110001111_u16);
+    let b_shortunion = a_shortunion.rotate_right(4);
+    println!("{:016b} -> {:016b}", a_shortunion.get(), b_shortunion.get());
+    assert_eq!(b_shortunion.get(), 0b1111101100111000_u16);
+
+    // Examples for IntUnion
+    let a_intunion = IntUnion::new_with(0b10110011100011110000111110000011_u32);
+    let b_intunion = a_intunion.rotate_right(8);
+    println!("{:032b} -> {:032b}", a_intunion.get(), b_intunion.get());
+    assert_eq!(b_intunion.get(), 0b10000011101100111000111100001111_u32);
+
+    // Examples for LongUnion
+    let a_longunion = LongUnion::new_with(0b1011001110001111000011111000001111110000001111111000000011111111_u64);
+    let b_longunion = a_longunion.rotate_right(16);
+    println!("{:064b} -> {:064b}", a_longunion.get(), b_longunion.get());
+    assert_eq!(b_longunion.get(), 0b1000000011111111101100111000111100001111100000111111000000111111_u64);
+
+    // Examples for LongerUnion
+    let a_longerunion = LongerUnion::new_with(0b10110011100011110000111110000011111100000011111110000000111111110000000011111111100000000011111111110000000000111111111110000000_u128);
+    let b_longerunion = a_longerunion.rotate_right(32);
+    println!("{:0128b} -> {:0128b}", a_longerunion.get(), b_longerunion.get());
+    assert_eq!(b_longerunion.get(), 0b11110000000000111111111110000000101100111000111100001111100000111111000000111111100000001111111100000000111111111000000000111111_u128);
+
+    // Examples for SizeUnion for 64-bit CPUs
+    #[cfg(target_pointer_width = "64")]
+    {
+        let a_sizeunion = SizeUnion::new_with(0b1011001110001111000011111000001111110000001111111000000011111111_usize);
+        let b_sizeunion = a_sizeunion.rotate_right(16);
+        println!("{:064b} -> {:064b}", a_sizeunion.get(), b_sizeunion.get());
+        assert_eq!(b_sizeunion.get(), 0b1000000011111111101100111000111100001111100000111111000000111111_usize);
+    }
+    println!("--------------------------------------");
+}
+
+fn unions_count_ones()
+{
+    println!("unions_count_ones");
+    use cryptocol::number::{ ShortUnion, IntUnion, LongUnion, LongerUnion, SizeUnion };
+
+    // Examples for ShortUnion
+    let a_shortunion = ShortUnion::new_with(0b1011001110001111_u16);
+    let ones = a_shortunion.count_ones();
+    println!("The number of ones of {:016b} is {}.", a_shortunion.get(), ones);
+    assert_eq!(ones, 10_u32);
+
+    // Examples for IntUnion
+    let a_intunion = IntUnion::new_with(0b10110011100011110000111110000011_u32);
+    let ones = a_intunion.count_ones();
+    println!("The number of ones of {:032b} is {}.", a_intunion.get(), ones);
+    assert_eq!(ones, 17_u32);
+
+    // Examples for LongUnion
+    let a_longunion = LongUnion::new_with(0b1011001110001111000011111000001111110000001111111000000011111111_u64);
+    let ones = a_longunion.count_ones();
+    println!("The number of ones of {:064b} is {}.", a_longunion.get(), ones);
+    assert_eq!(ones, 36_u32);
+
+    // Examples for LongerUnion
+    let a_longerunion = LongerUnion::new_with(0b10110011100011110000111110000011111100000011111110000000111111110000000011111111100000000011111111110000000000111111111110000000_u128);
+    let ones = a_longerunion.count_ones();
+    println!("The number of ones of {:0128b} is {}.", a_longerunion.get(), ones);
+    assert_eq!(ones, 66_u32);
+
+    // Examples for SizeUnion
+    let a_sizeunion = SizeUnion::new_with(0b10110011_usize);
+    let ones = a_sizeunion.count_ones();
+    println!("The number of ones of {:064b} is {}.", a_sizeunion.get(), ones);
+    assert_eq!(ones, 5_u32);
+    println!("--------------------------------------");
+}
+
+fn unions_count_zeros()
+{
+    println!("unions_count_zeros");
+    use cryptocol::number::{ ShortUnion, IntUnion, LongUnion, LongerUnion, SizeUnion };
+
+    // Examples for ShortUnion
+    let a_shortunion = ShortUnion::new_with(0b1011001110001111_u16);
+    let zeros = a_shortunion.count_zeros();
+    println!("The number of zeros of {:016b} is {}.", a_shortunion.get(), zeros);
+    assert_eq!(zeros, 6_u32);
+
+    // Examples for IntUnion
+    let a_intunion = IntUnion::new_with(0b10110011100011110000111110000011_u32);
+    let zeros = a_intunion.count_zeros();
+    println!("The number of zeros of {:032b} is {}.", a_intunion.get(), zeros);
+    assert_eq!(zeros, 15_u32);
+
+    // Examples for LongUnion
+    let a_longunion = LongUnion::new_with(0b1011001110001111000011111000001111110000001111111000000011111111_u64);
+    let zeros = a_longunion.count_zeros();
+    println!("The number of zeros of {:064b} is {}.", a_longunion.get(), zeros);
+    assert_eq!(zeros, 28_u32);
+
+    // Examples for LongerUnion
+    let a_longerunion = LongerUnion::new_with(0b10110011100011110000111110000011111100000011111110000000111111110000000011111111100000000011111111110000000000111111111110000000_u128);
+    let zeros = a_longerunion.count_zeros();
+    println!("The number of zeros of {:0128b} is {}.", a_longerunion.get(), zeros);
+    assert_eq!(zeros, 62_u32);
+
+    // Examples for SizeUnion for 64-bit CPUs
+    #[cfg(target_pointer_width = "64")]
+    {
+        let a_sizeunion = SizeUnion::new_with(0b1011001110001111000011111000001111110000001111111000000011111111_usize);
+        let zeros = a_sizeunion.count_zeros();
+        println!("The number of zeros of {:064b} is {}.", a_sizeunion.get(), zeros);
+        assert_eq!(zeros, 28_u32);
+    }
+    println!("--------------------------------------");
+}
+
+fn unions_leading_ones()
+{
+    println!("unions_leading_ones");
+    use cryptocol::number::{ ShortUnion, IntUnion, LongUnion, LongerUnion, SizeUnion };
+
+    // Examples for ShortUnion
+    let a_shortunion = ShortUnion::new_with(0b1100111000111110_u16);
+    let ones = a_shortunion.leading_ones();
+    println!("The number of leading ones of {:016b} is {}.", a_shortunion.get(), ones);
+    assert_eq!(ones, 2_u32);
+
+    // Examples for IntUnion
+    let a_intunion = IntUnion::new_with(0b11110000111110000011101100111000_u32);
+    let ones = a_intunion.leading_ones();
+    println!("The number of leading ones of {:032b} is {}.", a_intunion.get(), ones);
+    assert_eq!(ones, 4_u32);
+
+    // Examples for LongUnion
+    let a_longunion = LongUnion::new_with(0b1111100000111111000000111111100000001111111110110011100011110000_u64);
+    let ones = a_longunion.leading_ones();
+    println!("The number of leading ones of {:064b} is {}.", a_longunion.get(), ones);
+    assert_eq!(ones, 5_u32);
+
+    // Examples for LongerUnion
+    let a_longerunion = LongerUnion::new_with(0b11111111111000000010110011100011110000111110000011111100000011111110000000111111110000000011111111100000000011111111110000000000_u128);
+    let ones = a_longerunion.leading_ones();
+    println!("The number of leading ones of {:0128b} is {}.", a_longerunion.get(), ones);
+    assert_eq!(ones, 11_u32);
+
+    // Examples for SizeUnion for 64-bit CPUs
+    #[cfg(target_pointer_width = "64")]
+    {
+        let a_sizeunion = SizeUnion::new_with(0b1111111000000011111111101100111000111100001111100000111111000000_usize);
+        let ones = a_sizeunion.leading_ones();
+        println!("The number of leading ones of {:064b} is {}.", a_sizeunion.get(), ones);
+        assert_eq!(ones, 7_u32);
+    }
+    println!("--------------------------------------");
+}
+
+fn unions_leading_zeros()
+{
+    println!("unions_leading_zeros");
+    use cryptocol::number::{ ShortUnion, IntUnion, LongUnion, LongerUnion, SizeUnion };
+
+    // Examples for ShortUnion
+    let a_shortunion = ShortUnion::new_with(0b0011100011111011_u16);
+    let zeros = a_shortunion.leading_zeros();
+    println!("The number of leading zeros of {:016b} is {}.", a_shortunion.get(), zeros);
+    assert_eq!(zeros, 2_u32);
+
+    // Examples for IntUnion
+    let a_intunion = IntUnion::new_with(0b01100111000111100001111100000111_u32);
+    let zeros = a_intunion.leading_zeros();
+    println!("The number of leading zeros of {:032b} is {}.", a_intunion.get(), zeros);
+    assert_eq!(zeros, 1_u32);
+
+    // Examples for LongUnion
+    let a_longunion = LongUnion::new_with(0b0000011111100000011111110000000111111111011001110001111000011111_u64);
+    let zeros = a_longunion.leading_zeros();
+    println!("The number of leading zeros of {:064b} is {}.", a_longunion.get(), zeros);
+    assert_eq!(zeros, 5_u32);
+
+    // Examples for LongerUnion
+    let a_longerunion = LongerUnion::new_with(0b00000001111111100000000111111111000000000111111111100000000001111111111100000001011001110001111000011111000001111110000001111111_u128);
+    let zeros = a_longerunion.leading_zeros();
+    println!("The number of leading zeros of {:0128b} is {}.", a_longerunion.get(), zeros);
+    assert_eq!(zeros, 7_u32);
+
+    // Examples for SizeUnion for 64-bit CPUs
+    #[cfg(target_pointer_width = "64")]
+    {
+        let a_sizeunion = SizeUnion::new_with(0b0000111110000011111100000011111110000000111111111011001110001111_usize);
+        let zeros = a_sizeunion.leading_zeros();
+        println!("The number of leading zeros of {:064b} is {}.", a_sizeunion.get(), zeros);
+        assert_eq!(zeros, 4_u32);
+    }
+    println!("--------------------------------------");
+}
+
+fn unions_trailing_ones()
+{
+    println!("unions_trailing_ones");
+    use cryptocol::number::{ ShortUnion, IntUnion, LongUnion, LongerUnion, SizeUnion };
+
+    // Examples for ShortUnion
+    let a_shortunion = ShortUnion::new_with(0b1111011001110001_u16);
+    let ones = a_shortunion.trailing_ones();
+    println!("The number of trailing ones of {:016b} is {}.", a_shortunion.get(), ones);
+    assert_eq!(ones, 1_u32);
+
+    // Examples for IntUnion
+    let a_intunion = IntUnion::new_with(0b00000111011001110001111000011111_u32);
+    let ones = a_intunion.trailing_ones();
+    println!("The number of trailing ones of {:032b} is {}.", a_intunion.get(), ones);
+    assert_eq!(ones, 5_u32);
+
+    // Examples for LongUnion
+    let a_longunion = LongUnion::new_with(0b1011001110001111000011111000001111110000001111111000000011111111_u64);
+    let ones = a_longunion.trailing_ones();
+    println!("The number of trailing ones of {:064b} is {}.", a_longunion.get(), ones);
+    assert_eq!(ones, 8_u32);
+
+    // Examples for LongerUnion
+    let a_longerunion = LongerUnion::new_with(0b00000000001111111111100000001011001110001111000011111000001111110000001111111000000011111111000000001111111110000000001111111111_u128);
+    let ones = a_longerunion.trailing_ones();
+    println!("The number of trailing ones of {:0128b} is {}.", a_longerunion.get(), ones);
+    assert_eq!(ones, 10_u32);
+
+    // Examples for SizeUnion
+    let a_sizeunion = SizeUnion::new_with(0b10110011_usize);
+    let ones = a_sizeunion.trailing_ones();
+    println!("The number of trailing ones of {:064b} is {}.", a_sizeunion.get(), ones);
+    assert_eq!(ones, 2_u32);
+    println!("--------------------------------------");
+}
+
+fn unions_trailing_zeros()
+{
+    println!("unions_trailing_zeros");
+    use cryptocol::number::{ ShortUnion, IntUnion, LongUnion, LongerUnion, SizeUnion };
+
+    // Examples for ShortUnion
+    let a_shortunion = ShortUnion::new_with(0b1111101100111000_u16);
+    let zeros = a_shortunion.trailing_zeros();
+    println!("The number of trailing zeros of {:016b} is {}.", a_shortunion.get(), zeros);
+    assert_eq!(zeros, 3_u32);
+
+    // Examples for IntUnion
+    let a_intunion = IntUnion::new_with(0b11101100111000111100001111100000_u32);
+    let zeros = a_intunion.trailing_zeros();
+    println!("The number of trailing zeros of {:032b} is {}.", a_intunion.get(), zeros);
+    assert_eq!(zeros, 5_u32);
+
+    // Examples for LongUnion
+    let a_longunion = LongUnion::new_with(0b1111111000000011111111101100111000111100001111100000111111000000_u64);
+    let zeros = a_longunion.trailing_zeros();
+    println!("The number of trailing zeros of {:064b} is {}.", a_longunion.get(), zeros);
+    assert_eq!(zeros, 6_u32);
+
+    // Examples for LongerUnion
+    let a_longerunion = LongerUnion::new_with(0b10110011100011110000111110000011111100000011111110000000111111110000000011111111100000000011111111110000000000111111111110000000_u128);
+    let zeros = a_longerunion.trailing_zeros();
+    println!("The number of trailing zeros of {:0128b} is {}.", a_longerunion.get(), zeros);
+    assert_eq!(zeros, 7_u32);
+
+    // Examples for SizeUnion
+    let a_sizeunion = SizeUnion::new_with(0b10110000_usize);
+    let zeros = a_sizeunion.trailing_zeros();
+    println!("The number of trailing zeros of {:064b} is {}.", a_sizeunion.get(), zeros);
+    assert_eq!(zeros, 4_u32);
+    println!("--------------------------------------");
+}
 
 
-fn unions_bits_operation(){}
+fn unions_bytes_operation()
+{
+    unions_from_be();
+    unions_from_le();
+    unions_to_be();
+    unions_to_le();
+    unions_swap_bytes();
+}
+
+fn unions_from_be()
+{
+    println!("unions_from_be");
+    use cryptocol::number::{ ShortUnion, IntUnion, LongUnion, LongerUnion, SizeUnion };
+
+    // Example for ShortUnion for Little Endianness
+    let a_shortunionbe = ShortUnion::new_with(0x1234_u16);
+    let b_shortunionle = ShortUnion::from_be(a_shortunionbe);
+    println!("{:04x} -> {:04x}", a_shortunionbe.get(), b_shortunionle.get());
+    assert_eq!(b_shortunionle.get(), 0x3412_u16);
+
+    // Example for IntUnion for Little Endianness
+    let a_intunionbe = IntUnion::new_with(0x12345678_u32);
+    let b_intunionle = IntUnion::from_be(a_intunionbe);
+    println!("{:08x} -> {:08x}", a_intunionbe.get(), b_intunionle.get());
+    assert_eq!(b_intunionle.get(), 0x78563412_u32);
+
+    // Example for LongUnion for Little Endianness
+    let a_longunionbe = LongUnion::new_with(0x123456789ABCDEF0_u64);
+    let b_longunionle = LongUnion::from_be(a_longunionbe);
+    println!("{:016x} -> {:016x}", a_longunionbe.get(), b_longunionle.get());
+    assert_eq!(b_longunionle.get(), 0xf0debc9a78563412_u64);
+
+    // Example for LongerUnion for Little Endianness
+    let a_longerunionbe = LongerUnion::new_with(0x123456789ABCDEF0123456789ABCDEF0_u128);
+    let b_longerunionle = LongerUnion::from_be(a_longerunionbe);
+    println!("{:032x} -> {:032x}", a_longerunionbe.get(), b_longerunionle.get());
+    assert_eq!(b_longerunionle.get(), 0xf0debc9a78563412f0debc9a78563412_u128);
+
+    // Example for SizeUnion for 64-bit Little Endian CPUs
+    #[cfg(target_pointer_width = "64")]
+    {
+        let a_sizeunionbe = SizeUnion::new_with(0x123456789ABCDEF0_usize);
+        let b_sizeunionle = SizeUnion::from_be(a_sizeunionbe);
+        println!("{:016x} -> {:016x}", a_sizeunionbe.get(), b_sizeunionle.get());
+        assert_eq!(b_sizeunionle.get(), 0xf0debc9a78563412_usize);
+    }
+    println!("--------------------------------------");
+}
+
+fn unions_from_le()
+{
+    println!("unions_from_le");
+    use cryptocol::number::{ ShortUnion, IntUnion, LongUnion, LongerUnion, SizeUnion };
+
+    // Example for ShortUnion for Little Endianness
+    let a_shortunionle = ShortUnion::new_with(0x1234_u16);
+    let b_shortunionle = ShortUnion::from_le(a_shortunionle);
+    println!("{:04x} -> {:04x}", a_shortunionle.get(), b_shortunionle.get());
+    assert_eq!(b_shortunionle.get(), 0x1234_u16);
+
+    // Example for IntUnion for Little Endianness
+    let a_intunionle = IntUnion::new_with(0x12345678_u32);
+    let b_intunionle = IntUnion::from_le(a_intunionle);
+    println!("{:08x} -> {:08x}", a_intunionle.get(), b_intunionle.get());
+    assert_eq!(b_intunionle.get(), 0x12345678_u32);
+
+    // Example for LongUnion for Little Endianness
+    let a_longunionle = LongUnion::new_with(0x123456789ABCDEF0_u64);
+    let b_longunionle = LongUnion::from_le(a_longunionle);
+    println!("{:016x} -> {:016x}", a_longunionle.get(), b_longunionle.get());
+    assert_eq!(b_longunionle.get(), 0x123456789ABCDEF0_u64);
+
+    // Example for LongerUnion for Little Endianness
+    let a_longerunionle = LongerUnion::new_with(0x123456789ABCDEF0123456789ABCDEF0_u128);
+    let b_longerunionle = LongerUnion::from_le(a_longerunionle);
+    println!("{:032x} -> {:032x}", a_longerunionle.get(), b_longerunionle.get());
+    assert_eq!(b_longerunionle.get(), 0x123456789ABCDEF0123456789ABCDEF0_u128);
+
+    // Example for SizeUnion for 64-bit Little Endian CPUs
+    #[cfg(target_pointer_width = "64")]
+    {
+        let a_sizeunionle = SizeUnion::new_with(0x123456789ABCDEF0_usize);
+        let b_sizeunionle = SizeUnion::from_le(a_sizeunionle);
+        println!("{:016x} -> {:016x}", a_sizeunionle.get(), b_sizeunionle.get());
+        assert_eq!(b_sizeunionle.get(), 0x123456789ABCDEF0_usize);
+    }
+    println!("--------------------------------------");
+}
+
+fn unions_to_be()
+{
+    println!("unions_to_be");
+    use cryptocol::number::{ ShortUnion, IntUnion, LongUnion, LongerUnion, SizeUnion };
+
+    // Example for ShortUnion for Little Endianness
+    let a_shortunionle = ShortUnion::new_with(0x1234_u16);
+    let b_shortunionbe = ShortUnion::to_be(a_shortunionle);
+    println!("{:04x} -> {:04x}", a_shortunionle.get(), b_shortunionbe.get());
+    assert_eq!(b_shortunionbe.get(), 0x3412_u16);
+
+    // Example for IntUnion for Little Endianness
+    let a_intunionle = IntUnion::new_with(0x12345678_u32);
+    let b_intunionbe = IntUnion::to_be(a_intunionle);
+    println!("{:08x} -> {:08x}", a_intunionle.get(), b_intunionbe.get());
+    assert_eq!(b_intunionbe.get(), 0x78563412_u32);
+
+    // Example for LongUnion for Little Endianness
+    let a_longunionle = LongUnion::new_with(0x123456789ABCDEF0_u64);
+    let b_longunionbe = LongUnion::to_be(a_longunionle);
+    println!("{:016x} -> {:016x}", a_longunionle.get(), b_longunionbe.get());
+    assert_eq!(b_longunionbe.get(), 0xf0debc9a78563412_u64);
+
+    // Example for LongerUnion for Little Endianness
+    let a_longerunionle = LongerUnion::new_with(0x123456789ABCDEF0123456789ABCDEF0_u128);
+    let b_longerunionbe = LongerUnion::to_be(a_longerunionle);
+    println!("{:032x} -> {:032x}", a_longerunionle.get(), b_longerunionbe.get());
+    assert_eq!(b_longerunionbe.get(), 0xf0debc9a78563412f0debc9a78563412_u128);
+
+    // Example for SizeUnion for 64-bit Little Endian CPUs
+    #[cfg(target_pointer_width = "64")]
+    {
+        let a_sizeunionle = SizeUnion::new_with(0x123456789ABCDEF0_usize);
+        let b_sizeunionbe = SizeUnion::to_be(a_sizeunionle);
+        println!("{:016x} -> {:016x}", a_sizeunionle.get(), b_sizeunionbe.get());
+        assert_eq!(b_sizeunionbe.get(), 0xf0debc9a78563412_usize);
+    }
+    println!("--------------------------------------");
+}
+
+fn unions_to_le()
+{
+    println!("unions_to_le");
+    use cryptocol::number::{ ShortUnion, IntUnion, LongUnion, LongerUnion, SizeUnion };
+
+    // Example for ShortUnion for Little Endianness
+    let a_shortunionle = ShortUnion::new_with(0x1234_u16);
+    let b_shortunionle = ShortUnion::to_le(a_shortunionle);
+    println!("{:04x} -> {:04x}", a_shortunionle.get(), b_shortunionle.get());
+    assert_eq!(b_shortunionle.get(), 0x1234_u16);
+
+    // Example for IntUnion for Little Endianness
+    let a_intunionle = IntUnion::new_with(0x12345678_u32);
+    let b_intunionle = IntUnion::to_le(a_intunionle);
+    println!("{:08x} -> {:08x}", a_intunionle.get(), b_intunionle.get());
+    assert_eq!(b_intunionle.get(), 0x12345678_u32);
+
+    // Example for LongUnion for Little Endianness
+    let a_longunionle = LongUnion::new_with(0x123456789ABCDEF0_u64);
+    let b_longunionle = LongUnion::to_le(a_longunionle);
+    println!("{:016x} -> {:016x}", a_longunionle.get(), b_longunionle.get());
+    assert_eq!(b_longunionle.get(), 0x123456789ABCDEF0_u64);
+
+    // Example for LongerUnion for Little Endianness
+    let a_longerunionle = LongerUnion::new_with(0x123456789ABCDEF0123456789ABCDEF0_u128);
+    let b_longerunionle = LongerUnion::to_le(a_longerunionle);
+    println!("{:032x} -> {:032x}", a_longerunionle.get(), b_longerunionle.get());
+    assert_eq!(b_longerunionle.get(), 0x123456789ABCDEF0123456789ABCDEF0_u128);
+
+    // Example for SizeUnion for 64-bit Little Endian CPUs
+    #[cfg(target_pointer_width = "64")]
+    {
+        let a_sizeunionle = SizeUnion::new_with(0x123456789ABCDEF0_usize);
+        let b_sizeunionle = SizeUnion::to_le(a_sizeunionle);
+        println!("{:016x} -> {:016x}", a_sizeunionle.get(), b_sizeunionle.get());
+        assert_eq!(b_sizeunionle.get(), 0x123456789ABCDEF0_usize);
+    }
+    println!("--------------------------------------");
+}
+
+fn unions_swap_bytes()
+{
+    println!("unions_swap_bytes");
+    use cryptocol::number::{ ShortUnion, IntUnion, LongUnion, LongerUnion, SizeUnion };
+
+    // Example for ShortUnion
+    let a_shortunion = ShortUnion::new_with(0x1234_u16);
+    let b_shortunion = ShortUnion::swap_bytes(a_shortunion);
+    println!("{:04x} -> {:04x}", a_shortunion.get(), b_shortunion.get());
+    assert_eq!(b_shortunion.get(), 0x3412_u16);
+
+    // Example for IntUnion
+    let a_intunion = IntUnion::new_with(0x12345678_u32);
+    let b_intunion = IntUnion::swap_bytes(a_intunion);
+    println!("{:08x} -> {:08x}", a_intunion.get(), b_intunion.get());
+    assert_eq!(b_intunion.get(), 0x78563412_u32);
+
+    // Example for LongUnion
+    let a_longunion = LongUnion::new_with(0x123456789ABCDEF0_u64);
+    let b_longunion = LongUnion::swap_bytes(a_longunion);
+    println!("{:016x} -> {:016x}", a_longunion.get(), b_longunion.get());
+    assert_eq!(b_longunion.get(), 0xf0debc9a78563412_u64);
+
+    // Example for LongerUnion
+    let a_longerunion = LongerUnion::new_with(0x123456789ABCDEF0123456789ABCDEF0_u128);
+    let b_longerunion = LongerUnion::swap_bytes(a_longerunion);
+    println!("{:032x} -> {:032x}", a_longerunion.get(), b_longerunion.get());
+    assert_eq!(b_longerunion.get(), 0xf0debc9a78563412f0debc9a78563412_u128);
+
+    // Example for SizeUnion for 64-bit CPUs
+    #[cfg(target_pointer_width = "64")]
+    {
+        let a_sizeunion = SizeUnion::new_with(0x123456789ABCDEF0_usize);
+        let b_sizeunion = SizeUnion::swap_bytes(a_sizeunion);
+        println!("{:016x} -> {:016x}", a_sizeunion.get(), b_sizeunion.get());
+        assert_eq!(b_sizeunion.get(), 0xf0debc9a78563412_usize);
+    }
+    println!("--------------------------------------");
+}
 
 
-fn unions_bytes_operation(){}
+fn unions_find_power()
+{
+    unions_is_power_of_two();
+    unions_next_power_of_two();
+}
 
+fn unions_is_power_of_two()
+{
+    println!("unions_is_power_of_two");
+    use cryptocol::number::{ ShortUnion, IntUnion, LongUnion, LongerUnion, SizeUnion };
 
-fn unions_find_power(){}
+    // Example for ShortUnion
+    let a_shortunion = ShortUnion::new_with(32768_u16);
+    let a_two = a_shortunion.is_power_of_two();
+    println!("{} is {}power of two..", a_shortunion, if a_two {""} else {"not "});
+    assert!(a_two);
 
+    let b_shortunion = ShortUnion::new_with(65432_u16);
+    let b_two = b_shortunion.is_power_of_two();
+    println!("{} is {}power of two..", b_shortunion, if b_two {""} else {"not "});
+    assert!(!b_two);
 
-fn unions_conversion(){}
+    // Example for IntUnion
+    let a_intunion = IntUnion::new_with(2147483648_u32);
+    let a_two = a_intunion.is_power_of_two();
+    println!("{} is {}power of two..", a_intunion, if a_two {""} else {"not "});
+    assert!(a_two);
 
+    let b_intunion = IntUnion::new_with(876543210_u32);
+    let b_two = b_intunion.is_power_of_two();
+    println!("{} is {}power of two..", b_intunion, if b_two {""} else {"not "});
+    assert!(!b_two);
 
-fn unions_constants(){}
+    // Example for LongUnion
+    let a_longunion = LongUnion::new_with(9223372036854775808_u64);
+    let a_two = a_longunion.is_power_of_two();
+    println!("{} is {}power of two..", a_longunion, if a_two {""} else {"not "});
+    assert!(a_two);
 
+    let b_longunion = LongUnion::new_with(2468135791234567892_u64);
+    let b_two = b_longunion.is_power_of_two();
+    println!("{} is {}power of two..", b_longunion, if b_two {""} else {"not "});
+    assert!(!b_two);
 
-fn unions_size(){}
+    // Example for LongerUnion
+    let a_longerunion = LongerUnion::new_with(170141183460469231731687303715884105728_u128);
+    let a_two = a_longerunion.is_power_of_two();
+    println!("{} is {}power of two..", a_longerunion, if a_two {""} else {"not "});
+    assert!(a_two);
+
+    let b_longerunion = LongerUnion::new_with(200000000000000000000000000000000000000_u128);
+    let b_two = b_longerunion.is_power_of_two();
+    println!("{} is {}power of two..", b_longerunion, if b_two {""} else {"not "});
+    assert!(!b_two);
+
+    // Example for SizeUnion
+    let a_sizeunion = SizeUnion::new_with(128_usize);
+    let a_two = a_sizeunion.is_power_of_two();
+    println!("{} is {}power of two..", a_sizeunion, if a_two {""} else {"not "});
+    assert!(a_two);
+
+    let b_sizeunion = SizeUnion::new_with(200_usize);
+    let b_two = b_sizeunion.is_power_of_two();
+    println!("{} is {}power of two..", b_sizeunion, if b_two {""} else {"not "});
+    assert!(!b_two);
+    println!("--------------------------------------");
+}
+
+fn unions_next_power_of_two()
+{
+    println!("unions_next_power_of_two");
+    use cryptocol::number::{ ShortUnion, IntUnion, LongUnion, LongerUnion, SizeUnion };
+
+    // Example for ShortUnion
+    let a_shortunion = ShortUnion::new_with(400_u16);
+    let b_shortunion = a_shortunion.next_power_of_two();
+    println!("{} => {}", a_shortunion.get(), b_shortunion.get());
+    assert_eq!(b_shortunion.get(), 512_u16);
+
+    // Example for IntUnion
+    let a_intunion = IntUnion::new_with(400000_u32);
+    let b_intunion = a_intunion.next_power_of_two();
+    println!("{} => {}", a_intunion.get(), b_intunion.get());
+    assert_eq!(b_intunion.get(), 524288_u32);
+
+    // Example for LongUnion
+    let a_longunion = LongUnion::new_with(400000000000_u64);
+    let b_longunion = a_longunion.next_power_of_two();
+    println!("{} => {}", a_longunion.get(), b_longunion.get());
+    assert_eq!(b_longunion.get(), 549755813888_u64);
+
+    // Example for LongerUnion
+    let a_longerunion = LongerUnion::new_with(4000000000000000000000000000_u128);
+    let b_longerunion = a_longerunion.next_power_of_two();
+    println!("{} => {}", a_longerunion.get(), b_longerunion.get());
+    assert_eq!(b_longerunion.get(), 4951760157141521099596496896_u128);
+
+    // Example for SizeUnion
+    let a_sizeunion = SizeUnion::new_with(4000000000000000_usize);
+    let b_sizeunion = a_sizeunion.next_power_of_two();
+    println!("{} => {}", a_sizeunion.get(), b_sizeunion.get());
+    assert_eq!(b_sizeunion.get(), 4503599627370496_usize);
+    println!("--------------------------------------");
+}
 
 
 /*

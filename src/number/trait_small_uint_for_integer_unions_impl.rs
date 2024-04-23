@@ -263,7 +263,7 @@ macro_rules! SmallUInt_methods_for_integer_unions_impl {
             /// Computes `self.pow(exp)`, unless overflow does not occcurred.
             /// Otherwise, it will panic.
             /// [Read more](trait@SmallUInt#tymethod.unchecked_pow) in detail.
-            #[inline] fn unchecked_pow(self, exp: u32) -> Self      { self.checked_pow(exp).unwrap() }
+            #[inline] fn unchecked_pow(self, exp: u32) -> Self      { self.unchecked_pow(exp) }
 
             /// Computes `self`.pow(exp), saturating at the numeric bounds
             /// instead of overflowing.
@@ -296,22 +296,19 @@ macro_rules! SmallUInt_methods_for_integer_unions_impl {
             /// Returns the logarithm of the number with respect to an
             /// arbitrary base. [Read more](trait@SmallUInt#tymethod.ilog)
             /// in detail.
-            #[inline] fn ilog(self, base: Self) -> u32  { self.get().ilog(base.get()) }
+            #[inline] fn ilog(self, base: Self) -> u32  { self.ilog(base) }
 
             /// Returns the base 10 logarithm of the number.
             /// [Read more](trait@SmallUInt#tymethod.ilog10) in detail.
-            #[inline] fn ilog10(self) -> u32            { self.get().ilog10() }
+            #[inline] fn ilog10(self) -> u32            { self.ilog10() }
 
             /// Returns the base 2 logarithm of the number, rounded down.
             /// [Read more](trait@SmallUInt#tymethod.ilog2) in detail.
-            #[inline] fn ilog2(self) -> u32             { self.get().ilog2() }
+            #[inline] fn ilog2(self) -> u32             { self.ilog2() }
 
             /// Returns the square root of the number.
             /// [Read more](trait@SmallUInt#tymethod.isqrt) in detail.
-            #[inline] fn isqrt(self) -> Self
-            {
-                Self::new_with(SmallUInt::isqrt(self.get()))
-            }
+            #[inline] fn isqrt(self) -> Self            { self.isqrt() }
 
             // /// Returns the square root of the number.
             // /// [Read more](trait@SmallUInt#tymethod.isqrt) in detail.
@@ -319,7 +316,7 @@ macro_rules! SmallUInt_methods_for_integer_unions_impl {
 
             /// Returns the `exp`-th root of the number.
             /// [Read more](trait@SmallUInt#tymethod.root) in detail.
-            #[inline] fn root(self, exp: Self) -> Self  { Self::new_with(self.get().root(exp.get())) }
+            #[inline] fn iroot(self, exp: Self) -> Self  { Self::new_with(self.get().iroot(exp.get())) }
 
 
 
@@ -340,7 +337,6 @@ macro_rules! SmallUInt_methods_for_integer_unions_impl {
             /// Reverses the order of bits in the integer.
             /// [Read more](trait@SmallUInt#tymethod.reverse_bits) in detail.
             #[inline] fn reverse_bits(self) -> Self     { self.reverse_bits() }
-            // #[inline] fn reverse_bits_assign(&mut self) { *self = self.reverse_bits(); }
 
             /// Shifts the bits to the left by a specified amount, `n`,
             /// wrapping the truncated bits to the end of the resulting integer.
