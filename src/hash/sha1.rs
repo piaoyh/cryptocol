@@ -287,6 +287,52 @@ pub type SHA1 = SHA1_Generic;   // equivalent to `pub type SHA1 = SHA1_Expanded;
 /// The follwing example shows how to import and use SHA0.
 /// 
 /// ## Example
+/// ```
+/// use std::string::*;
+/// use cryptocol::hash::SHA0;
+/// 
+/// let mut hash = SHA0::new();
+/// 
+/// let mut txt = "";
+/// hash.digest_str(txt);
+/// println!("Msg =\t\"{}\"\nHash =\t{}\n", txt, hash.get_hash_value_in_string());
+/// assert_eq!(hash.get_hash_value_in_string(), "F96CEA198AD1DD5617AC084A3D92C6107708C0EF");
+/// 
+/// let txt_stirng = String::from("A");
+/// hash.digest_string(&txt_stirng);
+/// println!("Msg =\t\"{}\"\nHash =\t{}\n", txt_stirng, hash);
+/// assert_eq!(hash.to_string(), "E4DA6A8FBD813C90E6FA040D5F15398ECA200339");
+/// 
+/// let txt_array = ['W' as u8, 'o' as u8, 'w' as u8];
+/// hash.digest_array(&txt_array);
+/// println!("Msg =\t\"{:?}\"\nHash =\t{}\n", txt_array, hash);
+/// assert_eq!(hash.get_hash_value_in_string(), "72CFDDBCDCCCC0847DA8AA7FDBA901A2FC431068");
+/// 
+/// txt = "This data is 26-byte long.";
+/// hash.digest_str(txt);
+/// println!("Msg =\t\"{}\"\nHash =\t{}\n", txt, hash);
+/// assert_eq!(hash.to_string(), "B56263EB76AE1ABA8E7E4A4CA104BC78F1BC8D7A");
+/// 
+/// txt = "The unit of data length is not byte but bit.";
+/// hash.digest_str(txt);
+/// println!("Msg =\t\"{}\"\nHash =\t{}\n", txt, hash);
+/// assert_eq!(hash.get_hash_value_in_string(), "613FEB0029DF4FE0D16CBA8AAFA596D9BC309D18");
+/// 
+/// txt = "I am testing SHA0 for the data whose length is sixty-two bytes.";
+/// hash.digest_str(txt);
+/// println!("Msg =\t\"{}\"\nHash =\t{}\n", txt, hash);
+/// assert_eq!(hash.to_string(), "E0351ED0E4FDD2F5731A2E7472B08038B10AFB0D");
+/// 
+/// txt = "I am testing SHA-0 for the data whose length is sixty-four bytes.";
+/// hash.digest_str(txt);
+/// println!("Msg =\t\"{}\"\nHash =\t{}\n", txt, hash);
+/// assert_eq!(hash.get_hash_value_in_string(), "270CCCFD32361F7C01427D9F64B2248C6C88D080");
+/// 
+/// txt = "I am testing SHA0 for the case data whose length is more than sixty-four bytes is given.";
+/// hash.digest_str(txt);
+/// println!("Msg =\t\"{}\"\nHash =\t{}", txt, hash);
+/// assert_eq!(hash.to_string(), "0E71D76AC85D342DB566EDCFC971B6E06C5D7CBC");
+/// ```
 pub type SHA0 = SHA1_Generic<5, 0x67452301, 0xefcdab89,
                             0x98badcfe, 0x10325476, 0xc3d2e1f0, 80,
                             0x5a827999, 0x6ed9eba1, 0x8f1bbcdc,
