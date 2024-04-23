@@ -20,7 +20,7 @@ The checked items have already been implemented including documentation. The unc
 
 ### Small Numbers: meaningful as itself, and also the foundations mainly for Big Numbers as well as for other modules
 
-- [ ] Unions for primitive data types and their implementation, and the implementation
+- [X] Unions for primitive data types and their implementation, and the implementation
       of trait SmallUInt for the Unions --- `ShortUnion`, `IntUnion`, `LongUnion`,
       `LongerUnion`, `SizeUnion`, `SharedValues`, and `SharedArrays`
 - [X] Trait SmallUInt, its implementation for primitive data types, and the implementation
@@ -86,13 +86,13 @@ listed above. So, for example, even if the version number is 0.5.0.0,
 it does not mean that 50% of all functionalities are implemented.
 
 
-## Sorry for breaking changes from ver. 0.7.6 to ver. 0.7.7
+## Sorry for breaking changes from ver. 0.7.6 to ver. 0.8.0
 
 I think that if breaking changes are inevitable and have to be made, the sooner, the better especially before more people will be using my crate.
 
 ### trait SmallUInt
 
-| Ver. 0.7.6                             | Ver. 0.7.7                            |
+| Ver. 0.7.6                             | Ver. 0.8.0                            |
 |----------------------------------------|---------------------------------------|
 | pub fn root(self, exp: Self) -> Self   | pub fn iroot(self, exp: Self) -> Self |
 
@@ -100,7 +100,7 @@ I think that if breaking changes are inevitable and have to be made, the sooner,
 
 ### unions ShortUnion, IntUnion, LongUnion, LongerUnion, and SizeUnion
 
-| Ver. 0.7.6                             | Ver. 0.7.7     |
+| Ver. 0.7.6                             | Ver. 0.8.0     |
 |----------------------------------------|----------------|
 | pub fn root(self, exp: Self) -> Self   | removed        |
 | pub fn reverse_bits(self) -> Self      | removed        |

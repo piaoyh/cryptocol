@@ -28,7 +28,8 @@ pub fn main()
 
 fn hash_md4_main()
 {
-    md4_quick_start();
+    md4_quick_start1();
+    md4_quick_start2();
     md4_new();
     md4_digest();
     md4_digest_str();
@@ -50,9 +51,9 @@ fn hash_md4_main()
     md4_fmt_for_println();
 }
 
-fn md4_quick_start()
+fn md4_quick_start1()
 {
-    println!("md4_quick_start");
+    println!("md4_quick_start1");
     use std::string::*;
     use cryptocol::hash::MD4;
     let mut hash = MD4::new();
@@ -96,6 +97,56 @@ fn md4_quick_start()
     hash.digest_str(txt);
     println!("Msg =\t\"{}\"\nHash =\t{}", txt, hash);
     assert_eq!(hash.to_string(), "56771653687981390B0EB2A7D0A40DBB");
+    println!("-------------------------------");
+}
+
+fn md4_quick_start2()
+{
+    println!("md4_quick_start2");
+    use std::string::*;
+    use cryptocol::hash::MD4_Expanded;
+    type MyMD4 = MD4_Expanded<4, 0x1111_1111, 0x4444_4444, 0x8888_8888, 0xffff_ffff, 96>;
+    let mut hash = MyMD4::new();
+
+    let mut txt = "";
+    hash.digest_str(txt);
+    println!("Msg =\t\"{}\"\nHash =\t{}\n", txt, hash);
+    assert_eq!(hash.get_hash_value_in_string(), "13892AE087B903E5EC030A51E1BC720A");
+
+    let txt_stirng = String::from("A");
+    hash.digest_string(&txt_stirng);
+    println!("Msg =\t\"{}\"\nHash =\t{}\n", txt_stirng, hash);
+    assert_eq!(hash.to_string(), "0C0BE1B8893E47C005D95C69234141E9");
+
+    let txt_array = ['W' as u8, 'o' as u8, 'w' as u8];
+    hash.digest_array(&txt_array);
+    println!("Msg =\t\"{:?}\"\nHash =\t{}\n", txt_array, hash);
+    assert_eq!(hash.get_hash_value_in_string(), "17545CEB681C5B848234A557C5957AA7");
+
+    txt = "This data is 26-byte long.";
+    hash.digest_str(txt);
+    println!("Msg =\t\"{}\"\nHash =\t{}\n", txt, hash);
+    assert_eq!(hash.to_string(), "70F3EA1DCDE46C65868DC0937E374433");
+
+    txt = "The unit of data length is not byte but bit.";
+    hash.digest_str(txt);
+    println!("Msg =\t\"{}\"\nHash =\t{}\n", txt, hash);
+    assert_eq!(hash.get_hash_value_in_string(), "640B4635ED76F6574FC30AB233B74712");
+    
+    txt = "I am testing MD4_Expanded for the data of the length 62 bytes.";
+    hash.digest_str(txt);
+    println!("Msg =\t\"{}\"\nHash =\t{}\n", txt, hash);
+    assert_eq!(hash.to_string(), "B0D18D969B99F4BF48365449AF82EAFB");
+    
+    txt = "I am testing MD4_Expanded for the message which is 64 byte-long.";
+    hash.digest_str(txt);
+    println!("Msg =\t\"{}\"\nHash =\t{}\n", txt, hash);
+    assert_eq!(hash.get_hash_value_in_string(), "2D4ADABC3504B4A1B98FCCBFC48145AE");
+
+    txt = "I am testing MD4_Expanded for the case data whose length is more than 64 bytes is given.";
+    hash.digest_str(txt);
+    println!("Msg =\t\"{}\"\nHash =\t{}", txt, hash);
+    assert_eq!(hash.to_string(), "26E5336E4D863BBAD6347918CE6DBAF5");
     println!("-------------------------------");
 }
 
@@ -534,7 +585,8 @@ fn md4_fmt_for_println()
 
 fn hash_md5_main()
 {
-    md5_quick_start();
+    md5_quick_start1();
+    md5_quick_start2();
     md5_new();
     md5_digest();
     md5_digest_str();
@@ -556,9 +608,9 @@ fn hash_md5_main()
     md5_fmt_for_println();
 }
 
-fn md5_quick_start()
+fn md5_quick_start1()
 {
-    println!("md5_quick_start");
+    println!("md5_quick_start1");
     use std::string::*;
     use cryptocol::hash::MD5;
     let mut hash = MD5::new();
@@ -602,6 +654,56 @@ fn md5_quick_start()
     hash.digest_str(txt);
     println!("Msg =\t\"{}\"\nHash =\t{}", txt, hash);
     assert_eq!(hash.to_string(), "9831162AB272AE1D85245B75726D215E");
+    println!("-------------------------------");
+}
+
+fn md5_quick_start2()
+{
+    println!("md5_quick_start2");
+    use std::string::*;
+    use cryptocol::hash::MD5_Expanded;
+    type MyMD5 = MD5_Expanded<4, 0x1111_1111, 0x4444_4444, 0x8888_8888, 0xffff_ffff, 128>;
+    let mut hash = MyMD5::new();
+
+    let mut txt = "";
+    hash.digest_str(txt);
+    println!("Msg =\t\"{}\"\nHash =\t{}\n", txt, hash);
+    assert_eq!(hash.get_hash_value_in_string(), "2793C0925118EEA53C288640AA7D9C81");
+
+    let txt_stirng = String::from("A");
+    hash.digest_string(&txt_stirng);
+    println!("Msg =\t\"{}\"\nHash =\t{}\n", txt_stirng, hash);
+    assert_eq!(hash.to_string(), "78DBB9B3C63B704745BFF37E3254B350");
+
+    let txt_array = ['W' as u8, 'o' as u8, 'w' as u8];
+    hash.digest_array(&txt_array);
+    println!("Msg =\t\"{:?}\"\nHash =\t{}\n", txt_array, hash);
+    assert_eq!(hash.get_hash_value_in_string(), "298B65824C2F415446A6210AB0191B8B");
+
+    txt = "This data is 26-byte long.";
+    hash.digest_str(txt);
+    println!("Msg =\t\"{}\"\nHash =\t{}\n", txt, hash);
+    assert_eq!(hash.to_string(), "80C1F5A7858DEB5A136CE57DC60FCFBE");
+
+    txt = "The unit of data length is not byte but bit.";
+    hash.digest_str(txt);
+    println!("Msg =\t\"{}\"\nHash =\t{}\n", txt, hash);
+    assert_eq!(hash.get_hash_value_in_string(), "F3B540538E750E62A3F9417C308DD018");
+
+    txt = "I am testing MD5_Expanded for the data of the length 62 bytes.";
+    hash.digest_str(txt);
+    println!("Msg =\t\"{}\"\nHash =\t{}\n", txt, hash);
+    assert_eq!(hash.to_string(), "A136326C1DA54B63CC2743647219BA60");
+
+    txt = "I am testing MD5_Expanded for the message which is 64 byte-long.";
+    hash.digest_str(txt);
+    println!("Msg =\t\"{}\"\nHash =\t{}\n", txt, hash);
+    assert_eq!(hash.get_hash_value_in_string(), "C6AC6907DDE0E8429CF44BC21941F64A");
+
+    txt = "I am testing MD5_Expanded for the case data whose length is more than 64 bytes is given.";
+    hash.digest_str(txt);
+    println!("Msg =\t\"{}\"\nHash =\t{}", txt, hash);
+    assert_eq!(hash.to_string(), "BD4E0962262EBBAE4C4A89FBB2F7A2D4");
     println!("-------------------------------");
 }
 
@@ -1040,7 +1142,10 @@ fn md5_fmt_for_println()
 
 fn hash_sha1_main()
 {
-    sha1_quick_start();
+    sha1_quick_start1();
+    sha1_quick_start2();
+    sha1_quick_start3();
+    sha1_quick_start4();
     sha1_new();
     sha1_digest();
     sha1_digest_str();
@@ -1062,9 +1167,9 @@ fn hash_sha1_main()
     sha1_fmt_for_println();
 }
 
-fn sha1_quick_start()
+fn sha1_quick_start1()
 {
-    println!("sha1_quick_start");
+    println!("sha1_quick_start1");
     use std::string::*;
     use cryptocol::hash::SHA1;
     let mut hash = SHA1::new();
@@ -1108,6 +1213,157 @@ fn sha1_quick_start()
     hash.digest_str(txt);
     println!("Msg =\t\"{}\"\nHash =\t{}", txt, hash);
     assert_eq!(hash.to_string(), "BB2C79F551B95963ECE49D40F8A92349BF66CAE7");
+    println!("-------------------------------");
+}
+
+fn sha1_quick_start2()
+{
+    println!("sha1_quick_start2");
+    use std::string::*;
+    use cryptocol::hash::SHA0;
+    let mut hash = SHA0::new();
+
+    let mut txt = "";
+    hash.digest_str(txt);
+    println!("Msg =\t\"{}\"\nHash =\t{}\n", txt, hash.get_hash_value_in_string());
+    assert_eq!(hash.get_hash_value_in_string(), "F96CEA198AD1DD5617AC084A3D92C6107708C0EF");
+
+    let txt_stirng = String::from("A");
+    hash.digest_string(&txt_stirng);
+    println!("Msg =\t\"{}\"\nHash =\t{}\n", txt_stirng, hash);
+    assert_eq!(hash.to_string(), "E4DA6A8FBD813C90E6FA040D5F15398ECA200339");
+
+    let txt_array = ['W' as u8, 'o' as u8, 'w' as u8];
+    hash.digest_array(&txt_array);
+    println!("Msg =\t\"{:?}\"\nHash =\t{}\n", txt_array, hash);
+    assert_eq!(hash.get_hash_value_in_string(), "72CFDDBCDCCCC0847DA8AA7FDBA901A2FC431068");
+
+    txt = "This data is 26-byte long.";
+    hash.digest_str(txt);
+    println!("Msg =\t\"{}\"\nHash =\t{}\n", txt, hash);
+    assert_eq!(hash.to_string(), "B56263EB76AE1ABA8E7E4A4CA104BC78F1BC8D7A");
+
+    txt = "The unit of data length is not byte but bit.";
+    hash.digest_str(txt);
+    println!("Msg =\t\"{}\"\nHash =\t{}\n", txt, hash);
+    assert_eq!(hash.get_hash_value_in_string(), "613FEB0029DF4FE0D16CBA8AAFA596D9BC309D18");
+
+    txt = "I am testing SHA0 for the data whose length is sixty-two bytes.";
+    hash.digest_str(txt);
+    println!("Msg =\t\"{}\"\nHash =\t{}\n", txt, hash);
+    assert_eq!(hash.to_string(), "E0351ED0E4FDD2F5731A2E7472B08038B10AFB0D");
+
+    txt = "I am testing SHA-0 for the data whose length is sixty-four bytes.";
+    hash.digest_str(txt);
+    println!("Msg =\t\"{}\"\nHash =\t{}\n", txt, hash);
+    assert_eq!(hash.get_hash_value_in_string(), "270CCCFD32361F7C01427D9F64B2248C6C88D080");
+
+    txt = "I am testing SHA0 for the case data whose length is more than sixty-four bytes is given.";
+    hash.digest_str(txt);
+    println!("Msg =\t\"{}\"\nHash =\t{}", txt, hash);
+    assert_eq!(hash.to_string(), "0E71D76AC85D342DB566EDCFC971B6E06C5D7CBC");
+    println!("-------------------------------");
+}
+
+fn sha1_quick_start3()
+{
+    println!("sha1_quick_start3");
+    use std::string::*;
+    use cryptocol::hash::SHA1_Expanded;
+
+    type MySHA1 = SHA1_Expanded<5, 0x1111_1111, 0x4444_4444, 0x8888_8888, 0xcccc_cccc, 0xffff_ffff, 160>;
+    let mut hash = MySHA1::new();
+
+    let mut txt = "";
+    hash.digest_str(txt);
+    println!("Msg =\t\"{}\"\nHash =\t{}\n", txt, hash.get_hash_value_in_string());
+    assert_eq!(hash.get_hash_value_in_string(), "6C64DE0C4E997B2EE6DD562DBC43D2A1CB53F186");
+
+    let txt_stirng = String::from("A");
+    hash.digest_string(&txt_stirng);
+    println!("Msg =\t\"{}\"\nHash =\t{}\n", txt_stirng, hash);
+    assert_eq!(hash.to_string(), "DA0918B8FDF524572C293C4971CCE4071E14CE30");
+
+    let txt_array = ['W' as u8, 'o' as u8, 'w' as u8];
+    hash.digest_array(&txt_array);
+    println!("Msg =\t\"{:?}\"\nHash =\t{}\n", txt_array, hash);
+    assert_eq!(hash.get_hash_value_in_string(), "C6FC72A4D3A72DC40FF8B601DA4F1A626210EBC4");
+
+    txt = "This data is 26-byte long.";
+    hash.digest_str(txt);
+    println!("Msg =\t\"{}\"\nHash =\t{}\n", txt, hash);
+    assert_eq!(hash.to_string(), "58CEBE40E0391A38724EA06F327946C70C5585B2");
+
+    txt = "The unit of data length is not byte but bit.";
+    hash.digest_str(txt);
+    println!("Msg =\t\"{}\"\nHash =\t{}\n", txt, hash);
+    assert_eq!(hash.get_hash_value_in_string(), "756049AC909ACA9BC1A9213E0148402156B0DC7F");
+    
+    txt = "I am testing SHA1_Expanded for the data of sixty-two byte-long.";
+    hash.digest_str(txt);
+    println!("Msg =\t\"{}\"\nHash =\t{}\n", txt, hash);
+    assert_eq!(hash.to_string(), "18AD939F2027D8FEF249E533ECEC4BC551558317");
+    
+    txt = "I am testing SHA1_Expanded for the data whose length is 64 bytes.";
+    hash.digest_str(txt);
+    println!("Msg =\t\"{}\"\nHash =\t{}\n", txt, hash);
+    assert_eq!(hash.get_hash_value_in_string(), "89DE08E440FEDA32C10C704B0741E7EBBA8F74F4");
+
+    txt = "I am testing SHA1_Expanded for the case data whose length is more than 64 bytes is given.";
+    hash.digest_str(txt);
+    println!("Msg =\t\"{}\"\nHash =\t{}", txt, hash);
+    assert_eq!(hash.to_string(), "E131AE2668538116730817D639801D639AD9B883");
+    println!("-------------------------------");
+}
+
+fn sha1_quick_start4()
+{
+    println!("sha1_quick_start4");
+    use std::string::*;
+    use cryptocol::hash::SHA0_Expanded;
+
+    type MySHA0 = SHA0_Expanded<5, 0x1111_1111, 0x4444_4444, 0x8888_8888, 0xcccc_cccc, 0xffff_ffff, 160>;
+    let mut hash = MySHA0::new();
+
+    let mut txt = "";
+    hash.digest_str(txt);
+    println!("Msg =\t\"{}\"\nHash =\t{}\n", txt, hash.get_hash_value_in_string());
+    assert_eq!(hash.get_hash_value_in_string(), "DC1EF9093D309849ABA5EDF152DB32C695421438");
+
+    let txt_stirng = String::from("A");
+    hash.digest_string(&txt_stirng);
+    println!("Msg =\t\"{}\"\nHash =\t{}\n", txt_stirng, hash);
+    assert_eq!(hash.to_string(), "244743C28AE0223A6A0661813221864CC2EDBA35");
+
+    let txt_array = ['W' as u8, 'o' as u8, 'w' as u8];
+    hash.digest_array(&txt_array);
+    println!("Msg =\t\"{:?}\"\nHash =\t{}\n", txt_array, hash);
+    assert_eq!(hash.get_hash_value_in_string(), "2BBE776DC9E577B444CDA082EE31A87DB3C4EF57");
+
+    txt = "This data is 26-byte long.";
+    hash.digest_str(txt);
+    println!("Msg =\t\"{}\"\nHash =\t{}\n", txt, hash);
+    assert_eq!(hash.to_string(), "170E3BCFC4DDE939C7BF62C2F28A3DED07041407");
+
+    txt = "The unit of data length is not byte but bit.";
+    hash.digest_str(txt);
+    println!("Msg =\t\"{}\"\nHash =\t{}\n", txt, hash);
+    assert_eq!(hash.get_hash_value_in_string(), "E3EDDB4717F72DC7E703139D60964860A6AB316B");
+    
+    txt = "I am testing SHA0_Expanded for the data of sixty-two byte-long.";
+    hash.digest_str(txt);
+    println!("Msg =\t\"{}\"\nHash =\t{}\n", txt, hash);
+    assert_eq!(hash.to_string(), "ADF444B96A666E409E10452F634E0830B704C4EA");
+    
+    txt = "I am testing SHA0_Expanded for the data whose length is 64 bytes.";
+    hash.digest_str(txt);
+    println!("Msg =\t\"{}\"\nHash =\t{}\n", txt, hash);
+    assert_eq!(hash.get_hash_value_in_string(), "F0148F75FEF02934F69B18870FEC85DFE215B2AF");
+
+    txt = "I am testing SHA0_Expanded for the case data whose length is more than 64 bytes is given.";
+    hash.digest_str(txt);
+    println!("Msg =\t\"{}\"\nHash =\t{}", txt, hash);
+    assert_eq!(hash.to_string(), "C9A0A2597CAB6E3A6C0009FA6552F46814DBCB54");
     println!("-------------------------------");
 }
 
