@@ -20877,7 +20877,7 @@ pub trait SmallUInt: Copy + Clone + Sized //+ Display + Debug + ToString
     /// {
     ///     let a_u8 = 100_u8;
     ///     let res_u8 = func(a_u8);
-    ///     println!("isqrt( {}) = {}", a_u8, res_u8);
+    ///     println!("isqrt( {} ) = {}", a_u8, res_u8);
     ///     assert_eq!(res_u8, 10_u8);
     /// }
     /// 
@@ -20894,7 +20894,7 @@ pub trait SmallUInt: Copy + Clone + Sized //+ Display + Debug + ToString
     /// {
     ///     let a_u16 = 10000_u16;
     ///     let res_u16 = func(a_u16);
-    ///     println!("isqrt( {}) = {}", a_u16, res_u16);
+    ///     println!("isqrt( {} ) = {}", a_u16, res_u16);
     ///     assert_eq!(res_u16, 100_u16);
     /// }
     /// 
@@ -20911,7 +20911,7 @@ pub trait SmallUInt: Copy + Clone + Sized //+ Display + Debug + ToString
     /// {
     ///     let a_u32 = 1000000000_u32;
     ///     let res_u32 = func(a_u32);
-    ///     println!("isqrt( {}) = {}", a_u32, res_u32);
+    ///     println!("isqrt( {} ) = {}", a_u32, res_u32);
     ///     assert_eq!(res_u32, 31622_u32);
     /// }
     /// 
@@ -20928,7 +20928,7 @@ pub trait SmallUInt: Copy + Clone + Sized //+ Display + Debug + ToString
     /// {
     ///     let a_u64 = 10000000000000000000_u64;
     ///     let res_u64 = func(a_u64);
-    ///     println!("isqrt( {}) = {}", a_u64, res_u64);
+    ///     println!("isqrt( {} ) = {}", a_u64, res_u64);
     ///     assert_eq!(res_u64, 3162277660_u64);
     /// }
     /// 
@@ -20945,7 +20945,7 @@ pub trait SmallUInt: Copy + Clone + Sized //+ Display + Debug + ToString
     /// {
     ///     let a_u128 = 100000000000000000000000000000000000000_u128;
     ///     let res_u128 = func(a_u128);
-    ///     println!("isqrt( {}) = {}", a_u128, res_u128);
+    ///     println!("isqrt( {} ) = {}", a_u128, res_u128);
     ///     assert_eq!(res_u128, 10000000000000000000_u128);
     /// }
     /// 
@@ -20962,7 +20962,7 @@ pub trait SmallUInt: Copy + Clone + Sized //+ Display + Debug + ToString
     /// {
     ///     let a_usize = 10000000000000000000_usize;
     ///     let res_usize = func(a_usize);
-    ///     println!("isqrt( {}) = {}", a_usize, res_usize);
+    ///     println!("isqrt( {} ) = {}", a_usize, res_usize);
     ///     assert_eq!(res_usize, 3162277660_usize);
     /// }
     /// 
@@ -20979,7 +20979,7 @@ pub trait SmallUInt: Copy + Clone + Sized //+ Display + Debug + ToString
     /// {
     ///     let a_shortunion = 10000_u16.into_shortunion();
     ///     let res_shortunion = func(a_shortunion);
-    ///     println!("isqrt( {}) = {}", a_shortunion, res_shortunion);
+    ///     println!("isqrt( {} ) = {}", a_shortunion, res_shortunion);
     ///     assert_eq!(res_shortunion.get(), 100_u16);
     /// }
     /// 
@@ -20996,7 +20996,7 @@ pub trait SmallUInt: Copy + Clone + Sized //+ Display + Debug + ToString
     /// {
     ///     let a_intunion = 1000000000_u32.into_intunion();
     ///     let res_intunion = func(a_intunion);
-    ///     println!("isqrt( {}) = {}", a_intunion, res_intunion);
+    ///     println!("isqrt( {} ) = {}", a_intunion, res_intunion);
     ///     assert_eq!(res_intunion.get(), 31622_u32);
     /// }
     /// 
@@ -21013,7 +21013,7 @@ pub trait SmallUInt: Copy + Clone + Sized //+ Display + Debug + ToString
     /// {
     ///     let a_longunion = 10000000000000000000_u64.into_longunion();
     ///     let res_longunion = func(a_longunion);
-    ///     println!("isqrt( {}) = {}", a_longunion, res_longunion);
+    ///     println!("isqrt( {} ) = {}", a_longunion, res_longunion);
     ///     assert_eq!(res_longunion.get(), 3162277660_u64);
     /// }
     /// 
@@ -21030,7 +21030,7 @@ pub trait SmallUInt: Copy + Clone + Sized //+ Display + Debug + ToString
     /// {
     ///     let a_longerunion = 100000000000000000000000000000000000000_u128.into_longerunion();
     ///     let res_longerunion = func(a_longerunion);
-    ///     println!("isqrt( {}) = {}", a_longerunion, res_longerunion);
+    ///     println!("isqrt( {} ) = {}", a_longerunion, res_longerunion);
     ///     assert_eq!(res_longerunion.get(), 10000000000000000000_u128);
     /// }
     /// 
@@ -21045,10 +21045,10 @@ pub trait SmallUInt: Copy + Clone + Sized //+ Display + Debug + ToString
     /// use cryptocol::number::SmallUInt;
     /// fn main()
     /// {
-    ///     let a_sizeunion = 10000000000000000000_usize.into_sizeunion();
+    ///     let a_sizeunion = 100_usize.into_sizeunion();
     ///     let res_sizeunion = func(a_sizeunion);
-    ///     println!("isqrt( {}) = {}", a_sizeunion, res_sizeunion);
-    ///     assert_eq!(res_sizeunion.get(), 3162277660_usize);
+    ///     println!("isqrt( {} ) = {}", a_sizeunion, res_sizeunion);
+    ///     assert_eq!(res_sizeunion.get(), 10_usize);
     /// }
     /// 
     /// fn func<T: SmallUInt>(num: T) -> T
@@ -21067,57 +21067,57 @@ pub trait SmallUInt: Copy + Clone + Sized //+ Display + Debug + ToString
     /// {
     ///     let a_u8 = 100_u8;
     ///     let res_u8 = func(a_u8);
-    ///     println!("isqrt( {}) = {}", a_u8, res_u8);
+    ///     println!("isqrt( {} ) = {}", a_u8, res_u8);
     ///     assert_eq!(res_u8, 10_u8);
     /// 
     ///     let a_u16 = 10000_u16;
     ///     let res_u16 = func(a_u16);
-    ///     println!("isqrt( {}) = {}", a_u16, res_u16);
+    ///     println!("isqrt( {} ) = {}", a_u16, res_u16);
     ///     assert_eq!(res_u16, 100_u16);
     /// 
     ///     let a_u32 = 1000000000_u32;
     ///     let res_u32 = func(a_u32);
-    ///     println!("isqrt( {}) = {}", a_u32, res_u32);
+    ///     println!("isqrt( {} ) = {}", a_u32, res_u32);
     ///     assert_eq!(res_u32, 31622_u32);
     /// 
     ///     let a_u64 = 10000000000000000000_u64;
     ///     let res_u64 = func(a_u64);
-    ///     println!("isqrt( {}) = {}", a_u64, res_u64);
+    ///     println!("isqrt( {} ) = {}", a_u64, res_u64);
     ///     assert_eq!(res_u64, 3162277660_u64);
     /// 
     ///     let a_u128 = 100000000000000000000000000000000000000_u128;
     ///     let res_u128 = func(a_u128);
-    ///     println!("isqrt( {}) = {}", a_u128, res_u128);
+    ///     println!("isqrt( {} ) = {}", a_u128, res_u128);
     ///     assert_eq!(res_u128, 10000000000000000000_u128);
     /// 
     ///     let a_usize = 10000000000000000000_usize;
     ///     let res_usize = func(a_usize);
-    ///     println!("isqrt( {}) = {}", a_usize, res_usize);
+    ///     println!("isqrt( {} ) = {}", a_usize, res_usize);
     ///     assert_eq!(res_usize, 3162277660_usize);
     /// 
     ///     let a_shortunion = 10000_u16.into_shortunion();
     ///     let res_shortunion = func(a_shortunion);
-    ///     println!("isqrt( {}) = {}", a_shortunion, res_shortunion);
+    ///     println!("isqrt( {} ) = {}", a_shortunion, res_shortunion);
     ///     assert_eq!(res_shortunion.get(), 100_u16);
     /// 
     ///     let a_intunion = 1000000000_u32.into_intunion();
     ///     let res_intunion = func(a_intunion);
-    ///     println!("isqrt( {}) = {}", a_intunion, res_intunion);
+    ///     println!("isqrt( {} ) = {}", a_intunion, res_intunion);
     ///     assert_eq!(res_intunion.get(), 31622_u32);
     /// 
     ///     let a_longunion = 10000000000000000000_u64.into_longunion();
     ///     let res_longunion = func(a_longunion);
-    ///     println!("isqrt( {}) = {}", a_longunion, res_longunion);
+    ///     println!("isqrt( {} ) = {}", a_longunion, res_longunion);
     ///     assert_eq!(res_longunion.get(), 3162277660_u64);
     /// 
     ///     let a_longerunion = 100000000000000000000000000000000000000_u128.into_longerunion();
     ///     let res_longerunion = func(a_longerunion);
-    ///     println!("isqrt( {}) = {}", a_longerunion, res_longerunion);
+    ///     println!("isqrt( {} ) = {}", a_longerunion, res_longerunion);
     ///     assert_eq!(res_longerunion.get(), 10000000000000000000_u128);
     /// 
     ///     let a_sizeunion = 10000000000000000000_usize.into_sizeunion();
     ///     let res_sizeunion = func(a_sizeunion);
-    ///     println!("isqrt( {}) = {}", a_sizeunion, res_sizeunion);
+    ///     println!("isqrt( {} ) = {}", a_sizeunion, res_sizeunion);
     ///     assert_eq!(res_sizeunion.get(), 3162277660_usize);
     /// }
     /// 
@@ -21166,7 +21166,7 @@ pub trait SmallUInt: Copy + Clone + Sized //+ Display + Debug + ToString
     // /// [isqrt()](trait@SmallUInt#tymethod.isqrt) instead.
     // fn _isqrt(self) -> Self;
 
-    // fn root(self, exp: Self) -> Self;
+    // fn iroot(self, exp: Self) -> Self;
     /// Returns the `exp`-th root of the number.
     /// 
     /// # Output
@@ -21183,19 +21183,19 @@ pub trait SmallUInt: Copy + Clone + Sized //+ Display + Debug + ToString
     /// fn main()
     /// {
     ///     let a_u8 = 100_u8;
-    ///     let res_u8 = a_u8.root(3_u8);
-    ///     println!("root_3( {}) = {}", a_u8, res_u8);
+    ///     let res_u8 = a_u8.iroot(3_u8);
+    ///     println!("root_3( {} ) = {}", a_u8, res_u8);
     ///     assert_eq!(res_u8, 4_u8);
     /// 
     ///     let b_u8 = 100_u8;
     ///     let res_u8 = func(b_u8, 3_u8);
-    ///     println!("root_3( {}) = {}", b_u8, res_u8);
+    ///     println!("root_3( {} ) = {}", b_u8, res_u8);
     ///     assert_eq!(res_u8, 4_u8);
     /// }
     /// 
     /// fn func<T: SmallUInt>(num: T, exp: T) -> T
     /// {
-    ///     num.root(exp)
+    ///     num.iroot(exp)
     /// }
     /// ```
     /// 
@@ -21205,19 +21205,19 @@ pub trait SmallUInt: Copy + Clone + Sized //+ Display + Debug + ToString
     /// fn main()
     /// {
     ///     let a_u16 = 10000_u16;
-    ///     let res_u16 = a_u16.root(3_u16);
-    ///     println!("root_3( {}) = {}", a_u16, res_u16);
+    ///     let res_u16 = a_u16.iroot(3_u16);
+    ///     println!("root_3( {} ) = {}", a_u16, res_u16);
     ///     assert_eq!(res_u16, 21_u16);
     /// 
     ///     let b_u16 = 10000_u16;
     ///     let res_u16 = func(b_u16, 3_u16);
-    ///     println!("root_3( {}) = {}", b_u16, res_u16);
+    ///     println!("root_3( {} ) = {}", b_u16, res_u16);
     ///     assert_eq!(res_u16, 21_u16);
     /// }
     /// 
     /// fn func<T: SmallUInt>(num: T, exp: T) -> T
     /// {
-    ///     num.root(exp)
+    ///     num.iroot(exp)
     /// }
     /// ```
     /// 
@@ -21227,19 +21227,19 @@ pub trait SmallUInt: Copy + Clone + Sized //+ Display + Debug + ToString
     /// fn main()
     /// {
     ///     let a_u32 = 1000000000_u32;
-    ///     let res_u32 = a_u32.root(3_u32);
-    ///     println!("root_3( {}) = {}", a_u32, res_u32);
+    ///     let res_u32 = a_u32.iroot(3_u32);
+    ///     println!("root_3( {} ) = {}", a_u32, res_u32);
     ///     assert_eq!(res_u32, 1000_u32);
     /// 
     ///     let b_u32 = 1000000000_u32;
     ///     let res_u32 = func(b_u32, 3_u32);
-    ///     println!("root_3( {}) = {}", b_u32, res_u32);
+    ///     println!("root_3( {} ) = {}", b_u32, res_u32);
     ///     assert_eq!(res_u32, 1000_u32);
     /// }
     /// 
     /// fn func<T: SmallUInt>(num: T, exp: T) -> T
     /// {
-    ///     num.root(exp)
+    ///     num.iroot(exp)
     /// }
     /// ```
     /// 
@@ -21249,19 +21249,19 @@ pub trait SmallUInt: Copy + Clone + Sized //+ Display + Debug + ToString
     /// fn main()
     /// {
     ///     let a_u64 = 10000000000000000000_u64;
-    ///     let res_u64 = a_u64.root(3_u64);
-    ///     println!("root_3( {}) = {}", a_u64, res_u64);
+    ///     let res_u64 = a_u64.iroot(3_u64);
+    ///     println!("root_3( {} ) = {}", a_u64, res_u64);
     ///     assert_eq!(res_u64, 2154434_u64);
     /// 
     ///     let b_u64 = 10000000000000000000_u64;
     ///     let res_u64 = func(b_u64, 3_u64);
-    ///     println!("root_3( {}) = {}", b_u64, res_u64);
+    ///     println!("root_3( {} ) = {}", b_u64, res_u64);
     ///     assert_eq!(res_u64, 2154434_u64);
     /// }
     /// 
     /// fn func<T: SmallUInt>(num: T, exp: T) -> T
     /// {
-    ///     num.root(exp)
+    ///     num.iroot(exp)
     /// }
     /// ```
     /// 
@@ -21271,19 +21271,19 @@ pub trait SmallUInt: Copy + Clone + Sized //+ Display + Debug + ToString
     /// fn main()
     /// {
     ///     let a_u128 = 100000000000000000000000000000000000000_u128;
-    ///     let res_u128 = a_u128.root(3_u128);
-    ///     println!("root_3( {}) = {}", a_u128, res_u128);
+    ///     let res_u128 = a_u128.iroot(3_u128);
+    ///     println!("root_3( {} ) = {}", a_u128, res_u128);
     ///     assert_eq!(res_u128, 4641588833612_u128);
     /// 
     ///     let b_u128 = 100000000000000000000000000000000000000_u128;
     ///     let res_u128 = func(b_u128, 3_u128);
-    ///     println!("root_3( {}) = {}", b_u128, res_u128);
+    ///     println!("root_3( {} ) = {}", b_u128, res_u128);
     ///     assert_eq!(res_u128, 4641588833612_u128);
     /// }
     /// 
     /// fn func<T: SmallUInt>(num: T, exp: T) -> T
     /// {
-    ///     num.root(exp)
+    ///     num.iroot(exp)
     /// }
     /// ```
     /// 
@@ -21292,20 +21292,20 @@ pub trait SmallUInt: Copy + Clone + Sized //+ Display + Debug + ToString
     /// use cryptocol::number::SmallUInt;
     /// fn main()
     /// {
-    ///     let a_usize = 10000000000000000000_usize;
-    ///     let res_usize = a_usize.root(3_usize);
-    ///     println!("root_3( {}) = {}", a_usize, res_usize);
-    ///     assert_eq!(res_usize, 2154434_usize);
+    ///     let a_usize = 100_usize;
+    ///     let res_usize = a_usize.iroot(3_usize);
+    ///     println!("root_3( {} ) = {}", a_usize, res_usize);
+    ///     assert_eq!(res_usize, 4_usize);
     /// 
-    ///     let b_usize = 10000000000000000000_usize;
+    ///     let b_usize = 100_usize;
     ///     let res_usize = func(b_usize, 3_usize);
-    ///     println!("root_3( {}) = {}", b_usize, res_usize);
-    ///     assert_eq!(res_usize, 2154434_usize);
+    ///     println!("root_3( {} ) = {}", b_usize, res_usize);
+    ///     assert_eq!(res_usize, 4_usize);
     /// }
     /// 
     /// fn func<T: SmallUInt>(num: T, exp: T) -> T
     /// {
-    ///     num.root(exp)
+    ///     num.iroot(exp)
     /// }
     /// ```
     /// 
@@ -21315,19 +21315,19 @@ pub trait SmallUInt: Copy + Clone + Sized //+ Display + Debug + ToString
     /// fn main()
     /// {
     ///     let a_shortunion = 10000_u16.into_shortunion();
-    ///     let res_shortunion = a_shortunion.root(3_u16.into_shortunion());
-    ///     println!("root_3( {}) = {}", a_shortunion, res_shortunion);
+    ///     let res_shortunion = a_shortunion.iroot(3_u16.into_shortunion());
+    ///     println!("root_3( {} ) = {}", a_shortunion, res_shortunion);
     ///     assert_eq!(res_shortunion.get(), 21_u16);
     /// 
     ///     let b_shortunion = 10000_u16.into_shortunion();
     ///     let res_shortunion = func(b_shortunion, 3_u16.into_shortunion());
-    ///     println!("root_3( {}) = {}", b_shortunion, res_shortunion);
+    ///     println!("root_3( {} ) = {}", b_shortunion, res_shortunion);
     ///     assert_eq!(res_shortunion.get(), 21_u16);
     /// }
     /// 
     /// fn func<T: SmallUInt>(num: T, exp: T) -> T
     /// {
-    ///     num.root(exp)
+    ///     num.iroot(exp)
     /// }
     /// ```
     /// 
@@ -21337,19 +21337,19 @@ pub trait SmallUInt: Copy + Clone + Sized //+ Display + Debug + ToString
     /// fn main()
     /// {
     ///     let a_intunion = 1000000000_u32.into_intunion();
-    ///     let res_intunion = a_intunion.root(3_u32.into_intunion());
-    ///     println!("root_3( {}) = {}", a_intunion, res_intunion);
+    ///     let res_intunion = a_intunion.iroot(3_u32.into_intunion());
+    ///     println!("root_3( {} ) = {}", a_intunion, res_intunion);
     ///     assert_eq!(res_intunion.get(), 1000_u32);
     /// 
     ///     let b_intunion = 1000000000_u32.into_intunion();
     ///     let res_intunion = func(b_intunion, 3_u32.into_intunion());
-    ///     println!("root_3( {}) = {}", b_intunion, res_intunion);
+    ///     println!("root_3( {} ) = {}", b_intunion, res_intunion);
     ///     assert_eq!(res_intunion.get(), 1000_u32);
     /// }
     /// 
     /// fn func<T: SmallUInt>(num: T, exp: T) -> T
     /// {
-    ///     num.root(exp)
+    ///     num.iroot(exp)
     /// }
     /// ```
     /// 
@@ -21359,19 +21359,19 @@ pub trait SmallUInt: Copy + Clone + Sized //+ Display + Debug + ToString
     /// fn main()
     /// {
     ///     let a_longunion = 10000000000000000000_u64.into_longunion();
-    ///     let res_longunion = a_longunion.root(3_u64.into_longunion());
-    ///     println!("root_3( {}) = {}", a_longunion, res_longunion);
+    ///     let res_longunion = a_longunion.iroot(3_u64.into_longunion());
+    ///     println!("root_3( {} ) = {}", a_longunion, res_longunion);
     ///     assert_eq!(res_longunion.get(), 2154434_u64);
     /// 
     ///     let b_longunion = 10000000000000000000_u64.into_longunion();
     ///     let res_longunion = func(b_longunion, 3_u64.into_longunion());
-    ///     println!("root_3( {}) = {}", b_longunion, res_longunion);
+    ///     println!("root_3( {} ) = {}", b_longunion, res_longunion);
     ///     assert_eq!(res_longunion.get(), 2154434_u64);
     /// }
     /// 
     /// fn func<T: SmallUInt>(num: T, exp: T) -> T
     /// {
-    ///     num.root(exp)
+    ///     num.iroot(exp)
     /// }
     /// ```
     /// 
@@ -21381,19 +21381,19 @@ pub trait SmallUInt: Copy + Clone + Sized //+ Display + Debug + ToString
     /// fn main()
     /// {
     ///     let a_longerunion = 100000000000000000000000000000000000000_u128.into_longerunion();
-    ///     let res_longerunion = a_longerunion.root(3_u128.into_longerunion());
-    ///     println!("root_3( {}) = {}", a_longerunion, res_longerunion);
+    ///     let res_longerunion = a_longerunion.iroot(3_u128.into_longerunion());
+    ///     println!("root_3( {} ) = {}", a_longerunion, res_longerunion);
     ///     assert_eq!(res_longerunion.get(), 4641588833612_u128);
     /// 
     ///     let b_longerunion = 100000000000000000000000000000000000000_u128.into_longerunion();
     ///     let res_longerunion = func(b_longerunion, 3_u128.into_longerunion());
-    ///     println!("root_3( {}) = {}", b_longerunion, res_longerunion);
+    ///     println!("root_3( {} ) = {}", b_longerunion, res_longerunion);
     ///     assert_eq!(res_longerunion.get(), 4641588833612_u128);
     /// }
     /// 
     /// fn func<T: SmallUInt>(num: T, exp: T) -> T
     /// {
-    ///     num.root(exp)
+    ///     num.iroot(exp)
     /// }
     /// ```
     /// 
@@ -21402,20 +21402,20 @@ pub trait SmallUInt: Copy + Clone + Sized //+ Display + Debug + ToString
     /// use cryptocol::number::SmallUInt;
     /// fn main()
     /// {
-    ///     let a_sizeunion = 10000000000000000000_usize.into_sizeunion();
-    ///     let res_sizeunion = a_sizeunion.root(3_usize.into_sizeunion());
-    ///     println!("root_3( {}) = {}", a_sizeunion, res_sizeunion);
-    ///     assert_eq!(res_sizeunion.get(), 2154434_usize);
+    ///     let a_sizeunion = 100_usize.into_sizeunion();
+    ///     let res_sizeunion = a_sizeunion.iroot(3_usize.into_sizeunion());
+    ///     println!("root_3( {} ) = {}", a_sizeunion, res_sizeunion);
+    ///     assert_eq!(res_sizeunion.get(), 4_usize);
     /// 
-    ///     let b_sizeunion = 10000000000000000000_usize.into_sizeunion();
+    ///     let b_sizeunion = 100_usize.into_sizeunion();
     ///     let res_sizeunion = func(b_sizeunion, 3_usize.into_sizeunion());
-    ///     println!("root_3( {}) = {}", b_sizeunion, res_sizeunion);
-    ///     assert_eq!(res_sizeunion.get(), 2154434_usize);
+    ///     println!("root_3( {} ) = {}", b_sizeunion, res_sizeunion);
+    ///     assert_eq!(res_sizeunion.get(), 4_usize);
     /// }
     /// 
     /// fn func<T: SmallUInt>(num: T, exp: T) -> T
     /// {
-    ///     num.root(exp)
+    ///     num.iroot(exp)
     /// }
     /// ```
     /// You can use the above generic function `func<>()` for all
@@ -21428,119 +21428,119 @@ pub trait SmallUInt: Copy + Clone + Sized //+ Display + Debug + ToString
     /// fn main()
     /// {
     ///     let a_u8 = 100_u8;
-    ///     let res_u8 = a_u8.root(3_u8);
-    ///     println!("root_3( {}) = {}", a_u8, res_u8);
+    ///     let res_u8 = a_u8.iroot(3_u8);
+    ///     println!("root_3( {} ) = {}", a_u8, res_u8);
     ///     assert_eq!(res_u8, 4_u8);
     /// 
     ///     let b_u8 = 100_u8;
     ///     let res_u8 = func(b_u8, 3_u8);
-    ///     println!("root_3( {}) = {}", b_u8, res_u8);
+    ///     println!("root_3( {} ) = {}", b_u8, res_u8);
     ///     assert_eq!(res_u8, 4_u8);
     /// 
     ///     let a_u16 = 10000_u16;
-    ///     let res_u16 = a_u16.root(3_u16);
-    ///     println!("root_3( {}) = {}", a_u16, res_u16);
+    ///     let res_u16 = a_u16.iroot(3_u16);
+    ///     println!("root_3( {} ) = {}", a_u16, res_u16);
     ///     assert_eq!(res_u16, 21_u16);
     /// 
     ///     let b_u16 = 10000_u16;
     ///     let res_u16 = func(b_u16, 3_u16);
-    ///     println!("root_3( {}) = {}", b_u16, res_u16);
+    ///     println!("root_3( {} ) = {}", b_u16, res_u16);
     ///     assert_eq!(res_u16, 21_u16);
     /// 
     ///     let a_u32 = 1000000000_u32;
-    ///     let res_u32 = a_u32.root(3_u32);
-    ///     println!("root_3( {}) = {}", a_u32, res_u32);
+    ///     let res_u32 = a_u32.iroot(3_u32);
+    ///     println!("root_3( {} ) = {}", a_u32, res_u32);
     ///     assert_eq!(res_u32, 1000_u32);
     /// 
     ///     let b_u32 = 1000000000_u32;
     ///     let res_u32 = func(b_u32, 3_u32);
-    ///     println!("root_3( {}) = {}", b_u32, res_u32);
+    ///     println!("root_3( {} ) = {}", b_u32, res_u32);
     ///     assert_eq!(res_u32, 1000_u32);
     /// 
     ///     let a_u64 = 10000000000000000000_u64;
-    ///     let res_u64 = a_u64.root(3_u64);
-    ///     println!("root_3( {}) = {}", a_u64, res_u64);
+    ///     let res_u64 = a_u64.iroot(3_u64);
+    ///     println!("root_3( {} ) = {}", a_u64, res_u64);
     ///     assert_eq!(res_u64, 2154434_u64);
     /// 
     ///     let b_u64 = 10000000000000000000_u64;
     ///     let res_u64 = func(b_u64, 3_u64);
-    ///     println!("root_3( {}) = {}", b_u64, res_u64);
+    ///     println!("root_3( {} ) = {}", b_u64, res_u64);
     ///     assert_eq!(res_u64, 2154434_u64);
     /// 
     ///     let a_u128 = 100000000000000000000000000000000000000_u128;
-    ///     let res_u128 = a_u128.root(3_u128);
-    ///     println!("root_3( {}) = {}", a_u128, res_u128);
+    ///     let res_u128 = a_u128.iroot(3_u128);
+    ///     println!("root_3( {} ) = {}", a_u128, res_u128);
     ///     assert_eq!(res_u128, 4641588833612_u128);
     /// 
     ///     let b_u128 = 100000000000000000000000000000000000000_u128;
     ///     let res_u128 = func(b_u128, 3_u128);
-    ///     println!("root_3( {}) = {}", b_u128, res_u128);
+    ///     println!("root_3( {} ) = {}", b_u128, res_u128);
     ///     assert_eq!(res_u128, 4641588833612_u128);
     /// 
-    ///     let a_usize = 10000000000000000000_usize;
-    ///     let res_usize = a_usize.root(3_usize);
-    ///     println!("root_3( {}) = {}", a_usize, res_usize);
-    ///     assert_eq!(res_usize, 2154434_usize);
+    ///     let a_usize = 100_usize;
+    ///     let res_usize = a_usize.iroot(3_usize);
+    ///     println!("root_3( {} ) = {}", a_usize, res_usize);
+    ///     assert_eq!(res_usize, 4_usize);
     /// 
-    ///     let b_usize = 10000000000000000000_usize;
+    ///     let b_usize = 100_usize;
     ///     let res_usize = func(b_usize, 3_usize);
-    ///     println!("root_3( {}) = {}", b_usize, res_usize);
-    ///     assert_eq!(res_usize, 2154434_usize);
+    ///     println!("root_3( {} ) = {}", b_usize, res_usize);
+    ///     assert_eq!(res_usize, 4_usize);
     /// 
     ///     let a_shortunion = 10000_u16.into_shortunion();
-    ///     let res_shortunion = a_shortunion.root(3_u16.into_shortunion());
-    ///     println!("root_3( {}) = {}", a_shortunion, res_shortunion);
+    ///     let res_shortunion = a_shortunion.iroot(3_u16.into_shortunion());
+    ///     println!("root_3( {} ) = {}", a_shortunion, res_shortunion);
     ///     assert_eq!(res_shortunion.get(), 21_u16);
     /// 
     ///     let b_shortunion = 10000_u16.into_shortunion();
     ///     let res_shortunion = func(b_shortunion, 3_u16.into_shortunion());
-    ///     println!("root_3( {}) = {}", b_shortunion, res_shortunion);
+    ///     println!("root_3( {} ) = {}", b_shortunion, res_shortunion);
     ///     assert_eq!(res_shortunion.get(), 21_u16);
     /// 
     ///     let a_intunion = 1000000000_u32.into_intunion();
-    ///     let res_intunion = a_intunion.root(3_u32.into_intunion());
-    ///     println!("root_3( {}) = {}", a_intunion, res_intunion);
+    ///     let res_intunion = a_intunion.iroot(3_u32.into_intunion());
+    ///     println!("root_3( {} ) = {}", a_intunion, res_intunion);
     ///     assert_eq!(res_intunion.get(), 1000_u32);
     /// 
     ///     let b_intunion = 1000000000_u32.into_intunion();
     ///     let res_intunion = func(b_intunion, 3_u32.into_intunion());
-    ///     println!("root_3( {}) = {}", b_intunion, res_intunion);
+    ///     println!("root_3( {} ) = {}", b_intunion, res_intunion);
     ///     assert_eq!(res_intunion.get(), 1000_u32);
     /// 
     ///     let a_longunion = 10000000000000000000_u64.into_longunion();
-    ///     let res_longunion = a_longunion.root(3_u64.into_longunion());
-    ///     println!("root_3( {}) = {}", a_longunion, res_longunion);
+    ///     let res_longunion = a_longunion.iroot(3_u64.into_longunion());
+    ///     println!("root_3( {} ) = {}", a_longunion, res_longunion);
     ///     assert_eq!(res_longunion.get(), 2154434_u64);
     /// 
     ///     let b_longunion = 10000000000000000000_u64.into_longunion();
     ///     let res_longunion = func(b_longunion, 3_u64.into_longunion());
-    ///     println!("root_3( {}) = {}", b_longunion, res_longunion);
+    ///     println!("root_3( {} ) = {}", b_longunion, res_longunion);
     ///     assert_eq!(res_longunion.get(), 2154434_u64);
     /// 
     ///     let a_longerunion = 100000000000000000000000000000000000000_u128.into_longerunion();
-    ///     let res_longerunion = a_longerunion.root(3_u128.into_longerunion());
-    ///     println!("root_3( {}) = {}", a_longerunion, res_longerunion);
+    ///     let res_longerunion = a_longerunion.iroot(3_u128.into_longerunion());
+    ///     println!("root_3( {} ) = {}", a_longerunion, res_longerunion);
     ///     assert_eq!(res_longerunion.get(), 4641588833612_u128);
     /// 
     ///     let b_longerunion = 100000000000000000000000000000000000000_u128.into_longerunion();
     ///     let res_longerunion = func(b_longerunion, 3_u128.into_longerunion());
-    ///     println!("root_3( {}) = {}", b_longerunion, res_longerunion);
+    ///     println!("root_3( {} ) = {}", b_longerunion, res_longerunion);
     ///     assert_eq!(res_longerunion.get(), 4641588833612_u128);
     /// 
-    ///     let a_sizeunion = 10000000000000000000_usize.into_sizeunion();
-    ///     let res_sizeunion = a_sizeunion.root(3_usize.into_sizeunion());
-    ///     println!("root_3( {}) = {}", a_sizeunion, res_sizeunion);
-    ///     assert_eq!(res_sizeunion.get(), 2154434_usize);
+    ///     let a_sizeunion = 100_usize.into_sizeunion();
+    ///     let res_sizeunion = a_sizeunion.iroot(3_usize.into_sizeunion());
+    ///     println!("root_3( {} ) = {}", a_sizeunion, res_sizeunion);
+    ///     assert_eq!(res_sizeunion.get(), 4_usize);
     /// 
-    ///     let b_sizeunion = 10000000000000000000_usize.into_sizeunion();
+    ///     let b_sizeunion = 100_usize.into_sizeunion();
     ///     let res_sizeunion = func(b_sizeunion, 3_usize.into_sizeunion());
-    ///     println!("root_3( {}) = {}", b_sizeunion, res_sizeunion);
-    ///     assert_eq!(res_sizeunion.get(), 2154434_usize);
+    ///     println!("root_3( {} ) = {}", b_sizeunion, res_sizeunion);
+    ///     assert_eq!(res_sizeunion.get(), 4_usize);
     /// }
     /// 
     /// fn func<T: SmallUInt>(num: T, exp: T) -> T
     /// {
-    ///     num.root(exp)
+    ///     num.iroot(exp)
     /// }
     /// ```
     /// 
@@ -21550,7 +21550,7 @@ pub trait SmallUInt: Copy + Clone + Sized //+ Display + Debug + ToString
     /// for Big-endian CPUs with your own full responsibility.
     /// Tests a `SmallUInt`-type object to find whether or not it is a
     /// prime number.
-    fn root(self, exp: Self) -> Self;
+    fn iroot(self, exp: Self) -> Self;
 
     // fn test_miller_rabin(self, a: Self) -> bool
     /// Tests a `SmallUInt`-type object to find whether or not `self` is a
@@ -22897,15 +22897,18 @@ pub trait SmallUInt: Copy + Clone + Sized //+ Display + Debug + ToString
     /// }
     /// ```
     /// 
-    /// # Example 6 for usize
+    /// # Example 6 for usize for 64-bit CPUs
     /// ```
     /// use cryptocol::number::SmallUInt;
     /// fn main()
     /// {
-    ///     let a_usize = 0b1011001110001111000011111000001111110000001111111000000011111111_usize;
-    ///     let b_usize = func(a_usize);
-    ///     println!("{:064b} -> {:064b}", a_usize, b_usize);
-    ///     assert_eq!(b_usize, 0b1111111100000001111111000000111111000001111100001111000111001101_usize);
+    ///     #[cfg(target_pointer_width = "64")]
+    ///     {
+    ///         let a_usize = 0b1011001110001111000011111000001111110000001111111000000011111111_usize;
+    ///         let b_usize = func(a_usize);
+    ///         println!("{:064b} -> {:064b}", a_usize, b_usize);
+    ///         assert_eq!(b_usize, 0b1111111100000001111111000000111111000001111100001111000111001101_usize);
+    ///     }
     /// }
     /// 
     /// fn func<T: SmallUInt>(num: T) -> T
@@ -22982,15 +22985,18 @@ pub trait SmallUInt: Copy + Clone + Sized //+ Display + Debug + ToString
     /// }
     /// ```
     /// 
-    /// # Example 11 for SizeUnion
+    /// # Example 11 for SizeUnion for 64-bit CPUs
     /// ```
     /// use cryptocol::number::SmallUInt;
     /// fn main()
     /// {
-    ///     let a_sizeunion = 0b1011001110001111000011111000001111110000001111111000000011111111_usize.into_sizeunion();
-    ///     let b_sizeunion = func(a_sizeunion);
-    ///     println!("{:064b} -> {:064b}", a_sizeunion.get(), b_sizeunion.get());
-    ///     assert_eq!(b_sizeunion.get(), 0b1111111100000001111111000000111111000001111100001111000111001101_usize);
+    ///     #[cfg(target_pointer_width = "64")]
+    ///     {
+    ///         let a_sizeunion = 0b1011001110001111000011111000001111110000001111111000000011111111_usize.into_sizeunion();
+    ///         let b_sizeunion = func(a_sizeunion);
+    ///         println!("{:064b} -> {:064b}", a_sizeunion.get(), b_sizeunion.get());
+    ///         assert_eq!(b_sizeunion.get(), 0b1111111100000001111111000000111111000001111100001111000111001101_usize);
+    ///     }
     /// }
     /// 
     /// fn func<T: SmallUInt>(num: T) -> T
@@ -23032,10 +23038,13 @@ pub trait SmallUInt: Copy + Clone + Sized //+ Display + Debug + ToString
     ///     println!("{:0128b} -> {:0128b}", a_u128, b_u128);
     ///     assert_eq!(b_u128, 0b00000001111111111100000000001111111111000000000111111111000000001111111100000001111111000000111111000001111100001111000111001101_u128);
     /// 
-    ///     let a_usize = 0b1011001110001111000011111000001111110000001111111000000011111111_usize;
-    ///     let b_usize = func(a_usize);
-    ///     println!("{:064b} -> {:064b}", a_usize, b_usize);
-    ///     assert_eq!(b_usize, 0b1111111100000001111111000000111111000001111100001111000111001101_usize);
+    ///     #[cfg(target_pointer_width = "64")]
+    ///     {
+    ///         let a_usize = 0b1011001110001111000011111000001111110000001111111000000011111111_usize;
+    ///         let b_usize = func(a_usize);
+    ///         println!("{:064b} -> {:064b}", a_usize, b_usize);
+    ///         assert_eq!(b_usize, 0b1111111100000001111111000000111111000001111100001111000111001101_usize);
+    ///     }
     /// 
     ///     let a_shortunion = 0b1011001110001111_u16.into_shortunion();
     ///     let b_shortunion = func(a_shortunion);
@@ -23057,10 +23066,13 @@ pub trait SmallUInt: Copy + Clone + Sized //+ Display + Debug + ToString
     ///     println!("{:0128b} -> {:0128b}", a_longerunion.get(), b_longerunion.get());
     ///     assert_eq!(b_longerunion.get(), 0b00000001111111111100000000001111111111000000000111111111000000001111111100000001111111000000111111000001111100001111000111001101_u128);
     /// 
-    ///     let a_sizeunion = 0b1011001110001111000011111000001111110000001111111000000011111111_usize.into_sizeunion();
-    ///     let b_sizeunion = func(a_sizeunion);
-    ///     println!("{:064b} -> {:064b}", a_sizeunion.get(), b_sizeunion.get());
-    ///     assert_eq!(b_sizeunion.get(), 0b1111111100000001111111000000111111000001111100001111000111001101_usize);
+    ///     #[cfg(target_pointer_width = "64")]
+    ///     {
+    ///         let a_sizeunion = 0b1011001110001111000011111000001111110000001111111000000011111111_usize.into_sizeunion();
+    ///         let b_sizeunion = func(a_sizeunion);
+    ///         println!("{:064b} -> {:064b}", a_sizeunion.get(), b_sizeunion.get());
+    ///         assert_eq!(b_sizeunion.get(), 0b1111111100000001111111000000111111000001111100001111000111001101_usize);
+    ///     }
     /// }
     /// 
     /// fn func<T: SmallUInt>(num: T) -> T
@@ -23197,15 +23209,18 @@ pub trait SmallUInt: Copy + Clone + Sized //+ Display + Debug + ToString
     /// }
     /// ```
     /// 
-    /// # Example 6 for usize
+    /// # Example 6 for usize for 64-bit CPUs
     /// ```
     /// use cryptocol::number::SmallUInt;
     /// fn main()
     /// {
-    ///     let a_usize = 0b1011001110001111000011111000001111110000001111111000000011111111_usize;
-    ///     let b_usize = func(a_usize, 16);
-    ///     println!("{:064b} -> {:064b}", a_usize, b_usize);
-    ///     assert_eq!(b_usize, 0b0000111110000011111100000011111110000000111111111011001110001111_usize);
+    ///     #[cfg(target_pointer_width = "64")]
+    ///     {
+    ///         let a_usize = 0b1011001110001111000011111000001111110000001111111000000011111111_usize;
+    ///         let b_usize = func(a_usize, 16);
+    ///         println!("{:064b} -> {:064b}", a_usize, b_usize);
+    ///         assert_eq!(b_usize, 0b0000111110000011111100000011111110000000111111111011001110001111_usize);
+    ///     }
     /// }
     /// 
     /// fn func<T: SmallUInt>(num: T, rl: u32) -> T
@@ -23282,15 +23297,18 @@ pub trait SmallUInt: Copy + Clone + Sized //+ Display + Debug + ToString
     /// }
     /// ```
     /// 
-    /// # Example 11 for SizeUnion
+    /// # Example 11 for SizeUnion for 64-bit CPUs
     /// ```
     /// use cryptocol::number::SmallUInt;
     /// fn main()
     /// {
-    ///     let a_sizeunion = 0b1011001110001111000011111000001111110000001111111000000011111111_usize.into_sizeunion();
-    ///     let b_sizeunion = func(a_sizeunion, 16);
-    ///     println!("{:064b} -> {:064b}", a_sizeunion.get(), b_sizeunion.get());
-    ///     assert_eq!(b_sizeunion.get(), 0b0000111110000011111100000011111110000000111111111011001110001111_usize);
+    ///     #[cfg(target_pointer_width = "64")]
+    ///     {
+    ///         let a_sizeunion = 0b1011001110001111000011111000001111110000001111111000000011111111_usize.into_sizeunion();
+    ///         let b_sizeunion = func(a_sizeunion, 16);
+    ///         println!("{:064b} -> {:064b}", a_sizeunion.get(), b_sizeunion.get());
+    ///         assert_eq!(b_sizeunion.get(), 0b0000111110000011111100000011111110000000111111111011001110001111_usize);
+    ///     }
     /// }
     /// 
     /// fn func<T: SmallUInt>(num: T, rl: u32) -> T
@@ -23332,10 +23350,13 @@ pub trait SmallUInt: Copy + Clone + Sized //+ Display + Debug + ToString
     ///     println!("{:0128b} -> {:0128b}", a_u128, b_u128);
     ///     assert_eq!(b_u128, 0b11110000001111111000000011111111000000001111111110000000001111111111000000000011111111111000000010110011100011110000111110000011_u128);
     /// 
-    ///     let a_usize = 0b1011001110001111000011111000001111110000001111111000000011111111_usize;
-    ///     let b_usize = func(a_usize, 16);
-    ///     println!("{:064b} -> {:064b}", a_usize, b_usize);
-    ///     assert_eq!(b_usize, 0b0000111110000011111100000011111110000000111111111011001110001111_usize);
+    ///     #[cfg(target_pointer_width = "64")]
+    ///     {
+    ///         let a_usize = 0b1011001110001111000011111000001111110000001111111000000011111111_usize;
+    ///         let b_usize = func(a_usize, 16);
+    ///         println!("{:064b} -> {:064b}", a_usize, b_usize);
+    ///         assert_eq!(b_usize, 0b0000111110000011111100000011111110000000111111111011001110001111_usize);
+    ///     }
     /// 
     ///     let a_shortunion = 0b1011001110001111_u16.into_shortunion();
     ///     let b_shortunion = func(a_shortunion, 4);
@@ -23357,10 +23378,13 @@ pub trait SmallUInt: Copy + Clone + Sized //+ Display + Debug + ToString
     ///     println!("{:0128b} -> {:0128b}", a_longerunion.get(), b_longerunion.get());
     ///     assert_eq!(b_longerunion.get(), 0b11110000001111111000000011111111000000001111111110000000001111111111000000000011111111111000000010110011100011110000111110000011_u128);
     /// 
-    ///     let a_sizeunion = 0b1011001110001111000011111000001111110000001111111000000011111111_usize.into_sizeunion();
-    ///     let b_sizeunion = func(a_sizeunion, 16);
-    ///     println!("{:064b} -> {:064b}", a_sizeunion.get(), b_sizeunion.get());
-    ///     assert_eq!(b_sizeunion.get(), 0b0000111110000011111100000011111110000000111111111011001110001111_usize);
+    ///     #[cfg(target_pointer_width = "64")]
+    ///     {
+    ///         let a_sizeunion = 0b1011001110001111000011111000001111110000001111111000000011111111_usize.into_sizeunion();
+    ///         let b_sizeunion = func(a_sizeunion, 16);
+    ///         println!("{:064b} -> {:064b}", a_sizeunion.get(), b_sizeunion.get());
+    ///         assert_eq!(b_sizeunion.get(), 0b0000111110000011111100000011111110000000111111111011001110001111_usize);
+    ///     }
     /// }
     /// 
     /// fn func<T: SmallUInt>(num: T, rl: u32) -> T
@@ -23497,15 +23521,18 @@ pub trait SmallUInt: Copy + Clone + Sized //+ Display + Debug + ToString
     /// }
     /// ```
     /// 
-    /// # Example 6 for usize
+    /// # Example 6 for usize for 64-bit CPUs
     /// ```
     /// use cryptocol::number::SmallUInt;
     /// fn main()
     /// {
-    ///     let a_usize = 0b1011001110001111000011111000001111110000001111111000000011111111_usize;
-    ///     let b_usize = func(a_usize, 16);
-    ///     println!("{:064b} -> {:064b}", a_usize, b_usize);
-    ///     assert_eq!(b_usize, 0b1000000011111111101100111000111100001111100000111111000000111111_usize);
+    ///     #[cfg(target_pointer_width = "64")]
+    ///     {
+    ///         let a_usize = 0b1011001110001111000011111000001111110000001111111000000011111111_usize;
+    ///         let b_usize = func(a_usize, 16);
+    ///         println!("{:064b} -> {:064b}", a_usize, b_usize);
+    ///         assert_eq!(b_usize, 0b1000000011111111101100111000111100001111100000111111000000111111_usize);
+    ///     }
     /// }
     /// 
     /// fn func<T: SmallUInt>(num: T, rr: u32) -> T
@@ -23587,10 +23614,13 @@ pub trait SmallUInt: Copy + Clone + Sized //+ Display + Debug + ToString
     /// use cryptocol::number::SmallUInt;
     /// fn main()
     /// {
-    ///     let a_sizeunion = 0b1011001110001111000011111000001111110000001111111000000011111111_usize.into_sizeunion();
-    ///     let b_sizeunion = func(a_sizeunion, 16);
-    ///     println!("{:064b} -> {:064b}", a_sizeunion.get(), b_sizeunion.get());
-    ///     assert_eq!(b_sizeunion.get(), 0b1000000011111111101100111000111100001111100000111111000000111111_usize);
+    ///     #[cfg(target_pointer_width = "64")]
+    ///     {
+    ///         let a_sizeunion = 0b1011001110001111000011111000001111110000001111111000000011111111_usize.into_sizeunion();
+    ///         let b_sizeunion = func(a_sizeunion, 16);
+    ///         println!("{:064b} -> {:064b}", a_sizeunion.get(), b_sizeunion.get());
+    ///         assert_eq!(b_sizeunion.get(), 0b1000000011111111101100111000111100001111100000111111000000111111_usize);
+    ///     }
     /// }
     /// 
     /// fn func<T: SmallUInt>(num: T, rr: u32) -> T
@@ -23637,12 +23667,14 @@ pub trait SmallUInt: Copy + Clone + Sized //+ Display + Debug + ToString
     ///     println!("{:0128b} -> {:0128b}", a_u128, b_u128);
     ///     assert_eq!(b_u128, 0b11110000000000111111111110000000101100111000111100001111100000111111000000111111100000001111111100000000111111111000000000111111_u128);
     /// 
-    ///     // Examples for usize
-    ///     let a_usize = 0b1011001110001111000011111000001111110000001111111000000011111111_usize;
-    ///     let b_usize = func(a_usize, 16);
-    ///     println!("{:064b} -> {:064b}", a_usize, b_usize);
-    ///     assert_eq!(b_usize, 0b1000000011111111101100111000111100001111100000111111000000111111_usize);
-    /// 
+    ///     #[cfg(target_pointer_width = "64")]
+    ///     {
+    ///         let a_usize = 0b1011001110001111000011111000001111110000001111111000000011111111_usize;
+    ///         let b_usize = func(a_usize, 16);
+    ///         println!("{:064b} -> {:064b}", a_usize, b_usize);
+    ///         assert_eq!(b_usize, 0b1000000011111111101100111000111100001111100000111111000000111111_usize);
+    ///     }
+    ///  
     ///     // Examples for ShortUnion
     ///     let a_shortunion = 0b1011001110001111_u16.into_shortunion();
     ///     let b_shortunion = func(a_shortunion, 4);
@@ -23668,10 +23700,13 @@ pub trait SmallUInt: Copy + Clone + Sized //+ Display + Debug + ToString
     ///     assert_eq!(b_longerunion.get(), 0b11110000000000111111111110000000101100111000111100001111100000111111000000111111100000001111111100000000111111111000000000111111_u128);
     /// 
     ///     // Examples for SizeUnion
-    ///     let a_sizeunion = 0b1011001110001111000011111000001111110000001111111000000011111111_usize.into_sizeunion();
-    ///     let b_sizeunion = func(a_sizeunion, 16);
-    ///     println!("{:064b} -> {:064b}", a_sizeunion.get(), b_sizeunion.get());
-    ///     assert_eq!(b_sizeunion.get(), 0b1000000011111111101100111000111100001111100000111111000000111111_usize);
+    ///     #[cfg(target_pointer_width = "64")]
+    ///     {
+    ///         let a_sizeunion = 0b1011001110001111000011111000001111110000001111111000000011111111_usize.into_sizeunion();
+    ///         let b_sizeunion = func(a_sizeunion, 16);
+    ///         println!("{:064b} -> {:064b}", a_sizeunion.get(), b_sizeunion.get());
+    ///         assert_eq!(b_sizeunion.get(), 0b1000000011111111101100111000111100001111100000111111000000111111_usize);
+    ///     }
     /// }
     /// 
     /// fn func<T: SmallUInt>(num: T, rr: u32) -> T
@@ -23806,10 +23841,10 @@ pub trait SmallUInt: Copy + Clone + Sized //+ Display + Debug + ToString
     /// use cryptocol::number::SmallUInt;
     /// fn main()
     /// {
-    ///     let a_usize = 0b1011001110001111000011111000001111110000001111111000000011111111_usize;
+    ///     let a_usize = 0b10110011_usize;
     ///     let ones = func(a_usize);
     ///     println!("The number of ones of {:064b} is {}.", a_usize, ones);
-    ///     assert_eq!(ones, 36_u32);
+    ///     assert_eq!(ones, 5_u32);
     /// }
     /// 
     /// fn func<T: SmallUInt>(num: T) -> u32
@@ -23891,10 +23926,10 @@ pub trait SmallUInt: Copy + Clone + Sized //+ Display + Debug + ToString
     /// use cryptocol::number::SmallUInt;
     /// fn main()
     /// {
-    ///     let a_sizeunion = 0b1011001110001111000011111000001111110000001111111000000011111111_usize.into_sizeunion();
+    ///     let a_sizeunion = 0b10110011_usize.into_sizeunion();
     ///     let ones = func(a_sizeunion);
     ///     println!("The number of ones of {:064b} is {}.", a_sizeunion.get(), ones);
-    ///     assert_eq!(ones, 36_u32);
+    ///     assert_eq!(ones, 5_u32);
     /// }
     /// 
     /// fn func<T: SmallUInt>(num: T) -> u32
@@ -23936,10 +23971,10 @@ pub trait SmallUInt: Copy + Clone + Sized //+ Display + Debug + ToString
     ///     println!("The number of ones of {:0128b} is {}.", a_u128, ones);
     ///     assert_eq!(ones, 66_u32);
     /// 
-    ///     let a_usize = 0b1011001110001111000011111000001111110000001111111000000011111111_usize;
+    ///     let a_usize = 0b10110011_usize;
     ///     let ones = func(a_usize);
     ///     println!("The number of ones of {:064b} is {}.", a_usize, ones);
-    ///     assert_eq!(ones, 36_u32);
+    ///     assert_eq!(ones, 5_u32);
     /// 
     ///     let a_shortunion = 0b1011001110001111_u16.into_shortunion();
     ///     let ones = func(a_shortunion);
@@ -23961,10 +23996,10 @@ pub trait SmallUInt: Copy + Clone + Sized //+ Display + Debug + ToString
     ///     println!("The number of ones of {:0128b} is {}.", a_longerunion.get(), ones);
     ///     assert_eq!(ones, 66_u32);
     /// 
-    ///     let a_sizeunion = 0b1011001110001111000011111000001111110000001111111000000011111111_usize.into_sizeunion();
+    ///     let a_sizeunion = 0b10110011_usize.into_sizeunion();
     ///     let ones = func(a_sizeunion);
     ///     println!("The number of ones of {:064b} is {}.", a_sizeunion.get(), ones);
-    ///     assert_eq!(ones, 36_u32);
+    ///     assert_eq!(ones, 5_u32);
     /// }
     /// 
     /// fn func<T: SmallUInt>(num: T) -> u32
@@ -24094,15 +24129,18 @@ pub trait SmallUInt: Copy + Clone + Sized //+ Display + Debug + ToString
     /// }
     /// ```
     /// 
-    /// # Example 6 for usize
+    /// # Example 6 for usize for 64-bit CPUs
     /// ```
     /// use cryptocol::number::SmallUInt;
     /// fn main()
     /// {
-    ///     let a_usize = 0b1011001110001111000011111000001111110000001111111000000011111111_usize;
-    ///     let zeros = func(a_usize);
-    ///     println!("The number of zeros of {:064b} is {}.", a_usize, zeros);
-    ///     assert_eq!(zeros, 28_u32);
+    ///     #[cfg(target_pointer_width = "64")]
+    ///     {
+    ///         let a_usize = 0b1011001110001111000011111000001111110000001111111000000011111111_usize;
+    ///         let zeros = func(a_usize);
+    ///         println!("The number of zeros of {:064b} is {}.", a_usize, zeros);
+    ///         assert_eq!(zeros, 28_u32);
+    ///     }
     /// }
     /// 
     /// fn func<T: SmallUInt>(num: T) -> u32
@@ -24179,15 +24217,18 @@ pub trait SmallUInt: Copy + Clone + Sized //+ Display + Debug + ToString
     /// }
     /// ```
     /// 
-    /// # Example 11 for SizeUnion
+    /// # Example 11 for SizeUnion for 64-bit CPUs
     /// ```
     /// use cryptocol::number::SmallUInt;
     /// fn main()
     /// {
-    ///     let a_sizeunion = 0b1011001110001111000011111000001111110000001111111000000011111111_usize.into_sizeunion();
-    ///     let zeros = func(a_sizeunion);
-    ///     println!("The number of zeros of {:064b} is {}.", a_sizeunion.get(), zeros);
-    ///     assert_eq!(zeros, 28_u32);
+    ///     #[cfg(target_pointer_width = "64")]
+    ///     {
+    ///         let a_sizeunion = 0b1011001110001111000011111000001111110000001111111000000011111111_usize.into_sizeunion();
+    ///         let zeros = func(a_sizeunion);
+    ///         println!("The number of zeros of {:064b} is {}.", a_sizeunion.get(), zeros);
+    ///         assert_eq!(zeros, 28_u32);
+    ///     }
     /// }
     /// 
     /// fn func<T: SmallUInt>(num: T) -> u32
@@ -24229,10 +24270,13 @@ pub trait SmallUInt: Copy + Clone + Sized //+ Display + Debug + ToString
     ///     println!("The number of zeros of {:0128b} is {}.", a_u128, zeros);
     ///     assert_eq!(zeros, 62_u32);
     /// 
-    ///     let a_usize = 0b1011001110001111000011111000001111110000001111111000000011111111_usize;
-    ///     let zeros = func(a_usize);
-    ///     println!("The number of zeros of {:064b} is {}.", a_usize, zeros);
-    ///     assert_eq!(zeros, 28_u32);
+    ///     #[cfg(target_pointer_width = "64")]
+    ///     {
+    ///         let a_usize = 0b1011001110001111000011111000001111110000001111111000000011111111_usize;
+    ///         let zeros = func(a_usize);
+    ///         println!("The number of zeros of {:064b} is {}.", a_usize, zeros);
+    ///         assert_eq!(zeros, 28_u32);
+    ///     }
     /// 
     ///     let a_shortunion = 0b1011001110001111_u16.into_shortunion();
     ///     let zeros = func(a_shortunion);
@@ -24254,10 +24298,13 @@ pub trait SmallUInt: Copy + Clone + Sized //+ Display + Debug + ToString
     ///     println!("The number of zeros of {:0128b} is {}.", a_longerunion.get(), zeros);
     ///     assert_eq!(zeros, 62_u32);
     /// 
-    ///     let a_sizeunion = 0b1011001110001111000011111000001111110000001111111000000011111111_usize.into_sizeunion();
-    ///     let zeros = func(a_sizeunion);
-    ///     println!("The number of zeros of {:064b} is {}.", a_sizeunion.get(), zeros);
-    ///     assert_eq!(zeros, 28_u32);
+    ///     #[cfg(target_pointer_width = "64")]
+    ///     {
+    ///         let a_sizeunion = 0b1011001110001111000011111000001111110000001111111000000011111111_usize.into_sizeunion();
+    ///         let zeros = func(a_sizeunion);
+    ///         println!("The number of zeros of {:064b} is {}.", a_sizeunion.get(), zeros);
+    ///         assert_eq!(zeros, 28_u32);
+    ///     }
     /// }
     /// 
     /// fn func<T: SmallUInt>(num: T) -> u32
@@ -24387,15 +24434,18 @@ pub trait SmallUInt: Copy + Clone + Sized //+ Display + Debug + ToString
     /// }
     /// ```
     /// 
-    /// # Example 6 for usize
+    /// # Example 6 for usize for 64-bit CPUs
     /// ```
     /// use cryptocol::number::SmallUInt;
     /// fn main()
     /// {
-    ///     let a_usize = 0b0000001111111000000011111111101100111000111100001111100000111111_usize;
-    ///     let ones = func(a_usize);
-    ///     println!("The number of leading ones of {:064b} is {}.", a_usize, ones);
-    ///     assert_eq!(ones, 0_u32);
+    ///     #[cfg(target_pointer_width = "64")]
+    ///     {
+    ///         let a_usize = 0b0000001111111000000011111111101100111000111100001111100000111111_usize;
+    ///         let ones = func(a_usize);
+    ///         println!("The number of leading ones of {:064b} is {}.", a_usize, ones);
+    ///         assert_eq!(ones, 0_u32);
+    ///     }
     /// }
     /// 
     /// fn func<T: SmallUInt>(num: T) -> u32
@@ -24472,15 +24522,18 @@ pub trait SmallUInt: Copy + Clone + Sized //+ Display + Debug + ToString
     /// }
     /// ```
     /// 
-    /// # Example 11 for SizeUnion
+    /// # Example 11 for SizeUnion for 64-bit CPUs
     /// ```
     /// use cryptocol::number::SmallUInt;
     /// fn main()
     /// {
-    ///     let a_sizeunion = 0b1111111000000011111111101100111000111100001111100000111111000000_usize.into_sizeunion();
-    ///     let ones = func(a_sizeunion);
-    ///     println!("The number of leading ones of {:064b} is {}.", a_sizeunion.get(), ones);
-    ///     assert_eq!(ones, 7_u32);
+    ///     #[cfg(target_pointer_width = "64")]
+    ///     {
+    ///         let a_sizeunion = 0b1111111000000011111111101100111000111100001111100000111111000000_usize.into_sizeunion();
+    ///         let ones = func(a_sizeunion);
+    ///         println!("The number of leading ones of {:064b} is {}.", a_sizeunion.get(), ones);
+    ///         assert_eq!(ones, 7_u32);
+    ///     }
     /// }
     /// 
     /// fn func<T: SmallUInt>(num: T) -> u32
@@ -24522,10 +24575,13 @@ pub trait SmallUInt: Copy + Clone + Sized //+ Display + Debug + ToString
     ///     println!("The number of leading ones of {:0128b} is {}.", a_u128, ones);
     ///     assert_eq!(ones, 1_u32);
     /// 
-    ///     let a_usize = 0b0000001111111000000011111111101100111000111100001111100000111111_usize;
-    ///     let ones = func(a_usize);
-    ///     println!("The number of leading ones of {:064b} is {}.", a_usize, ones);
-    ///     assert_eq!(ones, 0_u32);
+    ///     #[cfg(target_pointer_width = "64")]
+    ///     {
+    ///         let a_usize = 0b0000001111111000000011111111101100111000111100001111100000111111_usize;
+    ///         let ones = func(a_usize);
+    ///         println!("The number of leading ones of {:064b} is {}.", a_usize, ones);
+    ///         assert_eq!(ones, 0_u32);
+    ///     }
     /// 
     ///     let a_shortunion = 0b1100111000111110_u16.into_shortunion();
     ///     let ones = func(a_shortunion);
@@ -24547,10 +24603,13 @@ pub trait SmallUInt: Copy + Clone + Sized //+ Display + Debug + ToString
     ///     println!("The number of leading ones of {:0128b} is {}.", a_longerunion.get(), ones);
     ///     assert_eq!(ones, 11_u32);
     /// 
-    ///     let a_sizeunion = 0b1111111000000011111111101100111000111100001111100000111111000000_usize.into_sizeunion();
-    ///     let ones = func(a_sizeunion);
-    ///     println!("The number of leading ones of {:064b} is {}.", a_sizeunion.get(), ones);
-    ///     assert_eq!(ones, 7_u32);
+    ///     #[cfg(target_pointer_width = "64")]
+    ///     {
+    ///         let a_sizeunion = 0b1111111000000011111111101100111000111100001111100000111111000000_usize.into_sizeunion();
+    ///         let ones = func(a_sizeunion);
+    ///         println!("The number of leading ones of {:064b} is {}.", a_sizeunion.get(), ones);
+    ///         assert_eq!(ones, 7_u32);
+    ///     }
     /// }
     /// 
     /// fn func<T: SmallUInt>(num: T) -> u32
@@ -24681,15 +24740,18 @@ pub trait SmallUInt: Copy + Clone + Sized //+ Display + Debug + ToString
     /// }
     /// ```
     /// 
-    /// # Example 6 for usize
+    /// # Example 6 for usize for 64-bit CPUs
     /// ```
     /// use cryptocol::number::SmallUInt;
     /// fn main()
     /// {
-    ///     let a_usize = 0b0000111110000011111100000011111110000000111111111011001110001111_usize;
-    ///     let zeros = func(a_usize);
-    ///     println!("The number of leading zeros of {:064b} is {}.", a_usize, zeros);
-    ///     assert_eq!(zeros, 4_u32);
+    ///     #[cfg(target_pointer_width = "64")]
+    ///     {
+    ///         let a_usize = 0b0000111110000011111100000011111110000000111111111011001110001111_usize;
+    ///         let zeros = func(a_usize);
+    ///         println!("The number of leading zeros of {:064b} is {}.", a_usize, zeros);
+    ///         assert_eq!(zeros, 4_u32);
+    ///     }
     /// }
     /// 
     /// fn func<T: SmallUInt>(num: T) -> u32
@@ -24766,15 +24828,18 @@ pub trait SmallUInt: Copy + Clone + Sized //+ Display + Debug + ToString
     /// }
     /// ```
     /// 
-    /// # Example 11 for SizeUnion
+    /// # Example 11 for SizeUnion for 64-bit CPUs
     /// ```
     /// use cryptocol::number::SmallUInt;
     /// fn main()
     /// {
-    ///     let a_sizeunion = 0b0000111110000011111100000011111110000000111111111011001110001111_usize.into_sizeunion();
-    ///     let zeros = func(a_sizeunion);
-    ///     println!("The number of leading zeros of {:064b} is {}.", a_sizeunion.get(), zeros);
-    ///     assert_eq!(zeros, 4_u32);
+    ///     #[cfg(target_pointer_width = "64")]
+    ///     {
+    ///         let a_sizeunion = 0b0000111110000011111100000011111110000000111111111011001110001111_usize.into_sizeunion();
+    ///         let zeros = func(a_sizeunion);
+    ///         println!("The number of leading zeros of {:064b} is {}.", a_sizeunion.get(), zeros);
+    ///         assert_eq!(zeros, 4_u32);
+    ///     }
     /// }
     /// 
     /// fn func<T: SmallUInt>(num: T) -> u32
@@ -24816,10 +24881,13 @@ pub trait SmallUInt: Copy + Clone + Sized //+ Display + Debug + ToString
     ///     println!("The number of leading zeros of {:0128b} is {}.", a_u128, zeros);
     ///     assert_eq!(zeros, 10_u32);
     /// 
-    ///     let a_usize = 0b0000111110000011111100000011111110000000111111111011001110001111_usize;
-    ///     let zeros = func(a_usize);
-    ///     println!("The number of leading zeros of {:064b} is {}.", a_usize, zeros);
-    ///     assert_eq!(zeros, 4_u32);
+    ///     #[cfg(target_pointer_width = "64")]
+    ///     {
+    ///         let a_usize = 0b0000111110000011111100000011111110000000111111111011001110001111_usize;
+    ///         let zeros = func(a_usize);
+    ///         println!("The number of leading zeros of {:064b} is {}.", a_usize, zeros);
+    ///         assert_eq!(zeros, 4_u32);
+    ///     }
     /// 
     ///     let a_shortunion = 0b0011100011111011_u16.into_shortunion();
     ///     let zeros = func(a_shortunion);
@@ -24841,10 +24909,13 @@ pub trait SmallUInt: Copy + Clone + Sized //+ Display + Debug + ToString
     ///     println!("The number of leading zeros of {:0128b} is {}.", a_longerunion.get(), zeros);
     ///     assert_eq!(zeros, 7_u32);
     /// 
-    ///     let a_sizeunion = 0b0000111110000011111100000011111110000000111111111011001110001111_usize.into_sizeunion();
-    ///     let zeros = func(a_sizeunion);
-    ///     println!("The number of leading zeros of {:064b} is {}.", a_sizeunion.get(), zeros);
-    ///     assert_eq!(zeros, 4_u32);
+    ///     #[cfg(target_pointer_width = "64")]
+    ///     {
+    ///         let a_sizeunion = 0b0000111110000011111100000011111110000000111111111011001110001111_usize.into_sizeunion();
+    ///         let zeros = func(a_sizeunion);
+    ///         println!("The number of leading zeros of {:064b} is {}.", a_sizeunion.get(), zeros);
+    ///         assert_eq!(zeros, 4_u32);
+    ///     }
     /// }
     /// 
     /// fn func<T: SmallUInt>(num: T) -> u32
@@ -24980,10 +25051,10 @@ pub trait SmallUInt: Copy + Clone + Sized //+ Display + Debug + ToString
     /// use cryptocol::number::SmallUInt;
     /// fn main()
     /// {
-    ///     let a_usize = 0b1111110110011100011110000111110000011111100000011111110000000111_usize;
+    ///     let a_usize = 0b10110011_usize;
     ///     let ones = func(a_usize);
     ///     println!("The number of trailing ones of {:064b} is {}.", a_usize, ones);
-    ///     assert_eq!(ones, 3_u32);
+    ///     assert_eq!(ones, 2_u32);
     /// }
     /// 
     /// fn func<T: SmallUInt>(num: T) -> u32
@@ -25065,10 +25136,10 @@ pub trait SmallUInt: Copy + Clone + Sized //+ Display + Debug + ToString
     /// use cryptocol::number::SmallUInt;
     /// fn main()
     /// {
-    ///     let a_sizeunion = 0b1011001110001111000011111000001111110000001111111000000011111111_usize.into_sizeunion();
+    ///     let a_sizeunion = 0b10110011_usize.into_sizeunion();
     ///     let ones = func(a_sizeunion);
     ///     println!("The number of trailing ones of {:064b} is {}.", a_sizeunion.get(), ones);
-    ///     assert_eq!(ones, 8_u32);
+    ///     assert_eq!(ones, 2_u32);
     /// }
     /// 
     /// fn func<T: SmallUInt>(num: T) -> u32
@@ -25110,10 +25181,10 @@ pub trait SmallUInt: Copy + Clone + Sized //+ Display + Debug + ToString
     ///     println!("The number of trailing ones of {:0128b} is {}.", a_u128, ones);
     ///     assert_eq!(ones, 0_u32);
     /// 
-    ///     let a_usize = 0b1111110110011100011110000111110000011111100000011111110000000111_usize;
+    ///     let a_usize = 0b10110011_usize;
     ///     let ones = func(a_usize);
     ///     println!("The number of trailing ones of {:064b} is {}.", a_usize, ones);
-    ///     assert_eq!(ones, 3_u32);
+    ///     assert_eq!(ones, 2_u32);
     /// 
     ///     let a_shortunion = 0b1111011001110001_u16.into_shortunion();
     ///     let ones = func(a_shortunion);
@@ -25135,10 +25206,10 @@ pub trait SmallUInt: Copy + Clone + Sized //+ Display + Debug + ToString
     ///     println!("The number of trailing ones of {:0128b} is {}.", a_longerunion.get(), ones);
     ///     assert_eq!(ones, 10_u32);
     /// 
-    ///     let a_sizeunion = 0b1011001110001111000011111000001111110000001111111000000011111111_usize.into_sizeunion();
+    ///     let a_sizeunion = 0b10110011_usize.into_sizeunion();
     ///     let ones = func(a_sizeunion);
     ///     println!("The number of trailing ones of {:064b} is {}.", a_sizeunion.get(), ones);
-    ///     assert_eq!(ones, 8_u32);
+    ///     assert_eq!(ones, 2_u32);
     /// }
     /// 
     /// fn func<T: SmallUInt>(num: T) -> u32
@@ -25188,10 +25259,10 @@ pub trait SmallUInt: Copy + Clone + Sized //+ Display + Debug + ToString
     /// use cryptocol::number::SmallUInt;
     /// fn main()
     /// {
-    ///     let a_u8 = 0b10110011_u8;
+    ///     let a_u8 = 0b10110000_u8;
     ///     let zeros = func(a_u8);
     ///     println!("The number of trailing zeros of {:08b} is {}.", a_u8, zeros);
-    ///     assert_eq!(zeros, 0_u32);
+    ///     assert_eq!(zeros, 4_u32);
     /// }
     /// 
     /// fn func<T: SmallUInt>(num: T) -> u32
@@ -25273,7 +25344,7 @@ pub trait SmallUInt: Copy + Clone + Sized //+ Display + Debug + ToString
     /// use cryptocol::number::SmallUInt;
     /// fn main()
     /// {
-    ///     let a_usize = 0b1111100000111111000000111111100000001111111110110011100011110000_usize;
+    ///     let a_usize = 0b10110000_usize;
     ///     let zeros = func(a_usize);
     ///     println!("The number of trailing zeros of {:064b} is {}.", a_usize, zeros);
     ///     assert_eq!(zeros, 4_u32);
@@ -25358,10 +25429,10 @@ pub trait SmallUInt: Copy + Clone + Sized //+ Display + Debug + ToString
     /// use cryptocol::number::SmallUInt;
     /// fn main()
     /// {
-    ///     let a_sizeunion = 0b1100111000111100001111100000111111000000111111100000001111111110_usize.into_sizeunion();
+    ///     let a_sizeunion = 0b10110000_usize.into_sizeunion();
     ///     let zeros = func(a_sizeunion);
     ///     println!("The number of trailing zeros of {:064b} is {}.", a_sizeunion.get(), zeros);
-    ///     assert_eq!(zeros, 1_u32);
+    ///     assert_eq!(zeros, 4_u32);
     /// }
     /// 
     /// fn func<T: SmallUInt>(num: T) -> u32
@@ -25378,10 +25449,10 @@ pub trait SmallUInt: Copy + Clone + Sized //+ Display + Debug + ToString
     /// use cryptocol::number::SmallUInt;
     /// fn main()
     /// {
-    ///     let a_u8 = 0b10110011_u8;
+    ///     let a_u8 = 0b10110000_u8;
     ///     let zeros = func(a_u8);
     ///     println!("The number of trailing zeros of {:08b} is {}.", a_u8, zeros);
-    ///     assert_eq!(zeros, 0_u32);
+    ///     assert_eq!(zeros, 4_u32);
     /// 
     ///     let a_u16 = 0b1111101100111000_u16;
     ///     let zeros = func(a_u16);
@@ -25403,7 +25474,7 @@ pub trait SmallUInt: Copy + Clone + Sized //+ Display + Debug + ToString
     ///     println!("The number of trailing zeros of {:0128b} is {}.", a_u128, zeros);
     ///     assert_eq!(zeros, 10_u32);
     /// 
-    ///     let a_usize = 0b1111100000111111000000111111100000001111111110110011100011110000_usize;
+    ///     let a_usize = 0b10110000_usize;
     ///     let zeros = func(a_usize);
     ///     println!("The number of trailing zeros of {:064b} is {}.", a_usize, zeros);
     ///     assert_eq!(zeros, 4_u32);
@@ -25428,10 +25499,10 @@ pub trait SmallUInt: Copy + Clone + Sized //+ Display + Debug + ToString
     ///     println!("The number of trailing zeros of {:0128b} is {}.", a_longerunion.get(), zeros);
     ///     assert_eq!(zeros, 7_u32);
     /// 
-    ///     let a_sizeunion = 0b1100111000111100001111100000111111000000111111100000001111111110_usize.into_sizeunion();
+    ///     let a_sizeunion = 0b10110000_usize.into_sizeunion();
     ///     let zeros = func(a_sizeunion);
     ///     println!("The number of trailing zeros of {:064b} is {}.", a_sizeunion.get(), zeros);
-    ///     assert_eq!(zeros, 1_u32);
+    ///     assert_eq!(zeros, 4_u32);
     /// }
     /// 
     /// fn func<T: SmallUInt>(num: T) -> u32
@@ -31995,6 +32066,9 @@ pub trait SmallUInt: Copy + Clone + Sized //+ Display + Debug + ToString
     // fn from_be(x: Self) -> Self;
     /// Converts an integer from big endian to the target’s endianness.
     /// 
+    /// # Arguments
+    /// `x` is an integer stored in the form of big endianness.
+    /// 
     /// # Features
     /// On big endian machine, this function does nothing, which is a no-op.
     /// On little endian machine, the bytes are swapped.
@@ -32087,15 +32161,18 @@ pub trait SmallUInt: Copy + Clone + Sized //+ Display + Debug + ToString
     /// }
     /// ```
     /// 
-    /// # Example 6 for usize for Little Endiannes
+    /// # Example 6  for 64-bit Little Endian CPUs
     /// ```
     /// use cryptocol::number::SmallUInt;
     /// fn main()
     /// {
-    ///     let a_usizebe = 0x123456789ABCDEF0_usize;
-    ///     let b_usizele = func(a_usizebe);
-    ///     println!("{:016x} -> {:016x}", a_usizebe, b_usizele);
-    ///     assert_eq!(b_usizele, 0xf0debc9a78563412_usize);
+    ///     #[cfg(target_pointer_width = "64")]
+    ///     {
+    ///         let a_usizebe = 0x123456789ABCDEF0_usize;
+    ///         let b_usizele = func(a_usizebe);
+    ///         println!("{:016x} -> {:016x}", a_usizebe, b_usizele);
+    ///         assert_eq!(b_usizele, 0xf0debc9a78563412_usize);
+    ///     }
     /// }
     /// 
     /// fn func<T: SmallUInt>(num: T) -> T
@@ -32172,15 +32249,18 @@ pub trait SmallUInt: Copy + Clone + Sized //+ Display + Debug + ToString
     /// }
     /// ```
     /// 
-    /// # Example 11 for SizeUnion for Little Endiannes
+    /// # Example 11  for 64-bit Little Endian CPUs
     /// ```
     /// use cryptocol::number::SmallUInt;
     /// fn main()
     /// {
-    ///     let a_sizeunionbe = 0x123456789ABCDEF0_usize.into_sizeunion();
-    ///     let b_sizeunionle = func(a_sizeunionbe);
-    ///     println!("{:016x} -> {:016x}", a_sizeunionbe.get(), b_sizeunionle.get());
-    ///     assert_eq!(b_sizeunionle.get(), 0xf0debc9a78563412_usize);
+    ///     #[cfg(target_pointer_width = "64")]
+    ///     {
+    ///         let a_sizeunionbe = 0x123456789ABCDEF0_usize.into_sizeunion();
+    ///         let b_sizeunionle = func(a_sizeunionbe);
+    ///         println!("{:016x} -> {:016x}", a_sizeunionbe.get(), b_sizeunionle.get());
+    ///         assert_eq!(b_sizeunionle.get(), 0xf0debc9a78563412_usize);
+    ///     }
     /// }
     /// 
     /// fn func<T: SmallUInt>(num: T) -> T
@@ -32222,10 +32302,13 @@ pub trait SmallUInt: Copy + Clone + Sized //+ Display + Debug + ToString
     ///     println!("{:032x} -> {:032x}", a_u128be, b_u128le);
     ///     assert_eq!(b_u128le, 0xf0debc9a78563412f0debc9a78563412_u128);
     /// 
-    ///     let a_usizebe = 0x123456789ABCDEF0_usize;
-    ///     let b_usizele = func(a_usizebe);
-    ///     println!("{:016x} -> {:016x}", a_usizebe, b_usizele);
-    ///     assert_eq!(b_usizele, 0xf0debc9a78563412_usize);
+    ///     #[cfg(target_pointer_width = "64")]
+    ///     {
+    ///         let a_usizebe = 0x123456789ABCDEF0_usize;
+    ///         let b_usizele = func(a_usizebe);
+    ///         println!("{:016x} -> {:016x}", a_usizebe, b_usizele);
+    ///         assert_eq!(b_usizele, 0xf0debc9a78563412_usize);
+    ///     }
     /// 
     ///     let a_shortunionbe = 0x1234_u16.into_shortunion();
     ///     let b_shortunionle = func(a_shortunionbe);
@@ -32247,10 +32330,13 @@ pub trait SmallUInt: Copy + Clone + Sized //+ Display + Debug + ToString
     ///     println!("{:032x} -> {:032x}", a_longerunionbe.get(), b_longerunionle.get());
     ///     assert_eq!(b_longerunionle.get(), 0xf0debc9a78563412f0debc9a78563412_u128);
     /// 
-    ///     let a_sizeunionbe = 0x123456789ABCDEF0_usize.into_sizeunion();
-    ///     let b_sizeunionle = func(a_sizeunionbe);
-    ///     println!("{:016x} -> {:016x}", a_sizeunionbe.get(), b_sizeunionle.get());
-    ///     assert_eq!(b_sizeunionle.get(), 0xf0debc9a78563412_usize);
+    ///     #[cfg(target_pointer_width = "64")]
+    ///     {
+    ///         let a_sizeunionbe = 0x123456789ABCDEF0_usize.into_sizeunion();
+    ///         let b_sizeunionle = func(a_sizeunionbe);
+    ///         println!("{:016x} -> {:016x}", a_sizeunionbe.get(), b_sizeunionle.get());
+    ///         assert_eq!(b_sizeunionle.get(), 0xf0debc9a78563412_usize);
+    ///     }
     /// }
     /// 
     /// fn func<T: SmallUInt>(num: T) -> T
@@ -32289,6 +32375,9 @@ pub trait SmallUInt: Copy + Clone + Sized //+ Display + Debug + ToString
 
     // fn from_le(x: Self) -> Self;
     /// Converts an integer from little endian to the target’s endianness.
+    /// 
+    /// # Arguments
+    /// `x` is an integer stored in the form of big endianness.
     /// 
     /// # Features
     /// On little endian machine, this function does nothing, which is a no-op.
@@ -32382,15 +32471,18 @@ pub trait SmallUInt: Copy + Clone + Sized //+ Display + Debug + ToString
     /// }
     /// ```
     /// 
-    /// # Example 6 for usize for Little Endiannes
+    /// # Example 6 for usize for 64-bit Little Endian CPUs
     /// ```
     /// use cryptocol::number::SmallUInt;
     /// fn main()
     /// {
-    ///     let a_usizele = 0x123456789ABCDEF0_usize;
-    ///     let b_usizele = func(a_usizele);
-    ///     println!("{:016x} -> {:016x}", a_usizele, b_usizele);
-    ///     assert_eq!(b_usizele, 0x123456789ABCDEF0_usize);
+    ///     #[cfg(target_pointer_width = "64")]
+    ///     {
+    ///         let a_usizele = 0x123456789ABCDEF0_usize;
+    ///         let b_usizele = func(a_usizele);
+    ///         println!("{:016x} -> {:016x}", a_usizele, b_usizele);
+    ///         assert_eq!(b_usizele, 0x123456789ABCDEF0_usize);
+    ///     }
     /// }
     /// 
     /// fn func<T: SmallUInt>(num: T) -> T
@@ -32467,15 +32559,18 @@ pub trait SmallUInt: Copy + Clone + Sized //+ Display + Debug + ToString
     /// }
     /// ```
     /// 
-    /// # Example 11 for SizeUnion for Little Endiannes
+    /// # Example 11 for SizeUnion for 64-bit Little Endian CPUs
     /// ```
     /// use cryptocol::number::SmallUInt;
     /// fn main()
     /// {
-    ///     let a_sizeunionle = 0x123456789ABCDEF0_usize.into_sizeunion();
-    ///     let b_sizeunionle = func(a_sizeunionle);
-    ///     println!("{:016x} -> {:016x}", a_sizeunionle.get(), b_sizeunionle.get());
-    ///     assert_eq!(b_sizeunionle.get(), 0x123456789ABCDEF0_usize);
+    ///     #[cfg(target_pointer_width = "64")]
+    ///     {
+    ///         let a_sizeunionle = 0x123456789ABCDEF0_usize.into_sizeunion();
+    ///         let b_sizeunionle = func(a_sizeunionle);
+    ///         println!("{:016x} -> {:016x}", a_sizeunionle.get(), b_sizeunionle.get());
+    ///         assert_eq!(b_sizeunionle.get(), 0x123456789ABCDEF0_usize);
+    ///     }
     /// }
     /// 
     /// fn func<T: SmallUInt>(num: T) -> T
@@ -32517,10 +32612,13 @@ pub trait SmallUInt: Copy + Clone + Sized //+ Display + Debug + ToString
     ///     println!("{:032x} -> {:032x}", a_u128le, b_u128le);
     ///     assert_eq!(b_u128le, 0x123456789ABCDEF0123456789ABCDEF0_u128);
     /// 
-    ///     let a_usizele = 0x123456789ABCDEF0_usize;
-    ///     let b_usizele = func(a_usizele);
-    ///     println!("{:016x} -> {:016x}", a_usizele, b_usizele);
-    ///     assert_eq!(b_usizele, 0x123456789ABCDEF0_usize);
+    ///     #[cfg(target_pointer_width = "64")]
+    ///     {
+    ///         let a_usizele = 0x123456789ABCDEF0_usize;
+    ///         let b_usizele = func(a_usizele);
+    ///         println!("{:016x} -> {:016x}", a_usizele, b_usizele);
+    ///         assert_eq!(b_usizele, 0x123456789ABCDEF0_usize);
+    ///     }
     /// 
     ///     let a_shortunionle = 0x1234_u16.into_shortunion();
     ///     let b_shortunionle = func(a_shortunionle);
@@ -32542,10 +32640,13 @@ pub trait SmallUInt: Copy + Clone + Sized //+ Display + Debug + ToString
     ///     println!("{:032x} -> {:032x}", a_longerunionle.get(), b_longerunionle.get());
     ///     assert_eq!(b_longerunionle.get(), 0x123456789ABCDEF0123456789ABCDEF0_u128);
     /// 
-    ///     let a_sizeunionle = 0x123456789ABCDEF0_usize.into_sizeunion();
-    ///     let b_sizeunionle = func(a_sizeunionle);
-    ///     println!("{:016x} -> {:016x}", a_sizeunionle.get(), b_sizeunionle.get());
-    ///     assert_eq!(b_sizeunionle.get(), 0x123456789ABCDEF0_usize);
+    ///     #[cfg(target_pointer_width = "64")]
+    ///     {
+    ///         let a_sizeunionle = 0x123456789ABCDEF0_usize.into_sizeunion();
+    ///         let b_sizeunionle = func(a_sizeunionle);
+    ///         println!("{:016x} -> {:016x}", a_sizeunionle.get(), b_sizeunionle.get());
+    ///         assert_eq!(b_sizeunionle.get(), 0x123456789ABCDEF0_usize);
+    ///     }
     /// }
     /// 
     /// fn func<T: SmallUInt>(num: T) -> T
@@ -32677,15 +32778,18 @@ pub trait SmallUInt: Copy + Clone + Sized //+ Display + Debug + ToString
     /// }
     /// ```
     /// 
-    /// # Example 6 for usize for Little Endianness
+    /// # Example 6 for usize for 64-bit Little Endian CPUs
     /// ```
     /// use cryptocol::number::SmallUInt;
     /// fn main()
     /// {
-    ///     let a_usizele = 0x123456789ABCDEF0_usize;
-    ///     let b_usizebe = func(a_usizele);
-    ///     println!("{:016x} -> {:016x}", a_usizele, b_usizebe);
-    ///     assert_eq!(b_usizebe, 0xf0debc9a78563412_usize);
+    ///     #[cfg(target_pointer_width = "64")]
+    ///     {
+    ///         let a_usizele = 0x123456789ABCDEF0_usize;
+    ///         let b_usizebe = func(a_usizele);
+    ///         println!("{:016x} -> {:016x}", a_usizele, b_usizebe);
+    ///         assert_eq!(b_usizebe, 0xf0debc9a78563412_usize);
+    ///     }
     /// }
     /// 
     /// fn func<T: SmallUInt>(num: T) -> T
@@ -32762,15 +32866,18 @@ pub trait SmallUInt: Copy + Clone + Sized //+ Display + Debug + ToString
     /// }
     /// ```
     /// 
-    /// # Example 11 for SizeUnion for Little Endianness
+    /// # Example 11 for SizeUnion for 64-bit Little Endian CPUs
     /// ```
     /// use cryptocol::number::SmallUInt;
     /// fn main()
     /// {
-    ///     let a_sizeunionle = 0x123456789ABCDEF0_usize.into_sizeunion();
-    ///     let b_sizeunionbe = func(a_sizeunionle);
-    ///     println!("{:016x} -> {:016x}", a_sizeunionle.get(), b_sizeunionbe.get());
-    ///     assert_eq!(b_sizeunionbe.get(), 0xf0debc9a78563412_usize);
+    ///     #[cfg(target_pointer_width = "64")]
+    ///     {
+    ///         let a_sizeunionle = 0x123456789ABCDEF0_usize.into_sizeunion();
+    ///         let b_sizeunionbe = func(a_sizeunionle);
+    ///         println!("{:016x} -> {:016x}", a_sizeunionle.get(), b_sizeunionbe.get());
+    ///         assert_eq!(b_sizeunionbe.get(), 0xf0debc9a78563412_usize);
+    ///     }
     /// }
     /// 
     /// fn func<T: SmallUInt>(num: T) -> T
@@ -32812,10 +32919,13 @@ pub trait SmallUInt: Copy + Clone + Sized //+ Display + Debug + ToString
     ///     println!("{:032x} -> {:032x}", a_u128le, b_u128be);
     ///     assert_eq!(b_u128be, 0xf0debc9a78563412f0debc9a78563412_u128);
     /// 
-    ///     let a_usizele = 0x123456789ABCDEF0_usize;
-    ///     let b_usizebe = func(a_usizele);
-    ///     println!("{:016x} -> {:016x}", a_usizele, b_usizebe);
-    ///     assert_eq!(b_usizebe, 0xf0debc9a78563412_usize);
+    ///     #[cfg(target_pointer_width = "64")]
+    ///     {
+    ///         let a_usizele = 0x123456789ABCDEF0_usize;
+    ///         let b_usizebe = func(a_usizele);
+    ///         println!("{:016x} -> {:016x}", a_usizele, b_usizebe);
+    ///         assert_eq!(b_usizebe, 0xf0debc9a78563412_usize);
+    ///     }
     /// 
     ///     let a_shortunionle = 0x1234_u16.into_shortunion();
     ///     let b_shortunionbe = func(a_shortunionle);
@@ -32837,10 +32947,13 @@ pub trait SmallUInt: Copy + Clone + Sized //+ Display + Debug + ToString
     ///     println!("{:032x} -> {:032x}", a_longerunionle.get(), b_longerunionbe.get());
     ///     assert_eq!(b_longerunionbe.get(), 0xf0debc9a78563412f0debc9a78563412_u128);
     /// 
-    ///     let a_sizeunionle = 0x123456789ABCDEF0_usize.into_sizeunion();
-    ///     let b_sizeunionbe = func(a_sizeunionle);
-    ///     println!("{:016x} -> {:016x}", a_sizeunionle.get(), b_sizeunionbe.get());
-    ///     assert_eq!(b_sizeunionbe.get(), 0xf0debc9a78563412_usize);
+    ///     #[cfg(target_pointer_width = "64")]
+    ///     {
+    ///         let a_sizeunionle = 0x123456789ABCDEF0_usize.into_sizeunion();
+    ///         let b_sizeunionbe = func(a_sizeunionle);
+    ///         println!("{:016x} -> {:016x}", a_sizeunionle.get(), b_sizeunionbe.get());
+    ///         assert_eq!(b_sizeunionbe.get(), 0xf0debc9a78563412_usize);
+    ///     }
     /// }
     /// 
     /// fn func<T: SmallUInt>(num: T) -> T
@@ -32972,15 +33085,18 @@ pub trait SmallUInt: Copy + Clone + Sized //+ Display + Debug + ToString
     /// }
     /// ```
     /// 
-    /// # Example 6 for usize for Little Endiannes
+    /// # Example 6 for usize for 64-bit Little Endian CPUs
     /// ```
     /// use cryptocol::number::SmallUInt;
     /// fn main()
     /// {
-    ///     let a_usizele = 0x123456789ABCDEF0_usize;
-    ///     let b_usizele = func(a_usizele);
-    ///     println!("{:016x} -> {:016x}", a_usizele, b_usizele);
-    ///     assert_eq!(b_usizele, 0x123456789ABCDEF0_usize);
+    ///     #[cfg(target_pointer_width = "64")]
+    ///     {
+    ///         let a_usizele = 0x123456789ABCDEF0_usize;
+    ///         let b_usizele = func(a_usizele);
+    ///         println!("{:016x} -> {:016x}", a_usizele, b_usizele);
+    ///         assert_eq!(b_usizele, 0x123456789ABCDEF0_usize);
+    ///     }
     /// }
     /// 
     /// fn func<T: SmallUInt>(num: T) -> T
@@ -33057,15 +33173,18 @@ pub trait SmallUInt: Copy + Clone + Sized //+ Display + Debug + ToString
     /// }
     /// ```
     /// 
-    /// # Example 11 for SizeUnion for Little Endiannes
+    /// # Example 11 for SizeUnion for 64-bit Little Endian CPUs
     /// ```
     /// use cryptocol::number::SmallUInt;
     /// fn main()
     /// {
-    ///     let a_sizeunionle = 0x123456789ABCDEF0_usize.into_sizeunion();
-    ///     let b_sizeunionle = func(a_sizeunionle);
-    ///     println!("{:016x} -> {:016x}", a_sizeunionle.get(), b_sizeunionle.get());
-    ///     assert_eq!(b_sizeunionle.get(), 0x123456789ABCDEF0_usize);
+    ///     #[cfg(target_pointer_width = "64")]
+    ///     {
+    ///         let a_sizeunionle = 0x123456789ABCDEF0_usize.into_sizeunion();
+    ///         let b_sizeunionle = func(a_sizeunionle);
+    ///         println!("{:016x} -> {:016x}", a_sizeunionle.get(), b_sizeunionle.get());
+    ///         assert_eq!(b_sizeunionle.get(), 0x123456789ABCDEF0_usize);
+    ///     }
     /// }
     /// 
     /// fn func<T: SmallUInt>(num: T) -> T
@@ -33107,10 +33226,13 @@ pub trait SmallUInt: Copy + Clone + Sized //+ Display + Debug + ToString
     ///     println!("{:032x} -> {:032x}", a_u128le, b_u128le);
     ///     assert_eq!(b_u128le, 0x123456789ABCDEF0123456789ABCDEF0_u128);
     /// 
-    ///     let a_usizele = 0x123456789ABCDEF0_usize;
-    ///     let b_usizele = func(a_usizele);
-    ///     println!("{:016x} -> {:016x}", a_usizele, b_usizele);
-    ///     assert_eq!(b_usizele, 0x123456789ABCDEF0_usize);
+    ///     #[cfg(target_pointer_width = "64")]
+    ///     {
+    ///         let a_usizele = 0x123456789ABCDEF0_usize;
+    ///         let b_usizele = func(a_usizele);
+    ///         println!("{:016x} -> {:016x}", a_usizele, b_usizele);
+    ///         assert_eq!(b_usizele, 0x123456789ABCDEF0_usize);
+    ///     }
     /// 
     ///     let a_shortunionle = 0x1234_u16.into_shortunion();
     ///     let b_shortunionle = func(a_shortunionle);
@@ -33132,10 +33254,13 @@ pub trait SmallUInt: Copy + Clone + Sized //+ Display + Debug + ToString
     ///     println!("{:032x} -> {:032x}", a_longerunionle.get(), b_longerunionle.get());
     ///     assert_eq!(b_longerunionle.get(), 0x123456789ABCDEF0123456789ABCDEF0_u128);
     /// 
-    ///     let a_sizeunionle = 0x123456789ABCDEF0_usize.into_sizeunion();
-    ///     let b_sizeunionle = func(a_sizeunionle);
-    ///     println!("{:016x} -> {:016x}", a_sizeunionle.get(), b_sizeunionle.get());
-    ///     assert_eq!(b_sizeunionle.get(), 0x123456789ABCDEF0_usize);
+    ///     #[cfg(target_pointer_width = "64")]
+    ///     {
+    ///         let a_sizeunionle = 0x123456789ABCDEF0_usize.into_sizeunion();
+    ///         let b_sizeunionle = func(a_sizeunionle);
+    ///         println!("{:016x} -> {:016x}", a_sizeunionle.get(), b_sizeunionle.get());
+    ///         assert_eq!(b_sizeunionle.get(), 0x123456789ABCDEF0_usize);
+    ///     }
     /// }
     /// 
     /// fn func<T: SmallUInt>(num: T) -> T
@@ -33267,15 +33392,18 @@ pub trait SmallUInt: Copy + Clone + Sized //+ Display + Debug + ToString
     /// }
     /// ```
     /// 
-    /// # Example 6 for usize
+    /// # Example 6 for usize for 64-bit CPUs
     /// ```
     /// use cryptocol::number::SmallUInt;
     /// fn main()
     /// {
-    ///     let a_usize = 0x123456789ABCDEF0_usize;
-    ///     let b_usize = func(a_usize);
-    ///     println!("{:016x} -> {:016x}", a_usize, b_usize);
-    ///     assert_eq!(b_usize, 0xf0debc9a78563412_usize);
+    ///     #[cfg(target_pointer_width = "64")]
+    ///     {
+    ///         let a_usize = 0x123456789ABCDEF0_usize;
+    ///         let b_usize = func(a_usize);
+    ///         println!("{:016x} -> {:016x}", a_usize, b_usize);
+    ///         assert_eq!(b_usize, 0xf0debc9a78563412_usize);
+    ///     }
     /// }
     /// 
     /// fn func<T: SmallUInt>(num: T) -> T
@@ -33352,15 +33480,18 @@ pub trait SmallUInt: Copy + Clone + Sized //+ Display + Debug + ToString
     /// }
     /// ```
     /// 
-    /// # Example 11 for SizeUnion
+    /// # Example 11 for SizeUnion for 64-bit CPUs
     /// ```
     /// use cryptocol::number::SmallUInt;
     /// fn main()
     /// {
-    ///     let a_sizeunion = 0x123456789ABCDEF0_usize.into_sizeunion();
-    ///     let b_sizeunion = func(a_sizeunion);
-    ///     println!("{:016x} -> {:016x}", a_sizeunion.get(), b_sizeunion.get());
-    ///     assert_eq!(b_sizeunion.get(), 0xf0debc9a78563412_usize);
+    ///     #[cfg(target_pointer_width = "64")]
+    ///     {
+    ///         let a_sizeunion = 0x123456789ABCDEF0_usize.into_sizeunion();
+    ///         let b_sizeunion = func(a_sizeunion);
+    ///         println!("{:016x} -> {:016x}", a_sizeunion.get(), b_sizeunion.get());
+    ///         assert_eq!(b_sizeunion.get(), 0xf0debc9a78563412_usize);
+    ///     }
     /// }
     /// 
     /// fn func<T: SmallUInt>(num: T) -> T
@@ -33402,10 +33533,13 @@ pub trait SmallUInt: Copy + Clone + Sized //+ Display + Debug + ToString
     ///     println!("{:032x} -> {:032x}", a_u128, b_u128);
     ///     assert_eq!(b_u128, 0xf0debc9a78563412f0debc9a78563412_u128);
     /// 
-    ///     let a_usize = 0x123456789ABCDEF0_usize;
-    ///     let b_usize = func(a_usize);
-    ///     println!("{:016x} -> {:016x}", a_usize, b_usize);
-    ///     assert_eq!(b_usize, 0xf0debc9a78563412_usize);
+    ///     #[cfg(target_pointer_width = "64")]
+    ///     {
+    ///         let a_usize = 0x123456789ABCDEF0_usize;
+    ///         let b_usize = func(a_usize);
+    ///         println!("{:016x} -> {:016x}", a_usize, b_usize);
+    ///         assert_eq!(b_usize, 0xf0debc9a78563412_usize);
+    ///     }
     /// 
     ///     let a_shortunion = 0x1234_u16.into_shortunion();
     ///     let b_shortunion = func(a_shortunion);
@@ -33427,10 +33561,13 @@ pub trait SmallUInt: Copy + Clone + Sized //+ Display + Debug + ToString
     ///     println!("{:032x} -> {:032x}", a_longerunion.get(), b_longerunion.get());
     ///     assert_eq!(b_longerunion.get(), 0xf0debc9a78563412f0debc9a78563412_u128);
     /// 
-    ///     let a_sizeunion = 0x123456789ABCDEF0_usize.into_sizeunion();
-    ///     let b_sizeunion = func(a_sizeunion);
-    ///     println!("{:016x} -> {:016x}", a_sizeunion.get(), b_sizeunion.get());
-    ///     assert_eq!(b_sizeunion.get(), 0xf0debc9a78563412_usize);
+    ///     #[cfg(target_pointer_width = "64")]
+    ///     {
+    ///         let a_sizeunion = 0x123456789ABCDEF0_usize.into_sizeunion();
+    ///         let b_sizeunion = func(a_sizeunion);
+    ///         println!("{:016x} -> {:016x}", a_sizeunion.get(), b_sizeunion.get());
+    ///         assert_eq!(b_sizeunion.get(), 0xf0debc9a78563412_usize);
+    ///     }
     /// }
     /// 
     /// fn func<T: SmallUInt>(num: T) -> T
@@ -33479,16 +33616,6 @@ pub trait SmallUInt: Copy + Clone + Sized //+ Display + Debug + ToString
     /// use cryptocol::number::SmallUInt;
     /// fn main()
     /// {
-    ///     let a_u8 = 128_u8;
-    ///     let a_two = a_u8.is_power_of_two();
-    ///     println!("{} is {}power of two.", a_u8, if a_two {""} else {"not "});
-    ///     assert!(a_two);
-    /// 
-    ///     let b_u8 = 200_u8;
-    ///     let b_two = b_u8.is_power_of_two();
-    ///     println!("{} is {}power of two.", b_u8, if b_two {""} else {"not "});
-    ///     assert!(!b_two);
-    /// 
     ///     let c_u8 = 128_u8;
     ///     let c_two = func(c_u8);
     ///     println!("{} is {}power of two.", c_u8, if c_two {""} else {"not "});
@@ -33511,16 +33638,6 @@ pub trait SmallUInt: Copy + Clone + Sized //+ Display + Debug + ToString
     /// use cryptocol::number::SmallUInt;
     /// fn main()
     /// {
-    ///     let a_u16 = 32768_u16;
-    ///     let a_two = a_u16.is_power_of_two();
-    ///     println!("{} is {}power of two..", a_u16, if a_two {""} else {"not "});
-    ///     assert!(a_two);
-    /// 
-    ///     let b_u16 = 60000_u16;
-    ///     let b_two = b_u16.is_power_of_two();
-    ///     println!("{} is {}power of two..", b_u16, if b_two {""} else {"not "});
-    ///     assert!(!b_two);
-    /// 
     ///     let c_u16 = 32768_u16;
     ///     let c_two = func(c_u16);
     ///     println!("{} is {}power of two..", c_u16, if c_two {""} else {"not "});
@@ -33543,16 +33660,6 @@ pub trait SmallUInt: Copy + Clone + Sized //+ Display + Debug + ToString
     /// use cryptocol::number::SmallUInt;
     /// fn main()
     /// {
-    ///     let a_u32 = 2147483648_u32;
-    ///     let a_two = a_u32.is_power_of_two();
-    ///     println!("{} is {}power of two..", a_u32, if a_two {""} else {"not "});
-    ///     assert!(a_two);
-    /// 
-    ///     let b_u32 = 800000000_u32;
-    ///     let b_two = b_u32.is_power_of_two();
-    ///     println!("{} is {}power of two..", b_u32, if b_two {""} else {"not "});
-    ///     assert!(!b_two);
-    /// 
     ///     let c_u32 = 2147483648_u32;
     ///     let c_two = func(c_u32);
     ///     println!("{} is {}power of two..", c_u32, if c_two {""} else {"not "});
@@ -33575,16 +33682,6 @@ pub trait SmallUInt: Copy + Clone + Sized //+ Display + Debug + ToString
     /// use cryptocol::number::SmallUInt;
     /// fn main()
     /// {
-    ///     let a_u64 = 9223372036854775808_u64;
-    ///     let a_two = a_u64.is_power_of_two();
-    ///     println!("{} is {}power of two..", a_u64, if a_two {""} else {"not "});
-    ///     assert!(a_two);
-    /// 
-    ///     let b_u64 = 2468135791234567892_u64;
-    ///     let b_two = b_u64.is_power_of_two();
-    ///     println!("{} is {}power of two..", b_u64, if b_two {""} else {"not "});
-    ///     assert!(!b_two);
-    /// 
     ///     let c_u64 = 9223372036854775808_u64;
     ///     let c_two = func(c_u64);
     ///     println!("{} is {}power of two..", c_u64, if c_two {""} else {"not "});
@@ -33607,16 +33704,6 @@ pub trait SmallUInt: Copy + Clone + Sized //+ Display + Debug + ToString
     /// use cryptocol::number::SmallUInt;
     /// fn main()
     /// {
-    ///     let a_u128 = 170141183460469231731687303715884105728_u128;
-    ///     let a_two = a_u128.is_power_of_two();
-    ///     println!("{} is {}power of two..", a_u128, if a_two {""} else {"not "});
-    ///     assert!(a_two);
-    /// 
-    ///     let b_u128 = 200000000000000000000000000000000000000_u128;
-    ///     let b_two = b_u128.is_power_of_two();
-    ///     println!("{} is {}power of two..", b_u128, if b_two {""} else {"not "});
-    ///     assert!(!b_two);
-    /// 
     ///     let c_u128 = 170141183460469231731687303715884105728_u128;
     ///     let c_two = func(c_u128);
     ///     println!("{} is {}power of two..", c_u128, if c_two {""} else {"not "});
@@ -33639,16 +33726,6 @@ pub trait SmallUInt: Copy + Clone + Sized //+ Display + Debug + ToString
     /// use cryptocol::number::SmallUInt;
     /// fn main()
     /// {
-    ///     let a_usize = 9223372036854775808_usize;
-    ///     let a_two = a_usize.is_power_of_two();
-    ///     println!("{} is {}power of two..", a_usize, if a_two {""} else {"not "});
-    ///     assert!(a_two);
-    /// 
-    ///     let b_usize = 20000000000000000_usize;
-    ///     let b_two = b_usize.is_power_of_two();
-    ///     println!("{} is {}power of two..", b_usize, if b_two {""} else {"not "});
-    ///     assert!(!b_two);
-    /// 
     ///     let c_usize = 9223372036854775808_usize;
     ///     let c_two = func(c_usize);
     ///     println!("{} is {}power of two..", c_usize, if c_two {""} else {"not "});
@@ -33671,16 +33748,6 @@ pub trait SmallUInt: Copy + Clone + Sized //+ Display + Debug + ToString
     /// use cryptocol::number::SmallUInt;
     /// fn main()
     /// {
-    ///     let a_shortunion = 32768_u16.into_shortunion();
-    ///     let a_two = a_shortunion.is_power_of_two();
-    ///     println!("{} is {}power of two..", a_shortunion, if a_two {""} else {"not "});
-    ///     assert!(a_two);
-    /// 
-    ///     let b_shortunion = 65432_u16.into_shortunion();
-    ///     let b_two = b_shortunion.is_power_of_two();
-    ///     println!("{} is {}power of two..", b_shortunion, if b_two {""} else {"not "});
-    ///     assert!(!b_two);
-    /// 
     ///     let c_shortunion = 32768_u16.into_shortunion();
     ///     let c_two = func(c_shortunion);
     ///     println!("{} is {}power of two..", c_shortunion, if c_two {""} else {"not "});
@@ -33703,16 +33770,6 @@ pub trait SmallUInt: Copy + Clone + Sized //+ Display + Debug + ToString
     /// use cryptocol::number::SmallUInt;
     /// fn main()
     /// {
-    ///     let a_intunion = 2147483648_u32.into_intunion();
-    ///     let a_two = a_intunion.is_power_of_two();
-    ///     println!("{} is {}power of two..", a_intunion, if a_two {""} else {"not "});
-    ///     assert!(a_two);
-    /// 
-    ///     let b_intunion = 876543210_u32.into_intunion();
-    ///     let b_two = b_intunion.is_power_of_two();
-    ///     println!("{} is {}power of two..", b_intunion, if b_two {""} else {"not "});
-    ///     assert!(!b_two);
-    /// 
     ///     let c_intunion = 2147483648_u32.into_intunion();
     ///     let c_two = func(c_intunion);
     ///     println!("{} is {}power of two..", c_intunion, if c_two {""} else {"not "});
@@ -33735,16 +33792,6 @@ pub trait SmallUInt: Copy + Clone + Sized //+ Display + Debug + ToString
     /// use cryptocol::number::SmallUInt;
     /// fn main()
     /// {
-    ///     let a_longunion = 9223372036854775808_u64.into_longunion();
-    ///     let a_two = a_longunion.is_power_of_two();
-    ///     println!("{} is {}power of two..", a_longunion, if a_two {""} else {"not "});
-    ///     assert!(a_two);
-    /// 
-    ///     let b_longunion = 2468135791234567892_u64.into_longunion();
-    ///     let b_two = b_longunion.is_power_of_two();
-    ///     println!("{} is {}power of two..", b_longunion, if b_two {""} else {"not "});
-    ///     assert!(!b_two);
-    /// 
     ///     let c_longunion = 9223372036854775808_u64.into_longunion();
     ///     let c_two = func(c_longunion);
     ///     println!("{} is {}power of two..", c_longunion, if c_two {""} else {"not "});
@@ -33767,16 +33814,6 @@ pub trait SmallUInt: Copy + Clone + Sized //+ Display + Debug + ToString
     /// use cryptocol::number::SmallUInt;
     /// fn main()
     /// {
-    ///     let a_longerunion = 170141183460469231731687303715884105728_u128.into_longerunion();
-    ///     let a_two = a_longerunion.is_power_of_two();
-    ///     println!("{} is {}power of two..", a_longerunion, if a_two {""} else {"not "});
-    ///     assert!(a_two);
-    /// 
-    ///     let b_longerunion = 200000000000000000000000000000000000000_u128.into_longerunion();
-    ///     let b_two = b_longerunion.is_power_of_two();
-    ///     println!("{} is {}power of two..", b_longerunion, if b_two {""} else {"not "});
-    ///     assert!(!b_two);
-    /// 
     ///     let c_longerunion = 170141183460469231731687303715884105728_u128.into_longerunion();
     ///     let c_two = func(c_longerunion);
     ///     println!("{} is {}power of two..", c_longerunion, if c_two {""} else {"not "});
@@ -33799,16 +33836,6 @@ pub trait SmallUInt: Copy + Clone + Sized //+ Display + Debug + ToString
     /// use cryptocol::number::SmallUInt;
     /// fn main()
     /// {
-    ///     let a_sizeunion = 9223372036854775808_usize.into_sizeunion();
-    ///     let a_two = a_sizeunion.is_power_of_two();
-    ///     println!("{} is {}power of two..", a_sizeunion, if a_two {""} else {"not "});
-    ///     assert!(a_two);
-    /// 
-    ///     let b_sizeunion = 2468135791234567882_usize.into_sizeunion();
-    ///     let b_two = b_sizeunion.is_power_of_two();
-    ///     println!("{} is {}power of two..", b_sizeunion, if b_two {""} else {"not "});
-    ///     assert!(!b_two);
-    /// 
     ///     let c_sizeunion = 9223372036854775808_usize.into_sizeunion();
     ///     let c_two = func(c_sizeunion);
     ///     println!("{} is {}power of two..", c_sizeunion, if c_two {""} else {"not "});
@@ -33834,16 +33861,6 @@ pub trait SmallUInt: Copy + Clone + Sized //+ Display + Debug + ToString
     /// use cryptocol::number::SmallUInt;
     /// fn main()
     /// {
-    ///     let a_u8 = 128_u8;
-    ///     let a_two = a_u8.is_power_of_two();
-    ///     println!("{} is {}power of two.", a_u8, if a_two {""} else {"not "});
-    ///     assert!(a_two);
-    /// 
-    ///     let b_u8 = 200_u8;
-    ///     let b_two = b_u8.is_power_of_two();
-    ///     println!("{} is {}power of two.", b_u8, if b_two {""} else {"not "});
-    ///     assert!(!b_two);
-    /// 
     ///     let c_u8 = 128_u8;
     ///     let c_two = func(c_u8);
     ///     println!("{} is {}power of two.", c_u8, if c_two {""} else {"not "});
@@ -33855,16 +33872,6 @@ pub trait SmallUInt: Copy + Clone + Sized //+ Display + Debug + ToString
     ///     assert!(!d_two);
     /// 
     ///     // Example for u16
-    ///     let a_u16 = 32768_u16;
-    ///     let a_two = a_u16.is_power_of_two();
-    ///     println!("{} is {}power of two..", a_u16, if a_two {""} else {"not "});
-    ///     assert!(a_two);
-    /// 
-    ///     let b_u16 = 60000_u16;
-    ///     let b_two = b_u16.is_power_of_two();
-    ///     println!("{} is {}power of two..", b_u16, if b_two {""} else {"not "});
-    ///     assert!(!b_two);
-    /// 
     ///     let c_u16 = 32768_u16;
     ///     let c_two = func(c_u16);
     ///     println!("{} is {}power of two..", c_u16, if c_two {""} else {"not "});
@@ -33876,16 +33883,6 @@ pub trait SmallUInt: Copy + Clone + Sized //+ Display + Debug + ToString
     ///     assert!(!d_two);
     /// 
     ///     // Example for u32
-    ///     let a_u32 = 2147483648_u32;
-    ///     let a_two = a_u32.is_power_of_two();
-    ///     println!("{} is {}power of two..", a_u32, if a_two {""} else {"not "});
-    ///     assert!(a_two);
-    /// 
-    ///     let b_u32 = 800000000_u32;
-    ///     let b_two = b_u32.is_power_of_two();
-    ///     println!("{} is {}power of two..", b_u32, if b_two {""} else {"not "});
-    ///     assert!(!b_two);
-    /// 
     ///     let c_u32 = 2147483648_u32;
     ///     let c_two = func(c_u32);
     ///     println!("{} is {}power of two..", c_u32, if c_two {""} else {"not "});
@@ -33897,16 +33894,6 @@ pub trait SmallUInt: Copy + Clone + Sized //+ Display + Debug + ToString
     ///     assert!(!d_two);
     /// 
     ///     // Example for u64
-    ///     let a_u64 = 9223372036854775808_u64;
-    ///     let a_two = a_u64.is_power_of_two();
-    ///     println!("{} is {}power of two..", a_u64, if a_two {""} else {"not "});
-    ///     assert!(a_two);
-    /// 
-    ///     let b_u64 = 2468135791234567892_u64;
-    ///     let b_two = b_u64.is_power_of_two();
-    ///     println!("{} is {}power of two..", b_u64, if b_two {""} else {"not "});
-    ///     assert!(!b_two);
-    /// 
     ///     let c_u64 = 9223372036854775808_u64;
     ///     let c_two = func(c_u64);
     ///     println!("{} is {}power of two..", c_u64, if c_two {""} else {"not "});
@@ -33918,16 +33905,6 @@ pub trait SmallUInt: Copy + Clone + Sized //+ Display + Debug + ToString
     ///     assert!(!d_two);
     /// 
     ///     // Example for u128
-    ///     let a_u128 = 170141183460469231731687303715884105728_u128;
-    ///     let a_two = a_u128.is_power_of_two();
-    ///     println!("{} is {}power of two..", a_u128, if a_two {""} else {"not "});
-    ///     assert!(a_two);
-    /// 
-    ///     let b_u128 = 200000000000000000000000000000000000000_u128;
-    ///     let b_two = b_u128.is_power_of_two();
-    ///     println!("{} is {}power of two..", b_u128, if b_two {""} else {"not "});
-    ///     assert!(!b_two);
-    /// 
     ///     let c_u128 = 170141183460469231731687303715884105728_u128;
     ///     let c_two = func(c_u128);
     ///     println!("{} is {}power of two..", c_u128, if c_two {""} else {"not "});
@@ -33939,16 +33916,6 @@ pub trait SmallUInt: Copy + Clone + Sized //+ Display + Debug + ToString
     ///     assert!(!d_two);
     /// 
     ///     // Example for usize
-    ///     let a_usize = 9223372036854775808_usize;
-    ///     let a_two = a_usize.is_power_of_two();
-    ///     println!("{} is {}power of two..", a_usize, if a_two {""} else {"not "});
-    ///     assert!(a_two);
-    /// 
-    ///     let b_usize = 20000000000000000_usize;
-    ///     let b_two = b_usize.is_power_of_two();
-    ///     println!("{} is {}power of two..", b_usize, if b_two {""} else {"not "});
-    ///     assert!(!b_two);
-    /// 
     ///     let c_usize = 9223372036854775808_usize;
     ///     let c_two = func(c_usize);
     ///     println!("{} is {}power of two..", c_usize, if c_two {""} else {"not "});
@@ -33960,16 +33927,6 @@ pub trait SmallUInt: Copy + Clone + Sized //+ Display + Debug + ToString
     ///     assert!(!d_two);
     /// 
     ///     // Example for ShortUnion
-    ///     let a_shortunion = 32768_u16.into_shortunion();
-    ///     let a_two = a_shortunion.is_power_of_two();
-    ///     println!("{} is {}power of two..", a_shortunion, if a_two {""} else {"not "});
-    ///     assert!(a_two);
-    /// 
-    ///     let b_shortunion = 65432_u16.into_shortunion();
-    ///     let b_two = b_shortunion.is_power_of_two();
-    ///     println!("{} is {}power of two..", b_shortunion, if b_two {""} else {"not "});
-    ///     assert!(!b_two);
-    /// 
     ///     let c_shortunion = 32768_u16.into_shortunion();
     ///     let c_two = func(c_shortunion);
     ///     println!("{} is {}power of two..", c_shortunion, if c_two {""} else {"not "});
@@ -33981,16 +33938,6 @@ pub trait SmallUInt: Copy + Clone + Sized //+ Display + Debug + ToString
     ///     assert!(!d_two);
     /// 
     ///     // Example for IntUnion
-    ///     let a_intunion = 2147483648_u32.into_intunion();
-    ///     let a_two = a_intunion.is_power_of_two();
-    ///     println!("{} is {}power of two..", a_intunion, if a_two {""} else {"not "});
-    ///     assert!(a_two);
-    /// 
-    ///     let b_intunion = 876543210_u32.into_intunion();
-    ///     let b_two = b_intunion.is_power_of_two();
-    ///     println!("{} is {}power of two..", b_intunion, if b_two {""} else {"not "});
-    ///     assert!(!b_two);
-    /// 
     ///     let c_intunion = 2147483648_u32.into_intunion();
     ///     let c_two = func(c_intunion);
     ///     println!("{} is {}power of two..", c_intunion, if c_two {""} else {"not "});
@@ -34002,16 +33949,6 @@ pub trait SmallUInt: Copy + Clone + Sized //+ Display + Debug + ToString
     ///     assert!(!d_two);
     /// 
     ///     // Example for LongUnion
-    ///     let a_longunion = 9223372036854775808_u64.into_longunion();
-    ///     let a_two = a_longunion.is_power_of_two();
-    ///     println!("{} is {}power of two..", a_longunion, if a_two {""} else {"not "});
-    ///     assert!(a_two);
-    /// 
-    ///     let b_longunion = 2468135791234567892_u64.into_longunion();
-    ///     let b_two = b_longunion.is_power_of_two();
-    ///     println!("{} is {}power of two..", b_longunion, if b_two {""} else {"not "});
-    ///     assert!(!b_two);
-    /// 
     ///     let c_longunion = 9223372036854775808_u64.into_longunion();
     ///     let c_two = func(c_longunion);
     ///     println!("{} is {}power of two..", c_longunion, if c_two {""} else {"not "});
@@ -34023,16 +33960,6 @@ pub trait SmallUInt: Copy + Clone + Sized //+ Display + Debug + ToString
     ///     assert!(!d_two);
     /// 
     ///     // Example for LongerUnion
-    ///     let a_longerunion = 170141183460469231731687303715884105728_u128.into_longerunion();
-    ///     let a_two = a_longerunion.is_power_of_two();
-    ///     println!("{} is {}power of two..", a_longerunion, if a_two {""} else {"not "});
-    ///     assert!(a_two);
-    /// 
-    ///     let b_longerunion = 200000000000000000000000000000000000000_u128.into_longerunion();
-    ///     let b_two = b_longerunion.is_power_of_two();
-    ///     println!("{} is {}power of two..", b_longerunion, if b_two {""} else {"not "});
-    ///     assert!(!b_two);
-    /// 
     ///     let c_longerunion = 170141183460469231731687303715884105728_u128.into_longerunion();
     ///     let c_two = func(c_longerunion);
     ///     println!("{} is {}power of two..", c_longerunion, if c_two {""} else {"not "});
@@ -34044,16 +33971,6 @@ pub trait SmallUInt: Copy + Clone + Sized //+ Display + Debug + ToString
     ///     assert!(!d_two);
     /// 
     ///     // Example for SizeUnion
-    ///     let a_sizeunion = 9223372036854775808_usize.into_sizeunion();
-    ///     let a_two = a_sizeunion.is_power_of_two();
-    ///     println!("{} is {}power of two..", a_sizeunion, if a_two {""} else {"not "});
-    ///     assert!(a_two);
-    /// 
-    ///     let b_sizeunion = 2468135791234567882_usize.into_sizeunion();
-    ///     let b_two = b_sizeunion.is_power_of_two();
-    ///     println!("{} is {}power of two..", b_sizeunion, if b_two {""} else {"not "});
-    ///     assert!(!b_two);
-    /// 
     ///     let c_sizeunion = 9223372036854775808_usize.into_sizeunion();
     ///     let c_two = func(c_sizeunion);
     ///     println!("{} is {}power of two..", c_sizeunion, if c_two {""} else {"not "});
@@ -34115,11 +34032,6 @@ pub trait SmallUInt: Copy + Clone + Sized //+ Display + Debug + ToString
     /// use cryptocol::number::SmallUInt;
     /// fn main()
     /// {
-    ///     let a_u8 = 10_u8;
-    ///     let b_u8 = a_u8.next_power_of_two();
-    ///     println!("{} => {}", a_u8, b_u8);
-    ///     assert_eq!(b_u8, 16_u8);
-    /// 
     ///     let c_u8 = 10_u8;
     ///     let d_u8 = func(c_u8);
     ///     println!("{} => {}", c_u8, d_u8);
@@ -34137,11 +34049,6 @@ pub trait SmallUInt: Copy + Clone + Sized //+ Display + Debug + ToString
     /// use cryptocol::number::SmallUInt;
     /// fn main()
     /// {
-    ///     let a_u16 = 1000_u16;
-    ///     let b_u16 = a_u16.next_power_of_two();
-    ///     println!("{} => {}", a_u16, b_u16);
-    ///     assert_eq!(b_u16, 1024_u16);
-    /// 
     ///     let c_u16 = 1000_u16;
     ///     let d_u16 = func(c_u16);
     ///     println!("{} => {}", c_u16, d_u16);
@@ -34159,11 +34066,6 @@ pub trait SmallUInt: Copy + Clone + Sized //+ Display + Debug + ToString
     /// use cryptocol::number::SmallUInt;
     /// fn main()
     /// {
-    ///     let a_u32 = 10000000_u32;
-    ///     let b_u32 = a_u32.next_power_of_two();
-    ///     println!("{} => {}", a_u32, b_u32);
-    ///     assert_eq!(b_u32, 16777216_u32);
-    /// 
     ///     let c_u32 = 10000000_u32;
     ///     let d_u32 = func(c_u32);
     ///     println!("{} => {}", c_u32, d_u32);
@@ -34181,11 +34083,6 @@ pub trait SmallUInt: Copy + Clone + Sized //+ Display + Debug + ToString
     /// use cryptocol::number::SmallUInt;
     /// fn main()
     /// {
-    ///     let a_u64 = 1000000000000000_u64;
-    ///     let b_u64 = a_u64.next_power_of_two();
-    ///     println!("{} => {}", a_u64, b_u64);
-    ///     assert_eq!(b_u64, 1125899906842624_u64);
-    /// 
     ///     let c_u64 = 1000000000000000_u64;
     ///     let d_u64 = func(c_u64);
     ///     println!("{} => {}", c_u64, d_u64);
@@ -34203,11 +34100,6 @@ pub trait SmallUInt: Copy + Clone + Sized //+ Display + Debug + ToString
     /// use cryptocol::number::SmallUInt;
     /// fn main()
     /// {
-    ///     let a_u128 = 100000000000000000000000000000_u128;
-    ///     let b_u128 = a_u128.next_power_of_two();
-    ///     println!("{} => {}", a_u128, b_u128);
-    ///     assert_eq!(b_u128, 158456325028528675187087900672_u128);
-    /// 
     ///     let c_u128 = 100000000000000000000000000000_u128;
     ///     let d_u128 = func(c_u128);
     ///     println!("{} => {}", c_u128, d_u128);
@@ -34225,15 +34117,10 @@ pub trait SmallUInt: Copy + Clone + Sized //+ Display + Debug + ToString
     /// use cryptocol::number::SmallUInt;
     /// fn main()
     /// {
-    ///     let a_usize = 1000000000000000_usize;
-    ///     let b_usize = a_usize.next_power_of_two();
-    ///     println!("{} => {}", a_usize, b_usize);
-    ///     assert_eq!(b_usize, 1125899906842624_usize);
-    /// 
-    ///     let c_usize = 1000000000000000_usize;
+    ///     let c_usize = 10_usize;
     ///     let d_usize = func(c_usize);
     ///     println!("{} => {}", c_usize, d_usize);
-    ///     assert_eq!(d_usize, 1125899906842624_usize);
+    ///     assert_eq!(d_usize, 16_usize);
     /// }
     /// 
     /// fn func<T: SmallUInt>(num: T) -> T
@@ -34247,11 +34134,6 @@ pub trait SmallUInt: Copy + Clone + Sized //+ Display + Debug + ToString
     /// use cryptocol::number::SmallUInt;
     /// fn main()
     /// {
-    ///     let a_shortunion = 400_u16.into_shortunion();
-    ///     let b_shortunion = a_shortunion.next_power_of_two();
-    ///     println!("{} => {}", a_shortunion.get(), b_shortunion.get());
-    ///     assert_eq!(b_shortunion.get(), 512_u16);
-    /// 
     ///     let c_shortunion = 400_u16.into_shortunion();
     ///     let d_shortunion = func(c_shortunion);
     ///     println!("{} => {}", c_shortunion.get(), d_shortunion.get());
@@ -34269,11 +34151,6 @@ pub trait SmallUInt: Copy + Clone + Sized //+ Display + Debug + ToString
     /// use cryptocol::number::SmallUInt;
     /// fn main()
     /// {
-    ///     let a_intunion = 400000_u32.into_intunion();
-    ///     let b_intunion = a_intunion.next_power_of_two();
-    ///     println!("{} => {}", a_intunion.get(), b_intunion.get());
-    ///     assert_eq!(b_intunion.get(), 524288_u32);
-    /// 
     ///     let c_intunion = 400000_u32.into_intunion();
     ///     let d_intunion = func(c_intunion);
     ///     println!("{} => {}", c_intunion.get(), d_intunion.get());
@@ -34291,11 +34168,6 @@ pub trait SmallUInt: Copy + Clone + Sized //+ Display + Debug + ToString
     /// use cryptocol::number::SmallUInt;
     /// fn main()
     /// {
-    ///     let a_longunion = 400000000000_u64.into_longunion();
-    ///     let b_longunion = a_longunion.next_power_of_two();
-    ///     println!("{} => {}", a_longunion.get(), b_longunion.get());
-    ///     assert_eq!(b_longunion.get(), 549755813888_u64);
-    /// 
     ///     let c_longunion = 400000000000_u64.into_longunion();
     ///     let d_longunion = func(c_longunion);
     ///     println!("{} => {}", c_longunion.get(), d_longunion.get());
@@ -34313,11 +34185,6 @@ pub trait SmallUInt: Copy + Clone + Sized //+ Display + Debug + ToString
     /// use cryptocol::number::SmallUInt;
     /// fn main()
     /// {
-    ///     let a_longerunion = 4000000000000000000000000000_u128.into_longerunion();
-    ///     let b_longerunion = a_longerunion.next_power_of_two();
-    ///     println!("{} => {}", a_longerunion.get(), b_longerunion.get());
-    ///     assert_eq!(b_longerunion.get(), 4951760157141521099596496896_u128);
-    /// 
     ///     let c_longerunion = 4000000000000000000000000000_u128.into_longerunion();
     ///     let d_longerunion = func(c_longerunion);
     ///     println!("{} => {}", c_longerunion.get(), d_longerunion.get());
@@ -34335,15 +34202,10 @@ pub trait SmallUInt: Copy + Clone + Sized //+ Display + Debug + ToString
     /// use cryptocol::number::SmallUInt;
     /// fn main()
     /// {
-    ///     let a_sizeunion = 4000000000000000_usize.into_sizeunion();
-    ///     let b_sizeunion = a_sizeunion.next_power_of_two();
-    ///     println!("{} => {}", a_sizeunion.get(), b_sizeunion.get());
-    ///     assert_eq!(b_sizeunion.get(), 4503599627370496_usize);
-    /// 
-    ///     let c_sizeunion = 4000000000000000_usize.into_sizeunion();
+    ///     let c_sizeunion = 10_usize.into_sizeunion();
     ///     let d_sizeunion = func(c_sizeunion);
     ///     println!("{} => {}", c_sizeunion.get(), d_sizeunion.get());
-    ///     assert_eq!(d_sizeunion.get(), 4503599627370496_usize);
+    ///     assert_eq!(d_sizeunion.get(), 16_usize);
     /// }
     /// 
     /// fn func<T: SmallUInt>(num: T) -> T
@@ -34360,86 +34222,40 @@ pub trait SmallUInt: Copy + Clone + Sized //+ Display + Debug + ToString
     /// use cryptocol::number::SmallUInt;
     /// fn main()
     /// {
-    ///     let a_u8 = 10_u8;
-    ///     let b_u8 = a_u8.next_power_of_two();
-    ///     println!("{} => {}", a_u8, b_u8);
-    ///     assert_eq!(b_u8, 16_u8);
-    /// 
     ///     let c_u8 = 10_u8;
     ///     let d_u8 = func(c_u8);
     ///     println!("{} => {}", c_u8, d_u8);
     ///     assert_eq!(d_u8, 16_u8);
-    /// 
-    ///     // Example for u16
-    ///     let a_u16 = 1000_u16;
-    ///     let b_u16 = a_u16.next_power_of_two();
-    ///     println!("{} => {}", a_u16, b_u16);
-    ///     assert_eq!(b_u16, 1024_u16);
     /// 
     ///     let c_u16 = 1000_u16;
     ///     let d_u16 = func(c_u16);
     ///     println!("{} => {}", c_u16, d_u16);
     ///     assert_eq!(d_u16, 1024_u16);
     /// 
-    ///     // Example for u32
-    ///     let a_u32 = 10000000_u32;
-    ///     let b_u32 = a_u32.next_power_of_two();
-    ///     println!("{} => {}", a_u32, b_u32);
-    ///     assert_eq!(b_u32, 16777216_u32);
-    /// 
     ///     let c_u32 = 10000000_u32;
     ///     let d_u32 = func(c_u32);
     ///     println!("{} => {}", c_u32, d_u32);
     ///     assert_eq!(d_u32, 16777216_u32);
-    /// 
-    ///     // Example for u64
-    ///     let a_u64 = 1000000000000000_u64;
-    ///     let b_u64 = a_u64.next_power_of_two();
-    ///     println!("{} => {}", a_u64, b_u64);
-    ///     assert_eq!(b_u64, 1125899906842624_u64);
     /// 
     ///     let c_u64 = 1000000000000000_u64;
     ///     let d_u64 = func(c_u64);
     ///     println!("{} => {}", c_u64, d_u64);
     ///     assert_eq!(d_u64, 1125899906842624_u64);
     /// 
-    ///     // Example for u128
-    ///     let a_u128 = 100000000000000000000000000000_u128;
-    ///     let b_u128 = a_u128.next_power_of_two();
-    ///     println!("{} => {}", a_u128, b_u128);
-    ///     assert_eq!(b_u128, 158456325028528675187087900672_u128);
-    /// 
     ///     let c_u128 = 100000000000000000000000000000_u128;
     ///     let d_u128 = func(c_u128);
     ///     println!("{} => {}", c_u128, d_u128);
     ///     assert_eq!(d_u128, 158456325028528675187087900672_u128);
     /// 
-    ///     // Example for usize
-    ///     let a_usize = 1000000000000000_usize;
-    ///     let b_usize = a_usize.next_power_of_two();
-    ///     println!("{} => {}", a_usize, b_usize);
-    ///     assert_eq!(b_usize, 1125899906842624_usize);
-    /// 
-    ///     let c_usize = 1000000000000000_usize;
+    ///     let c_usize = 10_usize;
     ///     let d_usize = func(c_usize);
     ///     println!("{} => {}", c_usize, d_usize);
-    ///     assert_eq!(d_usize, 1125899906842624_usize);
-    /// 
-    ///     // Example for ShortUnion
-    ///     let a_shortunion = 400_u16.into_shortunion();
-    ///     let b_shortunion = a_shortunion.next_power_of_two();
-    ///     println!("{} => {}", a_shortunion.get(), b_shortunion.get());
-    ///     assert_eq!(b_shortunion.get(), 512_u16);
+    ///     assert_eq!(d_usize, 16_usize);
     /// 
     ///     let c_shortunion = 400_u16.into_shortunion();
     ///     let d_shortunion = func(c_shortunion);
     ///     println!("{} => {}", c_shortunion.get(), d_shortunion.get());
     ///     assert_eq!(d_shortunion.get(), 512_u16);
-    /// 
-    ///     // Example for IntUnion
-    ///     let a_intunion = 400000_u32.into_intunion();
-    ///     let b_intunion = a_intunion.next_power_of_two();
-    ///     println!("{} => {}", a_intunion.get(), b_intunion.get());
     ///     assert_eq!(b_intunion.get(), 524288_u32);
     /// 
     ///     let c_intunion = 400000_u32.into_intunion();
@@ -34447,38 +34263,20 @@ pub trait SmallUInt: Copy + Clone + Sized //+ Display + Debug + ToString
     ///     println!("{} => {}", c_intunion.get(), d_intunion.get());
     ///     assert_eq!(d_intunion.get(), 524288_u32);
     /// 
-    ///     // Example for LongUnion
-    ///     let a_longunion = 400000000000_u64.into_longunion();
-    ///     let b_longunion = a_longunion.next_power_of_two();
-    ///     println!("{} => {}", a_longunion.get(), b_longunion.get());
-    ///     assert_eq!(b_longunion.get(), 549755813888_u64);
-    /// 
     ///     let c_longunion = 400000000000_u64.into_longunion();
     ///     let d_longunion = func(c_longunion);
     ///     println!("{} => {}", c_longunion.get(), d_longunion.get());
     ///     assert_eq!(d_longunion.get(), 549755813888_u64);
-    /// 
-    ///     // Example for LongerUnion
-    ///     let a_longerunion = 4000000000000000000000000000_u128.into_longerunion();
-    ///     let b_longerunion = a_longerunion.next_power_of_two();
-    ///     println!("{} => {}", a_longerunion.get(), b_longerunion.get());
-    ///     assert_eq!(b_longerunion.get(), 4951760157141521099596496896_u128);
     /// 
     ///     let c_longerunion = 4000000000000000000000000000_u128.into_longerunion();
     ///     let d_longerunion = func(c_longerunion);
     ///     println!("{} => {}", c_longerunion.get(), d_longerunion.get());
     ///     assert_eq!(d_longerunion.get(), 4951760157141521099596496896_u128);
     /// 
-    ///     // Example for SizeUnion
-    ///     let a_sizeunion = 4000000000000000_usize.into_sizeunion();
-    ///     let b_sizeunion = a_sizeunion.next_power_of_two();
-    ///     println!("{} => {}", a_sizeunion.get(), b_sizeunion.get());
-    ///     assert_eq!(b_sizeunion.get(), 4503599627370496_usize);
-    /// 
-    ///     let c_sizeunion = 4000000000000000_usize.into_sizeunion();
+    ///     let c_sizeunion = 10_usize.into_sizeunion();
     ///     let d_sizeunion = func(c_sizeunion);
     ///     println!("{} => {}", c_sizeunion.get(), d_sizeunion.get());
-    ///     assert_eq!(d_sizeunion.get(), 4503599627370496_usize);
+    ///     assert_eq!(d_sizeunion.get(), 16_usize);
     /// }
     /// 
     /// fn func<T: SmallUInt>(num: T) -> T

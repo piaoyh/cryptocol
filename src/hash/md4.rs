@@ -28,6 +28,63 @@ use crate::number::{ SmallUInt, IntUnion, LongUnion };
 /// The default values of H0, H1, H2, and H3 are 0x67452301, 0xefcdab89,
 /// 0x98badcfe, and 0x10325476, respectively (in little endian representation).
 /// - ROUND : the number of rounds. The default value of it is `48` (= 16 * 3).
+/// 
+/// # Quick Start
+/// In order to use the module MD4_Expanded which is the expanded verstion
+/// of MD4, you don't have to import (or use) cryptocol::hash::md4::MD4_Expanded
+/// directly because the module cryptocol::hash::md4 is re-exported.
+/// All you have to do is only import MD4_Expanded in the module
+/// cryptocol::hash. The follwing example shows how to import and use
+/// MD4_Expanded.
+/// 
+/// ## Example 
+/// ```
+/// use std::string::*;
+/// use cryptocol::hash::MD4_Expanded;
+/// 
+/// type MyMD4 = MD4_Expanded<4, 0x1111_1111, 0x4444_4444, 0x8888_8888, 0xffff_ffff, 96>;
+/// let mut hash = MyMD4::new();
+/// 
+/// let mut txt = "";
+/// hash.digest_str(txt);
+/// println!("Msg =\t\"{}\"\nHash =\t{}\n", txt, hash);
+/// assert_eq!(hash.get_hash_value_in_string(), "13892AE087B903E5EC030A51E1BC720A");
+/// 
+/// let txt_stirng = String::from("A");
+/// hash.digest_string(&txt_stirng);
+/// println!("Msg =\t\"{}\"\nHash =\t{}\n", txt_stirng, hash);
+/// assert_eq!(hash.to_string(), "0C0BE1B8893E47C005D95C69234141E9");
+/// 
+/// let txt_array = ['W' as u8, 'o' as u8, 'w' as u8];
+/// hash.digest_array(&txt_array);
+/// println!("Msg =\t\"{:?}\"\nHash =\t{}\n", txt_array, hash);
+/// assert_eq!(hash.get_hash_value_in_string(), "17545CEB681C5B848234A557C5957AA7");
+/// 
+/// txt = "This data is 26-byte long.";
+/// hash.digest_str(txt);
+/// println!("Msg =\t\"{}\"\nHash =\t{}\n", txt, hash);
+/// assert_eq!(hash.to_string(), "70F3EA1DCDE46C65868DC0937E374433");
+/// 
+/// txt = "The unit of data length is not byte but bit.";
+/// hash.digest_str(txt);
+/// println!("Msg =\t\"{}\"\nHash =\t{}\n", txt, hash);
+/// assert_eq!(hash.get_hash_value_in_string(), "640B4635ED76F6574FC30AB233B74712");
+/// 
+/// txt = "I am testing MD4_Expanded for the data of the length 62 bytes.";
+/// hash.digest_str(txt);
+/// println!("Msg =\t\"{}\"\nHash =\t{}\n", txt, hash);
+/// assert_eq!(hash.to_string(), "B0D18D969B99F4BF48365449AF82EAFB");
+/// 
+/// txt = "I am testing MD4_Expanded for the message which is 64 byte-long.";
+/// hash.digest_str(txt);
+/// println!("Msg =\t\"{}\"\nHash =\t{}\n", txt, hash);
+/// assert_eq!(hash.get_hash_value_in_string(), "2D4ADABC3504B4A1B98FCCBFC48145AE");
+/// 
+/// txt = "I am testing MD4_Expanded for the case data whose length is more than 64 bytes is given.";
+/// hash.digest_str(txt);
+/// println!("Msg =\t\"{}\"\nHash =\t{}", txt, hash);
+/// assert_eq!(hash.to_string(), "26E5336E4D863BBAD6347918CE6DBAF5");
+/// ```
 #[allow(non_camel_case_types)]
 pub type MD4_Expanded<const N: usize = 4,
                         const H0: u32 = 0x67452301, const H1: u32 = 0xefcdab89,
@@ -53,6 +110,60 @@ pub type MD4_Generic_HR_fixed<const N: usize = 4, const ROUND: usize = 48,
     = MD4_Generic<N, 0x67452301, 0xefcdab89, 0x98badcfe, 0x10325476, ROUND, K0, K1, K2>;
     
 /// The official MD4 hash algorithm
+/// 
+/// # Quick Start
+/// In order to use the module MD4, you don't have to import (or use)
+/// cryptocol::hash::md4::md4 directly because the module cryptocol::hash::md4
+/// is re-exported. All you have to do is only import MD4 in the module
+/// cryptocol::hash. Example shows how to import and use MD4.
+/// 
+/// ## Example 
+/// ```
+/// use std::string::*;
+/// use cryptocol::hash::MD4;
+/// 
+/// let mut hash = MD4::new();
+/// 
+/// let mut txt = "";
+/// hash.digest_str(txt);
+/// println!("Msg =\t\"{}\"\nHash =\t{}\n", txt, hash);
+/// assert_eq!(hash.get_hash_value_in_string(), "31D6CFE0D16AE931B73C59D7E0C089C0");
+/// 
+/// let txt_stirng = String::from("A");
+/// hash.digest_string(&txt_stirng);
+/// println!("Msg =\t\"{}\"\nHash =\t{}\n", txt_stirng, hash);
+/// assert_eq!(hash.to_string(), "D5EF20EEB3F75679F86CF57F93ED0FFE");
+/// 
+/// let txt_array = ['W' as u8, 'o' as u8, 'w' as u8];
+/// hash.digest_array(&txt_array);
+/// println!("Msg =\t\"{:?}\"\nHash =\t{}\n", txt_array, hash);
+/// assert_eq!(hash.get_hash_value_in_string(), "6407C0E728DA762A04924ADFE630974C");
+/// 
+/// txt = "This data is 26-byte long.";
+/// hash.digest_str(txt);
+/// println!("Msg =\t\"{}\"\nHash =\t{}\n", txt, hash);
+/// assert_eq!(hash.to_string(), "4F4A24D124B996BEA395344419F9A06B");
+/// 
+/// txt = "The unit of data length is not byte but bit.";
+/// hash.digest_str(txt);
+/// println!("Msg =\t\"{}\"\nHash =\t{}\n", txt, hash);
+/// assert_eq!(hash.get_hash_value_in_string(), "9DE35D8FCF68E74867FFB63F28625ABE");
+/// 
+/// txt = "I am testing MD4 for the data whose length is sixty-two bytes.";
+/// hash.digest_str(txt);
+/// println!("Msg =\t\"{}\"\nHash =\t{}\n", txt, hash);
+/// assert_eq!(hash.to_string(), "3A9F1487472B3A4315E0C90DC5CB3A2E");
+/// 
+/// txt = "I am testing MD4 for the message which is sixty-four bytes long.";
+/// hash.digest_str(txt);
+/// println!("Msg =\t\"{}\"\nHash =\t{}\n", txt, hash);
+/// assert_eq!(hash.get_hash_value_in_string(), "6CDB5B2BFF823A4A7B23675180EB7BEF");
+/// 
+/// txt = "I am testing MD4 for the case data whose length is more than sixty-four bytes is given.";
+/// hash.digest_str(txt);
+/// println!("Msg =\t\"{}\"\nHash =\t{}", txt, hash);
+/// assert_eq!(hash.to_string(), "56771653687981390B0EB2A7D0A40DBB");
+/// ```
 #[allow(non_camel_case_types)]
 pub type MD4 = MD4_Generic;     // equivalent to `pub type MD4 = MD4_Expanded;`
 
@@ -148,7 +259,7 @@ pub type MD4 = MD4_Generic;     // equivalent to `pub type MD4 = MD4_Expanded;`
 /// for instance, to print on a commandline screen by `println!("{}", hash)`
 /// where hash is the MD4 object. Example 2 shows how to use MD4 struct quickly.
 /// 
-/// ## Example 2
+/// ## Example 2 for MD4
 /// ```
 /// use std::string::*;
 /// use cryptocol::hash::MD4;
@@ -193,6 +304,58 @@ pub type MD4 = MD4_Generic;     // equivalent to `pub type MD4 = MD4_Expanded;`
 /// hash.digest_str(txt);
 /// println!("Msg =\t\"{}\"\nHash =\t{}", txt, hash);
 /// assert_eq!(hash.to_string(), "56771653687981390B0EB2A7D0A40DBB");
+/// ```
+/// 
+/// Example 3 shows how to use quickly MD4_Expanded which is the expanded
+/// version of MD4.
+/// 
+/// # Example 3 for MD4_Expanded
+/// ```
+/// use std::string::*;
+/// use cryptocol::hash::MD4_Expanded;
+/// 
+/// type MyMD4 = MD4_Expanded<4, 0x1111_1111, 0x4444_4444, 0x8888_8888, 0xffff_ffff, 96>;
+/// let mut hash = MyMD4::new();
+/// 
+/// let mut txt = "";
+/// hash.digest_str(txt);
+/// println!("Msg =\t\"{}\"\nHash =\t{}\n", txt, hash);
+/// assert_eq!(hash.get_hash_value_in_string(), "13892AE087B903E5EC030A51E1BC720A");
+/// 
+/// let txt_stirng = String::from("A");
+/// hash.digest_string(&txt_stirng);
+/// println!("Msg =\t\"{}\"\nHash =\t{}\n", txt_stirng, hash);
+/// assert_eq!(hash.to_string(), "0C0BE1B8893E47C005D95C69234141E9");
+/// 
+/// let txt_array = ['W' as u8, 'o' as u8, 'w' as u8];
+/// hash.digest_array(&txt_array);
+/// println!("Msg =\t\"{:?}\"\nHash =\t{}\n", txt_array, hash);
+/// assert_eq!(hash.get_hash_value_in_string(), "17545CEB681C5B848234A557C5957AA7");
+/// 
+/// txt = "This data is 26-byte long.";
+/// hash.digest_str(txt);
+/// println!("Msg =\t\"{}\"\nHash =\t{}\n", txt, hash);
+/// assert_eq!(hash.to_string(), "70F3EA1DCDE46C65868DC0937E374433");
+/// 
+/// txt = "The unit of data length is not byte but bit.";
+/// hash.digest_str(txt);
+/// println!("Msg =\t\"{}\"\nHash =\t{}\n", txt, hash);
+/// assert_eq!(hash.get_hash_value_in_string(), "640B4635ED76F6574FC30AB233B74712");
+/// 
+/// txt = "I am testing MD4_Expanded for the data of the length 62 bytes.";
+/// hash.digest_str(txt);
+/// println!("Msg =\t\"{}\"\nHash =\t{}\n", txt, hash);
+/// assert_eq!(hash.to_string(), "B0D18D969B99F4BF48365449AF82EAFB");
+/// 
+/// txt = "I am testing MD4_Expanded for the message which is 64 byte-long.";
+/// hash.digest_str(txt);
+/// println!("Msg =\t\"{}\"\nHash =\t{}\n", txt, hash);
+/// assert_eq!(hash.get_hash_value_in_string(), "2D4ADABC3504B4A1B98FCCBFC48145AE");
+/// 
+/// txt = "I am testing MD4_Expanded for the case data whose length is more than 64 bytes is given.";
+/// hash.digest_str(txt);
+/// println!("Msg =\t\"{}\"\nHash =\t{}", txt, hash);
+/// assert_eq!(hash.to_string(), "26E5336E4D863BBAD6347918CE6DBAF5");
 /// ```
 /// 
 /// # Big-endian issue

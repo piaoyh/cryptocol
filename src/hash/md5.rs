@@ -30,6 +30,62 @@ use crate::number::{ SmallUInt, IntUnion, LongUnion };
 /// The default values of H0, H1, H2, and H3 are 0x67452301, 0xefcdab89,
 /// 0x98badcfe, and 0x10325476, respectively (in little endian representation).
 /// - ROUND : the number of rounds. The default value of it is `64` (= 16 * 4).
+/// 
+/// # Quick Start
+/// In order to use the module MD5_Expanded, you don't have to import (or use)
+/// cryptocol::hash::md5::MD5 directly because the module
+/// cryptocol::hash::MD5_Expanded is re-exported.
+/// All you have to do is only import MD5 in the module
+/// cryptocol::hash. The following example shows how to import and use
+/// MD5_Expanded.
+/// 
+/// ## Example 
+/// ```
+/// use std::string::*;
+/// use cryptocol::hash::MD5_Expanded;
+/// type MyMD5 = MD5_Expanded<4, 0x1111_1111, 0x4444_4444, 0x8888_8888, 0xffff_ffff, 128>;
+/// let mut hash = MyMD5::new();
+/// 
+/// let mut txt = "";
+/// hash.digest_str(txt);
+/// println!("Msg =\t\"{}\"\nHash =\t{}\n", txt, hash);
+/// assert_eq!(hash.get_hash_value_in_string(), "2793C0925118EEA53C288640AA7D9C81");
+/// 
+/// let txt_stirng = String::from("A");
+/// hash.digest_string(&txt_stirng);
+/// println!("Msg =\t\"{}\"\nHash =\t{}\n", txt_stirng, hash);
+/// assert_eq!(hash.to_string(), "78DBB9B3C63B704745BFF37E3254B350");
+/// 
+/// let txt_array = ['W' as u8, 'o' as u8, 'w' as u8];
+/// hash.digest_array(&txt_array);
+/// println!("Msg =\t\"{:?}\"\nHash =\t{}\n", txt_array, hash);
+/// assert_eq!(hash.get_hash_value_in_string(), "298B65824C2F415446A6210AB0191B8B");
+/// 
+/// txt = "This data is 26-byte long.";
+/// hash.digest_str(txt);
+/// println!("Msg =\t\"{}\"\nHash =\t{}\n", txt, hash);
+/// assert_eq!(hash.to_string(), "80C1F5A7858DEB5A136CE57DC60FCFBE");
+/// 
+/// txt = "The unit of data length is not byte but bit.";
+/// hash.digest_str(txt);
+/// println!("Msg =\t\"{}\"\nHash =\t{}\n", txt, hash);
+/// assert_eq!(hash.get_hash_value_in_string(), "F3B540538E750E62A3F9417C308DD018");
+/// 
+/// txt = "I am testing MD5_Expanded for the data of the length 62 bytes.";
+/// hash.digest_str(txt);
+/// println!("Msg =\t\"{}\"\nHash =\t{}\n", txt, hash);
+/// assert_eq!(hash.to_string(), "A136326C1DA54B63CC2743647219BA60");
+/// 
+/// txt = "I am testing MD5_Expanded for the message which is 64 byte-long.";
+/// hash.digest_str(txt);
+/// println!("Msg =\t\"{}\"\nHash =\t{}\n", txt, hash);
+/// assert_eq!(hash.get_hash_value_in_string(), "C6AC6907DDE0E8429CF44BC21941F64A");
+/// 
+/// txt = "I am testing MD5_Expanded for the case data whose length is more than 64 bytes is given.";
+/// hash.digest_str(txt);
+/// println!("Msg =\t\"{}\"\nHash =\t{}", txt, hash);
+/// assert_eq!(hash.to_string(), "BD4E0962262EBBAE4C4A89FBB2F7A2D4");
+/// ```
 #[allow(non_camel_case_types)]
 pub type MD5_Expanded<const N: usize = 4,
                         const H0: u32 = 0x67452301, const H1: u32 = 0xefcdab89,
@@ -107,6 +163,60 @@ pub type MD5_Generic_HR_fixed<const N: usize = 4, const ROUND: usize = 64,
                     K56, K57, K58, K59,K60, K61, K62, K63>;
 
 /// The official MD5 hash algorithm
+/// 
+/// # Quick Start
+/// In order to use the module md5, you don't have to import (or use)
+/// cryptocol::hash::md5::MD5 directly because the module cryptocol::hash::md5
+/// is re-exported. All you have to do is only import MD5 in the module
+/// cryptocol::hash. Example shows how to import and use MD5.
+/// 
+/// ## Example 
+/// ```
+/// use std::string::*;
+/// use cryptocol::hash::MD5;
+/// 
+/// let mut hash = MD5::new();
+/// 
+/// let mut txt = "";
+/// hash.digest_str(txt);
+/// println!("Msg =\t\"{}\"\nHash =\t{}\n", txt, hash);
+/// assert_eq!(hash.get_hash_value_in_string(), "D41D8CD98F00B204E9800998ECF8427E");
+/// 
+/// let txt_stirng = String::from("A");
+/// hash.digest_string(&txt_stirng);
+/// println!("Msg =\t\"{}\"\nHash =\t{}\n", txt_stirng, hash);
+/// assert_eq!(hash.to_string(), "7FC56270E7A70FA81A5935B72EACBE29");
+/// 
+/// let txt_array = ['W' as u8, 'o' as u8, 'w' as u8];
+/// hash.digest_array(&txt_array);
+/// println!("Msg =\t\"{:?}\"\nHash =\t{}\n", txt_array, hash);
+/// assert_eq!(hash.get_hash_value_in_string(), "49DC5E45FBEC1433E2C612E5AA809C10");
+/// 
+/// txt = "This data is 26-byte long.";
+/// hash.digest_str(txt);
+/// println!("Msg =\t\"{}\"\nHash =\t{}\n", txt, hash);
+/// assert_eq!(hash.to_string(), "17ED1DB5CD96184041659D84BB36D76B");
+/// 
+/// txt = "The unit of data length is not byte but bit.";
+/// hash.digest_str(txt);
+/// println!("Msg =\t\"{}\"\nHash =\t{}\n", txt, hash);
+/// assert_eq!(hash.get_hash_value_in_string(), "C3EB6D4A1071E1A9C5E08FEF6E8F3FBF");
+/// 
+/// txt = "I am testing MD5 for the data whose length is sixty-two bytes.";
+/// hash.digest_str(txt);
+/// println!("Msg =\t\"{}\"\nHash =\t{}\n", txt, hash);
+/// assert_eq!(hash.to_string(), "6C33614E6317DC4641573E0EBC287F98");
+/// 
+/// let mut txt = "I am testing MD5 for the message which is sixty-four bytes long.";
+/// hash.digest_str(txt);
+/// println!("Msg =\t\"{}\"\nHash =\t{}\n", txt, hash);
+/// assert_eq!(hash.get_hash_value_in_string(), "584D41C6837AC714275196E4FF14B2EF");
+/// 
+/// txt = "I am testing MD5 for the case data whose length is more than sixty-four bytes is given.";
+/// hash.digest_str(txt);
+/// println!("Msg =\t\"{}\"\nHash =\t{}", txt, hash);
+/// assert_eq!(hash.to_string(), "9831162AB272AE1D85245B75726D215E");
+/// ```
 #[allow(non_camel_case_types)]
 pub type MD5 = MD5_Generic;     // equivalent to `pub type MD5 = MD5_Expanded;`
 
@@ -214,7 +324,7 @@ pub type MD5 = MD5_Generic;     // equivalent to `pub type MD5 = MD5_Expanded;`
 /// for instance, to print on a commandline screen by `println!("{}", hash)`
 /// where hash is the MD5 object. Example 2 shows how to use MD5 struct quickly.
 /// 
-/// ## Example 2
+/// ## Example 2 for MD5
 /// ```
 /// use std::string::*;
 /// use cryptocol::hash::MD5;
@@ -259,6 +369,57 @@ pub type MD5 = MD5_Generic;     // equivalent to `pub type MD5 = MD5_Expanded;`
 /// hash.digest_str(txt);
 /// println!("Msg =\t\"{}\"\nHash =\t{}", txt, hash);
 /// assert_eq!(hash.to_string(), "9831162AB272AE1D85245B75726D215E");
+/// ```
+/// 
+/// Example 3 shows how to quickly use MD5_Expanded which is expaned
+/// version of MD5.
+/// 
+/// # Example 3 for MD5_Expanded
+/// ```
+/// use std::string::*;
+/// use cryptocol::hash::MD5_Expanded;
+/// type MyMD5 = MD5_Expanded<4, 0x1111_1111, 0x4444_4444, 0x8888_8888, 0xffff_ffff, 128>;
+/// let mut hash = MyMD5::new();
+/// 
+/// let mut txt = "";
+/// hash.digest_str(txt);
+/// println!("Msg =\t\"{}\"\nHash =\t{}\n", txt, hash);
+/// assert_eq!(hash.get_hash_value_in_string(), "2793C0925118EEA53C288640AA7D9C81");
+/// 
+/// let txt_stirng = String::from("A");
+/// hash.digest_string(&txt_stirng);
+/// println!("Msg =\t\"{}\"\nHash =\t{}\n", txt_stirng, hash);
+/// assert_eq!(hash.to_string(), "78DBB9B3C63B704745BFF37E3254B350");
+/// 
+/// let txt_array = ['W' as u8, 'o' as u8, 'w' as u8];
+/// hash.digest_array(&txt_array);
+/// println!("Msg =\t\"{:?}\"\nHash =\t{}\n", txt_array, hash);
+/// assert_eq!(hash.get_hash_value_in_string(), "298B65824C2F415446A6210AB0191B8B");
+/// 
+/// txt = "This data is 26-byte long.";
+/// hash.digest_str(txt);
+/// println!("Msg =\t\"{}\"\nHash =\t{}\n", txt, hash);
+/// assert_eq!(hash.to_string(), "80C1F5A7858DEB5A136CE57DC60FCFBE");
+/// 
+/// txt = "The unit of data length is not byte but bit.";
+/// hash.digest_str(txt);
+/// println!("Msg =\t\"{}\"\nHash =\t{}\n", txt, hash);
+/// assert_eq!(hash.get_hash_value_in_string(), "F3B540538E750E62A3F9417C308DD018");
+/// 
+/// txt = "I am testing MD5_Expanded for the data of the length 62 bytes.";
+/// hash.digest_str(txt);
+/// println!("Msg =\t\"{}\"\nHash =\t{}\n", txt, hash);
+/// assert_eq!(hash.to_string(), "A136326C1DA54B63CC2743647219BA60");
+/// 
+/// txt = "I am testing MD5_Expanded for the message which is 64 byte-long.";
+/// hash.digest_str(txt);
+/// println!("Msg =\t\"{}\"\nHash =\t{}\n", txt, hash);
+/// assert_eq!(hash.get_hash_value_in_string(), "C6AC6907DDE0E8429CF44BC21941F64A");
+/// 
+/// txt = "I am testing MD5_Expanded for the case data whose length is more than 64 bytes is given.";
+/// hash.digest_str(txt);
+/// println!("Msg =\t\"{}\"\nHash =\t{}", txt, hash);
+/// assert_eq!(hash.to_string(), "BD4E0962262EBBAE4C4A89FBB2F7A2D4");
 /// ```
 /// 
 /// # Big-endian issue
