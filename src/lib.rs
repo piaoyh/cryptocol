@@ -23,12 +23,14 @@
 //! 
 //! # Road Map for Version 1.0
 //! This crate Cryptocol is planned to provide the following functionalities.
-//! The checked items have already been implemented including documentation.
-//! The unchecked items have not yet been implemented including documentation
-//! or have not yet even been started to implement.
+//! The checked items have already been implemented including documentation
+//! at least 95%. The unchecked items have been implemented including
+//! documentation less than 95% or have not yet even been started to implement.
 //! 
-//! ## Small Numbers: meaningful as itself, and also foundations mainly for Big Numbers as well as for other modules
-//! - [ ] Unions for primitive data types and their implementation, and the implementation of trait SmallUInt for the Unions ---
+//! ## Small Numbers: meaningful as itself, and also foundations mainly for
+//!         Big Numbers as well as for other modules
+//! - [X] Unions for primitive data types and their implementation, and the
+//!         implementation of trait SmallUInt for the Unions ---
 //!     [`ShortUnion`](number/short_union/union.ShortUnion.html#union.ShortUnion),
 //!     [`IntUnion`](number/int_union/union.IntUnion.html#union.IntUnion),
 //!     [`LongUnion`](number/long_union/union.LongUnion.html#union.LongUnion),
@@ -37,20 +39,21 @@
 //!     [`SharedValues`](number/shared_values/union.SharedValues.html#union.SharedValues), and
 //!     [`SharedArrays`](number/shared_arrays/union.SharedArrays.html#union.SharedArrays)
 //! - [X] Trait SmallUInt, its implementation for primitive data types, and the
-//!     implementation of it for the Unions ---
+//!         implementation of it for the Unions ---
 //!     [`SmallUInt`](number/small_uint/trait.SmallUInt.html#trait.SmallUInt)
 // ! - [ ] Trait SmallSInt, its implementation for primitive data types, and the
-// !     implementation of it for the Unions ---
-// !     [`SmallSInt`](number/small_sint/trait.SmallSInt.html#trait.SmallSInt)
+// !        implementation of it for the Unions ---
+// !    [`SmallSInt`](number/small_sint/trait.SmallSInt.html#trait.SmallSInt)
 // !     _--> Thinking about postponing to Roadmap for ver. 2.0_
 //! 
-//! ## Big Numbers: meaningful as itself and also the foundation for Asymmetric-Key Algorithms
+//! ## Big Numbers: meaningful as itself and also the foundation for
+//!         Asymmetric-Key Algorithms
 //! - [ ] Fixed Sized Big Unsigned Integer Operation ---
 //!     [`BigUInt`](number/big_uint/struct.BigUInt.html#struct.BigUInt)
 // ! - [ ] Fixed Sized Big Signed Integer Operation --- BigSInt
-// !     _--> Thinking about postponing to Roadmap for ver. 2.0_
+// !    _--> Thinking about postponing to Roadmap for ver. 2.0_
 // ! - [ ] Variable Sized Big Signed Integer Operation --- LargeInt
-// !     _--> Thinking about postponing to Roadmap for ver. 2.0 or higher_
+// !    _--> Thinking about postponing to Roadmap for ver. 2.0 or higher_
 //! 
 //! ## Hash Algorithms
 //! - [X] MD4 hash algorithms based on 128 bits

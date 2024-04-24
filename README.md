@@ -16,7 +16,7 @@ Only use this crate for Big-endian CPUs with your own full responsibility.
 ## Road Map for Version 1.0
 
 This crate Cryptocol is planned to provide the following functionalities.
-The checked items have already been implemented including documentation. The unchecked items have not yet been implemented including documentation or have not yet even been started to implement.
+The checked items have already been implemented including documentation at least 95%. The unchecked items have been implemented including documentation less than 95% or have not yet even been started to implement.
 
 ### Small Numbers: meaningful as itself, and also the foundations mainly for Big Numbers as well as for other modules
 
@@ -100,12 +100,12 @@ I think that if breaking changes are inevitable and have to be made, the sooner,
 
 ### unions ShortUnion, IntUnion, LongUnion, LongerUnion, and SizeUnion
 
-| Ver. 0.7.6                             | Ver. 0.8.0     |
-|----------------------------------------|----------------|
-| pub fn root(self, exp: Self) -> Self   | removed        |
-| pub fn reverse_bits(self) -> Self      | removed        |
+| Ver. 0.7.6                             | Ver. 0.8.0 |
+|----------------------------------------|------------|
+| pub fn root(self, exp: Self) -> Self   | removed    |
+| pub fn reverse_bits(self) -> Self      | removed    |
 
-- The above methods has been removed removed since they were found redundant since if you import SmallUInt, you can use the above methods.
+- The above methods has been removed since they were found redundant. If you import (use) SmallUInt, you can use the above methods.
 
 ## Sorry for breaking changes from ver. 0.7.2 to ver. 0.7.3
 

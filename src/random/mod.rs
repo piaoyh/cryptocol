@@ -112,20 +112,24 @@
 // ! - For `Random_AES`, read [head]
 //! 
 //! # How to embed OsRng in this module
+//! This is a simple illustration to embed OsRng in this module. It is assumed
+//! that you will have `main.rs` and `os_rng.rs`.
+//! 
 //! First, you have to include additional dependencies in your Cargo.toml
-//! as follows.
+//! as following example.
 //! 
 //! ## Example 3
 //! ```
 //! [dependencies]
-//! cryptocol = "0.10"
+//! cryptocol = "0.8.0"
 //! rand = { version = "0.8", features = ["getrandom"] }
 //! ```
 //! It is good if you keep the version number of each crate as latest version.
 //! 
 //! Second, you need to make a new empty rust source file in proper folder.
-//! Let's say the empty rust source file `trait_impl_for_OsRng.rs`. In the file
-//! `trait_impl_for_OsRng.rs`, you have to import some `struct`s as follows.
+//! Let's say the empty rust source file to be `os_rng.rs` and to be located
+//! in the same folder where main.rs is located. In the file `os_rng.rs`,
+//! you have to import some `struct`s as following example.
 //! 
 //! ## Example 4
 //! ```
@@ -136,7 +140,8 @@
 //! use cryptocol::random::{ Random_Engine, Random_Generic };
 //! ```
 //! 
-//! Third, you have to make an empty struct `OsRng` as follows.
+//! Third, you have to make an empty struct `OsRng` in `os_rng.rs`
+//! as following example.
 //! 
 //! ## Example 5
 //! ```
@@ -144,7 +149,7 @@
 //! ```
 //! 
 //! Fourth, you are supposed to make implementation of trait Random_Engine
-//! for the empty struct `OsRng` as follows.
+//! for the empty struct `OsRng` in `os_rng.rs` as following example.
 //! 
 //! ## Example 6
 //! ```
@@ -188,23 +193,79 @@
 //! }
 //! ```
 //! 
-//! Fifth, you have to define user-defined data type for your convenience
-//! as follows.
+//! Fifth, you can define user-defined data type for your convenience
+//! in `os_rng.rs` as following example.
 //! 
 //! ## Example 7
 //! ```
 //! pub type Random_OsRng = Random_Generic<OsRng>;
 //! ```
 //! 
+//! If you correctly follow the above-instructions, your `os_rng.rs` will
+//! look like as Example 8.
+//! 
+//! ## Example 8 (os_rng.rs)
+//! ```
+//! use std::ops::*;
+//! use std::fmt::{ Display, Debug };
+//! use rand::{ rngs, RngCore };
+//! use cryptocol::number::SmallUInt;
+//! use cryptocol::random::{ Random_Engine, Random_Generic };
+//! 
+//! pub struct OsRng;
+//! 
+//! impl Random_Engine for OsRng
+//! {
+//!     #[inline]
+//!     fn new() -> Self    { Self }
+//! 
+//!     #[inline]
+//!     fn new_with<T, const N: usize>(_: &[T; N]) -> Self
+//!     where T: SmallUInt + Copy + Clone + Display + Debug + ToString
+//!         + Add<Output=T> + AddAssign + Sub<Output=T> + SubAssign
+//!         + Mul<Output=T> + MulAssign + Div<Output=T> + DivAssign
+//!         + Rem<Output=T> + RemAssign
+//!         + Shl<Output=T> + ShlAssign + Shr<Output=T> + ShrAssign
+//!         + BitAnd<Output=T> + BitAndAssign + BitOr<Output=T> + BitOrAssign
+//!         + BitXor<Output=T> + BitXorAssign + Not<Output=T>
+//!         + PartialEq + PartialOrd
+//!     { Self::new() }
+//! 
+//!     #[inline]
+//!     fn sow_array<T, const N: usize>(&mut self, _: &[T; N])
+//!     where T: SmallUInt + Copy + Clone + Display + Debug + ToString
+//!         + Add<Output=T> + AddAssign + Sub<Output=T> + SubAssign
+//!         + Mul<Output=T> + MulAssign + Div<Output=T> + DivAssign
+//!         + Rem<Output=T> + RemAssign
+//!         + Shl<Output=T> + ShlAssign + Shr<Output=T> + ShrAssign
+//!         + BitAnd<Output=T> + BitAndAssign + BitOr<Output=T> + BitOrAssign
+//!         + BitXor<Output=T> + BitXorAssign + Not<Output=T>
+//!         + PartialEq + PartialOrd
+//!     {}
+//! 
+//!     #[inline]
+//!     fn harvest(&mut self, _: u64) -> [u64; 8]
+//!     {
+//!         [   rngs::OsRng.next_u64(), rngs::OsRng.next_u64(),
+//!             rngs::OsRng.next_u64(), rngs::OsRng.next_u64(),
+//!             rngs::OsRng.next_u64(), rngs::OsRng.next_u64(),
+//!             rngs::OsRng.next_u64(), rngs::OsRng.next_u64()  ]
+//!     }
+//! }
+//! 
+//! pub type Random_OsRng = Random_Generic<OsRng>;
+//! ```
+//! 
 //! Now, you are very ready to use `Random_OsRng` in your own project. And,
 //! all the methods of Random_OsRng has been automagically implemented and
-//! you can use them for free.
-//! In other source file of your project, you have to import `Random_OsRng`.
-//! In the following example, it is assumed that `trait_impl_for_OsRng.rs`
-//! is placed in the same folder.
-//! The following example shows how to use `Random_OsRng` in your project.
+//! you can use them for free. In other source files of your project,
+//! you are supposed to import `Random_OsRng`.
 //! 
-//! ## Example 8
+//! In the following example, it is assumed that `os_rng.rs` is placed in
+//! the same folder where `main.rs` is located. The following example shows
+//! how to use `Random_OsRng` in your `main.rs`.
+//! 
+//! ## Example 9 (main.rs)
 //! ```
 //! use super::trait_impl_for_OsRng::Random_OsRng;
 //! 
@@ -221,6 +282,8 @@
 //! println!("Random_OsRng BigUInt prime number = {}", r.random_prime_using_Miller_Rabin_BigUInt::<u64, 8>(5));
 //! ```
 //! 
+//! Now, you are ready to embed OsRng in this module and use it in any kind of
+//! your projects.
 //! 
 //! For `Random_Generic`, read [here](struct@Random_Generic).
 //! 
