@@ -19,7 +19,7 @@ use std::fmt::{ self, Debug, Display, Formatter };
 use std::cmp::{ PartialEq, PartialOrd, Ordering };
 use std::ops::*;
 
-use super::small_uint::SmallUInt;
+use crate::number::SmallUInt;
 
 /// # Introduction
 /// This union `LongUnion` is for slicing `u64` into two `u32`s, two `i32`s,

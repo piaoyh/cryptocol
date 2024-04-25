@@ -12,7 +12,8 @@
 #![allow(rustdoc::missing_doc_code_examples)]
 
 use std::mem::{ size_of, size_of_val };
-use super::{ SmallUInt, ShortUnion, IntUnion, LongUnion, LongerUnion, SizeUnion };
+
+use crate::number::{ SmallUInt, ShortUnion, IntUnion, LongUnion, LongerUnion, SizeUnion };
 
 macro_rules! SmallUInt_methods_for_uint_impl {
     ($f:ty) => {

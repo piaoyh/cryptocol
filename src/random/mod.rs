@@ -20,10 +20,33 @@
 //! [Read more](https://en.wikipedia.org/wiki/Statistical_randomness).
 //! 
 //! # Predefined pseudo-random number generators
+//! There is name consistancy. For the names of pseudo-random number generators
+//! in this module, `Any` indicates cryptographically insecure while `Random`
+//! indicates cryptographically secure.
+//! 
 //! There are provided predefined pseudo-random number generators:
-//! - Any: uses a hash algorithm SHA2_256. Read [here](random/random/type.Any.html#type.Any).
-//! - Random: uses a hash algorithm SHA2_512. Read [here](random/random/type.Random.html#type.Random).
-//! - Any_Num: uses a pseudo-random number generator algorithm of the function. Read [here](random/random/type.Any_Num.html#type.Any_Num).
+//! - Any: is a synonym of Any_SHA2_256 at the moment and can be silently
+//!     changed to have better algorithm in the future. If you want to keep
+//!     using SHA2_256 for a pseudo-random number generator, you may want to
+//!     use Any_SHA2_256. If you are happy that you will automatically use the
+//!     better algotrithm in the future, you may want to use `Any`.
+//!     Read [here](random/random/type.Any.html#type.Any).
+//! - Random: is a synonym of Random_SHA2_512 at the moment and can be silently
+//!     changed to have better algorithm in the future. If you want to keep
+//!     using SHA2_512 for a pseudo-random number generator, you may want to
+//!     use Random_SHA2_512. If you are happy that you will automatically use
+//!     the better algotrithm in the future, you may want to use `Random`.
+//!     Read [here](random/random/type.Random.html#type.Random).
+//! - Any_Num: is a synonym of Any_Num_C at the moment and can be silently
+//!     changed to have better algorithm in the future. If you want to keep
+//!     using the algorithm of C standard libraray for a pseudo-random number
+//!     generator, you may want to use Any_Num_C. If you are happy that you
+//!     will automatically use the better algotrithm in the future, you may
+//!     want to use `Any_Num`.
+//!     Read [here](random/random/type.Any_Num.html#type.Any_Num).
+//! - Any_Num_C: uses a pseudo-random number generator algorithm of the
+//!     function rand() of C standard library at the moment.
+//!     Read [here](random/type.Any_Num_C.html#type.Any_Num_C).
 //! - Any_MD4: uses a hash algorithm MD4. Read [here](random/random/type.Any_MD4.html#type.Any_MD4).
 //! - Any_MD5: uses a hash algorithm MD5. Read [here](random/random/type.Any_MD5.html#type.Any_MD5),
 //! - Any_SHA0: uses a hash algorithm SHA0. Read [here](random/random/type.Any_SHA0.html#type.Any_SHA0),
@@ -98,6 +121,8 @@
 //! - For `Any`, read [here](random/random/type.Any.html#type.Any).
 //! - For `Random`, read [here](random/type.Random.html#type.Random).
 //! - For `Any_Num`, read [here](random/type.Any_Num.html#type.Any_Num).
+//! - For `Any_Num_C`, read [here](random/type.Any_Num_C.html#type.Any_Num_C).
+// ! - For `AnyNumber_C_Generic`, read [here](any_number_c_generic/struct.AnyNumber_C_Generic.html#struct.AnyNumber_C_Generic).
 //! - For `Any_MD4`, read [here](random/type.Any_MD4.html#type.Any_MD4).
 //! - For `Any_MD5`, read [here](random/type.Any_MD5.html#type.Any_MD5),
 //! - For `Any_SHA0`, read [here](random/type.Any_SHA0.html#type.Any_SHA0),
@@ -297,8 +322,8 @@
 
 pub mod random;
 
-/// The module that contains struct AnyMumber
-pub mod any_number;
+/// The module that contains struct AnyMumber_C_Generic
+pub mod any_number_engine_c_generic;
 
 /// The module that contains trait Random_Engine
 pub mod trait_random_engine;
@@ -323,4 +348,4 @@ pub mod trait_impl_for_any_number;
 
 pub use random::*;
 pub use trait_random_engine::*;
-pub use any_number::AnyNumber;
+pub use any_number_engine_c_generic::{ AnyNumber_Engine_C_Generic, AnyNumber_Engine_C };

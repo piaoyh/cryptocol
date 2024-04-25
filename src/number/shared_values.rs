@@ -19,7 +19,8 @@ use std::fmt::{ Debug, Display };
 use std::cmp::{ PartialEq, PartialOrd };
 use std::ops::*;
 use std::mem::size_of;
-use super::small_uint::SmallUInt;
+
+use crate::number::SmallUInt;
 
 /// union for transforming from one type into anther type
 /// 

@@ -24,11 +24,10 @@ use std::hash::{ BuildHasher, Hasher };
 
 use crate::number::{ SmallUInt, LongUnion, LongerUnion, BigUInt };
 use crate::hash::{ MD4, MD5, SHA0, SHA1, SHA2_256, SHA2_512 };
-use super::Random_Engine;
-use super::AnyNumber;
+use crate::random::{ Random_Engine, AnyNumber_Engine_C };
 
 
-/// The struct `Any_MD4` which is a pseudo-random number generator using a hash
+/// The type `Any_MD4` which is a pseudo-random number generator using a hash
 /// algorithm MD4. It is a specific version of the generic struct
 /// [`Random_Generic`](struct@Random_Generic).
 /// 
@@ -37,50 +36,131 @@ use super::AnyNumber;
 #[allow(non_camel_case_types)] 
 pub type Any_MD4 = Random_Generic<MD4, 16383>;  // COUNT = 2^18 / 4 because of hashing 4 times for each random number generation
 
-/// The struct `Any_MD5` which is a pseudo-random number generator using a hash
+/// The type `Any_MD5` which is a pseudo-random number generator using a hash
 /// algorithm MD5. It is a specific version of the generic struct
 /// [`Random_Generic`](struct@Random_Generic).
 #[allow(non_camel_case_types)] 
 pub type Any_MD5 = Random_Generic<MD5, 16383>;  // COUNT = 2^18 / 4 because of hashing 4 times for each random number generation
 
-/// The struct `Any_SHA0` which is a pseudo-random number generator using a hash
+/// The type `Any_SHA0` which is a pseudo-random number generator using a hash
 /// algorithm SHA0. It is a specific version of the generic struct
 /// [`Random_Generic`](struct@Random_Generic).
 #[allow(non_camel_case_types)] 
 pub type Any_SHA0 = Random_Generic<SHA0, 2147483647>;   // COUNT = 2^33 / 4 because of hashing 4 times for each random number generation
 
-/// The struct `Any_SHA1` which is a pseudo-random number generator using a hash
+/// The type `Any_SHA1` which is a pseudo-random number generator using a hash
 /// algorithm SHA1. It is a specific version of the generic struct
 /// [`Random_Generic`](struct@Random_Generic).
 #[allow(non_camel_case_types)] 
 pub type Any_SHA1 = Random_Generic<SHA1, 4611686018427387903>;  // COUNT = 2^63 / 4 because of hashing 4 times for each random number generation
 
-/// The struct `Any_SHA2_256` which is a pseudo-random number generator using
+/// The type `Any_SHA2_256` which is a pseudo-random number generator using
 /// a hash algorithm SHA-2-256. It is a specific version of the generic struct
 /// [`Random_Generic`](struct@Random_Generic).
 #[allow(non_camel_case_types)] 
 pub type Any_SHA2_256 = Random_Generic<SHA2_256, 170141183460469231731687303715884105727>;   // COUNT = 2^128 / 2 because of hashing 2 times for each random number generation
 
-/// The struct `Random_SHA2_512` which is a pseudo-random number generator using
+/// The type `Random_SHA2_512` which is a pseudo-random number generator using
 /// a hash algorithm SHA-2-512. It is a specific version of the generic struct
 /// [`Random_Generic`](struct@Random_Generic).
 #[allow(non_camel_case_types)] 
 pub type Any_SHA2_512 = Random_Generic<SHA2_512, 340282366920938463463374607431768211455>;   // COUNT = min(2^256, u128::MAX) because of hashing one time for each random number generation
 
-/// The struct `Random_SHA2_512` which is a pseudo-random number generator using
+/// The type `Random_SHA2_512` which is a pseudo-random number generator using
 /// a hash algorithm SHA-2-512. It is a specific version of the generic struct
 /// [`Random_Generic`](struct@Random_Generic).
 #[allow(non_camel_case_types)] 
 pub type Random_SHA2_512 = Random_Generic<SHA2_512, 100>;   // COUNT = 2^256 because of hashing one time for each random number generation
 
-/// The struct `Any_Num` which is a random number generator using an
+/// The type `Any_Num_C` which is a random number generator using an
 /// pseudo-random number generator algorithm of rand() of C standard library.
 /// It is a specific version of the generic struct
 /// [`Random_Generic`](struct@Random_Generic).
-#[allow(non_camel_case_types)] 
-pub type Any_Num = Random_Generic<AnyNumber,  2147483647>;   // COUNT = u32::MAX
+/// 
+/// # QUICK START
+/// You can use `Any_Num_C` if you use random number for non-cryptographic
+/// purpose. `Any_Num_C` is for normal non-cryptographical purpose Look into
+/// the following examples.
+/// 
+/// ## Example
+/// ```
+/// use cryptocol::random::Any_Num_C;
+/// use cryptocol::define_utypes_with;
+/// define_utypes_with!(u64);
+/// 
+/// let mut rand = Any_Num_C::new();
+/// println!("Random number = {}", rand.random_u128());
+/// println!("Random number = {}", rand.random_u64());
+/// println!("Random number = {}", rand.random_u32());
+/// println!("Random number = {}", rand.random_u16());
+/// println!("Random number = {}", rand.random_u8());
+/// 
+/// if let Some(num) = rand.random_under_uint(1234567890123456_u64)
+///     { println!("Random number u64 = {}", num); }
+/// 
+/// if let Some(num) = rand.random_minmax_uint(1234_u16, 6321)
+///     { println!("Random number u16 = {}", num); }
+/// 
+/// println!("Random odd number usize = {}", rand.random_odd_uint::<usize>());
+/// if let Some(num) = rand.random_odd_under_uint(1234_u16)
+///     { println!("Random odd number u16 = {}", num); }
+/// 
+/// println!("Random 128-bit number u128 = {}", rand.random_with_msb_set_uint::<u128>());
+/// println!("Random 16-bit odd number u16 = {}", rand.random_with_msb_set_uint::<u16>());
+/// println!("Random prime number u64 = {}", rand.random_prime_using_miller_rabin_uint::<u64>(5));
+/// println!("Random usize-sized prime number usize = {}", rand.random_prime_with_msb_set_using_miller_rabin_uint::<usize>(5));
+/// 
+/// let num: [u128; 20] = rand.random_array();
+/// for i in 0..20
+///     { println!("Random number {} => {}", i, num[i]); }
+/// 
+/// let mut num = [0_u64; 32];
+/// rand.put_random_in_array(&mut num);
+/// for i in 0..32
+///     { println!("Random number {} => {}", i, num[i]); }
+/// 
+/// let mut biguint: U512 = rand.random_biguint();
+/// println!("Random Number: {}", biguint);
+/// 
+/// let mut ceiling = U1024::max().wrapping_div_uint(3_u8);
+/// if let Some(r) = rand.random_under_biguint(&ceiling)
+/// {
+///     println!("Random Number less than {} is\n{}", ceiling, r);
+///     assert!(r < ceiling);
+/// }
+/// 
+/// ceiling = U1024::max().wrapping_div_uint(5_u8);
+/// let r = rand.random_under_biguint_(&ceiling);
+/// println!("Random Number less than {} is\n{}", ceiling, r);
+/// assert!(r < ceiling);
+/// 
+/// ceiling = U1024::max().wrapping_div_uint(4_u8);
+/// if let Some(r) = rand.random_odd_under_biguint(&ceiling)
+/// {
+///     println!("Random odd Number less than {} is\n{}", ceiling, r);
+///     assert!(r < ceiling);
+/// }
+/// 
+/// biguint = rand.random_with_msb_set_biguint();
+/// println!("Random Number: {}", biguint);
+/// 
+/// biguint = rand.random_odd_with_msb_set_biguint();
+/// println!("512-bit Random Odd Number = {}", biguint);
+/// assert!(biguint > U512::halfmax());
+/// assert!(biguint.is_odd());
+/// 
+/// biguint = rand.random_prime_using_miller_rabin_biguint(5);
+/// println!("Random Prime Number = {}", biguint);
+/// assert!(biguint.is_odd());
+/// 
+/// biguint = rand.random_prime_with_msb_set_using_miller_rabin_biguint(5);
+/// println!("512-bit Random Prime Number = {}", biguint);
+/// assert!(biguint.is_odd());
+/// ```
+#[allow(non_camel_case_types)]
+pub type Any_Num_C = Random_Generic<AnyNumber_Engine_C,  2147483647>;   // COUNT = u32::MAX
 
-/// The struct `Random` which is a random number generator and is a synonym of
+/// The type `Random` which is a random number generator and is a synonym of
 /// [`Random_SHA2_512`](type@Random_SHA2_512). It means `Random` uses a hash
 /// algorithm SHA-2-512. It is cryptographically securer than its counterpart
 /// struct `Any` and a bit slower than [`Any`](type@Any).
@@ -89,11 +169,19 @@ pub type Any_Num = Random_Generic<AnyNumber,  2147483647>;   // COUNT = u32::MAX
 /// implemented.
 pub type Random = Random_SHA2_512;
 
-/// The struct `Any` which is a random number generator and is a synonym of
+/// The type `Any` which is a random number generator and is a synonym of
 /// [`Any_SHA2_256`](type@Any_SHA2_256). It means `Any` uses a hash
 /// algorithm SHA-2-256. It is cryptographically less secure than its
 /// counterpart struct `Random` and a bit faster than [`Random`](type@Random).
 pub type Any = Any_SHA2_256;
+
+/// The type `Any_Num` which is a random number generator and is a synonym of
+/// [`Any_Num_C`](type@Any_Num_C). It means `Any_Num` uses a pseudo-random
+/// number generator algorithm of the function rand() of C standard library.
+/// It is a specific version of the generic struct. It is cryptographically
+/// insecure.
+#[allow(non_camel_case_types)]
+pub type Any_Num = Any_Num_C;
 
 
 /// This generic struct Random_Generic<GenFunc: PRNG + 'static> is the struct
@@ -121,7 +209,7 @@ pub type Any = Any_SHA2_256;
 /// such as `new()` and `new_with_seeds()` will panic!
 /// 
 /// # Predetermined Provided Specific `struct`s
-/// - Any_Num: uses a pseudo-random number generator algorithm of the function
+/// - Any_Num_C: uses a pseudo-random number generator algorithm of the function
 /// rand() of C standard library.
 /// - Any_MD4: uses a hash algorithm MD4.
 /// - Any_MD5: uses a hash algorithm MD5.
@@ -793,8 +881,8 @@ impl<GenFunc: Random_Engine + 'static, const COUNT: u128> Random_Generic<GenFunc
     /// 
     /// # Example
     /// ```
-    /// use cryptocol::random::Any_Num;
-    /// let mut rand = Any_Num::new();
+    /// use cryptocol::random::AnyNum_C;
+    /// let mut rand = AnyNum_C::new();
     /// 
     /// let num = rand.random_under_uint_(12_u8);
     /// println!("Random number u8 = {}", num);

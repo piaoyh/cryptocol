@@ -12,11 +12,11 @@ use std::ops::*;
 use std::cmp::{ PartialEq, PartialOrd};
 use std::ptr::copy_nonoverlapping;
 
-use crate::number::small_uint::*;
-use super::Random_Engine;
-use super::AnyNumber;
+use crate::number::SmallUInt;
+use crate::random::{ Random_Engine, AnyNumber_Engine_C_Generic };
 
-impl Random_Engine for AnyNumber
+impl<const MULTIPLIER: u64, const ADDER: u64>
+Random_Engine for AnyNumber_Engine_C_Generic<MULTIPLIER, ADDER>
 {
     #[inline]
     fn new() -> Self

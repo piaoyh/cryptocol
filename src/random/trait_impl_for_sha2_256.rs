@@ -11,9 +11,9 @@ use std::fmt::{ Debug, Display };
 use std::ops::*;
 use std::cmp::{ PartialEq, PartialOrd};
 
-use crate::number::small_uint::*;
+use crate::number::SmallUInt;
 use crate::hash::SHA2_256_Generic;
-use super::Random_Engine;
+use crate::random::Random_Engine;
 
 
 impl<const H0: u32, const H1: u32, const H2: u32, const H3: u32,

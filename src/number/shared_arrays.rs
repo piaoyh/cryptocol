@@ -19,7 +19,8 @@ use std::fmt::Display;
 use std::mem::{ size_of, size_of_val };
 use std::cmp::{ PartialEq, PartialOrd };
 use std::ops::*;
-use super::small_uint::SmallUInt;
+
+use crate::number::SmallUInt;
 
 
 /// union for transforming from an array of one type into another array of

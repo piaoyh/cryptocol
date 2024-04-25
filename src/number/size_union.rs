@@ -19,7 +19,7 @@ use std::fmt::{ self, Debug, Display, Formatter };
 use std::cmp::{ PartialEq, PartialOrd, Ordering };
 use std::ops::*;
 
-use super::small_uint::SmallUInt;
+use crate::number::SmallUInt;
 
 /// # Introduction
 /// This union `SizeUnion` is for slicing `usize` into two `u64`s, two `i64`s,

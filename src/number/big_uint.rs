@@ -21,11 +21,7 @@ use std::convert::From;
 use std::str::FromStr;
 use std::ops::*;
 
-use super::small_uint::SmallUInt;
-use super::longer_union::LongerUnion;
-use super::shared_values::SharedValues;
-use super::shared_arrays::SharedArrays;
-use super::NumberErr;
+use crate::number::{ SmallUInt, LongerUnion, SharedValues, SharedArrays, NumberErr };
 
 
 /// 256-bit unsigned integer implemented by `BigUInt<u128, 2>` made with two `u128`s

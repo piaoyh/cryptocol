@@ -115,7 +115,7 @@
 //! - [ ] Pseudo-random number generator engines using symmetric-key encryption algorithms ---
 //!     `Any_DES`, `Any_NDES`, `Any_AES`, `Any_NAES`, `Random_AES`, and `Random_NAES`.
 //! - [ ] Pseudo-random number generator engines using simple randomization algorithm
-//!     --- [`Any_Num`](random/random/type.Any_Num.html#type.Any_Num)
+//!     --- [`Any_Num_C`](random/random/type.Any_Num.html#type.Any_Num_C)
 //! 
 //! ## Asymmetric-Key Algorithms for the Encryption/Decryption of digital data
 // ! - [ ] Diffie-Hellman _--> Thinking about postponing to Roadmap for ver. 2.0_

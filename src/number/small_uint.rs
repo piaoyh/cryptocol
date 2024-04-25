@@ -15,7 +15,7 @@
 #![allow(missing_docs)]
 #![allow(missing_doc_code_examples)]
 
-use super::{ ShortUnion, IntUnion, LongUnion, LongerUnion, SizeUnion };
+use crate::number::{ ShortUnion, IntUnion, LongUnion, LongerUnion, SizeUnion };
 
 /// # Introduction
 /// Trait `SmallUInt` is for generic type of primitive unsigned integer data

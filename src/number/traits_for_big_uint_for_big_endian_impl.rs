@@ -17,9 +17,7 @@ use std::convert::{ From, Into };
 use std::str::FromStr;
 use std::ops::*;
 
-use super::uint::*;
-use super::big_uint::BigUInt;
-use super::NumberErr;
+use crate::number::{ SmallUInt, BigUInt, NumberErr };
 
 
 #[cfg(target_endian = "big")]

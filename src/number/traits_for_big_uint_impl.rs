@@ -20,9 +20,7 @@ use std::convert::From;
 use std::str::FromStr;
 use std::ops::*;
 
-use super::small_uint::*;
-use super::big_uint::BigUInt;
-use super::NumberErr;
+use crate::number::{ SmallUInt, BigUInt, NumberErr };
 
 
 

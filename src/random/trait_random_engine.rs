@@ -11,7 +11,7 @@ use std::fmt::{ Debug, Display };
 use std::ops::*;
 use std::cmp::{ PartialEq, PartialOrd};
 
-use crate::number::small_uint::*;
+use crate::number::SmallUInt;
 
 /// The supporting trait for `Random_Generic`
 /// `Random_Generic` uses whatever object that has this trait for pseudo-random
