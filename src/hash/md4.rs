@@ -368,8 +368,7 @@ pub type MD4 = MD4_Generic;     // equivalent to `pub type MD4 = MD4_Expanded;`
 /// using the struct MD4 of this module. You can get the hash value from a text
 /// or a file. The following source code assumes its executable file name will
 /// be "md4_app". You can find all the examples including the following source
-/// code in the folder "examples" of this crate if you download this crate
-/// from [github](https://github.com/piaoyh/cryptocol).
+/// code in the folder "examples" of this crate.
 /// ```
 /// use std::{ io, env, fs };
 /// use std::io::BufRead;

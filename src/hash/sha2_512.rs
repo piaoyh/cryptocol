@@ -581,8 +581,7 @@ pub type SHA2_512_256 = SHA2_512_Generic<4, 0x22312194FC2BF72C, 0x9F555FA3C84C64
 /// extractor using the struct SHA2_512 of this module. You can get the hash
 /// value from a text or a file. The following source code assumes its
 /// executable file name will be "sha2_512_app". You can find all the examples
-/// including the following source code in the folder "examples" of this crate
-/// if you download this crate from [github](https://github.com/piaoyh/cryptocol).
+/// including the following source code in the folder "examples" of this crate.
 /// ```
 /// use std::{ io, env, fs };
 /// use std::io::BufRead;

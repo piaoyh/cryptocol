@@ -16,34 +16,45 @@ Only use this crate for Big-endian CPUs with your own full responsibility.
 ## Road Map for Version 1.0
 
 This crate Cryptocol is planned to provide the following functionalities.
-The checked items have already been implemented including documentation at least 95%. The unchecked items have been implemented including documentation less than 95% or have not yet even been started to implement.
+The checked items have already been implemented including documentation __at least 95%__. The unchecked items have been implemented including documentation __less than 95%__ or have __not__ yet even been started to implement.
 
 ### Small Numbers: meaningful as itself, and also the foundations mainly for Big Numbers as well as for other modules
 
 - [X] Unions for primitive data types and their implementation, and the implementation
-      of trait SmallUInt for the Unions --- `ShortUnion`, `IntUnion`, `LongUnion`,
-      `LongerUnion`, `SizeUnion`, `SharedValues`, and `SharedArrays`
+      of trait SmallUInt for the Unions --- 
+      [`ShortUnion`](https://docs.rs/cryptocol/latest/cryptocol/number/short_union/union.ShortUnion.html#union.ShortUnion),
+      [`IntUnion`](https://docs.rs/cryptocol/latest/cryptocol/number/int_union/union.IntUnion.html#union.IntUnion),
+      [`LongUnion`](https://docs.rs/cryptocol/latest/cryptocol/number/long_union/union.LongUnion.html#union.LongUnion),
+      [`LongerUnion`](https://docs.rs/cryptocol/latest/cryptocol/number/longer_union/union.LongerUnion.html#union.LongerUnion),
+      [`SizeUnion`](https://docs.rs/cryptocol/latest/cryptocol/number/size_union/union.SizeUnion.html#union.SizeUnion),
+      [`SharedValues`](https://docs.rs/cryptocol/latest/cryptocol/number/shared_values/union.SharedValues.html#union.SharedValues), and
+      [`SharedArrays`](https://docs.rs/cryptocol/latest/cryptocol/number/shared_arrays/union.SharedArrays.html#union.SharedArrays)
 - [X] Trait SmallUInt, its implementation for primitive data types, and the implementation
-      of it for the Unions --- `SmallUInt`
+      of it for the Unions --- [`SmallUInt`](https://docs.rs/cryptocol/latest/cryptocol/number/small_uint/trait.SmallUInt.html#trait.SmallUInt)
 
 ### Big Numbers: meaningful as itself and also the foundation for Asymmetric-Key Algorithms
 
-- [ ] Fixed Sized Big Unsigned Integer Operation --- `BigUInt`
+- [ ] Fixed Sized Big Unsigned Integer Operation --- [`BigUInt`](https://docs.rs/cryptocol/latest/cryptocol/number/big_uint/struct.BigUInt.html#struct.BigUInt)
 
 ### Hash Algorithms
 
 - [X] MD4 hash algorithms based on 128 bits
-    --- Includes MD4 and its expanded versions. `MD4_Generic`
+    --- Includes MD4 and its expanded versions.
+    [`MD4_Generic`](https://docs.rs/cryptocol/latest/cryptocol/hash/md4/struct.MD4_Generic.html#struct.MD4_Generic)
 - [X] MD5 hash algorithms based on 128 bits
-    --- Includes MD5 and its expanded versions. `MD5_Generic`
+    --- Includes MD5 and its expanded versions.
+    [`MD5_Generic`](https://docs.rs/cryptocol/latest/cryptocol/hash/md5/struct.MD5_Generic.html#struct.MD5_Generic)
 - [X] SHA-1 hash algorithms based on 160 bits
-    --- Includes SHA-1, SHA-0, and their expanded versions. `SHA1_Generic`
+    --- Includes SHA-1, SHA-0, and their expanded versions.
+    [`SHA1_Generic`](https://docs.rs/cryptocol/latest/cryptocol/hash/sha1/struct.SHA1_Generic.html#struct.SHA1_Generic)
 - [X] SHA-2 hash algorithms based on 256 bits
-    --- Includes SHA-256, SHA-224, and their expanded versions. `SHA2_256_Generic`
+    --- Includes SHA-256, SHA-224, and their expanded versions.
+    [`SHA2_256_Generic`](https://docs.rs/cryptocol/latest/cryptocol/hash/sha2_256/struct.SHA2_256_Generic.html#struct.SHA2_256_Generic)
 - [X] SHA-2 hash algorithms based on 512 bits
-    --- Includes SHA-512, SHA-384, SHA-512/256, and their expanded versions. `SHA2_512_Generic`
+    --- Includes SHA-512, SHA-384, SHA-512/256, and their expanded versions. [`SHA2_512_Generic`](https://docs.rs/cryptocol/latest/cryptocol/hash/sha2_512/struct.SHA2_512_Generic.html#struct.SHA2_512_Generic)
 - [X] SHA-2 hash algorithms based on 512/t bits
-    --- Includes 512/256, SHA-512/224, and their expanded versions. `SHA2_512_t_Generic`
+    --- Includes 512/256, SHA-512/224, and their expanded versions.
+    [`SHA2_512_t_Generic`](https://docs.rs/cryptocol/latest/cryptocol/hash/sha2_512_t/struct.SHA2_512_t_Generic.html#struct.SHA2_512_t_Generic)
 - [ ] SHA-3 (SHA3-224)
 - [ ] SHA-3 (SHA3-256)
 - [ ] SHA-3 (SHA3-384)
@@ -64,13 +75,21 @@ The checked items have already been implemented including documentation at least
 
 ### Pseudo-Random Number Generator Algorithms
 
-- [ ] Pseudo-random number generator --- struct `Random_Generic` and trait `Random_Engine`
+- [ ] Pseudo-random number generator ---
+    struct [`Random_Generic`](https://docs.rs/cryptocol/latest/cryptocol/random/random/struct.Random_Generic.html#struct.Random_Generic) and
+    trait [`Random_Engine`](https://docs.rs/cryptocol/latest/cryptocol/random/trait_random_engine/trait.Random_Engine.html#trait.Random_Engine)
 - [ ] Pseudo-random number generator engines using hash algorithms ---
-    `Any_MD4`, `Any_MD5`, `Any_SHA0`, `Any_SHA1`, `Any_SHA2_256`, `Any_SHA2_512`, and `Random_SHA2_512`.
+    [`Any_MD4`](https://docs.rs/cryptocol/latest/cryptocol/random/random/type.Any_MD4.html#type.Any_MD4),
+    [`Any_MD5`](https://docs.rs/cryptocol/latest/cryptocol/random/random/type.Any_MD5.html#type.Any_MD5),
+    [`Any_SHA0`](https://docs.rs/cryptocol/latest/cryptocol/random/random/type.Any_SHA0.html#type.Any_SHA0),
+    [`Any_SHA1`](https://docs.rs/cryptocol/latest/cryptocol/random/random/type.Any_SHA1.html#type.Any_SHA1),
+    [`Any_SHA2_256`](https://docs.rs/cryptocol/latest/cryptocol/random/random/type.Any_SHA2_256.html#type.Any_SHA2_256),
+    [`Any_SHA2_512`](https://docs.rs/cryptocol/latest/cryptocol/random/random/type.Any_SHA2_512.html#type.Any_SHA2_512), and
+    [`Random_SHA2_512`](https://docs.rs/cryptocol/latest/cryptocol/random/random/type.Random_SHA2_512.html#type.Random_SHA2_512).
 - [ ] Pseudo-random number generator engines using symmetric-key encryption algorithms ---
     `Any_DES`, `Any_NDES`, `Any_AES`, `Any_NAES`, `Random_AES`, and `Random_NAES`.
 - [ ] Pseudo-random number generator engines using simple randomization algorithm ---
-    `Any_Num_C`
+    [`Any_Num_C`](https://docs.rs/cryptocol/latest/cryptocol/random/random/type.Any_Num_C.html#type.Any_Num_C)
 
 ### Asymmetric-key Algorithms for the Encryption/Decryption of digital data
 
@@ -84,3 +103,7 @@ beyond 1.0.0.0. Before the version number 1.0.0.0, the maximum version
 number will be 0.25.x.x since there are all twenty-five functionalities
 listed above. So, for example, even if the version number is 0.5.0.0,
 it does not mean that 50% of all functionalities are implemented.
+
+## Breaking Changes
+
+Refer to the file `BreakingChanges.md` in this crate.

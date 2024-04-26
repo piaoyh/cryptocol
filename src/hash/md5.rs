@@ -432,8 +432,7 @@ pub type MD5 = MD5_Generic;     // equivalent to `pub type MD5 = MD5_Expanded;`
 /// using the struct MD5 of this module. You can get the hash value from a text
 /// or a file. The following source code assumes its executable file name will
 /// be "md5_app". You can find all the examples including the following source
-/// code in the folder "examples" of this crate if you download this crate
-/// from [github](https://github.com/piaoyh/cryptocol).
+/// code in the folder "examples" of this crate.
 /// ```
 /// use std::{ io, env, fs };
 /// use std::io::BufRead;

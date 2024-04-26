@@ -453,8 +453,7 @@ pub type SHA2_512_0 = SHA2_512_t_Generic;
 /// hash value from a text or a file. The following source code assumes its
 /// executable file name will be "sha2_512_224_app". You can find all the
 /// examples including the following source code in the folder "examples"
-/// of this crate if you download this crate from
-/// [github](https://github.com/piaoyh/cryptocol).
+/// of this crate.
 /// ```
 /// use std::{ io, env, fs };
 /// use std::io::BufRead;

@@ -63,8 +63,8 @@ Random_Engine for AnyNumber_Engine_C_Generic<MULTIPLIER, ADDER>
             { self.set_any_number_(i, message[i].into_u64()); }
         for i in 0..8
         {
-            self.set_any_number_(i, self.get_any_number_(i).wrapping_mul(1103515245));
-            self.set_any_number_(i, self.get_any_number_(i).wrapping_add(12345));
+            self.set_any_number_(i, self.get_any_number_(i).wrapping_mul(MULTIPLIER));
+            self.set_any_number_(i, self.get_any_number_(i).wrapping_add(ADDER));
         }
     }
 

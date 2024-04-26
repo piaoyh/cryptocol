@@ -66,8 +66,7 @@
 //! extractor using the above modules. You can get the hash value from a text
 //! or a file. The following source code assumes its executable file name will
 //! be "hash_app". You can find all the examples including the following source
-//! code in the folder "examples" of this crate if you download this crate from
-//! [github](https://github.com/piaoyh/cryptocol).
+//! code in the folder "examples" of this crate.
 //! ```
 //! use std::{ io, env, fs };
 //! use std::io::BufRead;

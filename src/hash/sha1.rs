@@ -660,8 +660,7 @@ pub type SHA0 = SHA1_Generic<5, 0x67452301, 0xefcdab89,
 /// extractor using the struct SHA1 of this module. You can get the hash value
 /// from a text or a file. The following source code assumes its executable
 /// file name will be "sha1_app". You can find all the examples including the
-/// following source code in the folder "examples" of this crate if you
-/// download this crate from [github](https://github.com/piaoyh/cryptocol).
+/// following source code in the folder "examples" of this crate.
 /// ```
 /// use std::{ io, env, fs };
 /// use std::io::BufRead;
