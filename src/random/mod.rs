@@ -25,20 +25,20 @@
 //! indicates cryptographically secure.
 //! 
 //! There are provided predefined pseudo-random number generators:
-//! - Any: is a synonym of Any_SHA2_256 at the moment and can be silently
-//!     changed to have better algorithm in the future. If you want to keep
+//! - Any: is a synonym of Any_SHA2_256 at the moment and can be __silently
+//!     changed__ to have better algorithm in the future. If you want to keep
 //!     using SHA2_256 for a pseudo-random number generator, you may want to
 //!     use Any_SHA2_256. If you are happy that you will automatically use the
 //!     better algotrithm in the future, you may want to use `Any`.
 //!     Read [here](random/random/type.Any.html#type.Any).
-//! - Random: is a synonym of Random_SHA2_512 at the moment and can be silently
-//!     changed to have better algorithm in the future. If you want to keep
-//!     using SHA2_512 for a pseudo-random number generator, you may want to
-//!     use Random_SHA2_512. If you are happy that you will automatically use
-//!     the better algotrithm in the future, you may want to use `Random`.
+//! - Random: is a synonym of Random_SHA2_512 at the moment and can be
+//!     __silently changed__ to have better algorithm in the future. If you want
+//!     to keep using SHA2_512 for a pseudo-random number generator, you may
+//!     want to use Random_SHA2_512. If you are happy that you will automatically
+//!     use the better algotrithm in the future, you may want to use `Random`.
 //!     Read [here](random/random/type.Random.html#type.Random).
-//! - Any_Num: is a synonym of Any_Num_C at the moment and can be silently
-//!     changed to have better algorithm in the future. If you want to keep
+//! - Any_Num: is a synonym of Any_Num_C at the moment and can be __silently
+//!     changed__ to have better algorithm in the future. If you want to keep
 //!     using the algorithm of C standard libraray for a pseudo-random number
 //!     generator, you may want to use Any_Num_C. If you are happy that you
 //!     will automatically use the better algotrithm in the future, you may

@@ -77,6 +77,35 @@ pub type Random_SHA2_512 = Random_Generic<SHA2_512, 100>;   // COUNT = 2^256 bec
 /// It is a specific version of the generic struct
 /// [`Random_Generic`](struct@Random_Generic).
 /// 
+/// This type `Any_Num_C` uses
+/// [`AnyNumber_Engine_C_Generic`](random/struct.AnyNumber_Engine_C_Generic.html#struct.AnyNumber_Engine_C_Generic)
+/// which just creates simple pseudo-random numbers by means of pseudo-random
+/// number generator algorithm of rand() of C standard library.
+/// 
+/// `AnyNumber_Engine_C_Generic` has eight sets of 64-bit pseudo-random
+/// number sequences and allows `Any_Num_C` to randomly chooses one of
+/// eight sets of the 64-bit pseudo-random number sequences at the very
+/// time when it produce a 64-bit pseudo-random number.
+/// For extremely simple example, suppose that the first set have the
+/// pseudo-random number sequence: 1-2-3-4-5, the second set: 2-4-6-8-10,
+/// the third set: 3-6-9-12-15-..., the fourth set: 4-8-12-16-20-...,
+/// the fifth set: 5-10-15-20-25-..., the sixth set: 6-12-18-24-30-...,
+/// the seventh set: 7-14-21-28-35-..., the eighth set: 8-16-24-32-40-...
+/// Then, the actual produced pseudo-random number can be 3-16-18-8-30-...
+/// if the first random number is chosen from the first set, and the second
+/// random number is chosen from the eighth set, and the third random number
+/// is chosen from sixth set, and the fourth random number is chosen from the
+/// fourth set, and fifth random number is chosen from the sixth set.
+/// So, this type `Any_Num_C` is far better than the algoriithm of the rand()
+/// function of C standard library but it is still cryptographically not
+/// secure enough.
+/// 
+/// It is __for non-cryptographic purpose__. So, normally it is OK to use this
+/// struct as `Random_Engine` embedded in the struct `Random_Generic` for
+/// pseudo-random number generator. However, __DO NOT USE THIS STRUCT FOR
+/// SERIOUS CRYPTOGRAPHIC PURPOSE__ because it does not guarrantee the
+/// cryptographic security.
+/// 
 /// # QUICK START
 /// You can use `Any_Num_C` if you use random number for non-cryptographic
 /// purpose. `Any_Num_C` is for normal non-cryptographical purpose Look into
@@ -161,25 +190,39 @@ pub type Random_SHA2_512 = Random_Generic<SHA2_512, 100>;   // COUNT = 2^256 bec
 pub type Any_Num_C = Random_Generic<AnyNumber_Engine_C,  2147483647>;   // COUNT = u32::MAX
 
 /// The type `Random` which is a random number generator and is a synonym of
-/// [`Random_SHA2_512`](type@Random_SHA2_512). It means `Random` uses a hash
-/// algorithm SHA-2-512. It is cryptographically securer than its counterpart
-/// struct `Any` and a bit slower than [`Any`](type@Any).
-/// *In the near future, `Random` will be changed to use SHA-3-512 alogrithm
-/// and to be a synonym of `Random_SHA3_512` when `Random_SHA3_512` is
-/// implemented.
+/// [`Random_SHA2_512`](type@Random_SHA2_512) at the moment. It means `Random`
+/// uses a hash algorithm SHA-2-512. It is cryptographically securer than its
+/// counterpart type `Any` and a bit slower than [`Any`](type@Any).
+/// _In the near future, `Random` may be silently changed to use SHA-3-512
+/// alogrithm and to be a synonym of `Random_SHA3_512` when `Random_SHA3_512`
+/// is implemented._ If you want to keep using SHA2_512 for a pseudo-random
+/// number generator, you may want to use Random_SHA2_512. If you are happy
+/// that you will automatically use the better algotrithm in the future,
+/// you may want to use `Random`.
 pub type Random = Random_SHA2_512;
 
 /// The type `Any` which is a random number generator and is a synonym of
-/// [`Any_SHA2_256`](type@Any_SHA2_256). It means `Any` uses a hash
-/// algorithm SHA-2-256. It is cryptographically less secure than its
+/// [`Any_SHA2_256`](type@Any_SHA2_256) at the moment. It means `Any` uses
+/// a hash algorithm SHA-2-256. It is cryptographically less secure than its
 /// counterpart struct `Random` and a bit faster than [`Random`](type@Random).
+/// _In the near future, `Any` may be silently changed to have better algorithm_
+/// If you want to keep using SHA2_256 for a pseudo-random number generator,
+/// you may want to use Any_SHA2_256. If you are happy that you will
+/// automatically use the better algotrithm in the future, you may want
+/// to use `Any`.
 pub type Any = Any_SHA2_256;
 
 /// The type `Any_Num` which is a random number generator and is a synonym of
-/// [`Any_Num_C`](type@Any_Num_C). It means `Any_Num` uses a pseudo-random
-/// number generator algorithm of the function rand() of C standard library.
-/// It is a specific version of the generic struct. It is cryptographically
-/// insecure.
+/// [`Any_Num_C`](type@Any_Num_C) at the moment. It means `Any_Num` uses a
+/// pseudo-random number generator algorithm of the function rand() of C
+/// standard library. It is a specific version of the generic struct. It is
+/// cryptographically insecure. _In the near future, `Any_Num` may be silently
+/// changed to use better alogrithm and to be a synonym of the better type
+/// when the better alogrithm is implemented._ If you want to keep using the
+/// algorithm of C standard libraray for a pseudo-random number generator,
+/// you may want to use Any_Num_C. If you are happy that you will
+/// automatically use the better algotrithm in the future, you may want to
+/// use `Any_Num`.
 #[allow(non_camel_case_types)]
 pub type Any_Num = Any_Num_C;
 
@@ -216,9 +259,11 @@ pub type Any_Num = Any_Num_C;
 /// - Any_SHA0: uses a hash algorithm SHA0.
 /// - Any_SHA1: uses a hash algorithm SHA1.
 /// - Any_SHA2_256: uses a hash algorithm SHA2_256.
+/// - Any_SHA2_512: uses a hash algorithm SHA2_512.
 /// - Random_SHA2_512: uses a hash algorithm SHA2_512.
-/// - Any: uses a hash algorithm SHA2_256.
-/// - Random: uses a hash algorithm SHA2_512.
+/// - Any: a synonym of Any_SHA2_256 at the moment.
+/// - Random: a synonym of Random_SHA2_512 at the moment.
+/// - Any_Num_C: a synonym of Any_Num_C at the moment.
 /// 
 /// # QUICK START
 /// You can use either struct `Any` or `Random` depending on your purpose.
@@ -234,6 +279,7 @@ pub type Any_Num = Any_Num_C;
 /// define_utypes_with!(u64);
 /// 
 /// let mut rand = Random::new();
+/// // let mut rand = Any::new();
 /// println!("Random number = {}", rand.random_u128());
 /// println!("Random number = {}", rand.random_u64());
 /// println!("Random number = {}", rand.random_u32());
@@ -330,15 +376,83 @@ impl<GenFunc: Random_Engine + 'static, const COUNT: u128> Random_Generic<GenFunc
     /// random number with high quality, you may want to use
     /// [rand::rngs::OsRng](https://docs.rs/rand/latest/rand/rngs/struct.OsRng.html)).
     /// 
-    /// # Examples
+    /// # Example 1 for Random
     /// ```
     /// use cryptocol::random::Random;
     /// let mut rand = Random::new();
     /// println!("Random number = {}", rand.random_u128());
-    /// println!("Random number = {}", rand.random_u64());
-    /// println!("Random number = {}", rand.random_u32());
-    /// println!("Random number = {}", rand.random_u16());
-    /// println!("Random number = {}", rand.random_u8());
+    /// ```
+    /// 
+    /// # Example 2 for Any
+    /// ```
+    /// use cryptocol::random::Any;
+    /// let mut any = Any::new();
+    /// println!("Random number = {}", any.random_u64());
+    /// ```
+    /// 
+    /// # Example 3 for Any_Num
+    /// ```
+    /// use cryptocol::random::Any_Num;
+    /// let mut any_num = Any_Num::new();
+    /// println!("Random number = {}", any_num.random_u32());
+    /// ```
+    /// 
+    /// # Example 4 for Any_Num_C
+    /// ```
+    /// use cryptocol::random::Any_Num_C;
+    /// let mut any_num_c = Any_Num_C::new();
+    /// println!("Any number = {}", any_num_c.random_u16());
+    /// ```
+    /// 
+    /// // Example 5 for Any_MD4
+    /// ```
+    /// use cryptocol::random::Any_MD4;
+    /// let mut any_md4 = Any_MD4::new();
+    /// println!("Any number = {}", any_md4.random_u8());
+    /// ```
+    /// 
+    /// // Example 6 for Any_MD5
+    /// ```
+    /// use cryptocol::random::Any_MD5;
+    /// let mut any_md5 = Any_MD5::new();
+    /// println!("Any number = {}", any_md5.random_usize());
+    /// ```
+    /// 
+    /// // Example 7 for Any_SHA0
+    /// ```
+    /// use cryptocol::random::Any_SHA0;
+    /// let mut any_sha0 = Any_SHA0::new();
+    /// println!("Any number = {}", any_sha0.random_uint::<u8>());
+    /// ```
+    /// 
+    /// // Example 8 for Any_SHA1
+    /// ```
+    /// use cryptocol::random::Any_SHA1;
+    /// let mut any_sha1 = Any_SHA1::new();
+    /// if let Some(num) = any_sha1.random_under_uint(1234_u16)
+    ///     { println!("Any number = {}", num); }
+    /// ```
+    /// 
+    /// // Example 9 for Any_SHA2_256
+    /// ```
+    /// use cryptocol::random::Any_SHA2_256;
+    /// let mut any_sha2_256 = Any_SHA2_256::new();
+    /// if let Some(num) = any_sha2_256.random_minmax_uint(12345678_u32, 87654321)
+    ///     { println!("Any number = {}", num); }
+    /// ```
+    /// 
+    /// // Example 10 for Any_SHA2_512
+    /// ```
+    /// use cryptocol::random::Any_SHA2_512;
+    /// let mut any_sha2_512 = Any_SHA2_512::new();
+    /// println!("Any odd number = {}", rand.random_odd_uint::<u64>());
+    /// ```
+    /// 
+    /// // Example 11 for Random_SHA2_512
+    /// ```
+    /// use cryptocol::random::Random_SHA2_512;
+    /// let mut random_sha2_512 = Random_SHA2_512::new();
+    /// println!("Random prime number = {}", random_sha2_512.random_prime_using_miller_rabin_uint::<u128>(5));
     /// ```
     pub fn new() -> Self
     {

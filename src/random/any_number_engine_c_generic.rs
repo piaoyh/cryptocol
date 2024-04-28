@@ -41,9 +41,9 @@ pub type AnyNumber_Engine_C = AnyNumber_Engine_C_Generic;
 /// operation and overflow, this formula produce pseudo-random numbers
 /// non-linearly. 
 /// 
-/// However, this struct `AnyNumber_Engine_C_Generic` is cryptographically
-/// securer than the algoriithm of the rand() function of C standard library
-/// though it is not still cryptographically secure enough. It is because it
+/// However, this struct `AnyNumber_Engine_C_Generic` is better than the
+/// algoriithm of the rand() function of C standard library though it is
+/// still cryptographically not secure enough. It is because it
 /// has eight sets of 64-bit pseudo-random number sequences and allows
 /// `Random_Generic` to randomly choose one of eight sets of the 64-bit
 /// pseudo-random number sequences at the very time when it produce a 64-bit

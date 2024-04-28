@@ -1,0 +1,990 @@
+[33mcommit a43ca57f98d25c1f0ddd6b1439ff4c9378df50f8[m[33m ([m[1;36mHEAD -> [m[1;32mmaster[m[33m, [m[1;31morigin/master[m[33m, [m[1;31morigin/HEAD[m[33m)[m
+Author: PARK youngho <programmer.youngho@gmail.com>
+Date:   Thu Apr 25 19:23:21 2024 +0600
+
+    ver. 0.8.0.1 Made source code neater, fixed some documentation of the module random, and moved all information of breaking changes in README.md to BreakingChanges.md.
+
+[33mcommit dfd743c74917044ff567ed4a24f1d9df082baa8e[m
+Author: PARK Youngho <programmer.youngho@gmail.com>
+Date:   Wed Apr 24 12:47:03 2024 +0600
+
+    ver. 0.8.0.0 Fixed Quick Start description for the module random, and fixed some description of lib.rs and README.md.
+
+[33mcommit 96c76568954500f39d0111bcc9446b60d76b1313[m
+Merge: 7818926 0dc5571
+Author: PARK Youngho <programmer.youngho@gmail.com>
+Date:   Wed Apr 24 10:46:23 2024 +0600
+
+    Merge branch 'tmp' of https://github.com/piaoyh/cryptocol
+
+[33mcommit 0dc5571b1c16bb4676da7178dc16659cf4cc9d48[m[33m ([m[1;31morigin/tmp[m[33m)[m
+Author: PARK youngho <programmer.youngho@gmail.com>
+Date:   Tue Apr 23 22:16:39 2024 +0600
+
+    ver. 0.7.6.5.tmp.3 Added an example to the QUICK START of SHA0.
+
+[33mcommit acb731edce94cde40c94a25777a783361a9f1ca7[m
+Author: PARK youngho <programmer.youngho@gmail.com>
+Date:   Tue Apr 23 22:11:00 2024 +0600
+
+    ver. 0.7.6.5.tmp.2 Added examples and documentation of the QUICK START to MD4_Generic, MD4_Expanded, MD4, MD5_Generic, MD5_Expannded, MD5, SHA1_Generic, SHA1_Expanded, SHA0_Expanded, SHA1, and SHA0.
+
+[33mcommit 771579c1e12417d0188e71c69e766d3d025993e7[m
+Author: PARK youngho <programmer.youngho@gmail.com>
+Date:   Tue Apr 23 17:48:23 2024 +0600
+
+    ver. 0.7.6.5.tmp.1 Finished writing examples and documentation of the nethods of ShortUnion, IntUnions, LongUnion, LongerUnion, and SizeUnion, and Fixed some examples of SmallUInt.
+
+[33mcommit 78189261cf2f5428d49de2e714e3c25f82b04f31[m
+Author: PARK Youngho <programmer.youngho@gmail.com>
+Date:   Mon Apr 22 12:20:07 2024 +0600
+
+    ver. 0.7.6.6 Fixed lib.rs, random/mod.rs and README.md.
+
+[33mcommit b8c6070bbbeb39712abe0a39a8849fec5ef0cf67[m
+Author: PARK youngho <programmer.youngho@gmail.com>
+Date:   Mon Apr 22 02:05:51 2024 +0600
+
+    ver. 0.7.6.5 Fixed lib.rs and README.md
+
+[33mcommit 47a36d55cd27dc08a93bb55bcc41c4e7f69781c8[m
+Author: PARK youngho <programmer.youngho@gmail.com>
+Date:   Mon Apr 22 00:25:06 2024 +0600
+
+    ver. 0.7.6.4 Added examples and documentation of the nethods ilog(), ilog10(), ilog2(), and *_pow() of ShortUnion, IntUnions, LongUnion, LongerUnion, and SizeUnion, and Fixed some examples of SmallUInt.
+
+[33mcommit 0830e778db2cd1f8d47ae725aac2a45e845b6b7b[m
+Author: PARK youngho <programmer.youngho@gmail.com>
+Date:   Sat Apr 20 12:17:15 2024 +0600
+
+    ver. 0.7.6.3 Added examples and documentation of the nethods *_div() and *_rem() of ShortUnion, IntUnions, LongUnion, LongerUnion, and SizeUnion, and Fixed some examples of SmallUInt.
+
+[33mcommit 5b11674cc07910c105eae35c00a078af23e04cbd[m
+Author: PARK Youngho <programmer.youngho@gmail.com>
+Date:   Fri Apr 19 15:37:30 2024 +0600
+
+    ver. 0.7.6.2 Added some documentation and examples of the method zero(), and one() to ShortUnion, IntUnion, LongUnion, LongerUnion, and SizeUnion.
+
+[33mcommit ccd20fdfd0e152041499294586356c98bb24728c[m
+Author: PARK Youngho <programmer.youngho@gmail.com>
+Date:   Fri Apr 19 14:57:59 2024 +0600
+
+    ver. 0.7.6.1 Added the methods widening_mul(), zero(), and one() to ShortUnion, IntUnion, LongUnion, LongerUnion, and SizeUnion, and added some documentation and examples of the method widening_mul() to ShortUnion, IntUnion, LongUnion, LongerUnion, and SizeUnion.
+
+[33mcommit 931fde5817ede02ce79a94bac62372723eb384d7[m
+Author: PARK youngho <programmer.youngho@gmail.com>
+Date:   Thu Apr 18 13:52:55 2024 +0600
+
+    ver. 0.7.6 Changed the version numnber of Cargo.toml into 0.7.6.
+
+[33mcommit e19aea51717556810058ab4458678fcf575de23a[m
+Author: PARK youngho <programmer.youngho@gmail.com>
+Date:   Thu Apr 18 13:45:03 2024 +0600
+
+    ver. 0.7.5.8 Added examples of the nethods carrying_mul() of ShortUnion, IntUnions, LongUnion, LongerUnion, and SizeUnion, and Fixed some examples of SmallUInt.
+
+[33mcommit a4b6e577025d0b2e7fd11cb9dd82e8c5a2051bd7[m
+Author: PARK youngho <programmer.youngho@gmail.com>
+Date:   Wed Apr 17 19:02:56 2024 +0600
+
+    ver. 0.7.5.7 Fixed some examples of SmallUInt.
+
+[33mcommit 2a89cf0e9d9388e9c8ea764111f83597135c8151[m
+Author: PARK Youngho <programmer.youngho@gmail.com>
+Date:   Wed Apr 17 13:55:50 2024 +0600
+
+    ver. 0.7.5.6 Added and fixed an example of carry_mul() of SmallUInt.
+
+[33mcommit 84a5c26cfe2424f86f106b75779161cf07feebc8[m
+Author: PARK youngho <programmer.youngho@gmail.com>
+Date:   Tue Apr 16 21:43:35 2024 +0600
+
+    ver. 0.7.5.5 Added test code
+
+[33mcommit 2498fd859bcf59d46034f77e179bbcdb57847637[m
+Author: PARK youngho <programmer.youngho@gmail.com>
+Date:   Tue Apr 16 21:23:34 2024 +0600
+
+    ver. 0.7.5.4 Removed the methods _isqrt(), _widening_mul(), and _carrying_mul() from SmallUInt, and added some examples and documents for ShortUnion, IntUnion, LongUnion, LongerUnion, and SizeUnion.
+
+[33mcommit ab9742b3968ce965fc8238c7062cae34110532e6[m
+Author: PARK youngho <programmer.youngho@gmail.com>
+Date:   Sun Apr 14 00:06:43 2024 +0600
+
+    ver. 0.7.5.3 Added the method carrying_mul(), some examples and documents for ShortUnion, IntUnion, LongUnion, LongerUnion, and SizeUnion.
+
+[33mcommit fbec244fcfa6d80d78cc9e24bf2618c9c5141246[m
+Author: PARK Youngho <programmer.youngho@gmail.com>
+Date:   Fri Apr 12 15:56:13 2024 +0600
+
+    ver. 0.7.5.2 Added some examples and documents for ShortUnion, IntUnion, LongUnion, LongerUnion, and SizeUnion, and fixed some examples of SmallUInt.
+
+[33mcommit 9debd943149ae4a0e712ab8d4f04cf46f6fa6393[m
+Author: PARK youngho <programmer.youngho@gmail.com>
+Date:   Fri Apr 12 01:01:59 2024 +0600
+
+    ver. 0.7.5.1 Added some examples and documents for ShortUnion, IntUnion, LongUnion, LongerUnion, and SizeUnion.
+
+[33mcommit dd67119b3afc78bea20b52aa0f52879f8e8e3cdf[m
+Author: PARK youngho <programmer.youngho@gmail.com>
+Date:   Mon Apr 8 06:58:55 2024 +0600
+
+    ver. 0.7.5.0 Fixed the version number info in Cargo.toml.
+
+[33mcommit 63cfd64f0d1b93bca885a05b1720d05c1d53a23a[m
+Author: PARK youngho <programmer.youngho@gmail.com>
+Date:   Mon Apr 8 00:44:28 2024 +0600
+
+    ver. 0.7.4.4 Added documents and examples of borrowing_sub() of unions, and added wapping_neg() and overflowing_neg() to SmallUInt, ShortUnions, IntUnion, LongUnion, LongerUnion, and SizeUnion.
+
+[33mcommit cdc6a87d693421999ce9093d2ee61fe70fc93f7c[m
+Author: PARK youngho <programmer.youngho@gmail.com>
+Date:   Thu Apr 4 23:42:47 2024 +0600
+
+    ver. 0.7.4.3 Added documents and examples of addtion methods of unions.
+
+[33mcommit fe246905e5f6e47b7a809e1a389286021c5fad24[m
+Author: PARK youngho <programmer.youngho@gmail.com>
+Date:   Wed Apr 3 00:42:50 2024 +0600
+
+    ver. 0.7.4.2 Added documents and examples to the method carrying_add() of Unions, and fixed examples of SmallUInt.
+
+[33mcommit 107a8937a70b86ae0993c4820285b68efb1eeb48[m
+Author: PARK youngho <programmer.youngho@gmail.com>
+Date:   Tue Apr 2 02:56:27 2024 +0600
+
+    ver. 0.7.4.1 Finished writing the macro get_set_size!().
+
+[33mcommit 76f3a50fb51ea82a16e71f25285f01dd39f2f8c9[m
+Author: PARK youngho <programmer.youngho@gmail.com>
+Date:   Mon Apr 1 00:24:49 2024 +0600
+
+    ver. 0.7.4.0 Finished writing the macro new_with_small_uint!().
+
+[33mcommit 62a5461b31a033aa64db2334002414667b4a2854[m
+Author: PARK youngho <programmer.youngho@gmail.com>
+Date:   Sun Mar 31 22:45:43 2024 +0600
+
+    ver. 0.7.3.7 Finished writing the macros get_set_short!(), get_set_int!(), and get_set_long!().
+
+[33mcommit 955e17df2f90773bd10ea06ba52d6034e69e456d[m
+Author: PARK youngho <programmer.youngho@gmail.com>
+Date:   Thu Mar 28 17:29:26 2024 +0600
+
+    ver. 0.7.3.6 Finished writing the macro get_set_byte!().
+
+[33mcommit 94581d2930de3e4b10fe5d73c67fbf0d0184aaf2[m
+Author: PARK youngho <programmer.youngho@gmail.com>
+Date:   Thu Mar 28 00:10:04 2024 +0600
+
+    ver. 0.7.3.5 Fixed the document links to ShortUnion, IntUnion, LongUnion, LongerUnion, and SizeUnion from lib.rs.
+
+[33mcommit c2183c3f1fa5defb8118d07d549e637650d7518d[m
+Author: PARK youngho <programmer.youngho@gmail.com>
+Date:   Wed Mar 27 23:51:01 2024 +0600
+
+    ver. 0.7.3.4 Added documents and examples to ShortUnion, IntUnion, LongUnion, LongerUnion, and SizeUnion.
+
+[33mcommit 2675b22672e5a9198676070c3d795c0510f8c888[m
+Author: PARK youngho <programmer.youngho@gmail.com>
+Date:   Tue Mar 26 23:27:56 2024 +0600
+
+    ver. 0.7.3.3 Removed the warning 'unused_macros' by adding #[allow(unused_macros)]
+
+[33mcommit b3c0f983e10a735ecd265c31cfb7c40265397205[m
+Author: PARK youngho <programmer.youngho@gmail.com>
+Date:   Tue Mar 26 22:53:28 2024 +0600
+
+    ver. 0.7.3.2 Complete writing macros get_set_short_fit!(), get_set_int_fit!(), get_set_long_fit!(), get_set_longer_fit!(), and get_set_size_fit!(), and add documents and examples to ShortUnion, IntUnion, LongUnion, LongerUnion, and SizeUnion
+
+[33mcommit 3d8b631f42a2d86058bbe7e747a03454a7c8d3d5[m
+Author: PARK youngho <programmer.youngho@gmail.com>
+Date:   Tue Mar 26 21:07:04 2024 +0600
+
+    ver. 0.7.3.1 Added documents and examples to ShortUnion, IntUnion, LongUnion, LongerUnion, and SizeUnion
+
+[33mcommit 12c9bf07f9e78055a36e3ea6b31d574b9667741d[m
+Author: PARK youngho <programmer.youngho@gmail.com>
+Date:   Sun Mar 24 21:39:02 2024 +0600
+
+    ver. 0.7.2.7 Impoved the simple applications of hash algorithms.
+
+[33mcommit a96eb2adb2d1002f9a39fdede522305f7f30f233[m
+Author: PARK youngho <programmer.youngho@gmail.com>
+Date:   Sat Mar 23 23:45:32 2024 +0600
+
+    ver. 0.7.2.6 Changed the method name onoff() of ShortUnion, IntUnion, LongUnion, LongerUnion, and SizeUnion into new_with_bool(), and removed the method onoff_signed(), and added documents and examples of ShortUnion, IntUnion, LongUnion, LongerUnion, and SizeUnion.
+
+[33mcommit 0faad5ff347ee71cafc037d441c3ea912784f1cb[m
+Author: PARK youngho <programmer.youngho@gmail.com>
+Date:   Fri Mar 22 21:21:22 2024 +0600
+
+    ver. 0.7.2.5 Changed back the arguments of the methods new_with_ubytes(), new_with_ushorts(), new_with_uints(), and new_with_ulongs() of the unions, and new() of DES_Generic to move instead of borrowing, and changed the arguments of from_array(), from_be (), from_le(), from_be_bytes(), and from_le_bytes() of BigUInt.
+
+[33mcommit d012126b81a3a2189259900290371b95e872bdca[m
+Author: PARK youngho <programmer.youngho@gmail.com>
+Date:   Fri Mar 22 01:30:28 2024 +0600
+
+    ver. 0.7.2.4 Added some documents and examples to the methods new_with_signed(), new_with_ubytes() of ShortUnion, IntUnion, LongUnion, LongerUnion, and SizeUnion, and changed the arguments of the methods new_with_ubytes(), new_with_ushorts(), new_with_uints(), and new_with_ulongs() of the unions, and new() of DES_Generic to borrow instead of moving, and changed other parts according to the changes of interface of the methods.
+
+[33mcommit 93c12c54a99b0f13c6430803ee2793a953b05c4e[m
+Author: PARK youngho <programmer.youngho@gmail.com>
+Date:   Thu Mar 21 00:21:25 2024 +0600
+
+    ver. 0.7.2.3 Added some documents and examples to the methods new_with() of ShortUnion, IntUnion, LongUnion, LongerUnion, and SizeUnion, and completed implementation of trait SmallUInt for ShortUnion, IntUnion, LongUnion, LongerUnion, and SizeUnion, and writing their documents.
+
+[33mcommit 9b4b87312f928d02c808517994c40be45027ef69[m
+Author: PARK youngho <programmer.youngho@gmail.com>
+Date:   Wed Mar 20 01:14:49 2024 +0600
+
+    ver. 0.7.2.2 Added the methods length_of_src() and length_of_des() to SharedArrays, and added some documents and examples to the methods new() of ShortUnion, IntUnion, LongUnion, LongerUnion, and SizeUnion.
+
+[33mcommit e9d2fbf18e6c2f7e875380b4e78027bd2a7c1c99[m
+Author: PARK youngho <programmer.youngho@gmail.com>
+Date:   Mon Mar 18 01:04:28 2024 +0600
+
+    ver. 0.7.2.1 Fixed some documentation for SharedArrays.
+
+[33mcommit c601bf84183066eac3ab727cdbe4d3ba049ef42d[m
+Author: PARK youngho <programmer.youngho@gmail.com>
+Date:   Mon Mar 18 00:56:34 2024 +0600
+
+    ver. 0.7.2.0 Added some examples to SharedArrays, and fixed some examples of SharedValues and SharedArrays.
+
+[33mcommit db2f6b96dd83394c99f3c222bebdf0338d3ce4e0[m
+Author: PARK youngho <programmer.youngho@gmail.com>
+Date:   Thu Mar 14 23:13:07 2024 +0600
+
+    ver. 0.7.1.3 Added some methods to SharedArrays, and changed some examples of quick start of SharedValues and SharedArrays.
+
+[33mcommit 838e3936d15d2b794f906bf6b77aa52df4bda289[m
+Author: PARK Youngho <programmer.youngho@gmail.com>
+Date:   Wed Mar 13 14:24:37 2024 +0600
+
+    Added examples for quick start of SharedValues and SharedArray, and added some implementation for shr, shl, shr_assign, shl_assign.
+
+[33mcommit d8ddd9d5f81e4c8718b4931ee05f7d324057d8e0[m
+Author: PARK youngho <programmer.youngho@gmail.com>
+Date:   Tue Mar 12 22:02:44 2024 +0600
+
+    ver. 0.7.1.1 Added some introduction to SharedValues and SharedArrays.
+
+[33mcommit cce6a9bc4f8da6c4b36d21ba818562fa990dfcdd[m
+Author: PARK youngho <programmer.youngho@gmail.com>
+Date:   Mon Mar 11 22:33:10 2024 +0600
+
+    ver. 0.7.1.0 Added some documentation and examples.
+
+[33mcommit ef1e6d1deeea97469fa45faa06a8e66ad5776b34[m
+Author: PARK Youngho <programmer.youngho@gmail.com>
+Date:   Mon Mar 11 15:48:29 2024 +0600
+
+     ver. 0.7.0.6 Added some documentation and examples.
+
+[33mcommit ea571ff05af7ca10412452fdfd3e77bd82444994[m
+Author: PARK youngho <programmer.youngho@gmail.com>
+Date:   Mon Mar 11 06:58:11 2024 +0600
+
+    ver. 0.7.0.5 Added some documentation and examples.
+
+[33mcommit 5f76e038114f8b6d372ecd1fca80d04b5e22306e[m
+Author: PARK youngho <programmer.youngho@gmail.com>
+Date:   Fri Mar 8 00:56:50 2024 +0600
+
+    ver. 0.7.0.4 Changed the union names from Share and Common into SharedValues and SharedArrays, and added some documentation and examples.
+
+[33mcommit 14c35aa0a82a0886d30031f74e6750ebf8738eb9[m
+Author: PARK youngho <programmer.youngho@gmail.com>
+Date:   Thu Mar 7 00:20:31 2024 +0600
+
+    ver. 0.7.0.3 Repositioned unions, macros, and some traits implementation for unions.
+
+[33mcommit 02b4a0f95235e79c200a0557938117300ff6cdb1[m
+Author: PARK Youngho <programmer.youngho@gmail.com>
+Date:   Wed Mar 6 14:05:27 2024 +0600
+
+    ver. 0.7.0.2 Changed some import structs, and added some examples.
+
+[33mcommit fa764eed47c4ac23f41c2ff7e0afaaa2eaa72321[m
+Author: PARK youngho <programmer.youngho@gmail.com>
+Date:   Tue Mar 5 22:00:49 2024 +0600
+
+    ver. 0.7.0.1 Changed all fields of ShortUnion, Intunion, LongUnion, LongerUnion, and SizeUnion from pub to private, and added documentation.
+
+[33mcommit 728ae3aa5b31a98f1ad106b5756dd3c8df1a40a0[m
+Author: PARK youngho <programmer.youngho@gmail.com>
+Date:   Mon Mar 4 00:08:05 2024 +0600
+
+    ver. 0.7.0.0 Completed writing code, documentation, and examples of number::SmallUInt, and improved generic parameters of symmetric::DES.
+
+[33mcommit a0ee701cf96174cd1978d8a674200599a93dd1f7[m
+Author: PARK youngho <programmer.youngho@gmail.com>
+Date:   Tue Feb 20 22:39:42 2024 +0600
+
+    ver. 0.6.3.10 Changed generic type definitions in hash module to make defined types to show method manual in a document well, and added comments to the methods of SmallUInt.
+
+[33mcommit 3868fb4adfc285f8db74d16ded4cd794ff99eb0d[m
+Author: PARK youngho <programmer.youngho@gmail.com>
+Date:   Tue Feb 20 17:51:33 2024 +0600
+
+    ver. 0.6.3.9 Added default values of generic parameters of all the structs or types in hash module
+
+[33mcommit 5e85a2262485625b90dd6a872313ec1c2d631123[m
+Author: PARK youngho <programmer.youngho@gmail.com>
+Date:   Tue Feb 20 00:37:45 2024 +0600
+
+    ver. 0.6.3.8 Added the sections 'A Simple but Useful Applications using cryptocol' and added some examples.
+
+[33mcommit 5774b145554460775ec3e1535935d90ca0bdc2a6[m
+Author: PARK youngho <programmer.youngho@gmail.com>
+Date:   Mon Feb 19 16:44:16 2024 +0600
+
+    ver. 0.6.3.7 Fixed examples, and added some examples.
+
+[33mcommit 79a095cc57b7fdebbdcb62015594f48a94669442[m
+Author: PARK youngho <programmer.youngho@gmail.com>
+Date:   Mon Feb 19 00:04:43 2024 +0600
+
+    ver. 0.6.3.6 Added some examples.
+
+[33mcommit 76bd0f6885f8772988502b71462c431f9005cae6[m
+Author: PARK youngho <programmer.youngho@gmail.com>
+Date:   Sun Feb 18 09:32:41 2024 +0600
+
+    ver. 0.6.3.5 Moved member variables BigUInt::method_widening_mul_assign_uint, BigUInt::method_wrapping_mul_assign_uint, BigUInt::method_widening_mul_assign, and BigUInt::method_wrapping_mul_assign to impl of BigUInt as const, and improved generic constants by removing FP* and made it calculated automatically, and made examples of SmallUInt to mean clearer, and added some examples.
+
+[33mcommit 59a6ebb45b67af7e714853e2b8148972e37e3773[m
+Author: PARK youngho <programmer.youngho@gmail.com>
+Date:   Fri Feb 16 22:04:34 2024 +0600
+
+    ver. 0.6.3.1 Added some examples.
+
+[33mcommit d9ef9adeaccdd6df898b95773339e2cebb0c0d55[m
+Author: PARK youngho <programmer.youngho@gmail.com>
+Date:   Fri Feb 16 00:33:23 2024 +0600
+
+    ver. 0.6.2.15 Corrected title from Collected Example into Collective Example.
+
+[33mcommit 681e237932400b690a689078813d31484e9339c4[m
+Author: PARK youngho <programmer.youngho@gmail.com>
+Date:   Fri Feb 16 00:24:53 2024 +0600
+
+    ver. 0.6.2.14 Added some examples.
+
+[33mcommit bc0d4a1900887f976c7bc6ca7c9f440af4f73ead[m
+Author: PARK youngho <programmer.youngho@gmail.com>
+Date:   Thu Feb 15 23:55:53 2024 +0600
+
+    ver. 0.6.2.13 Added SmallUInt::wrapping_neg() and its implemenation for primitive data types and its implementation of ShortUnion, IntUnion, LongUnion, LongerUnion, and SizeUnion, and added some examples.
+
+[33mcommit 67086ff1de8d8df525482597d9184f3a4fa1b92a[m
+Author: PARK Youngho <programmer.youngho@gmail.com>
+Date:   Wed Feb 14 15:49:27 2024 +0600
+
+    ver. 0.6.2.12 Improved the initial permutation function and the final permutation function of DES_Generic.
+
+[33mcommit 54dbdfd8307b54cb2ce1d45c66be96db5be332da[m
+Author: PARK Youngho <programmer.youngho@gmail.com>
+Date:   Wed Feb 14 11:31:46 2024 +0600
+
+    ver. 0.6.2.11 Fixed generic constants for initial permutation and final permutation and their relevant functions of DES_Generic.
+
+[33mcommit 208fa7381bfca6a3d42580289c2d3cd161ec910b[m
+Author: PARK youngho <programmer.youngho@gmail.com>
+Date:   Wed Feb 14 00:41:53 2024 +0600
+
+    ver. 0.6.2.10 Started developing DES_Generic.
+
+[33mcommit 3594a63aa414c9c894602ca69a45038a6785e251[m
+Author: PARK youngho <programmer.youngho@gmail.com>
+Date:   Mon Feb 12 21:02:09 2024 +0600
+
+    ver. 0.6.2.9 Added some examples.
+
+[33mcommit 146593c1bddb128bc6fff07d7c4b3f89bfb9cd77[m
+Author: PARK youngho <programmer.youngho@gmail.com>
+Date:   Mon Feb 12 21:00:34 2024 +0600
+
+    ver. 0.6.2.8 Added some examples.
+
+[33mcommit 26fb189a56d9ebc66afc06ea4aed9cfdb5d702e0[m
+Author: PARK youngho <programmer.youngho@gmail.com>
+Date:   Mon Feb 12 19:13:07 2024 +0600
+
+    ver. 0.6.2.7 Added some examples.
+
+[33mcommit 6768cd7f6f61aee1ab9eec98d67635df641915f7[m
+Author: PARK youngho <programmer.youngho@gmail.com>
+Date:   Sun Feb 11 22:43:21 2024 +0600
+
+    ver. 0.6.2.6 Added some examples.
+
+[33mcommit bb580917714f83f7d4e26b86a53499bcd4affb86[m
+Author: PARK youngho <programmer.youngho@gmail.com>
+Date:   Sun Feb 11 00:09:11 2024 +0600
+
+    ver. 0.6.2.5 Added some examples.
+
+[33mcommit e79763d7e5e66648e8a93068fedf0ff057b5acc5[m
+Author: PARK youngho <programmer.youngho@gmail.com>
+Date:   Fri Feb 9 13:14:14 2024 +0600
+
+    ver. 0.6.2.4 Added some examples.
+
+[33mcommit 243965193e4ec9e5ead3b230a85d96e5472c160d[m
+Author: PARK youngho <programmer.youngho@gmail.com>
+Date:   Wed Feb 7 20:24:41 2024 +0600
+
+    ver. 0.6.2.3 Added some examples.
+
+[33mcommit c32c59c5957f3c32ea7329db889e3ddb0dd28bbd[m
+Author: PARK youngho <programmer.youngho@gmail.com>
+Date:   Wed Feb 7 01:51:03 2024 +0600
+
+    ver. 0.6.2.2 Added some examples.
+
+[33mcommit e48a657d33482afaf6a97e2be46d99bda758eef8[m
+Author: PARK youngho <programmer.youngho@gmail.com>
+Date:   Sun Feb 4 21:48:30 2024 +0600
+
+    ver. 0.6.2.0 Added Added SmallUInt::into_shortunion(), SmallUInt::into_intunion(), SmallUInt::into_longunion(), SmallUInt::into_longerunion(), and SmallUInt::into_sizeunion(), and there implementation, and added some documentation.
+
+[33mcommit d53319c11601c3e028fa086074f606feb4659815[m
+Author: PARK youngho <programmer.youngho@gmail.com>
+Date:   Fri Feb 2 22:33:04 2024 +0600
+
+    ver. 0.6.1.0 Added SmallUInt::unchecked_div() and its implementation, and added some documentation.
+
+[33mcommit f683da766e108c3d31b76abc06d05e865f036aef[m
+Author: PARK youngho <programmer.youngho@gmail.com>
+Date:   Fri Feb 2 00:17:01 2024 +0600
+
+    ver. 0.6.0.4 Added documentation
+
+[33mcommit a16d261ebb614545a78dce6fa17710ff80ec161f[m
+Author: PARK youngho <programmer.youngho@gmail.com>
+Date:   Thu Feb 1 20:03:52 2024 +0600
+
+    ver.0.6.0.3 Added documentation
+
+[33mcommit d64515d83782a4e04789aeefbc7630a9480fc2aa[m
+Author: PARK youngho <programmer.youngho@gmail.com>
+Date:   Tue Jan 30 12:28:58 2024 +0600
+
+    ver. 0.6.0.2 Changed random::any_number::AnyNumber::new()
+
+[33mcommit 877d948b4e8fb66859bed5573463f4942fa74c00[m
+Author: PARK youngho <programmer.youngho@gmail.com>
+Date:   Sun Jan 28 21:16:53 2024 +0600
+
+    ver. 0.6.0.1 Fixed broken links in documentation and changed the struct name SHA2_Generic_512 and SHA2_Generic_512_t into SHA2_512_Generic and SHA2_512_t_Generic
+
+[33mcommit 3754caf96b3c07584021671db343525a63897dca[m
+Author: PARK youngho <programmer.youngho@gmail.com>
+Date:   Sat Jan 27 22:11:06 2024 +0600
+
+    0.6.0.0 Completed writing random module and documentation for random module and hash modules, and removed all warnings, and changed file names, module names, struct names accoding to Rust convention.
+
+[33mcommit 80383f246ac1c25f6ce0fa1e130227ddcc2b2719[m
+Author: PARK youngho <programmer.youngho@gmail.com>
+Date:   Tue Jan 23 15:28:46 2024 +0600
+
+    0.5.0.0 Change crate name 'Cryptocol' into 'cryptocol'.
+
+[33mcommit 0170906a1992103f08ad5f1a6b9f20aea33ed05a[m
+Author: PARK youngho <programmer.youngho@gmail.com>
+Date:   Tue Jan 23 15:05:11 2024 +0600
+
+    0.4.1.0 Fixed some documentation.
+
+[33mcommit 8a0a22db60e852e2a27a1d970bb40ac4f3b2142c[m
+Author: PARK youngho <programmer.youngho@gmail.com>
+Date:   Tue Jan 23 14:28:15 2024 +0600
+
+    0.4.0.4 Prepared publishing again
+
+[33mcommit 27e06a1ebbc320e82e84b4af8f32f6ec28ac54ca[m
+Author: PARK youngho <programmer.youngho@gmail.com>
+Date:   Tue Jan 23 14:23:32 2024 +0600
+
+    0.4.0.2 Prepared publishing again
+
+[33mcommit 3c4df208255f1a8c42cbd07beedb8f7a609e668b[m
+Author: PARK youngho <programmer.youngho@gmail.com>
+Date:   Tue Jan 23 13:56:55 2024 +0600
+
+    0.4.0.1 Prepared publishing
+
+[33mcommit a05bf00fda6788097c756a1684c439851cd72238[m
+Author: PARK youngho <programmer.youngho@gmail.com>
+Date:   Fri Jan 19 23:54:32 2024 +0600
+
+    Ver. 0.4.0.0. Added documentation for SAH2_Generic_512 and SHA2_Generic_512_t and made more examples for them, and fixed the documentation of lib.rs.
+
+[33mcommit 7e4b607272bdd7edc323c7dc23ddf159983e7038[m
+Author: PARK youngho <programmer.youngho@gmail.com>
+Date:   Mon Jan 15 01:10:15 2024 +0600
+
+    Ver. 0.3.2.0. Added documentation for MD2_Generic, MD5_Generic, SHA1_Generic, SHA2_Generic_256, SAH2_Generic_512 and SHA2_Generic_512_t and made more examples for them, and started writing Keccak_Generic.
+
+[33mcommit 10775c8aacf118d40a80294a158f2cf5b6803c48[m
+Author: PARK youngho <programmer.youngho@gmail.com>
+Date:   Mon Jan 8 23:24:46 2024 +0600
+
+    Ver. 0.3.1.1. Upgraded Random_Generic, and added documentation about how to embed OsRng in Random_Generic.
+
+[33mcommit fa41c611703dd20748954748c8c7231060749578[m
+Author: PARK youngho <programmer.youngho@gmail.com>
+Date:   Sat Jan 6 02:40:07 2024 +0600
+
+    Ver. 0.3.1.0. Created the module random, and created the trait trait_prng and its implementation of MD4, MD5, SHA0, SHA1, SHA2_256 and SHA_2_512 in the module random, and make code neatier, and fixed a recursion bug.
+
+[33mcommit d706e76b9932dc25123a2187c09137814b00802a[m
+Author: PARK youngho <programmer.youngho@gmail.com>
+Date:   Wed Jan 3 11:29:12 2024 +0600
+
+    Ver. 0.3.0.1. Temporarily removed all random number things from crate and fixed some documentations that have broken links.
+
+[33mcommit 1773581d25e8b642744aaa7c9c543209e069c81f[m
+Author: PARK youngho <programmer.youngho@gmail.com>
+Date:   Tue Jan 2 11:45:21 2024 +0600
+
+    Ver. 0.3.0.0. Upgraded MD5 and SHA1 into MD5_Generic and SHA1_Generic respectively, and completed writing codes of MD5_Generic, SHA1_Generic, SHA2_Generic_256, SAH2_Generic_512 and SHA2_Generic_512_t.
+
+[33mcommit 7428f4b4b7d8ace331c77a178a688a6c9ba4f7e0[m
+Author: PARK youngho <programmer.youngho@gmail.com>
+Date:   Mon Dec 25 22:41:40 2023 +0600
+
+    Ver. 0.2.0.0. Completed writing documentation for private methods of MD5 and SHA-1.
+
+[33mcommit d41e61e090f4cd2c70d94cc92171b68a06ea61e8[m
+Author: PARK youngho <programmer.youngho@gmail.com>
+Date:   Sun Dec 24 12:27:51 2023 +0600
+
+    Ver. 0.1.8.0. Completed writing code for SHA-1 and documentation for public methods of SHA-1.
+
+[33mcommit fd5853088039f0f5c7e3163ed929cf9bf0862429[m
+Author: PARK youngho <programmer.youngho@gmail.com>
+Date:   Sat Dec 23 10:38:40 2023 +0600
+
+    Ver. 0.1.5.6. Combined some codes for big endian and the corresponding codes for little endian into one codes for BigUInt, and added some codes for big endian for MD5.
+
+[33mcommit 5e0355e6e7e3b2ab933b06d90e49d67d5bc19a4f[m
+Author: PARK youngho <programmer.youngho@gmail.com>
+Date:   Fri Dec 22 23:47:26 2023 +0600
+
+    Ver. 0.1.5.5. Completed writing documentation for public methods of MD5.
+
+[33mcommit d76fbbee8cbb7228e3dc6e38ac5033c2fe516c19[m
+Author: PARK youngho <programmer.youngho@gmail.com>
+Date:   Tue Dec 19 16:22:18 2023 +0600
+
+    Ver. 0.1.5.0. Completed writing code for MD5.
+
+[33mcommit 81c30b8db48972a0d173d81e6c15c7003247c10c[m
+Author: PARK youngho <programmer.youngho@gmail.com>
+Date:   Wed Nov 29 00:04:32 2023 +0600
+
+    Ver. 0.1.4.18. Fixed bugs of the methods BigUInt::widening_mul_assign_uint_2(), BigUInt::wrapping_mul_assign_uint_2(), BigUInt::widening_mul_assign_2(), and BigUInt::wrapping_mul_assign_2(). Added some more documentation.
+
+[33mcommit e71272f426388585fbd18399683644225f3d5110[m
+Author: PARK youngho <programmer.youngho@gmail.com>
+Date:   Thu Nov 23 23:23:30 2023 +0600
+
+    Ver. 0.1.4.17. Added some more documentation.
+
+[33mcommit 4ec46ee922e466014a26682637f038cf2e64dadf[m
+Author: PARK youngho <programmer.youngho@gmail.com>
+Date:   Wed Nov 15 01:15:59 2023 +0600
+
+    Ver. 0.1.4.16. Added the initial version of hash::sha1::SHA1
+
+[33mcommit 7046be5249c4aaa3fd77f72062324d668765bee7[m
+Author: PARK youngho <programmer.youngho@gmail.com>
+Date:   Sun Nov 12 23:17:04 2023 +0600
+
+    Ver. 0.1.4.15. Added BigUInt::into_uint()
+
+[33mcommit 8466c29f0426a07a6bd41bc54edec359c82754c6[m
+Author: PARK youngho <programmer.youngho@gmail.com>
+Date:   Thu Nov 9 22:07:01 2023 +0600
+
+    Ver. 0.1.4.14. Fixed bugs for BigUInt::wrapping_mul_assign_1(), and added some more comments.
+
+[33mcommit f60e03624bbf5f5d37df97754a3f388dde5c0720[m
+Author: PARK youngho <programmer.youngho@gmail.com>
+Date:   Tue Nov 7 21:28:28 2023 +0600
+
+    Ver. 0.1.4.13. Fixed bugs for BigUInt::carrying_add_assign() and BigUInt::borrowing_sub_assign(), and added comments
+
+[33mcommit 20dbeb53d150948f2358322cd817723b609c57d9[m
+Author: PARK youngho <programmer.youngho@gmail.com>
+Date:   Fri Oct 27 00:23:02 2023 +0600
+
+    Ver. 0.1.4.12. Improved BigUInt::widening_mul_assign_uint() and added function pointers to struct BigUInt.
+
+[33mcommit abca1accb2add9e4aa49fc602c569b55236f7848[m
+Author: PARK youngho <programmer.youngho@gmail.com>
+Date:   Tue Oct 17 00:01:08 2023 +0600
+
+    Ver. 0.1.4.11. Improved the methods wrapping_mul_assign() and wrapping_mul_assign_uint().
+
+[33mcommit b4e35a65655155ae9a64b6ce373e02c12402d73b[m
+Author: PARK youngho <programmer.youngho@gmail.com>
+Date:   Mon Oct 16 23:10:30 2023 +0600
+
+    Ver. 0.1.4.10. Improved the methods divide_fully() and divide_fully_uint(), and moved all test code into examples folder.
+
+[33mcommit 9cfa5ffc62d57af2f7e97d87525aa1d974ed1409[m
+Author: PARK youngho <programmer.youngho@gmail.com>
+Date:   Sat Oct 7 23:47:57 2023 +0600
+
+    Ver. 0.1.4.9. Fixed the bug of wrapping_sub_assign() of BigUInt so that all the bugs related to prime number are fixed.
+
+[33mcommit 0c5b515ace40aa6a647d597df19631cd4302306e[m
+Author: PARK youngho <programmer.youngho@gmail.com>
+Date:   Mon Oct 2 01:32:51 2023 +0600
+
+    Ver. 0.1.4.8. Fixed some bugs in the methods of BigUInt.
+
+[33mcommit eca51df714be41e50e20162192d8515af4387c1e[m
+Author: PARK youngho <programmer.youngho@gmail.com>
+Date:   Wed Sep 27 21:45:30 2023 +0600
+
+    Ver. 0.1.4.7. Added some more methods to trait SmallUInt and its implementation for Unions and primitive integers.
+
+[33mcommit 3016aa0b54d32a5edca7b05c61be6fa11d5bd4e2[m
+Author: PARK youngho <programmer.youngho@gmail.com>
+Date:   Sat Sep 23 17:24:38 2023 +0600
+
+    Ver. 0.1.4.6. Added implementation of PartialEq<T> and PartialOrd<T>, and added some more documentation and examples in documentation.
+
+[33mcommit 5aed27b522b151f32cface731fd871f97b0d03b2[m
+Author: PARK youngho <programmer.youngho@gmail.com>
+Date:   Tue Sep 19 09:29:46 2023 +0600
+
+    Ver. 0.1.4.5. Change the module name uint into small_uint, and change trait name Uint into SmallUInt, and added some examples to documentation.
+
+[33mcommit 504107f55be5931e4621804f21cfd1527367df73[m
+Author: PARK youngho <programmer.youngho@gmail.com>
+Date:   Mon Sep 18 23:12:54 2023 +0600
+
+    Ver. 0.1.4.4. Change the methods set_uint() and is_uint() of BigUInt into generic version such as set_uint<U>() and is_uint<U>(), and added some examples to documentation.
+
+[33mcommit d6642945984b4514a9db13407a13dc005afbcf72[m
+Author: PARK youngho <programmer.youngho@gmail.com>
+Date:   Sun Sep 17 09:18:05 2023 +0600
+
+    Ver. 0.1.4.3. Removed some implementation of Add, AddAssign, Sub, SubAssign, Mul, MulAssign, Div, DivAssign, Rem, RemAssign, And, AndAssign, Or, OrAssign, Xor, XorAssign, and Not, and added some more documentation and examples.
+
+[33mcommit 515e41503a07df57faeda3be3de01590af5b16c8[m
+Author: PARK youngho <programmer.youngho@gmail.com>
+Date:   Fri Sep 8 21:43:13 2023 +0600
+
+    Ver. 0.1.4.2. Added more methods to BigUInt
+
+[33mcommit f65afaed1faae45a90dc8e0701d75678c4e7ff37[m
+Author: PARK youngho <programmer.youngho@gmail.com>
+Date:   Sat Sep 2 15:10:08 2023 +0600
+
+    Ver. 0.1.4.1. Added more traits such as Add<&Self>, AddAssign<&Self>, Sub<&Self>, SubAssign<&Self>, Mul<&Self>, MulAssign<&Self>, Div<&Self>, DivAssign<&Self>, Rem<&Self>, RemAssign<&Self>, etc. for BigUInt.
+
+[33mcommit 47c17f62c8a7ad4d34c0625aab5ee7442b1cd287[m
+Author: PARK youngho <programmer.youngho@gmail.com>
+Date:   Sat Sep 2 07:23:41 2023 +0600
+
+    Ver. 0.1.4.0. Removed the derived Copy trait from BigUInt, and changed all the relevant codes.
+
+[33mcommit 9507945cd36b19b6aac625d7bc34fc278aa6fa9f[m
+Author: PARK youngho <programmer.youngho@gmail.com>
+Date:   Wed Aug 30 23:58:51 2023 +0600
+
+    Ver. 0.1.3.9. Created the counterpart methods for arithmetic operation for unsigned integer for BigUInt, and change the relevant codes anywhere, and added some documentation.
+
+[33mcommit 97102dde11bcc55f5c75bfc95f3a8f1fce94dc77[m
+Author: PARK youngho <programmer.youngho@gmail.com>
+Date:   Wed Aug 30 13:53:41 2023 +0600
+
+    Ver. 0.1.3.8. Changed the names of some methods BigUInt::{add_uint(), accumulate(), sub_uint(), dissipate(), mul_uint(), times()} into BigUInt::{wrapping_add_uint(), wrapping_add_assign_uint(), wrapping_sub_assign_wrapping_mul_uint(), wrapping_mul_assign_uint()uint()} respectively, and change the relevant codes anywhere.
+
+[33mcommit 194891e7b0e9cd799601256b2f762dca2ed40c8a[m
+Author: PARK youngho <programmer.youngho@gmail.com>
+Date:   Wed Aug 30 09:17:53 2023 +0600
+
+    Ver. 0.1.3.7. Changed the names of some methods trait Uint::{carrying_mul_for_internal_use(), widening_mul_assign()}, and added their implementation for primitive unsigned integer type, and changed some documentation
+
+[33mcommit 8e16c2a27611555798779ac29593c50ca4221bc1[m
+Author: PARK youngho <programmer.youngho@gmail.com>
+Date:   Wed Aug 30 08:43:28 2023 +0600
+
+    Ver. 0.1.3.6. Added some methods BigUInt::{carrying_mul(), carrying_mul_assign(), widening_mul(), widening_mul_assign(), pow_assign() }, and added some more documentation and changed some documentation
+
+[33mcommit b7dea2fc0ebdac83eee857c2c6839bfe0cdd6414[m
+Author: PARK youngho <programmer.youngho@gmail.com>
+Date:   Sun Aug 27 22:24:30 2023 +0600
+
+    Ver. 0.1.3.5. Added some methods BigUInt::{saturating_rem(), saturating_rem_assign()} and added some documentation.
+
+[33mcommit 890677e03e1dc84493035f8cb7551bb2e58f1b96[m
+Author: PARK youngho <programmer.youngho@gmail.com>
+Date:   Fri Aug 25 22:31:00 2023 +0600
+
+    Ver. 0.1.3.4. Fixed bugs in methods BigUInt::{leading_zeros(), leading_ones(), and shift_left_assign()} and added some more documentation.
+
+[33mcommit eb7a5cbeb5216e9cc082149383da423f6b064ec7[m
+Author: PARK youngho <programmer.youngho@gmail.com>
+Date:   Mon Aug 21 17:41:11 2023 +0600
+
+    Ver. 0.1.3.3. Fixed a bug in uninon and wrote some more documentation.
+
+[33mcommit 06d3780fcf7c8b33fb22402e6d761c91c652439f[m
+Author: PARK youngho <programmer.youngho@gmail.com>
+Date:   Tue Aug 15 15:21:25 2023 +0600
+
+    Ver. 0.1.3.2. Moved all test codes into tests module and added some documentation
+
+[33mcommit 28c9b587c857e4a4b547beb784fcbb885dc0bc11[m
+Author: PARK youngho <programmer.youngho@gmail.com>
+Date:   Tue Aug 8 14:24:52 2023 +0600
+
+    Ver. 0.1.3.1. Changed all the union names UShort, UInt, ULong, ULonger, and USize into ShortUnion, IntUnion, LongUnion, LongerUnion, and SizeUnion, and add signed integral type items to them so that they can be use not only for unsigned context but also for signed context.
+
+[33mcommit b5a4545463a74f7294f02613336f891ff82617c6[m
+Author: PARK youngho <programmer.youngho@gmail.com>
+Date:   Sat Aug 5 07:56:16 2023 +0600
+
+    Ver. 0.1.3.0. Added some methods submax() to BigUInt, and moved unions UShort, UInt, ULong, and ULonger to the module unit_unions, and added some implementation using macros, and added some more documentations.
+
+[33mcommit c0a50b16dc8faabb6bbd2728a09656ccf4b70c8f[m
+Author: PARK youngho <programmer.youngho@gmail.com>
+Date:   Tue Aug 1 09:16:29 2023 +0600
+
+    Ver. 0.1.2.9. Added field 'this' to unions UShort, UInt, ULong, and ULonger, and added more documentations.
+
+[33mcommit 34ca3007751fa0e730c26d03f53c0d207845bb87[m
+Author: PARK youngho <programmer.youngho@gmail.com>
+Date:   Sun Jul 30 22:34:10 2023 +0600
+
+    Ver. 0.1.2.8. Removed the modules numeric, real, and float, and added some more random number generator methods, some random prime nubmer generator methods, and prime number determinator, and added some get/set methods for UShort, UInt, ULong, ULonger, and USize structs, added more documentations.
+
+[33mcommit 239794bd61a654fb3006ba614a52edda0dcd8e17[m
+Author: PARK youngho <programmer.youngho@gmail.com>
+Date:   Fri Jul 21 23:30:54 2023 +0600
+
+    Ver. 0.1.2.7. Make traits and their implementations and moved all relavant codes to there, and added more documentation.
+
+[33mcommit 416484fd8b878d90cacc65dd3d02bc1a635d7924[m
+Author: PARK youngho <programmer.youngho@gmail.com>
+Date:   Tue Jul 18 00:12:33 2023 +0600
+
+    Ver.  0.1.2.6. Added the methods random() and random_with_MSB_set() to BigUInt.
+
+[33mcommit 0f0454020649a114e16f76fcbf252cd37411fd29[m
+Author: PARK youngho <programmer.youngho@gmail.com>
+Date:   Mon Jul 17 11:05:09 2023 +0600
+
+    Ver.  0.1.2.5. Moved the contents of the modules huge_number and big_number to implementation of struct BigUInt, and removed the modules huge_number and big_number, and added the method is_one().
+
+[33mcommit 8d6214ffc15438d2596d9dd1a68fb26ce11c8692[m
+Author: PARK youngho <programmer.youngho@gmail.com>
+Date:   Mon Jul 17 00:36:19 2023 +0600
+
+    Ver.  0.1.2.4. Added methods to_string_with_radix_and_stride() and to_string_with_radix_and_delimiter() to BigUInt.
+
+[33mcommit b7d3cd914d8c30ce01613b3b339e9aa270f3008f[m
+Author: PARK youngho <programmer.youngho@gmail.com>
+Date:   Mon Jul 17 00:08:48 2023 +0600
+
+    Ver.  0.1.2.3. Added implementation of the traits From and FromStr for BigUInt, and added the enumerator NumberErr, and added some more documentation.
+
+[33mcommit fc8cf9db21ce62d9c7a958cba792b02a68cd918d[m
+Author: PARK youngho <programmer.youngho@gmail.com>
+Date:   Fri Jul 7 00:46:11 2023 +0600
+
+    Ver.  0.1.2.2. Moved all macros in mod.rs to macros_number.rs, and added documentation
+
+[33mcommit 259d9b37c2310f92dd7920699474c65e23606816[m
+Author: PARK youngho <programmer.youngho@gmail.com>
+Date:   Thu Jul 6 02:08:38 2023 +0600
+
+    Ver.  0.1.2.1. Added macros for predetermined types such as u256, u1024, etc. and added documentation.
+
+[33mcommit 4912a878d642639d134e4109f0f4ed6e8cf9b6f7[m
+Author: PARK youngho <programmer.youngho@gmail.com>
+Date:   Mon Jul 3 01:21:58 2023 +0600
+
+    Ver.  0.1.2.0. Fixed all example codes, and added documentation.
+
+[33mcommit a7c2a0aea163640fc7d202361e4d7d6344fc4fb1[m
+Author: PARK youngho <programmer.youngho@gmail.com>
+Date:   Fri Jun 30 23:02:12 2023 +0600
+
+    Ver.  0.1.1.34. Fixed bugs of functions divide_by_uint_fully() and divide_fully(), and added documentation.
+
+[33mcommit 504326ec0e1a4b901046324ca4eb13406b276876[m
+Author: PARK youngho <programmer.youngho@gmail.com>
+Date:   Tue Jun 20 09:42:36 2023 +0600
+
+    Ver.  0.1.1.33. Chnaged the trait name  BigNumber into BigInteger.
+
+[33mcommit 39d51d3d9369e0f638700653ca4bce863d7a7608[m
+Author: PARK youngho <programmer.youngho@gmail.com>
+Date:   Tue Jun 20 09:37:46 2023 +0600
+
+    Ver.  0.1.1.32. Moved some functions from the trait BigNumber to a trait HugeInteger.
+
+[33mcommit 93d3287acee2f8e1f7775317464df3680dcd06f4[m
+Author: PARK youngho <programmer.youngho@gmail.com>
+Date:   Tue Jun 20 09:28:04 2023 +0600
+
+    Ver.  0.1.1.31. Added a trait HugeInteger.
+
+[33mcommit c936945c29594a1be82de742981a8391d442b218[m
+Author: PARK youngho <programmer.youngho@gmail.com>
+Date:   Mon Jun 19 00:43:05 2023 +0600
+
+    Ver.  0.1.1.30. Removed the trait BigUnsignedInt, and fixed recursion compilation error.
+
+[33mcommit a5d0978f3f429c3c539e5fb4eff937a9467108b0[m
+Author: PARK youngho <programmer.youngho@gmail.com>
+Date:   Sun Jun 18 00:51:48 2023 +0600
+
+    Ver.  0.1.1.29. Divided BigUInt into traits BigNumber and BigUnsignedInt.
+
+[33mcommit 8f908a71e11d7463d70cc776d14e51099bc0e632[m
+Author: PARK youngho <programmer.youngho@gmail.com>
+Date:   Fri Jun 16 23:47:03 2023 +0600
+
+    Ver.  0.1.1.28. Added documentation to types such as u256, U32, etc.
+
+[33mcommit 13d02570675428147a4368f20650a02841538960[m
+Author: PARK youngho <programmer.youngho@gmail.com>
+Date:   Fri Jun 16 00:04:06 2023 +0600
+
+    Ver.  0.1.1.27. Fixed bugs of BigUInt<T, N>::add_assign(), BigUInt<T, N>::sub_assign(), BigUInt<T, N>::mul_assign(), BigUInt<T, N>::shl_assign(), BigUInt<T, N>::shr_assign(), and BigUInt<T, N>::partial_cmp() and create big endian version of them with bug fixing..
+
+[33mcommit aa7cc5a6a442a34f5d96272428768e8c43b1ab6c[m
+Author: PARK youngho <programmer.youngho@gmail.com>
+Date:   Sun Jun 11 20:55:26 2023 +0600
+
+    Ver. 0.1.1.26. Fixed bugs of BigUInt<T, N>::from_uint() for both of little endian version and big endian version, and improved them again.
+
+[33mcommit 873740acf1be58d6f315f8530369b2f872f4aeb4[m
+Author: PARK Youngho <programmer.youngho@gmail.com>
+Date:   Fri Jun 9 15:47:19 2023 +0600
+
+    Ver. 0.1.1.25. Added documents for BigUInt<T, N>::make_check_bits(), BigUInt<T, N>::to_string_with_radix() and BigUInt<T, N>::BigUInt<T, N>::turn_check_bits(), and added a Big Endian version to BigUInt<T, N>::turn_check_bits().
+
+[33mcommit 28520bce28c1fecf3cb7b27f77e8bc599742b298[m
+Author: PARK Youngho <programmer.youngho@gmail.com>
+Date:   Fri Jun 9 10:39:18 2023 +0600
+
+    Ver. 0.1.1.24. Fixed bugs of BigUInt<T, N>::from_uint() for both of little endian version and big endian version.
+
+[33mcommit c99fb3918159351917e2a1c21367335715ba6548[m
+Author: PARK youngho <programmer.youngho@gmail.com>
+Date:   Fri Jun 9 01:11:09 2023 +0600
+
+    Ver. 0.1.1.23. Added Big Endian codes to BigUInt<T, N>::from_uint().
+
+[33mcommit a11c71e19b7eaffff401248e174c7f6f4a91fadf[m
+Author: PARK youngho <programmer.youngho@gmail.com>
+Date:   Thu Jun 8 00:01:43 2023 +0600
+
+    Ver. 0.1.1.22. Added Big Endian codes to ShlAssign<i32> for BigUInt<T, N> and ShrAssign<i32> for BigUInt<T, N>.
+
+[33mcommit a292946736a54d4ecd12798a55d4305d281343f8[m
+Author: PARK youngho <programmer.youngho@gmail.com>
+Date:   Tue Jun 6 14:38:37 2023 +0600
+
+    Ver. 0.1.1.21. Fixed bugs of BigUInt::divide_fully() and  BigUInt::divide_by_uint_fully(), added function BigUInt<T, N>::into_biguint(), and ammended documents.
+
+[33mcommit bec5c8646e3fd9a22ffdb937bcdfda494b4565d5[m
+Author: PARK youngho <programmer.youngho@gmail.com>
+Date:   Sat Jun 3 14:18:59 2023 +0600
+
+    Ver. 0.1.1.21. Added and ammended documentation and added functions BigUInt<T, N>::in_byte() and BigUInt<T, N>::from_biguint().
+
+[33mcommit ff416e8cc04b5cabc0ad6ded6dc6fa79a91f0f8c[m
+Author: PARK Youngho <programmer.youngho@gmail.com>
+Date:   Fri Jun 2 15:48:52 2023 +0600
+
+    Ver. 0.1.1.20. Sorted all functions in uint.rs, int.rs, numeric.rs, float.rs and real.rs.
+
+[33mcommit 6d95c780a9e16691185632f2957375bceabbe5a2[m
+Author: PARK Youngho <programmer.youngho@gmail.com>
+Date:   Fri Jun 2 15:09:26 2023 +0600
+
+    Ver. 0.1.1.19. Changed file name Uint.rs, Int.rs, Numeric.rs, Float.rs and Real.rs into uint.rs, int.rs, numeric.rs, float.rs and real.rs.
+
+[33mcommit 5844400152ff0b283f93e253943fb43c3d600038[m
+Author: PARK Youngho <programmer.youngho@gmail.com>
+Date:   Fri Jun 2 11:58:29 2023 +0600
+
+    Ver. 0.1.1.18. Divided primitive.rs into Uint.rs, Int.rs, Numeric.rs, Float.rs and Real.rs. Added lib.rs.
+
+[33mcommit 9e46c36f7ab9160f7919b9377562da55d9afa61c[m
+Author: PARK youngho <programmer.youngho@gmail.com>
+Date:   Thu Jun 1 23:28:41 2023 +0600
+
+    Ver. 0.1.0.17. I fixed bugs of BigUInt<T,N>::divide_by_uint_fully(), BigUInt<T,N>::divide_fully(), BigUInt<T,N>::times(), BigUInt<T,N>::to_string_with_radix(), and BigUInt<T,N>::from_string_with_radix().
+
+[33mcommit df71de7c0c90d2e3769041536057a598024f013e[m
+Author: PARK youngho <programmer.youngho@gmail.com>
+Date:   Tue May 30 23:46:18 2023 +0600
+
+    Ver. 0.1.0.16. I added BigUInt<T,N>::into_u8(), BigUInt<T,N>::into_u16(), BigUInt<T,N>::into_u32(), BigUInt<T,N>::into_u64(), and BigUInt<T,N>::into_u128().
+
+[33mcommit c9638fc87d2399b3772d26137362eea742446795[m
+Author: PARK youngho <programmer.youngho@gmail.com>
+Date:   Tue May 30 00:15:46 2023 +0600
+
+    Ver. 0.1.0.15. I added Display::fmt() for Big_UInt so that it can be displayed normal way such as println!("{}", a), and added comments and rust docs to publish it.
+
+[33mcommit 81d13d51ca290b53836e68e77901602cd79403bb[m
+Author: PARK youngho <programmer.youngho@gmail.com>
+Date:   Sun May 28 23:52:25 2023 +0600
+
+    Ver. 0.1.0.13. I improved BigUInt<T, N>::mul_assign() and so it is a bit faster.
+
+[33mcommit 9c6c302028452b46c5946dc25dbbd5d686a5cc80[m
+Author: PARK youngho <programmer.youngho@gmail.com>
+Date:   Fri May 26 00:22:08 2023 +0600
+
+    Ver. 0.1.0.12. I improved BigUInt<T, N>::add_uint() and BigUInt<T, N>::sub_uint(). So, they are a bit faster.
+
+[33mcommit 8b3cafe7660d2da49b1093cdbff54dfd0810670d[m
+Author: PARK youngho <programmer.youngho@gmail.com>
+Date:   Wed May 24 01:32:21 2023 +0600
+
+    Ver. 0.1.0.10. I fixed all the bugs in BigUInt<T, N>::to_string_with_radix(), BigUInt<T, N>::divide_fully(), and BigUInt<T, N>::mul_assign(). So, it is faster than I expected.
+
+[33mcommit 774773aee300b7c5641b290dead5f695139f6890[m
+Author: PARK youngho <programmer.youngho@gmail.com>
+Date:   Sat May 20 01:28:26 2023 +0600
+
+    Ver. 0.1.0.4. I tried to improve BigUInt<T, N>::to_string_with_radix() but it is slower than I expected.
+
+[33mcommit 8fa90bbc85c89065685e3c0073fa283ada010ba1[m
+Author: PARK youngho <programmer.youngho@gmail.com>
+Date:   Fri May 19 07:01:32 2023 +0600
+
+    Ver. 0.1.0.3. I changed module names and improved multiplication.
+
+[33mcommit a04d40c28825e54671848fb8a82d1014705cea83[m
+Author: PARK youngho <programmer.youngho@gmail.com>
+Date:   Thu May 18 13:48:33 2023 +0600
+
+    Ver. 0.1.0.2. I fixed all the grammar errors and improved multiplication.
+
+[33mcommit afa843023289123e32962d680a96816512422707[m
+Author: PARK youngho <programmer.youngho@gmail.com>
+Date:   Thu May 18 12:42:56 2023 +0600
+
+    Ver. 0.1.0.1. I approved multiplication and shift right and left, but it I created grammar errors.
+
+[33mcommit 30793327a04f449fb3808226f8782174bba5bf05[m
+Author: PARK youngho <programmer.youngho@gmail.com>
+Date:   Sat May 13 19:55:28 2023 +0600
+
+    Ver. 0.1.0.0. Modules primitive and big_uint are written. In the module primitive, trait Uint and its implementations for u8, u16, u32, u64, u128 and usize, trait Int and its implementations for i8, i16, i32, i64 and i128, trait Float and its implementations for f32 and f64, trait Numeric and its implementation for u8, u16, u32, u64, u128, i8, i16, i32, i64 and i128, trait Real and its implementation for u8, u16, u32, u64, u128, usize, i8, i16, i32, i64, i128, f32 and f64 are written. And, the unions UShort, UInt, ULong, ULonger and USize, and their implementations are written in the module primitive. And also, in the module primitive, trait Large_Integer is written. In the module big_uint, struct BigUInt and trait Large_Integer's implementation for BigUInt are written. The traits Add, AddAssign, Sub, SubAssign, Mul, MulAssign, Div, DivAssign, Rem, RemAssign, Shl, ShlAssign, Shr, ShrAssign, BitAnd, BitAndAssign, BitOr, BitOrAssign, BitXor, BitXorAssign, Not, PartialEq, PartialOrd's implementations for BigUInt are written.

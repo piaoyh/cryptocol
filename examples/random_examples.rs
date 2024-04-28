@@ -13,45 +13,9 @@
 
 pub fn main()
 {
-    random_random();
-}
-
-fn random_random()
-{
     random_quick_start();
     random_new();
-    random_new_with_seeds();
-    random_random_u8();
-    random_random_u16();
-    random_random_u32();
-    random_random_u64();
-    random_random_u128();
-    random_random_usize();
-    random_random_uint();
-    random_random_under_uint();
-    random_random_under_uint_();
-    random_random_minmax_uint();
-    random_random_minmax_uint_();
-    random_random_odd_uint();
-    random_random_odd_under_uint();
-    random_random_odd_under_uint_();
-    random_random_with_msb_set_uint();
-    random_random_odd_with_msb_set_uint();
-    random_random_prime_using_miller_rabin_uint();
-    random_random_prime_with_msb_set_using_miller_rabin_uint();
-    random_random_array();
-    random_put_random_array();
-    random_random_biguint();
-    random_random_under_biguint();
-    random_random_under_biguint_();
-    random_random_odd_biguint();
-    random_random_odd_under_biguint();
-    random_random_odd_under_biguint_();
-    random_random_with_msb_set_biguint();
-    random_random_odd_with_msb_set_biguint();
-    random_random_prime_using_miller_rabin_biguint();
-    random_random_prime_with_msb_set_using_miller_rabin_biguint();
-
+    random_random();
 }
 
 fn random_quick_start()
@@ -132,17 +96,103 @@ fn random_quick_start()
     println!("-------------------------------");
 }
 
+
 fn random_new()
 {
     println!("random_new");
+    // Example for Random
     use cryptocol::random::Random;
     let mut rand = Random::new();
     println!("Random number = {}", rand.random_u128());
-    println!("Random number = {}", rand.random_u64());
-    println!("Random number = {}", rand.random_u32());
-    println!("Random number = {}", rand.random_u16());
-    println!("Random number = {}", rand.random_u8());
+
+    // Example for Any
+    use cryptocol::random::Any;
+    let mut any = Any::new();
+    println!("Any number = {}", any.random_u64());
+
+    // Example for Any_Num
+    use cryptocol::random::Any_Num;
+    let mut any_num = Any_Num::new();
+    println!("Any number = {}", any_num.random_u32());
+
+    // Example for Any_Num_C
+    use cryptocol::random::Any_Num_C;
+    let mut any_num_c = Any_Num_C::new();
+    println!("Any number = {}", any_num_c.random_u16());
+
+    // Example for Any_MD4
+    use cryptocol::random::Any_MD4;
+    let mut any_md4 = Any_MD4::new();
+    println!("Any number = {}", any_md4.random_u8());
+
+    // Example for Any_MD5
+    use cryptocol::random::Any_MD5;
+    let mut any_md5 = Any_MD5::new();
+    println!("Any number = {}", any_md5.random_usize());
+
+    // Example for Any_SHA0
+    use cryptocol::random::Any_SHA0;
+    let mut any_sha0 = Any_SHA0::new();
+    println!("Any number = {}", any_sha0.random_uint::<u8>());
+
+    // Example for Any_SHA1
+    use cryptocol::random::Any_SHA1;
+    let mut any_sha1 = Any_SHA1::new();
+    if let Some(num) = any_sha1.random_under_uint(1234_u16)
+        { println!("Any number = {}", num); }
+
+    // Example for Any_SHA2_256
+    use cryptocol::random::Any_SHA2_256;
+    let mut any_sha2_256 = Any_SHA2_256::new();
+    if let Some(num) = any_sha2_256.random_minmax_uint(12345678_u32, 87654321)
+        { println!("Any number = {}", num); }
+
+    // Example for Any_SHA2_512
+    use cryptocol::random::Any_SHA2_512;
+    let mut any_sha2_512 = Any_SHA2_512::new();
+    println!("Any odd number = {}", rand.random_odd_uint::<u64>());
+
+    // Example for Random_SHA2_512
+    use cryptocol::random::Random_SHA2_512;
+    let mut random_sha2_512 = Random_SHA2_512::new();
+    println!("Random prime number = {}", random_sha2_512.random_prime_using_miller_rabin_uint::<u128>(5));
     println!("-------------------------------");
+}
+
+fn random_random()
+{
+    random_new_with_seeds();
+    random_random_u8();
+    random_random_u16();
+    random_random_u32();
+    random_random_u64();
+    random_random_u128();
+    random_random_usize();
+    random_random_uint();
+    random_random_under_uint();
+    random_random_under_uint_();
+    random_random_minmax_uint();
+    random_random_minmax_uint_();
+    random_random_odd_uint();
+    random_random_odd_under_uint();
+    random_random_odd_under_uint_();
+    random_random_with_msb_set_uint();
+    random_random_odd_with_msb_set_uint();
+    random_random_prime_using_miller_rabin_uint();
+    random_random_prime_with_msb_set_using_miller_rabin_uint();
+    random_random_array();
+    random_put_random_array();
+    random_random_biguint();
+    random_random_under_biguint();
+    random_random_under_biguint_();
+    random_random_odd_biguint();
+    random_random_odd_under_biguint();
+    random_random_odd_under_biguint_();
+    random_random_with_msb_set_biguint();
+    random_random_odd_with_msb_set_biguint();
+    random_random_prime_using_miller_rabin_biguint();
+    random_random_prime_with_msb_set_using_miller_rabin_biguint();
+
 }
 
 fn random_new_with_seeds()
