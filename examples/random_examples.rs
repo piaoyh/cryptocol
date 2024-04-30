@@ -739,25 +739,91 @@ fn random_random_usize()
     use cryptocol::hash::SHA2_512_Expanded;
     type MySHA2 = SHA2_512_Expanded<0x1212_1212_1212_1212, 0x3434_3434_3434_3434, 0x5454_5454_5454_5454, 0x7878_7878_7878_7878, 0x9A9A_9A9A_9A9A_9A9A, 0xbcbc_bcbc_bcbc_bcbc, 0xdede_dede_dede_dede, 0xf0f0_f0f0_f0f0_f0f0, 240>;
     type MyAny = Random_Generic<MySHA2>;
-    let mut any_sha2_expanded2 = MyAny::new();
+    let mut any_sha2_expanded1 = MyAny::new();
     for i in 0..10
-        { println!("{} Any number (Random_Generic) = {}", i, any_sha2_expanded2.random_u64()); }
+        { println!("{} Any number (Random_Generic) = {}", i, any_sha2_expanded1.random_usize()); }
     println!("-------------------------------");
-    panic!("Intentional Stop");
 }
 
 fn random_random_uint()
 {
     println!("random_random_uint");
+    // Example for Random
+    use cryptocol::random::Random;
+    let mut rand = Random::new();
+    for i in 0..10
+        { println!("{} Random number (Random) = {}", i, rand.random_uint::<u8>()); }
+
+    // Example for Any
+    use cryptocol::random::Any;
+    let mut any = Any::new();
+    for i in 0..10
+        { println!("{} Any number (Any) = {}", i, any.random_uint::<u16>()); }
+  
+    // Example for Any_Num
+    use cryptocol::random::Any_Num;
+    let mut any_num = Any_Num::new();
+    for i in 0..10
+        { println!("{} Any number (Any_Num) = {}", i, any_num.random_uint::<u32>()); }
+
+    // Example for Any_Num_C
+    use cryptocol::random::Any_Num_C;
+    let mut any_num_c = Any_Num_C::new();
+    for i in 0..10
+        { println!("{} Any number (Any_Num_C) = {}", i, any_num_c.random_uint::<u64>()); }
+
+    // Example for Any_MD4
+    use cryptocol::random::Any_MD4;
+    let mut any_md4 = Any_MD4::new();
+    for i in 0..10
+        { println!("{} Any number (Any_MD4) = {}", i, any_md4.random_uint::<u128>()); }
+
+    // Example for Any_MD5
+    use cryptocol::random::Any_MD5;
+    let mut any_md5 = Any_MD5::new();
+    for i in 0..10
+        { println!("{} Any number (Any_MD5) = {}", i, any_md5.random_uint::<usize>()); }
+
+    // Example for Any_SHA0
+    use cryptocol::random::Any_SHA0;
+    let mut any_sha0 = Any_SHA0::new();
+    for i in 0..10
+        { println!("{} Any number (Any_SHA0) = {}", i, any_sha0.random_uint::<u8>()); }
+
+    // Example for Any_SHA1
+    use cryptocol::random::Any_SHA1;
+    let mut any_sha1 = Any_SHA1::new();
+    for i in 0..10
+        { println!("{} Any number (Any_SHA1) = {}", i, any_sha1.random_uint::<u16>()); }
+
+    // Example for Any_SHA2_256
     use cryptocol::random::Any_SHA2_256;
-    let mut rand = Any_SHA2_256::new();
-    println!("Random number u8 = {}", rand.random_uint::<u8>());
-    println!("Random number u16 = {}", rand.random_uint::<u16>());
-    println!("Random number u32 = {}", rand.random_uint::<u32>());
-    println!("Random number u64 = {}", rand.random_uint::<u64>());
-    println!("Random number u128 = {}", rand.random_uint::<u128>());
-    println!("Random number usize = {}", rand.random_uint::<usize>());
+    let mut any_sha2_256 = Any_SHA2_256::new();
+    for i in 0..10
+        { println!("{} Any number (Any_SHA2_256) = {}", i, any_sha2_256.random_uint::<u32>()); }
+
+    // Example for Any_SHA2_512
+    use cryptocol::random::Any_SHA2_512;
+    let mut any_sha2_512 = Any_SHA2_512::new();
+    for i in 0..10
+        { println!("{} Any number (Any_SHA2_512) = {}", i, any_sha2_512.random_uint::<u64>()); }
+
+    // Example for Random_SHA2_512
+    use cryptocol::random::Random_SHA2_512;
+    let mut rand_sha2_512 = Random_SHA2_512::new();
+    for i in 0..10
+        { println!("{} Random number (Random_SHA2_512) = {}", i, rand_sha2_512.random_uint::<u128>()); }
+
+    // Example for Random_Generic
+    use cryptocol::random::Random_Generic;
+    use cryptocol::hash::SHA2_512_Expanded;
+    type MySHA2 = SHA2_512_Expanded<0x1212_1212_1212_1212, 0x3434_3434_3434_3434, 0x5454_5454_5454_5454, 0x7878_7878_7878_7878, 0x9A9A_9A9A_9A9A_9A9A, 0xbcbc_bcbc_bcbc_bcbc, 0xdede_dede_dede_dede, 0xf0f0_f0f0_f0f0_f0f0, 240>;
+    type MyAny = Random_Generic<MySHA2>;
+    let mut any_sha2_expanded2 = MyAny::new();
+    for i in 0..10
+        { println!("{} Any number (Random_Generic) = {}", i, any_sha2_expanded2.random_uint::<u128>()); }
     println!("-------------------------------");
+    panic!("Intentional Stop");
 }
 
 fn random_random_under_uint()
