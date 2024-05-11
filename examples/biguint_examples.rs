@@ -224,9 +224,8 @@ fn biguint_new()
     define_utypes_with!(u128);
 
     let obj = U256::new();
-    let zero = U256::zero();
     println!("obj = {}", obj);
-    assert_eq!(obj, zero);
+    assert_eq!(obj.to_string(), "0");
     println!("-------------------------------");
 }
 
@@ -237,9 +236,8 @@ fn biguint_zero()
     define_utypes_with!(u64);
 
     let zero = U256::zero();
-    let obj = U256::new();
     println!("zero = {}", zero);
-    assert_eq!(zero, obj);
+    assert_eq!(zero.to_string(), "0");
     println!("-------------------------------");
 }
 
@@ -250,132 +248,78 @@ fn biguint_one()
     define_utypes_with!(u32);
 
     let one = U256::one();
-    let mut obj = U256::new();
-    obj.set_uint(1_u32);
     println!("one = {}", one);
-    assert_eq!(one, obj);
+    assert_eq!(one.to_string(), "1");
     println!("-------------------------------");
 }
 
 fn biguint_max()
 {
     println!("biguint_max");
-    use std::str::FromStr;
     use cryptocol::define_utypes_with;
     define_utypes_with!(u16);
 
     let maximum = U256::max();
     println!("maximum =\t{}", maximum);
-    assert_eq!(maximum, U256::from_str("115792089237316195423570985008687907853269984665640564039457584007913129639935").unwrap());
+    assert_eq!(maximum.to_string(), "115792089237316195423570985008687907853269984665640564039457584007913129639935");
+    assert_eq!(maximum.wrapping_add_uint(1_u16), U256::zero());
     println!("---------------------------");
 }
 
 fn biguint_submax()
 {
     println!("biguint_submax");
-    use std::str::FromStr;
     use cryptocol::define_utypes_with;
     define_utypes_with!(u8);
 
     let half = U256::submax(128_usize);
     println!("half maximum = \t{}", half);
-    assert_eq!(half, U256::from_str("340282366920938463463374607431768211455").unwrap());
+    println!("half maximum = \t{}", half.to_string_with_radix_and_stride(16, 4).unwrap());
+    assert_eq!(half.to_string(), "340282366920938463463374607431768211455");
+    assert_eq!(half.to_string_with_radix_and_stride(16, 4).unwrap(), "FFFF_FFFF_FFFF_FFFF_FFFF_FFFF_FFFF_FFFF");
     println!("---------------------------");
 }
 
 fn biguint_halfmax()
 {
     println!("biguint_halfmax");
-    use std::str::FromStr;
     use cryptocol::define_utypes_with;
     define_utypes_with!(u128);
 
     let half = U256::halfmax();
     println!("half maximum = \t{}", half);
-    assert_eq!(half, U256::from_str("340282366920938463463374607431768211455").unwrap());
+    println!("half maximum = \t{}", half.to_string_with_radix_and_stride(16, 4).unwrap());
+    assert_eq!(half.to_string(), "340282366920938463463374607431768211455");
+    assert_eq!(half.to_string_with_radix_and_stride(16, 4).unwrap(), "FFFF_FFFF_FFFF_FFFF_FFFF_FFFF_FFFF_FFFF");
     println!("---------------------------");
 }
 
 fn biguint_from_uint()
 {
-    biguint_from_uint_u8();
-    biguint_from_uint_u16();
-    biguint_from_uint_u32();
-    biguint_from_uint_u64();
-    biguint_from_uint_u128();
-    biguint_from_uint_usize();
-}
-
-fn biguint_from_uint_u8()
-{
-    println!("biguint_from_uint_u8");
+    println!("biguint_from_uint");
     use cryptocol::define_utypes_with_u16;
     define_utypes_with_u16!();
-     
-    let aa = U512::from_uint(123_u8);
-    println!("aa = {}", aa);
-    assert_eq!(aa.into_u8(), 123_u8);
-    println!("---------------------------");
-}
 
-fn biguint_from_uint_u16()
-{
-    println!("biguint_from_uint_u16");
-    use cryptocol::define_utypes_with_u64;
-    define_utypes_with_u64!();
-     
-    let bb = U512::from_uint(12345_u16);
-    println!("bb = {}", bb);
-    assert_eq!(bb.into_u16(), 12345_u16);
-    println!("---------------------------");
-}
+    let a_from_u8 = U512::from_uint(123_u8);
+    let b_from_u16 = U512::from_uint(12345_u16);
+    let c_from_u32 = U512::from_uint(1234567890_u32);
+    let d_from_u64 = U512::from_uint(12345678901234567890_u64);
+    let e_from_u128 = U512::from_uint(123456789012345678901234567890123456789_u128);
+    let f_from_usize = U512::from_uint(123_usize);
 
-fn biguint_from_uint_u32()
-{
-    println!("biguint_from_uint_u32");
-    use cryptocol::define_utypes_with_u8;
-    define_utypes_with_u8!();
-     
-    let cc = U512::from_uint(1234567890_u32);
-    println!("cc = {}", cc);
-    assert_eq!(cc.into_u32(), 1234567890_u32);
-    println!("---------------------------");
-}
+    println!("a_from_u8 = {}", a_from_u8);
+    println!("b_from_u16 = {}", b_from_u16);
+    println!("c_from_u32 = {}", c_from_u32);
+    println!("d_from_u64 = {}", d_from_u64);
+    println!("e_from_u128 = {}", e_from_u128);
+    println!("f_from_usize = {}", f_from_usize);
 
-fn biguint_from_uint_u64()
-{
-    println!("biguint_from_uint_u64");
-    use cryptocol::define_utypes_with_u128;
-    define_utypes_with_u128!();
-     
-    let dd = U512::from_uint(12345678901234567890_u64);
-    println!("dd = {}", dd);
-    assert_eq!(dd.into_u64(), 12345678901234567890_u64);
-    println!("---------------------------");
-}
-
-fn biguint_from_uint_u128()
-{
-    println!("biguint_from_uint_u128");
-    use cryptocol::define_utypes_with_u128;
-    define_utypes_with_u128!();
-     
-    let ee = U512::from_uint(123456789012345678901234567890123456789_u128);
-    println!("ee = {}", ee);
-    assert_eq!(ee.into_u128(), 123456789012345678901234567890123456789_u128);
-    println!("---------------------------");
-}
-
-fn biguint_from_uint_usize()
-{
-    println!("biguint_from_uint_usize");
-    use cryptocol::define_utypes_with_u32;
-    define_utypes_with_u32!();
-
-    let ff = U512::from_uint(123_usize);
-    println!("ff = {}", ff);
-
-    assert_eq!(ff.into_usize(), 123_usize);
+    assert_eq!(a_from_u8.into_u8(), 123_u8);
+    assert_eq!(b_from_u16.into_u16(), 12345_u16);
+    assert_eq!(c_from_u32.into_u32(), 1234567890_u32);
+    assert_eq!(d_from_u64.into_u64(), 12345678901234567890_u64);
+    assert_eq!(e_from_u128.into_u128(), 123456789012345678901234567890123456789_u128);
+    assert_eq!(f_from_usize.into_usize(), 123_usize);
     println!("---------------------------");
 }
 
@@ -385,58 +329,40 @@ fn biguint_from_array()
     use cryptocol::define_utypes_with;
     define_utypes_with!(u8);
 
-    let big_num = U256::from_array([1_u8;32]);
-    println!("big_num = {}", big_num.to_string_with_radix(2).unwrap());
-    assert_eq!(big_num, U256::from_str_radix("00000001_00000001_00000001_00000001_00000001_00000001_00000001_00000001_00000001_00000001_00000001_00000001_00000001_00000001_00000001_00000001_00000001_00000001_00000001_00000001_00000001_00000001_00000001_00000001_00000001_00000001_00000001_00000001_00000001_00000001_00000001_00000001", 2).unwrap());
+    let big_num = U256::from_array([10_u8;32]);
+    println!("big_num = {}", big_num.to_string_with_radix(16).unwrap());
+    assert_eq!(big_num.to_string_with_radix(16).unwrap(), "A0A0A0A0A0A0A0A0A0A0A0A0A0A0A0A0A0A0A0A0A0A0A0A0A0A0A0A0A0A0A0A");
     println!("---------------------------");
 }
 
 fn biguint_from_biguint()
 {
-    biguint_from_biguint_same_length();
-    biguint_from_biguint_shorter_length();
-    biguint_from_biguint_longer_length();
-}
-
-fn biguint_from_biguint_same_length()
-{
-    println!("biguint_from_biguint_same_length");
+    println!("biguint_from_biguint");
     use std::str::FromStr;
     use cryptocol::number::*;
 
-    let a = U256_with_u8::from_str("123456789123456789123456789123456789123456789123456789").unwrap();
-    let b = U256_with_u16::from_biguint(&a);
-    println!("a = {}", a);
-    println!("b = {}", b);
-    assert_eq!(a.to_string(), b.to_string());
-    println!("---------------------------");
-}
+    let a_u512_with_u8 = U512_with_u8::from_str("123456789123456789123456789123456789123456789123456789123456789123456789123456789123456789123456789123456789123456789123456789123456789123456789123456789").unwrap();
 
-fn biguint_from_biguint_shorter_length()
-{
-    println!("biguint_from_biguint_shorter_length");
-    use std::str::FromStr;
-    use cryptocol::number::*;
+    // Example for the same length
+    let b_u512_with_u8 = U512_with_u8::from_biguint(&a_u512_with_u8);
+    println!("a_u512_with_u8 = {}", a_u512_with_u8);
+    println!("b_u512_with_u8 = {}", b_u512_with_u8);
+    assert_eq!(a_u512_with_u8.to_string(), "123456789123456789123456789123456789123456789123456789123456789123456789123456789123456789123456789123456789123456789123456789123456789123456789123456789");
+    assert_eq!(b_u512_with_u8.to_string(), "123456789123456789123456789123456789123456789123456789123456789123456789123456789123456789123456789123456789123456789123456789123456789123456789123456789");
 
-    let a = U256_with_u8::from_str("123456789123456789123456789123456789123456789123456789").unwrap();
-    let b = U512_with_u16::from_biguint(&a);
-    println!("a = {}", a);
-    println!("b = {}", b);
-    assert_eq!(a.to_string(), b.to_string());
-    println!("---------------------------");
-}
+    // Example for the shorter length
+    let b_u256_with_u8 = U256_with_u16::from_biguint(&a_u512_with_u8);
+    println!("a_u512_with_u8 = {}", a_u512_with_u8);
+    println!("b_u256_with_u8 = {}", b_u256_with_u8);
+    assert_eq!(a_u512_with_u8.to_string(), "123456789123456789123456789123456789123456789123456789123456789123456789123456789123456789123456789123456789123456789123456789123456789123456789123456789");
+    assert_eq!(b_u256_with_u8.to_string(), "98633800081229720571026865697976779988382011787853764870844783447569204535061");
 
-fn biguint_from_biguint_longer_length()
-{
-    println!("biguint_from_biguint_longer_length");
-    use std::str::FromStr;
-    use cryptocol::number::*;
-
-    let a = U512_with_u8::from_str("123456789123456789123456789123456789123456789123456789").unwrap();
-    let b = U256_with_u16::from_biguint(&a);
-    println!("a = {}", a);
-    println!("b = {}", b);
-    assert_eq!(a.to_string(), b.to_string());
+    // Example for the longer length
+    let b_u1024_with_u8 = U1024_with_u16::from_biguint(&a_u512_with_u8);
+    println!("a_u512_with_u8 = {}", a_u512_with_u8);
+    println!("b_u1024_with_u8 = {}", b_u1024_with_u8);
+    assert_eq!(a_u512_with_u8.to_string(), "123456789123456789123456789123456789123456789123456789123456789123456789123456789123456789123456789123456789123456789123456789123456789123456789123456789");
+    assert_eq!(b_u1024_with_u8.to_string(), "123456789123456789123456789123456789123456789123456789123456789123456789123456789123456789123456789123456789123456789123456789123456789123456789123456789");
     println!("---------------------------");
 }
 
@@ -444,34 +370,44 @@ fn biguint_from_be()
 {
     println!("biguint_from_be");
     use cryptocol::define_utypes_with;
-    define_utypes_with!(u8);
+    define_utypes_with!(u16);
 
-    let be = U256::from_array([0x12, 0x34, 0x56, 0x78, 0x90, 0xab, 0xcd, 0xef,
-                                0x11, 0x22, 0x33, 0x44, 0x55, 0x66, 0x77, 0x88,
-                                0x99, 0x00, 0xaa, 0xbb, 0xcc, 0xdd, 0xee, 0xff,
-                                0x1f, 0x2e, 0x3d, 0x4c, 0x5b, 0x6a, 0x70, 0x89]);
+    let be = U256::from_array([0x1234, 0x5678, 0x90ab, 0xcdef,
+                                0x1122, 0x3344, 0x5566, 0x7788,
+                                0x9900, 0xaabb, 0xccdd, 0xeeff,
+                                0x1f2e, 0x3d4c, 0x5b6a, 0x7089]);
     let le = U256::from_be(be.clone());
     println!("be = 0x{}", be.to_string_with_radix(16).unwrap());
     println!("le = 0x{}", le.to_string_with_radix(16).unwrap());
-    assert_eq!(be.to_string_with_radix(16).unwrap(), "89706A5B4C3D2E1FFFEEDDCCBBAA00998877665544332211EFCDAB9078563412");
-    assert_eq!(le.to_string_with_radix(16).unwrap(), "1234567890ABCDEF11223344556677889900AABBCCDDEEFF1F2E3D4C5B6A7089");
+    #[cfg(target_endian = "little")]
+    {
+        assert_eq!(be.to_string_with_radix(16).unwrap(), "70895B6A3D4C1F2EEEFFCCDDAABB99007788556633441122CDEF90AB56781234");
+        assert_eq!(le.to_string_with_radix(16).unwrap(), "34127856AB90EFCD22114433665588770099BBAADDCCFFEE2E1F4C3D6A5B8970");        
+    }
+    #[cfg(target_endian = "big")]
+    {
+        assert_eq!(be.to_string_with_radix(16).unwrap(), "1234567890ABCDEF11223344556677889900AABBCCDDEEFF1F2E3D4C5B6A7089");
+        assert_eq!(le.to_string_with_radix(16).unwrap(), "1234567890ABCDEF11223344556677889900AABBCCDDEEFF1F2E3D4C5B6A7089");        
+    }
     println!("---------------------------");
 }
 
 fn biguint_from_be_bytes()
 {
-    println!("biguint_from_be");
+    println!("biguint_from_be_bytes");
     use cryptocol::define_utypes_with;
-    define_utypes_with!(u8);
+    define_utypes_with!(u32);
 
-    let be_array = [0x12, 0x34, 0x56, 0x78, 0x90, 0xab, 0xcd, 0xef,
-                    0x11, 0x22, 0x33, 0x44, 0x55, 0x66, 0x77, 0x88,
-                    0x99, 0x00, 0xaa, 0xbb, 0xcc, 0xdd, 0xee, 0xff,
-                    0x1f, 0x2e, 0x3d, 0x4c, 0x5b, 0x6a, 0x70, 0x89];
+    let be_array = [0x12345678, 0x90abcdef, 0x11223344, 0x55667788,
+                    0x9900aabb, 0xccddeeff, 0x1f2e3d4c, 0x5b6a7089];
     let le = U256::from_be_bytes(be_array.clone());
-    println!("be_array = {:?}", be_array);
-    println!("le = {:?}", le);
-    assert_eq!(le.to_string_with_radix(16).unwrap(), "1234567890ABCDEF11223344556677889900AABBCCDDEEFF1F2E3D4C5B6A7089");
+    print!("be_array = ");
+    for elem in be_array
+        { print!("0x{:8x} ", elem); }
+    println!();
+    println!("le = 0x{}", le.to_string_with_radix_and_delimiter(16, 8, " 0x").unwrap());
+    #[cfg(target_endian = "little")]    assert_eq!(le.to_string_with_radix_and_stride(16, 8).unwrap(), "78563412_EFCDAB90_44332211_88776655_BBAA0099_FFEEDDCC_4C3D2E1F_89706A5B");
+    #[cfg(target_endian = "big")]       assert_eq!(le.to_string_with_radix(16).unwrap(), "12345678_90ABCDEF_11223344_55667788_9900AABB_CCDDEEFF_1F2E3D4C_5B6A7089");
     println!("---------------------------");
 }
 
@@ -479,17 +415,25 @@ fn biguint_from_le()
 {
     println!("biguint_from_le");
     use cryptocol::define_utypes_with;
-    define_utypes_with!(u8);
+    define_utypes_with!(u16);
 
-    let le1 = U256::from_array([0x12, 0x34, 0x56, 0x78, 0x90, 0xab, 0xcd, 0xef,
-                                0x11, 0x22, 0x33, 0x44, 0x55, 0x66, 0x77, 0x88,
-                                0x99, 0x00, 0xaa, 0xbb, 0xcc, 0xdd, 0xee, 0xff,
-                                0x1f, 0x2e, 0x3d, 0x4c, 0x5b, 0x6a, 0x70, 0x89]);
+    let le1 = U256::from_array([0x1234, 0x5678, 0x90ab, 0xcdef,
+                    0x1122, 0x3344, 0x5566, 0x7788,
+                    0x9900, 0xaabb, 0xccdd, 0xeeff,
+                    0x1f2e, 0x3d4c, 0x5b6a, 0x7089]);
     let le2 = U256::from_le(le1.clone());
     println!("le1 = 0x{}", le1.to_string_with_radix(16).unwrap());
     println!("le2 = 0x{}", le2.to_string_with_radix(16).unwrap());
-    assert_eq!(le1.to_string_with_radix(16).unwrap(), "89706A5B4C3D2E1FFFEEDDCCBBAA00998877665544332211EFCDAB9078563412");
-    assert_eq!(le2.to_string_with_radix(16).unwrap(), "89706A5B4C3D2E1FFFEEDDCCBBAA00998877665544332211EFCDAB9078563412");
+    #[cfg(target_endian = "little")]
+    {
+        assert_eq!(le1.to_string_with_radix(16).unwrap(), "70895B6A3D4C1F2EEEFFCCDDAABB99007788556633441122CDEF90AB56781234");
+        assert_eq!(le2.to_string_with_radix(16).unwrap(), "70895B6A3D4C1F2EEEFFCCDDAABB99007788556633441122CDEF90AB56781234");
+    }
+    #[cfg(target_endian = "big")]
+    {
+        assert_eq!(le1.to_string_with_radix(16).unwrap(), "1234567890ABCDEF11223344556677889900AABBCCDDEEFF1F2E3D4C5B6A7089");
+        assert_eq!(le2.to_string_with_radix(16).unwrap(), "34127856AB90EFCD22114433665588770099BBAADDCCFFEE2E1F4C3D6A5B8970");
+    }
     println!("---------------------------");
 }
 
@@ -497,42 +441,275 @@ fn biguint_from_le_bytes()
 {
     println!("biguint_from_le_bytes");
     use cryptocol::define_utypes_with;
-    define_utypes_with!(u8);
+    define_utypes_with!(u32);
 
-    let le_array = [0x12, 0x34, 0x56, 0x78, 0x90, 0xab, 0xcd, 0xef,
-                    0x11, 0x22, 0x33, 0x44, 0x55, 0x66, 0x77, 0x88,
-                    0x99, 0x00, 0xaa, 0xbb, 0xcc, 0xdd, 0xee, 0xff,
-                    0x1f, 0x2e, 0x3d, 0x4c, 0x5b, 0x6a, 0x70, 0x89];
+    let le_array = [0x12345678, 0x90abcdef, 0x11223344, 0x55667788,
+                    0x9900aabb, 0xccddeeff, 0x1f2e3d4c, 0x5b6a7089];
     let le = U256::from_le_bytes(le_array.clone());
-    println!("le_array = {:?}", le_array);
-    println!("le = {:?}", le);
-    assert_eq!(le.to_string_with_radix(16).unwrap(), "89706A5B4C3D2E1FFFEEDDCCBBAA00998877665544332211EFCDAB9078563412");
+    print!("le_array = ");
+    for elem in le_array
+        { print!("0x{:8x} ", elem); }
+    println!();
+    println!("le = 0x{}", le.to_string_with_radix_and_delimiter(16, 8, " 0x").unwrap());
+    #[cfg(target_endian = "little")]    assert_eq!(le.to_string_with_radix_and_stride(16, 8).unwrap(), "5B6A7089_1F2E3D4C_CCDDEEFF_9900AABB_55667788_11223344_90ABCDEF_12345678");
+    #[cfg(target_endian = "big")]       assert_eq!(le.to_string_with_radix(16).unwrap(), "12345678_90ABCDEF_11223344_55667788_9900AABB_CCDDEEFF_1F2E3D4C_5B6A7089");
     println!("---------------------------");
 }
 
 fn biguint_from_string()
 {
     println!("biguint_from_string");
+    use std::fmt::Write as _;
+    use cryptocol::number::NumberErr;
     use cryptocol::define_utypes_with;
     define_utypes_with!(u64);
 
-    let a = U256::from_string("1234567890_1234567890_1234567890_1234567890_1234567890_1234567890_1234567890").unwrap();
-    println!("a = {}", a);
-    assert_eq!(a.to_string(), "1234567890123456789012345678901234567890123456789012345678901234567890");
+    // Example for correct case
+    let a_correct = U256::from_string("1234567890_1234567890_1234567890_1234567890_1234567890_1234567890_1234567890");
+    match a_correct
+    {
+        Ok(n) => {
+                println!("a_correct = {}", n);
+                assert_eq!(n.to_string(), "1234567890123456789012345678901234567890123456789012345678901234567890");
+            },
+        Err(e) => {
+                match e
+                {
+                    NumberErr::NotAlphaNumeric =>  { println!("Failed: Not alphanumeric!") },
+                    NumberErr::NotFitToRadix =>    { println!("Failed: Not decimal number!") },
+                    NumberErr::TooBigNumber =>     { println!("Failed: Too big number!") },
+                    _ => {},
+                }
+            },
+    }
+
+    // Example for NumberErr::NotAlphaNumeric case
+    let b_contains_non_alphanumeric = U256::from_string("12345+67890");
+    match b_contains_non_alphanumeric
+    {
+        Ok(n) =>  { println!("a_correct = {}", n); },
+        Err(e) => {
+            match e
+            {
+                NumberErr::NotAlphaNumeric => {
+                        println!("Failed: Not alphanumeric!");
+                        let mut txt = String::new();
+                        write!(&mut txt, "{:?}", b_contains_non_alphanumeric).unwrap();
+                        assert_eq!(txt, "Err(NotAlphaNumeric)");
+                    },
+                NumberErr::NotFitToRadix =>    { println!("Failed: Not decimal number!"); },
+                NumberErr::TooBigNumber =>     { println!("Failed: Too big number!"); },
+                _ => {},
+            }
+        },
+    }
+    
+    // Example for NumberErr::NotFitToRadix case
+    let c_constains_not_fit_to_radix = U256::from_string("1234567890a");
+    match c_constains_not_fit_to_radix
+    {
+        Ok(n) =>  { println!("c_constains_not_fit_to_radix = {}", n); },
+        Err(e) => {
+            match e
+            {
+                NumberErr::NotAlphaNumeric =>  { println!("Failed: Not alphanumeric!"); },
+                NumberErr::NotFitToRadix => {
+                        println!("Failed: Not decimal number!");
+                        let mut txt = String::new();
+                        write!(&mut txt, "{:?}", c_constains_not_fit_to_radix).unwrap();
+                        assert_eq!(txt, "Err(NotFitToRadix)");
+                    },
+                    NumberErr::TooBigNumber =>     { println!("Failed: Too big number!"); },
+                _ => {},
+            }
+        },
+    }
+
+    // Example for NumberErr::TooBigNumber case
+    let d_constains_too_big_number = U256::from_string("1234567890_1234567890_1234567890_1234567890_1234567890_1234567890_1234567890_1234567890_1234567890_1234567890_1234567890_1234567890_1234567890_1234567890");
+    match d_constains_too_big_number
+    {
+        Ok(n) =>  { println!("c_constains_too_big_number = {}", n); },
+        Err(e) => {
+            match e
+            {
+                NumberErr::NotAlphaNumeric =>  { println!("Failed: Not alphanumeric!"); },
+                NumberErr::NotFitToRadix =>    { println!("Failed: Not decimal number!"); },
+                NumberErr::TooBigNumber => {
+                        println!("Failed: Too big number!");
+                        let mut txt = String::new();
+                        write!(&mut txt, "{:?}", d_constains_too_big_number).unwrap();
+                        assert_eq!(txt, "Err(TooBigNumber)");
+                    },
+                _ => {},
+            }
+        },
+    }
+
+    // Example for NumberErr::NotAlphaNumeric and NumberErr::NotFitToRadix case
+    let e_contains_non_alphanumeric_not_fit_to_radix = U256::from_string("F12345+67890");
+    match e_contains_non_alphanumeric_not_fit_to_radix
+    {
+        Ok(n) =>  { println!("e_contains_non_alphanumeric_not_fit_to_radix = {}", n); },
+        Err(e) => {
+            match e
+            {
+                NumberErr::NotAlphaNumeric => {
+                        println!("Failed: Not alphanumeric!");
+                        let mut txt = String::new();
+                        write!(&mut txt, "{:?}", e_contains_non_alphanumeric_not_fit_to_radix).unwrap();
+                        assert_eq!(txt, "Err(NotAlphaNumeric)");
+                    },
+                NumberErr::NotFitToRadix =>    { println!("Failed: Not decimal number!"); },
+                NumberErr::TooBigNumber =>     { println!("Failed: Too big number!"); },
+                _ => {},
+            }
+        },
+    }
     println!("---------------------------");
 }
 
 fn biguint_from_str_radix()
 {
     println!("biguint_from_str_radix");
+    use std::fmt::Write as _;
+    use cryptocol::number::NumberErr;
     use cryptocol::define_utypes_with;
-    define_utypes_with!(u16);
-    let a = U512::from_str_radix("1234_5678_9ABC_DEF0_1234_5678_9ABC_DEF0_1234_5678_9ABC_DEF0_1234_5678_9ABC_DEF0_1234_5678_9ABC_DEF0_1234_5678_9ABC_DEF0_1234_5678_9ABC_DEF0_1234_5678_9ABC_DEF0", 16).unwrap();
-    println!("a = {}", a);
-    assert_eq!(a.to_string(), "953444119462584670231660883005169236350945453535049253076624239367818227875140724454335257332337691463184490358643394140772086144551847644877923949534960");
+    define_utypes_with!(u64);
+
+    // Example for correct case
+    let a_correct = U512::from_str_radix("1234_5678_9ABC_DEF0_1234_5678_9ABC_DEF0_1234_5678_9ABC_DEF0_1234_5678_9ABC_DEF0_1234_5678_9ABC_DEF0_1234_5678_9ABC_DEF0_1234_5678_9ABC_DEF0_1234_5678_9ABC_DEF0", 16);
+    match a_correct
+    {
+        Ok(n) => {
+                println!("a_correct = {}", n);
+                assert_eq!(n.to_string_with_radix_and_stride(16, 4).unwrap(), "1234_5678_9ABC_DEF0_1234_5678_9ABC_DEF0_1234_5678_9ABC_DEF0_1234_5678_9ABC_DEF0_1234_5678_9ABC_DEF0_1234_5678_9ABC_DEF0_1234_5678_9ABC_DEF0_1234_5678_9ABC_DEF0");
+            },
+        Err(e) => {
+                match e
+                {
+                    NumberErr::OutOfValidRadixRange =>  { println!("Failed: Out of Valid Radix Range!") },
+                    NumberErr::NotAlphaNumeric =>       { println!("Failed: Not alphanumeric!") },
+                    NumberErr::NotFitToRadix =>         { println!("Failed: Not decimal number!") },
+                    NumberErr::TooBigNumber =>          { println!("Failed: Too big number!") },
+                    _ => {},
+                }
+            },
+    }
+
+    // Example for NumberErr::OutOfValidRadixRange case
+    let b_contains_out_of_valid_radix_range = U512::from_str_radix("1234_5678_9ABC_DEF0_1234_5678_9ABC_DEF0_1234_5678_9ABC_DEF0_1234_5678_9ABC_DEF0_1234_5678_9ABC_DEF0_1234_5678_9ABC_DEF0_1234_5678_9ABC_DEF0_1234_5678_9ABC_DEF0", 63);
+    match b_contains_out_of_valid_radix_range
+    {
+        Ok(n) =>  { println!("a_correct = {}", n); },
+        Err(e) => {
+            match e
+            {
+                NumberErr::OutOfValidRadixRange => {
+                        println!("Failed: Out of Valid Radix Range!");
+                        let mut txt = String::new();
+                        write!(&mut txt, "{:?}", b_contains_out_of_valid_radix_range).unwrap();
+                        assert_eq!(txt, "Err(OutOfValidRadixRange)");
+                    },
+                NumberErr::NotAlphaNumeric =>   { println!("Failed: Not alphanumeric!"); },
+                NumberErr::NotFitToRadix =>     { println!("Failed: Not decimal number!"); },
+                NumberErr::TooBigNumber =>      { println!("Failed: Too big number!"); },
+                _ => {},
+            }
+        },
+    }
+
+    // Example for NumberErr::NotAlphaNumeric case
+    let c_contains_non_alphanumeric = U512::from_str_radix("1234-5678-9ABC-DEF0-1234-5678-9ABC-DEF0-1234-5678-9ABC-DEF0-1234-5678-9ABC-DEF0-1234-5678-9ABC-DEF0-1234-5678-9ABC-DEF0-1234-5678-9ABC-DEF0-1234-5678-9ABC-DEF0", 16);
+    match c_contains_non_alphanumeric
+    {
+        Ok(n) =>  { println!("a_correct = {}", n); },
+        Err(e) => {
+            match e
+            {
+                NumberErr::OutOfValidRadixRange => { println!("Failed: Out of Valid Radix Range!") },
+                NumberErr::NotAlphaNumeric => {
+                        println!("Failed: Not alphanumeric!");
+                        let mut txt = String::new();
+                        write!(&mut txt, "{:?}", c_contains_non_alphanumeric).unwrap();
+                        assert_eq!(txt, "Err(NotAlphaNumeric)");
+                    },
+                NumberErr::NotFitToRadix => { println!("Failed: Not decimal number!"); },
+                NumberErr::TooBigNumber =>  { println!("Failed: Too big number!"); },
+                _ => {},
+            }
+        },
+    }
+    
+    // Example for NumberErr::NotFitToRadix case
+    let d_constains_not_fit_to_radix = U512::from_str_radix("1234_5678_9ABC_DEFG_1234_5678_9ABC_DEFG_1234_5678_9ABC_DEFG_1234_5678_9ABC_DEFG_1234_5678_9ABC_DEFG_1234_5678_9ABC_DEFG_1234_5678_9ABC_DEFG_1234_5678_9ABC_DEFG", 16);
+    match d_constains_not_fit_to_radix
+    {
+        Ok(n) =>  { println!("d_constains_not_fit_to_radix = {}", n); },
+        Err(e) => {
+            match e
+            {
+                NumberErr::OutOfValidRadixRange =>  { println!("Failed: Out of Valid Radix Range!") },
+                NumberErr::NotAlphaNumeric =>       { println!("Failed: Not alphanumeric!"); },
+                NumberErr::NotFitToRadix => {
+                        println!("Failed: Not hexadecimal number!");
+                        let mut txt = String::new();
+                        write!(&mut txt, "{:?}", d_constains_not_fit_to_radix).unwrap();
+                        assert_eq!(txt, "Err(NotFitToRadix)");
+                    },
+                    NumberErr::TooBigNumber =>     { println!("Failed: Too big number!"); },
+                _ => {},
+            }
+        },
+    }
+
+    // Example for NumberErr::TooBigNumber case
+    let e_constains_too_big_number = U512::from_str_radix("1_1234_5678_9ABC_DEF0_1234_5678_9ABC_DEF0_1234_5678_9ABC_DEF0_1234_5678_9ABC_DEF0_1234_5678_9ABC_DEF0_1234_5678_9ABC_DEF0_1234_5678_9ABC_DEF0_1234_5678_9ABC_DEF0", 16);
+    match e_constains_too_big_number
+    {
+        Ok(n) =>  { println!("c_constains_too_big_number = {}", n); },
+        Err(e) => {
+            match e
+            {
+                NumberErr::OutOfValidRadixRange =>  { println!("Failed: Out of Valid Radix Range!") },
+                NumberErr::NotAlphaNumeric =>       { println!("Failed: Not alphanumeric!"); },
+                NumberErr::NotFitToRadix =>         { println!("Failed: Not decimal number!"); },
+                NumberErr::TooBigNumber => {
+                        println!("Failed: Too big number!");
+                        let mut txt = String::new();
+                        write!(&mut txt, "{:?}", e_constains_too_big_number).unwrap();
+                        assert_eq!(txt, "Err(TooBigNumber)");
+                    },
+                _ => {},
+            }
+        },
+    }
+
+    // Example for NumberErr::NotAlphaNumeric, NumberErr::NotFitToRadix, and NumberErr::TooBigNumber case
+    let f_contains_non_alphanumeric_not_fit_to_radix = U512::from_str_radix("1,1234,5678,9ABC,DEFG,1234,5678,9ABC,DEFG,1234,5678,9ABC,DEFG,1234,5678,9ABC,DEFG,1234,5678,9ABC,DEFG,1234,5678,9ABC,DEFG,1234,5678,9ABC,DEFG,1234,5678,9ABC,DEFG", 16);
+    match f_contains_non_alphanumeric_not_fit_to_radix
+    {
+        Ok(n) =>  { println!("f_contains_non_alphanumeric_not_fit_to_radix = {}", n); },
+        Err(e) => {
+            match e
+            {
+                NumberErr::OutOfValidRadixRange =>  { println!("Failed: Out of Valid Radix Range!") },
+                NumberErr::NotAlphaNumeric => {
+                        println!("Failed: Not alphanumeric!");
+                        let mut txt = String::new();
+                        write!(&mut txt, "{:?}", f_contains_non_alphanumeric_not_fit_to_radix).unwrap();
+                        assert_eq!(txt, "Err(NotAlphaNumeric)");
+                    },
+                NumberErr::NotFitToRadix =>    { println!("Failed: Not decimal number!"); },
+                NumberErr::TooBigNumber =>     { println!("Failed: Too big number!"); },
+                _ => {},
+            }
+        },
+    }
     println!("---------------------------");
 }
 
+////////////////////////////////////////////
 fn biguint_generate_check_bits()
 {
     println!("biguint_generate_check_bits");
