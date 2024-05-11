@@ -1445,7 +1445,6 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     ///                 NumberErr::NotAlphaNumeric =>       { println!("Failed: Not alphanumeric!") },
     ///                 NumberErr::NotFitToRadix =>         { println!("Failed: Not decimal number!") },
     ///                 NumberErr::TooBigNumber =>          { println!("Failed: Too big number!") },
-    ///                 _ => {},
     ///             }
     ///         },
     /// }
@@ -1474,7 +1473,6 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     ///             NumberErr::NotAlphaNumeric =>   { println!("Failed: Not alphanumeric!"); },
     ///             NumberErr::NotFitToRadix =>     { println!("Failed: Not decimal number!"); },
     ///             NumberErr::TooBigNumber =>      { println!("Failed: Too big number!"); },
-    ///             _ => {},
     ///         }
     ///     },
     /// }
@@ -1503,7 +1501,6 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     ///                 },
     ///             NumberErr::NotFitToRadix => { println!("Failed: Not decimal number!"); },
     ///             NumberErr::TooBigNumber =>  { println!("Failed: Too big number!"); },
-    ///             _ => {},
     ///         }
     ///     },
     /// }
@@ -1532,7 +1529,6 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     ///                     assert_eq!(txt, "Err(NotFitToRadix)");
     ///                 },
     ///                 NumberErr::TooBigNumber =>     { println!("Failed: Too big number!"); },
-    ///             _ => {},
     ///         }
     ///     },
     /// }
@@ -1561,7 +1557,6 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     ///                     write!(&mut txt, "{:?}", e_constains_too_big_number).unwrap();
     ///                     assert_eq!(txt, "Err(TooBigNumber)");
     ///                 },
-    ///             _ => {},
     ///         }
     ///     },
     /// }
@@ -1590,7 +1585,6 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     ///                 },
     ///             NumberErr::NotFitToRadix =>    { println!("Failed: Not decimal number!"); },
     ///             NumberErr::TooBigNumber =>     { println!("Failed: Too big number!"); },
-    ///             _ => {},
     ///         }
     ///     },
     /// }
@@ -1815,6 +1809,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// ```
     /// use cryptocol::define_utypes_with;
     /// define_utypes_with!(u16);
+    /// 
     /// let a = U256::from_str_radix("A16F", 16).unwrap();
     /// println!("a is {}-byte integer.", a.length_in_bytes());
     /// assert_eq!(a.length_in_bytes(), 32);
@@ -1871,16 +1866,17 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// 
     /// # Example
     /// ```
-    /// use cryptocol::number::*;
     /// use cryptocol::define_utypes_with;
-    /// use cryptocol::random::Any;
-    /// 
     /// define_utypes_with!(u128);
-    /// let mut a: U256 = Any::new().random_biguint();
+    /// 
+    /// let mut a = U256::from_string("256487951236974125896345564889974258").unwrap();
     /// println!("a = {}", a.to_string_with_radix_and_stride(2, 8).unwrap());
     /// a.turn_check_bits(102);
     /// println!("a = {}", a.to_string_with_radix_and_stride(2, 8).unwrap());
     /// assert_eq!(a, U256::from_str_radix("1000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000", 2).unwrap());
+    /// 
+    /// // It will panic.
+    /// // a.turn_check_bits(256);
     /// ```
     /// 
     /// # Big-endian issue
@@ -1955,10 +1951,10 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// {
     ///     Some(r) => {
     ///         println!("The {}th bit is set: {}", 300, r);
-    ///         assert_eq!(a.is_bit_set_(300), true);
     ///     },
     ///     None => {
     ///         println!("{}_U256 does not have the {}th bit.", a, 300);
+    ///         assert_eq!(a.is_bit_set(300), None);
     ///     }
     /// }
     /// ```

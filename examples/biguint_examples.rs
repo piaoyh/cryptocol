@@ -592,7 +592,6 @@ fn biguint_from_str_radix()
                     NumberErr::NotAlphaNumeric =>       { println!("Failed: Not alphanumeric!") },
                     NumberErr::NotFitToRadix =>         { println!("Failed: Not decimal number!") },
                     NumberErr::TooBigNumber =>          { println!("Failed: Too big number!") },
-                    _ => {},
                 }
             },
     }
@@ -614,7 +613,6 @@ fn biguint_from_str_radix()
                 NumberErr::NotAlphaNumeric =>   { println!("Failed: Not alphanumeric!"); },
                 NumberErr::NotFitToRadix =>     { println!("Failed: Not decimal number!"); },
                 NumberErr::TooBigNumber =>      { println!("Failed: Too big number!"); },
-                _ => {},
             }
         },
     }
@@ -636,7 +634,6 @@ fn biguint_from_str_radix()
                     },
                 NumberErr::NotFitToRadix => { println!("Failed: Not decimal number!"); },
                 NumberErr::TooBigNumber =>  { println!("Failed: Too big number!"); },
-                _ => {},
             }
         },
     }
@@ -658,7 +655,6 @@ fn biguint_from_str_radix()
                         assert_eq!(txt, "Err(NotFitToRadix)");
                     },
                     NumberErr::TooBigNumber =>     { println!("Failed: Too big number!"); },
-                _ => {},
             }
         },
     }
@@ -680,7 +676,6 @@ fn biguint_from_str_radix()
                         write!(&mut txt, "{:?}", e_constains_too_big_number).unwrap();
                         assert_eq!(txt, "Err(TooBigNumber)");
                     },
-                _ => {},
             }
         },
     }
@@ -702,14 +697,12 @@ fn biguint_from_str_radix()
                     },
                 NumberErr::NotFitToRadix =>    { println!("Failed: Not decimal number!"); },
                 NumberErr::TooBigNumber =>     { println!("Failed: Too big number!"); },
-                _ => {},
             }
         },
     }
     println!("---------------------------");
 }
 
-////////////////////////////////////////////
 fn biguint_generate_check_bits()
 {
     println!("biguint_generate_check_bits");
@@ -756,237 +749,6 @@ fn biguint_generate_check_bits_()
     // let a_256 = U256::generate_check_bits(256);
     println!("---------------------------");
 }
-
-/*
-fn biguint_random_number_main()
-{
-    biguint_any();
-    biguint_any_odd();
-    biguint_any_less_than();
-    biguint_any_odd_less_than();
-    biguint_any_with_MSB_set();
-    biguint_any_odd_with_MSB_set();
-    biguint_any_prime_using_Miller_Rabin();
-    biguint_turn_any();
-    biguint_random();
-    biguint_random_odd();
-    biguint_random_less_than();
-    biguint_random_odd_less_than();
-    biguint_random_with_MSB_set();
-    biguint_random_odd_with_MSB_set();
-    biguint_random_prime_using_Miller_Rabin();
-    biguint_randomize();
-    biguint_is_prime_using_miller_rabin();
-}
-
-fn biguint_any()
-{
-    println!("biguint_any");
-    use cryptocol::define_utypes_with;
-    define_utypes_with!(u128);
-    println!("Random Number: {}", U1024::any());
-    println!("---------------------------");
-}
-
-fn biguint_any_odd()
-{
-    println!("biguint_any_odd");
-    use cryptocol::define_utypes_with;
-    define_utypes_with!(u64);
-    let r = U1024::any_odd();
-    println!("Random Odd Number: {}", r);
-    assert!(r.is_odd());
-    println!("---------------------------");
-}
-
-fn biguint_any_less_than()
-{
-    println!("biguint_any_less_than");
-    use cryptocol::define_utypes_with;
-    define_utypes_with!(u32);
-    let ceiling = U1024::max() / U1024::from_uint::<u32>(3);
-    let r = U1024::any_less_than(&ceiling);
-    println!("Random Number less than {} is {}", ceiling, r);
-    assert!(r < ceiling);
-    println!("---------------------------");
-}
-
-fn biguint_any_odd_less_than()
-{
-    println!("biguint_any_odd_less_than");
-    use cryptocol::define_utypes_with;
-    define_utypes_with!(u16);
-    let ceiling = U1024::max() / U1024::from_uint::<u32>(3);
-    let r = U1024::any_odd_less_than(&ceiling);
-    println!("Random Odd Number less than {} is {}", ceiling, r);
-    assert!(r < ceiling);
-    assert!(r.is_odd());
-    println!("---------------------------");
-}
-
-fn biguint_any_with_MSB_set()
-{
-    println!("biguint_any_with_MSB_set");
-    use cryptocol::define_utypes_with;
-    define_utypes_with!(u8);
-    let num = U1024::any_with_MSB_set();
-    println!("Random Number = {}", U1024::any());
-    println!("1024-bit Random Number = {}", num);
-    assert!(num > U1024::submax(1023));
-    println!("---------------------------");
-}
-
-fn biguint_any_odd_with_MSB_set()
-{
-    println!("biguint_any_odd_with_MSB_set");
-    use cryptocol::define_utypes_with;
-    define_utypes_with!(u128);
-    let num = U1024::any_odd_with_MSB_set();
-    println!("Random Number = {}", U1024::any());
-    println!("1024-bit Random Odd Number = {}", num);
-    assert!(num > U1024::submax(1023));
-    assert!(num.is_odd());
-    println!("---------------------------");
-}
-
-fn biguint_any_prime_using_Miller_Rabin()
-{
-    println!("biguint_any_prime_using_Miller_Rabin");
-    use cryptocol::define_utypes_with;
-    define_utypes_with!(u64);
-    let num = U256::any_prime_using_Miller_Rabin(5);
-    println!("Random Prime Number = {}", num);
-    assert!(num.is_prime_using_miller_rabin(5));
-    println!("---------------------------");
-    
-}
-
-fn biguint_turn_any()
-{
-    println!("biguint_turn_any");
-    use cryptocol::define_utypes_with;
-    define_utypes_with!(u32);
-    let mut r = U256::new();
-    println!("original number = {}", r);
-    assert_eq!(r, U256::zero());
-    r.turn_any();
-    println!("random number = {}", r);
-    assert_ne!(r, U256::zero());
-    println!("---------------------------");
-}
-
-
-fn biguint_random()
-{
-    println!("biguint_random");
-    use cryptocol::define_utypes_with;
-    define_utypes_with!(u64);
-    println!("Random Number: {}", U1024::random());
-    println!("---------------------------");
-}
-
-fn biguint_random_odd()
-{
-    println!("biguint_random_odd");
-    use cryptocol::define_utypes_with;
-    define_utypes_with!(u128);
-    let r = U1024::random_odd();
-    println!("Random Odd Number: {}", r);
-    assert!(r.is_odd());
-    println!("---------------------------");
-}
-
-fn biguint_random_less_than()
-{
-    println!("biguint_random_less_than");
-    use cryptocol::define_utypes_with;
-    define_utypes_with!(u32);
-    let ceiling = U1024::max() / U1024::from_uint::<u32>(3);
-    let r = U1024::random_less_than(&ceiling);
-    println!("Random Number less than {} is {}", ceiling, r);
-    assert!(r < ceiling);
-    println!("---------------------------");
-}
-
-fn biguint_random_odd_less_than()
-{
-    println!("biguint_random_odd_less_than");
-    use cryptocol::define_utypes_with;
-    define_utypes_with!(u16);
-
-    let ceiling = U1024::max() / U1024::from_uint::<u32>(3);
-    let r = U1024::random_odd_less_than(&ceiling);
-    println!("Random Odd Number less than {} is {}", ceiling, U1024::random_odd_less_than(&ceiling));
-    assert!(r < ceiling);
-    assert!(r.is_odd());
-    println!("---------------------------");
-}
-
-fn biguint_random_with_MSB_set()
-{
-    println!("biguint_random_with_MSB_set");
-    use cryptocol::define_utypes_with;
-    define_utypes_with!(u8);
-    let num = U1024::random_with_MSB_set();
-    println!("Random Number = {}", U1024::random());
-    println!("1024-bit Random Number = {}", num);
-    assert!(num > U1024::submax(1023));
-    println!("---------------------------");
-}
-
-fn biguint_random_odd_with_MSB_set()
-{
-    println!("biguint_random_odd_with_MSB_set");
-    use cryptocol::define_utypes_with;
-    define_utypes_with!(u128);
-    let num = U1024::random_odd_with_MSB_set();
-    println!("Random Number = {}", U1024::random());
-    println!("1024-bit Random Odd Number = {}", num);
-    assert!(num > U1024::submax(1023));
-    assert!(num.is_odd());
-    println!("---------------------------");
-}
-
-fn biguint_random_prime_using_Miller_Rabin()
-{
-    println!("biguint_random_prime_using_Miller_Rabin");
-    use cryptocol::define_utypes_with;
-    define_utypes_with!(u64);
-    let num = U1024::random_prime_using_Miller_Rabin(5);
-    assert!(num.is_prime_using_miller_rabin(5));
-    println!("Random Prime Number = {}", num);
-    println!("---------------------------");
-}
-
-fn biguint_randomize()
-{
-    println!("biguint_randomize");
-    use cryptocol::define_utypes_with;
-    define_utypes_with!(u32);
-
-    let mut r = U1024::new();
-    println!("original number = {}", r);
-    assert_eq!(r, U1024::zero());
-    r.randomize();
-    println!("random number = {}", r);
-    assert_ne!(r, U1024::zero());
-    println!("---------------------------");
-}
-
-fn biguint_is_prime_using_miller_rabin()
-{
-    println!("biguint_is_prime_using_miller_rabin");
-    use cryptocol::define_utypes_with;
-    define_utypes_with!(u16);
-
-    let num = U1024::from_string("157847659859841049478697210209054499132116730052547470511818639401226705057924429751936169954758794979780692256039595351594450957429818931145981533862363167515145703012676459279601554094177152095755375227908501443524236048737351327752857335149319939532219166843564206337168180636940438709755340632429325500479").unwrap();
-    let yes = num.is_prime_using_miller_rabin(5);
-    println!("Is {} a prime number? => {}", num, yes);
-    if yes  { assert!(yes); }
-    else    { assert!(!yes); }
-    println!("---------------------------");
-}
-*/
 
 fn biguint_get_size_main()
 {
@@ -1078,13 +840,16 @@ fn biguint_turn_check_bits()
 {
     println!("biguint_turn_check_bits");
     use cryptocol::define_utypes_with;
-    
     define_utypes_with!(u128);
+
     let mut a = U256::from_string("256487951236974125896345564889974258").unwrap();
     println!("a = {}", a.to_string_with_radix_and_stride(2, 8).unwrap());
     a.turn_check_bits(102);
     println!("a = {}", a.to_string_with_radix_and_stride(2, 8).unwrap());
     assert_eq!(a, U256::from_str_radix("1000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000", 2).unwrap());
+
+    // It will panic.
+    // a.turn_check_bits(256);
     println!("---------------------------");
 }
 
@@ -1101,11 +866,9 @@ fn biguint_is_bit_set()
     {
         Some(r) => {
             println!("The {}th bit is set: {}", 151, r);
-            assert_eq!(a.is_bit_set_(151), true);
+            assert_eq!(a.is_bit_set(151).unwrap(), true);
         },
-        None => {
-            println!("{}_U256 does not have the {}th bit.", a, 151);
-        }
+        None => { println!("{}_U256 does not have the {}th bit.", a, 151); }
     }
 
     res = a.is_bit_set(200);
@@ -1113,22 +876,18 @@ fn biguint_is_bit_set()
     {
         Some(r) => {
             println!("The {}th bit is set: {}", 200, r);
-            assert_eq!(a.is_bit_set_(200), false);
+            assert_eq!(a.is_bit_set(200).unwrap(), false);
         },
-        None => {
-            println!("{}_U256 does not have the {}th bit.", a, 200);
-        }
+        None => { println!("{}_U256 does not have the {}th bit.", a, 200); }
     }
 
     res = a.is_bit_set(300);
     match res
     {
-        Some(r) => {
-            println!("The {}th bit is set: {}", 300, r);
-            assert_eq!(a.is_bit_set_(300), true);
-        },
+        Some(r) => { println!("The {}th bit is set: {}", 300, r); },
         None => {
             println!("{}_U256 does not have the {}th bit.", a, 300);
+            assert_eq!(a.is_bit_set(300), None);
         }
     }
     println!("---------------------------");
@@ -1151,6 +910,7 @@ fn biguint_is_bit_set_()
     println!("---------------------------");
 }
 
+////////////////////////////////////////////
 fn biguint_get_upper_portion()
 {
     println!("biguint_get_upper_portion");
@@ -4618,6 +4378,237 @@ pub fn test()
 }
 
 
+
+/*
+fn biguint_random_number_main()
+{
+    biguint_any();
+    biguint_any_odd();
+    biguint_any_less_than();
+    biguint_any_odd_less_than();
+    biguint_any_with_MSB_set();
+    biguint_any_odd_with_MSB_set();
+    biguint_any_prime_using_Miller_Rabin();
+    biguint_turn_any();
+    biguint_random();
+    biguint_random_odd();
+    biguint_random_less_than();
+    biguint_random_odd_less_than();
+    biguint_random_with_MSB_set();
+    biguint_random_odd_with_MSB_set();
+    biguint_random_prime_using_Miller_Rabin();
+    biguint_randomize();
+    biguint_is_prime_using_miller_rabin();
+}
+
+fn biguint_any()
+{
+    println!("biguint_any");
+    use cryptocol::define_utypes_with;
+    define_utypes_with!(u128);
+    println!("Random Number: {}", U1024::any());
+    println!("---------------------------");
+}
+
+fn biguint_any_odd()
+{
+    println!("biguint_any_odd");
+    use cryptocol::define_utypes_with;
+    define_utypes_with!(u64);
+    let r = U1024::any_odd();
+    println!("Random Odd Number: {}", r);
+    assert!(r.is_odd());
+    println!("---------------------------");
+}
+
+fn biguint_any_less_than()
+{
+    println!("biguint_any_less_than");
+    use cryptocol::define_utypes_with;
+    define_utypes_with!(u32);
+    let ceiling = U1024::max() / U1024::from_uint::<u32>(3);
+    let r = U1024::any_less_than(&ceiling);
+    println!("Random Number less than {} is {}", ceiling, r);
+    assert!(r < ceiling);
+    println!("---------------------------");
+}
+
+fn biguint_any_odd_less_than()
+{
+    println!("biguint_any_odd_less_than");
+    use cryptocol::define_utypes_with;
+    define_utypes_with!(u16);
+    let ceiling = U1024::max() / U1024::from_uint::<u32>(3);
+    let r = U1024::any_odd_less_than(&ceiling);
+    println!("Random Odd Number less than {} is {}", ceiling, r);
+    assert!(r < ceiling);
+    assert!(r.is_odd());
+    println!("---------------------------");
+}
+
+fn biguint_any_with_MSB_set()
+{
+    println!("biguint_any_with_MSB_set");
+    use cryptocol::define_utypes_with;
+    define_utypes_with!(u8);
+    let num = U1024::any_with_MSB_set();
+    println!("Random Number = {}", U1024::any());
+    println!("1024-bit Random Number = {}", num);
+    assert!(num > U1024::submax(1023));
+    println!("---------------------------");
+}
+
+fn biguint_any_odd_with_MSB_set()
+{
+    println!("biguint_any_odd_with_MSB_set");
+    use cryptocol::define_utypes_with;
+    define_utypes_with!(u128);
+    let num = U1024::any_odd_with_MSB_set();
+    println!("Random Number = {}", U1024::any());
+    println!("1024-bit Random Odd Number = {}", num);
+    assert!(num > U1024::submax(1023));
+    assert!(num.is_odd());
+    println!("---------------------------");
+}
+
+fn biguint_any_prime_using_Miller_Rabin()
+{
+    println!("biguint_any_prime_using_Miller_Rabin");
+    use cryptocol::define_utypes_with;
+    define_utypes_with!(u64);
+    let num = U256::any_prime_using_Miller_Rabin(5);
+    println!("Random Prime Number = {}", num);
+    assert!(num.is_prime_using_miller_rabin(5));
+    println!("---------------------------");
+    
+}
+
+fn biguint_turn_any()
+{
+    println!("biguint_turn_any");
+    use cryptocol::define_utypes_with;
+    define_utypes_with!(u32);
+    let mut r = U256::new();
+    println!("original number = {}", r);
+    assert_eq!(r, U256::zero());
+    r.turn_any();
+    println!("random number = {}", r);
+    assert_ne!(r, U256::zero());
+    println!("---------------------------");
+}
+
+
+fn biguint_random()
+{
+    println!("biguint_random");
+    use cryptocol::define_utypes_with;
+    define_utypes_with!(u64);
+    println!("Random Number: {}", U1024::random());
+    println!("---------------------------");
+}
+
+fn biguint_random_odd()
+{
+    println!("biguint_random_odd");
+    use cryptocol::define_utypes_with;
+    define_utypes_with!(u128);
+    let r = U1024::random_odd();
+    println!("Random Odd Number: {}", r);
+    assert!(r.is_odd());
+    println!("---------------------------");
+}
+
+fn biguint_random_less_than()
+{
+    println!("biguint_random_less_than");
+    use cryptocol::define_utypes_with;
+    define_utypes_with!(u32);
+    let ceiling = U1024::max() / U1024::from_uint::<u32>(3);
+    let r = U1024::random_less_than(&ceiling);
+    println!("Random Number less than {} is {}", ceiling, r);
+    assert!(r < ceiling);
+    println!("---------------------------");
+}
+
+fn biguint_random_odd_less_than()
+{
+    println!("biguint_random_odd_less_than");
+    use cryptocol::define_utypes_with;
+    define_utypes_with!(u16);
+
+    let ceiling = U1024::max() / U1024::from_uint::<u32>(3);
+    let r = U1024::random_odd_less_than(&ceiling);
+    println!("Random Odd Number less than {} is {}", ceiling, U1024::random_odd_less_than(&ceiling));
+    assert!(r < ceiling);
+    assert!(r.is_odd());
+    println!("---------------------------");
+}
+
+fn biguint_random_with_MSB_set()
+{
+    println!("biguint_random_with_MSB_set");
+    use cryptocol::define_utypes_with;
+    define_utypes_with!(u8);
+    let num = U1024::random_with_MSB_set();
+    println!("Random Number = {}", U1024::random());
+    println!("1024-bit Random Number = {}", num);
+    assert!(num > U1024::submax(1023));
+    println!("---------------------------");
+}
+
+fn biguint_random_odd_with_MSB_set()
+{
+    println!("biguint_random_odd_with_MSB_set");
+    use cryptocol::define_utypes_with;
+    define_utypes_with!(u128);
+    let num = U1024::random_odd_with_MSB_set();
+    println!("Random Number = {}", U1024::random());
+    println!("1024-bit Random Odd Number = {}", num);
+    assert!(num > U1024::submax(1023));
+    assert!(num.is_odd());
+    println!("---------------------------");
+}
+
+fn biguint_random_prime_using_Miller_Rabin()
+{
+    println!("biguint_random_prime_using_Miller_Rabin");
+    use cryptocol::define_utypes_with;
+    define_utypes_with!(u64);
+    let num = U1024::random_prime_using_Miller_Rabin(5);
+    assert!(num.is_prime_using_miller_rabin(5));
+    println!("Random Prime Number = {}", num);
+    println!("---------------------------");
+}
+
+fn biguint_randomize()
+{
+    println!("biguint_randomize");
+    use cryptocol::define_utypes_with;
+    define_utypes_with!(u32);
+
+    let mut r = U1024::new();
+    println!("original number = {}", r);
+    assert_eq!(r, U1024::zero());
+    r.randomize();
+    println!("random number = {}", r);
+    assert_ne!(r, U1024::zero());
+    println!("---------------------------");
+}
+
+fn biguint_is_prime_using_miller_rabin()
+{
+    println!("biguint_is_prime_using_miller_rabin");
+    use cryptocol::define_utypes_with;
+    define_utypes_with!(u16);
+
+    let num = U1024::from_string("157847659859841049478697210209054499132116730052547470511818639401226705057924429751936169954758794979780692256039595351594450957429818931145981533862363167515145703012676459279601554094177152095755375227908501443524236048737351327752857335149319939532219166843564206337168180636940438709755340632429325500479").unwrap();
+    let yes = num.is_prime_using_miller_rabin(5);
+    println!("Is {} a prime number? => {}", num, yes);
+    if yes  { assert!(yes); }
+    else    { assert!(!yes); }
+    println!("---------------------------");
+}
+*/
 
 /*
 fn f()
