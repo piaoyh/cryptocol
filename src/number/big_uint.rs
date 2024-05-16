@@ -2034,10 +2034,13 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// take in bits.
     /// 
     /// # Output
-    /// If `portion` is bigger than the length of the non-zero part of `self`,
-    /// this method returns `self`. If `portion` is less than the length of
-    /// the non-zero part of `self`, this method returns the high order part of
-    /// `self` as many bits as specified by `portion`.
+    /// - If `portion` is bigger than or equal to the length of the non-zero
+    /// part of `self`, this method returns `self`. Here, non-zero part of
+    /// `00101100` is not `1011` but `101100` for example.
+    /// - If `portion` is less than the length of the non-zero part of `self`,
+    /// this method returns the high order part of `self` as many bits as
+    /// specified by `portion`. Here, non-zero part of `00101100` is not `1011`
+    /// but `101100` for example.
     /// 
     /// # Example
     /// ```
@@ -2045,10 +2048,9 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// define_utypes_with!(u32);
     /// 
     /// let a = U256::from_string("12345678912345678912345678912345678912345678912345678912345678912345678912345").unwrap();
-    /// println!("a = {}_U256", a.to_string_with_radix_and_stride(2, 10).unwrap());
     /// let b = a.get_upper_portion(10);
-    /// println!("The 10-bit upper portion of {}_U256 is {}_U256", a, b);
-    /// assert_eq!(b.to_string(), "873");
+    /// println!("The 10-bit upper portion of {}_U256 is {}_U256", a.to_string_with_radix_and_stride(2, 10).unwrap(), b.to_string_with_radix_and_stride(2, 10).unwrap());
+    /// assert_eq!(b.to_string_with_radix_and_stride(2, 10).unwrap(), "1101101001");
     /// ```
     /// 
     /// # Big-endian issue
@@ -2074,21 +2076,23 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// take in bits.
     /// 
     /// # Output
-    /// If `portion` is bigger than the length of the non-zero part of `self`,
-    /// this method returns `self`. If `portion` is less than the length of
-    /// the non-zero part of `self`, this method returns the low order part of
-    /// `self` as many bits as specified by `portion`.
+    /// - If `portion` is bigger than or equal to the length of the non-zero
+    /// part of `self`, this method returns `self`. Here, non-zero part of
+    /// `00101100` is not `1011` but `101100` for example.
+    /// - If `portion` is less than the length of the non-zero part of `self`,
+    /// this method returns the low order part of `self` as many bits as
+    /// specified by `portion`. Here, non-zero part of `00101100` is not `1011`
+    /// but `101100` for example.
     /// 
     /// # Example
     /// ```
     /// use cryptocol::define_utypes_with;
     /// define_utypes_with!(u32);
     /// 
-    /// let a = U256::from_string("12345678912345678912345678912345678912345678912345678912345678912345678912345").unwrap();
-    /// println!("a = {}_U256", a.to_string_with_radix_and_stride(2, 10).unwrap());
+    /// let a = U256::from_string("12345678912345678912345678912345678912345678912345678912345678912345678912340").unwrap();
     /// let b = a.get_lower_portion(10);
-    /// println!("The 10-bit lower portion of {}_U256 is {}_U256", a, b);
-    /// assert_eq!(b.to_string(), "857");
+    /// println!("The 10-bit lower portion of {}_U256 is {}_U256", a.to_string_with_radix_and_stride(2, 10).unwrap(), b.to_string_with_radix_and_stride(2, 10).unwrap());
+    /// assert_eq!(b.to_string_with_radix_and_stride(2, 10).unwrap(), "1101010100");
     /// ```
     /// 
     /// # Big-endian issue

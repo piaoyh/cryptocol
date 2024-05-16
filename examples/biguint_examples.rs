@@ -910,7 +910,6 @@ fn biguint_is_bit_set_()
     println!("---------------------------");
 }
 
-////////////////////////////////////////////
 fn biguint_get_upper_portion()
 {
     println!("biguint_get_upper_portion");
@@ -918,10 +917,9 @@ fn biguint_get_upper_portion()
     define_utypes_with!(u32);
 
     let a = U256::from_string("12345678912345678912345678912345678912345678912345678912345678912345678912345").unwrap();
-    println!("a = {}_U256", a.to_string_with_radix_and_stride(2, 10).unwrap());
     let b = a.get_upper_portion(10);
-    println!("The 10-bit upper portion of {}_U256 is {}_U256", a, b);
-    assert_eq!(b.to_string(), "873");
+    println!("The 10-bit upper portion of {}_U256 is {}_U256", a.to_string_with_radix_and_stride(2, 10).unwrap(), b.to_string_with_radix_and_stride(2, 10).unwrap());
+    assert_eq!(b.to_string_with_radix_and_stride(2, 10).unwrap(), "1101101001");
     println!("---------------------------");
 }
 
@@ -931,13 +929,13 @@ fn biguint_get_lower_portion()
     use cryptocol::define_utypes_with;
     define_utypes_with!(u32);
 
-    let a = U256::from_string("12345678912345678912345678912345678912345678912345678912345678912345678912345").unwrap();
-    println!("a = {}_U256", a.to_string_with_radix_and_stride(2, 10).unwrap());
+    let a = U256::from_string("12345678912345678912345678912345678912345678912345678912345678912345678912340").unwrap();
     let b = a.get_lower_portion(10);
-    println!("The 10-bit lower portion of {}_U256 is {}_U256", a, b);
-    assert_eq!(b.to_string(), "857");
+    println!("The 10-bit lower portion of {}_U256 is {}_U256", a.to_string_with_radix_and_stride(2, 10).unwrap(), b.to_string_with_radix_and_stride(2, 10).unwrap());
+    assert_eq!(b.to_string_with_radix_and_stride(2, 10).unwrap(), "1101010100");
     println!("---------------------------");
 }
+////////////////////////////////////////////
 
 fn biguint_get_num()
 {
