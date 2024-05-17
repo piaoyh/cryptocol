@@ -935,7 +935,6 @@ fn biguint_get_lower_portion()
     assert_eq!(b.to_string_with_radix_and_stride(2, 10).unwrap(), "1101010100");
     println!("---------------------------");
 }
-////////////////////////////////////////////
 
 fn biguint_get_num()
 {
@@ -944,7 +943,6 @@ fn biguint_get_num()
     define_utypes_with!(u32);
 
     let a = U256::from([0_u32, 10, 20, 30, 40, 50, 60, 70]);
-    let e = a.get_num(3);
     match a.get_num(3)
     {
         Some(num) => {
@@ -953,15 +951,14 @@ fn biguint_get_num()
         },
         None => {
             println!("There is no third element.");
-            assert_eq!(e, None);
         },
     }
+
     let f = a.get_num(8);
     match f
     {
         Some(num) => {
             println!("a.get_num(3).unwrap() = {}", num);
-            assert_eq!(num, 30);
         },
         None => {
             println!("There is no third element.");
@@ -985,6 +982,7 @@ fn biguint_get_num_()
     // let c = a.get_num_(8);
     println!("---------------------------");
 }
+/////////////////////////////////////////////
 
 fn biguint_set_num()
 {

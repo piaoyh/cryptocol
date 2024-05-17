@@ -2131,8 +2131,9 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// Returns i-th element of its array of type `T` wrapped in Some
     /// of enum Option if `i` < `N`. Otherwise, it returns `None`.
     /// 
-    /// # Argument i
-    /// 0-th element contains LSB (Least Significant Bit), while (N-1)-th
+    /// # Arguments
+    /// - `i` is zero-based.
+    /// - 0-th element contains LSB (Least Significant Bit), while (N-1)-th
     /// element contains MSB (Most Significant Bit) regardless endianness.
     /// `BigUInt` have an array of type `T` in order to present long-sized
     /// unsigned integer.
@@ -2150,7 +2151,6 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// define_utypes_with!(u32);
     /// 
     /// let a = U256::from([0_u32, 10, 20, 30, 40, 50, 60, 70]);
-    /// let e = a.get_num(3);
     /// match a.get_num(3)
     /// {
     ///     Some(num) => {
@@ -2159,15 +2159,14 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     ///     },
     ///     None => {
     ///         println!("There is no third element.");
-    ///         assert_eq!(e, None);
     ///     },
     /// }
+    /// 
     /// let f = a.get_num(8);
     /// match f
     /// {
     ///     Some(num) => {
     ///         println!("a.get_num(3).unwrap() = {}", num);
-    ///         assert_eq!(num, 30);
     ///     },
     ///     None => {
     ///         println!("There is no third element.");
@@ -2187,7 +2186,9 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
             #[cfg(target_endian = "big")]       { Some(self.get_number()[N-1-i]) }
         }
         else
-            { None }
+        {
+            None
+        }
     }
 
     // pub fn get_num_(&self, i: usize) -> T
@@ -2200,8 +2201,9 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// - This method is performance-oriented and does not care for safety.
     /// So, if `i` >= `N`, it will panic.
     /// 
-    /// # Argument i
-    /// 0-th element contains LSB (Least Significant Bit), while (N-1)-th
+    /// # Arguments
+    /// - `i` is zero-based.
+    /// - 0-th element contains LSB (Least Significant Bit), while (N-1)-th
     /// element contains MSB (Most Significant Bit) regardless endianness.
     /// `BigUInt` have an array of type `T` in order to present long-sized
     /// unsigned integer.
@@ -2227,7 +2229,6 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// It is just experimental for Big Endian CPUs. So, you are not encouraged
     /// to use it for Big Endian CPUs for serious purpose. Only use this crate
     /// for Big-endian CPUs with your own full responsibility.
-    
     #[inline]
     pub fn get_num_(&self, i: usize) -> T
     {
