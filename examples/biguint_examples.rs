@@ -816,6 +816,7 @@ fn biguint_get_set_check_main()
     biguint_set_num();
     biguint_set_num_();
     biguint_get_number();
+    #[cfg(target_endian = "big")]   biguint_get_number_mut();
     biguint_set_number();
     // biguint_copy_within();
     biguint_set_zero();
@@ -972,8 +973,8 @@ fn biguint_get_num_()
 {
     println!("biguint_get_num_");
     use cryptocol::define_utypes_with;
-    
     define_utypes_with!(u32);
+
     let a = U256::from([0_u32, 10, 20, 30, 40, 50, 60, 70]);
     let b = a.get_num_(3);
     println!("a.get_num_(3) = {}", b);
@@ -982,7 +983,6 @@ fn biguint_get_num_()
     // let c = a.get_num_(8);
     println!("---------------------------");
 }
-/////////////////////////////////////////////
 
 fn biguint_set_num()
 {
@@ -994,9 +994,9 @@ fn biguint_set_num()
     let mut num = a.get_num_(3);
     println!("a.get_num(3).unwrap() = {}", num);
     let b = a.set_num(3, 0);
+    assert!(b);
     num = a.get_num_(3);
     println!("a.get_num(3).unwrap() = {}", num);
-    assert!(b);
     assert_eq!(num, 0);
 
     let c = a.set_num(4, 0);
@@ -1014,10 +1014,10 @@ fn biguint_set_num_()
 
     let mut a = U256::from([10_u128, 20]);
     let mut num = a.get_num_(1);
-    println!("a.get_num(1).unwrap() = {}", num);
+    println!("a.get_num_(1) = {}", num);
     a.set_num_(1, 0);
     num = a.get_num_(1);
-    println!("a.get_num(1).unwrap() = {}", num);
+    println!("a.get_num_(1) = {}", num);
     assert_eq!(num, 0);
 
     // It will panic.
@@ -1030,9 +1030,26 @@ fn biguint_get_number()
     println!("biguint_get_number");
     use cryptocol::define_utypes_with;
     define_utypes_with!(u32);
+
     if let Ok(a) = "12345678909876543210123456789098765432101234567890987654321012345678909876543".parse::<U256>()
     {
         let arr = a.get_number();
+        println!("arr = {:?}", arr);
+        assert_eq!(arr, &[169027903, 1302152522, 3897323189, 3259190507, 1179716839, 4196280276, 2015458651, 457926681]);
+    }
+    println!("---------------------------");
+}
+
+#[cfg(target_endian = "big")]
+fn biguint_get_number_mut()
+{
+    println!("biguint_get_number_mut");
+    use cryptocol::define_utypes_with;
+    define_utypes_with!(u32);
+
+    if let Ok(a) = "12345678909876543210123456789098765432101234567890987654321012345678909876543".parse::<U256>()
+    {
+        let arr = a.get_number_mut();
         println!("arr = {:?}", arr);
         assert_eq!(arr, &[169027903, 1302152522, 3897323189, 3259190507, 1179716839, 4196280276, 2015458651, 457926681]);
     }
@@ -1044,13 +1061,16 @@ fn biguint_set_number()
     println!("biguint_set_number");
     use cryptocol::define_utypes_with;
     define_utypes_with!(u16);
+
     let mut a = U256::new();
     println!("arr = {:?}", a);
-    a.set_number(&[1_u16, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16]);
+    let arr = [1_u16, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16];
+    a.set_number(&arr);
     println!("arr = {:?}", a);
-    assert_eq!(a.get_number(), &[1_u16, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16]);
+    assert_eq!(a.get_number(), &arr);
     println!("---------------------------");
 }
+/////////////////////////////////////////////
 
 // fn biguint_copy_within()
 // {

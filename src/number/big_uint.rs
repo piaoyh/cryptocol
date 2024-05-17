@@ -2216,8 +2216,8 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// # Example
     /// ```
     /// use cryptocol::define_utypes_with;
-    /// 
     /// define_utypes_with!(u32);
+    /// 
     /// let a = U256::from([0_u32, 10, 20, 30, 40, 50, 60, 70]);
     /// let b = a.get_num_(3);
     /// println!("a.get_num_(3) = {}", b);
@@ -2245,8 +2245,9 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// - If `size_of::<T>() * N` <= `128`, some methods may panic
     /// or its behavior may be undefined though it may not panic.
     ///  
-    /// # Argument i
-    /// 0-th element contains LSB (Least Significant Bit), while (N-1)-th
+    /// # Arguments
+    /// - `i` is zero-based.
+    /// - 0-th element contains LSB (Least Significant Bit), while (N-1)-th
     /// element contains MSB (Most Significant Bit) regardless endianess.
     /// `BigUInt` have an array of type `T` in order to present long-sized
     /// unsigned integer.
@@ -2267,9 +2268,9 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// let mut num = a.get_num_(3);
     /// println!("a.get_num(3).unwrap() = {}", num);
     /// let b = a.set_num(3, 0);
+    /// assert!(b);
     /// num = a.get_num_(3);
     /// println!("a.get_num(3).unwrap() = {}", num);
-    /// assert!(b);
     /// assert_eq!(num, 0);
     /// 
     /// let c = a.set_num(4, 0);
@@ -2304,8 +2305,9 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// or its behavior may be undefined though it may not panic.
     /// - If `i` >= `N`, it will panic.
     /// 
-    /// # Argument i
-    /// 0-th element contains LSB (Least Significant Bit), while (N-1)-th
+    /// # Arguments
+    /// - `i` is zero-based.
+    /// - 0-th element contains LSB (Least Significant Bit), while (N-1)-th
     /// element contains MSB (Most Significant Bit) regardless endianness.
     /// `BigUInt` have an array of type `T` in order to present long-sized
     /// unsigned integer.
@@ -2315,7 +2317,8 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// It is virtually the same as the method set_num(). This method set_num_()
     /// is considered to be slightly faster than the method set_num().
     /// Use this method set_num_() only when you are sure that `i` < `N`.
-    /// Otherwise, use its Counterpart method [set_num()](struct@BigUInt#method.set_num).
+    /// Otherwise, use its Counterpart method
+    /// [set_num()](struct@BigUInt#method.set_num).
     /// 
     /// # Example
     /// ```
@@ -2324,11 +2327,12 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// 
     /// let mut a = U256::from([10_u128, 20]);
     /// let mut num = a.get_num_(1);
-    /// println!("a.get_num(1).unwrap() = {}", num);
-    /// let b = a.set_num_(1, 0);
+    /// println!("a.get_num_(1) = {}", num);
+    /// a.set_num_(1, 0);
     /// num = a.get_num_(1);
-    /// println!("a.get_num(1).unwrap() = {}", num);
+    /// println!("a.get_num_(1) = {}", num);
     /// assert_eq!(num, 0);
+    /// 
     /// // It will panic.
     /// // let c = a.set_num_(4, 0);
     /// ```
@@ -2344,10 +2348,14 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// of giving its ownership. `BigUInt` has an array of `T` in order
     /// to present long-sized unsigned integers.
     /// 
+    /// # Features
+    /// The output of this method is immutable.
+    /// 
     /// # Example
     /// ```
     /// use cryptocol::define_utypes_with;
     /// define_utypes_with!(u32);
+    /// 
     /// if let Ok(a) = "12345678909876543210123456789098765432101234567890987654321012345678909876543".parse::<U256>()
     /// {
     ///     let arr = a.get_number();
@@ -2365,6 +2373,9 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// Returns the reference of its array of `T`-type for borrowing instead
     /// of giving its ownership. `BigUInt` has an array of `T` in order
     /// to present long-sized unsigned integers.
+    /// 
+    /// # Features
+    /// The output of this method is mutable.
     /// 
     /// # Example
     /// ```
@@ -2399,11 +2410,13 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// ```
     /// use cryptocol::define_utypes_with;
     /// define_utypes_with!(u16);
+    /// 
     /// let mut a = U256::new();
     /// println!("arr = {:?}", a);
-    /// a.set_number(&[1_u16, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16]);
+    /// let arr = [1_u16, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16];
+    /// a.set_number(&arr);
     /// println!("arr = {:?}", a);
-    /// assert_eq!(a.get_number(), &[1_u16, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16]);
+    /// assert_eq!(a.get_number(), &arr);
     /// ```
     #[inline]
     pub fn set_number(&mut self, val: &[T; N])
@@ -2449,7 +2462,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
         self.number.copy_within(src, dest);
     }
 
-    // pub fn copy_within<R>(&mut self, src: R, dest: usize)
+    // fn copy_within<R>(&mut self, src: R, dest: usize)
     /// Copies elements from one part of the slice `T`-array of BigUInt to
     /// another part of itself, using a memmove.
     /// 
@@ -2489,7 +2502,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// for Big-endian CPUs with your own full responsibility.
     #[inline]
     #[cfg(target_endian = "big")]
-    pub fn copy_within<R>(&mut self, src: R, dest: usize)
+    fn copy_within<R>(&mut self, src: R, dest: usize)
     where R: RangeBounds<usize>
     {
         let mut start: usize;
