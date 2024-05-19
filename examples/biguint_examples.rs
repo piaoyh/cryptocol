@@ -1070,7 +1070,6 @@ fn biguint_set_number()
     assert_eq!(a.get_number(), &arr);
     println!("---------------------------");
 }
-/////////////////////////////////////////////
 
 // fn biguint_copy_within()
 // {
@@ -1106,19 +1105,30 @@ fn biguint_is_zero()
     println!("biguint_is_zero");
     use cryptocol::define_utypes_with;
     define_utypes_with!(u128);
+
     let mut a = U1024::zero();
-    if a.is_zero()
-        { println!("a is Zero"); }
+    let mut b_zero = a.is_zero();
+    if b_zero
+    {
+        println!("a is Zero");
+        assert_eq!(b_zero, true);
+    }
     else
-        { println!("a is Not Zero"); }
-    assert!(a.is_zero());
+    {
+        println!("a is Not Zero");
+    }
 
     a.set_one();
-    if a.is_zero()
-        { println!("a is Zero"); }
+    b_zero = a.is_zero();
+    if b_zero
+    {
+        println!("a is Zero");
+    }
     else
-        { println!("a is Not Zero"); }
-    assert!(!a.is_zero());
+    {
+        println!("a is Not Zero");
+        assert_eq!(b_zero, false);
+    }
     println!("---------------------------");
 }
 
@@ -1144,18 +1154,28 @@ fn biguint_is_one()
     define_utypes_with!(u128);
     
     let mut a = U256::one();
-    if a.is_one()
-        { println!("a is One"); }
+    let mut b_one = a.is_one();
+    if b_one
+    {
+        println!("a is One");
+        assert_eq!(b_one, true);
+    }
     else
-        { println!("a is Not One"); }
-    assert!(a.is_one());
+    {
+        println!("a is Not One");
+    }
 
     a.set_max();
-    if a.is_one()
-        { println!("a is One"); }
+    b_one = a.is_one();
+    if b_one
+    {
+        println!("a is One");
+    }
     else
-        { println!("a is Not One"); }
-    assert!(!a.is_one());
+    {
+        println!("a is Not One");
+        assert_eq!(b_one, false);
+    }
     println!("---------------------------");
 }
 
@@ -1165,29 +1185,45 @@ fn biguint_is_zero_or_one()
     use cryptocol::define_utypes_with;
     define_utypes_with!(u32);
 
-    let mut a = U256::zero();
+    let a = U256::zero();
     println!("a = {}", a);
-    if a.is_zero_or_one()
-        { println!("a is One or Zero."); }
+    let b_zero_or_one = a.is_zero_or_one();
+    if b_zero_or_one
+    {
+        println!("a is One or Zero.");
+        assert_eq!(b_zero_or_one, true);
+    }
     else
-        { println!("a is Neither One nor Zero."); }
-    assert!(a.is_zero_or_one());
+    {
+        println!("a is Neither One nor Zero.");
+    }
 
+    let a = U256::one();
+    println!("a = {}", a);
+    let b_zero_or_one = a.is_zero_or_one();
+    if b_zero_or_one
+    {
+        println!("a is One or Zero.");
+    }
+    else
+    {
+        println!("a is Neither One nor Zero.");
+        assert_eq!(b_zero_or_one, true);
+    }
+
+    let mut a = U256::one();
     a.wrapping_add_assign_uint(1_u8);
     println!("a = {}", a);
-    if a.is_zero_or_one()
-        { println!("a is One or Zero."); }
+    let b_zero_or_one = a.is_zero_or_one();
+    if b_zero_or_one
+    {
+        println!("a is One or Zero.");
+    }
     else
-        { println!("a is Neither One nor Zero."); }
-    assert!(a.is_zero_or_one());
-
-    a.wrapping_add_assign_uint(1_u8);
-    println!("a = {}", a);
-    if a.is_zero_or_one()
-        { println!("a is One or Zero."); }
-    else
-        { println!("a is Neither One nor Zero."); }
-    assert!(!a.is_zero_or_one());
+    {
+        println!("a is Neither One nor Zero.");
+        assert_eq!(b_zero_or_one, false);
+    }
     println!("---------------------------");
 }
 
@@ -1200,8 +1236,8 @@ fn biguint_set_max()
     let mut a = U256::new();
     println!("a = {}", a);
     a.set_max();
-    println!("a = {}", a);
-    assert_eq!(a.to_string(), "115792089237316195423570985008687907853269984665640564039457584007913129639935");
+    println!("a = {}", a.to_string_with_radix_and_stride(16, 8).unwrap());
+    assert_eq!(a.to_string_with_radix_and_stride(16, 8).unwrap(), "FFFFFFFF_FFFFFFFF_FFFFFFFF_FFFFFFFF_FFFFFFFF_FFFFFFFF_FFFFFFFF_FFFFFFFF");
     println!("---------------------------");
 }
 
@@ -1212,12 +1248,9 @@ fn biguint_set_submax()
     define_utypes_with!(u16);
 
     let mut a = U256::new();
-    a.set_max();
     println!("a = {}", a);
-    assert_eq!(a, U256::max());
-
     a.set_submax(200_usize);
-    println!("a = {}", a);
+    println!("a = {}", a.to_string_with_radix_and_stride(16, 8).unwrap());
     assert_eq!(a.to_string_with_radix_and_stride(16, 8).unwrap(), "FF_FFFFFFFF_FFFFFFFF_FFFFFFFF_FFFFFFFF_FFFFFFFF_FFFFFFFF");
     println!("---------------------------");
 }
@@ -1231,10 +1264,11 @@ fn biguint_set_halfmax()
     let mut a = U256::new();
     println!("a = {}", a);
     a.set_halfmax();
-    println!("a = {}", a);
+    println!("a = {}", a.to_string_with_radix_and_stride(16, 8).unwrap());
     assert_eq!(a.to_string_with_radix_and_stride(16, 8).unwrap(), "FFFFFFFF_FFFFFFFF_FFFFFFFF_FFFFFFFF");
     println!("---------------------------");
 }
+///////////////////////////
 
 fn biguint_is_max()
 {

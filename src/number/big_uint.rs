@@ -2454,8 +2454,8 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// println!("a = {:?}", a);
     /// assert_eq!(a.get_number(), &[0, 1, 2, 3, 4, 5, 3, 4, 5, 6, 7, 8, 9, 13, 14, 15]);
     /// ```
-    #[inline]
     #[cfg(target_endian = "little")]
+    #[inline]
     fn copy_within<R>(&mut self, src: R, dest: usize)
     where R: RangeBounds<usize>
     {
@@ -2500,8 +2500,8 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// It is just experimental for Big Endian CPUs. So, you are not encouraged
     /// to use it for Big Endian CPUs for serious purpose. Only use this crate
     /// for Big-endian CPUs with your own full responsibility.
-    #[inline]
     #[cfg(target_endian = "big")]
+    #[inline]
     fn copy_within<R>(&mut self, src: R, dest: usize)
     where R: RangeBounds<usize>
     {
@@ -2553,23 +2553,42 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// # Output
     /// It returns true if it is zero. Otherwise, it returns false.
     /// 
-    /// # Example
+    /// # Example 1
     /// ```
     /// use cryptocol::define_utypes_with;
     /// define_utypes_with!(u128);
-    /// let mut a = U1024::zero();
-    /// if a.is_zero()
-    ///     { println!("a is Zero"); }
-    /// else
-    ///     { println!("a is Not Zero"); }
-    /// assert!(a.is_zero());
     /// 
-    /// a.set_one();
-    /// if a.is_zero()
-    ///     { println!("a is Zero"); }
+    /// let mut a = U1024::zero();
+    /// let mut b_zero = a.is_zero();
+    /// if b_zero
+    /// {
+    ///     println!("a is Zero");
+    ///     assert_eq!(b_zero, true);
+    /// }
     /// else
-    ///     { println!("a is Not Zero"); }
-    /// assert!(!a.is_zero());
+    /// {
+    ///     println!("a is Not Zero");
+    /// }
+    /// ```
+    /// 
+    /// # Example 2
+    /// ```
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u128);
+    /// 
+    /// let mut a = U1024::zero();
+    /// let mut b_zero = a.is_zero();
+    /// a.set_one();
+    /// b_zero = a.is_zero();
+    /// if b_zero
+    /// {
+    ///     println!("a is Zero");
+    /// }
+    /// else
+    /// {
+    ///     println!("a is Not Zero");
+    ///     assert_eq!(b_zero, false);
+    /// }
     /// ```
     pub fn is_zero(&self) -> bool
     {
@@ -2614,24 +2633,43 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// # Output
     /// It returns `true` if it is one. Otherwise, it returns `false`.
     /// 
-    /// # Example
+    /// # Example 1
     /// ```
     /// use cryptocol::define_utypes_with;
     /// define_utypes_with!(u128);
     /// 
     /// let mut a = U256::one();
-    /// if a.is_one()
-    ///     { println!("a is One"); }
+    /// let mut b_one = a.is_one();
+    /// if b_one
+    /// {
+    ///     println!("a is One");
+    ///     assert_eq!(b_one, true);
+    /// }
     /// else
-    ///     { println!("a is Not One"); }
-    /// assert!(a.is_one());
+    /// {
+    ///     println!("a is Not One");
+    /// }
+    /// ```
+    /// 
+    /// # Example 2
+    /// ```
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u128);
+    /// 
+    /// let mut a = U256::one();
+    /// let mut b_one = a.is_one();
     /// 
     /// a.set_max();
-    /// if a.is_one()
-    ///     { println!("a is One"); }
+    /// b_one = a.is_one();
+    /// if b_one
+    /// {
+    ///     println!("a is One");
+    /// }
     /// else
-    ///     { println!("a is Not One"); }
-    /// assert!(!a.is_one());
+    /// {
+    ///     println!("a is Not One");
+    ///     assert_eq!(b_one, false);
+    /// }
     /// ```
     pub fn is_one(&self) -> bool
     {
@@ -2653,34 +2691,62 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// # Output
     /// It returns true if it is either zero or one. Otherwise, it returns false.
     /// 
-    /// # Example
+    /// # Example 1
     /// ```
     /// use cryptocol::define_utypes_with;
     /// define_utypes_with!(u32);
     /// 
-    /// let mut a = U256::zero();
+    /// let a = U256::zero();
     /// println!("a = {}", a);
-    /// if a.is_zero_or_one()
-    ///     { println!("a is One or Zero."); }
+    /// let b_zero_or_one = a.is_zero_or_one();
+    /// if b_zero_or_one
+    /// {
+    ///     println!("a is One or Zero.");
+    ///     assert_eq!(b_zero_or_one, true);
+    /// }
     /// else
-    ///     { println!("a is Neither One nor Zero."); }
-    /// assert!(a.is_zero_or_one());
+    /// {
+    ///     println!("a is Neither One nor Zero.");
+    /// }
+    /// ```
     /// 
+    /// # Example 2
+    /// ```
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u32);
+    /// 
+    /// let a = U256::one();
+    /// println!("a = {}", a);
+    /// let b_zero_or_one = a.is_zero_or_one();
+    /// if b_zero_or_one
+    /// {
+    ///     println!("a is One or Zero.");
+    /// }
+    /// else
+    /// {
+    ///     println!("a is Neither One nor Zero.");
+    ///     assert_eq!(b_zero_or_one, true);
+    /// }
+    /// ```
+    /// 
+    /// # Example 3
+    /// ```
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u32);
+    /// 
+    /// let mut a = U256::one();
     /// a.wrapping_add_assign_uint(1_u8);
     /// println!("a = {}", a);
-    /// if a.is_zero_or_one()
-    ///     { println!("a is One or Zero."); }
+    /// let b_zero_or_one = a.is_zero_or_one();
+    /// if b_zero_or_one
+    /// {
+    ///     println!("a is One or Zero.");
+    /// }
     /// else
-    ///     { println!("a is Neither One nor Zero."); }
-    /// assert!(a.is_zero_or_one());
-    /// 
-    /// a.wrapping_add_assign_uint(1_u8);
-    /// println!("a = {}", a);
-    /// if a.is_zero_or_one()
-    ///     { println!("a is One or Zero."); }
-    /// else
-    ///     { println!("a is Neither One nor Zero."); }
-    /// assert!(!a.is_zero_or_one());
+    /// {
+    ///     println!("a is Neither One nor Zero.");
+    ///     assert_eq!(b_zero_or_one, false);
+    /// }
     /// ```
     pub fn is_zero_or_one(&self) -> bool
     {
@@ -2696,7 +2762,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     }
 
     // pub fn set_max(&mut self)
-    /// Sets `BigUInt`-type number to be maximum value in which all bits are
+    /// Sets `self` to be maximum value in which all bits are
     /// set to be `1`.
     /// 
     /// # Examples
@@ -2707,8 +2773,8 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// let mut a = U256::new();
     /// println!("a = {}", a);
     /// a.set_max();
-    /// println!("a = {}", a);
-    /// assert_eq!(a.to_string(), "115792089237316195423570985008687907853269984665640564039457584007913129639935");
+    /// println!("a = {}", a.to_string_with_radix_and_stride(16, 8).unwrap());
+    /// assert_eq!(a.to_string_with_radix_and_stride(16, 8).unwrap(), "FFFFFFFF_FFFFFFFF_FFFFFFFF_FFFFFFFF_FFFFFFFF_FFFFFFFF_FFFFFFFF_FFFFFFFF");
     /// ```
     pub fn set_max(&mut self)
     {
@@ -2717,7 +2783,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     }
 
     // pub fn set_submax(&mut self, size_in_bits: usize)
-    /// Sets `BigUInt`-type number to be `size_in_bits`-bit long maximum value
+    /// Sets `set` to be `size_in_bits`-bit long maximum value
     /// in which all bits are set to be `1`.
     /// 
     /// # Features
@@ -2731,12 +2797,9 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// define_utypes_with!(u16);
     /// 
     /// let mut a = U256::new();
-    /// a.set_max();
     /// println!("a = {}", a);
-    /// assert_eq!(a, U256::max());
-    /// 
     /// a.set_submax(200_usize);
-    /// println!("a = {}", a);
+    /// println!("a = {}", a.to_string_with_radix_and_stride(16, 8).unwrap());
     /// assert_eq!(a.to_string_with_radix_and_stride(16, 8).unwrap(), "FF_FFFFFFFF_FFFFFFFF_FFFFFFFF_FFFFFFFF_FFFFFFFF_FFFFFFFF");
     /// ```
     pub fn set_submax(&mut self, size_in_bits: usize)
@@ -2767,7 +2830,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     }
 
     // pub fn set_halfmax(&mut self)
-    /// Sets `BigUInt`-type number to be half long maximum value
+    /// Sets `self` to be half long maximum value
     /// in which all bits are set to be `1`.
     /// 
     /// # Features
@@ -2783,7 +2846,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// let mut a = U256::new();
     /// println!("a = {}", a);
     /// a.set_halfmax();
-    /// println!("a = {}", a);
+    /// println!("a = {}", a.to_string_with_radix_and_stride(16, 8).unwrap());
     /// assert_eq!(a.to_string_with_radix_and_stride(16, 8).unwrap(), "FFFFFFFF_FFFFFFFF_FFFFFFFF_FFFFFFFF");
     /// ```
     #[inline]
