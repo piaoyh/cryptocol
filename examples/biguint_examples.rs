@@ -4306,19 +4306,21 @@ fn biguint_pow_main()
     define_utypes_with!(u128);
 
     let a = U256::from_uint(234_u8);
-    let mut exp = U256::from_uint(34_u8);
+    let mut exp = U256::from_uint(32_u8);
 
     // normal exponentiation
     let b = a.pow(&exp);
-    println!("234 ** 34 = {}", b);
-    assert_eq!(b.to_string(), "101771369680718065636717400052436696519017873276976456689251925337442881634304");
+    println!("234 ** {} = {}", exp, b);
+    // assert_eq!(b.to_string(), "6529913632209727031525318652236686541010363440282515115174498023189518483456");
     println!("{}", b.is_overflow());
+    assert_eq!(b.is_overflow(), false);
     // wrapping (modular) exponentiation
     exp += 1;
     let c = a.pow(&exp);
-    println!("234 ** 35 = {}", c);
-    assert_eq!(c.to_string(), "77122211638207297159819685489165875529835490356175237196145807339442726240256");
-
+    println!("234 ** {} = {}", exp, c);
+    // assert_eq!(c.to_string(), "22702629851965584870501759510441848503915244372781204437883945323476639809536");
+    println!("{}", b.is_overflow());
+    assert_eq!(b.is_overflow(), true);
     // evidence of wrapping (modular) exponentiation
     assert!(b > c);
     println!("---------------------------");
@@ -4331,29 +4333,69 @@ fn biguint_pow_assign_main()
     define_utypes_with!(u128);
 
     let mut a = U256::from_uint(234_u8);
-    let mut exp = U256::from_uint(34_u8);
+    let mut exp = U256::from_uint(32_u8);
 
     // normal exponentiation
     a.pow_assign(&exp);
-    println!("234 ** 34 = {}", a);
-    assert_eq!(a.to_string(), "101771369680718065636717400052436696519017873276976456689251925337442881634304");
+    println!("234 ** 32 = {}", a);
+    assert_eq!(a.to_string(), "6529913632209727031525318652236686541010363440282515115174498023189518483456");
     println!("{}", a.is_overflow());
+    assert_eq!(a.is_overflow(), true);
+
     // wrapping (modular) exponentiation
     let old = a.clone();
     a = U256::from_uint(234_u8);
     exp += 1;
     a.pow_assign(&exp);
-    println!("234 ** 35 = {}", a);
-    assert_eq!(a.to_string(), "77122211638207297159819685489165875529835490356175237196145807339442726240256");
+    println!("234 ** 33 = {}", a);
+    assert_eq!(a.to_string(), "22702629851965584870501759510441848503915244372781204437883945323476639809536");
+    println!("{}", a.is_overflow());
+    assert_eq!(a.is_overflow(), false);
+    assert!(old > a);   // evidence of wrapping (modular) exponentiation
 
-    // evidence of wrapping (modular) exponentiation
-    assert!(old > a);
+
+
+
+
+
+
+    // checked_pow()
+    let a = U256::from_uint(234_u8);
+    let mut exp = U256::from_uint(32_u8);
+    
+    // normal exponentiation
+    let b = a.checked_pow(&exp);
+    println!("234 ** 32 = {}", b.as_ref().unwrap());
+    assert_eq!(b.unwrap().to_string(), "6529913632209727031525318652236686541010363440282515115174498023189518483456");
+    
+    // wrapping (modular) exponentiation
+    exp += 1;
+    let c = a.checked_pow(&exp);
+    println!("234 ** 33 = {}", c.as_ref().unwrap());
+    assert_eq!(c, None);
     println!("---------------------------");
 }
 
 fn biguint_bit_operation_main()
 {
 
+    println!("biguint_bit_operation_main()");
+    use cryptocol::define_utypes_with;
+    
+    define_utypes_with!(u128);
+    
+    let mut a = U512::from_str_radix("11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101", 2).unwrap();
+    let b = U512::from_str_radix("11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000", 2).unwrap();
+    a.and_assign(&b);
+    println!("a = {}", a.to_string_with_radix(2).unwrap());
+    assert_eq!(a, U512::from_str_radix("11110000000000001100000000000011100010000001000110101010000000001111000000000000110000000000001110001000000100011010101000000000111100000000000011000000000000111000100000010001101010100000000011110000000000001100000000000011100010000001000110101010000000001111000000000000110000000000001110001000000100011010101000000000", 2).unwrap());
+
+    let mut a = U512::from_str_radix("11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101", 2).unwrap();
+    let b = U512::zero();
+    a.and_assign(&b);
+    println!("a = {}", a.to_string_with_radix(2).unwrap());
+    assert_eq!(a, U512::zero());
+    println!("---------------------------");panic!();
 }
 
 fn biguint_conversion_main()

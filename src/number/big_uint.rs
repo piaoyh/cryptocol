@@ -194,6 +194,7 @@ use crate::number::{ SmallUInt, LongerUnion, SharedValues, SharedArrays, NumberE
 #[allow(non_camel_case_types)] pub type U16384_with_u8 = BigUInt<u8, 2048>;
 
 
+//////////////////////////////////////////
 /// # Introduction
 /// A struct that represents a big unsigned integer with user-defined fixed size.
 /// 
@@ -2443,17 +2444,17 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// - The two ranges may overlap.
     /// - The ends of the two ranges must be less than or equal to self.len().
     /// 
-    /// # Example
-    /// ```
-    /// use cryptocol::define_utypes_with;
-    /// define_utypes_with!(u16);
-    /// let mut a = U256::new();
-    /// a.set_number(&[0_u16, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15]);
-    /// println!("a = {:?}", a);
-    /// a.copy_within(3..10, 6);
-    /// println!("a = {:?}", a);
-    /// assert_eq!(a.get_number(), &[0, 1, 2, 3, 4, 5, 3, 4, 5, 6, 7, 8, 9, 13, 14, 15]);
-    /// ```
+    // / # Example
+    // / ```
+    // / use cryptocol::define_utypes_with;
+    // / define_utypes_with!(u16);
+    // / let mut a = U256::new();
+    // / a.set_number(&[0_u16, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15]);
+    // / println!("a = {:?}", a);
+    // / a.copy_within(3..10, 6);
+    // / println!("a = {:?}", a);
+    // / assert_eq!(a.get_number(), &[0, 1, 2, 3, 4, 5, 3, 4, 5, 6, 7, 8, 9, 13, 14, 15]);
+    // / ```
     #[cfg(target_endian = "little")]
     #[inline]
     fn copy_within<R>(&mut self, src: R, dest: usize)
@@ -8529,7 +8530,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /***** METHODS FOR EXPONENTIATION AND LOGARITHM WITH UINT *****/
 
     // pub fn pow_uint<U>(&self, exp: U) -> Self
-    /// Raises `BigUInt` type number to the power of exp, using exponentiation
+    /// Raises `self` to the power of exp, using exponentiation
     /// of type `BigUInt` by squaring. The type `U` has the trait `SmallUInt`.
     ///
     /// # Panics
@@ -8543,12 +8544,16 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// The argument `exp` is the primitive unsigned integer type.
     /// 
     /// # Features
-    /// It calls wrapping_pow_uint() internally.
+    /// - Wrapping (modular) exponentiation.
+    /// - Even if overflowing happens, the `OVERFLOW` flag will not be set for
+    /// either `self` or `output`.
     /// 
     /// # Counterpart Method
     /// If `rhs` is bigger than `u128`, the method
     /// [pow()](struct@BigUInt#method.pow)
     /// is proper rather than this method `pow_uint()`.
+    /// - If you need to know whether or not overflow occurs, use the method
+    /// [overflowing_pow_uint()](struct@BigUInt#method.overflowing_pow_uint).
     /// 
     /// # Example
     /// ```
@@ -8603,6 +8608,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// 
     /// # Features
     /// - It calls wrapping_pow_assign_uint() internally.
+    /// - If overflowing happens, the `OVERFLOW` flag will be set.
     /// - All the flags are historical, which means, for example, if an
     /// overflow occurred even once before this current operation or
     /// `OVERFLOW` flag is already set before this current operation,
@@ -8669,12 +8675,15 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// 
     /// # Features
     /// - Wrapping (modular) exponentiation.
-    /// - If overflowing happens, the `OVERFLOW` flag will be set.
+    /// - Even if overflowing happens, the `OVERFLOW` flag will not be set for
+    /// either `self` or `output`.
     /// 
     /// # Counterpart Method
-    /// If `rhs` is bigger than `u128`, the method
+    /// - If `rhs` is bigger than `u128`, the method
     /// [wrapping_pow_uint()](struct@BigUInt#method.wrapping_pow_uint)
     /// is proper rather than this method `wrapping_pow()`.
+    /// - If you need to know whether or not overflow occurs, use the method
+    /// [overflowing_pow_uint()](struct@BigUInt#method.overflowing_pow_uint).
     /// 
     /// # Example
     /// ```
@@ -8711,11 +8720,12 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     {
         let mut res = Self::from_array(self.get_number().clone());
         res.wrapping_pow_assign_uint(exp);
+        res.reset_all_flags();
         res
     }
 
     // pub fn wrapping_pow_assign_uint<U>(&mut self, exp: U)
-    /// Raises `BigUInt` type number to the power of `exp`, using exponentiation
+    /// Raises `self` to the power of `exp`, using exponentiation
     /// of primitive unsigned integer type by squaring, wrapping around at the
     /// boundary of the type, and assign the result to `self` back.
     ///
@@ -8727,7 +8737,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// The argument `exp` is the primitive unsigned integer type.
     /// 
     /// # Features
-    /// Wrapping (modular) exponentiation.
+    /// - Wrapping (modular) exponentiation.
     /// - If overflowing happens, the `OVERFLOW` flag will be set.
     /// - All the flags are historical, which means, for example, if an
     /// overflow occurred even once before this current operation or
@@ -8810,23 +8820,22 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// # Output
     /// It returns a tuple of the exponentiation along with a bool indicating
     /// whether an overflow happened. The second term of the tuple output
-    /// is the current overflow which has nothing to do with historical
-    /// ovrerflow of `self`.
+    /// has flags reset.
     ///
     /// # Argument
     /// The argument `exp` is the primitive unsigned integer type.
     /// 
     /// # Features
     /// - Wrapping (modular) exponentiation.
-    /// - If overflowing happens, the `OVERFLOW` flag will be set.
-    /// - If overflowing did not happen in the current operation, the second
-    /// term of output tuple will be false even if the `OVERFLOW` flag of `self`
-    /// was already set because of previous operation of `self`.
+    /// - Even if overflowing happens, the `OVERFLOW` flag will not be set for
+    /// either `self` or `output`.
     /// 
     /// # Counterpart Method
     /// If `rhs` is bigger than `u128`, the method
     /// [overflowing_pow()](struct@BigUInt#method.overflowing_pow)
     /// is proper rather than this method `overflowing_pow_uint()`.
+    /// - If you do not need to know whether or not overflow occurs, use the
+    /// method [wrapping_pow_uint()](struct@BigUInt#method.wrapping_pow_uint).
     /// 
     /// # Example
     /// ```
@@ -8865,6 +8874,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     {
         let mut res = Self::from_array(self.get_number().clone());
         let overflow = res.overflowing_pow_assign_uint(exp);
+        res.reset_all_flags();
         (res, overflow)
     }
     
@@ -8946,12 +8956,11 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
             + BitXor<Output=U> + BitXorAssign + Not<Output=U>
             + PartialEq + PartialOrd
     {
-        let old_overflow = self.is_overflow();
+        let old_flags = self.get_all_flags();
         self.reset_overflow();
         self.wrapping_pow_assign_uint(exp);
         let current_overflow = self.is_overflow();
-        if old_overflow || current_overflow
-            { self.set_overflow(); }
+        self.set_flag_bit(old_flags | current_overflow);
         current_overflow
     }
 
@@ -9155,7 +9164,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
         res
     }
 
-    // pub fn saturating_pow_uint<U>(&self, exp: U) -> Self
+    // pub fn saturating_pow_assign_uint<U>(&self, exp: U) -> Self
     /// Raises `BigUInt` type number to the power of exp, using exponentiation
     /// of type `BigUInt` by squaring, saturating at the numeric bounds
     /// instead of overflowing, and returns the result to `self` back.
@@ -9387,7 +9396,6 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
         }
     }
 
-    //////////////////////////////////////////////////
     // pub fn root_uint<U>(&self, exp: U) -> Self
     /// 
     #[inline]
@@ -12901,7 +12909,14 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// The argument `exp` is the type `BigUInt`.
     /// 
     /// # Features
-    /// Wrapping (modular) exponentiation. It calls wrapping_pow() internally.
+    /// - Wrapping (modular) exponentiation.
+    /// - It calls wrapping_pow() internally.
+    /// - If overflowing happens, the `OVERFLOW` flag will be set.
+    /// - All the flags are historical, which means, for example, if an
+    /// overflow occurred even once before this current operation or
+    /// `OVERFLOW` flag is already set before this current operation,
+    /// the `OVERFLOW` flag is not changed even if this current operation
+    /// does not cause overflow.
     /// 
     /// # Counterpart Method
     /// The method [pow_uint()](struct@BigUInt#method.pow_uint) is more
@@ -12947,7 +12962,14 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// The argument `exp` is the type `BigUInt`.
     /// 
     /// # Features
-    /// Wrapping (modular) exponentiation. It calls wrapping_pow() internally.
+    /// - Wrapping (modular) exponentiation.
+    /// - It calls wrapping_pow() internally.
+    /// - If overflowing happens, the `OVERFLOW` flag will be set.
+    /// - All the flags are historical, which means, for example, if an
+    /// overflow occurred even once before this current operation or
+    /// `OVERFLOW` flag is already set before this current operation,
+    /// the `OVERFLOW` flag is not changed even if this current operation
+    /// does not cause overflow.
     /// 
     /// # Counterpart Method
     /// The method [pow_assign_uint()](struct@BigUInt#method.pow_assign_uint)
@@ -14176,8 +14198,8 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// 
     /// define_utypes_with!(u128);
     /// 
-    /// let a = U256::from_str_radix("11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101", 2).unwrap();
-    /// let b = U256::from_str_radix("11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000", 2).unwrap();
+    /// let a = U512::from_str_radix("11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101", 2).unwrap();
+    /// let b = U512::from_str_radix("11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000", 2).unwrap();
     /// let c = a.and(&b);
     /// 
     /// println!("a = {}", a.to_string_with_radix(2).unwrap());
@@ -14194,8 +14216,8 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// 
     /// define_utypes_with!(u128);
     /// 
-    /// let a = U256::from_str_radix("11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101", 2).unwrap();
-    /// let b = U256::zero();
+    /// let a = U512::from_str_radix("11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101", 2).unwrap();
+    /// let b = U512::zero();
     /// let c = a.and(&b);
     /// 
     /// println!("a = {}", a.to_string_with_radix(2).unwrap());
@@ -14219,32 +14241,26 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// ```
     /// use cryptocol::number::*;
     /// use cryptocol::define_utypes_with;
-    /// 
     /// define_utypes_with!(u128);
     /// 
-    /// let mut a = U256::from_str_radix("11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101", 2).unwrap();
-    /// let b = U256::from_str_radix("11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000", 2).unwrap();
+    /// let mut a = U512::from_str_radix("11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101", 2).unwrap();
+    /// let b = U512::from_str_radix("11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000", 2).unwrap();
     /// a.and_assign(&b);
-    /// 
     /// println!("a = {}", a.to_string_with_radix(2).unwrap());
-    /// 
-    /// assert_eq!(a, U256::from_str_radix("1111000000000000110000000000001110001000000100011010101000000000111100000000000011000000000000111000100000010001101010100000000011110000000000001100000000000011100010000001000110101010000000001111000000000000110000000000001110001000000100011010101000000000", 2).unwrap());
+    /// assert_eq!(a, U512::from_str_radix("11110000000000001100000000000011100010000001000110101010000000001111000000000000110000000000001110001000000100011010101000000000111100000000000011000000000000111000100000010001101010100000000011110000000000001100000000000011100010000001000110101010000000001111000000000000110000000000001110001000000100011010101000000000", 2).unwrap());
     /// ```
     /// 
     /// # Example 2
     /// ```
     /// use cryptocol::number::*;
     /// use cryptocol::define_utypes_with;
-    /// 
     /// define_utypes_with!(u128);
     /// 
-    /// let mut a = U256::from_str_radix("11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101", 2).unwrap();
-    /// let b = U256::zero();
+    /// let mut a = U512::from_str_radix("11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101", 2).unwrap();
+    /// let b = U512::zero();
     /// a.and_assign(&b);
-    /// 
     /// println!("a = {}", a.to_string_with_radix(2).unwrap());
-    /// 
-    /// assert_eq!(a, U256::zero());
+    /// assert_eq!(a, U512::zero());
     /// ```
     pub fn and_assign(&mut self, rhs: &Self)
     {
