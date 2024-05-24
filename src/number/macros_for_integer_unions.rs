@@ -13982,6 +13982,14 @@ macro_rules! operators_for_integer_unions_impl {
 
         impl PartialEq for $f
         {
+            /// This method tests for `self`` and other values to be equal,
+            /// and is used by operator `==`.
+            /// [Read more](https://doc.rust-lang.org/std/cmp/trait.PartialEq.html#tymethod.eq)
+            /// 
+            /// # Example
+            /// ```
+            /// // Todo
+            /// ```
             #[inline]
             fn eq(&self, other: &Self) -> bool
             {
@@ -13994,9 +14002,9 @@ macro_rules! operators_for_integer_unions_impl {
             fn partial_cmp(&self, other: &Self) -> Option<Ordering>
             {
                 if self.get() > other.get()
-                    { return Some(Ordering::Greater); }
+                    { Some(Ordering::Greater) }
                 else if self.get() < other.get()
-                    { return Some(Ordering::Less); }
+                    { Some(Ordering::Less) }
                 else
                     { Some(Ordering::Equal) }
             }
@@ -14128,6 +14136,7 @@ macro_rules! display_for_integer_unions_impl {
 pub(super) use display_for_integer_unions_impl;
 
 
+    
 
 
 

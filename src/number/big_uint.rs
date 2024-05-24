@@ -2863,14 +2863,24 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// It returns `true` if it has maxmum number.
     /// Otherwise, it returns `false`.
     /// 
-    /// # Examples
+    /// # Example 1
     /// ```
     /// use cryptocol::define_utypes_with;
     /// define_utypes_with!(u128);
     /// 
     /// let a = U256::max();
-    /// println!("Is {} a 256-bit maximun? - {}", a, a.is_max());
+    /// println!("Is {} a 256-bit maximum? - {}", a, a.is_max());
     /// assert_eq!(a.is_max(), true);
+    /// ```
+    /// 
+    /// # Example 2
+    /// ```
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u128);
+    /// 
+    /// let b = U256::max().wrapping_sub_uint(1_u8);
+    /// println!("Is {} a 256-bit maximum? - {}", b, b.is_max());
+    /// assert_eq!(b.is_max(), false);
     /// ```
     /// 
     /// # Big-endian issue
@@ -3098,6 +3108,8 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
         }
         true
     }
+    
+///////////////
 
     // pub fn is_odd(&self) -> bool
     /// Checks whether the `BigUInt`-type number is an odd number.
@@ -8960,7 +8972,8 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
         self.reset_overflow();
         self.wrapping_pow_assign_uint(exp);
         let current_overflow = self.is_overflow();
-        self.set_flag_bit(old_flags | current_overflow);
+        let current_flag = self.get_all_flags();
+        self.set_flag_bit(old_flags | current_flag);
         current_overflow
     }
 

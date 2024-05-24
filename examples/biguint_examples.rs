@@ -1268,7 +1268,6 @@ fn biguint_set_halfmax()
     assert_eq!(a.to_string_with_radix_and_stride(16, 8).unwrap(), "FFFFFFFF_FFFFFFFF_FFFFFFFF_FFFFFFFF");
     println!("---------------------------");
 }
-///////////////////////////
 
 fn biguint_is_max()
 {
@@ -1277,8 +1276,12 @@ fn biguint_is_max()
     define_utypes_with!(u128);
 
     let a = U256::max();
-    println!("Is {} a 256-bit maximun? - {}", a, a.is_max());
+    println!("Is {} a 256-bit maximum? - {}", a, a.is_max());
     assert_eq!(a.is_max(), true);
+
+    let b = U256::max().wrapping_sub_uint(1_u8);
+    println!("Is {} a 256-bit maximum? - {}", b, b.is_max());
+    assert_eq!(b.is_max(), false);
     println!("---------------------------");
 }
 
@@ -1335,6 +1338,7 @@ fn biguint_is_uint()
     assert!(a.is_uint(51_u16));
     println!("---------------------------");
 }
+///////////////////////////
 
 fn biguint_is_odd()
 {
