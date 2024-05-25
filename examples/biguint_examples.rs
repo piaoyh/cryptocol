@@ -834,7 +834,7 @@ fn biguint_get_set_check_main()
     biguint_is_uint();
     biguint_is_odd();
     biguint_is_even();
-
+    biguint_is_msb_set();
 }
 
 fn biguint_turn_check_bits()
@@ -1335,10 +1335,10 @@ fn biguint_is_uint()
 
     let a = U1024::one() + 50_u16;
     println!("Question: Is a 51?\nAnswer: {}", a.is_uint(51_u32));
-    assert!(a.is_uint(51_u16));
+    assert_eq!(a.is_uint(51_u16), true);
+    assert_eq!(a.is_uint(50_u16), false);
     println!("---------------------------");
 }
-///////////////////////////
 
 fn biguint_is_odd()
 {
@@ -1352,14 +1352,14 @@ fn biguint_is_odd()
         { println!("{} is odd", a); }
     else
         { println!("{} is even", a); }
-    assert!(a.is_odd());
+    assert_eq!(a.is_odd(), true);
 
     a <<= 1;
     if a.is_odd()
         { println!("{} is odd", a); }
     else
         { println!("{} is even", a); }
-    assert!(!a.is_odd());
+    assert_eq!(a.is_odd(), false);
     println!("---------------------------");
 }
 
@@ -1375,15 +1375,37 @@ fn biguint_is_even()
         { println!("{} is even", a); }
     else
         { println!("{} is odd", a); }
-    assert!(!a.is_even());
+    assert_eq!(a.is_even(), false);
 
     a <<= 1;
     if a.is_even()
         { println!("{} is even", a); }
     else
         { println!("{} is odd", a); }
-    assert!(a.is_even());
+    assert_eq!(a.is_even(), true);
     println!("---------------------------");
+}
+
+fn biguint_is_msb_set()
+{
+    println!("fn biguint_is_msb_set()");
+    use cryptocol::define_utypes_with;
+    define_utypes_with!(u128);
+    
+    let mut a = U256::new();
+    a.set_uint(169743176821145534028236692093846345739_u128);
+    if a.is_msb_set()
+        { println!("{} is greater than halfmax ({}).", a, U256::halfmax()); }
+    else
+        { println!("{} is less than or equal to halfmax ({}).", a, U256::halfmax()); }
+    assert_eq!(a.is_msb_set(), false);
+    
+    a <<= 129;
+    if a.is_msb_set()
+        { println!("{} is greater than halfmax ({}).", a, U256::halfmax()); }
+    else
+        { println!("{} is less than or equal to halfmax ({}).", a, U256::halfmax()); }
+    assert_eq!(a.is_msb_set(), true);
 }
 
 fn biguint_check_bits_main()
@@ -1445,7 +1467,7 @@ fn biguint_leading_zeros()
     define_utypes_with!(u64);
 
     let a = "100000000000000000000000000000000000000000000000000000000000000000000000000000".parse::<U256>().unwrap();
-    println!("{} has {} leading ones in binary.", a, a.leading_zeros());
+    println!("{} has {} leading zeros in binary.", a, a.leading_zeros());
     assert_eq!(a.leading_zeros(), 0);
     println!("---------------------------");
 }
@@ -1540,7 +1562,7 @@ fn biguint_partial_cmp_uint()
     use cryptocol::define_utypes_with;
     define_utypes_with!(u8);
 
-    let mut res = UU32::from_uint(100_u8).partial_cmp_uint(90_u128).unwrap();
+    let res = UU32::from_uint(100_u8).partial_cmp_uint(90_u128).unwrap();
     match res
     {
         Ordering::Greater => { println!("100 > 90"); }
@@ -1549,7 +1571,7 @@ fn biguint_partial_cmp_uint()
     }
     assert_eq!(res, Ordering::Greater);
 
-    res = UU32::from_uint(100_u8).partial_cmp_uint(110_u128).unwrap();
+    let res = UU32::from_uint(100_u8).partial_cmp_uint(110_u128).unwrap();
     match res
     {
         Ordering::Greater => { println!("100 > 110"); }
@@ -1558,7 +1580,7 @@ fn biguint_partial_cmp_uint()
     }
     assert_eq!(res, Ordering::Less);
 
-    res = UU32::from_uint(100_u8).partial_cmp_uint(100_u128).unwrap();
+    let res = UU32::from_uint(100_u8).partial_cmp_uint(100_u128).unwrap();
     match res
     {
         Ordering::Greater => { println!("100 > 100"); }
@@ -1575,14 +1597,14 @@ fn biguint_lt_uint()
     use cryptocol::define_utypes_with;
     define_utypes_with!(u16);
 
-    let mut res = UU32::from_uint(100_u16).lt_uint(110_u64);
+    let res = UU32::from_uint(100_u16).lt_uint(110_u64);
     if res
         { println!("100 < 110"); }
     else
         { println!("100 >= 110"); }
     assert_eq!(res, true);
 
-    res = UU32::from_uint(100_u16).lt_uint(90_u64);
+    let res = UU32::from_uint(100_u16).lt_uint(90_u64);
     if res
         { println!("100 < 90"); }
     else
@@ -1597,14 +1619,14 @@ fn biguint_gt_uint()
     use cryptocol::define_utypes_with;
     define_utypes_with!(u32);
 
-    let mut res = UU32::from_uint(100_u32).gt_uint(90_u32);
+    let res = UU32::from_uint(100_u32).gt_uint(90_u32);
     if res
         { println!("100 > 90"); }
     else
         { println!("100 <= 90"); }
     assert_eq!(res, true);
 
-    res = UU32::from_uint(100_u32).gt_uint(110_u32);
+    let res = UU32::from_uint(100_u32).gt_uint(110_u32);
     if res
         { println!("100 > 110"); }
     else
@@ -1619,14 +1641,14 @@ fn biguint_le_uint()
     use cryptocol::define_utypes_with;
     define_utypes_with!(u64);
 
-    let mut res = UU32::from_uint(100_u64).le_uint(110_u16);
+    let res = UU32::from_uint(100_u64).le_uint(110_u16);
     if res
         { println!("100 <= 110"); }
     else
         { println!("100 > 110"); }
     assert_eq!(res, true);
 
-    res = UU32::from_uint(100_u64).lt_uint(90_u16);
+    let res = UU32::from_uint(100_u64).lt_uint(90_u16);
     if res
         { println!("100 < 90"); }
     else
@@ -1641,14 +1663,14 @@ fn biguint_ge_uint()
     use cryptocol::define_utypes_with;
     define_utypes_with!(u32);
 
-    let mut res = UU32::from_uint(100_u128).gt_uint(90_u8);
+    let res = UU32::from_uint(100_u128).gt_uint(90_u8);
     if res
         { println!("100 >= 90"); }
     else
         { println!("100 <= 90"); }
     assert_eq!(res, true);
 
-    res = UU32::from_uint(100_u128).gt_uint(110_u8);
+    let res = UU32::from_uint(100_u128).gt_uint(110_u8);
     if res
         { println!("100 > 110"); }
     else
@@ -1663,14 +1685,14 @@ fn biguint_eq_uint()
     use cryptocol::define_utypes_with;
     define_utypes_with!(u8);
 
-    let mut res = UU32::from_uint(100_u32).eq_uint(100_u8);
+    let res = UU32::from_uint(100_u32).eq_uint(100_u8);
     if res
         { println!("100 = 100"); }
     else
         { println!("100 != 100"); }
     assert_eq!(res, true);
 
-    res = UU32::from_uint(100_u64).eq_uint(200_u16);
+    let res = UU32::from_uint(100_u64).eq_uint(200_u16);
     if res
         { println!("100 = 200"); }
     else
@@ -1692,14 +1714,14 @@ fn biguint_eq_biguint()
     define_utypes_with!(u128);
 
     let num_str = "69743176821145534028236692093846345739169743176821145534028236692093846345739";
-    let mut res = UU32::from_string(num_str).unwrap().eq(&UU32::from_string(num_str).unwrap());
+    let res = UU32::from_string(num_str).unwrap().eq(&UU32::from_string(num_str).unwrap());
     if res
         { println!("{0} = {0}", num_str); }
     else
         { println!("{0} != {0}", num_str); }
     assert_eq!(res, true);
 
-    res = UU32::from_string(num_str).unwrap().eq(&UU32::from_uint(100_u8));
+    let res = UU32::from_string(num_str).unwrap().eq(&UU32::from_uint(100_u8));
     if res
         { println!("{} = 100", num_str); }
     else
@@ -1722,7 +1744,7 @@ fn biguint_partial_cmp_biguint()
     let num2 = num_str2.parse::<UU32>().unwrap();
     let num3 = num_str3.parse::<UU32>().unwrap();
 
-    let mut res = num1.partial_cmp(&num2).unwrap();
+    let res = num1.partial_cmp(&num2).unwrap();
     match res
     {
         Ordering::Greater => { println!("{} > {}", num1, num2); }
@@ -1731,7 +1753,7 @@ fn biguint_partial_cmp_biguint()
     }
     assert_eq!(res, Ordering::Greater);
 
-    res = num1.partial_cmp(&num3).unwrap();
+    let res = num1.partial_cmp(&num3).unwrap();
     match res
     {
         Ordering::Greater => { println!("{} > {}", num1, num3); }
@@ -1740,7 +1762,7 @@ fn biguint_partial_cmp_biguint()
     }
     assert_eq!(res, Ordering::Less);
 
-    res = num1.partial_cmp(&num1).unwrap();
+    let res = num1.partial_cmp(&num1).unwrap();
     match res
     {
         Ordering::Greater => { println!("{0} > {0}", num1); }
@@ -1790,28 +1812,29 @@ fn biguint_carrying_add_uint()
     let num2 = UU32::from_str_radix(num_str2, 16).unwrap();
     let num_uint = 0x11223344_55667788_9900AABB_CCDDEEFF_u128;
 
-    let (mut sum, mut carry) = num1.carrying_add_uint(num_uint, false);
+    let (sum, carry) = num1.carrying_add_uint(num_uint, false);
     println!("{} + {} = {}\ncarry = {}", num1, num_uint, sum, carry);
     assert_eq!(sum.to_string(), "115761816335569101403435733562708448393664880666628652711615198738168793722605");
     assert_eq!(carry, false);
 
-    (sum, carry) = num1.carrying_add_uint(num_uint, true);
+    let (sum, carry) = num1.carrying_add_uint(num_uint, true);
     println!("{} + {} = {}\ncarry = {}", num1, num_uint, sum, carry);
     assert_eq!(sum.to_string(), "115761816335569101403435733562708448393664880666628652711615198738168793722606");
     assert_eq!(carry, false);
 
-    (sum, carry) = num2.carrying_add_uint(num_uint, false);
+    let (sum, carry) = num2.carrying_add_uint(num_uint, false);
     println!("{} + {} = {}\ncarry = {}", num2, num_uint, sum, carry);
     assert_eq!(sum.to_string(), "22774453838368691933710012711845097214");
     assert_eq!(carry, true);
 
-    (sum, carry) = num2.carrying_add_uint(num_uint, true);
+    let (sum, carry) = num2.carrying_add_uint(num_uint, true);
     println!("{} + {} = {}\ncarry = {}", num2, num_uint, sum, carry);
     assert_eq!(sum.to_string(), "22774453838368691933710012711845097215");
     assert_eq!(carry, true);
     println!("---------------------------");
 }
 
+///////////////////////////
 fn biguint_carrying_add_assign_uint()
 {
     println!("biguint_carrying_add_assign_uint");

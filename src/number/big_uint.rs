@@ -2961,7 +2961,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// - If `size_of::<T>() * N` < `size_of::<U>()`, this method may panic or
     /// its behavior may be undefined though it may not panic.
     /// 
-    /// # Example
+    /// # Examples
     /// ```
     /// use cryptocol::define_utypes_with;
     /// define_utypes_with!(u8);
@@ -3039,14 +3039,15 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// However, you may want to use this method is_uint() rather than [eq_uint()](struct@BigUInt#method.eq_uint),
     /// if you know that this method is_uint() is a bit faster than [eq_uint()](struct@BigUInt#method.eq_uint),
     /// 
-    /// # Example
+    /// # Examples
     /// ```
     /// use cryptocol::define_utypes_with;
     /// define_utypes_with!(u16);
     /// 
     /// let a = U1024::one() + 50_u16;
     /// println!("Question: Is a 51?\nAnswer: {}", a.is_uint(51_u32));
-    /// assert!(a.is_uint(51_u16));
+    /// assert_eq!(a.is_uint(51_u16), true);
+    /// assert_eq!(a.is_uint(50_u16), false);
     /// ```
     /// # Big-endian issue
     /// It is just experimental for Big Endian CPUs. So, you are not encouraged
@@ -3108,8 +3109,6 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
         }
         true
     }
-    
-///////////////
 
     // pub fn is_odd(&self) -> bool
     /// Checks whether the `BigUInt`-type number is an odd number.
@@ -3117,7 +3116,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// # Output
     /// It will return `true`, if it is odd. Otherwise, it will return `false`.
     /// 
-    /// # Example
+    /// # Examples
     /// ```
     /// use cryptocol::define_utypes_with;
     /// define_utypes_with!(u32);
@@ -3128,14 +3127,14 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     ///     { println!("{} is odd", a); }
     /// else
     ///     { println!("{} is even", a); }
-    /// assert!(a.is_odd());
+    /// assert_eq!(a.is_odd(), true);
     /// 
     /// a <<= 1;
     /// if a.is_odd()
     ///     { println!("{} is odd", a); }
     /// else
     ///     { println!("{} is even", a); }
-    /// assert!(!a.is_odd());
+    /// assert_eq!(a.is_odd(), false);
     /// ```
     #[inline]
     pub fn is_odd(&self) -> bool
@@ -3149,7 +3148,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// # Output
     /// It will return `true`, if it is even. Otherwise, it will return `false`.
     /// 
-    /// # Example
+    /// # Examples
     /// ```
     /// use cryptocol::define_utypes_with;
     /// define_utypes_with!(u128);
@@ -3160,14 +3159,14 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     ///     { println!("{} is even", a); }
     /// else
     ///     { println!("{} is odd", a); }
-    /// assert!(!a.is_even());
+    /// assert_eq!(a.is_even(), false);
     /// 
     /// a <<= 1;
     /// if a.is_even()
     ///     { println!("{} is even", a); }
     /// else
     ///     { println!("{} is odd", a); }
-    /// assert!(a.is_even());
+    /// assert_eq!(a.is_even(), true);
     /// ```
     #[inline]
     pub fn is_even(&self) -> bool
@@ -3183,7 +3182,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// It will return `true`, if the MSB of `self` is set to be one.
     /// Otherwise, it will return `false`.
     /// 
-    /// # Example
+    /// # Examples
     /// ```
     /// use cryptocol::define_utypes_with;
     /// define_utypes_with!(u128);
@@ -3194,14 +3193,14 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     ///     { println!("{} is greater than halfmax ({}).", a, U256::halfmax()); }
     /// else
     ///     { println!("{} is less than or equal to halfmax ({}).", a, U256::halfmax()); }
-    /// assert!(!a.is_msb_set());
+    /// assert_eq!(a.is_msb_set(), false);
     /// 
-    /// a <<= 1;
+    /// a <<= 129;
     /// if a.is_msb_set()
     ///     { println!("{} is greater than halfmax ({}).", a, U256::halfmax()); }
     /// else
     ///     { println!("{} is less than or equal to halfmax ({}).", a, U256::halfmax()); }
-    /// assert!(a.is_msb_set());
+    /// assert_eq!(a.is_msb_set(), true);
     /// ```
     #[inline]
     pub fn is_msb_set(&self) -> bool
@@ -3220,7 +3219,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// # Output
     /// It returns the total number of the bits that are set to be one.
     /// 
-    /// # Example
+    /// # Examples
     /// ```
     /// use std::str::FromStr;
     /// use cryptocol::define_utypes_with;
@@ -3245,7 +3244,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// # Output
     /// It returns the total number of the bits that are set to be zero.
     /// 
-    /// # Example
+    /// # Examples
     /// ```
     /// use cryptocol::define_utypes_with;
     /// define_utypes_with!(u16);
@@ -3269,7 +3268,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// # Output
     /// It returns the total number of the leading bits that are set to be one.
     /// 
-    /// # Example
+    /// # Examples
     /// ```
     /// use std::str::FromStr;
     /// use cryptocol::define_utypes_with;
@@ -3301,13 +3300,13 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// # Output
     /// It returns the total number of the leading bits that are set to be zero.
     /// 
-    /// # Example
+    /// # Examples
     /// ```
     /// use cryptocol::define_utypes_with;
     /// define_utypes_with!(u64);
     /// 
     /// let a = "100000000000000000000000000000000000000000000000000000000000000000000000000000".parse::<U256>().unwrap();
-    /// println!("{} has {} leading ones in binary.", a, a.leading_zeros());
+    /// println!("{} has {} leading zeros in binary.", a, a.leading_zeros());
     /// assert_eq!(a.leading_zeros(), 0);
     /// ```
     pub fn leading_zeros(&self) -> u32
@@ -3332,7 +3331,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// # Output
     /// It returns the total number of the trailing bits that are set to be one.
     /// 
-    /// # Example
+    /// # Examples
     /// ```
     /// use cryptocol::define_utypes_with;
     /// use std::str::FromStr;
@@ -3367,7 +3366,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// # Output
     /// It returns the total number of the trailing bits that are set to be zero.
     /// 
-    /// # Example
+    /// # Examples
     /// ```
     /// use cryptocol::define_utypes_with;
     /// define_utypes_with!(u16);
@@ -3404,7 +3403,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// that has all bits set to be one.
     /// Here, 'maximum element' means the element that has all bits to be one. 
     /// 
-    /// # Example
+    /// # Examples
     /// ```
     /// use cryptocol::define_utypes_with;
     /// define_utypes_with!(u8);
@@ -3556,13 +3555,13 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// It returns `Ordering::Equal` wrapped by `Some` of enum `Option`
     /// if `self` is equal to `other`.
     /// 
-    /// # Example
+    /// # Example 1
     /// ```
     /// use std::cmp::Ordering;
     /// use cryptocol::define_utypes_with;
     /// define_utypes_with!(u8);
     /// 
-    /// let mut res = UU32::from_uint(100_u8).partial_cmp_uint(90_u128).unwrap();
+    /// let res = UU32::from_uint(100_u8).partial_cmp_uint(90_u128).unwrap();
     /// match res
     /// {
     ///     Ordering::Greater => { println!("100 > 90"); }
@@ -3570,8 +3569,15 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     ///     Ordering::Equal => { println!("100 = 90"); }
     /// }
     /// assert_eq!(res, Ordering::Greater);
+    /// ```
     /// 
-    /// res = UU32::from_uint(100_u8).partial_cmp_uint(110_u128).unwrap();
+    /// # Example 2
+    /// ```
+    /// use std::cmp::Ordering;
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u8);
+    /// 
+    /// let res = UU32::from_uint(100_u8).partial_cmp_uint(110_u128).unwrap();
     /// match res
     /// {
     ///     Ordering::Greater => { println!("100 > 110"); }
@@ -3579,8 +3585,15 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     ///     Ordering::Equal => { println!("100 = 110"); }
     /// }
     /// assert_eq!(res, Ordering::Less);
+    /// ```
     /// 
-    /// res = UU32::from_uint(100_u8).partial_cmp_uint(100_u128).unwrap();
+    /// # Example 3
+    /// ```
+    /// use std::cmp::Ordering;
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u8);
+    /// 
+    /// let res = UU32::from_uint(100_u8).partial_cmp_uint(100_u128).unwrap();
     /// match res
     /// {
     ///     Ordering::Greater => { println!("100 > 100"); }
@@ -3645,19 +3658,25 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// It returns `true` if `self` is less than `other`.
     /// Otherwise, it returns `false`.
     /// 
-    /// # Example
+    /// # Example 1
     /// ```
     /// use cryptocol::define_utypes_with;
     /// define_utypes_with!(u32);
     /// 
-    /// let mut res = UU32::from_uint(100_u16).gt_uint(90_u64);
+    /// let res = UU32::from_uint(100_u16).gt_uint(90_u64);
     /// if res
     ///     { println!("100 > 90"); }
     /// else
     ///     { println!("100 <= 90"); }
     /// assert_eq!(res, true);
+    /// ```
     /// 
-    /// res = UU32::from_uint(100_u16).gt_uint(110_u64);
+    /// # Example 2
+    /// ```
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u32);
+    /// 
+    /// let res = UU32::from_uint(100_u16).gt_uint(110_u64);
     /// if res
     ///     { println!("100 > 110"); }
     /// else
@@ -3691,19 +3710,25 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// It returns `true` if `self` is greater than `other`.
     /// Otherwise, it returns `false`.
     /// 
-    /// # Example
+    /// # Example 1
     /// ```
     /// use cryptocol::define_utypes_with;
     /// define_utypes_with!(u32);
     /// 
-    /// let mut res = UU32::from_uint(100_u32).gt_uint(90_u32);
+    /// let res = UU32::from_uint(100_u32).gt_uint(90_u32);
     /// if res
     ///     { println!("100 > 90"); }
     /// else
     ///     { println!("100 <= 90"); }
     /// assert_eq!(res, true);
+    /// ```
     /// 
-    /// res = UU32::from_uint(100_u32).gt_uint(110_u32);
+    /// # Example 2
+    /// ```
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u32);
+    /// 
+    /// let res = UU32::from_uint(100_u32).gt_uint(110_u32);
     /// if res
     ///     { println!("100 > 110"); }
     /// else
@@ -3737,19 +3762,25 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// It returns `true` if `self` is less than or equal to `other`.
     /// Otherwise, it returns `false`.
     /// 
-    /// # Example
+    /// # Example 1
     /// ```
     /// use cryptocol::define_utypes_with;
     /// define_utypes_with!(u64);
     /// 
-    /// let mut res = UU32::from_uint(100_u64).le_uint(110_u16);
+    /// let res = UU32::from_uint(100_u64).le_uint(110_u16);
     /// if res
     ///     { println!("100 <= 110"); }
     /// else
     ///     { println!("100 > 110"); }
     /// assert_eq!(res, true);
+    /// ```
     /// 
-    /// res = UU32::from_uint(100_u64).lt_uint(90_u16);
+    /// # Example 2
+    /// ```
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u64);
+    /// 
+    /// let res = UU32::from_uint(100_u64).lt_uint(90_u16);
     /// if res
     ///     { println!("100 < 90"); }
     /// else
@@ -3783,19 +3814,25 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// It returns `true` if `self` is greater than or equal to `other`.
     /// Otherwise, it returns `false`.
     /// 
-    /// # Example
+    /// # Example 1
     /// ```
     /// use cryptocol::define_utypes_with;
     /// define_utypes_with!(u32);
     /// 
-    /// let mut res = UU32::from_uint(100_u128).gt_uint(90_u8);
+    /// let res = UU32::from_uint(100_u128).gt_uint(90_u8);
     /// if res
     ///     { println!("100 >= 90"); }
     /// else
     ///     { println!("100 <= 90"); }
     /// assert_eq!(res, true);
+    /// ```
     /// 
-    /// res = UU32::from_uint(100_u128).gt_uint(110_u8);
+    /// # Example 2
+    /// ```
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u32);
+    /// 
+    /// let res = UU32::from_uint(100_u128).gt_uint(110_u8);
     /// if res
     ///     { println!("100 > 110"); }
     /// else
@@ -3829,19 +3866,25 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// It returns `true` if `self` is equal to `other`.
     /// Otherwise, it returns `false`.
     /// 
-    /// # Example
+    /// # Example 1
     /// ```
     /// use cryptocol::define_utypes_with;
     /// define_utypes_with!(u8);
     /// 
-    /// let mut res = UU32::from_uint(100_u32).eq_uint(100_u8);
+    /// let res = UU32::from_uint(100_u32).eq_uint(100_u8);
     /// if res
     ///     { println!("100 = 100"); }
     /// else
     ///     { println!("100 != 100"); }
     /// assert_eq!(res, true);
+    /// ```
     /// 
-    /// res = UU32::from_uint(100_u64).eq_uint(200_u16);
+    /// # Example 2
+    /// ```
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u8);
+    /// 
+    /// let res = UU32::from_uint(100_u64).eq_uint(200_u16);
     /// if res
     ///     { println!("100 = 200"); }
     /// else
@@ -3873,20 +3916,26 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// It returns `true` if `self` is equal to `other`.
     /// Otherwise, it returns `false`.
     /// 
-    /// # Example
+    /// # Example 1
     /// ```
     /// use cryptocol::define_utypes_with;
     /// define_utypes_with!(u128);
     /// 
     /// let num_str = "69743176821145534028236692093846345739169743176821145534028236692093846345739";
-    /// let mut res = UU32::from_string(num_str).unwrap().eq(&UU32::from_string(num_str).unwrap());
+    /// let res = UU32::from_string(num_str).unwrap().eq(&UU32::from_string(num_str).unwrap());
     /// if res
     ///     { println!("{0} = {0}", num_str); }
     /// else
     ///     { println!("{0} != {0}", num_str); }
     /// assert_eq!(res, true);
+    /// ```
     /// 
-    /// res = UU32::from_string(num_str).unwrap().eq(&UU32::from_uint(100_u8));
+    /// # Example 2
+    /// ```
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u128);
+    /// 
+    /// let res = UU32::from_string(num_str).unwrap().eq(&UU32::from_uint(100_u8));
     /// if res
     ///     { println!("{} = 100", num_str); }
     /// else
@@ -3918,7 +3967,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// It returns `Ordering::Equal` wrapped by `Some` of enum `Option`
     /// if `self` is equal to `other`.
     /// 
-    /// # Example
+    /// # Example 1
     /// ```
     /// use std::cmp::Ordering;
     /// use cryptocol::define_utypes_with;
@@ -3926,12 +3975,10 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// 
     /// let num_str1 = "70000000000000000000000000000000000000000000000000000000000000000000000000000";
     /// let num_str2 = "60000000000000000000000000000000000000000000000000000000000000000000000000000";
-    /// let num_str3 = "80000000000000000000000000000000000000000000000000000000000000000000000000000";
     /// let num1 = num_str1.parse::<UU32>().unwrap();
     /// let num2 = num_str2.parse::<UU32>().unwrap();
-    /// let num3 = num_str3.parse::<UU32>().unwrap();
     /// 
-    /// let mut res = num1.partial_cmp(&num2).unwrap();
+    /// let res = num1.partial_cmp(&num2).unwrap();
     /// match res
     /// {
     ///     Ordering::Greater => { println!("{} > {}", num1, num2); }
@@ -3939,8 +3986,19 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     ///     Ordering::Equal => { println!("{} = {}", num1, num2); }
     /// }
     /// assert_eq!(res, Ordering::Greater);
+    /// ```
     /// 
-    /// res = num1.partial_cmp(&num3).unwrap();
+    /// # Example 2
+    /// ```
+    /// use std::cmp::Ordering;
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u16);
+    /// 
+    /// let num_str1 = "70000000000000000000000000000000000000000000000000000000000000000000000000000";
+    /// let num_str3 = "80000000000000000000000000000000000000000000000000000000000000000000000000000";
+    /// let num1 = num_str1.parse::<UU32>().unwrap();
+    /// let num3 = num_str3.parse::<UU32>().unwrap();
+    /// let res = num1.partial_cmp(&num3).unwrap();
     /// match res
     /// {
     ///     Ordering::Greater => { println!("{} > {}", num1, num3); }
@@ -3948,8 +4006,18 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     ///     Ordering::Equal => { println!("{} = {}", num1, num3); }
     /// }
     /// assert_eq!(res, Ordering::Less);
+    /// ```
     /// 
-    /// res = num1.partial_cmp(&num1).unwrap();
+    /// # Example 3
+    /// ```
+    /// use std::cmp::Ordering;
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u16);
+    /// 
+    /// let num_str1 = "70000000000000000000000000000000000000000000000000000000000000000000000000000";
+    /// let num1 = num_str1.parse::<UU32>().unwrap();
+    /// 
+    /// let res = num1.partial_cmp(&num1).unwrap();
     /// match res
     /// {
     ///     Ordering::Greater => { println!("{0} > {0}", num1); }
@@ -4006,33 +4074,61 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// If `rhs` is bigger tham `ui128`, the method [carrying_add()](struct@BigUInt#method.carrying_add)
     /// is proper rather than this method.
     /// 
-    /// # Example
+    /// # Example 1
     /// ```
     /// use cryptocol::define_utypes_with;
     /// define_utypes_with!(u128);
     /// 
     /// let num_str1 = "FFEEDDBB_AA998877_66554433_221100FF_EEDDBBAA_99887766_55443322_1100FFEE";
-    /// let num_str2 = "FFFFFFFF_FFFFFFFF_FFFFFFFF_FFFFFFFF_FFFFFFFF_FFFFFFFF_FFFFFFFF_FFFFFFFF";
     /// let num1 = UU32::from_str_radix(num_str1, 16).unwrap();
-    /// let num2 = UU32::from_str_radix(num_str2, 16).unwrap();
     /// let num_uint = 0x11223344_55667788_9900AABB_CCDDEEFF_u128;
     /// 
-    /// let (mut sum, mut carry) = num1.carrying_add_uint(num_uint, false);
+    /// let (sum, carry) = num1.carrying_add_uint(num_uint, false);
     /// println!("{} + {} = {}\ncarry = {}", num1, num_uint, sum, carry);
     /// assert_eq!(sum.to_string(), "115761816335569101403435733562708448393664880666628652711615198738168793722605");
     /// assert_eq!(carry, false);
+    /// ```
     /// 
-    /// (sum, carry) = num1.carrying_add_uint(num_uint, true);
+    /// # Example 2
+    /// ```
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u128);
+    /// 
+    /// let num_str1 = "FFEEDDBB_AA998877_66554433_221100FF_EEDDBBAA_99887766_55443322_1100FFEE";
+    /// let num1 = UU32::from_str_radix(num_str1, 16).unwrap();
+    /// let num_uint = 0x11223344_55667788_9900AABB_CCDDEEFF_u128;
+    /// 
+    /// let (sum, carry) = num1.carrying_add_uint(num_uint, true);
     /// println!("{} + {} = {}\ncarry = {}", num1, num_uint, sum, carry);
     /// assert_eq!(sum.to_string(), "115761816335569101403435733562708448393664880666628652711615198738168793722606");
     /// assert_eq!(carry, false);
+    /// ```
     /// 
-    /// (sum, carry) = num2.carrying_add_uint(num_uint, false);
+    /// # Example 3
+    /// ```
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u128);
+    /// 
+    /// let num_str2 = "FFFFFFFF_FFFFFFFF_FFFFFFFF_FFFFFFFF_FFFFFFFF_FFFFFFFF_FFFFFFFF_FFFFFFFF";
+    /// let num2 = UU32::from_str_radix(num_str2, 16).unwrap();
+    /// let num_uint = 0x11223344_55667788_9900AABB_CCDDEEFF_u128;
+    /// 
+    /// let (sum, carry) = num2.carrying_add_uint(num_uint, false);
     /// println!("{} + {} = {}\ncarry = {}", num2, num_uint, sum, carry);
     /// assert_eq!(sum.to_string(), "22774453838368691933710012711845097214");
     /// assert_eq!(carry, true);
+    /// ```
     /// 
-    /// (sum, carry) = num2.carrying_add_uint(num_uint, true);
+    /// # Example 4
+    /// ```
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u128);
+    /// 
+    /// let num_str2 = "FFFFFFFF_FFFFFFFF_FFFFFFFF_FFFFFFFF_FFFFFFFF_FFFFFFFF_FFFFFFFF_FFFFFFFF";
+    /// let num2 = UU32::from_str_radix(num_str2, 16).unwrap();
+    /// let num_uint = 0x11223344_55667788_9900AABB_CCDDEEFF_u128;
+    /// 
+    /// let (sum, carry) = num2.carrying_add_uint(num_uint, true);
     /// println!("{} + {} = {}\ncarry = {}", num2, num_uint, sum, carry);
     /// assert_eq!(sum.to_string(), "22774453838368691933710012711845097215");
     /// assert_eq!(carry, true);
@@ -4057,6 +4153,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
         (res, c)
     }
 
+///////////////////////////
     // pub fn carrying_add_assign_uint<U>(&mut self, rhs: U, carry: bool) -> bool
     /// Accumulate `rhs` + `carry` to `self`, wrapping around at the boundary
     /// of the type, and return the resulting carry.
