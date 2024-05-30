@@ -1793,7 +1793,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     #[inline]
     pub fn size_in_bits() -> usize
     {
-        Self::size_in_bytes() * 8
+        T::size_in_bits() * N
     }
 
     // pub fn length_in_bytes(&self) -> usize
@@ -3108,8 +3108,6 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
         }
         true
     }
-    
-///////////////
 
     // pub fn is_odd(&self) -> bool
     /// Checks whether the `BigUInt`-type number is an odd number.
@@ -3117,7 +3115,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// # Output
     /// It will return `true`, if it is odd. Otherwise, it will return `false`.
     /// 
-    /// # Example
+    /// # Examples
     /// ```
     /// use cryptocol::define_utypes_with;
     /// define_utypes_with!(u32);
@@ -3128,14 +3126,14 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     ///     { println!("{} is odd", a); }
     /// else
     ///     { println!("{} is even", a); }
-    /// assert!(a.is_odd());
+    /// assert_eq!(a.is_odd(), true);
     /// 
     /// a <<= 1;
     /// if a.is_odd()
     ///     { println!("{} is odd", a); }
     /// else
     ///     { println!("{} is even", a); }
-    /// assert!(!a.is_odd());
+    /// assert_eq!(a.is_odd(), false);
     /// ```
     #[inline]
     pub fn is_odd(&self) -> bool
@@ -3160,14 +3158,14 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     ///     { println!("{} is even", a); }
     /// else
     ///     { println!("{} is odd", a); }
-    /// assert!(!a.is_even());
+    /// assert_eq!(a.is_even(), false);
     /// 
     /// a <<= 1;
     /// if a.is_even()
     ///     { println!("{} is even", a); }
     /// else
     ///     { println!("{} is odd", a); }
-    /// assert!(a.is_even());
+    /// assert_eq!(a.is_even(), true);
     /// ```
     #[inline]
     pub fn is_even(&self) -> bool
@@ -3183,7 +3181,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// It will return `true`, if the MSB of `self` is set to be one.
     /// Otherwise, it will return `false`.
     /// 
-    /// # Example
+    /// # Examples
     /// ```
     /// use cryptocol::define_utypes_with;
     /// define_utypes_with!(u128);
@@ -3194,14 +3192,14 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     ///     { println!("{} is greater than halfmax ({}).", a, U256::halfmax()); }
     /// else
     ///     { println!("{} is less than or equal to halfmax ({}).", a, U256::halfmax()); }
-    /// assert!(!a.is_msb_set());
+    /// assert_eq!(a.is_msb_set(), false);
     /// 
-    /// a <<= 1;
+    /// a.set_msb();
     /// if a.is_msb_set()
     ///     { println!("{} is greater than halfmax ({}).", a, U256::halfmax()); }
     /// else
     ///     { println!("{} is less than or equal to halfmax ({}).", a, U256::halfmax()); }
-    /// assert!(a.is_msb_set());
+    /// assert_eq!(a.is_msb_set(), true);
     /// ```
     #[inline]
     pub fn is_msb_set(&self) -> bool
@@ -3210,6 +3208,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     }
 
 
+///////////////
 
     /***** METHODS TO CHECK BITS *****/
 

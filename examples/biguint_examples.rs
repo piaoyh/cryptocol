@@ -834,7 +834,7 @@ fn biguint_get_set_check_main()
     biguint_is_uint();
     biguint_is_odd();
     biguint_is_even();
-
+    biguint_is_msb_set();
 }
 
 fn biguint_turn_check_bits()
@@ -1338,7 +1338,6 @@ fn biguint_is_uint()
     assert!(a.is_uint(51_u16));
     println!("---------------------------");
 }
-///////////////////////////
 
 fn biguint_is_odd()
 {
@@ -1352,14 +1351,14 @@ fn biguint_is_odd()
         { println!("{} is odd", a); }
     else
         { println!("{} is even", a); }
-    assert!(a.is_odd());
+    assert_eq!(a.is_odd(), true);
 
     a <<= 1;
     if a.is_odd()
         { println!("{} is odd", a); }
     else
         { println!("{} is even", a); }
-    assert!(!a.is_odd());
+    assert_eq!(a.is_odd(), false);
     println!("---------------------------");
 }
 
@@ -1375,17 +1374,39 @@ fn biguint_is_even()
         { println!("{} is even", a); }
     else
         { println!("{} is odd", a); }
-    assert!(!a.is_even());
+    assert_eq!(a.is_even(), false);
 
     a <<= 1;
     if a.is_even()
         { println!("{} is even", a); }
     else
         { println!("{} is odd", a); }
-    assert!(a.is_even());
+    assert_eq!(a.is_even(), true);
     println!("---------------------------");
 }
 
+fn biguint_is_msb_set()
+{
+    use cryptocol::define_utypes_with;
+    define_utypes_with!(u128);
+    
+    let mut a = U256::new();
+    a.set_uint(340282366920938463463374607431768211455_u128);
+    if a.is_msb_set()
+        { println!("{} is greater than halfmax ({}).", a, U256::halfmax()); }
+    else
+        { println!("{} is less than or equal to halfmax ({}).", a, U256::halfmax()); }
+    assert_eq!(a.is_msb_set(), false);
+    
+    a.set_msb();
+    if a.is_msb_set()
+        { println!("{} is greater than halfmax ({}).", a, U256::halfmax()); }
+    else
+        { println!("{} is less than or equal to halfmax ({}).", a, U256::halfmax()); }
+    assert_eq!(a.is_msb_set(), true);
+}
+
+///////////////////////////
 fn biguint_check_bits_main()
 {
     biguint_count_ones();
