@@ -3209,7 +3209,6 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     }
 
 
-///////////////
 
     /***** METHODS TO CHECK BITS *****/
 
@@ -3227,7 +3226,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// define_utypes_with!(u8);
     /// 
     /// let a = U256::from_str("100000000000000000000000000000000000000000000000000000000000000000000000000000").unwrap();
-    /// println!("{} has {} ones in binary.", a, a.count_ones());
+    /// println!("{} is {} in binary and has {} ones in binary.", a, a.to_string_with_radix_and_stride(2, 10).unwrap(), a.count_ones());
     /// assert_eq!(a.count_ones(), 107);
     /// ```
     pub fn count_ones(&self) -> u32
@@ -3251,7 +3250,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// define_utypes_with!(u16);
     /// 
     /// let a = "100000000000000000000000000000000000000000000000000000000000000000000000000000".parse::<U256>().unwrap();
-    /// println!("{} has {} zeros in binary.", a, a.count_zeros());
+    /// println!("{} is {} in binary and has {} zeros in binary.", a, a.to_string_with_radix_and_stride(2, 10).unwrap(), a.count_zeros());
     /// assert_eq!(a.count_zeros(), 149);
     /// ```
     pub fn count_zeros(&self) -> u32
@@ -3276,7 +3275,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// define_utypes_with!(u32);
     /// 
     /// let a = U256::from_str("100000000000000000000000000000000000000000000000000000000000000000000000000000").unwrap();
-    /// println!("{} has {} leading ones in binary.", a, a.leading_ones());
+    /// println!("{} is {} in binary and has {} leading ones in binary.", a, a.to_string_with_radix_and_stride(2, 10).unwrap(), a.leading_ones());
     /// assert_eq!(a.leading_ones(), 2);
     /// ```
     pub fn leading_ones(&self) -> u32
@@ -3307,7 +3306,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// define_utypes_with!(u64);
     /// 
     /// let a = "100000000000000000000000000000000000000000000000000000000000000000000000000000".parse::<U256>().unwrap();
-    /// println!("{} has {} leading zeros in binary.", a, a.leading_zeros());
+    /// println!("{} is {} in binary and has {} leading zeros in binary.", a, a.to_string_with_radix_and_stride(2, 10).unwrap(), a.leading_zeros());
     /// assert_eq!(a.leading_zeros(), 0);
     /// ```
     pub fn leading_zeros(&self) -> u32
@@ -3339,7 +3338,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// define_utypes_with!(u128);
     /// 
     /// let a = U256::from_str("111111111111111111111111111111111111111111111111111111111111111111111111111111").unwrap();
-    /// println!("{} has {} trailing ones in binary.", a, a.trailing_ones());
+    /// println!("{} is {} in binary and has {} leading ones in binary.", a, a.to_string_with_radix_and_stride(2, 10).unwrap(), a.leading_ones());
     /// assert_eq!(a.trailing_ones(), 3);
     /// ```
     pub fn trailing_ones(&self) -> u32
@@ -3373,7 +3372,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// define_utypes_with!(u16);
     /// 
     /// let a = "111111111111111111111111111111111111111111111111111111111111111111111111111111".parse::<U256>().unwrap();
-    /// println!("{} has {} trailing zeros in binary.", a, a.trailing_zeros());
+    /// println!("{} is {} in binary and has {} leading zeros in binary.", a, a.to_string_with_radix_and_stride(2, 10).unwrap(), a.leading_zeros());
     /// assert_eq!(a.trailing_zeros(), 0);
     /// ```
     pub fn trailing_zeros(&self) -> u32
@@ -3410,7 +3409,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// define_utypes_with!(u8);
     /// 
     /// let a = U256::from_str_radix("FFFFFFFF_EEEEEEEE_DDDDDDDD_CCCCCCCC_BBBBBBBB_AAAAAAAA_99999999_88888888", 16).unwrap();
-    /// println!("{} has {} leading max elements in array.", a, a.leading_max_elements());
+    /// println!("{} is {} in hexadecimal and has {} leading max elements in array.", a, a.to_string_with_radix_and_stride(16, 2).unwrap(), a.leading_max_elements());
     /// assert_eq!(a.leading_max_elements(), 4);
     /// ```
     pub fn leading_max_elements(&self) -> u32
@@ -3445,7 +3444,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// define_utypes_with!(u32);
     /// 
     /// let a = U256::from_str_radix("00000000_FFFFFFFF_EEEEEEEE_DDDDDDDD_CCCCCCCC_BBBBBBBB_AAAAAAAA_99999999", 16).unwrap();
-    /// println!("{} has {} leading zero elements in array.", a, a.leading_zero_elements());
+    /// println!("{} is {} in hexadecimal and has {} leading zero elements in array.", a, a.to_string_with_radix_and_stride(16, 8).unwrap(), a.leading_zero_elements());
     /// assert_eq!(a.leading_zero_elements(), 1);
     /// ```
     pub fn leading_zero_elements(&self) -> u32
@@ -3482,7 +3481,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// define_utypes_with!(u16);
     /// 
     /// let a = U256::from_str_radix("88888888_99999999_AAAAAAAA_BBBBBBBB_CCCCCCCC_DDDDDDDD_EEEEEEEE_FFFFFFFF", 16).unwrap();
-    /// println!("{} has {} leading max elements in array.", a, a.trailing_max_elements());
+    /// println!("{} is {} in hexadecimal and has {} trailing max elements in array.", a, a.to_string_with_radix_and_stride(16, 4).unwrap(),a.trailing_max_elements());
     /// assert_eq!(a.trailing_max_elements(), 2);
     /// ```
     pub fn trailing_max_elements(&self) -> u32
@@ -3511,7 +3510,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// define_utypes_with!(u8);
     /// 
     /// let a = U256::from_str_radix("FFFFFFFF_EEEEEEEE_DDDDDDDD_CCCCCCCC_BBBBBBBB_AAAAAAAA_9999999_900000000", 16).unwrap();
-    /// println!("{} has {} leading zero elements in array.", a, a.trailing_zero_elements());
+    /// println!("{} is {} in hexadecimal and has {} trailing zero elements in array.", a, a.to_string_with_radix_and_stride(16, 2).unwrap(),a.trailing_zero_elements());
     /// assert_eq!(a.trailing_zero_elements(), 4);
     /// ```
     pub fn trailing_zero_elements(&self) -> u32
@@ -3528,6 +3527,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     }
 
 
+///////////////
 
     /***** METHODS FOR COMPARISON WITH UINT *****/
 

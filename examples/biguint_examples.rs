@@ -1406,8 +1406,8 @@ fn biguint_is_msb_set()
     else
         { println!("{} is less than or equal to halfmax ({}).", a, U256::halfmax()); }
     assert_eq!(a.is_msb_set(), true);
+    println!("---------------------------");
 }
-////////////
 
 fn biguint_check_bits_main()
 {
@@ -1431,7 +1431,7 @@ fn biguint_count_ones()
     define_utypes_with!(u8);
 
     let a = U256::from_str("100000000000000000000000000000000000000000000000000000000000000000000000000000").unwrap();
-    println!("{} has {} ones in binary.", a, a.count_ones());
+    println!("{} is {} in binary and has {} ones in binary.", a, a.to_string_with_radix_and_stride(2, 10).unwrap(), a.count_ones());
     assert_eq!(a.count_ones(), 107);
     println!("---------------------------");
 }
@@ -1443,7 +1443,7 @@ fn biguint_count_zeros()
     define_utypes_with!(u16);
 
     let a = "100000000000000000000000000000000000000000000000000000000000000000000000000000".parse::<U256>().unwrap();
-    println!("{} has {} zeros in binary.", a, a.count_zeros());
+    println!("{} is {} in binary and has {} zeros in binary.", a, a.to_string_with_radix_and_stride(2, 10).unwrap(), a.count_zeros());
     assert_eq!(a.count_zeros(), 149);
     println!("---------------------------");
 }
@@ -1456,7 +1456,7 @@ fn biguint_leading_ones()
     define_utypes_with!(u32);
 
     let a = U256::from_str("100000000000000000000000000000000000000000000000000000000000000000000000000000").unwrap();
-    println!("{} has {} leading ones in binary.", a, a.leading_ones());
+    println!("{} is {} in binary and has {} leading ones in binary.", a, a.to_string_with_radix_and_stride(2, 10).unwrap(), a.leading_ones());
     assert_eq!(a.leading_ones(), 2);
     println!("---------------------------");
 }
@@ -1468,7 +1468,7 @@ fn biguint_leading_zeros()
     define_utypes_with!(u64);
 
     let a = "100000000000000000000000000000000000000000000000000000000000000000000000000000".parse::<U256>().unwrap();
-    println!("{} has {} leading zeros in binary.", a, a.leading_zeros());
+    println!("{} is {} in binary and has {} leading zeros in binary.", a, a.to_string_with_radix_and_stride(2, 10).unwrap(), a.leading_zeros());
     assert_eq!(a.leading_zeros(), 0);
     println!("---------------------------");
 }
@@ -1481,7 +1481,7 @@ fn biguint_trailing_ones()
     define_utypes_with!(u128);
 
     let a = U256::from_str("111111111111111111111111111111111111111111111111111111111111111111111111111111").unwrap();
-    println!("{} has {} trailing ones in binary.", a, a.trailing_ones());
+    println!("{} is {} in binary and has {} trailing ones in binary.", a, a.to_string_with_radix_and_stride(2, 10).unwrap(), a.trailing_ones());
     assert_eq!(a.trailing_ones(), 3);
     println!("---------------------------");
 }
@@ -1493,7 +1493,7 @@ fn biguint_trailing_zeros()
     define_utypes_with!(u16);
 
     let a = "111111111111111111111111111111111111111111111111111111111111111111111111111111".parse::<U256>().unwrap();
-    println!("{} has {} trailing zeros in binary.", a, a.trailing_zeros());
+    println!("{} is {} in binary and has {} trailing zeros in binary.", a, a.to_string_with_radix_and_stride(2, 10).unwrap(), a.trailing_zeros());
     assert_eq!(a.trailing_zeros(), 0);
     println!("---------------------------");
 }
@@ -1505,7 +1505,7 @@ fn biguint_leading_max_elements()
     define_utypes_with!(u8);
 
     let a = U256::from_str_radix("FFFFFFFF_EEEEEEEE_DDDDDDDD_CCCCCCCC_BBBBBBBB_AAAAAAAA_99999999_88888888", 16).unwrap();
-    println!("{} has {} leading max elements in array.", a, a.leading_max_elements());
+    println!("{} is {} in hexadecimal and has {} leading max elements in array.", a, a.to_string_with_radix_and_stride(16, 2).unwrap(), a.leading_max_elements());
     assert_eq!(a.leading_max_elements(), 4);
     println!("---------------------------");
 }
@@ -1517,7 +1517,7 @@ fn biguint_leading_zero_elements()
     define_utypes_with!(u32);
 
     let a = U256::from_str_radix("00000000_FFFFFFFF_EEEEEEEE_DDDDDDDD_CCCCCCCC_BBBBBBBB_AAAAAAAA_99999999", 16).unwrap();
-    println!("{} has {} leading zero elements in array.", a, a.leading_zero_elements());
+    println!("{} is {} in hexadecimal and has {} leading zero elements in array.", a, a.to_string_with_radix_and_stride(16, 8).unwrap(), a.leading_zero_elements());
     assert_eq!(a.leading_zero_elements(), 1);
     println!("---------------------------");
 }
@@ -1529,7 +1529,7 @@ fn biguint_trailing_max_elements()
     define_utypes_with!(u16);
 
     let a = U256::from_str_radix("88888888_99999999_AAAAAAAA_BBBBBBBB_CCCCCCCC_DDDDDDDD_EEEEEEEE_FFFFFFFF", 16).unwrap();
-    println!("{} has {} leading max elements in array.", a, a.trailing_max_elements());
+    println!("{} is {} in hexadecimal and has {} trailing max elements in array.", a, a.to_string_with_radix_and_stride(16, 4).unwrap(),a.trailing_max_elements());
     assert_eq!(a.trailing_max_elements(), 2);
     println!("---------------------------");
 }
@@ -1541,9 +1541,9 @@ fn biguint_trailing_zero_elements()
     define_utypes_with!(u8);
 
     let a = U256::from_str_radix("FFFFFFFF_EEEEEEEE_DDDDDDDD_CCCCCCCC_BBBBBBBB_AAAAAAAA_9999999_900000000", 16).unwrap();
-    println!("{} has {} leading zero elements in array.", a, a.trailing_zero_elements());
+    println!("{} is {} in hexadecimal and has {} trailing zero elements in array.", a, a.to_string_with_radix_and_stride(16, 2).unwrap(),a.trailing_zero_elements());
     assert_eq!(a.trailing_zero_elements(), 4);
-    println!("---------------------------");
+    println!("---------------------------");panic!();
 }
 
 fn biguint_comparison_uint_main()
@@ -1556,6 +1556,7 @@ fn biguint_comparison_uint_main()
     biguint_eq_uint();
 }
 
+////////////
 fn biguint_partial_cmp_uint()
 {
     println!("biguint_partial_cmp_uint");
