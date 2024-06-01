@@ -1836,43 +1836,42 @@ fn biguint_carrying_add_uint()
     println!("---------------------------");
 }
 
-///////////////////////////
 fn biguint_carrying_add_assign_uint()
 {
     println!("biguint_carrying_add_assign_uint");
     use cryptocol::define_utypes_with;
     define_utypes_with!(u64);
 
-    let num_str1 = "FFEEDDBB_AA998877_66554433_221100FF_EEDDBBAA_99887766_55443322_1100FFEE";
-    let num_str2 = "FFFFFFFF_FFFFFFFF_FFFFFFFF_FFFFFFFF_FFFFFFFF_FFFFFFFF_FFFFFFFF_FFFFFFFF";
-    let mut num1 = U256::from_str_radix(num_str1, 16).unwrap();
-    let mut num2 = U256::from_str_radix(num_str2, 16).unwrap();
     let num_uint = 0x9900AABB_CCDDEEFF_u64;
 
+    let num_str1 = "FFEEDDBB_AA998877_66554433_221100FF_EEDDBBAA_99887766_55443322_1100FFEE";
+    let mut num1 = U256::from_str_radix(num_str1, 16).unwrap();
     println!("Originally,\tnum1 = {}", num1);
-    let mut num3 = num1.clone();
-    let mut carry = num1.carrying_add_assign_uint(num_uint, false);
+    let carry = num1.carrying_add_assign_uint(num_uint, false);
     println!("After num1 += {},\tnum1 = {}\tcarry = {}", num_uint, num1, carry);
     assert_eq!(num1.to_string(), "115761816335569101403435733562708448393642106212790284019692513725068324302573");
     assert_eq!(carry, false);
 
-    num1 = num3;
+    let num_str1 = "FFEEDDBB_AA998877_66554433_221100FF_EEDDBBAA_99887766_55443322_1100FFEE";
+    let mut num1 = U256::from_str_radix(num_str1, 16).unwrap();
     println!("Originally,\tnum1 = {}", num1);
-    carry = num1.carrying_add_assign_uint(num_uint, true);
+    let carry = num1.carrying_add_assign_uint(num_uint, true);
     println!("After num1 += {},\tnum1 = {}\tcarry = {}", num_uint, num1, carry);
     assert_eq!(num1.to_string(), "115761816335569101403435733562708448393642106212790284019692513725068324302574");
     assert_eq!(carry, false);
 
-    num3 = num2.clone();
+    let num_str2 = "FFFFFFFF_FFFFFFFF_FFFFFFFF_FFFFFFFF_FFFFFFFF_FFFFFFFF_FFFFFFFF_FFFFFFFF";
+    let mut num2 = U256::from_str_radix(num_str2, 16).unwrap();
     println!("Originally,\tnum2 = {}", num2);
-    carry = num2.carrying_add_assign_uint(num_uint, false);
+    let carry = num2.carrying_add_assign_uint(num_uint, false);
     println!("After num2 += {},\tnum2 = {}\tcarry = {}", num_uint, num2, carry);
     assert_eq!(num2.to_string(), "11024999611375677182");
     assert_eq!(carry, true);
 
-    num2 = num3;
+    let num_str2 = "FFFFFFFF_FFFFFFFF_FFFFFFFF_FFFFFFFF_FFFFFFFF_FFFFFFFF_FFFFFFFF_FFFFFFFF";
+    let mut num2 = U256::from_str_radix(num_str2, 16).unwrap();
     println!("Originally,\tnum2 = {}", num2);
-    carry = num2.carrying_add_assign_uint(num_uint, true);
+    let carry = num2.carrying_add_assign_uint(num_uint, true);
     println!("After num2 += {},\tnum2 = {}\tcarry = {}", num_uint, num2, carry);
     assert_eq!(num2.to_string(), "11024999611375677183");
     assert_eq!(carry, true);
@@ -1886,16 +1885,16 @@ fn biguint_wrapping_add_uint()
     define_utypes_with!(u32);
 
     let a = U512::max().wrapping_sub_uint(1_u8);
-    let b = a.wrapping_add_uint(1_u8);
-    let c = a.wrapping_add_uint(2_u8);
-    let d = a.wrapping_add_uint(3_u8);
     
+    let b = a.wrapping_add_uint(1_u8);
     println!("{} + 1 = {}", a, b);
     assert_eq!(b.to_string(), "13407807929942597099574024998205846127479365820592393377723561443721764030073546976801874298166903427690031858186486050853753882811946569946433649006084095");
 
+    let c = a.wrapping_add_uint(2_u8);
     println!("{} + 2 = {}", a, c);
     assert_eq!(c.to_string(), "0");
 
+    let d = a.wrapping_add_uint(3_u8);
     println!("{} + 3 = {}", a, d);
     assert_eq!(d.to_string(), "1");
     println!("---------------------------");
@@ -1925,6 +1924,7 @@ fn biguint_wrapping_add_assign_uint()
     println!("---------------------------");
 }
 
+///////////////////////////
 fn biguint_overflowing_add_uint()
 {
     println!("biguint_overflowing_add_uint");

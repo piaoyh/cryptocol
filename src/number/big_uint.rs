@@ -4053,6 +4053,13 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// Calculates `self` + `rhs` + `carry`,
     /// wrapping around at the boundary of the type.
     /// 
+    /// # Arguments
+    /// - `rhs` is to be added to `self`, and small-sized unsigned integer
+    /// such as `u8`, `u16`, `u32`, `u64`, and `u128`.
+    /// - `carry` is to be added to `self` if `carry` is `true`,
+    /// and small-sized unsigned integer such as `u8`, `u16`, `u32`, `u64`,
+    /// and `u128`.
+    /// 
     /// # Panics
     /// If `size_of::<T>() * N` <= `128`, this method may panic
     /// or its behavior may be undefined though it may not panic.
@@ -4153,10 +4160,16 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
         (res, c)
     }
 
-///////////////////////////
     // pub fn carrying_add_assign_uint<U>(&mut self, rhs: U, carry: bool) -> bool
     /// Accumulate `rhs` + `carry` to `self`, wrapping around at the boundary
     /// of the type, and return the resulting carry.
+    /// 
+    /// # Arguments
+    /// - `rhs` is to be added to `self`, and small-sized unsigned integer
+    /// such as `u8`, `u16`, `u32`, `u64`, and `u128`.
+    /// - `carry` is to be added to `self` if `carry` is `true`,
+    /// and small-sized unsigned integer such as `u8`, `u16`, `u32`, `u64`,
+    /// and `u128`.
     /// 
     /// # Panics
     /// If `size_of::<T>() * N` <= `128`, this method may panic
@@ -4183,41 +4196,61 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// If `rhs` is bigger tham `ui128`, the method [carrying_add_assign()](struct@BigUInt#method.carrying_add_assign)
     /// is proper rather than this method.
     /// 
-    /// # Example
+    /// # Example 1
     /// ```
     /// use cryptocol::define_utypes_with;
     /// define_utypes_with!(u64);
     /// 
-    /// let num_str1 = "FFEEDDBB_AA998877_66554433_221100FF_EEDDBBAA_99887766_55443322_1100FFEE";
-    /// let num_str2 = "FFFFFFFF_FFFFFFFF_FFFFFFFF_FFFFFFFF_FFFFFFFF_FFFFFFFF_FFFFFFFF_FFFFFFFF";
-    /// let mut num1 = U256::from_str_radix(num_str1, 16).unwrap();
-    /// let mut num2 = U256::from_str_radix(num_str2, 16).unwrap();
     /// let num_uint = 0x9900AABB_CCDDEEFF_u64;
-    /// 
+    /// let num_str1 = "FFEEDDBB_AA998877_66554433_221100FF_EEDDBBAA_99887766_55443322_1100FFEE";
+    /// let mut num1 = U256::from_str_radix(num_str1, 16).unwrap();
     /// println!("Originally,\tnum1 = {}", num1);
-    /// let mut num3 = num1.clone();
-    /// let mut carry = num1.carrying_add_assign_uint(num_uint, false);
+    /// let carry = num1.carrying_add_assign_uint(num_uint, false);
     /// println!("After num1 += {},\tnum1 = {}\tcarry = {}", num_uint, num1, carry);
     /// assert_eq!(num1.to_string(), "115761816335569101403435733562708448393642106212790284019692513725068324302573");
     /// assert_eq!(carry, false);
+    /// ```
     /// 
-    /// num1 = num3;
+    /// # Example 2
+    /// ```
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u64);
+    /// 
+    /// let num_uint = 0x9900AABB_CCDDEEFF_u64;
+    /// let num_str1 = "FFEEDDBB_AA998877_66554433_221100FF_EEDDBBAA_99887766_55443322_1100FFEE";
+    /// let mut num1 = U256::from_str_radix(num_str1, 16).unwrap();
     /// println!("Originally,\tnum1 = {}", num1);
-    /// carry = num1.carrying_add_assign_uint(num_uint, true);
+    /// let carry = num1.carrying_add_assign_uint(num_uint, true);
     /// println!("After num1 += {},\tnum1 = {}\tcarry = {}", num_uint, num1, carry);
     /// assert_eq!(num1.to_string(), "115761816335569101403435733562708448393642106212790284019692513725068324302574");
     /// assert_eq!(carry, false);
+    /// ```
     /// 
-    /// num3 = num2.clone();
+    /// # Example 3
+    /// ```
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u64);
+    /// 
+    /// let num_uint = 0x9900AABB_CCDDEEFF_u64;
+    /// let num_str2 = "FFFFFFFF_FFFFFFFF_FFFFFFFF_FFFFFFFF_FFFFFFFF_FFFFFFFF_FFFFFFFF_FFFFFFFF";
+    /// let mut num2 = U256::from_str_radix(num_str2, 16).unwrap();
     /// println!("Originally,\tnum2 = {}", num2);
-    /// carry = num2.carrying_add_assign_uint(num_uint, false);
+    /// let carry = num2.carrying_add_assign_uint(num_uint, false);
     /// println!("After num2 += {},\tnum2 = {}\tcarry = {}", num_uint, num2, carry);
     /// assert_eq!(num2.to_string(), "11024999611375677182");
     /// assert_eq!(carry, true);
+    /// ```
     /// 
-    /// num2 = num3;
+    /// # Example 4
+    /// ```
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u64);
+    /// 
+    /// let num_uint = 0x9900AABB_CCDDEEFF_u64;
+    /// let num_str2 = "FFFFFFFF_FFFFFFFF_FFFFFFFF_FFFFFFFF_FFFFFFFF_FFFFFFFF_FFFFFFFF_FFFFFFFF";
+    /// let mut num2 = U256::from_str_radix(num_str2, 16).unwrap();
     /// println!("Originally,\tnum2 = {}", num2);
-    /// carry = num2.carrying_add_assign_uint(num_uint, true);
+    /// let carry = num2.carrying_add_assign_uint(num_uint, true);
     /// println!("After num2 += {},\tnum2 = {}\tcarry = {}", num_uint, num2, carry);
     /// assert_eq!(num2.to_string(), "11024999611375677183");
     /// assert_eq!(carry, true);
@@ -4264,6 +4297,10 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     // pub fn wrapping_add_uint<U>(&self, rhs: U) -> Self
     /// Computes `self` + `rhs`, wrapping around at the boundary of the type.
     /// 
+    /// # Arguments
+    /// `rhs` is to be added to `self`, and small-sized unsigned integer
+    /// such as `u8`, `u16`, `u32`, `u64`, and `u128`.
+    /// 
     /// # Panics
     /// If `size_of::<T>() * N` <= `128`, this method may panic
     /// or its behavior may be undefined though it may not panic.
@@ -4278,22 +4315,35 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// If `rhs` is bigger tham `ui128`, the method [wrapping_add()](struct@BigUInt#method.wrapping_add)
     /// is proper rather than this method.
     /// 
-    /// # Example
+    /// # Example 1
     /// ```
     /// use cryptocol::define_utypes_with;
     /// define_utypes_with!(u32);
     /// 
     /// let a = U512::max().wrapping_sub_uint(1_u8);
     /// let b = a.wrapping_add_uint(1_u8);
-    /// let c = a.wrapping_add_uint(2_u8);
-    /// let d = a.wrapping_add_uint(3_u8);
-    /// 
     /// println!("{} + 1 = {}", a, b);
     /// assert_eq!(b.to_string(), "13407807929942597099574024998205846127479365820592393377723561443721764030073546976801874298166903427690031858186486050853753882811946569946433649006084095");
+    /// ```
     /// 
+    /// # Example 2
+    /// ```
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u32);
+    /// 
+    /// let a = U512::max().wrapping_sub_uint(1_u8);
+    /// let c = a.wrapping_add_uint(2_u8);
     /// println!("{} + 2 = {}", a, c);
     /// assert_eq!(c.to_string(), "0");
+    /// ```
     /// 
+    /// # Example 3
+    /// ```
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u32);
+    /// 
+    /// let a = U512::max().wrapping_sub_uint(1_u8);
+    /// let d = a.wrapping_add_uint(3_u8);
     /// println!("{} + 3 = {}", a, d);
     /// assert_eq!(d.to_string(), "1");
     /// ```
@@ -4324,6 +4374,10 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     // pub fn wrapping_add_assign_uint<U>(&mut self, rhs: U)
     /// Computes `self` + `rhs`, wrapping around at the boundary of the type,
     /// and assign the result to `self` back.
+    /// 
+    /// # Arguments
+    /// `rhs` is to be added to `self`, and small-sized unsigned integer
+    /// such as `u8`, `u16`, `u32`, `u64`, and `u128`.
     /// 
     /// # Panics
     /// If `size_of::<T>() * N` <= `128`, this method may panic
@@ -4380,8 +4434,13 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
         self.carrying_add_assign_uint(rhs, false);
     }
 
+///////////////////////////
     // pub fn overflowing_add_uint<U>(&self, rhs: U) -> (Self, bool)
     /// Calculates `self` + `rhs`.
+    /// 
+    /// # Arguments
+    /// `rhs` is to be added to `self`, and small-sized unsigned integer
+    /// such as `u8`, `u16`, `u32`, `u64`, and `u128`.
     /// 
     /// # Panics
     /// If `size_of::<T>() * N` <= `128`, this method may panic
@@ -4442,6 +4501,10 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
 
     // pub fn overflowing_add_assign_uint<U>(&mut self, rhs: U) -> bool
     /// Calculates `self` + `rhs`, and assigns the result to `self` back.
+    /// 
+    /// # Arguments
+    /// `rhs` is to be added to `self`, and small-sized unsigned integer
+    /// such as `u8`, `u16`, `u32`, `u64`, and `u128`.
     /// 
     /// # Panics
     /// If `size_of::<T>() * N` <= `128`, this method may panic
@@ -4511,6 +4574,10 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
 
     // pub fn checked_add_uint<U>(&self, rhs: U) -> Option<Self>
     /// Computes `self` + `rhs`.
+    /// 
+    /// # Arguments
+    /// `rhs` is to be added to `self`, and small-sized unsigned integer
+    /// such as `u8`, `u16`, `u32`, `u64`, and `u128`.
     /// 
     /// # Panics
     /// If `size_of::<T>() * N` <= `128`, this method may panic
@@ -4602,6 +4669,10 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     // pub fn unchecked_add_uint<U>(&self, rhs: U) -> Self
     /// Computes `self` + `rhs`, assuming overflow cannot occur.
     /// 
+    /// # Arguments
+    /// `rhs` is to be added to `self`, and small-sized unsigned integer
+    /// such as `u8`, `u16`, `u32`, `u64`, and `u128`.
+    /// 
     /// # Panics
     /// - If `size_of::<T>() * N` <= `128`, this method may panic
     /// or its behavior may be undefined though it may not panic.
@@ -4651,6 +4722,10 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     // pub fn saturating_add_uint<U>(&self, rhs: U) -> Self
     /// Computes `self` + `rhs`, saturating at the numeric bounds
     /// instead of overflowing.
+    /// 
+    /// # Arguments
+    /// `rhs` is to be added to `self`, and small-sized unsigned integer
+    /// such as `u8`, `u16`, `u32`, `u64`, and `u128`.
     /// 
     /// # Panics
     /// If `size_of::<T>() * N` <= `128`, this method may panic
@@ -4710,6 +4785,10 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     // pub fn saturating_add_assign_uint<U>(&mut self, rhs: T)
     /// Computes `self` + `rhs`, saturating at the numeric bounds
     /// instead of overflowing, and assigns the result to `self` back.
+    /// 
+    /// # Arguments
+    /// `rhs` is to be added to `self`, and small-sized unsigned integer
+    /// such as `u8`, `u16`, `u32`, `u64`, and `u128`.
     /// 
     /// # Panics
     /// If `size_of::<T>() * N` <= `128`, this method may panic
@@ -4775,6 +4854,11 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     // pub fn modular_add_uint<U>(&self, rhs: U, modulo: &Self) -> Self
     /// Computes (`self` + `rhs`) % `modulo`, wrapping around at `modulo` of
     /// the type `Self` instead of overflowing.
+    /// 
+    /// # Arguments
+    /// -`rhs` is to be added to `self`, and small-sized unsigned integer
+    /// such as `u8`, `u16`, `u32`, `u64`, and `u128`.
+    /// - `modulo` is the divisor to divide the result of (`self` + `rhs`).
     /// 
     /// # Panics
     /// If `size_of::<T>() * N` <= `128`, this method may panic
@@ -4846,6 +4930,11 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// Computes (`self` + `rhs`) % `modulo`, wrapping around at `modulo`
     /// of the type `Self` instead of overflowing, and then, assign the result
     /// back to `self`.
+    /// 
+    /// # Arguments
+    /// -`rhs` is to be added to `self`, and small-sized unsigned integer
+    /// such as `u8`, `u16`, `u32`, `u64`, and `u128`.
+    /// - `modulo` is the divisor to divide the result of (`self` + `rhs`).
     /// 
     /// # Panics
     /// If `size_of::<T>() * N` <= `128`, this method may panic
