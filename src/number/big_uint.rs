@@ -3527,7 +3527,6 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     }
 
 
-///////////////
 
     /***** METHODS FOR COMPARISON WITH UINT *****/
 
@@ -3936,6 +3935,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// use cryptocol::define_utypes_with;
     /// define_utypes_with!(u128);
     /// 
+    /// let num_str = "69743176821145534028236692093846345739169743176821145534028236692093846345739";
     /// let res = UU32::from_string(num_str).unwrap().eq(&UU32::from_uint(100_u8));
     /// if res
     ///     { println!("{} = 100", num_str); }
@@ -4017,7 +4017,6 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// 
     /// let num_str1 = "70000000000000000000000000000000000000000000000000000000000000000000000000000";
     /// let num1 = num_str1.parse::<UU32>().unwrap();
-    /// 
     /// let res = num1.partial_cmp(&num1).unwrap();
     /// match res
     /// {

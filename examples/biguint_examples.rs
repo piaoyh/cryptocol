@@ -1543,7 +1543,7 @@ fn biguint_trailing_zero_elements()
     let a = U256::from_str_radix("FFFFFFFF_EEEEEEEE_DDDDDDDD_CCCCCCCC_BBBBBBBB_AAAAAAAA_9999999_900000000", 16).unwrap();
     println!("{} is {} in hexadecimal and has {} trailing zero elements in array.", a, a.to_string_with_radix_and_stride(16, 2).unwrap(),a.trailing_zero_elements());
     assert_eq!(a.trailing_zero_elements(), 4);
-    println!("---------------------------");panic!();
+    println!("---------------------------");
 }
 
 fn biguint_comparison_uint_main()
@@ -1556,7 +1556,6 @@ fn biguint_comparison_uint_main()
     biguint_eq_uint();
 }
 
-////////////
 fn biguint_partial_cmp_uint()
 {
     println!("biguint_partial_cmp_uint");
@@ -1786,6 +1785,7 @@ fn biguint_arithmatic_operation_uint_main()
     biguint_exponentiation_logarithm_uint();
 }
 
+////////////
 fn biguint_add_uint()
 {
     biguint_carrying_add_uint();
