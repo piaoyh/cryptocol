@@ -4394,7 +4394,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// If `rhs` is bigger tham `ui128`, the method [wrapping_add_assign()](struct@BigUInt#method.wrapping_add_assign)
     /// is proper rather than this method.
     /// 
-    /// # Example
+    /// # Example 1
     /// ```
     /// use cryptocol::define_utypes_with;
     /// define_utypes_with!(u16);
@@ -4406,10 +4406,28 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// a.wrapping_add_assign_uint(1_u8);
     /// println!("After a += 1,\ta = {}", a);
     /// assert_eq!(a.to_string(), "13407807929942597099574024998205846127479365820592393377723561443721764030073546976801874298166903427690031858186486050853753882811946569946433649006084095");
+    /// ```
+    /// 
+    /// # Example 2
+    /// ```
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u16);
+    /// 
+    /// let mut a = UU64::max();
+    /// println!("Originally,\ta = {}", a);
     /// 
     /// a.wrapping_add_assign_uint(1_u8);
     /// println!("After a += 1,\ta = {}", a);
     /// assert_eq!(a.to_string(), "0");
+    /// ```
+    /// 
+    /// # Example 3
+    /// ```
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u16);
+    /// 
+    /// let mut a = UU64::zero();
+    /// println!("Originally,\ta = {}", a);
     /// 
     /// a.wrapping_add_assign_uint(1_u8);
     /// println!("After a += 1,\ta = {}", a);
@@ -4434,7 +4452,6 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
         self.carrying_add_assign_uint(rhs, false);
     }
 
-///////////////////////////
     // pub fn overflowing_add_uint<U>(&self, rhs: U) -> (Self, bool)
     /// Calculates `self` + `rhs`.
     /// 
@@ -4458,7 +4475,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// If `rhs` is bigger tham `ui128`, the method [overflowing_add()](struct@BigUInt#method.overflowing_add)
     /// is proper rather than this method.
     /// 
-    /// # Example
+    /// # Example 1
     /// ```
     /// use cryptocol::define_utypes_with;
     /// define_utypes_with!(u8);
@@ -4468,12 +4485,26 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// println!("{} + 1 = {}\noverflow = {}", a, b, overflow);
     /// assert_eq!(b.to_string(), "13407807929942597099574024998205846127479365820592393377723561443721764030073546976801874298166903427690031858186486050853753882811946569946433649006084095");
     /// assert_eq!(overflow, false);
+    /// ```
     /// 
+    /// # Example 2
+    /// ```
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u8);
+    /// 
+    /// let a = U512::max().wrapping_sub_uint(1_u8);
     /// let (c, overflow) = a.overflowing_add_uint(2_u8);
     /// println!("{} + 2 = {}\noverflow = {}", a, c, overflow);
     /// assert_eq!(c.to_string(), "0");
     /// assert_eq!(overflow, true);
+    /// ```
     /// 
+    /// # Example 3
+    /// ```
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u8);
+    /// 
+    /// let a = U512::max().wrapping_sub_uint(1_u8);
     /// let (d, overflow) = a.overflowing_add_uint(3_u8);
     /// println!("{} + 3 = {}\noverflow = {}", a, d, overflow);
     /// assert_eq!(d.to_string(), "1");
@@ -4525,7 +4556,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// If `rhs` is bigger tham `ui128`, the method [overflowing_add_assign()](struct@BigUInt#method.overflowing_add_assign)
     /// is proper rather than this method.
     /// 
-    /// # Example
+    /// # Example 1
     /// ```
     /// use cryptocol::define_utypes_with;
     /// define_utypes_with!(u16);
@@ -4534,17 +4565,37 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// println!("Originally,\ta = {}", a);
     /// assert_eq!(a.to_string(), "13407807929942597099574024998205846127479365820592393377723561443721764030073546976801874298166903427690031858186486050853753882811946569946433649006084094");
     /// 
-    /// let mut overflow = a.overflowing_add_assign_uint(1_u8);
+    /// let overflow = a.overflowing_add_assign_uint(1_u8);
     /// println!("After a += 1,\ta = {}\noverflow = {}", a, overflow);
     /// assert_eq!(a.to_string(), "13407807929942597099574024998205846127479365820592393377723561443721764030073546976801874298166903427690031858186486050853753882811946569946433649006084095");
     /// assert_eq!(overflow, false);
+    /// ```
     /// 
-    /// overflow = a.overflowing_add_assign_uint(1_u8);
+    /// # Example 2
+    /// ```
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u16);
+    /// 
+    /// let mut a = UU64::max();
+    /// println!("Originally,\ta = {}", a);
+    /// assert_eq!(a.to_string(), "13407807929942597099574024998205846127479365820592393377723561443721764030073546976801874298166903427690031858186486050853753882811946569946433649006084095");
+    /// 
+    /// let overflow = a.overflowing_add_assign_uint(1_u8);
     /// println!("After a += 1,\ta = {}\noverflow = {}", a, overflow);
     /// assert_eq!(a.to_string(), "0");
     /// assert_eq!(overflow, true);
+    /// ```
     /// 
-    /// overflow = a.overflowing_add_assign_uint(1_u8);
+    /// # Example 3
+    /// ```
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u16);
+    /// 
+    /// let mut a = UU64::zero();
+    /// println!("Originally,\ta = {}", a);
+    /// assert_eq!(a.to_string(), "0");
+    /// 
+    /// let overflow = a.overflowing_add_assign_uint(1_u8);
     /// println!("After a += 1,\ta = {}\noverflow = {}", a, overflow);
     /// assert_eq!(a.to_string(), "1");
     /// assert_eq!(overflow, false);
@@ -4592,7 +4643,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// If `rhs` is bigger tham `ui128`, the method [checked_add()](struct@BigUInt#method.checked_add)
     /// is proper rather than this method.
     /// 
-    /// # Example
+    /// # Example 1
     /// ```
     /// use cryptocol::define_utypes_with;
     /// define_utypes_with!(u8);
@@ -4609,7 +4660,14 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     ///         println!("{} + 1 = overflow", a);
     ///     }
     /// }
+    /// ```
     /// 
+    /// # Example 2
+    /// ```
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u8);
+    /// 
+    /// let a = U512::max().wrapping_sub_uint(1_u8);
     /// let c = a.checked_add_uint(2_u8);
     /// match c
     /// {
@@ -4621,7 +4679,14 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     ///         assert_eq!(c, None);
     ///     }
     /// }
+    /// ```
     /// 
+    /// # Example 3
+    /// ```
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u8);
+    /// 
+    /// let a = U512::max().wrapping_sub_uint(1_u8);
     /// let d = a.checked_add_uint(3_u8);
     /// match d
     /// {
@@ -4687,7 +4752,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// If `rhs` is bigger tham `ui128`, the method [unchecked_add()](struct@BigUInt#method.unchecked_add)
     /// is proper rather than this method.
     /// 
-    /// # Example
+    /// # Examples
     /// ```
     /// use cryptocol::define_utypes_with;
     /// define_utypes_with!(u32);
@@ -4743,25 +4808,38 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// If `rhs` is bigger tham `ui128`, the method [saturating_add()](struct@BigUInt#method.saturating_add)
     /// is proper rather than this method.
     /// 
-    /// # Example
+    /// # Example 1
     /// ```
     /// use cryptocol::define_utypes_with;
     /// define_utypes_with!(u64);
     /// 
     /// let a = U512::max().wrapping_sub_uint(2_u8);
     /// let b = a.saturating_add_uint(1_u8);
-    /// let c = a.saturating_add_uint(2_u8);
-    /// let d = a.saturating_add_uint(3_u8);
-    /// 
     /// println!("{} + 1 = {}", a, b);
     /// assert_eq!(b.to_string(), "13407807929942597099574024998205846127479365820592393377723561443721764030073546976801874298166903427690031858186486050853753882811946569946433649006084094");
+    /// ```
     /// 
+    /// # Example 2
+    /// ```
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u64);
+    /// 
+    /// let a = U512::max().wrapping_sub_uint(2_u8);
+    /// let c = a.saturating_add_uint(2_u8);
     /// println!("{} + 2 = {}", a, c);
     /// assert_eq!(c.to_string(), "13407807929942597099574024998205846127479365820592393377723561443721764030073546976801874298166903427690031858186486050853753882811946569946433649006084095");
+    /// ```
     /// 
+    /// # Example 3
+    /// ```
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u64);
+    /// 
+    /// let a = U512::max().wrapping_sub_uint(2_u8);
+    /// let d = a.saturating_add_uint(3_u8);
     /// println!("{} + 3 = {}", a, d);
     /// assert_eq!(d.to_string(), "13407807929942597099574024998205846127479365820592393377723561443721764030073546976801874298166903427690031858186486050853753882811946569946433649006084095");
-    ///  ```
+    /// ```
     /// 
     /// # Big-endian issue
     /// It is just experimental for Big Endian CPUs. So, you are not encouraged
@@ -4806,7 +4884,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// If `rhs` is bigger tham `ui128`, the method [saturating_add_assign()](struct@BigUInt#method.saturating_add_assign)
     /// is proper rather than this method.
     /// 
-    /// # Example
+    /// # Example 1
     /// ```
     /// use cryptocol::define_utypes_with;
     /// define_utypes_with!(u128);
@@ -4818,9 +4896,29 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// a.saturating_add_assign_uint(1_u8);
     /// println!("After a += 1,\ta = {}", a);
     /// assert_eq!(a.to_string(), "13407807929942597099574024998205846127479365820592393377723561443721764030073546976801874298166903427690031858186486050853753882811946569946433649006084094");
+    /// ```
+    /// 
+    /// # Example 2
+    /// ```
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u128);
+    /// 
+    /// let mut a = UU64::max().wrapping_sub_uint(1_u8);
+    /// println!("Originally,\ta = {}", a);
+    /// assert_eq!(a.to_string(), "13407807929942597099574024998205846127479365820592393377723561443721764030073546976801874298166903427690031858186486050853753882811946569946433649006084094");
     /// 
     /// a.saturating_add_assign_uint(1_u8);
     /// println!("After a += 1,\ta = {}", a);
+    /// assert_eq!(a.to_string(), "13407807929942597099574024998205846127479365820592393377723561443721764030073546976801874298166903427690031858186486050853753882811946569946433649006084095");
+    /// ```
+    /// 
+    /// # Example 3
+    /// ```
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u128);
+    /// 
+    /// let mut a = UU64::max();
+    /// println!("Originally,\ta = {}", a);
     /// assert_eq!(a.to_string(), "13407807929942597099574024998205846127479365820592393377723561443721764030073546976801874298166903427690031858186486050853753882811946569946433649006084095");
     /// 
     /// a.saturating_add_assign_uint(1_u8);
@@ -4885,7 +4983,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// If `rhs` is bigger than `u128`, the method [modular_add()](struct@BigUInt#method.modular_add)
     /// is proper rather than this method `modular_add_uint()`.
     /// 
-    /// # Example
+    /// # Example 1
     /// ```
     /// use cryptocol::define_utypes_with;
     /// define_utypes_with!(u32);
@@ -4893,15 +4991,30 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// let a = U256::from_string("76801874298166903427690031858186486050853753882811946569946433649006").unwrap();
     /// let m = a.wrapping_add_uint(2_u8);
     /// let b = a.modular_add_uint(1_u8, &m);
-    /// let c = a.modular_add_uint(2_u8, &m);
-    /// let d = a.modular_add_uint(3_u8, &m);
-    /// 
     /// println!("{} + 1 = {}", a, b);
     /// assert_eq!(b.to_string(), "76801874298166903427690031858186486050853753882811946569946433649007");
+    /// ```
     /// 
+    /// # Example 2
+    /// ```
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u32);
+    /// 
+    /// let a = U256::from_string("76801874298166903427690031858186486050853753882811946569946433649006").unwrap();
+    /// let m = a.wrapping_add_uint(2_u8);
+    /// let c = a.modular_add_uint(2_u8, &m);
     /// println!("{} + 2 = {}", a, c);
     /// assert_eq!(c.to_string(), "0");
+    /// ```
     /// 
+    /// # Example 3
+    /// ```
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u32);
+    /// 
+    /// let a = U256::from_string("76801874298166903427690031858186486050853753882811946569946433649006").unwrap();
+    /// let m = a.wrapping_add_uint(2_u8);
+    /// let d = a.modular_add_uint(3_u8, &m);
     /// println!("{} + 3 = {}", a, d);
     /// assert_eq!(d.to_string(), "1");
     /// ```
@@ -4963,7 +5076,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// [modular_add_assign()](struct@BigUInt#method.modular_add_assign)
     /// is proper rather than this method.
     /// 
-    /// # Example
+    /// # Example 1
     /// ```
     /// use cryptocol::define_utypes_with;
     /// define_utypes_with!(u8);
@@ -4976,10 +5089,32 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// a.modular_add_assign_uint(1_u8, &m);
     /// println!("After a += 1,\ta = {}", a);
     /// assert_eq!(a.to_string(), "768018742981669034276900318581864860508537538828119465699464336490061");
+    /// ```
+    /// 
+    /// # Example 2
+    /// ```
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u8);
+    /// 
+    /// let mut a = U256::from_string("768018742981669034276900318581864860508537538828119465699464336490061").unwrap();
+    /// let m = a.wrapping_add_uint(1_u8);
+    /// println!("Originally,\ta = {}", a);
+    /// assert_eq!(a.to_string(), "768018742981669034276900318581864860508537538828119465699464336490061");
     /// 
     /// a.modular_add_assign_uint(1_u8, &m);
     /// println!("After a += 1,\ta = {}", a);
     /// assert_eq!(a.to_string(), "0");
+    /// ```
+    /// 
+    /// # Example 3
+    /// ```
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u8);
+    /// 
+    /// let mut a = U256::from_string("768018742981669034276900318581864860508537538828119465699464336490062").unwrap();
+    /// let m = a.clone();
+    /// println!("Originally,\ta = {}", a);
+    /// assert_eq!(a.to_string(), "768018742981669034276900318581864860508537538828119465699464336490062");
     /// 
     /// a.modular_add_assign_uint(1_u8, &m);
     /// println!("After a += 1,\ta = {}", a);
@@ -5033,6 +5168,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
         }
     }
 
+///////////////////////////
 
     /*** Subtraction ***/
 

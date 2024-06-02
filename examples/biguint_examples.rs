@@ -1924,7 +1924,6 @@ fn biguint_wrapping_add_assign_uint()
     println!("---------------------------");
 }
 
-///////////////////////////
 fn biguint_overflowing_add_uint()
 {
     println!("biguint_overflowing_add_uint");
@@ -2044,21 +2043,22 @@ fn biguint_saturating_add_uint()
     define_utypes_with!(u64);
 
     let a = U512::max().wrapping_sub_uint(2_u8);
-    let b = a.saturating_add_uint(1_u8);
-    let c = a.saturating_add_uint(2_u8);
-    let d = a.saturating_add_uint(3_u8);
     
+    let b = a.saturating_add_uint(1_u8);
     println!("{} + 1 = {}", a, b);
     assert_eq!(b.to_string(), "13407807929942597099574024998205846127479365820592393377723561443721764030073546976801874298166903427690031858186486050853753882811946569946433649006084094");
 
+    let c = a.saturating_add_uint(2_u8);
     println!("{} + 2 = {}", a, c);
     assert_eq!(c.to_string(), "13407807929942597099574024998205846127479365820592393377723561443721764030073546976801874298166903427690031858186486050853753882811946569946433649006084095");
 
+    let d = a.saturating_add_uint(3_u8);
     println!("{} + 3 = {}", a, d);
     assert_eq!(d.to_string(), "13407807929942597099574024998205846127479365820592393377723561443721764030073546976801874298166903427690031858186486050853753882811946569946433649006084095");
     println!("---------------------------");
 }
 
+///////////////////////////
 fn biguint_saturating_add_assign_uint()
 {
     println!("biguint_saturating_add_assign_uint");
@@ -2092,15 +2092,14 @@ fn biguint_modular_add_uint()
     let a = U256::from_string("76801874298166903427690031858186486050853753882811946569946433649006").unwrap();
     let m = a.wrapping_add_uint(2_u8);
     let b = a.modular_add_uint(1_u8, &m);
-    let c = a.modular_add_uint(2_u8, &m);
-    let d = a.modular_add_uint(3_u8, &m);
-    
     println!("{} + 1 = {}", a, b);
     assert_eq!(b.to_string(), "76801874298166903427690031858186486050853753882811946569946433649007");
 
+    let c = a.modular_add_uint(2_u8, &m);
     println!("{} + 2 = {}", a, c);
     assert_eq!(c.to_string(), "0");
 
+    let d = a.modular_add_uint(3_u8, &m);
     println!("{} + 3 = {}", a, d);
     assert_eq!(d.to_string(), "1");
     println!("---------------------------");
