@@ -1785,7 +1785,6 @@ fn biguint_arithmatic_operation_uint_main()
     biguint_exponentiation_logarithm_uint();
 }
 
-////////////
 fn biguint_add_uint()
 {
     biguint_carrying_add_uint();
@@ -2058,7 +2057,6 @@ fn biguint_saturating_add_uint()
     println!("---------------------------");
 }
 
-///////////////////////////
 fn biguint_saturating_add_assign_uint()
 {
     println!("biguint_saturating_add_assign_uint");
@@ -2160,25 +2158,25 @@ fn biguint_borrowing_sub_uint()
     let num2 = UU32::from_str_radix(num_str2, 16).unwrap();
     let num_uint = 0x11223344_55667788_9900AABB_CCDDEEFf_u128;
 
-    let (mut dif, mut carry) = num1.borrowing_sub_uint(num_uint, false);
-    println!("{} - {} = {}\ncarry = {}", num1, num_uint, dif, carry);
+    let (dif, borrow) = num1.borrowing_sub_uint(num_uint, false);
+    println!("{} - {} = {}\nborrow = {}", num1, num_uint, dif, borrow);
     assert_eq!(dif.to_string(), "115761816335569101403435733562708448393619331758951915327747778712745103528175");
-    assert_eq!(carry, false);
+    assert_eq!(borrow, false);
 
-    (dif, carry) = num1.borrowing_sub_uint(num_uint, true);
-    println!("{} - {} = {}\ncarry = {}", num1, num_uint, dif, carry);
+    let (dif, borrow) = num1.borrowing_sub_uint(num_uint, true);
+    println!("{} - {} = {}\ncarry = {}", num1, num_uint, dif, borrow);
     assert_eq!(dif.to_string(), "115761816335569101403435733562708448393619331758951915327747778712745103528174");
-    assert_eq!(carry, false);
+    assert_eq!(borrow, false);
 
-    (dif, carry) = num2.borrowing_sub_uint(num_uint, false);
-    println!("{} - {} = {}\ncarry = {}", num2, num_uint, dif, carry);
+    let (dif, borrow) = num2.borrowing_sub_uint(num_uint, false);
+    println!("{} - {} = {}\ncarry = {}", num2, num_uint, dif, borrow);
     assert_eq!(dif.to_string(), "115792089237316195423570985008687907853269984665640564039457584007913129639919");
-    assert_eq!(carry, true);
+    assert_eq!(borrow, true);
 
-    (dif, carry) = num2.borrowing_sub_uint(num_uint, true);
-    println!("{} - {} = {}\ncarry = {}", num2, num_uint, dif, carry);
+    let (dif, borrow) = num2.borrowing_sub_uint(num_uint, true);
+    println!("{} - {} = {}\ncarry = {}", num2, num_uint, dif, borrow);
     assert_eq!(dif.to_string(), "115792089237316195423570985008687907853269984665640564039457584007913129639918");
-    assert_eq!(carry, true);
+    assert_eq!(borrow, true);
     println!("---------------------------");
 }
 
@@ -2196,31 +2194,31 @@ fn biguint_borrowing_sub_assign_uint()
 
     println!("Originally,\tnum1 = {}", num1);
     let mut num3 = num1.clone();
-    let mut carry = num1.borrowing_sub_assign_uint(num_uint, false);
-    println!("After num1 -= {},\tnum1 = {}\tcarry = {}", num_uint, num1, carry);
+    let borrow = num1.borrowing_sub_assign_uint(num_uint, false);
+    println!("After num1 -= {},\tnum1 = {}\tborrow = {}", num_uint, num1, borrow);
     assert_eq!(num1.to_string(), "115761816335569101403435733562708448393642106212790284019670463725845572948207");
-    assert_eq!(carry, false);
+    assert_eq!(borrow, false);
 
     num1 = num3;
     println!("Originally,\tnum1 = {}", num1);
-    carry = num1.borrowing_sub_assign_uint(num_uint, true);
-    println!("After num1 -= {},\tnum1 = {}\tcarry = {}", num_uint, num1, carry);
+    let borrow = num1.borrowing_sub_assign_uint(num_uint, true);
+    println!("After num1 -= {},\tnum1 = {}\tcarry = {}", num_uint, num1, borrow);
     assert_eq!(num1.to_string(), "115761816335569101403435733562708448393642106212790284019670463725845572948206");
-    assert_eq!(carry, false);
+    assert_eq!(borrow, false);
 
     num3 = num2.clone();
     println!("Originally,\tnum2 = {}", num2);
-    carry = num2.borrowing_sub_assign_uint(num_uint, false);
-    println!("After num2 -= {},\tnum2 = {}\tcarry = {}", num_uint, num2, carry);
+    let borrow = num2.borrowing_sub_assign_uint(num_uint, false);
+    println!("After num2 -= {},\tnum2 = {}\tcarry = {}", num_uint, num2, borrow);
     assert_eq!(num2.to_string(), "115792089237316195423570985008687907853269984665640564039457584007913129639935");
-    assert_eq!(carry, true);
+    assert_eq!(borrow, true);
 
     num2 = num3;
     println!("Originally,\tnum2 = {}", num2);
-    carry = num2.borrowing_sub_assign_uint(num_uint, true);
-    println!("After num2 -= {},\tnum2 = {}\tcarry = {}", num_uint, num2, carry);
+    let borrow = num2.borrowing_sub_assign_uint(num_uint, true);
+    println!("After num2 -= {},\tnum2 = {}\tcarry = {}", num_uint, num2, borrow);
     assert_eq!(num2.to_string(), "115792089237316195423570985008687907853269984665640564039457584007913129639934");
-    assert_eq!(carry, true);
+    assert_eq!(borrow, true);
     println!("---------------------------");
 }
 
@@ -2259,14 +2257,17 @@ fn biguint_wrapping_sub_assign_uint()
     a.wrapping_sub_assign_uint(1_u8);
     println!("After a -= 1,\ta = {}", a);
     assert_eq!(a.to_string(), "0");
+    assert_eq!(a.is_underflow(), false);
     
     a.wrapping_sub_assign_uint(1_u8);
     println!("After a -= 1,\ta = {}", a);
     assert_eq!(a.to_string(), "13407807929942597099574024998205846127479365820592393377723561443721764030073546976801874298166903427690031858186486050853753882811946569946433649006084095");
+    assert_eq!(a.is_underflow(), true);
     
     a.wrapping_sub_assign_uint(1_u8);
     println!("After a -= 1,\ta = {}", a);
     assert_eq!(a.to_string(), "13407807929942597099574024998205846127479365820592393377723561443721764030073546976801874298166903427690031858186486050853753882811946569946433649006084094");
+    assert_eq!(a.is_underflow(), true);
     println!("---------------------------");
 }
 
@@ -2304,20 +2305,23 @@ fn biguint_overflowing_sub_assign_uint()
     println!("Originally,\ta = {}", a);
     assert_eq!(a.to_string(), "1");
 
-    let mut underflow = a.overflowing_sub_assign_uint(1_u8);
+    let underflow = a.overflowing_sub_assign_uint(1_u8);
     println!("After a -= 1,\ta = {}\nunderflow = {}", a, underflow);
     assert_eq!(a.to_string(), "0");
     assert_eq!(underflow, false);
+    assert_eq!(a.is_underflow(), false);
 
-    underflow = a.overflowing_sub_assign_uint(1_u8);
+    let underflow = a.overflowing_sub_assign_uint(1_u8);
     println!("After a -= 1,\ta = {}\nunderflow = {}", a, underflow);
     assert_eq!(a.to_string(), "13407807929942597099574024998205846127479365820592393377723561443721764030073546976801874298166903427690031858186486050853753882811946569946433649006084095");
     assert_eq!(underflow, true);
+    assert_eq!(a.is_underflow(), true);
 
-    underflow = a.overflowing_sub_assign_uint(1_u8);
+    let underflow = a.overflowing_sub_assign_uint(1_u8);
     println!("After a -= 1,\ta = {}\nunderflow = {}", a, underflow);
     assert_eq!(a.to_string(), "13407807929942597099574024998205846127479365820592393377723561443721764030073546976801874298166903427690031858186486050853753882811946569946433649006084094");
     assert_eq!(underflow, false);
+    assert_eq!(a.is_underflow(), true);
     println!("---------------------------");
 }
 
@@ -2417,14 +2421,17 @@ fn biguint_saturating_sub_assign_uint()
     a.saturating_sub_assign_uint(1_u8);
     println!("After a -= 1,\ta = {}", a);
     assert_eq!(a.to_string(), "1");
+    assert_eq!(a.is_underflow(), false);
     
     a.saturating_sub_assign_uint(1_u8);
     println!("After a -= 1,\ta = {}", a);
     assert_eq!(a.to_string(), "0");
+    assert_eq!(a.is_underflow(), false);
     
     a.saturating_sub_assign_uint(1_u8);
     println!("After a -= 1,\ta = {}", a);
     assert_eq!(a.to_string(), "0");
+    assert_eq!(a.is_underflow(), false);
     println!("---------------------------");
 }
 
@@ -2525,6 +2532,7 @@ fn biguint_mul_uint()
     biguint_modular_mul_assign_uint();
 }
 
+///////////////////////////
 fn biguint_carrying_mul_uint()
 {
     println!("biguint_carrying_mul_uint");

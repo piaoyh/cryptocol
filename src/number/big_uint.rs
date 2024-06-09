@@ -5168,13 +5168,16 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
         }
     }
 
-///////////////////////////
 
     /*** Subtraction ***/
 
     // pub fn borrowing_sub_uint<U>(&self, rhs: U, borrow: bool) -> (Self, bool)
     /// Calculates self − rhs − borrow and returns a tuple containing the
     /// difference and the output borrow.
+    /// 
+    /// # Arguments
+    /// `rhs` is to be subtrcted from `self`, and small-sized unsigned integer
+    /// such as `u8`, `u16`, `u32`, `u64`, and `u128`.
     /// 
     /// # Panics
     /// If `size_of::<T>() * N` <= `128`, this method may panic
@@ -5196,36 +5199,64 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// If `rhs` is bigger than `u128`, the method [borrowing_sub()](struct@BigUInt#method.borrowing_sub)
     /// is proper rather than this method `borrowing_sub_uint()`.
     /// 
-    /// # Example
+    /// # Example 1
     /// ```
     /// use cryptocol::define_utypes_with;
     /// define_utypes_with!(u128);
     /// 
     /// let num_str1 = "FFEEDDBB_AA998877_66554433_221100FF_EEDDBBAA_99887766_55443322_1100FFEE";
-    /// let num_str2 = "11223344_55667788_9900AABB_CCDDEEEe";
     /// let num1 = UU32::from_str_radix(num_str1, 16).unwrap();
+    /// let num_uint = 0x11223344_55667788_9900AABB_CCDDEEFf_u128;
+    /// 
+    /// let (dif, borrow) = num1.borrowing_sub_uint(num_uint, false);
+    /// println!("{} - {} = {}\nborrow = {}", num1, num_uint, dif, borrow);
+    /// assert_eq!(dif.to_string(), "115761816335569101403435733562708448393619331758951915327747778712745103528175");
+    /// assert_eq!(borrow, false);
+    /// ```
+    /// 
+    /// # Example 2
+    /// ```
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u128);
+    /// 
+    /// let num_str1 = "FFEEDDBB_AA998877_66554433_221100FF_EEDDBBAA_99887766_55443322_1100FFEE";
+    /// let num1 = UU32::from_str_radix(num_str1, 16).unwrap();
+    /// let num_uint = 0x11223344_55667788_9900AABB_CCDDEEFf_u128;
+    /// 
+    /// let (dif, borrow) = num1.borrowing_sub_uint(num_uint, true);
+    /// println!("{} - {} = {}\nborrow = {}", num1, num_uint, dif, borrow);
+    /// assert_eq!(dif.to_string(), "115761816335569101403435733562708448393619331758951915327747778712745103528174");
+    /// assert_eq!(borrow, false);
+    /// ```
+    /// 
+    /// # Example 3
+    /// ```
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u128);
+    /// 
+    /// let num_str2 = "11223344_55667788_9900AABB_CCDDEEEe";
     /// let num2 = UU32::from_str_radix(num_str2, 16).unwrap();
     /// let num_uint = 0x11223344_55667788_9900AABB_CCDDEEFf_u128;
     /// 
-    /// let (mut dif, mut carry) = num1.borrowing_sub_uint(num_uint, false);
-    /// println!("{} - {} = {}\ncarry = {}", num1, num_uint, dif, carry);
-    /// assert_eq!(dif.to_string(), "115761816335569101403435733562708448393619331758951915327747778712745103528175");
-    /// assert_eq!(carry, false);
-    /// 
-    /// (dif, carry) = num1.borrowing_sub_uint(num_uint, true);
-    /// println!("{} - {} = {}\ncarry = {}", num1, num_uint, dif, carry);
-    /// assert_eq!(dif.to_string(), "115761816335569101403435733562708448393619331758951915327747778712745103528174");
-    /// assert_eq!(carry, false);
-    /// 
-    /// (dif, carry) = num2.borrowing_sub_uint(num_uint, false);
-    /// println!("{} - {} = {}\ncarry = {}", num2, num_uint, dif, carry);
+    /// let (dif, borrow) = num2.borrowing_sub_uint(num_uint, false);
+    /// println!("{} - {} = {}\nborrow = {}", num2, num_uint, dif, borrow);
     /// assert_eq!(dif.to_string(), "115792089237316195423570985008687907853269984665640564039457584007913129639919");
-    /// assert_eq!(carry, true);
+    /// assert_eq!(borrow, true);
+    /// ```
     /// 
-    /// (dif, carry) = num2.borrowing_sub_uint(num_uint, true);
-    /// println!("{} - {} = {}\ncarry = {}", num2, num_uint, dif, carry);
+    /// # Example 4
+    /// ```
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u128);
+    /// 
+    /// let num_str2 = "11223344_55667788_9900AABB_CCDDEEEe";
+    /// let num2 = UU32::from_str_radix(num_str2, 16).unwrap();
+    /// let num_uint = 0x11223344_55667788_9900AABB_CCDDEEFf_u128;
+    /// 
+    /// let (dif, borrow) = num2.borrowing_sub_uint(num_uint, true);
+    /// println!("{} - {} = {}\nborrow = {}", num2, num_uint, dif, borrow);
     /// assert_eq!(dif.to_string(), "115792089237316195423570985008687907853269984665640564039457584007913129639918");
-    /// assert_eq!(carry, true);
+    /// assert_eq!(borrow, true);
     /// ```
     /// 
     /// # Big-endian issue
@@ -5250,6 +5281,13 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     // pub fn borrowing_sub_assign_uint<U>(&mut self, rhs: U, borrow: bool) -> bool
     /// Calculates self − rhs − borrow, and assigns difference to `self` back,
     /// and returns the output borrow.
+    /// 
+    /// # Arguments
+    /// - `rhs` is to be subtrcted from `self`, and small-sized unsigned integer
+    /// such as `u8`, `u16`, `u32`, `u64`, and `u128`.
+    /// - `borrow` is to be subtrcted from `self` if `borrow` is `true`,
+    /// and small-sized unsigned integer such as `u8`, `u16`, `u32`, `u64`,
+    /// and `u128`.
     /// 
     /// # Panics
     /// If `size_of::<T>() * N` <= `128`, this method may panic
@@ -5281,44 +5319,68 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// If `rhs` is bigger than `u128`, the method [borrowing_sub_assign()](struct@BigUInt#method.borrowing_sub_assign)
     /// is proper rather than this method `borrowing_sub_assign_uint()`.
     /// 
-    /// # Example
+    /// # Example 1
     /// ```
     /// use cryptocol::define_utypes_with;
     /// define_utypes_with!(u64);
     /// 
     /// let num_str1 = "FFEEDDBB_AA998877_66554433_221100FF_EEDDBBAA_99887766_55443322_1100FFEE";
-    /// let num_str2 = "9900AABB_CCDDEEFe";
     /// let mut num1 = U256::from_str_radix(num_str1, 16).unwrap();
-    /// let mut num2 = U256::from_str_radix(num_str2, 16).unwrap();
     /// let num_uint = 0x9900AABB_CCDDEEFf_u64;
     /// 
     /// println!("Originally,\tnum1 = {}", num1);
-    /// let mut num3 = num1.clone();
-    /// let mut carry = num1.borrowing_sub_assign_uint(num_uint, false);
-    /// println!("After num1 -= {},\tnum1 = {}\tcarry = {}", num_uint, num1, carry);
+    /// let borrow = num1.borrowing_sub_assign_uint(num_uint, false);
+    /// println!("After num1 -= {},\tnum1 = {}\tborrow = {}", num_uint, num1, borrow);
     /// assert_eq!(num1.to_string(), "115761816335569101403435733562708448393642106212790284019670463725845572948207");
-    /// assert_eq!(carry, false);
+    /// assert_eq!(borrow, false);
+    /// ```
     /// 
-    /// num1 = num3;
+    /// # Example 2
+    /// ```
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u64);
+    /// 
+    /// let num_str1 = "FFEEDDBB_AA998877_66554433_221100FF_EEDDBBAA_99887766_55443322_1100FFEE";
+    /// let mut num1 = U256::from_str_radix(num_str1, 16).unwrap();
+    /// let num_uint = 0x9900AABB_CCDDEEFf_u64;
+    /// 
     /// println!("Originally,\tnum1 = {}", num1);
-    /// carry = num1.borrowing_sub_assign_uint(num_uint, true);
-    /// println!("After num1 -= {},\tnum1 = {}\tcarry = {}", num_uint, num1, carry);
+    /// let borrow = num1.borrowing_sub_assign_uint(num_uint, true);
+    /// println!("After num1 -= {},\tnum1 = {}\tborrow = {}", num_uint, num1, borrow);
     /// assert_eq!(num1.to_string(), "115761816335569101403435733562708448393642106212790284019670463725845572948206");
-    /// assert_eq!(carry, false);
+    /// assert_eq!(borrow, false);
+    /// ```
     /// 
-    /// num3 = num2.clone();
+    /// # Example 3
+    /// ```
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u64);
+    /// 
+    /// let num_str2 = "9900AABB_CCDDEEFe";
+    /// let mut num2 = U256::from_str_radix(num_str2, 16).unwrap();
+    /// let num_uint = 0x9900AABB_CCDDEEFf_u64;
+    /// 
     /// println!("Originally,\tnum2 = {}", num2);
-    /// carry = num2.borrowing_sub_assign_uint(num_uint, false);
-    /// println!("After num2 -= {},\tnum2 = {}\tcarry = {}", num_uint, num2, carry);
+    /// let borrow = num2.borrowing_sub_assign_uint(num_uint, false);
+    /// println!("After num2 -= {},\tnum2 = {}\tcarry = {}", num_uint, num2, borrow);
     /// assert_eq!(num2.to_string(), "115792089237316195423570985008687907853269984665640564039457584007913129639935");
-    /// assert_eq!(carry, true);
+    /// assert_eq!(borrow, true);
+    /// ```
     /// 
-    /// num2 = num3;
+    /// # Example 4
+    /// ```
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u64);
+    /// 
+    /// let num_str2 = "9900AABB_CCDDEEFe";
+    /// let mut num2 = U256::from_str_radix(num_str2, 16).unwrap();
+    /// let num_uint = 0x9900AABB_CCDDEEFf_u64;
+    /// 
     /// println!("Originally,\tnum2 = {}", num2);
-    /// carry = num2.borrowing_sub_assign_uint(num_uint, true);
-    /// println!("After num2 -= {},\tnum2 = {}\tcarry = {}", num_uint, num2, carry);
+    /// let borrow = num2.borrowing_sub_assign_uint(num_uint, true);
+    /// println!("After num2 -= {},\tnum2 = {}\tborrow = {}", num_uint, num2, borrow);
     /// assert_eq!(num2.to_string(), "115792089237316195423570985008687907853269984665640564039457584007913129639934");
-    /// assert_eq!(carry, true);
+    /// assert_eq!(borrow, true);
     /// ```
     /// 
     /// # Big-endian issue
@@ -5361,6 +5423,10 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// Subtracts a unsigned integer number of type `U` from `BigUInt`-type
     /// unsigned integer and returns its result in a type of `BigUInt`.
     /// 
+    /// # Arguments
+    /// `rhs` is to be subtrcted from `self`, and small-sized unsigned integer
+    /// such as `u8`, `u16`, `u32`, `u64`, and `u128`.
+    /// 
     /// # Panics
     /// If `size_of::<T>() * N` <= `128`, this method may panic
     /// or its behavior may be undefined though it may not panic.
@@ -5377,22 +5443,37 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// If `rhs` is bigger than `u128`, the method [wrapping_sub()](struct@BigUInt#method.wrapping_sub)
     /// is proper rather than this method `wrapping_sub_uint()`.
     /// 
-    /// # Examples
-    /// 
+    /// # Example 1
     /// ```
     /// use cryptocol::define_utypes_with;
     /// define_utypes_with!(u32);
     /// 
     /// let a = U512::one();
     /// let b = a.wrapping_sub_uint(1_u8);
-    /// let c = a.wrapping_sub_uint(2_u8);
-    /// let d = a.wrapping_sub_uint(3_u8);
     /// 
     /// println!("{} - 1 = {}", a, b);
     /// assert_eq!(b.to_string(), "0");
+    /// ```
+    /// 
+    /// # Example 2
+    /// ```
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u32);
+    /// 
+    /// let a = U512::one();
+    /// let c = a.wrapping_sub_uint(2_u8);
     /// 
     /// println!("{} - 2 = {}", a, c);
     /// assert_eq!(c.to_string(), "13407807929942597099574024998205846127479365820592393377723561443721764030073546976801874298166903427690031858186486050853753882811946569946433649006084095");
+    /// ```
+    /// 
+    /// # Example 3
+    /// ```
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u32);
+    /// 
+    /// let a = U512::one();
+    /// let d = a.wrapping_sub_uint(3_u8);
     /// 
     /// println!("{} - 3 = {}", a, d);
     /// assert_eq!(d.to_string(), "13407807929942597099574024998205846127479365820592393377723561443721764030073546976801874298166903427690031858186486050853753882811946569946433649006084094");
@@ -5420,6 +5501,10 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// Subtracts rhs of type `U` from self which is of `BigUInt` type,
     /// and returns the result to `self` back.
     /// 
+    /// # Arguments
+    /// `rhs` is to be subtrcted from `self`, and small-sized unsigned integer
+    /// such as `u8`, `u16`, `u32`, `u64`, and `u128`.
+    /// 
     /// # Panics
     /// If `size_of::<T>() * N` <= `128`, this method may panic
     /// or its behavior may be undefined though it may not panic.
@@ -5439,7 +5524,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// [wrapping_sub_assign()](struct@BigUInt#method.wrapping_sub_assign)
     /// is proper rather than this method `wrapping_sub_assign_uint()`.
     /// 
-    /// # Example
+    /// # Example 1
     /// ```
     /// use cryptocol::define_utypes_with;
     /// define_utypes_with!(u16);
@@ -5451,14 +5536,59 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// a.wrapping_sub_assign_uint(1_u8);
     /// println!("After a -= 1,\ta = {}", a);
     /// assert_eq!(a.to_string(), "0");
+    /// ```
+    /// 
+    /// # Example 2
+    /// ```
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u16);
+    /// 
+    /// let mut a = UU64::zero();
+    /// println!("Originally,\ta = {}", a);
+    /// assert_eq!(a.to_string(), "0");
     /// 
     /// a.wrapping_sub_assign_uint(1_u8);
     /// println!("After a -= 1,\ta = {}", a);
+    /// assert_eq!(a.to_string(), "13407807929942597099574024998205846127479365820592393377723561443721764030073546976801874298166903427690031858186486050853753882811946569946433649006084095");
+    /// ```
+    /// 
+    /// # Example 3
+    /// ```
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u16);
+    /// 
+    /// let mut a = UU64::max();
+    /// println!("Originally,\ta = {}", a);
     /// assert_eq!(a.to_string(), "13407807929942597099574024998205846127479365820592393377723561443721764030073546976801874298166903427690031858186486050853753882811946569946433649006084095");
     /// 
     /// a.wrapping_sub_assign_uint(1_u8);
     /// println!("After a -= 1,\ta = {}", a);
     /// assert_eq!(a.to_string(), "13407807929942597099574024998205846127479365820592393377723561443721764030073546976801874298166903427690031858186486050853753882811946569946433649006084094");
+    /// ```
+    /// 
+    /// # Collective Example
+    /// ```
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u16);
+    /// 
+    /// let mut a = UU64::one();
+    /// println!("Originally,\ta = {}", a);
+    /// assert_eq!(a.to_string(), "1");
+    /// 
+    /// a.wrapping_sub_assign_uint(1_u8);
+    /// println!("After a -= 1,\ta = {}", a);
+    /// assert_eq!(a.to_string(), "0");
+    /// assert_eq!(a.is_underflow(), false);
+    /// 
+    /// a.wrapping_sub_assign_uint(1_u8);
+    /// println!("After a -= 1,\ta = {}", a);
+    /// assert_eq!(a.to_string(), "13407807929942597099574024998205846127479365820592393377723561443721764030073546976801874298166903427690031858186486050853753882811946569946433649006084095");
+    /// assert_eq!(a.is_underflow(), true);
+    /// 
+    /// a.wrapping_sub_assign_uint(1_u8);
+    /// println!("After a -= 1,\ta = {}", a);
+    /// assert_eq!(a.to_string(), "13407807929942597099574024998205846127479365820592393377723561443721764030073546976801874298166903427690031858186486050853753882811946569946433649006084094");
+    /// assert_eq!(a.is_underflow(), true);
     /// ```
     /// 
     /// # Big-endian issue
@@ -5482,6 +5612,10 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     // pub fn overflowing_sub_uint<U>(&self, rhs: U) -> (Self, bool)
     /// Calculates `self` - `rhs`.
     /// 
+    /// # Arguments
+    /// `rhs` is to be subtrcted from `self`, and small-sized unsigned integer
+    /// such as `u8`, `u16`, `u32`, `u64`, and `u128`.
+    /// 
     /// # Panics
     /// If `size_of::<T>() * N` <= `128`, this method may panic
     /// or its behavior may be undefined though it may not panic.
@@ -5502,7 +5636,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// [overflowing_sub()](struct@BigUInt#method.overflowing_sub) is proper
     /// rather than this method `overflowing_sub_uint()`.
     /// 
-    /// # Example
+    /// # Example 1
     /// ```
     /// use cryptocol::define_utypes_with;
     /// define_utypes_with!(u8);
@@ -5512,12 +5646,26 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// println!("{} - 1 = {}\nunderflow = {}", a, b, underflow);
     /// assert_eq!(b.to_string(), "0");
     /// assert_eq!(underflow, false);
+    /// ```
     /// 
+    /// # Example 2
+    /// ```
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u8);
+    /// 
+    /// let a = U512::one();
     /// let (c, underflow) = a.overflowing_sub_uint(2_u8);
     /// println!("{} - 2 = {}\nunderflow = {}", a, c, underflow);
     /// assert_eq!(c.to_string(), "13407807929942597099574024998205846127479365820592393377723561443721764030073546976801874298166903427690031858186486050853753882811946569946433649006084095");
     /// assert_eq!(underflow, true);
+    /// ```
     /// 
+    /// # Example 3
+    /// ```
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u8);
+    /// 
+    /// let a = U512::one();
     /// let (d, underflow) = a.overflowing_sub_uint(3_u8);
     /// println!("{} - 3 = {}\nunderflow = {}", a, d, underflow);
     /// assert_eq!(d.to_string(), "13407807929942597099574024998205846127479365820592393377723561443721764030073546976801874298166903427690031858186486050853753882811946569946433649006084094");
@@ -5547,6 +5695,10 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     // pub fn overflowing_sub_assign<U>(&mut self, rhs: U) -> bool
     /// Calculates `self` - `rhs`, and assigns the result to `self` back.
     /// 
+    /// # Arguments
+    /// - `rhs` is to be subtrcted from `self`, and small-sized unsigned integer
+    /// such as `u8`, `u16`, `u32`, `u64`, and `u128`.
+    /// 
     /// # Panics
     /// If `size_of::<T>() * N` <= `128`, this method may panic
     /// or its behavior may be undefined though it may not panic.
@@ -5569,7 +5721,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// [overflowing_sub_assign()](struct@BigUInt#method.overflowing_sub_assign)
     /// is proper rather than this method `overflowing_sub_assign_uint()`.
     /// 
-    /// # Example
+    /// # Example 1
     /// ```
     /// use cryptocol::define_utypes_with;
     /// define_utypes_with!(u16);
@@ -5578,21 +5730,69 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// println!("Originally,\ta = {}", a);
     /// assert_eq!(a.to_string(), "1");
     /// 
-    /// let mut underflow = a.overflowing_sub_assign_uint(1_u8);
+    /// let underflow = a.overflowing_sub_assign_uint(1_u8);
     /// println!("After a -= 1,\ta = {}\nunderflow = {}", a, underflow);
     /// assert_eq!(a.to_string(), "0");
     /// assert_eq!(underflow, false);
+    /// ```
     /// 
-    /// underflow = a.overflowing_sub_assign_uint(1_u8);
+    /// # Example 2
+    /// ```
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u16);
+    /// 
+    /// let mut a = UU64::zero();
+    /// println!("Originally,\ta = {}", a);
+    /// assert_eq!(a.to_string(), "0");
+    /// 
+    /// let underflow = a.overflowing_sub_assign_uint(1_u8);
     /// println!("After a -= 1,\ta = {}\nunderflow = {}", a, underflow);
     /// assert_eq!(a.to_string(), "13407807929942597099574024998205846127479365820592393377723561443721764030073546976801874298166903427690031858186486050853753882811946569946433649006084095");
     /// assert_eq!(underflow, true);
+    /// ```
     /// 
-    /// underflow = a.overflowing_sub_assign_uint(1_u8);
+    /// # Example 3
+    /// ```
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u16);
+    /// 
+    /// let mut a = UU64::max();
+    /// println!("Originally,\ta = {}", a);
+    /// assert_eq!(a.to_string(), "13407807929942597099574024998205846127479365820592393377723561443721764030073546976801874298166903427690031858186486050853753882811946569946433649006084095");
+    /// 
+    /// let underflow = a.overflowing_sub_assign_uint(1_u8);
     /// println!("After a -= 1,\ta = {}\nunderflow = {}", a, underflow);
     /// assert_eq!(a.to_string(), "13407807929942597099574024998205846127479365820592393377723561443721764030073546976801874298166903427690031858186486050853753882811946569946433649006084094");
     /// assert_eq!(underflow, false);
     /// ```
+    /// 
+    /// # Collective Example
+    /// ```
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u16);
+    /// 
+    /// let mut a = UU64::one();
+    /// println!("Originally,\ta = {}", a);
+    /// assert_eq!(a.to_string(), "1");
+    /// 
+    /// let underflow = a.overflowing_sub_assign_uint(1_u8);
+    /// println!("After a -= 1,\ta = {}\nunderflow = {}", a, underflow);
+    /// assert_eq!(a.to_string(), "0");
+    /// assert_eq!(underflow, false);
+    /// assert_eq!(a.is_underflow(), false);
+    /// 
+    /// let underflow = a.overflowing_sub_assign_uint(1_u8);
+    /// println!("After a -= 1,\ta = {}\nunderflow = {}", a, underflow);
+    /// assert_eq!(a.to_string(), "13407807929942597099574024998205846127479365820592393377723561443721764030073546976801874298166903427690031858186486050853753882811946569946433649006084095");
+    /// assert_eq!(underflow, true);
+    /// assert_eq!(a.is_underflow(), true);
+    /// 
+    /// let underflow = a.overflowing_sub_assign_uint(1_u8);
+    /// println!("After a -= 1,\ta = {}\nunderflow = {}", a, underflow);
+    /// assert_eq!(a.to_string(), "13407807929942597099574024998205846127479365820592393377723561443721764030073546976801874298166903427690031858186486050853753882811946569946433649006084094");
+    /// assert_eq!(underflow, false);
+    /// assert_eq!(a.is_underflow(), true);
+    /// ``` 
     /// 
     /// # Big-endian issue
     /// It is just experimental for Big Endian CPUs. So, you are not encouraged
@@ -5620,6 +5820,10 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     // pub fn checked_sub_uint<U>(&self, rhs: U) -> Option<Self>
     /// Computes `self` - `rhs`.
     /// 
+    /// # Arguments
+    /// `rhs` is to be subtrcted from `self`, and small-sized unsigned integer
+    /// such as `u8`, `u16`, `u32`, `u64`, and `u128`.
+    /// 
     /// # Panics
     /// If `size_of::<T>() * N` <= `128`, this method may panic
     /// or its behavior may be undefined though it may not panic.
@@ -5638,7 +5842,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// [checked_sub()](struct@BigUInt#method.checked_sub) is proper
     /// rather than this method `checked_sub_uint()`.
     /// 
-    /// # Example
+    /// # Example 1
     /// ```
     /// use cryptocol::define_utypes_with;
     /// define_utypes_with!(u8);
@@ -5655,7 +5859,14 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     ///         println!("{} - 1 = overflow", a);
     ///     }
     /// }
+    /// ```
     /// 
+    /// # Example 2
+    /// ```
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u8);
+    /// 
+    /// let a = U512::one();
     /// let c = a.checked_sub_uint(2_u8);
     /// match c
     /// {
@@ -5667,7 +5878,14 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     ///         assert_eq!(c, None);
     ///     }
     /// }
+    /// ```
     /// 
+    /// # Example 3
+    /// ```
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u8);
+    /// 
+    /// let a = U512::one();
     /// let d = a.checked_sub_uint(3_u8);
     /// match d
     /// {
@@ -5706,6 +5924,10 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     // pub fn unchecked_sub_uint<U>(&self, rhs: U) -> Self
     /// Computes `self` - `rhs`, assuming underflow cannot occur.
     /// 
+    /// # Arguments
+    /// `rhs` is to be subtrcted from `self`, and small-sized unsigned integer
+    /// such as `u8`, `u16`, `u32`, `u64`, and `u128`.
+    /// 
     /// # Panics
     /// - If `size_of::<T>() * N` <= `128`, this method may panic
     /// or its behavior may be undefined though it may not panic.
@@ -5725,7 +5947,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// [unchecked_sub()](struct@BigUInt#method.unchecked_sub) is proper
     /// rather than this method `unchecked_sub_uint()`.
     /// 
-    /// # Example
+    /// # Example 1
     /// ```
     /// use cryptocol::define_utypes_with;
     /// define_utypes_with!(u32);
@@ -5734,6 +5956,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// let b = a.unchecked_sub_uint(1_u8);
     /// println!("{} - 1 = {}", a, b);
     /// assert_eq!(b.to_string(), "0");
+    /// 
     /// // It will panic.
     /// // let c = a.unchecked_add_uint(2_u8);
     /// ```
@@ -5760,6 +5983,10 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// Computes `self` - `rhs`, saturating at the numeric bounds
     /// instead of underflowing.
     /// 
+    /// # Arguments
+    /// `rhs` is to be subtrcted from `self`, and small-sized unsigned integer
+    /// such as `u8`, `u16`, `u32`, `u64`, and `u128`.
+    /// 
     /// # Panics
     /// If `size_of::<T>() * N` <= `128`, this method may panic
     /// or its behavior may be undefined though it may not panic.
@@ -5778,21 +6005,35 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// [saturating_sub()](struct@BigUInt#method.saturating_sub) is proper
     /// rather than this method `saturating_sub_uint()`.
     /// 
-    /// # Example
+    /// # Example 1
     /// ```
     /// use cryptocol::define_utypes_with;
     /// define_utypes_with!(u64);
     /// 
     /// let a = U512::zero().wrapping_add_uint(2_u8);
     /// let b = a.saturating_sub_uint(1_u8);
-    /// let c = a.saturating_sub_uint(2_u8);
-    /// let d = a.saturating_sub_uint(3_u8);
-    /// 
     /// println!("{} - 1 = {}", a, b);
     /// assert_eq!(b.to_string(), "1");
+    /// ```
     /// 
+    /// # Example 2
+    /// ```
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u64);
+    /// 
+    /// let a = U512::zero().wrapping_add_uint(2_u8);
+    /// let c = a.saturating_sub_uint(2_u8);
     /// println!("{} - 2 = {}", a, c);
     /// assert_eq!(c.to_string(), "0");
+    /// ```
+    /// 
+    /// # Example 3
+    /// ```
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u64);
+    /// 
+    /// let a = U512::zero().wrapping_add_uint(2_u8);
+    /// let d = a.saturating_sub_uint(3_u8);
     /// 
     /// println!("{} - 3 = {}", a, d);
     /// assert_eq!(d.to_string(), "0");
@@ -5821,6 +6062,10 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// Computes `self` - `rhs`, saturating at the numeric bounds
     /// instead of underflowing, and assigns the result to `self` back.
     /// 
+    /// # Arguments
+    /// `rhs` is to be subtrcted from `self`, and small-sized unsigned integer
+    /// such as `u8`, `u16`, `u32`, `u64`, and `u128`.
+    /// 
     /// # Panics
     /// If `size_of::<T>() * N` <= `128`, this method may panic
     /// or its behavior may be undefined though it may not panic.
@@ -5841,7 +6086,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// [saturating_sub_assign()](struct@BigUInt#method.saturating_sub_assign)
     /// is proper rather than this method `saturating_sub_assign_uint()`.
     /// 
-    /// # Example
+    /// # Examples
     /// ```
     /// use cryptocol::define_utypes_with;
     /// define_utypes_with!(u128);
@@ -5853,14 +6098,17 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// a.saturating_sub_assign_uint(1_u8);
     /// println!("After a -= 1,\ta = {}", a);
     /// assert_eq!(a.to_string(), "1");
+    /// assert_eq!(a.is_underflow(), false);
     /// 
     /// a.saturating_sub_assign_uint(1_u8);
     /// println!("After a -= 1,\ta = {}", a);
     /// assert_eq!(a.to_string(), "0");
+    /// assert_eq!(a.is_underflow(), false);
     /// 
     /// a.saturating_sub_assign_uint(1_u8);
     /// println!("After a -= 1,\ta = {}", a);
     /// assert_eq!(a.to_string(), "0");
+    /// assert_eq!(a.is_underflow(), false);
     /// ```
     /// 
     /// # Big-endian issue
@@ -5890,6 +6138,11 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// Computes (`self` - `rhs`) % `modulo`, wrapping around at `modulo` of the
     /// type `Self` instead of underflowing.
     /// 
+    /// # Arguments
+    /// - `rhs` is to be subtrcted from `self`, and small-sized unsigned integer
+    /// such as `u8`, `u16`, `u32`, `u64`, and `u128`.
+    /// - `modulo` is the divisor to divide the result of (`self` - `rhs`).
+    /// 
     /// # Panics
     /// If `size_of::<T>() * N` <= `128`, this method may panic
     /// or its behavior may be undefined though it may not panic.
@@ -5916,7 +6169,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// [modular_sub()](struct@BigUInt#method.modular_sub) is
     /// proper rather than this method `modular_sub_uint()`.
     /// 
-    /// # Example
+    /// # Example 1
     /// ```
     /// use cryptocol::define_utypes_with;
     /// define_utypes_with!(u64);
@@ -5924,15 +6177,30 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// let m = U256::from_string("76801874298166903427690031858186486050853753882811946569946433649006084094").unwrap();
     /// let a = U256::from_uint(2_u8);
     /// let b = a.modular_sub_uint(1_u8, &m);
-    /// let c = a.modular_sub_uint(2_u8, &m);
-    /// let d = a.modular_sub_uint(3_u8, &m);
-    /// 
     /// println!("{} - 1 = {}", a, b);
     /// assert_eq!(b.to_string(), "1");
+    /// ```
     /// 
+    /// # Example 2
+    /// ```
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u64);
+    /// 
+    /// let m = U256::from_string("76801874298166903427690031858186486050853753882811946569946433649006084094").unwrap();
+    /// let a = U256::from_uint(2_u8);
+    /// let c = a.modular_sub_uint(2_u8, &m);
     /// println!("{} - 2 = {}", a, c);
     /// assert_eq!(c.to_string(), "0");
+    /// ```
     /// 
+    /// # Example 3
+    /// ```
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u64);
+    /// 
+    /// let m = U256::from_string("76801874298166903427690031858186486050853753882811946569946433649006084094").unwrap();
+    /// let a = U256::from_uint(2_u8);
+    /// let d = a.modular_sub_uint(3_u8, &m);
     /// println!("{} - 3 = {}", a, d);
     /// assert_eq!(d.to_string(), "76801874298166903427690031858186486050853753882811946569946433649006084093");
     /// ```
@@ -5961,6 +6229,11 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// of the type `Self` instead of underflowing, and then, assign the result
     /// back to `self`.
     /// 
+    /// # Arguments
+    /// - `rhs` is to be subtrcted from `self`, and small-sized unsigned integer
+    /// such as `u8`, `u16`, `u32`, `u64`, and `u128`.
+    /// - `modulo` is the divisor to divide the result of (`self` - `rhs`).
+    /// 
     /// # Panics
     /// If `size_of::<T>() * N` <= `128`, this method may panic
     /// or its behavior may be undefined though it may not panic.
@@ -5988,7 +6261,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// [modular_sub_assign()](struct@BigUInt#method.modular_sub_assign) is
     /// proper rather than this method `modular_sub_assign_uint()`.
     /// 
-    /// # Example
+    /// # Example 1
     /// ```
     /// use cryptocol::define_utypes_with;
     /// define_utypes_with!(u32);
@@ -6002,9 +6275,33 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// a.modular_sub_assign_uint(1_u8, &m);
     /// println!("After a -= 1,\ta = {}", a);
     /// assert_eq!(a.to_string(), "1");
+    /// ```
+    /// 
+    /// # Example 2
+    /// ```
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u32);
+    /// 
+    /// let m = UU32::from_string("76801874298166903427690031858186486050853753882811946569946433649006084094").unwrap();
+    /// let mut a = UU32::one();
+    /// 
+    /// println!("Originally,\ta = {}", a);
+    /// assert_eq!(a.to_string(), "1");
     /// 
     /// a.modular_sub_assign_uint(1_u8, &m);
     /// println!("After a -= 1,\ta = {}", a);
+    /// assert_eq!(a.to_string(), "0");
+    /// ```
+    /// 
+    /// # Example 3
+    /// ```
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u32);
+    /// 
+    /// let m = UU32::from_string("76801874298166903427690031858186486050853753882811946569946433649006084094").unwrap();
+    /// let mut a = UU32::zero();
+    /// 
+    /// println!("Originally,\ta = {}", a);
     /// assert_eq!(a.to_string(), "0");
     /// 
     /// a.modular_sub_assign_uint(1_u8, &m);
@@ -6057,6 +6354,10 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     // pub fn abs_diff_uint<U>(&self, other: U) -> Self
     /// Computes the absolute difference between `self` and `other`.
     /// 
+    /// # Arguments
+    /// - `other` is to be compared to `self`, and small-sized unsigned integer
+    /// such as `u8`, `u16`, `u32`, `u64`, and `u128`.
+    /// 
     /// # Panics
     /// If `size_of::<T>() * N` <= `128`, this method may panic
     /// or its behavior may be undefined though it may not panic.
@@ -6072,28 +6373,41 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// [abs_diff()](struct@BigUInt#method.abs_diff) is proper rather than
     /// this method `abs_diff_uint()`.
     /// 
-    /// # Example
+    /// # Example 1
     /// ```
     /// use cryptocol::define_utypes_with;
     /// define_utypes_with!(u128);
     /// 
     /// let num_str1 = "FFFFFFFF_FFFFFFFF_FFFFFFFF_FFFFFFFF_FFFFFFFF_FFFFFFFF_FFFFFFFF_FFFFFFFF";
-    /// let num_str2 = "12345678_9ABCDEF0_12345678_9ABCDEF0";
-    /// let num_str3 = "9900AABB_CCDDEEFF_9900AABB_CCDDEEFF";
     /// let num1 = U256::from_str_radix(num_str1, 16).unwrap();
-    /// let num2 = U256::from_str_radix(num_str2, 16).unwrap();
-    /// let num3 = U256::from_str_radix(num_str3, 16).unwrap();
     /// let num_uint = 0x9900AABB_CCDDEEFF_9900AABB_CCDDEEFF_u128;
-    /// 
     /// let a = num1.abs_diff_uint(num_uint);
-    /// let b = num2.abs_diff_uint(num_uint);
-    /// let c = num3.abs_diff_uint(num_uint);
-    /// 
     /// println!("| {} - {} | = {}", num1, num_uint, a);
     /// assert_eq!(a.to_string(), "115792089237316195423570985008687907853066609319396769656704041438214461985024");
+    /// ```
     /// 
+    /// # Example 2
+    /// ```
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u128);
+    /// 
+    /// let num_str2 = "12345678_9ABCDEF0_12345678_9ABCDEF0";
+    /// let num2 = U256::from_str_radix(num_str2, 16).unwrap();
+    /// let num_uint = 0x9900AABB_CCDDEEFF_9900AABB_CCDDEEFF_u128;
+    /// let b = num2.abs_diff_uint(num_uint);
     /// println!("| {} - {} | = {}", num2, num_uint, b);
     /// assert_eq!(b.to_string(), "179177489040527647888749252028162707471");
+    /// ```
+    /// 
+    /// # Example 3
+    /// ```
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u128);
+    /// 
+    /// let num_str3 = "9900AABB_CCDDEEFF_9900AABB_CCDDEEFF";
+    /// let num3 = U256::from_str_radix(num_str3, 16).unwrap();
+    /// let num_uint = 0x9900AABB_CCDDEEFF_9900AABB_CCDDEEFF_u128;
+    /// let c = num3.abs_diff_uint(num_uint);
     /// 
     /// println!("| {} - {} | = {}", num3, num_uint, c);
     /// assert_eq!(c.to_string(), "0");
@@ -6130,6 +6444,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
 
     /*** Multiplication ***/
 
+///////////////////////////
     // pub fn carrying_mul_uint<U>(&self, rhs: U, carry: Self) -> (Self, Self)
     /// Calculates the “full multiplication” `self` * `rhs` + `carry`,
     /// without the possibility to overflow.
