@@ -6444,10 +6444,14 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
 
     /*** Multiplication ***/
 
-///////////////////////////
     // pub fn carrying_mul_uint<U>(&self, rhs: U, carry: Self) -> (Self, Self)
     /// Calculates the “full multiplication” `self` * `rhs` + `carry`,
     /// without the possibility to overflow.
+    /// 
+    /// # Arguments
+    /// - `rhs` is to be multiplied to `self`, and small-sized unsigned integer
+    /// such as `u8`, `u16`, `u32`, `u64`, and `u128`.
+    /// - `carry` is to be added to `self`, and `Self`-typed.
     /// 
     /// # Panics
     /// If `size_of::<T>() * N` <= `128`, this method may panic
@@ -6481,7 +6485,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// - If `rhs` is bigger than `u128`, the method [carrying_mul()](struct@BigUInt#method.carrying_mul)
     /// is proper rather than this method `carrying_mul_uint()`.
     /// 
-    /// # Example
+    /// # Examples
     /// ```
     /// use cryptocol::define_utypes_with;
     /// define_utypes_with!(u8);
@@ -6489,8 +6493,8 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// let a_low = U256::from_string("76801874298166903427690031858186486050853753882811946569946433649006084094").unwrap();
     /// let a_high = UU32::from_string("75388281194656994643364900608409476801874298166903427690031858186486050853").unwrap();
     /// let b_uint = 225_u8;
-    /// let (mut res_low, mut res_high) = a_low.carrying_mul_uint(b_uint, UU32::zero());
-    /// let (mut res_high, mut res_higher) = a_high.carrying_mul_uint(b_uint, res_high);
+    /// let (res_low, res_high) = a_low.carrying_mul_uint(b_uint, UU32::zero());
+    /// let (res_high, res_higher) = a_high.carrying_mul_uint(b_uint, res_high);
     /// 
     /// println!("{}:{} X {} = {}:{}:{}", a_high, a_low, b_uint, res_higher, res_high, res_low);
     /// assert_eq!(res_higher.to_string(), "0");
@@ -6521,6 +6525,11 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// Calculates the “full multiplication” `self` * `rhs` + `carry`,
     /// without the possibility to overflow, and assigs the low-order bits of
     /// the result to `self` back and returns the high-order bits of the result.
+    /// 
+    /// # Arguments
+    /// - `rhs` is to be multiplied to `self`, and small-sized unsigned integer
+    /// such as `u8`, `u16`, `u32`, `u64`, and `u128`.
+    /// - `carry` is to be added to `self`, and `Self`-typed.
     /// 
     /// # Panics
     /// If `size_of::<T>() * N` <= `128`, this method may panic
@@ -6557,7 +6566,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// - If `rhs` is bigger than `u128`, the method [carrying_mul_assign()](struct@BigUInt#method.carrying_mul_assign)
     /// is proper rather than this method `carrying_mul_assign_uint()`.
     /// 
-    /// # Example
+    /// # Examples
     /// ```
     /// use cryptocol::define_utypes_with;
     /// define_utypes_with!(u16);
@@ -6571,11 +6580,10 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// println!("Originally,\ta_high = {}\n", a_high);
     /// assert_eq!(a_high.to_string(), "75388281194656994643364900608409476801874298166903427690031858186486050853");
     /// 
-    /// let mut res_high = a_low.carrying_mul_assign_uint(b_uint, UU32::zero());
+    /// let res_high = a_low.carrying_mul_assign_uint(b_uint, UU32::zero());
+    /// let res_higher = a_high.carrying_mul_assign_uint(b_uint, res_high);
     /// println!("After a_low.carrying_mul_assign_uint(225_u8, 0),\na_low = {}\n", a_low);
     /// assert_eq!(a_low.to_string(), "17280421717087553271230257168091959361442094623632687978237947571026368921150");
-    /// 
-    /// let mut res_higher = a_high.carrying_mul_assign_uint(b_uint, res_high);
     /// println!("After a_high.carrying_mul_assign_uint(225_u8, res_higher),\na_high = {}\nres_higher = {}", a_high, res_higher);
     /// assert_eq!(a_high.to_string(), "16962363268797823794757102636892132280421717087553271230257168091959361441925");
     /// assert_eq!(res_higher.to_string(), "0");
@@ -6604,6 +6612,10 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     // pub fn widening_mul_uint<U>(&self, rhs: U) -> (Self, Self)
     /// Calculates the complete product `self` * `rhs` without the possibility
     /// to overflow.
+    /// 
+    /// # Arguments
+    /// - `rhs` is to be multiplied to `self`, and small-sized unsigned integer
+    /// such as `u8`, `u16`, `u32`, `u64`, and `u128`.
     /// 
     /// # Panics
     /// If `size_of::<T>() * N` <= `128`, this method may panic
@@ -6635,7 +6647,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// - If `rhs` is bigger than `u128`, the method [widening_mul()](struct@BigUInt#method.widening_mul)
     /// is proper rather than this method `widening_mul_uint()`.
     /// 
-    /// # Example
+    /// # Examples
     /// ```
     /// use cryptocol::define_utypes_with;
     /// define_utypes_with!(u8);
@@ -6673,6 +6685,10 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// Calculates the complete product `self` * `rhs` without the possibility
     /// to overflow.
     /// 
+    /// # Arguments
+    /// `rhs` is to be multiplied to `self`, and small-sized unsigned integer
+    /// such as `u8`, `u16`, `u32`, `u64`, and `u128`.
+    /// 
     /// # Panics
     /// If `size_of::<T>() * N` <= `128`, this method may panic
     /// or its behavior may be undefined though it may not panic.
@@ -6706,7 +6722,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// - If `rhs` is bigger than `u128`, the method [widening_mul_assign()](struct@BigUInt#method.widening_mul_assign)
     /// is proper rather than this method `widening_mul_assign_uint()`.
     /// 
-    /// # Example
+    /// # Examples
     /// ```
     /// use cryptocol::define_utypes_with;
     /// define_utypes_with!(u16);
@@ -6813,6 +6829,10 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// Multiplies `BigUInt`-type number with a unsigned integer number
     /// of type `T` and returns its result in a type of `BigUInt`.
     /// 
+    /// # Arguments
+    /// `rhs` is to be multiplied to `self`, and small-sized unsigned integer
+    /// such as `u8`, `u16`, `u32`, `u64`, and `u128`.
+    /// 
     /// # Panics
     /// If `size_of::<T>() * N` <= `128`, this method may panic
     /// or its behavior may be undefined though it may not panic.
@@ -6825,15 +6845,28 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// If `rhs` is bigger than `u128`, the method [wrapping_mul_uint()](struct@BigUInt#method.wrapping_mul_uint)
     /// is proper rather than this method `wrapping_mul_uint()`.
     /// 
-    /// # Examples
+    /// # Example 1
     /// ```
     /// use cryptocol::define_utypes_with;
     /// define_utypes_with!(u32);
     /// 
-    /// let a_biguint = U256::from_string("876801874298166903427690031858186486050853753882811946569946433649006084094").unwrap();
+    /// let a_biguint = U256::from_string("12380187429816690342769003185818648605085375388281194656994643364900608").unwrap();
     /// let b_uint = 248_u16;
     /// let res = a_biguint.wrapping_mul_uint(b_uint);
     /// println!("{} X {} = {}", a_biguint, b_uint, res);
+    /// assert_eq!(res.to_string(), "3070286482594539205006712790083024854061173096293736274934671554495350784");
+    /// assert_eq!(res.is_overflow(), false);
+    /// ```
+    /// 
+    /// # Example 2
+    /// ```
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u32);
+    /// 
+    /// let c_biguint = U256::from_string("876801874298166903427690031858186486050853753882811946569946433649006084094").unwrap();
+    /// let b_uint = 248_u16;
+    /// let res = c_biguint.wrapping_mul_uint(b_uint);
+    /// println!("{} X {} = {}", c_biguint, b_uint, res);
     /// assert_eq!(res.to_string(), "101654775588629196626496142892142340687341746297296798709889131537040379215376");
     /// assert_eq!(res.is_overflow(), true);
     /// ```
@@ -6860,6 +6893,10 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     // pub fn wrapping_mul_assign_uint<U>(&mut self, rhs: U)
     /// Multiplies self which is of `BigUInt` type with rhs of type `U`.
     /// 
+    /// # Arguments
+    /// `rhs` is to be multiplied to `self`, and small-sized unsigned integer
+    /// such as `u8`, `u16`, `u32`, `u64`, and `u128`.
+    /// 
     /// # Panics
     /// If `size_of::<T>() * N` <= `128`, this method may panic
     /// or its behavior may be undefined though it may not panic.
@@ -6875,21 +6912,38 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// If `rhs` is bigger than `u128`, the method [wrapping_mul_assign()](struct@BigUInt#method.wrapping_mul_assign)
     /// is proper rather than this method `wrapping_mul_assign_uint()`.
     /// 
-    /// # Example
+    /// # Example 1
     /// ```
     /// use cryptocol::define_utypes_with;
     /// define_utypes_with!(u64);
     /// 
-    /// let mut a_biguint = UU32::from_string("876801874298166903427690031858186486050853753882811946569946433649006084094").unwrap();
+    /// let mut a_biguint = UU32::from_string("12380187429816690342769003185818648605085375388281194656994643364900608").unwrap();
     /// let b_uint = 248_u16;
     /// 
     /// println!("Originally,\ta_biguint = {}", a_biguint);
-    /// assert_eq!(a_biguint.to_string(), "876801874298166903427690031858186486050853753882811946569946433649006084094");
+    /// assert_eq!(a_biguint.to_string(), "12380187429816690342769003185818648605085375388281194656994643364900608");
     /// 
     /// a_biguint.wrapping_mul_assign_uint(b_uint);
     /// println!("After a_biguint.wrapping_mul_assign_uint(248_u16), a_biguint = {}", a_biguint);
-    /// assert_eq!(a_biguint.to_string(), "101654775588629196626496142892142340687341746297296798709889131537040379215376");
-    /// assert_eq!(a_biguint.is_overflow(), true);
+    /// assert_eq!(a_biguint.to_string(), "3070286482594539205006712790083024854061173096293736274934671554495350784");
+    /// assert_eq!(a_biguint.is_overflow(), false);
+    /// ```
+    /// 
+    /// # Example 2
+    /// ```
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u64);
+    /// 
+    /// let mut c_biguint = UU32::from_string("876801874298166903427690031858186486050853753882811946569946433649006084094").unwrap();
+    /// let b_uint = 248_u16;
+    /// 
+    /// println!("Originally,\ta_biguint = {}", c_biguint);
+    /// assert_eq!(c_biguint.to_string(), "876801874298166903427690031858186486050853753882811946569946433649006084094");
+    /// 
+    /// c_biguint.wrapping_mul_assign_uint(b_uint);
+    /// println!("After c_biguint.wrapping_mul_assign_uint(248_u16), c_biguint = {}", c_biguint);
+    /// assert_eq!(c_biguint.to_string(), "101654775588629196626496142892142340687341746297296798709889131537040379215376");
+    /// assert_eq!(c_biguint.is_overflow(), true);
     /// ```
     /// 
     /// # Big-endian issue
@@ -6971,6 +7025,10 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     // pub fn overflowing_mul_uint<U>(&self, rhs: U) -> (Self, bool)
     /// Calculates `self` * `rhs`.
     /// 
+    /// # Arguments
+    /// `rhs` is to be multiplied to `self`, and small-sized unsigned integer
+    /// such as `u8`, `u16`, `u32`, `u64`, and `u128`.
+    /// 
     /// # Panics
     /// If `size_of::<T>() * N` <= `128`, this method may panic
     /// or its behavior may be undefined though it may not panic.
@@ -6978,7 +7036,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// # Output
     /// It returns a tuple of the multiplication `self` * `rhs` along
     /// with a boolean indicating whether an arithmetic overflow would occur.
-    /// If an overflow would have occurred then the wrapped (modular) value
+    /// If an overflow would have occurred, the wrapped (modular) value
     /// is returned.
     /// 
     /// # Features
@@ -6990,15 +7048,28 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// [overflowing_mul()](struct@BigUInt#method.overflowing_mul)
     /// is proper rather than this method `overflowing_mul_uint()`.
     /// 
-    /// # Example
+    /// # Example 1
     /// ```
     /// use cryptocol::define_utypes_with;
     /// define_utypes_with!(u128);
     /// 
-    /// let a_biguint = U256::from_string("876801874298166903427690031858186486050853753882811946569946433649006084094").unwrap();
+    /// let a_biguint = U256::from_string("1874298166903427690031858186486050853753882811946569946433649006084094").unwrap();
     /// let b_uint = 248_u8;
     /// let (res, overflow) = a_biguint.overflowing_mul_uint(b_uint);
     /// println!("{} X {} = {}, {}", a_biguint, b_uint, res, overflow);
+    /// assert_eq!(res.to_string(), "464825945392050067127900830248540611730962937362749346715544953508855312");
+    /// assert_eq!(overflow, false);
+    /// ```
+    /// 
+    /// # Example 2
+    /// ```
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u128);
+    /// 
+    /// let c_biguint = U256::from_string("876801874298166903427690031858186486050853753882811946569946433649006084094").unwrap();
+    /// let b_uint = 248_u8;
+    /// let (res, overflow) = c_biguint.overflowing_mul_uint(b_uint);
+    /// println!("{} X {} = {}, {}", c_biguint, b_uint, res, overflow);
     /// assert_eq!(res.to_string(), "101654775588629196626496142892142340687341746297296798709889131537040379215376");
     /// assert_eq!(overflow, true);
     /// ```
@@ -7025,6 +7096,10 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     // pub fn overflowing_mul_assign_uint<U>(&mut self, rhs: U) -> bool
     /// Calculates `self` * `rhs`, and assigns the result to `self` back.
     /// 
+    /// # Arguments
+    /// `rhs` is to be multiplied to `self`, and small-sized unsigned integer
+    /// such as `u8`, `u16`, `u32`, `u64`, and `u128`.
+    /// 
     /// # Panics
     /// If `size_of::<T>() * N` <= `128`, this method may panic
     /// or its behavior may be undefined though it may not panic.
@@ -7046,20 +7121,37 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// [overflowing_mul_assign()](struct@BigUInt#method.overflowing_mul_assign)
     /// is proper rather than this method `overflowing_mul_assign_uint()`.
     /// 
-    /// # Example
+    /// # Example 1
     /// ```
     /// use cryptocol::define_utypes_with;
     /// define_utypes_with!(u8);
     /// 
-    /// let mut a_biguint = UU32::from_string("876801874298166903427690031858186486050853753882811946569946433649006084094").unwrap();
+    /// let mut a_biguint = UU32::from_string("1874298166903427690031858186486050853753882811946569946433649006084094").unwrap();
     /// let b_uint = 248_u16;
     /// 
     /// println!("Originally,\ta_biguint = {}", a_biguint);
-    /// assert_eq!(a_biguint.to_string(), "876801874298166903427690031858186486050853753882811946569946433649006084094");
+    /// assert_eq!(a_biguint.to_string(), "1874298166903427690031858186486050853753882811946569946433649006084094");
     /// 
     /// let overflow = a_biguint.overflowing_mul_assign_uint(b_uint);
     /// println!("After a_biguint.overflowing_mul_assign_uint(248_u16), a_biguint = {}, {}", a_biguint, overflow);
-    /// assert_eq!(a_biguint.to_string(), "101654775588629196626496142892142340687341746297296798709889131537040379215376");
+    /// assert_eq!(a_biguint.to_string(), "464825945392050067127900830248540611730962937362749346715544953508855312");
+    /// assert_eq!(overflow, false);
+    /// ```
+    /// 
+    /// # Example 2
+    /// ```
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u8);
+    /// 
+    /// let mut c_biguint = UU32::from_string("876801874298166903427690031858186486050853753882811946569946433649006084094").unwrap();
+    /// let b_uint = 248_u16;
+    /// 
+    /// println!("Originally,\tc_biguint = {}", c_biguint);
+    /// assert_eq!(c_biguint.to_string(), "876801874298166903427690031858186486050853753882811946569946433649006084094");
+    /// 
+    /// let overflow = c_biguint.overflowing_mul_assign_uint(b_uint);
+    /// println!("After c_biguint.overflowing_mul_assign_uint(248_u16), c_biguint = {}, {}", c_biguint, overflow);
+    /// assert_eq!(c_biguint.to_string(), "101654775588629196626496142892142340687341746297296798709889131537040379215376");
     /// assert_eq!(overflow, true);
     /// ```
     /// 
@@ -7088,6 +7180,10 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     // pub fn checked_mul_uint<U>(&self, rhs: U) -> Option<Self>
     /// Computes `self` * `rhs`.
     /// 
+    /// # Arguments
+    /// `rhs` is to be multiplied to `self`, and small-sized unsigned integer
+    /// such as `u8`, `u16`, `u32`, `u64`, and `u128`.
+    /// 
     /// # Panics
     /// If `size_of::<T>() * N` <= `128`, this method may panic
     /// or its behavior may be undefined though it may not panic.
@@ -7101,23 +7197,30 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// [checked_mul()](struct@BigUInt#method.checked_mul)
     /// is proper rather than this method `checked_mul_uint()`.
     /// 
-    /// # Example
+    /// # Example 1
     /// ```
     /// use cryptocol::define_utypes_with;
     /// define_utypes_with!(u16);
     /// 
     /// let a_biguint = U256::from_string("876801874298166903427690031858186486050853753882811946569946433649006084094").unwrap();
-    /// let mut b_uint = 248_u8;
-    /// let mut res = a_biguint.checked_mul_uint(b_uint);
+    /// let b_uint = 248_u8;
+    /// let res = a_biguint.checked_mul_uint(b_uint);
     /// match &res
     /// {
     ///     Some(r) => { println!("{} X {} = {}", a_biguint, b_uint, r); },
     ///     None => { println!("Overflow happend!"); },
     /// }
     /// assert_eq!(res, None);
+    /// ```
     /// 
-    /// b_uint = 5_u8;
-    /// res = a_biguint.checked_mul_uint(b_uint);
+    /// # Example 2
+    /// ```
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u16);
+    /// 
+    /// let a_biguint = U256::from_string("876801874298166903427690031858186486050853753882811946569946433649006084094").unwrap();
+    /// let b_uint = 5_u8;
+    /// let res = a_biguint.checked_mul_uint(b_uint);
     /// match &res
     /// {
     ///     Some(r) => { println!("{} X {} = {}", a_biguint, b_uint, r); },
@@ -7151,6 +7254,10 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     // pub fn unchecked_mul_uint<U>(&self, rhs: U) -> Self
     /// Computes `self` * `rhs`, assuming overflow cannot occur.
     /// 
+    /// # Arguments
+    /// `rhs` is to be multiplied to `self`, and small-sized unsigned integer
+    /// such as `u8`, `u16`, `u32`, `u64`, and `u128`.
+    /// 
     /// # Panics
     /// - If `size_of::<T>() * N` <= `128`, this method may panic
     /// or its behavior may be undefined though it may not panic.
@@ -7166,18 +7273,18 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// [unchecked_mul()](struct@BigUInt#method.unchecked_mul)
     /// is proper rather than this method `unchecked_mul_uint()`.
     /// 
-    /// # Example
+    /// # Examples
     /// ```
     /// use cryptocol::define_utypes_with;
     /// define_utypes_with!(u32);
     /// 
     /// let a_biguint = UU32::from_string("876801874298166903427690031858186486050853753882811946569946433649006084094").unwrap();
-    /// let mut res = a_biguint.unchecked_mul_uint(5_u8);
+    /// let res = a_biguint.unchecked_mul_uint(5_u8);
     /// println!("{} X {} = {}", a_biguint, 5_u8, res);
     /// assert_eq!(res.to_string(), "4384009371490834517138450159290932430254268769414059732849732168245030420470");
     /// 
     /// // It will panic.
-    /// // res = a_biguint.unchecked_mul_uint(248_u8);
+    /// // let res = a_biguint.unchecked_mul_uint(248_u8);
     /// ```
     /// 
     /// # Big-endian issue
@@ -7202,6 +7309,10 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// Computes `self` * `rhs`, saturating at the numeric bounds
     /// instead of overflowing.
     /// 
+    /// # Arguments
+    /// `rhs` is to be multiplied to `self`, and small-sized unsigned integer
+    /// such as `u8`, `u16`, `u32`, `u64`, and `u128`.
+    /// 
     /// # Panics
     /// If `size_of::<T>() * N` <= `128`, this method may panic
     /// or its behavior may be undefined though it may not panic.
@@ -7219,17 +7330,24 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// [saturating_mul()](struct@BigUInt#method.saturating_mul)
     /// is proper rather than this method `saturating_mul_uint()`.
     /// 
-    /// # Example
+    /// # Example 1
     /// ```
     /// use cryptocol::define_utypes_with;
     /// define_utypes_with!(u64);
     /// 
     /// let a_biguint = U256::from_string("876801874298166903427690031858186486050853753882811946569946433649006084094").unwrap();
-    /// let mut res = a_biguint.saturating_mul_uint(5_u8);
+    /// let res = a_biguint.saturating_mul_uint(5_u8);
     /// println!("{} X {} = {}", a_biguint, 5_u8, res);
     /// assert_eq!(res.to_string(), "4384009371490834517138450159290932430254268769414059732849732168245030420470");
+    /// ```
     /// 
-    /// res = a_biguint.saturating_mul_uint(248_u8);
+    /// # Example 2
+    /// ```
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u64);
+    /// 
+    /// let a_biguint = U256::from_string("876801874298166903427690031858186486050853753882811946569946433649006084094").unwrap();
+    /// let res = a_biguint.saturating_mul_uint(248_u8);
     /// println!("{} X {} = {}", a_biguint, 248_u8, res);
     /// assert_eq!(res.to_string(), "115792089237316195423570985008687907853269984665640564039457584007913129639935");
     /// assert_eq!(res, UU32::max());
@@ -7258,6 +7376,10 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// Computes `self` * `rhs`, saturating at the numeric bounds
     /// instead of overflowing, and assigns the result to `self` back.
     /// 
+    /// # Arguments
+    /// `rhs` is to be multiplied to `self`, and small-sized unsigned integer
+    /// such as `u8`, `u16`, `u32`, `u64`, and `u128`.
+    /// 
     /// # Panics
     /// If `size_of::<T>() * N` <= `128`, this method may panic
     /// or its behavior may be undefined though it may not panic.
@@ -7276,18 +7398,23 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// [saturating_mul_assign()](struct@BigUInt#method.saturating_mul_assign)
     /// is proper rather than this method `saturating_mul_assign_uint()`.
     /// 
-    /// # Example
+    /// # Example 1
     /// ```
     /// use cryptocol::define_utypes_with;
     /// define_utypes_with!(u128);
     /// 
     /// let mut a_biguint = U256::from_string("876801874298166903427690031858186486050853753882811946569946433649006084094").unwrap();
-    /// let mut b_biguint = a_biguint.clone();
-    /// 
     /// println!("Originally, a_biguint = {}", a_biguint);
     /// a_biguint.saturating_mul_assign_uint(5_u8);
     /// println!("After a_biguint.saturating_mul_assign_uint(5_u8), a_biguint = {}", a_biguint);
+    /// ```
     /// 
+    /// # Example 2
+    /// ```
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u128);
+    /// 
+    /// let mut b_biguint = U256::from_string("876801874298166903427690031858186486050853753882811946569946433649006084094").unwrap();
     /// println!("Originally, b_biguint = {}", b_biguint);
     /// b_biguint.saturating_mul_assign_uint(248_u8);
     /// println!("After b_biguint.saturating_mul_assign_uint(248_u8), b_biguint = {}", b_biguint);
@@ -7340,6 +7467,11 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// Computes (`self` * `rhs`) % `modulo`, wrapping around at `modulo`
     /// of the type `Self`.
     /// 
+    /// # Arguments
+    /// - `rhs` is to be multiplied to `self`, and small-sized unsigned integer
+    /// such as `u8`, `u16`, `u32`, `u64`, and `u128`.
+    /// - `modulo` is the divisor to divide the result of (`self` * `rhs`).
+    /// 
     /// # Panics
     /// If `size_of::<T>() * N` <= `128`, this method may panic
     /// or its behavior may be undefined though it may not panic.
@@ -7364,21 +7496,28 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// [modular_mul()](struct@BigUInt#method.modular_mul) is proper
     /// rather than this method `modular_mul_uint()`.
     /// 
-    /// # Example
+    /// # Example 1
     /// ```
     /// use cryptocol::define_utypes_with;
     /// define_utypes_with!(u8);
     /// 
     /// let m = UU32::from_string("76801874298166903427690031858186486050853753882811946569946433649006084094").unwrap();
     /// let a_biguint = U256::from_string("31858186486050853753882811946768018742981669034276900586487291375468285").unwrap();
-    /// let mut mul_uint = 5_u8;
-    /// 
-    /// let mut res = a_biguint.modular_mul_uint(mul_uint, &m);
+    /// let mul_uint = 5_u8;
+    /// let res = a_biguint.modular_mul_uint(mul_uint, &m);
     /// println!("{} * {} = {}", a_biguint, mul_uint, res);
     /// assert_eq!(res.to_string(), "159290932430254268769414059733840093714908345171384502932436456877341425");
+    /// ```
     /// 
-    /// mul_uint = 248_u8;
-    /// res = a_biguint.modular_mul_uint(mul_uint, &m);
+    /// # Example 2
+    /// ```
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u8);
+    /// 
+    /// let m = UU32::from_string("76801874298166903427690031858186486050853753882811946569946433649006084094").unwrap();
+    /// let a_biguint = U256::from_string("31858186486050853753882811946768018742981669034276900586487291375468285").unwrap();
+    /// let mul_uint = 248_u8;
+    /// let res = a_biguint.modular_mul_uint(mul_uint, &m);
     /// println!("{} * {} = {}", a_biguint, mul_uint, res);
     /// assert_eq!(res.to_string(), "7900830248540611730962937362798468648259453920500671345448848261116134680");
     /// ```
@@ -7402,9 +7541,15 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
         res
     }
 
+///////////////////////////
     // pub fn modular_mul_assign_uint<U>(&mut self, rhs: U, modulo: &Self)
     /// Computes (`self` * `rhs`) % `modulo`, wrapping around at `modulo`
     /// of the type `Self`, and assign the result to `self` back.
+    /// 
+    /// # Arguments
+    /// - `rhs` is to be multiplied to `self`, and small-sized unsigned integer
+    /// such as `u8`, `u16`, `u32`, `u64`, and `u128`.
+    /// - `modulo` is the divisor to divide the result of (`self` * `rhs`).
     /// 
     /// # Features
     /// - Wrapping (modular) multiplication at `modulo`. The differences between
@@ -7429,22 +7574,30 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// [modular_mul_assign()](struct@BigUInt#method.modular_mul_assign)
     /// is proper rather than this method `modular_mul_assign_uint()`.
     /// 
-    /// # Example
+    /// # Example 1
     /// ```
     /// use cryptocol::define_utypes_with;
     /// define_utypes_with!(u32);
     /// 
     /// let m = UU32::from_string("76801874298166903427690031858186486050853753882811946569946433649006084094").unwrap();
     /// let mut a_biguint = U256::from_string("31858186486050853753882811946768018742981669034276900586487291375468285").unwrap();
-    /// let mut b_biguint = a_biguint.clone();
-    /// let mut mul_uint = 5_u8;
+    /// let mul_uint = 5_u8;
     /// 
     /// println!("Originally, a_biguint = {}", a_biguint);
     /// a_biguint.modular_mul_assign_uint(mul_uint, &m);
     /// println!("After a_biguint.modular_mul_assign_uint(mul_uint, &m), a_biguint = {}", a_biguint);
     /// assert_eq!(a_biguint.to_string(), "159290932430254268769414059733840093714908345171384502932436456877341425");
+    /// ```
     /// 
-    /// mul_uint = 248_u8;
+    /// # Example 2
+    /// ```
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u32);
+    /// 
+    /// let m = UU32::from_string("76801874298166903427690031858186486050853753882811946569946433649006084094").unwrap();
+    /// let mut b_biguint = U256::from_string("31858186486050853753882811946768018742981669034276900586487291375468285").unwrap();
+    /// let mul_uint = 248_u8;
+    /// 
     /// println!("Originally, b_biguint = {}", b_biguint);
     /// b_biguint.modular_mul_assign_uint(mul_uint, &m);
     /// println!("After b_biguint.modular_mul_assign_uint(mul_uint, &m), b_biguint = {}", b_biguint);
