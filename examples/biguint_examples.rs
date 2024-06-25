@@ -2752,7 +2752,6 @@ fn biguint_unchecked_mul_uint()
     println!("---------------------------");
 }
 
-///////////////////////////
 fn biguint_saturating_mul_uint()
 {
     println!("biguint_saturating_mul_uint");
@@ -2860,8 +2859,8 @@ fn biguint_divide_fully_uint()
     define_utypes_with!(u16);
 
     let dividend = UU32::from_str("123456789015758942546236989636279846864825945392").unwrap();
-    let mut divisor = 87_u8;
-    let (mut quotient, mut remainder) = dividend.divide_fully_uint(divisor);
+    let divisor = 87_u8;
+    let (quotient, remainder) = dividend.divide_fully_uint(divisor);
     println!("{} / {} => quotient = {} , remainder = {}", dividend, divisor, quotient, remainder);
     assert_eq!(quotient.to_string(), "1419043551905275201680884938348044216837079832");
     assert_eq!(remainder.to_string(), "8");
@@ -2869,8 +2868,8 @@ fn biguint_divide_fully_uint()
     assert_eq!(quotient.is_inifinity(), false);
     assert_eq!(quotient.is_divided_by_zero(), false);
 
-    divisor = 0_u8;
-    (quotient, remainder) = dividend.divide_fully_uint(divisor);
+    let divisor = 0_u8;
+    let (quotient, remainder) = dividend.divide_fully_uint(divisor);
     println!("{} / {} => quotient = {} , remainder = {}", dividend, divisor, quotient, remainder);
     assert_eq!(quotient, U256::max());
     assert_eq!(remainder.to_string(), "0");
@@ -2888,16 +2887,16 @@ fn biguint_wrapping_div_uint()
     define_utypes_with!(u64);
 
     let dividend = U256::from_str("123456789015758942546236989636279846864825945392").unwrap();
-    let mut divisor = 87_u8;
-    let mut quotient = dividend.wrapping_div_uint(divisor);
+    let divisor = 87_u8;
+    let quotient = dividend.wrapping_div_uint(divisor);
     println!("{} / {} = {}", dividend, divisor, quotient);
     assert_eq!(quotient.to_string(), "1419043551905275201680884938348044216837079832");
     assert_eq!(quotient.is_overflow(), false);
     assert_eq!(quotient.is_inifinity(), false);
     assert_eq!(quotient.is_divided_by_zero(), false);
 
-    divisor = 0_u8;
-    quotient = dividend.wrapping_div_uint(divisor);
+    let divisor = 0_u8;
+    let quotient = dividend.wrapping_div_uint(divisor);
     println!("{} / {} = {}", dividend, divisor, quotient);
     assert_eq!(quotient, U256::max());
     assert_eq!(quotient.is_overflow(), true);
@@ -2914,7 +2913,7 @@ fn biguint_wrapping_div_assign_uint()
     define_utypes_with!(u128);
 
     let mut a_biguint = UU32::from_str("123456789015758942546236989636279846864825945392").unwrap();
-    let mut divisor = 87_u8;
+    let divisor = 87_u8;
     println!("Originally,\na_biguint = {}", a_biguint);
     a_biguint.wrapping_div_assign_uint(divisor);
     println!("After a_biguint.wrapping_div_assign_uint(&divisor),\na_biguint = {}", a_biguint);
@@ -2922,7 +2921,9 @@ fn biguint_wrapping_div_assign_uint()
     assert_eq!(a_biguint.is_inifinity(), false);
     assert_eq!(a_biguint.is_divided_by_zero(), false);
 
-    divisor = 0_u8;
+    let mut a_biguint = UU32::from_str("123456789015758942546236989636279846864825945392").unwrap();
+    let divisor = 0_u8;
+    println!("Originally,\na_biguint = {}", a_biguint);
     a_biguint.wrapping_div_assign_uint(divisor);
     println!("After a_biguint.wrapping_div_assign_uint({}),\na_biguint = {}", divisor, a_biguint);
     assert_eq!(a_biguint, UU32::max());
@@ -2967,9 +2968,9 @@ fn biguint_overflowing_div_assign_uint()
     define_utypes_with!(u16);
 
     let mut a_biguint = UU32::from_str("123456789015758942546236989636279846864825945392").unwrap();
-    let mut divisor = 87_u16;
+    let divisor = 87_u16;
     println!("Originally,\na_biguint = {}", a_biguint);
-    let mut overflow = a_biguint.overflowing_div_assign_uint(divisor);
+    let overflow = a_biguint.overflowing_div_assign_uint(divisor);
     println!("After a_biguint.overflowing_div_assign_uint({}),\na_biguint = {}", divisor, a_biguint);
     assert_eq!(a_biguint.to_string(), "1419043551905275201680884938348044216837079832");
     assert_eq!(overflow, false);
@@ -2977,8 +2978,9 @@ fn biguint_overflowing_div_assign_uint()
     assert_eq!(a_biguint.is_inifinity(), false);
     assert_eq!(a_biguint.is_divided_by_zero(), false);
 
-    divisor = 0_u16;
-    overflow = a_biguint.overflowing_div_assign_uint(divisor);
+    let mut a_biguint = UU32::from_str("123456789015758942546236989636279846864825945392").unwrap();
+    let divisor = 0_u16;
+    let overflow = a_biguint.overflowing_div_assign_uint(divisor);
     println!("After a_biguint.overflowing_div_assign_uint({}),\na_biguint = {}", divisor, a_biguint);
     assert_eq!(a_biguint, UU32::max());
     assert_eq!(overflow, true);
@@ -2996,8 +2998,8 @@ fn biguint_checked_div_uint()
     define_utypes_with!(u32);
 
     let dividend = U256::from_str("123456789015758942546236989636279846864825945392").unwrap();
-    let mut divisor = 87_u8;
-    let mut quotient = dividend.checked_div_uint(divisor);
+    let divisor = 87_u8;
+    let quotient = dividend.checked_div_uint(divisor);
     match quotient.clone()
     {
         Some(q) =>
@@ -3011,8 +3013,9 @@ fn biguint_checked_div_uint()
         None => { println!("Divided By Zero"); },
     }
 
-    divisor = 0_u8;
-    quotient = dividend.checked_div_uint(divisor);
+    let dividend = U256::from_str("123456789015758942546236989636279846864825945392").unwrap();
+    let divisor = 0_u8;
+    let quotient = dividend.checked_div_uint(divisor);
     match quotient
     {
         Some(q) => { println!("{} / {} = {}", dividend, divisor, q); },
@@ -3054,16 +3057,16 @@ fn biguint_saturating_div_uint()
     define_utypes_with!(u32);
 
     let dividend = U256::from_str("123456789015758942546236989636279846864825945392").unwrap();
-    let mut divisor = 87_u8;
-    let mut quotient = dividend.saturating_div_uint(divisor);
+    let divisor = 87_u8;
+    let quotient = dividend.saturating_div_uint(divisor);
     println!("{} / {} = {}", dividend, divisor, quotient);
     assert_eq!(quotient.to_string(), "1419043551905275201680884938348044216837079832");
     assert_eq!(quotient.is_overflow(), false);
     assert_eq!(quotient.is_inifinity(), false);
     assert_eq!(quotient.is_divided_by_zero(), false);
 
-    divisor = 0_u8;
-    quotient = dividend.saturating_div_uint(divisor);
+    let divisor = 0_u8;
+    let quotient = dividend.saturating_div_uint(divisor);
     println!("{} / {} = {}", dividend, divisor, quotient);
     assert_eq!(quotient, U256::max());
     assert_eq!(quotient.is_overflow(), false);
@@ -3080,7 +3083,7 @@ fn biguint_saturating_div_assign_uint()
     define_utypes_with!(u128);
 
     let mut a_biguint = UU32::from_str("123456789015758942546236989636279846864825945392").unwrap();
-    let mut divisor = 87_u16;
+    let divisor = 87_u16;
     println!("Originally,\na_biguint = {}", a_biguint);
     a_biguint.saturating_div_assign_uint(divisor);
     println!("After a_biguint.saturating_div_assign_uint({}),\na_biguint = {}", divisor, a_biguint);
@@ -3089,7 +3092,9 @@ fn biguint_saturating_div_assign_uint()
     assert_eq!(a_biguint.is_inifinity(), false);
     assert_eq!(a_biguint.is_divided_by_zero(), false);
 
-    divisor = 0_u16;
+    let mut a_biguint = UU32::from_str("123456789015758942546236989636279846864825945392").unwrap();
+    let divisor = 0_u16;
+    println!("Originally,\na_biguint = {}", a_biguint);
     a_biguint.saturating_div_assign_uint(divisor);
     println!("After a_biguint.saturating_div_assign_uint({}),\na_biguint = {}", divisor, a_biguint);
     assert_eq!(a_biguint, UU32::max());
@@ -3107,17 +3112,19 @@ fn biguint_modular_div_uint()
     define_utypes_with!(u8);
     
     let dividend = U256::from_str("123456789015758942546236989636279846864825945392").unwrap();
-    let mut divisor = 128_u8;
+    let divisor = 128_u8;
     let modulo = U256::from_uint(100_u8);
-    let mut quotient = dividend.modular_div_uint(divisor, &modulo);
+    let quotient = dividend.modular_div_uint(divisor, &modulo);
     println!("{} / {} = {}", dividend, divisor, quotient);
     assert_eq!(quotient.to_string(), "3");
     assert_eq!(quotient.is_overflow(), false);
     assert_eq!(quotient.is_inifinity(), false);
     assert_eq!(quotient.is_divided_by_zero(), false);
     
-    divisor = 200_u8;
-    quotient = dividend.modular_div_uint(divisor, &modulo);
+    let dividend = U256::from_str("123456789015758942546236989636279846864825945392").unwrap();
+    let divisor = 200_u8;
+    let modulo = U256::from_uint(100_u8);
+    let quotient = dividend.modular_div_uint(divisor, &modulo);
     println!("{} / {} = {}", dividend, divisor, quotient);
     assert_eq!(quotient, U256::max());
     assert_eq!(quotient.is_overflow(), true);
@@ -3134,7 +3141,7 @@ fn biguint_modular_div_assign_uint()
     define_utypes_with!(u16);
     
     let mut a_biguint = UU32::from_str("123456789015758942546236989636279846864825945392").unwrap();
-    let mut divisor = 128_u8;
+    let divisor = 128_u8;
     let modulo = UU32::from_uint(100_u8);
     println!("Originally,\na_biguint = {}", a_biguint);
     a_biguint.modular_div_assign_uint(divisor, &modulo);
@@ -3144,7 +3151,10 @@ fn biguint_modular_div_assign_uint()
     assert_eq!(a_biguint.is_inifinity(), false);
     assert_eq!(a_biguint.is_divided_by_zero(), false);
 
-    divisor = 200_u8;
+    let mut a_biguint = UU32::from_str("123456789015758942546236989636279846864825945392").unwrap();
+    let divisor = 200_u8;
+    let modulo = UU32::from_uint(100_u8);
+    println!("Originally,\na_biguint = {}", a_biguint);
     a_biguint.modular_div_assign_uint(divisor, &modulo);
     println!("After a_biguint.modular_div_assign_uint({}),\na_biguint = {}", divisor, a_biguint);
     assert_eq!(a_biguint, U256::max());
@@ -3168,6 +3178,7 @@ fn biguint_rem_uint()
     biguint_modular_rem_assign_uint();
 }
 
+///////////////////////////
 fn biguint_wrapping_rem_uint()
 {
     println!("biguint_wrapping_rem_uint");
