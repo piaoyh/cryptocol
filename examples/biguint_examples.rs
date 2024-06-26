@@ -3187,13 +3187,14 @@ fn biguint_wrapping_rem_uint()
     define_utypes_with!(u8);
 
     let dividend = UU32::from_str("123456789015758942546236989636279846864825945392").unwrap();
-    let mut divisor = 87_u8;
-    let mut remainder = dividend.wrapping_rem_uint(divisor);
+    let divisor = 87_u8;
+    let remainder = dividend.wrapping_rem_uint(divisor);
     println!("{} % {} = {}", dividend, divisor, remainder);
     assert_eq!(remainder.to_string(), "8");
 
-    divisor = 0_u8;
-    remainder = dividend.wrapping_rem_uint(divisor);
+    let dividend = UU32::from_str("123456789015758942546236989636279846864825945392").unwrap();
+    let divisor = 0_u8;
+    let remainder = dividend.wrapping_rem_uint(divisor);
     println!("{} % {} = {}", dividend, divisor, remainder);
     assert_eq!(remainder, 0);
     println!("---------------------------");
@@ -3207,7 +3208,7 @@ fn biguint_wrapping_rem_assign_uint()
     define_utypes_with!(u16);
 
     let mut a_biguint = U256::from_str("123456789015758942546236989636279846864825945392").unwrap();
-    let mut divisor = 87_u8;
+    let divisor = 87_u8;
     println!("Originally,\na_biguint = {}", a_biguint);
     a_biguint.wrapping_rem_assign_uint(divisor);
     println!("After a_biguint.wrapping_rem_assign_uint({}),\na_biguint = {}", divisor, a_biguint);
@@ -3216,7 +3217,9 @@ fn biguint_wrapping_rem_assign_uint()
     assert_eq!(a_biguint.is_inifinity(), false);
     assert_eq!(a_biguint.is_divided_by_zero(), false);
 
-    divisor = 0_u8;
+    let mut a_biguint = U256::from_str("123456789015758942546236989636279846864825945392").unwrap();
+    let divisor = 0_u8;
+    println!("Originally,\na_biguint = {}", a_biguint);
     a_biguint.wrapping_rem_assign_uint(divisor);
     println!("After a_biguint.wrapping_rem_assign_uint({}),\na_biguint = {}", divisor, a_biguint);
     assert_eq!(a_biguint, 0);
@@ -3234,14 +3237,15 @@ fn biguint_overflowing_rem_uint()
     define_utypes_with!(u32);
 
     let dividend = UU32::from_str("123456789015758942546236989636279846864825945392").unwrap();
-    let mut divisor = 87_u8;
-    let (mut remainder, mut overflow) = dividend.overflowing_rem_uint(divisor);
+    let divisor = 87_u8;
+    let (remainder, overflow) = dividend.overflowing_rem_uint(divisor);
     println!("{} % {} = {}", dividend, divisor, remainder);
     assert_eq!(remainder, 8);
     assert_eq!(overflow, false);
 
-    divisor = 0_u8;
-    (remainder, overflow) = dividend.overflowing_rem_uint(divisor);
+    let dividend = UU32::from_str("123456789015758942546236989636279846864825945392").unwrap();
+    let divisor = 0_u8;
+    let (remainder, overflow) = dividend.overflowing_rem_uint(divisor);
     println!("{} % {} = {}", dividend, divisor, remainder);
     assert_eq!(remainder, 0);
     assert_eq!(overflow, false);
@@ -3256,9 +3260,9 @@ fn biguint_overflowing_rem_assign_uint()
     define_utypes_with!(u64);
 
     let mut a_biguint = U256::from_str("123456789015758942546236989636279846864825945392").unwrap();
-    let mut divisor = 87_u16;
+    let divisor = 87_u16;
     println!("Originally,\na_biguint = {}", a_biguint);
-    let mut overflow = a_biguint.overflowing_rem_assign_uint(divisor);
+    let overflow = a_biguint.overflowing_rem_assign_uint(divisor);
     println!("After a_biguint.overflowing_rem_assign_uint({}),\na_biguint = {}", divisor, a_biguint);
     assert_eq!(a_biguint.to_string(), "8");
     assert_eq!(overflow, false);
@@ -3266,8 +3270,10 @@ fn biguint_overflowing_rem_assign_uint()
     assert_eq!(a_biguint.is_inifinity(), false);
     assert_eq!(a_biguint.is_divided_by_zero(), false);
 
-    divisor = 0_u16;
-    overflow = a_biguint.overflowing_rem_assign_uint(divisor);
+    let mut a_biguint = U256::from_str("123456789015758942546236989636279846864825945392").unwrap();
+    let divisor = 0_u16;
+    println!("Originally,\na_biguint = {}", a_biguint);
+    let overflow = a_biguint.overflowing_rem_assign_uint(divisor);
     println!("After a_biguint.overflowing_rem_assign_uint({}),\na_biguint = {}", divisor, a_biguint);
     assert_eq!(a_biguint, U256::zero());
     assert_eq!(overflow, false);
@@ -3285,8 +3291,8 @@ fn biguint_checked_rem_uint()
     define_utypes_with!(u128);
 
     let dividend = UU32::from_str("123456789015758942546236989636279846864825945392").unwrap();
-    let mut divisor = 87_u8;
-    let mut remainder = dividend.checked_rem_uint(divisor);
+    let divisor = 87_u8;
+    let remainder = dividend.checked_rem_uint(divisor);
     match remainder
     {
         Some(r) =>
@@ -3297,8 +3303,9 @@ fn biguint_checked_rem_uint()
         None => { println!("Divided By Zero"); },
     }
 
-    divisor = 0_u8;
-    remainder = dividend.checked_rem_uint(divisor);
+    let dividend = UU32::from_str("123456789015758942546236989636279846864825945392").unwrap();
+    let divisor = 0_u8;
+    let remainder = dividend.checked_rem_uint(divisor);
     match remainder
     {
         Some(r) => { println!("{} % {} = {}", dividend, divisor, r); },
@@ -3325,7 +3332,7 @@ fn biguint_unchecked_rem_uint()
     assert_eq!(remainder.to_string(), "8");
 
     // It will panic.
-    // remainder = dividend.unchecked_rem_uint(0_u8);
+    // let remainder = dividend.unchecked_rem_uint(0_u8);
     println!("---------------------------");
 }
 
@@ -3337,13 +3344,14 @@ fn biguint_saturating_rem_uint()
     define_utypes_with!(u16);
 
     let dividend = UU32::from_str("123456789015758942546236989636279846864825945392").unwrap();
-    let mut divisor = 87_u8;
-    let mut remainder = dividend.saturating_rem_uint(divisor);
+    let divisor = 87_u8;
+    let remainder = dividend.saturating_rem_uint(divisor);
     println!("{} % {} = {}", dividend, divisor, remainder);
     assert_eq!(remainder.to_string(), "8");
 
-    divisor = 0_u8;
-    remainder = dividend.saturating_rem_uint(divisor);
+    let dividend = UU32::from_str("123456789015758942546236989636279846864825945392").unwrap();
+    let divisor = 0_u8;
+    let remainder = dividend.saturating_rem_uint(divisor);
     println!("{} % {} = {}", dividend, divisor, remainder);
     assert_eq!(remainder, 0);
     println!("---------------------------");
@@ -3357,7 +3365,7 @@ fn biguint_saturating_rem_assign_uint()
     define_utypes_with!(u32);
 
     let mut a_biguint = U256::from_str("123456789015758942546236989636279846864825945392").unwrap();
-    let mut divisor = 87_u16;
+    let divisor = 87_u16;
     println!("Originally,\na_biguint = {}", a_biguint);
     a_biguint.saturating_rem_assign_uint(divisor);
     println!("After a_biguint.saturating_rem_assign_uint({}),\na_biguint = {}", divisor, a_biguint);
@@ -3366,7 +3374,9 @@ fn biguint_saturating_rem_assign_uint()
     assert_eq!(a_biguint.is_inifinity(), false);
     assert_eq!(a_biguint.is_divided_by_zero(), false);
 
-    divisor = 0_u16;
+    let mut a_biguint = U256::from_str("123456789015758942546236989636279846864825945392").unwrap();
+    let divisor = 0_u16;
+    println!("Originally,\na_biguint = {}", a_biguint);
     a_biguint.saturating_rem_assign_uint(divisor);
     println!("After a_biguint.saturating_rem_assign_uint({}),\na_biguint = {}", divisor, a_biguint);
     assert_eq!(a_biguint, UU32::zero());
@@ -3384,14 +3394,16 @@ fn biguint_modular_rem_uint()
     define_utypes_with!(u32);
 
     let dividend = U256::from_str("123456789015758942546236989636279846864825945392").unwrap();
-    let mut divisor = 128_u8;
+    let divisor = 128_u8;
     let modulo = U256::from_uint(100_u8);
-    let mut remainder = dividend.modular_rem_uint(divisor, &modulo);
+    let remainder = dividend.modular_rem_uint(divisor, &modulo);
     println!("{} % {} = {}", dividend, divisor, remainder);
     assert_eq!(remainder.to_string(), "8");
-    
-    divisor = 200_u8;
-    remainder = dividend.modular_rem_uint(divisor, &modulo);
+
+    let dividend = U256::from_str("123456789015758942546236989636279846864825945392").unwrap();
+    let divisor = 200_u8;
+    let modulo = U256::from_uint(100_u8);
+    let remainder = dividend.modular_rem_uint(divisor, &modulo);
     println!("{} % {} = {}", dividend, divisor, remainder);
     assert_eq!(remainder.to_string(), "0");
     println!("---------------------------");
@@ -3405,7 +3417,7 @@ fn biguint_modular_rem_assign_uint()
     define_utypes_with!(u64);
     
     let mut a_biguint = UU32::from_str("123456789015758942546236989636279846864825945392").unwrap();
-    let mut divisor = 128_u8;
+    let divisor = 128_u8;
     let modulo = UU32::from_uint(100_u8);
     println!("Originally,\na_biguint = {}", a_biguint);
     a_biguint.modular_rem_assign_uint(divisor, &modulo);
@@ -3415,7 +3427,10 @@ fn biguint_modular_rem_assign_uint()
     assert_eq!(a_biguint.is_inifinity(), false);
     assert_eq!(a_biguint.is_divided_by_zero(), false);
 
-    divisor = 200_u8;
+    let mut a_biguint = UU32::from_str("123456789015758942546236989636279846864825945392").unwrap();
+    let divisor = 200_u8;
+    let modulo = UU32::from_uint(100_u8);
+    println!("Originally,\na_biguint = {}", a_biguint);
     a_biguint.modular_rem_assign_uint(divisor, &modulo);
     println!("After a_biguint.modular_rem_assign_uint({}),\na_biguint = {}", divisor, a_biguint);
     assert_eq!(a_biguint.to_string(), "0");

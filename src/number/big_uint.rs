@@ -4967,6 +4967,8 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// (modular) addition at `modulo`.
     /// 
     /// # Features
+    /// - It takes the addition (= `add`) of `self` and `rhs`,
+    /// and then finally returns the remainder of `add` divided by `modulo`.
     /// - Wrapping (modular) addition at `modulo`.
     /// - The differences between this method `modular_add_uint()` and the
     /// method `wrapping_add_uint()` are, first, where wrapping around happens,
@@ -5054,6 +5056,8 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// or its behavior may be undefined though it may not panic.
     /// 
     /// # Features
+    /// - It takes the addition (= `add`) of `self` and `rhs`,
+    /// and then finally takes the remainder of `add` divided by `modulo`.
     /// - Wrapping (modular) addition at `modulo`.
     /// - The differences between this method `modular_add_assign_uint()` and
     /// the method `wrapping_add_assign_uint()` are, first, where wrapping
@@ -6152,6 +6156,8 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// wrapping (modular) subtraction at `modulo`.
     /// 
     /// # Features
+    /// - It takes the result of (= `sub`) of `rhs` subtracted from `self`,
+    /// and then finally returns the remainder of `sub` divided by `modulo`.
     /// - Wrapping (modular) subtraction at `modulo`.
     /// - The differences between this method `modular_sub_uint()` and the
     /// method `wrapping_sub_uint()` are, first, where wrapping around happens,
@@ -6239,6 +6245,8 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// or its behavior may be undefined though it may not panic.
     /// 
     /// # Features
+    /// - It takes the result of (= `sub`) of `rhs` subtracted from `self`,
+    /// and then finally takes the remainder of `sub` divided by `modulo`.
     /// - Wrapping (modular) subtraction at `modulo`.
     /// - The differences between this method `modular_sub_assign()` and the
     /// method `wrapping_sub_assign()` are, first, where wrapping around
@@ -7480,6 +7488,8 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// It returns (`self` * `rhs`) % `modulo`.
     /// 
     /// # Features
+    /// - It takes the multiplication (= `mul`) of `self` and `rhs`,
+    /// and then finally returns the remainder of `mul` divided by `modulo`.
     /// - Wrapping (modular) multiplication at `modulo`.
     /// - The differences between this method `modular_mul_uint()` and the
     /// method `wrapping_mul_uint()` are, first, where wrapping around happens,
@@ -7551,6 +7561,8 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// - `modulo` is the divisor to divide the result of (`self` * `rhs`).
     /// 
     /// # Features
+    /// - It takes the multiplication (= `mul`) of `self` and `rhs`,
+    /// and then finally takes the remainder of `mul` divided by `modulo`.
     /// - Wrapping (modular) multiplication at `modulo`. The differences between
     /// this method `modular_mul_assign_uint()` and the method
     /// `wrapping_mul_assign_uint()` are, first, where wrapping around happens,
@@ -8230,7 +8242,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// which is `self` / `rhs`, assuming that `rhs` cannot be zero.
     /// 
     /// # Arguments
-    /// `rhs` divides `self`, and is small-sized unsigned integer
+    /// `rhs` divides `self`, and is a small-sized unsigned integer
     /// such as `u8`, `u16`, `u32`, `u64`, and `u128`.
     ///
     /// # Panics
@@ -8298,7 +8310,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// instead of overflowing.
     /// 
     /// # Arguments
-    /// `rhs` divides `self`, and is small-sized unsigned integer
+    /// `rhs` divides `self`, and is a small-sized unsigned integer
     /// such as `u8`, `u16`, `u32`, `u64`, and `u128`.
     ///
     /// # Panics
@@ -8388,7 +8400,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// instead of overflowing, and assigns the quotient to `self` back.
     /// 
     /// # Arguments
-    /// `rhs` divides `self`, and is small-sized unsigned integer
+    /// `rhs` divides `self`, and is a small-sized unsigned integer
     /// such as `u8`, `u16`, `u32`, `u64`, and `u128`.
     ///
     /// # Panics
@@ -8474,8 +8486,9 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// `rhs` % `modulo`.
     /// 
     /// # Arguments
-    /// `rhs` divides `self`, and is small-sized unsigned integer
+    /// `rhs` divides `self`, and is a small-sized unsigned integer
     /// such as `u8`, `u16`, `u32`, `u64`, and `u128`.
+    /// - `modulo` is the divisor to divide the result of (`self` / `rhs`).
     ///
     /// # Panics
     /// If `size_of::<T>() * N` <= `128`, this method may panic
@@ -8488,6 +8501,9 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// of `BigUInt` type.
     /// 
     /// # Features
+    /// - It takes the remainder (= `rd1`) of `self` divided by `modulo`,
+    /// and takes the remainder (= `rd2`) of `rhs` divided by `modulo`,
+    /// and then finally returns the qutient of `rd1` divided by `rd2`.
     /// - There’s no way wrapping could ever happen unless `rhs` is zero.
     /// - If `rhs` % `modulo` is zero, the quotient will have maximum value
     /// of `BigUInt` type, and the flags of quotient such as `OVERFLOW`,
@@ -8558,7 +8574,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// `rhs` % `modulo`, and assigns the quotient to `self` back.
     /// 
     /// # Arguments
-    /// `rhs` divides `self`, and is small-sized unsigned integer
+    /// `rhs` divides `self`, and is a small-sized unsigned integer
     /// such as `u8`, `u16`, `u32`, `u64`, and `u128`.
     ///
     /// # Panics
@@ -8566,6 +8582,9 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// or its behavior may be undefined though it may not panic.
     /// 
     /// # Features
+    /// - It takes the remainder (= `rd1`) of `self` divided by `modulo`,
+    /// and takes the remainder (= `rd2`) of `rhs` divided by `modulo`,
+    /// and then finally takes the qutient of `rd1` divided by `rd2`.
     /// - There’s no way wrapping could ever happen unless `rhs` is zero.
     /// - If `rhs` % `modulo` is zero, the quotient will have maximum value
     /// of `BigUInt` type, and the flags of quotient such as `OVERFLOW`,
@@ -8637,10 +8656,14 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     {
         self.modular_div_assign(&Self::from_uint(rhs), modulo);
     }
-/////////////////
+
     // pub fn wrapping_rem_uint<U>(&self, rhs: U) -> U
     /// Calculates the remainder when `self` is divided by `rhs`,
     /// which is `self` % `rhs`.
+    /// 
+    /// # Arguments
+    /// `rhs` divides `self`, and is a small-sized unsigned integer
+    /// such as `u8`, `u16`, `u32`, `u64`, and `u128`.
     ///
     /// # Panics
     /// If `size_of::<T>() * N` <= `128`, this method may panic
@@ -8667,20 +8690,28 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// [wrapping_rem()](struct@BigUInt#method.wrapping_rem)
     /// is proper rather than this method `wrapping_rem_uint()`.
     /// 
-    /// # Example
+    /// # Example 1
     /// ```
     /// use std::str::FromStr;
     /// use cryptocol::define_utypes_with;
     /// define_utypes_with!(u8);
     /// 
     /// let dividend = UU32::from_str("123456789015758942546236989636279846864825945392").unwrap();
-    /// let mut divisor = 87_u8;
-    /// let mut remainder = dividend.wrapping_rem_uint(divisor);
+    /// let divisor = 87_u8;
+    /// let remainder = dividend.wrapping_rem_uint(divisor);
     /// println!("{} % {} = {}", dividend, divisor, remainder);
     /// assert_eq!(remainder.to_string(), "8");
+    /// ```
     /// 
-    /// divisor = 0_u8;
-    /// remainder = dividend.wrapping_rem_uint(divisor);
+    /// # Example 2
+    /// ```
+    /// use std::str::FromStr;
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u8);
+    /// 
+    /// let dividend = UU32::from_str("123456789015758942546236989636279846864825945392").unwrap();
+    /// let divisor = 0_u8;
+    /// let remainder = dividend.wrapping_rem_uint(divisor);
     /// println!("{} % {} = {}", dividend, divisor, remainder);
     /// assert_eq!(remainder, 0);
     /// ```
@@ -8706,6 +8737,10 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     // pub fn wrapping_rem_assign_uint<U>(&mut self, rhs: U)
     /// Calculates the remainder when `self` is divided by `rhs`,
     /// which is `self` % `rhs`, and returns the remainder to `self` back.
+    /// 
+    /// # Arguments
+    /// `rhs` divides `self`, and is a small-sized unsigned integer
+    /// such as `u8`, `u16`, `u32`, `u64`, and `u128`.
     ///
     /// # Panics
     /// If `size_of::<T>() * N` <= `128`, this method may panic
@@ -8733,14 +8768,14 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// [wrapping_rem_assign()](struct@BigUInt#method.wrapping_rem_assign)
     /// is proper rather than this method `wrapping_rem_assign_uint()`.
     /// 
-    /// # Example
+    /// # Example 1
     /// ```
     /// use std::str::FromStr;
     /// use cryptocol::define_utypes_with;
     /// define_utypes_with!(u16);
     /// 
     /// let mut a_biguint = U256::from_str("123456789015758942546236989636279846864825945392").unwrap();
-    /// let mut divisor = 87_u8;
+    /// let divisor = 87_u8;
     /// println!("Originally,\na_biguint = {}", a_biguint);
     /// a_biguint.wrapping_rem_assign_uint(divisor);
     /// println!("After a_biguint.wrapping_rem_assign_uint({}),\na_biguint = {}", divisor, a_biguint);
@@ -8748,8 +8783,17 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// assert_eq!(a_biguint.is_overflow(), false);
     /// assert_eq!(a_biguint.is_inifinity(), false);
     /// assert_eq!(a_biguint.is_divided_by_zero(), false);
+    /// ```
     /// 
-    /// divisor = 0_u8;
+    /// # Example 2
+    /// ```
+    /// use std::str::FromStr;
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u16);
+    /// 
+    /// let mut a_biguint = U256::from_str("123456789015758942546236989636279846864825945392").unwrap();
+    /// let divisor = 0_u8;
+    /// println!("Originally,\na_biguint = {}", a_biguint);
     /// a_biguint.wrapping_rem_assign_uint(divisor);
     /// println!("After a_biguint.wrapping_rem_assign_uint({}),\na_biguint = {}", divisor, a_biguint);
     /// assert_eq!(a_biguint, 0);
@@ -8781,6 +8825,10 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     // pub fn overflowing_rem_uint<U>(&self, rhs: U) -> (U, bool)
     /// Calculates the remainder when `self` is divided by `rhs`,
     /// which is `self` % `rhs`.
+    /// 
+    /// # Arguments
+    /// `rhs` divides `self`, and is a small-sized unsigned integer
+    /// such as `u8`, `u16`, `u32`, `u64`, and `u128`.
     ///
     /// # Panics
     /// If `size_of::<T>() * N` <= `128`, this method may panic
@@ -8804,21 +8852,29 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// [overflowing_rem()](struct@BigUInt#method.overflowing_rem)
     /// is proper rather than this method `overflowing_rem_uint()`.
     /// 
-    /// # Example
+    /// # Example 1
     /// ```
     /// use std::str::FromStr;
     /// use cryptocol::define_utypes_with;
     /// define_utypes_with!(u32);
     /// 
     /// let dividend = UU32::from_str("123456789015758942546236989636279846864825945392").unwrap();
-    /// let mut divisor = 87_u8;
-    /// let (mut remainder, mut overflow) = dividend.overflowing_rem_uint(divisor);
+    /// let divisor = 87_u8;
+    /// let (remainder, overflow) = dividend.overflowing_rem_uint(divisor);
     /// println!("{} % {} = {}", dividend, divisor, remainder);
     /// assert_eq!(remainder, 8);
     /// assert_eq!(overflow, false);
+    /// ```
     /// 
-    /// divisor = 0_u8;
-    /// (remainder, overflow) = dividend.overflowing_rem_uint(divisor);
+    /// # Example 2
+    /// ```
+    /// use std::str::FromStr;
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u32);
+    /// 
+    /// let dividend = UU32::from_str("123456789015758942546236989636279846864825945392").unwrap();
+    /// let divisor = 0_u8;
+    /// let (remainder, overflow) = dividend.overflowing_rem_uint(divisor);
     /// println!("{} % {} = {}", dividend, divisor, remainder);
     /// assert_eq!(remainder, 0);
     /// assert_eq!(overflow, false);
@@ -8845,6 +8901,10 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     // pub fn overflowing_rem_assign_uint<U>(&mut self, rhs: U) -> bool
     /// Calculates the remainder when `self` is divided by `rhs`,
     /// which is `self` % `rhs`, and returns the remainder to `self` back.
+    /// 
+    /// # Arguments
+    /// `rhs` divides `self`, and is a small-sized unsigned integer
+    /// such as `u8`, `u16`, `u32`, `u64`, and `u128`.
     ///
     /// # Panics
     /// If `size_of::<T>() * N` <= `128`, this method may panic
@@ -8871,25 +8931,34 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// [overflowing_rem_assign()](struct@BigUInt#method.overflowing_rem_assign)
     /// is proper rather than this method `overflowing_rem_assign_uint()`.
     /// 
-    /// # Example
+    /// # Example 1
     /// ```
     /// use std::str::FromStr;
     /// use cryptocol::define_utypes_with;
     /// define_utypes_with!(u64);
     /// 
     /// let mut a_biguint = U256::from_str("123456789015758942546236989636279846864825945392").unwrap();
-    /// let mut divisor = 87_u16;
+    /// let divisor = 87_u16;
     /// println!("Originally,\na_biguint = {}", a_biguint);
-    /// let mut overflow = a_biguint.overflowing_rem_assign_uint(divisor);
+    /// let overflow = a_biguint.overflowing_rem_assign_uint(divisor);
     /// println!("After a_biguint.overflowing_rem_assign_uint({}),\na_biguint = {}", divisor, a_biguint);
     /// assert_eq!(a_biguint.to_string(), "8");
     /// assert_eq!(overflow, false);
     /// assert_eq!(a_biguint.is_overflow(), false);
     /// assert_eq!(a_biguint.is_inifinity(), false);
     /// assert_eq!(a_biguint.is_divided_by_zero(), false);
+    /// ```
     /// 
-    /// divisor = 0_u16;
-    /// overflow = a_biguint.overflowing_rem_assign_uint(divisor);
+    /// # Example 2
+    /// ```
+    /// use std::str::FromStr;
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u64);
+    /// 
+    /// let mut a_biguint = U256::from_str("123456789015758942546236989636279846864825945392").unwrap();
+    /// let divisor = 0_u16;
+    /// println!("Originally,\na_biguint = {}", a_biguint);
+    /// let overflow = a_biguint.overflowing_rem_assign_uint(divisor);
     /// println!("After a_biguint.overflowing_rem_assign_uint({}),\na_biguint = {}", divisor, a_biguint);
     /// assert_eq!(a_biguint, U256::zero());
     /// assert_eq!(overflow, false);
@@ -8922,6 +8991,10 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     // pub fn checked_rem_uint<U>(&self, rhs: U) -> Option<U>
     /// Calculates the remainder when `self` is divided by `rhs`,
     /// which is `self` % `rhs`.
+    /// 
+    /// # Arguments
+    /// `rhs` divides `self`, and is a small-sized unsigned integer
+    /// such as `u8`, `u16`, `u32`, `u64`, and `u128`.
     ///
     /// # Panics
     /// If `size_of::<T>() * N` <= `128`, this method may panic
@@ -8942,15 +9015,15 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// [checked_rem()](struct@BigUInt#method.checked_rem)
     /// is proper rather than this method `checked_rem_uint()`.
     /// 
-    /// # Example
+    /// # Example 1
     /// ```
     /// use std::str::FromStr;
     /// use cryptocol::define_utypes_with;
     /// define_utypes_with!(u128);
     /// 
     /// let dividend = UU32::from_str("123456789015758942546236989636279846864825945392").unwrap();
-    /// let mut divisor = 87_u8;
-    /// let mut remainder = dividend.checked_rem_uint(divisor);
+    /// let divisor = 87_u8;
+    /// let remainder = dividend.checked_rem_uint(divisor);
     /// match remainder
     /// {
     ///     Some(r) =>
@@ -8960,9 +9033,17 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     ///         },
     ///     None => { println!("Divided By Zero"); },
     /// }
+    /// ```
     /// 
-    /// divisor = 0_u8;
-    /// remainder = dividend.checked_rem_uint(divisor);
+    /// # Example 2
+    /// ```
+    /// use std::str::FromStr;
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u128);
+    /// 
+    /// let dividend = UU32::from_str("123456789015758942546236989636279846864825945392").unwrap();
+    /// let divisor = 0_u8;
+    /// let remainder = dividend.checked_rem_uint(divisor);
     /// match remainder
     /// {
     ///     Some(r) => { println!("{} % {} = {}", dividend, divisor, r); },
@@ -8998,6 +9079,10 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     // pub fn unchecked_rem_uint<U>(&self, rhs: U) -> U
     /// Calculates the remainder when `self` is divided by `rhs`,
     /// which is `self` % `rhs`, assuming `rhs` cannot be zero.
+    /// 
+    /// # Arguments
+    /// `rhs` divides `self`, and is a small-sized unsigned integer
+    /// such as `u8`, `u16`, `u32`, `u64`, and `u128`.
     ///
     /// # Panics
     /// - If `size_of::<T>() * N` <= `128`, this method may panic
@@ -9010,14 +9095,14 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// Otherwise, it will panic.
     /// 
     /// # Features
-    /// Note that overflow never occurs.
+    /// Overflow never occurs.
     /// 
     /// # Counterpart Method
     /// If `rhs` is bigger than `u128`, the method
     /// [unchecked_rem()](struct@BigUInt#method.unchecked_rem)
     /// is proper rather than this method `unchecked_rem_uint()`.
     /// 
-    /// # Example
+    /// # Examples
     /// ```
     /// use std::str::FromStr;
     /// use cryptocol::define_utypes_with;
@@ -9029,9 +9114,8 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// println!("{} % {} = {}", dividend, divisor, remainder);
     /// assert_eq!(remainder.to_string(), "8");
     /// 
-    /// divisor = 0_u8;
     /// // It will panic.
-    /// // remainder = dividend.unchecked_rem_uint(divisor);
+    /// // let remainder = dividend.unchecked_rem_uint(0_u8);
     /// ```
     /// 
     /// # Big-endian issue
@@ -9054,7 +9138,11 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
 
     // pub fn saturating_rem_uint<U>(&self, rhs: U) -> U
     /// Calculates the remainder when `self` is divided by `rhs`,
-    /// which is `self` % `rhs`
+    /// which is `self` % `rhs`.
+    /// 
+    /// # Arguments
+    /// `rhs` divides `self`, and is a small-sized unsigned integer
+    /// such as `u8`, `u16`, `u32`, `u64`, and `u128`.
     ///
     /// # Panics
     /// If `size_of::<T>() * N` <= `128`, this method may panic
@@ -9066,7 +9154,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// If `rhs` is zero, it returns zero.
     /// 
     /// # Features
-    /// - Note that overflow never occurs.
+    /// - Overflow never occurs.
     /// - There’s no way wrapping could ever happen.
     /// - If `rhs` is `zero`, the remainder will have zero of`BigUInt` type.
     /// 
@@ -9075,20 +9163,28 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// [saturating_rem()](struct@BigUInt#method.saturating_rem)
     /// is proper rather than this method `saturating_rem_uint()`.
     /// 
-    /// # Example
+    /// # Example 1
     /// ```
     /// use std::str::FromStr;
     /// use cryptocol::define_utypes_with;
     /// define_utypes_with!(u16);
     /// 
     /// let dividend = UU32::from_str("123456789015758942546236989636279846864825945392").unwrap();
-    /// let mut divisor = 87_u8;
-    /// let mut remainder = dividend.saturating_rem_uint(divisor);
+    /// let divisor = 87_u8;
+    /// let remainder = dividend.saturating_rem_uint(divisor);
     /// println!("{} % {} = {}", dividend, divisor, remainder);
     /// assert_eq!(remainder.to_string(), "8");
+    /// ```
     /// 
-    /// divisor = 0_u8;
-    /// remainder = dividend.saturating_rem_uint(divisor);
+    /// # Example 2
+    /// ```
+    /// use std::str::FromStr;
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u16);
+    /// 
+    /// let dividend = UU32::from_str("123456789015758942546236989636279846864825945392").unwrap();
+    /// let divisor = 0_u8;
+    /// let remainder = dividend.saturating_rem_uint(divisor);
     /// println!("{} % {} = {}", dividend, divisor, remainder);
     /// assert_eq!(remainder, 0);
     /// ```
@@ -9114,6 +9210,10 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     // pub fn saturating_rem_assign_uint<U>(&mut self, rhs: U)
     /// Calculates the remainder when `self` is divided by `rhs`,
     /// which is `self` % `rhs`, and assigns the remainder to `self` back.
+    /// 
+    /// # Arguments
+    /// `rhs` divides `self`, and is a small-sized unsigned integer
+    /// such as `u8`, `u16`, `u32`, `u64`, and `u128`.
     ///
     /// # Panics
     /// If `size_of::<T>() * N` <= `128`, this method may panic
@@ -9129,20 +9229,19 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// the `DIVIDED_BY_ZERO` flag is not changed even if this current operation
     /// does not cause divided_by_zero.
     /// 
-    /// 
     /// # Counterpart Method
     /// If `rhs` is bigger than `u128`, the method
     /// [saturating_rem_assign()](struct@BigUInt#method.saturating_rem_assign)
     /// is proper rather than this method `saturating_rem_assign_uint()`.
     /// 
-    /// # Example
+    /// # Example 1
     /// ```
     /// use std::str::FromStr;
     /// use cryptocol::define_utypes_with;
     /// define_utypes_with!(u32);
     /// 
     /// let mut a_biguint = U256::from_str("123456789015758942546236989636279846864825945392").unwrap();
-    /// let mut divisor = 87_u16;
+    /// let divisor = 87_u16;
     /// println!("Originally,\na_biguint = {}", a_biguint);
     /// a_biguint.saturating_rem_assign_uint(divisor);
     /// println!("After a_biguint.saturating_rem_assign_uint({}),\na_biguint = {}", divisor, a_biguint);
@@ -9150,8 +9249,16 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// assert_eq!(a_biguint.is_overflow(), false);
     /// assert_eq!(a_biguint.is_inifinity(), false);
     /// assert_eq!(a_biguint.is_divided_by_zero(), false);
+    /// ```
     /// 
-    /// divisor = 0_u16;
+    /// # Example 2
+    /// ```
+    /// use std::str::FromStr;
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u32);
+    /// 
+    /// let mut a_biguint = U256::from_str("123456789015758942546236989636279846864825945392").unwrap();
+    /// let divisor = 0_u16;
     /// a_biguint.saturating_rem_assign_uint(divisor);
     /// println!("After a_biguint.saturating_rem_assign_uint({}),\na_biguint = {}", divisor, a_biguint);
     /// assert_eq!(a_biguint, UU32::zero());
@@ -9183,6 +9290,11 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     // pub fn modular_rem_uint<U>(&self, rhs: U, modulo: &Self) -> U
     /// Calculates the remainder when `self` % `modulo` is divided by
     /// `rhs` % `modulo`.
+    /// 
+    /// # Arguments
+    /// - `rhs` divides `self`, and is a small-sized unsigned integer
+    /// such as `u8`, `u16`, `u32`, `u64`, and `u128`.
+    /// - `modulo` is the divisor to divide the result of (`self` * `rhs`).
     ///
     /// # Panics
     /// If `size_of::<T>() * N` <= `128`, this method may panic
@@ -9194,6 +9306,9 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// - If `rhs` % `modulo` is zero, it returns `zero`.
     /// 
     /// # Features
+    /// - It takes the remainder (= `rd1`) of `self` divided by `modulo`,
+    /// and takes the remainder (= `rd2`) of `rhs` divided by `modulo`,
+    /// and then finally returns the remainder of `rd1` divided by `rd2`.
     /// - Overflow will not happen unless `rhs` % `modulo` is zero.
     /// - If `rhs` % `modulo` is zero, the remaindere will be `zero` of `U`
     /// type.
@@ -9206,21 +9321,30 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// [modular_rem()](struct@BigUInt#method.modular_rem)
     /// is proper rather than this method `modular_rem_uint()`.
     /// 
-    /// # Example
+    /// # Example 1
     /// ```
     /// use std::str::FromStr;
     /// use cryptocol::define_utypes_with;
     /// define_utypes_with!(u32);
     /// 
     /// let dividend = U256::from_str("123456789015758942546236989636279846864825945392").unwrap();
-    /// let mut divisor = 128_u8;
+    /// let divisor = 128_u8;
     /// let modulo = U256::from_uint(100_u8);
-    /// let mut remainder = dividend.modular_rem_uint(divisor, &modulo);
+    /// let remainder = dividend.modular_rem_uint(divisor, &modulo);
     /// println!("{} % {} = {}", dividend, divisor, remainder);
     /// assert_eq!(remainder.to_string(), "8");
+    /// ```
     /// 
-    /// divisor = 200_u8;
-    /// remainder = dividend.modular_rem_uint(divisor, &modulo);
+    /// # Example 2
+    /// ```
+    /// use std::str::FromStr;
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u32);
+    /// 
+    /// let dividend = U256::from_str("123456789015758942546236989636279846864825945392").unwrap();
+    /// let divisor = 200_u8;
+    /// let modulo = U256::from_uint(100_u8);
+    /// let remainder = dividend.modular_rem_uint(divisor, &modulo);
     /// println!("{} % {} = {}", dividend, divisor, remainder);
     /// assert_eq!(remainder.to_string(), "0");
     /// ```
@@ -9243,15 +9367,24 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
         self.modular_rem(&Self::from_uint(rhs), modulo).into_uint::<U>()
     }
 
+/////////////////
     // pub fn modular_rem_assign_uint<U>(&mut self, rhs: U, modulo: &Self)
     /// Calculates the remainder when `self` % `modulo` is divided by
     /// `rhs` % `modulo`.
+    /// 
+    /// # Arguments
+    /// - `rhs` divides `self`, and is a small-sized unsigned integer
+    /// such as `u8`, `u16`, `u32`, `u64`, and `u128`.
+    /// - `modulo` is the divisor to divide the result of (`self` * `rhs`).
     ///
     /// # Panics
     /// If `size_of::<T>() * N` <= `128`, this method may panic
     /// or its behavior may be undefined though it may not panic.
     /// 
     /// # Features
+    /// - It takes the remainder (= `rd1`) of `self` divided by `modulo`,
+    /// and takes the remainder (= `rd2`) of `rhs` divided by `modulo`,
+    /// and then finally takes the remainder of `rd1` divided by `rd2`.
     /// - Overflow will not happen unless `rhs` is zero.
     /// - If `rhs` % `modulo` is zero, `self` which is remainder will be `zero`,
     /// and its flag `DIVIDED_BY_ZERO` will be set.
@@ -9269,14 +9402,14 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// [modular_rem_assign()](struct@BigUInt#method.modular_rem_assign)
     /// is proper rather than this method `modular_rem_assign_uint()`.
     /// 
-    /// # Example
+    /// # Example 1
     /// ```
     /// use std::str::FromStr;
     /// use cryptocol::define_utypes_with;
     /// define_utypes_with!(u64);
     /// 
     /// let mut a_biguint = UU32::from_str("123456789015758942546236989636279846864825945392").unwrap();
-    /// let mut divisor = 128_u8;
+    /// let divisor = 128_u8;
     /// let modulo = UU32::from_uint(100_u8);
     /// println!("Originally,\na_biguint = {}", a_biguint);
     /// a_biguint.modular_rem_assign_uint(divisor, &modulo);
@@ -9285,8 +9418,18 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// assert_eq!(a_biguint.is_overflow(), false);
     /// assert_eq!(a_biguint.is_inifinity(), false);
     /// assert_eq!(a_biguint.is_divided_by_zero(), false);
+    /// ```
     /// 
-    /// divisor = 200_u8;
+    /// # Example 2
+    /// ```
+    /// use std::str::FromStr;
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u64);
+    /// 
+    /// let mut a_biguint = UU32::from_str("123456789015758942546236989636279846864825945392").unwrap();
+    /// let divisor = 200_u8;
+    /// let modulo = UU32::from_uint(100_u8);
+    /// println!("Originally,\na_biguint = {}", a_biguint);
     /// a_biguint.modular_rem_assign_uint(divisor, &modulo);
     /// println!("After a_biguint.modular_rem_assign_uint({}),\na_biguint = {}", divisor, a_biguint);
     /// assert_eq!(a_biguint.to_string(), "0");
