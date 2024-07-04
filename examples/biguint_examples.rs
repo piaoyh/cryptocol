@@ -3178,7 +3178,6 @@ fn biguint_rem_uint()
     biguint_modular_rem_assign_uint();
 }
 
-///////////////////////////
 fn biguint_wrapping_rem_uint()
 {
     println!("biguint_wrapping_rem_uint");
@@ -3453,15 +3452,15 @@ fn biguint_next_multiple_of_uint()
     use cryptocol::define_utypes_with;
     define_utypes_with!(u64);
 
-    let mut a_biguint = U256::from_str("123456789012345678901234567890123456789").unwrap();
+    let a_biguint = U256::from_str("123456789012345678901234567890123456789").unwrap();
     let num = 586478_u32;
-    let mut multiple = a_biguint.next_multiple_of_uint(num);
+    let multiple = a_biguint.next_multiple_of_uint(num);
     println!("The next multiple of {} is {}", a_biguint, multiple);
     assert_eq!(multiple.to_string(), "123456789012345678901234567890123697594");
     assert_eq!(multiple.is_overflow(), false);
 
-    a_biguint = U256::from_str_radix("FFFFFFFF_FFFFFFFF_FFFFFFFF_FFFFFFFF_FFFFFFFF_FFFFFFFF_FFFFFFFF_FFFFFFFF", 16).unwrap();
-    multiple = a_biguint.next_multiple_of_uint(num);
+    let a_biguint = U256::from_str_radix("FFFFFFFF_FFFFFFFF_FFFFFFFF_FFFFFFFF_FFFFFFFF_FFFFFFFF_FFFFFFFF_FFFFFFFF", 16).unwrap();
+    let multiple = a_biguint.next_multiple_of_uint(num);
     println!("The next multiple of {} is {}", a_biguint, multiple);
     assert_eq!(multiple.to_string(), "448670");
     assert_eq!(multiple.is_overflow(), true);
@@ -3487,7 +3486,7 @@ fn biguint_next_multiple_of_assign_uint()
     assert_eq!(a_biguint.to_string(), "123456789012345678901234567890123697594");
     assert_eq!(a_biguint.is_overflow(), false);
 
-    a_biguint = UU32::from_str_radix("FFFFFFFF_FFFFFFFF_FFFFFFFF_FFFFFFFF_FFFFFFFF_FFFFFFFF_FFFFFFFF_FFFFFFFF", 16).unwrap();
+    let mut a_biguint = UU32::from_str_radix("FFFFFFFF_FFFFFFFF_FFFFFFFF_FFFFFFFF_FFFFFFFF_FFFFFFFF_FFFFFFFF_FFFFFFFF", 16).unwrap();
     println!("Originally,\na_biguint = {}", a_biguint);
     a_biguint.next_multiple_of_assign_uint(num);
     println!("After a_biguint.next_multiple_of_assign_uint({}),\na_biguint = {}", num, a_biguint);
@@ -3559,6 +3558,7 @@ fn biguint_exponentiation_logarithm_uint()
     biguint_saturating_ilog10_assign_uint();
 }
 
+///////////////////////////
 fn biguint_pow_uint()
 {
     println!("biguint_pow_uint");

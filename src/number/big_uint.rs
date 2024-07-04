@@ -9367,7 +9367,6 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
         self.modular_rem(&Self::from_uint(rhs), modulo).into_uint::<U>()
     }
 
-/////////////////
     // pub fn modular_rem_assign_uint<U>(&mut self, rhs: U, modulo: &Self)
     /// Calculates the remainder when `self` % `modulo` is divided by
     /// `rhs` % `modulo`.
@@ -9459,6 +9458,10 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     // pub fn next_multiple_of_uint<U>(&self, rhs: U) -> Self
     /// Calculates the smallest value greater than or equal to `self` that is
     /// a multiple of `rhs`.
+    /// 
+    /// # Arguments
+    /// `rhs` is the base of multiple, and is a small-sized unsigned integer
+    /// such as `u8`, `u16`, `u32`, `u64`, and `u128`.
     ///
     /// # Panics
     /// - If `size_of::<T>() * N` <= `128`, this method may panic
@@ -9475,21 +9478,29 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// [next_multiple_of()](struct@BigUInt#method.next_multiple_of)
     /// is proper rather than this method `next_multiple_of_uint()`.
     /// 
-    /// # Example
+    /// # Example 1
     /// ```
     /// use std::str::FromStr;
     /// use cryptocol::define_utypes_with;
     /// define_utypes_with!(u64);
     /// 
-    /// let mut a_biguint = U256::from_str("123456789012345678901234567890123456789").unwrap();
-    /// let mut num = 586478_u32;
-    /// let mut multiple = a_biguint.next_multiple_of_uint(num);
+    /// let a_biguint = U256::from_str("123456789012345678901234567890123456789").unwrap();
+    /// let num = 586478_u32;
+    /// let multiple = a_biguint.next_multiple_of_uint(num);
     /// println!("The next multiple of {} is {}", a_biguint, multiple);
     /// assert_eq!(multiple.to_string(), "123456789012345678901234567890123697594");
     /// assert_eq!(multiple.is_overflow(), false);
+    /// ```
     /// 
-    /// a_biguint = U256::from_str_radix("FFFFFFFF_FFFFFFFF_FFFFFFFF_FFFFFFFF_FFFFFFFF_FFFFFFFF_FFFFFFFF_FFFFFFFF", 16).unwrap();
-    /// multiple = a_biguint.next_multiple_of_uint(num);
+    /// # Example 2
+    /// ```
+    /// use std::str::FromStr;
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u64);
+    /// 
+    /// let a_biguint = U256::from_str_radix("FFFFFFFF_FFFFFFFF_FFFFFFFF_FFFFFFFF_FFFFFFFF_FFFFFFFF_FFFFFFFF_FFFFFFFF", 16).unwrap();
+    /// let num = 586478_u32;
+    /// let multiple = a_biguint.next_multiple_of_uint(num);
     /// println!("The next multiple of {} is {}", a_biguint, multiple);
     /// assert_eq!(multiple.to_string(), "448670");
     /// assert_eq!(multiple.is_overflow(), true);
@@ -9521,6 +9532,10 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     // pub fn next_multiple_of_assign_uint<U>(&mut self, rhs: U)
     /// Calculates the smallest value greater than or equal to `self` that is
     /// a multiple of `rhs`, and assigns the result to `self` back.
+    /// 
+    /// # Arguments
+    /// `rhs` is the base of multiple, and is a small-sized unsigned integer
+    /// such as `u8`, `u16`, `u32`, `u64`, and `u128`.
     ///
     /// # Panics
     /// - If `size_of::<T>() * N` <= `128`, this method may panic
@@ -9542,31 +9557,39 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// [next_multiple_of_assign()](struct@BigUInt#method.next_multiple_of_assign)
     /// is proper rather than this method `next_multiple_of_assign_uint()`.
     /// 
-    /// # Example
+    /// # Example 1
     /// ```
     /// use std::str::FromStr;
     /// use cryptocol::define_utypes_with;
     /// define_utypes_with!(u128);
     /// 
     /// let mut a_biguint = UU32::from_str("123456789012345678901234567890123456789").unwrap();
-    /// let mut num = 586478_u32;
+    /// let num = 586478_u32;
     /// 
     /// println!("Originally,\na_biguint = {}", a_biguint);
     /// a_biguint.next_multiple_of_assign_uint(num);
     /// println!("After a_biguint.next_multiple_of_assign_uint({}),\na_biguint = {}", num, a_biguint);
     /// assert_eq!(a_biguint.to_string(), "123456789012345678901234567890123697594");
     /// assert_eq!(a_biguint.is_overflow(), false);
+    /// ```
     /// 
-    /// a_biguint = UU32::from_str_radix("FFFFFFFF_FFFFFFFF_FFFFFFFF_FFFFFFFF_FFFFFFFF_FFFFFFFF_FFFFFFFF_FFFFFFFF", 16).unwrap();
+    /// # Example 2
+    /// ```
+    /// use std::str::FromStr;
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u128);
+    /// 
+    /// let mut a_biguint = UU32::from_str_radix("FFFFFFFF_FFFFFFFF_FFFFFFFF_FFFFFFFF_FFFFFFFF_FFFFFFFF_FFFFFFFF_FFFFFFFF", 16).unwrap();
+    /// let num = 586478_u32;
+    /// 
     /// println!("Originally,\na_biguint = {}", a_biguint);
     /// a_biguint.next_multiple_of_assign_uint(num);
     /// println!("After a_biguint.next_multiple_of_assign_uint({}),\na_biguint = {}", num, a_biguint);
     /// assert_eq!(a_biguint.to_string(), "448670");
     /// assert_eq!(a_biguint.is_overflow(), true);
     /// 
-    /// num = 0_u32;
     /// // It will panic.
-    /// // a_biguint.next_multiple_of_assign_uint(num);
+    /// // a_biguint.next_multiple_of_assign_uint(0_u32);
     /// ```
     /// 
     /// # Big-endian issue
@@ -9605,6 +9628,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
 
     /***** METHODS FOR EXPONENTIATION AND LOGARITHM WITH UINT *****/
 
+///////////////////////////
     // pub fn pow_uint<U>(&self, exp: U) -> Self
     /// Raises `self` to the power of exp, using exponentiation
     /// of type `BigUInt` by squaring. The type `U` has the trait `SmallUInt`.
