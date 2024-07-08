@@ -3513,52 +3513,27 @@ fn biguint_exponentiation_logarithm_uint()
     biguint_modular_pow_uint();
     biguint_modular_pow_assign_uint();
 
-    biguint_root_uint();
-    biguint_root_assign_uint();
-    biguint_wrapping_root_uint();
-    biguint_wrapping_root_assign_uint();
-    biguint_overflowing_root_uint();
-    biguint_overflowing_root_assign_uint();
-    biguint_checked_root_uint();
-    biguint_unchecked_root_uint();
-    biguint_saturating_root_uint();
-    biguint_saturating_root_assign_uint();
+    biguint_iroot_uint();
+    biguint_iroot_assign_uint();
+    biguint_checked_iroot_uint();
+    biguint_unchecked_iroot_uint();
 
     biguint_ilog_uint();
     biguint_ilog_assign_uint();
-    biguint_wrapping_ilog_uint();
-    biguint_wrapping_ilog_assign_uint();
-    biguint_overflowing_ilog_uint();
-    biguint_overflowing_ilog_assign_uint();
     biguint_checked_ilog_uint();
     biguint_unchecked_ilog_uint();
-    biguint_saturating_ilog_uint();
-    biguint_saturating_ilog_assign_uint();
 
     biguint_ilog2_uint();
     biguint_ilog2_assign_uint();
-    biguint_wrapping_ilog2_uint();
-    biguint_wrapping_ilog2_assign_uint();
-    biguint_overflowing_ilog2_uint();
-    biguint_overflowing_ilog2_assign_uint();
     biguint_checked_ilog2_uint();
     biguint_unchecked_ilog2_uint();
-    biguint_saturating_ilog2_uint();
-    biguint_saturating_ilog2_assign_uint();
 
     biguint_ilog10_uint();
     biguint_ilog10_assign_uint();
-    biguint_wrapping_ilog10_uint();
-    biguint_wrapping_ilog10_assign_uint();
-    biguint_overflowing_ilog10_uint();
-    biguint_overflowing_ilog10_assign_uint();
     biguint_checked_ilog10_uint();
     biguint_unchecked_ilog10_uint();
-    biguint_saturating_ilog10_uint();
-    biguint_saturating_ilog10_assign_uint();
 }
 
-///////////////////////////
 fn biguint_pow_uint()
 {
     println!("biguint_pow_uint");
@@ -3566,14 +3541,14 @@ fn biguint_pow_uint()
     define_utypes_with!(u8);
 
     let a_biguint = UU32::from_uint(10_u8);
-    let mut exp = 30_u32;
-    let mut res = a_biguint.pow_uint(exp);
+    let exp = 30_u32;
+    let res = a_biguint.pow_uint(exp);
     println!("{} ** {} = {}", a_biguint, exp, res);
     assert_eq!(res.to_string(), "1000000000000000000000000000000");
     assert_eq!(res.is_overflow(), false);
 
-    exp = 100_u32;
-    res = a_biguint.pow_uint(exp);
+    let exp = 100_u32;
+    let res = a_biguint.pow_uint(exp);
     println!("{} ** {} = {}", a_biguint, exp, res);
     assert_eq!(res.to_string(), "60053020119642567005817971699943807522652027577520184704273238430174760927232");
     assert_eq!(res.is_overflow(), true);
@@ -3595,6 +3570,9 @@ fn biguint_pow_assign_uint()
     assert_eq!(a_biguint.to_string(), "10000000000");
     assert_eq!(a_biguint.is_overflow(), false);
 
+    let mut a_biguint = U256::from_uint(10000000000_u64);
+    let exp = 10_u8;
+    println!("Originally,\na_biguint = {}", a_biguint);
     a_biguint.pow_assign_uint(exp);
     println!("After a_biguint.pow_assign_uint({}),\na_biguint = {}", exp, a_biguint);
     assert_eq!(a_biguint.to_string(), "60053020119642567005817971699943807522652027577520184704273238430174760927232");
@@ -3609,14 +3587,14 @@ fn biguint_wrapping_pow_uint()
     define_utypes_with!(u32);
 
     let a_biguint = UU32::from_uint(10_u8);
-    let mut exp = 30_u32;
-    let mut res = a_biguint.wrapping_pow_uint(exp);
+    let exp = 30_u32;
+    let res = a_biguint.wrapping_pow_uint(exp);
     println!("{} ** {} = {}", a_biguint, exp, res);
     assert_eq!(res.to_string(), "1000000000000000000000000000000");
     assert_eq!(res.is_overflow(), false);
 
-    exp = 100_u32;
-    res = a_biguint.wrapping_pow_uint(exp);
+    let exp = 100_u32;
+    let res = a_biguint.wrapping_pow_uint(exp);
     println!("{} ** {} = {}", a_biguint, exp, res);
     assert_eq!(res.to_string(), "60053020119642567005817971699943807522652027577520184704273238430174760927232");
     assert_eq!(res.is_overflow(), true);
@@ -3638,6 +3616,7 @@ fn biguint_wrapping_pow_assign_uint()
     assert_eq!(a_biguint.to_string(), "10000000000");
     assert_eq!(a_biguint.is_overflow(), false);
 
+    println!("Originally,\na_biguint = {}", a_biguint);
     a_biguint.wrapping_pow_assign_uint(exp);
     println!("After a_biguint.wrapping_pow_assign_uint({}),\na_biguint = {}", exp, a_biguint);
     assert_eq!(a_biguint.to_string(), "60053020119642567005817971699943807522652027577520184704273238430174760927232");
@@ -3652,19 +3631,19 @@ fn biguint_overflowing_pow_uint()
     define_utypes_with!(u128);
 
     let a_biguint = UU32::from_uint(10_u8);
-    let mut exp = 30_u32;
-    let mut res = a_biguint.overflowing_pow_uint(exp);
-    println!("{} ** {} = {}\noverflow = {}", a_biguint, exp, res.0, res.1);
-    assert_eq!(res.0.to_string(), "1000000000000000000000000000000");
-    assert_eq!(res.1, false);
-    assert_eq!(res.0.is_overflow(), false);
+    let exp = 30_u32;
+    let (res, overflow) = a_biguint.overflowing_pow_uint(exp);
+    println!("{} ** {} = {}\noverflow = {}", a_biguint, exp, res, overflow);
+    assert_eq!(res.to_string(), "1000000000000000000000000000000");
+    assert_eq!(overflow, false);
+    assert_eq!(res.is_overflow(), false);
 
-    exp = 100_u32;
-    res = a_biguint.overflowing_pow_uint(exp);
-    println!("{} ** {} = {}\noverflow = {}", a_biguint, exp, res.0, res.1);
-    assert_eq!(res.0.to_string(), "60053020119642567005817971699943807522652027577520184704273238430174760927232");
-    assert_eq!(res.1, true);
-    assert_eq!(res.0.is_overflow(), true);
+    let exp = 100_u32;
+    let (res, overflow) = a_biguint.overflowing_pow_uint(exp);
+    println!("{} ** {} = {}\noverflow = {}", a_biguint, exp, res, overflow);
+    assert_eq!(res.to_string(), "60053020119642567005817971699943807522652027577520184704273238430174760927232");
+    assert_eq!(overflow, true);
+    assert_eq!(res.is_overflow(), true);
     println!("---------------------------");
 }
 
@@ -3675,24 +3654,26 @@ fn biguint_overflowing_pow_assign_uint()
     define_utypes_with!(u8);
 
     let mut a_biguint = U256::from_uint(10_u8);
-    let mut exp = 30_u32;
+    let exp = 30_u32;
 
     println!("Originally,\na_biguint = {}", a_biguint);
-    let mut overflow = a_biguint.overflowing_pow_assign_uint(exp);
+    let overflow = a_biguint.overflowing_pow_assign_uint(exp);
     println!("After a_biguint.overflowing_pow_assign_uint({}),\na_biguint = {}\noverflow = {}", exp, a_biguint, overflow);
     assert_eq!(a_biguint.to_string(), "1000000000000000000000000000000");
     assert_eq!(overflow, false);
     assert_eq!(a_biguint.is_overflow(), false);
 
-    exp = 3_u32;
-    overflow = a_biguint.overflowing_pow_assign_uint(exp);
+    let exp = 3_u32;
+    println!("Originally,\na_biguint = {}", a_biguint);
+    let overflow = a_biguint.overflowing_pow_assign_uint(exp);
     println!("After a_biguint.overflowing_pow_assign_uint({}),\na_biguint = {}\noverflow = {}", exp, a_biguint, overflow);
     assert_eq!(a_biguint.to_string(), "51484102413631087777415798035541167055393351402420714880745735202410401366016");
     assert_eq!(overflow, true);
     assert_eq!(a_biguint.is_overflow(), true);
 
-    exp = 0_u32;
-    overflow = a_biguint.overflowing_pow_assign_uint(exp);
+    let exp = 0_u32;
+    println!("Originally,\na_biguint = {}", a_biguint);
+    let overflow = a_biguint.overflowing_pow_assign_uint(exp);
     println!("After a_biguint.overflowing_pow_assign_uint({}),\na_biguint = {}\noverflow = {}", exp, a_biguint, overflow);
     assert_eq!(a_biguint.to_string(), "1");
     assert_eq!(overflow, false);
@@ -3707,8 +3688,8 @@ fn biguint_checked_pow_uint()
     define_utypes_with!(u16);
 
     let a_biguint = UU32::from_uint(10_u8);
-    let mut exp = 30_u32;
-    let mut res = a_biguint.checked_pow_uint(exp);
+    let exp = 30_u32;
+    let res = a_biguint.checked_pow_uint(exp);
     match res
     {
         Some(raised) => {
@@ -3719,8 +3700,8 @@ fn biguint_checked_pow_uint()
         None => { println!("Overflow"); }
     }
 
-    exp = 100_u32;
-    res = a_biguint.checked_pow_uint(exp);
+    let exp = 100_u32;
+    let res = a_biguint.checked_pow_uint(exp);
     match res
     {
         Some(raised) => { println!("{} ** {} = {}", a_biguint, exp, raised); },
@@ -3757,14 +3738,14 @@ fn biguint_saturating_pow_uint()
     define_utypes_with!(u64);
     
     let a_biguint = U256::from_uint(10_u8);
-    let mut exp = 30_u32;
-    let mut res = a_biguint.saturating_pow_uint(exp);
+    let exp = 30_u32;
+    let res = a_biguint.saturating_pow_uint(exp);
     println!("{} ** {} = {}", a_biguint, exp, res);
     assert_eq!(res.to_string(), "1000000000000000000000000000000");
     assert_eq!(res.is_overflow(), false);
-    
-    exp = 100_u32;
-    res = a_biguint.saturating_pow_uint(exp);
+
+    let exp = 100_u32;
+    let res = a_biguint.saturating_pow_uint(exp);
     println!("{} ** {} = {}", a_biguint, exp, res);
     assert_eq!(res, UU32::max());
     assert_eq!(res.is_overflow(), false);
@@ -3785,6 +3766,8 @@ fn biguint_saturating_pow_assign_uint()
     assert_eq!(a_biguint.to_string(), "1000000000000000000000000000000");
     assert_eq!(a_biguint.is_overflow(), false);
 
+    let mut a_biguint = UU32::from_uint(1000000000000000000000000000000_u128);
+    println!("Originally,\na_biguint = {}", a_biguint);
     a_biguint.saturating_pow_assign_uint(exp);
     println!("After a_biguint.overflowing_pow_assign_uint({}),\na_biguint = {}", exp, a_biguint);
     assert_eq!(a_biguint, UU32::max());
@@ -3799,21 +3782,22 @@ fn biguint_modular_pow_uint()
     define_utypes_with!(u8);
     
     let a_biguint = U256::from_uint(10_u8);
-    let mut exp = 30_u32;
-    let mut modulo = U256::halfmax();
-    let mut res = a_biguint.modular_pow_uint(exp, &modulo);
+    let exp = 30_u32;
+    let modulo = U256::halfmax();
+    let res = a_biguint.modular_pow_uint(exp, &modulo);
     println!("{} ** {} (mod {}) = {}", a_biguint, exp, modulo, res);
     assert_eq!(res.to_string(), "1000000000000000000000000000000");
     assert_eq!(res.is_overflow(), false);
-    
-    exp = 100_u32;
-    res = a_biguint.modular_pow_uint(exp, &modulo);
+
+    let exp = 100_u32;
+    let res = a_biguint.modular_pow_uint(exp, &modulo);
     println!("{} ** {} (mod {}) = {}", a_biguint, exp, modulo, res);
     assert_eq!(res.to_string(), "59749648429786538521694772865754025520");
     assert_eq!(res.is_overflow(), false);
 
-    modulo.set_zero();
-    res = a_biguint.modular_pow_uint(exp, &modulo);
+    let exp = 100_u32;
+    let modulo = U256::zero();
+    let res = a_biguint.modular_pow_uint(exp, &modulo);
     println!("{} ** {} (mod {}) = {}", a_biguint, exp, modulo, res);
     assert_eq!(res, U256::max());
     assert_eq!(res.is_overflow(), true);
@@ -3829,21 +3813,27 @@ fn biguint_modular_pow_assign_uint()
     define_utypes_with!(u16);
     
     let mut a_biguint = U256::from_uint(10_u8);
-    let mut exp = 30_u32;
-    let mut modulo = U256::halfmax();
+    let exp = 30_u32;
+    let modulo = U256::halfmax();
     println!("Originally,\na_biguint = {}", a_biguint);
     a_biguint.modular_pow_assign_uint(exp, &modulo);
     println!("After a_biguint.modular_pow_assign_uint({}),\na_biguint = {}", exp, a_biguint);
     assert_eq!(a_biguint.to_string(), "1000000000000000000000000000000");
     assert_eq!(a_biguint.is_overflow(), false);
 
-    exp = 100_u32;
+    let mut a_biguint = U256::from_uint(1000000000000000000000000000000_u128);
+    let exp = 100_u32;
+    let modulo = U256::halfmax();
+    println!("Originally,\na_biguint = {}", a_biguint);
     a_biguint.modular_pow_assign_uint(exp, &modulo);
     println!("After a_biguint.modular_pow_assign_uint({}),\na_biguint = {}", exp, a_biguint);
     assert_eq!(a_biguint.to_string(), "52266245075570873327294567809656160090");
     assert_eq!(a_biguint.is_overflow(), false);
 
-    modulo.set_zero();
+    let mut a_biguint = U256::from_uint(52266245075570873327294567809656160090_u128);
+    let exp = 100_u32;
+    let modulo = U256::zero();
+    println!("Originally,\na_biguint = {}", a_biguint);
     a_biguint.modular_pow_assign_uint(exp, &modulo);
     println!("After a_biguint.modular_pow_assign_uint({}),\na_biguint = {}", exp, a_biguint);
     assert_eq!(a_biguint, U256::max());
@@ -3853,245 +3843,610 @@ fn biguint_modular_pow_assign_uint()
     println!("---------------------------");
 }
 
-fn biguint_root_uint()
+fn biguint_iroot_uint()
 {
-    println!("biguint_root_uint");
+    println!("biguint_iroot_uint");
+    use cryptocol::define_utypes_with;
+    define_utypes_with!(u32);
+    
+    let a_biguint = U256::from_uint(1000_u16);
+    let exp = 3_u8;
+    let res = a_biguint.iroot_uint(exp);
+    println!("The third root of {} is {}.", a_biguint, res);
+    assert_eq!(res.to_string(), "10");
+
+    let exp = 2_u8;
+    let res = a_biguint.iroot_uint(exp);
+    println!("The square root of {} is {}.", a_biguint, res);
+    assert_eq!(res.to_string(), "31");
+
+    let a_biguint = U256::zero();
+    let exp = 6_u8;
+    let res = a_biguint.iroot_uint(exp);
+    println!("The {}-th root of {} is {}.", exp, a_biguint, res);
+    assert_eq!(res.to_string(), "0");
+
+    // It will panic.
+    // let res = a_biguint.iroot_uint(0_u8);
     println!("---------------------------");
 }
 
-fn biguint_root_assign_uint()
+fn biguint_iroot_assign_uint()
 {
-    println!("biguint_root_assign_uint");
+    println!("biguint_iroot_assign_uint");
+    use cryptocol::define_utypes_with;
+    define_utypes_with!(u64);
+
+    let mut a_biguint = U256::from_uint(1000_u16);
+    let exp = 3_u8;
+    println!("Originally,\na_biguint = {}", a_biguint);
+    a_biguint.iroot_assign_uint(exp);
+    println!("After a_biguint.iroot_assign_uint({}),\na_biguint = {}.", exp, a_biguint);
+    assert_eq!(a_biguint.to_string(), "10");
+
+    let mut a_biguint = U256::from_uint(1000_u16);
+    let exp = 2_u8;
+    println!("Originally,\na_biguint = {}", a_biguint);
+    a_biguint.iroot_assign_uint(exp);
+    println!("After a_biguint.iroot_assign_uint({}),\na_biguint = {}.", exp, a_biguint);
+    assert_eq!(a_biguint.to_string(), "31");
+
+    let mut a_biguint = U256::zero();
+    let exp = 6_u8;
+    println!("Originally,\na_biguint = {}", a_biguint);
+    a_biguint.iroot_assign_uint(exp);
+    println!("After a_biguint.iroot_assign_uint({}),\na_biguint = {}.", exp, a_biguint);
+    assert_eq!(a_biguint.to_string(), "0");
+
+    let mut _a_biguint = U256::from_uint(1000_u16);
+    // It will panic.
+    // _a_biguint.iroot_uint(0_u8);
     println!("---------------------------");
 }
 
-fn biguint_wrapping_root_uint()
+fn biguint_checked_iroot_uint()
 {
-    println!("biguint_wrapping_root_uint");
+    println!("biguint_checked_iroot_uint");
+    use cryptocol::define_utypes_with;
+    define_utypes_with!(u128);
+    
+    let a_biguint = U256::from_uint(1000_u16);
+    let exp = 3_u8;
+    let res = a_biguint.checked_iroot_uint(exp);
+    match res
+    {
+        Some(r) => {
+                println!("The third root of {} is {}.", a_biguint, r);
+                assert_eq!(r.to_string(), "10");
+            },
+        None => { println!("Error"); }
+    }
+
+    let exp = 2_u8;
+    let res = a_biguint.checked_iroot_uint(exp);
+    match res
+    {
+        Some(r) => {
+                println!("The square root of {} is {}.", a_biguint, r);
+                assert_eq!(r.to_string(), "31");
+            },
+        None => { println!("Error"); }
+    }
+
+    let a_biguint = U256::zero();
+    let exp = 6_u8;
+    let res = a_biguint.checked_iroot_uint(exp);
+    match res
+    {
+        Some(r) => {
+                println!("The {}-th root of {} is {}.", exp, a_biguint, r);
+                assert_eq!(r.to_string(), "0");
+            },
+        None => { println!("Error"); },
+    }
+
+    let a_biguint = U256::from_uint(1000_u16);
+    let exp = 0_u8;
+    let res = a_biguint.checked_iroot_uint(exp);
+    match res
+    {
+        Some(r) => { println!("The {}-th root of {} is {}.", exp, a_biguint, r); },
+        None => {
+                println!("Error");
+                assert_eq!(res, None);
+            },
+    }
     println!("---------------------------");
 }
 
-fn biguint_wrapping_root_assign_uint()
+fn biguint_unchecked_iroot_uint()
 {
-    println!("biguint_wrapping_root_assign_uint");
-    println!("---------------------------");
-}
+    println!("biguint_unchecked_iroot_uint");
+    use cryptocol::define_utypes_with;
+    define_utypes_with!(u8);
+    
+    let a_biguint = U256::from_uint(1000_u16);
+    let exp = 3_u8;
+    let res = a_biguint.unchecked_iroot_uint(exp);
+    println!("The third root of {} is {}.", a_biguint, res);
+    assert_eq!(res.to_string(), "10");
 
-fn biguint_overflowing_root_uint()
-{
-    println!("biguint_overflowing_root_uint");
-    println!("---------------------------");
-}
+    let exp = 2_u8;
+    let res = a_biguint.unchecked_iroot_uint(exp);
+    println!("The square root of {} is {}.", a_biguint, res);
+    assert_eq!(res.to_string(), "31");
 
-fn biguint_overflowing_root_assign_uint()
-{
-    println!("biguint_overflowing_root_assign_uint");
-    println!("---------------------------");
-}
+    let a_biguint = U256::zero();
+    let exp = 6_u8;
+    let res = a_biguint.unchecked_iroot_uint(exp);
+    println!("The {}-th root of {} is {}.", exp, a_biguint, res);
+    assert_eq!(res.to_string(), "0");
 
-fn biguint_checked_root_uint()
-{
-    println!("biguint_checked_root_uint");
-    println!("---------------------------");
-}
-
-fn biguint_unchecked_root_uint()
-{
-    println!("biguint_unchecked_root_uint");
-    println!("---------------------------");
-}
-
-fn biguint_saturating_root_uint()
-{
-    println!("biguint_saturating_root_uint");
-    println!("---------------------------");
-}
-
-fn biguint_saturating_root_assign_uint()
-{
-    println!("biguint_saturating_root_assign_uint");
+    let _a_biguint = U256::from_uint(1000_u16);
+    let _exp = 0_u8;
+    // It will panic.
+    // let res = a_biguint.unchecked_iroot_uint(_exp);
     println!("---------------------------");
 }
 
 fn biguint_ilog_uint()
 {
     println!("biguint_ilog_uint");
+    use cryptocol::define_utypes_with;
+    define_utypes_with!(u16);
+    
+    let a_biguint = U256::from_uint(81_u8);
+    let base = 3_u8;
+    let res = a_biguint.ilog_uint(base);
+    println!("The logarithm of {} with respect to {} is {}.", a_biguint, base, res);
+    assert_eq!(res.to_string(), "4");
+
+    let base = 2_u8;
+    let res = a_biguint.ilog_uint(base);
+    println!("The logarithm of {} with respect to {} is {}.", a_biguint, base, res);
+    assert_eq!(res.to_string(), "6");
+
+    let a_biguint = U256::from_uint(1_u8);
+    let base = 6_u8;
+    let res = a_biguint.ilog_uint(base);
+    println!("The logarithm of {} with respect to {} is {}.", a_biguint, base, res);
+    assert_eq!(res.to_string(), "0");
+
+    // It will panic.
+    // let res = a_biguint.ilog_uint(0_u8);
+
+    // It will panic.
+    // let res = a_biguint.ilog_uint(1_u8);
+
+    let _a_biguint = U256::zero();
+    let _base = 6_u8;
+    // It will panic.
+    // let res = _a_biguint.ilog_uint(_base);
     println!("---------------------------");
 }
 
 fn biguint_ilog_assign_uint()
 {
     println!("biguint_ilog_assign_uint");
-    println!("---------------------------");
-}
+    use cryptocol::define_utypes_with;
+    define_utypes_with!(u32);
 
-fn biguint_wrapping_ilog_uint()
-{
-    println!("biguint_wrapping_ilog_uint");
-    println!("---------------------------");
-}
+    let mut a_biguint = U256::from_uint(81_u8);
+    let base = 3_u8;
+    println!("Originally,\na_biguint = {}", a_biguint);
+    a_biguint.ilog_assign_uint(base);
+    println!("After a_biguint.ilog_assign_uint(base),\na_biguint = {}.", a_biguint);
+    assert_eq!(a_biguint.to_string(), "4");
 
-fn biguint_wrapping_ilog_assign_uint()
-{
-    println!("biguint_wrapping_ilog_assign_uint");
-    println!("---------------------------");
-}
+    let mut a_biguint = U256::from_uint(81_u8);
+    let base = 2_u8;
+    println!("Originally,\na_biguint = {}", a_biguint);
+    a_biguint.ilog_assign_uint(base);
+    println!("After a_biguint.ilog_assign_uint(base),\na_biguint = {}.", a_biguint);
+    assert_eq!(a_biguint.to_string(), "6");
 
-fn biguint_overflowing_ilog_uint()
-{
-    println!("biguint_overflowing_ilog_uint");
-    println!("---------------------------");
-}
+    let mut a_biguint = U256::from_uint(1_u8);
+    let base = 6_u8;
+    println!("Originally,\na_biguint = {}", a_biguint);
+    a_biguint.ilog_assign_uint(base);
+    println!("After a_biguint.ilog_assign_uint(base),\na_biguint = {}.", a_biguint);
+    assert_eq!(a_biguint.to_string(), "0");
 
-fn biguint_overflowing_ilog_assign_uint()
-{
-    println!("biguint_overflowing_ilog_assign_uint");
+    // It will panic.
+    // let res = a_biguint.ilog_assign_uint(0_u8);
+
+    // It will panic.
+    // a_biguint.ilog_assign_uint(1_u8);
+
+    let _a_biguint = U256::zero();
+    let _base = 6_u8;
+    // It will panic.
+    // _a_biguint.ilog_assign_uint(_base);
     println!("---------------------------");
 }
 
 fn biguint_checked_ilog_uint()
 {
     println!("biguint_checked_ilog_uint");
+    use cryptocol::define_utypes_with;
+    define_utypes_with!(u64);
+    
+    let a_biguint = U256::from_uint(81_u8);
+    let base = 3_u8;
+    let res = a_biguint.checked_ilog_uint(base);
+    match res
+    {
+        Some(r) => {
+                println!("The logarithm of {} with respect to {} is {}.", a_biguint, base, r);
+                assert_eq!(r.to_string(), "4");
+            },
+        None => { println!("Error"); },
+    }
+
+    let base = 2_u8;
+    let res = a_biguint.checked_ilog_uint(base);
+    match res
+    {
+        Some(r) => {
+                println!("The logarithm of {} with respect to {} is {}.", a_biguint, base, r);
+                assert_eq!(r.to_string(), "6");
+            },
+        None => { println!("Error"); },
+    }
+
+    let a_biguint = U256::from_uint(1_u8);
+    let base = 6_u8;
+    let res = a_biguint.checked_ilog_uint(base);
+    match res
+    {
+        Some(r) => {
+                println!("The logarithm of {} with respect to {} is {}.", a_biguint, base, r);
+                assert_eq!(r.to_string(), "0");
+            },
+        None => { println!("Error"); },
+    }
+
+    let res = a_biguint.checked_ilog_uint(0_u8);
+    match res
+    {
+        Some(r) => { println!("The logarithm of {} with respect to {} is {}.", a_biguint, base, r); },
+        None => {
+                println!("Error");
+                assert_eq!(res, None);
+            },
+    }
+
+    let res = a_biguint.checked_ilog_uint(1_u8);
+    match res
+    {
+        Some(r) => { println!("The logarithm of {} with respect to {} is {}.", a_biguint, base, r); },
+        None => {
+                println!("Error");
+                assert_eq!(res, None);
+            },
+    }
+
+    let a_biguint = U256::zero();
+    let base = 6_u8;
+    let res = a_biguint.checked_ilog_uint(1_u8);
+    match res
+    {
+        Some(r) => { println!("The logarithm of {} with respect to {} is {}.", a_biguint, base, r); },
+        None => {
+                println!("Error");
+                assert_eq!(res, None);
+            },
+    }
     println!("---------------------------");
 }
 
 fn biguint_unchecked_ilog_uint()
 {
     println!("biguint_unchecked_ilog_uint");
+    use cryptocol::define_utypes_with;
+    define_utypes_with!(u128);
+    
+    let a_biguint = U256::from_uint(81_u8);
+    let base = 3_u8;
+    let res = a_biguint.unchecked_ilog_uint(base);
+    println!("The logarithm of {} with respect to {} is {}.", a_biguint, base, res);
+    assert_eq!(res.to_string(), "4");
+
+    let base = 2_u8;
+    let res = a_biguint.unchecked_ilog_uint(base);
+    println!("The logarithm of {} with respect to {} is {}.", a_biguint, base, res);
+    assert_eq!(res.to_string(), "6");
+
+    let a_biguint = U256::from_uint(1_u8);
+    let base = 6_u8;
+    let res = a_biguint.unchecked_ilog_uint(base);
+    println!("The logarithm of {} with respect to {} is {}.", a_biguint, base, res);
+    assert_eq!(res.to_string(), "0");
+
+    // It will panic.
+    // let res = a_biguint.unchecked_ilog_uint(0_u8);
+
+    // It will panic.
+    // let res = a_biguint.unchecked_ilog_uint(1_u8);
+
+    let _a_biguint = U256::zero();
+    let _base = 6_u8;
+    // It will panic.
+    // let res = _a_biguint.unchecked_ilog_uint(_base);
     println!("---------------------------");
 }
-
-fn biguint_saturating_ilog_uint()
-{
-    println!("biguint_saturating_ilog_uint");
-    println!("---------------------------");
-}
-
-fn biguint_saturating_ilog_assign_uint()
-{
-    println!("biguint_saturating_ilog_assign_uint");
-    println!("---------------------------");
-}
-
 
 fn biguint_ilog2_uint()
 {
     println!("biguint_ilog2_uint");
+    use cryptocol::define_utypes_with;
+    define_utypes_with!(u16);
+
+    let a_biguint = U256::from_uint(64_u8);
+    let res = a_biguint.ilog2_uint();
+    println!("The base 2 logarithm of {} is {}.", a_biguint, res);
+    assert_eq!(res.to_string(), "6");
+
+    let a_biguint = U256::from_uint(70_u8);
+    let res = a_biguint.ilog2_uint();
+    println!("The base 2 logarithm of {} is {}.", a_biguint, res);
+    assert_eq!(res.to_string(), "6");
+
+    let a_biguint = U256::from_uint(1_u8);
+    let res = a_biguint.ilog2_uint();
+    println!("The base 2 logarithm of {} is {}.", a_biguint, res);
+    assert_eq!(res.to_string(), "0");
+
+    let _a_biguint = U256::zero();
+    // It will panic.
+    // let res = _a_biguint.ilog2_uint();
     println!("---------------------------");
 }
 
 fn biguint_ilog2_assign_uint()
 {
     println!("biguint_ilog2_assign_uint");
-    println!("---------------------------");
-}
+    use cryptocol::define_utypes_with;
+    define_utypes_with!(u32);
 
-fn biguint_wrapping_ilog2_uint()
-{
-    println!("biguint_wrapping_ilog2_uint");
-    println!("---------------------------");
-}
+    let mut a_biguint = U256::from_uint(64_u8);
+    println!("Originally,\na_biguint = {}", a_biguint);
+    a_biguint.ilog2_assign_uint();
+    println!("After a_biguint.ilog2_assign_uint(),\na_biguint = {}.", a_biguint);
+    assert_eq!(a_biguint.to_string(), "6");
 
-fn biguint_wrapping_ilog2_assign_uint()
-{
-    println!("biguint_wrapping_ilog2_assign_uint");
-    println!("---------------------------");
-}
+    let mut a_biguint = U256::from_uint(70_u8);
+    println!("Originally,\na_biguint = {}", a_biguint);
+    a_biguint.ilog2_assign_uint();
+    println!("After a_biguint.ilog2_assign_uint(),\na_biguint = {}.", a_biguint);
+    assert_eq!(a_biguint.to_string(), "6");
 
-fn biguint_overflowing_ilog2_uint()
-{
-    println!("biguint_overflowing_ilog2_uint");
-    println!("---------------------------");
-}
+    let mut a_biguint = U256::from_uint(1_u8);
+    println!("Originally,\na_biguint = {}", a_biguint);
+    a_biguint.ilog2_assign_uint();
+    println!("After a_biguint.ilog2_assign_uint(),\na_biguint = {}.", a_biguint);
+    assert_eq!(a_biguint.to_string(), "0");
 
-fn biguint_overflowing_ilog2_assign_uint()
-{
-    println!("biguint_overflowing_ilog2_assign_uint");
+    let _a_biguint = U256::zero();
+    // It will panic.
+    // _a_biguint.ilog2_assign_uint();
     println!("---------------------------");
 }
 
 fn biguint_checked_ilog2_uint()
 {
     println!("biguint_checked_ilog2_uint");
+    use cryptocol::define_utypes_with;
+    define_utypes_with!(u64);
+    
+    let a_biguint = U256::from_uint(64_u8);
+    let res = a_biguint.checked_ilog2_uint();
+    match res
+    {
+        Some(r) => {
+                println!("The base 2 logarithm of {} is {}.", a_biguint, r);
+                assert_eq!(r.to_string(), "6");
+            },
+        None => { println!("Error"); },
+    }
+
+    let a_biguint = U256::from_uint(70_u8);
+    let res = a_biguint.checked_ilog2_uint();
+    match res
+    {
+        Some(r) => {
+                println!("The base 2 logarithm of {} is {}.", a_biguint, r);
+                assert_eq!(r.to_string(), "6");
+            },
+        None => { println!("Error"); },
+    }
+
+    let a_biguint = U256::from_uint(1_u8);
+    let res = a_biguint.checked_ilog2_uint();
+    match res
+    {
+        Some(r) => {
+                println!("The base 2 logarithm of {} is {}.", a_biguint, r);
+                assert_eq!(r.to_string(), "0");
+            },
+        None => { println!("Error"); },
+    }
+
+    let a_biguint = U256::zero();
+    let res = a_biguint.checked_ilog_uint(1_u8);
+    match res
+    {
+        Some(r) => { println!("The base 2 logarithm of {}is {}.", a_biguint, r); },
+        None => {
+                println!("Error");
+                assert_eq!(res, None);
+            },
+    }
     println!("---------------------------");
 }
 
 fn biguint_unchecked_ilog2_uint()
 {
     println!("biguint_unchecked_ilog2_uint");
-    println!("---------------------------");
-}
+    use cryptocol::define_utypes_with;
+    define_utypes_with!(u128);
 
-fn biguint_saturating_ilog2_uint()
-{
-    println!("biguint_saturating_ilog2_uint");
-    println!("---------------------------");
-}
+    let a_biguint = U256::from_uint(64_u8);
+    let res = a_biguint.ilog2_uint();
+    println!("The base 2 logarithm of {} is {}.", a_biguint, res);
+    assert_eq!(res.to_string(), "6");
 
-fn biguint_saturating_ilog2_assign_uint()
-{
-    println!("biguint_saturating_ilog2_assign_uint");
+    let a_biguint = U256::from_uint(70_u8);
+    let res = a_biguint.ilog2_uint();
+    println!("The base 2 logarithm of {} is {}.", a_biguint, res);
+    assert_eq!(res.to_string(), "6");
+
+    let a_biguint = U256::from_uint(1_u8);
+    let res = a_biguint.ilog2_uint();
+    println!("The base 2 logarithm of {} is {}.", a_biguint, res);
+    assert_eq!(res.to_string(), "0");
+
+    let _a_biguint = U256::zero();
+    // It will panic.
+    // let res = _a_biguint.ilog2_uint();
     println!("---------------------------");
 }
 
 fn biguint_ilog10_uint()
 {
     println!("biguint_ilog10_uint");
+    use cryptocol::define_utypes_with;
+    define_utypes_with!(u8);
+
+    let a_biguint = U256::from_uint(10000_u32);
+    let res = a_biguint.ilog10_uint();
+    println!("The base 10 logarithm of {} is {}.", a_biguint, res);
+    assert_eq!(res.to_string(), "4");
+
+    let a_biguint = U256::from_uint(12345_u32);
+    let res = a_biguint.ilog10_uint();
+    println!("The base 10 logarithm of {} is {}.", a_biguint, res);
+    assert_eq!(res.to_string(), "4");
+
+    let a_biguint = U256::from_uint(1_u8);
+    let res = a_biguint.ilog10_uint();
+    println!("The base 10 logarithm of {} is {}.", a_biguint, res);
+    assert_eq!(res.to_string(), "0");
+
+    let _a_biguint = U256::zero();
+    // It will panic.
+    // let res = _a_biguint.ilog10_uint();
     println!("---------------------------");
 }
 
 fn biguint_ilog10_assign_uint()
 {
     println!("biguint_ilog10_assign_uint");
-    println!("---------------------------");
-}
+    use cryptocol::define_utypes_with;
+    define_utypes_with!(u16);
 
-fn biguint_wrapping_ilog10_uint()
-{
-    println!("biguint_wrapping_ilog10_uint");
-    println!("---------------------------");
-}
+    let mut a_biguint = U256::from_uint(10000_u32);
+    println!("Originally,\na_biguint = {}", a_biguint);
+    a_biguint.ilog10_assign_uint();
+    println!("After a_biguint.ilog10_assign_uint(),\na_biguint = {}.", a_biguint);
+    assert_eq!(a_biguint.to_string(), "4");
 
-fn biguint_wrapping_ilog10_assign_uint()
-{
-    println!("biguint_wrapping_ilog10_assign_uint");
-    println!("---------------------------");
-}
+    let mut a_biguint = U256::from_uint(12345_u32);
+    println!("Originally,\na_biguint = {}", a_biguint);
+    a_biguint.ilog10_assign_uint();
+    println!("After a_biguint.ilog10_assign_uint(),\na_biguint = {}.", a_biguint);
+    assert_eq!(a_biguint.to_string(), "4");
 
-fn biguint_overflowing_ilog10_uint()
-{
-    println!("biguint_overflowing_ilog10_uint");
-    println!("---------------------------");
-}
+    let mut a_biguint = U256::from_uint(1_u8);
+    println!("Originally,\na_biguint = {}", a_biguint);
+    a_biguint.ilog10_assign_uint();
+    println!("After a_biguint.ilog10_assign_uint(),\na_biguint = {}.", a_biguint);
+    assert_eq!(a_biguint.to_string(), "0");
 
-fn biguint_overflowing_ilog10_assign_uint()
-{
-    println!("biguint_overflowing_ilog10_assign_uint");
+    let _a_biguint = U256::zero();
+    // It will panic.
+    // _a_biguint.ilog10_assign_uint();
     println!("---------------------------");
 }
 
 fn biguint_checked_ilog10_uint()
 {
     println!("biguint_checked_ilog10_uint");
+    use cryptocol::define_utypes_with;
+    define_utypes_with!(u32);
+    
+    let a_biguint = U256::from_uint(10000_u32);
+    let res = a_biguint.checked_ilog10_uint();
+    match res
+    {
+        Some(r) => {
+                println!("The base 10 logarithm of {} is {}.", a_biguint, r);
+                assert_eq!(r.to_string(), "4");
+            },
+        None => { println!("Error"); },
+    }
+
+    let a_biguint = U256::from_uint(12345_u32);
+    let res = a_biguint.checked_ilog10_uint();
+    match res
+    {
+        Some(r) => {
+                println!("The base 10 logarithm of {} is {}.", a_biguint, r);
+                assert_eq!(r.to_string(), "4");
+            },
+        None => { println!("Error"); },
+    }
+
+    let a_biguint = U256::from_uint(1_u8);
+    let res = a_biguint.checked_ilog10_uint();
+    match res
+    {
+        Some(r) => {
+                println!("The base 10 logarithm of {} is {}.", a_biguint, r);
+                assert_eq!(r.to_string(), "0");
+            },
+        None => { println!("Error"); },
+    }
+
+    let a_biguint = U256::zero();
+    let res = a_biguint.checked_ilog10_uint();
+    match res
+    {
+        Some(r) => { println!("The 10 logarithm of {} is {}.", a_biguint, r); },
+        None => {
+                println!("Error");
+                assert_eq!(res, None);
+            },
+    }
     println!("---------------------------");
 }
 
 fn biguint_unchecked_ilog10_uint()
 {
     println!("biguint_unchecked_ilog10_uint");
-    println!("---------------------------");
-}
+    use cryptocol::define_utypes_with;
+    define_utypes_with!(u64);
 
-fn biguint_saturating_ilog10_uint()
-{
-    println!("biguint_saturating_ilog10_uint");
-    println!("---------------------------");
-}
+    let a_biguint = U256::from_uint(10000_u32);
+    let res = a_biguint.unchecked_ilog10_uint();
+    println!("The base 10 logarithm of {} is {}.", a_biguint, res);
+    assert_eq!(res.to_string(), "4");
 
-fn biguint_saturating_ilog10_assign_uint()
-{
-    println!("biguint_saturating_ilog10_assign_uint");
+    let a_biguint = U256::from_uint(12345_u32);
+    let res = a_biguint.unchecked_ilog10_uint();
+    println!("The base 10 logarithm of {} is {}.", a_biguint, res);
+    assert_eq!(res.to_string(), "4");
+
+    let a_biguint = U256::from_uint(1_u8);
+    let res = a_biguint.unchecked_ilog10_uint();
+    println!("The base 2 logarithm of {} is {}.", a_biguint, res);
+    assert_eq!(res.to_string(), "0");
+
+    let _a_biguint = U256::zero();
+    // It will panic.
+    // let res = _a_biguint.unchecked_ilog10_uint();
     println!("---------------------------");
+    panic!();///////////////////////////
 }
 
 fn biguint_arithmatic_operation_biguint()

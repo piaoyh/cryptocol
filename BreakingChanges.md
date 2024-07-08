@@ -1,5 +1,49 @@
 # Breaking Changes
 
+## Breaking changes from ver. 0.8.1 to ver. 0.9.0
+
+### Twenty-four methods of BigUInt
+
+| Ver. 0.8.1                                                      | Ver. 0.9.0 |
+|-----------------------------------------------------------------|------------|
+| pub fn wrapping_root_uint(&self, exp: U) -> Self                | removed    |
+| pub fn wrapping_root_assign_uint(&mut self, exp: U)             | removed    |
+| pub fn overflowing_root_uint(&self, exp: U) -> (Self, bool)     | removed    |
+| pub fn overflowing_root_assign_uint(&mut self, exp: U) -> bool  | removed    |
+| pub fn saturating_root_uint(&self, exp: U) -> Self              | removed    |
+| pub fn saturating_root_assign_uint(&mut self, exp: U)           | removed    |
+| pub fn wrapping_ilog_uint(&self, base: U) -> Self               | removed    |
+| pub fn wrapping_ilog_assign_uint(&mut self, base: U)            | removed    |
+| pub fn overflowing_ilog_uint(&self, base: U) -> (Self, bool)    | removed    |
+| pub fn overflowing_ilog_assign_uint(&mut self, base: U) -> bool | removed    |
+| pub fn saturating_ilog_uint(&self, base: U) -> Self             | removed    |
+| pub fn saturating_ilog_assign_uint(&mut self, base: U)          | removed    |
+| pub fn wrapping_ilog2_uint(&self) -> Self                       | removed    |
+| pub fn wrapping_ilog2_assign_uint(&mut self)                    | removed    |
+| pub fn overflowing_ilog2_uint(&self) -> (Self, bool)            | removed    |
+| pub fn overflowing_ilog2_assign_uint(&mut self) -> bool         | removed    |
+| pub fn saturating_ilog2_uint(&self) -> Self                     | removed    |
+| pub fn saturating_ilog2_assign_uint(&mut self)                  | removed    |
+| pub fn wrapping_ilog10_uint(&self) -> Self                      | removed    |
+| pub fn wrapping_ilog10_assign_uint(&mut self)                   | removed    |
+| pub fn overflowing_ilog10_uint(&self) -> (Self, bool)           | removed    |
+| pub fn overflowing_ilog10_assign_uint(&mut self) -> bool        | removed    |
+| pub fn saturating_ilog10_uint(&self) -> Self                    | removed    |
+| pub fn saturating_ilog10_assign_uint(&mut self)                 | removed    |
+
+- The methods above have been removed because they never overflow.
+
+### Four methods of BigUInt
+
+| Ver. 0.8.1                                                      | Ver. 0.9.0                                                       |
+|-----------------------------------------------------------------|------------------------------------------------------------------|
+| pub fn root_uint(&self, exp: U) -> Self                         | pub fn iroot_uint(&self, exp: U) -> Self                         |
+| pub fn root_assign_uint(&mut self, exp: U)                      | pub fn iroot_assign_uint(&mut self, exp: U)                      |
+| pub fn checked_root_uint(&self, exp: U) -> Option&lt;Self&gt;   | pub fn checked_iroot_uint(&self, exp: U) -> Option&lt;Self&gt;   |
+| pub fn unchecked_root_uint(&self, exp: U) -> Option&lt;Self&gt; | pub fn unchecked_iroot_uint(&self, exp: U) -> Option&lt;Self&gt; |
+
+- The names of the methods above have been changed from root into `*root*_uint()` into `*iroot*_uint()` in order to keep consistency with primitive data types such as `u8`, `u16`, `u32`, `u64`, `u128`, and `usize`.
+
 ## Breaking changes from ver. 0.7.6 to ver. 0.8.0
 
 ### One method of trait SmallUInt
@@ -159,9 +203,9 @@ A breaking change has been made to change the function `number::BigUInt::copy_wi
 
 ### A method of struct BigUInt
 
-| Ver. 0.6.2                                                  | Ver. 0.6.3                                              |
-|-------------------------------------------------------------|---------------------------------------------------------|
-| pub fn copy_within&lt;R&gt;(&mut self, src: R, dest: usize) | fn copy_within&lt;R&gt;(&mut self, src: R, dest: usize) |
+| Ver. 0.6.2                                         | Ver. 0.6.3                                     |
+|----------------------------------------------------|------------------------------------------------|
+| pub fn copy_within(&mut self, src: R, dest: usize) | fn copy_within(&mut self, src: R, dest: usize) |
 
 ## Breaking changes from ver. 0.5.0 to ver. 0.6.0
 
