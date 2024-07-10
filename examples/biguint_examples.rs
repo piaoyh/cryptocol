@@ -2041,19 +2041,21 @@ fn biguint_saturating_add_uint()
     use cryptocol::define_utypes_with;
     define_utypes_with!(u64);
 
-    let a = U512::max().wrapping_sub_uint(2_u8);
-    
-    let b = a.saturating_add_uint(1_u8);
-    println!("{} + 1 = {}", a, b);
-    assert_eq!(b.to_string(), "13407807929942597099574024998205846127479365820592393377723561443721764030073546976801874298166903427690031858186486050853753882811946569946433649006084094");
+    let a_biguint = U512::max().wrapping_sub_uint(2_u8);
+    let res = a_biguint.saturating_add_uint(1_u8);
+    println!("{} + 1 = {}", a_biguint, res);
+    assert_eq!(res.to_string(), "13407807929942597099574024998205846127479365820592393377723561443721764030073546976801874298166903427690031858186486050853753882811946569946433649006084094");
+    assert_eq!(res.is_overflow(), false);
 
-    let c = a.saturating_add_uint(2_u8);
-    println!("{} + 2 = {}", a, c);
-    assert_eq!(c.to_string(), "13407807929942597099574024998205846127479365820592393377723561443721764030073546976801874298166903427690031858186486050853753882811946569946433649006084095");
+    let res = a_biguint.saturating_add_uint(2_u8);
+    println!("{} + 2 = {}", a_biguint, res);
+    assert_eq!(res.to_string(), "13407807929942597099574024998205846127479365820592393377723561443721764030073546976801874298166903427690031858186486050853753882811946569946433649006084095");
+    assert_eq!(res.is_overflow(), false);
 
-    let d = a.saturating_add_uint(3_u8);
-    println!("{} + 3 = {}", a, d);
-    assert_eq!(d.to_string(), "13407807929942597099574024998205846127479365820592393377723561443721764030073546976801874298166903427690031858186486050853753882811946569946433649006084095");
+    let res = a_biguint.saturating_add_uint(3_u8);
+    println!("{} + 3 = {}", a_biguint, res);
+    assert_eq!(res.to_string(), "13407807929942597099574024998205846127479365820592393377723561443721764030073546976801874298166903427690031858186486050853753882811946569946433649006084095");
+    assert_eq!(res.is_overflow(), false);
     println!("---------------------------");
 }
 
@@ -2063,21 +2065,21 @@ fn biguint_saturating_add_assign_uint()
     use cryptocol::define_utypes_with;
     define_utypes_with!(u128);
 
-    let mut a = UU64::max().wrapping_sub_uint(2_u8);
-    println!("Originally,\ta = {}", a);
-    assert_eq!(a.to_string(), "13407807929942597099574024998205846127479365820592393377723561443721764030073546976801874298166903427690031858186486050853753882811946569946433649006084093");
+    let mut a_biguint = UU64::max().wrapping_sub_uint(2_u8);
+    println!("Originally,\ta_biguint = {}", a_biguint);
+    assert_eq!(a_biguint.to_string(), "13407807929942597099574024998205846127479365820592393377723561443721764030073546976801874298166903427690031858186486050853753882811946569946433649006084093");
     
-    a.saturating_add_assign_uint(1_u8);
-    println!("After a += 1,\ta = {}", a);
-    assert_eq!(a.to_string(), "13407807929942597099574024998205846127479365820592393377723561443721764030073546976801874298166903427690031858186486050853753882811946569946433649006084094");
+    a_biguint.saturating_add_assign_uint(1_u8);
+    println!("After a_biguint += 1,\ta_biguint = {}", a_biguint);
+    assert_eq!(a_biguint.to_string(), "13407807929942597099574024998205846127479365820592393377723561443721764030073546976801874298166903427690031858186486050853753882811946569946433649006084094");
     
-    a.saturating_add_assign_uint(1_u8);
-    println!("After a += 1,\ta = {}", a);
-    assert_eq!(a.to_string(), "13407807929942597099574024998205846127479365820592393377723561443721764030073546976801874298166903427690031858186486050853753882811946569946433649006084095");
+    a_biguint.saturating_add_assign_uint(1_u8);
+    println!("After a_biguint += 1,\ta_biguint = {}", a_biguint);
+    assert_eq!(a_biguint.to_string(), "13407807929942597099574024998205846127479365820592393377723561443721764030073546976801874298166903427690031858186486050853753882811946569946433649006084095");
     
-    a.saturating_add_assign_uint(1_u8);
-    println!("After a += 1,\ta = {}", a);
-    assert_eq!(a.to_string(), "13407807929942597099574024998205846127479365820592393377723561443721764030073546976801874298166903427690031858186486050853753882811946569946433649006084095");
+    a_biguint.saturating_add_assign_uint(1_u8);
+    println!("After a_biguint += 1,\ta_biguint = {}", a_biguint);
+    assert_eq!(a_biguint.to_string(), "13407807929942597099574024998205846127479365820592393377723561443721764030073546976801874298166903427690031858186486050853753882811946569946433649006084095");
     println!("---------------------------");
 }
 
@@ -4446,7 +4448,6 @@ fn biguint_unchecked_ilog10_uint()
     // It will panic.
     // let res = _a_biguint.unchecked_ilog10_uint();
     println!("---------------------------");
-    panic!();///////////////////////////
 }
 
 fn biguint_arithmatic_operation_biguint()
@@ -4483,10 +4484,10 @@ fn biguint_carrying_add()
     use cryptocol::define_utypes_with;
     define_utypes_with!(u128);
 
-    let a_hi = U256::from_str_radix("15D5_ECE4_41DB_7709_BA44_8C40_0DCF_7160_3CD4_F7FF_F0CF_476F_33FD_438B_0E1D_2086", 16).unwrap();
-    let a_lo = U256::from_str_radix("C9B4_EF7B_BBC9_F60E_45CB_EE41_B567_A641_7D69_A0EC_05F7_65A7_F81B_5C91_72DC_BAC0", 16).unwrap();
-    let b_hi = U256::from_str_radix("274_DDD9_4DAA_9405_B621_6BCA_AF43_78E3_0FA6_1D7D_86F4_0D17_2C18_A01C_80F9_DB46", 16).unwrap();
-    let b_lo = U256::from_str_radix("DF8A_DC5F_FDA5_6D18_0010_7A81_C337_17A1_BA3E_98EB_F6C6_AD17_2C18_A01C_80F9_DB46", 16).unwrap();
+    let a_hi = U256::from_str_radix("1234_5678_9ABC_DEF0_FEDC_BA98_7654_3210_1234_5678_9ABC_DEF0_FEDC_BA98_7654_3210", 16).unwrap();
+    let a_lo = U256::from_str_radix("1357_9BDF_0246_8ACE_ECA8_6420_FDB9_7531_1357_9BDF_0246_8ACE_ECA8_6420_FDB9_7531", 16).unwrap();
+    let b_hi = U256::from_str_radix("EDCB_A987_6543_210F_0123_4567_89AB_CDEF_EDCB_A987_6543_210F_0123_4567_89AB_CDE1", 16).unwrap();
+    let b_lo = U256::from_str_radix("FDB9_7531_0ECA_8642_2468_ACE0_1357_9BDF_FDB9_7531_0ECA_8642_2468_ACE0_1357_9BDF", 16).unwrap();
 
     let (c_lo, carry) = a_lo.carrying_add(&b_lo, false);
     let (c_hi, overflow) = a_hi.carrying_add(&b_hi, carry);
@@ -4494,12 +4495,30 @@ fn biguint_carrying_add()
     println!("{}:{} + {}:{} = {}:{}", a_hi.to_string_with_radix_and_stride(16, 4).unwrap(), a_lo.to_string_with_radix_and_stride(16, 4).unwrap(), b_hi.to_string_with_radix_and_stride(16, 4).unwrap(), b_lo.to_string_with_radix_and_stride(16, 4).unwrap(), c_hi.to_string_with_radix_and_stride(16, 4).unwrap(), c_lo.to_string_with_radix_and_stride(16, 4).unwrap());
     println!("carry = {}, overflow = {}", carry, overflow);
 
-    assert_eq!(c_hi.to_string_with_radix_and_stride(16, 4).unwrap(), "184A_CABD_8F86_0B0F_7065_F80A_BD12_EA43_4C7B_157D_77C3_5486_6015_E3A7_8F16_FBCD");
-    assert_eq!(c_lo.to_string_with_radix_and_stride(16, 4).unwrap(), "A93F_CBDB_B96F_6326_45DC_68C3_789E_BDE3_37A8_39D7_FCBE_12BF_2433_FCAD_F3D6_9606");
+    assert_eq!(c_hi.to_string_with_radix_and_stride(16, 4).unwrap(), "FFFF_FFFF_FFFF_FFFF_FFFF_FFFF_FFFF_FFFF_FFFF_FFFF_FFFF_FFFF_FFFF_FFFF_FFFF_FFF2");
+    assert_eq!(c_lo.to_string_with_radix_and_stride(16, 4).unwrap(), "1111_1110_1111_1111_1111_1101_1111_1111_1111_1110_1111_1111_1111_1101_1111_1110");
     assert_eq!(carry, true);
     assert_eq!(c_lo.is_overflow(), true);
     assert_eq!(overflow, false);
     assert_eq!(c_hi.is_overflow(), false);
+
+    let a_hi = U256::from_str_radix("FFFF_FFFF_FFFF_FFFF_FFFF_FFFF_FFFF_FFFF_FFFF_FFFF_FFFF_FFFF_FFFF_FFFF_FFFF_FFFF", 16).unwrap();
+    let a_lo = U256::from_str_radix("FFFF_FFFF_FFFF_FFFF_FFFF_FFFF_FFFF_FFFF_FFFF_FFFF_FFFF_FFFF_FFFF_FFFF_FFFF_FFFF", 16).unwrap();
+    let b_hi = U256::zero();
+    let b_lo = U256::one();
+
+    let (c_lo, carry) = a_lo.carrying_add(&b_lo, false);
+    let (c_hi, overflow) = a_hi.carrying_add(&b_hi, carry);
+
+    println!("{}:{} + {}:{} = {}:{}", a_hi.to_string_with_radix_and_stride(16, 4).unwrap(), a_lo.to_string_with_radix_and_stride(16, 4).unwrap(), b_hi.to_string_with_radix_and_stride(16, 4).unwrap(), b_lo.to_string_with_radix_and_stride(16, 4).unwrap(), c_hi.to_string_with_radix_and_stride(16, 4).unwrap(), c_lo.to_string_with_radix_and_stride(16, 4).unwrap());
+    println!("carry = {}, overflow = {}", carry, overflow);
+
+    assert_eq!(c_hi.to_string(), "0");
+    assert_eq!(c_lo.to_string(), "0");
+    assert_eq!(carry, true);
+    assert_eq!(c_lo.is_overflow(), true);
+    assert_eq!(overflow, true);
+    assert_eq!(c_hi.is_overflow(), true);
     println!("---------------------------");
 }
 
@@ -4507,145 +4526,289 @@ fn biguint_carrying_add_assign()
 {
     println!("biguint_carrying_add_assign");
     use cryptocol::define_utypes_with;
-    define_utypes_with!(u16);
+    define_utypes_with!(u8);
 
-    let mut a_hi = U256::from_str_radix("15D5_ECE4_41DB_7709_BA44_8C40_0DCF_7160_3CD4_F7FF_F0CF_476F_33FD_438B_0E1D_2086", 16).unwrap();
-    let mut a_lo = U256::from_str_radix("C9B4_EF7B_BBC9_F60E_45CB_EE41_B567_A641_7D69_A0EC_05F7_65A7_F81B_5C91_72DC_BAC0", 16).unwrap();
-    let b_hi = U256::from_str_radix("274_DDD9_4DAA_9405_B621_6BCA_AF43_78E3_0FA6_1D7D_86F4_0D17_2C18_A01C_80F9_DB46", 16).unwrap();
-    let b_lo = U256::from_str_radix("DF8A_DC5F_FDA5_6D18_0010_7A81_C337_17A1_BA3E_98EB_F6C6_AD17_2C18_A01C_80F9_DB46", 16).unwrap();
-    let c_hi = U256::from(1_u8);
-    let c_lo = U256::from(1_u8);
+    let mut a_hi = U256::from_str_radix("1234_5678_9ABC_DEF0_FEDC_BA98_7654_3210_1234_5678_9ABC_DEF0_FEDC_BA98_7654_3210", 16).unwrap();
+    let mut a_lo = U256::from_str_radix("1357_9BDF_0246_8ACE_ECA8_6420_FDB9_7531_1357_9BDF_0246_8ACE_ECA8_6420_FDB9_7531", 16).unwrap();
+    let b_hi = U256::from_str_radix("EDCB_A987_6543_210F_0123_4567_89AB_CDEF_EDCB_A987_6543_210F_0123_4567_89AB_CDE1", 16).unwrap();
+    let b_lo = U256::from_str_radix("FDB9_7531_0ECA_8642_2468_ACE0_1357_9BDF_FDB9_7531_0ECA_8642_2468_ACE0_1357_9BDF", 16).unwrap();
 
     print!("{}:{} + {}:{}", a_hi.to_string_with_radix_and_stride(16, 4).unwrap(), a_lo.to_string_with_radix_and_stride(16, 4).unwrap(), b_hi.to_string_with_radix_and_stride(16, 4).unwrap(), b_lo.to_string_with_radix_and_stride(16, 4).unwrap());
-    let mut carry = a_lo.carrying_add_assign(&b_lo, false);
-    let mut overflow = a_hi.carrying_add_assign(&b_hi, carry);
+    let carry = a_lo.carrying_add_assign(&b_lo, false);
+    let overflow = a_hi.carrying_add_assign(&b_hi, carry);
     println!(" = {}:{}", a_hi.to_string_with_radix_and_stride(16, 4).unwrap(), a_lo.to_string_with_radix_and_stride(16, 4).unwrap());
     println!("carry = {}, overflow = {}", carry, overflow);
 
-    assert_eq!(a_hi.to_string_with_radix_and_stride(16, 4).unwrap(), "184A_CABD_8F86_0B0F_7065_F80A_BD12_EA43_4C7B_157D_77C3_5486_6015_E3A7_8F16_FBCD");
-    assert_eq!(a_lo.to_string_with_radix_and_stride(16, 4).unwrap(), "A93F_CBDB_B96F_6326_45DC_68C3_789E_BDE3_37A8_39D7_FCBE_12BF_2433_FCAD_F3D6_9606");
+    assert_eq!(a_hi.to_string_with_radix_and_stride(16, 4).unwrap(), "FFFF_FFFF_FFFF_FFFF_FFFF_FFFF_FFFF_FFFF_FFFF_FFFF_FFFF_FFFF_FFFF_FFFF_FFFF_FFF2");
+    assert_eq!(a_lo.to_string_with_radix_and_stride(16, 4).unwrap(), "1111_1110_1111_1111_1111_1101_1111_1111_1111_1110_1111_1111_1111_1101_1111_1110");
     assert_eq!(carry, true);
     assert_eq!(a_lo.is_overflow(), true);
     assert_eq!(overflow, false);
     assert_eq!(a_hi.is_overflow(), false);
 
-    print!("{}:{} + {}:{}", a_hi.to_string_with_radix_and_stride(16, 4).unwrap(), a_lo.to_string_with_radix_and_stride(16, 4).unwrap(), c_hi.to_string_with_radix_and_stride(16, 4).unwrap(), c_lo.to_string_with_radix_and_stride(16, 4).unwrap());
-    carry = a_lo.carrying_add_assign(&c_lo, false);
-    overflow = a_hi.carrying_add_assign(&c_hi, carry);
+    let mut a_hi = U256::from_str_radix("FFFF_FFFF_FFFF_FFFF_FFFF_FFFF_FFFF_FFFF_FFFF_FFFF_FFFF_FFFF_FFFF_FFFF_FFFF_FFFF", 16).unwrap();
+    let mut a_lo = U256::from_str_radix("FFFF_FFFF_FFFF_FFFF_FFFF_FFFF_FFFF_FFFF_FFFF_FFFF_FFFF_FFFF_FFFF_FFFF_FFFF_FFFF", 16).unwrap();
+    let b_hi = U256::zero();
+    let b_lo = U256::one();
+    print!("{}:{} + {}:{}", a_hi.to_string_with_radix_and_stride(16, 4).unwrap(), a_lo.to_string_with_radix_and_stride(16, 4).unwrap(), b_hi.to_string_with_radix_and_stride(16, 4).unwrap(), b_lo.to_string_with_radix_and_stride(16, 4).unwrap());
+    let carry = a_lo.carrying_add_assign(&b_lo, false);
+    let overflow = a_hi.carrying_add_assign(&b_hi, carry);
     println!(" = {}:{}", a_hi.to_string_with_radix_and_stride(16, 4).unwrap(), a_lo.to_string_with_radix_and_stride(16, 4).unwrap());
     println!("carry = {}, overflow = {}", carry, overflow);
-    assert_eq!(a_hi.to_string_with_radix_and_stride(16, 4).unwrap(), "184A_CABD_8F86_0B0F_7065_F80A_BD12_EA43_4C7B_157D_77C3_5486_6015_E3A7_8F16_FBCE");
-    assert_eq!(a_lo.to_string_with_radix_and_stride(16, 4).unwrap(), "A93F_CBDB_B96F_6326_45DC_68C3_789E_BDE3_37A8_39D7_FCBE_12BF_2433_FCAD_F3D6_9607");
-    assert_eq!(carry, false);
+    assert_eq!(a_hi.to_string(), "0");
+    assert_eq!(a_lo.to_string(), "0");
+    assert_eq!(carry, true);
     assert_eq!(a_lo.is_overflow(), true);
-    assert_eq!(overflow, false);
-    assert_eq!(a_hi.is_overflow(), false);
+    assert_eq!(overflow, true);
+    assert_eq!(a_hi.is_overflow(), true);
     println!("---------------------------");
 }
 
 fn biguint_wrapping_add()
 {
-    println!("biguint_wrapping_add_main()");
+    println!("biguint_wrapping_add");
     use cryptocol::define_utypes_with;
-    define_utypes_with!(u128);
+    define_utypes_with!(u16);
 
-    let zero = U512::zero();
-    let one = U512::one();
-    let two = U512::from(2_u8);
-    let three = U512::from(3_u8);
-    let a = U512::max().wrapping_sub(&one);
-    let b = a.wrapping_add(&one);
-    let c = a.wrapping_add(&two);
-    let d = a.wrapping_add(&three);
+    let a_biguint = U512::max().wrapping_sub_uint(1_u8);
+    let res = a_biguint.wrapping_add(&U512::one());
+    println!("{} + 1 = {}", a_biguint, res);
+    assert_eq!(res, U512::max());
+    assert_eq!(res.is_overflow(), false);
 
-    println!("{} + 1 = {}", a, b);
-    assert_eq!(b, U512::max());
+    let b_biguint = U512::max();
+    let res = b_biguint.wrapping_add(&U512::one());
+    println!("{} + 1 = {}", b_biguint, res);
+    assert_eq!(res.to_string(), "0");
+    assert_eq!(res.is_overflow(), true);
 
-    println!("{} + 2 = {}", a, c);
-    assert_eq!(c, zero);
-
-    println!("{} + 3 = {}", a, d);
-    assert_eq!(d, one);
+    let c_biguint = U512::zero();
+    let res = c_biguint.wrapping_add(&U512::one());
+    println!("{} + 1 = {}", c_biguint, res);
+    assert_eq!(res.to_string(), "1");
+    assert_eq!(res.is_overflow(), false);
     println!("---------------------------");
 }
 
 fn biguint_wrapping_add_assign()
 {
-    println!("biguint_wrapping_add_assign()");
+    println!("biguint_wrapping_add_assign");
     use cryptocol::define_utypes_with;
-    define_utypes_with!(u128);
+    define_utypes_with!(u32);
 
-    let zero = U512::zero();
-    let one = U512::one();
+    let mut a_biguint = U512::max().wrapping_sub_uint(1_u8);
+    println!("Originally,\ta_biguint = {}", a_biguint);
+    assert_eq!(a_biguint.to_string(), "13407807929942597099574024998205846127479365820592393377723561443721764030073546976801874298166903427690031858186486050853753882811946569946433649006084094");
+    a_biguint.wrapping_add_assign(&U512::one());
+    println!("After a_biguint.wrapping_add_assign(&U512::one()),\ta_biguint = {}", a_biguint);
+    assert_eq!(a_biguint, U512::max());
 
-    let mut a = U512::max().wrapping_sub(&one);
-    println!("Originally,\ta = {}", a);
-    assert_eq!(a.to_string(), "13407807929942597099574024998205846127479365820592393377723561443721764030073546976801874298166903427690031858186486050853753882811946569946433649006084094");
+    let mut b_biguint = U512::max();
+    println!("Originally,\tb_biguint = {}", b_biguint);
+    b_biguint.wrapping_add_assign(&U512::one());
+    println!("After b_biguint.wrapping_add_assign(&U512::one()),\ta_biguint = {}", b_biguint);
+    assert_eq!(b_biguint.to_string(), "0");
 
-    a.wrapping_add_assign(&one);
-    println!("After a += 1,\ta = {}", a);
-    assert_eq!(a, U512::max());
-
-    a.wrapping_add_assign(&one);
-    println!("After a += 1,\ta = {}", a);
-    assert_eq!(a, zero);
-
-    a.wrapping_add_assign(&one);
-    println!("After a += 1,\ta = {}", a);
-    assert_eq!(a, one);
+    let mut c_biguint = U512::zero();
+    println!("Originally,\tb_biguint = {}", c_biguint);
+    c_biguint.wrapping_add_assign(&U512::one());
+    println!("After c_biguint.wrapping_add_assign(&U512::one()),\tc_biguint = {}", c_biguint);
+    assert_eq!(c_biguint.to_string(), "1");
     println!("---------------------------");
 }
 
 fn biguint_overflowing_add()
 {
-    println!("biguint_overflowing_add()");
+    println!("biguint_overflowing_add");
+    use cryptocol::define_utypes_with;
+    define_utypes_with!(u64);
+
+    let a_biguint = U512::max().wrapping_sub_uint(1_u8);
+    let (res, overflow) = a_biguint.overflowing_add(&U512::one());
+    println!("{} + 1 = {}, overflow = {}", a_biguint, res, overflow);
+    assert_eq!(res, U512::max());
+    assert_eq!(res.is_overflow(), false);
+    assert_eq!(overflow, false);
+
+    let b_biguint = U512::max();
+    let (res, overflow) = b_biguint.overflowing_add(&U512::one());
+    println!("{} + 1 = {}, overflow = {}", b_biguint, res, overflow);
+    assert_eq!(res.to_string(), "0");
+    assert_eq!(res.is_overflow(), true);
+    assert_eq!(overflow, true);
     println!("---------------------------");
 }
 
 fn biguint_overflowing_add_assign()
 {
-    println!("biguint_overflowing_add_assign()");
+    println!("biguint_overflowing_add_assign");
+    use cryptocol::define_utypes_with;
+    define_utypes_with!(u128);
+
+    let mut a_biguint = U512::max().wrapping_sub_uint(1_u8);
+    println!("Originally,\ta_biguint = {}", a_biguint);
+    assert_eq!(a_biguint.to_string(), "13407807929942597099574024998205846127479365820592393377723561443721764030073546976801874298166903427690031858186486050853753882811946569946433649006084094");
+    let overflow = a_biguint.overflowing_add_assign(&U512::one());
+    println!("After a_biguint.overflowing_add_assign(&U512::one()),\ta_biguint = {}, overflow = {}", a_biguint, overflow);
+    assert_eq!(a_biguint, U512::max());
+    assert_eq!(a_biguint.is_overflow(), false);
+    assert_eq!(overflow, false);
+
+    let mut b_biguint = U512::max();
+    println!("Originally,\tb_biguint = {}", b_biguint);
+    assert_eq!(b_biguint.to_string(), "13407807929942597099574024998205846127479365820592393377723561443721764030073546976801874298166903427690031858186486050853753882811946569946433649006084095");
+    let overflow = b_biguint.overflowing_add_assign(&U512::one());
+    println!("After b_biguint.overflowing_add_assign(&U512::one()),\tb_biguint = {}, overflow = {}", b_biguint, overflow);
+    assert_eq!(b_biguint.to_string(), "0");
+    assert_eq!(b_biguint.is_overflow(), true);
+    assert_eq!(overflow, true);
     println!("---------------------------");
 }
 
 fn biguint_checked_add()
 {
-    println!("biguint_checked_add()");
+    println!("biguint_checked_add");
+    use cryptocol::define_utypes_with;
+    define_utypes_with!(u8);
+
+    let a_biguint = U512::max().wrapping_sub_uint(1_u8);
+    let res = a_biguint.checked_add(&U512::one());
+    match res
+    {
+        Some(r) => {
+                println!("{} + 1 = {}, overflow = {}", a_biguint, r, r.is_overflow());
+                assert_eq!(r, U512::max());
+                assert_eq!(r.is_overflow(), false);
+            },
+        None => { println!("Error: Overflow"); },
+    }
+
+    let b_biguint = U512::max();
+    let res = b_biguint.checked_add(&U512::one());
+    match res
+    {
+        Some(r) => { println!("{} + 1 = {}, overflow = {}", b_biguint, r, r.is_overflow()); },
+        None => { 
+                println!("Error: Overflow");
+                assert_eq!(res, None);
+            },
+    }
     println!("---------------------------");
 }
 
 fn biguint_unchecked_add()
 {
     println!("biguint_unchecked_add()");
+    use cryptocol::define_utypes_with;
+    define_utypes_with!(u16);
+
+    let a_biguint = U512::max().wrapping_sub_uint(1_u8);
+    let res = a_biguint.unchecked_add(&U512::one());
+    println!("{} + 1 = {}, overflow = {}", a_biguint, res, res.is_overflow());
+    assert_eq!(res, U512::max());
+    assert_eq!(res.is_overflow(), false);
+
+    let _b_biguint = U512::max();
+    // It will panic.
+    // let res = _b_biguint.unchecked_add(&U512::one());
     println!("---------------------------");
 }
 
 fn biguint_saturating_add()
 {
-    println!("biguint_saturating_add()");
+    println!("biguint_saturating_add");
+    use cryptocol::define_utypes_with;
+    define_utypes_with!(u32);
+
+    let a_biguint = U512::max().wrapping_sub_uint(1_u8);
+    let res = a_biguint.saturating_add(&U512::one());
+    println!("{} + 1 = {}", a_biguint, res);
+    assert_eq!(res, U512::max());
+    assert_eq!(res.is_overflow(), false);
+
+    let b_biguint = U512::max();
+    let res = b_biguint.saturating_add(&U512::one());
+    println!("{} + 1 = {}", b_biguint, res);
+    assert_eq!(res, U512::max());
+    assert_eq!(res.is_overflow(), false);
     println!("---------------------------");
 }
 
 fn biguint_saturating_add_assign()
 {
-    println!("biguint_saturating_add_assign()");
+    println!("biguint_saturating_add_assign");
+    use cryptocol::define_utypes_with;
+    define_utypes_with!(u64);
+
+    let mut a_biguint = U512::max().wrapping_sub_uint(1_u8);
+    println!("Originally, \ta_biguint = {}", a_biguint);
+    a_biguint.saturating_add_assign(&U512::one());
+    println!("After a_biguint.saturating_add_assign(&U512::one()), a_biguint = {}", a_biguint);
+    assert_eq!(a_biguint, U512::max());
+    assert_eq!(a_biguint.is_overflow(), false);
+
+    let mut b_biguint = U512::max();
+    println!("Originally, \tb_biguint = {}", b_biguint);
+    b_biguint.saturating_add_assign(&U512::one());
+    println!("After a_biguint.saturating_add_assign(&U512::one()), a_biguint = {}", b_biguint);
+    assert_eq!(b_biguint, U512::max());
+    assert_eq!(b_biguint.is_overflow(), false);
     println!("---------------------------");
 }
 
 fn biguint_modular_add()
 {
-    println!("biguint_modular_add()");
+    println!("biguint_modular_add");
+    use cryptocol::define_utypes_with;
+    define_utypes_with!(u128);
+
+    let a_biguint = U256::from_string("76801874298166903427690031858186486050853753882811946569946433649006").unwrap();
+    let m = a_biguint.wrapping_add_uint(2_u8);
+    let res = a_biguint.modular_add(&U256::one(), &m);
+    println!("{} + 1 = {}", a_biguint, res);
+    assert_eq!(res.to_string(), "76801874298166903427690031858186486050853753882811946569946433649007");
+
+    let res = a_biguint.modular_add(&U256::from_uint(2_u8), &m);
+    println!("{} + 2 = {}", a_biguint, res);
+    assert_eq!(res.to_string(), "0");
+
+    let res = a_biguint.modular_add(&U256::from_uint(3_u8), &m);
+    println!("{} + 3 = {}", a_biguint, res);
+    assert_eq!(res.to_string(), "1");
     println!("---------------------------");
 }
 
 fn biguint_modular_add_assign()
 {
-    println!("biguint_modular_add_assign()");
+    println!("biguint_modular_add_assign");
+    use cryptocol::define_utypes_with;
+    define_utypes_with!(u8);
+
+    let mut a_biguint = U256::from_string("768018742981669034276900318581864860508537538828119465699464336490060").unwrap();
+    let m = a_biguint.wrapping_add_uint(2_u8);
+    println!("Originally,\ta = {}", a_biguint);
+    a_biguint.modular_add_assign(&U256::one(), &m);
+    println!("After a_biguint.modular_add_assign_uint(&U256::one(), &m),\ta_biguint = {}", a_biguint);
+    assert_eq!(a_biguint.to_string(), "768018742981669034276900318581864860508537538828119465699464336490061");
+    
+    let mut b_biguint = U256::from_string("768018742981669034276900318581864860508537538828119465699464336490060").unwrap();
+    println!("Originally,\tb_biguint = {}", b_biguint);
+    b_biguint.modular_add_assign(&U256::from_uint(2_u8), &m);
+    println!("After a_biguint.modular_add_assign(&U256::from_uint(2_u8), &m),\ta_biguint = {}", b_biguint);
+    assert_eq!(b_biguint.to_string(), "0");
+
+    let mut c_biguint = U256::from_string("768018742981669034276900318581864860508537538828119465699464336490060").unwrap();    
+    println!("Originally,\tc_biguint = {}", c_biguint);
+    c_biguint.modular_add_assign(&U256::from_uint(3_u8), &m);
+    println!("After c_biguint.modular_add_assign(&U256::from_uint(3_u8), &m),\ta_biguint = {}", c_biguint);
+    assert_eq!(c_biguint.to_string(), "1");
     println!("---------------------------");
+    panic!();///////////////////////////
 }
 
 fn biguint_sub()
 {
+
 }
 
 fn biguint_mul()
