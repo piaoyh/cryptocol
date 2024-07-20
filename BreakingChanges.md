@@ -44,6 +44,73 @@
 
 - The names of the methods above have been changed from root into `*root*_uint()` into `*iroot*_uint()` in order to keep consistency with primitive data types such as `u8`, `u16`, `u32`, `u64`, `u128`, and `usize`.
 
+| Methods                                                                       | Ver. 0.8.1                                                      | Ver. 0.9.0                                         |
+|-------------------------------------------------------------------------------|-----------------------------------------------------------------|----------------------------------------------------|
+| pub fn modular_add_uint&lt;U&gt;(&self, rhs: U, modulo: &Self) -> Self        | It returns maximum when `modulo` is either zero or one.         | It will panic when `modulo` is either zero or one. |
+| pub fn modular_add_assign_uint&lt;U&gt;(&self, rhs: U, modulo: &Self) -> Self | It gives maximum to `self` when `modulo` is either zero or one. | It will panic when `modulo` is either zero or one. |
+| pub fn modular_sub_uint&lt;U&gt;(&self, rhs: U, modulo: &Self) -> Self        | It returns maximum when `modulo` is either zero or one.         | It will panic when `modulo` is either zero or one. |
+| pub fn modular_sub_assign_uint&lt;U&gt;(&self, rhs: U, modulo: &Self) -> Self | It gives maximum to `self` when `modulo` is either zero or one. | It will panic when `modulo` is either zero or one. |
+| pub fn modular_mul_uint&lt;U&gt;(&self, rhs: U, modulo: &Self) -> Self        | It returns maximum when `modulo` is either zero or one.         | It will panic when `modulo` is either zero or one. |
+| pub fn modular_mul_assign_uint&lt;U&gt;(&self, rhs: U, modulo: &Self) -> Self | It gives maximum to `self` when `modulo` is either zero or one. | It will panic when `modulo` is either zero or one. |
+| pub fn modular_div_uint&lt;U&gt;(&self, rhs: U, modulo: &Self) -> Self        | It returns maximum when `modulo` is either zero or one.         | It will panic when `modulo` is either zero or one. |
+| pub fn modular_div_uint&lt;U&gt;(&self, rhs: U, modulo: &Self) -> Self        | It returns maximum when `rhs` is zero.                          | It will panic when `rhs` is zero.                  |
+| pub fn modular_div_assign_uint&lt;U&gt;(&self, rhs: U, modulo: &Self) -> Self | It gives maximum to `self` when `modulo` is either zero or one. | It will panic when `modulo` is either zero or one. |
+| pub fn modular_div_assign_uint&lt;U&gt;(&self, rhs: U, modulo: &Self) -> Self | It gives maximum to `self` when `rhs` is zero.                  | It will panic when `rhs` is zero.                  |
+| pub fn modular_rem_uint&lt;U&gt;(&self, rhs: U, modulo: &Self) -> Self        | It returns maximum when `modulo` is either zero or one.         | It will panic when `modulo` is either zero or one. |
+| pub fn modular_rem_uint&lt;U&gt;(&self, rhs: U, modulo: &Self) -> Self        | It returns maximum when `rhs` is zero.                          | It will panic when `rhs` is zero.                  |
+| pub fn modular_rem_assign_uint&lt;U&gt;(&self, rhs: U, modulo: &Self) -> Self | It gives maximum to `self` when `modulo` is either zero or one. | It will panic when `modulo` is either zero or one. |
+| pub fn modular_rem_assign_uint&lt;U&gt;(&self, rhs: U, modulo: &Self) -> Self | It gives maximum to `self` when `rhs` is zero.                  | It will panic when `rhs` is zero.                  |
+| pub fn wrapping_div_uint&lt;U&gt;(&self, rhs: U) -> Self                      | It returns maximum when `rhs` is zero.                          | It will panic when `rhs` is zero.                  |
+| pub fn wrapping_div_assign_uint&lt;U&gt;(&self, rhs: U) -> Self               | It gives maximum to `self` when `rhs` is zero.                  | It will panic when `rhs` is zero.                  |
+| pub fn overflowing_div_uint&lt;U&gt;(&self, rhs: U) -> Self                   | It returns maximum when `rhs` is zero.                          | It will panic when `rhs` is zero.                  |
+| pub fn overflowing_div_assign_uint&lt;U&gt;(&self, rhs: U) -> Self            | It gives maximum to `self` when `rhs` is zero.                  | It will panic when `rhs` is zero.                  |
+| pub fn pub fn unchecked_div_uint&lt;U&gt;(&self, rhs: U) -> Self              | It returns maximum when `rhs` is zero.                          | It will panic when `rhs` is zero.                  |
+| pub fn saturating_div_uint&lt;U&gt;(&self, rhs: U) -> Self                    | It returns maximum when `rhs` is zero.                          | It will panic when `rhs` is zero.                  |
+| pub fn saturating_div_assign_uint&lt;U&gt;(&mut self, rhs: U) -> Self         | It gives maximum to `self` when `rhs` is zero.                  | It will panic when `rhs` is zero.                  |
+| pub fn wrapping_rem_uint&lt;U&gt;(&self, rhs: U) -> Self                      | It returns zero when `rhs` is zero.                             | It will panic when `rhs` is zero.                  |
+| pub fn wrapping_rem_assign_uint&lt;U&gt;(&self, rhs: U) -> Self               | It gives zero to `self` when `rhs` is zero.                     | It will panic when `rhs` is zero.                  |
+| pub fn overflowing_rem_uint&lt;U&gt;(&self, rhs: U) -> Self                   | It returns zero when `rhs` is zero.                             | It will panic when `rhs` is zero.                  |
+| pub fn overflowing_rem_assign_uint&lt;U&gt;(&self, rhs: U) -> Self            | It gives zero to `self` when `rhs` is zero.                     | It will panic when `rhs` is zero.                  |
+| pub fn pub fn unchecked_rem_uint&lt;U&gt;(&self, rhs: U) -> Self              | It returns zero when `rhs` is zero.                             | It will panic when `rhs` is zero.                  |
+| pub fn saturating_rem_uint&lt;U&gt;(&self, rhs: U) -> Self                    | It returns zero when `rhs` is zero.                             | It will panic when `rhs` is zero.                  |
+| pub fn saturating_rem_assign_uint&lt;U&gt;(&mut self, rhs: U) -> Self         | It gives zero to `self` when `rhs` is zero.                     | It will panic when `rhs` is zero.                  |
+| pub fn divide_fully_uint&lt;U&gt;(&self, rhs: U) -> (Self, U)                 | It returns (maximum, 0) when `rhs` is zero.                     | It will panic when `rhs` is zero.                  |
+| pub fn modular_pow_uint&lt;U&gt;(&self, exp: U, modulo: &Self) -> Self        | It returns maximum when `modulo` is either zero or one.         | It will panic when `modulo` is either zero or one. |
+| pub fn modular_pow_assign_uint&lt;U&gt;(&mut self, exp: U, modulo: &Self)     | It gives maximum to `self` when `modulo` is either zero or one. | It will panic when `modulo` is either zero or one. |
+
+| pub fn modular_add(&self, rhs: &Self, modulo: &Self) -> Self                  | It returns maximum when `modulo` is either zero or one.         | It will panic when `modulo` is either zero or one. |
+| pub fn modular_add_assign(&self, rhs: &Self, modulo: &Self) -> Self           | It gives maximum to `self` when `modulo` is either zero or one. | It will panic when `modulo` is either zero or one. |
+| pub fn modular_sub(&self, rhs: &Self, modulo: &Self) -> Self                  | It returns maximum when `modulo` is either zero or one.         | It will panic when `modulo` is either zero or one. |
+| pub fn modular_sub_assign(&self, rhs: &Self, modulo: &Self) -> Self           | It gives maximum to `self` when `modulo` is either zero or one. | It will panic when `modulo` is either zero or one. |
+| pub fn modular_mul(&self, rhs: &Self, modulo: &Self) -> Self                  | It returns maximum when `modulo` is either zero or one.         | It will panic when `modulo` is either zero or one. |
+| pub fn modular_mul_assign(&self, rhs: &Self, modulo: &Self) -> Self           | It gives maximum to `self` when `modulo` is either zero or one. | It will panic when `modulo` is either zero or one. |
+| pub fn modular_div(&self, rhs: &Self, modulo: &Self) -> Self                  | It returns maximum when `modulo` is either zero or one.         | It will panic when `modulo` is either zero or one. |
+| pub fn modular_div(&self, rhs: &Self, modulo: &Self) -> Self                  | It returns maximum when `rhs` is zero.                          | It will panic when `rhs` is zero.                  |
+| pub fn modular_div_assign(&self, rhs: &Self, modulo: &Self) -> Self           | It gives maximum to `self` when `modulo` is either zero or one. | It will panic when `modulo` is either zero or one. |
+| pub fn modular_div_assign(&self, rhs: &Self, modulo: &Self) -> Self           | It gives maximum to `self` when `rhs` is zero.                  | It will panic when `rhs` is zero.                  |
+| pub fn modular_rem(&self, rhs: &Self, modulo: &Self) -> Self                  | It returns maximum when `modulo` is either zero or one.         | It will panic when `modulo` is either zero or one. |
+| pub fn modular_rem(&self, rhs: &Self, modulo: &Self) -> Self                  | It returns maximum when `rhs` is zero.                          | It will panic when `rhs` is zero.                  |
+| pub fn modular_rem_assign(&self, rhs: &Self, modulo: &Self) -> Self           | It gives maximum to `self` when `modulo` is either zero or one. | It will panic when `modulo` is either zero or one. |
+| pub fn modular_rem_assign(&self, rhs: &Self, modulo: &Self) -> Self           | It gives maximum to `self` when `rhs` is zero.                  | It will panic when `rhs` is zero.                  |
+| pub fn wrapping_div(&self, rhs: &Self) -> Self                                | It returns maximum when `rhs` is zero.                          | It will panic when `rhs` is zero.                  |
+| pub fn wrapping_div_assign(&self, rhs: &Self) -> Self                         | It gives maximum to `self` when `rhs` is zero.                  | It will panic when `rhs` is zero.                  |
+| pub fn overflowing_div(&self, rhs: &Self) -> Self                             | It returns maximum when `rhs` is zero.                          | It will panic when `rhs` is zero.                  |
+| pub fn overflowing_div_assign(&self, rhs: &Self) -> Self                      | It gives maximum to `self` when `rhs` is zero.                  | It will panic when `rhs` is zero.                  |
+| pub fn pub fn unchecked_div(&self, rhs: &Self) -> Self                        | It returns maximum when `rhs` is zero.                          | It will panic when `rhs` is zero.                  |
+| pub fn saturating_div(&self, rhs: &Self) -> Self                              | It returns maximum when `rhs` is zero.                          | It will panic when `rhs` is zero.                  |
+| pub fn saturating_div_assign(&mut self, rhs: &Self) -> Self                   | It gives maximum to `self` when `rhs` is zero.                  | It will panic when `rhs` is zero.                  |
+| pub fn wrapping_rem(&self, rhs: &Self) -> Self                                | It returns zero when `rhs` is zero.                             | It will panic when `rhs` is zero.                  |
+| pub fn wrapping_rem_assign(&self, rhs: &Self) -> Self                         | It gives zero to `self` when `rhs` is zero.                     | It will panic when `rhs` is zero.                  |
+| pub fn overflowing_rem(&self, rhs: &Self) -> Self                             | It returns zero when `rhs` is zero.                             | It will panic when `rhs` is zero.                  |
+| pub fn overflowing_rem_assign(&self, rhs: &Self) -> Self                      | It gives zero to `self` when `rhs` is zero.                     | It will panic when `rhs` is zero.                  |
+| pub fn pub fn unchecked_rem(&self, rhs: &Self) -> Self                        | It returns zero when `rhs` is zero.                             | It will panic when `rhs` is zero.                  |
+| pub fn saturating_rem(&self, rhs: &Self) -> Self                              | It returns zero when `rhs` is zero.                             | It will panic when `rhs` is zero.                  |
+| pub fn saturating_rem_assign(&mut self, rhs: &Self) -> Self                   | It gives zero to `self` when `rhs` is zero.                     | It will panic when `rhs` is zero.                  |
+| pub fn divide_fully(&self, rhs: &Self) -> (Self, U)                           | It returns (maximum, 0) when `rhs` is zero.                     | It will panic when `rhs` is zero.                  |
+
+- The above-methods have been changed to cause panic when the argument `modulo` is either zero or one. The author think that it is high chance that it is a mistake to give zero or one to the arguement `modulo` but this mistake won't be found or will be found only with a lot of efforts at test time if these methods do not cause panic. So, this change has been made for better security.
+- The above-methods have been changed to cause panic when the argument `rhs` is zero. The author think that it is high chance that it is a mistake to give zero to the arguement `rhs` but this mistake won't be found or will be found only with a lot of efforts at test time if these methods do not cause panic. So, this change has been made for better security.
+
 ## Breaking changes from ver. 0.7.6 to ver. 0.8.0
 
 ### One method of trait SmallUInt
