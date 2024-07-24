@@ -13938,9 +13938,26 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// u128, use the method
     /// [carrying_mul_uint()](struct@BigUInt#method.carrying_mul_uint).
     /// 
-    /// # Example
+    /// # Examples
     /// ```
-    /// // Todo
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u128);
+    /// 
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u128);
+    /// 
+    /// let a_biguint_low = U256::from_string("76801874298166903427690031858186486050853753882811946569946433649006084094").unwrap();
+    /// let a_biguint_high = U256::from_string("75388281194656994643364900608409476801874298166903427690031858186486050853").unwrap();
+    /// let b_biguint = UU32::from_string("16962363268797823794757102636892132280421717087553271230257168091959361441925").unwrap();
+    /// let (res_biguint_low, res_biguint_high) = a_biguint_low.carrying_mul(&b_biguint, UU32::zero());
+    /// assert_eq!(res_biguint_high.is_overflow(), false);
+    /// let (res_biguint_high, res_biguint_higher) = a_biguint_high.carrying_mul(&b_biguint, res_biguint_high);
+    /// 
+    /// println!("{}:{} X {} = {}:{}:{}", a_biguint_high, a_biguint_low, b_biguint, res_biguint_higher, res_biguint_high, res_biguint_low);
+    /// assert_eq!(res_biguint_higher.to_string(), "11043616366686523019040587905143508095308019572635527295298701528708842829");
+    /// assert_eq!(res_biguint_high.to_string(), "47612192950075281462365720785702517256274202447286280420710978194126658529299");
+    /// assert_eq!(res_biguint_low.to_string(), "99569105317044689054574557712853522297141576321520100863242044268764373638902");
+    /// assert_eq!(res_biguint_higher.is_overflow(), false);
     /// ```
     /// 
     /// # Big-endian issue
@@ -13986,9 +14003,29 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// use the method
     /// [carrying_mul_assign_uint()](struct@BigUInt#method.carrying_mul_assign_uint).
     /// 
-    /// # Example
+    /// # Examples
     /// ```
-    /// // Todo
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u8);
+    /// 
+    /// let mut a_biguint_low = UU32::from_string("76801874298166903427690031858186486050853753882811946569946433649006084094").unwrap();
+    /// let mut a_biguint_high = UU32::from_string("75388281194656994643364900608409476801874298166903427690031858186486050853").unwrap();
+    /// let b_biguint = U256::from_string("16962363268797823794757102636892132280421717087553271230257168091959361441925").unwrap();
+    /// 
+    /// println!("Originally,\na_biguint_low = {}", a_biguint_low);
+    /// assert_eq!(a_biguint_low.to_string(), "76801874298166903427690031858186486050853753882811946569946433649006084094");
+    /// println!("Originally,\na_biguint_high = {}", a_biguint_high);
+    /// assert_eq!(a_biguint_high.to_string(), "75388281194656994643364900608409476801874298166903427690031858186486050853");
+    /// 
+    /// let res_biguint_high = a_biguint_low.carrying_mul_assign(&b_biguint, UU32::zero());
+    /// assert_eq!(res_biguint_high.is_overflow(), false);
+    /// let res_biguint_higher = a_biguint_high.carrying_mul_assign(&b_biguint, res_biguint_high);
+    /// println!("After a_biguint_low.carrying_mul_assign(&b_biguint, UU32::zero()),\na_biguint_low = {}", a_biguint_low);
+    /// println!("After a_biguint_high.carrying_mul_assign(&b_biguint, res_biguint_high),\na_biguint_high = {}", a_biguint_high);
+    /// println!("res_biguint_higher = {}", res_biguint_higher);
+    /// assert_eq!(res_biguint_higher.to_string(), "11043616366686523019040587905143508095308019572635527295298701528708842829");
+    /// assert_eq!(a_biguint_high.to_string(), "47612192950075281462365720785702517256274202447286280420710978194126658529299");
+    /// assert_eq!(a_biguint_low.to_string(), "99569105317044689054574557712853522297141576321520100863242044268764373638902");
     /// ```
     /// 
     /// # Big-endian issue
@@ -14001,8 +14038,6 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
         if self.overflowing_add_assign(&carry)
             { high.wrapping_add_assign_uint(1_u8); }
         high
-
-
 /*
         let zero = T::zero();
         let one = T::one();
@@ -14158,7 +14193,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     {
         (Self::method_widening_mul_assign)(self, rhs)
     }
-
+//=======================
     fn widening_mul_assign_1(&mut self, rhs: &Self) -> Self
     {
         if rhs.is_zero()
@@ -14170,32 +14205,46 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
             { return Self::zero(); }
 
         let operand = self.clone();
+        self.set_zero();
         let zero = T::zero();
-        let mut high = Self::zero();
-        let mut lower = zero;
-        let mut higher = zero;
+        let mut high_biguint = Self::zero();
+        let mut low_uint = zero;
         let i_n = N - rhs.leading_zero_elements() as usize;
         let j_n = N - operand.leading_zero_elements() as usize;
         for i in 0..i_n
         {
+            let mut high_uint = zero;
             for j in 0..j_n
             {
-                (lower, higher) = operand.get_num_(j).carrying_mul(rhs.get_num_(i), higher);
-                let ij = i + j;
+                let operandd_j = operand.get_num_(j);
+                let rhs_i = rhs.get_num_(i);
+                (low_uint, high_uint) = operandd_j.carrying_mul(rhs_i, high_uint);
+                let mut ij = i + j;
+                let num_biguint: &mut Self;
                 if ij < N
-                    { self.set_num_(ij, lower); }
+                {
+                    num_biguint = self;
+                }
                 else
-                    { high.set_num_(ij - N, lower); }
+                {
+                    ij -= N;
+                    num_biguint = &mut high_biguint;
+                }
+                let num_uint_ij = num_biguint.get_num_(ij);
+                let (num, overflow) = num_uint_ij.overflowing_add(low_uint);
+                num_biguint.set_num_(ij, num);
+                if overflow
+                    { high_uint = high_uint.wrapping_add(T::one()); }
             }
             let c = i + j_n;
             if c < N
-                { self.set_num_(c, lower); }
+                { self.set_num_(c, high_uint); }
             else
-                { high.set_num_(c - N, lower); }
+                { high_biguint.set_num_(c - N, high_uint); }
         }
-        if !high.is_zero()
+        if !high_biguint.is_zero()
             { self.set_overflow(); }
-        high
+        high_biguint
     }
 
     fn widening_mul_assign_2(&mut self, rhs: &Self) -> Self

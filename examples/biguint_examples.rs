@@ -20,9 +20,9 @@ pub fn main()
     biguint_comparison_uint_main();
     biguint_comparison_biguint_main();
     biguint_arithmatic_operation_uint_main();
-    // biguint_exponentiation_logarithm_uint_main();
+    biguint_exponentiation_logarithm_uint_main();
     biguint_arithmatic_operation_biguint();
-    biguint_exponentiation_logarithm_biguint_main();
+    biguint_exponentiation_logarithm_main();
     biguint_bit_operation_main();
     biguint_conversion_main();
     biguint_flag_manipulation_main();
@@ -1782,7 +1782,6 @@ fn biguint_arithmatic_operation_uint_main()
     biguint_div_uint();
     biguint_rem_uint();
     biguint_next_multiple_uint();
-    biguint_exponentiation_logarithm_uint();
 }
 
 fn biguint_add_uint()
@@ -3489,7 +3488,7 @@ fn biguint_next_multiple_of_assign_uint()
     println!("---------------------------");
 }
 
-fn biguint_exponentiation_logarithm_uint()
+fn biguint_exponentiation_logarithm_uint_main()
 {
     biguint_pow_uint();
     biguint_pow_assign_uint();
@@ -4439,7 +4438,6 @@ fn biguint_arithmatic_operation_biguint()
     biguint_div();
     biguint_rem();
     biguint_next_multiple();
-    biguint_exponentiation_logarithm();
 }
 
 fn biguint_add()
@@ -5156,12 +5154,333 @@ fn biguint_abs_diff()
     assert_eq!(c, U256::from_str("500000000500000000500000000500000000").unwrap());
     assert_eq!(d, U256::from_str("500000000500000000500000000500000000").unwrap());
     println!("---------------------------");
-    panic!();///////////////////////////
 }
-
 
 fn biguint_mul()
 {
+    biguint_carrying_mul();
+    biguint_carrying_mul_assign();
+    biguint_widening_mul();
+    biguint_widening_mul_assign();
+    biguint_wrapping_mul();
+    biguint_wrapping_mul_assign();
+    biguint_overflowing_mul();
+    biguint_overflowing_mul_assign();
+    biguint_checked_mul();
+    biguint_unchecked_mul();
+    biguint_saturating_mul();
+    biguint_saturating_mul_assign();
+    biguint_modular_mul();
+    biguint_modular_mul_assign();
+}
+
+fn biguint_carrying_mul()
+{
+    println!("biguint_carrying_mul");
+    use cryptocol::define_utypes_with;
+    define_utypes_with!(u128);
+
+    let a_biguint_low = U256::from_string("76801874298166903427690031858186486050853753882811946569946433649006084094").unwrap();
+    let a_biguint_high = U256::from_string("75388281194656994643364900608409476801874298166903427690031858186486050853").unwrap();
+    let b_biguint = UU32::from_string("16962363268797823794757102636892132280421717087553271230257168091959361441925").unwrap();
+    let (res_biguint_low, res_biguint_high) = a_biguint_low.carrying_mul(&b_biguint, UU32::zero());
+    assert_eq!(res_biguint_high.is_overflow(), false);
+    let (res_biguint_high, res_biguint_higher) = a_biguint_high.carrying_mul(&b_biguint, res_biguint_high);
+
+    println!("{}:{} X {} = {}:{}:{}", a_biguint_high, a_biguint_low, b_biguint, res_biguint_higher, res_biguint_high, res_biguint_low);
+    assert_eq!(res_biguint_higher.to_string(), "11043616366686523019040587905143508095308019572635527295298701528708842829");
+    assert_eq!(res_biguint_high.to_string(), "47612192950075281462365720785702517256274202447286280420710978194126658529299");
+    assert_eq!(res_biguint_low.to_string(), "99569105317044689054574557712853522297141576321520100863242044268764373638902");
+    assert_eq!(res_biguint_higher.is_overflow(), false);
+    println!("---------------------------");
+}
+
+fn biguint_carrying_mul_assign()
+{
+    println!("biguint_carrying_mul_assign");
+    use cryptocol::define_utypes_with;
+    define_utypes_with!(u8);
+
+    let mut a_biguint_low = UU32::from_string("76801874298166903427690031858186486050853753882811946569946433649006084094").unwrap();
+    let mut a_biguint_high = UU32::from_string("75388281194656994643364900608409476801874298166903427690031858186486050853").unwrap();
+    let b_biguint = U256::from_string("16962363268797823794757102636892132280421717087553271230257168091959361441925").unwrap();
+
+    println!("Originally,\na_biguint_low = {}", a_biguint_low);
+    assert_eq!(a_biguint_low.to_string(), "76801874298166903427690031858186486050853753882811946569946433649006084094");
+    println!("Originally,\na_biguint_high = {}", a_biguint_high);
+    assert_eq!(a_biguint_high.to_string(), "75388281194656994643364900608409476801874298166903427690031858186486050853");
+    
+    let res_biguint_high = a_biguint_low.carrying_mul_assign(&b_biguint, UU32::zero());
+    assert_eq!(res_biguint_high.is_overflow(), false);
+    let res_biguint_higher = a_biguint_high.carrying_mul_assign(&b_biguint, res_biguint_high);
+    println!("After a_biguint_low.carrying_mul_assign(&b_biguint, UU32::zero()),\na_biguint_low = {}", a_biguint_low);
+    println!("After a_biguint_high.carrying_mul_assign(&b_biguint, res_biguint_high),\na_biguint_high = {}", a_biguint_high);
+    println!("res_biguint_higher = {}", res_biguint_higher);
+    assert_eq!(res_biguint_higher.to_string(), "11043616366686523019040587905143508095308019572635527295298701528708842829");
+    assert_eq!(a_biguint_high.to_string(), "47612192950075281462365720785702517256274202447286280420710978194126658529299");
+    assert_eq!(a_biguint_low.to_string(), "99569105317044689054574557712853522297141576321520100863242044268764373638902");
+    println!("---------------------------");
+}
+
+fn biguint_widening_mul()
+{
+    println!("biguint_widening_mul");
+    use cryptocol::define_utypes_with;
+    define_utypes_with!(u8);
+
+    let a_biguint = U256::from_string("876801874298166903427690031858186486050853753882811946569946433649006084094").unwrap();
+    let b_uint = 248_u8;
+    let (res_low, res_high) = a_biguint.widening_mul_uint(b_uint);
+
+    println!("{} X {} = {}:{}", a_biguint, b_uint, res_high, res_low);
+    assert_eq!(res_high.to_string(), "1");
+    assert_eq!(res_low.to_string(), "101654775588629196626496142892142340687341746297296798709889131537040379215376");
+    println!("---------------------------");
+}
+
+fn biguint_widening_mul_assign()
+{
+    println!("biguint_widening_mul_assign");
+    use cryptocol::define_utypes_with;
+    define_utypes_with!(u16);
+
+    let mut a_biguint = UU32::from_string("876801874298166903427690031858186486050853753882811946569946433649006084094").unwrap();
+    let b_uint = 248_u8;
+
+    println!("Originally,\ta_biguint = {}", a_biguint);
+    assert_eq!(a_biguint.to_string(), "876801874298166903427690031858186486050853753882811946569946433649006084094");
+    
+    let res_high = a_biguint.widening_mul_assign_uint(b_uint);
+    println!("After a_biguint.widening_mul_assign_uint(248_u8),\na_biguint = {}\nres_high = {}", a_biguint, res_high);
+    assert_eq!(a_biguint.to_string(), "101654775588629196626496142892142340687341746297296798709889131537040379215376");
+    assert_eq!(res_high.to_string(), "1");
+    println!("---------------------------");
+    panic!(); //================================
+}
+
+fn biguint_wrapping_mul()
+{
+    println!("biguint_wrapping_mul");
+    use cryptocol::define_utypes_with;
+    define_utypes_with!(u32);
+
+    let a_biguint = U256::from_string("12380187429816690342769003185818648605085375388281194656994643364900608").unwrap();
+    let b_uint = 248_u16;
+    let res = a_biguint.wrapping_mul_uint(b_uint);
+    println!("{} X {} = {}", a_biguint, b_uint, res);
+    assert_eq!(res.to_string(), "3070286482594539205006712790083024854061173096293736274934671554495350784");
+    assert_eq!(res.is_overflow(), false);
+
+    let c_biguint = U256::from_string("876801874298166903427690031858186486050853753882811946569946433649006084094").unwrap();
+    let res = c_biguint.wrapping_mul_uint(b_uint);
+    println!("{} X {} = {}", c_biguint, b_uint, res);
+    assert_eq!(res.to_string(), "101654775588629196626496142892142340687341746297296798709889131537040379215376");
+    assert_eq!(res.is_overflow(), true);
+    println!("---------------------------");
+}
+
+fn biguint_wrapping_mul_assign()
+{
+    println!("biguint_wrapping_mul_assign");
+    use cryptocol::define_utypes_with;
+    define_utypes_with!(u64);
+
+    let mut a_biguint = UU32::from_string("12380187429816690342769003185818648605085375388281194656994643364900608").unwrap();
+    let b_uint = 248_u16;
+
+    println!("Originally,\ta_biguint = {}", a_biguint);
+    assert_eq!(a_biguint.to_string(), "12380187429816690342769003185818648605085375388281194656994643364900608");
+    
+    a_biguint.wrapping_mul_assign_uint(b_uint);
+    println!("After a_biguint.wrapping_mul_assign_uint(248_u16), a_biguint = {}", a_biguint);
+    assert_eq!(a_biguint.to_string(), "3070286482594539205006712790083024854061173096293736274934671554495350784");
+    assert_eq!(a_biguint.is_overflow(), false);
+
+    let mut c_biguint = UU32::from_string("876801874298166903427690031858186486050853753882811946569946433649006084094").unwrap();
+    println!("Originally,\ta_biguint = {}", c_biguint);
+    assert_eq!(c_biguint.to_string(), "876801874298166903427690031858186486050853753882811946569946433649006084094");
+    
+    c_biguint.wrapping_mul_assign_uint(b_uint);
+    println!("After c_biguint.wrapping_mul_assign_uint(248_u16), a_biguint = {}", c_biguint);
+    assert_eq!(c_biguint.to_string(), "101654775588629196626496142892142340687341746297296798709889131537040379215376");
+    assert_eq!(c_biguint.is_overflow(), true);
+    println!("---------------------------");
+}
+
+fn biguint_overflowing_mul()
+{
+    println!("biguint_overflowing_mul");
+    use cryptocol::define_utypes_with;
+    define_utypes_with!(u128);
+
+    let a_biguint = U256::from_string("1874298166903427690031858186486050853753882811946569946433649006084094").unwrap();
+    let b_uint = 248_u8;
+    let (res, overflow) = a_biguint.overflowing_mul_uint(b_uint);
+    println!("{} X {} = {}, {}", a_biguint, b_uint, res, overflow);
+    assert_eq!(res.to_string(), "464825945392050067127900830248540611730962937362749346715544953508855312");
+    assert_eq!(overflow, false);
+
+    let c_biguint = U256::from_string("876801874298166903427690031858186486050853753882811946569946433649006084094").unwrap();
+    let (res, overflow) = c_biguint.overflowing_mul_uint(b_uint);
+    println!("{} X {} = {}, {}", c_biguint, b_uint, res, overflow);
+    assert_eq!(res.to_string(), "101654775588629196626496142892142340687341746297296798709889131537040379215376");
+    assert_eq!(overflow, true);
+    println!("---------------------------");
+}
+
+fn biguint_overflowing_mul_assign()
+{
+    println!("biguint_overflowing_mul_assign");
+    use cryptocol::define_utypes_with;
+    define_utypes_with!(u8);
+
+    let mut a_biguint = UU32::from_string("1874298166903427690031858186486050853753882811946569946433649006084094").unwrap();
+    let b_uint = 248_u16;
+
+    println!("Originally,\ta_biguint = {}", a_biguint);
+    assert_eq!(a_biguint.to_string(), "1874298166903427690031858186486050853753882811946569946433649006084094");
+
+    let overflow = a_biguint.overflowing_mul_assign_uint(b_uint);
+    println!("After a_biguint.overflowing_mul_assign_uint(248_u16), a_biguint = {}, {}", a_biguint, overflow);
+    assert_eq!(a_biguint.to_string(), "464825945392050067127900830248540611730962937362749346715544953508855312");
+    assert_eq!(overflow, false);
+
+    let mut c_biguint = UU32::from_string("876801874298166903427690031858186486050853753882811946569946433649006084094").unwrap();
+    println!("Originally,\tc_biguint = {}", a_biguint);
+    assert_eq!(c_biguint.to_string(), "876801874298166903427690031858186486050853753882811946569946433649006084094");
+
+    let overflow = c_biguint.overflowing_mul_assign_uint(b_uint);
+    println!("After c_biguint.overflowing_mul_assign_uint(248_u16), c_biguint = {}, {}", c_biguint, overflow);
+    assert_eq!(c_biguint.to_string(), "101654775588629196626496142892142340687341746297296798709889131537040379215376");
+    assert_eq!(overflow, true);
+    println!("---------------------------");
+}
+
+fn biguint_checked_mul()
+{
+    println!("biguint_checked_mul");
+    use cryptocol::define_utypes_with;
+    define_utypes_with!(u16);
+
+    let a_biguint = U256::from_string("876801874298166903427690031858186486050853753882811946569946433649006084094").unwrap();
+    let mut b_uint = 248_u8;
+    let res = a_biguint.checked_mul_uint(b_uint);
+    match &res
+    {
+        Some(r) => { println!("{} X {} = {}", a_biguint, b_uint, r); },
+        None => { println!("Overflow happend!"); },
+    }
+    assert_eq!(res, None);
+
+    b_uint = 5_u8;
+    let res = a_biguint.checked_mul_uint(b_uint);
+    match &res
+    {
+        Some(r) => { println!("{} X {} = {}", a_biguint, b_uint, r); },
+        None => { println!("Overflow happend!"); },
+    }
+    assert_eq!(res.unwrap().to_string(), "4384009371490834517138450159290932430254268769414059732849732168245030420470");
+    println!("---------------------------");
+}
+
+fn biguint_unchecked_mul()
+{
+    println!("biguint_unchecked_mul_uint");
+    use cryptocol::define_utypes_with;
+    define_utypes_with!(u32);
+
+    let a_biguint = UU32::from_string("876801874298166903427690031858186486050853753882811946569946433649006084094").unwrap();
+    let res = a_biguint.unchecked_mul_uint(5_u8);
+    println!("{} X {} = {}", a_biguint, 5_u8, res);
+    assert_eq!(res.to_string(), "4384009371490834517138450159290932430254268769414059732849732168245030420470");
+
+    // It will panic.
+    // let res = a_biguint.unchecked_mul_uint(248_u8);
+    println!("---------------------------");
+}
+
+fn biguint_saturating_mul()
+{
+    println!("biguint_saturating_mul_uint");
+    use cryptocol::define_utypes_with;
+    define_utypes_with!(u64);
+
+    let a_biguint = U256::from_string("876801874298166903427690031858186486050853753882811946569946433649006084094").unwrap();
+    let res = a_biguint.saturating_mul_uint(5_u8);
+    println!("{} X {} = {}", a_biguint, 5_u8, res);
+    assert_eq!(res.to_string(), "4384009371490834517138450159290932430254268769414059732849732168245030420470");
+
+    let res = a_biguint.saturating_mul_uint(248_u8);
+    println!("{} X {} = {}", a_biguint, 248_u8, res);
+    assert_eq!(res.to_string(), "115792089237316195423570985008687907853269984665640564039457584007913129639935");
+    assert_eq!(res, UU32::max());
+    println!("---------------------------");
+}
+
+fn biguint_saturating_mul_assign()
+{
+    println!("biguint_saturating_mul_assign_uint");
+    use cryptocol::define_utypes_with;
+    define_utypes_with!(u128);
+
+    let mut a_biguint = U256::from_string("876801874298166903427690031858186486050853753882811946569946433649006084094").unwrap();
+    let mut b_biguint = a_biguint.clone();
+
+    println!("Originally, a_biguint = {}", a_biguint);
+    a_biguint.saturating_mul_assign_uint(5_u8);
+    println!("After a_biguint.saturating_mul_assign_uint(5_u8), a_biguint = {}", a_biguint);
+
+    println!("Originally, b_biguint = {}", b_biguint);
+    b_biguint.saturating_mul_assign_uint(248_u8);
+    println!("After b_biguint.saturating_mul_assign_uint(248_u8), b_biguint = {}", b_biguint);
+    assert_eq!(b_biguint.to_string(), "115792089237316195423570985008687907853269984665640564039457584007913129639935");
+    assert_eq!(b_biguint, UU32::max());
+    println!("---------------------------");
+}
+
+fn biguint_modular_mul()
+{
+    println!("biguint_modular_mul_uint");
+    use cryptocol::define_utypes_with;
+    define_utypes_with!(u8);
+
+    let m = UU32::from_string("76801874298166903427690031858186486050853753882811946569946433649006084094").unwrap();
+    let a_biguint = U256::from_string("31858186486050853753882811946768018742981669034276900586487291375468285").unwrap();
+    let mul_uint = 5_u8;
+
+    let mut res = a_biguint.modular_mul_uint(mul_uint, &m);
+    println!("{} * {} = {} (mod {})", a_biguint, mul_uint, res, m);
+    assert_eq!(res.to_string(), "159290932430254268769414059733840093714908345171384502932436456877341425");
+
+    let mul_uint = 248_u8;
+    res = a_biguint.modular_mul_uint(mul_uint, &m);
+    println!("{} * {} = {} (mod {})", a_biguint, mul_uint, res, m);
+    assert_eq!(res.to_string(), "7900830248540611730962937362798468648259453920500671345448848261116134680");
+    println!("---------------------------");
+}
+
+fn biguint_modular_mul_assign()
+{
+    println!("biguint_modular_mul_assign_uint");
+    use cryptocol::define_utypes_with;
+    define_utypes_with!(u32);
+
+    let m = UU32::from_string("76801874298166903427690031858186486050853753882811946569946433649006084094").unwrap();
+    let mut a_biguint = U256::from_string("31858186486050853753882811946768018742981669034276900586487291375468285").unwrap();
+    let mut b_biguint = a_biguint.clone();
+    let mut mul_uint = 5_u8;
+
+    println!("Originally, a_biguint = {}", a_biguint);
+    a_biguint.modular_mul_assign_uint(mul_uint, &m);
+    println!("After a_biguint.modular_mul_assign_uint(mul_uint, &m), a_biguint = {}", a_biguint);
+    assert_eq!(a_biguint.to_string(), "159290932430254268769414059733840093714908345171384502932436456877341425");
+    
+    mul_uint = 248_u8;
+    println!("Originally, b_biguint = {}", b_biguint);
+    b_biguint.modular_mul_assign_uint(mul_uint, &m);
+    println!("After b_biguint.modular_mul_assign_uint(mul_uint, &m), b_biguint = {}", b_biguint);
+    assert_eq!(b_biguint.to_string(), "7900830248540611730962937362798468648259453920500671345448848261116134680");
+    println!("---------------------------");
 }
 
 fn biguint_div()
@@ -5176,23 +5495,15 @@ fn biguint_next_multiple()
 {
 }
 
-fn biguint_exponentiation_logarithm()
+fn biguint_exponentiation_logarithm_main()
 {
-    biguint_pow_uint_main();
-    biguint_pow_assign_uint_main();
+    biguint_pow();
+    biguint_pow_assign();
 }
 
-
-
-fn biguint_exponentiation_logarithm_biguint_main()
+fn biguint_pow()
 {
-    biguint_pow_main();
-    biguint_pow_assign_main();
-}
-
-fn biguint_pow_uint_main()
-{
-    println!("biguint_pow_uint()");
+    println!("biguint_pow()");
     use cryptocol::define_utypes_with;
     define_utypes_with!(u128);
 
@@ -5212,39 +5523,9 @@ fn biguint_pow_uint_main()
     assert_eq!(b.is_overflow(), false);
     assert_eq!(c.is_overflow(), true);
     println!("---------------------------");
-}
-
-
-fn biguint_pow_assign_uint_main()
-{
-    println!("biguint_pow_assign_uint_main()");
-    use cryptocol::define_utypes_with;
-    define_utypes_with!(u128);
-
-    let mut a = U256::from_uint(123_u8);
-    let mut b = a.clone();
-
-    // normal exponentiation
-    a.pow_assign_uint(36_u8);
-    println!("123 ** 36 = {}", a);
-    assert_eq!(a.to_string(), "1724185592748300222303045014791251528772289498837076631331177393773983461361");
-
-    // wrapping (modular) exponentiation
-    b.pow_assign_uint(37_u8);
-    println!("123 ** 37 = {}", b);
-    assert_eq!(b.to_string(), "96282738670724731919703551810636030185721623691319861614277235426286836107467");
-
-    // evidence of wrapping (modular) exponentiation
-    assert_eq!(a.is_overflow(), false);
-    assert_eq!(b.is_overflow(), true);
-    println!("---------------------------");
-}
-
-fn biguint_pow_main()
-{
     println!("biguint_pow_main()");
-    use cryptocol::define_utypes_with;
-    define_utypes_with!(u128);
+//    use cryptocol::define_utypes_with;
+  //  define_utypes_with!(u128);
 
     let a = U256::from_uint(234_u8);
     let mut exp = U256::from_uint(32_u8);
@@ -5267,11 +5548,31 @@ fn biguint_pow_main()
     println!("---------------------------");
 }
 
-fn biguint_pow_assign_main()
+fn biguint_pow_assign()
 {
-    println!("biguint_pow_assign_main()");
+    println!("biguint_pow_assign_uint_main()");
     use cryptocol::define_utypes_with;
     define_utypes_with!(u128);
+
+    let mut a = U256::from_uint(123_u8);
+    let mut b = a.clone();
+
+    // normal exponentiation
+    a.pow_assign_uint(36_u8);
+    println!("123 ** 36 = {}", a);
+    assert_eq!(a.to_string(), "1724185592748300222303045014791251528772289498837076631331177393773983461361");
+
+    // wrapping (modular) exponentiation
+    b.pow_assign_uint(37_u8);
+    println!("123 ** 37 = {}", b);
+    assert_eq!(b.to_string(), "96282738670724731919703551810636030185721623691319861614277235426286836107467");
+
+    // evidence of wrapping (modular) exponentiation
+    assert_eq!(a.is_overflow(), false);
+    assert_eq!(b.is_overflow(), true);
+    println!("---------------------------");
+    // use cryptocol::define_utypes_with;
+    // define_utypes_with!(u128);
 
     let mut a = U256::from_uint(234_u8);
     let mut exp = U256::from_uint(32_u8);
@@ -5293,12 +5594,6 @@ fn biguint_pow_assign_main()
     println!("{}", a.is_overflow());
     assert_eq!(a.is_overflow(), false);
     assert!(old > a);   // evidence of wrapping (modular) exponentiation
-
-
-
-
-
-
 
     // checked_pow()
     let a = U256::from_uint(234_u8);
