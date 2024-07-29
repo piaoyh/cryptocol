@@ -271,61 +271,61 @@ use crate::number::SmallUInt;
 /// It is just experimental for Big Endian CPUs. So, you are not encouraged
 /// to use it for serious purpose. Only use this crate for Big-endian CPUs
 /// with your own full responsibility.
-#[cfg(target_pointer_width = "128")]
-#[derive(Copy, Clone)]
-#[allow(dead_code)]
-pub union SizeUnion
-{
-    /// The biggest unsigned element for compatibility with other unions
-    this: usize,
+// #[cfg(target_pointer_width = "128")]
+// #[derive(Copy, Clone)]
+// #[allow(dead_code)]
+// pub union SizeUnion
+// {
+//     /// The biggest unsigned element for compatibility with other unions
+//     this: usize,
 
-    /// The biggest signed element for compatibility with other unions
-    that: isize,
+//     /// The biggest signed element for compatibility with other unions
+//     that: isize,
 
-    /// The usize type element whose size is the same as the SizeUnion
-    pub u_size: usize,
+//     /// The usize type element whose size is the same as the SizeUnion
+//     pub u_size: usize,
 
-    /// The isize type element whose size is the same as the SizeUnion
-    pub s_size: isize,
+//     /// The isize type element whose size is the same as the SizeUnion
+//     pub s_size: isize,
 
-    /// The biggest unsigned element which is 128-bit unsigned integer
-    pub ulonger: u128,
+//     /// The biggest unsigned element which is 128-bit unsigned integer
+//     pub ulonger: u128,
 
-    /// The biggest signed element which is 128-bit unsigned integer
-    pub slonger: i128,
+//     /// The biggest signed element which is 128-bit unsigned integer
+//     pub slonger: i128,
 
-    /// The secondly biggest unsigned element array whose elements are
-    /// 64-bit unsigned integer
-    pub ulong: [u64; 2],
+//     /// The secondly biggest unsigned element array whose elements are
+//     /// 64-bit unsigned integer
+//     pub ulong: [u64; 2],
 
-    /// The secondly biggest unsigned element array whose elements are
-    /// 64-bit signed integer
-    pub slong: [i64; 2],
+//     /// The secondly biggest unsigned element array whose elements are
+//     /// 64-bit signed integer
+//     pub slong: [i64; 2],
 
-    /// The thirdly biggest unsigned element array whose elements are
-    /// 32-bit unsigned integer
-    pub uint: [u32; 4],
+//     /// The thirdly biggest unsigned element array whose elements are
+//     /// 32-bit unsigned integer
+//     pub uint: [u32; 4],
 
-    /// The thirdly biggest unsigned element array whose elements are
-    /// 32-bit signed integer
-    pub sint: [i32; 4],
+//     /// The thirdly biggest unsigned element array whose elements are
+//     /// 32-bit signed integer
+//     pub sint: [i32; 4],
 
-    /// The fourthly biggest unsigned element array whose elements are
-    /// 16-bit unsigned integer
-    pub ushort: [u16; 8],
+//     /// The fourthly biggest unsigned element array whose elements are
+//     /// 16-bit unsigned integer
+//     pub ushort: [u16; 8],
 
-    /// The fourthly biggest unsigned element array whose elements are
-    /// 16-bit signed integer
-    pub sshort: [i16; 8],
+//     /// The fourthly biggest unsigned element array whose elements are
+//     /// 16-bit signed integer
+//     pub sshort: [i16; 8],
 
-    /// The fifthly biggest unsigned element array whose elements are
-    /// 8-bit unsigned integer
-    pub ubyte: [u8; 16],
+//     /// The fifthly biggest unsigned element array whose elements are
+//     /// 8-bit unsigned integer
+//     pub ubyte: [u8; 16],
 
-    /// The fifthly biggest unsigned element array whose elements are
-    /// 8-bit signed integer
-    pub sbyte: [i8; 16],
-}
+//     /// The fifthly biggest unsigned element array whose elements are
+//     /// 8-bit signed integer
+//     pub sbyte: [i8; 16],
+// }
 
 
 /// # Introduction
@@ -852,102 +852,102 @@ pub union SizeUnion
 }
 
 
-/// # Introduction
-/// This union `SizeUnion` is for using with `u8` or `i8`.
-/// 
-/// # Quick Start
-/// In order to use this union, you have to import (use)
-/// `cryptocol::number::SizeUnion` as follows.
-/// 
-/// ## Example 1
-/// ```
-/// use cryptocol::number::SizeUnion;
-/// ```
-/// You can use the methods `get()`, `get_signed()`, `get_ubyte()`, and
-/// `get_sbyte()` in order to obtain the data of `usize` in various types.
-/// 
-/// ## Example 2
-/// ```
-/// use cryptocol::number::SizeUnion;
-/// 
-/// let a = SizeUnion::new_with_signed(79_isize);
-/// 
-/// println!("a.get() = {}", a.get());
-/// println!("a.get_signed() = {}", a.get_signed());
-/// println!("a.get_usize() = {}", a.get_usize());
-/// println!("a.get_ssize() = {}", a.get_ssize());
-/// println!("a.get_ubyte() = {}", a.get_ubyte());
-/// println!("a.get_sbyte() = {}", a.get_sbyte());
-/// assert_eq!(a.get(), 79_usize);
-/// assert_eq!(a.get_signed(), 79_isize);
-/// assert_eq!(a.get_usize(), 79_usize);
-/// assert_eq!(a.get_ssize(), 79_isize);
-/// assert_eq!(a.get_ubyte(), 79_u8);
-/// assert_eq!(a.get_sbyte(), 79_u8);
-/// ```
-/// You can use `SizeUnion` as if you used `usize`. You can perform all kinds
-/// of arithmetic operations such as addition, subtraction, multiplication,
-/// and division (div and rem), and other operations which are available for
-/// `usize`. If you use `SizeUnion` with the help of `SmallUInt`, it will be
-/// even more powerful and convenient. In this case, you don't even have to
-/// import (use) `cryptocol::number::SizeUnion`.
-/// 
-/// ## Example 3
-/// ```
-/// use cryptocol::number::SmallUInt;
-/// 
-/// let a_sizeunion = 12_usize.into_sizeunion();
-/// let b_sizeunion = 87_usize.into_sizeunion();
-/// let c_sizeunion = a_sizeunion.wrapping_add(b_sizeunion);
-/// 
-/// println!("{} + {} = {}", a_sizeunion, b_sizeunion, c_sizeunion);
-/// assert_eq!(c_sizeunion.get(), 55_usize);
-/// 
-/// let d_sizeunion = b_sizeunion - a_sizeunion;
-/// println!("{} - {} = {}", b_sizeunion, a_sizeunion, d_sizeunion);
-/// assert_eq!(d_sizeunion.get(), 75_usize);
-/// 
-/// let e_sizeunion = d_sizeunion * 3_usize.into_sizeunion();
-/// println!("{} * {} = {}", d_sizeunion, 3_usize.into_sizeunion(), e_sizeunion);
-/// assert_eq!(e_sizeunion.get(), 225_usize);
-/// 
-/// let f_sizeunion = c_sizeunion / 10_usize.into_sizeunion();
-/// println!("{} / {} = {}", c_sizeunion, 10_usize.into_sizeunion(), f_sizeunion);
-/// assert_eq!(f_shortunion.get(), 9_usize);
-/// 
-/// let g_sizeunion = c_sizeunion % 10_usize.into_sizeunion();
-/// println!("{} % {} = {}", c_sizeunion, 10_usize.into_sizeunion(), g_sizeunion);
-/// assert_eq!(g_sizeunion.get(), 9_usize);
-/// ```
-///  
-/// # Big-endian issue
-/// It is just experimental for Big Endian CPUs. So, you are not encouraged
-/// to use it for serious purpose. Only use this crate for Big-endian CPUs
-/// with your own full responsibility.
-#[cfg(target_pointer_width = "8")]
-#[derive(Copy, Clone)]
-#[allow(dead_code)]
-#[allow(non_camel_case_types)]
-pub union SizeUnion
-{
-    /// The biggest unsigned element for compatibility with other unions
-    pub this: usize,
+// /// # Introduction
+// /// This union `SizeUnion` is for using with `u8` or `i8`.
+// /// 
+// /// # Quick Start
+// /// In order to use this union, you have to import (use)
+// /// `cryptocol::number::SizeUnion` as follows.
+// /// 
+// /// ## Example 1
+// /// ```
+// /// use cryptocol::number::SizeUnion;
+// /// ```
+// /// You can use the methods `get()`, `get_signed()`, `get_ubyte()`, and
+// /// `get_sbyte()` in order to obtain the data of `usize` in various types.
+// /// 
+// /// ## Example 2
+// /// ```
+// /// use cryptocol::number::SizeUnion;
+// /// 
+// /// let a = SizeUnion::new_with_signed(79_isize);
+// /// 
+// /// println!("a.get() = {}", a.get());
+// /// println!("a.get_signed() = {}", a.get_signed());
+// /// println!("a.get_usize() = {}", a.get_usize());
+// /// println!("a.get_ssize() = {}", a.get_ssize());
+// /// println!("a.get_ubyte() = {}", a.get_ubyte());
+// /// println!("a.get_sbyte() = {}", a.get_sbyte());
+// /// assert_eq!(a.get(), 79_usize);
+// /// assert_eq!(a.get_signed(), 79_isize);
+// /// assert_eq!(a.get_usize(), 79_usize);
+// /// assert_eq!(a.get_ssize(), 79_isize);
+// /// assert_eq!(a.get_ubyte(), 79_u8);
+// /// assert_eq!(a.get_sbyte(), 79_u8);
+// /// ```
+// /// You can use `SizeUnion` as if you used `usize`. You can perform all kinds
+// /// of arithmetic operations such as addition, subtraction, multiplication,
+// /// and division (div and rem), and other operations which are available for
+// /// `usize`. If you use `SizeUnion` with the help of `SmallUInt`, it will be
+// /// even more powerful and convenient. In this case, you don't even have to
+// /// import (use) `cryptocol::number::SizeUnion`.
+// /// 
+// /// ## Example 3
+// /// ```
+// /// use cryptocol::number::SmallUInt;
+// /// 
+// /// let a_sizeunion = 12_usize.into_sizeunion();
+// /// let b_sizeunion = 87_usize.into_sizeunion();
+// /// let c_sizeunion = a_sizeunion.wrapping_add(b_sizeunion);
+// /// 
+// /// println!("{} + {} = {}", a_sizeunion, b_sizeunion, c_sizeunion);
+// /// assert_eq!(c_sizeunion.get(), 55_usize);
+// /// 
+// /// let d_sizeunion = b_sizeunion - a_sizeunion;
+// /// println!("{} - {} = {}", b_sizeunion, a_sizeunion, d_sizeunion);
+// /// assert_eq!(d_sizeunion.get(), 75_usize);
+// /// 
+// /// let e_sizeunion = d_sizeunion * 3_usize.into_sizeunion();
+// /// println!("{} * {} = {}", d_sizeunion, 3_usize.into_sizeunion(), e_sizeunion);
+// /// assert_eq!(e_sizeunion.get(), 225_usize);
+// /// 
+// /// let f_sizeunion = c_sizeunion / 10_usize.into_sizeunion();
+// /// println!("{} / {} = {}", c_sizeunion, 10_usize.into_sizeunion(), f_sizeunion);
+// /// assert_eq!(f_shortunion.get(), 9_usize);
+// /// 
+// /// let g_sizeunion = c_sizeunion % 10_usize.into_sizeunion();
+// /// println!("{} % {} = {}", c_sizeunion, 10_usize.into_sizeunion(), g_sizeunion);
+// /// assert_eq!(g_sizeunion.get(), 9_usize);
+// /// ```
+// ///  
+// /// # Big-endian issue
+// /// It is just experimental for Big Endian CPUs. So, you are not encouraged
+// /// to use it for serious purpose. Only use this crate for Big-endian CPUs
+// /// with your own full responsibility.
+// #[cfg(target_pointer_width = "8")]
+// #[derive(Copy, Clone)]
+// #[allow(dead_code)]
+// #[allow(non_camel_case_types)]
+// pub union SizeUnion
+// {
+//     /// The biggest unsigned element for compatibility with other unions
+//     pub this: usize,
 
-    /// The biggest signed element for compatibility with other unions
-    pub that: isize,
+//     /// The biggest signed element for compatibility with other unions
+//     pub that: isize,
 
-    /// The usize type element whose size is the same as the SizeUnion
-    pub u_size: usize,
+//     /// The usize type element whose size is the same as the SizeUnion
+//     pub u_size: usize,
 
-    /// The isize type element whose size is the same as the SizeUnion
-    pub s_size: isize,
+//     /// The isize type element whose size is the same as the SizeUnion
+//     pub s_size: isize,
 
-    /// The biggest unsigned element which is 8-bit unsigned integer
-    pub ubyte: u8,
+//     /// The biggest unsigned element which is 8-bit unsigned integer
+//     pub ubyte: u8,
 
-    /// The biggest signed element which is 8-bit unsigned integer
-    pub sbyte: i8,
-}
+//     /// The biggest signed element which is 8-bit unsigned integer
+//     pub sbyte: i8,
+// }
 
 
 impl SizeUnion
@@ -1116,25 +1116,25 @@ impl SizeUnion
 
     crate::number::get_set_size_fit!();
 
-    #[cfg(target_pointer_width = "128")]    crate::number::get_set_byte!(16);
+    // #[cfg(target_pointer_width = "128")]    crate::number::get_set_byte!(16);
     #[cfg(target_pointer_width = "64")]     crate::number::get_set_byte!(8);
     #[cfg(target_pointer_width = "32")]     crate::number::get_set_byte!(4);
     #[cfg(target_pointer_width = "16")]     crate::number::get_set_byte!(2);
-    #[cfg(target_pointer_width = "8")]      crate::number::get_set_byte_fit!();
+    // #[cfg(target_pointer_width = "8")]      crate::number::get_set_byte_fit!();
 
-    #[cfg(target_pointer_width = "128")]    crate::number::get_set_short!(8);
+    // #[cfg(target_pointer_width = "128")]    crate::number::get_set_short!(8);
     #[cfg(target_pointer_width = "64")]     crate::number::get_set_short!(4);
     #[cfg(target_pointer_width = "32")]     crate::number::get_set_short!(2);
     #[cfg(target_pointer_width = "16")]     crate::number::get_set_short_fit!();
 
-    #[cfg(target_pointer_width = "128")]    crate::number::get_set_int!(4);
+    // #[cfg(target_pointer_width = "128")]    crate::number::get_set_int!(4);
     #[cfg(target_pointer_width = "64")]     crate::number::get_set_int!(2);
     #[cfg(target_pointer_width = "32")]     crate::number::get_set_int_fit!();
 
-    #[cfg(target_pointer_width = "128")]    crate::number::get_set_long!(2);
+    // #[cfg(target_pointer_width = "128")]    crate::number::get_set_long!(2);
     #[cfg(target_pointer_width = "64")]     crate::number::get_set_long_fit!();
 
-    #[cfg(target_pointer_width = "128")]    crate::number::get_set_longer_fit!();
+    // #[cfg(target_pointer_width = "128")]    crate::number::get_set_longer_fit!();
 
     crate::number::integer_union_methods!(usize);
 }
@@ -1257,17 +1257,17 @@ impl Debug for SizeUnion
             .field("u_size", &self.get_usize())
             .field("s_size", &self.get_ssize());
 
-        #[cfg(target_pointer_width = "128")]
-        ff.field("ulonger", unsafe { &self.ulonger } )
-            .field("slonger", unsafe { &self.slonger } )
-            .field("ulong", unsafe { &self.ulong } )
-            .field("slong", unsafe { &self.slong } )
-            .field("uint", unsafe { &self.uint } )
-            .field("sint", unsafe { &self.sint } )
-            .field("ushort", unsafe { &self.ushort } )
-            .field("sshort", unsafe { &self.sshort } )
-            .field("ubyte", unsafe { &self.ubyte } )
-            .field("sbyte", unsafe { &self.sbyte } );
+        // #[cfg(target_pointer_width = "128")]
+        // ff.field("ulonger", unsafe { &self.ulonger } )
+        //     .field("slonger", unsafe { &self.slonger } )
+        //     .field("ulong", unsafe { &self.ulong } )
+        //     .field("slong", unsafe { &self.slong } )
+        //     .field("uint", unsafe { &self.uint } )
+        //     .field("sint", unsafe { &self.sint } )
+        //     .field("ushort", unsafe { &self.ushort } )
+        //     .field("sshort", unsafe { &self.sshort } )
+        //     .field("ubyte", unsafe { &self.ubyte } )
+        //     .field("sbyte", unsafe { &self.sbyte } );
 
         #[cfg(target_pointer_width = "64")] 
         ff.field("ulong", unsafe { &self.ulong } )
@@ -1293,9 +1293,9 @@ impl Debug for SizeUnion
             .field("ubyte", unsafe { &self.ubyte } )
             .field("sbyte", unsafe { &self.sbyte } );
 
-        #[cfg(target_pointer_width = "8")]
-        ff.field("ubyte", unsafe { &self.ubyte } )
-            .field("sbyte", unsafe { &self.sbyte } );
+        // #[cfg(target_pointer_width = "8")]
+        // ff.field("ubyte", unsafe { &self.ubyte } )
+        //     .field("sbyte", unsafe { &self.sbyte } );
 
         ff.finish()
     }

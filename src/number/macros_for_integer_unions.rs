@@ -75,24 +75,24 @@ macro_rules! new_with_small_uint {
         #[cfg(target_pointer_width = "64")] 
         #[inline] pub fn new_with_ubytes(ubyte: [u8; 8]) -> Self    { Self { ubyte } }
 
-        // pub fn new_with_ubytes(ubyte: [u8; 16]) -> Self
-        /// Constructs a new `SizeUnion` with initializing it with `ubyte`.
-        /// 
-        /// # Output
-        /// A new object of `SizeUnion` initialized with the value `ubyte`.
-        /// 
-        /// # Initialization
-        /// The field of the constructed object will be initialized with `ubyte`.
-        /// 
-        /// Example
-        /// ```
-        /// use cryptocol::number::SizeUnion;
-        /// let a = SizeUnion::new_with_ubytes([79_u8, 11_u8, 74_u8, 241_u8, 245_u8, 104_u8, 163_u8, 189_u8, 88_u8, 136_u8, 206_u8, 126_u8, 26_u8, 59_u8, 18_u8, 255_u8]);
-        /// println!("a = {}", a.get());
-        /// assert_eq!(a.get(), 339047799029950809142362261752780557135_usize);
-        /// ```
-        #[cfg(target_pointer_width = "128")] 
-        #[inline] pub fn new_with_ubytes(ubyte: [u8; 16]) -> Self    { Self { ubyte } }
+        // // pub fn new_with_ubytes(ubyte: [u8; 16]) -> Self
+        // /// Constructs a new `SizeUnion` with initializing it with `ubyte`.
+        // /// 
+        // /// # Output
+        // /// A new object of `SizeUnion` initialized with the value `ubyte`.
+        // /// 
+        // /// # Initialization
+        // /// The field of the constructed object will be initialized with `ubyte`.
+        // /// 
+        // /// Example
+        // /// ```
+        // /// use cryptocol::number::SizeUnion;
+        // /// let a = SizeUnion::new_with_ubytes([79_u8, 11_u8, 74_u8, 241_u8, 245_u8, 104_u8, 163_u8, 189_u8, 88_u8, 136_u8, 206_u8, 126_u8, 26_u8, 59_u8, 18_u8, 255_u8]);
+        // /// println!("a = {}", a.get());
+        // /// assert_eq!(a.get(), 339047799029950809142362261752780557135_usize);
+        // /// ```
+        // #[cfg(target_pointer_width = "128")] 
+        // #[inline] pub fn new_with_ubytes(ubyte: [u8; 16]) -> Self    { Self { ubyte } }
 
         // pub fn new_with_ushorts(ushort: [u16; 2]) -> Self
         /// Constructs a new `SizeUnion` with initializing it with `ushort`.
@@ -132,25 +132,25 @@ macro_rules! new_with_small_uint {
         #[cfg(target_pointer_width = "64")] 
         #[inline] pub fn new_with_ushorts(ushort: [u16; 4]) -> Self  { Self { ushort } }
 
-        // pub fn new_with_ushorts(ushort: [u16; 8]) -> Self
-        /// Constructs a new `SizeUnion` with initializing it with `ushort`.
-        /// 
-        /// # Output
-        /// A new object of `SizeUnion` initialized with the value `ushort`.
-        /// 
-        /// # Initialization
-        /// The field of the constructed object will be initialized with `ushort`.
-        /// 
-        /// Example
-        /// ```
-        /// use cryptocol::number::SizeUnion;
-        /// let arr = [2895_u16, 61770_u16, 26869_u16, 48547_u16, 34904_u16, 32
-        /// let a = SizeUnion::new_with_ushorts(arr);
-        /// println!("a = {}", a.get());
-        /// assert_eq!(a.get(), 339047799029950809142362261752780557135_usize);
-        /// ```
-        #[cfg(target_pointer_width = "128")] 
-        #[inline] pub fn new_with_ushorts(ushort: [u16; 8]) -> Self  { Self { ushort } }
+        // // pub fn new_with_ushorts(ushort: [u16; 8]) -> Self
+        // /// Constructs a new `SizeUnion` with initializing it with `ushort`.
+        // /// 
+        // /// # Output
+        // /// A new object of `SizeUnion` initialized with the value `ushort`.
+        // /// 
+        // /// # Initialization
+        // /// The field of the constructed object will be initialized with `ushort`.
+        // /// 
+        // /// Example
+        // /// ```
+        // /// use cryptocol::number::SizeUnion;
+        // /// let arr = [2895_u16, 61770_u16, 26869_u16, 48547_u16, 34904_u16, 32
+        // /// let a = SizeUnion::new_with_ushorts(arr);
+        // /// println!("a = {}", a.get());
+        // /// assert_eq!(a.get(), 339047799029950809142362261752780557135_usize);
+        // /// ```
+        // #[cfg(target_pointer_width = "128")] 
+        // #[inline] pub fn new_with_ushorts(ushort: [u16; 8]) -> Self  { Self { ushort } }
 
         // pub fn new_with_uints(uint: [u32; 2]) -> Self
         /// Constructs a new `SizeUnion` with initializing it with `uint`.
@@ -171,45 +171,46 @@ macro_rules! new_with_small_uint {
         #[cfg(target_pointer_width = "64")] 
         #[inline] pub fn new_with_uints(uint: [u32; 2]) -> Self     { Self { uint } }
 
-        // pub fn new_with_uints(uint: [u32; 4]) -> Self
-        /// Constructs a new `SizeUnion` with initializing it with `uint`.
-        /// 
-        /// # Output
-        /// A new object of `SizeUnion` initialized with the value `uint`.
-        /// 
-        /// # Initialization
-        /// The field of the constructed object will be initialized with `uint`.
-        /// 
-        /// Example
-        /// ```
-        /// use cryptocol::number::SizeUnion;
-        /// let arr = [4048161615_u32, 3181603061_u32, 2127464536_u32, 4279384858_u32];
-        /// let a = SizeUnion::new_with_uints(arr);
-        /// println!("a = {}", a.get());
-        /// assert_eq!(a.get(), 339047799029950809142362261752780557135_usize);
-        /// ```
-        #[cfg(target_pointer_width = "128")] 
-        #[inline] pub fn new_with_uints(uint: [u32; 4]) -> Self     { Self { uint } }
+        // // pub fn new_with_uints(uint: [u32; 4]) -> Self
+        // /// Constructs a new `SizeUnion` with initializing it with `uint`.
+        // /// 
+        // /// # Output
+        // /// A new object of `SizeUnion` initialized with the value `uint`.
+        // /// 
+        // /// # Initialization
+        // /// The field of the constructed object will be initialized with `uint`.
+        // /// 
+        // /// Example
+        // /// ```
+        // /// use cryptocol::number::SizeUnion;
+        // /// let arr = [4048161615_u32, 3181603061_u32, 2127464536_u32, 4279384858_u32];
+        // /// let a = SizeUnion::new_with_uints(arr);
+        // /// println!("a = {}", a.get());
+        // /// assert_eq!(a.get(), 339047799029950809142362261752780557135_usize);
+        // /// ```
+        // #[cfg(target_pointer_width = "128")] 
+        // #[inline] pub fn new_with_uints(uint: [u32; 4]) -> Self     { Self { uint } }
 
-        // pub fn new_with_ulongs(ulong: [u64; 4]) -> Self
-        /// Constructs a new `SizeUnion` with initializing it with `ulong`.
-        /// 
-        /// # Output
-        /// A new object of `SizeUnion` initialized with the value `ulong`.
-        /// 
-        /// # Initialization
-        /// The field of the constructed object will be initialized with `ulong`.
-        /// 
-        /// Example
-        /// ```
-        /// use cryptocol::number::SizeUnion;
-        /// let arr = [13664881099896654671_u64, 18379818014235068504_u64];
-        /// let a = SizeUnion::new_with_ulongs(arr);
-        /// println!("a = {}", a.get());
-        /// assert_eq!(a.get(), 339047799029950809142362261752780557135_usize);
-        /// ```
-        #[cfg(target_pointer_width = "128")] 
-        #[inline] pub fn new_with_ulongs(ulong: [u64; 4]) -> Self   { Self { ulong } }    }
+        // // pub fn new_with_ulongs(ulong: [u64; 4]) -> Self
+        // /// Constructs a new `SizeUnion` with initializing it with `ulong`.
+        // /// 
+        // /// # Output
+        // /// A new object of `SizeUnion` initialized with the value `ulong`.
+        // /// 
+        // /// # Initialization
+        // /// The field of the constructed object will be initialized with `ulong`.
+        // /// 
+        // /// Example
+        // /// ```
+        // /// use cryptocol::number::SizeUnion;
+        // /// let arr = [13664881099896654671_u64, 18379818014235068504_u64];
+        // /// let a = SizeUnion::new_with_ulongs(arr);
+        // /// println!("a = {}", a.get());
+        // /// assert_eq!(a.get(), 339047799029950809142362261752780557135_usize);
+        // /// ```
+        // #[cfg(target_pointer_width = "128")] 
+        // #[inline] pub fn new_with_ulongs(ulong: [u64; 4]) -> Self   { Self { ulong } }
+    }
 }
 #[allow(unused_imports)] pub(super) use new_with_small_uint;
 
@@ -4394,126 +4395,126 @@ macro_rules! get_set_size {
     ($f:expr) => {
         const J: usize = $f - 1;
 
-        // pub fn get_usize_(&self, i: usize) -> usize
-        /// Returns i-th element of array `u_size` of type `usize`
-        /// if `i` is less than the size of this union in bytes divided by
-        /// the size of the type `usize` in bytes. Otherwise, it will panic.
-        /// 
-        /// # Arguments
-        /// `i` indicates `i`-th element. 0-th element contains LSB (Least
-        /// Significant Bit), while (the size of this union in bytes - 1)-th
-        /// element contains MSB (Most Significant Bit) regardless endianness.
-        /// 
-        /// # Output
-        /// i-th element of array `u_size` of type `usize`
-        /// if `i` is less than the size of this union in bytes divided by
-        /// the size of the type `usize` in bytes
-        /// 
-        /// # Panics
-        /// So, if `i` is greater than or equal to the size of this union
-        /// in bytes divided by the size of the type `usize` in bytes,
-        /// it will panic.
-        /// 
-        /// # Caution
-        /// Use this method only when you are sure that the argument `i` is
-        /// less than the size of this union in bytes divided by the size of
-        /// the type `usize` in bytes
-        /// 
-        /// # Counterpart Method
-        /// It is performance-oriented and does not care for safety.
-        /// It is virtually the same as the method get_usize(). This method
-        /// get_usize_() is considered to be slightly faster than the method
-        /// get_usize().
-        /// Use this method only when you are sure that `i` is less than
-        /// the size of this union in bytes divided by the size of the type
-        /// `usize` in bytes. Otherwise, use its counterpart method
-        /// [get_usize()](#method.get_usize) for safety.
-        /// 
-        /// # Example 1 for ShortUnion
-        /// ```
-        /// use cryptocol::number::ShortUnion;
-        /// let a_shortunion = ShortUnion::new_with(2895_u16);
-        /// for i in 0..2
-        ///     { println!("a_shortunion.get_usize_({}) = {}", i, a_shortunion.get_usize_(i)); }
-        /// assert_eq!(a_shortunion.get_usize_(0), 79_usize);
-        /// assert_eq!(a_shortunion.get_usize_(1), 11_usize);
-        /// 
-        /// // It will panic.
-        /// // println!("a_shortunion.get_usize_(2) = {}", a_shortunion.get_usize_(2));
-        /// ```
-        /// 
-        /// # Example 2 for IntUnion
-        /// ```
-        /// use cryptocol::number::IntUnion;
-        /// let a_intunion = IntUnion::new_with(4048161615_u32);
-        /// for i in 0..4
-        ///     { println!("a_intunion.get_usize_({}) = {}", i, a_intunion.get_usize_(i)); }
-        /// assert_eq!(a_intunion.get_usize_(0), 79_usize);
-        /// assert_eq!(a_intunion.get_usize_(1), 11_usize);
-        /// assert_eq!(a_intunion.get_usize_(2), 74_usize);
-        /// assert_eq!(a_intunion.get_usize_(3), 241_usize);
-        /// 
-        /// // It will panic.
-        /// // println!("a_intunion.get_usize_(4) = {}", a_intunion.get_usize_(4));
-        /// ```
-        /// 
-        /// # Example 3 for LongUnion
-        /// ```
-        /// use cryptocol::number::LongUnion;
-        /// let a_longunion = LongUnion::new_with(13664881099896654671_u64);
-        /// for i in 0..8
-        ///     { println!("a_longunion.get_usize_({}) = {}", i, a_longunion.get_usize_(i)); }
-        /// assert_eq!(a_longunion.get_usize_(0), 79_usize);
-        /// assert_eq!(a_longunion.get_usize_(1), 11_usize);
-        /// assert_eq!(a_longunion.get_usize_(2), 74_usize);
-        /// assert_eq!(a_longunion.get_usize_(3), 241_usize);
-        /// assert_eq!(a_longunion.get_usize_(4), 245_usize);
-        /// assert_eq!(a_longunion.get_usize_(5), 104_usize);
-        /// assert_eq!(a_longunion.get_usize_(6), 163_usize);
-        /// assert_eq!(a_longunion.get_usize_(7), 189_usize);
-        /// 
-        /// // It will panic.
-        /// // println!("a_longunion.get_usize_(8) = {}", a_longunion.get_usize_(8));
-        /// ```
-        /// 
-        /// # Example 4 for LongerUnion
-        /// ```
-        /// use cryptocol::number::LongerUnion;
-        /// let a_longerunion = LongerUnion::new_with(339047799029950809142362261752780557135_u128);
-        /// for i in 0..16
-        ///     { println!("a_longerunion.get_usize_({}) = {}", i, a_longerunion.get_usize_(i)); }
-        /// assert_eq!(a_longerunion.get_usize_(0), 79_usize);
-        /// assert_eq!(a_longerunion.get_usize_(1), 11_usize);
-        /// assert_eq!(a_longerunion.get_usize_(2), 74_usize);
-        /// assert_eq!(a_longerunion.get_usize_(3), 241_usize);
-        /// assert_eq!(a_longerunion.get_usize_(4), 245_usize);
-        /// assert_eq!(a_longerunion.get_usize_(5), 104_usize);
-        /// assert_eq!(a_longerunion.get_usize_(6), 163_usize);
-        /// assert_eq!(a_longerunion.get_usize_(7), 189_usize);
-        /// assert_eq!(a_longerunion.get_usize_(8), 88_usize);
-        /// assert_eq!(a_longerunion.get_usize_(9), 136_usize);
-        /// assert_eq!(a_longerunion.get_usize_(10), 206_usize);
-        /// assert_eq!(a_longerunion.get_usize_(11), 126_usize);
-        /// assert_eq!(a_longerunion.get_usize_(12), 26_usize);
-        /// assert_eq!(a_longerunion.get_usize_(13), 59_usize);
-        /// assert_eq!(a_longerunion.get_usize_(14), 18_usize);
-        /// assert_eq!(a_longerunion.get_usize_(15), 255_usize);
-        /// 
-        /// // It will panic.
-        /// // println!("a_longerunion.get_usize_(16) = {}", a_longerunion.get_usize_(16));
-        /// ```
-        /// 
-        /// # Big-endian issue
-        /// It is just experimental for Big Endian CPUs. So, you are not
-        /// encouraged to use it for Big Endian CPUs for serious purpose.
-        /// Only use this crate for Big-endian CPUs with your own full
-        /// responsibility.
-        #[cfg(target_pointer_width = "8")]
-        #[inline] pub fn get_usize_(&self, i: usize) -> usize
-        {
-            #[cfg(target_endian = "little")]    unsafe { self.u_size[i] }
-            #[cfg(target_endian = "big")]       unsafe { self.u_size[Self::J-i] }
-        }
+        // // pub fn get_usize_(&self, i: usize) -> usize
+        // /// Returns i-th element of array `u_size` of type `usize`
+        // /// if `i` is less than the size of this union in bytes divided by
+        // /// the size of the type `usize` in bytes. Otherwise, it will panic.
+        // /// 
+        // /// # Arguments
+        // /// `i` indicates `i`-th element. 0-th element contains LSB (Least
+        // /// Significant Bit), while (the size of this union in bytes - 1)-th
+        // /// element contains MSB (Most Significant Bit) regardless endianness.
+        // /// 
+        // /// # Output
+        // /// i-th element of array `u_size` of type `usize`
+        // /// if `i` is less than the size of this union in bytes divided by
+        // /// the size of the type `usize` in bytes
+        // /// 
+        // /// # Panics
+        // /// So, if `i` is greater than or equal to the size of this union
+        // /// in bytes divided by the size of the type `usize` in bytes,
+        // /// it will panic.
+        // /// 
+        // /// # Caution
+        // /// Use this method only when you are sure that the argument `i` is
+        // /// less than the size of this union in bytes divided by the size of
+        // /// the type `usize` in bytes
+        // /// 
+        // /// # Counterpart Method
+        // /// It is performance-oriented and does not care for safety.
+        // /// It is virtually the same as the method get_usize(). This method
+        // /// get_usize_() is considered to be slightly faster than the method
+        // /// get_usize().
+        // /// Use this method only when you are sure that `i` is less than
+        // /// the size of this union in bytes divided by the size of the type
+        // /// `usize` in bytes. Otherwise, use its counterpart method
+        // /// [get_usize()](#method.get_usize) for safety.
+        // /// 
+        // /// # Example 1 for ShortUnion
+        // /// ```
+        // /// use cryptocol::number::ShortUnion;
+        // /// let a_shortunion = ShortUnion::new_with(2895_u16);
+        // /// for i in 0..2
+        // ///     { println!("a_shortunion.get_usize_({}) = {}", i, a_shortunion.get_usize_(i)); }
+        // /// assert_eq!(a_shortunion.get_usize_(0), 79_usize);
+        // /// assert_eq!(a_shortunion.get_usize_(1), 11_usize);
+        // /// 
+        // /// // It will panic.
+        // /// // println!("a_shortunion.get_usize_(2) = {}", a_shortunion.get_usize_(2));
+        // /// ```
+        // /// 
+        // /// # Example 2 for IntUnion
+        // /// ```
+        // /// use cryptocol::number::IntUnion;
+        // /// let a_intunion = IntUnion::new_with(4048161615_u32);
+        // /// for i in 0..4
+        // ///     { println!("a_intunion.get_usize_({}) = {}", i, a_intunion.get_usize_(i)); }
+        // /// assert_eq!(a_intunion.get_usize_(0), 79_usize);
+        // /// assert_eq!(a_intunion.get_usize_(1), 11_usize);
+        // /// assert_eq!(a_intunion.get_usize_(2), 74_usize);
+        // /// assert_eq!(a_intunion.get_usize_(3), 241_usize);
+        // /// 
+        // /// // It will panic.
+        // /// // println!("a_intunion.get_usize_(4) = {}", a_intunion.get_usize_(4));
+        // /// ```
+        // /// 
+        // /// # Example 3 for LongUnion
+        // /// ```
+        // /// use cryptocol::number::LongUnion;
+        // /// let a_longunion = LongUnion::new_with(13664881099896654671_u64);
+        // /// for i in 0..8
+        // ///     { println!("a_longunion.get_usize_({}) = {}", i, a_longunion.get_usize_(i)); }
+        // /// assert_eq!(a_longunion.get_usize_(0), 79_usize);
+        // /// assert_eq!(a_longunion.get_usize_(1), 11_usize);
+        // /// assert_eq!(a_longunion.get_usize_(2), 74_usize);
+        // /// assert_eq!(a_longunion.get_usize_(3), 241_usize);
+        // /// assert_eq!(a_longunion.get_usize_(4), 245_usize);
+        // /// assert_eq!(a_longunion.get_usize_(5), 104_usize);
+        // /// assert_eq!(a_longunion.get_usize_(6), 163_usize);
+        // /// assert_eq!(a_longunion.get_usize_(7), 189_usize);
+        // /// 
+        // /// // It will panic.
+        // /// // println!("a_longunion.get_usize_(8) = {}", a_longunion.get_usize_(8));
+        // /// ```
+        // /// 
+        // /// # Example 4 for LongerUnion
+        // /// ```
+        // /// use cryptocol::number::LongerUnion;
+        // /// let a_longerunion = LongerUnion::new_with(339047799029950809142362261752780557135_u128);
+        // /// for i in 0..16
+        // ///     { println!("a_longerunion.get_usize_({}) = {}", i, a_longerunion.get_usize_(i)); }
+        // /// assert_eq!(a_longerunion.get_usize_(0), 79_usize);
+        // /// assert_eq!(a_longerunion.get_usize_(1), 11_usize);
+        // /// assert_eq!(a_longerunion.get_usize_(2), 74_usize);
+        // /// assert_eq!(a_longerunion.get_usize_(3), 241_usize);
+        // /// assert_eq!(a_longerunion.get_usize_(4), 245_usize);
+        // /// assert_eq!(a_longerunion.get_usize_(5), 104_usize);
+        // /// assert_eq!(a_longerunion.get_usize_(6), 163_usize);
+        // /// assert_eq!(a_longerunion.get_usize_(7), 189_usize);
+        // /// assert_eq!(a_longerunion.get_usize_(8), 88_usize);
+        // /// assert_eq!(a_longerunion.get_usize_(9), 136_usize);
+        // /// assert_eq!(a_longerunion.get_usize_(10), 206_usize);
+        // /// assert_eq!(a_longerunion.get_usize_(11), 126_usize);
+        // /// assert_eq!(a_longerunion.get_usize_(12), 26_usize);
+        // /// assert_eq!(a_longerunion.get_usize_(13), 59_usize);
+        // /// assert_eq!(a_longerunion.get_usize_(14), 18_usize);
+        // /// assert_eq!(a_longerunion.get_usize_(15), 255_usize);
+        // /// 
+        // /// // It will panic.
+        // /// // println!("a_longerunion.get_usize_(16) = {}", a_longerunion.get_usize_(16));
+        // /// ```
+        // /// 
+        // /// # Big-endian issue
+        // /// It is just experimental for Big Endian CPUs. So, you are not
+        // /// encouraged to use it for Big Endian CPUs for serious purpose.
+        // /// Only use this crate for Big-endian CPUs with your own full
+        // /// responsibility.
+        // #[cfg(target_pointer_width = "8")]
+        // #[inline] pub fn get_usize_(&self, i: usize) -> usize
+        // {
+        //     #[cfg(target_endian = "little")]    unsafe { self.u_size[i] }
+        //     #[cfg(target_endian = "big")]       unsafe { self.u_size[Self::J-i] }
+        // }
 
         // pub fn get_usize_(&self, i: usize) -> usize
         /// Returns i-th element of array `u_size` of type `usize`
@@ -4745,164 +4746,164 @@ macro_rules! get_set_size {
             #[cfg(target_endian = "big")]       unsafe { self.u_size[Self::J-i] }
         }
 
-        // pub fn set_usize_(&mut self, i: usize, val: usize) 
-        /// Sets i-th element of its array `u_size` of type `usize`
-        /// if `i` is less than the size of this union in bytes divided
-        /// by the size of the type `usize` in bytes.
-        /// Otherwise, it will panic.
-        /// 
-        /// # Arguments
-        /// - `i` indicates `i`-th element. 0-th element contains LSB (Least
-        /// Significant Bit), while (the size of this union in bytes - 1)-th
-        /// element contains MSB (Most Significant Bit) regardless endianness.
-        /// - `val` is the value of type `usize` to set the i-th element of its
-        ///  array `u_size` of type `usize`.
-        /// 
-        /// # Panics
-        /// So, if `i` is greater than or equal to the size of this union
-        /// in bytes divided by the size of the type `usize` in bytes,
-        /// it will panic.
-        /// 
-        /// # Caution
-        /// Use this method only when you are sure that the argument `i` is
-        /// less than the size of this union in bytes divided by the size of
-        /// the type `usize` in bytes
-        /// 
-        /// # Counterpart Method
-        /// It is performance-oriented and does not care for safety.
-        /// It is virtually the same as the method set_usize(). This method
-        /// set_usize_() is considered to be slightly faster than the method
-        /// set_usize().
-        /// Use this method only when you are sure that `i` is less than
-        /// the size of this union in bytes divided by the size of the type
-        /// `usize` in bytes. Otherwise, use its counterpart
-        /// method [set_usize()](#method.set_usize) for safety.
-        /// 
-        /// # Example 1 for ShortUnion
-        /// ```
-        /// use cryptocol::number::ShortUnion;
-        /// let mut a_shortunion = ShortUnion::new();
-        /// a_shortunion.set_usize_(0, 79_usize);
-        /// a_shortunion.set_usize_(1, 11_usize);
-        /// 
-        /// // It will panic.
-        /// // a_shortunion.set_usize_(2, 100_usize);
-        /// 
-        /// println!("a_shortunion.get() = {}", a_shortunion.get());
-        /// for i in 0..2
-        ///     { println!("a_shortunion.get_usize_({}) = {}", i, a_shortunion.get_usize_(i)); }
-        /// assert_eq!(a_shortunion.get_usize_(0), 79_usize);
-        /// assert_eq!(a_shortunion.get_usize_(1), 11_usize);
-        /// assert_eq!(a_shortunion.get(), 2895_u16);
-        /// ```
-        /// 
-        /// # Example 2 for IntUnion
-        /// ```
-        /// use cryptocol::number::IntUnion;
-        /// let mut a_intunion = IntUnion::new();
-        /// a_intunion.set_usize_(0, 79_usize);
-        /// a_intunion.set_usize_(1, 11_usize);
-        /// a_intunion.set_usize_(2, 74_usize);
-        /// a_intunion.set_usize_(3, 241_usize);
-        /// 
-        /// // It will panic.
-        /// // a_intunion.set_usize_(4, 100_usize);
-        /// 
-        /// println!("a_intunion.get() = {}", a_intunion.get());
-        /// for i in 0..4
-        ///     { println!("a_intunion.get_usize_({}) = {}", i, a_intunion.get_usize_(i)); }
-        /// assert_eq!(a_intunion.get_usize_(0), 79_usize);
-        /// assert_eq!(a_intunion.get_usize_(1), 11_usize);
-        /// assert_eq!(a_intunion.get_usize_(2), 74_usize);
-        /// assert_eq!(a_intunion.get_usize_(3), 241_usize);
-        /// assert_eq!(a_intunion.get(), 4048161615_u32);
-        /// ```
-        /// 
-        /// # Example 3 for LongUnion
-        /// ```
-        /// use cryptocol::number::LongUnion;
-        /// let mut a_longunion = LongUnion::new();
-        /// a_longunion.set_usize_(0, 79_usize);
-        /// a_longunion.set_usize_(1, 11_usize);
-        /// a_longunion.set_usize_(2, 74_usize);
-        /// a_longunion.set_usize_(3, 241_usize);
-        /// a_longunion.set_usize_(4, 245_usize);
-        /// a_longunion.set_usize_(5, 104_usize);
-        /// a_longunion.set_usize_(6, 163_usize);
-        /// a_longunion.set_usize_(7, 189_usize);
-        /// 
-        /// // It will panic.
-        /// // a_longunion.set_usize_(8, 100_usize);
-        /// 
-        /// for i in 0..8
-        ///     { println!("a_longunion.get_usize_({}) = {}", i, a_longunion.get_usize_(i)); }
-        /// assert_eq!(a_longunion.get_usize_(0), 79_usize);
-        /// assert_eq!(a_longunion.get_usize_(1), 11_usize);
-        /// assert_eq!(a_longunion.get_usize_(2), 74_usize);
-        /// assert_eq!(a_longunion.get_usize_(3), 241_usize);
-        /// assert_eq!(a_longunion.get_usize_(4), 245_usize);
-        /// assert_eq!(a_longunion.get_usize_(5), 104_usize);
-        /// assert_eq!(a_longunion.get_usize_(6), 163_usize);
-        /// assert_eq!(a_longunion.get_usize_(7), 189_usize);
-        /// assert_eq!(a_longunion.get(), 13664881099896654671_u64);
-        /// ```
-        /// 
-        /// # Example 4 for LongerUnion
-        /// ```
-        /// use cryptocol::number::LongerUnion;
-        /// let mut a_longerunion = LongerUnion::new();
-        /// a_longerunion.set_usize_(0, 79_usize);
-        /// a_longerunion.set_usize_(1, 11_usize);
-        /// a_longerunion.set_usize_(2, 74_usize);
-        /// a_longerunion.set_usize_(3, 241_usize);
-        /// a_longerunion.set_usize_(4, 245_usize);
-        /// a_longerunion.set_usize_(5, 104_usize);
-        /// a_longerunion.set_usize_(6, 163_usize);
-        /// a_longerunion.set_usize_(7, 189_usize);
-        /// a_longerunion.set_usize_(8, 88_usize);
-        /// a_longerunion.set_usize_(9, 136_usize);
-        /// a_longerunion.set_usize_(10, 206_usize);
-        /// a_longerunion.set_usize_(11, 126_usize);
-        /// a_longerunion.set_usize_(12, 26_usize);
-        /// a_longerunion.set_usize_(13, 59_usize);
-        /// a_longerunion.set_usize_(14, 18_usize);
-        /// a_longerunion.set_usize_(15, 255_usize);
-        /// 
-        /// // It will panic.
-        /// // a_longerunion.set_usize_(16, 100_usize);
-        /// 
-        /// for i in 0..16
-        ///     { println!("a_longerunion.get_usize_({}) = {}", i, a_longerunion.get_usize_(i)); }
-        /// assert_eq!(a_longerunion.get_usize_(0), 79_usize);
-        /// assert_eq!(a_longerunion.get_usize_(1), 11_usize);
-        /// assert_eq!(a_longerunion.get_usize_(2), 74_usize);
-        /// assert_eq!(a_longerunion.get_usize_(3), 241_usize);
-        /// assert_eq!(a_longerunion.get_usize_(4), 245_usize);
-        /// assert_eq!(a_longerunion.get_usize_(5), 104_usize);
-        /// assert_eq!(a_longerunion.get_usize_(6), 163_usize);
-        /// assert_eq!(a_longerunion.get_usize_(7), 189_usize);
-        /// assert_eq!(a_longerunion.get_usize_(8), 88_usize);
-        /// assert_eq!(a_longerunion.get_usize_(9), 136_usize);
-        /// assert_eq!(a_longerunion.get_usize_(10), 206_usize);
-        /// assert_eq!(a_longerunion.get_usize_(11), 126_usize);
-        /// assert_eq!(a_longerunion.get_usize_(12), 26_usize);
-        /// assert_eq!(a_longerunion.get_usize_(13), 59_usize);
-        /// assert_eq!(a_longerunion.get_usize_(14), 18_usize);
-        /// assert_eq!(a_longerunion.get_usize_(15), 255_usize);
-        /// assert_eq!(a_longerunion.get(), 339047799029950809142362261752780557135_u128);
-        /// ```
-        /// 
-        /// # Big-endian issue
-        /// It is just experimental for Big Endian CPUs. So, you are not
-        /// encouraged to use it for Big Endian CPUs for serious purpose.
-        /// Only use this crate for Big-endian CPUs with your own full
-        /// responsibility.
-        #[cfg(target_pointer_width = "8")]
-        #[inline] pub fn set_usize_(&mut self, i: usize, val: usize) 
-        {
-            #[cfg(target_endian = "little")]    unsafe { self.u_size[i] = val; }
-            #[cfg(target_endian = "big")]       unsafe { self.u_size[Self::J-i] = val; }
-        }
+        // // pub fn set_usize_(&mut self, i: usize, val: usize) 
+        // /// Sets i-th element of its array `u_size` of type `usize`
+        // /// if `i` is less than the size of this union in bytes divided
+        // /// by the size of the type `usize` in bytes.
+        // /// Otherwise, it will panic.
+        // /// 
+        // /// # Arguments
+        // /// - `i` indicates `i`-th element. 0-th element contains LSB (Least
+        // /// Significant Bit), while (the size of this union in bytes - 1)-th
+        // /// element contains MSB (Most Significant Bit) regardless endianness.
+        // /// - `val` is the value of type `usize` to set the i-th element of its
+        // ///  array `u_size` of type `usize`.
+        // /// 
+        // /// # Panics
+        // /// So, if `i` is greater than or equal to the size of this union
+        // /// in bytes divided by the size of the type `usize` in bytes,
+        // /// it will panic.
+        // /// 
+        // /// # Caution
+        // /// Use this method only when you are sure that the argument `i` is
+        // /// less than the size of this union in bytes divided by the size of
+        // /// the type `usize` in bytes
+        // /// 
+        // /// # Counterpart Method
+        // /// It is performance-oriented and does not care for safety.
+        // /// It is virtually the same as the method set_usize(). This method
+        // /// set_usize_() is considered to be slightly faster than the method
+        // /// set_usize().
+        // /// Use this method only when you are sure that `i` is less than
+        // /// the size of this union in bytes divided by the size of the type
+        // /// `usize` in bytes. Otherwise, use its counterpart
+        // /// method [set_usize()](#method.set_usize) for safety.
+        // /// 
+        // /// # Example 1 for ShortUnion
+        // /// ```
+        // /// use cryptocol::number::ShortUnion;
+        // /// let mut a_shortunion = ShortUnion::new();
+        // /// a_shortunion.set_usize_(0, 79_usize);
+        // /// a_shortunion.set_usize_(1, 11_usize);
+        // /// 
+        // /// // It will panic.
+        // /// // a_shortunion.set_usize_(2, 100_usize);
+        // /// 
+        // /// println!("a_shortunion.get() = {}", a_shortunion.get());
+        // /// for i in 0..2
+        // ///     { println!("a_shortunion.get_usize_({}) = {}", i, a_shortunion.get_usize_(i)); }
+        // /// assert_eq!(a_shortunion.get_usize_(0), 79_usize);
+        // /// assert_eq!(a_shortunion.get_usize_(1), 11_usize);
+        // /// assert_eq!(a_shortunion.get(), 2895_u16);
+        // /// ```
+        // /// 
+        // /// # Example 2 for IntUnion
+        // /// ```
+        // /// use cryptocol::number::IntUnion;
+        // /// let mut a_intunion = IntUnion::new();
+        // /// a_intunion.set_usize_(0, 79_usize);
+        // /// a_intunion.set_usize_(1, 11_usize);
+        // /// a_intunion.set_usize_(2, 74_usize);
+        // /// a_intunion.set_usize_(3, 241_usize);
+        // /// 
+        // /// // It will panic.
+        // /// // a_intunion.set_usize_(4, 100_usize);
+        // /// 
+        // /// println!("a_intunion.get() = {}", a_intunion.get());
+        // /// for i in 0..4
+        // ///     { println!("a_intunion.get_usize_({}) = {}", i, a_intunion.get_usize_(i)); }
+        // /// assert_eq!(a_intunion.get_usize_(0), 79_usize);
+        // /// assert_eq!(a_intunion.get_usize_(1), 11_usize);
+        // /// assert_eq!(a_intunion.get_usize_(2), 74_usize);
+        // /// assert_eq!(a_intunion.get_usize_(3), 241_usize);
+        // /// assert_eq!(a_intunion.get(), 4048161615_u32);
+        // /// ```
+        // /// 
+        // /// # Example 3 for LongUnion
+        // /// ```
+        // /// use cryptocol::number::LongUnion;
+        // /// let mut a_longunion = LongUnion::new();
+        // /// a_longunion.set_usize_(0, 79_usize);
+        // /// a_longunion.set_usize_(1, 11_usize);
+        // /// a_longunion.set_usize_(2, 74_usize);
+        // /// a_longunion.set_usize_(3, 241_usize);
+        // /// a_longunion.set_usize_(4, 245_usize);
+        // /// a_longunion.set_usize_(5, 104_usize);
+        // /// a_longunion.set_usize_(6, 163_usize);
+        // /// a_longunion.set_usize_(7, 189_usize);
+        // /// 
+        // /// // It will panic.
+        // /// // a_longunion.set_usize_(8, 100_usize);
+        // /// 
+        // /// for i in 0..8
+        // ///     { println!("a_longunion.get_usize_({}) = {}", i, a_longunion.get_usize_(i)); }
+        // /// assert_eq!(a_longunion.get_usize_(0), 79_usize);
+        // /// assert_eq!(a_longunion.get_usize_(1), 11_usize);
+        // /// assert_eq!(a_longunion.get_usize_(2), 74_usize);
+        // /// assert_eq!(a_longunion.get_usize_(3), 241_usize);
+        // /// assert_eq!(a_longunion.get_usize_(4), 245_usize);
+        // /// assert_eq!(a_longunion.get_usize_(5), 104_usize);
+        // /// assert_eq!(a_longunion.get_usize_(6), 163_usize);
+        // /// assert_eq!(a_longunion.get_usize_(7), 189_usize);
+        // /// assert_eq!(a_longunion.get(), 13664881099896654671_u64);
+        // /// ```
+        // /// 
+        // /// # Example 4 for LongerUnion
+        // /// ```
+        // /// use cryptocol::number::LongerUnion;
+        // /// let mut a_longerunion = LongerUnion::new();
+        // /// a_longerunion.set_usize_(0, 79_usize);
+        // /// a_longerunion.set_usize_(1, 11_usize);
+        // /// a_longerunion.set_usize_(2, 74_usize);
+        // /// a_longerunion.set_usize_(3, 241_usize);
+        // /// a_longerunion.set_usize_(4, 245_usize);
+        // /// a_longerunion.set_usize_(5, 104_usize);
+        // /// a_longerunion.set_usize_(6, 163_usize);
+        // /// a_longerunion.set_usize_(7, 189_usize);
+        // /// a_longerunion.set_usize_(8, 88_usize);
+        // /// a_longerunion.set_usize_(9, 136_usize);
+        // /// a_longerunion.set_usize_(10, 206_usize);
+        // /// a_longerunion.set_usize_(11, 126_usize);
+        // /// a_longerunion.set_usize_(12, 26_usize);
+        // /// a_longerunion.set_usize_(13, 59_usize);
+        // /// a_longerunion.set_usize_(14, 18_usize);
+        // /// a_longerunion.set_usize_(15, 255_usize);
+        // /// 
+        // /// // It will panic.
+        // /// // a_longerunion.set_usize_(16, 100_usize);
+        // /// 
+        // /// for i in 0..16
+        // ///     { println!("a_longerunion.get_usize_({}) = {}", i, a_longerunion.get_usize_(i)); }
+        // /// assert_eq!(a_longerunion.get_usize_(0), 79_usize);
+        // /// assert_eq!(a_longerunion.get_usize_(1), 11_usize);
+        // /// assert_eq!(a_longerunion.get_usize_(2), 74_usize);
+        // /// assert_eq!(a_longerunion.get_usize_(3), 241_usize);
+        // /// assert_eq!(a_longerunion.get_usize_(4), 245_usize);
+        // /// assert_eq!(a_longerunion.get_usize_(5), 104_usize);
+        // /// assert_eq!(a_longerunion.get_usize_(6), 163_usize);
+        // /// assert_eq!(a_longerunion.get_usize_(7), 189_usize);
+        // /// assert_eq!(a_longerunion.get_usize_(8), 88_usize);
+        // /// assert_eq!(a_longerunion.get_usize_(9), 136_usize);
+        // /// assert_eq!(a_longerunion.get_usize_(10), 206_usize);
+        // /// assert_eq!(a_longerunion.get_usize_(11), 126_usize);
+        // /// assert_eq!(a_longerunion.get_usize_(12), 26_usize);
+        // /// assert_eq!(a_longerunion.get_usize_(13), 59_usize);
+        // /// assert_eq!(a_longerunion.get_usize_(14), 18_usize);
+        // /// assert_eq!(a_longerunion.get_usize_(15), 255_usize);
+        // /// assert_eq!(a_longerunion.get(), 339047799029950809142362261752780557135_u128);
+        // /// ```
+        // /// 
+        // /// # Big-endian issue
+        // /// It is just experimental for Big Endian CPUs. So, you are not
+        // /// encouraged to use it for Big Endian CPUs for serious purpose.
+        // /// Only use this crate for Big-endian CPUs with your own full
+        // /// responsibility.
+        // #[cfg(target_pointer_width = "8")]
+        // #[inline] pub fn set_usize_(&mut self, i: usize, val: usize) 
+        // {
+        //     #[cfg(target_endian = "little")]    unsafe { self.u_size[i] = val; }
+        //     #[cfg(target_endian = "big")]       unsafe { self.u_size[Self::J-i] = val; }
+        // }
 
         // pub fn set_usize_(&mut self, i: usize, val: usize) 
         /// Sets i-th element of its array `u_size` of type `usize`
@@ -5162,126 +5163,126 @@ macro_rules! get_set_size {
             #[cfg(target_endian = "big")]       unsafe { self.u_size[Self::J-i] = val; }
         }
 
-        // pub fn get_ssize_(&self, i: usize) -> isize
-        /// Returns i-th element of array `s_size` of type `isize`
-        /// if `i` is less than the size of this union in bytes divided by
-        /// the size of the type `isize` in bytes. Otherwise, it will panic.
-        /// 
-        /// # Arguments
-        /// - `i` indicates `i`-th element. 0-th element contains LSB (Least
-        /// Significant Bit), while (the size of this union in bytes - 1)-th
-        /// element contains MSB (Most Significant Bit) regardless endianness.
-        /// 
-        /// # Output
-        /// i-th element of array `s_size` of type `isize`
-        /// if `i` is less than the size of this union in bytes divided by
-        /// the size of the type `isize` in bytes
-        /// 
-        /// # Panics
-        /// So, if `i` is greater than or equal to the size of this union
-        /// in bytes divided by the size of the type `isize` in bytes,
-        /// it will panic.
-        /// 
-        /// # Caution
-        /// Use this method only when you are sure that the argument `i` is
-        /// less than the size of this union in bytes divided by the size of
-        /// the type `usize` in bytes
-        /// 
-        /// # Counterpart Method
-        /// It is performance-oriented and does not care for safety.
-        /// It is virtually the same as the method get_ssize(). This method
-        /// get_ssize_() is considered to be slightly faster than the method
-        /// get_ssize().
-        /// Use this method only when you are sure that `i` is less than
-        /// the size of this union in bytes divided by the size of the type
-        /// `isize` in bytes. Otherwise, use its counterpart method
-        /// [get_ssize()](#method.get_ssize) for safety.
-        /// 
-        /// # Example 1 for ShortUnion
-        /// ```
-        /// use cryptocol::number::ShortUnion;
-        /// let a_shortunion = ShortUnion::new_with(2895_u16);
-        /// for i in 0..2
-        ///     { println!("a_shortunion.get_ssize_({}) = {}", i, a_shortunion.get_ssize_(i)); }
-        /// assert_eq!(a_shortunion.get_ssize_(0), 79__isize);
-        /// assert_eq!(a_shortunion.get_ssize_(1), 11__isize);
-        /// 
-        /// // It will panic.
-        /// // println!("a_shortunion.get_ssize_(2) = {}", a_shortunion.get_ssize_(2));
-        /// ```
-        /// 
-        /// # Example 2 for IntUnion
-        /// ```
-        /// use cryptocol::number::IntUnion;
-        /// let a_intunion = IntUnion::new_with(4048161615_u32);
-        /// for i in 0..4
-        ///     { println!("a_intunion.get_ssize_({}) = {}", i, a_intunion.get_ssize_(i)); }
-        /// assert_eq!(a_intunion.get_ssize_(0), 79__isize);
-        /// assert_eq!(a_intunion.get_ssize_(1), 11__isize);
-        /// assert_eq!(a_intunion.get_ssize_(2), 74__isize);
-        /// assert_eq!(a_intunion.get_ssize_(3), -15__isize);
-        /// 
-        /// // It will panic.
-        /// // println!("a_intunion.get_ssize_(4) = {}", a_intunion.get_ssize_(4));
-        /// ```
-        /// 
-        /// # Example 3 for LongUnion
-        /// ```
-        /// use cryptocol::number::LongUnion;
-        /// let a_longunion = LongUnion::new_with(13664881099896654671_u64);
-        /// for i in 0..8
-        ///     { println!("a_longunion.get_ssize_({}) = {}", i, a_longunion.get_ssize_(i)); }
-        /// assert_eq!(a_longunion.get_ssize_(0), 79__isize);
-        /// assert_eq!(a_longunion.get_ssize_(1), 11__isize);
-        /// assert_eq!(a_longunion.get_ssize_(2), 74__isize);
-        /// assert_eq!(a_longunion.get_ssize_(3), -15__isize);
-        /// assert_eq!(a_longunion.get_ssize_(4), -11__isize);
-        /// assert_eq!(a_longunion.get_ssize_(5), 104__isize);
-        /// assert_eq!(a_longunion.get_ssize_(6), -93__isize);
-        /// assert_eq!(a_longunion.get_ssize_(7), -67__isize);
-        /// 
-        /// // It will panic.
-        /// // println!("a_longunion.get_ssize_(8) = {}", a_longunion.get_ssize_(8));
-        /// ```
-        /// 
-        /// # Example 4 for LongerUnion
-        /// ```
-        /// use cryptocol::number::LongerUnion;
-        /// let a_longerunion = LongerUnion::new_with(339047799029950809142362261752780557135_u128);
-        /// for i in 0..16
-        ///     { println!("a_longerunion.get_ssize_({}) = {}", i, a_longerunion.get_ssize_(i)); }
-        /// assert_eq!(a_longerunion.get_ssize_(0), 79__isize);
-        /// assert_eq!(a_longerunion.get_ssize_(1), 11__isize);
-        /// assert_eq!(a_longerunion.get_ssize_(2), 74__isize);
-        /// assert_eq!(a_longerunion.get_ssize_(3), -15__isize);
-        /// assert_eq!(a_longerunion.get_ssize_(4), -11__isize);
-        /// assert_eq!(a_longerunion.get_ssize_(5), 104__isize);
-        /// assert_eq!(a_longerunion.get_ssize_(6), -93__isize);
-        /// assert_eq!(a_longerunion.get_ssize_(7), -67__isize);
-        /// assert_eq!(a_longerunion.get_ssize_(8), 88__isize);
-        /// assert_eq!(a_longerunion.get_ssize_(9), -120__isize);
-        /// assert_eq!(a_longerunion.get_ssize_(10), -50__isize);
-        /// assert_eq!(a_longerunion.get_ssize_(11), 126__isize);
-        /// assert_eq!(a_longerunion.get_ssize_(12), 26__isize);
-        /// assert_eq!(a_longerunion.get_ssize_(13), 59__isize);
-        /// assert_eq!(a_longerunion.get_ssize_(14), 18__isize);
-        /// assert_eq!(a_longerunion.get_ssize_(15), -1__isize);
-        /// 
-        /// // It will panic.
-        /// // println!("a_longerunion.get_ssize_(16) = {}", a_longerunion.get_ssize_(16));
-        /// ```
-        /// 
-        /// # Big-endian issue
-        /// It is just experimental for Big Endian CPUs. So, you are not
-        /// encouraged to use it for Big Endian CPUs for serious purpose.
-        /// Only use this crate for Big-endian CPUs with your own full
-        /// responsibility.
-        #[cfg(target_pointer_width = "8")]
-        #[inline] pub fn get_ssize_(&self, i: usize) -> isize
-        {
-            #[cfg(target_endian = "little")]    unsafe { self.s_size[i] }
-            #[cfg(target_endian = "big")]       unsafe { self.s_size[Self::J-i] }
-        }
+        // // pub fn get_ssize_(&self, i: usize) -> isize
+        // /// Returns i-th element of array `s_size` of type `isize`
+        // /// if `i` is less than the size of this union in bytes divided by
+        // /// the size of the type `isize` in bytes. Otherwise, it will panic.
+        // /// 
+        // /// # Arguments
+        // /// - `i` indicates `i`-th element. 0-th element contains LSB (Least
+        // /// Significant Bit), while (the size of this union in bytes - 1)-th
+        // /// element contains MSB (Most Significant Bit) regardless endianness.
+        // /// 
+        // /// # Output
+        // /// i-th element of array `s_size` of type `isize`
+        // /// if `i` is less than the size of this union in bytes divided by
+        // /// the size of the type `isize` in bytes
+        // /// 
+        // /// # Panics
+        // /// So, if `i` is greater than or equal to the size of this union
+        // /// in bytes divided by the size of the type `isize` in bytes,
+        // /// it will panic.
+        // /// 
+        // /// # Caution
+        // /// Use this method only when you are sure that the argument `i` is
+        // /// less than the size of this union in bytes divided by the size of
+        // /// the type `usize` in bytes
+        // /// 
+        // /// # Counterpart Method
+        // /// It is performance-oriented and does not care for safety.
+        // /// It is virtually the same as the method get_ssize(). This method
+        // /// get_ssize_() is considered to be slightly faster than the method
+        // /// get_ssize().
+        // /// Use this method only when you are sure that `i` is less than
+        // /// the size of this union in bytes divided by the size of the type
+        // /// `isize` in bytes. Otherwise, use its counterpart method
+        // /// [get_ssize()](#method.get_ssize) for safety.
+        // /// 
+        // /// # Example 1 for ShortUnion
+        // /// ```
+        // /// use cryptocol::number::ShortUnion;
+        // /// let a_shortunion = ShortUnion::new_with(2895_u16);
+        // /// for i in 0..2
+        // ///     { println!("a_shortunion.get_ssize_({}) = {}", i, a_shortunion.get_ssize_(i)); }
+        // /// assert_eq!(a_shortunion.get_ssize_(0), 79__isize);
+        // /// assert_eq!(a_shortunion.get_ssize_(1), 11__isize);
+        // /// 
+        // /// // It will panic.
+        // /// // println!("a_shortunion.get_ssize_(2) = {}", a_shortunion.get_ssize_(2));
+        // /// ```
+        // /// 
+        // /// # Example 2 for IntUnion
+        // /// ```
+        // /// use cryptocol::number::IntUnion;
+        // /// let a_intunion = IntUnion::new_with(4048161615_u32);
+        // /// for i in 0..4
+        // ///     { println!("a_intunion.get_ssize_({}) = {}", i, a_intunion.get_ssize_(i)); }
+        // /// assert_eq!(a_intunion.get_ssize_(0), 79__isize);
+        // /// assert_eq!(a_intunion.get_ssize_(1), 11__isize);
+        // /// assert_eq!(a_intunion.get_ssize_(2), 74__isize);
+        // /// assert_eq!(a_intunion.get_ssize_(3), -15__isize);
+        // /// 
+        // /// // It will panic.
+        // /// // println!("a_intunion.get_ssize_(4) = {}", a_intunion.get_ssize_(4));
+        // /// ```
+        // /// 
+        // /// # Example 3 for LongUnion
+        // /// ```
+        // /// use cryptocol::number::LongUnion;
+        // /// let a_longunion = LongUnion::new_with(13664881099896654671_u64);
+        // /// for i in 0..8
+        // ///     { println!("a_longunion.get_ssize_({}) = {}", i, a_longunion.get_ssize_(i)); }
+        // /// assert_eq!(a_longunion.get_ssize_(0), 79__isize);
+        // /// assert_eq!(a_longunion.get_ssize_(1), 11__isize);
+        // /// assert_eq!(a_longunion.get_ssize_(2), 74__isize);
+        // /// assert_eq!(a_longunion.get_ssize_(3), -15__isize);
+        // /// assert_eq!(a_longunion.get_ssize_(4), -11__isize);
+        // /// assert_eq!(a_longunion.get_ssize_(5), 104__isize);
+        // /// assert_eq!(a_longunion.get_ssize_(6), -93__isize);
+        // /// assert_eq!(a_longunion.get_ssize_(7), -67__isize);
+        // /// 
+        // /// // It will panic.
+        // /// // println!("a_longunion.get_ssize_(8) = {}", a_longunion.get_ssize_(8));
+        // /// ```
+        // /// 
+        // /// # Example 4 for LongerUnion
+        // /// ```
+        // /// use cryptocol::number::LongerUnion;
+        // /// let a_longerunion = LongerUnion::new_with(339047799029950809142362261752780557135_u128);
+        // /// for i in 0..16
+        // ///     { println!("a_longerunion.get_ssize_({}) = {}", i, a_longerunion.get_ssize_(i)); }
+        // /// assert_eq!(a_longerunion.get_ssize_(0), 79__isize);
+        // /// assert_eq!(a_longerunion.get_ssize_(1), 11__isize);
+        // /// assert_eq!(a_longerunion.get_ssize_(2), 74__isize);
+        // /// assert_eq!(a_longerunion.get_ssize_(3), -15__isize);
+        // /// assert_eq!(a_longerunion.get_ssize_(4), -11__isize);
+        // /// assert_eq!(a_longerunion.get_ssize_(5), 104__isize);
+        // /// assert_eq!(a_longerunion.get_ssize_(6), -93__isize);
+        // /// assert_eq!(a_longerunion.get_ssize_(7), -67__isize);
+        // /// assert_eq!(a_longerunion.get_ssize_(8), 88__isize);
+        // /// assert_eq!(a_longerunion.get_ssize_(9), -120__isize);
+        // /// assert_eq!(a_longerunion.get_ssize_(10), -50__isize);
+        // /// assert_eq!(a_longerunion.get_ssize_(11), 126__isize);
+        // /// assert_eq!(a_longerunion.get_ssize_(12), 26__isize);
+        // /// assert_eq!(a_longerunion.get_ssize_(13), 59__isize);
+        // /// assert_eq!(a_longerunion.get_ssize_(14), 18__isize);
+        // /// assert_eq!(a_longerunion.get_ssize_(15), -1__isize);
+        // /// 
+        // /// // It will panic.
+        // /// // println!("a_longerunion.get_ssize_(16) = {}", a_longerunion.get_ssize_(16));
+        // /// ```
+        // /// 
+        // /// # Big-endian issue
+        // /// It is just experimental for Big Endian CPUs. So, you are not
+        // /// encouraged to use it for Big Endian CPUs for serious purpose.
+        // /// Only use this crate for Big-endian CPUs with your own full
+        // /// responsibility.
+        // #[cfg(target_pointer_width = "8")]
+        // #[inline] pub fn get_ssize_(&self, i: usize) -> isize
+        // {
+        //     #[cfg(target_endian = "little")]    unsafe { self.s_size[i] }
+        //     #[cfg(target_endian = "big")]       unsafe { self.s_size[Self::J-i] }
+        // }
 
         // pub fn get_ssize_(&self, i: usize) -> isize
         /// Returns i-th element of array `s_size` of type `isize`
@@ -5512,166 +5513,166 @@ macro_rules! get_set_size {
             #[cfg(target_endian = "big")]       unsafe { self.s_size[Self::J-i] }
         }
 
-        // pub fn set_ssize_(&mut self, i: usize, val: isize) 
-        /// Sets i-th element of its array `s_size` of type `isize`
-        /// if `i` is less than the size of this union in bytes divided
-        /// by the size of the type `isize` in bytes.
-        /// Otherwise, it will panic.
-        /// 
-        /// # Arguments
-        /// - `i` indicates `i`-th element. 0-th element contains LSB (Least
-        /// Significant Bit), while (the size of this union in bytes - 1)-th
-        /// element contains MSB (Most Significant Bit) regardless endianness.
-        /// - `val` is the value of type `isize` to set the i-th element of its
-        ///  array `s_size` of type `isize`.
-        /// 
-        /// # Panics
-        /// So, if `i` is greater than or equal to the size of this union
-        /// in bytes divided by the size of the type `isize` in bytes,
-        /// it will panic.
-        /// 
-        /// # Caution
-        /// Use this method only when you are sure that the argument `i` is
-        /// less than the size of this union in bytes divided by the size of
-        /// the type `isize` in bytes
-        /// 
-        /// # Counterpart Method
-        /// It is performance-oriented and does not care for safety.
-        /// It is virtually the same as the method set_ssize(). This method
-        /// set_ssize_() is considered to be slightly faster than the method
-        /// set_ssize().
-        /// Use this method only when you are sure that `i` is less than
-        /// the size of this union in bytes divided by the size of the type
-        /// `isize` in bytes. Otherwise, use its counterpart method
-        /// [set_ssize()](#method.set_ssize) for safety.
-        /// 
-        /// # Example 1 for ShortUnion
-        /// ```
-        /// use cryptocol::number::ShortUnion;
-        /// let mut a_shortunion = ShortUnion::new();
-        /// a_shortunion.set_ssize_(0, 79_isize);
-        /// a_shortunion.set_ssize_(1, 11_isize);
-        /// 
-        /// // It will panic.
-        /// // a_shortunion.set_ssize_(2, 100_isize);
-        /// 
-        /// println!("a_shortunion.get() = {}", a_shortunion.get());
-        /// for i in 0..2
-        ///     { println!("a_shortunion.get_ssize_({}) = {}", i, a_shortunion.get_ssize_(i)); }
-        /// assert_eq!(a_shortunion.get_ssize_(0), 79_isize);
-        /// assert_eq!(a_shortunion.get_ssize_(1), 11_isize);
-        /// assert_eq!(a_shortunion.get(), 2895_u16);
-        /// ```
-        /// 
-        /// # Example 2 for IntUnion
-        /// ```
-        /// use cryptocol::number::IntUnion;
-        /// let mut a_intunion = IntUnion::new();
-        /// a_intunion.set_ssize_(0, 79_isize);
-        /// a_intunion.set_ssize_(1, 11_isize);
-        /// a_intunion.set_ssize_(2, 74_isize);
-        /// a_intunion.set_ssize_(3, -15_isize);
-        /// 
-        /// // It will panic.
-        /// // a_intunion.set_ssize_(4, 100_isize);
-        /// 
-        /// println!("a_intunion.get() = {}", a_intunion.get());
-        /// for i in 0..4
-        ///     { println!("a_intunion.get_ssize_({}) = {}", i, a_intunion.get_ssize_(i)); }
-        /// assert_eq!(a_intunion.get_ssize_(0), 79_isize);
-        /// assert_eq!(a_intunion.get_ssize_(1), 11_isize);
-        /// assert_eq!(a_intunion.get_ssize_(2), 74_isize);
-        /// assert_eq!(a_intunion.get_ssize_(3), -15_isize);
-        /// assert_eq!(a_intunion.get(), 4048161615_u32);
-        /// ```
-        /// 
-        /// # Example 3 for LongUnion
-        /// ```
-        /// use cryptocol::number::LongUnion;
-        /// let mut a_longunion = LongUnion::new();
-        /// a_longunion.set_ssize_(0, 79_isize);
-        /// a_longunion.set_ssize_(1, 11_isize);
-        /// a_longunion.set_ssize_(2, 74_isize);
-        /// a_longunion.set_ssize_(3, -15_isize);
-        /// a_longunion.set_ssize_(4, -11_isize);
-        /// a_longunion.set_ssize_(5, 104_isize);
-        /// a_longunion.set_ssize_(6, -93_isize);
-        /// a_longunion.set_ssize_(7, -67_isize);
-        /// 
-        /// // It will panic.
-        /// // a_intunion.set_ssize_(8, 100_isize);
-        /// 
-        /// println!("a_longunion.get() = {}", a_longunion.get());
-        /// for i in 0..8
-        ///     { println!("a_longunion.get_ssize_({}) = {}", i, a_longunion.get_ssize_(i)); }
-        /// assert_eq!(a_longunion.get_ssize_(0), 79_isize);
-        /// assert_eq!(a_longunion.get_ssize_(1), 11_isize);
-        /// assert_eq!(a_longunion.get_ssize_(2), 74_isize);
-        /// assert_eq!(a_longunion.get_ssize_(3), -15_isize);
-        /// assert_eq!(a_longunion.get_ssize_(4), -11_isize);
-        /// assert_eq!(a_longunion.get_ssize_(5), 104_isize);
-        /// assert_eq!(a_longunion.get_ssize_(6), -93_isize);
-        /// assert_eq!(a_longunion.get_ssize_(7), -67_isize);
-        /// assert_eq!(a_longunion.get(), 13664881099896654671_u64);
-        /// ```
-        /// 
-        /// # Example 4 for LongerUnion
-        /// ```
-        /// use cryptocol::number::LongerUnion;
-        /// let mut a_longerunion = LongerUnion::new();
-        /// a_longerunion.set_ssize_(0, 79_isize);
-        /// a_longerunion.set_ssize_(1, 11_isize);
-        /// a_longerunion.set_ssize_(2, 74_isize);
-        /// a_longerunion.set_ssize_(3, -15_isize);
-        /// a_longerunion.set_ssize_(4, -11_isize);
-        /// a_longerunion.set_ssize_(5, 104_isize);
-        /// a_longerunion.set_ssize_(6, -93_isize);
-        /// a_longerunion.set_ssize_(7, -67_isize);
-        /// a_longerunion.set_ssize_(8, 88_isize);
-        /// a_longerunion.set_ssize_(9, -120_isize);
-        /// a_longerunion.set_ssize_(10, -50_isize);
-        /// a_longerunion.set_ssize_(11, 126_isize);
-        /// a_longerunion.set_ssize_(12, 26_isize);
-        /// a_longerunion.set_ssize_(13, 59_isize);
-        /// a_longerunion.set_ssize_(14, 18_isize);
-        /// a_longerunion.set_ssize_(15, -1_isize);
-        /// 
-        /// // It will panic.
-        /// // a_longerunion.set_ssize_(16, 100_isize);
-        /// 
-        /// println!("a_longerunion.get() = {}", a_longerunion.get());
-        /// for i in 0..16
-        ///     { println!("a_longerunion.get_ssize_({}) = {}", i, a_longerunion.get_ssize_(i)); }
-        /// assert_eq!(a_longerunion.get_ssize_(0), 79_isize);
-        /// assert_eq!(a_longerunion.get_ssize_(1), 11_isize);
-        /// assert_eq!(a_longerunion.get_ssize_(2), 74_isize);
-        /// assert_eq!(a_longerunion.get_ssize_(3), -15_isize);
-        /// assert_eq!(a_longerunion.get_ssize_(4), -11_isize);
-        /// assert_eq!(a_longerunion.get_ssize_(5), 104_isize);
-        /// assert_eq!(a_longerunion.get_ssize_(6), -93_isize);
-        /// assert_eq!(a_longerunion.get_ssize_(7), -67_isize);
-        /// assert_eq!(a_longerunion.get_ssize_(8), 88_isize);
-        /// assert_eq!(a_longerunion.get_ssize_(9), -120_isize);
-        /// assert_eq!(a_longerunion.get_ssize_(10), -50_isize);
-        /// assert_eq!(a_longerunion.get_ssize_(11), 126_isize);
-        /// assert_eq!(a_longerunion.get_ssize_(12), 26_isize);
-        /// assert_eq!(a_longerunion.get_ssize_(13), 59_isize);
-        /// assert_eq!(a_longerunion.get_ssize_(14), 18_isize);
-        /// assert_eq!(a_longerunion.get_ssize_(15), -1_isize);
-        /// assert_eq!(a_longerunion.get(), 339047799029950809142362261752780557135_usize);
-        /// ```
-        /// 
-        /// # Big-endian issue
-        /// It is just experimental for Big Endian CPUs. So, you are not
-        /// encouraged to use it for Big Endian CPUs for serious purpose.
-        /// Only use this crate for Big-endian CPUs with your own full
-        /// responsibility.
-        #[cfg(target_pointer_width = "8")]
-        #[inline] pub fn set_ssize_(&mut self, i: usize, val: isize) 
-        {
-            #[cfg(target_endian = "little")]    unsafe { self.s_size[i] = val; }
-            #[cfg(target_endian = "big")]       unsafe { self.s_size[Self::J-i] = val; }
-        }
+        // // pub fn set_ssize_(&mut self, i: usize, val: isize) 
+        // /// Sets i-th element of its array `s_size` of type `isize`
+        // /// if `i` is less than the size of this union in bytes divided
+        // /// by the size of the type `isize` in bytes.
+        // /// Otherwise, it will panic.
+        // /// 
+        // /// # Arguments
+        // /// - `i` indicates `i`-th element. 0-th element contains LSB (Least
+        // /// Significant Bit), while (the size of this union in bytes - 1)-th
+        // /// element contains MSB (Most Significant Bit) regardless endianness.
+        // /// - `val` is the value of type `isize` to set the i-th element of its
+        // ///  array `s_size` of type `isize`.
+        // /// 
+        // /// # Panics
+        // /// So, if `i` is greater than or equal to the size of this union
+        // /// in bytes divided by the size of the type `isize` in bytes,
+        // /// it will panic.
+        // /// 
+        // /// # Caution
+        // /// Use this method only when you are sure that the argument `i` is
+        // /// less than the size of this union in bytes divided by the size of
+        // /// the type `isize` in bytes
+        // /// 
+        // /// # Counterpart Method
+        // /// It is performance-oriented and does not care for safety.
+        // /// It is virtually the same as the method set_ssize(). This method
+        // /// set_ssize_() is considered to be slightly faster than the method
+        // /// set_ssize().
+        // /// Use this method only when you are sure that `i` is less than
+        // /// the size of this union in bytes divided by the size of the type
+        // /// `isize` in bytes. Otherwise, use its counterpart method
+        // /// [set_ssize()](#method.set_ssize) for safety.
+        // /// 
+        // /// # Example 1 for ShortUnion
+        // /// ```
+        // /// use cryptocol::number::ShortUnion;
+        // /// let mut a_shortunion = ShortUnion::new();
+        // /// a_shortunion.set_ssize_(0, 79_isize);
+        // /// a_shortunion.set_ssize_(1, 11_isize);
+        // /// 
+        // /// // It will panic.
+        // /// // a_shortunion.set_ssize_(2, 100_isize);
+        // /// 
+        // /// println!("a_shortunion.get() = {}", a_shortunion.get());
+        // /// for i in 0..2
+        // ///     { println!("a_shortunion.get_ssize_({}) = {}", i, a_shortunion.get_ssize_(i)); }
+        // /// assert_eq!(a_shortunion.get_ssize_(0), 79_isize);
+        // /// assert_eq!(a_shortunion.get_ssize_(1), 11_isize);
+        // /// assert_eq!(a_shortunion.get(), 2895_u16);
+        // /// ```
+        // /// 
+        // /// # Example 2 for IntUnion
+        // /// ```
+        // /// use cryptocol::number::IntUnion;
+        // /// let mut a_intunion = IntUnion::new();
+        // /// a_intunion.set_ssize_(0, 79_isize);
+        // /// a_intunion.set_ssize_(1, 11_isize);
+        // /// a_intunion.set_ssize_(2, 74_isize);
+        // /// a_intunion.set_ssize_(3, -15_isize);
+        // /// 
+        // /// // It will panic.
+        // /// // a_intunion.set_ssize_(4, 100_isize);
+        // /// 
+        // /// println!("a_intunion.get() = {}", a_intunion.get());
+        // /// for i in 0..4
+        // ///     { println!("a_intunion.get_ssize_({}) = {}", i, a_intunion.get_ssize_(i)); }
+        // /// assert_eq!(a_intunion.get_ssize_(0), 79_isize);
+        // /// assert_eq!(a_intunion.get_ssize_(1), 11_isize);
+        // /// assert_eq!(a_intunion.get_ssize_(2), 74_isize);
+        // /// assert_eq!(a_intunion.get_ssize_(3), -15_isize);
+        // /// assert_eq!(a_intunion.get(), 4048161615_u32);
+        // /// ```
+        // /// 
+        // /// # Example 3 for LongUnion
+        // /// ```
+        // /// use cryptocol::number::LongUnion;
+        // /// let mut a_longunion = LongUnion::new();
+        // /// a_longunion.set_ssize_(0, 79_isize);
+        // /// a_longunion.set_ssize_(1, 11_isize);
+        // /// a_longunion.set_ssize_(2, 74_isize);
+        // /// a_longunion.set_ssize_(3, -15_isize);
+        // /// a_longunion.set_ssize_(4, -11_isize);
+        // /// a_longunion.set_ssize_(5, 104_isize);
+        // /// a_longunion.set_ssize_(6, -93_isize);
+        // /// a_longunion.set_ssize_(7, -67_isize);
+        // /// 
+        // /// // It will panic.
+        // /// // a_intunion.set_ssize_(8, 100_isize);
+        // /// 
+        // /// println!("a_longunion.get() = {}", a_longunion.get());
+        // /// for i in 0..8
+        // ///     { println!("a_longunion.get_ssize_({}) = {}", i, a_longunion.get_ssize_(i)); }
+        // /// assert_eq!(a_longunion.get_ssize_(0), 79_isize);
+        // /// assert_eq!(a_longunion.get_ssize_(1), 11_isize);
+        // /// assert_eq!(a_longunion.get_ssize_(2), 74_isize);
+        // /// assert_eq!(a_longunion.get_ssize_(3), -15_isize);
+        // /// assert_eq!(a_longunion.get_ssize_(4), -11_isize);
+        // /// assert_eq!(a_longunion.get_ssize_(5), 104_isize);
+        // /// assert_eq!(a_longunion.get_ssize_(6), -93_isize);
+        // /// assert_eq!(a_longunion.get_ssize_(7), -67_isize);
+        // /// assert_eq!(a_longunion.get(), 13664881099896654671_u64);
+        // /// ```
+        // /// 
+        // /// # Example 4 for LongerUnion
+        // /// ```
+        // /// use cryptocol::number::LongerUnion;
+        // /// let mut a_longerunion = LongerUnion::new();
+        // /// a_longerunion.set_ssize_(0, 79_isize);
+        // /// a_longerunion.set_ssize_(1, 11_isize);
+        // /// a_longerunion.set_ssize_(2, 74_isize);
+        // /// a_longerunion.set_ssize_(3, -15_isize);
+        // /// a_longerunion.set_ssize_(4, -11_isize);
+        // /// a_longerunion.set_ssize_(5, 104_isize);
+        // /// a_longerunion.set_ssize_(6, -93_isize);
+        // /// a_longerunion.set_ssize_(7, -67_isize);
+        // /// a_longerunion.set_ssize_(8, 88_isize);
+        // /// a_longerunion.set_ssize_(9, -120_isize);
+        // /// a_longerunion.set_ssize_(10, -50_isize);
+        // /// a_longerunion.set_ssize_(11, 126_isize);
+        // /// a_longerunion.set_ssize_(12, 26_isize);
+        // /// a_longerunion.set_ssize_(13, 59_isize);
+        // /// a_longerunion.set_ssize_(14, 18_isize);
+        // /// a_longerunion.set_ssize_(15, -1_isize);
+        // /// 
+        // /// // It will panic.
+        // /// // a_longerunion.set_ssize_(16, 100_isize);
+        // /// 
+        // /// println!("a_longerunion.get() = {}", a_longerunion.get());
+        // /// for i in 0..16
+        // ///     { println!("a_longerunion.get_ssize_({}) = {}", i, a_longerunion.get_ssize_(i)); }
+        // /// assert_eq!(a_longerunion.get_ssize_(0), 79_isize);
+        // /// assert_eq!(a_longerunion.get_ssize_(1), 11_isize);
+        // /// assert_eq!(a_longerunion.get_ssize_(2), 74_isize);
+        // /// assert_eq!(a_longerunion.get_ssize_(3), -15_isize);
+        // /// assert_eq!(a_longerunion.get_ssize_(4), -11_isize);
+        // /// assert_eq!(a_longerunion.get_ssize_(5), 104_isize);
+        // /// assert_eq!(a_longerunion.get_ssize_(6), -93_isize);
+        // /// assert_eq!(a_longerunion.get_ssize_(7), -67_isize);
+        // /// assert_eq!(a_longerunion.get_ssize_(8), 88_isize);
+        // /// assert_eq!(a_longerunion.get_ssize_(9), -120_isize);
+        // /// assert_eq!(a_longerunion.get_ssize_(10), -50_isize);
+        // /// assert_eq!(a_longerunion.get_ssize_(11), 126_isize);
+        // /// assert_eq!(a_longerunion.get_ssize_(12), 26_isize);
+        // /// assert_eq!(a_longerunion.get_ssize_(13), 59_isize);
+        // /// assert_eq!(a_longerunion.get_ssize_(14), 18_isize);
+        // /// assert_eq!(a_longerunion.get_ssize_(15), -1_isize);
+        // /// assert_eq!(a_longerunion.get(), 339047799029950809142362261752780557135_usize);
+        // /// ```
+        // /// 
+        // /// # Big-endian issue
+        // /// It is just experimental for Big Endian CPUs. So, you are not
+        // /// encouraged to use it for Big Endian CPUs for serious purpose.
+        // /// Only use this crate for Big-endian CPUs with your own full
+        // /// responsibility.
+        // #[cfg(target_pointer_width = "8")]
+        // #[inline] pub fn set_ssize_(&mut self, i: usize, val: isize) 
+        // {
+        //     #[cfg(target_endian = "little")]    unsafe { self.s_size[i] = val; }
+        //     #[cfg(target_endian = "big")]       unsafe { self.s_size[Self::J-i] = val; }
+        // }
 
         // pub fn set_ssize_(&mut self, i: usize, val: isize) 
         /// Sets i-th element of its array `s_size` of type `isize`
@@ -5931,138 +5932,138 @@ macro_rules! get_set_size {
             #[cfg(target_endian = "big")]       unsafe { self.s_size[Self::J-i] = val; }
         }
 
+        // // pub fn get_usize(&self, i: usize) -> Option<usize>
+        // /// Returns i-th element of array `u_size` of type `usize` wrapped
+        // /// in Some of enum `Option` if `i` is less than the size of this union
+        // /// in bytes divided by the size of the type `usize` in bytes.
+        // /// Otherwise, it returns `None` of enum `Option`.
+        // /// 
+        // /// # Arguments
+        // /// `i` indicates `i`-th element. 0-th element contains LSB (Least
+        // /// Significant Bit), while (the size of this union in bytes - 1)-th
+        // /// element contains MSB (Most Significant Bit) regardless endianness.
+        // /// 
+        // /// # Output
+        // /// - i-th element of array `u_size` of type `usize` wrapped
+        // /// in Some of enum `Option` if `i` is less than the size of this
+        // /// union in bytes divided by the size of the type `usize` in bytes
+        // /// - `None` if `i` is greater than or equal to the size of this
+        // /// union in bytes divided by the size of the type `usize` in bytes
+        // /// 
+        // /// # Counterpart Method
+        // /// Use this method when you are not sure that `i` is less than
+        // /// the size of this union in bytes divided by the size of the type
+        // /// `usize` in bytes. Otherwise, you can use its counterpart method
+        // /// [get_usize_()](#method.get_usize_) for performance.
+        // /// 
+        // /// # Example 1 for ShortUnion
+        // /// ```
+        // /// use cryptocol::number::ShortUnion;
+        // /// let a_shortunion = ShortUnion::new_with(2895_u16);
+        // /// for i in 0..2
+        // /// {
+        // ///     match a_shortunion.get_usize(i)
+        // ///     {
+        // ///         Some(a) => { println!("a_shortunion.get_usize({}) = {}", i, a); },
+        // ///         _ => {},
+        // ///     }
+        // /// }
+        // /// assert_eq!(a_shortunion.get_usize(0), Some(79_usize));
+        // /// assert_eq!(a_shortunion.get_usize(1), Some(11_usize));
+        // /// assert_eq!(a_shortunion.get_usize(2), None);
+        // /// ```
+        // /// 
+        // /// # Example 2 for IntUnion
+        // /// ```
+        // /// use cryptocol::number::IntUnion;
+        // /// let a_intunion = IntUnion::new_with(4048161615_u32);
+        // /// for i in 0..4
+        // /// {
+        // ///     match a_intunion.get_usize(i)
+        // ///     {
+        // ///         Some(a) => { println!("a_intunion.get_usize({}) = {}", i, a); },
+        // ///         _ => {},
+        // ///     }
+        // /// }
+        // /// assert_eq!(a_intunion.get_usize(0), Some(79_usize));
+        // /// assert_eq!(a_intunion.get_usize(1), Some(11_usize));
+        // /// assert_eq!(a_intunion.get_usize(2), Some(74_usize));
+        // /// assert_eq!(a_intunion.get_usize(3), Some(241_usize));
+        // /// assert_eq!(a_intunion.get_usize(4), None);
+        // /// ```
+        // /// 
+        // /// # Example 3 for LongUnion
+        // /// ```
+        // /// use cryptocol::number::LongUnion;
+        // /// let a_longunion = LongUnion::new_with(13664881099896654671_u64);
+        // /// for i in 0..8
+        // /// {
+        // ///     match a_longunion.get_usize(i)
+        // ///     {
+        // ///         Some(a) => { println!("a_longunion.get_usize({}) = {}", i, a); },
+        // ///         _ => {},
+        // ///     }
+        // /// }
+        // /// assert_eq!(a_longunion.get_usize(0), Some(79_usize));
+        // /// assert_eq!(a_longunion.get_usize(1), Some(11_usize));
+        // /// assert_eq!(a_longunion.get_usize(2), Some(74_usize));
+        // /// assert_eq!(a_longunion.get_usize(3), Some(241_usize));
+        // /// assert_eq!(a_longunion.get_usize(4), Some(245_usize));
+        // /// assert_eq!(a_longunion.get_usize(5), Some(104_usize));
+        // /// assert_eq!(a_longunion.get_usize(6), Some(163_usize));
+        // /// assert_eq!(a_longunion.get_usize(7), Some(189_usize));
+        // /// assert_eq!(a_longunion.get_usize(8), None);
+        // /// ```
+        // /// 
+        // /// # Example 4 for LongerUnion
+        // /// ```
+        // /// use cryptocol::number::LongerUnion;
+        // /// let a_longerunion = LongerUnion::new_with(339047799029950809142362261752780557135_usize);
+        // /// for i in 0..16
+        // /// {
+        // ///     match a_longerunion.get_usize(i)
+        // ///     {
+        // ///         Some(a) => { println!("a_longerunion.get_usize({}) = {}", i, a); },
+        // ///         _ => {},
+        // ///     }
+        // /// }
+        // /// assert_eq!(a_longerunion.get_usize(0), Some(79_usize));
+        // /// assert_eq!(a_longerunion.get_usize(1), Some(11_usize));
+        // /// assert_eq!(a_longerunion.get_usize(2), Some(74_usize));
+        // /// assert_eq!(a_longerunion.get_usize(3), Some(241_usize));
+        // /// assert_eq!(a_longerunion.get_usize(4), Some(245_usize));
+        // /// assert_eq!(a_longerunion.get_usize(5), Some(104_usize));
+        // /// assert_eq!(a_longerunion.get_usize(6), Some(163_usize));
+        // /// assert_eq!(a_longerunion.get_usize(7), Some(189_usize));
+        // /// assert_eq!(a_longerunion.get_usize(8), Some(88_usize));
+        // /// assert_eq!(a_longerunion.get_usize(9), Some(136_usize));
+        // /// assert_eq!(a_longerunion.get_usize(10), Some(206_usize));
+        // /// assert_eq!(a_longerunion.get_usize(11), Some(126_usize));
+        // /// assert_eq!(a_longerunion.get_usize(12), Some(26_usize));
+        // /// assert_eq!(a_longerunion.get_usize(13), Some(59_usize));
+        // /// assert_eq!(a_longerunion.get_usize(14), Some(18_usize));
+        // /// assert_eq!(a_longerunion.get_usize(15), Some(255_usize));
+        // /// assert_eq!(a_longerunion.get_usize(16), None);
+        // /// ```
+        // /// 
+        // /// # Big-endian issue
+        // /// It is just experimental for Big Endian CPUs. So, you are not
+        // /// encouraged to use it for Big Endian CPUs for serious purpose.
+        // /// Only use this crate for Big-endian CPUs with your own full
+        // /// responsibility.
+        // #[cfg(target_pointer_width = "8")]
         // pub fn get_usize(&self, i: usize) -> Option<usize>
-        /// Returns i-th element of array `u_size` of type `usize` wrapped
-        /// in Some of enum `Option` if `i` is less than the size of this union
-        /// in bytes divided by the size of the type `usize` in bytes.
-        /// Otherwise, it returns `None` of enum `Option`.
-        /// 
-        /// # Arguments
-        /// `i` indicates `i`-th element. 0-th element contains LSB (Least
-        /// Significant Bit), while (the size of this union in bytes - 1)-th
-        /// element contains MSB (Most Significant Bit) regardless endianness.
-        /// 
-        /// # Output
-        /// - i-th element of array `u_size` of type `usize` wrapped
-        /// in Some of enum `Option` if `i` is less than the size of this
-        /// union in bytes divided by the size of the type `usize` in bytes
-        /// - `None` if `i` is greater than or equal to the size of this
-        /// union in bytes divided by the size of the type `usize` in bytes
-        /// 
-        /// # Counterpart Method
-        /// Use this method when you are not sure that `i` is less than
-        /// the size of this union in bytes divided by the size of the type
-        /// `usize` in bytes. Otherwise, you can use its counterpart method
-        /// [get_usize_()](#method.get_usize_) for performance.
-        /// 
-        /// # Example 1 for ShortUnion
-        /// ```
-        /// use cryptocol::number::ShortUnion;
-        /// let a_shortunion = ShortUnion::new_with(2895_u16);
-        /// for i in 0..2
-        /// {
-        ///     match a_shortunion.get_usize(i)
-        ///     {
-        ///         Some(a) => { println!("a_shortunion.get_usize({}) = {}", i, a); },
-        ///         _ => {},
-        ///     }
-        /// }
-        /// assert_eq!(a_shortunion.get_usize(0), Some(79_usize));
-        /// assert_eq!(a_shortunion.get_usize(1), Some(11_usize));
-        /// assert_eq!(a_shortunion.get_usize(2), None);
-        /// ```
-        /// 
-        /// # Example 2 for IntUnion
-        /// ```
-        /// use cryptocol::number::IntUnion;
-        /// let a_intunion = IntUnion::new_with(4048161615_u32);
-        /// for i in 0..4
-        /// {
-        ///     match a_intunion.get_usize(i)
-        ///     {
-        ///         Some(a) => { println!("a_intunion.get_usize({}) = {}", i, a); },
-        ///         _ => {},
-        ///     }
-        /// }
-        /// assert_eq!(a_intunion.get_usize(0), Some(79_usize));
-        /// assert_eq!(a_intunion.get_usize(1), Some(11_usize));
-        /// assert_eq!(a_intunion.get_usize(2), Some(74_usize));
-        /// assert_eq!(a_intunion.get_usize(3), Some(241_usize));
-        /// assert_eq!(a_intunion.get_usize(4), None);
-        /// ```
-        /// 
-        /// # Example 3 for LongUnion
-        /// ```
-        /// use cryptocol::number::LongUnion;
-        /// let a_longunion = LongUnion::new_with(13664881099896654671_u64);
-        /// for i in 0..8
-        /// {
-        ///     match a_longunion.get_usize(i)
-        ///     {
-        ///         Some(a) => { println!("a_longunion.get_usize({}) = {}", i, a); },
-        ///         _ => {},
-        ///     }
-        /// }
-        /// assert_eq!(a_longunion.get_usize(0), Some(79_usize));
-        /// assert_eq!(a_longunion.get_usize(1), Some(11_usize));
-        /// assert_eq!(a_longunion.get_usize(2), Some(74_usize));
-        /// assert_eq!(a_longunion.get_usize(3), Some(241_usize));
-        /// assert_eq!(a_longunion.get_usize(4), Some(245_usize));
-        /// assert_eq!(a_longunion.get_usize(5), Some(104_usize));
-        /// assert_eq!(a_longunion.get_usize(6), Some(163_usize));
-        /// assert_eq!(a_longunion.get_usize(7), Some(189_usize));
-        /// assert_eq!(a_longunion.get_usize(8), None);
-        /// ```
-        /// 
-        /// # Example 4 for LongerUnion
-        /// ```
-        /// use cryptocol::number::LongerUnion;
-        /// let a_longerunion = LongerUnion::new_with(339047799029950809142362261752780557135_usize);
-        /// for i in 0..16
-        /// {
-        ///     match a_longerunion.get_usize(i)
-        ///     {
-        ///         Some(a) => { println!("a_longerunion.get_usize({}) = {}", i, a); },
-        ///         _ => {},
-        ///     }
-        /// }
-        /// assert_eq!(a_longerunion.get_usize(0), Some(79_usize));
-        /// assert_eq!(a_longerunion.get_usize(1), Some(11_usize));
-        /// assert_eq!(a_longerunion.get_usize(2), Some(74_usize));
-        /// assert_eq!(a_longerunion.get_usize(3), Some(241_usize));
-        /// assert_eq!(a_longerunion.get_usize(4), Some(245_usize));
-        /// assert_eq!(a_longerunion.get_usize(5), Some(104_usize));
-        /// assert_eq!(a_longerunion.get_usize(6), Some(163_usize));
-        /// assert_eq!(a_longerunion.get_usize(7), Some(189_usize));
-        /// assert_eq!(a_longerunion.get_usize(8), Some(88_usize));
-        /// assert_eq!(a_longerunion.get_usize(9), Some(136_usize));
-        /// assert_eq!(a_longerunion.get_usize(10), Some(206_usize));
-        /// assert_eq!(a_longerunion.get_usize(11), Some(126_usize));
-        /// assert_eq!(a_longerunion.get_usize(12), Some(26_usize));
-        /// assert_eq!(a_longerunion.get_usize(13), Some(59_usize));
-        /// assert_eq!(a_longerunion.get_usize(14), Some(18_usize));
-        /// assert_eq!(a_longerunion.get_usize(15), Some(255_usize));
-        /// assert_eq!(a_longerunion.get_usize(16), None);
-        /// ```
-        /// 
-        /// # Big-endian issue
-        /// It is just experimental for Big Endian CPUs. So, you are not
-        /// encouraged to use it for Big Endian CPUs for serious purpose.
-        /// Only use this crate for Big-endian CPUs with your own full
-        /// responsibility.
-        #[cfg(target_pointer_width = "8")]
-        pub fn get_usize(&self, i: usize) -> Option<usize>
-        {
-            if i <= Self::J
-            {
-                #[cfg(target_endian = "little")]    unsafe { Some(self.u_size[i]) }
-                #[cfg(target_endian = "big")]       unsafe { Some(self.u_size[Self::J-i]) }
-            }
-            else
-            {
-                None
-            }
-        }
+        // {
+        //     if i <= Self::J
+        //     {
+        //         #[cfg(target_endian = "little")]    unsafe { Some(self.u_size[i]) }
+        //         #[cfg(target_endian = "big")]       unsafe { Some(self.u_size[Self::J-i]) }
+        //     }
+        //     else
+        //     {
+        //         None
+        //     }
+        // }
 
         // pub fn get_usize(&self, i: usize) -> Option<usize>
         /// Returns i-th element of array `u_size` of type `usize` wrapped
@@ -6304,212 +6305,212 @@ macro_rules! get_set_size {
             }
         }
 
+        // // pub fn set_usize(&mut self, i: usize, val:usize) -> bool
+        // /// Sets i-th element of its array `u_size` of type `usize` and returns
+        // /// true if `i` is less than the size of this union in bytes divided
+        // /// by the size of the type `usize` in bytes.
+        // /// Otherwise, it will set nothing amd return false.
+        // /// 
+        // /// # Arguments
+        // /// - `i` indicates `i`-th element. 0-th element contains LSB (Least
+        // /// Significant Bit), while (the size of this union in bytes - 1)-th
+        // /// element contains MSB (Most Significant Bit) regardless endianness.
+        // /// - `val` is the value of type `usize` to set the i-th element of its
+        // ///  array `u_size` of type `usize`.
+        // /// 
+        // /// # Output
+        // /// - `true` if `i` is less than the size of this union in bytes
+        // /// divided by the size of the type `usize` in bytes
+        // /// - `false` if `i` is equal to or greater than the size of this
+        // /// union in bytes divided by the size of the type `usize` in bytes
+        // /// 
+        // /// # Counterpart Method
+        // /// Use this method when you are not sure that `i` is less than
+        // /// the size of this union in bytes divided by the size of the type
+        // /// `usize` in bytes. Otherwise, you can use its counterpart
+        // /// method [set_usize_()](#method.set_usize_) for performance.
+        // /// 
+        // /// # Example 1 for ShortUnion
+        // /// ```
+        // /// use cryptocol::number::ShortUnion;
+        // /// let mut a_shortunion = ShortUnion::new();
+        // /// let b0 = a_shortunion.set_usize(0, 79_usize);
+        // /// let b1 = a_shortunion.set_usize(1, 11_usize);
+        // /// let b2 = a_shortunion.set_usize(2, 100_usize);  // Nothing will be done
+        // /// assert_eq!(b0, true);
+        // /// assert_eq!(b1, true);
+        // /// assert_eq!(b2, false);
+        // /// println!("a_shortunion.get() = {}", a_shortunion.get());
+        // /// for i in 0..2
+        // /// {
+        // ///     match a_shortunion.get_usize(i)
+        // ///     {
+        // ///         Some(a) => { println!("a_shortunion.get_usize({}) = {}", i, a); },
+        // ///         _ => {},
+        // ///     }
+        // /// }
+        // /// assert_eq!(a_shortunion.get_usize(0), Some(79_usize));
+        // /// assert_eq!(a_shortunion.get_usize(1), Some(11_usize));
+        // /// assert_eq!(a_shortunion.get(), 2895_u16);
+        // /// ```
+        // /// 
+        // /// # Example 2 for IntUnion
+        // /// ```
+        // /// use cryptocol::number::IntUnion;
+        // /// let mut a_intunion = IntUnion::new();
+        // /// let b0 = a_intunion.set_usize(0, 79_usize);
+        // /// let b1 = a_intunion.set_usize(1, 11_usize);
+        // /// let b2 = a_intunion.set_usize(2, 74_usize);
+        // /// let b3 = a_intunion.set_usize(3, 241_usize);
+        // /// let b4 = a_intunion.set_usize(4, 100_usize);
+        // /// assert_eq!(b0, true);
+        // /// assert_eq!(b1, true);
+        // /// assert_eq!(b2, true);
+        // /// assert_eq!(b3, true);
+        // /// assert_eq!(b4, false);
+        // /// println!("a_intunion.get() = {}", a_intunion.get());
+        // /// for i in 0..4
+        // /// {
+        // ///     match a_intunion.get_usize(i)
+        // ///     {
+        // ///         Some(a) => { println!("a_intunion.get_usize({}) = {}", i, a); },
+        // ///         _ => {},
+        // ///     }
+        // /// }
+        // /// assert_eq!(a_intunion.get_usize(0), Some(79_usize));
+        // /// assert_eq!(a_intunion.get_usize(1), Some(11_usize));
+        // /// assert_eq!(a_intunion.get_usize(2), Some(74_usize));
+        // /// assert_eq!(a_intunion.get_usize(3), Some(241_usize));
+        // /// assert_eq!(a_intunion.get(), 4048161615_u32);
+        // /// ```
+        // /// 
+        // /// # Example 3 for LongUnion
+        // /// ```
+        // /// use cryptocol::number::LongUnion;
+        // /// let mut a_longunion = LongUnion::new();
+        // /// let b0 = a_longunion.set_usize(0, 79_usize);
+        // /// let b1 = a_longunion.set_usize(1, 11_usize);
+        // /// let b2 = a_longunion.set_usize(2, 74_usize);
+        // /// let b3 = a_longunion.set_usize(3, 241_usize);
+        // /// let b4 = a_longunion.set_usize(4, 245_usize);
+        // /// let b5 = a_longunion.set_usize(5, 104_usize);
+        // /// let b6 = a_longunion.set_usize(6, 163_usize);
+        // /// let b7 = a_longunion.set_usize(7, 189_usize);
+        // /// let b8 = a_longunion.set_usize(8, 100_usize);
+        // /// assert_eq!(b0, true);
+        // /// assert_eq!(b1, true);
+        // /// assert_eq!(b2, true);
+        // /// assert_eq!(b3, true);
+        // /// assert_eq!(b4, true);
+        // /// assert_eq!(b5, true);
+        // /// assert_eq!(b6, true);
+        // /// assert_eq!(b7, true);
+        // /// assert_eq!(b8, false);
+        // /// println!("a_longunion.get() = {}", a_longunion.get());
+        // /// for i in 0..8
+        // /// {
+        // ///     match a_longunion.get_usize(i)
+        // ///     {
+        // ///         Some(a) => { println!("a_longunion.get_usize({}) = {}", i, a); },
+        // ///         _ => {},
+        // ///     }
+        // /// }
+        // /// assert_eq!(a_longunion.get_usize(0), Some(79_usize));
+        // /// assert_eq!(a_longunion.get_usize(1), Some(11_usize));
+        // /// assert_eq!(a_longunion.get_usize(2), Some(74_usize));
+        // /// assert_eq!(a_longunion.get_usize(3), Some(241_usize));
+        // /// assert_eq!(a_longunion.get_usize(4), Some(245_usize));
+        // /// assert_eq!(a_longunion.get_usize(5), Some(104_usize));
+        // /// assert_eq!(a_longunion.get_usize(6), Some(163_usize));
+        // /// assert_eq!(a_longunion.get_usize(7), Some(189_usize));
+        // /// assert_eq!(a_longunion.get(), 13664881099896654671_u64);
+        // /// ```
+        // /// 
+        // /// # Example 4 for LongerUnion
+        // /// ```
+        // /// use cryptocol::number::LongerUnion;
+        // /// let mut a_longerunion = LongerUnion::new();
+        // /// let b0 = a_longerunion.set_usize(0, 79_usize);
+        // /// let b1 = a_longerunion.set_usize(1, 11_usize);
+        // /// let b2 = a_longerunion.set_usize(2, 74_usize);
+        // /// let b3 = a_longerunion.set_usize(3, 241_usize);
+        // /// let b4 = a_longerunion.set_usize(4, 245_usize);
+        // /// let b5 = a_longerunion.set_usize(5, 104_usize);
+        // /// let b6 = a_longerunion.set_usize(6, 163_usize);
+        // /// let b7 = a_longerunion.set_usize(7, 189_usize);
+        // /// let b8 = a_longerunion.set_usize(8, 88_usize);
+        // /// let b9 = a_longerunion.set_usize(9, 136_usize);
+        // /// let b10 = a_longerunion.set_usize(10, 206_usize);
+        // /// let b11 = a_longerunion.set_usize(11, 126_usize);
+        // /// let b12 = a_longerunion.set_usize(12, 26_usize);
+        // /// let b13 = a_longerunion.set_usize(13, 59_usize);
+        // /// let b14 = a_longerunion.set_usize(14, 18_usize);
+        // /// let b15 = a_longerunion.set_usize(15, 255_usize);
+        // /// let b16 = a_longerunion.set_usize(16, 100_usize);
+        // /// assert_eq!(b0, true);
+        // /// assert_eq!(b1, true);
+        // /// assert_eq!(b2, true);
+        // /// assert_eq!(b3, true);
+        // /// assert_eq!(b4, true);
+        // /// assert_eq!(b5, true);
+        // /// assert_eq!(b6, true);
+        // /// assert_eq!(b7, true);
+        // /// assert_eq!(b8, true);
+        // /// assert_eq!(b9, true);
+        // /// assert_eq!(b10, true);
+        // /// assert_eq!(b11, true);
+        // /// assert_eq!(b12, true);
+        // /// assert_eq!(b13, true);
+        // /// assert_eq!(b14, true);
+        // /// assert_eq!(b15, true);
+        // /// assert_eq!(b16, false);
+        // /// println!("a_longerunion.get() = {}", a_longerunion.get());
+        // /// for i in 0..16
+        // /// {
+        // ///     match a_longerunion.get_usize(i)
+        // ///     {
+        // ///         Some(a) => { println!("a_longerunion.get_usize({}) = {}", i, a); },
+        // ///         _ => {},
+        // ///     }
+        // /// }
+        // /// assert_eq!(a_longerunion.get_usize(0), Some(79_usize));
+        // /// assert_eq!(a_longerunion.get_usize(1), Some(11_usize));
+        // /// assert_eq!(a_longerunion.get_usize(2), Some(74_usize));
+        // /// assert_eq!(a_longerunion.get_usize(3), Some(241_usize));
+        // /// assert_eq!(a_longerunion.get_usize(4), Some(245_usize));
+        // /// assert_eq!(a_longerunion.get_usize(5), Some(104_usize));
+        // /// assert_eq!(a_longerunion.get_usize(6), Some(163_usize));
+        // /// assert_eq!(a_longerunion.get_usize(7), Some(189_usize));
+        // /// assert_eq!(a_longerunion.get_usize(8), Some(88_usize));
+        // /// assert_eq!(a_longerunion.get_usize(9), Some(136_usize));
+        // /// assert_eq!(a_longerunion.get_usize(10), Some(206_usize));
+        // /// assert_eq!(a_longerunion.get_usize(11), Some(126_usize));
+        // /// assert_eq!(a_longerunion.get_usize(12), Some(26_usize));
+        // /// assert_eq!(a_longerunion.get_usize(13), Some(59_usize));
+        // /// assert_eq!(a_longerunion.get_usize(14), Some(18_usize));
+        // /// assert_eq!(a_longerunion.get_usize(15), Some(255_usize));
+        // /// assert_eq!(a_longerunion.get(), 339047799029950809142362261752780557135_usize);
+        // /// ```
+        // /// 
+        // /// # Big-endian issue
+        // /// It is just experimental for Big Endian CPUs. So, you are not
+        // /// encouraged to use it for Big Endian CPUs for serious purpose.
+        // /// Only use this crate for Big-endian CPUs with your own full
+        // /// responsibility.
+        // #[cfg(target_pointer_width = "8")]
         // pub fn set_usize(&mut self, i: usize, val:usize) -> bool
-        /// Sets i-th element of its array `u_size` of type `usize` and returns
-        /// true if `i` is less than the size of this union in bytes divided
-        /// by the size of the type `usize` in bytes.
-        /// Otherwise, it will set nothing amd return false.
-        /// 
-        /// # Arguments
-        /// - `i` indicates `i`-th element. 0-th element contains LSB (Least
-        /// Significant Bit), while (the size of this union in bytes - 1)-th
-        /// element contains MSB (Most Significant Bit) regardless endianness.
-        /// - `val` is the value of type `usize` to set the i-th element of its
-        ///  array `u_size` of type `usize`.
-        /// 
-        /// # Output
-        /// - `true` if `i` is less than the size of this union in bytes
-        /// divided by the size of the type `usize` in bytes
-        /// - `false` if `i` is equal to or greater than the size of this
-        /// union in bytes divided by the size of the type `usize` in bytes
-        /// 
-        /// # Counterpart Method
-        /// Use this method when you are not sure that `i` is less than
-        /// the size of this union in bytes divided by the size of the type
-        /// `usize` in bytes. Otherwise, you can use its counterpart
-        /// method [set_usize_()](#method.set_usize_) for performance.
-        /// 
-        /// # Example 1 for ShortUnion
-        /// ```
-        /// use cryptocol::number::ShortUnion;
-        /// let mut a_shortunion = ShortUnion::new();
-        /// let b0 = a_shortunion.set_usize(0, 79_usize);
-        /// let b1 = a_shortunion.set_usize(1, 11_usize);
-        /// let b2 = a_shortunion.set_usize(2, 100_usize);  // Nothing will be done
-        /// assert_eq!(b0, true);
-        /// assert_eq!(b1, true);
-        /// assert_eq!(b2, false);
-        /// println!("a_shortunion.get() = {}", a_shortunion.get());
-        /// for i in 0..2
-        /// {
-        ///     match a_shortunion.get_usize(i)
-        ///     {
-        ///         Some(a) => { println!("a_shortunion.get_usize({}) = {}", i, a); },
-        ///         _ => {},
-        ///     }
-        /// }
-        /// assert_eq!(a_shortunion.get_usize(0), Some(79_usize));
-        /// assert_eq!(a_shortunion.get_usize(1), Some(11_usize));
-        /// assert_eq!(a_shortunion.get(), 2895_u16);
-        /// ```
-        /// 
-        /// # Example 2 for IntUnion
-        /// ```
-        /// use cryptocol::number::IntUnion;
-        /// let mut a_intunion = IntUnion::new();
-        /// let b0 = a_intunion.set_usize(0, 79_usize);
-        /// let b1 = a_intunion.set_usize(1, 11_usize);
-        /// let b2 = a_intunion.set_usize(2, 74_usize);
-        /// let b3 = a_intunion.set_usize(3, 241_usize);
-        /// let b4 = a_intunion.set_usize(4, 100_usize);
-        /// assert_eq!(b0, true);
-        /// assert_eq!(b1, true);
-        /// assert_eq!(b2, true);
-        /// assert_eq!(b3, true);
-        /// assert_eq!(b4, false);
-        /// println!("a_intunion.get() = {}", a_intunion.get());
-        /// for i in 0..4
-        /// {
-        ///     match a_intunion.get_usize(i)
-        ///     {
-        ///         Some(a) => { println!("a_intunion.get_usize({}) = {}", i, a); },
-        ///         _ => {},
-        ///     }
-        /// }
-        /// assert_eq!(a_intunion.get_usize(0), Some(79_usize));
-        /// assert_eq!(a_intunion.get_usize(1), Some(11_usize));
-        /// assert_eq!(a_intunion.get_usize(2), Some(74_usize));
-        /// assert_eq!(a_intunion.get_usize(3), Some(241_usize));
-        /// assert_eq!(a_intunion.get(), 4048161615_u32);
-        /// ```
-        /// 
-        /// # Example 3 for LongUnion
-        /// ```
-        /// use cryptocol::number::LongUnion;
-        /// let mut a_longunion = LongUnion::new();
-        /// let b0 = a_longunion.set_usize(0, 79_usize);
-        /// let b1 = a_longunion.set_usize(1, 11_usize);
-        /// let b2 = a_longunion.set_usize(2, 74_usize);
-        /// let b3 = a_longunion.set_usize(3, 241_usize);
-        /// let b4 = a_longunion.set_usize(4, 245_usize);
-        /// let b5 = a_longunion.set_usize(5, 104_usize);
-        /// let b6 = a_longunion.set_usize(6, 163_usize);
-        /// let b7 = a_longunion.set_usize(7, 189_usize);
-        /// let b8 = a_longunion.set_usize(8, 100_usize);
-        /// assert_eq!(b0, true);
-        /// assert_eq!(b1, true);
-        /// assert_eq!(b2, true);
-        /// assert_eq!(b3, true);
-        /// assert_eq!(b4, true);
-        /// assert_eq!(b5, true);
-        /// assert_eq!(b6, true);
-        /// assert_eq!(b7, true);
-        /// assert_eq!(b8, false);
-        /// println!("a_longunion.get() = {}", a_longunion.get());
-        /// for i in 0..8
-        /// {
-        ///     match a_longunion.get_usize(i)
-        ///     {
-        ///         Some(a) => { println!("a_longunion.get_usize({}) = {}", i, a); },
-        ///         _ => {},
-        ///     }
-        /// }
-        /// assert_eq!(a_longunion.get_usize(0), Some(79_usize));
-        /// assert_eq!(a_longunion.get_usize(1), Some(11_usize));
-        /// assert_eq!(a_longunion.get_usize(2), Some(74_usize));
-        /// assert_eq!(a_longunion.get_usize(3), Some(241_usize));
-        /// assert_eq!(a_longunion.get_usize(4), Some(245_usize));
-        /// assert_eq!(a_longunion.get_usize(5), Some(104_usize));
-        /// assert_eq!(a_longunion.get_usize(6), Some(163_usize));
-        /// assert_eq!(a_longunion.get_usize(7), Some(189_usize));
-        /// assert_eq!(a_longunion.get(), 13664881099896654671_u64);
-        /// ```
-        /// 
-        /// # Example 4 for LongerUnion
-        /// ```
-        /// use cryptocol::number::LongerUnion;
-        /// let mut a_longerunion = LongerUnion::new();
-        /// let b0 = a_longerunion.set_usize(0, 79_usize);
-        /// let b1 = a_longerunion.set_usize(1, 11_usize);
-        /// let b2 = a_longerunion.set_usize(2, 74_usize);
-        /// let b3 = a_longerunion.set_usize(3, 241_usize);
-        /// let b4 = a_longerunion.set_usize(4, 245_usize);
-        /// let b5 = a_longerunion.set_usize(5, 104_usize);
-        /// let b6 = a_longerunion.set_usize(6, 163_usize);
-        /// let b7 = a_longerunion.set_usize(7, 189_usize);
-        /// let b8 = a_longerunion.set_usize(8, 88_usize);
-        /// let b9 = a_longerunion.set_usize(9, 136_usize);
-        /// let b10 = a_longerunion.set_usize(10, 206_usize);
-        /// let b11 = a_longerunion.set_usize(11, 126_usize);
-        /// let b12 = a_longerunion.set_usize(12, 26_usize);
-        /// let b13 = a_longerunion.set_usize(13, 59_usize);
-        /// let b14 = a_longerunion.set_usize(14, 18_usize);
-        /// let b15 = a_longerunion.set_usize(15, 255_usize);
-        /// let b16 = a_longerunion.set_usize(16, 100_usize);
-        /// assert_eq!(b0, true);
-        /// assert_eq!(b1, true);
-        /// assert_eq!(b2, true);
-        /// assert_eq!(b3, true);
-        /// assert_eq!(b4, true);
-        /// assert_eq!(b5, true);
-        /// assert_eq!(b6, true);
-        /// assert_eq!(b7, true);
-        /// assert_eq!(b8, true);
-        /// assert_eq!(b9, true);
-        /// assert_eq!(b10, true);
-        /// assert_eq!(b11, true);
-        /// assert_eq!(b12, true);
-        /// assert_eq!(b13, true);
-        /// assert_eq!(b14, true);
-        /// assert_eq!(b15, true);
-        /// assert_eq!(b16, false);
-        /// println!("a_longerunion.get() = {}", a_longerunion.get());
-        /// for i in 0..16
-        /// {
-        ///     match a_longerunion.get_usize(i)
-        ///     {
-        ///         Some(a) => { println!("a_longerunion.get_usize({}) = {}", i, a); },
-        ///         _ => {},
-        ///     }
-        /// }
-        /// assert_eq!(a_longerunion.get_usize(0), Some(79_usize));
-        /// assert_eq!(a_longerunion.get_usize(1), Some(11_usize));
-        /// assert_eq!(a_longerunion.get_usize(2), Some(74_usize));
-        /// assert_eq!(a_longerunion.get_usize(3), Some(241_usize));
-        /// assert_eq!(a_longerunion.get_usize(4), Some(245_usize));
-        /// assert_eq!(a_longerunion.get_usize(5), Some(104_usize));
-        /// assert_eq!(a_longerunion.get_usize(6), Some(163_usize));
-        /// assert_eq!(a_longerunion.get_usize(7), Some(189_usize));
-        /// assert_eq!(a_longerunion.get_usize(8), Some(88_usize));
-        /// assert_eq!(a_longerunion.get_usize(9), Some(136_usize));
-        /// assert_eq!(a_longerunion.get_usize(10), Some(206_usize));
-        /// assert_eq!(a_longerunion.get_usize(11), Some(126_usize));
-        /// assert_eq!(a_longerunion.get_usize(12), Some(26_usize));
-        /// assert_eq!(a_longerunion.get_usize(13), Some(59_usize));
-        /// assert_eq!(a_longerunion.get_usize(14), Some(18_usize));
-        /// assert_eq!(a_longerunion.get_usize(15), Some(255_usize));
-        /// assert_eq!(a_longerunion.get(), 339047799029950809142362261752780557135_usize);
-        /// ```
-        /// 
-        /// # Big-endian issue
-        /// It is just experimental for Big Endian CPUs. So, you are not
-        /// encouraged to use it for Big Endian CPUs for serious purpose.
-        /// Only use this crate for Big-endian CPUs with your own full
-        /// responsibility.
-        #[cfg(target_pointer_width = "8")]
-        pub fn set_usize(&mut self, i: usize, val:usize) -> bool
-        {
-            if i <= Self::J
-            { 
-                #[cfg(target_endian = "little")]    unsafe { self.u_size[i] = val; }
-                #[cfg(target_endian = "big")]       unsafe { self.u_size[Self::J-i] = val; }
-                true
-            }
-            else
-            {
-                false
-            }
-        }
+        // {
+        //     if i <= Self::J
+        //     { 
+        //         #[cfg(target_endian = "little")]    unsafe { self.u_size[i] = val; }
+        //         #[cfg(target_endian = "big")]       unsafe { self.u_size[Self::J-i] = val; }
+        //         true
+        //     }
+        //     else
+        //     {
+        //         false
+        //     }
+        // }
 
         // pub fn set_usize(&mut self, i: usize, val:usize) -> bool
         /// Sets i-th element of its array `u_size` of type `usize` and returns
@@ -6819,136 +6820,136 @@ macro_rules! get_set_size {
             }
         }
 
+        // // pub fn get_ssize(&self, i: usize) -> Option<isize>
+        // /// Returns i-th element of array `s_size` of type `isize` wrapped
+        // /// in Some of enum `Option` if `i` is less than the size of this union
+        // /// in bytes divided by the size of the type `isize` in bytes.
+        // /// Otherwise, it returns None of enum `Option`.
+        // /// 
+        // /// # Arguments
+        // /// `i` indicates `i`-th element. 0-th element contains LSB (Least
+        // /// Significant Bit), while (the size of this union in bytes - 1)-th
+        // /// element contains MSB (Most Significant Bit) regardless endianness.
+        // /// 
+        // /// # Output
+        // /// i-th element of array `s_size` of type `isize` wrapped
+        // /// in Some of enum `Option` if `i` is less than the size of this union
+        // /// in bytes divided by the size of the type `isize` in bytes
+        // /// 
+        // /// # Counterpart Method
+        // /// Use this method when you are not sure that `i` is less than
+        // /// the size of this union in bytes divided by the size of the type
+        // /// `isize` in bytes. Otherwise, you can use its counterpart method
+        // /// [get_ssize_()](#method.get_ssize_) for performance.
+        // /// 
+        // /// # Example 1 for ShortUnion
+        // /// ```
+        // /// use cryptocol::number::ShortUnion;
+        // /// let a_shortunion = ShortUnion::new_with(2895_u16);
+        // /// for i in 0..2
+        // /// {
+        // ///     match a_shortunion.get_ssize(i)
+        // ///     {
+        // ///         Some(a) => { println!("a_shortunion.get_ssize({}) = {}", i, a); },
+        // ///         _ => {},
+        // ///     }
+        // /// }
+        // /// assert_eq!(a_shortunion.get_ssize(0), Some(79_isize));
+        // /// assert_eq!(a_shortunion.get_ssize(1), Some(11_isize));
+        // /// assert_eq!(a_shortunion.get_ssize(2), None);
+        // /// ```
+        // /// 
+        // /// # Example 2 for IntUnion
+        // /// ```
+        // /// use cryptocol::number::IntUnion;
+        // /// let a_intunion = IntUnion::new_with(4048161615_u32);
+        // /// for i in 0..4
+        // /// {
+        // ///     match a_intunion.get_ssize(i)
+        // ///     {
+        // ///         Some(a) => { println!("a_intunion.get_ssize({}) = {}", i, a); },
+        // ///         _ => {},
+        // ///     }
+        // /// }
+        // /// assert_eq!(a_intunion.get_ssize(0), Some(79_isize));
+        // /// assert_eq!(a_intunion.get_ssize(1), Some(11_isize));
+        // /// assert_eq!(a_intunion.get_ssize(2), Some(74_isize));
+        // /// assert_eq!(a_intunion.get_ssize(3), Some(-15_isize));
+        // /// assert_eq!(a_intunion.get_ssize(4), None);
+        // /// ```
+        // /// 
+        // /// # Example 3 for LongUnion
+        // /// ```
+        // /// use cryptocol::number::LongUnion;
+        // /// let a_longunion = LongUnion::new_with(13664881099896654671_u64);
+        // /// for i in 0..8
+        // /// {
+        // ///     match a_longunion.get_ssize(i)
+        // ///     {
+        // ///         Some(a) => { println!("a_longunion.get_ssize({}) = {}", i, a); },
+        // ///         _ => {},
+        // ///     }
+        // /// }
+        // /// assert_eq!(a_longunion.get_ssize(0), Some(79_isize));
+        // /// assert_eq!(a_longunion.get_ssize(1), Some(11_isize));
+        // /// assert_eq!(a_longunion.get_ssize(2), Some(74_isize));
+        // /// assert_eq!(a_longunion.get_ssize(3), Some(-15_isize));
+        // /// assert_eq!(a_longunion.get_ssize(4), Some(-11_isize));
+        // /// assert_eq!(a_longunion.get_ssize(5), Some(104_isize));
+        // /// assert_eq!(a_longunion.get_ssize(6), Some(-93_isize));
+        // /// assert_eq!(a_longunion.get_ssize(7), Some(-67_isize));
+        // /// assert_eq!(a_longunion.get_ssize(8), None);
+        // /// ```
+        // /// 
+        // /// # Example 4 for LongerUnion
+        // /// ```
+        // /// use cryptocol::number::LongerUnion;
+        // /// let a_longerunion = LongerUnion::new_with(339047799029950809142362261752780557135_usize);
+        // /// for i in 0..16
+        // /// {
+        // ///     match a_longerunion.get_ssize(i)
+        // ///     {
+        // ///         Some(a) => { println!("a_longerunion.get_ssize({}) = {}", i, a); },
+        // ///         _ => {},
+        // ///     }
+        // /// }
+        // /// assert_eq!(a_longerunion.get_ssize(0), Some(79_isize));
+        // /// assert_eq!(a_longerunion.get_ssize(1), Some(11_isize));
+        // /// assert_eq!(a_longerunion.get_ssize(2), Some(74_isize));
+        // /// assert_eq!(a_longerunion.get_ssize(3), Some(-15_isize));
+        // /// assert_eq!(a_longerunion.get_ssize(4), Some(-11_isize));
+        // /// assert_eq!(a_longerunion.get_ssize(5), Some(104_isize));
+        // /// assert_eq!(a_longerunion.get_ssize(6), Some(-93_isize));
+        // /// assert_eq!(a_longerunion.get_ssize(7), Some(-67_isize));
+        // /// assert_eq!(a_longerunion.get_ssize(8), Some(88_isize));
+        // /// assert_eq!(a_longerunion.get_ssize(9), Some(-120_isize));
+        // /// assert_eq!(a_longerunion.get_ssize(10), Some(-50_isize));
+        // /// assert_eq!(a_longerunion.get_ssize(11), Some(126_isize));
+        // /// assert_eq!(a_longerunion.get_ssize(12), Some(26_isize));
+        // /// assert_eq!(a_longerunion.get_ssize(13), Some(59_isize));
+        // /// assert_eq!(a_longerunion.get_ssize(14), Some(18_isize));
+        // /// assert_eq!(a_longerunion.get_ssize(15), Some(-1_isize));
+        // /// assert_eq!(a_longerunion.get_ssize(16), None);
+        // /// ```
+        // /// 
+        // /// # Big-endian issue
+        // /// It is just experimental for Big Endian CPUs. So, you are not
+        // /// encouraged to use it for Big Endian CPUs for serious purpose.
+        // /// Only use this crate for Big-endian CPUs with your own full
+        // /// responsibility.
+        // #[cfg(target_pointer_width = "8")]
         // pub fn get_ssize(&self, i: usize) -> Option<isize>
-        /// Returns i-th element of array `s_size` of type `isize` wrapped
-        /// in Some of enum `Option` if `i` is less than the size of this union
-        /// in bytes divided by the size of the type `isize` in bytes.
-        /// Otherwise, it returns None of enum `Option`.
-        /// 
-        /// # Arguments
-        /// `i` indicates `i`-th element. 0-th element contains LSB (Least
-        /// Significant Bit), while (the size of this union in bytes - 1)-th
-        /// element contains MSB (Most Significant Bit) regardless endianness.
-        /// 
-        /// # Output
-        /// i-th element of array `s_size` of type `isize` wrapped
-        /// in Some of enum `Option` if `i` is less than the size of this union
-        /// in bytes divided by the size of the type `isize` in bytes
-        /// 
-        /// # Counterpart Method
-        /// Use this method when you are not sure that `i` is less than
-        /// the size of this union in bytes divided by the size of the type
-        /// `isize` in bytes. Otherwise, you can use its counterpart method
-        /// [get_ssize_()](#method.get_ssize_) for performance.
-        /// 
-        /// # Example 1 for ShortUnion
-        /// ```
-        /// use cryptocol::number::ShortUnion;
-        /// let a_shortunion = ShortUnion::new_with(2895_u16);
-        /// for i in 0..2
-        /// {
-        ///     match a_shortunion.get_ssize(i)
-        ///     {
-        ///         Some(a) => { println!("a_shortunion.get_ssize({}) = {}", i, a); },
-        ///         _ => {},
-        ///     }
-        /// }
-        /// assert_eq!(a_shortunion.get_ssize(0), Some(79_isize));
-        /// assert_eq!(a_shortunion.get_ssize(1), Some(11_isize));
-        /// assert_eq!(a_shortunion.get_ssize(2), None);
-        /// ```
-        /// 
-        /// # Example 2 for IntUnion
-        /// ```
-        /// use cryptocol::number::IntUnion;
-        /// let a_intunion = IntUnion::new_with(4048161615_u32);
-        /// for i in 0..4
-        /// {
-        ///     match a_intunion.get_ssize(i)
-        ///     {
-        ///         Some(a) => { println!("a_intunion.get_ssize({}) = {}", i, a); },
-        ///         _ => {},
-        ///     }
-        /// }
-        /// assert_eq!(a_intunion.get_ssize(0), Some(79_isize));
-        /// assert_eq!(a_intunion.get_ssize(1), Some(11_isize));
-        /// assert_eq!(a_intunion.get_ssize(2), Some(74_isize));
-        /// assert_eq!(a_intunion.get_ssize(3), Some(-15_isize));
-        /// assert_eq!(a_intunion.get_ssize(4), None);
-        /// ```
-        /// 
-        /// # Example 3 for LongUnion
-        /// ```
-        /// use cryptocol::number::LongUnion;
-        /// let a_longunion = LongUnion::new_with(13664881099896654671_u64);
-        /// for i in 0..8
-        /// {
-        ///     match a_longunion.get_ssize(i)
-        ///     {
-        ///         Some(a) => { println!("a_longunion.get_ssize({}) = {}", i, a); },
-        ///         _ => {},
-        ///     }
-        /// }
-        /// assert_eq!(a_longunion.get_ssize(0), Some(79_isize));
-        /// assert_eq!(a_longunion.get_ssize(1), Some(11_isize));
-        /// assert_eq!(a_longunion.get_ssize(2), Some(74_isize));
-        /// assert_eq!(a_longunion.get_ssize(3), Some(-15_isize));
-        /// assert_eq!(a_longunion.get_ssize(4), Some(-11_isize));
-        /// assert_eq!(a_longunion.get_ssize(5), Some(104_isize));
-        /// assert_eq!(a_longunion.get_ssize(6), Some(-93_isize));
-        /// assert_eq!(a_longunion.get_ssize(7), Some(-67_isize));
-        /// assert_eq!(a_longunion.get_ssize(8), None);
-        /// ```
-        /// 
-        /// # Example 4 for LongerUnion
-        /// ```
-        /// use cryptocol::number::LongerUnion;
-        /// let a_longerunion = LongerUnion::new_with(339047799029950809142362261752780557135_usize);
-        /// for i in 0..16
-        /// {
-        ///     match a_longerunion.get_ssize(i)
-        ///     {
-        ///         Some(a) => { println!("a_longerunion.get_ssize({}) = {}", i, a); },
-        ///         _ => {},
-        ///     }
-        /// }
-        /// assert_eq!(a_longerunion.get_ssize(0), Some(79_isize));
-        /// assert_eq!(a_longerunion.get_ssize(1), Some(11_isize));
-        /// assert_eq!(a_longerunion.get_ssize(2), Some(74_isize));
-        /// assert_eq!(a_longerunion.get_ssize(3), Some(-15_isize));
-        /// assert_eq!(a_longerunion.get_ssize(4), Some(-11_isize));
-        /// assert_eq!(a_longerunion.get_ssize(5), Some(104_isize));
-        /// assert_eq!(a_longerunion.get_ssize(6), Some(-93_isize));
-        /// assert_eq!(a_longerunion.get_ssize(7), Some(-67_isize));
-        /// assert_eq!(a_longerunion.get_ssize(8), Some(88_isize));
-        /// assert_eq!(a_longerunion.get_ssize(9), Some(-120_isize));
-        /// assert_eq!(a_longerunion.get_ssize(10), Some(-50_isize));
-        /// assert_eq!(a_longerunion.get_ssize(11), Some(126_isize));
-        /// assert_eq!(a_longerunion.get_ssize(12), Some(26_isize));
-        /// assert_eq!(a_longerunion.get_ssize(13), Some(59_isize));
-        /// assert_eq!(a_longerunion.get_ssize(14), Some(18_isize));
-        /// assert_eq!(a_longerunion.get_ssize(15), Some(-1_isize));
-        /// assert_eq!(a_longerunion.get_ssize(16), None);
-        /// ```
-        /// 
-        /// # Big-endian issue
-        /// It is just experimental for Big Endian CPUs. So, you are not
-        /// encouraged to use it for Big Endian CPUs for serious purpose.
-        /// Only use this crate for Big-endian CPUs with your own full
-        /// responsibility.
-        #[cfg(target_pointer_width = "8")]
-        pub fn get_ssize(&self, i: usize) -> Option<isize>
-        {
-            if i <= Self::J
-            {
-                #[cfg(target_endian = "little")]    unsafe { Some(self.s_size[i]) }
-                #[cfg(target_endian = "big")]       unsafe { Some(self.s_size[Self::J-i]) }
-            }
-            else
-            {
-                None
-            }
-        }
+        // {
+        //     if i <= Self::J
+        //     {
+        //         #[cfg(target_endian = "little")]    unsafe { Some(self.s_size[i]) }
+        //         #[cfg(target_endian = "big")]       unsafe { Some(self.s_size[Self::J-i]) }
+        //     }
+        //     else
+        //     {
+        //         None
+        //     }
+        // }
 
         // pub fn get_ssize(&self, i: usize) -> Option<isize>
         /// Returns i-th element of array `s_size` of type `isize` wrapped
@@ -7185,212 +7186,212 @@ macro_rules! get_set_size {
             }
         }
 
+        // // pub fn set_ssize(&mut self, i: usize, val: isize) -> bool
+        // /// Sets i-th element of its array `ssize` of type `isize` and returns
+        // /// true if `i` is less than the size of this union in bytes divided
+        // /// by the size of the type `isize` in bytes.
+        // /// Otherwise, it will set nothing amd return false.
+        // /// 
+        // /// # Arguments i
+        // /// `i` indicates `i`-th element. 0-th element contains LSB (Least
+        // /// Significant Bit), while (the size of this union in bytes - 1)-th
+        // /// element contains MSB (Most Significant Bit) regardless endianness.
+        // /// - `val` is the value of type `isize` to set the i-th element of its
+        // ///  array `s_size` of type `isize`.
+        // /// 
+        // /// # Output
+        // /// - `true` if `i` is less than the size of this union in bytes
+        // /// divided by the size of the type `isize` in bytes
+        // /// - `false` if `i` is equal to or greater than the size of this
+        // /// union in bytes divided by the size of the type `isize` in bytes
+        // /// 
+        // /// # Counterpart Method
+        // /// Use this method when you are not sure that `i` is less than
+        // /// the size of this union in bytes divided by the size of the type
+        // /// `isize` in bytes. Otherwise, use its counterpart
+        // /// method [set_ssize_()](#method.set_ssize_) for performance.
+        // /// 
+        // /// # Example 1 for ShortUnion
+        // /// ```
+        // /// use cryptocol::number::ShortUnion;
+        // /// let mut a_shortunion = ShortUnion::new();
+        // /// let b0 = a_shortunion.set_ssize(0, 79_isize);
+        // /// let b1 = a_shortunion.set_ssize(1, 11_isize);
+        // /// let b2 = a_shortunion.set_ssize(2, 100_isize);  // Nothing will be done
+        // /// assert_eq!(b0, true);
+        // /// assert_eq!(b1, true);
+        // /// assert_eq!(b2, false);
+        // /// println!("a_shortunion.get() = {}", a_shortunion.get());
+        // /// for i in 0..2
+        // /// {
+        // ///     match a_shortunion.get_ssize(i)
+        // ///     {
+        // ///         Some(a) => { println!("a_shortunion.get_ssize({}) = {}", i, a); },
+        // ///         _ => {},
+        // ///     }
+        // /// }
+        // /// assert_eq!(a_shortunion.get_ssize(0), Some(79_isize));
+        // /// assert_eq!(a_shortunion.get_ssize(1), Some(11_isize));
+        // /// assert_eq!(a_shortunion.get_ssize(2), None);
+        // /// ```
+        // /// 
+        // /// # Example 2 for IntUnion
+        // /// ```
+        // /// use cryptocol::number::IntUnion;
+        // /// let mut a_intunion = IntUnion::new();
+        // /// let b0 = a_intunion.set_ssize(0, 79_isize);
+        // /// let b1 = a_intunion.set_ssize(1, 11_isize);
+        // /// let b2 = a_intunion.set_ssize(2, 74_isize);
+        // /// let b3 = a_intunion.set_ssize(3, -15_isize);
+        // /// let b4 = a_intunion.set_ssize(4, 100_isize);
+        // /// assert_eq!(b0, true);
+        // /// assert_eq!(b1, true);
+        // /// assert_eq!(b2, true);
+        // /// assert_eq!(b3, true);
+        // /// assert_eq!(b4, false);
+        // /// println!("a_intunion.get() = {}", a_intunion.get());
+        // /// for i in 0..4
+        // /// {
+        // ///     match a_intunion.get_ssize(i)
+        // ///     {
+        // ///         Some(a) => { println!("a_intunion.get_ssize({}) = {}", i, a); },
+        // ///         _ => {},
+        // ///     }
+        // /// }
+        // /// assert_eq!(a_intunion.get_ssize(0), Some(79_isize));
+        // /// assert_eq!(a_intunion.get_ssize(1), Some(11_isize));
+        // /// assert_eq!(a_intunion.get_ssize(2), Some(74_isize));
+        // /// assert_eq!(a_intunion.get_ssize(3), Some(-15_isize));
+        // /// assert_eq!(a_intunion.get(), 4048161615_u32);
+        // /// ```
+        // /// 
+        // /// # Example 3 for LongUnion
+        // /// ```
+        // /// use cryptocol::number::LongUnion;
+        // /// let mut a_longunion = LongUnion::new();
+        // /// let b0 = a_longunion.set_ssize(0, 79_isize);
+        // /// let b1 = a_longunion.set_ssize(1, 11_isize);
+        // /// let b2 = a_longunion.set_ssize(2, 74_isize);
+        // /// let b3 = a_longunion.set_ssize(3, -15_isize);
+        // /// let b4 = a_longunion.set_ssize(4, -11_isize);
+        // /// let b5 = a_longunion.set_ssize(5, 104_isize);
+        // /// let b6 = a_longunion.set_ssize(6, -93_isize);
+        // /// let b7 = a_longunion.set_ssize(7, -67_isize);
+        // /// let b8 = a_longunion.set_ssize(8, 100_isize);
+        // /// assert_eq!(b0, true);
+        // /// assert_eq!(b1, true);
+        // /// assert_eq!(b2, true);
+        // /// assert_eq!(b3, true);
+        // /// assert_eq!(b4, true);
+        // /// assert_eq!(b5, true);
+        // /// assert_eq!(b6, true);
+        // /// assert_eq!(b7, true);
+        // /// assert_eq!(b8, false);
+        // /// println!("a_longunion.get() = {}", a_longunion.get());
+        // /// for i in 0..8
+        // /// {
+        // ///     match a_longunion.get_usize(i)
+        // ///     {
+        // ///         Some(a) => { println!("a_longunion.get_usize({}) = {}", i, a); },
+        // ///         _ => {},
+        // ///     }
+        // /// }
+        // /// assert_eq!(a_longunion.get_ssize(0), Some(79_isize));
+        // /// assert_eq!(a_longunion.get_ssize(1), Some(11_isize));
+        // /// assert_eq!(a_longunion.get_ssize(2), Some(74_isize));
+        // /// assert_eq!(a_longunion.get_ssize(3), Some(-15_isize));
+        // /// assert_eq!(a_longunion.get_ssize(4), Some(-11_isize));
+        // /// assert_eq!(a_longunion.get_ssize(5), Some(104_isize));
+        // /// assert_eq!(a_longunion.get_ssize(6), Some(-93_isize));
+        // /// assert_eq!(a_longunion.get_ssize(7), Some(-67_isize));
+        // /// assert_eq!(a_longunion.get(), 13664881099896654671_u64);
+        // /// ```
+        // /// 
+        // /// # Example 4 for LongerUnion
+        // /// ```
+        // /// use cryptocol::number::LongerUnion;
+        // /// let mut a_longerunion = LongerUnion::new();
+        // /// let b0 = a_longerunion.set_ssize(0, 79_isize);
+        // /// let b1 = a_longerunion.set_ssize(1, 11_isize);
+        // /// let b2 = a_longerunion.set_ssize(2, 74_isize);
+        // /// let b3 = a_longerunion.set_ssize(3, -15_isize);
+        // /// let b4 = a_longerunion.set_ssize(4, -11_isize);
+        // /// let b5 = a_longerunion.set_ssize(5, 104_isize);
+        // /// let b6 = a_longerunion.set_ssize(6, -93_isize);
+        // /// let b7 = a_longerunion.set_ssize(7, -67_isize);
+        // /// let b8 = a_longerunion.set_ssize(8, 88_isize);
+        // /// let b9 = a_longerunion.set_ssize(9, -120_isize);
+        // /// let b10 = a_longerunion.set_ssize(10, -50_isize);
+        // /// let b11 = a_longerunion.set_ssize(11, 126_isize);
+        // /// let b12 = a_longerunion.set_ssize(12, 26_isize);
+        // /// let b13 = a_longerunion.set_ssize(13, 59_isize);
+        // /// let b14 = a_longerunion.set_ssize(14, 18_isize);
+        // /// let b15 = a_longerunion.set_ssize(15, -1_isize);
+        // /// let b16 = a_longerunion.set_ssize(16, 100_isize);
+        // /// assert_eq!(b0, true);
+        // /// assert_eq!(b1, true);
+        // /// assert_eq!(b2, true);
+        // /// assert_eq!(b3, true);
+        // /// assert_eq!(b4, true);
+        // /// assert_eq!(b5, true);
+        // /// assert_eq!(b6, true);
+        // /// assert_eq!(b7, true);
+        // /// assert_eq!(b8, true);
+        // /// assert_eq!(b9, true);
+        // /// assert_eq!(b10, true);
+        // /// assert_eq!(b11, true);
+        // /// assert_eq!(b12, true);
+        // /// assert_eq!(b13, true);
+        // /// assert_eq!(b14, true);
+        // /// assert_eq!(b15, true);
+        // /// assert_eq!(b16, false);
+        // /// println!("a_longerunion.get() = {}", a_longerunion.get());
+        // /// for i in 0..16
+        // /// {
+        // ///     match a_longerunion.get_usize(i)
+        // ///     {
+        // ///         Some(a) => { println!("a_longerunion.get_usize({}) = {}", i, a); },
+        // ///         _ => {},
+        // ///     }
+        // /// }
+        // /// assert_eq!(a_longerunion.get_ssize(0), Some(79_isize));
+        // /// assert_eq!(a_longerunion.get_ssize(1), Some(11_isize));
+        // /// assert_eq!(a_longerunion.get_ssize(2), Some(74_isize));
+        // /// assert_eq!(a_longerunion.get_ssize(3), Some(-15_isize));
+        // /// assert_eq!(a_longerunion.get_ssize(4), Some(-11_isize));
+        // /// assert_eq!(a_longerunion.get_ssize(5), Some(104_isize));
+        // /// assert_eq!(a_longerunion.get_ssize(6), Some(-93_isize));
+        // /// assert_eq!(a_longerunion.get_ssize(7), Some(-67_isize));
+        // /// assert_eq!(a_longerunion.get_ssize(8), Some(88_isize));
+        // /// assert_eq!(a_longerunion.get_ssize(9), Some(-120_isize));
+        // /// assert_eq!(a_longerunion.get_ssize(10), Some(-50_isize));
+        // /// assert_eq!(a_longerunion.get_ssize(11), Some(126_isize));
+        // /// assert_eq!(a_longerunion.get_ssize(12), Some(26_isize));
+        // /// assert_eq!(a_longerunion.get_ssize(13), Some(59_isize));
+        // /// assert_eq!(a_longerunion.get_ssize(14), Some(18_isize));
+        // /// assert_eq!(a_longerunion.get_ssize(15), Some(-1_isize));
+        // /// assert_eq!(a_longerunion.get(), 339047799029950809142362261752780557135_usize);
+        // /// ```
+        // /// 
+        // /// # Big-endian issue
+        // /// It is just experimental for Big Endian CPUs. So, you are not
+        // /// encouraged to use it for Big Endian CPUs for serious purpose.
+        // /// Only use this crate for Big-endian CPUs with your own full
+        // /// responsibility.
+        // #[cfg(target_pointer_width = "8")]
         // pub fn set_ssize(&mut self, i: usize, val: isize) -> bool
-        /// Sets i-th element of its array `ssize` of type `isize` and returns
-        /// true if `i` is less than the size of this union in bytes divided
-        /// by the size of the type `isize` in bytes.
-        /// Otherwise, it will set nothing amd return false.
-        /// 
-        /// # Arguments i
-        /// `i` indicates `i`-th element. 0-th element contains LSB (Least
-        /// Significant Bit), while (the size of this union in bytes - 1)-th
-        /// element contains MSB (Most Significant Bit) regardless endianness.
-        /// - `val` is the value of type `isize` to set the i-th element of its
-        ///  array `s_size` of type `isize`.
-        /// 
-        /// # Output
-        /// - `true` if `i` is less than the size of this union in bytes
-        /// divided by the size of the type `isize` in bytes
-        /// - `false` if `i` is equal to or greater than the size of this
-        /// union in bytes divided by the size of the type `isize` in bytes
-        /// 
-        /// # Counterpart Method
-        /// Use this method when you are not sure that `i` is less than
-        /// the size of this union in bytes divided by the size of the type
-        /// `isize` in bytes. Otherwise, use its counterpart
-        /// method [set_ssize_()](#method.set_ssize_) for performance.
-        /// 
-        /// # Example 1 for ShortUnion
-        /// ```
-        /// use cryptocol::number::ShortUnion;
-        /// let mut a_shortunion = ShortUnion::new();
-        /// let b0 = a_shortunion.set_ssize(0, 79_isize);
-        /// let b1 = a_shortunion.set_ssize(1, 11_isize);
-        /// let b2 = a_shortunion.set_ssize(2, 100_isize);  // Nothing will be done
-        /// assert_eq!(b0, true);
-        /// assert_eq!(b1, true);
-        /// assert_eq!(b2, false);
-        /// println!("a_shortunion.get() = {}", a_shortunion.get());
-        /// for i in 0..2
-        /// {
-        ///     match a_shortunion.get_ssize(i)
-        ///     {
-        ///         Some(a) => { println!("a_shortunion.get_ssize({}) = {}", i, a); },
-        ///         _ => {},
-        ///     }
-        /// }
-        /// assert_eq!(a_shortunion.get_ssize(0), Some(79_isize));
-        /// assert_eq!(a_shortunion.get_ssize(1), Some(11_isize));
-        /// assert_eq!(a_shortunion.get_ssize(2), None);
-        /// ```
-        /// 
-        /// # Example 2 for IntUnion
-        /// ```
-        /// use cryptocol::number::IntUnion;
-        /// let mut a_intunion = IntUnion::new();
-        /// let b0 = a_intunion.set_ssize(0, 79_isize);
-        /// let b1 = a_intunion.set_ssize(1, 11_isize);
-        /// let b2 = a_intunion.set_ssize(2, 74_isize);
-        /// let b3 = a_intunion.set_ssize(3, -15_isize);
-        /// let b4 = a_intunion.set_ssize(4, 100_isize);
-        /// assert_eq!(b0, true);
-        /// assert_eq!(b1, true);
-        /// assert_eq!(b2, true);
-        /// assert_eq!(b3, true);
-        /// assert_eq!(b4, false);
-        /// println!("a_intunion.get() = {}", a_intunion.get());
-        /// for i in 0..4
-        /// {
-        ///     match a_intunion.get_ssize(i)
-        ///     {
-        ///         Some(a) => { println!("a_intunion.get_ssize({}) = {}", i, a); },
-        ///         _ => {},
-        ///     }
-        /// }
-        /// assert_eq!(a_intunion.get_ssize(0), Some(79_isize));
-        /// assert_eq!(a_intunion.get_ssize(1), Some(11_isize));
-        /// assert_eq!(a_intunion.get_ssize(2), Some(74_isize));
-        /// assert_eq!(a_intunion.get_ssize(3), Some(-15_isize));
-        /// assert_eq!(a_intunion.get(), 4048161615_u32);
-        /// ```
-        /// 
-        /// # Example 3 for LongUnion
-        /// ```
-        /// use cryptocol::number::LongUnion;
-        /// let mut a_longunion = LongUnion::new();
-        /// let b0 = a_longunion.set_ssize(0, 79_isize);
-        /// let b1 = a_longunion.set_ssize(1, 11_isize);
-        /// let b2 = a_longunion.set_ssize(2, 74_isize);
-        /// let b3 = a_longunion.set_ssize(3, -15_isize);
-        /// let b4 = a_longunion.set_ssize(4, -11_isize);
-        /// let b5 = a_longunion.set_ssize(5, 104_isize);
-        /// let b6 = a_longunion.set_ssize(6, -93_isize);
-        /// let b7 = a_longunion.set_ssize(7, -67_isize);
-        /// let b8 = a_longunion.set_ssize(8, 100_isize);
-        /// assert_eq!(b0, true);
-        /// assert_eq!(b1, true);
-        /// assert_eq!(b2, true);
-        /// assert_eq!(b3, true);
-        /// assert_eq!(b4, true);
-        /// assert_eq!(b5, true);
-        /// assert_eq!(b6, true);
-        /// assert_eq!(b7, true);
-        /// assert_eq!(b8, false);
-        /// println!("a_longunion.get() = {}", a_longunion.get());
-        /// for i in 0..8
-        /// {
-        ///     match a_longunion.get_usize(i)
-        ///     {
-        ///         Some(a) => { println!("a_longunion.get_usize({}) = {}", i, a); },
-        ///         _ => {},
-        ///     }
-        /// }
-        /// assert_eq!(a_longunion.get_ssize(0), Some(79_isize));
-        /// assert_eq!(a_longunion.get_ssize(1), Some(11_isize));
-        /// assert_eq!(a_longunion.get_ssize(2), Some(74_isize));
-        /// assert_eq!(a_longunion.get_ssize(3), Some(-15_isize));
-        /// assert_eq!(a_longunion.get_ssize(4), Some(-11_isize));
-        /// assert_eq!(a_longunion.get_ssize(5), Some(104_isize));
-        /// assert_eq!(a_longunion.get_ssize(6), Some(-93_isize));
-        /// assert_eq!(a_longunion.get_ssize(7), Some(-67_isize));
-        /// assert_eq!(a_longunion.get(), 13664881099896654671_u64);
-        /// ```
-        /// 
-        /// # Example 4 for LongerUnion
-        /// ```
-        /// use cryptocol::number::LongerUnion;
-        /// let mut a_longerunion = LongerUnion::new();
-        /// let b0 = a_longerunion.set_ssize(0, 79_isize);
-        /// let b1 = a_longerunion.set_ssize(1, 11_isize);
-        /// let b2 = a_longerunion.set_ssize(2, 74_isize);
-        /// let b3 = a_longerunion.set_ssize(3, -15_isize);
-        /// let b4 = a_longerunion.set_ssize(4, -11_isize);
-        /// let b5 = a_longerunion.set_ssize(5, 104_isize);
-        /// let b6 = a_longerunion.set_ssize(6, -93_isize);
-        /// let b7 = a_longerunion.set_ssize(7, -67_isize);
-        /// let b8 = a_longerunion.set_ssize(8, 88_isize);
-        /// let b9 = a_longerunion.set_ssize(9, -120_isize);
-        /// let b10 = a_longerunion.set_ssize(10, -50_isize);
-        /// let b11 = a_longerunion.set_ssize(11, 126_isize);
-        /// let b12 = a_longerunion.set_ssize(12, 26_isize);
-        /// let b13 = a_longerunion.set_ssize(13, 59_isize);
-        /// let b14 = a_longerunion.set_ssize(14, 18_isize);
-        /// let b15 = a_longerunion.set_ssize(15, -1_isize);
-        /// let b16 = a_longerunion.set_ssize(16, 100_isize);
-        /// assert_eq!(b0, true);
-        /// assert_eq!(b1, true);
-        /// assert_eq!(b2, true);
-        /// assert_eq!(b3, true);
-        /// assert_eq!(b4, true);
-        /// assert_eq!(b5, true);
-        /// assert_eq!(b6, true);
-        /// assert_eq!(b7, true);
-        /// assert_eq!(b8, true);
-        /// assert_eq!(b9, true);
-        /// assert_eq!(b10, true);
-        /// assert_eq!(b11, true);
-        /// assert_eq!(b12, true);
-        /// assert_eq!(b13, true);
-        /// assert_eq!(b14, true);
-        /// assert_eq!(b15, true);
-        /// assert_eq!(b16, false);
-        /// println!("a_longerunion.get() = {}", a_longerunion.get());
-        /// for i in 0..16
-        /// {
-        ///     match a_longerunion.get_usize(i)
-        ///     {
-        ///         Some(a) => { println!("a_longerunion.get_usize({}) = {}", i, a); },
-        ///         _ => {},
-        ///     }
-        /// }
-        /// assert_eq!(a_longerunion.get_ssize(0), Some(79_isize));
-        /// assert_eq!(a_longerunion.get_ssize(1), Some(11_isize));
-        /// assert_eq!(a_longerunion.get_ssize(2), Some(74_isize));
-        /// assert_eq!(a_longerunion.get_ssize(3), Some(-15_isize));
-        /// assert_eq!(a_longerunion.get_ssize(4), Some(-11_isize));
-        /// assert_eq!(a_longerunion.get_ssize(5), Some(104_isize));
-        /// assert_eq!(a_longerunion.get_ssize(6), Some(-93_isize));
-        /// assert_eq!(a_longerunion.get_ssize(7), Some(-67_isize));
-        /// assert_eq!(a_longerunion.get_ssize(8), Some(88_isize));
-        /// assert_eq!(a_longerunion.get_ssize(9), Some(-120_isize));
-        /// assert_eq!(a_longerunion.get_ssize(10), Some(-50_isize));
-        /// assert_eq!(a_longerunion.get_ssize(11), Some(126_isize));
-        /// assert_eq!(a_longerunion.get_ssize(12), Some(26_isize));
-        /// assert_eq!(a_longerunion.get_ssize(13), Some(59_isize));
-        /// assert_eq!(a_longerunion.get_ssize(14), Some(18_isize));
-        /// assert_eq!(a_longerunion.get_ssize(15), Some(-1_isize));
-        /// assert_eq!(a_longerunion.get(), 339047799029950809142362261752780557135_usize);
-        /// ```
-        /// 
-        /// # Big-endian issue
-        /// It is just experimental for Big Endian CPUs. So, you are not
-        /// encouraged to use it for Big Endian CPUs for serious purpose.
-        /// Only use this crate for Big-endian CPUs with your own full
-        /// responsibility.
-        #[cfg(target_pointer_width = "8")]
-        pub fn set_ssize(&mut self, i: usize, val: isize) -> bool
-        {
-            if i <= Self::J
-            { 
-                #[cfg(target_endian = "little")]    unsafe { self.s_size[i] = val; }
-                #[cfg(target_endian = "big")]       unsafe { self.s_size[Self::J-i] = val; }
-                true
-            }
-            else
-            {
-                false
-            }
-        }
+        // {
+        //     if i <= Self::J
+        //     { 
+        //         #[cfg(target_endian = "little")]    unsafe { self.s_size[i] = val; }
+        //         #[cfg(target_endian = "big")]       unsafe { self.s_size[Self::J-i] = val; }
+        //         true
+        //     }
+        //     else
+        //     {
+        //         false
+        //     }
+        // }
 
         // pub fn set_ssize(&mut self, i: usize, val: isize) -> bool
         /// Sets i-th element of its array `ssize` of type `isize` and returns

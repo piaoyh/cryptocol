@@ -1489,11 +1489,11 @@ impl<GenFunc: Random_Engine + 'static, const COUNT: u128> Random_Generic<GenFunc
     #[inline]
     pub fn random_usize(&mut self) -> usize
     {
-        #[cfg(target_pointer_width = "8")]      return self.random_u8().into_usize();
+        // #[cfg(target_pointer_width = "8")]      return self.random_u8().into_usize();
         #[cfg(target_pointer_width = "16")]     return self.random_u16().into_usize();
         #[cfg(target_pointer_width = "32")]     return self.random_u32().into_usize();
         #[cfg(target_pointer_width = "64")]     return self.random_u64().into_usize();
-        #[cfg(target_pointer_width = "128")]    return self.random_u128().into_usize();
+        // #[cfg(target_pointer_width = "128")]    return self.random_u128().into_usize();
     }
 
     // pub fn random_uint<T>(&mut self) -> T

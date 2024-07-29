@@ -302,11 +302,11 @@ pub union LongUnion
     /// The isize type array whose elements's size is 16-bit size
     #[cfg(target_pointer_width = "16")] s_size: [isize; 4],
 
-    /// The usize type array whose elements's size is 8-bit size
-    #[cfg(target_pointer_width = "8")] u_size: [usize; 8],
+    // /// The usize type array whose elements's size is 8-bit size
+    // #[cfg(target_pointer_width = "8")] u_size: [usize; 8],
 
-    /// The isize type array whose elements's size is 8-bit size
-    #[cfg(target_pointer_width = "8")] s_size: [isize; 8],
+    // /// The isize type array whose elements's size is 8-bit size
+    // #[cfg(target_pointer_width = "8")] s_size: [isize; 8],
 }
 
 impl LongUnion
@@ -537,7 +537,7 @@ impl LongUnion
     #[cfg(target_pointer_width = "64")]     crate::number::get_set_size_fit!();
     #[cfg(target_pointer_width = "32")]     crate::number::get_set_usize!(2);
     #[cfg(target_pointer_width = "16")]     crate::number::get_set_usize!(4);
-    #[cfg(target_pointer_width = "8")]      crate::number::get_set_usize!(8);
+    // #[cfg(target_pointer_width = "8")]      crate::number::get_set_usize!(8);
 
     crate::number::integer_union_methods!(u64);
 }
@@ -673,8 +673,8 @@ impl Debug for LongUnion
                                                 .field("s_size", &[self.get_ssize_(0), self.get_ssize_(1)]);
         #[cfg(target_pointer_width = "16")] ff.field("u_size", &[self.get_usize_(0), self.get_usize_(1), self.get_usize_(2), self.get_usize_(3)])
                                                 .field("s_size", &[self.get_ssize_(0), self.get_ssize_(1), self.get_ssize_(2), self.get_ssize_(3)]);
-        #[cfg(target_pointer_width = "8")] ff.field("u_size", &[self.get_usize_(0), self.get_usize_(1), self.get_usize_(2), self.get_usize_(3), self.get_usize_(4), self.get_usize_(5), self.get_usize_(6), self.get_usize_(7)])
-                                                .field("s_size", &[self.get_ssize_(0), self.get_ssize_(1), self.get_ssize_(2), self.get_ssize_(3), self.get_ssize_(4), self.get_ssize_(5), self.get_ssize_(6), self.get_ssize_(7)]);
+        // #[cfg(target_pointer_width = "8")] ff.field("u_size", &[self.get_usize_(0), self.get_usize_(1), self.get_usize_(2), self.get_usize_(3), self.get_usize_(4), self.get_usize_(5), self.get_usize_(6), self.get_usize_(7)])
+        //                                         .field("s_size", &[self.get_ssize_(0), self.get_ssize_(1), self.get_ssize_(2), self.get_ssize_(3), self.get_ssize_(4), self.get_ssize_(5), self.get_ssize_(6), self.get_ssize_(7)]);
         ff.finish()
     }
 }

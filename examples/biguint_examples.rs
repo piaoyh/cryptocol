@@ -5226,15 +5226,15 @@ fn biguint_widening_mul()
 {
     println!("biguint_widening_mul");
     use cryptocol::define_utypes_with;
-    define_utypes_with!(u8);
+    define_utypes_with!(u16);
 
     let a_biguint = U256::from_string("876801874298166903427690031858186486050853753882811946569946433649006084094").unwrap();
-    let b_uint = 248_u8;
-    let (res_low, res_high) = a_biguint.widening_mul_uint(b_uint);
+    let b_biguint = U256::from_string("123456789098765432101234566789098765432101234567890987654321012345678909876").unwrap();
+    let (res_biguint_low, res_biguint_high) = a_biguint.widening_mul(&b_biguint);
 
-    println!("{} X {} = {}:{}", a_biguint, b_uint, res_high, res_low);
-    assert_eq!(res_high.to_string(), "1");
-    assert_eq!(res_low.to_string(), "101654775588629196626496142892142340687341746297296798709889131537040379215376");
+    println!("{} X {} = {}:{}", a_biguint, b_biguint, res_biguint_high, res_biguint_low);
+    assert_eq!(res_biguint_high.to_string(), "1");
+    assert_eq!(res_biguint_low.to_string(), "101654775588629196626496142892142340687341746297296798709889131537040379215376");
     println!("---------------------------");
 }
 

@@ -13748,6 +13748,10 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// of the type `Self` instead of underflowing, and then, assign the result
     /// back to `self`.
     /// 
+    /// # Arguments
+    /// - `rhs` is to be subtrcted from `self`, and is of `&Self`-type.
+    /// - `modulo` is the divisor to divide the result of (`self` - `rhs`).
+    /// 
     /// # Panics
     /// - If `size_of::<T>() * N` <= `128`, this method may panic
     /// or its behavior may be undefined though it may not panic.
@@ -13911,6 +13915,14 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// Calculates the “full multiplication” `self` * `rhs` + `carry` without
     /// the possibility to overflow.
     /// 
+    /// # Arguments
+    /// - `rhs` is to be multiplied to `self`, and is `&Self` type.
+    /// - `carry` is to be added to `self`, and `Self`-typed.
+    /// 
+    /// # Panics
+    /// If `size_of::<T>() * N` <= `128`, this method may panic
+    /// or its behavior may be undefined though it may not panic.
+    /// 
     /// # Output
     /// It returns `self` * `rhs` + `carry` in the form of a tuple of the
     /// low-order (wrapping) bits and the high-order (overflow) bits of the
@@ -13943,9 +13955,6 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// use cryptocol::define_utypes_with;
     /// define_utypes_with!(u128);
     /// 
-    /// use cryptocol::define_utypes_with;
-    /// define_utypes_with!(u128);
-    /// 
     /// let a_biguint_low = U256::from_string("76801874298166903427690031858186486050853753882811946569946433649006084094").unwrap();
     /// let a_biguint_high = U256::from_string("75388281194656994643364900608409476801874298166903427690031858186486050853").unwrap();
     /// let b_biguint = UU32::from_string("16962363268797823794757102636892132280421717087553271230257168091959361441925").unwrap();
@@ -13975,6 +13984,14 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// Calculates the “full multiplication” `self` * `rhs` + `carry` without
     /// the possibility to overflow, and assigs the low-order bits of the result
     /// to `self` back and returns the high-order bits of the result.
+    /// 
+    /// # Arguments
+    /// - `rhs` is to be multiplied to `self`, and is `&Self` type.
+    /// - `carry` is to be added to `self`, and `Self`-typed.
+    /// 
+    /// # Panics
+    /// If `size_of::<T>() * N` <= `128`, this method may panic
+    /// or its behavior may be undefined though it may not panic.
     /// 
     /// # Output
     /// It returns the high-order (overflow) bits of `self` * `rhs` + `carry`
@@ -14110,6 +14127,9 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// Calculates the complete product `self` * `rhs` without the possibility
     /// to overflow.
     /// 
+    /// # Arguments
+    /// - `rhs` is to be multiplied to `self`, and is `&Self` type.
+    /// 
     /// # Output
     /// It returns `self` * `rhs` in the form of a tuple of the low-order
     /// (wrapping) bits and the high-order (overflow) bits of the result as
@@ -14208,7 +14228,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
         self.set_zero();
         let zero = T::zero();
         let mut high_biguint = Self::zero();
-        let mut low_uint = zero;
+        let mut low_uint: T;
         let i_n = N - rhs.leading_zero_elements() as usize;
         let j_n = N - operand.leading_zero_elements() as usize;
         for i in 0..i_n
@@ -17782,7 +17802,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     #[inline]
     pub fn into_usize(&self) -> usize
     {
-        #[cfg(target_pointer_width = "128")]    return self.into_u128().into_usize();
+        // #[cfg(target_pointer_width = "128")]    return self.into_u128().into_usize();
         #[cfg(target_pointer_width = "64")]     return self.into_u64().into_usize();
         #[cfg(target_pointer_width = "32")]     return self.into_u32().into_usize();
         #[cfg(target_pointer_width = "16")]     return self.into_u16().into_usize();

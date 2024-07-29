@@ -162,11 +162,11 @@ pub union ShortUnion
     /// The isize type element whose size is the same as the ShortUnion
     #[cfg(target_pointer_width = "16")] s_size: isize,
 
-    /// The usize type array whose elements's size is 8-bit size
-    #[cfg(target_pointer_width = "8")] u_size: [usize; 2],
+    // / The usize type array whose elements's size is 8-bit size
+    // #[cfg(target_pointer_width = "8")] u_size: [usize; 2],
 
-    /// The isize type array whose elements's size is 8-bit size
-    #[cfg(target_pointer_width = "8")] s_size: [isize; 2],
+    // / The isize type array whose elements's size is 8-bit size
+    // #[cfg(target_pointer_width = "8")] s_size: [isize; 2],
 }
 
 
@@ -354,7 +354,7 @@ impl ShortUnion
 
     crate::number::get_set_byte!(2);
 
-    #[cfg(target_pointer_width = "8")]  crate::number::get_set_size!(2);
+    // #[cfg(target_pointer_width = "8")]  crate::number::get_set_size!(2);
     #[cfg(target_pointer_width = "16")] crate::number::get_set_size_fit!();
 
     crate::number::integer_union_methods!(u16);
@@ -448,8 +448,8 @@ impl Debug for ShortUnion
             .field("sbyte",  &[self.get_sbyte_(0), self.get_sbyte_(1)]);
          #[cfg(target_pointer_width = "16")] ff.field("u_size", unsafe { &self.get_usize() } )
                                                 .field("s_size", unsafe { &self.get_ssize() } );
-         #[cfg(target_pointer_width = "8")] ff.field("u_size", unsafe { &[self.get_usize(0), self.get_usize(1)] } )
-                                                .field("s_size", unsafe { &[self.get_ssize(0), self.get_isize(1)] } );
+        //  #[cfg(target_pointer_width = "8")] ff.field("u_size", unsafe { &[self.get_usize(0), self.get_usize(1)] } )
+        //                                         .field("s_size", unsafe { &[self.get_ssize(0), self.get_isize(1)] } );
          ff.finish()
     }
 }

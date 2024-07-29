@@ -220,11 +220,11 @@ pub union IntUnion
     /// The isize type array whose elements's size is 16-bit size
     #[cfg(target_pointer_width = "16")] pub s_size: [isize; 2],
 
-    /// The usize type array whose elements's size is 8-bit size
-    #[cfg(target_pointer_width = "8")] pub u_size: [usize; 4],
+    // /// The usize type array whose elements's size is 8-bit size
+    // #[cfg(target_pointer_width = "8")] pub u_size: [usize; 4],
 
-    /// The isize type array whose elements's size is 8-bit size
-    #[cfg(target_pointer_width = "8")] pub s_size: [isize; 4],
+    // /// The isize type array whose elements's size is 8-bit size
+    // #[cfg(target_pointer_width = "8")] pub s_size: [isize; 4],
 }
 
 
@@ -434,7 +434,7 @@ impl IntUnion
 
     #[cfg(target_pointer_width = "32")]     crate::number::get_set_size_fit!();
     #[cfg(target_pointer_width = "16")]     crate::number::get_set_usize!(2);
-    #[cfg(target_pointer_width = "8")]      crate::number::get_set_usize!(4);
+    // #[cfg(target_pointer_width = "8")]      crate::number::get_set_usize!(4);
 
     crate::number::integer_union_methods!(u32);
 }
@@ -543,8 +543,8 @@ impl Debug for IntUnion
                                                 .field("s_size", &self.get_ssize());
         #[cfg(target_pointer_width = "16")] ff.field("u_size", &[self.get_usize_(0), self.get_usize_(1)])
                                                 .field("s_size", &[self.get_ssize_(0), self.get_ssize_(1)]);
-        #[cfg(target_pointer_width = "8")] ff.field("u_size", &[self.get_usize_(0), self.get_usize_(1), self.get_usize_(2), self.get_usize_(3)])
-                                                .field("s_size", &[self.get_ssize_(0), self.get_ssize_(1), self.get_ssize_(2), self.get_ssize_(3)]);
+        // #[cfg(target_pointer_width = "8")] ff.field("u_size", &[self.get_usize_(0), self.get_usize_(1), self.get_usize_(2), self.get_usize_(3)])
+        //                                         .field("s_size", &[self.get_ssize_(0), self.get_ssize_(1), self.get_ssize_(2), self.get_ssize_(3)]);
         ff.finish()
     }
 }
