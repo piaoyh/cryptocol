@@ -2426,35 +2426,35 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     }
 
     // fn copy_within<R>(&mut self, src: R, dest: usize)
-    /// Copies elements from one part of the slice `T`-array of BigUInt to
-    /// another part of itself, using a memmove.
-    /// 
-    /// # Panics
-    /// - If `size_of::<T>() * N` <= `128`, some methods may panic
-    /// or its behavior may be undefined though it may not panic.
-    /// - This method copy_within() will panic if either range exceeds the end
-    /// of the slice, or if the end of src is before the start.
-    /// 
-    /// # Arguments
-    /// - src is the range within self.number to copy from. Regardless
-    /// endianness, the index is counted from LSB (Least Significant Bit) to MSB
-    /// (Most Significant Bit). So, index 0 is LSB and index N-1 is MSB.
-    /// - dest is the starting index of the range within self.number to copy to,
-    /// which will have the same length as src.
-    /// - The two ranges may overlap.
-    /// - The ends of the two ranges must be less than or equal to self.len().
-    /// 
-    // / # Example
-    // / ```
-    // / use cryptocol::define_utypes_with;
-    // / define_utypes_with!(u16);
-    // / let mut a = U256::new();
-    // / a.set_number(&[0_u16, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15]);
-    // / println!("a = {:?}", a);
-    // / a.copy_within(3..10, 6);
-    // / println!("a = {:?}", a);
-    // / assert_eq!(a.get_number(), &[0, 1, 2, 3, 4, 5, 3, 4, 5, 6, 7, 8, 9, 13, 14, 15]);
-    // / ```
+    // /// Copies elements from one part of the slice `T`-array of BigUInt to
+    // /// another part of itself, using a memmove.
+    // /// 
+    // /// # Panics
+    // /// - If `size_of::<T>() * N` <= `128`, some methods may panic
+    // /// or its behavior may be undefined though it may not panic.
+    // /// - This method copy_within() will panic if either range exceeds the end
+    // /// of the slice, or if the end of src is before the start.
+    // /// 
+    // /// # Arguments
+    // /// - src is the range within self.number to copy from. Regardless
+    // /// endianness, the index is counted from LSB (Least Significant Bit) to MSB
+    // /// (Most Significant Bit). So, index 0 is LSB and index N-1 is MSB.
+    // /// - dest is the starting index of the range within self.number to copy to,
+    // /// which will have the same length as src.
+    // /// - The two ranges may overlap.
+    // /// - The ends of the two ranges must be less than or equal to self.len().
+    // /// 
+    // /// # Example
+    // /// ```
+    // /// use cryptocol::define_utypes_with;
+    // /// define_utypes_with!(u16);
+    // /// let mut a = U256::new();
+    // /// a.set_number(&[0_u16, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15]);
+    // /// println!("a = {:?}", a);
+    // /// a.copy_within(3..10, 6);
+    // /// println!("a = {:?}", a);
+    // /// assert_eq!(a.get_number(), &[0, 1, 2, 3, 4, 5, 3, 4, 5, 6, 7, 8, 9, 13, 14, 15]);
+    // /// ```
     #[cfg(target_endian = "little")]
     #[inline]
     fn copy_within<R>(&mut self, src: R, dest: usize)
@@ -2464,43 +2464,43 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     }
 
     // fn copy_within<R>(&mut self, src: R, dest: usize)
-    /// Copies elements from one part of the slice `T`-array of BigUInt to
-    /// another part of itself, using a memmove.
-    /// 
-    /// # Panics
-    /// - If `size_of::<T>() * N` <= `128`, some methods may panic
-    /// or its behavior may be undefined though it may not panic.
-    /// - This method copy_within() will panic if either range exceeds the end
-    /// of the slice, or if the end of src is before the start.
-    /// 
-    /// # Arguments
-    /// - src is the range within self.number to copy from. Regardless
-    /// endianness, the index is counted from LSB (Least Significant Bit) to MSB
-    /// (Most Significant Bit). So, index 0 is LSB and index N-1 is MSB. if you
-    /// want to use index Big-endian way, in other words, index 0 is MSB and
-    /// index N-1 is LSB, use the method [_copy_within()](struct@BigUInt#method._copy_within)
-    /// instead of this method copy_within().
-    /// - dest is the starting index of the range within self.number to copy to,
-    /// which will have the same length as src.
-    /// - The two ranges may overlap.
-    /// - The ends of the two ranges must be less than or equal to self.len().
-    /// 
-    /// # Example
-    /// ```
-    /// use cryptocol::define_utypes_with;
-    /// define_utypes_with!(u16);
-    /// let mut a = U256::new();
-    /// a.set_number(&[0_u16, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15]);
-    /// println!("a = {:?}", a);
-    /// a.copy_within(3..10, 6);
-    /// println!("a = {:?}", a);
-    /// assert_eq!(a.get_number(), &[0, 1, 2, 3, 4, 5, 3, 4, 5, 6, 7, 8, 9, 13, 14, 15]);
-    /// ```
-    /// 
-    /// # Big-endian issue
-    /// It is just experimental for Big Endian CPUs. So, you are not encouraged
-    /// to use it for Big Endian CPUs for serious purpose. Only use this crate
-    /// for Big-endian CPUs with your own full responsibility.
+    // /// Copies elements from one part of the slice `T`-array of BigUInt to
+    // /// another part of itself, using a memmove.
+    // /// 
+    // /// # Panics
+    // /// - If `size_of::<T>() * N` <= `128`, some methods may panic
+    // /// or its behavior may be undefined though it may not panic.
+    // /// - This method copy_within() will panic if either range exceeds the end
+    // /// of the slice, or if the end of src is before the start.
+    // /// 
+    // /// # Arguments
+    // /// - src is the range within self.number to copy from. Regardless
+    // /// endianness, the index is counted from LSB (Least Significant Bit) to MSB
+    // /// (Most Significant Bit). So, index 0 is LSB and index N-1 is MSB. if you
+    // /// want to use index Big-endian way, in other words, index 0 is MSB and
+    // /// index N-1 is LSB, use the method [_copy_within()](struct@BigUInt#method._copy_within)
+    // /// instead of this method copy_within().
+    // /// - dest is the starting index of the range within self.number to copy to,
+    // /// which will have the same length as src.
+    // /// - The two ranges may overlap.
+    // /// - The ends of the two ranges must be less than or equal to self.len().
+    // /// 
+    // /// # Example
+    // /// ```
+    // /// use cryptocol::define_utypes_with;
+    // /// define_utypes_with!(u16);
+    // /// let mut a = U256::new();
+    // /// a.set_number(&[0_u16, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15]);
+    // /// println!("a = {:?}", a);
+    // /// a.copy_within(3..10, 6);
+    // /// println!("a = {:?}", a);
+    // /// assert_eq!(a.get_number(), &[0, 1, 2, 3, 4, 5, 3, 4, 5, 6, 7, 8, 9, 13, 14, 15]);
+    // /// ```
+    // /// 
+    // /// # Big-endian issue
+    // /// It is just experimental for Big Endian CPUs. So, you are not encouraged
+    // /// to use it for Big Endian CPUs for serious purpose. Only use this crate
+    // /// for Big-endian CPUs with your own full responsibility.
     #[cfg(target_endian = "big")]
     #[inline]
     fn copy_within<R>(&mut self, src: R, dest: usize)
@@ -4094,6 +4094,10 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// println!("{} + {} = {}\ncarry = {}", num1, num_uint, sum, carry);
     /// assert_eq!(sum.to_string(), "115761816335569101403435733562708448393664880666628652711615198738168793722605");
     /// assert_eq!(carry, false);
+    /// assert_eq!(sum.is_overflow(), false);
+    /// assert_eq!(sum.is_underflow(), false);
+    /// assert_eq!(sum.is_divided_by_zero(), false);
+    /// assert_eq!(sum.is_infinity(), false);
     /// ```
     /// 
     /// # Example 2
@@ -4109,6 +4113,10 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// println!("{} + {} = {}\ncarry = {}", num1, num_uint, sum, carry);
     /// assert_eq!(sum.to_string(), "115761816335569101403435733562708448393664880666628652711615198738168793722606");
     /// assert_eq!(carry, false);
+    /// assert_eq!(sum.is_overflow(), false);
+    /// assert_eq!(sum.is_underflow(), false);
+    /// assert_eq!(sum.is_divided_by_zero(), false);
+    /// assert_eq!(sum.is_infinity(), false);
     /// ```
     /// 
     /// # Example 3
@@ -4124,6 +4132,10 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// println!("{} + {} = {}\ncarry = {}", num2, num_uint, sum, carry);
     /// assert_eq!(sum.to_string(), "22774453838368691933710012711845097214");
     /// assert_eq!(carry, true);
+    /// assert_eq!(sum.is_overflow(), true);
+    /// assert_eq!(sum.is_underflow(), false);
+    /// assert_eq!(sum.is_divided_by_zero(), false);
+    /// assert_eq!(sum.is_infinity(), false);
     /// ```
     /// 
     /// # Example 4
@@ -4139,6 +4151,10 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// println!("{} + {} = {}\ncarry = {}", num2, num_uint, sum, carry);
     /// assert_eq!(sum.to_string(), "22774453838368691933710012711845097215");
     /// assert_eq!(carry, true);
+    /// assert_eq!(sum.is_overflow(), true);
+    /// assert_eq!(sum.is_underflow(), false);
+    /// assert_eq!(sum.is_divided_by_zero(), false);
+    /// assert_eq!(sum.is_infinity(), false);
     /// ```
     /// 
     /// # Big-endian issue
@@ -4206,9 +4222,18 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// let mut num1 = U256::from_str_radix(num_str1, 16).unwrap();
     /// println!("Originally,\tnum1 = {}", num1);
     /// let carry = num1.carrying_add_assign_uint(num_uint, false);
+    /// assert_eq!(num1.is_overflow(), false);
+    /// assert_eq!(num1.is_underflow(), false);
+    /// assert_eq!(num1.is_divided_by_zero(), false);
+    /// assert_eq!(num1.is_infinity(), false);
+    /// 
     /// println!("After num1 += {},\tnum1 = {}\tcarry = {}", num_uint, num1, carry);
     /// assert_eq!(num1.to_string(), "115761816335569101403435733562708448393642106212790284019692513725068324302573");
     /// assert_eq!(carry, false);
+    /// assert_eq!(num1.is_overflow(), false);
+    /// assert_eq!(num1.is_underflow(), false);
+    /// assert_eq!(num1.is_divided_by_zero(), false);
+    /// assert_eq!(num1.is_infinity(), false);
     /// ```
     /// 
     /// # Example 2
@@ -4221,9 +4246,18 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// let mut num1 = U256::from_str_radix(num_str1, 16).unwrap();
     /// println!("Originally,\tnum1 = {}", num1);
     /// let carry = num1.carrying_add_assign_uint(num_uint, true);
+    /// assert_eq!(num1.is_overflow(), false);
+    /// assert_eq!(num1.is_underflow(), false);
+    /// assert_eq!(num1.is_divided_by_zero(), false);
+    /// assert_eq!(num1.is_infinity(), false);
+    /// 
     /// println!("After num1 += {},\tnum1 = {}\tcarry = {}", num_uint, num1, carry);
     /// assert_eq!(num1.to_string(), "115761816335569101403435733562708448393642106212790284019692513725068324302574");
     /// assert_eq!(carry, false);
+    /// assert_eq!(num1.is_overflow(), false);
+    /// assert_eq!(num1.is_underflow(), false);
+    /// assert_eq!(num1.is_divided_by_zero(), false);
+    /// assert_eq!(num1.is_infinity(), false);
     /// ```
     /// 
     /// # Example 3
@@ -4235,10 +4269,19 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// let num_str2 = "FFFFFFFF_FFFFFFFF_FFFFFFFF_FFFFFFFF_FFFFFFFF_FFFFFFFF_FFFFFFFF_FFFFFFFF";
     /// let mut num2 = U256::from_str_radix(num_str2, 16).unwrap();
     /// println!("Originally,\tnum2 = {}", num2);
+    /// assert_eq!(num2.is_overflow(), false);
+    /// assert_eq!(num2.is_underflow(), false);
+    /// assert_eq!(num2.is_divided_by_zero(), false);
+    /// assert_eq!(num2.is_infinity(), false);
+    /// 
     /// let carry = num2.carrying_add_assign_uint(num_uint, false);
     /// println!("After num2 += {},\tnum2 = {}\tcarry = {}", num_uint, num2, carry);
     /// assert_eq!(num2.to_string(), "11024999611375677182");
     /// assert_eq!(carry, true);
+    /// assert_eq!(num2.is_overflow(), true);
+    /// assert_eq!(num2.is_underflow(), false);
+    /// assert_eq!(num2.is_divided_by_zero(), false);
+    /// assert_eq!(num2.is_infinity(), false);
     /// ```
     /// 
     /// # Example 4
@@ -4250,10 +4293,19 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// let num_str2 = "FFFFFFFF_FFFFFFFF_FFFFFFFF_FFFFFFFF_FFFFFFFF_FFFFFFFF_FFFFFFFF_FFFFFFFF";
     /// let mut num2 = U256::from_str_radix(num_str2, 16).unwrap();
     /// println!("Originally,\tnum2 = {}", num2);
+    /// assert_eq!(num2.is_overflow(), false);
+    /// assert_eq!(num2.is_underflow(), false);
+    /// assert_eq!(num2.is_divided_by_zero(), false);
+    /// assert_eq!(num2.is_infinity(), false);
+    /// 
     /// let carry = num2.carrying_add_assign_uint(num_uint, true);
     /// println!("After num2 += {},\tnum2 = {}\tcarry = {}", num_uint, num2, carry);
     /// assert_eq!(num2.to_string(), "11024999611375677183");
     /// assert_eq!(carry, true);
+    /// assert_eq!(num2.is_overflow(), true);
+    /// assert_eq!(num2.is_underflow(), false);
+    /// assert_eq!(num2.is_divided_by_zero(), false);
+    /// assert_eq!(num2.is_infinity(), false);
     /// ```
     /// 
     /// # Big-endian issue
@@ -4320,10 +4372,14 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// use cryptocol::define_utypes_with;
     /// define_utypes_with!(u32);
     /// 
-    /// let a = U512::max().wrapping_sub_uint(1_u8);
-    /// let b = a.wrapping_add_uint(1_u8);
-    /// println!("{} + 1 = {}", a, b);
-    /// assert_eq!(b.to_string(), "13407807929942597099574024998205846127479365820592393377723561443721764030073546976801874298166903427690031858186486050853753882811946569946433649006084095");
+    /// let a_biguint = U512::max().wrapping_sub_uint(1_u8);
+    /// let res = a_biguint.wrapping_add_uint(1_u8);
+    /// println!("{} + 1 = {}", a_biguint, res);
+    /// assert_eq!(res.to_string(), "13407807929942597099574024998205846127479365820592393377723561443721764030073546976801874298166903427690031858186486050853753882811946569946433649006084095");
+    /// assert_eq!(res.is_overflow(), false);
+    /// assert_eq!(res.is_underflow(), false);
+    /// assert_eq!(res.is_divided_by_zero(), false);
+    /// assert_eq!(res.is_infinity(), false);
     /// ```
     /// 
     /// # Example 2
@@ -4331,10 +4387,14 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// use cryptocol::define_utypes_with;
     /// define_utypes_with!(u32);
     /// 
-    /// let a = U512::max().wrapping_sub_uint(1_u8);
-    /// let c = a.wrapping_add_uint(2_u8);
-    /// println!("{} + 2 = {}", a, c);
-    /// assert_eq!(c.to_string(), "0");
+    /// let a_biguint = U512::max().wrapping_sub_uint(1_u8);
+    /// let res = a_biguint.wrapping_add_uint(2_u8);
+    /// println!("{} + 2 = {}", a_biguint, res);
+    /// assert_eq!(res.to_string(), "0");
+    /// assert_eq!(res.is_overflow(), true);
+    /// assert_eq!(res.is_underflow(), false);
+    /// assert_eq!(res.is_divided_by_zero(), false);
+    /// assert_eq!(res.is_infinity(), false);
     /// ```
     /// 
     /// # Example 3
@@ -4342,10 +4402,14 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// use cryptocol::define_utypes_with;
     /// define_utypes_with!(u32);
     /// 
-    /// let a = U512::max().wrapping_sub_uint(1_u8);
-    /// let d = a.wrapping_add_uint(3_u8);
-    /// println!("{} + 3 = {}", a, d);
-    /// assert_eq!(d.to_string(), "1");
+    /// let a_biguint = U512::max().wrapping_sub_uint(1_u8);
+    /// let res = a_biguint.wrapping_add_uint(3_u8);
+    /// println!("{} + 3 = {}", a_biguint, res);
+    /// assert_eq!(res.to_string(), "1");
+    /// assert_eq!(res.is_overflow(), true);
+    /// assert_eq!(res.is_underflow(), false);
+    /// assert_eq!(res.is_divided_by_zero(), false);
+    /// assert_eq!(res.is_infinity(), false);
     /// ```
     /// 
     /// # Big-endian issue
@@ -4401,13 +4465,21 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// use cryptocol::define_utypes_with;
     /// define_utypes_with!(u16);
     /// 
-    /// let mut a = UU64::max().wrapping_sub_uint(1_u8);
-    /// println!("Originally,\ta = {}", a);
-    /// assert_eq!(a.to_string(), "13407807929942597099574024998205846127479365820592393377723561443721764030073546976801874298166903427690031858186486050853753882811946569946433649006084094");
+    /// let mut a_biguint = UU64::max().wrapping_sub_uint(1_u8);
+    /// println!("Originally,\ta_biguint = {}", a_biguint);
+    /// assert_eq!(a_biguint.to_string(), "13407807929942597099574024998205846127479365820592393377723561443721764030073546976801874298166903427690031858186486050853753882811946569946433649006084094");
+    /// assert_eq!(a_biguint.is_overflow(), false);
+    /// assert_eq!(a_biguint.is_underflow(), false);
+    /// assert_eq!(a_biguint.is_divided_by_zero(), false);
+    /// assert_eq!(a_biguint.is_infinity(), false);
     /// 
-    /// a.wrapping_add_assign_uint(1_u8);
-    /// println!("After a += 1,\ta = {}", a);
-    /// assert_eq!(a.to_string(), "13407807929942597099574024998205846127479365820592393377723561443721764030073546976801874298166903427690031858186486050853753882811946569946433649006084095");
+    /// a_biguint.wrapping_add_assign_uint(1_u8);
+    /// println!("After a_biguint.wrapping_add_assign_uint(1_u8),\ta_biguint = {}", a_biguint);
+    /// assert_eq!(a_biguint.to_string(), "13407807929942597099574024998205846127479365820592393377723561443721764030073546976801874298166903427690031858186486050853753882811946569946433649006084095");
+    /// assert_eq!(a_biguint.is_overflow(), false);
+    /// assert_eq!(a_biguint.is_underflow(), false);
+    /// assert_eq!(a_biguint.is_divided_by_zero(), false);
+    /// assert_eq!(a_biguint.is_infinity(), false);
     /// ```
     /// 
     /// # Example 2
@@ -4415,12 +4487,20 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// use cryptocol::define_utypes_with;
     /// define_utypes_with!(u16);
     /// 
-    /// let mut a = UU64::max();
-    /// println!("Originally,\ta = {}", a);
+    /// let mut a_biguint = UU64::max();
+    /// println!("Originally,\ta_biguint = {}", a_biguint);
+    /// assert_eq!(a_biguint.is_overflow(), false);
+    /// assert_eq!(a_biguint.is_underflow(), false);
+    /// assert_eq!(a_biguint.is_divided_by_zero(), false);
+    /// assert_eq!(a_biguint.is_infinity(), false);
     /// 
-    /// a.wrapping_add_assign_uint(1_u8);
-    /// println!("After a += 1,\ta = {}", a);
-    /// assert_eq!(a.to_string(), "0");
+    /// a_biguint.wrapping_add_assign_uint(1_u8);
+    /// println!("After a_biguint.wrapping_add_assign_uint(1_u8),\ta_biguint = {}", a_biguint);
+    /// assert_eq!(a_biguint.to_string(), "0");
+    /// assert_eq!(a_biguint.is_overflow(), true);
+    /// assert_eq!(a_biguint.is_underflow(), false);
+    /// assert_eq!(a_biguint.is_divided_by_zero(), false);
+    /// assert_eq!(a_biguint.is_infinity(), false);
     /// ```
     /// 
     /// # Example 3
@@ -4428,12 +4508,20 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// use cryptocol::define_utypes_with;
     /// define_utypes_with!(u16);
     /// 
-    /// let mut a = UU64::zero();
-    /// println!("Originally,\ta = {}", a);
+    /// let mut a_biguint = UU64::zero();
+    /// println!("Originally,\ta_biguint = {}", a_biguint);
+    /// assert_eq!(a_biguint.is_overflow(), false);
+    /// assert_eq!(a_biguint.is_underflow(), false);
+    /// assert_eq!(a_biguint.is_divided_by_zero(), false);
+    /// assert_eq!(a_biguint.is_infinity(), false);
     /// 
-    /// a.wrapping_add_assign_uint(1_u8);
-    /// println!("After a += 1,\ta = {}", a);
-    /// assert_eq!(a.to_string(), "1");
+    /// a_biguint.wrapping_add_assign_uint(1_u8);
+    /// println!("After a_biguint.wrapping_add_assign_uint(1_u8),\ta_biguint = {}", a_biguint);
+    /// assert_eq!(a_biguint.to_string(), "1");
+    /// assert_eq!(a_biguint.is_overflow(), false);
+    /// assert_eq!(a_biguint.is_underflow(), false);
+    /// assert_eq!(a_biguint.is_divided_by_zero(), false);
+    /// assert_eq!(a_biguint.is_infinity(), false);
     /// ```
     /// 
     /// # Big-endian issue
@@ -4453,7 +4541,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     {
         self.carrying_add_assign_uint(rhs, false);
     }
-
+//-============
     // pub fn overflowing_add_uint<U>(&self, rhs: U) -> (Self, bool)
     /// Calculates `self` + `rhs`.
     /// 
@@ -4995,9 +5083,10 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// 
     /// let a = U256::from_string("76801874298166903427690031858186486050853753882811946569946433649006").unwrap();
     /// let m = a.wrapping_add_uint(2_u8);
-    /// let b = a.modular_add_uint(1_u8, &m);
-    /// println!("{} + 1 = {}", a, b);
-    /// assert_eq!(b.to_string(), "76801874298166903427690031858186486050853753882811946569946433649007");
+    /// let res = a.modular_add_uint(1_u8, &m);
+    /// println!("{} + 1 = {}", a, res);
+    /// assert_eq!(res.to_string(), "76801874298166903427690031858186486050853753882811946569946433649007");
+    /// assert_eq!(res.is_overflow(), false);
     /// ```
     /// 
     /// # Example 2
@@ -5007,9 +5096,10 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// 
     /// let a = U256::from_string("76801874298166903427690031858186486050853753882811946569946433649006").unwrap();
     /// let m = a.wrapping_add_uint(2_u8);
-    /// let c = a.modular_add_uint(2_u8, &m);
-    /// println!("{} + 2 = {}", a, c);
-    /// assert_eq!(c.to_string(), "0");
+    /// let res = a.modular_add_uint(2_u8, &m);
+    /// println!("{} + 2 = {}", a, res);
+    /// assert_eq!(res.to_string(), "0");
+    /// assert_eq!(res.is_overflow(), true);
     /// ```
     /// 
     /// # Example 3
@@ -5019,9 +5109,10 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// 
     /// let a = U256::from_string("76801874298166903427690031858186486050853753882811946569946433649006").unwrap();
     /// let m = a.wrapping_add_uint(2_u8);
-    /// let d = a.modular_add_uint(3_u8, &m);
-    /// println!("{} + 3 = {}", a, d);
-    /// assert_eq!(d.to_string(), "1");
+    /// let res = a.modular_add_uint(3_u8, &m);
+    /// println!("{} + 3 = {}", a, res);
+    /// assert_eq!(res.to_string(), "1");
+    /// assert_eq!(res.is_overflow(), true);
     /// ```
     /// 
     /// # Big-endian issue
@@ -5093,10 +5184,12 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// let m = a.wrapping_add_uint(2_u8);
     /// println!("Originally,\ta = {}", a);
     /// assert_eq!(a.to_string(), "768018742981669034276900318581864860508537538828119465699464336490060");
+    /// assert_eq!(a.is_overflow(), false);
     /// 
     /// a.modular_add_assign_uint(1_u8, &m);
-    /// println!("After a += 1,\ta = {}", a);
+    /// println!("After a.modular_add_assign_uint(1_u8, &m),\ta = {}", a);
     /// assert_eq!(a.to_string(), "768018742981669034276900318581864860508537538828119465699464336490061");
+    /// assert_eq!(a.is_overflow(), false);
     /// ```
     /// 
     /// # Example 2
@@ -5105,13 +5198,15 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// define_utypes_with!(u8);
     /// 
     /// let mut a = U256::from_string("768018742981669034276900318581864860508537538828119465699464336490061").unwrap();
-    /// let m = a.wrapping_add_uint(1_u8);
+    /// let m = a.wrapping_add_uint(2_u8);
     /// println!("Originally,\ta = {}", a);
     /// assert_eq!(a.to_string(), "768018742981669034276900318581864860508537538828119465699464336490061");
+    /// assert_eq!(a.is_overflow(), false);
     /// 
-    /// a.modular_add_assign_uint(1_u8, &m);
-    /// println!("After a += 1,\ta = {}", a);
+    /// a.modular_add_assign_uint(2_u8, &m);
+    /// println!("After a.modular_add_assign_uint(2_u8, &m),\ta = {}", a);
     /// assert_eq!(a.to_string(), "0");
+    /// assert_eq!(a.is_overflow(), true);
     /// ```
     /// 
     /// # Example 3
@@ -5120,13 +5215,20 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// define_utypes_with!(u8);
     /// 
     /// let mut a = U256::from_string("768018742981669034276900318581864860508537538828119465699464336490062").unwrap();
-    /// let m = a.clone();
+    /// let m = a.wrapping_add_uint(2_u8);
     /// println!("Originally,\ta = {}", a);
     /// assert_eq!(a.to_string(), "768018742981669034276900318581864860508537538828119465699464336490062");
+    /// assert_eq!(a.is_overflow(), false);
+    /// 
+    /// a.modular_add_assign_uint(3_u8, &m);
+    /// println!("After a.modular_add_assign_uint(3_u8, &m),\ta = {}", a);
+    /// assert_eq!(a.to_string(), "1");
+    /// assert_eq!(a.is_overflow(), true);
     /// 
     /// a.modular_add_assign_uint(1_u8, &m);
-    /// println!("After a += 1,\ta = {}", a);
-    /// assert_eq!(a.to_string(), "1");
+    /// println!("After a.modular_add_assign_uint(1_u8, &m),\ta = {}", a);
+    /// assert_eq!(a.to_string(), "2");
+    /// assert_eq!(a.is_overflow(), true);
     /// ```
     /// 
     /// # Big-endian issue
@@ -5146,7 +5248,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
         if modulo.is_zero_or_one()
             { panic!(); }
 
-        let flags = self.get_all_flags();
+        let mut flags = self.get_all_flags();
         if *self >= *modulo
             { self.wrapping_rem_assign(modulo); }
 
@@ -5156,13 +5258,13 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
             if *self >= diff
             {
                 self.wrapping_sub_assign(&diff);
-                self.set_flag_bit(flags | Self::OVERFLOW);
+                flags |= Self::OVERFLOW;
             }
             else    // if *self < diff
             {
                 self.wrapping_add_assign_uint(rhs);
-                self.set_flag_bit(flags);
             }
+            self.set_flag_bit(flags);
         }
         else if rhs.length_in_bytes() > T::size_in_bytes()  // && (module <= rhs)
         {
@@ -5177,15 +5279,14 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
             if mself >= diff
             {
                 mself = mself.wrapping_sub(diff);
-                self.set_uint(mself);
-                self.set_flag_bit(flags | Self::OVERFLOW);
+                flags |= Self::OVERFLOW;
             }
             else    // if mself < diff
             {
                 mself = mself.wrapping_add(mrhs);
-                self.set_uint(mself);
-                self.set_flag_bit(flags);
             }
+            self.set_uint(mself);
+            self.set_flag_bit(flags);
         }
     }
 
@@ -6200,9 +6301,10 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// 
     /// let m = U256::from_string("76801874298166903427690031858186486050853753882811946569946433649006084094").unwrap();
     /// let a = U256::from_uint(2_u8);
-    /// let b = a.modular_sub_uint(1_u8, &m);
-    /// println!("{} - 1 = {}", a, b);
-    /// assert_eq!(b.to_string(), "1");
+    /// let res = a.modular_sub_uint(1_u8, &m);
+    /// println!("{} - 1 = {}", a, res);
+    /// assert_eq!(res.to_string(), "1");
+    /// assert_eq!(res.is_underflow(), false);
     /// ```
     /// 
     /// # Example 2
@@ -6212,9 +6314,10 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// 
     /// let m = U256::from_string("76801874298166903427690031858186486050853753882811946569946433649006084094").unwrap();
     /// let a = U256::from_uint(2_u8);
-    /// let c = a.modular_sub_uint(2_u8, &m);
-    /// println!("{} - 2 = {}", a, c);
-    /// assert_eq!(c.to_string(), "0");
+    /// let res = a.modular_sub_uint(2_u8, &m);
+    /// println!("{} - 2 = {}", a, res);
+    /// assert_eq!(res.to_string(), "0");
+    /// assert_eq!(res.is_underflow(), false);
     /// ```
     /// 
     /// # Example 3
@@ -6224,9 +6327,10 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// 
     /// let m = U256::from_string("76801874298166903427690031858186486050853753882811946569946433649006084094").unwrap();
     /// let a = U256::from_uint(2_u8);
-    /// let d = a.modular_sub_uint(3_u8, &m);
-    /// println!("{} - 3 = {}", a, d);
-    /// assert_eq!(d.to_string(), "76801874298166903427690031858186486050853753882811946569946433649006084093");
+    /// let res = a.modular_sub_uint(3_u8, &m);
+    /// println!("{} - 3 = {}", a, res);
+    /// assert_eq!(res.to_string(), "76801874298166903427690031858186486050853753882811946569946433649006084093");
+    /// assert_eq!(res.is_underflow(), true);
     /// ```
     /// 
     /// # Big-endian issue
@@ -6353,7 +6457,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
         if modulo.is_zero_or_one()
             { panic!(); }
 
-        let flags = self.get_all_flags();
+        let mut flags = self.get_all_flags();
         if *self >= *modulo
             { self.wrapping_rem_assign(modulo); }
 
@@ -6362,14 +6466,14 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
             if self.ge_uint(rhs)    // if *self >= rhs
             {
                 self.wrapping_sub_assign_uint(rhs);
-                self.set_flag_bit(flags);
             }
             else    // if *self < rhs
             {
                 let diff = modulo.wrapping_sub_uint(rhs);
                 self.wrapping_add_assign(&diff);
-                self.set_flag_bit(flags | Self::UNDERFLOW);
+                flags |= Self::UNDERFLOW;
             }
+            self.set_flag_bit(flags);
         }
         else if rhs.length_in_bytes() > T::size_in_bytes()  // if rhs.length_in_bytes() > T::size_in_bytes() && (module <= rhs)
         {
@@ -6383,14 +6487,14 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
             if mself >= mrhs
             {
                 self.set_uint(mself.wrapping_sub(mrhs));
-                self.set_flag_bit(flags);
             }
             else    // if *self < rhs
             {
                 let diff = modu.wrapping_sub(mrhs);
                 self.set_uint(mself.wrapping_add(diff));
-                self.set_flag_bit(flags | Self::UNDERFLOW);
+                flags |= Self::UNDERFLOW;
             }
+            self.set_flag_bit(flags);
         }
     }
 
@@ -6409,7 +6513,8 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// It returns the absolute difference between `self` and `other`.
     /// 
     /// # Features
-    /// It computes the absolute difference between `self` and other.
+    /// - It computes the absolute difference between `self` and other.
+    /// - It does not change the flags OVERFLOW and UNDERFLOW.
     /// 
     /// # Counterpart Method
     /// If `rhs` is bigger than `u128`, the method
@@ -6424,9 +6529,11 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// let num_str1 = "FFFFFFFF_FFFFFFFF_FFFFFFFF_FFFFFFFF_FFFFFFFF_FFFFFFFF_FFFFFFFF_FFFFFFFF";
     /// let num1 = U256::from_str_radix(num_str1, 16).unwrap();
     /// let num_uint = 0x9900AABB_CCDDEEFF_9900AABB_CCDDEEFF_u128;
-    /// let a = num1.abs_diff_uint(num_uint);
-    /// println!("| {} - {} | = {}", num1, num_uint, a);
-    /// assert_eq!(a.to_string(), "115792089237316195423570985008687907853066609319396769656704041438214461985024");
+    /// let res = num1.abs_diff_uint(num_uint);
+    /// println!("| {} - {} | = {}", num1, num_uint, res);
+    /// assert_eq!(res.to_string(), "115792089237316195423570985008687907853066609319396769656704041438214461985024");
+    /// assert_eq!(res.is_overflow(), false);
+    /// assert_eq!(res.is_underflow(), false);
     /// ```
     /// 
     /// # Example 2
@@ -6437,9 +6544,11 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// let num_str2 = "12345678_9ABCDEF0_12345678_9ABCDEF0";
     /// let num2 = U256::from_str_radix(num_str2, 16).unwrap();
     /// let num_uint = 0x9900AABB_CCDDEEFF_9900AABB_CCDDEEFF_u128;
-    /// let b = num2.abs_diff_uint(num_uint);
-    /// println!("| {} - {} | = {}", num2, num_uint, b);
-    /// assert_eq!(b.to_string(), "179177489040527647888749252028162707471");
+    /// let res = num2.abs_diff_uint(num_uint);
+    /// println!("| {} - {} | = {}", num2, num_uint, res);
+    /// assert_eq!(res.to_string(), "179177489040527647888749252028162707471");
+    /// assert_eq!(res.is_overflow(), false);
+    /// assert_eq!(res.is_underflow(), false);
     /// ```
     /// 
     /// # Example 3
@@ -6450,10 +6559,11 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// let num_str3 = "9900AABB_CCDDEEFF_9900AABB_CCDDEEFF";
     /// let num3 = U256::from_str_radix(num_str3, 16).unwrap();
     /// let num_uint = 0x9900AABB_CCDDEEFF_9900AABB_CCDDEEFF_u128;
-    /// let c = num3.abs_diff_uint(num_uint);
-    /// 
-    /// println!("| {} - {} | = {}", num3, num_uint, c);
-    /// assert_eq!(c.to_string(), "0");
+    /// let res = num3.abs_diff_uint(num_uint);
+    /// println!("| {} - {} | = {}", num3, num_uint, res);
+    /// assert_eq!(res.to_string(), "0");
+    /// assert_eq!(res.is_overflow(), false);
+    /// assert_eq!(res.is_underflow(), false);
     /// ```
     /// 
     /// # Big-endian issue
@@ -7152,12 +7262,10 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// Otherwise, it returns `false`.
     /// 
     /// # Features
-    /// - If the output is false, the `OVERFOLOW` flag will be set.
     /// - All the flags are historical, which means, for example, if an
-    /// overflow occurred even once before this current operation or
-    /// `OVERFLOW` flag is already set before this current operation,
-    /// the `OVERFLOW` flag is not changed even if this current operation
-    /// does not cause overflow.
+    /// overflow occurred at least once or `OVERFLOW` flag is already set
+    /// before this current operation, the `OVERFLOW` flag is not changed
+    /// even if this current operation does not cause overflow.
     /// 
     /// # Counterpart Method
     /// If `rhs` is bigger than `u128`, the method
@@ -7217,6 +7325,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
         self.wrapping_mul_assign_uint(rhs);
         let current_overflow = self.is_overflow();
         self.set_flag_bit(old);
+
         current_overflow
     }
 
@@ -10420,23 +10529,12 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// let res = a_biguint.modular_pow_uint(exp, &modulo);
     /// println!("{} ** {} (mod {}) = {}", a_biguint, exp, modulo, res);
     /// assert_eq!(res.to_string(), "59749648429786538521694772865754025520");
-    /// assert_eq!(res.is_overflow(), false);
-    /// ```
-    /// 
-    /// # Example 3
-    /// ```
-    /// use cryptocol::define_utypes_with;
-    /// define_utypes_with!(u128);
-    /// 
-    /// let a_biguint = U256::from_uint(10_u8);
-    /// let exp = 100_u32;
-    /// let modulo = U256::zero();
-    /// let res = a_biguint.modular_pow_uint(exp, &modulo);
-    /// println!("{} ** {} (mod {}) = {}", a_biguint, exp, modulo, res);
-    /// assert_eq!(res, U256::max());
     /// assert_eq!(res.is_overflow(), true);
-    /// assert_eq!(res.is_inifinity(), true);
-    /// assert_eq!(res.is_divided_by_zero(), true);
+    /// 
+    /// let _exp = 100_u32;
+    /// let _modulo = U256::zero();
+    /// // It will panic!
+    /// // let _res = a_biguint.modular_pow_uint(_exp, &_modulo);
     /// ```
     /// 
     /// # Big-endian issue
@@ -10518,25 +10616,14 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// a_biguint.modular_pow_assign_uint(exp, &modulo);
     /// println!("After a_biguint.modular_pow_assign_uint({}),\na_biguint = {}", exp, a_biguint);
     /// assert_eq!(a_biguint.to_string(), "52266245075570873327294567809656160090");
-    /// assert_eq!(a_biguint.is_overflow(), false);
-    /// ```
-    /// 
-    /// # Example 3
-    /// ```
-    /// use cryptocol::define_utypes_with;
-    /// define_utypes_with!(u8);
-    /// 
-    /// let mut a_biguint = U256::from_uint(52266245075570873327294567809656160090_u128);
-    /// let exp = 100_u32;
-    /// let modulo = U256::zero();
-    /// println!("Originally,\na_biguint = {}", a_biguint);
-    /// 
-    /// a_biguint.modular_pow_assign_uint(exp, &modulo);
-    /// println!("After a_biguint.modular_pow_assign_uint({}),\na_biguint = {}", exp, a_biguint);
-    /// assert_eq!(a_biguint, U256::max());
     /// assert_eq!(a_biguint.is_overflow(), true);
-    /// assert_eq!(a_biguint.is_inifinity(), true);
-    /// assert_eq!(a_biguint.is_divided_by_zero(), true);
+    /// 
+    /// let mut _a_biguint = U256::from_uint(52266245075570873327294567809656160090_u128);
+    /// let _exp = 100_u32;
+    /// let _modulo = U256::zero();
+    /// println!("Originally,\na_biguint = {}", _a_biguint);
+    /// // It will panic!
+    /// // _a_biguint.modular_pow_assign_uint(_exp, &_modulo);
     /// ```
     /// 
     /// # Big-endian issue
@@ -10557,6 +10644,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
             { panic!(); }
         else if *self >= *modulo
             { self.wrapping_rem_assign(modulo); }
+
         let mut acc = Self::from_array(self.get_number().clone());
         self.set_one();
         let mut mexp = exp;
@@ -12814,6 +12902,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// let res = a_biguint.modular_add(&U256::one(), &m);
     /// println!("{} + 1 = {}", a_biguint, res);
     /// assert_eq!(res.to_string(), "76801874298166903427690031858186486050853753882811946569946433649007");
+    /// assert_eq!(res.is_overflow(), false);
     /// ```
     /// 
     /// # Example 2
@@ -12826,6 +12915,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// let res = a_biguint.modular_add(&U256::from_uint(2_u8), &m);
     /// println!("{} + 2 = {}", a_biguint, res);
     /// assert_eq!(res.to_string(), "0");
+    /// assert_eq!(res.is_overflow(), true);
     /// ```
     /// 
     /// # Example 3
@@ -12838,6 +12928,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// let res = a_biguint.modular_add(&U256::from_uint(3_u8), &m);
     /// println!("{} + 3 = {}", a_biguint, res);
     /// assert_eq!(res.to_string(), "1");
+    /// assert_eq!(res.is_overflow(), true);
     /// ```
     /// 
     /// # Big-endian issue
@@ -12939,24 +13030,30 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
             { panic!(); }
         else if *self >= *modulo
             { self.wrapping_rem_assign(modulo); }
-        if *rhs < *modulo    // In this case, it does not cause cloning for performance.
+
+        let mut flags = self.get_all_flags();
+        let _rhs: Self;
+        let mrhs: &Self;
+        if *rhs >= *modulo
         {
-            // let mrhs = rhs.clone(); // Does not clone for performance
-            let diff = modulo.wrapping_sub(rhs);
-            if *self >= diff
-                { self.wrapping_sub_assign(&diff); }
-            else
-                { self.wrapping_add_assign(rhs); }
+            _rhs = rhs.wrapping_rem(modulo);
+            mrhs = &_rhs;
         }
-        else    // if *rhs >= *modulo
+        else
         {
-            let mrhs = rhs.wrapping_rem(modulo);
-            let diff = modulo.wrapping_sub(&mrhs);
-            if *self >= diff
-                { self.wrapping_sub_assign(&diff); }
-            else
-                { self.wrapping_add_assign(&mrhs); }
+            mrhs = rhs;
         }
+        let diff = modulo.wrapping_sub(mrhs);
+        if *self >= diff
+        {
+            self.wrapping_sub_assign(&diff);
+            flags |= BigUInt::OVERFLOW;
+        }
+        else
+        {
+            self.wrapping_add_assign(mrhs);
+        }
+        self.set_flag_bit(flags);
     }
 
 
@@ -13910,7 +14007,6 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
 
     /*** Multiplication ***/
 
-    //==================
     // pub fn carrying_mul(&self, rhs: &Self, carry: Self) -> (Self, Self)
     /// Calculates the “full multiplication” `self` * `rhs` + `carry` without
     /// the possibility to overflow.
@@ -14130,6 +14226,10 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// # Arguments
     /// - `rhs` is to be multiplied to `self`, and is `&Self` type.
     /// 
+    /// # Panics
+    /// If `size_of::<T>() * N` <= `128`, this method may panic
+    /// or its behavior may be undefined though it may not panic.
+    /// 
     /// # Output
     /// It returns `self` * `rhs` in the form of a tuple of the low-order
     /// (wrapping) bits and the high-order (overflow) bits of the result as
@@ -14154,9 +14254,19 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// u32, u64, and u128, use the method
     /// [widening_mul_uint()](struct@BigUInt#method.widening_mul_uint).
     /// 
-    /// # Example
+    /// # Examples
     /// ```
-    /// // Todo
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u16);
+    /// 
+    /// let a_biguint = U256::from_string("876801874298166903427690031858186486050853753882811946569946433649006084094").unwrap();
+    /// let b_biguint = U256::from_string("123456789098765432101234566789098765432101234567890987654321012345678909876").unwrap();
+    /// let (res_biguint_low, res_biguint_high) = a_biguint.widening_mul(&b_biguint);
+    /// 
+    /// println!("{} X {} = {}:{}", a_biguint, b_biguint, res_biguint_high, res_biguint_low);
+    /// assert_eq!(res_biguint_high.to_string(), "934840581853378776614741519244947987886551255599166686673415072970125925");
+    /// assert_eq!(res_biguint_low.to_string(), "99383456710232708163688724311017197312314189592099594761784803361525674171544");
+    /// assert_eq!(res_biguint_high.is_overflow(), false);
     /// ```
     /// 
     /// # Big-endian issue
@@ -14174,6 +14284,13 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     // pub fn widening_mul_assign(&mut self, rhs: &Self) -> Self
     /// Calculates the complete product `self` * `rhs` without the possibility
     /// to overflow.
+    /// 
+    /// # Arguments
+    /// - `rhs` is to be multiplied to `self`, and is `&Self` type.
+    /// 
+    /// # Panics
+    /// If `size_of::<T>() * N` <= `128`, this method may panic
+    /// or its behavior may be undefined though it may not panic.
     /// 
     /// # Output
     /// It returns the high-order (overflow) bits of the result `self` * `rhs`.
@@ -14199,9 +14316,22 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// u32, u64, and u128, use the method
     /// [widening_mul_assign_uint()](struct@BigUInt#method.widening_mul_assign_uint).
     /// 
-    /// # Example
+    /// # Examples
     /// ```
-    /// // Todo
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u32);
+    /// 
+    /// let mut a_biguint = UU32::from_string("876801874298166903427690031858186486050853753882811946569946433649006084094").unwrap();
+    /// let b_biguint = U256::from_string("123456789098765432101234566789098765432101234567890987654321012345678909876").unwrap();
+    /// 
+    /// println!("Originally,\ta_biguint = {}", a_biguint);
+    /// assert_eq!(a_biguint.to_string(), "876801874298166903427690031858186486050853753882811946569946433649006084094");
+    /// 
+    /// let res_biguint_high = a_biguint.widening_mul_assign(&b_biguint);
+    /// println!("After a_biguint.widening_mul_assign(&b_biguint),\na_biguint = {}\nres_biguint_high = {}", a_biguint, res_biguint_high);
+    /// assert_eq!(a_biguint.to_string(), "99383456710232708163688724311017197312314189592099594761784803361525674171544");
+    /// assert_eq!(res_biguint_high.to_string(), "934840581853378776614741519244947987886551255599166686673415072970125925");
+    /// assert_eq!(res_biguint_high.is_overflow(), false);
     /// ```
     /// 
     /// # Big-endian issue
@@ -14213,7 +14343,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     {
         (Self::method_widening_mul_assign)(self, rhs)
     }
-//=======================
+
     fn widening_mul_assign_1(&mut self, rhs: &Self) -> Self
     {
         if rhs.is_zero()
@@ -14323,6 +14453,13 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     // pub fn wrapping_mul(&self, rhs: &Self) -> Self
     /// Computes `self` * `rhs`, wrapping around at the boundary of the type.
     /// 
+    /// # Arguments
+    /// - `rhs` is to be multiplied to `self`, and is `&Self` type.
+    /// 
+    /// # Panics
+    /// If `size_of::<T>() * N` <= `128`, this method may panic
+    /// or its behavior may be undefined though it may not panic.
+    /// 
     /// # Output
     /// It returns `self` * `rhs` with wrapping (modular) addition.
     /// 
@@ -14337,9 +14474,30 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// u32, u64, and u128, use the method
     /// [wrapping_mul_uint()](struct@BigUInt#method.wrapping_mul_uint).
     /// 
-    /// # Example
+    /// # Example 1
     /// ```
-    /// // Todo
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u64);
+    /// 
+    /// let a_biguint = U256::from_string("12380187429816690342769003185818648605085375388281194656994643364900608").unwrap();
+    /// let b_biguint = U256::from_uint(248_u8);
+    /// let res = a_biguint.wrapping_mul(&b_biguint);
+    /// println!("{} X {} = {}", a_biguint, b_biguint, res);
+    /// assert_eq!(res.to_string(), "3070286482594539205006712790083024854061173096293736274934671554495350784");
+    /// assert_eq!(res.is_overflow(), false);
+    /// ```
+    /// 
+    /// # Example 2
+    /// ```
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u64);
+    /// 
+    /// let c_biguint = U256::from_string("876801874298166903427690031858186486050853753882811946569946433649006084094").unwrap();
+    /// let b_biguint = U256::from_uint(248_u8);
+    /// let res = c_biguint.wrapping_mul(&b_biguint);
+    /// println!("{} X {} = {}", c_biguint, b_biguint, res);
+    /// assert_eq!(res.to_string(), "101654775588629196626496142892142340687341746297296798709889131537040379215376");
+    /// assert_eq!(res.is_overflow(), true);
     /// ```
     /// 
     /// # Big-endian issue
@@ -14357,6 +14515,13 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// Computes self * rhs, wrapping around at the boundary of the type,
     /// and assign the result to `self` back.
     /// 
+    /// # Arguments
+    /// - `rhs` is to be multiplied to `self`, and is `&Self` type.
+    /// 
+    /// # Panics
+    /// If `size_of::<T>() * N` <= `128`, this method may panic
+    /// or its behavior may be undefined though it may not panic.
+    /// 
     /// # Features
     /// Wrapping (modular) multiplication.
     /// 
@@ -14368,9 +14533,37 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// u32, u64, and u128, use the method
     /// [wrapping_mul_assign_uint()](struct@BigUInt#method.wrapping_mul_assign_uint).
     /// 
-    /// # Example
+    /// # Example 1
     /// ```
-    /// // Todo
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u128);
+    /// 
+    /// let mut a_biguint = UU32::from_string("12380187429816690342769003185818648605085375388281194656994643364900608").unwrap();
+    /// let b_biguint = U256::from_uint(248_u8);
+    /// 
+    /// println!("Originally,\ta_biguint = {}", a_biguint);
+    /// assert_eq!(a_biguint.to_string(), "12380187429816690342769003185818648605085375388281194656994643364900608");
+    /// 
+    /// a_biguint.wrapping_mul_assign(&b_biguint);
+    /// println!("After a_biguint.wrapping_mul_assign(&b_biguint), a_biguint = {}", a_biguint);
+    /// assert_eq!(a_biguint.to_string(), "3070286482594539205006712790083024854061173096293736274934671554495350784");
+    /// assert_eq!(a_biguint.is_overflow(), false);
+    /// ```
+    /// 
+    /// # Example 2
+    /// ```
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u128);
+    /// 
+    /// let mut c_biguint = UU32::from_string("876801874298166903427690031858186486050853753882811946569946433649006084094").unwrap();
+    /// let b_biguint = U256::from_uint(248_u8);
+    /// println!("Originally,\ta_biguint = {}", c_biguint);
+    /// assert_eq!(c_biguint.to_string(), "876801874298166903427690031858186486050853753882811946569946433649006084094");
+    /// 
+    /// c_biguint.wrapping_mul_assign(&b_biguint);
+    /// println!("After c_biguint.wrapping_mul_assign(&b_biguint), a_biguint = {}", c_biguint);
+    /// assert_eq!(c_biguint.to_string(), "101654775588629196626496142892142340687341746297296798709889131537040379215376");
+    /// assert_eq!(c_biguint.is_overflow(), true);
     /// ```
     /// 
     /// # Big-endian issue
@@ -14495,10 +14688,17 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     // pub fn overflowing_mul(&self, rhs: &Self) -> (Self, bool)
     /// Calculates `self` * `rhs`.
     /// 
+    /// # Arguments
+    /// - `rhs` is to be multiplied to `self`, and is `&Self` type.
+    /// 
+    /// # Panics
+    /// If `size_of::<T>() * N` <= `128`, this method may panic
+    /// or its behavior may be undefined though it may not panic.
+    /// 
     /// # Output
-    /// It returns a tuple of the multiplication `self` * `rhs` along
+    /// - It returns a tuple of the multiplication `self` * `rhs` along
     /// with a boolean indicating whether an arithmetic overflow would occur.
-    /// If an overflow would have occurred then the wrapped (modular) value
+    /// - If an overflow would have occurred then the wrapped (modular) value
     /// is returned.
     /// 
     /// # Counterpart Method
@@ -14509,9 +14709,36 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// u32, u64, and u128, use the method
     /// [overflowing_mul_uint()](struct@BigUInt#method.overflowing_mul_uint).
     /// 
-    /// # Example
+    /// # Example 1
     /// ```
-    /// // Todo
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u8);
+    /// 
+    /// let a_biguint = U256::from_string("1874298166903427690031858186486050853753882811946569946433649006084094").unwrap();
+    /// let b_biguint = U256::from_uint(248_u8);
+    /// let (res, overflow) = a_biguint.overflowing_mul(&b_biguint);
+    /// println!("{} X {} = {}, {}", a_biguint, b_biguint, res, overflow);
+    /// assert_eq!(res.to_string(), "464825945392050067127900830248540611730962937362749346715544953508855312");
+    /// assert_eq!(overflow, false);
+    /// ```
+    /// 
+    /// # Example 2
+    /// ```
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u8);
+    /// 
+    /// let a_biguint = U256::from_string("1874298166903427690031858186486050853753882811946569946433649006084094").unwrap();
+    /// let b_biguint = U256::from_uint(248_u8);
+    /// let (res, overflow) = a_biguint.overflowing_mul(&b_biguint);
+    /// println!("{} X {} = {}, {}", a_biguint, b_biguint, res, overflow);
+    /// assert_eq!(res.to_string(), "464825945392050067127900830248540611730962937362749346715544953508855312");
+    /// assert_eq!(overflow, false);
+    /// let c_biguint = U256::from_string("876801874298166903427690031858186486050853753882811946569946433649006084094").unwrap();
+    /// let b_biguint = U256::from_uint(248_u8);
+    /// let (res, overflow) = c_biguint.overflowing_mul(&b_biguint);
+    /// println!("{} X {} = {}, {}", c_biguint, b_biguint, res, overflow);
+    /// assert_eq!(res.to_string(), "101654775588629196626496142892142340687341746297296798709889131537040379215376");
+    /// assert_eq!(overflow, true);
     /// ```
     /// 
     /// # Big-endian issue
@@ -14528,6 +14755,13 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     // pub fn overflowing_mul_assign(&mut self, rhs: &Self) -> bool
     /// Calculates `self` * `rhs`, and assigns the result to `self` back.
     /// 
+    /// # Arguments
+    /// - `rhs` is to be multiplied to `self`, and is `&Self` type.
+    /// 
+    /// # Panics
+    /// If `size_of::<T>() * N` <= `128`, this method may panic
+    /// or its behavior may be undefined though it may not panic.
+    /// 
     /// # Output
     /// It returns true if an arithmetic overflow would occur.
     /// Otherwise, it returns `false`.
@@ -14540,9 +14774,37 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// u32, u64, and u128, use the method
     /// [overflowing_mul_assign_uint()](struct@BigUInt#method.overflowing_mul_assign_uint).
     /// 
-    /// # Example
+    /// # Example 1
     /// ```
-    /// // Todo
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u16);
+    /// 
+    /// let mut a_biguint = UU32::from_string("1874298166903427690031858186486050853753882811946569946433649006084094").unwrap();
+    /// let b_biguint = U256::from_uint(248_u8);
+    /// 
+    /// println!("Originally,\ta_biguint = {}", a_biguint);
+    /// assert_eq!(a_biguint.to_string(), "1874298166903427690031858186486050853753882811946569946433649006084094");
+    /// 
+    /// let overflow = a_biguint.overflowing_mul_assign(&b_biguint);
+    /// println!("After a_biguint.overflowing_mul_assign(&b_biguint), a_biguint = {}, {}", a_biguint, overflow);
+    /// assert_eq!(a_biguint.to_string(), "464825945392050067127900830248540611730962937362749346715544953508855312");
+    /// assert_eq!(overflow, false);
+    /// ```
+    /// 
+    /// # Example 2
+    /// ```
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u16);
+    /// 
+    /// let mut c_biguint = UU32::from_string("876801874298166903427690031858186486050853753882811946569946433649006084094").unwrap();
+    /// let b_biguint = U256::from_uint(248_u8);
+    /// println!("Originally,\tc_biguint = {}", c_biguint);
+    /// assert_eq!(c_biguint.to_string(), "876801874298166903427690031858186486050853753882811946569946433649006084094");
+    /// 
+    /// let overflow = c_biguint.overflowing_mul_assign(&b_biguint);
+    /// println!("After c_biguint.overflowing_mul_assign(&b_biguint), c_biguint = {}, {}", c_biguint, overflow);
+    /// assert_eq!(c_biguint.to_string(), "101654775588629196626496142892142340687341746297296798709889131537040379215376");
+    /// assert_eq!(overflow, true);
     /// ```
     /// 
     /// # Big-endian issue
@@ -14563,6 +14825,13 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     // pub fn checked_mul(&self, rhs: &Self) -> Option<Self>
     /// Computes `self` * `rhs`.
     /// 
+    /// # Arguments
+    /// - `rhs` is to be multiplied to `self`, and is `&Self` type.
+    /// 
+    /// # Panics
+    /// If `size_of::<T>() * N` <= `128`, this method may panic
+    /// or its behavior may be undefined though it may not panic.
+    /// 
     /// # Output
     /// It returns the sum `self` * `rhs` wrapped by `Some` of enum `Option`
     /// if overflow did not occur. Otherwise, it returns `None` of enum Option.
@@ -14574,9 +14843,36 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// u32, u64, and u128, use the method
     /// [checked_mul_uint()](struct@BigUInt#method.checked_mul_uint).
     /// 
-    /// # Example
+    /// # Example 1
     /// ```
-    /// // Todo
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u32);
+    /// 
+    /// let a_biguint = U256::from_string("876801874298166903427690031858186486050853753882811946569946433649006084094").unwrap();
+    /// let b_biguint = U256::from_uint(248_u8);
+    /// let res = a_biguint.checked_mul(&b_biguint);
+    /// match &res
+    /// {
+    ///     Some(r) => { println!("{} X {} = {}", a_biguint, b_biguint, r); },
+    ///     None => { println!("Overflow happend!"); },
+    /// }
+    /// assert_eq!(res, None);
+    /// ```
+    /// 
+    /// # Example 2
+    /// ```
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u32);
+    /// 
+    /// let a_biguint = U256::from_string("876801874298166903427690031858186486050853753882811946569946433649006084094").unwrap();
+    /// let b_biguint = U256::from_uint(5_u8);
+    /// let res = a_biguint.checked_mul(&b_biguint);
+    /// match &res
+    /// {
+    ///     Some(r) => { println!("{} X {} = {}", a_biguint, b_biguint, r); },
+    ///     None => { println!("Overflow happend!"); },
+    /// }
+    /// assert_eq!(res.unwrap().to_string(), "4384009371490834517138450159290932430254268769414059732849732168245030420470");
     /// ```
     /// 
     /// # Big-endian issue
@@ -14595,7 +14891,10 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
 
     // pub fn unchecked_mul(&self, rhs: &Self) -> Self
     /// Computes `self` * `rhs`, assuming overflow cannot occur.
-    ///
+    /// 
+    /// # Arguments
+    /// - `rhs` is to be multiplied to `self`, and is `&Self` type.
+    /// 
     /// # Panics
     /// - If `size_of::<T>() * N` <= `128`, this method may panic
     /// or its behavior may be undefined though it may not panic.
@@ -14614,9 +14913,20 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// u32, u64, and u128, use the method
     /// [unchecked_mul_uint()](struct@BigUInt#method.unchecked_mul_uint).
     /// 
-    /// # Example
+    /// # Examples
     /// ```
-    /// // Todo
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u64);
+    /// 
+    /// let a_biguint = UU32::from_string("876801874298166903427690031858186486050853753882811946569946433649006084094").unwrap();
+    /// let b_biguint = UU32::from_uint(5_u8);
+    /// let res = a_biguint.unchecked_mul(&b_biguint);
+    /// println!("{} X {} = {}", a_biguint, b_biguint, res);
+    /// assert_eq!(res.to_string(), "4384009371490834517138450159290932430254268769414059732849732168245030420470");
+    /// 
+    /// let _b_biguint = UU32::from_uint(248_u8);
+    /// // It will panic.
+    /// // let res = a_biguint.unchecked_mul(&_b_biguint);
     /// ```
     /// 
     /// # Big-endian issue
@@ -14633,6 +14943,13 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// Computes `self` * `rhs`, saturating at the numeric bounds
     /// instead of overflowing.
     /// 
+    /// # Arguments
+    /// - `rhs` is to be multiplied to `self`, and is `&Self` type.
+    /// 
+    /// # Panics
+    /// If `size_of::<T>() * N` <= `128`, this method may panic
+    /// or its behavior may be undefined though it may not panic.
+    /// 
     /// # Output
     /// It returns the sum `self` + `rhs` if overflow did not occur.
     /// Otherwise, it returns the maximum value.
@@ -14645,9 +14962,29 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// u32, u64, and u128, use the method
     /// [saturating_mul_uint()](struct@BigUInt#method.saturating_mul_uint).
     /// 
-    /// # Example
+    /// # Example 1
     /// ```
-    /// // Todo
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u128);
+    /// 
+    /// let a_biguint = U256::from_string("876801874298166903427690031858186486050853753882811946569946433649006084094").unwrap();
+    /// let b_biguint = UU32::from_uint(5_u8);
+    /// let res = a_biguint.saturating_mul(&b_biguint);
+    /// println!("{} X {} = {}", a_biguint, b_biguint, res);
+    /// assert_eq!(res.to_string(), "4384009371490834517138450159290932430254268769414059732849732168245030420470");
+    /// ```
+    /// 
+    /// # Example 2
+    /// ```
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u128);
+    /// 
+    /// let a_biguint = U256::from_string("876801874298166903427690031858186486050853753882811946569946433649006084094").unwrap();
+    /// let b_biguint = UU32::from_uint(248_u8);
+    /// let res = a_biguint.saturating_mul(&b_biguint);
+    /// println!("{} X {} = {}", a_biguint, b_biguint, res);
+    /// assert_eq!(res.to_string(), "115792089237316195423570985008687907853269984665640564039457584007913129639935");
+    /// assert_eq!(res, UU32::max());
     /// ```
     /// 
     /// # Big-endian issue
@@ -14665,6 +15002,13 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// Computes `self` * `rhs`, saturating at the numeric bounds
     /// instead of overflowing, and assigns the result to `self` back.
     /// 
+    /// # Arguments
+    /// - `rhs` is to be multiplied to `self`, and is `&Self` type.
+    /// 
+    /// # Panics
+    /// If `size_of::<T>() * N` <= `128`, this method may panic
+    /// or its behavior may be undefined though it may not panic.
+    /// 
     /// # Counterpart Method
     /// The method
     /// [saturating_mul_assign_uint()](struct@BigUInt#method.saturating_mul_assign_uint)
@@ -14673,9 +15017,30 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// u32, u64, and u128, use the method
     /// [saturating_mul_assign_uint()](struct@BigUInt#method.saturating_mul_assign_uint).
     /// 
-    /// # Example
+    /// # Example 1
     /// ```
-    /// // Todo
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u8);
+    /// 
+    /// let mut a_biguint = U256::from_string("876801874298166903427690031858186486050853753882811946569946433649006084094").unwrap();
+    /// let b_biguint = UU32::from_uint(5_u8);
+    /// println!("Originally, a_biguint = {}", a_biguint);
+    /// a_biguint.saturating_mul_assign(&b_biguint);
+    /// println!("After a_biguint.saturating_mul_assign(&b_biguint), a_biguint = {}", a_biguint);
+    /// ```
+    /// 
+    /// # Example 2
+    /// ```
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u8);
+    /// 
+    /// let mut a_biguint = U256::from_string("876801874298166903427690031858186486050853753882811946569946433649006084094").unwrap();
+    /// let b_biguint = UU32::from_uint(248_u8);
+    /// println!("Originally, a_biguint = {}", a_biguint);
+    /// a_biguint.saturating_mul_assign(&b_biguint);
+    /// println!("After a_biguint.saturating_mul_assign_uint(&b_biguint), a_biguint = {}", a_biguint);
+    /// assert_eq!(a_biguint.to_string(), "115792089237316195423570985008687907853269984665640564039457584007913129639935");
+    /// assert_eq!(a_biguint, UU32::max());
     /// ```
     /// 
     /// # Big-endian issue
@@ -14693,9 +15058,19 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
         }
     }
 
+//=======================
     // pub fn modular_mul(&self, rhs: &Self, modulo: &Self) -> Self
     /// Computes (`self` * `rhs`) % `modulo`, wrapping around at `modulo`
     /// of the type `Self`.
+    /// 
+    /// # Arguments
+    /// - `rhs` is to be multiplied to `self`, and is `&Self` type.
+    /// - `modulo` is the divisor to divide the result of (`self` * `rhs`).
+    /// 
+    /// # Panics
+    /// - If `size_of::<T>() * N` <= `128`, this method may panic
+    /// or its behavior may be undefined though it may not panic.
+    /// - If `modulo` is either zero or one, this method will panic.
     /// 
     /// # Features
     /// - Wrapping (modular) multiplication at `modulo`. The differences between
@@ -14706,8 +15081,6 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// method does not set `OVERFLOW` flag even if wrapping around happens,
     /// while the method `wrapping_mul()` sets `OVERFLOW` flag when wrapping
     /// around happens.
-    /// - If `modulo` is `zero`, the flags such as `OVERFLOW`, `DIVIDED_BY_ZERO`,
-    /// and `INFINITY` will be set.
     /// 
     /// # Counterpart Method
     /// The method [modular_mul_uint()](struct@BigUInt#method.modular_mul_uint)
@@ -14716,9 +15089,33 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// u32, u64, and u128, use the method
     /// [modular_mul_uint()](struct@BigUInt#method.modular_mul_uint).
     /// 
-    /// # Example
+    /// # Example 1
     /// ```
-    /// // Todo
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u8);
+    /// 
+    /// let m = UU32::from_string("76801874298166903427690031858186486050853753882811946569946433649006084094").unwrap();
+    /// let a_biguint = U256::from_string("31858186486050853753882811946768018742981669034276900586487291375468285").unwrap();
+    /// let mul_biguint = UU32::from_uint(5_u8);
+    /// 
+    /// let res = a_biguint.modular_mul(&mul_biguint, &m);
+    /// println!("{} * {} = {} (mod {})", a_biguint, mul_biguint, res, m);
+    /// assert_eq!(res.to_string(), "159290932430254268769414059733840093714908345171384502932436456877341425");
+    /// assert_eq!(res.is_overflow(), false);
+    /// ```
+    /// 
+    /// # Example 2
+    /// ```
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u8);
+    /// 
+    /// let m = UU32::from_string("76801874298166903427690031858186486050853753882811946569946433649006084094").unwrap();
+    /// let a_biguint = U256::from_string("31858186486050853753882811946768018742981669034276900586487291375468285").unwrap();
+    /// let mul_biguint = UU32::from_uint(248_u8);
+    /// let res = a_biguint.modular_mul(&mul_biguint, &m);
+    /// println!("{} * {} = {} (mod {})", a_biguint, mul_biguint, res, m);
+    /// assert_eq!(res.to_string(), "7900830248540611730962937362798468648259453920500671345448848261116134680");
+    /// assert_eq!(res.is_overflow(), true);
     /// ```
     /// 
     /// # Big-endian issue
@@ -14735,6 +15132,15 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     // pub fn modular_mul_assign(&self, rhs: &Self, modulo: &Self)
     /// Computes (`self` * `rhs`) % `modulo`, wrapping around at `modulo`
     /// of the type `Self`, and assign the result to `self` back.
+    /// 
+    /// # Arguments
+    /// - `rhs` is to be multiplied to `self`, and is `&Self` type.
+    /// - `modulo` is the divisor to divide the result of (`self` * `rhs`).
+    /// 
+    /// # Panics
+    /// - If `size_of::<T>() * N` <= `128`, this method may panic
+    /// or its behavior may be undefined though it may not panic.
+    /// - If `modulo` is either zero or one, this method will panic.
     /// 
     /// # Features
     /// - Wrapping (modular) multiplication at `modulo`. The differences between
@@ -14762,9 +15168,50 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// u32, u64, and u128, use the method
     /// [modular_mul_assign_uint()](struct@BigUInt#method.modular_mul_assign_uint).
     /// 
-    /// # Example
+    /// # Example 1
     /// ```
-    /// // Todo
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u16);
+    /// 
+    /// let m = UU32::from_string("76801874298166903427690031858186486050853753882811946569946433649006084094").unwrap();
+    /// let mut a_biguint = U256::from_string("31858186486050853753882811946768018742981669034276900586487291375468285").unwrap();
+    /// let mul_biguint = UU32::from_uint(5_u8);
+    /// println!("Originally, a_biguint = {}", a_biguint);
+    /// assert_eq!(a_biguint.is_overflow(), false);
+    /// assert_eq!(a_biguint.is_underflow(), false);
+    /// assert_eq!(a_biguint.is_divided_by_zero(), false);
+    /// assert_eq!(a_biguint.is_infinity(), false);
+    /// 
+    /// a_biguint.modular_mul_assign(&mul_biguint, &m);
+    /// println!("After a_biguint.modular_mul_assign(&mul_biguint, &m), a_biguint = {}", a_biguint);
+    /// assert_eq!(a_biguint.to_string(), "159290932430254268769414059733840093714908345171384502932436456877341425");
+    /// assert_eq!(a_biguint.is_overflow(), false);
+    /// assert_eq!(a_biguint.is_underflow(), false);
+    /// assert_eq!(a_biguint.is_divided_by_zero(), false);
+    /// assert_eq!(a_biguint.is_infinity(), false);
+    /// ```
+    /// 
+    /// # Example 2
+    /// ```
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u16);
+    /// 
+    /// let m = UU32::from_string("76801874298166903427690031858186486050853753882811946569946433649006084094").unwrap();
+    /// let mut a_biguint = U256::from_string("31858186486050853753882811946768018742981669034276900586487291375468285").unwrap();
+    /// let mul_biguint = UU32::from_uint(123456789_u32);
+    /// println!("Originally, a_biguint = {}", a_biguint);
+    /// assert_eq!(a_biguint.is_overflow(), false);
+    /// assert_eq!(a_biguint.is_underflow(), false);
+    /// assert_eq!(a_biguint.is_divided_by_zero(), false);
+    /// assert_eq!(a_biguint.is_infinity(), false);
+    /// 
+    /// a_biguint.modular_mul_assign(&mul_biguint, &m);
+    /// println!("After b_biguint.modular_mul_assign(&mul_biguint, &m), a_biguint = {}", a_biguint);
+    /// assert_eq!(a_biguint.to_string(), "8622247606403727534023749230384750061554739874487486410968923457264899031");
+    /// assert_eq!(a_biguint.is_overflow(), true);
+    /// assert_eq!(a_biguint.is_underflow(), false);
+    /// assert_eq!(a_biguint.is_divided_by_zero(), false);
+    /// assert_eq!(a_biguint.is_infinity(), false);
     /// ```
     /// 
     /// # Big-endian issue
@@ -14773,7 +15220,12 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// for Big-endian CPUs with your own full responsibility.
     pub fn modular_mul_assign(&mut self, rhs: &Self, modulo: &Self)
     {
-        self.wrapping_rem_assign(modulo);
+        if modulo.is_zero_or_one()
+            { panic!(); }
+        else if *self >= *modulo
+            { self.wrapping_rem_assign(modulo); }
+
+        let mut flags = self.get_all_flags();
         let mut mrhs = rhs.wrapping_rem(modulo);
         let mut res = Self::zero();
         let zero = Self::zero();
@@ -14785,6 +15237,9 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
             mrhs.shift_right_assign(1_u8);
         }
         self.set_number(res.get_number());
+        if res.is_overflow()
+            { flags |= BigUInt::OVERFLOW; }
+        self.set_flag_bit(flags);
     }
 
 
@@ -16271,8 +16726,11 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
 
     pub fn modular_pow_assign(&mut self, exp: &Self, modulo: &Self)
     {
-        if *self >= *modulo
+        if modulo.is_zero_or_one()
+            { panic!(); }
+        else if *self >= *modulo
             { self.wrapping_rem_assign(modulo); }
+
         let mut res = Self::one();
         let mut mexp = exp.clone();
         let zero = Self::zero();
@@ -18259,7 +18717,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
         self.set_flag_bit(Self::INFINITY);
     }
 
-    // pub fn reset_inifinity(&mut self)
+    // pub fn reset_infinity(&mut self)
     /// Resets infinity flag.
     /// 
     /// # Example
@@ -18267,12 +18725,12 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// // Todo
     /// ```
     #[inline]
-    pub fn reset_inifinity(&mut self)
+    pub fn reset_infinity(&mut self)
     {
         self.reset_flag_bit(Self::INFINITY);
     }
 
-    // pub fn is_inifinity(&self) -> bool
+    // pub fn is_infinity(&self) -> bool
     /// Checks whether or not inifinity flag is set.
     /// 
     /// # Output
@@ -18284,7 +18742,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// // Todo
     /// ```
     #[inline]
-    pub fn is_inifinity(&self) -> bool
+    pub fn is_infinity(&self) -> bool
     {
         self.is_flag_bit_on(Self::INFINITY)
     }
@@ -18312,7 +18770,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     #[inline]
     pub fn reset_divided_by_zero(&mut self) { self.reset_flag_bit(Self::DIVIDED_BY_ZERO); }
 
-    // pub fn is_overflow(&self) -> bool
+    // pub fn is_divided_by_zero(&self) -> bool
     /// Checks whether or not divided_by_zero flag is set.
     /// 
     /// # Output

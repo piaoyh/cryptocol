@@ -33,7 +33,7 @@
 
 - The methods above have been removed because they never overflow.
 
-### Four methods of BigUInt
+### Seven methods of BigUInt
 
 | Ver. 0.8.1                                                      | Ver. 0.9.0                                                       |
 |-----------------------------------------------------------------|------------------------------------------------------------------|
@@ -41,8 +41,12 @@
 | pub fn root_assign_uint(&mut self, exp: U)                      | pub fn iroot_assign_uint(&mut self, exp: U)                      |
 | pub fn checked_root_uint(&self, exp: U) -> Option&lt;Self&gt;   | pub fn checked_iroot_uint(&self, exp: U) -> Option&lt;Self&gt;   |
 | pub fn unchecked_root_uint(&self, exp: U) -> Option&lt;Self&gt; | pub fn unchecked_iroot_uint(&self, exp: U) -> Option&lt;Self&gt; |
+| pub fn set_inifinity(&mut self)                                 | pub fn set_infinity(&mut self)                                   |
+| pub fn reset_inifinity(&mut self)                               | pub fn reset_infinity(&mut self)                                 |
+| pub fn is_inifinity(&self) -> bool                              | pub fn is_infinity(&self) -> bool                                |
 
-- The names of the methods above have been changed from root into `*root*_uint()` into `*iroot*_uint()` in order to keep consistency with primitive data types such as `u8`, `u16`, `u32`, `u64`, `u128`, and `usize`.
+- The names of the four upper methods above `*root*_uint()` have been changed into `*iroot*_uint()` in order to keep consistency with primitive data types such as `u8`, `u16`, `u32`, `u64`, `u128`, and `usize`.
+- The names of the three lower methods above `*inifinity()` have been changed into `*infinity()` because `inifinity` is the typo mistake of `infinity`.
 
 | Methods                                                                       | Ver. 0.8.1                                                      | Ver. 0.9.0                                         |
 |-------------------------------------------------------------------------------|-----------------------------------------------------------------|----------------------------------------------------|
@@ -77,7 +81,6 @@
 | pub fn divide_fully_uint&lt;U&gt;(&self, rhs: U) -> (Self, U)                 | It returns (maximum, 0) when `rhs` is zero.                     | It will panic when `rhs` is zero.                  |
 | pub fn modular_pow_uint&lt;U&gt;(&self, exp: U, modulo: &Self) -> Self        | It returns maximum when `modulo` is either zero or one.         | It will panic when `modulo` is either zero or one. |
 | pub fn modular_pow_assign_uint&lt;U&gt;(&mut self, exp: U, modulo: &Self)     | It gives maximum to `self` when `modulo` is either zero or one. | It will panic when `modulo` is either zero or one. |
-
 | pub fn modular_add(&self, rhs: &Self, modulo: &Self) -> Self                  | It returns maximum when `modulo` is either zero or one.         | It will panic when `modulo` is either zero or one. |
 | pub fn modular_add_assign(&self, rhs: &Self, modulo: &Self) -> Self           | It gives maximum to `self` when `modulo` is either zero or one. | It will panic when `modulo` is either zero or one. |
 | pub fn modular_sub(&self, rhs: &Self, modulo: &Self) -> Self                  | It returns maximum when `modulo` is either zero or one.         | It will panic when `modulo` is either zero or one. |
