@@ -2035,28 +2035,42 @@ fn biguint_wrapping_add_assign_uint()
     assert_eq!(a_biguint.is_infinity(), false);
     println!("---------------------------");
 }
-//-================
+
 fn biguint_overflowing_add_uint()
 {
     println!("biguint_overflowing_add_uint");
     use cryptocol::define_utypes_with;
     define_utypes_with!(u8);
 
-    let a = U512::max().wrapping_sub_uint(1_u8);
-    let (b, overflow) = a.overflowing_add_uint(1_u8);
-    println!("{} + 1 = {}\noverflow = {}", a, b, overflow);
-    assert_eq!(b.to_string(), "13407807929942597099574024998205846127479365820592393377723561443721764030073546976801874298166903427690031858186486050853753882811946569946433649006084095");
+    let a_biguint = U512::max().wrapping_sub_uint(1_u8);
+    let (res, overflow) = a_biguint.overflowing_add_uint(1_u8);
+    println!("{} + 1 = {}\noverflow = {}", a_biguint, res, overflow);
+    assert_eq!(res.to_string(), "13407807929942597099574024998205846127479365820592393377723561443721764030073546976801874298166903427690031858186486050853753882811946569946433649006084095");
     assert_eq!(overflow, false);
+    assert_eq!(res.is_overflow(), false);
+    assert_eq!(res.is_underflow(), false);
+    assert_eq!(res.is_divided_by_zero(), false);
+    assert_eq!(res.is_infinity(), false);
 
-    let (c, overflow) = a.overflowing_add_uint(2_u8);
-    println!("{} + 2 = {}\noverflow = {}", a, c, overflow);
-    assert_eq!(c.to_string(), "0");
+    let a_biguint = U512::max().wrapping_sub_uint(1_u8);
+    let (res, overflow) = a_biguint.overflowing_add_uint(2_u8);
+    println!("{} + 2 = {}\noverflow = {}", a_biguint, res, overflow);
+    assert_eq!(res.to_string(), "0");
     assert_eq!(overflow, true);
+    assert_eq!(res.is_overflow(), true);
+    assert_eq!(res.is_underflow(), false);
+    assert_eq!(res.is_divided_by_zero(), false);
+    assert_eq!(res.is_infinity(), false);
 
-    let (d, overflow) = a.overflowing_add_uint(3_u8);
-    println!("{} + 3 = {}\noverflow = {}", a, d, overflow);
-    assert_eq!(d.to_string(), "1");
+    let a_biguint = U512::max().wrapping_sub_uint(1_u8);
+    let (res, overflow) = a_biguint.overflowing_add_uint(3_u8);
+    println!("{} + 3 = {}\noverflow = {}", a_biguint, res, overflow);
+    assert_eq!(res.to_string(), "1");
     assert_eq!(overflow, true);
+    assert_eq!(res.is_overflow(), true);
+    assert_eq!(res.is_underflow(), false);
+    assert_eq!(res.is_divided_by_zero(), false);
+    assert_eq!(res.is_infinity(), false);
     println!("---------------------------");
 }
 
@@ -2066,24 +2080,56 @@ fn biguint_overflowing_add_assign_uint()
     use cryptocol::define_utypes_with;
     define_utypes_with!(u16);
 
-    let mut a = UU64::max().wrapping_sub_uint(1_u8);
-    println!("Originally,\ta = {}", a);
-    assert_eq!(a.to_string(), "13407807929942597099574024998205846127479365820592393377723561443721764030073546976801874298166903427690031858186486050853753882811946569946433649006084094");
+    let mut a_biguint = UU64::max().wrapping_sub_uint(1_u8);
+    println!("Originally,\ta_biguint = {}", a_biguint);
+    assert_eq!(a_biguint.to_string(), "13407807929942597099574024998205846127479365820592393377723561443721764030073546976801874298166903427690031858186486050853753882811946569946433649006084094");
+    assert_eq!(a_biguint.is_overflow(), false);
+    assert_eq!(a_biguint.is_underflow(), false);
+    assert_eq!(a_biguint.is_divided_by_zero(), false);
+    assert_eq!(a_biguint.is_infinity(), false);
 
-    let mut overflow = a.overflowing_add_assign_uint(1_u8);
-    println!("After a += 1,\ta = {}\noverflow = {}", a, overflow);
-    assert_eq!(a.to_string(), "13407807929942597099574024998205846127479365820592393377723561443721764030073546976801874298166903427690031858186486050853753882811946569946433649006084095");
+    let overflow = a_biguint.overflowing_add_assign_uint(1_u8);
+    println!("After a_biguint.overflowing_add_assign_uint(1_u8),\ta_biguint = {}\noverflow = {}", a_biguint, overflow);
+    assert_eq!(a_biguint.to_string(), "13407807929942597099574024998205846127479365820592393377723561443721764030073546976801874298166903427690031858186486050853753882811946569946433649006084095");
     assert_eq!(overflow, false);
+    assert_eq!(a_biguint.is_overflow(), false);
+    assert_eq!(a_biguint.is_underflow(), false);
+    assert_eq!(a_biguint.is_divided_by_zero(), false);
+    assert_eq!(a_biguint.is_infinity(), false);
 
-    overflow = a.overflowing_add_assign_uint(1_u8);
-    println!("After a += 1,\ta = {}\noverflow = {}", a, overflow);
-    assert_eq!(a.to_string(), "0");
+    let mut a_biguint = UU64::max().wrapping_sub_uint(1_u8);
+    println!("Originally,\ta_biguint = {}", a_biguint);
+    assert_eq!(a_biguint.to_string(), "13407807929942597099574024998205846127479365820592393377723561443721764030073546976801874298166903427690031858186486050853753882811946569946433649006084094");
+    assert_eq!(a_biguint.is_overflow(), false);
+    assert_eq!(a_biguint.is_underflow(), false);
+    assert_eq!(a_biguint.is_divided_by_zero(), false);
+    assert_eq!(a_biguint.is_infinity(), false);
+
+    let overflow = a_biguint.overflowing_add_assign_uint(2_u8);
+    println!("After a_biguint.overflowing_add_assign_uint(2_u8),\ta_biguint = {}\noverflow = {}", a_biguint, overflow);
+    assert_eq!(a_biguint.to_string(), "0");
     assert_eq!(overflow, true);
+    assert_eq!(a_biguint.is_overflow(), true);
+    assert_eq!(a_biguint.is_underflow(), false);
+    assert_eq!(a_biguint.is_divided_by_zero(), false);
+    assert_eq!(a_biguint.is_infinity(), false);
 
-    overflow = a.overflowing_add_assign_uint(1_u8);
-    println!("After a += 1,\ta = {}\noverflow = {}", a, overflow);
-    assert_eq!(a.to_string(), "1");
-    assert_eq!(overflow, false);
+    let mut a_biguint = UU64::max().wrapping_sub_uint(1_u8);
+    println!("Originally,\ta_biguint = {}", a_biguint);
+    assert_eq!(a_biguint.to_string(), "13407807929942597099574024998205846127479365820592393377723561443721764030073546976801874298166903427690031858186486050853753882811946569946433649006084094");
+    assert_eq!(a_biguint.is_overflow(), false);
+    assert_eq!(a_biguint.is_underflow(), false);
+    assert_eq!(a_biguint.is_divided_by_zero(), false);
+    assert_eq!(a_biguint.is_infinity(), false);
+
+    let overflow = a_biguint.overflowing_add_assign_uint(3_u8);
+    println!("After a_biguint.overflowing_add_assign_uint(3_u8),\ta_biguint = {}\noverflow = {}", a_biguint, overflow);
+    assert_eq!(a_biguint.to_string(), "1");
+    assert_eq!(overflow, true);
+    assert_eq!(a_biguint.is_overflow(), true);
+    assert_eq!(a_biguint.is_underflow(), false);
+    assert_eq!(a_biguint.is_divided_by_zero(), false);
+    assert_eq!(a_biguint.is_infinity(), false);
     println!("---------------------------");
 }
 
@@ -2093,40 +2139,46 @@ fn biguint_checked_add_uint()
     use cryptocol::define_utypes_with;
     define_utypes_with!(u8);
 
-    let a = U512::max().wrapping_sub_uint(1_u8);
-    let b = a.checked_add_uint(1_u8);
-    match b
+    let a_biguint = U512::max().wrapping_sub_uint(1_u8);
+    let res = a_biguint.checked_add_uint(1_u8);
+    match res
     {
         Some(num) => {
-            println!("{} + 1 = {}", a, num);
+            println!("{} + 1 = {}", a_biguint, num);
             assert_eq!(num.to_string(), "13407807929942597099574024998205846127479365820592393377723561443721764030073546976801874298166903427690031858186486050853753882811946569946433649006084095");
+            assert_eq!(num.is_overflow(), false);
+            assert_eq!(num.is_underflow(), false);
+            assert_eq!(num.is_divided_by_zero(), false);
+            assert_eq!(num.is_infinity(), false);
         },
         None => {
-            println!("{} + 1 = overflow", a);
+            println!("{} + 1 = overflow", a_biguint);
         }
     }
 
-    let c = a.checked_add_uint(2_u8);
-    match c
+    let a_biguint = U512::max().wrapping_sub_uint(1_u8);
+    let res = a_biguint.checked_add_uint(2_u8);
+    match res
     {
         Some(num) => {
-            println!("{} + 2 = {}", a, num);
+            println!("{} + 2 = {}", a_biguint, num);
         },
         None => {
-            println!("{} + 2 = overflow", a);
-            assert_eq!(c, None);
+            println!("{} + 2 = overflow", a_biguint);
+            assert_eq!(res, None);
         }
     }
 
-    let d = a.checked_add_uint(3_u8);
-    match d
+    let a_biguint = U512::max().wrapping_sub_uint(1_u8);
+    let res = a_biguint.checked_add_uint(3_u8);
+    match res
     {
         Some(num) => {
-            println!("{} + 3 = {}", a, num);
+            println!("{} + 3 = {}", a_biguint, num);
         },
         None => {
-            println!("{} + 3 = overflow", a);
-            assert_eq!(d, None);
+            println!("{} + 3 = overflow", a_biguint);
+            assert_eq!(res, None);
         }
     }
     println!("---------------------------");
@@ -2138,13 +2190,18 @@ fn biguint_unchecked_add_uint()
     use cryptocol::define_utypes_with;
     define_utypes_with!(u32);
 
-    let a = UU64::max().wrapping_sub_uint(1_u8);
-    let b = a.unchecked_add_uint(1_u8);
-    println!("{} + 1 = {}", a, b);
-    assert_eq!(b.to_string(), "13407807929942597099574024998205846127479365820592393377723561443721764030073546976801874298166903427690031858186486050853753882811946569946433649006084095");
+    let a_biguint = UU64::max().wrapping_sub_uint(1_u8);
+    let res = a_biguint.unchecked_add_uint(1_u8);
+    println!("{} + 1 = {}", a_biguint, res);
+    assert_eq!(res.to_string(), "13407807929942597099574024998205846127479365820592393377723561443721764030073546976801874298166903427690031858186486050853753882811946569946433649006084095");
+    assert_eq!(res.is_overflow(), false);
+    assert_eq!(res.is_underflow(), false);
+    assert_eq!(res.is_divided_by_zero(), false);
+    assert_eq!(res.is_infinity(), false);
 
+    let _a_biguint = UU64::max().wrapping_sub_uint(1_u8);
     // It will panic.
-    // let c = a.unchecked_add_uint(2_u8);
+    // let res = _a_biguint.unchecked_add_uint(2_u8);
     println!("---------------------------");
 }
 
@@ -2159,16 +2216,27 @@ fn biguint_saturating_add_uint()
     println!("{} + 1 = {}", a_biguint, res);
     assert_eq!(res.to_string(), "13407807929942597099574024998205846127479365820592393377723561443721764030073546976801874298166903427690031858186486050853753882811946569946433649006084094");
     assert_eq!(res.is_overflow(), false);
+    assert_eq!(res.is_underflow(), false);
+    assert_eq!(res.is_divided_by_zero(), false);
+    assert_eq!(res.is_infinity(), false);
 
+    let a_biguint = U512::max().wrapping_sub_uint(2_u8);
     let res = a_biguint.saturating_add_uint(2_u8);
     println!("{} + 2 = {}", a_biguint, res);
     assert_eq!(res.to_string(), "13407807929942597099574024998205846127479365820592393377723561443721764030073546976801874298166903427690031858186486050853753882811946569946433649006084095");
     assert_eq!(res.is_overflow(), false);
+    assert_eq!(res.is_underflow(), false);
+    assert_eq!(res.is_divided_by_zero(), false);
+    assert_eq!(res.is_infinity(), false);
 
+    let a_biguint = U512::max().wrapping_sub_uint(2_u8);
     let res = a_biguint.saturating_add_uint(3_u8);
     println!("{} + 3 = {}", a_biguint, res);
     assert_eq!(res.to_string(), "13407807929942597099574024998205846127479365820592393377723561443721764030073546976801874298166903427690031858186486050853753882811946569946433649006084095");
     assert_eq!(res.is_overflow(), false);
+    assert_eq!(res.is_underflow(), false);
+    assert_eq!(res.is_divided_by_zero(), false);
+    assert_eq!(res.is_infinity(), false);
     println!("---------------------------");
 }
 
@@ -2181,18 +2249,50 @@ fn biguint_saturating_add_assign_uint()
     let mut a_biguint = UU64::max().wrapping_sub_uint(2_u8);
     println!("Originally,\ta_biguint = {}", a_biguint);
     assert_eq!(a_biguint.to_string(), "13407807929942597099574024998205846127479365820592393377723561443721764030073546976801874298166903427690031858186486050853753882811946569946433649006084093");
-    
+    assert_eq!(a_biguint.is_overflow(), false);
+    assert_eq!(a_biguint.is_underflow(), false);
+    assert_eq!(a_biguint.is_divided_by_zero(), false);
+    assert_eq!(a_biguint.is_infinity(), false);
+
     a_biguint.saturating_add_assign_uint(1_u8);
-    println!("After a_biguint += 1,\ta_biguint = {}", a_biguint);
+    println!("After a_biguint.saturating_add_assign_uint(1_u8),\ta_biguint = {}", a_biguint);
     assert_eq!(a_biguint.to_string(), "13407807929942597099574024998205846127479365820592393377723561443721764030073546976801874298166903427690031858186486050853753882811946569946433649006084094");
+    assert_eq!(a_biguint.is_overflow(), false);
+    assert_eq!(a_biguint.is_underflow(), false);
+    assert_eq!(a_biguint.is_divided_by_zero(), false);
+    assert_eq!(a_biguint.is_infinity(), false);
     
-    a_biguint.saturating_add_assign_uint(1_u8);
-    println!("After a_biguint += 1,\ta_biguint = {}", a_biguint);
-    assert_eq!(a_biguint.to_string(), "13407807929942597099574024998205846127479365820592393377723561443721764030073546976801874298166903427690031858186486050853753882811946569946433649006084095");
-    
-    a_biguint.saturating_add_assign_uint(1_u8);
-    println!("After a_biguint += 1,\ta_biguint = {}", a_biguint);
-    assert_eq!(a_biguint.to_string(), "13407807929942597099574024998205846127479365820592393377723561443721764030073546976801874298166903427690031858186486050853753882811946569946433649006084095");
+    let mut a_biguint = UU64::max().wrapping_sub_uint(2_u8);
+    println!("Originally,\ta_biguint = {}", a_biguint);
+    assert_eq!(a_biguint.to_string(), "13407807929942597099574024998205846127479365820592393377723561443721764030073546976801874298166903427690031858186486050853753882811946569946433649006084093");
+    assert_eq!(a_biguint.is_overflow(), false);
+    assert_eq!(a_biguint.is_underflow(), false);
+    assert_eq!(a_biguint.is_divided_by_zero(), false);
+    assert_eq!(a_biguint.is_infinity(), false);
+
+    a_biguint.saturating_add_assign_uint(2_u8);
+    println!("After a_biguint.saturating_add_assign_uint(2_u8),\ta_biguint = {}", a_biguint);
+    assert_eq!(a_biguint, UU64::max());
+    assert_eq!(a_biguint.is_overflow(), false);
+    assert_eq!(a_biguint.is_underflow(), false);
+    assert_eq!(a_biguint.is_divided_by_zero(), false);
+    assert_eq!(a_biguint.is_infinity(), false);
+
+    let mut a_biguint = UU64::max().wrapping_sub_uint(2_u8);
+    println!("Originally,\ta_biguint = {}", a_biguint);
+    assert_eq!(a_biguint.to_string(), "13407807929942597099574024998205846127479365820592393377723561443721764030073546976801874298166903427690031858186486050853753882811946569946433649006084093");
+    assert_eq!(a_biguint.is_overflow(), false);
+    assert_eq!(a_biguint.is_underflow(), false);
+    assert_eq!(a_biguint.is_divided_by_zero(), false);
+    assert_eq!(a_biguint.is_infinity(), false);
+
+    a_biguint.saturating_add_assign_uint(3_u8);
+    println!("After a_biguint.saturating_add_assign_uint(3_u8),\ta_biguint = {}", a_biguint);
+    assert_eq!(a_biguint, UU64::max());
+    assert_eq!(a_biguint.is_overflow(), false);
+    assert_eq!(a_biguint.is_underflow(), false);
+    assert_eq!(a_biguint.is_divided_by_zero(), false);
+    assert_eq!(a_biguint.is_infinity(), false);
     println!("---------------------------");
 }
 
@@ -2202,68 +2302,103 @@ fn biguint_modular_add_uint()
     use cryptocol::define_utypes_with;
     define_utypes_with!(u8);
 
-    let a = U256::from_string("76801874298166903427690031858186486050853753882811946569946433649006").unwrap();
-    let m = a.wrapping_add_uint(2_u8);
-    let res = a.modular_add_uint(1_u8, &m);
-    println!("{} + 1 = {}", a, res);
+    let a_biguint = U256::from_string("76801874298166903427690031858186486050853753882811946569946433649006").unwrap();
+    let m = a_biguint.wrapping_add_uint(2_u8);
+    let res = a_biguint.modular_add_uint(1_u8, &m);
+    println!("{} + 1 = {}", a_biguint, res);
     assert_eq!(res.to_string(), "76801874298166903427690031858186486050853753882811946569946433649007");
     assert_eq!(res.is_overflow(), false);
+    assert_eq!(res.is_underflow(), false);
+    assert_eq!(res.is_divided_by_zero(), false);
+    assert_eq!(res.is_infinity(), false);
 
-    let res = a.modular_add_uint(2_u8, &m);
-    println!("{} + 2 = {}", a, res);
+    let a_biguint = U256::from_string("76801874298166903427690031858186486050853753882811946569946433649006").unwrap();
+    let m = a_biguint.wrapping_add_uint(2_u8);
+    let res = a_biguint.modular_add_uint(2_u8, &m);
+    println!("{} + 2 = {}", a_biguint, res);
     assert_eq!(res.to_string(), "0");
     assert_eq!(res.is_overflow(), true);
+    assert_eq!(res.is_underflow(), false);
+    assert_eq!(res.is_divided_by_zero(), false);
+    assert_eq!(res.is_infinity(), false);
 
-    let res = a.modular_add_uint(3_u8, &m);
-    println!("{} + 3 = {}", a, res);
+    let a_biguint = U256::from_string("76801874298166903427690031858186486050853753882811946569946433649006").unwrap();
+    let m = a_biguint.wrapping_add_uint(2_u8);
+    let res = a_biguint.modular_add_uint(3_u8, &m);
+    println!("{} + 3 = {}", a_biguint, res);
     assert_eq!(res.to_string(), "1");
     assert_eq!(res.is_overflow(), true);
+    assert_eq!(res.is_underflow(), false);
+    assert_eq!(res.is_divided_by_zero(), false);
+    assert_eq!(res.is_infinity(), false);
     println!("---------------------------");
 }
 
+//-================
 fn biguint_modular_add_assign_uint()
 {
     println!("biguint_modular_add_assign_uint");
     use cryptocol::define_utypes_with;
     define_utypes_with!(u8);
 
-    let mut a = U256::from_string("768018742981669034276900318581864860508537538828119465699464336490060").unwrap();
-    let m = a.wrapping_add_uint(2_u8);
-    println!("Originally,\ta = {}", a);
-    assert_eq!(a.to_string(), "768018742981669034276900318581864860508537538828119465699464336490060");
-    assert_eq!(a.is_overflow(), false);
+    let mut a_biguint = U256::from_string("768018742981669034276900318581864860508537538828119465699464336490060").unwrap();
+    let m = a_biguint.wrapping_add_uint(2_u8);
+    println!("Originally,\ta_biguint = {}", a_biguint);
+    assert_eq!(a_biguint.to_string(), "768018742981669034276900318581864860508537538828119465699464336490060");
+    assert_eq!(a_biguint.is_overflow(), false);
+    assert_eq!(a_biguint.is_underflow(), false);
+    assert_eq!(a_biguint.is_divided_by_zero(), false);
+    assert_eq!(a_biguint.is_infinity(), false);
 
-    a.modular_add_assign_uint(1_u8, &m);
-    println!("After a.modular_add_assign_uint(1_u8, &m),\ta = {}", a);
-    assert_eq!(a.to_string(), "768018742981669034276900318581864860508537538828119465699464336490061");
-    assert_eq!(a.is_overflow(), false);
+    a_biguint.modular_add_assign_uint(1_u8, &m);
+    println!("After a.modular_add_assign_uint(1_u8, &m),\ta = {}", a_biguint);
+    assert_eq!(a_biguint.to_string(), "768018742981669034276900318581864860508537538828119465699464336490061");
+    assert_eq!(a_biguint.is_overflow(), false);
+    assert_eq!(a_biguint.is_underflow(), false);
+    assert_eq!(a_biguint.is_divided_by_zero(), false);
+    assert_eq!(a_biguint.is_infinity(), false);
     
-    let mut a = U256::from_string("768018742981669034276900318581864860508537538828119465699464336490060").unwrap();
-    let m = a.wrapping_add_uint(2_u8);
-    println!("Originally,\ta = {}", a);
-    assert_eq!(a.to_string(), "768018742981669034276900318581864860508537538828119465699464336490060");
-    assert_eq!(a.is_overflow(), false);
+    let mut a_biguint = U256::from_string("768018742981669034276900318581864860508537538828119465699464336490060").unwrap();
+    let m = a_biguint.wrapping_add_uint(2_u8);
+    println!("Originally,\ta_biguint = {}", a_biguint);
+    assert_eq!(a_biguint.to_string(), "768018742981669034276900318581864860508537538828119465699464336490060");
+    assert_eq!(a_biguint.is_overflow(), false);
+    assert_eq!(a_biguint.is_underflow(), false);
+    assert_eq!(a_biguint.is_divided_by_zero(), false);
+    assert_eq!(a_biguint.is_infinity(), false);
 
-    a.modular_add_assign_uint(2_u8, &m);
-    println!("After a.modular_add_assign_uint(2_u8, &m),\ta = {}", a);
-    assert_eq!(a.to_string(), "0");
-    assert_eq!(a.is_overflow(), true);
+    a_biguint.modular_add_assign_uint(2_u8, &m);
+    println!("After a.modular_add_assign_uint(2_u8, &m),\ta = {}", a_biguint);
+    assert_eq!(a_biguint.to_string(), "0");
+    assert_eq!(a_biguint.is_overflow(), true);
+    assert_eq!(a_biguint.is_underflow(), false);
+    assert_eq!(a_biguint.is_divided_by_zero(), false);
+    assert_eq!(a_biguint.is_infinity(), false);
 
-    let mut a = U256::from_string("768018742981669034276900318581864860508537538828119465699464336490060").unwrap();
-    let m = a.wrapping_add_uint(2_u8);
-    println!("Originally,\ta = {}", a);
-    assert_eq!(a.to_string(), "768018742981669034276900318581864860508537538828119465699464336490060");
-    assert_eq!(a.is_overflow(), false);
+    let mut a_biguint = U256::from_string("768018742981669034276900318581864860508537538828119465699464336490060").unwrap();
+    let m = a_biguint.wrapping_add_uint(2_u8);
+    println!("Originally,\ta = {}", a_biguint);
+    assert_eq!(a_biguint.to_string(), "768018742981669034276900318581864860508537538828119465699464336490060");
+    assert_eq!(a_biguint.is_overflow(), false);
+    assert_eq!(a_biguint.is_underflow(), false);
+    assert_eq!(a_biguint.is_divided_by_zero(), false);
+    assert_eq!(a_biguint.is_infinity(), false);
 
-    a.modular_add_assign_uint(3_u8, &m);
-    println!("After a.modular_add_assign_uint(3_u8, &m),\ta = {}", a);
-    assert_eq!(a.to_string(), "1");
-    assert_eq!(a.is_overflow(), true);
+    a_biguint.modular_add_assign_uint(3_u8, &m);
+    println!("After a.modular_add_assign_uint(3_u8, &m),\ta_biguint = {}", a_biguint);
+    assert_eq!(a_biguint.to_string(), "1");
+    assert_eq!(a_biguint.is_overflow(), true);
+    assert_eq!(a_biguint.is_underflow(), false);
+    assert_eq!(a_biguint.is_divided_by_zero(), false);
+    assert_eq!(a_biguint.is_infinity(), false);
 
-    a.modular_add_assign_uint(1_u8, &m);
-    println!("After a.modular_add_assign_uint(1_u8, &m),\ta = {}", a);
-    assert_eq!(a.to_string(), "2");
-    assert_eq!(a.is_overflow(), true);
+    a_biguint.modular_add_assign_uint(1_u8, &m);
+    println!("After a.modular_add_assign_uint(1_u8, &m),\ta = {}", a_biguint);
+    assert_eq!(a_biguint.to_string(), "2");
+    assert_eq!(a_biguint.is_overflow(), true);
+    assert_eq!(a_biguint.is_underflow(), false);
+    assert_eq!(a_biguint.is_divided_by_zero(), false);
+    assert_eq!(a_biguint.is_infinity(), false);
     println!("---------------------------");
 }
 
