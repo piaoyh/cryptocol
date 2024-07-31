@@ -7899,10 +7899,11 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
         if modulo.is_zero_or_one()
             { panic!(); }
 
-        let flags = self.get_all_flags();
+        let mut flags = self.get_all_flags();
         if *self >= *modulo
             { self.wrapping_rem_assign(modulo); }
 
+        self.reset_all_flags();
         if modulo.gt_uint(rhs)
         {
             let mut mrhs = T::num::<U>(rhs);
@@ -7915,7 +7916,9 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
                 mrhs >>= T::one();
             }
             *self = res;
-            self.set_flag_bit(flags | self.get_all_flags());
+            if self.is_overflow()
+                { flags |= Self::OVERFLOW; }
+            self.set_all_flags(flags);
         }
         else if U::size_in_bytes() > T::size_in_bytes()  // && (module <= rhs)
         {
@@ -7928,9 +7931,17 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
             let mself = self.into_u128();
             let new_mself = mself.modular_mul(mrhs, modu);
             self.set_uint(new_mself);
-            self.set_flag_bit(flags);
+            self.set_all_flags(flags);
             if mself > new_mself
-                { self.set_overflow(); }
+            {
+                self.set_overflow();
+            }
+            else
+            {
+                let r = mself.overflowing_mul(mrhs);
+                if (r.0 >= modu) || r.1
+                    { self.set_overflow(); }
+            }
         }
     }
 
