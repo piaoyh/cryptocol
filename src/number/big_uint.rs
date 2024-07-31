@@ -6044,11 +6044,13 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
             + BitXor<Output=U> + BitXorAssign + Not<Output=U>
             + PartialEq + PartialOrd
     {
-        let old = self.get_all_flags();
-        self.reset_all_flags();
+        let mut flags = self.get_all_flags();
         self.wrapping_sub_assign_uint(rhs);
+        self.reset_all_flags();
         let current_underflow = self.is_underflow();
-        self.set_flag_bit(old);
+        if current_underflow
+            { flags |= BigUInt::UNDERFLOW; }
+        self.set_all_flags(flags);
         current_underflow
     }
 
