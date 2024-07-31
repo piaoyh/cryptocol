@@ -7435,11 +7435,13 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
             + BitXor<Output=U> + BitXorAssign + Not<Output=U>
             + PartialEq + PartialOrd
     {
-        let old = self.get_all_flags();
-        self.reset_all_flags();
+        let mut flags = self.get_all_flags();
         self.wrapping_mul_assign_uint(rhs);
+        self.reset_all_flags();
         let current_overflow = self.is_overflow();
-        self.set_flag_bit(old);
+        if current_overflow
+            { flags |= Self::OVERFLOW; }
+        self.set_all_flags(flags);
 
         current_overflow
     }
