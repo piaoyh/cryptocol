@@ -4745,7 +4745,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
         self.wrapping_add_assign_uint(rhs);
         let current_overflow = self.is_overflow();
         if current_overflow
-            { flags |=  BigUInt::OVERFLOW; }
+            { flags |=  Self::OVERFLOW; }
         self.set_all_flags(flags);
 
         current_overflow
@@ -6049,7 +6049,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
         self.reset_all_flags();
         let current_underflow = self.is_underflow();
         if current_underflow
-            { flags |= BigUInt::UNDERFLOW; }
+            { flags |= Self::UNDERFLOW; }
         self.set_all_flags(flags);
         current_underflow
     }
@@ -6588,7 +6588,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
                 self.wrapping_add_assign(&diff);
                 flags |= Self::UNDERFLOW;
             }
-            self.set_flag_bit(flags);
+            self.set_all_flags(flags);
         }
         else if rhs.length_in_bytes() > T::size_in_bytes()  // if rhs.length_in_bytes() > T::size_in_bytes() && (module <= rhs)
         {
@@ -6609,7 +6609,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
                 self.set_uint(mself.wrapping_add(diff));
                 flags |= Self::UNDERFLOW;
             }
-            self.set_flag_bit(flags);
+            self.set_all_flags(flags);
         }
     }
 
@@ -12739,7 +12739,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
         self.wrapping_add_assign(rhs);
         let current_overflow = self.is_overflow();
         if current_overflow
-            { flags |= BigUInt::OVERFLOW; }
+            { flags |= Self::OVERFLOW; }
         self.set_all_flags(flags);
         current_overflow
     }
@@ -13162,7 +13162,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
         if *self >= diff
         {
             self.wrapping_sub_assign(&diff);
-            flags |= BigUInt::OVERFLOW;
+            flags |= Self::OVERFLOW;
         }
         else
         {
@@ -15353,7 +15353,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
         }
         self.set_number(res.get_number());
         if res.is_overflow()
-            { flags |= BigUInt::OVERFLOW; }
+            { flags |= Self::OVERFLOW; }
         self.set_flag_bit(flags);
     }
 
