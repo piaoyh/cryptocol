@@ -5405,7 +5405,6 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
 
     /*** Subtraction ***/
 
-    //-============
     // pub fn borrowing_sub_uint<U>(&self, rhs: U, borrow: bool) -> (Self, bool)
     /// Calculates self − rhs − borrow and returns a tuple containing the
     /// difference and the output borrow.
@@ -5447,8 +5446,8 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// println!("{} - {} = {}\nborrow = {}", num1, num_uint, dif, borrow);
     /// assert_eq!(dif.to_string(), "115761816335569101403435733562708448393619331758951915327747778712745103528175");
     /// assert_eq!(borrow, false);
-    /// assert_eq!(dif.is_overflow(), false);
     /// assert_eq!(dif.is_underflow(), false);
+    /// assert_eq!(dif.is_overflow(), false);
     /// assert_eq!(dif.is_divided_by_zero(), false);
     /// assert_eq!(dif.is_infinity(), false);
     /// ```
@@ -5466,8 +5465,8 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// println!("{} - {} = {}\nborrow = {}", num1, num_uint, dif, borrow);
     /// assert_eq!(dif.to_string(), "115761816335569101403435733562708448393619331758951915327747778712745103528174");
     /// assert_eq!(borrow, false);
-    /// assert_eq!(dif.is_overflow(), false);
     /// assert_eq!(dif.is_underflow(), false);
+    /// assert_eq!(dif.is_overflow(), false);
     /// assert_eq!(dif.is_divided_by_zero(), false);
     /// assert_eq!(dif.is_infinity(), false);
     /// ```
@@ -5485,8 +5484,8 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// println!("{} - {} = {}\nborrow = {}", num2, num_uint, dif, borrow);
     /// assert_eq!(dif.to_string(), "115792089237316195423570985008687907853269984665640564039457584007913129639919");
     /// assert_eq!(borrow, true);
-    /// assert_eq!(dif.is_overflow(), true);
-    /// assert_eq!(dif.is_underflow(), false);
+    /// assert_eq!(dif.is_underflow(), true);
+    /// assert_eq!(dif.is_overflow(), false);
     /// assert_eq!(dif.is_divided_by_zero(), false);
     /// assert_eq!(dif.is_infinity(), false);
     /// ```
@@ -5504,8 +5503,8 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// println!("{} - {} = {}\nborrow = {}", num2, num_uint, dif, borrow);
     /// assert_eq!(dif.to_string(), "115792089237316195423570985008687907853269984665640564039457584007913129639918");
     /// assert_eq!(borrow, true);
-    /// assert_eq!(dif.is_overflow(), true);
-    /// assert_eq!(dif.is_underflow(), false);
+    /// assert_eq!(dif.is_underflow(), true);
+    /// assert_eq!(dif.is_overflow(), false);
     /// assert_eq!(dif.is_divided_by_zero(), false);
     /// assert_eq!(dif.is_infinity(), false);
     /// ```
@@ -5580,10 +5579,19 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// let num_uint = 0x9900AABB_CCDDEEFf_u64;
     /// 
     /// println!("Originally,\tnum1 = {}", num1);
+    /// assert_eq!(num1.is_overflow(), false);
+    /// assert_eq!(num1.is_underflow(), false);
+    /// assert_eq!(num1.is_divided_by_zero(), false);
+    /// assert_eq!(num1.is_infinity(), false);
+    /// 
     /// let borrow = num1.borrowing_sub_assign_uint(num_uint, false);
     /// println!("After num1 -= {},\tnum1 = {}\tborrow = {}", num_uint, num1, borrow);
     /// assert_eq!(num1.to_string(), "115761816335569101403435733562708448393642106212790284019670463725845572948207");
     /// assert_eq!(borrow, false);
+    /// assert_eq!(num1.is_underflow(), false);
+    /// assert_eq!(num1.is_overflow(), false);
+    /// assert_eq!(num1.is_divided_by_zero(), false);
+    /// assert_eq!(num1.is_infinity(), false);
     /// ```
     /// 
     /// # Example 2
@@ -5596,10 +5604,19 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// let num_uint = 0x9900AABB_CCDDEEFf_u64;
     /// 
     /// println!("Originally,\tnum1 = {}", num1);
+    /// assert_eq!(num1.is_overflow(), false);
+    /// assert_eq!(num1.is_underflow(), false);
+    /// assert_eq!(num1.is_divided_by_zero(), false);
+    /// assert_eq!(num1.is_infinity(), false);
+    /// 
     /// let borrow = num1.borrowing_sub_assign_uint(num_uint, true);
     /// println!("After num1 -= {},\tnum1 = {}\tborrow = {}", num_uint, num1, borrow);
     /// assert_eq!(num1.to_string(), "115761816335569101403435733562708448393642106212790284019670463725845572948206");
     /// assert_eq!(borrow, false);
+    /// assert_eq!(num1.is_underflow(), false);
+    /// assert_eq!(num1.is_overflow(), false);
+    /// assert_eq!(num1.is_divided_by_zero(), false);
+    /// assert_eq!(num1.is_infinity(), false);
     /// ```
     /// 
     /// # Example 3
@@ -5612,10 +5629,19 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// let num_uint = 0x9900AABB_CCDDEEFf_u64;
     /// 
     /// println!("Originally,\tnum2 = {}", num2);
+    /// assert_eq!(num2.is_overflow(), false);
+    /// assert_eq!(num2.is_underflow(), false);
+    /// assert_eq!(num2.is_divided_by_zero(), false);
+    /// assert_eq!(num2.is_infinity(), false);
+    /// 
     /// let borrow = num2.borrowing_sub_assign_uint(num_uint, false);
     /// println!("After num2 -= {},\tnum2 = {}\tcarry = {}", num_uint, num2, borrow);
     /// assert_eq!(num2.to_string(), "115792089237316195423570985008687907853269984665640564039457584007913129639935");
     /// assert_eq!(borrow, true);
+    /// assert_eq!(num2.is_underflow(), true);
+    /// assert_eq!(num2.is_overflow(), false);
+    /// assert_eq!(num2.is_divided_by_zero(), false);
+    /// assert_eq!(num2.is_infinity(), false);
     /// ```
     /// 
     /// # Example 4
@@ -5628,10 +5654,19 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// let num_uint = 0x9900AABB_CCDDEEFf_u64;
     /// 
     /// println!("Originally,\tnum2 = {}", num2);
+    /// assert_eq!(num2.is_overflow(), false);
+    /// assert_eq!(num2.is_underflow(), false);
+    /// assert_eq!(num2.is_divided_by_zero(), false);
+    /// assert_eq!(num2.is_infinity(), false);
+    /// 
     /// let borrow = num2.borrowing_sub_assign_uint(num_uint, true);
     /// println!("After num2 -= {},\tnum2 = {}\tborrow = {}", num_uint, num2, borrow);
     /// assert_eq!(num2.to_string(), "115792089237316195423570985008687907853269984665640564039457584007913129639934");
     /// assert_eq!(borrow, true);
+    /// assert_eq!(num2.is_underflow(), true);
+    /// assert_eq!(num2.is_overflow(), false);
+    /// assert_eq!(num2.is_divided_by_zero(), false);
+    /// assert_eq!(num2.is_infinity(), false);
     /// ```
     /// 
     /// # Big-endian issue
@@ -5667,12 +5702,13 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
                     { break; }
             }
             if b
-                { flags |= Self::OVERFLOW; }
+                { flags |= Self::UNDERFLOW; }
         }
         self.set_all_flags(flags);
         b
     }
 
+    //-============
     // pub fn wrapping_sub_uint<U>(&self, rhs: U) -> Self
     /// Subtracts a unsigned integer number of type `U` from `BigUInt`-type
     /// unsigned integer and returns its result in a type of `BigUInt`.
