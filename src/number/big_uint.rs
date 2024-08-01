@@ -6128,6 +6128,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
             + PartialEq + PartialOrd
     {
         let mut flags = self.get_all_flags();
+        self.reset_all_flags();
         self.wrapping_sub_assign_uint(rhs);
         let current_underflow = self.is_underflow();
         if current_underflow
