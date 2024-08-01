@@ -2334,7 +2334,6 @@ fn biguint_modular_add_uint()
     println!("---------------------------");
 }
 
-//-================
 fn biguint_modular_add_assign_uint()
 {
     println!("biguint_modular_add_assign_uint");
@@ -2420,6 +2419,7 @@ fn biguint_sub_uint()
     biguint_abs_diff_uint();
 }
 
+//-================
 fn biguint_borrowing_sub_uint()
 {
     println!("biguint_borrowing_sub_uint");
@@ -2427,30 +2427,56 @@ fn biguint_borrowing_sub_uint()
     define_utypes_with!(u128);
 
     let num_str1 = "FFEEDDBB_AA998877_66554433_221100FF_EEDDBBAA_99887766_55443322_1100FFEE";
-    let num_str2 = "11223344_55667788_9900AABB_CCDDEEEe";
     let num1 = UU32::from_str_radix(num_str1, 16).unwrap();
-    let num2 = UU32::from_str_radix(num_str2, 16).unwrap();
     let num_uint = 0x11223344_55667788_9900AABB_CCDDEEFf_u128;
 
     let (dif, borrow) = num1.borrowing_sub_uint(num_uint, false);
     println!("{} - {} = {}\nborrow = {}", num1, num_uint, dif, borrow);
     assert_eq!(dif.to_string(), "115761816335569101403435733562708448393619331758951915327747778712745103528175");
     assert_eq!(borrow, false);
+    assert_eq!(dif.is_overflow(), false);
+    assert_eq!(dif.is_underflow(), false);
+    assert_eq!(dif.is_divided_by_zero(), false);
+    assert_eq!(dif.is_infinity(), false);
+
+    let num_str1 = "FFEEDDBB_AA998877_66554433_221100FF_EEDDBBAA_99887766_55443322_1100FFEE";
+    let num1 = UU32::from_str_radix(num_str1, 16).unwrap();
+    let num_uint = 0x11223344_55667788_9900AABB_CCDDEEFf_u128;
 
     let (dif, borrow) = num1.borrowing_sub_uint(num_uint, true);
-    println!("{} - {} = {}\ncarry = {}", num1, num_uint, dif, borrow);
+    println!("{} - {} = {}\nborrow = {}", num1, num_uint, dif, borrow);
     assert_eq!(dif.to_string(), "115761816335569101403435733562708448393619331758951915327747778712745103528174");
     assert_eq!(borrow, false);
+    assert_eq!(dif.is_overflow(), false);
+    assert_eq!(dif.is_underflow(), false);
+    assert_eq!(dif.is_divided_by_zero(), false);
+    assert_eq!(dif.is_infinity(), false);
+
+    let num_str2 = "11223344_55667788_9900AABB_CCDDEEEe";
+    let num2 = UU32::from_str_radix(num_str2, 16).unwrap();
+    let num_uint = 0x11223344_55667788_9900AABB_CCDDEEFf_u128;
 
     let (dif, borrow) = num2.borrowing_sub_uint(num_uint, false);
-    println!("{} - {} = {}\ncarry = {}", num2, num_uint, dif, borrow);
+    println!("{} - {} = {}\nborrow = {}", num2, num_uint, dif, borrow);
     assert_eq!(dif.to_string(), "115792089237316195423570985008687907853269984665640564039457584007913129639919");
     assert_eq!(borrow, true);
+    assert_eq!(dif.is_overflow(), true);
+    assert_eq!(dif.is_underflow(), false);
+    assert_eq!(dif.is_divided_by_zero(), false);
+    assert_eq!(dif.is_infinity(), false);
+
+    let num_str2 = "11223344_55667788_9900AABB_CCDDEEEe";
+    let num2 = UU32::from_str_radix(num_str2, 16).unwrap();
+    let num_uint = 0x11223344_55667788_9900AABB_CCDDEEFf_u128;
 
     let (dif, borrow) = num2.borrowing_sub_uint(num_uint, true);
-    println!("{} - {} = {}\ncarry = {}", num2, num_uint, dif, borrow);
+    println!("{} - {} = {}\nborrow = {}", num2, num_uint, dif, borrow);
     assert_eq!(dif.to_string(), "115792089237316195423570985008687907853269984665640564039457584007913129639918");
     assert_eq!(borrow, true);
+    assert_eq!(dif.is_overflow(), true);
+    assert_eq!(dif.is_underflow(), false);
+    assert_eq!(dif.is_divided_by_zero(), false);
+    assert_eq!(dif.is_infinity(), false);
     println!("---------------------------");
 }
 
