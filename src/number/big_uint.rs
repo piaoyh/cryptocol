@@ -7620,7 +7620,6 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
             { self.set_overflow(); }
     }
 
-    //-============
     // pub fn overflowing_mul_uint<U>(&self, rhs: U) -> (Self, bool)
     /// Calculates `self` * `rhs`.
     /// 
@@ -7650,7 +7649,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// # Example 1
     /// ```
     /// use cryptocol::define_utypes_with;
-    /// define_utypes_with!(u128);
+    /// define_utypes_with!(u8);
     /// 
     /// let a_biguint = U256::from_string("1874298166903427690031858186486050853753882811946569946433649006084094").unwrap();
     /// let b_uint = 248_u8;
@@ -7658,19 +7657,27 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// println!("{} X {} = {}, {}", a_biguint, b_uint, res, overflow);
     /// assert_eq!(res.to_string(), "464825945392050067127900830248540611730962937362749346715544953508855312");
     /// assert_eq!(overflow, false);
+    /// assert_eq!(res.is_overflow(), false);
+    /// assert_eq!(res.is_underflow(), false);
+    /// assert_eq!(res.is_divided_by_zero(), false);
+    /// assert_eq!(res.is_infinity(), false);
     /// ```
     /// 
     /// # Example 2
     /// ```
     /// use cryptocol::define_utypes_with;
-    /// define_utypes_with!(u128);
+    /// define_utypes_with!(u8);
     /// 
-    /// let c_biguint = U256::from_string("876801874298166903427690031858186486050853753882811946569946433649006084094").unwrap();
+    /// let a_biguint = U256::from_string("876801874298166903427690031858186486050853753882811946569946433649006084094").unwrap();
     /// let b_uint = 248_u8;
-    /// let (res, overflow) = c_biguint.overflowing_mul_uint(b_uint);
-    /// println!("{} X {} = {}, {}", c_biguint, b_uint, res, overflow);
+    /// let (res, overflow) = a_biguint.overflowing_mul_uint(b_uint);
+    /// println!("{} X {} = {}, {}", a_biguint, b_uint, res, overflow);
     /// assert_eq!(res.to_string(), "101654775588629196626496142892142340687341746297296798709889131537040379215376");
     /// assert_eq!(overflow, true);
+    /// assert_eq!(res.is_overflow(), true);
+    /// assert_eq!(res.is_underflow(), false);
+    /// assert_eq!(res.is_divided_by_zero(), false);
+    /// assert_eq!(res.is_infinity(), false);
     /// ```
     /// 
     /// # Big-endian issue
@@ -7724,15 +7731,23 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// define_utypes_with!(u8);
     /// 
     /// let mut a_biguint = UU32::from_string("1874298166903427690031858186486050853753882811946569946433649006084094").unwrap();
-    /// let b_uint = 248_u16;
+    /// let b_uint = 248_u8;
     /// 
     /// println!("Originally,\ta_biguint = {}", a_biguint);
     /// assert_eq!(a_biguint.to_string(), "1874298166903427690031858186486050853753882811946569946433649006084094");
+    /// assert_eq!(a_biguint.is_overflow(), false);
+    /// assert_eq!(a_biguint.is_underflow(), false);
+    /// assert_eq!(a_biguint.is_divided_by_zero(), false);
+    /// assert_eq!(a_biguint.is_infinity(), false);
     /// 
     /// let overflow = a_biguint.overflowing_mul_assign_uint(b_uint);
     /// println!("After a_biguint.overflowing_mul_assign_uint(248_u16), a_biguint = {}, {}", a_biguint, overflow);
     /// assert_eq!(a_biguint.to_string(), "464825945392050067127900830248540611730962937362749346715544953508855312");
     /// assert_eq!(overflow, false);
+    /// assert_eq!(a_biguint.is_overflow(), false);
+    /// assert_eq!(a_biguint.is_underflow(), false);
+    /// assert_eq!(a_biguint.is_divided_by_zero(), false);
+    /// assert_eq!(a_biguint.is_infinity(), false);
     /// ```
     /// 
     /// # Example 2
@@ -7740,16 +7755,24 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// use cryptocol::define_utypes_with;
     /// define_utypes_with!(u8);
     /// 
-    /// let mut c_biguint = UU32::from_string("876801874298166903427690031858186486050853753882811946569946433649006084094").unwrap();
-    /// let b_uint = 248_u16;
+    /// let mut a_biguint = UU32::from_string("876801874298166903427690031858186486050853753882811946569946433649006084094").unwrap();
+    /// let b_uint = 248_u8;
     /// 
-    /// println!("Originally,\tc_biguint = {}", c_biguint);
-    /// assert_eq!(c_biguint.to_string(), "876801874298166903427690031858186486050853753882811946569946433649006084094");
+    /// println!("Originally,\ta_biguint = {}", a_biguint);
+    /// assert_eq!(a_biguint.to_string(), "876801874298166903427690031858186486050853753882811946569946433649006084094");
+    /// assert_eq!(a_biguint.is_overflow(), false);
+    /// assert_eq!(a_biguint.is_underflow(), false);
+    /// assert_eq!(a_biguint.is_divided_by_zero(), false);
+    /// assert_eq!(a_biguint.is_infinity(), false);
     /// 
-    /// let overflow = c_biguint.overflowing_mul_assign_uint(b_uint);
-    /// println!("After c_biguint.overflowing_mul_assign_uint(248_u16), c_biguint = {}, {}", c_biguint, overflow);
-    /// assert_eq!(c_biguint.to_string(), "101654775588629196626496142892142340687341746297296798709889131537040379215376");
+    /// let overflow = a_biguint.overflowing_mul_assign_uint(b_uint);
+    /// println!("After a_biguint.overflowing_mul_assign_uint(248_u16), a_biguint = {}, {}", a_biguint, overflow);
+    /// assert_eq!(a_biguint.to_string(), "101654775588629196626496142892142340687341746297296798709889131537040379215376");
     /// assert_eq!(overflow, true);
+    /// assert_eq!(a_biguint.is_overflow(), true);
+    /// assert_eq!(a_biguint.is_underflow(), false);
+    /// assert_eq!(a_biguint.is_divided_by_zero(), false);
+    /// assert_eq!(a_biguint.is_infinity(), false);
     /// ```
     /// 
     /// # Big-endian issue
@@ -7802,14 +7825,16 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// define_utypes_with!(u16);
     /// 
     /// let a_biguint = U256::from_string("876801874298166903427690031858186486050853753882811946569946433649006084094").unwrap();
-    /// let b_uint = 248_u8;
+    /// let b_uint = 248_u16;
     /// let res = a_biguint.checked_mul_uint(b_uint);
     /// match &res
     /// {
     ///     Some(r) => { println!("{} X {} = {}", a_biguint, b_uint, r); },
-    ///     None => { println!("Overflow happend!"); },
+    ///     None => {
+    ///         println!("Overflow happend!");
+    ///         assert_eq!(res, None);
+    ///     },
     /// }
-    /// assert_eq!(res, None);
     /// ```
     /// 
     /// # Example 2
@@ -7818,14 +7843,20 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// define_utypes_with!(u16);
     /// 
     /// let a_biguint = U256::from_string("876801874298166903427690031858186486050853753882811946569946433649006084094").unwrap();
-    /// let b_uint = 5_u8;
+    /// let b_uint = 5_u16;
     /// let res = a_biguint.checked_mul_uint(b_uint);
     /// match &res
     /// {
-    ///     Some(r) => { println!("{} X {} = {}", a_biguint, b_uint, r); },
+    ///     Some(r) => {
+    ///             println!("{} X {} = {}", a_biguint, b_uint, r);
+    ///             assert_eq!(r.to_string(), "4384009371490834517138450159290932430254268769414059732849732168245030420470");
+    ///             assert_eq!(r.is_overflow(), false);
+    ///             assert_eq!(r.is_underflow(), false);
+    ///             assert_eq!(r.is_divided_by_zero(), false);
+    ///             assert_eq!(r.is_infinity(), false);
+    ///         },
     ///     None => { println!("Overflow happend!"); },
     /// }
-    /// assert_eq!(res.unwrap().to_string(), "4384009371490834517138450159290932430254268769414059732849732168245030420470");
     /// ```
     /// 
     /// # Big-endian issue
@@ -7881,9 +7912,14 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// let res = a_biguint.unchecked_mul_uint(5_u8);
     /// println!("{} X {} = {}", a_biguint, 5_u8, res);
     /// assert_eq!(res.to_string(), "4384009371490834517138450159290932430254268769414059732849732168245030420470");
+    /// assert_eq!(res.is_overflow(), false);
+    /// assert_eq!(res.is_underflow(), false);
+    /// assert_eq!(res.is_divided_by_zero(), false);
+    /// assert_eq!(res.is_infinity(), false);
     /// 
+    /// let _a_biguint = UU32::from_string("876801874298166903427690031858186486050853753882811946569946433649006084094").unwrap();
     /// // It will panic.
-    /// // let res = a_biguint.unchecked_mul_uint(248_u8);
+    /// // let res = _a_biguint.unchecked_mul_uint(248_u8);
     /// ```
     /// 
     /// # Big-endian issue
@@ -7938,6 +7974,10 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// let res = a_biguint.saturating_mul_uint(5_u8);
     /// println!("{} X {} = {}", a_biguint, 5_u8, res);
     /// assert_eq!(res.to_string(), "4384009371490834517138450159290932430254268769414059732849732168245030420470");
+    /// assert_eq!(res.is_overflow(), false);
+    /// assert_eq!(res.is_underflow(), false);
+    /// assert_eq!(res.is_divided_by_zero(), false);
+    /// assert_eq!(res.is_infinity(), false);
     /// ```
     /// 
     /// # Example 2
@@ -7950,6 +7990,10 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// println!("{} X {} = {}", a_biguint, 248_u8, res);
     /// assert_eq!(res.to_string(), "115792089237316195423570985008687907853269984665640564039457584007913129639935");
     /// assert_eq!(res, UU32::max());
+    /// assert_eq!(res.is_overflow(), false);
+    /// assert_eq!(res.is_underflow(), false);
+    /// assert_eq!(res.is_divided_by_zero(), false);
+    /// assert_eq!(res.is_infinity(), false);
     /// ```
     /// 
     /// # Big-endian issue
@@ -8004,8 +8048,18 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// 
     /// let mut a_biguint = U256::from_string("876801874298166903427690031858186486050853753882811946569946433649006084094").unwrap();
     /// println!("Originally, a_biguint = {}", a_biguint);
+    /// assert_eq!(a_biguint.is_overflow(), false);
+    /// assert_eq!(a_biguint.is_underflow(), false);
+    /// assert_eq!(a_biguint.is_divided_by_zero(), false);
+    /// assert_eq!(a_biguint.is_infinity(), false);
+    /// 
     /// a_biguint.saturating_mul_assign_uint(5_u8);
     /// println!("After a_biguint.saturating_mul_assign_uint(5_u8), a_biguint = {}", a_biguint);
+    /// assert_eq!(a_biguint.to_string(), "4384009371490834517138450159290932430254268769414059732849732168245030420470");
+    /// assert_eq!(a_biguint.is_overflow(), false);
+    /// assert_eq!(a_biguint.is_underflow(), false);
+    /// assert_eq!(a_biguint.is_divided_by_zero(), false);
+    /// assert_eq!(a_biguint.is_infinity(), false);
     /// ```
     /// 
     /// # Example 2
@@ -8013,12 +8067,20 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// use cryptocol::define_utypes_with;
     /// define_utypes_with!(u128);
     /// 
-    /// let mut b_biguint = U256::from_string("876801874298166903427690031858186486050853753882811946569946433649006084094").unwrap();
-    /// println!("Originally, b_biguint = {}", b_biguint);
-    /// b_biguint.saturating_mul_assign_uint(248_u8);
-    /// println!("After b_biguint.saturating_mul_assign_uint(248_u8), b_biguint = {}", b_biguint);
-    /// assert_eq!(b_biguint.to_string(), "115792089237316195423570985008687907853269984665640564039457584007913129639935");
-    /// assert_eq!(b_biguint, UU32::max());
+    /// let mut a_biguint = U256::from_string("876801874298166903427690031858186486050853753882811946569946433649006084094").unwrap();
+    /// println!("Originally, a_biguint = {}", a_biguint);
+    /// assert_eq!(a_biguint.is_overflow(), false);
+    /// assert_eq!(a_biguint.is_underflow(), false);
+    /// assert_eq!(a_biguint.is_divided_by_zero(), false);
+    /// assert_eq!(a_biguint.is_infinity(), false);
+    /// 
+    /// a_biguint.saturating_mul_assign_uint(248_u8);
+    /// println!("After a_biguint.saturating_mul_assign_uint(248_u8), a_biguint = {}", a_biguint);
+    /// assert_eq!(a_biguint, UU32::max());
+    /// assert_eq!(a_biguint.is_overflow(), false);
+    /// assert_eq!(a_biguint.is_underflow(), false);
+    /// assert_eq!(a_biguint.is_divided_by_zero(), false);
+    /// assert_eq!(a_biguint.is_infinity(), false);
     /// ```
     /// 
     /// # Big-endian issue
@@ -8109,6 +8171,10 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// let res = a_biguint.modular_mul_uint(mul_uint, &m);
     /// println!("{} * {} = {}", a_biguint, mul_uint, res);
     /// assert_eq!(res.to_string(), "159290932430254268769414059733840093714908345171384502932436456877341425");
+    /// assert_eq!(res.is_overflow(), false);
+    /// assert_eq!(res.is_underflow(), false);
+    /// assert_eq!(res.is_divided_by_zero(), false);
+    /// assert_eq!(res.is_infinity(), false);
     /// ```
     /// 
     /// # Example 2
@@ -8117,11 +8183,15 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// define_utypes_with!(u8);
     /// 
     /// let m = UU32::from_string("76801874298166903427690031858186486050853753882811946569946433649006084094").unwrap();
-    /// let a_biguint = U256::from_string("31858186486050853753882811946768018742981669034276900586487291375468285").unwrap();
+    /// let a_biguint = U256::from_string("318581864860508537538828119467680187429816690342769005864872913754682855846").unwrap();
     /// let mul_uint = 248_u8;
     /// let res = a_biguint.modular_mul_uint(mul_uint, &m);
     /// println!("{} * {} = {}", a_biguint, mul_uint, res);
-    /// assert_eq!(res.to_string(), "7900830248540611730962937362798468648259453920500671345448848261116134680");
+    /// assert_eq!(res.to_string(), "55975706890540585964020877768978822316880213476032380583548819983093801176");
+    /// assert_eq!(res.is_overflow(), true);
+    /// assert_eq!(res.is_underflow(), false);
+    /// assert_eq!(res.is_divided_by_zero(), false);
+    /// assert_eq!(res.is_infinity(), false);
     /// ```
     /// 
     /// # Big-endian issue
@@ -8185,7 +8255,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// # Example 1
     /// ```
     /// use cryptocol::define_utypes_with;
-    /// define_utypes_with!(u32);
+    /// define_utypes_with!(u16);
     /// 
     /// let m = UU32::from_string("76801874298166903427690031858186486050853753882811946569946433649006084094").unwrap();
     /// let mut a_biguint = U256::from_string("31858186486050853753882811946768018742981669034276900586487291375468285").unwrap();
@@ -8193,23 +8263,41 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// 
     /// println!("Originally, a_biguint = {}", a_biguint);
     /// a_biguint.modular_mul_assign_uint(mul_uint, &m);
+    /// assert_eq!(a_biguint.is_overflow(), false);
+    /// assert_eq!(a_biguint.is_underflow(), false);
+    /// assert_eq!(a_biguint.is_divided_by_zero(), false);
+    /// assert_eq!(a_biguint.is_infinity(), false);
+    /// 
     /// println!("After a_biguint.modular_mul_assign_uint(mul_uint, &m), a_biguint = {}", a_biguint);
     /// assert_eq!(a_biguint.to_string(), "159290932430254268769414059733840093714908345171384502932436456877341425");
+    /// assert_eq!(a_biguint.is_overflow(), false);
+    /// assert_eq!(a_biguint.is_underflow(), false);
+    /// assert_eq!(a_biguint.is_divided_by_zero(), false);
+    /// assert_eq!(a_biguint.is_infinity(), false);
     /// ```
     /// 
     /// # Example 2
     /// ```
     /// use cryptocol::define_utypes_with;
-    /// define_utypes_with!(u32);
+    /// define_utypes_with!(u16);
     /// 
     /// let m = UU32::from_string("76801874298166903427690031858186486050853753882811946569946433649006084094").unwrap();
-    /// let mut b_biguint = U256::from_string("31858186486050853753882811946768018742981669034276900586487291375468285").unwrap();
+    /// let mut a_biguint = U256::from_string("318581864860508537538828119467680187429816690342769005864872913754682855846").unwrap();
     /// let mul_uint = 248_u8;
     /// 
-    /// println!("Originally, b_biguint = {}", b_biguint);
-    /// b_biguint.modular_mul_assign_uint(mul_uint, &m);
-    /// println!("After b_biguint.modular_mul_assign_uint(mul_uint, &m), b_biguint = {}", b_biguint);
-    /// assert_eq!(b_biguint.to_string(), "7900830248540611730962937362798468648259453920500671345448848261116134680");
+    /// println!("Originally, a_biguint = {}", a_biguint);
+    /// assert_eq!(a_biguint.is_overflow(), false);
+    /// assert_eq!(a_biguint.is_underflow(), false);
+    /// assert_eq!(a_biguint.is_divided_by_zero(), false);
+    /// assert_eq!(a_biguint.is_infinity(), false);
+    /// 
+    /// a_biguint.modular_mul_assign_uint(mul_uint, &m);
+    /// println!("After a_biguint.modular_mul_assign_uint(mul_uint, &m), a_biguint = {}", a_biguint);
+    /// assert_eq!(a_biguint.to_string(), "55975706890540585964020877768978822316880213476032380583548819983093801176");
+    /// assert_eq!(a_biguint.is_overflow(), true);
+    /// assert_eq!(a_biguint.is_underflow(), false);
+    /// assert_eq!(a_biguint.is_divided_by_zero(), false);
+    /// assert_eq!(a_biguint.is_infinity(), false);
     /// ```
     /// 
     /// # Big-endian issue
@@ -8261,23 +8349,24 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
             let mself = self.into_u128();
             let new_mself = mself.modular_mul(mrhs, modu);
             self.set_uint(new_mself);
-            self.set_all_flags(flags);
             if mself > new_mself
             {
-                self.set_overflow();
+                flags |= Self::OVERFLOW;
             }
             else
             {
                 let r = mself.overflowing_mul(mrhs);
                 if (r.0 >= modu) || r.1
-                    { self.set_overflow(); }
+                    { flags |= Self::OVERFLOW; }
             }
+            self.set_all_flags(flags);
         }
     }
 
 
     /*** Division ***/
 
+    //-============
     // pub fn divide_fully_uint<U>(&self, rhs: U) -> (Self, U)
     /// Divide `BigUInt<T, N>` by `rhs` so as to get quotient and remainder
     /// 
