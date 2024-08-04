@@ -4277,13 +4277,19 @@ fn biguint_unchecked_rem_uint()
     println!("biguint_unchecked_rem_uint");
     use std::str::FromStr;
     use cryptocol::define_utypes_with;
-    define_utypes_with!(u32);
+    define_utypes_with!(u64);
 
     let dividend = U256::from_str("123456789015758942546236989636279846864825945392").unwrap();
     let divisor = 87_u8;
     let remainder = dividend.unchecked_rem_uint(divisor);
     println!("{} % {} = {}", dividend, divisor, remainder);
     assert_eq!(remainder.to_string(), "8");
+
+    let dividend = U256::zero();
+    let divisor = 87_u8;
+    let remainder = dividend.unchecked_rem_uint(divisor);
+    println!("{} % {} = {}", dividend, divisor, remainder);
+    assert_eq!(remainder.to_string(), "0");
 
     // It will panic.
     // let remainder = dividend.unchecked_rem_uint(0_u8);
@@ -4295,13 +4301,19 @@ fn biguint_saturating_rem_uint()
     println!("biguint_saturating_rem_uint");
     use std::str::FromStr;
     use cryptocol::define_utypes_with;
-    define_utypes_with!(u64);
+    define_utypes_with!(u128);
 
     let dividend = UU32::from_str("123456789015758942546236989636279846864825945392").unwrap();
     let divisor = 87_u8;
     let remainder = dividend.saturating_rem_uint(divisor);
     println!("{} % {} = {}", dividend, divisor, remainder);
     assert_eq!(remainder.to_string(), "8");
+
+    let dividend = UU32::zero();
+    let divisor = 87_u8;
+    let remainder = dividend.saturating_rem_uint(divisor);
+    println!("{} % {} = {}", dividend, divisor, remainder);
+    assert_eq!(remainder.to_string(), "0");
 
     let _dividend = UU32::from_str("123456789015758942546236989636279846864825945392").unwrap();
     let _divisor = 0_u8;
@@ -4315,15 +4327,37 @@ fn biguint_saturating_rem_assign_uint()
     println!("biguint_saturating_rem_assign_uint");
     use std::str::FromStr;
     use cryptocol::define_utypes_with;
-    define_utypes_with!(u128);
+    define_utypes_with!(u8);
 
     let mut a_biguint = U256::from_str("123456789015758942546236989636279846864825945392").unwrap();
     let divisor = 87_u16;
     println!("Originally,\na_biguint = {}", a_biguint);
+    assert_eq!(a_biguint.is_overflow(), false);
+    assert_eq!(a_biguint.is_underflow(), false);
+    assert_eq!(a_biguint.is_infinity(), false);
+    assert_eq!(a_biguint.is_divided_by_zero(), false);
+
     a_biguint.saturating_rem_assign_uint(divisor);
     println!("After a_biguint.saturating_rem_assign_uint({}),\na_biguint = {}", divisor, a_biguint);
     assert_eq!(a_biguint.to_string(), "8");
     assert_eq!(a_biguint.is_overflow(), false);
+    assert_eq!(a_biguint.is_underflow(), false);
+    assert_eq!(a_biguint.is_infinity(), false);
+    assert_eq!(a_biguint.is_divided_by_zero(), false);
+
+    let mut a_biguint = U256::zero();
+    let divisor = 87_u16;
+    println!("Originally,\na_biguint = {}", a_biguint);
+    assert_eq!(a_biguint.is_overflow(), false);
+    assert_eq!(a_biguint.is_underflow(), false);
+    assert_eq!(a_biguint.is_infinity(), false);
+    assert_eq!(a_biguint.is_divided_by_zero(), false);
+
+    a_biguint.saturating_rem_assign_uint(divisor);
+    println!("After a_biguint.saturating_rem_assign_uint({}),\na_biguint = {}", divisor, a_biguint);
+    assert_eq!(a_biguint.to_string(), "0");
+    assert_eq!(a_biguint.is_overflow(), false);
+    assert_eq!(a_biguint.is_underflow(), false);
     assert_eq!(a_biguint.is_infinity(), false);
     assert_eq!(a_biguint.is_divided_by_zero(), false);
 
