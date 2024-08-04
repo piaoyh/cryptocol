@@ -5204,6 +5204,16 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// assert_eq!(res.is_underflow(), false);
     /// assert_eq!(res.is_divided_by_zero(), false);
     /// assert_eq!(res.is_infinity(), false);
+    /// 
+    /// let _a_biguint = U256::from_string("76801874298166903427690031858186486050853753882811946569946433649006").unwrap();
+    /// let _m = U256::zero();
+    /// // It will panic.
+    /// // let res = _a_biguint.modular_add_uint(3_u8, &_m);
+    /// 
+    /// let _a_biguint = U256::from_string("76801874298166903427690031858186486050853753882811946569946433649006").unwrap();
+    /// let _m = U256::one();
+    /// // It will panic.
+    /// // let res = _a_biguint.modular_add_uint(3_u8, &_m);
     /// ```
     /// 
     /// # Big-endian issue
@@ -5341,6 +5351,16 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// assert_eq!(a_biguint.is_underflow(), false);
     /// assert_eq!(a_biguint.is_divided_by_zero(), false);
     /// assert_eq!(a_biguint.is_infinity(), false);
+    /// 
+    /// let _a_biguint = U256::from_string("76801874298166903427690031858186486050853753882811946569946433649006").unwrap();
+    /// let _m = U256::zero();
+    /// // It will panic.
+    /// // _a_biguint.modular_add_assign_uint(1_u8, &_m);
+    /// 
+    /// let _a_biguint = U256::from_string("76801874298166903427690031858186486050853753882811946569946433649006").unwrap();
+    /// let _m = U256::one();
+    /// // It will panic.
+    /// // _a_biguint.modular_add_assign_uint(1_u8, &_m);
     /// ```
     /// 
     /// # Big-endian issue
@@ -6599,6 +6619,16 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// assert_eq!(res.is_overflow(), false);
     /// assert_eq!(res.is_divided_by_zero(), false);
     /// assert_eq!(res.is_infinity(), false);
+    /// 
+    /// let _a_biguint = U256::from_uint(2_u8);
+    /// let _m = U256::zero();
+    /// // It will panic.
+    /// // let res = _a_biguint.modular_sub_uint(1_u8, &_m);
+    /// 
+    /// let _a_biguint = U256::from_uint(2_u8);
+    /// let _m = U256::one();
+    /// // It will panic.
+    /// // let res = _a_biguint.modular_sub_uint(1_u8, &_m);
     /// ```
     /// 
     /// # Big-endian issue
@@ -6730,6 +6760,16 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// assert_eq!(a_biguint.is_overflow(), false);
     /// assert_eq!(a_biguint.is_divided_by_zero(), false);
     /// assert_eq!(a_biguint.is_infinity(), false);
+    /// 
+    /// let _a_biguint = U256::from_uint(2_u8);
+    /// let _m = U256::zero();
+    /// // It will panic.
+    /// // _a_biguint.modular_sub_assign_uint(1_u8, &_m);
+    /// 
+    /// let _a_biguint = U256::from_uint(2_u8);
+    /// let _m = U256::one();
+    /// // It will panic.
+    /// // _a_biguint.modular_sub_assign_uint(1_u8, &_m);
     /// ```
     /// 
     /// # Big-endian issue
@@ -8192,6 +8232,18 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// assert_eq!(res.is_underflow(), false);
     /// assert_eq!(res.is_divided_by_zero(), false);
     /// assert_eq!(res.is_infinity(), false);
+    /// 
+    /// let _m = UU32::zero();
+    /// let _a_biguint = U256::from_string("318581864860508537538828119467680187429816690342769005864872913754682855846").unwrap();
+    /// let _mul_uint = 248_u8;
+    /// // It will panic!
+    /// // let res = _a_biguint.modular_mul_uint(_mul_uint, &_m);
+    /// 
+    /// let _m = UU32::one();
+    /// let _a_biguint = U256::from_string("318581864860508537538828119467680187429816690342769005864872913754682855846").unwrap();
+    /// let _mul_uint = 248_u8;
+    /// // It will panic!
+    /// // let res = _a_biguint.modular_mul_uint(_mul_uint, &_m);
     /// ```
     /// 
     /// # Big-endian issue
@@ -8298,6 +8350,18 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// assert_eq!(a_biguint.is_underflow(), false);
     /// assert_eq!(a_biguint.is_divided_by_zero(), false);
     /// assert_eq!(a_biguint.is_infinity(), false);
+    /// 
+    /// let _m = UU32::zero();
+    /// let _a_biguint = U256::from_string("318581864860508537538828119467680187429816690342769005864872913754682855846").unwrap();
+    /// let _mul_uint = 248_u8;
+    /// // It will panic!
+    /// // _a_biguint.modular_mul_assign_uint(_mul_uint, &_m);
+    /// 
+    /// let _m = UU32::one();
+    /// let _a_biguint = U256::from_string("318581864860508537538828119467680187429816690342769005864872913754682855846").unwrap();
+    /// let _mul_uint = 248_u8;
+    /// // It will panic!
+    /// // a_biguint.modular_mul_assign_uint(_mul_uint, &_m);
     /// ```
     /// 
     /// # Big-endian issue
@@ -9329,6 +9393,12 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// // let quotient = _dividend.modular_div_uint(_divisor, &_modulo);
     /// 
     /// let _dividend = U256::from_str("123456789015758942546236989636279846864825945392").unwrap();
+    /// let _divisor = 128_u8;
+    /// let _modulo = U256::one();
+    /// // It will panic!
+    /// // let quotient = _dividend.modular_div_uint(_divisor, &_modulo);
+    /// 
+    /// let _dividend = U256::from_str("123456789015758942546236989636279846864825945392").unwrap();
     /// let _divisor = 0_u8;
     /// let _modulo = U256::from_uint(100_u8);
     /// // It will panic!
@@ -9409,6 +9479,12 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// let _a_biguint = U256::from_str("123456789015758942546236989636279846864825945392").unwrap();
     /// let _divisor = 128_u8;
     /// let _modulo = U256::zero();
+    /// // It will panic!
+    /// // _a_biguint.modular_div_assign_uint(_divisor, &_modulo);
+    /// 
+    /// let _a_biguint = U256::from_str("123456789015758942546236989636279846864825945392").unwrap();
+    /// let _divisor = 128_u8;
+    /// let _modulo = U256::one();
     /// // It will panic!
     /// // _a_biguint.modular_div_assign_uint(_divisor, &_modulo);
     /// 
@@ -10211,11 +10287,11 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// [modular_rem()](struct@BigUInt#method.modular_rem)
     /// is proper rather than this method `modular_rem_uint()`.
     /// 
-    /// # Examples
+    /// # Example 1
     /// ```
     /// use std::str::FromStr;
     /// use cryptocol::define_utypes_with;
-    /// define_utypes_with!(u8);
+    /// define_utypes_with!(u16);
     /// 
     /// let dividend = U256::from_str("123456789015758942546236989636279846864825945392").unwrap();
     /// let divisor = 128_u8;
@@ -10223,10 +10299,30 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// let remainder = dividend.modular_rem_uint(divisor, &modulo);
     /// println!("{} % {} = {} (mod {})", dividend, divisor, remainder, modulo);
     /// assert_eq!(remainder.to_string(), "8");
+    /// ```
+    /// 
+    /// # Example 2
+    /// ```
+    /// use std::str::FromStr;
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u16);
+    /// 
+    /// let dividend = U256::zero();
+    /// let divisor = 128_u8;
+    /// let modulo = U256::from_uint(100_u8);
+    /// let remainder = dividend.modular_rem_uint(divisor, &modulo);
+    /// println!("{} % {} = {} (mod {})", dividend, divisor, remainder, modulo);
+    /// assert_eq!(remainder.to_string(), "0");
     /// 
     /// let _dividend = U256::from_str("123456789015758942546236989636279846864825945392").unwrap();
     /// let _divisor = 128_u8;
     /// let _modulo = U256::zero();
+    /// // It will panic!
+    /// // let quotient = _dividend.modular_rem_uint(_divisor, &_modulo);
+    /// 
+    /// let _dividend = U256::from_str("123456789015758942546236989636279846864825945392").unwrap();
+    /// let _divisor = 128_u8;
+    /// let _modulo = U256::one();
     /// // It will panic!
     /// // let quotient = _dividend.modular_rem_uint(_divisor, &_modulo);
     /// 
@@ -10296,22 +10392,59 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// ```
     /// use std::str::FromStr;
     /// use cryptocol::define_utypes_with;
-    /// define_utypes_with!(u16);
+    /// define_utypes_with!(u32);
     /// 
     /// let mut a_biguint = UU32::from_str("123456789015758942546236989636279846864825945392").unwrap();
     /// let divisor = 128_u8;
     /// let modulo = UU32::from_uint(100_u8);
     /// println!("Originally,\na_biguint = {}", a_biguint);
+    /// assert_eq!(a_biguint.is_overflow(), false);
+    /// assert_eq!(a_biguint.is_underflow(), false);
+    /// assert_eq!(a_biguint.is_infinity(), false);
+    /// assert_eq!(a_biguint.is_divided_by_zero(), false);
+    /// 
     /// a_biguint.modular_rem_assign_uint(divisor, &modulo);
     /// println!("After a_biguint.modular_rem_assign_uint({}),\na_biguint = {}", divisor, a_biguint);
     /// assert_eq!(a_biguint.to_string(), "8");
     /// assert_eq!(a_biguint.is_overflow(), false);
+    /// assert_eq!(a_biguint.is_underflow(), false);
+    /// assert_eq!(a_biguint.is_infinity(), false);
+    /// assert_eq!(a_biguint.is_divided_by_zero(), false);
+    /// ```
+    /// 
+    /// # Example 2
+    /// ```
+    /// use std::str::FromStr;
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u32);
+    /// 
+    /// let mut a_biguint = UU32::zero();
+    /// let divisor = 128_u8;
+    /// let modulo = UU32::from_uint(100_u8);
+    /// println!("Originally,\na_biguint = {}", a_biguint);
+    /// assert_eq!(a_biguint.is_overflow(), false);
+    /// assert_eq!(a_biguint.is_underflow(), false);
+    /// assert_eq!(a_biguint.is_infinity(), false);
+    /// assert_eq!(a_biguint.is_divided_by_zero(), false);
+    /// 
+    /// a_biguint.modular_rem_assign_uint(divisor, &modulo);
+    /// println!("After a_biguint.modular_rem_assign_uint({}),\na_biguint = {}", divisor, a_biguint);
+    /// assert_eq!(a_biguint.to_string(), "0");
+    /// assert_eq!(a_biguint.is_overflow(), false);
+    /// assert_eq!(a_biguint.is_underflow(), false);
     /// assert_eq!(a_biguint.is_infinity(), false);
     /// assert_eq!(a_biguint.is_divided_by_zero(), false);
     /// 
     /// let _a_biguint = U256::from_str("123456789015758942546236989636279846864825945392").unwrap();
     /// let _divisor = 128_u8;
     /// let _modulo = U256::zero();
+    /// println!("Originally,\n_a_biguint = {}", _a_biguint);
+    /// // It will panic!
+    /// // _a_biguint.modular_rem_assign_uint(_divisor, &_modulo);
+    /// 
+    /// let _a_biguint = U256::from_str("123456789015758942546236989636279846864825945392").unwrap();
+    /// let _divisor = 128_u8;
+    /// let _modulo = U256::one();
     /// println!("Originally,\n_a_biguint = {}", _a_biguint);
     /// // It will panic!
     /// // _a_biguint.modular_rem_assign_uint(_divisor, &_modulo);
