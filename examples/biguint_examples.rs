@@ -3558,7 +3558,6 @@ fn biguint_modular_mul_uint()
     println!("---------------------------");
 }
 
-//-================
 fn biguint_modular_mul_assign_uint()
 {
     println!("biguint_modular_mul_assign_uint");
@@ -3622,19 +3621,32 @@ fn biguint_divide_fully_uint()
     println!("biguint_divide_fully_uint");
     use std::str::FromStr;
     use cryptocol::define_utypes_with;
-    define_utypes_with!(u16);
+    define_utypes_with!(u32);
 
     let dividend = UU32::from_str("123456789015758942546236989636279846864825945392").unwrap();
-    let divisor = 87_u8;
+    let divisor = 87_u32;
     let (quotient, remainder) = dividend.divide_fully_uint(divisor);
     println!("{} / {} => quotient = {} , remainder = {}", dividend, divisor, quotient, remainder);
     assert_eq!(quotient.to_string(), "1419043551905275201680884938348044216837079832");
     assert_eq!(remainder.to_string(), "8");
     assert_eq!(quotient.is_overflow(), false);
+    assert_eq!(quotient.is_underflow(), false);
     assert_eq!(quotient.is_infinity(), false);
     assert_eq!(quotient.is_divided_by_zero(), false);
 
-    let _divisor = 0_u8;
+    let dividend = UU32::zero();
+    let divisor = 87_u32;
+    let (quotient, remainder) = dividend.divide_fully_uint(divisor);
+    println!("{} / {} => quotient = {} , remainder = {}", dividend, divisor, quotient, remainder);
+    assert_eq!(quotient.to_string(), "0");
+    assert_eq!(remainder.to_string(), "0");
+    assert_eq!(quotient.is_overflow(), false);
+    assert_eq!(quotient.is_underflow(), false);
+    assert_eq!(quotient.is_infinity(), false);
+    assert_eq!(quotient.is_divided_by_zero(), false);
+
+    let _dividend = UU32::from_str("123456789015758942546236989636279846864825945392").unwrap();
+    let _divisor = 0_u32;
     // It will panic!
     // let (quotient, remainder) = dividend.divide_fully_uint(_divisor);
     println!("---------------------------");
@@ -3653,6 +3665,17 @@ fn biguint_wrapping_div_uint()
     println!("{} / {} = {}", dividend, divisor, quotient);
     assert_eq!(quotient.to_string(), "1419043551905275201680884938348044216837079832");
     assert_eq!(quotient.is_overflow(), false);
+    assert_eq!(quotient.is_underflow(), false);
+    assert_eq!(quotient.is_infinity(), false);
+    assert_eq!(quotient.is_divided_by_zero(), false);
+
+    let dividend = U256::zero();
+    let divisor = 87_u8;
+    let quotient = dividend.wrapping_div_uint(divisor);
+    println!("{} / {} = {}", dividend, divisor, quotient);
+    assert_eq!(quotient.to_string(), "0");
+    assert_eq!(quotient.is_overflow(), false);
+    assert_eq!(quotient.is_underflow(), false);
     assert_eq!(quotient.is_infinity(), false);
     assert_eq!(quotient.is_divided_by_zero(), false);
 
@@ -3672,9 +3695,32 @@ fn biguint_wrapping_div_assign_uint()
     let mut a_biguint = UU32::from_str("123456789015758942546236989636279846864825945392").unwrap();
     let divisor = 87_u8;
     println!("Originally,\na_biguint = {}", a_biguint);
+    assert_eq!(a_biguint.is_overflow(), false);
+    assert_eq!(a_biguint.is_underflow(), false);
+    assert_eq!(a_biguint.is_infinity(), false);
+    assert_eq!(a_biguint.is_divided_by_zero(), false);
+
     a_biguint.wrapping_div_assign_uint(divisor);
     println!("After a_biguint.wrapping_div_assign_uint(&divisor),\na_biguint = {}", a_biguint);
+    assert_eq!(a_biguint.to_string(), "1419043551905275201680884938348044216837079832");
     assert_eq!(a_biguint.is_overflow(), false);
+    assert_eq!(a_biguint.is_underflow(), false);
+    assert_eq!(a_biguint.is_infinity(), false);
+    assert_eq!(a_biguint.is_divided_by_zero(), false);
+
+    let mut a_biguint = UU32::zero();
+    let divisor = 87_u8;
+    println!("Originally,\na_biguint = {}", a_biguint);
+    assert_eq!(a_biguint.is_overflow(), false);
+    assert_eq!(a_biguint.is_underflow(), false);
+    assert_eq!(a_biguint.is_infinity(), false);
+    assert_eq!(a_biguint.is_divided_by_zero(), false);
+
+    a_biguint.wrapping_div_assign_uint(divisor);
+    println!("After a_biguint.wrapping_div_assign_uint(&divisor),\na_biguint = {}", a_biguint);
+    assert_eq!(a_biguint.to_string(), "0");
+    assert_eq!(a_biguint.is_overflow(), false);
+    assert_eq!(a_biguint.is_underflow(), false);
     assert_eq!(a_biguint.is_infinity(), false);
     assert_eq!(a_biguint.is_divided_by_zero(), false);
 
@@ -3700,6 +3746,18 @@ fn biguint_overflowing_div_uint()
     assert_eq!(quotient.to_string(), "1419043551905275201680884938348044216837079832");
     assert_eq!(overflow, false);
     assert_eq!(quotient.is_overflow(), false);
+    assert_eq!(quotient.is_underflow(), false);
+    assert_eq!(quotient.is_infinity(), false);
+    assert_eq!(quotient.is_divided_by_zero(), false);
+
+    let dividend = U256::zero();
+    let divisor = 87_u8;
+    let (quotient, overflow) = dividend.overflowing_div_uint(divisor);
+    println!("{} / {} = {}", dividend, divisor, quotient);
+    assert_eq!(quotient.to_string(), "0");
+    assert_eq!(overflow, false);
+    assert_eq!(quotient.is_overflow(), false);
+    assert_eq!(quotient.is_underflow(), false);
     assert_eq!(quotient.is_infinity(), false);
     assert_eq!(quotient.is_divided_by_zero(), false);
 
@@ -3708,6 +3766,7 @@ fn biguint_overflowing_div_uint()
     // let (quotient, overflow) = dividend.overflowing_div_uint(_divisor);
     println!("---------------------------");
 }
+
 fn biguint_overflowing_div_assign_uint()
 {
     println!("biguint_overflowing_div_assign_uint");
@@ -3718,13 +3777,36 @@ fn biguint_overflowing_div_assign_uint()
     let mut a_biguint = UU32::from_str("123456789015758942546236989636279846864825945392").unwrap();
     let divisor = 87_u16;
     println!("Originally,\na_biguint = {}", a_biguint);
+    assert_eq!(a_biguint.is_overflow(), false);
+    assert_eq!(a_biguint.is_underflow(), false);
+    assert_eq!(a_biguint.is_infinity(), false);
+    assert_eq!(a_biguint.is_divided_by_zero(), false);
+    
     let overflow = a_biguint.overflowing_div_assign_uint(divisor);
     println!("After a_biguint.overflowing_div_assign_uint({}),\na_biguint = {}", divisor, a_biguint);
     assert_eq!(a_biguint.to_string(), "1419043551905275201680884938348044216837079832");
     assert_eq!(overflow, false);
     assert_eq!(a_biguint.is_overflow(), false);
+    assert_eq!(a_biguint.is_underflow(), false);
     assert_eq!(a_biguint.is_infinity(), false);
     assert_eq!(a_biguint.is_divided_by_zero(), false);
+
+    let mut a_biguint = UU32::zero();
+    let divisor = 87_u16;
+    println!("Originally,\na_biguint = {}", a_biguint);
+    assert_eq!(a_biguint.is_overflow(), false);
+    assert_eq!(a_biguint.is_underflow(), false);
+    assert_eq!(a_biguint.is_infinity(), false);
+    assert_eq!(a_biguint.is_divided_by_zero(), false);
+    
+    let overflow = a_biguint.overflowing_div_assign_uint(divisor);
+    println!("After a_biguint.overflowing_div_assign_uint({}),\na_biguint = {}", divisor, a_biguint);
+    assert_eq!(a_biguint.to_string(), "0");
+    assert_eq!(overflow, false);
+    assert_eq!(a_biguint.is_overflow(), false);
+    assert_eq!(a_biguint.is_underflow(), false);
+    assert_eq!(a_biguint.is_infinity(), false);
+    assert_eq!(a_biguint.is_divided_by_zero(), false);    let mut _a_biguint = UU32::from_str("123456789015758942546236989636279846864825945392").unwrap();
 
     let mut _a_biguint = UU32::from_str("123456789015758942546236989636279846864825945392").unwrap();
     let _divisor = 0_u16;
@@ -3743,15 +3825,33 @@ fn biguint_checked_div_uint()
     let dividend = U256::from_str("123456789015758942546236989636279846864825945392").unwrap();
     let divisor = 87_u8;
     let quotient = dividend.checked_div_uint(divisor);
-    match quotient.clone()
+    match quotient
     {
         Some(q) =>
             {
                 println!("{} / {} = {}", dividend, divisor, q);
                 assert_eq!(q.to_string(), "1419043551905275201680884938348044216837079832");
-                assert_eq!(quotient.clone().unwrap().is_overflow(), false);
-                assert_eq!(quotient.clone().unwrap().is_infinity(), false);
-                assert_eq!(quotient.clone().unwrap().is_divided_by_zero(), false);
+                assert_eq!(q.is_overflow(), false);
+                assert_eq!(q.is_underflow(), false);
+                assert_eq!(q.is_infinity(), false);
+                assert_eq!(q.is_divided_by_zero(), false);
+            },
+        None => { println!("Divided By Zero"); },
+    }
+
+    let dividend = U256::zero();
+    let divisor = 87_u8;
+    let quotient = dividend.checked_div_uint(divisor);
+    match quotient
+    {
+        Some(q) =>
+            {
+                println!("{} / {} = {}", dividend, divisor, q);
+                assert_eq!(q.to_string(), "0");
+                assert_eq!(q.is_overflow(), false);
+                assert_eq!(q.is_underflow(), false);
+                assert_eq!(q.is_infinity(), false);
+                assert_eq!(q.is_divided_by_zero(), false);
             },
         None => { println!("Divided By Zero"); },
     }
@@ -3784,6 +3884,17 @@ fn biguint_unchecked_div_uint()
     println!("{} / {} = {}", dividend, divisor, quotient);
     assert_eq!(quotient.to_string(), "1419043551905275201680884938348044216837079832");
     assert_eq!(quotient.is_overflow(), false);
+    assert_eq!(quotient.is_underflow(), false);
+    assert_eq!(quotient.is_infinity(), false);
+    assert_eq!(quotient.is_divided_by_zero(), false);
+
+    let dividend = UU32::zero();
+    let divisor = 87_u8;
+    let quotient = dividend.unchecked_div_uint(divisor);
+    println!("{} / {} = {}", dividend, divisor, quotient);
+    assert_eq!(quotient.to_string(), "0");
+    assert_eq!(quotient.is_overflow(), false);
+    assert_eq!(quotient.is_underflow(), false);
     assert_eq!(quotient.is_infinity(), false);
     assert_eq!(quotient.is_divided_by_zero(), false);
 
@@ -3798,7 +3909,7 @@ fn biguint_saturating_div_uint()
     println!("biguint_saturating_div_uint");
     use std::str::FromStr;
     use cryptocol::define_utypes_with;
-    define_utypes_with!(u32);
+    define_utypes_with!(u128);
 
     let dividend = U256::from_str("123456789015758942546236989636279846864825945392").unwrap();
     let divisor = 87_u8;
@@ -3806,6 +3917,17 @@ fn biguint_saturating_div_uint()
     println!("{} / {} = {}", dividend, divisor, quotient);
     assert_eq!(quotient.to_string(), "1419043551905275201680884938348044216837079832");
     assert_eq!(quotient.is_overflow(), false);
+    assert_eq!(quotient.is_underflow(), false);
+    assert_eq!(quotient.is_infinity(), false);
+    assert_eq!(quotient.is_divided_by_zero(), false);
+
+    let dividend = UU32::zero();
+    let divisor = 87_u8;
+    let quotient = dividend.saturating_div_uint(divisor);
+    println!("{} / {} = {}", dividend, divisor, quotient);
+    assert_eq!(quotient.to_string(), "0");
+    assert_eq!(quotient.is_overflow(), false);
+    assert_eq!(quotient.is_underflow(), false);
     assert_eq!(quotient.is_infinity(), false);
     assert_eq!(quotient.is_divided_by_zero(), false);
 
@@ -3820,20 +3942,42 @@ fn biguint_saturating_div_assign_uint()
     println!("biguint_saturating_div_assign_uint");
     use std::str::FromStr;
     use cryptocol::define_utypes_with;
-    define_utypes_with!(u128);
+    define_utypes_with!(u8);
 
     let mut a_biguint = UU32::from_str("123456789015758942546236989636279846864825945392").unwrap();
-    let divisor = 87_u16;
+    let divisor = 87_u8;
     println!("Originally,\na_biguint = {}", a_biguint);
+    assert_eq!(a_biguint.is_overflow(), false);
+    assert_eq!(a_biguint.is_underflow(), false);
+    assert_eq!(a_biguint.is_infinity(), false);
+    assert_eq!(a_biguint.is_divided_by_zero(), false);
+
     a_biguint.saturating_div_assign_uint(divisor);
     println!("After a_biguint.saturating_div_assign_uint({}),\na_biguint = {}", divisor, a_biguint);
     assert_eq!(a_biguint.to_string(), "1419043551905275201680884938348044216837079832");
     assert_eq!(a_biguint.is_overflow(), false);
+    assert_eq!(a_biguint.is_underflow(), false);
+    assert_eq!(a_biguint.is_infinity(), false);
+    assert_eq!(a_biguint.is_divided_by_zero(), false);
+
+    let mut a_biguint = UU32::zero();
+    let divisor = 87_u8;
+    println!("Originally,\na_biguint = {}", a_biguint);
+    assert_eq!(a_biguint.is_overflow(), false);
+    assert_eq!(a_biguint.is_underflow(), false);
+    assert_eq!(a_biguint.is_infinity(), false);
+    assert_eq!(a_biguint.is_divided_by_zero(), false);
+
+    a_biguint.saturating_div_assign_uint(divisor);
+    println!("After a_biguint.saturating_div_assign_uint({}),\na_biguint = {}", divisor, a_biguint);
+    assert_eq!(a_biguint.to_string(), "0");
+    assert_eq!(a_biguint.is_overflow(), false);
+    assert_eq!(a_biguint.is_underflow(), false);
     assert_eq!(a_biguint.is_infinity(), false);
     assert_eq!(a_biguint.is_divided_by_zero(), false);
 
     let mut _a_biguint = UU32::from_str("123456789015758942546236989636279846864825945392").unwrap();
-    let _divisor = 0_u16;
+    let _divisor = 0_u8;
     println!("Originally,\na_biguint = {}", _a_biguint);
     // It will panic!
     // _a_biguint.saturating_div_assign_uint(_divisor);
@@ -3845,7 +3989,7 @@ fn biguint_modular_div_uint()
     println!("biguint_modular_div_uint");
     use std::str::FromStr;
     use cryptocol::define_utypes_with;
-    define_utypes_with!(u8);
+    define_utypes_with!(u16);
     
     let dividend = U256::from_str("123456789015758942546236989636279846864825945392").unwrap();
     let divisor = 128_u8;
@@ -3882,7 +4026,7 @@ fn biguint_modular_div_assign_uint()
     println!("biguint_modular_div_assign_uint");
     use std::str::FromStr;
     use cryptocol::define_utypes_with;
-    define_utypes_with!(u16);
+    define_utypes_with!(u32);
     
     let mut a_biguint = UU32::from_str("123456789015758942546236989636279846864825945392").unwrap();
     let divisor = 128_u8;
@@ -3934,13 +4078,19 @@ fn biguint_wrapping_rem_uint()
     println!("biguint_wrapping_rem_uint");
     use std::str::FromStr;
     use cryptocol::define_utypes_with;
-    define_utypes_with!(u32);
+    define_utypes_with!(u64);
 
     let dividend = UU32::from_str("123456789015758942546236989636279846864825945392").unwrap();
     let divisor = 87_u8;
     let remainder = dividend.wrapping_rem_uint(divisor);
     println!("{} % {} = {}", dividend, divisor, remainder);
     assert_eq!(remainder.to_string(), "8");
+
+    let dividend = UU32::zero();
+    let divisor = 87_u8;
+    let remainder = dividend.wrapping_rem_uint(divisor);
+    println!("{} % {} = {}", dividend, divisor, remainder);
+    assert_eq!(remainder.to_string(), "0");
 
     let _dividend = UU32::from_str("123456789015758942546236989636279846864825945392").unwrap();
     let _divisor = 0_u8;
@@ -3954,15 +4104,37 @@ fn biguint_wrapping_rem_assign_uint()
     println!("biguint_wrapping_rem_assign_uint");
     use std::str::FromStr;
     use cryptocol::define_utypes_with;
-    define_utypes_with!(u64);
+    define_utypes_with!(u128);
 
     let mut a_biguint = U256::from_str("123456789015758942546236989636279846864825945392").unwrap();
     let divisor = 87_u8;
     println!("Originally,\na_biguint = {}", a_biguint);
+    assert_eq!(a_biguint.is_overflow(), false);
+    assert_eq!(a_biguint.is_underflow(), false);
+    assert_eq!(a_biguint.is_infinity(), false);
+    assert_eq!(a_biguint.is_divided_by_zero(), false);
+
     a_biguint.wrapping_rem_assign_uint(divisor);
     println!("After a_biguint.wrapping_rem_assign_uint({}),\na_biguint = {}", divisor, a_biguint);
     assert_eq!(a_biguint.to_string(), "8");
     assert_eq!(a_biguint.is_overflow(), false);
+    assert_eq!(a_biguint.is_underflow(), false);
+    assert_eq!(a_biguint.is_infinity(), false);
+    assert_eq!(a_biguint.is_divided_by_zero(), false);
+
+    let mut a_biguint = U256::zero();
+    let divisor = 87_u8;
+    println!("Originally,\na_biguint = {}", a_biguint);
+    a_biguint.wrapping_rem_assign_uint(divisor);
+    assert_eq!(a_biguint.is_overflow(), false);
+    assert_eq!(a_biguint.is_underflow(), false);
+    assert_eq!(a_biguint.is_infinity(), false);
+    assert_eq!(a_biguint.is_divided_by_zero(), false);
+
+    println!("After a_biguint.wrapping_rem_assign_uint({}),\na_biguint = {}", divisor, a_biguint);
+    assert_eq!(a_biguint.to_string(), "0");
+    assert_eq!(a_biguint.is_overflow(), false);
+    assert_eq!(a_biguint.is_underflow(), false);
     assert_eq!(a_biguint.is_infinity(), false);
     assert_eq!(a_biguint.is_divided_by_zero(), false);
 
@@ -3979,13 +4151,20 @@ fn biguint_overflowing_rem_uint()
     println!("biguint_overflowing_rem_uint");
     use std::str::FromStr;
     use cryptocol::define_utypes_with;
-    define_utypes_with!(u128);
+    define_utypes_with!(u8);
 
     let dividend = UU32::from_str("123456789015758942546236989636279846864825945392").unwrap();
     let divisor = 87_u8;
     let (remainder, overflow) = dividend.overflowing_rem_uint(divisor);
     println!("{} % {} = {}", dividend, divisor, remainder);
     assert_eq!(remainder, 8);
+    assert_eq!(overflow, false);
+
+    let dividend = UU32::zero();
+    let divisor = 87_u8;
+    let (remainder, overflow) = dividend.overflowing_rem_uint(divisor);
+    println!("{} % {} = {}", dividend, divisor, remainder);
+    assert_eq!(remainder, 0);
     assert_eq!(overflow, false);
 
     let _dividend = UU32::from_str("123456789015758942546236989636279846864825945392").unwrap();
@@ -3995,21 +4174,45 @@ fn biguint_overflowing_rem_uint()
     println!("---------------------------");
 }
 
+//-================
 fn biguint_overflowing_rem_assign_uint()
 {
     println!("biguint_overflowing_rem_assign_uint");
     use std::str::FromStr;
     use cryptocol::define_utypes_with;
-    define_utypes_with!(u8);
+    define_utypes_with!(u16);
 
     let mut a_biguint = U256::from_str("123456789015758942546236989636279846864825945392").unwrap();
     let divisor = 87_u16;
     println!("Originally,\na_biguint = {}", a_biguint);
+    assert_eq!(a_biguint.is_overflow(), false);
+    assert_eq!(a_biguint.is_underflow(), false);
+    assert_eq!(a_biguint.is_infinity(), false);
+    assert_eq!(a_biguint.is_divided_by_zero(), false);
+
     let overflow = a_biguint.overflowing_rem_assign_uint(divisor);
     println!("After a_biguint.overflowing_rem_assign_uint({}),\na_biguint = {}", divisor, a_biguint);
     assert_eq!(a_biguint.to_string(), "8");
     assert_eq!(overflow, false);
     assert_eq!(a_biguint.is_overflow(), false);
+    assert_eq!(a_biguint.is_underflow(), false);
+    assert_eq!(a_biguint.is_infinity(), false);
+    assert_eq!(a_biguint.is_divided_by_zero(), false);
+
+    let mut a_biguint = U256::zero();
+    let divisor = 87_u16;
+    println!("Originally,\na_biguint = {}", a_biguint);
+    assert_eq!(a_biguint.is_overflow(), false);
+    assert_eq!(a_biguint.is_underflow(), false);
+    assert_eq!(a_biguint.is_infinity(), false);
+    assert_eq!(a_biguint.is_divided_by_zero(), false);
+
+    let overflow = a_biguint.overflowing_rem_assign_uint(divisor);
+    println!("After a_biguint.overflowing_rem_assign_uint({}),\na_biguint = {}", divisor, a_biguint);
+    assert_eq!(a_biguint.to_string(), "0");
+    assert_eq!(overflow, false);
+    assert_eq!(a_biguint.is_overflow(), false);
+    assert_eq!(a_biguint.is_underflow(), false);
     assert_eq!(a_biguint.is_infinity(), false);
     assert_eq!(a_biguint.is_divided_by_zero(), false);
 
@@ -4026,7 +4229,7 @@ fn biguint_checked_rem_uint()
     println!("biguint_checked_rem_uint");
     use std::str::FromStr;
     use cryptocol::define_utypes_with;
-    define_utypes_with!(u16);
+    define_utypes_with!(u32);
 
     let dividend = UU32::from_str("123456789015758942546236989636279846864825945392").unwrap();
     let divisor = 87_u8;
@@ -4037,6 +4240,19 @@ fn biguint_checked_rem_uint()
             {
                 println!("{} % {} = {}", dividend, divisor, r);
                 assert_eq!(r.to_string(), "8");
+            },
+        None => { println!("Divided By Zero"); },
+    }
+
+    let dividend = UU32::zero();
+    let divisor = 87_u8;
+    let remainder = dividend.checked_rem_uint(divisor);
+    match remainder
+    {
+        Some(r) =>
+            {
+                println!("{} % {} = {}", dividend, divisor, r);
+                assert_eq!(r.to_string(), "0");
             },
         None => { println!("Divided By Zero"); },
     }
