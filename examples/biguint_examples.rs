@@ -4574,7 +4574,7 @@ fn biguint_next_multiple_of_uint()
     println!("biguint_next_multiple_of_uint");
     use std::str::FromStr;
     use cryptocol::define_utypes_with;
-    define_utypes_with!(u32);
+    define_utypes_with!(u64);
 
     let a_biguint = U256::from_str("123456789012345678901234567890123456789").unwrap();
     let num = 586478_u32;
@@ -4582,15 +4582,21 @@ fn biguint_next_multiple_of_uint()
     println!("The next multiple of {} is {}", a_biguint, multiple);
     assert_eq!(multiple.to_string(), "123456789012345678901234567890123697594");
     assert_eq!(multiple.is_overflow(), false);
+    assert_eq!(multiple.is_underflow(), false);
+    assert_eq!(multiple.is_infinity(), false);
+    assert_eq!(multiple.is_divided_by_zero(), false);
 
     let a_biguint = U256::from_str_radix("FFFFFFFF_FFFFFFFF_FFFFFFFF_FFFFFFFF_FFFFFFFF_FFFFFFFF_FFFFFFFF_FFFFFFFF", 16).unwrap();
     let multiple = a_biguint.next_multiple_of_uint(num);
     println!("The next multiple of {} is {}", a_biguint, multiple);
     assert_eq!(multiple.to_string(), "448670");
     assert_eq!(multiple.is_overflow(), true);
+    assert_eq!(multiple.is_underflow(), false);
+    assert_eq!(multiple.is_infinity(), false);
+    assert_eq!(multiple.is_divided_by_zero(), false);
 
     // It will panic.
-    // multiple = a_biguint.next_multiple_of_uint(0_u32);
+    // multiple = a_biguint.next_multiple_of_uint(0_u8);
     println!("---------------------------");
 }
 
@@ -4609,6 +4615,9 @@ fn biguint_next_multiple_of_assign_uint()
     println!("After a_biguint.next_multiple_of_assign_uint({}),\na_biguint = {}", num, a_biguint);
     assert_eq!(a_biguint.to_string(), "123456789012345678901234567890123697594");
     assert_eq!(a_biguint.is_overflow(), false);
+    assert_eq!(a_biguint.is_underflow(), false);
+    assert_eq!(a_biguint.is_infinity(), false);
+    assert_eq!(a_biguint.is_divided_by_zero(), false);
 
     let mut a_biguint = UU32::from_str_radix("FFFFFFFF_FFFFFFFF_FFFFFFFF_FFFFFFFF_FFFFFFFF_FFFFFFFF_FFFFFFFF_FFFFFFFF", 16).unwrap();
     println!("Originally,\na_biguint = {}", a_biguint);
@@ -4616,6 +4625,9 @@ fn biguint_next_multiple_of_assign_uint()
     println!("After a_biguint.next_multiple_of_assign_uint({}),\na_biguint = {}", num, a_biguint);
     assert_eq!(a_biguint.to_string(), "448670");
     assert_eq!(a_biguint.is_overflow(), true);
+    assert_eq!(a_biguint.is_underflow(), false);
+    assert_eq!(a_biguint.is_infinity(), false);
+    assert_eq!(a_biguint.is_divided_by_zero(), false);
 
     // It will panic.
     // a_biguint.next_multiple_of_assign_uint(0_u32);

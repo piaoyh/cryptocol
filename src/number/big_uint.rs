@@ -10517,6 +10517,9 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// println!("The next multiple of {} is {}", a_biguint, multiple);
     /// assert_eq!(multiple.to_string(), "123456789012345678901234567890123697594");
     /// assert_eq!(multiple.is_overflow(), false);
+    /// assert_eq!(multiple.is_underflow(), false);
+    /// assert_eq!(multiple.is_infinity(), false);
+    /// assert_eq!(multiple.is_divided_by_zero(), false);
     /// ```
     /// 
     /// # Example 2
@@ -10531,6 +10534,9 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// println!("The next multiple of {} is {}", a_biguint, multiple);
     /// assert_eq!(multiple.to_string(), "448670");
     /// assert_eq!(multiple.is_overflow(), true);
+    /// assert_eq!(multiple.is_underflow(), false);
+    /// assert_eq!(multiple.is_infinity(), false);
+    /// assert_eq!(multiple.is_divided_by_zero(), false);
     /// 
     /// let _num = 0_u32;
     /// // It will panic.
@@ -10598,6 +10604,9 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// println!("After a_biguint.next_multiple_of_assign_uint({}),\na_biguint = {}", num, a_biguint);
     /// assert_eq!(a_biguint.to_string(), "123456789012345678901234567890123697594");
     /// assert_eq!(a_biguint.is_overflow(), false);
+    /// assert_eq!(a_biguint.is_underflow(), false);
+    /// assert_eq!(a_biguint.is_infinity(), false);
+    /// assert_eq!(a_biguint.is_divided_by_zero(), false);
     /// ```
     /// 
     /// # Example 2
@@ -10614,6 +10623,9 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// println!("After a_biguint.next_multiple_of_assign_uint({}),\na_biguint = {}", num, a_biguint);
     /// assert_eq!(a_biguint.to_string(), "448670");
     /// assert_eq!(a_biguint.is_overflow(), true);
+    /// assert_eq!(a_biguint.is_underflow(), false);
+    /// assert_eq!(a_biguint.is_infinity(), false);
+    /// assert_eq!(a_biguint.is_divided_by_zero(), false);
     /// 
     /// // It will panic.
     /// // a_biguint.next_multiple_of_assign_uint(0_u32);
