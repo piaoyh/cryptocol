@@ -12345,9 +12345,9 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// less than the `exp`-th root of `self` is returned.
     ///
     /// # Panics
-    /// - If `exp` is `0`, it will panic because of divided-by-zero error.
     /// - If `size_of::<T>() * N` <= `128`, this method may panic
     /// or its behavior may be undefined though it may not panic.
+    /// - If `exp` is `0`, it will panic.
     /// 
     /// # Features
     /// - The result of this method is never greater than `self` and so
@@ -12411,6 +12411,9 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
             + BitXor<Output=U> + BitXorAssign + Not<Output=U>
             + PartialEq + PartialOrd
     {
+        if exp.is_zero()
+            { panic!(); }
+
         let mut adder;
         let mut highest = ((Self::size_in_bits() as u128 - self.leading_zeros() as u128).wrapping_div(exp.into_u128())) as usize;
         let mut high;
