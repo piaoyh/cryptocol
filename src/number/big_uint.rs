@@ -12361,25 +12361,33 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// # Example 1
     /// ```
     /// use cryptocol::define_utypes_with;
-    /// define_utypes_with!(u16);
+    /// define_utypes_with!(u32);
     /// 
     /// let a_biguint = U256::from_uint(1000_u16);
     /// let exp = 3_u8;
     /// let res = a_biguint.iroot_uint(exp);
     /// println!("The third root of {} is {}.", a_biguint, res);
     /// assert_eq!(res.to_string(), "10");
+    /// assert_eq!(res.is_overflow(), false);
+    /// assert_eq!(res.is_underflow(), false);
+    /// assert_eq!(res.is_infinity(), false);
+    /// assert_eq!(res.is_divided_by_zero(), false);
     /// ```
     /// 
     /// # Example 2
     /// ```
     /// use cryptocol::define_utypes_with;
-    /// define_utypes_with!(u16);
+    /// define_utypes_with!(u32);
     /// 
     /// let a_biguint = U256::from_uint(1000_u16);
     /// let exp = 2_u8;
     /// let res = a_biguint.iroot_uint(exp);
     /// println!("The square root of {} is {}.", a_biguint, res);
     /// assert_eq!(res.to_string(), "31");
+    /// assert_eq!(res.is_overflow(), false);
+    /// assert_eq!(res.is_underflow(), false);
+    /// assert_eq!(res.is_infinity(), false);
+    /// assert_eq!(res.is_divided_by_zero(), false);
     /// ```
     /// 
     /// # Example 3
@@ -12392,9 +12400,15 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// let res = a_biguint.iroot_uint(exp);
     /// println!("The {}-th root of {} is {}.", exp, a_biguint, res);
     /// assert_eq!(res.to_string(), "0");
+    /// assert_eq!(res.is_overflow(), false);
+    /// assert_eq!(res.is_underflow(), false);
+    /// assert_eq!(res.is_infinity(), false);
+    /// assert_eq!(res.is_divided_by_zero(), false);
     /// 
+    /// let _a_biguint = U256::from_uint(1000_u16);
+    /// let _exp = 0_u8;
     /// // It will panic.
-    /// // let res = a_biguint.iroot_uint(0_u8);
+    /// // let res = _a_biguint.iroot_uint(_exp);
     /// ```
     /// 
     /// # Big-endian issue
@@ -12481,9 +12495,9 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// unsigned integer such as `u8`, `u16`, `u32`, `u64`, and `u128`.
     ///
     /// # Panics
-    /// - If `exp` is `0`, it will panic because of divided-by-zero error.
     /// - If `size_of::<T>() * N` <= `128`, this method may panic
     /// or its behavior may be undefined though it may not panic.
+    /// - If `exp` is `0`, it will panic.
     /// 
     /// # Features
     /// - `self` will be the `exp`-th root of `self` is returned if it is
@@ -12506,14 +12520,23 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// # Example 1
     /// ```
     /// use cryptocol::define_utypes_with;
-    /// define_utypes_with!(u32);
+    /// define_utypes_with!(u64);
     /// 
     /// let mut a_biguint = U256::from_uint(1000_u16);
     /// let exp = 3_u8;
     /// println!("Originally,\na_biguint = {}", a_biguint);
+    /// assert_eq!(a_biguint.is_overflow(), false);
+    /// assert_eq!(a_biguint.is_underflow(), false);
+    /// assert_eq!(a_biguint.is_infinity(), false);
+    /// assert_eq!(a_biguint.is_divided_by_zero(), false);
+    /// 
     /// a_biguint.iroot_assign_uint(exp);
     /// println!("After a_biguint.iroot_assign_uint({}),\na_biguint = {}.", exp, a_biguint);
     /// assert_eq!(a_biguint.to_string(), "10");
+    /// assert_eq!(a_biguint.is_overflow(), false);
+    /// assert_eq!(a_biguint.is_underflow(), false);
+    /// assert_eq!(a_biguint.is_infinity(), false);
+    /// assert_eq!(a_biguint.is_divided_by_zero(), false);
     /// ```
     /// 
     /// # Example 2
@@ -12524,9 +12547,18 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// let mut a_biguint = U256::from_uint(1000_u16);
     /// let exp = 2_u8;
     /// println!("Originally,\na_biguint = {}", a_biguint);
+    /// assert_eq!(a_biguint.is_overflow(), false);
+    /// assert_eq!(a_biguint.is_underflow(), false);
+    /// assert_eq!(a_biguint.is_infinity(), false);
+    /// assert_eq!(a_biguint.is_divided_by_zero(), false);
+    /// 
     /// a_biguint.iroot_assign_uint(exp);
     /// println!("After a_biguint.iroot_assign_uint({}),\na_biguint = {}.", exp, a_biguint);
     /// assert_eq!(a_biguint.to_string(), "31");
+    /// assert_eq!(a_biguint.is_overflow(), false);
+    /// assert_eq!(a_biguint.is_underflow(), false);
+    /// assert_eq!(a_biguint.is_infinity(), false);
+    /// assert_eq!(a_biguint.is_divided_by_zero(), false);
     /// ```
     /// 
     /// # Example 3
@@ -12537,13 +12569,23 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// let mut a_biguint = U256::zero();
     /// let exp = 6_u8;
     /// println!("Originally,\na_biguint = {}", a_biguint);
+    /// assert_eq!(a_biguint.is_overflow(), false);
+    /// assert_eq!(a_biguint.is_underflow(), false);
+    /// assert_eq!(a_biguint.is_infinity(), false);
+    /// assert_eq!(a_biguint.is_divided_by_zero(), false);
+    /// 
     /// a_biguint.iroot_assign_uint(exp);
     /// println!("After a_biguint.iroot_assign_uint({}),\na_biguint = {}.", exp, a_biguint);
     /// assert_eq!(a_biguint.to_string(), "0");
+    /// assert_eq!(a_biguint.is_overflow(), false);
+    /// assert_eq!(a_biguint.is_underflow(), false);
+    /// assert_eq!(a_biguint.is_infinity(), false);
+    /// assert_eq!(a_biguint.is_divided_by_zero(), false);
     /// 
-    /// let mut a_biguint = U256::from_uint(1000_u16);
+    /// let mut _a_biguint = U256::from_uint(1000_u16);
+    /// let _exp = 0_u8;
     /// // It will panic.
-    /// // a_biguint.iroot_assign_uint(0_u8);
+    /// // _a_biguint.iroot_assign_uint(_exp);
     /// ```
     /// 
     /// # Big-endian issue
@@ -12563,7 +12605,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
         let flags = self.get_all_flags();
         let root = self.iroot_uint(exp);
         self.set_number(root.get_number());
-        self.set_flag_bit(flags | root.get_all_flags());
+        self.set_flag_bit(flags);
     }
 
     // pub fn checked_iroot_uint<U>(&self, exp: U) -> Option<Self>
@@ -12601,7 +12643,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// # Example 1
     /// ```
     /// use cryptocol::define_utypes_with;
-    /// define_utypes_with!(u64);
+    /// define_utypes_with!(u128);
     /// 
     /// let a_biguint = U256::from_uint(1000_u16);
     /// let exp = 3_u8;
@@ -12611,6 +12653,10 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     ///     Some(r) => {
     ///             println!("The third root of {} is {}.", a_biguint, r);
     ///             assert_eq!(r.to_string(), "10");
+    ///             assert_eq!(r.is_overflow(), false);
+    ///             assert_eq!(r.is_underflow(), false);
+    ///             assert_eq!(r.is_infinity(), false);
+    ///             assert_eq!(r.is_divided_by_zero(), false);
     ///         },
     ///     None => { println!("Error"); }
     /// }
@@ -12619,7 +12665,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// # Example 2
     /// ```
     /// use cryptocol::define_utypes_with;
-    /// define_utypes_with!(u64);
+    /// define_utypes_with!(u128);
     /// 
     /// let a_biguint = U256::from_uint(1000_u16);
     /// let exp = 2_u8;
@@ -12629,6 +12675,10 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     ///     Some(r) => {
     ///             println!("The square root of {} is {}.", a_biguint, r);
     ///             assert_eq!(r.to_string(), "31");
+    ///             assert_eq!(r.is_overflow(), false);
+    ///             assert_eq!(r.is_underflow(), false);
+    ///             assert_eq!(r.is_infinity(), false);
+    ///             assert_eq!(r.is_divided_by_zero(), false);
     ///         },
     ///     None => { println!("Error"); }
     /// }
@@ -12637,7 +12687,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// # Example 3
     /// ```
     /// use cryptocol::define_utypes_with;
-    /// define_utypes_with!(u64);
+    /// define_utypes_with!(u128);
     /// 
     /// let a_biguint = U256::zero();
     /// let exp = 6_u8;
@@ -12647,6 +12697,10 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     ///     Some(r) => {
     ///             println!("The {}-th root of {} is {}.", exp, a_biguint, r);
     ///             assert_eq!(r.to_string(), "0");
+    ///             assert_eq!(r.is_overflow(), false);
+    ///             assert_eq!(r.is_underflow(), false);
+    ///             assert_eq!(r.is_infinity(), false);
+    ///             assert_eq!(r.is_divided_by_zero(), false);
     ///         },
     ///     None => { println!("Error"); },
     /// }
@@ -12655,7 +12709,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// # Example 4
     /// ```
     /// use cryptocol::define_utypes_with;
-    /// define_utypes_with!(u64);
+    /// define_utypes_with!(u128);
     /// 
     /// let a_biguint = U256::from_uint(1000_u16);
     /// let exp = 0_u8;
@@ -12705,9 +12759,9 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// the `exp`-th root of `self` will be returned.
     ///
     /// # Panics
-    /// - If `exp` is `0`, it will panic.
     /// - If `size_of::<T>() * N` <= `128`, this method may panic
     /// or its behavior may be undefined though it may not panic.
+    /// - If `exp` is `0`, it will panic.
     /// 
     /// # Features
     /// - The result of this method is never greater than `self` and so
@@ -12728,6 +12782,10 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// let res = a_biguint.unchecked_iroot_uint(exp);
     /// println!("The third root of {} is {}.", a_biguint, res);
     /// assert_eq!(res.to_string(), "10");
+    /// assert_eq!(res.is_overflow(), false);
+    /// assert_eq!(res.is_underflow(), false);
+    /// assert_eq!(res.is_infinity(), false);
+    /// assert_eq!(res.is_divided_by_zero(), false);
     /// ```
     /// 
     /// # Example 2
@@ -12740,6 +12798,10 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// let res = a_biguint.unchecked_iroot_uint(exp);
     /// println!("The square root of {} is {}.", a_biguint, res);
     /// assert_eq!(res.to_string(), "31");
+    /// assert_eq!(res.is_overflow(), false);
+    /// assert_eq!(res.is_underflow(), false);
+    /// assert_eq!(res.is_infinity(), false);
+    /// assert_eq!(res.is_divided_by_zero(), false);
     /// ```
     /// 
     /// # Example 3
@@ -12752,10 +12814,15 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// let res = a_biguint.unchecked_iroot_uint(exp);
     /// println!("The {}-th root of {} is {}.", exp, a_biguint, res);
     /// assert_eq!(res.to_string(), "0");
+    /// assert_eq!(res.is_overflow(), false);
+    /// assert_eq!(res.is_underflow(), false);
+    /// assert_eq!(res.is_infinity(), false);
+    /// assert_eq!(res.is_divided_by_zero(), false);
     /// 
-    /// let a_biguint = U256::from_uint(1000_u16);
+    /// let _a_biguint = U256::zero();
+    /// let _exp = 0_u8;
     /// // It will panic.
-    /// // let res = a_biguint.unchecked_iroot_uint(0_u8);
+    /// // let res = a_biguint.unchecked_iroot_uint(_exp);
     /// ```
     /// 
     /// # Big-endian issue
