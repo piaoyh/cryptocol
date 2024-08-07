@@ -614,7 +614,7 @@ use crate::number::{ SmallUInt, LongerUnion, SharedValues, SharedArrays, NumberE
 /// to use it for Big Endian CPUs for serious purpose. Only use this crate
 /// for Big-endian CPUs with your own full responsibility.
 #[derive(Debug, Clone)]
-pub struct BigUInt<T, const N: usize>
+pub struct BigUInt<T, const N: usize, const PANIC_FREE: bool = false>
 where T: SmallUInt + Copy + Clone + Display + Debug + ToString
         + Add<Output=T> + AddAssign + Sub<Output=T> + SubAssign
         + Mul<Output=T> + MulAssign + Div<Output=T> + DivAssign
@@ -632,7 +632,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     flag: u8,
 }
 
-impl<T, const N: usize> BigUInt<T, N>
+impl<T, const N: usize, const PANIC_FREE: bool> BigUInt<T, N, PANIC_FREE>
 where T: SmallUInt + Copy + Clone + Display + Debug + ToString
         + Add<Output=T> + AddAssign + Sub<Output=T> + SubAssign
         + Mul<Output=T> + MulAssign + Div<Output=T> + DivAssign
@@ -718,10 +718,10 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /***** CONSTRUCTORS *****/
 
     // pub fn new() -> Self
-    /// Constructs a new `BigUInt<T, N>`.
+    /// Constructs a new `BigUInt<T, N, PANIC_FREE>`.
     /// 
     /// # Output
-    /// A new object of `BigUInt<T, N>`.
+    /// A new object of `BigUInt<T, N, PANIC_FREE>`.
     /// 
     /// # Initialization
     /// All the attributes of the constructed object will be
@@ -746,18 +746,18 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     }
 
     // pub fn zero() -> Self
-    /// Constructs a new `BigUInt<T, N>` which has the value of `0`.
+    /// Constructs a new `BigUInt<T, N, PANIC_FREE>` which has the value of `0`.
     /// 
     /// # Output
-    /// A new object of `BigUInt<T, N>` that represents `0`.
+    /// A new object of `BigUInt<T, N, PANIC_FREE>` that represents `0`.
     /// 
     /// # Features
-    /// This function calls `BigUInt<T, N>::new()`, so it is virtually exactly
-    /// the same as the function `BigUInt<T, N>::new()`.
+    /// This function calls `BigUInt<T, N, PANIC_FREE>::new()`, so it is virtually exactly
+    /// the same as the function `BigUInt<T, N, PANIC_FREE>::new()`.
     /// 
     /// # Benefit
     /// Your source code will be better readable if you use
-    /// `BigUInt<T, N>::zero()` instead of `BigUInt<T, N>::new()` especially
+    /// `BigUInt<T, N, PANIC_FREE>::zero()` instead of `BigUInt<T, N, PANIC_FREE>::new()` especially
     /// when you create the big number zero.
     ///
     /// # Example
@@ -776,14 +776,14 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     }
 
     // pub fn one() -> Self
-    /// Constructs a new `BigUInt<T, N>` which has the value of `1`.
+    /// Constructs a new `BigUInt<T, N, PANIC_FREE>` which has the value of `1`.
     /// 
     /// # Output
-    /// A new object of `BigUInt<T, N>` that represents `1`.
+    /// A new object of `BigUInt<T, N, PANIC_FREE>` that represents `1`.
     /// 
     /// # Benefit
     /// Your source code will be better readable if you use
-    /// `BigUInt<T, N>::one()` instead of `BigUInt<T, N>::new()` and then
+    /// `BigUInt<T, N, PANIC_FREE>::one()` instead of `BigUInt<T, N, PANIC_FREE>::new()` and then
     /// `set_uint(1)` especially when you create the big number `1`.
     /// 
     /// # Example
@@ -808,10 +808,10 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     }
 
     // pub fn max() -> Self
-    /// Constructs a new `BigUInt<T, N>` which has the value of maximum.
+    /// Constructs a new `BigUInt<T, N, PANIC_FREE>` which has the value of maximum.
     /// 
     /// # Output
-    /// A new object of `BigUInt<T, N>` that represents maximum value.
+    /// A new object of `BigUInt<T, N, PANIC_FREE>` that represents maximum value.
     /// 
     /// # Features
     /// All bits are set to be `1`.
@@ -833,12 +833,12 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     }
 
     // pub fn submax(size_in_bits: usize) -> Self
-    /// Constructs a new `BigUInt<T, N>`-type object which has the value of
+    /// Constructs a new `BigUInt<T, N, PANIC_FREE>`-type object which has the value of
     /// `size_in_bits`-bit long maximum value in which all bits are set to
     /// be `1`.
     /// 
     /// # Output
-    /// A new object of `BigUInt<T, N>` that represents `size_in_bits`-bit
+    /// A new object of `BigUInt<T, N, PANIC_FREE>` that represents `size_in_bits`-bit
     /// long maximum value.
     /// 
     /// # Features
@@ -865,11 +865,11 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     }
 
     // pub fn halfmax() -> Self
-    /// Constructs a new `BigUInt<T, N>`-type object which has the value of
+    /// Constructs a new `BigUInt<T, N, PANIC_FREE>`-type object which has the value of
     /// half-length maximum value in which all bits are set to be `1`.
     /// 
     /// # Output
-    /// A new object of `BigUInt<T, N>` that represents a half-length
+    /// A new object of `BigUInt<T, N, PANIC_FREE>` that represents a half-length
     /// maximum value.
     /// 
     /// # Features
@@ -895,11 +895,11 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     }
 
     // pub fn from_uint<U>(val: U) -> Self
-    /// Constructs a new `BigUInt<T, N>`-type object from an unsigned integer
+    /// Constructs a new `BigUInt<T, N, PANIC_FREE>`-type object from an unsigned integer
     /// such as `u8`, `u16`, `u32`, `u64`, `u128` and `usize`.
     /// 
     /// # Output
-    /// A new object of `BigUInt<T, N>` that represents the same value of `val`.
+    /// A new object of `BigUInt<T, N, PANIC_FREE>` that represents the same value of `val`.
     /// 
     /// # Panics
     /// If `size_of::<T>() * N` <= `128`, this method may panic
@@ -963,11 +963,11 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     }
 
     // pub fn from_array(val: [T; N]) -> Self
-    /// Constructs a new `BigUInt<T, N>` from an array of type `T` with `N`
+    /// Constructs a new `BigUInt<T, N, PANIC_FREE>` from an array of type `T` with `N`
     /// elements.
     /// 
     /// # Output
-    /// A new object of `BigUInt<T, N>` that represents the same value of array `val`.
+    /// A new object of `BigUInt<T, N, PANIC_FREE>` that represents the same value of array `val`.
     /// 
     /// # Counterpart Method
     /// You can also use the method [from()](struct@BigUInt#impl-From<[T;+N]>-for-BigUInt<T,+N>)
@@ -988,10 +988,10 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     }
 
     // pub fn from_biguint<U, const M: usize>(biguint: &BigUInt<U, M>) -> Self
-    /// Constructs a new `BigUInt<T, N>` from another kind of `BigUInt<U, M>`.
+    /// Constructs a new `BigUInt<T, N, PANIC_FREE>` from another kind of `BigUInt<U, M>`.
     /// 
     /// # Output
-    /// A new object of `BigUInt<T, N>` that represents the same value of another
+    /// A new object of `BigUInt<T, N, PANIC_FREE>` that represents the same value of another
     /// kind of `BigUInt<U, M>`.
     /// 
     /// # Features
@@ -1037,7 +1037,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// assert_eq!(b_u1024_with_u8.to_string(), "123456789123456789123456789123456789123456789123456789123456789123456789123456789123456789123456789123456789123456789123456789123456789123456789123456789");
     /// ```
     #[inline]
-    pub fn from_biguint<U, const M: usize>(biguint: &BigUInt<U, M>) -> Self
+    pub fn from_biguint<U, const M: usize, const IMORTAL: bool>(biguint: &BigUInt<U, M, IMORTAL>) -> Self
     where U: SmallUInt + Copy + Clone + Display + Debug + ToString
             + Add<Output=U> + AddAssign + Sub<Output=U> + SubAssign
             + Mul<Output=U> + MulAssign + Div<Output=U> + DivAssign
@@ -1197,10 +1197,10 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     }
 
     //  pub fn from_string(txt: &str) -> Result<Self, NumberErr>
-    /// Constructs a new `BigUInt<T, N>` from a string of decimal number.
+    /// Constructs a new `BigUInt<T, N, PANIC_FREE>` from a string of decimal number.
     /// 
     /// # Output
-    /// The constructed object will be wrapped in `Ok(BigUInt<T, N>)` if it is
+    /// The constructed object will be wrapped in `Ok(BigUInt<T, N, PANIC_FREE>)` if it is
     /// successfully created. Otherwise, this method returns one of
     /// `Err(NumberErr::NotAlphaNumeric)`, and `Err(NumberErr::NotFitToRadix)`
     /// according to its failure reason.
@@ -1364,10 +1364,10 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     }
 
     //  pub fn from_str_radix(txt: &str, radix: u32) -> Result<Self, NumberErr>
-    /// Constructs a new `BigUInt<T, N>` from a string with `radix`.
+    /// Constructs a new `BigUInt<T, N, PANIC_FREE>` from a string with `radix`.
     /// 
     /// # Output
-    /// The constructed object will be wrapped in `Ok(BigUInt<T, N>)` if it is
+    /// The constructed object will be wrapped in `Ok(BigUInt<T, N, PANIC_FREE>)` if it is
     /// successfully created. Otherwise, this method returns one of
     /// `Err(NumberErr::OutOfValidRadixRange)`, `Err(NumberErr::NotAlphaNumeric)`,
     /// and `Err(NumberErr::NotFitToRadix)` according to its failure reason.
@@ -1646,11 +1646,11 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     }
 
     // pub fn generate_check_bits(bit_pos: usize) -> Option<Self>
-    /// Constucts a new `BigUInt<T, N>` which has the value zero and sets only
+    /// Constucts a new `BigUInt<T, N, PANIC_FREE>` which has the value zero and sets only
     /// the bit specified by the argument bit_pos to be 1.
     /// 
     /// # Output
-    /// It returns a big unsigned integer `BigUInt<T, N>` whose bit specified
+    /// It returns a big unsigned integer `BigUInt<T, N, PANIC_FREE>` whose bit specified
     /// by the argument bit_posvalue is set to be 1, wrapped by enum
     /// `Some(self)` of `Option<Self>` if the bit positon `bit_pos` is less
     /// than `size_of::<T>() * N * 8`. It returns `None` if the bit positon
@@ -1696,7 +1696,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     }
 
     // pub fn generate_check_bits_(bit_pos: usize) -> Self
-    /// Constucts a new `BigUInt<T, N>` which has the value zero and sets only
+    /// Constucts a new `BigUInt<T, N, PANIC_FREE>` which has the value zero and sets only
     /// the bit specified by the argument bit_pos to be 1.
     /// 
     /// # Panics
@@ -1706,7 +1706,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// `size_of::<T>() * N * 8`, this method will panic.
     /// 
     /// # Output
-    /// It returns a big unsigned integer `BigUInt<T, N>` whose bit specified
+    /// It returns a big unsigned integer `BigUInt<T, N, PANIC_FREE>` whose bit specified
     /// by the argument bit_posvalue is set to be 1.
     /// 
     /// # Bit Position
@@ -1851,7 +1851,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /***** METHODS TO GET, SET, AND CHECK *****/
 
     // pub fn turn_check_bits(&mut self, bit_pos: usize)
-    /// Changes a `BigUInt<T, N>` to have the value zero and sets only
+    /// Changes a `BigUInt<T, N, PANIC_FREE>` to have the value zero and sets only
     /// the bit specified by the argument `bit_pos` to be 1.
     /// 
     /// # Panics
@@ -8431,7 +8431,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /*** Division ***/
 
     // pub fn divide_fully_uint<U>(&self, rhs: U) -> (Self, U)
-    /// Divide `BigUInt<T, N>` by `rhs` so as to get quotient and remainder
+    /// Divide `BigUInt<T, N, PANIC_FREE>` by `rhs` so as to get quotient and remainder
     /// 
     /// # Arguments
     /// `rhs` divides `self`, and is a small-sized unsigned integer
@@ -14173,7 +14173,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /***** ARITHMATIC OPERATIONS WITH BIGUINT *****/
 
     /*** ADDITION ***/
-
+//-===============
     // pub fn carrying_add(&self, rhs: &Self, carry: bool) -> (Self, bool)
     /// Calculates `self` + `rhs` + `carry`,
     /// wrapping around at the boundary of the type.
@@ -20416,12 +20416,12 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     }
 
     // pub fn to_string_with_radix_and_delimiter(&self, radix: usize, stride: usize, delimiter: &str) -> Result<String, NumberErr>
-    /// Reads the value of `BigUInt<T, N>` and write it into String in a 
+    /// Reads the value of `BigUInt<T, N, PANIC_FREE>` and write it into String in a 
     /// certain radix indicated by `radix`, with certain stride steps
     /// indicated by `stride`, and with a delimiter indicated by `delimiter`.
     /// 
     /// # Output
-    /// It returns a sring that shows the value of `BigUInt<T, N>` in a 
+    /// It returns a sring that shows the value of `BigUInt<T, N, PANIC_FREE>` in a 
     /// certain radix indicated by `radix`, with certain stride steps
     /// indicated by `stride`, and with a delimiter indicated by `delimiter`.
     /// 
@@ -20480,11 +20480,11 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     }
 
     // pub fn to_string_with_radix_and_stride(&self, radix: usize, stride: usize) -> Result<String, NumberErr>
-    /// Reads the value of `BigUInt<T, N>` and write it into String
+    /// Reads the value of `BigUInt<T, N, PANIC_FREE>` and write it into String
     /// with a certain radix.
     /// 
     /// # Output
-    /// It returns a sring that shows the value of `BigUInt<T, N>`.
+    /// It returns a sring that shows the value of `BigUInt<T, N, PANIC_FREE>`.
     /// 
     /// # Valid Radix Range
     /// The radix can be from `2` up to `62` (= 10 + 26 + 26). Such radices that
@@ -20572,11 +20572,11 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     }
 
     // pub fn to_string_with_radix(&self, radix: usize) -> Result<String, NumberErr>
-    /// Reads the value of `BigUInt<T, N>` and write it into String
+    /// Reads the value of `BigUInt<T, N, PANIC_FREE>` and write it into String
     /// with a certain radix.
     /// 
     /// # Output
-    /// It returns a sring that shows the value of `BigUInt<T, N>`.
+    /// It returns a sring that shows the value of `BigUInt<T, N, PANIC_FREE>`.
     /// 
     /// # Valid Radix Range
     /// The radix can be from `2` up to `62` (= 10 + 26 + 26). Such radices that
