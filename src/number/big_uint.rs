@@ -194,12 +194,184 @@ use crate::number::{ SmallUInt, LongerUnion, SharedValues, SharedArrays, NumberE
 #[allow(non_camel_case_types)] pub type U16384_with_u8 = BigUInt<u8, 2048>;
 
 
+// PANIC_FREE MODE
+
+/// Panic-free 256-bit unsigned integer implemented by `BigUInt<u128, 2, true>` made with two `u128`s
+#[allow(non_camel_case_types)] pub type U256_with_u128_ = BigUInt<u128, 2, true>;
+
+/// Panic-free 512-bit unsigned integer implemented by `BigUInt<u128, 4, true>` made with four `u128`s
+#[allow(non_camel_case_types)] pub type U512_with_u128_ = BigUInt<u128, 4, true>;
+
+/// Panic-free 1024-bit unsigned integer implemented by `BigUInt<u128, 8, true>` made with eight `u128`s
+#[allow(non_camel_case_types)] pub type U1024_with_u128_ = BigUInt<u128, 8, true>;
+
+/// Panic-free 2048-bit unsigned integer implemented by `BigUInt<u128, 4, true>` made with sixteen `u128`s
+#[allow(non_camel_case_types)] pub type U2048_with_u128_ = BigUInt<u128, 16, true>;
+
+/// Panic-free 3072-bit unsigned integer implemented by `BigUInt<u128, 4, true>` made with twenty-four `u128`s
+#[allow(non_camel_case_types)] pub type U3072_with_u128_ = BigUInt<u128, 24, true>;
+
+/// Panic-free 4096-bit unsigned integer implemented by `BigUInt<u128, 4, true>` made with thirty-two `u128`s
+#[allow(non_camel_case_types)] pub type U4096_with_u128_ = BigUInt<u128, 32, true>;
+
+/// Panic-free 5120-bit unsigned integer implemented by `BigUInt<u128, 4, true>` made with forty `u128`s
+#[allow(non_camel_case_types)] pub type U5120_with_u128_ = BigUInt<u128, 40, true>;
+
+/// Panic-free 6144-bit unsigned integer implemented by `BigUInt<u128, 4, true>` made with fory-eight `u128`s
+#[allow(non_camel_case_types)] pub type U6144_with_u128_ = BigUInt<u128, 48, true>;
+
+/// Panic-free 7168-bit unsigned integer implemented by `BigUInt<u128, 4, true>` made with fifty-six `u128`s
+#[allow(non_camel_case_types)] pub type U7168_with_u128_ = BigUInt<u128, 56, true>;
+
+/// Panic-free 8192-bit unsigned integer implemented by `BigUInt<u128, 4, true>` made with sixty-four `u128`s
+#[allow(non_camel_case_types)] pub type U8192_with_u128_ = BigUInt<u128, 64, true>;
+
+/// Panic-free 16384-bit unsigned integer implemented by `BigUInt<u128, 4, true>` made with one hundred twenty-eight `u128`s
+#[allow(non_camel_case_types)] pub type U16384_with_u128_ = BigUInt<u128, 128, true>;
+
+
+/// Panic-free 256-bit unsigned integer implemented by `BigUInt<u64, 4, true>` made with four `u64`s
+#[allow(non_camel_case_types)] pub type U256_with_u64_ = BigUInt<u64, 4, true>;
+
+/// Panic-free 512-bit unsigned integer implemented by `BigUInt<u64, 8, true>` made with eight `u64`s
+#[allow(non_camel_case_types)] pub type U512_with_u64_ = BigUInt<u64, 8, true>;
+
+/// Panic-free 1024-bit unsigned integer implemented by `BigUInt<u64, 16, true>` made with sixteen `u64`s
+#[allow(non_camel_case_types)] pub type U1024_with_u64_ = BigUInt<u64, 16, true>;
+
+/// Panic-free 2048-bit unsigned integer implemented by `BigUInt<u64, 32, true>` made with thirty-two `u64`s
+#[allow(non_camel_case_types)] pub type U2048_with_u64_ = BigUInt<u64, 32, true>;
+
+/// Panic-free 3072-bit unsigned integer implemented by `BigUInt<u64, 48, true>` made with fourty-eight `u64`s
+#[allow(non_camel_case_types)] pub type U3072_with_u64_ = BigUInt<u64, 48, true>;
+
+/// Panic-free 4096-bit unsigned integer implemented by `BigUInt<u64, 64, true>` made with sixty-four `u64`s
+#[allow(non_camel_case_types)] pub type U4096_with_u64_ = BigUInt<u64, 64, true>;
+
+/// Panic-free 5120-bit unsigned integer implemented by `BigUInt<u64, 80, true>` made with eighty `u64`s
+#[allow(non_camel_case_types)] pub type U5120_with_u64_ = BigUInt<u64, 80, true>;
+
+/// Panic-free 6144-bit unsigned integer implemented by `BigUInt<u64, 96, true>` made with ninety-six `u64`s
+#[allow(non_camel_case_types)] pub type U6144_with_u64_ = BigUInt<u64, 96, true>;
+
+/// Panic-free 7168-bit unsigned integer implemented by BigUInt<u64, 112, true> made with one hundred twelve `u64`s
+#[allow(non_camel_case_types)] pub type U7168_with_u64_ = BigUInt<u64, 112, true>;
+
+/// Panic-free 8192-bit unsigned integer implemented by `BigUInt<u64, 128, true>` made with two hundred twenty-eight `u64`s
+#[allow(non_camel_case_types)] pub type U8192_with_u64_ = BigUInt<u64, 128, true>;
+
+/// Panic-free 16384-bit unsigned integer implemented by `BigUInt<u64, 256, true>` made with two hundred fifty-six `u64`s
+#[allow(non_camel_case_types)] pub type U16384_with_u64_ = BigUInt<u64, 256, true>;
+
+
+/// Panic-free 256-bit unsigned integer implemented by `BigUInt<u32, 8, true>` made with eight `u32`s
+#[allow(non_camel_case_types)] pub type U256_with_u32_ = BigUInt<u32, 8, true>;
+
+/// Panic-free 512-bit unsigned integer implemented by `BigUInt<u32, 8, true>` made with sixteen `u32`s
+#[allow(non_camel_case_types)] pub type U512_with_u32_ = BigUInt<u32, 16, true>;
+
+/// Panic-free 1024-bit unsigned integer implemented by `BigUInt<u32, 8, true>` made with thirty-two `u32`s
+#[allow(non_camel_case_types)] pub type U1024_with_u32_ = BigUInt<u32, 32, true>;
+
+/// Panic-free 2048-bit unsigned integer implemented by `BigUInt<u32, 8, true>` made with sixty-four `u32`s
+#[allow(non_camel_case_types)] pub type U2048_with_u32_ = BigUInt<u32, 64, true>;
+
+/// Panic-free 3072-bit unsigned integer implemented by `BigUInt<u32, 8, true>` made with ninety-six `u32`s
+#[allow(non_camel_case_types)] pub type U3072_with_u32_ = BigUInt<u32, 96, true>;
+
+/// Panic-free 4096-bit unsigned integer implemented by `BigUInt<u32, 8, true>` made with one hundred twenty-eight `u32`s
+#[allow(non_camel_case_types)] pub type U4096_with_u32_ = BigUInt<u32, 128, true>;
+
+/// Panic-free 5120-bit unsigned integer implemented by `BigUInt<u32, 8, true>` made with one hundred sixty `u32`s
+#[allow(non_camel_case_types)] pub type U5120_with_u32_ = BigUInt<u32, 160, true>;
+
+/// Panic-free 6144-bit unsigned integer implemented by `BigUInt<u32, 8, true>` made with one hundred ninety-two `u32`s
+#[allow(non_camel_case_types)] pub type U6144_with_u32_ = BigUInt<u32, 192, true>;
+
+/// Panic-free 7168-bit unsigned integer implemented by `BigUInt<u32, 8, true>` made with two hundred twenty-four `u32`s
+#[allow(non_camel_case_types)] pub type U7168_with_u32_ = BigUInt<u32, 224, true>;
+
+/// Panic-free 8192-bit unsigned integer implemented by `BigUInt<u32, 8, true>` made with two hundred fifty-six `u32`s
+#[allow(non_camel_case_types)] pub type U8192_with_u32_ = BigUInt<u32, 256, true>;
+
+/// Panic-free 16384-bit unsigned integer implemented by `BigUInt<u32, 8, true>` made with five hundred twelve `u32`s
+#[allow(non_camel_case_types)] pub type U16384_with_u32_ = BigUInt<u32, 512, true>;
+
+
+/// Panic-free 256-bit unsigned integer implemented by `BigUInt<u16, 16, true>` made with sixteen `u16`s
+#[allow(non_camel_case_types)] pub type U256_with_u16_ = BigUInt<u16, 16, true>;
+
+/// Panic-free 512-bit unsigned integer implemented by `BigUInt<u16, 32, true>` made with thirty-two `u16`s
+#[allow(non_camel_case_types)] pub type U512_with_u16_ = BigUInt<u16, 32, true>;
+
+/// Panic-free 1024-bit unsigned integer implemented by `BigUInt<u16, 64, true>` made with sixty-four `u16`s
+#[allow(non_camel_case_types)] pub type U1024_with_u16_ = BigUInt<u16, 64, true>;
+
+/// Panic-free 2048-bit unsigned integer implemented by `BigUInt<u16, 128, true>` made with one hundred twenty-eight `u16`s
+#[allow(non_camel_case_types)] pub type U2048_with_u16_ = BigUInt<u16, 128, true>;
+
+/// Panic-free 3072-bit unsigned integer implemented by `BigUInt<u16, 192, true>` made with one hundred ninety-two `u16`s
+#[allow(non_camel_case_types)] pub type U3072_with_u16_ = BigUInt<u16, 192, true>;
+
+/// Panic-free 4096-bit unsigned integer implemented by `BigUInt<u16, 256, true>` made with two hundred fifty-six `u16`s
+#[allow(non_camel_case_types)] pub type U4096_with_u16_ = BigUInt<u16, 256, true>;
+
+/// Panic-free 5120-bit unsigned integer implemented by `BigUInt<u16, 320, true>` made with three hundred twenty `u16`s
+#[allow(non_camel_case_types)] pub type U5120_with_u16_ = BigUInt<u16, 320, true>;
+
+/// Panic-free 6144-bit unsigned integer implemented by `BigUInt<u16, 384, true>` made with three hundred eighty-four `u16`s
+#[allow(non_camel_case_types)] pub type U6144_with_u16_ = BigUInt<u16, 384, true>;
+
+/// Panic-free 7168-bit unsigned integer implemented by `BigUInt<u16, 448, true>` made with four hundred forty-eight `u16`s
+#[allow(non_camel_case_types)] pub type U7168_with_u16_ = BigUInt<u16, 448, true>;
+
+/// Panic-free 8192-bit unsigned integer implemented by `BigUInt<u16, 512, true>` made with five hundred twelve `u16`s
+#[allow(non_camel_case_types)] pub type U8192_with_u16_ = BigUInt<u16, 512, true>;
+
+/// Panic-free 16384-bit unsigned integer implemented by `BigUInt<u16, 1024, true>` made with one thousand twenty-four `u16`s
+#[allow(non_camel_case_types)] pub type U16384_with_u16_ = BigUInt<u16, 1024, true>;
+
+
+/// Panic-free 256-bit unsigned integer implemented by `BigUInt<u8, 32, true>` made with thirty-two `u8`s
+#[allow(non_camel_case_types)] pub type U256_with_u8_ = BigUInt<u8, 32, true>;
+
+/// Panic-free 512-bit unsigned integer implemented by `BigUInt<u8, 64, true>` made with sixty-four `u8`s
+#[allow(non_camel_case_types)] pub type U512_with_u8_ = BigUInt<u8, 64, true>;
+
+/// Panic-free 1024-bit unsigned integer implemented by `BigUInt<u8, 128, true>` made with one hundred twenty-eight `u8`s
+#[allow(non_camel_case_types)] pub type U1024_with_u8_ = BigUInt<u8, 128, true>;
+
+/// Panic-free 2048-bit unsigned integer implemented by `BigUInt<u8, 256, true>` made with two hundred fifty-six `u8`s
+#[allow(non_camel_case_types)] pub type U2048_with_u8_ = BigUInt<u8, 256, true>;
+
+/// Panic-free 3072-bit unsigned integer implemented by `BigUInt<u8, 384, true>` made with three hundred eighty-four `u8`s
+#[allow(non_camel_case_types)] pub type U3072_with_u8_ = BigUInt<u8, 384, true>;
+
+/// Panic-free 4096-bit unsigned integer implemented by `BigUInt<u8, 512, true>` made with five hundred twelve `u8`s
+#[allow(non_camel_case_types)] pub type U4096_with_u8_ = BigUInt<u8, 512, true>;
+
+/// Panic-free 5120-bit unsigned integer implemented by `BigUInt<u8, 640, true>` made with six hundred forty-eight `u8`s
+#[allow(non_camel_case_types)] pub type U5120_with_u8_ = BigUInt<u8, 640, true>;
+
+/// Panic-free 6144-bit unsigned integer implemented by `BigUInt<u8, 768, true>` made with seven hundred sixty-eight `u8`s
+#[allow(non_camel_case_types)] pub type U6144_with_u8_ = BigUInt<u8, 768, true>;
+
+/// Panic-free 7168-bit unsigned integer implemented by `BigUInt<u8, 896, true>` made with eight hundred ninety-six `u8`s
+#[allow(non_camel_case_types)] pub type U7168_with_u8_ = BigUInt<u8, 896, true>;
+
+/// Panic-free 8192-bit unsigned integer implemented by `BigUInt<u8, 1024, true>` made with one thousand twenty-four `u8`s
+#[allow(non_camel_case_types)] pub type U8192_with_u8_ = BigUInt<u8, 1024, true>;
+
+/// Panic-free 16384-bit unsigned integer implemented by `BigUInt<u8, 2048, true>` made with two thousand forty-eight `u8`s
+#[allow(non_camel_case_types)] pub type U16384_with_u8_ = BigUInt<u8, 2048, true>;
+
 //////////////////////////////////////////
 /// # Introduction
 /// A struct that represents a big unsigned integer with user-defined fixed size.
 /// 
-/// The struct `BigUInt<T, const N: usize>` is a generic struct for which you
-/// can decide the type of elements and its number. It is Little-endian.
+/// The struct `BigUInt<T, const N: usize, const PANIC_FREE>` is a generic
+/// struct for which you can decide the type of elements and its number.
+/// It is Little-endian.
 /// - It consists of an array of type `T` with `N` elements and flags of type
 ///   `u8`.
 /// - The generic data type `T` is supposed to be a _primitive unsigned integer_
@@ -215,6 +387,15 @@ use crate::number::{ SmallUInt, LongerUnion, SharedValues, SharedArrays, NumberE
 ///   depends on operating system. If your operating system is for 64-bit
 ///   machine, usize will be the same size of `u64` while your operating system
 ///   is for 32-bit machine, `usize` will be the same size of `u32`.
+/// - The generic constant `PANIC_FREE` indicates whether or not `BigUInt` is
+///   panic-free __during arithmatic operation__. If PANIC_FREE is false, the
+///   methods of `BigUInt` may panic depending on conditions such as
+///   `divide-by-zero`, etc. If PANIC_FREE is `true`, the methods of `BigUInt`
+///   will never panic __during arithmatic operation__ even under the condition
+///   `divide-by-zero` unless `size_of::<T>() * N` <= `128`. It may panic
+///   __during non-arithmatic operation__ such as set_num() even if
+///   `PANIC_FREE` is `true`. __Panic-free does not mean that it will never
+///   panic under any condition.__
 /// - The same sized `BigUInt` can be made in several ways.
 ///   For example, a 1024-bit unsigned integer can be implemented with
 ///   either `BigUInt<u128, 8>`, `BigUInt<u64, 16>`, `BigUInt<u32, 32>`,
@@ -669,23 +850,36 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
 
     /// A flag to represent whether or not overflow happened
     /// during previous operations. When divided-by-zero happens,
-    /// the flags `DIVIDED_BY_ZERO`, `INFINITY` and `OVERFLOW` will be set.
+    /// the flags `DIVIDED_BY_ZERO`, `INFINITY` and `OVERFLOW` will be set too.
+    /// This flag is available regardless the generic constant `PANIC_FREE`.
     const OVERFLOW: u8          = 0b0000_0001;
 
     /// A flag to represent whether or not underflow happened
     /// during previous operations.
+    /// This flag is available regardless the generic constant `PANIC_FREE`.
     const UNDERFLOW: u8         = 0b0000_0010;
     
     /// A flag to represent whether or not the value became extremely big
-    /// for some reasons such as "divided by zero" during previous operations.
-    /// When divided-by-zero happens,
-    /// the flags `DIVIDED_BY_ZERO`, `INFINITY` and `OVERFLOW` will be set.
+    /// for some reasons such as `divided-by-zero` during previous operations.
+    /// When divided-by-zero happens, the flags `DIVIDED_BY_ZERO`, `INFINITY`
+    /// and `OVERFLOW` will be set too.
+    /// This flag will be available only when the generic constant
+    /// `PANIC_FREE` is `true`.
     const INFINITY: u8          = 0b0000_0100;
 
-    /// A flag to represent whether or not divided-by-zero happened
-    /// during previous operations. When divided-by-zero happens,
-    /// the flags `DIVIDED_BY_ZERO`, `INFINITY` and `OVERFLOW` will be set.
+    /// A flag to represent whether or not divided-by-zero happened during
+    /// previous operations. When divided-by-zero happens, the flags
+    /// `DIVIDED_BY_ZERO`, `INFINITY` and `OVERFLOW` will be set too.
+    /// This flag will be available only when the generic constant
+    /// `PANIC_FREE` is `true`.
     const DIVIDED_BY_ZERO: u8   = 0b0000_1000;
+
+    /// A flag to represent whether or not the value cannot be defined.
+    /// For example, the result of `0 / 0` will be undefined so that the flag
+    /// `UNDEFINED` will be set.
+    /// This flag will be available only when the generic constant
+    /// `PANIC_FREE` is `true`.
+    const UNDEFINED: u8         = 0b0001_0000;
 
     #[allow(non_upper_case_globals)]
     const method_widening_mul_assign_uint: fn(&mut Self, T) -> Self
@@ -752,12 +946,14 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// A new object of `BigUInt<T, N, PANIC_FREE>` that represents `0`.
     /// 
     /// # Features
-    /// This function calls `BigUInt<T, N, PANIC_FREE>::new()`, so it is virtually exactly
-    /// the same as the function `BigUInt<T, N, PANIC_FREE>::new()`.
+    /// This function calls `BigUInt<T, N, PANIC_FREE>::new()`, so it is
+    /// virtually exactly the same as the function
+    /// `BigUInt<T, N, PANIC_FREE>::new()`.
     /// 
     /// # Benefit
     /// Your source code will be better readable if you use
-    /// `BigUInt<T, N, PANIC_FREE>::zero()` instead of `BigUInt<T, N, PANIC_FREE>::new()` especially
+    /// `BigUInt<T, N, PANIC_FREE>::zero()` instead of
+    /// `BigUInt<T, N, PANIC_FREE>::new()` especially
     /// when you create the big number zero.
     ///
     /// # Example
@@ -783,7 +979,8 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// 
     /// # Benefit
     /// Your source code will be better readable if you use
-    /// `BigUInt<T, N, PANIC_FREE>::one()` instead of `BigUInt<T, N, PANIC_FREE>::new()` and then
+    /// `BigUInt<T, N, PANIC_FREE>::one()` instead of
+    /// `BigUInt<T, N, PANIC_FREE>::new()` and then
     /// `set_uint(1)` especially when you create the big number `1`.
     /// 
     /// # Example
@@ -808,7 +1005,8 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     }
 
     // pub fn max() -> Self
-    /// Constructs a new `BigUInt<T, N, PANIC_FREE>` which has the value of maximum.
+    /// Constructs a new `BigUInt<T, N, PANIC_FREE>` which has the value of
+    /// maximum.
     /// 
     /// # Output
     /// A new object of `BigUInt<T, N, PANIC_FREE>` that represents maximum value.
@@ -833,13 +1031,13 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     }
 
     // pub fn submax(size_in_bits: usize) -> Self
-    /// Constructs a new `BigUInt<T, N, PANIC_FREE>`-type object which has the value of
-    /// `size_in_bits`-bit long maximum value in which all bits are set to
-    /// be `1`.
+    /// Constructs a new `BigUInt<T, N, PANIC_FREE>`-type object which has the
+    /// value of `size_in_bits`-bit long maximum value in which all bits are
+    /// set to be `1`.
     /// 
     /// # Output
-    /// A new object of `BigUInt<T, N, PANIC_FREE>` that represents `size_in_bits`-bit
-    /// long maximum value.
+    /// A new object of `BigUInt<T, N, PANIC_FREE>` that represents
+    /// `size_in_bits`-bit long maximum value.
     /// 
     /// # Features
     /// This method will make all the `size_in_bits` bits of `number[T;N]` of
@@ -865,12 +1063,12 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     }
 
     // pub fn halfmax() -> Self
-    /// Constructs a new `BigUInt<T, N, PANIC_FREE>`-type object which has the value of
-    /// half-length maximum value in which all bits are set to be `1`.
+    /// Constructs a new `BigUInt<T, N, PANIC_FREE>`-type object which has the
+    /// value of half-length maximum value in which all bits are set to be `1`.
     /// 
     /// # Output
-    /// A new object of `BigUInt<T, N, PANIC_FREE>` that represents a half-length
-    /// maximum value.
+    /// A new object of `BigUInt<T, N, PANIC_FREE>` that represents
+    /// a half-length maximum value.
     /// 
     /// # Features
     /// This method will make all the lower half bits of `number[T;N]` of
@@ -895,11 +1093,12 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     }
 
     // pub fn from_uint<U>(val: U) -> Self
-    /// Constructs a new `BigUInt<T, N, PANIC_FREE>`-type object from an unsigned integer
-    /// such as `u8`, `u16`, `u32`, `u64`, `u128` and `usize`.
+    /// Constructs a new `BigUInt<T, N, PANIC_FREE>`-type object from an
+    /// unsigned integer such as `u8`, `u16`, `u32`, `u64`, `u128` and `usize`.
     /// 
     /// # Output
-    /// A new object of `BigUInt<T, N, PANIC_FREE>` that represents the same value of `val`.
+    /// A new object of `BigUInt<T, N, PANIC_FREE>` that represents the same
+    /// value of `val`.
     /// 
     /// # Panics
     /// If `size_of::<T>() * N` <= `128`, this method may panic
@@ -5249,7 +5448,8 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// # Panics
     /// - If `size_of::<T>() * N` <= `128`, this method may panic
     /// or its behavior may be undefined though it may not panic.
-    /// - If `modulo` is either zero or one, this method will panic.
+    /// - If `PANIC_FREE` is `false` and `modulo` is either `zero` or `one`,
+    /// this method will panic.
     /// 
     /// # Features
     /// - It takes the addition (= `add`) of `self` and `rhs`,
@@ -5264,8 +5464,8 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// `OVERFLOW` flag even if wrapping around happens at `modulo` while the
     /// method `wrapping_add_assign_uint()` sets `OVERFLOW` flag when wrapping
     /// around happens.
-    /// - If `modulo` is `zero`, the flags such as `OVERFLOW`, `DIVIDED_BY_ZERO`,
-    /// and `INFINITY` will be set.
+    /// - If `PANIC_FREE` is `true` and `modulo` is either `zero` or `one`,
+    /// the `UNDEFINED` FLag will be set and `self` will have the value `zero`.
     /// - All the flags are historical, which means, for example, if an overflow
     /// occurred even once before this current operation or `OVERFLOW`
     /// flag is already set before this current operation, the `OVERFLOW` flag
@@ -5377,8 +5577,20 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
             + BitXor<Output=U> + BitXorAssign + Not<Output=U>
             + PartialEq + PartialOrd
     {
-        if modulo.is_zero_or_one()
+        if PANIC_FREE
+        {
+            if modulo.is_zero_or_one()
+            {
+                self.set_zero();
+                self.set_undefined();
+                return;
+            }
+        }
+        else
+        {
+            if modulo.is_zero_or_one()
             { panic!(); }
+        }
 
         let mut flags = self.get_all_flags();
         if *self >= *modulo
@@ -6663,7 +6875,8 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// # Panics
     /// - If `size_of::<T>() * N` <= `128`, this method may panic
     /// or its behavior may be undefined though it may not panic.
-    /// - If `modulo` is either zero or one, this method will panic.
+    /// - If `PANIC_FREE` is `false` and `modulo` is either zero or one,
+    /// this method will panic.
     /// 
     /// # Features
     /// - It takes the result of (= `sub`) of `rhs` subtracted from `self`,
@@ -6677,8 +6890,8 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// method does not set `UNDERFLOW` flag even if wrapping around happens,
     /// while the method `wrapping_sub_assign()` sets `UNDERFLOW` flag when
     /// wrapping around happens.
-    /// - If `modulo` is `zero`, the flags such as `OVERFLOW`, `DIVIDED_BY_ZERO`,
-    /// and `INFINITY` will be set.
+    /// - If `PANIC_FREE` is `true` and `modulo` is `zero`, the `UNDEFINED`
+    /// flags will be set.
     /// - All the flags are historical, which means, for example, if an
     /// underflow occurred even once before this current operation or
     /// `UNDERFLOW` flag is already set before this current operation,
@@ -6786,8 +6999,20 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
             + BitXor<Output=U> + BitXorAssign + Not<Output=U>
             + PartialEq + PartialOrd
     {
-        if modulo.is_zero_or_one()
+        if PANIC_FREE
+        {
+            if modulo.is_zero_or_one()
+            {
+                self.set_zero();
+                self.set_undefined();
+                return;
+            }
+        }
+        else
+        {
+            if modulo.is_zero_or_one()
             { panic!(); }
+        }
 
         let mut flags = self.get_all_flags();
         if *self >= *modulo
@@ -8277,7 +8502,10 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// # Panics
     /// - If `size_of::<T>() * N` <= `128`, this method may panic
     /// or its behavior may be undefined though it may not panic.
-    /// - If `modulo` is either zero or one, this method will panic.
+    /// - If `PANIC_FREE` is `false` and `modulo` is either zero or one,
+    /// this method will panic.
+    /// - If `PANIC_FREE` is `false` and `rhs` is either zero or multiple of
+    /// `modulo`, it will panic.
     /// 
     /// # Features
     /// - It takes the multiplication (= `mul`) of `self` and `rhs`,
@@ -8291,8 +8519,14 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// `OVERFLOW` flag even if wrapping around happens, while the method
     /// `wrapping_mul_assign_uint()` sets `OVERFLOW` flag when wrapping around
     /// happens.
-    /// - If `modulo` is `zero`, the flags such as `OVERFLOW`, `DIVIDED_BY_ZERO`,
-    /// and `INFINITY` will be set.
+    /// - If `PANIC_FREE` is `true` and `modulo` is `zero`, the `UNDEFINED` flag
+    /// will be set and `self` will have the value `zero`.
+    /// - If `PANIC_FREE` is `true` and both `rhs` and `self` are either zero or
+    /// multiple of `modulo`, the `UNDEFINED` flag will be set and `self` will
+    /// have the value `zero`.
+    /// - If `PANIC_FREE` is `true` and both `rhs` is either zero or multiple of
+    /// `modulo` and `self` is not `zero`, the `OVERFLOW`, `DIVIDED_BY_ZERO`, and
+    /// `INFINITY` flags will be set and `self` will have the maximum value.
     /// - All the flags are historical, which means, for example, if an
     /// overflow occurred even once before this current operation or
     /// `OVERFLOW` flag is already set before this current operation,
@@ -8378,8 +8612,20 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
             + BitXor<Output=U> + BitXorAssign + Not<Output=U>
             + PartialEq + PartialOrd
     {
-        if modulo.is_zero_or_one()
+        if PANIC_FREE
+        {
+            if modulo.is_zero_or_one()
+            {
+                self.set_zero();
+                self.set_undefined();
+                return;
+            }
+        }
+        else
+        {
+            if modulo.is_zero_or_one()
             { panic!(); }
+        }
 
         let mut flags = self.get_all_flags();
         if *self >= *modulo
@@ -8440,7 +8686,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// # Panics
     /// - If `size_of::<T>() * N` <= `128`, this method may panic
     /// or its behavior may be undefined though it may not panic.
-    /// - If `rhs` is zero, this method will panic.
+    /// - If `PANIC_FREE` is `false` and `rhs` is zero, this method will panic.
     /// 
     /// # Output
     /// It returns tuple of quotient and remainder. quotient is `Self` type
@@ -8448,9 +8694,14 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// 
     /// # Features
     /// - There’s no way wrapping could ever happen unless `rhs` is zero.
-    /// - If `rhs` is zero, this method will panic.
-    /// - If 'self' is zero and `rhs` is non-zero, this method returns (zero, zero).
-    /// - If 'self' is zero and `rhs` is zero, this method will panic.
+    /// - If 'self' is zero and `rhs` is non-zero,
+    /// this method returns (zero, zero).
+    /// - If `PANIC_FREE` is `true` and both 'self' and `rhs` are `zero`,
+    /// the `UNDEFINED` flag will be set and `self` will have the value `zero`.
+    /// - If `PANIC_FREE` is `true` and both 'self' is not `zero` and `rhs` is
+    /// `zero`, the `INFINITY`, `DIVIDED_BY_ZERO` and `OVERFLOW` flags will be
+    /// set and `self` will have the maximum value.
+    /// 
     /// - This function is the base function for all the methods *_div_uint(),
     /// *_div_assign_uint(), *_rem_uint(), and *_rem_assign_uint().
     /// 
@@ -8513,11 +8764,31 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
             + BitXor<Output=U> + BitXorAssign + Not<Output=U>
             + PartialEq + PartialOrd
     {
-        if rhs.is_zero()
+        if PANIC_FREE
         {
-            panic!();
+            if rhs.is_zero()
+            {
+                let mut q: Self;
+                if self.is_zero()
+                {
+                    q = Self::zero();
+                    q.set_undefined();
+                }
+                else
+                {
+                    q = Self::max();
+                    q.set_all_flags(Self::INFINITY | Self::DIVIDED_BY_ZERO | Self::OVERFLOW);
+                }
+                return (q, U::zero());
+            }
         }
-        else if self.is_zero()
+        else
+        {
+            if rhs.is_zero()
+                { panic!(); }
+        }
+
+        if self.is_zero()
         {
             (Self::zero(), U::zero())
         }
@@ -9438,16 +9709,26 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// such as `u8`, `u16`, `u32`, `u64`, and `u128`.
     ///
     /// # Panics
-    /// - If `size_of::<T>() * N` <= `128`, this method may panic
-    /// or its behavior may be undefined though it may not panic.
-    /// - If `rhs` is either zero or multiple of `modulo`, it will panic.
-    /// - If `modulo` is either zero or one, it will panic.
+    /// - If `size_of::<T>() * N` <= `128`, this method may panic or its
+    /// behavior may be undefined though it may not panic.
+    /// - If `PANIC_FREE` is `false` and `rhs` is either zero or multiple of
+    /// `modulo`, it will panic.
+    /// - If `PANIC_FREE` is `false` and `modulo` is either zero or one,
+    /// it will panic.
     /// 
     /// # Features
     /// - It takes the remainder (= `rd1`) of `self` divided by `modulo`,
     /// and takes the remainder (= `rd2`) of `rhs` divided by `modulo`,
     /// and then finally takes the qutient of `rd1` divided by `rd2`.
     /// - There’s no way wrapping could ever happen.
+    /// - If `PANIC_FREE` is `true` and `modulo` is either zero or one,
+    /// `self` will have the value `zero` and `UNDEFINED` flag will be set.
+    /// - If `PANIC_FREE` is `true` and `rhs` is either zero or multiple of
+    /// `modulo` and `self` is zero, `self` will have the value `zero` and
+    /// `UNDEFINED` flag will be set.
+    /// - If `PANIC_FREE` is `true` and `rhs` is either zero or multiple of
+    /// `modulo` and `self` is not zero, `self` will have the max value and
+    /// `INFINITY`, `DIVIDED_BY_ZERO`, and `OVERFLOW` flags will be set.
     /// - All the flags are historical, which means, for example, if an
     /// divided_by_zero occurred even once before this current operation or
     /// `DIVIDED_BY_ZERO` flag is already set before this current operation,
@@ -9516,8 +9797,37 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
             + BitXor<Output=U> + BitXorAssign + Not<Output=U>
             + PartialEq + PartialOrd
     {
-        if modulo.is_zero_or_one()
-            { panic!(); }
+        if PANIC_FREE
+        {
+            let mut terminated = false;
+            if modulo.is_zero_or_one()
+            {
+                self.set_zero();
+                self.set_undefined();
+                terminated = true;
+            }
+            if rhs.is_zero()
+            {
+                if self.is_zero()
+                {
+                    self.set_zero();
+                    self.set_undefined();
+                }
+                else
+                {
+                    self.set_max();
+                    self.set_all_flags(Self::INFINITY | Self::DIVIDED_BY_ZERO | Self::OVERFLOW);
+                }
+                return;
+            }
+            if terminated
+                { return; }
+        }
+        else
+        {
+            if modulo.is_zero_or_one() | rhs.is_zero()
+                { panic!(); }
+        }
 
         let flags = self.get_all_flags();   
         if *self >= *modulo
@@ -9538,6 +9848,29 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
             let modu = modulo.into_u128();
             let mrhs = rhs.into_u128().wrapping_rem(modu);
             let mself = self.into_u128().wrapping_rem(modu);
+            if PANIC_FREE
+            {
+                if mrhs.is_zero()
+                {
+                    if self.is_zero()
+                    {
+                        self.set_zero();
+                        self.set_undefined();
+                    }
+                    else
+                    {
+                        self.set_max();
+                        self.set_all_flags(Self::INFINITY | Self::DIVIDED_BY_ZERO | Self::OVERFLOW);
+                    }
+                    return;
+                }
+            }
+            else
+            {
+                if mrhs.is_zero()
+                    { panic!(); }
+            }
+
             if mself >= mrhs
                 { self.set_uint(mself.wrapping_div(mrhs)); }
             else
@@ -20727,89 +21060,6 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
         self.flag = flag;
     }
 
-    // pub fn set_infinity(&mut self)
-    /// Sets infinity flag.
-    /// 
-    /// # Example
-    /// ```
-    /// // Todo
-    /// ```
-    #[inline]
-    pub fn set_infinity(&mut self)
-    {
-        self.set_flag_bit(Self::INFINITY);
-    }
-
-    // pub fn reset_infinity(&mut self)
-    /// Resets infinity flag.
-    /// 
-    /// # Example
-    /// ```
-    /// // Todo
-    /// ```
-    #[inline]
-    pub fn reset_infinity(&mut self)
-    {
-        self.reset_flag_bit(Self::INFINITY);
-    }
-
-    // pub fn is_infinity(&self) -> bool
-    /// Checks whether or not inifinity flag is set.
-    /// 
-    /// # Output
-    /// It returns `true` if the inifinity flag is set.
-    /// Otherwise, it returns `false`.
-    /// 
-    /// # Example
-    /// ```
-    /// // Todo
-    /// ```
-    #[inline]
-    pub fn is_infinity(&self) -> bool
-    {
-        self.is_flag_bit_on(Self::INFINITY)
-    }
-
-    // pub fn set_divided_by_zero(&mut self)
-    /// Sets divided_by_zero flag.
-    /// 
-    /// # Example
-    /// ```
-    /// // Todo
-    /// ```
-    #[inline]
-    pub fn set_divided_by_zero(&mut self)
-    {
-        self.set_flag_bit(Self::DIVIDED_BY_ZERO);
-    }
-
-    // pub fn reset_divided_by_zero(&mut self)
-    /// Resets divided_by_zero flag.
-    /// 
-    /// # Example
-    /// ```
-    /// // Todo
-    /// ```
-    #[inline]
-    pub fn reset_divided_by_zero(&mut self) { self.reset_flag_bit(Self::DIVIDED_BY_ZERO); }
-
-    // pub fn is_divided_by_zero(&self) -> bool
-    /// Checks whether or not divided_by_zero flag is set.
-    /// 
-    /// # Output
-    /// It returns `true` if the divided_by_zero flag is set.
-    /// Otherwise, it returns `false`.
-    /// 
-    /// # Example
-    /// ```
-    /// // Todo
-    /// ```
-    #[inline]
-    pub fn is_divided_by_zero(&self) -> bool
-    {
-        self.is_flag_bit_on(Self::DIVIDED_BY_ZERO)
-    }
-
     // pub fn set_overflow(&mut self)
     /// Sets `OVERFLOW` flag.
     /// 
@@ -20894,6 +21144,132 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     pub fn is_underflow(&self) -> bool
     {
         self.is_flag_bit_on(Self::UNDERFLOW)
+    }
+
+    // pub fn set_infinity(&mut self)
+    /// Sets `INFINITY` flag.
+    /// 
+    /// # Example
+    /// ```
+    /// // Todo
+    /// ```
+    #[inline]
+    pub fn set_infinity(&mut self)
+    {
+        self.set_flag_bit(Self::INFINITY);
+    }
+
+    // pub fn reset_infinity(&mut self)
+    /// Resets infinity flag.
+    /// 
+    /// # Example
+    /// ```
+    /// // Todo
+    /// ```
+    #[inline]
+    pub fn reset_infinity(&mut self)
+    {
+        self.reset_flag_bit(Self::INFINITY);
+    }
+
+    // pub fn is_infinity(&self) -> bool
+    /// Checks whether or not `INFINITY` flag is set.
+    /// 
+    /// # Output
+    /// It returns `true` if the `INFINITY` flag is set.
+    /// Otherwise, it returns `false`.
+    /// 
+    /// # Example
+    /// ```
+    /// // Todo
+    /// ```
+    #[inline]
+    pub fn is_infinity(&self) -> bool
+    {
+        self.is_flag_bit_on(Self::INFINITY)
+    }
+
+    // pub fn set_divided_by_zero(&mut self)
+    /// Sets `DIVIDED_BY_ZERO` flag.
+    /// 
+    /// # Example
+    /// ```
+    /// // Todo
+    /// ```
+    #[inline]
+    pub fn set_divided_by_zero(&mut self)
+    {
+        self.set_flag_bit(Self::DIVIDED_BY_ZERO);
+    }
+
+    // pub fn reset_divided_by_zero(&mut self)
+    /// Resets `DIVIDED_BY_ZERO` flag.
+    /// 
+    /// # Example
+    /// ```
+    /// // Todo
+    /// ```
+    #[inline]
+    pub fn reset_divided_by_zero(&mut self) { self.reset_flag_bit(Self::DIVIDED_BY_ZERO); }
+
+    // pub fn is_divided_by_zero(&self) -> bool
+    /// Checks whether or not `DIVIDED_BY_ZERO` flag is set.
+    /// 
+    /// # Output
+    /// It returns `true` if the `DIVIDED_BY_ZERO` flag is set.
+    /// Otherwise, it returns `false`.
+    /// 
+    /// # Example
+    /// ```
+    /// // Todo
+    /// ```
+    #[inline]
+    pub fn is_divided_by_zero(&self) -> bool
+    {
+        self.is_flag_bit_on(Self::DIVIDED_BY_ZERO)
+    }
+
+    // pub fn set_undefined(&mut self)
+    /// Sets `UNDEFINED` flag.
+    /// 
+    /// # Example
+    /// ```
+    /// // Todo
+    /// ```
+    #[inline]
+    pub fn set_undefined(&mut self)
+    {
+        self.set_flag_bit(Self::UNDEFINED);
+    }
+
+    // pub fn reset_undefined(&mut self)
+    /// Resets `UNDEFINED` flag.
+    /// 
+    /// # Example
+    /// ```
+    /// // Todo
+    /// ```
+    #[inline]
+    pub fn reset_undefined(&mut self)
+    {
+        self.reset_flag_bit(Self::UNDEFINED);
+    }
+
+    // pub fn is_undefined(&self) -> bool
+    /// Checks whether or not `UNDEFINED` flag is set.
+    /// 
+    /// # Output
+    /// It returns `true` if the `UNDEFINED` flag is set.
+    /// Otherwise, it returns `false`.
+    /// 
+    /// # Example
+    /// ```
+    /// // Todo
+    /// ```
+    #[inline]
+    pub fn is_undefined(&self) -> bool
+    {
+        self.is_flag_bit_on(Self::UNDEFINED)
     }
 
     // pub fn set_untrustable(&mut self)
