@@ -8921,6 +8921,30 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// assert_eq!(quotient.is_divided_by_zero(), true);
     /// ```
     /// 
+    /// # Example 4
+    /// ```
+    /// use std::str::FromStr;
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u32);
+    /// 
+    /// let _dividend = UU32::zero();
+    /// let _divisor = 0_u32;
+    /// // It will panic!
+    /// // let (quotient, remainder) = _dividend.divide_fully_uint(_divisor);
+    /// 
+    /// let dividend = UU32_::zero();
+    /// let divisor = 0_u32;
+    /// let (quotient, remainder) = dividend.divide_fully_uint(divisor);
+    /// println!("{} / {} => quotient = {} , remainder = {}", dividend, divisor, quotient, remainder);
+    /// assert_eq!(quotient, UU32_::zero());
+    /// assert_eq!(remainder.to_string(), "0");
+    /// assert_eq!(quotient.is_overflow(), false);
+    /// assert_eq!(quotient.is_underflow(), false);
+    /// assert_eq!(quotient.is_infinity(), false);
+    /// assert_eq!(quotient.is_undefined(), true);
+    /// assert_eq!(quotient.is_divided_by_zero(), true);
+    /// ```
+    /// 
     /// # Big-endian issue
     /// It is just experimental for Big Endian CPUs. So, you are not encouraged
     /// to use it for Big Endian CPUs for serious purpose. Only use this crate
@@ -9072,11 +9096,52 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// assert_eq!(quotient.is_infinity(), false);
     /// assert_eq!(quotient.is_divided_by_zero(), false);
     /// assert_eq!(quotient.is_undefined(), false);
+    /// ```
+    /// 
+    /// # Example 3
+    /// ```
+    /// use std::str::FromStr;
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u64);
     /// 
     /// let _dividend = U256::from_str("123456789015758942546236989636279846864825945392").unwrap();
     /// let _divisor = 0_u8;
     /// // It will painc!
     /// // let quotient = _dividend.wrapping_div_uint(_divisor);
+    /// 
+    /// let dividend = U256_::from_str("123456789015758942546236989636279846864825945392").unwrap();
+    /// let divisor = 0_u8;
+    /// let quotient = dividend.wrapping_div_uint(divisor);
+    /// println!("{} / {} = {}", dividend, divisor, quotient);
+    /// assert_eq!(quotient, U256_::max());
+    /// assert_eq!(quotient.is_overflow(), true);
+    /// assert_eq!(quotient.is_underflow(), false);
+    /// assert_eq!(quotient.is_infinity(), true);
+    /// assert_eq!(quotient.is_undefined(), false);
+    /// assert_eq!(quotient.is_divided_by_zero(), true);
+    /// ```
+    /// 
+    /// # Example 4
+    /// ```
+    /// use std::str::FromStr;
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u64);
+    /// 
+    /// let _dividend = U256::zero();
+    /// let _divisor = 0_u8;
+    /// // It will painc!
+    /// // let quotient = _dividend.wrapping_div_uint(_divisor);
+    /// 
+    /// let dividend = U256_::zero();
+    /// let divisor = 0_u8;
+    /// let quotient = dividend.wrapping_div_uint(divisor);
+    /// println!("{} / {} = {}", dividend, divisor, quotient);
+    /// assert_eq!(quotient.to_string(), "0");
+    /// assert_eq!(quotient.is_overflow(), false);
+    /// assert_eq!(quotient.is_underflow(), false);
+    /// assert_eq!(quotient.is_infinity(), false);
+    /// assert_eq!(quotient.is_undefined(), true);
+    /// assert_eq!(quotient.is_divided_by_zero(), true);
     /// ```
     /// 
     /// # Big-endian issue
@@ -9178,18 +9243,63 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// assert_eq!(a_biguint.is_infinity(), false);
     /// assert_eq!(a_biguint.is_divided_by_zero(), false);
     /// assert_eq!(a_biguint.is_undefined(), false);
+    /// ```
+    /// 
+    /// # Example 3
+    /// ```
+    /// use std::str::FromStr;
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u128);
     /// 
     /// let mut _a_biguint = UU32::from_str("123456789015758942546236989636279846864825945392").unwrap();
     /// let _divisor = 0_u8;
     /// println!("Originally,\n_a_biguint = {}", _a_biguint);
     /// // It will panic!
     /// // a_biguint.wrapping_div_assign_uint(_divisor);
+    /// 
+    /// let dividend = U256_::from_str("123456789015758942546236989636279846864825945392").unwrap();
+    /// let divisor = 0_u8;
+    /// let (quotient, overflow) = dividend.overflowing_div_uint(divisor);
+    /// println!("{} / {} = {}", dividend, divisor, quotient);
+    /// assert_eq!(quotient, U256_::max());
+    /// assert_eq!(overflow, true);
+    /// assert_eq!(quotient.is_overflow(), true);
+    /// assert_eq!(quotient.is_underflow(), false);
+    /// assert_eq!(quotient.is_infinity(), true);
+    /// assert_eq!(quotient.is_undefined(), false);
+    /// assert_eq!(quotient.is_divided_by_zero(), true);
+    /// ```
+    /// 
+    /// # Example 4
+    /// ```
+    /// use std::str::FromStr;
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u128);
+    /// 
+    /// let mut _a_biguint = UU32::zero();
+    /// let _divisor = 0_u8;
+    /// println!("Originally,\n_a_biguint = {}", _a_biguint);
+    /// // It will panic!
+    /// // a_biguint.wrapping_div_assign_uint(_divisor);
+    /// 
+    /// let dividend = U256_::zero();
+    /// let divisor = 0_u8;
+    /// let (quotient, overflow) = dividend.overflowing_div_uint(divisor);
+    /// println!("{} / {} = {}", dividend, divisor, quotient);
+    /// assert_eq!(quotient.to_string(), "0");
+    /// assert_eq!(overflow, false);
+    /// assert_eq!(quotient.is_overflow(), false);
+    /// assert_eq!(quotient.is_underflow(), false);
+    /// assert_eq!(quotient.is_infinity(), false);
+    /// assert_eq!(quotient.is_undefined(), true);
+    /// assert_eq!(quotient.is_divided_by_zero(), true);
     /// ```
     /// 
     /// # Big-endian issue
     /// It is just experimental for Big Endian CPUs. So, you are not encouraged
     /// to use it for Big Endian CPUs for serious purpose. Only use this crate
     /// for Big-endian CPUs with your own full responsibility.
+    #[inline]
     pub fn wrapping_div_assign_uint<U>(&mut self, rhs: U)
     where U: SmallUInt + Copy + Clone + Display + Debug + ToString
             + Add<Output=U> + AddAssign + Sub<Output=U> + SubAssign
@@ -9200,9 +9310,9 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
             + BitXor<Output=U> + BitXorAssign + Not<Output=U>
             + PartialEq + PartialOrd
     {
-        let flags = self.get_all_flags();
-        *self = self.wrapping_div_uint(rhs);
-        self.set_flag_bit(flags);
+        let res = self.wrapping_div_uint(rhs);
+        self.set_number(res.get_number());
+        self.set_flag_bit(res.get_all_flags());
     }
 
     // pub fn overflowing_div_uint<U>(&self, rhs: U) -> (Self, bool)
@@ -9277,10 +9387,53 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// assert_eq!(quotient.is_infinity(), false);
     /// assert_eq!(quotient.is_divided_by_zero(), false);
     /// assert_eq!(quotient.is_undefined(), false);
+    /// ```
+    ///
+    /// # Example 3
+    /// ```
+    /// use std::str::FromStr;
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u8);
     /// 
     /// let _dividend = U256::from_str("123456789015758942546236989636279846864825945392").unwrap();
     /// let _divisor = 0_u8;
     /// // let (quotient, overflow) = _dividend.overflowing_div_uint(_divisor);
+    /// 
+    /// let dividend = U256_::from_str("123456789015758942546236989636279846864825945392").unwrap();
+    /// let divisor = 0_u8;
+    /// let (quotient, overflow) = dividend.overflowing_div_uint(divisor);
+    /// println!("{} / {} = {}", dividend, divisor, quotient);
+    /// assert_eq!(quotient, U256_::max());
+    /// assert_eq!(overflow, true);
+    /// assert_eq!(quotient.is_overflow(), true);
+    /// assert_eq!(quotient.is_underflow(), false);
+    /// assert_eq!(quotient.is_infinity(), true);
+    /// assert_eq!(quotient.is_undefined(), false);
+    /// assert_eq!(quotient.is_divided_by_zero(), true);
+    /// ```
+    ///
+    /// # Example 4
+    /// ```
+    /// use std::str::FromStr;
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u8);
+    /// 
+    /// let _dividend = U256::zero();
+    /// let _divisor = 0_u8;
+    /// // It will panic!
+    /// // let (quotient, overflow) = _dividend.overflowing_div_uint(_divisor);
+    /// 
+    /// let dividend = U256_::zero();
+    /// let divisor = 0_u8;
+    /// let (quotient, overflow) = dividend.overflowing_div_uint(divisor);
+    /// println!("{} / {} = {}", dividend, divisor, quotient);
+    /// assert_eq!(quotient.to_string(), "0");
+    /// assert_eq!(overflow, false);
+    /// assert_eq!(quotient.is_overflow(), false);
+    /// assert_eq!(quotient.is_underflow(), false);
+    /// assert_eq!(quotient.is_infinity(), false);
+    /// assert_eq!(quotient.is_undefined(), true);
+    /// assert_eq!(quotient.is_divided_by_zero(), true);
     /// ```
     ///
     /// # Big-endian issue

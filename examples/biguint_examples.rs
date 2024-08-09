@@ -3901,9 +3901,37 @@ fn biguint_wrapping_div_uint()
     assert_eq!(quotient.is_undefined(), false);
     assert_eq!(quotient.is_divided_by_zero(), false);
 
+    let _dividend = U256::from_str("123456789015758942546236989636279846864825945392").unwrap();
     let _divisor = 0_u8;
     // It will panic!
-    // let quotient = dividend.wrapping_div_uint(_divisor);
+    // let quotient = _dividend.wrapping_div_uint(_divisor);
+
+    let dividend = U256_::from_str("123456789015758942546236989636279846864825945392").unwrap();
+    let divisor = 0_u8;
+    let quotient = dividend.wrapping_div_uint(divisor);
+    println!("{} / {} = {}", dividend, divisor, quotient);
+    assert_eq!(quotient, U256_::max());
+    assert_eq!(quotient.is_overflow(), true);
+    assert_eq!(quotient.is_underflow(), false);
+    assert_eq!(quotient.is_infinity(), true);
+    assert_eq!(quotient.is_undefined(), false);
+    assert_eq!(quotient.is_divided_by_zero(), true);
+
+    let _dividend = U256::zero();
+    let _divisor = 0_u8;
+    // It will panic!
+    // let quotient = _dividend.wrapping_div_uint(_divisor);
+
+    let dividend = U256_::zero();
+    let divisor = 0_u8;
+    let quotient = dividend.wrapping_div_uint(divisor);
+    println!("{} / {} = {}", dividend, divisor, quotient);
+    assert_eq!(quotient.to_string(), "0");
+    assert_eq!(quotient.is_overflow(), false);
+    assert_eq!(quotient.is_underflow(), false);
+    assert_eq!(quotient.is_infinity(), false);
+    assert_eq!(quotient.is_undefined(), true);
+    assert_eq!(quotient.is_divided_by_zero(), true);
     println!("---------------------------");
 }
 
@@ -3955,6 +3983,48 @@ fn biguint_wrapping_div_assign_uint()
     println!("Originally,\n_a_biguint = {}", _a_biguint);
     // It will panic!
     // _a_biguint.wrapping_div_assign_uint(_divisor);
+
+    let mut a_biguint = UU32_::from_str("123456789015758942546236989636279846864825945392").unwrap();
+    let divisor = 0_u8;
+    println!("Originally,\na_biguint = {}", a_biguint);
+    assert_eq!(a_biguint.is_overflow(), false);
+    assert_eq!(a_biguint.is_underflow(), false);
+    assert_eq!(a_biguint.is_infinity(), false);
+    assert_eq!(a_biguint.is_undefined(), false);
+    assert_eq!(a_biguint.is_divided_by_zero(), false);
+
+    a_biguint.wrapping_div_assign_uint(divisor);
+    println!("After a_biguint.wrapping_div_assign_uint(&divisor),\na_biguint = {}", a_biguint);
+    assert_eq!(a_biguint, UU32_::max());
+    assert_eq!(a_biguint.is_overflow(), true);
+    assert_eq!(a_biguint.is_underflow(), false);
+    assert_eq!(a_biguint.is_infinity(), true);
+    assert_eq!(a_biguint.is_undefined(), false);
+    assert_eq!(a_biguint.is_divided_by_zero(), true);
+
+    let mut _a_biguint = UU32::zero();
+    let _divisor = 0_u8;
+    println!("Originally,\n_a_biguint = {}", _a_biguint);
+    // It will panic!
+    // _a_biguint.wrapping_div_assign_uint(_divisor);
+
+    let mut a_biguint = UU32_::zero();
+    let divisor = 0_u8;
+    println!("Originally,\na_biguint = {}", a_biguint);
+    assert_eq!(a_biguint.is_overflow(), false);
+    assert_eq!(a_biguint.is_underflow(), false);
+    assert_eq!(a_biguint.is_infinity(), false);
+    assert_eq!(a_biguint.is_undefined(), false);
+    assert_eq!(a_biguint.is_divided_by_zero(), false);
+
+    a_biguint.wrapping_div_assign_uint(divisor);
+    println!("After a_biguint.wrapping_div_assign_uint(&divisor),\na_biguint = {}", a_biguint);
+    assert_eq!(a_biguint.to_string(), "0");
+    assert_eq!(a_biguint.is_overflow(), false);
+    assert_eq!(a_biguint.is_underflow(), false);
+    assert_eq!(a_biguint.is_infinity(), false);
+    assert_eq!(a_biguint.is_undefined(), true);
+    assert_eq!(a_biguint.is_divided_by_zero(), true);
     println!("---------------------------");
 }
 
@@ -3989,9 +4059,39 @@ fn biguint_overflowing_div_uint()
     assert_eq!(quotient.is_undefined(), false);
     assert_eq!(quotient.is_divided_by_zero(), false);
 
+    let _dividend = U256::from_str("123456789015758942546236989636279846864825945392").unwrap();
     let _divisor = 0_u8;
     // It will panic!
-    // let (quotient, overflow) = dividend.overflowing_div_uint(_divisor);
+    // let (quotient, overflow) = _dividend.overflowing_div_uint(_divisor);
+
+    let dividend = U256_::from_str("123456789015758942546236989636279846864825945392").unwrap();
+    let divisor = 0_u8;
+    let (quotient, overflow) = dividend.overflowing_div_uint(divisor);
+    println!("{} / {} = {}", dividend, divisor, quotient);
+    assert_eq!(quotient, U256_::max());
+    assert_eq!(overflow, true);
+    assert_eq!(quotient.is_overflow(), true);
+    assert_eq!(quotient.is_underflow(), false);
+    assert_eq!(quotient.is_infinity(), true);
+    assert_eq!(quotient.is_undefined(), false);
+    assert_eq!(quotient.is_divided_by_zero(), true);
+
+    let _dividend = U256::zero();
+    let _divisor = 0_u8;
+    // It will panic!
+    // let (quotient, overflow) = _dividend.overflowing_div_uint(_divisor);
+
+    let dividend = U256_::zero();
+    let divisor = 0_u8;
+    let (quotient, overflow) = dividend.overflowing_div_uint(divisor);
+    println!("{} / {} = {}", dividend, divisor, quotient);
+    assert_eq!(quotient.to_string(), "0");
+    assert_eq!(overflow, false);
+    assert_eq!(quotient.is_overflow(), false);
+    assert_eq!(quotient.is_underflow(), false);
+    assert_eq!(quotient.is_infinity(), false);
+    assert_eq!(quotient.is_undefined(), true);
+    assert_eq!(quotient.is_divided_by_zero(), true);
     println!("---------------------------");
 }
 
