@@ -388,12 +388,13 @@ use crate::number::{ SmallUInt, LongerUnion, SharedValues, SharedArrays, NumberE
 ///   machine, usize will be the same size of `u64` while your operating system
 ///   is for 32-bit machine, `usize` will be the same size of `u32`.
 /// - The generic constant `PANIC_FREE` indicates whether or not `BigUInt` is
-///   panic-free __during arithmatic operation__. If PANIC_FREE is false, the
-///   methods of `BigUInt` may panic depending on conditions such as
-///   `divide-by-zero`, etc. If PANIC_FREE is `true`, the methods of `BigUInt`
-///   will never panic __during arithmatic operation__ even under the condition
+///   panic-free __for divide-by-zero or modulo-by-zero-or-one arithmatic
+///   operation__. If PANIC_FREE is false, the methods of `BigUInt` may panic
+///   depending on conditions such as `divide-by-zero`, etc. If PANIC_FREE is
+///   `true`, the methods of `BigUInt` will never panic __for divide-by-zero or
+///   modulo-by-zero-or-one arithmatic operation__ even under the condition
 ///   `divide-by-zero` unless `size_of::<T>() * N` <= `128`. It may panic
-///   __during non-arithmatic operation__ such as set_num() even if
+///   __during non-arithmatic operation__ such as set_num_() even if
 ///   `PANIC_FREE` is `true`. __Panic-free does not mean that it will never
 ///   panic under any condition.__
 /// - The same sized `BigUInt` can be made in several ways.
@@ -4056,9 +4057,9 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// more convenient for you to use the operator `==`.
     /// 
     /// # Panics
-    /// - If `size_of::<T>() * N` <= `128`, some methods may panic
+    /// - If `size_of::<T>() * N` <= `128`, this method may panic
     /// or its behavior may be undefined though it may not panic.
-    /// - If `size_of::<T>() * N` < `size_of::<U>()`, This method may panic
+    /// - If `size_of::<T>() * N` < `size_of::<U>()`, this method may panic
     /// or its behavior may be undefined though it may not panic.
     /// 
     /// # Output
@@ -4297,6 +4298,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// assert_eq!(sum.is_underflow(), false);
     /// assert_eq!(sum.is_divided_by_zero(), false);
     /// assert_eq!(sum.is_infinity(), false);
+    /// assert_eq!(sum.is_undefined(), false);
     /// ```
     /// 
     /// # Example 2
@@ -4316,6 +4318,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// assert_eq!(sum.is_underflow(), false);
     /// assert_eq!(sum.is_divided_by_zero(), false);
     /// assert_eq!(sum.is_infinity(), false);
+    /// assert_eq!(sum.is_undefined(), false);
     /// ```
     /// 
     /// # Example 3
@@ -4335,6 +4338,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// assert_eq!(sum.is_underflow(), false);
     /// assert_eq!(sum.is_divided_by_zero(), false);
     /// assert_eq!(sum.is_infinity(), false);
+    /// assert_eq!(sum.is_undefined(), false);
     /// ```
     /// 
     /// # Example 4
@@ -4354,6 +4358,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// assert_eq!(sum.is_underflow(), false);
     /// assert_eq!(sum.is_divided_by_zero(), false);
     /// assert_eq!(sum.is_infinity(), false);
+    /// assert_eq!(sum.is_undefined(), false);
     /// ```
     /// 
     /// # Big-endian issue
@@ -4425,6 +4430,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// assert_eq!(num1.is_underflow(), false);
     /// assert_eq!(num1.is_divided_by_zero(), false);
     /// assert_eq!(num1.is_infinity(), false);
+    /// assert_eq!(num1.is_undefined(), false);
     /// 
     /// println!("After num1 += {},\tnum1 = {}\tcarry = {}", num_uint, num1, carry);
     /// assert_eq!(num1.to_string(), "115761816335569101403435733562708448393642106212790284019692513725068324302573");
@@ -4433,6 +4439,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// assert_eq!(num1.is_underflow(), false);
     /// assert_eq!(num1.is_divided_by_zero(), false);
     /// assert_eq!(num1.is_infinity(), false);
+    /// assert_eq!(num1.is_undefined(), false);
     /// ```
     /// 
     /// # Example 2
@@ -4449,6 +4456,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// assert_eq!(num1.is_underflow(), false);
     /// assert_eq!(num1.is_divided_by_zero(), false);
     /// assert_eq!(num1.is_infinity(), false);
+    /// assert_eq!(num1.is_undefined(), false);
     /// 
     /// println!("After num1 += {},\tnum1 = {}\tcarry = {}", num_uint, num1, carry);
     /// assert_eq!(num1.to_string(), "115761816335569101403435733562708448393642106212790284019692513725068324302574");
@@ -4457,6 +4465,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// assert_eq!(num1.is_underflow(), false);
     /// assert_eq!(num1.is_divided_by_zero(), false);
     /// assert_eq!(num1.is_infinity(), false);
+    /// assert_eq!(num1.is_undefined(), false);
     /// ```
     /// 
     /// # Example 3
@@ -4472,6 +4481,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// assert_eq!(num2.is_underflow(), false);
     /// assert_eq!(num2.is_divided_by_zero(), false);
     /// assert_eq!(num2.is_infinity(), false);
+    /// assert_eq!(num2.is_undefined(), false);
     /// 
     /// let carry = num2.carrying_add_assign_uint(num_uint, false);
     /// println!("After num2 += {},\tnum2 = {}\tcarry = {}", num_uint, num2, carry);
@@ -4481,6 +4491,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// assert_eq!(num2.is_underflow(), false);
     /// assert_eq!(num2.is_divided_by_zero(), false);
     /// assert_eq!(num2.is_infinity(), false);
+    /// assert_eq!(num2.is_undefined(), false);
     /// ```
     /// 
     /// # Example 4
@@ -4496,6 +4507,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// assert_eq!(num2.is_underflow(), false);
     /// assert_eq!(num2.is_divided_by_zero(), false);
     /// assert_eq!(num2.is_infinity(), false);
+    /// assert_eq!(num2.is_undefined(), false);
     /// 
     /// let carry = num2.carrying_add_assign_uint(num_uint, true);
     /// println!("After num2 += {},\tnum2 = {}\tcarry = {}", num_uint, num2, carry);
@@ -4505,6 +4517,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// assert_eq!(num2.is_underflow(), false);
     /// assert_eq!(num2.is_divided_by_zero(), false);
     /// assert_eq!(num2.is_infinity(), false);
+    /// assert_eq!(num2.is_undefined(), false);
     /// ```
     /// 
     /// # Big-endian issue
@@ -4579,6 +4592,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// assert_eq!(res.is_underflow(), false);
     /// assert_eq!(res.is_divided_by_zero(), false);
     /// assert_eq!(res.is_infinity(), false);
+    /// assert_eq!(res.is_undefined(), false);
     /// ```
     /// 
     /// # Example 2
@@ -4594,6 +4608,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// assert_eq!(res.is_underflow(), false);
     /// assert_eq!(res.is_divided_by_zero(), false);
     /// assert_eq!(res.is_infinity(), false);
+    /// assert_eq!(res.is_undefined(), false);
     /// ```
     /// 
     /// # Example 3
@@ -4609,6 +4624,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// assert_eq!(res.is_underflow(), false);
     /// assert_eq!(res.is_divided_by_zero(), false);
     /// assert_eq!(res.is_infinity(), false);
+    /// assert_eq!(res.is_undefined(), false);
     /// ```
     /// 
     /// # Big-endian issue
@@ -4671,6 +4687,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// assert_eq!(a_biguint.is_underflow(), false);
     /// assert_eq!(a_biguint.is_divided_by_zero(), false);
     /// assert_eq!(a_biguint.is_infinity(), false);
+    /// assert_eq!(a_biguint.is_undefined(), false);
     /// 
     /// a_biguint.wrapping_add_assign_uint(1_u8);
     /// println!("After a_biguint.wrapping_add_assign_uint(1_u8),\ta_biguint = {}", a_biguint);
@@ -4679,6 +4696,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// assert_eq!(a_biguint.is_underflow(), false);
     /// assert_eq!(a_biguint.is_divided_by_zero(), false);
     /// assert_eq!(a_biguint.is_infinity(), false);
+    /// assert_eq!(a_biguint.is_undefined(), false);
     /// ```
     /// 
     /// # Example 2
@@ -4692,6 +4710,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// assert_eq!(a_biguint.is_underflow(), false);
     /// assert_eq!(a_biguint.is_divided_by_zero(), false);
     /// assert_eq!(a_biguint.is_infinity(), false);
+    /// assert_eq!(a_biguint.is_undefined(), false);
     /// 
     /// a_biguint.wrapping_add_assign_uint(1_u8);
     /// println!("After a_biguint.wrapping_add_assign_uint(1_u8),\ta_biguint = {}", a_biguint);
@@ -4700,6 +4719,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// assert_eq!(a_biguint.is_underflow(), false);
     /// assert_eq!(a_biguint.is_divided_by_zero(), false);
     /// assert_eq!(a_biguint.is_infinity(), false);
+    /// assert_eq!(a_biguint.is_undefined(), false);
     /// ```
     /// 
     /// # Example 3
@@ -4713,6 +4733,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// assert_eq!(a_biguint.is_underflow(), false);
     /// assert_eq!(a_biguint.is_divided_by_zero(), false);
     /// assert_eq!(a_biguint.is_infinity(), false);
+    /// assert_eq!(a_biguint.is_undefined(), false);
     /// 
     /// a_biguint.wrapping_add_assign_uint(1_u8);
     /// println!("After a_biguint.wrapping_add_assign_uint(1_u8),\ta_biguint = {}", a_biguint);
@@ -4721,6 +4742,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// assert_eq!(a_biguint.is_underflow(), false);
     /// assert_eq!(a_biguint.is_divided_by_zero(), false);
     /// assert_eq!(a_biguint.is_infinity(), false);
+    /// assert_eq!(a_biguint.is_undefined(), false);
     /// ```
     /// 
     /// # Big-endian issue
@@ -4778,6 +4800,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// assert_eq!(res.is_underflow(), false);
     /// assert_eq!(res.is_divided_by_zero(), false);
     /// assert_eq!(res.is_infinity(), false);
+    /// assert_eq!(res.is_undefined(), false);
     /// ```
     /// 
     /// # Example 2
@@ -4794,6 +4817,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// assert_eq!(res.is_underflow(), false);
     /// assert_eq!(res.is_divided_by_zero(), false);
     /// assert_eq!(res.is_infinity(), false);
+    /// assert_eq!(res.is_undefined(), false);
     /// ```
     /// 
     /// # Example 3
@@ -4810,6 +4834,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// assert_eq!(res.is_underflow(), false);
     /// assert_eq!(res.is_divided_by_zero(), false);
     /// assert_eq!(res.is_infinity(), false);
+    /// assert_eq!(res.is_undefined(), false);
     /// ```
     /// 
     /// # Big-endian issue
@@ -4869,6 +4894,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// assert_eq!(a_biguint.is_underflow(), false);
     /// assert_eq!(a_biguint.is_divided_by_zero(), false);
     /// assert_eq!(a_biguint.is_infinity(), false);
+    /// assert_eq!(a_biguint.is_undefined(), false);
     /// 
     /// let overflow = a_biguint.overflowing_add_assign_uint(1_u8);
     /// println!("After a_biguint.overflowing_add_assign_uint(1_u8),\ta_biguint = {}\noverflow = {}", a_biguint, overflow);
@@ -4878,6 +4904,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// assert_eq!(a_biguint.is_underflow(), false);
     /// assert_eq!(a_biguint.is_divided_by_zero(), false);
     /// assert_eq!(a_biguint.is_infinity(), false);
+    /// assert_eq!(a_biguint.is_undefined(), false);
     /// ```
     /// 
     /// # Example 2
@@ -4892,6 +4919,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// assert_eq!(a_biguint.is_underflow(), false);
     /// assert_eq!(a_biguint.is_divided_by_zero(), false);
     /// assert_eq!(a_biguint.is_infinity(), false);
+    /// assert_eq!(a_biguint.is_undefined(), false);
     /// 
     /// let overflow = a_biguint.overflowing_add_assign_uint(2_u8);
     /// println!("After a_biguint.overflowing_add_assign_uint(2_u8),\ta_biguint = {}\noverflow = {}", a_biguint, overflow);
@@ -4901,6 +4929,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// assert_eq!(a_biguint.is_underflow(), false);
     /// assert_eq!(a_biguint.is_divided_by_zero(), false);
     /// assert_eq!(a_biguint.is_infinity(), false);
+    /// assert_eq!(a_biguint.is_undefined(), false);
     /// ```
     /// 
     /// # Example 3
@@ -4915,6 +4944,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// assert_eq!(a_biguint.is_underflow(), false);
     /// assert_eq!(a_biguint.is_divided_by_zero(), false);
     /// assert_eq!(a_biguint.is_infinity(), false);
+    /// assert_eq!(a_biguint.is_undefined(), false);
     /// 
     /// let overflow = a_biguint.overflowing_add_assign_uint(3_u8);
     /// println!("After a_biguint.overflowing_add_assign_uint(3_u8),\ta_biguint = {}\noverflow = {}", a_biguint, overflow);
@@ -4924,6 +4954,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// assert_eq!(a_biguint.is_underflow(), false);
     /// assert_eq!(a_biguint.is_divided_by_zero(), false);
     /// assert_eq!(a_biguint.is_infinity(), false);
+    /// assert_eq!(a_biguint.is_undefined(), false);
     /// ```
     /// 
     /// # Big-endian issue
@@ -4986,6 +5017,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     ///         assert_eq!(num.is_underflow(), false);
     ///         assert_eq!(num.is_divided_by_zero(), false);
     ///         assert_eq!(num.is_infinity(), false);
+    ///         assert_eq!(num.is_undefined(), false);
     ///     },
     ///     None => {
     ///         println!("{} + 1 = overflow", a_biguint);
@@ -5093,6 +5125,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// assert_eq!(res.is_underflow(), false);
     /// assert_eq!(res.is_divided_by_zero(), false);
     /// assert_eq!(res.is_infinity(), false);
+    /// assert_eq!(res.is_undefined(), false);
     /// 
     /// let _a_biguint = UU64::max().wrapping_sub_uint(1_u8);
     /// // It will panic.
@@ -5154,6 +5187,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// assert_eq!(res.is_underflow(), false);
     /// assert_eq!(res.is_divided_by_zero(), false);
     /// assert_eq!(res.is_infinity(), false);
+    /// assert_eq!(res.is_undefined(), false);
     /// ```
     /// 
     /// # Example 2
@@ -5169,6 +5203,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// assert_eq!(res.is_underflow(), false);
     /// assert_eq!(res.is_divided_by_zero(), false);
     /// assert_eq!(res.is_infinity(), false);
+    /// assert_eq!(res.is_undefined(), false);
     /// ```
     /// 
     /// # Example 3
@@ -5184,6 +5219,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// assert_eq!(res.is_underflow(), false);
     /// assert_eq!(res.is_divided_by_zero(), false);
     /// assert_eq!(res.is_infinity(), false);
+    /// assert_eq!(res.is_undefined(), false);
     /// ```
     /// 
     /// # Big-endian issue
@@ -5241,6 +5277,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// assert_eq!(a_biguint.is_underflow(), false);
     /// assert_eq!(a_biguint.is_divided_by_zero(), false);
     /// assert_eq!(a_biguint.is_infinity(), false);
+    /// assert_eq!(a_biguint.is_undefined(), false);
     /// 
     /// a_biguint.saturating_add_assign_uint(1_u8);
     /// println!("After a_biguint.saturating_add_assign_uint(1_u8),\ta_biguint = {}", a_biguint);
@@ -5249,6 +5286,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// assert_eq!(a_biguint.is_underflow(), false);
     /// assert_eq!(a_biguint.is_divided_by_zero(), false);
     /// assert_eq!(a_biguint.is_infinity(), false);
+    /// assert_eq!(a_biguint.is_undefined(), false);
     /// ```
     /// 
     /// # Example 2
@@ -5263,6 +5301,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// assert_eq!(a_biguint.is_underflow(), false);
     /// assert_eq!(a_biguint.is_divided_by_zero(), false);
     /// assert_eq!(a_biguint.is_infinity(), false);
+    /// assert_eq!(a_biguint.is_undefined(), false);
     /// 
     /// a_biguint.saturating_add_assign_uint(2_u8);
     /// println!("After a_biguint.saturating_add_assign_uint(2_u8),\ta_biguint = {}", a_biguint);
@@ -5271,8 +5310,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// assert_eq!(a_biguint.is_underflow(), false);
     /// assert_eq!(a_biguint.is_divided_by_zero(), false);
     /// assert_eq!(a_biguint.is_infinity(), false);
-    /// let mut a_biguint = UU64::max().wrapping_sub_uint(2_u8);
-    /// assert_eq!(a_biguint.to_string(), "13407807929942597099574024998205846127479365820592393377723561443721764030073546976801874298166903427690031858186486050853753882811946569946433649006084093");
+    /// assert_eq!(a_biguint.is_undefined(), false);
     /// ```
     /// 
     /// # Example 3
@@ -5287,6 +5325,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// assert_eq!(a_biguint.is_underflow(), false);
     /// assert_eq!(a_biguint.is_divided_by_zero(), false);
     /// assert_eq!(a_biguint.is_infinity(), false);
+    /// assert_eq!(a_biguint.is_undefined(), false);
     /// 
     /// a_biguint.saturating_add_assign_uint(3_u8);
     /// println!("After a_biguint.saturating_add_assign_uint(3_u8),\ta_biguint = {}", a_biguint);
@@ -5295,6 +5334,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// assert_eq!(a_biguint.is_underflow(), false);
     /// assert_eq!(a_biguint.is_divided_by_zero(), false);
     /// assert_eq!(a_biguint.is_infinity(), false);
+    /// assert_eq!(a_biguint.is_undefined(), false);
     /// ```
     /// 
     /// # Big-endian issue
@@ -5371,6 +5411,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// assert_eq!(res.is_underflow(), false);
     /// assert_eq!(res.is_divided_by_zero(), false);
     /// assert_eq!(res.is_infinity(), false);
+    /// assert_eq!(res.is_undefined(), false);
     /// ```
     /// 
     /// # Example 2
@@ -5387,6 +5428,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// assert_eq!(res.is_underflow(), false);
     /// assert_eq!(res.is_divided_by_zero(), false);
     /// assert_eq!(res.is_infinity(), false);
+    /// assert_eq!(res.is_undefined(), false);
     /// ```
     /// 
     /// # Example 3
@@ -5403,6 +5445,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// assert_eq!(res.is_underflow(), false);
     /// assert_eq!(res.is_divided_by_zero(), false);
     /// assert_eq!(res.is_infinity(), false);
+    /// assert_eq!(res.is_undefined(), false);
     /// 
     /// let _a_biguint = U256::from_string("76801874298166903427690031858186486050853753882811946569946433649006").unwrap();
     /// let _m = U256::zero();
@@ -5489,6 +5532,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// assert_eq!(a_biguint.is_underflow(), false);
     /// assert_eq!(a_biguint.is_divided_by_zero(), false);
     /// assert_eq!(a_biguint.is_infinity(), false);
+    /// assert_eq!(a_biguint.is_undefined(), false);
     /// 
     /// a_biguint.modular_add_assign_uint(1_u8, &m);
     /// println!("After a.modular_add_assign_uint(1_u8, &m),\ta = {}", a_biguint);
@@ -5497,6 +5541,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// assert_eq!(a_biguint.is_underflow(), false);
     /// assert_eq!(a_biguint.is_divided_by_zero(), false);
     /// assert_eq!(a_biguint.is_infinity(), false);
+    /// assert_eq!(a_biguint.is_undefined(), false);
     /// ```
     /// 
     /// # Example 2
@@ -5512,6 +5557,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// assert_eq!(a_biguint.is_underflow(), false);
     /// assert_eq!(a_biguint.is_divided_by_zero(), false);
     /// assert_eq!(a_biguint.is_infinity(), false);
+    /// assert_eq!(a_biguint.is_undefined(), false);
     /// 
     /// a_biguint.modular_add_assign_uint(2_u8, &m);
     /// println!("After a.modular_add_assign_uint(2_u8, &m),\ta = {}", a_biguint);
@@ -5520,6 +5566,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// assert_eq!(a_biguint.is_underflow(), false);
     /// assert_eq!(a_biguint.is_divided_by_zero(), false);
     /// assert_eq!(a_biguint.is_infinity(), false);
+    /// assert_eq!(a_biguint.is_undefined(), false);
     /// ```
     /// 
     /// # Example 3
@@ -5535,6 +5582,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// assert_eq!(a_biguint.is_underflow(), false);
     /// assert_eq!(a_biguint.is_divided_by_zero(), false);
     /// assert_eq!(a_biguint.is_infinity(), false);
+    /// assert_eq!(a_biguint.is_undefined(), false);
     /// 
     /// a_biguint.modular_add_assign_uint(3_u8, &m);
     /// println!("After a.modular_add_assign_uint(3_u8, &m),\ta_biguint = {}", a_biguint);
@@ -5543,6 +5591,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// assert_eq!(a_biguint.is_underflow(), false);
     /// assert_eq!(a_biguint.is_divided_by_zero(), false);
     /// assert_eq!(a_biguint.is_infinity(), false);
+    /// assert_eq!(a_biguint.is_undefined(), false);
     /// 
     /// a_biguint.modular_add_assign_uint(1_u8, &m);
     /// println!("After a.modular_add_assign_uint(1_u8, &m),\ta = {}", a_biguint);
@@ -5551,6 +5600,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// assert_eq!(a_biguint.is_underflow(), false);
     /// assert_eq!(a_biguint.is_divided_by_zero(), false);
     /// assert_eq!(a_biguint.is_infinity(), false);
+    /// assert_eq!(a_biguint.is_undefined(), false);
     /// 
     /// let _a_biguint = U256::from_string("76801874298166903427690031858186486050853753882811946569946433649006").unwrap();
     /// let _m = U256::zero();
@@ -5682,6 +5732,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// assert_eq!(dif.is_overflow(), false);
     /// assert_eq!(dif.is_divided_by_zero(), false);
     /// assert_eq!(dif.is_infinity(), false);
+    /// assert_eq!(dif.is_undefined(), false);
     /// ```
     /// 
     /// # Example 2
@@ -5701,6 +5752,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// assert_eq!(dif.is_overflow(), false);
     /// assert_eq!(dif.is_divided_by_zero(), false);
     /// assert_eq!(dif.is_infinity(), false);
+    /// assert_eq!(dif.is_undefined(), false);
     /// ```
     /// 
     /// # Example 3
@@ -5720,6 +5772,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// assert_eq!(dif.is_overflow(), false);
     /// assert_eq!(dif.is_divided_by_zero(), false);
     /// assert_eq!(dif.is_infinity(), false);
+    /// assert_eq!(dif.is_undefined(), false);
     /// ```
     /// 
     /// # Example 4
@@ -5739,6 +5792,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// assert_eq!(dif.is_overflow(), false);
     /// assert_eq!(dif.is_divided_by_zero(), false);
     /// assert_eq!(dif.is_infinity(), false);
+    /// assert_eq!(dif.is_undefined(), false);
     /// ```
     /// 
     /// # Big-endian issue
@@ -5815,6 +5869,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// assert_eq!(num1.is_underflow(), false);
     /// assert_eq!(num1.is_divided_by_zero(), false);
     /// assert_eq!(num1.is_infinity(), false);
+    /// assert_eq!(num1.is_undefined(), false);
     /// 
     /// let borrow = num1.borrowing_sub_assign_uint(num_uint, false);
     /// println!("After num1 -= {},\tnum1 = {}\tborrow = {}", num_uint, num1, borrow);
@@ -5824,6 +5879,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// assert_eq!(num1.is_overflow(), false);
     /// assert_eq!(num1.is_divided_by_zero(), false);
     /// assert_eq!(num1.is_infinity(), false);
+    /// assert_eq!(num1.is_undefined(), false);
     /// ```
     /// 
     /// # Example 2
@@ -5840,6 +5896,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// assert_eq!(num1.is_underflow(), false);
     /// assert_eq!(num1.is_divided_by_zero(), false);
     /// assert_eq!(num1.is_infinity(), false);
+    /// assert_eq!(num1.is_undefined(), false);
     /// 
     /// let borrow = num1.borrowing_sub_assign_uint(num_uint, true);
     /// println!("After num1 -= {},\tnum1 = {}\tborrow = {}", num_uint, num1, borrow);
@@ -5849,6 +5906,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// assert_eq!(num1.is_overflow(), false);
     /// assert_eq!(num1.is_divided_by_zero(), false);
     /// assert_eq!(num1.is_infinity(), false);
+    /// assert_eq!(num1.is_undefined(), false);
     /// ```
     /// 
     /// # Example 3
@@ -5865,6 +5923,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// assert_eq!(num2.is_underflow(), false);
     /// assert_eq!(num2.is_divided_by_zero(), false);
     /// assert_eq!(num2.is_infinity(), false);
+    /// assert_eq!(num2.is_undefined(), false);
     /// 
     /// let borrow = num2.borrowing_sub_assign_uint(num_uint, false);
     /// println!("After num2 -= {},\tnum2 = {}\tcarry = {}", num_uint, num2, borrow);
@@ -5874,6 +5933,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// assert_eq!(num2.is_overflow(), false);
     /// assert_eq!(num2.is_divided_by_zero(), false);
     /// assert_eq!(num2.is_infinity(), false);
+    /// assert_eq!(num2.is_undefined(), false);
     /// ```
     /// 
     /// # Example 4
@@ -5890,6 +5950,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// assert_eq!(num2.is_underflow(), false);
     /// assert_eq!(num2.is_divided_by_zero(), false);
     /// assert_eq!(num2.is_infinity(), false);
+    /// assert_eq!(num2.is_undefined(), false);
     /// 
     /// let borrow = num2.borrowing_sub_assign_uint(num_uint, true);
     /// println!("After num2 -= {},\tnum2 = {}\tborrow = {}", num_uint, num2, borrow);
@@ -5899,6 +5960,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// assert_eq!(num2.is_overflow(), false);
     /// assert_eq!(num2.is_divided_by_zero(), false);
     /// assert_eq!(num2.is_infinity(), false);
+    /// assert_eq!(num2.is_undefined(), false);
     /// ```
     /// 
     /// # Big-endian issue
@@ -5977,6 +6039,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// assert_eq!(res.is_overflow(), false);
     /// assert_eq!(res.is_divided_by_zero(), false);
     /// assert_eq!(res.is_infinity(), false);
+    /// assert_eq!(res.is_undefined(), false);
     /// ```
     /// 
     /// # Example 2
@@ -5992,6 +6055,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// assert_eq!(res.is_overflow(), false);
     /// assert_eq!(res.is_divided_by_zero(), false);
     /// assert_eq!(res.is_infinity(), false);
+    /// assert_eq!(res.is_undefined(), false);
     /// ```
     /// 
     /// # Example 3
@@ -6007,6 +6071,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// assert_eq!(res.is_overflow(), false);
     /// assert_eq!(res.is_divided_by_zero(), false);
     /// assert_eq!(res.is_infinity(), false);
+    /// assert_eq!(res.is_undefined(), false);
     /// ```
     /// 
     /// # Big-endian issue
@@ -6066,6 +6131,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// assert_eq!(a_biguint.is_underflow(), false);
     /// assert_eq!(a_biguint.is_divided_by_zero(), false);
     /// assert_eq!(a_biguint.is_infinity(), false);
+    /// assert_eq!(a_biguint.is_undefined(), false);
     /// 
     /// a_biguint.wrapping_sub_assign_uint(1_u8);
     /// println!("After a_biguint.wrapping_sub_assign_uint(1_u8),\ta_biguint = {}", a_biguint);
@@ -6074,6 +6140,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// assert_eq!(a_biguint.is_overflow(), false);
     /// assert_eq!(a_biguint.is_divided_by_zero(), false);
     /// assert_eq!(a_biguint.is_infinity(), false);
+    /// assert_eq!(a_biguint.is_undefined(), false);
     /// ```
     /// 
     /// # Example 2
@@ -6088,6 +6155,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// assert_eq!(a_biguint.is_underflow(), false);
     /// assert_eq!(a_biguint.is_divided_by_zero(), false);
     /// assert_eq!(a_biguint.is_infinity(), false);
+    /// assert_eq!(a_biguint.is_undefined(), false);
     /// 
     /// a_biguint.wrapping_sub_assign_uint(2_u8);
     /// println!("After a_biguint.wrapping_sub_assign_uint(2_u8),\ta_biguint = {}", a_biguint);
@@ -6096,6 +6164,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// assert_eq!(a_biguint.is_overflow(), false);
     /// assert_eq!(a_biguint.is_divided_by_zero(), false);
     /// assert_eq!(a_biguint.is_infinity(), false);
+    /// assert_eq!(a_biguint.is_undefined(), false);
     /// ```
     /// 
     /// # Example 3
@@ -6110,6 +6179,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// assert_eq!(a_biguint.is_overflow(), false);
     /// assert_eq!(a_biguint.is_divided_by_zero(), false);
     /// assert_eq!(a_biguint.is_infinity(), false);
+    /// assert_eq!(a_biguint.is_undefined(), false);
     /// 
     /// a_biguint.wrapping_sub_assign_uint(3_u8);
     /// println!("After a_biguint.wrapping_sub_assign_uint(3_u8),\ta_biguint = {}", a_biguint);
@@ -6118,6 +6188,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// assert_eq!(a_biguint.is_overflow(), false);
     /// assert_eq!(a_biguint.is_divided_by_zero(), false);
     /// assert_eq!(a_biguint.is_infinity(), false);
+    /// assert_eq!(a_biguint.is_undefined(), false);
     /// 
     /// a_biguint.wrapping_sub_assign_uint(1_u8);
     /// println!("After a_biguint.wrapping_sub_assign_uint(1_u8),\ta_biguint = {}", a_biguint);
@@ -6126,6 +6197,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// assert_eq!(a_biguint.is_overflow(), false);
     /// assert_eq!(a_biguint.is_divided_by_zero(), false);
     /// assert_eq!(a_biguint.is_infinity(), false);
+    /// assert_eq!(a_biguint.is_undefined(), false);
     /// ```
     /// 
     /// # Big-endian issue
@@ -6187,6 +6259,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// assert_eq!(res.is_overflow(), false);
     /// assert_eq!(res.is_divided_by_zero(), false);
     /// assert_eq!(res.is_infinity(), false);
+    /// assert_eq!(res.is_undefined(), false);
     /// ```
     /// 
     /// # Example 2
@@ -6203,6 +6276,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// assert_eq!(res.is_overflow(), false);
     /// assert_eq!(res.is_divided_by_zero(), false);
     /// assert_eq!(res.is_infinity(), false);
+    /// assert_eq!(res.is_undefined(), false);
     /// ```
     /// 
     /// # Example 3
@@ -6219,6 +6293,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// assert_eq!(res.is_overflow(), false);
     /// assert_eq!(res.is_divided_by_zero(), false);
     /// assert_eq!(res.is_infinity(), false);
+    /// assert_eq!(res.is_undefined(), false);
     /// ```
     /// 
     /// # Big-endian issue
@@ -6282,6 +6357,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// assert_eq!(a_biguint.is_overflow(), false);
     /// assert_eq!(a_biguint.is_divided_by_zero(), false);
     /// assert_eq!(a_biguint.is_infinity(), false);
+    /// assert_eq!(a_biguint.is_undefined(), false);
     /// 
     /// let underflow = a_biguint.overflowing_sub_assign_uint(1_u8);
     /// println!("After a_biguint.overflowing_sub_assign_uint(1_u8),\ta_biguint = {}\nunderflow = {}", a_biguint, underflow);
@@ -6291,6 +6367,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// assert_eq!(a_biguint.is_overflow(), false);
     /// assert_eq!(a_biguint.is_divided_by_zero(), false);
     /// assert_eq!(a_biguint.is_infinity(), false);
+    /// assert_eq!(a_biguint.is_undefined(), false);
     /// ```
     /// 
     /// # Example 2
@@ -6305,6 +6382,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// assert_eq!(a_biguint.is_overflow(), false);
     /// assert_eq!(a_biguint.is_divided_by_zero(), false);
     /// assert_eq!(a_biguint.is_infinity(), false);
+    /// assert_eq!(a_biguint.is_undefined(), false);
     /// 
     /// let underflow = a_biguint.overflowing_sub_assign_uint(2_u8);
     /// println!("After a_biguint.overflowing_sub_assign_uint(2_u8),\ta_biguint = {}\nunderflow = {}", a_biguint, underflow);
@@ -6314,6 +6392,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// assert_eq!(a_biguint.is_overflow(), false);
     /// assert_eq!(a_biguint.is_divided_by_zero(), false);
     /// assert_eq!(a_biguint.is_infinity(), false);
+    /// assert_eq!(a_biguint.is_undefined(), false);
     /// ```
     /// 
     /// # Example 3
@@ -6328,6 +6407,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// assert_eq!(a_biguint.is_overflow(), false);
     /// assert_eq!(a_biguint.is_divided_by_zero(), false);
     /// assert_eq!(a_biguint.is_infinity(), false);
+    /// assert_eq!(a_biguint.is_undefined(), false);
     /// 
     /// let underflow = a_biguint.overflowing_sub_assign_uint(3_u8);
     /// println!("After a_biguint.overflowing_sub_assign_uint(3_u8),\ta_biguint = {}\nunderflow = {}", a_biguint, underflow);
@@ -6337,6 +6417,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// assert_eq!(a_biguint.is_overflow(), false);
     /// assert_eq!(a_biguint.is_divided_by_zero(), false);
     /// assert_eq!(a_biguint.is_infinity(), false);
+    /// assert_eq!(a_biguint.is_undefined(), false);
     /// 
     /// let underflow = a_biguint.overflowing_sub_assign_uint(1_u8);
     /// println!("After a_biguint.overflowing_sub_assign_uint(1_u8),\ta_biguint = {}\nunderflow = {}", a_biguint, underflow);
@@ -6346,6 +6427,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// assert_eq!(a_biguint.is_overflow(), false);
     /// assert_eq!(a_biguint.is_divided_by_zero(), false);
     /// assert_eq!(a_biguint.is_infinity(), false);
+    /// assert_eq!(a_biguint.is_undefined(), false);
     /// ``` 
     /// 
     /// # Big-endian issue
@@ -6410,10 +6492,11 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     ///     Some(num) => {
     ///         println!("{} - 1 = {}", a_biguint, num);
     ///         assert_eq!(num.to_string(), "0");
-    ///         assert_eq!(a_biguint.is_underflow(), false);
-    ///         assert_eq!(a_biguint.is_overflow(), false);
-    ///         assert_eq!(a_biguint.is_divided_by_zero(), false);
-    ///         assert_eq!(a_biguint.is_infinity(), false);
+    ///         assert_eq!(num.is_underflow(), false);
+    ///         assert_eq!(num.is_overflow(), false);
+    ///         assert_eq!(num.is_divided_by_zero(), false);
+    ///         assert_eq!(num.is_infinity(), false);
+    ///         assert_eq!(num.is_undefined(), false);
     ///     },
     ///     None => {
     ///         println!("{} - 1 = overflow", a_biguint);
@@ -6516,6 +6599,11 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// let res = a_biguint.unchecked_sub_uint(1_u8);
     /// println!("{} - 1 = {}", a_biguint, res);
     /// assert_eq!(res.to_string(), "0");
+    /// assert_eq!(res.is_underflow(), false);
+    /// assert_eq!(res.is_overflow(), false);
+    /// assert_eq!(res.is_divided_by_zero(), false);
+    /// assert_eq!(res.is_infinity(), false);
+    /// assert_eq!(res.is_undefined(), false);
     /// 
     /// let _a_biguint = UU64::one();
     /// // It will panic.
@@ -6579,6 +6667,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// assert_eq!(res.is_overflow(), false);
     /// assert_eq!(res.is_divided_by_zero(), false);
     /// assert_eq!(res.is_infinity(), false);
+    /// assert_eq!(res.is_undefined(), false);
     /// ```
     /// 
     /// # Example 2
@@ -6594,6 +6683,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// assert_eq!(res.is_overflow(), false);
     /// assert_eq!(res.is_divided_by_zero(), false);
     /// assert_eq!(res.is_infinity(), false);
+    /// assert_eq!(res.is_undefined(), false);
     /// ```
     /// 
     /// # Example 3
@@ -6609,6 +6699,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// assert_eq!(res.is_overflow(), false);
     /// assert_eq!(res.is_divided_by_zero(), false);
     /// assert_eq!(res.is_infinity(), false);
+    /// assert_eq!(res.is_undefined(), false);
     /// ```
     /// 
     /// # Big-endian issue
@@ -6670,6 +6761,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// assert_eq!(a_biguint.is_overflow(), false);
     /// assert_eq!(a_biguint.is_divided_by_zero(), false);
     /// assert_eq!(a_biguint.is_infinity(), false);
+    /// assert_eq!(a_biguint.is_undefined(), false);
     /// 
     /// a_biguint.saturating_sub_assign_uint(1_u8);
     /// println!("After a_biguint.saturating_sub_assign_uint(1_u8),\ta_biguint = {}", a_biguint);
@@ -6678,6 +6770,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// assert_eq!(a_biguint.is_overflow(), false);
     /// assert_eq!(a_biguint.is_divided_by_zero(), false);
     /// assert_eq!(a_biguint.is_infinity(), false);
+    /// assert_eq!(a_biguint.is_undefined(), false);
     /// ```
     /// 
     /// # Example 2
@@ -6692,6 +6785,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// assert_eq!(a_biguint.is_overflow(), false);
     /// assert_eq!(a_biguint.is_divided_by_zero(), false);
     /// assert_eq!(a_biguint.is_infinity(), false);
+    /// assert_eq!(a_biguint.is_undefined(), false);
     /// 
     /// a_biguint.saturating_sub_assign_uint(2_u8);
     /// println!("After a_biguint.saturating_sub_assign_uint(2_u8),\ta_biguint = {}", a_biguint);
@@ -6700,6 +6794,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// assert_eq!(a_biguint.is_overflow(), false);
     /// assert_eq!(a_biguint.is_divided_by_zero(), false);
     /// assert_eq!(a_biguint.is_infinity(), false);
+    /// assert_eq!(a_biguint.is_undefined(), false);
     /// ```
     /// 
     /// # Example 3
@@ -6714,6 +6809,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// assert_eq!(a_biguint.is_overflow(), false);
     /// assert_eq!(a_biguint.is_divided_by_zero(), false);
     /// assert_eq!(a_biguint.is_infinity(), false);
+    /// assert_eq!(a_biguint.is_undefined(), false);
     /// 
     /// a_biguint.saturating_sub_assign_uint(3_u8);
     /// println!("After a_biguint.saturating_sub_assign_uint(3_u8),\ta_biguint = {}", a_biguint);
@@ -6722,6 +6818,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// assert_eq!(a_biguint.is_overflow(), false);
     /// assert_eq!(a_biguint.is_divided_by_zero(), false);
     /// assert_eq!(a_biguint.is_infinity(), false);
+    /// assert_eq!(a_biguint.is_undefined(), false);
     /// ```
     /// 
     /// # Big-endian issue
@@ -6799,6 +6896,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// assert_eq!(res.is_overflow(), false);
     /// assert_eq!(res.is_divided_by_zero(), false);
     /// assert_eq!(res.is_infinity(), false);
+    /// assert_eq!(res.is_undefined(), false);
     /// ```
     /// 
     /// # Example 2
@@ -6815,6 +6913,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// assert_eq!(res.is_overflow(), false);
     /// assert_eq!(res.is_divided_by_zero(), false);
     /// assert_eq!(res.is_infinity(), false);
+    /// assert_eq!(res.is_undefined(), false);
     /// ```
     /// 
     /// # Example 3
@@ -6831,6 +6930,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// assert_eq!(res.is_overflow(), false);
     /// assert_eq!(res.is_divided_by_zero(), false);
     /// assert_eq!(res.is_infinity(), false);
+    /// assert_eq!(res.is_undefined(), false);
     /// 
     /// let _a_biguint = U256::from_uint(2_u8);
     /// let _m = U256::zero();
@@ -6917,6 +7017,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// assert_eq!(a_biguint.is_overflow(), false);
     /// assert_eq!(a_biguint.is_divided_by_zero(), false);
     /// assert_eq!(a_biguint.is_infinity(), false);
+    /// assert_eq!(a_biguint.is_undefined(), false);
     /// 
     /// a_biguint.modular_sub_assign_uint(1_u8, &m);
     /// println!("After a_biguint.modular_sub_assign_uint(1_u8, &m),\ta_biguint = {}", a_biguint);
@@ -6925,6 +7026,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// assert_eq!(a_biguint.is_overflow(), false);
     /// assert_eq!(a_biguint.is_divided_by_zero(), false);
     /// assert_eq!(a_biguint.is_infinity(), false);
+    /// assert_eq!(a_biguint.is_undefined(), false);
     /// ```
     /// 
     /// # Example 2
@@ -6941,6 +7043,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// assert_eq!(a_biguint.is_overflow(), false);
     /// assert_eq!(a_biguint.is_divided_by_zero(), false);
     /// assert_eq!(a_biguint.is_infinity(), false);
+    /// assert_eq!(a_biguint.is_undefined(), false);
     ///    
     /// a_biguint.modular_sub_assign_uint(2_u8, &m);
     /// println!("After a_biguint.modular_sub_assign_uint(2_u8, &m),\ta_biguint = {}", a_biguint);
@@ -6949,6 +7052,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// assert_eq!(a_biguint.is_overflow(), false);
     /// assert_eq!(a_biguint.is_divided_by_zero(), false);
     /// assert_eq!(a_biguint.is_infinity(), false);
+    /// assert_eq!(a_biguint.is_undefined(), false);
     /// ```
     /// 
     /// # Example 3
@@ -6965,6 +7069,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// assert_eq!(a_biguint.is_overflow(), false);
     /// assert_eq!(a_biguint.is_divided_by_zero(), false);
     /// assert_eq!(a_biguint.is_infinity(), false);
+    /// assert_eq!(a_biguint.is_undefined(), false);
     ///    
     /// a_biguint.modular_sub_assign_uint(3_u8, &m);
     /// println!("After a_biguint.modular_sub_assign_uint(3_u8, &m),\ta_biguint = {}", a_biguint);
@@ -6973,6 +7078,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// assert_eq!(a_biguint.is_overflow(), false);
     /// assert_eq!(a_biguint.is_divided_by_zero(), false);
     /// assert_eq!(a_biguint.is_infinity(), false);
+    /// assert_eq!(a_biguint.is_undefined(), false);
     /// 
     /// let _a_biguint = U256::from_uint(2_u8);
     /// let _m = U256::zero();
@@ -7093,6 +7199,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// assert_eq!(res.is_underflow(), false);
     /// assert_eq!(res.is_divided_by_zero(), false);
     /// assert_eq!(res.is_infinity(), false);
+    /// assert_eq!(res.is_undefined(), false);
     /// ```
     /// 
     /// # Example 2
@@ -7110,6 +7217,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// assert_eq!(res.is_underflow(), false);
     /// assert_eq!(res.is_divided_by_zero(), false);
     /// assert_eq!(res.is_infinity(), false);
+    /// assert_eq!(res.is_undefined(), false);
     /// ```
     /// 
     /// # Example 3
@@ -7127,6 +7235,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// assert_eq!(res.is_underflow(), false);
     /// assert_eq!(res.is_divided_by_zero(), false);
     /// assert_eq!(res.is_infinity(), false);
+    /// assert_eq!(res.is_undefined(), false);
     /// ```
     /// 
     /// # Big-endian issue
@@ -7220,6 +7329,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// assert_eq!(res_higher.is_underflow(), false);
     /// assert_eq!(res_higher.is_divided_by_zero(), false);
     /// assert_eq!(res_higher.is_infinity(), false);
+    /// assert_eq!(res_higher.is_undefined(), false);
     /// ```
     /// 
     /// # Example 2
@@ -7241,6 +7351,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// assert_eq!(res_higher.is_underflow(), false);
     /// assert_eq!(res_higher.is_divided_by_zero(), false);
     /// assert_eq!(res_higher.is_infinity(), false);
+    /// assert_eq!(res_higher.is_undefined(), false);
     /// ```
     /// 
     /// # Big-endian issue
@@ -7324,6 +7435,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// assert_eq!(a_high_biguint.is_underflow(), false);
     /// assert_eq!(a_high_biguint.is_divided_by_zero(), false);
     /// assert_eq!(a_high_biguint.is_infinity(), false);
+    /// assert_eq!(a_high_biguint.is_undefined(), false);
     /// 
     /// let res_high = a_low_biguint.carrying_mul_assign_uint(b_uint, UU32::zero());
     /// let res_higher = a_high_biguint.carrying_mul_assign_uint(b_uint, res_high);
@@ -7331,15 +7443,17 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// assert_eq!(a_low_biguint.to_string(), "17280421717087553271230257168091959361442094623632687978237947571026368921150");
     /// println!("After a_high_biguint.carrying_mul_assign_uint(225_u8, res_higher),\na_high_biguint = {}\nres_higher = {}", a_high_biguint, res_higher);
     /// assert_eq!(a_high_biguint.to_string(), "16962363268797823794757102636892132280421717087553271230257168091959361441925");
+    /// assert_eq!(a_high_biguint.is_overflow(), false);
+    /// assert_eq!(a_high_biguint.is_underflow(), false);
+    /// assert_eq!(a_high_biguint.is_divided_by_zero(), false);
+    /// assert_eq!(a_high_biguint.is_infinity(), false);
+    /// assert_eq!(a_high_biguint.is_undefined(), false);
     /// assert_eq!(res_higher.to_string(), "0");
     /// assert_eq!(res_higher.is_overflow(), false);
     /// assert_eq!(res_higher.is_underflow(), false);
     /// assert_eq!(res_higher.is_divided_by_zero(), false);
     /// assert_eq!(res_higher.is_infinity(), false);
-    /// assert_eq!(a_high_biguint.is_overflow(), false);
-    /// assert_eq!(a_high_biguint.is_underflow(), false);
-    /// assert_eq!(a_high_biguint.is_divided_by_zero(), false);
-    /// assert_eq!(a_high_biguint.is_infinity(), false);
+    /// assert_eq!(res_higher.is_undefined(), false);
     /// ```
     /// 
     /// # Example 2
@@ -7359,6 +7473,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// assert_eq!(a_high_biguint.is_underflow(), false);
     /// assert_eq!(a_high_biguint.is_divided_by_zero(), false);
     /// assert_eq!(a_high_biguint.is_infinity(), false);
+    /// assert_eq!(a_high_biguint.is_undefined(), false);
     /// 
     /// let res_high = a_low_biguint.carrying_mul_assign_uint(b_uint, UU32::zero());
     /// let res_higher = a_high_biguint.carrying_mul_assign_uint(b_uint, res_high);
@@ -7366,15 +7481,17 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// assert_eq!(a_low_biguint.to_string(), "115792089237316195423570985008687907853269984665640564039439137263839420088321");
     /// println!("After a_high_biguint.carrying_mul_assign_uint(225_u8, res_higher),\na_high_biguint = {}\nres_higher = {}", a_high_biguint, res_higher);
     /// assert_eq!(a_high_biguint.to_string(), "115792089237316195423570985008687907853269984665640564039439137263839420088385");
+    /// assert_eq!(a_high_biguint.is_overflow(), true);
+    /// assert_eq!(a_high_biguint.is_underflow(), false);
+    /// assert_eq!(a_high_biguint.is_divided_by_zero(), false);
+    /// assert_eq!(a_high_biguint.is_infinity(), false);
+    /// assert_eq!(a_high_biguint.is_undefined(), false);
     /// assert_eq!(res_higher.to_string(), "64");
     /// assert_eq!(res_higher.is_overflow(), false);
     /// assert_eq!(res_higher.is_underflow(), false);
     /// assert_eq!(res_higher.is_divided_by_zero(), false);
     /// assert_eq!(res_higher.is_infinity(), false);
-    /// assert_eq!(a_high_biguint.is_overflow(), true);
-    /// assert_eq!(a_high_biguint.is_underflow(), false);
-    /// assert_eq!(a_high_biguint.is_divided_by_zero(), false);
-    /// assert_eq!(a_high_biguint.is_infinity(), false);
+    /// assert_eq!(res_higher.is_undefined(), false);
     /// ```
     /// 
     /// # Big-endian issue
@@ -7451,6 +7568,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// assert_eq!(res_high.is_underflow(), false);
     /// assert_eq!(res_high.is_divided_by_zero(), false);
     /// assert_eq!(res_high.is_infinity(), false);
+    /// assert_eq!(res_high.is_undefined(), false);
     /// ```
     /// 
     /// # Example 2
@@ -7469,6 +7587,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// assert_eq!(res_high.is_underflow(), false);
     /// assert_eq!(res_high.is_divided_by_zero(), false);
     /// assert_eq!(res_high.is_infinity(), false);
+    /// assert_eq!(res_high.is_undefined(), false);
     /// ```
     /// 
     /// # Big-endian issue
@@ -7546,6 +7665,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// assert_eq!(a_biguint.is_underflow(), false);
     /// assert_eq!(a_biguint.is_divided_by_zero(), false);
     /// assert_eq!(a_biguint.is_infinity(), false);
+    /// assert_eq!(a_biguint.is_undefined(), false);
     /// 
     /// let res_high = a_biguint.widening_mul_assign_uint(b_uint);
     /// println!("After a_biguint.widening_mul_assign_uint(248_u8),\na_biguint = {}\nres_high = {}", a_biguint, res_high);
@@ -7555,6 +7675,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// assert_eq!(res_high.is_underflow(), false);
     /// assert_eq!(res_high.is_divided_by_zero(), false);
     /// assert_eq!(res_high.is_infinity(), false);
+    /// assert_eq!(res_high.is_undefined(), false);
     /// ```
     /// 
     /// # Example 2
@@ -7571,6 +7692,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// assert_eq!(a_biguint.is_underflow(), false);
     /// assert_eq!(a_biguint.is_divided_by_zero(), false);
     /// assert_eq!(a_biguint.is_infinity(), false);
+    /// assert_eq!(a_biguint.is_undefined(), false);
     /// 
     /// let res_high = a_biguint.widening_mul_assign_uint(b_uint);
     /// println!("After a_biguint.widening_mul_assign_uint(248_u8),\na_biguint = {}\nres_high = {}", a_biguint, res_high);
@@ -7580,6 +7702,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// assert_eq!(res_high.is_underflow(), false);
     /// assert_eq!(res_high.is_divided_by_zero(), false);
     /// assert_eq!(res_high.is_infinity(), false);
+    /// assert_eq!(res_high.is_undefined(), false);
     /// ```
     /// 
     /// # Big-endian issue
@@ -7702,6 +7825,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// assert_eq!(res.is_underflow(), false);
     /// assert_eq!(res.is_divided_by_zero(), false);
     /// assert_eq!(res.is_infinity(), false);
+    /// assert_eq!(res.is_undefined(), false);
     /// ```
     /// 
     /// # Example 2
@@ -7718,6 +7842,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// assert_eq!(res.is_underflow(), false);
     /// assert_eq!(res.is_divided_by_zero(), false);
     /// assert_eq!(res.is_infinity(), false);
+    /// assert_eq!(res.is_undefined(), false);
     /// ```
     /// 
     /// # Big-endian issue
@@ -7775,6 +7900,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// assert_eq!(a_biguint.is_underflow(), false);
     /// assert_eq!(a_biguint.is_divided_by_zero(), false);
     /// assert_eq!(a_biguint.is_infinity(), false);
+    /// assert_eq!(a_biguint.is_undefined(), false);
     /// 
     /// a_biguint.wrapping_mul_assign_uint(b_uint);
     /// println!("After a_biguint.wrapping_mul_assign_uint(248_u16), a_biguint = {}", a_biguint);
@@ -7783,6 +7909,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// assert_eq!(a_biguint.is_underflow(), false);
     /// assert_eq!(a_biguint.is_divided_by_zero(), false);
     /// assert_eq!(a_biguint.is_infinity(), false);
+    /// assert_eq!(a_biguint.is_undefined(), false);
     /// ```
     /// 
     /// # Example 2
@@ -7799,6 +7926,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// assert_eq!(a_biguint.is_underflow(), false);
     /// assert_eq!(a_biguint.is_divided_by_zero(), false);
     /// assert_eq!(a_biguint.is_infinity(), false);
+    /// assert_eq!(a_biguint.is_undefined(), false);
     /// 
     /// a_biguint.wrapping_mul_assign_uint(b_uint);
     /// println!("After a_biguint.wrapping_mul_assign_uint(248_u16), a_biguint = {}", a_biguint);
@@ -7807,6 +7935,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// assert_eq!(a_biguint.is_underflow(), false);
     /// assert_eq!(a_biguint.is_divided_by_zero(), false);
     /// assert_eq!(a_biguint.is_infinity(), false);
+    /// assert_eq!(a_biguint.is_undefined(), false);
     /// ```
     /// 
     /// # Big-endian issue
@@ -7926,6 +8055,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// assert_eq!(res.is_underflow(), false);
     /// assert_eq!(res.is_divided_by_zero(), false);
     /// assert_eq!(res.is_infinity(), false);
+    /// assert_eq!(res.is_undefined(), false);
     /// ```
     /// 
     /// # Example 2
@@ -7943,6 +8073,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// assert_eq!(res.is_underflow(), false);
     /// assert_eq!(res.is_divided_by_zero(), false);
     /// assert_eq!(res.is_infinity(), false);
+    /// assert_eq!(res.is_undefined(), false);
     /// ```
     /// 
     /// # Big-endian issue
@@ -8004,6 +8135,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// assert_eq!(a_biguint.is_underflow(), false);
     /// assert_eq!(a_biguint.is_divided_by_zero(), false);
     /// assert_eq!(a_biguint.is_infinity(), false);
+    /// assert_eq!(a_biguint.is_undefined(), false);
     /// 
     /// let overflow = a_biguint.overflowing_mul_assign_uint(b_uint);
     /// println!("After a_biguint.overflowing_mul_assign_uint(248_u16), a_biguint = {}, {}", a_biguint, overflow);
@@ -8013,6 +8145,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// assert_eq!(a_biguint.is_underflow(), false);
     /// assert_eq!(a_biguint.is_divided_by_zero(), false);
     /// assert_eq!(a_biguint.is_infinity(), false);
+    /// assert_eq!(a_biguint.is_undefined(), false);
     /// ```
     /// 
     /// # Example 2
@@ -8029,6 +8162,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// assert_eq!(a_biguint.is_underflow(), false);
     /// assert_eq!(a_biguint.is_divided_by_zero(), false);
     /// assert_eq!(a_biguint.is_infinity(), false);
+    /// assert_eq!(a_biguint.is_undefined(), false);
     /// 
     /// let overflow = a_biguint.overflowing_mul_assign_uint(b_uint);
     /// println!("After a_biguint.overflowing_mul_assign_uint(248_u16), a_biguint = {}, {}", a_biguint, overflow);
@@ -8038,6 +8172,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// assert_eq!(a_biguint.is_underflow(), false);
     /// assert_eq!(a_biguint.is_divided_by_zero(), false);
     /// assert_eq!(a_biguint.is_infinity(), false);
+    /// assert_eq!(a_biguint.is_undefined(), false);
     /// ```
     /// 
     /// # Big-endian issue
@@ -8119,6 +8254,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     ///             assert_eq!(r.is_underflow(), false);
     ///             assert_eq!(r.is_divided_by_zero(), false);
     ///             assert_eq!(r.is_infinity(), false);
+    ///             assert_eq!(r.is_undefined(), false);
     ///         },
     ///     None => { println!("Overflow happend!"); },
     /// }
@@ -8181,6 +8317,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// assert_eq!(res.is_underflow(), false);
     /// assert_eq!(res.is_divided_by_zero(), false);
     /// assert_eq!(res.is_infinity(), false);
+    /// assert_eq!(res.is_undefined(), false);
     /// 
     /// let _a_biguint = UU32::from_string("876801874298166903427690031858186486050853753882811946569946433649006084094").unwrap();
     /// // It will panic.
@@ -8243,6 +8380,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// assert_eq!(res.is_underflow(), false);
     /// assert_eq!(res.is_divided_by_zero(), false);
     /// assert_eq!(res.is_infinity(), false);
+    /// assert_eq!(res.is_undefined(), false);
     /// ```
     /// 
     /// # Example 2
@@ -8259,6 +8397,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// assert_eq!(res.is_underflow(), false);
     /// assert_eq!(res.is_divided_by_zero(), false);
     /// assert_eq!(res.is_infinity(), false);
+    /// assert_eq!(res.is_undefined(), false);
     /// ```
     /// 
     /// # Big-endian issue
@@ -8317,6 +8456,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// assert_eq!(a_biguint.is_underflow(), false);
     /// assert_eq!(a_biguint.is_divided_by_zero(), false);
     /// assert_eq!(a_biguint.is_infinity(), false);
+    /// assert_eq!(a_biguint.is_undefined(), false);
     /// 
     /// a_biguint.saturating_mul_assign_uint(5_u8);
     /// println!("After a_biguint.saturating_mul_assign_uint(5_u8), a_biguint = {}", a_biguint);
@@ -8325,6 +8465,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// assert_eq!(a_biguint.is_underflow(), false);
     /// assert_eq!(a_biguint.is_divided_by_zero(), false);
     /// assert_eq!(a_biguint.is_infinity(), false);
+    /// assert_eq!(a_biguint.is_undefined(), false);
     /// ```
     /// 
     /// # Example 2
@@ -8338,6 +8479,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// assert_eq!(a_biguint.is_underflow(), false);
     /// assert_eq!(a_biguint.is_divided_by_zero(), false);
     /// assert_eq!(a_biguint.is_infinity(), false);
+    /// assert_eq!(a_biguint.is_undefined(), false);
     /// 
     /// a_biguint.saturating_mul_assign_uint(248_u8);
     /// println!("After a_biguint.saturating_mul_assign_uint(248_u8), a_biguint = {}", a_biguint);
@@ -8346,6 +8488,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// assert_eq!(a_biguint.is_underflow(), false);
     /// assert_eq!(a_biguint.is_divided_by_zero(), false);
     /// assert_eq!(a_biguint.is_infinity(), false);
+    /// assert_eq!(a_biguint.is_undefined(), false);
     /// ```
     /// 
     /// # Big-endian issue
@@ -8440,6 +8583,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// assert_eq!(res.is_underflow(), false);
     /// assert_eq!(res.is_divided_by_zero(), false);
     /// assert_eq!(res.is_infinity(), false);
+    /// assert_eq!(res.is_undefined(), false);
     /// ```
     /// 
     /// # Example 2
@@ -8457,6 +8601,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// assert_eq!(res.is_underflow(), false);
     /// assert_eq!(res.is_divided_by_zero(), false);
     /// assert_eq!(res.is_infinity(), false);
+    /// assert_eq!(res.is_undefined(), false);
     /// 
     /// let _m = UU32::zero();
     /// let _a_biguint = U256::from_string("318581864860508537538828119467680187429816690342769005864872913754682855846").unwrap();
@@ -8553,6 +8698,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// assert_eq!(a_biguint.is_underflow(), false);
     /// assert_eq!(a_biguint.is_divided_by_zero(), false);
     /// assert_eq!(a_biguint.is_infinity(), false);
+    /// assert_eq!(a_biguint.is_undefined(), false);
     /// 
     /// println!("After a_biguint.modular_mul_assign_uint(mul_uint, &m), a_biguint = {}", a_biguint);
     /// assert_eq!(a_biguint.to_string(), "159290932430254268769414059733840093714908345171384502932436456877341425");
@@ -8560,6 +8706,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// assert_eq!(a_biguint.is_underflow(), false);
     /// assert_eq!(a_biguint.is_divided_by_zero(), false);
     /// assert_eq!(a_biguint.is_infinity(), false);
+    /// assert_eq!(a_biguint.is_undefined(), false);
     /// ```
     /// 
     /// # Example 2
@@ -8576,6 +8723,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// assert_eq!(a_biguint.is_underflow(), false);
     /// assert_eq!(a_biguint.is_divided_by_zero(), false);
     /// assert_eq!(a_biguint.is_infinity(), false);
+    /// assert_eq!(a_biguint.is_undefined(), false);
     /// 
     /// a_biguint.modular_mul_assign_uint(mul_uint, &m);
     /// println!("After a_biguint.modular_mul_assign_uint(mul_uint, &m), a_biguint = {}", a_biguint);
@@ -8584,6 +8732,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// assert_eq!(a_biguint.is_underflow(), false);
     /// assert_eq!(a_biguint.is_divided_by_zero(), false);
     /// assert_eq!(a_biguint.is_infinity(), false);
+    /// assert_eq!(a_biguint.is_undefined(), false);
     /// 
     /// let _m = UU32::zero();
     /// let _a_biguint = U256::from_string("318581864860508537538828119467680187429816690342769005864872913754682855846").unwrap();
@@ -8697,7 +8846,8 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// - If 'self' is zero and `rhs` is non-zero,
     /// this method returns (zero, zero).
     /// - If `PANIC_FREE` is `true` and both 'self' and `rhs` are `zero`,
-    /// the `UNDEFINED` flag will be set and `self` will have the value `zero`.
+    /// the `UNDEFINED` and `DIVIDED_BY_ZERO` flags will be set and `self` will
+    /// have the value `zero`.
     /// - If `PANIC_FREE` is `true` and both 'self' is not `zero` and `rhs` is
     /// `zero`, the `INFINITY`, `DIVIDED_BY_ZERO` and `OVERFLOW` flags will be
     /// set and `self` will have the maximum value.
@@ -8725,6 +8875,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// assert_eq!(quotient.is_overflow(), false);
     /// assert_eq!(quotient.is_infinity(), false);
     /// assert_eq!(quotient.is_divided_by_zero(), false);
+    /// assert_eq!(quotient.is_undefined(), false);
     /// ```
     /// 
     /// # Example 2
@@ -8743,11 +8894,31 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// assert_eq!(quotient.is_underflow(), false);
     /// assert_eq!(quotient.is_infinity(), false);
     /// assert_eq!(quotient.is_divided_by_zero(), false);
+    /// assert_eq!(quotient.is_undefined(), false);
+    /// ```
+    /// 
+    /// # Example 3
+    /// ```
+    /// use std::str::FromStr;
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u32);
     /// 
     /// let _dividend = UU32::from_str("123456789015758942546236989636279846864825945392").unwrap();
     /// let _divisor = 0_u32;
     /// // It will panic!
     /// // let (quotient, remainder) = _dividend.divide_fully_uint(_divisor);
+    /// 
+    /// let dividend = UU32_::from_str("123456789015758942546236989636279846864825945392").unwrap();
+    /// let divisor = 0_u32;
+    /// let (quotient, remainder) = dividend.divide_fully_uint(divisor);
+    /// println!("{} / {} => quotient = {} , remainder = {}", dividend, divisor, quotient, remainder);
+    /// assert_eq!(quotient, UU32_::max());
+    /// assert_eq!(remainder.to_string(), "0");
+    /// assert_eq!(quotient.is_overflow(), true);
+    /// assert_eq!(quotient.is_underflow(), false);
+    /// assert_eq!(quotient.is_infinity(), true);
+    /// assert_eq!(quotient.is_undefined(), false);
+    /// assert_eq!(quotient.is_divided_by_zero(), true);
     /// ```
     /// 
     /// # Big-endian issue
@@ -8768,17 +8939,19 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
         {
             if rhs.is_zero()
             {
+                let mut flags = Self::DIVIDED_BY_ZERO;
                 let mut q: Self;
                 if self.is_zero()
                 {
                     q = Self::zero();
-                    q.set_undefined();
+                    flags |= Self::UNDEFINED;
                 }
                 else
                 {
                     q = Self::max();
-                    q.set_all_flags(Self::INFINITY | Self::DIVIDED_BY_ZERO | Self::OVERFLOW);
+                    flags |= Self::INFINITY | Self::OVERFLOW;
                 }
+                q.set_all_flags(flags);
                 return (q, U::zero());
             }
         }
@@ -8880,6 +9053,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// assert_eq!(quotient.is_underflow(), false);
     /// assert_eq!(quotient.is_infinity(), false);
     /// assert_eq!(quotient.is_divided_by_zero(), false);
+    /// assert_eq!(quotient.is_undefined(), false);
     /// ```
     /// 
     /// # Example 2
@@ -8897,6 +9071,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// assert_eq!(quotient.is_underflow(), false);
     /// assert_eq!(quotient.is_infinity(), false);
     /// assert_eq!(quotient.is_divided_by_zero(), false);
+    /// assert_eq!(quotient.is_undefined(), false);
     /// 
     /// let _dividend = U256::from_str("123456789015758942546236989636279846864825945392").unwrap();
     /// let _divisor = 0_u8;
@@ -8970,6 +9145,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// assert_eq!(a_biguint.is_underflow(), false);
     /// assert_eq!(a_biguint.is_infinity(), false);
     /// assert_eq!(a_biguint.is_divided_by_zero(), false);
+    /// assert_eq!(a_biguint.is_undefined(), false);
     /// 
     /// a_biguint.wrapping_div_assign_uint(divisor);
     /// println!("After a_biguint.wrapping_div_assign_uint(&divisor),\na_biguint = {}", a_biguint);
@@ -8977,6 +9153,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// assert_eq!(a_biguint.is_underflow(), false);
     /// assert_eq!(a_biguint.is_infinity(), false);
     /// assert_eq!(a_biguint.is_divided_by_zero(), false);
+    /// assert_eq!(a_biguint.is_undefined(), false);
     /// ```
     /// 
     /// # Example 2
@@ -8992,6 +9169,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// assert_eq!(a_biguint.is_underflow(), false);
     /// assert_eq!(a_biguint.is_infinity(), false);
     /// assert_eq!(a_biguint.is_divided_by_zero(), false);
+    /// assert_eq!(a_biguint.is_undefined(), false);
     /// 
     /// a_biguint.wrapping_div_assign_uint(divisor);
     /// println!("After a_biguint.wrapping_div_assign_uint(&divisor),\na_biguint = {}", a_biguint);
@@ -8999,6 +9177,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// assert_eq!(a_biguint.is_underflow(), false);
     /// assert_eq!(a_biguint.is_infinity(), false);
     /// assert_eq!(a_biguint.is_divided_by_zero(), false);
+    /// assert_eq!(a_biguint.is_undefined(), false);
     /// 
     /// let mut _a_biguint = UU32::from_str("123456789015758942546236989636279846864825945392").unwrap();
     /// let _divisor = 0_u8;
@@ -9078,6 +9257,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// assert_eq!(quotient.is_overflow(), false);
     /// assert_eq!(quotient.is_infinity(), false);
     /// assert_eq!(quotient.is_divided_by_zero(), false);
+    /// assert_eq!(quotient.is_undefined(), false);
     /// ```
     ///
     /// # Example 2
@@ -9096,6 +9276,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// assert_eq!(quotient.is_underflow(), false);
     /// assert_eq!(quotient.is_infinity(), false);
     /// assert_eq!(quotient.is_divided_by_zero(), false);
+    /// assert_eq!(quotient.is_undefined(), false);
     /// 
     /// let _dividend = U256::from_str("123456789015758942546236989636279846864825945392").unwrap();
     /// let _divisor = 0_u8;
@@ -9175,6 +9356,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// assert_eq!(a_biguint.is_underflow(), false);
     /// assert_eq!(a_biguint.is_infinity(), false);
     /// assert_eq!(a_biguint.is_divided_by_zero(), false);
+    /// assert_eq!(a_biguint.is_undefined(), false);
     /// 
     /// let overflow = a_biguint.overflowing_div_assign_uint(divisor);
     /// println!("After a_biguint.overflowing_div_assign_uint({}),\na_biguint = {}", divisor, a_biguint);
@@ -9184,6 +9366,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// assert_eq!(a_biguint.is_underflow(), false);
     /// assert_eq!(a_biguint.is_infinity(), false);
     /// assert_eq!(a_biguint.is_divided_by_zero(), false);
+    /// assert_eq!(a_biguint.is_undefined(), false);
     /// ```
     ///
     /// # Example 2
@@ -9199,6 +9382,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// assert_eq!(a_biguint.is_underflow(), false);
     /// assert_eq!(a_biguint.is_infinity(), false);
     /// assert_eq!(a_biguint.is_divided_by_zero(), false);
+    /// assert_eq!(a_biguint.is_undefined(), false);
     /// 
     /// let overflow = a_biguint.overflowing_div_assign_uint(divisor);
     /// println!("After a_biguint.overflowing_div_assign_uint({}),\na_biguint = {}", divisor, a_biguint);
@@ -9207,7 +9391,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// assert_eq!(a_biguint.is_overflow(), false);
     /// assert_eq!(a_biguint.is_underflow(), false);
     /// assert_eq!(a_biguint.is_infinity(), false);
-    /// assert_eq!(a_biguint.is_divided_by_zero(), false);    let mut _a_biguint = UU32::from_str("123456789015758942546236989636279846864825945392").unwrap();
+    /// assert_eq!(a_biguint.is_divided_by_zero(), false);
     /// 
     /// let mut _a_biguint = UU32::from_str("123456789015758942546236989636279846864825945392").unwrap();
     /// let _divisor = 0_u16;
@@ -9282,6 +9466,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     ///             assert_eq!(q.is_underflow(), false);
     ///             assert_eq!(q.is_infinity(), false);
     ///             assert_eq!(q.is_divided_by_zero(), false);
+    ///             assert_eq!(q.is_undefined(), false);
     ///         },
     ///     None => { println!("Divided By Zero"); },
     /// }
@@ -9306,6 +9491,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     ///             assert_eq!(q.is_underflow(), false);
     ///             assert_eq!(q.is_infinity(), false);
     ///             assert_eq!(q.is_divided_by_zero(), false);
+    ///             assert_eq!(q.is_undefined(), false);
     ///         },
     ///     None => { println!("Divided By Zero"); },
     /// }
@@ -9395,6 +9581,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// assert_eq!(quotient.is_underflow(), false);
     /// assert_eq!(quotient.is_infinity(), false);
     /// assert_eq!(quotient.is_divided_by_zero(), false);
+    /// assert_eq!(quotient.is_undefined(), false);
     /// 
     /// let _divisor = 0_u8;
     /// // It will panic.
@@ -9468,6 +9655,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// assert_eq!(quotient.is_underflow(), false);
     /// assert_eq!(quotient.is_infinity(), false);
     /// assert_eq!(quotient.is_divided_by_zero(), false);
+    /// assert_eq!(quotient.is_undefined(), false);
     /// ```
     /// 
     /// # Example 2
@@ -9485,6 +9673,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// assert_eq!(quotient.is_underflow(), false);
     /// assert_eq!(quotient.is_infinity(), false);
     /// assert_eq!(quotient.is_divided_by_zero(), false);
+    /// assert_eq!(quotient.is_undefined(), false);
     /// 
     /// let _dividend = U256::from_str("123456789015758942546236989636279846864825945392").unwrap();
     /// let _divisor = 0_u8;
@@ -9552,6 +9741,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// assert_eq!(a_biguint.is_underflow(), false);
     /// assert_eq!(a_biguint.is_infinity(), false);
     /// assert_eq!(a_biguint.is_divided_by_zero(), false);
+    /// assert_eq!(a_biguint.is_undefined(), false);
     /// 
     /// a_biguint.saturating_div_assign_uint(divisor);
     /// println!("After a_biguint.saturating_div_assign_uint({}),\na_biguint = {}", divisor, a_biguint);
@@ -9560,6 +9750,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// assert_eq!(a_biguint.is_underflow(), false);
     /// assert_eq!(a_biguint.is_infinity(), false);
     /// assert_eq!(a_biguint.is_divided_by_zero(), false);
+    /// assert_eq!(a_biguint.is_undefined(), false);
     /// ```
     /// 
     /// # Example 2
@@ -9575,6 +9766,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// assert_eq!(a_biguint.is_underflow(), false);
     /// assert_eq!(a_biguint.is_infinity(), false);
     /// assert_eq!(a_biguint.is_divided_by_zero(), false);
+    /// assert_eq!(a_biguint.is_undefined(), false);
     /// 
     /// a_biguint.saturating_div_assign_uint(divisor);
     /// println!("After a_biguint.saturating_div_assign_uint({}),\na_biguint = {}", divisor, a_biguint);
@@ -9583,6 +9775,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// assert_eq!(a_biguint.is_underflow(), false);
     /// assert_eq!(a_biguint.is_infinity(), false);
     /// assert_eq!(a_biguint.is_divided_by_zero(), false);
+    /// assert_eq!(a_biguint.is_undefined(), false);
     /// 
     /// let mut _a_biguint = UU32::from_str("123456789015758942546236989636279846864825945392").unwrap();
     /// let _divisor = 0_u16;
@@ -9656,6 +9849,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// assert_eq!(quotient.is_overflow(), false);
     /// assert_eq!(quotient.is_infinity(), false);
     /// assert_eq!(quotient.is_divided_by_zero(), false);
+    /// assert_eq!(quotient.is_undefined(), false);
     /// 
     /// let _dividend = U256::from_str("123456789015758942546236989636279846864825945392").unwrap();
     /// let _divisor = 128_u8;
@@ -9756,6 +9950,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// assert_eq!(a_biguint.is_overflow(), false);
     /// assert_eq!(a_biguint.is_infinity(), false);
     /// assert_eq!(a_biguint.is_divided_by_zero(), false);
+    /// assert_eq!(a_biguint.is_undefined(), false);
     /// 
     /// let _a_biguint = U256::from_str("123456789015758942546236989636279846864825945392").unwrap();
     /// let _divisor = 128_u8;
@@ -9998,6 +10193,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// assert_eq!(a_biguint.is_underflow(), false);
     /// assert_eq!(a_biguint.is_infinity(), false);
     /// assert_eq!(a_biguint.is_divided_by_zero(), false);
+    /// assert_eq!(a_biguint.is_undefined(), false);
     /// 
     /// a_biguint.wrapping_rem_assign_uint(divisor);
     /// println!("After a_biguint.wrapping_rem_assign_uint({}),\na_biguint = {}", divisor, a_biguint);
@@ -10005,6 +10201,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// assert_eq!(a_biguint.is_overflow(), false);
     /// assert_eq!(a_biguint.is_infinity(), false);
     /// assert_eq!(a_biguint.is_divided_by_zero(), false);
+    /// assert_eq!(a_biguint.is_undefined(), false);
     /// ```
     /// 
     /// # Example 2
@@ -10020,6 +10217,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// assert_eq!(a_biguint.is_underflow(), false);
     /// assert_eq!(a_biguint.is_infinity(), false);
     /// assert_eq!(a_biguint.is_divided_by_zero(), false);
+    /// assert_eq!(a_biguint.is_undefined(), false);
     /// 
     /// a_biguint.wrapping_rem_assign_uint(divisor);
     /// println!("After a_biguint.wrapping_rem_assign_uint({}),\na_biguint = {}", divisor, a_biguint);
@@ -10028,6 +10226,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// assert_eq!(a_biguint.is_underflow(), false);
     /// assert_eq!(a_biguint.is_infinity(), false);
     /// assert_eq!(a_biguint.is_divided_by_zero(), false);
+    /// assert_eq!(a_biguint.is_undefined(), false);
     /// 
     /// let mut _a_biguint = U256::from_str("123456789015758942546236989636279846864825945392").unwrap();
     /// let _divisor = 0_u8;
@@ -10169,6 +10368,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// assert_eq!(a_biguint.is_underflow(), false);
     /// assert_eq!(a_biguint.is_infinity(), false);
     /// assert_eq!(a_biguint.is_divided_by_zero(), false);
+    /// assert_eq!(a_biguint.is_undefined(), false);
     /// 
     /// let overflow = a_biguint.overflowing_rem_assign_uint(divisor);
     /// println!("After a_biguint.overflowing_rem_assign_uint({}),\na_biguint = {}", divisor, a_biguint);
@@ -10178,6 +10378,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// assert_eq!(a_biguint.is_underflow(), false);
     /// assert_eq!(a_biguint.is_infinity(), false);
     /// assert_eq!(a_biguint.is_divided_by_zero(), false);
+    /// assert_eq!(a_biguint.is_undefined(), false);
     /// ```
     /// 
     /// # Example 2
@@ -10193,6 +10394,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// assert_eq!(a_biguint.is_underflow(), false);
     /// assert_eq!(a_biguint.is_infinity(), false);
     /// assert_eq!(a_biguint.is_divided_by_zero(), false);
+    /// assert_eq!(a_biguint.is_undefined(), false);
     /// 
     /// let overflow = a_biguint.overflowing_rem_assign_uint(divisor);
     /// println!("After a_biguint.overflowing_rem_assign_uint({}),\na_biguint = {}", divisor, a_biguint);
@@ -10202,6 +10404,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// assert_eq!(a_biguint.is_underflow(), false);
     /// assert_eq!(a_biguint.is_infinity(), false);
     /// assert_eq!(a_biguint.is_divided_by_zero(), false);
+    /// assert_eq!(a_biguint.is_undefined(), false);
     /// 
     /// let mut _a_biguint = U256::from_str("123456789015758942546236989636279846864825945392").unwrap();
     /// let _divisor = 0_u16;
@@ -10531,6 +10734,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// assert_eq!(a_biguint.is_underflow(), false);
     /// assert_eq!(a_biguint.is_infinity(), false);
     /// assert_eq!(a_biguint.is_divided_by_zero(), false);
+    /// assert_eq!(a_biguint.is_undefined(), false);
     /// 
     /// a_biguint.saturating_rem_assign_uint(divisor);
     /// println!("After a_biguint.saturating_rem_assign_uint({}),\na_biguint = {}", divisor, a_biguint);
@@ -10539,6 +10743,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// assert_eq!(a_biguint.is_underflow(), false);
     /// assert_eq!(a_biguint.is_infinity(), false);
     /// assert_eq!(a_biguint.is_divided_by_zero(), false);
+    /// assert_eq!(a_biguint.is_undefined(), false);
     /// ```
     /// 
     /// # Example 2
@@ -10554,6 +10759,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// assert_eq!(a_biguint.is_underflow(), false);
     /// assert_eq!(a_biguint.is_infinity(), false);
     /// assert_eq!(a_biguint.is_divided_by_zero(), false);
+    /// assert_eq!(a_biguint.is_undefined(), false);
     /// 
     /// a_biguint.saturating_rem_assign_uint(divisor);
     /// println!("After a_biguint.saturating_rem_assign_uint({}),\na_biguint = {}", divisor, a_biguint);
@@ -10562,6 +10768,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// assert_eq!(a_biguint.is_underflow(), false);
     /// assert_eq!(a_biguint.is_infinity(), false);
     /// assert_eq!(a_biguint.is_divided_by_zero(), false);
+    /// assert_eq!(a_biguint.is_undefined(), false);
     /// 
     /// let mut _a_biguint = U256::from_str("123456789015758942546236989636279846864825945392").unwrap();
     /// let _divisor = 0_u16;
@@ -10735,6 +10942,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// assert_eq!(a_biguint.is_underflow(), false);
     /// assert_eq!(a_biguint.is_infinity(), false);
     /// assert_eq!(a_biguint.is_divided_by_zero(), false);
+    /// assert_eq!(a_biguint.is_undefined(), false);
     /// 
     /// a_biguint.modular_rem_assign_uint(divisor, &modulo);
     /// println!("After a_biguint.modular_rem_assign_uint({}),\na_biguint = {}", divisor, a_biguint);
@@ -10743,6 +10951,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// assert_eq!(a_biguint.is_underflow(), false);
     /// assert_eq!(a_biguint.is_infinity(), false);
     /// assert_eq!(a_biguint.is_divided_by_zero(), false);
+    /// assert_eq!(a_biguint.is_undefined(), false);
     /// ```
     /// 
     /// # Example 2
@@ -10759,6 +10968,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// assert_eq!(a_biguint.is_underflow(), false);
     /// assert_eq!(a_biguint.is_infinity(), false);
     /// assert_eq!(a_biguint.is_divided_by_zero(), false);
+    /// assert_eq!(a_biguint.is_undefined(), false);
     /// 
     /// a_biguint.modular_rem_assign_uint(divisor, &modulo);
     /// println!("After a_biguint.modular_rem_assign_uint({}),\na_biguint = {}", divisor, a_biguint);
@@ -10767,6 +10977,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// assert_eq!(a_biguint.is_underflow(), false);
     /// assert_eq!(a_biguint.is_infinity(), false);
     /// assert_eq!(a_biguint.is_divided_by_zero(), false);
+    /// assert_eq!(a_biguint.is_undefined(), false);
     /// 
     /// let _a_biguint = U256::from_str("123456789015758942546236989636279846864825945392").unwrap();
     /// let _divisor = 128_u8;
@@ -10853,6 +11064,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// assert_eq!(multiple.is_underflow(), false);
     /// assert_eq!(multiple.is_infinity(), false);
     /// assert_eq!(multiple.is_divided_by_zero(), false);
+    /// assert_eq!(multiple.is_undefined(), false);
     /// ```
     /// 
     /// # Example 2
@@ -10870,6 +11082,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// assert_eq!(multiple.is_underflow(), false);
     /// assert_eq!(multiple.is_infinity(), false);
     /// assert_eq!(multiple.is_divided_by_zero(), false);
+    /// assert_eq!(multiple.is_undefined(), false);
     /// 
     /// let _num = 0_u32;
     /// // It will panic.
@@ -10940,6 +11153,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// assert_eq!(a_biguint.is_underflow(), false);
     /// assert_eq!(a_biguint.is_infinity(), false);
     /// assert_eq!(a_biguint.is_divided_by_zero(), false);
+    /// assert_eq!(a_biguint.is_undefined(), false);
     /// ```
     /// 
     /// # Example 2
@@ -10959,6 +11173,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// assert_eq!(a_biguint.is_underflow(), false);
     /// assert_eq!(a_biguint.is_infinity(), false);
     /// assert_eq!(a_biguint.is_divided_by_zero(), false);
+    /// assert_eq!(a_biguint.is_undefined(), false);
     /// 
     /// // It will panic.
     /// // a_biguint.next_multiple_of_assign_uint(0_u32);
@@ -11044,6 +11259,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// assert_eq!(res.is_underflow(), false);
     /// assert_eq!(res.is_infinity(), false);
     /// assert_eq!(res.is_divided_by_zero(), false);
+    /// assert_eq!(res.is_undefined(), false);
     /// ```
     /// 
     /// # Example 2
@@ -11061,6 +11277,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// assert_eq!(res.is_underflow(), false);
     /// assert_eq!(res.is_infinity(), false);
     /// assert_eq!(res.is_divided_by_zero(), false);
+    /// assert_eq!(res.is_undefined(), false);
     /// ```
     /// 
     /// # Example 3
@@ -11078,6 +11295,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// assert_eq!(res.is_underflow(), false);
     /// assert_eq!(res.is_infinity(), false);
     /// assert_eq!(res.is_divided_by_zero(), false);
+    /// assert_eq!(res.is_undefined(), false);
     /// ```
     /// 
     /// # Example 4
@@ -11095,6 +11313,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// assert_eq!(res.is_underflow(), false);
     /// assert_eq!(res.is_infinity(), false);
     /// assert_eq!(res.is_divided_by_zero(), false);
+    /// assert_eq!(res.is_undefined(), false);
     /// 
     /// let _a_biguint = UU32::zero();
     /// let _exp = 0_u8;
@@ -11162,6 +11381,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// assert_eq!(a_biguint.is_underflow(), false);
     /// assert_eq!(a_biguint.is_infinity(), false);
     /// assert_eq!(a_biguint.is_divided_by_zero(), false);
+    /// assert_eq!(a_biguint.is_undefined(), false);
     /// 
     /// a_biguint.pow_assign_uint(exp);
     /// println!("After a_biguint.pow_assign_uint({}),\na_biguint = {}", exp, a_biguint);
@@ -11170,6 +11390,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// assert_eq!(a_biguint.is_underflow(), false);
     /// assert_eq!(a_biguint.is_infinity(), false);
     /// assert_eq!(a_biguint.is_divided_by_zero(), false);
+    /// assert_eq!(a_biguint.is_undefined(), false);
     /// ```
     /// 
     /// # Example 2
@@ -11184,6 +11405,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// assert_eq!(a_biguint.is_underflow(), false);
     /// assert_eq!(a_biguint.is_infinity(), false);
     /// assert_eq!(a_biguint.is_divided_by_zero(), false);
+    /// assert_eq!(a_biguint.is_undefined(), false);
     /// 
     /// a_biguint.pow_assign_uint(exp);
     /// println!("After a_biguint.pow_assign_uint({}),\na_biguint = {}", exp, a_biguint);
@@ -11192,6 +11414,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// assert_eq!(a_biguint.is_underflow(), false);
     /// assert_eq!(a_biguint.is_infinity(), false);
     /// assert_eq!(a_biguint.is_divided_by_zero(), false);
+    /// assert_eq!(a_biguint.is_undefined(), false);
     /// ```
     /// 
     /// # Example 3
@@ -11206,6 +11429,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// assert_eq!(a_biguint.is_underflow(), false);
     /// assert_eq!(a_biguint.is_infinity(), false);
     /// assert_eq!(a_biguint.is_divided_by_zero(), false);
+    /// assert_eq!(a_biguint.is_undefined(), false);
     /// 
     /// a_biguint.pow_assign_uint(exp);
     /// println!("After a_biguint.pow_assign_uint({}),\na_biguint = {}", exp, a_biguint);
@@ -11214,6 +11438,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// assert_eq!(a_biguint.is_underflow(), false);
     /// assert_eq!(a_biguint.is_infinity(), false);
     /// assert_eq!(a_biguint.is_divided_by_zero(), false);
+    /// assert_eq!(a_biguint.is_undefined(), false);
     /// ```
     /// 
     /// # Example 4
@@ -11228,6 +11453,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// assert_eq!(a_biguint.is_underflow(), false);
     /// assert_eq!(a_biguint.is_infinity(), false);
     /// assert_eq!(a_biguint.is_divided_by_zero(), false);
+    /// assert_eq!(a_biguint.is_undefined(), false);
     /// 
     /// a_biguint.pow_assign_uint(exp);
     /// println!("After a_biguint.pow_assign_uint({}),\na_biguint = {}", exp, a_biguint);
@@ -11236,6 +11462,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// assert_eq!(a_biguint.is_underflow(), false);
     /// assert_eq!(a_biguint.is_infinity(), false);
     /// assert_eq!(a_biguint.is_divided_by_zero(), false);
+    /// assert_eq!(a_biguint.is_undefined(), false);
     /// 
     /// let mut _a_biguint = U256::zero();
     /// let _exp = 0_u8;
@@ -11306,6 +11533,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// assert_eq!(res.is_underflow(), false);
     /// assert_eq!(res.is_infinity(), false);
     /// assert_eq!(res.is_divided_by_zero(), false);
+    /// assert_eq!(res.is_undefined(), false);
     /// ```
     /// 
     /// # Example 2
@@ -11322,6 +11550,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// assert_eq!(res.is_underflow(), false);
     /// assert_eq!(res.is_infinity(), false);
     /// assert_eq!(res.is_divided_by_zero(), false);
+    /// assert_eq!(res.is_undefined(), false);
     /// ```
     /// 
     /// # Example 3
@@ -11338,6 +11567,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// assert_eq!(res.is_underflow(), false);
     /// assert_eq!(res.is_infinity(), false);
     /// assert_eq!(res.is_divided_by_zero(), false);
+    /// assert_eq!(res.is_undefined(), false);
     /// ```
     /// 
     /// # Example 4
@@ -11354,6 +11584,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// assert_eq!(res.is_underflow(), false);
     /// assert_eq!(res.is_infinity(), false);
     /// assert_eq!(res.is_divided_by_zero(), false);
+    /// assert_eq!(res.is_undefined(), false);
     /// 
     /// let _a_biguint = UU32::zero();
     /// let _exp = 0_u8;
@@ -11421,6 +11652,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// assert_eq!(a_biguint.is_underflow(), false);
     /// assert_eq!(a_biguint.is_infinity(), false);
     /// assert_eq!(a_biguint.is_divided_by_zero(), false);
+    /// assert_eq!(a_biguint.is_undefined(), false);
     /// 
     /// a_biguint.wrapping_pow_assign_uint(exp);
     /// println!("After a_biguint.wrapping_pow_assign_uint({}),\na_biguint = {}", exp, a_biguint);
@@ -11429,6 +11661,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// assert_eq!(a_biguint.is_underflow(), false);
     /// assert_eq!(a_biguint.is_infinity(), false);
     /// assert_eq!(a_biguint.is_divided_by_zero(), false);
+    /// assert_eq!(a_biguint.is_undefined(), false);
     /// ```
     /// 
     /// # Example 2
@@ -11443,6 +11676,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// assert_eq!(a_biguint.is_underflow(), false);
     /// assert_eq!(a_biguint.is_infinity(), false);
     /// assert_eq!(a_biguint.is_divided_by_zero(), false);
+    /// assert_eq!(a_biguint.is_undefined(), false);
     /// 
     /// a_biguint.wrapping_pow_assign_uint(exp);
     /// println!("After a_biguint.wrapping_pow_assign_uint({}),\na_biguint = {}", exp, a_biguint);
@@ -11451,6 +11685,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// assert_eq!(a_biguint.is_underflow(), false);
     /// assert_eq!(a_biguint.is_infinity(), false);
     /// assert_eq!(a_biguint.is_divided_by_zero(), false);
+    /// assert_eq!(a_biguint.is_undefined(), false);
     /// ```
     /// 
     /// # Example 3
@@ -11465,6 +11700,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// assert_eq!(a_biguint.is_underflow(), false);
     /// assert_eq!(a_biguint.is_infinity(), false);
     /// assert_eq!(a_biguint.is_divided_by_zero(), false);
+    /// assert_eq!(a_biguint.is_undefined(), false);
     /// 
     /// a_biguint.wrapping_pow_assign_uint(exp);
     /// println!("After a_biguint.wrapping_pow_assign_uint({}),\na_biguint = {}", exp, a_biguint);
@@ -11473,6 +11709,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// assert_eq!(a_biguint.is_underflow(), false);
     /// assert_eq!(a_biguint.is_infinity(), false);
     /// assert_eq!(a_biguint.is_divided_by_zero(), false);
+    /// assert_eq!(a_biguint.is_undefined(), false);
     /// ```
     /// 
     /// # Example 4
@@ -11487,6 +11724,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// assert_eq!(a_biguint.is_underflow(), false);
     /// assert_eq!(a_biguint.is_infinity(), false);
     /// assert_eq!(a_biguint.is_divided_by_zero(), false);
+    /// assert_eq!(a_biguint.is_undefined(), false);
     /// 
     /// a_biguint.wrapping_pow_assign_uint(exp);
     /// println!("After a_biguint.wrapping_pow_assign_uint({}),\na_biguint = {}", exp, a_biguint);
@@ -11495,6 +11733,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// assert_eq!(a_biguint.is_underflow(), false);
     /// assert_eq!(a_biguint.is_infinity(), false);
     /// assert_eq!(a_biguint.is_divided_by_zero(), false);
+    /// assert_eq!(a_biguint.is_undefined(), false);
     /// 
     /// let mut _a_biguint = U256::zero();
     /// let _exp = 0_u8;
@@ -11590,6 +11829,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// assert_eq!(res.is_underflow(), false);
     /// assert_eq!(res.is_infinity(), false);
     /// assert_eq!(res.is_divided_by_zero(), false);
+    /// assert_eq!(res.is_undefined(), false);
     /// ```
     /// 
     /// # Example 2
@@ -11607,6 +11847,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// assert_eq!(res.is_underflow(), false);
     /// assert_eq!(res.is_infinity(), false);
     /// assert_eq!(res.is_divided_by_zero(), false);
+    /// assert_eq!(res.is_undefined(), false);
     /// ```
     /// 
     /// # Example 3
@@ -11624,6 +11865,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// assert_eq!(res.is_underflow(), false);
     /// assert_eq!(res.is_infinity(), false);
     /// assert_eq!(res.is_divided_by_zero(), false);
+    /// assert_eq!(res.is_undefined(), false);
     /// ```
     /// 
     /// # Example 4
@@ -11641,6 +11883,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// assert_eq!(res.is_underflow(), false);
     /// assert_eq!(res.is_infinity(), false);
     /// assert_eq!(res.is_divided_by_zero(), false);
+    /// assert_eq!(res.is_undefined(), false);
     /// 
     /// let _a_biguint = UU32::zero();
     /// let _exp = 0_u8;
@@ -11716,6 +11959,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// assert_eq!(a_biguint.is_underflow(), false);
     /// assert_eq!(a_biguint.is_infinity(), false);
     /// assert_eq!(a_biguint.is_divided_by_zero(), false);
+    /// assert_eq!(a_biguint.is_undefined(), false);
     /// 
     /// let overflow = a_biguint.overflowing_pow_assign_uint(exp);
     /// println!("After a_biguint.overflowing_pow_assign_uint({}),\na_biguint = {}\noverflow = {}", exp, a_biguint, overflow);
@@ -11725,6 +11969,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// assert_eq!(a_biguint.is_underflow(), false);
     /// assert_eq!(a_biguint.is_infinity(), false);
     /// assert_eq!(a_biguint.is_divided_by_zero(), false);
+    /// assert_eq!(a_biguint.is_undefined(), false);
     /// ```
     /// 
     /// # Example 2
@@ -11739,6 +11984,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// assert_eq!(a_biguint.is_underflow(), false);
     /// assert_eq!(a_biguint.is_infinity(), false);
     /// assert_eq!(a_biguint.is_divided_by_zero(), false);
+    /// assert_eq!(a_biguint.is_undefined(), false);
     /// 
     /// let overflow = a_biguint.overflowing_pow_assign_uint(exp);
     /// println!("After a_biguint.overflowing_pow_assign_uint({}),\na_biguint = {}\noverflow = {}", exp, a_biguint, overflow);
@@ -11748,6 +11994,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// assert_eq!(a_biguint.is_underflow(), false);
     /// assert_eq!(a_biguint.is_infinity(), false);
     /// assert_eq!(a_biguint.is_divided_by_zero(), false);
+    /// assert_eq!(a_biguint.is_undefined(), false);
     /// ```
     /// 
     /// # Example 3
@@ -11762,6 +12009,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// assert_eq!(a_biguint.is_underflow(), false);
     /// assert_eq!(a_biguint.is_infinity(), false);
     /// assert_eq!(a_biguint.is_divided_by_zero(), false);
+    /// assert_eq!(a_biguint.is_undefined(), false);
     /// 
     /// let overflow = a_biguint.overflowing_pow_assign_uint(exp);
     /// println!("After a_biguint.overflowing_pow_assign_uint({}),\na_biguint = {}\noverflow = {}", exp, a_biguint, overflow);
@@ -11771,6 +12019,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// assert_eq!(a_biguint.is_underflow(), false);
     /// assert_eq!(a_biguint.is_infinity(), false);
     /// assert_eq!(a_biguint.is_divided_by_zero(), false);
+    /// assert_eq!(a_biguint.is_undefined(), false);
     /// ```
     /// 
     /// # Example 4
@@ -11785,6 +12034,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// assert_eq!(a_biguint.is_underflow(), false);
     /// assert_eq!(a_biguint.is_infinity(), false);
     /// assert_eq!(a_biguint.is_divided_by_zero(), false);
+    /// assert_eq!(a_biguint.is_undefined(), false);
     /// 
     /// let overflow = a_biguint.overflowing_pow_assign_uint(exp);
     /// println!("After a_biguint.overflowing_pow_assign_uint({}),\na_biguint = {}\noverflow = {}", exp, a_biguint, overflow);
@@ -11794,6 +12044,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// assert_eq!(a_biguint.is_underflow(), false);
     /// assert_eq!(a_biguint.is_infinity(), false);
     /// assert_eq!(a_biguint.is_divided_by_zero(), false);
+    /// assert_eq!(a_biguint.is_undefined(), false);
     /// 
     /// let mut _a_biguint = U256::zero();
     /// let _exp = 0_u8;
@@ -11872,6 +12123,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     ///             assert_eq!(raised.is_underflow(), false);
     ///             assert_eq!(raised.is_infinity(), false);
     ///             assert_eq!(raised.is_divided_by_zero(), false);
+    ///             assert_eq!(raised.is_undefined(), false);
     ///         },
     ///     None => { println!("Overflow"); }
     /// }
@@ -11912,6 +12164,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     ///             assert_eq!(raised.is_underflow(), false);
     ///             assert_eq!(raised.is_infinity(), false);
     ///             assert_eq!(raised.is_divided_by_zero(), false);
+    ///             assert_eq!(raised.is_undefined(), false);
     ///         },
     ///     None => { println!("Overflow"); }
     /// }
@@ -11934,6 +12187,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     ///             assert_eq!(raised.is_underflow(), false);
     ///             assert_eq!(raised.is_infinity(), false);
     ///             assert_eq!(raised.is_divided_by_zero(), false);
+    ///             assert_eq!(raised.is_undefined(), false);
     ///         },
     ///     None => { println!("Overflow"); }
     /// }
@@ -12022,6 +12276,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// assert_eq!(res.is_underflow(), false);
     /// assert_eq!(res.is_infinity(), false);
     /// assert_eq!(res.is_divided_by_zero(), false);
+    /// assert_eq!(res.is_undefined(), false);
     /// ```
     /// 
     /// # Example 2
@@ -12049,6 +12304,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// assert_eq!(res.is_underflow(), false);
     /// assert_eq!(res.is_infinity(), false);
     /// assert_eq!(res.is_divided_by_zero(), false);
+    /// assert_eq!(res.is_undefined(), false);
     /// ```
     /// 
     /// # Example 4
@@ -12065,6 +12321,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// assert_eq!(res.is_underflow(), false);
     /// assert_eq!(res.is_infinity(), false);
     /// assert_eq!(res.is_divided_by_zero(), false);
+    /// assert_eq!(res.is_undefined(), false);
     /// 
     /// let _a_biguint = UU32::zero();
     /// let _exp = 0_u8;
@@ -12133,6 +12390,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// assert_eq!(res.is_underflow(), false);
     /// assert_eq!(res.is_infinity(), false);
     /// assert_eq!(res.is_divided_by_zero(), false);
+    /// assert_eq!(res.is_undefined(), false);
     /// ```
     /// 
     /// # Example 2
@@ -12149,6 +12407,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// assert_eq!(res.is_underflow(), false);
     /// assert_eq!(res.is_infinity(), false);
     /// assert_eq!(res.is_divided_by_zero(), false);
+    /// assert_eq!(res.is_undefined(), false);
     /// ```
     /// 
     /// # Example 3
@@ -12165,6 +12424,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// assert_eq!(res.is_underflow(), false);
     /// assert_eq!(res.is_infinity(), false);
     /// assert_eq!(res.is_divided_by_zero(), false);
+    /// assert_eq!(res.is_undefined(), false);
     /// ```
     /// 
     /// # Example 4
@@ -12181,6 +12441,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// assert_eq!(res.is_underflow(), false);
     /// assert_eq!(res.is_infinity(), false);
     /// assert_eq!(res.is_divided_by_zero(), false);
+    /// assert_eq!(res.is_undefined(), false);
     /// 
     /// let _a_biguint = UU32::zero();
     /// let _exp = 0_u8;
@@ -12248,6 +12509,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// assert_eq!(a_biguint.is_underflow(), false);
     /// assert_eq!(a_biguint.is_infinity(), false);
     /// assert_eq!(a_biguint.is_divided_by_zero(), false);
+    /// assert_eq!(a_biguint.is_undefined(), false);
     /// 
     /// println!("After a_biguint.overflowing_pow_assign_uint({}),\na_biguint = {}", exp, a_biguint);
     /// assert_eq!(a_biguint.to_string(), "1000000000000000000000000000000");
@@ -12255,6 +12517,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// assert_eq!(a_biguint.is_underflow(), false);
     /// assert_eq!(a_biguint.is_infinity(), false);
     /// assert_eq!(a_biguint.is_divided_by_zero(), false);
+    /// assert_eq!(a_biguint.is_undefined(), false);
     /// ```
     /// 
     /// # Example 2
@@ -12269,6 +12532,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// assert_eq!(a_biguint.is_underflow(), false);
     /// assert_eq!(a_biguint.is_infinity(), false);
     /// assert_eq!(a_biguint.is_divided_by_zero(), false);
+    /// assert_eq!(a_biguint.is_undefined(), false);
     /// 
     /// a_biguint.saturating_pow_assign_uint(exp);
     /// println!("After a_biguint.overflowing_pow_assign_uint({}),\na_biguint = {}", exp, a_biguint);
@@ -12277,6 +12541,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// assert_eq!(a_biguint.is_underflow(), false);
     /// assert_eq!(a_biguint.is_infinity(), false);
     /// assert_eq!(a_biguint.is_divided_by_zero(), false);
+    /// assert_eq!(a_biguint.is_undefined(), false);
     /// ```
     /// 
     /// # Example 3
@@ -12291,6 +12556,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// assert_eq!(a_biguint.is_underflow(), false);
     /// assert_eq!(a_biguint.is_infinity(), false);
     /// assert_eq!(a_biguint.is_divided_by_zero(), false);
+    /// assert_eq!(a_biguint.is_undefined(), false);
     /// 
     /// a_biguint.saturating_pow_assign_uint(exp);
     /// println!("After a_biguint.overflowing_pow_assign_uint({}),\na_biguint = {}", exp, a_biguint);
@@ -12299,6 +12565,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// assert_eq!(a_biguint.is_underflow(), false);
     /// assert_eq!(a_biguint.is_infinity(), false);
     /// assert_eq!(a_biguint.is_divided_by_zero(), false);
+    /// assert_eq!(a_biguint.is_undefined(), false);
     /// ```
     /// 
     /// # Example 4
@@ -12313,6 +12580,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// assert_eq!(a_biguint.is_underflow(), false);
     /// assert_eq!(a_biguint.is_infinity(), false);
     /// assert_eq!(a_biguint.is_divided_by_zero(), false);
+    /// assert_eq!(a_biguint.is_undefined(), false);
     /// 
     /// a_biguint.saturating_pow_assign_uint(exp);
     /// println!("After a_biguint.overflowing_pow_assign_uint({}),\na_biguint = {}", exp, a_biguint);
@@ -12321,6 +12589,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// assert_eq!(a_biguint.is_underflow(), false);
     /// assert_eq!(a_biguint.is_infinity(), false);
     /// assert_eq!(a_biguint.is_divided_by_zero(), false);
+    /// assert_eq!(a_biguint.is_undefined(), false);
     /// 
     /// let mut _a_biguint = UU32::zero();
     /// let _exp = 0_u8;
@@ -12397,6 +12666,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// assert_eq!(res.is_underflow(), false);
     /// assert_eq!(res.is_infinity(), false);
     /// assert_eq!(res.is_divided_by_zero(), false);
+    /// assert_eq!(res.is_undefined(), false);
     /// ```
     /// 
     /// # Example 2
@@ -12414,6 +12684,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// assert_eq!(res.is_underflow(), false);
     /// assert_eq!(res.is_infinity(), false);
     /// assert_eq!(res.is_divided_by_zero(), false);
+    /// assert_eq!(res.is_undefined(), false);
     /// ```
     /// 
     /// # Example 3
@@ -12431,6 +12702,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// assert_eq!(res.is_underflow(), false);
     /// assert_eq!(res.is_infinity(), false);
     /// assert_eq!(res.is_divided_by_zero(), false);
+    /// assert_eq!(res.is_undefined(), false);
     /// ```
     /// 
     /// # Example 4
@@ -12448,6 +12720,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// assert_eq!(res.is_underflow(), false);
     /// assert_eq!(res.is_infinity(), false);
     /// assert_eq!(res.is_divided_by_zero(), false);
+    /// assert_eq!(res.is_undefined(), false);
     /// 
     /// let _a_biguint = UU32::zero();
     /// let _exp = 0_u8;
@@ -12533,6 +12806,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// assert_eq!(a_biguint.is_underflow(), false);
     /// assert_eq!(a_biguint.is_infinity(), false);
     /// assert_eq!(a_biguint.is_divided_by_zero(), false);
+    /// assert_eq!(a_biguint.is_undefined(), false);
     /// 
     /// a_biguint.modular_pow_assign_uint(exp, &modulo);
     /// println!("After a_biguint.modular_pow_assign_uint({}),\na_biguint = {}", exp, a_biguint);
@@ -12556,6 +12830,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// assert_eq!(a_biguint.is_underflow(), false);
     /// assert_eq!(a_biguint.is_infinity(), false);
     /// assert_eq!(a_biguint.is_divided_by_zero(), false);
+    /// assert_eq!(a_biguint.is_undefined(), false);
     /// 
     /// a_biguint.modular_pow_assign_uint(exp, &modulo);
     /// println!("After a_biguint.modular_pow_assign_uint({}),\na_biguint = {}", exp, a_biguint);
@@ -12564,6 +12839,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// assert_eq!(a_biguint.is_underflow(), false);
     /// assert_eq!(a_biguint.is_infinity(), false);
     /// assert_eq!(a_biguint.is_divided_by_zero(), false);
+    /// assert_eq!(a_biguint.is_undefined(), false);
     /// ```
     /// 
     /// # Example 3
@@ -12579,6 +12855,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// assert_eq!(a_biguint.is_underflow(), false);
     /// assert_eq!(a_biguint.is_infinity(), false);
     /// assert_eq!(a_biguint.is_divided_by_zero(), false);
+    /// assert_eq!(a_biguint.is_undefined(), false);
     /// 
     /// a_biguint.modular_pow_assign_uint(exp, &modulo);
     /// println!("After a_biguint.modular_pow_assign_uint({}),\na_biguint = {}", exp, a_biguint);
@@ -12587,6 +12864,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// assert_eq!(a_biguint.is_underflow(), false);
     /// assert_eq!(a_biguint.is_infinity(), false);
     /// assert_eq!(a_biguint.is_divided_by_zero(), false);
+    /// assert_eq!(a_biguint.is_undefined(), false);
     /// ```
     /// 
     /// # Example 4
@@ -12602,6 +12880,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// assert_eq!(a_biguint.is_underflow(), false);
     /// assert_eq!(a_biguint.is_infinity(), false);
     /// assert_eq!(a_biguint.is_divided_by_zero(), false);
+    /// assert_eq!(a_biguint.is_undefined(), false);
     /// 
     /// a_biguint.modular_pow_assign_uint(exp, &modulo);
     /// println!("After a_biguint.modular_pow_assign_uint({}),\na_biguint = {}", exp, a_biguint);
@@ -12610,6 +12889,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// assert_eq!(a_biguint.is_underflow(), false);
     /// assert_eq!(a_biguint.is_infinity(), false);
     /// assert_eq!(a_biguint.is_divided_by_zero(), false);
+    /// assert_eq!(a_biguint.is_undefined(), false);
     /// 
     /// let mut _a_biguint = U256::zero();
     /// let _exp = 0_u8;
@@ -12705,6 +12985,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// assert_eq!(res.is_underflow(), false);
     /// assert_eq!(res.is_infinity(), false);
     /// assert_eq!(res.is_divided_by_zero(), false);
+    /// assert_eq!(res.is_undefined(), false);
     /// ```
     /// 
     /// # Example 2
@@ -12721,6 +13002,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// assert_eq!(res.is_underflow(), false);
     /// assert_eq!(res.is_infinity(), false);
     /// assert_eq!(res.is_divided_by_zero(), false);
+    /// assert_eq!(res.is_undefined(), false);
     /// ```
     /// 
     /// # Example 3
@@ -12737,6 +13019,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// assert_eq!(res.is_underflow(), false);
     /// assert_eq!(res.is_infinity(), false);
     /// assert_eq!(res.is_divided_by_zero(), false);
+    /// assert_eq!(res.is_undefined(), false);
     /// 
     /// let _a_biguint = U256::from_uint(1000_u16);
     /// let _exp = 0_u8;
@@ -12862,6 +13145,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// assert_eq!(a_biguint.is_underflow(), false);
     /// assert_eq!(a_biguint.is_infinity(), false);
     /// assert_eq!(a_biguint.is_divided_by_zero(), false);
+    /// assert_eq!(a_biguint.is_undefined(), false);
     /// 
     /// a_biguint.iroot_assign_uint(exp);
     /// println!("After a_biguint.iroot_assign_uint({}),\na_biguint = {}.", exp, a_biguint);
@@ -12870,6 +13154,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// assert_eq!(a_biguint.is_underflow(), false);
     /// assert_eq!(a_biguint.is_infinity(), false);
     /// assert_eq!(a_biguint.is_divided_by_zero(), false);
+    /// assert_eq!(a_biguint.is_undefined(), false);
     /// ```
     /// 
     /// # Example 2
@@ -12884,6 +13169,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// assert_eq!(a_biguint.is_underflow(), false);
     /// assert_eq!(a_biguint.is_infinity(), false);
     /// assert_eq!(a_biguint.is_divided_by_zero(), false);
+    /// assert_eq!(a_biguint.is_undefined(), false);
     /// 
     /// a_biguint.iroot_assign_uint(exp);
     /// println!("After a_biguint.iroot_assign_uint({}),\na_biguint = {}.", exp, a_biguint);
@@ -12892,6 +13178,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// assert_eq!(a_biguint.is_underflow(), false);
     /// assert_eq!(a_biguint.is_infinity(), false);
     /// assert_eq!(a_biguint.is_divided_by_zero(), false);
+    /// assert_eq!(a_biguint.is_undefined(), false);
     /// ```
     /// 
     /// # Example 3
@@ -12906,6 +13193,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// assert_eq!(a_biguint.is_underflow(), false);
     /// assert_eq!(a_biguint.is_infinity(), false);
     /// assert_eq!(a_biguint.is_divided_by_zero(), false);
+    /// assert_eq!(a_biguint.is_undefined(), false);
     /// 
     /// a_biguint.iroot_assign_uint(exp);
     /// println!("After a_biguint.iroot_assign_uint({}),\na_biguint = {}.", exp, a_biguint);
@@ -12914,6 +13202,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// assert_eq!(a_biguint.is_underflow(), false);
     /// assert_eq!(a_biguint.is_infinity(), false);
     /// assert_eq!(a_biguint.is_divided_by_zero(), false);
+    /// assert_eq!(a_biguint.is_undefined(), false);
     /// 
     /// let mut _a_biguint = U256::from_uint(1000_u16);
     /// let _exp = 0_u8;
@@ -12990,6 +13279,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     ///             assert_eq!(r.is_underflow(), false);
     ///             assert_eq!(r.is_infinity(), false);
     ///             assert_eq!(r.is_divided_by_zero(), false);
+    ///             assert_eq!(r.is_undefined(), false);
     ///         },
     ///     None => { println!("Error"); }
     /// }
@@ -13012,6 +13302,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     ///             assert_eq!(r.is_underflow(), false);
     ///             assert_eq!(r.is_infinity(), false);
     ///             assert_eq!(r.is_divided_by_zero(), false);
+    ///             assert_eq!(r.is_undefined(), false);
     ///         },
     ///     None => { println!("Error"); }
     /// }
@@ -13034,6 +13325,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     ///             assert_eq!(r.is_underflow(), false);
     ///             assert_eq!(r.is_infinity(), false);
     ///             assert_eq!(r.is_divided_by_zero(), false);
+    ///             assert_eq!(r.is_undefined(), false);
     ///         },
     ///     None => { println!("Error"); },
     /// }
@@ -13119,6 +13411,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// assert_eq!(res.is_underflow(), false);
     /// assert_eq!(res.is_infinity(), false);
     /// assert_eq!(res.is_divided_by_zero(), false);
+    /// assert_eq!(res.is_undefined(), false);
     /// ```
     /// 
     /// # Example 2
@@ -13135,6 +13428,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// assert_eq!(res.is_underflow(), false);
     /// assert_eq!(res.is_infinity(), false);
     /// assert_eq!(res.is_divided_by_zero(), false);
+    /// assert_eq!(res.is_undefined(), false);
     /// ```
     /// 
     /// # Example 3
@@ -13151,6 +13445,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// assert_eq!(res.is_underflow(), false);
     /// assert_eq!(res.is_infinity(), false);
     /// assert_eq!(res.is_divided_by_zero(), false);
+    /// assert_eq!(res.is_undefined(), false);
     /// 
     /// let _a_biguint = U256::zero();
     /// let _exp = 0_u8;
@@ -13221,6 +13516,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// assert_eq!(res.is_underflow(), false);
     /// assert_eq!(res.is_infinity(), false);
     /// assert_eq!(res.is_divided_by_zero(), false);
+    /// assert_eq!(res.is_undefined(), false);
     /// ```
     /// 
     /// # Example 2
@@ -13237,6 +13533,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// assert_eq!(res.is_underflow(), false);
     /// assert_eq!(res.is_infinity(), false);
     /// assert_eq!(res.is_divided_by_zero(), false);
+    /// assert_eq!(res.is_undefined(), false);
     /// ```
     /// 
     /// # Example 3
@@ -13253,6 +13550,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// assert_eq!(res.is_underflow(), false);
     /// assert_eq!(res.is_infinity(), false);
     /// assert_eq!(res.is_divided_by_zero(), false);
+    /// assert_eq!(res.is_undefined(), false);
     /// 
     /// let _a_biguint = U256::from_uint(100_u8);
     /// let _base = 0_u8;
@@ -13347,6 +13645,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// assert_eq!(a_biguint.is_underflow(), false);
     /// assert_eq!(a_biguint.is_infinity(), false);
     /// assert_eq!(a_biguint.is_divided_by_zero(), false);
+    /// assert_eq!(a_biguint.is_undefined(), false);
     /// 
     /// a_biguint.ilog_assign_uint(base);
     /// println!("After a_biguint.ilog_assign_uint(base),\na_biguint = {}.", a_biguint);
@@ -13355,6 +13654,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// assert_eq!(a_biguint.is_underflow(), false);
     /// assert_eq!(a_biguint.is_infinity(), false);
     /// assert_eq!(a_biguint.is_divided_by_zero(), false);
+    /// assert_eq!(a_biguint.is_undefined(), false);
     /// ```
     /// 
     /// # Example 2
@@ -13369,6 +13669,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// assert_eq!(a_biguint.is_underflow(), false);
     /// assert_eq!(a_biguint.is_infinity(), false);
     /// assert_eq!(a_biguint.is_divided_by_zero(), false);
+    /// assert_eq!(a_biguint.is_undefined(), false);
     /// 
     /// a_biguint.ilog_assign_uint(base);
     /// println!("After a_biguint.ilog_assign_uint(base),\na_biguint = {}.", a_biguint);
@@ -13377,6 +13678,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// assert_eq!(a_biguint.is_underflow(), false);
     /// assert_eq!(a_biguint.is_infinity(), false);
     /// assert_eq!(a_biguint.is_divided_by_zero(), false);
+    /// assert_eq!(a_biguint.is_undefined(), false);
     /// ```
     /// 
     /// # Example 3
@@ -13391,6 +13693,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// assert_eq!(a_biguint.is_underflow(), false);
     /// assert_eq!(a_biguint.is_infinity(), false);
     /// assert_eq!(a_biguint.is_divided_by_zero(), false);
+    /// assert_eq!(a_biguint.is_undefined(), false);
     /// 
     /// a_biguint.ilog_assign_uint(base);
     /// println!("After a_biguint.ilog_assign_uint(base),\na_biguint = {}.", a_biguint);
@@ -13399,6 +13702,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// assert_eq!(a_biguint.is_underflow(), false);
     /// assert_eq!(a_biguint.is_infinity(), false);
     /// assert_eq!(a_biguint.is_divided_by_zero(), false);
+    /// assert_eq!(a_biguint.is_undefined(), false);
     /// 
     /// let _a_biguint = U256::from_uint(100_u8);
     /// let _base = 0_u8;
@@ -13495,6 +13799,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     ///             assert_eq!(r.is_underflow(), false);
     ///             assert_eq!(r.is_infinity(), false);
     ///             assert_eq!(r.is_divided_by_zero(), false);
+    ///             assert_eq!(r.is_undefined(), false);
     ///         },
     ///     None => { println!("Error"); },
     /// }
@@ -13517,6 +13822,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     ///             assert_eq!(r.is_underflow(), false);
     ///             assert_eq!(r.is_infinity(), false);
     ///             assert_eq!(r.is_divided_by_zero(), false);
+    ///             assert_eq!(r.is_undefined(), false);
     ///         },
     ///     None => { println!("Error"); },
     /// }
@@ -13539,6 +13845,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     ///             assert_eq!(r.is_underflow(), false);
     ///             assert_eq!(r.is_infinity(), false);
     ///             assert_eq!(r.is_divided_by_zero(), false);
+    ///             assert_eq!(r.is_undefined(), false);
     ///         },
     ///     None => { println!("Error"); },
     /// }
@@ -13699,6 +14006,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// assert_eq!(res.is_underflow(), false);
     /// assert_eq!(res.is_infinity(), false);
     /// assert_eq!(res.is_divided_by_zero(), false);
+    /// assert_eq!(res.is_undefined(), false);
     /// ```
     /// 
     /// # Example 2
@@ -13715,6 +14023,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// assert_eq!(res.is_underflow(), false);
     /// assert_eq!(res.is_infinity(), false);
     /// assert_eq!(res.is_divided_by_zero(), false);
+    /// assert_eq!(res.is_undefined(), false);
     /// ```
     /// 
     /// # Example 3
@@ -13731,6 +14040,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// assert_eq!(res.is_underflow(), false);
     /// assert_eq!(res.is_infinity(), false);
     /// assert_eq!(res.is_divided_by_zero(), false);
+    /// assert_eq!(res.is_undefined(), false);
     /// 
     /// let _a_biguint = U256::from_uint(100_u8);
     /// let _base = 0_u8;
@@ -13807,6 +14117,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// assert_eq!(res.is_underflow(), false);
     /// assert_eq!(res.is_infinity(), false);
     /// assert_eq!(res.is_divided_by_zero(), false);
+    /// assert_eq!(res.is_undefined(), false);
     /// ```
     /// 
     /// # Example 2
@@ -13822,6 +14133,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// assert_eq!(res.is_underflow(), false);
     /// assert_eq!(res.is_infinity(), false);
     /// assert_eq!(res.is_divided_by_zero(), false);
+    /// assert_eq!(res.is_undefined(), false);
     /// ```
     /// 
     /// # Example 3
@@ -13837,6 +14149,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// assert_eq!(res.is_underflow(), false);
     /// assert_eq!(res.is_infinity(), false);
     /// assert_eq!(res.is_divided_by_zero(), false);
+    /// assert_eq!(res.is_undefined(), false);
     /// 
     /// let _a_biguint = U256::zero();
     /// // It will panic.
@@ -13881,6 +14194,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// assert_eq!(a_biguint.is_underflow(), false);
     /// assert_eq!(a_biguint.is_infinity(), false);
     /// assert_eq!(a_biguint.is_divided_by_zero(), false);
+    /// assert_eq!(a_biguint.is_undefined(), false);
     /// 
     /// a_biguint.ilog2_assign_uint();
     /// println!("After a_biguint.ilog2_assign_uint(),\na_biguint = {}.", a_biguint);
@@ -13889,6 +14203,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// assert_eq!(a_biguint.is_underflow(), false);
     /// assert_eq!(a_biguint.is_infinity(), false);
     /// assert_eq!(a_biguint.is_divided_by_zero(), false);
+    /// assert_eq!(a_biguint.is_undefined(), false);
     /// ```
     /// 
     /// # Example 2
@@ -13902,6 +14217,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// assert_eq!(a_biguint.is_underflow(), false);
     /// assert_eq!(a_biguint.is_infinity(), false);
     /// assert_eq!(a_biguint.is_divided_by_zero(), false);
+    /// assert_eq!(a_biguint.is_undefined(), false);
     /// 
     /// a_biguint.ilog2_assign_uint();
     /// println!("After a_biguint.ilog2_assign_uint(),\na_biguint = {}.", a_biguint);
@@ -13910,6 +14226,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// assert_eq!(a_biguint.is_underflow(), false);
     /// assert_eq!(a_biguint.is_infinity(), false);
     /// assert_eq!(a_biguint.is_divided_by_zero(), false);
+    /// assert_eq!(a_biguint.is_undefined(), false);
     /// ```
     /// 
     /// # Example 3
@@ -13923,6 +14240,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// assert_eq!(a_biguint.is_underflow(), false);
     /// assert_eq!(a_biguint.is_infinity(), false);
     /// assert_eq!(a_biguint.is_divided_by_zero(), false);
+    /// assert_eq!(a_biguint.is_undefined(), false);
     /// 
     /// a_biguint.ilog2_assign_uint();
     /// println!("After a_biguint.ilog2_assign_uint(),\na_biguint = {}.", a_biguint);
@@ -13931,6 +14249,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// assert_eq!(a_biguint.is_underflow(), false);
     /// assert_eq!(a_biguint.is_infinity(), false);
     /// assert_eq!(a_biguint.is_divided_by_zero(), false);
+    /// assert_eq!(a_biguint.is_undefined(), false);
     /// 
     /// let mut _a_biguint = U256::zero();
     /// // It will panic.
@@ -13984,6 +14303,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     ///             assert_eq!(r.is_underflow(), false);
     ///             assert_eq!(r.is_infinity(), false);
     ///             assert_eq!(r.is_divided_by_zero(), false);
+    ///             assert_eq!(r.is_undefined(), false);
     ///         },
     ///     None => { println!("Error"); },
     /// }
@@ -14005,6 +14325,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     ///             assert_eq!(r.is_underflow(), false);
     ///             assert_eq!(r.is_infinity(), false);
     ///             assert_eq!(r.is_divided_by_zero(), false);
+    ///             assert_eq!(r.is_undefined(), false);
     ///         },
     ///     None => { println!("Error"); },
     /// }
@@ -14026,6 +14347,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     ///             assert_eq!(r.is_underflow(), false);
     ///             assert_eq!(r.is_infinity(), false);
     ///             assert_eq!(r.is_divided_by_zero(), false);
+    ///             assert_eq!(r.is_undefined(), false);
     ///         },
     ///     None => { println!("Error"); },
     /// }
@@ -14092,6 +14414,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// assert_eq!(res.is_underflow(), false);
     /// assert_eq!(res.is_infinity(), false);
     /// assert_eq!(res.is_divided_by_zero(), false);
+    /// assert_eq!(res.is_undefined(), false);
     /// ```
     /// 
     /// # Example 2
@@ -14107,6 +14430,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// assert_eq!(res.is_underflow(), false);
     /// assert_eq!(res.is_infinity(), false);
     /// assert_eq!(res.is_divided_by_zero(), false);
+    /// assert_eq!(res.is_undefined(), false);
     /// ```
     /// 
     /// # Example 3
@@ -14122,6 +14446,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// assert_eq!(res.is_underflow(), false);
     /// assert_eq!(res.is_infinity(), false);
     /// assert_eq!(res.is_divided_by_zero(), false);
+    /// assert_eq!(res.is_undefined(), false);
     /// 
     /// let _a_biguint = U256::zero();
     /// // It will panic.
@@ -14169,6 +14494,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// assert_eq!(res.is_underflow(), false);
     /// assert_eq!(res.is_infinity(), false);
     /// assert_eq!(res.is_divided_by_zero(), false);
+    /// assert_eq!(res.is_undefined(), false);
     /// ```
     /// 
     /// # Example 2
@@ -14184,6 +14510,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// assert_eq!(res.is_underflow(), false);
     /// assert_eq!(res.is_infinity(), false);
     /// assert_eq!(res.is_divided_by_zero(), false);
+    /// assert_eq!(res.is_undefined(), false);
     /// ```
     /// 
     /// # Example 3
@@ -14199,6 +14526,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// assert_eq!(res.is_underflow(), false);
     /// assert_eq!(res.is_infinity(), false);
     /// assert_eq!(res.is_divided_by_zero(), false);
+    /// assert_eq!(res.is_undefined(), false);
     /// 
     /// let _a_biguint = U256::zero();
     /// // It will panic.
@@ -14243,6 +14571,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// assert_eq!(a_biguint.is_underflow(), false);
     /// assert_eq!(a_biguint.is_infinity(), false);
     /// assert_eq!(a_biguint.is_divided_by_zero(), false);
+    /// assert_eq!(a_biguint.is_undefined(), false);
     /// 
     /// a_biguint.ilog10_assign_uint();
     /// println!("After a_biguint.ilog10_assign_uint(),\na_biguint = {}.", a_biguint);
@@ -14251,6 +14580,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// assert_eq!(a_biguint.is_underflow(), false);
     /// assert_eq!(a_biguint.is_infinity(), false);
     /// assert_eq!(a_biguint.is_divided_by_zero(), false);
+    /// assert_eq!(a_biguint.is_undefined(), false);
     /// ```
     /// 
     /// # Example 2
@@ -14264,6 +14594,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// assert_eq!(a_biguint.is_underflow(), false);
     /// assert_eq!(a_biguint.is_infinity(), false);
     /// assert_eq!(a_biguint.is_divided_by_zero(), false);
+    /// assert_eq!(a_biguint.is_undefined(), false);
     /// 
     /// a_biguint.ilog10_assign_uint();
     /// println!("After a_biguint.ilog10_assign_uint(),\na_biguint = {}.", a_biguint);
@@ -14272,6 +14603,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// assert_eq!(a_biguint.is_underflow(), false);
     /// assert_eq!(a_biguint.is_infinity(), false);
     /// assert_eq!(a_biguint.is_divided_by_zero(), false);
+    /// assert_eq!(a_biguint.is_undefined(), false);
     /// ```
     /// 
     /// # Example 3
@@ -14285,6 +14617,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// assert_eq!(a_biguint.is_underflow(), false);
     /// assert_eq!(a_biguint.is_infinity(), false);
     /// assert_eq!(a_biguint.is_divided_by_zero(), false);
+    /// assert_eq!(a_biguint.is_undefined(), false);
     /// 
     /// a_biguint.ilog10_assign_uint();
     /// println!("After a_biguint.ilog10_assign_uint(),\na_biguint = {}.", a_biguint);
@@ -14293,6 +14626,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// assert_eq!(a_biguint.is_underflow(), false);
     /// assert_eq!(a_biguint.is_infinity(), false);
     /// assert_eq!(a_biguint.is_divided_by_zero(), false);
+    /// assert_eq!(a_biguint.is_undefined(), false);
     /// 
     /// let mut _a_biguint = U256::zero();
     /// // It will panic.
@@ -14348,6 +14682,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     ///             assert_eq!(r.is_underflow(), false);
     ///             assert_eq!(r.is_infinity(), false);
     ///             assert_eq!(r.is_divided_by_zero(), false);
+    ///             assert_eq!(r.is_undefined(), false);
     ///         },
     ///     None => { println!("Error"); },
     /// }
@@ -14369,6 +14704,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     ///             assert_eq!(r.is_underflow(), false);
     ///             assert_eq!(r.is_infinity(), false);
     ///             assert_eq!(r.is_divided_by_zero(), false);
+    ///             assert_eq!(r.is_undefined(), false);
     ///         },
     ///     None => { println!("Error"); },
     /// }
@@ -14390,6 +14726,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     ///             assert_eq!(r.is_underflow(), false);
     ///             assert_eq!(r.is_infinity(), false);
     ///             assert_eq!(r.is_divided_by_zero(), false);
+    ///             assert_eq!(r.is_undefined(), false);
     ///         },
     ///     None => { println!("Error"); },
     /// }
@@ -14455,6 +14792,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// assert_eq!(a_biguint.is_underflow(), false);
     /// assert_eq!(a_biguint.is_infinity(), false);
     /// assert_eq!(a_biguint.is_divided_by_zero(), false);
+    /// assert_eq!(a_biguint.is_undefined(), false);
     /// ```
     /// 
     /// # Example 2
@@ -14470,6 +14808,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// assert_eq!(a_biguint.is_underflow(), false);
     /// assert_eq!(a_biguint.is_infinity(), false);
     /// assert_eq!(a_biguint.is_divided_by_zero(), false);
+    /// assert_eq!(a_biguint.is_undefined(), false);
     /// ```
     /// 
     /// # Example 3
@@ -14485,6 +14824,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// assert_eq!(a_biguint.is_underflow(), false);
     /// assert_eq!(a_biguint.is_infinity(), false);
     /// assert_eq!(a_biguint.is_divided_by_zero(), false);
+    /// assert_eq!(a_biguint.is_undefined(), false);
     /// 
     /// let _a_biguint = U256::zero();
     /// // It will panic.
@@ -14506,7 +14846,6 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /***** ARITHMATIC OPERATIONS WITH BIGUINT *****/
 
     /*** ADDITION ***/
-//-===============
     // pub fn carrying_add(&self, rhs: &Self, carry: bool) -> (Self, bool)
     /// Calculates `self` + `rhs` + `carry`,
     /// wrapping around at the boundary of the type.
@@ -14548,16 +14887,22 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// 
     /// let (c_biguint_lo, carry) = a_biguint_lo.carrying_add(&b_biguint_lo, false);
     /// let (c_biguint_hi, overflow) = a_biguint_hi.carrying_add(&b_biguint_hi, carry);
-    /// 
     /// println!("{}:{} + {}:{} = {}:{}", a_biguint_hi.to_string_with_radix_and_stride(16, 4).unwrap(), a_biguint_lo.to_string_with_radix_and_stride(16, 4).unwrap(), b_biguint_hi.to_string_with_radix_and_stride(16, 4).unwrap(), b_biguint_lo.to_string_with_radix_and_stride(16, 4).unwrap(), c_biguint_hi.to_string_with_radix_and_stride(16, 4).unwrap(), c_biguint_lo.to_string_with_radix_and_stride(16, 4).unwrap());
     /// println!("carry = {}, overflow = {}", carry, overflow);
-    /// 
     /// assert_eq!(c_biguint_hi.to_string_with_radix_and_stride(16, 4).unwrap(), "FFFF_FFFF_FFFF_FFFF_FFFF_FFFF_FFFF_FFFF_FFFF_FFFF_FFFF_FFFF_FFFF_FFFF_FFFF_FFF2");
+    /// assert_eq!(overflow, false);
+    /// assert_eq!(c_biguint_hi.is_overflow(), false);
+    /// assert_eq!(c_biguint_hi.is_underflow(), false);
+    /// assert_eq!(c_biguint_hi.is_infinity(), false);
+    /// assert_eq!(c_biguint_hi.is_divided_by_zero(), false);
+    /// assert_eq!(c_biguint_hi.is_undefined(), false);
     /// assert_eq!(c_biguint_lo.to_string_with_radix_and_stride(16, 4).unwrap(), "1111_1110_1111_1111_1111_1101_1111_1111_1111_1110_1111_1111_1111_1101_1111_1110");
     /// assert_eq!(carry, true);
     /// assert_eq!(c_biguint_lo.is_overflow(), true);
-    /// assert_eq!(overflow, false);
-    /// assert_eq!(c_biguint_hi.is_overflow(), false);
+    /// assert_eq!(c_biguint_lo.is_underflow(), false);
+    /// assert_eq!(c_biguint_lo.is_infinity(), false);
+    /// assert_eq!(c_biguint_lo.is_divided_by_zero(), false);
+    /// assert_eq!(c_biguint_hi.is_undefined(), false);
     /// ``` 
     /// 
     /// # Example 2
@@ -14571,16 +14916,23 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// 
     /// let (c_biguint_lo, carry) = a_biguint_lo.carrying_add(&b_biguint_lo, false);
     /// let (c_biguint_hi, overflow) = a_biguint_hi.carrying_add(&b_biguint_hi, carry);
-    /// 
     /// println!("{}:{} + {}:{} = {}:{}", a_biguint_hi.to_string_with_radix_and_stride(16, 4).unwrap(), a_biguint_lo.to_string_with_radix_and_stride(16, 4).unwrap(), b_biguint_hi.to_string_with_radix_and_stride(16, 4).unwrap(), b_biguint_lo.to_string_with_radix_and_stride(16, 4).unwrap(), c_biguint_hi.to_string_with_radix_and_stride(16, 4).unwrap(), c_biguint_lo.to_string_with_radix_and_stride(16, 4).unwrap());
     /// println!("carry = {}, overflow = {}", carry, overflow);
     /// 
     /// assert_eq!(c_biguint_hi.to_string(), "0");
+    /// assert_eq!(overflow, true);
+    /// assert_eq!(c_biguint_hi.is_overflow(), true);
+    /// assert_eq!(c_biguint_lo.is_underflow(), false);
+    /// assert_eq!(c_biguint_lo.is_infinity(), false);
+    /// assert_eq!(c_biguint_lo.is_divided_by_zero(), false);
+    /// assert_eq!(c_biguint_hi.is_undefined(), false);
     /// assert_eq!(c_biguint_lo.to_string(), "0");
     /// assert_eq!(carry, true);
     /// assert_eq!(c_biguint_lo.is_overflow(), true);
-    /// assert_eq!(overflow, true);
-    /// assert_eq!(c_biguint_hi.is_overflow(), true);
+    /// assert_eq!(c_biguint_lo.is_underflow(), false);
+    /// assert_eq!(c_biguint_lo.is_infinity(), false);
+    /// assert_eq!(c_biguint_lo.is_divided_by_zero(), false);
+    /// assert_eq!(c_biguint_hi.is_undefined(), false);
     /// ```
     /// 
     /// # Big-endian issue
@@ -14594,6 +14946,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
         (res, c)
     }
 
+//-===============
     // pub fn carrying_add_assign(&self, rhs: &Self, carry: bool) -> bool
     /// Accumulate `rhs` + `carry` to `self`, wrapping around at the boundary
     /// of the type, and return the resulting carry.

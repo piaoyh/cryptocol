@@ -30,7 +30,8 @@
 /// 256-bit, 512-bit, 1024-bit, U2048-bit, 3072-bit, 4096-bit, 5120-bit,
 /// 6144-bit, 7168-bit, 8192-bit, and 16384-bit big unsigned integer types,
 /// respectively. Here, 'panic-free' does not mean that it never panic in any
-/// case, but means that it does not panic during arithmatic operation. 
+/// case, but means that it does not panic for divide-by-zero or
+/// modulo-by-zero-or-one arithmatic operation. 
 /// They are defined based on `u8`, `u16`, `u32`, `u64` and `u128` according
 /// to the given parameter.
 /// 

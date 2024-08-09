@@ -119,8 +119,8 @@
 | pub fn saturating_rem_assign(&mut self, rhs: &Self) -> Self                   | It gives zero to `self` when `rhs` is zero.                     | It will panic depending on generic parameter PANIC_FREE. |
 | pub fn divide_fully(&self, rhs: &Self) -> (Self, U)                           | It returns (maximum, 0) when `rhs` is zero.                     | It will panic depending on generic parameter PANIC_FREE. |
 
-- The above-methods have been changed to cause panic when the argument `modulo` is either zero or one. The author think that it is high chance that it is a mistake to give zero or one to the arguement `modulo` but this mistake won't be found or will be found only with a lot of efforts at test time if these methods do not cause panic. So, this change has been made for better security.
-- The above-methods have been changed to cause panic when the argument `rhs` is zero. The author think that it is high chance that it is a mistake to give zero to the arguement `rhs` but this mistake won't be found or will be found only with a lot of efforts at test time if these methods do not cause panic. So, this change has been made for better security.
+- The above-methods have been changed to cause panic when the argument `modulo` is either zero or one if BigUInt is not panic-free. The author think that it is high chance that it is a mistake to give zero or one to the arguement `modulo` but this mistake won't be found or will be found only with a lot of efforts at test time if these methods do not cause panic. So, this change has been made for better security.
+- The above-methods have been changed to cause panic when the argument `rhs` is zero if BigUInt is not panic-free. The author think that it is high chance that it is a mistake to give zero to the arguement `rhs` but this mistake won't be found or will be found only with a lot of efforts at test time if these methods do not cause panic. So, this change has been made for better security.
 
 ## Breaking changes from ver. 0.7.6 to ver. 0.8.0
 
