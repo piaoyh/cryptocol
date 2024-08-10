@@ -11421,8 +11421,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
             + BitXor<Output=U> + BitXorAssign + Not<Output=U>
             + PartialEq + PartialOrd
     {
-        let mut res = Self::new();
-        res.set_number(self.get_number());
+        let mut res = Self::from_array(self.get_number().clone());
         res.panic_free_modular_div_assign_uint(rhs, modulo);
         res
     }
@@ -11526,7 +11525,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
             if self.is_zero()
             {
                 self.set_zero();
-                self.set_undefined();
+                self.set_flag_bit(Self::UNDEFINED | Self::DIVIDED_BY_ZERO);
             }
             else
             {
@@ -11544,15 +11543,17 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
         if terminated
             { return; }
 
-        let flags = self.get_all_flags();   
+        let flags = self.get_all_flags();
         if *self >= *modulo
-            { self.wrapping_rem_assign(modulo); }
+        {
+            self.wrapping_rem_assign(modulo);
+            self.set_all_flags(flags);
+        }
 
         if modulo.gt_uint(rhs)
         {
-            if self.ge_uint(rhs)    // if modulo > *self >= rhs
-                { self.wrapping_div_assign_uint(rhs); }
-            self.set_flag_bit(flags);
+            self.wrapping_div_assign_uint(rhs);
+            self.set_all_flags(flags);
         }
         else if rhs.length_in_bytes() > T::size_in_bytes()  // if rhs.length_in_bytes() > T::size_in_bytes() && (module <= rhs)
         {
@@ -11568,7 +11569,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
                 if self.is_zero()
                 {
                     self.set_zero();
-                    self.set_undefined();
+                    self.set_flag_bit(Self::UNDEFINED | Self::DIVIDED_BY_ZERO);
                 }
                 else
                 {
@@ -11577,12 +11578,8 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
                 }
                 return;
             }
-
-            if mself >= mrhs
-                { self.set_uint(mself.wrapping_div(mrhs)); }
-            else
-                { self.set_uint(mself); }
-            self.set_flag_bit(flags);
+            self.set_uint(mself.wrapping_div(mrhs));
+            self.set_all_flags(flags);
         }
     }
 

@@ -5221,10 +5221,10 @@ fn biguint_panic_free_modular_div_uint()
     let quotient = dividend.panic_free_modular_div_uint(divisor, &modulo);
     println!("{} / {} = {} (mod {})", dividend, divisor, quotient, modulo);
     assert_eq!(quotient.to_string(), "0");
-    assert_eq!(quotient.is_overflow(), true);
+    assert_eq!(quotient.is_overflow(), false);
     assert_eq!(quotient.is_underflow(), false);
-    assert_eq!(quotient.is_infinity(), true);
-    assert_eq!(quotient.is_undefined(), false);
+    assert_eq!(quotient.is_infinity(), false);
+    assert_eq!(quotient.is_undefined(), true);
     assert_eq!(quotient.is_divided_by_zero(), true);
 
     let dividend = U256::zero();
