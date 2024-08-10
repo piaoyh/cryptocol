@@ -5131,6 +5131,7 @@ fn biguint_panic_free_modular_div_uint()
     use cryptocol::define_utypes_with;
     define_utypes_with!(u128);
 
+    // Normal case 1
     let dividend = U256::from_str("123456789015758942546236989636279846864825945392").unwrap();
     let divisor = 128_u8;
     let modulo = U256::from_uint(100_u8);
@@ -5143,6 +5144,7 @@ fn biguint_panic_free_modular_div_uint()
     assert_eq!(quotient.is_undefined(), false);
     assert_eq!(quotient.is_divided_by_zero(), false);
 
+    // Normal case 2
     let dividend = U256::zero();
     let divisor = 128_u8;
     let modulo = U256::from_uint(100_u8);
@@ -5155,6 +5157,7 @@ fn biguint_panic_free_modular_div_uint()
     assert_eq!(quotient.is_undefined(), false);
     assert_eq!(quotient.is_divided_by_zero(), false);
 
+    // Normal case 3
     let dividend = U256::from_uint(10000_u16);
     let divisor = 128_u8;
     let modulo = U256::from_uint(100_u8);
@@ -5167,6 +5170,7 @@ fn biguint_panic_free_modular_div_uint()
     assert_eq!(quotient.is_undefined(), false);
     assert_eq!(quotient.is_divided_by_zero(), false);
 
+    // modulo == 0 and divisor != 0 and dividend != 0
     let dividend = U256::from_str("123456789015758942546236989636279846864825945392").unwrap();
     let divisor = 128_u8;
     let modulo = U256::zero();
@@ -5178,7 +5182,8 @@ fn biguint_panic_free_modular_div_uint()
     assert_eq!(quotient.is_infinity(), false);
     assert_eq!(quotient.is_undefined(), true);
     assert_eq!(quotient.is_divided_by_zero(), false);
-    
+
+    // modulo == 1 and divisor != 0 and dividend != 0
     let dividend = U256::from_str("123456789015758942546236989636279846864825945392").unwrap();
     let divisor = 128_u8;
     let modulo = U256::one();
@@ -5191,6 +5196,7 @@ fn biguint_panic_free_modular_div_uint()
     assert_eq!(quotient.is_undefined(), true);
     assert_eq!(quotient.is_divided_by_zero(), false);
 
+    // modulo >= 2 and divisor == 0 and dividend != 0
     let dividend = U256::from_str("123456789015758942546236989636279846864825945392").unwrap();
     let divisor = 0_u8;
     let modulo = U256::from_uint(100_u8);
@@ -5203,6 +5209,7 @@ fn biguint_panic_free_modular_div_uint()
     assert_eq!(quotient.is_undefined(), false);
     assert_eq!(quotient.is_divided_by_zero(), true);
 
+    // modulo >= 2 and divisor == n * modulo and dividend != 0
     let dividend = U256::from_str("123456789015758942546236989636279846864825945392").unwrap();
     let divisor = 200_u8;
     let modulo = U256::from_uint(100_u8);
@@ -5214,7 +5221,8 @@ fn biguint_panic_free_modular_div_uint()
     assert_eq!(quotient.is_infinity(), true);
     assert_eq!(quotient.is_undefined(), false);
     assert_eq!(quotient.is_divided_by_zero(), true);
-    
+
+    // modulo >= 2 and divisor == n * modulo and dividend == m * modulo
     let dividend = U256::from_uint(30000_u16);
     let divisor = 200_u8;
     let modulo = U256::from_uint(100_u8);
@@ -5227,6 +5235,7 @@ fn biguint_panic_free_modular_div_uint()
     assert_eq!(quotient.is_undefined(), true);
     assert_eq!(quotient.is_divided_by_zero(), true);
 
+    // modulo == 0 and divisor == 0 and dividend == 0
     let dividend = U256::zero();
     let divisor = 0_u8;
     let modulo = U256::zero();
@@ -5239,6 +5248,7 @@ fn biguint_panic_free_modular_div_uint()
     assert_eq!(quotient.is_undefined(), true);
     assert_eq!(quotient.is_divided_by_zero(), true);
 
+    // modulo == 1 and divisor == 0 and dividend == 0
     let dividend = U256::zero();
     let divisor = 0_u8;
     let modulo = U256::one();
@@ -5250,7 +5260,7 @@ fn biguint_panic_free_modular_div_uint()
     assert_eq!(quotient.is_infinity(), false);
     assert_eq!(quotient.is_undefined(), true);
     assert_eq!(quotient.is_divided_by_zero(), true);
-    println!("---------------------------");panic!();
+    println!("---------------------------");
 }
 
 fn biguint_panic_free_modular_div_assign_uint()
@@ -5258,12 +5268,13 @@ fn biguint_panic_free_modular_div_assign_uint()
     println!("biguint_panic_free_modular_div_assign_uint");
     use std::str::FromStr;
     use cryptocol::define_utypes_with;
-    define_utypes_with!(u8);
-    
+    define_utypes_with!(u16);
+
+    // Normal case 1
     let mut a_biguint = UU32::from_str("123456789015758942546236989636279846864825945392").unwrap();
     let divisor = 128_u8;
     let modulo = UU32::from_uint(100_u8);
-    println!("Originally,\na_biguint = {}", a_biguint);
+    println!("Originally, a_biguint = {}", a_biguint);
     assert_eq!(a_biguint.is_overflow(), false);
     assert_eq!(a_biguint.is_underflow(), false);
     assert_eq!(a_biguint.is_infinity(), false);
@@ -5271,7 +5282,7 @@ fn biguint_panic_free_modular_div_assign_uint()
     assert_eq!(a_biguint.is_divided_by_zero(), false);
 
     a_biguint.panic_free_modular_div_assign_uint(divisor, &modulo);
-    println!("After a_biguint.modular_div_assign_uint({}, {}),\na_biguint = {}", divisor, modulo, a_biguint);
+    println!("After a_biguint.modular_div_assign_uint({}, {}), a_biguint = {}", divisor, modulo, a_biguint);
     assert_eq!(a_biguint.to_string(), "3");
     assert_eq!(a_biguint.is_overflow(), false);
     assert_eq!(a_biguint.is_underflow(), false);
@@ -5279,10 +5290,11 @@ fn biguint_panic_free_modular_div_assign_uint()
     assert_eq!(a_biguint.is_undefined(), false);
     assert_eq!(a_biguint.is_divided_by_zero(), false);
 
-    let mut a_biguint = U256::from_str("123456789015758942546236989636279846864825945392").unwrap();
+    // Normal case 2
+    let mut a_biguint = UU32::zero();
     let divisor = 128_u8;
-    let modulo = U256::zero();
-    println!("Originally,\na_biguint = {}", a_biguint);
+    let modulo = UU32::from_uint(100_u8);
+    println!("Originally, a_biguint = {}", a_biguint);
     assert_eq!(a_biguint.is_overflow(), false);
     assert_eq!(a_biguint.is_underflow(), false);
     assert_eq!(a_biguint.is_infinity(), false);
@@ -5290,7 +5302,47 @@ fn biguint_panic_free_modular_div_assign_uint()
     assert_eq!(a_biguint.is_divided_by_zero(), false);
 
     a_biguint.panic_free_modular_div_assign_uint(divisor, &modulo);
-    println!("After a_biguint.modular_div_assign_uint({}, {}),\na_biguint = {}", divisor, modulo, a_biguint);
+    println!("After a_biguint.modular_div_assign_uint({}, {}), a_biguint = {}", divisor, modulo, a_biguint);
+    assert_eq!(a_biguint.to_string(), "0");
+    assert_eq!(a_biguint.is_overflow(), false);
+    assert_eq!(a_biguint.is_underflow(), false);
+    assert_eq!(a_biguint.is_infinity(), false);
+    assert_eq!(a_biguint.is_undefined(), false);
+    assert_eq!(a_biguint.is_divided_by_zero(), false);
+
+    // Normal case 3
+    let mut a_biguint = U256::from_uint(10000_u16);
+    let divisor = 128_u8;
+    let modulo = UU32::from_uint(100_u8);
+    println!("Originally, a_biguint = {}", a_biguint);
+    assert_eq!(a_biguint.is_overflow(), false);
+    assert_eq!(a_biguint.is_underflow(), false);
+    assert_eq!(a_biguint.is_infinity(), false);
+    assert_eq!(a_biguint.is_undefined(), false);
+    assert_eq!(a_biguint.is_divided_by_zero(), false);
+
+    a_biguint.panic_free_modular_div_assign_uint(divisor, &modulo);
+    println!("After a_biguint.modular_div_assign_uint({}, {}), a_biguint = {}", divisor, modulo, a_biguint);
+    assert_eq!(a_biguint.to_string(), "0");
+    assert_eq!(a_biguint.is_overflow(), false);
+    assert_eq!(a_biguint.is_underflow(), false);
+    assert_eq!(a_biguint.is_infinity(), false);
+    assert_eq!(a_biguint.is_undefined(), false);
+    assert_eq!(a_biguint.is_divided_by_zero(), false);
+
+    // modulo == 0 and divisor != 0 and dividend != 0
+    let mut a_biguint = UU32::from_str("123456789015758942546236989636279846864825945392").unwrap();
+    let divisor = 128_u8;
+    let modulo = U256::zero();
+    println!("Originally, a_biguint = {}", a_biguint);
+    assert_eq!(a_biguint.is_overflow(), false);
+    assert_eq!(a_biguint.is_underflow(), false);
+    assert_eq!(a_biguint.is_infinity(), false);
+    assert_eq!(a_biguint.is_undefined(), false);
+    assert_eq!(a_biguint.is_divided_by_zero(), false);
+
+    a_biguint.panic_free_modular_div_assign_uint(divisor, &modulo);
+    println!("After a_biguint.modular_div_assign_uint({}, {}), a_biguint = {}", divisor, modulo, a_biguint);
     assert_eq!(a_biguint.to_string(), "0");
     assert_eq!(a_biguint.is_overflow(), false);
     assert_eq!(a_biguint.is_underflow(), false);
@@ -5298,10 +5350,11 @@ fn biguint_panic_free_modular_div_assign_uint()
     assert_eq!(a_biguint.is_undefined(), true);
     assert_eq!(a_biguint.is_divided_by_zero(), false);
 
+    // modulo == 1 and divisor != 0 and dividend != 0
     let mut a_biguint = U256::from_str("123456789015758942546236989636279846864825945392").unwrap();
     let divisor = 128_u8;
     let modulo = U256::one();
-    println!("Originally,\na_biguint = {}", a_biguint);
+    println!("Originally, a_biguint = {}", a_biguint);
     assert_eq!(a_biguint.is_overflow(), false);
     assert_eq!(a_biguint.is_underflow(), false);
     assert_eq!(a_biguint.is_infinity(), false);
@@ -5309,7 +5362,7 @@ fn biguint_panic_free_modular_div_assign_uint()
     assert_eq!(a_biguint.is_divided_by_zero(), false);
 
     a_biguint.panic_free_modular_div_assign_uint(divisor, &modulo);
-    println!("After a_biguint.modular_div_assign_uint({}, {}),\na_biguint = {}", divisor, modulo, a_biguint);
+    println!("After a_biguint.modular_div_assign_uint({}, {}), a_biguint = {}", divisor, modulo, a_biguint);
     assert_eq!(a_biguint.to_string(), "0");
     assert_eq!(a_biguint.is_overflow(), false);
     assert_eq!(a_biguint.is_underflow(), false);
@@ -5317,10 +5370,11 @@ fn biguint_panic_free_modular_div_assign_uint()
     assert_eq!(a_biguint.is_undefined(), true);
     assert_eq!(a_biguint.is_divided_by_zero(), false);
 
+    // modulo >= 2 and divisor == 0 and dividend != 0
     let mut a_biguint = U256::from_str("123456789015758942546236989636279846864825945392").unwrap();
     let divisor = 0_u8;
     let modulo = U256::from_uint(100_u8);
-    println!("Originally,\na_biguint = {}", a_biguint);
+    println!("Originally, a_biguint = {}", a_biguint);
     assert_eq!(a_biguint.is_overflow(), false);
     assert_eq!(a_biguint.is_underflow(), false);
     assert_eq!(a_biguint.is_infinity(), false);
@@ -5328,20 +5382,94 @@ fn biguint_panic_free_modular_div_assign_uint()
     assert_eq!(a_biguint.is_divided_by_zero(), false);
 
     a_biguint.panic_free_modular_div_assign_uint(divisor, &modulo);
-    println!("After a_biguint.modular_div_assign_uint({}, {}),\na_biguint = {}", divisor, modulo, a_biguint);
+    println!("After a_biguint.modular_div_assign_uint({}, {}), a_biguint = {}", divisor, modulo, a_biguint);
+    assert_eq!(a_biguint, U256::max());
+    assert_eq!(a_biguint.is_overflow(), true);
+    assert_eq!(a_biguint.is_underflow(), false);
+    assert_eq!(a_biguint.is_infinity(), true);
+    assert_eq!(a_biguint.is_undefined(), false);
+    assert_eq!(a_biguint.is_divided_by_zero(), true);
+
+    // modulo >= 2 and divisor == n * modulo and dividend != 0
+    let mut a_biguint = U256::from_str("123456789015758942546236989636279846864825945392").unwrap();
+    let divisor = 200_u8;
+    let modulo = U256::from_uint(100_u8);
+    println!("Originally, a_biguint = {}", a_biguint);
+    assert_eq!(a_biguint.is_overflow(), false);
+    assert_eq!(a_biguint.is_underflow(), false);
+    assert_eq!(a_biguint.is_infinity(), false);
+    assert_eq!(a_biguint.is_undefined(), false);
+    assert_eq!(a_biguint.is_divided_by_zero(), false);
+
+    a_biguint.panic_free_modular_div_assign_uint(divisor, &modulo);
+    println!("After a_biguint.modular_div_assign_uint({}, {}), a_biguint = {}", divisor, modulo, a_biguint);
+    assert_eq!(a_biguint, U256::max());
+    assert_eq!(a_biguint.is_overflow(), true);
+    assert_eq!(a_biguint.is_underflow(), false);
+    assert_eq!(a_biguint.is_infinity(), true);
+    assert_eq!(a_biguint.is_undefined(), false);
+    assert_eq!(a_biguint.is_divided_by_zero(), true);
+
+    // modulo >= 2 and divisor == n * modulo and dividend == m * modulo
+    let mut a_biguint = U256::from_uint(30000_u16);
+    let divisor = 200_u8;
+    let modulo = U256::from_uint(100_u8);
+    println!("Originally, a_biguint = {}", a_biguint);
+    assert_eq!(a_biguint.is_overflow(), false);
+    assert_eq!(a_biguint.is_underflow(), false);
+    assert_eq!(a_biguint.is_infinity(), false);
+    assert_eq!(a_biguint.is_undefined(), false);
+    assert_eq!(a_biguint.is_divided_by_zero(), false);
+
+    a_biguint.panic_free_modular_div_assign_uint(divisor, &modulo);
+    println!("After a_biguint.modular_div_assign_uint({}, {}), a_biguint = {}", divisor, modulo, a_biguint);
     assert_eq!(a_biguint.to_string(), "0");
     assert_eq!(a_biguint.is_overflow(), false);
     assert_eq!(a_biguint.is_underflow(), false);
     assert_eq!(a_biguint.is_infinity(), false);
     assert_eq!(a_biguint.is_undefined(), true);
+    assert_eq!(a_biguint.is_divided_by_zero(), true);
+
+    // modulo == 0 and divisor == 0 and dividend == 0
+    let mut a_biguint = U256::zero();
+    let divisor = 0_u8;
+    let modulo = U256::zero();
+    println!("Originally, a_biguint = {}", a_biguint);
+    assert_eq!(a_biguint.is_overflow(), false);
+    assert_eq!(a_biguint.is_underflow(), false);
+    assert_eq!(a_biguint.is_infinity(), false);
+    assert_eq!(a_biguint.is_undefined(), false);
     assert_eq!(a_biguint.is_divided_by_zero(), false);
-    
-    let a_biguint = U256::from_str("123456789015758942546236989636279846864825945392").unwrap();
-    let divisor = 200_u8;
-    let modulo = U256::from_uint(100_u8);
-    // It will panic!
-    // _a_biguint.modular_div_uint(_divisor, &_modulo);
-    println!("---------------------------");
+
+    a_biguint.panic_free_modular_div_assign_uint(divisor, &modulo);
+    println!("After a_biguint.modular_div_assign_uint({}, {}), a_biguint = {}", divisor, modulo, a_biguint);
+    assert_eq!(a_biguint.to_string(), "0");
+    assert_eq!(a_biguint.is_overflow(), false);
+    assert_eq!(a_biguint.is_underflow(), false);
+    assert_eq!(a_biguint.is_infinity(), false);
+    assert_eq!(a_biguint.is_undefined(), true);
+    assert_eq!(a_biguint.is_divided_by_zero(), true);
+
+    // modulo == 1 and divisor == 0 and dividend == 0
+    let mut a_biguint = U256::zero();
+    let divisor = 0_u8;
+    let modulo = U256::one();
+    println!("Originally, a_biguint = {}", a_biguint);
+    assert_eq!(a_biguint.is_overflow(), false);
+    assert_eq!(a_biguint.is_underflow(), false);
+    assert_eq!(a_biguint.is_infinity(), false);
+    assert_eq!(a_biguint.is_undefined(), false);
+    assert_eq!(a_biguint.is_divided_by_zero(), false);
+
+    a_biguint.panic_free_modular_div_assign_uint(divisor, &modulo);
+    println!("After a_biguint.modular_div_assign_uint({}, {}), a_biguint = {}", divisor, modulo, a_biguint);
+    assert_eq!(a_biguint.to_string(), "0");
+    assert_eq!(a_biguint.is_overflow(), false);
+    assert_eq!(a_biguint.is_underflow(), false);
+    assert_eq!(a_biguint.is_infinity(), false);
+    assert_eq!(a_biguint.is_undefined(), true);
+    assert_eq!(a_biguint.is_divided_by_zero(), true);
+    println!("---------------------------");panic!();
 }
 
 fn biguint_rem_uint()
