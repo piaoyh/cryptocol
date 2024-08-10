@@ -13,61 +13,40 @@
 #![allow(missing_doc_code_examples)]
 //! The module that contains macros for defining big unsigned integer data types. 
 
-/// The macro that defines the types `U256`, `U256_`, `U512`, `U512_`,
-/// `U1024`, `U1024_`, `U2048`, `U2048_`, `U3072`, `U3072_`, `U4096`, `U4096_`,
-/// `U5120`, `U5120_`, `U6144`, `U6144_`, `U7168`, `U7168_`, `U8192`, `U8192_`,
-/// `U16384`, and `U16384_`. 
+/// The macro that defines the types `U256`, `U512`, `U1024`, `U2048`, `U3072`,
+/// `U4096`, `U5120`, `U6144`, `U7168`, `U8192`, and `U16384`. 
 /// 
 /// The types `U256`, `U512`, `U1024`, `U2048`, `U3072`, `U4096`, `U5120`,
-/// `U6144`, `U7168`, `U8192`, and `U16384` are normal 256-bit, 512-bit,
-/// 1024-bit, U2048-bit, 3072-bit, 4096-bit, 5120-bit, 6144-bit, 7168-bit,
-/// 8192-bit, and 16384-bit big unsigned integer types, respectively.
+/// `U6144`, `U7168`, `U8192`, and `U16384` are 256-bit, 512-bit, 1024-bit,
+/// U2048-bit, 3072-bit, 4096-bit, 5120-bit, 6144-bit, 7168-bit, 8192-bit,
+/// and 16384-bit big unsigned integer types, respectively.
 /// They are defined based on `u8`, `u16`, `u32`, `u64` and `u128` according
 /// to the given parameter.
 /// 
-/// The types `U256_`, `U512_`, `U1024_`, `U2048_`, `U3072_`, `U4096_`,
-/// `U5120_`, `U6144_`, `U7168_`, `U8192_`, and `U16384_` are panic-free
-/// 256-bit, 512-bit, 1024-bit, U2048-bit, 3072-bit, 4096-bit, 5120-bit,
-/// 6144-bit, 7168-bit, 8192-bit, and 16384-bit big unsigned integer types,
-/// respectively. Here, 'panic-free' does not mean that it never panic in any
-/// case, but means that it does not panic for divide-by-zero or
-/// modulo-by-zero-or-one arithmatic operation. 
 /// They are defined based on `u8`, `u16`, `u32`, `u64` and `u128` according
 /// to the given parameter.
 /// 
-/// So, if you give `u128` as a parameter, it will define `U256`, `U256_`,
-/// `U512`, `U512_`, `U1024`, `U1024_`, `U2048`, `U2048_`, `U3072`, `U3072_`,
-/// `U4096`, `U4096_`, `U5120`, `U5120_`, `U6144_`, `U6144`, `U6144_`,
-/// `U7168`, `U7168_`, `U8192`, `U8192_`, `U16384`, and `U16384_` based on
-/// `u128`. That is, U256, U256_, U1024, and U1024 will be defined to be
-/// `BigUInt<u128, 2, false>`, BigUInt<u128, 2, true>`,
-/// `BigUInt<u128, 8, false>`,  and `BigUInt<u128, 8, true>`, respectively,
+/// So, if you give `u128` as a parameter, it will define `U256`, `U512`,
+/// `U1024`, `U2048`, `U3072`, `U4096`, `U5120`, `U6144`, `U7168`, `U8192`,
+/// and `U16384`, based on `u128`. That is, U256, U256_, U1024, and U1024 will
+/// be defined to be `BigUInt<u128, 2>` and `BigUInt<u128, 8>`, respectively,
 /// for example.
 /// 
-/// Furthermore, `UU32`, `UU32_`, `UU64`, `UU64_`, `UU128`, `UU128_`,
-/// `UU256`, `UU256_`, `UU384`, `UU384_`, `UU512`, `UU512_`, `UU640`, `UU640_`,
-/// `UU768`, `UU768_`, `UU896`, `UU896_`, `UU1024`, `UU1024_`, `UU2048`, and
-/// `UU2048_` will be also defined to be `U256`, `U256_`, `U512`, `U512_`,
-/// `U1024`, `U1024_`, `U2048`, `U2048_`, `U3072`, `U3072_`, `U4096`, `U4096_`,
-/// `U5120`, `U5120_`, `U6144`, `U6144_`, `U7168`, `U7168_`, `U8192`, `U8192_`,
-/// `U16384`, and `U16384_`, respectively. `UU32` and `UU32_` are normal
-/// 32-byte big unsigned integer type and panic-free 32-byte big unsigned
-/// integer type, respectively. `UU64` and `UU64_` are normal 64-byte big
-/// unsigned integer type, and panic-free 64-byte big unsigned integer type,
-/// respectively. `UU128` and `UU128_` are normal 128-byte big unsigned integer
-/// type, and panic-free 128-byte big unsigned integer type, respectively.
-/// That is, `UU32` is a synonym of `U256`. `UU32_` is a synonym of `U256_`.
-/// `UU64` is a synonym of `U512`. `UU64_` is a synonym of `U512_`.
+/// Furthermore, `UU32`, `UU64`, `UU128`, `UU256`, `UU384`, `UU512`, `UU640`,
+/// `UU768`, `UU896`, `UU1024`, and `UU2048` will be also defined to be `U256`,
+/// `U512`, `U1024`, `U2048`, `U3072`, `U4096`, `U5120`, `U6144`, `U7168`,
+/// `U8192`, and `U16384`, respectively. `UU32` is 32-byte big unsigned integer
+/// type, and `UU64` is 64-byte big unsigned integer type, and `UU128` is
+/// 128-byte big unsigned integer type, and so on.
+/// That is, `UU32` is a synonym of `U256`, and `UU64` is a synonym of `U512`,
+/// and so on.
 /// 
 /// If you define big unsigned integer types with `define_utypes_with!(u128)`,
-/// `U1024` and `UU128` will be `BigUInt<u128, 8, false>`, and
-/// `U1024_` and `UU128_` will be `BigUInt<u128, 8, true>`.
+/// `U1024` and `UU128` will be `BigUInt<u128, 8>`.
 /// If you define big unsigned integer types with `define_utypes_with!(u64)`,
-/// `U1024` and `UU128` will be `BigUInt<u64, 16, false>`, and
-/// `U1024_` and `UU128_` will be `BigUInt<u64, 16, true>`.
+/// `U1024` and `UU128` will be `BigUInt<u64, 16>`.
 /// If you define big unsigned integer types with `define_utypes_with!(u32)`,
-/// `U1024` and `UU128` will be `BigUInt<u32, 32, false>`, and
-/// `U1024_` and `UU128_` will be `BigUInt<u32, 32, true>`.
+/// `U1024` and `UU128` will be `BigUInt<u32, 32>`.
 /// They are all the same sized, but their insides or structures are all
 /// different from one another.
 /// 
@@ -208,45 +187,30 @@ macro_rules! define_utypes_with
 }
 
 
-/// The macro that defines the types `U256`, `U256_`, `U512`, `U512_`,
-/// `U1024`, `U1024_`, `U2048`, `U2048_`, `U3072`, `U3072_`,`U4096`, `U4096_`,
-/// `U5120`, `U5120_`, `U6144`, `U6144_`, `U7168`, `U7168_`, `U8192`, `U8192_`,
-/// `U16384`, and `U16384_` __based on `u128`__. 
+/// The macro that defines the types `U256`, `U512`, `U1024`, `U2048`,
+/// `U3072`, `U4096`, `U5120`, `U6144`, `U7168`, `U8192`, and `U16384`
+/// __based on `u128`__.
 /// 
 /// The types `U256`, `U512`, `U1024`, `U2048`, `U3072`, `U4096`, `U5120`,
-/// `U6144`, `U7168`, `U8192`, and `U16384` are normal 256-bit, 512-bit,
-/// 1024-bit, U2048-bit, 3072-bit, 4096-bit, 5120-bit, 6144-bit, 7168-bit,
-/// 8192-bit, and 16384-bit big unsigned integer types, respectively.
-/// The types `U256_`, `U512_`, `U1024_`, `U2048_`, `U3072_`, `U4096_`,
-/// `U5120_`, `U6144_`, `U7168_`, `U8192_`, and `U16384_` are panic-free
-/// 256-bit, 512-bit, 1024-bit, U2048-bit, 3072-bit, 4096-bit, 5120-bit,
-/// 6144-bit, 7168-bit, 8192-bit, and 16384-bit big unsigned integer types,
-/// respectively. They are all defined __based on `u128`__.
+/// `U6144`, `U7168`, `U8192`, and `U16384` are 256-bit, 512-bit, 1024-bit,
+/// 2048-bit, 3072-bit, 4096-bit, 5120-bit, 6144-bit, 7168-bit, 8192-bit,
+/// and 16384-bit big unsigned integer types, respectively.
+/// They are all defined __based on `u128`__.
 /// 
-/// So, it will define `U256`, `U256_`, `U512`, `U512_`, `U1024`, `U1024_`,
-/// `U2048`, `U2048_`, `U3072`, `U3072_`,`U4096`, `U4096_`, `U5120`, `U5120_`,
-/// `U6144`, `U6144_`, `U7168`, `U7168_`, `U8192`, `U8192_`,
-/// `U16384`, and `U16384_` __based on `u128`__.
-/// That is, `U256` and `U1024` will be defined to be `BigUInt<u128, 2, false>`
-/// and `BigUInt<u128, 8, false>`, respectively, and `U256_` and `U1024_` will
-/// be defined to be `BigUInt<u128, 2, true>` and `BigUInt<u128, 8, true>`,
-/// respectively, for example.
+/// So, it will define `U256`, `U512`, `U1024`, `U2048`, `U3072`, `U4096`,
+/// `U5120`, `U6144`, `U7168`, `U8192`, and  `U16384` __based on `u128`__.
+/// That is, `U256` and `U1024` will be defined to be `BigUInt<u128, 2>`
+/// and `BigUInt<u128, 8>`, respectively, for example.
 /// 
-/// Furthermore, `UU32`, `UU32_`, `UU64`, `UU64_`, `UU128`, `UU128_`,
-/// `UU256`, `UU256_`, `UU384`, `UU384_`, `UU512`, `UU512_`, `UU640`, `UU640_`,
-/// `UU768`, `UU768_`, `UU896`, `UU896_`, `UU1024`, `UU1024_`,
-/// `UU2048`, and `UU2048_` will be also defined to be `U256`, `U256_`,
-/// `U512`, `U512_`, `U1024`, `U1024_`, `U2048`, `U2048_`, `U3072`, `U3072_`,
-/// `U4096`, `U4096_`, `U5120`, `U5120_`, `U6144`, `U6144_`, `U7168`, `U7168_`,
-/// `U8192`, `U8192_`, `U16384`, and `U16384_`, respectively.
-/// `UU32` and `UU32_` are normal 32-byte big unsigned integer type and
-/// panic-free 32-byte big unsigned integer type, respectively.
-/// `UU64` and `UU64_` are normal 64-byte big unsigned integer type and
-/// panic-free 64-byte big unsigned integer type, respectively.
-/// `UU128` and `UU128_` are normal 128-byte big unsigned integer type and
-/// panic-free 128-byte big unsigned integer type, respectively.
-/// That is, `UU32` is a synonym of `U256`, and `UU32_` is a synonym of `U256_`.
-/// `UU64` is a synonym of `U512`, and `UU64_` is a synonym of `U512_`.
+/// Furthermore, `UU32`, `UU64`, `UU128`, `UU256`, `UU384`, `UU512`, `UU640`,
+/// `UU768`, `UU896`, `UU1024`, and `UU2048` will be also defined to be `U256`,
+/// `U512`, `U1024`, `U2048`, `U3072`, `U4096`, `U5120`, `U6144`, `U7168`,
+/// `U8192`, and `U16384`, respectively.
+/// `UU32` is 32-byte big unsigned integer type, and
+/// `UU64` is 64-byte big unsigned integer type, and
+/// `UU128` is 128-byte big unsigned integer type and so on.
+/// That is, `UU32` is a synonym of `U256`, and
+/// `UU64` is a synonym of `U512`, and so on.
 /// 
 /// The following examples show how to use the macro `define_utypes_with_u128!()`.
 /// 
@@ -272,9 +236,6 @@ macro_rules! define_utypes_with_u128
         use cryptocol::number::{ U256_with_u128, U512_with_u128, U1024_with_u128, U2048_with_u128,
                                 U3072_with_u128, U4096_with_u128, U5120_with_u128, U6144_with_u128,
                                 U7168_with_u128, U8192_with_u128, U16384_with_u128 };
-        use cryptocol::number::{ U256_with_u128_, U512_with_u128_, U1024_with_u128_, U2048_with_u128_,
-                                U3072_with_u128_, U4096_with_u128_, U5120_with_u128_, U6144_with_u128_,
-                                U7168_with_u128_, U8192_with_u128_, U16384_with_u128_ };
 
         /// 256-bit unsigned integer, Synonym of `U256_with_u128`
         pub type U256 = U256_with_u128;
@@ -341,116 +302,34 @@ macro_rules! define_utypes_with_u128
 
         /// 2048-byte unsigned integer, Synonym of `U16384`
         pub type UU2048 = U16384;
-
-
-        /// Panic-free 256-bit unsigned integer, Synonym of `U256_with_u128_`
-        pub type U256_ = U256_with_u128_;
-
-        /// Panic-free 512-bit unsigned integer for 128-bit machines, Synonym of `U512_with_u128_`
-        pub type U512_ = U512_with_u128_;
-
-        /// Panic-free 1024-bit unsigned integer for 128-bit machines, Synonym of `U1024_with_u128_`
-        pub type U1024_ = U1024_with_u128_;
-
-        /// Panic-free 2048-bit unsigned integer for 128-bit machines, Synonym of `U2048_with_u128_`
-        pub type U2048_ = U2048_with_u128_;
-
-        /// Panic-free 3072-bit unsigned integer for 128-bit machines, Synonym of `U3072_with_u128_`
-        pub type U3072_ = U3072_with_u128_;
-
-        /// Panic-free 4096-bit unsigned integer for 128-bit machines, Synonym of `U4096_with_u128_`
-        pub type U4096_ = U4096_with_u128_;
-
-        /// Panic-free 5120-bit unsigned integer for 128-bit machines, Synonym of `U5120_with_u128_`
-        pub type U5120_ = U5120_with_u128_;
-
-        /// Panic-free 6144-bit unsigned integer for 128-bit machines, Synonym of `U6144_with_u128_`
-        pub type U6144_ = U6144_with_u128_;
-
-        /// Panic-free 7168-bit unsigned integer for 128-bit machines, Synonym of `U7168_with_u128_`
-        pub type U7168_ = U7168_with_u128_;
-
-        /// Panic-free 8192-bit unsigned integer for 128-bit machines, Synonym of `U8192_with_u128_`
-        pub type U8192_ = U8192_with_u128_;
-
-        /// Panic-free 16384-bit unsigned integer for 128-bit machines, Synonym of `U16384_with_u128_`
-        pub type U16384_ = U16384_with_u128_;
-
-        /// Panic-free 32-byte unsigned integer, Synonym of `U256_`
-        pub type UU32_ = U256_;
-
-        /// Panic-free 64-byte unsigned integer, Synonym of `U512_`
-        pub type UU64_ = U512_;
-
-        /// Panic-free 128-byte unsigned integer, Synonym of `U1024_`
-        pub type UU128_ = U1024_;
-
-        /// Panic-free 256-byte unsigned integer, Synonym of `U2048_`
-        pub type UU256_ = U2048_;
-
-        /// Panic-free 384-byte unsigned integer, Synonym of `U3072_`
-        pub type UU384_ = U3072_;
-
-        /// Panic-free 512-byte unsigned integer, Synonym of `U4096_`
-        pub type UU512_ = U4096_;
-
-        /// Panic-free 640-byte unsigned integer, Synonym of `U5120_`
-        pub type UU640_ = U5120_;
-
-        /// Panic-free 760-byte unsigned integer, Synonym of `U6144_`
-        pub type UU768_ = U6144_;
-
-        /// Panic-free 896-byte unsigned integer, Synonym of `U7168_`
-        pub type UU896_ = U7168_;
-
-        /// Panic-free 1024-byte unsigned integer, Synonym of `U8192_`
-        pub type UU1024_ = U8192_;
-
-        /// Panic-free 2048-byte unsigned integer, Synonym of `U16384_`
-        pub type UU2048_ = U16384_;
     }
 }
 
 
-/// The macro that defines the types `U256`, `U256_`, `U512`, `U512_`,
-/// `U1024`, `U1024_`, `U2048`, `U2048_`, `U3072`, `U3072_`,`U4096`, `U4096_`,
-/// `U5120`, `U5120_`, `U6144`, `U6144_`, `U7168`, `U7168_`, `U8192`, `U8192_`,
-/// `U16384`, and `U16384_` __based on `u64`__. 
+/// The macro that defines the types `U256`, `U512`, `U1024`, `U2048`,
+/// `U3072`, `U4096`, `U5120`, `U6144`, `U7168`, `U8192`, and `U16384`
+/// __based on `u64`__. 
 /// 
 /// The types `U256`, `U512`, `U1024`, `U2048`, `U3072`, `U4096`, `U5120`,
-/// `U6144`, `U7168`, `U8192`, and `U16384` are normal 256-bit, 512-bit,
-/// 1024-bit, U2048-bit, 3072-bit, 4096-bit, 5120-bit, 6144-bit, 7168-bit,
-/// 8192-bit, and 16384-bit big unsigned integer types, respectively.
-/// The types `U256_`, `U512_`, `U1024_`, `U2048_`, `U3072_`, `U4096_`,
-/// `U5120_`, `U6144_`, `U7168_`, `U8192_`, and `U16384_` are panic-free
-/// 256-bit, 512-bit, 1024-bit, U2048-bit, 3072-bit, 4096-bit, 5120-bit,
-/// 6144-bit, 7168-bit, 8192-bit, and 16384-bit big unsigned integer types,
-/// respectively. They are all defined __based on `u64`__.
+/// `U6144`, `U7168`, `U8192`, and `U16384` are 256-bit, 512-bit, 1024-bit,
+/// 2048-bit, 3072-bit, 4096-bit, 5120-bit, 6144-bit, 7168-bit, 8192-bit,
+/// and 16384-bit big unsigned integer types, respectively.
+/// They are all defined __based on `u64`__.
 /// 
-/// So, it will define `U256`, `U256_`, `U512`, `U512_`, `U1024`, `U1024_`,
-/// `U2048`, `U2048_`, `U3072`, `U3072_`,`U4096`, `U4096_`, `U5120`, `U5120_`,
-/// `U6144`, `U6144_`, `U7168`, `U7168_`, `U8192`, `U8192_`,
-/// `U16384`, and `U16384_` __based on `u128`__.
-/// That is, `U256` and `U1024` will be defined to be `BigUInt<u64, 4, false>`
-/// and `BigUInt<u64, 16, false>`, respectively, and `U256_` and `U1024_` will
-/// be defined to be `BigUInt<u64, 4, true>` and `BigUInt<u64, 16, true>`,
-/// respectively, for example.
+/// So, it will define `U256`, `U512`, `U1024`, `U2048`, `U3072`, `U4096`,
+/// `U5120`, `U6144`, `U7168`, `U8192`, and  `U16384` __based on `u64`__.
+/// That is, `U256` and `U1024` will be defined to be `BigUInt<u64, 4>`
+/// and `BigUInt<u64, 16>`, respectively, for example.
 /// 
-/// Furthermore, `UU32`, `UU32_`, `UU64`, `UU64_`, `UU128`, `UU128_`,
-/// `UU256`, `UU256_`, `UU384`, `UU384_`, `UU512`, `UU512_`, `UU640`, `UU640_`,
-/// `UU768`, `UU768_`, `UU896`, `UU896_`, `UU1024`, `UU1024_`,
-/// `UU2048`, and `UU2048_` will be also defined to be `U256`, `U256_`,
-/// `U512`, `U512_`, `U1024`, `U1024_`, `U2048`, `U2048_`, `U3072`, `U3072_`,
-/// `U4096`, `U4096_`, `U5120`, `U5120_`, `U6144`, `U6144_`, `U7168`, `U7168_`,
-/// `U8192`, `U8192_`, `U16384`, and `U16384_`, respectively.
-/// `UU32` and `UU32_` are normal 32-byte big unsigned integer type and
-/// panic-free 32-byte big unsigned integer type, respectively.
-/// `UU64` and `UU64_` are normal 64-byte big unsigned integer type and
-/// panic-free 64-byte big unsigned integer type, respectively.
-/// `UU128` and `UU128_` are normal 128-byte big unsigned integer type and
-/// panic-free 128-byte big unsigned integer type, respectively.
-/// That is, `UU32` is a synonym of `U256`, and `UU32_` is a synonym of `U256_`.
-/// `UU64` is a synonym of `U512`, and `UU64_` is a synonym of `U512_`.
+/// Furthermore, `UU32`, `UU64`, `UU128`, `UU256`, `UU384`, `UU512`, `UU640`,
+/// `UU768`, `UU896`, `UU1024`, and `UU2048` will be also defined to be `U256`,
+/// `U512`, `U1024`, `U2048`, `U3072`, `U4096`, `U5120`, `U6144`, `U7168`,
+/// `U8192`, and `U16384`, respectively.
+/// `UU32` is 32-byte big unsigned integer type, and
+/// `UU64` is 64-byte big unsigned integer type, and
+/// `UU128` is 128-byte big unsigned integer type and so on.
+/// That is, `UU32` is a synonym of `U256`, and
+/// `UU64` is a synonym of `U512`, and so on.
 /// 
 /// The following examples show how to use the macro `define_utypes_with_u64!()`.
 /// 
@@ -476,9 +355,6 @@ macro_rules! define_utypes_with_u64
         use cryptocol::number::{ U256_with_u64, U512_with_u64, U1024_with_u64, U2048_with_u64,
                                 U3072_with_u64, U4096_with_u64, U5120_with_u64, U6144_with_u64,
                                 U7168_with_u64, U8192_with_u64, U16384_with_u64 };
-        use cryptocol::number::{ U256_with_u64_, U512_with_u64_, U1024_with_u64_, U2048_with_u64_,
-                                U3072_with_u64_, U4096_with_u64_, U5120_with_u64_, U6144_with_u64_,
-                                U7168_with_u64_, U8192_with_u64_, U16384_with_u64_ };
 
         /// 256-bit unsigned integer for 64-bit machines, Synonym of `U256_with_u64`
         pub type U256 = U256_with_u64;
@@ -545,116 +421,36 @@ macro_rules! define_utypes_with_u64
 
         /// 2048-byte unsigned integer, Synonym of `U16384`
         pub type UU2048 = U16384;
-
-
-        /// Panic-free 256-bit unsigned integer for 64-bit machines, Synonym of `U256_with_u64_`
-        pub type U256_ = U256_with_u64_;
-
-        /// Panic-free 512-bit unsigned integer for 64-bit machines, Synonym of `U512_with_u64_`
-        pub type U512_ = U512_with_u64_;
-
-        /// Panic-free 1024-bit unsigned integer for 64-bit machines, Synonym of `U1024_with_u64_`
-        pub type U1024_ = U1024_with_u64_;
-
-        /// Panic-free 2048-bit unsigned integer for 64-bit machines, Synonym of `U2048_with_u64_`
-        pub type U2048_ = U2048_with_u64_;
-
-        /// Panic-free 3072-bit unsigned integer for 64-bit machines, Synonym of `U3072_with_u64_`
-        pub type U3072_ = U3072_with_u64_;
-
-        /// Panic-free 4096-bit unsigned integer for 64-bit machines, Synonym of `U4096_with_u64_`
-        pub type U4096_ = U4096_with_u64_;
-
-        /// Panic-free 5120-bit unsigned integer for 64-bit machines, Synonym of `U5120_with_u64_`
-        pub type U5120_ = U5120_with_u64_;
-
-        /// Panic-free 6144-bit unsigned integer for 64-bit machines, Synonym of `U6144_with_u64_`
-        pub type U6144_ = U6144_with_u64_;
-
-        /// Panic-free 7168-bit unsigned integer for 64-bit machines, Synonym of `U7168_with_u64_`
-        pub type U7168_ = U7168_with_u64_;
-
-        /// Panic-free 8192-bit unsigned integer for 64-bit machines, Synonym of `U8192_with_u64_`
-        pub type U8192_ = U8192_with_u64_;
-
-        /// Panic-free 16384-bit unsigned integer for 64-bit machines, Synonym of `U16384_with_u64_`
-        pub type U16384_ = U16384_with_u64_;
-
-        /// Panic-free 32-byte unsigned integer, Synonym of `U256_`
-        pub type UU32_ = U256_;
-
-        /// Panic-free 64-byte unsigned integer, Synonym of `U512_`
-        pub type UU64_ = U512_;
-
-        /// Panic-free 128-byte unsigned integer, Synonym of `U1024_`
-        pub type UU128_ = U1024_;
-
-        /// Panic-free 256-byte unsigned integer, Synonym of `U2048_`
-        pub type UU256_ = U2048_;
-
-        /// Panic-free 384-byte unsigned integer, Synonym of `U3072_`
-        pub type UU384_ = U3072_;
-
-        /// Panic-free 512-byte unsigned integer, Synonym of `U4096_`
-        pub type UU512_ = U4096_;
-
-        /// Panic-free 640-byte unsigned integer, Synonym of `U5120_`
-        pub type UU640_ = U5120_;
-
-        /// Panic-free 760-byte unsigned integer, Synonym of `U6144_`
-        pub type UU768_ = U6144_;
-
-        /// Panic-free 896-byte unsigned integer, Synonym of `U7168_`
-        pub type UU896_ = U7168_;
-
-        /// Panic-free 1024-byte unsigned integer, Synonym of `U8192_`
-        pub type UU1024_ = U8192_;
-
-        /// Panic-free 2048-byte unsigned integer, Synonym of `U16384_`
-        pub type UU2048_ = U16384_;
     };
 }
 
 
-/// The macro that defines the types `U256`, `U256_`, `U512`, `U512_`,
-/// `U1024`, `U1024_`, `U2048`, `U2048_`, `U3072`, `U3072_`,`U4096`, `U4096_`,
-/// `U5120`, `U5120_`, `U6144`, `U6144_`, `U7168`, `U7168_`, `U8192`, `U8192_`,
-/// `U16384`, and `U16384_` __based on `u32`__. 
+/// The macro that defines the types `U256`, `U512`, `U1024`, `U2048`,
+/// `U3072`, `U4096`, `U5120`, `U6144`, `U7168`, `U8192`, and `U16384`
+/// __based on `u32`__. 
 /// 
 /// The types `U256`, `U512`, `U1024`, `U2048`, `U3072`, `U4096`, `U5120`,
-/// `U6144`, `U7168`, `U8192`, and `U16384` are normal 256-bit, 512-bit,
-/// 1024-bit, U2048-bit, 3072-bit, 4096-bit, 5120-bit, 6144-bit, 7168-bit,
-/// 8192-bit, and 16384-bit big unsigned integer types, respectively.
-/// The types `U256_`, `U512_`, `U1024_`, `U2048_`, `U3072_`, `U4096_`,
-/// `U5120_`, `U6144_`, `U7168_`, `U8192_`, and `U16384_` are panic-free
-/// 256-bit, 512-bit, 1024-bit, U2048-bit, 3072-bit, 4096-bit, 5120-bit,
-/// 6144-bit, 7168-bit, 8192-bit, and 16384-bit big unsigned integer types,
-/// respectively. They are all defined __based on `u32`__.
+/// `U6144`, `U7168`, `U8192`, and `U16384` are 256-bit, 512-bit, 1024-bit,
+/// 2048-bit, 3072-bit, 4096-bit, 5120-bit, 6144-bit, 7168-bit, 8192-bit,
+/// and 16384-bit big unsigned integer types, respectively.
+/// They are all defined __based on `u32`__.
 /// 
 /// So, it will define `U256`, `U256_`, `U512`, `U512_`, `U1024`, `U1024_`,
 /// `U2048`, `U2048_`, `U3072`, `U3072_`,`U4096`, `U4096_`, `U5120`, `U5120_`,
 /// `U6144`, `U6144_`, `U7168`, `U7168_`, `U8192`, `U8192_`,
 /// `U16384`, and `U16384_` __based on `u32`__.
-/// That is, `U256` and `U1024` will be defined to be `BigUInt<u32, 8, false>`
-/// and `BigUInt<<u32, 32, false>`, respectively, and `U256_` and `U1024_` will
-/// be defined to be `BigUInt<u32, 8, true>` and `BigUInt<u32, 32, true>`,
-/// respectively, for example.
+/// That is, `U256` and `U1024` will be defined to be `BigUInt<u32, 8>`
+/// and `BigUInt<<u32, 32>`, respectively, for example.
 /// 
-/// Furthermore, `UU32`, `UU32_`, `UU64`, `UU64_`, `UU128`, `UU128_`,
-/// `UU256`, `UU256_`, `UU384`, `UU384_`, `UU512`, `UU512_`, `UU640`, `UU640_`,
-/// `UU768`, `UU768_`, `UU896`, `UU896_`, `UU1024`, `UU1024_`,
-/// `UU2048`, and `UU2048_` will be also defined to be `U256`, `U256_`,
-/// `U512`, `U512_`, `U1024`, `U1024_`, `U2048`, `U2048_`, `U3072`, `U3072_`,
-/// `U4096`, `U4096_`, `U5120`, `U5120_`, `U6144`, `U6144_`, `U7168`, `U7168_`,
-/// `U8192`, `U8192_`, `U16384`, and `U16384_`, respectively.
-/// `UU32` and `UU32_` are normal 32-byte big unsigned integer type and
-/// panic-free 32-byte big unsigned integer type, respectively.
-/// `UU64` and `UU64_` are normal 64-byte big unsigned integer type and
-/// panic-free 64-byte big unsigned integer type, respectively.
-/// `UU128` and `UU128_` are normal 128-byte big unsigned integer type and
-/// panic-free 128-byte big unsigned integer type, respectively.
-/// That is, `UU32` is a synonym of `U256`, and `UU32_` is a synonym of `U256_`.
-/// `UU64` is a synonym of `U512`, and `UU64_` is a synonym of `U512_`.
+/// Furthermore, `UU32`, `UU64`, `UU128`, `UU256`, `UU384`, `UU512`, `UU640`,
+/// `UU768`, `UU896`, `UU1024`, and `UU2048` will be also defined to be `U256`,
+/// `U512`, `U1024`, `U2048`, `U3072`, `U4096`, `U5120`, `U6144`, `U7168`,
+/// `U8192`, and `U16384`, respectively.
+/// `UU32` is 32-byte big unsigned integer type, and
+/// `UU64` is 64-byte big unsigned integer type, and
+/// `UU128` is 128-byte big unsigned integer type and so on.
+/// That is, `UU32` is a synonym of `U256`, and
+/// `UU64` is a synonym of `U512`, and so on.
 /// 
 /// The following examples show how to use the macro `define_utypes_with_u32!()`.
 /// 
@@ -680,9 +476,6 @@ macro_rules! define_utypes_with_u32
         use cryptocol::number::{ U256_with_u32, U512_with_u32, U1024_with_u32, U2048_with_u32,
                                 U3072_with_u32, U4096_with_u32, U5120_with_u32, U6144_with_u32,
                                 U7168_with_u32, U8192_with_u32, U16384_with_u32 };
-        use cryptocol::number::{ U256_with_u32_, U512_with_u32_, U1024_with_u32_, U2048_with_u32_,
-                                U3072_with_u32_, U4096_with_u32_, U5120_with_u32_, U6144_with_u32_,
-                                U7168_with_u32_, U8192_with_u32_, U16384_with_u32_ };
 
         /// 256-bit unsigned integer for 32-bit machines, Synonym of `U256_with_u32`
         pub type U256 = U256_with_u32;
@@ -749,116 +542,34 @@ macro_rules! define_utypes_with_u32
 
         /// 2048-byte unsigned integer, Synonym of `U16384`
         pub type UU2048 = U16384;
-
-
-        /// Panic-free 256-bit unsigned integer for 32-bit machines, Synonym of `U256_with_u32_`
-        pub type U256_ = U256_with_u32_;
-
-        /// Panic-free 512-bit unsigned integer for 32-bit machines, Synonym of `U512_with_u32_`
-        pub type U512_ = U512_with_u32_;
-
-        /// Panic-free 1024-bit unsigned integer for 32-bit machines, Synonym of `U1024_with_u32_`
-        pub type U1024_ = U1024_with_u32_;
-
-        /// Panic-free 2048-bit unsigned integer for 32-bit machines, Synonym of `U2048_with_u32_`
-        pub type U2048_ = U2048_with_u32_;
-
-        /// Panic-free 3072-bit unsigned integer for 32-bit machines, Synonym of `U3072_with_u32_`
-        pub type U3072_ = U3072_with_u32_;
-
-        /// Panic-free 4096-bit unsigned integer for 32-bit machines, Synonym of `U4096_with_u32_`
-        pub type U4096_ = U4096_with_u32_;
-
-        /// Panic-free 5120-bit unsigned integer for 32-bit machines, Synonym of `U5120_with_u32_`
-        pub type U5120_ = U5120_with_u32_;
-
-        /// Panic-free 6144-bit unsigned integer for 32-bit machines, Synonym of `U6144_with_u32_`
-        pub type U6144_ = U6144_with_u32_;
-
-        /// Panic-free 7168-bit unsigned integer for 32-bit machines, Synonym of `U7168_with_u32_`
-        pub type U7168_ = U7168_with_u32_;
-
-        /// Panic-free 8192-bit unsigned integer for 32-bit machines, Synonym of `U8192_with_u32_`
-        pub type U8192_ = U8192_with_u32_;
-
-        /// Panic-free 16384-bit unsigned integer for 32-bit machines, Synonym of `U16384_with_u32_`
-        pub type U16384_ = U16384_with_u32_;
-
-        /// Panic-free 32-byte unsigned integer, Synonym of `U256_`
-        pub type UU32_ = U256_;
-
-        /// Panic-free 64-byte unsigned integer, Synonym of `U512_`
-        pub type UU64_ = U512_;
-
-        /// Panic-free 128-byte unsigned integer, Synonym of `U1024_`
-        pub type UU128_ = U1024_;
-
-        /// Panic-free 256-byte unsigned integer, Synonym of `U2048_`
-        pub type UU256_ = U2048_;
-
-        /// Panic-free 384-byte unsigned integer, Synonym of `U3072_`
-        pub type UU384_ = U3072_;
-
-        /// Panic-free 512-byte unsigned integer, Synonym of `U4096_`
-        pub type UU512_ = U4096_;
-
-        /// Panic-free 640-byte unsigned integer, Synonym of `U5120_`
-        pub type UU640_ = U5120_;
-
-        /// Panic-free 760-byte unsigned integer, Synonym of `U6144_`
-        pub type UU768_ = U6144_;
-
-        /// Panic-free 896-byte unsigned integer, Synonym of `U7168_`
-        pub type UU896_ = U7168_;
-
-        /// Panic-free 1024-byte unsigned integer, Synonym of `U8192_`
-        pub type UU1024_ = U8192_;
-
-        /// Panic-free 2048-byte unsigned integer, Synonym of `U16384_`
-        pub type UU2048_ = U16384_;
     };
 }
 
 
-/// The macro that defines the types `U256`, `U256_`, `U512`, `U512_`,
-/// `U1024`, `U1024_`, `U2048`, `U2048_`, `U3072`, `U3072_`,`U4096`, `U4096_`,
-/// `U5120`, `U5120_`, `U6144`, `U6144_`, `U7168`, `U7168_`, `U8192`, `U8192_`,
-/// `U16384`, and `U16384_` __based on `u16`__. 
+/// The macro that defines the types `U256`, `U512`, `U1024`, `U2048`,
+/// `U3072`, `U4096`, `U5120`, `U6144`, `U7168`, `U8192`, and `U16384`
+/// __based on `u16`__. 
 /// 
 /// The types `U256`, `U512`, `U1024`, `U2048`, `U3072`, `U4096`, `U5120`,
-/// `U6144`, `U7168`, `U8192`, and `U16384` are normal 256-bit, 512-bit,
-/// 1024-bit, U2048-bit, 3072-bit, 4096-bit, 5120-bit, 6144-bit, 7168-bit,
-/// 8192-bit, and 16384-bit big unsigned integer types, respectively.
-/// The types `U256_`, `U512_`, `U1024_`, `U2048_`, `U3072_`, `U4096_`,
-/// `U5120_`, `U6144_`, `U7168_`, `U8192_`, and `U16384_` are panic-free
-/// 256-bit, 512-bit, 1024-bit, U2048-bit, 3072-bit, 4096-bit, 5120-bit,
-/// 6144-bit, 7168-bit, 8192-bit, and 16384-bit big unsigned integer types,
-/// respectively. They are all defined __based on `u16`__.
+/// `U6144`, `U7168`, `U8192`, and `U16384` are 256-bit, 512-bit, 1024-bit,
+/// 2048-bit, 3072-bit, 4096-bit, 5120-bit, 6144-bit, 7168-bit, 8192-bit,
+/// and 16384-bit big unsigned integer types, respectively.
+/// They are all defined __based on `u16`__.
 /// 
-/// So, it will define `U256`, `U256_`, `U512`, `U512_`, `U1024`, `U1024_`,
-/// `U2048`, `U2048_`, `U3072`, `U3072_`,`U4096`, `U4096_`, `U5120`, `U5120_`,
-/// `U6144`, `U6144_`, `U7168`, `U7168_`, `U8192`, `U8192_`,
-/// `U16384`, and `U16384_` __based on `u16`__.
-/// That is, `U256` and `U1024` will be defined to be `BigUInt<u16, 16, false>`
-/// and `BigUInt<u16, 64, false>`, respectively, and `U256_` and `U1024_` will
-/// be defined to be `BigUInt<u16, 16, true>` and `BigUInt<u16, 64, true>`,
-/// respectively, for example.
+/// So, it will define `U256`, `U512`, `U1024`, `U2048`, `U3072`, `U4096`,
+/// `U5120`, `U6144`, `U7168`, `U8192`, and  `U16384` __based on `u16`__.
+/// That is, `U256` and `U1024` will be defined to be `BigUInt<u16, 16>`
+/// and `BigUInt<u16, 64>`, respectively, for example.
 /// 
-/// Furthermore, `UU32`, `UU32_`, `UU64`, `UU64_`, `UU128`, `UU128_`,
-/// `UU256`, `UU256_`, `UU384`, `UU384_`, `UU512`, `UU512_`, `UU640`, `UU640_`,
-/// `UU768`, `UU768_`, `UU896`, `UU896_`, `UU1024`, `UU1024_`,
-/// `UU2048`, and `UU2048_` will be also defined to be `U256`, `U256_`,
-/// `U512`, `U512_`, `U1024`, `U1024_`, `U2048`, `U2048_`, `U3072`, `U3072_`,
-/// `U4096`, `U4096_`, `U5120`, `U5120_`, `U6144`, `U6144_`, `U7168`, `U7168_`,
-/// `U8192`, `U8192_`, `U16384`, and `U16384_`, respectively.
-/// `UU32` and `UU32_` are normal 32-byte big unsigned integer type and
-/// panic-free 32-byte big unsigned integer type, respectively.
-/// `UU64` and `UU64_` are normal 64-byte big unsigned integer type and
-/// panic-free 64-byte big unsigned integer type, respectively.
-/// `UU128` and `UU128_` are normal 128-byte big unsigned integer type and
-/// panic-free 128-byte big unsigned integer type, respectively.
-/// That is, `UU32` is a synonym of `U256`, and `UU32_` is a synonym of `U256_`.
-/// `UU64` is a synonym of `U512`, and `UU64_` is a synonym of `U512_`.
+/// Furthermore, `UU32`, `UU64`, `UU128`, `UU256`, `UU384`, `UU512`, `UU640`,
+/// `UU768`, `UU896`, `UU1024`, and `UU2048` will be also defined to be `U256`,
+/// `U512`, `U1024`, `U2048`, `U3072`, `U4096`, `U5120`, `U6144`, `U7168`,
+/// `U8192`, and `U16384`, respectively.
+/// `UU32` is 32-byte big unsigned integer type, and
+/// `UU64` is 64-byte big unsigned integer type, and
+/// `UU128` is 128-byte big unsigned integer type and so on.
+/// That is, `UU32` is a synonym of `U256`, and
+/// `UU64` is a synonym of `U512`, and so on.
 /// 
 /// The following examples show how to use the macro `define_utypes_with_u16!()`.
 /// 
@@ -884,9 +595,6 @@ macro_rules! define_utypes_with_u16
         use cryptocol::number::{ U256_with_u16, U512_with_u16, U1024_with_u16, U2048_with_u16,
                                 U3072_with_u16, U4096_with_u16, U5120_with_u16, U6144_with_u16,
                                 U7168_with_u16, U8192_with_u16, U16384_with_u16 };
-        use cryptocol::number::{ U256_with_u16_, U512_with_u16_, U1024_with_u16_, U2048_with_u16_,
-                                U3072_with_u16_, U4096_with_u16_, U5120_with_u16_, U6144_with_u16_,
-                                U7168_with_u16_, U8192_with_u16_, U16384_with_u16_ };
                                 
         /// 256-bit unsigned integer for 16-bit machines, Synonym of `U256_with_u16`
         pub type U256 = U256_with_u16;
@@ -953,116 +661,34 @@ macro_rules! define_utypes_with_u16
 
         /// 2048-byte unsigned integer, Synonym of `U16384`
         pub type UU2048 = U16384;
-
-
-        /// Panic-free 256-bit unsigned integer for 16-bit machines, Synonym of `U256_with_u16_`
-        pub type U256_ = U256_with_u16_;
-
-        /// Panic-free 512-bit unsigned integer for 16-bit machines, Synonym of `U512_with_u16_`
-        pub type U512_ = U512_with_u16_;
-
-        /// Panic-free 1024-bit unsigned integer for 16-bit machines, Synonym of `U1024_with_u16_`
-        pub type U1024_ = U1024_with_u16_;
-
-        /// Panic-free 2048-bit unsigned integer for 16-bit machines, Synonym of `U2048_with_u16_`
-        pub type U2048_ = U2048_with_u16_;
-
-        /// Panic-free 3072-bit unsigned integer for 16-bit machines, Synonym of `U3072_with_u16_`
-        pub type U3072_ = U3072_with_u16_;
-
-        /// Panic-free 4096-bit unsigned integer for 16-bit machines, Synonym of `U4096_with_u16_`
-        pub type U4096_ = U4096_with_u16_;
-
-        /// Panic-free 5120-bit unsigned integer for 16-bit machines, Synonym of `U5120_with_u16_`
-        pub type U5120_ = U5120_with_u16_;
-
-        /// Panic-free 6144-bit unsigned integer for 16-bit machines, Synonym of `U6144_with_u16_`
-        pub type U6144_ = U6144_with_u16_;
-
-        /// Panic-free 7168-bit unsigned integer for 16-bit machines, Synonym of `U7168_with_u16_`
-        pub type U7168_ = U7168_with_u16_;
-
-        /// Panic-free 8192-bit unsigned integer for 16-bit machines, Synonym of `U8192_with_u16_`
-        pub type U8192_ = U8192_with_u16_;
-
-        /// Panic-free 16384-bit unsigned integer for 16-bit machines, Synonym of `U16384_with_u16_`
-        pub type U16384_ = U16384_with_u16_;
-
-        /// Panic-free 32-byte unsigned integer, Synonym of `U256_`
-        pub type UU32_ = U256_;
-
-        /// Panic-free 64-byte unsigned integer, Synonym of `U512_`
-        pub type UU64_ = U512_;
-
-        /// Panic-free 128-byte unsigned integer, Synonym of `U1024_`
-        pub type UU128_ = U1024_;
-
-        /// Panic-free 256-byte unsigned integer, Synonym of `U2048_`
-        pub type UU256_ = U2048_;
-
-        /// Panic-free 384-byte unsigned integer, Synonym of `U3072_`
-        pub type UU384_ = U3072_;
-
-        /// Panic-free 512-byte unsigned integer, Synonym of `U4096_`
-        pub type UU512_ = U4096_;
-
-        /// Panic-free 640-byte unsigned integer, Synonym of `U5120_`
-        pub type UU640_ = U5120_;
-
-        /// Panic-free 760-byte unsigned integer, Synonym of `U6144_`
-        pub type UU768_ = U6144_;
-
-        /// Panic-free 896-byte unsigned integer, Synonym of `U7168_`
-        pub type UU896_ = U7168_;
-
-        /// Panic-free 1024-byte unsigned integer, Synonym of `U8192_`
-        pub type UU1024_ = U8192_;
-
-        /// Panic-free 2048-byte unsigned integer, Synonym of `U16384_`
-        pub type UU2048_ = U16384_;
     };
 }
 
 
-/// The macro that defines the types `U256`, `U256_`, `U512`, `U512_`,
-/// `U1024`, `U1024_`, `U2048`, `U2048_`, `U3072`, `U3072_`,`U4096`, `U4096_`,
-/// `U5120`, `U5120_`, `U6144`, `U6144_`, `U7168`, `U7168_`, `U8192`, `U8192_`,
-/// `U16384`, and `U16384_` __based on `u8`__.
+/// The macro that defines the types `U256`, `U512`, `U1024`, `U2048`,
+/// `U3072`, `U4096`, `U5120`, `U6144`, `U7168`, `U8192`, and `U16384`
+/// __based on `u8`__.
 /// 
 /// The types `U256`, `U512`, `U1024`, `U2048`, `U3072`, `U4096`, `U5120`,
-/// `U6144`, `U7168`, `U8192`, and `U16384` are normal 256-bit, 512-bit,
-/// 1024-bit, U2048-bit, 3072-bit, 4096-bit, 5120-bit, 6144-bit, 7168-bit,
-/// 8192-bit, and 16384-bit big unsigned integer types, respectively.
-/// The types `U256_`, `U512_`, `U1024_`, `U2048_`, `U3072_`, `U4096_`,
-/// `U5120_`, `U6144_`, `U7168_`, `U8192_`, and `U16384_` are panic-free
-/// 256-bit, 512-bit, 1024-bit, U2048-bit, 3072-bit, 4096-bit, 5120-bit,
-/// 6144-bit, 7168-bit, 8192-bit, and 16384-bit big unsigned integer types,
-/// respectively. They are all defined __based on `u8`__.
+/// `U6144`, `U7168`, `U8192`, and `U16384` are 256-bit, 512-bit, 1024-bit,
+/// 2048-bit, 3072-bit, 4096-bit, 5120-bit, 6144-bit, 7168-bit, 8192-bit,
+/// and 16384-bit big unsigned integer types, respectively.
+/// They are all defined __based on `u8`__.
 /// 
-/// So, it will define `U256`, `U256_`, `U512`, `U512_`, `U1024`, `U1024_`,
-/// `U2048`, `U2048_`, `U3072`, `U3072_`,`U4096`, `U4096_`, `U5120`, `U5120_`,
-/// `U6144`, `U6144_`, `U7168`, `U7168_`, `U8192`, `U8192_`,
-/// `U16384`, and `U16384_` __based on `u8`__.
-/// That is, `U256` and `U1024` will be defined to be `BigUInt<u8, 32, false>`
-/// and `BigUInt<u8, 128, false>`, respectively, and `U256_` and `U1024_` will
-/// be defined to be `BigUInt<u8, 32, true>` and `BigUInt<u8, 128, true>`,
-/// respectively, for example.
+/// So, it will define `U256`, `U512`, `U1024`, `U2048`, `U3072`, `U4096`,
+/// `U5120`, `U6144`, `U7168`, `U8192`, and  `U16384` __based on `u8`__.
+/// That is, `U256` and `U1024` will be defined to be `BigUInt<u8, 32>`
+/// and `BigUInt<u8, 128>`, respectively, for example.
 /// 
-/// Furthermore, `UU32`, `UU32_`, `UU64`, `UU64_`, `UU128`, `UU128_`,
-/// `UU256`, `UU256_`, `UU384`, `UU384_`, `UU512`, `UU512_`, `UU640`, `UU640_`,
-/// `UU768`, `UU768_`, `UU896`, `UU896_`, `UU1024`, `UU1024_`,
-/// `UU2048`, and `UU2048_` will be also defined to be `U256`, `U256_`,
-/// `U512`, `U512_`, `U1024`, `U1024_`, `U2048`, `U2048_`, `U3072`, `U3072_`,
-/// `U4096`, `U4096_`, `U5120`, `U5120_`, `U6144`, `U6144_`, `U7168`, `U7168_`,
-/// `U8192`, `U8192_`, `U16384`, and `U16384_`, respectively.
-/// `UU32` and `UU32_` are normal 32-byte big unsigned integer type and
-/// panic-free 32-byte big unsigned integer type, respectively.
-/// `UU64` and `UU64_` are normal 64-byte big unsigned integer type and
-/// panic-free 64-byte big unsigned integer type, respectively.
-/// `UU128` and `UU128_` are normal 128-byte big unsigned integer type and
-/// panic-free 128-byte big unsigned integer type, respectively.
-/// That is, `UU32` is a synonym of `U256`, and `UU32_` is a synonym of `U256_`.
-/// `UU64` is a synonym of `U512`, and `UU64_` is a synonym of `U512_`.
+/// Furthermore, `UU32`, `UU64`, `UU128`, `UU256`, `UU384`, `UU512`, `UU640`,
+/// `UU768`, `UU896`, `UU1024`, and `UU2048` will be also defined to be `U256`,
+/// `U512`, `U1024`, `U2048`, `U3072`, `U4096`, `U5120`, `U6144`, `U7168`,
+/// `U8192`, and `U16384`, respectively.
+/// `UU32` is 32-byte big unsigned integer type, and
+/// `UU64` is 64-byte big unsigned integer type, and
+/// `UU128` is 128-byte big unsigned integer type and so on.
+/// That is, `UU32` is a synonym of `U256`, and
+/// `UU64` is a synonym of `U512`, and so on.
 /// 
 /// The following examples show how to use the macro `define_utypes_with_u8!()`.
 /// 
@@ -1088,9 +714,6 @@ macro_rules! define_utypes_with_u8
         use cryptocol::number::{ U256_with_u8, U512_with_u8, U1024_with_u8, U2048_with_u8,
                                 U3072_with_u8, U4096_with_u8, U5120_with_u8, U6144_with_u8,
                                 U7168_with_u8, U8192_with_u8, U16384_with_u8 };
-        use cryptocol::number::{ U256_with_u8_, U512_with_u8_, U1024_with_u8_, U2048_with_u8_,
-                                U3072_with_u8_, U4096_with_u8_, U5120_with_u8_, U6144_with_u8_,
-                                U7168_with_u8_, U8192_with_u8_, U16384_with_u8_ };
 
         /// 256-bit unsigned integer for 8-bit machines, Synonym of `U256_with_u8`
         pub type U256 = U256_with_u8;
@@ -1157,73 +780,6 @@ macro_rules! define_utypes_with_u8
 
         /// 2048-byte unsigned integer, Synonym of `U16384`
         pub type UU2048 = U16384;
-
-
-        /// Panic-free 256-bit unsigned integer for 8-bit machines, Synonym of `U256_with_u8_`
-        pub type U256_ = U256_with_u8_;
-
-        /// Panic-free 512-bit unsigned integer for 8-bit machines, Synonym of `U512_with_u8_`
-        pub type U512_ = U512_with_u8_;
-
-        /// Panic-free 1024-bit unsigned integer for 8-bit machines, Synonym of `U1024_with_u8_`
-        pub type U1024_ = U1024_with_u8_;
-
-        /// Panic-free 2048-bit unsigned integer for 8-bit machines, Synonym of `U2048_with_u8_`
-        pub type U2048_ = U2048_with_u8_;
-
-        /// Panic-free 3072-bit unsigned integer for 8-bit machines, Synonym of `U3072_with_u8_`
-        pub type U3072_ = U3072_with_u8_;
-
-        /// Panic-free 4096-bit unsigned integer for 8-bit machines, Synonym of `U4096_with_u8_`
-        pub type U4096_ = U4096_with_u8_;
-
-        /// Panic-free 5120-bit unsigned integer for 8-bit machines, Synonym of `U5120_with_u8_`
-        pub type U5120_ = U5120_with_u8_;
-
-        /// Panic-free 6144-bit unsigned integer for 8-bit machines, Synonym of `U6144_with_u8_`
-        pub type U6144_ = U6144_with_u8_;
-
-        /// Panic-free 7168-bit unsigned integer for 8-bit machines, Synonym of `U7168_with_u8_`
-        pub type U7168_ = U7168_with_u8_;
-
-        /// Panic-free 8192-bit unsigned integer for 8-bit machines, Synonym of `U8192_with_u8_`
-        pub type U8192_ = U8192_with_u8_;
-
-        /// Panic-free 16384-bit unsigned integer for 8-bit machines, Synonym of `U16384_with_u8_`
-        pub type U16384_ = U16384_with_u8_;
-
-        /// Panic-free 8-byte unsigned integer, Synonym of `U256_`
-        pub type UU32_ = U256_;
-
-        /// Panic-free 8-byte unsigned integer, Synonym of `U512_`
-        pub type UU64_ = U512_;
-
-        /// Panic-free 128-byte unsigned integer, Synonym of `U1024_`
-        pub type UU128_ = U1024_;
-
-        /// Panic-free 256-byte unsigned integer, Synonym of `U2048_`
-        pub type UU256_ = U2048_;
-
-        /// Panic-free 384-byte unsigned integer, Synonym of `U3072_`
-        pub type UU384_ = U3072_;
-
-        /// Panic-free 512-byte unsigned integer, Synonym of `U4096_`
-        pub type UU512_ = U4096_;
-
-        /// Panic-free 640-byte unsigned integer, Synonym of `U5120_`
-        pub type UU640_ = U5120_;
-
-        /// Panic-free 760-byte unsigned integer, Synonym of `U6144_`
-        pub type UU768_ = U6144_;
-
-        /// Panic-free 896-byte unsigned integer, Synonym of `U7168_`
-        pub type UU896_ = U7168_;
-
-        /// Panic-free 1024-byte unsigned integer, Synonym of `U8192_`
-        pub type UU1024_ = U8192_;
-
-        /// Panic-free 2048-byte unsigned integer, Synonym of `U16384_`
-        pub type UU2048_ = U16384_;
     };
 }
 
