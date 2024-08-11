@@ -5469,7 +5469,7 @@ fn biguint_panic_free_modular_div_assign_uint()
     assert_eq!(a_biguint.is_infinity(), false);
     assert_eq!(a_biguint.is_undefined(), true);
     assert_eq!(a_biguint.is_divided_by_zero(), true);
-    println!("---------------------------");panic!();
+    println!("---------------------------");
 }
 
 fn biguint_rem_uint()
@@ -5482,8 +5482,12 @@ fn biguint_rem_uint()
     biguint_unchecked_rem_uint();
     biguint_saturating_rem_uint();
     biguint_saturating_rem_assign_uint();
+    biguint_panic_free_rem_uint();
+    biguint_panic_free_rem_assign_uint();
     biguint_modular_rem_uint();
     biguint_modular_rem_assign_uint();
+    biguint_panic_free_modular_rem_uint();
+    biguint_panic_free_modular_rem_assign_uint();
 }
 
 fn biguint_wrapping_rem_uint()
@@ -5491,7 +5495,7 @@ fn biguint_wrapping_rem_uint()
     println!("biguint_wrapping_rem_uint");
     use std::str::FromStr;
     use cryptocol::define_utypes_with;
-    define_utypes_with!(u64);
+    define_utypes_with!(u8);
 
     let dividend = UU32::from_str("123456789015758942546236989636279846864825945392").unwrap();
     let divisor = 87_u8;
@@ -5517,7 +5521,7 @@ fn biguint_wrapping_rem_assign_uint()
     println!("biguint_wrapping_rem_assign_uint");
     use std::str::FromStr;
     use cryptocol::define_utypes_with;
-    define_utypes_with!(u128);
+    define_utypes_with!(u16);
 
     let mut a_biguint = U256::from_str("123456789015758942546236989636279846864825945392").unwrap();
     let divisor = 87_u8;
@@ -5568,7 +5572,7 @@ fn biguint_overflowing_rem_uint()
     println!("biguint_overflowing_rem_uint");
     use std::str::FromStr;
     use cryptocol::define_utypes_with;
-    define_utypes_with!(u8);
+    define_utypes_with!(u32);
 
     let dividend = UU32::from_str("123456789015758942546236989636279846864825945392").unwrap();
     let divisor = 87_u8;
@@ -5596,7 +5600,7 @@ fn biguint_overflowing_rem_assign_uint()
     println!("biguint_overflowing_rem_assign_uint");
     use std::str::FromStr;
     use cryptocol::define_utypes_with;
-    define_utypes_with!(u16);
+    define_utypes_with!(u64);
 
     let mut a_biguint = U256::from_str("123456789015758942546236989636279846864825945392").unwrap();
     let divisor = 87_u16;
@@ -5649,7 +5653,7 @@ fn biguint_checked_rem_uint()
     println!("biguint_checked_rem_uint");
     use std::str::FromStr;
     use cryptocol::define_utypes_with;
-    define_utypes_with!(u32);
+    define_utypes_with!(u128);
 
     let dividend = UU32::from_str("123456789015758942546236989636279846864825945392").unwrap();
     let divisor = 87_u8;
@@ -5697,7 +5701,7 @@ fn biguint_unchecked_rem_uint()
     println!("biguint_unchecked_rem_uint");
     use std::str::FromStr;
     use cryptocol::define_utypes_with;
-    define_utypes_with!(u64);
+    define_utypes_with!(u8);
 
     let dividend = U256::from_str("123456789015758942546236989636279846864825945392").unwrap();
     let divisor = 87_u8;
@@ -5721,7 +5725,7 @@ fn biguint_saturating_rem_uint()
     println!("biguint_saturating_rem_uint");
     use std::str::FromStr;
     use cryptocol::define_utypes_with;
-    define_utypes_with!(u128);
+    define_utypes_with!(u16);
 
     let dividend = UU32::from_str("123456789015758942546236989636279846864825945392").unwrap();
     let divisor = 87_u8;
@@ -5747,7 +5751,7 @@ fn biguint_saturating_rem_assign_uint()
     println!("biguint_saturating_rem_assign_uint");
     use std::str::FromStr;
     use cryptocol::define_utypes_with;
-    define_utypes_with!(u8);
+    define_utypes_with!(u32);
 
     let mut a_biguint = U256::from_str("123456789015758942546236989636279846864825945392").unwrap();
     let divisor = 87_u16;
@@ -5790,6 +5794,98 @@ fn biguint_saturating_rem_assign_uint()
     println!("Originally,\n_a_biguint = {}", _a_biguint);
     // It will panic!
     // _a_biguint.saturating_rem_assign_uint(_divisor);
+    println!("---------------------------");
+}
+
+fn biguint_panic_free_rem_uint()
+{
+    println!("biguint_panic_free_rem_uint");
+    use std::str::FromStr;
+    use cryptocol::define_utypes_with;
+    define_utypes_with!(u64);
+
+    let dividend = UU32::from_str("123456789015758942546236989636279846864825945392").unwrap();
+    let divisor = 87_u8;
+    let remainder = dividend.panic_free_rem_uint(divisor);
+    println!("{} % {} = {}", dividend, divisor, remainder);
+    assert_eq!(remainder.to_string(), "8");
+
+    let dividend = UU32::zero();
+    let divisor = 87_u8;
+    let remainder = dividend.panic_free_rem_uint(divisor);
+    println!("{} % {} = {}", dividend, divisor, remainder);
+    assert_eq!(remainder.to_string(), "0");
+
+    let _dividend = UU32::from_str("123456789015758942546236989636279846864825945392").unwrap();
+    let _divisor = 0_u8;
+    // It will panic!
+    // let remainder = _dividend.wrapping_rem_uint(_divisor);
+    println!("---------------------------");
+}
+
+fn biguint_panic_free_rem_assign_uint()
+{
+    println!("biguint_panic_free_rem_assign_uint");
+    use std::str::FromStr;
+    use cryptocol::define_utypes_with;
+    define_utypes_with!(u128);
+
+    // Normal case 1
+    let mut a_biguint = U256::from_str("123456789015758942546236989636279846864825945392").unwrap();
+    let divisor = 87_u8;
+    println!("Originally, a_biguint = {}", a_biguint);
+    assert_eq!(a_biguint.is_overflow(), false);
+    assert_eq!(a_biguint.is_underflow(), false);
+    assert_eq!(a_biguint.is_infinity(), false);
+    assert_eq!(a_biguint.is_undefined(), false);
+    assert_eq!(a_biguint.is_divided_by_zero(), false);
+
+    a_biguint.panic_free_rem_assign_uint(divisor);
+    println!("After a_biguint.panic_free_rem_assign_uint({}), a_biguint = {}", divisor, a_biguint);
+    assert_eq!(a_biguint.to_string(), "8");
+    assert_eq!(a_biguint.is_overflow(), false);
+    assert_eq!(a_biguint.is_underflow(), false);
+    assert_eq!(a_biguint.is_infinity(), false);
+    assert_eq!(a_biguint.is_undefined(), false);
+    assert_eq!(a_biguint.is_divided_by_zero(), false);
+
+    // Normal case 2
+    let mut a_biguint = U256::zero();
+    let divisor = 87_u8;
+    println!("Originally, a_biguint = {}", a_biguint);
+    assert_eq!(a_biguint.is_overflow(), false);
+    assert_eq!(a_biguint.is_underflow(), false);
+    assert_eq!(a_biguint.is_infinity(), false);
+    assert_eq!(a_biguint.is_undefined(), false);
+    assert_eq!(a_biguint.is_divided_by_zero(), false);
+
+    a_biguint.panic_free_rem_assign_uint(divisor);
+    println!("After a_biguint.panic_free_rem_assign_uint({}), a_biguint = {}", divisor, a_biguint);
+    assert_eq!(a_biguint.to_string(), "0");
+    assert_eq!(a_biguint.is_overflow(), false);
+    assert_eq!(a_biguint.is_underflow(), false);
+    assert_eq!(a_biguint.is_infinity(), false);
+    assert_eq!(a_biguint.is_undefined(), false);
+    assert_eq!(a_biguint.is_divided_by_zero(), false);
+
+    // divisor == 0
+    let mut a_biguint = U256::from_str("123456789015758942546236989636279846864825945392").unwrap();
+    let divisor = 0_u8;
+    println!("Originally, a_biguint = {}", a_biguint);
+    assert_eq!(a_biguint.is_overflow(), false);
+    assert_eq!(a_biguint.is_underflow(), false);
+    assert_eq!(a_biguint.is_infinity(), false);
+    assert_eq!(a_biguint.is_undefined(), false);
+    assert_eq!(a_biguint.is_divided_by_zero(), false);
+
+    a_biguint.panic_free_rem_assign_uint(divisor);
+    println!("After a_biguint.panic_free_rem_assign_uint({}), a_biguint = {}", divisor, a_biguint);
+    assert_eq!(a_biguint.to_string(), "0");
+    assert_eq!(a_biguint.is_overflow(), false);
+    assert_eq!(a_biguint.is_underflow(), false);
+    assert_eq!(a_biguint.is_infinity(), false);
+    assert_eq!(a_biguint.is_undefined(), false);
+    assert_eq!(a_biguint.is_divided_by_zero(), true);
     println!("---------------------------");
 }
 
@@ -5843,6 +5939,128 @@ fn biguint_modular_rem_uint()
 fn biguint_modular_rem_assign_uint()
 {
     println!("biguint_modular_rem_assign_uint");
+    use std::str::FromStr;
+    use cryptocol::define_utypes_with;
+    define_utypes_with!(u32);
+
+    let mut a_biguint = UU32::from_str("123456789015758942546236989636279846864825945392").unwrap();
+    let divisor = 128_u8;
+    let modulo = UU32::from_uint(100_u8);
+    println!("Originally,\na_biguint = {}", a_biguint);
+    assert_eq!(a_biguint.is_overflow(), false);
+    assert_eq!(a_biguint.is_underflow(), false);
+    assert_eq!(a_biguint.is_infinity(), false);
+    assert_eq!(a_biguint.is_undefined(), false);
+    assert_eq!(a_biguint.is_divided_by_zero(), false);
+
+    a_biguint.modular_rem_assign_uint(divisor, &modulo);
+    println!("After a_biguint.modular_rem_assign_uint({}),\na_biguint = {}", divisor, a_biguint);
+    assert_eq!(a_biguint.to_string(), "8");
+    assert_eq!(a_biguint.is_overflow(), false);
+    assert_eq!(a_biguint.is_underflow(), false);
+    assert_eq!(a_biguint.is_infinity(), false);
+    assert_eq!(a_biguint.is_undefined(), false);
+    assert_eq!(a_biguint.is_divided_by_zero(), false);
+
+    let mut a_biguint = UU32::zero();
+    let divisor = 128_u8;
+    let modulo = UU32::from_uint(100_u8);
+    println!("Originally,\na_biguint = {}", a_biguint);
+    assert_eq!(a_biguint.is_overflow(), false);
+    assert_eq!(a_biguint.is_underflow(), false);
+    assert_eq!(a_biguint.is_infinity(), false);
+    assert_eq!(a_biguint.is_undefined(), false);
+    assert_eq!(a_biguint.is_divided_by_zero(), false);
+
+    a_biguint.modular_rem_assign_uint(divisor, &modulo);
+    println!("After a_biguint.modular_rem_assign_uint({}),\na_biguint = {}", divisor, a_biguint);
+    assert_eq!(a_biguint.to_string(), "0");
+    assert_eq!(a_biguint.is_overflow(), false);
+    assert_eq!(a_biguint.is_underflow(), false);
+    assert_eq!(a_biguint.is_infinity(), false);
+    assert_eq!(a_biguint.is_undefined(), false);
+    assert_eq!(a_biguint.is_divided_by_zero(), false);
+
+    let _a_biguint = U256::from_str("123456789015758942546236989636279846864825945392").unwrap();
+    let _divisor = 128_u8;
+    let _modulo = U256::zero();
+    println!("Originally,\n_a_biguint = {}", _a_biguint);
+    // It will panic!
+    // _a_biguint.modular_rem_assign_uint(_divisor, &_modulo);
+
+    let _a_biguint = U256::from_str("123456789015758942546236989636279846864825945392").unwrap();
+    let _divisor = 128_u8;
+    let _modulo = U256::one();
+    println!("Originally,\n_a_biguint = {}", _a_biguint);
+    // It will panic!
+    // _a_biguint.modular_rem_assign_uint(_divisor, &_modulo);
+
+    let _a_biguint = U256::from_str("123456789015758942546236989636279846864825945392").unwrap();
+    let _divisor = 0_u8;
+    let _modulo = U256::from_uint(100_u8);
+    println!("Originally,\n_a_biguint = {}", _a_biguint);
+    // It will panic!
+    // _a_biguint.modular_rem_assign_uint(_divisor, &_modulo);
+    
+    let _a_biguint = U256::from_str("123456789015758942546236989636279846864825945392").unwrap();
+    let _divisor = 200_u8;
+    let _modulo = U256::from_uint(100_u8);
+    println!("Originally,\n_a_biguint = {}", _a_biguint);
+    // It will panic!
+    // _a_biguint.modular_rem_assign_uint(_divisor, &_modulo);
+    println!("---------------------------");
+}
+
+fn biguint_panic_free_modular_rem_uint()
+{
+    println!("biguint_panic_free_modular_rem_uint");
+    use std::str::FromStr;
+    use cryptocol::define_utypes_with;
+    define_utypes_with!(u16);
+
+    let dividend = U256::from_str("123456789015758942546236989636279846864825945392").unwrap();
+    let divisor = 128_u8;
+    let modulo = U256::from_uint(100_u8);
+    let remainder = dividend.modular_rem_uint(divisor, &modulo);
+    println!("{} % {} = {} (mod {})", dividend, divisor, remainder, modulo);
+    assert_eq!(remainder.to_string(), "8");
+
+    let dividend = U256::zero();
+    let divisor = 128_u8;
+    let modulo = U256::from_uint(100_u8);
+    let remainder = dividend.modular_rem_uint(divisor, &modulo);
+    println!("{} % {} = {} (mod {})", dividend, divisor, remainder, modulo);
+    assert_eq!(remainder.to_string(), "0");
+
+    let _dividend = U256::from_str("123456789015758942546236989636279846864825945392").unwrap();
+    let _divisor = 128_u8;
+    let _modulo = U256::zero();
+    // It will panic!
+    // let quotient = _dividend.modular_rem_uint(_divisor, &_modulo);
+
+    let _dividend = U256::from_str("123456789015758942546236989636279846864825945392").unwrap();
+    let _divisor = 128_u8;
+    let _modulo = U256::one();
+    // It will panic!
+    // let quotient = _dividend.modular_rem_uint(_divisor, &_modulo);
+    
+    let _dividend = U256::from_str("123456789015758942546236989636279846864825945392").unwrap();
+    let _divisor = 0_u8;
+    let _modulo = U256::from_uint(100_u8);
+    // It will panic!
+    // let quotient = _dividend.modular_rem_uint(_divisor, &_modulo);
+    
+    let _dividend = U256::from_str("123456789015758942546236989636279846864825945392").unwrap();
+    let _divisor = 200_u8;
+    let _modulo = U256::from_uint(100_u8);
+    // It will panic!
+    // let quotient = _dividend.modular_rem_uint(_divisor, &_modulo);
+    println!("---------------------------");
+}
+
+fn biguint_panic_free_modular_rem_assign_uint()
+{
+    println!("biguint_panic_free_modular_rem_uint");
     use std::str::FromStr;
     use cryptocol::define_utypes_with;
     define_utypes_with!(u32);
