@@ -13794,9 +13794,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
             let trhs = T::num(rhs);
             let r = self.wrapping_rem_uint(trhs);
             if r != T::zero()
-            {
-                self.wrapping_add_assign_uint(trhs - r);
-            }
+                { self.wrapping_add_assign_uint(trhs - r); }
         }
     }
 

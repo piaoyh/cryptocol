@@ -1,10 +1,10 @@
 # Breaking Changes
 
-## Breaking changes from ver. 0.8.1 to ver. 0.9.0
+## Breaking changes from ver. 0.8.1 to ver. 0.8.2
 
 ### Twenty-four methods of BigUInt
 
-| Ver. 0.8.1                                                      | Ver. 0.9.0 |
+| Ver. 0.8.1                                                      | Ver. 0.8.2 |
 |-----------------------------------------------------------------|------------|
 | pub fn wrapping_root_uint(&self, exp: U) -> Self                | removed    |
 | pub fn wrapping_root_assign_uint(&mut self, exp: U)             | removed    |
@@ -35,7 +35,7 @@
 
 ### Seven methods of BigUInt
 
-| Ver. 0.8.1                                                      | Ver. 0.9.0                                                       |
+| Ver. 0.8.1                                                      | Ver. 0.8.2                                                       |
 |-----------------------------------------------------------------|------------------------------------------------------------------|
 | pub fn root_uint(&self, exp: U) -> Self                         | pub fn iroot_uint(&self, exp: U) -> Self                         |
 | pub fn root_assign_uint(&mut self, exp: U)                      | pub fn iroot_assign_uint(&mut self, exp: U)                      |
@@ -48,7 +48,7 @@
 - The names of the four upper methods above `*root*_uint()` have been changed into `*iroot*_uint()` in order to keep consistency with primitive data types such as `u8`, `u16`, `u32`, `u64`, `u128`, and `usize`.
 - The names of the three lower methods above `*inifinity()` have been changed into `*infinity()` because `inifinity` is the typo mistake of `infinity`.
 
-| Methods                                                                       | Ver. 0.8.1                                                    | Ver. 0.9.0                                       |
+| Methods                                                                       | Ver. 0.8.1                                                    | Ver. 0.8.2                                       |
 |-------------------------------------------------------------------------------|---------------------------------------------------------------|--------------------------------------------------|
 | pub fn modular_add_uint&lt;U&gt;(&self, rhs: U, modulo: &Self) -> Self        | It returns maximum if `modulo` is either zero or one.         | It will panic if `modulo` is either zero or one. |
 | pub fn modular_add_assign_uint&lt;U&gt;(&self, rhs: U, modulo: &Self) -> Self | It gives maximum to `self` if `modulo` is either zero or one. | It will panic if `modulo` is either zero or one. |
