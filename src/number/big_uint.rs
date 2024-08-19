@@ -5175,13 +5175,13 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// the type `Self` instead of overflowing.
     /// 
     /// # Arguments
-    /// -`rhs` is to be added to `self`, and small-sized unsigned integer
-    /// such as `u8`, `u16`, `u32`, `u64`, and `u128`.
+    /// - `rhs` is to be added to `self`, and small-sized unsigned integer
+    ///   such as `u8`, `u16`, `u32`, `u64`, and `u128`.
     /// - `modulo` is the divisor to divide the result of (`self` + `rhs`).
     /// 
     /// # Panics
     /// - If `size_of::<T>() * N` <= `128`, this method may panic
-    /// or its behavior may be undefined though it may not panic.
+    ///   or its behavior may be undefined though it may not panic.
     /// - If `modulo` is either `zero` or `one`, this method will panic.
     /// 
     /// # Output
@@ -5190,18 +5190,18 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// 
     /// # Features
     /// - It takes the addition (= `add`) of `self` and `rhs`,
-    /// and then finally returns the remainder of `add` divided by `modulo`.
+    ///   and then finally returns the remainder of `add` divided by `modulo`.
     /// - Wrapping (modular) addition at `modulo`.
     /// - The differences between this method `modular_add_uint()` and the
-    /// method `wrapping_add_uint()` are, first, where wrapping around happens,
-    /// and, second, whether or not `OVERFLOW` flag is set. First, this method
-    /// wraps araound at `modulo` while the method `wrapping_add_uint()` wraps
-    /// araound at maximum value + 1. Second, this method does not set
-    /// `OVERFLOW` flag even if wrapping around happens at `modulo` while the
-    /// method `wrapping_add_uint()` sets `OVERFLOW` flag when wrapping around
-    /// happens.
+    ///   method `wrapping_add_uint()` are, first, where wrapping around
+    ///   happens, and, second, when `OVERFLOW` flag is set. First, this method
+    ///   wraps araound at `modulo` while the method `wrapping_add_uint()`
+    ///   wraps araound at `maximum value + 1`. Second, this method set
+    ///   `OVERFLOW` flag when wrapping around happens at `modulo` while the
+    ///   method `wrapping_add_uint()` sets `OVERFLOW` flag when wrapping around
+    ///   happens at `maximum value + 1`.
     /// - If `modulo` is `zero`, the flags such as `OVERFLOW`, `DIVIDED_BY_ZERO`,
-    /// and `INFINITY` will be set.
+    ///   and `INFINITY` will be set.
     /// 
     /// # Counterpart Method
     /// If `rhs` is bigger than `u128`, the method [modular_add()](struct@BigUInt#method.modular_add)
@@ -5294,32 +5294,32 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// back to `self`.
     /// 
     /// # Arguments
-    /// -`rhs` is to be added to `self`, and small-sized unsigned integer
-    /// such as `u8`, `u16`, `u32`, `u64`, and `u128`.
+    /// - `rhs` is to be added to `self`, and small-sized unsigned integer
+    ///   such as `u8`, `u16`, `u32`, `u64`, and `u128`.
     /// - `modulo` is the divisor to divide the result of (`self` + `rhs`).
     /// 
     /// # Panics
     /// - If `size_of::<T>() * N` <= `128`, this method may panic or its
-    /// behavior may be undefined though it may not panic.
+    ///   behavior may be undefined though it may not panic.
     /// - If `modulo` is either `zero` or `one`, this method will panic.
     /// 
     /// # Features
     /// - It takes the addition (= `add`) of `self` and `rhs`,
-    /// and then finally takes the remainder of `add` divided by `modulo`.
+    ///   and then finally takes the remainder of `add` divided by `modulo`.
     /// - Wrapping (modular) addition at `modulo`.
     /// - The differences between this method `modular_add_assign_uint()` and
-    /// the method `wrapping_add_assign_uint()` are, first, where wrapping
-    /// around happens, and, second, whether or not `OVERFLOW` flag is set.
-    /// First, this method `modular_add_assign_uint()` wraps araound at `modulo`
-    /// while the method `wrapping_add_assign_uint()` wraps araound at maximum
-    /// value + 1. Second, this method `modular_add_assign_uint()` does not set
-    /// `OVERFLOW` flag even if wrapping around happens at `modulo` while the
-    /// method `wrapping_add_assign_uint()` sets `OVERFLOW` flag when wrapping
-    /// around happens.
-    /// - All the flags are historical, which means, for example, if an overflow
-    /// occurred even once before this current operation or `OVERFLOW`
-    /// flag is already set before this current operation, the `OVERFLOW` flag
-    /// is not changed even if this current operation does not cause overflow.
+    ///   the method `wrapping_add_assign_uint()` are, first, where wrapping
+    ///   around happens, and, second, when `OVERFLOW` flag is set. First, this
+    ///   method wraps araound at `modulo` while the method
+    ///   `wrapping_add_assign_uint()` wraps araound at `maximum value + 1`.
+    ///   Second, this method set `OVERFLOW` flag when wrapping around happens
+    ///   at `modulo` while the method `wrapping_add_assign_uint()` sets
+    ///   `OVERFLOW` flag when wrapping around happens at `maximum value + 1`.
+    /// - All the flags are historical, which means, for example, if an
+    ///   overflow occurred even once before this current operation or
+    ///   `OVERFLOW` flag is already set before this current operation, the
+    ///   `OVERFLOW` flag is not changed even if this current operation does
+    ///    not cause overflow.
     /// 
     /// # Counterpart Method
     /// If `rhs` is bigger tham `ui128`, the method
@@ -5458,18 +5458,18 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// 
     /// # Features
     /// - It takes the addition (= `add`) of `self` and `rhs`,
-    /// and then finally returns the remainder of `add` divided by `modulo`.
+    ///   and then finally returns the remainder of `add` divided by `modulo`.
     /// - Wrapping (modular) addition at `modulo`.
-    /// - The differences between this method `modular_add_uint()` and the
-    /// method `wrapping_add_uint()` are, first, where wrapping around happens,
-    /// and, second, whether or not `OVERFLOW` flag is set. First, this method
-    /// wraps araound at `modulo` while the method `wrapping_add_uint()` wraps
-    /// araound at maximum value + 1. Second, this method does not set
-    /// `OVERFLOW` flag even if wrapping around happens at `modulo` while the
-    /// method `wrapping_add_uint()` sets `OVERFLOW` flag when wrapping around
-    /// happens.
+    /// - The differences between this method `modular_add_assign_uint()` and
+    ///   the method `wrapping_add_assign_uint()` are, first, where wrapping
+    ///   around happens, and, second, when `OVERFLOW` flag is set. First, this
+    ///   method wraps araound at `modulo` while the method
+    ///   `wrapping_add_assign_uint()` wraps araound at `maximum value + 1`.
+    ///   Second, this method set `OVERFLOW` flag when wrapping around happens
+    ///   at `modulo` while the method `wrapping_add_assign_uint()` sets
+    ///   `OVERFLOW` flag when wrapping around happens at `maximum value + 1`.
     /// - If `modulo` is either `zero` or `one`, the `UNDEFINED` flag will be
-    /// set and the result value will have the value `zero`.
+    ///   set and the result value will have the value `zero`.
     /// 
     /// # Counterpart Method
     /// If `rhs` is bigger than `u128`, the method [panic_free_modular_add()](struct@BigUInt#method.panic_free_modular_add)
@@ -5591,33 +5591,32 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// back to `self`.
     /// 
     /// # Arguments
-    /// -`rhs` is to be added to `self`, and small-sized unsigned integer
-    /// such as `u8`, `u16`, `u32`, `u64`, and `u128`.
+    /// - `rhs` is to be added to `self`, and small-sized unsigned integer
+    ///   such as `u8`, `u16`, `u32`, `u64`, and `u128`.
     /// - `modulo` is the divisor to divide the result of (`self` + `rhs`).
     /// 
     /// # Panics
     /// - If `size_of::<T>() * N` <= `128`, this method may panic
-    /// or its behavior may be undefined though it may not panic.
+    ///   or its behavior may be undefined though it may not panic.
     /// 
     /// # Features
     /// - It takes the addition (= `add`) of `self` and `rhs`,
-    /// and then finally takes the remainder of `add` divided by `modulo`.
+    ///   and then finally takes the remainder of `add` divided by `modulo`.
     /// - Wrapping (modular) addition at `modulo`.
     /// - The differences between this method `modular_add_assign_uint()` and
-    /// the method `wrapping_add_assign_uint()` are, first, where wrapping
-    /// around happens, and, second, whether or not `OVERFLOW` flag is set.
-    /// First, this method `modular_add_assign_uint()` wraps araound at `modulo`
-    /// while the method `wrapping_add_assign_uint()` wraps araound at maximum
-    /// value + 1. Second, this method `modular_add_assign_uint()` does not set
-    /// `OVERFLOW` flag even if wrapping around happens at `modulo` while the
-    /// method `wrapping_add_assign_uint()` sets `OVERFLOW` flag when wrapping
-    /// around happens.
+    ///   the method `wrapping_add_assign_uint()` are, first, where wrapping
+    ///   around happens, and, second, when `OVERFLOW` flag is set. First, this
+    ///   method wraps araound at `modulo` while the method
+    ///   `wrapping_add_assign_uint()` wraps araound at `maximum value + 1`.
+    ///   Second, this method set `OVERFLOW` flag when wrapping around happens
+    ///   at `modulo` while the method `wrapping_add_assign_uint()` sets
+    ///   `OVERFLOW` flag when wrapping around happens at `maximum value + 1`.
     /// - If `modulo` is either `zero` or `one`, the `UNDEFINED` flag will be
-    /// set and `self` will have the value `zero`.
+    ///   set and `self` will have the value `zero`.
     /// - All the flags are historical, which means, for example, if an overflow
-    /// occurred even once before this current operation or `OVERFLOW`
-    /// flag is already set before this current operation, the `OVERFLOW` flag
-    /// is not changed even if this current operation does not cause overflow.
+    ///   occurred even once before this current operation or `OVERFLOW`
+    ///   flag is already set before this current operation, the `OVERFLOW` flag
+    ///   is not changed even if this current operation does not cause overflow.
     /// 
     /// # Counterpart Method
     /// If `rhs` is bigger tham `ui128`, the method
@@ -5800,7 +5799,11 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
         if *self >= *modulo
             { self.wrapping_rem_assign(modulo); }
 
-        if modulo.gt_uint(rhs)
+        if rhs.length_in_bytes() > T::size_in_bytes()  // && (module <= rhs)
+        {
+            self.common_modular_add_assign(&Self::from_uint(rhs), modulo);
+        }
+        else if modulo.gt_uint(rhs)
         {
             let diff = modulo.wrapping_sub_uint(rhs);
             if *self >= diff
@@ -5814,16 +5817,11 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
             }
             self.set_flag_bit(flags);
         }
-        else if rhs.length_in_bytes() > T::size_in_bytes()  // && (module <= rhs)
-        {
-            self.modular_add_assign(&Self::from_uint(rhs), modulo);
-        }
         else    // if (U::size_in_bytes() <= T::size_in_bytes()) && (module <= rhs)
         {
-            let mrhs = rhs.into_u128();
-            let modu = modulo.into_u128();
-            let mut mself = self.into_u128();
-            let diff = modu.wrapping_sub(mrhs);
+            let modu = modulo.into_uint::<U>();
+            let mut mself = self.into_uint::<U>();
+            let diff = modu.wrapping_sub(rhs);
             if mself >= diff
             {
                 mself = mself.wrapping_sub(diff);
@@ -5831,7 +5829,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
             }
             else    // if mself < diff
             {
-                mself = mself.wrapping_add(mrhs);
+                mself = mself.wrapping_add(rhs);
             }
             self.set_uint(mself);
             self.set_flag_bit(flags);
@@ -7004,12 +7002,12 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// 
     /// # Arguments
     /// - `rhs` is to be subtrcted from `self`, and small-sized unsigned integer
-    /// such as `u8`, `u16`, `u32`, `u64`, and `u128`.
+    ///   such as `u8`, `u16`, `u32`, `u64`, and `u128`.
     /// - `modulo` is the divisor to divide the result of (`self` - `rhs`).
     /// 
     /// # Panics
     /// - If `size_of::<T>() * N` <= `128`, this method may panic
-    /// or its behavior may be undefined though it may not panic.
+    ///   or its behavior may be undefined though it may not panic.
     /// - If `modulo` is either zero or one, this method will panic.
     /// 
     /// # Output
@@ -7018,16 +7016,16 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// 
     /// # Features
     /// - It takes the result of (= `sub`) of `rhs` subtracted from `self`,
-    /// and then finally returns the remainder of `sub` divided by `modulo`.
+    ///   and then finally returns the remainder of `sub` divided by `modulo`.
     /// - Wrapping (modular) subtraction at `modulo`.
     /// - The differences between this method `modular_sub_uint()` and the
-    /// method `wrapping_sub_uint()` are, first, where wrapping around happens,
-    /// and, second, whether or not `UNDERFLOW` flag is set. First, this method
-    /// wraps araound at `modulo` while the method `wrapping_sub_uint()` wraps
-    /// araound at maximum value. Second, this method does not set `UNDERFLOW`
-    /// flag even if wrapping around happens while the method
-    /// `wrapping_sub_uint()` sets `UNDERFLOW` flag when wrapping around
-    /// happens.
+    ///   method `modular_sub_uint()` are, first, where wrapping around
+    ///   happens, and, second, when `UNDERFLOW` flag is set. First, this
+    ///   method wraps araound at `modulo` while the method
+    ///   `modular_sub_uint()` wraps araound at `maximum value + 1`. Second,
+    ///   this method set `UNDERFLOW` flag when wrapping around happens at
+    ///   `modulo` while the method `modular_sub_uint()` sets `UNDERFLOW`
+    ///   flag when wrapping around happens at `maximum value + 1`.
     /// 
     /// # Counterpart Method
     /// If `rhs` is bigger than `u128`, the method
@@ -7121,31 +7119,31 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// 
     /// # Arguments
     /// - `rhs` is to be subtrcted from `self`, and small-sized unsigned integer
-    /// such as `u8`, `u16`, `u32`, `u64`, and `u128`.
+    ///   such as `u8`, `u16`, `u32`, `u64`, and `u128`.
     /// - `modulo` is the divisor to divide the result of (`self` - `rhs`).
     /// 
     /// # Panics
     /// - If `size_of::<T>() * N` <= `128`, this method may panic
-    /// or its behavior may be undefined though it may not panic.
+    ///   or its behavior may be undefined though it may not panic.
     /// - If `modulo` is either zero or one, this method will panic.
     /// 
     /// # Features
     /// - It takes the result of (= `sub`) of `rhs` subtracted from `self`,
-    /// and then finally takes the remainder of `sub` divided by `modulo`.
+    ///   and then finally takes the remainder of `sub` divided by `modulo`.
     /// - Wrapping (modular) subtraction at `modulo`.
-    /// - The differences between this method `modular_sub_assign()` and the
-    /// method `wrapping_sub_assign()` are, first, where wrapping around
-    /// happens, and, second, whether or not `UNDERFLOW` flag is set. First,
-    /// this method wraps araound at `modulo` while the method
-    /// `wrapping_sub_assign()` wraps araound at maximum value. Second, this
-    /// method does not set `UNDERFLOW` flag even if wrapping around happens,
-    /// while the method `wrapping_sub_assign()` sets `UNDERFLOW` flag when
-    /// wrapping around happens.
+    /// - The differences between this method `modular_sub_assign_uint()` and
+    ///   the method `wrapping_sub_assign_uint()` are, first, where wrapping
+    ///   around happens, and, second, when `UNDERFLOW` flag is set. First, this
+    ///   method wraps araound at `modulo` while the method
+    ///   `wrapping_sub_assign_uint()` wraps araound at `maximum value + 1`.
+    ///   Second, this method set `UNDERFLOW` flag when wrapping around happens
+    ///   at `modulo` while the method `wrapping_sub_assign_uint()` sets
+    ///   `UNDERFLOW` flag when wrapping around happens at `maximum value + 1`.
     /// - All the flags are historical, which means, for example, if an
-    /// underflow occurred even once before this current operation or
-    /// `UNDERFLOW` flag is already set before this current operation,
-    /// the `UNDERFLOW` flag is not changed even if this current operation
-    /// does not cause underflow.
+    ///   underflow occurred even once before this current operation or
+    ///   `UNDERFLOW` flag is already set before this current operation,
+    ///   the `UNDERFLOW` flag is not changed even if this current operation
+    ///   does not cause underflow.
     /// 
     /// # Counterpart Method
     /// If `rhs` is bigger than `u128, the method
@@ -7265,12 +7263,12 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// 
     /// # Arguments
     /// - `rhs` is to be subtrcted from `self`, and small-sized unsigned integer
-    /// such as `u8`, `u16`, `u32`, `u64`, and `u128`.
+    ///   such as `u8`, `u16`, `u32`, `u64`, and `u128`.
     /// - `modulo` is the divisor to divide the result of (`self` - `rhs`).
     /// 
     /// # Panics
     /// - If `size_of::<T>() * N` <= `128`, this method may panic
-    /// or its behavior may be undefined though it may not panic.
+    ///   or its behavior may be undefined though it may not panic.
     /// 
     /// # Output
     /// It returns the modulo-difference (`self` - `rhs`) % `modulo` with
@@ -7280,8 +7278,8 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// - It takes the result of (= `sub`) of `rhs` subtracted from `self`,
     ///   and then finally returns the remainder of `sub` divided by `modulo`.
     /// - Wrapping (modular) subtraction at `modulo`.
-    /// - The differences between this method `modular_sub_uint()` and the
-    ///   method `wrapping_sub_uint()` are, first, where wrapping around
+    /// - The differences between this method `panic_free_modular_sub_uint()`
+    ///   and the method `wrapping_sub_uint()` are, first, where wrapping around
     ///   happens, and, second, whether or not `UNDERFLOW` flag is set. First,
     ///   this method wraps araound at `modulo` while the method
     ///   `wrapping_sub_uint()` wraps araound at maximum value. Second, this
@@ -7293,7 +7291,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// 
     /// # Counterpart Method
     /// If `rhs` is bigger than `u128`, the method
-    /// [modular_sub()](struct@BigUInt#method.modular_sub) is
+    /// [panic_free_modular_sub()](struct@BigUInt#method.panic_free_modular_sub) is
     /// proper rather than this method `modular_sub_uint()`.
     /// 
     /// # Example 1 for a normal case
@@ -7412,21 +7410,21 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// 
     /// # Arguments
     /// - `rhs` is to be subtrcted from `self`, and small-sized unsigned integer
-    /// such as `u8`, `u16`, `u32`, `u64`, and `u128`.
+    ///   such as `u8`, `u16`, `u32`, `u64`, and `u128`.
     /// - `modulo` is the divisor to divide the result of (`self` - `rhs`).
     /// 
     /// # Panics
     /// - If `size_of::<T>() * N` <= `128`, this method may panic
-    /// or its behavior may be undefined though it may not panic.
+    ///   or its behavior may be undefined though it may not panic.
     /// 
     /// # Features
     /// - It takes the result of (= `sub`) of `rhs` subtracted from `self`,
     ///   and then finally takes the remainder of `sub` divided by `modulo`.
     /// - Wrapping (modular) subtraction at `modulo`.
-    /// - The differences between this method `modular_sub_assign()` and the
-    ///   method `wrapping_sub_assign()` are, first, where wrapping around
-    ///   happens, and, second, whether or not `UNDERFLOW` flag is set. First,
-    ///   this method wraps araound at `modulo` while the method
+    /// - The differences between this method `panic_free_modular_sub_assign()`
+    ///   and the method `wrapping_sub_assign()` are, first, where wrapping
+    ///   around happens, and, second, whether or not `UNDERFLOW` flag is set.
+    ///   First, this method wraps araound at `modulo` while the method
     ///   `wrapping_sub_assign()` wraps araound at maximum value. Second, this
     ///   method does not set `UNDERFLOW` flag even if wrapping around happens,
     ///   while the method `wrapping_sub_assign()` sets `UNDERFLOW` flag when
@@ -7616,7 +7614,11 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
         if *self >= *modulo
             { self.wrapping_rem_assign(modulo); }
 
-        if modulo.gt_uint(rhs)
+        if rhs.length_in_bytes() > T::size_in_bytes()  // if rhs.length_in_bytes() > T::size_in_bytes() && (module <= rhs)
+        {
+            self.common_modular_sub_assign(&Self::from_uint(rhs), modulo);
+        }
+        else if modulo.gt_uint(rhs)
         {
             if self.ge_uint(rhs)    // if *self >= rhs
             {
@@ -7630,22 +7632,17 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
             }
             self.set_all_flags(flags);
         }
-        else if rhs.length_in_bytes() > T::size_in_bytes()  // if rhs.length_in_bytes() > T::size_in_bytes() && (module <= rhs)
-        {
-            self.modular_sub_assign(&Self::from_uint(rhs), modulo);
-        }
         else    // if (U::size_in_bytes() <= T::size_in_bytes()) && (module <= rhs)
         {
-            let modu = modulo.into_u128();
-            let mrhs = rhs.into_u128().wrapping_rem(modu);
-            let mself = self.into_u128().modular_sub(mrhs, modu);
-            if mself >= mrhs
+            let modu = modulo.into_uint::<U>();
+            let mself = self.into_uint::<U>().modular_sub(rhs, modu);
+            if mself >= rhs
             {
-                self.set_uint(mself.wrapping_sub(mrhs));
+                self.set_uint(mself.wrapping_sub(rhs));
             }
             else    // if *self < rhs
             {
-                let diff = modu.wrapping_sub(mrhs);
+                let diff = modu.wrapping_sub(rhs);
                 self.set_uint(mself.wrapping_add(diff));
                 flags |= Self::UNDERFLOW;
             }
@@ -9046,12 +9043,13 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// and then finally returns the remainder of `mul` divided by `modulo`.
     /// - Wrapping (modular) multiplication at `modulo`.
     /// - The differences between this method `modular_mul_uint()` and the
-    /// method `wrapping_mul_uint()` are, first, where wrapping around happens,
-    /// and, second, whether or not `OVERFLOW` flag is set. First, this method
-    /// wraps araound at `modulo` while the method `wrapping_mul_uint()` wraps
-    /// araound at maximum value. Second, this method does not set `OVERFLOW`
-    /// flag even if wrapping around happens, while the method
-    /// `wrapping_mul_uint()` sets `OVERFLOW` flag when wrapping around happens.
+    ///   method `wrapping_mul_uint()` are, first, where wrapping around
+    ///   happens, and, second, when `OVERFLOW` flag is set. First, this method
+    ///   wraps araound at `modulo` while the method `wrapping_mul_uint()`
+    ///   wraps araound at `maximum value + 1`. Second, this method set
+    ///   `OVERFLOW` flag when wrapping around happens at `modulo` while the
+    ///   method `wrapping_mul_uint()` sets `OVERFLOW` flag when wrapping
+    ///   around happens at `maximum value + 1`.
     /// 
     /// # Counterpart Method
     /// If `rhs` is bigger than `u128`, the method
@@ -9141,21 +9139,20 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// 
     /// # Features
     /// - It takes the multiplication (= `mul`) of `self` and `rhs`,
-    /// and then finally takes the remainder of `mul` divided by `modulo`.
-    /// - Wrapping (modular) multiplication at `modulo`. The differences between
-    /// this method `modular_mul_assign_uint()` and the method
-    /// `wrapping_mul_assign_uint()` are, first, where wrapping around happens,
-    /// and, second, whether or not `OVERFLOW` flag is set. First, this method
-    /// wraps araound at `modulo` while the method `wrapping_mul_assign_uint()`
-    /// wraps araound at maximum value. Second, this method does not set
-    /// `OVERFLOW` flag even if wrapping around happens, while the method
-    /// `wrapping_mul_assign_uint()` sets `OVERFLOW` flag when wrapping around
-    /// happens.
+    ///   and then finally takes the remainder of `mul` divided by `modulo`.
+    /// - The differences between this method `modular_mul_assign_uint()` and
+    ///   the method `wrapping_mul_assign_uint()` are, first, where wrapping
+    ///   around happens, and, second, when `OVERFLOW` flag is set. First, this
+    ///   method wraps araound at `modulo` while the method
+    ///   `wrapping_mul_assign_uint()` wraps araound at `maximum value + 1`.
+    ///   Second, this method set `OVERFLOW` flag when wrapping around happens
+    ///   at `modulo` while the method `wrapping_mul_assign_uint()` sets
+    ///   `OVERFLOW` flag when wrapping around happens at `maximum value + 1`.
     /// - All the flags are historical, which means, for example, if an
-    /// overflow occurred even once before this current operation or
-    /// `OVERFLOW` flag is already set before this current operation,
-    /// the `OVERFLOW` flag is not changed even if this current operation
-    /// does not cause overflow.
+    ///   overflow occurred even once before this current operation or
+    ///   `OVERFLOW` flag is already set before this current operation,
+    ///   the `OVERFLOW` flag is not changed even if this current operation
+    ///   does not cause overflow.
     /// 
     /// # Counterpart Method
     /// If `rhs` is bigger than `u128`, the method
@@ -9267,14 +9264,14 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// - It takes the multiplication (= `mul`) of `self` and `rhs`,
     ///   and then finally returns the remainder of `mul` divided by `modulo`.
     /// - Wrapping (modular) multiplication at `modulo`.
-    /// - The differences between this method `modular_mul_uint()` and the
-    ///   method `wrapping_mul_uint()` are, first, where wrapping around
-    ///   happens, and, second, whether or not `OVERFLOW` flag is set. First,
-    ///   this method wraps araound at `modulo` while the method
-    ///   `wrapping_mul_uint()` wraps araound at maximum value. Second, this
-    ///   method does not set `OVERFLOW` flag even if wrapping around happens,
-    ///   while the method `wrapping_mul_uint()` sets `OVERFLOW` flag when
-    ///   wrapping around happens.
+    /// - The differences between this method `panic_free_modular_mul_uint()`
+    ///   and the method `wrapping_mul_uint()` are, first, where wrapping around
+    ///   happens, and, second, when `OVERFLOW` flag is set. First, this method
+    ///   wraps araound at `modulo` while the method `wrapping_mul_uint()`
+    ///   wraps araound at `maximum value + 1`. Second, this method set
+    ///   `OVERFLOW` flag when wrapping around happens at `modulo` while the
+    ///   method `wrapping_mul_uint()` sets `OVERFLOW` flag when wrapping
+    ///   around happens at `maximum value + 1`.
     /// - If `modulo` is either zero or one, the result is zero and
     ///   the `UMDEFINED` flag will be set.
     /// 
@@ -9391,15 +9388,15 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// # Features
     /// - It takes the multiplication (= `mul`) of `self` and `rhs`,
     ///   and then finally takes the remainder of `mul` divided by `modulo`.
-    /// - Wrapping (modular) multiplication at `modulo`. The differences
-    ///   between this method `modular_mul_assign_uint()` and the method
-    ///   `wrapping_mul_assign_uint()` are, first, where wrapping around
-    ///   happens, and, second, whether or not `OVERFLOW` flag is set. First,
-    ///   this method wraps araound at `modulo` while the method
-    ///   `wrapping_mul_assign_uint()` wraps araound at maximum value. Second,
-    ///   this method does not set `OVERFLOW` flag even if wrapping around
-    ///   happens, while the method `wrapping_mul_assign_uint()` sets
-    ///   `OVERFLOW` flag when wrapping around happens.
+    /// - The differences between this method
+    ///   `panic_free_modular_mul_assign_uint()` and the method
+    ///   `wrapping_mul_uint()` are, first, where wrapping around happens, and,
+    ///   second, when `OVERFLOW` flag is set. First, this method wraps araound
+    ///   at `modulo` while the method `wrapping_mul_uint()` wraps araound at
+    ///   `maximum value + 1`. Second, this method set `OVERFLOW` flag when
+    ///   wrapping around happens at `modulo` while the method
+    ///   `wrapping_mul_uint()` sets `OVERFLOW` flag when wrapping around
+    ///   happens at `maximum value + 1`.
     /// - If `modulo` is either zero or one, the `UNDEFINED` flag will be set
     ///   and `self` will have the value `zero`.
     /// - All the flags are historical, which means, for example, if an
@@ -9516,7 +9513,11 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
             { self.wrapping_rem_assign(modulo); }
 
         self.reset_all_flags();
-        if modulo.gt_uint(rhs)
+        if U::size_in_bytes() > T::size_in_bytes()  // && (module <= rhs)
+        {
+            self.common_modular_mul_assign(&Self::from_uint(rhs), modulo);
+        }
+        else if modulo.gt_uint(rhs)
         {
             let mut mrhs = T::num::<U>(rhs);
             let mut res = Self::zero();
@@ -9531,10 +9532,6 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
             if self.is_overflow()
                 { flags |= Self::OVERFLOW; }
             self.set_all_flags(flags);
-        }
-        else if U::size_in_bytes() > T::size_in_bytes()  // && (module <= rhs)
-        {
-            self.modular_mul_assign(&Self::from_uint(rhs), modulo);
         }
         else    // if (U::size_in_bytes() <= T::size_in_bytes()) && (module <= rhs)
         {
@@ -11155,14 +11152,14 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
         if *self >= *modulo
             { self.wrapping_rem_assign(modulo); }
 
-        if modulo.gt_uint(rhs)
+        if rhs.length_in_bytes() > T::size_in_bytes()  // if rhs.length_in_bytes() > T::size_in_bytes() && (module <= rhs)
+        {
+            self.modular_div_assign(&Self::from_uint(rhs), modulo);
+        }    
+        else if modulo.gt_uint(rhs)
         {
             self.wrapping_div_assign_uint(rhs);
             self.set_all_flags(flags);
-        }
-        else if rhs.length_in_bytes() > T::size_in_bytes()  // if rhs.length_in_bytes() > T::size_in_bytes() && (module <= rhs)
-        {
-            self.modular_div_assign(&Self::from_uint(rhs), modulo);
         }
         else    // if (U::size_in_bytes() <= T::size_in_bytes()) && (modulo <= rhs)
         {
@@ -11787,14 +11784,14 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
             self.set_all_flags(flags);
         }
 
-        if modulo.gt_uint(rhs)
+        if rhs.length_in_bytes() > T::size_in_bytes()  // if rhs.length_in_bytes() > T::size_in_bytes() && (module <= rhs)
+        {
+            self.modular_div_assign(&Self::from_uint(rhs), modulo);
+        }
+        else if modulo.gt_uint(rhs)
         {
             self.wrapping_div_assign_uint(rhs);
             self.set_all_flags(flags);
-        }
-        else if rhs.length_in_bytes() > T::size_in_bytes()  // if rhs.length_in_bytes() > T::size_in_bytes() && (module <= rhs)
-        {
-            self.modular_div_assign(&Self::from_uint(rhs), modulo);
         }
         else    // if (U::size_in_bytes() <= T::size_in_bytes()) && (modulo <= rhs)
         {
@@ -13000,14 +12997,14 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
         if *self >= *modulo
             { self.wrapping_rem_assign(modulo); }
 
-        if modulo.gt_uint(rhs)
+        if rhs.length_in_bytes() > T::size_in_bytes()  // if rhs.length_in_bytes() > T::size_in_bytes() && (module <= rhs)
+        {
+            self.modular_rem_assign(&Self::from_uint(rhs), modulo);
+        }
+        else if modulo.gt_uint(rhs)
         {
             self.wrapping_rem_assign_uint(rhs);
             self.set_all_flags(flags);
-        }
-        else if rhs.length_in_bytes() > T::size_in_bytes()  // if rhs.length_in_bytes() > T::size_in_bytes() && (module <= rhs)
-        {
-            self.modular_rem_assign(&Self::from_uint(rhs), modulo);
         }
         else    // if (U::size_in_bytes() <= T::size_in_bytes()) && (modulo <= rhs)
         {
@@ -13589,14 +13586,14 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
         if *self >= *modulo
             { self.wrapping_rem_assign(modulo); }
 
-        if modulo.gt_uint(rhs)
+        if rhs.length_in_bytes() > T::size_in_bytes()  // if rhs.length_in_bytes() > T::size_in_bytes() && (module <= rhs)
+        {
+            self.panic_free_modular_rem_assign(&Self::from_uint(rhs), modulo);
+        }
+        else if modulo.gt_uint(rhs)
         {
             self.wrapping_rem_assign_uint(rhs);
             self.set_all_flags(flags);
-        }
-        else if rhs.length_in_bytes() > T::size_in_bytes()  // if rhs.length_in_bytes() > T::size_in_bytes() && (module <= rhs)
-        {
-            self.panic_free_modular_rem_assign(&Self::from_uint(rhs), modulo);
         }
         else    // if (U::size_in_bytes() <= T::size_in_bytes()) && (modulo <= rhs)
         {
@@ -13626,7 +13623,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// # Panics
     /// - If `size_of::<T>() * N` <= `128`, this method may panic
     /// or its behavior may be undefined though it may not panic.
-    /// - This function will panic if rhs is zero.
+    /// - This function will panic if `rhs` is zero.
     /// 
     /// # Output
     /// It returns the smallest value greater than or equal to self that is
@@ -13642,7 +13639,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// ```
     /// use std::str::FromStr;
     /// use cryptocol::define_utypes_with;
-    /// define_utypes_with!(u64);
+    /// define_utypes_with!(u32);
     /// 
     /// let a_biguint = U256::from_str("123456789012345678901234567890123456789").unwrap();
     /// let num = 586478_u32;
@@ -13660,7 +13657,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// ```
     /// use std::str::FromStr;
     /// use cryptocol::define_utypes_with;
-    /// define_utypes_with!(u64);
+    /// define_utypes_with!(u32);
     /// 
     /// let a_biguint = U256::from_str_radix("FFFFFFFF_FFFFFFFF_FFFFFFFF_FFFFFFFF_FFFFFFFF_FFFFFFFF_FFFFFFFF_FFFFFFFF", 16).unwrap();
     /// let num = 586478_u32;
@@ -13673,9 +13670,10 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// assert_eq!(multiple.is_divided_by_zero(), false);
     /// assert_eq!(multiple.is_undefined(), false);
     /// 
-    /// let _num = 0_u32;
+    /// let _a_biguint = U256::from_str("123456789012345678901234567890123456789").unwrap();
+    /// let _num = 0_u8;
     /// // It will panic.
-    /// // multiple = a_biguint.next_multiple_of_uint(_num);
+    /// // multiple = _a_biguint.next_multiple_of_uint(_num);
     /// ```
     /// 
     /// # Big-endian issue
@@ -13692,7 +13690,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
             + BitXor<Output=U> + BitXorAssign + Not<Output=U>
             + PartialEq + PartialOrd
     {
-        let mut res = self.clone();
+        let mut res = Self::from_array(self.get_number().clone());
         res.next_multiple_of_assign_uint(rhs);
         res
     }
@@ -13707,18 +13705,18 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     ///
     /// # Panics
     /// - If `size_of::<T>() * N` <= `128`, this method may panic
-    /// or its behavior may be undefined though it may not panic.
-    /// - This function will panic if rhs is zero.
+    ///   or its behavior may be undefined though it may not panic.
+    /// - This function will panic if `rhs` is zero.
     /// 
     /// # Features
-    /// - `self` will be the smallest value greater than or equal to self that is
-    /// a multiple of `rhs`. However, if overflow occurs, `self` will be the
-    /// value wrapped around.
+    /// - `self` will be the smallest value greater than or equal to self that
+    ///   is a multiple of `rhs`. However, if overflow occurs, `self` will be
+    ///   the value wrapped around.
     /// - All the flags are historical, which means, for example, if an
-    /// overflow occurred even once before this current operation or
-    /// `OVERFLOW` flag is already set before this current operation,
-    /// the `OVERFLOW` flag is not changed even if this current operation
-    /// does not cause overflow.
+    ///   overflow occurred even once before this current operation or
+    ///   `OVERFLOW` flag is already set before this current operation,
+    ///   the `OVERFLOW` flag is not changed even if this current operation
+    ///   does not cause overflow.
     /// 
     /// # Counterpart Method
     /// If `rhs` is bigger than `u128`, the method
@@ -13729,12 +13727,17 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// ```
     /// use std::str::FromStr;
     /// use cryptocol::define_utypes_with;
-    /// define_utypes_with!(u128);
+    /// define_utypes_with!(u64);
     /// 
     /// let mut a_biguint = UU32::from_str("123456789012345678901234567890123456789").unwrap();
     /// let num = 586478_u32;
-    /// 
     /// println!("Originally,\na_biguint = {}", a_biguint);
+    /// assert_eq!(a_biguint.is_overflow(), false);
+    /// assert_eq!(a_biguint.is_underflow(), false);
+    /// assert_eq!(a_biguint.is_infinity(), false);
+    /// assert_eq!(a_biguint.is_divided_by_zero(), false);
+    /// assert_eq!(a_biguint.is_undefined(), false);
+    /// 
     /// a_biguint.next_multiple_of_assign_uint(num);
     /// println!("After a_biguint.next_multiple_of_assign_uint({}),\na_biguint = {}", num, a_biguint);
     /// assert_eq!(a_biguint.to_string(), "123456789012345678901234567890123697594");
@@ -13749,12 +13752,17 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// ```
     /// use std::str::FromStr;
     /// use cryptocol::define_utypes_with;
-    /// define_utypes_with!(u128);
+    /// define_utypes_with!(u64);
     /// 
     /// let mut a_biguint = UU32::from_str_radix("FFFFFFFF_FFFFFFFF_FFFFFFFF_FFFFFFFF_FFFFFFFF_FFFFFFFF_FFFFFFFF_FFFFFFFF", 16).unwrap();
     /// let num = 586478_u32;
-    /// 
     /// println!("Originally,\na_biguint = {}", a_biguint);
+    /// assert_eq!(a_biguint.is_overflow(), false);
+    /// assert_eq!(a_biguint.is_underflow(), false);
+    /// assert_eq!(a_biguint.is_infinity(), false);
+    /// assert_eq!(a_biguint.is_divided_by_zero(), false);
+    /// assert_eq!(a_biguint.is_undefined(), false);
+    /// 
     /// a_biguint.next_multiple_of_assign_uint(num);
     /// println!("After a_biguint.next_multiple_of_assign_uint({}),\na_biguint = {}", num, a_biguint);
     /// assert_eq!(a_biguint.to_string(), "448670");
@@ -13764,8 +13772,10 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// assert_eq!(a_biguint.is_divided_by_zero(), false);
     /// assert_eq!(a_biguint.is_undefined(), false);
     /// 
+    /// let _a_biguint = U256::from_str_radix("FFFFFFFF_FFFFFFFF_FFFFFFFF_FFFFFFFF_FFFFFFFF_FFFFFFFF_FFFFFFFF_FFFFFFFF", 16).unwrap();
+    /// let _num = 0_u8;
     /// // It will panic.
-    /// // a_biguint.next_multiple_of_assign_uint(0_u32);
+    /// // _a_biguint.next_multiple_of_assign_uint(_num);
     /// ```
     /// 
     /// # Big-endian issue
@@ -13784,7 +13794,243 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     {
         if rhs == U::zero()
             { panic!(); }
+        self.common_next_multiple_of_assign_uint(rhs);
+    }
 
+    // pub fn panic_free_next_multiple_of_uint<U>(&self, rhs: U) -> Self
+    /// Calculates the smallest value greater than or equal to `self` that is
+    /// a multiple of `rhs`.
+    /// 
+    /// # Arguments
+    /// `rhs` is the base of multiple, and is a small-sized unsigned integer
+    /// such as `u8`, `u16`, `u32`, `u64`, and `u128`.
+    ///
+    /// # Panics
+    /// - If `size_of::<T>() * N` <= `128`, this method may panic
+    ///   or its behavior may be undefined though it may not panic.
+    /// 
+    /// # Output
+    /// - It returns the smallest value greater than or equal to self that is
+    ///   a multiple of `rhs`. However, if overflow occurs, it returns the
+    ///   value wrapped around.
+    /// - If `rhs` is zero, the `UNDEFINED` flag will be set and it returns
+    ///   `zero`.
+    /// 
+    /// # Counterpart Method
+    /// If `rhs` is bigger than `u128`, the method
+    /// [next_multiple_of()](struct@BigUInt#method.next_multiple_of)
+    /// is proper rather than this method `next_multiple_of_uint()`.
+    /// 
+    /// # Example 1
+    /// ```
+    /// use std::str::FromStr;
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u128);
+    /// 
+    /// let a_biguint = U256::from_str("123456789012345678901234567890123456789").unwrap();
+    /// let num = 586478_u32;
+    /// let multiple = a_biguint.next_multiple_of_uint(num);
+    /// println!("The next multiple of {} is {}", a_biguint, multiple);
+    /// assert_eq!(multiple.to_string(), "123456789012345678901234567890123697594");
+    /// assert_eq!(multiple.is_overflow(), false);
+    /// assert_eq!(multiple.is_underflow(), false);
+    /// assert_eq!(multiple.is_infinity(), false);
+    /// assert_eq!(multiple.is_divided_by_zero(), false);
+    /// assert_eq!(multiple.is_undefined(), false);
+    /// ```
+    /// 
+    /// # Example 2
+    /// ```
+    /// use std::str::FromStr;
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u128);
+    /// 
+    /// let a_biguint = U256::from_str_radix("FFFFFFFF_FFFFFFFF_FFFFFFFF_FFFFFFFF_FFFFFFFF_FFFFFFFF_FFFFFFFF_FFFFFFFF", 16).unwrap();
+    /// let num = 586478_u32;
+    /// let multiple = a_biguint.next_multiple_of_uint(num);
+    /// println!("The next multiple of {} is {}", a_biguint, multiple);
+    /// assert_eq!(multiple.to_string(), "448670");
+    /// assert_eq!(multiple.is_overflow(), true);
+    /// assert_eq!(multiple.is_underflow(), false);
+    /// assert_eq!(multiple.is_infinity(), false);
+    /// assert_eq!(multiple.is_divided_by_zero(), false);
+    /// assert_eq!(multiple.is_undefined(), false);
+    /// ```
+    /// 
+    /// # Example 3
+    /// ```
+    /// use std::str::FromStr;
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u128);
+    /// 
+    /// let a_biguint = U256::from_str_radix("123456789012345678901234567890123456789", 16).unwrap();
+    /// let num = 0_u8;
+    /// let multiple = a_biguint.panic_free_next_multiple_of_uint(num);
+    /// println!("The next multiple of {} is {}", a_biguint, multiple);
+    /// assert_eq!(multiple.to_string(), "0");
+    /// assert_eq!(multiple.is_overflow(), false);
+    /// assert_eq!(multiple.is_underflow(), false);
+    /// assert_eq!(multiple.is_infinity(), false);
+    /// assert_eq!(multiple.is_divided_by_zero(), false);
+    /// assert_eq!(multiple.is_undefined(), true);
+    /// ```
+    /// 
+    /// # Big-endian issue
+    /// It is just experimental for Big Endian CPUs. So, you are not encouraged
+    /// to use it for Big Endian CPUs for serious purpose. Only use this crate
+    /// for Big-endian CPUs with your own full responsibility.
+    pub fn panic_free_next_multiple_of_uint<U>(&self, rhs: U) -> Self
+    where U: SmallUInt + Copy + Clone + Display + Debug + ToString
+            + Add<Output=U> + AddAssign + Sub<Output=U> + SubAssign
+            + Mul<Output=U> + MulAssign + Div<Output=U> + DivAssign
+            + Rem<Output=U> + RemAssign
+            + Shl<Output=U> + ShlAssign + Shr<Output=U> + ShrAssign
+            + BitAnd<Output=U> + BitAndAssign + BitOr<Output=U> + BitOrAssign
+            + BitXor<Output=U> + BitXorAssign + Not<Output=U>
+            + PartialEq + PartialOrd
+    {
+        let mut res = Self::from_array(self.get_number().clone());
+        res.panic_free_next_multiple_of_assign_uint(rhs);
+        res
+    }
+
+    // pub fn panic_free_next_multiple_of_assign_uint<U>(&mut self, rhs: U)
+    /// Calculates the smallest value greater than or equal to `self` that is
+    /// a multiple of `rhs`, and assigns the result to `self` back.
+    /// 
+    /// # Arguments
+    /// `rhs` is the base of multiple, and is a small-sized unsigned integer
+    /// such as `u8`, `u16`, `u32`, `u64`, and `u128`.
+    ///
+    /// # Panics
+    /// - If `size_of::<T>() * N` <= `128`, this method may panic
+    ///   or its behavior may be undefined though it may not panic.
+    /// 
+    /// # Features
+    /// - `self` will be the smallest value greater than or equal to self that
+    ///   is a multiple of `rhs`. However, if overflow occurs, `self` will be
+    ///   the value wrapped around.
+    /// - If `rhs` is zero, the `UNDEFINED` flag will be set and `self`
+    ///   will be `zero`.
+    /// - All the flags are historical, which means, for example, if an
+    ///   overflow occurred even once before this current operation or
+    ///   `OVERFLOW` flag is already set before this current operation,
+    ///   the `OVERFLOW` flag is not changed even if this current operation
+    ///   does not cause overflow.
+    /// 
+    /// # Counterpart Method
+    /// If `rhs` is bigger than `u128`, the method
+    /// [next_multiple_of_assign()](struct@BigUInt#method.next_multiple_of_assign)
+    /// is proper rather than this method `next_multiple_of_assign_uint()`.
+    /// 
+    /// # Example 1
+    /// ```
+    /// use std::str::FromStr;
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u32);
+    /// 
+    /// let mut a_biguint = UU32::from_str("123456789012345678901234567890123456789").unwrap();
+    /// let num = 586478_u32;
+    /// println!("Originally, a_biguint = {}", a_biguint);
+    /// assert_eq!(a_biguint.is_overflow(), false);
+    /// assert_eq!(a_biguint.is_underflow(), false);
+    /// assert_eq!(a_biguint.is_infinity(), false);
+    /// assert_eq!(a_biguint.is_divided_by_zero(), false);
+    /// assert_eq!(a_biguint.is_undefined(), false);
+    /// 
+    /// a_biguint.next_multiple_of_assign_uint(num);
+    /// println!("After a_biguint.next_multiple_of_assign_uint({}), a_biguint = {}", num, a_biguint);
+    /// assert_eq!(a_biguint.to_string(), "123456789012345678901234567890123697594");
+    /// assert_eq!(a_biguint.is_overflow(), false);
+    /// assert_eq!(a_biguint.is_underflow(), false);
+    /// assert_eq!(a_biguint.is_infinity(), false);
+    /// assert_eq!(a_biguint.is_divided_by_zero(), false);
+    /// assert_eq!(a_biguint.is_undefined(), false);
+    /// ```
+    /// 
+    /// # Example 2
+    /// ```
+    /// use std::str::FromStr;
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u32);
+    /// 
+    /// let mut a_biguint = UU32::from_str_radix("FFFFFFFF_FFFFFFFF_FFFFFFFF_FFFFFFFF_FFFFFFFF_FFFFFFFF_FFFFFFFF_FFFFFFFF", 16).unwrap();
+    /// let num = 586478_u32;
+    /// println!("Originally, a_biguint = {}", a_biguint);
+    /// assert_eq!(a_biguint.is_overflow(), false);
+    /// assert_eq!(a_biguint.is_underflow(), false);
+    /// assert_eq!(a_biguint.is_infinity(), false);
+    /// assert_eq!(a_biguint.is_divided_by_zero(), false);
+    /// assert_eq!(a_biguint.is_undefined(), false);
+    /// 
+    /// a_biguint.next_multiple_of_assign_uint(num);
+    /// println!("After a_biguint.next_multiple_of_assign_uint({}), a_biguint = {}", num, a_biguint);
+    /// assert_eq!(a_biguint.to_string(), "448670");
+    /// assert_eq!(a_biguint.is_overflow(), true);
+    /// assert_eq!(a_biguint.is_underflow(), false);
+    /// assert_eq!(a_biguint.is_infinity(), false);
+    /// assert_eq!(a_biguint.is_divided_by_zero(), false);
+    /// assert_eq!(a_biguint.is_undefined(), false);
+    /// ```
+    /// 
+    /// # Example 3
+    /// ```
+    /// use std::str::FromStr;
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u32);
+    /// 
+    /// let mut a_biguint = UU32::from_str_radix("123456789012345678901234567890123456789", 16).unwrap();
+    /// let num = 0_u8;
+    /// println!("Originally, a_biguint = {}", a_biguint);
+    /// assert_eq!(a_biguint.is_overflow(), false);
+    /// assert_eq!(a_biguint.is_underflow(), false);
+    /// assert_eq!(a_biguint.is_infinity(), false);
+    /// assert_eq!(a_biguint.is_divided_by_zero(), false);
+    /// assert_eq!(a_biguint.is_undefined(), false);
+    /// 
+    /// a_biguint.panic_free_next_multiple_of_assign_uint(num);
+    /// println!("After a_biguint.next_multiple_of_assign_uint({}), a_biguint = {}", num, a_biguint);
+    /// assert_eq!(a_biguint.to_string(), "0");
+    /// assert_eq!(a_biguint.is_overflow(), false);
+    /// assert_eq!(a_biguint.is_underflow(), false);
+    /// assert_eq!(a_biguint.is_infinity(), false);
+    /// assert_eq!(a_biguint.is_undefined(), true);
+    /// assert_eq!(a_biguint.is_divided_by_zero(), false);
+    /// ```
+    /// 
+    /// # Big-endian issue
+    /// It is just experimental for Big Endian CPUs. So, you are not encouraged
+    /// to use it for Big Endian CPUs for serious purpose. Only use this crate
+    /// for Big-endian CPUs with your own full responsibility.
+    pub fn panic_free_next_multiple_of_assign_uint<U>(&mut self, rhs: U)
+    where U: SmallUInt + Copy + Clone + Display + Debug + ToString
+            + Add<Output=U> + AddAssign + Sub<Output=U> + SubAssign
+            + Mul<Output=U> + MulAssign + Div<Output=U> + DivAssign
+            + Rem<Output=U> + RemAssign
+            + Shl<Output=U> + ShlAssign + Shr<Output=U> + ShrAssign
+            + BitAnd<Output=U> + BitAndAssign + BitOr<Output=U> + BitOrAssign
+            + BitXor<Output=U> + BitXorAssign + Not<Output=U>
+            + PartialEq + PartialOrd
+    {
+        if rhs == U::zero()
+        {
+            self.set_zero();
+            self.set_undefined();
+            return;
+        }
+        self.common_next_multiple_of_assign_uint(rhs);
+    }
+
+    fn common_next_multiple_of_assign_uint<U>(&mut self, rhs: U)
+    where U: SmallUInt + Copy + Clone + Display + Debug + ToString
+            + Add<Output=U> + AddAssign + Sub<Output=U> + SubAssign
+            + Mul<Output=U> + MulAssign + Div<Output=U> + DivAssign
+            + Rem<Output=U> + RemAssign
+            + Shl<Output=U> + ShlAssign + Shr<Output=U> + ShrAssign
+            + BitAnd<Output=U> + BitAndAssign + BitOr<Output=U> + BitOrAssign
+            + BitXor<Output=U> + BitXorAssign + Not<Output=U>
+            + PartialEq + PartialOrd
+    {
         if U::size_in_bytes() > T::size_in_bytes()
         {
             self.next_multiple_of_assign(&Self::from_uint(rhs));
@@ -13798,10 +14044,699 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
         }
     }
 
-    
+    // pub fn modular_next_multiple_of_uint<U>(&self, rhs: U, modulo: &Self) -> Self
+    /// Calculates the smallest value greater than or equal to `self` that is
+    /// a multiple of `rhs`, wrapping arround at `modulo`.
+    /// 
+    /// # Arguments
+    /// `rhs` is the base of multiple, and is a small-sized unsigned integer
+    /// such as `u8`, `u16`, `u32`, `u64`, and `u128`.
+    ///
+    /// # Panics
+    /// - If `size_of::<T>() * N` <= `128`, this method may panic
+    /// or its behavior may be undefined though it may not panic.
+    /// - This function will panic if `rhs` is `zero`.
+    /// - This function will panic if `modulo` is either `zero` or `one`.
+    /// 
+    /// # Output
+    /// It returns the smallest value greater than or equal to self that is
+    /// a multiple of `rhs`. However, if overflow occurs, it returns the value
+    /// wrapped around. Here, overflow means the result becomes greater or
+    /// equal `modulo` so that the result may get wrapped arround.
+    /// 
+    /// # Features
+    /// - If `rhs` is zero, the `UNDEFINED` flag will be set and it returns
+    ///   `zero`.
+    /// - The differences between this method `modular_next_multiple_of_uint()`
+    ///   and the method `next_multiple_of_uint()` are, first, where wrapping
+    ///   around happens, and, second, when `OVERFLOW` flag is set. First, this
+    ///   method wraps araound at `modulo` while the method
+    ///   `next_multiple_of_uint()` wraps araound at `maximum value + 1`.
+    ///   Second, this method set `OVERFLOW` flag when wrapping around happens
+    ///   at `modulo` while the method `next_multiple_of_uint()` sets the
+    ///   `OVERFLOW` flag when wrapping around happens at `maximum value + 1`.
+    /// 
+    /// # Counterpart Method
+    /// If `rhs` is bigger than `u128`, the method
+    /// [modular_next_multiple_of()](struct@BigUInt#method.modular_next_multiple_of)
+    /// is proper rather than this method `modular_next_multiple_of_uint()`.
+    /// 
+    /// # Example 1
+    /// ```
+    /// use std::str::FromStr;
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u8);
+    /// 
+    /// let a_biguint = U256::from_str("123456789012345678901234567890123456789").unwrap();
+    /// let num = 100_u8;
+    /// let modulo = a_biguint.wrapping_add_uint(200_u8);
+    /// let multiple = a_biguint.modular_next_multiple_of_uint(num, &modulo);
+    /// println!("The next multiple of {} is {}", a_biguint, multiple);
+    /// assert_eq!(multiple.to_string(), "123456789012345678901234567890123456800");
+    /// assert_eq!(multiple.is_overflow(), false);
+    /// assert_eq!(multiple.is_underflow(), false);
+    /// assert_eq!(multiple.is_infinity(), false);
+    /// assert_eq!(multiple.is_divided_by_zero(), false);
+    /// assert_eq!(multiple.is_undefined(), false);
+    /// ```
+    /// 
+    /// # Example 2
+    /// ```
+    /// use std::str::FromStr;
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u8);
+    /// 
+    /// let a_biguint = U256::from_str_radix("FFFFFFFF_FFFFFFFF_FFFFFFFF_FFFFFFFF_FFFFFFFF_FFFFFFFF_FFFFFFFF_FFFFFFFF", 16).unwrap();
+    /// let num = 100_u8;
+    /// let modulo = a_biguint.wrapping_add_uint(200_u8);
+    /// let multiple = a_biguint.modular_next_multiple_of_uint(num, &modulo);
+    /// println!("The next multiple of {} is {}", a_biguint, multiple);
+    /// assert_eq!(multiple.to_string(), "1");
+    /// assert_eq!(multiple.is_overflow(), true);
+    /// assert_eq!(multiple.is_underflow(), false);
+    /// assert_eq!(multiple.is_infinity(), false);
+    /// assert_eq!(multiple.is_divided_by_zero(), false);
+    /// assert_eq!(multiple.is_undefined(), false);
+    /// 
+    /// let _a_biguint = U256::from_str_radix("123456789012345678901234567890123456789", 16).unwrap();
+    /// let _num = 0_u8;
+    /// let _modulo = a_biguint.wrapping_add_uint(200_u8);
+    /// // It will panic.
+    /// // let multiple = _a_biguint.modular_next_multiple_of_uint(_num, &_modulo);
+    /// 
+    /// let _a_biguint = U256::from_str_radix("123456789012345678901234567890123456789", 16).unwrap();
+    /// let _num = 100_u8;
+    /// let _modulo = U256::zero();
+    /// // It will panic.
+    /// // let multiple = _a_biguint.modular_next_multiple_of_uint(_num, &_modulo);
+    /// 
+    /// let _a_biguint = U256::from_str_radix("123456789012345678901234567890123456789", 16).unwrap();
+    /// let _num = 100_u8;
+    /// let _modulo = U256::zero();
+    /// // It will panic.
+    /// // let multiple = _a_biguint.modular_next_multiple_of_uint(_num, &_modulo);
+    /// 
+    /// let _a_biguint = U256::from_str_radix("123456789012345678901234567890123456789", 16).unwrap();
+    /// let _num = 200_u8;
+    /// let _modulo = U256::from_uint(100_u8);
+    /// // It will panic.
+    /// // let multiple = _a_biguint.modular_next_multiple_of_uint(_num, &_modulo);
+    /// ```
+    /// 
+    /// # Big-endian issue
+    /// It is just experimental for Big Endian CPUs. So, you are not encouraged
+    /// to use it for Big Endian CPUs for serious purpose. Only use this crate
+    /// for Big-endian CPUs with your own full responsibility.
+    pub fn modular_next_multiple_of_uint<U>(&self, rhs: U, modulo: &Self) -> Self
+    where U: SmallUInt + Copy + Clone + Display + Debug + ToString
+            + Add<Output=U> + AddAssign + Sub<Output=U> + SubAssign
+            + Mul<Output=U> + MulAssign + Div<Output=U> + DivAssign
+            + Rem<Output=U> + RemAssign
+            + Shl<Output=U> + ShlAssign + Shr<Output=U> + ShrAssign
+            + BitAnd<Output=U> + BitAndAssign + BitOr<Output=U> + BitOrAssign
+            + BitXor<Output=U> + BitXorAssign + Not<Output=U>
+            + PartialEq + PartialOrd
+    {
+        let mut res = Self::from_array(self.get_number().clone());
+        res.modular_next_multiple_of_assign_uint(rhs, modulo);
+        res
+    }
+
+    // pub fn modular_next_multiple_of_assign_uint<U>(&mut self, rhs: U, modulo: &Self)
+    /// Calculates the smallest value greater than or equal to `self` that is
+    /// a multiple of `rhs`, and assigns the result to `self` back.
+    /// 
+    /// # Arguments
+    /// `rhs` is the base of multiple, and is a small-sized unsigned integer
+    /// such as `u8`, `u16`, `u32`, `u64`, and `u128`.
+    ///
+    /// # Panics
+    /// - If `size_of::<T>() * N` <= `128`, this method may panic
+    ///   or its behavior may be undefined though it may not panic.
+    /// - This function will panic if `rhs` is `zero`.
+    /// - This function will panic if `modulo` is either `zero` or `one`.
+    /// 
+    /// # Features
+    /// - `self` will be the smallest value greater than or equal to self that
+    ///   is a multiple of `rhs`. However, if overflow occurs, `self` will be
+    ///   the value wrapped around.
+    /// - If `rhs` is zero, the `UNDEFINED` flag will be set and it returns
+    ///   `zero`.
+    /// - The differences between this method
+    ///   `modular_next_multiple_of_assign_uint()`
+    ///   and the method `next_multiple_of_assign_uint()` are, first, where
+    ///   wrapping around happens, and, second, when `OVERFLOW` flag is set.
+    ///   First, this method wraps araound at `modulo` while the method
+    ///   `next_multiple_of_assign_uint()` wraps araound at `maximum value + 1`.
+    ///   Second, this method set `OVERFLOW` flag when wrapping around happens
+    ///   at `modulo` while the method `next_multiple_of_assign_uint()` sets the
+    ///   `OVERFLOW` flag when wrapping around happens at `maximum value + 1`.
+    /// - All the flags are historical, which means, for example, if an
+    ///   overflow occurred even once before this current operation or
+    ///   `OVERFLOW` flag is already set before this current operation,
+    ///   the `OVERFLOW` flag is not changed even if this current operation
+    ///   does not cause overflow.
+    /// 
+    /// # Counterpart Method
+    /// If `rhs` is bigger than `u128`, the method
+    /// [next_multiple_of_assign()](struct@BigUInt#method.next_multiple_of_assign)
+    /// is proper rather than this method `next_multiple_of_assign_uint()`.
+    /// 
+    /// # Example 1
+    /// ```
+    /// use std::str::FromStr;
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u16);
+    /// 
+    /// let mut a_biguint = UU32::from_str("123456789012345678901234567890123456789").unwrap();
+    /// println!("Originally, a_biguint = {}", a_biguint);
+    /// assert_eq!(a_biguint.is_overflow(), false);
+    /// assert_eq!(a_biguint.is_underflow(), false);
+    /// assert_eq!(a_biguint.is_infinity(), false);
+    /// assert_eq!(a_biguint.is_divided_by_zero(), false);
+    /// assert_eq!(a_biguint.is_undefined(), false);
+    /// 
+    /// let num = 100_u8;
+    /// let modulo = a_biguint.wrapping_add_uint(200_u8);
+    /// a_biguint.modular_next_multiple_of_assign_uint(num, &modulo);
+    /// println!("After a_biguint.modular_next_multiple_of_assign_uint({}), a_biguint = {}", num, a_biguint);
+    /// assert_eq!(a_biguint.to_string(), "123456789012345678901234567890123456800");
+    /// assert_eq!(a_biguint.is_overflow(), false);
+    /// assert_eq!(a_biguint.is_underflow(), false);
+    /// assert_eq!(a_biguint.is_infinity(), false);
+    /// assert_eq!(a_biguint.is_undefined(), false);
+    /// assert_eq!(a_biguint.is_divided_by_zero(), false);
+    /// ```
+    /// 
+    /// # Example 2
+    /// ```
+    /// use std::str::FromStr;
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u16);
+    /// 
+    /// let mut a_biguint = UU32::from_str_radix("FFFFFFFF_FFFFFFFF_FFFFFFFF_FFFFFFFF_FFFFFFFF_FFFFFFFF_FFFFFFFF_FFFFFFFF", 16).unwrap();
+    /// println!("Originally, a_biguint = {}", a_biguint);
+    /// assert_eq!(a_biguint.is_overflow(), false);
+    /// assert_eq!(a_biguint.is_underflow(), false);
+    /// assert_eq!(a_biguint.is_infinity(), false);
+    /// assert_eq!(a_biguint.is_divided_by_zero(), false);
+    /// assert_eq!(a_biguint.is_undefined(), false);
+    /// 
+    /// let num = 100_u8;
+    /// let modulo = a_biguint.wrapping_add_uint(200_u8);
+    /// a_biguint.modular_next_multiple_of_assign_uint(num, &modulo);
+    /// println!("After a_biguint.next_multiple_of_assign_uint({}), a_biguint = {}", num, a_biguint);
+    /// assert_eq!(a_biguint.to_string(), "1");
+    /// assert_eq!(a_biguint.is_overflow(), true);
+    /// assert_eq!(a_biguint.is_underflow(), false);
+    /// assert_eq!(a_biguint.is_infinity(), false);
+    /// assert_eq!(a_biguint.is_undefined(), false);
+    /// assert_eq!(a_biguint.is_divided_by_zero(), false);
+    /// 
+    /// let mut _a_biguint = U256::from_str_radix("123456789012345678901234567890123456789", 16).unwrap();
+    /// println!("Originally, a_biguint = {}", _a_biguint);
+    /// let _num = 0_u8;
+    /// let _modulo = _a_biguint.wrapping_add_uint(200_u8);
+    /// // _a_biguint.modular_next_multiple_of_assign_uint(_num, &_modulo);
+    /// 
+    /// let mut _a_biguint = U256::from_str_radix("123456789012345678901234567890123456789", 16).unwrap();
+    /// println!("Originally, a_biguint = {}", _a_biguint);
+    /// let _num = 100_u8;
+    /// let _modulo = U256::zero();
+    /// // _a_biguint.modular_next_multiple_of_assign_uint(_num, &_modulo);
+    /// 
+    /// let mut _a_biguint = U256::from_str_radix("123456789012345678901234567890123456789", 16).unwrap();
+    /// println!("Originally, a_biguint = {}", _a_biguint);
+    /// let _num = 100_u8;
+    /// let _modulo = U256::zero();
+    /// // _a_biguint.modular_next_multiple_of_assign_uint(_num, &_modulo);
+    /// 
+    /// let mut _a_biguint = U256::from_str_radix("123456789012345678901234567890123456789", 16).unwrap();
+    /// println!("Originally, a_biguint = {}", a_biguint);
+    /// let _num = 200_u8;
+    /// let _modulo = U256::from_uint(100_u8);
+    /// // _a_biguint.modular_next_multiple_of_assign_uint(_num, &_modulo);
+    /// ```
+    /// 
+    /// # Big-endian issue
+    /// It is just experimental for Big Endian CPUs. So, you are not encouraged
+    /// to use it for Big Endian CPUs for serious purpose. Only use this crate
+    /// for Big-endian CPUs with your own full responsibility.
+    pub fn modular_next_multiple_of_assign_uint<U>(&mut self, rhs: U, modulo: &Self)
+    where U: SmallUInt + Copy + Clone + Display + Debug + ToString
+            + Add<Output=U> + AddAssign + Sub<Output=U> + SubAssign
+            + Mul<Output=U> + MulAssign + Div<Output=U> + DivAssign
+            + Rem<Output=U> + RemAssign
+            + Shl<Output=U> + ShlAssign + Shr<Output=U> + ShrAssign
+            + BitAnd<Output=U> + BitAndAssign + BitOr<Output=U> + BitOrAssign
+            + BitXor<Output=U> + BitXorAssign + Not<Output=U>
+            + PartialEq + PartialOrd
+    {
+        if modulo.is_zero_or_one() || rhs.is_zero()
+            { panic!(); }
+        self.common_modular_next_multiple_of_assign_uint(rhs, modulo);
+    }
+
+    // pub fn panic_free_modular_next_multiple_of_uint<U>(&self, rhs: U, modulo: &Self) -> Self
+    /// Calculates the smallest value greater than or equal to `self` that is
+    /// a multiple of `rhs`.
+    /// 
+    /// # Arguments
+    /// `rhs` is the base of multiple, and is a small-sized unsigned integer
+    /// such as `u8`, `u16`, `u32`, `u64`, and `u128`.
+    ///
+    /// # Panics
+    /// - If `size_of::<T>() * N` <= `128`, this method may panic
+    ///   or its behavior may be undefined though it may not panic.
+    /// 
+    /// # Output
+    /// - It returns the smallest value greater than or equal to self that is
+    ///   a multiple of `rhs`. However, if overflow occurs, it returns the
+    ///   value wrapped around.
+    /// - If `rhs` is `zero`, the `UNDEFINED` flag will be set and it returns
+    ///   `zero`.
+    /// - If `modulo` is either `zero` or `one`, the `UNDEFINED` flag will be
+    ///   set and it returns `zero`.
+    /// 
+    /// # Features
+    /// - The differences between this method
+    ///   `panic_free_modular_next_multiple_of_uint()`
+    ///   and the method `panic_free_next_multiple_of_uint()` are, first,
+    ///   where wrapping around happens, and, second, when `OVERFLOW` flag is
+    ///   set. First, this method wraps araound at `modulo` while the method
+    ///   `panic_free_next_multiple_of_uint()` wraps araound at `maximum
+    ///   value + 1`. Second, this method set `OVERFLOW` flag when wrapping
+    ///   around happens at `modulo` while the method
+    ///   `panic_free_next_multiple_of_uint()` sets the `OVERFLOW` flag
+    ///   when wrapping around happens at `maximum value + 1`.
+    /// 
+    /// # Counterpart Method
+    /// If `rhs` is bigger than `u128`, the method
+    /// [next_multiple_of()](struct@BigUInt#method.next_multiple_of)
+    /// is proper rather than this method `next_multiple_of_uint()`.
+    /// 
+    /// # Example 1 for normal case
+    /// ```
+    /// use std::str::FromStr;
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u8);
+    /// 
+    /// let a_biguint = U256::from_str("123456789012345678901234567890123456789").unwrap();
+    /// let num = 100_u8;
+    /// let modulo = a_biguint.wrapping_add_uint(200_u8);
+    /// let multiple = a_biguint.panic_free_modular_next_multiple_of_uint(num, &modulo);
+    /// println!("The next multiple of {} is {}", a_biguint, multiple);
+    /// assert_eq!(multiple.to_string(), "123456789012345678901234567890123456800");
+    /// assert_eq!(multiple.is_overflow(), false);
+    /// assert_eq!(multiple.is_underflow(), false);
+    /// assert_eq!(multiple.is_infinity(), false);
+    /// assert_eq!(multiple.is_divided_by_zero(), false);
+    /// assert_eq!(multiple.is_undefined(), false);
+    /// ```
+    /// 
+    /// # Example 2 for normal case
+    /// ```
+    /// use std::str::FromStr;
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u8);
+    /// 
+    /// let a_biguint = U256::from_str_radix("FFFFFFFF_FFFFFFFF_FFFFFFFF_FFFFFFFF_FFFFFFFF_FFFFFFFF_FFFFFFFF_FFFFFFFF", 16).unwrap();
+    /// let num = 100_u8;
+    /// let modulo = a_biguint.wrapping_add_uint(200_u8);
+    /// let multiple = a_biguint.panic_free_modular_next_multiple_of_uint(num, &modulo);
+    /// println!("The next multiple of {} is {}", a_biguint, multiple);
+    /// assert_eq!(multiple.to_string(), "1");
+    /// assert_eq!(multiple.is_overflow(), true);
+    /// assert_eq!(multiple.is_underflow(), false);
+    /// assert_eq!(multiple.is_infinity(), false);
+    /// assert_eq!(multiple.is_divided_by_zero(), false);
+    /// assert_eq!(multiple.is_undefined(), false);
+    /// ```
+    /// 
+    /// # Example 3 for rhs == 0
+    /// ```
+    /// use std::str::FromStr;
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u8);
+    /// 
+    /// let a_biguint = U256::from_str_radix("123456789012345678901234567890123456789", 16).unwrap();
+    /// let num = 0_u8;
+    /// let modulo = a_biguint.wrapping_add_uint(200_u8);
+    /// let multiple = a_biguint.panic_free_modular_next_multiple_of_uint(num, &modulo);
+    /// println!("The next multiple of {} is {}", a_biguint, multiple);
+    /// assert_eq!(multiple.to_string(), "0");
+    /// assert_eq!(multiple.is_overflow(), false);
+    /// assert_eq!(multiple.is_underflow(), false);
+    /// assert_eq!(multiple.is_infinity(), false);
+    /// assert_eq!(multiple.is_divided_by_zero(), false);
+    /// assert_eq!(multiple.is_undefined(), true);
+    /// ```
+    /// 
+    /// # Example 4 for modulo == 0
+    /// ```
+    /// use std::str::FromStr;
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u8);
+    /// 
+    /// let a_biguint = U256::from_str_radix("123456789012345678901234567890123456789", 16).unwrap();
+    /// let num = 100_u8;
+    /// let modulo = U256::zero();
+    /// let multiple = a_biguint.panic_free_modular_next_multiple_of_uint(num, &modulo);
+    /// println!("The next multiple of {} is {}", a_biguint, multiple);
+    /// assert_eq!(multiple.to_string(), "0");
+    /// assert_eq!(multiple.is_overflow(), false);
+    /// assert_eq!(multiple.is_underflow(), false);
+    /// assert_eq!(multiple.is_infinity(), false);
+    /// assert_eq!(multiple.is_divided_by_zero(), false);
+    /// assert_eq!(multiple.is_undefined(), true);
+    /// ```
+    /// 
+    /// # Example 5 for modulo == 1
+    /// ```
+    /// use std::str::FromStr;
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u8);
+    /// 
+    /// let a_biguint = U256::from_str_radix("123456789012345678901234567890123456789", 16).unwrap();
+    /// let num = 100_u8;
+    /// let modulo = U256::zero();
+    /// let multiple = a_biguint.panic_free_modular_next_multiple_of_uint(num, &modulo);
+    /// println!("The next multiple of {} is {}", a_biguint, multiple);
+    /// assert_eq!(multiple.to_string(), "0");
+    /// assert_eq!(multiple.is_overflow(), false);
+    /// assert_eq!(multiple.is_underflow(), false);
+    /// assert_eq!(multiple.is_infinity(), false);
+    /// assert_eq!(multiple.is_divided_by_zero(), false);
+    /// assert_eq!(multiple.is_undefined(), true);
+    /// ```
+    /// 
+    /// # Example 6 for rhs == multiple of modulo
+    /// ```
+    /// use std::str::FromStr;
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u8);
+    /// 
+    /// let a_biguint = U256::from_str_radix("123456789012345678901234567890123456789", 16).unwrap();
+    /// let num = 200_u8;
+    /// let modulo = U256::from_uint(100_u8);
+    /// let multiple = a_biguint.panic_free_modular_next_multiple_of_uint(num, &modulo);
+    /// println!("The next multiple of {} is {}", a_biguint, multiple);
+    /// assert_eq!(multiple.to_string(), "0");
+    /// assert_eq!(multiple.is_overflow(), false);
+    /// assert_eq!(multiple.is_underflow(), false);
+    /// assert_eq!(multiple.is_infinity(), false);
+    /// assert_eq!(multiple.is_divided_by_zero(), false);
+    /// assert_eq!(multiple.is_undefined(), true);
+    /// ```
+    /// 
+    /// # Big-endian issue
+    /// It is just experimental for Big Endian CPUs. So, you are not encouraged
+    /// to use it for Big Endian CPUs for serious purpose. Only use this crate
+    /// for Big-endian CPUs with your own full responsibility.
+    pub fn panic_free_modular_next_multiple_of_uint<U>(&self, rhs: U, modulo: &Self) -> Self
+    where U: SmallUInt + Copy + Clone + Display + Debug + ToString
+            + Add<Output=U> + AddAssign + Sub<Output=U> + SubAssign
+            + Mul<Output=U> + MulAssign + Div<Output=U> + DivAssign
+            + Rem<Output=U> + RemAssign
+            + Shl<Output=U> + ShlAssign + Shr<Output=U> + ShrAssign
+            + BitAnd<Output=U> + BitAndAssign + BitOr<Output=U> + BitOrAssign
+            + BitXor<Output=U> + BitXorAssign + Not<Output=U>
+            + PartialEq + PartialOrd
+    {
+        let mut res = Self::from_array(self.get_number().clone());
+        res.panic_free_modular_next_multiple_of_assign_uint(rhs, modulo);
+        res
+    }
+
+    // pub fn panic_free_modular_next_multiple_of_assign_uint<U>(&mut self, rhs: U, modulo: &Self)
+    /// Calculates the smallest value greater than or equal to `self` that is
+    /// a multiple of `rhs`, and assigns the result to `self` back.
+    /// 
+    /// # Arguments
+    /// `rhs` is the base of multiple, and is a small-sized unsigned integer
+    /// such as `u8`, `u16`, `u32`, `u64`, and `u128`.
+    ///
+    /// # Panics
+    /// - If `size_of::<T>() * N` <= `128`, this method may panic
+    ///   or its behavior may be undefined though it may not panic.
+    /// 
+    /// # Features
+    /// - `self` will be the smallest value greater than or equal to self that
+    ///   is a multiple of `rhs`. However, if overflow occurs, `self` will be
+    ///   the value wrapped around.
+    /// - If `rhs` is zero, the `UNDEFINED` flag will be set and `self`
+    ///   will be `zero`.
+    /// - If `modulo` is either `zero` or `one`, the `UNDEFINED` flag will be
+    ///   set and `self` will be `zero`.
+    /// - The differences between this method
+    ///   `panic_free_modular_next_multiple_of_assign_uint()`
+    ///   and the method `panic_free_next_multiple_of_assign_uint()` are, first,
+    ///   where wrapping around happens, and, second, when `OVERFLOW` flag is
+    ///   set. First, this method wraps araound at `modulo` while the method
+    ///   `panic_free_next_multiple_of_assign_uint()` wraps araound at `maximum
+    ///   value + 1`. Second, this method set `OVERFLOW` flag when wrapping
+    ///   around happens at `modulo` while the method
+    ///   `panic_free_next_multiple_of_assign_uint()` sets the `OVERFLOW` flag
+    ///   when wrapping around happens at `maximum value + 1`.
+    /// - All the flags are historical, which means, for example, if an
+    ///   overflow occurred even once before this current operation or
+    ///   `OVERFLOW` flag is already set before this current operation,
+    ///   the `OVERFLOW` flag is not changed even if this current operation
+    ///   does not cause overflow.
+    /// 
+    /// # Counterpart Method
+    /// If `rhs` is bigger than `u128`, the method
+    /// [next_multiple_of_assign()](struct@BigUInt#method.next_multiple_of_assign)
+    /// is proper rather than this method `next_multiple_of_assign_uint()`.
+    /// 
+    /// # Example 1 for normal case
+    /// ```
+    /// use std::str::FromStr;
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u16);
+    /// 
+    /// let mut a_biguint = UU32::from_str("123456789012345678901234567890123456789").unwrap();
+    /// println!("Originally, a_biguint = {}", a_biguint);
+    /// assert_eq!(a_biguint.is_overflow(), false);
+    /// assert_eq!(a_biguint.is_underflow(), false);
+    /// assert_eq!(a_biguint.is_infinity(), false);
+    /// assert_eq!(a_biguint.is_divided_by_zero(), false);
+    /// assert_eq!(a_biguint.is_undefined(), false);
+    /// 
+    /// let num = 100_u8;
+    /// let modulo = a_biguint.wrapping_add_uint(200_u8);
+    /// a_biguint.panic_free_modular_next_multiple_of_assign_uint(num, &modulo);
+    /// println!("After a_biguint.modular_next_multiple_of_assign_uint({}), a_biguint = {}", num, a_biguint);
+    /// assert_eq!(a_biguint.to_string(), "123456789012345678901234567890123456800");
+    /// assert_eq!(a_biguint.is_overflow(), false);
+    /// assert_eq!(a_biguint.is_underflow(), false);
+    /// assert_eq!(a_biguint.is_infinity(), false);
+    /// assert_eq!(a_biguint.is_undefined(), false);
+    /// assert_eq!(a_biguint.is_divided_by_zero(), false);
+    /// ```
+    /// 
+    /// # Example 2 for normal case
+    /// ```
+    /// use std::str::FromStr;
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u16);
+    /// 
+    /// let mut a_biguint = UU32::from_str_radix("FFFFFFFF_FFFFFFFF_FFFFFFFF_FFFFFFFF_FFFFFFFF_FFFFFFFF_FFFFFFFF_FFFFFFFF", 16).unwrap();
+    /// println!("Originally, a_biguint = {}", a_biguint);
+    /// assert_eq!(a_biguint.is_overflow(), false);
+    /// assert_eq!(a_biguint.is_underflow(), false);
+    /// assert_eq!(a_biguint.is_infinity(), false);
+    /// assert_eq!(a_biguint.is_divided_by_zero(), false);
+    /// assert_eq!(a_biguint.is_undefined(), false);
+    /// 
+    /// let num = 100_u8;
+    /// let modulo = a_biguint.wrapping_add_uint(200_u8);
+    /// a_biguint.panic_free_modular_next_multiple_of_assign_uint(num, &modulo);
+    /// println!("After a_biguint.next_multiple_of_assign_uint({}), a_biguint = {}", num, a_biguint);
+    /// assert_eq!(a_biguint.to_string(), "1");
+    /// assert_eq!(a_biguint.is_overflow(), true);
+    /// assert_eq!(a_biguint.is_underflow(), false);
+    /// assert_eq!(a_biguint.is_infinity(), false);
+    /// assert_eq!(a_biguint.is_undefined(), false);
+    /// assert_eq!(a_biguint.is_divided_by_zero(), false);
+    /// ```
+    /// 
+    /// # Example 3 for  rhs == 0
+    /// ```
+    /// use std::str::FromStr;
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u32);
+    /// 
+    /// let mut a_biguint = U256::from_str_radix("123456789012345678901234567890123456789", 16).unwrap();
+    /// println!("Originally, a_biguint = {}", a_biguint);
+    /// assert_eq!(a_biguint.is_overflow(), false);
+    /// assert_eq!(a_biguint.is_underflow(), false);
+    /// assert_eq!(a_biguint.is_infinity(), false);
+    /// assert_eq!(a_biguint.is_divided_by_zero(), false);
+    /// assert_eq!(a_biguint.is_undefined(), false);
+    /// 
+    /// let num = 0_u8;
+    /// let modulo = a_biguint.wrapping_add_uint(200_u8);
+    /// a_biguint.panic_free_modular_next_multiple_of_assign_uint(num, &modulo);
+    /// println!("After a_biguint.next_multiple_of_assign_uint({}), a_biguint = {}", num, a_biguint);
+    /// assert_eq!(a_biguint.to_string(), "0");
+    /// assert_eq!(a_biguint.is_overflow(), false);
+    /// assert_eq!(a_biguint.is_underflow(), false);
+    /// assert_eq!(a_biguint.is_infinity(), false);
+    /// assert_eq!(a_biguint.is_undefined(), true);
+    /// assert_eq!(a_biguint.is_divided_by_zero(), false);
+    /// ```
+    /// 
+    /// # Example 4 for modulo == 0
+    /// ```
+    /// use std::str::FromStr;
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u32);
+    /// 
+    /// let mut a_biguint = U256::from_str_radix("123456789012345678901234567890123456789", 16).unwrap();
+    /// println!("Originally, a_biguint = {}", a_biguint);
+    /// assert_eq!(a_biguint.is_overflow(), false);
+    /// assert_eq!(a_biguint.is_underflow(), false);
+    /// assert_eq!(a_biguint.is_infinity(), false);
+    /// assert_eq!(a_biguint.is_divided_by_zero(), false);
+    /// assert_eq!(a_biguint.is_undefined(), false);
+    /// 
+    /// let num = 100_u8;
+    /// let modulo = U256::zero();
+    /// a_biguint.panic_free_modular_next_multiple_of_assign_uint(num, &modulo);
+    /// println!("After a_biguint.next_multiple_of_assign_uint({}), a_biguint = {}", num, a_biguint);
+    /// assert_eq!(a_biguint.to_string(), "0");
+    /// assert_eq!(a_biguint.is_overflow(), false);
+    /// assert_eq!(a_biguint.is_underflow(), false);
+    /// assert_eq!(a_biguint.is_infinity(), false);
+    /// assert_eq!(a_biguint.is_undefined(), true);
+    /// assert_eq!(a_biguint.is_divided_by_zero(), false);
+    /// ```
+    /// 
+    /// # Example 5 for modulo == 1
+    /// ```
+    /// use std::str::FromStr;
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u32);
+    /// 
+    /// let mut a_biguint = U256::from_str_radix("123456789012345678901234567890123456789", 16).unwrap();
+    /// println!("Originally, a_biguint = {}", a_biguint);
+    /// assert_eq!(a_biguint.is_overflow(), false);
+    /// assert_eq!(a_biguint.is_underflow(), false);
+    /// assert_eq!(a_biguint.is_infinity(), false);
+    /// assert_eq!(a_biguint.is_divided_by_zero(), false);
+    /// assert_eq!(a_biguint.is_undefined(), false);
+    /// 
+    /// let num = 100_u8;
+    /// let modulo = U256::zero();
+    /// a_biguint.panic_free_modular_next_multiple_of_assign_uint(num, &modulo);
+    /// println!("After a_biguint.next_multiple_of_assign_uint({}), a_biguint = {}", num, a_biguint);
+    /// assert_eq!(a_biguint.to_string(), "0");
+    /// assert_eq!(a_biguint.is_overflow(), false);
+    /// assert_eq!(a_biguint.is_underflow(), false);
+    /// assert_eq!(a_biguint.is_infinity(), false);
+    /// assert_eq!(a_biguint.is_undefined(), true);
+    /// assert_eq!(a_biguint.is_divided_by_zero(), false);
+    /// ```
+    /// 
+    /// # Example 6 for rhs == multiple of modulo
+    /// ```
+    /// use std::str::FromStr;
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u32);
+    /// 
+    /// let mut a_biguint = U256::from_str_radix("123456789012345678901234567890123456789", 16).unwrap();
+    /// println!("Originally, a_biguint = {}", a_biguint);
+    /// assert_eq!(a_biguint.is_overflow(), false);
+    /// assert_eq!(a_biguint.is_underflow(), false);
+    /// assert_eq!(a_biguint.is_infinity(), false);
+    /// assert_eq!(a_biguint.is_divided_by_zero(), false);
+    /// assert_eq!(a_biguint.is_undefined(), false);
+    /// 
+    /// let num = 200_u8;
+    /// let modulo = U256::from_uint(100_u8);
+    /// a_biguint.panic_free_modular_next_multiple_of_assign_uint(num, &modulo);
+    /// println!("After a_biguint.next_multiple_of_assign_uint({}), a_biguint = {}", num, a_biguint);
+    /// assert_eq!(a_biguint.to_string(), "0");
+    /// assert_eq!(a_biguint.is_overflow(), false);
+    /// assert_eq!(a_biguint.is_underflow(), false);
+    /// assert_eq!(a_biguint.is_infinity(), false);
+    /// assert_eq!(a_biguint.is_undefined(), true);
+    /// assert_eq!(a_biguint.is_divided_by_zero(), false);
+    /// ```
+    /// 
+    /// # Big-endian issue
+    /// It is just experimental for Big Endian CPUs. So, you are not encouraged
+    /// to use it for Big Endian CPUs for serious purpose. Only use this crate
+    /// for Big-endian CPUs with your own full responsibility.
+    pub fn panic_free_modular_next_multiple_of_assign_uint<U>(&mut self, rhs: U, modulo: &Self)
+    where U: SmallUInt + Copy + Clone + Display + Debug + ToString
+            + Add<Output=U> + AddAssign + Sub<Output=U> + SubAssign
+            + Mul<Output=U> + MulAssign + Div<Output=U> + DivAssign
+            + Rem<Output=U> + RemAssign
+            + Shl<Output=U> + ShlAssign + Shr<Output=U> + ShrAssign
+            + BitAnd<Output=U> + BitAndAssign + BitOr<Output=U> + BitOrAssign
+            + BitXor<Output=U> + BitXorAssign + Not<Output=U>
+            + PartialEq + PartialOrd
+    {
+        if modulo.is_zero_or_one() || rhs.is_zero()
+        {
+            self.set_zero();
+            self.set_undefined();
+            return;
+        }
+        else if modulo.le_uint(rhs)
+        {
+            let modu = modulo.into_uint::<U>();
+            if rhs.wrapping_rem(modu).is_zero()
+            {
+                self.set_zero();
+                self.set_undefined();
+                return;
+            }
+        }
+        self.common_modular_next_multiple_of_assign_uint(rhs, modulo);
+    }
+
+    fn common_modular_next_multiple_of_assign_uint<U>(&mut self, rhs: U, modulo: &Self)
+    where U: SmallUInt + Copy + Clone + Display + Debug + ToString
+            + Add<Output=U> + AddAssign + Sub<Output=U> + SubAssign
+            + Mul<Output=U> + MulAssign + Div<Output=U> + DivAssign
+            + Rem<Output=U> + RemAssign
+            + Shl<Output=U> + ShlAssign + Shr<Output=U> + ShrAssign
+            + BitAnd<Output=U> + BitAndAssign + BitOr<Output=U> + BitOrAssign
+            + BitXor<Output=U> + BitXorAssign + Not<Output=U>
+            + PartialEq + PartialOrd
+    {
+        let flags = self.get_all_flags();
+        if *self >= *modulo
+            { self.wrapping_rem_assign(modulo); }
+
+        if U::size_in_bytes() > T::size_in_bytes()
+        {
+            self.common_next_multiple_of_assign(&Self::from_uint(rhs));
+        }
+        else if modulo.gt_uint(rhs)
+        {
+            let diff = self.wrapping_rem_uint(rhs);
+            self.reset_all_flags();
+            self.modular_add_assign_uint(rhs - diff, modulo);
+            self.set_flag_bit(flags);
+        }
+        else    // if U::size_in_bytes() <= T::size_in_bytes() and modulo <= rhs
+        {
+            let trhs = T::num(rhs);
+            let diff = self.wrapping_rem_uint(trhs);
+            self.reset_all_flags();
+            self.modular_add_assign_uint(trhs - diff, modulo);
+            self.set_flag_bit(flags);
+        }
+    }
+
+
 
     /***** METHODS FOR EXPONENTIATION AND LOGARITHM WITH UINT *****/
-
+//------
     // pub fn pow_uint<U>(&self, exp: U) -> Self
     /// Raises `self` to the power of exp, using exponentiation
     /// of type `BigUInt` by squaring. The type `U` has the trait `SmallUInt`.
@@ -18143,7 +19078,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// type `Self` instead of overflowing.
     /// 
     /// # Arguments
-    /// -`rhs` is to be added to `self`, and is of `&Self`-type.
+    /// - `rhs` is to be added to `self`, and is of `&Self`-type.
     /// - `modulo` is the divisor to divide the result of (`self` + `rhs`).
     /// 
     /// # Output
@@ -18311,7 +19246,103 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     {
         if modulo.is_zero_or_one()
             { panic!(); }
-        else if *self >= *modulo
+        self.common_modular_add_assign(rhs, modulo);
+    }
+
+    // pub fn panic_free_modular_add_assign(&mut self, rhs: &Self, modulo: &Self)
+    /// Computes (`self` + `rhs`) % `modulo`, wrapping around at `modulo`
+    /// of the type `Self` instead of overflowing, and then, assign the result
+    /// back to `self`.
+    /// 
+    /// # Arguments
+    /// -`rhs` is to be added to `self`, and is of `&Self`-type.
+    /// - `modulo` is the divisor to divide the result of (`self` + `rhs`).
+    /// 
+    /// # Panics
+    /// - If `size_of::<T>() * N` <= `128`, this method may panic
+    /// or its behavior may be undefined though it may not panic.
+    /// - If `modulo` is either zero or one, this method will panic.
+    /// 
+    /// # Features
+    /// - Wrapping (modular) addition at `modulo`. The differences between this
+    /// method `modular_add_assign()` and the method `wrapping_add_assign()`
+    /// are, first, where wrapping around happens, and, second, whether or not
+    /// `OVERFLOW` flag is set. First, this method wraps araound at `modulo`
+    /// while the method `wrapping_add_assign()` wraps araound at maximum value.
+    /// Second, this method does not set `OVERFLOW` flag even if wrapping around
+    /// happens, while the method `wrapping_add_assign()` sets `OVERFLOW` flag
+    /// when wrapping around happens.
+    /// - If `modulo` is `zero`, the flags such as `OVERFLOW`, `DIVIDED_BY_ZERO`,
+    /// and `INFINITY` will be set.
+    /// - All the flags are historical, which means, for example, if an
+    /// overflow occurred even once before this current operation or
+    /// `OVERFLOW` flag is already set before this current operation,
+    /// the `OVERFLOW` flag is not changed even if this current operation
+    /// does not cause overflow.
+    /// 
+    /// # Counterpart Method
+    /// - The method
+    /// [modular_add_assign_uint()](struct@BigUInt#method.modular_add_assign_uint)
+    /// is a bit faster than this method `modular_add_assign()`.
+    /// - If `rhs` is primitive unsigned integral data type such as u8, u16,
+    /// u32, u64, and u128, use the method
+    /// [modular_add_assign_uint()](struct@BigUInt#method.modular_add_assign_uint).
+    /// 
+    /// # Example 1
+    /// ```
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u8);
+    /// 
+    /// let mut a_biguint = U256::from_string("768018742981669034276900318581864860508537538828119465699464336490060").unwrap();
+    /// let m = a_biguint.wrapping_add_uint(2_u8); // == 76801874298166903427690031858186486050853753882811946569946433649008
+    /// println!("Originally,\ta = {}", a_biguint);
+    /// a_biguint.modular_add_assign(&U256::one(), &m);
+    /// println!("After a_biguint.modular_add_assign_uint(&U256::one(), &m),\ta_biguint = {}", a_biguint);
+    /// assert_eq!(a_biguint.to_string(), "768018742981669034276900318581864860508537538828119465699464336490061");
+    /// ```
+    /// 
+    /// # Example 2
+    /// ```
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u8);
+    /// 
+    /// let mut b_biguint = U256::from_string("768018742981669034276900318581864860508537538828119465699464336490060").unwrap();
+    /// let m = b_biguint.wrapping_add_uint(2_u8); // == 76801874298166903427690031858186486050853753882811946569946433649008
+    /// println!("Originally,\tb_biguint = {}", b_biguint);
+    /// b_biguint.modular_add_assign(&U256::from_uint(2_u8), &m);
+    /// println!("After a_biguint.modular_add_assign(&U256::from_uint(2_u8), &m),\ta_biguint = {}", b_biguint);
+    /// assert_eq!(b_biguint.to_string(), "0");
+    /// ```
+    /// 
+    /// # Example 3
+    /// ```
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u8);
+    /// 
+    /// let mut c_biguint = U256::from_string("768018742981669034276900318581864860508537538828119465699464336490060").unwrap();    
+    /// let m = c_biguint.wrapping_add_uint(2_u8); // == 76801874298166903427690031858186486050853753882811946569946433649008
+    /// println!("Originally,\tc_biguint = {}", c_biguint);
+    /// c_biguint.modular_add_assign(&U256::from_uint(3_u8), &m);
+    /// println!("After c_biguint.modular_add_assign(&U256::from_uint(3_u8), &m),\ta_biguint = {}", c_biguint);
+    /// assert_eq!(c_biguint.to_string(), "1");
+    /// ```
+    /// 
+    /// # Big-endian issue
+    /// It is just experimental for Big Endian CPUs. So, you are not encouraged
+    /// to use it for Big Endian CPUs for serious purpose. Only use this crate
+    /// for Big-endian CPUs with your own full responsibility.
+    pub fn panic_free_modular_add_assign(&mut self, rhs: &Self, modulo: &Self)
+    {
+        if modulo.is_zero_or_one() | rhs.is_zero()
+        {
+            self.set_undefined();
+        }
+        self.common_modular_add_assign(rhs, modulo);
+    }
+
+    fn common_modular_add_assign(&mut self, rhs: &Self, modulo: &Self)
+    {
+        if *self >= *modulo
             { self.wrapping_rem_assign(modulo); }
 
         let mut flags = self.get_all_flags();
@@ -19212,7 +20243,190 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     {
         if modulo.is_zero_or_one()
             { panic!(); }
- 
+        self.common_modular_sub_assign(rhs, modulo);
+    }
+
+    // pub fn panic_free_modular_sub(&self, rhs: &Self, modulo: &Self) -> Self
+    /// Computes (`self` - `rhs`) % `modulo`, wrapping around at `modulo` of the
+    /// type `Self` instead of underflowing.
+    /// 
+    /// # Arguments
+    /// - `rhs` is to be subtrcted from `self`, and is of `&Self`-type.
+    /// - `modulo` is the divisor to divide the result of (`self` - `rhs`).
+    /// 
+    /// # Panics
+    /// - If `size_of::<T>() * N` <= `128`, this method may panic
+    /// or its behavior may be undefined though it may not panic.
+    /// - If `modulo` is either zero or one, this method will panic.
+    /// 
+    /// # Output
+    /// It returns the modulo-difference (`self` - `rhs`) % `modulo` with
+    /// wrapping (modular) subtraction at `modulo`.
+    /// 
+    /// # Features
+    /// - Wrapping (modular) subtraction at `modulo`. The differences between
+    /// this method `modular_sub()` and the method `wrapping_sub()` are, first,
+    /// where wrapping around happens, and, second, whether or not `UNDERFLOW`
+    /// flag is set. First, this method wraps araound at `modulo` while the
+    /// method `wrapping_sub()` wraps araound at maximum value. Second, this
+    /// method does not set `UNDERFLOW` flag even if wrapping around
+    /// happens while the method `wrapping_sub()` sets `UNDERFLOW` flag when
+    /// wrapping around happens.
+    /// - If `modulo` is `zero`, the flags such as `OVERFLOW`, `DIVIDED_BY_ZERO`,
+    /// and `INFINITY` will be set.
+    /// 
+    /// # Counterpart Method
+    /// The method
+    /// [modular_sub_uint()](struct@BigUInt#method.modular_sub_uint)
+    /// is a bit faster than this method `modular_sub()`.
+    /// If `rhs` is primitive unsigned integral data type such as u8, u16,
+    /// u32, u64, and u128, use the method
+    /// [modular_sub_uint()](struct@BigUInt#method.modular_sub_uint).
+    /// 
+    /// # Example 1
+    /// ```
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u16);
+    /// 
+    /// let a_biguint = U256::one();
+    /// let m = U256::from_string("10000000000000000000000000000000000000000000000000000000000000000000").unwrap();
+    /// let res = a_biguint.modular_sub(&U256::one(), &m);
+    /// println!("{} - 1 = {}", a_biguint, res);
+    /// assert_eq!(res.to_string(), "0");
+    /// assert_eq!(res.is_underflow(), false);
+    /// ```
+    /// 
+    /// # Example 2
+    /// ```
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u16);
+    /// 
+    /// let b_biguint = U256::zero();
+    /// let m = U256::from_string("10000000000000000000000000000000000000000000000000000000000000000000").unwrap();
+    /// let res = b_biguint.modular_sub(&U256::one(), &m);
+    /// println!("{} - 1 = {}", b_biguint, res);
+    /// assert_eq!(res.to_string(), "9999999999999999999999999999999999999999999999999999999999999999999");
+    /// assert_eq!(res.is_underflow(), true);
+    /// ```
+    /// 
+    /// # Example 3
+    /// ```
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u16);
+    /// 
+    /// let c_biguint = U256::from_string("9999999999999999999999999999999999999999999999999999999999999999999").unwrap();
+    /// let m = U256::from_string("10000000000000000000000000000000000000000000000000000000000000000000").unwrap();
+    /// let res = c_biguint.modular_sub(&U256::one(), &m);
+    /// println!("{} - 1 = {}", c_biguint, res);
+    /// assert_eq!(res.to_string(), "9999999999999999999999999999999999999999999999999999999999999999998");
+    /// assert_eq!(res.is_underflow(), false);
+    /// ```
+    /// 
+    /// # Big-endian issue
+    /// It is just experimental for Big Endian CPUs. So, you are not encouraged
+    /// to use it for Big Endian CPUs for serious purpose. Only use this crate
+    /// for Big-endian CPUs with your own full responsibility.
+    pub fn panic_free_modular_sub(&self, rhs: &Self, modulo: &Self) -> Self
+    {
+        let mut res = Self::from_array(self.get_number().clone());
+        res.modular_sub_assign(rhs, modulo);
+        res
+    }
+
+    // pub fn panic_free_modular_sub_assign(&mut self, rhs: &Self, modulo: &Self)
+    /// Computes (`self` - `rhs`) % `modulo`, wrapping around at `modulo`
+    /// of the type `Self` instead of underflowing, and then, assign the result
+    /// back to `self`.
+    /// 
+    /// # Arguments
+    /// - `rhs` is to be subtrcted from `self`, and is of `&Self`-type.
+    /// - `modulo` is the divisor to divide the result of (`self` - `rhs`).
+    /// 
+    /// # Panics
+    /// - If `size_of::<T>() * N` <= `128`, this method may panic
+    /// or its behavior may be undefined though it may not panic.
+    /// - If `modulo` is either zero or one, this method will panic.
+    /// 
+    /// # Features
+    /// Wrapping (modular) subtraction at `modulo`. The differences between this
+    /// method `modular_sub_assign()` and the method `wrapping_sub_assign()`
+    /// are, first, where wrapping around happens, and, second, whether or not
+    /// `UNDERFLOW` flag is set. First, this method wraps araound at `modulo`
+    /// while the method `wrapping_sub_assign()` wraps araound at maximum value.
+    /// Second, this method does not set `UNDERFLOW` flag even if wrapping
+    /// around happens, while the method `wrapping_sub_assign()` sets
+    /// `UNDERFLOW` flag when wrapping around happens.
+    /// - If `modulo` is `zero`, the flags such as `OVERFLOW`, `DIVIDED_BY_ZERO`,
+    /// and `INFINITY` will be set.
+    /// - All the flags reflect historical underflow, which means, for example,
+    /// if an overflow occurred even once before this current operation or
+    /// `OVERFOLOW` flag is already set before this current operation, the
+    /// `OVERFOLOW` flag is not changed even though this current operation does
+    /// not cause overflow.
+    /// 
+    /// # Counterpart Method
+    /// The method
+    /// [modular_sub_assign_uint()](struct@BigUInt#method.modular_sub_assign_uint)
+    /// is a bit faster than this method `modular_sub_assign()`.
+    /// If `rhs` is primitive unsigned integral data type such as u8, u16,
+    /// u32, u64, and u128, use the method
+    /// [modular_sub_assign_uint()](struct@BigUInt#method.modular_sub_assign_uint).
+    /// 
+    /// # Example 1
+    /// ```
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u32);
+    /// 
+    /// let mut a_biguint = U256::one();
+    /// let m = U256::from_string("10000000000000000000000000000000000000000000000000000000000000000000").unwrap();
+    /// println!("Originally,\ta = {}", a_biguint);
+    /// a_biguint.modular_sub_assign(&U256::one(), &m);
+    /// println!("After a_biguint.modular_sub_assign(&U256::one(), &m),\ta_biguint = {}", a_biguint);
+    /// assert_eq!(a_biguint.to_string(), "0");
+    /// assert_eq!(a_biguint.is_underflow(), false);
+    /// ```
+    /// 
+    /// # Example 2
+    /// ```
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u32);
+    /// 
+    /// let mut b_biguint = U256::zero();
+    /// let m = U256::from_string("10000000000000000000000000000000000000000000000000000000000000000000").unwrap();
+    /// println!("Originally,\tb_biguint = {}", b_biguint);
+    /// b_biguint.modular_sub_assign(&&U256::one(), &m);
+    /// println!("After b_biguint.modular_sub_assign(&U256::one(), &m),\tb_biguint = {}", b_biguint);
+    /// assert_eq!(b_biguint.to_string(), "9999999999999999999999999999999999999999999999999999999999999999999");
+    /// assert_eq!(b_biguint.is_underflow(), true);
+    /// ```
+    /// 
+    /// # Example 3
+    /// ```
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u16);
+    /// 
+    /// let mut c_biguint = U256::from_string("9999999999999999999999999999999999999999999999999999999999999999999").unwrap();    
+    /// let m = U256::from_string("10000000000000000000000000000000000000000000000000000000000000000000").unwrap();
+    /// println!("Originally,\tc_biguint = {}", c_biguint);
+    /// c_biguint.modular_sub_assign(&U256::one(), &m);
+    /// println!("After c_biguint.modular_sub_assign(&U256::one(), &m),\ta_biguint = {}", c_biguint);
+    /// assert_eq!(c_biguint.to_string(), "9999999999999999999999999999999999999999999999999999999999999999998");
+    /// assert_eq!(c_biguint.is_underflow(), false);
+    /// ```
+    /// 
+    /// # Big-endian issue
+    /// It is just experimental for Big Endian CPUs. So, you are not encouraged
+    /// to use it for Big Endian CPUs for serious purpose. Only use this crate
+    /// for Big-endian CPUs with your own full responsibility.
+    pub fn panic_free_modular_sub_assign(&mut self, rhs: &Self, modulo: &Self)
+    {
+        if modulo.is_zero_or_one()
+            { panic!(); }
+        self.common_modular_sub_assign(rhs, modulo);
+    }
+
+    fn common_modular_sub_assign(&mut self, rhs: &Self, modulo: &Self)
+    {
         let flags = self.get_all_flags();
         self.wrapping_rem_assign(modulo);
         if *rhs < *modulo    // In this case, it does not cause cloning for performance.
@@ -20505,7 +21719,178 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     {
         if modulo.is_zero_or_one()
             { panic!(); }
-        else if *self >= *modulo
+        self.common_modular_mul_assign(rhs, modulo);
+    }
+
+    // pub fn panic_free_modular_mul(&self, rhs: &Self, modulo: &Self) -> Self
+    /// Computes (`self` * `rhs`) % `modulo`, wrapping around at `modulo`
+    /// of the type `Self`.
+    /// 
+    /// # Arguments
+    /// - `rhs` is to be multiplied to `self`, and is `&Self` type.
+    /// - `modulo` is the divisor to divide the result of (`self` * `rhs`).
+    /// 
+    /// # Panics
+    /// - If `size_of::<T>() * N` <= `128`, this method may panic
+    /// or its behavior may be undefined though it may not panic.
+    /// - If `modulo` is either zero or one, this method will panic.
+    /// 
+    /// # Features
+    /// - Wrapping (modular) multiplication at `modulo`. The differences between
+    /// this method `modular_mul()` and the method `wrapping_mul()` are, first,
+    /// where wrapping around happens, and, second, whether or not `OVERFLOW`
+    /// flag is set. First, this method wraps araound at `modulo` while the
+    /// method `wrapping_mul()` wraps araound at maximum value. Second, this
+    /// method does not set `OVERFLOW` flag even if wrapping around happens,
+    /// while the method `wrapping_mul()` sets `OVERFLOW` flag when wrapping
+    /// around happens.
+    /// 
+    /// # Counterpart Method
+    /// The method [modular_mul_uint()](struct@BigUInt#method.modular_mul_uint)
+    /// is a bit faster than this method `modular_mul()`.
+    /// If `rhs` is primitive unsigned integral data type such as u8, u16,
+    /// u32, u64, and u128, use the method
+    /// [modular_mul_uint()](struct@BigUInt#method.modular_mul_uint).
+    /// 
+    /// # Example 1
+    /// ```
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u8);
+    /// 
+    /// let m = UU32::from_string("76801874298166903427690031858186486050853753882811946569946433649006084094").unwrap();
+    /// let a_biguint = U256::from_string("31858186486050853753882811946768018742981669034276900586487291375468285").unwrap();
+    /// let mul_biguint = UU32::from_uint(5_u8);
+    /// 
+    /// let res = a_biguint.modular_mul(&mul_biguint, &m);
+    /// println!("{} * {} = {} (mod {})", a_biguint, mul_biguint, res, m);
+    /// assert_eq!(res.to_string(), "159290932430254268769414059733840093714908345171384502932436456877341425");
+    /// assert_eq!(res.is_overflow(), false);
+    /// ```
+    /// 
+    /// # Example 2
+    /// ```
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u8);
+    /// 
+    /// let m = UU32::from_string("76801874298166903427690031858186486050853753882811946569946433649006084094").unwrap();
+    /// let a_biguint = U256::from_string("31858186486050853753882811946768018742981669034276900586487291375468285").unwrap();
+    /// let mul_biguint = UU32::from_uint(248_u8);
+    /// let res = a_biguint.modular_mul(&mul_biguint, &m);
+    /// println!("{} * {} = {} (mod {})", a_biguint, mul_biguint, res, m);
+    /// assert_eq!(res.to_string(), "7900830248540611730962937362798468648259453920500671345448848261116134680");
+    /// assert_eq!(res.is_overflow(), true);
+    /// ```
+    /// 
+    /// # Big-endian issue
+    /// It is just experimental for Big Endian CPUs. So, you are not encouraged
+    /// to use it for Big Endian CPUs for serious purpose. Only use this crate
+    /// for Big-endian CPUs with your own full responsibility.
+    pub fn panic_free_modular_mul(&self, rhs: &Self, modulo: &Self) -> Self
+    {
+        let mut res = Self::from_array(self.get_number().clone());
+        res.panic_free_modular_mul_assign(rhs, modulo);
+        res
+    }
+
+    // pub fn panic_free_modular_mul_assign(&self, rhs: &Self, modulo: &Self)
+    /// Computes (`self` * `rhs`) % `modulo`, wrapping around at `modulo`
+    /// of the type `Self`, and assign the result to `self` back.
+    /// 
+    /// # Arguments
+    /// - `rhs` is to be multiplied to `self`, and is `&Self` type.
+    /// - `modulo` is the divisor to divide the result of (`self` * `rhs`).
+    /// 
+    /// # Panics
+    /// - If `size_of::<T>() * N` <= `128`, this method may panic
+    /// or its behavior may be undefined though it may not panic.
+    /// - If `modulo` is either zero or one, this method will panic.
+    /// 
+    /// # Features
+    /// - Wrapping (modular) multiplication at `modulo`. The differences between
+    /// this method `modular_mul_assign()` and the method
+    /// `wrapping_mul_assign()` are, first, where wrapping around happens, and,
+    /// second, whether or not `OVERFLOW` flag is set. First, this method wraps
+    /// araound at `modulo` while the method `wrapping_mul_assign()` wraps
+    /// araound at maximum value. Second, this method does not set `OVERFLOW`
+    /// flag even if wrapping around happens, while the method
+    /// `wrapping_mul_assign()` sets `OVERFLOW` flag when wrapping around
+    /// happens.
+    /// - If `modulo` is `zero`, the flags such as `OVERFLOW`, `DIVIDED_BY_ZERO`,
+    /// and `INFINITY` will be set.
+    /// - All the flags reflect historical underflow, which means, for example,
+    /// if an overflow occurred even once before this current operation or
+    /// `OVERFOLOW` flag is already set before this current operation, the
+    /// `OVERFOLOW` flag is not changed even though this current operation does
+    /// not cause overflow.
+    /// 
+    /// # Counterpart Method
+    /// The method
+    /// [modular_mul_assign_uint()](struct@BigUInt#method.modular_mul_assign_uint)
+    /// is a bit faster than this method `modular_mul_assign()`.
+    /// If `rhs` is primitive unsigned integral data type such as u8, u16,
+    /// u32, u64, and u128, use the method
+    /// [modular_mul_assign_uint()](struct@BigUInt#method.modular_mul_assign_uint).
+    /// 
+    /// # Example 1
+    /// ```
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u16);
+    /// 
+    /// let m = UU32::from_string("76801874298166903427690031858186486050853753882811946569946433649006084094").unwrap();
+    /// let mut a_biguint = U256::from_string("31858186486050853753882811946768018742981669034276900586487291375468285").unwrap();
+    /// let mul_biguint = UU32::from_uint(5_u8);
+    /// println!("Originally, a_biguint = {}", a_biguint);
+    /// assert_eq!(a_biguint.is_overflow(), false);
+    /// assert_eq!(a_biguint.is_underflow(), false);
+    /// assert_eq!(a_biguint.is_divided_by_zero(), false);
+    /// assert_eq!(a_biguint.is_infinity(), false);
+    /// 
+    /// a_biguint.modular_mul_assign(&mul_biguint, &m);
+    /// println!("After a_biguint.modular_mul_assign(&mul_biguint, &m), a_biguint = {}", a_biguint);
+    /// assert_eq!(a_biguint.to_string(), "159290932430254268769414059733840093714908345171384502932436456877341425");
+    /// assert_eq!(a_biguint.is_overflow(), false);
+    /// assert_eq!(a_biguint.is_underflow(), false);
+    /// assert_eq!(a_biguint.is_divided_by_zero(), false);
+    /// assert_eq!(a_biguint.is_infinity(), false);
+    /// ```
+    /// 
+    /// # Example 2
+    /// ```
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u16);
+    /// 
+    /// let m = UU32::from_string("76801874298166903427690031858186486050853753882811946569946433649006084094").unwrap();
+    /// let mut a_biguint = U256::from_string("31858186486050853753882811946768018742981669034276900586487291375468285").unwrap();
+    /// let mul_biguint = UU32::from_uint(123456789_u32);
+    /// println!("Originally, a_biguint = {}", a_biguint);
+    /// assert_eq!(a_biguint.is_overflow(), false);
+    /// assert_eq!(a_biguint.is_underflow(), false);
+    /// assert_eq!(a_biguint.is_divided_by_zero(), false);
+    /// assert_eq!(a_biguint.is_infinity(), false);
+    /// 
+    /// a_biguint.modular_mul_assign(&mul_biguint, &m);
+    /// println!("After b_biguint.modular_mul_assign(&mul_biguint, &m), a_biguint = {}", a_biguint);
+    /// assert_eq!(a_biguint.to_string(), "8622247606403727534023749230384750061554739874487486410968923457264899031");
+    /// assert_eq!(a_biguint.is_overflow(), true);
+    /// assert_eq!(a_biguint.is_underflow(), false);
+    /// assert_eq!(a_biguint.is_divided_by_zero(), false);
+    /// assert_eq!(a_biguint.is_infinity(), false);
+    /// ```
+    /// 
+    /// # Big-endian issue
+    /// It is just experimental for Big Endian CPUs. So, you are not encouraged
+    /// to use it for Big Endian CPUs for serious purpose. Only use this crate
+    /// for Big-endian CPUs with your own full responsibility.
+    pub fn panic_free_modular_mul_assign(&mut self, rhs: &Self, modulo: &Self)
+    {
+        if modulo.is_zero_or_one()
+            { panic!(); }
+        self.common_modular_mul_assign(rhs, modulo);
+    }
+
+    fn common_modular_mul_assign(&mut self, rhs: &Self, modulo: &Self)
+    {
+        if *self >= *modulo
             { self.wrapping_rem_assign(modulo); }
 
         let mut flags = self.get_all_flags();
@@ -20524,6 +21909,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
             { flags |= Self::OVERFLOW; }
         self.set_flag_bit(flags);
     }
+
 
 
     /*** Division ***/
@@ -21728,14 +23114,180 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     {
         if rhs.is_zero()
             { panic!(); }
-
-        let r = self.wrapping_rem(rhs);
-        if !r.is_zero()
-        {
-            self.wrapping_add_assign(&rhs.wrapping_sub(&r));
-        }
+        self.common_next_multiple_of_assign(rhs);
     }
 
+    // pub fn modular_next_multiple_of(&self, rhs: &Self, modulo: &Self) -> Self
+    /// Calculates the smallest value greater than or equal to `self` that is
+    /// a multiple of `rhs`.
+    ///
+    /// # Panics
+    /// - If `size_of::<T>() * N` <= `128`, this method may panic
+    /// or its behavior may be undefined though it may not panic.
+    /// - This function will panic if rhs is zero.
+    /// 
+    /// # Output
+    /// It returns the smallest value greater than or equal to self that is
+    /// a multiple of `rhs`. However, if overflow occurs, it returns the value
+    /// wrapped around.
+    /// 
+    /// # Example
+    /// ```
+    /// // Todo
+    /// ```
+    pub fn modular_next_multiple_of(&self, rhs: &Self, modulo: &Self) -> Self
+    {
+        let mut res = self.clone();
+        res.modular_next_multiple_of_assign(&rhs, modulo);
+        res
+    }
+
+    // pub fn modular_next_multiple_of_assign(&mut self, rhs: &Self, modulo: &Self)
+    /// Calculates the smallest value greater than or equal to `self` that is
+    /// a multiple of `rhs`, and assigns the result to `self` back.
+    ///
+    /// # Panics
+    /// - If `size_of::<T>() * N` <= `128`, this method may panic
+    /// or its behavior may be undefined though it may not panic.
+    /// - This function will panic if rhs is zero.
+    /// 
+    /// # Features
+    /// `self` will be the smallest value greater than or equal to self that is
+    /// a multiple of `rhs`. However, if overflow occurs, `self` will be the
+    /// value wrapped around.
+    /// 
+    /// # Example
+    /// ```
+    /// // Todo
+    /// ```
+    pub fn modular_next_multiple_of_assign(&mut self, rhs: &Self, modulo: &Self)
+    {
+        if modulo.is_zero_or_one() || rhs.is_zero()
+            { panic!(); }
+        self.common_modular_next_multiple_of_assign(rhs, modulo);
+    }
+
+    // pub fn panic_free_next_multiple_of(&self, rhs: &Self) -> Self
+    /// Calculates the smallest value greater than or equal to `self` that is
+    /// a multiple of `rhs`.
+    ///
+    /// # Panics
+    /// - If `size_of::<T>() * N` <= `128`, this method may panic
+    /// or its behavior may be undefined though it may not panic.
+    /// - This function will panic if rhs is zero.
+    /// 
+    /// # Output
+    /// It returns the smallest value greater than or equal to self that is
+    /// a multiple of `rhs`. However, if overflow occurs, it returns the value
+    /// wrapped around.
+    /// 
+    /// # Example
+    /// ```
+    /// // Todo
+    /// ```
+    pub fn panic_free_next_multiple_of(&self, rhs: &Self) -> Self
+    {
+        let mut res = Self::from_array(self.get_number().clone());
+        res.panic_free_next_multiple_of_assign(&rhs);
+        res
+    }
+
+    // pub fn next_multiple_of_assign(&mut self, rhs: &Self)
+    /// Calculates the smallest value greater than or equal to `self` that is
+    /// a multiple of `rhs`, and assigns the result to `self` back.
+    ///
+    /// # Panics
+    /// - If `size_of::<T>() * N` <= `128`, this method may panic
+    /// or its behavior may be undefined though it may not panic.
+    /// - This function will panic if rhs is zero.
+    /// 
+    /// # Features
+    /// `self` will be the smallest value greater than or equal to self that is
+    /// a multiple of `rhs`. However, if overflow occurs, `self` will be the
+    /// value wrapped around.
+    /// 
+    /// # Example
+    /// ```
+    /// // Todo
+    /// ```
+    pub fn panic_free_next_multiple_of_assign(&mut self, rhs: &Self)
+    {
+        if rhs.is_zero()
+        {
+            self.set_zero();
+            self.set_undefined();
+            return;
+        }
+        self.common_next_multiple_of_assign(rhs);
+    }
+
+    fn common_next_multiple_of_assign(&mut self, rhs: &Self)
+    {
+        let r = self.wrapping_rem(rhs);
+        self.wrapping_add_assign(&rhs.wrapping_sub(&r));
+    }
+
+    // pub fn modular_next_multiple_of(&self, rhs: &Self, modulo: &Self) -> Self
+    /// Calculates the smallest value greater than or equal to `self` that is
+    /// a multiple of `rhs`.
+    ///
+    /// # Panics
+    /// - If `size_of::<T>() * N` <= `128`, this method may panic
+    /// or its behavior may be undefined though it may not panic.
+    /// - This function will panic if rhs is zero.
+    /// 
+    /// # Output
+    /// It returns the smallest value greater than or equal to self that is
+    /// a multiple of `rhs`. However, if overflow occurs, it returns the value
+    /// wrapped around.
+    /// 
+    /// # Example
+    /// ```
+    /// // Todo
+    /// ```
+    pub fn panic_free_modular_next_multiple_of(&self, rhs: &Self, modulo: &Self) -> Self
+    {
+        let mut res = self.clone();
+        res.panic_free_modular_next_multiple_of_assign(&rhs, modulo);
+        res
+    }
+
+    // pub fn modular_next_multiple_of_assign(&mut self, rhs: &Self, modulo: &Self)
+    /// Calculates the smallest value greater than or equal to `self` that is
+    /// a multiple of `rhs`, and assigns the result to `self` back.
+    ///
+    /// # Panics
+    /// - If `size_of::<T>() * N` <= `128`, this method may panic
+    /// or its behavior may be undefined though it may not panic.
+    /// - This function will panic if rhs is zero.
+    /// 
+    /// # Features
+    /// `self` will be the smallest value greater than or equal to self that is
+    /// a multiple of `rhs`. However, if overflow occurs, `self` will be the
+    /// value wrapped around.
+    /// 
+    /// # Example
+    /// ```
+    /// // Todo
+    /// ```
+    pub fn panic_free_modular_next_multiple_of_assign(&mut self, rhs: &Self, modulo: &Self)
+    {
+        if modulo.is_zero_or_one() || rhs.is_zero()
+        {
+            self.set_zero();
+            self.set_undefined();
+            return;
+        }
+        self.common_modular_next_multiple_of_assign(rhs, modulo);
+    }
+
+    fn common_modular_next_multiple_of_assign(&mut self, rhs: &Self, modulo: &Self)
+    {
+           
+        let r = self.wrapping_rem(rhs);
+        self.wrapping_add_assign(&rhs.wrapping_sub(&r));
+    }
+    
     // pub fn next_power_of_two(&self) -> Self
     /// Returns the smallest power of two greater than or equal to `self`.
     /// 

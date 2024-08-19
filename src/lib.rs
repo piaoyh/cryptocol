@@ -27,8 +27,7 @@
 //! at least 95%. The unchecked items have been implemented including
 //! documentation less than 95% or have not yet even been started to implement.
 //! 
-//! ## Small Numbers: meaningful as itself, and also foundations mainly for
-//!         Big Numbers as well as for other modules
+//! ## Small Numbers: meaningful as itself, and also foundations mainly for Big Numbers as well as for other modules
 //! - [X] Unions for primitive data types and their implementation, and the
 //!         implementation of trait SmallUInt for the Unions ---
 //!     [`ShortUnion`](number/short_union/union.ShortUnion.html#union.ShortUnion),
@@ -46,8 +45,7 @@
 // !    [`SmallSInt`](number/small_sint/trait.SmallSInt.html#trait.SmallSInt)
 // !     _--> Thinking about postponing to Roadmap for ver. 2.0_
 //! 
-//! ## Big Numbers: meaningful as itself and also the foundation for
-//!         Asymmetric-Key Algorithms
+//! ## Big Numbers: meaningful as itself and also the foundation for Asymmetric-Key Algorithms
 //! - [ ] Fixed Sized Big Unsigned Integer Operation ---
 //!     [`BigUInt`](number/big_uint/struct.BigUInt.html#struct.BigUInt)
 // ! - [ ] Fixed Sized Big Signed Integer Operation --- BigSInt

@@ -6330,6 +6330,12 @@ fn biguint_next_multiple_uint()
 {
     biguint_next_multiple_of_uint();
     biguint_next_multiple_of_assign_uint();
+    biguint_panic_free_next_multiple_of_uint();
+    biguint_panic_free_next_multiple_of_assign_uint();
+    biguint_modular_next_multiple_of_uint();
+    biguint_modular_next_multiple_of_assign_uint();
+    biguint_panic_free_modular_next_multiple_of_uint();
+    biguint_panic_free_modular_next_multiple_of_assign_uint();
 }
 
 fn biguint_next_multiple_of_uint()
@@ -6337,7 +6343,7 @@ fn biguint_next_multiple_of_uint()
     println!("biguint_next_multiple_of_uint");
     use std::str::FromStr;
     use cryptocol::define_utypes_with;
-    define_utypes_with!(u64);
+    define_utypes_with!(u32);
 
     let a_biguint = U256::from_str("123456789012345678901234567890123456789").unwrap();
     let num = 586478_u32;
@@ -6348,8 +6354,10 @@ fn biguint_next_multiple_of_uint()
     assert_eq!(multiple.is_underflow(), false);
     assert_eq!(multiple.is_infinity(), false);
     assert_eq!(multiple.is_divided_by_zero(), false);
+    assert_eq!(multiple.is_undefined(), false);
 
     let a_biguint = U256::from_str_radix("FFFFFFFF_FFFFFFFF_FFFFFFFF_FFFFFFFF_FFFFFFFF_FFFFFFFF_FFFFFFFF_FFFFFFFF", 16).unwrap();
+    let num = 586478_u32;
     let multiple = a_biguint.next_multiple_of_uint(num);
     println!("The next multiple of {} is {}", a_biguint, multiple);
     assert_eq!(multiple.to_string(), "448670");
@@ -6357,9 +6365,12 @@ fn biguint_next_multiple_of_uint()
     assert_eq!(multiple.is_underflow(), false);
     assert_eq!(multiple.is_infinity(), false);
     assert_eq!(multiple.is_divided_by_zero(), false);
+    assert_eq!(multiple.is_undefined(), false);
 
+    let _a_biguint = U256::from_str_radix("FFFFFFFF_FFFFFFFF_FFFFFFFF_FFFFFFFF_FFFFFFFF_FFFFFFFF_FFFFFFFF_FFFFFFFF", 16).unwrap();
+    let _num = 586478_u32;
     // It will panic.
-    // multiple = a_biguint.next_multiple_of_uint(0_u8);
+    let _multiple = _a_biguint.next_multiple_of_uint(_num);
     println!("---------------------------");
 }
 
@@ -6368,12 +6379,17 @@ fn biguint_next_multiple_of_assign_uint()
     println!("biguint_next_multiple_of_assign_uint");
     use std::str::FromStr;
     use cryptocol::define_utypes_with;
-    define_utypes_with!(u128);
+    define_utypes_with!(u64);
 
     let mut a_biguint = UU32::from_str("123456789012345678901234567890123456789").unwrap();
     let num = 586478_u32;
-
     println!("Originally,\na_biguint = {}", a_biguint);
+    assert_eq!(a_biguint.is_overflow(), false);
+    assert_eq!(a_biguint.is_underflow(), false);
+    assert_eq!(a_biguint.is_infinity(), false);
+    assert_eq!(a_biguint.is_divided_by_zero(), false);
+    assert_eq!(a_biguint.is_undefined(), false);
+
     a_biguint.next_multiple_of_assign_uint(num);
     println!("After a_biguint.next_multiple_of_assign_uint({}),\na_biguint = {}", num, a_biguint);
     assert_eq!(a_biguint.to_string(), "123456789012345678901234567890123697594");
@@ -6385,6 +6401,12 @@ fn biguint_next_multiple_of_assign_uint()
 
     let mut a_biguint = UU32::from_str_radix("FFFFFFFF_FFFFFFFF_FFFFFFFF_FFFFFFFF_FFFFFFFF_FFFFFFFF_FFFFFFFF_FFFFFFFF", 16).unwrap();
     println!("Originally,\na_biguint = {}", a_biguint);
+    assert_eq!(a_biguint.is_overflow(), false);
+    assert_eq!(a_biguint.is_underflow(), false);
+    assert_eq!(a_biguint.is_infinity(), false);
+    assert_eq!(a_biguint.is_divided_by_zero(), false);
+    assert_eq!(a_biguint.is_undefined(), false);
+
     a_biguint.next_multiple_of_assign_uint(num);
     println!("After a_biguint.next_multiple_of_assign_uint({}),\na_biguint = {}", num, a_biguint);
     assert_eq!(a_biguint.to_string(), "448670");
@@ -6394,10 +6416,474 @@ fn biguint_next_multiple_of_assign_uint()
     assert_eq!(a_biguint.is_undefined(), false);
     assert_eq!(a_biguint.is_divided_by_zero(), false);
 
+    let _a_biguint = U256::from_str_radix("FFFFFFFF_FFFFFFFF_FFFFFFFF_FFFFFFFF_FFFFFFFF_FFFFFFFF_FFFFFFFF_FFFFFFFF", 16).unwrap();
+    let _num = 0_u8;
     // It will panic.
-    // a_biguint.next_multiple_of_assign_uint(0_u32);
+    // _a_biguint.next_multiple_of_assign_uint(_num);
     println!("---------------------------");
 }
+
+fn biguint_panic_free_next_multiple_of_uint()
+{
+    println!("biguint_panic_free_next_multiple_of_uint");
+    use std::str::FromStr;
+    use cryptocol::define_utypes_with;
+    define_utypes_with!(u128);
+
+    let a_biguint = U256::from_str("123456789012345678901234567890123456789").unwrap();
+    let num = 586478_u32;
+    let multiple = a_biguint.panic_free_next_multiple_of_uint(num);
+    println!("The next multiple of {} is {}", a_biguint, multiple);
+    assert_eq!(multiple.to_string(), "123456789012345678901234567890123697594");
+    assert_eq!(multiple.is_overflow(), false);
+    assert_eq!(multiple.is_underflow(), false);
+    assert_eq!(multiple.is_infinity(), false);
+    assert_eq!(multiple.is_divided_by_zero(), false);
+    assert_eq!(multiple.is_undefined(), false);
+
+    let a_biguint = U256::from_str_radix("FFFFFFFF_FFFFFFFF_FFFFFFFF_FFFFFFFF_FFFFFFFF_FFFFFFFF_FFFFFFFF_FFFFFFFF", 16).unwrap();
+    let num = 586478_u32;
+    let multiple = a_biguint.panic_free_next_multiple_of_uint(num);
+    println!("The next multiple of {} is {}", a_biguint, multiple);
+    assert_eq!(multiple.to_string(), "448670");
+    assert_eq!(multiple.is_overflow(), true);
+    assert_eq!(multiple.is_underflow(), false);
+    assert_eq!(multiple.is_infinity(), false);
+    assert_eq!(multiple.is_divided_by_zero(), false);
+    assert_eq!(multiple.is_undefined(), false);
+
+    let a_biguint = U256::from_str_radix("123456789012345678901234567890123456789", 16).unwrap();
+    let num = 0_u8;
+    let multiple = a_biguint.panic_free_next_multiple_of_uint(num);
+    println!("The next multiple of {} is {}", a_biguint, multiple);
+    assert_eq!(multiple.to_string(), "0");
+    assert_eq!(multiple.is_overflow(), false);
+    assert_eq!(multiple.is_underflow(), false);
+    assert_eq!(multiple.is_infinity(), false);
+    assert_eq!(multiple.is_divided_by_zero(), false);
+    assert_eq!(multiple.is_undefined(), true);
+    println!("---------------------------");
+}
+
+fn biguint_panic_free_next_multiple_of_assign_uint()
+{
+    println!("biguint_panic_free_next_multiple_of_assign_uint");
+    use std::str::FromStr;
+    use cryptocol::define_utypes_with;
+    define_utypes_with!(u32);
+
+    let mut a_biguint = UU32::from_str("123456789012345678901234567890123456789").unwrap();
+    let num = 586478_u32;
+    println!("Originally, a_biguint = {}", a_biguint);
+    assert_eq!(a_biguint.is_overflow(), false);
+    assert_eq!(a_biguint.is_underflow(), false);
+    assert_eq!(a_biguint.is_infinity(), false);
+    assert_eq!(a_biguint.is_divided_by_zero(), false);
+    assert_eq!(a_biguint.is_undefined(), false);
+
+    a_biguint.panic_free_next_multiple_of_assign_uint(num);
+    println!("After a_biguint.next_multiple_of_assign_uint({}), a_biguint = {}", num, a_biguint);
+    assert_eq!(a_biguint.to_string(), "123456789012345678901234567890123697594");
+    assert_eq!(a_biguint.is_overflow(), false);
+    assert_eq!(a_biguint.is_underflow(), false);
+    assert_eq!(a_biguint.is_infinity(), false);
+    assert_eq!(a_biguint.is_undefined(), false);
+    assert_eq!(a_biguint.is_divided_by_zero(), false);
+
+    let mut a_biguint = UU32::from_str_radix("FFFFFFFF_FFFFFFFF_FFFFFFFF_FFFFFFFF_FFFFFFFF_FFFFFFFF_FFFFFFFF_FFFFFFFF", 16).unwrap();
+    let num = 586478_u32;
+    println!("Originally, a_biguint = {}", a_biguint);
+    assert_eq!(a_biguint.is_overflow(), false);
+    assert_eq!(a_biguint.is_underflow(), false);
+    assert_eq!(a_biguint.is_infinity(), false);
+    assert_eq!(a_biguint.is_divided_by_zero(), false);
+    assert_eq!(a_biguint.is_undefined(), false);
+
+    a_biguint.panic_free_next_multiple_of_assign_uint(num);
+    println!("After a_biguint.next_multiple_of_assign_uint({}), a_biguint = {}", num, a_biguint);
+    assert_eq!(a_biguint.to_string(), "448670");
+    assert_eq!(a_biguint.is_overflow(), true);
+    assert_eq!(a_biguint.is_underflow(), false);
+    assert_eq!(a_biguint.is_infinity(), false);
+    assert_eq!(a_biguint.is_undefined(), false);
+    assert_eq!(a_biguint.is_divided_by_zero(), false);
+
+    let mut a_biguint = UU32::from_str_radix("123456789012345678901234567890123456789", 16).unwrap();
+    let num = 0_u8;
+    println!("Originally, a_biguint = {}", a_biguint);
+    assert_eq!(a_biguint.is_overflow(), false);
+    assert_eq!(a_biguint.is_underflow(), false);
+    assert_eq!(a_biguint.is_infinity(), false);
+    assert_eq!(a_biguint.is_divided_by_zero(), false);
+    assert_eq!(a_biguint.is_undefined(), false);
+
+    a_biguint.panic_free_next_multiple_of_assign_uint(num);
+    println!("After a_biguint.next_multiple_of_assign_uint({}), a_biguint = {}", num, a_biguint);
+    assert_eq!(a_biguint.to_string(), "0");
+    assert_eq!(a_biguint.is_overflow(), false);
+    assert_eq!(a_biguint.is_underflow(), false);
+    assert_eq!(a_biguint.is_infinity(), false);
+    assert_eq!(a_biguint.is_undefined(), true);
+    assert_eq!(a_biguint.is_divided_by_zero(), false);
+    println!("---------------------------");
+}
+
+fn biguint_modular_next_multiple_of_uint()
+{
+    println!("biguint_modular_next_multiple_of_uint");
+    use std::str::FromStr;
+    use cryptocol::define_utypes_with;
+    define_utypes_with!(u8);
+
+    // Normal case 1
+    let a_biguint = U256::from_str("123456789012345678901234567890123456789").unwrap();
+    let num = 100_u8;
+    let modulo = a_biguint.wrapping_add_uint(200_u8);
+    let multiple = a_biguint.modular_next_multiple_of_uint(num, &modulo);
+    println!("The next multiple of {} is {}", a_biguint, multiple);
+    assert_eq!(multiple.to_string(), "123456789012345678901234567890123456800");
+    assert_eq!(multiple.is_overflow(), false);
+    assert_eq!(multiple.is_underflow(), false);
+    assert_eq!(multiple.is_infinity(), false);
+    assert_eq!(multiple.is_divided_by_zero(), false);
+    assert_eq!(multiple.is_undefined(), false);
+
+    // Normal case 2
+    let a_biguint = U256::from_str_radix("FFFFFFFF_FFFFFFFF_FFFFFFFF_FFFFFFFF_FFFFFFFF_FFFFFFFF_FFFFFFFF_FFFFFFFF", 16).unwrap();
+    let num = 100_u8;
+    let modulo = a_biguint.wrapping_add_uint(200_u8);
+    let multiple = a_biguint.modular_next_multiple_of_uint(num, &modulo);
+    println!("The next multiple of {} is {}", a_biguint, multiple);
+    assert_eq!(multiple.to_string(), "1");
+    assert_eq!(multiple.is_overflow(), true);
+    assert_eq!(multiple.is_underflow(), false);
+    assert_eq!(multiple.is_infinity(), false);
+    assert_eq!(multiple.is_divided_by_zero(), false);
+    assert_eq!(multiple.is_undefined(), false);
+
+    // rhs == 0
+    let _a_biguint = U256::from_str_radix("123456789012345678901234567890123456789", 16).unwrap();
+    let _num = 0_u8;
+    let _modulo = a_biguint.wrapping_add_uint(200_u8);
+    // It will panic.
+    // let multiple = _a_biguint.modular_next_multiple_of_uint(_num, &_modulo);
+
+    // modulo == 0
+    let _a_biguint = U256::from_str_radix("123456789012345678901234567890123456789", 16).unwrap();
+    let _num = 100_u8;
+    let _modulo = U256::zero();
+    // It will panic.
+    // let multiple = _a_biguint.modular_next_multiple_of_uint(_num, &_modulo);
+
+    // modulo == 1
+    let _a_biguint = U256::from_str_radix("123456789012345678901234567890123456789", 16).unwrap();
+    let _num = 100_u8;
+    let _modulo = U256::zero();
+    // It will panic.
+    // let multiple = _a_biguint.modular_next_multiple_of_uint(_num, &_modulo);
+
+    // rhs == multiple of modulo
+    let _a_biguint = U256::from_str_radix("123456789012345678901234567890123456789", 16).unwrap();
+    let _num = 200_u8;
+    let _modulo = U256::from_uint(100_u8);
+    // It will panic.
+    // let multiple = _a_biguint.modular_next_multiple_of_uint(_num, &_modulo);
+    println!("---------------------------");
+}
+
+fn biguint_modular_next_multiple_of_assign_uint()
+{
+    println!("biguint_modular_next_multiple_of_assign_uint");
+    use std::str::FromStr;
+    use cryptocol::define_utypes_with;
+    define_utypes_with!(u16);
+
+    // Normal case 1
+    let mut a_biguint = UU32::from_str("123456789012345678901234567890123456789").unwrap();
+    println!("Originally, a_biguint = {}", a_biguint);
+    assert_eq!(a_biguint.is_overflow(), false);
+    assert_eq!(a_biguint.is_underflow(), false);
+    assert_eq!(a_biguint.is_infinity(), false);
+    assert_eq!(a_biguint.is_divided_by_zero(), false);
+    assert_eq!(a_biguint.is_undefined(), false);
+
+    let num = 100_u8;
+    let modulo = a_biguint.wrapping_add_uint(200_u8);
+    a_biguint.modular_next_multiple_of_assign_uint(num, &modulo);
+    println!("After a_biguint.modular_next_multiple_of_assign_uint({}), a_biguint = {}", num, a_biguint);
+    assert_eq!(a_biguint.to_string(), "123456789012345678901234567890123456800");
+    assert_eq!(a_biguint.is_overflow(), false);
+    assert_eq!(a_biguint.is_underflow(), false);
+    assert_eq!(a_biguint.is_infinity(), false);
+    assert_eq!(a_biguint.is_undefined(), false);
+    assert_eq!(a_biguint.is_divided_by_zero(), false);
+
+    // Normal case 2
+    let mut a_biguint = UU32::from_str_radix("FFFFFFFF_FFFFFFFF_FFFFFFFF_FFFFFFFF_FFFFFFFF_FFFFFFFF_FFFFFFFF_FFFFFFFF", 16).unwrap();
+    println!("Originally, a_biguint = {}", a_biguint);
+    assert_eq!(a_biguint.is_overflow(), false);
+    assert_eq!(a_biguint.is_underflow(), false);
+    assert_eq!(a_biguint.is_infinity(), false);
+    assert_eq!(a_biguint.is_divided_by_zero(), false);
+    assert_eq!(a_biguint.is_undefined(), false);
+
+    let num = 100_u8;
+    let modulo = a_biguint.wrapping_add_uint(200_u8);
+    a_biguint.modular_next_multiple_of_assign_uint(num, &modulo);
+    println!("After a_biguint.next_multiple_of_assign_uint({}), a_biguint = {}", num, a_biguint);
+    assert_eq!(a_biguint.to_string(), "1");
+    assert_eq!(a_biguint.is_overflow(), true);
+    assert_eq!(a_biguint.is_underflow(), false);
+    assert_eq!(a_biguint.is_infinity(), false);
+    assert_eq!(a_biguint.is_undefined(), false);
+    assert_eq!(a_biguint.is_divided_by_zero(), false);
+
+    // rhs == 0
+    let mut _a_biguint = U256::from_str_radix("123456789012345678901234567890123456789", 16).unwrap();
+    println!("Originally, a_biguint = {}", _a_biguint);
+    let _num = 0_u8;
+    let _modulo = _a_biguint.wrapping_add_uint(200_u8);
+    // _a_biguint.modular_next_multiple_of_assign_uint(_num, &_modulo);
+
+    // modulo == 0
+    let mut _a_biguint = U256::from_str_radix("123456789012345678901234567890123456789", 16).unwrap();
+    println!("Originally, a_biguint = {}", _a_biguint);
+    let _num = 100_u8;
+    let _modulo = U256::zero();
+    // _a_biguint.modular_next_multiple_of_assign_uint(_num, &_modulo);
+
+    // modulo == 1
+    let mut _a_biguint = U256::from_str_radix("123456789012345678901234567890123456789", 16).unwrap();
+    println!("Originally, a_biguint = {}", _a_biguint);
+    let _num = 100_u8;
+    let _modulo = U256::zero();
+    // _a_biguint.modular_next_multiple_of_assign_uint(_num, &_modulo);
+
+    // rhs == multiple of modulo
+    let mut _a_biguint = U256::from_str_radix("123456789012345678901234567890123456789", 16).unwrap();
+    println!("Originally, a_biguint = {}", a_biguint);
+    let _num = 200_u8;
+    let _modulo = U256::from_uint(100_u8);
+    // _a_biguint.modular_next_multiple_of_assign_uint(_num, &_modulo);
+    println!("---------------------------");
+}
+
+fn biguint_panic_free_modular_next_multiple_of_uint()
+{
+    println!("biguint_panic_free_modular_next_multiple_of_uint");
+    use std::str::FromStr;
+    use cryptocol::define_utypes_with;
+    define_utypes_with!(u8);
+
+    // Normal case 1
+    let a_biguint = U256::from_str("123456789012345678901234567890123456789").unwrap();
+    let num = 100_u8;
+    let modulo = a_biguint.wrapping_add_uint(200_u8);
+    let multiple = a_biguint.panic_free_modular_next_multiple_of_uint(num, &modulo);
+    println!("The next multiple of {} is {}", a_biguint, multiple);
+    assert_eq!(multiple.to_string(), "123456789012345678901234567890123456800");
+    assert_eq!(multiple.is_overflow(), false);
+    assert_eq!(multiple.is_underflow(), false);
+    assert_eq!(multiple.is_infinity(), false);
+    assert_eq!(multiple.is_divided_by_zero(), false);
+    assert_eq!(multiple.is_undefined(), false);
+
+    // Normal case 2
+    let a_biguint = U256::from_str_radix("FFFFFFFF_FFFFFFFF_FFFFFFFF_FFFFFFFF_FFFFFFFF_FFFFFFFF_FFFFFFFF_FFFFFFFF", 16).unwrap();
+    let num = 100_u8;
+    let modulo = a_biguint.wrapping_add_uint(200_u8);
+    let multiple = a_biguint.panic_free_modular_next_multiple_of_uint(num, &modulo);
+    println!("The next multiple of {} is {}", a_biguint, multiple);
+    assert_eq!(multiple.to_string(), "1");
+    assert_eq!(multiple.is_overflow(), true);
+    assert_eq!(multiple.is_underflow(), false);
+    assert_eq!(multiple.is_infinity(), false);
+    assert_eq!(multiple.is_divided_by_zero(), false);
+    assert_eq!(multiple.is_undefined(), false);
+
+    // rhs == 0
+    let a_biguint = U256::from_str_radix("123456789012345678901234567890123456789", 16).unwrap();
+    let num = 0_u8;
+    let modulo = a_biguint.wrapping_add_uint(200_u8);
+    let multiple = a_biguint.panic_free_modular_next_multiple_of_uint(num, &modulo);
+    println!("The next multiple of {} is {}", a_biguint, multiple);
+    assert_eq!(multiple.to_string(), "0");
+    assert_eq!(multiple.is_overflow(), false);
+    assert_eq!(multiple.is_underflow(), false);
+    assert_eq!(multiple.is_infinity(), false);
+    assert_eq!(multiple.is_divided_by_zero(), false);
+    assert_eq!(multiple.is_undefined(), true);
+
+    // modulo == 0
+    let a_biguint = U256::from_str_radix("123456789012345678901234567890123456789", 16).unwrap();
+    let num = 100_u8;
+    let modulo = U256::zero();
+    let multiple = a_biguint.panic_free_modular_next_multiple_of_uint(num, &modulo);
+    println!("The next multiple of {} is {}", a_biguint, multiple);
+    assert_eq!(multiple.to_string(), "0");
+    assert_eq!(multiple.is_overflow(), false);
+    assert_eq!(multiple.is_underflow(), false);
+    assert_eq!(multiple.is_infinity(), false);
+    assert_eq!(multiple.is_divided_by_zero(), false);
+    assert_eq!(multiple.is_undefined(), true);
+
+    // modulo == 1
+    let a_biguint = U256::from_str_radix("123456789012345678901234567890123456789", 16).unwrap();
+    let num = 100_u8;
+    let modulo = U256::zero();
+    let multiple = a_biguint.panic_free_modular_next_multiple_of_uint(num, &modulo);
+    println!("The next multiple of {} is {}", a_biguint, multiple);
+    assert_eq!(multiple.to_string(), "0");
+    assert_eq!(multiple.is_overflow(), false);
+    assert_eq!(multiple.is_underflow(), false);
+    assert_eq!(multiple.is_infinity(), false);
+    assert_eq!(multiple.is_divided_by_zero(), false);
+    assert_eq!(multiple.is_undefined(), true);
+
+    // rhs == multiple of modulo
+    let a_biguint = U256::from_str_radix("123456789012345678901234567890123456789", 16).unwrap();
+    let num = 200_u8;
+    let modulo = U256::from_uint(100_u8);
+    let multiple = a_biguint.panic_free_modular_next_multiple_of_uint(num, &modulo);
+    println!("The next multiple of {} is {}", a_biguint, multiple);
+    assert_eq!(multiple.to_string(), "0");
+    assert_eq!(multiple.is_overflow(), false);
+    assert_eq!(multiple.is_underflow(), false);
+    assert_eq!(multiple.is_infinity(), false);
+    assert_eq!(multiple.is_divided_by_zero(), false);
+    assert_eq!(multiple.is_undefined(), true);
+    println!("---------------------------");
+}
+
+fn biguint_panic_free_modular_next_multiple_of_assign_uint()
+{
+    println!("biguint_panic_free_modular_next_multiple_of_assign_uint");
+    use std::str::FromStr;
+    use cryptocol::define_utypes_with;
+    define_utypes_with!(u16);
+
+    // Normal case 1
+    let mut a_biguint = UU32::from_str("123456789012345678901234567890123456789").unwrap();
+    println!("Originally, a_biguint = {}", a_biguint);
+    assert_eq!(a_biguint.is_overflow(), false);
+    assert_eq!(a_biguint.is_underflow(), false);
+    assert_eq!(a_biguint.is_infinity(), false);
+    assert_eq!(a_biguint.is_divided_by_zero(), false);
+    assert_eq!(a_biguint.is_undefined(), false);
+
+    let num = 100_u8;
+    let modulo = a_biguint.wrapping_add_uint(200_u8);
+    a_biguint.panic_free_modular_next_multiple_of_assign_uint(num, &modulo);
+    println!("After a_biguint.modular_next_multiple_of_assign_uint({}), a_biguint = {}", num, a_biguint);
+    assert_eq!(a_biguint.to_string(), "123456789012345678901234567890123456800");
+    assert_eq!(a_biguint.is_overflow(), false);
+    assert_eq!(a_biguint.is_underflow(), false);
+    assert_eq!(a_biguint.is_infinity(), false);
+    assert_eq!(a_biguint.is_undefined(), false);
+    assert_eq!(a_biguint.is_divided_by_zero(), false);
+
+    // Normal case 2
+    let mut a_biguint = UU32::from_str_radix("FFFFFFFF_FFFFFFFF_FFFFFFFF_FFFFFFFF_FFFFFFFF_FFFFFFFF_FFFFFFFF_FFFFFFFF", 16).unwrap();
+    println!("Originally, a_biguint = {}", a_biguint);
+    assert_eq!(a_biguint.is_overflow(), false);
+    assert_eq!(a_biguint.is_underflow(), false);
+    assert_eq!(a_biguint.is_infinity(), false);
+    assert_eq!(a_biguint.is_divided_by_zero(), false);
+    assert_eq!(a_biguint.is_undefined(), false);
+
+    let num = 100_u8;
+    let modulo = a_biguint.wrapping_add_uint(200_u8);
+    a_biguint.panic_free_modular_next_multiple_of_assign_uint(num, &modulo);
+    println!("After a_biguint.next_multiple_of_assign_uint({}), a_biguint = {}", num, a_biguint);
+    assert_eq!(a_biguint.to_string(), "1");
+    assert_eq!(a_biguint.is_overflow(), true);
+    assert_eq!(a_biguint.is_underflow(), false);
+    assert_eq!(a_biguint.is_infinity(), false);
+    assert_eq!(a_biguint.is_undefined(), false);
+    assert_eq!(a_biguint.is_divided_by_zero(), false);
+
+    // rhs == 0
+    let mut a_biguint = U256::from_str_radix("123456789012345678901234567890123456789", 16).unwrap();
+    println!("Originally, a_biguint = {}", a_biguint);
+    assert_eq!(a_biguint.is_overflow(), false);
+    assert_eq!(a_biguint.is_underflow(), false);
+    assert_eq!(a_biguint.is_infinity(), false);
+    assert_eq!(a_biguint.is_divided_by_zero(), false);
+    assert_eq!(a_biguint.is_undefined(), false);
+
+    let num = 0_u8;
+    let modulo = a_biguint.wrapping_add_uint(200_u8);
+    a_biguint.panic_free_modular_next_multiple_of_assign_uint(num, &modulo);
+    println!("After a_biguint.next_multiple_of_assign_uint({}), a_biguint = {}", num, a_biguint);
+    assert_eq!(a_biguint.to_string(), "0");
+    assert_eq!(a_biguint.is_overflow(), false);
+    assert_eq!(a_biguint.is_underflow(), false);
+    assert_eq!(a_biguint.is_infinity(), false);
+    assert_eq!(a_biguint.is_undefined(), true);
+    assert_eq!(a_biguint.is_divided_by_zero(), false);
+
+    // modulo == 0
+    let mut a_biguint = U256::from_str_radix("123456789012345678901234567890123456789", 16).unwrap();
+    println!("Originally, a_biguint = {}", a_biguint);
+    assert_eq!(a_biguint.is_overflow(), false);
+    assert_eq!(a_biguint.is_underflow(), false);
+    assert_eq!(a_biguint.is_infinity(), false);
+    assert_eq!(a_biguint.is_divided_by_zero(), false);
+    assert_eq!(a_biguint.is_undefined(), false);
+
+    let num = 100_u8;
+    let modulo = U256::zero();
+    a_biguint.panic_free_modular_next_multiple_of_assign_uint(num, &modulo);
+    println!("After a_biguint.next_multiple_of_assign_uint({}), a_biguint = {}", num, a_biguint);
+    assert_eq!(a_biguint.to_string(), "0");
+    assert_eq!(a_biguint.is_overflow(), false);
+    assert_eq!(a_biguint.is_underflow(), false);
+    assert_eq!(a_biguint.is_infinity(), false);
+    assert_eq!(a_biguint.is_undefined(), true);
+    assert_eq!(a_biguint.is_divided_by_zero(), false);
+
+    // modulo == 1
+    let mut a_biguint = U256::from_str_radix("123456789012345678901234567890123456789", 16).unwrap();
+    println!("Originally, a_biguint = {}", a_biguint);
+    assert_eq!(a_biguint.is_overflow(), false);
+    assert_eq!(a_biguint.is_underflow(), false);
+    assert_eq!(a_biguint.is_infinity(), false);
+    assert_eq!(a_biguint.is_divided_by_zero(), false);
+    assert_eq!(a_biguint.is_undefined(), false);
+
+    let num = 100_u8;
+    let modulo = U256::zero();
+    a_biguint.panic_free_modular_next_multiple_of_assign_uint(num, &modulo);
+    println!("After a_biguint.next_multiple_of_assign_uint({}), a_biguint = {}", num, a_biguint);
+    assert_eq!(a_biguint.to_string(), "0");
+    assert_eq!(a_biguint.is_overflow(), false);
+    assert_eq!(a_biguint.is_underflow(), false);
+    assert_eq!(a_biguint.is_infinity(), false);
+    assert_eq!(a_biguint.is_undefined(), true);
+    assert_eq!(a_biguint.is_divided_by_zero(), false);
+
+    // rhs == multiple of modulo
+    let mut a_biguint = U256::from_str_radix("123456789012345678901234567890123456789", 16).unwrap();
+    println!("Originally, a_biguint = {}", a_biguint);
+    assert_eq!(a_biguint.is_overflow(), false);
+    assert_eq!(a_biguint.is_underflow(), false);
+    assert_eq!(a_biguint.is_infinity(), false);
+    assert_eq!(a_biguint.is_divided_by_zero(), false);
+    assert_eq!(a_biguint.is_undefined(), false);
+
+    let num = 200_u8;
+    let modulo = U256::from_uint(100_u8);
+    a_biguint.panic_free_modular_next_multiple_of_assign_uint(num, &modulo);
+    println!("After a_biguint.next_multiple_of_assign_uint({}), a_biguint = {}", num, a_biguint);
+    assert_eq!(a_biguint.to_string(), "0");
+    assert_eq!(a_biguint.is_overflow(), false);
+    assert_eq!(a_biguint.is_underflow(), false);
+    assert_eq!(a_biguint.is_infinity(), false);
+    assert_eq!(a_biguint.is_undefined(), true);
+    assert_eq!(a_biguint.is_divided_by_zero(), false);
+    println!("---------------------------");
+}
+
 
 fn biguint_exponentiation_logarithm_uint_main()
 {
