@@ -14736,6 +14736,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
 
 
     /***** METHODS FOR EXPONENTIATION AND LOGARITHM WITH UINT *****/
+    
 //------
     // pub fn pow_uint<U>(&self, exp: U) -> Self
     /// Raises `self` to the power of exp, using exponentiation
