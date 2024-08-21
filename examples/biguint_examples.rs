@@ -6099,10 +6099,10 @@ fn biguint_panic_free_modular_rem_uint()
     let modulo = U256::from_uint(100_u8);
     let remainder = dividend.panic_free_modular_rem_uint(divisor, &modulo);
     println!("{} % {} = {} (mod {})", dividend, divisor, remainder, modulo);
-    assert_eq!(remainder.to_string(), "0");
-    assert_eq!(remainder.is_overflow(), false);
+    assert_eq!(remainder, U256::max());
+    assert_eq!(remainder.is_overflow(), true);
     assert_eq!(remainder.is_underflow(), false);
-    assert_eq!(remainder.is_infinity(), false);
+    assert_eq!(remainder.is_infinity(), true);
     assert_eq!(remainder.is_undefined(), false);
     assert_eq!(remainder.is_divided_by_zero(), true);
     
@@ -6112,10 +6112,10 @@ fn biguint_panic_free_modular_rem_uint()
     let modulo = U256::from_uint(100_u8);
     let remainder = dividend.panic_free_modular_rem_uint(divisor, &modulo);
     println!("{} % {} = {} (mod {})", dividend, divisor, remainder, modulo);
-    assert_eq!(remainder.to_string(), "0");
-    assert_eq!(remainder.is_overflow(), false);
+    assert_eq!(remainder, U256::max());
+    assert_eq!(remainder.is_overflow(), true);
     assert_eq!(remainder.is_underflow(), false);
-    assert_eq!(remainder.is_infinity(), false);
+    assert_eq!(remainder.is_infinity(), true);
     assert_eq!(remainder.is_undefined(), false);
     assert_eq!(remainder.is_divided_by_zero(), true);
 
@@ -6260,10 +6260,10 @@ fn biguint_panic_free_modular_rem_assign_uint()
 
     a_biguint.panic_free_modular_rem_assign_uint(divisor, &modulo);
     println!("After a_biguint.modular_rem_assign_uint({}, {}), a_biguint = {}", divisor, modulo, a_biguint);
-    assert_eq!(a_biguint.to_string(), "0");
-    assert_eq!(a_biguint.is_overflow(), false);
+    assert_eq!(a_biguint, U256::max());
+    assert_eq!(a_biguint.is_overflow(), true);
     assert_eq!(a_biguint.is_underflow(), false);
-    assert_eq!(a_biguint.is_infinity(), false);
+    assert_eq!(a_biguint.is_infinity(), true);
     assert_eq!(a_biguint.is_undefined(), false);
     assert_eq!(a_biguint.is_divided_by_zero(), true);
 
@@ -6280,10 +6280,10 @@ fn biguint_panic_free_modular_rem_assign_uint()
 
     a_biguint.panic_free_modular_rem_assign_uint(divisor, &modulo);
     println!("After a_biguint.modular_rem_assign_uint({}, {}), a_biguint = {}", divisor, modulo, a_biguint);
-    assert_eq!(a_biguint.to_string(), "0");
-    assert_eq!(a_biguint.is_overflow(), false);
+    assert_eq!(a_biguint, U256::max());
+    assert_eq!(a_biguint.is_overflow(), true);
     assert_eq!(a_biguint.is_underflow(), false);
-    assert_eq!(a_biguint.is_infinity(), false);
+    assert_eq!(a_biguint.is_infinity(), true);
     assert_eq!(a_biguint.is_undefined(), false);
     assert_eq!(a_biguint.is_divided_by_zero(), true);
 
@@ -8059,7 +8059,7 @@ fn biguint_panic_free_modular_pow_uint()
     assert_eq!(res.is_divided_by_zero(), false);
 
     let a_biguint = U256::from_uint(3000_u16);
-    let exp = 2000_u16;
+    let exp = 30_u8;
     let modulo = U256::from_uint(1000_u16);
     let res = a_biguint.panic_free_modular_pow_uint(exp, &modulo);
     println!("{} ** {} = {} (mod {})", a_biguint, exp, res, modulo);
@@ -8067,7 +8067,7 @@ fn biguint_panic_free_modular_pow_uint()
     assert_eq!(res.is_overflow(), false);
     assert_eq!(res.is_underflow(), false);
     assert_eq!(res.is_infinity(), false);
-    assert_eq!(res.is_undefined(), true);
+    assert_eq!(res.is_undefined(), false);
     assert_eq!(res.is_divided_by_zero(), false);
 
     let a_biguint = UU32::zero();
@@ -8084,6 +8084,30 @@ fn biguint_panic_free_modular_pow_uint()
 
     let a_biguint = U256::from_uint(3000_u16);
     let exp = 0_u8;
+    let modulo = U256::from_uint(1000_u16);
+    let res = a_biguint.panic_free_modular_pow_uint(exp, &modulo);
+    println!("{} ** {} = {} (mod {})", a_biguint, exp, res, modulo);
+    assert_eq!(res.to_string(), "0");
+    assert_eq!(res.is_overflow(), false);
+    assert_eq!(res.is_underflow(), false);
+    assert_eq!(res.is_infinity(), false);
+    assert_eq!(res.is_undefined(), true);
+    assert_eq!(res.is_divided_by_zero(), false);
+
+    let a_biguint = U256::zero();
+    let exp = 2000_u16;
+    let modulo = U256::from_uint(1000_u16);
+    let res = a_biguint.panic_free_modular_pow_uint(exp, &modulo);
+    println!("{} ** {} = {} (mod {})", a_biguint, exp, res, modulo);
+    assert_eq!(res.to_string(), "0");
+    assert_eq!(res.is_overflow(), false);
+    assert_eq!(res.is_underflow(), false);
+    assert_eq!(res.is_infinity(), false);
+    assert_eq!(res.is_undefined(), true);
+    assert_eq!(res.is_divided_by_zero(), false);
+
+    let a_biguint = U256::from_uint(3000_u16);
+    let exp = 2000_u16;
     let modulo = U256::from_uint(1000_u16);
     let res = a_biguint.panic_free_modular_pow_uint(exp, &modulo);
     println!("{} ** {} = {} (mod {})", a_biguint, exp, res, modulo);

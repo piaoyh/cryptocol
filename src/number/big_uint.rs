@@ -11211,12 +11211,6 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
         if modulo.is_zero_or_one() | rhs.is_zero()
             { panic!(); }
 
-        let flags = self.get_all_flags();   
-        if *self >= *modulo
-        {
-            self.wrapping_rem_assign(modulo);
-            self.reset_all_flags();
-        }
         let mut mrhs = rhs;
         if modulo.le_uint(rhs)
         {
@@ -11226,15 +11220,22 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
                 { panic!(); }
         }
 
+        let flags = self.get_all_flags();   
+        if *self >= *modulo
+        {
+            self.wrapping_rem_assign(modulo);
+            self.reset_all_flags();
+        }
+
         if rhs.length_in_bytes() > T::size_in_bytes()
         {
             self.modular_div_assign(&Self::from_uint(mrhs), modulo);
-        }    
-        else if modulo.gt_uint(mrhs)
+        }
+        else if modulo.gt_uint(rhs)
         {
             self.wrapping_div_assign_uint(mrhs);
         }
-        else    // if (U::size_in_bytes() <= T::size_in_bytes()) && (*self < modulo <= rhs)
+        else
         {
             let modu = modulo.into_uint::<U>();
             let mself = self.into_uint::<U>().wrapping_rem(modu);
@@ -11870,9 +11871,19 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
         }
 
         if mrhs.length_in_bytes() > T::size_in_bytes()
-            { self.modular_div_assign(&Self::from_uint(rhs), modulo); }
+        {
+            self.modular_div_assign(&Self::from_uint(rhs), modulo);
+        }
+        else if modulo.gt_uint(rhs)
+        {
+            self.wrapping_div_assign_uint(mrhs);
+        }
         else
-            { self.wrapping_div_assign_uint(mrhs); }
+        {
+            let modu = modulo.into_uint::<U>();
+            let mself = self.into_uint::<U>().wrapping_rem(modu);
+            self.set_uint(mself.wrapping_div(mrhs));
+        }
         self.set_flag_bit(flags);
     }
 
@@ -13052,9 +13063,21 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
         if modulo.is_zero_or_one() | rhs.is_zero()
             { panic!(); }
 
-        let flags = self.get_all_flags();
+        let mut mrhs = rhs;
+        if modulo.le_uint(rhs)
+        {
+            let modu = modulo.into_uint::<U>();
+            mrhs = rhs.wrapping_rem(modu);
+            if mrhs.is_zero()
+                { panic!(); }
+        }
+
+        let flags = self.get_all_flags();   
         if *self >= *modulo
-            { self.wrapping_rem_assign(modulo); }
+        {
+            self.wrapping_rem_assign(modulo);
+            self.reset_all_flags();
+        }
 
         if rhs.length_in_bytes() > T::size_in_bytes()  // if rhs.length_in_bytes() > T::size_in_bytes() && (module <= rhs)
         {
@@ -13063,18 +13086,14 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
         else if modulo.gt_uint(rhs)
         {
             self.wrapping_rem_assign_uint(rhs);
-            self.set_all_flags(flags);
         }
         else    // if (U::size_in_bytes() <= T::size_in_bytes()) && (modulo <= rhs)
         {
             let modu = modulo.into_uint::<U>();
-            let mrhs = rhs.wrapping_rem(modu);
             let mself = self.into_uint::<U>().wrapping_rem(modu);
-            if mrhs.is_zero()
-                { panic!(); }
             self.set_uint(mself.wrapping_rem(mrhs));
-            self.set_all_flags(flags);
         }
+        self.set_flag_bit(flags);
     }
 
     // pub fn panic_free_modular_rem_uint<U>(&self, rhs: U, modulo: &Self) -> Self
@@ -13210,10 +13229,10 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// let modulo = U256::from_uint(100_u8);
     /// let remainder = dividend.panic_free_modular_rem_uint(divisor, &modulo);
     /// println!("{} % {} = {} (mod {})", dividend, divisor, remainder, modulo);
-    /// assert_eq!(remainder.to_string(), "0");
-    /// assert_eq!(remainder.is_overflow(), false);
+    /// assert_eq!(remainder, U256::max());
+    /// assert_eq!(remainder.is_overflow(), true);
     /// assert_eq!(remainder.is_underflow(), false);
-    /// assert_eq!(remainder.is_infinity(), false);
+    /// assert_eq!(remainder.is_infinity(), true);
     /// assert_eq!(remainder.is_undefined(), false);
     /// assert_eq!(remainder.is_divided_by_zero(), true);
     /// ```
@@ -13229,10 +13248,10 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// let modulo = U256::from_uint(100_u8);
     /// let remainder = dividend.panic_free_modular_rem_uint(divisor, &modulo);
     /// println!("{} % {} = {} (mod {})", dividend, divisor, remainder, modulo);
-    /// assert_eq!(remainder.to_string(), "0");
-    /// assert_eq!(remainder.is_overflow(), false);
+    /// assert_eq!(remainder, U256::max());
+    /// assert_eq!(remainder.is_overflow(), true);
     /// assert_eq!(remainder.is_underflow(), false);
-    /// assert_eq!(remainder.is_infinity(), false);
+    /// assert_eq!(remainder.is_infinity(), true);
     /// assert_eq!(remainder.is_undefined(), false);
     /// assert_eq!(remainder.is_divided_by_zero(), true);
     /// ```
@@ -13484,10 +13503,10 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// 
     /// a_biguint.panic_free_modular_rem_assign_uint(divisor, &modulo);
     /// println!("After a_biguint.modular_rem_assign_uint({}, {}), a_biguint = {}", divisor, modulo, a_biguint);
-    /// assert_eq!(a_biguint.to_string(), "0");
-    /// assert_eq!(a_biguint.is_overflow(), false);
+    /// assert_eq!(a_biguint, U256::max());
+    /// assert_eq!(a_biguint.is_overflow(), true);
     /// assert_eq!(a_biguint.is_underflow(), false);
-    /// assert_eq!(a_biguint.is_infinity(), false);
+    /// assert_eq!(a_biguint.is_infinity(), true);
     /// assert_eq!(a_biguint.is_undefined(), false);
     /// assert_eq!(a_biguint.is_divided_by_zero(), true);
     /// ```
@@ -13510,10 +13529,10 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// 
     /// a_biguint.panic_free_modular_rem_assign_uint(divisor, &modulo);
     /// println!("After a_biguint.modular_rem_assign_uint({}, {}), a_biguint = {}", divisor, modulo, a_biguint);
-    /// assert_eq!(a_biguint.to_string(), "0");
-    /// assert_eq!(a_biguint.is_overflow(), false);
+    /// assert_eq!(a_biguint, U256::max());
+    /// assert_eq!(a_biguint.is_overflow(), true);
     /// assert_eq!(a_biguint.is_underflow(), false);
-    /// assert_eq!(a_biguint.is_infinity(), false);
+    /// assert_eq!(a_biguint.is_infinity(), true);
     /// assert_eq!(a_biguint.is_undefined(), false);
     /// assert_eq!(a_biguint.is_divided_by_zero(), true);
     /// ```
@@ -13611,64 +13630,67 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
             + BitXor<Output=U> + BitXorAssign + Not<Output=U>
             + PartialEq + PartialOrd
     {
-        let modu: u128;
-        let mrhs: u128;
+        let mut terminated = false;
+        let mut mrhs = rhs;
+        if !modulo.is_zero_or_one()
+        {
+            if *self >= *modulo
+            {
+                self.wrapping_rem_assign(modulo);
+                self.reset_all_flags();
+            }
+            if modulo.le_uint(rhs)
+            {
+                let modu = modulo.into_uint::<U>();
+                mrhs = rhs.wrapping_rem(modu);
+            }
+        }
+
+        if mrhs.is_zero()
+        {
+            if self.is_zero()
+            {
+                self.set_zero();
+                self.set_flag_bit(Self::UNDEFINED | Self::DIVIDED_BY_ZERO);
+            }
+            else
+            {
+                self.set_max();
+                self.set_flag_bit(Self::INFINITY | Self::DIVIDED_BY_ZERO | Self::OVERFLOW);
+            }
+            terminated = true;
+        }
         if modulo.is_zero_or_one()
         {
             self.set_zero();
             self.set_undefined();
-            if rhs.is_zero()
-                { self.set_divided_by_zero(); }
             return;
         }
-        if rhs.is_zero()
-        {
-            if self.is_zero()
-                { self.set_undefined(); }
-            self.set_zero();
-            self.set_divided_by_zero();
-            return;
-        }
-        else if modulo.le_uint(rhs)
-        {
-            modu = modulo.into_u128();
-            mrhs = rhs.into_u128().wrapping_rem(modu);
-            if mrhs.is_zero()
-            {
-                self.set_zero();
-                self.set_divided_by_zero();
-                return;
-            }
-        }
+        if terminated
+            { return; }
 
         let flags = self.get_all_flags();
         if *self >= *modulo
-            { self.wrapping_rem_assign(modulo); }
+        {
+            self.wrapping_rem_assign(modulo);
+            self.reset_all_flags();
+        }
 
-        if rhs.length_in_bytes() > T::size_in_bytes()  // if rhs.length_in_bytes() > T::size_in_bytes() && (module <= rhs)
+        if rhs.length_in_bytes() > T::size_in_bytes()
         {
             self.panic_free_modular_rem_assign(&Self::from_uint(rhs), modulo);
         }
         else if modulo.gt_uint(rhs)
         {
             self.wrapping_rem_assign_uint(rhs);
-            self.set_all_flags(flags);
         }
-        else    // if (U::size_in_bytes() <= T::size_in_bytes()) && (modulo <= rhs)
+        else    // if (U::size_in_bytes() <= T::size_in_bytes()) && (*self < modulo <= rhs)
         {
-            let modu = modulo.into_u128();
-            let mrhs = rhs.into_u128().wrapping_rem(modu);
-            let mself = self.into_u128().wrapping_rem(modu);
-            if mrhs.is_zero()
-            {
-                self.set_zero();
-                self.set_divided_by_zero();
-                return;
-            }
-
+            let modu = modulo.into_uint::<U>();
+            let mself = self.into_uint::<U>().wrapping_rem(modu);
             self.set_uint(mself.wrapping_rem(mrhs));
-            self.set_all_flags(flags);
         }
+        self.set_flag_bit(flags);
     }
 
     // pub fn next_multiple_of_uint<U>(&self, rhs: U) -> Self
