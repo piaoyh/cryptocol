@@ -11824,7 +11824,22 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
             + PartialEq + PartialOrd
     {
         let mut terminated = false;
-        if rhs.is_zero()
+        let mut mrhs = rhs;
+        if !modulo.is_zero_or_one()
+        {
+            if *self >= *modulo
+            {
+                self.wrapping_rem_assign(modulo);
+                self.reset_all_flags();
+            }
+            if modulo.le_uint(rhs)
+            {
+                let modu = modulo.into_uint::<U>();
+                mrhs = rhs.wrapping_rem(modu);
+            }
+        }
+
+        if mrhs.is_zero()
         {
             if self.is_zero()
             {
@@ -11851,40 +11866,14 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
         if *self >= *modulo
         {
             self.wrapping_rem_assign(modulo);
-            self.set_all_flags(flags);
+            self.reset_all_flags();
         }
 
-        if rhs.length_in_bytes() > T::size_in_bytes()  // if rhs.length_in_bytes() > T::size_in_bytes() && (module <= rhs)
-        {
-            self.modular_div_assign(&Self::from_uint(rhs), modulo);
-        }
-        else if modulo.gt_uint(rhs)
-        {
-            self.wrapping_div_assign_uint(rhs);
-            self.set_all_flags(flags);
-        }
-        else    // if (U::size_in_bytes() <= T::size_in_bytes()) && (modulo <= rhs)
-        {
-            let modu = modulo.into_u128();
-            let mrhs = rhs.into_u128().wrapping_rem(modu);
-            let mself = self.into_u128().wrapping_rem(modu);
-            if mrhs.is_zero()
-            {
-                if self.is_zero()
-                {
-                    self.set_zero();
-                    self.set_flag_bit(Self::UNDEFINED | Self::DIVIDED_BY_ZERO);
-                }
-                else
-                {
-                    self.set_max();
-                    self.set_flag_bit(Self::INFINITY | Self::DIVIDED_BY_ZERO | Self::OVERFLOW);
-                }
-                return;
-            }
-            self.set_uint(mself.wrapping_div(mrhs));
-            self.set_all_flags(flags);
-        }
+        if mrhs.length_in_bytes() > T::size_in_bytes()
+            { self.modular_div_assign(&Self::from_uint(rhs), modulo); }
+        else
+            { self.wrapping_div_assign_uint(mrhs); }
+        self.set_flag_bit(flags);
     }
 
     // pub fn wrapping_rem_uint<U>(&self, rhs: U) -> U
