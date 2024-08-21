@@ -5224,7 +5224,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// assert_eq!(res.is_undefined(), false);
     /// ```
     /// 
-    /// # Example 2
+    /// # Example 2 
     /// ```
     /// use cryptocol::define_utypes_with;
     /// define_utypes_with!(u8);
@@ -5797,7 +5797,10 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     {
         let mut flags = self.get_all_flags();
         if *self >= *modulo
-            { self.wrapping_rem_assign(modulo); }
+        {
+            self.wrapping_rem_assign(modulo);
+            self.reset_all_flags();
+        }
 
         if rhs.length_in_bytes() > T::size_in_bytes()  // && (module <= rhs)
         {
@@ -5805,35 +5808,41 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
         }
         else if modulo.gt_uint(rhs)
         {
-            let diff = modulo.wrapping_sub_uint(rhs);
-            if *self >= diff
+            if !rhs.is_zero()
             {
-                self.wrapping_sub_assign(&diff);
-                flags |= Self::OVERFLOW;
+                let diff = modulo.wrapping_sub_uint(rhs);
+                if *self >= diff
+                {
+                    self.wrapping_sub_assign(&diff);
+                    flags |= Self::OVERFLOW;
+                }
+                else    // if *self < diff
+                {
+                    self.wrapping_add_assign_uint(rhs);
+                }
             }
-            else    // if *self < diff
-            {
-                self.wrapping_add_assign_uint(rhs);
-            }
-            self.set_flag_bit(flags);
         }
-        else    // if (U::size_in_bytes() <= T::size_in_bytes()) && (module <= rhs)
+        else    // if (U::size_in_bytes() <= T::size_in_bytes()) && (self < module <= rhs)
         {
             let modu = modulo.into_uint::<U>();
-            let mut mself = self.into_uint::<U>();
-            let diff = modu.wrapping_sub(rhs);
-            if mself >= diff
+            let mrhs = rhs.wrapping_rem(modu);
+            if !mrhs.is_zero()
             {
-                mself = mself.wrapping_sub(diff);
-                flags |= Self::OVERFLOW;
+                let mut mself = self.into_uint::<U>();
+                let diff = modu.wrapping_sub(mrhs);
+                if mself >= diff
+                {
+                    mself = mself.wrapping_sub(diff);
+                    flags |= Self::OVERFLOW;
+                }
+                else    // if mself < diff
+                {
+                    mself = mself.wrapping_add(rhs);
+                }
+                self.set_uint(mself);
             }
-            else    // if mself < diff
-            {
-                mself = mself.wrapping_add(rhs);
-            }
-            self.set_uint(mself);
-            self.set_flag_bit(flags);
         }
+        self.set_flag_bit(flags);
     }
 
 
@@ -7612,7 +7621,10 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     {
         let mut flags = self.get_all_flags();
         if *self >= *modulo
-            { self.wrapping_rem_assign(modulo); }
+        {
+            self.wrapping_rem_assign(modulo);
+            self.reset_all_flags();
+        }
 
         if rhs.length_in_bytes() > T::size_in_bytes()  // if rhs.length_in_bytes() > T::size_in_bytes() && (module <= rhs)
         {
@@ -7620,34 +7632,40 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
         }
         else if modulo.gt_uint(rhs)
         {
-            if self.ge_uint(rhs)    // if *self >= rhs
+            if !rhs.is_zero()
             {
-                self.wrapping_sub_assign_uint(rhs);
+                if self.ge_uint(rhs)    // if *self >= rhs
+                {
+                    self.wrapping_sub_assign_uint(rhs);
+                }
+                else    // if *self < rhs
+                {
+                    let diff = modulo.wrapping_sub_uint(rhs);
+                    self.wrapping_add_assign(&diff);
+                    flags |= Self::UNDERFLOW;
+                }
             }
-            else    // if *self < rhs
-            {
-                let diff = modulo.wrapping_sub_uint(rhs);
-                self.wrapping_add_assign(&diff);
-                flags |= Self::UNDERFLOW;
-            }
-            self.set_all_flags(flags);
         }
-        else    // if (U::size_in_bytes() <= T::size_in_bytes()) && (module <= rhs)
+        else    // if (U::size_in_bytes() <= T::size_in_bytes()) && (self < module <= rhs)
         {
             let modu = modulo.into_uint::<U>();
-            let mself = self.into_uint::<U>().modular_sub(rhs, modu);
-            if mself >= rhs
+            let mrhs = rhs.wrapping_rem(modu);
+            if !mrhs.is_zero()
             {
-                self.set_uint(mself.wrapping_sub(rhs));
+                let mself = self.into_uint::<U>().modular_sub(mrhs, modu);
+                if mself >= mrhs
+                {
+                    self.set_uint(mself.wrapping_sub(mrhs));
+                }
+                else    // if mself < rhs
+                {
+                    let diff = modu.wrapping_sub(mrhs);
+                    self.set_uint(mself.wrapping_add(diff));
+                    flags |= Self::UNDERFLOW;
+                }
             }
-            else    // if *self < rhs
-            {
-                let diff = modu.wrapping_sub(rhs);
-                self.set_uint(mself.wrapping_add(diff));
-                flags |= Self::UNDERFLOW;
-            }
-            self.set_all_flags(flags);
         }
+        self.set_flag_bit(flags);
     }
 
     // pub fn abs_diff_uint<U>(&self, other: U) -> Self
@@ -9090,6 +9108,42 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// assert_eq!(res.is_divided_by_zero(), false);
     /// assert_eq!(res.is_infinity(), false);
     /// assert_eq!(res.is_undefined(), false);
+    /// ```
+    /// 
+    /// # Example 3
+    /// ```
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u32);
+    /// 
+    /// let m = UU32::from_uint(1000_u16);
+    /// let a_biguint = U256::from_uint(4321000_u32);
+    /// let mul_uint = 5_u8;
+    /// let res = a_biguint.modular_mul_uint(mul_uint, &m);
+    /// println!("{} * {} = {} (mod {})", a_biguint, mul_uint, res, m);
+    /// assert_eq!(res.to_string(), "0");
+    /// assert_eq!(res.is_overflow(), false);
+    /// assert_eq!(res.is_underflow(), false);
+    /// assert_eq!(res.is_divided_by_zero(), false);
+    /// assert_eq!(res.is_infinity(), false);
+    /// assert_eq!(res.is_undefined(), false);
+    /// ```
+    /// 
+    /// # Example 4
+    /// ```
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u32);
+    /// 
+    /// let m = UU32::from_uint(1000_u16);
+    /// let a_biguint = U256::from_string("318581864860508537538828119467680187429816690342769005864872913754682855846").unwrap();
+    /// let mul_uint = 4321000_u32;
+    /// let res = a_biguint.modular_mul_uint(mul_uint, &m);
+    /// println!("{} * {} = {} (mod {})", a_biguint, mul_uint, res, m);
+    /// assert_eq!(res.to_string(), "0");
+    /// assert_eq!(res.is_overflow(), false);
+    /// assert_eq!(res.is_underflow(), false);
+    /// assert_eq!(res.is_divided_by_zero(), false);
+    /// assert_eq!(res.is_infinity(), false);
+    /// assert_eq!(res.is_undefined(), false);
     /// 
     /// let _m = UU32::zero();
     /// let _a_biguint = U256::from_string("318581864860508537538828119467680187429816690342769005864872913754682855846").unwrap();
@@ -9510,48 +9564,57 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     {
         let mut flags = self.get_all_flags();
         if *self >= *modulo
-            { self.wrapping_rem_assign(modulo); }
+        {
+            self.wrapping_rem_assign(modulo);
+            self.reset_all_flags();
+        }
 
-        self.reset_all_flags();
-        if U::size_in_bytes() > T::size_in_bytes()  // && (module <= rhs)
+        if !self.is_zero()
         {
-            self.common_modular_mul_assign(&Self::from_uint(rhs), modulo);
-        }
-        else if modulo.gt_uint(rhs)
-        {
-            let mut mrhs = T::num::<U>(rhs);
-            let mut res = Self::zero();
-            while mrhs > T::zero()
+            if U::size_in_bytes() > T::size_in_bytes()
             {
-                if mrhs.is_odd()
-                    { res.modular_add_assign(self, modulo); }
-                self.modular_add_assign(&self.clone(), modulo);
-                mrhs >>= T::one();
+                self.common_modular_mul_assign(&Self::from_uint(rhs), modulo);
             }
-            *self = res;
-            if self.is_overflow()
-                { flags |= Self::OVERFLOW; }
-            self.set_all_flags(flags);
-        }
-        else    // if (U::size_in_bytes() <= T::size_in_bytes()) && (module <= rhs)
-        {
-            let modu = modulo.into_u128();
-            let mrhs = rhs.into_u128().wrapping_rem(modu);
-            let mself = self.into_u128();
-            let new_mself = mself.modular_mul(mrhs, modu);
-            self.set_uint(new_mself);
-            if mself > new_mself
+            else if modulo.gt_uint(rhs)
             {
-                flags |= Self::OVERFLOW;
+                let mut mrhs = T::num::<U>(rhs);
+                let mut res = Self::zero();
+                while mrhs > T::zero()
+                {
+                    if mrhs.is_odd()
+                        { res.modular_add_assign(self, modulo); }
+                    self.modular_add_assign(&self.clone(), modulo);
+                    mrhs >>= T::one();
+                }
+                *self = res;
             }
-            else
+            else    // if (U::size_in_bytes() <= T::size_in_bytes()) && (self < module <= rhs)
             {
-                let r = mself.overflowing_mul(mrhs);
-                if (r.0 >= modu) || r.1
-                    { flags |= Self::OVERFLOW; }
+                let modu = modulo.into_uint::<U>();
+                let mrhs = rhs.wrapping_rem(modu);
+                if mrhs.is_zero()
+                {
+                    self.set_zero();
+                }
+                else
+                {
+                    let mself = self.into_uint::<U>();
+                    let new_mself = mself.modular_mul(mrhs, modu);
+                    self.set_uint(new_mself);
+                    if mself > new_mself
+                    {
+                        flags |= Self::OVERFLOW;
+                    }
+                    else
+                    {
+                        let r = mself.overflowing_mul(mrhs);
+                        if (r.0 >= modu) || r.1
+                            { flags |= Self::OVERFLOW; }
+                    }
+                }
             }
-            self.set_all_flags(flags);
         }
+        self.set_flag_bit(flags);
     }
 
 
@@ -13008,9 +13071,9 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
         }
         else    // if (U::size_in_bytes() <= T::size_in_bytes()) && (modulo <= rhs)
         {
-            let modu = modulo.into_u128();
-            let mrhs = rhs.into_u128().wrapping_rem(modu);
-            let mself = self.into_u128().wrapping_rem(modu);
+            let modu = modulo.into_uint::<U>();
+            let mrhs = rhs.wrapping_rem(modu);
+            let mself = self.into_uint::<U>().wrapping_rem(modu);
             if mrhs.is_zero()
                 { panic!(); }
             self.set_uint(mself.wrapping_rem(mrhs));
@@ -14736,12 +14799,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
 
 
     /***** METHODS FOR EXPONENTIATION AND LOGARITHM WITH UINT *****/
-<<<<<<< HEAD
-    
-//------
-=======
 
->>>>>>> refs/remotes/origin/master
     // pub fn pow_uint<U>(&self, exp: U) -> Self
     /// Raises `self` to the power of exp, using exponentiation
     /// of type `BigUInt` by squaring. The type `U` has the trait `SmallUInt`.
@@ -16761,21 +16819,19 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
             + BitXor<Output=U> + BitXorAssign + Not<Output=U>
             + PartialEq + PartialOrd
     {
-        if modulo.is_zero_or_one()
+        if modulo.is_zero_or_one() || (self.is_zero() && exp.is_zero())
             { panic!(); }
-        else if *self >= *modulo
+        if *self >= *modulo
             { self.wrapping_rem_assign(modulo); }
-
-        let mut acc = Self::from_array(self.get_number().clone());
-        self.set_one();
         let mut mexp = exp;
-        while mexp > U::zero()
+        if modulo.le_uint(exp)
         {
-            if mexp.is_odd()
-                { self.modular_mul_assign(&acc, modulo); }
-                acc.modular_mul_assign(&acc.clone(), modulo);
-            mexp >>= U::one();
+            let modu = modulo.into_uint::<U>();
+            mexp = exp.wrapping_rem(modu);
         }
+        if self.is_zero() && mexp.is_zero()
+            { panic!(); }
+        self.common_modular_pow_assign_uint(exp, modulo);
     }
 
     // pub fn panic_free_modular_pow_uint<U>(&self, exp: U, modulo: &Self) -> Self
@@ -16812,7 +16868,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// # Example 1
     /// ```
     /// use cryptocol::define_utypes_with;
-    /// define_utypes_with!(u32);
+    /// define_utypes_with!(u128);
     /// 
     /// let a_biguint = U256::from_uint(10_u8);
     /// let exp = 30_u8;
@@ -16952,7 +17008,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// # Example 1
     /// ```
     /// use cryptocol::define_utypes_with;
-    /// define_utypes_with!(u16);
+    /// define_utypes_with!(u8);
     /// 
     /// let mut a_biguint = U256::from_uint(10_u8);
     /// let exp = 30_u8;
@@ -17083,14 +17139,47 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
             + BitXor<Output=U> + BitXorAssign + Not<Output=U>
             + PartialEq + PartialOrd
     {
-        if modulo.is_zero_or_one()
-            { panic!(); }
-        else if *self >= *modulo
+        if modulo.is_zero_or_one() || (self.is_zero() && exp.is_zero())
+        {
+            self.set_zero();
+            self.set_undefined();
+            return;
+        }
+        if *self >= *modulo
             { self.wrapping_rem_assign(modulo); }
+        let mut mexp = exp;
+        if modulo.le_uint(exp)
+        {
+            let modu = modulo.into_uint::<U>();
+            mexp = exp.wrapping_rem(modu);
+        }
+        if self.is_zero() && mexp.is_zero()
+        {
+            self.set_zero();
+            self.set_undefined();
+            return;
+        }
+        self.common_modular_pow_assign_uint(exp, modulo);
+    }
 
+    fn common_modular_pow_assign_uint<U>(&mut self, exp: U, modulo: &Self)
+    where U: SmallUInt + Copy + Clone + Display + Debug + ToString
+            + Add<Output=U> + AddAssign + Sub<Output=U> + SubAssign
+            + Mul<Output=U> + MulAssign + Div<Output=U> + DivAssign
+            + Rem<Output=U> + RemAssign
+            + Shl<Output=U> + ShlAssign + Shr<Output=U> + ShrAssign
+            + BitAnd<Output=U> + BitAndAssign + BitOr<Output=U> + BitOrAssign
+            + BitXor<Output=U> + BitXorAssign + Not<Output=U>
+            + PartialEq + PartialOrd
+    {
+        let mut mexp = exp;
+        if modulo.le_uint(exp)
+        {
+            let modu = modulo.into_uint::<U>();
+            mexp = exp.wrapping_rem(modu);
+        }
         let mut acc = Self::from_array(self.get_number().clone());
         self.set_one();
-        let mut mexp = exp;
         while mexp > U::zero()
         {
             if mexp.is_odd()
