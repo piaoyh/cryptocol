@@ -8438,7 +8438,151 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// assert_eq!(res.is_undefined(), false);
     /// ```
     /// 
-    /// # Example 4 for modulo == 0
+    /// # Example 4 for op1 == 0
+    /// ```
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u32);
+    /// 
+    /// let a_biguint = U256::from_uint(0_u8);
+    /// let m = U256::from_uint(250_u8);
+    /// let rhs = 3_u8;
+    /// let res = a_biguint.panic_free_modular_sub_uint(rhs, &m);
+    /// println!("{} - {} = {}(mod {})", a_biguint, rhs, res, m);
+    /// assert_eq!(res.to_string(), "247");
+    /// assert_eq!(res.is_overflow(), false);
+    /// assert_eq!(res.is_underflow(), true);
+    /// assert_eq!(res.is_divided_by_zero(), false);
+    /// assert_eq!(res.is_infinity(), false);
+    /// assert_eq!(res.is_undefined(), false);
+    /// ```
+    /// 
+    /// # Example 5 for op1 == multiple of modulo
+    /// ```
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u32);
+    /// 
+    /// let a_biguint = U256::from_uint(750_u16);
+    /// let m = U256::from_uint(250_u8);
+    /// let rhs = 3_u8;
+    /// let res = a_biguint.panic_free_modular_sub_uint(rhs, &m);
+    /// println!("{} - {} = {}(mod {})", a_biguint, rhs, res, m);
+    /// assert_eq!(res.to_string(), "247");
+    /// assert_eq!(res.is_overflow(), false);
+    /// assert_eq!(res.is_underflow(), true);
+    /// assert_eq!(res.is_divided_by_zero(), false);
+    /// assert_eq!(res.is_infinity(), false);
+    /// assert_eq!(res.is_undefined(), false);
+    /// ```
+    /// 
+    /// # Example 6 for op2 == 0
+    /// ```
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u32);
+    /// 
+    /// let a_biguint = U256::from_string("76801874298166903427690031858186486050853753882811946569946433649006").unwrap();
+    /// let m = U256::from_uint(250_u8);
+    /// let rhs = 0_u8;
+    /// let res = a_biguint.panic_free_modular_sub_uint(rhs, &m);
+    /// println!("{} - {} = {}(mod {})", a_biguint, rhs, res, m);
+    /// assert_eq!(res.to_string(), "6");
+    /// assert_eq!(res.is_overflow(), false);
+    /// assert_eq!(res.is_underflow(), false);
+    /// assert_eq!(res.is_divided_by_zero(), false);
+    /// assert_eq!(res.is_infinity(), false);
+    /// assert_eq!(res.is_undefined(), false);
+    /// ```
+    /// 
+    /// # Example 7 for op2 == multiple of modulo
+    /// ```
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u32);
+    /// 
+    /// let a_biguint = U256::from_string("76801874298166903427690031858186486050853753882811946569946433649006").unwrap();
+    /// let m = U256::from_uint(50_u8);
+    /// let rhs = 250_u8;
+    /// let res = a_biguint.panic_free_modular_sub_uint(rhs, &m);
+    /// println!("{} - {} = {}(mod {})", a_biguint, rhs, res, m);
+    /// assert_eq!(res.to_string(), "6");
+    /// assert_eq!(res.is_overflow(), false);
+    /// assert_eq!(res.is_underflow(), false);
+    /// assert_eq!(res.is_divided_by_zero(), false);
+    /// assert_eq!(res.is_infinity(), false);
+    /// assert_eq!(res.is_undefined(), false);
+    /// ```
+    /// 
+    /// # Example 8 for op1 == 0 and op2 == 0
+    /// ```
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u32);
+    /// 
+    /// let a_biguint = U256::from_uint(0_u8);
+    /// let m = U256::from_uint(250_u8);
+    /// let rhs = 0_u8;
+    /// let res = a_biguint.panic_free_modular_sub_uint(rhs, &m);
+    /// println!("{} - {} = {}(mod {})", a_biguint, rhs, res, m);
+    /// assert_eq!(res.to_string(), "0");
+    /// assert_eq!(res.is_overflow(), false);
+    /// assert_eq!(res.is_underflow(), false);
+    /// assert_eq!(res.is_divided_by_zero(), false);
+    /// assert_eq!(res.is_infinity(), false);
+    /// assert_eq!(res.is_undefined(), false);
+    /// ```
+    /// 
+    /// # Example 9 for op1 == multiple of modulo and op2 == 0
+    /// ```
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u32);
+    /// 
+    /// let a_biguint = U256::from_uint(750_u16);
+    /// let m = U256::from_uint(250_u8);
+    /// let rhs = 0_u8;
+    /// let res = a_biguint.panic_free_modular_sub_uint(rhs, &m);
+    /// println!("{} - {} = {}(mod {})", a_biguint, rhs, res, m);
+    /// assert_eq!(res.to_string(), "0");
+    /// assert_eq!(res.is_overflow(), false);
+    /// assert_eq!(res.is_underflow(), false);
+    /// assert_eq!(res.is_divided_by_zero(), false);
+    /// assert_eq!(res.is_infinity(), false);
+    /// assert_eq!(res.is_undefined(), false);
+    /// ```
+    /// 
+    /// # Example 10 for op1 == 0 and op2 == multiple of modulo
+    /// ```
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u32);
+    /// 
+    /// let a_biguint = U256::from_uint(0_u8);
+    /// let m = U256::from_uint(50_u8);
+    /// let rhs = 250_u8;
+    /// let res = a_biguint.panic_free_modular_sub_uint(rhs, &m);
+    /// println!("{} - {} = {}(mod {})", a_biguint, rhs, res, m);
+    /// assert_eq!(res.to_string(), "0");
+    /// assert_eq!(res.is_overflow(), false);
+    /// assert_eq!(res.is_underflow(), false);
+    /// assert_eq!(res.is_divided_by_zero(), false);
+    /// assert_eq!(res.is_infinity(), false);
+    /// assert_eq!(res.is_undefined(), false);
+    /// ```
+    /// 
+    /// # Example 11 for op1 == multiple of modulo and op2 == multiple of modulo
+    /// ```
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u32);
+    /// 
+    /// let a_biguint = U256::from_uint(150_u8);
+    /// let m = U256::from_uint(50_u8);
+    /// let rhs = 250_u8;
+    /// let res = a_biguint.panic_free_modular_sub_uint(rhs, &m);
+    /// println!("{} - {} = {}(mod {})", a_biguint, rhs, res, m);
+    /// assert_eq!(res.to_string(), "0");
+    /// assert_eq!(res.is_overflow(), false);
+    /// assert_eq!(res.is_underflow(), false);
+    /// assert_eq!(res.is_divided_by_zero(), false);
+    /// assert_eq!(res.is_infinity(), false);
+    /// assert_eq!(res.is_undefined(), false);
+    /// ```
+    /// 
+    /// # Example 12 for modulo == 0
     /// ```
     /// use cryptocol::define_utypes_with;
     /// define_utypes_with!(u32);
@@ -8456,7 +8600,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// assert_eq!(res.is_undefined(), true);
     /// ```
     /// 
-    /// # Example 4 for modulo == 1
+    /// # Example 13 for modulo == 1
     /// ```
     /// use cryptocol::define_utypes_with;
     /// define_utypes_with!(u32);
@@ -8472,6 +8616,30 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// assert_eq!(res.is_divided_by_zero(), false);
     /// assert_eq!(res.is_infinity(), false);
     /// assert_eq!(res.is_undefined(), true);
+    /// ```
+    /// 
+    /// # Collective Example for modulo == 0 or 1
+    /// ```
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u32);
+    /// 
+    /// for a_biguint in [U256::from_string("76801874298166903427690031858186486050853753882811946569946433649006").unwrap(), U256::zero(), U256::from_uint(50_u8)]
+    /// {
+    ///     for rhs in [0_u8, 3_u8, 50_u8]
+    ///     {
+    ///         for m in [U256::zero(), U256::one()]
+    ///         {
+    ///             let res = a_biguint.panic_free_modular_sub_uint(rhs, &m);
+    ///             println!("{} - {} = {} (mod {})", a_biguint, rhs, res, m);
+    ///             assert_eq!(res.to_string(), "0");
+    ///             assert_eq!(res.is_overflow(), false);
+    ///             assert_eq!(res.is_underflow(), false);
+    ///             assert_eq!(res.is_divided_by_zero(), false);
+    ///             assert_eq!(res.is_infinity(), false);
+    ///             assert_eq!(res.is_undefined(), true);
+    ///         }
+    ///     }
+    /// }
     /// ```
     /// 
     /// # Big-endian issue
@@ -8613,7 +8781,189 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// assert_eq!(a_biguint.is_undefined(), false);
     /// ```
     /// 
-    /// # Example 4 for modulo == 0
+    /// # Example 4 for op1 == 0
+    /// ```
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u64);
+    /// 
+    /// let mut a_biguint = U256::from_uint(0_u8);
+    /// let m = U256::from_uint(250_u8);
+    /// println!("Originally, a_biguint = {}", a_biguint);
+    /// assert_eq!(a_biguint.to_string(), "0");
+    /// assert_eq!(a_biguint.is_overflow(), false);
+    /// assert_eq!(a_biguint.is_underflow(), false);
+    /// assert_eq!(a_biguint.is_divided_by_zero(), false);
+    /// assert_eq!(a_biguint.is_infinity(), false);
+    /// assert_eq!(a_biguint.is_undefined(), false);
+    /// 
+    /// let rhs = 3_u8;
+    /// a_biguint.panic_free_modular_sub_assign_uint(rhs, &m);
+    /// println!("After a_biguint.panic_free_modular_sub_assign_uint({}, &m), a_biguint = {}", rhs, a_biguint);
+    /// assert_eq!(a_biguint.to_string(), "247");
+    /// assert_eq!(a_biguint.is_overflow(), false);
+    /// assert_eq!(a_biguint.is_underflow(), true);
+    /// assert_eq!(a_biguint.is_divided_by_zero(), false);
+    /// assert_eq!(a_biguint.is_infinity(), false);
+    /// assert_eq!(a_biguint.is_undefined(), false);
+    /// ```
+    /// 
+    /// # Example 5 for op1 == multiple of modulo
+    /// ```
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u64);
+    /// 
+    /// let mut a_biguint = U256::from_uint(750_u16);
+    /// let m = U256::from_uint(250_u8);
+    /// println!("Originally, a_biguint = {}", a_biguint);
+    /// assert_eq!(a_biguint.to_string(), "750");
+    /// assert_eq!(a_biguint.is_overflow(), false);
+    /// assert_eq!(a_biguint.is_underflow(), false);
+    /// assert_eq!(a_biguint.is_divided_by_zero(), false);
+    /// assert_eq!(a_biguint.is_infinity(), false);
+    /// assert_eq!(a_biguint.is_undefined(), false);
+    /// 
+    /// let rhs = 3_u8;
+    /// a_biguint.panic_free_modular_sub_assign_uint(rhs, &m);
+    /// println!("After a_biguint.panic_free_modular_sub_assign_uint({}, &m), a_biguint = {}", rhs, a_biguint);
+    /// assert_eq!(a_biguint.to_string(), "247");
+    /// assert_eq!(a_biguint.is_overflow(), false);
+    /// assert_eq!(a_biguint.is_underflow(), true);
+    /// assert_eq!(a_biguint.is_divided_by_zero(), false);
+    /// assert_eq!(a_biguint.is_infinity(), false);
+    /// assert_eq!(a_biguint.is_undefined(), false);
+    /// ```
+    /// 
+    /// # Example 6 for op2 == 0
+    /// ```
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u64);
+    /// 
+    /// let mut a_biguint = U256::from_string("76801874298166903427690031858186486050853753882811946569946433649006").unwrap();
+    /// let m = U256::from_uint(250_u8);
+    /// println!("Originally, a_biguint = {}", a_biguint);
+    /// assert_eq!(a_biguint.to_string(), "76801874298166903427690031858186486050853753882811946569946433649006");
+    /// assert_eq!(a_biguint.is_overflow(), false);
+    /// assert_eq!(a_biguint.is_underflow(), false);
+    /// assert_eq!(a_biguint.is_divided_by_zero(), false);
+    /// assert_eq!(a_biguint.is_infinity(), false);
+    /// assert_eq!(a_biguint.is_undefined(), false);
+    /// 
+    /// let rhs = 0_u8;
+    /// a_biguint.panic_free_modular_sub_assign_uint(rhs, &m);
+    /// println!("After a_biguint.panic_free_modular_sub_assign_uint({}, &m), a_biguint = {}", rhs, a_biguint);
+    /// assert_eq!(a_biguint.to_string(), "6");
+    /// assert_eq!(a_biguint.is_overflow(), false);
+    /// assert_eq!(a_biguint.is_underflow(), false);
+    /// assert_eq!(a_biguint.is_divided_by_zero(), false);
+    /// assert_eq!(a_biguint.is_infinity(), false);
+    /// assert_eq!(a_biguint.is_undefined(), false);
+    /// ```
+    /// 
+    /// # Example 7 for op2 == multiple of modulo
+    /// ```
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u64);
+    /// 
+    /// let mut a_biguint = U256::from_string("76801874298166903427690031858186486050853753882811946569946433649006").unwrap();
+    /// let m = U256::from_uint(50_u8);
+    /// println!("Originally, a_biguint = {}", a_biguint);
+    /// assert_eq!(a_biguint.to_string(), "76801874298166903427690031858186486050853753882811946569946433649006");
+    /// assert_eq!(a_biguint.is_overflow(), false);
+    /// assert_eq!(a_biguint.is_underflow(), false);
+    /// assert_eq!(a_biguint.is_divided_by_zero(), false);
+    /// assert_eq!(a_biguint.is_infinity(), false);
+    /// assert_eq!(a_biguint.is_undefined(), false);
+    /// 
+    /// let rhs = 250_u8;
+    /// a_biguint.panic_free_modular_sub_assign_uint(rhs, &m);
+    /// println!("After a_biguint.panic_free_modular_sub_assign_uint({}, &m), a_biguint = {}", rhs, a_biguint);
+    /// assert_eq!(a_biguint.to_string(), "6");
+    /// assert_eq!(a_biguint.is_overflow(), false);
+    /// assert_eq!(a_biguint.is_underflow(), false);
+    /// assert_eq!(a_biguint.is_divided_by_zero(), false);
+    /// assert_eq!(a_biguint.is_infinity(), false);
+    /// assert_eq!(a_biguint.is_undefined(), false);
+    /// ```
+    /// 
+    /// # Example 8 for op1 == 0 and op2 == 0
+    /// ```
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u64);
+    /// 
+    /// let mut a_biguint = U256::from_uint(0_u8);
+    /// let m = U256::from_uint(250_u8);
+    /// println!("Originally, a_biguint = {}", a_biguint);
+    /// assert_eq!(a_biguint.to_string(), "0");
+    /// assert_eq!(a_biguint.is_overflow(), false);
+    /// assert_eq!(a_biguint.is_underflow(), false);
+    /// assert_eq!(a_biguint.is_divided_by_zero(), false);
+    /// assert_eq!(a_biguint.is_infinity(), false);
+    /// assert_eq!(a_biguint.is_undefined(), false);
+    /// 
+    /// let rhs = 0_u8;
+    /// a_biguint.panic_free_modular_sub_assign_uint(rhs, &m);
+    /// println!("After a_biguint.panic_free_modular_sub_assign_uint({}, &m), a_biguint = {}", rhs, a_biguint);
+    /// assert_eq!(a_biguint.to_string(), "0");
+    /// assert_eq!(a_biguint.is_overflow(), false);
+    /// assert_eq!(a_biguint.is_underflow(), false);
+    /// assert_eq!(a_biguint.is_divided_by_zero(), false);
+    /// assert_eq!(a_biguint.is_infinity(), false);
+    /// assert_eq!(a_biguint.is_undefined(), false);
+    /// ```
+    /// 
+    /// # Example 9 for op1 == multiple of modulo and op2 == 0
+    /// ```
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u64);
+    /// 
+    /// let mut a_biguint = U256::from_uint(750_u16);
+    /// let m = U256::from_uint(250_u8);
+    /// println!("Originally, a_biguint = {}", a_biguint);
+    /// assert_eq!(a_biguint.to_string(), "750");
+    /// assert_eq!(a_biguint.is_overflow(), false);
+    /// assert_eq!(a_biguint.is_underflow(), false);
+    /// assert_eq!(a_biguint.is_divided_by_zero(), false);
+    /// assert_eq!(a_biguint.is_infinity(), false);
+    /// assert_eq!(a_biguint.is_undefined(), false);
+    /// 
+    /// let rhs = 0_u8;
+    /// a_biguint.panic_free_modular_sub_assign_uint(rhs, &m);
+    /// println!("After a_biguint.panic_free_modular_sub_assign_uint({}, &m), a_biguint = {}", rhs, a_biguint);
+    /// assert_eq!(a_biguint.to_string(), "0");
+    /// assert_eq!(a_biguint.is_overflow(), false);
+    /// assert_eq!(a_biguint.is_underflow(), false);
+    /// assert_eq!(a_biguint.is_divided_by_zero(), false);
+    /// assert_eq!(a_biguint.is_infinity(), false);
+    /// assert_eq!(a_biguint.is_undefined(), false);
+    /// ```
+    /// 
+    /// # Example 10 for op1 == multiple of modulo and op2 == multiple of modulo
+    /// ```
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u64);
+    /// 
+    /// let mut a_biguint = U256::from_uint(150_u8);
+    /// let m = U256::from_uint(50_u8);
+    /// println!("Originally, a_biguint = {}", a_biguint);
+    /// assert_eq!(a_biguint.to_string(), "150");
+    /// assert_eq!(a_biguint.is_overflow(), false);
+    /// assert_eq!(a_biguint.is_underflow(), false);
+    /// assert_eq!(a_biguint.is_divided_by_zero(), false);
+    /// assert_eq!(a_biguint.is_infinity(), false);
+    /// assert_eq!(a_biguint.is_undefined(), false);
+    /// 
+    /// let rhs = 250_u8;
+    /// a_biguint.panic_free_modular_sub_assign_uint(rhs, &m);
+    /// println!("After a_biguint.panic_free_modular_sub_assign_uint({}, &m), a_biguint = {}", rhs, a_biguint);
+    /// assert_eq!(a_biguint.to_string(), "0");
+    /// assert_eq!(a_biguint.is_overflow(), false);
+    /// assert_eq!(a_biguint.is_underflow(), false);
+    /// assert_eq!(a_biguint.is_divided_by_zero(), false);
+    /// assert_eq!(a_biguint.is_infinity(), false);
+    /// assert_eq!(a_biguint.is_undefined(), false);
+    /// ```
+    /// 
+    /// # Example 11 for modulo == 0
     /// ```
     /// use cryptocol::define_utypes_with;
     /// define_utypes_with!(u64);
@@ -8621,7 +8971,6 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// let mut a_biguint = U256::from_uint(2_u8);
     /// let m = U256::zero();
     /// let rhs = 3_u8;
-    /// 
     /// println!("Originally, a_biguint = {}", a_biguint);
     /// assert_eq!(a_biguint.to_string(), "2");
     /// assert_eq!(a_biguint.is_underflow(), false);
@@ -8640,7 +8989,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// assert_eq!(a_biguint.is_undefined(), true);
     /// ```
     /// 
-    /// # Example 5 for modulo == 1
+    /// # Example 12 for modulo == 1
     /// ```
     /// use cryptocol::define_utypes_with;
     /// define_utypes_with!(u64);
@@ -8648,7 +8997,6 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// let mut a_biguint = U256::from_uint(2_u8);
     /// let m = U256::one();
     /// let rhs = 3_u8;
-    /// 
     /// println!("Originally, a_biguint = {}", a_biguint);
     /// assert_eq!(a_biguint.to_string(), "2");
     /// assert_eq!(a_biguint.is_underflow(), false);
@@ -8665,6 +9013,38 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// assert_eq!(a_biguint.is_divided_by_zero(), false);
     /// assert_eq!(a_biguint.is_infinity(), false);
     /// assert_eq!(a_biguint.is_undefined(), true);
+    /// ```
+    /// 
+    /// # Collective Example 12 for modulo == 0 or 1
+    /// ```
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u64);
+    /// 
+    /// for a in [U256::from_string("76801874298166903427690031858186486050853753882811946569946433649006").unwrap(), U256::zero(), U256::from_uint(50_u8)]
+    /// {
+    ///     for rhs in [0_u8, 3_u8, 50_u8]
+    ///     {
+    ///         for m in [U256::zero(), U256::one()]
+    ///         {
+    ///             let mut a_biguint = a.clone();
+    ///             println!("Originally, a = {}", a_biguint);
+    ///             assert_eq!(a_biguint.is_overflow(), false);
+    ///             assert_eq!(a_biguint.is_underflow(), false);
+    ///             assert_eq!(a_biguint.is_divided_by_zero(), false);
+    ///             assert_eq!(a_biguint.is_infinity(), false);
+    ///             assert_eq!(a_biguint.is_undefined(), false);
+    ///         
+    ///             a_biguint.panic_free_modular_sub_assign_uint(rhs, &m);
+    ///             println!("After a_biguint.panic_free_modular_sub_assign_uint({}, &{}), a_biguint = {}", rhs, a_biguint, m);
+    ///             assert_eq!(a_biguint.to_string(), "0");
+    ///             assert_eq!(a_biguint.is_overflow(), false);
+    ///             assert_eq!(a_biguint.is_underflow(), false);
+    ///             assert_eq!(a_biguint.is_divided_by_zero(), false);
+    ///             assert_eq!(a_biguint.is_infinity(), false);
+    ///             assert_eq!(a_biguint.is_undefined(), true);
+    ///         }
+    ///     }
+    /// }
     /// ```
     /// 
     /// # Big-endian issue
