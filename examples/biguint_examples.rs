@@ -2349,8 +2349,9 @@ fn biguint_modular_add_uint()
     // Normal case 1
     let a_biguint = U256::from_string("76801874298166903427690031858186486050853753882811946569946433649006").unwrap();
     let m = a_biguint.wrapping_add_uint(2_u8);
-    let res = a_biguint.modular_add_uint(1_u8, &m);
-    println!("{} + 1 = {}(mod {})", a_biguint, res, m);
+    let rhs = 1_u8;
+    let res = a_biguint.modular_add_uint(rhs, &m);
+    println!("{} + {} = {}(mod {})", a_biguint, rhs, res, m);
     assert_eq!(res.to_string(), "76801874298166903427690031858186486050853753882811946569946433649007");
     assert_eq!(res.is_overflow(), false);
     assert_eq!(res.is_underflow(), false);
@@ -2361,8 +2362,9 @@ fn biguint_modular_add_uint()
     // Normal case 2
     let a_biguint = U256::from_string("76801874298166903427690031858186486050853753882811946569946433649006").unwrap();
     let m = a_biguint.wrapping_add_uint(2_u8);
-    let res = a_biguint.modular_add_uint(2_u8, &m);
-    println!("{} + 2 = {}(mod {})", a_biguint, res, m);
+    let rhs = 2_u8;
+    let res = a_biguint.modular_add_uint(rhs, &m);
+    println!("{} + {} = {}(mod {})", a_biguint, rhs, res, m);
     assert_eq!(res.to_string(), "0");
     assert_eq!(res.is_overflow(), true);
     assert_eq!(res.is_underflow(), false);
@@ -2373,8 +2375,9 @@ fn biguint_modular_add_uint()
     // Normal case 3
     let a_biguint = U256::from_string("76801874298166903427690031858186486050853753882811946569946433649006").unwrap();
     let m = a_biguint.wrapping_add_uint(2_u8);
-    let res = a_biguint.modular_add_uint(3_u8, &m);
-    println!("{} + 3 = {}(mod {})", a_biguint, res, m);
+    let rhs = 3_u8;
+    let res = a_biguint.modular_add_uint(rhs, &m);
+    println!("{} + {} = {}(mod {})", a_biguint, rhs, res, m);
     assert_eq!(res.to_string(), "1");
     assert_eq!(res.is_overflow(), true);
     assert_eq!(res.is_underflow(), false);
@@ -2385,8 +2388,9 @@ fn biguint_modular_add_uint()
     // op1 == 0
     let a_biguint = U256::from_uint(0_u8);
     let m = U256::from_uint(250_u8);
-    let res = a_biguint.modular_add_uint(3_u8, &m);
-    println!("{} + 3 = {}(mod {})", a_biguint, res, m);
+    let rhs = 3_u8;
+    let res = a_biguint.modular_add_uint(rhs, &m);
+    println!("{} + {} = {}(mod {})", a_biguint, rhs, res, m);
     assert_eq!(res.to_string(), "3");
     assert_eq!(res.is_overflow(), false);
     assert_eq!(res.is_underflow(), false);
@@ -2397,8 +2401,9 @@ fn biguint_modular_add_uint()
     // op1 == multiple of modulo
     let a_biguint = U256::from_uint(750_u16);
     let m = U256::from_uint(250_u8);
-    let res = a_biguint.modular_add_uint(3_u8, &m);
-    println!("{} + 3 = {}(mod {})", a_biguint, res, m);
+    let rhs = 3_u8;
+    let res = a_biguint.modular_add_uint(rhs, &m);
+    println!("{} + {} = {}(mod {})", a_biguint, rhs, res, m);
     assert_eq!(res.to_string(), "3");
     assert_eq!(res.is_overflow(), false);
     assert_eq!(res.is_underflow(), false);
@@ -2409,8 +2414,9 @@ fn biguint_modular_add_uint()
     // op2 == 0
     let a_biguint = U256::from_string("76801874298166903427690031858186486050853753882811946569946433649006").unwrap();
     let m = U256::from_uint(250_u8);
-    let res = a_biguint.modular_add_uint(0_u8, &m);
-    println!("{} + 0 = {}(mod {})", a_biguint, res, m);
+    let rhs = 0_u8;
+    let res = a_biguint.modular_add_uint(rhs, &m);
+    println!("{} + {} = {}(mod {})", a_biguint, rhs, res, m);
     assert_eq!(res.to_string(), "6");
     assert_eq!(res.is_overflow(), false);
     assert_eq!(res.is_underflow(), false);
@@ -2421,8 +2427,9 @@ fn biguint_modular_add_uint()
     // op2 == multiple of modulo
     let a_biguint = U256::from_string("76801874298166903427690031858186486050853753882811946569946433649006").unwrap();
     let m = U256::from_uint(50_u8);
-    let res = a_biguint.modular_add_uint(250_u8, &m);
-    println!("{} + 250 = {}(mod {})", a_biguint, res, m);
+    let rhs = 250_u8;
+    let res = a_biguint.modular_add_uint(rhs, &m);
+    println!("{} + {} = {}(mod {})", a_biguint, rhs, res, m);
     assert_eq!(res.to_string(), "6");
     assert_eq!(res.is_overflow(), false);
     assert_eq!(res.is_underflow(), false);
@@ -2433,8 +2440,9 @@ fn biguint_modular_add_uint()
     // op1 == 0 and op2 == 0
     let a_biguint = U256::from_uint(0_u8);
     let m = U256::from_uint(250_u8);
-    let res = a_biguint.modular_add_uint(0_u8, &m);
-    println!("{} + 0 = {}(mod {})", a_biguint, res, m);
+    let rhs = 0_u8;
+    let res = a_biguint.modular_add_uint(rhs, &m);
+    println!("{} + {} = {}(mod {})", a_biguint, rhs, res, m);
     assert_eq!(res.to_string(), "0");
     assert_eq!(res.is_overflow(), false);
     assert_eq!(res.is_underflow(), false);
@@ -2445,8 +2453,9 @@ fn biguint_modular_add_uint()
     // op1 == multiple of modulo and op2 == 0
     let a_biguint = U256::from_uint(750_u16);
     let m = U256::from_uint(250_u8);
-    let res = a_biguint.modular_add_uint(0_u8, &m);
-    println!("{} + 0 = {}(mod {})", a_biguint, res, m);
+    let rhs = 0_u8;
+    let res = a_biguint.modular_add_uint(rhs, &m);
+    println!("{} + {} = {}(mod {})", a_biguint, rhs, res, m);
     assert_eq!(res.to_string(), "0");
     assert_eq!(res.is_overflow(), false);
     assert_eq!(res.is_underflow(), false);
@@ -2457,8 +2466,9 @@ fn biguint_modular_add_uint()
     // op1 == 0 and op2 == multiple of modulo
     let a_biguint = U256::from_uint(0_u8);
     let m = U256::from_uint(50_u8);
-    let res = a_biguint.modular_add_uint(250_u8, &m);
-    println!("{} + 0 = {}(mod {})", a_biguint, res, m);
+    let rhs = 250_u8;
+    let res = a_biguint.modular_add_uint(rhs, &m);
+    println!("{} + {} = {}(mod {})", a_biguint, rhs, res, m);
     assert_eq!(res.to_string(), "0");
     assert_eq!(res.is_overflow(), false);
     assert_eq!(res.is_underflow(), false);
@@ -2469,8 +2479,9 @@ fn biguint_modular_add_uint()
     // op1 == multiple of modulo and op2 == multiple of modulo
     let a_biguint = U256::from_uint(150_u8);
     let m = U256::from_uint(50_u8);
-    let res = a_biguint.modular_add_uint(250_u8, &m);
-    println!("{} + 0 = {}(mod {})", a_biguint, res, m);
+    let rhs = 250_u8;
+    let res = a_biguint.modular_add_uint(rhs, &m);
+    println!("{} + {} = {}(mod {})", a_biguint, rhs, res, m);
     assert_eq!(res.to_string(), "0");
     assert_eq!(res.is_overflow(), false);
     assert_eq!(res.is_underflow(), false);
@@ -2480,13 +2491,15 @@ fn biguint_modular_add_uint()
 
     let _a_biguint = U256::from_string("76801874298166903427690031858186486050853753882811946569946433649006").unwrap();
     let _m = U256::zero();
+    let _rhs = 3_u8;
     // It will panic.
-    // let res = a_biguint.modular_add_uint(3_u8, &m);
+    // let res = a_biguint.modular_add_uint(_rhs, &m);
 
     let _a_biguint = U256::from_string("76801874298166903427690031858186486050853753882811946569946433649006").unwrap();
     let _m = U256::one();
+    let _rhs = 3_u8;
     // It will panic.
-    // let res = a_biguint.modular_add_uint(3_u8, &m);
+    // let res = a_biguint.modular_add_uint(_rhs, &m);
     println!("---------------------------");
 }
 
@@ -2507,8 +2520,9 @@ fn biguint_modular_add_assign_uint()
     assert_eq!(a_biguint.is_infinity(), false);
     assert_eq!(a_biguint.is_undefined(), false);
 
-    a_biguint.modular_add_assign_uint(1_u8, &m);
-    println!("After a.modular_add_assign_uint(1_u8, &m), a_biguint = {}", a_biguint);
+    let rhs = 1_u8;
+    a_biguint.modular_add_assign_uint(rhs, &m);
+    println!("After a.modular_add_assign_uint({}, &m), a_biguint = {}", rhs, a_biguint);
     assert_eq!(a_biguint.to_string(), "768018742981669034276900318581864860508537538828119465699464336490061");
     assert_eq!(a_biguint.is_overflow(), false);
     assert_eq!(a_biguint.is_underflow(), false);
@@ -2527,8 +2541,9 @@ fn biguint_modular_add_assign_uint()
     assert_eq!(a_biguint.is_infinity(), false);
     assert_eq!(a_biguint.is_undefined(), false);
 
-    a_biguint.modular_add_assign_uint(2_u8, &m);
-    println!("After a.modular_add_assign_uint(2_u8, &m), da_biguint = {}", a_biguint);
+    let rhs = 2_u8;
+    a_biguint.modular_add_assign_uint(rhs, &m);
+    println!("After a.modular_add_assign_uint({}, &m), a_biguint = {}", rhs, a_biguint);
     assert_eq!(a_biguint.to_string(), "0");
     assert_eq!(a_biguint.is_overflow(), true);
     assert_eq!(a_biguint.is_underflow(), false);
@@ -2547,8 +2562,9 @@ fn biguint_modular_add_assign_uint()
     assert_eq!(a_biguint.is_infinity(), false);
     assert_eq!(a_biguint.is_undefined(), false);
 
-    a_biguint.modular_add_assign_uint(3_u8, &m);
-    println!("After a.modular_add_assign_uint(3_u8, &m), a_biguint = {}", a_biguint);
+    let rhs = 3_u8;
+    a_biguint.modular_add_assign_uint(rhs, &m);
+    println!("After a.modular_add_assign_uint({}, &m), a_biguint = {}", rhs, a_biguint);
     assert_eq!(a_biguint.to_string(), "1");
     assert_eq!(a_biguint.is_overflow(), true);
     assert_eq!(a_biguint.is_underflow(), false);
@@ -2576,8 +2592,9 @@ fn biguint_modular_add_assign_uint()
     assert_eq!(a_biguint.is_infinity(), false);
     assert_eq!(a_biguint.is_undefined(), false);
 
-    a_biguint.modular_add_assign_uint(3_u8, &m);
-    println!("After a.modular_add_assign_uint(3_u8, &m), a_biguint = {}", a_biguint);
+    let rhs = 3_u8;
+    a_biguint.modular_add_assign_uint(rhs, &m);
+    println!("After a.modular_add_assign_uint({}, &m), a_biguint = {}", rhs, a_biguint);
     assert_eq!(a_biguint.to_string(), "3");
     assert_eq!(a_biguint.is_overflow(), false);
     assert_eq!(a_biguint.is_underflow(), false);
@@ -2596,8 +2613,9 @@ fn biguint_modular_add_assign_uint()
     assert_eq!(a_biguint.is_infinity(), false);
     assert_eq!(a_biguint.is_undefined(), false);
 
-    a_biguint.modular_add_assign_uint(3_u8, &m);
-    println!("After a.modular_add_assign_uint(3_u8, &m), a_biguint = {}", a_biguint);
+    let rhs = 3_u8;
+    a_biguint.modular_add_assign_uint(rhs, &m);
+    println!("After a.modular_add_assign_uint({}, &m), a_biguint = {}", rhs, a_biguint);
     assert_eq!(a_biguint.to_string(), "3");
     assert_eq!(a_biguint.is_overflow(), false);
     assert_eq!(a_biguint.is_underflow(), false);
@@ -2616,8 +2634,9 @@ fn biguint_modular_add_assign_uint()
     assert_eq!(a_biguint.is_infinity(), false);
     assert_eq!(a_biguint.is_undefined(), false);
 
-    a_biguint.modular_add_assign_uint(0_u8, &m);
-    println!("After a.modular_add_assign_uint(0_u8, &m), a_biguint = {}", a_biguint);
+    let rhs = 0_u8;
+    a_biguint.modular_add_assign_uint(rhs, &m);
+    println!("After a.modular_add_assign_uint({}, &m), a_biguint = {}", rhs, a_biguint);
     assert_eq!(a_biguint.to_string(), "6");
     assert_eq!(a_biguint.is_overflow(), false);
     assert_eq!(a_biguint.is_underflow(), false);
@@ -2636,8 +2655,9 @@ fn biguint_modular_add_assign_uint()
     assert_eq!(a_biguint.is_infinity(), false);
     assert_eq!(a_biguint.is_undefined(), false);
 
-    a_biguint.modular_add_assign_uint(250_u8, &m);
-    println!("After a.modular_add_assign_uint(250_u8, &m), a_biguint = {}", a_biguint);
+    let rhs = 250_u8;
+    a_biguint.modular_add_assign_uint(rhs, &m);
+    println!("After a.modular_add_assign_uint({}, &m), a_biguint = {}", rhs, a_biguint);
     assert_eq!(a_biguint.to_string(), "6");
     assert_eq!(a_biguint.is_overflow(), false);
     assert_eq!(a_biguint.is_underflow(), false);
@@ -2656,8 +2676,9 @@ fn biguint_modular_add_assign_uint()
     assert_eq!(a_biguint.is_infinity(), false);
     assert_eq!(a_biguint.is_undefined(), false);
 
-    a_biguint.modular_add_assign_uint(0_u8, &m);
-    println!("After a.modular_add_assign_uint(0_u8, &m), a_biguint = {}", a_biguint);
+    let rhs = 0_u8;
+    a_biguint.modular_add_assign_uint(rhs, &m);
+    println!("After a.modular_add_assign_uint({}, &m), a_biguint = {}", rhs, a_biguint);
     assert_eq!(a_biguint.to_string(), "0");
     assert_eq!(a_biguint.is_overflow(), false);
     assert_eq!(a_biguint.is_underflow(), false);
@@ -2676,8 +2697,9 @@ fn biguint_modular_add_assign_uint()
     assert_eq!(a_biguint.is_infinity(), false);
     assert_eq!(a_biguint.is_undefined(), false);
 
-    a_biguint.modular_add_assign_uint(0_u8, &m);
-    println!("After a.modular_add_assign_uint(0_u8, &m), a_biguint = {}", a_biguint);
+    let rhs = 0_u8;
+    a_biguint.modular_add_assign_uint(rhs, &m);
+    println!("After a.modular_add_assign_uint({}, &m), a_biguint = {}", rhs, a_biguint);
     assert_eq!(a_biguint.to_string(), "0");
     assert_eq!(a_biguint.is_overflow(), false);
     assert_eq!(a_biguint.is_underflow(), false);
@@ -2696,8 +2718,9 @@ fn biguint_modular_add_assign_uint()
     assert_eq!(a_biguint.is_infinity(), false);
     assert_eq!(a_biguint.is_undefined(), false);
 
-    a_biguint.modular_add_assign_uint(250_u8, &m);
-    println!("After a.modular_add_assign_uint(250_u8, &m), a_biguint = {}", a_biguint);
+    let rhs = 250_u8;
+    a_biguint.modular_add_assign_uint(rhs, &m);
+    println!("After a.modular_add_assign_uint({}, &m), a_biguint = {}", rhs, a_biguint);
     assert_eq!(a_biguint.to_string(), "0");
     assert_eq!(a_biguint.is_overflow(), false);
     assert_eq!(a_biguint.is_underflow(), false);
@@ -2707,11 +2730,13 @@ fn biguint_modular_add_assign_uint()
 
     let _a_biguint = U256::from_string("76801874298166903427690031858186486050853753882811946569946433649006").unwrap();
     let _m = U256::zero();
+    let _rhs = 1_u8;
     // It will panic.
     // a_biguint.modular_add_assign_uint(1_u8, &m);
 
     let _a_biguint = U256::from_string("76801874298166903427690031858186486050853753882811946569946433649006").unwrap();
     let _m = U256::one();
+    let _rhs = 1_u8;
     // It will panic.
     // a_biguint.modular_add_assign_uint(1_u8, &m);
     println!("---------------------------");
@@ -2762,6 +2787,110 @@ fn biguint_panic_free_modular_add_uint()
     assert_eq!(res.is_infinity(), false);
     assert_eq!(res.is_undefined(), false);
 
+    // op1 == 0
+    let a_biguint = U256::from_uint(0_u8);
+    let m = U256::from_uint(250_u8);
+    let rhs = 3_u8;
+    let res = a_biguint.panic_free_modular_add_uint(rhs, &m);
+    println!("{} + {} = {}(mod {})", a_biguint, rhs, res, m);
+    assert_eq!(res.to_string(), "3");
+    assert_eq!(res.is_overflow(), false);
+    assert_eq!(res.is_underflow(), false);
+    assert_eq!(res.is_divided_by_zero(), false);
+    assert_eq!(res.is_infinity(), false);
+    assert_eq!(res.is_undefined(), false);
+
+    // op1 == multiple of modulo
+    let a_biguint = U256::from_uint(750_u16);
+    let m = U256::from_uint(250_u8);
+    let rhs = 3_u8;
+    let res = a_biguint.panic_free_modular_add_uint(rhs, &m);
+    println!("{} + {} = {}(mod {})", a_biguint, rhs, res, m);
+    assert_eq!(res.to_string(), "3");
+    assert_eq!(res.is_overflow(), false);
+    assert_eq!(res.is_underflow(), false);
+    assert_eq!(res.is_divided_by_zero(), false);
+    assert_eq!(res.is_infinity(), false);
+    assert_eq!(res.is_undefined(), false);
+
+    // op2 == 0
+    let a_biguint = U256::from_string("76801874298166903427690031858186486050853753882811946569946433649006").unwrap();
+    let m = U256::from_uint(250_u8);
+    let rhs = 0_u8;
+    let res = a_biguint.panic_free_modular_add_uint(rhs, &m);
+    println!("{} + {} = {}(mod {})", a_biguint, rhs, res, m);
+    assert_eq!(res.to_string(), "6");
+    assert_eq!(res.is_overflow(), false);
+    assert_eq!(res.is_underflow(), false);
+    assert_eq!(res.is_divided_by_zero(), false);
+    assert_eq!(res.is_infinity(), false);
+    assert_eq!(res.is_undefined(), false);
+
+    // op2 == multiple of modulo
+    let a_biguint = U256::from_string("76801874298166903427690031858186486050853753882811946569946433649006").unwrap();
+    let m = U256::from_uint(50_u8);
+    let rhs = 250_u8;
+    let res = a_biguint.panic_free_modular_add_uint(rhs, &m);
+    println!("{} + {} = {}(mod {})", a_biguint, rhs, res, m);
+    assert_eq!(res.to_string(), "6");
+    assert_eq!(res.is_overflow(), false);
+    assert_eq!(res.is_underflow(), false);
+    assert_eq!(res.is_divided_by_zero(), false);
+    assert_eq!(res.is_infinity(), false);
+    assert_eq!(res.is_undefined(), false);
+
+    // op1 == 0 and op2 == 0
+    let a_biguint = U256::from_uint(0_u8);
+    let m = U256::from_uint(250_u8);
+    let rhs = 0_u8;
+    let res = a_biguint.panic_free_modular_add_uint(rhs, &m);
+    println!("{} + {} = {}(mod {})", a_biguint, rhs, res, m);
+    assert_eq!(res.to_string(), "0");
+    assert_eq!(res.is_overflow(), false);
+    assert_eq!(res.is_underflow(), false);
+    assert_eq!(res.is_divided_by_zero(), false);
+    assert_eq!(res.is_infinity(), false);
+    assert_eq!(res.is_undefined(), false);
+
+    // op1 == multiple of modulo and op2 == 0
+    let a_biguint = U256::from_uint(750_u16);
+    let m = U256::from_uint(250_u8);
+    let rhs = 0_u8;
+    let res = a_biguint.panic_free_modular_add_uint(rhs, &m);
+    println!("{} + {} = {}(mod {})", a_biguint, rhs, res, m);
+    assert_eq!(res.to_string(), "0");
+    assert_eq!(res.is_overflow(), false);
+    assert_eq!(res.is_underflow(), false);
+    assert_eq!(res.is_divided_by_zero(), false);
+    assert_eq!(res.is_infinity(), false);
+    assert_eq!(res.is_undefined(), false);
+
+    // op1 == 0 and op2 == multiple of modulo
+    let a_biguint = U256::from_uint(0_u8);
+    let m = U256::from_uint(50_u8);
+    let rhs = 250_u8;
+    let res = a_biguint.panic_free_modular_add_uint(rhs, &m);
+    println!("{} + {} = {}(mod {})", a_biguint, rhs, res, m);
+    assert_eq!(res.to_string(), "0");
+    assert_eq!(res.is_overflow(), false);
+    assert_eq!(res.is_underflow(), false);
+    assert_eq!(res.is_divided_by_zero(), false);
+    assert_eq!(res.is_infinity(), false);
+    assert_eq!(res.is_undefined(), false);
+
+    // op1 == multiple of modulo and op2 == multiple of modulo
+    let a_biguint = U256::from_uint(150_u8);
+    let m = U256::from_uint(50_u8);
+    let rhs = 250_u8;
+    let res = a_biguint.panic_free_modular_add_uint(rhs, &m);
+    println!("{} + {} = {}(mod {})", a_biguint, rhs, res, m);
+    assert_eq!(res.to_string(), "0");
+    assert_eq!(res.is_overflow(), false);
+    assert_eq!(res.is_underflow(), false);
+    assert_eq!(res.is_divided_by_zero(), false);
+    assert_eq!(res.is_infinity(), false);
+    assert_eq!(res.is_undefined(), false);
+
     // modulo == 0
     let a_biguint = U256::from_string("76801874298166903427690031858186486050853753882811946569946433649006").unwrap();
     let m = U256::zero();
@@ -2787,6 +2916,25 @@ fn biguint_panic_free_modular_add_uint()
     assert_eq!(res.is_divided_by_zero(), false);
     assert_eq!(res.is_infinity(), false);
     assert_eq!(res.is_undefined(), true);
+
+    // collectively
+    for a_biguint in [U256::from_string("76801874298166903427690031858186486050853753882811946569946433649006").unwrap(), U256::zero(), U256::from_uint(50_u8)]
+    {
+        for rhs in [0_u8, 3_u8, 50_u8]
+        {
+            for m in [U256::zero(), U256::one()]
+            {
+                let res = a_biguint.panic_free_modular_add_uint(rhs, &m);
+                println!("{} + {} = {} (mod {})", a_biguint, rhs, res, m);
+                assert_eq!(res.to_string(), "0");
+                assert_eq!(res.is_overflow(), false);
+                assert_eq!(res.is_underflow(), false);
+                assert_eq!(res.is_divided_by_zero(), false);
+                assert_eq!(res.is_infinity(), false);
+                assert_eq!(res.is_undefined(), true);
+            }
+        }
+    }
     println!("---------------------------");
 }
 
@@ -2868,6 +3016,153 @@ fn biguint_panic_free_modular_add_assign_uint()
     assert_eq!(a_biguint.is_infinity(), false);
     assert_eq!(a_biguint.is_undefined(), false);
 
+    // op1 == 0
+    let mut a_biguint = U256::from_uint(0_u8);
+    let m = U256::from_uint(250_u8);
+    println!("Originally, a_biguint = {}", a_biguint);
+    assert_eq!(a_biguint.to_string(), "0");
+    assert_eq!(a_biguint.is_overflow(), false);
+    assert_eq!(a_biguint.is_underflow(), false);
+    assert_eq!(a_biguint.is_divided_by_zero(), false);
+    assert_eq!(a_biguint.is_infinity(), false);
+    assert_eq!(a_biguint.is_undefined(), false);
+
+    let rhs = 3_u8;
+    a_biguint.panic_free_modular_add_assign_uint(rhs, &m);
+    println!("After a_biguint.panic_free_modular_add_assign_uint({}, &m), a_biguint = {}", rhs, a_biguint);
+    assert_eq!(a_biguint.to_string(), "3");
+    assert_eq!(a_biguint.is_overflow(), false);
+    assert_eq!(a_biguint.is_underflow(), false);
+    assert_eq!(a_biguint.is_divided_by_zero(), false);
+    assert_eq!(a_biguint.is_infinity(), false);
+    assert_eq!(a_biguint.is_undefined(), false);
+
+    // op1 == multiple of modulo
+    let mut a_biguint = U256::from_uint(750_u16);
+    let m = U256::from_uint(250_u8);
+    println!("Originally, a_biguint = {}", a_biguint);
+    assert_eq!(a_biguint.to_string(), "750");
+    assert_eq!(a_biguint.is_overflow(), false);
+    assert_eq!(a_biguint.is_underflow(), false);
+    assert_eq!(a_biguint.is_divided_by_zero(), false);
+    assert_eq!(a_biguint.is_infinity(), false);
+    assert_eq!(a_biguint.is_undefined(), false);
+
+    let rhs = 3_u8;
+    a_biguint.panic_free_modular_add_assign_uint(rhs, &m);
+    println!("After a_biguint.panic_free_modular_add_assign_uint({}, &m), a_biguint = {}", rhs, a_biguint);
+    assert_eq!(a_biguint.to_string(), "3");
+    assert_eq!(a_biguint.is_overflow(), false);
+    assert_eq!(a_biguint.is_underflow(), false);
+    assert_eq!(a_biguint.is_divided_by_zero(), false);
+    assert_eq!(a_biguint.is_infinity(), false);
+    assert_eq!(a_biguint.is_undefined(), false);
+
+    // op2 == 0
+    let mut a_biguint = U256::from_string("76801874298166903427690031858186486050853753882811946569946433649006").unwrap();
+    let m = U256::from_uint(250_u8);
+    println!("Originally, a_biguint = {}", a_biguint);
+    assert_eq!(a_biguint.to_string(), "76801874298166903427690031858186486050853753882811946569946433649006");
+    assert_eq!(a_biguint.is_overflow(), false);
+    assert_eq!(a_biguint.is_underflow(), false);
+    assert_eq!(a_biguint.is_divided_by_zero(), false);
+    assert_eq!(a_biguint.is_infinity(), false);
+    assert_eq!(a_biguint.is_undefined(), false);
+
+    let rhs = 0_u8;
+    a_biguint.panic_free_modular_add_assign_uint(rhs, &m);
+    println!("After a_biguint.panic_free_modular_add_assign_uint({}, &m), a_biguint = {}", rhs, a_biguint);
+    assert_eq!(a_biguint.to_string(), "6");
+    assert_eq!(a_biguint.is_overflow(), false);
+    assert_eq!(a_biguint.is_underflow(), false);
+    assert_eq!(a_biguint.is_divided_by_zero(), false);
+    assert_eq!(a_biguint.is_infinity(), false);
+    assert_eq!(a_biguint.is_undefined(), false);
+
+    // op2 == multiple of modulo
+    let mut a_biguint = U256::from_string("76801874298166903427690031858186486050853753882811946569946433649006").unwrap();
+    let m = U256::from_uint(50_u8);
+    println!("Originally, a_biguint = {}", a_biguint);
+    assert_eq!(a_biguint.to_string(), "76801874298166903427690031858186486050853753882811946569946433649006");
+    assert_eq!(a_biguint.is_overflow(), false);
+    assert_eq!(a_biguint.is_underflow(), false);
+    assert_eq!(a_biguint.is_divided_by_zero(), false);
+    assert_eq!(a_biguint.is_infinity(), false);
+    assert_eq!(a_biguint.is_undefined(), false);
+
+    let rhs = 250_u8;
+    a_biguint.panic_free_modular_add_assign_uint(rhs, &m);
+    println!("After a_biguint.panic_free_modular_add_assign_uint({}, &m), a_biguint = {}", rhs, a_biguint);
+    assert_eq!(a_biguint.to_string(), "6");
+    assert_eq!(a_biguint.is_overflow(), false);
+    assert_eq!(a_biguint.is_underflow(), false);
+    assert_eq!(a_biguint.is_divided_by_zero(), false);
+    assert_eq!(a_biguint.is_infinity(), false);
+    assert_eq!(a_biguint.is_undefined(), false);
+
+    // op1 == 0 and op2 == 0
+    let mut a_biguint = U256::from_uint(0_u8);
+    let m = U256::from_uint(250_u8);
+    println!("Originally, a_biguint = {}", a_biguint);
+    assert_eq!(a_biguint.to_string(), "0");
+    assert_eq!(a_biguint.is_overflow(), false);
+    assert_eq!(a_biguint.is_underflow(), false);
+    assert_eq!(a_biguint.is_divided_by_zero(), false);
+    assert_eq!(a_biguint.is_infinity(), false);
+    assert_eq!(a_biguint.is_undefined(), false);
+
+    let rhs = 0_u8;
+    a_biguint.panic_free_modular_add_assign_uint(rhs, &m);
+    println!("After a_biguint.panic_free_modular_add_assign_uint({}, &m), a_biguint = {}", rhs, a_biguint);
+    assert_eq!(a_biguint.to_string(), "0");
+    assert_eq!(a_biguint.is_overflow(), false);
+    assert_eq!(a_biguint.is_underflow(), false);
+    assert_eq!(a_biguint.is_divided_by_zero(), false);
+    assert_eq!(a_biguint.is_infinity(), false);
+    assert_eq!(a_biguint.is_undefined(), false);
+
+    // op1 == multiple of modulo and op2 == 0
+    let mut a_biguint = U256::from_uint(750_u16);
+    let m = U256::from_uint(250_u8);
+    println!("Originally, a_biguint = {}", a_biguint);
+    assert_eq!(a_biguint.to_string(), "750");
+    assert_eq!(a_biguint.is_overflow(), false);
+    assert_eq!(a_biguint.is_underflow(), false);
+    assert_eq!(a_biguint.is_divided_by_zero(), false);
+    assert_eq!(a_biguint.is_infinity(), false);
+    assert_eq!(a_biguint.is_undefined(), false);
+
+    let rhs = 0_u8;
+    a_biguint.panic_free_modular_add_assign_uint(rhs, &m);
+    println!("After a_biguint.panic_free_modular_add_assign_uint({}, &m), a_biguint = {}", rhs, a_biguint);
+    assert_eq!(a_biguint.to_string(), "0");
+    assert_eq!(a_biguint.is_overflow(), false);
+    assert_eq!(a_biguint.is_underflow(), false);
+    assert_eq!(a_biguint.is_divided_by_zero(), false);
+    assert_eq!(a_biguint.is_infinity(), false);
+    assert_eq!(a_biguint.is_undefined(), false);
+
+    // op1 == multiple of modulo and op2 == multiple of modulo
+    let mut a_biguint = U256::from_uint(150_u8);
+    let m = U256::from_uint(50_u8);
+    println!("Originally, a_biguint = {}", a_biguint);
+    assert_eq!(a_biguint.to_string(), "150");
+    assert_eq!(a_biguint.is_overflow(), false);
+    assert_eq!(a_biguint.is_underflow(), false);
+    assert_eq!(a_biguint.is_divided_by_zero(), false);
+    assert_eq!(a_biguint.is_infinity(), false);
+    assert_eq!(a_biguint.is_undefined(), false);
+
+    let rhs = 250_u8;
+    a_biguint.panic_free_modular_add_assign_uint(rhs, &m);
+    println!("After a_biguint.panic_free_modular_add_assign_uint({}, &m), a_biguint = {}", rhs, a_biguint);
+    assert_eq!(a_biguint.to_string(), "0");
+    assert_eq!(a_biguint.is_overflow(), false);
+    assert_eq!(a_biguint.is_underflow(), false);
+    assert_eq!(a_biguint.is_divided_by_zero(), false);
+    assert_eq!(a_biguint.is_infinity(), false);
+    assert_eq!(a_biguint.is_undefined(), false);
+
     // modulo == 0
     let mut a_biguint = U256::from_string("768018742981669034276900318581864860508537538828119465699464336490060").unwrap();
     let m = U256::zero();
@@ -2909,6 +3204,33 @@ fn biguint_panic_free_modular_add_assign_uint()
     assert_eq!(a_biguint.is_divided_by_zero(), false);
     assert_eq!(a_biguint.is_infinity(), false);
     assert_eq!(a_biguint.is_undefined(), true);
+
+    // collectively
+    for a in [U256::from_string("76801874298166903427690031858186486050853753882811946569946433649006").unwrap(), U256::zero(), U256::from_uint(50_u8)]
+    {
+        for rhs in [0_u8, 3_u8, 50_u8]
+        {
+            for m in [U256::zero(), U256::one()]
+            {
+                let mut a_biguint = a.clone();
+                println!("Originally, a = {}", a_biguint);
+                assert_eq!(a_biguint.is_overflow(), false);
+                assert_eq!(a_biguint.is_underflow(), false);
+                assert_eq!(a_biguint.is_divided_by_zero(), false);
+                assert_eq!(a_biguint.is_infinity(), false);
+                assert_eq!(a_biguint.is_undefined(), false);
+            
+                a_biguint.panic_free_modular_add_assign_uint(rhs, &m);
+                println!("After a_biguint.panic_free_modular_add_assign_uint({}, &{}), a_biguint = {}", rhs, a_biguint, m);
+                assert_eq!(a_biguint.to_string(), "0");
+                assert_eq!(a_biguint.is_overflow(), false);
+                assert_eq!(a_biguint.is_underflow(), false);
+                assert_eq!(a_biguint.is_divided_by_zero(), false);
+                assert_eq!(a_biguint.is_infinity(), false);
+                assert_eq!(a_biguint.is_undefined(), true);
+            }
+        }
+    }
     println!("---------------------------");
 }
 
