@@ -11792,8 +11792,8 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     ///             assert_eq!(a_biguint.is_infinity(), false);
     ///             assert_eq!(a_biguint.is_undefined(), false);
     ///         
-    ///             a_biguint.panic_free_modular_sub_assign_uint(rhs, &m);
-    ///             println!("After a_biguint.panic_free_modular_sub_assign_uint({}, &{}), a_biguint = {}", rhs, a_biguint, m);
+    ///             a_biguint.panic_free_modular_mul_assign_uint(rhs, &m);
+    ///             println!("After a_biguint.panic_free_modular_mul_assign_uint({}, &{}), a_biguint = {}", rhs, a_biguint, m);
     ///             assert_eq!(a_biguint.to_string(), "0");
     ///             assert_eq!(a_biguint.is_overflow(), false);
     ///             assert_eq!(a_biguint.is_underflow(), false);
@@ -13333,7 +13333,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// [modular_div()](struct@BigUInt#method.modular_div)
     /// is proper rather than this method `modular_div_uint()`.
     /// 
-    /// # Examples
+    /// # Example 1 for normal case
     /// ```
     /// use std::str::FromStr;
     /// use cryptocol::define_utypes_with;
@@ -13350,28 +13350,105 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// assert_eq!(quotient.is_infinity(), false);
     /// assert_eq!(quotient.is_divided_by_zero(), false);
     /// assert_eq!(quotient.is_undefined(), false);
+    /// ```
     /// 
+    /// # Example 2 for dividend == 0
+    /// ```
+    /// use std::str::FromStr;
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u32);
+    /// 
+    /// let dividend = U256::from_uint(0_u8);
+    /// let modulo = U256::from_uint(250_u8);
+    /// let divisor = 3_u8;
+    /// let res = dividend.modular_div_uint(divisor, &modulo);
+    /// println!("{} / {} = {}(mod {})", dividend, divisor, res, modulo);
+    /// assert_eq!(res.to_string(), "0");
+    /// assert_eq!(res.is_overflow(), false);
+    /// assert_eq!(res.is_underflow(), false);
+    /// assert_eq!(res.is_divided_by_zero(), false);
+    /// assert_eq!(res.is_infinity(), false);
+    /// assert_eq!(res.is_undefined(), false);
+    /// ```
+    /// 
+    /// # Example 3 for dividend == multiple of modulo
+    /// ```
+    /// use std::str::FromStr;
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u32);
+    /// 
+    /// let dividend = U256::from_uint(750_u16);
+    /// let modulo = U256::from_uint(250_u8);
+    /// let divisor = 3_u8;
+    /// let res = dividend.modular_div_uint(divisor, &modulo);
+    /// println!("{} / {} = {}(mod {})", dividend, divisor, res, modulo);
+    /// assert_eq!(res.to_string(), "0");
+    /// assert_eq!(res.is_overflow(), false);
+    /// assert_eq!(res.is_underflow(), false);
+    /// assert_eq!(res.is_divided_by_zero(), false);
+    /// assert_eq!(res.is_infinity(), false);
+    /// assert_eq!(res.is_undefined(), false);
+    /// ```
+    /// 
+    /// # Panic Examples
+    /// ```
+    /// use std::str::FromStr;
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u32);
+    /// 
+    /// // op2 == 0
+    /// let _a_biguint = U256::from_string("76801874298166903427690031858186486050853753882811946569946433649006").unwrap();
+    /// let _m = U256::from_uint(250_u8);
+    /// let _rhs = 0_u8;
+    /// // It will panic.
+    /// // let res = a_biguint.modular_div_uint(rhs, &_m);
+    /// 
+    /// // op2 == multiple of modulo
+    /// let _a_biguint = U256::from_string("76801874298166903427690031858186486050853753882811946569946433649006").unwrap();
+    /// let _m = U256::from_uint(50_u8);
+    /// let _rhs = 250_u8;
+    /// // It will panic.
+    /// // let res = a_biguint.modular_div_uint(rhs, &_m);
+    /// 
+    /// // op1 == 0 and op2 == 0
+    /// let _a_biguint = U256::from_uint(0_u8);
+    /// let _m = U256::from_uint(250_u8);
+    /// let _rhs = 0_u8;
+    /// // It will panic.
+    /// // let res = a_biguint.modular_div_uint(rhs, &_m);
+    /// 
+    /// // op1 == multiple of modulo and op2 == 0
+    /// let _a_biguint = U256::from_uint(750_u16);
+    /// let _m = U256::from_uint(250_u8);
+    /// let _rhs = 0_u8;
+    /// // It will panic.
+    /// // let res = a_biguint.modular_div_uint(rhs, &_m);
+    /// 
+    /// // op1 == 0 and op2 == multiple of modulo
+    /// let _a_biguint = U256::from_uint(0_u8);
+    /// let _m = U256::from_uint(50_u8);
+    /// let _rhs = 250_u8;
+    /// // It will panic.
+    /// // let res = a_biguint.modular_div_uint(rhs, &_m);
+    /// 
+    /// // op1 == multiple of modulo and op2 == multiple of modulo
+    /// let _a_biguint = U256::from_uint(150_u8);
+    /// let _m = U256::from_uint(50_u8);
+    /// let _rhs = 250_u8;
+    /// // It will panic.
+    /// // let res = a_biguint.modular_div_uint(rhs, &_m);
+    /// 
+    /// // modulo == 0
     /// let _dividend = U256::from_str("123456789015758942546236989636279846864825945392").unwrap();
     /// let _divisor = 128_u8;
     /// let _modulo = U256::zero();
     /// // It will panic!
     /// // let quotient = _dividend.modular_div_uint(_divisor, &_modulo);
     /// 
+    /// // modulo == 1
     /// let _dividend = U256::from_str("123456789015758942546236989636279846864825945392").unwrap();
     /// let _divisor = 128_u8;
     /// let _modulo = U256::one();
-    /// // It will panic!
-    /// // let quotient = _dividend.modular_div_uint(_divisor, &_modulo);
-    /// 
-    /// let _dividend = U256::from_str("123456789015758942546236989636279846864825945392").unwrap();
-    /// let _divisor = 0_u8;
-    /// let _modulo = U256::from_uint(100_u8);
-    /// // It will panic!
-    /// // let quotient = _dividend.modular_div_uint(_divisor, &_modulo);
-    /// 
-    /// let _dividend = U256::from_str("123456789015758942546236989636279846864825945392").unwrap();
-    /// let _divisor = 200_u8;
-    /// let _modulo = U256::from_uint(100_u8);
     /// // It will panic!
     /// // let quotient = _dividend.modular_div_uint(_divisor, &_modulo);
     /// ```
@@ -13573,7 +13650,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// [modular_div()](struct@BigUInt#method.modular_div)
     /// is proper rather than this method `modular_div_uint()`.
     /// 
-    /// # Example 1 for a normal case
+    /// # Example 1 for a normal case for modulo >= 2 and dividend != 0 and divisor != 0
     /// ```
     /// use std::str::FromStr;
     /// use cryptocol::define_utypes_with;
@@ -13592,7 +13669,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// assert_eq!(quotient.is_undefined(), false);
     /// ```
     /// 
-    /// # Example 2 for a normal case
+    /// # Example 2 for normal case for modulo >= 2 and dividend == 0 and divisor != 0
     /// ```
     /// use std::str::FromStr;
     /// use cryptocol::define_utypes_with;
@@ -13611,7 +13688,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// assert_eq!(quotient.is_undefined(), false);
     /// ```
     /// 
-    /// # Example 3 for a normal case
+    /// # Example 3 for normal case for modulo >= 2 and dividend == multiple of modulo and divisor != 0
     /// ```
     /// use std::str::FromStr;
     /// use cryptocol::define_utypes_with;
@@ -13630,45 +13707,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// assert_eq!(quotient.is_undefined(), false);
     /// ```
     /// 
-    /// # Example 4 for modulo == 0 and divisor != 0 and dividend != 0
-    /// ```
-    /// use std::str::FromStr;
-    /// use cryptocol::define_utypes_with;
-    /// define_utypes_with!(u128);
-    /// 
-    /// let dividend = U256::from_str("123456789015758942546236989636279846864825945392").unwrap();
-    /// let divisor = 128_u8;
-    /// let modulo = U256::zero();
-    /// let quotient = dividend.panic_free_modular_div_uint(divisor, &modulo);
-    /// println!("{} / {} = {} (mod {})", dividend, divisor, quotient, modulo);
-    /// assert_eq!(quotient.to_string(), "0");
-    /// assert_eq!(quotient.is_overflow(), false);
-    /// assert_eq!(quotient.is_underflow(), false);
-    /// assert_eq!(quotient.is_infinity(), false);
-    /// assert_eq!(quotient.is_undefined(), true);
-    /// assert_eq!(quotient.is_divided_by_zero(), false);
-    /// ```
-    /// 
-    /// # Example 5 for modulo == 1 and divisor != 0 and dividend != 0
-    /// ```
-    /// use std::str::FromStr;
-    /// use cryptocol::define_utypes_with;
-    /// define_utypes_with!(u128);
-    /// 
-    /// let dividend = U256::from_str("123456789015758942546236989636279846864825945392").unwrap();
-    /// let divisor = 128_u8;
-    /// let modulo = U256::one();
-    /// let quotient = dividend.panic_free_modular_div_uint(divisor, &modulo);
-    /// println!("{} / {} = {} (mod {})", dividend, divisor, quotient, modulo);
-    /// assert_eq!(quotient.to_string(), "0");
-    /// assert_eq!(quotient.is_overflow(), false);
-    /// assert_eq!(quotient.is_underflow(), false);
-    /// assert_eq!(quotient.is_infinity(), false);
-    /// assert_eq!(quotient.is_undefined(), true);
-    /// assert_eq!(quotient.is_divided_by_zero(), false);
-    /// ```
-    /// 
-    /// # Example 6 for modulo >= 2 and divisor == 0 and dividend != 0
+    /// # Example 4 for modulo >= 2 and divisor == 0 and dividend != 0
     /// ```
     /// use std::str::FromStr;
     /// use cryptocol::define_utypes_with;
@@ -13687,7 +13726,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// assert_eq!(quotient.is_divided_by_zero(), true);
     /// ```
     /// 
-    /// # Example 7 for modulo >= 2 and divisor == n * modulo and dividend != 0
+    /// # Example 5 for modulo >= 2 and divisor == multiple of modulo and dividend != 0
     /// ```
     /// use std::str::FromStr;
     /// use cryptocol::define_utypes_with;
@@ -13706,7 +13745,64 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// assert_eq!(quotient.is_divided_by_zero(), true);
     /// ```
     /// 
-    /// # Example 8 for modulo >= 2 and divisor == n * modulo and dividend == m * modulo
+    /// # Example 6 for modulo >= 2 and divisor == 0 and dividend == 0
+    /// ```
+    /// use std::str::FromStr;
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u128);
+    /// 
+    /// let dividend = U256::zero();
+    /// let divisor = 0_u8;
+    /// let modulo = U256::from_uint(100_u8);
+    /// let quotient = dividend.panic_free_modular_div_uint(divisor, &modulo);
+    /// println!("{} / {} = {} (mod {})", dividend, divisor, quotient, modulo);
+    /// assert_eq!(quotient.to_string(), "0");
+    /// assert_eq!(quotient.is_overflow(), false);
+    /// assert_eq!(quotient.is_underflow(), false);
+    /// assert_eq!(quotient.is_infinity(), false);
+    /// assert_eq!(quotient.is_undefined(), true);
+    /// assert_eq!(quotient.is_divided_by_zero(), true);
+    /// ```
+    /// 
+    /// # Example 7 for modulo >= 2 and divisor == 0 and dividend == multiple of modulo
+    /// ```
+    /// use std::str::FromStr;
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u128);
+    /// 
+    /// let dividend = U256::from_uint(30000_u16);
+    /// let divisor = 0_u8;
+    /// let modulo = U256::from_uint(100_u8);
+    /// let quotient = dividend.panic_free_modular_div_uint(divisor, &modulo);
+    /// println!("{} / {} = {} (mod {})", dividend, divisor, quotient, modulo);
+    /// assert_eq!(quotient.to_string(), "0");
+    /// assert_eq!(quotient.is_overflow(), false);
+    /// assert_eq!(quotient.is_underflow(), false);
+    /// assert_eq!(quotient.is_infinity(), false);
+    /// assert_eq!(quotient.is_undefined(), true);
+    /// assert_eq!(quotient.is_divided_by_zero(), true);
+    /// ```
+    /// 
+    /// # Example 8 for modulo >= 2 and divisor == multiple of modulo and dividend == 0
+    /// ```
+    /// use std::str::FromStr;
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u128);
+    /// 
+    /// let dividend = U256::zero();
+    /// let divisor = 200_u8;
+    /// let modulo = U256::from_uint(100_u8);
+    /// let quotient = dividend.panic_free_modular_div_uint(divisor, &modulo);
+    /// println!("{} / {} = {} (mod {})", dividend, divisor, quotient, modulo);
+    /// assert_eq!(quotient.to_string(), "0");
+    /// assert_eq!(quotient.is_overflow(), false);
+    /// assert_eq!(quotient.is_underflow(), false);
+    /// assert_eq!(quotient.is_infinity(), false);
+    /// assert_eq!(quotient.is_undefined(), true);
+    /// assert_eq!(quotient.is_divided_by_zero(), true);
+    /// ```
+    /// 
+    /// # Example 9 for modulo >= 2 and divisor == multiple of modulo and dividend == multiple of modulo
     /// ```
     /// use std::str::FromStr;
     /// use cryptocol::define_utypes_with;
@@ -13725,7 +13821,45 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// assert_eq!(quotient.is_divided_by_zero(), true);
     /// ```
     /// 
-    /// # Example 9 for modulo == 0 and divisor == 0 and dividend == 0
+    /// # Example 10 for modulo == 0 and divisor != 0 and dividend != 0
+    /// ```
+    /// use std::str::FromStr;
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u128);
+    /// 
+    /// let dividend = U256::from_str("123456789015758942546236989636279846864825945392").unwrap();
+    /// let divisor = 128_u8;
+    /// let modulo = U256::zero();
+    /// let quotient = dividend.panic_free_modular_div_uint(divisor, &modulo);
+    /// println!("{} / {} = {} (mod {})", dividend, divisor, quotient, modulo);
+    /// assert_eq!(quotient.to_string(), "0");
+    /// assert_eq!(quotient.is_overflow(), false);
+    /// assert_eq!(quotient.is_underflow(), false);
+    /// assert_eq!(quotient.is_infinity(), false);
+    /// assert_eq!(quotient.is_undefined(), true);
+    /// assert_eq!(quotient.is_divided_by_zero(), false);
+    /// ```
+    /// 
+    /// # Example 11 for modulo == 1 and divisor != 0 and dividend != 0
+    /// ```
+    /// use std::str::FromStr;
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u128);
+    /// 
+    /// let dividend = U256::from_str("123456789015758942546236989636279846864825945392").unwrap();
+    /// let divisor = 128_u8;
+    /// let modulo = U256::one();
+    /// let quotient = dividend.panic_free_modular_div_uint(divisor, &modulo);
+    /// println!("{} / {} = {} (mod {})", dividend, divisor, quotient, modulo);
+    /// assert_eq!(quotient.to_string(), "0");
+    /// assert_eq!(quotient.is_overflow(), false);
+    /// assert_eq!(quotient.is_underflow(), false);
+    /// assert_eq!(quotient.is_infinity(), false);
+    /// assert_eq!(quotient.is_undefined(), true);
+    /// assert_eq!(quotient.is_divided_by_zero(), false);
+    /// ```
+    /// 
+    /// # Example 12 for modulo == 0 and divisor == 0 and dividend == 0
     /// ```
     /// use std::str::FromStr;
     /// use cryptocol::define_utypes_with;
@@ -13744,7 +13878,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// assert_eq!(quotient.is_divided_by_zero(), true);
     /// ```
     /// 
-    /// # Example 10 for modulo == 1 and divisor == 0 and dividend == 0
+    /// # Example 13 for modulo == 1 and divisor == 0 and dividend == 0
     /// ```
     /// use std::str::FromStr;
     /// use cryptocol::define_utypes_with;
@@ -13763,11 +13897,56 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// assert_eq!(quotient.is_divided_by_zero(), true);
     /// ```
     /// 
+    /// # Collective Example for modulo == 0 or 1
+    /// ```
+    /// use std::str::FromStr;
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u128);
+    /// 
+    /// for modulo in [U256::zero(), U256::one()]
+    /// {
+    ///     let op1 = U256::zero();
+    ///     let op2 = 0_u8;
+    ///     let res = op1.panic_free_modular_div_uint(op2, &modulo);
+    ///     println!("{} / {} = {} (mod {})", op1, op2, res, modulo);
+    ///     assert_eq!(res.to_string(), "0");
+    ///     assert_eq!(res.is_overflow(), false);
+    ///     assert_eq!(res.is_underflow(), false);
+    ///     assert_eq!(res.is_divided_by_zero(), true);
+    ///     assert_eq!(res.is_infinity(), false);
+    ///     assert_eq!(res.is_undefined(), true);
+    ///     
+    ///     for dividend in [U256::from_string("76801874298166903427690031858186486050853753882811946569946433649006").unwrap(), U256::from_uint(50_u8)]
+    ///     {
+    ///         let rhs = 0_u8;
+    ///         let res = dividend.panic_free_modular_div_uint(rhs, &modulo);
+    ///         println!("{} / {} = {} (mod {})", dividend, rhs, res, modulo);
+    ///         assert_eq!(res.to_string(), "0");
+    ///         assert_eq!(res.is_overflow(), true);
+    ///         assert_eq!(res.is_underflow(), false);
+    ///         assert_eq!(res.is_divided_by_zero(), true);
+    ///         assert_eq!(res.is_infinity(), true);
+    ///         assert_eq!(res.is_undefined(), true);
+    /// 
+    ///         for divisor in [3_u8, 50_u8]
+    ///         {
+    ///             let res = dividend.panic_free_modular_div_uint(divisor, &modulo);
+    ///             println!("{} / {} = {} (mod {})", dividend, divisor, res, modulo);
+    ///             assert_eq!(res.to_string(), "0");
+    ///             assert_eq!(res.is_overflow(), false);
+    ///             assert_eq!(res.is_underflow(), false);
+    ///             assert_eq!(res.is_divided_by_zero(), false);
+    ///             assert_eq!(res.is_infinity(), false);
+    ///             assert_eq!(res.is_undefined(), true);
+    ///         }
+    ///     }
+    /// }
+    /// ```
+    /// 
     /// # Big-endian issue
     /// It is just experimental for Big Endian CPUs. So, you are not encouraged
     /// to use it for Big Endian CPUs for serious purpose. Only use this crate
     /// for Big-endian CPUs with your own full responsibility.
-    #[inline]
     pub fn panic_free_modular_div_uint<U>(&self, rhs: U, modulo: &Self) -> Self
     where U: SmallUInt + Copy + Clone + Display + Debug + ToString
             + Add<Output=U> + AddAssign + Sub<Output=U> + SubAssign
@@ -13904,7 +14083,163 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// assert_eq!(a_biguint.is_divided_by_zero(), false);
     /// ```
     /// 
-    /// # Example 4 for modulo == 0 and divisor != 0 and dividend != 0
+    /// # Example 4 for amodulo >= 2 and self != 0 and divisor == 0
+    /// ```
+    /// use std::str::FromStr;
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u16);
+    /// 
+    /// let mut a_biguint = U256::from_str("123456789015758942546236989636279846864825945392").unwrap();
+    /// println!("Originally, a_biguint = {}", a_biguint);
+    /// assert_eq!(a_biguint.is_overflow(), false);
+    /// assert_eq!(a_biguint.is_underflow(), false);
+    /// assert_eq!(a_biguint.is_infinity(), false);
+    /// assert_eq!(a_biguint.is_undefined(), false);
+    /// assert_eq!(a_biguint.is_divided_by_zero(), false);
+    /// 
+    /// let divisor = 0_u8;
+    /// let modulo = U256::from_uint(100_u8);
+    /// a_biguint.panic_free_modular_div_assign_uint(divisor, &modulo);
+    /// println!("After a_biguint.panic_free_modular_div_assign_uint({}, {}), a_biguint = {}", divisor, modulo, a_biguint);
+    /// assert_eq!(a_biguint.to_string(), "115792089237316195423570985008687907853269984665640564039457584007913129639935");
+    /// assert_eq!(a_biguint.is_overflow(), true);
+    /// assert_eq!(a_biguint.is_underflow(), false);
+    /// assert_eq!(a_biguint.is_infinity(), true);
+    /// assert_eq!(a_biguint.is_undefined(), false);
+    /// assert_eq!(a_biguint.is_divided_by_zero(), true);
+    /// ```
+    /// 
+    /// # Example 5 for modulo >= 2 and self != 0 and divisor == multiple of modulo
+    /// ```
+    /// use std::str::FromStr;
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u16);
+    /// 
+    /// let mut a_biguint = U256::from_str("123456789015758942546236989636279846864825945392").unwrap();
+    /// println!("Originally, a_biguint = {}", a_biguint);
+    /// assert_eq!(a_biguint.is_overflow(), false);
+    /// assert_eq!(a_biguint.is_underflow(), false);
+    /// assert_eq!(a_biguint.is_infinity(), false);
+    /// assert_eq!(a_biguint.is_undefined(), false);
+    /// assert_eq!(a_biguint.is_divided_by_zero(), false);
+    /// 
+    /// let divisor = 0_u8;
+    /// let modulo = U256::from_uint(100_u8);
+    /// a_biguint.panic_free_modular_div_assign_uint(divisor, &modulo);
+    /// println!("After a_biguint.panic_free_modular_div_assign_uint({}, {}), a_biguint = {}", divisor, modulo, a_biguint);
+    /// assert_eq!(a_biguint.to_string(), "115792089237316195423570985008687907853269984665640564039457584007913129639935");
+    /// assert_eq!(a_biguint.is_overflow(), true);
+    /// assert_eq!(a_biguint.is_underflow(), false);
+    /// assert_eq!(a_biguint.is_infinity(), true);
+    /// assert_eq!(a_biguint.is_undefined(), false);
+    /// assert_eq!(a_biguint.is_divided_by_zero(), true);
+    /// ```
+    /// 
+    /// # Example 6 for modulo >= 2 and self == 0 and divisor == 0
+    /// ```
+    /// use std::str::FromStr;
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u16);
+    /// 
+    /// let mut a_biguint = U256::zero();
+    /// println!("Originally, a_biguint = {}", a_biguint);
+    /// assert_eq!(a_biguint.is_overflow(), false);
+    /// assert_eq!(a_biguint.is_underflow(), false);
+    /// assert_eq!(a_biguint.is_infinity(), false);
+    /// assert_eq!(a_biguint.is_undefined(), false);
+    /// assert_eq!(a_biguint.is_divided_by_zero(), false);
+    /// 
+    /// let divisor = 0_u8;
+    /// let modulo = U256::from_uint(100_u8);
+    /// a_biguint.panic_free_modular_div_assign_uint(divisor, &modulo);
+    /// println!("After a_biguint.panic_free_modular_div_assign_uint({}, {}), a_biguint = {}", divisor, modulo, a_biguint);
+    /// assert_eq!(a_biguint.to_string(), "0");
+    /// assert_eq!(a_biguint.is_overflow(), false);
+    /// assert_eq!(a_biguint.is_underflow(), false);
+    /// assert_eq!(a_biguint.is_infinity(), false);
+    /// assert_eq!(a_biguint.is_undefined(), true);
+    /// assert_eq!(a_biguint.is_divided_by_zero(), true);
+    /// ```
+    /// 
+    /// # Example 7 for modulo >= 2 and self == 0 and divisor == multiple of modulo
+    /// ```
+    /// use std::str::FromStr;
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u16);
+    /// 
+    /// let mut a_biguint = U256::zero();
+    /// println!("Originally, a_biguint = {}", a_biguint);
+    /// assert_eq!(a_biguint.is_overflow(), false);
+    /// assert_eq!(a_biguint.is_underflow(), false);
+    /// assert_eq!(a_biguint.is_infinity(), false);
+    /// assert_eq!(a_biguint.is_undefined(), false);
+    /// assert_eq!(a_biguint.is_divided_by_zero(), false);
+    /// 
+    /// let divisor = 200_u8;
+    /// let modulo = U256::from_uint(100_u8);
+    /// a_biguint.panic_free_modular_div_assign_uint(divisor, &modulo);
+    /// println!("After a_biguint.panic_free_modular_div_assign_uint({}, {}), a_biguint = {}", divisor, modulo, a_biguint);
+    /// assert_eq!(a_biguint.to_string(), "0");
+    /// assert_eq!(a_biguint.is_overflow(), false);
+    /// assert_eq!(a_biguint.is_underflow(), false);
+    /// assert_eq!(a_biguint.is_infinity(), false);
+    /// assert_eq!(a_biguint.is_undefined(), true);
+    /// assert_eq!(a_biguint.is_divided_by_zero(), true);
+    /// ```
+    /// 
+    /// # Example 8 for modulo >= 2 and self == multiple of modulo and divisor == 0
+    /// ```
+    /// use std::str::FromStr;
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u16);
+    /// 
+    /// let mut a_biguint = U256::from_uint(30000_u16);
+    /// println!("Originally, a_biguint = {}", a_biguint);
+    /// assert_eq!(a_biguint.is_overflow(), false);
+    /// assert_eq!(a_biguint.is_underflow(), false);
+    /// assert_eq!(a_biguint.is_infinity(), false);
+    /// assert_eq!(a_biguint.is_undefined(), false);
+    /// assert_eq!(a_biguint.is_divided_by_zero(), false);
+    /// 
+    /// let divisor = 0_u8;
+    /// let modulo = U256::from_uint(100_u8);
+    /// a_biguint.panic_free_modular_div_assign_uint(divisor, &modulo);
+    /// println!("After a_biguint.panic_free_modular_div_assign_uint({}, {}), a_biguint = {}", divisor, modulo, a_biguint);
+    /// assert_eq!(a_biguint.to_string(), "0");
+    /// assert_eq!(a_biguint.is_overflow(), false);
+    /// assert_eq!(a_biguint.is_underflow(), false);
+    /// assert_eq!(a_biguint.is_infinity(), false);
+    /// assert_eq!(a_biguint.is_undefined(), true);
+    /// assert_eq!(a_biguint.is_divided_by_zero(), true);
+    /// ```
+    /// 
+    /// # Example 9 for modulo >= 2 and self == multiple of modulo and divisor == multiple of modulo
+    /// ```
+    /// use std::str::FromStr;
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u16);
+    /// 
+    /// let mut a_biguint = U256::from_uint(30000_u16);
+    /// println!("Originally, a_biguint = {}", a_biguint);
+    /// assert_eq!(a_biguint.is_overflow(), false);
+    /// assert_eq!(a_biguint.is_underflow(), false);
+    /// assert_eq!(a_biguint.is_infinity(), false);
+    /// assert_eq!(a_biguint.is_undefined(), false);
+    /// assert_eq!(a_biguint.is_divided_by_zero(), false);
+    /// 
+    /// let divisor = 200_u8;
+    /// let modulo = U256::from_uint(100_u8);
+    /// a_biguint.panic_free_modular_div_assign_uint(divisor, &modulo);
+    /// println!("After a_biguint.panic_free_modular_div_assign_uint({}, {}), a_biguint = {}", divisor, modulo, a_biguint);
+    /// assert_eq!(a_biguint.to_string(), "0");
+    /// assert_eq!(a_biguint.is_overflow(), false);
+    /// assert_eq!(a_biguint.is_underflow(), false);
+    /// assert_eq!(a_biguint.is_infinity(), false);
+    /// assert_eq!(a_biguint.is_undefined(), true);
+    /// assert_eq!(a_biguint.is_divided_by_zero(), true);
+    /// ```
+    /// 
+    /// # Example 10 for modulo == 0 and divisor != 0 and dividend != 0
     /// ```
     /// use std::str::FromStr;
     /// use cryptocol::define_utypes_with;
@@ -13930,7 +14265,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// assert_eq!(a_biguint.is_divided_by_zero(), false);
     /// ```
     /// 
-    /// # Example 5 for modulo == 1 and divisor != 0 and dividend != 0
+    /// # Example 11 for modulo == 1 and divisor != 0 and dividend != 0
     /// ```
     /// use std::str::FromStr;
     /// use cryptocol::define_utypes_with;
@@ -13956,102 +14291,25 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// assert_eq!(a_biguint.is_divided_by_zero(), false);
     /// ```
     /// 
-    /// # Example 6 for modulo >= 2 and divisor == 0 and dividend != 0
+    /// # Example 12 for modulo == 0 and divisor == 0 and dividend == 0
     /// ```
     /// use std::str::FromStr;
     /// use cryptocol::define_utypes_with;
     /// define_utypes_with!(u16);
     /// 
-    /// let mut a_biguint = U256::from_str("123456789015758942546236989636279846864825945392").unwrap();
-    /// let divisor = 0_u8;
-    /// let modulo = U256::from_uint(100_u8);
-    /// println!("Originally, a_biguint = {}", a_biguint);
-    /// assert_eq!(a_biguint.is_overflow(), false);
-    /// assert_eq!(a_biguint.is_underflow(), false);
-    /// assert_eq!(a_biguint.is_infinity(), false);
-    /// assert_eq!(a_biguint.is_undefined(), false);
-    /// assert_eq!(a_biguint.is_divided_by_zero(), false);
-    /// 
-    /// a_biguint.panic_free_modular_div_assign_uint(divisor, &modulo);
-    /// println!("After a_biguint.modular_div_assign_uint({}, {}), a_biguint = {}", divisor, modulo, a_biguint);
-    /// assert_eq!(a_biguint, U256::max());
-    /// assert_eq!(a_biguint.is_overflow(), true);
-    /// assert_eq!(a_biguint.is_underflow(), false);
-    /// assert_eq!(a_biguint.is_infinity(), true);
-    /// assert_eq!(a_biguint.is_undefined(), false);
-    /// assert_eq!(a_biguint.is_divided_by_zero(), true);
-    /// ```
-    /// 
-    /// # Example 7 for modulo >= 2 and divisor == n * modulo and dividend != 0
-    /// ```
-    /// use std::str::FromStr;
-    /// use cryptocol::define_utypes_with;
-    /// define_utypes_with!(u16);
-    /// 
-    /// let mut a_biguint = U256::from_str("123456789015758942546236989636279846864825945392").unwrap();
-    /// let divisor = 200_u8;
-    /// let modulo = U256::from_uint(100_u8);
-    /// println!("Originally, a_biguint = {}", a_biguint);
-    /// assert_eq!(a_biguint.is_overflow(), false);
-    /// assert_eq!(a_biguint.is_underflow(), false);
-    /// assert_eq!(a_biguint.is_infinity(), false);
-    /// assert_eq!(a_biguint.is_undefined(), false);
-    /// assert_eq!(a_biguint.is_divided_by_zero(), false);
-    /// 
-    /// a_biguint.panic_free_modular_div_assign_uint(divisor, &modulo);
-    /// println!("After a_biguint.modular_div_assign_uint({}, {}), a_biguint = {}", divisor, modulo, a_biguint);
-    /// assert_eq!(a_biguint, U256::max());
-    /// assert_eq!(a_biguint.is_overflow(), true);
-    /// assert_eq!(a_biguint.is_underflow(), false);
-    /// assert_eq!(a_biguint.is_infinity(), true);
-    /// assert_eq!(a_biguint.is_undefined(), false);
-    /// assert_eq!(a_biguint.is_divided_by_zero(), true);
-    /// ```
-    /// 
-    /// # Example 8 for modulo >= 2 and divisor == n * modulo and dividend == m * modulo
-    /// ```
-    /// use std::str::FromStr;
-    /// use cryptocol::define_utypes_with;
-    /// define_utypes_with!(u16);
-    /// 
-    /// let mut a_biguint = U256::from_uint(30000_u16);
-    /// let divisor = 200_u8;
-    /// let modulo = U256::from_uint(100_u8);
-    /// println!("Originally, a_biguint = {}", a_biguint);
-    /// assert_eq!(a_biguint.is_overflow(), false);
-    /// assert_eq!(a_biguint.is_underflow(), false);
-    /// assert_eq!(a_biguint.is_infinity(), false);
-    /// assert_eq!(a_biguint.is_undefined(), false);
-    /// assert_eq!(a_biguint.is_divided_by_zero(), false);
-    /// 
-    /// a_biguint.panic_free_modular_div_assign_uint(divisor, &modulo);
-    /// println!("After a_biguint.modular_div_assign_uint({}, {}), a_biguint = {}", divisor, modulo, a_biguint);
-    /// assert_eq!(a_biguint.to_string(), "0");
-    /// assert_eq!(a_biguint.is_overflow(), false);
-    /// assert_eq!(a_biguint.is_underflow(), false);
-    /// assert_eq!(a_biguint.is_infinity(), false);
-    /// assert_eq!(a_biguint.is_undefined(), true);
-    /// assert_eq!(a_biguint.is_divided_by_zero(), true);
-    /// ```
-    /// 
-    /// # Example 9 for modulo == 0 and divisor == 0 and dividend == 0
-    /// ```
-    /// use std::str::FromStr;
-    /// use cryptocol::define_utypes_with;
-    /// define_utypes_with!(u16);
-    /// 
+    /// // modulo == 0 and divisor == 0 and dividend == 0
     /// let mut a_biguint = U256::zero();
+    /// println!("Originally, a_biguint = {}", a_biguint);
+    /// assert_eq!(a_biguint.is_overflow(), false);
+    /// assert_eq!(a_biguint.is_underflow(), false);
+    /// assert_eq!(a_biguint.is_infinity(), false);
+    /// assert_eq!(a_biguint.is_undefined(), false);
+    /// assert_eq!(a_biguint.is_divided_by_zero(), false);
+    /// 
     /// let divisor = 0_u8;
     /// let modulo = U256::zero();
-    /// println!("Originally, a_biguint = {}", a_biguint);
-    /// assert_eq!(a_biguint.is_overflow(), false);
-    /// assert_eq!(a_biguint.is_underflow(), false);
-    /// assert_eq!(a_biguint.is_infinity(), false);
-    /// assert_eq!(a_biguint.is_undefined(), false);
-    /// assert_eq!(a_biguint.is_divided_by_zero(), false);
-    /// 
     /// a_biguint.panic_free_modular_div_assign_uint(divisor, &modulo);
-    /// println!("After a_biguint.modular_div_assign_uint({}, {}), a_biguint = {}", divisor, modulo, a_biguint);
+    /// println!("After a_biguint.panic_free_modular_div_assign_uint({}, {}), a_biguint = {}", divisor, modulo, a_biguint);
     /// assert_eq!(a_biguint.to_string(), "0");
     /// assert_eq!(a_biguint.is_overflow(), false);
     /// assert_eq!(a_biguint.is_underflow(), false);
@@ -14060,15 +14318,13 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// assert_eq!(a_biguint.is_divided_by_zero(), true);
     /// ```
     /// 
-    /// # Example 10 for modulo == 1 and divisor == 0 and dividend == 0
+    /// # Example 13 for modulo == 1 and divisor == 0 and dividend == 0
     /// ```
     /// use std::str::FromStr;
     /// use cryptocol::define_utypes_with;
     /// define_utypes_with!(u16);
     /// 
     /// let mut a_biguint = U256::zero();
-    /// let divisor = 0_u8;
-    /// let modulo = U256::one();
     /// println!("Originally, a_biguint = {}", a_biguint);
     /// assert_eq!(a_biguint.is_overflow(), false);
     /// assert_eq!(a_biguint.is_underflow(), false);
@@ -14076,14 +14332,85 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// assert_eq!(a_biguint.is_undefined(), false);
     /// assert_eq!(a_biguint.is_divided_by_zero(), false);
     /// 
+    /// let divisor = 0_u8;
+    /// let modulo = U256::one();
     /// a_biguint.panic_free_modular_div_assign_uint(divisor, &modulo);
-    /// println!("After a_biguint.modular_div_assign_uint({}, {}), a_biguint = {}", divisor, modulo, a_biguint);
+    /// println!("After a_biguint.panic_free_modular_div_assign_uint({}, {}), a_biguint = {}", divisor, modulo, a_biguint);
     /// assert_eq!(a_biguint.to_string(), "0");
     /// assert_eq!(a_biguint.is_overflow(), false);
     /// assert_eq!(a_biguint.is_underflow(), false);
     /// assert_eq!(a_biguint.is_infinity(), false);
     /// assert_eq!(a_biguint.is_undefined(), true);
     /// assert_eq!(a_biguint.is_divided_by_zero(), true);
+    /// ```
+    /// 
+    /// # Collective Example for modulo == 0 or 1
+    /// ```
+    /// use std::str::FromStr;
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u16);
+    /// 
+    /// for modulo in [U256::zero(), U256::one()]
+    /// {
+    ///     let mut dividend = U256::zero();
+    ///     println!("Originally, op1 = {}", dividend);
+    ///     assert_eq!(dividend.is_overflow(), false);
+    ///     assert_eq!(dividend.is_underflow(), false);
+    ///     assert_eq!(dividend.is_infinity(), false);
+    ///     assert_eq!(dividend.is_undefined(), false);
+    ///     assert_eq!(dividend.is_divided_by_zero(), false);
+    /// 
+    ///     let divisor = 0_u8;
+    ///     dividend.panic_free_modular_div_assign_uint(divisor, &modulo);
+    ///     println!("After a_biguint.panic_free_modular_div_assign_uint({}, {}), op1 = {}", divisor, modulo, dividend);
+    ///     assert_eq!(dividend.to_string(), "0");
+    ///     assert_eq!(dividend.is_overflow(), false);
+    ///     assert_eq!(dividend.is_underflow(), false);
+    ///     assert_eq!(dividend.is_divided_by_zero(), true);
+    ///     assert_eq!(dividend.is_infinity(), false);
+    ///     assert_eq!(dividend.is_undefined(), true);
+    ///     
+    ///     for op in [U256::from_string("76801874298166903427690031858186486050853753882811946569946433649006").unwrap(), U256::from_uint(50_u8)]
+    ///     {
+    ///         let mut dividend = op.clone();
+    ///         println!("Originally, dividend = {}", dividend);
+    ///         assert_eq!(dividend.is_overflow(), false);
+    ///         assert_eq!(dividend.is_underflow(), false);
+    ///         assert_eq!(dividend.is_infinity(), false);
+    ///         assert_eq!(dividend.is_undefined(), false);
+    ///         assert_eq!(dividend.is_divided_by_zero(), false);
+    /// 
+    ///         let divisor = 0_u8;
+    ///         dividend.panic_free_modular_div_assign_uint(divisor, &modulo);
+    ///         println!("After op1.panic_free_modular_div_assign_uint({}, {}), dividend = {}", divisor, modulo, dividend);
+    ///         assert_eq!(dividend.to_string(), "0");
+    ///         assert_eq!(dividend.is_overflow(), true);
+    ///         assert_eq!(dividend.is_underflow(), false);
+    ///         assert_eq!(dividend.is_divided_by_zero(), true);
+    ///         assert_eq!(dividend.is_infinity(), true);
+    ///         assert_eq!(dividend.is_undefined(), true);
+    /// 
+    ///         for divisor in [3_u8, 50_u8]
+    ///         {
+    ///             let mut dividend = op.clone();
+    ///             println!("Originally, dividend = {}", dividend);
+    ///             assert_eq!(dividend.is_overflow(), false);
+    ///             assert_eq!(dividend.is_underflow(), false);
+    ///             assert_eq!(dividend.is_infinity(), false);
+    ///             assert_eq!(dividend.is_undefined(), false);
+    ///             assert_eq!(dividend.is_divided_by_zero(), false);
+    /// 
+    ///             dividend.panic_free_modular_div_assign_uint(divisor, &modulo);
+    ///             println!("After dividend.panic_free_modular_div_assign_uint({}, {}), dividend = {}", divisor, modulo, dividend);
+    ///             assert_eq!(dividend.to_string(), "0");
+    ///             assert_eq!(dividend.is_overflow(), false);
+    ///             assert_eq!(dividend.is_underflow(), false);
+    ///             assert_eq!(dividend.is_divided_by_zero(), false);
+    ///             assert_eq!(dividend.is_infinity(), false);
+    ///             assert_eq!(dividend.is_undefined(), true);
+    ///         }
+    ///     }
+    /// }
     /// ```
     /// 
     /// # Big-endian issue
