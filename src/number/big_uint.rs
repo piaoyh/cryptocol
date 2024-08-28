@@ -2512,7 +2512,6 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     // /// to use it for Big Endian CPUs for serious purpose. Only use this crate
     // /// for Big-endian CPUs with your own full responsibility.
     #[cfg(target_endian = "big")]
-    #[inline]
     fn copy_within<R>(&mut self, src: R, dest: usize)
     where R: RangeBounds<usize>
     {
@@ -3703,7 +3702,9 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
             + BitAnd<Output=U> + BitAndAssign + BitOr<Output=U> + BitOrAssign
             + BitXor<Output=U> + BitXorAssign + Not<Output=U>
             + PartialEq + PartialOrd
-    { self.partial_cmp_uint(other).unwrap().is_lt() }
+    {
+        self.partial_cmp_uint(other).unwrap().is_lt()
+    }
 
     // pub fn gt_uint<U>(&self, other: U) -> bool
     /// Compares `self` and `other` to find whether `self` is greater
@@ -3755,7 +3756,9 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
             + BitAnd<Output=U> + BitAndAssign + BitOr<Output=U> + BitOrAssign
             + BitXor<Output=U> + BitXorAssign + Not<Output=U>
             + PartialEq + PartialOrd
-    { self.partial_cmp_uint(other).unwrap().is_gt() }
+    {
+        self.partial_cmp_uint(other).unwrap().is_gt()
+    }
 
     // pub fn le_uint<U>(&self, other: U) -> bool
     /// Compares `self` and `other` to find whether `self` is less than or
@@ -3807,7 +3810,9 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
             + BitAnd<Output=U> + BitAndAssign + BitOr<Output=U> + BitOrAssign
             + BitXor<Output=U> + BitXorAssign + Not<Output=U>
             + PartialEq + PartialOrd
-    { self.partial_cmp_uint(other).unwrap().is_le() }
+    {
+        self.partial_cmp_uint(other).unwrap().is_le()
+    }
 
     // pub fn ge_uint<U>(&self, other: U) -> bool 
     /// Compares `self` and `other` to find whether `self` is greater than
@@ -3859,7 +3864,9 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
             + BitAnd<Output=U> + BitAndAssign + BitOr<Output=U> + BitOrAssign
             + BitXor<Output=U> + BitXorAssign + Not<Output=U>
             + PartialEq + PartialOrd
-    { self.partial_cmp_uint(other).unwrap().is_ge() }
+    {
+        self.partial_cmp_uint(other).unwrap().is_ge()
+    }
 
     // pub fn eq_uint<U>(&self, other: U) -> bool
     /// Compares `self` and `other` to find whether `self` is equal to `other`.
@@ -3911,7 +3918,9 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
             + BitAnd<Output=U> + BitAndAssign + BitOr<Output=U> + BitOrAssign
             + BitXor<Output=U> + BitXorAssign + Not<Output=U>
             + PartialEq + PartialOrd
-    { self.partial_cmp_uint(other).unwrap().is_eq() }
+    {
+        self.partial_cmp_uint(other).unwrap().is_eq()
+    }
 
 
 
@@ -7194,7 +7203,6 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// It is just experimental for Big Endian CPUs. So, you are not encouraged
     /// to use it for Big Endian CPUs for serious purpose. Only use this crate
     /// for Big-endian CPUs with your own full responsibility.
-    #[inline]
     pub fn overflowing_sub_uint<U>(&self, rhs: U) -> (Self, bool)
     where U: SmallUInt + Copy + Clone + Display + Debug + ToString
             + Add<Output=U> + AddAssign + Sub<Output=U> + SubAssign
@@ -7328,7 +7336,6 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// It is just experimental for Big Endian CPUs. So, you are not encouraged
     /// to use it for Big Endian CPUs for serious purpose. Only use this crate
     /// for Big-endian CPUs with your own full responsibility.
-    #[inline]
     pub fn overflowing_sub_assign_uint<U>(&mut self, rhs: U) -> bool
     where U: SmallUInt + Copy + Clone + Display + Debug + ToString
             + Add<Output=U> + AddAssign + Sub<Output=U> + SubAssign
@@ -9569,7 +9576,6 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// It is just experimental for Big Endian CPUs. So, you are not encouraged
     /// to use it for Big Endian CPUs for serious purpose. Only use this crate
     /// for Big-endian CPUs with your own full responsibility.
-    #[inline]
     pub fn widening_mul_uint<U>(&self, rhs: U) -> (Self, Self)
     where U: SmallUInt + Copy + Clone + Display + Debug + ToString
             + Add<Output=U> + AddAssign + Sub<Output=U> + SubAssign
@@ -12396,7 +12402,6 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// It is just experimental for Big Endian CPUs. So, you are not encouraged
     /// to use it for Big Endian CPUs for serious purpose. Only use this crate
     /// for Big-endian CPUs with your own full responsibility.
-    #[inline]
     pub fn wrapping_div_assign_uint<U>(&mut self, rhs: U)
     where U: SmallUInt + Copy + Clone + Display + Debug + ToString
             + Add<Output=U> + AddAssign + Sub<Output=U> + SubAssign
@@ -13011,7 +13016,6 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// It is just experimental for Big Endian CPUs. So, you are not encouraged
     /// to use it for Big Endian CPUs for serious purpose. Only use this crate
     /// for Big-endian CPUs with your own full responsibility.
-    #[inline]
     pub fn saturating_div_assign_uint<U>(&mut self, rhs: U)
     where U: SmallUInt + Copy + Clone + Display + Debug + ToString
             + Add<Output=U> + AddAssign + Sub<Output=U> + SubAssign
@@ -13287,7 +13291,6 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// It is just experimental for Big Endian CPUs. So, you are not encouraged
     /// to use it for Big Endian CPUs for serious purpose. Only use this crate
     /// for Big-endian CPUs with your own full responsibility.
-    #[inline]
     pub fn panic_free_div_assign_uint<U>(&mut self, rhs: U)
     where U: SmallUInt + Copy + Clone + Display + Debug + ToString
             + Add<Output=U> + AddAssign + Sub<Output=U> + SubAssign
@@ -13457,7 +13460,6 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// It is just experimental for Big Endian CPUs. So, you are not encouraged
     /// to use it for Big Endian CPUs for serious purpose. Only use this crate
     /// for Big-endian CPUs with your own full responsibility.
-    #[inline]
     pub fn modular_div_uint<U>(&self, rhs: U, modulo: &Self) -> Self
     where U: SmallUInt + Copy + Clone + Display + Debug + ToString
             + Add<Output=U> + AddAssign + Sub<Output=U> + SubAssign
@@ -13551,7 +13553,6 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// It is just experimental for Big Endian CPUs. So, you are not encouraged
     /// to use it for Big Endian CPUs for serious purpose. Only use this crate
     /// for Big-endian CPUs with your own full responsibility.
-    #[inline]
     pub fn modular_div_assign_uint<U>(&mut self, rhs: U, modulo: &Self)
     where U: SmallUInt + Copy + Clone + Display + Debug + ToString
             + Add<Output=U> + AddAssign + Sub<Output=U> + SubAssign
@@ -14417,7 +14418,6 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// It is just experimental for Big Endian CPUs. So, you are not encouraged
     /// to use it for Big Endian CPUs for serious purpose. Only use this crate
     /// for Big-endian CPUs with your own full responsibility.
-    #[inline]
     pub fn panic_free_modular_div_assign_uint<U>(&mut self, rhs: U, modulo: &Self)
     where U: SmallUInt + Copy + Clone + Display + Debug + ToString
             + Add<Output=U> + AddAssign + Sub<Output=U> + SubAssign
@@ -15760,7 +15760,6 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// It is just experimental for Big Endian CPUs. So, you are not encouraged
     /// to use it for Big Endian CPUs for serious purpose. Only use this crate
     /// for Big-endian CPUs with your own full responsibility.
-    #[inline]
     pub fn modular_rem_assign_uint<U>(&mut self, rhs: U, modulo: &Self)
     where U: SmallUInt + Copy + Clone + Display + Debug + ToString
             + Add<Output=U> + AddAssign + Sub<Output=U> + SubAssign
@@ -16708,7 +16707,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     ///
     /// # Panics
     /// - If `size_of::<T>() * N` <= `128`, this method may panic
-    /// or its behavior may be undefined though it may not panic.
+    ///   or its behavior may be undefined though it may not panic.
     /// - This function will panic if `rhs` is zero.
     /// 
     /// # Output
@@ -16745,7 +16744,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// use cryptocol::define_utypes_with;
     /// define_utypes_with!(u32);
     /// 
-    /// let a_biguint = U256::from_str_radix("FFFFFFFF_FFFFFFFF_FFFFFFFF_FFFFFFFF_FFFFFFFF_FFFFFFFF_FFFFFFFF_FFFFFFFF", 16).unwrap();
+    /// let a_biguint = U256::max();
     /// let num = 586478_u32;
     /// let multiple = a_biguint.next_multiple_of_uint(num);
     /// println!("The next multiple of {} is {}", a_biguint, multiple);
@@ -16755,6 +16754,13 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// assert_eq!(multiple.is_infinity(), false);
     /// assert_eq!(multiple.is_divided_by_zero(), false);
     /// assert_eq!(multiple.is_undefined(), false);
+    /// ```
+    /// 
+    /// # Panic Example
+    /// ```
+    /// use std::str::FromStr;
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u32);
     /// 
     /// let _a_biguint = U256::from_str("123456789012345678901234567890123456789").unwrap();
     /// let _num = 0_u8;
@@ -16857,8 +16863,15 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// assert_eq!(a_biguint.is_infinity(), false);
     /// assert_eq!(a_biguint.is_divided_by_zero(), false);
     /// assert_eq!(a_biguint.is_undefined(), false);
+    /// ```
     /// 
-    /// let _a_biguint = U256::from_str_radix("FFFFFFFF_FFFFFFFF_FFFFFFFF_FFFFFFFF_FFFFFFFF_FFFFFFFF_FFFFFFFF_FFFFFFFF", 16).unwrap();
+    /// # Panic Example
+    /// ```
+    /// use std::str::FromStr;
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u64);
+    /// 
+    /// let _a_biguint = U256::from_str_radix("123456789012345678901234567890123697594", 16).unwrap();
     /// let _num = 0_u8;
     /// // It will panic.
     /// // _a_biguint.next_multiple_of_assign_uint(_num);
@@ -16931,7 +16944,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// use cryptocol::define_utypes_with;
     /// define_utypes_with!(u128);
     /// 
-    /// let a_biguint = U256::from_str_radix("FFFFFFFF_FFFFFFFF_FFFFFFFF_FFFFFFFF_FFFFFFFF_FFFFFFFF_FFFFFFFF_FFFFFFFF", 16).unwrap();
+    /// let a_biguint = U256::max();
     /// let num = 586478_u32;
     /// let multiple = a_biguint.next_multiple_of_uint(num);
     /// println!("The next multiple of {} is {}", a_biguint, multiple);
@@ -17040,7 +17053,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// use cryptocol::define_utypes_with;
     /// define_utypes_with!(u32);
     /// 
-    /// let mut a_biguint = UU32::from_str_radix("FFFFFFFF_FFFFFFFF_FFFFFFFF_FFFFFFFF_FFFFFFFF_FFFFFFFF_FFFFFFFF_FFFFFFFF", 16).unwrap();
+    /// let mut a_biguint = UU32::max();
     /// let num = 586478_u32;
     /// println!("Originally, a_biguint = {}", a_biguint);
     /// assert_eq!(a_biguint.is_overflow(), false);
@@ -17140,7 +17153,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     ///
     /// # Panics
     /// - If `size_of::<T>() * N` <= `128`, this method may panic
-    /// or its behavior may be undefined though it may not panic.
+    ///   or its behavior may be undefined though it may not panic.
     /// - This function will panic if `rhs` is `zero`.
     /// - This function will panic if `modulo` is either `zero` or `one`.
     /// 
@@ -17192,7 +17205,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// use cryptocol::define_utypes_with;
     /// define_utypes_with!(u8);
     /// 
-    /// let a_biguint = U256::from_str_radix("FFFFFFFF_FFFFFFFF_FFFFFFFF_FFFFFFFF_FFFFFFFF_FFFFFFFF_FFFFFFFF_FFFFFFFF", 16).unwrap();
+    /// let a_biguint = U256::max();
     /// let num = 100_u8;
     /// let modulo = a_biguint.wrapping_add_uint(200_u8);
     /// let multiple = a_biguint.modular_next_multiple_of_uint(num, &modulo);
@@ -17203,6 +17216,13 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// assert_eq!(multiple.is_infinity(), false);
     /// assert_eq!(multiple.is_divided_by_zero(), false);
     /// assert_eq!(multiple.is_undefined(), false);
+    /// ```
+    /// 
+    /// # Panic Examples
+    /// ```
+    /// use std::str::FromStr;
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u8);
     /// 
     /// let _a_biguint = U256::from_str_radix("123456789012345678901234567890123456789", 16).unwrap();
     /// let _num = 0_u8;
@@ -17211,20 +17231,20 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// // let multiple = _a_biguint.modular_next_multiple_of_uint(_num, &_modulo);
     /// 
     /// let _a_biguint = U256::from_str_radix("123456789012345678901234567890123456789", 16).unwrap();
-    /// let _num = 100_u8;
-    /// let _modulo = U256::zero();
-    /// // It will panic.
-    /// // let multiple = _a_biguint.modular_next_multiple_of_uint(_num, &_modulo);
-    /// 
-    /// let _a_biguint = U256::from_str_radix("123456789012345678901234567890123456789", 16).unwrap();
-    /// let _num = 100_u8;
-    /// let _modulo = U256::zero();
-    /// // It will panic.
-    /// // let multiple = _a_biguint.modular_next_multiple_of_uint(_num, &_modulo);
-    /// 
-    /// let _a_biguint = U256::from_str_radix("123456789012345678901234567890123456789", 16).unwrap();
     /// let _num = 200_u8;
     /// let _modulo = U256::from_uint(100_u8);
+    /// // It will panic.
+    /// // let multiple = _a_biguint.modular_next_multiple_of_uint(_num, &_modulo);
+    /// 
+    /// let _a_biguint = U256::from_str_radix("123456789012345678901234567890123456789", 16).unwrap();
+    /// let _num = 100_u8;
+    /// let _modulo = U256::zero();
+    /// // It will panic.
+    /// // let multiple = _a_biguint.modular_next_multiple_of_uint(_num, &_modulo);
+    /// 
+    /// let _a_biguint = U256::from_str_radix("123456789012345678901234567890123456789", 16).unwrap();
+    /// let _num = 100_u8;
+    /// let _modulo = U256::one();
     /// // It will panic.
     /// // let multiple = _a_biguint.modular_next_multiple_of_uint(_num, &_modulo);
     /// ```
@@ -17320,7 +17340,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// use cryptocol::define_utypes_with;
     /// define_utypes_with!(u16);
     /// 
-    /// let mut a_biguint = UU32::from_str_radix("FFFFFFFF_FFFFFFFF_FFFFFFFF_FFFFFFFF_FFFFFFFF_FFFFFFFF_FFFFFFFF_FFFFFFFF", 16).unwrap();
+    /// let mut a_biguint = UU32::max();
     /// println!("Originally, a_biguint = {}", a_biguint);
     /// assert_eq!(a_biguint.is_overflow(), false);
     /// assert_eq!(a_biguint.is_underflow(), false);
@@ -17338,6 +17358,13 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// assert_eq!(a_biguint.is_infinity(), false);
     /// assert_eq!(a_biguint.is_undefined(), false);
     /// assert_eq!(a_biguint.is_divided_by_zero(), false);
+    /// ```
+    /// 
+    /// # Panic Examples
+    /// ```
+    /// use std::str::FromStr;
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u16);
     /// 
     /// let mut _a_biguint = U256::from_str_radix("123456789012345678901234567890123456789", 16).unwrap();
     /// println!("Originally, a_biguint = {}", _a_biguint);
@@ -17346,21 +17373,21 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// // _a_biguint.modular_next_multiple_of_assign_uint(_num, &_modulo);
     /// 
     /// let mut _a_biguint = U256::from_str_radix("123456789012345678901234567890123456789", 16).unwrap();
-    /// println!("Originally, a_biguint = {}", _a_biguint);
-    /// let _num = 100_u8;
-    /// let _modulo = U256::zero();
-    /// // _a_biguint.modular_next_multiple_of_assign_uint(_num, &_modulo);
-    /// 
-    /// let mut _a_biguint = U256::from_str_radix("123456789012345678901234567890123456789", 16).unwrap();
-    /// println!("Originally, a_biguint = {}", _a_biguint);
-    /// let _num = 100_u8;
-    /// let _modulo = U256::zero();
-    /// // _a_biguint.modular_next_multiple_of_assign_uint(_num, &_modulo);
-    /// 
-    /// let mut _a_biguint = U256::from_str_radix("123456789012345678901234567890123456789", 16).unwrap();
     /// println!("Originally, a_biguint = {}", a_biguint);
     /// let _num = 200_u8;
     /// let _modulo = U256::from_uint(100_u8);
+    /// // _a_biguint.modular_next_multiple_of_assign_uint(_num, &_modulo);
+    /// 
+    /// let mut _a_biguint = U256::from_str_radix("123456789012345678901234567890123456789", 16).unwrap();
+    /// println!("Originally, a_biguint = {}", _a_biguint);
+    /// let _num = 100_u8;
+    /// let _modulo = U256::zero();
+    /// // _a_biguint.modular_next_multiple_of_assign_uint(_num, &_modulo);
+    /// 
+    /// let mut _a_biguint = U256::from_str_radix("123456789012345678901234567890123456789", 16).unwrap();
+    /// println!("Originally, a_biguint = {}", _a_biguint);
+    /// let _num = 100_u8;
+    /// let _modulo = U256::one();
     /// // _a_biguint.modular_next_multiple_of_assign_uint(_num, &_modulo);
     /// ```
     /// 
@@ -17446,7 +17473,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// use cryptocol::define_utypes_with;
     /// define_utypes_with!(u8);
     /// 
-    /// let a_biguint = U256::from_str_radix("FFFFFFFF_FFFFFFFF_FFFFFFFF_FFFFFFFF_FFFFFFFF_FFFFFFFF_FFFFFFFF_FFFFFFFF", 16).unwrap();
+    /// let a_biguint = U256::max();
     /// let num = 100_u8;
     /// let modulo = a_biguint.wrapping_add_uint(200_u8);
     /// let multiple = a_biguint.panic_free_modular_next_multiple_of_uint(num, &modulo);
@@ -17478,45 +17505,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// assert_eq!(multiple.is_undefined(), true);
     /// ```
     /// 
-    /// # Example 4 for modulo == 0
-    /// ```
-    /// use std::str::FromStr;
-    /// use cryptocol::define_utypes_with;
-    /// define_utypes_with!(u8);
-    /// 
-    /// let a_biguint = U256::from_str_radix("123456789012345678901234567890123456789", 16).unwrap();
-    /// let num = 100_u8;
-    /// let modulo = U256::zero();
-    /// let multiple = a_biguint.panic_free_modular_next_multiple_of_uint(num, &modulo);
-    /// println!("The next multiple of {} is {}", a_biguint, multiple);
-    /// assert_eq!(multiple.to_string(), "0");
-    /// assert_eq!(multiple.is_overflow(), false);
-    /// assert_eq!(multiple.is_underflow(), false);
-    /// assert_eq!(multiple.is_infinity(), false);
-    /// assert_eq!(multiple.is_divided_by_zero(), false);
-    /// assert_eq!(multiple.is_undefined(), true);
-    /// ```
-    /// 
-    /// # Example 5 for modulo == 1
-    /// ```
-    /// use std::str::FromStr;
-    /// use cryptocol::define_utypes_with;
-    /// define_utypes_with!(u8);
-    /// 
-    /// let a_biguint = U256::from_str_radix("123456789012345678901234567890123456789", 16).unwrap();
-    /// let num = 100_u8;
-    /// let modulo = U256::zero();
-    /// let multiple = a_biguint.panic_free_modular_next_multiple_of_uint(num, &modulo);
-    /// println!("The next multiple of {} is {}", a_biguint, multiple);
-    /// assert_eq!(multiple.to_string(), "0");
-    /// assert_eq!(multiple.is_overflow(), false);
-    /// assert_eq!(multiple.is_underflow(), false);
-    /// assert_eq!(multiple.is_infinity(), false);
-    /// assert_eq!(multiple.is_divided_by_zero(), false);
-    /// assert_eq!(multiple.is_undefined(), true);
-    /// ```
-    /// 
-    /// # Example 6 for rhs == multiple of modulo
+    /// # Example 4 for rhs == multiple of modulo
     /// ```
     /// use std::str::FromStr;
     /// use cryptocol::define_utypes_with;
@@ -17525,6 +17514,82 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// let a_biguint = U256::from_str_radix("123456789012345678901234567890123456789", 16).unwrap();
     /// let num = 200_u8;
     /// let modulo = U256::from_uint(100_u8);
+    /// let multiple = a_biguint.panic_free_modular_next_multiple_of_uint(num, &modulo);
+    /// println!("The next multiple of {} is {}", a_biguint, multiple);
+    /// assert_eq!(multiple.to_string(), "0");
+    /// assert_eq!(multiple.is_overflow(), false);
+    /// assert_eq!(multiple.is_underflow(), false);
+    /// assert_eq!(multiple.is_infinity(), false);
+    /// assert_eq!(multiple.is_divided_by_zero(), false);
+    /// assert_eq!(multiple.is_undefined(), true);
+    /// ```
+    /// 
+    /// # Example 5 for modulo == 0
+    /// ```
+    /// use std::str::FromStr;
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u8);
+    /// 
+    /// let a_biguint = U256::from_str_radix("123456789012345678901234567890123456789", 16).unwrap();
+    /// let num = 100_u8;
+    /// let modulo = U256::zero();
+    /// let multiple = a_biguint.panic_free_modular_next_multiple_of_uint(num, &modulo);
+    /// println!("The next multiple of {} is {}", a_biguint, multiple);
+    /// assert_eq!(multiple.to_string(), "0");
+    /// assert_eq!(multiple.is_overflow(), false);
+    /// assert_eq!(multiple.is_underflow(), false);
+    /// assert_eq!(multiple.is_infinity(), false);
+    /// assert_eq!(multiple.is_divided_by_zero(), false);
+    /// assert_eq!(multiple.is_undefined(), true);
+    /// ```
+    /// 
+    /// # Example 6 for modulo == 1
+    /// ```
+    /// use std::str::FromStr;
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u8);
+    /// 
+    /// let a_biguint = U256::from_str_radix("123456789012345678901234567890123456789", 16).unwrap();
+    /// let num = 100_u8;
+    /// let modulo = U256::one();
+    /// let multiple = a_biguint.panic_free_modular_next_multiple_of_uint(num, &modulo);
+    /// println!("The next multiple of {} is {}", a_biguint, multiple);
+    /// assert_eq!(multiple.to_string(), "0");
+    /// assert_eq!(multiple.is_overflow(), false);
+    /// assert_eq!(multiple.is_underflow(), false);
+    /// assert_eq!(multiple.is_infinity(), false);
+    /// assert_eq!(multiple.is_divided_by_zero(), false);
+    /// assert_eq!(multiple.is_undefined(), true);
+    /// ```
+    /// 
+    /// # Example 7 for rhs == 0 and modulo == 0
+    /// ```
+    /// use std::str::FromStr;
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u8);
+    /// 
+    /// let a_biguint = U256::from_str_radix("123456789012345678901234567890123456789", 16).unwrap();
+    /// let num = 0_u8;
+    /// let modulo = U256::zero();
+    /// let multiple = a_biguint.panic_free_modular_next_multiple_of_uint(num, &modulo);
+    /// println!("The next multiple of {} is {}", a_biguint, multiple);
+    /// assert_eq!(multiple.to_string(), "0");
+    /// assert_eq!(multiple.is_overflow(), false);
+    /// assert_eq!(multiple.is_underflow(), false);
+    /// assert_eq!(multiple.is_infinity(), false);
+    /// assert_eq!(multiple.is_divided_by_zero(), false);
+    /// assert_eq!(multiple.is_undefined(), true);
+    /// ```
+    /// 
+    /// # Example 8 for rhs == 0 and modulo == 1
+    /// ```
+    /// use std::str::FromStr;
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u8);
+    /// 
+    /// let a_biguint = U256::from_str_radix("123456789012345678901234567890123456789", 16).unwrap();
+    /// let num = 0_u8;
+    /// let modulo = U256::one();
     /// let multiple = a_biguint.panic_free_modular_next_multiple_of_uint(num, &modulo);
     /// println!("The next multiple of {} is {}", a_biguint, multiple);
     /// assert_eq!(multiple.to_string(), "0");
@@ -17673,59 +17738,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// assert_eq!(a_biguint.is_divided_by_zero(), false);
     /// ```
     /// 
-    /// # Example 4 for modulo == 0
-    /// ```
-    /// use std::str::FromStr;
-    /// use cryptocol::define_utypes_with;
-    /// define_utypes_with!(u32);
-    /// 
-    /// let mut a_biguint = U256::from_str_radix("123456789012345678901234567890123456789", 16).unwrap();
-    /// println!("Originally, a_biguint = {}", a_biguint);
-    /// assert_eq!(a_biguint.is_overflow(), false);
-    /// assert_eq!(a_biguint.is_underflow(), false);
-    /// assert_eq!(a_biguint.is_infinity(), false);
-    /// assert_eq!(a_biguint.is_divided_by_zero(), false);
-    /// assert_eq!(a_biguint.is_undefined(), false);
-    /// 
-    /// let num = 100_u8;
-    /// let modulo = U256::zero();
-    /// a_biguint.panic_free_modular_next_multiple_of_assign_uint(num, &modulo);
-    /// println!("After a_biguint.next_multiple_of_assign_uint({}), a_biguint = {}", num, a_biguint);
-    /// assert_eq!(a_biguint.to_string(), "0");
-    /// assert_eq!(a_biguint.is_overflow(), false);
-    /// assert_eq!(a_biguint.is_underflow(), false);
-    /// assert_eq!(a_biguint.is_infinity(), false);
-    /// assert_eq!(a_biguint.is_undefined(), true);
-    /// assert_eq!(a_biguint.is_divided_by_zero(), false);
-    /// ```
-    /// 
-    /// # Example 5 for modulo == 1
-    /// ```
-    /// use std::str::FromStr;
-    /// use cryptocol::define_utypes_with;
-    /// define_utypes_with!(u32);
-    /// 
-    /// let mut a_biguint = U256::from_str_radix("123456789012345678901234567890123456789", 16).unwrap();
-    /// println!("Originally, a_biguint = {}", a_biguint);
-    /// assert_eq!(a_biguint.is_overflow(), false);
-    /// assert_eq!(a_biguint.is_underflow(), false);
-    /// assert_eq!(a_biguint.is_infinity(), false);
-    /// assert_eq!(a_biguint.is_divided_by_zero(), false);
-    /// assert_eq!(a_biguint.is_undefined(), false);
-    /// 
-    /// let num = 100_u8;
-    /// let modulo = U256::zero();
-    /// a_biguint.panic_free_modular_next_multiple_of_assign_uint(num, &modulo);
-    /// println!("After a_biguint.next_multiple_of_assign_uint({}), a_biguint = {}", num, a_biguint);
-    /// assert_eq!(a_biguint.to_string(), "0");
-    /// assert_eq!(a_biguint.is_overflow(), false);
-    /// assert_eq!(a_biguint.is_underflow(), false);
-    /// assert_eq!(a_biguint.is_infinity(), false);
-    /// assert_eq!(a_biguint.is_undefined(), true);
-    /// assert_eq!(a_biguint.is_divided_by_zero(), false);
-    /// ```
-    /// 
-    /// # Example 6 for rhs == multiple of modulo
+    /// # Example 4 for rhs == multiple of modulo
     /// ```
     /// use std::str::FromStr;
     /// use cryptocol::define_utypes_with;
@@ -17741,6 +17754,110 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// 
     /// let num = 200_u8;
     /// let modulo = U256::from_uint(100_u8);
+    /// a_biguint.panic_free_modular_next_multiple_of_assign_uint(num, &modulo);
+    /// println!("After a_biguint.next_multiple_of_assign_uint({}), a_biguint = {}", num, a_biguint);
+    /// assert_eq!(a_biguint.to_string(), "0");
+    /// assert_eq!(a_biguint.is_overflow(), false);
+    /// assert_eq!(a_biguint.is_underflow(), false);
+    /// assert_eq!(a_biguint.is_infinity(), false);
+    /// assert_eq!(a_biguint.is_undefined(), true);
+    /// assert_eq!(a_biguint.is_divided_by_zero(), false);
+    /// ```
+    /// 
+    /// # Example 5 for modulo == 0
+    /// ```
+    /// use std::str::FromStr;
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u32);
+    /// 
+    /// let mut a_biguint = U256::from_str_radix("123456789012345678901234567890123456789", 16).unwrap();
+    /// println!("Originally, a_biguint = {}", a_biguint);
+    /// assert_eq!(a_biguint.is_overflow(), false);
+    /// assert_eq!(a_biguint.is_underflow(), false);
+    /// assert_eq!(a_biguint.is_infinity(), false);
+    /// assert_eq!(a_biguint.is_divided_by_zero(), false);
+    /// assert_eq!(a_biguint.is_undefined(), false);
+    /// 
+    /// let num = 100_u8;
+    /// let modulo = U256::zero();
+    /// a_biguint.panic_free_modular_next_multiple_of_assign_uint(num, &modulo);
+    /// println!("After a_biguint.next_multiple_of_assign_uint({}), a_biguint = {}", num, a_biguint);
+    /// assert_eq!(a_biguint.to_string(), "0");
+    /// assert_eq!(a_biguint.is_overflow(), false);
+    /// assert_eq!(a_biguint.is_underflow(), false);
+    /// assert_eq!(a_biguint.is_infinity(), false);
+    /// assert_eq!(a_biguint.is_undefined(), true);
+    /// assert_eq!(a_biguint.is_divided_by_zero(), false);
+    /// ```
+    /// 
+    /// # Example 6 for modulo == 1
+    /// ```
+    /// use std::str::FromStr;
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u32);
+    /// 
+    /// let mut a_biguint = U256::from_str_radix("123456789012345678901234567890123456789", 16).unwrap();
+    /// println!("Originally, a_biguint = {}", a_biguint);
+    /// assert_eq!(a_biguint.is_overflow(), false);
+    /// assert_eq!(a_biguint.is_underflow(), false);
+    /// assert_eq!(a_biguint.is_infinity(), false);
+    /// assert_eq!(a_biguint.is_divided_by_zero(), false);
+    /// assert_eq!(a_biguint.is_undefined(), false);
+    /// 
+    /// let num = 100_u8;
+    /// let modulo = U256::one();
+    /// a_biguint.panic_free_modular_next_multiple_of_assign_uint(num, &modulo);
+    /// println!("After a_biguint.next_multiple_of_assign_uint({}), a_biguint = {}", num, a_biguint);
+    /// assert_eq!(a_biguint.to_string(), "0");
+    /// assert_eq!(a_biguint.is_overflow(), false);
+    /// assert_eq!(a_biguint.is_underflow(), false);
+    /// assert_eq!(a_biguint.is_infinity(), false);
+    /// assert_eq!(a_biguint.is_undefined(), true);
+    /// assert_eq!(a_biguint.is_divided_by_zero(), false);
+    /// ```
+    /// 
+    /// # Example 7 for rhs == 0 and modulo == 0
+    /// ```
+    /// use std::str::FromStr;
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u32);
+    /// 
+    /// let mut a_biguint = U256::from_str_radix("123456789012345678901234567890123456789", 16).unwrap();
+    /// println!("Originally, a_biguint = {}", a_biguint);
+    /// assert_eq!(a_biguint.is_overflow(), false);
+    /// assert_eq!(a_biguint.is_underflow(), false);
+    /// assert_eq!(a_biguint.is_infinity(), false);
+    /// assert_eq!(a_biguint.is_divided_by_zero(), false);
+    /// assert_eq!(a_biguint.is_undefined(), false);
+    /// 
+    /// let num = 0_u8;
+    /// let modulo = U256::zero();
+    /// a_biguint.panic_free_modular_next_multiple_of_assign_uint(num, &modulo);
+    /// println!("After a_biguint.next_multiple_of_assign_uint({}), a_biguint = {}", num, a_biguint);
+    /// assert_eq!(a_biguint.to_string(), "0");
+    /// assert_eq!(a_biguint.is_overflow(), false);
+    /// assert_eq!(a_biguint.is_underflow(), false);
+    /// assert_eq!(a_biguint.is_infinity(), false);
+    /// assert_eq!(a_biguint.is_undefined(), true);
+    /// assert_eq!(a_biguint.is_divided_by_zero(), false);
+    /// ```
+    /// 
+    /// # Example 6 for rhs == 0 and modulo == 1
+    /// ```
+    /// use std::str::FromStr;
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u32);
+    /// 
+    /// let mut a_biguint = U256::from_str_radix("123456789012345678901234567890123456789", 16).unwrap();
+    /// println!("Originally, a_biguint = {}", a_biguint);
+    /// assert_eq!(a_biguint.is_overflow(), false);
+    /// assert_eq!(a_biguint.is_underflow(), false);
+    /// assert_eq!(a_biguint.is_infinity(), false);
+    /// assert_eq!(a_biguint.is_divided_by_zero(), false);
+    /// assert_eq!(a_biguint.is_undefined(), false);
+    /// 
+    /// let num = 0_u8;
+    /// let modulo = U256::one();
     /// a_biguint.panic_free_modular_next_multiple_of_assign_uint(num, &modulo);
     /// println!("After a_biguint.next_multiple_of_assign_uint({}), a_biguint = {}", num, a_biguint);
     /// assert_eq!(a_biguint.to_string(), "0");
@@ -18220,7 +18337,6 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// It is just experimental for Big Endian CPUs. So, you are not encouraged
     /// to use it for Big Endian CPUs for serious purpose. Only use this crate
     /// for Big-endian CPUs with your own full responsibility.
-    #[inline]
     pub fn panic_free_pow_uint<U>(&self, exp: U) -> Self
     where U: SmallUInt + Copy + Clone + Display + Debug + ToString
             + Add<Output=U> + AddAssign + Sub<Output=U> + SubAssign
@@ -21905,7 +22021,6 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// It is just experimental for Big Endian CPUs. So, you are not encouraged
     /// to use it for Big Endian CPUs for serious purpose. Only use this crate
     /// for Big-endian CPUs with your own full responsibility.
-    #[inline]
     pub fn ilog10_assign_uint(&mut self)
     {
         let flag = self.get_all_flags();
@@ -22581,7 +22696,6 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// It is just experimental for Big Endian CPUs. So, you are not encouraged
     /// to use it for Big Endian CPUs for serious purpose. Only use this crate
     /// for Big-endian CPUs with your own full responsibility.
-    #[inline]
     pub fn overflowing_add_assign(&mut self, rhs: &Self) -> bool
     {
         let mut flags = self.get_all_flags();
@@ -23509,7 +23623,6 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// It is just experimental for Big Endian CPUs. So, you are not encouraged
     /// to use it for Big Endian CPUs for serious purpose. Only use this crate
     /// for Big-endian CPUs with your own full responsibility.
-    #[inline]
     pub fn overflowing_sub(&self, rhs: &Self) -> (Self, bool)
     {
         let mut res = Self::from_array(self.get_number().clone());
@@ -23569,7 +23682,6 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// It is just experimental for Big Endian CPUs. So, you are not encouraged
     /// to use it for Big Endian CPUs for serious purpose. Only use this crate
     /// for Big-endian CPUs with your own full responsibility.
-    #[inline]
     pub fn overflowing_sub_assign(&mut self, rhs: &Self) -> bool
     {
         let old_underflow = self.is_underflow();
@@ -24516,7 +24628,6 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// It is just experimental for Big Endian CPUs. So, you are not encouraged
     /// to use it for Big Endian CPUs for serious purpose. Only use this crate
     /// for Big-endian CPUs with your own full responsibility.
-    #[inline]
     pub fn widening_mul(&self, rhs: &Self) -> (Self, Self)
     {
         let mut low = Self::from_array(self.get_number().clone());
@@ -25978,7 +26089,6 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// It is just experimental for Big Endian CPUs. So, you are not encouraged
     /// to use it for Big Endian CPUs for serious purpose. Only use this crate
     /// for Big-endian CPUs with your own full responsibility.
-    #[inline]
     pub fn saturating_div_assign(&mut self, rhs: &Self)
     {
         let old_overflow = self.is_overflow();
@@ -26040,8 +26150,6 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// # Big-endian issue
     /// It is just experimental for Big Endian CPUs. So, you are not encouraged
     /// to use it for Big Endian CPUs for serious purpose. Only use this crate
-    /// for Big-endian CPUs with your own full responsibility.
-    #[inline]
     pub fn modular_div(&self, rhs: &Self, modulo: &Self) -> Self
     {
         let mut lhs = Self::from_array(self.get_number().clone());
@@ -26438,7 +26546,6 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// It is just experimental for Big Endian CPUs. So, you are not encouraged
     /// to use it for Big Endian CPUs for serious purpose. Only use this crate
     /// for Big-endian CPUs with your own full responsibility.
-    #[inline]
     pub fn saturating_rem_assign(&mut self, rhs: &Self)
     {
         let old_overflow = self.is_overflow();
@@ -26588,7 +26695,6 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// It is just experimental for Big Endian CPUs. So, you are not encouraged
     /// to use it for Big Endian CPUs for serious purpose. Only use this crate
     /// for Big-endian CPUs with your own full responsibility.
-    #[inline]
     pub fn modular_rem(&self, rhs: &Self, modulo: &Self) -> Self
     {
         let mut lhs = Self::from_array(self.get_number().clone());
@@ -26727,7 +26833,6 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// It is just experimental for Big Endian CPUs. So, you are not encouraged
     /// to use it for Big Endian CPUs for serious purpose. Only use this crate
     /// for Big-endian CPUs with your own full responsibility.
-    #[inline]
     pub fn panic_free_modular_rem(&self, rhs: &Self, modulo: &Self) -> Self
     {
         let mut lhs = Self::from_array(self.get_number().clone());
@@ -29084,33 +29189,17 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// ```
     /// // Todo
     /// ```
-    #[cfg(target_endian = "little")]
     #[inline]
     pub fn to_be(&self) -> Self
     {
-        self.swap_bytes()
-    }
-
-    // pub fn to_be(&self) -> Self
-    /// Converts `self` to big endian from the target’s endianness.
-    /// 
-    /// # Features
-    /// On big endian this is a no-op. On little endian the bytes are swapped.
-    /// 
-    /// # Example
-    /// ```
-    /// // Todo
-    /// ```
-    #[cfg(target_endian = "big")]
-    #[inline]
-    pub fn to_be(&self) -> Self
-    {
-        self.clone()
+        #[cfg(target_endian = "little")] return self.swap_bytes();
+        #[cfg(target_endian = "big")] return self.clone();
     }
 
     // pub fn to_be_bytes(&self) -> [T; N]
     /// Return the memory representation of this integer as a byte array
     /// in big-endian (network) byte order.
+    /// 
     /// # Features
     /// On big endian this is a no-op. On little endian the bytes are swapped.
     /// 
@@ -29118,28 +29207,12 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// ```
     /// // Todo
     /// ```
-    #[cfg(target_endian = "little")]
+    
     #[inline]
     pub fn to_be_bytes(&self) -> [T; N]
     {
-        self.swap_bytes().get_number().clone()
-    }
-
-    // pub fn to_be_bytes(&self) -> [T; N]
-    /// Return the memory representation of this integer as a byte array
-    /// in big-endian (network) byte order.
-    /// # Features
-    /// On big endian this is a no-op. On little endian the bytes are swapped.
-    /// 
-    /// # Example
-    /// ```
-    /// // Todo
-    /// ```
-    #[cfg(target_endian = "big")]
-    #[inline]
-    pub fn to_be_bytes(&self) -> [T; N]
-    {
-        self.get_number().clone()
+        #[cfg(target_endian = "little")] return self.swap_bytes().get_number().clone();
+        #[cfg(target_endian = "big")] return self.get_number().clone();
     }
 
     // pub fn to_le(&self) -> Self
@@ -29152,28 +29225,12 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// ```
     /// // Todo
     /// ```
-    #[cfg(target_endian = "little")]
+    
     #[inline]
     pub fn to_le(&self) -> Self
     {
-        self.clone()
-    }
-
-    // pub fn to_le(&self) -> Self
-    /// Converts `self` to little endian from the target’s endianness.
-    /// 
-    /// # Features
-    /// On little endian this is a no-op. On big endian the bytes are swapped.
-    /// 
-    /// # Example
-    /// ```
-    /// // Todo
-    /// ```
-    #[cfg(target_endian = "big")]
-    #[inline]
-    pub fn to_le(&self) -> Self
-    {
-        self.swap_bytes()
+        #[cfg(target_endian = "little")] return self.clone();
+        #[cfg(target_endian = "big")] return self.swap_bytes();
     }
 
     // pub fn to_le_bytes(&self) -> [T; N]
@@ -29187,29 +29244,11 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// ```
     /// // Todo
     /// ```
-    #[cfg(target_endian = "little")]
     #[inline]
     pub fn to_le_bytes(&self) -> [T; N]
     {
-        self.get_number().clone()
-    }
-
-    // pub fn to_le_bytes(&self) -> [T; N]
-    /// Return the memory representation of this integer as a byte array
-    /// in little-endian byte order.
-    /// 
-    /// # Features
-    /// On little endian this is a no-op. On big endian the bytes are swapped.
-    /// 
-    /// # Example
-    /// ```
-    /// // Todo
-    /// ```
-    #[cfg(target_endian = "big")]
-    #[inline]
-    pub fn to_le_bytes(&self) -> [T; N]
-    {
-        self.swap_bytes().get_number().clone()
+        #[cfg(target_endian = "little")] return self.get_number().clone();
+        #[cfg(target_endian = "big")] return self.swap_bytes().get_number().clone();
     }
 
     // pub fn to_string_with_radix_and_delimiter(&self, radix: usize, stride: usize, delimiter: &str) -> Result<String, NumberErr>
@@ -29674,7 +29713,10 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// // Todo
     /// ```
     #[inline]
-    pub fn reset_divided_by_zero(&mut self) { self.reset_flag_bit(Self::DIVIDED_BY_ZERO); }
+    pub fn reset_divided_by_zero(&mut self)
+    {
+        self.reset_flag_bit(Self::DIVIDED_BY_ZERO);
+    }
 
     // pub fn is_divided_by_zero(&self) -> bool
     /// Checks whether or not `DIVIDED_BY_ZERO` flag is set.
