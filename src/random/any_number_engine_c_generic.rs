@@ -125,7 +125,6 @@ impl<const MULTIPLIER: u64, const ADDER: u64> AnyNumber_Engine_C_Generic<MULTIPL
     /// # Output
     /// When `idx` is greater than `7`, it returns the pseudo-random 64-bit
     /// unsigned integer wrapped by `Some` of enum `Option`.
-    #[inline]
     pub fn get_any_number(&self, idx: usize) -> Option<u64>
     {
         if idx < 8
@@ -154,7 +153,7 @@ impl<const MULTIPLIER: u64, const ADDER: u64> AnyNumber_Engine_C_Generic<MULTIPL
     /// When `idx` is greater than `7`, it does nothing and returns `false`.
     /// Otherwise, it set a specific random number indicated by `idx` to be
     /// `val` and returns `true`.
-    #[inline] pub fn set_any_number(&mut self, idx: usize, val: u64) -> bool
+    pub fn set_any_number(&mut self, idx: usize, val: u64) -> bool
     {
         if idx < 8
         {
