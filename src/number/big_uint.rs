@@ -4074,10 +4074,10 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// 
     /// # Arguments
     /// - `rhs` is to be added to `self`, and small-sized unsigned integer
-    /// such as `u8`, `u16`, `u32`, `u64`, and `u128`.
+    ///   such as `u8`, `u16`, `u32`, `u64`, and `u128`.
     /// - `carry` is to be added to `self` if `carry` is `true`,
-    /// and small-sized unsigned integer such as `u8`, `u16`, `u32`, `u64`,
-    /// and `u128`.
+    ///   and small-sized unsigned integer such as `u8`, `u16`, `u32`, `u64`,
+    ///   and `u128`.
     /// 
     /// # Panics
     /// If `size_of::<T>() * N` <= `128`, this method may panic
@@ -4091,10 +4091,12 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// 
     /// # Features
     /// - This allows chaining together multiple additions to create even a
-    /// wider addition. This can be thought of as a big integer “full adder”,
-    /// in the electronics sense.
+    ///   wider addition. This can be thought of as a big integer “full adder”,
+    ///   in the electronics sense.
     /// - If the input carry is `false`, this method is equivalent to
-    /// `overflowing_add_uint()`, and the output carry reflect current overflow.
+    ///   `overflowing_add_uint()`, and the output carry reflect current
+    ///   overflow.
+    /// - If overflow happened, the flag `OVERFLOW` of the return value will be set.
     /// 
     /// # Counterpart Method
     /// If `rhs` is bigger tham `ui128`, the method [carrying_add()](struct@BigUInt#method.carrying_add)
@@ -4392,7 +4394,8 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// It returns `self` + `rhs` with wrapping (modular) addition.
     /// 
     /// # Features
-    /// Wrapping (modular) addition.
+    /// - Wrapping (modular) addition.
+    /// - If overflow happened, the flag `OVERFLOW` of the return value will be set.
     /// 
     /// # Counterpart Method
     /// If `rhs` is bigger tham `ui128`, the method [wrapping_add()](struct@BigUInt#method.wrapping_add)
@@ -4599,7 +4602,8 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// would have occurred then the wrapped (modular) value is returned.
     /// 
     /// # Features
-    /// The output overflow reflects current overflow.
+    /// - The output overflow reflects current overflow.
+    /// - If overflow happened, the flag `OVERFLOW` of the return value will be set.
     /// 
     /// # Counterpart Method
     /// If `rhs` is bigger tham `ui128`, the method [overflowing_add()](struct@BigUInt#method.overflowing_add)
@@ -4931,7 +4935,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// If `rhs` is bigger tham `ui128`, the method [unchecked_add()](struct@BigUInt#method.unchecked_add)
     /// is proper rather than this method.
     /// 
-    /// # Examples
+    /// # Example 1
     /// ```
     /// use cryptocol::define_utypes_with;
     /// define_utypes_with!(u32);
@@ -4945,6 +4949,11 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// assert_eq!(res.is_divided_by_zero(), false);
     /// assert_eq!(res.is_infinity(), false);
     /// assert_eq!(res.is_undefined(), false);
+    /// 
+    /// # Panic Example
+    /// ```
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u32);
     /// 
     /// let _a_biguint = UU64::max().wrapping_sub_uint(1_u8);
     /// // It will panic.
@@ -4987,7 +4996,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// 
     /// # Features
     /// - This method saturates when it reaches maximum value.
-    /// - It does not set `OVERFLOW` flag.
+    /// - It does not set `OVERFLOW` flag of the return value.
     /// 
     /// # Counterpart Method
     /// If `rhs` is bigger tham `ui128`, the method [saturating_add()](struct@BigUInt#method.saturating_add)
@@ -6607,12 +6616,14 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// 
     /// # Features
     /// - It performs “ternary subtraction” by subtracting a primitive unsigned
-    /// integer operand and a borrow-in bit from `self`, and returns an output
-    /// integer and a borrow-out bit. This allows chaining together multiple
-    /// subtractions to create a wider subtraction.
+    ///   integer operand and a borrow-in bit from `self`, and returns an output
+    ///   integer and a borrow-out bit. This allows chaining together multiple
+    ///   subtractions to create a wider subtraction.
     /// - If the input borrow is `false`, this method is equivalent to
-    /// `overflowing_sub_uint()`, and the output carry is equal to
-    /// the `UNDERFLOW` flag.
+    ///   `overflowing_sub_uint()`, and the output carry is equal to
+    ///   the `UNDERFLOW` flag.
+    /// - If the underflow happened, the flag `UNDERFLOW` of the return value will
+    ///   be set.
     /// 
     /// # Counterpart Method
     /// If `rhs` is bigger than `u128`, the method [borrowing_sub()](struct@BigUInt#method.borrowing_sub)
@@ -6923,7 +6934,9 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// # Features
     /// - Wrapping (modular) subtraction.
     /// - It computes `self`` - `rhs`, wrapping around at the boundary
-    /// of the type.
+    ///   of the type.
+    /// - If the underflow happened, the flag `UNDERFLOW` of the return value will
+    ///   be set.
     /// 
     /// # Counterpart Method
     /// If `rhs` is bigger than `u128`, the method [wrapping_sub()](struct@BigUInt#method.wrapping_sub)
@@ -7140,8 +7153,10 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// 
     /// # Features
     /// - It returns a tuple of the subtraction along with a boolean indicating
-    /// whether an arithmetic overflow would occur.
+    ///   whether an arithmetic overflow would occur.
     /// - If an overflow would have occurred then the wrapped value is returned.
+    /// - If the underflow happened, the flag `UNDERFLOW` of the return value will
+    ///   be set.
     /// 
     /// # Counterpart Method
     /// If `rhs` is bigger than `u128`, the method
@@ -7491,7 +7506,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// [unchecked_sub()](struct@BigUInt#method.unchecked_sub) is proper
     /// rather than this method `unchecked_sub_uint()`.
     /// 
-    /// # Examples
+    /// # Example 1
     /// ```
     /// use cryptocol::define_utypes_with;
     /// define_utypes_with!(u32);
@@ -7505,6 +7520,11 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// assert_eq!(res.is_divided_by_zero(), false);
     /// assert_eq!(res.is_infinity(), false);
     /// assert_eq!(res.is_undefined(), false);
+    /// 
+    /// # Panic Example
+    /// ```
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u32);
     /// 
     /// let _a_biguint = UU64::one();
     /// // It will panic.
@@ -7548,7 +7568,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// # Features
     /// - Saturating integer subtraction.
     /// - This method saturates when it reaches `zero`.
-    /// - It does not set `UNDERFLOW` flag.
+    /// - It does not set `UNDERFLOW` flag of the return value.
     /// 
     /// # Counterpart Method
     /// If `rhs` is bigger than `u128`, the method
@@ -9271,26 +9291,29 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// 
     /// # Features
     /// - It performs “long multiplication” which takes in an extra amount to
-    /// add, and may return an additional amount of overflow. This allows for
-    /// chaining together multiple multiplications to create “bigger integers”
-    /// which represent larger values.
+    ///   add, and may return an additional amount of overflow. This allows for
+    ///   chaining together multiple multiplications to create
+    ///  “bigger integers” which represent larger values.
     /// - If the high-order part of the return value is not zero, the
-    /// `OVERFOLOW` flag will be set though the output tuple is free from
-    /// overflow. It is because the `OVERFOLOW` flag is about `self`,
-    /// and not about the result of multiplication.
+    ///   `OVERFOLOW` flag will be set though the output tuple is free from
+    ///   overflow. It is because the `OVERFOLOW` flag is about `self`,
+    ///   and not about the result of multiplication.
+    /// - If overflow happened, the flag `OVERFLOW` of the return value will
+    ///   be set.
     /// 
     /// # Counterpart Methods
     /// - If you don’t need the carry, then you can use
-    /// [widening_mul_uint()](struct@BigUInt#method.widening_mul_uint) instead.
+    ///   [widening_mul_uint()](struct@BigUInt#method.widening_mul_uint) instead.
     /// - The value of the first field in the returned tuple matches what you’d
-    /// get by combining the methods
-    /// [wrapping_mul_uint()](struct@BigUInt#method.wrapping_mul_uint) and
-    /// [wrapping_add_uint()](struct@BigUInt#method.wrapping_add_uint):
-    /// `self.wrapping_mul_uint(rhs).wrapping_add_uint(carry)`. So,
-    /// `self.carrying_mul_uint(rhs, carry).0`
-    /// == `self.wrapping_mul_uint(rhs).wrapping_add_uint(carry)`
-    /// - If `rhs` is bigger than `u128`, the method [carrying_mul()](struct@BigUInt#method.carrying_mul)
-    /// is proper rather than this method `carrying_mul_uint()`.
+    ///   get by combining the methods
+    ///   [wrapping_mul_uint()](struct@BigUInt#method.wrapping_mul_uint) and
+    ///   [wrapping_add_uint()](struct@BigUInt#method.wrapping_add_uint):
+    ///   `self.wrapping_mul_uint(rhs).wrapping_add_uint(carry)`. So,
+    ///   `self.carrying_mul_uint(rhs, carry).0`
+    ///   == `self.wrapping_mul_uint(rhs).wrapping_add_uint(carry)`
+    /// - If `rhs` is bigger than `u128`, the method
+    ///   [carrying_mul()](struct@BigUInt#method.carrying_mul)
+    ///   is proper rather than this method `carrying_mul_uint()`.
     /// 
     /// # Example 1
     /// ```
@@ -9375,30 +9398,30 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// 
     /// # Features
     /// - It performs “long multiplication” which takes in an extra amount to
-    /// add, and may return an additional amount of overflow. This allows for
-    /// chaining together multiple multiplications to create “bigger integers”
-    /// which represent larger values.
+    ///   add, and may return an additional amount of overflow. This allows for
+    ///   chaining together multiple multiplications to create “bigger integers”
+    ///   which represent larger values.
     /// - If the return value is not zero, the `OVERFOLOW` flag will be set
-    /// though the output tuple is free from overflow. It is because the
-    /// `OVERFOLOW` flag is about `self`, and not about the result of
-    /// multiplication.
+    ///   though the output tuple is free from overflow. It is because the
+    ///   `OVERFOLOW` flag is about `self`, and not about the result of
+    ///   multiplication.
     /// - All the flags are historical, which means, for example, if an
-    /// overflow occurred even once before this current operation or
-    /// `OVERFLOW` flag is already set before this current operation,
-    /// the `OVERFLOW` flag is not changed even if this current operation
-    /// does not cause overflow.
+    ///   overflow occurred even once before this current operation or
+    ///   `OVERFLOW` flag is already set before this current operation,
+    ///   the `OVERFLOW` flag is not changed even if this current operation
+    ///   does not cause overflow.
     /// 
     /// # Counterpart Methods
     /// - If you don’t need the carry, then you can use
-    /// [widening_mul_assign_uint()](struct@BigUInt#method.widening_mul_assign_uint)
-    /// instead.
+    ///   [widening_mul_assign_uint()](struct@BigUInt#method.widening_mul_assign_uint)
+    ///   instead.
     /// - The value of `self` after calculation matches what you’d get by
-    /// combining the mehtods
-    /// [wrapping_mul_uint()](struct@BigUInt#method.wrapping_mul_uint) and
-    /// [wrapping_add_assign_uint()](struct@BigUInt#method.wrapping_add_assign_uint):
-    /// `self.wrapping_mul_uint(rhs).wrapping_add_assign_uint(carry)`.
+    ///   combining the mehtods
+    ///   [wrapping_mul_uint()](struct@BigUInt#method.wrapping_mul_uint) and
+    ///   [wrapping_add_assign_uint()](struct@BigUInt#method.wrapping_add_assign_uint):
+    ///   `self.wrapping_mul_uint(rhs).wrapping_add_assign_uint(carry)`.
     /// - If `rhs` is bigger than `u128`, the method [carrying_mul_assign()](struct@BigUInt#method.carrying_mul_assign)
-    /// is proper rather than this method `carrying_mul_assign_uint()`.
+    ///   is proper rather than this method `carrying_mul_assign_uint()`.
     /// 
     /// # Example 1
     /// ```
@@ -9515,24 +9538,25 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// 
     /// # Features
     /// - It performs “long multiplication” which takes in an extra amount to add,
-    /// and may return an additional amount of overflow. This allows for
-    /// chaining together multiple multiplications to create “bigger integers”
-    /// which represent larger values.
+    ///   and may return an additional amount of overflow. This allows for
+    ///   chaining together multiple multiplications to create “bigger integers”
+    ///   which represent larger values.
     /// - If the high-order part of the return value is not zero, the
-    /// `OVERFOLOW` flag will be set though the output tuple is free from
-    /// overflow. It is because the `OVERFOLOW` flag is about `self`,
-    /// and not about the result of multiplication.
+    ///   `OVERFOLOW` flag will be set though the output tuple is free from
+    ///   overflow. It is because the `OVERFOLOW` flag is about `self`,
+    ///   and not about the result of multiplication.
     /// 
     /// # Counterpart Methods
     /// - If you also need to add a carry to the wide result, then you want to
-    /// use [carrying_mul_uint()](struct@BigUInt#method.carrying_mul_uint)
-    /// instead.
+    ///   use [carrying_mul_uint()](struct@BigUInt#method.carrying_mul_uint)
+    ///   instead.
     /// - The value of the first field in the returned tuple matches what
-    /// you’d get the method
-    /// [wrapping_mul_uint()](struct@BigUInt#method.wrapping_mul_uint).
-    /// `self.widening_mul_uint(rhs).0` == `self.wrapping_mul_uint(rhs)`
-    /// - If `rhs` is bigger than `u128`, the method [widening_mul()](struct@BigUInt#method.widening_mul)
-    /// is proper rather than this method `widening_mul_uint()`.
+    ///   you’d get the method
+    ///   [wrapping_mul_uint()](struct@BigUInt#method.wrapping_mul_uint).
+    ///   `self.widening_mul_uint(rhs).0` == `self.wrapping_mul_uint(rhs)`
+    /// - If `rhs` is bigger than `u128`, the method
+    ///   [widening_mul()](struct@BigUInt#method.widening_mul)
+    ///   is proper rather than this method `widening_mul_uint()`.
     /// 
     /// # Example 1
     /// ```
@@ -9608,29 +9632,29 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// 
     /// # Features
     /// - It performs “long multiplication” which takes in an extra amount to add,
-    /// and may return an additional amount of overflow. This allows for
-    /// chaining together multiple multiplications to create “bigger integers”
-    /// which represent larger values.
+    ///   and may return an additional amount of overflow. This allows for
+    ///   chaining together multiple multiplications to create “bigger integers”
+    ///   which represent larger values.
     /// - If the return value is not zero, the `OVERFOLOW` flag will be set
-    /// though the output tuple is free from overflow. It is because the
-    /// `OVERFOLOW` flag is about `self`, and not about the result of
-    /// multiplication.
+    ///   though the output tuple is free from overflow. It is because the
+    ///   `OVERFOLOW` flag is about `self`, and not about the result of
+    ///   multiplication.
     /// - All the flags are historical, which means, for example, if an
-    /// overflow occurred even once before this current operation or
-    /// `OVERFLOW` flag is already set before this current operation,
-    /// the `OVERFLOW` flag is not changed even if this current operation
-    /// does not cause overflow.
+    ///   overflow occurred even once before this current operation or
+    ///   `OVERFLOW` flag is already set before this current operation,
+    ///   the `OVERFLOW` flag is not changed even if this current operation
+    ///   does not cause overflow.
     /// 
     /// # Counterpart Methods
     /// - If you also need to add a carry to the wide result, then you want to
-    /// use
-    /// [widening_mul_assign_uint()](struct@BigUInt#method.carrying_mul_assign_uint)
-    /// instead.
+    ///   use
+    ///   [widening_mul_assign_uint()](struct@BigUInt#method.carrying_mul_assign_uint)
+    ///   instead.
     /// - The value of `self` after calculation matches what you’d get the
-    /// method [wrapping_mul_uint()](struct@BigUInt#method.wrapping_mul_uint)
-    /// `self` == `self.wrapping_mul_uint(rhs)`.
+    ///   method [wrapping_mul_uint()](struct@BigUInt#method.wrapping_mul_uint)
+    ///   `self` == `self.wrapping_mul_uint(rhs)`.
     /// - If `rhs` is bigger than `u128`, the method [widening_mul_assign()](struct@BigUInt#method.widening_mul_assign)
-    /// is proper rather than this method `widening_mul_assign_uint()`.
+    ///   is proper rather than this method `widening_mul_assign_uint()`.
     /// 
     /// # Example 1
     /// ```
@@ -9784,12 +9808,17 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// If `size_of::<T>() * N` <= `128`, this method may panic
     /// or its behavior may be undefined though it may not panic.
     /// 
+    /// # Features
+    /// - If overflow happened, the flag 'OVERFLOW' of the return value will
+    ///   be set.
+    /// 
     /// # Output
     /// It returns the multiplication of `self` and `rhs`, wrapping around
     /// at the boundary of the type.
     /// 
     /// # Counterpart Method
-    /// If `rhs` is bigger than `u128`, the method [wrapping_mul_uint()](struct@BigUInt#method.wrapping_mul_uint)
+    /// If `rhs` is bigger than `u128`, the method
+    /// [wrapping_mul_uint()](struct@BigUInt#method.wrapping_mul_uint)
     /// is proper rather than this method `wrapping_mul_uint()`.
     /// 
     /// # Example 1
@@ -10007,14 +10036,15 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// or its behavior may be undefined though it may not panic.
     /// 
     /// # Output
-    /// It returns a tuple of the multiplication `self` * `rhs` along
-    /// with a boolean indicating whether an arithmetic overflow would occur.
-    /// If an overflow would have occurred, the wrapped (modular) value
-    /// is returned.
+    /// - It returns a tuple of the multiplication `self` * `rhs` along
+    ///   with a boolean indicating whether an arithmetic overflow would occur.
+    /// - If an overflow would have occurred, the wrapped (modular) value
+    ///   is returned.
     /// 
     /// # Features
-    /// - If the second element of the output tuple is false, the `OVERFOLOW`
-    /// flag will be set.
+    /// If an overflow would have occurred, the second element of the output
+    /// tuple is false and the `OVERFOLOW` flag of the first element will
+    /// be set.
     /// 
     /// # Counterpart Method
     /// If `rhs` is bigger than `u128`, the method
@@ -10272,9 +10302,9 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// 
     /// # Panics
     /// - If `size_of::<T>() * N` <= `128`, this method may panic
-    /// or its behavior may be undefined though it may not panic.
+    ///   or its behavior may be undefined though it may not panic.
     /// - If overflow occurred, it will panic. So, use this method only when
-    /// you are sure that overflow will not occur.
+    ///   you are sure that overflow will not occur.
     /// 
     /// # Output
     /// It returns the sum `self` * `rhs` if overflow did not occur.
@@ -10285,7 +10315,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// [unchecked_mul()](struct@BigUInt#method.unchecked_mul)
     /// is proper rather than this method `unchecked_mul_uint()`.
     /// 
-    /// # Examples
+    /// # Example 1
     /// ```
     /// use cryptocol::define_utypes_with;
     /// define_utypes_with!(u32);
@@ -10299,6 +10329,12 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// assert_eq!(res.is_divided_by_zero(), false);
     /// assert_eq!(res.is_infinity(), false);
     /// assert_eq!(res.is_undefined(), false);
+    /// ```
+    /// 
+    /// # Panic Example
+    /// ```
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u32);
     /// 
     /// let _a_biguint = UU32::from_string("876801874298166903427690031858186486050853753882811946569946433649006084094").unwrap();
     /// // It will panic.
@@ -10416,10 +10452,10 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// - This method saturates when it reaches maximum value.
     /// - It does not set `OVERFLOW` flag.
     /// - All the flags are historical, which means, for example, if an
-    /// overflow occurred even once before this current operation or
-    /// `OVERFLOW` flag is already set before this current operation,
-    /// the `OVERFLOW` flag is not changed even if this current operation
-    /// does not cause overflow.
+    ///   overflow occurred even once before this current operation or
+    ///   `OVERFLOW` flag is already set before this current operation,
+    ///   the `OVERFLOW` flag is not changed even if this current operation
+    ///   does not cause overflow.
     /// 
     /// # Counterpart Method
     /// If `rhs` is bigger than `u128`, the method
@@ -12226,13 +12262,13 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// - Wrapped division on `BigUInt` types is just normal division.
     /// - There’s no way wrapping could ever happen unless `rhs` is zero.
     /// - This function exists, so that all operations are accounted for
-    /// in the wrapping operations.
+    ///   in the wrapping operations.
     /// - If `rhs` is zero, the quotient will have maximum value of `BigUInt`
-    /// type, and the flags of quotient such as `OVERFLOW`, `INFINITY`, and
-    /// `DIVIDED_BY_ZERO` will be set
+    ///   type, and the flags of quotient such as `OVERFLOW`, `INFINITY`, and
+    ///   `DIVIDED_BY_ZERO` will be set
     /// - __It does not panic__ while the counterpart method `wrapping_div()`
-    /// for primitive integer data type such as u8, u16, u32, u64, etc.
-    /// will panic if `rhs` is zero.
+    ///   for primitive integer data type such as u8, u16, u32, u64, etc.
+    ///   will panic if `rhs` is zero.
     /// 
     /// # Counterpart Method
     /// If `rhs` is bigger than `u128`, the method
@@ -12273,6 +12309,13 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// assert_eq!(quotient.is_infinity(), false);
     /// assert_eq!(quotient.is_divided_by_zero(), false);
     /// assert_eq!(quotient.is_undefined(), false);
+    /// ```
+    /// 
+    /// # Panic Examples
+    /// ```
+    /// use std::str::FromStr;
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u32);
     /// 
     /// let _dividend = U256::from_str("123456789015758942546236989636279846864825945392").unwrap();
     /// let _divisor = 0_u8;
@@ -12313,25 +12356,25 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// 
     /// # Panics
     /// - If `size_of::<T>() * N` <= `128`, this method may panic
-    /// or its behavior may be undefined though it may not panic.
+    ///   or its behavior may be undefined though it may not panic.
     /// - If `rhs` is zero, this method will panic.
     ///
     /// # Features
     /// - Wrapped division on `BigUInt` types is just normal division.
     /// - There’s no way wrapping could ever happen unless `rhs` is zero.
     /// - This function exists, so that all operations are accounted for
-    /// in the wrapping operations.
+    ///   in the wrapping operations.
     /// - If `rhs` is zero, the quotient will have maximum value of `BigUInt`
-    /// type, and the flags of quotient such as `OVERFLOW`, `INFINITY`, and
-    /// `DIVIDED_BY_ZERO` will be set
+    ///   type, and the flags of quotient such as `OVERFLOW`, `INFINITY`, and
+    ///   `DIVIDED_BY_ZERO` will be set
     /// - __It does not panic__ while the counterpart method `wrapping_div()`
-    /// for primitive integer data type such as u8, u16, u32, u64, etc.
-    /// will panic if `rhs` is zero.
+    ///   for primitive integer data type such as u8, u16, u32, u64, etc.
+    ///   will panic if `rhs` is zero.
     /// - All the flags are historical, which means, for example, if an
-    /// divided_by_zero occurred even once before this current operation or
-    /// `DIVIDED_BY_ZERO` flag is already set before this current operation,
-    /// the `DIVIDED_BY_ZERO` flag is not changed even if this current operation
-    /// does not cause divided_by_zero.
+    ///   divided_by_zero occurred even once before this current operation or
+    ///   `DIVIDED_BY_ZERO` flag is already set before this current operation,
+    ///   the `DIVIDED_BY_ZERO` flag is not changed even if this current
+    ///   operation does not cause divided_by_zero.
     /// 
     /// # Counterpart Method
     /// If `rhs` is bigger than `u128`, the method
@@ -12384,6 +12427,13 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// assert_eq!(a_biguint.is_infinity(), false);
     /// assert_eq!(a_biguint.is_divided_by_zero(), false);
     /// assert_eq!(a_biguint.is_undefined(), false);
+    /// ```
+    /// 
+    /// # Panic Exmaples
+    /// ```
+    /// use std::str::FromStr;
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u64);
     /// 
     /// let mut _a_biguint = UU32::from_str("123456789015758942546236989636279846864825945392").unwrap();
     /// let _divisor = 0_u8;
@@ -12427,7 +12477,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// 
     /// # Panics
     /// - If `size_of::<T>() * N` <= `128`, this method may panic
-    /// or its behavior may be undefined though it may not panic.
+    ///   or its behavior may be undefined though it may not panic.
     /// - If `rhs` is zero, this method will panic.
     ///
     /// # Output
@@ -12441,13 +12491,13 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// - Overflowing division on `BigUInt` types is just normal division.
     /// - There’s no way overflowing could ever happen unless `rhs` is zero.
     /// - This function exists, so that all operations are accounted for
-    /// in the wrapping operations.
+    ///   in the wrapping operations.
     /// - If `rhs` is zero, the quotient will have maximum value of `BigUInt`
-    /// type, and the flags of quotient such as `OVERFLOW`, `INFINITY`, and
-    /// `DIVIDED_BY_ZERO` will be set
+    ///   type, and the flags of quotient such as `OVERFLOW`, `INFINITY`, and
+    ///   `DIVIDED_BY_ZERO` will be set
     /// - __It does not panic__ while the counterpart method `overflowing_div()`
-    /// for primitive integer data type such as u8, u16, u32, u64, etc.
-    /// will panic if `rhs` is zero.
+    ///   for primitive integer data type such as u8, u16, u32, u64, etc.
+    ///   will panic if `rhs` is zero.
     /// 
     /// # Counterpart Method
     /// If `rhs` is bigger than `u128`, the method
@@ -12489,9 +12539,17 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// assert_eq!(quotient.is_infinity(), false);
     /// assert_eq!(quotient.is_divided_by_zero(), false);
     /// assert_eq!(quotient.is_undefined(), false);
+    /// ```
+    /// 
+    /// # Panic Exmaples
+    /// ```
+    /// use std::str::FromStr;
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u128);
     /// 
     /// let _dividend = U256::from_str("123456789015758942546236989636279846864825945392").unwrap();
     /// let _divisor = 0_u8;
+    /// // It will panic!
     /// // let (quotient, overflow) = _dividend.overflowing_div_uint(_divisor);
     /// 
     /// let _dividend = U256::zero();
@@ -12529,7 +12587,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// 
     /// # Panics
     /// - If `size_of::<T>() * N` <= `128`, this method may panic
-    /// or its behavior may be undefined though it may not panic.
+    ///   or its behavior may be undefined though it may not panic.
     /// - If `rhs` is zero, this method will panic.
     ///
     /// # Output
@@ -12542,18 +12600,18 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// - Overflowing division on `BigUInt` types is just normal division.
     /// - There’s no way overflowing could ever happen unless `rhs` is zero.
     /// - This function exists, so that all operations are accounted for
-    /// in the wrapping operations.
+    ///   in the wrapping operations.
     /// - If `rhs` is zero, the quotient will have maximum value of `BigUInt`
-    /// type, and the flags of quotient such as `OVERFLOW`, `INFINITY`, and
-    /// `DIVIDED_BY_ZERO` will be set
+    ///   type, and the flags of quotient such as `OVERFLOW`, `INFINITY`, and
+    ///   `DIVIDED_BY_ZERO` will be set
     /// - __It does not panic__ while the counterpart method `overflowing_div()`
-    /// for primitive integer data type such as u8, u16, u32, u64, etc.
-    /// will panic if `rhs` is zero.
+    ///   for primitive integer data type such as u8, u16, u32, u64, etc.
+    ///   will panic if `rhs` is zero.
     /// - All the flags are historical, which means, for example, if an
-    /// divided_by_zero occurred even once before this current operation or
-    /// `DIVIDED_BY_ZERO` flag is already set before this current operation,
-    /// the `DIVIDED_BY_ZERO` flag is not changed even if this current operation
-    /// does not cause divided_by_zero.
+    ///   divided_by_zero occurred even once before this current operation or
+    ///   `DIVIDED_BY_ZERO` flag is already set before this current operation,
+    ///   the `DIVIDED_BY_ZERO` flag is not changed even if this current
+    ///   operation does not cause divided_by_zero.
     /// 
     /// # Counterpart Method
     /// If `rhs` is bigger than `u128`, the method
@@ -12611,7 +12669,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// assert_eq!(a_biguint.is_divided_by_zero(), false);
     /// ```
     ///
-    /// # Example 3
+    /// # Panic Examples
     /// ```
     /// use std::str::FromStr;
     /// use cryptocol::define_utypes_with;
@@ -12776,9 +12834,9 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     ///
     /// # Panics
     /// - If `size_of::<T>() * N` <= `128`, this method may panic
-    /// or its behavior may be undefined though it may not panic.
+    ///   or its behavior may be undefined though it may not panic.
     /// - If `rhs` is zero, it will panic. So, use this method only when you
-    /// are sure that `rhs` is not zero. 
+    ///   are sure that `rhs` is not zero. 
     /// 
     /// # Output
     /// It returns the quotient of when `self` is divided by `rhs`,
@@ -12787,7 +12845,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// 
     /// # Features
     /// - Unchecked integer division on `BigUInt` types is just normal division.
-    /// - There’s no way wrapping could ever happen unless `rhs` is zero.
+    /// - There's no way wrapping could ever happen unless `rhs` is zero.
     /// - If `rhs` is zero, it will panic.
     /// 
     /// # Counterpart Method
@@ -12795,7 +12853,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// [unchecked_div()](struct@BigUInt#method.unchecked_div)
     /// is proper rather than this method `unchecked_div_uint()`.
     /// 
-    /// # Examples
+    /// # Example 1
     /// ```
     /// use std::str::FromStr;
     /// use cryptocol::define_utypes_with;
@@ -12811,6 +12869,13 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// assert_eq!(quotient.is_infinity(), false);
     /// assert_eq!(quotient.is_divided_by_zero(), false);
     /// assert_eq!(quotient.is_undefined(), false);
+    /// ```
+    /// 
+    /// # Panic Example
+    /// ```
+    /// use std::str::FromStr;
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u32);
     /// 
     /// let _divisor = 0_u8;
     /// // It will panic.
@@ -12846,7 +12911,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     ///
     /// # Panics
     /// - If `size_of::<T>() * N` <= `128`, this method may panic
-    /// or its behavior may be undefined though it may not panic.
+    ///   or its behavior may be undefined though it may not panic.
     /// - If `rhs` is zero, it will panic.
     /// 
     /// # Output
@@ -12859,10 +12924,10 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// - This method saturates when it reaches maximum value.
     /// - It does not set `OVERFLOW` flag.
     /// - If `rhs` is zero, the quotient will have maximum value of `BigUInt`
-    /// type, and `DIVIDED_BY_ZERO` flag of quotient will be set.
+    ///   type, and `DIVIDED_BY_ZERO` flag of quotient will be set.
     /// - __It does not panic__ while the counterpart method `saturating_div()`
-    /// for primitive integer data type such as u8, u16, u32, u64, etc.
-    /// will panic if `rhs` is zero.
+    ///   for primitive integer data type such as u8, u16, u32, u64, etc.
+    ///   will panic if `rhs` is zero.
     /// 
     /// # Counterpart Method
     /// If `rhs` is bigger than `u128`, the method
@@ -12903,6 +12968,13 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// assert_eq!(quotient.is_infinity(), false);
     /// assert_eq!(quotient.is_divided_by_zero(), false);
     /// assert_eq!(quotient.is_undefined(), false);
+    /// ```
+    /// 
+    /// # Panic Example
+    /// ```
+    /// use std::str::FromStr;
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u64);
     /// 
     /// let _dividend = U256::from_str("123456789015758942546236989636279846864825945392").unwrap();
     /// let _divisor = 0_u8;
@@ -12939,7 +13011,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     ///
     /// # Panics
     /// - If `size_of::<T>() * N` <= `128`, this method may panic
-    /// or its behavior may be undefined though it may not panic.
+    ///   or its behavior may be undefined though it may not panic.
     /// - If `rhs` is zero, it will panic.
     /// 
     /// # Features
@@ -12947,10 +13019,10 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// - This method saturates when it reaches maximum value.
     /// - It does not set `OVERFLOW` flag.
     /// - All the flags are historical, which means, for example, if an
-    /// divided_by_zero occurred even once before this current operation or
-    /// `DIVIDED_BY_ZERO` flag is already set before this current operation,
-    /// the `DIVIDED_BY_ZERO` flag is not changed even if this current operation
-    /// does not cause divided_by_zero.
+    ///   divided_by_zero occurred even once before this current operation or
+    ///   `DIVIDED_BY_ZERO` flag is already set before this current operation,
+    ///   the `DIVIDED_BY_ZERO` flag is not changed even if this current
+    ///   operation does not cause divided_by_zero.
     /// 
     /// # Counterpart Method
     /// If `rhs` is bigger than `u128`, the method
@@ -13005,6 +13077,13 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// assert_eq!(a_biguint.is_infinity(), false);
     /// assert_eq!(a_biguint.is_divided_by_zero(), false);
     /// assert_eq!(a_biguint.is_undefined(), false);
+    /// ```
+    /// 
+    /// # Panic Example
+    /// ```
+    /// use std::str::FromStr;
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u128);
     /// 
     /// let mut _a_biguint = UU32::from_str("123456789015758942546236989636279846864825945392").unwrap();
     /// let _divisor = 0_u8;
@@ -13041,7 +13120,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// 
     /// # Panics
     /// - If `size_of::<T>() * N` <= `128`, this method may panic
-    /// or its behavior may be undefined though it may not panic.
+    ///   or its behavior may be undefined though it may not panic.
     ///
     /// # Output
     /// It returns the quotient of when `self` is divided by `rhs`,
@@ -14546,6 +14625,13 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// let remainder = dividend.wrapping_rem_uint(divisor);
     /// println!("{} % {} = {}", dividend, divisor, remainder);
     /// assert_eq!(remainder.to_string(), "0");
+    /// ```
+    /// 
+    /// # Panic Example
+    /// ```
+    /// use std::str::FromStr;
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u8);
     /// 
     /// let _dividend = UU32::from_str("123456789015758942546236989636279846864825945392").unwrap();
     /// let _divisor = 0_u8;
@@ -14649,6 +14735,13 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// assert_eq!(a_biguint.is_infinity(), false);
     /// assert_eq!(a_biguint.is_divided_by_zero(), false);
     /// assert_eq!(a_biguint.is_undefined(), false);
+    /// ```
+    /// 
+    /// # Panic Example
+    /// ```
+    /// use std::str::FromStr;
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u16);
     /// 
     /// let mut _a_biguint = U256::from_str("123456789015758942546236989636279846864825945392").unwrap();
     /// let _divisor = 0_u8;
@@ -14687,7 +14780,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     ///
     /// # Panics
     /// - If `size_of::<T>() * N` <= `128`, this method may panic
-    /// or its behavior may be undefined though it may not panic.
+    ///   or its behavior may be undefined though it may not panic.
     /// - If `rhs` is zero, this method will panic.
     /// 
     /// # Output
@@ -14729,6 +14822,13 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// println!("{} % {} = {}", dividend, divisor, remainder);
     /// assert_eq!(remainder, 0);
     /// assert_eq!(overflow, false);
+    /// ```
+    /// 
+    /// # Panic Example
+    /// ```
+    /// use std::str::FromStr;
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u32);
     /// 
     /// let _dividend = UU32::from_str("123456789015758942546236989636279846864825945392").unwrap();
     /// let _divisor = 0_u8;
@@ -14764,7 +14864,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     ///
     /// # Panics
     /// - If `size_of::<T>() * N` <= `128`, this method may panic
-    /// or its behavior may be undefined though it may not panic.
+    ///   or its behavior may be undefined though it may not panic.
     /// - If `rhs` is zero, this method will panic.
     /// 
     /// # Output
@@ -14775,10 +14875,10 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// - Note that overflow never occurs, so the outtput is always false.
     /// - `self` will have the the remainder after execution.
     /// - All the flags are historical, which means, for example, if an
-    /// divided_by_zero occurred even once before this current operation or
-    /// `DIVIDED_BY_ZERO` flag is already set before this current operation,
-    /// the `DIVIDED_BY_ZERO` flag is not changed even if this current operation
-    /// does not cause divided_by_zero.
+    ///   divided_by_zero occurred even once before this current operation or
+    ///   `DIVIDED_BY_ZERO` flag is already set before this current operation,
+    ///   the `DIVIDED_BY_ZERO` flag is not changed even if this current operation
+    ///   does not cause divided_by_zero.
     /// 
     /// # Counterpart Method
     /// If `rhs` is bigger than `u128`, the method
@@ -14835,6 +14935,13 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// assert_eq!(a_biguint.is_infinity(), false);
     /// assert_eq!(a_biguint.is_divided_by_zero(), false);
     /// assert_eq!(a_biguint.is_undefined(), false);
+    /// ```
+    /// 
+    /// # Panic Example
+    /// ```
+    /// use std::str::FromStr;
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u64);
     /// 
     /// let mut _a_biguint = U256::from_str("123456789015758942546236989636279846864825945392").unwrap();
     /// let _divisor = 0_u16;
@@ -14987,7 +15094,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     ///
     /// # Panics
     /// - If `size_of::<T>() * N` <= `128`, this method may panic
-    /// or its behavior may be undefined though it may not panic.
+    ///   or its behavior may be undefined though it may not panic.
     /// - If `rhs` is `zero`, it will panic.
     /// 
     /// # Output
@@ -15027,6 +15134,13 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// let mut remainder = dividend.unchecked_rem_uint(divisor);
     /// println!("{} % {} = {}", dividend, divisor, remainder);
     /// assert_eq!(remainder.to_string(), "0");
+    /// ```
+    /// 
+    /// # Panic Example
+    /// ```
+    /// use std::str::FromStr;
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u8);
     /// 
     /// // It will panic.
     /// // let remainder = dividend.unchecked_rem_uint(0_u8);
@@ -15060,7 +15174,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     ///
     /// # Panics
     /// - If `size_of::<T>() * N` <= `128`, this method may panic
-    /// or its behavior may be undefined though it may not panic.
+    ///   or its behavior may be undefined though it may not panic.
     /// - If `rhs` is zero, this method will panic.
     /// 
     /// # Output
@@ -15100,6 +15214,13 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// let remainder = dividend.saturating_rem_uint(divisor);
     /// println!("{} % {} = {}", dividend, divisor, remainder);
     /// assert_eq!(remainder.to_string(), "0");
+    /// ```
+    /// 
+    /// # Panic Example
+    /// ```
+    /// use std::str::FromStr;
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u16);
     /// 
     /// let _dividend = UU32::from_str("123456789015758942546236989636279846864825945392").unwrap();
     /// let _divisor = 0_u8;
@@ -15136,7 +15257,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     ///
     /// # Panics
     /// - If `size_of::<T>() * N` <= `128`, this method may panic
-    /// or its behavior may be undefined though it may not panic.
+    ///   or its behavior may be undefined though it may not panic.
     /// - If `rhs` is zero, this method will panic.
     /// 
     /// # Features
@@ -15200,6 +15321,13 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// assert_eq!(a_biguint.is_infinity(), false);
     /// assert_eq!(a_biguint.is_divided_by_zero(), false);
     /// assert_eq!(a_biguint.is_undefined(), false);
+    /// ```
+    /// 
+    /// # Panic Example
+    /// ```
+    /// use std::str::FromStr;
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u32);
     /// 
     /// let mut _a_biguint = U256::from_str("123456789015758942546236989636279846864825945392").unwrap();
     /// let _divisor = 0_u16;
@@ -15285,6 +15413,13 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// let remainder = dividend.panic_free_rem_uint(divisor);
     /// println!("{} % {} = {}", dividend, divisor, remainder);
     /// assert_eq!(remainder.to_string(), "0");
+    /// ```
+    /// 
+    /// # Panic Example
+    /// ```
+    /// use std::str::FromStr;
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u64);
     /// 
     /// let _dividend = UU32::from_str("123456789015758942546236989636279846864825945392").unwrap();
     /// let _divisor = 0_u8;
@@ -17950,32 +18085,31 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     ///
     /// # Panics
     /// - If `size_of::<T>() * N` <= `128`, this method may panic
-    /// or its behavior may be undefined though it may not panic.
+    ///   or its behavior may be undefined though it may not panic.
     /// - If both `self` and `exp` are zero, the result is undefined
-    /// so this method will panic.
+    ///   so this method will panic.
     /// 
     /// # Output
     /// It returns the result of `self` raised to the power of `exp`.
     /// 
     /// # Features
     /// - Wrapping (modular) exponentiation.
-    /// - Even if overflowing happens, the `OVERFLOW` flag will not be set for
-    /// either `self` or `output`.
+    /// - If overflowing happens, the `OVERFLOW` flag of the return value will
+    ///   be set.
     /// 
     /// # Counterpart Method
-    /// If `exp` is bigger than `u128`, the method
-    /// [pow()](struct@BigUInt#method.pow)
-    /// is proper rather than this method `pow_uint()`.
+    /// - If `exp` is bigger than `u128`, the method
+    ///   [pow()](struct@BigUInt#method.pow)
+    ///   is proper rather than this method `pow_uint()`.
     /// - If you need to know whether or not overflow occurs, use the method
-    /// [overflowing_pow_uint()](struct@BigUInt#method.overflowing_pow_uint).
+    ///   [overflowing_pow_uint()](struct@BigUInt#method.overflowing_pow_uint).
     /// 
     /// # Example 1
     /// ```
-    /// use std::str::FromStr;
     /// use cryptocol::define_utypes_with;
     /// define_utypes_with!(u8);
     /// 
-    /// let a_biguint = UU32::from_str("10").unwrap();
+    /// let a_biguint = UU32::from_uint(10_u8);
     /// let exp = 30_u8;
     /// let res = a_biguint.pow_uint(exp);
     /// println!("{} ** {} = {}", a_biguint, exp, res);
@@ -17983,17 +18117,16 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// assert_eq!(res.is_overflow(), false);
     /// assert_eq!(res.is_underflow(), false);
     /// assert_eq!(res.is_infinity(), false);
-    /// assert_eq!(res.is_divided_by_zero(), false);
     /// assert_eq!(res.is_undefined(), false);
+    /// assert_eq!(res.is_divided_by_zero(), false);
     /// ```
     /// 
     /// # Example 2
     /// ```
-    /// use std::str::FromStr;
     /// use cryptocol::define_utypes_with;
     /// define_utypes_with!(u8);
     /// 
-    /// let a_biguint = UU32::from_str("10").unwrap();
+    /// let a_biguint = UU32::from_uint(10_u8);
     /// let exp = 100_u8;
     /// let res = a_biguint.pow_uint(exp);
     /// println!("{} ** {} = {}", a_biguint, exp, res);
@@ -18001,17 +18134,16 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// assert_eq!(res.is_overflow(), true);
     /// assert_eq!(res.is_underflow(), false);
     /// assert_eq!(res.is_infinity(), false);
-    /// assert_eq!(res.is_divided_by_zero(), false);
     /// assert_eq!(res.is_undefined(), false);
+    /// assert_eq!(res.is_divided_by_zero(), false);
     /// ```
     /// 
     /// # Example 3
     /// ```
-    /// use std::str::FromStr;
     /// use cryptocol::define_utypes_with;
     /// define_utypes_with!(u8);
     /// 
-    /// let a_biguint = UU32::from_str("10").unwrap();
+    /// let a_biguint = UU32::from_uint(10_u8);
     /// let exp = 0_u8;
     /// let res = a_biguint.pow_uint(exp);
     /// println!("{} ** {} = {}", a_biguint, exp, res);
@@ -18025,7 +18157,6 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// 
     /// # Example 4
     /// ```
-    /// use std::str::FromStr;
     /// use cryptocol::define_utypes_with;
     /// define_utypes_with!(u8);
     /// 
@@ -18037,13 +18168,19 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// assert_eq!(res.is_overflow(), false);
     /// assert_eq!(res.is_underflow(), false);
     /// assert_eq!(res.is_infinity(), false);
-    /// assert_eq!(res.is_divided_by_zero(), false);
     /// assert_eq!(res.is_undefined(), false);
+    /// assert_eq!(res.is_divided_by_zero(), false);
+    /// ```
+    /// 
+    /// # Panic Example
+    /// ```
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u8);
     /// 
     /// let _a_biguint = UU32::zero();
     /// let _exp = 0_u8;
     /// // It will panic.
-    /// // let res = a_biguint.pow_uint(exp);
+    /// // let res = _a_biguint.pow_uint(_exp);
     /// ```
     /// 
     /// # Big-endian issue
@@ -18076,18 +18213,18 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     ///
     /// # Panics
     /// - If `size_of::<T>() * N` <= `128`, this method may panic
-    /// or its behavior may be undefined though it may not panic.
+    ///   or its behavior may be undefined though it may not panic.
     /// - If both `self` and `exp` are zero, the result is undefined
-    /// so this method will panic.
+    ///   so this method will panic.
     /// 
     /// # Features
     /// - It calls wrapping_pow_assign_uint() internally.
-    /// - If overflowing happens, the `OVERFLOW` flag will be set.
+    /// - If overflowing happens, the `OVERFLOW` flag of `self` will be set.
     /// - All the flags are historical, which means, for example, if an
-    /// overflow occurred even once before this current operation or
-    /// `OVERFLOW` flag is already set before this current operation,
-    /// the `OVERFLOW` flag is not changed even if this current operation
-    /// does not cause overflow.
+    ///   overflow occurred even once before this current operation or
+    ///   `OVERFLOW` flag is already set before this current operation,
+    ///   the `OVERFLOW` flag is not changed even if this current operation
+    ///   does not cause overflow.
     /// 
     /// # Counterpart Method
     /// If `exp` is bigger than `u128`, the method
@@ -18100,7 +18237,6 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// define_utypes_with!(u16);
     /// 
     /// let mut a_biguint = U256::from_uint(10_u8);
-    /// let exp = 10_u8;
     /// println!("Originally, a_biguint = {}", a_biguint);
     /// assert_eq!(a_biguint.is_overflow(), false);
     /// assert_eq!(a_biguint.is_underflow(), false);
@@ -18108,9 +18244,10 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// assert_eq!(a_biguint.is_divided_by_zero(), false);
     /// assert_eq!(a_biguint.is_undefined(), false);
     /// 
+    /// let exp = 30_u8;
     /// a_biguint.pow_assign_uint(exp);
     /// println!("After a_biguint.pow_assign_uint({}), a_biguint = {}", exp, a_biguint);
-    /// assert_eq!(a_biguint.to_string(), "10000000000");
+    /// assert_eq!(a_biguint.to_string(), "1000000000000000000000000000000");
     /// assert_eq!(a_biguint.is_overflow(), false);
     /// assert_eq!(a_biguint.is_underflow(), false);
     /// assert_eq!(a_biguint.is_infinity(), false);
@@ -18123,8 +18260,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// use cryptocol::define_utypes_with;
     /// define_utypes_with!(u16);
     /// 
-    /// let mut a_biguint = U256::from_uint(10000000000_u64);
-    /// let exp = 10_u8;
+    /// let mut a_biguint = U256::from_uint(10_u8);
     /// println!("Originally, a_biguint = {}", a_biguint);
     /// assert_eq!(a_biguint.is_overflow(), false);
     /// assert_eq!(a_biguint.is_underflow(), false);
@@ -18132,6 +18268,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// assert_eq!(a_biguint.is_divided_by_zero(), false);
     /// assert_eq!(a_biguint.is_undefined(), false);
     /// 
+    /// let exp = 100_u8;
     /// a_biguint.pow_assign_uint(exp);
     /// println!("After a_biguint.pow_assign_uint({}), a_biguint = {}", exp, a_biguint);
     /// assert_eq!(a_biguint.to_string(), "60053020119642567005817971699943807522652027577520184704273238430174760927232");
@@ -18148,7 +18285,6 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// define_utypes_with!(u16);
     /// 
     /// let mut a_biguint = U256::zero();
-    /// let exp = 10_u8;
     /// println!("Originally, a_biguint = {}", a_biguint);
     /// assert_eq!(a_biguint.is_overflow(), false);
     /// assert_eq!(a_biguint.is_underflow(), false);
@@ -18156,6 +18292,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// assert_eq!(a_biguint.is_divided_by_zero(), false);
     /// assert_eq!(a_biguint.is_undefined(), false);
     /// 
+    /// let exp = 10_u8;
     /// a_biguint.pow_assign_uint(exp);
     /// println!("After a_biguint.pow_assign_uint({}), a_biguint = {}", exp, a_biguint);
     /// assert_eq!(a_biguint.to_string(), "0");
@@ -18172,7 +18309,6 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// define_utypes_with!(u16);
     /// 
     /// let mut a_biguint = U256::from_uint(10_u8);
-    /// let exp = 0_u8;
     /// println!("Originally, a_biguint = {}", a_biguint);
     /// assert_eq!(a_biguint.is_overflow(), false);
     /// assert_eq!(a_biguint.is_underflow(), false);
@@ -18180,6 +18316,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// assert_eq!(a_biguint.is_divided_by_zero(), false);
     /// assert_eq!(a_biguint.is_undefined(), false);
     /// 
+    /// let exp = 0_u8;
     /// a_biguint.pow_assign_uint(exp);
     /// println!("After a_biguint.pow_assign_uint({}), a_biguint = {}", exp, a_biguint);
     /// assert_eq!(a_biguint.to_string(), "1");
@@ -18188,10 +18325,16 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// assert_eq!(a_biguint.is_infinity(), false);
     /// assert_eq!(a_biguint.is_divided_by_zero(), false);
     /// assert_eq!(a_biguint.is_undefined(), false);
+    /// ```
+    /// 
+    /// # Panic Example
+    /// ```
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u16);
     /// 
     /// let mut _a_biguint = U256::zero();
     /// let _exp = 0_u8;
-    /// println!("Originally, a_biguint = {}", a_biguint);
+    /// println!("Originally, a_biguint = {}", _a_biguint);
     /// // It will panic.
     /// // _a_biguint.pow_assign_uint(_exp);
     /// ```
@@ -18224,7 +18367,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     ///
     /// # Panics
     /// - If `size_of::<T>() * N` <= `128`, this method may panic
-    /// or its behavior may be undefined though it may not panic.
+    ///   or its behavior may be undefined though it may not panic.
     /// 
     /// # Output
     /// - It returns the result of `self` raised to the power of `exp`.
@@ -18233,15 +18376,17 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// 
     /// # Features
     /// - Wrapping (modular) exponentiation.
+    /// - If overflowing happens, the `OVERFLOW` flag of the return value will
+    ///   be set.
     /// - If both `self` and `exp` are zero, the result is undefined
-    /// so this method will set the `UNDEFINED` flag.
+    ///   so this method will set the `UNDEFINED` flag.
     /// 
     /// # Counterpart Method
-    /// If `exp` is bigger than `u128`, the method
-    /// [pow()](struct@BigUInt#method.pow)
-    /// is proper rather than this method `pow_uint()`.
+    /// - If `exp` is bigger than `u128`, the method
+    ///   [pow()](struct@BigUInt#method.pow)
+    ///   is proper rather than this method `pow_uint()`.
     /// - If you need to know whether or not overflow occurs, use the method
-    /// [overflowing_pow_uint()](struct@BigUInt#method.overflowing_pow_uint).
+    ///   [overflowing_pow_uint()](struct@BigUInt#method.overflowing_pow_uint).
     /// 
     /// # Example 1
     /// ```
@@ -18368,7 +18513,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// 
     /// # Features
     /// - It calls wrapping_pow_assign_uint() internally.
-    /// - If overflowing happens, the `OVERFLOW` flag will be set.
+    /// - If overflowing happens, the `OVERFLOW` flag of `self` will be set.
     /// - If both `self` and `exp` are zero, the `UNDEFINED` flag will be set.
     /// - All the flags are historical, which means, for example, if an
     ///   overflow occurred even once before this current operation or
@@ -18387,7 +18532,6 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// define_utypes_with!(u64);
     /// 
     /// let mut a_biguint = U256::from_uint(10_u8);
-    /// let exp = 10_u8;
     /// println!("Originally, a_biguint = {}", a_biguint);
     /// assert_eq!(a_biguint.is_overflow(), false);
     /// assert_eq!(a_biguint.is_underflow(), false);
@@ -18395,6 +18539,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// assert_eq!(a_biguint.is_undefined(), false);
     /// assert_eq!(a_biguint.is_divided_by_zero(), false);
     /// 
+    /// let exp = 10_u8;
     /// a_biguint.panic_free_pow_assign_uint(exp);
     /// println!("After a_biguint.panic_free_pow_assign_uint({}), a_biguint = {}", exp, a_biguint);
     /// assert_eq!(a_biguint.to_string(), "10000000000");
@@ -18411,7 +18556,6 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// define_utypes_with!(u64);
     /// 
     /// let mut a_biguint = U256::from_uint(10000000000_u64);
-    /// let exp = 10_u8;
     /// println!("Originally, a_biguint = {}", a_biguint);
     /// assert_eq!(a_biguint.is_overflow(), false);
     /// assert_eq!(a_biguint.is_underflow(), false);
@@ -18419,6 +18563,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// assert_eq!(a_biguint.is_undefined(), false);
     /// assert_eq!(a_biguint.is_divided_by_zero(), false);
     /// 
+    /// let exp = 10_u8;
     /// a_biguint.panic_free_pow_assign_uint(exp);
     /// println!("After a_biguint.panic_free_pow_assign_uint({}), a_biguint = {}", exp, a_biguint);
     /// assert_eq!(a_biguint.to_string(), "60053020119642567005817971699943807522652027577520184704273238430174760927232");
@@ -18435,7 +18580,6 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// define_utypes_with!(u64);
     /// 
     /// let mut a_biguint = U256::zero();
-    /// let exp = 10_u8;
     /// println!("Originally, a_biguint = {}", a_biguint);
     /// assert_eq!(a_biguint.is_overflow(), false);
     /// assert_eq!(a_biguint.is_underflow(), false);
@@ -18443,6 +18587,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// assert_eq!(a_biguint.is_undefined(), false);
     /// assert_eq!(a_biguint.is_divided_by_zero(), false);
     /// 
+    /// let exp = 10_u8;
     /// a_biguint.panic_free_pow_assign_uint(exp);
     /// println!("After a_biguint.panic_free_pow_assign_uint({}), a_biguint = {}", exp, a_biguint);
     /// assert_eq!(a_biguint.to_string(), "0");
@@ -18459,7 +18604,6 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// define_utypes_with!(u64);
     /// 
     /// let mut a_biguint = U256::from_uint(10_u8);
-    /// let exp = 0_u8;
     /// println!("Originally, a_biguint = {}", a_biguint);
     /// assert_eq!(a_biguint.is_overflow(), false);
     /// assert_eq!(a_biguint.is_underflow(), false);
@@ -18467,6 +18611,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// assert_eq!(a_biguint.is_undefined(), false);
     /// assert_eq!(a_biguint.is_divided_by_zero(), false);
     /// 
+    /// let exp = 0_u8;
     /// a_biguint.panic_free_pow_assign_uint(exp);
     /// println!("After a_biguint.panic_free_pow_assign_uint({}), a_biguint = {}", exp, a_biguint);
     /// assert_eq!(a_biguint.to_string(), "1");
@@ -18544,7 +18689,8 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// 
     /// # Features
     /// - Wrapping (modular) exponentiation.
-    /// - If overflowing happens, the `OVERFLOW` flag will be set.
+    /// - If overflowing happens, the `OVERFLOW` flag of the return value
+    ///   will be set.
     /// 
     /// # Counterpart Method
     /// - If `exp` is bigger than `u128`, the method
@@ -18619,6 +18765,12 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// assert_eq!(res.is_infinity(), false);
     /// assert_eq!(res.is_divided_by_zero(), false);
     /// assert_eq!(res.is_undefined(), false);
+    /// ```
+    /// 
+    /// # Panic Example
+    /// ```
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u128);
     /// 
     /// let _a_biguint = UU32::zero();
     /// let _exp = 0_u8;
@@ -18662,7 +18814,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// 
     /// # Features
     /// - Wrapping (modular) exponentiation.
-    /// - If overflowing happens, the `OVERFLOW` flag will be set.
+    /// - If overflowing happens, the `OVERFLOW` flag of `self` will be set.
     /// - All the flags are historical, which means, for example, if an
     ///   overflow occurred even once before this current operation or
     ///   `OVERFLOW` flag is already set before this current operation,
@@ -18680,7 +18832,6 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// define_utypes_with!(u8);
     /// 
     /// let mut a_biguint = U256::from_uint(10_u8);
-    /// let exp = 30_u8;
     /// println!("Originally, a_biguint = {}", a_biguint);
     /// assert_eq!(a_biguint.is_overflow(), false);
     /// assert_eq!(a_biguint.is_underflow(), false);
@@ -18688,6 +18839,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// assert_eq!(a_biguint.is_divided_by_zero(), false);
     /// assert_eq!(a_biguint.is_undefined(), false);
     /// 
+    /// let exp = 30_u8;
     /// a_biguint.wrapping_pow_assign_uint(exp);
     /// println!("After a_biguint.wrapping_pow_assign_uint({}), a_biguint = {}", exp, a_biguint);
     /// assert_eq!(a_biguint.to_string(), "1000000000000000000000000000000");
@@ -18704,7 +18856,6 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// define_utypes_with!(u8);
     /// 
     /// let mut a_biguint = U256::from_uint(10_u8);
-    /// let exp = 100_u8;
     /// println!("Originally, a_biguint = {}", a_biguint);
     /// assert_eq!(a_biguint.is_overflow(), false);
     /// assert_eq!(a_biguint.is_underflow(), false);
@@ -18712,6 +18863,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// assert_eq!(a_biguint.is_divided_by_zero(), false);
     /// assert_eq!(a_biguint.is_undefined(), false);
     /// 
+    /// let exp = 100_u8;
     /// a_biguint.wrapping_pow_assign_uint(exp);
     /// println!("After a_biguint.wrapping_pow_assign_uint({}), a_biguint = {}", exp, a_biguint);
     /// assert_eq!(a_biguint.to_string(), "60053020119642567005817971699943807522652027577520184704273238430174760927232");
@@ -18728,7 +18880,6 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// define_utypes_with!(u8);
     /// 
     /// let mut a_biguint = U256::zero();
-    /// let exp = 30_u8;
     /// println!("Originally, a_biguint = {}", a_biguint);
     /// assert_eq!(a_biguint.is_overflow(), false);
     /// assert_eq!(a_biguint.is_underflow(), false);
@@ -18736,6 +18887,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// assert_eq!(a_biguint.is_divided_by_zero(), false);
     /// assert_eq!(a_biguint.is_undefined(), false);
     /// 
+    /// let exp = 30_u8;
     /// a_biguint.wrapping_pow_assign_uint(exp);
     /// println!("After a_biguint.wrapping_pow_assign_uint({}), a_biguint = {}", exp, a_biguint);
     /// assert_eq!(a_biguint.to_string(), "0");
@@ -18752,7 +18904,6 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// define_utypes_with!(u8);
     /// 
     /// let mut a_biguint = U256::from_uint(10_u8);
-    /// let exp = 0_u8;
     /// println!("Originally, a_biguint = {}", a_biguint);
     /// assert_eq!(a_biguint.is_overflow(), false);
     /// assert_eq!(a_biguint.is_underflow(), false);
@@ -18760,6 +18911,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// assert_eq!(a_biguint.is_divided_by_zero(), false);
     /// assert_eq!(a_biguint.is_undefined(), false);
     /// 
+    /// let exp = 0_u8;
     /// a_biguint.wrapping_pow_assign_uint(exp);
     /// println!("After a_biguint.wrapping_pow_assign_uint({}), a_biguint = {}", exp, a_biguint);
     /// assert_eq!(a_biguint.to_string(), "1");
@@ -18768,6 +18920,12 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// assert_eq!(a_biguint.is_infinity(), false);
     /// assert_eq!(a_biguint.is_divided_by_zero(), false);
     /// assert_eq!(a_biguint.is_undefined(), false);
+    /// ```
+    /// 
+    /// # Panic Example
+    /// ```
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u8);
     /// 
     /// let mut _a_biguint = U256::zero();
     /// let _exp = 0_u8;
@@ -18845,11 +19003,12 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// 
     /// # Output
     /// It returns a tuple of the exponentiation along with a bool indicating
-    /// whether an overflow happened. The second term of the tuple output
-    /// has flags reset.
+    /// whether an overflow happened.
     /// 
     /// # Features
     /// - Wrapping (modular) exponentiation.
+    /// - If overflowing happens, the `OVERFLOW` flag of the return value
+    ///   will be set.
     /// 
     /// # Counterpart Method
     /// - If `exp` is bigger than `u128`, the method
@@ -18928,11 +19087,17 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// assert_eq!(res.is_infinity(), false);
     /// assert_eq!(res.is_divided_by_zero(), false);
     /// assert_eq!(res.is_undefined(), false);
+    /// ```
+    /// 
+    /// # Panic Example
+    /// ```
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u16);
     /// 
     /// let _a_biguint = UU32::zero();
     /// let _exp = 0_u8;
     /// // It will panic.
-    /// // let (res, overflow) = a_biguint.overflowing_pow_uint(_exp);
+    /// // let (res, overflow) = _a_biguint.overflowing_pow_uint(_exp);
     /// ```
     /// 
     /// # Big-endian issue
@@ -18970,13 +19135,13 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     ///   so this method will panic.
     /// 
     /// # Output
-    /// It returns a bool indicating whether or not an overflow happened.
-    /// It is the current overflow which has nothing to do with historical
-    /// ovrerflow of `self`.
+    /// - It returns a bool indicating whether or not an overflow happened.
+    /// - It is the current overflow which has nothing to do with historical
+    ///   ovrerflow of `self`.
     /// 
     /// # Features
     /// - Wrapping (modular) exponentiation.
-    /// - If overflowing happens, the `OVERFLOW` flag will be set.
+    /// - If overflowing happens, the `OVERFLOW` flag of `self` will be set.
     /// - If overflowing did not happen in the current operation, the output
     ///   will be false even if the `OVERFLOW` flag of `self` was already set
     ///   because of previous operation of `self`.
@@ -18997,7 +19162,6 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// define_utypes_with!(u32);
     /// 
     /// let mut a_biguint = U256::from_uint(10_u8);
-    /// let exp = 30_u8;
     /// println!("Originally, a_biguint = {}", a_biguint);
     /// assert_eq!(a_biguint.is_overflow(), false);
     /// assert_eq!(a_biguint.is_underflow(), false);
@@ -19005,6 +19169,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// assert_eq!(a_biguint.is_divided_by_zero(), false);
     /// assert_eq!(a_biguint.is_undefined(), false);
     /// 
+    /// let exp = 30_u8;
     /// let overflow = a_biguint.overflowing_pow_assign_uint(exp);
     /// println!("After a_biguint.overflowing_pow_assign_uint({}), a_biguint = {}\noverflow = {}", exp, a_biguint, overflow);
     /// assert_eq!(a_biguint.to_string(), "1000000000000000000000000000000");
@@ -19022,7 +19187,6 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// define_utypes_with!(u32);
     /// 
     /// let mut a_biguint = U256::from_string("1000000000000000000000000000000").unwrap();
-    /// let exp = 3_u32;
     /// println!("Originally, a_biguint = {}", a_biguint);
     /// assert_eq!(a_biguint.is_overflow(), false);
     /// assert_eq!(a_biguint.is_underflow(), false);
@@ -19030,6 +19194,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// assert_eq!(a_biguint.is_divided_by_zero(), false);
     /// assert_eq!(a_biguint.is_undefined(), false);
     /// 
+    /// let exp = 3_u32;
     /// let overflow = a_biguint.overflowing_pow_assign_uint(exp);
     /// println!("After a_biguint.overflowing_pow_assign_uint({}), a_biguint = {}\noverflow = {}", exp, a_biguint, overflow);
     /// assert_eq!(a_biguint.to_string(), "51484102413631087777415798035541167055393351402420714880745735202410401366016");
@@ -19047,7 +19212,6 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// define_utypes_with!(u32);
     /// 
     /// let mut a_biguint = U256::from_uint(10_u8);
-    /// let exp = 0_u32;
     /// println!("Originally, a_biguint = {}", a_biguint);
     /// assert_eq!(a_biguint.is_overflow(), false);
     /// assert_eq!(a_biguint.is_underflow(), false);
@@ -19055,6 +19219,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// assert_eq!(a_biguint.is_divided_by_zero(), false);
     /// assert_eq!(a_biguint.is_undefined(), false);
     /// 
+    /// let exp = 0_u32;
     /// let overflow = a_biguint.overflowing_pow_assign_uint(exp);
     /// println!("After a_biguint.overflowing_pow_assign_uint({}), a_biguint = {}\noverflow = {}", exp, a_biguint, overflow);
     /// assert_eq!(a_biguint.to_string(), "1");
@@ -19072,7 +19237,6 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// define_utypes_with!(u32);
     /// 
     /// let mut a_biguint = U256::zero();
-    /// let exp = 10_u8;
     /// println!("Originally, a_biguint = {}", a_biguint);
     /// assert_eq!(a_biguint.is_overflow(), false);
     /// assert_eq!(a_biguint.is_underflow(), false);
@@ -19080,6 +19244,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// assert_eq!(a_biguint.is_divided_by_zero(), false);
     /// assert_eq!(a_biguint.is_undefined(), false);
     /// 
+    /// let exp = 10_u8;
     /// let overflow = a_biguint.overflowing_pow_assign_uint(exp);
     /// println!("After a_biguint.overflowing_pow_assign_uint({}), a_biguint = {}\noverflow = {}", exp, a_biguint, overflow);
     /// assert_eq!(a_biguint.to_string(), "0");
@@ -19089,10 +19254,16 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// assert_eq!(a_biguint.is_infinity(), false);
     /// assert_eq!(a_biguint.is_divided_by_zero(), false);
     /// assert_eq!(a_biguint.is_undefined(), false);
+    /// ```
+    /// 
+    /// # Panic Example
+    /// ```
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u32);
     /// 
     /// let mut _a_biguint = U256::zero();
     /// let _exp = 0_u8;
-    /// println!("Originally, a_biguint = {}", a_biguint);
+    /// println!("Originally, a_biguint = {}", _a_biguint);
     /// // It will panic.
     /// // let overflow = _a_biguint.overflowing_pow_assign_uint(_exp);
     /// ```
@@ -19115,8 +19286,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
         self.reset_overflow();
         self.wrapping_pow_assign_uint(exp);
         let current_overflow = self.is_overflow();
-        let current_flag = self.get_all_flags();
-        self.set_flag_bit(old_flags | current_flag);
+        self.set_flag_bit(old_flags);
         current_overflow
     }
 
@@ -19297,7 +19467,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// if overflow does not occur. If overflow occurs, it will panic.
     /// 
     /// # Features
-    /// - Wrapping (modular) exponentiation.
+    /// Wrapping (modular) exponentiation.
     /// 
     /// # Counterpart Method
     /// If `exp` is bigger than `u128`, the method
@@ -19319,11 +19489,6 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// assert_eq!(res.is_infinity(), false);
     /// assert_eq!(res.is_divided_by_zero(), false);
     /// assert_eq!(res.is_undefined(), false);
-    /// 
-    /// let _a_biguint = UU32::from_uint(10_u8);
-    /// let _exp = 100_u8;
-    /// // It will panic.
-    /// // let res = _a_biguint.unchecked_pow_uint(exp);
     /// ```
     /// 
     /// # Example 2
@@ -19358,6 +19523,17 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// assert_eq!(res.is_infinity(), false);
     /// assert_eq!(res.is_divided_by_zero(), false);
     /// assert_eq!(res.is_undefined(), false);
+    /// ```
+    /// 
+    /// # Panic Examples
+    /// ```
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u32);
+    /// 
+    /// let _a_biguint = UU32::from_uint(10_u8);
+    /// let _exp = 100_u8;
+    /// // It will panic.
+    /// // let res = _a_biguint.unchecked_pow_uint(_exp);
     /// 
     /// let _a_biguint = UU32::zero();
     /// let _exp = 0_u8;
@@ -19405,7 +19581,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// - Wrapping (modular) exponentiation.
     /// - Overflowing never happens.
     /// - This method saturates when it reaches maximum value.
-    /// - It does not set `OVERFLOW` flag.
+    /// - It does not set `OVERFLOW` flag of the return value.
     /// 
     /// # Counterpart Method
     /// If `exp` is bigger than `u128`, the method
@@ -19478,6 +19654,12 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// assert_eq!(res.is_infinity(), false);
     /// assert_eq!(res.is_divided_by_zero(), false);
     /// assert_eq!(res.is_undefined(), false);
+    /// ```
+    /// 
+    /// # Panic Example
+    /// ```
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u8);
     /// 
     /// let _a_biguint = UU32::zero();
     /// let _exp = 0_u8;
@@ -19516,9 +19698,9 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     ///
     /// # Panics
     /// - If `size_of::<T>() * N` <= `128`, this method may panic
-    /// or its behavior may be undefined though it may not panic.
+    ///   or its behavior may be undefined though it may not panic.
     /// - If both `self` and `exp` are zero, the result is undefined
-    /// so this method will panic.
+    ///   so this method will panic.
     /// 
     /// # Features
     /// - Wrapping (modular) exponentiation.
@@ -19538,15 +19720,15 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// define_utypes_with!(u16);
     /// 
     /// let mut a_biguint = UU32::from_uint(10_u8);
-    /// let exp = 30_u8;
     /// println!("Originally, a_biguint = {}", a_biguint);
-    /// a_biguint.saturating_pow_assign_uint(exp);
     /// assert_eq!(a_biguint.is_overflow(), false);
     /// assert_eq!(a_biguint.is_underflow(), false);
     /// assert_eq!(a_biguint.is_infinity(), false);
     /// assert_eq!(a_biguint.is_divided_by_zero(), false);
     /// assert_eq!(a_biguint.is_undefined(), false);
     /// 
+    /// let exp = 30_u8;
+    /// a_biguint.saturating_pow_assign_uint(exp);
     /// println!("After a_biguint.overflowing_pow_assign_uint({}), a_biguint = {}", exp, a_biguint);
     /// assert_eq!(a_biguint.to_string(), "1000000000000000000000000000000");
     /// assert_eq!(a_biguint.is_overflow(), false);
@@ -19562,7 +19744,6 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// define_utypes_with!(u16);
     /// 
     /// let mut a_biguint = UU32::from_uint(1000000000000000000000000000000_u128);
-    /// let exp = 30_u8;
     /// println!("Originally, a_biguint = {}", a_biguint);
     /// assert_eq!(a_biguint.is_overflow(), false);
     /// assert_eq!(a_biguint.is_underflow(), false);
@@ -19570,6 +19751,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// assert_eq!(a_biguint.is_divided_by_zero(), false);
     /// assert_eq!(a_biguint.is_undefined(), false);
     /// 
+    /// let exp = 30_u8;
     /// a_biguint.saturating_pow_assign_uint(exp);
     /// println!("After a_biguint.overflowing_pow_assign_uint({}), a_biguint = {}", exp, a_biguint);
     /// assert_eq!(a_biguint, UU32::max());
@@ -19586,7 +19768,6 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// define_utypes_with!(u16);
     /// 
     /// let mut a_biguint = UU32::from_uint(100_u8);
-    /// let exp = 0_u8;
     /// println!("Originally, a_biguint = {}", a_biguint);
     /// assert_eq!(a_biguint.is_overflow(), false);
     /// assert_eq!(a_biguint.is_underflow(), false);
@@ -19594,6 +19775,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// assert_eq!(a_biguint.is_divided_by_zero(), false);
     /// assert_eq!(a_biguint.is_undefined(), false);
     /// 
+    /// let exp = 0_u8;
     /// a_biguint.saturating_pow_assign_uint(exp);
     /// println!("After a_biguint.overflowing_pow_assign_uint({}), a_biguint = {}", exp, a_biguint);
     /// assert_eq!(a_biguint.to_string(), "1");
@@ -19610,7 +19792,6 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// define_utypes_with!(u16);
     /// 
     /// let mut a_biguint = UU32::zero();
-    /// let exp = 30_u8;
     /// println!("Originally, a_biguint = {}", a_biguint);
     /// assert_eq!(a_biguint.is_overflow(), false);
     /// assert_eq!(a_biguint.is_underflow(), false);
@@ -19618,14 +19799,21 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// assert_eq!(a_biguint.is_divided_by_zero(), false);
     /// assert_eq!(a_biguint.is_undefined(), false);
     /// 
+    /// let exp = 30_u8;
     /// a_biguint.saturating_pow_assign_uint(exp);
     /// println!("After a_biguint.overflowing_pow_assign_uint({}), a_biguint = {}", exp, a_biguint);
-    /// assert_eq!(a_biguint.to_string(), "1");
+    /// assert_eq!(a_biguint.to_string(), "0");
     /// assert_eq!(a_biguint.is_overflow(), false);
     /// assert_eq!(a_biguint.is_underflow(), false);
     /// assert_eq!(a_biguint.is_infinity(), false);
     /// assert_eq!(a_biguint.is_divided_by_zero(), false);
     /// assert_eq!(a_biguint.is_undefined(), false);
+    /// ```
+    /// 
+    /// # Panic Example
+    /// ```
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u16);
     /// 
     /// let mut _a_biguint = UU32::zero();
     /// let _exp = 0_u8;
@@ -19685,7 +19873,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// If `exp` is bigger than `u128`, use the method
     /// [modular_pow()](struct@BigUInt#method.modular_pow) instead.
     /// 
-    /// # Example 1
+    /// # Example 1 for Noraml case
     /// ```
     /// use cryptocol::define_utypes_with;
     /// define_utypes_with!(u32);
@@ -19703,7 +19891,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// assert_eq!(res.is_undefined(), false);
     /// ```
     /// 
-    /// # Example 2
+    /// # Example 2 for Noraml case
     /// ```
     /// use cryptocol::define_utypes_with;
     /// define_utypes_with!(u32);
@@ -19721,7 +19909,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// assert_eq!(res.is_undefined(), false);
     /// ```
     /// 
-    /// # Example 3
+    /// # Example 3 for self != 0 and exp == 0 and modulo != 0
     /// ```
     /// use cryptocol::define_utypes_with;
     /// define_utypes_with!(u32);
@@ -19739,7 +19927,25 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// assert_eq!(res.is_undefined(), false);
     /// ```
     /// 
-    /// # Example 4
+    /// # Example 4 for self != 0 and exp == multiple of modulo and modulo != 0
+    /// ```
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u32);
+    /// 
+    /// let a_biguint = UU32::from_uint(10_u8);
+    /// let exp = 200_u8;
+    /// let modulo = U256::from_uint(100_u8);
+    /// let res = a_biguint.modular_pow_uint(exp, &modulo);
+    /// println!("{} ** {} = {}", a_biguint, exp, res);
+    /// assert_eq!(res.to_string(), "1");
+    /// assert_eq!(res.is_overflow(), false);
+    /// assert_eq!(res.is_underflow(), false);
+    /// assert_eq!(res.is_infinity(), false);
+    /// assert_eq!(res.is_undefined(), false);
+    /// assert_eq!(res.is_divided_by_zero(), false);
+    /// ```
+    /// 
+    /// # Example 5 for self == 0 and exp != 0 and modulo != 0
     /// ```
     /// use cryptocol::define_utypes_with;
     /// define_utypes_with!(u32);
@@ -19755,19 +19961,74 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// assert_eq!(res.is_infinity(), false);
     /// assert_eq!(res.is_divided_by_zero(), false);
     /// assert_eq!(res.is_undefined(), false);
+    /// ```
     /// 
+    /// # Example 6 for self == multiple of modulo and exp != 0 and modulo != 0
+    /// ```
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u32);
+    /// 
+    /// let a_biguint = UU32::from_uint(300_u16);
+    /// let exp = 30_u8;
+    /// let modulo = U256::from_uint(100_u8);
+    /// let res = a_biguint.modular_pow_uint(exp, &modulo);
+    /// println!("{} ** {} = {}", a_biguint, exp, res);
+    /// assert_eq!(res.to_string(), "0");
+    /// assert_eq!(res.is_overflow(), false);
+    /// assert_eq!(res.is_underflow(), false);
+    /// assert_eq!(res.is_infinity(), false);
+    /// assert_eq!(res.is_undefined(), false);
+    /// assert_eq!(res.is_divided_by_zero(), false);
+    /// ```
+    /// 
+    /// # Panic Examples
+    /// ```
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u32);
+    /// 
+    /// // self == 0 and exp == 0 and modulo != 0
     /// let _a_biguint = UU32::zero();
     /// let _exp = 0_u8;
     /// let _modulo = U256::halfmax();
     /// // It will panic.
     /// // let res = _a_biguint.modular_pow_uint(_exp, &_modulo);
     /// 
+    /// // self == 0 and exp == multiple of modulo and modulo != 0
+    /// let _a_biguint = UU32::zero();
+    /// let _exp = 200_u8;
+    /// let _modulo = U256::from_uint(100_u8);
+    /// // It will panic.
+    /// // let res = _a_biguint.modular_pow_uint(_exp, &_modulo);
+    /// 
+    /// // self == multiple of modulo and exp == 0 and modulo != 0
+    /// let _a_biguint = UU32::from_uint(300_u16);
+    /// let _exp = 0_u8;
+    /// let _modulo = U256::from_uint(100_u8);
+    /// // It will panic.
+    /// // let res = _a_biguint.modular_pow_uint(_exp, &_modulo);
+    /// 
+    /// // self == multiple of modulo and exp == multiple of modulo and modulo != 0
+    /// let _a_biguint = UU32::from_uint(300_u16);
+    /// let _exp = 200_u8;
+    /// let _modulo = U256::from_uint(100_u8);
+    /// // It will panic.
+    /// // let res = _a_biguint.modular_pow_uint(_exp, &_modulo);
+    /// 
+    /// // self != 0 and exp != 0 and modulo == 0
     /// let _a_biguint = U256::from_uint(10_u8);
     /// let _exp = 100_u8;
     /// let _modulo = U256::zero();
     /// // It will panic!
     /// // let _res = a_biguint.modular_pow_uint(_exp, &_modulo);
     /// 
+    /// // self != 0 and exp != 0 and modulo == 1
+    /// let _a_biguint = U256::from_uint(10_u8);
+    /// let _exp = 100_u8;
+    /// let _modulo = U256::one();
+    /// // It will panic!
+    /// // let _res = a_biguint.modular_pow_uint(_exp, &_modulo);
+    /// 
+    /// // self == 0 and exp == 0 and modulo == 0
     /// let _a_biguint = U256::zero();
     /// let _exp = 0_u8;
     /// let _modulo = U256::zero();
@@ -19824,14 +20085,12 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// [modular_pow_assign()](struct@BigUInt#method.modular_pow_assign)
     /// is proper rather than this method.
     /// 
-    /// # Example 1
+    /// # Example 1 for normal case
     /// ```
     /// use cryptocol::define_utypes_with;
     /// define_utypes_with!(u64);
     /// 
     /// let mut a_biguint = U256::from_uint(10_u8);
-    /// let exp = 30_u8;
-    /// let modulo = U256::halfmax();
     /// println!("Originally, a_biguint = {}", a_biguint);
     /// assert_eq!(a_biguint.is_overflow(), false);
     /// assert_eq!(a_biguint.is_underflow(), false);
@@ -19839,6 +20098,8 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// assert_eq!(a_biguint.is_divided_by_zero(), false);
     /// assert_eq!(a_biguint.is_undefined(), false);
     /// 
+    /// let exp = 30_u8;
+    /// let modulo = U256::halfmax();
     /// a_biguint.modular_pow_assign_uint(exp, &modulo);
     /// println!("After a_biguint.modular_pow_assign_uint({}), a_biguint = {}", exp, a_biguint);
     /// assert_eq!(a_biguint.to_string(), "1000000000000000000000000000000");
@@ -19848,14 +20109,12 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// assert_eq!(a_biguint.is_divided_by_zero(), false);
     /// ```
     /// 
-    /// # Example 2
+    /// # Example 2 for normal case
     /// ```
     /// use cryptocol::define_utypes_with;
     /// define_utypes_with!(u64);
     /// 
     /// let mut a_biguint = U256::from_uint(1000000000000000000000000000000_u128);
-    /// let exp = 100_u8;
-    /// let modulo = U256::halfmax();
     /// println!("Originally, a_biguint = {}", a_biguint);
     /// assert_eq!(a_biguint.is_overflow(), false);
     /// assert_eq!(a_biguint.is_underflow(), false);
@@ -19863,6 +20122,8 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// assert_eq!(a_biguint.is_divided_by_zero(), false);
     /// assert_eq!(a_biguint.is_undefined(), false);
     /// 
+    /// let exp = 100_u8;
+    /// let modulo = U256::halfmax();
     /// a_biguint.modular_pow_assign_uint(exp, &modulo);
     /// println!("After a_biguint.modular_pow_assign_uint({}), a_biguint = {}", exp, a_biguint);
     /// assert_eq!(a_biguint.to_string(), "52266245075570873327294567809656160090");
@@ -19873,14 +20134,62 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// assert_eq!(a_biguint.is_undefined(), false);
     /// ```
     /// 
-    /// # Example 3
+    /// # Example 3 for self != 0 and exp == 0 and modulo != 0
+    /// ```
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u64);
+    /// 
+    /// let mut a_biguint = U256::from_uint(10_u8);
+    /// println!("Originally, a_biguint = {}", a_biguint);
+    /// assert_eq!(a_biguint.is_overflow(), false);
+    /// assert_eq!(a_biguint.is_underflow(), false);
+    /// assert_eq!(a_biguint.is_infinity(), false);
+    /// assert_eq!(a_biguint.is_undefined(), false);
+    /// assert_eq!(a_biguint.is_divided_by_zero(), false);
+    /// 
+    /// let exp = 0_u8;
+    /// let modulo = U256::halfmax();
+    /// a_biguint.modular_pow_assign_uint(exp, &modulo);
+    /// println!("After a_biguint.modular_pow_assign_uint({}), a_biguint = {}", exp, a_biguint);
+    /// assert_eq!(a_biguint.to_string(), "1");
+    /// assert_eq!(a_biguint.is_overflow(), false);
+    /// assert_eq!(a_biguint.is_underflow(), false);
+    /// assert_eq!(a_biguint.is_infinity(), false);
+    /// assert_eq!(a_biguint.is_undefined(), false);
+    /// assert_eq!(a_biguint.is_divided_by_zero(), false);
+    /// ```
+    /// 
+    /// # Example 4 for self != 0 and exp == multiple of modulo and modulo != 0
+    /// ```
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u64);
+    /// 
+    /// let mut a_biguint = U256::from_uint(10_u8);
+    /// println!("Originally, a_biguint = {}", a_biguint);
+    /// assert_eq!(a_biguint.is_overflow(), false);
+    /// assert_eq!(a_biguint.is_underflow(), false);
+    /// assert_eq!(a_biguint.is_infinity(), false);
+    /// assert_eq!(a_biguint.is_undefined(), false);
+    /// assert_eq!(a_biguint.is_divided_by_zero(), false);
+    /// 
+    /// let exp = 200_u8;
+    /// let modulo = U256::from_uint(100_u8);
+    /// a_biguint.modular_pow_assign_uint(exp, &modulo);
+    /// println!("After a_biguint.modular_pow_assign_uint({}), a_biguint = {}", exp, a_biguint);
+    /// assert_eq!(a_biguint.to_string(), "1");
+    /// assert_eq!(a_biguint.is_overflow(), false);
+    /// assert_eq!(a_biguint.is_underflow(), false);
+    /// assert_eq!(a_biguint.is_infinity(), false);
+    /// assert_eq!(a_biguint.is_undefined(), false);
+    /// assert_eq!(a_biguint.is_divided_by_zero(), false);
+    /// ```
+    /// 
+    /// # Example 5 for self == 0 and exp != 0 and modulo != 0
     /// ```
     /// use cryptocol::define_utypes_with;
     /// define_utypes_with!(u64);
     /// 
     /// let mut a_biguint = UU32::zero();
-    /// let exp = 30_u8;
-    /// let modulo = U256::halfmax();
     /// println!("Originally, a_biguint = {}", a_biguint);
     /// assert_eq!(a_biguint.is_overflow(), false);
     /// assert_eq!(a_biguint.is_underflow(), false);
@@ -19888,6 +20197,8 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// assert_eq!(a_biguint.is_divided_by_zero(), false);
     /// assert_eq!(a_biguint.is_undefined(), false);
     /// 
+    /// let exp = 30_u8;
+    /// let modulo = U256::halfmax();
     /// a_biguint.modular_pow_assign_uint(exp, &modulo);
     /// println!("After a_biguint.modular_pow_assign_uint({}), a_biguint = {}", exp, a_biguint);
     /// assert_eq!(a_biguint.to_string(), "0");
@@ -19898,30 +20209,62 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// assert_eq!(a_biguint.is_undefined(), false);
     /// ```
     /// 
-    /// # Example 4
+    /// # Example 6 for self == 0 and exp != 0 and modulo != 0
     /// ```
     /// use cryptocol::define_utypes_with;
     /// define_utypes_with!(u64);
     /// 
-    /// let mut a_biguint = U256::from_uint(10_u8);
-    /// let exp = 0_u8;
-    /// let modulo = U256::halfmax();
+    /// let mut a_biguint = UU32::zero();
     /// println!("Originally, a_biguint = {}", a_biguint);
     /// assert_eq!(a_biguint.is_overflow(), false);
     /// assert_eq!(a_biguint.is_underflow(), false);
     /// assert_eq!(a_biguint.is_infinity(), false);
-    /// assert_eq!(a_biguint.is_divided_by_zero(), false);
     /// assert_eq!(a_biguint.is_undefined(), false);
+    /// assert_eq!(a_biguint.is_divided_by_zero(), false);
     /// 
+    /// let exp = 30_u8;
+    /// let modulo = U256::halfmax();
     /// a_biguint.modular_pow_assign_uint(exp, &modulo);
     /// println!("After a_biguint.modular_pow_assign_uint({}), a_biguint = {}", exp, a_biguint);
-    /// assert_eq!(a_biguint.to_string(), "1");
+    /// assert_eq!(a_biguint.to_string(), "0");
     /// assert_eq!(a_biguint.is_overflow(), false);
     /// assert_eq!(a_biguint.is_underflow(), false);
     /// assert_eq!(a_biguint.is_infinity(), false);
-    /// assert_eq!(a_biguint.is_divided_by_zero(), false);
     /// assert_eq!(a_biguint.is_undefined(), false);
+    /// assert_eq!(a_biguint.is_divided_by_zero(), false);
+    /// ```
     /// 
+    /// # Example 7 for self == multiple of modulo and exp != 0 and modulo != 0
+    /// ```
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u64);
+    /// 
+    /// let mut a_biguint = UU32::from_uint(300_u16);
+    /// println!("Originally, a_biguint = {}", a_biguint);
+    /// assert_eq!(a_biguint.is_overflow(), false);
+    /// assert_eq!(a_biguint.is_underflow(), false);
+    /// assert_eq!(a_biguint.is_infinity(), false);
+    /// assert_eq!(a_biguint.is_undefined(), false);
+    /// assert_eq!(a_biguint.is_divided_by_zero(), false);
+    /// 
+    /// let exp = 30_u8;
+    /// let modulo = U256::from_uint(100_u8);
+    /// a_biguint.modular_pow_assign_uint(exp, &modulo);
+    /// println!("After a_biguint.modular_pow_assign_uint({}), a_biguint = {}", exp, a_biguint);
+    /// assert_eq!(a_biguint.to_string(), "0");
+    /// assert_eq!(a_biguint.is_overflow(), false);
+    /// assert_eq!(a_biguint.is_underflow(), false);
+    /// assert_eq!(a_biguint.is_infinity(), false);
+    /// assert_eq!(a_biguint.is_undefined(), false);
+    /// assert_eq!(a_biguint.is_divided_by_zero(), false);
+    /// ```
+    /// 
+    /// # Panic Examples
+    /// ```
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u64);
+    /// 
+    /// // self == 0 and exp == 0 and modulo != 0
     /// let mut _a_biguint = U256::zero();
     /// let _exp = 0_u8;
     /// let _modulo = U256::halfmax();
@@ -19929,13 +20272,47 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// // It will panic!
     /// // _a_biguint.modular_pow_assign_uint(_exp, &_modulo);
     /// 
+    /// // self == 0 and exp == multiple of modulo and modulo != 0
+    /// let mut _a_biguint = U256::zero();
+    /// let _exp = 200_u8;
+    /// let _modulo = U256::from_uint(100_u8);
+    /// println!("Originally,\n_a_biguint = {}", _a_biguint);
+    /// // It will panic!
+    /// // _a_biguint.modular_pow_assign_uint(_exp, &_modulo);
+    /// 
+    /// // self == multiple of modulo and exp == 0 and modulo != 0
+    /// let mut _a_biguint = U256::from_uint(300_u16);
+    /// let _exp = 0_u8;
+    /// let _modulo = U256::from_uint(100_u8);
+    /// println!("Originally,\n_a_biguint = {}", _a_biguint);
+    /// // It will panic!
+    /// // _a_biguint.modular_pow_assign_uint(_exp, &_modulo);
+    /// 
+    /// // self == multiple of modulo and exp == multiple of modulo and modulo != 0
+    /// let mut _a_biguint = U256::from_uint(300_u16);
+    /// let _exp = 200_u8;
+    /// let _modulo = U256::from_uint(100_u8);
+    /// println!("Originally,\n_a_biguint = {}", _a_biguint);
+    /// // It will panic!
+    /// // _a_biguint.modular_pow_assign_uint(_exp, &_modulo);
+    /// 
+    /// // self != 0 and exp != 0 and modulo == 0
     /// let mut _a_biguint = U256::from_uint(10_u8);
-    /// let _exp = 30_u8;
+    /// let _exp = 100_u8;
     /// let _modulo = U256::zero();
     /// println!("Originally,\n_a_biguint = {}", _a_biguint);
     /// // It will panic!
     /// // _a_biguint.modular_pow_assign_uint(_exp, &_modulo);
     /// 
+    /// // self != 0 and exp != 0 and modulo == 1
+    /// let _a_biguint = U256::from_uint(10_u8);
+    /// let _exp = 100_u8;
+    /// let _modulo = U256::one();
+    /// println!("Originally,\n_a_biguint = {}", _a_biguint);
+    /// // It will panic!
+    /// // _a_biguint.modular_pow_assign_uint(_exp, &_modulo);
+    /// 
+    /// // self == 0 and exp == 0 and modulo == 0
     /// let mut _a_biguint = U256::zero();
     /// let _exp = 0_u8;
     /// let _modulo = U256::zero();
@@ -20004,7 +20381,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// If `exp` is bigger than `u128`, use the method
     /// [modular_pow()](struct@BigUInt#method.modular_pow) instead.
     /// 
-    /// # Example 1
+    /// # Example 1 for Noraml case
     /// ```
     /// use cryptocol::define_utypes_with;
     /// define_utypes_with!(u128);
@@ -20022,10 +20399,10 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// assert_eq!(res.is_undefined(), false);
     /// ```
     /// 
-    /// # Example 2
+    /// # Example 2 for Normal case
     /// ```
     /// use cryptocol::define_utypes_with;
-    /// define_utypes_with!(u8);
+    /// define_utypes_with!(u128);
     /// 
     /// let a_biguint = U256::from_uint(10_u8);
     /// let exp = 100_u8;
@@ -20040,10 +20417,10 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// assert_eq!(res.is_undefined(), false);
     /// ```
     /// 
-    /// # Example 3
+    /// # Example 3 for self != 0 and exp == 0 and modulo != 0
     /// ```
     /// use cryptocol::define_utypes_with;
-    /// define_utypes_with!(u8);
+    /// define_utypes_with!(u128);
     /// 
     /// let a_biguint = U256::from_uint(10_u8);
     /// let exp = 0_u8;
@@ -20058,40 +20435,208 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// assert_eq!(res.is_undefined(), false);
     /// ```
     /// 
-    /// # Example 4
+    /// # Example 4 for self != 0 and exp == multiple of modulo and modulo != 0
     /// ```
     /// use cryptocol::define_utypes_with;
-    /// define_utypes_with!(u8);
+    /// define_utypes_with!(u128);
     /// 
-    /// let a_biguint = U256::zero();
+    /// let a_biguint = UU32::from_uint(10_u8);
+    /// let exp = 2000_u16;
+    /// let modulo = U256::from_uint(1000_u16);
+    /// let res = a_biguint.panic_free_modular_pow_uint(exp, &modulo);
+    /// println!("{} ** {} = {} (mod {})", a_biguint, exp, res, modulo);
+    /// assert_eq!(res.to_string(), "1");
+    /// assert_eq!(res.is_overflow(), false);
+    /// assert_eq!(res.is_underflow(), false);
+    /// assert_eq!(res.is_infinity(), false);
+    /// assert_eq!(res.is_undefined(), false);
+    /// assert_eq!(res.is_divided_by_zero(), false);
+    /// ```
+    /// 
+    /// # Example 5 for self == 0 and exp != 0 and modulo != 0
+    /// ```
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u128);
+    /// 
+    /// let a_biguint = UU32::zero();
     /// let exp = 30_u8;
     /// let modulo = U256::halfmax();
-    /// let res = a_biguint.modular_pow_uint(exp, &modulo);
-    /// println!("{} ** {} (mod {}) = {}", a_biguint, exp, modulo, res);
+    /// let res = a_biguint.panic_free_modular_pow_uint(exp, &modulo);
+    /// println!("{} ** {} = {} (mod {})", a_biguint, exp, res, modulo);
     /// assert_eq!(res.to_string(), "0");
     /// assert_eq!(res.is_overflow(), false);
     /// assert_eq!(res.is_underflow(), false);
     /// assert_eq!(res.is_infinity(), false);
-    /// assert_eq!(res.is_divided_by_zero(), false);
     /// assert_eq!(res.is_undefined(), false);
+    /// assert_eq!(res.is_divided_by_zero(), false);
+    /// ```
     /// 
-    /// let _a_biguint = UU32::zero();
-    /// let _exp = 0_u8;
-    /// let _modulo = U256::halfmax();
-    /// // It will panic.
-    /// // let res = _a_biguint.panic_free_modular_pow_uint(_exp, &_modulo);
+    /// # Example 6 for self == multiple of modulo and exp != 0 and modulo != 0
+    /// ```
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u128);
     /// 
-    /// let _a_biguint = U256::from_uint(10_u8);
-    /// let _exp = 100_u8;
-    /// let _modulo = U256::zero();
-    /// // It will panic!
-    /// // let _res = a_biguint.panic_free_modular_pow_uint(_exp, &_modulo);
+    /// let a_biguint = U256::from_uint(3000_u16);
+    /// let exp = 30_u8;
+    /// let modulo = U256::from_uint(1000_u16);
+    /// let res = a_biguint.panic_free_modular_pow_uint(exp, &modulo);
+    /// println!("{} ** {} = {} (mod {})", a_biguint, exp, res, modulo);
+    /// assert_eq!(res.to_string(), "0");
+    /// assert_eq!(res.is_overflow(), false);
+    /// assert_eq!(res.is_underflow(), false);
+    /// assert_eq!(res.is_infinity(), false);
+    /// assert_eq!(res.is_undefined(), false);
+    /// assert_eq!(res.is_divided_by_zero(), false);
+    /// ```
     /// 
-    /// let _a_biguint = U256::zero();
-    /// let _exp = 0_u8;
-    /// let _modulo = U256::zero();
-    /// // It will panic!
-    /// // let _res = a_biguint.panic_free_modular_pow_uint(_exp, &_modulo);
+    /// # Example 7 for self == 0 and exp == 0 and modulo != 0
+    /// ```
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u128);
+    /// 
+    /// let a_biguint = UU32::zero();
+    /// let exp = 0_u8;
+    /// let modulo = U256::halfmax();
+    /// let res = a_biguint.panic_free_modular_pow_uint(exp, &modulo);
+    /// println!("{} ** {} = {} (mod {})", a_biguint, exp, res, modulo);
+    /// assert_eq!(res.to_string(), "0");
+    /// assert_eq!(res.is_overflow(), false);
+    /// assert_eq!(res.is_underflow(), false);
+    /// assert_eq!(res.is_infinity(), false);
+    /// assert_eq!(res.is_undefined(), true);
+    /// assert_eq!(res.is_divided_by_zero(), false);
+    /// ```
+    /// 
+    /// # Example 8 for self == 0 and exp == multiple of modulo and modulo != 0
+    /// ```
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u128);
+    /// 
+    /// let a_biguint = U256::zero();
+    /// let exp = 2000_u16;
+    /// let modulo = U256::from_uint(1000_u16);
+    /// let res = a_biguint.panic_free_modular_pow_uint(exp, &modulo);
+    /// println!("{} ** {} = {} (mod {})", a_biguint, exp, res, modulo);
+    /// assert_eq!(res.to_string(), "0");
+    /// assert_eq!(res.is_overflow(), false);
+    /// assert_eq!(res.is_underflow(), false);
+    /// assert_eq!(res.is_infinity(), false);
+    /// assert_eq!(res.is_undefined(), true);
+    /// assert_eq!(res.is_divided_by_zero(), false);
+    /// ```
+    /// 
+    /// # Example 9 for self == multiple of modulo and exp == 0 and modulo != 0
+    /// ```
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u128);
+    /// 
+    /// let a_biguint = U256::from_uint(3000_u16);
+    /// let exp = 0_u8;
+    /// let modulo = U256::from_uint(1000_u16);
+    /// let res = a_biguint.panic_free_modular_pow_uint(exp, &modulo);
+    /// println!("{} ** {} = {} (mod {})", a_biguint, exp, res, modulo);
+    /// assert_eq!(res.to_string(), "0");
+    /// assert_eq!(res.is_overflow(), false);
+    /// assert_eq!(res.is_underflow(), false);
+    /// assert_eq!(res.is_infinity(), false);
+    /// assert_eq!(res.is_undefined(), true);
+    /// assert_eq!(res.is_divided_by_zero(), false);
+    /// ```
+    /// 
+    /// # Example 10 for self == multiple of modulo and exp == multiple of modulo and modulo != 0
+    /// ```
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u128);
+    /// 
+    /// let a_biguint = U256::from_uint(3000_u16);
+    /// let exp = 2000_u16;
+    /// let modulo = U256::from_uint(1000_u16);
+    /// let res = a_biguint.panic_free_modular_pow_uint(exp, &modulo);
+    /// println!("{} ** {} = {} (mod {})", a_biguint, exp, res, modulo);
+    /// assert_eq!(res.to_string(), "0");
+    /// assert_eq!(res.is_overflow(), false);
+    /// assert_eq!(res.is_underflow(), false);
+    /// assert_eq!(res.is_infinity(), false);
+    /// assert_eq!(res.is_undefined(), true);
+    /// assert_eq!(res.is_divided_by_zero(), false);
+    /// ```
+    /// 
+    /// # Example 11 for self != 0 and exp != 0 and modulo == 0
+    /// ```
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u128);
+    /// 
+    /// let a_biguint = U256::from_uint(10_u8);
+    /// let exp = 100_u8;
+    /// let modulo = U256::zero();
+    /// let res = a_biguint.panic_free_modular_pow_uint(exp, &modulo);
+    /// println!("{} ** {} = {} (mod {})", a_biguint, exp, res, modulo);
+    /// assert_eq!(res.to_string(), "0");
+    /// assert_eq!(res.is_overflow(), false);
+    /// assert_eq!(res.is_underflow(), false);
+    /// assert_eq!(res.is_infinity(), false);
+    /// assert_eq!(res.is_undefined(), true);
+    /// assert_eq!(res.is_divided_by_zero(), false);
+    /// ```
+    /// 
+    /// # Example 12 for self != 0 and exp != 0 and modulo == 1
+    /// ```
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u128);
+    /// 
+    /// let a_biguint = U256::from_uint(10_u8);
+    /// let exp = 100_u8;
+    /// let modulo = U256::one();
+    /// let res = a_biguint.panic_free_modular_pow_uint(exp, &modulo);
+    /// println!("{} ** {} = {} (mod {})", a_biguint, exp, res, modulo);
+    /// assert_eq!(res.to_string(), "0");
+    /// assert_eq!(res.is_overflow(), false);
+    /// assert_eq!(res.is_underflow(), false);
+    /// assert_eq!(res.is_infinity(), false);
+    /// assert_eq!(res.is_undefined(), true);
+    /// assert_eq!(res.is_divided_by_zero(), false);
+    /// ```
+    /// 
+    /// # Example 13 for self == 0 and exp == 0 and modulo == 0
+    /// ```
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u128);
+    /// 
+    /// let a_biguint = U256::zero();
+    /// let exp = 0_u8;
+    /// let modulo = U256::zero();
+    /// let res = a_biguint.panic_free_modular_pow_uint(exp, &modulo);
+    /// println!("{} ** {} = {} (mod {})", a_biguint, exp, res, modulo);
+    /// assert_eq!(res.to_string(), "0");
+    /// assert_eq!(res.is_overflow(), false);
+    /// assert_eq!(res.is_underflow(), false);
+    /// assert_eq!(res.is_infinity(), false);
+    /// assert_eq!(res.is_undefined(), true);
+    /// assert_eq!(res.is_divided_by_zero(), false);
+    /// ```
+    /// 
+    /// # Collective Examples
+    /// ```
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u128);
+    /// 
+    /// for modulo in [U256::zero(), U256::one()]
+    /// {
+    ///     for lhs in [U256::zero(), U256::from_uint(50_u8)]
+    ///     {
+    ///         for rhs in [0_u8, 50_u8]
+    ///         {
+    ///             let res = lhs.panic_free_modular_pow_uint(rhs, &modulo);
+    ///             println!("{} ** {} = {} (mod {})", lhs, rhs, res, modulo);
+    ///             assert_eq!(res.to_string(), "0");
+    ///             assert_eq!(res.is_overflow(), false);
+    ///             assert_eq!(res.is_underflow(), false);
+    ///             assert_eq!(res.is_divided_by_zero(), false);
+    ///             assert_eq!(res.is_infinity(), false);
+    ///             assert_eq!(res.is_undefined(), true);
+    ///         }
+    ///     }
+    /// }
     /// ```
     /// 
     /// # Big-endian issue
@@ -20144,14 +20689,12 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// [modular_pow_assign()](struct@BigUInt#method.modular_pow_assign)
     /// is proper rather than this method.
     /// 
-    /// # Example 1
+    /// # Example 1 for Noraml case
     /// ```
     /// use cryptocol::define_utypes_with;
     /// define_utypes_with!(u8);
     /// 
     /// let mut a_biguint = U256::from_uint(10_u8);
-    /// let exp = 30_u8;
-    /// let modulo = U256::halfmax();
     /// println!("Originally, a_biguint = {}", a_biguint);
     /// assert_eq!(a_biguint.is_overflow(), false);
     /// assert_eq!(a_biguint.is_underflow(), false);
@@ -20159,23 +20702,24 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// assert_eq!(a_biguint.is_divided_by_zero(), false);
     /// assert_eq!(a_biguint.is_undefined(), false);
     /// 
+    /// let exp = 30_u8;
+    /// let modulo = U256::halfmax();
     /// a_biguint.panic_free_modular_pow_assign_uint(exp, &modulo);
-    /// println!("After a_biguint.modular_pow_assign_uint({}), a_biguint = {}", exp, a_biguint);
+    /// println!("After a_biguint.panic_free_modular_pow_assign_uint({}, {}), a_biguint = {}", exp, modulo, a_biguint);
     /// assert_eq!(a_biguint.to_string(), "1000000000000000000000000000000");
     /// assert_eq!(a_biguint.is_overflow(), false);
     /// assert_eq!(a_biguint.is_underflow(), false);
     /// assert_eq!(a_biguint.is_infinity(), false);
     /// assert_eq!(a_biguint.is_divided_by_zero(), false);
+    /// assert_eq!(a_biguint.is_undefined(), false);
     /// ```
     /// 
-    /// # Example 2
+    /// # Example 2 for Noraml case
     /// ```
     /// use cryptocol::define_utypes_with;
-    /// define_utypes_with!(u16);
+    /// define_utypes_with!(u8);
     /// 
     /// let mut a_biguint = U256::from_uint(1000000000000000000000000000000_u128);
-    /// let exp = 100_u8;
-    /// let modulo = U256::halfmax();
     /// println!("Originally, a_biguint = {}", a_biguint);
     /// assert_eq!(a_biguint.is_overflow(), false);
     /// assert_eq!(a_biguint.is_underflow(), false);
@@ -20183,8 +20727,10 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// assert_eq!(a_biguint.is_divided_by_zero(), false);
     /// assert_eq!(a_biguint.is_undefined(), false);
     /// 
+    /// let exp = 100_u8;
+    /// let modulo = U256::halfmax();
     /// a_biguint.panic_free_modular_pow_assign_uint(exp, &modulo);
-    /// println!("After a_biguint.modular_pow_assign_uint({}), a_biguint = {}", exp, a_biguint);
+    /// println!("After a_biguint.panic_free_modular_pow_assign_uint({}, {}), a_biguint = {}", exp, modulo, a_biguint);
     /// assert_eq!(a_biguint.to_string(), "52266245075570873327294567809656160090");
     /// assert_eq!(a_biguint.is_overflow(), true);
     /// assert_eq!(a_biguint.is_underflow(), false);
@@ -20193,14 +20739,12 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// assert_eq!(a_biguint.is_undefined(), false);
     /// ```
     /// 
-    /// # Example 3
+    /// # Example 3 for self != 0 and exp == 0 and modulo != 0
     /// ```
     /// use cryptocol::define_utypes_with;
-    /// define_utypes_with!(u16);
+    /// define_utypes_with!(u8);
     /// 
-    /// let mut a_biguint = UU32::zero();
-    /// let exp = 30_u8;
-    /// let modulo = U256::halfmax();
+    /// let mut a_biguint = U256::from_uint(10_u8);
     /// println!("Originally, a_biguint = {}", a_biguint);
     /// assert_eq!(a_biguint.is_overflow(), false);
     /// assert_eq!(a_biguint.is_underflow(), false);
@@ -20208,8 +20752,60 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// assert_eq!(a_biguint.is_divided_by_zero(), false);
     /// assert_eq!(a_biguint.is_undefined(), false);
     /// 
+    /// let exp = 0_u8;
+    /// let modulo = U256::halfmax();
     /// a_biguint.panic_free_modular_pow_assign_uint(exp, &modulo);
-    /// println!("After a_biguint.modular_pow_assign_uint({}), a_biguint = {}", exp, a_biguint);
+    /// println!("After a_biguint.panic_free_modular_pow_assign_uint({}, {}), a_biguint = {}", exp, modulo, a_biguint);
+    /// assert_eq!(a_biguint.to_string(), "1");
+    /// assert_eq!(a_biguint.is_overflow(), false);
+    /// assert_eq!(a_biguint.is_underflow(), false);
+    /// assert_eq!(a_biguint.is_infinity(), false);
+    /// assert_eq!(a_biguint.is_divided_by_zero(), false);
+    /// assert_eq!(a_biguint.is_undefined(), false);
+    /// ```
+    /// 
+    /// # Example 4 for self != 0 and exp == multiple of modulo and modulo != 0
+    /// ```
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u8);
+    /// 
+    /// let mut a_biguint = U256::from_uint(10_u8);
+    /// println!("Originally, a_biguint = {}", a_biguint);
+    /// assert_eq!(a_biguint.is_overflow(), false);
+    /// assert_eq!(a_biguint.is_underflow(), false);
+    /// assert_eq!(a_biguint.is_infinity(), false);
+    /// assert_eq!(a_biguint.is_undefined(), false);
+    /// assert_eq!(a_biguint.is_divided_by_zero(), false);
+    /// 
+    /// let exp = 200_u8;
+    /// let modulo = U256::from_uint(100_u8);
+    /// a_biguint.panic_free_modular_pow_assign_uint(exp, &modulo);
+    /// println!("After a_biguint.panic_free_modular_pow_assign_uint({}, {}), a_biguint = {}", exp, modulo, a_biguint);
+    /// assert_eq!(a_biguint.to_string(), "1");
+    /// assert_eq!(a_biguint.is_overflow(), false);
+    /// assert_eq!(a_biguint.is_underflow(), false);
+    /// assert_eq!(a_biguint.is_infinity(), false);
+    /// assert_eq!(a_biguint.is_undefined(), false);
+    /// assert_eq!(a_biguint.is_divided_by_zero(), false);
+    /// ```
+    /// 
+    /// # Example 5 for self == 0 and exp != 0 and modulo != 0
+    /// ```
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u8);
+    /// 
+    /// let mut a_biguint = UU32::zero();
+    /// println!("Originally, a_biguint = {}", a_biguint);
+    /// assert_eq!(a_biguint.is_overflow(), false);
+    /// assert_eq!(a_biguint.is_underflow(), false);
+    /// assert_eq!(a_biguint.is_infinity(), false);
+    /// assert_eq!(a_biguint.is_divided_by_zero(), false);
+    /// assert_eq!(a_biguint.is_undefined(), false);
+    /// 
+    /// let exp = 30_u8;
+    /// let modulo = U256::halfmax();
+    /// a_biguint.panic_free_modular_pow_assign_uint(exp, &modulo);
+    /// println!("After a_biguint.panic_free_modular_pow_assign_uint({}, {}), a_biguint = {}", exp, modulo, a_biguint);
     /// assert_eq!(a_biguint.to_string(), "0");
     /// assert_eq!(a_biguint.is_overflow(), false);
     /// assert_eq!(a_biguint.is_underflow(), false);
@@ -20218,50 +20814,186 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// assert_eq!(a_biguint.is_undefined(), false);
     /// ```
     /// 
-    /// # Example 4
+    /// # Example 6 for self == multiple of modulo and exp != 0 and modulo != 0
     /// ```
     /// use cryptocol::define_utypes_with;
-    /// define_utypes_with!(u16);
+    /// define_utypes_with!(u8);
     /// 
-    /// let mut a_biguint = U256::from_uint(10_u8);
-    /// let exp = 0_u8;
-    /// let modulo = U256::halfmax();
+    /// let mut a_biguint = UU32::from_uint(300_u16);
     /// println!("Originally, a_biguint = {}", a_biguint);
     /// assert_eq!(a_biguint.is_overflow(), false);
     /// assert_eq!(a_biguint.is_underflow(), false);
     /// assert_eq!(a_biguint.is_infinity(), false);
-    /// assert_eq!(a_biguint.is_divided_by_zero(), false);
     /// assert_eq!(a_biguint.is_undefined(), false);
+    /// assert_eq!(a_biguint.is_divided_by_zero(), false);
     /// 
+    /// let exp = 30_u8;
+    /// let modulo = U256::from_uint(100_u8);
     /// a_biguint.panic_free_modular_pow_assign_uint(exp, &modulo);
-    /// println!("After a_biguint.modular_pow_assign_uint({}), a_biguint = {}", exp, a_biguint);
-    /// assert_eq!(a_biguint.to_string(), "1");
+    /// println!("After a_biguint.panic_free_modular_pow_assign_uint({}, {}), a_biguint = {}", exp, modulo, a_biguint);
+    /// assert_eq!(a_biguint.to_string(), "0");
     /// assert_eq!(a_biguint.is_overflow(), false);
     /// assert_eq!(a_biguint.is_underflow(), false);
     /// assert_eq!(a_biguint.is_infinity(), false);
-    /// assert_eq!(a_biguint.is_divided_by_zero(), false);
     /// assert_eq!(a_biguint.is_undefined(), false);
+    /// assert_eq!(a_biguint.is_divided_by_zero(), false);
+    /// ```
     /// 
-    /// let mut _a_biguint = U256::zero();
-    /// let _exp = 0_u8;
-    /// let _modulo = U256::halfmax();
-    /// println!("Originally,\n_a_biguint = {}", _a_biguint);
-    /// // It will panic!
-    /// // _a_biguint.panic_free_modular_pow_assign_uint(_exp, &_modulo);
+    /// # Example 7 for self == 0 and exp == 0 and modulo != 0
+    /// ```
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u8);
     /// 
-    /// let mut _a_biguint = U256::from_uint(10_u8);
-    /// let _exp = 30_u8;
-    /// let _modulo = U256::zero();
-    /// println!("Originally,\n_a_biguint = {}", _a_biguint);
-    /// // It will panic!
-    /// // _a_biguint.panic_free_modular_pow_assign_uint(_exp, &_modulo);
+    /// let mut a_biguint = U256::zero();
+    /// println!("Originally, a_biguint = {}", a_biguint);
+    /// assert_eq!(a_biguint.is_overflow(), false);
+    /// assert_eq!(a_biguint.is_underflow(), false);
+    /// assert_eq!(a_biguint.is_infinity(), false);
+    /// assert_eq!(a_biguint.is_undefined(), false);
+    /// assert_eq!(a_biguint.is_divided_by_zero(), false);
     /// 
-    /// let mut _a_biguint = U256::zero();
-    /// let _exp = 0_u8;
-    /// let _modulo = U256::zero();
-    /// println!("Originally,\n_a_biguint = {}", _a_biguint);
-    /// // It will panic!
-    /// // _a_biguint.panic_free_modular_pow_assign_uint(_exp, &_modulo);
+    /// let exp = 0_u8;
+    /// let modulo = U256::halfmax();
+    /// a_biguint.panic_free_modular_pow_assign_uint(exp, &modulo);
+    /// println!("After a_biguint.panic_free_modular_pow_assign_uint({}, {}), a_biguint = {}", exp, modulo, a_biguint);
+    /// assert_eq!(a_biguint.to_string(), "0");
+    /// assert_eq!(a_biguint.is_overflow(), false);
+    /// assert_eq!(a_biguint.is_underflow(), false);
+    /// assert_eq!(a_biguint.is_infinity(), false);
+    /// assert_eq!(a_biguint.is_undefined(), true);
+    /// assert_eq!(a_biguint.is_divided_by_zero(), false);
+    /// ```
+    /// 
+    /// # Example 8 for self == multiple of modulo and exp == multiple of modulo and modulo != 0
+    /// ```
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u8);
+    /// 
+    /// let mut a_biguint = U256::from_uint(200_u8);
+    /// println!("Originally, a_biguint = {}", a_biguint);
+    /// assert_eq!(a_biguint.is_overflow(), false);
+    /// assert_eq!(a_biguint.is_underflow(), false);
+    /// assert_eq!(a_biguint.is_infinity(), false);
+    /// assert_eq!(a_biguint.is_undefined(), false);
+    /// assert_eq!(a_biguint.is_divided_by_zero(), false);
+    /// 
+    /// let exp = 150_u8;
+    /// let modulo = U256::from_uint(50_u8);
+    /// a_biguint.panic_free_modular_pow_assign_uint(exp, &modulo);
+    /// println!("After a_biguint.panic_free_modular_pow_assign_uint({}, {}), a_biguint = {}", exp, modulo, a_biguint);
+    /// assert_eq!(a_biguint.to_string(), "0");
+    /// assert_eq!(a_biguint.is_overflow(), false);
+    /// assert_eq!(a_biguint.is_underflow(), false);
+    /// assert_eq!(a_biguint.is_infinity(), false);
+    /// assert_eq!(a_biguint.is_undefined(), true);
+    /// assert_eq!(a_biguint.is_divided_by_zero(), false);
+    /// ```
+    /// 
+    /// # Example 9 for self != 0 and exp != 0 and modulo == 0
+    /// ```
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u8);
+    /// 
+    /// let mut a_biguint = U256::from_uint(10_u8);
+    /// println!("Originally, a_biguint = {}", a_biguint);
+    /// assert_eq!(a_biguint.is_overflow(), false);
+    /// assert_eq!(a_biguint.is_underflow(), false);
+    /// assert_eq!(a_biguint.is_infinity(), false);
+    /// assert_eq!(a_biguint.is_undefined(), false);
+    /// assert_eq!(a_biguint.is_divided_by_zero(), false);
+    /// 
+    /// let exp = 100_u8;
+    /// let modulo = U256::zero();
+    /// a_biguint.panic_free_modular_pow_assign_uint(exp, &modulo);
+    /// println!("After a_biguint.panic_free_modular_pow_assign_uint({}, {}), a_biguint = {}", exp, modulo, a_biguint);
+    /// assert_eq!(a_biguint.to_string(), "0");
+    /// assert_eq!(a_biguint.is_overflow(), false);
+    /// assert_eq!(a_biguint.is_underflow(), false);
+    /// assert_eq!(a_biguint.is_infinity(), false);
+    /// assert_eq!(a_biguint.is_undefined(), true);
+    /// assert_eq!(a_biguint.is_divided_by_zero(), false);
+    /// ```
+    /// 
+    /// # Example 10 for self != 0 and exp != 0 and modulo == 1
+    /// ```
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u8);
+    /// 
+    /// let mut a_biguint = U256::from_uint(10_u8);
+    /// println!("Originally, a_biguint = {}", a_biguint);
+    /// assert_eq!(a_biguint.is_overflow(), false);
+    /// assert_eq!(a_biguint.is_underflow(), false);
+    /// assert_eq!(a_biguint.is_infinity(), false);
+    /// assert_eq!(a_biguint.is_undefined(), false);
+    /// assert_eq!(a_biguint.is_divided_by_zero(), false);
+    /// 
+    /// let exp = 100_u8;
+    /// let modulo = U256::one();
+    /// a_biguint.panic_free_modular_pow_assign_uint(exp, &modulo);
+    /// println!("After a_biguint.panic_free_modular_pow_assign_uint({}, {}), a_biguint = {}", exp, modulo, a_biguint);
+    /// assert_eq!(a_biguint.to_string(), "0");
+    /// assert_eq!(a_biguint.is_overflow(), false);
+    /// assert_eq!(a_biguint.is_underflow(), false);
+    /// assert_eq!(a_biguint.is_infinity(), false);
+    /// assert_eq!(a_biguint.is_undefined(), true);
+    /// assert_eq!(a_biguint.is_divided_by_zero(), false);
+    /// ```
+    /// 
+    /// # Example 11 for self == 0 and exp == 0 and modulo == 0
+    /// ```
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u8);
+    /// 
+    /// let mut a_biguint = U256::zero();
+    /// println!("Originally, a_biguint = {}", a_biguint);
+    /// assert_eq!(a_biguint.is_overflow(), false);
+    /// assert_eq!(a_biguint.is_underflow(), false);
+    /// assert_eq!(a_biguint.is_infinity(), false);
+    /// assert_eq!(a_biguint.is_undefined(), false);
+    /// assert_eq!(a_biguint.is_divided_by_zero(), false);
+    /// 
+    /// let exp = 0_u8;
+    /// let modulo = U256::zero();
+    /// a_biguint.panic_free_modular_pow_assign_uint(exp, &modulo);
+    /// println!("After a_biguint.panic_free_modular_pow_assign_uint({}, {}), a_biguint = {}", exp, modulo, a_biguint);
+    /// assert_eq!(a_biguint.to_string(), "0");
+    /// assert_eq!(a_biguint.is_overflow(), false);
+    /// assert_eq!(a_biguint.is_underflow(), false);
+    /// assert_eq!(a_biguint.is_infinity(), false);
+    /// assert_eq!(a_biguint.is_undefined(), true);
+    /// assert_eq!(a_biguint.is_divided_by_zero(), false);
+    /// ```
+    /// 
+    /// # Collective Examples
+    /// ```
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u8);
+    /// 
+    /// for modulo in [U256::zero(), U256::one()]
+    /// {
+    ///     for lhs in [U256::zero(), U256::from_uint(50_u8)]
+    ///     {
+    ///         for rhs in [0_u8, 50_u8]
+    ///         {
+    ///             let mut lhs = lhs.clone();
+    ///             println!("Originally, lhs = {}", lhs);
+    ///             assert_eq!(lhs.is_overflow(), false);
+    ///             assert_eq!(lhs.is_underflow(), false);
+    ///             assert_eq!(lhs.is_infinity(), false);
+    ///             assert_eq!(lhs.is_undefined(), false);
+    ///             assert_eq!(lhs.is_divided_by_zero(), false);
+    /// 
+    ///             lhs.panic_free_modular_pow_assign_uint(rhs, &modulo);
+    ///             println!("After lhs.panic_free_modular_pow_assign_uint({}, {}), lhs = {}", rhs, modulo, lhs);
+    ///             assert_eq!(lhs.to_string(), "0");
+    ///             assert_eq!(lhs.is_overflow(), false);
+    ///             assert_eq!(lhs.is_underflow(), false);
+    ///             assert_eq!(lhs.is_infinity(), false);
+    ///             assert_eq!(lhs.is_undefined(), true);
+    ///             assert_eq!(lhs.is_divided_by_zero(), false);
+    ///         }
+    ///     }
+    /// }
     /// ```
     /// 
     /// # Big-endian issue
@@ -24657,18 +25389,18 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// 
     /// # Counterpart Methods
     /// - If you also need to add a carry to the wide result, then you want
-    /// to use
-    /// [carrying_mul_assign()](struct@BigUInt#method.carrying_mul_assign)
-    /// instead.
+    ///   to use
+    ///   [carrying_mul_assign()](struct@BigUInt#method.carrying_mul_assign)
+    ///   instead.
     /// - The value of `self` after calculation matches what you’d get
-    /// the method [wrapping_mul()](struct@BigUInt#method.wrapping_mul).
-    /// `self` == `self.wrapping_mul(rhs)`
+    ///    the method [wrapping_mul()](struct@BigUInt#method.wrapping_mul).
+    ///   `self` == `self.wrapping_mul(rhs)`
     /// - The method
-    /// [widening_mul_assign_uint()](struct@BigUInt#method.widening_mul_assign_uint)
-    /// is a bit faster than this method `widening_mul_assign()`.
-    /// If `rhs` is primitive unsigned integral data type such as u8, u16,
-    /// u32, u64, and u128, use the method
-    /// [widening_mul_assign_uint()](struct@BigUInt#method.widening_mul_assign_uint).
+    ///   [widening_mul_assign_uint()](struct@BigUInt#method.widening_mul_assign_uint)
+    ///   is a bit faster than this method `widening_mul_assign()`.
+    ///   If `rhs` is primitive unsigned integral data type such as u8, u16,
+    ///   u32, u64, and u128, use the method
+    ///   [widening_mul_assign_uint()](struct@BigUInt#method.widening_mul_assign_uint).
     /// 
     /// # Examples
     /// ```
