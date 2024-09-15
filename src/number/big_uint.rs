@@ -12110,19 +12110,20 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     ///   `quotient`, and `remainder` will be `zero` and `DIVIDED_BY_ZERO`
     ///   flags will be set for `remainder`.
     /// - If 'self' is not `zero` and `rhs` is `zero` then, `quotient` will
-    ///   have the maximum value and `INFINITY`, `DIVIDED_BY_ZERO` and
-    ///   `OVERFLOW` flags will be set for `quotient`, and `remainder` will
-    ///   have `zero` and the flag `DIVIDED_BY_ZERO` will be set for
-    ///   `remainder`.
+    ///   have the maximum value, and the flags `INFINITY` and
+    ///   `DIVIDED_BY_ZERO` of `quotient` will be set, and
+    ///   `remainder` will have `zero` and the flag `DIVIDED_BY_ZERO` of
+    ///   `remainder` will be set.
     /// - This function is the base function for all the methods
     ///   panic_free_*_div_uint(), panic_free_*_div_assign_uint(),
     ///   panic_free_*_rem_uint(), and panic_free_*_rem_assign_uint().
-    /// - In summary, the quotients and the flags will be set as follows:
+    /// - In summary, the quotient, the remainder and their flags
+    ///   will be set as follows:
     /// 
-    /// | `rhs` | `self` | `quotient` | flags of `quotient`                       | `remainder` | flags of `remainder` |
-    /// |-------|--------|------------|-------------------------------------------|-------------|----------------------|
-    /// | 0     | 0      | 0          | `UNDEFINED`, `DIVIDED_BY_ZERO`            | 0           | `DIVIDED_BY_ZERO`    |
-    /// | 0     | != 0   | max        | `INFINITY`, `DIVIDED_BY_ZERO`, `OVERFLOW` | 0           | `DIVIDED_BY_ZERO`    |
+    /// | `rhs` | `self` | `quotient` | flags of `quotient`            | `remainder` | flags of `remainder` |
+    /// |-------|--------|------------|--------------------------------|-------------|----------------------|
+    /// | 0     | 0      | 0          | `UNDEFINED`, `DIVIDED_BY_ZERO` | 0           | `DIVIDED_BY_ZERO`    |
+    /// | 0     | != 0   | max        | `INFINITY`, `DIVIDED_BY_ZERO`  | 0           | `DIVIDED_BY_ZERO`    |
     /// 
     /// # Counterpart Method
     /// If `rhs` is bigger than `u128`, the method
@@ -12146,6 +12147,11 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// assert_eq!(quotient.is_infinity(), false);
     /// assert_eq!(quotient.is_undefined(), false);
     /// assert_eq!(quotient.is_divided_by_zero(), false);
+    /// assert_eq!(remainder.is_overflow(), false);
+    /// assert_eq!(remainder.is_underflow(), false);
+    /// assert_eq!(remainder.is_infinity(), false);
+    /// assert_eq!(remainder.is_undefined(), false);
+    /// assert_eq!(remainder.is_divided_by_zero(), false);
     /// ```
     /// 
     /// # Example 2 for a normal case
@@ -12165,6 +12171,11 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// assert_eq!(quotient.is_infinity(), false);
     /// assert_eq!(quotient.is_undefined(), false);
     /// assert_eq!(quotient.is_divided_by_zero(), false);
+    /// assert_eq!(remainder.is_overflow(), false);
+    /// assert_eq!(remainder.is_underflow(), false);
+    /// assert_eq!(remainder.is_infinity(), false);
+    /// assert_eq!(remainder.is_undefined(), false);
+    /// assert_eq!(remainder.is_divided_by_zero(), false);
     /// ```
     /// 
     /// # Example 3 for dividend != 0 and divisor == 0
@@ -12179,11 +12190,16 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// println!("{} / {} => quotient = {} , remainder = {}", dividend, divisor, quotient, remainder);
     /// assert_eq!(quotient, UU32::max());
     /// assert_eq!(remainder.to_string(), "0");
-    /// assert_eq!(quotient.is_overflow(), true);
+    /// assert_eq!(quotient.is_overflow(), false);
     /// assert_eq!(quotient.is_underflow(), false);
     /// assert_eq!(quotient.is_infinity(), true);
     /// assert_eq!(quotient.is_undefined(), false);
     /// assert_eq!(quotient.is_divided_by_zero(), true);
+    /// assert_eq!(remainder.is_overflow(), false);
+    /// assert_eq!(remainder.is_underflow(), false);
+    /// assert_eq!(remainder.is_infinity(), false);
+    /// assert_eq!(remainder.is_undefined(), false);
+    /// assert_eq!(remainder.is_divided_by_zero(), true);
     /// ```
     /// 
     /// # Example 4 for dividend == 0 and divisor == 0
@@ -12203,6 +12219,11 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// assert_eq!(quotient.is_infinity(), false);
     /// assert_eq!(quotient.is_undefined(), true);
     /// assert_eq!(quotient.is_divided_by_zero(), true);
+    /// assert_eq!(remainder.is_overflow(), false);
+    /// assert_eq!(remainder.is_underflow(), false);
+    /// assert_eq!(remainder.is_infinity(), false);
+    /// assert_eq!(remainder.is_undefined(), false);
+    /// assert_eq!(remainder.is_divided_by_zero(), true);
     /// ```
     /// 
     /// # Big-endian issue
@@ -12232,7 +12253,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
             else
             {
                 q = Self::max();
-                q.set_all_flags(Self::INFINITY | Self::OVERFLOW | Self::DIVIDED_BY_ZERO);
+                q.set_all_flags(Self::INFINITY | Self::DIVIDED_BY_ZERO);
             }
             return (q, r);
         }
@@ -13136,10 +13157,17 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     ///   u16, u32, u64, etc. will panic if `rhs` is zero.
     /// - If `rhs` is zero and `self` is not zero, the quotient will have
     ///   maximum value of `BigUInt` and the flags of quotient such as
-    ///   `OVERFLOW`, `INFINITY`, and `DIVIDED_BY_ZERO` will be set.
+    ///   `INFINITY`, and `DIVIDED_BY_ZERO` will be set.
     /// - If `rhs` is zero and `self` is zero, the quotient will have
     ///   value `zero` of `BigUInt` type and the flags of quotient such as
     ///   `DIVIDED_BY_ZERO` and `UNDEFINED` will be set.
+    /// - In summary, the quotient and its flags will be set as follows:
+    /// 
+    /// | `rhs` | `self` | `quotient` | flags of `quotient`            |
+    /// |-------|--------|------------|--------------------------------|
+    /// | 0     | 0      | 0          | `UNDEFINED`, `DIVIDED_BY_ZERO` |
+    /// | 0     | != 0   | max        | `INFINITY`, `DIVIDED_BY_ZERO`  |
+    /// 
     /// 
     /// # Counterpart Method
     /// If `rhs` is bigger than `u128`, the method
@@ -13193,7 +13221,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// let quotient = dividend.panic_free_div_uint(divisor);
     /// println!("{} / {} = {}", dividend, divisor, quotient);
     /// assert_eq!(quotient, U256::max());
-    /// assert_eq!(quotient.is_overflow(), true);
+    /// assert_eq!(quotient.is_overflow(), false);
     /// assert_eq!(quotient.is_underflow(), false);
     /// assert_eq!(quotient.is_infinity(), true);
     /// assert_eq!(quotient.is_undefined(), false);
@@ -13258,10 +13286,17 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     ///   u8, u16, u32, u64, etc. will panic if `rhs` is zero.
     /// - If `rhs` is zero and `self` is not zero, the quotient will have
     ///   maximum value of `BigUInt` and the flags of quotient such as
-    ///   `OVERFLOW`, `INFINITY`, and `DIVIDED_BY_ZERO` will be set.
+    ///   `INFINITY`, and `DIVIDED_BY_ZERO` will be set.
     /// - If `rhs` is zero and `self` is zero, the quotient will have
     ///   value `zero` of `BigUInt` type and the flags of quotient such as
     ///   `DIVIDED_BY_ZERO` and `UNDEFINED` will be set.
+    /// - In summary, the quotient and its flags will be set as follows:
+    /// 
+    /// | `rhs` | `self` | `quotient` | flags of `quotient`            |
+    /// |-------|--------|------------|--------------------------------|
+    /// | 0     | 0      | 0          | `UNDEFINED`, `DIVIDED_BY_ZERO` |
+    /// | 0     | != 0   | max        | `INFINITY`, `DIVIDED_BY_ZERO`  |
+    /// 
     /// 
     /// # Counterpart Method
     /// If `rhs` is bigger than `u128`, the method
@@ -13310,6 +13345,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// a_biguint.panic_free_div_assign_uint(divisor);
     /// println!("After a_biguint.panic_free_div_assign_uint(&divisor),\na_biguint = {}", a_biguint);
     /// assert_eq!(a_biguint.to_string(), "0");
+    /// assert_eq!(a_biguint.is_overflow(), false);
     /// assert_eq!(a_biguint.is_underflow(), false);
     /// assert_eq!(a_biguint.is_infinity(), false);
     /// assert_eq!(a_biguint.is_divided_by_zero(), false);
@@ -13334,7 +13370,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// a_biguint.panic_free_div_assign_uint(divisor);
     /// println!("After a_biguint.panic_free_div_assign_uint(&divisor),\na_biguint = {}", a_biguint);
     /// assert_eq!(a_biguint, U256::max());
-    /// assert_eq!(a_biguint.is_overflow(), true);
+    /// assert_eq!(a_biguint.is_overflow(), false);
     /// assert_eq!(a_biguint.is_underflow(), false);
     /// assert_eq!(a_biguint.is_infinity(), true);
     /// assert_eq!(a_biguint.is_undefined(), false);
@@ -13602,6 +13638,13 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// assert_eq!(a_biguint.is_infinity(), false);
     /// assert_eq!(a_biguint.is_divided_by_zero(), false);
     /// assert_eq!(a_biguint.is_undefined(), false);
+    /// ```
+    /// 
+    /// # Panic Example
+    /// ```
+    /// use std::str::FromStr;
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u64);
     /// 
     /// let _a_biguint = U256::from_str("123456789015758942546236989636279846864825945392").unwrap();
     /// let _divisor = 128_u8;
@@ -13714,16 +13757,16 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     ///   `DIVIDED_BY_ZERO` flags will be set.
     /// - If `modulo` is greater than one, and `rhs` is either zero or multiple
     ///   of `modulo`, and `self` is not zero, and `modulo` is neither zero nor
-    ///   one, the quotient will have the max value and `INFINITY`,
-    ///   `DIVIDED_BY_ZERO`, and `OVERFLOW` flags will be set.
+    ///   one, the quotient will have the max value and `INFINITY`, and
+    ///   `DIVIDED_BY_ZERO` flags will be set.
     /// - In summary, the quotients and the flags will be set as follows:
     /// 
-    /// | `modulo` | `rhs`               | `self`              | quotient | flags                                     |
-    /// |----------|---------------------|---------------------|----------|-------------------------------------------|
-    /// | 0 or 1   | 0 (mod `modulo`)    | >= 0                | 0        | `UNDEFINED`, `DIVIDED_BY_ZERO`            |
-    /// | 0 or 1   | != 0 (mod `modulo`) | >= 0                | 0        | `UNDEFINED`                               |
-    /// | >= 2     | 0 (mod `modulo`)    | 0 (mod `modulo`)    | 0        | `UNDEFINED`, `DIVIDED_BY_ZERO`            |
-    /// | >= 2     | 0 (mod `modulo`)    | != 0 (mod `modulo`) | max      | `INFINITY`, `DIVIDED_BY_ZERO`, `OVERFLOW` |
+    /// | `modulo` | `rhs`               | `self`              | quotient | flags                          |
+    /// |----------|---------------------|---------------------|----------|--------------------------------|
+    /// | 0 or 1   | 0 (mod `modulo`)    | >= 0                | 0        | `UNDEFINED`, `DIVIDED_BY_ZERO` |
+    /// | 0 or 1   | != 0 (mod `modulo`) | >= 0                | 0        | `UNDEFINED`                    |
+    /// | >= 2     | 0 (mod `modulo`)    | 0 (mod `modulo`)    | 0        | `UNDEFINED`, `DIVIDED_BY_ZERO` |
+    /// | >= 2     | 0 (mod `modulo`)    | != 0 (mod `modulo`) | max      | `INFINITY`, `DIVIDED_BY_ZERO`  |
     /// 
     /// # Counterpart Method
     /// If `rhs` is bigger than `u128`, the method
@@ -13799,7 +13842,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// let quotient = dividend.panic_free_modular_div_uint(divisor, &modulo);
     /// println!("{} / {} = {} (mod {})", dividend, divisor, quotient, modulo);
     /// assert_eq!(quotient, U256::max());
-    /// assert_eq!(quotient.is_overflow(), true);
+    /// assert_eq!(quotient.is_overflow(), false);
     /// assert_eq!(quotient.is_underflow(), false);
     /// assert_eq!(quotient.is_infinity(), true);
     /// assert_eq!(quotient.is_undefined(), false);
@@ -13818,7 +13861,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// let quotient = dividend.panic_free_modular_div_uint(divisor, &modulo);
     /// println!("{} / {} = {} (mod {})", dividend, divisor, quotient, modulo);
     /// assert_eq!(quotient, U256::max());
-    /// assert_eq!(quotient.is_overflow(), true);
+    /// assert_eq!(quotient.is_overflow(), false);
     /// assert_eq!(quotient.is_underflow(), false);
     /// assert_eq!(quotient.is_infinity(), true);
     /// assert_eq!(quotient.is_undefined(), false);
@@ -14002,7 +14045,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     ///         let res = dividend.panic_free_modular_div_uint(rhs, &modulo);
     ///         println!("{} / {} = {} (mod {})", dividend, rhs, res, modulo);
     ///         assert_eq!(res.to_string(), "0");
-    ///         assert_eq!(res.is_overflow(), true);
+    ///         assert_eq!(res.is_overflow(), false);
     ///         assert_eq!(res.is_underflow(), false);
     ///         assert_eq!(res.is_divided_by_zero(), true);
     ///         assert_eq!(res.is_infinity(), true);
@@ -14056,29 +14099,29 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// 
     /// # Features
     /// - It takes the remainder (= `rd1`) of `self` divided by `modulo`,
-    /// and takes the remainder (= `rd2`) of `rhs` divided by `modulo`,
-    /// and then finally takes the qutient of `rd1` divided by `rd2`.
+    ///   and takes the remainder (= `rd2`) of `rhs` divided by `modulo`,
+    ///   and then finally takes the qutient of `rd1` divided by `rd2`.
     /// - There’s no way wrapping could ever happen.
     /// - All the flags are historical, which means, for example, if an
-    /// divided_by_zero occurred even once before this current operation or
-    /// `DIVIDED_BY_ZERO` flag is already set before this current operation,
-    /// the `DIVIDED_BY_ZERO` flag is not changed even if this current operation
-    /// does not cause divided_by_zero.
+    ///   divided_by_zero occurred even once before this current operation or
+    ///   `DIVIDED_BY_ZERO` flag is already set before this current operation,
+    ///   the `DIVIDED_BY_ZERO` flag is not changed even if this current
+    ///   operation does not cause divided_by_zero.
     /// - If `modulo` is either zero or one, `self` will have the value `zero`
-    /// and `UNDEFINED` flag will be set.
+    ///   and `UNDEFINED` flag will be set.
     /// - If `rhs` is either zero or multiple of `modulo` and `self` is zero,
-    /// `self` will have the value `zero` and `UNDEFINED` flag will be set.
+    ///   `self` will have the value `zero` and `UNDEFINED` flag will be set.
     /// - If `rhs` is either zero or multiple of `modulo` and `self` is not
-    /// zero, `self` will have the max value and `INFINITY`, `DIVIDED_BY_ZERO`,
-    /// and `OVERFLOW` flags will be set.
+    ///   zero, `self` will have the max value, and the flags `INFINITY` and
+    ///  `DIVIDED_BY_ZERO` of `self` will be set.
     /// - In summary, the quotients and the flags will be set as follows:
     /// 
-    /// | `modulo` | `rhs`               | `self`              | new `self` | flags                                     |
-    /// |----------|---------------------|---------------------|------------|-------------------------------------------|
-    /// | 0 or 1   | 0 (mod `modulo`)    | >= 0                | 0          | `UNDEFINED`, `DIVIDED_BY_ZERO`            |
-    /// | 0 or 1   | != 0 (mod `modulo`) | >= 0                | 0          | `UNDEFINED`                               |
-    /// | >= 2     | 0 (mod `modulo`)    | 0 (mod `modulo`)    | 0          | `UNDEFINED`, `DIVIDED_BY_ZERO`            |
-    /// | >= 2     | 0 (mod `modulo`)    | != 0 (mod `modulo`) | max        | `INFINITY`, `DIVIDED_BY_ZERO`, `OVERFLOW` |
+    /// | `modulo` | `rhs`               | `self`              | new `self` | flags                          |
+    /// |----------|---------------------|---------------------|------------|--------------------------------|
+    /// | 0 or 1   | 0 (mod `modulo`)    | >= 0                | 0          | `UNDEFINED`, `DIVIDED_BY_ZERO` |
+    /// | 0 or 1   | != 0 (mod `modulo`) | >= 0                | 0          | `UNDEFINED`                    |
+    /// | >= 2     | 0 (mod `modulo`)    | 0 (mod `modulo`)    | 0          | `UNDEFINED`, `DIVIDED_BY_ZERO` |
+    /// | >= 2     | 0 (mod `modulo`)    | != 0 (mod `modulo`) | max        | `INFINITY`, `DIVIDED_BY_ZERO`  |
     /// 
     /// # Counterpart Method
     /// If `rhs` is bigger than `u128`, the method
@@ -14182,7 +14225,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// a_biguint.panic_free_modular_div_assign_uint(divisor, &modulo);
     /// println!("After a_biguint.panic_free_modular_div_assign_uint({}, {}), a_biguint = {}", divisor, modulo, a_biguint);
     /// assert_eq!(a_biguint.to_string(), "115792089237316195423570985008687907853269984665640564039457584007913129639935");
-    /// assert_eq!(a_biguint.is_overflow(), true);
+    /// assert_eq!(a_biguint.is_overflow(), false);
     /// assert_eq!(a_biguint.is_underflow(), false);
     /// assert_eq!(a_biguint.is_infinity(), true);
     /// assert_eq!(a_biguint.is_undefined(), false);
@@ -14208,7 +14251,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// a_biguint.panic_free_modular_div_assign_uint(divisor, &modulo);
     /// println!("After a_biguint.panic_free_modular_div_assign_uint({}, {}), a_biguint = {}", divisor, modulo, a_biguint);
     /// assert_eq!(a_biguint.to_string(), "115792089237316195423570985008687907853269984665640564039457584007913129639935");
-    /// assert_eq!(a_biguint.is_overflow(), true);
+    /// assert_eq!(a_biguint.is_overflow(), false);
     /// assert_eq!(a_biguint.is_underflow(), false);
     /// assert_eq!(a_biguint.is_infinity(), true);
     /// assert_eq!(a_biguint.is_undefined(), false);
@@ -14464,7 +14507,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     ///         dividend.panic_free_modular_div_assign_uint(divisor, &modulo);
     ///         println!("After op1.panic_free_modular_div_assign_uint({}, {}), dividend = {}", divisor, modulo, dividend);
     ///         assert_eq!(dividend.to_string(), "0");
-    ///         assert_eq!(dividend.is_overflow(), true);
+    ///         assert_eq!(dividend.is_overflow(), false);
     ///         assert_eq!(dividend.is_underflow(), false);
     ///         assert_eq!(dividend.is_divided_by_zero(), true);
     ///         assert_eq!(dividend.is_infinity(), true);
@@ -14533,7 +14576,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
             else
             {
                 self.set_max();
-                self.set_flag_bit(Self::INFINITY | Self::DIVIDED_BY_ZERO | Self::OVERFLOW);
+                self.set_flag_bit(Self::INFINITY | Self::DIVIDED_BY_ZERO);
             }
             terminated = true;
         }
@@ -15379,10 +15422,17 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// - There’s no way wrapping could ever happen.
     /// - This function exists, so that the program may be able to run
     ///   even if `rhs` is zero.
-    /// - If `rhs` is `zero`, the remainder is zero.
+    /// - If `rhs` is `zero`, the remainder is zero and the flag
+    ///   `DIVIDED_BY_ZERO` of `remainder` will be set.
     /// - __It does not panic__ while the counterpart methods `wrapping_rem()`
     ///   for primitive integer data type such as u8, u16, u32, u64, etc. will
     ///   panic if `rhs` is zero.
+    /// - In summary, the quotient and its flags will be set as follows:
+    /// 
+    /// | `rhs` | `remainder` | flags of `remainder` |
+    /// |-------|-------------|----------------------|
+    /// | 0     | 0           | `DIVIDED_BY_ZERO`    |
+    /// 
     /// 
     /// # Counterpart Method
     /// If `rhs` is bigger than `u128`, the method
@@ -15400,6 +15450,11 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// let remainder = dividend.panic_free_rem_uint(divisor);
     /// println!("{} % {} = {}", dividend, divisor, remainder);
     /// assert_eq!(remainder.to_string(), "8");
+    /// assert_eq!(remainder.is_overflow(), false);
+    /// assert_eq!(remainder.is_underflow(), false);
+    /// assert_eq!(remainder.is_infinity(), false);
+    /// assert_eq!(remainder.is_divided_by_zero(), false);
+    /// assert_eq!(remainder.is_undefined(), false);
     /// ```
     /// 
     /// # Example 2
@@ -15413,18 +15468,47 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// let remainder = dividend.panic_free_rem_uint(divisor);
     /// println!("{} % {} = {}", dividend, divisor, remainder);
     /// assert_eq!(remainder.to_string(), "0");
+    /// assert_eq!(remainder.is_overflow(), false);
+    /// assert_eq!(remainder.is_underflow(), false);
+    /// assert_eq!(remainder.is_infinity(), false);
+    /// assert_eq!(remainder.is_divided_by_zero(), false);
+    /// assert_eq!(remainder.is_undefined(), false);
     /// ```
     /// 
-    /// # Panic Example
+    /// # Example 3
     /// ```
     /// use std::str::FromStr;
     /// use cryptocol::define_utypes_with;
     /// define_utypes_with!(u64);
     /// 
-    /// let _dividend = UU32::from_str("123456789015758942546236989636279846864825945392").unwrap();
-    /// let _divisor = 0_u8;
-    /// // It will panic!
-    /// // let remainder = _dividend.panic_free_rem_uint(_divisor);
+    /// let dividend = UU32::from_str("123456789015758942546236989636279846864825945392").unwrap();
+    /// let divisor = 0_u8;
+    /// let remainder = dividend.panic_free_rem_uint(divisor);
+    /// println!("{} % {} = {}", dividend, divisor, remainder);
+    /// assert_eq!(remainder.to_string(), "0");
+    /// assert_eq!(remainder.is_overflow(), false);
+    /// assert_eq!(remainder.is_underflow(), false);
+    /// assert_eq!(remainder.is_infinity(), false);
+    /// assert_eq!(remainder.is_divided_by_zero(), true);
+    /// assert_eq!(remainder.is_undefined(), false);
+    /// ```
+    /// 
+    /// # Example 4
+    /// ```
+    /// use std::str::FromStr;
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u64);
+    /// 
+    /// let dividend = UU32::zero();
+    /// let divisor = 0_u8;
+    /// let remainder = dividend.panic_free_rem_uint(divisor);
+    /// println!("{} % {} = {}", dividend, divisor, remainder);
+    /// assert_eq!(remainder.to_string(), "0");
+    /// assert_eq!(remainder.is_overflow(), false);
+    /// assert_eq!(remainder.is_underflow(), false);
+    /// assert_eq!(remainder.is_infinity(), false);
+    /// assert_eq!(remainder.is_divided_by_zero(), true);
+    /// assert_eq!(remainder.is_undefined(), false);
     /// ```
     /// 
     /// # Big-endian issue
@@ -15464,13 +15548,19 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// - There’s no way wrapping could ever happen.
     /// - This function exists, so that all operations are accounted for in the
     ///   wrapping operations.
-    /// - If `rhs` is zero, `self` will be zero and the `DIVIDED_BY_ZERO` and
-    ///   `UNDEFINED` flags will be set.
+    /// - If `rhs` is zero, `self` will be zero and the `DIVIDED_BY_ZERO` flag
+    ///   of `self` will be set.
     /// - All the flags are historical, which means, for example, if an
     ///   divided_by_zero occurred even once before this current operation or
     ///   `DIVIDED_BY_ZERO` flag is already set before this current operation,
     ///   the `DIVIDED_BY_ZERO` flag is not changed even if this current
     ///   operation does not cause divided_by_zero.
+    /// - In summary, the quotient and its flags will be set as follows:
+    /// 
+    /// | `rhs` | `remainder` | flags of `remainder` |
+    /// |-------|-------------|----------------------|
+    /// | 0     | 0           | `DIVIDED_BY_ZERO`    |
+    /// 
     /// 
     /// # Counterpart Method
     /// If `rhs` is bigger than `u128`, the method
@@ -15484,7 +15574,6 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// define_utypes_with!(u128);
     /// 
     /// let mut a_biguint = U256::from_str("123456789015758942546236989636279846864825945392").unwrap();
-    /// let divisor = 87_u8;
     /// println!("Originally, a_biguint = {}", a_biguint);
     /// assert_eq!(a_biguint.is_overflow(), false);
     /// assert_eq!(a_biguint.is_underflow(), false);
@@ -15492,10 +15581,12 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// assert_eq!(a_biguint.is_divided_by_zero(), false);
     /// assert_eq!(a_biguint.is_undefined(), false);
     /// 
+    /// let divisor = 87_u8;
     /// a_biguint.wrapping_rem_assign_uint(divisor);
     /// println!("After a_biguint.wrapping_rem_assign_uint({}), a_biguint = {}", divisor, a_biguint);
     /// assert_eq!(a_biguint.to_string(), "8");
     /// assert_eq!(a_biguint.is_overflow(), false);
+    /// assert_eq!(a_biguint.is_underflow(), false);
     /// assert_eq!(a_biguint.is_infinity(), false);
     /// assert_eq!(a_biguint.is_divided_by_zero(), false);
     /// assert_eq!(a_biguint.is_undefined(), false);
@@ -15508,7 +15599,6 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// define_utypes_with!(u128);
     /// 
     /// let mut a_biguint = U256::zero();
-    /// let divisor = 87_u8;
     /// println!("Originally, a_biguint = {}", a_biguint);
     /// assert_eq!(a_biguint.is_overflow(), false);
     /// assert_eq!(a_biguint.is_underflow(), false);
@@ -15516,6 +15606,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// assert_eq!(a_biguint.is_divided_by_zero(), false);
     /// assert_eq!(a_biguint.is_undefined(), false);
     /// 
+    /// let divisor = 87_u8;
     /// a_biguint.wrapping_rem_assign_uint(divisor);
     /// println!("After a_biguint.wrapping_rem_assign_uint({}), a_biguint = {}", divisor, a_biguint);
     /// assert_eq!(a_biguint.to_string(), "0");
@@ -15533,7 +15624,6 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// define_utypes_with!(u128);
     /// 
     /// let mut a_biguint = U256::from_str("123456789015758942546236989636279846864825945392").unwrap();
-    /// let divisor = 0_u8;
     /// println!("Originally, a_biguint = {}", a_biguint);
     /// assert_eq!(a_biguint.is_overflow(), false);
     /// assert_eq!(a_biguint.is_underflow(), false);
@@ -15541,6 +15631,32 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// assert_eq!(a_biguint.is_undefined(), false);
     /// assert_eq!(a_biguint.is_divided_by_zero(), false);
     /// 
+    /// let divisor = 0_u8;
+    /// a_biguint.panic_free_rem_assign_uint(divisor);
+    /// println!("After a_biguint.panic_free_rem_assign_uint({}), a_biguint = {}", divisor, a_biguint);
+    /// assert_eq!(a_biguint.to_string(), "0");
+    /// assert_eq!(a_biguint.is_overflow(), false);
+    /// assert_eq!(a_biguint.is_underflow(), false);
+    /// assert_eq!(a_biguint.is_infinity(), false);
+    /// assert_eq!(a_biguint.is_undefined(), false);
+    /// assert_eq!(a_biguint.is_divided_by_zero(), true);
+    /// ```
+    /// 
+    /// # Example 4
+    /// ```
+    /// use std::str::FromStr;
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u128);
+    /// 
+    /// let mut a_biguint = U256::zero();
+    /// println!("Originally, a_biguint = {}", a_biguint);
+    /// assert_eq!(a_biguint.is_overflow(), false);
+    /// assert_eq!(a_biguint.is_underflow(), false);
+    /// assert_eq!(a_biguint.is_infinity(), false);
+    /// assert_eq!(a_biguint.is_undefined(), false);
+    /// assert_eq!(a_biguint.is_divided_by_zero(), false);
+    /// 
+    /// let divisor = 0_u8;
     /// a_biguint.panic_free_rem_assign_uint(divisor);
     /// println!("After a_biguint.panic_free_rem_assign_uint({}), a_biguint = {}", divisor, a_biguint);
     /// assert_eq!(a_biguint.to_string(), "0");
@@ -15947,15 +16063,15 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// 
     /// # Arguments
     /// - `rhs` divides `self`, and is a small-sized unsigned integer
-    /// such as `u8`, `u16`, `u32`, `u64`, and `u128`.
+    ///   such as `u8`, `u16`, `u32`, `u64`, and `u128`.
     /// - `modulo` is the divisor to divide the result of (`self` * `rhs`).
     ///
     /// # Panics
-    /// - If `size_of::<T>() * N` <= `128`, this method may panic
+    /// If `size_of::<T>() * N` <= `128`, this method may panic
     /// or its behavior may be undefined though it may not panic.
     /// 
     /// # Output
-    /// - It returns the remainder of when `self` % `modulo` is divided by
+    /// It returns the remainder of when `self` % `modulo` is divided by
     /// `rhs` % `modulo` if `rhs` is not multiple of `modulo`.
     /// 
     /// # Features
@@ -15967,7 +16083,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     ///   `modulo` or `modulo` is zero or one.
     /// - If `modulo` is either zero or one, and `rhs` is zero or multiple of
     ///   `modulo` then, the remainder will have the value `zero` and
-    ///   `UNDEFINED` and `DIVIDED_BY_ZERO` flags will be set.
+    ///   `DIVIDED_BY_ZERO` flag of the remainder will be set.
     /// - If `modulo` is either zero or one, and `rhs` is not zero nor multiple
     ///   of `modulo` then, the remainder will have the value `zero` and
     ///   `UNDEFINED` flag will be set.
@@ -15980,7 +16096,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// |----------|---------------------|-----------|--------------------------------|
     /// | 0 or 1   | 0 (mod `modulo`)    | 0         | `UNDEFINED`, `DIVIDED_BY_ZERO` |
     /// | 0 or 1   | != 0 (mod `modulo`) | 0         | `UNDEFINED`                    |
-    /// | >= 2     | 0 (mod `modulo`)    | 0         | `UNDEFINED`, `DIVIDED_BY_ZERO` |
+    /// | >= 2     | 0 (mod `modulo`)    | 0         | `DIVIDED_BY_ZERO`              |
     /// 
     /// # Counterpart Method
     /// If `rhs` is bigger than `u128`, the method
@@ -16055,10 +16171,10 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// let modulo = U256::from_uint(100_u8);
     /// let remainder = dividend.panic_free_modular_rem_uint(divisor, &modulo);
     /// println!("{} % {} = {} (mod {})", dividend, divisor, remainder, modulo);
-    /// assert_eq!(remainder, U256::max());
-    /// assert_eq!(remainder.is_overflow(), true);
+    /// assert_eq!(remainder.to_string(), "0");
+    /// assert_eq!(remainder.is_overflow(), false);
     /// assert_eq!(remainder.is_underflow(), false);
-    /// assert_eq!(remainder.is_infinity(), true);
+    /// assert_eq!(remainder.is_infinity(), false);
     /// assert_eq!(remainder.is_undefined(), false);
     /// assert_eq!(remainder.is_divided_by_zero(), true);
     /// ```
@@ -16074,10 +16190,10 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// let modulo = U256::from_uint(100_u8);
     /// let remainder = dividend.panic_free_modular_rem_uint(divisor, &modulo);
     /// println!("{} % {} = {} (mod {})", dividend, divisor, remainder, modulo);
-    /// assert_eq!(remainder, U256::max());
-    /// assert_eq!(remainder.is_overflow(), true);
+    /// assert_eq!(remainder.to_string(), "0");
+    /// assert_eq!(remainder.is_overflow(), false);
     /// assert_eq!(remainder.is_underflow(), false);
-    /// assert_eq!(remainder.is_infinity(), true);
+    /// assert_eq!(remainder.is_infinity(), false);
     /// assert_eq!(remainder.is_undefined(), false);
     /// assert_eq!(remainder.is_divided_by_zero(), true);
     /// ```
@@ -16097,7 +16213,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// assert_eq!(remainder.is_overflow(), false);
     /// assert_eq!(remainder.is_underflow(), false);
     /// assert_eq!(remainder.is_infinity(), false);
-    /// assert_eq!(remainder.is_undefined(), true);
+    /// assert_eq!(remainder.is_undefined(), false);
     /// assert_eq!(remainder.is_divided_by_zero(), true);
     /// ```
     /// 
@@ -16116,7 +16232,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// assert_eq!(remainder.is_overflow(), false);
     /// assert_eq!(remainder.is_underflow(), false);
     /// assert_eq!(remainder.is_infinity(), false);
-    /// assert_eq!(remainder.is_undefined(), true);
+    /// assert_eq!(remainder.is_undefined(), false);
     /// assert_eq!(remainder.is_divided_by_zero(), true);
     /// ```
     /// 
@@ -16135,7 +16251,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// assert_eq!(remainder.is_overflow(), false);
     /// assert_eq!(remainder.is_underflow(), false);
     /// assert_eq!(remainder.is_infinity(), false);
-    /// assert_eq!(remainder.is_undefined(), true);
+    /// assert_eq!(remainder.is_undefined(), false);
     /// assert_eq!(remainder.is_divided_by_zero(), true);
     /// ```
     /// 
@@ -16154,7 +16270,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// assert_eq!(remainder.is_overflow(), false);
     /// assert_eq!(remainder.is_underflow(), false);
     /// assert_eq!(remainder.is_infinity(), false);
-    /// assert_eq!(remainder.is_undefined(), true);
+    /// assert_eq!(remainder.is_undefined(), false);
     /// assert_eq!(remainder.is_divided_by_zero(), true);
     /// ```
     /// 
@@ -16245,7 +16361,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     ///     let op1 = U256::zero();
     ///     let op2 = 0_u8;
     ///     let res = op1.panic_free_modular_rem_uint(op2, &modulo);
-    ///     println!("{} / {} = {} (mod {})", op1, op2, res, modulo);
+    ///     println!("{} % {} = {} (mod {})", op1, op2, res, modulo);
     ///     assert_eq!(res.to_string(), "0");
     ///     assert_eq!(res.is_overflow(), false);
     ///     assert_eq!(res.is_underflow(), false);
@@ -16257,18 +16373,18 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     ///     {
     ///         let rhs = 0_u8;
     ///         let res = dividend.panic_free_modular_rem_uint(rhs, &modulo);
-    ///         println!("{} / {} = {} (mod {})", dividend, rhs, res, modulo);
+    ///         println!("{} % {} = {} (mod {})", dividend, rhs, res, modulo);
     ///         assert_eq!(res.to_string(), "0");
-    ///         assert_eq!(res.is_overflow(), true);
+    ///         assert_eq!(res.is_overflow(), false);
     ///         assert_eq!(res.is_underflow(), false);
     ///         assert_eq!(res.is_divided_by_zero(), true);
-    ///         assert_eq!(res.is_infinity(), true);
+    ///         assert_eq!(res.is_infinity(), false);
     ///         assert_eq!(res.is_undefined(), true);
     /// 
     ///         for divisor in [3_u8, 50_u8]
     ///         {
     ///             let res = dividend.panic_free_modular_rem_uint(divisor, &modulo);
-    ///             println!("{} / {} = {} (mod {})", dividend, divisor, res, modulo);
+    ///             println!("{} % {} = {} (mod {})", dividend, divisor, res, modulo);
     ///             assert_eq!(res.to_string(), "0");
     ///             assert_eq!(res.is_overflow(), false);
     ///             assert_eq!(res.is_underflow(), false);
@@ -16328,14 +16444,14 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     ///   `UNDEFINED` flag will be set.
     /// - If `modulo` is greater than one, and `rhs` is either zero or multiple
     ///   of `modulo` then, the remainder will have the value `zero` and
-    ///   `UNDEFINED` and `DIVIDED_BY_ZERO` flags will be set.
+    ///   `DIVIDED_BY_ZERO` flag of the remainder will be set.
     /// - In summary, the quotients and the flags will be set as follows:
     /// 
     /// | `modulo` | `rhs`               | remainder | flags                          |
     /// |----------|---------------------|-----------|--------------------------------|
     /// | 0 or 1   | 0 (mod `modulo`)    | 0         | `UNDEFINED`, `DIVIDED_BY_ZERO` |
     /// | 0 or 1   | != 0 (mod `modulo`) | 0         | `UNDEFINED`                    |
-    /// | >= 2     | 0 (mod `modulo`)    | 0         | `UNDEFINED`, `DIVIDED_BY_ZERO` |
+    /// | >= 2     | 0 (mod `modulo`)    | 0         | `DIVIDED_BY_ZERO`              |
     /// 
     /// - All the flags are historical, which means, for example, if an
     ///   divided_by_zero occurred even once before this current operation or
@@ -16444,10 +16560,10 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// let modulo = U256::from_uint(100_u8);
     /// a_biguint.panic_free_modular_rem_assign_uint(divisor, &modulo);
     /// println!("After a_biguint.modular_rem_assign_uint({}, {}), a_biguint = {}", divisor, modulo, a_biguint);
-    /// assert_eq!(a_biguint, U256::max());
-    /// assert_eq!(a_biguint.is_overflow(), true);
+    /// assert_eq!(a_biguint.to_string(), "0");
+    /// assert_eq!(a_biguint.is_overflow(), false);
     /// assert_eq!(a_biguint.is_underflow(), false);
-    /// assert_eq!(a_biguint.is_infinity(), true);
+    /// assert_eq!(a_biguint.is_infinity(), false);
     /// assert_eq!(a_biguint.is_undefined(), false);
     /// assert_eq!(a_biguint.is_divided_by_zero(), true);
     /// ```
@@ -16470,10 +16586,10 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// let modulo = U256::from_uint(100_u8);
     /// a_biguint.panic_free_modular_rem_assign_uint(divisor, &modulo);
     /// println!("After a_biguint.modular_rem_assign_uint({}, {}), a_biguint = {}", divisor, modulo, a_biguint);
-    /// assert_eq!(a_biguint, U256::max());
-    /// assert_eq!(a_biguint.is_overflow(), true);
+    /// assert_eq!(a_biguint.to_string(), "0");
+    /// assert_eq!(a_biguint.is_overflow(), false);
     /// assert_eq!(a_biguint.is_underflow(), false);
-    /// assert_eq!(a_biguint.is_infinity(), true);
+    /// assert_eq!(a_biguint.is_infinity(), false);
     /// assert_eq!(a_biguint.is_undefined(), false);
     /// assert_eq!(a_biguint.is_divided_by_zero(), true);
     /// ```
@@ -16500,7 +16616,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// assert_eq!(a_biguint.is_overflow(), false);
     /// assert_eq!(a_biguint.is_underflow(), false);
     /// assert_eq!(a_biguint.is_infinity(), false);
-    /// assert_eq!(a_biguint.is_undefined(), true);
+    /// assert_eq!(a_biguint.is_undefined(), false);
     /// assert_eq!(a_biguint.is_divided_by_zero(), true);
     /// ```
     /// 
@@ -16526,7 +16642,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// assert_eq!(a_biguint.is_overflow(), false);
     /// assert_eq!(a_biguint.is_underflow(), false);
     /// assert_eq!(a_biguint.is_infinity(), false);
-    /// assert_eq!(a_biguint.is_undefined(), true);
+    /// assert_eq!(a_biguint.is_undefined(), false);
     /// assert_eq!(a_biguint.is_divided_by_zero(), true);
     /// ```
     /// 
@@ -16552,7 +16668,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// assert_eq!(a_biguint.is_overflow(), false);
     /// assert_eq!(a_biguint.is_underflow(), false);
     /// assert_eq!(a_biguint.is_infinity(), false);
-    /// assert_eq!(a_biguint.is_undefined(), true);
+    /// assert_eq!(a_biguint.is_undefined(), false);
     /// assert_eq!(a_biguint.is_divided_by_zero(), true);
     /// ```
     /// 
@@ -16578,7 +16694,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// assert_eq!(a_biguint.is_overflow(), false);
     /// assert_eq!(a_biguint.is_underflow(), false);
     /// assert_eq!(a_biguint.is_infinity(), false);
-    /// assert_eq!(a_biguint.is_undefined(), true);
+    /// assert_eq!(a_biguint.is_undefined(), false);
     /// assert_eq!(a_biguint.is_divided_by_zero(), true);
     /// ```
     /// 
@@ -16726,10 +16842,10 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     ///         dividend.panic_free_modular_rem_assign_uint(divisor, &modulo);
     ///         println!("After op1.panic_free_modular_rem_assign_uint({}, {}), dividend = {}", divisor, modulo, dividend);
     ///         assert_eq!(dividend.to_string(), "0");
-    ///         assert_eq!(dividend.is_overflow(), true);
+    ///         assert_eq!(dividend.is_overflow(), false);
     ///         assert_eq!(dividend.is_underflow(), false);
     ///         assert_eq!(dividend.is_divided_by_zero(), true);
-    ///         assert_eq!(dividend.is_infinity(), true);
+    ///         assert_eq!(dividend.is_infinity(), false);
     ///         assert_eq!(dividend.is_undefined(), true);
     /// 
     ///         for divisor in [3_u8, 50_u8]
@@ -16771,6 +16887,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     {
         let mut terminated = false;
         let mut mrhs = rhs;
+        let flags = self.get_all_flags();
         if !modulo.is_zero_or_one()
         {
             if *self >= *modulo
@@ -16787,32 +16904,21 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
 
         if mrhs.is_zero()
         {
-            if self.is_zero()
-            {
-                self.set_zero();
-                self.set_flag_bit(Self::UNDEFINED | Self::DIVIDED_BY_ZERO);
-            }
-            else
-            {
-                self.set_max();
-                self.set_flag_bit(Self::INFINITY | Self::DIVIDED_BY_ZERO | Self::OVERFLOW);
-            }
+            self.set_zero();
+            self.set_divided_by_zero();
             terminated = true;
         }
         if modulo.is_zero_or_one()
         {
-            self.set_zero();
+            if !terminated
+                { self.set_zero(); }
             self.set_undefined();
-            return;
+            terminated = true;
         }
         if terminated
-            { return; }
-
-        let flags = self.get_all_flags();
-        if *self >= *modulo
         {
-            self.wrapping_rem_assign(modulo);
-            self.reset_all_flags();
+            self.set_flag_bit(flags);
+            return;
         }
 
         if rhs.length_in_bytes() > T::size_in_bytes()
@@ -21064,7 +21170,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// Returns the `exp`-th root of `self`, rounded down.
     ///
     /// # Arguments
-    /// - `exp` is the power of the root of `self` and is a non-zero small-sized
+    /// `exp` is the power of the root of `self` and is a non-zero small-sized
     /// unsigned integer such as `u8`, `u16`, `u32`, `u64`, and `u128`.
     /// 
     /// # Output
@@ -21075,11 +21181,11 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     ///
     /// # Panics
     /// - If `size_of::<T>() * N` <= `128`, this method may panic
-    /// or its behavior may be undefined though it may not panic.
+    ///   or its behavior may be undefined though it may not panic.
     /// - If `exp` is `0`, it will panic.
     /// 
     /// # Features
-    /// - The result of this method is never greater than `self` and so
+    /// The result of this method is never greater than `self` and so
     /// never causes overflow.
     /// 
     /// # Counterpart Method
@@ -21090,7 +21196,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// # Example 1
     /// ```
     /// use cryptocol::define_utypes_with;
-    /// define_utypes_with!(u32);
+    /// define_utypes_with!(u8);
     /// 
     /// let a_biguint = U256::from_uint(1000_u16);
     /// let exp = 3_u8;
@@ -21107,7 +21213,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// # Example 2
     /// ```
     /// use cryptocol::define_utypes_with;
-    /// define_utypes_with!(u32);
+    /// define_utypes_with!(u8);
     /// 
     /// let a_biguint = U256::from_uint(1000_u16);
     /// let exp = 2_u8;
@@ -21124,7 +21230,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// # Example 3
     /// ```
     /// use cryptocol::define_utypes_with;
-    /// define_utypes_with!(u16);
+    /// define_utypes_with!(u8);
     /// 
     /// let a_biguint = U256::zero();
     /// let exp = 6_u8;
@@ -21136,6 +21242,12 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// assert_eq!(res.is_infinity(), false);
     /// assert_eq!(res.is_divided_by_zero(), false);
     /// assert_eq!(res.is_undefined(), false);
+    /// ```
+    /// 
+    /// # Panic Example
+    /// ```
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u8);
     /// 
     /// let _a_biguint = U256::from_uint(1000_u16);
     /// let _exp = 0_u8;
@@ -21159,7 +21271,285 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     {
         if exp.is_zero()
             { panic!(); }
+        self.common_iroot_uint(exp)
+    }
 
+    // pub fn iroot_assign_uint<U>(&mut self, exp: U)
+    /// Calculates the `exp`-th root of `self`, rounded down,
+    /// and assigns the result back to `self`.
+    ///
+    /// # Arguments
+    /// `exp` is the power of the root of `self` and is a non-zero small-sized
+    /// unsigned integer such as `u8`, `u16`, `u32`, `u64`, and `u128`.
+    ///
+    /// # Panics
+    /// - If `size_of::<T>() * N` <= `128`, this method may panic
+    ///   or its behavior may be undefined though it may not panic.
+    /// - If `exp` is `0`, it will panic.
+    /// 
+    /// # Features
+    /// - `self` will be the `exp`-th root of `self` is returned if it is
+    ///   exactly the `Self`-typed unsigned integer. Otherwise, `self` will be
+    ///   the `Self`-typed biggest unsigned integer that is less than the
+    ///   `exp`-th root of `self`.
+    /// - The result of this method is never greater than `self` and so
+    ///   never causes overflow.
+    /// - All the flags are historical, which means, for example, if an
+    ///   overflow occurred even once before this current operation or
+    ///   `OVERFLOW` flag is already set before this current operation,
+    ///   the `OVERFLOW` flag is not changed even if this current operation
+    ///   does not cause overflow.
+    /// 
+    /// # Counterpart Method
+    /// If `exp` is bigger than `u128`, the method
+    /// [iroot_assign()](struct@BigUInt#method.iroot_assign)
+    /// is proper rather than this method.
+    /// 
+    /// # Example 1
+    /// ```
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u16);
+    /// 
+    /// let mut a_biguint = U256::from_uint(1000_u16);
+    /// println!("Originally, a_biguint = {}", a_biguint);
+    /// assert_eq!(a_biguint.is_overflow(), false);
+    /// assert_eq!(a_biguint.is_underflow(), false);
+    /// assert_eq!(a_biguint.is_infinity(), false);
+    /// assert_eq!(a_biguint.is_divided_by_zero(), false);
+    /// assert_eq!(a_biguint.is_undefined(), false);
+    /// 
+    /// let exp = 3_u8;
+    /// a_biguint.iroot_assign_uint(exp);
+    /// println!("After a_biguint.iroot_assign_uint({}), a_biguint = {}.", exp, a_biguint);
+    /// assert_eq!(a_biguint.to_string(), "10");
+    /// assert_eq!(a_biguint.is_overflow(), false);
+    /// assert_eq!(a_biguint.is_underflow(), false);
+    /// assert_eq!(a_biguint.is_infinity(), false);
+    /// assert_eq!(a_biguint.is_divided_by_zero(), false);
+    /// assert_eq!(a_biguint.is_undefined(), false);
+    /// ```
+    /// 
+    /// # Example 2
+    /// ```
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u16);
+    /// 
+    /// let mut a_biguint = U256::from_uint(1000_u16);
+    /// println!("Originally, a_biguint = {}", a_biguint);
+    /// assert_eq!(a_biguint.is_overflow(), false);
+    /// assert_eq!(a_biguint.is_underflow(), false);
+    /// assert_eq!(a_biguint.is_infinity(), false);
+    /// assert_eq!(a_biguint.is_divided_by_zero(), false);
+    /// assert_eq!(a_biguint.is_undefined(), false);
+    /// 
+    /// let exp = 2_u8;
+    /// a_biguint.iroot_assign_uint(exp);
+    /// println!("After a_biguint.iroot_assign_uint({}), a_biguint = {}.", exp, a_biguint);
+    /// assert_eq!(a_biguint.to_string(), "31");
+    /// assert_eq!(a_biguint.is_overflow(), false);
+    /// assert_eq!(a_biguint.is_underflow(), false);
+    /// assert_eq!(a_biguint.is_infinity(), false);
+    /// assert_eq!(a_biguint.is_divided_by_zero(), false);
+    /// assert_eq!(a_biguint.is_undefined(), false);
+    /// ```
+    /// 
+    /// # Example 3
+    /// ```
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u16);
+    /// 
+    /// let mut a_biguint = U256::zero();
+    /// println!("Originally, a_biguint = {}", a_biguint);
+    /// assert_eq!(a_biguint.is_overflow(), false);
+    /// assert_eq!(a_biguint.is_underflow(), false);
+    /// assert_eq!(a_biguint.is_infinity(), false);
+    /// assert_eq!(a_biguint.is_divided_by_zero(), false);
+    /// assert_eq!(a_biguint.is_undefined(), false);
+    /// 
+    /// let exp = 6_u8;
+    /// a_biguint.iroot_assign_uint(exp);
+    /// println!("After a_biguint.iroot_assign_uint({}), a_biguint = {}.", exp, a_biguint);
+    /// assert_eq!(a_biguint.to_string(), "0");
+    /// assert_eq!(a_biguint.is_overflow(), false);
+    /// assert_eq!(a_biguint.is_underflow(), false);
+    /// assert_eq!(a_biguint.is_infinity(), false);
+    /// assert_eq!(a_biguint.is_divided_by_zero(), false);
+    /// assert_eq!(a_biguint.is_undefined(), false);
+    /// ```
+    /// 
+    /// # Panic Example
+    /// ```
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u16);
+    /// 
+    /// let mut _a_biguint = U256::from_uint(1000_u16);
+    /// let _exp = 0_u8;
+    /// // It will panic.
+    /// // _a_biguint.iroot_assign_uint(_exp);
+    /// ```
+    /// 
+    /// # Big-endian issue
+    /// It is just experimental for Big Endian CPUs. So, you are not encouraged
+    /// to use it for Big Endian CPUs for serious purpose. Only use this crate
+    /// for Big-endian CPUs with your own full responsibility.
+    pub fn iroot_assign_uint<U>(&mut self, exp: U)
+    where U: SmallUInt + Copy + Clone + Display + Debug + ToString
+            + Add<Output=U> + AddAssign + Sub<Output=U> + SubAssign
+            + Mul<Output=U> + MulAssign + Div<Output=U> + DivAssign
+            + Rem<Output=U> + RemAssign
+            + Shl<Output=U> + ShlAssign + Shr<Output=U> + ShrAssign
+            + BitAnd<Output=U> + BitAndAssign + BitOr<Output=U> + BitOrAssign
+            + BitXor<Output=U> + BitXorAssign + Not<Output=U>
+            + PartialEq + PartialOrd
+    {
+        let flags = self.get_all_flags();
+        let root = self.iroot_uint(exp);
+        self.set_number(root.get_number());
+        self.set_flag_bit(flags | root.get_all_flags());
+    }
+
+    // pub fn panic_free_iroot_uint<U>(&self, exp: U) -> Self
+    /// Returns the `exp`-th root of `self`, rounded down.
+    ///
+    /// # Arguments
+    /// `exp` is the power of the root of `self` and is a non-zero small-sized
+    /// unsigned integer such as `u8`, `u16`, `u32`, `u64`, and `u128`.
+    /// 
+    /// # Output
+    /// The `exp`-th root of `self` is returned if it is exactly the
+    /// `Self`-typed unsigned integer. 
+    /// Otherwise, the `Self`-typed biggest unsigned integer that is
+    /// less than the `exp`-th root of `self` is returned.
+    ///
+    /// # Panics
+    /// If `size_of::<T>() * N` <= `128`, this method may panic
+    /// or its behavior may be undefined though it may not panic.
+    /// 
+    /// # Features
+    /// - If `exp` is greater than zero, the result of this method is never
+    ///   greater than `self` and so it never causes overflow.
+    /// - If `exp` is zero and `self` is either zero or one,
+    ///   the return value will be zero and 
+    ///   the flags `UNDEFINED` of the return value will be set.
+    /// - If `exp` is zero and `self` is greater than one, the return value
+    ///   will be the maximum and the flags `UNDEFINED`, `OVERFLOW` and
+    ///   `INFINITY` of the return value will be set.
+    /// 
+    /// # Counterpart Method
+    /// If `exp` is bigger than `u128`, the method
+    /// [panic_free_iroot()](struct@BigUInt#method.panic_free_iroot)
+    /// is proper rather than this method.
+    /// 
+    /// # Example 1
+    /// ```
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u32);
+    /// 
+    /// let a_biguint = U256::from_uint(1000_u16);
+    /// let exp = 3_u8;
+    /// let res = a_biguint.panic_free_iroot_uint(exp);
+    /// println!("The third root of {} is {}.", a_biguint, res);
+    /// assert_eq!(res.to_string(), "10");
+    /// assert_eq!(res.is_overflow(), false);
+    /// assert_eq!(res.is_underflow(), false);
+    /// assert_eq!(res.is_infinity(), false);
+    /// assert_eq!(res.is_divided_by_zero(), false);
+    /// assert_eq!(res.is_undefined(), false);
+    /// ```
+    /// 
+    /// # Example 2
+    /// ```
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u32);
+    /// 
+    /// let a_biguint = U256::from_uint(1000_u16);
+    /// let exp = 2_u8;
+    /// let res = a_biguint.panic_free_iroot_uint(exp);
+    /// println!("The square root of {} is {}.", a_biguint, res);
+    /// assert_eq!(res.to_string(), "31");
+    /// assert_eq!(res.is_overflow(), false);
+    /// assert_eq!(res.is_underflow(), false);
+    /// assert_eq!(res.is_infinity(), false);
+    /// assert_eq!(res.is_divided_by_zero(), false);
+    /// assert_eq!(res.is_undefined(), false);
+    /// ```
+    /// 
+    /// # Example 3
+    /// ```
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u32);
+    /// 
+    /// let a_biguint = U256::zero();
+    /// let exp = 6_u8;
+    /// let res = a_biguint.panic_free_iroot_uint(exp);
+    /// println!("The {}-th root of {} is {}.", exp, a_biguint, res);
+    /// assert_eq!(res.to_string(), "0");
+    /// assert_eq!(res.is_overflow(), false);
+    /// assert_eq!(res.is_underflow(), false);
+    /// assert_eq!(res.is_infinity(), false);
+    /// assert_eq!(res.is_divided_by_zero(), false);
+    /// assert_eq!(res.is_undefined(), false);
+    /// ```
+    /// 
+    /// # Example 4
+    /// ```
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u32);
+    /// 
+    /// let a_biguint = U256::zero();
+    /// let exp = 0_u8;
+    /// let res = a_biguint.panic_free_iroot_uint(exp);
+    /// println!("The {}-th root of {} is {}.", exp, a_biguint, res);
+    /// assert_eq!(res.to_string(), "0");
+    /// assert_eq!(res.is_overflow(), false);
+    /// assert_eq!(res.is_underflow(), false);
+    /// assert_eq!(res.is_infinity(), false);
+    /// assert_eq!(res.is_undefined(), true);
+    /// assert_eq!(res.is_divided_by_zero(), false);
+    /// ```
+    /// 
+    /// # Big-endian issue
+    /// It is just experimental for Big Endian CPUs. So, you are not encouraged
+    /// to use it for Big Endian CPUs for serious purpose. Only use this crate
+    /// for Big-endian CPUs with your own full responsibility.
+    pub fn panic_free_iroot_uint<U>(&self, exp: U) -> Self
+    where U: SmallUInt + Copy + Clone + Display + Debug + ToString
+            + Add<Output=U> + AddAssign + Sub<Output=U> + SubAssign
+            + Mul<Output=U> + MulAssign + Div<Output=U> + DivAssign
+            + Rem<Output=U> + RemAssign
+            + Shl<Output=U> + ShlAssign + Shr<Output=U> + ShrAssign
+            + BitAnd<Output=U> + BitAndAssign + BitOr<Output=U> + BitOrAssign
+            + BitXor<Output=U> + BitXorAssign + Not<Output=U>
+            + PartialEq + PartialOrd
+    {
+        if exp.is_zero()
+        {
+            let mut res;
+            if self.is_zero_or_one()
+            {
+                res = Self::zero();
+                res.set_undefined();
+            }
+            else
+            {
+                res = Self::max();
+                res.set_all_flags(Self::UNDEFINED | Self::OVERFLOW | Self::INFINITY);
+            }
+            return res;
+        }
+        self.common_iroot_uint(exp)
+    }
+////////////////////
+    fn common_iroot_uint<U>(&self, exp: U) -> Self
+    where U: SmallUInt + Copy + Clone + Display + Debug + ToString
+            + Add<Output=U> + AddAssign + Sub<Output=U> + SubAssign
+            + Mul<Output=U> + MulAssign + Div<Output=U> + DivAssign
+            + Rem<Output=U> + RemAssign
+            + Shl<Output=U> + ShlAssign + Shr<Output=U> + ShrAssign
+            + BitAnd<Output=U> + BitAndAssign + BitOr<Output=U> + BitOrAssign
+            + BitXor<Output=U> + BitXorAssign + Not<Output=U>
+            + PartialEq + PartialOrd
+    {
         let mut adder;
         let mut highest = ((Self::size_in_bits() as u128 - self.leading_zeros() as u128).wrapping_div(exp.into_u128())) as usize;
         let mut high;
@@ -21218,31 +21608,32 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
         }
     }
 
-    // pub fn iroot_assign_uint<U>(&mut self, exp: U)
+    // pub fn panic_free_iroot_assign_uint<U>(&mut self, exp: U)
     /// Calculates the `exp`-th root of `self`, rounded down,
     /// and assigns the result back to `self`.
     ///
     /// # Arguments
-    /// - `exp` is the power of the root of `self` and is a non-zero small-sized
+    /// `exp` is the power of the root of `self` and is a non-zero small-sized
     /// unsigned integer such as `u8`, `u16`, `u32`, `u64`, and `u128`.
     ///
     /// # Panics
-    /// - If `size_of::<T>() * N` <= `128`, this method may panic
+    /// If `size_of::<T>() * N` <= `128`, this method may panic
     /// or its behavior may be undefined though it may not panic.
-    /// - If `exp` is `0`, it will panic.
     /// 
     /// # Features
     /// - `self` will be the `exp`-th root of `self` is returned if it is
-    /// exactly the `Self`-typed unsigned integer. Otherwise, `self` will be
-    /// the `Self`-typed biggest unsigned integer that is less than the
-    /// `exp`-th root of `self`.
+    ///   exactly the `Self`-typed unsigned integer. Otherwise, `self` will be
+    ///   the `Self`-typed biggest unsigned integer that is less than the
+    ///   `exp`-th root of `self`.
     /// - The result of this method is never greater than `self` and so
-    /// never causes overflow.
+    ///   never causes overflow.
+    /// - If `exp` is `0`, the flag `UNDEFINED` of the return value
+    ///   will be set.
     /// - All the flags are historical, which means, for example, if an
-    /// overflow occurred even once before this current operation or
-    /// `OVERFLOW` flag is already set before this current operation,
-    /// the `OVERFLOW` flag is not changed even if this current operation
-    /// does not cause overflow.
+    ///   overflow occurred even once before this current operation or
+    ///   `OVERFLOW` flag is already set before this current operation,
+    ///   the `OVERFLOW` flag is not changed even if this current operation
+    ///   does not cause overflow.
     /// 
     /// # Counterpart Method
     /// If `exp` is bigger than `u128`, the method
@@ -21252,10 +21643,9 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// # Example 1
     /// ```
     /// use cryptocol::define_utypes_with;
-    /// define_utypes_with!(u64);
+    /// define_utypes_with!(u16);
     /// 
     /// let mut a_biguint = U256::from_uint(1000_u16);
-    /// let exp = 3_u8;
     /// println!("Originally, a_biguint = {}", a_biguint);
     /// assert_eq!(a_biguint.is_overflow(), false);
     /// assert_eq!(a_biguint.is_underflow(), false);
@@ -21263,6 +21653,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// assert_eq!(a_biguint.is_divided_by_zero(), false);
     /// assert_eq!(a_biguint.is_undefined(), false);
     /// 
+    /// let exp = 3_u8;
     /// a_biguint.iroot_assign_uint(exp);
     /// println!("After a_biguint.iroot_assign_uint({}), a_biguint = {}.", exp, a_biguint);
     /// assert_eq!(a_biguint.to_string(), "10");
@@ -21276,10 +21667,9 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// # Example 2
     /// ```
     /// use cryptocol::define_utypes_with;
-    /// define_utypes_with!(u32);
+    /// define_utypes_with!(u16);
     /// 
     /// let mut a_biguint = U256::from_uint(1000_u16);
-    /// let exp = 2_u8;
     /// println!("Originally, a_biguint = {}", a_biguint);
     /// assert_eq!(a_biguint.is_overflow(), false);
     /// assert_eq!(a_biguint.is_underflow(), false);
@@ -21287,6 +21677,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// assert_eq!(a_biguint.is_divided_by_zero(), false);
     /// assert_eq!(a_biguint.is_undefined(), false);
     /// 
+    /// let exp = 2_u8;
     /// a_biguint.iroot_assign_uint(exp);
     /// println!("After a_biguint.iroot_assign_uint({}), a_biguint = {}.", exp, a_biguint);
     /// assert_eq!(a_biguint.to_string(), "31");
@@ -21300,10 +21691,9 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// # Example 3
     /// ```
     /// use cryptocol::define_utypes_with;
-    /// define_utypes_with!(u32);
+    /// define_utypes_with!(u16);
     /// 
     /// let mut a_biguint = U256::zero();
-    /// let exp = 6_u8;
     /// println!("Originally, a_biguint = {}", a_biguint);
     /// assert_eq!(a_biguint.is_overflow(), false);
     /// assert_eq!(a_biguint.is_underflow(), false);
@@ -21311,6 +21701,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// assert_eq!(a_biguint.is_divided_by_zero(), false);
     /// assert_eq!(a_biguint.is_undefined(), false);
     /// 
+    /// let exp = 6_u8;
     /// a_biguint.iroot_assign_uint(exp);
     /// println!("After a_biguint.iroot_assign_uint({}), a_biguint = {}.", exp, a_biguint);
     /// assert_eq!(a_biguint.to_string(), "0");
@@ -21319,6 +21710,12 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// assert_eq!(a_biguint.is_infinity(), false);
     /// assert_eq!(a_biguint.is_divided_by_zero(), false);
     /// assert_eq!(a_biguint.is_undefined(), false);
+    /// ```
+    /// 
+    /// # Panic Example
+    /// ```
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u16);
     /// 
     /// let mut _a_biguint = U256::from_uint(1000_u16);
     /// let _exp = 0_u8;
@@ -21330,7 +21727,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// It is just experimental for Big Endian CPUs. So, you are not encouraged
     /// to use it for Big Endian CPUs for serious purpose. Only use this crate
     /// for Big-endian CPUs with your own full responsibility.
-    pub fn iroot_assign_uint<U>(&mut self, exp: U)
+    pub fn panic_free_iroot_assign_uint<U>(&mut self, exp: U)
     where U: SmallUInt + Copy + Clone + Display + Debug + ToString
             + Add<Output=U> + AddAssign + Sub<Output=U> + SubAssign
             + Mul<Output=U> + MulAssign + Div<Output=U> + DivAssign
@@ -21341,9 +21738,9 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
             + PartialEq + PartialOrd
     {
         let flags = self.get_all_flags();
-        let root = self.iroot_uint(exp);
+        let root = self.panic_free_iroot_uint(exp);
         self.set_number(root.get_number());
-        self.set_flag_bit(flags);
+        self.set_flag_bit(flags | root.get_all_flags());
     }
 
     // pub fn checked_iroot_uint<U>(&self, exp: U) -> Option<Self>
@@ -21356,22 +21753,22 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// 
     /// # Output
     /// - If the `exp`-th root of `self` is exactly a `Self`-typed unsigned
-    /// integer, it will be wrapped by emum `Some` of `Option` and returned.
+    ///   integer, it will be wrapped by emum `Some` of `Option` and returned.
     /// - If the `exp`-th root of `self` is NOT exactly a `Self`-typed unsigned
-    /// integer, the `Self`-typed biggest unsigned integer that is less than
-    /// the `exp`-th root of `self` will be wrapped by emum `Some` of `Option`
-    /// and returned.
+    ///   integer, the `Self`-typed biggest unsigned integer that is less than
+    ///   the `exp`-th root of `self` will be wrapped by emum `Some` of `Option`
+    ///   and returned.
     /// - If `exp` is `0`, `None` is returned.
     ///
     /// # Panics
-    /// - If `size_of::<T>() * N` <= `128`, this method may panic
+    /// If `size_of::<T>() * N` <= `128`, this method may panic
     /// or its behavior may be undefined though it may not panic.
     /// 
     /// # Features
     /// - If `size_of::<T>() * N` <= `128`, this method may panic
-    /// or its behavior may be undefined though it may not panic.
+    ///   or its behavior may be undefined though it may not panic.
     /// - The result of this method is never greater than `self` and so
-    /// never causes overflow.
+    ///   never causes overflow.
     /// 
     /// # Counterpart Method
     /// If `exp` is bigger than `u128`, the method
@@ -27304,6 +27701,13 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// is set. __It does not panic__ while the same named methods
     /// `wrapping_rem()` for primitive integer data type such as u8, u16,
     /// u32, u64, etc. will panic if `rhs` is zero.
+    /// - In summary, the quotient and its flags will be set as follows:
+    /// 
+    /// | `rhs` | `self` | `quotient` | flags of `quotient`            | `remainder` | flags of `remainder` |
+    /// |-------|--------|------------|--------------------------------|-------------|----------------------|
+    /// | 0     | 0      | 0          | `UNDEFINED`, `DIVIDED_BY_ZERO` | 0           | `DIVIDED_BY_ZERO`    |
+    /// | 0     | != 0   | max        | `INFINITY`, `DIVIDED_BY_ZERO`  | 0           | `DIVIDED_BY_ZERO`    |
+    /// 
     /// 
     /// # Counterpart Method
     /// The method
@@ -27866,9 +28270,16 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
 
     fn common_modular_next_multiple_of_assign(&mut self, rhs: &Self, modulo: &Self)
     {
-           
-        let r = self.wrapping_rem(rhs);
-        self.wrapping_add_assign(&rhs.wrapping_sub(&r));
+        let flags = self.get_all_flags();
+        self.wrapping_rem_assign(modulo);
+        let mrhs;
+        if rhs.ge(modulo)
+            { mrhs = rhs.wrapping_rem(modulo); }
+        else
+            { mrhs = rhs.clone(); }
+        let r = self.wrapping_rem(&mrhs);
+        self.wrapping_add_assign(&mrhs.wrapping_sub(&r));
+        self.set_flag_bit(flags);
     }
     
     // pub fn next_power_of_two(&self) -> Self
