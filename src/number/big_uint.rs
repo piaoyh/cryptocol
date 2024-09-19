@@ -21426,14 +21426,21 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// or its behavior may be undefined though it may not panic.
     /// 
     /// # Features
-    /// - If `exp` is greater than zero, the result of this method is never
-    ///   greater than `self` and so it never causes overflow.
+    /// - If `exp` is greater than zero and `self` is greater than 1,
+    ///   the result of this method is never greater than `self` and so
+    ///   it never causes overflow.
     /// - If `exp` is zero and `self` is either zero or one,
     ///   the return value will be zero and 
     ///   the flags `UNDEFINED` of the return value will be set.
     /// - If `exp` is zero and `self` is greater than one, the return value
-    ///   will be the maximum and the flags `UNDEFINED`, `OVERFLOW` and
-    ///   `INFINITY` of the return value will be set.
+    ///   will be the maximum and the flags `UNDEFINED`, and `INFINITY`
+    ///   of the return value will be set.
+    /// - In summary, the return value and its flags will be set as follows:
+    /// 
+    /// | `exp` | `self` | return value | flags                   |
+    /// |-------|--------|--------------|-------------------------|
+    /// | 0     | 0 or 1 | 0            | `UNDEFINED`             |
+    /// | 0     | >= 2   | max          | `INFINITY`, `UNDEFINED` |
     /// 
     /// # Counterpart Method
     /// If `exp` is bigger than `u128`, the method
@@ -21508,6 +21515,40 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// assert_eq!(res.is_divided_by_zero(), false);
     /// ```
     /// 
+    /// # Example 5
+    /// ```
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u32);
+    /// 
+    /// let a_biguint = U256::one();
+    /// let exp = 0_u8;
+    /// let res = a_biguint.panic_free_iroot_uint(exp);
+    /// println!("The {}-th root of {} is {}.", exp, a_biguint, res);
+    /// assert_eq!(res.to_string(), "0");
+    /// assert_eq!(res.is_overflow(), false);
+    /// assert_eq!(res.is_underflow(), false);
+    /// assert_eq!(res.is_infinity(), false);
+    /// assert_eq!(res.is_undefined(), true);
+    /// assert_eq!(res.is_divided_by_zero(), false);
+    /// ```
+    /// 
+    /// # Example 6
+    /// ```
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u32);
+    /// 
+    /// let a_biguint = U256::from_uint(2_u8);
+    /// let exp = 0_u8;
+    /// let res = a_biguint.panic_free_iroot_uint(exp);
+    /// println!("The {}-th root of {} is {}.", exp, a_biguint, res);
+    /// assert_eq!(res, U256::max());
+    /// assert_eq!(res.is_overflow(), false);
+    /// assert_eq!(res.is_underflow(), false);
+    /// assert_eq!(res.is_infinity(), true);
+    /// assert_eq!(res.is_undefined(), true);
+    /// assert_eq!(res.is_divided_by_zero(), false);
+    /// ```
+    /// 
     /// # Big-endian issue
     /// It is just experimental for Big Endian CPUs. So, you are not encouraged
     /// to use it for Big Endian CPUs for serious purpose. Only use this crate
@@ -21533,13 +21574,13 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
             else
             {
                 res = Self::max();
-                res.set_all_flags(Self::UNDEFINED | Self::OVERFLOW | Self::INFINITY);
+                res.set_all_flags(Self::UNDEFINED | Self::INFINITY);
             }
             return res;
         }
         self.common_iroot_uint(exp)
     }
-////////////////////
+
     fn common_iroot_uint<U>(&self, exp: U) -> Self
     where U: SmallUInt + Copy + Clone + Display + Debug + ToString
             + Add<Output=U> + AddAssign + Sub<Output=U> + SubAssign
@@ -21621,14 +21662,24 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// or its behavior may be undefined though it may not panic.
     /// 
     /// # Features
-    /// - `self` will be the `exp`-th root of `self` is returned if it is
-    ///   exactly the `Self`-typed unsigned integer. Otherwise, `self` will be
-    ///   the `Self`-typed biggest unsigned integer that is less than the
-    ///   `exp`-th root of `self`.
+    /// - `self` will be the exp-th root of `self` or biggest value under the
+    ///   exp-th root of `self`.
     /// - The result of this method is never greater than `self` and so
     ///   never causes overflow.
-    /// - If `exp` is `0`, the flag `UNDEFINED` of the return value
-    ///   will be set.
+    /// - If `exp` is greater than zero and `self` is greater than 1, `self`
+    ///   will never be greater than `self` and so it never causes overflow.
+    /// - If `exp` is zero and `self` is either zero or one, `self` will be
+    ///   zero and the flags `UNDEFINED` of the return value will be set.
+    /// - If `exp` is zero and `self` is greater than one, `self` will be the
+    ///   maximum and the flags `UNDEFINED` and `INFINITY` of `self` will be
+    ///   set.
+    /// - In summary, the return value and its flags will be set as follows:
+    /// 
+    /// | `exp` | `self` | result | flags                   |
+    /// |-------|--------|--------|-------------------------|
+    /// | 0     | 0 or 1 | 0      | `UNDEFINED`             |
+    /// | 0     | >= 2   | max    | `INFINITY`, `UNDEFINED` |
+    /// 
     /// - All the flags are historical, which means, for example, if an
     ///   overflow occurred even once before this current operation or
     ///   `OVERFLOW` flag is already set before this current operation,
@@ -21643,7 +21694,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// # Example 1
     /// ```
     /// use cryptocol::define_utypes_with;
-    /// define_utypes_with!(u16);
+    /// define_utypes_with!(u64);
     /// 
     /// let mut a_biguint = U256::from_uint(1000_u16);
     /// println!("Originally, a_biguint = {}", a_biguint);
@@ -21667,7 +21718,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// # Example 2
     /// ```
     /// use cryptocol::define_utypes_with;
-    /// define_utypes_with!(u16);
+    /// define_utypes_with!(u64);
     /// 
     /// let mut a_biguint = U256::from_uint(1000_u16);
     /// println!("Originally, a_biguint = {}", a_biguint);
@@ -21691,7 +21742,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// # Example 3
     /// ```
     /// use cryptocol::define_utypes_with;
-    /// define_utypes_with!(u16);
+    /// define_utypes_with!(u64);
     /// 
     /// let mut a_biguint = U256::zero();
     /// println!("Originally, a_biguint = {}", a_biguint);
@@ -21712,15 +21763,76 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// assert_eq!(a_biguint.is_undefined(), false);
     /// ```
     /// 
-    /// # Panic Example
+    /// # Example 4
     /// ```
     /// use cryptocol::define_utypes_with;
-    /// define_utypes_with!(u16);
+    /// define_utypes_with!(u64);
     /// 
-    /// let mut _a_biguint = U256::from_uint(1000_u16);
-    /// let _exp = 0_u8;
-    /// // It will panic.
-    /// // _a_biguint.iroot_assign_uint(_exp);
+    /// let mut a_biguint = U256::zero();
+    /// println!("Originally, a_biguint = {}", a_biguint);
+    /// assert_eq!(a_biguint.is_overflow(), false);
+    /// assert_eq!(a_biguint.is_underflow(), false);
+    /// assert_eq!(a_biguint.is_infinity(), false);
+    /// assert_eq!(a_biguint.is_undefined(), false);
+    /// assert_eq!(a_biguint.is_divided_by_zero(), false);
+    /// 
+    /// let exp = 0_u8;
+    /// a_biguint.panic_free_iroot_assign_uint(exp);
+    /// println!("After a_biguint.iroot_assign_uint({}), a_biguint = {}.", exp, a_biguint);
+    /// assert_eq!(a_biguint.to_string(), "0");
+    /// assert_eq!(a_biguint.is_overflow(), false);
+    /// assert_eq!(a_biguint.is_underflow(), false);
+    /// assert_eq!(a_biguint.is_infinity(), false);
+    /// assert_eq!(a_biguint.is_undefined(), true);
+    /// assert_eq!(a_biguint.is_divided_by_zero(), false);
+    /// ```
+    /// 
+    /// # Example 5
+    /// ```
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u64);
+    /// 
+    /// let mut a_biguint = U256::one();
+    /// println!("Originally, a_biguint = {}", a_biguint);
+    /// assert_eq!(a_biguint.is_overflow(), false);
+    /// assert_eq!(a_biguint.is_underflow(), false);
+    /// assert_eq!(a_biguint.is_infinity(), false);
+    /// assert_eq!(a_biguint.is_undefined(), false);
+    /// assert_eq!(a_biguint.is_divided_by_zero(), false);
+    /// 
+    /// let exp = 0_u8;
+    /// a_biguint.panic_free_iroot_assign_uint(exp);
+    /// println!("After a_biguint.iroot_assign_uint({}), a_biguint = {}.", exp, a_biguint);
+    /// assert_eq!(a_biguint.to_string(), "0");
+    /// assert_eq!(a_biguint.is_overflow(), false);
+    /// assert_eq!(a_biguint.is_underflow(), false);
+    /// assert_eq!(a_biguint.is_infinity(), false);
+    /// assert_eq!(a_biguint.is_undefined(), true);
+    /// assert_eq!(a_biguint.is_divided_by_zero(), false);
+    /// ```
+    /// 
+    /// # Example 6
+    /// ```
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u64);
+    /// 
+    /// let mut a_biguint = U256::from_uint(2_u8);
+    /// println!("Originally, a_biguint = {}", a_biguint);
+    /// assert_eq!(a_biguint.is_overflow(), false);
+    /// assert_eq!(a_biguint.is_underflow(), false);
+    /// assert_eq!(a_biguint.is_infinity(), false);
+    /// assert_eq!(a_biguint.is_undefined(), false);
+    /// assert_eq!(a_biguint.is_divided_by_zero(), false);
+    /// 
+    /// let exp = 0_u8;
+    /// a_biguint.panic_free_iroot_assign_uint(exp);
+    /// println!("After a_biguint.iroot_assign_uint({}), a_biguint = {}.", exp, a_biguint);
+    /// assert_eq!(a_biguint, U256::max());
+    /// assert_eq!(a_biguint.is_overflow(), false);
+    /// assert_eq!(a_biguint.is_underflow(), false);
+    /// assert_eq!(a_biguint.is_infinity(), true);
+    /// assert_eq!(a_biguint.is_undefined(), true);
+    /// assert_eq!(a_biguint.is_divided_by_zero(), false);
     /// ```
     /// 
     /// # Big-endian issue
@@ -21959,6 +22071,12 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// assert_eq!(res.is_infinity(), false);
     /// assert_eq!(res.is_divided_by_zero(), false);
     /// assert_eq!(res.is_undefined(), false);
+    /// ```
+    /// 
+    /// # Panic Example
+    /// ```
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u8);
     /// 
     /// let _a_biguint = U256::zero();
     /// let _exp = 0_u8;
@@ -21984,6 +22102,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
         self.iroot_uint(exp)
     }
 
+    /////////////////////////////
     // pub fn ilog_uint<U>(&self, base: U) -> Self
     /// Returns the logarithm of the number with respect to an arbitrary base,
     /// rounded down.
@@ -22216,6 +22335,12 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// assert_eq!(a_biguint.is_infinity(), false);
     /// assert_eq!(a_biguint.is_divided_by_zero(), false);
     /// assert_eq!(a_biguint.is_undefined(), false);
+    /// ```
+    /// 
+    /// # Panic Examples
+    /// ```
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u32);
     /// 
     /// let _a_biguint = U256::from_uint(100_u8);
     /// let _base = 0_u8;

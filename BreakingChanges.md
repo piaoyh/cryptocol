@@ -1,8 +1,18 @@
 # Breaking Changes
 
+## Breaking changes from ver. 0.8.4 to ver. 0.8.5
+
+### Five methods of BigUInt
+
+| Methods                                                                        |
+|--------------------------------------------------------------------------------|
+| pub fn panic_free_iroot_uint<U>(&self, exp: U) -> Self                         |
+
+- When the result approaches infinity, the flags of the result to be set were `NFINITY`, `OVERFLOW`, and `UNDEFINED` in ver. 0.8.4 but the flags of the result to be set have been changed to be `INFINITY` and `UNDEFINED` in ver. 0.8.5.
+
 ## Breaking changes from ver. 0.8.3 to ver. 0.8.4
 
-### Twenty-four methods of BigUInt
+### Five methods of BigUInt
 
 | Methods                                                                        |
 |--------------------------------------------------------------------------------|
@@ -12,7 +22,7 @@
 | pub fn panic_free_modular_div_uint<U>(&self, rhs: U, modulo: &Self) -> Self    |
 | pub fn panic_free_modular_div_assign_uint<U>(&mut self, rhs: U, modulo: &Self) |
 
-- When dividing by zero, the flags of the quotient to be set were `NFINITY`, `DIVIDED_BY_ZERO`, and `OVERFLOW` in ver. 0.8.3 but the flags of the quotient to be set have been changed to be `INFINITY` and `DIVIDED_BY_ZERO` in ver. 0.8.4.
+- When dividing by zero, the flags of the quotient to be set were `NFINITY`, `DIVIDED_BY_ZERO`, and `OVERFLOW` in ver. 0.8.3 but the flags of the quotient to be set have been changed to be `INFINITY` and `DIVIDED_BY_ZERO` in ver. 0.8.4. The meaning of the fag `OVERFLOW` has been changed to mean that the value was wrapped around at maximum value in ver. 0.8.4. From the beginning, the meaning of the flag `UNDERFLOW` has meant that it was wrapped around at zero.
 
 
 ## Breaking changes from ver. 0.8.1 to ver. 0.8.2
