@@ -22102,7 +22102,6 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
         self.iroot_uint(exp)
     }
 
-    /////////////////////////////
     // pub fn ilog_uint<U>(&self, base: U) -> Self
     /// Returns the logarithm of the number with respect to an arbitrary base,
     /// rounded down.
@@ -22183,6 +22182,12 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// assert_eq!(res.is_infinity(), false);
     /// assert_eq!(res.is_divided_by_zero(), false);
     /// assert_eq!(res.is_undefined(), false);
+    /// ```
+    /// 
+    /// # Panic Examples
+    /// ```
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u16);
     /// 
     /// let _a_biguint = U256::from_uint(100_u8);
     /// let _base = 0_u8;
@@ -22226,16 +22231,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     {
         if self.is_zero() || base.is_zero_or_one()
             { panic!() }
-
-        let mut count = 0_usize;
-        let mut quotient = self.clone();
-        quotient.wrapping_div_assign_uint(T::num::<U>(base));
-        while !quotient.is_zero()
-        {
-            count += 1;
-            quotient.wrapping_div_assign_uint(T::num::<U>(base))
-        }
-        Self::from_uint(count)
+        self.common_ilog_uint(base)
     }
 
     // pub fn ilog_assign_uint<U>(&mut self, base: U)
@@ -22271,7 +22267,6 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// define_utypes_with!(u32);
     /// 
     /// let mut a_biguint = U256::from_uint(81_u8);
-    /// let base = 3_u8;
     /// println!("Originally, a_biguint = {}", a_biguint);
     /// assert_eq!(a_biguint.is_overflow(), false);
     /// assert_eq!(a_biguint.is_underflow(), false);
@@ -22279,8 +22274,9 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// assert_eq!(a_biguint.is_divided_by_zero(), false);
     /// assert_eq!(a_biguint.is_undefined(), false);
     /// 
+    /// let base = 3_u8;
     /// a_biguint.ilog_assign_uint(base);
-    /// println!("After a_biguint.ilog_assign_uint(base),\na_biguint = {}.", a_biguint);
+    /// println!("After a_biguint.ilog_assign_uint({}),\na_biguint = {}.", base, a_biguint);
     /// assert_eq!(a_biguint.to_string(), "4");
     /// assert_eq!(a_biguint.is_overflow(), false);
     /// assert_eq!(a_biguint.is_underflow(), false);
@@ -22295,7 +22291,6 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// define_utypes_with!(u32);
     /// 
     /// let mut a_biguint = U256::from_uint(81_u8);
-    /// let base = 2_u8;
     /// println!("Originally, a_biguint = {}", a_biguint);
     /// assert_eq!(a_biguint.is_overflow(), false);
     /// assert_eq!(a_biguint.is_underflow(), false);
@@ -22303,8 +22298,9 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// assert_eq!(a_biguint.is_divided_by_zero(), false);
     /// assert_eq!(a_biguint.is_undefined(), false);
     /// 
+    /// let base = 2_u8;
     /// a_biguint.ilog_assign_uint(base);
-    /// println!("After a_biguint.ilog_assign_uint(base),\na_biguint = {}.", a_biguint);
+    /// println!("After a_biguint.ilog_assign_uint({}),\na_biguint = {}.", base, a_biguint);
     /// assert_eq!(a_biguint.to_string(), "6");
     /// assert_eq!(a_biguint.is_overflow(), false);
     /// assert_eq!(a_biguint.is_underflow(), false);
@@ -22319,7 +22315,6 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// define_utypes_with!(u32);
     ///
     /// let mut a_biguint = U256::from_uint(1_u8);
-    /// let base = 6_u8;
     /// println!("Originally, a_biguint = {}", a_biguint);
     /// assert_eq!(a_biguint.is_overflow(), false);
     /// assert_eq!(a_biguint.is_underflow(), false);
@@ -22327,8 +22322,9 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// assert_eq!(a_biguint.is_divided_by_zero(), false);
     /// assert_eq!(a_biguint.is_undefined(), false);
     /// 
+    /// let base = 6_u8;
     /// a_biguint.ilog_assign_uint(base);
-    /// println!("After a_biguint.ilog_assign_uint(base),\na_biguint = {}.", a_biguint);
+    /// println!("After a_biguint.ilog_assign_uint({}),\na_biguint = {}.", base, a_biguint);
     /// assert_eq!(a_biguint.to_string(), "0");
     /// assert_eq!(a_biguint.is_overflow(), false);
     /// assert_eq!(a_biguint.is_underflow(), false);
@@ -22388,6 +22384,482 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
         self.set_flag_bit(flags | log.get_all_flags());
     }
 
+    // pub fn panic_free_ilog_uint<U>(&self, base: U) -> Self
+    /// Returns the logarithm of the number with respect to an arbitrary base,
+    /// rounded down.
+    ///
+    /// # Arguments
+    /// `base` is the base of logarithm of `self`, and is a small-sized
+    /// unsigned integer greater than 1 such as `u8`, `u16`, `u32`, `u64`,
+    /// and `u128`.
+    ///
+    /// # Panics
+    /// - If `size_of::<T>() * N` <= `128`, this method may panic
+    /// or its behavior may be undefined though it may not panic.
+    /// 
+    /// # Output
+    /// It returns the logarithm of the number with respect to an arbitrary
+    /// `base`, rounded down.
+    /// 
+    /// # Features
+    /// - This method might not be optimized owing to implementation details;
+    ///   panic_free_ilog2_uint() can produce results more efficiently for
+    ///   base 2, and panic_free_ilog10_uint() can produce results more
+    ///   efficiently for base 10.
+    /// - If `self` is zero, the return value will be zero and the flag
+    ///   `UNDEFINED` of the return value will be set.
+    /// - If `self` is non-zero and `base` is either zero or one, the return
+    ///   value will be maximum value and the flag `INFINITY` of the return
+    ///   value will be set.
+    /// - In summary, the return value and its flags will be set as follows:
+    /// 
+    /// | `self` | `base` | result | flags       |
+    /// |--------|--------|--------|-------------|
+    /// | 0      | --     | 0      | `UNDEFINED` |
+    /// | != 0   | 0 or 1 | max    | `INFINITY`  |
+    /// 
+    /// # Counterpart Methods
+    /// This method might not be optimized owing to implementation details;
+    /// [panic_free_ilog2_uint()](struct@BigUInt#method.panic_free_ilog2_uint)
+    /// can produce results more efficiently for base 2, and
+    /// [panic_free_ilog10_uint()](struct@BigUInt#method.panic_free_ilog10_uint)
+    /// can produce results more efficiently for base 10.
+    /// 
+    /// # Example 1
+    /// ```
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u64);
+    /// 
+    /// let a_biguint = U256::from_uint(81_u8);
+    /// let base = 3_u8;
+    /// let res = a_biguint.ilog_uint(base);
+    /// println!("The logarithm of {} with respect to {} is {}.", a_biguint, base, res);
+    /// assert_eq!(res.to_string(), "4");
+    /// assert_eq!(res.is_overflow(), false);
+    /// assert_eq!(res.is_underflow(), false);
+    /// assert_eq!(res.is_infinity(), false);
+    /// assert_eq!(res.is_divided_by_zero(), false);
+    /// assert_eq!(res.is_undefined(), false);
+    /// ```
+    /// 
+    /// # Example 2
+    /// ```
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u64);
+    /// 
+    /// let a_biguint = U256::from_uint(81_u8);
+    /// let base = 2_u8;
+    /// let res = a_biguint.ilog_uint(base);
+    /// println!("The logarithm of {} with respect to {} is {}.", a_biguint, base, res);
+    /// assert_eq!(res.to_string(), "6");
+    /// assert_eq!(res.is_overflow(), false);
+    /// assert_eq!(res.is_underflow(), false);
+    /// assert_eq!(res.is_infinity(), false);
+    /// assert_eq!(res.is_divided_by_zero(), false);
+    /// assert_eq!(res.is_undefined(), false);
+    /// ```
+    /// 
+    /// # Example 3
+    /// ```
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u64);
+    ///
+    /// let a_biguint = U256::from_uint(1_u8);
+    /// let base = 6_u8;
+    /// let res = a_biguint.ilog_uint(base);
+    /// println!("The logarithm of {} with respect to {} is {}.", a_biguint, base, res);
+    /// assert_eq!(res.to_string(), "0");
+    /// assert_eq!(res.is_overflow(), false);
+    /// assert_eq!(res.is_underflow(), false);
+    /// assert_eq!(res.is_infinity(), false);
+    /// assert_eq!(res.is_divided_by_zero(), false);
+    /// assert_eq!(res.is_undefined(), false);
+    /// ```
+    /// 
+    /// # Example 4
+    /// ```
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u64);
+    /// 
+    /// let a_biguint = U256::from_uint(100_u8);
+    /// let base = 0_u8;
+    /// 
+    /// let res = a_biguint.panic_free_ilog_uint(base);
+    /// println!("The logarithm of {} with respect to {} is {}.", a_biguint, base, res);
+    /// assert_eq!(res, U256::max());
+    /// assert_eq!(res.is_overflow(), false);
+    /// assert_eq!(res.is_underflow(), false);
+    /// assert_eq!(res.is_infinity(), true);
+    /// assert_eq!(res.is_undefined(), false);
+    /// assert_eq!(res.is_divided_by_zero(), false);
+    /// ```
+    /// 
+    /// # Example 5
+    /// ```
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u64);
+    /// 
+    /// let a_biguint = U256::from_uint(100_u8);
+    /// let base = 1_u8;
+    /// let res = a_biguint.panic_free_ilog_uint(base);
+    /// println!("The logarithm of {} with respect to {} is {}.", a_biguint, base, res);
+    /// assert_eq!(res, U256::max());
+    /// assert_eq!(res.is_overflow(), false);
+    /// assert_eq!(res.is_underflow(), false);
+    /// assert_eq!(res.is_infinity(), true);
+    /// assert_eq!(res.is_undefined(), false);
+    /// assert_eq!(res.is_divided_by_zero(), false);
+    /// ```
+    /// 
+    /// # Example 6
+    /// ```
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u64);
+    /// 
+    /// let a_biguint = U256::zero();
+    /// let base = 6_u8;
+    /// let res = a_biguint.panic_free_ilog_uint(base);
+    /// println!("The logarithm of {} with respect to {} is {}.", a_biguint, base, res);
+    /// assert_eq!(res.to_string(), "0");
+    /// assert_eq!(res.is_overflow(), false);
+    /// assert_eq!(res.is_underflow(), false);
+    /// assert_eq!(res.is_infinity(), false);
+    /// assert_eq!(res.is_undefined(), true);
+    /// assert_eq!(res.is_divided_by_zero(), false);
+    /// ```
+    /// 
+    /// # Example 7
+    /// ```
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u64);
+    /// 
+    /// let a_biguint = U256::zero();
+    /// let base = 0_u8;
+    /// let res = a_biguint.panic_free_ilog_uint(base);
+    /// println!("The logarithm of {} with respect to {} is {}.", a_biguint, base, res);
+    /// assert_eq!(res.to_string(), "0");
+    /// assert_eq!(res.is_overflow(), false);
+    /// assert_eq!(res.is_underflow(), false);
+    /// assert_eq!(res.is_infinity(), false);
+    /// assert_eq!(res.is_undefined(), true);
+    /// assert_eq!(res.is_divided_by_zero(), false);
+    /// ```
+    /// 
+    /// # Example 8
+    /// ```
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u64);
+    /// 
+    /// let a_biguint = U256::zero();
+    /// let base = 1_u8;
+    /// let res = a_biguint.panic_free_ilog_uint(base);
+    /// println!("The logarithm of {} with respect to {} is {}.", a_biguint, base, res);
+    /// assert_eq!(res.to_string(), "0");
+    /// assert_eq!(res.is_overflow(), false);
+    /// assert_eq!(res.is_underflow(), false);
+    /// assert_eq!(res.is_infinity(), false);
+    /// assert_eq!(res.is_undefined(), true);
+    /// assert_eq!(res.is_divided_by_zero(), false);
+    /// ```
+    /// 
+    /// # Big-endian issue
+    /// It is just experimental for Big Endian CPUs. So, you are not encouraged
+    /// to use it for Big Endian CPUs for serious purpose. Only use this crate
+    /// for Big-endian CPUs with your own full responsibility.
+    pub fn panic_free_ilog_uint<U>(&self, base: U) -> Self
+    where U: SmallUInt + Copy + Clone + Display + Debug + ToString
+            + Add<Output=U> + AddAssign + Sub<Output=U> + SubAssign
+            + Mul<Output=U> + MulAssign + Div<Output=U> + DivAssign
+            + Rem<Output=U> + RemAssign
+            + Shl<Output=U> + ShlAssign + Shr<Output=U> + ShrAssign
+            + BitAnd<Output=U> + BitAndAssign + BitOr<Output=U> + BitOrAssign
+            + BitXor<Output=U> + BitXorAssign + Not<Output=U>
+            + PartialEq + PartialOrd
+    {
+        if self.is_zero()
+        {
+            let mut res = Self::zero();
+            res.set_undefined();
+            return res;
+        }
+        else if base.is_zero_or_one()
+        {
+            let mut res = Self::max();
+            res.set_infinity();
+            return res;
+        }
+        self.common_ilog_uint(base)
+    }
+
+    fn common_ilog_uint<U>(&self, base: U) -> Self
+    where U: SmallUInt + Copy + Clone + Display + Debug + ToString
+            + Add<Output=U> + AddAssign + Sub<Output=U> + SubAssign
+            + Mul<Output=U> + MulAssign + Div<Output=U> + DivAssign
+            + Rem<Output=U> + RemAssign
+            + Shl<Output=U> + ShlAssign + Shr<Output=U> + ShrAssign
+            + BitAnd<Output=U> + BitAndAssign + BitOr<Output=U> + BitOrAssign
+            + BitXor<Output=U> + BitXorAssign + Not<Output=U>
+            + PartialEq + PartialOrd
+    {
+        let mut count = 0_usize;
+        let mut quotient = self.clone();
+        quotient.wrapping_div_assign_uint(T::num::<U>(base));
+        while !quotient.is_zero()
+        {
+            count += 1;
+            quotient.wrapping_div_assign_uint(T::num::<U>(base))
+        }
+        Self::from_uint(count)
+    }
+
+    // pub fn panic_free_ilog_assign_uint<U>(&mut self, base: U)
+    /// Calculates the logarithm of the number with respect to an arbitrary base,
+    /// rounded down, and assigns back to `self`.
+    ///
+    /// # Arguments
+    /// `base` is the base of logarithm of `self`, and is a small-sized
+    /// unsigned integer greater than 1 such as `u8`, `u16`, `u32`, `u64`,
+    /// and `u128`.
+    ///
+    /// # Panics
+    /// - If `size_of::<T>() * N` <= `128`, this method may panic
+    /// or its behavior may be undefined though it may not panic.
+    /// 
+    /// # Features
+    /// - This method might not be optimized owing to implementation details;
+    ///   panic_free_ilog2_assign_uint() can produce results more efficiently
+    ///   for base 2, and panic_free_ilog10_assign_uint() can produce results
+    ///   more efficiently for base 10.
+    /// - If `self` is zero, the return value will be zero and the flag
+    ///   `UNDEFINED` of `self` will be set.
+    /// - If `self` is non-zero and `base` is either zero or one, `self`
+    ///   will be maximum value and the flag `INFINITY` of `self` will be set.
+    /// - In summary, the result and its flags will be set as follows:
+    /// 
+    /// | `self` | `base` | result | flags       |
+    /// |--------|--------|--------|-------------|
+    /// | 0      | --     | 0      | `UNDEFINED` |
+    /// | != 0   | 0 or 1 | max    | `INFINITY`  |
+    /// 
+    /// # Counterpart Methods
+    /// This method might not be optimized owing to implementation details;
+    /// [panic_free_ilog2_assign_uint()](struct@BigUInt#method.panic_free_ilog2_assign_uint)
+    /// can produce results more efficiently for base 2, and
+    /// [panic_free_ilog10_assign_uint()](struct@BigUInt#method.panic_free_ilog10_assign_uint)
+    /// can produce results more efficiently for base 10.
+    /// 
+    /// # Example 1
+    /// ```
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u128);
+    /// 
+    /// let mut a_biguint = U256::from_uint(81_u8);
+    /// println!("Originally, a_biguint = {}", a_biguint);
+    /// assert_eq!(a_biguint.is_overflow(), false);
+    /// assert_eq!(a_biguint.is_underflow(), false);
+    /// assert_eq!(a_biguint.is_infinity(), false);
+    /// assert_eq!(a_biguint.is_divided_by_zero(), false);
+    /// assert_eq!(a_biguint.is_undefined(), false);
+    /// 
+    /// let base = 3_u8;
+    /// a_biguint.ilog_assign_uint(base);
+    /// println!("After a_biguint.ilog_assign_uint(base),\na_biguint = {}.", a_biguint);
+    /// assert_eq!(a_biguint.to_string(), "4");
+    /// assert_eq!(a_biguint.is_overflow(), false);
+    /// assert_eq!(a_biguint.is_underflow(), false);
+    /// assert_eq!(a_biguint.is_infinity(), false);
+    /// assert_eq!(a_biguint.is_divided_by_zero(), false);
+    /// assert_eq!(a_biguint.is_undefined(), false);
+    /// ```
+    /// 
+    /// # Example 2
+    /// ```
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u128);
+    /// 
+    /// let mut a_biguint = U256::from_uint(81_u8);
+    /// println!("Originally, a_biguint = {}", a_biguint);
+    /// assert_eq!(a_biguint.is_overflow(), false);
+    /// assert_eq!(a_biguint.is_underflow(), false);
+    /// assert_eq!(a_biguint.is_infinity(), false);
+    /// assert_eq!(a_biguint.is_divided_by_zero(), false);
+    /// assert_eq!(a_biguint.is_undefined(), false);
+    /// 
+    /// let base = 2_u8;
+    /// a_biguint.ilog_assign_uint(base);
+    /// println!("After a_biguint.ilog_assign_uint(base),\na_biguint = {}.", a_biguint);
+    /// assert_eq!(a_biguint.to_string(), "6");
+    /// assert_eq!(a_biguint.is_overflow(), false);
+    /// assert_eq!(a_biguint.is_underflow(), false);
+    /// assert_eq!(a_biguint.is_infinity(), false);
+    /// assert_eq!(a_biguint.is_divided_by_zero(), false);
+    /// assert_eq!(a_biguint.is_undefined(), false);
+    /// ```
+    /// 
+    /// # Example 3
+    /// ```
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u128);
+    ///
+    /// let mut a_biguint = U256::from_uint(1_u8);
+    /// println!("Originally, a_biguint = {}", a_biguint);
+    /// assert_eq!(a_biguint.is_overflow(), false);
+    /// assert_eq!(a_biguint.is_underflow(), false);
+    /// assert_eq!(a_biguint.is_infinity(), false);
+    /// assert_eq!(a_biguint.is_divided_by_zero(), false);
+    /// assert_eq!(a_biguint.is_undefined(), false);
+    /// 
+    /// let base = 6_u8;
+    /// a_biguint.ilog_assign_uint(base);
+    /// println!("After a_biguint.ilog_assign_uint(base),\na_biguint = {}.", a_biguint);
+    /// assert_eq!(a_biguint.to_string(), "0");
+    /// assert_eq!(a_biguint.is_overflow(), false);
+    /// assert_eq!(a_biguint.is_underflow(), false);
+    /// assert_eq!(a_biguint.is_infinity(), false);
+    /// assert_eq!(a_biguint.is_divided_by_zero(), false);
+    /// assert_eq!(a_biguint.is_undefined(), false);
+    /// ```
+    /// 
+    /// # Examples 4
+    /// ```
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u128);
+    /// 
+    /// let mut a_biguint = U256::from_uint(100_u8);
+    /// println!("Originally, a_biguint = {}", a_biguint);
+    /// assert_eq!(a_biguint.is_overflow(), false);
+    /// assert_eq!(a_biguint.is_underflow(), false);
+    /// assert_eq!(a_biguint.is_infinity(), false);
+    /// assert_eq!(a_biguint.is_undefined(), false);
+    /// assert_eq!(a_biguint.is_divided_by_zero(), false);
+    /// 
+    /// let base = 0_u8;
+    /// a_biguint.panic_free_ilog_assign_uint(base);
+    /// println!("After a_biguint.panic_free_ilog_assign_uint({}),\na_biguint = {}.", base, a_biguint);
+    /// assert_eq!(a_biguint, U256::max());
+    /// assert_eq!(a_biguint.is_overflow(), false);
+    /// assert_eq!(a_biguint.is_underflow(), false);
+    /// assert_eq!(a_biguint.is_infinity(), true);
+    /// assert_eq!(a_biguint.is_undefined(), false);
+    /// assert_eq!(a_biguint.is_divided_by_zero(), false);
+    /// ```
+    /// 
+    /// # Examples 5
+    /// ```
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u128);
+    /// 
+    /// let mut a_biguint = U256::from_uint(100_u8);
+    /// println!("Originally, a_biguint = {}", a_biguint);
+    /// assert_eq!(a_biguint.is_overflow(), false);
+    /// assert_eq!(a_biguint.is_underflow(), false);
+    /// assert_eq!(a_biguint.is_infinity(), false);
+    /// assert_eq!(a_biguint.is_undefined(), false);
+    /// assert_eq!(a_biguint.is_divided_by_zero(), false);
+    /// 
+    /// let base = 1_u8;
+    /// a_biguint.panic_free_ilog_assign_uint(base);
+    /// println!("After a_biguint.panic_free_ilog_assign_uint({}),\na_biguint = {}.", base, a_biguint);
+    /// assert_eq!(a_biguint, U256::max());
+    /// assert_eq!(a_biguint.is_overflow(), false);
+    /// assert_eq!(a_biguint.is_underflow(), false);
+    /// assert_eq!(a_biguint.is_infinity(), true);
+    /// assert_eq!(a_biguint.is_undefined(), false);
+    /// assert_eq!(a_biguint.is_divided_by_zero(), false);
+    /// ```
+    /// 
+    /// # Examples 6
+    /// ```
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u128);
+    /// 
+    /// let mut a_biguint = U256::zero();
+    /// println!("Originally, a_biguint = {}", a_biguint);
+    /// assert_eq!(a_biguint.is_overflow(), false);
+    /// assert_eq!(a_biguint.is_underflow(), false);
+    /// assert_eq!(a_biguint.is_infinity(), false);
+    /// assert_eq!(a_biguint.is_undefined(), false);
+    /// assert_eq!(a_biguint.is_divided_by_zero(), false);
+    /// 
+    /// let base = 6_u8;
+    /// a_biguint.panic_free_ilog_assign_uint(base);
+    /// println!("After a_biguint.panic_free_ilog_assign_uint({}),\na_biguint = {}.", base, a_biguint);
+    /// assert_eq!(a_biguint.to_string(), "0");
+    /// assert_eq!(a_biguint.is_overflow(), false);
+    /// assert_eq!(a_biguint.is_underflow(), false);
+    /// assert_eq!(a_biguint.is_infinity(), false);
+    /// assert_eq!(a_biguint.is_undefined(), true);
+    /// assert_eq!(a_biguint.is_divided_by_zero(), false);
+    /// ```
+    /// 
+    /// # Examples 7
+    /// ```
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u128);
+    /// 
+    /// let mut a_biguint = U256::zero();
+    /// println!("Originally, a_biguint = {}", a_biguint);
+    /// assert_eq!(a_biguint.is_overflow(), false);
+    /// assert_eq!(a_biguint.is_underflow(), false);
+    /// assert_eq!(a_biguint.is_infinity(), false);
+    /// assert_eq!(a_biguint.is_undefined(), false);
+    /// assert_eq!(a_biguint.is_divided_by_zero(), false);
+    /// 
+    /// let base = 0_u8;
+    /// a_biguint.panic_free_ilog_assign_uint(base);
+    /// println!("After a_biguint.panic_free_ilog_assign_uint({}),\na_biguint = {}.", base, a_biguint);
+    /// assert_eq!(a_biguint.to_string(), "0");
+    /// assert_eq!(a_biguint.is_overflow(), false);
+    /// assert_eq!(a_biguint.is_underflow(), false);
+    /// assert_eq!(a_biguint.is_infinity(), false);
+    /// assert_eq!(a_biguint.is_undefined(), true);
+    /// assert_eq!(a_biguint.is_divided_by_zero(), false);
+    /// ```
+    /// 
+    /// # Examples 8
+    /// ```
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u128);
+    /// 
+    /// let mut a_biguint = U256::zero();
+    /// println!("Originally, a_biguint = {}", a_biguint);
+    /// assert_eq!(a_biguint.is_overflow(), false);
+    /// assert_eq!(a_biguint.is_underflow(), false);
+    /// assert_eq!(a_biguint.is_infinity(), false);
+    /// assert_eq!(a_biguint.is_undefined(), false);
+    /// assert_eq!(a_biguint.is_divided_by_zero(), false);
+    /// 
+    /// let base = 1_u8;
+    /// a_biguint.panic_free_ilog_assign_uint(base);
+    /// println!("After a_biguint.panic_free_ilog_assign_uint({}),\na_biguint = {}.", base, a_biguint);
+    /// assert_eq!(a_biguint.to_string(), "0");
+    /// assert_eq!(a_biguint.is_overflow(), false);
+    /// assert_eq!(a_biguint.is_underflow(), false);
+    /// assert_eq!(a_biguint.is_infinity(), false);
+    /// assert_eq!(a_biguint.is_undefined(), true);
+    /// assert_eq!(a_biguint.is_divided_by_zero(), false);
+    /// ```
+    /// 
+    /// # Big-endian issue
+    /// It is just experimental for Big Endian CPUs. So, you are not encouraged
+    /// to use it for Big Endian CPUs for serious purpose. Only use this crate
+    /// for Big-endian CPUs with your own full responsibility.
+    pub fn panic_free_ilog_assign_uint<U>(&mut self, base: U)
+    where U: SmallUInt + Copy + Clone + Display + Debug + ToString
+            + Add<Output=U> + AddAssign + Sub<Output=U> + SubAssign
+            + Mul<Output=U> + MulAssign + Div<Output=U> + DivAssign
+            + Rem<Output=U> + RemAssign
+            + Shl<Output=U> + ShlAssign + Shr<Output=U> + ShrAssign
+            + BitAnd<Output=U> + BitAndAssign + BitOr<Output=U> + BitOrAssign
+            + BitXor<Output=U> + BitXorAssign + Not<Output=U>
+            + PartialEq + PartialOrd
+    {
+        let flags = self.get_all_flags();
+        let log = self.panic_free_ilog_uint(base);
+        self.set_number(log.get_number());
+        self.set_flag_bit(flags | log.get_all_flags());
+    }
+
     // pub fn checked_ilog_uint<U>(&self, base: U) -> Option<Self>
     /// Returns the logarithm of the number with respect to an arbitrary base,
     /// rounded down, wrapped with enum `Some` of `Option`.
@@ -22423,7 +22895,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// # Example 1
     /// ```
     /// use cryptocol::define_utypes_with;
-    /// define_utypes_with!(u64);
+    /// define_utypes_with!(u8);
     /// 
     /// let a_biguint = U256::from_uint(81_u8);
     /// let base = 3_u8;
@@ -22446,7 +22918,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// # Example 2
     /// ```
     /// use cryptocol::define_utypes_with;
-    /// define_utypes_with!(u64);
+    /// define_utypes_with!(u8);
     /// 
     /// let a_biguint = U256::from_uint(81_u8);
     /// let base = 2_u8;
@@ -22469,7 +22941,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// # Example 3
     /// ```
     /// use cryptocol::define_utypes_with;
-    /// define_utypes_with!(u64);
+    /// define_utypes_with!(u8);
     /// 
     /// let a_biguint = U256::from_uint(1_u8);
     /// let base = 6_u8;
@@ -22492,7 +22964,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// # Example 4
     /// ```
     /// use cryptocol::define_utypes_with;
-    /// define_utypes_with!(u64);
+    /// define_utypes_with!(u8);
     /// 
     /// let a_biguint = U256::from_uint(100_u8);
     /// let base = 0_u8;
@@ -22510,7 +22982,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// # Example 5
     /// ```
     /// use cryptocol::define_utypes_with;
-    /// define_utypes_with!(u64);
+    /// define_utypes_with!(u8);
     /// 
     /// let a_biguint = U256::from_uint(100_u8);
     /// let base = 1_u8;
@@ -22528,7 +23000,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// # Example 6
     /// ```
     /// use cryptocol::define_utypes_with;
-    /// define_utypes_with!(u64);
+    /// define_utypes_with!(u8);
     /// 
     /// let a_biguint = U256::zero();
     /// let base = 6_u8;
@@ -22546,7 +23018,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// # Example 7
     /// ```
     /// use cryptocol::define_utypes_with;
-    /// define_utypes_with!(u64);
+    /// define_utypes_with!(u8);
     /// 
     /// let a_biguint = U256::zero();
     /// let base = 0_u8;
@@ -22564,7 +23036,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// # Example 8
     /// ```
     /// use cryptocol::define_utypes_with;
-    /// define_utypes_with!(u64);
+    /// define_utypes_with!(u8);
     /// 
     /// let a_biguint = U256::zero();
     /// let base = 1_u8;
@@ -22633,7 +23105,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// # Example 1
     /// ```
     /// use cryptocol::define_utypes_with;
-    /// define_utypes_with!(u128);
+    /// define_utypes_with!(u16);
     /// 
     /// let a_biguint = U256::from_uint(81_u8);
     /// let base = 3_u8;
@@ -22650,7 +23122,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// # Example 2
     /// ```
     /// use cryptocol::define_utypes_with;
-    /// define_utypes_with!(u128);
+    /// define_utypes_with!(u16);
     /// 
     /// let a_biguint = U256::from_uint(81_u8);
     /// let base = 2_u8;
@@ -22667,7 +23139,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// # Example 3
     /// ```
     /// use cryptocol::define_utypes_with;
-    /// define_utypes_with!(u128);
+    /// define_utypes_with!(u16);
     ///
     /// let a_biguint = U256::from_uint(1_u8);
     /// let base = 6_u8;
@@ -22679,6 +23151,12 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// assert_eq!(res.is_infinity(), false);
     /// assert_eq!(res.is_divided_by_zero(), false);
     /// assert_eq!(res.is_undefined(), false);
+    /// ```
+    /// 
+    /// # Panic Examples
+    /// ```
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u16);
     /// 
     /// let _a_biguint = U256::from_uint(100_u8);
     /// let _base = 0_u8;
@@ -22724,6 +23202,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
         self.ilog_uint(base)
     }
 
+    /////////////////////////////
     // pub fn ilog2_uint(&self) -> Self
     /// Returns the base 2 logarithm of the number, rounded down.
     ///
