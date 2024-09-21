@@ -12054,12 +12054,11 @@ fn biguint_unchecked_ilog_uint()
     println!("---------------------------");
 }
 
-//////////////////////
 fn biguint_ilog2_uint()
 {
     println!("biguint_ilog2_uint");
     use cryptocol::define_utypes_with;
-    define_utypes_with!(u16);
+    define_utypes_with!(u32);
 
     let a_biguint = U256::from_uint(64_u8);
     let res = a_biguint.ilog2_uint();
@@ -12101,7 +12100,7 @@ fn biguint_ilog2_assign_uint()
 {
     println!("biguint_ilog2_assign_uint");
     use cryptocol::define_utypes_with;
-    define_utypes_with!(u32);
+    define_utypes_with!(u64);
 
     let mut a_biguint = U256::from_uint(64_u8);
     println!("Originally, a_biguint = {}", a_biguint);
@@ -12164,10 +12163,10 @@ fn biguint_panic_free_ilog2_uint()
 {
     println!("biguint_panic_free_ilog2_uint");
     use cryptocol::define_utypes_with;
-    define_utypes_with!(u16);
+    define_utypes_with!(u128);
 
     let a_biguint = U256::from_uint(64_u8);
-    let res = a_biguint.ilog2_uint();
+    let res = a_biguint.panic_free_ilog2_uint();
     println!("The base 2 logarithm of {} is {}.", a_biguint, res);
     assert_eq!(res.to_string(), "6");
     assert_eq!(res.is_overflow(), false);
@@ -12177,7 +12176,7 @@ fn biguint_panic_free_ilog2_uint()
     assert_eq!(res.is_divided_by_zero(), false);
 
     let a_biguint = U256::from_uint(70_u8);
-    let res = a_biguint.ilog2_uint();
+    let res = a_biguint.panic_free_ilog2_uint();
     println!("The base 2 logarithm of {} is {}.", a_biguint, res);
     assert_eq!(res.to_string(), "6");
     assert_eq!(res.is_overflow(), false);
@@ -12187,7 +12186,7 @@ fn biguint_panic_free_ilog2_uint()
     assert_eq!(res.is_divided_by_zero(), false);
 
     let a_biguint = U256::from_uint(1_u8);
-    let res = a_biguint.ilog2_uint();
+    let res = a_biguint.panic_free_ilog2_uint();
     println!("The base 2 logarithm of {} is {}.", a_biguint, res);
     assert_eq!(res.to_string(), "0");
     assert_eq!(res.is_overflow(), false);
@@ -12196,9 +12195,15 @@ fn biguint_panic_free_ilog2_uint()
     assert_eq!(res.is_undefined(), false);
     assert_eq!(res.is_divided_by_zero(), false);
 
-    let _a_biguint = U256::zero();
-    // It will panic.
-    // let res = _a_biguint.ilog2_uint();
+    let a_biguint = U256::zero();
+    let res = a_biguint.panic_free_ilog2_uint();
+    println!("The base 2 logarithm of {} is {}.", a_biguint, res);
+    assert_eq!(res.to_string(), "0");
+    assert_eq!(res.is_overflow(), false);
+    assert_eq!(res.is_underflow(), false);
+    assert_eq!(res.is_infinity(), false);
+    assert_eq!(res.is_undefined(), true);
+    assert_eq!(res.is_divided_by_zero(), false);
     println!("---------------------------");
 }
 
@@ -12206,7 +12211,7 @@ fn biguint_panic_free_ilog2_assign_uint()
 {
     println!("biguint_panic_free_ilog2_assign_uint");
     use cryptocol::define_utypes_with;
-    define_utypes_with!(u32);
+    define_utypes_with!(u8);
 
     let mut a_biguint = U256::from_uint(64_u8);
     println!("Originally, a_biguint = {}", a_biguint);
@@ -12216,8 +12221,8 @@ fn biguint_panic_free_ilog2_assign_uint()
     assert_eq!(a_biguint.is_undefined(), false);
     assert_eq!(a_biguint.is_divided_by_zero(), false);
 
-    a_biguint.ilog2_assign_uint();
-    println!("After a_biguint.ilog2_assign_uint(),\na_biguint = {}.", a_biguint);
+    a_biguint.panic_free_ilog2_assign_uint();
+    println!("After a_biguint.panic_free_ilog2_assign_uint(),\na_biguint = {}.", a_biguint);
     assert_eq!(a_biguint.to_string(), "6");
     assert_eq!(a_biguint.is_overflow(), false);
     assert_eq!(a_biguint.is_underflow(), false);
@@ -12233,8 +12238,8 @@ fn biguint_panic_free_ilog2_assign_uint()
     assert_eq!(a_biguint.is_undefined(), false);
     assert_eq!(a_biguint.is_divided_by_zero(), false);
 
-    a_biguint.ilog2_assign_uint();
-    println!("After a_biguint.ilog2_assign_uint(),\na_biguint = {}.", a_biguint);
+    a_biguint.panic_free_ilog2_assign_uint();
+    println!("After a_biguint.panic_free_ilog2_assign_uint(),\na_biguint = {}.", a_biguint);
     assert_eq!(a_biguint.to_string(), "6");
     assert_eq!(a_biguint.is_overflow(), false);
     assert_eq!(a_biguint.is_underflow(), false);
@@ -12250,8 +12255,8 @@ fn biguint_panic_free_ilog2_assign_uint()
     assert_eq!(a_biguint.is_undefined(), false);
     assert_eq!(a_biguint.is_divided_by_zero(), false);
 
-    a_biguint.ilog2_assign_uint();
-    println!("After a_biguint.ilog2_assign_uint(),\na_biguint = {}.", a_biguint);
+    a_biguint.panic_free_ilog2_assign_uint();
+    println!("After a_biguint.panic_free_ilog2_assign_uint(),\na_biguint = {}.", a_biguint);
     assert_eq!(a_biguint.to_string(), "0");
     assert_eq!(a_biguint.is_overflow(), false);
     assert_eq!(a_biguint.is_underflow(), false);
@@ -12259,9 +12264,22 @@ fn biguint_panic_free_ilog2_assign_uint()
     assert_eq!(a_biguint.is_undefined(), false);
     assert_eq!(a_biguint.is_divided_by_zero(), false);
 
-    let _a_biguint = U256::zero();
-    // It will panic.
-    // _a_biguint.ilog2_assign_uint();
+    let mut a_biguint = U256::zero();
+    println!("Originally, a_biguint = {}", a_biguint);
+    assert_eq!(a_biguint.is_overflow(), false);
+    assert_eq!(a_biguint.is_underflow(), false);
+    assert_eq!(a_biguint.is_infinity(), false);
+    assert_eq!(a_biguint.is_undefined(), false);
+    assert_eq!(a_biguint.is_divided_by_zero(), false);
+
+    a_biguint.panic_free_ilog2_assign_uint();
+    println!("After a_biguint.panic_free_ilog2_assign_uint(),\na_biguint = {}.", a_biguint);
+    assert_eq!(a_biguint.to_string(), "0");
+    assert_eq!(a_biguint.is_overflow(), false);
+    assert_eq!(a_biguint.is_underflow(), false);
+    assert_eq!(a_biguint.is_infinity(), false);
+    assert_eq!(a_biguint.is_undefined(), true);
+    assert_eq!(a_biguint.is_divided_by_zero(), false);
     println!("---------------------------");
 }
 
@@ -12269,7 +12287,7 @@ fn biguint_checked_ilog2_uint()
 {
     println!("biguint_checked_ilog2_uint");
     use cryptocol::define_utypes_with;
-    define_utypes_with!(u64);
+    define_utypes_with!(u16);
     
     let a_biguint = U256::from_uint(64_u8);
     let res = a_biguint.checked_ilog2_uint();
@@ -12336,7 +12354,7 @@ fn biguint_unchecked_ilog2_uint()
 {
     println!("biguint_unchecked_ilog2_uint");
     use cryptocol::define_utypes_with;
-    define_utypes_with!(u128);
+    define_utypes_with!(u32);
 
     let a_biguint = U256::from_uint(64_u8);
     let res = a_biguint.ilog2_uint();
@@ -12374,6 +12392,7 @@ fn biguint_unchecked_ilog2_uint()
     println!("---------------------------");
 }
 
+//////////////////////
 fn biguint_ilog10_uint()
 {
     println!("biguint_ilog10_uint");
