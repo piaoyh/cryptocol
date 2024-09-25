@@ -4,11 +4,14 @@
 
 ### Five methods of BigUInt
 
-| Methods                                                                        |
-|--------------------------------------------------------------------------------|
-| pub fn panic_free_iroot_uint<U>(&self, exp: U) -> Self                         |
+| Methods                                                          |
+|------------------------------------------------------------------|
+| pub fn panic_free_iroot_uint<U>(&self, exp: U) -> Self           |
+| pub fn modular_add_uint<U>(&self, rhs: U, modulo: &Self) -> Self |
+| pub fn modular_add<U>(&self, rhs: U, modulo: &Self) -> Self      |
 
 - When the result approaches infinity, the flags of the result to be set were `NFINITY`, `OVERFLOW`, and `UNDEFINED` in ver. 0.8.4 but the flags of the result to be set have been changed to be `INFINITY` and `UNDEFINED` in ver. 0.8.5.
+- When the argument `modulo` is zero or one, 
 
 ## Breaking changes from ver. 0.8.3 to ver. 0.8.4
 

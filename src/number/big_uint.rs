@@ -4073,11 +4073,10 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// wrapping around at the boundary of the type.
     /// 
     /// # Arguments
-    /// - `rhs` is to be added to `self`, and small-sized unsigned integer
-    ///   such as `u8`, `u16`, `u32`, `u64`, and `u128`.
-    /// - `carry` is to be added to `self` if `carry` is `true`,
-    ///   and small-sized unsigned integer such as `u8`, `u16`, `u32`, `u64`,
-    ///   and `u128`.
+    /// - `rhs` is to be added to `self`, and is of small-sized unsigned
+    ///   integer such as `u8`, `u16`, `u32`, `u64`, and `u128`.
+    /// - `carry` is of `bool` type so that `1` may be added to `self`
+    ///   if `carry` is `true`.
     /// 
     /// # Panics
     /// If `size_of::<T>() * N` <= `128`, this method may panic
@@ -4091,15 +4090,18 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// 
     /// # Features
     /// - This allows chaining together multiple additions to create even a
-    ///   wider addition. This can be thought of as a big integer “full adder”,
-    ///   in the electronics sense.
+    ///   wider addition. This can be thought of as a big integer
+    ///   "full adder", in the electronics sense.
     /// - If the input carry is `false`, this method is equivalent to
     ///   `overflowing_add_uint()`, and the output carry reflect current
     ///   overflow.
-    /// - If overflow happened, the flag `OVERFLOW` of the return value will be set.
+    /// - The output carry is equal to the `OVERFLOW` flag of the return value.
+    /// - If overflow happened, the flag `OVERFLOW` of the return value will
+    ///   be set.
     /// 
     /// # Counterpart Method
-    /// If `rhs` is bigger tham `ui128`, the method [carrying_add()](struct@BigUInt#method.carrying_add)
+    /// If `rhs` is bigger tham `ui128`, the method
+    /// [carrying_add()](struct@BigUInt#method.carrying_add)
     /// is proper rather than this method.
     /// 
     /// # Example 1
@@ -4208,9 +4210,8 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// # Arguments
     /// - `rhs` is to be added to `self`, and small-sized unsigned integer
     /// such as `u8`, `u16`, `u32`, `u64`, and `u128`.
-    /// - `carry` is to be added to `self` if `carry` is `true`,
-    /// and small-sized unsigned integer such as `u8`, `u16`, `u32`, `u64`,
-    /// and `u128`.
+    /// - `carry` is of `bool` type so that `1` may be added to `self`
+    ///   if `carry` is `true`.
     /// 
     /// # Panics
     /// If `size_of::<T>() * N` <= `128`, this method may panic
@@ -4223,18 +4224,19 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// 
     /// # Features
     /// - This allows chaining together multiple additions to create even a
-    /// wider addition. This can be thought of as a big integer “full adder”,
-    /// in the electronics sense.
+    ///   wider addition. This can be thought of as a big integer "full adder",
+    ///   in the electronics sense.
     /// - If the input carry is false, this method is equivalent to
-    /// `overflowing_add_assign_uint()`, and the output carry reflect current
-    /// overflow.
+    ///   `overflowing_add_assign_uint()`, and the output carry reflect current
+    ///   overflow.
     /// - All the flags are historical, which means, for example, if an overflow
-    /// occurred even once before this current operation or `OVERFLOW`
-    /// flag is already set before this current operation, the `OVERFLOW` flag
-    /// is not changed even if this current operation does not cause overflow.
+    ///   occurred even once before this current operation or `OVERFLOW`
+    ///   flag is already set before this current operation, the `OVERFLOW` flag
+    ///   is not changed even if this current operation does not cause overflow.
     /// 
     /// # Counterpart Method
-    /// If `rhs` is bigger tham `ui128`, the method [carrying_add_assign()](struct@BigUInt#method.carrying_add_assign)
+    /// If `rhs` is bigger tham `ui128`, the method
+    /// [carrying_add_assign()](struct@BigUInt#method.carrying_add_assign)
     /// is proper rather than this method.
     /// 
     /// # Example 1
@@ -4395,10 +4397,12 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// 
     /// # Features
     /// - Wrapping (modular) addition.
-    /// - If overflow happened, the flag `OVERFLOW` of the return value will be set.
+    /// - If overflow happened, the flag `OVERFLOW` of the return value
+    ///   will be set.
     /// 
     /// # Counterpart Method
-    /// If `rhs` is bigger tham `ui128`, the method [wrapping_add()](struct@BigUInt#method.wrapping_add)
+    /// If `rhs` is bigger tham `ui128`, the method
+    /// [wrapping_add()](struct@BigUInt#method.wrapping_add)
     /// is proper rather than this method.
     /// 
     /// # Example 1
@@ -4488,13 +4492,15 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// 
     /// # Features
     /// - Wrapping (modular) addition.
-    /// - All the flags are historical, which means, for example, if an overflow
-    /// occurred even once before this current operation or `OVERFLOW`
-    /// flag is already set before this current operation, the `OVERFLOW` flag
-    /// is not changed even if this current operation does not cause overflow.
+    /// - All the flags are historical, which means, for example, if an
+    ///   overflow occurred even once before this current operation or
+    ///   `OVERFLOW` flag is already set before this current operation,
+    ///   the `OVERFLOW` flag is not changed even if this current operation
+    ///   does not cause overflow.
     /// 
     /// # Counterpart Method
-    /// If `rhs` is bigger tham `ui128`, the method [wrapping_add_assign()](struct@BigUInt#method.wrapping_add_assign)
+    /// If `rhs` is bigger tham `ui128`, the method
+    /// [wrapping_add_assign()](struct@BigUInt#method.wrapping_add_assign)
     /// is proper rather than this method.
     /// 
     /// # Example 1
@@ -4513,7 +4519,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// 
     /// a_biguint.wrapping_add_assign_uint(1_u8);
     /// println!("After a_biguint.wrapping_add_assign_uint(1_u8), a_biguint = {}", a_biguint);
-    /// assert_eq!(a_biguint.to_string(), "13407807929942597099574024998205846127479365820592393377723561443721764030073546976801874298166903427690031858186486050853753882811946569946433649006084095");
+    /// assert_eq!(a_biguint, UU64::max());
     /// assert_eq!(a_biguint.is_overflow(), false);
     /// assert_eq!(a_biguint.is_underflow(), false);
     /// assert_eq!(a_biguint.is_divided_by_zero(), false);
@@ -4542,25 +4548,11 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// assert_eq!(a_biguint.is_divided_by_zero(), false);
     /// assert_eq!(a_biguint.is_infinity(), false);
     /// assert_eq!(a_biguint.is_undefined(), false);
-    /// ```
-    /// 
-    /// # Example 3
-    /// ```
-    /// use cryptocol::define_utypes_with;
-    /// define_utypes_with!(u16);
-    /// 
-    /// let mut a_biguint = UU64::zero();
-    /// println!("Originally, a_biguint = {}", a_biguint);
-    /// assert_eq!(a_biguint.is_overflow(), false);
-    /// assert_eq!(a_biguint.is_underflow(), false);
-    /// assert_eq!(a_biguint.is_divided_by_zero(), false);
-    /// assert_eq!(a_biguint.is_infinity(), false);
-    /// assert_eq!(a_biguint.is_undefined(), false);
     /// 
     /// a_biguint.wrapping_add_assign_uint(1_u8);
     /// println!("After a_biguint.wrapping_add_assign_uint(1_u8), a_biguint = {}", a_biguint);
     /// assert_eq!(a_biguint.to_string(), "1");
-    /// assert_eq!(a_biguint.is_overflow(), false);
+    /// assert_eq!(a_biguint.is_overflow(), true);
     /// assert_eq!(a_biguint.is_underflow(), false);
     /// assert_eq!(a_biguint.is_divided_by_zero(), false);
     /// assert_eq!(a_biguint.is_infinity(), false);
@@ -4606,7 +4598,8 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// - If overflow happened, the flag `OVERFLOW` of the return value will be set.
     /// 
     /// # Counterpart Method
-    /// If `rhs` is bigger tham `ui128`, the method [overflowing_add()](struct@BigUInt#method.overflowing_add)
+    /// If `rhs` is bigger tham `ui128`, the method
+    /// [overflowing_add()](struct@BigUInt#method.overflowing_add)
     /// is proper rather than this method.
     /// 
     /// # Example 1
@@ -4617,7 +4610,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// let a_biguint = U512::max().wrapping_sub_uint(1_u8);
     /// let (res, overflow) = a_biguint.overflowing_add_uint(1_u8);
     /// println!("{} + 1 = {}\noverflow = {}", a_biguint, res, overflow);
-    /// assert_eq!(res.to_string(), "13407807929942597099574024998205846127479365820592393377723561443721764030073546976801874298166903427690031858186486050853753882811946569946433649006084095");
+    /// assert_eq!(res, U512::max());
     /// assert_eq!(overflow, false);
     /// assert_eq!(res.is_overflow(), false);
     /// assert_eq!(res.is_underflow(), false);
@@ -4702,7 +4695,8 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// is not changed even if this current operation does not cause overflow.
     /// 
     /// # Counterpart Method
-    /// If `rhs` is bigger tham `ui128`, the method [overflowing_add_assign()](struct@BigUInt#method.overflowing_add_assign)
+    /// If `rhs` is bigger tham `ui128`, the method
+    /// [overflowing_add_assign()](struct@BigUInt#method.overflowing_add_assign)
     /// is proper rather than this method.
     /// 
     /// # Example 1
@@ -4712,7 +4706,6 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// 
     /// let mut a_biguint = UU64::max().wrapping_sub_uint(1_u8);
     /// println!("Originally, a_biguint = {}", a_biguint);
-    /// assert_eq!(a_biguint.to_string(), "13407807929942597099574024998205846127479365820592393377723561443721764030073546976801874298166903427690031858186486050853753882811946569946433649006084094");
     /// assert_eq!(a_biguint.is_overflow(), false);
     /// assert_eq!(a_biguint.is_underflow(), false);
     /// assert_eq!(a_biguint.is_divided_by_zero(), false);
@@ -4721,7 +4714,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// 
     /// let overflow = a_biguint.overflowing_add_assign_uint(1_u8);
     /// println!("After a_biguint.overflowing_add_assign_uint(1_u8), a_biguint = {}\noverflow = {}", a_biguint, overflow);
-    /// assert_eq!(a_biguint.to_string(), "13407807929942597099574024998205846127479365820592393377723561443721764030073546976801874298166903427690031858186486050853753882811946569946433649006084095");
+    /// assert_eq!(a_biguint, UU64::max());
     /// assert_eq!(overflow, false);
     /// assert_eq!(a_biguint.is_overflow(), false);
     /// assert_eq!(a_biguint.is_underflow(), false);
@@ -4737,42 +4730,26 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// 
     /// let mut a_biguint = UU64::max().wrapping_sub_uint(1_u8);
     /// println!("Originally, a_biguint = {}", a_biguint);
-    /// assert_eq!(a_biguint.to_string(), "13407807929942597099574024998205846127479365820592393377723561443721764030073546976801874298166903427690031858186486050853753882811946569946433649006084094");
     /// assert_eq!(a_biguint.is_overflow(), false);
     /// assert_eq!(a_biguint.is_underflow(), false);
     /// assert_eq!(a_biguint.is_divided_by_zero(), false);
     /// assert_eq!(a_biguint.is_infinity(), false);
     /// assert_eq!(a_biguint.is_undefined(), false);
     /// 
-    /// let overflow = a_biguint.overflowing_add_assign_uint(2_u8);
+    /// let mut overflow = a_biguint.overflowing_add_assign_uint(2_u8);
     /// println!("After a_biguint.overflowing_add_assign_uint(2_u8), a_biguint = {}\noverflow = {}", a_biguint, overflow);
-    /// assert_eq!(a_biguint.to_string(), "0");
     /// assert_eq!(overflow, true);
+    /// assert_eq!(a_biguint.to_string(), "0");
     /// assert_eq!(a_biguint.is_overflow(), true);
     /// assert_eq!(a_biguint.is_underflow(), false);
     /// assert_eq!(a_biguint.is_divided_by_zero(), false);
     /// assert_eq!(a_biguint.is_infinity(), false);
     /// assert_eq!(a_biguint.is_undefined(), false);
-    /// ```
     /// 
-    /// # Example 3
-    /// ```
-    /// use cryptocol::define_utypes_with;
-    /// define_utypes_with!(u8);
-    /// 
-    /// let mut a_biguint = UU64::max().wrapping_sub_uint(1_u8);
-    /// println!("Originally, a_biguint = {}", a_biguint);
-    /// assert_eq!(a_biguint.to_string(), "13407807929942597099574024998205846127479365820592393377723561443721764030073546976801874298166903427690031858186486050853753882811946569946433649006084094");
-    /// assert_eq!(a_biguint.is_overflow(), false);
-    /// assert_eq!(a_biguint.is_underflow(), false);
-    /// assert_eq!(a_biguint.is_divided_by_zero(), false);
-    /// assert_eq!(a_biguint.is_infinity(), false);
-    /// assert_eq!(a_biguint.is_undefined(), false);
-    /// 
-    /// let overflow = a_biguint.overflowing_add_assign_uint(3_u8);
-    /// println!("After a_biguint.overflowing_add_assign_uint(3_u8), a_biguint = {}\noverflow = {}", a_biguint, overflow);
-    /// assert_eq!(a_biguint.to_string(), "1");
-    /// assert_eq!(overflow, true);
+    /// overflow = a_biguint.overflowing_add_assign_uint(2_u8);
+    /// println!("After a_biguint.overflowing_add_assign_uint(2_u8), a_biguint = {}\noverflow = {}", a_biguint, overflow);
+    /// assert_eq!(overflow, false);
+    /// assert_eq!(a_biguint.to_string(), "2");
     /// assert_eq!(a_biguint.is_overflow(), true);
     /// assert_eq!(a_biguint.is_underflow(), false);
     /// assert_eq!(a_biguint.is_divided_by_zero(), false);
@@ -4794,16 +4771,15 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
             + BitXor<Output=U> + BitXorAssign + Not<Output=U>
             + PartialEq + PartialOrd
     {
-        let mut flags = self.get_all_flags();
+        let flags = self.get_all_flags();
+        self.reset_all_flags();
         self.wrapping_add_assign_uint(rhs);
         let current_overflow = self.is_overflow();
-        if current_overflow
-            { flags |=  Self::OVERFLOW; }
-        self.set_all_flags(flags);
-
+        self.set_flag_bit(flags);
         current_overflow
     }
 
+//------------------
     // pub fn checked_add_uint<U>(&self, rhs: U) -> Option<Self>
     /// Computes `self` + `rhs`.
     /// 
@@ -4949,6 +4925,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// assert_eq!(res.is_divided_by_zero(), false);
     /// assert_eq!(res.is_infinity(), false);
     /// assert_eq!(res.is_undefined(), false);
+    /// ```
     /// 
     /// # Panic Example
     /// ```
@@ -5218,8 +5195,13 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     ///   `OVERFLOW` flag when wrapping around happens at `modulo` while the
     ///   method `wrapping_add_uint()` sets `OVERFLOW` flag when wrapping around
     ///   happens at `maximum value + 1`.
-    /// - If `modulo` is `zero`, the flags such as `OVERFLOW`, `DIVIDED_BY_ZERO`,
-    ///   and `INFINITY` will be set.
+    /// - If `modulo` is zero or one, the return value will be 0 and the flag
+    ///   `UNDEFINED` of the return value will be set.
+    /// - In summary, the return value and its flags will be set as follows:
+    /// 
+    /// | `modulo` | return value | flags       |
+    /// |----------|--------------|-------------|
+    /// | 0 or 1   | 0            | `UNDEFINED` |
     /// 
     /// # Counterpart Method
     /// If `rhs` is bigger than `u128`, the method [modular_add()](struct@BigUInt#method.modular_add)
@@ -11173,7 +11155,6 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// # Panics
     /// - If `size_of::<T>() * N` <= `128`, this method may panic
     /// or its behavior may be undefined though it may not panic.
-    /// - If `modulo` is either zero or one, this method will panic.
     /// 
     /// # Output
     /// It returns (`self` * `rhs`) % `modulo`.
@@ -11469,7 +11450,6 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// # Panics
     /// - If `size_of::<T>() * N` <= `128`, this method may panic
     /// or its behavior may be undefined though it may not panic.
-    /// - If `modulo` is either zero or one, this method will panic.
     /// 
     /// # Features
     /// - It takes the multiplication (= `mul`) of `self` and `rhs`,
@@ -24437,30 +24417,38 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /***** ARITHMATIC OPERATIONS WITH BIGUINT *****/
 
     /*** ADDITION ***/
-    /////////////////////////////
+
     // pub fn carrying_add(&self, rhs: &Self, carry: bool) -> (Self, bool)
     /// Calculates `self` + `rhs` + `carry`,
     /// wrapping around at the boundary of the type.
     /// 
     /// # Arguments
-    /// -`rhs` is to be added to `self`, and is of `&Self`-type.
-    /// - `carry` is to be added to `self`, and is of `bool` type.
+    /// - `rhs` is to be added to `self`, and is of `&Self`-type.
+    /// - `carry` is of `bool` type so that `1` may be added to `self`
+    ///   if `carry` is `true`.
     /// 
-    /// # Features
-    /// - This allows chaining together multiple additions to create even a wider
-    /// addition. This can be thought of as a big integer “full adder”,
-    /// in the electronics sense.
-    /// - If the input carry is `false`, this method is equivalent to
-    /// `overflowing_add()`.
-    /// - The output carry is equal to the `OVERFLOW` flag.
+    /// # Panics
+    /// If `size_of::<T>() * N` <= `128`, this method may panic
+    /// or its behavior may be undefined though it may not panic.
     /// 
     /// # Outputs
     /// It returns a tuple containing the sum and the output carry. It performs
-    /// “ternary addition” of two big integer operands and a carry-in bit, and
+    /// "ternary addition" of two big integer operands and a carry-in bit, and
     /// returns an output big integer and a carry-out bit.
     /// 
+    /// # Features
+    /// - This allows chaining together multiple additions to create even a
+    ///   wider addition. This can be thought of as a big integer
+    ///   "full adder", in the electronics sense.
+    /// - If the input carry is `false`, this method is equivalent to
+    ///   `overflowing_add()`, and the output carry reflect current
+    ///   overflow..
+    /// - The output carry is equal to the `OVERFLOW` flag of the return value.
+    /// - If overflow happened, the flag `OVERFLOW` of the return value will
+    ///   be set.
+    /// 
     /// # Counterpart Method
-    /// - The method
+    /// The method
     /// [carrying_add_uint()](struct@BigUInt#method.carrying_add_uint)
     /// is a bit faster than this method `carrying_add()`.
     /// So, if `rhs` is primitive unsigned integral data type such as u8, u16,
@@ -24470,7 +24458,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// # Example 1
     /// ```
     /// use cryptocol::define_utypes_with;
-    /// define_utypes_with!(u128);
+    /// define_utypes_with!(u8);
     /// 
     /// let a_biguint_hi = U256::from_str_radix("1234_5678_9ABC_DEF0_FEDC_BA98_7654_3210_1234_5678_9ABC_DEF0_FEDC_BA98_7654_3210", 16).unwrap();
     /// let a_biguint_lo = U256::from_str_radix("1357_9BDF_0246_8ACE_ECA8_6420_FDB9_7531_1357_9BDF_0246_8ACE_ECA8_6420_FDB9_7531", 16).unwrap();
@@ -24500,7 +24488,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// # Example 2
     /// ```
     /// use cryptocol::define_utypes_with;
-    /// define_utypes_with!(u128);
+    /// define_utypes_with!(u8);
     /// let a_biguint_hi = U256::from_str_radix("FFFF_FFFF_FFFF_FFFF_FFFF_FFFF_FFFF_FFFF_FFFF_FFFF_FFFF_FFFF_FFFF_FFFF_FFFF_FFFF", 16).unwrap();
     /// let a_biguint_lo = U256::from_str_radix("FFFF_FFFF_FFFF_FFFF_FFFF_FFFF_FFFF_FFFF_FFFF_FFFF_FFFF_FFFF_FFFF_FFFF_FFFF_FFFF", 16).unwrap();
     /// let b_biguint_hi = U256::zero();
@@ -24538,33 +24526,38 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
         (res, c)
     }
 
-//-===============
     // pub fn carrying_add_assign(&self, rhs: &Self, carry: bool) -> bool
     /// Accumulate `rhs` + `carry` to `self`, wrapping around at the boundary
     /// of the type, and return the resulting carry.
     /// 
     /// # Arguments
-    /// -`rhs` is to be added to `self`, and is of `&Self`-type.
-    /// - `carry` is to be added to `self`, and is of `bool` type.
+    /// - `rhs` is to be added to `self`, and is of `&Self`-type.
+    /// - `carry` is of `bool` type so that `1` may be added to `self`
+    ///   if `carry` is `true`.
     /// 
-    /// # Features
-    /// - This allows chaining together multiple additions to create even a
-    /// wider addition. This can be thought of as a big integer “full adder”,
-    /// in the electronics sense.
-    /// - If the input carry is `false`, this method is equivalent to
-    /// `overflowing_add_assign()`.
-    /// - All the flags are historical, which means, for example, if an
-    /// overflow occurred even once before this current operation or
-    /// `OVERFLOW` flag is already set before this current operation,
-    /// the `OVERFLOW` flag is not changed even if this current operation
-    /// does not cause overflow.
+    /// # Panics
+    /// If `size_of::<T>() * N` <= `128`, this method may panic
+    /// or its behavior may be undefined though it may not panic.
     /// 
     /// # Output
     /// It returns the output carry. It performs “ternary addition” of two big
     /// integer operands and a carry-in bit, and returns a carry-out bit.
     /// 
+    /// # Features
+    /// - This allows chaining together multiple additions to create even a
+    ///   wider addition. This can be thought of as a big integer "full adder",
+    ///   in the electronics sense.
+    /// - If the input carry is `false`, this method is equivalent to
+    ///   `overflowing_add_assign()`, and the output carry reflect current
+    ///   overflow.
+    /// - All the flags are historical, which means, for example, if an
+    ///   overflow occurred even once before this current operation or
+    ///   `OVERFLOW` flag is already set before this current operation,
+    ///   the `OVERFLOW` flag is not changed even if this current operation
+    ///   does not cause overflow.
+    /// 
     /// # Counterpart Method
-    /// - The method
+    /// The method
     /// [carrying_add_assign_uint()](struct@BigUInt#method.carrying_add_assign_uint)
     /// is a bit faster than this method `carrying_add_assign()`.
     /// So, if `rhs` is primitive unsigned integral data type such as u8, u16,
@@ -24574,49 +24567,147 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// # Example 1
     /// ```
     /// use cryptocol::define_utypes_with;
-    /// define_utypes_with!(u8);
+    /// define_utypes_with!(u16);
     /// 
     /// let mut a_biguint_hi = U256::from_str_radix("1234_5678_9ABC_DEF0_FEDC_BA98_7654_3210_1234_5678_9ABC_DEF0_FEDC_BA98_7654_3210", 16).unwrap();
     /// let mut a_biguint_lo = U256::from_str_radix("1357_9BDF_0246_8ACE_ECA8_6420_FDB9_7531_1357_9BDF_0246_8ACE_ECA8_6420_FDB9_7531", 16).unwrap();
     /// let b_biguint_hi = U256::from_str_radix("EDCB_A987_6543_210F_0123_4567_89AB_CDEF_EDCB_A987_6543_210F_0123_4567_89AB_CDE1", 16).unwrap();
     /// let b_biguint_lo = U256::from_str_radix("FDB9_7531_0ECA_8642_2468_ACE0_1357_9BDF_FDB9_7531_0ECA_8642_2468_ACE0_1357_9BDF", 16).unwrap();
+    /// println!("Originally, a_biguint_hi = {}\na_biguint_lo = {}\nb_biguint_hi = {}\nb_biguint_lo = {}", a_biguint_hi, a_biguint_lo, b_biguint_hi, b_biguint_lo);
+    /// print!("Operation is: {}:{} + {}:{} ", a_biguint_hi, a_biguint_lo, b_biguint_hi, b_biguint_lo);
     /// 
-    /// print!("{}:{} + {}:{}", a_biguint_hi.to_string_with_radix_and_stride(16, 4).unwrap(), a_biguint_lo.to_string_with_radix_and_stride(16, 4).unwrap(), b_biguint_hi.to_string_with_radix_and_stride(16, 4).unwrap(), b_biguint_lo.to_string_with_radix_and_stride(16, 4).unwrap());
+    /// assert_eq!(a_biguint_hi.is_overflow(), false);
+    /// assert_eq!(a_biguint_hi.is_underflow(), false);
+    /// assert_eq!(a_biguint_hi.is_infinity(), false);
+    /// assert_eq!(a_biguint_hi.is_divided_by_zero(), false);
+    /// assert_eq!(a_biguint_hi.is_undefined(), false);
+    /// 
+    /// assert_eq!(a_biguint_lo.is_overflow(), false);
+    /// assert_eq!(a_biguint_lo.is_underflow(), false);
+    /// assert_eq!(a_biguint_lo.is_infinity(), false);
+    /// assert_eq!(a_biguint_lo.is_divided_by_zero(), false);
+    /// assert_eq!(a_biguint_lo.is_undefined(), false);
+    /// 
+    /// assert_eq!(b_biguint_hi.is_overflow(), false);
+    /// assert_eq!(b_biguint_hi.is_underflow(), false);
+    /// assert_eq!(b_biguint_hi.is_infinity(), false);
+    /// assert_eq!(b_biguint_hi.is_divided_by_zero(), false);
+    /// assert_eq!(b_biguint_hi.is_undefined(), false);
+    /// 
+    /// assert_eq!(b_biguint_hi.is_overflow(), false);
+    /// assert_eq!(b_biguint_hi.is_underflow(), false);
+    /// assert_eq!(b_biguint_hi.is_infinity(), false);
+    /// assert_eq!(b_biguint_hi.is_divided_by_zero(), false);
+    /// assert_eq!(b_biguint_hi.is_undefined(), false);
+    /// 
     /// let carry = a_biguint_lo.carrying_add_assign(&b_biguint_lo, false);
     /// let overflow = a_biguint_hi.carrying_add_assign(&b_biguint_hi, carry);
+    /// 
     /// println!(" = {}:{}", a_biguint_hi.to_string_with_radix_and_stride(16, 4).unwrap(), a_biguint_lo.to_string_with_radix_and_stride(16, 4).unwrap());
     /// println!("carry = {}, overflow = {}", carry, overflow);
+    /// println!("After a_biguint_lo.carrying_add_assign(&b_biguint_lo, false), a_biguint_lo = {}", a_biguint_lo);
+    /// println!("After a_biguint_hi.carrying_add_assign(&b_biguint_hi, {}), a_biguint_hi = {}", carry, a_biguint_hi);
     /// 
-    /// assert_eq!(a_biguint_hi.to_string_with_radix_and_stride(16, 4).unwrap(), "FFFF_FFFF_FFFF_FFFF_FFFF_FFFF_FFFF_FFFF_FFFF_FFFF_FFFF_FFFF_FFFF_FFFF_FFFF_FFF2");
     /// assert_eq!(a_biguint_lo.to_string_with_radix_and_stride(16, 4).unwrap(), "1111_1110_1111_1111_1111_1101_1111_1111_1111_1110_1111_1111_1111_1101_1111_1110");
     /// assert_eq!(carry, true);
     /// assert_eq!(a_biguint_lo.is_overflow(), true);
+    /// assert_eq!(a_biguint_lo.is_underflow(), false);
+    /// assert_eq!(a_biguint_lo.is_infinity(), false);
+    /// assert_eq!(a_biguint_lo.is_divided_by_zero(), false);
+    /// assert_eq!(a_biguint_lo.is_undefined(), false);
+    /// 
+    /// assert_eq!(a_biguint_hi.to_string_with_radix_and_stride(16, 4).unwrap(), "FFFF_FFFF_FFFF_FFFF_FFFF_FFFF_FFFF_FFFF_FFFF_FFFF_FFFF_FFFF_FFFF_FFFF_FFFF_FFF2");
     /// assert_eq!(overflow, false);
     /// assert_eq!(a_biguint_hi.is_overflow(), false);
+    /// assert_eq!(a_biguint_hi.is_underflow(), false);
+    /// assert_eq!(a_biguint_hi.is_infinity(), false);
+    /// assert_eq!(a_biguint_hi.is_divided_by_zero(), false);
+    /// assert_eq!(a_biguint_hi.is_undefined(), false);
+    /// 
+    /// assert_eq!(b_biguint_hi.is_overflow(), false);
+    /// assert_eq!(b_biguint_hi.is_underflow(), false);
+    /// assert_eq!(b_biguint_hi.is_infinity(), false);
+    /// assert_eq!(b_biguint_hi.is_divided_by_zero(), false);
+    /// assert_eq!(b_biguint_hi.is_undefined(), false);
+    /// 
+    /// assert_eq!(b_biguint_hi.is_overflow(), false);
+    /// assert_eq!(b_biguint_hi.is_underflow(), false);
+    /// assert_eq!(b_biguint_hi.is_infinity(), false);
+    /// assert_eq!(b_biguint_hi.is_divided_by_zero(), false);
+    /// assert_eq!(b_biguint_hi.is_undefined(), false);
     /// ```
     /// 
     /// # Example 2
     /// ```
     /// use cryptocol::define_utypes_with;
-    /// define_utypes_with!(u8);
+    /// define_utypes_with!(u16);
     /// 
     /// let mut a_biguint_hi = U256::from_str_radix("FFFF_FFFF_FFFF_FFFF_FFFF_FFFF_FFFF_FFFF_FFFF_FFFF_FFFF_FFFF_FFFF_FFFF_FFFF_FFFF", 16).unwrap();
     /// let mut a_biguint_lo = U256::from_str_radix("FFFF_FFFF_FFFF_FFFF_FFFF_FFFF_FFFF_FFFF_FFFF_FFFF_FFFF_FFFF_FFFF_FFFF_FFFF_FFFF", 16).unwrap();
     /// let b_biguint_hi = U256::zero();
     /// let b_biguint_lo = U256::one();
+    /// println!("Originally, a_biguint_hi = {}\na_biguint_lo = {}\nb_biguint_hi = {}\nb_biguint_lo = {}", a_biguint_hi, a_biguint_lo, b_biguint_hi, b_biguint_lo);
+    /// print!("Operation is: {}:{} + {}:{} ", a_biguint_hi, a_biguint_lo, b_biguint_hi, b_biguint_lo);
     /// 
-    /// print!("{}:{} + {}:{}", a_biguint_hi.to_string_with_radix_and_stride(16, 4).unwrap(), a_biguint_lo.to_string_with_radix_and_stride(16, 4).unwrap(), b_biguint_hi.to_string_with_radix_and_stride(16, 4).unwrap(), b_biguint_lo.to_string_with_radix_and_stride(16, 4).unwrap());
+    /// assert_eq!(a_biguint_hi.is_overflow(), false);
+    /// assert_eq!(a_biguint_hi.is_underflow(), false);
+    /// assert_eq!(a_biguint_hi.is_infinity(), false);
+    /// assert_eq!(a_biguint_hi.is_divided_by_zero(), false);
+    /// assert_eq!(a_biguint_hi.is_undefined(), false);
+    /// 
+    /// assert_eq!(a_biguint_lo.is_overflow(), false);
+    /// assert_eq!(a_biguint_lo.is_underflow(), false);
+    /// assert_eq!(a_biguint_lo.is_infinity(), false);
+    /// assert_eq!(a_biguint_lo.is_divided_by_zero(), false);
+    /// assert_eq!(a_biguint_lo.is_undefined(), false);
+    /// 
+    /// assert_eq!(b_biguint_hi.is_overflow(), false);
+    /// assert_eq!(b_biguint_hi.is_underflow(), false);
+    /// assert_eq!(b_biguint_hi.is_infinity(), false);
+    /// assert_eq!(b_biguint_hi.is_divided_by_zero(), false);
+    /// assert_eq!(b_biguint_hi.is_undefined(), false);
+    /// 
+    /// assert_eq!(b_biguint_hi.is_overflow(), false);
+    /// assert_eq!(b_biguint_hi.is_underflow(), false);
+    /// assert_eq!(b_biguint_hi.is_infinity(), false);
+    /// assert_eq!(b_biguint_hi.is_divided_by_zero(), false);
+    /// assert_eq!(b_biguint_hi.is_undefined(), false);
+    /// 
     /// let carry = a_biguint_lo.carrying_add_assign(&b_biguint_lo, false);
     /// let overflow = a_biguint_hi.carrying_add_assign(&b_biguint_hi, carry);
+    /// 
     /// println!(" = {}:{}", a_biguint_hi.to_string_with_radix_and_stride(16, 4).unwrap(), a_biguint_lo.to_string_with_radix_and_stride(16, 4).unwrap());
     /// println!("carry = {}, overflow = {}", carry, overflow);
+    /// println!("After a_biguint_lo.carrying_add_assign(&b_biguint_lo, false), a_biguint_lo = {}", a_biguint_lo);
+    /// println!("After a_biguint_hi.carrying_add_assign(&b_biguint_hi, {}), a_biguint_hi = {}", carry, a_biguint_hi);
     /// 
-    /// assert_eq!(a_biguint_hi.to_string(), "0");
     /// assert_eq!(a_biguint_lo.to_string(), "0");
     /// assert_eq!(carry, true);
     /// assert_eq!(a_biguint_lo.is_overflow(), true);
+    /// assert_eq!(a_biguint_lo.is_underflow(), false);
+    /// assert_eq!(a_biguint_lo.is_infinity(), false);
+    /// assert_eq!(a_biguint_lo.is_divided_by_zero(), false);
+    /// assert_eq!(a_biguint_lo.is_undefined(), false);
+    /// 
+    /// assert_eq!(a_biguint_hi.to_string(), "0");
     /// assert_eq!(overflow, true);
     /// assert_eq!(a_biguint_hi.is_overflow(), true);
+    /// assert_eq!(a_biguint_hi.is_underflow(), false);
+    /// assert_eq!(a_biguint_hi.is_infinity(), false);
+    /// assert_eq!(a_biguint_hi.is_divided_by_zero(), false);
+    /// assert_eq!(a_biguint_hi.is_undefined(), false);
+    /// 
+    /// assert_eq!(b_biguint_hi.is_overflow(), false);
+    /// assert_eq!(b_biguint_hi.is_underflow(), false);
+    /// assert_eq!(b_biguint_hi.is_infinity(), false);
+    /// assert_eq!(b_biguint_hi.is_divided_by_zero(), false);
+    /// assert_eq!(b_biguint_hi.is_undefined(), false);
+    /// 
+    /// assert_eq!(b_biguint_hi.is_overflow(), false);
+    /// assert_eq!(b_biguint_hi.is_underflow(), false);
+    /// assert_eq!(b_biguint_hi.is_infinity(), false);
+    /// assert_eq!(b_biguint_hi.is_divided_by_zero(), false);
+    /// assert_eq!(b_biguint_hi.is_undefined(), false);
     /// ```
     /// 
     /// # Big-endian issue
@@ -24654,56 +24745,77 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// Computes `self` + `rhs`, wrapping around at the boundary of the type.
     /// 
     /// # Arguments
-    /// -`rhs` is to be added to `self`, and is of `&Self`-type.
+    /// `rhs` is to be added to `self`, and is of `&Self`-type.
+    /// 
+    /// # Panics
+    /// If `size_of::<T>() * N` <= `128`, this method may panic
+    /// or its behavior may be undefined though it may not panic.
     /// 
     /// # Output
     /// It returns `self` + `rhs` with wrapping (modular) addition.
     /// 
     /// # Features
-    /// Wrapping (modular) addition.
+    /// - Wrapping (modular) addition.
+    /// - If overflow happened, the flag `OVERFLOW` of the return value
+    ///   will be set.
     /// 
     /// # Counterpart Method
-    /// - The method
+    /// The method
     /// [wrapping_add_uint()](struct@BigUInt#method.wrapping_add_uint)
     /// is a bit faster than this method `wrapping_add()`.
-    /// - If `rhs` is primitive unsigned integral data type such as u8, u16,
+    /// So, if `rhs` is primitive unsigned integral data type such as u8, u16,
     /// u32, u64, and u128, use the method
     /// [wrapping_add_uint()](struct@BigUInt#method.wrapping_add_uint).
     /// 
     /// # Example 1
     /// ```
     /// use cryptocol::define_utypes_with;
-    /// define_utypes_with!(u16);
+    /// define_utypes_with!(u32);
     /// 
     /// let a_biguint = U512::max().wrapping_sub_uint(1_u8);
-    /// let res = a_biguint.wrapping_add(&U512::one());
-    /// println!("{} + 1 = {}", a_biguint, res);
+    /// let one_biguint = U512::one();
+    /// let res = a_biguint.wrapping_add(&one_biguint);
+    /// println!("{} + {} = {}", a_biguint, one_biguint, res);
     /// assert_eq!(res, U512::max());
     /// assert_eq!(res.is_overflow(), false);
+    /// assert_eq!(res.is_underflow(), false);
+    /// assert_eq!(res.is_infinity(), false);
+    /// assert_eq!(res.is_divided_by_zero(), false);
+    /// assert_eq!(res.is_undefined(), false);
     /// ```
     /// 
     /// # Example 2
     /// ```
     /// use cryptocol::define_utypes_with;
-    /// define_utypes_with!(u16);
+    /// define_utypes_with!(u32);
     /// 
     /// let b_biguint = U512::max();
-    /// let res = b_biguint.wrapping_add(&U512::one());
-    /// println!("{} + 1 = {}", b_biguint, res);
+    /// let one_biguint = U512::one();
+    /// let res = b_biguint.wrapping_add(&one_biguint);
+    /// println!("{} + {} = {}", b_biguint, one_biguint, res);
     /// assert_eq!(res.to_string(), "0");
     /// assert_eq!(res.is_overflow(), true);
+    /// assert_eq!(res.is_underflow(), false);
+    /// assert_eq!(res.is_infinity(), false);
+    /// assert_eq!(res.is_divided_by_zero(), false);
+    /// assert_eq!(res.is_undefined(), false);
     /// ```
     /// 
     /// # Example 3
     /// ```
     /// use cryptocol::define_utypes_with;
-    /// define_utypes_with!(u16);
+    /// define_utypes_with!(u32);
     /// 
     /// let c_biguint = U512::zero();
-    /// let res = c_biguint.wrapping_add(&U512::one());
-    /// println!("{} + 1 = {}", c_biguint, res);
+    /// let one_biguint = U512::one();
+    /// let res = c_biguint.wrapping_add(&one_biguint);
+    /// println!("{} + {} = {}", c_biguint, one_biguint, res);
     /// assert_eq!(res.to_string(), "1");
     /// assert_eq!(res.is_overflow(), false);
+    /// assert_eq!(res.is_underflow(), false);
+    /// assert_eq!(res.is_infinity(), false);
+    /// assert_eq!(res.is_divided_by_zero(), false);
+    /// assert_eq!(res.is_undefined(), false);
     /// ```
     /// 
     /// # Big-endian issue
@@ -24721,13 +24833,22 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// and assign the result to `self` back.
     /// 
     /// # Arguments
-    /// -`rhs` is to be added to `self`, and is of `&Self`-type.
+    /// `rhs` is to be added to `self`, and is of `&Self`-type.
+    /// 
+    /// # Panics
+    /// If `size_of::<T>() * N` <= `128`, this method may panic
+    /// or its behavior may be undefined though it may not panic.
     /// 
     /// # Features
-    /// Wrapping (modular) addition.
+    /// - Wrapping (modular) addition.
+    /// - All the flags are historical, which means, for example, if an
+    ///   overflow occurred even once before this current operation or
+    ///   `OVERFLOW` flag is already set before this current operation,
+    ///   the `OVERFLOW` flag is not changed even if this current operation
+    ///   does not cause overflow.
     /// 
     /// # Counterpart Method
-    /// - The method
+    /// The method
     /// [wrapping_add_assign_uint()](struct@BigUInt#method.wrapping_add_assign_uint)
     /// is a bit faster than this method `wrapping_add_assign()`.
     /// So, if `rhs` is primitive unsigned integral data type such as u8, u16,
@@ -24737,38 +24858,58 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// # Example 1
     /// ```
     /// use cryptocol::define_utypes_with;
-    /// define_utypes_with!(u32);
+    /// define_utypes_with!(u64);
     /// 
     /// let mut a_biguint = U512::max().wrapping_sub_uint(1_u8);
     /// println!("Originally, a_biguint = {}", a_biguint);
-    /// assert_eq!(a_biguint.to_string(), "13407807929942597099574024998205846127479365820592393377723561443721764030073546976801874298166903427690031858186486050853753882811946569946433649006084094");
-    /// a_biguint.wrapping_add_assign(&U512::one());
+    /// assert_eq!(a_biguint.is_overflow(), false);
+    /// assert_eq!(a_biguint.is_underflow(), false);
+    /// assert_eq!(a_biguint.is_infinity(), false);
+    /// assert_eq!(a_biguint.is_divided_by_zero(), false);
+    /// assert_eq!(a_biguint.is_undefined(), false);
+    /// 
+    /// let one_biguint = U512::one();
+    /// a_biguint.wrapping_add_assign(&one_biguint);
     /// println!("After a_biguint.wrapping_add_assign(&U512::one()), a_biguint = {}", a_biguint);
     /// assert_eq!(a_biguint, U512::max());
+    /// assert_eq!(a_biguint.is_overflow(), false);
+    /// assert_eq!(a_biguint.is_underflow(), false);
+    /// assert_eq!(a_biguint.is_infinity(), false);
+    /// assert_eq!(a_biguint.is_divided_by_zero(), false);
+    /// assert_eq!(a_biguint.is_undefined(), false);
     /// ```
     /// 
     /// # Example 2 
     /// ```
     /// use cryptocol::define_utypes_with;
-    /// define_utypes_with!(u32);
-    ///     
-    /// let mut b_biguint = U512::max();
-    /// println!("Originally,\tb_biguint = {}", b_biguint);
-    /// b_biguint.wrapping_add_assign(&U512::one());
-    /// println!("After b_biguint.wrapping_add_assign(&U512::one()),\tb_biguint = {}", b_biguint);
-    /// assert_eq!(b_biguint.to_string(), "0");
-    /// ```
+    /// define_utypes_with!(u64);
     /// 
-    /// # Example 3
-    /// ```
-    /// use cryptocol::define_utypes_with;
-    /// define_utypes_with!(u32);
+    /// let mut a_biguint = U512::max();
+    /// println!("Originally,\ta_biguint = {}", a_biguint);
+    /// assert_eq!(a_biguint.is_overflow(), false);
+    /// assert_eq!(a_biguint.is_underflow(), false);
+    /// assert_eq!(a_biguint.is_infinity(), false);
+    /// assert_eq!(a_biguint.is_divided_by_zero(), false);
+    /// assert_eq!(a_biguint.is_undefined(), false);
     /// 
-    /// let mut c_biguint = U512::zero();
-    /// println!("Originally,\tc_biguint = {}", c_biguint);
-    /// c_biguint.wrapping_add_assign(&U512::one());
-    /// println!("After c_biguint.wrapping_add_assign(&U512::one()),\tc_biguint = {}", c_biguint);
-    /// assert_eq!(c_biguint.to_string(), "1");
+    /// let one_biguint = U512::one();
+    /// a_biguint.wrapping_add_assign(&one_biguint);
+    /// println!("After a_biguint.wrapping_add_assign(&U512::one()), a_biguint = {}", a_biguint);
+    /// assert_eq!(a_biguint.to_string(), "0");
+    /// assert_eq!(a_biguint.is_overflow(), true);
+    /// assert_eq!(a_biguint.is_underflow(), false);
+    /// assert_eq!(a_biguint.is_infinity(), false);
+    /// assert_eq!(a_biguint.is_divided_by_zero(), false);
+    /// assert_eq!(a_biguint.is_undefined(), false);
+    /// 
+    /// a_biguint.wrapping_add_assign(&one_biguint);
+    /// println!("After a_biguint.wrapping_add_assign(&U512::one()),\ta_biguint = {}", a_biguint);
+    /// assert_eq!(a_biguint.to_string(), "1");
+    /// assert_eq!(a_biguint.is_overflow(), true);
+    /// assert_eq!(a_biguint.is_underflow(), false);
+    /// assert_eq!(a_biguint.is_infinity(), false);
+    /// assert_eq!(a_biguint.is_divided_by_zero(), false);
+    /// assert_eq!(a_biguint.is_undefined(), false);
     /// ```
     /// 
     /// # Big-endian issue
@@ -24801,7 +24942,11 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// Calculates `self` + `rhs`.
     /// 
     /// # Arguments
-    /// -`rhs` is to be added to `self`, and is of `&Self`-type.
+    /// `rhs` is to be added to `self`, and is of `&Self`-type.
+    /// 
+    /// # Panics
+    /// If `size_of::<T>() * N` <= `128`, this method may panic
+    /// or its behavior may be undefined though it may not panic.
     /// 
     /// # Output
     /// It returns a tuple of the addition `self` + `rhs` along with a boolean
@@ -24809,37 +24954,65 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// would have occurred then the wrapped (modular) value is returned.
     /// 
     /// # Counterpart Method
-    /// - The method
+    /// The method
     /// [overflowing_add_uint()](struct@BigUInt#method.overflowing_add_uint)
     /// is a bit faster than this method `overflowing_add()`.
-    /// - If `rhs` is primitive unsigned integral data type such as u8, u16,
+    /// So, if `rhs` is primitive unsigned integral data type such as u8, u16,
     /// u32, u64, and u128, use the method
     /// [overflowing_add_uint()](struct@BigUInt#method.overflowing_add_uint).
     /// 
     /// # Example 1
     /// ```
     /// use cryptocol::define_utypes_with;
-    /// define_utypes_with!(u64);
+    /// define_utypes_with!(u128);
     /// 
     /// let a_biguint = U512::max().wrapping_sub_uint(1_u8);
-    /// let (res, overflow) = a_biguint.overflowing_add(&U512::one());
-    /// println!("{} + 1 = {}, overflow = {}", a_biguint, res, overflow);
+    /// let one_biguint = U512::one();
+    /// let (res, overflow) = a_biguint.overflowing_add(&one_biguint);
+    /// println!("{} + {} = {}, overflow = {}", a_biguint, one_biguint, res, overflow);
+    /// assert_eq!(overflow, false);
     /// assert_eq!(res, U512::max());
     /// assert_eq!(res.is_overflow(), false);
-    /// assert_eq!(overflow, false);
+    /// assert_eq!(res.is_underflow(), false);
+    /// assert_eq!(res.is_infinity(), false);
+    /// assert_eq!(res.is_divided_by_zero(), false);
+    /// assert_eq!(res.is_undefined(), false);
     /// ```
     /// 
     /// # Example 2
     /// ```
     /// use cryptocol::define_utypes_with;
-    /// define_utypes_with!(u64);
+    /// define_utypes_with!(u128);
     /// 
     /// let b_biguint = U512::max();
-    /// let (res, overflow) = b_biguint.overflowing_add(&U512::one());
-    /// println!("{} + 1 = {}, overflow = {}", b_biguint, res, overflow);
+    /// let one_biguint = U512::one();
+    /// let (res, overflow) = b_biguint.overflowing_add(&one_biguint);
+    /// println!("{} + {} = {}, overflow = {}", b_biguint, one_biguint, res, overflow);
+    /// assert_eq!(overflow, true);
     /// assert_eq!(res.to_string(), "0");
     /// assert_eq!(res.is_overflow(), true);
+    /// assert_eq!(res.is_underflow(), false);
+    /// assert_eq!(res.is_infinity(), false);
+    /// assert_eq!(res.is_divided_by_zero(), false);
+    /// assert_eq!(res.is_undefined(), false);
+    /// ```
+    /// 
+    /// # Example 3
+    /// ```
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u128);
+    /// 
+    /// let c_biguint = U512::max();
+    /// let two_biguint = U512::from_uint(2_u8);
+    /// let (res, overflow) = c_biguint.overflowing_add(&two_biguint);
+    /// println!("{} + {} = {}, overflow = {}", c_biguint, two_biguint, res, overflow);
     /// assert_eq!(overflow, true);
+    /// assert_eq!(res.to_string(), "1");
+    /// assert_eq!(res.is_overflow(), true);
+    /// assert_eq!(res.is_underflow(), false);
+    /// assert_eq!(res.is_infinity(), false);
+    /// assert_eq!(res.is_divided_by_zero(), false);
+    /// assert_eq!(res.is_undefined(), false);
     /// ```
     /// 
     /// # Big-endian issue
@@ -24857,48 +25030,90 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// Calculates `self` + `rhs`, and assigns the result to `self` back.
     /// 
     /// # Arguments
-    /// -`rhs` is to be added to `self`, and is of `&Self`-type.
+    /// `rhs` is to be added to `self`, and is of `&Self`-type.
+    /// 
+    /// # Panics
+    /// If `size_of::<T>() * N` <= `128`, this method may panic
+    /// or its behavior may be undefined though it may not panic.
     /// 
     /// # Output
     /// It returns true if an arithmetic overflow would occur.
     /// Otherwise, it returns `false`.
     /// 
+    /// # Features
+    /// - The output overflow reflects current overflow.
+    /// - All the flags are historical, which means, for example, if an
+    ///  overflow occurred even once before this current operation or
+    ///  `OVERFLOW` flag is already set before this current operation,
+    ///  the `OVERFLOW` flag is not changed even if this current operation
+    ///  does not cause overflow.
+    /// 
     /// # Counterpart Method
-    /// - The method
+    /// The method
     /// [overflowing_add_assign_uint()](struct@BigUInt#method.overflowing_add_assign_uint)
     /// is a bit faster than this method `overflowing_add_assign()`.
-    /// - If `rhs` is primitive unsigned integral data type such as u8, u16,
+    /// So, if `rhs` is primitive unsigned integral data type such as u8, u16,
     /// u32, u64, and u128, use the method
     /// [overflowing_add_assign_uint()](struct@BigUInt#method.overflowing_add_assign_uint).
     /// 
     /// # Example 1
     /// ```
     /// use cryptocol::define_utypes_with;
-    /// define_utypes_with!(u128);
+    /// define_utypes_with!(u8);
     /// 
     /// let mut a_biguint = U512::max().wrapping_sub_uint(1_u8);
     /// println!("Originally, a_biguint = {}", a_biguint);
-    /// assert_eq!(a_biguint.to_string(), "13407807929942597099574024998205846127479365820592393377723561443721764030073546976801874298166903427690031858186486050853753882811946569946433649006084094");
-    /// let overflow = a_biguint.overflowing_add_assign(&U512::one());
+    /// assert_eq!(a_biguint.is_overflow(), false);
+    /// assert_eq!(a_biguint.is_underflow(), false);
+    /// assert_eq!(a_biguint.is_infinity(), false);
+    /// assert_eq!(a_biguint.is_divided_by_zero(), false);
+    /// assert_eq!(a_biguint.is_undefined(), false);
+    /// 
+    /// let one_biguint = U512::one();
+    /// let overflow = a_biguint.overflowing_add_assign(&one_biguint);
     /// println!("After a_biguint.overflowing_add_assign(&U512::one()), a_biguint = {}, overflow = {}", a_biguint, overflow);
+    /// assert_eq!(overflow, false);
     /// assert_eq!(a_biguint, U512::max());
     /// assert_eq!(a_biguint.is_overflow(), false);
-    /// assert_eq!(overflow, false);
+    /// assert_eq!(a_biguint.is_underflow(), false);
+    /// assert_eq!(a_biguint.is_infinity(), false);
+    /// assert_eq!(a_biguint.is_divided_by_zero(), false);
+    /// assert_eq!(a_biguint.is_undefined(), false);
     /// ```
     /// 
     /// # Example 2
     /// ```
     /// use cryptocol::define_utypes_with;
-    /// define_utypes_with!(u128);
+    /// define_utypes_with!(u8);
     /// 
-    /// let mut b_biguint = U512::max();
-    /// println!("Originally,\tb_biguint = {}", b_biguint);
-    /// assert_eq!(b_biguint.to_string(), "13407807929942597099574024998205846127479365820592393377723561443721764030073546976801874298166903427690031858186486050853753882811946569946433649006084095");
-    /// let overflow = b_biguint.overflowing_add_assign(&U512::one());
-    /// println!("After b_biguint.overflowing_add_assign(&U512::one()),\tb_biguint = {}, overflow = {}", b_biguint, overflow);
-    /// assert_eq!(b_biguint.to_string(), "0");
-    /// assert_eq!(b_biguint.is_overflow(), true);
+    /// let mut a_biguint = U512::max();
+    /// println!("Originally,\ta_biguint = {}", a_biguint);
+    /// assert_eq!(a_biguint.is_overflow(), false);
+    /// assert_eq!(a_biguint.is_underflow(), false);
+    /// assert_eq!(a_biguint.is_infinity(), false);
+    /// assert_eq!(a_biguint.is_divided_by_zero(), false);
+    /// assert_eq!(a_biguint.is_undefined(), false);
+    /// 
+    /// let one_biguint = U512::one();
+    /// let mut overflow = a_biguint.overflowing_add_assign(&one_biguint);
+    /// println!("After a_biguint.overflowing_add_assign(&U512::one()),\ta_biguint = {}, overflow = {}", a_biguint, overflow);
     /// assert_eq!(overflow, true);
+    /// assert_eq!(a_biguint.to_string(), "0");
+    /// assert_eq!(a_biguint.is_overflow(), true);
+    /// assert_eq!(a_biguint.is_underflow(), false);
+    /// assert_eq!(a_biguint.is_infinity(), false);
+    /// assert_eq!(a_biguint.is_divided_by_zero(), false);
+    /// assert_eq!(a_biguint.is_undefined(), false);
+    /// 
+    /// overflow = a_biguint.overflowing_add_assign(&one_biguint);
+    /// println!("After a_biguint.overflowing_add_assign(&U512::one()),\ta_biguint = {}, overflow = {}", a_biguint, overflow);
+    /// assert_eq!(overflow, false);
+    /// assert_eq!(a_biguint.to_string(), "1");
+    /// assert_eq!(a_biguint.is_overflow(), true);
+    /// assert_eq!(a_biguint.is_underflow(), false);
+    /// assert_eq!(a_biguint.is_infinity(), false);
+    /// assert_eq!(a_biguint.is_divided_by_zero(), false);
+    /// assert_eq!(a_biguint.is_undefined(), false);
     /// ```
     /// 
     /// # Big-endian issue
@@ -24907,12 +25122,11 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// for Big-endian CPUs with your own full responsibility.
     pub fn overflowing_add_assign(&mut self, rhs: &Self) -> bool
     {
-        let mut flags = self.get_all_flags();
+        let flags = self.get_all_flags();
+        self.reset_all_flags();
         self.wrapping_add_assign(rhs);
         let current_overflow = self.is_overflow();
-        if current_overflow
-            { flags |= Self::OVERFLOW; }
-        self.set_all_flags(flags);
+        self.set_flag_bit(flags);
         current_overflow
     }
 
@@ -24920,33 +25134,43 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// Computes `self` + `rhs`.
     /// 
     /// # Arguments
-    /// -`rhs` is to be added to `self`, and is of `&Self`-type.
+    /// `rhs` is to be added to `self`, and is of `&Self`-type.
+    /// 
+    /// # Panics
+    /// If `size_of::<T>() * N` <= `128`, this method may panic
+    /// or its behavior may be undefined though it may not panic.
     /// 
     /// # Output
     /// It returns the sum `self` + `rhs` wrapped by `Some` of enum `Option`
-    /// if overflow did not occur. Otherwise, it returns `None` of enum Option.
+    /// if overflow did not occur at current operation.
+    /// Otherwise, it returns `None` of enum Option.
     /// 
     /// # Counterpart Method
-    /// - The method
+    /// The method
     /// [checked_add_uint()](struct@BigUInt#method.checked_add_uint)
     /// is a bit faster than this method `checked_add()`.
-    /// - If `rhs` is primitive unsigned integral data type such as u8, u16,
+    /// So, if `rhs` is primitive unsigned integral data type such as u8, u16,
     /// u32, u64, and u128, use the method
     /// [checked_add_uint()](struct@BigUInt#method.checked_add_uint).
     /// 
     /// # Example 1
     /// ```
     /// use cryptocol::define_utypes_with;
-    /// define_utypes_with!(u8);
+    /// define_utypes_with!(u16);
     /// 
     /// let a_biguint = U512::max().wrapping_sub_uint(1_u8);
-    /// let res = a_biguint.checked_add(&U512::one());
+    /// let one_biguint = U512::one();
+    /// let res = a_biguint.checked_add(&one_biguint);
     /// match res
     /// {
     ///     Some(r) => {
-    ///             println!("{} + 1 = {}, overflow = {}", a_biguint, r, r.is_overflow());
+    ///             println!("{} + {} = {}, overflow = {}", a_biguint, one_biguint, r, r.is_overflow());
     ///             assert_eq!(r, U512::max());
     ///             assert_eq!(r.is_overflow(), false);
+    ///             assert_eq!(r.is_underflow(), false);
+    ///             assert_eq!(r.is_infinity(), false);
+    ///             assert_eq!(r.is_divided_by_zero(), false);
+    ///             assert_eq!(r.is_undefined(), false);
     ///         },
     ///     None => { println!("Error: Overflow"); },
     /// }
@@ -24955,13 +25179,14 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// # Example 2
     /// ```
     /// use cryptocol::define_utypes_with;
-    /// define_utypes_with!(u8);
+    /// define_utypes_with!(u16);
     /// 
     /// let b_biguint = U512::max();
-    /// let res = b_biguint.checked_add(&U512::one());
+    /// let one_biguint = U512::one();
+    /// let res = b_biguint.checked_add(&one_biguint);
     /// match res
     /// {
-    ///     Some(r) => { println!("{} + 1 = {}, overflow = {}", b_biguint, r, r.is_overflow()); },
+    ///     Some(r) => { println!("{} + {} = {}, overflow = {}", b_biguint, one_biguint, r, r.is_overflow()); },
     ///     None => { 
     ///             println!("Error: Overflow");
     ///             assert_eq!(res, None);
@@ -24986,40 +25211,52 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// Computes `self` + `rhs`, assuming overflow cannot occur.
     ///
     /// # Arguments
-    /// -`rhs` is to be added to `self`, and is of `&Self`-type.
+    /// `rhs` is to be added to `self`, and is of `&Self`-type.
     /// 
     /// # Panics
     /// - If `size_of::<T>() * N` <= `128`, this method may panic
-    /// or its behavior may be undefined though it may not panic.
+    ///   or its behavior may be undefined though it may not panic.
     /// - If overflow occurred, it will panic. So, use this method
-    /// only when you are sure that overflow will not occur. 
+    ///   only when you are sure that overflow will not occur. 
     /// 
     /// # Output
     /// It returns the sum `self` + `rhs` if overflow did not occur.
     /// Otherwise, it will panic.
     /// 
     /// # Counterpart Method
-    /// - The method
+    /// The method
     /// [unchecked_add_uint()](struct@BigUInt#method.unchecked_add_uint)
     /// is a bit faster than this method `unchecked_add()`.
-    /// - If `rhs` is primitive unsigned integral data type such as u8, u16,
+    /// So, if `rhs` is primitive unsigned integral data type such as u8, u16,
     /// u32, u64, and u128, use the method
     /// [unchecked_add_uint()](struct@BigUInt#method.unchecked_add_uint).
     /// 
-    /// # Examples
+    /// # Example 1
     /// ```
     /// use cryptocol::define_utypes_with;
-    /// define_utypes_with!(u16);
+    /// define_utypes_with!(u32);
     /// 
     /// let a_biguint = U512::max().wrapping_sub_uint(1_u8);
-    /// let res = a_biguint.unchecked_add(&U512::one());
-    /// println!("{} + 1 = {}, overflow = {}", a_biguint, res, res.is_overflow());
+    /// let one_biguint = U512::one();
+    /// let res = a_biguint.unchecked_add(&one_biguint);
+    /// println!("{} + {} = {}, overflow = {}", a_biguint, one_biguint, res, res.is_overflow());
     /// assert_eq!(res, U512::max());
     /// assert_eq!(res.is_overflow(), false);
+    /// assert_eq!(res.is_underflow(), false);
+    /// assert_eq!(res.is_infinity(), false);
+    /// assert_eq!(res.is_divided_by_zero(), false);
+    /// assert_eq!(res.is_undefined(), false);
+    /// ```
+    /// 
+    /// # Panic Example
+    /// ```
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u32);
     /// 
     /// let _b_biguint = U512::max();
+    /// let _one_biguint = U512::one();
     /// // It will panic.
-    /// // let res = _b_biguint.unchecked_add(&U512::one());
+    /// // let res = _b_biguint.unchecked_add(&_one_biguint);
     /// ```
     /// 
     /// # Big-endian issue
@@ -25037,42 +25274,54 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// instead of overflowing.
     /// 
     /// # Arguments
-    /// -`rhs` is to be added to `self`, and is of `&Self`-type.
+    /// `rhs` is to be added to `self`, and is of `&Self`-type.
     /// 
     /// # Output
-    /// It returns the sum `self` + `rhs` if overflow did not occur.
-    /// Otherwise, it returns the maximum value.
+    /// It returns the sum `self` + `rhs` if the return value is less than or
+    /// equal to the maximum value. If the sum `self` + `rhs` is greater than
+    /// the maximum value it returns the maximum value.
+    /// 
+    /// # Features
+    /// Overflow does never occur.
     /// 
     /// # Counterpart Method
-    /// - The method
+    /// The method
     /// [saturating_add_uint()](struct@BigUInt#method.saturating_add_uint)
     /// is a bit faster than this method `saturating_add()`.
-    /// - If `rhs` is primitive unsigned integral data type such as u8, u16,
+    /// So, if `rhs` is primitive unsigned integral data type such as u8, u16,
     /// u32, u64, and u128, use the method
     /// [saturating_add_uint()](struct@BigUInt#method.saturating_add_uint).
     /// 
     /// # Example 1
     /// ```
     /// use cryptocol::define_utypes_with;
-    /// define_utypes_with!(u32);
+    /// define_utypes_with!(u64);
     /// 
     /// let a_biguint = U512::max().wrapping_sub_uint(1_u8);
-    /// let res = a_biguint.saturating_add(&U512::one());
-    /// println!("{} + 1 = {}", a_biguint, res);
+    /// let one_biguint = U512::one();
+    /// let res = a_biguint.saturating_add(&one_biguint);
     /// assert_eq!(res, U512::max());
     /// assert_eq!(res.is_overflow(), false);
+    /// assert_eq!(res.is_underflow(), false);
+    /// assert_eq!(res.is_infinity(), false);
+    /// assert_eq!(res.is_divided_by_zero(), false);
+    /// assert_eq!(res.is_undefined(), false);
     /// ```
     /// 
     /// # Example 2
     /// ```
     /// use cryptocol::define_utypes_with;
-    /// define_utypes_with!(u32);
+    /// define_utypes_with!(u64);
     /// 
     /// let b_biguint = U512::max();
-    /// let res = b_biguint.saturating_add(&U512::one());
-    /// println!("{} + 1 = {}", b_biguint, res);
+    /// let one_biguint = U512::one();
+    /// let res = b_biguint.saturating_add(&one_biguint);
     /// assert_eq!(res, U512::max());
     /// assert_eq!(res.is_overflow(), false);
+    /// assert_eq!(res.is_underflow(), false);
+    /// assert_eq!(res.is_infinity(), false);
+    /// assert_eq!(res.is_divided_by_zero(), false);
+    /// assert_eq!(res.is_undefined(), false);
     /// ```
     /// 
     /// # Big-endian issue
@@ -25091,40 +25340,70 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// instead of overflowing, and assigns the result to `self` back.
     /// 
     /// # Arguments
-    /// -`rhs` is to be added to `self`, and is of `&Self`-type.
+    /// `rhs` is to be added to `self`, and is of `&Self`-type.
+    /// 
+    /// # Features
+    /// - Overflow does never occur.
+    /// - All the flags are historical, which means, for example, if an
+    ///   overflow occurred even once before this current operation or
+    ///   `OVERFLOW` flag is already set before this current operation,
+    ///   the `OVERFLOW` flag is not changed even if this current operation
+    ///   does not cause overflow.
     /// 
     /// # Counterpart Method
-    /// - The method
+    /// The method
     /// [saturating_add_assign_uint()](struct@BigUInt#method.saturating_add_assign_uint)
     /// is a bit faster than this method `saturating_add_assign()`.
-    /// - If `rhs` is primitive unsigned integral data type such as u8, u16,
+    /// So, if `rhs` is primitive unsigned integral data type such as u8, u16,
     /// u32, u64, and u128, use the method
     /// [saturating_add_assign_uint()](struct@BigUInt#method.saturating_add_assign_uint).
     /// 
     /// # Example 1
     /// ```
     /// use cryptocol::define_utypes_with;
-    /// define_utypes_with!(u64);
+    /// define_utypes_with!(u128);
     /// 
     /// let mut a_biguint = U512::max().wrapping_sub_uint(1_u8);
     /// println!("Originally, \ta_biguint = {}", a_biguint);
-    /// a_biguint.saturating_add_assign(&U512::one());
+    /// assert_eq!(a_biguint.is_overflow(), false);
+    /// assert_eq!(a_biguint.is_underflow(), false);
+    /// assert_eq!(a_biguint.is_infinity(), false);
+    /// assert_eq!(a_biguint.is_divided_by_zero(), false);
+    /// assert_eq!(a_biguint.is_undefined(), false);
+    /// 
+    /// let one_biguint = U512::one();
+    /// a_biguint.saturating_add_assign(&one_biguint);
     /// println!("After a_biguint.saturating_add_assign(&U512::one()), a_biguint = {}", a_biguint);
     /// assert_eq!(a_biguint, U512::max());
     /// assert_eq!(a_biguint.is_overflow(), false);
+    /// assert_eq!(a_biguint.is_underflow(), false);
+    /// assert_eq!(a_biguint.is_infinity(), false);
+    /// assert_eq!(a_biguint.is_divided_by_zero(), false);
+    /// assert_eq!(a_biguint.is_undefined(), false);
     /// ```
     /// 
     /// # Example 2
     /// ```
     /// use cryptocol::define_utypes_with;
-    /// define_utypes_with!(u64);
+    /// define_utypes_with!(u128);
     /// 
     /// let mut b_biguint = U512::max();
     /// println!("Originally, \tb_biguint = {}", b_biguint);
-    /// b_biguint.saturating_add_assign(&U512::one());
-    /// println!("After a_biguint.saturating_add_assign(&U512::one()), a_biguint = {}", b_biguint);
+    /// assert_eq!(b_biguint.is_overflow(), false);
+    /// assert_eq!(b_biguint.is_underflow(), false);
+    /// assert_eq!(b_biguint.is_infinity(), false);
+    /// assert_eq!(b_biguint.is_divided_by_zero(), false);
+    /// assert_eq!(b_biguint.is_undefined(), false);
+    /// 
+    /// let one_biguint = U512::one();
+    /// b_biguint.saturating_add_assign(&one_biguint);
+    /// println!("After b_biguint.saturating_add_assign(&U512::one()), b_biguint = {}", b_biguint);
     /// assert_eq!(b_biguint, U512::max());
     /// assert_eq!(b_biguint.is_overflow(), false);
+    /// assert_eq!(b_biguint.is_underflow(), false);
+    /// assert_eq!(b_biguint.is_infinity(), false);
+    /// assert_eq!(b_biguint.is_divided_by_zero(), false);
+    /// assert_eq!(b_biguint.is_undefined(), false);
     /// ```
     /// 
     /// # Big-endian issue
@@ -25142,6 +25421,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
         }
     }
 
+//===============
     // pub fn modular_add(&self, rhs: &Self, modulo: &Self) -> Self
     /// Computes (`self` + `rhs`) % `modulo`, wrapping around at `modulo` of the
     /// type `Self` instead of overflowing.
@@ -25156,20 +25436,26 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// 
     /// # Panics
     /// - If `size_of::<T>() * N` <= `128`, this method may panic
-    /// or its behavior may be undefined though it may not panic.
+    ///   or its behavior may be undefined though it may not panic.
     /// - If `modulo` is either zero or one, this method will panic.
     /// 
     /// # Features
     /// - Wrapping (modular) addition at `modulo`. The differences between this
-    /// method `modular_add()` and the method `wrapping_add()` are, first,
-    /// where wrapping around happens, and, second, whether or not `OVERFLOW`
-    /// flag is set. First, this method wraps araound at `modulo` while the
-    /// method `wrapping_add()` wraps araound at maximum value + 1. Second,
-    /// this method does not set `OVERFLOW` flag even if wrapping around
-    /// happens while the method `wrapping_add()` sets `OVERFLOW` flag when
-    /// wrapping around happens.
-    /// - If `modulo` is `zero`, the flags such as `OVERFLOW`, `DIVIDED_BY_ZERO`,
-    /// and `INFINITY` will be set.
+    ///   method `modular_add()` and the method `wrapping_add()` are, first,
+    ///   where wrapping around happens, and, second, whether or not `OVERFLOW`
+    ///   flag is set. First, this method wraps araound at `modulo` while the
+    ///   method `wrapping_add()` wraps araound at maximum value + 1. Second,
+    ///   this method does not set `OVERFLOW` flag even if wrapping around
+    ///   happens while the method `wrapping_add()` sets `OVERFLOW` flag when
+    ///   wrapping around happens.
+    /// - If `modulo` is zero or one, the return value will be 0 and the flag
+    ///   `UNDEFINED` of the return value will be set.
+    /// - In summary, the return value and its flags will be set as follows:
+    /// 
+    /// | `modulo` | return value | flags       |
+    /// |----------|--------------|-------------|
+    /// | 0 or 1   | 0            | `UNDEFINED` |
+    /// 
     /// 
     /// # Counterpart Method
     /// - The method
