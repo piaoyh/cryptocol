@@ -11876,6 +11876,7 @@ pub trait SmallUInt: Copy + Clone + Sized //+ Display + Debug + ToString
     ///     let c_u8 = b_u8.modular_mul(2, 200);
     ///     println!("{} * 2 = {} (mod 200)", b_u8, c_u8);
     ///     assert_eq!(c_u8, 160_u8);
+    ///     assert_eq!(c_u8 as u16, ((b_u8 as u16) * 2) % 200_u16);
     /// 
     ///     let d_u8 = 90_u8;
     ///     let e_u8 = func(d_u8, 2, 200);
@@ -11906,6 +11907,7 @@ pub trait SmallUInt: Copy + Clone + Sized //+ Display + Debug + ToString
     ///     let c_u16 = b_u16.modular_mul(2, 20000);
     ///     println!("{} * 2 = {}", b_u16, c_u16);
     ///     assert_eq!(c_u16, 16000_u16);
+    ///     assert_eq!(c_u16 as u32, ((b_u16 as u32) * 2) % 20000_u32);
     /// 
     ///     let d_u16 = 9000_u16;
     ///     let e_u16 = func(d_u16, 2, 20000);
@@ -11936,6 +11938,7 @@ pub trait SmallUInt: Copy + Clone + Sized //+ Display + Debug + ToString
     ///     let c_u32 = b_u32.modular_mul(2, 20000000);
     ///     println!("{} * 2 = {}", b_u32, c_u32);
     ///     assert_eq!(c_u32, 16000000_u32);
+    ///     assert_eq!(c_u32 as u64, ((b_u32 as u64) * 2) % 20000000_u64);
     /// 
     ///     let d_u32 = 9000000_u32;
     ///     let e_u32 = func(d_u32, 2, 20000000);
@@ -11966,6 +11969,7 @@ pub trait SmallUInt: Copy + Clone + Sized //+ Display + Debug + ToString
     ///     let c_u64 = b_u64.modular_mul(2, 2000000000000);
     ///     println!("{} * 2 = {}", b_u64, c_u64);
     ///     assert_eq!(c_u64, 1600000000000_u64);
+    ///     assert_eq!(c_u64 as u128, ((b_u64 as u128) * 2) % 2000000000000_u128);
     /// 
     ///     let d_u64 = 900000000000_u64;
     ///     let e_u64 = func(d_u64, 2, 2000000000000);
