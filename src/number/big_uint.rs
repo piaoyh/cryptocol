@@ -9336,7 +9336,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /*** Multiplication ***/
 
     // pub fn carrying_mul_uint<U>(&self, rhs: U, carry: Self) -> (Self, Self)
-    /// Calculates the “full multiplication” `self` * `rhs` + `carry`,
+    /// Calculates the "full multiplication" `self` * `rhs` + `carry`,
     /// without the possibility to overflow.
     /// 
     /// # Arguments
@@ -9351,25 +9351,26 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// # Output
     /// It returns `self` * `rhs` + `carry` in the form of a tuple of the
     /// low-order (wrapping) bits and the high-order (overflow) bits of the
-    /// result as two separate values, in that order, that is, (`low`, `high`).
+    /// result as two separate values, in the order (`low`, `high`).
     /// 
     /// # Features
-    /// - It performs “long multiplication” which takes in an extra amount to
+    /// - It performs "long multiplication" which takes in an extra amount to
     ///   add, and may return an additional amount of overflow. This allows for
     ///   chaining together multiple multiplications to create
-    ///  “bigger integers” which represent larger values.
+    ///   "bigger integers" which represent larger values.
     /// - If the high-order part of the return value is not zero, the
-    ///   `OVERFOLOW` flag will be set though the output tuple is free from
-    ///   overflow. It is because the `OVERFOLOW` flag is about `self`,
+    ///   `OVERFLOW` flag will be set though the output tuple is free from
+    ///   overflow. It is because the `OVERFLOW` flag is about `self`,
     ///   and not about the result of multiplication.
-    /// - If overflow happened, the flag `OVERFLOW` of the return value will
-    ///   be set.
+    /// - If overflow would occur, the flag `OVERFLOW` of the return value
+    ///   will be set.
     /// 
     /// # Counterpart Methods
     /// - If you don’t need the carry, then you can use
-    ///   [widening_mul_uint()](struct@BigUInt#method.widening_mul_uint) instead.
-    /// - The value of the first field in the returned tuple matches what you’d
-    ///   get by combining the methods
+    ///   [widening_mul_uint()](struct@BigUInt#method.widening_mul_uint)
+    ///   instead.
+    /// - The value of the first field in the returned tuple matches
+    ///   what you’d get by combining the methods
     ///   [wrapping_mul_uint()](struct@BigUInt#method.wrapping_mul_uint) and
     ///   [wrapping_add_uint()](struct@BigUInt#method.wrapping_add_uint):
     ///   `self.wrapping_mul_uint(rhs).wrapping_add_uint(carry)`. So,
@@ -9379,7 +9380,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     ///   [carrying_mul()](struct@BigUInt#method.carrying_mul)
     ///   is proper rather than this method `carrying_mul_uint()`.
     /// 
-    /// # Example 1
+    /// # Example 1 for Normal case
     /// ```
     /// use cryptocol::define_utypes_with;
     /// define_utypes_with!(u64);
@@ -9388,39 +9389,69 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// let a_high_biguint = UU32::from_string("75388281194656994643364900608409476801874298166903427690031858186486050853").unwrap();
     /// let b_uint = 225_u8;
     /// let (res_low, res_high) = a_low_biguint.carrying_mul_uint(b_uint, UU32::zero());
-    /// let (res_high, res_higher) = a_high_biguint.carrying_mul_uint(b_uint, res_high);
+    /// assert_eq!(res_high.is_overflow(), false);
+    /// assert_eq!(res_high.is_underflow(), false);
+    /// assert_eq!(res_high.is_divided_by_zero(), false);
+    /// assert_eq!(res_high.is_infinity(), false);
+    /// assert_eq!(res_high.is_undefined(), false);
     /// 
+    /// let (res_high, res_higher) = a_high_biguint.carrying_mul_uint(b_uint, res_high);
     /// println!("{}:{} X {} = {}:{}:{}", a_high_biguint, a_low_biguint, b_uint, res_higher, res_high, res_low);
     /// assert_eq!(res_higher.to_string(), "0");
-    /// assert_eq!(res_high.to_string(), "16962363268797823794757102636892132280421717087553271230257168091959361441925");
-    /// assert_eq!(res_low.to_string(), "17280421717087553271230257168091959361442094623632687978237947571026368921150");
     /// assert_eq!(res_higher.is_overflow(), false);
     /// assert_eq!(res_higher.is_underflow(), false);
     /// assert_eq!(res_higher.is_divided_by_zero(), false);
     /// assert_eq!(res_higher.is_infinity(), false);
     /// assert_eq!(res_higher.is_undefined(), false);
+    /// assert_eq!(res_high.to_string(), "16962363268797823794757102636892132280421717087553271230257168091959361441925");
+    /// assert_eq!(res_high.is_overflow(), false);
+    /// assert_eq!(res_high.is_underflow(), false);
+    /// assert_eq!(res_high.is_divided_by_zero(), false);
+    /// assert_eq!(res_high.is_infinity(), false);
+    /// assert_eq!(res_high.is_undefined(), false);
+    /// assert_eq!(res_low.to_string(), "17280421717087553271230257168091959361442094623632687978237947571026368921150");
+    /// assert_eq!(res_low.is_overflow(), false);
+    /// assert_eq!(res_low.is_underflow(), false);
+    /// assert_eq!(res_low.is_divided_by_zero(), false);
+    /// assert_eq!(res_low.is_infinity(), false);
+    /// assert_eq!(res_low.is_undefined(), false);
     /// ```
     /// 
-    /// # Example 2
+    /// # Example 2 for Maximum case
     /// ```
     /// use cryptocol::define_utypes_with;
     /// define_utypes_with!(u64);
     /// 
-    /// let a_low_biguint = U256::from_str_radix("FFFFFFFF_FFFFFFFF_FFFFFFFF_FFFFFFFF_FFFFFFFF_FFFFFFFF_FFFFFFFF_FFFFFFFF", 16).unwrap();
-    /// let a_high_biguint = UU32::from_str_radix("FFFFFFFF_FFFFFFFF_FFFFFFFF_FFFFFFFF_FFFFFFFF_FFFFFFFF_FFFFFFFF_FFFFFFFF", 16).unwrap();
-    /// let b_uint = 0xFFFFFFFF_FFFFFFFF_u64;
+    /// let a_low_biguint = U256::max();
+    /// let a_high_biguint = UU32::max();
+    /// let b_uint = u64::MAX;
     /// let (res_low, res_high) = a_low_biguint.carrying_mul_uint(b_uint, UU32::zero());
-    /// let (res_high, res_higher) = a_high_biguint.carrying_mul_uint(b_uint, res_high);
+    /// assert_eq!(res_high.is_overflow(), false);
+    /// assert_eq!(res_high.is_underflow(), false);
+    /// assert_eq!(res_high.is_divided_by_zero(), false);
+    /// assert_eq!(res_high.is_infinity(), false);
+    /// assert_eq!(res_high.is_undefined(), false);
     /// 
-    /// println!("{}:{} X {} = {}:{}:{}", a_high_biguint, a_low_biguint, b_uint, res_higher, res_high, res_low);
-    /// assert_eq!(res_higher.to_string(), "63");
-    /// assert_eq!(res_high.to_string(), "115792089237316195423570985008687907853269984665640564039439137263839420088384");
-    /// assert_eq!(res_low.to_string(), "115792089237316195423570985008687907853269984665640564039439137263839420088321");
+    /// let (res_high, res_higher) = a_high_biguint.carrying_mul_uint(b_uint, res_high);
+    /// println!("{}:{} X {:X} = {}:{}:{}", a_high_biguint.to_string_with_radix_and_stride(16, 8).unwrap(), a_low_biguint.to_string_with_radix_and_stride(16, 8).unwrap(), b_uint, res_higher.to_string_with_radix_and_stride(16, 8).unwrap(), res_high.to_string_with_radix_and_stride(16, 8).unwrap(), res_low.to_string_with_radix_and_stride(16, 8).unwrap());
+    /// assert_eq!(res_higher.to_string_with_radix_and_stride(16, 8).unwrap(), "3F");
     /// assert_eq!(res_higher.is_overflow(), false);
     /// assert_eq!(res_higher.is_underflow(), false);
     /// assert_eq!(res_higher.is_divided_by_zero(), false);
     /// assert_eq!(res_higher.is_infinity(), false);
     /// assert_eq!(res_higher.is_undefined(), false);
+    /// assert_eq!(res_high.to_string_with_radix_and_stride(16, 8).unwrap(), "FFFFFFFF_FFFFFFFF_FFFFFFFF_FFFFFFFF_FFFFFFFF_FFFFFFFF_00000000_00000040");
+    /// assert_eq!(res_high.is_overflow(), true);
+    /// assert_eq!(res_high.is_underflow(), false);
+    /// assert_eq!(res_high.is_divided_by_zero(), false);
+    /// assert_eq!(res_high.is_infinity(), false);
+    /// assert_eq!(res_high.is_undefined(), false);
+    /// assert_eq!(res_low.to_string_with_radix_and_stride(16, 8).unwrap(), "FFFFFFFF_FFFFFFFF_FFFFFFFF_FFFFFFFF_FFFFFFFF_FFFFFFFF_00000000_00000001");
+    /// assert_eq!(res_low.is_overflow(), true);
+    /// assert_eq!(res_low.is_underflow(), false);
+    /// assert_eq!(res_low.is_divided_by_zero(), false);
+    /// assert_eq!(res_low.is_infinity(), false);
+    /// assert_eq!(res_low.is_undefined(), false);
     /// ```
     /// 
     /// # Big-endian issue
@@ -9443,14 +9474,14 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     }
 
     // pub fn carrying_mul_assign_uint<U>(&mut self, rhs: U, carry: Self) -> Self
-    /// Calculates the “full multiplication” `self` * `rhs` + `carry`,
+    /// Calculates the "full multiplication" `self` * `rhs` + `carry`,
     /// without the possibility to overflow, and assigs the low-order bits of
     /// the result to `self` back and returns the high-order bits of the result.
     /// 
     /// # Arguments
     /// - `rhs` is to be multiplied to `self`, and small-sized unsigned integer
-    /// such as `u8`, `u16`, `u32`, `u64`, and `u128`.
-    /// - `carry` is to be added to `self`, and `Self`-typed.
+    ///   such as `u8`, `u16`, `u32`, `u64`, and `u128`.
+    /// - `carry` is to be added to `self`, and is `Self`-type.
     /// 
     /// # Panics
     /// If `size_of::<T>() * N` <= `128`, this method may panic
@@ -9461,13 +9492,13 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// of the result.
     /// 
     /// # Features
-    /// - It performs “long multiplication” which takes in an extra amount to
+    /// - It performs "long multiplication" which takes in an extra amount to
     ///   add, and may return an additional amount of overflow. This allows for
-    ///   chaining together multiple multiplications to create “bigger integers”
+    ///   chaining together multiple multiplications to create "bigger integers"
     ///   which represent larger values.
-    /// - If the return value is not zero, the `OVERFOLOW` flag will be set
-    ///   though the output tuple is free from overflow. It is because the
-    ///   `OVERFOLOW` flag is about `self`, and not about the result of
+    /// - If the return value is not zero, the `OVERFLOW` flag will be set
+    ///   though the output is free from overflow. It is because the
+    ///   `OVERFLOW` flag is of `self`, and not of the result of
     ///   multiplication.
     /// - All the flags are historical, which means, for example, if an
     ///   overflow occurred even once before this current operation or
@@ -9484,10 +9515,11 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     ///   [wrapping_mul_uint()](struct@BigUInt#method.wrapping_mul_uint) and
     ///   [wrapping_add_assign_uint()](struct@BigUInt#method.wrapping_add_assign_uint):
     ///   `self.wrapping_mul_uint(rhs).wrapping_add_assign_uint(carry)`.
-    /// - If `rhs` is bigger than `u128`, the method [carrying_mul_assign()](struct@BigUInt#method.carrying_mul_assign)
+    /// - If `rhs` is bigger than `u128`, the method
+    ///   [carrying_mul_assign()](struct@BigUInt#method.carrying_mul_assign)
     ///   is proper rather than this method `carrying_mul_assign_uint()`.
     /// 
-    /// # Example 1
+    /// # Example 1 for Normal case
     /// ```
     /// use cryptocol::define_utypes_with;
     /// define_utypes_with!(u128);
@@ -9497,9 +9529,12 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// let b_uint = 225_u8;
     /// 
     /// println!("Originally, a_low_biguint = {}", a_low_biguint);
-    /// assert_eq!(a_low_biguint.to_string(), "76801874298166903427690031858186486050853753882811946569946433649006084094");
+    /// assert_eq!(a_low_biguint.is_overflow(), false);
+    /// assert_eq!(a_low_biguint.is_underflow(), false);
+    /// assert_eq!(a_low_biguint.is_divided_by_zero(), false);
+    /// assert_eq!(a_low_biguint.is_infinity(), false);
+    /// assert_eq!(a_low_biguint.is_undefined(), false);
     /// println!("Originally, a_high_biguint = {}\n", a_high_biguint);
-    /// assert_eq!(a_high_biguint.to_string(), "75388281194656994643364900608409476801874298166903427690031858186486050853");
     /// assert_eq!(a_high_biguint.is_overflow(), false);
     /// assert_eq!(a_high_biguint.is_underflow(), false);
     /// assert_eq!(a_high_biguint.is_divided_by_zero(), false);
@@ -9507,37 +9542,49 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// assert_eq!(a_high_biguint.is_undefined(), false);
     /// 
     /// let res_high = a_low_biguint.carrying_mul_assign_uint(b_uint, UU32::zero());
-    /// let res_higher = a_high_biguint.carrying_mul_assign_uint(b_uint, res_high);
-    /// println!("After a_low_biguint.carrying_mul_assign_uint(225_u8, 0),\na_low_biguint = {}\n", a_low_biguint);
+    /// assert_eq!(res_high.is_overflow(), false);
+    /// assert_eq!(res_high.is_underflow(), false);
+    /// assert_eq!(res_high.is_divided_by_zero(), false);
+    /// assert_eq!(res_high.is_infinity(), false);
+    /// assert_eq!(res_high.is_undefined(), false);
+    /// println!("After a_low_biguint.carrying_mul_assign_uint(225_u8, 0),\na_low_biguint = {}", a_low_biguint);
     /// assert_eq!(a_low_biguint.to_string(), "17280421717087553271230257168091959361442094623632687978237947571026368921150");
+    /// assert_eq!(a_low_biguint.is_overflow(), false);
+    /// assert_eq!(a_low_biguint.is_underflow(), false);
+    /// assert_eq!(a_low_biguint.is_divided_by_zero(), false);
+    /// assert_eq!(a_low_biguint.is_infinity(), false);
+    /// assert_eq!(a_low_biguint.is_undefined(), false);
+    /// let res_higher = a_high_biguint.carrying_mul_assign_uint(b_uint, res_high);
     /// println!("After a_high_biguint.carrying_mul_assign_uint(225_u8, res_higher),\na_high_biguint = {}\nres_higher = {}", a_high_biguint, res_higher);
-    /// assert_eq!(a_high_biguint.to_string(), "16962363268797823794757102636892132280421717087553271230257168091959361441925");
-    /// assert_eq!(a_high_biguint.is_overflow(), false);
-    /// assert_eq!(a_high_biguint.is_underflow(), false);
-    /// assert_eq!(a_high_biguint.is_divided_by_zero(), false);
-    /// assert_eq!(a_high_biguint.is_infinity(), false);
-    /// assert_eq!(a_high_biguint.is_undefined(), false);
     /// assert_eq!(res_higher.to_string(), "0");
     /// assert_eq!(res_higher.is_overflow(), false);
     /// assert_eq!(res_higher.is_underflow(), false);
     /// assert_eq!(res_higher.is_divided_by_zero(), false);
     /// assert_eq!(res_higher.is_infinity(), false);
     /// assert_eq!(res_higher.is_undefined(), false);
+    /// assert_eq!(a_high_biguint.is_overflow(), false);
+    /// assert_eq!(a_high_biguint.is_underflow(), false);
+    /// assert_eq!(a_high_biguint.is_divided_by_zero(), false);
+    /// assert_eq!(a_high_biguint.is_infinity(), false);
+    /// assert_eq!(a_high_biguint.is_undefined(), false);
     /// ```
     /// 
-    /// # Example 2
+    /// # Example 2 for Maximum case
     /// ```
     /// use cryptocol::define_utypes_with;
     /// define_utypes_with!(u128);
     /// 
-    /// let mut a_low_biguint = U256::from_str_radix("FFFFFFFF_FFFFFFFF_FFFFFFFF_FFFFFFFF_FFFFFFFF_FFFFFFFF_FFFFFFFF_FFFFFFFF", 16).unwrap();
-    /// let mut a_high_biguint = UU32::from_str_radix("FFFFFFFF_FFFFFFFF_FFFFFFFF_FFFFFFFF_FFFFFFFF_FFFFFFFF_FFFFFFFF_FFFFFFFF", 16).unwrap();
-    /// let b_uint = 0xFFFFFFFF_FFFFFFFF_u64;
+    /// let mut a_low_biguint = U256::max();
+    /// let mut a_high_biguint = UU32::max();
+    /// let b_uint = u64::MAX;
     /// 
     /// println!("Originally, a_low_biguint = {}", a_low_biguint);
-    /// assert_eq!(a_low_biguint.to_string(), "115792089237316195423570985008687907853269984665640564039457584007913129639935");
+    /// assert_eq!(a_low_biguint.is_overflow(), false);
+    /// assert_eq!(a_low_biguint.is_underflow(), false);
+    /// assert_eq!(a_low_biguint.is_divided_by_zero(), false);
+    /// assert_eq!(a_low_biguint.is_infinity(), false);
+    /// assert_eq!(a_low_biguint.is_undefined(), false);
     /// println!("Originally, a_high_biguint = {}\n", a_high_biguint);
-    /// assert_eq!(a_high_biguint.to_string(), "115792089237316195423570985008687907853269984665640564039457584007913129639935");
     /// assert_eq!(a_high_biguint.is_overflow(), false);
     /// assert_eq!(a_high_biguint.is_underflow(), false);
     /// assert_eq!(a_high_biguint.is_divided_by_zero(), false);
@@ -9545,17 +9592,27 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// assert_eq!(a_high_biguint.is_undefined(), false);
     /// 
     /// let res_high = a_low_biguint.carrying_mul_assign_uint(b_uint, UU32::zero());
+    /// assert_eq!(res_high.is_overflow(), false);
+    /// assert_eq!(res_high.is_underflow(), false);
+    /// assert_eq!(res_high.is_divided_by_zero(), false);
+    /// assert_eq!(res_high.is_infinity(), false);
+    /// assert_eq!(res_high.is_undefined(), false);
+    /// println!("After a_low_biguint.carrying_mul_assign_uint(u64::MAX, 0),\na_low_biguint = {}", a_low_biguint.to_string_with_radix_and_stride(16, 8).unwrap());
+    /// assert_eq!(a_low_biguint.to_string_with_radix_and_stride(16, 8).unwrap(), "FFFFFFFF_FFFFFFFF_FFFFFFFF_FFFFFFFF_FFFFFFFF_FFFFFFFF_00000000_00000001");
+    /// assert_eq!(a_low_biguint.is_overflow(), true);
+    /// assert_eq!(a_low_biguint.is_underflow(), false);
+    /// assert_eq!(a_low_biguint.is_divided_by_zero(), false);
+    /// assert_eq!(a_low_biguint.is_infinity(), false);
+    /// assert_eq!(a_low_biguint.is_undefined(), false);
     /// let res_higher = a_high_biguint.carrying_mul_assign_uint(b_uint, res_high);
-    /// println!("After a_low_biguint.carrying_mul_assign_uint(225_u8, 0),\na_low_biguint = {}\n", a_low_biguint);
-    /// assert_eq!(a_low_biguint.to_string(), "115792089237316195423570985008687907853269984665640564039439137263839420088321");
-    /// println!("After a_high_biguint.carrying_mul_assign_uint(225_u8, res_higher),\na_high_biguint = {}\nres_higher = {}", a_high_biguint, res_higher);
-    /// assert_eq!(a_high_biguint.to_string(), "115792089237316195423570985008687907853269984665640564039439137263839420088384");
+    /// println!("After a_high_biguint.carrying_mul_assign_uint(u64::MAX),\na_high_biguint = {}\nres_higher = {}", a_high_biguint.to_string_with_radix_and_stride(16, 8).unwrap(), res_higher.to_string_with_radix_and_stride(16, 8).unwrap());
+    /// assert_eq!(a_high_biguint.to_string_with_radix_and_stride(16, 8).unwrap(), "FFFFFFFF_FFFFFFFF_FFFFFFFF_FFFFFFFF_FFFFFFFF_FFFFFFFF_00000000_00000040");
     /// assert_eq!(a_high_biguint.is_overflow(), true);
     /// assert_eq!(a_high_biguint.is_underflow(), false);
     /// assert_eq!(a_high_biguint.is_divided_by_zero(), false);
     /// assert_eq!(a_high_biguint.is_infinity(), false);
     /// assert_eq!(a_high_biguint.is_undefined(), false);
-    /// assert_eq!(res_higher.to_string(), "63");
+    /// assert_eq!(res_higher.to_string_with_radix_and_stride(16, 8).unwrap(), "3F");
     /// assert_eq!(res_higher.is_overflow(), false);
     /// assert_eq!(res_higher.is_underflow(), false);
     /// assert_eq!(res_higher.is_divided_by_zero(), false);
@@ -9589,7 +9646,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// 
     /// # Arguments
     /// - `rhs` is to be multiplied to `self`, and small-sized unsigned integer
-    /// such as `u8`, `u16`, `u32`, `u64`, and `u128`.
+    ///   such as `u8`, `u16`, `u32`, `u64`, and `u128`.
     /// 
     /// # Panics
     /// If `size_of::<T>() * N` <= `128`, this method may panic
@@ -9601,13 +9658,13 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// two separate values, in that order.
     /// 
     /// # Features
-    /// - It performs “long multiplication” which takes in an extra amount to add,
-    ///   and may return an additional amount of overflow. This allows for
-    ///   chaining together multiple multiplications to create “bigger integers”
-    ///   which represent larger values.
+    /// - It performs "long multiplication" which takes in an extra amount to
+    ///   add, and may return an additional amount of overflow.
+    ///   This allows for chaining together multiple multiplications to create
+    ///   bigger integers which represent larger values.
     /// - If the high-order part of the return value is not zero, the
-    ///   `OVERFOLOW` flag will be set though the output tuple is free from
-    ///   overflow. It is because the `OVERFOLOW` flag is about `self`,
+    ///   `OVERFLOW` flag will be set though the output tuple is free from
+    ///   overflow. It is because the `OVERFLOW` flag is about `self`,
     ///   and not about the result of multiplication.
     /// 
     /// # Counterpart Methods
@@ -9622,42 +9679,50 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     ///   [widening_mul()](struct@BigUInt#method.widening_mul)
     ///   is proper rather than this method `widening_mul_uint()`.
     /// 
-    /// # Example 1
+    /// # Example 1 for Normal case
     /// ```
     /// use cryptocol::define_utypes_with;
     /// define_utypes_with!(u128);
     /// 
     /// let a_biguint = U256::from_string("876801874298166903427690031858186486050853753882811946569946433649006084094").unwrap();
-    /// let b_uint = 248_u8;
+    /// let b_uint = 248_u128;
     /// let (res_low, res_high) = a_biguint.widening_mul_uint(b_uint);
-    /// 
     /// println!("{} X {} = {}:{}", a_biguint, b_uint, res_high, res_low);
     /// assert_eq!(res_high.to_string(), "1");
-    /// assert_eq!(res_low.to_string(), "101654775588629196626496142892142340687341746297296798709889131537040379215376");
     /// assert_eq!(res_high.is_overflow(), false);
     /// assert_eq!(res_high.is_underflow(), false);
     /// assert_eq!(res_high.is_divided_by_zero(), false);
     /// assert_eq!(res_high.is_infinity(), false);
     /// assert_eq!(res_high.is_undefined(), false);
+    /// assert_eq!(res_low.to_string(), "101654775588629196626496142892142340687341746297296798709889131537040379215376");
+    /// assert_eq!(res_low.is_overflow(), true);
+    /// assert_eq!(res_low.is_underflow(), false);
+    /// assert_eq!(res_low.is_divided_by_zero(), false);
+    /// assert_eq!(res_low.is_infinity(), false);
+    /// assert_eq!(res_low.is_undefined(), false);
     /// ```
     /// 
-    /// # Example 2
+    /// # Example 2 for Maximum case
     /// ```
     /// use cryptocol::define_utypes_with;
     /// define_utypes_with!(u128);
     /// 
-    /// let a_biguint = U256::from_string("876801874298166903427690031858186486050853753882811946569946433649006084094").unwrap();
-    /// let b_uint = 0xFFFFFFFF_FFFFFFFF_FFFFFFFF_FFFFFFFF_u128;
+    /// let a_biguint = U256::max();
+    /// let b_uint = u128::MAX;
     /// let (res_low, res_high) = a_biguint.widening_mul_uint(b_uint);
-    /// 
-    /// println!("{} X {} = {}:{}", a_biguint, b_uint, res_high, res_low);
-    /// assert_eq!(res_high.to_string(), "52");
-    /// assert_eq!(res_low.to_string(), "58518030306364833069536810134514120512051322437074483720471980365660800679938");
+    /// println!("{} X {:X} = {}:{}", a_biguint.to_string_with_radix_and_stride(16, 8).unwrap(), b_uint, res_high.to_string_with_radix_and_stride(16, 8).unwrap(), res_low.to_string_with_radix_and_stride(16, 8).unwrap());
+    /// assert_eq!(res_high.to_string_with_radix_and_stride(16, 8).unwrap(), "7F");
     /// assert_eq!(res_high.is_overflow(), false);
     /// assert_eq!(res_high.is_underflow(), false);
     /// assert_eq!(res_high.is_divided_by_zero(), false);
     /// assert_eq!(res_high.is_infinity(), false);
     /// assert_eq!(res_high.is_undefined(), false);
+    /// assert_eq!(res_low.to_string_with_radix_and_stride(16, 8).unwrap(), "FFFFFFFF_FFFFFFFF_FFFFFFFF_FFFFFFFF_00000000_00000000_00000000_00000001");
+    /// assert_eq!(res_low.is_overflow(), true);
+    /// assert_eq!(res_low.is_underflow(), false);
+    /// assert_eq!(res_low.is_divided_by_zero(), false);
+    /// assert_eq!(res_low.is_infinity(), false);
+    /// assert_eq!(res_low.is_undefined(), false);
     /// ```
     /// 
     /// # Big-endian issue
@@ -9699,9 +9764,9 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     ///   and may return an additional amount of overflow. This allows for
     ///   chaining together multiple multiplications to create “bigger integers”
     ///   which represent larger values.
-    /// - If the return value is not zero, the `OVERFOLOW` flag will be set
+    /// - If the return value is not zero, the `OVERFLOW` flag will be set
     ///   though the output tuple is free from overflow. It is because the
-    ///   `OVERFOLOW` flag is about `self`, and not about the result of
+    ///   `OVERFLOW` flag is about `self`, and not about the result of
     ///   multiplication.
     /// - All the flags are historical, which means, for example, if an
     ///   overflow occurred even once before this current operation or
@@ -9717,17 +9782,17 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// - The value of `self` after calculation matches what you’d get the
     ///   method [wrapping_mul_uint()](struct@BigUInt#method.wrapping_mul_uint)
     ///   `self` == `self.wrapping_mul_uint(rhs)`.
-    /// - If `rhs` is bigger than `u128`, the method [widening_mul_assign()](struct@BigUInt#method.widening_mul_assign)
+    /// - If `rhs` is bigger than `u128`, the method 
+    ///   [widening_mul_assign()](struct@BigUInt#method.widening_mul_assign)
     ///   is proper rather than this method `widening_mul_assign_uint()`.
     /// 
-    /// # Example 1
+    /// # Example 1 for Normal case
     /// ```
     /// use cryptocol::define_utypes_with;
     /// define_utypes_with!(u64);
     /// 
     /// let mut a_biguint = UU32::from_string("876801874298166903427690031858186486050853753882811946569946433649006084094").unwrap();
     /// let b_uint = 248_u64;
-    /// 
     /// println!("Originally, a_biguint = {}", a_biguint);
     /// assert_eq!(a_biguint.to_string(), "876801874298166903427690031858186486050853753882811946569946433649006084094");
     /// assert_eq!(a_biguint.is_overflow(), false);
@@ -9747,16 +9812,14 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// assert_eq!(res_high.is_undefined(), false);
     /// ```
     /// 
-    /// # Example 2
+    /// # Example 2 for Maximum case
     /// ```
     /// use cryptocol::define_utypes_with;
     /// define_utypes_with!(u64);
     /// 
-    /// let mut a_biguint = UU32::from_string("876801874298166903427690031858186486050853753882811946569946433649006084094").unwrap();
-    /// let b_uint = 0xFFFFFFFF_FFFFFFFF_u64;
-    /// 
+    /// let mut a_biguint = UU32::max();
+    /// let b_uint = u64::MAX;
     /// println!("Originally, a_biguint = {}", a_biguint);
-    /// assert_eq!(a_biguint.to_string(), "876801874298166903427690031858186486050853753882811946569946433649006084094");
     /// assert_eq!(a_biguint.is_overflow(), false);
     /// assert_eq!(a_biguint.is_underflow(), false);
     /// assert_eq!(a_biguint.is_divided_by_zero(), false);
@@ -9764,14 +9827,19 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// assert_eq!(a_biguint.is_undefined(), false);
     /// 
     /// let res_high = a_biguint.widening_mul_assign_uint(b_uint);
-    /// println!("After a_biguint.widening_mul_assign_uint(248_u8),\na_biguint = {}\nres_high = {}", a_biguint, res_high);
-    /// assert_eq!(a_biguint.to_string(), "7605588536142832003018071296064168839267089802540845941988996760025713082370");
-    /// assert_eq!(res_high.to_string(), "23");
+    /// println!("After a_biguint.widening_mul_assign_uint(u64::MAX),\na_biguint = {}\nres_high = {}", a_biguint.to_string_with_radix_and_stride(16, 8).unwrap(), res_high.to_string_with_radix_and_stride(16, 8).unwrap());
+    /// assert_eq!(res_high.to_string_with_radix_and_stride(16, 8).unwrap(), "3F");
     /// assert_eq!(res_high.is_overflow(), false);
     /// assert_eq!(res_high.is_underflow(), false);
     /// assert_eq!(res_high.is_divided_by_zero(), false);
     /// assert_eq!(res_high.is_infinity(), false);
     /// assert_eq!(res_high.is_undefined(), false);
+    /// assert_eq!(a_biguint.to_string_with_radix_and_stride(16, 8).unwrap(), "FFFFFFFF_FFFFFFFF_FFFFFFFF_FFFFFFFF_FFFFFFFF_FFFFFFFF_00000000_00000001");
+    /// assert_eq!(a_biguint.is_overflow(), true);
+    /// assert_eq!(a_biguint.is_underflow(), false);
+    /// assert_eq!(a_biguint.is_divided_by_zero(), false);
+    /// assert_eq!(a_biguint.is_infinity(), false);
+    /// assert_eq!(a_biguint.is_undefined(), false);
     /// ```
     /// 
     /// # Big-endian issue
@@ -10107,7 +10175,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// 
     /// # Features
     /// If an overflow would have occurred, the second element of the output
-    /// tuple is false and the `OVERFOLOW` flag of the first element will
+    /// tuple is false and the `OVERFLOW` flag of the first element will
     /// be set.
     /// 
     /// # Counterpart Method
@@ -28962,8 +29030,8 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// and `INFINITY` will be set.
     /// - All the flags reflect historical underflow, which means, for example,
     /// if an overflow occurred even once before this current operation or
-    /// `OVERFOLOW` flag is already set before this current operation, the
-    /// `OVERFOLOW` flag is not changed even though this current operation does
+    /// `OVERFLOW` flag is already set before this current operation, the
+    /// `OVERFLOW` flag is not changed even though this current operation does
     /// not cause overflow.
     /// 
     /// # Counterpart Method
@@ -29401,10 +29469,9 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
 
     /*** Multiplication ***/
 
-    //===================
     // pub fn carrying_mul(&self, rhs: &Self, carry: Self) -> (Self, Self)
-    /// Calculates the “full multiplication” `self` * `rhs` + `carry` without
-    /// the possibility to overflow.
+    /// Calculates the "full multiplication" `self` * `rhs` + `carry`,
+    /// without the possibility to overflow.
     /// 
     /// # Arguments
     /// - `rhs` is to be multiplied to `self`, and is `&Self` type.
@@ -29417,47 +29484,112 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// # Output
     /// It returns `self` * `rhs` + `carry` in the form of a tuple of the
     /// low-order (wrapping) bits and the high-order (overflow) bits of the
-    /// result as two separate values, in that order.
+    /// result as two separate values, in the order (`low`, `high`).
     /// 
     /// # Features
-    /// It performs “long multiplication” which takes in an extra amount to add,
-    /// and may return an additional amount of overflow. This allows for
-    /// chaining together multiple multiplications to create “bigger integers”
-    /// which represent larger values.
+    /// - It performs "long multiplication" which takes in an extra amount to
+    ///   add, and may return an additional amount of overflow. This allows for
+    ///   chaining together multiple multiplications to create
+    ///   "bigger integers" which represent larger values.
+    /// - If the high-order part of the return value is not zero, the
+    ///   `OVERFLOW` flag will be set though the output tuple is free from
+    ///   overflow. It is because the `OVERFLOW` flag is about `self`,
+    ///   and not about the result of multiplication.
+    /// - If overflow would occur, the flag `OVERFLOW` of the return value
+    ///   will be set.
     /// 
     /// # Counterpart Methods
     /// - If you don’t need the carry, then you can use
-    /// [widening_mul()](struct@BigUInt#method.widening_mul) instead.
+    ///   [widening_mul()](struct@BigUInt#method.widening_mul) instead.
     /// - The value of the first field in the returned tuple matches
-    /// what you’d get by combining the methods
-    /// [wrapping_mul()](struct@BigUInt#method.wrapping_mul) and
-    /// [wrapping_add()](struct@BigUInt#method.wrapping_add):
-    /// `self.wrapping_mul(rhs).wrapping_add(carry)`. So,
-    /// `self.carrying_mul(rhs, carry).0` == `self.wrapping_mul(rhs).wrapping_add(carry)`
+    ///   what you’d get by combining the methods
+    ///   [wrapping_mul()](struct@BigUInt#method.wrapping_mul) and
+    ///   [wrapping_add()](struct@BigUInt#method.wrapping_add):
+    ///   `self.wrapping_mul(rhs).wrapping_add(carry)`. So,
+    ///   `self.carrying_mul(rhs, carry).0` == `self.wrapping_mul(rhs).wrapping_add(carry)`
     /// - The method
-    /// [carrying_mul_uint()](struct@BigUInt#method.carrying_mul_uint)
-    /// is a bit faster than this method `carrying_mul()`. If `rhs` is
-    /// primitive unsigned integral data type such as u8, u16, u32, u64, and
-    /// u128, use the method
-    /// [carrying_mul_uint()](struct@BigUInt#method.carrying_mul_uint).
+    ///   [carrying_mul_uint()](struct@BigUInt#method.carrying_mul_uint)
+    ///   is a bit faster than this method `carrying_mul()`. If `rhs` is
+    ///   primitive unsigned integral data type such as u8, u16, u32, u64, and
+    ///   u128, use the method
+    ///   [carrying_mul_uint()](struct@BigUInt#method.carrying_mul_uint).
     /// 
-    /// # Examples
+    /// # Example 1 for Normal case
     /// ```
     /// use cryptocol::define_utypes_with;
-    /// define_utypes_with!(u128);
+    /// define_utypes_with!(u8);
     /// 
     /// let a_biguint_low = U256::from_string("76801874298166903427690031858186486050853753882811946569946433649006084094").unwrap();
     /// let a_biguint_high = U256::from_string("75388281194656994643364900608409476801874298166903427690031858186486050853").unwrap();
     /// let b_biguint = UU32::from_string("16962363268797823794757102636892132280421717087553271230257168091959361441925").unwrap();
     /// let (res_biguint_low, res_biguint_high) = a_biguint_low.carrying_mul(&b_biguint, UU32::zero());
     /// assert_eq!(res_biguint_high.is_overflow(), false);
+    /// assert_eq!(res_biguint_high.is_underflow(), false);
+    /// assert_eq!(res_biguint_high.is_divided_by_zero(), false);
+    /// assert_eq!(res_biguint_high.is_infinity(), false);
+    /// assert_eq!(res_biguint_high.is_undefined(), false);
     /// let (res_biguint_high, res_biguint_higher) = a_biguint_high.carrying_mul(&b_biguint, res_biguint_high);
     /// 
     /// println!("{}:{} X {} = {}:{}:{}", a_biguint_high, a_biguint_low, b_biguint, res_biguint_higher, res_biguint_high, res_biguint_low);
     /// assert_eq!(res_biguint_higher.to_string(), "11043616366686523019040587905143508095308019572635527295298701528708842829");
-    /// assert_eq!(res_biguint_high.to_string(), "47612192950075281462365720785702517256274202447286280420710978194126658529299");
-    /// assert_eq!(res_biguint_low.to_string(), "99569105317044689054574557712853522297141576321520100863242044268764373638902");
     /// assert_eq!(res_biguint_higher.is_overflow(), false);
+    /// assert_eq!(res_biguint_higher.is_underflow(), false);
+    /// assert_eq!(res_biguint_higher.is_divided_by_zero(), false);
+    /// assert_eq!(res_biguint_higher.is_infinity(), false);
+    /// assert_eq!(res_biguint_higher.is_undefined(), false);
+    /// 
+    /// assert_eq!(res_biguint_high.to_string(), "47612192950075281462365720785702517256274202447286280420710978194126658529299");
+    /// assert_eq!(res_biguint_high.is_overflow(), true);
+    /// assert_eq!(res_biguint_high.is_underflow(), false);
+    /// assert_eq!(res_biguint_high.is_divided_by_zero(), false);
+    /// assert_eq!(res_biguint_high.is_infinity(), false);
+    /// assert_eq!(res_biguint_high.is_undefined(), false);
+    /// 
+    /// assert_eq!(res_biguint_low.to_string(), "99569105317044689054574557712853522297141576321520100863242044268764373638902");
+    /// assert_eq!(res_biguint_low.is_overflow(), true);
+    /// assert_eq!(res_biguint_low.is_underflow(), false);
+    /// assert_eq!(res_biguint_low.is_divided_by_zero(), false);
+    /// assert_eq!(res_biguint_low.is_infinity(), false);
+    /// assert_eq!(res_biguint_low.is_undefined(), false);
+    /// ```
+    /// 
+    /// # Example 2 for Maximum case
+    /// ```
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u8);
+    /// 
+    /// let a_biguint_low = U256::from_str_radix("FFFFFFFF_FFFFFFFF_FFFFFFFF_FFFFFFFF_FFFFFFFF_FFFFFFFF_FFFFFFFF_FFFFFFFF", 16).unwrap();
+    /// let a_biguint_high = U256::from_str_radix("FFFFFFFF_FFFFFFFF_FFFFFFFF_FFFFFFFF_FFFFFFFF_FFFFFFFF_FFFFFFFF_FFFFFFFF", 16).unwrap();
+    /// let b_biguint = UU32::from_str_radix("FFFFFFFF_FFFFFFFF_FFFFFFFF_FFFFFFFF_FFFFFFFF_FFFFFFFF_FFFFFFFF_FFFFFFFF", 16).unwrap();
+    /// let (res_biguint_low, res_biguint_high) = a_biguint_low.carrying_mul(&b_biguint, UU32::zero());
+    /// assert_eq!(res_biguint_high.is_overflow(), false);
+    /// assert_eq!(res_biguint_high.is_underflow(), false);
+    /// assert_eq!(res_biguint_high.is_divided_by_zero(), false);
+    /// assert_eq!(res_biguint_high.is_infinity(), false);
+    /// assert_eq!(res_biguint_high.is_undefined(), false);
+    /// let (res_biguint_high, res_biguint_higher) = a_biguint_high.carrying_mul(&b_biguint, res_biguint_high);
+    /// 
+    /// println!("{}:{} X {} = {}:{}:{}", a_biguint_high.to_string_with_radix_and_stride(16, 8).unwrap(), a_biguint_low.to_string_with_radix_and_stride(16, 8).unwrap(), b_biguint.to_string_with_radix_and_stride(16, 8).unwrap(), res_biguint_higher.to_string_with_radix_and_stride(16, 8).unwrap(), res_biguint_high.to_string_with_radix_and_stride(16, 8).unwrap(), res_biguint_low.to_string_with_radix_and_stride(16, 8).unwrap());
+    /// assert_eq!(res_biguint_higher.to_string_with_radix_and_stride(16, 8).unwrap(), "FFFFFFFF_FFFFFFFF_FFFFFFFF_FFFFFFFF_FFFFFFFF_FFFFFFFF_FFFFFFFF_FFFFFFFE");
+    /// assert_eq!(res_biguint_higher.is_overflow(), false);
+    /// assert_eq!(res_biguint_higher.is_underflow(), false);
+    /// assert_eq!(res_biguint_higher.is_divided_by_zero(), false);
+    /// assert_eq!(res_biguint_higher.is_infinity(), false);
+    /// assert_eq!(res_biguint_higher.is_undefined(), false);
+    /// 
+    /// assert_eq!(res_biguint_high.to_string_with_radix_and_stride(16, 8).unwrap(), "FFFFFFFF_FFFFFFFF_FFFFFFFF_FFFFFFFF_FFFFFFFF_FFFFFFFF_FFFFFFFF_FFFFFFFF");
+    /// assert_eq!(res_biguint_high.is_overflow(), true);
+    /// assert_eq!(res_biguint_high.is_underflow(), false);
+    /// assert_eq!(res_biguint_high.is_divided_by_zero(), false);
+    /// assert_eq!(res_biguint_high.is_infinity(), false);
+    /// assert_eq!(res_biguint_high.is_undefined(), false);
+    /// 
+    /// assert_eq!(res_biguint_low.to_string(), "1");
+    /// assert_eq!(res_biguint_low.is_overflow(), true);
+    /// assert_eq!(res_biguint_low.is_underflow(), false);
+    /// assert_eq!(res_biguint_low.is_divided_by_zero(), false);
+    /// assert_eq!(res_biguint_low.is_infinity(), false);
+    /// assert_eq!(res_biguint_low.is_undefined(), false);
     /// ```
     /// 
     /// # Big-endian issue
@@ -29472,13 +29604,13 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     }
 
     // pub fn carrying_mul_assign(&mut self, rhs: &Self, carry: Self) -> Self
-    /// Calculates the “full multiplication” `self` * `rhs` + `carry` without
+    /// Calculates the "full multiplication" `self` * `rhs` + `carry` without
     /// the possibility to overflow, and assigs the low-order bits of the result
     /// to `self` back and returns the high-order bits of the result.
     /// 
     /// # Arguments
     /// - `rhs` is to be multiplied to `self`, and is `&Self` type.
-    /// - `carry` is to be added to `self`, and `Self`-typed.
+    /// - `carry` is to be added to `self`, and is of `Self`-type.
     /// 
     /// # Panics
     /// If `size_of::<T>() * N` <= `128`, this method may panic
@@ -29489,51 +29621,137 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// of the result.
     /// 
     /// # Features
-    /// It performs “long multiplication” which takes in an extra amount to add,
-    /// and may return an additional amount of overflow. This allows for
-    /// chaining together multiple multiplications to create “bigger integers”
-    /// which represent larger values.
+    /// - It performs "long multiplication" which takes in an extra amount to
+    ///   add, and may return an additional amount of overflow. This allows for
+    ///   chaining together multiple multiplications to create "bigger integers"
+    ///   which represent larger values.
+    /// - If the return value is not zero, the `OVERFLOW` flag will be set
+    ///   though the output is free from overflow. It is because the
+    ///   `OVERFLOW` flag is of `self`, and not of the result of
+    ///   multiplication.
+    /// - All the flags are historical, which means, for example, if an
+    ///   overflow occurred even once before this current operation or
+    ///   `OVERFLOW` flag is already set before this current operation,
+    ///   the `OVERFLOW` flag is not changed even if this current operation
+    ///   does not cause overflow.
     /// 
     /// # Counterpart Methods
     /// - If you don’t need the carry, then you can use
-    /// [widening_mul_assign()](struct@BigUInt#method.widening_mul_assign)
-    /// instead.
+    ///   [widening_mul_assign()](struct@BigUInt#method.widening_mul_assign)
+    ///   instead.
     /// - The value of `self` after calculation matches what you’d get by
-    /// combining the methods
-    /// [wrapping_mul()](struct@BigUInt#method.wrapping_mul) and
-    /// [wrapping_add_assign()](struct@BigUInt#method.wrapping_add_assign):
-    /// `self.wrapping_mul(rhs).wrapping_add_assign(carry)`.
+    ///   combining the methods
+    ///   [wrapping_mul()](struct@BigUInt#method.wrapping_mul) and
+    ///   [wrapping_add_assign()](struct@BigUInt#method.wrapping_add_assign):
+    ///   `self.wrapping_mul(rhs).wrapping_add_assign(carry)`.
     /// - The method
-    /// [carrying_mul_assign_uint()](struct@BigUInt#method.carrying_mul_assign_uint)
-    /// is a bit faster than this method `carrying_mul_assign()`.
-    /// If `rhs` is primitive unsigned integral data type such as u8, u16,
-    /// u32, u64, and u128,
-    /// use the method
-    /// [carrying_mul_assign_uint()](struct@BigUInt#method.carrying_mul_assign_uint).
+    ///   [carrying_mul_assign_uint()](struct@BigUInt#method.carrying_mul_assign_uint)
+    ///   is a bit faster than this method `carrying_mul_assign()`.
+    ///   So, if `rhs` is primitive unsigned integral data type such as u8, u16,
+    ///   u32, u64, and u128,
+    ///   use the method
+    ///   [carrying_mul_assign_uint()](struct@BigUInt#method.carrying_mul_assign_uint).
     /// 
-    /// # Examples
+    /// # Example 1 for Normal case
     /// ```
     /// use cryptocol::define_utypes_with;
-    /// define_utypes_with!(u8);
+    /// define_utypes_with!(u16);
     /// 
     /// let mut a_biguint_low = UU32::from_string("76801874298166903427690031858186486050853753882811946569946433649006084094").unwrap();
     /// let mut a_biguint_high = UU32::from_string("75388281194656994643364900608409476801874298166903427690031858186486050853").unwrap();
     /// let b_biguint = U256::from_string("16962363268797823794757102636892132280421717087553271230257168091959361441925").unwrap();
-    /// 
-    /// println!("Originally, a_biguint_low = {}", a_biguint_low);
-    /// assert_eq!(a_biguint_low.to_string(), "76801874298166903427690031858186486050853753882811946569946433649006084094");
-    /// println!("Originally, a_biguint_high = {}", a_biguint_high);
-    /// assert_eq!(a_biguint_high.to_string(), "75388281194656994643364900608409476801874298166903427690031858186486050853");
+    /// println!("Originally, a_biguint_low = {}\na_biguint_high = {}", a_biguint_low, a_biguint_high);
+    /// assert_eq!(a_biguint_low.is_overflow(), false);
+    /// assert_eq!(a_biguint_low.is_underflow(), false);
+    /// assert_eq!(a_biguint_low.is_divided_by_zero(), false);
+    /// assert_eq!(a_biguint_low.is_infinity(), false);
+    /// assert_eq!(a_biguint_low.is_undefined(), false);
+    /// assert_eq!(a_biguint_high.is_overflow(), false);
+    /// assert_eq!(a_biguint_high.is_underflow(), false);
+    /// assert_eq!(a_biguint_high.is_divided_by_zero(), false);
+    /// assert_eq!(a_biguint_high.is_infinity(), false);
+    /// assert_eq!(a_biguint_high.is_undefined(), false);
     /// 
     /// let res_biguint_high = a_biguint_low.carrying_mul_assign(&b_biguint, UU32::zero());
     /// assert_eq!(res_biguint_high.is_overflow(), false);
+    /// assert_eq!(res_biguint_high.is_underflow(), false);
+    /// assert_eq!(res_biguint_high.is_divided_by_zero(), false);
+    /// assert_eq!(res_biguint_high.is_infinity(), false);
+    /// assert_eq!(res_biguint_high.is_undefined(), false);
+    /// 
     /// let res_biguint_higher = a_biguint_high.carrying_mul_assign(&b_biguint, res_biguint_high);
     /// println!("After a_biguint_low.carrying_mul_assign(&b_biguint, UU32::zero()),\na_biguint_low = {}", a_biguint_low);
     /// println!("After a_biguint_high.carrying_mul_assign(&b_biguint, res_biguint_high),\na_biguint_high = {}", a_biguint_high);
     /// println!("res_biguint_higher = {}", res_biguint_higher);
     /// assert_eq!(res_biguint_higher.to_string(), "11043616366686523019040587905143508095308019572635527295298701528708842829");
+    /// assert_eq!(res_biguint_higher.is_overflow(), false);
+    /// assert_eq!(res_biguint_higher.is_underflow(), false);
+    /// assert_eq!(res_biguint_higher.is_divided_by_zero(), false);
+    /// assert_eq!(res_biguint_higher.is_infinity(), false);
+    /// assert_eq!(res_biguint_higher.is_undefined(), false);
     /// assert_eq!(a_biguint_high.to_string(), "47612192950075281462365720785702517256274202447286280420710978194126658529299");
+    /// assert_eq!(a_biguint_high.is_overflow(), true);
+    /// assert_eq!(a_biguint_high.is_underflow(), false);
+    /// assert_eq!(a_biguint_high.is_divided_by_zero(), false);
+    /// assert_eq!(a_biguint_high.is_infinity(), false);
+    /// assert_eq!(a_biguint_high.is_undefined(), false);
     /// assert_eq!(a_biguint_low.to_string(), "99569105317044689054574557712853522297141576321520100863242044268764373638902");
+    /// assert_eq!(a_biguint_low.is_overflow(), true);
+    /// assert_eq!(a_biguint_low.is_underflow(), false);
+    /// assert_eq!(a_biguint_low.is_divided_by_zero(), false);
+    /// assert_eq!(a_biguint_low.is_infinity(), false);
+    /// assert_eq!(a_biguint_low.is_undefined(), false);
+    /// ```
+    /// 
+    /// # Example 2 for Maximum case
+    /// ```
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u16);
+    /// 
+    /// let mut a_biguint_low = U256::from_str_radix("FFFFFFFF_FFFFFFFF_FFFFFFFF_FFFFFFFF_FFFFFFFF_FFFFFFFF_FFFFFFFF_FFFFFFFF", 16).unwrap();
+    /// let mut a_biguint_high = U256::from_str_radix("FFFFFFFF_FFFFFFFF_FFFFFFFF_FFFFFFFF_FFFFFFFF_FFFFFFFF_FFFFFFFF_FFFFFFFF", 16).unwrap();
+    /// let b_biguint = U256::from_str_radix("FFFFFFFF_FFFFFFFF_FFFFFFFF_FFFFFFFF_FFFFFFFF_FFFFFFFF_FFFFFFFF_FFFFFFFF", 16).unwrap();
+    /// println!("Originally, a_biguint_low = {}\na_biguint_high = {}", a_biguint_low, a_biguint_high);
+    /// assert_eq!(a_biguint_low.is_overflow(), false);
+    /// assert_eq!(a_biguint_low.is_underflow(), false);
+    /// assert_eq!(a_biguint_low.is_divided_by_zero(), false);
+    /// assert_eq!(a_biguint_low.is_infinity(), false);
+    /// assert_eq!(a_biguint_low.is_undefined(), false);
+    /// assert_eq!(a_biguint_high.is_overflow(), false);
+    /// assert_eq!(a_biguint_high.is_underflow(), false);
+    /// assert_eq!(a_biguint_high.is_divided_by_zero(), false);
+    /// assert_eq!(a_biguint_high.is_infinity(), false);
+    /// assert_eq!(a_biguint_high.is_undefined(), false);
+    /// 
+    /// let res_biguint_high = a_biguint_low.carrying_mul_assign(&b_biguint, UU32::zero());
+    /// assert_eq!(res_biguint_high.is_overflow(), false);
+    /// assert_eq!(res_biguint_high.is_underflow(), false);
+    /// assert_eq!(res_biguint_high.is_divided_by_zero(), false);
+    /// assert_eq!(res_biguint_high.is_infinity(), false);
+    /// assert_eq!(res_biguint_high.is_undefined(), false);
+    /// 
+    /// let res_biguint_higher = a_biguint_high.carrying_mul_assign(&b_biguint, res_biguint_high);
+    /// println!("After a_biguint_low.carrying_mul_assign(&b_biguint, UU32::zero()),\na_biguint_low = {}", a_biguint_low);
+    /// println!("After a_biguint_high.carrying_mul_assign(&b_biguint, res_biguint_high),\na_biguint_high = {}", a_biguint_high);
+    /// println!("res_biguint_higher = {}", res_biguint_higher);
+    /// assert_eq!(res_biguint_higher.to_string_with_radix_and_stride(16, 8).unwrap(), "FFFFFFFF_FFFFFFFF_FFFFFFFF_FFFFFFFF_FFFFFFFF_FFFFFFFF_FFFFFFFF_FFFFFFFE");
+    /// assert_eq!(res_biguint_higher.is_overflow(), false);
+    /// assert_eq!(res_biguint_higher.is_underflow(), false);
+    /// assert_eq!(res_biguint_higher.is_divided_by_zero(), false);
+    /// assert_eq!(res_biguint_higher.is_infinity(), false);
+    /// assert_eq!(res_biguint_higher.is_undefined(), false);
+    /// assert_eq!(a_biguint_high.to_string_with_radix_and_stride(16, 8).unwrap(), "FFFFFFFF_FFFFFFFF_FFFFFFFF_FFFFFFFF_FFFFFFFF_FFFFFFFF_FFFFFFFF_FFFFFFFF");
+    /// assert_eq!(a_biguint_high.is_overflow(), true);
+    /// assert_eq!(a_biguint_high.is_underflow(), false);
+    /// assert_eq!(a_biguint_high.is_divided_by_zero(), false);
+    /// assert_eq!(a_biguint_high.is_infinity(), false);
+    /// assert_eq!(a_biguint_high.is_undefined(), false);
+    /// assert_eq!(a_biguint_low.to_string(), "1");
+    /// assert_eq!(a_biguint_low.is_overflow(), true);
+    /// assert_eq!(a_biguint_low.is_underflow(), false);
+    /// assert_eq!(a_biguint_low.is_divided_by_zero(), false);
+    /// assert_eq!(a_biguint_low.is_infinity(), false);
+    /// assert_eq!(a_biguint_low.is_undefined(), false);
     /// ```
     /// 
     /// # Big-endian issue
@@ -29619,7 +29837,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// to overflow.
     /// 
     /// # Arguments
-    /// - `rhs` is to be multiplied to `self`, and is `&Self` type.
+    /// - `rhs` is to be multiplied to `self`, and is `&Self`-type.
     /// 
     /// # Panics
     /// If `size_of::<T>() * N` <= `128`, this method may panic
@@ -29631,28 +29849,35 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// two separate values, in that order.
     /// 
     /// # Features
-    /// It performs “long multiplication” which takes in an extra amount to add,
-    /// and may return an additional amount of overflow. This allows for
-    /// chaining together multiple multiplications to create “bigger integers”
-    /// which represent larger values.
+    /// - It performs "long multiplication" which takes in an extra amount to
+    ///   add, and may return an additional amount of overflow.
+    ///   This allows for chaining together multiple multiplications to create
+    ///   bigger integers which represent larger values.
+    /// - If the high-order part of the return value is not zero, the
+    ///   `OVERFLOW` flag will be set though the output tuple is free from
+    ///   overflow. It is because the `OVERFLOW` flag is about `self`,
+    ///   and not about the result of multiplication.
     /// 
     /// # Counterpart Methods
-    /// - If you also need to add a carry to the wide result, then you want to use
-    /// [carrying_mul()](struct@BigUInt#method.carrying_mul) instead.
-    /// - The value of the first field in the returned tuple matches what you’d
-    /// get the method [wrapping_mul()](struct@BigUInt#method.wrapping_mul).
-    /// `self.widening_mul(rhs).0` == `self.wrapping_mul(rhs)`
+    /// - If you also need to add a carry to the wide result,
+    ///   then you want to use
+    ///   [carrying_mul()](struct@BigUInt#method.carrying_mul)
+    ///   instead.
+    /// - The value of the first field in the returned tuple matches
+    ///   what you’d get the method
+    ///   [wrapping_mul()](struct@BigUInt#method.wrapping_mul).
+    ///   `self.widening_mul(rhs).0` == `self.wrapping_mul(rhs)`
     /// - The method
-    /// [widening_mul_uint()](struct@BigUInt#method.widening_mul_uint)
-    /// is a bit faster than this method `widening_mul()`.
-    /// If `rhs` is primitive unsigned integral data type such as u8, u16,
-    /// u32, u64, and u128, use the method
-    /// [widening_mul_uint()](struct@BigUInt#method.widening_mul_uint).
+    ///   [widening_mul_uint()](struct@BigUInt#method.widening_mul_uint)
+    ///   is a bit faster than this method `widening_mul()`.
+    ///   So, if `rhs` is primitive unsigned integral data type such as u8,
+    ///   u16, u32, u64, and u128, use the method
+    ///   [widening_mul_uint()](struct@BigUInt#method.widening_mul_uint).
     /// 
-    /// # Examples
+    /// # Example 1 for Normal case
     /// ```
     /// use cryptocol::define_utypes_with;
-    /// define_utypes_with!(u16);
+    /// define_utypes_with!(u32);
     /// 
     /// let a_biguint = U256::from_string("876801874298166903427690031858186486050853753882811946569946433649006084094").unwrap();
     /// let b_biguint = U256::from_string("123456789098765432101234566789098765432101234567890987654321012345678909876").unwrap();
@@ -29660,8 +29885,42 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// 
     /// println!("{} X {} = {}:{}", a_biguint, b_biguint, res_biguint_high, res_biguint_low);
     /// assert_eq!(res_biguint_high.to_string(), "934840581853378776614741519244947987886551255599166686673415072970125925");
-    /// assert_eq!(res_biguint_low.to_string(), "99383456710232708163688724311017197312314189592099594761784803361525674171544");
     /// assert_eq!(res_biguint_high.is_overflow(), false);
+    /// assert_eq!(res_biguint_high.is_underflow(), false);
+    /// assert_eq!(res_biguint_high.is_divided_by_zero(), false);
+    /// assert_eq!(res_biguint_high.is_infinity(), false);
+    /// assert_eq!(res_biguint_high.is_undefined(), false);
+    /// 
+    /// assert_eq!(res_biguint_low.to_string(), "99383456710232708163688724311017197312314189592099594761784803361525674171544");
+    /// assert_eq!(res_biguint_low.is_overflow(), true);
+    /// assert_eq!(res_biguint_low.is_underflow(), false);
+    /// assert_eq!(res_biguint_low.is_divided_by_zero(), false);
+    /// assert_eq!(res_biguint_low.is_infinity(), false);
+    /// assert_eq!(res_biguint_low.is_undefined(), false);
+    /// ```
+    /// # Example 2 for Maximum case
+    /// ```
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u32);
+    /// 
+    /// let a_biguint = U256::max();
+    /// let b_biguint = U256::max();
+    /// let (res_biguint_low, res_biguint_high) = a_biguint.widening_mul(&b_biguint);
+    /// 
+    /// println!("{} X {} = {}:{}", a_biguint.to_string_with_radix_and_stride(16, 8).unwrap(), b_biguint.to_string_with_radix_and_stride(16, 8).unwrap(), res_biguint_high.to_string_with_radix_and_stride(16, 8).unwrap(), res_biguint_low.to_string_with_radix_and_stride(16, 8).unwrap());
+    /// assert_eq!(res_biguint_high.to_string_with_radix_and_stride(16, 8).unwrap(), "FFFFFFFF_FFFFFFFF_FFFFFFFF_FFFFFFFF_FFFFFFFF_FFFFFFFF_FFFFFFFF_FFFFFFFE");
+    /// assert_eq!(res_biguint_high.is_overflow(), false);
+    /// assert_eq!(res_biguint_high.is_underflow(), false);
+    /// assert_eq!(res_biguint_high.is_divided_by_zero(), false);
+    /// assert_eq!(res_biguint_high.is_infinity(), false);
+    /// assert_eq!(res_biguint_high.is_undefined(), false);
+    /// 
+    /// assert_eq!(res_biguint_low.to_string_with_radix_and_stride(16, 8).unwrap(), "1");
+    /// assert_eq!(res_biguint_low.is_overflow(), true);
+    /// assert_eq!(res_biguint_low.is_underflow(), false);
+    /// assert_eq!(res_biguint_low.is_divided_by_zero(), false);
+    /// assert_eq!(res_biguint_low.is_infinity(), false);
+    /// assert_eq!(res_biguint_low.is_undefined(), false);
     /// ```
     /// 
     /// # Big-endian issue
@@ -29690,10 +29949,19 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// It returns the high-order (overflow) bits of the result `self` * `rhs`.
     /// 
     /// # Features
-    /// It performs “long multiplication” which takes in an extra amount to add,
-    /// and may return an additional amount of overflow. This allows for
-    /// chaining together multiple multiplications to create “bigger integers”
-    /// which represent larger values.
+    /// - It performs “long multiplication” which takes in an extra amount to add,
+    ///   and may return an additional amount of overflow. This allows for
+    ///   chaining together multiple multiplications to create “bigger integers”
+    ///   which represent larger values.
+    /// - If the return value is not zero, the `OVERFLOW` flag will be set
+    ///   though the output tuple is free from overflow. It is because the
+    ///   `OVERFLOW` flag is about `self`, and not about the result of
+    ///   multiplication.
+    /// - All the flags are historical, which means, for example, if an
+    ///   overflow occurred even once before this current operation or
+    ///   `OVERFLOW` flag is already set before this current operation,
+    ///   the `OVERFLOW` flag is not changed even if this current operation
+    ///   does not cause overflow.
     /// 
     /// # Counterpart Methods
     /// - If you also need to add a carry to the wide result, then you want
@@ -29710,22 +29978,64 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     ///   u32, u64, and u128, use the method
     ///   [widening_mul_assign_uint()](struct@BigUInt#method.widening_mul_assign_uint).
     /// 
-    /// # Examples
+    /// # Example 1 for Normal case
     /// ```
     /// use cryptocol::define_utypes_with;
-    /// define_utypes_with!(u32);
+    /// define_utypes_with!(u64);
     /// 
     /// let mut a_biguint = UU32::from_string("876801874298166903427690031858186486050853753882811946569946433649006084094").unwrap();
     /// let b_biguint = U256::from_string("123456789098765432101234566789098765432101234567890987654321012345678909876").unwrap();
-    /// 
     /// println!("Originally, a_biguint = {}", a_biguint);
-    /// assert_eq!(a_biguint.to_string(), "876801874298166903427690031858186486050853753882811946569946433649006084094");
+    /// assert_eq!(a_biguint.is_overflow(), false);
+    /// assert_eq!(a_biguint.is_underflow(), false);
+    /// assert_eq!(a_biguint.is_divided_by_zero(), false);
+    /// assert_eq!(a_biguint.is_infinity(), false);
+    /// assert_eq!(a_biguint.is_undefined(), false);
     /// 
     /// let res_biguint_high = a_biguint.widening_mul_assign(&b_biguint);
     /// println!("After a_biguint.widening_mul_assign(&b_biguint),\na_biguint = {}\nres_biguint_high = {}", a_biguint, res_biguint_high);
     /// assert_eq!(a_biguint.to_string(), "99383456710232708163688724311017197312314189592099594761784803361525674171544");
+    /// assert_eq!(a_biguint.is_overflow(), true);
+    /// assert_eq!(a_biguint.is_underflow(), false);
+    /// assert_eq!(a_biguint.is_divided_by_zero(), false);
+    /// assert_eq!(a_biguint.is_infinity(), false);
+    /// assert_eq!(a_biguint.is_undefined(), false);
     /// assert_eq!(res_biguint_high.to_string(), "934840581853378776614741519244947987886551255599166686673415072970125925");
     /// assert_eq!(res_biguint_high.is_overflow(), false);
+    /// assert_eq!(res_biguint_high.is_underflow(), false);
+    /// assert_eq!(res_biguint_high.is_divided_by_zero(), false);
+    /// assert_eq!(res_biguint_high.is_infinity(), false);
+    /// assert_eq!(res_biguint_high.is_undefined(), false);
+    /// ```
+    /// 
+    /// # Example 2 for Maximum case
+    /// ```
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u64);
+    /// 
+    /// let mut a_biguint = U256::max();
+    /// let b_biguint = U256::max();
+    /// println!("Originally, a_biguint = {}", a_biguint.to_string_with_radix_and_stride(16, 8).unwrap());
+    /// assert_eq!(a_biguint.is_overflow(), false);
+    /// assert_eq!(a_biguint.is_underflow(), false);
+    /// assert_eq!(a_biguint.is_divided_by_zero(), false);
+    /// assert_eq!(a_biguint.is_infinity(), false);
+    /// assert_eq!(a_biguint.is_undefined(), false);
+    /// 
+    /// let res_biguint_high = a_biguint.widening_mul_assign(&b_biguint);
+    /// println!("After a_biguint.widening_mul_assign(&b_biguint),\na_biguint = {}\nres_biguint_high = {}", a_biguint.to_string_with_radix_and_stride(16, 8).unwrap(), res_biguint_high.to_string_with_radix_and_stride(16, 8).unwrap());
+    /// assert_eq!(a_biguint.to_string_with_radix_and_stride(16, 8).unwrap(), "1");
+    /// assert_eq!(a_biguint.is_overflow(), true);
+    /// assert_eq!(a_biguint.is_underflow(), false);
+    /// assert_eq!(a_biguint.is_divided_by_zero(), false);
+    /// assert_eq!(a_biguint.is_infinity(), false);
+    /// assert_eq!(a_biguint.is_undefined(), false);
+    /// assert_eq!(res_biguint_high.to_string_with_radix_and_stride(16, 8).unwrap(), "FFFFFFFF_FFFFFFFF_FFFFFFFF_FFFFFFFF_FFFFFFFF_FFFFFFFF_FFFFFFFF_FFFFFFFE");
+    /// assert_eq!(res_biguint_high.is_overflow(), false);
+    /// assert_eq!(res_biguint_high.is_underflow(), false);
+    /// assert_eq!(res_biguint_high.is_divided_by_zero(), false);
+    /// assert_eq!(res_biguint_high.is_infinity(), false);
+    /// assert_eq!(res_biguint_high.is_undefined(), false);
     /// ```
     /// 
     /// # Big-endian issue
@@ -29844,6 +30154,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
         high
     }
 
+    //===================
     // pub fn wrapping_mul(&self, rhs: &Self) -> Self
     /// Computes `self` * `rhs`, wrapping around at the boundary of the type.
     /// 
@@ -30549,8 +30860,8 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// and `INFINITY` will be set.
     /// - All the flags reflect historical underflow, which means, for example,
     /// if an overflow occurred even once before this current operation or
-    /// `OVERFOLOW` flag is already set before this current operation, the
-    /// `OVERFOLOW` flag is not changed even though this current operation does
+    /// `OVERFLOW` flag is already set before this current operation, the
+    /// `OVERFLOW` flag is not changed even though this current operation does
     /// not cause overflow.
     /// 
     /// # Counterpart Method
@@ -30715,8 +31026,8 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// and `INFINITY` will be set.
     /// - All the flags reflect historical underflow, which means, for example,
     /// if an overflow occurred even once before this current operation or
-    /// `OVERFOLOW` flag is already set before this current operation, the
-    /// `OVERFOLOW` flag is not changed even though this current operation does
+    /// `OVERFLOW` flag is already set before this current operation, the
+    /// `OVERFLOW` flag is not changed even though this current operation does
     /// not cause overflow.
     /// 
     /// # Counterpart Method
@@ -31219,13 +31530,13 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// and `INFINITY` will be set.
     /// - All the flags reflect historical flags, which means, for example,
     /// if an overflow occurred even once before this current operation or
-    /// `OVERFOLOW` flag is already set before this current operation, the
-    /// `OVERFOLOW` flag is not changed even though this current operation does
+    /// `OVERFLOW` flag is already set before this current operation, the
+    /// `OVERFLOW` flag is not changed even though this current operation does
     /// not cause overflow.
     /// - All the flags reflect historical underflow, which means, for example,
     /// if an overflow occurred even once before this current operation or
-    /// `OVERFOLOW` flag is already set before this current operation, the
-    /// `OVERFOLOW` flag is not changed even though this current operation does
+    /// `OVERFLOW` flag is already set before this current operation, the
+    /// `OVERFLOW` flag is not changed even though this current operation does
     /// not cause overflow.
     /// - If `modulo` is `zero`, the flags such as `OVERFLOW`, `DIVIDED_BY_ZERO`,
     /// and `INFINITY` will be set.
