@@ -5876,7 +5876,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     ///   at `modulo` while the method `wrapping_add_assign_uint()` sets
     ///   `OVERFLOW` flag when wrapping around happens at `maximum value + 1`.
     /// - If `modulo` is either `zero` or `one`, the `UNDEFINED` flag of the
-    ///   return value will be set and the result value will have the value `0`.
+    ///   return value will be set and the return value will have the value `0`.
     /// - In summary, the return value and its flags will be set as follows:
     /// 
     /// | `modulo` | return value | flags       |
@@ -6195,13 +6195,13 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     ///   Second, this method sets `OVERFLOW` flag when wrapping around happens
     ///   at `modulo` while the method `wrapping_add_assign_uint()` sets
     ///   `OVERFLOW` flag when wrapping around happens at `maximum value + 1`.
-    /// - If `modulo` is either `zero` or `one`, the `UNDEFINED` flag of the
-    ///   return value will be set and the result value will have the value `0`.
-    /// - In summary, the return value and its flags will be set as follows:
+    /// - If `modulo` is either `zero` or `one`, the `UNDEFINED` flag of `self`
+    ///   will be set and `self` will have the value `0`.
+    /// - In summary, `self` and its flags will be set as follows:
     /// 
-    /// | `modulo` | return value | flags       |
-    /// |----------|--------------|-------------|
-    /// | 0 or 1   | 0            | `UNDEFINED` |
+    /// | `modulo` | result value (self) | flags       |
+    /// |----------|---------------------|-------------|
+    /// | 0 or 1   | 0                   | `UNDEFINED` |
     /// 
     /// - All the flags are historical, which means, for example, if an
     ///   overflow occurred even once before this current operation or
@@ -26408,7 +26408,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     ///   at `modulo`, while the method `wrapping_add()` sets `OVERFLOW`
     ///   flag when wrapping around happens at `maximum value + 1`.
     /// - If `modulo` is either `zero` or `one`, the `UNDEFINED` flag of the
-    ///   return value will be set and the result value will have the value `0`.
+    ///   return value will be set and the return value will have the value `0`.
     /// - In summary, the return value and its flags will be set as follows:
     /// 
     /// | `modulo` | return value | flags       |
@@ -26734,16 +26734,16 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     ///   around happens, and, second, when `OVERFLOW` flag is set.
     ///   First, this method wraps around at `modulo` while the method
     ///   `wrapping_add_assign()` wraps around at maximum value.
-    ///   Second, this method does not set `OVERFLOW` flag even if wrapping
-    ///   around happens, while the method `wrapping_add_assign()` sets
+    ///   Second, this method sets `OVERFLOW` flag when wrapping around happens
+    ///   at `modulo`, while the method `wrapping_add_assign()` sets
     ///   `OVERFLOW` flag when wrapping around happens at `maximum value + 1`.
-    /// - If `modulo` is either `zero` or `one`, the `UNDEFINED` flag of the
-    ///   return value will be set and the result value will have the value `0`.
-    /// - In summary, the return value and its flags will be set as follows:
+    /// - If `modulo` is either `zero` or `one`, the `UNDEFINED` flag of `self`
+    ///   will be set and `self` will have the value `0`.
+    /// - In summary, `self` and its flags will be set as follows:
     /// 
-    /// | `modulo` | return value | flags       |
-    /// |----------|--------------|-------------|
-    /// | 0 or 1   | 0            | `UNDEFINED` |
+    /// | `modulo` | result value (self) | flags       |
+    /// |----------|---------------------|-------------|
+    /// | 0 or 1   | 0                   | `UNDEFINED` |
     /// 
     /// - All the flags are historical, which means, for example, if an
     ///   overflow occurred even once before this current operation or
