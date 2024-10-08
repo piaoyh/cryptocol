@@ -4490,7 +4490,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     // pub fn wrapping_add_assign_uint<U>(&mut self, rhs: U)
     /// Calculates `self` + `rhs`,
     /// wrapping around at the boundary of the `Self` type,
-    /// and assign the addition result `self` + `rhs` + `carry` to `self` back.
+    /// and assign the addition result `self` + `rhs` to `self` back.
     /// 
     /// # Arguments
     /// `rhs` is to be added to `self`, and small-sized unsigned integer
@@ -4821,11 +4821,11 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// # Output
     /// It returns the sum `self` + `rhs` wrapped by `Some` of enum `Option`
     /// if overflow did not occur at current operation.
-    /// Otherwise, it returns `None` of enum Option.
+    /// Otherwise, it returns `None` of enum `Option`.
     /// 
     /// # Features
     /// It does not wrap around at the boundary of the `Self` type.
-    /// So, if overflow happened, it returns `None` of enum Option.
+    /// So, if overflow happened, it returns `None` of enum `Option`.
     /// 
     /// # Counterpart Method
     /// If `rhs` is bigger tham `ui128`, the method
@@ -5868,12 +5868,12 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     ///   and then finally returns the remainder of `sum` divided by `modulo`.
     /// - Wrapping (modular) addition at `modulo`.
     /// - The differences between this method `panic_free_modular_add_uint()`
-    ///   and the method `wrapping_add_assign_uint()` are, first, where
+    ///   and the method `wrapping_add_uint()` are, first, where
     ///   wrapping around happens, and, second, when `OVERFLOW` flag is set.
     ///   First, this method wraps around at `modulo` while the method
-    ///   `wrapping_add_assign_uint()` wraps around at `maximum value + 1`.
+    ///   `wrapping_add_uint()` wraps around at `maximum value + 1`.
     ///   Second, this method sets `OVERFLOW` flag when wrapping around happens
-    ///   at `modulo` while the method `wrapping_add_assign_uint()` sets
+    ///   at `modulo` while the method `wrapping_add_uint()` sets
     ///   `OVERFLOW` flag when wrapping around happens at `maximum value + 1`.
     /// - If `modulo` is either `zero` or `one`, the `UNDEFINED` flag of the
     ///   return value will be set and the return value will have the value `0`.
@@ -6654,36 +6654,44 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /*** Subtraction ***/
 
     // pub fn borrowing_sub_uint<U>(&self, rhs: U, borrow: bool) -> (Self, bool)
-    /// Calculates self − rhs − borrow and returns a tuple containing the
-    /// difference and the output borrow.
+    /// Calculates `self` - `rhs` - `carry`,
+    /// wrapping around at the boundary of the `Self` type,
+    /// and returns a tuple of a subtraction result `self` - `rhs` - `carry`
+    /// along with a borrow-out bit.
     /// 
     /// # Arguments
-    /// - `rhs` is to be subtracted from `self`, and small-sized unsigned integer
-    ///   such as `u8`, `u16`, `u32`, `u64`, and `u128`.
-    /// - `borrow` is to be added to `self`, and is of `bool`-type.
+    /// - `rhs` is to be subtracted from `self`, and is of small-sized unsigned
+    ///   integer such as `u8`, `u16`, `u32`, `u64`, and `u128`.
+    /// - `borrow` is of `bool` type so that `1` may be subtracted from `self`
+    ///   if `borrow` is `true`.
     /// 
     /// # Panics
     /// If `size_of::<T>() * N` <= `128`, this method may panic
     /// or its behavior may be undefined though it may not panic.
     /// 
     /// # Outputs
-    /// It returns a tuple containing an output big integer and a carry-out bit.
+    /// It returns a tuple containing the subtraction result and the borrow-out
+    /// bit. It performs "ternary subtraction" of one `Self`-typed operand,
+    /// a primitive unsigned integer, and a borrow-in bit, and returns an tuple
+    /// of an subtraction result in `Self` type and a borrow-out bit.
     /// 
     /// # Features
-    /// - It performs “ternary subtraction” by subtracting a primitive unsigned
-    ///   integer operand and a borrow-in bit from `self`, and returns an output
-    ///   integer and a borrow-out bit. This allows chaining together multiple
-    ///   subtractions to create a wider subtraction.
+    /// - Wrapping (modular) subtraction.
+    /// - This allows chaining together multiple subtraction to create even a
+    ///   wider subtraction. This can be thought of as a big integer
+    ///   "full subtracter", in the electronics sense.
     /// - If the input borrow is `false`, this method is equivalent to
-    ///   `overflowing_sub_uint()`, and the output carry is equal to
-    ///   the `UNDERFLOW` flag.
-    /// - If the underflow happened, the flag `UNDERFLOW` of the return value
-    ///   will be set.
+    ///   `overflowing_sub_uint()`, and the output borrow reflects current
+    ///   underflow.
+    /// - The output borrow is equal to the `UNDERFLOW` flag
+    ///   of the return value.
+    /// - If underflow happened, the flag `UNDERFLOW` of the return value will
+    ///   be set.
     /// 
     /// # Counterpart Method
-    /// If `rhs` is bigger than `u128`, the method
+    /// If `rhs` is bigger tham `ui128`, the method
     /// [borrowing_sub()](struct@BigUInt#method.borrowing_sub)
-    /// is proper rather than this method `borrowing_sub_uint()`.
+    /// is proper rather than this method.
     /// 
     /// # Example 1
     /// ```
@@ -6785,41 +6793,45 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     }
 
     // pub fn borrowing_sub_assign_uint<U>(&mut self, rhs: U, borrow: bool) -> bool
-    /// Calculates self − rhs − borrow, and assigns difference to `self` back,
-    /// and returns the output borrow.
+    /// Calculates `self` - `rhs` - `carry`,
+    /// wrapping around at the boundary of the `Self` type,
+    /// and assign the subtraction result `self` - `rhs` - `carry`
+    /// to `self` back,
+    /// and return the resulting borrow.
     /// 
     /// # Arguments
-    /// - `rhs` is to be subtracted from `self`, and small-sized unsigned integer
-    ///   such as `u8`, `u16`, `u32`, `u64`, and `u128`.
-    /// - `borrow` is to be added to `self`, and is of `bool`-type.
+    /// - `rhs` is to be subtracted from `self`, and is of small-sized unsigned
+    ///   integer such as `u8`, `u16`, `u32`, `u64`, and `u128`.
+    /// - `borrow` is of `bool` type so that `1` may be subtracted from `self`
+    ///   if `borrow` is `true`.
     /// 
     /// # Panics
     /// If `size_of::<T>() * N` <= `128`, this method may panic
     /// or its behavior may be undefined though it may not panic.
     /// 
     /// # Outputs
-    /// It returns a carry-out bit.
+    /// It returns the output borrow. It performs "ternary subtraction" of one
+    /// `Self`-typed operand, primitive unsigned integer, and a borrow-in bit,
+    /// and returns a borrow-out bit.
     /// 
     /// # Features
-    /// - It performs "ternary subtraction" by subtracting both an integer
-    ///   operand and a borrow-in bit from `self`, and a borrow-out bit.
-    ///   This allows chaining together multiple subtractions to create
-    ///   a wider subtraction.
-    /// - If the input borrow is `false`, this method is equivalent to
-    ///   `overflowing_sub_assign_uint()`, and the output carry reflect current
-    ///   underflow.
-    /// - If the underflow happened, the flag `UNDERFLOW` of `self`
-    ///   will be set.
-    /// - All the flags are historical, which means, for example, if an
-    ///   underflow occurred even once before this current operation or
-    ///   `UNDERFLOW` flag is already set before this current operation,
-    ///   the `UNDERFLOW` flag is not changed even if this current operation
-    ///   does not cause underflow.
+    /// - Wrapping (modular) subtraction.
+    /// - This allows chaining together multiple subtraction to create even a
+    ///   wider subtraction. This can be thought of as a big integer
+    ///   "full subtracter", in the electronics sense.
+    /// - If the input borrow is false, this method is equivalent to
+    ///   `overflowing_sub_assign_uint()`, and the output borrow reflects
+    ///   the current underflow.
+    /// - If underflow happened, the flag `UNDERFLOW` of `self` will be set.
+    /// - All the flags are historical, which means, for example, if an underflow
+    ///   occurred even once before this current operation or `UNDERFLOW`
+    ///   flag is already set before this current operation, the `UNDERFLOW` flag
+    ///   is not changed even if this current operation does not cause underflow.
     /// 
     /// # Counterpart Method
-    /// If `rhs` is bigger than `u128`, the method
+    /// If `rhs` is bigger tham `ui128`, the method
     /// [borrowing_sub_assign()](struct@BigUInt#method.borrowing_sub_assign)
-    /// is proper rather than this method `borrowing_sub_assign_uint()`.
+    /// is proper rather than this method.
     /// 
     /// # Example 1
     /// ```
@@ -6969,8 +6981,9 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     }
 
     // pub fn wrapping_sub_uint<U>(&self, rhs: U) -> Self
-    /// Subtracts a unsigned integer number of type `U` from `self`,
-    /// and returns its result in a type of `BigUInt`.
+    /// Calculates `self` - `rhs`,
+    /// wrapping around at the boundary of the `Self` type,
+    /// and returns a subtraction result `self` - `rhs`.
     /// 
     /// # Arguments
     /// `rhs` is to be subtracted from `self`, and small-sized unsigned integer
@@ -6981,19 +6994,17 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// or its behavior may be undefined though it may not panic.
     /// 
     /// # Output
-    /// It returns the subtraction of `rhs` from `self`.
+    /// It returns `self` - `rhs` with wrapping (modular) subtraction.
     /// 
     /// # Features
     /// - Wrapping (modular) subtraction.
-    /// - It computes `self` - `rhs`, wrapping around at the boundary
-    ///   of the `Self` type.
-    /// - If the underflow would occur, the flag `UNDERFLOW`
-    ///   of the return value will be set.
+    /// - If underflow happened, the flag `UNDERFLOW` of the return value
+    ///   will be set.
     /// 
     /// # Counterpart Method
-    /// If `rhs` is bigger than `u128`, the method
+    /// If `rhs` is bigger tham `ui128`, the method
     /// [wrapping_sub()](struct@BigUInt#method.wrapping_sub)
-    /// is proper rather than this method `wrapping_sub_uint()`.
+    /// is proper rather than this method.
     /// 
     /// # Example 1
     /// ```
@@ -7062,8 +7073,9 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     }
 
     // pub fn wrapping_sub_assign_uint<U>(&mut self, rhs: U)
-    /// Subtracts rhs of type `U` from self which is of `BigUInt` type,
-    /// and returns the result to `self` back.
+    /// Calculates `self` - `rhs`,
+    /// wrapping around at the boundary of the `Self` type,
+    /// and assign the subtraction result `self` - `rhs` to `self` back.
     /// 
     /// # Arguments
     /// `rhs` is to be subtracted from `self`, and small-sized unsigned integer
@@ -7075,20 +7087,16 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// 
     /// # Features
     /// - Wrapping (modular) subtraction.
-    /// - It computes `self` - `rhs`, wrapping around at the boundary
-    ///   of the `Self` type.
-    /// - If the underflow would occur, the flag `UNDERFLOW` of `self`
-    ///   will be set.
-    /// - All the flags are historical, which means, for example, if an
-    ///   underflow occurred even once before this current operation or
-    ///   `UNDERFLOW` flag is already set before this current operation,
-    ///   the `UNDERFLOW` flag is not changed even if this current operation
-    ///   does not cause underflow.
+    /// - If underflow happened, the flag `UNDERFLOW` of `self` will be set.
+    /// - All the flags are historical, which means, for example, if an underflow
+    ///   occurred even once before this current operation or `UNDERFLOW`
+    ///   flag is already set before this current operation, the `UNDERFLOW` flag
+    ///   is not changed even if this current operation does not cause underflow.
     /// 
     /// # Counterpart Method
-    /// If `rhs` is bigger than `u128`, the method
+    /// If `rhs` is bigger tham `u128`, the method
     /// [wrapping_sub_assign()](struct@BigUInt#method.wrapping_sub_assign)
-    /// is proper rather than this method `wrapping_sub_assign_uint()`.
+    /// is proper rather than this method.
     /// 
     /// # Example 1
     /// ```
@@ -7190,8 +7198,10 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     }
 
     // pub fn overflowing_sub_uint<U>(&self, rhs: U) -> (Self, bool)
-    /// Calculates `self` - `rhs`, and returns a tuple of the result of
-    /// subtraction and whether underflow would occur.
+    /// Calculates `self` - `rhs`,
+    /// wrapping around at the boundary of the `Self` type,
+    /// and returns a tuple of the subtraction result `self` - `rhs` along with
+    /// a boolean indicating whether an arithmetic underflow would occur.
     /// 
     /// # Arguments
     /// `rhs` is to be subtracted from `self`, and small-sized unsigned integer
@@ -7203,23 +7213,21 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// 
     /// # Output
     /// It returns a tuple of the subtraction `self` - `rhs` along with a
-    /// boolean indicating whether an arithmetic underflow would occur. If an
-    /// underflow would have occurred then the wrapped (modular) value is
-    /// returned.
+    /// boolean indicating whether an arithmetic underflow would occur.
+    /// If an underflow would have occurred, then the wrapped (modular) value
+    /// is returned.
     /// 
     /// # Features
     /// - Wrapping (modular) subtraction.
-    /// - It returns a tuple of the subtraction along with a boolean indicating
-    ///   whether an arithmetic underflow would occur.
-    /// - If underflowing happens, the second element of the output tuple will
+    /// - If underflow happens, the second element of the output tuple will
     ///   be true and the `UNDERFLOW` flag of the return value will be set.
     /// - The second element of the output tuple reflects only
     ///   the current underflow.
     /// 
     /// # Counterpart Method
-    /// If `rhs` is bigger than `u128`, the method
-    /// [overflowing_sub()](struct@BigUInt#method.overflowing_sub) is proper
-    /// rather than this method `overflowing_sub_uint()`.
+    /// If `rhs` is bigger tham `ui128`, the method
+    /// [overflowing_sub()](struct@BigUInt#method.overflowing_sub)
+    /// is proper rather than this method.
     /// 
     /// # Example 1
     /// ```
@@ -7291,11 +7299,15 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
         (res, current_underflow)
     }
 
-    // pub fn overflowing_sub_assign<U>(&mut self, rhs: U) -> bool
-    /// Calculates `self` - `rhs`, and assigns the result to `self` back.
+    // pub fn overflowing_add_assign_uint<U>(&mut self, rhs: U) -> bool
+    /// Calculates `self` - `rhs`,
+    /// wrapping around at the boundary of the `Self` type,
+    /// and assigns the subtraction result `self` - `rhs` to `self` back,
+    /// and returns a boolean indicating whether an arithmetic underflow
+    /// would occur.
     /// 
     /// # Arguments
-    /// - `rhs` is to be subtracted from `self`, and small-sized unsigned integer
+    /// `rhs` is to be subtracted from `self`, and small-sized unsigned integer
     /// such as `u8`, `u16`, `u32`, `u64`, and `u128`.
     /// 
     /// # Panics
@@ -7303,36 +7315,25 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// or its behavior may be undefined though it may not panic.
     /// 
     /// # Output
-    /// It returns true if an arithmetic unerflow would occur.
+    /// It returns true if an arithmetic underflow would occur.
     /// Otherwise, it returns `false`.
     /// 
     /// # Features
     /// - Wrapping (modular) subtraction.
-    /// - If an underflow would have occurred then the wrapped value is
-    ///   assigned back to `self`, and the flag `UNDERFLOW` of `self`
-    ///   will be set.
-    /// - It returns a boolean indicating whether an arithmetic underflow
-    ///   would occur at the current operation.
-    /// - All the flags are historical, which means, for example, if an
-    ///   underflow occurred even once before this current operation or
-    ///   `UNDERFLOW` flag is already set before this current operation,
-    ///   the `UNDERFLOW` flag is not changed even if this current operation
-    ///   does not cause underflow.
-    /// 
-    /// - If overflowing did not happen in the current operation, the output
-    ///   will be false even if the `OVERFLOW` flag of `self` was already set
+    /// - If underflow happened, the flag `UNDERFLOW` of `self` will be set.
+    /// - If underflow did not happen in the current operation, the output
+    ///   will be false even if the `UNDERFLOW` flag of `self` was already set
     ///   because of previous operation of `self`.
-    /// - The output reflects only the current overflow.
-    /// - All the flags are historical, which means, for example, if an overflow
-    ///   occurred even once before this current operation or `OVERFLOW`
-    ///   flag is already set before this current operation, the `OVERFLOW` flag
-    ///   is not changed even if this current operation does not cause overflow.
-    /// 
+    /// - The output reflects only the current underflow.
+    /// - All the flags are historical, which means, for example, if an underflow
+    ///   occurred even once before this current operation or `UNDERFLOW`
+    ///   flag is already set before this current operation, the `UNDERFLOW` flag
+    ///   is not changed even if this current operation does not cause underflow.
     /// 
     /// # Counterpart Method
-    /// If `rhs` is bigger than `u128`, the method
+    /// If `rhs` is bigger tham `ui128`, the method
     /// [overflowing_sub_assign()](struct@BigUInt#method.overflowing_sub_assign)
-    /// is proper rather than this method `overflowing_sub_assign_uint()`.
+    /// is proper rather than this method.
     /// 
     /// # Example 1
     /// ```
@@ -7444,8 +7445,9 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     }
 
     // pub fn checked_sub_uint<U>(&self, rhs: U) -> Option<Self>
-    /// Computes `self` - `rhs` and returns the result wrapped by `Some`
-    /// of enum `Option` if unerflow did not occur.
+    /// Calculates `self` - `rhs`,
+    /// and returns an subtraction result `self` - `rhs`
+    /// wrapped by `Some` of enum `Option`.
     /// 
     /// # Arguments
     /// `rhs` is to be subtracted from `self`, and small-sized unsigned integer
@@ -7456,18 +7458,18 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// or its behavior may be undefined though it may not panic.
     /// 
     /// # Output
-    /// It returns the difference `self` - `rhs` wrapped by `Some`
-    /// of enum `Option` if unerflow did not occur.
+    /// It returns the difference `self` - `rhs` wrapped by `Some` of enum
+    /// `Option` if underflow did not occur at current operation.
     /// Otherwise, it returns `None` of enum `Option`.
     /// 
     /// # Features
-    /// - Checked integer subtraction.
-    /// - It computes `self` - `rhs, returning `None` if underflow occurred.
+    /// It does not wrap around at the boundary of the `Self` type.
+    /// So, if underflow happened, it returns `None` of enum `Option`.
     /// 
     /// # Counterpart Method
-    /// If `rhs` is bigger than `u128`, the method
-    /// [checked_sub()](struct@BigUInt#method.checked_sub) is proper
-    /// rather than this method `checked_sub_uint()`.
+    /// If `rhs` is bigger tham `ui128`, the method
+    /// [checked_sub()](struct@BigUInt#method.checked_sub)
+    /// is proper rather than this method.
     /// 
     /// # Example 1
     /// ```
@@ -7554,7 +7556,8 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     }
 
     // pub fn unchecked_sub_uint<U>(&self, rhs: U) -> Self
-    /// Computes `self` - `rhs`, assuming underflow cannot occur.
+    /// Calculates `self` - `rhs`, assuming underflow cannot occur,
+    /// and returns an subtraction result `self` - `rhs`.
     /// 
     /// # Arguments
     /// `rhs` is to be subtracted from `self`, and small-sized unsigned integer
@@ -7563,21 +7566,21 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// # Panics
     /// - If `size_of::<T>() * N` <= `128`, this method may panic
     ///   or its behavior may be undefined though it may not panic.
-    /// - If underflow occurred, it will panic. So, use this method only when
-    ///   you are sure that underflow will not occur.
-    /// 
-    /// # Features
-    /// - Unchecked integer subtraction.
-    /// - It computes `self` - `rhs`, assuming overflow cannot occur.
+    /// - If underflow occurred, it will panic. So, use this method
+    ///   only when you are sure that underflow will not occur.
     /// 
     /// # Output
-    /// It returns the difference `self` - `rhs` if underflow did not occur.
-    /// Otherwise, it will panic.
+    /// It returns the difference `self` - `rhs` if underflow did not occur at
+    /// current operation. Otherwise, it will panic.
+    /// 
+    /// # Features
+    /// It does not wrap around at the boundary of the `Self` type.
+    /// So, if underflow happened, it will panic.
     /// 
     /// # Counterpart Method
-    /// If `rhs` is bigger than `u128`, the method
-    /// [unchecked_sub()](struct@BigUInt#method.unchecked_sub) is proper
-    /// rather than this method `unchecked_sub_uint()`.
+    /// If `rhs` is bigger tham `ui128`, the method
+    /// [unchecked_sub()](struct@BigUInt#method.unchecked_sub)
+    /// is proper rather than this method.
     /// 
     /// # Example 1
     /// ```
@@ -7623,8 +7626,8 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     }
 
     // pub fn saturating_sub_uint<U>(&self, rhs: U) -> Self
-    /// Computes `self` - `rhs`, saturating at the numeric bounds
-    /// instead of underflowing.
+    /// Calculates `self` - `rhs`,
+    /// saturating at `0` instead of underflowing.
     /// 
     /// # Arguments
     /// `rhs` is to be subtracted from `self`, and small-sized unsigned integer
@@ -7635,19 +7638,18 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// or its behavior may be undefined though it may not panic.
     /// 
     /// # Output
-    /// - If the difference `self` - `rhs` is greater or equal to `0`,
-    ///   it returns the differnce.
-    /// - If the difference `self` - `rhs` is less than `0`, it returns `0`.
+    /// It returns the difference `self` - `rhs` if the result is less than
+    /// or equal to `0` of `Self`. If the difference `self` - `rhs`
+    /// is less than `0`, it returns `0`.
     /// 
     /// # Features
-    /// - Saturating integer subtraction.
-    /// - This method saturates when it reaches `zero`.
+    /// - This method saturates when it reaches `0` of `Self`.
     /// - It does not set `UNDERFLOW` flag of the return value.
     /// 
     /// # Counterpart Method
-    /// If `rhs` is bigger than `u128`, the method
+    /// If `rhs` is bigger tham `ui128`, the method
     /// [saturating_sub()](struct@BigUInt#method.saturating_sub)
-    /// is proper rather than this method `saturating_sub_uint()`.
+    /// is proper rather than this method.
     /// 
     /// # Example 1
     /// ```
@@ -7716,9 +7718,10 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
         res
     }
 
-    // pub fn saturating_sub_assign_uint<U>(&mut self, rhs: U)
-    /// Computes `self` - `rhs`, saturating at the numeric bounds
-    /// instead of underflowing, and assigns the result to `self` back.
+    // pub fn saturating_sub_assign_uint<U>(&mut self, rhs: T)
+    /// Calculates `self` - `rhs`,
+    /// saturating at `0` instead of underflowing,
+    /// and assigns the result to `self` back.
     /// 
     /// # Arguments
     /// `rhs` is to be subtracted from `self`, and small-sized unsigned integer
@@ -7729,23 +7732,17 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// or its behavior may be undefined though it may not panic.
     /// 
     /// # Features
-    /// - Saturating integer subtraction.
-    /// - If the difference `self` - `rhs` is greater or equal to `0`,
-    ///   the result will be the differnce.
-    /// - If the difference `self` - `rhs` is less than `0`, the result
-    ///   will be  `0`.
-    /// - This method saturates when it reaches `zero`.
+    /// - This method saturates when it reaches `0` of `Self`.
     /// - It does not set `UNDERFLOW` flag of the return value.
-    /// - All the flags are historical, which means, for example, if an
-    ///   underflow occurred even once before this current operation or
-    ///   `UNDERFLOW` flag is already set before this current operation,
-    ///   the `UNDERFLOW` flag is not changed even if this current operation
-    ///   does not cause underflow.
+    /// - All the flags are historical, which means, for example, if an underflow
+    ///   occurred even once before this current operation or `UNDERFLOW`
+    ///   flag is already set before this current operation, the `UNDERFLOW` flag
+    ///   is not changed even if this current operation does not cause underflow.
     /// 
     /// # Counterpart Method
-    /// If `rhs` is bigger than `u128`, the method
+    /// If `rhs` is bigger tham `ui128`, the method
     /// [saturating_sub_assign()](struct@BigUInt#method.saturating_sub_assign)
-    /// is proper rather than this method `saturating_sub_assign_uint()`.
+    /// is proper rather than this method.
     /// 
     /// # Example 1
     /// ```
@@ -7843,35 +7840,37 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     }
 
     // pub fn modular_sub_uint<U>(&self, rhs: U, modulo: &Self) -> Self
-    /// Computes (`self` - `rhs`) % `modulo`, wrapping around at `modulo` of the
-    /// type `Self` instead of underflowing.
+    /// Calculates (`self` - `rhs`) % `modulo`,
+    /// wrapping around at `modulo` of the `Self` type instead of underflowing.
     /// 
     /// # Arguments
-    /// - `rhs` is to be subtracted from `self`, and small-sized unsigned integer
-    ///   such as `u8`, `u16`, `u32`, `u64`, and `u128`.
-    /// - `modulo` is the divisor to divide the result of (`self` - `rhs`).
+    /// - `rhs` is to be subtracted from `self`, and small-sized unsigned
+    ///   integer such as `u8`, `u16`, `u32`, `u64`, and `u128`.
+    /// - `modulo` is the divisor to divide the result of (`self` - `rhs`),
+    ///   and is of `&Self` type.
     /// 
     /// # Panics
     /// - If `size_of::<T>() * N` <= `128`, this method may panic
     ///   or its behavior may be undefined though it may not panic.
-    /// - If `modulo` is either zero or one, this method will panic.
+    /// - If `modulo` is either `zero` or `one`, this method will panic.
     /// 
     /// # Output
     /// It returns the modulo-difference (`self` - `rhs`) % `modulo` with
     /// wrapping (modular) subtraction at `modulo`.
     /// 
     /// # Features
-    /// - It takes the result of (= `sub`) of `rhs` subtracted from `self`,
-    ///   and then finally returns the remainder of `sub` divided by `modulo`.
+    /// - It takes the subtraction (= `difference`) of `rhs` from `self`, and
+    ///   then finally returns the remainder of `difference` divided
+    ///   by `modulo`.
     /// - Wrapping (modular) subtraction at `modulo`.
     /// - The differences between this method `modular_sub_uint()` and the
-    ///   method `modular_sub_uint()` are, first, where wrapping around
-    ///   happens, and, second, when `UNDERFLOW` flag is set. First, this
-    ///   method wraps araound at `modulo` while the method
-    ///   `modular_sub_uint()` wraps araound at `maximum value + 1`. Second,
-    ///   this method set `UNDERFLOW` flag when wrapping around happens at
-    ///   `modulo` while the method `modular_sub_uint()` sets `UNDERFLOW`
-    ///   flag when wrapping around happens.
+    ///   method `wrapping_sub_uint()` are, first, where wrapping around
+    ///   happens, and, second, when `UNDERFLOW` flag is set.
+    ///   First, this method wraps around at `modulo` while the method
+    ///   `wrapping_sub_uint()` wraps around at `maximum value + 1`.
+    ///   Second, this method sets `UNDERFLOW` flag when wrapping around happens
+    ///   at `modulo` while the method `wrapping_sub_uint()` sets `UNDERFLOW`
+    ///   flag when wrapping around happens at `maximum value + 1`.
     /// 
     /// # Counterpart Method
     /// If `rhs` is bigger than `u128`, the method
@@ -8132,42 +8131,44 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     }
 
     // pub fn modular_sub_assign_uint<U>(&mut self, rhs: U, modulo: &Self)
-    /// Computes (`self` - `rhs`) % `modulo`, wrapping around at `modulo`
-    /// of the type `Self` instead of underflowing, and then, assign the result
-    /// back to `self`.
+    /// Calculates (`self` - `rhs`) % `modulo`,
+    /// wrapping around at `modulo` of the `Self` type instead of underflowing,
+    /// and then, assigns the result back to `self`.
     /// 
     /// # Arguments
-    /// - `rhs` is to be subtracted from `self`, and small-sized unsigned integer
-    ///   such as `u8`, `u16`, `u32`, `u64`, and `u128`.
-    /// - `modulo` is the divisor to divide the result of (`self` - `rhs`).
+    /// - `rhs` is to be subtracted from `self`, and small-sized unsigned
+    ///   integer such as `u8`, `u16`, `u32`, `u64`, and `u128`.
+    /// - `modulo` is the divisor to divide the result of (`self` - `rhs`),
+    ///   and is of `&Self` type.
     /// 
     /// # Panics
     /// - If `size_of::<T>() * N` <= `128`, this method may panic
     ///   or its behavior may be undefined though it may not panic.
-    /// - If `modulo` is either zero or one, this method will panic.
+    /// - If `modulo` is either `zero` or `one`, this method will panic.
     /// 
     /// # Features
-    /// - It takes the result of (= `sub`) of `rhs` subtracted from `self`,
-    ///   and then finally takes the remainder of `sub` divided by `modulo`.
+    /// - It takes the subtraction (= `difference`) of `rhs` from `self`, and
+    ///   then finally returns the remainder of `difference` divided
+    ///   by `modulo`.
     /// - Wrapping (modular) subtraction at `modulo`.
     /// - The differences between this method `modular_sub_assign_uint()` and
     ///   the method `wrapping_sub_assign_uint()` are, first, where wrapping
     ///   around happens, and, second, when `UNDERFLOW` flag is set.
-    ///   First, this method wraps araound at `modulo` while the method
-    ///   `wrapping_sub_assign_uint()` wraps araound at `maximum value + 1`.
-    ///   Second, this method set `UNDERFLOW` flag when wrapping around happens
+    ///   First, this method wraps around at `modulo` while the method
+    ///   `wrapping_sub_assign_uint()` wraps around at `maximum value + 1`.
+    ///   Second, this method sets `UNDERFLOW` flag when wrapping around happens
     ///   at `modulo` while the method `wrapping_sub_assign_uint()` sets
-    ///   `UNDERFLOW` flag when wrapping around happens.
+    ///   `UNDERFLOW` flag when wrapping around happens at `maximum value + 1`.
     /// - All the flags are historical, which means, for example, if an
     ///   underflow occurred even once before this current operation or
-    ///   `UNDERFLOW` flag is already set before this current operation,
-    ///   the `UNDERFLOW` flag is not changed even if this current operation
-    ///   does not cause underflow.
+    ///   `UNDERFLOW` flag is already set before this current operation, the
+    ///   `UNDERFLOW` flag is not changed even if this current operation does
+    ///    not cause underflow.
     /// 
     /// # Counterpart Method
-    /// If `rhs` is bigger than `u128, the method
-    /// [modular_sub_assign()](struct@BigUInt#method.modular_sub_assign) is
-    /// proper rather than this method `modular_sub_assign_uint()`.
+    /// If `rhs` is bigger tham `ui128`, the method
+    /// [modular_sub_assign()](struct@BigUInt#method.modular_sub_assign)
+    /// is proper rather than this method.
     /// 
     /// # Example 1 for normal case
     /// ```
@@ -8491,36 +8492,38 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     }
 
     // pub fn panic_free_modular_sub_uint<U>(&self, rhs: U, modulo: &Self) -> Self
-    /// Computes (`self` - `rhs`) % `modulo`, wrapping around at `modulo` of the
-    /// type `Self` instead of underflowing.
+    /// Calculates (`self` - `rhs`) % `modulo`,
+    /// wrapping around at `modulo` of the `Self` type instead of underflowing.
     /// 
     /// # Arguments
-    /// - `rhs` is to be subtracted from `self`, and small-sized unsigned integer
+    /// - `rhs` is to be added to `self`, and small-sized unsigned integer
     ///   such as `u8`, `u16`, `u32`, `u64`, and `u128`.
-    /// - `modulo` is the divisor to divide the result of (`self` - `rhs`).
+    /// - `modulo` is the divisor to divide the result of (`self` - `rhs`),
+    ///   and is of `&Self` type.
     /// 
     /// # Panics
-    /// - If `size_of::<T>() * N` <= `128`, this method may panic
-    ///   or its behavior may be undefined though it may not panic.
+    /// If `size_of::<T>() * N` <= `128`, this method may panic
+    /// or its behavior may be undefined though it may not panic.
     /// 
     /// # Output
     /// It returns the modulo-difference (`self` - `rhs`) % `modulo` with
     /// wrapping (modular) subtraction at `modulo`.
     /// 
     /// # Features
-    /// - It takes the result of (= `sub`) of `rhs` subtracted from `self`,
-    ///   and then finally returns the remainder of `sub` divided by `modulo`.
+    /// - It takes the subtraction (= `difference`) of `rhs` from `self`, and
+    ///   then finally returns the remainder of `difference` divided
+    ///   by `modulo`.
     /// - Wrapping (modular) subtraction at `modulo`.
     /// - The differences between this method `panic_free_modular_sub_uint()`
-    ///   and the method `wrapping_sub_uint()` are, first, where wrapping around
-    ///   happens, and, second, whether or not `UNDERFLOW` flag is set.
-    ///   First, this method wraps araound at `modulo` while the method
-    ///   `wrapping_sub_uint()` wraps araound at `maximum value + 1`.
-    ///   Second, this method does not set `UNDERFLOW` flag even if wrapping
-    ///   around happens while the method `wrapping_sub_uint()` sets
-    ///   `UNDERFLOW` flag when wrapping around happens.
-    /// - If `modulo` is either zero or one, the result is zero and the
-    ///   `UNDEFINED` flag will be set.
+    ///   and the method `wrapping_sub_uint()` are, first, where
+    ///   wrapping around happens, and, second, when `UNDERFLOW` flag is set.
+    ///   First, this method wraps around at `modulo` while the method
+    ///   `wrapping_sub_uint()` wraps around at `maximum value + 1`.
+    ///   Second, this method sets `UNDERFLOW` flag when wrapping around happens
+    ///   at `modulo` while the method `wrapping_sub_uint()` sets
+    ///   `UNDERFLOW` flag when wrapping around happens at `maximum value + 1`.
+    /// - If `modulo` is either `zero` or `one`, the `UNDEFINED` flag of the
+    ///   return value will be set and the return value will have the value `0`.
     /// - In summary, the return value and its flags will be set as follows:
     /// 
     /// | `modulo` | return value | flags       |
@@ -8530,7 +8533,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// # Counterpart Method
     /// If `rhs` is bigger than `u128`, the method
     /// [panic_free_modular_sub()](struct@BigUInt#method.panic_free_modular_sub)
-    /// is proper rather than this method `modular_sub_uint()`.
+    /// is proper rather than this method `panic_free_modular_sub_uint()`.
     /// 
     /// # Example 1 for a normal case
     /// ```
@@ -8810,39 +8813,41 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     }
 
     // pub fn panic_free_modular_sub_assign_uint<U>(&mut self, rhs: U, modulo: &Self)
-    /// Computes (`self` - `rhs`) % `modulo`, wrapping around at `modulo`
-    /// of the type `Self` instead of underflowing, and then, assign the result
-    /// back to `self`.
+    /// Calculates (`self` - `rhs`) % `modulo`,
+    /// wrapping around at `modulo` of the `Self` type instead of underflowing,
+    /// and then, assigns the result back to `self`.
     /// 
     /// # Arguments
-    /// - `rhs` is to be subtracted from `self`, and small-sized unsigned integer
+    /// - `rhs` is to be added to `self`, and small-sized unsigned integer
     ///   such as `u8`, `u16`, `u32`, `u64`, and `u128`.
-    /// - `modulo` is the divisor to divide the result of (`self` - `rhs`).
+    /// - `modulo` is the divisor to divide the result of (`self` - `rhs`),
+    ///   and is of `&Self` type.
     /// 
     /// # Panics
     /// - If `size_of::<T>() * N` <= `128`, this method may panic
     ///   or its behavior may be undefined though it may not panic.
     /// 
     /// # Features
-    /// - It takes the result of (= `sub`) of `rhs` subtracted from `self`,
-    ///   and then finally takes the remainder of `sub` divided by `modulo`.
+    /// - It takes the subtraction (= `difference`) of `rhs` from `self`, and
+    ///   then finally returns the remainder of `difference` divided
+    ///   by `modulo`.
     /// - Wrapping (modular) subtraction at `modulo`.
     /// - The differences between this method
     ///   `panic_free_modular_sub_assign_uint()` and the method
     ///   `wrapping_sub_assign_uint()` are, first, where wrapping
-    ///   around happens, and, second, whether or not `UNDERFLOW` flag is set.
-    ///   First, this method wraps araound at `modulo` while the method
-    ///   `wrapping_sub_assign_uint()` wraps araound at `maximum value + 1`.
-    ///   Second, this method does not set `UNDERFLOW` flag even if wrapping
-    ///   around happens, while the method `wrapping_sub_assign_uint()` sets
-    ///   `UNDERFLOW` flag when wrapping around happens.
-    /// - If `modulo` is either zero or one, `self` will be `0` and the
-    ///   `UNDEFINED` flags will be set.
-    /// - In summary, the result and the flags of `self` will be set as follows:
+    ///   around happens, and, second, when `UNDERFLOW` flag is set.
+    ///   First, this method wraps around at `modulo` while the method
+    ///   `wrapping_sub_assign_uint()` wraps around at `maximum value + 1`.
+    ///   Second, this method sets `UNDERFLOW` flag when wrapping around happens
+    ///   at `modulo` while the method `wrapping_sub_assign_uint()` sets
+    ///   `UNDERFLOW` flag when wrapping around happens at `maximum value + 1`.
+    /// - If `modulo` is either `zero` or `one`, the `UNDEFINED` flag of `self`
+    ///   will be set and `self` will have the value `0`.
+    /// - In summary, `self` and its flags will be set as follows:
     /// 
-    /// | `modulo` | result | flags       |
-    /// |----------|--------|-------------|
-    /// | 0 or 1   | 0      | `UNDEFINED` |
+    /// | `modulo` | result value (self) | flags       |
+    /// |----------|---------------------|-------------|
+    /// | 0 or 1   | 0                   | `UNDEFINED` |
     /// 
     /// - All the flags are historical, which means, for example, if an
     ///   underflow occurred even once before this current operation or
@@ -8851,9 +8856,9 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     ///   does not cause underflow.
     /// 
     /// # Counterpart Method
-    /// If `rhs` is bigger than `u128, the method
-    /// [modular_sub_assign()](struct@BigUInt#method.modular_sub_assign) is
-    /// proper rather than this method `modular_sub_assign_uint()`.
+    /// If `rhs` is bigger tham `ui128`, the method
+    /// [panic_free_modular_sub_assign_uint()](struct@BigUInt#method.panic_free_modular_sub_assign_uint)
+    /// is proper rather than this method.
     /// 
     /// # Example 1 for a normal case
     /// ```
@@ -9285,10 +9290,10 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     }
 
     // pub fn abs_diff_uint<U>(&self, other: U) -> Self
-    /// Computes the absolute difference between `self` and `other`.
+    /// Calculates the absolute difference between `self` and `other`.
     /// 
     /// # Arguments
-    /// - `other` is to be compared to `self`, and small-sized unsigned integer
+    /// `other` is to be compared to `self`, and small-sized unsigned integer
     /// such as `u8`, `u16`, `u32`, `u64`, and `u128`.
     /// 
     /// # Panics
@@ -9299,7 +9304,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// It returns the absolute difference between `self` and `other`.
     /// 
     /// # Features
-    /// - It computes the absolute difference between `self` and `other`.
+    /// - It calculates the absolute difference between `self` and `other`.
     /// - It does not change the flags either `OVERFLOW` or `UNDERFLOW`.
     /// 
     /// # Counterpart Method
@@ -25393,11 +25398,11 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// # Output
     /// It returns the sum `self` + `rhs` wrapped by `Some` of enum `Option`
     /// if overflow did not occur at current operation.
-    /// Otherwise, it returns `None` of enum Option.
+    /// Otherwise, it returns `None` of enum `Option`.
     /// 
     /// # Features
     /// It does not wrap around at the boundary of the `Self` type.
-    /// So, if overflow happened, it returns `None` of enum Option.
+    /// So, if overflow happened, it returns `None` of enum `Option`.
     /// 
     /// # Counterpart Method
     /// The method
@@ -25721,7 +25726,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// # Arguments
     /// - `rhs` is to be added to `self`, and is of `&Self` type.
     /// - `modulo` is the divisor to divide the result of (`self` + `rhs`),
-    ///   and is of `Self`-typed.
+    ///   and is of `&Self` type.
     /// 
     /// # Panics
     /// - If `size_of::<T>() * N` <= `128`, this method may panic
@@ -26006,7 +26011,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// # Arguments
     /// -`rhs` is to be added to `self`, and is of `&Self` type.
     /// - `modulo` is the divisor to divide the result of (`self` + `rhs`),
-    ///   and is of `Self`-typed.
+    ///   and is of `&Self` typed.
     /// 
     /// # Panics
     /// - If `size_of::<T>() * N` <= `128`, this method may panic
@@ -27176,37 +27181,44 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /*** Subtraction ***/
 
     // pub fn borrowing_sub(&self, rhs: &Self, borrow: bool) -> (Self, bool)
-    /// Calculates self − rhs − borrow and returns a tuple containing the
-    /// difference and the output borrow.
+    /// Calculates `self` - `rhs` - `carry`,
+    /// wrapping around at the boundary of the `Self` type,
+    /// and returns a tuple of a subtraction result `self` - `rhs` - `carry`
+    /// along with a borrow-out bit.
     /// 
     /// # Arguments
     /// - `rhs` is to be subtracted from `self`, and is of `&Self` type.
-    /// - `borrow` is to be added to `self`, and is of `bool`-type.
+    /// - `borrow` is of `bool` type so that `1` may be subtracted from `self`
+    ///   if `borrow` is `true`.
     /// 
     /// # Panics
     /// If `size_of::<T>() * N` <= `128`, this method may panic
     /// or its behavior may be undefined though it may not panic.
     /// 
     /// # Outputs
-    /// It returns a tuple containing an output big integer and a carry-out bit.
+    /// It returns a tuple containing the subtraction result and the borrow-out
+    /// bit. It performs "ternary subtraction" of one `Self`-typed operand,
+    /// a primitive unsigned integer, and a borrow-in bit, and returns an tuple
+    /// of an subtraction result in `Self` type and a borrow-out bit.
     /// 
     /// # Features
-    /// - It performs “ternary subtraction” by subtracting a primitive unsigned
-    ///   integer operand and a borrow-in bit from `self`, and returns an output
-    ///   integer and a borrow-out bit. This allows chaining together multiple
-    ///   subtractions to create a wider subtraction.
+    /// - Wrapping (modular) subtraction.
+    /// - This allows chaining together multiple subtraction to create even a
+    ///   wider subtraction. This can be thought of as a big integer
+    ///   "full subtracter", in the electronics sense.
     /// - If the input borrow is `false`, this method is equivalent to
-    ///   `overflowing_sub()`, and the output carry is equal to
-    ///   the `UNDERFLOW` flag.
-    /// - If the underflow happened, the flag `UNDERFLOW` of the return value
-    ///   will be set.
+    ///   `overflowing_sub()`, and the output borrow reflects current underflow.
+    /// - The output borrow is equal to the `UNDERFLOW` flag
+    ///   of the return value.
+    /// - If underflow happened, the flag `UNDERFLOW` of the return value will
+    ///   be set.
     /// 
     /// # Counterpart Method
     /// The method
     /// [borrowing_sub_uint()](struct@BigUInt#method.borrowing_sub_uint)
     /// is a bit faster than this method `borrowing_sub()`.
     /// So, if `rhs` is primitive unsigned integral data type such as u8, u16,
-    /// u32, u64, and u128, use the method
+    /// u32, u64, and u128, you are highly encouraged to use the method
     /// [borrowing_sub_uint()](struct@BigUInt#method.borrowing_sub_uint).
     /// 
     /// # Example 1
@@ -27283,44 +27295,48 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
         (res, b)
     }
 
-    // pub fn borrowing_sub_assign(&mut self, rhs: &Self, borrow: bool) -> bool
-    /// Calculates self − rhs − borrow, and assigns difference to `self` back,
-    /// and returns the output borrow.
+    // pub fn carrying_sub_assign(&self, rhs: &Self, borrow: bool) -> bool
+    /// Calculates `self` - `rhs` - `carry`,
+    /// wrapping around at the boundary of the `Self` type,
+    /// and assign the subtraction result `self` - `rhs` - `carry`
+    /// to `self` back,
+    /// and return the resulting borrow.
     /// 
     /// # Arguments
     /// - `rhs` is to be subtracted from `self`, and is of `&Self` type.
-    /// - `borrow` is to be added to `self`, and is of `bool`-type.
+    /// - `borrow` is of `bool` type so that `1` may be subtracted from `self`
+    ///   if `borrow` is `true`.
     /// 
     /// # Panics
     /// If `size_of::<T>() * N` <= `128`, this method may panic
     /// or its behavior may be undefined though it may not panic.
     /// 
-    /// # Outputs
-    /// It returns a carry-out bit.
+    /// # Output
+    /// It returns the output borrow. It performs "ternary subtraction" of two
+    /// `Self`-typed operands, and a borrow-in bit,
+    /// and returns a borrow-out bit.
     /// 
     /// # Features
-    /// - It performs "ternary subtraction" by subtracting both an integer
-    ///   operand and a borrow-in bit from `self`, and a borrow-out bit.
-    ///   This allows chaining together multiple subtractions to create
-    ///   a wider subtraction.
-    /// - If the input carry is `false`, this method is equivalent to
-    ///   `overflowing_sub_assign()`, and the output carry reflect current
-    ///   underflow.
-    /// - If the underflow happened, the flag `UNDERFLOW` of `self`
-    ///   will be set.
-    /// - All the flags are historical, which means, for example, if an
-    ///   underflow occurred even once before this current operation or
-    ///   `UNDERFLOW` flag is already set before this current operation,
-    ///   the `UNDERFLOW` flag is not changed even if this current operation
-    ///   does not cause underflow.
+    /// - Wrapping (modular) subtraction.
+    /// - This allows chaining together multiple subtraction to create even a
+    ///   wider subtraction. This can be thought of as a big integer
+    ///   "full subtracter", in the electronics sense.
+    /// - If the input borrow is false, this method is equivalent to
+    ///   `overflowing_sub_assign()`, and the output borrow reflects
+    ///   the current underflow.
+    /// - If underflow happened, the flag `UNDERFLOW` of `self` will be set.
+    /// - All the flags are historical, which means, for example, if an underflow
+    ///   occurred even once before this current operation or `UNDERFLOW`
+    ///   flag is already set before this current operation, the `UNDERFLOW` flag
+    ///   is not changed even if this current operation does not cause underflow.
     /// 
     /// # Counterpart Method
     /// The method
-    /// [borrowing_sub_assign_uint()](struct@BigUInt#method.borrowing_sub_assign_uint)
-    /// is a bit faster than this method `borrowing_sub_assign()`.
-    /// So, if `rhs` is primitive unsigned integral
-    /// data type such as u8, u16, u32, u64, and u128, use the method
-    /// [borrowing_sub_assign_uint()](struct@BigUInt#method.borrowing_sub_assign_uint).
+    /// [carrying_sub_assign_uint()](struct@BigUInt#method.carrying_sub_assign_uint)
+    /// is a bit faster than this method `carrying_sub_assign()`.
+    /// So, if `rhs` is primitive unsigned integral data type such as u8, u16,
+    /// u32, u64, and u128, you are highly encouraged to use the method
+    /// [carrying_sub_assign_uint()](struct@BigUInt#method.carrying_sub_assign_uint).
     /// 
     /// # Example 1
     /// ```
@@ -27433,8 +27449,9 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     }
 
     // pub fn wrapping_sub(&self, rhs: &Self) -> Self
-    /// Subtracts a `BigUInt`-typeed `rhs` from `self`,
-    /// and returns its result in a type of `BigUInt`.
+    /// Calculates `self` - `rhs`,
+    /// wrapping around at the boundary of the `Self` type,
+    /// and returns a subtraction result `self` - `rhs`.
     /// 
     /// # Arguments
     /// `rhs` is to be subtracted from `self`, and is of `&Self` type.
@@ -27444,21 +27461,19 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// or its behavior may be undefined though it may not panic.
     /// 
     /// # Output
-    /// It returns the subtraction of `rhs` from `self`.
+    /// It returns `self` - `rhs` with wrapping (modular) subtraction.
     /// 
     /// # Features
     /// - Wrapping (modular) subtraction.
-    /// - It computes `self` - `rhs`, wrapping around at the boundary
-    ///   of the `Self` type.
-    /// - If the underflow happened, the flag `UNDERFLOW` of the return value
+    /// - If underflow happened, the flag `UNDERFLOW` of the return value
     ///   will be set.
     /// 
     /// # Counterpart Method
     /// The method
     /// [wrapping_sub_uint()](struct@BigUInt#method.wrapping_sub_uint)
     /// is a bit faster than this method `wrapping_sub()`.
-    /// So, if `rhs` is primitive unsigned integral
-    /// data type such as u8, u16, u32, u64, and u128, use the method
+    /// So, if `rhs` is primitive unsigned integral data type such as u8, u16,
+    /// u32, u64, and u128, use the method
     /// [wrapping_sub_uint()](struct@BigUInt#method.wrapping_sub_uint).
     /// 
     /// # Example 1
@@ -27520,8 +27535,9 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     }
 
     // pub fn wrapping_sub_assign(&mut self, rhs: &Self)
-    /// Subtracts a `BigUInt`-typeed `rhs` from `self`,
-    /// and assigns the result to `self` back.
+    /// Calculates `self` - `rhs`,
+    /// wrapping around at the boundary of the `Self` type,
+    /// and assign the subtraction result `self` - `rhs` to `self` back.
     /// 
     /// # Arguments
     /// `rhs` is to be subtracted from `self`, and is of `&Self` type.
@@ -27532,21 +27548,17 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// 
     /// # Features
     /// - Wrapping (modular) subtraction.
-    /// - It computes `self` - `rhs`, wrapping around at the boundary
-    ///   of the type.
-    /// - If the underflow happened, the flag `UNDERFLOW` of `self`
-    ///   will be set.
-    /// - All the flags are historical, which means, for example, if an
-    ///   underflow occurred even once before this current operation or
-    ///   `UNDERFLOW` flag is already set before this current operation,
-    ///   the `UNDERFLOW` flag is not changed even if this current operation
-    ///   does not cause underflow.
+    /// - If underflow happened, the flag `UNDERFLOW` of `self` will be set.
+    /// - All the flags are historical, which means, for example, if an underflow
+    ///   occurred even once before this current operation or `UNDERFLOW`
+    ///   flag is already set before this current operation, the `UNDERFLOW` flag
+    ///   is not changed even if this current operation does not cause underflow.
     /// 
     /// # Counterpart Method
     /// The method
     /// [wrapping_sub_assign_uint()](struct@BigUInt#method.wrapping_sub_assign_uint)
     /// is a bit faster than this method `wrapping_sub_assign()`.
-    /// If `rhs` is primitive unsigned integral data type such as u8, u16,
+    /// So, if `rhs` is primitive unsigned integral data type such as u8, u16,
     /// u32, u64, and u128, use the method
     /// [wrapping_sub_assign_uint()](struct@BigUInt#method.wrapping_sub_assign_uint).
     /// 
@@ -27649,28 +27661,30 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     }
 
     // pub fn overflowing_sub(&self, rhs: &Self) -> (Self, bool)
-    /// Calculates `self` - `rhs`, and returns a tuple of the result of
-    /// subtraction along with a boolean indicating whether an arithmetic
-    /// underflow would occur.
+    /// Calculates `self` - `rhs`,
+    /// wrapping around at the boundary of the `Self` type,
+    /// and returns a tuple of the subtraction result `self` - `rhs` along with
+    /// a boolean indicating whether an arithmetic underflow would occur.
     /// 
     /// # Arguments
-    /// `rhs` is to be subtracted from `self`, and is of `&Self` type.
+    /// `rhs` is to be added to `self`, and is of `&Self` type.
     /// 
     /// # Panics
     /// If `size_of::<T>() * N` <= `128`, this method may panic
     /// or its behavior may be undefined though it may not panic.
     /// 
     /// # Output
-    /// It returns a tuple of the subtraction `self` - `rhs` along with a boolean
-    /// indicating whether an arithmetic unerflow would occur. If an underflow
-    /// would have occurred then the wrapped (modular) value is returned.
+    /// It returns a tuple of the subtraction `self` - `rhs` along with a
+    /// boolean indicating whether an arithmetic underflow would occur.
+    /// If an underflow would have occurred, then the wrapped (modular) value
+    /// is returned.
     /// 
     /// # Features
-    /// - It returns a tuple of the subtraction along with a boolean indicating
-    ///   whether an arithmetic underflow would occur.
-    /// - If an underflow would have occurred then the wrapped value is
-    ///   returned, and the flag `UNDERFLOW` of the return value
-    ///   will be set.
+    /// - Wrapping (modular) subtraction.
+    /// - If underflow happens, the second element of the output tuple will
+    ///   be true and the `UNDERFLOW` flag of the return value will be set.
+    /// - The second element of the output tuple reflects only
+    ///   the current underflow.
     /// 
     /// # Counterpart Method
     /// The method
@@ -27726,7 +27740,11 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     }
 
     // pub fn overflowing_sub_assign(&mut self, rhs: &Self) -> bool
-    /// Calculates `self` - `rhs`, and assigns the result to `self` back.
+    /// Calculates `self` - `rhs`,
+    /// wrapping around at the boundary of the `Self` type,
+    /// and assigns the subtraction result `self` - `rhs` to `self` back,
+    /// and returns a boolean indicating whether an arithmetic underflow
+    /// would occur.
     /// 
     /// # Arguments
     /// `rhs` is to be subtracted from `self`, and is of `&Self` type.
@@ -27736,26 +27754,26 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// or its behavior may be undefined though it may not panic.
     /// 
     /// # Output
-    /// It returns true if an arithmetic unerflow would occur.
+    /// It returns true if an arithmetic underflow would occur.
     /// Otherwise, it returns `false`.
     /// 
     /// # Features
-    /// - If an underflow would have occurred
-    ///   then the wrapped value is assigned back to `self`, and the flag
-    ///   `UNDERFLOW` of `self` will be set.
-    /// - It returns a boolean indicating whether an arithmetic underflow
-    ///   would occur at the current operation.
-    /// - All the flags are historical, which means, for example, if an
-    ///   underflow occurred even once before this current operation or
-    ///   `UNDERFLOW` flag is already set before this current operation,
-    ///   the `UNDERFLOW` flag is not changed even if this current operation
-    ///   does not cause underflow.
+    /// - Wrapping (modular) subtraction.
+    /// - If underflow happened, the flag `UNDERFLOW` of `self` will be set.
+    /// - If underflow did not happen in the current operation, the output
+    ///   will be false even if the `UNDERFLOW` flag of `self` was already set
+    ///   because of previous operation of `self`.
+    /// - The output reflects only the current underflow.
+    /// - All the flags are historical, which means, for example, if an underflow
+    ///   occurred even once before this current operation or `UNDERFLOW`
+    ///   flag is already set before this current operation, the `UNDERFLOW` flag
+    ///   is not changed even if this current operation does not cause underflow.
     /// 
     /// # Counterpart Method
     /// The method
     /// [overflowing_sub_assign_uint()](struct@BigUInt#method.overflowing_sub_assign_uint)
     /// is a bit faster than this method `overflowing_sub_assign()`.
-    /// If `rhs` is primitive unsigned integral data type such as u8, u16,
+    /// So, if `rhs` is primitive unsigned integral data type such as u8, u16,
     /// u32, u64, and u128, use the method
     /// [overflowing_sub_assign_uint()](struct@BigUInt#method.overflowing_sub_assign_uint).
     /// 
@@ -27823,8 +27841,9 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     }
 
     // pub fn checked_sub(&self, rhs: &Self) -> Option<Self>
-    /// Computes `self` - `rhs` and returns the result wrapped by `Some`
-    /// of enum `Option` if unerflow did not occur.
+    /// Calculates `self` - `rhs`,
+    /// and returns an subtraction result `self` - `rhs`
+    /// wrapped by `Some` of enum `Option`.
     /// 
     /// # Arguments
     /// `rhs` is to be subtracted from `self`, and is of `&Self` type.
@@ -27834,13 +27853,13 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// or its behavior may be undefined though it may not panic.
     /// 
     /// # Output
-    /// It returns the difference `self` - `rhs` wrapped by `Some`
-    /// of enum `Option` if unerflow did not occur.
+    /// It returns the difference `self` - `rhs` wrapped by `Some` of enum
+    /// `Option` if underflow did not occur at current operation.
     /// Otherwise, it returns `None` of enum `Option`.
     /// 
     /// # Features
-    /// - Checked integer subtraction.
-    /// - It computes `self` - `rhs, returning `None` if underflow occurred.
+    /// It does not wrap around at the boundary of the `Self` type.
+    /// So, if underflow happened, it returns `None` of enum `Option`.
     /// 
     /// # Counterpart Method
     /// The method
@@ -27904,7 +27923,8 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     }
 
     // pub fn unchecked_sub(&self, rhs: &Self) -> Self
-    /// Computes `self` - `rhs`, assuming underflow cannot occur.
+    /// Calculates `self` - `rhs`, assuming underflow cannot occur,
+    /// and returns an subtraction result `self` - `rhs`.
     ///
     /// # Arguments
     /// `rhs` is to be subtracted from `self`, and is of `&Self` type.
@@ -27915,13 +27935,13 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// - If underflow occurred, it will panic. So, use this method
     ///   only when you are sure that underflow will not occur.
     /// 
-    /// # Features
-    /// - Unchecked integer subtraction.
-    /// - It computes `self` - `rhs`, assuming overflow cannot occur.
-    /// 
     /// # Output
-    /// It returns the difference `self` - `rhs` if underflow did not occur.
-    /// Otherwise, it will panic.
+    /// It returns the difference `self` - `rhs` if underflow did not occur at
+    /// current operation. Otherwise, it will panic.
+    /// 
+    /// # Features
+    /// It does not wrap around at the boundary of the `Self` type.
+    /// So, if underflow happened, it will panic.
     /// 
     /// # Counterpart Method
     /// The method
@@ -27967,8 +27987,8 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     }
 
     // pub fn saturating_sub(&self, rhs: &Self) -> Self
-    /// Computes `self` - `rhs`, saturating at the numeric bounds
-    /// instead of underflowing.
+    /// Calculates `self` - `rhs`,
+    /// saturating at `0` instead of underflowing.
     /// 
     /// # Arguments
     /// `rhs` is to be subtracted from `self`, and is of `&Self` type.
@@ -27978,22 +27998,21 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// or its behavior may be undefined though it may not panic.
     /// 
     /// # Output
-    /// - If the difference `self` - `rhs` is greater or equal to `0`,
-    ///   it returns the differnce.
-    /// - If the difference `self` - `rhs` is less than `0`, it returns `0`.
+    /// It returns the difference `self` - `rhs` if the result is less than
+    /// or equal to `0` of `Self`. If the difference `self` - `rhs`
+    /// is less than `0`, it returns `0`.
     /// 
     /// # Features
-    /// - Saturating integer subtraction.
-    /// - This method saturates when it reaches `zero`.
+    /// - This method saturates when it reaches `0` of `Self`.
     /// - It does not set `UNDERFLOW` flag of the return value.
     /// 
     /// # Counterpart Method
     /// The method
     /// [saturating_sub_uint()](struct@BigUInt#method.saturating_sub_uint)
     /// is a bit faster than this method `saturating_sub()`.
-    /// If `rhs` is primitive unsigned integral data type such as u8, u16,
+    /// So, if `rhs` is primitive unsigned integral data type such as u8, u16,
     /// u32, u64, and u128, use the method
-    /// [saturating_sub()](struct@BigUInt#method.saturating_sub).
+    /// [saturating_sub_uint()](struct@BigUInt#method.saturating_sub_uint).
     /// 
     /// # Example 1
     /// ```
@@ -28058,8 +28077,9 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     }
 
     // pub fn saturating_sub_assign(&mut self, rhs: &Self)
-    /// Computes `self` - `rhs`, saturating at the numeric bounds
-    /// instead of underflowing, and assigns the result to `self` back.
+    /// Calculates `self` - `rhs`,
+    /// saturating at `0` instead of underflowing,
+    /// and assigns the result to `self` back.
     /// 
     /// # Arguments
     /// `rhs` is to be subtracted from `self`, and is of `&Self` type.
@@ -28069,28 +28089,18 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// or its behavior may be undefined though it may not panic.
     /// 
     /// # Features
-    /// - Saturating integer subtraction.
-    /// - If the difference `self` - `rhs` is greater or equal to `0`,
-    ///   the result will be the differnce.
-    /// - If the difference `self` - `rhs` is less than `0`, the result
-    ///   will be  `0`.
-    /// - This method saturates when it reaches `zero`.
+    /// - This method saturates when it reaches `0` of `Self`.
     /// - It does not set `UNDERFLOW` flag of the return value.
-    /// - All the flags are historical, which means, for example, if an
-    ///   underflow occurred even once before this current operation or
-    ///   `UNDERFLOW` flag is already set before this current operation,
-    ///   the `UNDERFLOW` flag is not changed even if this current operation
-    ///   does not cause underflow.
-    /// 
-    /// # Features
-    /// `self` will be the difference `self` - `rhs` if underflowing
-    /// did not occur. Otherwise, it returns `0`.
+    /// - All the flags are historical, which means, for example, if an underflow
+    ///   occurred even once before this current operation or `UNDERFLOW`
+    ///   flag is already set before this current operation, the `UNDERFLOW` flag
+    ///   is not changed even if this current operation does not cause underflow.
     /// 
     /// # Counterpart Method
     /// The method
     /// [saturating_sub_assign_uint()](struct@BigUInt#method.saturating_sub_assign_uint)
     /// is a bit faster than this method `saturating_sub_assign()`.
-    /// If `rhs` is primitive unsigned integral data type such as u8, u16,
+    /// So, if `rhs` is primitive unsigned integral data type such as u8, u16,
     /// u32, u64, and u128, use the method
     /// [saturating_sub_assign_uint()](struct@BigUInt#method.saturating_sub_assign_uint).
     /// 
@@ -28147,40 +28157,42 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     }
 
     // pub fn modular_sub(&self, rhs: &Self, modulo: &Self) -> Self
-    /// Computes (`self` - `rhs`) % `modulo`, wrapping around at `modulo` of the
-    /// type `Self` instead of underflowing.
+    /// Calculates (`self` - `rhs`) % `modulo`,
+    /// wrapping around at `modulo` of the `Self` type instead of underflowing.
     /// 
     /// # Arguments
-    /// - `rhs` is to be subtracted from `self`, and is of `&Self` type.
-    /// - `modulo` is the divisor to divide the result of (`self` - `rhs`).
+    /// - `rhs` is to be added to `self`, and is of `&Self` type..
+    /// - `modulo` is the divisor to divide the result of (`self` - `rhs`),
+    ///   and is of `&Self` type.
     /// 
     /// # Panics
     /// - If `size_of::<T>() * N` <= `128`, this method may panic
-    /// or its behavior may be undefined though it may not panic.
-    /// - If `modulo` is either zero or one, this method will panic.
+    ///   or its behavior may be undefined though it may not panic.
+    /// - If `modulo` is either `zero` or `one`, this method will panic.
     /// 
     /// # Output
     /// It returns the modulo-difference (`self` - `rhs`) % `modulo` with
     /// wrapping (modular) subtraction at `modulo`.
     /// 
     /// # Features
-    /// - It takes the result of (= `sub`) of `rhs` subtracted from `self`,
-    ///   and then finally returns the remainder of `sub` divided by `modulo`.
+    /// - It takes the subtraction (= `difference`) of `rhs` from `self`, and
+    ///   then finally returns the remainder of `difference` divided
+    ///   by `modulo`.
     /// - Wrapping (modular) subtraction at `modulo`.
-    /// - The differences between this method `modular_sub_uint()` and the
-    ///   method `modular_sub_uint()` are, first, where wrapping around
-    ///   happens, and, second, when `UNDERFLOW` flag is set. First, this
-    ///   method wraps araound at `modulo` while the method
-    ///   `modular_sub_uint()` wraps araound at `maximum value + 1`. Second,
-    ///   this method set `UNDERFLOW` flag when wrapping around happens at
-    ///   `modulo` while the method `modular_sub_uint()` sets `UNDERFLOW`
-    ///   flag when wrapping around happens.
+    /// - The differences between this method `modular_sub()` and the
+    ///   method `wrapping_sub()` are, first, where wrapping around
+    ///   happens, and, second, when `UNDERFLOW` flag is set.
+    ///   First, this method wraps around at `modulo` while the method
+    ///   `wrapping_sub()` wraps around at `maximum value + 1`.
+    ///   Second, this method sets `UNDERFLOW` flag when wrapping around happens
+    ///   at `modulo` while the method `wrapping_sub()` sets `UNDERFLOW`
+    ///   flag when wrapping around happens at `maximum value + 1`.
     /// 
     /// # Counterpart Method
     /// The method
     /// [modular_sub_uint()](struct@BigUInt#method.modular_sub_uint)
     /// is a bit faster than this method `modular_sub()`.
-    /// If `rhs` is primitive unsigned integral data type such as u8, u16,
+    /// So, if `rhs` is primitive unsigned integral data type such as u8, u16,
     /// u32, u64, and u128, use the method
     /// [modular_sub_uint()](struct@BigUInt#method.modular_sub_uint).
     /// 
@@ -28430,36 +28442,38 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     }
 
     // pub fn modular_sub_assign(&mut self, rhs: &Self, modulo: &Self)
-    /// Computes (`self` - `rhs`) % `modulo`, wrapping around at `modulo`
-    /// of the type `Self` instead of underflowing, and then, assign the result
-    /// back to `self`.
+    /// Calculates (`self` - `rhs`) % `modulo`,
+    /// wrapping around at `modulo` of the `Self` type instead of underflowing,
+    /// and then, assigns the result back to `self`.
     /// 
     /// # Arguments
-    /// - `rhs` is to be subtracted from `self`, and is of `&Self` type.
-    /// - `modulo` is the divisor to divide the result of (`self` - `rhs`).
+    /// -`rhs` is to be added to `self`, and is of `&Self` type.
+    /// - `modulo` is the divisor to divide the result of (`self` - `rhs`),
+    ///   and is of `&Self` type.
     /// 
     /// # Panics
     /// - If `size_of::<T>() * N` <= `128`, this method may panic
     ///   or its behavior may be undefined though it may not panic.
-    /// - If `modulo` is either zero or one, this method will panic.
+    /// - If `modulo` is either `zero` or `one`, this method will panic.
     /// 
     /// # Features
-    /// - It takes the result of (= `sub`) of `rhs` subtracted from `self`,
-    ///   and then finally takes the remainder of `sub` divided by `modulo`.
+    /// - It takes the subtraction (= `difference`) of `rhs` from `self`, and
+    ///   then finally returns the remainder of `difference` divided
+    ///   by `modulo`.
     /// - Wrapping (modular) subtraction at `modulo`.
-    /// - The differences between this method `modular_sub_assign()` and the
-    ///   method `wrapping_sub_assign()` are, first, where wrapping around
-    ///   happens, and, second, whether or not `UNDERFLOW` flag is set.
-    /// - First, this method wraps araound at `modulo` while the method
-    ///   `wrapping_sub_assign()` wraps araound at maximum value.
-    ///   Second, this method does not set `UNDERFLOW` flag even if wrapping
-    ///   around happens, while the method `wrapping_sub_assign()` sets
-    ///   `UNDERFLOW` flag when wrapping around happens.
+    /// - The differences between this method `modular_sub_assign()` and
+    ///   the method `wrapping_sub_assign()` are, first, where wrapping
+    ///   around happens, and, second, when `UNDERFLOW` flag is set.
+    ///   First, this method wraps around at `modulo` while the method
+    ///   `wrapping_sub_assign()` wraps around at `maximum value + 1`.
+    ///   Second, this method sets `UNDERFLOW` flag when wrapping around happens
+    ///   at `modulo` while the method `wrapping_sub_assign()` sets
+    ///   `UNDERFLOW` flag when wrapping around happens at `maximum value + 1`.
     /// - All the flags are historical, which means, for example, if an
     ///   underflow occurred even once before this current operation or
-    ///   `UNDERFLOW` flag is already set before this current operation,
-    ///   the `UNDERFLOW` flag is not changed even if this current operation
-    ///   does not cause underflow.
+    ///   `UNDERFLOW` flag is already set before this current operation, the
+    ///   `UNDERFLOW` flag is not changed even if this current operation does
+    ///    not cause underflow.
     /// 
     /// # Counterpart Method
     /// The method
@@ -28783,35 +28797,37 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     }
 
     // pub fn panic_free_modular_sub(&self, rhs: &Self, modulo: &Self) -> Self
-    /// Computes (`self` - `rhs`) % `modulo`, wrapping around at `modulo` of the
-    /// type `Self` instead of underflowing.
+    /// Calculates (`self` - `rhs`) % `modulo`,
+    /// wrapping around at `modulo` of the `Self` type instead of underflowing.
     /// 
     /// # Arguments
-    /// - `rhs` is to be subtracted from `self`, and is of `&Self` type.
-    /// - `modulo` is the divisor to divide the result of (`self` - `rhs`).
+    /// -`rhs` is to be subtracted from `self`, and is of `&Self` type.
+    /// - `modulo` is the divisor to divide the result of (`self` - `rhs`),
+    ///   and is of `&Self` type.
     /// 
     /// # Panics
-    /// - If `size_of::<T>() * N` <= `128`, this method may panic
-    ///   or its behavior may be undefined though it may not panic.
+    /// If `size_of::<T>() * N` <= `128`, this method may panic
+    /// or its behavior may be undefined though it may not panic.
     /// 
     /// # Output
-    /// It returns the modulo-difference (`self` - `rhs`) % `modulo` with
-    /// wrapping (modular) subtraction at `modulo`.
+    /// It returns the modulo-sum (`self` + `rhs`) % `modulo` with wrapping
+    /// (modular) addition at `modulo`.
     /// 
     /// # Features
-    /// - It takes the result of (= `sub`) of `rhs` subtracted from `self`,
-    ///   and then finally returns the remainder of `sub` divided by `modulo`.
+    /// - It takes the subtraction (= `difference`) of `rhs` from `self`, and
+    ///   then finally returns the remainder of `difference` divided
+    ///   by `modulo`.
     /// - Wrapping (modular) subtraction at `modulo`.
-    /// - The differences between this method `panic_free_modular_sub()` and
-    ///   the method `wrapping_sub()` are, first, where wrapping around
-    ///   happens, and, second, whether or not `UNDERFLOW` flag is set.
-    ///   First, this method wraps araound at `modulo` while the method
-    ///   `wrapping_sub()` wraps araound at `maximum value + 1`.
-    ///   Second, this method does not set `UNDERFLOW` flag even if wrapping
-    ///   around happens while the method `wrapping_sub()` sets
-    ///   `UNDERFLOW` flag when wrapping around happens.
-    /// - If `modulo` is either zero or one, the result is zero and the
-    ///   `UNDEFINED` flag will be set.
+    /// - The differences between this method `panic_free_modular_sub()`
+    ///   and the method `wrapping_sub()` are, first, where
+    ///   wrapping around happens, and, second, when `UNDERFLOW` flag is set.
+    ///   First, this method wraps around at `modulo` while the method
+    ///   `wrapping_sub()` wraps around at `maximum value + 1`.
+    ///   Second, this method sets `UNDERFLOW` flag when wrapping around happens
+    ///   at `modulo` while the method `wrapping_sub()` sets `UNDERFLOW`
+    ///   flag when wrapping around happens at `maximum value + 1`.
+    /// - If `modulo` is either `zero` or `one`, the `UNDEFINED` flag of the
+    ///   return value will be set and the return value will have the value `0`.
     /// - In summary, the return value and its flags will be set as follows:
     /// 
     /// | `modulo` | return value | flags       |
@@ -28820,11 +28836,11 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// 
     /// # Counterpart Method
     /// The method
-    /// [modular_sub_uint()](struct@BigUInt#method.modular_sub_uint)
-    /// is a bit faster than this method `modular_sub()`.
+    /// [panic_free_modular_sub_uint()](struct@BigUInt#method.panic_free_modular_sub_uint)
+    /// is a bit faster than this method `panic_free_modular_sub()`.
     /// So, if `rhs` is primitive unsigned integral data type such as u8, u16,
     /// u32, u64, and u128, use the method
-    /// [modular_sub_uint()](struct@BigUInt#method.modular_sub_uint).
+    /// [panic_free_modular_sub_uint()](struct@BigUInt#method.panic_free_modular_sub_uint).
     /// 
     /// # Example 1 for Normal Case
     /// ```
@@ -29077,69 +29093,51 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
         res
     }
 
-    // pub fn panic_free_modular_sub_assign(&mut self, rhs: &Self, modulo: &Self)
-    /// Computes (`self` - `rhs`) % `modulo`, wrapping around at `modulo`
-    /// of the type `Self` instead of underflowing, and then, assign the result
-    /// back to `self`.
+    // pub fn panic_free_modular_sub(&self, rhs: &Self, modulo: &Self) -> Self
+    /// Calculates (`self` - `rhs`) % `modulo`,
+    /// wrapping around at `modulo` of the `Self` type instead of underflowing.
     /// 
     /// # Arguments
-    /// - `rhs` is to be subtracted from `self`, and is of `&Self` type.
-    /// - `modulo` is the divisor to divide the result of (`self` - `rhs`).
+    /// -`rhs` is to be subtracted from `self`, and is of `&Self` type.
+    /// - `modulo` is the divisor to divide the result of (`self` - `rhs`),
+    ///   and is of `&Self` type.
     /// 
     /// # Panics
-    /// - If `size_of::<T>() * N` <= `128`, this method may panic
+    /// If `size_of::<T>() * N` <= `128`, this method may panic
     /// or its behavior may be undefined though it may not panic.
     /// 
+    /// # Output
+    /// It returns the modulo-sum (`self` + `rhs`) % `modulo` with wrapping
+    /// (modular) addition at `modulo`.
+    /// 
     /// # Features
-    /// - It takes the result of (= `sub`) of `rhs` subtracted from `self`,
-    ///   and then finally takes the remainder of `sub` divided by `modulo`.
+    /// - It takes the subtraction (= `difference`) of `rhs` from `self`, and
+    ///   then finally returns the remainder of `difference` divided
+    ///   by `modulo`.
     /// - Wrapping (modular) subtraction at `modulo`.
-    /// - The differences between this method `panic_free_modular_sub_assign()`
-    ///   and the method `wrapping_sub_assign()` are, first, where wrapping
-    ///   around happens, and, second, whether or not `UNDERFLOW` flag is set.
-    ///   First, this method wraps araound at `modulo` while the method
-    ///   `wrapping_sub_assign()` wraps araound at `maximum value + 1`.
-    ///   Second, this method does not set `UNDERFLOW` flag even if wrapping
-    ///   around happens, while the method `wrapping_sub_assign()` sets
-    ///  `UNDERFLOW` flag when wrapping around happens.
-    /// - If `modulo` is either zero or one, `self` will be `0` and the
-    ///   `UNDEFINED` flags will be set.
-    /// - In summary, the result and the flags of `self` will be set as follows:
+    /// - The differences between this method `panic_free_modular_sub()`
+    ///   and the method `wrapping_sub()` are, first, where
+    ///   wrapping around happens, and, second, when `UNDERFLOW` flag is set.
+    ///   First, this method wraps around at `modulo` while the method
+    ///   `wrapping_sub()` wraps around at `maximum value + 1`.
+    ///   Second, this method sets `UNDERFLOW` flag when wrapping around happens
+    ///   at `modulo` while the method `wrapping_sub()` sets `UNDERFLOW`
+    ///   flag when wrapping around happens at `maximum value + 1`.
+    /// - If `modulo` is either `zero` or `one`, the `UNDEFINED` flag of the
+    ///   return value will be set and the return value will have the value `0`.
+    /// - In summary, the return value and its flags will be set as follows:
     /// 
-    /// | `modulo` | result | flags       |
-    /// |----------|--------|-------------|
-    /// | 0 or 1   | 0      | `UNDEFINED` |
-    /// 
-    /// - All the flags are historical, which means, for example, if an
-    ///   underflow occurred even once before this current operation or
-    ///   `UNDERFLOW` flag is already set before this current operation,
-    ///   the `UNDERFLOW` flag is not changed even if this current operation
-    ///   does not cause underflow.
-    /// 
-    /// # Features
-    /// Wrapping (modular) subtraction at `modulo`. The differences between this
-    /// method `modular_sub_assign()` and the method `wrapping_sub_assign()`
-    /// are, first, where wrapping around happens, and, second, whether or not
-    /// `UNDERFLOW` flag is set. First, this method wraps araound at `modulo`
-    /// while the method `wrapping_sub_assign()` wraps araound at maximum value.
-    /// Second, this method does not set `UNDERFLOW` flag even if wrapping
-    /// around happens, while the method `wrapping_sub_assign()` sets
-    /// `UNDERFLOW` flag when wrapping around happens.
-    /// - If `modulo` is `zero`, the flags such as `OVERFLOW`, `DIVIDED_BY_ZERO`,
-    /// and `INFINITY` will be set.
-    /// - All the flags reflect historical underflow, which means, for example,
-    /// if an overflow occurred even once before this current operation or
-    /// `OVERFLOW` flag is already set before this current operation, the
-    /// `OVERFLOW` flag is not changed even though this current operation does
-    /// not cause overflow.
+    /// | `modulo` | return value | flags       |
+    /// |----------|--------------|-------------|
+    /// | 0 or 1   | 0            | `UNDEFINED` |
     /// 
     /// # Counterpart Method
     /// The method
-    /// [modular_sub_assign_uint()](struct@BigUInt#method.modular_sub_assign_uint)
-    /// is a bit faster than this method `modular_sub_assign()`.
-    /// If `rhs` is primitive unsigned integral data type such as u8, u16,
+    /// [panic_free_modular_sub_uint()](struct@BigUInt#method.panic_free_modular_sub_uint)
+    /// is a bit faster than this method `panic_free_modular_sub()`.
+    /// So, if `rhs` is primitive unsigned integral data type such as u8, u16,
     /// u32, u64, and u128, use the method
-    /// [modular_sub_assign_uint()](struct@BigUInt#method.modular_sub_assign_uint).
+    /// [panic_free_modular_sub_uint()](struct@BigUInt#method.panic_free_modular_sub_uint).
     /// 
     /// # Example 1 for Normal case
     /// ```
@@ -29508,10 +29506,10 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     }
 
     // pub fn abs_diff(&self, other: &Self) -> Self
-    /// Computes the absolute difference between `self` and `other`.
+    /// Calculates the absolute difference between `self` and `other`.
     /// 
     /// # Arguments
-    /// - `other` is to be compared to `self`, and is of `&Self` type.
+    /// `other` is to be compared to `self`, and is of `&Self` type.
     /// 
     /// # Panics
     /// If `size_of::<T>() * N` <= `128`, this method may panic
@@ -29521,7 +29519,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// It returns the absolute difference between `self` and `other`.
     /// 
     /// # Features
-    /// - It computes the absolute difference between `self` and `other`.
+    /// - It calculates the absolute difference between `self` and `other`.
     /// - It does not change the flags either `OVERFLOW` or `UNDERFLOW`.
     /// 
     /// # Counterpart Method
