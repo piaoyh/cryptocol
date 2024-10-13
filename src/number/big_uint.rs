@@ -4209,8 +4209,8 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     // pub fn carrying_add_assign_uint<U>(&mut self, rhs: U, carry: bool) -> bool
     /// Calculates `self` + `rhs` + `carry`,
     /// wrapping around at the boundary of the `Self` type,
-    /// and assign the addition result `self` + `rhs` + `carry` to `self` back,
-    /// and return the resulting carry.
+    /// and assigns the addition result `self` + `rhs` + `carry` to `self` back,
+    /// and returns the resulting carry.
     /// 
     /// # Arguments
     /// - `rhs` is to be added to `self`, and small-sized unsigned integer
@@ -4490,7 +4490,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     // pub fn wrapping_add_assign_uint<U>(&mut self, rhs: U)
     /// Calculates `self` + `rhs`,
     /// wrapping around at the boundary of the `Self` type,
-    /// and assign the addition result `self` + `rhs` to `self` back.
+    /// and assigns the addition result `self` + `rhs` to `self` back.
     /// 
     /// # Arguments
     /// `rhs` is to be added to `self`, and small-sized unsigned integer
@@ -4605,7 +4605,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// # Output
     /// It returns a tuple of the addition `self` + `rhs` along with a boolean
     /// indicating whether an arithmetic overflow would occur. If an overflow
-    /// would have occurred then the wrapped (modular) value is returned.
+    /// would have occurred, then the wrapped (modular) value is returned.
     /// 
     /// # Features
     /// - Wrapping (modular) addition.
@@ -5101,7 +5101,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// 
     /// # Features
     /// - This method saturates when it reaches the maximum value of `Self`.
-    /// - It does not set `OVERFLOW` flag of the return value.
+    /// - It does not set `OVERFLOW` flag of `self`.
     /// - All the flags are historical, which means, for example, if an overflow
     ///   occurred even once before this current operation or `OVERFLOW`
     ///   flag is already set before this current operation, the `OVERFLOW` flag
@@ -5209,7 +5209,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
 
     // pub fn modular_add_uint<U>(&self, rhs: U, modulo: &Self) -> Self
     /// Calculates (`self` + `rhs`) % `modulo`,
-    /// wrapping around at `modulo` of the `Self` type instead of overflowing.
+    /// wrapping around at `modulo` of the `Self` type.
     /// 
     /// # Arguments
     /// - `rhs` is to be added to `self`, and small-sized unsigned integer
@@ -5500,7 +5500,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
 
     // pub fn modular_add_assign_uint<U>(&mut self, rhs: U, modulo: &Self)
     /// Calculates (`self` + `rhs`) % `modulo`,
-    /// wrapping around at `modulo` of the `Self` type instead of overflowing,
+    /// wrapping around at `modulo` of the `Self` type,
     /// and then, assigns the result back to `self`.
     /// 
     /// # Arguments
@@ -5847,7 +5847,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
 
 // pub fn panic_free_modular_add_uint<U>(&self, rhs: U, modulo: &Self) -> Self
     /// Calculates (`self` + `rhs`) % `modulo`,
-    /// wrapping around at `modulo` of the `Self` type instead of overflowing.
+    /// wrapping around at `modulo` of the `Self` type.
     /// 
     /// # Arguments
     /// - `rhs` is to be added to `self`, and small-sized unsigned integer
@@ -6168,7 +6168,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
 
     // pub fn panic_free_modular_add_assign_uint<U>(&mut self, rhs: U, modulo: &Self)
     /// Calculates (`self` + `rhs`) % `modulo`,
-    /// wrapping around at `modulo` of the `Self` type instead of overflowing,
+    /// wrapping around at `modulo` of the `Self` type,
     /// and then, assigns the result back to `self`.
     /// 
     /// # Arguments
@@ -6795,7 +6795,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     // pub fn borrowing_sub_assign_uint<U>(&mut self, rhs: U, borrow: bool) -> bool
     /// Calculates `self` - `rhs` - `carry`,
     /// wrapping around at the boundary of the `Self` type,
-    /// and assign the subtraction result `self` - `rhs` - `carry`
+    /// and assigns the subtraction result `self` - `rhs` - `carry`
     /// to `self` back,
     /// and return the resulting borrow.
     /// 
@@ -7075,7 +7075,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     // pub fn wrapping_sub_assign_uint<U>(&mut self, rhs: U)
     /// Calculates `self` - `rhs`,
     /// wrapping around at the boundary of the `Self` type,
-    /// and assign the subtraction result `self` - `rhs` to `self` back.
+    /// and assigns the subtraction result `self` - `rhs` to `self` back.
     /// 
     /// # Arguments
     /// `rhs` is to be subtracted from `self`, and small-sized unsigned integer
@@ -7733,7 +7733,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// 
     /// # Features
     /// - This method saturates when it reaches `0` of `Self`.
-    /// - It does not set `UNDERFLOW` flag of the return value.
+    /// - It does not set `UNDERFLOW` flag of `self`.
     /// - All the flags are historical, which means, for example, if an underflow
     ///   occurred even once before this current operation or `UNDERFLOW`
     ///   flag is already set before this current operation, the `UNDERFLOW` flag
@@ -7841,7 +7841,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
 
     // pub fn modular_sub_uint<U>(&self, rhs: U, modulo: &Self) -> Self
     /// Calculates (`self` - `rhs`) % `modulo`,
-    /// wrapping around at `modulo` of the `Self` type instead of underflowing.
+    /// wrapping around at `modulo` of the `Self` type.
     /// 
     /// # Arguments
     /// - `rhs` is to be subtracted from `self`, and small-sized unsigned
@@ -8132,7 +8132,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
 
     // pub fn modular_sub_assign_uint<U>(&mut self, rhs: U, modulo: &Self)
     /// Calculates (`self` - `rhs`) % `modulo`,
-    /// wrapping around at `modulo` of the `Self` type instead of underflowing,
+    /// wrapping around at `modulo` of the `Self` type,
     /// and then, assigns the result back to `self`.
     /// 
     /// # Arguments
@@ -8493,7 +8493,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
 
     // pub fn panic_free_modular_sub_uint<U>(&self, rhs: U, modulo: &Self) -> Self
     /// Calculates (`self` - `rhs`) % `modulo`,
-    /// wrapping around at `modulo` of the `Self` type instead of underflowing.
+    /// wrapping around at `modulo` of the `Self` type.
     /// 
     /// # Arguments
     /// - `rhs` is to be added to `self`, and small-sized unsigned integer
@@ -8814,7 +8814,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
 
     // pub fn panic_free_modular_sub_assign_uint<U>(&mut self, rhs: U, modulo: &Self)
     /// Calculates (`self` - `rhs`) % `modulo`,
-    /// wrapping around at `modulo` of the `Self` type instead of underflowing,
+    /// wrapping around at `modulo` of the `Self` type,
     /// and then, assigns the result back to `self`.
     /// 
     /// # Arguments
@@ -9398,49 +9398,52 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /*** Multiplication ***/
 
     // pub fn carrying_mul_uint<U>(&self, rhs: U, carry: Self) -> (Self, Self)
-    /// Calculates the "full multiplication" `self` * `rhs` + `carry`,
-    /// without the possibility to overflow.
+    /// Calculates `self` * `rhs` + `carry`,
+    /// wrapping around at the boundary of the `Self` type,
+    /// and returns a tuple the low-order (wrapping) bits and the high-order
+    /// (overflow) bits of the result of the calculation
+    /// `self` * `rhs` + `carry`.
     /// 
     /// # Arguments
-    /// - `rhs` is to be multiplied to `self`, and small-sized unsigned integer
-    /// such as `u8`, `u16`, `u32`, `u64`, and `u128`.
-    /// - `carry` is to be added to `self`, and `Self`-typed.
+    /// - `rhs` is to be multiplied to `self`, and is of small-sized unsigned
+    ///   integer such as `u8`, `u16`, `u32`, `u64`, and `u128`.
+    /// - `carry` is of `Self` type
+    ///   so that `carry` may be added to `self` * `rhs`.
     /// 
     /// # Panics
     /// If `size_of::<T>() * N` <= `128`, this method may panic
     /// or its behavior may be undefined though it may not panic.
     /// 
-    /// # Output
-    /// It returns `self` * `rhs` + `carry` in the form of a tuple of the
-    /// low-order (wrapping) bits and the high-order (overflow) bits of the
-    /// result as two separate values, in the order (`low`, `high`).
+    /// # Outputs
+    /// It returns the multiplication result `self` * `rhs` + `carry` in the
+    /// form of a tuple of the low-order (wrapping) bits and the
+    /// high-order (overflow) bits of the result as two separate values,
+    /// in the order (`low`, `high`).
     /// 
     /// # Features
-    /// - It performs "long multiplication" which takes in an extra amount to
-    ///   add, and may return an additional amount of overflow. This allows for
-    ///   chaining together multiple multiplications to create
-    ///   "bigger integers" which represent larger values.
+    /// - It performs "long multiplication" which takes in an extra amount
+    ///   to add, and returns the result in a tuple containing a low-order
+    ///   part and a high-order part of it. This allows for chaining together
+    ///   multiple multiplications to create "bigger integers" which represent
+    ///   larger values.
     /// - If the high-order part of the return value is not zero, the
-    ///   `OVERFLOW` flag will be set though the output tuple is free from
-    ///   overflow. It is because the `OVERFLOW` flag is about `self`,
-    ///   and not about the result of multiplication.
-    /// - If overflow would occur, the flag `OVERFLOW` of the return value
-    ///   will be set.
+    ///   `OVERFLOW` flag of the low-order part will be set though the output
+    ///   tuple is free from overflow.
+    /// - If the input carry is `0`, this method is equivalent to
+    ///   `widening_mul_uint()`.
     /// 
     /// # Counterpart Methods
     /// - If you don’t need the carry, then you can use
-    ///   [widening_mul_uint()](struct@BigUInt#method.widening_mul_uint)
-    ///   instead.
+    ///   [widening_mul_uint()](struct@BigUInt#method.widening_mul_uint) instead.
     /// - The value of the first field in the returned tuple matches
     ///   what you’d get by combining the methods
     ///   [wrapping_mul_uint()](struct@BigUInt#method.wrapping_mul_uint) and
-    ///   [wrapping_add_uint()](struct@BigUInt#method.wrapping_add_uint):
-    ///   `self.wrapping_mul_uint(rhs).wrapping_add_uint(carry)`. So,
-    ///   `self.carrying_mul_uint(rhs, carry).0`
-    ///   == `self.wrapping_mul_uint(rhs).wrapping_add_uint(carry)`
+    ///   [wrapping_add()](struct@BigUInt#method.wrapping_add):
+    ///   `self.wrapping_mul_uint(rhs).wrapping_add(carry)`. So,
+    ///   `self.carrying_mul_uint(rhs, carry).0` == `self.wrapping_mul_uint(rhs).wrapping_add(carry)`
     /// - If `rhs` is bigger than `u128`, the method
-    ///   [carrying_mul()](struct@BigUInt#method.carrying_mul)
-    ///   is proper rather than this method `carrying_mul_uint()`.
+    ///   [widening_mul()](struct@BigUInt#method.widening_mul)
+    ///   is proper rather than this method `widening_mul_uint()`.
     /// 
     /// # Example 1 for Normal case
     /// ```
@@ -9536,46 +9539,45 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     }
 
     // pub fn carrying_mul_assign_uint<U>(&mut self, rhs: U, carry: Self) -> Self
-    /// Calculates the "full multiplication" `self` * `rhs` + `carry`,
-    /// without the possibility to overflow, and assigs the low-order bits of
-    /// the result to `self` back and returns the high-order bits of the result.
+    /// Calculates `self` * `rhs` + `carry`,
+    /// wrapping around at the boundary of the `Self` type,
+    /// and assigns the low-order (wrapping) bits of the result
+    /// `self` * `rhs` + `carry` back to `self`,
+    /// and returns the high-order (overflow) bits of the result.
     /// 
     /// # Arguments
     /// - `rhs` is to be multiplied to `self`, and small-sized unsigned integer
     ///   such as `u8`, `u16`, `u32`, `u64`, and `u128`.
-    /// - `carry` is to be added to `self`, and is `Self`-type.
+    /// - `carry` is of `Self` type
+    ///   so that `carry` may be added to `self` * `rhs`.
     /// 
     /// # Panics
     /// If `size_of::<T>() * N` <= `128`, this method may panic
     /// or its behavior may be undefined though it may not panic.
     /// 
-    /// # Output
-    /// It returns the high-order (overflow) bits of `self` * `rhs` + `carry`
-    /// of the result.
+    /// # Outputs
+    /// It returns the high-order (overflow) bits of the result
+    /// `self` * `rhs` + `carry`.
     /// 
     /// # Features
-    /// - It performs "long multiplication" which takes in an extra amount to
-    ///   add, and may return an additional amount of overflow. This allows for
-    ///   chaining together multiple multiplications to create "bigger integers"
-    ///   which represent larger values.
-    /// - If the return value is not zero, the `OVERFLOW` flag will be set
-    ///   though the output is free from overflow. It is because the
-    ///   `OVERFLOW` flag is of `self`, and not of the result of
-    ///   multiplication.
-    /// - All the flags are historical, which means, for example, if an
-    ///   overflow occurred even once before this current operation or
-    ///   `OVERFLOW` flag is already set before this current operation,
-    ///   the `OVERFLOW` flag is not changed even if this current operation
-    ///   does not cause overflow.
+    /// - It performs "long multiplication" which takes in an extra amount
+    ///   to add, and assigns the low-order part the result to `self` back,
+    ///   and returns the high-order part of the result.
+    /// - If the return value which is the high-order part of the result is
+    ///   not zero, the `OVERFLOW` flag of `self` will be set
+    ///   though the result is free from overflow because the `OVERFLOW` flag
+    ///   is of `self`, and not of the result of the multiplication.
+    /// - If the input carry is `0`, this method is equivalent to
+    ///   `widening_mul_assign_uint()`.
     /// 
-    /// # Counterpart Methods
+    /// # Counterpart Method
     /// - If you don’t need the carry, then you can use
     ///   [widening_mul_assign_uint()](struct@BigUInt#method.widening_mul_assign_uint)
     ///   instead.
     /// - The value of `self` after calculation matches what you’d get by
     ///   combining the mehtods
     ///   [wrapping_mul_uint()](struct@BigUInt#method.wrapping_mul_uint) and
-    ///   [wrapping_add_assign_uint()](struct@BigUInt#method.wrapping_add_assign_uint):
+    ///   [wrapping_add_assign()](struct@BigUInt#method.wrapping_add_assign):
     ///   `self.wrapping_mul_uint(rhs).wrapping_add_assign_uint(carry)`.
     /// - If `rhs` is bigger than `u128`, the method
     ///   [carrying_mul_assign()](struct@BigUInt#method.carrying_mul_assign)
@@ -9703,31 +9705,31 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     }
 
     // pub fn widening_mul_uint<U>(&self, rhs: U) -> (Self, Self)
-    /// Calculates the complete product `self` * `rhs` without the possibility
-    /// to overflow.
+    /// Calculates `self` * `rhs`,
+    /// wrapping around at the boundary of the `Self` type,
+    /// and returns a tuple the low-order (wrapping) bits and the high-order
+    /// (overflow) bits of the result of the calculation  `self` * `rhs`.
     /// 
     /// # Arguments
-    /// - `rhs` is to be multiplied to `self`, and small-sized unsigned integer
-    ///   such as `u8`, `u16`, `u32`, `u64`, and `u128`.
+    /// - `rhs` is to be multiplied to `self`, and is of small-sized unsigned
+    ///   integer such as `u8`, `u16`, `u32`, `u64`, and `u128`.
     /// 
     /// # Panics
     /// If `size_of::<T>() * N` <= `128`, this method may panic
     /// or its behavior may be undefined though it may not panic.
     /// 
-    /// # Output
-    /// It returns `self` * `rhs` in the form of a tuple of the low-order
-    /// (wrapping) bits and the high-order (overflow) bits of the result as
-    /// two separate values, in that order.
+    /// # Outputs
+    /// It returns the multiplication result `self` * `rhs` in the form of a
+    /// tuple of the low-order (wrapping) bits and the high-order
+    /// (overflow) bits of the result as two separate values,
+    /// in the order (`low`, `high`).
     /// 
     /// # Features
-    /// - It performs "long multiplication" which takes in an extra amount to
-    ///   add, and may return an additional amount of overflow.
-    ///   This allows for chaining together multiple multiplications to create
-    ///   bigger integers which represent larger values.
+    /// - It performs "long multiplication", and returns the result in a tuple
+    ///   containing a low-order part and a high-order part of it.
     /// - If the high-order part of the return value is not zero, the
-    ///   `OVERFLOW` flag will be set though the output tuple is free from
-    ///   overflow. It is because the `OVERFLOW` flag is about `self`,
-    ///   and not about the result of multiplication.
+    ///   `OVERFLOW` flag of the low-order part will be set though the output
+    ///   tuple is free from overflow.
     /// 
     /// # Counterpart Methods
     /// - If you also need to add a carry to the wide result, then you want to
@@ -9736,7 +9738,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// - The value of the first field in the returned tuple matches what
     ///   you’d get the method
     ///   [wrapping_mul_uint()](struct@BigUInt#method.wrapping_mul_uint).
-    ///   `self.widening_mul_uint(rhs).0` == `self.wrapping_mul_uint(rhs)`
+    ///   `self.widening_mul_uint(rhs).0` == `self.wrapping_mul_uint(rhs)`.
     /// - If `rhs` is bigger than `u128`, the method
     ///   [widening_mul()](struct@BigUInt#method.widening_mul)
     ///   is proper rather than this method `widening_mul_uint()`.
@@ -9807,43 +9809,39 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     }
 
     // pub fn widening_mul_assign_uint<U>(&mut self, rhs: U) -> Self
-    /// Calculates the complete product `self` * `rhs` without the possibility
-    /// to overflow.
+    /// Calculates `self` * `rhs`,
+    /// wrapping around at the boundary of the `Self` type,
+    /// and assigns the low-order (wrapping) bits of the result `self` * `rhs`,
+    /// and returns the high-order (overflow) bits of the result.
     /// 
     /// # Arguments
-    /// `rhs` is to be multiplied to `self`, and small-sized unsigned integer
-    /// such as `u8`, `u16`, `u32`, `u64`, and `u128`.
+    /// - `rhs` is to be multiplied to `self`, and small-sized unsigned integer
+    ///   such as `u8`, `u16`, `u32`, `u64`, and `u128`.
     /// 
     /// # Panics
     /// If `size_of::<T>() * N` <= `128`, this method may panic
     /// or its behavior may be undefined though it may not panic.
     /// 
-    /// # Output
+    /// # Outputs
     /// It returns the high-order (overflow) bits of the result `self` * `rhs`.
     /// 
     /// # Features
-    /// - It performs "long multiplication" which takes in an extra amount to add,
-    ///   and may return an additional amount of overflow. This allows for
-    ///   chaining together multiple multiplications to create “bigger integers”
-    ///   which represent larger values.
-    /// - If the return value is not zero, the `OVERFLOW` flag will be set
-    ///   though the output tuple is free from overflow. It is because the
-    ///   `OVERFLOW` flag is about `self`, and not about the result of
-    ///   multiplication.
-    /// - All the flags are historical, which means, for example, if an
-    ///   overflow occurred even once before this current operation or
-    ///   `OVERFLOW` flag is already set before this current operation,
-    ///   the `OVERFLOW` flag is not changed even if this current operation
-    ///   does not cause overflow.
+    /// - It performs "long multiplication",
+    ///   and assigns the low-order part the result to `self` back,
+    ///   and returns the high-order part of it.
+    /// - If the return value which is the high-order part of the result is
+    ///   not zero, the `OVERFLOW` flag of `self` will be set
+    ///   though the result is free from overflow because the `OVERFLOW` flag
+    ///   is of `self`, and not of the result of the multiplication.
     /// 
     /// # Counterpart Methods
     /// - If you also need to add a carry to the wide result, then you want to
     ///   use
-    ///   [widening_mul_assign_uint()](struct@BigUInt#method.carrying_mul_assign_uint)
+    ///   [carrying_mul_assign_uint()](struct@BigUInt#method.carrying_mul_assign_uint)
     ///   instead.
     /// - The value of `self` after calculation matches what you’d get the
     ///   method [wrapping_mul_uint()](struct@BigUInt#method.wrapping_mul_uint)
-    ///   `self` == `self.wrapping_mul_uint(rhs)`.
+    ///   so `self` == `self.wrapping_mul_uint(rhs)`.
     /// - If `rhs` is bigger than `u128`, the method 
     ///   [widening_mul_assign()](struct@BigUInt#method.widening_mul_assign)
     ///   is proper rather than this method `widening_mul_assign_uint()`.
@@ -9991,7 +9989,9 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     }
 
     // pub fn wrapping_mul_uint<U>(&self, rhs: U) -> Self
-    /// Computes `self` * `rhs`, wrapping around at the boundary of the type.
+    /// Calculates `self` * `rhs`,
+    /// wrapping around at the boundary of the `Self` type,
+    /// and returns a multiplication result `self` * `rhs`.
     /// 
     /// # Arguments
     /// `rhs` is to be multiplied to `self`, and small-sized unsigned integer
@@ -10001,18 +10001,18 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// If `size_of::<T>() * N` <= `128`, this method may panic
     /// or its behavior may be undefined though it may not panic.
     /// 
-    /// # Features
-    /// - Wrapping (modular) addition.
-    /// - If overflow would occur, the flag 'OVERFLOW' of the return value will
-    ///   be set.
-    /// 
     /// # Output
-    /// It returns the multiplication of `self` and `rhs`, wrapping around
-    /// at the boundary of the type.
+    /// It returns the multiplication result `self` * `rhs` with wrapping
+    /// (modular) multiplication.
+    /// 
+    /// # Features
+    /// - Wrapping (modular) multiplication.
+    /// - If overflow happened, the flag `OVERFLOW` of the return value
+    ///   will be set.
     /// 
     /// # Counterpart Method
     /// If `rhs` is bigger than `u128`, the method
-    /// [wrapping_mul_uint()](struct@BigUInt#method.wrapping_mul_uint)
+    /// [wrapping_mul()](struct@BigUInt#method.wrapping_mul)
     /// is proper rather than this method `wrapping_mul_uint()`.
     /// 
     /// # Example 1
@@ -10069,7 +10069,9 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     }
 
     // pub fn wrapping_mul_assign_uint<U>(&mut self, rhs: U)
-    /// Multiplies self which is of `BigUInt` type with rhs of type `U`.
+    /// Calculates `self` * `rhs`,
+    /// wrapping around at the boundary of the `Self` type,
+    /// and assigns a multiplication result `self` * `rhs` to `self` back.
     /// 
     /// # Arguments
     /// `rhs` is to be multiplied to `self`, and small-sized unsigned integer
@@ -10080,15 +10082,18 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// or its behavior may be undefined though it may not panic.
     /// 
     /// # Features
+    /// - Wrapping (modular) multiplication.
+    /// - If overflow happened, the flag `OVERFLOW` of `self` will be set.
     /// - All the flags are historical, which means, for example, if an
-    /// overflow occurred even once before this current operation or
-    /// `OVERFLOW` flag is already set before this current operation,
-    /// the `OVERFLOW` flag is not changed even if this current operation
-    /// does not cause overflow.
+    ///   overflow occurred even once before this current operation or
+    ///   `OVERFLOW` flag is already set before this current operation,
+    ///   the `OVERFLOW` flag is not changed even if this current operation
+    ///   does not cause overflow.
     /// 
     /// # Counterpart Method
-    /// If `rhs` is bigger than `u128`, the method [wrapping_mul_assign()](struct@BigUInt#method.wrapping_mul_assign)
-    /// is proper rather than this method `wrapping_mul_assign_uint()`.
+    /// If `rhs` is bigger tham `u128`, the method
+    /// [wrapping_mul_assign()](struct@BigUInt#method.wrapping_mul_assign)
+    /// is proper rather than this method.
     /// 
     /// # Example 1
     /// ```
@@ -10219,7 +10224,10 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     }
 
     // pub fn overflowing_mul_uint<U>(&self, rhs: U) -> (Self, bool)
-    /// Calculates `self` * `rhs`.
+    /// Calculates `self` * `rhs`,
+    /// wrapping around at the boundary of the `Self` type,
+    /// and returns a tuple of the multiplication result `self` * `rhs` along with
+    /// a boolean indicating whether an arithmetic overflow would occur.
     /// 
     /// # Arguments
     /// `rhs` is to be multiplied to `self`, and small-sized unsigned integer
@@ -10230,20 +10238,22 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// or its behavior may be undefined though it may not panic.
     /// 
     /// # Output
-    /// - It returns a tuple of the multiplication `self` * `rhs` along
-    ///   with a boolean indicating whether an arithmetic overflow would occur.
-    /// - If an overflow would have occurred, the wrapped (modular) value
-    ///   is returned.
+    /// It returns a tuple of the multiplication result `self` * `rhs` along
+    /// with a boolean indicating whether an arithmetic overflow would
+    /// occur. If an overflow would have occurred,
+    /// then the wrapped (modular) value is returned.
     /// 
     /// # Features
-    /// If an overflow would have occurred, the second element of the output
-    /// tuple is false and the `OVERFLOW` flag of the first element will
-    /// be set.
+    /// - Wrapping (modular) multiplication .
+    /// - If overflow happens, the second element of the output tuple will
+    ///   be true and the `OVERFLOW` flag of the return value will be set.
+    /// - The second element of the output tuple reflects only
+    ///   the current overflow.
     /// 
     /// # Counterpart Method
-    /// If `rhs` is bigger than `u128`, the method
+    /// If `rhs` is bigger tham `ui128`, the method
     /// [overflowing_mul()](struct@BigUInt#method.overflowing_mul)
-    /// is proper rather than this method `overflowing_mul_uint()`.
+    /// is proper rather than this method.
     /// 
     /// # Example 1
     /// ```
@@ -10301,10 +10311,14 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     }
 
     // pub fn overflowing_mul_assign_uint<U>(&mut self, rhs: U) -> bool
-    /// Calculates `self` * `rhs`, and assigns the result to `self` back.
+    /// Calculates `self` * `rhs`,
+    /// wrapping around at the boundary of the `Self` type,
+    /// and assigns the multiplication result `self` * `rhs` to `self` back,
+    /// and returns a boolean indicating whether an arithmetic overflow
+    /// would occur.
     /// 
     /// # Arguments
-    /// `rhs` is to be multiplied to `self`, and small-sized unsigned integer
+    /// `rhs` is to be added to `self`, and small-sized unsigned integer
     /// such as `u8`, `u16`, `u32`, `u64`, and `u128`.
     /// 
     /// # Panics
@@ -10316,15 +10330,21 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// Otherwise, it returns `false`.
     /// 
     /// # Features
-    /// - All the flags are historical, which means, for example, if an
-    /// overflow occurred at least once or `OVERFLOW` flag is already set
-    /// before this current operation, the `OVERFLOW` flag is not changed
-    /// even if this current operation does not cause overflow.
+    /// - Wrapping (modular) multiplication.
+    /// - If overflow happened, the flag `OVERFLOW` of `self` will be set.
+    /// - If overflow did not happen in the current operation, the output
+    ///   will be false even if the `OVERFLOW` flag of `self` was already set
+    ///   because of previous operation of `self`.
+    /// - The output reflects only the current overflow.
+    /// - All the flags are historical, which means, for example, if an overflow
+    ///   occurred even once before this current operation or `OVERFLOW`
+    ///   flag is already set before this current operation, the `OVERFLOW` flag
+    ///   is not changed even if this current operation does not cause overflow.
     /// 
     /// # Counterpart Method
-    /// If `rhs` is bigger than `u128`, the method
+    /// If `rhs` is bigger tham `ui128`, the method
     /// [overflowing_mul_assign()](struct@BigUInt#method.overflowing_mul_assign)
-    /// is proper rather than this method `overflowing_mul_assign_uint()`.
+    /// is proper rather than this method.
     /// 
     /// # Example 1
     /// ```
@@ -10405,7 +10425,9 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     }
 
     // pub fn checked_mul_uint<U>(&self, rhs: U) -> Option<Self>
-    /// Computes `self` * `rhs`.
+    /// Calculates `self` * `rhs`,
+    /// and returns an multiplication result `self` * `rhs`
+    /// wrapped by `Some` of enum `Option`.
     /// 
     /// # Arguments
     /// `rhs` is to be multiplied to `self`, and small-sized unsigned integer
@@ -10416,13 +10438,18 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// or its behavior may be undefined though it may not panic.
     /// 
     /// # Output
-    /// It returns the sum `self` * `rhs` wrapped by `Some` of enum `Option`
-    /// if overflow did not occur. Otherwise, it returns `None` of enum Option.
+    /// It returns the the multiplication result `self` * `rhs` wrapped by
+    /// `Some` of enum `Option` if overflow did not occur at current operation.
+    /// Otherwise, it returns `None` of enum `Option`.
+    /// 
+    /// # Features
+    /// It does not wrap around at the boundary of the `Self` type.
+    /// So, if overflow happened, it returns `None` of enum `Option`.
     /// 
     /// # Counterpart Method
-    /// If `rhs` is bigger than `u128`, the method
+    /// If `rhs` is bigger tham `ui128`, the method
     /// [checked_mul()](struct@BigUInt#method.checked_mul)
-    /// is proper rather than this method `checked_mul_uint()`.
+    /// is proper rather than this method.
     /// 
     /// # Example 1
     /// ```
@@ -10488,7 +10515,8 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     }
 
     // pub fn unchecked_mul_uint<U>(&self, rhs: U) -> Self
-    /// Computes `self` * `rhs`, assuming overflow cannot occur.
+    /// Calculates `self` * `rhs`, assuming overflow cannot occur,
+    /// and returns an multiplication result `self` * `rhs`.
     /// 
     /// # Arguments
     /// `rhs` is to be multiplied to `self`, and small-sized unsigned integer
@@ -10497,17 +10525,21 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// # Panics
     /// - If `size_of::<T>() * N` <= `128`, this method may panic
     ///   or its behavior may be undefined though it may not panic.
-    /// - If overflow occurred, it will panic. So, use this method only when
-    ///   you are sure that overflow will not occur.
+    /// - If overflow occurred, it will panic. So, use this method
+    ///   only when you are sure that overflow will not occur.
     /// 
     /// # Output
-    /// It returns the sum `self` * `rhs` if overflow did not occur.
-    /// Otherwise, it will panic.
+    /// It returns the multiplication result `self` * `rhs` if overflow did not
+    /// occur at current operation. Otherwise, it will panic.
+    /// 
+    /// # Features
+    /// It does not wrap around at the boundary of the `Self` type.
+    /// So, if overflow happened, it will panic.
     /// 
     /// # Counterpart Method
-    /// If `rhs` is bigger than `u128`, the method
+    /// If `rhs` is bigger tham `ui128`, the method
     /// [unchecked_mul()](struct@BigUInt#method.unchecked_mul)
-    /// is proper rather than this method `unchecked_mul_uint()`.
+    /// is proper rather than this method.
     /// 
     /// # Example 1
     /// ```
@@ -10554,8 +10586,8 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     }
 
     // pub fn saturating_mul_uint<U>(&self, rhs: U) -> Self
-    /// Computes `self` * `rhs`, saturating at the numeric bounds
-    /// instead of overflowing.
+    /// Calculates `self` * `rhs`,
+    /// saturating at the numeric bounds instead of overflowing.
     /// 
     /// # Arguments
     /// `rhs` is to be multiplied to `self`, and small-sized unsigned integer
@@ -10566,17 +10598,19 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// or its behavior may be undefined though it may not panic.
     /// 
     /// # Output
-    /// It returns the sum `self` + `rhs` if overflow did not occur.
-    /// Otherwise, it returns the maximum value.
+    /// It returns the multiplication result `self` * `rhs` if the result is
+    /// less than or equal to the maximum value of `Self`. If the sum
+    /// `self` + `rhs` is greater than the maximum value it returns the
+    /// maximum value.
     /// 
     /// # Features
-    /// - This method saturates when it reaches maximum value.
-    /// - It does not set `OVERFLOW` flag.
+    /// - This method saturates when it reaches the maximum value of `Self`.
+    /// - It does not set `OVERFLOW` flag of the return value.
     /// 
     /// # Counterpart Method
-    /// If `rhs` is bigger than `u128`, the method
+    /// If `rhs` is bigger tham `ui128`, the method
     /// [saturating_mul()](struct@BigUInt#method.saturating_mul)
-    /// is proper rather than this method `saturating_mul_uint()`.
+    /// is proper rather than this method.
     /// 
     /// # Example 1
     /// ```
@@ -10631,8 +10665,9 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     }
 
     // pub fn saturating_mul_assign_uint<U>(&mut self, rhs: U)
-    /// Computes `self` * `rhs`, saturating at the numeric bounds
-    /// instead of overflowing, and assigns the result to `self` back.
+    /// Calculates `self` * `rhs`,
+    /// saturating at the numeric bounds instead of overflowing,
+    /// and assigns the result to `self` back.
     /// 
     /// # Arguments
     /// `rhs` is to be multiplied to `self`, and small-sized unsigned integer
@@ -10643,18 +10678,17 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// or its behavior may be undefined though it may not panic.
     /// 
     /// # Features
-    /// - This method saturates when it reaches maximum value.
-    /// - It does not set `OVERFLOW` flag.
-    /// - All the flags are historical, which means, for example, if an
-    ///   overflow occurred even once before this current operation or
-    ///   `OVERFLOW` flag is already set before this current operation,
-    ///   the `OVERFLOW` flag is not changed even if this current operation
-    ///   does not cause overflow.
+    /// - This method saturates when it reaches the maximum value of `Self`.
+    /// - It does not set `OVERFLOW` flag of `self`.
+    /// - All the flags are historical, which means, for example, if an overflow
+    ///   occurred even once before this current operation or `OVERFLOW`
+    ///   flag is already set before this current operation, the `OVERFLOW` flag
+    ///   is not changed even if this current operation does not cause overflow.
     /// 
     /// # Counterpart Method
-    /// If `rhs` is bigger than `u128`, the method
+    /// If `rhs` is bigger tham `ui128`, the method
     /// [saturating_mul_assign()](struct@BigUInt#method.saturating_mul_assign)
-    /// is proper rather than this method `saturating_mul_assign_uint()`.
+    /// is proper rather than this method.
     /// 
     /// # Example 1
     /// ```
@@ -10744,39 +10778,42 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     */
 
     // pub fn modular_mul_uint<U>(&self, rhs: U, modulo: &Self) -> Self
-    /// Computes (`self` * `rhs`) % `modulo`, wrapping around at `modulo`
-    /// of the type `Self`.
+    /// Calculates (`self` * `rhs`) % `modulo`,
+    /// wrapping around at `modulo` of the `Self` type.
     /// 
     /// # Arguments
     /// - `rhs` is to be multiplied to `self`, and small-sized unsigned integer
-    /// such as `u8`, `u16`, `u32`, `u64`, and `u128`.
-    /// - `modulo` is the divisor to divide the result of (`self` * `rhs`).
+    ///   such as `u8`, `u16`, `u32`, `u64`, and `u128`.
+    /// - `modulo` is the divisor to divide the result of (`self` * `rhs`),
+    ///   and is of `&Self` type.
     /// 
     /// # Panics
     /// - If `size_of::<T>() * N` <= `128`, this method may panic
-    /// or its behavior may be undefined though it may not panic.
-    /// - If `modulo` is either zero or one, this method will panic.
+    ///   or its behavior may be undefined though it may not panic.
+    /// - If `modulo` is either `zero` or `one`, this method will panic.
     /// 
     /// # Output
-    /// It returns (`self` * `rhs`) % `modulo`.
+    /// It returns the modulo-product (`self` * `rhs`) % `modulo` with wrapping
+    /// (modular) multiplication at `modulo`.
     /// 
     /// # Features
-    /// - It takes the multiplication (= `mul`) of `self` and `rhs`,
-    /// and then finally returns the remainder of `mul` divided by `modulo`.
+    /// - It takes the multiplication (= `product`) of `self` and `rhs`,
+    ///   and then finally returns the remainder of `product`
+    ///   divided by `modulo`.
     /// - Wrapping (modular) multiplication at `modulo`.
-    /// - The differences between this method `modular_mul_uint()` and the
+    /// - The differences of between this method `modular_mul_uint()` and the
     ///   method `wrapping_mul_uint()` are, first, where wrapping around
-    ///   happens, and, second, when `OVERFLOW` flag is set. First, this method
-    ///   wraps araound at `modulo` while the method `wrapping_mul_uint()`
-    ///   wraps araound at `maximum value + 1`. Second, this method set
-    ///   `OVERFLOW` flag when wrapping around happens at `modulo` while the
-    ///   method `wrapping_mul_uint()` sets `OVERFLOW` flag when wrapping
-    ///   around happens.
+    ///   happens, and, second, when `OVERFLOW` flag is set.
+    ///   First, this method wraps around at `modulo` while the method
+    ///   `wrapping_mul_uint()` wraps around at `maximum value + 1`.
+    ///   Second, this method sets `OVERFLOW` flag when wrapping around happens
+    ///   at `modulo` while the method `wrapping_mul_uint()` sets `OVERFLOW`
+    ///   flag when wrapping around happens at `maximum value + 1`.
     /// 
     /// # Counterpart Method
     /// If `rhs` is bigger than `u128`, the method
-    /// [modular_mul()](struct@BigUInt#method.modular_mul) is proper
-    /// rather than this method `modular_mul_uint()`.
+    /// [modular_mul()](struct@BigUInt#method.modular_mul)
+    /// is proper rather than this method `modular_mul_uint()`.
     /// 
     /// # Example 1 for normal case
     /// ```
@@ -11014,40 +11051,44 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     }
 
     // pub fn modular_mul_assign_uint<U>(&mut self, rhs: U, modulo: &Self)
-    /// Computes (`self` * `rhs`) % `modulo`, wrapping around at `modulo`
-    /// of the type `Self`, and assign the result to `self` back.
+    /// Calculates (`self` * `rhs`) % `modulo`,
+    /// wrapping around at `modulo` of the `Self` type,
+    /// and then, assigns the result back to `self`.
     /// 
     /// # Arguments
-    /// - `rhs` is to be multiplied to `self`, and small-sized unsigned integer
-    /// such as `u8`, `u16`, `u32`, `u64`, and `u128`.
-    /// - `modulo` is the divisor to divide the result of (`self` * `rhs`).
+    /// - `rhs` is to be added to `self`, and small-sized unsigned integer
+    ///   such as `u8`, `u16`, `u32`, `u64`, and `u128`.
+    /// - `modulo` is the divisor to divide the result of (`self` * `rhs`),
+    ///   and is of `&Self` type.
     /// 
     /// # Panics
     /// - If `size_of::<T>() * N` <= `128`, this method may panic
-    /// or its behavior may be undefined though it may not panic.
-    /// - If `modulo` is either zero or one, this method will panic.
+    ///   or its behavior may be undefined though it may not panic.
+    /// - If `modulo` is either `zero` or `one`, this method will panic.
     /// 
     /// # Features
-    /// - It takes the multiplication (= `mul`) of `self` and `rhs`,
-    ///   and then finally takes the remainder of `mul` divided by `modulo`.
+    /// - It takes the multiplication (= `product`) of `self` and `rhs`,
+    ///   and then finally assigns the remainder of `product` divided
+    ///   by `modulo` to `self` back.
+    /// - Wrapping (modular) multiplication at `modulo`.
     /// - The differences between this method `modular_mul_assign_uint()` and
     ///   the method `wrapping_mul_assign_uint()` are, first, where wrapping
-    ///   around happens, and, second, when `OVERFLOW` flag is set. First, this
-    ///   method wraps araound at `modulo` while the method
-    ///   `wrapping_mul_assign_uint()` wraps araound at `maximum value + 1`.
-    ///   Second, this method set `OVERFLOW` flag when wrapping around happens
+    ///   around happens, and, second, when `OVERFLOW` flag is set.
+    ///   First, this method wraps around at `modulo` while the method
+    ///   `wrapping_mul_assign_uint()` wraps around at `maximum value + 1`.
+    ///   Second, this method sets `OVERFLOW` flag when wrapping around happens
     ///   at `modulo` while the method `wrapping_mul_assign_uint()` sets
-    ///   `OVERFLOW` flag when wrapping around happens.
+    ///   `OVERFLOW` flag when wrapping around happens at `maximum value + 1`.
     /// - All the flags are historical, which means, for example, if an
     ///   overflow occurred even once before this current operation or
-    ///   `OVERFLOW` flag is already set before this current operation,
-    ///   the `OVERFLOW` flag is not changed even if this current operation
-    ///   does not cause overflow.
+    ///   `OVERFLOW` flag is already set before this current operation, the
+    ///   `OVERFLOW` flag is not changed even if this current operation does
+    ///    not cause overflow.
     /// 
     /// # Counterpart Method
-    /// If `rhs` is bigger than `u128`, the method
+    /// If `rhs` is bigger tham `ui128`, the method
     /// [modular_mul_assign()](struct@BigUInt#method.modular_mul_assign)
-    /// is proper rather than this method `modular_mul_assign_uint()`.
+    /// is proper rather than this method.
     /// 
     /// # Example 1
     /// ```
@@ -11356,35 +11397,38 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     }
 
     // pub fn panic_free_modular_mul_uint<U>(&self, rhs: U, modulo: &Self) -> Self
-    /// Computes (`self` * `rhs`) % `modulo`, wrapping around at `modulo`
-    /// of the type `Self`.
+    /// Calculates (`self` * `rhs`) % `modulo`,
+    /// wrapping around at `modulo` of the `Self` type.
     /// 
     /// # Arguments
     /// - `rhs` is to be multiplied to `self`, and small-sized unsigned integer
-    /// such as `u8`, `u16`, `u32`, `u64`, and `u128`.
-    /// - `modulo` is the divisor to divide the result of (`self` * `rhs`).
+    ///   such as `u8`, `u16`, `u32`, `u64`, and `u128`.
+    /// - `modulo` is the divisor to divide the result of (`self` * `rhs`),
+    ///   and is of `&Self` type.
     /// 
     /// # Panics
-    /// - If `size_of::<T>() * N` <= `128`, this method may panic
+    /// If `size_of::<T>() * N` <= `128`, this method may panic
     /// or its behavior may be undefined though it may not panic.
     /// 
     /// # Output
-    /// It returns (`self` * `rhs`) % `modulo`.
+    /// It returns the modulo-product (`self` * `rhs`) % `modulo` with wrapping
+    /// (modular) multiplication at `modulo`.
     /// 
     /// # Features
-    /// - It takes the multiplication (= `mul`) of `self` and `rhs`,
-    ///   and then finally returns the remainder of `mul` divided by `modulo`.
+    /// - It takes the multiplication (= `product`) of `self` and `rhs`,
+    ///   and then finally returns the remainder of `product`
+    ///   divided by `modulo`.
     /// - Wrapping (modular) multiplication at `modulo`.
-    /// - The differences between this method `panic_free_modular_mul_uint()`
-    ///   and the method `wrapping_mul_uint()` are, first, where wrapping around
-    ///   happens, and, second, when `OVERFLOW` flag is set. First, this method
-    ///   wraps araound at `modulo` while the method `wrapping_mul_uint()`
-    ///   wraps araound at `maximum value + 1`. Second, this method set
-    ///   `OVERFLOW` flag when wrapping around happens at `modulo` while the
-    ///   method `wrapping_mul_uint()` sets `OVERFLOW` flag when wrapping
-    ///   around happens.
-    /// - If `modulo` is either zero or one, the result is zero and
-    ///   the `UMDEFINED` flag will be set.
+    /// - The differences of between this method `modular_mul_uint()` and the
+    ///   method `wrapping_mul_uint()` are, first, where wrapping around
+    ///   happens, and, second, when `OVERFLOW` flag is set.
+    ///   First, this method wraps around at `modulo` while the method
+    ///   `wrapping_mul_uint()` wraps around at `maximum value + 1`.
+    ///   Second, this method sets `OVERFLOW` flag when wrapping around happens
+    ///   at `modulo` while the method `wrapping_mul_uint()` sets `OVERFLOW`
+    ///   flag when wrapping around happens at `maximum value + 1`.
+    /// - If `modulo` is either `zero` or `one`, the `UNDEFINED` flag of the
+    ///   return value will be set and the return value will have the value `0`.
     /// - In summary, the return value and its flags will be set as follows:
     /// 
     /// | `modulo` | return value | flags       |
@@ -11393,8 +11437,8 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// 
     /// # Counterpart Method
     /// If `rhs` is bigger than `u128`, the method
-    /// [modular_mul()](struct@BigUInt#method.modular_mul) is proper
-    /// rather than this method `modular_mul_uint()`.
+    /// [panic_free_modular_mul()](struct@BigUInt#method.panic_free_modular_mul)
+    /// is proper rather than this method `panic_free_modular_mul_uint()`.
     /// 
     /// # Example 1 for a normal case
     /// ```
@@ -11656,37 +11700,41 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     }
 
     // pub fn panic_free_modular_mul_assign_uint<U>(&mut self, rhs: U, modulo: &Self)
-    /// Computes (`self` * `rhs`) % `modulo`, wrapping around at `modulo`
-    /// of the type `Self`, and assign the result to `self` back.
+    /// Calculates (`self` * `rhs`) % `modulo`,
+    /// wrapping around at `modulo` of the `Self` type,
+    /// and then assigns the result back to `self`.
     /// 
     /// # Arguments
     /// - `rhs` is to be multiplied to `self`, and small-sized unsigned integer
-    /// such as `u8`, `u16`, `u32`, `u64`, and `u128`.
-    /// - `modulo` is the divisor to divide the result of (`self` * `rhs`).
+    ///   such as `u8`, `u16`, `u32`, `u64`, and `u128`.
+    /// - `modulo` is the divisor to divide the result of (`self` * `rhs`),
+    ///   and is of `&Self` type.
     /// 
     /// # Panics
     /// - If `size_of::<T>() * N` <= `128`, this method may panic
-    /// or its behavior may be undefined though it may not panic.
+    ///   or its behavior may be undefined though it may not panic.
     /// 
     /// # Features
-    /// - It takes the multiplication (= `mul`) of `self` and `rhs`,
-    ///   and then finally takes the remainder of `mul` divided by `modulo`.
+    /// - It takes the multiplication (= `product`) of `self` and `rhs`,
+    ///   and then finally returns the remainder of `product`
+    ///   divided by `modulo`.
+    /// - Wrapping (modular) multiplication at `modulo`.
     /// - The differences between this method
     ///   `panic_free_modular_mul_assign_uint()` and the method
-    ///   `wrapping_mul_uint()` are, first, where wrapping around happens, and,
-    ///   second, when `OVERFLOW` flag is set. First, this method wraps araound
-    ///   at `modulo` while the method `wrapping_mul_uint()` wraps araound at
-    ///   `maximum value + 1`. Second, this method set `OVERFLOW` flag when
-    ///   wrapping around happens at `modulo` while the method
-    ///   `wrapping_mul_uint()` sets `OVERFLOW` flag when wrapping around
-    ///   happens.
-    /// - If `modulo` is either zero or one, the `UNDEFINED` flag will be set
-    ///   and `self` will have the value `zero`.
-    /// - In summary, the result and the flags of `self` will be set as follows:
+    ///   `wrapping_mul_assign_uint()` are, first, where wrapping
+    ///   around happens, and, second, when `OVERFLOW` flag is set.
+    ///   First, this method wraps around at `modulo` while the method
+    ///   `wrapping_mul_assign_uint()` wraps around at `maximum value + 1`.
+    ///   Second, this method sets `OVERFLOW` flag when wrapping around happens
+    ///   at `modulo` while the method `wrapping_mul_assign_uint()` sets
+    ///   `OVERFLOW` flag when wrapping around happens at `maximum value + 1`.
+    /// - If `modulo` is either `zero` or `one`, the `UNDEFINED` flag of `self`
+    ///   will be set and `self` will have the value `0`.
+    /// - In summary, `self` and its flags will be set as follows:
     /// 
-    /// | `modulo` | result | flags       |
-    /// |----------|--------|-------------|
-    /// | 0 or 1   | 0      | `UNDEFINED` |
+    /// | `modulo` | result value (self) | flags       |
+    /// |----------|---------------------|-------------|
+    /// | 0 or 1   | 0                   | `UNDEFINED` |
     /// 
     /// - All the flags are historical, which means, for example, if an
     ///   overflow occurred even once before this current operation or
@@ -11695,9 +11743,9 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     ///   does not cause overflow.
     /// 
     /// # Counterpart Method
-    /// If `rhs` is bigger than `u128`, the method
-    /// [modular_mul_assign()](struct@BigUInt#method.modular_mul_assign)
-    /// is proper rather than this method `modular_mul_assign_uint()`.
+    /// If `rhs` is bigger tham `ui128`, the method
+    /// [panic_free_modular_mul_assign_uint()](struct@BigUInt#method.panic_free_modular_mul_assign_uint)
+    /// is proper rather than this method.
     /// 
     /// # Example 1 for normal case
     /// ```
@@ -17589,7 +17637,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
 
     // pub fn modular_next_multiple_of_uint<U>(&self, rhs: U, modulo: &Self) -> Self
     /// Calculates the smallest value greater than or equal to `self` that is
-    /// a multiple of `rhs`, wrapping arround at `modulo`.
+    /// a multiple of `rhs`, wrapping around at `modulo`.
     /// 
     /// # Arguments
     /// `rhs` is the base of multiple, and is a small-sized unsigned integer
@@ -18513,7 +18561,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     // pub fn pow_assign_uint<U>(&mut self, exp: U)
     /// Raises `BigUInt` type number to the power of exp,
     /// using exponentiation of primitive unsigned integer type by squaring,
-    /// and assign the result to `self` back.
+    /// and assigns the result to `self` back.
     /// The type `U` has the trait `SmallUInt`.
     /// 
     /// # Arguments
@@ -18809,7 +18857,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     // pub fn panic_free_pow_assign_uint<U>(&mut self, exp: U)
     /// Raises `BigUInt` type number to the power of exp,
     /// using exponentiation of primitive unsigned integer type by squaring,
-    /// and assign the result to `self` back.
+    /// and assigns the result to `self` back.
     /// The type `U` has the trait `SmallUInt`.
     /// 
     /// # Arguments
@@ -19109,7 +19157,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     // pub fn wrapping_pow_assign_uint<U>(&mut self, exp: U)
     /// Raises `self` to the power of `exp`, using exponentiation
     /// of primitive unsigned integer type by squaring, wrapping around at the
-    /// boundary of the type, and assign the result to `self` back.
+    /// boundary of the type, and assigns the result to `self` back.
     ///
     /// # Arguments
     /// `exp` is the power to raise `self` to and is a small-sized unsigned
@@ -20367,7 +20415,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     // pub fn modular_pow_assign_uint<U>(&mut self, exp: U, modulo: &Self)
     /// Raises `BigUInt` type number to the power of `exp`, using exponentiation
     /// of primitive unsigned integer type by squaring, wrapping around at
-    /// `modulo`, and assign the result to `self` back.
+    /// `modulo`, and assigns the result to `self` back.
     ///
     /// # Arguments
     /// - `exp` is the power to raise `self` to and is a small-sized unsigned
@@ -20970,7 +21018,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     // pub fn panic_free_modular_pow_assign_uint<U>(&mut self, exp: U, modulo: &Self)
     /// Raises `BigUInt` type number to the power of `exp`, using exponentiation
     /// of primitive unsigned integer type by squaring, wrapping around at
-    /// `modulo`, and assign the result to `self` back.
+    /// `modulo`, and assigns the result to `self` back.
     ///
     /// # Arguments
     /// - `exp` is the power to raise `self` to and is a small-sized unsigned
@@ -25188,7 +25236,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// # Output
     /// It returns a tuple of the addition `self` + `rhs` along with a boolean
     /// indicating whether an arithmetic overflow would occur. If an overflow
-    /// would have occurred then the wrapped (modular) value is returned.
+    /// would have occurred, then the wrapped (modular) value is returned.
     /// 
     /// # Features
     /// - Wrapping (modular) addition.
@@ -25618,7 +25666,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// 
     /// # Features
     /// - This method saturates when it reaches the maximum value of `Self`.
-    /// - It does not set `OVERFLOW` flag of the return value.
+    /// - It does not set `OVERFLOW` flag of `self`.
     /// - All the flags are historical, which means, for example, if an overflow
     ///   occurred even once before this current operation or `OVERFLOW`
     ///   flag is already set before this current operation, the `OVERFLOW` flag
@@ -25721,7 +25769,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
 
     // pub fn modular_add(&self, rhs: &Self, modulo: &Self) -> Self
     /// Calculates (`self` + `rhs`) % `modulo`,
-    /// wrapping around at `modulo` of the `Self` type instead of overflowing.
+    /// wrapping around at `modulo` of the `Self` type.
     /// 
     /// # Arguments
     /// - `rhs` is to be added to `self`, and is of `&Self` type.
@@ -26005,7 +26053,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
 
     // pub fn modular_add_assign(&mut self, rhs: &Self, modulo: &Self)
     /// Calculates (`self` + `rhs`) % `modulo`,
-    /// wrapping around at `modulo` of the `Self` type instead of overflowing,
+    /// wrapping around at `modulo` of the `Self` type,
     /// and then, assigns the result back to `self`.
     /// 
     /// # Arguments
@@ -26385,7 +26433,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     }
     // pub fn panic_free_modular_add(&self, rhs: &Self, modulo: &Self) -> Self
     /// Calculates (`self` + `rhs`) % `modulo`,
-    /// wrapping around at `modulo` of the `Self` type instead of overflowing.
+    /// wrapping around at `modulo` of the `Self` type.
     /// 
     /// # Arguments
     /// - `rhs` is to be added to `self`, and is of `&Self` type.
@@ -26717,7 +26765,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
 
     // pub fn panic_free_modular_add_assign(&mut self, rhs: &Self, modulo: &Self)
     /// Calculates (`self` + `rhs`) % `modulo`,
-    /// wrapping around at `modulo` of the `Self` type instead of overflowing,
+    /// wrapping around at `modulo` of the `Self` type,
     /// and then, assigns the result back to `self`.
     /// 
     /// # Arguments
@@ -28090,7 +28138,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// 
     /// # Features
     /// - This method saturates when it reaches `0` of `Self`.
-    /// - It does not set `UNDERFLOW` flag of the return value.
+    /// - It does not set `UNDERFLOW` flag of `self`.
     /// - All the flags are historical, which means, for example, if an underflow
     ///   occurred even once before this current operation or `UNDERFLOW`
     ///   flag is already set before this current operation, the `UNDERFLOW` flag
@@ -28158,7 +28206,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
 
     // pub fn modular_sub(&self, rhs: &Self, modulo: &Self) -> Self
     /// Calculates (`self` - `rhs`) % `modulo`,
-    /// wrapping around at `modulo` of the `Self` type instead of underflowing.
+    /// wrapping around at `modulo` of the `Self` type.
     /// 
     /// # Arguments
     /// - `rhs` is to be added to `self`, and is of `&Self` type..
@@ -28443,7 +28491,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
 
     // pub fn modular_sub_assign(&mut self, rhs: &Self, modulo: &Self)
     /// Calculates (`self` - `rhs`) % `modulo`,
-    /// wrapping around at `modulo` of the `Self` type instead of underflowing,
+    /// wrapping around at `modulo` of the `Self` type,
     /// and then, assigns the result back to `self`.
     /// 
     /// # Arguments
@@ -28798,7 +28846,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
 
     // pub fn panic_free_modular_sub(&self, rhs: &Self, modulo: &Self) -> Self
     /// Calculates (`self` - `rhs`) % `modulo`,
-    /// wrapping around at `modulo` of the `Self` type instead of underflowing.
+    /// wrapping around at `modulo` of the `Self` type.
     /// 
     /// # Arguments
     /// -`rhs` is to be subtracted from `self`, and is of `&Self` type.
@@ -29095,7 +29143,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
 
     // pub fn panic_free_modular_sub(&self, rhs: &Self, modulo: &Self) -> Self
     /// Calculates (`self` - `rhs`) % `modulo`,
-    /// wrapping around at `modulo` of the `Self` type instead of underflowing.
+    /// wrapping around at `modulo` of the `Self` type.
     /// 
     /// # Arguments
     /// -`rhs` is to be subtracted from `self`, and is of `&Self` type.
@@ -29567,33 +29615,38 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /*** Multiplication ***/
 
     // pub fn carrying_mul(&self, rhs: &Self, carry: Self) -> (Self, Self)
-    /// Calculates the "full multiplication" `self` * `rhs` + `carry`,
-    /// without the possibility to overflow.
+    /// Calculates `self` + `rhs` + `carry`,
+    /// wrapping around at the boundary of the `Self` type,
+    /// and returns a tuple the low-order (wrapping) bits and the high-order
+    /// (overflow) bits of the result of the calculation
+    /// `self` * `rhs` + `carry`.
     /// 
     /// # Arguments
     /// - `rhs` is to be multiplied to `self`, and is of `&Self` type.
-    /// - `carry` is to be added to `self`, and `Self`-typed.
+    /// - `carry` is of `Self` type
+    ///   so that `carry` may be added to `self` * `rhs`.
     /// 
     /// # Panics
     /// If `size_of::<T>() * N` <= `128`, this method may panic
     /// or its behavior may be undefined though it may not panic.
     /// 
-    /// # Output
-    /// It returns `self` * `rhs` + `carry` in the form of a tuple of the
-    /// low-order (wrapping) bits and the high-order (overflow) bits of the
-    /// result as two separate values, in the order (`low`, `high`).
+    /// # 
+    /// It returns the multiplication result `self` * `rhs` + `carry` in the
+    /// form of a tuple of the low-order (wrapping) bits and the
+    /// high-order (overflow) bits of the result as two separate values,
+    /// in the order (`low`, `high`).
     /// 
     /// # Features
-    /// - It performs "long multiplication" which takes in an extra amount to
-    ///   add, and may return an additional amount of overflow. This allows for
-    ///   chaining together multiple multiplications to create
-    ///   "bigger integers" which represent larger values.
+    /// - It performs "long multiplication" which takes in an extra amount
+    ///   to add, and returns the result in a tuple containing a low-order
+    ///   part and a high-order part of it. This allows for chaining together
+    ///   multiple multiplications to create "bigger integers" which represent
+    ///   larger values.
     /// - If the high-order part of the return value is not zero, the
-    ///   `OVERFLOW` flag will be set though the output tuple is free from
-    ///   overflow. It is because the `OVERFLOW` flag is about `self`,
-    ///   and not about the result of multiplication.
-    /// - If overflow would occur, the flag `OVERFLOW` of the return value
-    ///   will be set.
+    ///   `OVERFLOW` flag of the low-order part will be set though the output
+    ///   tuple is free from overflow.
+    /// - If the input carry is `0`, this method is equivalent to
+    ///   `widening_mul()`.
     /// 
     /// # Counterpart Methods
     /// - If you don’t need the carry, then you can use
@@ -29701,31 +29754,35 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     }
 
     // pub fn carrying_mul_assign(&mut self, rhs: &Self, carry: Self) -> Self
-    /// Calculates the "full multiplication" `self` * `rhs` + `carry` without
-    /// the possibility to overflow, and assigs the low-order bits of the result
-    /// to `self` back and returns the high-order bits of the result.
+    /// Calculates `self` + `rhs` + `carry`,
+    /// wrapping around at the boundary of the `Self` type,
+    /// and assigns the low-order (wrapping) bits of the result
+    /// `self` * `rhs` + `carry` back to `self`,
+    /// and returns the high-order (overflow) bits of the result.
     /// 
     /// # Arguments
     /// - `rhs` is to be multiplied to `self`, and is of `&Self` type.
-    /// - `carry` is to be added to `self`, and is of `Self`-type.
+    /// - `carry` is of `Self` type
+    ///   so that `carry` may be added to `self` * `rhs`.
     /// 
     /// # Panics
     /// If `size_of::<T>() * N` <= `128`, this method may panic
     /// or its behavior may be undefined though it may not panic.
     /// 
     /// # Output
-    /// It returns the high-order (overflow) bits of `self` * `rhs` + `carry`
-    /// of the result.
+    /// It returns the high-order (overflow) bits of the result
+    /// `self` * `rhs` + `carry`.
     /// 
     /// # Features
-    /// - It performs "long multiplication" which takes in an extra amount to
-    ///   add, and may return an additional amount of overflow. This allows for
-    ///   chaining together multiple multiplications to create "bigger integers"
-    ///   which represent larger values.
-    /// - If the return value is not zero, the `OVERFLOW` flag will be set
-    ///   though the output is free from overflow. It is because the
-    ///   `OVERFLOW` flag is of `self`, and not of the result of
-    ///   multiplication.
+    /// - It performs "long multiplication" which takes in an extra amount
+    ///   to add, and assigns the low-order part the result to `self` back,
+    ///   and returns the high-order part of the result.
+    /// - If the return value which is the high-order part of the result is
+    ///   not zero, the `OVERFLOW` flag of `self` will be set
+    ///   though the result is free from overflow because the `OVERFLOW` flag
+    ///   is of `self`, and not of the result of the multiplication.
+    /// - If the input carry is `0`, this method is equivalent to
+    ///   `widening_mul_assign()`.
     /// - All the flags are historical, which means, for example, if an
     ///   overflow occurred even once before this current operation or
     ///   `OVERFLOW` flag is already set before this current operation,
@@ -29737,9 +29794,9 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     ///   [widening_mul_assign()](struct@BigUInt#method.widening_mul_assign)
     ///   instead.
     /// - The value of `self` after calculation matches what you’d get by
-    ///   combining the methods
+    ///   combining the mehtods
     ///   [wrapping_mul()](struct@BigUInt#method.wrapping_mul) and
-    ///   [wrapping_add_assign()](struct@BigUInt#method.wrapping_add_assign):
+    ///   [wrapping_add_assign()](struct@BigUInt#method.wrapping_add_assign_uint):
     ///   `self.wrapping_mul(rhs).wrapping_add_assign(carry)`.
     /// - The method
     ///   [carrying_mul_assign_uint()](struct@BigUInt#method.carrying_mul_assign_uint)
@@ -29930,40 +29987,39 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     }
 
     // pub fn widening_mul(&self, rhs: &Self) -> (Self, Self)
-    /// Calculates the complete product `self` * `rhs` without the possibility
-    /// to overflow.
+    /// Calculates `self` * `rhs`,
+    /// wrapping around at the boundary of the `Self` type,
+    /// and returns a tuple the low-order (wrapping) bits and the high-order
+    /// (overflow) bits of the result of the calculation  `self` * `rhs`.
     /// 
     /// # Arguments
-    /// - `rhs` is to be multiplied to `self`, and is of `&Self` type.
+    /// - `rhs` is to be added to `self`, and is of `&Self` type.
     /// 
     /// # Panics
     /// If `size_of::<T>() * N` <= `128`, this method may panic
     /// or its behavior may be undefined though it may not panic.
     /// 
-    /// # Output
-    /// It returns `self` * `rhs` in the form of a tuple of the low-order
-    /// (wrapping) bits and the high-order (overflow) bits of the result as
-    /// two separate values, in that order.
+    /// # Outputs
+    /// It returns the multiplication result `self` * `rhs` in the form of a
+    /// tuple of the low-order (wrapping) bits and the high-order
+    /// (overflow) bits of the result as two separate values,
+    /// in the order (`low`, `high`).
     /// 
     /// # Features
-    /// - It performs "long multiplication" which takes in an extra amount to
-    ///   add, and may return an additional amount of overflow.
-    ///   This allows for chaining together multiple multiplications to create
-    ///   bigger integers which represent larger values.
+    /// - It performs "long multiplication", and returns the result in a tuple
+    ///   containing a low-order part and a high-order part of it.
     /// - If the high-order part of the return value is not zero, the
-    ///   `OVERFLOW` flag will be set though the output tuple is free from
-    ///   overflow. It is because the `OVERFLOW` flag is about `self`,
-    ///   and not about the result of multiplication.
+    ///   `OVERFLOW` flag of the low-order part will be set though the output
+    ///   tuple is free from overflow.
     /// 
     /// # Counterpart Methods
-    /// - If you also need to add a carry to the wide result,
-    ///   then you want to use
-    ///   [carrying_mul()](struct@BigUInt#method.carrying_mul)
+    /// - If you also need to add a carry to the wide result, then you want to
+    ///   use [carrying_mul()](struct@BigUInt#method.carrying_mul)
     ///   instead.
-    /// - The value of the first field in the returned tuple matches
-    ///   what you’d get the method
+    /// - The value of the first field in the returned tuple matches what
+    ///   you’d get the method
     ///   [wrapping_mul()](struct@BigUInt#method.wrapping_mul).
-    ///   `self.widening_mul(rhs).0` == `self.wrapping_mul(rhs)`
+    ///   `self.widening_mul(rhs).0` == `self.wrapping_mul(rhs)`.
     /// - The method
     ///   [widening_mul_uint()](struct@BigUInt#method.widening_mul_uint)
     ///   is a bit faster than this method `widening_mul()`.
@@ -30032,42 +30088,38 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     }
 
     // pub fn widening_mul_assign(&mut self, rhs: &Self) -> Self
-    /// Calculates the complete product `self` * `rhs` without the possibility
-    /// to overflow.
+    /// Calculates `self` * `rhs`,
+    /// wrapping around at the boundary of the `Self` type,
+    /// and assigns the low-order (wrapping) bits of the result `self` * `rhs`,
+    /// and returns the high-order (overflow) bits of the result.
     /// 
     /// # Arguments
-    /// - `rhs` is to be multiplied to `self`, and is of `&Self` type.
+    /// - `rhs` is to be added to `self`, and is of `&Self` type.
     /// 
     /// # Panics
     /// If `size_of::<T>() * N` <= `128`, this method may panic
     /// or its behavior may be undefined though it may not panic.
     /// 
     /// # Output
-    /// It returns the high-order (overflow) bits of the result `self` * `rhs`.
+    /// It returns the high-order (overflow) bits of the result `self` * `rhs`.bit.
     /// 
     /// # Features
-    /// - It performs "long multiplication" which takes in an extra amount to add,
-    ///   and may return an additional amount of overflow. This allows for
-    ///   chaining together multiple multiplications to create “bigger integers”
-    ///   which represent larger values.
-    /// - If the return value is not zero, the `OVERFLOW` flag will be set
-    ///   though the output tuple is free from overflow. It is because the
-    ///   `OVERFLOW` flag is about `self`, and not about the result of
-    ///   multiplication.
-    /// - All the flags are historical, which means, for example, if an
-    ///   overflow occurred even once before this current operation or
-    ///   `OVERFLOW` flag is already set before this current operation,
-    ///   the `OVERFLOW` flag is not changed even if this current operation
-    ///   does not cause overflow.
+    /// - It performs "long multiplication",
+    ///   and assigns the low-order part the result to `self` back,
+    ///   and returns the high-order part of it.
+    /// - If the return value which is the high-order part of the result is
+    ///   not zero, the `OVERFLOW` flag of `self` will be set
+    ///   though the result is free from overflow because the `OVERFLOW` flag
+    ///   is of `self`, and not of the result of the multiplication.
     /// 
     /// # Counterpart Methods
-    /// - If you also need to add a carry to the wide result, then you want
-    ///   to use
+    /// - If you also need to add a carry to the wide result, then you want to
+    ///   use
     ///   [carrying_mul_assign()](struct@BigUInt#method.carrying_mul_assign)
     ///   instead.
-    /// - The value of `self` after calculation matches what you’d get
-    ///    the method [wrapping_mul()](struct@BigUInt#method.wrapping_mul).
-    ///   `self` == `self.wrapping_mul(rhs)`
+    /// - The value of `self` after calculation matches what you’d get the
+    ///   method [wrapping_mul()](struct@BigUInt#method.wrapping_mul)
+    ///   so `self` == `self.wrapping_mul(rhs)`.
     /// - The method
     ///   [widening_mul_assign_uint()](struct@BigUInt#method.widening_mul_assign_uint)
     ///   is a bit faster than this method `widening_mul_assign()`.
@@ -30252,29 +30304,31 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     }
 
     // pub fn wrapping_mul(&self, rhs: &Self) -> Self
-    /// Computes `self` * `rhs`, wrapping around at the boundary of the type.
+    /// Calculates `self` * `rhs`,
+    /// wrapping around at the boundary of the `Self` type,
+    /// and returns a multiplication result `self` * `rhs`.
     /// 
     /// # Arguments
-    /// `rhs` is to be multiplied to `self`, and is of `&Self` type.
+    /// `rhs` is to be added to `self`, and is of `&Self` type.
     /// 
     /// # Panics
     /// If `size_of::<T>() * N` <= `128`, this method may panic
     /// or its behavior may be undefined though it may not panic.
     /// 
-    /// # Features
-    /// - Wrapping (modular) addition.
-    /// - If overflow would occur, the flag 'OVERFLOW' of the return value will
-    ///   be set.
-    /// 
     /// # Output
-    /// It returns the multiplication of `self` and `rhs`, wrapping around
-    /// at the boundary of the type.
+    /// It returns the multiplication result `self` * `rhs` with wrapping
+    /// (modular) multiplication.
+    /// 
+    /// # Features
+    /// - Wrapping (modular) multiplication.
+    /// - If overflow happened, the flag `OVERFLOW` of the return value
+    ///   will be set.
     /// 
     /// # Counterpart Method
     /// The method
     /// [wrapping_mul_uint()](struct@BigUInt#method.wrapping_mul_uint)
     /// is a bit faster than this method `wrapping_mul()`.
-    /// If `rhs` is primitive unsigned integral data type such as u8, u16,
+    /// So, if `rhs` is primitive unsigned integral data type such as u8, u16,
     /// u32, u64, and u128, use the method
     /// [wrapping_mul_uint()](struct@BigUInt#method.wrapping_mul_uint).
     /// 
@@ -30324,11 +30378,12 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     }
 
     // pub fn wrapping_mul_assign(&mut self, rhs: &Self)
-    /// Computes self * rhs, wrapping around at the boundary of the type,
-    /// and assign the result to `self` back.
+    /// Calculates `self` * `rhs`,
+    /// wrapping around at the boundary of the `Self` type,
+    /// and assigns a multiplication result `self` * `rhs` to `self` back.
     /// 
     /// # Arguments
-    /// `rhs` is to be multiplied to `self`, and is of `&Self` type.
+    /// `rhs` is to be added to `self`, and is of `&Self` type.
     /// 
     /// # Panics
     /// If `size_of::<T>() * N` <= `128`, this method may panic
@@ -30336,6 +30391,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// 
     /// # Features
     /// - Wrapping (modular) multiplication.
+    /// - If overflow happened, the flag `OVERFLOW` of `self` will be set.
     /// - All the flags are historical, which means, for example, if an
     ///   overflow occurred even once before this current operation or
     ///   `OVERFLOW` flag is already set before this current operation,
@@ -30346,7 +30402,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// The method
     /// [wrapping_mul_assign_uint()](struct@BigUInt#method.wrapping_mul_assign_uint)
     /// is a bit faster than this method `wrapping_mul_assign()`.
-    /// If `rhs` is primitive unsigned integral data type such as u8, u16,
+    /// So, if `rhs` is primitive unsigned integral data type such as u8, u16,
     /// u32, u64, and u128, use the method
     /// [wrapping_mul_assign_uint()](struct@BigUInt#method.wrapping_mul_assign_uint).
     /// 
@@ -30518,25 +30574,30 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     }
 
     // pub fn overflowing_mul(&self, rhs: &Self) -> (Self, bool)
-    /// Calculates `self` * `rhs`.
+    /// Calculates `self` * `rhs`,
+    /// wrapping around at the boundary of the `Self` type,
+    /// and returns a tuple of the multiplication result `self` * `rhs` along with
+    /// a boolean indicating whether an arithmetic overflow would occur.
     /// 
     /// # Arguments
-    /// - `rhs` is to be multiplied to `self`, and is of `&Self` type.
+    /// `rhs` is to be multiplied to `self`, and is of `&Self` type.
     /// 
     /// # Panics
     /// If `size_of::<T>() * N` <= `128`, this method may panic
     /// or its behavior may be undefined though it may not panic.
     /// 
     /// # Output
-    /// - It returns a tuple of the multiplication `self` * `rhs` along
-    ///   with a boolean indicating whether an arithmetic overflow would occur.
-    /// - If an overflow would have occurred then the wrapped (modular) value
-    ///   is returned.
+    /// It returns a tuple of the multiplication result `self` * `rhs` along
+    /// with a boolean indicating whether an arithmetic overflow would
+    /// occur. If an overflow would have occurred,
+    /// then the wrapped (modular) value is returned.
     /// 
     /// # Features
-    /// If an overflow would have occurred, the second element of the output
-    /// tuple is true and the `OVERFLOW` flag of the first element will
-    /// be set.
+    /// - Wrapping (modular) multiplication .
+    /// - If overflow happens, the second element of the output tuple will
+    ///   be true and the `OVERFLOW` flag of the return value will be set.
+    /// - The second element of the output tuple reflects only
+    ///   the current overflow.
     /// 
     /// # Counterpart Method
     /// The method
@@ -30595,10 +30656,14 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
 
     //===================
     // pub fn overflowing_mul_assign(&mut self, rhs: &Self) -> bool
-    /// Calculates `self` * `rhs`, and assigns the result to `self` back.
+    /// Calculates `self` * `rhs`,
+    /// wrapping around at the boundary of the `Self` type,
+    /// and assigns the multiplication result `self` * `rhs` to `self` back,
+    /// and returns a boolean indicating whether an arithmetic overflow
+    /// would occur.
     /// 
     /// # Arguments
-    /// - `rhs` is to be multiplied to `self`, and is of `&Self` type.
+    /// `rhs` is to be multiplied to `self`, and is of `&Self` type.
     /// 
     /// # Panics
     /// If `size_of::<T>() * N` <= `128`, this method may panic
@@ -30609,16 +30674,23 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// Otherwise, it returns `false`.
     /// 
     /// # Features
+    /// - Wrapping (modular) multiplication.
+    /// - If overflow happened, the flag `OVERFLOW` of `self` will be set.
+    /// - If overflow did not happen in the current operation, the output
+    ///   will be false even if the `OVERFLOW` flag of `self` was already set
+    ///   because of previous operation of `self`.
+    /// - The output reflects only the current overflow.
     /// - All the flags are historical, which means, for example, if an
-    /// overflow occurred at least once or `OVERFLOW` flag is already set
-    /// before this current operation, the `OVERFLOW` flag is not changed
-    /// even if this current operation does not cause overflow.
+    ///   overflow occurred even once before this current operation or
+    ///   `OVERFLOW` flag is already set before this current operation,
+    ///   the `OVERFLOW` flag is not changed even if this current operation
+    ///   does not cause overflow.
     /// 
     /// # Counterpart Method
     /// The method
     /// [overflowing_mul_assign_uint()](struct@BigUInt#method.overflowing_mul_assign_uint)
     /// is a bit faster than this method `overflowing_mul_assign()`.
-    /// If `rhs` is primitive unsigned integral data type such as u8, u16,
+    /// So, if `rhs` is primitive unsigned integral data type such as u8, u16,
     /// u32, u64, and u128, use the method
     /// [overflowing_mul_assign_uint()](struct@BigUInt#method.overflowing_mul_assign_uint).
     /// 
@@ -30671,23 +30743,31 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     }
 
     // pub fn checked_mul(&self, rhs: &Self) -> Option<Self>
-    /// Computes `self` * `rhs`.
+    /// Calculates `self` * `rhs`,
+    /// and returns an multiplication result `self` * `rhs`
+    /// wrapped by `Some` of enum `Option`.
     /// 
     /// # Arguments
-    /// - `rhs` is to be multiplied to `self`, and is `&Self` type.
+    /// `rhs` is to be multiplied to `self`, and is of `&Self` type.
     /// 
     /// # Panics
     /// If `size_of::<T>() * N` <= `128`, this method may panic
     /// or its behavior may be undefined though it may not panic.
     /// 
     /// # Output
-    /// It returns the sum `self` * `rhs` wrapped by `Some` of enum `Option`
-    /// if overflow did not occur. Otherwise, it returns `None` of enum Option.
+    /// It returns the the multiplication result `self` * `rhs` wrapped by
+    /// `Some` of enum `Option` if overflow did not occur at current operation.
+    /// Otherwise, it returns `None` of enum `Option`.
+    /// 
+    /// # Features
+    /// It does not wrap around at the boundary of the `Self` type.
+    /// So, if overflow happened, it returns `None` of enum `Option`.
     /// 
     /// # Counterpart Method
-    /// The method [checked_mul_uint()](struct@BigUInt#method.checked_mul_uint)
+    /// The method
+    /// [checked_mul_uint()](struct@BigUInt#method.checked_mul_uint)
     /// is a bit faster than this method `checked_mul()`.
-    /// If `rhs` is primitive unsigned integral data type such as u8, u16,
+    /// So, if `rhs` is primitive unsigned integral data type such as u8, u16,
     /// u32, u64, and u128, use the method
     /// [checked_mul_uint()](struct@BigUInt#method.checked_mul_uint).
     /// 
@@ -30738,26 +30818,31 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     }
 
     // pub fn unchecked_mul(&self, rhs: &Self) -> Self
-    /// Computes `self` * `rhs`, assuming overflow cannot occur.
-    /// 
+    /// Calculates `self` * `rhs`, assuming overflow cannot occur,
+    /// and returns an multiplication result `self` * `rhs`.
+    ///
     /// # Arguments
-    /// - `rhs` is to be multiplied to `self`, and is `&Self` type.
+    /// `rhs` is to be added to `self`, and is of `&Self` type.
     /// 
     /// # Panics
     /// - If `size_of::<T>() * N` <= `128`, this method may panic
-    /// or its behavior may be undefined though it may not panic.
+    ///   or its behavior may be undefined though it may not panic.
     /// - If overflow occurred, it will panic. So, use this method
-    /// only when you are sure that overflow will not occur. 
+    ///   only when you are sure that overflow will not occur. 
     /// 
     /// # Output
-    /// It returns the sum `self` * `rhs` if overflow did not occur.
-    /// Otherwise, it will panic.
+    /// It returns the multiplication result `self` * `rhs` if overflow did not
+    /// occur at current operation. Otherwise, it will panic.
+    /// 
+    /// # Features
+    /// It does not wrap around at the boundary of the `Self` type.
+    /// So, if overflow happened, it will panic.
     /// 
     /// # Counterpart Method
     /// The method
     /// [unchecked_mul_uint()](struct@BigUInt#method.unchecked_mul_uint)
     /// is a bit faster than this method `unchecked_mul()`.
-    /// If `rhs` is primitive unsigned integral data type such as u8, u16,
+    /// So, if `rhs` is primitive unsigned integral data type such as u8, u16,
     /// u32, u64, and u128, use the method
     /// [unchecked_mul_uint()](struct@BigUInt#method.unchecked_mul_uint).
     /// 
@@ -30788,25 +30873,31 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     }
 
     // pub fn saturating_mul(&self, rhs: &Self) -> Self
-    /// Computes `self` * `rhs`, saturating at the numeric bounds
-    /// instead of overflowing.
+    /// Calculates `self` * `rhs`,
+    /// saturating at the numeric bounds instead of overflowing.
     /// 
     /// # Arguments
-    /// - `rhs` is to be multiplied to `self`, and is `&Self` type.
+    /// `rhs` is to be added to `self`, and is of `&Self` type.
     /// 
     /// # Panics
     /// If `size_of::<T>() * N` <= `128`, this method may panic
     /// or its behavior may be undefined though it may not panic.
     /// 
     /// # Output
-    /// It returns the sum `self` + `rhs` if overflow did not occur.
-    /// Otherwise, it returns the maximum value.
+    /// It returns the multiplication result `self` * `rhs` if the result is
+    /// less than or equal to the maximum value of `Self`. If the sum
+    /// `self` + `rhs` is greater than the maximum value it returns the
+    /// maximum value.
+    /// 
+    /// # Features
+    /// - This method saturates when it reaches the maximum value of `Self`.
+    /// - It does not set `OVERFLOW` flag of the return value.
     /// 
     /// # Counterpart Method
     /// The method
     /// [saturating_mul_uint()](struct@BigUInt#method.saturating_mul_uint)
     /// is a bit faster than this method `saturating_mul()`.
-    /// If `rhs` is primitive unsigned integral data type such as u8, u16,
+    /// So, if `rhs` is primitive unsigned integral data type such as u8, u16,
     /// u32, u64, and u128, use the method
     /// [saturating_mul_uint()](struct@BigUInt#method.saturating_mul_uint).
     /// 
@@ -30847,21 +30938,30 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     }
 
     // pub fn saturating_mul_assign(&mut self, rhs: &Self)
-    /// Computes `self` * `rhs`, saturating at the numeric bounds
-    /// instead of overflowing, and assigns the result to `self` back.
+    /// Calculates `self` * `rhs`,
+    /// saturating at the numeric bounds instead of overflowing,
+    /// and assigns the result to `self` back.
     /// 
     /// # Arguments
-    /// - `rhs` is to be multiplied to `self`, and is `&Self` type.
+    /// `rhs` is to be multiplied to `self`, and is of `&Self` type.
     /// 
     /// # Panics
     /// If `size_of::<T>() * N` <= `128`, this method may panic
     /// or its behavior may be undefined though it may not panic.
     /// 
+    /// # Features
+    /// - This method saturates when it reaches the maximum value of `Self`.
+    /// - It does not set `OVERFLOW` flag of the return value.
+    /// - All the flags are historical, which means, for example, if an overflow
+    ///   occurred even once before this current operation or `OVERFLOW`
+    ///   flag is already set before this current operation, the `OVERFLOW` flag
+    ///   is not changed even if this current operation does not cause overflow.
+    /// 
     /// # Counterpart Method
     /// The method
     /// [saturating_mul_assign_uint()](struct@BigUInt#method.saturating_mul_assign_uint)
     /// is a bit faster than this method `saturating_mul_assign()`.
-    /// If `rhs` is primitive unsigned integral data type such as u8, u16,
+    /// So, if `rhs` is primitive unsigned integral data type such as u8, u16,
     /// u32, u64, and u128, use the method
     /// [saturating_mul_assign_uint()](struct@BigUInt#method.saturating_mul_assign_uint).
     /// 
@@ -30907,32 +31007,42 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     }
 
     // pub fn modular_mul(&self, rhs: &Self, modulo: &Self) -> Self
-    /// Computes (`self` * `rhs`) % `modulo`, wrapping around at `modulo`
-    /// of the type `Self`.
+    /// Calculates (`self` * `rhs`) % `modulo`,
+    /// wrapping around at `modulo` of the `Self` type.
     /// 
     /// # Arguments
-    /// - `rhs` is to be multiplied to `self`, and is `&Self` type.
-    /// - `modulo` is the divisor to divide the result of (`self` * `rhs`).
+    /// - `rhs` is to be multiplied to `self`, and is of `&Self` type.
+    /// - `modulo` is the divisor to divide the result of (`self` * `rhs`),
+    ///   and is of `&Self` type.
     /// 
     /// # Panics
     /// - If `size_of::<T>() * N` <= `128`, this method may panic
-    /// or its behavior may be undefined though it may not panic.
-    /// - If `modulo` is either zero or one, this method will panic.
+    ///   or its behavior may be undefined though it may not panic.
+    /// - If `modulo` is either `zero` or `one`, this method will panic.
+    /// 
+    /// # Output
+    /// It returns the modulo-product (`self` * `rhs`) % `modulo` with wrapping
+    /// (modular) multiplication at `modulo`.
     /// 
     /// # Features
-    /// - Wrapping (modular) multiplication at `modulo`. The differences between
-    /// this method `modular_mul()` and the method `wrapping_mul()` are, first,
-    /// where wrapping around happens, and, second, whether or not `OVERFLOW`
-    /// flag is set. First, this method wraps araound at `modulo` while the
-    /// method `wrapping_mul()` wraps araound at maximum value. Second, this
-    /// method does not set `OVERFLOW` flag even if wrapping around happens,
-    /// while the method `wrapping_mul()` sets `OVERFLOW` flag when wrapping
-    /// around happens.
+    /// - It takes the multiplication (= `product`) of `self` and `rhs`,
+    ///   and then finally returns the remainder of `product`
+    ///   divided by `modulo`.
+    /// - Wrapping (modular) multiplication at `modulo`.
+    /// - The differences between this method `modular_mul()` and the method
+    ///   `wrapping_mul()` are, first, where wrapping around happens,
+    ///   and, second, when `OVERFLOW` flag is set.
+    ///   First, this method wraps around at `modulo` while the method
+    ///   `wrapping_mul()` wraps around at `maximum value + 1`.
+    ///   Second, this method sets `OVERFLOW` flag when wrapping around happens
+    ///   at `modulo` while the method `wrapping_mul()` sets `OVERFLOW`
+    ///   flag when wrapping around happens at `maximum value + 1`.
     /// 
     /// # Counterpart Method
-    /// The method [modular_mul_uint()](struct@BigUInt#method.modular_mul_uint)
+    /// The method
+    /// [modular_mul_uint()](struct@BigUInt#method.modular_mul_uint)
     /// is a bit faster than this method `modular_mul()`.
-    /// If `rhs` is primitive unsigned integral data type such as u8, u16,
+    /// So, if `rhs` is primitive unsigned integral data type such as u8, u16,
     /// u32, u64, and u128, use the method
     /// [modular_mul_uint()](struct@BigUInt#method.modular_mul_uint).
     /// 
@@ -30977,41 +31087,44 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     }
 
     // pub fn modular_mul_assign(&self, rhs: &Self, modulo: &Self)
-    /// Computes (`self` * `rhs`) % `modulo`, wrapping around at `modulo`
-    /// of the type `Self`, and assign the result to `self` back.
+    /// Calculates (`self` * `rhs`) % `modulo`,
+    /// wrapping around at `modulo` of the `Self` type,
+    /// and then, assigns the result back to `self`.
     /// 
     /// # Arguments
-    /// - `rhs` is to be multiplied to `self`, and is `&Self` type.
-    /// - `modulo` is the divisor to divide the result of (`self` * `rhs`).
+    /// -`rhs` is to be added to `self`, and is of `&Self` type.
+    /// - `modulo` is the divisor to divide the result of (`self` * `rhs`),
+    ///   and is of `&Self` type.
     /// 
     /// # Panics
     /// - If `size_of::<T>() * N` <= `128`, this method may panic
-    /// or its behavior may be undefined though it may not panic.
-    /// - If `modulo` is either zero or one, this method will panic.
+    ///   or its behavior may be undefined though it may not panic.
+    /// - If `modulo` is either `zero` or `one`, this method will panic.
     /// 
     /// # Features
-    /// - Wrapping (modular) multiplication at `modulo`. The differences between
-    /// this method `modular_mul_assign()` and the method
-    /// `wrapping_mul_assign()` are, first, where wrapping around happens, and,
-    /// second, whether or not `OVERFLOW` flag is set. First, this method wraps
-    /// araound at `modulo` while the method `wrapping_mul_assign()` wraps
-    /// araound at maximum value. Second, this method does not set `OVERFLOW`
-    /// flag even if wrapping around happens, while the method
-    /// `wrapping_mul_assign()` sets `OVERFLOW` flag when wrapping around
-    /// happens.
-    /// - If `modulo` is `zero`, the flags such as `OVERFLOW`, `DIVIDED_BY_ZERO`,
-    /// and `INFINITY` will be set.
-    /// - All the flags reflect historical underflow, which means, for example,
-    /// if an overflow occurred even once before this current operation or
-    /// `OVERFLOW` flag is already set before this current operation, the
-    /// `OVERFLOW` flag is not changed even though this current operation does
-    /// not cause overflow.
+    /// - It takes the multiplication (= `product`) of `self` and `rhs`,
+    ///   and then finally assigns the remainder of `product` divided
+    ///   by `modulo` to `self` back.
+    /// - Wrapping (modular) multiplication at `modulo`.
+    /// - The differences between this method `modular_mul_assign()` and
+    ///   the method `wrapping_mul_assign()` are, first, where wrapping
+    ///   around happens, and, second, when `OVERFLOW` flag is set.
+    ///   First, this method wraps around at `modulo` while the method
+    ///   `wrapping_mul_assign()` wraps around at `maximum value + 1`.
+    ///   Second, this method sets `OVERFLOW` flag when wrapping around happens
+    ///   at `modulo` while the method `wrapping_mul_assign()` sets
+    ///   `OVERFLOW` flag when wrapping around happens at `maximum value + 1`.
+    /// - All the flags are historical, which means, for example, if an
+    ///   overflow occurred even once before this current operation or
+    ///   `OVERFLOW` flag is already set before this current operation,
+    ///   the `OVERFLOW` flag is not changed even if this current operation
+    ///   does not cause overflow.
     /// 
     /// # Counterpart Method
     /// The method
     /// [modular_mul_assign_uint()](struct@BigUInt#method.modular_mul_assign_uint)
     /// is a bit faster than this method `modular_mul_assign()`.
-    /// If `rhs` is primitive unsigned integral data type such as u8, u16,
+    /// So, if `rhs` is primitive unsigned integral data type such as u8, u16,
     /// u32, u64, and u128, use the method
     /// [modular_mul_assign_uint()](struct@BigUInt#method.modular_mul_assign_uint).
     /// 
@@ -31073,34 +31186,50 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     }
 
     // pub fn panic_free_modular_mul(&self, rhs: &Self, modulo: &Self) -> Self
-    /// Computes (`self` * `rhs`) % `modulo`, wrapping around at `modulo`
-    /// of the type `Self`.
+    /// Calculates (`self` * `rhs`) % `modulo`,
+    /// wrapping around at `modulo` of the `Self` type.
     /// 
     /// # Arguments
-    /// - `rhs` is to be multiplied to `self`, and is `&Self` type.
-    /// - `modulo` is the divisor to divide the result of (`self` * `rhs`).
+    /// - `rhs` is to be multiplied to `self`, and is of `&Self` type.
+    /// - `modulo` is the divisor to divide the result of (`self` * `rhs`),
+    ///   and is of `&Self` type.
     /// 
     /// # Panics
-    /// - If `size_of::<T>() * N` <= `128`, this method may panic
+    /// If `size_of::<T>() * N` <= `128`, this method may panic
     /// or its behavior may be undefined though it may not panic.
-    /// - If `modulo` is either zero or one, this method will panic.
+    /// 
+    /// # Output
+    /// It returns the modulo-product (`self` * `rhs`) % `modulo` with wrapping
+    /// (modular) multiplication at `modulo`.
     /// 
     /// # Features
-    /// - Wrapping (modular) multiplication at `modulo`. The differences between
-    /// this method `modular_mul()` and the method `wrapping_mul()` are, first,
-    /// where wrapping around happens, and, second, whether or not `OVERFLOW`
-    /// flag is set. First, this method wraps araound at `modulo` while the
-    /// method `wrapping_mul()` wraps araound at maximum value. Second, this
-    /// method does not set `OVERFLOW` flag even if wrapping around happens,
-    /// while the method `wrapping_mul()` sets `OVERFLOW` flag when wrapping
-    /// around happens.
+    /// - It takes the multiplication (= `product`) of `self` and `rhs`,
+    ///   and then finally returns the remainder of `product`
+    ///   divided by `modulo`.
+    /// - Wrapping (modular) multiplication at `modulo`.
+    /// - The differences of between this method `modular_mul()` and the
+    ///   method `wrapping_mul()` are, first, where wrapping around
+    ///   happens, and, second, when `OVERFLOW` flag is set.
+    ///   First, this method wraps around at `modulo` while the method
+    ///   `wrapping_mul()` wraps around at `maximum value + 1`.
+    ///   Second, this method sets `OVERFLOW` flag when wrapping around happens
+    ///   at `modulo` while the method `wrapping_mul()` sets `OVERFLOW`
+    ///   flag when wrapping around happens at `maximum value + 1`.
+    /// - If `modulo` is either `zero` or `one`, the `UNDEFINED` flag of the
+    ///   return value will be set and the return value will have the value `0`.
+    /// - In summary, the return value and its flags will be set as follows:
+    /// 
+    /// | `modulo` | return value | flags       |
+    /// |----------|--------------|-------------|
+    /// | 0 or 1   | 0            | `UNDEFINED` |
     /// 
     /// # Counterpart Method
-    /// The method [modular_mul_uint()](struct@BigUInt#method.modular_mul_uint)
-    /// is a bit faster than this method `modular_mul()`.
-    /// If `rhs` is primitive unsigned integral data type such as u8, u16,
+    /// The method
+    /// [panic_free_modular_mul_uint()](struct@BigUInt#method.panic_free_modular_mul_uint)
+    /// is a bit faster than this method `panic_free_modular_mul()`.
+    /// So, if `rhs` is primitive unsigned integral data type such as u8, u16,
     /// u32, u64, and u128, use the method
-    /// [modular_mul_uint()](struct@BigUInt#method.modular_mul_uint).
+    /// [panic_free_modular_mul_uint()](struct@BigUInt#method.panic_free_modular_mul_uint).
     /// 
     /// # Example 1
     /// ```
@@ -31143,43 +31272,54 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     }
 
     // pub fn panic_free_modular_mul_assign(&self, rhs: &Self, modulo: &Self)
-    /// Computes (`self` * `rhs`) % `modulo`, wrapping around at `modulo`
-    /// of the type `Self`, and assign the result to `self` back.
+    /// Calculates (`self` * `rhs`) % `modulo`,
+    /// wrapping around at `modulo` of the `Self` type,
+    /// and then assigns the result back to `self`.
     /// 
     /// # Arguments
-    /// - `rhs` is to be multiplied to `self`, and is `&Self` type.
-    /// - `modulo` is the divisor to divide the result of (`self` * `rhs`).
+    /// -`rhs` is to be multiplied to `self`, and is of `&Self` type.
+    /// - `modulo` is the divisor to divide the result of (`self` * `rhs`),
+    ///   and is of `&Self` type.
     /// 
     /// # Panics
     /// - If `size_of::<T>() * N` <= `128`, this method may panic
-    /// or its behavior may be undefined though it may not panic.
-    /// - If `modulo` is either zero or one, this method will panic.
+    ///   or its behavior may be undefined though it may not panic.
     /// 
     /// # Features
-    /// - Wrapping (modular) multiplication at `modulo`. The differences between
-    /// this method `modular_mul_assign()` and the method
-    /// `wrapping_mul_assign()` are, first, where wrapping around happens, and,
-    /// second, whether or not `OVERFLOW` flag is set. First, this method wraps
-    /// araound at `modulo` while the method `wrapping_mul_assign()` wraps
-    /// araound at maximum value. Second, this method does not set `OVERFLOW`
-    /// flag even if wrapping around happens, while the method
-    /// `wrapping_mul_assign()` sets `OVERFLOW` flag when wrapping around
-    /// happens.
-    /// - If `modulo` is `zero`, the flags such as `OVERFLOW`, `DIVIDED_BY_ZERO`,
-    /// and `INFINITY` will be set.
-    /// - All the flags reflect historical underflow, which means, for example,
-    /// if an overflow occurred even once before this current operation or
-    /// `OVERFLOW` flag is already set before this current operation, the
-    /// `OVERFLOW` flag is not changed even though this current operation does
-    /// not cause overflow.
+    /// - It takes the multiplication (= `product`) of `self` and `rhs`,
+    ///   and then finally returns the remainder of `product`
+    ///   divided by `modulo`.
+    /// - Wrapping (modular) multiplication at `modulo`.
+    /// - The differences between this method
+    ///   `panic_free_modular_mul_assign()` and the method
+    ///   `wrapping_mul_assign()` are, first, where wrapping
+    ///   around happens, and, second, when `OVERFLOW` flag is set.
+    ///   First, this method wraps around at `modulo` while the method
+    ///   `wrapping_mul_assign()` wraps around at `maximum value + 1`.
+    ///   Second, this method sets `OVERFLOW` flag when wrapping around happens
+    ///   at `modulo` while the method `wrapping_mul_assign()` sets
+    ///   `OVERFLOW` flag when wrapping around happens at `maximum value + 1`.
+    /// - If `modulo` is either `zero` or `one`, the `UNDEFINED` flag of the
+    ///   return value will be set and the result value will have the value `0`.
+    /// - In summary, the result value and its flags will be set as follows:
+    /// 
+    /// | `modulo` | result value | flags       |
+    /// |----------|--------------|-------------|
+    /// | 0 or 1   | 0            | `UNDEFINED` |
+    /// 
+    /// - All the flags are historical, which means, for example, if an
+    ///   overflow occurred even once before this current operation or
+    ///   `OVERFLOW` flag is already set before this current operation,
+    ///   the `OVERFLOW` flag is not changed even if this current operation
+    ///   does not cause overflow.
     /// 
     /// # Counterpart Method
     /// The method
-    /// [modular_mul_assign_uint()](struct@BigUInt#method.modular_mul_assign_uint)
-    /// is a bit faster than this method `modular_mul_assign()`.
-    /// If `rhs` is primitive unsigned integral data type such as u8, u16,
+    /// [panic_free_modular_mul_assign_uint()](struct@BigUInt#method.panic_free_modular_mul_assign_uint)
+    /// is a bit faster than this method `panic_free_modular_mul_assign()`.
+    /// So, if `rhs` is primitive unsigned integral data type such as u8, u16,
     /// u32, u64, and u128, use the method
-    /// [modular_mul_assign_uint()](struct@BigUInt#method.modular_mul_assign_uint).
+    /// [panic_free_modular_mul_assign_uint()](struct@BigUInt#method.panic_free_modular_mul_assign_uint).
     /// 
     /// # Example 1
     /// ```
