@@ -11,9 +11,12 @@
 | pub fn panic_free_modular_sub(&self, rhs: &Self, modulo: &Self) -> Self    |
 | pub fn panic_free_modular_sub_assign(&mut self, rhs: &Self, modulo: &Self) |
 | pub fn panic_free_modular_mul_assign(&mut self, rhs: &Self, modulo: &Self) |
+| pub fn panic_free_divide_fully_uint<U>(&self, rhs: U) -> (Self, U)         |
+| pub fn panic_free_divide_fully(&self, rhs: &Self) -> (Self, Self)          |
 
 - When the result approaches infinity, the flags of the result to be set were `INFINITY`, `OVERFLOW`, and `UNDEFINED` in ver. 0.8.4 but the flags of the result to be set have been changed to be `INFINITY` and `UNDEFINED` in ver. 0.8.5.
 - When the argument `modulo` is zero or one, the flags of the result to be set were `INFINITY`, `OVERFLOW`, and `DIVIDED_BY_ZERO` in ver. 0.8.4 but the flags of the result to be set have been changed to be `UNDEFINED` in ver. 0.8.5.
+- When the argument `rhs` is zero and `self` is not zero, the flags of the result to be set were `INFINITY`, `OVERFLOW`, and `DIVIDED_BY_ZERO` in ver. 0.8.4 but the flags of the quotient to be set have been changed to be `INFINITY` and `DIVIDED_BY_ZERO` in ver. 0.8.5.
 
 ## Breaking changes from ver. 0.8.3 to ver. 0.8.4
 

@@ -12244,25 +12244,27 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     }
 
     // pub fn divide_fully_uint<U>(&self, rhs: U) -> (Self, U)
-    /// Divide `BigUInt<T, N>` by `rhs` so as to get quotient and remainder
+    /// Divides `self` by `rhs`,
+    /// and returns a tuple of a quotient and a remainder.
     /// 
     /// # Arguments
-    /// `rhs` divides `self`, and is a small-sized unsigned integer
+    /// `rhs` divides `self`, and is of primitive unsigned integral data type
     /// such as `u8`, `u16`, `u32`, `u64`, and `u128`.
     /// 
     /// # Panics
     /// - If `size_of::<T>() * N` <= `128`, this method may panic
-    /// or its behavior may be undefined though it may not panic.
+    ///   or its behavior may be undefined though it may not panic.
     /// - If `rhs` is zero, this method will panic.
     /// 
     /// # Output
-    /// It returns tuple of quotient and remainder. quotient is `Self` type
-    /// and remainder is `U` type.
+    /// It returns tuple of a quotient and a remainder.
+    /// The quotient is of `Self` type, and the remainder is of the primitive
+    /// unsigned integral data type such as `u8`, `u16`, `u32`, `u64`,
+    /// and `u128`.
     /// 
     /// # Features
     /// - There’s no way wrapping could ever happen unless `rhs` is zero.
-    /// - If 'self' is zero and `rhs` is non-zero,
-    ///   this method returns (zero, zero).
+    /// - If `rhs` is zero, this method will panic.
     /// - This function is the base function for all the methods *_div_uint(),
     ///   *_div_assign_uint(), *_rem_uint(), and *_rem_assign_uint().
     /// 
@@ -12281,8 +12283,8 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// let divisor = 87_u8;
     /// let (quotient, remainder) = dividend.divide_fully_uint(divisor);
     /// println!("{} / {} => quotient = {} , remainder = {}", dividend, divisor, quotient, remainder);
-    /// assert_eq!(quotient.to_string(), "1419043551905275201680884938348044216837079832");
     /// assert_eq!(remainder.to_string(), "8");
+    /// assert_eq!(quotient.to_string(), "1419043551905275201680884938348044216837079832");
     /// assert_eq!(quotient.is_overflow(), false);
     /// assert_eq!(quotient.is_infinity(), false);
     /// assert_eq!(quotient.is_divided_by_zero(), false);
@@ -12299,13 +12301,20 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// let divisor = 87_u8;
     /// let (quotient, remainder) = dividend.divide_fully_uint(divisor);
     /// println!("{} / {} => quotient = {} , remainder = {}", dividend, divisor, quotient, remainder);
-    /// assert_eq!(quotient.to_string(), "0");
     /// assert_eq!(remainder.to_string(), "0");
+    /// assert_eq!(quotient.to_string(), "0");
     /// assert_eq!(quotient.is_overflow(), false);
     /// assert_eq!(quotient.is_underflow(), false);
     /// assert_eq!(quotient.is_infinity(), false);
     /// assert_eq!(quotient.is_divided_by_zero(), false);
     /// assert_eq!(quotient.is_undefined(), false);
+    /// ```
+    /// 
+    /// # Panic Examples
+    /// ```
+    /// use std::str::FromStr;
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u8);
     /// 
     /// let _dividend = UU32::from_str("123456789015758942546236989636279846864825945392").unwrap();
     /// let _divisor = 0_u8;
@@ -12338,36 +12347,36 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     }
 
     // pub fn panic_free_divide_fully_uint<U>(&self, rhs: U) -> (Self, Self)
-    /// Divide `BigUInt<T, N>` by `rhs` so as to get quotient and remainder
+    /// Divides `self` by `rhs`,
+    /// and returns a tuple of a quotient and a remainder.
     /// 
     /// # Arguments
-    /// `rhs` divides `self`, and is a small-sized unsigned integer
+    /// `rhs` divides `self`, and is of primitive unsigned integral data type
     /// such as `u8`, `u16`, `u32`, `u64`, and `u128`.
     /// 
     /// # Panics
     /// - If `size_of::<T>() * N` <= `128`, this method may panic
-    /// or its behavior may be undefined though it may not panic.
+    ///   or its behavior may be undefined though it may not panic.
     /// 
     /// # Output
-    /// It returns tuple of quotient and remainder. quotient and remainder
-    /// is `Self` type.
+    /// It returns tuple of a quotient and a remainder.
+    /// The quotient is of `Self` type, and the remainder is of the primitive
+    /// unsigned integral data type such as `u8`, `u16`, `u32`, `u64`,
+    /// and `u128`.
     /// 
     /// # Features
     /// - There’s no way wrapping could ever happen unless `rhs` is zero.
     /// - If 'self' is zero and `rhs` is non-zero,
     ///   this method returns (zero, zero).
-    /// - If both 'self' and `rhs` are `zero` then, `quotient` will be `zero`
-    ///   and `UNDEFINED` and `DIVIDED_BY_ZERO` flags will be set for
-    ///   `quotient`, and `remainder` will be `zero` and `DIVIDED_BY_ZERO`
-    ///   flags will be set for `remainder`.
-    /// - If 'self' is not `zero` and `rhs` is `zero` then, `quotient` will
-    ///   have the maximum value, and the flags `INFINITY` and
-    ///   `DIVIDED_BY_ZERO` of `quotient` will be set, and
-    ///   `remainder` will have `zero` and the flag `DIVIDED_BY_ZERO` of
-    ///   `remainder` will be set.
-    /// - This function is the base function for all the methods
-    ///   panic_free_*_div_uint(), panic_free_*_div_assign_uint(),
-    ///   panic_free_*_rem_uint(), and panic_free_*_rem_assign_uint().
+    /// - If both `rhs` and 'self' are zero, the quotient will be zero,
+    ///   and its flags `UNDEFINED` and `DIVIDED_BY_ZERO` will be set,
+    ///   and the remainder will be zero,
+    ///   and its flag `DIVIDED_BY_ZERO` will be set.
+    /// - If `rhs` is zero and 'self' is non-zero, the quotient will have
+    ///   the maximum value of `Self`, and its flags `INFINITY` and
+    ///   `DIVIDED_BY_ZERO` will be set,
+    ///   and the remainder` will be zero,
+    ///   and its flag `DIVIDED_BY_ZERO` will be set.
     /// - In summary, the quotient, the remainder and their flags
     ///   will be set as follows:
     /// 
@@ -12375,6 +12384,10 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// |-------|--------|------------|--------------------------------|-------------|----------------------|
     /// | 0     | 0      | 0          | `UNDEFINED`, `DIVIDED_BY_ZERO` | 0           | `DIVIDED_BY_ZERO`    |
     /// | 0     | != 0   | max        | `INFINITY`, `DIVIDED_BY_ZERO`  | 0           | `DIVIDED_BY_ZERO`    |
+    /// 
+    /// - This function is the base function for all the methods
+    ///   panic_free_*_div_uint(), panic_free_*_div_assign_uint(),
+    ///   panic_free_*_rem_uint(), and panic_free_*_rem_assign_uint().
     /// 
     /// # Counterpart Method
     /// If `rhs` is bigger than `u128`, the method
@@ -12392,12 +12405,12 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// let (quotient, remainder) = dividend.panic_free_divide_fully_uint(divisor);
     /// println!("{} / {} => quotient = {} , remainder = {}", dividend, divisor, quotient, remainder);
     /// assert_eq!(quotient.to_string(), "1419043551905275201680884938348044216837079832");
-    /// assert_eq!(remainder.to_string(), "8");
     /// assert_eq!(quotient.is_overflow(), false);
     /// assert_eq!(quotient.is_underflow(), false);
     /// assert_eq!(quotient.is_infinity(), false);
     /// assert_eq!(quotient.is_undefined(), false);
     /// assert_eq!(quotient.is_divided_by_zero(), false);
+    /// assert_eq!(remainder.to_string(), "8");
     /// assert_eq!(remainder.is_overflow(), false);
     /// assert_eq!(remainder.is_underflow(), false);
     /// assert_eq!(remainder.is_infinity(), false);
@@ -12416,12 +12429,12 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// let (quotient, remainder) = dividend.panic_free_divide_fully_uint(divisor);
     /// println!("{} / {} => quotient = {} , remainder = {}", dividend, divisor, quotient, remainder);
     /// assert_eq!(quotient.to_string(), "0");
-    /// assert_eq!(remainder.to_string(), "0");
     /// assert_eq!(quotient.is_overflow(), false);
     /// assert_eq!(quotient.is_underflow(), false);
     /// assert_eq!(quotient.is_infinity(), false);
     /// assert_eq!(quotient.is_undefined(), false);
     /// assert_eq!(quotient.is_divided_by_zero(), false);
+    /// assert_eq!(remainder.to_string(), "0");
     /// assert_eq!(remainder.is_overflow(), false);
     /// assert_eq!(remainder.is_underflow(), false);
     /// assert_eq!(remainder.is_infinity(), false);
@@ -12440,12 +12453,12 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// let (quotient, remainder) = dividend.panic_free_divide_fully_uint(divisor);
     /// println!("{} / {} => quotient = {} , remainder = {}", dividend, divisor, quotient, remainder);
     /// assert_eq!(quotient, UU32::max());
-    /// assert_eq!(remainder.to_string(), "0");
     /// assert_eq!(quotient.is_overflow(), false);
     /// assert_eq!(quotient.is_underflow(), false);
     /// assert_eq!(quotient.is_infinity(), true);
     /// assert_eq!(quotient.is_undefined(), false);
     /// assert_eq!(quotient.is_divided_by_zero(), true);
+    /// assert_eq!(remainder.to_string(), "0");
     /// assert_eq!(remainder.is_overflow(), false);
     /// assert_eq!(remainder.is_underflow(), false);
     /// assert_eq!(remainder.is_infinity(), false);
@@ -12464,12 +12477,12 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// let (quotient, remainder) = dividend.panic_free_divide_fully_uint(divisor);
     /// println!("{} / {} => quotient = {} , remainder = {}", dividend, divisor, quotient, remainder);
     /// assert_eq!(quotient.to_string(), "0");
-    /// assert_eq!(remainder.to_string(), "0");
     /// assert_eq!(quotient.is_overflow(), false);
     /// assert_eq!(quotient.is_underflow(), false);
     /// assert_eq!(quotient.is_infinity(), false);
     /// assert_eq!(quotient.is_undefined(), true);
     /// assert_eq!(quotient.is_divided_by_zero(), true);
+    /// assert_eq!(remainder.to_string(), "0");
     /// assert_eq!(remainder.is_overflow(), false);
     /// assert_eq!(remainder.is_underflow(), false);
     /// assert_eq!(remainder.is_infinity(), false);
@@ -12514,33 +12527,27 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     }
 
     // pub fn wrapping_div_uint<U>(&self, rhs: U) -> Self
-    /// Calculates the quotient when `self` is divided by `rhs`,
-    /// which is `self` / `rhs`.
+    /// Divides `self` by `rhs`, and returns the quotient.
     /// 
     /// # Arguments
-    /// `rhs` divides `self`, and is a small-sized unsigned integer
+    /// `rhs` divides `self`, and is of primitive unsigned integral data type
     /// such as `u8`, `u16`, `u32`, `u64`, and `u128`.
     /// 
     /// # Panics
     /// - If `size_of::<T>() * N` <= `128`, this method may panic
-    /// or its behavior may be undefined though it may not panic.
+    ///   or its behavior may be undefined though it may not panic.
     /// - If `rhs` is zero, this method will panic.
     ///
     /// # Output
-    /// It returns the quotient of when `self` is divided by `rhs`,
-    /// which is `self` / `rhs`. 
+    /// It returns a quotient of `BigUInt` type,
+    /// and the quotient would never overflow.
     /// 
     /// # Features
     /// - Wrapped division on `BigUInt` types is just normal division.
     /// - There’s no way wrapping could ever happen unless `rhs` is zero.
+    /// - If `rhs` is zero, this method will panic.
     /// - This function exists, so that all operations are accounted for
     ///   in the wrapping operations.
-    /// - If `rhs` is zero, the quotient will have maximum value of `BigUInt`
-    ///   type, and the flags of quotient such as `OVERFLOW`, `INFINITY`, and
-    ///   `DIVIDED_BY_ZERO` will be set
-    /// - __It does not panic__ while the counterpart method `wrapping_div()`
-    ///   for primitive integer data type such as u8, u16, u32, u64, etc.
-    ///   will panic if `rhs` is zero.
     /// 
     /// # Counterpart Method
     /// If `rhs` is bigger than `u128`, the method
@@ -12619,34 +12626,28 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     }
 
     // pub fn wrapping_div_assign_uint<U>(&mut self, rhs: U)
-    /// Calculates the quotient when `self` is divided by `rhs`,
-    /// which is `self` / `rhs`, and assigns the result to `self` back.
+    /// Divides `self` by `rhs`, and assigns the quotient to `self` back..
     /// 
     /// # Arguments
-    /// `rhs` divides `self`, and is a small-sized unsigned integer
+    /// `rhs` divides `self`, and is of primitive unsigned integral data type
     /// such as `u8`, `u16`, `u32`, `u64`, and `u128`.
     /// 
     /// # Panics
     /// - If `size_of::<T>() * N` <= `128`, this method may panic
     ///   or its behavior may be undefined though it may not panic.
     /// - If `rhs` is zero, this method will panic.
-    ///
+    /// 
     /// # Features
     /// - Wrapped division on `BigUInt` types is just normal division.
     /// - There’s no way wrapping could ever happen unless `rhs` is zero.
+    /// - If `rhs` is zero, this method will panic.
     /// - This function exists, so that all operations are accounted for
     ///   in the wrapping operations.
-    /// - If `rhs` is zero, the quotient will have maximum value of `BigUInt`
-    ///   type, and the flags of quotient such as `OVERFLOW`, `INFINITY`, and
-    ///   `DIVIDED_BY_ZERO` will be set
-    /// - __It does not panic__ while the counterpart method `wrapping_div()`
-    ///   for primitive integer data type such as u8, u16, u32, u64, etc.
-    ///   will panic if `rhs` is zero.
     /// - All the flags are historical, which means, for example, if an
     ///   divided_by_zero occurred even once before this current operation or
     ///   `DIVIDED_BY_ZERO` flag is already set before this current operation,
-    ///   the `DIVIDED_BY_ZERO` flag is not changed even if this current
-    ///   operation does not cause divided_by_zero.
+    ///   the `DIVIDED_BY_ZERO` flag is not changed even if this current operation
+    ///   does not cause divided_by_zero.
     /// 
     /// # Counterpart Method
     /// If `rhs` is bigger than `u128`, the method
@@ -12740,41 +12741,35 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     }
 
     // pub fn overflowing_div_uint<U>(&self, rhs: U) -> (Self, bool)
-    /// Calculates the quotient when `self` is divided by `rhs`,
-    /// which is `self` / `rhs`.
+    /// Divides `self` by `rhs`,
+    /// and returns a tuple of the quotient of `self` / `rhs` along with
+    /// a boolean indicating whether an arithmetic overflow would occur.
     /// 
     /// # Arguments
-    /// `rhs` divides `self`, and is a small-sized unsigned integer
+    /// `rhs` divides `self`, and is of primitive unsigned integral data type
     /// such as `u8`, `u16`, `u32`, `u64`, and `u128`.
     /// 
     /// # Panics
     /// - If `size_of::<T>() * N` <= `128`, this method may panic
     ///   or its behavior may be undefined though it may not panic.
     /// - If `rhs` is zero, this method will panic.
-    ///
+    /// 
     /// # Output
-    /// It returns a tuple of the quotient along with a boolean indicating
-    /// whether an arithmetic overflow would occur. Note that when `rhs` is
-    /// a non-zero unsigned integer, overflow never occurs, so the second
-    /// value is always `false` in that case. However, if `rhs` is zero,
-    /// the second value of the output tuple will be `true`.
-    ///
+    /// It returns a tuple of the quotient of `BigUInt` type as a result of
+    /// `self` / `rhs` along with a boolean indicating whether an arithmetic
+    /// overflow would occur. But the quotient would never overflow.
+    /// So, the second element of the output tuple is always `false`.
+    /// 
     /// # Features
-    /// - Overflowing division on `BigUInt` types is just normal division.
-    /// - There’s no way overflowing could ever happen unless `rhs` is zero.
-    /// - This function exists, so that all operations are accounted for
-    ///   in the wrapping operations.
-    /// - If `rhs` is zero, the quotient will have maximum value of `BigUInt`
-    ///   type, and the flags of quotient such as `OVERFLOW`, `INFINITY`, and
-    ///   `DIVIDED_BY_ZERO` will be set
-    /// - __It does not panic__ while the counterpart method `overflowing_div()`
-    ///   for primitive integer data type such as u8, u16, u32, u64, etc.
-    ///   will panic if `rhs` is zero.
+    /// - Wrapped division on `BigUInt` types is just normal division.
+    /// - The quotient would never overflow.
+    /// - The second element of the output tuple reflects only
+    ///   the current overflow.
     /// 
     /// # Counterpart Method
-    /// If `rhs` is bigger than `u128`, the method
+    /// If `rhs` is bigger tham `ui128`, the method
     /// [overflowing_div()](struct@BigUInt#method.overflowing_div)
-    /// is proper rather than this method `overflowing_div_uint()`.
+    /// is proper rather than this method.
     ///
     /// # Example 1
     /// ```
@@ -12850,45 +12845,40 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     }
 
     // pub fn overflowing_div_assign_uint<U>(&mut self, rhs: U) -> bool
-    /// Calculates the quotient when `self` is divided by `rhs`,
-    /// which is `self` / `rhs`, and assigns the result to `self` back.
+    /// Divides `self` by `rhs`,
+    /// and assigns the quotient of `self` / `rhs` to `self` back,
+    /// and returns a boolean indicating whether an arithmetic overflow
+    /// would occur.
     /// 
     /// # Arguments
-    /// `rhs` divides `self`, and is a small-sized unsigned integer
+    /// `rhs` divides `self`, and is of primitive unsigned integral data type
     /// such as `u8`, `u16`, `u32`, `u64`, and `u128`.
     /// 
     /// # Panics
     /// - If `size_of::<T>() * N` <= `128`, this method may panic
     ///   or its behavior may be undefined though it may not panic.
     /// - If `rhs` is zero, this method will panic.
-    ///
+    /// 
     /// # Output
-    /// It returns a boolean indicating whether an arithmetic overflow would
-    /// occur. Note that when `rhs` is a non-zero unsigned integer, overflow
-    /// never occurs, so the output is always `false` in that case. However,
-    /// if `rhs` is zero, the output will be `true`.
-    ///
+    /// It returns true if an arithmetic overflow would occur.
+    /// But the quotient would never overflow.
+    /// So, it always returns `false`.
+    /// 
     /// # Features
-    /// - Overflowing division on `BigUInt` types is just normal division.
-    /// - There’s no way overflowing could ever happen unless `rhs` is zero.
-    /// - This function exists, so that all operations are accounted for
-    ///   in the wrapping operations.
-    /// - If `rhs` is zero, the quotient will have maximum value of `BigUInt`
-    ///   type, and the flags of quotient such as `OVERFLOW`, `INFINITY`, and
-    ///   `DIVIDED_BY_ZERO` will be set
-    /// - __It does not panic__ while the counterpart method `overflowing_div()`
-    ///   for primitive integer data type such as u8, u16, u32, u64, etc.
-    ///   will panic if `rhs` is zero.
-    /// - All the flags are historical, which means, for example, if an
-    ///   divided_by_zero occurred even once before this current operation or
-    ///   `DIVIDED_BY_ZERO` flag is already set before this current operation,
-    ///   the `DIVIDED_BY_ZERO` flag is not changed even if this current
-    ///   operation does not cause divided_by_zero.
+    /// - Wrapped division on `BigUInt` types is just normal division.
+    /// - The quotient would never overflow.
+    /// - The output will be `false` even if the `OVERFLOW` flag of `self`
+    ///   was already set because of previous operation of `self`.
+    /// - The output reflects only the current overflow.
+    /// - All the flags are historical, which means, for example, if an overflow
+    ///   occurred even once before this current operation or `OVERFLOW`
+    ///   flag is already set before this current operation, the `OVERFLOW` flag
+    ///   is not changed even if this current operation does not cause overflow.
     /// 
     /// # Counterpart Method
-    /// If `rhs` is bigger than `u128`, the method
+    /// If `rhs` is bigger tham `ui128`, the method
     /// [overflowing_div_assign()](struct@BigUInt#method.overflowing_div_assign)
-    /// is proper rather than this method `overflowing_div_assign_uint()`.
+    /// is proper rather than this method.
     ///
     /// # Example 1
     /// ```
@@ -12981,30 +12971,31 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     }
 
     // pub fn checked_div_uint<U>(&self, rhs: U) -> Option<Self>
-    /// Calculates the quotient when `self` is divided by `rhs`,
-    /// which is `self` / `rhs`.
+    /// Divides `self` by `rhs`,
+    /// and returns the quotient wrapped by `Some` of enum `Option`.
     /// 
     /// # Arguments
-    /// `rhs` divides `self`, and is a small-sized unsigned integer
+    /// `rhs` divides `self`, and is of small-sized unsigned integer
     /// such as `u8`, `u16`, `u32`, `u64`, and `u128`.
-    ///
+    /// 
     /// # Panics
     /// If `size_of::<T>() * N` <= `128`, this method may panic
     /// or its behavior may be undefined though it may not panic.
     /// 
     /// # Output
-    /// It returns `None` if `rhs` is zero. Otherwise, it returns the quotient
-    /// of when `self` is divided by `rhs`, which is `self` / `rhs`,
-    /// wrapped by `Some` of enum `Option`.
+    /// It returns a quotient of `BigUInt` type wrapped by `Some` of
+    /// enum `Option` if overflow did not occur at current operation.
+    /// Otherwise, it returns `None` of enum `Option`.
     /// 
     /// # Features
-    /// - Checked integer division on `BigUInt` types is just normal division.
+    /// - This division on `BigUInt` types is just normal division.
     /// - There’s no way wrapping could ever happen unless `rhs` is zero.
+    /// - If `rhs` is zero, it returns `None` of enum `Option`.
     /// 
     /// # Counterpart Method
-    /// If `rhs` is bigger than `u128`, the method
+    /// If `rhs` is bigger tham `ui128`, the method
     /// [checked_div()](struct@BigUInt#method.checked_div)
-    /// is proper rather than this method `checked_div_uint()`.
+    /// is proper rather than this method.
     /// 
     /// # Example 1
     /// ```
@@ -13076,6 +13067,26 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// }
     /// ```
     /// 
+    /// # Example 4
+    /// ```
+    /// use std::str::FromStr;
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u16);
+    /// 
+    /// let dividend = U256::zero();
+    /// let divisor = 0_u8;
+    /// let quotient = dividend.checked_div_uint(divisor);
+    /// match quotient
+    /// {
+    ///     Some(q) => { println!("{} / {} = {}", dividend, divisor, q); },
+    ///     None =>
+    ///         {
+    ///             println!("Divided By Zero");
+    ///             assert_eq!(quotient, None);
+    ///         },
+    /// }
+    /// ```
+    /// 
     /// # Big-endian issue
     /// It is just experimental for Big Endian CPUs. So, you are not encouraged
     /// to use it for Big Endian CPUs for serious purpose. Only use this crate
@@ -13097,28 +13108,23 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     }
 
     // pub fn unchecked_div_uint<U>(&self, rhs: U) -> Self
-    /// Calculates the quotient when `self` is divided by `rhs`,
-    /// which is `self` / `rhs`, assuming that `rhs` cannot be zero.
+    /// Divides `self` by `rhs`, and returns the quotient.
     /// 
     /// # Arguments
-    /// `rhs` divides `self`, and is a small-sized unsigned integer
+    /// `rhs` divides `self`, and is of primitive unsigned integral data type
     /// such as `u8`, `u16`, `u32`, `u64`, and `u128`.
-    ///
+    /// 
     /// # Panics
     /// - If `size_of::<T>() * N` <= `128`, this method may panic
     ///   or its behavior may be undefined though it may not panic.
-    /// - If `rhs` is zero, it will panic. So, use this method only when you
-    ///   are sure that `rhs` is not zero. 
-    /// 
+    /// - If `rhs` is zero, this method will panic.
+    ///
     /// # Output
-    /// It returns the quotient of when `self` is divided by `rhs`,
-    /// which is `self` / `rhs` if `rhs` is not zero.
-    /// If `rhs` is zero, it will panic.
+    /// It returns a quotient of `BigUInt` type. 
     /// 
     /// # Features
-    /// - Unchecked integer division on `BigUInt` types is just normal division.
-    /// - There's no way wrapping could ever happen unless `rhs` is zero.
-    /// - If `rhs` is zero, it will panic.
+    /// - Wrapped division on `BigUInt` types is just normal division.
+    /// - If `rhs` is zero, this method will panic.
     /// 
     /// # Counterpart Method
     /// If `rhs` is bigger than `u128`, the method
@@ -13143,15 +13149,39 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// assert_eq!(quotient.is_undefined(), false);
     /// ```
     /// 
-    /// # Panic Example
+    /// # Example 2
     /// ```
     /// use std::str::FromStr;
     /// use cryptocol::define_utypes_with;
     /// define_utypes_with!(u32);
     /// 
+    /// let dividend = UU32::zero();
+    /// let divisor = 87_u8;
+    /// let quotient = dividend.unchecked_div_uint(divisor);
+    /// println!("{} / {} = {}", dividend, divisor, quotient);
+    /// assert_eq!(quotient.to_string(), "0");
+    /// assert_eq!(quotient.is_overflow(), false);
+    /// assert_eq!(quotient.is_underflow(), false);
+    /// assert_eq!(quotient.is_infinity(), false);
+    /// assert_eq!(quotient.is_divided_by_zero(), false);
+    /// assert_eq!(quotient.is_undefined(), false);
+    /// ```
+    /// 
+    /// # Panic Examples
+    /// ```
+    /// use std::str::FromStr;
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u32);
+    /// 
+    /// let _dividend = UU32::from_str("123456789015758942546236989636279846864825945392").unwrap();
     /// let _divisor = 0_u8;
     /// // It will panic.
-    /// // let quotient = dividend.uchecked_div_uint(_divisor);
+    /// // let quotient = _dividend.uchecked_div_uint(_divisor);
+    /// 
+    /// let _dividend = UU32::zero();
+    /// let _divisor = 0_u8;
+    /// // It will panic.
+    /// // let quotient = _dividend.uchecked_div_uint(_divisor);
     /// ```
     /// 
     /// # Big-endian issue
@@ -13173,38 +13203,31 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     }
 
     // pub fn saturating_div_uint<U>(&self, rhs: U) -> Self
-    /// Calculates the quotient when `self` is divided by `rhs`,
-    /// which is `self` / `rhs`, saturating at the numeric bounds
-    /// instead of overflowing.
+    /// Divides `self` by `rhs`,
+    /// saturating at the numeric bounds instead of overflowing,
+    /// and returns the quotient of `self` / `rhs`.
     /// 
     /// # Arguments
-    /// `rhs` divides `self`, and is a small-sized unsigned integer
+    /// `rhs` divides `self`, and is of primitive unsigned integral data type
     /// such as `u8`, `u16`, `u32`, `u64`, and `u128`.
-    ///
+    /// 
     /// # Panics
     /// - If `size_of::<T>() * N` <= `128`, this method may panic
     ///   or its behavior may be undefined though it may not panic.
-    /// - If `rhs` is zero, it will panic.
+    /// - If `rhs` is zero, this method will panic.
     /// 
     /// # Output
-    /// It returns the quotient of when `self` is divided by `rhs`,
-    /// which is `self` / `rhs` if `rhs` is not zero.
-    /// If `rhs` is zero, it returns the maximum value.
+    /// It returns the quotient of `BigUInt` type as a result of
+    /// `self` / `rhs`.
     /// 
     /// # Features
-    /// - There’s no way wrapping could ever happen unless `rhs` is zero.
-    /// - This method saturates when it reaches maximum value.
-    /// - It does not set `OVERFLOW` flag.
-    /// - If `rhs` is zero, the quotient will have maximum value of `BigUInt`
-    ///   type, and `DIVIDED_BY_ZERO` flag of quotient will be set.
-    /// - __It does not panic__ while the counterpart method `saturating_div()`
-    ///   for primitive integer data type such as u8, u16, u32, u64, etc.
-    ///   will panic if `rhs` is zero.
+    /// - The quotient would never overflow so that it can not saturate.
+    /// - It does not set `OVERFLOW` flag of the return value.
     /// 
     /// # Counterpart Method
-    /// If `rhs` is bigger than `u128`, the method
+    /// If `rhs` is bigger tham `ui128`, the method
     /// [saturating_div()](struct@BigUInt#method.saturating_div)
-    /// is proper rather than this method `saturating_div_uint()`.
+    /// is proper rather than this method.
     /// 
     /// # Example 1
     /// ```
@@ -13242,13 +13265,18 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// assert_eq!(quotient.is_undefined(), false);
     /// ```
     /// 
-    /// # Panic Example
+    /// # Panic Examples
     /// ```
     /// use std::str::FromStr;
     /// use cryptocol::define_utypes_with;
     /// define_utypes_with!(u64);
     /// 
     /// let _dividend = U256::from_str("123456789015758942546236989636279846864825945392").unwrap();
+    /// let _divisor = 0_u8;
+    /// // It will panic!
+    /// // let quotient = _dividend.saturating_div_uint(_divisor);
+    /// 
+    /// let _dividend = UU32::zero();
     /// let _divisor = 0_u8;
     /// // It will panic!
     /// // let quotient = _dividend.saturating_div_uint(_divisor);
@@ -13272,34 +13300,32 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
         quotient
     }
 
-    // pub fn saturating_div_assign_uint<U>(&mut self, rhs: U) -> Self
-    /// Calculates the quotient when `self` is divided by `rhs`,
-    /// which is `self` / `rhs`, saturating at the numeric bounds
-    /// instead of overflowing, and assigns the quotient to `self` back.
+    // pub fn saturating_div_assign_uint<U>(&mut self, rhs: U)
+    /// Divides `self` by `rhs`,
+    /// saturating at the numeric bounds instead of overflowing,
+    /// and assigns the quotient of `self` / `rhs` to `self` back.
     /// 
     /// # Arguments
-    /// `rhs` divides `self`, and is a small-sized unsigned integer
+    /// `rhs` divides `self`, and is of primitive unsigned integral data type
     /// such as `u8`, `u16`, `u32`, `u64`, and `u128`.
-    ///
+    /// 
     /// # Panics
     /// - If `size_of::<T>() * N` <= `128`, this method may panic
     ///   or its behavior may be undefined though it may not panic.
-    /// - If `rhs` is zero, it will panic.
+    /// - If `rhs` is zero, this method will panic.
     /// 
     /// # Features
-    /// - There’s no way wrapping could ever happen.
-    /// - This method saturates when it reaches maximum value.
-    /// - It does not set `OVERFLOW` flag.
-    /// - All the flags are historical, which means, for example, if an
-    ///   divided_by_zero occurred even once before this current operation or
-    ///   `DIVIDED_BY_ZERO` flag is already set before this current operation,
-    ///   the `DIVIDED_BY_ZERO` flag is not changed even if this current
-    ///   operation does not cause divided_by_zero.
+    /// - The quotient would never overflow so that it can not saturate.
+    /// - It does not set `OVERFLOW` flag of the return value.
+    /// - All the flags are historical, which means, for example, if an overflow
+    ///   occurred even once before this current operation or `OVERFLOW`
+    ///   flag is already set before this current operation, the `OVERFLOW` flag
+    ///   is not changed even if this current operation does not cause overflow.
     /// 
     /// # Counterpart Method
-    /// If `rhs` is bigger than `u128`, the method
+    /// If `rhs` is bigger tham `ui128`, the method
     /// [saturating_div_assign()](struct@BigUInt#method.saturating_div_assign)
-    /// is proper rather than this method `saturating_div_assign_uint()`.
+    /// is proper rather than this method.
     /// 
     /// # Example 1
     /// ```
@@ -13359,6 +13385,13 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// 
     /// let mut _a_biguint = UU32::from_str("123456789015758942546236989636279846864825945392").unwrap();
     /// let _divisor = 0_u8;
+    /// println!("Originally, _a_biguint = {}", _a_biguint);
+    /// // It will panic!
+    /// // _a_biguint.saturating_div_assign_uint(_divisor);
+    /// 
+    /// let mut _a_biguint = UU32::zero();
+    /// let _divisor = 0_u8;
+    /// println!("Originally, _a_biguint = {}", _a_biguint);
     /// // It will panic!
     /// // _a_biguint.saturating_div_assign_uint(_divisor);
     /// ```
@@ -13379,38 +13412,34 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     {
         let res = self.saturating_div_uint(rhs);
         self.set_number(res.get_number());
-        self.set_flag_bit(res.get_all_flags());
+        self.set_all_flags(res.get_all_flags());
     }
 
     // pub fn panic_free_div_uint<U>(&self, rhs: U) -> Self
-    /// Calculates the quotient when `self` is divided by `rhs`,
-    /// which is `self` / `rhs`.
+    /// Divides `self` by `rhs`, and returns the quotient.
     /// 
     /// # Arguments
-    /// `rhs` divides `self`, and is a small-sized unsigned integer
+    /// `rhs` divides `self`, and is of primitive unsigned integral data type
     /// such as `u8`, `u16`, `u32`, `u64`, and `u128`.
     /// 
     /// # Panics
-    /// - If `size_of::<T>() * N` <= `128`, this method may panic
-    ///   or its behavior may be undefined though it may not panic.
+    /// If `size_of::<T>() * N` <= `128`, this method may panic
+    /// or its behavior may be undefined though it may not panic.
     ///
     /// # Output
-    /// It returns the quotient of when `self` is divided by `rhs`,
-    /// which is `self` / `rhs`. 
+    /// It returns a quotient of `BigUInt` type,
+    /// and the quotient would never overflow. 
     /// 
     /// # Features
     /// - Wrapped division on `BigUInt` types is just normal division.
     /// - There’s no way wrapping could ever happen unless `rhs` is zero.
-    /// - This function exists, so that the program may be able to run
-    ///   even if `rhs` is zero.
     /// - __It does not panic__ while the counterpart method
-    ///   `wrapping_div_uint()` for primitive integer data type such as u8,
-    ///   u16, u32, u64, etc. will panic if `rhs` is zero.
+    ///   `wrapping_div_uint()` will panic if `rhs` is zero.
     /// - If `rhs` is zero and `self` is not zero, the quotient will have
-    ///   maximum value of `BigUInt` and the flags of quotient such as
-    ///   `INFINITY`, and `DIVIDED_BY_ZERO` will be set.
+    ///   maximum value of `BigUInt` and the flags of the quotient,
+    ///   `INFINITY` and `DIVIDED_BY_ZERO` will be set.
     /// - If `rhs` is zero and `self` is zero, the quotient will have
-    ///   value `zero` of `BigUInt` type and the flags of quotient such as
+    ///   value `zero` of `BigUInt` type and the flags of the quotient,
     ///   `DIVIDED_BY_ZERO` and `UNDEFINED` will be set.
     /// - In summary, the quotient and its flags will be set as follows:
     /// 
@@ -13419,11 +13448,13 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// | 0     | 0      | 0          | `UNDEFINED`, `DIVIDED_BY_ZERO` |
     /// | 0     | != 0   | max        | `INFINITY`, `DIVIDED_BY_ZERO`  |
     /// 
-    /// 
     /// # Counterpart Method
-    /// If `rhs` is bigger than `u128`, the method
-    /// [panic_free_wrapping_div()](struct@BigUInt#method.panic_free_wrapping_div)
-    /// is proper rather than this method `panic_free_wrapping_div_uint()`.
+    /// The method
+    /// [panic_free_div_uint()](struct@BigUInt#method.panic_free_div_uint)
+    /// is a bit faster than this method `wrapping_div()`.
+    /// If `rhs` is primitive unsigned integral data type such as u8, u16,
+    /// u32, u64, and u128, use the method
+    /// [panic_free_div_uint()](struct@BigUInt#method.panic_free_div_uint).
     /// 
     /// # Example 1 for a normal case
     /// ```
@@ -13516,42 +13547,43 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     }
 
     // pub fn panic_free_div_assign_uint<U>(&mut self, rhs: U)
-    /// Calculates the quotient when `self` is divided by `rhs`,
-    /// which is `self` / `rhs`, and assigns the result to `self` back.
+    /// Divides `self` by `rhs`, and assigns the quotient to `self` back.
     /// 
     /// # Arguments
-    /// `rhs` divides `self`, and is a small-sized unsigned integer
+    /// `rhs` divides `self`, and is of primitive unsigned integral data type
     /// such as `u8`, `u16`, `u32`, `u64`, and `u128`.
     /// 
     /// # Panics
-    /// - If `size_of::<T>() * N` <= `128`, this method may panic
+    /// If `size_of::<T>() * N` <= `128`, this method may panic
     /// or its behavior may be undefined though it may not panic.
-    ///
+    /// 
     /// # Features
     /// - Wrapped division on `BigUInt` types is just normal division.
     /// - There’s no way wrapping could ever happen unless `rhs` is zero.
-    /// - This function exists, so that the program may be able to run
-    ///   even if `rhs` is zero.
     /// - __It does not panic__ while the counterpart method
-    ///   `wrapping_div_assign_uint()` for primitive integer data type such as
-    ///   u8, u16, u32, u64, etc. will panic if `rhs` is zero.
+    ///   `wrapping_div_uint()` will panic if `rhs` is zero.
     /// - If `rhs` is zero and `self` is not zero, the quotient will have
-    ///   maximum value of `BigUInt` and the flags of quotient such as
-    ///   `INFINITY`, and `DIVIDED_BY_ZERO` will be set.
+    ///   maximum value of `BigUInt` and the flags of `self`,
+    ///   `INFINITY` and `DIVIDED_BY_ZERO` will be set.
     /// - If `rhs` is zero and `self` is zero, the quotient will have
-    ///   value `zero` of `BigUInt` type and the flags of quotient such as
+    ///   value `zero` of `BigUInt` type and the flags of `self`,
     ///   `DIVIDED_BY_ZERO` and `UNDEFINED` will be set.
     /// - In summary, the quotient and its flags will be set as follows:
     /// 
-    /// | `rhs` | `self` | `quotient` | flags of `quotient`            |
-    /// |-------|--------|------------|--------------------------------|
-    /// | 0     | 0      | 0          | `UNDEFINED`, `DIVIDED_BY_ZERO` |
-    /// | 0     | != 0   | max        | `INFINITY`, `DIVIDED_BY_ZERO`  |
+    /// | `rhs` | `self` | `quotient` (= `self`) | flags of `quotient`            |
+    /// |-------|--------|-----------------------|--------------------------------|
+    /// | 0     | 0      | 0                     | `UNDEFINED`, `DIVIDED_BY_ZERO` |
+    /// | 0     | != 0   | max                   | `INFINITY`, `DIVIDED_BY_ZERO`  |
     /// 
+    /// - All the flags are historical, which means, for example, if an
+    ///   divided_by_zero occurred even once before this current operation or
+    ///   `DIVIDED_BY_ZERO` flag is already set before this current operation,
+    ///   the `DIVIDED_BY_ZERO` flag is not changed even if this current operation
+    ///   does not cause divided_by_zero.
     /// 
     /// # Counterpart Method
     /// If `rhs` is bigger than `u128`, the method
-    /// [panic_free_div_assign()](struct@BigUInt#method.wrapping_div_assign)
+    /// [panic_free_div_assign()](struct@BigUInt#method.panic_free_div_assign)
     /// is proper rather than this method `panic_free_div_assign_uint()`.
     /// 
     /// # Example 1
@@ -13673,29 +13705,29 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     }
 
     // pub fn modular_div_uint<U>(&self, rhs: U, modulo: &Self) -> Self
-    /// Calculates the quotient when `self` % `modulo` is divided by
-    /// `rhs` % `modulo`.
+    /// Divides (`self` % `modulo`) by (`rhs` % `modulo`),
+    /// and returns the quotient.
     /// 
     /// # Arguments
-    /// - `rhs` divides `self`, and is a small-sized unsigned integer
-    /// such as `u8`, `u16`, `u32`, `u64`, and `u128`.
-    /// - `modulo` is the divisor to divide the result of (`self` / `rhs`).
-    ///
+    /// - `rhs` divides `self`, and is of primitive unsigned integral data type
+    ///   such as `u8`, `u16`, `u32`, `u64`, and `u128`.
+    /// - `modulo` is the divisor to divide the remainder of (`self` / `rhs`),
+    ///   and is of `&Self` type.
+    /// 
     /// # Panics
     /// - If `size_of::<T>() * N` <= `128`, this method may panic
-    /// or its behavior may be undefined though it may not panic.
+    ///   or its behavior may be undefined though it may not panic.
     /// - If `rhs` is either zero or multiple of `modulo`, it will panic.
     /// - If `modulo` is either zero or one, it will panic.
     /// 
     /// # Output
-    /// It returns the quotient of when `self` % `modulo` is divided by
-    /// `rhs` % `modulo` if `rhs` % `modulo` is not zero.
+    /// It returns the quotient of when (`self` % `modulo`) is divided by
+    /// (`rhs` % `modulo`) if (`rhs` % `modulo`) is not zero.
     /// 
     /// # Features
-    /// - It takes the remainder (= `rd1`) of `self` divided by `modulo`,
+    /// It takes the remainder (= `rd1`) of `self` divided by `modulo`,
     /// and takes the remainder (= `rd2`) of `rhs` divided by `modulo`,
-    /// and then finally returns the qutient of `rd1` divided by `rd2`.
-    /// - There’s no way wrapping could ever happen.
+    /// and then finally returns the quotient of `rd1` divided by `rd2`.
     /// 
     /// # Counterpart Method
     /// If `rhs` is bigger than `u128`, the method
@@ -13842,34 +13874,35 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     }
 
     // pub fn modular_div_assign_uint<U>(&mut self, rhs: U, modulo: &Self)
-    /// Calculates the quotient when `self` % `modulo` is divided by
-    /// `rhs` % `modulo`, and assigns the quotient to `self` back.
+    /// Divides (`self` % `modulo`) by (`rhs` % `modulo`),
+    /// and assigns the quotient back to `self`.
     /// 
     /// # Arguments
-    /// `rhs` divides `self`, and is a small-sized unsigned integer
-    /// such as `u8`, `u16`, `u32`, `u64`, and `u128`.
-    ///
+    /// - `rhs` divides `self`, and is of primitive unsigned integral data type
+    ///   such as `u8`, `u16`, `u32`, `u64`, and `u128`.
+    /// - `modulo` is the divisor to divide the remainder of (`self` / `rhs`),
+    ///   and is of `&Self` type.
+    /// 
     /// # Panics
-    /// - If `size_of::<T>() * N` <= `128`, this method may panic or its
-    /// behavior may be undefined though it may not panic.
+    /// - If `size_of::<T>() * N` <= `128`, this method may panic
+    ///   or its behavior may be undefined though it may not panic.
     /// - If `rhs` is either zero or multiple of `modulo`, it will panic.
     /// - If `modulo` is either zero or one, it will panic.
     /// 
     /// # Features
     /// - It takes the remainder (= `rd1`) of `self` divided by `modulo`,
-    /// and takes the remainder (= `rd2`) of `rhs` divided by `modulo`,
-    /// and then finally takes the qutient of `rd1` divided by `rd2`.
-    /// - There’s no way wrapping could ever happen.
+    ///   and takes the remainder (= `rd2`) of `rhs` divided by `modulo`,
+    ///   and then finally returns the quotient of `rd1` divided by `rd2`.
     /// - All the flags are historical, which means, for example, if an
-    /// divided_by_zero occurred even once before this current operation or
-    /// `DIVIDED_BY_ZERO` flag is already set before this current operation,
-    /// the `DIVIDED_BY_ZERO` flag is not changed even if this current operation
-    /// does not cause divided_by_zero.
+    ///   divided_by_zero occurred even once before this current operation or
+    ///   `DIVIDED_BY_ZERO` flag is already set before this current operation,
+    ///   the `DIVIDED_BY_ZERO` flag is not changed even if this current operation
+    ///   does not cause divided_by_zero.
     /// 
     /// # Counterpart Method
-    /// If `rhs` is bigger than `u128`, the method
+    /// If `rhs` is bigger tham `ui128`, the method
     /// [modular_div_assign()](struct@BigUInt#method.modular_div_assign)
-    /// is proper rather than this method `modular_div_assign_uint()`.
+    /// is proper rather than this method.
     /// 
     /// # Example 1
     /// ```
@@ -13973,27 +14006,27 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     }
 
     // pub fn panic_free_modular_div_uint<U>(&self, rhs: U, modulo: &Self) -> Self
-    /// Calculates the quotient when `self` % `modulo` is divided by
-    /// `rhs` % `modulo`.
+    /// Divides (`self` % `modulo`) by (`rhs` % `modulo`),
+    /// and returns the quotient.
     /// 
     /// # Arguments
-    /// - `rhs` divides `self`, and is a small-sized unsigned integer
-    /// such as `u8`, `u16`, `u32`, `u64`, and `u128`.
-    /// - `modulo` is the divisor to divide the result of (`self` / `rhs`).
-    ///
+    /// - `rhs` divides `self`, and is of primitive unsigned integral data type
+    ///   such as `u8`, `u16`, `u32`, `u64`, and `u128`.
+    /// - `modulo` is the divisor to divide the remainder of (`self` / `rhs`),
+    ///   and is of `&Self` type.
+    /// 
     /// # Panics
-    /// - If `size_of::<T>() * N` <= `128`, this method may panic
+    /// If `size_of::<T>() * N` <= `128`, this method may panic
     /// or its behavior may be undefined though it may not panic.
     /// 
     /// # Output
-    /// It returns the quotient of when `self` % `modulo` is divided by
-    /// `rhs` % `modulo` if `rhs` % `modulo` is not zero.
+    /// It returns the quotient of when (`self` % `modulo`) is divided by
+    /// (`rhs` % `modulo`) if (`rhs` % `modulo`) is not zero.
     /// 
     /// # Features
     /// - It takes the remainder (= `rd1`) of `self` divided by `modulo`,
     ///   and takes the remainder (= `rd2`) of `rhs` divided by `modulo`,
-    ///   and then finally returns the qutient of `rd1` divided by `rd2`.
-    /// - There’s no way that wrapping could ever happen.
+    ///   and then finally returns the quotient of `rd1` divided by `rd2`.
     /// - __It does not panic__ even if `rhs` is zero or multiple of
     ///   `modulo` or `modulo` is zero or one.
     /// - If `modulo` is either zero or one, and `rhs` is zero or multiple of
@@ -14021,8 +14054,8 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// 
     /// # Counterpart Method
     /// If `rhs` is bigger than `u128`, the method
-    /// [modular_div()](struct@BigUInt#method.modular_div)
-    /// is proper rather than this method `modular_div_uint()`.
+    /// [panic_free_modular_div()](struct@BigUInt#method.panic_free_modular_div)
+    /// is proper rather than this method `panic_free_modular_div_uint()`.
     /// 
     /// # Example 1 for a normal case for modulo >= 2 and dividend != 0 and divisor != 0
     /// ```
@@ -14337,47 +14370,59 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     }
 
     // pub fn panic_free_modular_div_assign_uint<U>(&mut self, rhs: U, modulo: &Self)
-    /// Calculates the quotient when `self` % `modulo` is divided by
-    /// `rhs` % `modulo`, and assigns the quotient to `self` back.
+    /// Divides (`self` % `modulo`) by (`rhs` % `modulo`),
+    /// and assigns the quotient back to `self`.
     /// 
     /// # Arguments
-    /// `rhs` divides `self`, and is a small-sized unsigned integer
-    /// such as `u8`, `u16`, `u32`, `u64`, and `u128`.
-    ///
+    /// - `rhs` divides `self`, and is of primitive unsigned integral data type
+    ///   such as `u8`, `u16`, `u32`, `u64`, and `u128`.
+    /// - `modulo` is the divisor to divide the remainder of (`self` / `rhs`),
+    ///   and is of `&Self` type.
+    /// 
     /// # Panics
-    /// - If `size_of::<T>() * N` <= `128`, this method may panic or its
-    /// behavior may be undefined though it may not panic.
+    /// If `size_of::<T>() * N` <= `128`, this method may panic
+    /// or its behavior may be undefined though it may not panic.
     /// 
     /// # Features
     /// - It takes the remainder (= `rd1`) of `self` divided by `modulo`,
     ///   and takes the remainder (= `rd2`) of `rhs` divided by `modulo`,
-    ///   and then finally takes the qutient of `rd1` divided by `rd2`.
-    /// - There’s no way wrapping could ever happen.
+    ///   and then finally assigns the quotient of `rd1` divided by `rd2`
+    ///   back to `self`.
+    /// - __It does not panic__ even if `rhs` is zero or multiple of
+    ///   `modulo` or `modulo` is zero or one.
+    /// - If `modulo` is either zero or one, and `rhs` is zero or multiple of
+    ///   `modulo` then, the quotient will have the value `zero` and
+    ///   `UNDEFINED` and `DIVIDED_BY_ZERO` flags will be set.
+    /// - If `modulo` is either zero or one, and `rhs` is not zero nor multiple
+    ///   of `modulo` then, the quotient will have the value `zero` and
+    ///   `UNDEFINED` flag will be set.
+    /// - If `modulo` is greater than one, and `rhs` is either zero or multiple
+    ///   of `modulo`, and `self` is zero or multiple of `modulo` then, the
+    ///   quotient will have the value `zero`, and `UNDEFINED` and
+    ///   `DIVIDED_BY_ZERO` flags will be set.
+    /// - If `modulo` is greater than one, and `rhs` is either zero or multiple
+    ///   of `modulo`, and `self` is not zero, and `modulo` is neither zero nor
+    ///   one, the quotient will have the max value and `INFINITY`, and
+    ///   `DIVIDED_BY_ZERO` flags will be set.
+    /// - In summary, the quotients and the flags will be set as follows:
+    /// 
+    /// | `modulo` | `rhs`               | `self`              | quotient | flags                          |
+    /// |----------|---------------------|---------------------|----------|--------------------------------|
+    /// | 0 or 1   | 0 (mod `modulo`)    | >= 0                | 0        | `UNDEFINED`, `DIVIDED_BY_ZERO` |
+    /// | 0 or 1   | != 0 (mod `modulo`) | >= 0                | 0        | `UNDEFINED`                    |
+    /// | >= 2     | 0 (mod `modulo`)    | 0 (mod `modulo`)    | 0        | `UNDEFINED`, `DIVIDED_BY_ZERO` |
+    /// | >= 2     | 0 (mod `modulo`)    | != 0 (mod `modulo`) | max      | `INFINITY`, `DIVIDED_BY_ZERO`  |
+    /// 
     /// - All the flags are historical, which means, for example, if an
     ///   divided_by_zero occurred even once before this current operation or
     ///   `DIVIDED_BY_ZERO` flag is already set before this current operation,
-    ///   the `DIVIDED_BY_ZERO` flag is not changed even if this current
-    ///   operation does not cause divided_by_zero.
-    /// - If `modulo` is either zero or one, `self` will have the value `zero`
-    ///   and `UNDEFINED` flag will be set.
-    /// - If `rhs` is either zero or multiple of `modulo` and `self` is zero,
-    ///   `self` will have the value `zero` and `UNDEFINED` flag will be set.
-    /// - If `rhs` is either zero or multiple of `modulo` and `self` is not
-    ///   zero, `self` will have the max value, and the flags `INFINITY` and
-    ///  `DIVIDED_BY_ZERO` of `self` will be set.
-    /// - In summary, the quotients and the flags will be set as follows:
-    /// 
-    /// | `modulo` | `rhs`               | `self`              | new `self` | flags                          |
-    /// |----------|---------------------|---------------------|------------|--------------------------------|
-    /// | 0 or 1   | 0 (mod `modulo`)    | >= 0                | 0          | `UNDEFINED`, `DIVIDED_BY_ZERO` |
-    /// | 0 or 1   | != 0 (mod `modulo`) | >= 0                | 0          | `UNDEFINED`                    |
-    /// | >= 2     | 0 (mod `modulo`)    | 0 (mod `modulo`)    | 0          | `UNDEFINED`, `DIVIDED_BY_ZERO` |
-    /// | >= 2     | 0 (mod `modulo`)    | != 0 (mod `modulo`) | max        | `INFINITY`, `DIVIDED_BY_ZERO`  |
+    ///   the `DIVIDED_BY_ZERO` flag is not changed even if this current operation
+    ///   does not cause divided_by_zero.
     /// 
     /// # Counterpart Method
-    /// If `rhs` is bigger than `u128`, the method
-    /// [modular_div_assign()](struct@BigUInt#method.modular_div_assign)
-    /// is proper rather than this method `modular_div_assign_uint()`.
+    /// If `rhs` is bigger tham `ui128`, the method
+    /// [panic_free_modular_div_assign()](struct@BigUInt#method.panic_free_modular_div_assign)
+    /// is proper rather than this method.
     /// 
     /// # Example 1 for a normal case
     /// ```
@@ -14864,31 +14909,28 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
         self.set_flag_bit(flags);
     }
 
-    // pub fn wrapping_rem_uint<U>(&self, rhs: U) -> U
-    /// Calculates the remainder when `self` is divided by `rhs`,
-    /// which is `self` % `rhs`.
+    // pub fn wrapping_rem_uint<U>(&self, rhs: U) -> Self
+    /// Divides `self` by `rhs`, and returns the remainder.
     /// 
     /// # Arguments
-    /// `rhs` divides `self`, and is a small-sized unsigned integer
+    /// `rhs` divides `self`, and is of primitive unsigned integral data type
     /// such as `u8`, `u16`, `u32`, `u64`, and `u128`.
-    ///
+    /// 
     /// # Panics
     /// - If `size_of::<T>() * N` <= `128`, this method may panic
     ///   or its behavior may be undefined though it may not panic.
-    /// - If `rhs` is zero, it will panic.
-    /// 
+    /// - If `rhs` is zero, this method will panic.
+    ///
     /// # Output
-    /// - If `rhs` is not zero, it returns the remainder of the calculation
-    ///   that `self` is divided by `rhs`, which is `self` % `rhs`,
-    ///   with wrapping (modular) division.
+    /// It returns a remainder of `BigUInt` type,
+    /// and the remainder would never overflow.
     /// 
     /// # Features
-    /// - Wrapped remainder calculation on `BigUInt` types is just the regular
-    ///   remainder calculation.
-    /// - There’s no way wrapping could ever happen.
-    /// - This function exists, so that all operations are accounted for in the
-    ///   wrapping operations.
-    /// - If `rhs` is `zero`, the remainder is zero.
+    /// - Wrapped division on `BigUInt` types is just normal division.
+    /// - There’s no way wrapping could ever happen unless `rhs` is zero.
+    /// - If `rhs` is zero, this method will panic.
+    /// - This function exists, so that all operations are accounted for
+    ///   in the wrapping operations.
     /// 
     /// # Counterpart Method
     /// If `rhs` is bigger than `u128`, the method
@@ -14951,30 +14993,29 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
         remainder
     }
 
-    // pub fn wrapping_rem_assign_uint<U>(&mut self, rhs: U)
-    /// Calculates the remainder when `self` is divided by `rhs`,
-    /// which is `self` % `rhs`, and returns the remainder to `self` back.
+    // pub fn wrapping_rem_assign_uint(&mut self, rhs: U)
+    /// Divides `self` by `rhs`, and assigns the remainder to `self` back..
     /// 
     /// # Arguments
-    /// `rhs` divides `self`, and is a small-sized unsigned integer
+    /// `rhs` divides `self`, and is of primitive unsigned integral data type
     /// such as `u8`, `u16`, `u32`, `u64`, and `u128`.
-    ///
+    /// 
     /// # Panics
     /// - If `size_of::<T>() * N` <= `128`, this method may panic
     ///   or its behavior may be undefined though it may not panic.
-    /// - If `rhs` is zero, it will panic.
+    /// - If `rhs` is zero, this method will panic.
     /// 
     /// # Features
-    /// - Wrapped remainder calculation on `BigUInt` types is just the regular
-    ///   remainder calculation.
-    /// - There’s no way wrapping could ever happen.
-    /// - This function exists, so that all operations are accounted for in the
-    ///   wrapping operations.
+    /// - Wrapped division on `BigUInt` types is just normal division.
+    /// - There’s no way wrapping could ever happen unless `rhs` is zero.
+    /// - If `rhs` is zero, this method will panic.
+    /// - This function exists, so that all operations are accounted for
+    ///   in the wrapping operations.
     /// - All the flags are historical, which means, for example, if an
     ///   divided_by_zero occurred even once before this current operation or
     ///   `DIVIDED_BY_ZERO` flag is already set before this current operation,
-    ///   the `DIVIDED_BY_ZERO` flag is not changed even if this current
-    ///   operation does not cause divided_by_zero.
+    ///   the `DIVIDED_BY_ZERO` flag is not changed even if this current operation
+    ///   does not cause divided_by_zero.
     /// 
     /// # Counterpart Method
     /// If `rhs` is bigger than `u128`, the method
@@ -15064,31 +15105,36 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
         self.set_all_flags(flags);
     }
 
-    // pub fn overflowing_rem_uint<U>(&self, rhs: U) -> (U, bool)
-    /// Calculates the remainder when `self` is divided by `rhs`,
-    /// which is `self` % `rhs`.
+    // pub fn overflowing_rem_uint<U>(&self, rhs: U) -> (Self, bool)
+    /// Divides `self` by `rhs`,
+    /// and returns a tuple of the remainder of `self` / `rhs` along with
+    /// a boolean indicating whether an arithmetic overflow would occur.
     /// 
     /// # Arguments
-    /// `rhs` divides `self`, and is a small-sized unsigned integer
+    /// `rhs` divides `self`, and is of primitive unsigned integral data type
     /// such as `u8`, `u16`, `u32`, `u64`, and `u128`.
-    ///
+    /// 
     /// # Panics
     /// - If `size_of::<T>() * N` <= `128`, this method may panic
     ///   or its behavior may be undefined though it may not panic.
     /// - If `rhs` is zero, this method will panic.
     /// 
     /// # Output
-    /// It returns a tuple of the remainder after dividing,
-    /// which is `self` % `rhs` along with a boolean indicating
-    /// whether an arithmetic overflow would occur.
+    /// It returns a tuple of the remainder of `BigUInt` type as a result of
+    /// `self` % `rhs` along with a boolean indicating whether an arithmetic
+    /// overflow would occur. But the remainder would never overflow.
+    /// So, the second element of the output tuple is always `false`.
     /// 
     /// # Features
-    /// Note that overflow never occurs, so the second value is always false.
+    /// - Wrapped division on `BigUInt` types is just normal division.
+    /// - The remainder would never overflow.
+    /// - The second element of the output tuple reflects only
+    ///   the current overflow.
     /// 
     /// # Counterpart Method
-    /// If `rhs` is bigger than `u128`, the method
+    /// If `rhs` is bigger tham `ui128`, the method
     /// [overflowing_rem()](struct@BigUInt#method.overflowing_rem)
-    /// is proper rather than this method `overflowing_rem_uint()`.
+    /// is proper rather than this method.
     /// 
     /// # Example 1
     /// ```
@@ -15149,35 +15195,40 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     }
 
     // pub fn overflowing_rem_assign_uint<U>(&mut self, rhs: U) -> bool
-    /// Calculates the remainder when `self` is divided by `rhs`,
-    /// which is `self` % `rhs`, and returns the remainder to `self` back.
+    /// Divides `self` by `rhs`,
+    /// and assigns the remainder of `self` / `rhs` to `self` back,
+    /// and returns a boolean indicating whether an arithmetic overflow
+    /// would occur.
     /// 
     /// # Arguments
-    /// `rhs` divides `self`, and is a small-sized unsigned integer
+    /// `rhs` divides `self`, and is of primitive unsigned integral data type
     /// such as `u8`, `u16`, `u32`, `u64`, and `u128`.
-    ///
+    /// 
     /// # Panics
     /// - If `size_of::<T>() * N` <= `128`, this method may panic
     ///   or its behavior may be undefined though it may not panic.
     /// - If `rhs` is zero, this method will panic.
     /// 
     /// # Output
-    /// It returns a boolean indicating whether an arithmetic overflow
-    /// would occur.
+    /// It returns true if an arithmetic overflow would occur.
+    /// But the remainder would never overflow.
+    /// So, it always returns `false`.
     /// 
     /// # Features
-    /// - Note that overflow never occurs, so the outtput is always false.
-    /// - `self` will have the the remainder after execution.
-    /// - All the flags are historical, which means, for example, if an
-    ///   divided_by_zero occurred even once before this current operation or
-    ///   `DIVIDED_BY_ZERO` flag is already set before this current operation,
-    ///   the `DIVIDED_BY_ZERO` flag is not changed even if this current operation
-    ///   does not cause divided_by_zero.
+    /// - Wrapped division on `BigUInt` types is just normal division.
+    /// - The remainder would never overflow.
+    /// - The output will be `false` even if the `OVERFLOW` flag of `self`
+    ///   was already set because of previous operation of `self`.
+    /// - The output reflects only the current overflow.
+    /// - All the flags are historical, which means, for example, if an overflow
+    ///   occurred even once before this current operation or `OVERFLOW`
+    ///   flag is already set before this current operation, the `OVERFLOW` flag
+    ///   is not changed even if this current operation does not cause overflow.
     /// 
     /// # Counterpart Method
-    /// If `rhs` is bigger than `u128`, the method
+    /// If `rhs` is bigger tham `ui128`, the method
     /// [overflowing_rem_assign()](struct@BigUInt#method.overflowing_rem_assign)
-    /// is proper rather than this method `overflowing_rem_assign_uint()`.
+    /// is proper rather than this method.
     /// 
     /// # Example 1
     /// ```
@@ -15265,33 +15316,32 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
         false
     }
 
-    // pub fn checked_rem_uint<U>(&self, rhs: U) -> Option<U>
-    /// Calculates the remainder when `self` is divided by `rhs`,
-    /// which is `self` % `rhs`.
+    // pub fn checked_rem_uint<U>(&self, rhs: U) -> Option<Self>
+    /// Divides `self` by `rhs`,
+    /// and returns the remainder wrapped by `Some` of enum `Option`.
     /// 
     /// # Arguments
-    /// `rhs` divides `self`, and is a small-sized unsigned integer
+    /// `rhs` divides `self`, and is of small-sized unsigned integer
     /// such as `u8`, `u16`, `u32`, `u64`, and `u128`.
-    ///
+    /// 
     /// # Panics
-    /// - If `size_of::<T>() * N` <= `128`, this method may panic
-    ///   or its behavior may be undefined though it may not panic.
-    /// - If `rhs` is zero, this method will panic.
+    /// If `size_of::<T>() * N` <= `128`, this method may panic
+    /// or its behavior may be undefined though it may not panic.
     /// 
     /// # Output
-    /// It returns the remainder when `self` is divided by `rhs`,
-    /// which is `self` % `rhs`, wrapped by `Some` of enum `Option`
-    /// if `rhs` is not zero. Otherwise, it returns `None` of enum `Option`.
+    /// It returns a remainder of `BigUInt` type wrapped by `Some` of
+    /// enum `Option` if overflow did not occur at current operation.
+    /// Otherwise, it returns `None` of enum `Option`.
     /// 
     /// # Features
-    /// - Note that overflow never occurs.
-    /// - If `rhs` is zero, the output of this method
-    ///   is `None` of enum `Option`.
+    /// - This division on `BigUInt` types is just normal division.
+    /// - There’s no way wrapping could ever happen unless `rhs` is zero.
+    /// - If `rhs` is zero, it returns `None` of enum `Option`.
     /// 
     /// # Counterpart Method
-    /// If `rhs` is bigger than `u128`, the method
+    /// If `rhs` is bigger tham `ui128`, the method
     /// [checked_rem()](struct@BigUInt#method.checked_rem)
-    /// is proper rather than this method `checked_rem_uint()`.
+    /// is proper rather than this method.
     /// 
     /// # Example 1
     /// ```
@@ -15378,26 +15428,24 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
         }
     }
 
-    // pub fn unchecked_rem_uint<U>(&self, rhs: U) -> U
-    /// Calculates the remainder when `self` is divided by `rhs`,
-    /// which is `self` % `rhs`, assuming `rhs` cannot be zero.
+    // pub fn unchecked_rem_uint<U>(&self, rhs: U) -> Self
+    /// Divides `self` by `rhs`, and returns the remainder.
     /// 
     /// # Arguments
-    /// `rhs` divides `self`, and is a small-sized unsigned integer
+    /// `rhs` divides `self`, and is of primitive unsigned integral data type
     /// such as `u8`, `u16`, `u32`, `u64`, and `u128`.
-    ///
+    /// 
     /// # Panics
     /// - If `size_of::<T>() * N` <= `128`, this method may panic
     ///   or its behavior may be undefined though it may not panic.
-    /// - If `rhs` is `zero`, it will panic.
-    /// 
+    /// - If `rhs` is zero, this method will panic.
+    ///
     /// # Output
-    /// It returns the remainder when `self` is divided by `rhs`,
-    /// which is `self` % `rhs`, if `rhs` is not zero.
-    /// Otherwise, it will panic.
+    /// It returns a remainder of `BigUInt` type. 
     /// 
     /// # Features
-    /// Overflow never occurs.
+    /// - Wrapped division on `BigUInt` types is just normal division.
+    /// - If `rhs` is zero, this method will panic.
     /// 
     /// # Counterpart Method
     /// If `rhs` is bigger than `u128`, the method
@@ -15458,31 +15506,32 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
         self.checked_rem_uint(rhs).unwrap()
     }
 
-    // pub fn saturating_rem_uint<U>(&self, rhs: U) -> U
-    /// Calculates the remainder when `self` is divided by `rhs`,
-    /// which is `self` % `rhs`.
+    // pub fn saturating_rem_uint<U>(&self, rhs: U) -> Self
+    /// Divides `self` by `rhs`,
+    /// saturating at the numeric bounds instead of overflowing,
+    /// and returns the remainder of `self` / `rhs`.
     /// 
     /// # Arguments
-    /// `rhs` divides `self`, and is a small-sized unsigned integer
+    /// `rhs` divides `self`, and is of primitive unsigned integral data type
     /// such as `u8`, `u16`, `u32`, `u64`, and `u128`.
-    ///
+    /// 
     /// # Panics
     /// - If `size_of::<T>() * N` <= `128`, this method may panic
     ///   or its behavior may be undefined though it may not panic.
     /// - If `rhs` is zero, this method will panic.
     /// 
     /// # Output
-    /// It returns the remainder when `self` is divided by `rhs`,
-    /// which is `self` % `rhs`, if `rhs` is not zero.
+    /// It returns the remainder of `BigUInt` type as a result of
+    /// `self` % `rhs`.
     /// 
     /// # Features
-    /// - Overflow never occurs.
-    /// - There’s no way wrapping could ever happen.
+    /// - The remainder would never overflow so that it can not saturate.
+    /// - It does not set `OVERFLOW` flag of the return value.
     /// 
     /// # Counterpart Method
-    /// If `rhs` is bigger than `u128`, the method
+    /// If `rhs` is bigger tham `ui128`, the method
     /// [saturating_rem()](struct@BigUInt#method.saturating_rem)
-    /// is proper rather than this method `saturating_rem_uint()`.
+    /// is proper rather than this method.
     /// 
     /// # Example 1
     /// ```
@@ -15541,31 +15590,32 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
         remainder
     }
 
-    // pub fn saturating_rem_assign_uint<U>(&mut self, rhs: U)
-    /// Calculates the remainder when `self` is divided by `rhs`,
-    /// which is `self` % `rhs`, and assigns the remainder to `self` back.
+    // pub fn saturating_mul_assign_uint<U>(&mut self, rhs: U)
+    /// Divides `self` by `rhs`,
+    /// saturating at the numeric bounds instead of overflowing,
+    /// and assigns the remainder of `self` / `rhs` to `self` back.
     /// 
     /// # Arguments
-    /// `rhs` divides `self`, and is a small-sized unsigned integer
+    /// `rhs` divides `self`, and is of primitive unsigned integral data type
     /// such as `u8`, `u16`, `u32`, `u64`, and `u128`.
-    ///
+    /// 
     /// # Panics
     /// - If `size_of::<T>() * N` <= `128`, this method may panic
     ///   or its behavior may be undefined though it may not panic.
     /// - If `rhs` is zero, this method will panic.
     /// 
     /// # Features
-    /// - Note that overflow never occurs.
-    /// - All the flags are historical, which means, for example, if an
-    ///   divided_by_zero occurred even once before this current operation or
-    ///   `DIVIDED_BY_ZERO` flag is already set before this current operation,
-    ///   the `DIVIDED_BY_ZERO` flag is not changed even if this current
-    ///   operation does not cause divided_by_zero.
+    /// - The remainder would never overflow so that it can not saturate.
+    /// - It does not set `OVERFLOW` flag of the return value.
+    /// - All the flags are historical, which means, for example, if an overflow
+    ///   occurred even once before this current operation or `OVERFLOW`
+    ///   flag is already set before this current operation, the `OVERFLOW` flag
+    ///   is not changed even if this current operation does not cause overflow.
     /// 
     /// # Counterpart Method
-    /// If `rhs` is bigger than `u128`, the method
+    /// If `rhs` is bigger tham `ui128`, the method
     /// [saturating_rem_assign()](struct@BigUInt#method.saturating_rem_assign)
-    /// is proper rather than this method `saturating_rem_assign_uint()`.
+    /// is proper rather than this method.
     /// 
     /// # Example 1
     /// ```
@@ -15651,44 +15701,40 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     }
 
     // pub fn panic_free_rem_uint<U>(&self, rhs: U) -> Self
-    /// Calculates the remainder when `self` is divided by `rhs`,
-    /// which is `self` % `rhs`.
+    /// Divides `self` by `rhs`, and returns the remainder.
     /// 
     /// # Arguments
-    /// `rhs` divides `self`, and is a small-sized unsigned integer
+    /// `rhs` divides `self`, and is of primitive unsigned integral data type
     /// such as `u8`, `u16`, `u32`, `u64`, and `u128`.
-    ///
-    /// # Panics
-    /// - If `size_of::<T>() * N` <= `128`, this method may panic
-    ///   or its behavior may be undefined though it may not panic.
     /// 
+    /// # Panics
+    /// If `size_of::<T>() * N` <= `128`, this method may panic
+    /// or its behavior may be undefined though it may not panic.
+    ///
     /// # Output
-    /// - If `rhs` is not zero, it returns the remainder of the calculation
-    ///   that `self` is divided by `rhs`, which is `self` % `rhs`,
-    ///   with wrapping (modular) division.
+    /// It returns a remainder of `BigUInt` type,
+    /// and the remainder would never overflow. 
     /// 
     /// # Features
-    /// - Wrapped remainder calculation on `BigUInt` types is just the regular
-    ///   remainder calculation.
-    /// - There’s no way wrapping could ever happen.
-    /// - This function exists, so that the program may be able to run
-    ///   even if `rhs` is zero.
-    /// - If `rhs` is `zero`, the remainder is zero and the flag
-    ///   `DIVIDED_BY_ZERO` of `remainder` will be set.
-    /// - __It does not panic__ while the counterpart methods `wrapping_rem()`
-    ///   for primitive integer data type such as u8, u16, u32, u64, etc. will
-    ///   panic if `rhs` is zero.
-    /// - In summary, the quotient and its flags will be set as follows:
+    /// - Wrapped division on `BigUInt` types is just normal division.
+    /// - There’s no way wrapping could ever happen unless `rhs` is zero.
+    /// - __It does not panic__ while the counterpart method
+    ///   `wrapping_rem_uint()` will panic if `rhs` is zero.
+    /// - If `rhs` is `zero`, `self` will be `zero` and the `DIVIDED_BY_ZERO` flag
+    ///   of `self` will be set.
+    /// - In summary, the remainder and its flags will be set as follows:
     /// 
-    /// | `rhs` | `remainder` | flags of `remainder` |
-    /// |-------|-------------|----------------------|
-    /// | 0     | 0           | `DIVIDED_BY_ZERO`    |
-    /// 
+    /// | `rhs` | `remainder` (= `self`) | flags of `remainder` |
+    /// |-------|------------------------|----------------------|
+    /// | 0     | 0                      | `DIVIDED_BY_ZERO`    |
     /// 
     /// # Counterpart Method
-    /// If `rhs` is bigger than `u128`, the method
-    /// [panic_free_rem()](struct@BigUInt#method.panic_free_rem)
-    /// is proper rather than this method `panic_free_rem_uint()`.
+    /// The method
+    /// [panic_free_rem_uint()](struct@BigUInt#method.panic_free_rem_uint)
+    /// is a bit faster than this method `wrapping_rem()`.
+    /// If `rhs` is primitive unsigned integral data type such as u8, u16,
+    /// u32, u64, and u128, use the method
+    /// [panic_free_rem_uint()](struct@BigUInt#method.panic_free_rem_uint).
     /// 
     /// # Example 1
     /// ```
@@ -15781,42 +15827,39 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     }
 
     // pub fn panic_free_rem_assign_uint<U>(&mut self, rhs: U)
-    /// Calculates the remainder when `self` is divided by `rhs`,
-    /// which is `self` % `rhs`, and returns the remainder to `self` back.
+    /// Divides `self` by `rhs`, and assigns the remainder to `self` back.
     /// 
     /// # Arguments
-    /// `rhs` divides `self`, and is a small-sized unsigned integer
+    /// `rhs` divides `self`, and is of primitive unsigned integral data type
     /// such as `u8`, `u16`, `u32`, `u64`, and `u128`.
-    ///
+    /// 
     /// # Panics
-    /// - If `size_of::<T>() * N` <= `128`, this method may panic
-    ///   or its behavior may be undefined though it may not panic.
-    /// - If `rhs` is either zero or multiple of `modulo`, it will panic.
+    /// If `size_of::<T>() * N` <= `128`, this method may panic
+    /// or its behavior may be undefined though it may not panic.
     /// 
     /// # Features
-    /// - Wrapped remainder calculation on `BigUInt` types is just the regular
-    ///   remainder calculation.
-    /// - There’s no way wrapping could ever happen.
-    /// - This function exists, so that all operations are accounted for in the
-    ///   wrapping operations.
-    /// - If `rhs` is zero, `self` will be zero and the `DIVIDED_BY_ZERO` flag
-    ///   of `self` will be set.
-    /// - All the flags are historical, which means, for example, if an
-    ///   divided_by_zero occurred even once before this current operation or
-    ///   `DIVIDED_BY_ZERO` flag is already set before this current operation,
-    ///   the `DIVIDED_BY_ZERO` flag is not changed even if this current
-    ///   operation does not cause divided_by_zero.
-    /// - In summary, the quotient and its flags will be set as follows:
+    /// - Wrapped division on `BigUInt` types is just normal division.
+    /// - There’s no way wrapping could ever happen unless `rhs` is zero.
+    /// - __It does not panic__ while the counterpart method
+    ///   `wrapping_rem_uint()` will panic if `rhs` is zero.
+    /// - If `rhs` is `zero`, the remainder is `zero` and the flag
+    ///   `DIVIDED_BY_ZERO` of `remainder` will be set.
+    /// - In summary, the remainder and its flags will be set as follows:
     /// 
     /// | `rhs` | `remainder` | flags of `remainder` |
     /// |-------|-------------|----------------------|
-    /// | 0     | 0           | `DIVIDED_BY_ZERO`    |
+    /// | 0     |  0          | `DIVIDED_BY_ZERO`    |
     /// 
+    /// - All the flags are historical, which means, for example, if an
+    ///   divided_by_zero occurred even once before this current operation or
+    ///   `DIVIDED_BY_ZERO` flag is already set before this current operation,
+    ///   the `DIVIDED_BY_ZERO` flag is not changed even if this current operation
+    ///   does not cause divided_by_zero.
     /// 
     /// # Counterpart Method
     /// If `rhs` is bigger than `u128`, the method
-    /// [wrapping_rem_assign()](struct@BigUInt#method.wrapping_rem_assign)
-    /// is proper rather than this method `wrapping_rem_assign_uint()`.
+    /// [panic_free_rem_assign()](struct@BigUInt#method.panic_free_rem_assign)
+    /// is proper rather than this method `panic_free_rem_assign_uint()`.
     /// 
     /// # Example 1
     /// ```
@@ -15938,30 +15981,30 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
             { self.set_divided_by_zero(); }
     }
 
-    // pub fn modular_rem_uint<U>(&self, rhs: U, modulo: &Self) -> U
-    /// Calculates the remainder when `self` % `modulo` is divided by
-    /// `rhs` % `modulo`.
+    // pub fn modular_rem_uint<U>(&self, rhs: U, modulo: &Self) -> Self
+    /// Divides (`self` % `modulo`) by (`rhs` % `modulo`),
+    /// and returns the remainder.
     /// 
     /// # Arguments
-    /// - `rhs` divides `self`, and is a small-sized unsigned integer
-    /// such as `u8`, `u16`, `u32`, `u64`, and `u128`.
-    /// - `modulo` is the divisor to divide the result of (`self` * `rhs`).
-    ///
+    /// - `rhs` divides `self`, and is of primitive unsigned integral data type
+    ///   such as `u8`, `u16`, `u32`, `u64`, and `u128`.
+    /// - `modulo` is the divisor to divide the remainder of (`self` / `rhs`),
+    ///   and is of `&Self` type.
+    /// 
     /// # Panics
     /// - If `size_of::<T>() * N` <= `128`, this method may panic
-    /// or its behavior may be undefined though it may not panic.
+    ///   or its behavior may be undefined though it may not panic.
     /// - If `rhs` is either zero or multiple of `modulo`, it will panic.
     /// - If `modulo` is either zero or one, it will panic.
     /// 
     /// # Output
-    /// - It returns the remainder of when `self` % `modulo` is divided by
-    /// `rhs` % `modulo` if `rhs` % `modulo` is not zero.
+    /// It returns the remainder of when (`self` % `modulo`) is divided by
+    /// (`rhs` % `modulo`) if (`rhs` % `modulo`) is not zero.
     /// 
     /// # Features
-    /// - It takes the remainder (= `rd1`) of `self` divided by `modulo`,
+    /// It takes the remainder (= `rd1`) of `self` divided by `modulo`,
     /// and takes the remainder (= `rd2`) of `rhs` divided by `modulo`,
     /// and then finally returns the remainder of `rd1` divided by `rd2`.
-    /// - Overflow will not happen.
     /// 
     /// # Counterpart Method
     /// If `rhs` is bigger than `u128`, the method
@@ -16079,35 +16122,35 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     }
 
     // pub fn modular_rem_assign_uint<U>(&mut self, rhs: U, modulo: &Self)
-    /// Calculates the remainder when `self` % `modulo` is divided by
-    /// `rhs` % `modulo`.
+    /// Divides (`self` % `modulo`) by (`rhs` % `modulo`),
+    /// and assigns the remainder back to `self`.
     /// 
     /// # Arguments
-    /// - `rhs` divides `self`, and is a small-sized unsigned integer
-    /// such as `u8`, `u16`, `u32`, `u64`, and `u128`.
-    /// - `modulo` is the divisor to divide the result of (`self` * `rhs`).
-    ///
+    /// - `rhs` divides `self`, and is of primitive unsigned integral data type
+    ///   such as `u8`, `u16`, `u32`, `u64`, and `u128`.
+    /// - `modulo` is the divisor to divide the remainder of (`self` / `rhs`),
+    ///   and is of `&Self` type.
+    /// 
     /// # Panics
     /// - If `size_of::<T>() * N` <= `128`, this method may panic
-    /// or its behavior may be undefined though it may not panic.
+    ///   or its behavior may be undefined though it may not panic.
     /// - If `rhs` is either zero or multiple of `modulo`, it will panic.
     /// - If `modulo` is either zero or one, it will panic.
     /// 
     /// # Features
     /// - It takes the remainder (= `rd1`) of `self` divided by `modulo`,
     ///   and takes the remainder (= `rd2`) of `rhs` divided by `modulo`,
-    ///   and then finally takes the remainder of `rd1` divided by `rd2`.
-    /// - Overflow will not happen.
+    ///   and then finally returns the remainder of `rd1` divided by `rd2`.
     /// - All the flags are historical, which means, for example, if an
     ///   divided_by_zero occurred even once before this current operation or
     ///   `DIVIDED_BY_ZERO` flag is already set before this current operation,
-    ///   the `DIVIDED_BY_ZERO` flag is not changed even if this current
-    ///   operation does not cause divided_by_zero.
+    ///   the `DIVIDED_BY_ZERO` flag is not changed even if this current operation
+    ///   does not cause divided_by_zero.
     /// 
     /// # Counterpart Method
-    /// If `rhs` is bigger than `u128`, the method
+    /// If `rhs` is bigger tham `ui128`, the method
     /// [modular_rem_assign()](struct@BigUInt#method.modular_rem_assign)
-    /// is proper rather than this method `modular_rem_assign_uint()`.
+    /// is proper rather than this method.
     /// 
     /// # Example 1 for normal case
     /// ```
@@ -16309,21 +16352,22 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     }
 
     // pub fn panic_free_modular_rem_uint<U>(&self, rhs: U, modulo: &Self) -> Self
-    /// Calculates the remainder when `self` % `modulo` is divided by
-    /// `rhs` % `modulo`.
+    /// Divides (`self` % `modulo`) by (`rhs` % `modulo`),
+    /// and returns the remainder.
     /// 
     /// # Arguments
-    /// - `rhs` divides `self`, and is a small-sized unsigned integer
+    /// - `rhs` divides `self`, and is of primitive unsigned integral data type
     ///   such as `u8`, `u16`, `u32`, `u64`, and `u128`.
-    /// - `modulo` is the divisor to divide the result of (`self` * `rhs`).
-    ///
+    /// - `modulo` is the divisor to divide the remainder of (`self` / `rhs`),
+    ///   and is of `&Self` type.
+    /// 
     /// # Panics
     /// If `size_of::<T>() * N` <= `128`, this method may panic
     /// or its behavior may be undefined though it may not panic.
     /// 
     /// # Output
-    /// It returns the remainder of when `self` % `modulo` is divided by
-    /// `rhs` % `modulo` if `rhs` is not multiple of `modulo`.
+    /// It returns the remainder of when (`self` % `modulo`) is divided by
+    /// (`rhs` % `modulo`) if (`rhs` % `modulo`) is not zero.
     /// 
     /// # Features
     /// - It takes the remainder (= `rd1`) of `self` divided by `modulo`,
@@ -16341,7 +16385,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// - If `modulo` is greater than one, and `rhs` is either zero or multiple
     ///   of `modulo` then, the remainder will have the value `zero` and
     ///   `UNDEFINED` and `DIVIDED_BY_ZERO` flags will be set.
-    /// - In summary, the quotients and the flags will be set as follows:
+    /// - In summary, the remainder and the flags will be set as follows:
     /// 
     /// | `modulo` | `rhs`               | remainder | flags                          |
     /// |----------|---------------------|-----------|--------------------------------|
@@ -16668,52 +16712,54 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     }
 
     // pub fn panic_free_modular_rem_assign_uint<U>(&mut self, rhs: U, modulo: &Self)
-    /// Calculates the remainder when `self` % `modulo` is divided by
-    /// `rhs` % `modulo`.
+    /// Divides (`self` % `modulo`) by (`rhs` % `modulo`),
+    /// and assigns the remainder back to `self`.
     /// 
     /// # Arguments
-    /// - `rhs` divides `self`, and is a small-sized unsigned integer
-    /// such as `u8`, `u16`, `u32`, `u64`, and `u128`.
-    /// - `modulo` is the divisor to divide the result of (`self` * `rhs`).
-    ///
+    /// - `rhs` divides `self`, and is of primitive unsigned integral data type
+    ///   such as `u8`, `u16`, `u32`, `u64`, and `u128`.
+    /// - `modulo` is the divisor to divide the remainder of (`self` / `rhs`),
+    ///   and is of `&Self` type.
+    /// 
     /// # Panics
-    /// - If `size_of::<T>() * N` <= `128`, this method may panic
+    /// If `size_of::<T>() * N` <= `128`, this method may panic
     /// or its behavior may be undefined though it may not panic.
     /// 
     /// # Features
     /// - It takes the remainder (= `rd1`) of `self` divided by `modulo`,
     ///   and takes the remainder (= `rd2`) of `rhs` divided by `modulo`,
-    ///   and then finally takes the remainder of `rd1` divided by `rd2`.
+    ///   and then finally assigns the remainder of `rd1` divided by `rd2`
+    ///   back to `self`.
     /// - Overflow will not happen.
     /// - __It does not panic__ even if `rhs` is zero or multiple of
     ///   `modulo` or `modulo` is zero or one.
     /// - If `modulo` is either zero or one, and `rhs` is zero or multiple of
-    ///   `modulo` then, the remainder will have the value `zero` and
+    ///   `modulo` then, `self` will have the value `zero` and its
     ///   `UNDEFINED` and `DIVIDED_BY_ZERO` flags will be set.
     /// - If `modulo` is either zero or one, and `rhs` is not zero nor multiple
-    ///   of `modulo` then, the remainder will have the value `zero` and
+    ///   of `modulo` then, `self` will have the value `zero` and its
     ///   `UNDEFINED` flag will be set.
     /// - If `modulo` is greater than one, and `rhs` is either zero or multiple
-    ///   of `modulo` then, the remainder will have the value `zero` and
-    ///   `DIVIDED_BY_ZERO` flag of the remainder will be set.
-    /// - In summary, the quotients and the flags will be set as follows:
+    ///   of `modulo` then, `self` will have the value `zero` and its
+    ///   `DIVIDED_BY_ZERO` flag will be set.
+    /// - In summary, `self` and its flags will be set as follows:
     /// 
-    /// | `modulo` | `rhs`               | remainder | flags                          |
-    /// |----------|---------------------|-----------|--------------------------------|
-    /// | 0 or 1   | 0 (mod `modulo`)    | 0         | `UNDEFINED`, `DIVIDED_BY_ZERO` |
-    /// | 0 or 1   | != 0 (mod `modulo`) | 0         | `UNDEFINED`                    |
-    /// | >= 2     | 0 (mod `modulo`)    | 0         | `DIVIDED_BY_ZERO`              |
+    /// | `modulo` | `rhs`               | remainder (= `self`) | flags                          |
+    /// |----------|---------------------|----------------------|--------------------------------|
+    /// | 0 or 1   | 0 (mod `modulo`)    | 0                    | `UNDEFINED`, `DIVIDED_BY_ZERO` |
+    /// | 0 or 1   | != 0 (mod `modulo`) | 0                    | `UNDEFINED`                    |
+    /// | >= 2     | 0 (mod `modulo`)    | 0                    | `DIVIDED_BY_ZERO`              |
     /// 
     /// - All the flags are historical, which means, for example, if an
     ///   divided_by_zero occurred even once before this current operation or
     ///   `DIVIDED_BY_ZERO` flag is already set before this current operation,
-    ///   the `DIVIDED_BY_ZERO` flag is not changed even if this current
-    ///   operation does not cause divided_by_zero.
+    ///   the `DIVIDED_BY_ZERO` flag is not changed even if this current operation
+    ///   does not cause divided_by_zero.
     /// 
     /// # Counterpart Method
-    /// If `rhs` is bigger than `u128`, the method
+    /// If `rhs` is bigger tham `ui128`, the method
     /// [panic_free_modular_rem_assign()](struct@BigUInt#method.panic_free_modular_rem_assign)
-    /// is proper rather than this method `panic_free_modular_rem_assign_uint()`.
+    /// is proper rather than this method.
     /// 
     /// # Example 1 for normal case
     /// ```
@@ -32559,68 +32605,20 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
 
     /*** Division ***/
 
-    //===================
-    // pub fn divide_fully(&self, rhs: &Self) -> (Self, Self)
-    /// Divides `self` which is of `BigUInt` type by `rhs` which is of `BigUInt`
-    /// type, and returns a tuple of quotient and remainder.
-    /// 
-    /// # Output
-    /// It returns a tuple of quotient and remainder which are `BigUInt`type.
-    /// 
-    /// # Panics
-    /// - If `size_of::<T>() * N` <= `128`, this method may panic
-    /// or its behavior may be undefined though it may not panic.
-    /// - If `rhs` is zero, this method will panic.
-    /// 
-    /// # Features
-    /// If `rhs` is zero, the quotient will have maximum value of `BigUInt`
-    /// type, and the flags of quotient such as `OVERFLOW`, `INFINITY`, and
-    /// `DIVIDED_BY_ZERO` will be set, and the remainder will be set to be
-    /// zero of `BigUInt` type, the `DIVIDED_BY_ZERO` flag of remainder
-    /// will be set.
-    /// 
-    /// # Counterpart Method
-    /// The method
-    /// [divide_fully_uint()](struct@BigUInt#method.divide_fully_uint)
-    /// is a bit faster than this method `divide_fully()`.
-    /// If `rhs` is primitive unsigned integral data type such as u8, u16,
-    /// u32, u64, and u128, use the method
-    /// [divide_fully_uint()](struct@BigUInt#method.divide_fully_uint).
-    /// 
-    /// # Examples
-    /// ```
-    /// use std::str::FromStr;
-    /// use cryptocol::define_utypes_with;
-    /// define_utypes_with!(u128);
-    /// let dividend = U256::from_str("1234567890157589425462369896").unwrap();
-    /// let divisor = U256::from_str("1234567890").unwrap();
-    /// let (quotient, remainder) = dividend.divide_fully(&divisor);
-    /// ```
-    pub fn divide_fully(&self, rhs: &Self) -> (Self, Self)
+    fn common_divide_fully(&self, rhs: &Self) -> (Self, Self)
     {
-        let mut quotient = Self::zero();
-        let one = T::one();
         if self.is_zero()
-        {
-            return (quotient, Self::zero());
-        }
-        else if rhs.is_zero()
-        {
-            panic!();
-        }
-        else if *self < *rhs
-        {
-            return (quotient, self.clone());
-        }
-        else if *self == *rhs
-        {
-            quotient.set_num(0, one);
-            return (quotient, Self::zero());
-        }
+            { return (Self::zero(), Self::zero()); }
+        else if self.lt(rhs)
+            { return (Self::zero(), self.clone()); }
+        else if self.eq(rhs)
+            { return (Self::one(), Self::zero()); }
 
+        let mut quotient = Self::zero();
         let size_rhs = rhs.length_in_bits() - rhs.leading_zeros() as usize;
         let size_self = self.length_in_bits() - self.leading_zeros() as usize;
         let mut remainder = self.get_upper_portion(size_rhs);
+        remainder.reset_all_flags();
         let mut position = size_self - size_rhs;
         loop
         {
@@ -32637,28 +32635,306 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
             if self.is_bit_set_(position)
                 { remainder.set_lsb(); }
         }
-
         (quotient, remainder)
     }
 
-    // pub fn wrapping_div(&self, rhs: &Self) -> Self
-    /// Calculates the quotient when `self` is divided by `rhs`,
-    /// which is `self` / `rhs`.
-    ///
+    // pub fn divide_fully(&self, rhs: &Self) -> (Self, Self)
+    /// Divides `self` by `rhs`,
+    /// and returns a tuple of a quotient and a remainder.
+    /// 
+    /// # Arguments
+    /// `rhs` divides `self`, and is of `&Self` type.
+    /// 
+    /// # Panics
+    /// - If `size_of::<T>() * N` <= `128`, this method may panic
+    ///   or its behavior may be undefined though it may not panic.
+    /// - If `rhs` is zero, this method will panic.
+    /// 
     /// # Output
-    /// It returns the quotient of when `self` is divided by `rhs`,
-    /// which is `self` / `rhs`. 
+    /// It returns a tuple of a quotient and a remainder.
+    /// Both the quotient and the remainder are of `BigUInt` type.
     /// 
     /// # Features
-    /// Wrapped division on `BigUInt` types is just normal division.
-    /// There’s no way wrapping could ever happen. This function exists,
-    /// so that all operations are accounted for in the wrapping operations.
+    /// - There’s no way wrapping could ever happen unless `rhs` is zero.
+    /// - If `rhs` is zero, this method will panic.
+    /// - This function is the base function for all the methods *_div(),
+    ///   *_div_assign(), *_rem(), and *_rem_assign().
     /// 
-    /// If `rhs` is zero, the quotient will have maximum value of `BigUInt`
-    /// type, and the flags of quotient such as `OVERFLOW`, `INFINITY`, and
-    /// `DIVIDED_BY_ZERO` will be set. __It does not panic__ while the same
-    /// named methods `wrapping_div()` for primitive integer data type such
-    /// as u8, u16, u32, u64, etc. will panic if `rhs` is zero.
+    /// # Counterpart Method
+    /// The method
+    /// [divide_fully_uint()](struct@BigUInt#method.divide_fully_uint)
+    /// is a bit faster than this method `divide_fully()`.
+    /// If `rhs` is primitive unsigned integral data type such as u8, u16,
+    /// u32, u64, and u128, use the method
+    /// [divide_fully_uint()](struct@BigUInt#method.divide_fully_uint).
+    /// 
+    /// # Example 1
+    /// ```
+    /// use std::str::FromStr;
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u8);
+    /// 
+    /// let dividend = UU32::from_str("123456789015758942546236989636279846864825945392").unwrap();
+    /// let divisor = UU32::from_uint(87_u8);
+    /// let (quotient, remainder) = dividend.divide_fully(&divisor);
+    /// println!("{} / {} => quotient = {} , remainder = {}", dividend, divisor, quotient, remainder);
+    /// assert_eq!(quotient.to_string(), "1419043551905275201680884938348044216837079832");
+    /// assert_eq!(quotient.is_overflow(), false);
+    /// assert_eq!(quotient.is_underflow(), false);
+    /// assert_eq!(quotient.is_infinity(), false);
+    /// assert_eq!(quotient.is_undefined(), false);
+    /// assert_eq!(quotient.is_divided_by_zero(), false);
+    /// assert_eq!(remainder.to_string(), "8");
+    /// assert_eq!(remainder.is_overflow(), false);
+    /// assert_eq!(remainder.is_underflow(), false);
+    /// assert_eq!(remainder.is_infinity(), false);
+    /// assert_eq!(remainder.is_undefined(), false);
+    /// assert_eq!(remainder.is_divided_by_zero(), false);
+    /// ```
+    /// 
+    /// # Example 2
+    /// ```
+    /// use std::str::FromStr;
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u8);
+    /// 
+    /// let dividend = UU32::zero();
+    /// let divisor = UU32::from_uint(87_u8);
+    /// let (quotient, remainder) = dividend.divide_fully(&divisor);
+    /// println!("{} / {} => quotient = {} , remainder = {}", dividend, divisor, quotient, remainder);
+    /// assert_eq!(quotient.to_string(), "0");
+    /// assert_eq!(quotient.is_overflow(), false);
+    /// assert_eq!(quotient.is_underflow(), false);
+    /// assert_eq!(quotient.is_infinity(), false);
+    /// assert_eq!(quotient.is_undefined(), false);
+    /// assert_eq!(quotient.is_divided_by_zero(), false);
+    /// assert_eq!(remainder.to_string(), "0");
+    /// assert_eq!(remainder.is_overflow(), false);
+    /// assert_eq!(remainder.is_underflow(), false);
+    /// assert_eq!(remainder.is_infinity(), false);
+    /// assert_eq!(remainder.is_undefined(), false);
+    /// assert_eq!(remainder.is_divided_by_zero(), false);
+    /// ```
+    /// 
+    /// # Panic Examples
+    /// ```
+    /// use std::str::FromStr;
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u8);
+    /// 
+    /// let _dividend = UU32::from_str("123456789015758942546236989636279846864825945392").unwrap();
+    /// let _divisor = 0_u8;
+    /// // It will panic!
+    /// // let (quotient, remainder) = dividend.divide_fully(&_divisor);
+    /// 
+    /// let _dividend = UU32::zero();
+    /// let _divisor = 0_u8;
+    /// // It will panic!
+    /// // let (quotient, remainder) = dividend.divide_fully(&_divisor);
+    /// ```
+    /// 
+    /// # Big-endian issue
+    /// It is just experimental for Big Endian CPUs. So, you are not encouraged
+    /// to use it for Big Endian CPUs for serious purpose. Only use this crate
+    /// for Big-endian CPUs with your own full responsibility.
+    pub fn divide_fully(&self, rhs: &Self) -> (Self, Self)
+    {
+        if rhs.is_zero()
+            { panic!(); }
+        self.common_divide_fully(rhs)
+    }
+
+    // pub fn panic_free_divide_fully(&self, rhs: &Self) -> (Self, Self)
+    /// Divides `self` by `rhs`,
+    /// and returns a tuple of a quotient and a remainder.
+    /// 
+    /// # Arguments
+    /// `rhs` divides `self`, and is of `&Self` type.
+    /// 
+    /// # Panics
+    /// If `size_of::<T>() * N` <= `128`, this method may panic
+    /// or its behavior may be undefined though it may not panic.
+    /// 
+    /// # Output
+    /// It returns a tuple of a quotient and a remainder.
+    /// Both the quotient and the remainder are of `BigUInt` type.
+    /// 
+    /// # Features
+    /// - There’s no way wrapping could ever happen unless `rhs` is zero.
+    /// - If 'self' is zero and `rhs` is non-zero,
+    ///   this method returns (zero, zero).
+    /// - If both `rhs` and 'self' are zero, the quotient will be zero,
+    ///   and its flags `UNDEFINED` and `DIVIDED_BY_ZERO` will be set,
+    ///   and the remainder will be zero,
+    ///   and its flag `DIVIDED_BY_ZERO` will be set.
+    /// - If `rhs` is zero and 'self' is non-zero, the quotient will have
+    ///   the maximum value of `Self`, and its flags `INFINITY` and
+    ///   `DIVIDED_BY_ZERO` will be set,
+    ///   and the remainder` will be zero,
+    ///   and its flag `DIVIDED_BY_ZERO` will be set.
+    /// - In summary, the quotient, the remainder and their flags
+    ///   will be set as follows:
+    /// 
+    /// | `rhs` | `self` | `quotient` | flags of `quotient`            | `remainder` | flags of `remainder` |
+    /// |-------|--------|------------|--------------------------------|-------------|----------------------|
+    /// | 0     | 0      | 0          | `UNDEFINED`, `DIVIDED_BY_ZERO` | 0           | `DIVIDED_BY_ZERO`    |
+    /// | 0     | != 0   | max        | `INFINITY`, `DIVIDED_BY_ZERO`  | 0           | `DIVIDED_BY_ZERO`    |
+    /// 
+    /// - This function is the base function for all the methods
+    ///   panic_free_*_div(), panic_free_*_div_assign(),
+    ///   panic_free_*_rem(), and panic_free_*_rem_assign().
+    /// 
+    /// # Counterpart Method
+    /// The method
+    /// [panic_free_divide_fully_uint()](struct@BigUInt#method.panic_free_divide_fully_uint)
+    /// is a bit faster than this method `panic_free_divide_fully()`.
+    /// If `rhs` is primitive unsigned integral data type such as u8, u16,
+    /// u32, u64, and u128, use the method
+    /// [panic_free_divide_fully_uint()](struct@BigUInt#method.panic_free_divide_fully_uint).
+    /// 
+    /// # Example 1 for a normal case
+    /// ```
+    /// use std::str::FromStr;
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u16);
+    /// 
+    /// let dividend = UU32::from_str("123456789015758942546236989636279846864825945392").unwrap();
+    /// let divisor = 87_u8;
+    /// let (quotient, remainder) = dividend.panic_free_divide_fully_uint(divisor);
+    /// println!("{} / {} => quotient = {} , remainder = {}", dividend, divisor, quotient, remainder);
+    /// assert_eq!(quotient.to_string(), "1419043551905275201680884938348044216837079832");
+    /// assert_eq!(remainder.to_string(), "8");
+    /// assert_eq!(quotient.is_overflow(), false);
+    /// assert_eq!(quotient.is_underflow(), false);
+    /// assert_eq!(quotient.is_infinity(), false);
+    /// assert_eq!(quotient.is_undefined(), false);
+    /// assert_eq!(quotient.is_divided_by_zero(), false);
+    /// assert_eq!(remainder.is_overflow(), false);
+    /// assert_eq!(remainder.is_underflow(), false);
+    /// assert_eq!(remainder.is_infinity(), false);
+    /// assert_eq!(remainder.is_undefined(), false);
+    /// assert_eq!(remainder.is_divided_by_zero(), false);
+    /// ```
+    /// 
+    /// # Example 2 for a normal case
+    /// ```
+    /// use std::str::FromStr;
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u16);
+    /// 
+    /// let dividend = UU32::zero();
+    /// let divisor = 87_u8;
+    /// let (quotient, remainder) = dividend.panic_free_divide_fully_uint(divisor);
+    /// println!("{} / {} => quotient = {} , remainder = {}", dividend, divisor, quotient, remainder);
+    /// assert_eq!(quotient.to_string(), "0");
+    /// assert_eq!(remainder.to_string(), "0");
+    /// assert_eq!(quotient.is_overflow(), false);
+    /// assert_eq!(quotient.is_underflow(), false);
+    /// assert_eq!(quotient.is_infinity(), false);
+    /// assert_eq!(quotient.is_undefined(), false);
+    /// assert_eq!(quotient.is_divided_by_zero(), false);
+    /// assert_eq!(remainder.is_overflow(), false);
+    /// assert_eq!(remainder.is_underflow(), false);
+    /// assert_eq!(remainder.is_infinity(), false);
+    /// assert_eq!(remainder.is_undefined(), false);
+    /// assert_eq!(remainder.is_divided_by_zero(), false);
+    /// ```
+    /// 
+    /// # Example 3 for dividend != 0 and divisor == 0
+    /// ```
+    /// use std::str::FromStr;
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u16);
+    /// 
+    /// let dividend = UU32::from_str("123456789015758942546236989636279846864825945392").unwrap();
+    /// let divisor = 0_u8;
+    /// let (quotient, remainder) = dividend.panic_free_divide_fully_uint(divisor);
+    /// println!("{} / {} => quotient = {} , remainder = {}", dividend, divisor, quotient, remainder);
+    /// assert_eq!(quotient, UU32::max());
+    /// assert_eq!(remainder.to_string(), "0");
+    /// assert_eq!(quotient.is_overflow(), false);
+    /// assert_eq!(quotient.is_underflow(), false);
+    /// assert_eq!(quotient.is_infinity(), true);
+    /// assert_eq!(quotient.is_undefined(), false);
+    /// assert_eq!(quotient.is_divided_by_zero(), true);
+    /// assert_eq!(remainder.is_overflow(), false);
+    /// assert_eq!(remainder.is_underflow(), false);
+    /// assert_eq!(remainder.is_infinity(), false);
+    /// assert_eq!(remainder.is_undefined(), false);
+    /// assert_eq!(remainder.is_divided_by_zero(), true);
+    /// ```
+    /// 
+    /// # Example 4 for dividend == 0 and divisor == 0
+    /// ```
+    /// use std::str::FromStr;
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u16);
+    /// 
+    /// let dividend = UU32::zero();
+    /// let divisor = 0_u8;
+    /// let (quotient, remainder) = dividend.panic_free_divide_fully_uint(divisor);
+    /// println!("{} / {} => quotient = {} , remainder = {}", dividend, divisor, quotient, remainder);
+    /// assert_eq!(quotient.to_string(), "0");
+    /// assert_eq!(remainder.to_string(), "0");
+    /// assert_eq!(quotient.is_overflow(), false);
+    /// assert_eq!(quotient.is_underflow(), false);
+    /// assert_eq!(quotient.is_infinity(), false);
+    /// assert_eq!(quotient.is_undefined(), true);
+    /// assert_eq!(quotient.is_divided_by_zero(), true);
+    /// assert_eq!(remainder.is_overflow(), false);
+    /// assert_eq!(remainder.is_underflow(), false);
+    /// assert_eq!(remainder.is_infinity(), false);
+    /// assert_eq!(remainder.is_undefined(), false);
+    /// assert_eq!(remainder.is_divided_by_zero(), true);
+    /// ```
+    /// 
+    /// # Big-endian issue
+    /// It is just experimental for Big Endian CPUs. So, you are not encouraged
+    /// to use it for Big Endian CPUs for serious purpose. Only use this crate
+    /// for Big-endian CPUs with your own full responsibility.
+    pub fn panic_free_divide_fully(&self, rhs: &Self) -> (Self, Self)
+    {
+        if rhs.is_zero()
+        {
+            let mut q: Self;
+            let mut r = Self::zero();
+            r.set_all_flags(Self::DIVIDED_BY_ZERO);
+            if self.is_zero()
+            {
+                q = Self::zero();
+                q.set_all_flags(Self::UNDEFINED | Self::DIVIDED_BY_ZERO);
+            }
+            else
+            {
+                q = Self::max();
+                q.set_all_flags(Self::INFINITY | Self::DIVIDED_BY_ZERO);
+            }
+            return (q, r);
+        }
+        self.common_divide_fully(rhs)
+    }
+
+    // pub fn wrapping_div(&self, rhs: &Self) -> Self
+    /// Divides `self` by `rhs`, and returns the quotient.
+    /// 
+    /// # Arguments
+    /// `rhs` divides `self`, and is of `&Self` type.
+    /// 
+    /// # Panics
+    /// - If `size_of::<T>() * N` <= `128`, this method may panic
+    ///   or its behavior may be undefined though it may not panic.
+    /// - If `rhs` is zero, this method will panic.
+    ///
+    /// # Output
+    /// It returns a quotient of `BigUInt` type,
+    /// and the quotient would never overflow. 
+    /// 
+    /// # Features
+    /// - Wrapped division on `BigUInt` types is just normal division.
+    /// - There’s no way wrapping could ever happen unless `rhs` is zero.
+    /// - If `rhs` is zero, this method will panic.
+    /// - This function exists, so that all operations are accounted for
+    ///   in the wrapping operations.
     /// 
     /// # Counterpart Method
     /// The method
@@ -32668,9 +32944,57 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// u32, u64, and u128, use the method
     /// [wrapping_div_uint()](struct@BigUInt#method.wrapping_div_uint).
     /// 
-    /// # Example
+    /// # Example 1
     /// ```
-    /// // Todo
+    /// use std::str::FromStr;
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u32);
+    /// 
+    /// let dividend = U256::from_str("123456789015758942546236989636279846864825945392").unwrap();
+    /// let divisor = U256::from_uint(87_u8);
+    /// let quotient = dividend.wrapping_div(&divisor);
+    /// println!("{} / {} = {}", dividend, divisor, quotient);
+    /// assert_eq!(quotient.to_string(), "1419043551905275201680884938348044216837079832");
+    /// assert_eq!(quotient.is_overflow(), false);
+    /// assert_eq!(quotient.is_underflow(), false);
+    /// assert_eq!(quotient.is_infinity(), false);
+    /// assert_eq!(quotient.is_undefined(), false);
+    /// assert_eq!(quotient.is_divided_by_zero(), false);
+    /// ```
+    /// 
+    /// # Example 2
+    /// ```
+    /// use std::str::FromStr;
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u32);
+    /// 
+    /// let dividend = U256::zero();
+    /// let divisor = U256::from_uint(87_u8);
+    /// let quotient = dividend.wrapping_div(&divisor);
+    /// println!("{} / {} = {}", dividend, divisor, quotient);
+    /// assert_eq!(quotient.to_string(), "0");
+    /// assert_eq!(quotient.is_overflow(), false);
+    /// assert_eq!(quotient.is_underflow(), false);
+    /// assert_eq!(quotient.is_infinity(), false);
+    /// assert_eq!(quotient.is_undefined(), false);
+    /// assert_eq!(quotient.is_divided_by_zero(), false);
+    /// ```
+    /// 
+    /// # Panic Examples
+    /// ```
+    /// use std::str::FromStr;
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u32);
+    /// 
+    /// let _dividend = U256::from_str("123456789015758942546236989636279846864825945392").unwrap();
+    /// let _divisor = U256::zero();
+    /// // It will panic!
+    /// // let quotient = _dividend.wrapping_div(&_divisor);
+    /// 
+    /// let _dividend = U256::zero();
+    /// let _divisor = U256::zero();
+    /// // It will panic!
+    /// // let quotient = _dividend.wrapping_div(&_divisor);
     /// ```
     /// 
     /// # Big-endian issue
@@ -32684,19 +33008,27 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     }
 
     // pub fn wrapping_div_assign(&mut self, rhs: &Self)
-    /// Calculates the quotient when `self` is divided by `rhs`,
-    /// which is `self` / `rhs`, and assign the result to `self` back.
+    /// Divides `self` by `rhs`, and assigns the quotient to `self` back.
+    /// 
+    /// # Arguments
+    /// `rhs` divides `self`, and is of `&Self` type.
+    /// 
+    /// # Panics
+    /// - If `size_of::<T>() * N` <= `128`, this method may panic
+    ///   or its behavior may be undefined though it may not panic.
+    /// - If `rhs` is zero, this method will panic.
     /// 
     /// # Features
-    /// Wrapped division on `BigUInt` types is just normal division.
-    /// There’s no way wrapping could ever happen. This function exists,
-    /// so that all operations are accounted for in the wrapping operations.
-    /// 
-    /// If `rhs` is zero, the `self` will have maximum value of `BigUInt`
-    /// type, and the flags of `self` such as `OVERFLOW`, `INFINITY`, and
-    /// `DIVIDED_BY_ZERO` will be set. __It does not panic__ while the same
-    /// kind methods `wrapping_div()` for primitive integer data type such
-    /// as u8, u16, u32, u64, etc. will panic if `rhs` is zero.
+    /// - Wrapped division on `BigUInt` types is just normal division.
+    /// - There’s no way wrapping could ever happen unless `rhs` is zero.
+    /// - If `rhs` is zero, this method will panic.
+    /// - This function exists, so that all operations are accounted for
+    ///   in the wrapping operations.
+    /// - All the flags are historical, which means, for example, if an
+    ///   divided_by_zero occurred even once before this current operation or
+    ///   `DIVIDED_BY_ZERO` flag is already set before this current operation,
+    ///   the `DIVIDED_BY_ZERO` flag is not changed even if this current operation
+    ///   does not cause divided_by_zero.
     /// 
     /// # Counterpart Method
     /// The method
@@ -32706,9 +33038,73 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// u32, u64, and u128, use the method
     /// [wrapping_div_assign_uint()](struct@BigUInt#method.wrapping_div_assign_uint).
     /// 
-    /// # Example
+    /// # Example 1
     /// ```
-    /// // Todo
+    /// use std::str::FromStr;
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u64);
+    /// 
+    /// let mut a_biguint = UU32::from_str("123456789015758942546236989636279846864825945392").unwrap();
+    /// let divisor = UU32::from_uint(87_u8);
+    /// println!("Originally, a_biguint = {}", a_biguint);
+    /// assert_eq!(a_biguint.is_overflow(), false);
+    /// assert_eq!(a_biguint.is_underflow(), false);
+    /// assert_eq!(a_biguint.is_infinity(), false);
+    /// assert_eq!(a_biguint.is_undefined(), false);
+    /// assert_eq!(a_biguint.is_divided_by_zero(), false);
+    /// 
+    /// a_biguint.wrapping_div_assign(&divisor);
+    /// println!("After a_biguint.wrapping_div_assign(&divisor),\na_biguint = {}", a_biguint);
+    /// assert_eq!(a_biguint.to_string(), "1419043551905275201680884938348044216837079832");
+    /// assert_eq!(a_biguint.is_overflow(), false);
+    /// assert_eq!(a_biguint.is_underflow(), false);
+    /// assert_eq!(a_biguint.is_infinity(), false);
+    /// assert_eq!(a_biguint.is_undefined(), false);
+    /// assert_eq!(a_biguint.is_divided_by_zero(), false);
+    /// ```
+    /// 
+    /// # Example 2
+    /// ```
+    /// use std::str::FromStr;
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u64);
+    /// 
+    /// let mut a_biguint = UU32::zero();
+    /// let divisor = UU32::from_uint(87_u8);
+    /// println!("Originally, a_biguint = {}", a_biguint);
+    /// assert_eq!(a_biguint.is_overflow(), false);
+    /// assert_eq!(a_biguint.is_underflow(), false);
+    /// assert_eq!(a_biguint.is_infinity(), false);
+    /// assert_eq!(a_biguint.is_undefined(), false);
+    /// assert_eq!(a_biguint.is_divided_by_zero(), false);
+    /// 
+    /// a_biguint.wrapping_div_assign(&divisor);
+    /// println!("After a_biguint.wrapping_div_assign(&divisor),\na_biguint = {}", a_biguint);
+    /// assert_eq!(a_biguint.to_string(), "0");
+    /// assert_eq!(a_biguint.is_overflow(), false);
+    /// assert_eq!(a_biguint.is_underflow(), false);
+    /// assert_eq!(a_biguint.is_infinity(), false);
+    /// assert_eq!(a_biguint.is_undefined(), false);
+    /// assert_eq!(a_biguint.is_divided_by_zero(), false);
+    /// ```
+    /// 
+    /// # Panic Examples
+    /// ```
+    /// use std::str::FromStr;
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u64);
+    /// 
+    /// let mut _a_biguint = UU32::from_str("123456789015758942546236989636279846864825945392").unwrap();
+    /// let _divisor = UU32::zero();
+    /// println!("Originally,\n_a_biguint = {}", _a_biguint);
+    /// // It will panic!
+    /// // _a_biguint.wrapping_div_assign(&_divisor);
+    /// 
+    /// let mut _a_biguint = UU32::zero();
+    /// let _divisor = UU32::zero();
+    /// println!("Originally,\n_a_biguint = {}", _a_biguint);
+    /// // It will panic!
+    /// // _a_biguint.wrapping_div_assign(&_divisor);
     /// ```
     /// 
     /// # Big-endian issue
@@ -32721,33 +33117,395 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
         *self = quotient;
     }
 
-    // pub fn checked_div(&self, rhs: &Self) -> Option<Self>
-    /// Calculates the quotient when `self` is divided by `rhs`,
-    /// which is `self` / `rhs`.
+    // pub fn overflowing_div(&self, rhs: &Self) -> (Self, bool)
+    /// Divides `self` by `rhs`,
+    /// and returns a tuple of the quotient of `self` / `rhs` along with
+    /// a boolean indicating whether an arithmetic overflow would occur.
+    /// 
+    /// # Arguments
+    /// `rhs` divides `self`, and is of `&Self` type.
+    /// 
+    /// # Panics
+    /// - If `size_of::<T>() * N` <= `128`, this method may panic
+    ///   or its behavior may be undefined though it may not panic.
+    /// - If `rhs` is zero, this method will panic.
     /// 
     /// # Output
-    /// It returns `None` if `rhs` is zero. Otherwise, it returns the quotient
-    /// of when `self` is divided by `rhs`, which is `self` / `rhs`,
-    /// wrapped by `Some` of enum `Option`.
+    /// It returns a tuple of the quotient of `BigUInt` type as a result of
+    /// `self` / `rhs` along with a boolean indicating whether an arithmetic
+    /// overflow would occur. But the quotient would never overflow.
+    /// So, the second element of the output tuple is always `false`.
     /// 
     /// # Features
-    /// Wrapped division on `BigUInt` types is just normal division.
-    /// There’s no way wrapping could ever happen.
-    /// 
-    /// If `rhs` is zero, the quotient will have maximum value of `BigUInt`
-    /// type, and the flags of quotient such as `OVERFLOW`, `INFINITY`, and
-    /// `DIVIDED_BY_ZERO` will be set.
+    /// - Wrapped division on `BigUInt` types is just normal division.
+    /// - The quotient would never overflow.
+    /// - The second element of the output tuple reflects only
+    ///   the current overflow.
     /// 
     /// # Counterpart Method
-    /// The method [checked_div_uint()](struct@BigUInt#method.checked_div_uint)
+    /// The method
+    /// [overflowing_div_uint()](struct@BigUInt#method.overflowing_div_uint)
+    /// is a bit faster than this method `overflowing_div()`.
+    /// So, if `rhs` is primitive unsigned integral data type such as u8, u16,
+    /// u32, u64, and u128, use the method
+    /// [overflowing_div_uint()](struct@BigUInt#method.overflowing_div_uint).
+    /// 
+    /// # Example 1
+    /// ```
+    /// use std::str::FromStr;
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u128);
+    /// 
+    /// let dividend = U256::from_str("123456789015758942546236989636279846864825945392").unwrap();
+    /// let divisor = U256::from_uint(87_u8);
+    /// let (quotient, overflow) = dividend.overflowing_div(&divisor);
+    /// println!("{} / {} = {}", dividend, divisor, quotient);
+    /// assert_eq!(quotient.to_string(), "1419043551905275201680884938348044216837079832");
+    /// assert_eq!(overflow, false);
+    /// assert_eq!(quotient.is_overflow(), false);
+    /// assert_eq!(quotient.is_underflow(), false);
+    /// assert_eq!(quotient.is_infinity(), false);
+    /// assert_eq!(quotient.is_undefined(), false);
+    /// assert_eq!(quotient.is_divided_by_zero(), false);
+    /// ```
+    /// 
+    /// # Example 2
+    /// ```
+    /// use std::str::FromStr;
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u128);
+    /// 
+    /// let dividend = U256::zero();
+    /// let divisor = U256::from_uint(87_u8);
+    /// let (quotient, overflow) = dividend.overflowing_div(&divisor);
+    /// println!("{} / {} = {}", dividend, divisor, quotient);
+    /// assert_eq!(quotient.to_string(), "0");
+    /// assert_eq!(overflow, false);
+    /// assert_eq!(quotient.is_overflow(), false);
+    /// assert_eq!(quotient.is_underflow(), false);
+    /// assert_eq!(quotient.is_infinity(), false);
+    /// assert_eq!(quotient.is_undefined(), false);
+    /// assert_eq!(quotient.is_divided_by_zero(), false);
+    /// ```
+    /// 
+    /// # Panic Examples
+    /// ```
+    /// use std::str::FromStr;
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u128);
+    /// 
+    /// let _dividend = U256::from_str("123456789015758942546236989636279846864825945392").unwrap();
+    /// let _divisor = U256::zero();
+    /// // It will panic!
+    /// // let (quotient, overflow) = _dividend.overflowing_div(&_divisor);
+    /// 
+    /// let _dividend = U256::zero();
+    /// let _divisor = U256::zero();
+    /// // It will panic!
+    /// // let (quotient, overflow) = _dividend.overflowing_div(&_divisor);
+    /// ```
+    /// 
+    /// # Big-endian issue
+    /// It is just experimental for Big Endian CPUs. So, you are not encouraged
+    /// to use it for Big Endian CPUs for serious purpose. Only use this crate
+    /// for Big-endian CPUs with your own full responsibility.
+    pub fn overflowing_div(&self, rhs: &Self) -> (Self, bool)
+    {
+        let mut res = Self::from_array(self.get_number().clone());
+        let overflow = res.overflowing_div_assign(rhs);
+        (res, overflow)
+    }
+
+    // pub fn overflowing_div_assign(&mut self, rhs: &Self) -> bool
+    /// Divides `self` by `rhs`,
+    /// and assigns the quotient of `self` / `rhs` to `self` back,
+    /// and returns a boolean indicating whether an arithmetic overflow
+    /// would occur.
+    /// 
+    /// # Arguments
+    /// `rhs` divides `self`, and is of `&Self` type.
+    /// 
+    /// # Panics
+    /// - If `size_of::<T>() * N` <= `128`, this method may panic
+    ///   or its behavior may be undefined though it may not panic.
+    /// - If `rhs` is zero, this method will panic.
+    /// 
+    /// # Output
+    /// It returns true if an arithmetic overflow would occur.
+    /// But the quotient would never overflow.
+    /// So, it always returns `false`.
+    /// 
+    /// # Features
+    /// - Wrapped division on `BigUInt` types is just normal division.
+    /// - The quotient would never overflow.
+    /// - The output will be `false` even if the `OVERFLOW` flag of `self`
+    ///   was already set because of previous operation of `self`.
+    /// - The output reflects only the current overflow.
+    /// - All the flags are historical, which means, for example, if an overflow
+    ///   occurred even once before this current operation or `OVERFLOW`
+    ///   flag is already set before this current operation, the `OVERFLOW` flag
+    ///   is not changed even if this current operation does not cause overflow.
+    /// 
+    /// # Counterpart Method
+    /// The method
+    /// [overflowing_div_assign_uint()](struct@BigUInt#method.overflowing_div_assign_uint)
+    /// is a bit faster than this method `overflowing_div_assign_uint()`.
+    /// So, if `rhs` is primitive unsigned integral data type such as u8, u16,
+    /// u32, u64, and u128, use the method
+    /// [overflowing_div_assign_uint()](struct@BigUInt#method.overflowing_div_assign_uint).
+    /// 
+    /// # Example 1
+    /// ```
+    /// use std::str::FromStr;
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u8);
+    /// 
+    /// let mut a_biguint = UU32::from_str("123456789015758942546236989636279846864825945392").unwrap();
+    /// let divisor = UU32::from_uint(87_u8);
+    /// println!("Originally, a_biguint = {}", a_biguint);
+    /// assert_eq!(a_biguint.is_overflow(), false);
+    /// assert_eq!(a_biguint.is_underflow(), false);
+    /// assert_eq!(a_biguint.is_infinity(), false);
+    /// assert_eq!(a_biguint.is_undefined(), false);
+    /// assert_eq!(a_biguint.is_divided_by_zero(), false);
+    /// 
+    /// let overflow = a_biguint.overflowing_div_assign(&divisor);
+    /// println!("After a_biguint.overflowing_div_assign({}), a_biguint = {}", divisor, a_biguint);
+    /// assert_eq!(a_biguint.to_string(), "1419043551905275201680884938348044216837079832");
+    /// assert_eq!(overflow, false);
+    /// assert_eq!(a_biguint.is_overflow(), false);
+    /// assert_eq!(a_biguint.is_underflow(), false);
+    /// assert_eq!(a_biguint.is_infinity(), false);
+    /// assert_eq!(a_biguint.is_undefined(), false);
+    /// assert_eq!(a_biguint.is_divided_by_zero(), false);
+    /// ```
+    /// 
+    /// # Example 2
+    /// ```
+    /// use std::str::FromStr;
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u8);
+    /// 
+    /// let mut a_biguint = UU32::zero();
+    /// let divisor = UU32::from_uint(87_u8);
+    /// println!("Originally, a_biguint = {}", a_biguint);
+    /// assert_eq!(a_biguint.is_overflow(), false);
+    /// assert_eq!(a_biguint.is_underflow(), false);
+    /// assert_eq!(a_biguint.is_infinity(), false);
+    /// assert_eq!(a_biguint.is_undefined(), false);
+    /// assert_eq!(a_biguint.is_divided_by_zero(), false);
+    /// 
+    /// let overflow = a_biguint.overflowing_div_assign(&divisor);
+    /// println!("After a_biguint.overflowing_div_assign({}), a_biguint = {}", divisor, a_biguint);
+    /// assert_eq!(a_biguint.to_string(), "0");
+    /// assert_eq!(overflow, false);
+    /// assert_eq!(a_biguint.is_overflow(), false);
+    /// assert_eq!(a_biguint.is_underflow(), false);
+    /// assert_eq!(a_biguint.is_infinity(), false);
+    /// assert_eq!(a_biguint.is_undefined(), false);
+    /// assert_eq!(a_biguint.is_divided_by_zero(), false);
+    /// ```
+    /// 
+    /// # Panic Examples
+    /// ```
+    /// use std::str::FromStr;
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u8);
+    /// 
+    /// let mut _a_biguint = UU32::from_str("123456789015758942546236989636279846864825945392").unwrap();
+    /// let _divisor = UU32::zero();
+    /// // It will panic!
+    /// // let overflow = _a_biguint.overflowing_div_assign(&_divisor);
+    /// 
+    /// let mut _a_biguint = UU32::zero();
+    /// let _divisor = UU32::zero();
+    /// // It will panic!
+    /// // let overflow = _a_biguint.overflowing_div_assign(&_divisor);
+    /// ```
+    /// 
+    /// # Big-endian issue
+    /// It is just experimental for Big Endian CPUs. So, you are not encouraged
+    /// to use it for Big Endian CPUs for serious purpose. Only use this crate
+    /// for Big-endian CPUs with your own full responsibility.
+    pub fn overflowing_div_assign(&mut self, rhs: &Self) -> bool
+    {
+        let old_overflow = self.is_overflow();
+        self.reset_overflow();
+        self.wrapping_div_assign(rhs);
+        let current_overflow = self.is_overflow();
+        if old_overflow || current_overflow
+            { self.set_overflow(); }
+        current_overflow
+    }
+
+    //===================
+    // pub fn checked_div(&self, rhs: &Self) -> Option<Self>
+    /// Divides `self` by `rhs`,
+    /// and returns the quotient wrapped by `Some` of enum `Option`.
+    /// 
+    /// # Arguments
+    /// `rhs` divides `self`, and is of `&Self` type.
+    /// 
+    /// # Panics
+    /// If `size_of::<T>() * N` <= `128`, this method may panic
+    /// or its behavior may be undefined though it may not panic.
+    /// 
+    /// # Output
+    /// It returns a quotient of `BigUInt` type wrapped by `Some` of
+    /// enum `Option` if overflow did not occur at current operation.
+    /// Otherwise, it returns `None` of enum `Option`.
+    /// 
+    /// # Features
+    /// - This division on `BigUInt` types is just normal division.
+    /// - There’s no way wrapping could ever happen unless `rhs` is zero.
+    /// - If `rhs` is zero, it returns `None` of enum `Option`.
+    /// 
+    /// # Counterpart Method
+    /// The method
+    /// [checked_div_uint()](struct@BigUInt#method.checked_div_uint)
     /// is a bit faster than this method `checked_div()`.
-    /// If `rhs` is primitive unsigned integral data type such as u8, u16,
+    /// So, if `rhs` is primitive unsigned integral data type such as u8, u16,
     /// u32, u64, and u128, use the method
     /// [checked_div_uint()](struct@BigUInt#method.checked_div_uint).
     /// 
-    /// # Example
+    /// # Example 1
     /// ```
-    /// // Todo
+    /// use std::str::FromStr;
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u16);
+    /// 
+    /// let dividend = U256::from_str("123456789015758942546236989636279846864825945392").unwrap();
+    /// let divisor = U256::from_uint(87_u8);
+    /// let quotient = dividend.checked_div(&divisor);
+    /// match quotient
+    /// {
+    ///     Some(q) =>
+    ///         {
+    ///             println!("{} / {} = {}", dividend, divisor, q);
+    ///             assert_eq!(q.to_string(), "1419043551905275201680884938348044216837079832");
+    ///             assert_eq!(q.is_overflow(), false);
+    ///             assert_eq!(q.is_underflow(), false);
+    ///             assert_eq!(q.is_infinity(), false);
+    ///             assert_eq!(q.is_undefined(), false);
+    ///             assert_eq!(q.is_divided_by_zero(), false);
+    ///         },
+    ///     None => { println!("Divided By Zero"); },
+    /// }
+    /// ```
+    /// 
+    /// # Example 2
+    /// ```
+    /// use std::str::FromStr;
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u16);
+    ///
+    /// let dividend = U256::zero();
+    /// let divisor = U256::from_uint(87_u8);
+    /// let quotient = dividend.checked_div(&divisor);
+    /// match quotient
+    /// {
+    ///     Some(q) =>
+    ///         {
+    ///             println!("{} / {} = {}", dividend, divisor, q);
+    ///             assert_eq!(q.to_string(), "0");
+    ///             assert_eq!(q.is_overflow(), false);
+    ///             assert_eq!(q.is_underflow(), false);
+    ///             assert_eq!(q.is_infinity(), false);
+    ///             assert_eq!(q.is_undefined(), false);
+    ///             assert_eq!(q.is_divided_by_zero(), false);
+    ///         },
+    ///     None => { println!("Divided By Zero"); },
+    /// }
+    /// ```
+    /// 
+    /// # Example 3
+    /// ```
+    /// use std::str::FromStr;
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u16);
+    /// 
+    /// let dividend = U256::from_str("123456789015758942546236989636279846864825945392").unwrap();
+    /// let divisor = U256::zero();
+    /// let quotient = dividend.checked_div(&divisor);
+    /// match quotient
+    /// {
+    ///     Some(q) => { println!("{} / {} = {}", dividend, divisor, q); },
+    ///     None =>
+    ///         {
+    ///             println!("Divided By Zero");
+    ///             assert_eq!(quotient, None);
+    ///         },
+    /// }
+    /// ```
+    /// 
+    /// # Example 4
+    /// ```
+    /// use std::str::FromStr;
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u16);
+    /// 
+    /// let dividend = U256::from_str("123456789015758942546236989636279846864825945392").unwrap();
+    /// let divisor = U256::zero();
+    /// let quotient = dividend.checked_div(&divisor);
+    /// match quotient
+    /// {
+    ///     Some(q) =>
+    ///         {
+    ///             println!("{} / {} = {}", dividend, divisor, q);
+    ///             assert_eq!(q, U256::max());
+    ///             assert_eq!(q.is_overflow(), true);
+    ///             assert_eq!(q.is_underflow(), false);
+    ///             assert_eq!(q.is_infinity(), true);
+    ///             assert_eq!(q.is_undefined(), false);
+    ///             assert_eq!(q.is_divided_by_zero(), true);
+    ///         },
+    ///     None => { println!("Divided By Zero"); },
+    /// }
+    /// ```
+    /// 
+    /// # Example 5
+    /// ```
+    /// use std::str::FromStr;
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u16);
+    /// 
+    /// let dividend = U256::zero();
+    /// let divisor = U256::zero();
+    /// let quotient = dividend.checked_div(&divisor);
+    /// match quotient
+    /// {
+    ///     Some(q) => { println!("{} / {} = {}", dividend, divisor, q); },
+    ///     None =>
+    ///         {
+    ///             println!("Divided By Zero");
+    ///             assert_eq!(quotient, None);
+    ///         },
+    /// }
+    /// ```
+    /// 
+    /// # Example 6
+    /// ```
+    /// use std::str::FromStr;
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u16);
+    /// 
+    /// let dividend = U256::zero();
+    /// let divisor = U256::zero();
+    /// let quotient = dividend.checked_div(&divisor);
+    /// match quotient
+    /// {
+    ///     Some(q) =>
+    ///         {
+    ///             println!("{} / {} = {}", dividend, divisor, q);
+    ///             assert_eq!(q.to_string(), "0");
+    ///             assert_eq!(q.is_overflow(), true);
+    ///             assert_eq!(q.is_underflow(), false);
+    ///             assert_eq!(q.is_infinity(), true);
+    ///             assert_eq!(q.is_undefined(), true);
+    ///             assert_eq!(q.is_divided_by_zero(), true);
+    ///         },
+    ///     None => { println!("Divided By Zero"); },
+    /// }
     /// ```
     /// 
     /// # Big-endian issue
@@ -32756,31 +33514,29 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// for Big-endian CPUs with your own full responsibility.
     pub fn checked_div(&self, rhs: &Self) -> Option<Self>
     {
-        let res = self.wrapping_div(rhs);
-        if res.is_divided_by_zero()
+        if rhs.is_zero()
             { None }
         else
-            { Some(res) }
+            { Some(self.wrapping_div(rhs)) }
     }
 
     // pub fn unchecked_div(&self, rhs: &Self) -> Self
-    /// Calculates the quotient when `self` is divided by `rhs`,
-    /// which is `self` / `rhs`, assuming that `rhs` cannot be zero.
-    ///
+    /// Divides `self` by `rhs`, and returns the quotient.
+    /// 
+    /// # Arguments
+    /// `rhs` divides `self`, and is of `&Self` type.
+    /// 
     /// # Panics
     /// - If `size_of::<T>() * N` <= `128`, this method may panic
-    /// or its behavior may be undefined though it may not panic.
-    /// - If `rhs` is zero, it will panic. So, use this method
-    /// only when you are sure that `rhs` is not zero. 
-    /// 
+    ///   or its behavior may be undefined though it may not panic.
+    /// - If `rhs` is zero, this method will panic.
+    ///
     /// # Output
-    /// It returns the quotient of when `self` is divided by `rhs`,
-    /// which is `self` / `rhs` if `rhs` is not zero.
-    /// Otherwise, it will panic.
+    /// It returns a quotient of `BigUInt` type. 
     /// 
     /// # Features
-    /// Wrapped division on `BigUInt` types is just normal division.
-    /// There’s no way wrapping could ever happen.
+    /// - Wrapped division on `BigUInt` types is just normal division.
+    /// - If `rhs` is zero, this method will panic.
     /// 
     /// # Counterpart Method
     /// The method
@@ -32806,29 +33562,31 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     }
 
     // pub fn saturating_div(&self, rhs: &Self) -> Self
-    /// Calculates the quotient when `self` is divided by `rhs`,
-    /// which is `self` / `rhs`, saturating at the numeric bounds
-    /// instead of overflowing.
+    /// Divides `self` by `rhs`,
+    /// saturating at the numeric bounds instead of overflowing,
+    /// and returns the quotient of `self` / `rhs`.
+    /// 
+    /// # Arguments
+    /// `rhs` divides `self`, and is of `&Self` type.
+    /// 
+    /// # Panics
+    /// - If `size_of::<T>() * N` <= `128`, this method may panic
+    ///   or its behavior may be undefined though it may not panic.
+    /// - If `rhs` is zero, this method will panic.
     /// 
     /// # Output
-    /// It returns the quotient of when `self` is divided by `rhs`,
-    /// which is `self` / `rhs` if `rhs` is not zero.
-    /// Otherwise, it returns the maximum value.
+    /// It returns the quotient of `BigUInt` type as a result of
+    /// `self` / `rhs`.
     /// 
     /// # Features
-    /// Overflow will not happen unless `rhs` is zero. __It does not panic__
-    /// while the same named methods `saturating_div()` for primitive integer
-    /// data type such as u8, u16, u32, u64, etc. will panic if `rhs` is zero.
-    /// 
-    /// If `rhs` is zero, the quotient will have maximum value of `BigUInt`
-    /// type, and the flags of quotient such as `OVERFLOW` and `DIVIDED_BY_ZERO`
-    /// will be set.
+    /// - The quotient would never overflow so that it can not saturate.
+    /// - It does not set `OVERFLOW` flag of the return value.
     /// 
     /// # Counterpart Method
     /// The method
     /// [saturating_div_uint()](struct@BigUInt#method.saturating_div_uint)
     /// is a bit faster than this method `saturating_div()`.
-    /// If `rhs` is primitive unsigned integral data type such as u8, u16,
+    /// So, if `rhs` is primitive unsigned integral data type such as u8, u16,
     /// u32, u64, and u128, use the method
     /// [saturating_div_uint()](struct@BigUInt#method.saturating_div_uint).
     /// 
@@ -32847,25 +33605,32 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
         quotient
     }
 
-    // pub fn saturating_div(&self, rhs: &Self) -> Self
-    /// Calculates the quotient when `self` is divided by `rhs`,
-    /// which is `self` / `rhs`, saturating at the numeric bounds
-    /// instead of overflowing, and assigns the quotient to `self`.
+    // pub fn saturating_div_assign(&mut self, rhs: &Self)
+    /// Divides `self` by `rhs`,
+    /// saturating at the numeric bounds instead of overflowing,
+    /// and assigns the quotient of `self` / `rhs` to `self` back.
+    /// 
+    /// # Arguments
+    /// `rhs` divides `self`, and is of `&Self` type.
+    /// 
+    /// # Panics
+    /// - If `size_of::<T>() * N` <= `128`, this method may panic
+    ///   or its behavior may be undefined though it may not panic.
+    /// - If `rhs` is zero, this method will panic.
     /// 
     /// # Features
-    /// Overflow will not happen unless `rhs` is zero. __It does not panic__
-    /// while the similar methods `saturating_div()` for primitive integer
-    /// data type such as u8, u16, u32, u64, etc. will panic if `rhs` is zero.
-    /// 
-    /// If `rhs` is zero, `self` will have maximum value of `BigUInt`
-    /// type, and the flags of `self` such as `OVERFLOW` and `DIVIDED_BY_ZERO`
-    /// will be set.
+    /// - The quotient would never overflow so that it can not saturate.
+    /// - It does not set `OVERFLOW` flag of the return value.
+    /// - All the flags are historical, which means, for example, if an overflow
+    ///   occurred even once before this current operation or `OVERFLOW`
+    ///   flag is already set before this current operation, the `OVERFLOW` flag
+    ///   is not changed even if this current operation does not cause overflow.
     /// 
     /// # Counterpart Method
     /// The method
     /// [saturating_div_assign_uint()](struct@BigUInt#method.saturating_div_assign_uint)
     /// is a bit faster than this method `saturating_div_assign()`.
-    /// If `rhs` is primitive unsigned integral data type such as u8, u16,
+    /// So, if `rhs` is primitive unsigned integral data type such as u8, u16,
     /// u32, u64, and u128, use the method
     /// [saturating_div_assign_uint()](struct@BigUInt#method.saturating_div_assign_uint).
     /// 
@@ -32880,38 +33645,317 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// for Big-endian CPUs with your own full responsibility.
     pub fn saturating_div_assign(&mut self, rhs: &Self)
     {
-        let old_overflow = self.is_overflow();
-        *self = self.saturating_div(rhs);
-        if old_overflow
-            { self.set_overflow(); }
+        let flags = self.get_all_flags();
+        let res = self.saturating_div(rhs);
+        self.set_number(res.get_number());
+        self.set_all_flags(flags);
     }
 
-    // pub fn modular_div(&self, rhs: &Self, modulo: &Self) -> Self
-    /// Calculates the quotient when `self` % `modulo` is divided by
-    /// `rhs` % `modulo`.
+    // pub fn panic_free_div(&self, rhs: &Self) -> Self
+    /// Divides `self` by `rhs`, and returns the quotient.
+    /// 
+    /// # Arguments
+    /// `rhs` divides `self`, and is of `&Self` type.
+    /// 
+    /// # Panics
+    /// If `size_of::<T>() * N` <= `128`, this method may panic
+    /// or its behavior may be undefined though it may not panic.
     ///
+    /// # Output
+    /// It returns a quotient of `BigUInt` type,
+    /// and the quotient would never overflow. 
+    /// 
+    /// # Features
+    /// - Wrapped division on `BigUInt` types is just normal division.
+    /// - There’s no way wrapping could ever happen unless `rhs` is zero.
+    /// - __It does not panic__ while the counterpart method
+    ///   `wrapping_div()` will panic if `rhs` is zero.
+    /// - If `rhs` is zero and `self` is not zero, the quotient will have
+    ///   maximum value of `BigUInt` and the flags of the quotient,
+    ///   `INFINITY` and `DIVIDED_BY_ZERO` will be set.
+    /// - If `rhs` is zero and `self` is zero, the quotient will have
+    ///   value `zero` of `BigUInt` type and the flags of the quotient,
+    ///   `DIVIDED_BY_ZERO` and `UNDEFINED` will be set.
+    /// - In summary, the quotient and its flags will be set as follows:
+    /// 
+    /// | `rhs` | `self` | `quotient` | flags of `quotient`            |
+    /// |-------|--------|------------|--------------------------------|
+    /// | 0     | 0      | 0          | `UNDEFINED`, `DIVIDED_BY_ZERO` |
+    /// | 0     | != 0   | max        | `INFINITY`, `DIVIDED_BY_ZERO`  |
+    /// 
+    /// # Counterpart Method
+    /// The method
+    /// [panic_free_div_uint()](struct@BigUInt#method.panic_free_div_uint)
+    /// is a bit faster than this method `panic_free_div()`.
+    /// If `rhs` is primitive unsigned integral data type such as u8, u16,
+    /// u32, u64, and u128, use the method
+    /// [panic_free_div_uint()](struct@BigUInt#method.panic_free_div_uint).
+    /// 
+    /// # Example 1 for a normal case
+    /// ```
+    /// use std::str::FromStr;
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u8);
+    /// 
+    /// let dividend = U256::from_str("123456789015758942546236989636279846864825945392").unwrap();
+    /// let divisor = 87_u8;
+    /// let quotient = dividend.panic_free_div_uint(divisor);
+    /// println!("{} / {} = {}", dividend, divisor, quotient);
+    /// assert_eq!(quotient.to_string(), "1419043551905275201680884938348044216837079832");
+    /// assert_eq!(quotient.is_overflow(), false);
+    /// assert_eq!(quotient.is_underflow(), false);
+    /// assert_eq!(quotient.is_infinity(), false);
+    /// assert_eq!(quotient.is_divided_by_zero(), false);
+    /// assert_eq!(quotient.is_undefined(), false);
+    /// ```
+    /// 
+    /// # Example 2 for a normal case
+    /// ```
+    /// use std::str::FromStr;
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u8);
+    /// 
+    /// let dividend = U256::zero();
+    /// let divisor = 87_u8;
+    /// let quotient = dividend.panic_free_div_uint(divisor);
+    /// println!("{} / {} = {}", dividend, divisor, quotient);
+    /// assert_eq!(quotient.to_string(), "0");
+    /// assert_eq!(quotient.is_overflow(), false);
+    /// assert_eq!(quotient.is_underflow(), false);
+    /// assert_eq!(quotient.is_infinity(), false);
+    /// assert_eq!(quotient.is_divided_by_zero(), false);
+    /// assert_eq!(quotient.is_undefined(), false);
+    /// ```
+    /// 
+    /// # Example 3 for dividend != 0 and divisor = 0
+    /// ```
+    /// use std::str::FromStr;
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u8);
+    /// 
+    /// let dividend = U256::from_str("123456789015758942546236989636279846864825945392").unwrap();
+    /// let divisor = 0_u8;
+    /// let quotient = dividend.panic_free_div_uint(divisor);
+    /// println!("{} / {} = {}", dividend, divisor, quotient);
+    /// assert_eq!(quotient, U256::max());
+    /// assert_eq!(quotient.is_overflow(), false);
+    /// assert_eq!(quotient.is_underflow(), false);
+    /// assert_eq!(quotient.is_infinity(), true);
+    /// assert_eq!(quotient.is_undefined(), false);
+    /// assert_eq!(quotient.is_divided_by_zero(), true);
+    /// ```
+    /// 
+    /// # Example 4 for dividend == 0 and divisor = 0
+    /// ```
+    /// use std::str::FromStr;
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u8);
+    /// 
+    /// let dividend = U256::zero();
+    /// let divisor = 0_u8;
+    /// let quotient = dividend.panic_free_div_uint(divisor);
+    /// println!("{} / {} = {}", dividend, divisor, quotient);
+    /// assert_eq!(quotient.to_string(), "0");
+    /// assert_eq!(quotient.is_overflow(), false);
+    /// assert_eq!(quotient.is_underflow(), false);
+    /// assert_eq!(quotient.is_infinity(), false);
+    /// assert_eq!(quotient.is_undefined(), true);
+    /// assert_eq!(quotient.is_divided_by_zero(), true);
+    /// ```
+    /// 
+    /// # Big-endian issue
+    /// It is just experimental for Big Endian CPUs. So, you are not encouraged
+    /// to use it for Big Endian CPUs for serious purpose. Only use this crate
+    /// for Big-endian CPUs with your own full responsibility.
+    pub fn panic_free_div(&self, rhs: &Self) -> Self
+    {
+        let (quotient, _) = self.panic_free_divide_fully(rhs);
+        quotient
+    }
+
+    // pub fn panic_free_div_assign(&mut self, rhs: &Self)
+    /// Divides `self` by `rhs`, and assigns the quotient to `self` back.
+    /// 
+    /// # Arguments
+    /// `rhs` divides `self`, and is of `&Self` type.
+    /// 
     /// # Panics
     /// If `size_of::<T>() * N` <= `128`, this method may panic
     /// or its behavior may be undefined though it may not panic.
     /// 
-    /// # Output
-    /// It returns the quotient of when `self` % `modulo` is divided by
-    /// `rhs` % `modulo` if `rhs` % `modulo` is not zero.
-    /// If `rhs` % `modulo` is zero, it returns the maximum value.
-    /// 
     /// # Features
-    /// - Overflow will not happen unless `rhs` % `modulo` is zero.
-    /// - __It does not panic__ even if `rhs` % `modulo` is `zero`
-    /// - If `rhs` % `modulo` is zero, the quotient will have maximum value
-    /// of `BigUInt` type, and the flags of quotient such as `OVERFLOW`,
-    /// `INFINITY`, and `DIVIDED_BY_ZERO` will be set.
-    /// - If `modulo` is `zero`, the remainder will be `zero` and its
-    /// flags such as `OVERFLOW`, `DIVIDED_BY_ZERO`, and `INFINITY` will be set.
+    /// - Wrapped division on `BigUInt` types is just normal division.
+    /// - There’s no way wrapping could ever happen unless `rhs` is zero.
+    /// - __It does not panic__ while the counterpart method
+    ///   `wrapping_div_uint()` will panic if `rhs` is zero.
+    /// - If `rhs` is zero and `self` is not zero, the quotient will have
+    ///   maximum value of `BigUInt` and the flags of `self`,
+    ///   `INFINITY` and `DIVIDED_BY_ZERO` will be set.
+    /// - If `rhs` is zero and `self` is zero, the quotient will have
+    ///   value `zero` of `BigUInt` type and the flags of `self`,
+    ///   `DIVIDED_BY_ZERO` and `UNDEFINED` will be set.
+    /// - In summary, the quotient and its flags will be set as follows:
+    /// 
+    /// | `rhs` | `self` | `quotient` (= `self`) | flags of `quotient`            |
+    /// |-------|--------|-----------------------|--------------------------------|
+    /// | 0     | 0      | 0                     | `UNDEFINED`, `DIVIDED_BY_ZERO` |
+    /// | 0     | != 0   | max                   | `INFINITY`, `DIVIDED_BY_ZERO`  |
+    /// 
+    /// - All the flags are historical, which means, for example, if an
+    ///   divided_by_zero occurred even once before this current operation or
+    ///   `DIVIDED_BY_ZERO` flag is already set before this current operation,
+    ///   the `DIVIDED_BY_ZERO` flag is not changed even if this current operation
+    ///   does not cause divided_by_zero.
     /// 
     /// # Counterpart Method
-    /// If `rhs` is smaller than or equal to `u128`, the method
+    /// The method
+    /// [panic_free_div_assign_uint()](struct@BigUInt#method.panic_free_div_assign_uint)
+    /// is a bit faster than this method `panic_free_div_assign()`.
+    /// If `rhs` is primitive unsigned integral data type such as u8, u16,
+    /// u32, u64, and u128, use the method
+    /// [panic_free_div_assign_uint()](struct@BigUInt#method.panic_free_div_assign_uint).
+    /// 
+    /// # Example 1
+    /// ```
+    /// use std::str::FromStr;
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u16);
+    /// 
+    /// let mut a_biguint = UU32::from_str("123456789015758942546236989636279846864825945392").unwrap();
+    /// let divisor = 87_u8;
+    /// println!("Originally, a_biguint = {}", a_biguint);
+    /// assert_eq!(a_biguint.is_overflow(), false);
+    /// assert_eq!(a_biguint.is_underflow(), false);
+    /// assert_eq!(a_biguint.is_infinity(), false);
+    /// assert_eq!(a_biguint.is_divided_by_zero(), false);
+    /// assert_eq!(a_biguint.is_undefined(), false);
+    /// 
+    /// a_biguint.panic_free_div_assign_uint(divisor);
+    /// println!("After a_biguint.panic_free_div_assign_uint(&divisor),\na_biguint = {}", a_biguint);
+    /// assert_eq!(a_biguint.is_overflow(), false);
+    /// assert_eq!(a_biguint.is_underflow(), false);
+    /// assert_eq!(a_biguint.is_infinity(), false);
+    /// assert_eq!(a_biguint.is_divided_by_zero(), false);
+    /// assert_eq!(a_biguint.is_undefined(), false);
+    /// ```
+    /// 
+    /// # Example 2
+    /// ```
+    /// use std::str::FromStr;
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u16);
+    /// 
+    /// let mut a_biguint = UU32::zero();
+    /// let divisor = 87_u8;
+    /// println!("Originally, a_biguint = {}", a_biguint);
+    /// assert_eq!(a_biguint.is_overflow(), false);
+    /// assert_eq!(a_biguint.is_underflow(), false);
+    /// assert_eq!(a_biguint.is_infinity(), false);
+    /// assert_eq!(a_biguint.is_divided_by_zero(), false);
+    /// assert_eq!(a_biguint.is_undefined(), false);
+    /// 
+    /// a_biguint.panic_free_div_assign_uint(divisor);
+    /// println!("After a_biguint.panic_free_div_assign_uint(&divisor),\na_biguint = {}", a_biguint);
+    /// assert_eq!(a_biguint.to_string(), "0");
+    /// assert_eq!(a_biguint.is_overflow(), false);
+    /// assert_eq!(a_biguint.is_underflow(), false);
+    /// assert_eq!(a_biguint.is_infinity(), false);
+    /// assert_eq!(a_biguint.is_divided_by_zero(), false);
+    /// assert_eq!(a_biguint.is_undefined(), false);
+    /// ```
+    /// 
+    /// # Example 3
+    /// ```
+    /// use std::str::FromStr;
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u16);
+    /// 
+    /// let mut a_biguint = U256::from_str("123456789015758942546236989636279846864825945392").unwrap();
+    /// let divisor = 0_u8;
+    /// println!("Originally, a_biguint = {}", a_biguint);
+    /// assert_eq!(a_biguint.is_overflow(), false);
+    /// assert_eq!(a_biguint.is_underflow(), false);
+    /// assert_eq!(a_biguint.is_infinity(), false);
+    /// assert_eq!(a_biguint.is_divided_by_zero(), false);
+    /// assert_eq!(a_biguint.is_undefined(), false);
+    /// 
+    /// a_biguint.panic_free_div_assign_uint(divisor);
+    /// println!("After a_biguint.panic_free_div_assign_uint(&divisor),\na_biguint = {}", a_biguint);
+    /// assert_eq!(a_biguint, U256::max());
+    /// assert_eq!(a_biguint.is_overflow(), false);
+    /// assert_eq!(a_biguint.is_underflow(), false);
+    /// assert_eq!(a_biguint.is_infinity(), true);
+    /// assert_eq!(a_biguint.is_undefined(), false);
+    /// assert_eq!(a_biguint.is_divided_by_zero(), true);
+    /// ```
+    /// 
+    /// # Example 4
+    /// ```
+    /// use std::str::FromStr;
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u16);
+    /// 
+    /// let mut a_biguint = UU32::zero();
+    /// let divisor = 0_u8;
+    /// println!("Originally,\n_a_biguint = {}", a_biguint);
+    /// assert_eq!(a_biguint.is_overflow(), false);
+    /// assert_eq!(a_biguint.is_underflow(), false);
+    /// assert_eq!(a_biguint.is_infinity(), false);
+    /// assert_eq!(a_biguint.is_divided_by_zero(), false);
+    /// assert_eq!(a_biguint.is_undefined(), false);
+    /// 
+    /// a_biguint.panic_free_div_assign_uint(divisor);
+    /// println!("After a_biguint.panic_free_div_assign_uint(&divisor),\na_biguint = {}", a_biguint);
+    /// assert_eq!(a_biguint.to_string(), "0");
+    /// assert_eq!(a_biguint.is_overflow(), false);
+    /// assert_eq!(a_biguint.is_underflow(), false);
+    /// assert_eq!(a_biguint.is_infinity(), false);
+    /// assert_eq!(a_biguint.is_undefined(), true);
+    /// assert_eq!(a_biguint.is_divided_by_zero(), true);
+    /// ```
+    /// 
+    /// # Big-endian issue
+    /// It is just experimental for Big Endian CPUs. So, you are not encouraged
+    /// to use it for Big Endian CPUs for serious purpose. Only use this crate
+    /// for Big-endian CPUs with your own full responsibility.
+    pub fn panic_free_div_assign(&mut self, rhs: &Self)
+    {
+        let res = self.panic_free_div(rhs);
+        self.set_number(res.get_number());
+        self.set_flag_bit(res.get_all_flags());
+    }
+
+    // pub fn modular_div(&self, rhs: &Self, modulo: &Self) -> Self
+    /// Divides (`self` % `modulo`) by (`rhs` % `modulo`),
+    /// and returns the quotient.
+    /// 
+    /// # Arguments
+    /// - `rhs` divides `self`, and is of `&Self` type.
+    /// - `modulo` is the divisor to divide the remainder of (`self` / `rhs`),
+    ///   and is of `&Self` type.
+    /// 
+    /// # Panics
+    /// - If `size_of::<T>() * N` <= `128`, this method may panic
+    ///   or its behavior may be undefined though it may not panic.
+    /// - If `rhs` is either zero or multiple of `modulo`, it will panic.
+    /// - If `modulo` is either zero or one, it will panic.
+    /// 
+    /// # Output
+    /// It returns the quotient of when (`self` % `modulo`) is divided by
+    /// (`rhs` % `modulo`) if (`rhs` % `modulo`) is not zero.
+    /// 
+    /// # Features
+    /// It takes the remainder (= `rd1`) of `self` divided by `modulo`,
+    /// and takes the remainder (= `rd2`) of `rhs` divided by `modulo`,
+    /// and then finally returns the quotient of `rd1` divided by `rd2`.
+    /// 
+    /// # Counterpart Method
+    /// The method
     /// [modular_div_uint()](struct@BigUInt#method.modular_div_uint)
-    /// is proper rather than this method `modular_div()`.
+    /// is a bit faster than this method `modular_div()`.
+    /// So, if `rhs` is primitive unsigned integral data type such as u8, u16,
+    /// u32, u64, and u128, use the method
+    /// [modular_div_uint()](struct@BigUInt#method.modular_div_uint).
     /// 
     /// # Example
     /// ```
@@ -32946,48 +33990,38 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
         lhs
     }
 
-    // pub fn modular_div_assign(&mut self, rhs: &Self, modulo: &Self)
-    /// Calculates the quotient when `self` % `modulo` is divided by
-    /// `rhs` % `modulo`, and assigns the quotient to `self` back.
-    ///
+    // pub fn modular_div_assign(&self, rhs: &Self, modulo: &Self)
+    /// Divides (`self` % `modulo`) by (`rhs` % `modulo`),
+    /// and assigns the quotient back to `self`.
+    /// 
+    /// # Arguments
+    /// -`rhs` is to be added to `self`, and is of `&Self` type.
+    /// - `modulo` is the divisor to divide the remainder of (`self` / `rhs`),
+    ///   and is of `&Self` type.
+    /// 
     /// # Panics
-    /// If `size_of::<T>() * N` <= `128`, this method may panic
-    /// or its behavior may be undefined though it may not panic.
+    /// - If `size_of::<T>() * N` <= `128`, this method may panic
+    ///   or its behavior may be undefined though it may not panic.
+    /// - If `rhs` is either zero or multiple of `modulo`, it will panic.
+    /// - If `modulo` is either zero or one, it will panic.
     /// 
     /// # Features
-    /// - Overflow will not happen unless `rhs` % `modulo` is zero.
-    /// - If `rhs` % `modulo` is zero, the quotient will have maximum value
-    /// of `BigUInt` type, and the flags of quotient such as `OVERFLOW`,
-    /// `INFINITY`, and `DIVIDED_BY_ZERO` will be set.
-    /// - __It does not panic__ even if `rhs` % `modulo` is `zero`.
-    /// - If `modulo` is `zero`, the flags such as `OVERFLOW`, `DIVIDED_BY_ZERO`,
-    /// and `INFINITY` will be set.
-    /// - If `modulo` is `zero`, the flags such as `OVERFLOW`, `DIVIDED_BY_ZERO`,
-    /// and `INFINITY` will be set.
-    /// - All the flags reflect historical flags, which means, for example,
-    /// if an overflow occurred even once before this current operation or
-    /// `OVERFLOW` flag is already set before this current operation, the
-    /// `OVERFLOW` flag is not changed even though this current operation does
-    /// not cause overflow.
-    /// - All the flags reflect historical underflow, which means, for example,
-    /// if an overflow occurred even once before this current operation or
-    /// `OVERFLOW` flag is already set before this current operation, the
-    /// `OVERFLOW` flag is not changed even though this current operation does
-    /// not cause overflow.
-    /// - If `modulo` is `zero`, the flags such as `OVERFLOW`, `DIVIDED_BY_ZERO`,
-    /// and `INFINITY` will be set.
-    /// - The `OVERFLOW`, `INFINITY`, and `DIVIDED_BY_ZERO` flags reflect
-    /// historical overflow, which means if an overflow and/or divided-by-zero
-    /// occurred even once before this current operation or `OVERFLOW`,
-    /// `INFINITY`, and/or `DIVIDED_BY_ZERO` flag(s) is/are already set before
-    /// this current operation, the `OVERFLOW`, `INFINITY`, and/or
-    /// `DIVIDED_BY_ZERO` flag(s) is/are not changed even though this current
-    /// operation does not cause overflow and/or divided-by-zero.
+    /// - It takes the remainder (= `rd1`) of `self` divided by `modulo`,
+    ///   and takes the remainder (= `rd2`) of `rhs` divided by `modulo`,
+    ///   and then finally returns the quotient of `rd1` divided by `rd2`.
+    /// - All the flags are historical, which means, for example, if an
+    ///   divided_by_zero occurred even once before this current operation or
+    ///   `DIVIDED_BY_ZERO` flag is already set before this current operation,
+    ///   the `DIVIDED_BY_ZERO` flag is not changed even if this current operation
+    ///   does not cause divided_by_zero.
     /// 
     /// # Counterpart Method
-    /// If `rhs` is bigger than `u128`, the method
-    /// [saturating_div_assign()](struct@BigUInt#method.saturating_div_assign)
-    /// is proper rather than this method `saturating_div_assign_uint()`.
+    /// The method
+    /// [modular_div_assign_uint()](struct@BigUInt#method.modular_div_assign_uint)
+    /// is a bit faster than this method `modular_mul_assign()`.
+    /// So, if `rhs` is primitive unsigned integral data type such as u8, u16,
+    /// u32, u64, and u128, use the method
+    /// [modular_div_assign_uint()](struct@BigUInt#method.modular_div_assign_uint).
     /// 
     /// # Example
     /// ```
@@ -33024,24 +34058,220 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
         self.wrapping_div_assign(&rhs.wrapping_rem(modulo));
     }
 
-    // pub fn wrapping_rem(&self, rhs: &Self) -> Self
-    /// Calculates the remainder when `self` is divided by `rhs`,
-    /// which is `self` % `rhs`.
+    // pub fn panic_free_modular_div(&self, rhs: &Self, modulo: &Self) -> Self
+    /// Divides (`self` % `modulo`) by (`rhs` % `modulo`),
+    /// and returns the quotient.
+    /// 
+    /// # Arguments
+    /// - `rhs` divides `self`, and is of `&Self` type.
+    /// - `modulo` is the divisor to divide the remainder of (`self` / `rhs`),
+    ///   and is of `&Self` type.
+    /// 
+    /// # Panics
+    /// If `size_of::<T>() * N` <= `128`, this method may panic
+    /// or its behavior may be undefined though it may not panic.
     /// 
     /// # Output
-    /// It returns the remainder when `self` is divided by `rhs`,
-    /// which is `self` % `rhs`, with wrapping (modular) division.
+    /// It returns the quotient of when (`self` % `modulo`) is divided by
+    /// (`rhs` % `modulo`) if (`rhs` % `modulo`) is not zero.
     /// 
     /// # Features
-    /// Wrapped remainder calculation on `BigUInt` types is just the regular
-    /// remainder calculation. There’s no way wrapping could ever happen. This
-    /// function exists, so that all operations are accounted for in the
-    /// wrapping operations.
+    /// - It takes the remainder (= `rd1`) of `self` divided by `modulo`,
+    ///   and takes the remainder (= `rd2`) of `rhs` divided by `modulo`,
+    ///   and then finally returns the quotient of `rd1` divided by `rd2`.
+    /// - __It does not panic__ even if `rhs` is zero or multiple of
+    ///   `modulo` or `modulo` is zero or one.
+    /// - If `modulo` is either zero or one, and `rhs` is zero or multiple of
+    ///   `modulo` then, the quotient will have the value `zero` and
+    ///   `UNDEFINED` and `DIVIDED_BY_ZERO` flags will be set.
+    /// - If `modulo` is either zero or one, and `rhs` is not zero nor multiple
+    ///   of `modulo` then, the quotient will have the value `zero` and
+    ///   `UNDEFINED` flag will be set.
+    /// - If `modulo` is greater than one, and `rhs` is either zero or multiple
+    ///   of `modulo`, and `self` is zero or multiple of `modulo` then, the
+    ///   quotient will have the value `zero`, and `UNDEFINED` and
+    ///   `DIVIDED_BY_ZERO` flags will be set.
+    /// - If `modulo` is greater than one, and `rhs` is either zero or multiple
+    ///   of `modulo`, and `self` is not zero, and `modulo` is neither zero nor
+    ///   one, the quotient will have the max value and `INFINITY`, and
+    ///   `DIVIDED_BY_ZERO` flags will be set.
+    /// - In summary, the quotients and the flags will be set as follows:
     /// 
-    /// If `rhs` is zero, the remainder is zero and its `DIVIDED_BY_ZERO`
-    /// is set. __It does not panic__ while the same named methods
-    /// `wrapping_rem()` for primitive integer data type such as u8, u16,
-    /// u32, u64, etc. will panic if `rhs` is zero.
+    /// | `modulo` | `rhs`               | `self`              | quotient | flags                          |
+    /// |----------|---------------------|---------------------|----------|--------------------------------|
+    /// | 0 or 1   | 0 (mod `modulo`)    | >= 0                | 0        | `UNDEFINED`, `DIVIDED_BY_ZERO` |
+    /// | 0 or 1   | != 0 (mod `modulo`) | >= 0                | 0        | `UNDEFINED`                    |
+    /// | >= 2     | 0 (mod `modulo`)    | 0 (mod `modulo`)    | 0        | `UNDEFINED`, `DIVIDED_BY_ZERO` |
+    /// | >= 2     | 0 (mod `modulo`)    | != 0 (mod `modulo`) | max      | `INFINITY`, `DIVIDED_BY_ZERO`  |
+    /// 
+    /// # Counterpart Method
+    /// The method
+    /// [panic_free_modular_div_uint()](struct@BigUInt#method.panic_free_modular_div_uint)
+    /// is a bit faster than this method `modular_div()`.
+    /// So, if `rhs` is primitive unsigned integral data type such as u8, u16,
+    /// u32, u64, and u128, use the method
+    /// [panic_free_modular_div_uint()](struct@BigUInt#method.panic_free_modular_div_uint).
+    /// 
+    /// # Examples
+    /// 
+    /// 
+    /// # Big-endian issue
+    /// It is just experimental for Big Endian CPUs. So, you are not encouraged
+    /// to use it for Big Endian CPUs for serious purpose. Only use this crate
+    /// for Big-endian CPUs with your own full responsibility.
+    pub fn panic_free_modular_div(&self, rhs: &Self, modulo: &Self) -> Self
+    {
+        let mut res = Self::from_array(self.get_number().clone());
+        res.panic_free_modular_div_assign(rhs, modulo);
+        res
+    }
+
+    // pub fn panic_free_modular_div_assign(&mut self, rhs: &Self, modulo: &Self)
+    /// Divides (`self` % `modulo`) by (`rhs` % `modulo`),
+    /// and assigns the quotient back to `self`.
+    /// 
+    /// # Arguments
+    /// - `rhs` divides `self`, and is of `&Self` type.
+    /// - `modulo` is the divisor to divide the remainder of (`self` / `rhs`),
+    ///   and is of `&Self` type.
+    /// 
+    /// # Panics
+    /// If `size_of::<T>() * N` <= `128`, this method may panic
+    /// or its behavior may be undefined though it may not panic.
+    /// 
+    /// # Features
+    /// - It takes the remainder (= `rd1`) of `self` divided by `modulo`,
+    ///   and takes the remainder (= `rd2`) of `rhs` divided by `modulo`,
+    ///   and then finally assigns the quotient of `rd1` divided by `rd2`
+    ///   back to `self`.
+    /// - __It does not panic__ even if `rhs` is zero or multiple of
+    ///   `modulo` or `modulo` is zero or one.
+    /// - If `modulo` is either zero or one, and `rhs` is zero or multiple of
+    ///   `modulo` then, the quotient will have the value `zero` and
+    ///   `UNDEFINED` and `DIVIDED_BY_ZERO` flags will be set.
+    /// - If `modulo` is either zero or one, and `rhs` is not zero nor multiple
+    ///   of `modulo` then, the quotient will have the value `zero` and
+    ///   `UNDEFINED` flag will be set.
+    /// - If `modulo` is greater than one, and `rhs` is either zero or multiple
+    ///   of `modulo`, and `self` is zero or multiple of `modulo` then, the
+    ///   quotient will have the value `zero`, and `UNDEFINED` and
+    ///   `DIVIDED_BY_ZERO` flags will be set.
+    /// - If `modulo` is greater than one, and `rhs` is either zero or multiple
+    ///   of `modulo`, and `self` is not zero, and `modulo` is neither zero nor
+    ///   one, the quotient will have the max value and `INFINITY`, and
+    ///   `DIVIDED_BY_ZERO` flags will be set.
+    /// - In summary, the quotients and the flags will be set as follows:
+    /// 
+    /// | `modulo` | `rhs`               | `self`              | quotient | flags                          |
+    /// |----------|---------------------|---------------------|----------|--------------------------------|
+    /// | 0 or 1   | 0 (mod `modulo`)    | >= 0                | 0        | `UNDEFINED`, `DIVIDED_BY_ZERO` |
+    /// | 0 or 1   | != 0 (mod `modulo`) | >= 0                | 0        | `UNDEFINED`                    |
+    /// | >= 2     | 0 (mod `modulo`)    | 0 (mod `modulo`)    | 0        | `UNDEFINED`, `DIVIDED_BY_ZERO` |
+    /// | >= 2     | 0 (mod `modulo`)    | != 0 (mod `modulo`) | max      | `INFINITY`, `DIVIDED_BY_ZERO`  |
+    /// 
+    /// - All the flags are historical, which means, for example, if an
+    ///   divided_by_zero occurred even once before this current operation or
+    ///   `DIVIDED_BY_ZERO` flag is already set before this current operation,
+    ///   the `DIVIDED_BY_ZERO` flag is not changed even if this current operation
+    ///   does not cause divided_by_zero.
+    /// 
+    /// # Counterpart Method
+    /// The method
+    /// [panic_free_modular_div_assign_uint()](struct@BigUInt#method.panic_free_modular_div_assign_uint)
+    /// is a bit faster than this method `panic_free_modular_div_assign()`.
+    /// So, if `rhs` is primitive unsigned integral data type such as u8, u16,
+    /// u32, u64, and u128, use the method
+    /// [panic_free_modular_div_assign_uint()](struct@BigUInt#method.panic_free_modular_div_assign_uint).
+    /// 
+    /// # Examples
+    /// 
+    /// 
+    /// # Big-endian issue
+    /// It is just experimental for Big Endian CPUs. So, you are not encouraged
+    /// to use it for Big Endian CPUs for serious purpose. Only use this crate
+    /// for Big-endian CPUs with your own full responsibility.
+    pub fn panic_free_modular_div_assign(&mut self, rhs: &Self, modulo: &Self)
+    {
+        let mut terminated = false;
+        let mut mrhs = rhs.clone();
+        if !modulo.is_zero_or_one()
+        {
+            if *self >= *modulo
+            {
+                self.wrapping_rem_assign(modulo);
+                self.reset_all_flags();
+            }
+            if modulo.le(rhs)
+                { mrhs.wrapping_rem_assign(modulo); }
+        }
+
+        if mrhs.is_zero()
+        {
+            if self.is_zero()
+            {
+                self.set_zero();
+                self.set_flag_bit(Self::UNDEFINED | Self::DIVIDED_BY_ZERO);
+            }
+            else
+            {
+                self.set_max();
+                self.set_flag_bit(Self::INFINITY | Self::DIVIDED_BY_ZERO);
+            }
+            terminated = true;
+        }
+        if modulo.is_zero_or_one()
+        {
+            self.set_zero();
+            self.set_undefined();
+            return;
+        }
+        if terminated
+            { return; }
+
+        let flags = self.get_all_flags();
+        if *self >= *modulo // self.ge(modulo)
+        {
+            self.wrapping_rem_assign(modulo);
+            self.reset_all_flags();
+        }
+
+        if mrhs.length_in_bytes() > T::size_in_bytes()
+        {
+            self.modular_div_assign(&mrhs, modulo);
+        }
+        else if modulo.gt(rhs)
+        {
+            self.wrapping_div_assign(&mrhs);
+        }
+        else
+        {
+            self.wrapping_rem_assign(modulo);
+            self.wrapping_div_assign(&mrhs);
+        }
+        self.set_flag_bit(flags);
+    } 
+    
+    // pub fn wrapping_rem(&self, rhs: &Self) -> Self
+    /// Divides `self` by `rhs`, and returns the remainder.
+    /// 
+    /// # Arguments
+    /// `rhs` divides `self`, and is of `&Self` type.
+    /// 
+    /// # Panics
+    /// - If `size_of::<T>() * N` <= `128`, this method may panic
+    ///   or its behavior may be undefined though it may not panic.
+    /// - If `rhs` is zero, this method will panic.
+    ///
+    /// # Output
+    /// It returns a remainder of `BigUInt` type,
+    /// and the remainder would never overflow. 
+    /// 
+    /// # Features
+    /// - Wrapped division on `BigUInt` types is just normal division.
+    /// - There’s no way wrapping could ever happen unless `rhs` is zero.
+    /// - If `rhs` is zero, this method will panic.
+    /// - This function exists, so that all operations are accounted for
+    ///   in the wrapping operations.
     /// 
     /// # Counterpart Method
     /// The method
@@ -33067,24 +34297,27 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     }
 
     // pub fn wrapping_rem_assign(&mut self, rhs: &Self)
-    /// Calculates the remainder when `self` is divided by `rhs`,
-    /// which is `self` % `rhs`, and returns the remainder to `self` back.
+    /// Divides `self` by `rhs`, and assigns the remainder to `self` back.
+    /// 
+    /// # Arguments
+    /// `rhs` divides `self`, and is of `&Self` type.
     /// 
     /// # Panics
     /// - If `size_of::<T>() * N` <= `128`, this method may panic
-    /// or its behavior may be undefined though it may not panic.
+    ///   or its behavior may be undefined though it may not panic.
     /// - If `rhs` is zero, this method will panic.
     /// 
     /// # Features
-    /// Wrapped remainder calculation on `BigUInt` types is just the regular
-    /// remainder calculation. There’s no way wrapping could ever happen. This
-    /// function exists, so that all operations are accounted for in the
-    /// wrapping operations.
-    /// 
-    /// If `rhs` is zero, the `self` is zero and its `DIVIDED_BY_ZERO`
-    /// is set. __It does not panic__ while the similar methods
-    /// `wrapping_rem()` for primitive integer data type such as 
-    /// u8, u16, u32, u64, etc. will panic if `rhs` is zero.
+    /// - Wrapped division on `BigUInt` types is just normal division.
+    /// - There’s no way wrapping could ever happen unless `rhs` is zero.
+    /// - If `rhs` is zero, this method will panic.
+    /// - This function exists, so that all operations are accounted for
+    ///   in the wrapping operations.
+    /// - All the flags are historical, which means, for example, if an
+    ///   divided_by_zero occurred even once before this current operation or
+    ///   `DIVIDED_BY_ZERO` flag is already set before this current operation,
+    ///   the `DIVIDED_BY_ZERO` flag is not changed even if this current operation
+    ///   does not cause divided_by_zero.
     /// 
     /// # Counterpart Method
     /// The method
@@ -33112,28 +34345,36 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
             { self.set_overflow(); }
     }
 
-    // pub fn overflowing_rem(self, rhs: &Self) -> (Self, bool)
-    /// Calculates the remainder when `self` is divided by `rhs`,
-    /// which is `self` % `rhs`.
+    // pub fn overflowing_rem(&self, rhs: &Self) -> (Self, bool)
+    /// Divides `self` by `rhs`,
+    /// and returns a tuple of the remainder of `self` / `rhs` along with
+    /// a boolean indicating whether an arithmetic overflow would occur.
+    /// 
+    /// # Arguments
+    /// `rhs` divides `self`, and is of `&Self` type.
+    /// 
+    /// # Panics
+    /// - If `size_of::<T>() * N` <= `128`, this method may panic
+    ///   or its behavior may be undefined though it may not panic.
+    /// - If `rhs` is zero, this method will panic.
     /// 
     /// # Output
-    /// It returns a tuple of the remainder after dividing,
-    /// which is `self` % `rhs` along with a boolean indicating whether an
-    /// arithmetic overflow would occur.
+    /// It returns a tuple of the remainder of `BigUInt` type as a result of
+    /// `self` % `rhs` along with a boolean indicating whether an arithmetic
+    /// overflow would occur. But the remainder would never overflow.
+    /// So, the second element of the output tuple is always `false`.
     /// 
     /// # Features
-    /// Note that overflow never occurs, so the second value is always false.
-    /// 
-    /// If `rhs` is zero, the remainder is zero and its `DIVIDED_BY_ZERO`
-    /// is set. __It does not panic__ while the same named methods
-    /// `overflowing_rem()` for primitive integer data type such as u8, u16,
-    /// u32, u64, etc. will panic if `rhs` is zero.
+    /// - Wrapped division on `BigUInt` types is just normal division.
+    /// - The remainder would never overflow.
+    /// - The second element of the output tuple reflects only
+    ///   the current overflow.
     /// 
     /// # Counterpart Method
     /// The method
     /// [overflowing_rem_uint()](struct@BigUInt#method.overflowing_rem_uint)
     /// is a bit faster than this method `overflowing_rem()`.
-    /// If `rhs` is primitive unsigned integral data type such as u8, u16,
+    /// So, if `rhs` is primitive unsigned integral data type such as u8, u16,
     /// u32, u64, and u128, use the method
     /// [overflowing_rem_uint()](struct@BigUInt#method.overflowing_rem_uint).
     /// 
@@ -33153,26 +34394,40 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     }
 
     // pub fn overflowing_rem_assign(&mut self, rhs: &Self) -> bool
-    /// Calculates the remainder when `self` is divided by `rhs`,
-    /// which is `self` % `rhs`, and returns the remainder to `self` back.
-    /// 
-    /// # Output
-    /// It returns a boolean indicating whether an arithmetic overflow
+    /// Divides `self` by `rhs`,
+    /// and assigns the remainder of `self` / `rhs` to `self` back,
+    /// and returns a boolean indicating whether an arithmetic overflow
     /// would occur.
     /// 
-    /// # Features
-    /// Note that overflow never occurs, so the outtput is always false.
+    /// # Arguments
+    /// `rhs` divides `self`, and is of `&Self` type.
     /// 
-    /// If `rhs` is zero, `self` is zero and its `DIVIDED_BY_ZERO`
-    /// is set. __It does not panic__ while the similar methods
-    /// `overflowing_rem()` for primitive integer data type such as
-    /// u8, u16, u32, u64, etc. will panic if `rhs` is zero.
+    /// # Panics
+    /// - If `size_of::<T>() * N` <= `128`, this method may panic
+    ///   or its behavior may be undefined though it may not panic.
+    /// - If `rhs` is zero, this method will panic.
+    /// 
+    /// # Output
+    /// It returns true if an arithmetic overflow would occur.
+    /// But the remainder would never overflow.
+    /// So, it always returns `false`.
+    /// 
+    /// # Features
+    /// - Wrapped division on `BigUInt` types is just normal division.
+    /// - The remainder would never overflow.
+    /// - The output will be `false` even if the `OVERFLOW` flag of `self`
+    ///   was already set because of previous operation of `self`.
+    /// - The output reflects only the current overflow.
+    /// - All the flags are historical, which means, for example, if an overflow
+    ///   occurred even once before this current operation or `OVERFLOW`
+    ///   flag is already set before this current operation, the `OVERFLOW` flag
+    ///   is not changed even if this current operation does not cause overflow.
     /// 
     /// # Counterpart Method
     /// The method
     /// [overflowing_rem_assign_uint()](struct@BigUInt#method.overflowing_rem_assign_uint)
-    /// is a bit faster than this method `overflowing_rem_assign()`.
-    /// If `rhs` is primitive unsigned integral data type such as u8, u16,
+    /// is a bit faster than this method `overflowing_rem_assign_uint()`.
+    /// So, if `rhs` is primitive unsigned integral data type such as u8, u16,
     /// u32, u64, and u128, use the method
     /// [overflowing_rem_assign_uint()](struct@BigUInt#method.overflowing_rem_assign_uint).
     /// 
@@ -33196,22 +34451,31 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     }
 
     // pub fn checked_rem(&self, rhs: &Self) -> Option<Self>
-    /// Calculates the remainder when `self` is divided by `rhs`,
-    /// which is `self` % `rhs`.
+    /// Divides `self` by `rhs`,
+    /// and returns the remainder wrapped by `Some` of enum `Option`.
+    /// 
+    /// # Arguments
+    /// `rhs` divides `self`, and is of `&Self` type.
+    /// 
+    /// # Panics
+    /// If `size_of::<T>() * N` <= `128`, this method may panic
+    /// or its behavior may be undefined though it may not panic.
     /// 
     /// # Output
-    /// It returns the remainder when `self` is divided by `rhs`,
-    /// which is `self` % `rhs`, wrapped by `Some` of enum `Option`
-    /// if `rhs` is not zero. Otherwise, it returns `None` of enum Option.
+    /// It returns a remainder of `BigUInt` type wrapped by `Some` of
+    /// enum `Option` if overflow did not occur at current operation.
+    /// Otherwise, it returns `None` of enum `Option`.
     /// 
     /// # Features
-    /// Note that overflow never occurs.
+    /// - This division on `BigUInt` types is just normal division.
+    /// - There’s no way wrapping could ever happen unless `rhs` is zero.
+    /// - If `rhs` is zero, it returns `None` of enum `Option`.
     /// 
     /// # Counterpart Method
     /// The method
     /// [checked_rem_uint()](struct@BigUInt#method.checked_rem_uint)
     /// is a bit faster than this method `checked_rem()`.
-    /// If `rhs` is primitive unsigned integral data type such as u8, u16,
+    /// So, if `rhs` is primitive unsigned integral data type such as u8, u16,
     /// u32, u64, and u128, use the method
     /// [checked_rem_uint()](struct@BigUInt#method.checked_rem_uint).
     /// 
@@ -33234,16 +34498,22 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     }
 
     // pub fn unchecked_rem(&self, rhs: &Self) -> Self
-    /// Calculates the remainder when `self` is divided by `rhs`,
-    /// which is `self` % `rhs`, assuming `rhs` cannot be zero.
+    /// Divides `self` by `rhs`, and returns the remainder.
     /// 
+    /// # Arguments
+    /// `rhs` divides `self`, and is of `&Self` type.
+    /// 
+    /// # Panics
+    /// - If `size_of::<T>() * N` <= `128`, this method may panic
+    ///   or its behavior may be undefined though it may not panic.
+    /// - If `rhs` is zero, this method will panic.
+    ///
     /// # Output
-    /// It returns the remainder when `self` is divided by `rhs`,
-    /// which is `self` % `rhs`, if `rhs` is not zero.
-    /// Otherwise, it returns zero.
+    /// It returns a remainder of `BigUInt` type. 
     /// 
     /// # Features
-    /// Note that overflow never occurs.
+    /// - Wrapped division on `BigUInt` types is just normal division.
+    /// - If `rhs` is zero, this method will panic.
     /// 
     /// # Counterpart Method
     /// The method
@@ -33269,26 +34539,31 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     }
 
     // pub fn saturating_rem(&self, rhs: &Self) -> Self
-    /// Calculates the remainder when `self` is divided by `rhs`,
-    /// which is `self` % `rhs`
+    /// Divides `self` by `rhs`,
+    /// saturating at the numeric bounds instead of overflowing,
+    /// and returns the remainder of `self` / `rhs`.
+    /// 
+    /// # Arguments
+    /// `rhs` divides `self`, and is of `&Self` type.
+    /// 
+    /// # Panics
+    /// - If `size_of::<T>() * N` <= `128`, this method may panic
+    ///   or its behavior may be undefined though it may not panic.
+    /// - If `rhs` is zero, this method will panic.
     /// 
     /// # Output
-    /// It returns the remainder when `self` is divided by `rhs`,
-    /// which is `self` % `rhs`, if `rhs` is not zero.
-    /// Otherwise, it returns zero.
+    /// It returns the remainder of `BigUInt` type as a result of
+    /// `self` % `rhs`.
     /// 
     /// # Features
-    /// If `rhs` is zero, the remainder will have zero of`BigUInt` type,
-    /// and `DIVIDED_BY_ZERO` flag of the remainder will be set, and
-    /// the remainder will be set to be zero of `BigUInt` type.
-    /// 
-    /// Note that overflow never occurs.
+    /// - The remainder would never overflow so that it can not saturate.
+    /// - It does not set `OVERFLOW` flag of the return value.
     /// 
     /// # Counterpart Method
     /// The method
     /// [saturating_rem_uint()](struct@BigUInt#method.saturating_rem_uint)
     /// is a bit faster than this method `saturating_rem()`.
-    /// If `rhs` is primitive unsigned integral data type such as u8, u16,
+    /// So, if `rhs` is primitive unsigned integral data type such as u8, u16,
     /// u32, u64, and u128, use the method
     /// [saturating_rem_uint()](struct@BigUInt#method.saturating_rem_uint).
     /// 
@@ -33308,21 +34583,31 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     }
 
     // pub fn saturating_rem_assign(&mut self, rhs: &Self)
-    /// Calculates the remainder when `self` is divided by `rhs`,
-    /// which is `self` % `rhs`, and assigns the remainder to `self` back.
+    /// Divides `self` by `rhs`,
+    /// saturating at the numeric bounds instead of overflowing,
+    /// and assigns the remainder of `self` / `rhs` to `self` back.
+    /// 
+    /// # Arguments
+    /// `rhs` divides `self`, and is of `&Self` type.
+    /// 
+    /// # Panics
+    /// - If `size_of::<T>() * N` <= `128`, this method may panic
+    ///   or its behavior may be undefined though it may not panic.
+    /// - If `rhs` is zero, this method will panic.
     /// 
     /// # Features
-    /// If `rhs` is zero, `self` will have zero of`BigUInt` type,
-    /// and `DIVIDED_BY_ZERO` flag of `self` will be set, and
-    /// `self` will be set to be zero of `BigUInt` type.
-    /// 
-    /// Note that overflow never occurs.
+    /// - The remainder would never overflow so that it can not saturate.
+    /// - It does not set `OVERFLOW` flag of the return value.
+    /// - All the flags are historical, which means, for example, if an overflow
+    ///   occurred even once before this current operation or `OVERFLOW`
+    ///   flag is already set before this current operation, the `OVERFLOW` flag
+    ///   is not changed even if this current operation does not cause overflow.
     /// 
     /// # Counterpart Method
     /// The method
     /// [saturating_rem_assign_uint()](struct@BigUInt#method.saturating_rem_assign_uint)
     /// is a bit faster than this method `saturating_rem_assign()`.
-    /// If `rhs` is primitive unsigned integral data type such as u8, u16,
+    /// So, if `rhs` is primitive unsigned integral data type such as u8, u16,
     /// u32, u64, and u128, use the method
     /// [saturating_rem_assign_uint()](struct@BigUInt#method.saturating_rem_assign_uint).
     /// 
@@ -33344,38 +34629,39 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     }
 
     // pub fn panic_free_rem(&self, rhs: &Self) -> Self
-    /// Calculates the remainder when `self` is divided by `rhs`,
-    /// which is `self` % `rhs`.
+    /// Divides `self` by `rhs`, and returns the remainder.
     /// 
+    /// # Arguments
+    /// `rhs` divides `self`, and is of `&Self` type.
+    /// 
+    /// # Panics
+    /// If `size_of::<T>() * N` <= `128`, this method may panic
+    /// or its behavior may be undefined though it may not panic.
+    ///
     /// # Output
-    /// It returns the remainder when `self` is divided by `rhs`,
-    /// which is `self` % `rhs`, with wrapping (modular) division.
+    /// It returns a remainder of `BigUInt` type,
+    /// and the remainder would never overflow. 
     /// 
     /// # Features
-    /// Wrapped remainder calculation on `BigUInt` types is just the regular
-    /// remainder calculation. There’s no way wrapping could ever happen. This
-    /// function exists, so that all operations are accounted for in the
-    /// wrapping operations.
+    /// - Wrapped division on `BigUInt` types is just normal division.
+    /// - There’s no way wrapping could ever happen unless `rhs` is zero.
+    /// - __It does not panic__ while the counterpart method
+    ///   `wrapping_rem()` will panic if `rhs` is zero.
+    /// - If `rhs` is `zero`, the remainder is `zero` and the flag
+    ///   `DIVIDED_BY_ZERO` of `remainder` will be set.
+    /// - In summary, the remainder and its flags will be set as follows:
     /// 
-    /// If `rhs` is zero, the remainder is zero and its `DIVIDED_BY_ZERO`
-    /// is set. __It does not panic__ while the same named methods
-    /// `wrapping_rem()` for primitive integer data type such as u8, u16,
-    /// u32, u64, etc. will panic if `rhs` is zero.
-    /// - In summary, the quotient and its flags will be set as follows:
-    /// 
-    /// | `rhs` | `self` | `quotient` | flags of `quotient`            | `remainder` | flags of `remainder` |
-    /// |-------|--------|------------|--------------------------------|-------------|----------------------|
-    /// | 0     | 0      | 0          | `UNDEFINED`, `DIVIDED_BY_ZERO` | 0           | `DIVIDED_BY_ZERO`    |
-    /// | 0     | != 0   | max        | `INFINITY`, `DIVIDED_BY_ZERO`  | 0           | `DIVIDED_BY_ZERO`    |
-    /// 
+    /// | `rhs` | `remainder` | flags of `remainder` |
+    /// |-------|-------------|----------------------|
+    /// | 0     |  0          | `DIVIDED_BY_ZERO`    |
     /// 
     /// # Counterpart Method
     /// The method
-    /// [wrapping_rem_uint()](struct@BigUInt#method.wrapping_rem_uint)
-    /// is a bit faster than this method `wrapping_rem()`.
+    /// [panic_free_rem_uint()](struct@BigUInt#method.panic_free_rem_uint)
+    /// is a bit faster than this method `panic_free_rem()`.
     /// If `rhs` is primitive unsigned integral data type such as u8, u16,
     /// u32, u64, and u128, use the method
-    /// [wrapping_rem_uint()](struct@BigUInt#method.wrapping_rem_uint).
+    /// [panic_free_rem_uint()](struct@BigUInt#method.panic_free_rem_uint).
     /// 
     /// # Example
     /// ```
@@ -33393,32 +34679,41 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     }
 
     // pub fn panic_free_rem_assign(&mut self, rhs: &Self)
-    /// Calculates the remainder when `self` is divided by `rhs`,
-    /// which is `self` % `rhs`, and returns the remainder to `self` back.
+    /// Divides `self` by `rhs`, and assigns the remainder to `self` back.
+    /// 
+    /// # Arguments
+    /// `rhs` divides `self`, and is of `&Self` type.
     /// 
     /// # Panics
-    /// - If `size_of::<T>() * N` <= `128`, this method may panic
+    /// If `size_of::<T>() * N` <= `128`, this method may panic
     /// or its behavior may be undefined though it may not panic.
-    /// - If `rhs` is zero, this method will panic.
     /// 
     /// # Features
-    /// Wrapped remainder calculation on `BigUInt` types is just the regular
-    /// remainder calculation. There’s no way wrapping could ever happen. This
-    /// function exists, so that all operations are accounted for in the
-    /// wrapping operations.
+    /// - Wrapped division on `BigUInt` types is just normal division.
+    /// - There’s no way wrapping could ever happen unless `rhs` is zero.
+    /// - __It does not panic__ while the counterpart method
+    ///   `wrapping_rem_uint()` will panic if `rhs` is zero.
+    /// - If `rhs` is `zero`, `self` will be `zero` and the `DIVIDED_BY_ZERO` flag
+    ///   of `self` will be set.
+    /// - In summary, the remainder and its flags will be set as follows:
     /// 
-    /// If `rhs` is zero, the `self` is zero and its `DIVIDED_BY_ZERO`
-    /// is set. __It does not panic__ while the similar methods
-    /// `wrapping_rem()` for primitive integer data type such as 
-    /// u8, u16, u32, u64, etc. will panic if `rhs` is zero.
+    /// | `rhs` | `remainder` (= `self`) | flags of `remainder` |
+    /// |-------|------------------------|----------------------|
+    /// | 0     | 0                      | `DIVIDED_BY_ZERO`    |
+    /// 
+    /// - All the flags are historical, which means, for example, if an
+    ///   divided_by_zero occurred even once before this current operation or
+    ///   `DIVIDED_BY_ZERO` flag is already set before this current operation,
+    ///   the `DIVIDED_BY_ZERO` flag is not changed even if this current operation
+    ///   does not cause divided_by_zero.
     /// 
     /// # Counterpart Method
     /// The method
-    /// [wrapping_rem_assign_uint()](struct@BigUInt#method.wrapping_rem_assign_uint)
-    /// is a bit faster than this method `wrapping_rem_assign()`.
+    /// [panic_free_rem_assign_uint()](struct@BigUInt#method.panic_free_rem_assign_uint)
+    /// is a bit faster than this method `panic_free_rem_assign()`.
     /// If `rhs` is primitive unsigned integral data type such as u8, u16,
     /// u32, u64, and u128, use the method
-    /// [wrapping_rem_assign_uint()](struct@BigUInt#method.wrapping_rem_assign_uint).
+    /// [panic_free_rem_assign_uint()](struct@BigUInt#method.panic_free_rem_assign_uint).
     /// 
     /// # Example
     /// ```
@@ -33439,30 +34734,36 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     }
 
     // pub fn modular_rem(&self, rhs: &Self, modulo: &Self) -> Self
-    /// Calculates the remainder when `self` % `modulo` is divided by 
-    /// rhs` % `modulo`.
-    ///
+    /// Divides (`self` % `modulo`) by (`rhs` % `modulo`),
+    /// and returns the remainder.
+    /// 
+    /// # Arguments
+    /// - `rhs` divides `self`, and is of `&Self` type.
+    /// - `modulo` is the divisor to divide the remainder of (`self` / `rhs`),
+    ///   and is of `&Self` type.
+    /// 
     /// # Panics
-    /// If `size_of::<T>() * N` <= `128`, this method may panic
-    /// or its behavior may be undefined though it may not panic.
+    /// - If `size_of::<T>() * N` <= `128`, this method may panic
+    ///   or its behavior may be undefined though it may not panic.
+    /// - If `rhs` is either `zero` or multiple of `modulo`, it will panic.
+    /// - If `modulo` is either `zero` or `one`, it will panic.
     /// 
     /// # Output
-    /// - It returns the remainder of when `self` % `modulo` is divided by
-    /// `rhs` % `modulo`, if `rhs` % `modulo` is not zero.
-    /// - If `rhs` % `modulo` is zero, it returns `zero`.
+    /// It returns the remainder of when (`self` % `modulo`) is divided by
+    /// (`rhs` % `modulo`) if (`rhs` % `modulo`) is not zero.
     /// 
     /// # Features
-    /// - If `rhs` % `modulo` is zero, the remainder will be `zero`
-    /// of `BigUInt` type, and the flag of remainder `DIVIDED_BY_ZERO`
-    /// will be set.
-    /// - __It does not panic__ even if `rhs` % `modulo` is `zero`.
-    /// - If `modulo` is `zero`, the flags such as `OVERFLOW`, `DIVIDED_BY_ZERO`,
-    /// and `INFINITY` will be set.
+    /// It takes the remainder (= `rd1`) of `self` divided by `modulo`,
+    /// and takes the remainder (= `rd2`) of `rhs` divided by `modulo`,
+    /// and then finally returns the remainder of `rd1` divided by `rd2`.
     /// 
     /// # Counterpart Method
-    /// If `rhs` is bigger than `u128`, the method
-    /// [saturating_div()](struct@BigUInt#method.saturating_div)
-    /// is proper rather than this method `saturating_div_uint()`.
+    /// The method
+    /// [modular_rem_uint()](struct@BigUInt#method.modular_rem_uint)
+    /// is a bit faster than this method `modular_rem()`.
+    /// So, if `rhs` is primitive unsigned integral data type such as u8, u16,
+    /// u32, u64, and u128, use the method
+    /// [modular_rem_uint()](struct@BigUInt#method.modular_rem_uint).
     /// 
     /// # Example
     /// ```
@@ -33498,48 +34799,38 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
         lhs
     }
 
-    // pub fn modular_rem_assign(&mut self, rhs: &Self, modulo: &Self)
-    /// Calculates the quotient when `self` % `modulo` is divided by
-    /// `rhs` % `modulo`, and assigns the remainder to `self` back.
-    ///
+    // pub fn modular_rem_assign(&self, rhs: &Self, modulo: &Self)
+    /// Divides (`self` % `modulo`) by (`rhs` % `modulo`),
+    /// and assigns the remainder back to `self`.
+    /// 
+    /// # Arguments
+    /// -`rhs` is to be added to `self`, and is of `&Self` type.
+    /// - `modulo` is the divisor to divide the remainder of (`self` / `rhs`),
+    ///   and is of `&Self` type.
+    /// 
     /// # Panics
-    /// If `size_of::<T>() * N` <= `128`, this method may panic
-    /// or its behavior may be undefined though it may not panic.
+    /// - If `size_of::<T>() * N` <= `128`, this method may panic
+    ///   or its behavior may be undefined though it may not panic.
+    /// - If `rhs` is either zero or multiple of `modulo`, it will panic.
+    /// - If `modulo` is either zero or one, it will panic.
     /// 
     /// # Features
-    /// - If `rhs` % `modulo` is zero, `self` which is the remainder will be
-    /// `zero`, and its flag `DIVIDED_BY_ZERO` will be set.
-    /// - __It does not panic__ even if `rhs` % `modulo` is `zero`.
-    /// - If `modulo` is `zero`, the flags such as `OVERFLOW`, `DIVIDED_BY_ZERO`,
-    /// and `INFINITY` will be set.
-    /// - 
-    /// The `OVERFLOW`, `INFINITY`, and `DIVIDED_BY_ZERO` flags reflect
-    /// historical overflow, which means if an overflow and/or divided-by-zero
-    /// occurred even once before this current operation or `OVERFLOW`,
-    /// `INFINITY`, and/or `DIVIDED_BY_ZERO` flag(s) is/are already set before
-    /// this current operation, the `OVERFLOW`, `INFINITY`, and/or
-    /// `DIVIDED_BY_ZERO` flag(s) is/are not changed even though this current
-    /// operation does not cause overflow and/or divided-by-zero.
-    /// - Overflow will not happen unless `rhs` is zero. __It does not panic__
-    /// while the similar methods `saturating_div()` for primitive integer
-    /// data type such as u8, u16, u32, u64, etc. will panic if `rhs` is zero.
-    /// - If `rhs` is zero, the quotient will have maximum value of `BigUInt`
-    /// type, and the flags of quotient such as `OVERFLOW`, `INFINITY`, and
-    /// `DIVIDED_BY_ZERO` will be set. __It does not panic__ while the
-    /// counterpart method `wrapping_div()` for primitive integer data type
-    /// such as u8, u16, u32, u64, etc. will panic if `rhs` is zero.
-    /// - The `OVERFLOW`, `INFINITY`, and `DIVIDED_BY_ZERO` flags reflect
-    /// historical overflow, which means if an overflow and/or divided-by-zero
-    /// occurred even once before this current operation or `OVERFLOW`,
-    /// `INFINITY`, and/or `DIVIDED_BY_ZERO` flag(s) is/are already set before
-    /// this current operation, the `OVERFLOW`, `INFINITY`, and/or
-    /// `DIVIDED_BY_ZERO` flag(s) is/are not changed even though this current
-    /// operation does not cause overflow and/or divided-by-zero.
+    /// - It takes the remainder (= `rd1`) of `self` divided by `modulo`,
+    ///   and takes the remainder (= `rd2`) of `rhs` divided by `modulo`,
+    ///   and then finally returns the remainder of `rd1` divided by `rd2`.
+    /// - All the flags are historical, which means, for example, if an
+    ///   divided_by_zero occurred even once before this current operation or
+    ///   `DIVIDED_BY_ZERO` flag is already set before this current operation,
+    ///   the `DIVIDED_BY_ZERO` flag is not changed even if this current operation
+    ///   does not cause divided_by_zero.
     /// 
     /// # Counterpart Method
-    /// If `rhs` is bigger than `u128`, the method
-    /// [saturating_div_assign()](struct@BigUInt#method.saturating_div_assign)
-    /// is proper rather than this method `saturating_div_assign_uint()`.
+    /// The method
+    /// [modular_rem_assign_uint()](struct@BigUInt#method.modular_rem_assign_uint)
+    /// is a bit faster than this method `modular_mul_assign()`.
+    /// So, if `rhs` is primitive unsigned integral data type such as u8, u16,
+    /// u32, u64, and u128, use the method
+    /// [modular_rem_assign_uint()](struct@BigUInt#method.modular_rem_assign_uint).
     /// 
     /// # Example
     /// ```
@@ -33577,30 +34868,53 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     }
 
     // pub fn panic_free_modular_rem(&self, rhs: &Self, modulo: &Self) -> Self
-    /// Calculates the remainder when `self` % `modulo` is divided by 
-    /// rhs` % `modulo`.
-    ///
+    /// Divides (`self` % `modulo`) by (`rhs` % `modulo`),
+    /// and returns the remainder.
+    /// 
+    /// # Arguments
+    /// - `rhs` divides `self`, and is of `&Self` type.
+    /// - `modulo` is the divisor to divide the remainder of (`self` / `rhs`),
+    ///   and is of `&Self` type.
+    /// 
     /// # Panics
     /// If `size_of::<T>() * N` <= `128`, this method may panic
     /// or its behavior may be undefined though it may not panic.
     /// 
     /// # Output
-    /// - It returns the remainder of when `self` % `modulo` is divided by
-    /// `rhs` % `modulo`, if `rhs` % `modulo` is not zero.
-    /// - If `rhs` % `modulo` is zero, it returns `zero`.
+    /// It returns the remainder of when (`self` % `modulo`) is divided by
+    /// (`rhs` % `modulo`) if (`rhs` % `modulo`) is not zero.
     /// 
     /// # Features
-    /// - If `rhs` % `modulo` is zero, the remainder will be `zero`
-    /// of `BigUInt` type, and the flag of remainder `DIVIDED_BY_ZERO`
-    /// will be set.
-    /// - __It does not panic__ even if `rhs` % `modulo` is `zero`.
-    /// - If `modulo` is `zero`, the flags such as `OVERFLOW`, `DIVIDED_BY_ZERO`,
-    /// and `INFINITY` will be set.
+    /// - It takes the remainder (= `rd1`) of `self` divided by `modulo`,
+    ///   and takes the remainder (= `rd2`) of `rhs` divided by `modulo`,
+    ///   and then finally returns the remainder of `rd1` divided by `rd2`.
+    /// - Overflow will not happen.
+    /// - __It does not panic__ even if `rhs` is zero or multiple of
+    ///   `modulo` or `modulo` is zero or one.
+    /// - If `modulo` is either zero or one, and `rhs` is zero or multiple of
+    ///   `modulo` then, the remainder will have the value `zero` and
+    ///   `DIVIDED_BY_ZERO` flag of the remainder will be set.
+    /// - If `modulo` is either zero or one, and `rhs` is not zero nor multiple
+    ///   of `modulo` then, the remainder will have the value `zero` and
+    ///   `UNDEFINED` flag will be set.
+    /// - If `modulo` is greater than one, and `rhs` is either zero or multiple
+    ///   of `modulo` then, the remainder will have the value `zero` and
+    ///   `UNDEFINED` and `DIVIDED_BY_ZERO` flags will be set.
+    /// - In summary, the remainder and the flags will be set as follows:
+    /// 
+    /// | `modulo` | `rhs`               | remainder | flags                          |
+    /// |----------|---------------------|-----------|--------------------------------|
+    /// | 0 or 1   | 0 (mod `modulo`)    | 0         | `UNDEFINED`, `DIVIDED_BY_ZERO` |
+    /// | 0 or 1   | != 0 (mod `modulo`) | 0         | `UNDEFINED`                    |
+    /// | >= 2     | 0 (mod `modulo`)    | 0         | `DIVIDED_BY_ZERO`              |
     /// 
     /// # Counterpart Method
-    /// If `rhs` is bigger than `u128`, the method
-    /// [saturating_div()](struct@BigUInt#method.saturating_div)
-    /// is proper rather than this method `saturating_div_uint()`.
+    /// The method
+    /// [panic_free_modular_rem_uint()](struct@BigUInt#method.panic_free_modular_rem_uint)
+    /// is a bit faster than this method `modular_rem()`.
+    /// So, if `rhs` is primitive unsigned integral data type such as u8, u16,
+    /// u32, u64, and u128, use the method
+    /// [panic_free_modular_rem_uint()](struct@BigUInt#method.panic_free_modular_rem_uint).
     /// 
     /// # Example
     /// ```
@@ -33636,48 +34950,57 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
         lhs
     }
 
-    // pub fn panic_free_modular_rem_assign(&mut self, rhs: &Self, modulo: &Self)
-    /// Calculates the quotient when `self` % `modulo` is divided by
-    /// `rhs` % `modulo`, and assigns the remainder to `self` back.
-    ///
+    // pub fn panic_free_modular_rem_assign(&self, rhs: &Self, modulo: &Self)
+    /// Divides (`self` % `modulo`) by (`rhs` % `modulo`),
+    /// and assigns the remainder back to `self`.
+    /// 
+    /// # Arguments
+    /// - `rhs` divides `self`, and is of `&Self` type.
+    /// - `modulo` is the divisor to divide the remainder of (`self` / `rhs`),
+    ///   and is of `&Self` type.
+    /// 
     /// # Panics
     /// If `size_of::<T>() * N` <= `128`, this method may panic
     /// or its behavior may be undefined though it may not panic.
     /// 
     /// # Features
-    /// - If `rhs` % `modulo` is zero, `self` which is the remainder will be
-    /// `zero`, and its flag `DIVIDED_BY_ZERO` will be set.
-    /// - __It does not panic__ even if `rhs` % `modulo` is `zero`.
-    /// - If `modulo` is `zero`, the flags such as `OVERFLOW`, `DIVIDED_BY_ZERO`,
-    /// and `INFINITY` will be set.
-    /// - 
-    /// The `OVERFLOW`, `INFINITY`, and `DIVIDED_BY_ZERO` flags reflect
-    /// historical overflow, which means if an overflow and/or divided-by-zero
-    /// occurred even once before this current operation or `OVERFLOW`,
-    /// `INFINITY`, and/or `DIVIDED_BY_ZERO` flag(s) is/are already set before
-    /// this current operation, the `OVERFLOW`, `INFINITY`, and/or
-    /// `DIVIDED_BY_ZERO` flag(s) is/are not changed even though this current
-    /// operation does not cause overflow and/or divided-by-zero.
-    /// - Overflow will not happen unless `rhs` is zero. __It does not panic__
-    /// while the similar methods `saturating_div()` for primitive integer
-    /// data type such as u8, u16, u32, u64, etc. will panic if `rhs` is zero.
-    /// - If `rhs` is zero, the quotient will have maximum value of `BigUInt`
-    /// type, and the flags of quotient such as `OVERFLOW`, `INFINITY`, and
-    /// `DIVIDED_BY_ZERO` will be set. __It does not panic__ while the
-    /// counterpart method `wrapping_div()` for primitive integer data type
-    /// such as u8, u16, u32, u64, etc. will panic if `rhs` is zero.
-    /// - The `OVERFLOW`, `INFINITY`, and `DIVIDED_BY_ZERO` flags reflect
-    /// historical overflow, which means if an overflow and/or divided-by-zero
-    /// occurred even once before this current operation or `OVERFLOW`,
-    /// `INFINITY`, and/or `DIVIDED_BY_ZERO` flag(s) is/are already set before
-    /// this current operation, the `OVERFLOW`, `INFINITY`, and/or
-    /// `DIVIDED_BY_ZERO` flag(s) is/are not changed even though this current
-    /// operation does not cause overflow and/or divided-by-zero.
+    /// - It takes the remainder (= `rd1`) of `self` divided by `modulo`,
+    ///   and takes the remainder (= `rd2`) of `rhs` divided by `modulo`,
+    ///   and then finally assigns the remainder of `rd1` divided by `rd2`
+    ///   back to `self`.
+    /// - Overflow will not happen.
+    /// - __It does not panic__ even if `rhs` is zero or multiple of
+    ///   `modulo` or `modulo` is zero or one.
+    /// - If `modulo` is either zero or one, and `rhs` is zero or multiple of
+    ///   `modulo` then, `self` will have the value `zero` and its
+    ///   `UNDEFINED` and `DIVIDED_BY_ZERO` flags will be set.
+    /// - If `modulo` is either zero or one, and `rhs` is not zero nor multiple
+    ///   of `modulo` then, `self` will have the value `zero` and its
+    ///   `UNDEFINED` flag will be set.
+    /// - If `modulo` is greater than one, and `rhs` is either zero or multiple
+    ///   of `modulo` then, `self` will have the value `zero` and its
+    ///   `DIVIDED_BY_ZERO` flag will be set.
+    /// - In summary, `self` and its flags will be set as follows:
+    /// 
+    /// | `modulo` | `rhs`               | remainder (= `self`) | flags                          |
+    /// |----------|---------------------|----------------------|--------------------------------|
+    /// | 0 or 1   | 0 (mod `modulo`)    | 0                    | `UNDEFINED`, `DIVIDED_BY_ZERO` |
+    /// | 0 or 1   | != 0 (mod `modulo`) | 0                    | `UNDEFINED`                    |
+    /// | >= 2     | 0 (mod `modulo`)    | 0                    | `DIVIDED_BY_ZERO`              |
+    /// 
+    /// - All the flags are historical, which means, for example, if an
+    ///   divided_by_zero occurred even once before this current operation or
+    ///   `DIVIDED_BY_ZERO` flag is already set before this current operation,
+    ///   the `DIVIDED_BY_ZERO` flag is not changed even if this current operation
+    ///   does not cause divided_by_zero.
     /// 
     /// # Counterpart Method
-    /// If `rhs` is bigger than `u128`, the method
-    /// [saturating_div_assign()](struct@BigUInt#method.saturating_div_assign)
-    /// is proper rather than this method `saturating_div_assign_uint()`.
+    /// The method
+    /// [panic_free_modular_rem_assign_uint()](struct@BigUInt#method.panic_free_modular_rem_assign_uint)
+    /// is a bit faster than this method `panic_free_modular_rem_assign()`.
+    /// So, if `rhs` is primitive unsigned integral data type such as u8, u16,
+    /// u32, u64, and u128, use the method
+    /// [panic_free_modular_rem_assign_uint()](struct@BigUInt#method.panic_free_modular_rem_assign_uint).
     /// 
     /// # Example
     /// ```
@@ -36324,7 +37647,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
         (self.flag & flag) != 0
     }
 
-    // pub fn get_all_flags(&self) -> u8
+    // fn get_all_flags(&self) -> u8
     /// Gets all the flag bits.
     ///
     /// # Output
@@ -36353,7 +37676,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
         self.flag = 0;
     }
 
-    // pub fn set_all_flags(&mut self)
+    // fn set_all_flags(&mut self)
     /// Resets all flag bits to be `0`.
     /// 
     /// # Example

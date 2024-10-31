@@ -32,11 +32,29 @@ The checked items have already been implemented including documentation __at lea
 - [X] Trait SmallUInt, its implementation for primitive data types, and the implementation
       of it for the Unions --- [`SmallUInt`](https://docs.rs/cryptocol/latest/cryptocol/number/small_uint/trait.SmallUInt.html#trait.SmallUInt)
 
+<!--
+- [ ] Trait SmallUInt and its implementation for primitive data types --- SmallUInt
+    ===> Moved to Roadmap for ver. 2.0
+-->
+
 ### Big Numbers: meaningful as itself and also the foundation for Asymmetric-Key Algorithms
 
 - [ ] Fixed Sized Big Unsigned Integer Operation --- [`BigUInt`](https://docs.rs/cryptocol/latest/cryptocol/number/big_uint/struct.BigUInt.html#struct.BigUInt)
 
+<!--
+- [ ] Fixed Sized Big Signed Integer Operation --- BigSInt
+    ===> Moved to Roadmap for ver. 2.0
+- [ ] Variable Sized Big Signed Integer Operation --- LargeInt
+    ===> Moved to Roadmap for ver. 2.0 or higher
+-->
+
 ### Hash Algorithms
+
+<!--
+- [ ] MD2 hash algorithms based on 128 bits
+    --- Includes MD4 and its expanded versions.
+    ===> Moved to Roadmap for ver. 2.0
+-->
 
 - [X] MD4 hash algorithms based on 128 bits
     --- Includes MD4 and its expanded versions.
@@ -44,6 +62,13 @@ The checked items have already been implemented including documentation __at lea
 - [X] MD5 hash algorithms based on 128 bits
     --- Includes MD5 and its expanded versions.
     [`MD5_Generic`](https://docs.rs/cryptocol/latest/cryptocol/hash/md5/struct.MD5_Generic.html#struct.MD5_Generic)
+
+<!--
+- [ ] MD6 hash algorithms based on 256 bits
+    --- Includes MD4 and its expanded versions.
+    ===> Moved to Roadmap for ver. 2.0
+-->
+
 - [X] SHA-1 hash algorithms based on 160 bits
     --- Includes SHA-1, SHA-0, and their expanded versions.
     [`SHA1_Generic`](https://docs.rs/cryptocol/latest/cryptocol/hash/sha1/struct.SHA1_Generic.html#struct.SHA1_Generic)
@@ -62,7 +87,31 @@ The checked items have already been implemented including documentation __at lea
 - [ ] SHA-3 (SHAKE 128)
 - [ ] SHA-3 (SHAKE 256)
 
+<!--
+- [ ] RIPEMD hash algorithms based on 256 bits
+    --- Includes RIPEMD and its expanded versions.
+    ===> Moved to Roadmap for ver. 2.0
+- [ ] BLAKE2 hash algorithms based on 256 bits
+    --- Includes BLAKE2 and its expanded versions.
+    ===> Moved to Roadmap for ver. 2.0
+- [ ] BLAKE3 hash algorithms based on 256 bits
+    --- Includes BLAKE3 and its expanded versions.
+    ===> Moved to Roadmap for ver. 2.0
+-->
+
 ### Symmetric-key Algorithms for the Encryption/Decryption of digital data
+
+<!--
+- [ ] Lucifer symmetric-key encryption/decryption algorithm
+    --- Includes Lucifer and its expanded versions. `Lucifer_Generic`
+    ===> Moved to Roadmap for ver. 2.0
+- [ ] Bluefish symmetric-key encryption/decryption algorithm
+    --- Includes Bluefish and its expanded versions. `Bluefish_Generic`
+    ===> Moved to Roadmap for ver. 2.0
+- [ ] Twofish symmetric-key encryption/decryption algorithm
+    --- Includes Twofish and its expanded versions. `Twofish_Generic`
+    ===> Moved to Roadmap for ver. 2.0
+-->
 
 - [ ] DES symmetric-key encryption/decryption algorithm
     --- Includes DES and its expanded versions. `DES_Generic`
@@ -72,6 +121,42 @@ The checked items have already been implemented including documentation __at lea
     --- Includes AES and its expanded versions. `AES_Generic`
 - [ ] NAES symmetric-key encryption/decryption algorithm
     --- Includes 2DES, 3DES, 4AES, etc., and their expanded versions. `NAES_Generic`
+
+<!--
+- [ ] SEED symmetric-key encryption/decryption algorithm
+    --- Includes SEED and its expanded versions. `SEED_Generic`
+    ===> Moved to Roadmap for ver. 2.0
+- [ ] HIGHT symmetric-key encryption/decryption algorithm
+    --- Includes HIGHT and its expanded versions. `HIGHT_Generic`
+    ===> Moved to Roadmap for ver. 2.0
+- [ ] ARIA symmetric-key encryption/decryption algorithm
+    --- Includes ARIA and its expanded versions. `ARIA_Generic`
+    ===> Moved to Roadmap for ver. 2.0
+- [ ] LEA symmetric-key encryption/decryption algorithm
+    --- Includes LEA and its expanded versions. `LEA_Generic`
+    ===> Moved to Roadmap for ver. 2.0
+- [ ] RC2 symmetric-key encryption/decryption algorithm
+    --- Includes RC2 and its expanded versions. `RC2_Generic`
+    ===> Moved to Roadmap for ver. 2.0
+- [ ] RC4 symmetric-key encryption/decryption algorithm
+    --- Includes RC4 and its expanded versions. `RC4_Generic`
+    ===> Moved to Roadmap for ver. 2.0
+- [ ] RC5 symmetric-key encryption/decryption algorithm
+    --- Includes RC5 and its expanded versions. `RC5_Generic`
+    ===> Moved to Roadmap for ver. 2.0
+- [ ] RC6 symmetric-key encryption/decryption algorithm
+    --- Includes RC6 and its expanded versions. `RC6_Generic`
+    ===> Moved to Roadmap for ver. 2.0
+- [ ] Salsa20 symmetric-key encryption/decryption algorithm
+    --- Includes Salsa20 and its expanded versions. `Salsa20_Generic`
+    ===> Moved to Roadmap for ver. 2.0
+- [ ] Chacha20 symmetric-key encryption/decryption algorithm
+    --- Includes Chacha20 and its expanded versions. `Chacha20_Generic`
+    ===> Moved to Roadmap for ver. 2.0
+- [ ] IDEA symmetric-key encryption/decryption algorithm
+    --- Includes IDEA and its expanded versions. `IDEA_Generic`
+    ===> Moved to Roadmap for ver. 2.0
+-->
 
 ### Pseudo-Random Number Generator Algorithms
 
@@ -93,8 +178,20 @@ The checked items have already been implemented including documentation __at lea
 
 ### Asymmetric-key Algorithms for the Encryption/Decryption of digital data
 
+<!--
+- [ ] Diffie-Hellman
+    ===> Moved to Roadmap for ver. 2.0
+- [ ] ElGamal
+    ===> Moved to Roadmap for ver. 2.0
+-->
+
 - [ ] RSA (Ron Rivest, Adi Shamir, Leonard Adleman)
 - [ ] ECC (Elliptic Curve Cryptosystem)
+
+<!--
+- [ ] Rabin
+    ===> Moved to Roadmap for ver. 2.0
+-->
 
 When the implementation of all the above functionalitis are completed,
 the version number 1.0.0.0 will be given. After that whenever another
