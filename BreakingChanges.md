@@ -2,7 +2,26 @@
 
 ## Breaking changes from ver. 0.8.4 to ver. 0.8.5
 
-### Five methods of BigUInt
+## Twelve methods of BigUInt
+
+| Ver. 0.8.4                                        | Ver. 0.8.5 |
+|---------------------------------------------------|------------|
+| pub fn ilog2_uint(&self) -> Self                  | removed    |
+| pub fn ilog2_assign_uint(&mut self)               | removed    |
+| pub fn panic_free_ilog2_uint(&self) -> Self       | removed    |
+| pub fn panic_free_ilog2_assign_uint(&mut self)    | removed    |
+| pub fn checked_ilog2_uint(&self) -> Option<Self>  | removed    |
+| pub fn unchecked_ilog2_uint(&self) -> Self        | removed    |
+| pub fn ilog10_uint(&self) -> Self                 | removed    |
+| pub fn ilog10_assign_uint(&mut self)              | removed    |
+| pub fn panic_free_ilog10_uint(&self) -> Self      | removed    |
+| pub fn panic_free_ilog10_assign_uint(&mut self)   | removed    |
+| pub fn checked_ilog10_uint(&self) -> Option<Self> | removed    |
+| pub fn unchecked_ilog10_uint(&self) -> Self       | removed    |
+
+- The methods above have been removed because they are meaningless.
+
+### Seven methods of BigUInt
 
 | Methods                                                                    |
 |----------------------------------------------------------------------------|

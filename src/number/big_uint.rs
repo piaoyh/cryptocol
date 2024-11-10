@@ -195,6 +195,356 @@ use crate::number::{ SmallUInt, LongerUnion, SharedValues, SharedArrays, NumberE
 
 
 
+/*** Macro Fuctions ***/
+
+macro_rules! carrying_calc
+{
+    ($me:expr, $func:expr, $rhs:expr, $carry:expr) => {
+        let mut res = Self::from_array(Self::get_number($me).clone());
+        let c = $func(&mut res, $rhs, $carry);
+        return (res, c);
+    }
+    // carrying_calc!(self, Self::carrying_add_assign_uint, rhs, carry);
+    //
+    // let mut res = Self::from_array(self.get_number().clone());
+    // let c = res.carrying_add_assign_uint(rhs, carry);
+    // (res, c)
+}
+
+macro_rules! overflowing_calc
+{
+    ($me:expr, $func:expr, $rhs:expr) => {
+        let mut res = Self::from_array(Self::get_number($me).clone());
+        let current_overflow = $func(&mut res, $rhs);
+        return (res, current_overflow);
+    }
+    // overflowing_calc!(self, Self::overflowing_add_assign_uint, rhs);
+    //
+    // let mut res = Self::from_array(self.get_number().clone());
+    // let current_overflow = res.overflowing_add_assign_uint(rhs);
+    // (res, current_overflow)
+}
+
+macro_rules! overflowing_calc_div
+{
+    ($me:expr, $func:expr, $rhs:expr) => {
+        let (quotient, _) = $func($me, $rhs);
+        return (quotient, false);
+    }
+    // overflowing_calc_div!(self, Self::divide_fully_uint, rhs);
+    //
+    // let (quotient, _) = self.divide_fully_uint(rhs);
+    // let overflow = quotient.is_overflow();
+    // (quotient, overflow)
+}
+
+macro_rules! overflowing_calc_rem
+{
+    ($me:expr, $func:expr, $rhs:expr) => {
+        let (_, remainder) = $func($me, $rhs);
+        return (remainder, false);
+    }
+    // overflowing_calc_rem!(self, Self::divide_fully_uint, rhs);
+    //
+    // let (_, remainder) = self.divide_fully_uint(rhs);
+    // (remainder, false)
+}
+
+macro_rules! overflowing_calc_assign
+{
+    ($me:expr, $func:expr, $rhs:expr) => {
+        let flags = Self::get_all_flags($me);
+        Self::reset_all_flags($me);
+        $func($me, $rhs);
+        let current_overflow = Self::is_overflow($me);
+        Self::set_flag_bit($me, flags);
+        return current_overflow;
+    }
+    // overflowing_calc_assign!(self, Self::wrapping_add_assign_uint, rhs);
+    //
+    // let flags = self.get_all_flags();
+    // self.reset_all_flags();
+    // self.wrapping_add_assign_uint(rhs);
+    // let current_overflow = self.is_overflow();
+    // self.set_flag_bit(flags);
+    // current_overflow
+}
+
+macro_rules! underflowing_calc_assign
+{
+    ($me:expr, $func:expr, $rhs:expr) => {
+        let flags = Self::get_all_flags($me);
+        Self::reset_all_flags($me);
+        $func($me, $rhs);
+        let current_underflow = Self::is_underflow($me);
+        Self::set_flag_bit($me, flags);
+        return current_underflow;
+    }
+    // underflowing_calc_assign!(self, Self::wrapping_sub_assign_uint, rhs);
+    //
+    // let flags = self.get_all_flags();
+    // self.reset_all_flags();
+    // self.wrapping_sub_assign_uint(rhs);
+    // let current_underflow = self.is_underflow();
+    // self.set_flag_bit(flags);
+    // current_underflow
+}
+
+macro_rules! general_calc
+{
+    ($me:expr, $func:expr) => {
+        let mut res = Self::from_array(Self::get_number($me).clone());
+        $func(&mut res);
+        return res;
+    };
+    // general_calc!(self, Self::next_power_of_two_assign);
+    //
+    // let mut res = Self::from_array(self.get_number().clone());
+    // res.next_power_of_two_assign();
+    // res
+
+    ($me:expr, $func:expr, $rhs:expr) => {
+        let mut res = Self::from_array(Self::get_number($me).clone());
+        $func(&mut res, $rhs);
+        return res;
+    };
+    // general_calc!(self, Self::saturating_add_assign_uint, rhs);
+    //
+    // let mut res = Self::from_array(self.get_number().clone());
+    // res.saturating_add_assign_uint(rhs);
+    // res
+
+    ($me:expr, $func:expr, $rhs:expr, $modulo:expr) => {
+        let mut res = Self::from_array(Self::get_number($me).clone());
+        $func(&mut res, $rhs, $modulo);
+        return res;
+    }
+    // general_calc!(self, Self::modular_add_assign_uint, rhs, modulo);
+    //
+    // let mut res = Self::from_array(self.get_number().clone());
+    // res.modular_add_assign_uint(rhs, modulo);
+    // res
+}
+
+macro_rules! general_calc_div
+{
+    ($me:expr, $func:expr, $rhs:expr) => {
+        let (quotient, _) = $func($me, $rhs);
+        return quotient;
+    }
+    // general_calc_div!(self, Self::divide_fully_uint, rhs);
+    //
+    // let (quotient, _) = self.divide_fully_uint(rhs);
+    // quotient
+}
+
+macro_rules! general_calc_rem
+{
+    ($me:expr, $func:expr, $rhs:expr) => {
+        let (_, remainder) = $func($me, $rhs);
+        return remainder;
+    }
+    // general_calc_rem!(self, Self::divide_fully_uint, rhs);
+    //
+    // let (_, remainder) = self.divide_fully_uint(rhs);
+    // remainder
+}
+
+macro_rules! general_calc_assign
+{
+    ($me:expr, $func:expr) => {
+        let res = $func($me);
+        Self::set_number($me, res.get_number());
+        Self::set_all_flags($me, res.get_all_flags());
+    };
+    // general_calc_assign!(self, Self::ilog2);
+    //
+    // let res = self.ilog2();
+    // self.set_number(res.get_number());
+    // self.set_all_flags(res.get_all_flags());
+
+    ($me:expr, $func:expr, $rhs:expr) => {
+        let res = $func($me, $rhs);
+        Self::set_number($me, res.get_number());
+        Self::set_all_flags($me, res.get_all_flags());
+    }
+    // general_calc_assign!(self, Self::wrapping_div_uint, rhs);
+    //
+    // let res = self.wrapping_div_uint(rhs);
+    // self.set_number(res.get_number());
+    // self.set_all_flags(res.get_all_flags());
+}
+
+macro_rules! saturating_calc_assign
+{
+    ($me:expr, $func:expr, $rhs:expr) => {
+        let overflow = Self::is_overflow($me);
+        if $func($me, $rhs)
+        {
+            Self::set_max($me);
+            if !overflow
+                { Self::reset_overflow($me); }
+        }
+    }
+    // saturating_calc_assign!(self, Self::overflowing_add_assign_uint, rhs);
+    //
+    // let overflow = self.is_overflow();
+    // if self.overflowing_add_assign_uint(rhs)
+    // {
+    //     self.set_max();
+    //     if !overflow
+    //         { self.reset_overflow(); }
+    // }
+}
+
+macro_rules! saturating_calc_sub_assign
+{
+    ($me:expr, $func:expr, $rhs:expr) => {
+        let underflow = Self::is_underflow($me);
+        if $func($me, $rhs)
+        {
+            Self::set_zero($me);
+            if !underflow
+                { Self::reset_underflow($me); }
+        }
+    }
+    // saturating_calc_sub_assign!(self, Self::overflowing_sub_assign_uint, rhs);
+    //
+    // let underflow = self.is_underflow();
+    // if self.overflowing_sub_assign_uint(rhs)
+    // {
+    //     self.set_zero();
+    //     if !underflow
+    //         { self.reset_underflow(); }
+    // }
+}
+
+macro_rules! checked_calc
+{
+    ($me:expr, $func:expr, $rhs:expr) => {
+        let (res, overflow) = $func($me, $rhs);
+        return  if overflow
+                    { None }
+                else
+                    { Some(res) };
+    }
+    // checked_calc!(self, Self::overflowing_add_uint, T::num::<U>(rhs));
+    //
+    // let (res, overflow) = self.overflowing_add_uint(rhs);
+    // if overflow
+    //     { None }
+    // else
+    //     { Some(res) }
+}
+
+macro_rules! checked_calc_div
+{
+    ($me:expr, $func:expr, $rhs:expr) => {
+        return  if $rhs.is_zero()
+                    { None }
+                else
+                    { Some($func($me, $rhs)) };
+    }
+    // checked_calc_div!(self, Self::wrapping_div_uint, rhs);
+    //
+    // if rhs.is_zero()
+    //     { None }
+    // else
+    //     { Some(self.wrapping_div_uint(rhs)) }
+}
+
+macro_rules! modular_calc_assign
+{
+    ($me:expr, $func:expr, $rhs:expr, $modulo:expr) => {
+        if Self::is_zero_or_one($modulo)
+            { panic!(); }
+        $func($me, $rhs, $modulo);
+    }
+    // modular_calc_assign!(self, Self::common_modular_add_assign_uint, rhs, modulo);
+    //
+    // if modulo.is_zero_or_one()
+    //     { panic!(); }
+    // self.common_modular_add_assign_uint(rhs, modulo);
+}
+
+macro_rules! panic_free_modular_calc_assign
+{
+    ($me:expr, $func:expr, $rhs:expr, $modulo:expr) => {
+        if Self::is_zero_or_one($modulo)
+        {
+            Self::set_zero($me);
+            Self::set_undefined($me);
+        }
+        else
+        {
+            $func($me, $rhs, $modulo);
+        }
+    }
+    // panic_free_modular_calc_assign!(self, Self::common_modular_add_assign_uint, rhs, modulo);
+    //
+    // if modulo.is_zero_or_one()
+    // {
+    //     self.set_undefined();
+    //     self.set_zero();
+    // }
+    // else
+    // {
+    //     self.common_modular_add_assign(rhs, modulo);
+    // }
+}
+
+macro_rules! panic_free_calc_div_rem_assign
+{
+    ($me:expr, $func:expr, $rhs:expr) => {
+        let res = $func($me, $rhs);
+        Self::set_number($me, res.get_number());
+        Self::set_flag_bit($me, res.get_all_flags());
+    }
+    // panic_free_calc_div_rem_assign!(self, Self::panic_free_div_uint, rhs);
+    //
+    // let res = self.panic_free_div_uint(rhs);
+    // self.set_number(res.get_number());
+    // self.set_flag_bit(res.get_all_flags());
+}
+
+macro_rules! if_rhs_is_zero
+{
+    ($me:expr, $rhs:expr) => {
+        let mut q: Self;
+        let mut r = Self::zero();
+        r.set_all_flags(Self::DIVIDED_BY_ZERO);
+        if Self::is_zero($me)
+        {
+            q = Self::zero();
+            q.set_all_flags(Self::UNDEFINED | Self::DIVIDED_BY_ZERO);
+        }
+        else
+        {
+            q = Self::max();
+            q.set_all_flags(Self::INFINITY | Self::DIVIDED_BY_ZERO);
+        }
+        return (q, r);
+    }
+    // if_rhs_is_zero!(self, rhs);
+    //
+    // let mut q: Self;
+    // let mut r = Self::zero();
+    // r.set_all_flags(Self::DIVIDED_BY_ZERO);
+    // if self.is_zero()
+    // {
+    //     q = Self::zero();
+    //     q.set_all_flags(Self::UNDEFINED | Self::DIVIDED_BY_ZERO);
+    // }
+    // else
+    // {
+    //     q = Self::max();
+    //     q.set_all_flags(Self::INFINITY | Self::DIVIDED_BY_ZERO);
+    // }
+    // return (q, r);
+}
+
+
+
 //////////////////////////////////////////
 /// # Introduction
 /// A struct that represents a big unsigned integer with user-defined fixed size.
@@ -4062,7 +4412,6 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
         Some(Ordering::Equal)
     }
 
-    
 
     /***** ARITHMATIC OPERATIONS WITH UINT *****/
 
@@ -4201,9 +4550,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
             + BitXor<Output=U> + BitXorAssign + Not<Output=U>
             + PartialEq + PartialOrd
     {
-        let mut res = Self::from_array(self.get_number().clone());
-        let c = res.carrying_add_assign_uint(rhs, carry);
-        (res, c)
+        carrying_calc!(self, Self::carrying_add_assign_uint, rhs, carry);
     }
 
     // pub fn carrying_add_assign_uint<U>(&mut self, rhs: U, carry: bool) -> bool
@@ -4687,9 +5034,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
             + BitXor<Output=U> + BitXorAssign + Not<Output=U>
             + PartialEq + PartialOrd
     {
-        let mut res = Self::from_array(self.get_number().clone());
-        let current_overflow = res.overflowing_add_assign_uint(rhs);
-        (res, current_overflow)
+        overflowing_calc!(self, Self::overflowing_add_assign_uint, rhs);
     }
 
     // pub fn overflowing_add_assign_uint<U>(&mut self, rhs: U) -> bool
@@ -4800,12 +5145,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
             + BitXor<Output=U> + BitXorAssign + Not<Output=U>
             + PartialEq + PartialOrd
     {
-        let flags = self.get_all_flags();
-        self.reset_all_flags();
-        self.wrapping_add_assign_uint(rhs);
-        let current_overflow = self.is_overflow();
-        self.set_flag_bit(flags);
-        current_overflow
+        overflowing_calc_assign!(self, Self::wrapping_add_assign_uint, rhs);
     }
 
     // pub fn checked_add_uint<U>(&self, rhs: U) -> Option<Self>
@@ -4912,17 +5252,9 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
             + PartialEq + PartialOrd
     {
         if rhs.length_in_bytes() > T::size_in_bytes()
-        {
-            self.checked_add(&Self::from_uint(rhs))
-        }
+            { self.checked_add(&Self::from_uint(rhs)) }
         else    // if rhs.length_in_bytes() <= T::size_in_bytes()
-        {
-            let (res, overflow) = self.overflowing_add_uint(T::num::<U>(rhs));
-            if overflow
-                { None }
-            else
-                { Some(res) }
-        }
+            { checked_calc!(self, Self::overflowing_add_uint, T::num::<U>(rhs)); }
     }
 
     // pub fn unchecked_add_uint<U>(&self, rhs: U) -> Self
@@ -5084,9 +5416,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
             + BitXor<Output=U> + BitXorAssign + Not<Output=U>
             + PartialEq + PartialOrd
     {
-        let mut res = Self::from_array(self.get_number().clone());
-        res.saturating_add_assign_uint(rhs);
-        res
+        general_calc!(self, Self::saturating_add_assign_uint, rhs);
     }
 
     // pub fn saturating_add_assign_uint<U>(&mut self, rhs: T)
@@ -5201,13 +5531,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
             + BitXor<Output=U> + BitXorAssign + Not<Output=U>
             + PartialEq + PartialOrd
     {
-        let overflow = self.is_overflow();
-        if self.overflowing_add_assign_uint(rhs)
-        {
-            self.set_max();
-            if !overflow
-                { self.reset_overflow(); }
-        }
+        saturating_calc_assign!(self, Self::overflowing_add_assign_uint, rhs);
     }
 
     // pub fn modular_add_uint<U>(&self, rhs: U, modulo: &Self) -> Self
@@ -5496,9 +5820,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
             + PartialEq + PartialOrd
 
     {
-        let mut res = Self::from_array(self.get_number().clone());
-        res.modular_add_assign_uint(rhs, modulo);
-        res
+        general_calc!(self, Self::modular_add_assign_uint, rhs, modulo);
     }
 
     // pub fn modular_add_assign_uint<U>(&mut self, rhs: U, modulo: &Self)
@@ -5843,9 +6165,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
             + BitXor<Output=U> + BitXorAssign + Not<Output=U>
             + PartialEq + PartialOrd
     {
-        if modulo.is_zero_or_one()
-            { panic!(); }
-        self.common_modular_add_assign_uint(rhs, modulo);
+        modular_calc_assign!(self, Self::common_modular_add_assign_uint, rhs, modulo);
     }
 
     // pub fn panic_free_modular_add_uint<U>(&self, rhs: U, modulo: &Self) -> Self
@@ -6164,9 +6484,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
             + PartialEq + PartialOrd
 
     {
-        let mut res = Self::from_array(self.get_number().clone());
-        res.panic_free_modular_add_assign_uint(rhs, modulo);
-        res
+        general_calc!(self, Self::panic_free_modular_add_assign_uint, rhs, modulo);
     }
 
     // pub fn panic_free_modular_add_assign_uint<U>(&mut self, rhs: U, modulo: &Self)
@@ -6584,13 +6902,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
             + BitXor<Output=U> + BitXorAssign + Not<Output=U>
             + PartialEq + PartialOrd
     {
-        if modulo.is_zero_or_one()
-        {
-            self.set_zero();
-            self.set_undefined();
-            return;
-        }
-        self.common_modular_add_assign_uint(rhs, modulo);
+        panic_free_modular_calc_assign!(self, Self::common_modular_add_assign_uint, rhs, modulo);
     }
 
     fn common_modular_add_assign_uint<U>(&mut self, rhs: U, modulo: &Self)
@@ -6790,9 +7102,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
             + BitXor<Output=U> + BitXorAssign + Not<Output=U>
             + PartialEq + PartialOrd
     {
-        let mut res = Self::from_array(self.get_number().clone());
-        let b = res.borrowing_sub_assign_uint(rhs, borrow);
-        (res, b)
+        carrying_calc!(self, Self::borrowing_sub_assign_uint, rhs, borrow);
     }
 
     // pub fn borrowing_sub_assign_uint<U>(&mut self, rhs: U, borrow: bool) -> bool
@@ -7071,8 +7381,15 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
             + BitXor<Output=U> + BitXorAssign + Not<Output=U>
             + PartialEq + PartialOrd
     {
-        let (res, _) = self.borrowing_sub_uint(rhs, false);
-        res
+        if U::size_in_bytes() > T::size_in_bytes()
+        {
+            self.wrapping_sub(&Self::from_uint(rhs))
+        }
+        else // if U::size_in_bytes() <= T::size_in_bytes()
+        {
+            let (res, _) = self.borrowing_sub_uint(rhs, false);
+            res
+        }
     }
 
     // pub fn wrapping_sub_assign_uint<U>(&mut self, rhs: U)
@@ -7297,9 +7614,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
             + BitXor<Output=U> + BitXorAssign + Not<Output=U>
             + PartialEq + PartialOrd
     {
-        let mut res = Self::from_array(self.get_number().clone());
-        let current_underflow = res.overflowing_sub_assign_uint(rhs);
-        (res, current_underflow)
+        overflowing_calc!(self, Self::overflowing_sub_assign_uint, rhs);
     }
 
     // pub fn overflowing_add_assign_uint<U>(&mut self, rhs: U) -> bool
@@ -7437,14 +7752,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
             + BitXor<Output=U> + BitXorAssign + Not<Output=U>
             + PartialEq + PartialOrd
     {
-        let mut flags = self.get_all_flags();
-        self.reset_all_flags();
-        self.wrapping_sub_assign_uint(rhs);
-        let current_underflow = self.is_underflow();
-        if current_underflow
-            { flags |= Self::UNDERFLOW; }
-        self.set_all_flags(flags);
-        current_underflow
+        underflowing_calc_assign!(self, Self::wrapping_sub_assign_uint, rhs);
     }
 
     // pub fn checked_sub_uint<U>(&self, rhs: U) -> Option<Self>
@@ -7550,12 +7858,10 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
             + BitXor<Output=U> + BitXorAssign + Not<Output=U>
             + PartialEq + PartialOrd
     {
-        let mut res = Self::from_array(self.get_number().clone());
-        let underflow = res.overflowing_sub_assign_uint(rhs);
-        if underflow
-            { None }
+        if rhs.length_in_bytes() > T::size_in_bytes()
+            { self.checked_sub(&Self::from_uint(rhs)) }
         else
-            { Some(res) }
+            { checked_calc!(self, Self::overflowing_sub_uint, T::num::<U>(rhs)); }
     }
 
     // pub fn unchecked_sub_uint<U>(&self, rhs: U) -> Self
@@ -7716,9 +8022,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
             + BitXor<Output=U> + BitXorAssign + Not<Output=U>
             + PartialEq + PartialOrd
     {
-        let mut res = Self::from_array(self.get_number().clone());
-        res.saturating_sub_assign_uint(rhs);
-        res
+        general_calc!(self, Self::saturating_sub_assign_uint, rhs);
     }
 
     // pub fn saturating_sub_assign_uint<U>(&mut self, rhs: T)
@@ -7833,13 +8137,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
             + BitXor<Output=U> + BitXorAssign + Not<Output=U>
             + PartialEq + PartialOrd
     {
-        let underflow = self.is_underflow();
-        if self.overflowing_sub_assign_uint(rhs)
-        {
-            self.set_zero();
-            if !underflow
-                { self.reset_underflow(); }
-        }
+        saturating_calc_sub_assign!(self, Self::overflowing_sub_assign_uint, rhs);
     }
 
     // pub fn modular_sub_uint<U>(&self, rhs: U, modulo: &Self) -> Self
@@ -8128,9 +8426,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
             + BitXor<Output=U> + BitXorAssign + Not<Output=U>
             + PartialEq + PartialOrd
     {
-        let mut res = Self::from_array(self.get_number().clone());
-        res.modular_sub_assign_uint(rhs, modulo);
-        res
+        general_calc!(self, Self::modular_sub_assign_uint, rhs, modulo);
     }
 
     // pub fn modular_sub_assign_uint<U>(&mut self, rhs: U, modulo: &Self)
@@ -8489,9 +8785,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
             + BitXor<Output=U> + BitXorAssign + Not<Output=U>
             + PartialEq + PartialOrd
     {
-        if modulo.is_zero_or_one()
-            { panic!(); }
-        self.common_modular_sub_assign_uint(rhs, modulo);
+        modular_calc_assign!(self, Self::common_modular_sub_assign_uint, rhs, modulo);
     }
 
     // pub fn panic_free_modular_sub_uint<U>(&self, rhs: U, modulo: &Self) -> Self
@@ -8810,9 +9104,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
             + BitXor<Output=U> + BitXorAssign + Not<Output=U>
             + PartialEq + PartialOrd
     {
-        let mut res = Self::from_array(self.get_number().clone());
-        res.panic_free_modular_sub_assign_uint(rhs, modulo);
-        res
+        general_calc!(self, Self::panic_free_modular_sub_assign_uint, rhs, modulo);
     }
 
     // pub fn panic_free_modular_sub_assign_uint<U>(&mut self, rhs: U, modulo: &Self)
@@ -9224,13 +9516,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
             + BitXor<Output=U> + BitXorAssign + Not<Output=U>
             + PartialEq + PartialOrd
     {
-        if modulo.is_zero_or_one()
-        {
-            self.set_zero();
-            self.set_undefined();
-            return;
-        }
-        self.common_modular_sub_assign_uint(rhs, modulo);
+        panic_free_modular_calc_assign!(self, Self::common_modular_sub_assign_uint, rhs, modulo);
     }
 
     fn common_modular_sub_assign_uint<U>(&mut self, rhs: U, modulo: &Self)
@@ -10066,9 +10352,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
             + BitXor<Output=U> + BitXorAssign + Not<Output=U>
             + PartialEq + PartialOrd
     {
-        let mut res = Self::from_array(self.get_number().clone());
-        res.wrapping_mul_assign_uint(rhs);
-        res
+        general_calc!(self, Self::wrapping_mul_assign_uint, rhs);
     }
 
     // pub fn wrapping_mul_assign_uint<U>(&mut self, rhs: U)
@@ -10308,9 +10592,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
             + BitXor<Output=U> + BitXorAssign + Not<Output=U>
             + PartialEq + PartialOrd
     {
-        let mut res = Self::from_array(self.get_number().clone());
-        let current_overflow = res.overflowing_mul_assign_uint(rhs);
-        (res, current_overflow)
+        overflowing_calc!(self, Self::overflowing_mul_assign_uint, rhs);
     }
 
     // pub fn overflowing_mul_assign_uint<U>(&mut self, rhs: U) -> bool
@@ -10417,14 +10699,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
             + BitXor<Output=U> + BitXorAssign + Not<Output=U>
             + PartialEq + PartialOrd
     {
-        let mut flags = self.get_all_flags();
-        self.reset_all_flags();
-        self.wrapping_mul_assign_uint(rhs);
-        let current_overflow = self.is_overflow();
-        if current_overflow
-            { flags |= Self::OVERFLOW; }
-        self.set_all_flags(flags);
-        current_overflow
+        overflowing_calc_assign!(self, Self::wrapping_mul_assign_uint, rhs);
     }
 
     // pub fn checked_mul_uint<U>(&self, rhs: U) -> Option<Self>
@@ -10509,12 +10784,10 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
             + BitXor<Output=U> + BitXorAssign + Not<Output=U>
             + PartialEq + PartialOrd
     {
-        let mut res = Self::from_array(self.get_number().clone());
-        let overflow = res.overflowing_mul_assign_uint(rhs);
-        if overflow
-            { None }
+        if rhs.length_in_bytes() > T::size_in_bytes()
+            { self.checked_mul(&Self::from_uint(rhs)) }
         else
-            { Some(res) }
+            { checked_calc!(self, Self::overflowing_mul_uint, T::num::<U>(rhs)); }
     }
 
     // pub fn unchecked_mul_uint<U>(&self, rhs: U) -> Self
@@ -10662,9 +10935,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
             + BitXor<Output=U> + BitXorAssign + Not<Output=U>
             + PartialEq + PartialOrd
     {
-        let mut res = Self::from_array(self.get_number().clone());
-        res.saturating_mul_assign_uint(rhs);
-        res
+        general_calc!(self, Self::saturating_mul_assign_uint, rhs);
     }
 
     // pub fn saturating_mul_assign_uint<U>(&mut self, rhs: U)
@@ -10753,13 +11024,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
             + BitXor<Output=U> + BitXorAssign + Not<Output=U>
             + PartialEq + PartialOrd
     {
-        let overflow = self.is_overflow();
-        if self.overflowing_mul_assign_uint(rhs)
-        {
-            self.set_max();
-            if !overflow
-                { self.reset_overflow(); }
-        }
+        saturating_calc_assign!(self, Self::overflowing_mul_assign_uint, rhs);
     }
 
     /*
@@ -11048,9 +11313,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
             + BitXor<Output=U> + BitXorAssign + Not<Output=U>
             + PartialEq + PartialOrd
     {
-        let mut res = Self::from_array(self.get_number().clone());
-        res.modular_mul_assign_uint(rhs, modulo);
-        res
+        general_calc!(self, Self::modular_mul_assign_uint, rhs, modulo);
     }
 
     // pub fn modular_mul_assign_uint<U>(&mut self, rhs: U, modulo: &Self)
@@ -11393,10 +11656,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
             + BitXor<Output=U> + BitXorAssign + Not<Output=U>
             + PartialEq + PartialOrd
     {
-        if modulo.is_zero_or_one()
-            { panic!(); }
-        self.common_modular_mul_assign_uint(rhs, modulo);
-
+        modular_calc_assign!(self, Self::common_modular_mul_assign_uint, rhs, modulo);
     }
 
     // pub fn panic_free_modular_mul_uint<U>(&self, rhs: U, modulo: &Self) -> Self
@@ -11697,9 +11957,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
             + BitXor<Output=U> + BitXorAssign + Not<Output=U>
             + PartialEq + PartialOrd
     {
-        let mut res = Self::from_array(self.get_number().clone());
-        res.panic_free_modular_mul_assign_uint(rhs, modulo);
-        res
+        general_calc!(self, Self::panic_free_modular_mul_assign_uint, rhs, modulo);
     }
 
     // pub fn panic_free_modular_mul_assign_uint<U>(&mut self, rhs: U, modulo: &Self)
@@ -12115,14 +12373,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
             + BitXor<Output=U> + BitXorAssign + Not<Output=U>
             + PartialEq + PartialOrd
     {
-        if modulo.is_zero_or_one()
-        {
-            self.set_zero();
-            self.set_undefined();
-            return;
-        }
-        self.common_modular_mul_assign_uint(rhs, modulo);
-
+        panic_free_modular_calc_assign!(self, Self::common_modular_mul_assign_uint, rhs, modulo);
     }
 
     fn common_modular_mul_assign_uint<U>(&mut self, rhs: U, modulo: &Self)
@@ -12509,24 +12760,14 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     {
         if rhs.is_zero()
         {
-            let mut q: Self;
-            let mut r = Self::zero();
-            r.set_all_flags(Self::DIVIDED_BY_ZERO);
-            if self.is_zero()
-            {
-                q = Self::zero();
-                q.set_all_flags(Self::UNDEFINED | Self::DIVIDED_BY_ZERO);
-            }
-            else
-            {
-                q = Self::max();
-                q.set_all_flags(Self::INFINITY | Self::DIVIDED_BY_ZERO);
-            }
-            return (q, r);
+            if_rhs_is_zero!(self, rhs);
         }
-        let (q, rem) = self.common_divide_fully_uint(rhs);
-        let r = Self::from_uint(rem);
-        (q, r)
+        else
+        {
+            let (q, rem) = self.common_divide_fully_uint(rhs);
+            let r = Self::from_uint(rem);
+            (q, r)
+        }
     }
 
     // pub fn wrapping_div_uint<U>(&self, rhs: U) -> Self
@@ -12624,8 +12865,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
             + BitXor<Output=U> + BitXorAssign + Not<Output=U>
             + PartialEq + PartialOrd
     {
-        let (quotient, _) = self.divide_fully_uint(rhs);
-        quotient
+        general_calc_div!(self, Self::divide_fully_uint, rhs);
     }
 
     // pub fn wrapping_div_assign_uint<U>(&mut self, rhs: U)
@@ -12738,9 +12978,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
             + BitXor<Output=U> + BitXorAssign + Not<Output=U>
             + PartialEq + PartialOrd
     {
-        let res = self.wrapping_div_uint(rhs);
-        self.set_number(res.get_number());
-        self.set_flag_bit(res.get_all_flags());
+        general_calc_assign!(self, Self::wrapping_div_uint, rhs);
     }
 
     // pub fn overflowing_div_uint<U>(&self, rhs: U) -> (Self, bool)
@@ -12842,9 +13080,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
             + BitXor<Output=U> + BitXorAssign + Not<Output=U>
             + PartialEq + PartialOrd
     {
-        let (quotient, _) = self.divide_fully_uint(rhs);
-        let overflow = quotient.is_overflow();
-        (quotient, overflow)
+        overflowing_calc_div!(self, Self::divide_fully_uint, rhs);
     }
 
     // pub fn overflowing_div_assign_uint<U>(&mut self, rhs: U) -> bool
@@ -12965,12 +13201,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
             + BitXor<Output=U> + BitXorAssign + Not<Output=U>
             + PartialEq + PartialOrd
     {
-        let old = self.get_all_flags();
-        let (quotient, _) = self.divide_fully_uint(rhs);
-        *self = quotient;
-        let overflow = self.is_overflow();
-        self.set_flag_bit(old);
-        overflow
+        overflowing_calc_assign!(self, Self::wrapping_div_assign_uint, rhs);
     }
 
     // pub fn checked_div_uint<U>(&self, rhs: U) -> Option<Self>
@@ -13104,10 +13335,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
             + BitXor<Output=U> + BitXorAssign + Not<Output=U>
             + PartialEq + PartialOrd
     {
-        if rhs.is_zero()
-            { None }
-        else
-            { Some(self.wrapping_div_uint(rhs)) }
+        checked_calc_div!(self, Self::wrapping_div_uint, rhs);
     }
 
     // pub fn unchecked_div_uint<U>(&self, rhs: U) -> Self
@@ -13299,8 +13527,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
             + BitXor<Output=U> + BitXorAssign + Not<Output=U>
             + PartialEq + PartialOrd
     {
-        let (quotient, _) = self.divide_fully_uint(rhs);
-        quotient
+        general_calc_div!(self, Self::divide_fully_uint, rhs);
     }
 
     // pub fn saturating_div_assign_uint<U>(&mut self, rhs: U)
@@ -13413,9 +13640,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
             + BitXor<Output=U> + BitXorAssign + Not<Output=U>
             + PartialEq + PartialOrd
     {
-        let res = self.saturating_div_uint(rhs);
-        self.set_number(res.get_number());
-        self.set_all_flags(res.get_all_flags());
+        general_calc_assign!(self, Self::saturating_div_uint, rhs);
     }
 
     // pub fn panic_free_div_uint<U>(&self, rhs: U) -> Self
@@ -13545,8 +13770,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
             + BitXor<Output=U> + BitXorAssign + Not<Output=U>
             + PartialEq + PartialOrd
     {
-        let (quotient, _) = self.panic_free_divide_fully_uint(rhs);
-        quotient
+        general_calc_div!(self, Self::panic_free_divide_fully_uint, rhs);
     }
 
     // pub fn panic_free_div_assign_uint<U>(&mut self, rhs: U)
@@ -13702,9 +13926,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
             + BitXor<Output=U> + BitXorAssign + Not<Output=U>
             + PartialEq + PartialOrd
     {
-        let res = self.panic_free_div_uint(rhs);
-        self.set_number(res.get_number());
-        self.set_flag_bit(res.get_all_flags());
+        panic_free_calc_div_rem_assign!(self, Self::panic_free_div_uint, rhs);
     }
 
     // pub fn modular_div_uint<U>(&self, rhs: U, modulo: &Self) -> Self
@@ -13871,9 +14093,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
             + BitXor<Output=U> + BitXorAssign + Not<Output=U>
             + PartialEq + PartialOrd
     {
-        let mut res = Self::from_array(self.get_number().clone());
-        res.modular_div_assign_uint(rhs, modulo);
-        res
+        general_calc!(self, Self::modular_div_assign_uint, rhs, modulo);
     }
 
     // pub fn modular_div_assign_uint<U>(&mut self, rhs: U, modulo: &Self)
@@ -14460,9 +14680,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
             + BitXor<Output=U> + BitXorAssign + Not<Output=U>
             + PartialEq + PartialOrd
     {
-        let mut res = Self::from_array(self.get_number().clone());
-        res.panic_free_modular_div_assign_uint(rhs, modulo);
-        res
+        general_calc!(self, Self::panic_free_modular_div_assign_uint, rhs, modulo);
     }
 
     // pub fn panic_free_modular_div_assign_uint<U>(&mut self, rhs: U, modulo: &Self)
@@ -15090,8 +15308,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
             + BitXor<Output=U> + BitXorAssign + Not<Output=U>
             + PartialEq + PartialOrd
     {
-        let (_, remainder) = self.divide_fully_uint(rhs);
-        remainder
+        general_calc_rem!(self, Self::divide_fully_uint, rhs);
     }
 
     // pub fn wrapping_rem_assign_uint(&mut self, rhs: U)
@@ -15302,8 +15519,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
             + BitXor<Output=U> + BitXorAssign + Not<Output=U>
             + PartialEq + PartialOrd
     {
-        let (_, remainder) = self.divide_fully_uint(rhs);
-        (remainder, false)
+        overflowing_calc_rem!(self, Self::divide_fully_uint, rhs);
     }
 
     // pub fn overflowing_rem_assign_uint<U>(&mut self, rhs: U) -> bool
@@ -15427,10 +15643,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
             + BitXor<Output=U> + BitXorAssign + Not<Output=U>
             + PartialEq + PartialOrd
     {
-        let (_, remainder) = self.divide_fully_uint(rhs);
-        self.set_uint(remainder);
-        if rhs == U::zero()
-            { self.set_divided_by_zero(); }
+        self.saturating_rem_assign_uint(rhs);
         false
     }
 
@@ -15555,15 +15768,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
             + BitXor<Output=U> + BitXorAssign + Not<Output=U>
             + PartialEq + PartialOrd
     {
-        if rhs == U::zero()
-        {
-            None
-        }
-        else
-        {
-            let (_, remainder) = self.divide_fully_uint(rhs);
-            Some(remainder)
-        }
+        checked_calc_div!(self, Self::wrapping_rem_uint, rhs);
     }
 
     // pub fn unchecked_rem_uint<U>(&self, rhs: U) -> Self
@@ -15735,8 +15940,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
             + BitXor<Output=U> + BitXorAssign + Not<Output=U>
             + PartialEq + PartialOrd
     {
-        let (_, remainder) = self.divide_fully_uint(rhs);
-        remainder
+        general_calc_rem!(self, Self::divide_fully_uint, rhs);
     }
 
     // pub fn saturating_rem_assign_uint<U>(&mut self, rhs: U)
@@ -15849,10 +16053,8 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
             + BitXor<Output=U> + BitXorAssign + Not<Output=U>
             + PartialEq + PartialOrd
     {
-        let flags = self.get_all_flags();
         let (_, remainder) = self.divide_fully_uint(rhs);
         self.set_uint(remainder);
-        self.set_all_flags(flags);
     }
 
     // pub fn panic_free_rem_uint<U>(&self, rhs: U) -> Self
@@ -15977,8 +16179,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
             + BitXor<Output=U> + BitXorAssign + Not<Output=U>
             + PartialEq + PartialOrd
     {
-        let (_, remainder) = self.panic_free_divide_fully_uint(rhs);
-        remainder
+        general_calc_rem!(self, Self::panic_free_divide_fully_uint, rhs);
     }
 
     // pub fn panic_free_rem_assign_uint<U>(&mut self, rhs: U)
@@ -16130,14 +16331,10 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
             + BitXor<Output=U> + BitXorAssign + Not<Output=U>
             + PartialEq + PartialOrd
     {
-        let old_overflow = self.is_overflow();
-        let (_, remainder) = self.panic_free_divide_fully_uint(rhs);
-        *self = remainder;
-        if old_overflow
-            { self.set_overflow(); }
+        panic_free_calc_div_rem_assign!(self, Self::panic_free_rem_uint, rhs);
     }
 
-    // pub fn modular_rem_uint<U>(&self, rhs: U, modulo: &Self) -> Self
+    // pub fn modular_rem_uint<U>(&self, rhs: U, modulo: &Self) -> U
     /// Divides (`self` % `modulo`) by (`rhs` % `modulo`),
     /// and returns the remainder.
     /// 
@@ -16876,9 +17073,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
             + BitXor<Output=U> + BitXorAssign + Not<Output=U>
             + PartialEq + PartialOrd
     {
-        let mut res = Self::from_array(self.get_number().clone());
-        res.panic_free_modular_rem_assign_uint(rhs, modulo);
-        res
+        general_calc!(self, Self::panic_free_modular_rem_assign_uint, rhs, modulo);
     }
 
     // pub fn panic_free_modular_rem_assign_uint<U>(&mut self, rhs: U, modulo: &Self)
@@ -17490,9 +17685,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
             + BitXor<Output=U> + BitXorAssign + Not<Output=U>
             + PartialEq + PartialOrd
     {
-        let mut res = Self::from_array(self.get_number().clone());
-        res.next_multiple_of_assign_uint(rhs);
-        res
+        general_calc!(self, Self::next_multiple_of_assign_uint, rhs);
     }
 
     // pub fn next_multiple_of_assign_uint<U>(&mut self, rhs: U)
@@ -17696,9 +17889,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
             + BitXor<Output=U> + BitXorAssign + Not<Output=U>
             + PartialEq + PartialOrd
     {
-        let mut res = Self::from_array(self.get_number().clone());
-        res.panic_free_next_multiple_of_assign_uint(rhs);
-        res
+        general_calc!(self, Self::panic_free_next_multiple_of_assign_uint, rhs);
     }
 
     // pub fn panic_free_next_multiple_of_assign_uint<U>(&mut self, rhs: U)
@@ -17823,9 +18014,11 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
         {
             self.set_zero();
             self.set_undefined();
-            return;
         }
-        self.common_next_multiple_of_assign_uint(rhs);
+        else
+        {
+            self.common_next_multiple_of_assign_uint(rhs);
+        }
     }
 
     fn common_next_multiple_of_assign_uint<U>(&mut self, rhs: U)
@@ -17971,9 +18164,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
             + BitXor<Output=U> + BitXorAssign + Not<Output=U>
             + PartialEq + PartialOrd
     {
-        let mut res = Self::from_array(self.get_number().clone());
-        res.modular_next_multiple_of_assign_uint(rhs, modulo);
-        res
+        general_calc!(self, Self::modular_next_multiple_of_assign_uint, rhs, modulo);
     }
 
     // pub fn modular_next_multiple_of_assign_uint<U>(&mut self, rhs: U, modulo: &Self)
@@ -18113,9 +18304,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
             + BitXor<Output=U> + BitXorAssign + Not<Output=U>
             + PartialEq + PartialOrd
     {
-        if modulo.is_zero_or_one() || rhs.is_zero()
-            { panic!(); }
-        self.common_modular_next_multiple_of_assign_uint(rhs, modulo);
+        modular_calc_assign!(self, Self::common_modular_next_multiple_of_assign_uint, rhs, modulo);
     }
 
     // pub fn panic_free_modular_next_multiple_of_uint<U>(&self, rhs: U, modulo: &Self) -> Self
@@ -18322,9 +18511,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
             + BitXor<Output=U> + BitXorAssign + Not<Output=U>
             + PartialEq + PartialOrd
     {
-        let mut res = Self::from_array(self.get_number().clone());
-        res.panic_free_modular_next_multiple_of_assign_uint(rhs, modulo);
-        res
+        general_calc!(self, Self::panic_free_modular_next_multiple_of_assign_uint, rhs, modulo);
     }
 
     // pub fn panic_free_modular_next_multiple_of_assign_uint<U>(&mut self, rhs: U, modulo: &Self)
@@ -19065,9 +19252,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
             + BitXor<Output=U> + BitXorAssign + Not<Output=U>
             + PartialEq + PartialOrd
     {
-        let mut res = Self::from_array(self.get_number().clone());
-        res.panic_free_pow_assign_uint(exp);
-        res
+        general_calc!(self, Self::panic_free_pow_assign_uint, exp);
     }
 
     // pub fn panic_free_pow_assign_uint<U>(&mut self, exp: U)
@@ -19365,9 +19550,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
             + BitXor<Output=U> + BitXorAssign + Not<Output=U>
             + PartialEq + PartialOrd
     {
-        let mut res = Self::from_array(self.get_number().clone());
-        res.wrapping_pow_assign_uint(exp);
-        res
+        general_calc!(self, Self::wrapping_pow_assign_uint, exp);
     }
 
     // pub fn wrapping_pow_assign_uint<U>(&mut self, exp: U)
@@ -19687,9 +19870,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
             + BitXor<Output=U> + BitXorAssign + Not<Output=U>
             + PartialEq + PartialOrd
     {
-        let mut res = Self::from_array(self.get_number().clone());
-        let overflow = res.overflowing_pow_assign_uint(exp);
-        (res, overflow)
+        overflowing_calc!(self, Self::overflowing_pow_assign_uint, exp);
     }
     
     // pub fn overflowing_pow_assign_uint<U>(&mut self, exp: U) -> bool
@@ -19855,12 +20036,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
             + BitXor<Output=U> + BitXorAssign + Not<Output=U>
             + PartialEq + PartialOrd
     {
-        let old_flags = self.get_all_flags();
-        self.reset_overflow();
-        self.wrapping_pow_assign_uint(exp);
-        let current_overflow = self.is_overflow();
-        self.set_flag_bit(old_flags);
-        current_overflow
+        overflowing_calc_assign!(self, Self::wrapping_pow_assign_uint, exp);
     }
 
     // pub fn checked_pow_uint<U>(&self, exp: U) -> Option<Self>
@@ -20254,9 +20430,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
             + BitXor<Output=U> + BitXorAssign + Not<Output=U>
             + PartialEq + PartialOrd
     {
-        let mut res = Self::from_array(self.get_number().clone());
-        res.saturating_pow_assign_uint(exp);
-        res
+        general_calc!(self, Self::saturating_pow_assign_uint, exp);
     }
 
     // pub fn saturating_pow_assign_uint<U>(&self, exp: U) -> Self
@@ -20409,13 +20583,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
             + BitXor<Output=U> + BitXorAssign + Not<Output=U>
             + PartialEq + PartialOrd
     {
-        let overflow = self.is_overflow();
-        if self.overflowing_pow_assign_uint(exp)
-        {
-            self.set_max();
-            if !overflow
-                { self.reset_overflow(); }
-        }
+        saturating_calc_assign!(self, Self::overflowing_pow_assign_uint, exp);
     }
 
     // pub fn modular_pow_uint<U>(&self, exp: U, modulo: &Self) -> Self
@@ -20623,9 +20791,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
             + BitXor<Output=U> + BitXorAssign + Not<Output=U>
             + PartialEq + PartialOrd
     {
-        let mut res = Self::from_array(self.get_number().clone());
-        res.modular_pow_assign_uint(exp, modulo);
-        res
+        general_calc!(self, Self::modular_pow_assign_uint, exp, modulo);
     }
 
     // pub fn modular_pow_assign_uint<U>(&mut self, exp: U, modulo: &Self)
@@ -21226,9 +21392,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
             + BitXor<Output=U> + BitXorAssign + Not<Output=U>
             + PartialEq + PartialOrd
     {
-        let mut res = Self::from_array(self.get_number().clone());
-        res.panic_free_modular_pow_assign_uint(exp, modulo);
-        res
+        general_calc!(self, Self::panic_free_modular_pow_assign_uint, exp, modulo);
     }
 
     // pub fn panic_free_modular_pow_assign_uint<U>(&mut self, exp: U, modulo: &Self)
@@ -21869,10 +22033,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
             + BitXor<Output=U> + BitXorAssign + Not<Output=U>
             + PartialEq + PartialOrd
     {
-        let flags = self.get_all_flags();
-        let root = self.iroot_uint(exp);
-        self.set_number(root.get_number());
-        self.set_flag_bit(flags | root.get_all_flags());
+        general_calc_assign!(self, Self::iroot_uint, exp);
     }
 
     // pub fn panic_free_iroot_uint<U>(&self, exp: U) -> Self
@@ -22316,10 +22477,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
             + BitXor<Output=U> + BitXorAssign + Not<Output=U>
             + PartialEq + PartialOrd
     {
-        let flags = self.get_all_flags();
-        let root = self.panic_free_iroot_uint(exp);
-        self.set_number(root.get_number());
-        self.set_flag_bit(flags | root.get_all_flags());
+        general_calc_assign!(self, Self::panic_free_iroot_uint, exp);
     }
 
     // pub fn checked_iroot_uint<U>(&self, exp: U) -> Option<Self>
@@ -22590,14 +22748,14 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// 
     /// # Features
     /// This method might not be optimized owing to implementation details;
-    /// ilog2_uint() can produce results more efficiently for base 2,
-    /// and ilog10_uint() can produce results more efficiently for base 10.
+    /// ilog2() can produce results more efficiently for base 2,
+    /// and ilog10() can produce results more efficiently for base 10.
     /// 
     /// # Counterpart Methods
     /// This method might not be optimized owing to implementation details;
-    /// [ilog2_uint()](struct@BigUInt#method.ilog2_uint)
+    /// [ilog2()](struct@BigUInt#method.ilog2)
     /// can produce results more efficiently for base 2, and
-    /// [ilog10_uint()](struct@BigUInt#method.ilog10_uint)
+    /// [ilog10()](struct@BigUInt#method.ilog10)
     /// can produce results more efficiently for base 10.
     /// 
     /// # Example 1
@@ -22718,14 +22876,14 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// 
     /// # Features
     /// This method might not be optimized owing to implementation details;
-    /// ilog2_uint() can produce results more efficiently for base 2,
-    /// and ilog10_uint() can produce results more efficiently for base 10.
+    /// ilog2() can produce results more efficiently for base 2,
+    /// and ilog10() can produce results more efficiently for base 10.
     /// 
     /// # Counterpart Methods
     /// This method might not be optimized owing to implementation details;
-    /// [ilog2_assign_uint()](struct@BigUInt#method.ilog2_assign_uint)
+    /// [ilog2_assign()](struct@BigUInt#method.ilog2_assign)
     /// can produce results more efficiently for base 2, and
-    /// [ilog10_assign_uint()](struct@BigUInt#method.ilog10_assign_uint)
+    /// [ilog10_assign()](struct@BigUInt#method.ilog10_assign)
     /// can produce results more efficiently for base 10.
     /// 
     /// # Example 1
@@ -22845,10 +23003,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
             + BitXor<Output=U> + BitXorAssign + Not<Output=U>
             + PartialEq + PartialOrd
     {
-        let flags = self.get_all_flags();
-        let log = self.ilog_uint(base);
-        self.set_number(log.get_number());
-        self.set_flag_bit(flags | log.get_all_flags());
+        general_calc_assign!(self, Self::ilog_uint, base);
     }
 
     // pub fn panic_free_ilog_uint<U>(&self, base: U) -> Self
@@ -22870,8 +23025,8 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// 
     /// # Features
     /// - This method might not be optimized owing to implementation details;
-    ///   panic_free_ilog2_uint() can produce results more efficiently for
-    ///   base 2, and panic_free_ilog10_uint() can produce results more
+    ///   panic_free_ilog2() can produce results more efficiently for
+    ///   base 2, and panic_free_ilog10() can produce results more
     ///   efficiently for base 10.
     /// - If `self` is zero, the return value will be zero and the flag
     ///   `UNDEFINED` of the return value will be set.
@@ -22887,9 +23042,9 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// 
     /// # Counterpart Methods
     /// This method might not be optimized owing to implementation details;
-    /// [panic_free_ilog2_uint()](struct@BigUInt#method.panic_free_ilog2_uint)
+    /// [panic_free_ilog2()](struct@BigUInt#method.panic_free_ilog2)
     /// can produce results more efficiently for base 2, and
-    /// [panic_free_ilog10_uint()](struct@BigUInt#method.panic_free_ilog10_uint)
+    /// [panic_free_ilog10()](struct@BigUInt#method.panic_free_ilog10)
     /// can produce results more efficiently for base 10.
     /// 
     /// # Example 1
@@ -23094,8 +23249,8 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// 
     /// # Features
     /// - This method might not be optimized owing to implementation details;
-    ///   panic_free_ilog2_assign_uint() can produce results more efficiently
-    ///   for base 2, and panic_free_ilog10_assign_uint() can produce results
+    ///   panic_free_ilog2_assign() can produce results more efficiently
+    ///   for base 2, and panic_free_ilog10_assign() can produce results
     ///   more efficiently for base 10.
     /// - If `self` is zero, the result will be zero and the flag
     ///   `UNDEFINED` of `self` will be set.
@@ -23110,9 +23265,9 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// 
     /// # Counterpart Methods
     /// This method might not be optimized owing to implementation details;
-    /// [panic_free_ilog2_assign_uint()](struct@BigUInt#method.panic_free_ilog2_assign_uint)
+    /// [panic_free_ilog2_assign()](struct@BigUInt#method.panic_free_ilog2_assign)
     /// can produce results more efficiently for base 2, and
-    /// [panic_free_ilog10_assign_uint()](struct@BigUInt#method.panic_free_ilog10_assign_uint)
+    /// [panic_free_ilog10_assign()](struct@BigUInt#method.panic_free_ilog10_assign)
     /// can produce results more efficiently for base 10.
     /// 
     /// # Example 1
@@ -23321,9 +23476,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
             + BitXor<Output=U> + BitXorAssign + Not<Output=U>
             + PartialEq + PartialOrd
     {
-        let log = self.panic_free_ilog_uint(base);
-        self.set_number(log.get_number());
-        self.set_flag_bit(log.get_all_flags());
+        general_calc_assign!(self, Self::panic_free_ilog_uint, base);
     }
 
     // pub fn checked_ilog_uint<U>(&self, base: U) -> Option<Self>
@@ -23347,15 +23500,15 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// - This function will return `None` if `self` is zero.
     /// - This function will return `None` if `base` is zero or one.
     /// - This method might not be optimized owing to implementation details;
-    /// checked_ilog2_uint() can produce results more efficiently for base 2,
-    /// and checked_ilog10_uint() can produce results more efficiently
+    /// checked_ilog2() can produce results more efficiently for base 2,
+    /// and checked_ilog10() can produce results more efficiently
     /// for base 10.
     /// 
     /// # Counterpart Methods
     /// This method might not be optimized owing to implementation details;
-    /// [checked_ilog2_uint()](struct@BigUInt#method.checked_ilog2_uint)
+    /// [checked_ilog2()](struct@BigUInt#method.checked_ilog2)
     /// can produce results more efficiently for base 2, and
-    /// [checked_ilog10_uint()](struct@BigUInt#method.checked_ilog10_uint)
+    /// [checked_ilog10()](struct@BigUInt#method.checked_ilog10)
     /// can produce results more efficiently for base 10.
     /// 
     /// # Example 1
@@ -23532,8 +23685,9 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
             + PartialEq + PartialOrd
     {
         if self.is_zero() || (base <= U::one())
-            { return None }
-        Some(self.ilog_uint(base))
+            { None }
+        else
+            { Some(self.ilog_uint(base)) }
     }
 
     // pub fn unchecked_ilog_uint<U>(&self, base: U) -> Self
@@ -23557,15 +23711,15 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// 
     /// # Features
     /// This method might not be optimized owing to implementation details;
-    /// unchecked_ilog2_uint() can produce results more efficiently for base 2,
-    /// and unchecked_ilog10_uint() can produce results more efficiently
+    /// unchecked_ilog2() can produce results more efficiently for base 2,
+    /// and unchecked_ilog10() can produce results more efficiently
     /// for base 10.
     /// 
     /// # Counterpart Methods
     /// This method might not be optimized owing to implementation details;
-    /// [unchecked_ilog2_uint()](struct@BigUInt#method.unchecked_ilog2_uint)
+    /// [unchecked_ilog2()](struct@BigUInt#method.unchecked_ilog2)
     /// can produce results more efficiently for base 2, and
-    /// [unchecked_ilog10_uint()](struct@BigUInt#method.unchecked_ilog10_uint)
+    /// [unchecked_ilog10()](struct@BigUInt#method.unchecked_ilog10)
     /// can produce results more efficiently for base 10.
     /// 
     /// # Example 1
@@ -23666,1237 +23820,6 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
             + PartialEq + PartialOrd
     {
         self.ilog_uint(base)
-    }
-
-    // pub fn ilog2_uint(&self) -> Self
-    /// Returns the base 2 logarithm of the number, rounded down.
-    ///
-    /// # Panics
-    /// - If `size_of::<T>() * N` <= `128`, this method may panic
-    ///   or its behavior may be undefined though it may not panic.
-    /// - This function will panic if `self` is zero.
-    /// 
-    /// # Output
-    /// It returns the base 2 logarithm of the number, rounded down.
-    /// 
-    /// # Counterpart Methods
-    /// This method is optimized for base 2;
-    /// [ilog_uint()](struct@BigUInt#method.ilog_uint)
-    /// can produce results of the base other than 2, and
-    /// [ilog10_uint()](struct@BigUInt#method.ilog10_uint)
-    /// can produce results more efficiently for base 10.
-    /// 
-    /// # Example 1
-    /// ```
-    /// use cryptocol::define_utypes_with;
-    /// define_utypes_with!(u32);
-    /// 
-    /// let a_biguint = U256::from_uint(64_u8);
-    /// let res = a_biguint.ilog2_uint();
-    /// println!("The base 2 logarithm of {} is {}.", a_biguint, res);
-    /// assert_eq!(res.to_string(), "6");
-    /// assert_eq!(res.is_overflow(), false);
-    /// assert_eq!(res.is_underflow(), false);
-    /// assert_eq!(res.is_infinity(), false);
-    /// assert_eq!(res.is_divided_by_zero(), false);
-    /// assert_eq!(res.is_undefined(), false);
-    /// ```
-    /// 
-    /// # Example 2
-    /// ```
-    /// use cryptocol::define_utypes_with;
-    /// define_utypes_with!(u16);
-    /// 
-    /// let a_biguint = U256::from_uint(70_u8);
-    /// let res = a_biguint.ilog2_uint();
-    /// println!("The base 2 logarithm of {} is {}.", a_biguint, res);
-    /// assert_eq!(res.to_string(), "6");
-    /// assert_eq!(res.is_overflow(), false);
-    /// assert_eq!(res.is_underflow(), false);
-    /// assert_eq!(res.is_infinity(), false);
-    /// assert_eq!(res.is_divided_by_zero(), false);
-    /// assert_eq!(res.is_undefined(), false);
-    /// ```
-    /// 
-    /// # Example 3
-    /// ```
-    /// use cryptocol::define_utypes_with;
-    /// define_utypes_with!(u16);
-    ///
-    /// let a_biguint = U256::from_uint(1_u8);
-    /// let res = a_biguint.ilog2_uint();
-    /// println!("The base 2 logarithm of {} is {}.", a_biguint, res);
-    /// assert_eq!(res.to_string(), "0");
-    /// assert_eq!(res.is_overflow(), false);
-    /// assert_eq!(res.is_underflow(), false);
-    /// assert_eq!(res.is_infinity(), false);
-    /// assert_eq!(res.is_divided_by_zero(), false);
-    /// assert_eq!(res.is_undefined(), false);
-    /// ```
-    /// 
-    /// # Panic Example
-    /// ```
-    /// use cryptocol::define_utypes_with;
-    /// define_utypes_with!(u16);
-    /// 
-    /// let _a_biguint = U256::zero();
-    /// // It will panic.
-    /// // let res = _a_biguint.ilog2_uint();
-    /// ```
-    /// 
-    /// # Big-endian issue
-    /// It is just experimental for Big Endian CPUs. So, you are not encouraged
-    /// to use it for Big Endian CPUs for serious purpose. Only use this crate
-    /// for Big-endian CPUs with your own full responsibility.
-    pub fn ilog2_uint(&self) -> Self
-    {
-        if self.is_zero()
-            { panic!(); }
-        Self::from_uint(self.length_in_bits() as u64 - self.leading_zeros() as u64 - 1_u64)
-    }
-
-    // pub fn ilog2_assign_uint(&mut self)
-    /// Calculates the base 2 logarithm of the number, rounded down,
-    /// and assigns back to `self`.
-    ///
-    /// # Panics
-    /// - If `size_of::<T>() * N` <= `128`, this method may panic
-    ///   or its behavior may be undefined though it may not panic.
-    /// - This function will panic if `self` is zero.
-    /// 
-    /// # Counterpart Methods
-    /// This method is optimized for base 2;
-    /// [ilog_assign_uint()](struct@BigUInt#method.ilog_assign_uint)
-    /// can produce results of the base other than 2, and
-    /// [ilog10_assign_uint()](struct@BigUInt#method.ilog10_assign_uint)
-    /// can produce results more efficiently for base 10.
-    /// 
-    /// # Example 1
-    /// ```
-    /// use cryptocol::define_utypes_with;
-    /// define_utypes_with!(u64);
-    /// 
-    /// let mut a_biguint = U256::from_uint(64_u8);
-    /// println!("Originally, a_biguint = {}", a_biguint);
-    /// assert_eq!(a_biguint.is_overflow(), false);
-    /// assert_eq!(a_biguint.is_underflow(), false);
-    /// assert_eq!(a_biguint.is_infinity(), false);
-    /// assert_eq!(a_biguint.is_divided_by_zero(), false);
-    /// assert_eq!(a_biguint.is_undefined(), false);
-    /// 
-    /// a_biguint.ilog2_assign_uint();
-    /// println!("After a_biguint.ilog2_assign_uint(),\na_biguint = {}.", a_biguint);
-    /// assert_eq!(a_biguint.to_string(), "6");
-    /// assert_eq!(a_biguint.is_overflow(), false);
-    /// assert_eq!(a_biguint.is_underflow(), false);
-    /// assert_eq!(a_biguint.is_infinity(), false);
-    /// assert_eq!(a_biguint.is_divided_by_zero(), false);
-    /// assert_eq!(a_biguint.is_undefined(), false);
-    /// ```
-    /// 
-    /// # Example 2
-    /// ```
-    /// use cryptocol::define_utypes_with;
-    /// define_utypes_with!(u64);
-    /// 
-    /// let mut a_biguint = U256::from_uint(70_u8);
-    /// println!("Originally, a_biguint = {}", a_biguint);
-    /// assert_eq!(a_biguint.is_overflow(), false);
-    /// assert_eq!(a_biguint.is_underflow(), false);
-    /// assert_eq!(a_biguint.is_infinity(), false);
-    /// assert_eq!(a_biguint.is_divided_by_zero(), false);
-    /// assert_eq!(a_biguint.is_undefined(), false);
-    /// 
-    /// a_biguint.ilog2_assign_uint();
-    /// println!("After a_biguint.ilog2_assign_uint(),\na_biguint = {}.", a_biguint);
-    /// assert_eq!(a_biguint.to_string(), "6");
-    /// assert_eq!(a_biguint.is_overflow(), false);
-    /// assert_eq!(a_biguint.is_underflow(), false);
-    /// assert_eq!(a_biguint.is_infinity(), false);
-    /// assert_eq!(a_biguint.is_divided_by_zero(), false);
-    /// assert_eq!(a_biguint.is_undefined(), false);
-    /// ```
-    /// 
-    /// # Example 3
-    /// ```
-    /// use cryptocol::define_utypes_with;
-    /// define_utypes_with!(u64);
-    ///
-    /// let mut a_biguint = U256::from_uint(1_u8);
-    /// println!("Originally, a_biguint = {}", a_biguint);
-    /// assert_eq!(a_biguint.is_overflow(), false);
-    /// assert_eq!(a_biguint.is_underflow(), false);
-    /// assert_eq!(a_biguint.is_infinity(), false);
-    /// assert_eq!(a_biguint.is_divided_by_zero(), false);
-    /// assert_eq!(a_biguint.is_undefined(), false);
-    /// 
-    /// a_biguint.ilog2_assign_uint();
-    /// println!("After a_biguint.ilog2_assign_uint(),\na_biguint = {}.", a_biguint);
-    /// assert_eq!(a_biguint.to_string(), "0");
-    /// assert_eq!(a_biguint.is_overflow(), false);
-    /// assert_eq!(a_biguint.is_underflow(), false);
-    /// assert_eq!(a_biguint.is_infinity(), false);
-    /// assert_eq!(a_biguint.is_divided_by_zero(), false);
-    /// assert_eq!(a_biguint.is_undefined(), false);
-    /// ```
-    /// 
-    /// # Panic Example
-    /// ```
-    /// use cryptocol::define_utypes_with;
-    /// define_utypes_with!(u64);
-    /// 
-    /// let mut _a_biguint = U256::zero();
-    /// // It will panic.
-    /// // _a_biguint.ilog2_assign_uint();
-    /// ```
-    /// 
-    /// # Big-endian issue
-    /// It is just experimental for Big Endian CPUs. So, you are not encouraged
-    /// to use it for Big Endian CPUs for serious purpose. Only use this crate
-    /// for Big-endian CPUs with your own full responsibility.
-    pub fn ilog2_assign_uint(&mut self)
-    {
-        let flag = self.get_all_flags();
-        let log2 = self.ilog2_uint();
-        self.set_number(log2.get_number());
-        self.set_flag_bit(flag);
-    }
-
-    // pub fn panic_free_ilog2_uint(&self) -> Self
-    /// Returns the base 2 logarithm of the number, rounded down.
-    ///
-    /// # Panics
-    /// If `size_of::<T>() * N` <= `128`, this method may panic
-    /// or its behavior may be undefined though it may not panic.
-    /// 
-    /// # Output
-    /// It returns the base 2 logarithm of the number, rounded down.
-    /// 
-    /// # Features
-    /// If `self` is zero, the return value will be zero and the flag
-    /// `UNDEFINED` of the return value will be set.
-    /// 
-    /// # Counterpart Methods
-    /// This method is optimized for base 2;
-    /// [ilog_uint()](struct@BigUInt#method.ilog_uint)
-    /// can produce results of the base other than 2, and
-    /// [ilog10_uint()](struct@BigUInt#method.ilog10_uint)
-    /// can produce results more efficiently for base 10.
-    /// 
-    /// # Example 1
-    /// ```
-    /// use cryptocol::define_utypes_with;
-    /// define_utypes_with!(u128);
-    /// 
-    /// let a_biguint = U256::from_uint(64_u8);
-    /// let res = a_biguint.panic_free_ilog2_uint();
-    /// println!("The base 2 logarithm of {} is {}.", a_biguint, res);
-    /// assert_eq!(res.to_string(), "6");
-    /// assert_eq!(res.is_overflow(), false);
-    /// assert_eq!(res.is_underflow(), false);
-    /// assert_eq!(res.is_infinity(), false);
-    /// assert_eq!(res.is_divided_by_zero(), false);
-    /// assert_eq!(res.is_undefined(), false);
-    /// ```
-    /// 
-    /// # Example 2
-    /// ```
-    /// use cryptocol::define_utypes_with;
-    /// define_utypes_with!(u128);
-    /// 
-    /// let a_biguint = U256::from_uint(70_u8);
-    /// let res = a_biguint.panic_free_ilog2_uint();
-    /// println!("The base 2 logarithm of {} is {}.", a_biguint, res);
-    /// assert_eq!(res.to_string(), "6");
-    /// assert_eq!(res.is_overflow(), false);
-    /// assert_eq!(res.is_underflow(), false);
-    /// assert_eq!(res.is_infinity(), false);
-    /// assert_eq!(res.is_divided_by_zero(), false);
-    /// assert_eq!(res.is_undefined(), false);
-    /// ```
-    /// 
-    /// # Example 3
-    /// ```
-    /// use cryptocol::define_utypes_with;
-    /// define_utypes_with!(u128);
-    ///
-    /// let a_biguint = U256::from_uint(1_u8);
-    /// let res = a_biguint.panic_free_ilog2_uint();
-    /// println!("The base 2 logarithm of {} is {}.", a_biguint, res);
-    /// assert_eq!(res.to_string(), "0");
-    /// assert_eq!(res.is_overflow(), false);
-    /// assert_eq!(res.is_underflow(), false);
-    /// assert_eq!(res.is_infinity(), false);
-    /// assert_eq!(res.is_divided_by_zero(), false);
-    /// assert_eq!(res.is_undefined(), false);
-    /// ```
-    /// 
-    /// # Example 4
-    /// ```
-    /// use cryptocol::define_utypes_with;
-    /// define_utypes_with!(u128);
-    /// 
-    /// let a_biguint = U256::zero();
-    /// let res = a_biguint.panic_free_ilog2_uint();
-    /// println!("The base 2 logarithm of {} is {}.", a_biguint, res);
-    /// assert_eq!(res.to_string(), "0");
-    /// assert_eq!(res.is_overflow(), false);
-    /// assert_eq!(res.is_underflow(), false);
-    /// assert_eq!(res.is_infinity(), false);
-    /// assert_eq!(res.is_undefined(), true);
-    /// assert_eq!(res.is_divided_by_zero(), false);
-    /// ```
-    /// 
-    /// # Big-endian issue
-    /// It is just experimental for Big Endian CPUs. So, you are not encouraged
-    /// to use it for Big Endian CPUs for serious purpose. Only use this crate
-    /// for Big-endian CPUs with your own full responsibility.
-    pub fn panic_free_ilog2_uint(&self) -> Self
-    {
-        if self.is_zero()
-        {
-            let mut res = Self::zero();
-            res.set_undefined();
-            return res;
-        }
-        Self::from_uint(self.length_in_bits() as u64 - self.leading_zeros() as u64 - 1_u64)
-    }
-
-    // pub fn panic_free_ilog2_assign_uint(&mut self)
-    /// Calculates the base 2 logarithm of the number, rounded down,
-    /// and assigns back to `self`.
-    ///
-    /// # Panics
-    /// - If `size_of::<T>() * N` <= `128`, this method may panic
-    /// or its behavior may be undefined though it may not panic.
-    /// 
-    /// # Features
-    /// If `self` is zero, the result will be zero and the flag
-    /// `UNDEFINED` of `self` will be set.
-    /// 
-    /// # Counterpart Methods
-    /// This method is optimized for base 2;
-    /// [ilog_assign_uint()](struct@BigUInt#method.ilog_assign_uint)
-    /// can produce results of the base other than 2, and
-    /// [ilog10_assign_uint()](struct@BigUInt#method.ilog10_assign_uint)
-    /// can produce results more efficiently for base 10.
-    /// 
-    /// # Example 1
-    /// ```
-    /// use cryptocol::define_utypes_with;
-    /// define_utypes_with!(u8);
-    /// 
-    /// let mut a_biguint = U256::from_uint(64_u8);
-    /// println!("Originally, a_biguint = {}", a_biguint);
-    /// assert_eq!(a_biguint.is_overflow(), false);
-    /// assert_eq!(a_biguint.is_underflow(), false);
-    /// assert_eq!(a_biguint.is_infinity(), false);
-    /// assert_eq!(a_biguint.is_divided_by_zero(), false);
-    /// assert_eq!(a_biguint.is_undefined(), false);
-    /// 
-    /// a_biguint.ilog2_assign_uint();
-    /// println!("After a_biguint.ilog2_assign_uint(),\na_biguint = {}.", a_biguint);
-    /// assert_eq!(a_biguint.to_string(), "6");
-    /// assert_eq!(a_biguint.is_overflow(), false);
-    /// assert_eq!(a_biguint.is_underflow(), false);
-    /// assert_eq!(a_biguint.is_infinity(), false);
-    /// assert_eq!(a_biguint.is_divided_by_zero(), false);
-    /// assert_eq!(a_biguint.is_undefined(), false);
-    /// ```
-    /// 
-    /// # Example 2
-    /// ```
-    /// use cryptocol::define_utypes_with;
-    /// define_utypes_with!(u8);
-    /// 
-    /// let mut a_biguint = U256::from_uint(70_u8);
-    /// println!("Originally, a_biguint = {}", a_biguint);
-    /// assert_eq!(a_biguint.is_overflow(), false);
-    /// assert_eq!(a_biguint.is_underflow(), false);
-    /// assert_eq!(a_biguint.is_infinity(), false);
-    /// assert_eq!(a_biguint.is_divided_by_zero(), false);
-    /// assert_eq!(a_biguint.is_undefined(), false);
-    /// 
-    /// a_biguint.ilog2_assign_uint();
-    /// println!("After a_biguint.ilog2_assign_uint(),\na_biguint = {}.", a_biguint);
-    /// assert_eq!(a_biguint.to_string(), "6");
-    /// assert_eq!(a_biguint.is_overflow(), false);
-    /// assert_eq!(a_biguint.is_underflow(), false);
-    /// assert_eq!(a_biguint.is_infinity(), false);
-    /// assert_eq!(a_biguint.is_divided_by_zero(), false);
-    /// assert_eq!(a_biguint.is_undefined(), false);
-    /// ```
-    /// 
-    /// # Example 3
-    /// ```
-    /// use cryptocol::define_utypes_with;
-    /// define_utypes_with!(u8);
-    ///
-    /// let mut a_biguint = U256::from_uint(1_u8);
-    /// println!("Originally, a_biguint = {}", a_biguint);
-    /// assert_eq!(a_biguint.is_overflow(), false);
-    /// assert_eq!(a_biguint.is_underflow(), false);
-    /// assert_eq!(a_biguint.is_infinity(), false);
-    /// assert_eq!(a_biguint.is_divided_by_zero(), false);
-    /// assert_eq!(a_biguint.is_undefined(), false);
-    /// 
-    /// a_biguint.ilog2_assign_uint();
-    /// println!("After a_biguint.ilog2_assign_uint(),\na_biguint = {}.", a_biguint);
-    /// assert_eq!(a_biguint.to_string(), "0");
-    /// assert_eq!(a_biguint.is_overflow(), false);
-    /// assert_eq!(a_biguint.is_underflow(), false);
-    /// assert_eq!(a_biguint.is_infinity(), false);
-    /// assert_eq!(a_biguint.is_divided_by_zero(), false);
-    /// assert_eq!(a_biguint.is_undefined(), false);
-    /// ```
-    /// 
-    /// # Example 4
-    /// ```
-    /// use cryptocol::define_utypes_with;
-    /// define_utypes_with!(u8);
-    /// 
-    /// let mut a_biguint = U256::zero();
-    /// println!("Originally, a_biguint = {}", a_biguint);
-    /// assert_eq!(a_biguint.is_overflow(), false);
-    /// assert_eq!(a_biguint.is_underflow(), false);
-    /// assert_eq!(a_biguint.is_infinity(), false);
-    /// assert_eq!(a_biguint.is_undefined(), false);
-    /// assert_eq!(a_biguint.is_divided_by_zero(), false);
-    /// 
-    /// a_biguint.panic_free_ilog2_assign_uint();
-    /// println!("After a_biguint.panic_free_ilog2_assign_uint(),\na_biguint = {}.", a_biguint);
-    /// assert_eq!(a_biguint.to_string(), "0");
-    /// assert_eq!(a_biguint.is_overflow(), false);
-    /// assert_eq!(a_biguint.is_underflow(), false);
-    /// assert_eq!(a_biguint.is_infinity(), false);
-    /// assert_eq!(a_biguint.is_undefined(), true);
-    /// assert_eq!(a_biguint.is_divided_by_zero(), false);
-    /// ```
-    /// 
-    /// # Big-endian issue
-    /// It is just experimental for Big Endian CPUs. So, you are not encouraged
-    /// to use it for Big Endian CPUs for serious purpose. Only use this crate
-    /// for Big-endian CPUs with your own full responsibility.
-    pub fn panic_free_ilog2_assign_uint(&mut self)
-    {
-        let log2 = self.panic_free_ilog2_uint();
-        self.set_number(log2.get_number());
-        self.set_flag_bit(log2.get_all_flags());
-    }
-
-    // pub fn checked_ilog2_uint(&self) -> Option<Self>
-    /// Calculates the base 2 logarithm of the number.
-    ///
-    /// # Panics
-    /// - If `size_of::<T>() * N` <= `128`, this method may panic
-    /// or its behavior may be undefined though it may not panic.
-    /// 
-    /// # Output
-    /// It returns the base 2 logarithm of the number, rounded down,
-    /// wrapped by `Some` of enum `Option` if `self` is not zero.
-    /// It returns `None` if `self` is zero.
-    /// 
-    /// # Counterpart Methods
-    /// This method is optimized for base 2;
-    /// [checked_ilog_uint()](struct@BigUInt#method.checked_ilog_uint)
-    /// can produce results of the base other than 2, and
-    /// [checked_ilog10_uint()](struct@BigUInt#method.checked_ilog10_uint)
-    /// can produce results more efficiently for base 10.
-    /// 
-    /// # Example 1
-    /// ```
-    /// use cryptocol::define_utypes_with;
-    /// define_utypes_with!(u16);
-    /// 
-    /// let a_biguint = U256::from_uint(64_u8);
-    /// let res = a_biguint.checked_ilog2_uint();
-    /// match res
-    /// {
-    ///     Some(r) => {
-    ///             println!("The base 2 logarithm of {} is {}.", a_biguint, r);
-    ///             assert_eq!(r.to_string(), "6");
-    ///             assert_eq!(r.is_overflow(), false);
-    ///             assert_eq!(r.is_underflow(), false);
-    ///             assert_eq!(r.is_infinity(), false);
-    ///             assert_eq!(r.is_divided_by_zero(), false);
-    ///             assert_eq!(r.is_undefined(), false);
-    ///         },
-    ///     None => { println!("Error"); },
-    /// }
-    /// ```
-    /// 
-    /// # Example 2
-    /// ```
-    /// use cryptocol::define_utypes_with;
-    /// define_utypes_with!(u16);
-    /// 
-    /// let a_biguint = U256::from_uint(70_u8);
-    /// let res = a_biguint.checked_ilog2_uint();
-    /// match res
-    /// {
-    ///     Some(r) => {
-    ///             println!("The base 2 logarithm of {} is {}.", a_biguint, r);
-    ///             assert_eq!(r.to_string(), "6");
-    ///             assert_eq!(r.is_overflow(), false);
-    ///             assert_eq!(r.is_underflow(), false);
-    ///             assert_eq!(r.is_infinity(), false);
-    ///             assert_eq!(r.is_divided_by_zero(), false);
-    ///             assert_eq!(r.is_undefined(), false);
-    ///         },
-    ///     None => { println!("Error"); },
-    /// }
-    /// ```
-    /// 
-    /// # Example 3
-    /// ```
-    /// use cryptocol::define_utypes_with;
-    /// define_utypes_with!(u16);
-    /// 
-    /// let a_biguint = U256::from_uint(1_u8);
-    /// let res = a_biguint.checked_ilog2_uint();
-    /// match res
-    /// {
-    ///     Some(r) => {
-    ///             println!("The base 2 logarithm of {} is {}.", a_biguint, r);
-    ///             assert_eq!(r.to_string(), "0");
-    ///             assert_eq!(r.is_overflow(), false);
-    ///             assert_eq!(r.is_underflow(), false);
-    ///             assert_eq!(r.is_infinity(), false);
-    ///             assert_eq!(r.is_divided_by_zero(), false);
-    ///             assert_eq!(r.is_undefined(), false);
-    ///         },
-    ///     None => { println!("Error"); },
-    /// }
-    /// ```
-    /// 
-    /// # Example 4
-    /// ```
-    /// use cryptocol::define_utypes_with;
-    /// define_utypes_with!(u16);
-    /// 
-    /// let a_biguint = U256::zero();
-    /// let base = 6_u8;
-    /// let res = a_biguint.checked_ilog_uint(1_u8);
-    /// match res
-    /// {
-    ///     Some(r) => { println!("The base 10 logarithm of {} is {}.", a_biguint, r); },
-    ///     None => {
-    ///             println!("Error");
-    ///             assert_eq!(res, None);
-    ///         },
-    /// }
-    /// ```
-    /// 
-    /// # Big-endian issue
-    /// It is just experimental for Big Endian CPUs. So, you are not encouraged
-    /// to use it for Big Endian CPUs for serious purpose. Only use this crate
-    /// for Big-endian CPUs with your own full responsibility.
-    pub fn checked_ilog2_uint(&self) -> Option<Self>
-    {
-        if self.is_zero()
-            { None }
-        else
-            { Some(self.ilog2_uint()) }
-    }
-
-    // pub fn unchecked_ilog2_uint(&self) -> Self
-    /// Returns the base 2 logarithm of the number, rounded down.
-    ///
-    /// # Panics
-    /// - If `size_of::<T>() * N` <= `128`, this method may panic
-    /// or its behavior may be undefined though it may not panic.
-    /// - This function will panic if `self` is zero.
-    /// 
-    /// # Output
-    /// It returns the base 2 logarithm of the number, rounded down.
-    /// 
-    /// # Counterpart Methods
-    /// This method is optimized for base 2;
-    /// [unchecked_ilog_uint()](struct@BigUInt#method.unchecked_ilog_uint)
-    /// can produce results of the base other than 2, and
-    /// [unchecked_ilog10_uint()](struct@BigUInt#method.unchecked_ilog10_uint)
-    /// can produce results more efficiently for base 10.
-    /// 
-    /// # Example 1
-    /// ```
-    /// use cryptocol::define_utypes_with;
-    /// define_utypes_with!(u32);
-    /// 
-    /// let a_biguint = U256::from_uint(64_u8);
-    /// let res = a_biguint.unchecked_ilog2_uint();
-    /// println!("The base 2 logarithm of {} is {}.", a_biguint, res);
-    /// assert_eq!(res.to_string(), "6");
-    /// assert_eq!(res.is_overflow(), false);
-    /// assert_eq!(res.is_underflow(), false);
-    /// assert_eq!(res.is_infinity(), false);
-    /// assert_eq!(res.is_divided_by_zero(), false);
-    /// assert_eq!(res.is_undefined(), false);
-    /// ```
-    /// 
-    /// # Example 2
-    /// ```
-    /// use cryptocol::define_utypes_with;
-    /// define_utypes_with!(u32);
-    /// 
-    /// let a_biguint = U256::from_uint(70_u8);
-    /// let res = a_biguint.unchecked_ilog2_uint();
-    /// println!("The base 2 logarithm of {} is {}.", a_biguint, res);
-    /// assert_eq!(res.to_string(), "6");
-    /// assert_eq!(res.is_overflow(), false);
-    /// assert_eq!(res.is_underflow(), false);
-    /// assert_eq!(res.is_infinity(), false);
-    /// assert_eq!(res.is_divided_by_zero(), false);
-    /// assert_eq!(res.is_undefined(), false);
-    /// ```
-    /// 
-    /// # Example 3
-    /// ```
-    /// use cryptocol::define_utypes_with;
-    /// define_utypes_with!(u32);
-    ///
-    /// let a_biguint = U256::from_uint(1_u8);
-    /// let res = a_biguint.unchecked_ilog2_uint();
-    /// println!("The base 2 logarithm of {} is {}.", a_biguint, res);
-    /// assert_eq!(res.to_string(), "0");
-    /// assert_eq!(res.is_overflow(), false);
-    /// assert_eq!(res.is_underflow(), false);
-    /// assert_eq!(res.is_infinity(), false);
-    /// assert_eq!(res.is_divided_by_zero(), false);
-    /// assert_eq!(res.is_undefined(), false);
-    /// ```
-    /// 
-    /// # Panic Example
-    /// ```
-    /// use cryptocol::define_utypes_with;
-    /// define_utypes_with!(u32);
-    /// 
-    /// let _a_biguint = U256::zero();
-    /// // It will panic.
-    /// // let res = _a_biguint.unchecked_ilog2_uint();
-    /// ```
-    /// 
-    /// # Big-endian issue
-    /// It is just experimental for Big Endian CPUs. So, you are not encouraged
-    /// to use it for Big Endian CPUs for serious purpose. Only use this crate
-    /// for Big-endian CPUs with your own full responsibility.
-    #[inline]
-    pub fn unchecked_ilog2_uint(&self) -> Self
-    {
-        self.ilog2_uint()
-    }
-
-    // pub fn ilog10_uint(&self) -> Self
-    /// Returns the base 10 logarithm of the number, rounded down.
-    ///
-    /// # Panics
-    /// - If `size_of::<T>() * N` <= `128`, this method may panic
-    /// or its behavior may be undefined though it may not panic.
-    /// - This function will panic if `self` is zero.
-    /// 
-    /// # Output
-    /// It returns the base 10 logarithm of the number, rounded down.
-    /// 
-    /// # Counterpart Methods
-    /// This method is optimized for base 10;
-    /// [ilog_uint()](struct@BigUInt#method.ilog_uint)
-    /// can produce results of the base other than 10, and
-    /// [ilog2_uint()](struct@BigUInt#method.ilog2_uint)
-    /// can produce results more efficiently for base 10.
-    /// 
-    /// # Example 1
-    /// ```
-    /// use cryptocol::define_utypes_with;
-    /// define_utypes_with!(u64);
-    /// 
-    /// let a_biguint = U256::from_uint(10000_u32);
-    /// let res = a_biguint.ilog10_uint();
-    /// println!("The base 10 logarithm of {} is {}.", a_biguint, res);
-    /// assert_eq!(res.to_string(), "4");
-    /// assert_eq!(res.is_overflow(), false);
-    /// assert_eq!(res.is_underflow(), false);
-    /// assert_eq!(res.is_infinity(), false);
-    /// assert_eq!(res.is_divided_by_zero(), false);
-    /// assert_eq!(res.is_undefined(), false);
-    /// ```
-    /// 
-    /// # Example 2
-    /// ```
-    /// use cryptocol::define_utypes_with;
-    /// define_utypes_with!(u64);
-    /// 
-    /// let a_biguint = U256::from_uint(12345_u32);
-    /// let res = a_biguint.ilog10_uint();
-    /// println!("The base 10 logarithm of {} is {}.", a_biguint, res);
-    /// assert_eq!(res.to_string(), "4");
-    /// assert_eq!(res.is_overflow(), false);
-    /// assert_eq!(res.is_underflow(), false);
-    /// assert_eq!(res.is_infinity(), false);
-    /// assert_eq!(res.is_divided_by_zero(), false);
-    /// assert_eq!(res.is_undefined(), false);
-    /// ```
-    /// 
-    /// # Example 3
-    /// ```
-    /// use cryptocol::define_utypes_with;
-    /// define_utypes_with!(u64);
-    ///
-    /// let a_biguint = U256::from_uint(1_u8);
-    /// let res = a_biguint.ilog10_uint();
-    /// println!("The base 10 logarithm of {} is {}.", a_biguint, res);
-    /// assert_eq!(res.to_string(), "0");
-    /// assert_eq!(res.is_overflow(), false);
-    /// assert_eq!(res.is_underflow(), false);
-    /// assert_eq!(res.is_infinity(), false);
-    /// assert_eq!(res.is_divided_by_zero(), false);
-    /// assert_eq!(res.is_undefined(), false);
-    /// ```
-    /// 
-    /// # Panic Example
-    /// ```
-    /// use cryptocol::define_utypes_with;
-    /// define_utypes_with!(u64);
-    /// 
-    /// let _a_biguint = U256::zero();
-    /// // It will panic.
-    /// // let res = _a_biguint.ilog10_uint();
-    /// ```
-    /// 
-    /// # Big-endian issue
-    /// It is just experimental for Big Endian CPUs. So, you are not encouraged
-    /// to use it for Big Endian CPUs for serious purpose. Only use this crate
-    /// for Big-endian CPUs with your own full responsibility.
-    #[inline]
-    pub fn ilog10_uint(&self) -> Self
-    {
-        self.ilog_uint(10_u8)
-    }
-
-    // pub fn ilog10_assign_uint(&mut self)
-    /// Calculates the base 10 logarithm of the number, rounded down,
-    /// and assigns back to `self`.
-    ///
-    /// # Panics
-    /// - If `size_of::<T>() * N` <= `128`, this method may panic
-    /// or its behavior may be undefined though it may not panic.
-    /// - This function will panic if `self` is zero.
-    /// 
-    /// # Counterpart Methods
-    /// This method is not optimized for base 10 but provides convenience
-    /// for base 10;
-    /// [ilog_assign_uint()](struct@BigUInt#method.ilog_assign_uint)
-    /// can produce results of the base other than 10, and
-    /// [ilog2_assign_uint()](struct@BigUInt#method.ilog2_assign_uint)
-    /// can produce results more efficiently for base 2.
-    /// 
-    /// # Example 1
-    /// ```
-    /// use cryptocol::define_utypes_with;
-    /// define_utypes_with!(u128);
-    /// 
-    /// let mut a_biguint = U256::from_uint(10000_u32);
-    /// println!("Originally, a_biguint = {}", a_biguint);
-    /// assert_eq!(a_biguint.is_overflow(), false);
-    /// assert_eq!(a_biguint.is_underflow(), false);
-    /// assert_eq!(a_biguint.is_infinity(), false);
-    /// assert_eq!(a_biguint.is_divided_by_zero(), false);
-    /// assert_eq!(a_biguint.is_undefined(), false);
-    /// 
-    /// a_biguint.ilog10_assign_uint();
-    /// println!("After a_biguint.ilog10_assign_uint(),\na_biguint = {}.", a_biguint);
-    /// assert_eq!(a_biguint.to_string(), "4");
-    /// assert_eq!(a_biguint.is_overflow(), false);
-    /// assert_eq!(a_biguint.is_underflow(), false);
-    /// assert_eq!(a_biguint.is_infinity(), false);
-    /// assert_eq!(a_biguint.is_divided_by_zero(), false);
-    /// assert_eq!(a_biguint.is_undefined(), false);
-    /// ```
-    /// 
-    /// # Example 2
-    /// ```
-    /// use cryptocol::define_utypes_with;
-    /// define_utypes_with!(u128);
-    /// 
-    /// let mut a_biguint = U256::from_uint(12345_u32);
-    /// println!("Originally, a_biguint = {}", a_biguint);
-    /// assert_eq!(a_biguint.is_overflow(), false);
-    /// assert_eq!(a_biguint.is_underflow(), false);
-    /// assert_eq!(a_biguint.is_infinity(), false);
-    /// assert_eq!(a_biguint.is_divided_by_zero(), false);
-    /// assert_eq!(a_biguint.is_undefined(), false);
-    /// 
-    /// a_biguint.ilog10_assign_uint();
-    /// println!("After a_biguint.ilog10_assign_uint(),\na_biguint = {}.", a_biguint);
-    /// assert_eq!(a_biguint.to_string(), "4");
-    /// assert_eq!(a_biguint.is_overflow(), false);
-    /// assert_eq!(a_biguint.is_underflow(), false);
-    /// assert_eq!(a_biguint.is_infinity(), false);
-    /// assert_eq!(a_biguint.is_divided_by_zero(), false);
-    /// assert_eq!(a_biguint.is_undefined(), false);
-    /// ```
-    /// 
-    /// # Example 3
-    /// ```
-    /// use cryptocol::define_utypes_with;
-    /// define_utypes_with!(u128);
-    ///
-    /// let mut a_biguint = U256::from_uint(1_u8);
-    /// println!("Originally, a_biguint = {}", a_biguint);
-    /// assert_eq!(a_biguint.is_overflow(), false);
-    /// assert_eq!(a_biguint.is_underflow(), false);
-    /// assert_eq!(a_biguint.is_infinity(), false);
-    /// assert_eq!(a_biguint.is_divided_by_zero(), false);
-    /// assert_eq!(a_biguint.is_undefined(), false);
-    /// 
-    /// a_biguint.ilog10_assign_uint();
-    /// println!("After a_biguint.ilog10_assign_uint(),\na_biguint = {}.", a_biguint);
-    /// assert_eq!(a_biguint.to_string(), "0");
-    /// assert_eq!(a_biguint.is_overflow(), false);
-    /// assert_eq!(a_biguint.is_underflow(), false);
-    /// assert_eq!(a_biguint.is_infinity(), false);
-    /// assert_eq!(a_biguint.is_divided_by_zero(), false);
-    /// assert_eq!(a_biguint.is_undefined(), false);
-    /// ```
-    /// 
-    /// # Panic Example
-    /// ```
-    /// use cryptocol::define_utypes_with;
-    /// define_utypes_with!(u128);
-    /// 
-    /// let mut _a_biguint = U256::zero();
-    /// // It will panic.
-    /// // _a_biguint.ilog10_assign_uint();
-    /// ```
-    /// 
-    /// # Big-endian issue
-    /// It is just experimental for Big Endian CPUs. So, you are not encouraged
-    /// to use it for Big Endian CPUs for serious purpose. Only use this crate
-    /// for Big-endian CPUs with your own full responsibility.
-    #[inline]
-    pub fn ilog10_assign_uint(&mut self)
-    {
-        self.ilog_assign_uint(10_u8)
-        // For the future upgrade, the following code is remained.
-        // let flag = self.get_all_flags();
-        // let log10 = self.ilog10_uint();
-        // self.set_number(log10.get_number());
-        // self.set_flag_bit(flag);
-    }
-
-    // pub fn panic_free_ilog10_uint(&self) -> Self
-    /// Returns the base 10 logarithm of the number, rounded down.
-    ///
-    /// # Panics
-    /// - If `size_of::<T>() * N` <= `128`, this method may panic
-    /// or its behavior may be undefined though it may not panic.
-    /// 
-    /// # Features
-    /// If `self` is zero, the return value will be zero and the flag
-    /// `UNDEFINED` of the return value will be set.
-    /// 
-    /// # Output
-    /// It returns the base 10 logarithm of the number, rounded down.
-    /// 
-    /// # Counterpart Methods
-    /// This method is optimized for base 10;
-    /// [painc_free_ilog_uint()](struct@BigUInt#method.painc_free_ilog_uint)
-    /// can produce results of the base other than 10, and
-    /// [painc_free_ilog2_uint()](struct@BigUInt#method.painc_free_ilog2_uint)
-    /// can produce results more efficiently for base 10.
-    /// 
-    /// # Example 1
-    /// ```
-    /// use cryptocol::define_utypes_with;
-    /// define_utypes_with!(u8);
-    /// 
-    /// let a_biguint = U256::from_uint(10000_u32);
-    /// let res = a_biguint.panic_free_ilog10_uint();
-    /// println!("The base 10 logarithm of {} is {}.", a_biguint, res);
-    /// assert_eq!(res.to_string(), "4");
-    /// assert_eq!(res.is_overflow(), false);
-    /// assert_eq!(res.is_underflow(), false);
-    /// assert_eq!(res.is_infinity(), false);
-    /// assert_eq!(res.is_divided_by_zero(), false);
-    /// assert_eq!(res.is_undefined(), false);
-    /// ```
-    /// 
-    /// # Example 2
-    /// ```
-    /// use cryptocol::define_utypes_with;
-    /// define_utypes_with!(u8);
-    /// 
-    /// let a_biguint = U256::from_uint(12345_u32);
-    /// let res = a_biguint.panic_free_ilog10_uint();
-    /// println!("The base 10 logarithm of {} is {}.", a_biguint, res);
-    /// assert_eq!(res.to_string(), "4");
-    /// assert_eq!(res.is_overflow(), false);
-    /// assert_eq!(res.is_underflow(), false);
-    /// assert_eq!(res.is_infinity(), false);
-    /// assert_eq!(res.is_divided_by_zero(), false);
-    /// assert_eq!(res.is_undefined(), false);
-    /// ```
-    /// 
-    /// # Example 3
-    /// ```
-    /// use cryptocol::define_utypes_with;
-    /// define_utypes_with!(u8);
-    ///
-    /// let a_biguint = U256::from_uint(1_u8);
-    /// let res = a_biguint.panic_free_ilog10_uint();
-    /// println!("The base 10 logarithm of {} is {}.", a_biguint, res);
-    /// assert_eq!(res.to_string(), "0");
-    /// assert_eq!(res.is_overflow(), false);
-    /// assert_eq!(res.is_underflow(), false);
-    /// assert_eq!(res.is_infinity(), false);
-    /// assert_eq!(res.is_divided_by_zero(), false);
-    /// assert_eq!(res.is_undefined(), false);
-    /// ```
-    /// 
-    /// # Example 4
-    /// ```
-    /// use cryptocol::define_utypes_with;
-    /// define_utypes_with!(u8);
-    /// 
-    /// let a_biguint = U256::zero();
-    /// let res = a_biguint.panic_free_ilog10_uint();
-    /// println!("The base 10 logarithm of {} is {}.", a_biguint, res);
-    /// assert_eq!(res.to_string(), "0");
-    /// assert_eq!(res.is_overflow(), false);
-    /// assert_eq!(res.is_underflow(), false);
-    /// assert_eq!(res.is_infinity(), false);
-    /// assert_eq!(res.is_undefined(), true);
-    /// assert_eq!(res.is_divided_by_zero(), false);
-    /// ```
-    /// 
-    /// # Big-endian issue
-    /// It is just experimental for Big Endian CPUs. So, you are not encouraged
-    /// to use it for Big Endian CPUs for serious purpose. Only use this crate
-    /// for Big-endian CPUs with your own full responsibility.
-    #[inline]
-    pub fn panic_free_ilog10_uint(&self) -> Self
-    {
-        self.panic_free_ilog_uint(10_u8)
-    }
-
-    // pub fn panic_free_ilog10_assign_uint(&mut self)
-    /// Calculates the base 10 logarithm of the number, rounded down,
-    /// and assigns back to `self`.
-    ///
-    /// # Panics
-    /// - If `size_of::<T>() * N` <= `128`, this method may panic
-    /// or its behavior may be undefined though it may not panic.
-    /// 
-    /// # Features
-    /// If `self` is zero, the result will be zero and the flag
-    /// `UNDEFINED` of `self` will be set.
-    /// 
-    /// # Counterpart Methods
-    /// This method is not optimized for base 10 but provides convenience
-    /// for base 10;
-    /// [panic_free_ilog_assign_uint()](struct@BigUInt#method.panic_free_ilog_assign_uint)
-    /// can produce results of the base other than 10, and
-    /// [panic_free_ilog2_assign_uint()](struct@BigUInt#method.panic_free_ilog2_assign_uint)
-    /// can produce results more efficiently for base 2.
-    /// 
-    /// # Example 1
-    /// ```
-    /// use cryptocol::define_utypes_with;
-    /// define_utypes_with!(u16);
-    /// 
-    /// let mut a_biguint = U256::from_uint(10000_u32);
-    /// println!("Originally, a_biguint = {}", a_biguint);
-    /// assert_eq!(a_biguint.is_overflow(), false);
-    /// assert_eq!(a_biguint.is_underflow(), false);
-    /// assert_eq!(a_biguint.is_infinity(), false);
-    /// assert_eq!(a_biguint.is_divided_by_zero(), false);
-    /// assert_eq!(a_biguint.is_undefined(), false);
-    /// 
-    /// a_biguint.panic_free_ilog10_assign_uint();
-    /// println!("After a_biguint.panic_free_ilog10_assign_uint(),\na_biguint = {}.", a_biguint);
-    /// assert_eq!(a_biguint.to_string(), "4");
-    /// assert_eq!(a_biguint.is_overflow(), false);
-    /// assert_eq!(a_biguint.is_underflow(), false);
-    /// assert_eq!(a_biguint.is_infinity(), false);
-    /// assert_eq!(a_biguint.is_divided_by_zero(), false);
-    /// assert_eq!(a_biguint.is_undefined(), false);
-    /// ```
-    /// 
-    /// # Example 2
-    /// ```
-    /// use cryptocol::define_utypes_with;
-    /// define_utypes_with!(u16);
-    /// 
-    /// let mut a_biguint = U256::from_uint(12345_u32);
-    /// println!("Originally, a_biguint = {}", a_biguint);
-    /// assert_eq!(a_biguint.is_overflow(), false);
-    /// assert_eq!(a_biguint.is_underflow(), false);
-    /// assert_eq!(a_biguint.is_infinity(), false);
-    /// assert_eq!(a_biguint.is_divided_by_zero(), false);
-    /// assert_eq!(a_biguint.is_undefined(), false);
-    /// 
-    /// a_biguint.panic_free_ilog10_assign_uint();
-    /// println!("After a_biguint.panic_free_ilog10_assign_uint(),\na_biguint = {}.", a_biguint);
-    /// assert_eq!(a_biguint.to_string(), "4");
-    /// assert_eq!(a_biguint.is_overflow(), false);
-    /// assert_eq!(a_biguint.is_underflow(), false);
-    /// assert_eq!(a_biguint.is_infinity(), false);
-    /// assert_eq!(a_biguint.is_divided_by_zero(), false);
-    /// assert_eq!(a_biguint.is_undefined(), false);
-    /// ```
-    /// 
-    /// # Example 3
-    /// ```
-    /// use cryptocol::define_utypes_with;
-    /// define_utypes_with!(u16);
-    ///
-    /// let mut a_biguint = U256::from_uint(1_u8);
-    /// println!("Originally, a_biguint = {}", a_biguint);
-    /// assert_eq!(a_biguint.is_overflow(), false);
-    /// assert_eq!(a_biguint.is_underflow(), false);
-    /// assert_eq!(a_biguint.is_infinity(), false);
-    /// assert_eq!(a_biguint.is_divided_by_zero(), false);
-    /// assert_eq!(a_biguint.is_undefined(), false);
-    /// 
-    /// a_biguint.panic_free_ilog10_assign_uint();
-    /// println!("After a_biguint.panic_free_ilog10_assign_uint(),\na_biguint = {}.", a_biguint);
-    /// assert_eq!(a_biguint.to_string(), "0");
-    /// assert_eq!(a_biguint.is_overflow(), false);
-    /// assert_eq!(a_biguint.is_underflow(), false);
-    /// assert_eq!(a_biguint.is_infinity(), false);
-    /// assert_eq!(a_biguint.is_divided_by_zero(), false);
-    /// assert_eq!(a_biguint.is_undefined(), false);
-    /// ```
-    /// 
-    /// # Example 4
-    /// ```
-    /// use cryptocol::define_utypes_with;
-    /// define_utypes_with!(u16);
-    /// 
-    /// let mut a_biguint = U256::zero();
-    /// println!("Originally, a_biguint = {}", a_biguint);
-    /// assert_eq!(a_biguint.is_overflow(), false);
-    /// assert_eq!(a_biguint.is_underflow(), false);
-    /// assert_eq!(a_biguint.is_infinity(), false);
-    /// assert_eq!(a_biguint.is_undefined(), false);
-    /// assert_eq!(a_biguint.is_divided_by_zero(), false);
-    /// 
-    /// a_biguint.panic_free_ilog10_assign_uint();
-    /// println!("After a_biguint.panic_free_ilog10_assign_uint(),\na_biguint = {}.", a_biguint);
-    /// assert_eq!(a_biguint.to_string(), "0");
-    /// assert_eq!(a_biguint.is_overflow(), false);
-    /// assert_eq!(a_biguint.is_underflow(), false);
-    /// assert_eq!(a_biguint.is_infinity(), false);
-    /// assert_eq!(a_biguint.is_undefined(), true);
-    /// assert_eq!(a_biguint.is_divided_by_zero(), false);
-    /// ```
-    /// 
-    /// # Big-endian issue
-    /// It is just experimental for Big Endian CPUs. So, you are not encouraged
-    /// to use it for Big Endian CPUs for serious purpose. Only use this crate
-    /// for Big-endian CPUs with your own full responsibility.
-    #[inline]
-    pub fn panic_free_ilog10_assign_uint(&mut self)
-    {
-        self.panic_free_ilog_assign_uint(10_u8);
-        // For the future upgrade, the following code is remained.
-        // let flag = self.get_all_flags();
-        // let log10 = self.panic_free_ilog10_uint();
-        // self.set_number(log10.get_number());
-        // self.set_flag_bit(flag);
-    }
-
-    // pub fn checked_ilog10_uint(&self) -> Option<Self>
-    /// Calculates the base 10 logarithm of the number.
-    ///
-    /// # Panics
-    /// - If `size_of::<T>() * N` <= `128`, this method may panic
-    /// or its behavior may be undefined though it may not panic.
-    /// 
-    /// # Output
-    /// It returns the base 10 logarithm of the number, rounded down,
-    /// wrapped by `Some` of enum `Option` if `self` is not zero.
-    /// It returns `None` if `self` is zero.
-    /// 
-    /// # Counterpart Methods
-    /// This method is not optimized for base 10 but provides convenience
-    /// for base 10;
-    /// [checked_ilog_uint()](struct@BigUInt#method.checked_ilog_uint)
-    /// can produce results of the base other than 10, and
-    /// [checked_ilog2_uint()](struct@BigUInt#method.checked_ilog2_uint)
-    /// can produce results more efficiently for base 2.
-    /// 
-    /// # Example 1
-    /// ```
-    /// use cryptocol::define_utypes_with;
-    /// define_utypes_with!(u32);
-    /// 
-    /// let a_biguint = U256::from_uint(10000_u32);
-    /// let res = a_biguint.checked_ilog10_uint();
-    /// match res
-    /// {
-    ///     Some(r) => {
-    ///             println!("The base 10 logarithm of {} is {}.", a_biguint, r);
-    ///             assert_eq!(r.to_string(), "4");
-    ///             assert_eq!(r.is_overflow(), false);
-    ///             assert_eq!(r.is_underflow(), false);
-    ///             assert_eq!(r.is_infinity(), false);
-    ///             assert_eq!(r.is_divided_by_zero(), false);
-    ///             assert_eq!(r.is_undefined(), false);
-    ///         },
-    ///     None => { println!("Error"); },
-    /// }
-    /// ```
-    /// 
-    /// # Example 2
-    /// ```
-    /// use cryptocol::define_utypes_with;
-    /// define_utypes_with!(u32);
-    /// 
-    /// let a_biguint = U256::from_uint(70_u8);
-    /// let res = a_biguint.checked_ilog2_uint();
-    /// match res
-    /// {
-    ///     Some(r) => {
-    ///             println!("The base 2 logarithm of {} is {}.", 12345_u32, r);
-    ///             assert_eq!(r.to_string(), "6");
-    ///             assert_eq!(r.is_overflow(), false);
-    ///             assert_eq!(r.is_underflow(), false);
-    ///             assert_eq!(r.is_infinity(), false);
-    ///             assert_eq!(r.is_divided_by_zero(), false);
-    ///             assert_eq!(r.is_undefined(), false);
-    ///         },
-    ///     None => { println!("Error"); },
-    /// }
-    /// ```
-    /// 
-    /// # Example 3
-    /// ```
-    /// use cryptocol::define_utypes_with;
-    /// define_utypes_with!(u32);
-    /// 
-    /// let a_biguint = U256::from_uint(1_u8);
-    /// let res = a_biguint.checked_ilog2_uint();
-    /// match res
-    /// {
-    ///     Some(r) => {
-    ///             println!("The base 2 logarithm of {} is {}.", a_biguint, r);
-    ///             assert_eq!(r.to_string(), "0");
-    ///             assert_eq!(r.is_overflow(), false);
-    ///             assert_eq!(r.is_underflow(), false);
-    ///             assert_eq!(r.is_infinity(), false);
-    ///             assert_eq!(r.is_divided_by_zero(), false);
-    ///             assert_eq!(r.is_undefined(), false);
-    ///         },
-    ///     None => { println!("Error"); },
-    /// }
-    /// ```
-    /// 
-    /// # Example 4
-    /// ```
-    /// use cryptocol::define_utypes_with;
-    /// define_utypes_with!(u32);
-    /// 
-    /// let a_biguint = U256::zero();
-    /// let base = 6_u8;
-    /// let res = a_biguint.checked_ilog_uint(1_u8);
-    /// match res
-    /// {
-    ///     Some(r) => { println!("The base 10 logarithm of {} is {}.", a_biguint, r); },
-    ///     None => {
-    ///             println!("Error");
-    ///             assert_eq!(res, None);
-    ///         },
-    /// }
-    /// ```
-    /// 
-    /// # Big-endian issue
-    /// It is just experimental for Big Endian CPUs. So, you are not encouraged
-    /// to use it for Big Endian CPUs for serious purpose. Only use this crate
-    /// for Big-endian CPUs with your own full responsibility.
-    #[inline]
-    pub fn checked_ilog10_uint(&self) -> Option<Self>
-    {
-        self.checked_ilog_uint(10_u8)
-    }
-
-    // pub fn unchecked_ilog10_uint(&self) -> Self
-    /// Returns the base 10 logarithm of the number, rounded down.
-    ///
-    /// # Panics
-    /// - If `size_of::<T>() * N` <= `128`, this method may panic
-    /// or its behavior may be undefined though it may not panic.
-    /// - This function will panic if `self` is zero.
-    /// 
-    /// # Output
-    /// It returns the base 10 logarithm of the number, rounded down.
-    /// 
-    /// # Counterpart Methods
-    /// This method is not optimized for base 10 but provides convenience
-    /// for base 10;
-    /// [unchecked_ilog_uint()](struct@BigUInt#method.unchecked_ilog_uint)
-    /// can produce results of the base other than 10, and
-    /// [unchecked_ilog2_uint()](struct@BigUInt#method.unchecked_ilog2_uint)
-    /// can produce results more efficiently for base 2.
-    /// 
-    /// # Example 1
-    /// ```
-    /// use cryptocol::define_utypes_with;
-    /// define_utypes_with!(u64);
-    /// 
-    /// let a_biguint = U256::from_uint(10000_u32);
-    /// let res = a_biguint.unchecked_ilog10_uint();
-    /// println!("The base 10 logarithm of {} is {}.", a_biguint, res);
-    /// assert_eq!(res.to_string(), "4");
-    /// assert_eq!(a_biguint.is_overflow(), false);
-    /// assert_eq!(a_biguint.is_underflow(), false);
-    /// assert_eq!(a_biguint.is_infinity(), false);
-    /// assert_eq!(a_biguint.is_divided_by_zero(), false);
-    /// assert_eq!(a_biguint.is_undefined(), false);
-    /// ```
-    /// 
-    /// # Example 2
-    /// ```
-    /// use cryptocol::define_utypes_with;
-    /// define_utypes_with!(u64);
-    /// 
-    /// let a_biguint = U256::from_uint(12345_u32);
-    /// let res = a_biguint.unchecked_ilog10_uint();
-    /// println!("The base 10 logarithm of {} is {}.", a_biguint, res);
-    /// assert_eq!(res.to_string(), "4");
-    /// assert_eq!(a_biguint.is_overflow(), false);
-    /// assert_eq!(a_biguint.is_underflow(), false);
-    /// assert_eq!(a_biguint.is_infinity(), false);
-    /// assert_eq!(a_biguint.is_divided_by_zero(), false);
-    /// assert_eq!(a_biguint.is_undefined(), false);
-    /// ```
-    /// 
-    /// # Example 3
-    /// ```
-    /// use cryptocol::define_utypes_with;
-    /// define_utypes_with!(u64);
-    ///
-    /// let a_biguint = U256::from_uint(1_u8);
-    /// let res = a_biguint.unchecked_ilog10_uint();
-    /// println!("The base 10 logarithm of {} is {}.", a_biguint, res);
-    /// assert_eq!(res.to_string(), "0");
-    /// assert_eq!(a_biguint.is_overflow(), false);
-    /// assert_eq!(a_biguint.is_underflow(), false);
-    /// assert_eq!(a_biguint.is_infinity(), false);
-    /// assert_eq!(a_biguint.is_divided_by_zero(), false);
-    /// assert_eq!(a_biguint.is_undefined(), false);
-    /// 
-    /// let _a_biguint = U256::zero();
-    /// // It will panic.
-    /// // let res = _a_biguint.unchecked_ilog10_uint();
-    /// ```
-    /// 
-    /// # Big-endian issue
-    /// It is just experimental for Big Endian CPUs. So, you are not encouraged
-    /// to use it for Big Endian CPUs for serious purpose. Only use this crate
-    /// for Big-endian CPUs with your own full responsibility.
-    #[inline]
-    pub fn unchecked_ilog10_uint(&self) -> Self
-    {
-        self.unchecked_ilog_uint(10_u8)
     }
 
 
@@ -25011,9 +23934,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// for Big-endian CPUs with your own full responsibility.
     pub fn carrying_add(&self, rhs: &Self, carry: bool) -> (Self, bool)
     {
-        let mut res = Self::from_array(self.get_number().clone());
-        let c = res.carrying_add_assign(rhs, carry);
-        (res, c)
+        carrying_calc!(self, Self::carrying_add_assign, rhs, carry);
     }
 
     // pub fn carrying_add_assign(&self, rhs: &Self, carry: bool) -> bool
@@ -25529,9 +24450,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// for Big-endian CPUs with your own full responsibility.
     pub fn overflowing_add(&self, rhs: &Self) -> (Self, bool)
     {
-        let mut res = Self::from_array(self.get_number().clone());
-        let current_overflow = res.overflowing_add_assign(rhs);
-        (res, current_overflow)
+        overflowing_calc!(self, Self::overflowing_add_assign, rhs);
     }
 
     // pub fn overflowing_add_assign(&mut self, rhs: &Self) -> bool
@@ -25639,12 +24558,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// for Big-endian CPUs with your own full responsibility.
     pub fn overflowing_add_assign(&mut self, rhs: &Self) -> bool
     {
-        let flags = self.get_all_flags();
-        self.reset_all_flags();
-        self.wrapping_add_assign(rhs);
-        let current_overflow = self.is_overflow();
-        self.set_flag_bit(flags);
-        current_overflow
+        overflowing_calc_assign!(self, Self::wrapping_add_assign, rhs);
     }
 
     // pub fn checked_add(&self, rhs: &Self) -> Option<Self>
@@ -25723,11 +24637,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// for Big-endian CPUs with your own full responsibility.
     pub fn checked_add(&self, rhs: &Self) -> Option<Self>
     {
-        let (res, overflow) = self.overflowing_add(rhs);
-        if overflow
-            { None }
-        else
-            { Some(res) }
+        checked_calc!(self, Self::overflowing_add, rhs);
     }
 
     // pub fn unchecked_add(&self, rhs: &Self) -> Self
@@ -25863,9 +24773,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// for Big-endian CPUs with your own full responsibility.
     pub fn saturating_add(&self, rhs: &Self) -> Self
     {
-        let mut res = Self::from_array(self.get_number().clone());
-        res.saturating_add_assign(rhs);
-        res
+        general_calc!(self, Self::saturating_add_assign, rhs);
     }
 
     // pub fn saturating_add_assign(&mut self, rhs: &Self)
@@ -25974,13 +24882,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// for Big-endian CPUs with your own full responsibility.
     pub fn saturating_add_assign(&mut self, rhs: &Self)
     {
-        let overflow = self.is_overflow();
-        if self.overflowing_add_assign(rhs)
-        {
-            self.set_max();
-            if !overflow
-                { self.reset_overflow(); }
-        }
+        saturating_calc_assign!(self, Self::overflowing_add_assign, rhs);
     }
 
     // pub fn modular_add(&self, rhs: &Self, modulo: &Self) -> Self
@@ -26262,9 +25164,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// for Big-endian CPUs with your own full responsibility.
     pub fn modular_add(&self, rhs: &Self, modulo: &Self) -> Self
     {
-        let mut res = Self::from_array(self.get_number().clone());
-        res.modular_add_assign(rhs, modulo);
-        res
+        general_calc!(self, Self::modular_add_assign, rhs, modulo);
     }
 
     // pub fn modular_add_assign(&mut self, rhs: &Self, modulo: &Self)
@@ -26643,9 +25543,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// for Big-endian CPUs with your own full responsibility.
     pub fn modular_add_assign(&mut self, rhs: &Self, modulo: &Self)
     {
-        if modulo.is_zero_or_one()
-            { panic!(); }
-        self.common_modular_add_assign(rhs, modulo);
+        modular_calc_assign!(self, Self::common_modular_add_assign, rhs, modulo);
     }
     // pub fn panic_free_modular_add(&self, rhs: &Self, modulo: &Self) -> Self
     /// Calculates (`self` + `rhs`) % `modulo`,
@@ -26974,9 +25872,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// for Big-endian CPUs with your own full responsibility.
     pub fn panic_free_modular_add(&self, rhs: &Self, modulo: &Self) -> Self
     {
-        let mut res = Self::from_array(self.get_number().clone());
-        res.panic_free_modular_add_assign(rhs, modulo);
-        res
+        general_calc!(self, Self::panic_free_modular_add_assign, rhs, modulo);
     }
 
     // pub fn panic_free_modular_add_assign(&mut self, rhs: &Self, modulo: &Self)
@@ -27400,15 +26296,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// for Big-endian CPUs with your own full responsibility.
     pub fn panic_free_modular_add_assign(&mut self, rhs: &Self, modulo: &Self)
     {
-        if modulo.is_zero_or_one()
-        {
-            self.set_undefined();
-            self.set_zero();
-        }
-        else
-        {
-            self.common_modular_add_assign(rhs, modulo);
-        }
+        panic_free_modular_calc_assign!(self, Self::common_modular_add_assign, rhs, modulo);
     }
 
     fn common_modular_add_assign(&mut self, rhs: &Self, modulo: &Self)
@@ -27554,12 +26442,10 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// for Big-endian CPUs with your own full responsibility.
     pub fn borrowing_sub(&self, rhs: &Self, borrow: bool) -> (Self, bool)
     {
-        let mut res = Self::from_array(self.get_number().clone());
-        let b = res.borrowing_sub_assign(rhs, borrow);
-        (res, b)
+        carrying_calc!(self, Self::borrowing_sub_assign, rhs, borrow);
     }
 
-    // pub fn carrying_sub_assign(&self, rhs: &Self, borrow: bool) -> bool
+    // pub fn borrowing_sub_assign(&self, rhs: &Self, borrow: bool) -> bool
     /// Calculates `self` - `rhs` - `carry`,
     /// wrapping around at the boundary of the `Self` type,
     /// and assign the subtraction result `self` - `rhs` - `carry`
@@ -27998,9 +26884,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// for Big-endian CPUs with your own full responsibility.
     pub fn overflowing_sub(&self, rhs: &Self) -> (Self, bool)
     {
-        let mut res = Self::from_array(self.get_number().clone());
-        let current_overflow = res.overflowing_sub_assign(rhs);
-        (res, current_overflow)
+        overflowing_calc!(self, Self::overflowing_sub_assign, rhs);
     }
 
     // pub fn overflowing_sub_assign(&mut self, rhs: &Self) -> bool
@@ -28095,13 +26979,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// for Big-endian CPUs with your own full responsibility.
     pub fn overflowing_sub_assign(&mut self, rhs: &Self) -> bool
     {
-        let old_underflow = self.is_underflow();
-        self.reset_underflow();
-        self.wrapping_sub_assign(rhs);
-        let current_underflow = self.is_underflow();
-        if old_underflow || current_underflow
-            { self.set_underflow(); }
-        current_underflow
+        underflowing_calc_assign!(self, Self::wrapping_sub_assign, rhs);
     }
 
     // pub fn checked_sub(&self, rhs: &Self) -> Option<Self>
@@ -28178,12 +27056,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// for Big-endian CPUs with your own full responsibility.
     pub fn checked_sub(&self, rhs: &Self) -> Option<Self>
     {
-        let mut res = Self::from_array(self.get_number().clone());
-        let underflow = res.overflowing_sub_assign(rhs);
-        if underflow
-            { None }
-        else
-            { Some(res) }
+        checked_calc!(self, Self::overflowing_sub, rhs);
     }
 
     // pub fn unchecked_sub(&self, rhs: &Self) -> Self
@@ -28335,9 +27208,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// for Big-endian CPUs with your own full responsibility.
     pub fn saturating_sub(&self, rhs: &Self) -> Self
     {
-        let mut res = Self::from_array(self.get_number().clone());
-        res.saturating_sub_assign(rhs);
-        res
+        general_calc!(self, Self::saturating_sub_assign, rhs);
     }
 
     // pub fn saturating_sub_assign(&mut self, rhs: &Self)
@@ -28411,13 +27282,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// for Big-endian CPUs with your own full responsibility.
     pub fn saturating_sub_assign(&mut self, rhs: &Self)
     {
-        let underflow = self.is_underflow();
-        if self.overflowing_sub_assign(rhs)
-        {
-            self.set_zero();
-            if !underflow
-                { self.reset_underflow(); }
-        }
+        saturating_calc_sub_assign!(self, Self::overflowing_sub_assign, rhs);
     }
 
     // pub fn modular_sub(&self, rhs: &Self, modulo: &Self) -> Self
@@ -28700,9 +27565,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// for Big-endian CPUs with your own full responsibility.
     pub fn modular_sub(&self, rhs: &Self, modulo: &Self) -> Self
     {
-        let mut res = Self::from_array(self.get_number().clone());
-        res.modular_sub_assign(rhs, modulo);
-        res
+        general_calc!(self, Self::modular_sub_assign, rhs, modulo);
     }
 
     // pub fn modular_sub_assign(&mut self, rhs: &Self, modulo: &Self)
@@ -29055,9 +27918,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// for Big-endian CPUs with your own full responsibility.
     pub fn modular_sub_assign(&mut self, rhs: &Self, modulo: &Self)
     {
-        if modulo.is_zero_or_one()
-            { panic!(); }
-        self.common_modular_sub_assign(rhs, modulo);
+        modular_calc_assign!(self, Self::common_modular_sub_assign, rhs, modulo);
     }
 
     // pub fn panic_free_modular_sub(&self, rhs: &Self, modulo: &Self) -> Self
@@ -29388,9 +28249,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// for Big-endian CPUs with your own full responsibility.
     pub fn panic_free_modular_sub(&self, rhs: &Self, modulo: &Self) -> Self
     {
-        let mut res = Self::from_array(self.get_number().clone());
-        res.panic_free_modular_sub_assign(rhs, modulo);
-        res
+        general_calc!(self, Self::panic_free_modular_sub_assign, rhs, modulo);
     }
 
     // pub fn panic_free_modular_sub_assign(&mut self, rhs: &Self, modulo: &Self)
@@ -29814,13 +28673,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// for Big-endian CPUs with your own full responsibility.
     pub fn panic_free_modular_sub_assign(&mut self, rhs: &Self, modulo: &Self)
     {
-        if modulo.is_zero_or_one()
-        {
-            self.set_zero();
-            self.set_undefined();
-            return;
-        }
-        self.common_modular_sub_assign(rhs, modulo);
+        panic_free_modular_calc_assign!(self, Self::common_modular_sub_assign, rhs, modulo);
     }
 
     fn common_modular_sub_assign(&mut self, rhs: &Self, modulo: &Self)
@@ -30677,9 +29530,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// for Big-endian CPUs with your own full responsibility.
     pub fn wrapping_mul(&self, rhs: &Self) -> Self
     {
-        let mut res = Self::from_array(self.get_number().clone());
-        res.wrapping_mul_assign(rhs);
-        res
+        general_calc!(self, Self::wrapping_mul_assign, rhs);
     }
 
     // pub fn wrapping_mul_assign(&mut self, rhs: &Self)
@@ -30954,9 +29805,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// for Big-endian CPUs with your own full responsibility.
     pub fn overflowing_mul(&self, rhs: &Self) -> (Self, bool)
     {
-        let mut res = Self::from_array(self.get_number().clone());
-        let overflow = res.overflowing_mul_assign(rhs);
-        (res, overflow)
+        overflowing_calc!(self, Self::overflowing_mul_assign, rhs);
     }
 
     // pub fn overflowing_mul_assign(&mut self, rhs: &Self) -> bool
@@ -31055,13 +29904,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// for Big-endian CPUs with your own full responsibility.
     pub fn overflowing_mul_assign(&mut self, rhs: &Self) -> bool
     {
-        let old_overflow = self.is_overflow();
-        self.reset_overflow();
-        self.wrapping_mul_assign(rhs);
-        let current_overflow = self.is_overflow();
-        if old_overflow || current_overflow
-            { self.set_overflow(); }
-        current_overflow
+        overflowing_calc_assign!(self, Self::wrapping_mul_assign, rhs);
     }
 
     // pub fn checked_mul(&self, rhs: &Self) -> Option<Self>
@@ -31142,12 +29985,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// for Big-endian CPUs with your own full responsibility.
     pub fn checked_mul(&self, rhs: &Self) -> Option<Self>
     {
-        let mut res = Self::from_array(self.get_number().clone());
-        let overflow = res.overflowing_mul_assign(rhs);
-        if overflow
-            { None }
-        else
-            { Some(res) }
+        checked_calc!(self, Self::overflowing_mul, rhs);
     }
 
     // pub fn unchecked_mul(&self, rhs: &Self) -> Self
@@ -31286,9 +30124,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// for Big-endian CPUs with your own full responsibility.
     pub fn saturating_mul(&self, rhs: &Self) -> Self
     {
-        let mut res = Self::from_array(self.get_number().clone());
-        res.saturating_mul_assign(rhs);
-        res
+        general_calc!(self, Self::saturating_mul_assign, rhs);
     }
 
     // pub fn saturating_mul_assign(&mut self, rhs: &Self)
@@ -31373,13 +30209,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// for Big-endian CPUs with your own full responsibility.
     pub fn saturating_mul_assign(&mut self, rhs: &Self)
     {
-        let overflow = self.is_overflow();
-        if self.overflowing_mul_assign(rhs)
-        {
-            self.set_max();
-            if !overflow
-                { self.reset_overflow(); }
-        }
+        saturating_calc_assign!(self, Self::overflowing_mul_assign, rhs);
     }
 
     // pub fn modular_mul(&self, rhs: &Self, modulo: &Self) -> Self
@@ -31644,9 +30474,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// for Big-endian CPUs with your own full responsibility.
     pub fn modular_mul(&self, rhs: &Self, modulo: &Self) -> Self
     {
-        let mut res = Self::from_array(self.get_number().clone());
-        res.modular_mul_assign(rhs, modulo);
-        res
+        general_calc!(self, Self::modular_mul_assign, rhs, modulo);
     }
 
     // pub fn modular_mul_assign(&self, rhs: &Self, modulo: &Self)
@@ -32004,9 +30832,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// for Big-endian CPUs with your own full responsibility.
     pub fn modular_mul_assign(&mut self, rhs: &Self, modulo: &Self)
     {
-        if modulo.is_zero_or_one()
-            { panic!(); }
-        self.common_modular_mul_assign(rhs, modulo);
+        modular_calc_assign!(self, Self::common_modular_mul_assign, rhs, modulo);
     }
 
     // pub fn panic_free_modular_mul(&self, rhs: &Self, modulo: &Self) -> Self
@@ -32319,9 +31145,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// for Big-endian CPUs with your own full responsibility.
     pub fn panic_free_modular_mul(&self, rhs: &Self, modulo: &Self) -> Self
     {
-        let mut res = Self::from_array(self.get_number().clone());
-        res.panic_free_modular_mul_assign(rhs, modulo);
-        res
+        general_calc!(self, Self::panic_free_modular_mul_assign, rhs, modulo);
     }
 
     // pub fn panic_free_modular_mul_assign(&self, rhs: &Self, modulo: &Self)
@@ -32737,13 +31561,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// for Big-endian CPUs with your own full responsibility.
     pub fn panic_free_modular_mul_assign(&mut self, rhs: &Self, modulo: &Self)
     {
-        if modulo.is_zero_or_one()
-        {
-            self.set_zero();
-            self.set_undefined();
-            return;
-        }
-        self.common_modular_mul_assign(rhs, modulo);
+        panic_free_modular_calc_assign!(self, Self::common_modular_mul_assign, rhs, modulo);
     }
 
     fn common_modular_mul_assign(&mut self, rhs: &Self, modulo: &Self)
@@ -33065,23 +31883,9 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     pub fn panic_free_divide_fully(&self, rhs: &Self) -> (Self, Self)
     {
         if rhs.is_zero()
-        {
-            let mut q: Self;
-            let mut r = Self::zero();
-            r.set_all_flags(Self::DIVIDED_BY_ZERO);
-            if self.is_zero()
-            {
-                q = Self::zero();
-                q.set_all_flags(Self::UNDEFINED | Self::DIVIDED_BY_ZERO);
-            }
-            else
-            {
-                q = Self::max();
-                q.set_all_flags(Self::INFINITY | Self::DIVIDED_BY_ZERO);
-            }
-            return (q, r);
-        }
-        self.common_divide_fully(rhs)
+            { if_rhs_is_zero!(self, rhs); }
+        else
+            { self.common_divide_fully(rhs) }
     }
 
     // pub fn wrapping_div(&self, rhs: &Self) -> Self
@@ -33173,8 +31977,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// for Big-endian CPUs with your own full responsibility.
     pub fn wrapping_div(&self, rhs: &Self) -> Self
     {
-        let (quotient, _) = self.divide_fully(rhs);
-        quotient
+        general_calc_div!(self, Self::divide_fully, rhs);
     }
 
     // pub fn wrapping_div_assign(&mut self, rhs: &Self)
@@ -33283,8 +32086,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// for Big-endian CPUs with your own full responsibility.
     pub fn wrapping_div_assign(&mut self, rhs: &Self)
     {
-        let (quotient, _) = self.divide_fully(rhs);
-        *self = quotient;
+        general_calc_assign!(self, Self::wrapping_div, rhs);
     }
 
     // pub fn overflowing_div(&self, rhs: &Self) -> (Self, bool)
@@ -33381,9 +32183,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// for Big-endian CPUs with your own full responsibility.
     pub fn overflowing_div(&self, rhs: &Self) -> (Self, bool)
     {
-        let mut res = Self::from_array(self.get_number().clone());
-        let overflow = res.overflowing_div_assign(rhs);
-        (res, overflow)
+        overflowing_calc_div!(self, Self::divide_fully, rhs);
     }
 
     // pub fn overflowing_div_assign(&mut self, rhs: &Self) -> bool
@@ -33499,13 +32299,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// for Big-endian CPUs with your own full responsibility.
     pub fn overflowing_div_assign(&mut self, rhs: &Self) -> bool
     {
-        let old_overflow = self.is_overflow();
-        self.reset_overflow();
-        self.wrapping_div_assign(rhs);
-        let current_overflow = self.is_overflow();
-        if old_overflow || current_overflow
-            { self.set_overflow(); }
-        current_overflow
+        overflowing_calc_assign!(self, Self::wrapping_div_assign, rhs);
     }
 
     // pub fn checked_div(&self, rhs: &Self) -> Option<Self>
@@ -33633,10 +32427,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// for Big-endian CPUs with your own full responsibility.
     pub fn checked_div(&self, rhs: &Self) -> Option<Self>
     {
-        if rhs.is_zero()
-            { None }
-        else
-            { Some(self.wrapping_div(rhs)) }
+        checked_calc_div!(self, Self::wrapping_div, rhs);
     }
 
     // pub fn unchecked_div(&self, rhs: &Self) -> Self
@@ -33816,8 +32607,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// for Big-endian CPUs with your own full responsibility.
     pub fn saturating_div(&self, rhs: &Self) -> Self
     {
-        let (quotient, _) = self.divide_fully(rhs);
-        quotient
+        general_calc_div!(self, Self::divide_fully, rhs);
     }
 
     // pub fn saturating_div_assign(&mut self, rhs: &Self)
@@ -33924,10 +32714,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// for Big-endian CPUs with your own full responsibility.
     pub fn saturating_div_assign(&mut self, rhs: &Self)
     {
-        let flags = self.get_all_flags();
-        let res = self.saturating_div(rhs);
-        self.set_number(res.get_number());
-        self.set_all_flags(flags);
+        general_calc_assign!(self, Self::saturating_div, rhs);
     }
 
     // pub fn panic_free_div(&self, rhs: &Self) -> Self
@@ -34048,8 +32835,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// for Big-endian CPUs with your own full responsibility.
     pub fn panic_free_div(&self, rhs: &Self) -> Self
     {
-        let (quotient, _) = self.panic_free_divide_fully(rhs);
-        quotient
+        general_calc_div!(self, Self::panic_free_divide_fully, rhs);
     }
 
     // pub fn panic_free_div_assign(&mut self, rhs: &Self)
@@ -34200,9 +32986,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// for Big-endian CPUs with your own full responsibility.
     pub fn panic_free_div_assign(&mut self, rhs: &Self)
     {
-        let res = self.panic_free_div(rhs);
-        self.set_number(res.get_number());
-        self.set_flag_bit(res.get_all_flags());
+        panic_free_calc_div_rem_assign!(self, Self::panic_free_div, rhs);
     }
 
     // pub fn modular_div(&self, rhs: &Self, modulo: &Self) -> Self
@@ -34360,9 +33144,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// to use it for Big Endian CPUs for serious purpose. Only use this crate
     pub fn modular_div(&self, rhs: &Self, modulo: &Self) -> Self
     {
-        let mut lhs = Self::from_array(self.get_number().clone());
-        lhs.modular_div_assign(rhs, modulo);
-        lhs
+        general_calc!(self, Self::modular_div_assign, rhs, modulo);
     }
 
     // pub fn modular_div_assign(&self, rhs: &Self, modulo: &Self)
@@ -34910,9 +33692,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// for Big-endian CPUs with your own full responsibility.
     pub fn panic_free_modular_div(&self, rhs: &Self, modulo: &Self) -> Self
     {
-        let mut res = Self::from_array(self.get_number().clone());
-        res.panic_free_modular_div_assign(rhs, modulo);
-        res
+        general_calc!(self, Self::panic_free_modular_div_assign, rhs, modulo);
     }
 
     // pub fn panic_free_modular_div_assign(&mut self, rhs: &Self, modulo: &Self)
@@ -35515,8 +34295,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// for Big-endian CPUs with your own full responsibility.
     pub fn wrapping_rem(&self, rhs: &Self) -> Self
     {
-        let (_, remainder) = self.divide_fully(rhs);
-        remainder
+        general_calc_rem!(self, Self::divide_fully, rhs);
     }
 
     // pub fn wrapping_rem_assign(&mut self, rhs: &Self)
@@ -35625,11 +34404,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// for Big-endian CPUs with your own full responsibility.
     pub fn wrapping_rem_assign(&mut self, rhs: &Self)
     {
-        let old_overflow = self.is_overflow();
-        let (_, remainder) = self.divide_fully(rhs);
-        *self = remainder;
-        if old_overflow
-            { self.set_overflow(); }
+        general_calc_assign!(self, Self::wrapping_rem, rhs);
     }
 
     // pub fn overflowing_rem(&self, rhs: &Self) -> (Self, bool)
@@ -35726,8 +34501,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// for Big-endian CPUs with your own full responsibility.
     pub fn overflowing_rem(&self, rhs: &Self) -> (Self, bool)
     {
-        let (_, remainder) = self.divide_fully(rhs);
-        (remainder, false)
+        overflowing_calc_rem!(self, Self::divide_fully, rhs);
     }
 
     // pub fn overflowing_rem_assign(&mut self, rhs: &Self) -> bool
@@ -35845,11 +34619,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// for Big-endian CPUs with your own full responsibility.
     pub fn overflowing_rem_assign(&mut self, rhs: &Self) -> bool
     {
-        let flags = self.get_all_flags();
-        let (_, remainder) = self.divide_fully(rhs);
-        self.set_number(remainder.get_number());
-        self.set_all_flags(flags);
-        false
+        overflowing_calc_assign!(self, Self::wrapping_rem_assign, rhs);
     }
 
     // pub fn checked_rem(&self, rhs: &Self) -> Option<Self>
@@ -35977,10 +34747,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// for Big-endian CPUs with your own full responsibility.
     pub fn checked_rem(&self, rhs: &Self) -> Option<Self>
     {
-        if rhs.is_zero()
-            { None }
-        else
-            { Some(self.wrapping_rem(&rhs)) }
+        checked_calc_div!(self, Self::wrapping_rem, rhs);
     }
 
     // pub fn unchecked_rem(&self, rhs: &Self) -> Self
@@ -36160,8 +34927,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// for Big-endian CPUs with your own full responsibility.
     pub fn saturating_rem(&self, rhs: &Self) -> Self
     {
-        let (_, remainder) = self.divide_fully(&rhs);
-        remainder
+        general_calc_rem!(self, Self::divide_fully, rhs);
     }
 
     // pub fn saturating_rem_assign(&mut self, rhs: &Self)
@@ -36268,10 +35034,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// for Big-endian CPUs with your own full responsibility.
     pub fn saturating_rem_assign(&mut self, rhs: &Self)
     {
-        let old_overflow = self.is_overflow();
-        *self = self.saturating_rem(rhs);
-        if old_overflow
-            { self.set_overflow(); }
+        general_calc_assign!(self, Self::saturating_rem, rhs);
     }
 
     // pub fn panic_free_rem(&self, rhs: &Self) -> Self
@@ -36387,8 +35150,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// for Big-endian CPUs with your own full responsibility.
     pub fn panic_free_rem(&self, rhs: &Self) -> Self
     {
-        let (_, remainder) = self.panic_free_divide_fully(rhs);
-        remainder
+        general_calc_rem!(self, Self::panic_free_divide_fully, rhs);
     }
 
     // pub fn panic_free_rem_assign(&mut self, rhs: &Self)
@@ -36534,10 +35296,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// for Big-endian CPUs with your own full responsibility.
     pub fn panic_free_rem_assign(&mut self, rhs: &Self)
     {
-        let flags = self.get_all_flags();
-        let (_, remainder) = self.panic_free_divide_fully(rhs);
-        self.set_number(remainder.get_number());
-        self.set_all_flags(flags | remainder.get_all_flags());
+        panic_free_calc_div_rem_assign!(self, Self::panic_free_rem, rhs);
     }
 
     // pub fn modular_rem(&self, rhs: &Self, modulo: &Self) -> Self
@@ -36698,9 +35457,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// for Big-endian CPUs with your own full responsibility.
     pub fn modular_rem(&self, rhs: &Self, modulo: &Self) -> Self
     {
-        let mut lhs = Self::from_array(self.get_number().clone());
-        lhs.modular_rem_assign(rhs, modulo);
-        lhs
+        general_calc!(self, Self::modular_rem_assign, rhs, modulo);
     }
 
     // pub fn modular_rem_assign(&self, rhs: &Self, modulo: &Self)
@@ -37243,9 +36000,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// for Big-endian CPUs with your own full responsibility.
     pub fn panic_free_modular_rem(&self, rhs: &Self, modulo: &Self) -> Self
     {
-        let mut lhs = Self::from_array(self.get_number().clone());
-        lhs.panic_free_modular_rem_assign(rhs, modulo);
-        lhs
+        general_calc!(self, Self::panic_free_modular_rem_assign, rhs, modulo);
     }
 
     // pub fn panic_free_modular_rem_assign(&self, rhs: &Self, modulo: &Self)
@@ -37771,9 +36526,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// ```
     pub fn next_multiple_of(&self, rhs: &Self) -> Self
     {
-        let mut res = self.clone();
-        res.next_multiple_of_assign(&rhs);
-        res
+        general_calc!(self, Self::next_multiple_of_assign, rhs);
     }
 
     // pub fn next_multiple_of_assign(&mut self, rhs: &Self)
@@ -37821,9 +36574,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// ```
     pub fn modular_next_multiple_of(&self, rhs: &Self, modulo: &Self) -> Self
     {
-        let mut res = self.clone();
-        res.modular_next_multiple_of_assign(&rhs, modulo);
-        res
+        general_calc!(self, Self::modular_next_multiple_of_assign, rhs, modulo);
     }
 
     // pub fn modular_next_multiple_of_assign(&mut self, rhs: &Self, modulo: &Self)
@@ -37846,9 +36597,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// ```
     pub fn modular_next_multiple_of_assign(&mut self, rhs: &Self, modulo: &Self)
     {
-        if modulo.is_zero_or_one() || rhs.is_zero()
-            { panic!(); }
-        self.common_modular_next_multiple_of_assign(rhs, modulo);
+        modular_calc_assign!(self, Self::common_modular_next_multiple_of_assign, rhs, modulo);
     }
 
     // pub fn panic_free_next_multiple_of(&self, rhs: &Self) -> Self
@@ -37871,9 +36620,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// ```
     pub fn panic_free_next_multiple_of(&self, rhs: &Self) -> Self
     {
-        let mut res = Self::from_array(self.get_number().clone());
-        res.panic_free_next_multiple_of_assign(&rhs);
-        res
+        general_calc!(self, Self::panic_free_next_multiple_of_assign, rhs);
     }
 
     // pub fn next_multiple_of_assign(&mut self, rhs: &Self)
@@ -37931,9 +36678,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// ```
     pub fn panic_free_modular_next_multiple_of(&self, rhs: &Self, modulo: &Self) -> Self
     {
-        let mut res = self.clone();
-        res.panic_free_modular_next_multiple_of_assign(&rhs, modulo);
-        res
+        general_calc!(self, Self::panic_free_modular_next_multiple_of_assign, rhs, modulo);
     }
 
     // pub fn modular_next_multiple_of_assign(&mut self, rhs: &Self, modulo: &Self)
@@ -37996,9 +36741,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// ```
     pub fn next_power_of_two(&self) -> Self
     {
-        let mut res = self.clone();
-        res.next_power_of_two_assign();
-        res
+        general_calc!(self, Self::next_power_of_two_assign);
     }
 
     // pub fn next_power_of_two_assign(&mut self)
@@ -38200,9 +36943,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// ```
     pub fn wrapping_pow(&self, exp: &Self) -> Self
     {
-        let mut res = Self::from_array(self.get_number().clone());
-        res.wrapping_pow_assign(exp);
-        res
+        general_calc!(self, Self::wrapping_pow_assign, exp);
     }
 
     // pub fn wrapping_pow_assign(&mut self, exp: &Self)
@@ -38324,9 +37065,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// ```
     pub fn overflowing_pow(&self, exp: &Self) -> (Self, bool)
     {
-        let mut res = Self::from_array(self.get_number().clone());
-        let overflow = res.overflowing_pow_assign(exp);
-        (res, overflow)
+        overflowing_calc!(self, Self::overflowing_pow_assign, exp);
     }
 
     // pub fn overflowing_pow_assign(&mut self, exp: &Self) -> bool
@@ -38382,13 +37121,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// ```
     pub fn overflowing_pow_assign(&mut self, exp: &Self) -> bool
     {
-        let old_overflow = self.is_overflow();
-        self.reset_overflow();
-        self.wrapping_pow_assign(exp);
-        let current_overflow = self.is_overflow();
-        if old_overflow || current_overflow
-            { self.set_overflow(); }
-        current_overflow
+        overflowing_calc_assign!(self, Self::wrapping_pow_assign, exp);
     }
 
     // pub fn checked_pow(&self, exp: &Self) -> Option<Self>
@@ -38453,27 +37186,17 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
 
     pub fn saturating_pow(&self, exp: &Self) -> Self
     {
-        let mut res = Self::from_array(self.get_number().clone());
-        res.saturating_pow_assign(exp);
-        res
+        general_calc!(self, Self::saturating_pow_assign, exp);
     }
 
     pub fn saturating_pow_assign(&mut self, exp: &Self)
     {
-        let overflow = self.is_overflow();
-        if self.overflowing_pow_assign(exp)
-        {
-            self.set_max();
-            if !overflow
-                { self.reset_overflow(); }
-        }
+        saturating_calc_assign!(self, Self::overflowing_pow_assign, exp);
     }
 
     pub fn modular_pow(&self, exp: &Self, modulo: &Self) -> Self
     {
-        let mut res = Self::from_array(self.get_number().clone());
-        res.modular_pow_assign(exp, modulo);
-        res
+        general_calc!(self, Self::modular_pow_assign, exp, modulo);
     }
 
     pub fn modular_pow_assign(&mut self, exp: &Self, modulo: &Self)
@@ -38536,40 +37259,6 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
         Self::from_uint(count)
     }
 
-    // pub fn ilog2(&self) -> Self
-    /// Calculates Returns the base 2 logarithm of the number.
-    ///
-    /// # Panics
-    /// - If `size_of::<T>() * N` <= `128`, this method may panic
-    /// or its behavior may be undefined though it may not panic.
-    /// - This function will panic if `self` is zero.
-    /// 
-    /// # Output
-    /// It returns the base 2 logarithm of the number, rounded down.
-    /// 
-    /// # Example
-    /// ```
-    /// use cryptocol::define_utypes_with;
-    /// define_utypes_with!(u128);
-    /// 
-    /// let a = U256::from_uint(2_u8);
-    /// let b = a.ilog2();
-    /// println!("log_2(2) = {}", b);
-    /// assert_eq!(b, U256::from_uint(1_u8));
-    /// ```
-    pub fn ilog2(&self) -> Self
-    {
-        if self.is_zero()
-            { panic!() }
-        Self::from_uint(self.length_in_bits() - self.leading_zeros() as usize - 1)
-    }
-
-    #[inline]
-    pub fn ilog10(&self) -> Self
-    {
-        self.ilog_uint(10_u8)
-    }
-
     // pub fn checked_ilog(&self, base: Self) -> Self
     /// Calculates the logarithm of the number with respect to a `base`.
     /// 
@@ -38604,35 +37293,1230 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
         Some(Self::from_uint(count))
     }
 
-    // pub fn checked_ilog2(&self) -> Self
-    /// Calculates Returns the base 2 logarithm of the number.
+    // pub fn ilog2(&self) -> Self
+    /// Returns the base 2 logarithm of the number, rounded down.
+    ///
+    /// # Panics
+    /// - If `size_of::<T>() * N` <= `128`, this method may panic
+    ///   or its behavior may be undefined though it may not panic.
+    /// - This function will panic if `self` is zero.
     /// 
     /// # Output
-    /// It returns the base 2 logarithm of the number, rounded down,
-    /// wrapped by `Some` of enum `Option`. It returns `None` if `self` is zero.
+    /// It returns the base 2 logarithm of the number, rounded down.
     /// 
-    /// # Example
+    /// # Counterpart Methods
+    /// This method is optimized for base 2;
+    /// [ilog_uint()](struct@BigUInt#method.ilog_uint)
+    /// can produce results of the base other than 2, and
+    /// [ilog10()](struct@BigUInt#method.ilog10)
+    /// can produce results more efficiently for base 10.
+    /// 
+    /// # Example 1
     /// ```
-    /// use cryptocol::number::*;
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u32);
+    /// 
+    /// let a_biguint = U256::from_uint(64_u8);
+    /// let res = a_biguint.ilog2();
+    /// println!("The base 2 logarithm of {} is {}.", a_biguint, res);
+    /// assert_eq!(res.to_string(), "6");
+    /// assert_eq!(res.is_overflow(), false);
+    /// assert_eq!(res.is_underflow(), false);
+    /// assert_eq!(res.is_infinity(), false);
+    /// assert_eq!(res.is_divided_by_zero(), false);
+    /// assert_eq!(res.is_undefined(), false);
+    /// ```
+    /// 
+    /// # Example 2
+    /// ```
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u16);
+    /// 
+    /// let a_biguint = U256::from_uint(70_u8);
+    /// let res = a_biguint.ilog2();
+    /// println!("The base 2 logarithm of {} is {}.", a_biguint, res);
+    /// assert_eq!(res.to_string(), "6");
+    /// assert_eq!(res.is_overflow(), false);
+    /// assert_eq!(res.is_underflow(), false);
+    /// assert_eq!(res.is_infinity(), false);
+    /// assert_eq!(res.is_divided_by_zero(), false);
+    /// assert_eq!(res.is_undefined(), false);
+    /// ```
+    /// 
+    /// # Example 3
+    /// ```
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u16);
+    ///
+    /// let a_biguint = U256::from_uint(1_u8);
+    /// let res = a_biguint.ilog2();
+    /// println!("The base 2 logarithm of {} is {}.", a_biguint, res);
+    /// assert_eq!(res.to_string(), "0");
+    /// assert_eq!(res.is_overflow(), false);
+    /// assert_eq!(res.is_underflow(), false);
+    /// assert_eq!(res.is_infinity(), false);
+    /// assert_eq!(res.is_divided_by_zero(), false);
+    /// assert_eq!(res.is_undefined(), false);
+    /// ```
+    /// 
+    /// # Panic Example
+    /// ```
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u16);
+    /// 
+    /// let _a_biguint = U256::zero();
+    /// // It will panic.
+    /// // let res = _a_biguint.ilog2();
+    /// ```
+    /// 
+    /// # Big-endian issue
+    /// It is just experimental for Big Endian CPUs. So, you are not encouraged
+    /// to use it for Big Endian CPUs for serious purpose. Only use this crate
+    /// for Big-endian CPUs with your own full responsibility.
+    pub fn ilog2(&self) -> Self
+    {
+        if self.is_zero()
+            { panic!(); }
+        Self::from_uint(self.length_in_bits() as u64 - self.leading_zeros() as u64 - 1_u64)
+    }
+
+    // pub fn ilog2_assign(&mut self)
+    /// Calculates the base 2 logarithm of the number, rounded down,
+    /// and assigns back to `self`.
+    ///
+    /// # Panics
+    /// - If `size_of::<T>() * N` <= `128`, this method may panic
+    ///   or its behavior may be undefined though it may not panic.
+    /// - This function will panic if `self` is zero.
+    /// 
+    /// # Counterpart Methods
+    /// This method is optimized for base 2;
+    /// [ilog_assign_uint()](struct@BigUInt#method.ilog_assign_uint)
+    /// can produce results of the base other than 2, and
+    /// [ilog10_assign()](struct@BigUInt#method.ilog10_assign)
+    /// can produce results more efficiently for base 10.
+    /// 
+    /// # Example 1
+    /// ```
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u64);
+    /// 
+    /// let mut a_biguint = U256::from_uint(64_u8);
+    /// println!("Originally, a_biguint = {}", a_biguint);
+    /// assert_eq!(a_biguint.is_overflow(), false);
+    /// assert_eq!(a_biguint.is_underflow(), false);
+    /// assert_eq!(a_biguint.is_infinity(), false);
+    /// assert_eq!(a_biguint.is_divided_by_zero(), false);
+    /// assert_eq!(a_biguint.is_undefined(), false);
+    /// 
+    /// a_biguint.ilog2_assign();
+    /// println!("After a_biguint.ilog2_assign(),\na_biguint = {}.", a_biguint);
+    /// assert_eq!(a_biguint.to_string(), "6");
+    /// assert_eq!(a_biguint.is_overflow(), false);
+    /// assert_eq!(a_biguint.is_underflow(), false);
+    /// assert_eq!(a_biguint.is_infinity(), false);
+    /// assert_eq!(a_biguint.is_divided_by_zero(), false);
+    /// assert_eq!(a_biguint.is_undefined(), false);
+    /// ```
+    /// 
+    /// # Example 2
+    /// ```
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u64);
+    /// 
+    /// let mut a_biguint = U256::from_uint(70_u8);
+    /// println!("Originally, a_biguint = {}", a_biguint);
+    /// assert_eq!(a_biguint.is_overflow(), false);
+    /// assert_eq!(a_biguint.is_underflow(), false);
+    /// assert_eq!(a_biguint.is_infinity(), false);
+    /// assert_eq!(a_biguint.is_divided_by_zero(), false);
+    /// assert_eq!(a_biguint.is_undefined(), false);
+    /// 
+    /// a_biguint.ilog2_assign();
+    /// println!("After a_biguint.ilog2_assign(),\na_biguint = {}.", a_biguint);
+    /// assert_eq!(a_biguint.to_string(), "6");
+    /// assert_eq!(a_biguint.is_overflow(), false);
+    /// assert_eq!(a_biguint.is_underflow(), false);
+    /// assert_eq!(a_biguint.is_infinity(), false);
+    /// assert_eq!(a_biguint.is_divided_by_zero(), false);
+    /// assert_eq!(a_biguint.is_undefined(), false);
+    /// ```
+    /// 
+    /// # Example 3
+    /// ```
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u64);
+    ///
+    /// let mut a_biguint = U256::from_uint(1_u8);
+    /// println!("Originally, a_biguint = {}", a_biguint);
+    /// assert_eq!(a_biguint.is_overflow(), false);
+    /// assert_eq!(a_biguint.is_underflow(), false);
+    /// assert_eq!(a_biguint.is_infinity(), false);
+    /// assert_eq!(a_biguint.is_divided_by_zero(), false);
+    /// assert_eq!(a_biguint.is_undefined(), false);
+    /// 
+    /// a_biguint.ilog2_assign();
+    /// println!("After a_biguint.ilog2_assign(),\na_biguint = {}.", a_biguint);
+    /// assert_eq!(a_biguint.to_string(), "0");
+    /// assert_eq!(a_biguint.is_overflow(), false);
+    /// assert_eq!(a_biguint.is_underflow(), false);
+    /// assert_eq!(a_biguint.is_infinity(), false);
+    /// assert_eq!(a_biguint.is_divided_by_zero(), false);
+    /// assert_eq!(a_biguint.is_undefined(), false);
+    /// ```
+    /// 
+    /// # Panic Example
+    /// ```
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u64);
+    /// 
+    /// let mut _a_biguint = U256::zero();
+    /// // It will panic.
+    /// // _a_biguint.ilog2_assign();
+    /// ```
+    /// 
+    /// # Big-endian issue
+    /// It is just experimental for Big Endian CPUs. So, you are not encouraged
+    /// to use it for Big Endian CPUs for serious purpose. Only use this crate
+    /// for Big-endian CPUs with your own full responsibility.
+    pub fn ilog2_assign(&mut self)
+    {
+        general_calc_assign!(self, Self::ilog2);
+    }
+
+    // pub fn panic_free_ilog2(&self) -> Self
+    /// Returns the base 2 logarithm of the number, rounded down.
+    ///
+    /// # Panics
+    /// If `size_of::<T>() * N` <= `128`, this method may panic
+    /// or its behavior may be undefined though it may not panic.
+    /// 
+    /// # Output
+    /// It returns the base 2 logarithm of the number, rounded down.
+    /// 
+    /// # Features
+    /// If `self` is zero, the return value will be zero and the flag
+    /// `UNDEFINED` of the return value will be set.
+    /// 
+    /// # Counterpart Methods
+    /// This method is optimized for base 2;
+    /// [ilog_uint()](struct@BigUInt#method.ilog_uint)
+    /// can produce results of the base other than 2, and
+    /// [ilog10()](struct@BigUInt#method.ilog10)
+    /// can produce results more efficiently for base 10.
+    /// 
+    /// # Example 1
+    /// ```
     /// use cryptocol::define_utypes_with;
     /// define_utypes_with!(u128);
     /// 
-    /// let a = U256::from_uint(2_u8);
-    /// let b = a.ilog2();
-    /// println!("log_2(2) = {}", b);
-    /// assert_eq!(b, U256::from_uint(1_u8));
+    /// let a_biguint = U256::from_uint(64_u8);
+    /// let res = a_biguint.panic_free_ilog2();
+    /// println!("The base 2 logarithm of {} is {}.", a_biguint, res);
+    /// assert_eq!(res.to_string(), "6");
+    /// assert_eq!(res.is_overflow(), false);
+    /// assert_eq!(res.is_underflow(), false);
+    /// assert_eq!(res.is_infinity(), false);
+    /// assert_eq!(res.is_divided_by_zero(), false);
+    /// assert_eq!(res.is_undefined(), false);
     /// ```
+    /// 
+    /// # Example 2
+    /// ```
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u128);
+    /// 
+    /// let a_biguint = U256::from_uint(70_u8);
+    /// let res = a_biguint.panic_free_ilog2();
+    /// println!("The base 2 logarithm of {} is {}.", a_biguint, res);
+    /// assert_eq!(res.to_string(), "6");
+    /// assert_eq!(res.is_overflow(), false);
+    /// assert_eq!(res.is_underflow(), false);
+    /// assert_eq!(res.is_infinity(), false);
+    /// assert_eq!(res.is_divided_by_zero(), false);
+    /// assert_eq!(res.is_undefined(), false);
+    /// ```
+    /// 
+    /// # Example 3
+    /// ```
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u128);
+    ///
+    /// let a_biguint = U256::from_uint(1_u8);
+    /// let res = a_biguint.panic_free_ilog2();
+    /// println!("The base 2 logarithm of {} is {}.", a_biguint, res);
+    /// assert_eq!(res.to_string(), "0");
+    /// assert_eq!(res.is_overflow(), false);
+    /// assert_eq!(res.is_underflow(), false);
+    /// assert_eq!(res.is_infinity(), false);
+    /// assert_eq!(res.is_divided_by_zero(), false);
+    /// assert_eq!(res.is_undefined(), false);
+    /// ```
+    /// 
+    /// # Example 4
+    /// ```
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u128);
+    /// 
+    /// let a_biguint = U256::zero();
+    /// let res = a_biguint.panic_free_ilog2();
+    /// println!("The base 2 logarithm of {} is {}.", a_biguint, res);
+    /// assert_eq!(res.to_string(), "0");
+    /// assert_eq!(res.is_overflow(), false);
+    /// assert_eq!(res.is_underflow(), false);
+    /// assert_eq!(res.is_infinity(), false);
+    /// assert_eq!(res.is_undefined(), true);
+    /// assert_eq!(res.is_divided_by_zero(), false);
+    /// ```
+    /// 
+    /// # Big-endian issue
+    /// It is just experimental for Big Endian CPUs. So, you are not encouraged
+    /// to use it for Big Endian CPUs for serious purpose. Only use this crate
+    /// for Big-endian CPUs with your own full responsibility.
+    pub fn panic_free_ilog2(&self) -> Self
+    {
+        if self.is_zero()
+        {
+            let mut res = Self::zero();
+            res.set_undefined();
+            return res;
+        }
+        Self::from_uint(self.length_in_bits() as u64 - self.leading_zeros() as u64 - 1_u64)
+    }
+
+    // pub fn panic_free_ilog2_assign(&mut self)
+    /// Calculates the base 2 logarithm of the number, rounded down,
+    /// and assigns back to `self`.
+    ///
+    /// # Panics
+    /// - If `size_of::<T>() * N` <= `128`, this method may panic
+    /// or its behavior may be undefined though it may not panic.
+    /// 
+    /// # Features
+    /// If `self` is zero, the result will be zero and the flag
+    /// `UNDEFINED` of `self` will be set.
+    /// 
+    /// # Counterpart Methods
+    /// This method is optimized for base 2;
+    /// [ilog_assign_uint()](struct@BigUInt#method.ilog_assign_uint)
+    /// can produce results of the base other than 2, and
+    /// [ilog10_assign()](struct@BigUInt#method.ilog10_assign)
+    /// can produce results more efficiently for base 10.
+    /// 
+    /// # Example 1
+    /// ```
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u8);
+    /// 
+    /// let mut a_biguint = U256::from_uint(64_u8);
+    /// println!("Originally, a_biguint = {}", a_biguint);
+    /// assert_eq!(a_biguint.is_overflow(), false);
+    /// assert_eq!(a_biguint.is_underflow(), false);
+    /// assert_eq!(a_biguint.is_infinity(), false);
+    /// assert_eq!(a_biguint.is_divided_by_zero(), false);
+    /// assert_eq!(a_biguint.is_undefined(), false);
+    /// 
+    /// a_biguint.ilog2_assign();
+    /// println!("After a_biguint.ilog2_assign(),\na_biguint = {}.", a_biguint);
+    /// assert_eq!(a_biguint.to_string(), "6");
+    /// assert_eq!(a_biguint.is_overflow(), false);
+    /// assert_eq!(a_biguint.is_underflow(), false);
+    /// assert_eq!(a_biguint.is_infinity(), false);
+    /// assert_eq!(a_biguint.is_divided_by_zero(), false);
+    /// assert_eq!(a_biguint.is_undefined(), false);
+    /// ```
+    /// 
+    /// # Example 2
+    /// ```
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u8);
+    /// 
+    /// let mut a_biguint = U256::from_uint(70_u8);
+    /// println!("Originally, a_biguint = {}", a_biguint);
+    /// assert_eq!(a_biguint.is_overflow(), false);
+    /// assert_eq!(a_biguint.is_underflow(), false);
+    /// assert_eq!(a_biguint.is_infinity(), false);
+    /// assert_eq!(a_biguint.is_divided_by_zero(), false);
+    /// assert_eq!(a_biguint.is_undefined(), false);
+    /// 
+    /// a_biguint.ilog2_assign();
+    /// println!("After a_biguint.ilog2_assign(),\na_biguint = {}.", a_biguint);
+    /// assert_eq!(a_biguint.to_string(), "6");
+    /// assert_eq!(a_biguint.is_overflow(), false);
+    /// assert_eq!(a_biguint.is_underflow(), false);
+    /// assert_eq!(a_biguint.is_infinity(), false);
+    /// assert_eq!(a_biguint.is_divided_by_zero(), false);
+    /// assert_eq!(a_biguint.is_undefined(), false);
+    /// ```
+    /// 
+    /// # Example 3
+    /// ```
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u8);
+    ///
+    /// let mut a_biguint = U256::from_uint(1_u8);
+    /// println!("Originally, a_biguint = {}", a_biguint);
+    /// assert_eq!(a_biguint.is_overflow(), false);
+    /// assert_eq!(a_biguint.is_underflow(), false);
+    /// assert_eq!(a_biguint.is_infinity(), false);
+    /// assert_eq!(a_biguint.is_divided_by_zero(), false);
+    /// assert_eq!(a_biguint.is_undefined(), false);
+    /// 
+    /// a_biguint.ilog2_assign();
+    /// println!("After a_biguint.ilog2_assign(),\na_biguint = {}.", a_biguint);
+    /// assert_eq!(a_biguint.to_string(), "0");
+    /// assert_eq!(a_biguint.is_overflow(), false);
+    /// assert_eq!(a_biguint.is_underflow(), false);
+    /// assert_eq!(a_biguint.is_infinity(), false);
+    /// assert_eq!(a_biguint.is_divided_by_zero(), false);
+    /// assert_eq!(a_biguint.is_undefined(), false);
+    /// ```
+    /// 
+    /// # Example 4
+    /// ```
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u8);
+    /// 
+    /// let mut a_biguint = U256::zero();
+    /// println!("Originally, a_biguint = {}", a_biguint);
+    /// assert_eq!(a_biguint.is_overflow(), false);
+    /// assert_eq!(a_biguint.is_underflow(), false);
+    /// assert_eq!(a_biguint.is_infinity(), false);
+    /// assert_eq!(a_biguint.is_undefined(), false);
+    /// assert_eq!(a_biguint.is_divided_by_zero(), false);
+    /// 
+    /// a_biguint.panic_free_ilog2_assign();
+    /// println!("After a_biguint.panic_free_ilog2_assign(),\na_biguint = {}.", a_biguint);
+    /// assert_eq!(a_biguint.to_string(), "0");
+    /// assert_eq!(a_biguint.is_overflow(), false);
+    /// assert_eq!(a_biguint.is_underflow(), false);
+    /// assert_eq!(a_biguint.is_infinity(), false);
+    /// assert_eq!(a_biguint.is_undefined(), true);
+    /// assert_eq!(a_biguint.is_divided_by_zero(), false);
+    /// ```
+    /// 
+    /// # Big-endian issue
+    /// It is just experimental for Big Endian CPUs. So, you are not encouraged
+    /// to use it for Big Endian CPUs for serious purpose. Only use this crate
+    /// for Big-endian CPUs with your own full responsibility.
+    pub fn panic_free_ilog2_assign(&mut self)
+    {
+        general_calc_assign!(self, Self::panic_free_ilog2);
+    }
+
+    // pub fn checked_ilog2(&self) -> Option<Self>
+    /// Calculates the base 2 logarithm of the number.
+    ///
+    /// # Panics
+    /// - If `size_of::<T>() * N` <= `128`, this method may panic
+    /// or its behavior may be undefined though it may not panic.
+    /// 
+    /// # Output
+    /// It returns the base 2 logarithm of the number, rounded down,
+    /// wrapped by `Some` of enum `Option` if `self` is not zero.
+    /// It returns `None` if `self` is zero.
+    /// 
+    /// # Counterpart Methods
+    /// This method is optimized for base 2;
+    /// [checked_ilog_uint()](struct@BigUInt#method.checked_ilog_uint)
+    /// can produce results of the base other than 2, and
+    /// [checked_ilog10()](struct@BigUInt#method.checked_ilog10)
+    /// can produce results more efficiently for base 10.
+    /// 
+    /// # Example 1
+    /// ```
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u16);
+    /// 
+    /// let a_biguint = U256::from_uint(64_u8);
+    /// let res = a_biguint.checked_ilog2();
+    /// match res
+    /// {
+    ///     Some(r) => {
+    ///             println!("The base 2 logarithm of {} is {}.", a_biguint, r);
+    ///             assert_eq!(r.to_string(), "6");
+    ///             assert_eq!(r.is_overflow(), false);
+    ///             assert_eq!(r.is_underflow(), false);
+    ///             assert_eq!(r.is_infinity(), false);
+    ///             assert_eq!(r.is_divided_by_zero(), false);
+    ///             assert_eq!(r.is_undefined(), false);
+    ///         },
+    ///     None => { println!("Error"); },
+    /// }
+    /// ```
+    /// 
+    /// # Example 2
+    /// ```
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u16);
+    /// 
+    /// let a_biguint = U256::from_uint(70_u8);
+    /// let res = a_biguint.checked_ilog2();
+    /// match res
+    /// {
+    ///     Some(r) => {
+    ///             println!("The base 2 logarithm of {} is {}.", a_biguint, r);
+    ///             assert_eq!(r.to_string(), "6");
+    ///             assert_eq!(r.is_overflow(), false);
+    ///             assert_eq!(r.is_underflow(), false);
+    ///             assert_eq!(r.is_infinity(), false);
+    ///             assert_eq!(r.is_divided_by_zero(), false);
+    ///             assert_eq!(r.is_undefined(), false);
+    ///         },
+    ///     None => { println!("Error"); },
+    /// }
+    /// ```
+    /// 
+    /// # Example 3
+    /// ```
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u16);
+    /// 
+    /// let a_biguint = U256::from_uint(1_u8);
+    /// let res = a_biguint.checked_ilog2();
+    /// match res
+    /// {
+    ///     Some(r) => {
+    ///             println!("The base 2 logarithm of {} is {}.", a_biguint, r);
+    ///             assert_eq!(r.to_string(), "0");
+    ///             assert_eq!(r.is_overflow(), false);
+    ///             assert_eq!(r.is_underflow(), false);
+    ///             assert_eq!(r.is_infinity(), false);
+    ///             assert_eq!(r.is_divided_by_zero(), false);
+    ///             assert_eq!(r.is_undefined(), false);
+    ///         },
+    ///     None => { println!("Error"); },
+    /// }
+    /// ```
+    /// 
+    /// # Example 4
+    /// ```
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u16);
+    /// 
+    /// let a_biguint = U256::zero();
+    /// let base = 6_u8;
+    /// let res = a_biguint.checked_ilog_uint(1_u8);
+    /// match res
+    /// {
+    ///     Some(r) => { println!("The base 10 logarithm of {} is {}.", a_biguint, r); },
+    ///     None => {
+    ///             println!("Error");
+    ///             assert_eq!(res, None);
+    ///         },
+    /// }
+    /// ```
+    /// 
+    /// # Big-endian issue
+    /// It is just experimental for Big Endian CPUs. So, you are not encouraged
+    /// to use it for Big Endian CPUs for serious purpose. Only use this crate
+    /// for Big-endian CPUs with your own full responsibility.
     pub fn checked_ilog2(&self) -> Option<Self>
     {
         if self.is_zero()
-            { return None; }
-        Some(Self::from_uint(self.length_in_bits() - self.leading_zeros() as usize - 1))
+            { None }
+        else
+            { Some(self.ilog2()) }
     }
 
+    // pub fn unchecked_ilog2(&self) -> Self
+    /// Returns the base 2 logarithm of the number, rounded down.
+    ///
+    /// # Panics
+    /// - If `size_of::<T>() * N` <= `128`, this method may panic
+    /// or its behavior may be undefined though it may not panic.
+    /// - This function will panic if `self` is zero.
+    /// 
+    /// # Output
+    /// It returns the base 2 logarithm of the number, rounded down.
+    /// 
+    /// # Counterpart Methods
+    /// This method is optimized for base 2;
+    /// [unchecked_ilog_uint()](struct@BigUInt#method.unchecked_ilog_uint)
+    /// can produce results of the base other than 2, and
+    /// [unchecked_ilog10()](struct@BigUInt#method.unchecked_ilog10)
+    /// can produce results more efficiently for base 10.
+    /// 
+    /// # Example 1
+    /// ```
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u32);
+    /// 
+    /// let a_biguint = U256::from_uint(64_u8);
+    /// let res = a_biguint.unchecked_ilog2();
+    /// println!("The base 2 logarithm of {} is {}.", a_biguint, res);
+    /// assert_eq!(res.to_string(), "6");
+    /// assert_eq!(res.is_overflow(), false);
+    /// assert_eq!(res.is_underflow(), false);
+    /// assert_eq!(res.is_infinity(), false);
+    /// assert_eq!(res.is_divided_by_zero(), false);
+    /// assert_eq!(res.is_undefined(), false);
+    /// ```
+    /// 
+    /// # Example 2
+    /// ```
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u32);
+    /// 
+    /// let a_biguint = U256::from_uint(70_u8);
+    /// let res = a_biguint.unchecked_ilog2();
+    /// println!("The base 2 logarithm of {} is {}.", a_biguint, res);
+    /// assert_eq!(res.to_string(), "6");
+    /// assert_eq!(res.is_overflow(), false);
+    /// assert_eq!(res.is_underflow(), false);
+    /// assert_eq!(res.is_infinity(), false);
+    /// assert_eq!(res.is_divided_by_zero(), false);
+    /// assert_eq!(res.is_undefined(), false);
+    /// ```
+    /// 
+    /// # Example 3
+    /// ```
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u32);
+    ///
+    /// let a_biguint = U256::from_uint(1_u8);
+    /// let res = a_biguint.unchecked_ilog2();
+    /// println!("The base 2 logarithm of {} is {}.", a_biguint, res);
+    /// assert_eq!(res.to_string(), "0");
+    /// assert_eq!(res.is_overflow(), false);
+    /// assert_eq!(res.is_underflow(), false);
+    /// assert_eq!(res.is_infinity(), false);
+    /// assert_eq!(res.is_divided_by_zero(), false);
+    /// assert_eq!(res.is_undefined(), false);
+    /// ```
+    /// 
+    /// # Panic Example
+    /// ```
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u32);
+    /// 
+    /// let _a_biguint = U256::zero();
+    /// // It will panic.
+    /// // let res = _a_biguint.unchecked_ilog2();
+    /// ```
+    /// 
+    /// # Big-endian issue
+    /// It is just experimental for Big Endian CPUs. So, you are not encouraged
+    /// to use it for Big Endian CPUs for serious purpose. Only use this crate
+    /// for Big-endian CPUs with your own full responsibility.
+    #[inline]
+    pub fn unchecked_ilog2(&self) -> Self
+    {
+        self.ilog2()
+    }
+
+    // pub fn ilog10(&self) -> Self
+    /// Returns the base 10 logarithm of the number, rounded down.
+    ///
+    /// # Panics
+    /// - If `size_of::<T>() * N` <= `128`, this method may panic
+    /// or its behavior may be undefined though it may not panic.
+    /// - This function will panic if `self` is zero.
+    /// 
+    /// # Output
+    /// It returns the base 10 logarithm of the number, rounded down.
+    /// 
+    /// # Counterpart Methods
+    /// This method is optimized for base 10;
+    /// [ilog_uint()](struct@BigUInt#method.ilog_uint)
+    /// can produce results of the base other than 10, and
+    /// [ilog2()](struct@BigUInt#method.ilog2)
+    /// can produce results more efficiently for base 10.
+    /// 
+    /// # Example 1
+    /// ```
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u64);
+    /// 
+    /// let a_biguint = U256::from_uint(10000_u32);
+    /// let res = a_biguint.ilog10();
+    /// println!("The base 10 logarithm of {} is {}.", a_biguint, res);
+    /// assert_eq!(res.to_string(), "4");
+    /// assert_eq!(res.is_overflow(), false);
+    /// assert_eq!(res.is_underflow(), false);
+    /// assert_eq!(res.is_infinity(), false);
+    /// assert_eq!(res.is_divided_by_zero(), false);
+    /// assert_eq!(res.is_undefined(), false);
+    /// ```
+    /// 
+    /// # Example 2
+    /// ```
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u64);
+    /// 
+    /// let a_biguint = U256::from_uint(12345_u32);
+    /// let res = a_biguint.ilog10();
+    /// println!("The base 10 logarithm of {} is {}.", a_biguint, res);
+    /// assert_eq!(res.to_string(), "4");
+    /// assert_eq!(res.is_overflow(), false);
+    /// assert_eq!(res.is_underflow(), false);
+    /// assert_eq!(res.is_infinity(), false);
+    /// assert_eq!(res.is_divided_by_zero(), false);
+    /// assert_eq!(res.is_undefined(), false);
+    /// ```
+    /// 
+    /// # Example 3
+    /// ```
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u64);
+    ///
+    /// let a_biguint = U256::from_uint(1_u8);
+    /// let res = a_biguint.ilog10();
+    /// println!("The base 10 logarithm of {} is {}.", a_biguint, res);
+    /// assert_eq!(res.to_string(), "0");
+    /// assert_eq!(res.is_overflow(), false);
+    /// assert_eq!(res.is_underflow(), false);
+    /// assert_eq!(res.is_infinity(), false);
+    /// assert_eq!(res.is_divided_by_zero(), false);
+    /// assert_eq!(res.is_undefined(), false);
+    /// ```
+    /// 
+    /// # Panic Example
+    /// ```
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u64);
+    /// 
+    /// let _a_biguint = U256::zero();
+    /// // It will panic.
+    /// // let res = _a_biguint.ilog10();
+    /// ```
+    /// 
+    /// # Big-endian issue
+    /// It is just experimental for Big Endian CPUs. So, you are not encouraged
+    /// to use it for Big Endian CPUs for serious purpose. Only use this crate
+    /// for Big-endian CPUs with your own full responsibility.
+    #[inline]
+    pub fn ilog10(&self) -> Self
+    {
+        self.ilog_uint(10_u8)
+    }
+
+    // pub fn ilog10_assign(&mut self)
+    /// Calculates the base 10 logarithm of the number, rounded down,
+    /// and assigns back to `self`.
+    ///
+    /// # Panics
+    /// - If `size_of::<T>() * N` <= `128`, this method may panic
+    /// or its behavior may be undefined though it may not panic.
+    /// - This function will panic if `self` is zero.
+    /// 
+    /// # Counterpart Methods
+    /// This method is not optimized for base 10 but provides convenience
+    /// for base 10;
+    /// [ilog_assign_uint()](struct@BigUInt#method.ilog_assign_uint)
+    /// can produce results of the base other than 10, and
+    /// [ilog2_assign()](struct@BigUInt#method.ilog2_assign)
+    /// can produce results more efficiently for base 2.
+    /// 
+    /// # Example 1
+    /// ```
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u128);
+    /// 
+    /// let mut a_biguint = U256::from_uint(10000_u32);
+    /// println!("Originally, a_biguint = {}", a_biguint);
+    /// assert_eq!(a_biguint.is_overflow(), false);
+    /// assert_eq!(a_biguint.is_underflow(), false);
+    /// assert_eq!(a_biguint.is_infinity(), false);
+    /// assert_eq!(a_biguint.is_divided_by_zero(), false);
+    /// assert_eq!(a_biguint.is_undefined(), false);
+    /// 
+    /// a_biguint.ilog10_assign();
+    /// println!("After a_biguint.ilog10_assign(),\na_biguint = {}.", a_biguint);
+    /// assert_eq!(a_biguint.to_string(), "4");
+    /// assert_eq!(a_biguint.is_overflow(), false);
+    /// assert_eq!(a_biguint.is_underflow(), false);
+    /// assert_eq!(a_biguint.is_infinity(), false);
+    /// assert_eq!(a_biguint.is_divided_by_zero(), false);
+    /// assert_eq!(a_biguint.is_undefined(), false);
+    /// ```
+    /// 
+    /// # Example 2
+    /// ```
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u128);
+    /// 
+    /// let mut a_biguint = U256::from_uint(12345_u32);
+    /// println!("Originally, a_biguint = {}", a_biguint);
+    /// assert_eq!(a_biguint.is_overflow(), false);
+    /// assert_eq!(a_biguint.is_underflow(), false);
+    /// assert_eq!(a_biguint.is_infinity(), false);
+    /// assert_eq!(a_biguint.is_divided_by_zero(), false);
+    /// assert_eq!(a_biguint.is_undefined(), false);
+    /// 
+    /// a_biguint.ilog10_assign();
+    /// println!("After a_biguint.ilog10_assign(),\na_biguint = {}.", a_biguint);
+    /// assert_eq!(a_biguint.to_string(), "4");
+    /// assert_eq!(a_biguint.is_overflow(), false);
+    /// assert_eq!(a_biguint.is_underflow(), false);
+    /// assert_eq!(a_biguint.is_infinity(), false);
+    /// assert_eq!(a_biguint.is_divided_by_zero(), false);
+    /// assert_eq!(a_biguint.is_undefined(), false);
+    /// ```
+    /// 
+    /// # Example 3
+    /// ```
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u128);
+    ///
+    /// let mut a_biguint = U256::from_uint(1_u8);
+    /// println!("Originally, a_biguint = {}", a_biguint);
+    /// assert_eq!(a_biguint.is_overflow(), false);
+    /// assert_eq!(a_biguint.is_underflow(), false);
+    /// assert_eq!(a_biguint.is_infinity(), false);
+    /// assert_eq!(a_biguint.is_divided_by_zero(), false);
+    /// assert_eq!(a_biguint.is_undefined(), false);
+    /// 
+    /// a_biguint.ilog10_assign();
+    /// println!("After a_biguint.ilog10_assign(),\na_biguint = {}.", a_biguint);
+    /// assert_eq!(a_biguint.to_string(), "0");
+    /// assert_eq!(a_biguint.is_overflow(), false);
+    /// assert_eq!(a_biguint.is_underflow(), false);
+    /// assert_eq!(a_biguint.is_infinity(), false);
+    /// assert_eq!(a_biguint.is_divided_by_zero(), false);
+    /// assert_eq!(a_biguint.is_undefined(), false);
+    /// ```
+    /// 
+    /// # Panic Example
+    /// ```
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u128);
+    /// 
+    /// let mut _a_biguint = U256::zero();
+    /// // It will panic.
+    /// // _a_biguint.ilog10_assign();
+    /// ```
+    /// 
+    /// # Big-endian issue
+    /// It is just experimental for Big Endian CPUs. So, you are not encouraged
+    /// to use it for Big Endian CPUs for serious purpose. Only use this crate
+    /// for Big-endian CPUs with your own full responsibility.
+    #[inline]
+    pub fn ilog10_assign(&mut self)
+    {
+        self.ilog_assign_uint(10_u8)
+        // For the future upgrade, the following code is remained.
+        // let flag = self.get_all_flags();
+        // let log10 = self.ilog10();
+        // self.set_number(log10.get_number());
+        // self.set_flag_bit(flag);
+    }
+
+    // pub fn panic_free_ilog10(&self) -> Self
+    /// Returns the base 10 logarithm of the number, rounded down.
+    ///
+    /// # Panics
+    /// - If `size_of::<T>() * N` <= `128`, this method may panic
+    /// or its behavior may be undefined though it may not panic.
+    /// 
+    /// # Features
+    /// If `self` is zero, the return value will be zero and the flag
+    /// `UNDEFINED` of the return value will be set.
+    /// 
+    /// # Output
+    /// It returns the base 10 logarithm of the number, rounded down.
+    /// 
+    /// # Counterpart Methods
+    /// This method is optimized for base 10;
+    /// [painc_free_ilog_uint()](struct@BigUInt#method.painc_free_ilog_uint)
+    /// can produce results of the base other than 10, and
+    /// [painc_free_ilog2()](struct@BigUInt#method.painc_free_ilog2)
+    /// can produce results more efficiently for base 10.
+    /// 
+    /// # Example 1
+    /// ```
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u8);
+    /// 
+    /// let a_biguint = U256::from_uint(10000_u32);
+    /// let res = a_biguint.panic_free_ilog10();
+    /// println!("The base 10 logarithm of {} is {}.", a_biguint, res);
+    /// assert_eq!(res.to_string(), "4");
+    /// assert_eq!(res.is_overflow(), false);
+    /// assert_eq!(res.is_underflow(), false);
+    /// assert_eq!(res.is_infinity(), false);
+    /// assert_eq!(res.is_divided_by_zero(), false);
+    /// assert_eq!(res.is_undefined(), false);
+    /// ```
+    /// 
+    /// # Example 2
+    /// ```
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u8);
+    /// 
+    /// let a_biguint = U256::from_uint(12345_u32);
+    /// let res = a_biguint.panic_free_ilog10();
+    /// println!("The base 10 logarithm of {} is {}.", a_biguint, res);
+    /// assert_eq!(res.to_string(), "4");
+    /// assert_eq!(res.is_overflow(), false);
+    /// assert_eq!(res.is_underflow(), false);
+    /// assert_eq!(res.is_infinity(), false);
+    /// assert_eq!(res.is_divided_by_zero(), false);
+    /// assert_eq!(res.is_undefined(), false);
+    /// ```
+    /// 
+    /// # Example 3
+    /// ```
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u8);
+    ///
+    /// let a_biguint = U256::from_uint(1_u8);
+    /// let res = a_biguint.panic_free_ilog10();
+    /// println!("The base 10 logarithm of {} is {}.", a_biguint, res);
+    /// assert_eq!(res.to_string(), "0");
+    /// assert_eq!(res.is_overflow(), false);
+    /// assert_eq!(res.is_underflow(), false);
+    /// assert_eq!(res.is_infinity(), false);
+    /// assert_eq!(res.is_divided_by_zero(), false);
+    /// assert_eq!(res.is_undefined(), false);
+    /// ```
+    /// 
+    /// # Example 4
+    /// ```
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u8);
+    /// 
+    /// let a_biguint = U256::zero();
+    /// let res = a_biguint.panic_free_ilog10();
+    /// println!("The base 10 logarithm of {} is {}.", a_biguint, res);
+    /// assert_eq!(res.to_string(), "0");
+    /// assert_eq!(res.is_overflow(), false);
+    /// assert_eq!(res.is_underflow(), false);
+    /// assert_eq!(res.is_infinity(), false);
+    /// assert_eq!(res.is_undefined(), true);
+    /// assert_eq!(res.is_divided_by_zero(), false);
+    /// ```
+    /// 
+    /// # Big-endian issue
+    /// It is just experimental for Big Endian CPUs. So, you are not encouraged
+    /// to use it for Big Endian CPUs for serious purpose. Only use this crate
+    /// for Big-endian CPUs with your own full responsibility.
+    #[inline]
+    pub fn panic_free_ilog10(&self) -> Self
+    {
+        self.panic_free_ilog_uint(10_u8)
+    }
+
+    // pub fn panic_free_ilog10_assign(&mut self)
+    /// Calculates the base 10 logarithm of the number, rounded down,
+    /// and assigns back to `self`.
+    ///
+    /// # Panics
+    /// - If `size_of::<T>() * N` <= `128`, this method may panic
+    /// or its behavior may be undefined though it may not panic.
+    /// 
+    /// # Features
+    /// If `self` is zero, the result will be zero and the flag
+    /// `UNDEFINED` of `self` will be set.
+    /// 
+    /// # Counterpart Methods
+    /// This method is not optimized for base 10 but provides convenience
+    /// for base 10;
+    /// [panic_free_ilog_assign_uint()](struct@BigUInt#method.panic_free_ilog_assign_uint)
+    /// can produce results of the base other than 10, and
+    /// [panic_free_ilog2_assign()](struct@BigUInt#method.panic_free_ilog2_assign)
+    /// can produce results more efficiently for base 2.
+    /// 
+    /// # Example 1
+    /// ```
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u16);
+    /// 
+    /// let mut a_biguint = U256::from_uint(10000_u32);
+    /// println!("Originally, a_biguint = {}", a_biguint);
+    /// assert_eq!(a_biguint.is_overflow(), false);
+    /// assert_eq!(a_biguint.is_underflow(), false);
+    /// assert_eq!(a_biguint.is_infinity(), false);
+    /// assert_eq!(a_biguint.is_divided_by_zero(), false);
+    /// assert_eq!(a_biguint.is_undefined(), false);
+    /// 
+    /// a_biguint.panic_free_ilog10_assign();
+    /// println!("After a_biguint.panic_free_ilog10_assign(),\na_biguint = {}.", a_biguint);
+    /// assert_eq!(a_biguint.to_string(), "4");
+    /// assert_eq!(a_biguint.is_overflow(), false);
+    /// assert_eq!(a_biguint.is_underflow(), false);
+    /// assert_eq!(a_biguint.is_infinity(), false);
+    /// assert_eq!(a_biguint.is_divided_by_zero(), false);
+    /// assert_eq!(a_biguint.is_undefined(), false);
+    /// ```
+    /// 
+    /// # Example 2
+    /// ```
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u16);
+    /// 
+    /// let mut a_biguint = U256::from_uint(12345_u32);
+    /// println!("Originally, a_biguint = {}", a_biguint);
+    /// assert_eq!(a_biguint.is_overflow(), false);
+    /// assert_eq!(a_biguint.is_underflow(), false);
+    /// assert_eq!(a_biguint.is_infinity(), false);
+    /// assert_eq!(a_biguint.is_divided_by_zero(), false);
+    /// assert_eq!(a_biguint.is_undefined(), false);
+    /// 
+    /// a_biguint.panic_free_ilog10_assign();
+    /// println!("After a_biguint.panic_free_ilog10_assign(),\na_biguint = {}.", a_biguint);
+    /// assert_eq!(a_biguint.to_string(), "4");
+    /// assert_eq!(a_biguint.is_overflow(), false);
+    /// assert_eq!(a_biguint.is_underflow(), false);
+    /// assert_eq!(a_biguint.is_infinity(), false);
+    /// assert_eq!(a_biguint.is_divided_by_zero(), false);
+    /// assert_eq!(a_biguint.is_undefined(), false);
+    /// ```
+    /// 
+    /// # Example 3
+    /// ```
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u16);
+    ///
+    /// let mut a_biguint = U256::from_uint(1_u8);
+    /// println!("Originally, a_biguint = {}", a_biguint);
+    /// assert_eq!(a_biguint.is_overflow(), false);
+    /// assert_eq!(a_biguint.is_underflow(), false);
+    /// assert_eq!(a_biguint.is_infinity(), false);
+    /// assert_eq!(a_biguint.is_divided_by_zero(), false);
+    /// assert_eq!(a_biguint.is_undefined(), false);
+    /// 
+    /// a_biguint.panic_free_ilog10_assign();
+    /// println!("After a_biguint.panic_free_ilog10_assign(),\na_biguint = {}.", a_biguint);
+    /// assert_eq!(a_biguint.to_string(), "0");
+    /// assert_eq!(a_biguint.is_overflow(), false);
+    /// assert_eq!(a_biguint.is_underflow(), false);
+    /// assert_eq!(a_biguint.is_infinity(), false);
+    /// assert_eq!(a_biguint.is_divided_by_zero(), false);
+    /// assert_eq!(a_biguint.is_undefined(), false);
+    /// ```
+    /// 
+    /// # Example 4
+    /// ```
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u16);
+    /// 
+    /// let mut a_biguint = U256::zero();
+    /// println!("Originally, a_biguint = {}", a_biguint);
+    /// assert_eq!(a_biguint.is_overflow(), false);
+    /// assert_eq!(a_biguint.is_underflow(), false);
+    /// assert_eq!(a_biguint.is_infinity(), false);
+    /// assert_eq!(a_biguint.is_undefined(), false);
+    /// assert_eq!(a_biguint.is_divided_by_zero(), false);
+    /// 
+    /// a_biguint.panic_free_ilog10_assign();
+    /// println!("After a_biguint.panic_free_ilog10_assign(),\na_biguint = {}.", a_biguint);
+    /// assert_eq!(a_biguint.to_string(), "0");
+    /// assert_eq!(a_biguint.is_overflow(), false);
+    /// assert_eq!(a_biguint.is_underflow(), false);
+    /// assert_eq!(a_biguint.is_infinity(), false);
+    /// assert_eq!(a_biguint.is_undefined(), true);
+    /// assert_eq!(a_biguint.is_divided_by_zero(), false);
+    /// ```
+    /// 
+    /// # Big-endian issue
+    /// It is just experimental for Big Endian CPUs. So, you are not encouraged
+    /// to use it for Big Endian CPUs for serious purpose. Only use this crate
+    /// for Big-endian CPUs with your own full responsibility.
+    #[inline]
+    pub fn panic_free_ilog10_assign(&mut self)
+    {
+        self.panic_free_ilog_assign_uint(10_u8);
+        // For the future upgrade, the following code is remained.
+        // let flag = self.get_all_flags();
+        // let log10 = self.panic_free_ilog10();
+        // self.set_number(log10.get_number());
+        // self.set_flag_bit(flag);
+    }
+
+    // pub fn checked_ilog10(&self) -> Option<Self>
+    /// Calculates the base 10 logarithm of the number.
+    ///
+    /// # Panics
+    /// - If `size_of::<T>() * N` <= `128`, this method may panic
+    /// or its behavior may be undefined though it may not panic.
+    /// 
+    /// # Output
+    /// It returns the base 10 logarithm of the number, rounded down,
+    /// wrapped by `Some` of enum `Option` if `self` is not zero.
+    /// It returns `None` if `self` is zero.
+    /// 
+    /// # Counterpart Methods
+    /// This method is not optimized for base 10 but provides convenience
+    /// for base 10;
+    /// [checked_ilog_uint()](struct@BigUInt#method.checked_ilog_uint)
+    /// can produce results of the base other than 10, and
+    /// [checked_ilog2()](struct@BigUInt#method.checked_ilog2)
+    /// can produce results more efficiently for base 2.
+    /// 
+    /// # Example 1
+    /// ```
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u32);
+    /// 
+    /// let a_biguint = U256::from_uint(10000_u32);
+    /// let res = a_biguint.checked_ilog10();
+    /// match res
+    /// {
+    ///     Some(r) => {
+    ///             println!("The base 10 logarithm of {} is {}.", a_biguint, r);
+    ///             assert_eq!(r.to_string(), "4");
+    ///             assert_eq!(r.is_overflow(), false);
+    ///             assert_eq!(r.is_underflow(), false);
+    ///             assert_eq!(r.is_infinity(), false);
+    ///             assert_eq!(r.is_divided_by_zero(), false);
+    ///             assert_eq!(r.is_undefined(), false);
+    ///         },
+    ///     None => { println!("Error"); },
+    /// }
+    /// ```
+    /// 
+    /// # Example 2
+    /// ```
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u32);
+    /// 
+    /// let a_biguint = U256::from_uint(70_u8);
+    /// let res = a_biguint.checked_ilog2();
+    /// match res
+    /// {
+    ///     Some(r) => {
+    ///             println!("The base 2 logarithm of {} is {}.", 12345_u32, r);
+    ///             assert_eq!(r.to_string(), "6");
+    ///             assert_eq!(r.is_overflow(), false);
+    ///             assert_eq!(r.is_underflow(), false);
+    ///             assert_eq!(r.is_infinity(), false);
+    ///             assert_eq!(r.is_divided_by_zero(), false);
+    ///             assert_eq!(r.is_undefined(), false);
+    ///         },
+    ///     None => { println!("Error"); },
+    /// }
+    /// ```
+    /// 
+    /// # Example 3
+    /// ```
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u32);
+    /// 
+    /// let a_biguint = U256::from_uint(1_u8);
+    /// let res = a_biguint.checked_ilog2();
+    /// match res
+    /// {
+    ///     Some(r) => {
+    ///             println!("The base 2 logarithm of {} is {}.", a_biguint, r);
+    ///             assert_eq!(r.to_string(), "0");
+    ///             assert_eq!(r.is_overflow(), false);
+    ///             assert_eq!(r.is_underflow(), false);
+    ///             assert_eq!(r.is_infinity(), false);
+    ///             assert_eq!(r.is_divided_by_zero(), false);
+    ///             assert_eq!(r.is_undefined(), false);
+    ///         },
+    ///     None => { println!("Error"); },
+    /// }
+    /// ```
+    /// 
+    /// # Example 4
+    /// ```
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u32);
+    /// 
+    /// let a_biguint = U256::zero();
+    /// let base = 6_u8;
+    /// let res = a_biguint.checked_ilog_uint(1_u8);
+    /// match res
+    /// {
+    ///     Some(r) => { println!("The base 10 logarithm of {} is {}.", a_biguint, r); },
+    ///     None => {
+    ///             println!("Error");
+    ///             assert_eq!(res, None);
+    ///         },
+    /// }
+    /// ```
+    /// 
+    /// # Big-endian issue
+    /// It is just experimental for Big Endian CPUs. So, you are not encouraged
+    /// to use it for Big Endian CPUs for serious purpose. Only use this crate
+    /// for Big-endian CPUs with your own full responsibility.
     #[inline]
     pub fn checked_ilog10(&self) -> Option<Self>
     {
         self.checked_ilog_uint(10_u8)
+    }
+
+    // pub fn unchecked_ilog10(&self) -> Self
+    /// Returns the base 10 logarithm of the number, rounded down.
+    ///
+    /// # Panics
+    /// - If `size_of::<T>() * N` <= `128`, this method may panic
+    /// or its behavior may be undefined though it may not panic.
+    /// - This function will panic if `self` is zero.
+    /// 
+    /// # Output
+    /// It returns the base 10 logarithm of the number, rounded down.
+    /// 
+    /// # Counterpart Methods
+    /// This method is not optimized for base 10 but provides convenience
+    /// for base 10;
+    /// [unchecked_ilog_uint()](struct@BigUInt#method.unchecked_ilog_uint)
+    /// can produce results of the base other than 10, and
+    /// [unchecked_ilog2()](struct@BigUInt#method.unchecked_ilog2)
+    /// can produce results more efficiently for base 2.
+    /// 
+    /// # Example 1
+    /// ```
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u64);
+    /// 
+    /// let a_biguint = U256::from_uint(10000_u32);
+    /// let res = a_biguint.unchecked_ilog10();
+    /// println!("The base 10 logarithm of {} is {}.", a_biguint, res);
+    /// assert_eq!(res.to_string(), "4");
+    /// assert_eq!(a_biguint.is_overflow(), false);
+    /// assert_eq!(a_biguint.is_underflow(), false);
+    /// assert_eq!(a_biguint.is_infinity(), false);
+    /// assert_eq!(a_biguint.is_divided_by_zero(), false);
+    /// assert_eq!(a_biguint.is_undefined(), false);
+    /// ```
+    /// 
+    /// # Example 2
+    /// ```
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u64);
+    /// 
+    /// let a_biguint = U256::from_uint(12345_u32);
+    /// let res = a_biguint.unchecked_ilog10();
+    /// println!("The base 10 logarithm of {} is {}.", a_biguint, res);
+    /// assert_eq!(res.to_string(), "4");
+    /// assert_eq!(a_biguint.is_overflow(), false);
+    /// assert_eq!(a_biguint.is_underflow(), false);
+    /// assert_eq!(a_biguint.is_infinity(), false);
+    /// assert_eq!(a_biguint.is_divided_by_zero(), false);
+    /// assert_eq!(a_biguint.is_undefined(), false);
+    /// ```
+    /// 
+    /// # Example 3
+    /// ```
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u64);
+    ///
+    /// let a_biguint = U256::from_uint(1_u8);
+    /// let res = a_biguint.unchecked_ilog10();
+    /// println!("The base 10 logarithm of {} is {}.", a_biguint, res);
+    /// assert_eq!(res.to_string(), "0");
+    /// assert_eq!(a_biguint.is_overflow(), false);
+    /// assert_eq!(a_biguint.is_underflow(), false);
+    /// assert_eq!(a_biguint.is_infinity(), false);
+    /// assert_eq!(a_biguint.is_divided_by_zero(), false);
+    /// assert_eq!(a_biguint.is_undefined(), false);
+    /// 
+    /// let _a_biguint = U256::zero();
+    /// // It will panic.
+    /// // let res = _a_biguint.unchecked_ilog10();
+    /// ```
+    /// 
+    /// # Big-endian issue
+    /// It is just experimental for Big Endian CPUs. So, you are not encouraged
+    /// to use it for Big Endian CPUs for serious purpose. Only use this crate
+    /// for Big-endian CPUs with your own full responsibility.
+    #[inline]
+    pub fn unchecked_ilog10(&self) -> Self
+    {
+        self.unchecked_ilog_uint(10_u8)
     }
 
     // pub fn wrapping_pow() -> Self
