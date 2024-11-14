@@ -18862,6 +18862,102 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
         }
     }
 
+    // pub fn is_multiple_of_uint<U>(&self, rhs: U) -> bool
+    /// Returns `true` if `self` is a multiple of `rhs`, and `false` otherwise.
+    /// 
+    /// # Arguments
+    /// `rhs` is the base of multiple, and is a primitive unsigned integer
+    /// such as `u8`, `u16`, `u32`, `u64`, and `u128`.
+    /// 
+    /// # Output
+    /// - If `self` is a multiple of `rhs`, it returns `true`, and
+    ///   otherwise, it returns `false`.
+    /// - If both `self` and `rhs` are `zero`, it returns `true`.
+    /// - If `self` is not `zero` and `rhs` is `zero`, it returns `false`.
+    /// 
+    /// # Features
+    /// - This function is equivalent to `self` % rhs == 0,
+    ///   except that it will not panic for `rhs` == 0.
+    /// - If `rhs` is `zero` and `self` is `zero`, it returns `true`.
+    /// - If `rhs` is `zero` and `self` is not `zero`, it returns `false`.
+    /// 
+    /// # Counterpart Method
+    /// If `rhs` is bigger than `u128`, the method
+    /// [is_multiple_of()](struct@BigUInt#method.is_multiple_of)
+    /// is proper rather than this method `is_multiple_of_uint()`.
+    /// 
+    /// # Example 1 for normal case
+    /// ```
+    /// use std::str::FromStr;
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u32);
+    /// 
+    /// let a_biguint = U256::from_str("12345678901234567890123456789012345678900").unwrap();
+    /// let rhs = 100_u8;
+    /// let ans = a_biguint.is_multiple_of_uint(rhs);
+    /// println!("Is {} the multiple of {}? -> {}", a_biguint, rhs, ans);
+    /// assert_eq!(ans, true);
+    /// ```
+    /// 
+    /// # Example 2 for normal case
+    /// ```
+    /// use std::str::FromStr;
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u32);
+    /// 
+    /// let a_biguint = U256::from_str("12345678901234567890123456789012345678900").unwrap();
+    /// let rhs = 99_u8;
+    /// let ans = a_biguint.is_multiple_of_uint(rhs);
+    /// println!("Is {} the multiple of {}? -> {}", a_biguint, rhs, ans);
+    /// assert_eq!(ans, false);
+    /// ```
+    /// 
+    /// # Example 3 for rhs == 0 and self != 0
+    /// ```
+    /// use std::str::FromStr;
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u32);
+    /// 
+    /// let a_biguint = U256::from_str("12345678901234567890123456789012345678900").unwrap();
+    /// let rhs = 0_u8;
+    /// let ans = a_biguint.is_multiple_of_uint(rhs);
+    /// println!("Is {} the multiple of {}? -> {}", a_biguint, rhs, ans);
+    /// assert_eq!(ans, false);
+    /// ```
+    /// 
+    /// # Example 4 for rhs == 0 and self == 0
+    /// ```
+    /// use std::str::FromStr;
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u32);
+    /// 
+    /// let a_biguint = U256::zero();
+    /// let rhs = 0_u8;
+    /// let ans = a_biguint.is_multiple_of_uint(rhs);
+    /// println!("Is {} the multiple of {}? -> {}", a_biguint, rhs, ans);
+    /// assert_eq!(ans, true);
+    /// ```
+    /// 
+    /// # Big-endian issue
+    /// It is just experimental for Big Endian CPUs. So, you are not encouraged
+    /// to use it for Big Endian CPUs for serious purpose. Only use this crate
+    /// for Big-endian CPUs with your own full responsibility.
+    pub fn is_multiple_of_uint<U>(&self, rhs: U) -> bool
+    where U: SmallUInt + Copy + Clone + Display + Debug + ToString
+            + Add<Output=U> + AddAssign + Sub<Output=U> + SubAssign
+            + Mul<Output=U> + MulAssign + Div<Output=U> + DivAssign
+            + Rem<Output=U> + RemAssign
+            + Shl<Output=U> + ShlAssign + Shr<Output=U> + ShrAssign
+            + BitAnd<Output=U> + BitAndAssign + BitOr<Output=U> + BitOrAssign
+            + BitXor<Output=U> + BitXorAssign + Not<Output=U>
+            + PartialEq + PartialOrd
+    {
+        if rhs.is_zero()
+            { self.is_zero() }
+        else
+            { self.wrapping_rem_uint(rhs).is_zero() }
+    }
+
 
 
     /***** METHODS FOR EXPONENTIATION AND LOGARITHM WITH UINT *****/
@@ -37707,6 +37803,97 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
         self.set_flag_bit(flags);
     }
 
+    // pub fn is_multiple_of(&self, rhs: &Self) -> bool
+    /// Returns `true` if `self` is a multiple of `rhs`, and `false` otherwise.
+    /// 
+    /// # Arguments
+    /// `rhs` is the base of multiple, and is of `&Self` type.
+    /// 
+    /// # Output
+    /// - If `self` is a multiple of `rhs`, it returns `true`, and
+    ///   otherwise, it returns `false`.
+    /// - If both `self` and `rhs` are `zero`, it returns `true`.
+    /// - If `self` is not `zero` and `rhs` is `zero`, it returns `false`.
+    /// 
+    /// # Features
+    /// - This function is equivalent to `self` % rhs == 0,
+    ///   except that it will not panic for `rhs` == 0.
+    /// - If `rhs` is `zero` and `self` is `zero`, it returns `true`.
+    /// - If `rhs` is `zero` and `self` is not `zero`, it returns `false`.
+    /// 
+    /// # Counterpart Method
+    /// The method
+    /// [is_next_multiple_of_uint()](struct@BigUInt#method.is_next_multiple_of_uint)
+    /// is a bit faster than this method `is_next_multiple_of()`.
+    /// So, if `rhs` is primitive unsigned integral data type such as u8, u16,
+    /// u32, u64, and u128, use the method
+    /// [is_next_multiple_of_uint()](struct@BigUInt#method.is_next_multiple_of_uint).
+    /// 
+    /// # Example 1 for Normal case
+    /// ```
+    /// use std::str::FromStr;
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u64);
+    /// 
+    /// let a_biguint = U256::from_str("12345678901234567890123456789012345678900").unwrap();
+    /// let rhs = U256::from(100_u8);
+    /// let ans = a_biguint.is_multiple_of(&rhs);
+    /// println!("Is {} the multiple of {}? -> {}", a_biguint, rhs, ans);
+    /// assert_eq!(ans, true);
+    /// ```
+    /// 
+    /// # Example 2 for Normal case
+    /// ```
+    /// use std::str::FromStr;
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u64);
+    /// 
+    /// let a_biguint = U256::from_str("12345678901234567890123456789012345678900").unwrap();
+    /// let rhs = U256::from(99_u8);
+    /// let ans = a_biguint.is_multiple_of(&rhs);
+    /// println!("Is {} the multiple of {}? -> {}", a_biguint, rhs, ans);
+    /// assert_eq!(ans, false);
+    /// ```
+    /// 
+    /// # Example 3 for rhs == 0 and self != 0
+    /// ```
+    /// use std::str::FromStr;
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u64);
+    /// 
+    /// let a_biguint = U256::from_str("12345678901234567890123456789012345678900").unwrap();
+    /// let rhs = U256::zero();
+    /// let ans = a_biguint.is_multiple_of(&rhs);
+    /// println!("Is {} the multiple of {}? -> {}", a_biguint, rhs, ans);
+    /// assert_eq!(ans, false);
+    /// ```
+    /// 
+    /// # Example 4 for rhs == 0 and self == 0
+    /// ```
+    /// use std::str::FromStr;
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u64);
+    /// 
+    /// let a_biguint = U256::zero();
+    /// let rhs = U256::zero();
+    /// let ans = a_biguint.is_multiple_of(&rhs);
+    /// println!("Is {} the multiple of {}? -> {}", a_biguint, rhs, ans);
+    /// assert_eq!(ans, true);
+    /// ```
+    /// 
+    /// # Big-endian issue
+    /// It is just experimental for Big Endian CPUs. So, you are not encouraged
+    /// to use it for Big Endian CPUs for serious purpose. Only use this crate
+    /// for Big-endian CPUs with your own full responsibility.
+    #[inline]
+    pub fn is_multiple_of(&self, rhs: &Self) -> bool
+    {
+        if rhs.is_zero()
+            { self.is_zero() }
+        else
+            { self.wrapping_rem(rhs).is_zero() }
+    }
+
     //===================
     // pub fn next_power_of_two(&self) -> Self
     /// Returns the smallest power of two greater than or equal to `self`.
@@ -37715,9 +37902,9 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// It returns the smallest power of two greater than or equal to `self`.
     /// 
     /// # Features
-    /// When return value overflows
-    /// (i.e., self > `(1 << (size_of::<T>() * N - 1))`),
-    /// it returns value wrapped around.
+    /// When the return value overflows
+    /// (i.e., `self > (1 << (size_of::<T>() * N - 1))`),
+    /// it returns the value wrapped to `zero`.
     /// 
     /// # Example
     /// ```
@@ -37730,12 +37917,12 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
 
     // pub fn next_power_of_two_assign(&mut self)
     /// Finds the smallest power of two greater than or equal to `self`,
-    /// and returns the result to `self` back.
+    /// and assigns the result to `self` back.
     /// 
     /// # Features
     /// When the result overflows
-    /// (i.e., self > (1 << (size_of::<T>() * N - 1))),
-    /// it `self` will be the value wrapped around.
+    /// (i.e., `self > (1 << (size_of::<T>() * N - 1))`),
+    /// it `self` will be the value wrapped to `zero`.
     /// 
     /// # Example
     /// ```

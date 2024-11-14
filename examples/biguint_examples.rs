@@ -8979,6 +8979,7 @@ fn biguint_next_multiple_uint()
     biguint_modular_next_multiple_of_assign_uint();
     biguint_panic_free_modular_next_multiple_of_uint();
     biguint_panic_free_modular_next_multiple_of_assign_uint();
+    biguint_is_multiple_of_uint();
 }
 
 fn biguint_next_multiple_of_uint()
@@ -9591,6 +9592,43 @@ fn biguint_panic_free_modular_next_multiple_of_assign_uint()
     assert_eq!(a_biguint.is_infinity(), false);
     assert_eq!(a_biguint.is_undefined(), true);
     assert_eq!(a_biguint.is_divided_by_zero(), false);
+    println!("---------------------------");
+}
+
+fn biguint_is_multiple_of_uint()
+{
+    println!("biguint_is_multiple_of_uint");
+    use std::str::FromStr;
+    use cryptocol::define_utypes_with;
+    define_utypes_with!(u32);
+
+    // Normal case 1
+    let a_biguint = U256::from_str("12345678901234567890123456789012345678900").unwrap();
+    let rhs = 100_u8;
+    let ans = a_biguint.is_multiple_of_uint(rhs);
+    println!("Is {} the multiple of {}? -> {}", a_biguint, rhs, ans);
+    assert_eq!(ans, true);
+
+    // Normal case 2
+    let a_biguint = U256::from_str("12345678901234567890123456789012345678900").unwrap();
+    let rhs = 99_u8;
+    let ans = a_biguint.is_multiple_of_uint(rhs);
+    println!("Is {} the multiple of {}? -> {}", a_biguint, rhs, ans);
+    assert_eq!(ans, false);
+
+    // rhs == 0 and self != 0
+    let a_biguint = U256::from_str("12345678901234567890123456789012345678900").unwrap();
+    let rhs = 0_u8;
+    let ans = a_biguint.is_multiple_of_uint(rhs);
+    println!("Is {} the multiple of {}? -> {}", a_biguint, rhs, ans);
+    assert_eq!(ans, false);
+
+    // rhs == 0 and self == 0
+    let a_biguint = U256::zero();
+    let rhs = 0_u8;
+    let ans = a_biguint.is_multiple_of_uint(rhs);
+    println!("Is {} the multiple of {}? -> {}", a_biguint, rhs, ans);
+    assert_eq!(ans, true);
     println!("---------------------------");
 }
 
@@ -19593,6 +19631,7 @@ fn biguint_next_multiple()
     biguint_modular_next_multiple_of_assign();
     biguint_panic_free_modular_next_multiple_of();
     biguint_panic_free_modular_next_multiple_of_assign();
+    biguint_is_multiple_of();
 }
 
 fn biguint_next_multiple_of()
@@ -20205,6 +20244,43 @@ fn biguint_panic_free_modular_next_multiple_of_assign()
     assert_eq!(a_biguint.is_infinity(), false);
     assert_eq!(a_biguint.is_undefined(), true);
     assert_eq!(a_biguint.is_divided_by_zero(), false);
+    println!("---------------------------");
+}
+
+fn biguint_is_multiple_of()
+{
+    println!("biguint_is_multiple_of()");
+    use std::str::FromStr;
+    use cryptocol::define_utypes_with;
+    define_utypes_with!(u64);
+
+    // Normal case 1
+    let a_biguint = U256::from_str("12345678901234567890123456789012345678900").unwrap();
+    let rhs = U256::from(100_u8);
+    let ans = a_biguint.is_multiple_of(&rhs);
+    println!("Is {} the multiple of {}? -> {}", a_biguint, rhs, ans);
+    assert_eq!(ans, true);
+
+    // Normal case 2
+    let a_biguint = U256::from_str("12345678901234567890123456789012345678900").unwrap();
+    let rhs = U256::from(99_u8);
+    let ans = a_biguint.is_multiple_of(&rhs);
+    println!("Is {} the multiple of {}? -> {}", a_biguint, rhs, ans);
+    assert_eq!(ans, false);
+
+    // rhs == 0 and self != 0
+    let a_biguint = U256::from_str("12345678901234567890123456789012345678900").unwrap();
+    let rhs = U256::zero();
+    let ans = a_biguint.is_multiple_of(&rhs);
+    println!("Is {} the multiple of {}? -> {}", a_biguint, rhs, ans);
+    assert_eq!(ans, false);
+
+    // rhs == 0 and self == 0
+    let a_biguint = U256::zero();
+    let rhs = U256::zero();
+    let ans = a_biguint.is_multiple_of(&rhs);
+    println!("Is {} the multiple of {}? -> {}", a_biguint, rhs, ans);
+    assert_eq!(ans, true);
     println!("---------------------------");
 }
 
