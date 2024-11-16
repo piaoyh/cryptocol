@@ -2214,16 +2214,16 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// Changes a `BigUInt<T, N>` to have the value zero and sets only
     /// the bit specified by the argument `bit_pos` to be 1.
     /// 
+    /// # Argumentss
+    /// The bit positon `bit_pos` is zero-based and should be counted from LSB
+    /// (Least Significant Bit) reguardless endian. So, if the `bit_pos` is `0`,
+    /// only LSB is set to be `1` and all the other bits will be set to `0`.
+    /// 
     /// # Panics
     /// - If `size_of::<T>() * N` <= `128`, some methods may panic
     /// or its behavior may be undefined though it may not panic.
     /// - If the bit positon `bit_pos` is greater than or equal to
     /// `size_of::<T>() * N * 8`, this method will panic.
-    /// 
-    /// # Bit Position
-    /// The bit positon `bit_pos` is zero-based and should be counted from LSB
-    /// (Least Significant Bit) reguardless endian. So, if the `bit_pos` is `0`,
-    /// only LSB is set to be `1` and all the other bits will be set to `0`.
     /// 
     /// # Example
     /// ```
@@ -18868,6 +18868,10 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// # Arguments
     /// `rhs` is the base of multiple, and is a primitive unsigned integer
     /// such as `u8`, `u16`, `u32`, `u64`, and `u128`.
+    ///
+    /// # Panics
+    /// If `size_of::<T>() * N` <= `128`, this method may panic
+    /// or its behavior may be undefined though it may not panic.
     /// 
     /// # Output
     /// - If `self` is a multiple of `rhs`, it returns `true`, and
@@ -37808,6 +37812,10 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// 
     /// # Arguments
     /// `rhs` is the base of multiple, and is of `&Self` type.
+    ///
+    /// # Panics
+    /// If `size_of::<T>() * N` <= `128`, this method may panic
+    /// or its behavior may be undefined though it may not panic.
     /// 
     /// # Output
     /// - If `self` is a multiple of `rhs`, it returns `true`, and
@@ -37900,16 +37908,71 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// 
     /// # Output
     /// It returns the smallest power of two greater than or equal to `self`.
+    ///
+    /// # Panics
+    /// If `size_of::<T>() * N` <= `128`, this method may panic
+    /// or its behavior may be undefined though it may not panic.
     /// 
     /// # Features
     /// When the return value overflows
     /// (i.e., `self > (1 << (size_of::<T>() * N - 1))`),
     /// it returns the value wrapped to `zero`.
     /// 
-    /// # Example
+    /// # Example 1 for Normal case
     /// ```
-    /// // Todo
+    /// use std::str::FromStr;
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u8);
+    /// 
+    /// let a_biguint = U256::from_str("123456789012345678901234567890123456789").unwrap();
+    /// let res = a_biguint.next_power_of_two();
+    /// println!("The next power of two is {}.", res);
+    /// assert_eq!(res.to_string(), "170141183460469231731687303715884105728");
+    /// assert_eq!(res.is_overflow(), false);
+    /// assert_eq!(res.is_underflow(), false);
+    /// assert_eq!(res.is_infinity(), false);
+    /// assert_eq!(res.is_undefined(), false);
+    /// assert_eq!(res.is_divided_by_zero(), false);
     /// ```
+    /// 
+    /// # Example 2 for Maximum
+    /// ```
+    /// use std::str::FromStr;
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u8);
+    /// 
+    /// let a_biguint = U256::max();
+    /// let res = a_biguint.next_power_of_two();
+    /// println!("The next power of two is {}.", res);
+    /// assert_eq!(res.to_string(), "0");
+    /// assert_eq!(res.is_overflow(), true);
+    /// assert_eq!(res.is_underflow(), false);
+    /// assert_eq!(res.is_infinity(), false);
+    /// assert_eq!(res.is_undefined(), false);
+    /// assert_eq!(res.is_divided_by_zero(), false);
+    /// ```
+    /// 
+    /// # Example 3 for Minimum
+    /// ```
+    /// use std::str::FromStr;
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u8);
+    /// 
+    /// let a_biguint = U256::zero();
+    /// let res = a_biguint.next_power_of_two();
+    /// println!("The next power of two is {}.", res);
+    /// assert_eq!(res.to_string(), "0");
+    /// assert_eq!(res.is_overflow(), false);
+    /// assert_eq!(res.is_underflow(), false);
+    /// assert_eq!(res.is_infinity(), false);
+    /// assert_eq!(res.is_undefined(), false);
+    /// assert_eq!(res.is_divided_by_zero(), false);
+    /// ```
+    /// 
+    /// # Big-endian issue
+    /// It is just experimental for Big Endian CPUs. So, you are not encouraged
+    /// to use it for Big Endian CPUs for serious purpose. Only use this crate
+    /// for Big-endian CPUs with your own full responsibility.
     pub fn next_power_of_two(&self) -> Self
     {
         general_calc!(self, Self::next_power_of_two_assign);
@@ -37918,37 +37981,167 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     // pub fn next_power_of_two_assign(&mut self)
     /// Finds the smallest power of two greater than or equal to `self`,
     /// and assigns the result to `self` back.
+    ///
+    /// # Panics
+    /// If `size_of::<T>() * N` <= `128`, this method may panic
+    /// or its behavior may be undefined though it may not panic.
     /// 
     /// # Features
-    /// When the result overflows
-    /// (i.e., `self > (1 << (size_of::<T>() * N - 1))`),
-    /// it `self` will be the value wrapped to `zero`.
+    /// - When the result overflows
+    ///   (i.e., `self > (1 << (size_of::<T>() * N - 1))`),
+    ///   it `self` will be the value wrapped to `zero`.
+    /// - It assigns to `self` the smallest power of two greater than
+    ///   or equal to `self`.
     /// 
-    /// # Example
+    /// # Example 1 for Normal case
     /// ```
-    /// // Todo
+    /// use std::str::FromStr;
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u16);
+    /// 
+    /// let mut a_biguint = U256::from_str("123456789012345678901234567890123456789").unwrap();
+    /// println!("Originally, a_biguint = {}", a_biguint);
+    /// assert_eq!(a_biguint.is_overflow(), false);
+    /// assert_eq!(a_biguint.is_underflow(), false);
+    /// assert_eq!(a_biguint.is_infinity(), false);
+    /// assert_eq!(a_biguint.is_divided_by_zero(), false);
+    /// assert_eq!(a_biguint.is_undefined(), false);
+    /// 
+    /// a_biguint.next_power_of_two_assign();
+    /// println!("After a_biguint.next_power_of_two_assign(), a_biguint = {}", a_biguint);
+    /// assert_eq!(a_biguint.to_string(), "170141183460469231731687303715884105728");
+    /// assert_eq!(a_biguint.is_overflow(), false);
+    /// assert_eq!(a_biguint.is_underflow(), false);
+    /// assert_eq!(a_biguint.is_infinity(), false);
+    /// assert_eq!(a_biguint.is_undefined(), false);
+    /// assert_eq!(a_biguint.is_divided_by_zero(), false);
     /// ```
+    /// 
+    /// # Example 2 for Maximum
+    /// ```
+    /// use std::str::FromStr;
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u16);
+    /// 
+    /// let mut a_biguint = U256::max();
+    /// println!("Originally, a_biguint = {}", a_biguint);
+    /// assert_eq!(a_biguint.is_overflow(), false);
+    /// assert_eq!(a_biguint.is_underflow(), false);
+    /// assert_eq!(a_biguint.is_infinity(), false);
+    /// assert_eq!(a_biguint.is_divided_by_zero(), false);
+    /// assert_eq!(a_biguint.is_undefined(), false);
+    /// 
+    /// a_biguint.next_power_of_two_assign();
+    /// println!("After a_biguint.next_power_of_two_assign(), a_biguint = {}", a_biguint);
+    /// assert_eq!(a_biguint.to_string(), "0");
+    /// assert_eq!(a_biguint.is_overflow(), true);
+    /// assert_eq!(a_biguint.is_underflow(), false);
+    /// assert_eq!(a_biguint.is_infinity(), false);
+    /// assert_eq!(a_biguint.is_undefined(), false);
+    /// assert_eq!(a_biguint.is_divided_by_zero(), false);
+    /// ```
+    /// 
+    /// # Example 3 for Minimum
+    /// ```
+    /// use std::str::FromStr;
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u16);
+    /// 
+    /// let mut a_biguint = U256::zero();
+    /// println!("Originally, a_biguint = {}", a_biguint);
+    /// assert_eq!(a_biguint.is_overflow(), false);
+    /// assert_eq!(a_biguint.is_underflow(), false);
+    /// assert_eq!(a_biguint.is_infinity(), false);
+    /// assert_eq!(a_biguint.is_divided_by_zero(), false);
+    /// assert_eq!(a_biguint.is_undefined(), false);
+    /// 
+    /// a_biguint.next_power_of_two_assign();
+    /// println!("After a_biguint.next_power_of_two_assign(), a_biguint = {}", a_biguint);
+    /// assert_eq!(a_biguint.to_string(), "0");
+    /// assert_eq!(a_biguint.is_overflow(), false);
+    /// assert_eq!(a_biguint.is_underflow(), false);
+    /// assert_eq!(a_biguint.is_infinity(), false);
+    /// assert_eq!(a_biguint.is_undefined(), false);
+    /// assert_eq!(a_biguint.is_divided_by_zero(), false);
+    /// ```
+    /// 
+    /// # Big-endian issue
+    /// It is just experimental for Big Endian CPUs. So, you are not encouraged
+    /// to use it for Big Endian CPUs for serious purpose. Only use this crate
+    /// for Big-endian CPUs with your own full responsibility.
     pub fn next_power_of_two_assign(&mut self)
     {
         if !self.is_power_of_two()
         {
             let bit_pos = Self::size_in_bits() - 1 - self.leading_zeros() as usize;
             self.turn_check_bits(bit_pos);
-            self.shift_left(1_u8);
+            self.shift_left_assign(1_u8);
         }
     }
 
     // pub fn is_power_of_two(&self) -> bool
     /// Returns true if and only if self == 2 ** k for some k.
+    ///
+    /// # Panics
+    /// If `size_of::<T>() * N` <= `128`, this method may panic
+    /// or its behavior may be undefined though it may not panic.
     /// 
-    /// # Example
+    /// # Example 1 for Normal case
     /// ```
-    /// // Todo
+    /// use std::str::FromStr;
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u32);
+    /// 
+    /// let a_biguint = U256::from_str("123456789012345678901234567890123456789").unwrap();
+    /// let res = a_biguint.is_power_of_two();
+    /// println!("Is {} the power of two? - {}.", a_biguint, res);
+    /// assert_eq!(res, false);
     /// ```
+    /// 
+    /// # Example 2 for Normal case
+    /// ```
+    /// use std::str::FromStr;
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u32);
+    /// 
+    /// let a_biguint = U256::from_str("170141183460469231731687303715884105728").unwrap();
+    /// let res = a_biguint.is_power_of_two();
+    /// println!("Is {} the power of two? - {}.", a_biguint, res);
+    /// assert_eq!(res, true);
+    /// ```
+    /// 
+    /// # Example 3 for Maximum
+    /// ```
+    /// use std::str::FromStr;
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u32);
+    /// 
+    /// let a_biguint = U256::max();
+    /// let res = a_biguint.is_power_of_two();
+    /// println!("Is {} the power of two? - {}.", a_biguint, res);
+    /// assert_eq!(res, false);
+    /// ```
+    /// 
+    /// # Example 4 for Minimum
+    /// ```
+    /// use std::str::FromStr;
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u32);
+    /// 
+    /// let a_biguint = U256::zero();
+    /// let res = a_biguint.is_power_of_two();
+    /// println!("Is {} the power of two? - {}.", a_biguint, res);
+    /// assert_eq!(res, true);
+    /// ```
+    /// 
+    /// # Big-endian issue
+    /// It is just experimental for Big Endian CPUs. So, you are not encouraged
+    /// to use it for Big Endian CPUs for serious purpose. Only use this crate
+    /// for Big-endian CPUs with your own full responsibility.
     #[inline]
     pub fn is_power_of_two(&self) -> bool
     {
-        self.count_ones() == 1
+        self.count_ones() <= 1
     }
 
 
@@ -39944,9 +40137,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
             + BitXor<Output=U> + BitXorAssign + Not<Output=U>
             + PartialEq + PartialOrd
     {
-        let mut res = Self::from_array(self.get_number().clone());
-        res.shift_left_assign(n);
-        res
+        general_calc!(self, Self::shift_left_assign, n);
     }
 
     // pub fn shift_left_assign<U>(&mut self, n: U)
@@ -39977,7 +40168,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
             + BitXor<Output=U> + BitXorAssign + Not<Output=U>
             + PartialEq + PartialOrd
     {
-        let size_t_bits = T::size_in_bits();
+        let size_t_bits = T::size_in_bits();    // The maximum of size_t_bits is 128. So, it can be cantained in even u8.
         let chunk_num = n.wrapping_div(U::usize_as_smalluint(size_t_bits)).into_usize();
         let piece_num = n.wrapping_rem(U::usize_as_smalluint(size_t_bits)).into_usize();
         let zero = T::zero();
@@ -39995,17 +40186,15 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
             for idx in 0..chunk_num
                 { self.set_num_(idx, zero); }
         }
-        if piece_num == 0
-            { return; }
-        // if (self.get_num_(N-1).leading_zeros() as usize) < piece_num
-        //     { self.set_overflow(); }
 
         let mut num: T;
         let mut carry = zero;
+        let shl = T::usize_as_smalluint(piece_num);
+        let shr = T::usize_as_smalluint(size_t_bits - piece_num);
         for idx in chunk_num..N
         {
-            num = (self.get_num_(idx) << T::usize_as_smalluint(piece_num)) | carry;
-            carry = self.get_num_(idx) >> T::usize_as_smalluint(size_t_bits - piece_num);
+            num = (self.get_num_(idx) << shl) | carry;
+            carry = self.get_num_(idx) >> shr;
             self.set_num_(idx, num);
         }
         if !carry.is_zero()

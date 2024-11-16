@@ -20287,6 +20287,9 @@ fn biguint_is_multiple_of()
 
 fn biguint_exponentiation_logarithm_biguint_main()
 {
+    biguint_next_power_of_two();
+    biguint_next_power_of_two_assign();
+    biguint_is_power_of_two();
     biguint_pow();
     biguint_pow_assign();
     // biguint_panic_free_pow();
@@ -20332,11 +20335,149 @@ fn biguint_exponentiation_logarithm_biguint_main()
     biguint_unchecked_ilog10();
 }
 
+fn biguint_next_power_of_two()
+{
+    println!("biguint_next_power_of_two");
+    use std::str::FromStr;
+    use cryptocol::define_utypes_with;
+    define_utypes_with!(u8);
+
+    // Normal case
+    let a_biguint = U256::from_str("123456789012345678901234567890123456789").unwrap();
+    let res = a_biguint.next_power_of_two();
+    println!("The next power of two is {}.", res);
+    assert_eq!(res.to_string(), "170141183460469231731687303715884105728");
+    assert_eq!(res.is_overflow(), false);
+    assert_eq!(res.is_underflow(), false);
+    assert_eq!(res.is_infinity(), false);
+    assert_eq!(res.is_undefined(), false);
+    assert_eq!(res.is_divided_by_zero(), false);
+
+    // Maximum
+    let a_biguint = U256::max();
+    let res = a_biguint.next_power_of_two();
+    println!("The next power of two is {}.", res);
+    assert_eq!(res.to_string(), "0");
+    assert_eq!(res.is_overflow(), true);
+    assert_eq!(res.is_underflow(), false);
+    assert_eq!(res.is_infinity(), false);
+    assert_eq!(res.is_undefined(), false);
+    assert_eq!(res.is_divided_by_zero(), false);
+
+    // Minimum
+    let a_biguint = U256::zero();
+    let res = a_biguint.next_power_of_two();
+    println!("The next power of two is {}.", res);
+    assert_eq!(res.to_string(), "0");
+    assert_eq!(res.is_overflow(), false);
+    assert_eq!(res.is_underflow(), false);
+    assert_eq!(res.is_infinity(), false);
+    assert_eq!(res.is_undefined(), false);
+    assert_eq!(res.is_divided_by_zero(), false);
+    println!("---------------------------");
+}
+
+fn biguint_next_power_of_two_assign()
+{
+    println!("biguint_next_power_of_two_assign()");
+    use std::str::FromStr;
+    use cryptocol::define_utypes_with;
+    define_utypes_with!(u16);
+
+    // Normal case
+    let mut a_biguint = U256::from_str("123456789012345678901234567890123456789").unwrap();
+    println!("Originally, a_biguint = {}", a_biguint);
+    assert_eq!(a_biguint.is_overflow(), false);
+    assert_eq!(a_biguint.is_underflow(), false);
+    assert_eq!(a_biguint.is_infinity(), false);
+    assert_eq!(a_biguint.is_divided_by_zero(), false);
+    assert_eq!(a_biguint.is_undefined(), false);
+
+    a_biguint.next_power_of_two_assign();
+    println!("After a_biguint.next_power_of_two_assign(), a_biguint = {}", a_biguint);
+    assert_eq!(a_biguint.to_string(), "170141183460469231731687303715884105728");
+    assert_eq!(a_biguint.is_overflow(), false);
+    assert_eq!(a_biguint.is_underflow(), false);
+    assert_eq!(a_biguint.is_infinity(), false);
+    assert_eq!(a_biguint.is_undefined(), false);
+    assert_eq!(a_biguint.is_divided_by_zero(), false);
+
+    // Maximum
+    let mut a_biguint = U256::max();
+    println!("Originally, a_biguint = {}", a_biguint);
+    assert_eq!(a_biguint.is_overflow(), false);
+    assert_eq!(a_biguint.is_underflow(), false);
+    assert_eq!(a_biguint.is_infinity(), false);
+    assert_eq!(a_biguint.is_divided_by_zero(), false);
+    assert_eq!(a_biguint.is_undefined(), false);
+
+    a_biguint.next_power_of_two_assign();
+    println!("After a_biguint.next_power_of_two_assign(), a_biguint = {}", a_biguint);
+    assert_eq!(a_biguint.to_string(), "0");
+    assert_eq!(a_biguint.is_overflow(), true);
+    assert_eq!(a_biguint.is_underflow(), false);
+    assert_eq!(a_biguint.is_infinity(), false);
+    assert_eq!(a_biguint.is_undefined(), false);
+    assert_eq!(a_biguint.is_divided_by_zero(), false);
+
+    // Minimum
+    let mut a_biguint = U256::zero();
+    println!("Originally, a_biguint = {}", a_biguint);
+    assert_eq!(a_biguint.is_overflow(), false);
+    assert_eq!(a_biguint.is_underflow(), false);
+    assert_eq!(a_biguint.is_infinity(), false);
+    assert_eq!(a_biguint.is_divided_by_zero(), false);
+    assert_eq!(a_biguint.is_undefined(), false);
+
+    a_biguint.next_power_of_two_assign();
+    println!("After a_biguint.next_power_of_two_assign(), a_biguint = {}", a_biguint);
+    assert_eq!(a_biguint.to_string(), "0");
+    assert_eq!(a_biguint.is_overflow(), false);
+    assert_eq!(a_biguint.is_underflow(), false);
+    assert_eq!(a_biguint.is_infinity(), false);
+    assert_eq!(a_biguint.is_undefined(), false);
+    assert_eq!(a_biguint.is_divided_by_zero(), false);
+    println!("---------------------------");
+}
+
+fn biguint_is_power_of_two()
+{
+    println!("biguint_pow()");
+    use std::str::FromStr;
+    use cryptocol::define_utypes_with;
+    define_utypes_with!(u32);
+
+    // Normal case 1
+    let a_biguint = U256::from_str("123456789012345678901234567890123456789").unwrap();
+    let res = a_biguint.is_power_of_two();
+    println!("Is {} the power of two? - {}.", a_biguint, res);
+    assert_eq!(res, false);
+
+    // Normal case 2
+    let a_biguint = U256::from_str("170141183460469231731687303715884105728").unwrap();
+    let res = a_biguint.is_power_of_two();
+    println!("Is {} the power of two? - {}.", a_biguint, res);
+    assert_eq!(res, true);
+
+    // Maximum
+    let a_biguint = U256::max();
+    let res = a_biguint.is_power_of_two();
+    println!("Is {} the power of two? - {}.", a_biguint, res);
+    assert_eq!(res, false);
+
+    // Minimum
+    let a_biguint = U256::zero();
+    let res = a_biguint.is_power_of_two();
+    println!("Is {} the power of two? - {}.", a_biguint, res);
+    assert_eq!(res, true);
+    println!("---------------------------");
+}
+
 fn biguint_pow()
 {
     println!("biguint_pow()");
     use cryptocol::define_utypes_with;
-    define_utypes_with!(u128);
+    define_utypes_with!(u64);
 
     let a = U256::from_uint(123_u8);
 
