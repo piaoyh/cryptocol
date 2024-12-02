@@ -622,6 +622,126 @@ macro_rules! general_modular_calc_pow_assign
     // self.set_flag_bit(res.get_all_flags());
 }
 
+macro_rules! general_calc_iroot
+{
+    ($me:expr, $func:expr, $exp:expr) => {
+        if $exp.is_zero()
+        {
+            if $me.is_zero_or_one()
+            {
+                panic!();
+            }
+            else
+            {
+                let mut res = Self::max();
+                res.set_all_flags(Self::UNDEFINED | Self::INFINITY);
+                return res;
+            }
+        }
+        else if $me.is_zero()
+        {
+            return Self::zero();
+        }
+        else if $me.is_one()
+        {
+            return Self::one();
+        }
+        else
+        {
+            return $func($me, $exp);
+        }
+    }
+    // general_calc_iroot!(self, Self::common_iroot, exp);
+    //
+    // if exp.is_zero()
+    // {
+    //     if self.is_zero_or_one()
+    //     {
+    //         panic!();
+    //     }
+    //     else
+    //     {
+    //         let mut res = Self::max();
+    //         res.set_all_flags(Self::UNDEFINED | Self::INFINITY);
+    //         res
+    //     }
+    // }
+    // else if self.is_zero()
+    // {
+    //     Self::zero()
+    // }
+    // else if self.is_one()
+    // {
+    //     Self::one()
+    // }
+    // else
+    // {
+    //     self.common_iroot(exp)
+    // }
+}
+
+macro_rules! general_panic_free_calc_iroot
+{
+    ($me:expr, $func:expr, $exp:expr) => {
+        if $exp.is_zero()
+        {
+            let mut res;
+            if $me.is_zero_or_one()
+            {
+                res = Self::zero();
+                res.set_undefined();
+            }
+            else
+            {
+                res = Self::max();
+                res.set_all_flags(Self::UNDEFINED | Self::INFINITY);
+            }
+            return res;
+        }
+        else if $me.is_zero()
+        {
+            return Self::zero();
+        }
+        else if $me.is_one()
+        {
+            return Self::one();
+        }
+        else
+        {
+            return $func($me, $exp);
+        }
+    }
+    // general_panic_free_calc_iroot!(self, Self::common_iroot, exp);
+    //
+    // if exp.is_zero()
+    // {
+    //     let mut res;
+    //     if self.is_zero_or_one()
+    //     {
+    //         res = Self::zero();
+    //         res.set_undefined();
+    //     }
+    //     else
+    //     {
+    //         res = Self::max();
+    //         res.set_all_flags(Self::UNDEFINED | Self::INFINITY);
+    //     }
+    //     res
+    // }
+    // else if self.is_zero()
+    // {
+    //     Self::zero()
+    // }
+    // else if self.is_one()
+    // {
+    //     Self::one()
+    // }
+    // else
+    // {
+    //     self.common_iroot(exp)
+    // }
+}
+
 
 
 //////////////////////////////////////////
@@ -22096,39 +22216,95 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// 
     /// # Example 1
     /// ```
+    /// use std::str::FromStr;
     /// use cryptocol::define_utypes_with;
     /// define_utypes_with!(u8);
     /// 
-    /// let a_biguint = U256::from_uint(1000_u16);
-    /// let exp = 3_u8;
+    /// let a_biguint = U256::from_str("1_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000").unwrap();
+    /// let exp = 8_u8;
     /// let res = a_biguint.iroot_uint(exp);
-    /// println!("The third root of {} is {}.", a_biguint, res);
-    /// assert_eq!(res.to_string(), "10");
+    /// println!("The {}-th root of {} is {}.", exp, a_biguint, res);
+    /// assert_eq!(res.to_string(), "100000000");
     /// assert_eq!(res.is_overflow(), false);
     /// assert_eq!(res.is_underflow(), false);
     /// assert_eq!(res.is_infinity(), false);
-    /// assert_eq!(res.is_divided_by_zero(), false);
     /// assert_eq!(res.is_undefined(), false);
+    /// assert_eq!(res.is_divided_by_zero(), false);
     /// ```
     /// 
     /// # Example 2
     /// ```
+    /// use std::str::FromStr;
     /// use cryptocol::define_utypes_with;
     /// define_utypes_with!(u8);
     /// 
-    /// let a_biguint = U256::from_uint(1000_u16);
-    /// let exp = 2_u8;
+    /// let a_biguint = U256::from_str("1_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000").unwrap();
+    /// let exp = 65_u8;
     /// let res = a_biguint.iroot_uint(exp);
-    /// println!("The square root of {} is {}.", a_biguint, res);
-    /// assert_eq!(res.to_string(), "31");
+    /// println!("The {}-th root of {} is {}.", exp, a_biguint, res);
+    /// assert_eq!(res.to_string(), "9");
     /// assert_eq!(res.is_overflow(), false);
     /// assert_eq!(res.is_underflow(), false);
     /// assert_eq!(res.is_infinity(), false);
-    /// assert_eq!(res.is_divided_by_zero(), false);
     /// assert_eq!(res.is_undefined(), false);
+    /// assert_eq!(res.is_divided_by_zero(), false);
     /// ```
     /// 
     /// # Example 3
+    /// ```
+    /// use std::str::FromStr;
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u8);
+    /// 
+    /// let a_biguint = U256::from_str("1_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000").unwrap();
+    /// let exp = 212_u8;
+    /// let res = a_biguint.iroot_uint(exp);
+    /// println!("The {}-th root of {} is {}.", exp, a_biguint, res);
+    /// assert_eq!(res.to_string(), "2");
+    /// assert_eq!(res.is_overflow(), false);
+    /// assert_eq!(res.is_underflow(), false);
+    /// assert_eq!(res.is_infinity(), false);
+    /// assert_eq!(res.is_undefined(), false);
+    /// assert_eq!(res.is_divided_by_zero(), false);
+    /// ```
+    /// 
+    /// # Example 4
+    /// ```
+    /// use std::str::FromStr;
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u8);
+    /// 
+    /// let a_biguint = U256::from_str("1_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000").unwrap();
+    /// let exp = 213_u8;
+    /// let res = a_biguint.iroot_uint(exp);
+    /// println!("The {}-th root of {} is {}.", exp, a_biguint, res);
+    /// assert_eq!(res.to_string(), "1");
+    /// assert_eq!(res.is_overflow(), false);
+    /// assert_eq!(res.is_underflow(), false);
+    /// assert_eq!(res.is_infinity(), false);
+    /// assert_eq!(res.is_undefined(), false);
+    /// assert_eq!(res.is_divided_by_zero(), false);
+    /// ```
+    /// 
+    /// # Example 5
+    /// ```
+    /// use std::str::FromStr;
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u8);
+    /// 
+    /// let a_biguint = U256::from_str("1_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000").unwrap();
+    /// let exp = u128::MAX;
+    /// let res = a_biguint.iroot_uint(exp);
+    /// println!("The {}-th root of {} is {}.", exp, a_biguint, res);
+    /// assert_eq!(res.to_string(), "1");
+    /// assert_eq!(res.is_overflow(), false);
+    /// assert_eq!(res.is_underflow(), false);
+    /// assert_eq!(res.is_infinity(), false);
+    /// assert_eq!(res.is_undefined(), false);
+    /// assert_eq!(res.is_divided_by_zero(), false);
+    /// ```
+    /// 
+    /// # Example 6
     /// ```
     /// use cryptocol::define_utypes_with;
     /// define_utypes_with!(u8);
@@ -22147,10 +22323,21 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// 
     /// # Panic Example
     /// ```
+    /// use std::str::FromStr;
     /// use cryptocol::define_utypes_with;
     /// define_utypes_with!(u8);
     /// 
-    /// let _a_biguint = U256::from_uint(1000_u16);
+    /// let _a_biguint = U256::from_str("1_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000").unwrap();
+    /// let _exp = 0_u8;
+    /// // It will panic.
+    /// // let res = _a_biguint.iroot_uint(_exp);
+    /// 
+    /// let _a_biguint = U256::one();
+    /// let _exp = 0_u8;
+    /// // It will panic.
+    /// // let res = _a_biguint.iroot_uint(_exp);
+    /// 
+    /// let _a_biguint = U256::zero();
     /// let _exp = 0_u8;
     /// // It will panic.
     /// // let res = _a_biguint.iroot_uint(_exp);
@@ -22170,9 +22357,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
             + BitXor<Output=U> + BitXorAssign + Not<Output=U>
             + PartialEq + PartialOrd
     {
-        if exp.is_zero()
-            { panic!(); }
-        self.common_iroot_uint(exp)
+        general_calc_iroot!(self, Self::common_iroot_uint, exp);
     }
 
     // pub fn iroot_assign_uint<U>(&mut self, exp: U)
@@ -22208,54 +22393,129 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// 
     /// # Example 1
     /// ```
+    /// use std::str::FromStr;
     /// use cryptocol::define_utypes_with;
     /// define_utypes_with!(u16);
     /// 
-    /// let mut a_biguint = U256::from_uint(1000_u16);
+    /// let mut a_biguint = U256::from_str("1_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000").unwrap();
     /// println!("Originally, a_biguint = {}", a_biguint);
     /// assert_eq!(a_biguint.is_overflow(), false);
     /// assert_eq!(a_biguint.is_underflow(), false);
     /// assert_eq!(a_biguint.is_infinity(), false);
-    /// assert_eq!(a_biguint.is_divided_by_zero(), false);
     /// assert_eq!(a_biguint.is_undefined(), false);
+    /// assert_eq!(a_biguint.is_divided_by_zero(), false);
     /// 
-    /// let exp = 3_u8;
+    /// let exp = 8_u8;
     /// a_biguint.iroot_assign_uint(exp);
     /// println!("After a_biguint.iroot_assign_uint({}), a_biguint = {}.", exp, a_biguint);
-    /// assert_eq!(a_biguint.to_string(), "10");
+    /// assert_eq!(a_biguint.to_string(), "100000000");
     /// assert_eq!(a_biguint.is_overflow(), false);
     /// assert_eq!(a_biguint.is_underflow(), false);
     /// assert_eq!(a_biguint.is_infinity(), false);
-    /// assert_eq!(a_biguint.is_divided_by_zero(), false);
     /// assert_eq!(a_biguint.is_undefined(), false);
+    /// assert_eq!(a_biguint.is_divided_by_zero(), false);
     /// ```
     /// 
     /// # Example 2
     /// ```
+    /// use std::str::FromStr;
     /// use cryptocol::define_utypes_with;
     /// define_utypes_with!(u16);
     /// 
-    /// let mut a_biguint = U256::from_uint(1000_u16);
+    /// let mut a_biguint = U256::from_str("1_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000").unwrap();
     /// println!("Originally, a_biguint = {}", a_biguint);
     /// assert_eq!(a_biguint.is_overflow(), false);
     /// assert_eq!(a_biguint.is_underflow(), false);
     /// assert_eq!(a_biguint.is_infinity(), false);
-    /// assert_eq!(a_biguint.is_divided_by_zero(), false);
     /// assert_eq!(a_biguint.is_undefined(), false);
+    /// assert_eq!(a_biguint.is_divided_by_zero(), false);
     /// 
-    /// let exp = 2_u8;
+    /// let exp = 65_u8;
     /// a_biguint.iroot_assign_uint(exp);
     /// println!("After a_biguint.iroot_assign_uint({}), a_biguint = {}.", exp, a_biguint);
-    /// assert_eq!(a_biguint.to_string(), "31");
+    /// assert_eq!(a_biguint.to_string(), "9");
     /// assert_eq!(a_biguint.is_overflow(), false);
     /// assert_eq!(a_biguint.is_underflow(), false);
     /// assert_eq!(a_biguint.is_infinity(), false);
-    /// assert_eq!(a_biguint.is_divided_by_zero(), false);
     /// assert_eq!(a_biguint.is_undefined(), false);
+    /// assert_eq!(a_biguint.is_divided_by_zero(), false);
     /// ```
     /// 
     /// # Example 3
     /// ```
+    /// use std::str::FromStr;
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u16);
+    /// 
+    /// let mut a_biguint = U256::from_str("1_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000").unwrap();
+    /// assert_eq!(a_biguint.is_overflow(), false);
+    /// assert_eq!(a_biguint.is_underflow(), false);
+    /// assert_eq!(a_biguint.is_infinity(), false);
+    /// assert_eq!(a_biguint.is_undefined(), false);
+    /// assert_eq!(a_biguint.is_divided_by_zero(), false);
+    /// 
+    /// let exp = 212_u8;
+    /// a_biguint.iroot_assign_uint(exp);
+    /// println!("After a_biguint.iroot_assign_uint({}), a_biguint = {}.", exp, a_biguint);
+    /// assert_eq!(a_biguint.to_string(), "2");
+    /// assert_eq!(a_biguint.is_overflow(), false);
+    /// assert_eq!(a_biguint.is_underflow(), false);
+    /// assert_eq!(a_biguint.is_infinity(), false);
+    /// assert_eq!(a_biguint.is_undefined(), false);
+    /// assert_eq!(a_biguint.is_divided_by_zero(), false);
+    /// ```
+    /// 
+    /// # Example 4
+    /// ```
+    /// use std::str::FromStr;
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u16);
+    /// 
+    /// let mut a_biguint = U256::from_str("1_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000").unwrap();
+    /// assert_eq!(a_biguint.is_overflow(), false);
+    /// assert_eq!(a_biguint.is_underflow(), false);
+    /// assert_eq!(a_biguint.is_infinity(), false);
+    /// assert_eq!(a_biguint.is_undefined(), false);
+    /// assert_eq!(a_biguint.is_divided_by_zero(), false);
+    /// 
+    /// let exp = 213_u8;
+    /// a_biguint.iroot_assign_uint(exp);
+    /// println!("After a_biguint.iroot_assign_uint({}), a_biguint = {}.", exp, a_biguint);
+    /// assert_eq!(a_biguint.to_string(), "1");
+    /// assert_eq!(a_biguint.is_overflow(), false);
+    /// assert_eq!(a_biguint.is_underflow(), false);
+    /// assert_eq!(a_biguint.is_infinity(), false);
+    /// assert_eq!(a_biguint.is_undefined(), false);
+    /// assert_eq!(a_biguint.is_divided_by_zero(), false);
+    /// ```
+    /// 
+    /// # Example 5
+    /// ```
+    /// use std::str::FromStr;
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u16);
+    /// 
+    /// let mut a_biguint = U256::from_str("1_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000").unwrap();
+    /// assert_eq!(a_biguint.is_overflow(), false);
+    /// assert_eq!(a_biguint.is_underflow(), false);
+    /// assert_eq!(a_biguint.is_infinity(), false);
+    /// assert_eq!(a_biguint.is_undefined(), false);
+    /// assert_eq!(a_biguint.is_divided_by_zero(), false);
+    /// 
+    /// let exp = u128::MAX;
+    /// a_biguint.iroot_assign_uint(exp);
+    /// println!("After a_biguint.iroot_assign_uint({}), a_biguint = {}.", exp, a_biguint);
+    /// assert_eq!(a_biguint.to_string(), "1");
+    /// assert_eq!(a_biguint.is_overflow(), false);
+    /// assert_eq!(a_biguint.is_underflow(), false);
+    /// assert_eq!(a_biguint.is_infinity(), false);
+    /// assert_eq!(a_biguint.is_undefined(), false);
+    /// assert_eq!(a_biguint.is_divided_by_zero(), false);
+    /// ```
+    /// 
+    /// # Example 6
+    /// ```
+    /// use std::str::FromStr;
     /// use cryptocol::define_utypes_with;
     /// define_utypes_with!(u16);
     /// 
@@ -22278,15 +22538,26 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// assert_eq!(a_biguint.is_undefined(), false);
     /// ```
     /// 
-    /// # Panic Example
+    /// # Panic Examples
     /// ```
+    /// use std::str::FromStr;
     /// use cryptocol::define_utypes_with;
     /// define_utypes_with!(u16);
     /// 
-    /// let mut _a_biguint = U256::from_uint(1000_u16);
+    /// let mut _a_biguint = U256::from_str("1_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000").unwrap();
     /// let _exp = 0_u8;
     /// // It will panic.
-    /// // _a_biguint.iroot_assign_uint(_exp);
+    /// // a_biguint.iroot_assign_uint(exp);
+    /// 
+    /// let mut _a_biguint = U256::one();
+    /// let _exp = 0_u8;
+    /// // It will panic.
+    /// // a_biguint.iroot_assign_uint(exp);
+    /// 
+    /// let mut _a_biguint = U256::zero();
+    /// let _exp = 0_u8;
+    /// // It will panic.
+    /// // a_biguint.iroot_assign_uint(exp);
     /// ```
     /// 
     /// # Big-endian issue
@@ -22347,40 +22618,97 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// 
     /// # Example 1
     /// ```
+    /// use std::str::FromStr;
     /// use cryptocol::define_utypes_with;
     /// define_utypes_with!(u32);
     /// 
-    /// let a_biguint = U256::from_uint(1000_u16);
-    /// let exp = 3_u8;
+    /// let a_biguint = U256::from_str("1_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000").unwrap();
+    /// let exp = 8_u8;
     /// let res = a_biguint.panic_free_iroot_uint(exp);
-    /// println!("The third root of {} is {}.", a_biguint, res);
-    /// assert_eq!(res.to_string(), "10");
+    /// println!("The {}-th root of {} is {}.", exp, a_biguint, res);
+    /// assert_eq!(res.to_string(), "100000000");
     /// assert_eq!(res.is_overflow(), false);
     /// assert_eq!(res.is_underflow(), false);
     /// assert_eq!(res.is_infinity(), false);
-    /// assert_eq!(res.is_divided_by_zero(), false);
     /// assert_eq!(res.is_undefined(), false);
+    /// assert_eq!(res.is_divided_by_zero(), false);
     /// ```
     /// 
     /// # Example 2
     /// ```
+    /// use std::str::FromStr;
     /// use cryptocol::define_utypes_with;
     /// define_utypes_with!(u32);
     /// 
-    /// let a_biguint = U256::from_uint(1000_u16);
-    /// let exp = 2_u8;
+    /// let a_biguint = U256::from_str("1_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000").unwrap();
+    /// let exp = 65_u8;
     /// let res = a_biguint.panic_free_iroot_uint(exp);
-    /// println!("The square root of {} is {}.", a_biguint, res);
-    /// assert_eq!(res.to_string(), "31");
+    /// println!("The {}-th root of {} is {}.", exp, a_biguint, res);
+    /// assert_eq!(res.to_string(), "9");
     /// assert_eq!(res.is_overflow(), false);
     /// assert_eq!(res.is_underflow(), false);
     /// assert_eq!(res.is_infinity(), false);
-    /// assert_eq!(res.is_divided_by_zero(), false);
     /// assert_eq!(res.is_undefined(), false);
+    /// assert_eq!(res.is_divided_by_zero(), false);
     /// ```
     /// 
     /// # Example 3
     /// ```
+    /// use std::str::FromStr;
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u32);
+    /// 
+    /// let a_biguint = U256::from_str("1_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000").unwrap();
+    /// let exp = 212_u8;
+    /// let res = a_biguint.panic_free_iroot_uint(exp);
+    /// println!("The {}-th root of {} is {}.", exp, a_biguint, res);
+    /// assert_eq!(res.to_string(), "2");
+    /// assert_eq!(res.is_overflow(), false);
+    /// assert_eq!(res.is_underflow(), false);
+    /// assert_eq!(res.is_infinity(), false);
+    /// assert_eq!(res.is_undefined(), false);
+    /// assert_eq!(res.is_divided_by_zero(), false);
+    /// ```
+    /// 
+    /// # Example 4
+    /// ```
+    /// use std::str::FromStr;
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u32);
+    /// 
+    /// let a_biguint = U256::from_str("1_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000").unwrap();
+    /// let exp = 213_u8;
+    /// let res = a_biguint.panic_free_iroot_uint(exp);
+    /// println!("The {}-th root of {} is {}.", exp, a_biguint, res);
+    /// assert_eq!(res.to_string(), "1");
+    /// assert_eq!(res.is_overflow(), false);
+    /// assert_eq!(res.is_underflow(), false);
+    /// assert_eq!(res.is_infinity(), false);
+    /// assert_eq!(res.is_undefined(), false);
+    /// assert_eq!(res.is_divided_by_zero(), false);
+    /// ```
+    /// 
+    /// # Example 5
+    /// ```
+    /// use std::str::FromStr;
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u32);
+    /// 
+    /// let a_biguint = U256::from_str("1_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000").unwrap();
+    /// let exp = u128::MAX;
+    /// let res = a_biguint.panic_free_iroot_uint(exp);
+    /// println!("The {}-th root of {} is {}.", exp, a_biguint, res);
+    /// assert_eq!(res.to_string(), "1");
+    /// assert_eq!(res.is_overflow(), false);
+    /// assert_eq!(res.is_underflow(), false);
+    /// assert_eq!(res.is_infinity(), false);
+    /// assert_eq!(res.is_undefined(), false);
+    /// assert_eq!(res.is_divided_by_zero(), false);
+    /// ```
+    /// 
+    /// # Example 6
+    /// ```
+    /// use std::str::FromStr;
     /// use cryptocol::define_utypes_with;
     /// define_utypes_with!(u32);
     /// 
@@ -22396,24 +22724,25 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// assert_eq!(res.is_undefined(), false);
     /// ```
     /// 
-    /// # Example 4
+    /// # Example 7
     /// ```
+    /// use std::str::FromStr;
     /// use cryptocol::define_utypes_with;
     /// define_utypes_with!(u32);
     /// 
-    /// let a_biguint = U256::zero();
+    /// let a_biguint = U256::from_str("1_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000").unwrap();
     /// let exp = 0_u8;
     /// let res = a_biguint.panic_free_iroot_uint(exp);
     /// println!("The {}-th root of {} is {}.", exp, a_biguint, res);
-    /// assert_eq!(res.to_string(), "0");
+    /// assert_eq!(res, U256::max());
     /// assert_eq!(res.is_overflow(), false);
     /// assert_eq!(res.is_underflow(), false);
-    /// assert_eq!(res.is_infinity(), false);
+    /// assert_eq!(res.is_infinity(), true);
     /// assert_eq!(res.is_undefined(), true);
     /// assert_eq!(res.is_divided_by_zero(), false);
     /// ```
     /// 
-    /// # Example 5
+    /// # Example 8
     /// ```
     /// use cryptocol::define_utypes_with;
     /// define_utypes_with!(u32);
@@ -22430,19 +22759,19 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// assert_eq!(res.is_divided_by_zero(), false);
     /// ```
     /// 
-    /// # Example 6
+    /// # Example 9
     /// ```
     /// use cryptocol::define_utypes_with;
     /// define_utypes_with!(u32);
     /// 
-    /// let a_biguint = U256::from_uint(2_u8);
+    /// let a_biguint = U256::zero();
     /// let exp = 0_u8;
     /// let res = a_biguint.panic_free_iroot_uint(exp);
     /// println!("The {}-th root of {} is {}.", exp, a_biguint, res);
-    /// assert_eq!(res, U256::max());
+    /// assert_eq!(res.to_string(), "0");
     /// assert_eq!(res.is_overflow(), false);
     /// assert_eq!(res.is_underflow(), false);
-    /// assert_eq!(res.is_infinity(), true);
+    /// assert_eq!(res.is_infinity(), false);
     /// assert_eq!(res.is_undefined(), true);
     /// assert_eq!(res.is_divided_by_zero(), false);
     /// ```
@@ -22461,22 +22790,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
             + BitXor<Output=U> + BitXorAssign + Not<Output=U>
             + PartialEq + PartialOrd
     {
-        if exp.is_zero()
-        {
-            let mut res;
-            if self.is_zero_or_one()
-            {
-                res = Self::zero();
-                res.set_undefined();
-            }
-            else
-            {
-                res = Self::max();
-                res.set_all_flags(Self::UNDEFINED | Self::INFINITY);
-            }
-            return res;
-        }
-        self.common_iroot_uint(exp)
+        general_panic_free_calc_iroot!(self, Self::common_iroot_uint, exp);
     }
 
     fn common_iroot_uint<U>(&self, exp: U) -> Self
@@ -22489,13 +22803,17 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
             + BitXor<Output=U> + BitXorAssign + Not<Output=U>
             + PartialEq + PartialOrd
     {
-        let mut adder;
         let mut highest = ((Self::size_in_bits() as u128 - self.leading_zeros() as u128).wrapping_div(exp.into_u128())) as usize;
+        if highest.is_zero()
+        {
+            return Self::one();
+        }
         let mut high;
         let mut low;
         let mut mid;
-        let mut res = Self::zero();
+        let mut adder;
         let mut sum;
+        let mut res = Self::zero();
         let maximum = highest.wrapping_sub(1);
         loop
         {
@@ -22591,53 +22909,127 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// 
     /// # Example 1
     /// ```
+    /// use std::str::FromStr;
     /// use cryptocol::define_utypes_with;
     /// define_utypes_with!(u64);
     /// 
-    /// let mut a_biguint = U256::from_uint(1000_u16);
+    /// let mut a_biguint = U256::from_str("1_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000").unwrap();
     /// println!("Originally, a_biguint = {}", a_biguint);
     /// assert_eq!(a_biguint.is_overflow(), false);
     /// assert_eq!(a_biguint.is_underflow(), false);
     /// assert_eq!(a_biguint.is_infinity(), false);
-    /// assert_eq!(a_biguint.is_divided_by_zero(), false);
     /// assert_eq!(a_biguint.is_undefined(), false);
+    /// assert_eq!(a_biguint.is_divided_by_zero(), false);
     /// 
-    /// let exp = 3_u8;
-    /// a_biguint.iroot_assign_uint(exp);
-    /// println!("After a_biguint.iroot_assign_uint({}), a_biguint = {}.", exp, a_biguint);
-    /// assert_eq!(a_biguint.to_string(), "10");
+    /// let exp = 8_u8;
+    /// a_biguint.panic_free_iroot_assign_uint(exp);
+    /// println!("After a_biguint.panic_free_iroot_assign_uint({}), a_biguint = {}.", exp, a_biguint);
+    /// assert_eq!(a_biguint.to_string(), "100000000");
     /// assert_eq!(a_biguint.is_overflow(), false);
     /// assert_eq!(a_biguint.is_underflow(), false);
     /// assert_eq!(a_biguint.is_infinity(), false);
-    /// assert_eq!(a_biguint.is_divided_by_zero(), false);
     /// assert_eq!(a_biguint.is_undefined(), false);
+    /// assert_eq!(a_biguint.is_divided_by_zero(), false);
     /// ```
     /// 
     /// # Example 2
     /// ```
+    /// use std::str::FromStr;
     /// use cryptocol::define_utypes_with;
     /// define_utypes_with!(u64);
     /// 
-    /// let mut a_biguint = U256::from_uint(1000_u16);
+    /// let mut a_biguint = U256::from_str("1_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000").unwrap();
     /// println!("Originally, a_biguint = {}", a_biguint);
     /// assert_eq!(a_biguint.is_overflow(), false);
     /// assert_eq!(a_biguint.is_underflow(), false);
     /// assert_eq!(a_biguint.is_infinity(), false);
-    /// assert_eq!(a_biguint.is_divided_by_zero(), false);
     /// assert_eq!(a_biguint.is_undefined(), false);
+    /// assert_eq!(a_biguint.is_divided_by_zero(), false);
     /// 
-    /// let exp = 2_u8;
-    /// a_biguint.iroot_assign_uint(exp);
-    /// println!("After a_biguint.iroot_assign_uint({}), a_biguint = {}.", exp, a_biguint);
-    /// assert_eq!(a_biguint.to_string(), "31");
+    /// let exp = 65_u8;
+    /// a_biguint.panic_free_iroot_assign_uint(exp);
+    /// println!("After a_biguint.panic_free_iroot_assign_uint({}), a_biguint = {}.", exp, a_biguint);
+    /// assert_eq!(a_biguint.to_string(), "9");
     /// assert_eq!(a_biguint.is_overflow(), false);
     /// assert_eq!(a_biguint.is_underflow(), false);
     /// assert_eq!(a_biguint.is_infinity(), false);
-    /// assert_eq!(a_biguint.is_divided_by_zero(), false);
     /// assert_eq!(a_biguint.is_undefined(), false);
+    /// assert_eq!(a_biguint.is_divided_by_zero(), false);
     /// ```
     /// 
     /// # Example 3
+    /// ```
+    /// use std::str::FromStr;
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u64);
+    /// 
+    /// let mut a_biguint = U256::from_str("1_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000").unwrap();
+    /// assert_eq!(a_biguint.is_overflow(), false);
+    /// assert_eq!(a_biguint.is_underflow(), false);
+    /// assert_eq!(a_biguint.is_infinity(), false);
+    /// assert_eq!(a_biguint.is_undefined(), false);
+    /// assert_eq!(a_biguint.is_divided_by_zero(), false);
+    /// 
+    /// let exp = 212_u8;
+    /// a_biguint.panic_free_iroot_assign_uint(exp);
+    /// println!("After a_biguint.panic_free_iroot_assign_uint({}), a_biguint = {}.", exp, a_biguint);
+    /// assert_eq!(a_biguint.to_string(), "2");
+    /// assert_eq!(a_biguint.is_overflow(), false);
+    /// assert_eq!(a_biguint.is_underflow(), false);
+    /// assert_eq!(a_biguint.is_infinity(), false);
+    /// assert_eq!(a_biguint.is_undefined(), false);
+    /// assert_eq!(a_biguint.is_divided_by_zero(), false);
+    /// ```
+    /// 
+    /// # Example 4
+    /// ```
+    /// use std::str::FromStr;
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u64);
+    /// 
+    /// let mut a_biguint = U256::from_str("1_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000").unwrap();
+    /// assert_eq!(a_biguint.is_overflow(), false);
+    /// assert_eq!(a_biguint.is_underflow(), false);
+    /// assert_eq!(a_biguint.is_infinity(), false);
+    /// assert_eq!(a_biguint.is_undefined(), false);
+    /// assert_eq!(a_biguint.is_divided_by_zero(), false);
+    /// 
+    /// let exp = 213_u8;
+    /// a_biguint.panic_free_iroot_assign_uint(exp);
+    /// println!("After a_biguint.panic_free_iroot_assign_uint({}), a_biguint = {}.", exp, a_biguint);
+    /// assert_eq!(a_biguint.to_string(), "1");
+    /// assert_eq!(a_biguint.is_overflow(), false);
+    /// assert_eq!(a_biguint.is_underflow(), false);
+    /// assert_eq!(a_biguint.is_infinity(), false);
+    /// assert_eq!(a_biguint.is_undefined(), false);
+    /// assert_eq!(a_biguint.is_divided_by_zero(), false);
+    /// ```
+    /// 
+    /// # Example 5
+    /// ```
+    /// use std::str::FromStr;
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u64);
+    /// 
+    /// let mut a_biguint = U256::from_str("1_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000").unwrap();
+    /// assert_eq!(a_biguint.is_overflow(), false);
+    /// assert_eq!(a_biguint.is_underflow(), false);
+    /// assert_eq!(a_biguint.is_infinity(), false);
+    /// assert_eq!(a_biguint.is_undefined(), false);
+    /// assert_eq!(a_biguint.is_divided_by_zero(), false);
+    /// 
+    /// let exp = u128::MAX;
+    /// a_biguint.panic_free_iroot_assign_uint(exp);
+    /// println!("After a_biguint.panic_free_iroot_assign_uint({}), a_biguint = {}.", exp, a_biguint);
+    /// assert_eq!(a_biguint.to_string(), "1");
+    /// assert_eq!(a_biguint.is_overflow(), false);
+    /// assert_eq!(a_biguint.is_underflow(), false);
+    /// assert_eq!(a_biguint.is_infinity(), false);
+    /// assert_eq!(a_biguint.is_undefined(), false);
+    /// assert_eq!(a_biguint.is_divided_by_zero(), false);
+    /// ```
+    /// 
+    /// # Example 6
     /// ```
     /// use cryptocol::define_utypes_with;
     /// define_utypes_with!(u64);
@@ -22661,7 +23053,32 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// assert_eq!(a_biguint.is_undefined(), false);
     /// ```
     /// 
-    /// # Example 4
+    /// # Example 7
+    /// ```
+    /// use std::str::FromStr;
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u64);
+    /// 
+    /// let mut a_biguint = U256::from_str("1_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000").unwrap();
+    /// println!("Originally, a_biguint = {}", a_biguint);
+    /// assert_eq!(a_biguint.is_overflow(), false);
+    /// assert_eq!(a_biguint.is_underflow(), false);
+    /// assert_eq!(a_biguint.is_infinity(), false);
+    /// assert_eq!(a_biguint.is_undefined(), false);
+    /// assert_eq!(a_biguint.is_divided_by_zero(), false);
+    /// 
+    /// let exp = 0_u8;
+    /// a_biguint.panic_free_iroot_assign_uint(exp);
+    /// println!("After a_biguint.iroot_assign_uint({}), a_biguint = {}.", exp, a_biguint);
+    /// assert_eq!(a_biguint, U256::max());
+    /// assert_eq!(a_biguint.is_overflow(), false);
+    /// assert_eq!(a_biguint.is_underflow(), false);
+    /// assert_eq!(a_biguint.is_infinity(), true);
+    /// assert_eq!(a_biguint.is_undefined(), true);
+    /// assert_eq!(a_biguint.is_divided_by_zero(), false);
+    /// ```
+    /// 
+    /// # Example 8
     /// ```
     /// use cryptocol::define_utypes_with;
     /// define_utypes_with!(u64);
@@ -22685,7 +23102,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// assert_eq!(a_biguint.is_divided_by_zero(), false);
     /// ```
     /// 
-    /// # Example 5
+    /// # Example 9
     /// ```
     /// use cryptocol::define_utypes_with;
     /// define_utypes_with!(u64);
@@ -22705,30 +23122,6 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// assert_eq!(a_biguint.is_overflow(), false);
     /// assert_eq!(a_biguint.is_underflow(), false);
     /// assert_eq!(a_biguint.is_infinity(), false);
-    /// assert_eq!(a_biguint.is_undefined(), true);
-    /// assert_eq!(a_biguint.is_divided_by_zero(), false);
-    /// ```
-    /// 
-    /// # Example 6
-    /// ```
-    /// use cryptocol::define_utypes_with;
-    /// define_utypes_with!(u64);
-    /// 
-    /// let mut a_biguint = U256::from_uint(2_u8);
-    /// println!("Originally, a_biguint = {}", a_biguint);
-    /// assert_eq!(a_biguint.is_overflow(), false);
-    /// assert_eq!(a_biguint.is_underflow(), false);
-    /// assert_eq!(a_biguint.is_infinity(), false);
-    /// assert_eq!(a_biguint.is_undefined(), false);
-    /// assert_eq!(a_biguint.is_divided_by_zero(), false);
-    /// 
-    /// let exp = 0_u8;
-    /// a_biguint.panic_free_iroot_assign_uint(exp);
-    /// println!("After a_biguint.iroot_assign_uint({}), a_biguint = {}.", exp, a_biguint);
-    /// assert_eq!(a_biguint, U256::max());
-    /// assert_eq!(a_biguint.is_overflow(), false);
-    /// assert_eq!(a_biguint.is_underflow(), false);
-    /// assert_eq!(a_biguint.is_infinity(), true);
     /// assert_eq!(a_biguint.is_undefined(), true);
     /// assert_eq!(a_biguint.is_divided_by_zero(), false);
     /// ```
@@ -22784,22 +23177,23 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// 
     /// # Example 1
     /// ```
+    /// use std::str::FromStr;
     /// use cryptocol::define_utypes_with;
     /// define_utypes_with!(u128);
     /// 
-    /// let a_biguint = U256::from_uint(1000_u16);
-    /// let exp = 3_u8;
+    /// let a_biguint = U256::from_str("1_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000").unwrap();
+    /// let exp = 8_u8;
     /// let res = a_biguint.checked_iroot_uint(exp);
     /// match res
     /// {
     ///     Some(r) => {
     ///             println!("The third root of {} is {}.", a_biguint, r);
-    ///             assert_eq!(r.to_string(), "10");
+    ///             assert_eq!(r.to_string(), "100000000");
     ///             assert_eq!(r.is_overflow(), false);
     ///             assert_eq!(r.is_underflow(), false);
     ///             assert_eq!(r.is_infinity(), false);
-    ///             assert_eq!(r.is_divided_by_zero(), false);
     ///             assert_eq!(r.is_undefined(), false);
+    ///             assert_eq!(r.is_divided_by_zero(), false);
     ///         },
     ///     None => { println!("Error"); }
     /// }
@@ -22807,28 +23201,101 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// 
     /// # Example 2
     /// ```
+    /// use std::str::FromStr;
     /// use cryptocol::define_utypes_with;
     /// define_utypes_with!(u128);
     /// 
-    /// let a_biguint = U256::from_uint(1000_u16);
-    /// let exp = 2_u8;
+    /// let a_biguint = U256::from_str("1_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000").unwrap();
+    /// let exp = 65_u8;
     /// let res = a_biguint.checked_iroot_uint(exp);
     /// match res
     /// {
     ///     Some(r) => {
     ///             println!("The square root of {} is {}.", a_biguint, r);
-    ///             assert_eq!(r.to_string(), "31");
+    ///             assert_eq!(r.to_string(), "9");
     ///             assert_eq!(r.is_overflow(), false);
     ///             assert_eq!(r.is_underflow(), false);
     ///             assert_eq!(r.is_infinity(), false);
-    ///             assert_eq!(r.is_divided_by_zero(), false);
     ///             assert_eq!(r.is_undefined(), false);
+    ///             assert_eq!(r.is_divided_by_zero(), false);
     ///         },
     ///     None => { println!("Error"); }
     /// }
     /// ```
     /// 
     /// # Example 3
+    /// ```
+    /// use std::str::FromStr;
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u128);
+    /// 
+    /// let a_biguint = U256::from_str("1_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000").unwrap();
+    /// let exp = 212_u8;
+    /// let res = a_biguint.checked_iroot_uint(exp);
+    /// match res
+    /// {
+    ///     Some(r) => {
+    ///             println!("The square root of {} is {}.", a_biguint, r);
+    ///             assert_eq!(r.to_string(), "2");
+    ///             assert_eq!(r.is_overflow(), false);
+    ///             assert_eq!(r.is_underflow(), false);
+    ///             assert_eq!(r.is_infinity(), false);
+    ///             assert_eq!(r.is_undefined(), false);
+    ///             assert_eq!(r.is_divided_by_zero(), false);
+    ///         },
+    ///     None => { println!("Error"); }
+    /// }
+    /// ```
+    /// 
+    /// # Example 4
+    /// ```
+    /// use std::str::FromStr;
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u128);
+    /// 
+    /// let a_biguint = U256::from_str("1_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000").unwrap();
+    /// let exp = 213_u8;
+    /// let res = a_biguint.checked_iroot_uint(exp);
+    /// match res
+    /// {
+    ///     Some(r) => {
+    ///             println!("The square root of {} is {}.", a_biguint, r);
+    ///             assert_eq!(r.to_string(), "1");
+    ///             assert_eq!(r.is_overflow(), false);
+    ///             assert_eq!(r.is_underflow(), false);
+    ///             assert_eq!(r.is_infinity(), false);
+    ///             assert_eq!(r.is_undefined(), false);
+    ///             assert_eq!(r.is_divided_by_zero(), false);
+    ///         },
+    ///     None => { println!("Error"); }
+    /// }
+    /// ```
+    /// 
+    /// # Example 5
+    /// ```
+    /// use std::str::FromStr;
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u128);
+    /// 
+    /// let a_biguint = U256::from_str("1_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000").unwrap();
+    /// let exp = u128::MAX;
+    /// let res = a_biguint.checked_iroot_uint(exp);
+    /// match res
+    /// {
+    ///     Some(r) => {
+    ///             println!("The square root of {} is {}.", a_biguint, r);
+    ///             assert_eq!(r.to_string(), "1");
+    ///             assert_eq!(r.is_overflow(), false);
+    ///             assert_eq!(r.is_underflow(), false);
+    ///             assert_eq!(r.is_infinity(), false);
+    ///             assert_eq!(r.is_undefined(), false);
+    ///             assert_eq!(r.is_divided_by_zero(), false);
+    ///         },
+    ///     None => { println!("Error"); }
+    /// }
+    /// ```
+    /// 
+    /// # Example 6
     /// ```
     /// use cryptocol::define_utypes_with;
     /// define_utypes_with!(u128);
@@ -22851,12 +23318,50 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// }
     /// ```
     /// 
-    /// # Example 4
+    /// # Example 7
+    /// ```
+    /// use std::str::FromStr;
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u128);
+    /// 
+    /// let a_biguint = U256::from_str("1_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000").unwrap();
+    /// let exp = 0_u8;
+    /// let res = a_biguint.checked_iroot_uint(exp);
+    /// match res
+    /// {
+    ///     Some(r) => { println!("The {}-th root of {} is {}.", exp, a_biguint, r); },
+    ///     None => {
+    ///             println!("Error");
+    ///             assert_eq!(res, None);
+    ///         },
+    /// }
+    /// ```
+    /// 
+    /// # Example 8
     /// ```
     /// use cryptocol::define_utypes_with;
     /// define_utypes_with!(u128);
     /// 
-    /// let a_biguint = U256::from_uint(1000_u16);
+    /// let a_biguint = U256::one();
+    /// let exp = 0_u8;
+    /// let res = a_biguint.checked_iroot_uint(exp);
+    /// match res
+    /// {
+    ///     Some(r) => { println!("The {}-th root of {} is {}.", exp, a_biguint, r); },
+    ///     None => {
+    ///             println!("Error");
+    ///             assert_eq!(res, None);
+    ///         },
+    /// }
+    /// ```
+    /// 
+    /// # Example 9
+    /// ```
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u128);
+    /// 
+    /// 
+    /// let a_biguint = U256::zero();
     /// let exp = 0_u8;
     /// let res = a_biguint.checked_iroot_uint(exp);
     /// match res
@@ -22916,39 +23421,95 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// 
     /// # Example 1
     /// ```
+    /// use std::str::FromStr;
     /// use cryptocol::define_utypes_with;
     /// define_utypes_with!(u8);
     /// 
-    /// let a_biguint = U256::from_uint(1000_u16);
-    /// let exp = 3_u8;
+    /// let a_biguint = U256::from_str("1_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000").unwrap();
+    /// let exp = 8_u8;
     /// let res = a_biguint.unchecked_iroot_uint(exp);
     /// println!("The third root of {} is {}.", a_biguint, res);
-    /// assert_eq!(res.to_string(), "10");
+    /// assert_eq!(res.to_string(), "100000000");
     /// assert_eq!(res.is_overflow(), false);
     /// assert_eq!(res.is_underflow(), false);
     /// assert_eq!(res.is_infinity(), false);
-    /// assert_eq!(res.is_divided_by_zero(), false);
     /// assert_eq!(res.is_undefined(), false);
+    /// assert_eq!(res.is_divided_by_zero(), false);
     /// ```
     /// 
     /// # Example 2
     /// ```
+    /// use std::str::FromStr;
     /// use cryptocol::define_utypes_with;
     /// define_utypes_with!(u8);
     /// 
-    /// let a_biguint = U256::from_uint(1000_u16);
-    /// let exp = 2_u8;
+    /// let a_biguint = U256::from_str("1_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000").unwrap();
+    /// let exp = 65_u8;
     /// let res = a_biguint.unchecked_iroot_uint(exp);
     /// println!("The square root of {} is {}.", a_biguint, res);
-    /// assert_eq!(res.to_string(), "31");
+    /// assert_eq!(res.to_string(), "9");
     /// assert_eq!(res.is_overflow(), false);
     /// assert_eq!(res.is_underflow(), false);
     /// assert_eq!(res.is_infinity(), false);
-    /// assert_eq!(res.is_divided_by_zero(), false);
     /// assert_eq!(res.is_undefined(), false);
+    /// assert_eq!(res.is_divided_by_zero(), false);
     /// ```
     /// 
     /// # Example 3
+    /// ```
+    /// use std::str::FromStr;
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u8);
+    /// 
+    /// let a_biguint = U256::from_str("1_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000").unwrap();
+    /// let exp = 212_u8;
+    /// let res = a_biguint.unchecked_iroot_uint(exp);
+    /// println!("The square root of {} is {}.", a_biguint, res);
+    /// assert_eq!(res.to_string(), "2");
+    /// assert_eq!(res.is_overflow(), false);
+    /// assert_eq!(res.is_underflow(), false);
+    /// assert_eq!(res.is_infinity(), false);
+    /// assert_eq!(res.is_undefined(), false);
+    /// assert_eq!(res.is_divided_by_zero(), false);
+    /// ```
+    /// 
+    /// # Example 4
+    /// ```
+    /// use std::str::FromStr;
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u8);
+    /// 
+    /// let a_biguint = U256::from_str("1_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000").unwrap();
+    /// let exp = 213_u8;
+    /// let res = a_biguint.unchecked_iroot_uint(exp);
+    /// println!("The square root of {} is {}.", a_biguint, res);
+    /// assert_eq!(res.to_string(), "1");
+    /// assert_eq!(res.is_overflow(), false);
+    /// assert_eq!(res.is_underflow(), false);
+    /// assert_eq!(res.is_infinity(), false);
+    /// assert_eq!(res.is_undefined(), false);
+    /// assert_eq!(res.is_divided_by_zero(), false);
+    /// ```
+    /// 
+    /// # Example 5
+    /// ```
+    /// use std::str::FromStr;
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u8);
+    /// 
+    /// let a_biguint = U256::from_str("1_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000").unwrap();
+    /// let exp = u128::MAX;
+    /// let res = a_biguint.unchecked_iroot_uint(exp);
+    /// println!("The square root of {} is {}.", a_biguint, res);
+    /// assert_eq!(res.to_string(), "1");
+    /// assert_eq!(res.is_overflow(), false);
+    /// assert_eq!(res.is_underflow(), false);
+    /// assert_eq!(res.is_infinity(), false);
+    /// assert_eq!(res.is_undefined(), false);
+    /// assert_eq!(res.is_divided_by_zero(), false);
+    /// ```
+    /// 
+    /// # Example 6
     /// ```
     /// use cryptocol::define_utypes_with;
     /// define_utypes_with!(u8);
@@ -22965,15 +23526,26 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// assert_eq!(res.is_undefined(), false);
     /// ```
     /// 
-    /// # Panic Example
+    /// # Panic Examples
     /// ```
+    /// use std::str::FromStr;
     /// use cryptocol::define_utypes_with;
     /// define_utypes_with!(u8);
+    /// 
+    /// let _a_biguint = U256::from_str("1_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000").unwrap();
+    /// let _exp = 0_u8;
+    /// // It will panic.
+    /// // let res = _a_biguint.unchecked_iroot_uint(_exp);
+    /// 
+    /// let _a_biguint = U256::one();
+    /// let _exp = 0_u8;
+    /// // It will panic.
+    /// // let res = _a_biguint.unchecked_iroot_uint(_exp);
     /// 
     /// let _a_biguint = U256::zero();
     /// let _exp = 0_u8;
     /// // It will panic.
-    /// // let res = a_biguint.unchecked_iroot_uint(_exp);
+    /// // let res = _a_biguint.unchecked_iroot_uint(_exp);
     /// ```
     /// 
     /// # Big-endian issue
@@ -41172,6 +41744,1274 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     }
 
     //===================
+    // pub fn iroot(self, exp: &Self) -> Self
+    /// Returns the `exp`-th root of `self`, rounded down.
+    ///
+    /// # Arguments
+    /// `exp` is the power of the root of `self` and is a non-zero small-sized
+    /// unsigned integer such as `u8`, `u16`, `u32`, `u64`, and `u128`.
+    /// 
+    /// # Output
+    /// The `exp`-th root of `self` is returned if it is exactly the
+    /// `Self`-typed unsigned integer. 
+    /// Otherwise, the `Self`-typed biggest unsigned integer that is
+    /// less than the `exp`-th root of `self` is returned.
+    ///
+    /// # Panics
+    /// - If `size_of::<T>() * N` <= `128`, this method may panic
+    ///   or its behavior may be undefined though it may not panic.
+    /// - If `exp` is `0`, it will panic.
+    /// 
+    /// # Features
+    /// The result of this method is never greater than `self` and so
+    /// never causes overflow.
+    /// 
+    /// # Counterpart Method
+    /// If `exp` is bigger than `u128`, the method
+    /// [iroot()](struct@BigUInt#method.iroot)
+    /// is proper rather than this method.
+    /// 
+    /// # Example 1
+    /// ```
+    /// use std::str::FromStr;
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u8);
+    /// 
+    /// let a_biguint = U256::from_str("1_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000").unwrap();
+    /// let exp = U256::from_uint(8_u8);
+    /// let res = a_biguint.iroot(&exp);
+    /// println!("The {}-th root of {} is {}.", exp, a_biguint, res);
+    /// assert_eq!(res.to_string(), "100000000");
+    /// assert_eq!(res.is_overflow(), false);
+    /// assert_eq!(res.is_underflow(), false);
+    /// assert_eq!(res.is_infinity(), false);
+    /// assert_eq!(res.is_undefined(), false);
+    /// assert_eq!(res.is_divided_by_zero(), false);
+    /// ```
+    /// 
+    /// # Example 2
+    /// ```
+    /// use std::str::FromStr;
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u8);
+    /// 
+    /// let a_biguint = U256::from_str("1_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000").unwrap();
+    /// let exp = U256::from_uint(65_u8);
+    /// let res = a_biguint.iroot(&exp);
+    /// println!("The {}-th root of {} is {}.", exp, a_biguint, res);
+    /// assert_eq!(res.to_string(), "9");
+    /// assert_eq!(res.is_overflow(), false);
+    /// assert_eq!(res.is_underflow(), false);
+    /// assert_eq!(res.is_infinity(), false);
+    /// assert_eq!(res.is_undefined(), false);
+    /// assert_eq!(res.is_divided_by_zero(), false);
+    /// ```
+    /// 
+    /// # Example 3
+    /// ```
+    /// use std::str::FromStr;
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u8);
+    /// 
+    /// let a_biguint = U256::from_str("1_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000").unwrap();
+    /// let exp = U256::from_uint(212_u8);
+    /// let res = a_biguint.iroot(&exp);
+    /// println!("The {}-th root of {} is {}.", exp, a_biguint, res);
+    /// assert_eq!(res.to_string(), "2");
+    /// assert_eq!(res.is_overflow(), false);
+    /// assert_eq!(res.is_underflow(), false);
+    /// assert_eq!(res.is_infinity(), false);
+    /// assert_eq!(res.is_undefined(), false);
+    /// assert_eq!(res.is_divided_by_zero(), false);
+    /// ```
+    /// 
+    /// # Example 4
+    /// ```
+    /// use std::str::FromStr;
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u8);
+    /// 
+    /// let a_biguint = U256::from_str("1_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000").unwrap();
+    /// let exp = U256::from_uint(213_u8);
+    /// let res = a_biguint.iroot(&exp);
+    /// println!("The {}-th root of {} is {}.", exp, a_biguint, res);
+    /// assert_eq!(res.to_string(), "1");
+    /// assert_eq!(res.is_overflow(), false);
+    /// assert_eq!(res.is_underflow(), false);
+    /// assert_eq!(res.is_infinity(), false);
+    /// assert_eq!(res.is_undefined(), false);
+    /// assert_eq!(res.is_divided_by_zero(), false);
+    /// ```
+    /// 
+    /// # Example 5
+    /// ```
+    /// use std::str::FromStr;
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u8);
+    /// 
+    /// let a_biguint = U256::from_str("1_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000").unwrap();
+    /// let exp = U256::from_uint(u128::MAX).wrapping_add_uint(1_u8);
+    /// let res = a_biguint.iroot(&exp);
+    /// println!("The {}-th root of {} is {}.", exp, a_biguint, res);
+    /// assert_eq!(res.to_string(), "1");
+    /// assert_eq!(res.is_overflow(), false);
+    /// assert_eq!(res.is_underflow(), false);
+    /// assert_eq!(res.is_infinity(), false);
+    /// assert_eq!(res.is_undefined(), false);
+    /// assert_eq!(res.is_divided_by_zero(), false);
+    /// ```
+    /// 
+    /// # Example 6
+    /// ```
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u8);
+    /// 
+    /// let a_biguint = U256::zero();
+    /// let exp = U256::from_uint(6_u8);
+    /// let res = a_biguint.iroot(&exp);
+    /// println!("The {}-th root of {} is {}.", exp, a_biguint, res);
+    /// assert_eq!(res.to_string(), "0");
+    /// assert_eq!(res.is_overflow(), false);
+    /// assert_eq!(res.is_underflow(), false);
+    /// assert_eq!(res.is_infinity(), false);
+    /// assert_eq!(res.is_undefined(), false);
+    /// assert_eq!(res.is_divided_by_zero(), false);
+    /// ```
+    /// 
+    /// # Panic Examples
+    /// ```
+    /// use std::str::FromStr;
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u8);
+    /// 
+    /// let _a_biguint = U256::from_str("1_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000").unwrap();
+    /// let _exp = U256::zero();
+    /// // It will panic.
+    /// // let res = _a_biguint.iroot(&_exp);
+    /// 
+    /// let _a_biguint = U256::one();
+    /// let _exp = U256::zero();
+    /// // It will panic.
+    /// // let res = _a_biguint.iroot(&_exp);
+    /// 
+    /// let _a_biguint = U256::zero();
+    /// let _exp = U256::zero();
+    /// // It will panic.
+    /// // let res = _a_biguint.iroot(&_exp);
+    /// ```
+    /// 
+    /// # Big-endian issue
+    /// It is just experimental for Big Endian CPUs. So, you are not encouraged
+    /// to use it for Big Endian CPUs for serious purpose. Only use this crate
+    /// for Big-endian CPUs with your own full responsibility.
+    pub fn iroot(&self, exp: &Self) -> Self
+    {
+        general_calc_iroot!(self, Self::common_iroot, exp);
+    }
+
+    // pub fn iroot_assign(&mut self, exp: &Self)
+    /// Calculates the `exp`-th root of `self`, rounded down,
+    /// and assigns the result back to `self`.
+    ///
+    /// # Arguments
+    /// `exp` is the power of the root of `self` and is a non-zero small-sized
+    /// unsigned integer such as `u8`, `u16`, `u32`, `u64`, and `u128`.
+    ///
+    /// # Panics
+    /// - If `size_of::<T>() * N` <= `128`, this method may panic
+    ///   or its behavior may be undefined though it may not panic.
+    /// - If `exp` is `0`, it will panic.
+    /// 
+    /// # Features
+    /// - `self` will be the `exp`-th root of `self` is returned if it is
+    ///   exactly the `Self`-typed unsigned integer. Otherwise, `self` will be
+    ///   the `Self`-typed biggest unsigned integer that is less than the
+    ///   `exp`-th root of `self`.
+    /// - The result of this method is never greater than `self` and so
+    ///   never causes overflow.
+    /// - All the flags are historical, which means, for example, if an
+    ///   overflow occurred even once before this current operation or
+    ///   `OVERFLOW` flag is already set before this current operation,
+    ///   the `OVERFLOW` flag is not changed even if this current operation
+    ///   does not cause overflow.
+    /// 
+    /// # Counterpart Method
+    /// If `exp` is bigger than `u128`, the method
+    /// [iroot_assign()](struct@BigUInt#method.iroot_assign)
+    /// is proper rather than this method.
+    /// 
+    /// # Example 1
+    /// ```
+    /// use std::str::FromStr;
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u16);
+    /// 
+    /// let mut a_biguint = U256::from_str("1_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000").unwrap();
+    /// println!("Originally, a_biguint = {}", a_biguint);
+    /// assert_eq!(a_biguint.is_overflow(), false);
+    /// assert_eq!(a_biguint.is_underflow(), false);
+    /// assert_eq!(a_biguint.is_infinity(), false);
+    /// assert_eq!(a_biguint.is_undefined(), false);
+    /// assert_eq!(a_biguint.is_divided_by_zero(), false);
+    /// 
+    /// let exp = U256::from_uint(8_u8);
+    /// a_biguint.iroot_assign(&exp);
+    /// println!("After a_biguint.iroot_assign({}), a_biguint = {}.", exp, a_biguint);
+    /// assert_eq!(a_biguint.to_string(), "100000000");
+    /// assert_eq!(a_biguint.is_overflow(), false);
+    /// assert_eq!(a_biguint.is_underflow(), false);
+    /// assert_eq!(a_biguint.is_infinity(), false);
+    /// assert_eq!(a_biguint.is_undefined(), false);
+    /// assert_eq!(a_biguint.is_divided_by_zero(), false);
+    /// ```
+    /// 
+    /// # Example 2
+    /// ```
+    /// use std::str::FromStr;
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u16);
+    /// 
+    /// let mut a_biguint = U256::from_str("1_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000").unwrap();
+    /// println!("Originally, a_biguint = {}", a_biguint);
+    /// assert_eq!(a_biguint.is_overflow(), false);
+    /// assert_eq!(a_biguint.is_underflow(), false);
+    /// assert_eq!(a_biguint.is_infinity(), false);
+    /// assert_eq!(a_biguint.is_undefined(), false);
+    /// assert_eq!(a_biguint.is_divided_by_zero(), false);
+    /// 
+    /// let exp = U256::from_uint(65_u8);
+    /// a_biguint.iroot_assign(&exp);
+    /// println!("After a_biguint.iroot_assign({}), a_biguint = {}.", exp, a_biguint);
+    /// assert_eq!(a_biguint.to_string(), "9");
+    /// assert_eq!(a_biguint.is_overflow(), false);
+    /// assert_eq!(a_biguint.is_underflow(), false);
+    /// assert_eq!(a_biguint.is_infinity(), false);
+    /// assert_eq!(a_biguint.is_undefined(), false);
+    /// assert_eq!(a_biguint.is_divided_by_zero(), false);
+    /// ```
+    /// 
+    /// # Example 3
+    /// ```
+    /// use std::str::FromStr;
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u16);
+    /// 
+    /// let mut a_biguint = U256::from_str("1_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000").unwrap();
+    /// assert_eq!(a_biguint.is_overflow(), false);
+    /// assert_eq!(a_biguint.is_underflow(), false);
+    /// assert_eq!(a_biguint.is_infinity(), false);
+    /// assert_eq!(a_biguint.is_undefined(), false);
+    /// assert_eq!(a_biguint.is_divided_by_zero(), false);
+    /// 
+    /// let exp = U256::from_uint(212_u8);
+    /// a_biguint.iroot_assign(&exp);
+    /// println!("After a_biguint.iroot_assign({}), a_biguint = {}.", exp, a_biguint);
+    /// assert_eq!(a_biguint.to_string(), "2");
+    /// assert_eq!(a_biguint.is_overflow(), false);
+    /// assert_eq!(a_biguint.is_underflow(), false);
+    /// assert_eq!(a_biguint.is_infinity(), false);
+    /// assert_eq!(a_biguint.is_undefined(), false);
+    /// assert_eq!(a_biguint.is_divided_by_zero(), false);
+    /// ```
+    /// 
+    /// # Example 4
+    /// ```
+    /// use std::str::FromStr;
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u16);
+    /// 
+    /// let mut a_biguint = U256::from_str("1_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000").unwrap();
+    /// assert_eq!(a_biguint.is_overflow(), false);
+    /// assert_eq!(a_biguint.is_underflow(), false);
+    /// assert_eq!(a_biguint.is_infinity(), false);
+    /// assert_eq!(a_biguint.is_undefined(), false);
+    /// assert_eq!(a_biguint.is_divided_by_zero(), false);
+    /// 
+    /// let exp = U256::from_uint(213_u8);
+    /// a_biguint.iroot_assign(&exp);
+    /// println!("After a_biguint.iroot_assign({}), a_biguint = {}.", exp, a_biguint);
+    /// assert_eq!(a_biguint.to_string(), "1");
+    /// assert_eq!(a_biguint.is_overflow(), false);
+    /// assert_eq!(a_biguint.is_underflow(), false);
+    /// assert_eq!(a_biguint.is_infinity(), false);
+    /// assert_eq!(a_biguint.is_undefined(), false);
+    /// assert_eq!(a_biguint.is_divided_by_zero(), false);
+    /// ```
+    /// 
+    /// # Example 5
+    /// ```
+    /// use std::str::FromStr;
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u16);
+    /// 
+    /// let mut a_biguint = U256::from_str("1_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000").unwrap();
+    /// assert_eq!(a_biguint.is_overflow(), false);
+    /// assert_eq!(a_biguint.is_underflow(), false);
+    /// assert_eq!(a_biguint.is_infinity(), false);
+    /// assert_eq!(a_biguint.is_undefined(), false);
+    /// assert_eq!(a_biguint.is_divided_by_zero(), false);
+    /// 
+    /// let exp = U256::from_uint(u128::MAX).wrapping_add_uint(1_u8);
+    /// a_biguint.iroot_assign(&exp);
+    /// println!("After a_biguint.iroot_assign({}), a_biguint = {}.", exp, a_biguint);
+    /// assert_eq!(a_biguint.to_string(), "1");
+    /// assert_eq!(a_biguint.is_overflow(), false);
+    /// assert_eq!(a_biguint.is_underflow(), false);
+    /// assert_eq!(a_biguint.is_infinity(), false);
+    /// assert_eq!(a_biguint.is_undefined(), false);
+    /// assert_eq!(a_biguint.is_divided_by_zero(), false);
+    /// ```
+    /// 
+    /// # Example 6
+    /// ```
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u16);
+    /// 
+    /// let mut a_biguint = U256::zero();
+    /// println!("Originally, a_biguint = {}", a_biguint);
+    /// assert_eq!(a_biguint.is_overflow(), false);
+    /// assert_eq!(a_biguint.is_underflow(), false);
+    /// assert_eq!(a_biguint.is_infinity(), false);
+    /// assert_eq!(a_biguint.is_undefined(), false);
+    /// assert_eq!(a_biguint.is_divided_by_zero(), false);
+    /// 
+    /// let exp = U256::from_uint(6_u8);
+    /// a_biguint.iroot_assign(&exp);
+    /// println!("After a_biguint.iroot_assign_uint({}), a_biguint = {}.", exp, a_biguint);
+    /// assert_eq!(a_biguint.to_string(), "0");
+    /// assert_eq!(a_biguint.is_overflow(), false);
+    /// assert_eq!(a_biguint.is_underflow(), false);
+    /// assert_eq!(a_biguint.is_infinity(), false);
+    /// assert_eq!(a_biguint.is_undefined(), false);
+    /// assert_eq!(a_biguint.is_divided_by_zero(), false);
+    /// ```
+    /// 
+    /// # Panic Examples
+    /// ```
+    /// use std::str::FromStr;
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u16);
+    /// 
+    /// let mut _a_biguint = U256::from_str("1_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000").unwrap();
+    /// let _exp = U256::zero();
+    /// // It will panic.
+    /// // _a_biguint.iroot_assign(&_exp);
+    /// 
+    /// let mut _a_biguint = U256::one();
+    /// let _exp = U256::zero();
+    /// // It will panic.
+    /// // _a_biguint.iroot_assign(&_exp);
+    /// 
+    /// let mut _a_biguint = U256::zero();
+    /// let _exp = U256::zero();
+    /// // It will panic.
+    /// // _a_biguint.iroot_assign(&_exp);
+    /// ```
+    /// 
+    /// # Big-endian issue
+    /// It is just experimental for Big Endian CPUs. So, you are not encouraged
+    /// to use it for Big Endian CPUs for serious purpose. Only use this crate
+    /// for Big-endian CPUs with your own full responsibility.
+    pub fn iroot_assign(&mut self, exp: &Self)
+    {
+        general_calc_assign!(self, Self::iroot, exp);
+    }
+
+    // pub fn panic_free_iroot(&self, exp: &Self) -> Self
+    /// Returns the `exp`-th root of `self`, rounded down.
+    ///
+    /// # Arguments
+    /// `exp` is the power of the root of `self` and is a non-zero small-sized
+    /// unsigned integer such as `u8`, `u16`, `u32`, `u64`, and `u128`.
+    /// 
+    /// # Output
+    /// The `exp`-th root of `self` is returned if it is exactly the
+    /// `Self`-typed unsigned integer. 
+    /// Otherwise, the `Self`-typed biggest unsigned integer that is
+    /// less than the `exp`-th root of `self` is returned.
+    ///
+    /// # Panics
+    /// If `size_of::<T>() * N` <= `128`, this method may panic
+    /// or its behavior may be undefined though it may not panic.
+    /// 
+    /// # Features
+    /// - If `exp` is greater than zero and `self` is greater than 1,
+    ///   the result of this method is never greater than `self` and so
+    ///   it never causes overflow.
+    /// - If `exp` is zero and `self` is either zero or one,
+    ///   the return value will be zero and 
+    ///   the flags `UNDEFINED` of the return value will be set.
+    /// - If `exp` is zero and `self` is greater than one, the return value
+    ///   will be the maximum and the flags `UNDEFINED`, and `INFINITY`
+    ///   of the return value will be set.
+    /// - In summary, the return value and its flags will be set as follows:
+    /// 
+    /// | `exp` | `self` | return value | flags                   |
+    /// |-------|--------|--------------|-------------------------|
+    /// | 0     | 0 or 1 | 0            | `UNDEFINED`             |
+    /// | 0     | >= 2   | max          | `INFINITY`, `UNDEFINED` |
+    /// 
+    /// # Counterpart Method
+    /// If `exp` is bigger than `u128`, the method
+    /// [panic_free_iroot()](struct@BigUInt#method.panic_free_iroot)
+    /// is proper rather than this method.
+    /// 
+    /// # Example 1
+    /// ```
+    /// use std::str::FromStr;
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u32);
+    /// 
+    /// let a_biguint = U256::from_str("1_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000").unwrap();
+    /// let exp = U256::from_uint(8_u8);
+    /// let res = a_biguint.panic_free_iroot(&exp);
+    /// println!("The {}-th root of {} is {}.", exp, a_biguint, res);
+    /// assert_eq!(res.to_string(), "100000000");
+    /// assert_eq!(res.is_overflow(), false);
+    /// assert_eq!(res.is_underflow(), false);
+    /// assert_eq!(res.is_infinity(), false);
+    /// assert_eq!(res.is_undefined(), false);
+    /// assert_eq!(res.is_divided_by_zero(), false);
+    /// ```
+    /// 
+    /// # Example 2
+    /// ```
+    /// use std::str::FromStr;
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u32);
+    /// 
+    /// let a_biguint = U256::from_str("1_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000").unwrap();
+    /// let exp = U256::from_uint(65_u8);
+    /// let res = a_biguint.panic_free_iroot(&exp);
+    /// println!("The {}-th root of {} is {}.", exp, a_biguint, res);
+    /// assert_eq!(res.to_string(), "9");
+    /// assert_eq!(res.is_overflow(), false);
+    /// assert_eq!(res.is_underflow(), false);
+    /// assert_eq!(res.is_infinity(), false);
+    /// assert_eq!(res.is_undefined(), false);
+    /// assert_eq!(res.is_divided_by_zero(), false);
+    /// ```
+    /// 
+    /// # Example 3
+    /// ```
+    /// use std::str::FromStr;
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u32);
+    /// 
+    /// let a_biguint = U256::from_str("1_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000").unwrap();
+    /// let exp = U256::from_uint(212_u8);
+    /// let res = a_biguint.panic_free_iroot(&exp);
+    /// println!("The {}-th root of {} is {}.", exp, a_biguint, res);
+    /// assert_eq!(res.to_string(), "2");
+    /// assert_eq!(res.is_overflow(), false);
+    /// assert_eq!(res.is_underflow(), false);
+    /// assert_eq!(res.is_infinity(), false);
+    /// assert_eq!(res.is_undefined(), false);
+    /// assert_eq!(res.is_divided_by_zero(), false);
+    /// ```
+    /// 
+    /// # Example 4
+    /// ```
+    /// use std::str::FromStr;
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u32);
+    /// 
+    /// let a_biguint = U256::from_str("1_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000").unwrap();
+    /// let exp = U256::from_uint(213_u8);
+    /// let res = a_biguint.panic_free_iroot(&exp);
+    /// println!("The {}-th root of {} is {}.", exp, a_biguint, res);
+    /// assert_eq!(res.to_string(), "1");
+    /// assert_eq!(res.is_overflow(), false);
+    /// assert_eq!(res.is_underflow(), false);
+    /// assert_eq!(res.is_infinity(), false);
+    /// assert_eq!(res.is_undefined(), false);
+    /// assert_eq!(res.is_divided_by_zero(), false);
+    /// ```
+    /// 
+    /// # Example 5
+    /// ```
+    /// use std::str::FromStr;
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u32);
+    /// 
+    /// let a_biguint = U256::from_str("1_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000").unwrap();
+    /// let exp = U256::from_uint(u128::MAX).wrapping_add_uint(1_u8);
+    /// let res = a_biguint.panic_free_iroot(&exp);
+    /// println!("The {}-th root of {} is {}.", exp, a_biguint, res);
+    /// assert_eq!(res.to_string(), "1");
+    /// assert_eq!(res.is_overflow(), false);
+    /// assert_eq!(res.is_underflow(), false);
+    /// assert_eq!(res.is_infinity(), false);
+    /// assert_eq!(res.is_undefined(), false);
+    /// assert_eq!(res.is_divided_by_zero(), false);
+    /// ```
+    /// 
+    /// # Example 6
+    /// ```
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u32);
+    /// 
+    /// let a_biguint = U256::zero();
+    /// let exp = U256::from_uint(6_u8);
+    /// let res = a_biguint.panic_free_iroot(&exp);
+    /// println!("The {}-th root of {} is {}.", exp, a_biguint, res);
+    /// assert_eq!(res.to_string(), "0");
+    /// assert_eq!(res.is_overflow(), false);
+    /// assert_eq!(res.is_underflow(), false);
+    /// assert_eq!(res.is_infinity(), false);
+    /// assert_eq!(res.is_undefined(), false);
+    /// assert_eq!(res.is_divided_by_zero(), false);
+    /// ```
+    /// 
+    /// # Example 7
+    /// ```
+    /// use std::str::FromStr;
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u32);
+    /// 
+    /// let a_biguint = U256::from_str("1_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000").unwrap();
+    /// let exp = U256::zero();
+    /// let res = a_biguint.panic_free_iroot(&exp);
+    /// println!("The {}-th root of {} is {}.", exp, a_biguint, res);
+    /// assert_eq!(res, U256::max());
+    /// assert_eq!(res.is_overflow(), false);
+    /// assert_eq!(res.is_underflow(), false);
+    /// assert_eq!(res.is_infinity(), true);
+    /// assert_eq!(res.is_undefined(), true);
+    /// assert_eq!(res.is_divided_by_zero(), false);
+    /// ```
+    /// 
+    /// # Example 8
+    /// ```
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u32);
+    /// 
+    /// let a_biguint = U256::one();
+    /// let exp = U256::zero();
+    /// let res = a_biguint.panic_free_iroot(&exp);
+    /// println!("The {}-th root of {} is {}.", exp, a_biguint, res);
+    /// assert_eq!(res.to_string(), "0");
+    /// assert_eq!(res.is_overflow(), false);
+    /// assert_eq!(res.is_underflow(), false);
+    /// assert_eq!(res.is_infinity(), false);
+    /// assert_eq!(res.is_undefined(), true);
+    /// assert_eq!(res.is_divided_by_zero(), false);
+    /// ```
+    /// 
+    /// # Example 9
+    /// ```
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u32);
+    /// 
+    /// let a_biguint = U256::zero();
+    /// let exp = U256::zero();
+    /// let res = a_biguint.panic_free_iroot(&exp);
+    /// println!("The {}-th root of {} is {}.", exp, a_biguint, res);
+    /// assert_eq!(res.to_string(), "0");
+    /// assert_eq!(res.is_overflow(), false);
+    /// assert_eq!(res.is_underflow(), false);
+    /// assert_eq!(res.is_infinity(), false);
+    /// assert_eq!(res.is_undefined(), true);
+    /// assert_eq!(res.is_divided_by_zero(), false);
+    /// ```
+    /// 
+    /// # Big-endian issue
+    /// It is just experimental for Big Endian CPUs. So, you are not encouraged
+    /// to use it for Big Endian CPUs for serious purpose. Only use this crate
+    /// for Big-endian CPUs with your own full responsibility.
+    pub fn panic_free_iroot(&self, exp: &Self) -> Self
+    {
+        general_panic_free_calc_iroot!(self, Self::common_iroot, exp);
+    }
+
+    fn common_iroot(&self, exp: &Self) -> Self
+    {
+        if exp.gt_uint(u128::MAX)
+            { Self::one() }
+        else
+            { self.common_iroot_uint(exp.into_u128()) }
+    }
+
+    // pub fn panic_free_iroot_assign(&mut self, exp: &Self)
+    /// Calculates the `exp`-th root of `self`, rounded down,
+    /// and assigns the result back to `self`.
+    ///
+    /// # Arguments
+    /// `exp` is the power of the root of `self` and is a non-zero small-sized
+    /// unsigned integer such as `u8`, `u16`, `u32`, `u64`, and `u128`.
+    ///
+    /// # Panics
+    /// If `size_of::<T>() * N` <= `128`, this method may panic
+    /// or its behavior may be undefined though it may not panic.
+    /// 
+    /// # Features
+    /// - `self` will be the exp-th root of `self` or biggest value under the
+    ///   exp-th root of `self`.
+    /// - The result of this method is never greater than `self` and so
+    ///   never causes overflow.
+    /// - If `exp` is greater than zero and `self` is greater than 1, `self`
+    ///   will never be greater than `self` and so it never causes overflow.
+    /// - If `exp` is zero and `self` is either zero or one, `self` will be
+    ///   zero and the flags `UNDEFINED` of the return value will be set.
+    /// - If `exp` is zero and `self` is greater than one, `self` will be the
+    ///   maximum and the flags `UNDEFINED` and `INFINITY` of `self` will be
+    ///   set.
+    /// - In summary, the return value and its flags will be set as follows:
+    /// 
+    /// | `exp` | `self` | result | flags                   |
+    /// |-------|--------|--------|-------------------------|
+    /// | 0     | 0 or 1 | 0      | `UNDEFINED`             |
+    /// | 0     | >= 2   | max    | `INFINITY`, `UNDEFINED` |
+    /// 
+    /// - All the flags are historical, which means, for example, if an
+    ///   overflow occurred even once before this current operation or
+    ///   `OVERFLOW` flag is already set before this current operation,
+    ///   the `OVERFLOW` flag is not changed even if this current operation
+    ///   does not cause overflow.
+    /// 
+    /// # Counterpart Method
+    /// If `exp` is bigger than `u128`, the method
+    /// [iroot_assign()](struct@BigUInt#method.iroot_assign)
+    /// is proper rather than this method.
+    /// 
+    /// # Example 1
+    /// ```
+    /// use std::str::FromStr;
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u64);
+    /// 
+    /// let mut a_biguint = U256::from_str("1_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000").unwrap();
+    /// println!("Originally, a_biguint = {}", a_biguint);
+    /// assert_eq!(a_biguint.is_overflow(), false);
+    /// assert_eq!(a_biguint.is_underflow(), false);
+    /// assert_eq!(a_biguint.is_infinity(), false);
+    /// assert_eq!(a_biguint.is_undefined(), false);
+    /// assert_eq!(a_biguint.is_divided_by_zero(), false);
+    /// 
+    /// let exp = U256::from_uint(8_u8);
+    /// a_biguint.panic_free_iroot_assign(&exp);
+    /// println!("After a_biguint.panic_free_iroot_assign({}), a_biguint = {}.", exp, a_biguint);
+    /// assert_eq!(a_biguint.to_string(), "100000000");
+    /// assert_eq!(a_biguint.is_overflow(), false);
+    /// assert_eq!(a_biguint.is_underflow(), false);
+    /// assert_eq!(a_biguint.is_infinity(), false);
+    /// assert_eq!(a_biguint.is_undefined(), false);
+    /// assert_eq!(a_biguint.is_divided_by_zero(), false);
+    /// ```
+    /// 
+    /// # Example 2
+    /// ```
+    /// use std::str::FromStr;
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u64);
+    /// 
+    /// let mut a_biguint = U256::from_str("1_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000").unwrap();
+    /// println!("Originally, a_biguint = {}", a_biguint);
+    /// assert_eq!(a_biguint.is_overflow(), false);
+    /// assert_eq!(a_biguint.is_underflow(), false);
+    /// assert_eq!(a_biguint.is_infinity(), false);
+    /// assert_eq!(a_biguint.is_undefined(), false);
+    /// assert_eq!(a_biguint.is_divided_by_zero(), false);
+    /// 
+    /// let exp = U256::from_uint(65_u8);
+    /// a_biguint.panic_free_iroot_assign(&exp);
+    /// println!("After a_biguint.panic_free_iroot_assign({}), a_biguint = {}.", exp, a_biguint);
+    /// assert_eq!(a_biguint.to_string(), "9");
+    /// assert_eq!(a_biguint.is_overflow(), false);
+    /// assert_eq!(a_biguint.is_underflow(), false);
+    /// assert_eq!(a_biguint.is_infinity(), false);
+    /// assert_eq!(a_biguint.is_undefined(), false);
+    /// assert_eq!(a_biguint.is_divided_by_zero(), false);
+    /// ```
+    /// 
+    /// # Example 3
+    /// ```
+    /// use std::str::FromStr;
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u64);
+    /// 
+    /// let mut a_biguint = U256::from_str("1_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000").unwrap();
+    /// assert_eq!(a_biguint.is_overflow(), false);
+    /// assert_eq!(a_biguint.is_underflow(), false);
+    /// assert_eq!(a_biguint.is_infinity(), false);
+    /// assert_eq!(a_biguint.is_undefined(), false);
+    /// assert_eq!(a_biguint.is_divided_by_zero(), false);
+    /// 
+    /// let exp = U256::from_uint(212_u8);
+    /// a_biguint.panic_free_iroot_assign(&exp);
+    /// println!("After a_biguint.panic_free_iroot_assign({}), a_biguint = {}.", exp, a_biguint);
+    /// assert_eq!(a_biguint.to_string(), "2");
+    /// assert_eq!(a_biguint.is_overflow(), false);
+    /// assert_eq!(a_biguint.is_underflow(), false);
+    /// assert_eq!(a_biguint.is_infinity(), false);
+    /// assert_eq!(a_biguint.is_undefined(), false);
+    /// assert_eq!(a_biguint.is_divided_by_zero(), false);
+    /// ```
+    /// 
+    /// # Example 4
+    /// ```
+    /// use std::str::FromStr;
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u64);
+    /// 
+    /// let mut a_biguint = U256::from_str("1_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000").unwrap();
+    /// assert_eq!(a_biguint.is_overflow(), false);
+    /// assert_eq!(a_biguint.is_underflow(), false);
+    /// assert_eq!(a_biguint.is_infinity(), false);
+    /// assert_eq!(a_biguint.is_undefined(), false);
+    /// assert_eq!(a_biguint.is_divided_by_zero(), false);
+    /// 
+    /// let exp = U256::from_uint(213_u8);
+    /// a_biguint.panic_free_iroot_assign(&exp);
+    /// println!("After a_biguint.panic_free_iroot_assign({}), a_biguint = {}.", exp, a_biguint);
+    /// assert_eq!(a_biguint.to_string(), "1");
+    /// assert_eq!(a_biguint.is_overflow(), false);
+    /// assert_eq!(a_biguint.is_underflow(), false);
+    /// assert_eq!(a_biguint.is_infinity(), false);
+    /// assert_eq!(a_biguint.is_undefined(), false);
+    /// assert_eq!(a_biguint.is_divided_by_zero(), false);
+    /// ```
+    /// 
+    /// # Example 5
+    /// ```
+    /// use std::str::FromStr;
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u64);
+    /// 
+    /// let mut a_biguint = U256::from_str("1_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000").unwrap();
+    /// assert_eq!(a_biguint.is_overflow(), false);
+    /// assert_eq!(a_biguint.is_underflow(), false);
+    /// assert_eq!(a_biguint.is_infinity(), false);
+    /// assert_eq!(a_biguint.is_undefined(), false);
+    /// assert_eq!(a_biguint.is_divided_by_zero(), false);
+    /// 
+    /// let exp = U256::from_uint(u128::MAX).wrapping_add_uint(1_u8);
+    /// a_biguint.panic_free_iroot_assign(&exp);
+    /// println!("After a_biguint.panic_free_iroot_assign({}), a_biguint = {}.", exp, a_biguint);
+    /// assert_eq!(a_biguint.to_string(), "1");
+    /// assert_eq!(a_biguint.is_overflow(), false);
+    /// assert_eq!(a_biguint.is_underflow(), false);
+    /// assert_eq!(a_biguint.is_infinity(), false);
+    /// assert_eq!(a_biguint.is_undefined(), false);
+    /// assert_eq!(a_biguint.is_divided_by_zero(), false);
+    /// ```
+    /// 
+    /// # Example 6
+    /// ```
+    /// use std::str::FromStr;
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u64);
+    /// 
+    /// let mut a_biguint = U256::zero();
+    /// println!("Originally, a_biguint = {}", a_biguint);
+    /// assert_eq!(a_biguint.is_overflow(), false);
+    /// assert_eq!(a_biguint.is_underflow(), false);
+    /// assert_eq!(a_biguint.is_infinity(), false);
+    /// assert_eq!(a_biguint.is_undefined(), false);
+    /// assert_eq!(a_biguint.is_divided_by_zero(), false);
+    /// 
+    /// let exp = U256::from_uint(6_u8);
+    /// a_biguint.panic_free_iroot_assign(&exp);
+    /// println!("After a_biguint.panic_free_iroot_assign({}), a_biguint = {}.", exp, a_biguint);
+    /// assert_eq!(a_biguint.to_string(), "0");
+    /// assert_eq!(a_biguint.is_overflow(), false);
+    /// assert_eq!(a_biguint.is_underflow(), false);
+    /// assert_eq!(a_biguint.is_infinity(), false);
+    /// assert_eq!(a_biguint.is_undefined(), false);
+    /// assert_eq!(a_biguint.is_divided_by_zero(), false);
+    /// ```
+    /// 
+    /// # Example 7
+    /// ```
+    /// use std::str::FromStr;
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u64);
+    /// 
+    /// let mut a_biguint = U256::from_str("1_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000").unwrap();
+    /// assert_eq!(a_biguint.is_overflow(), false);
+    /// assert_eq!(a_biguint.is_underflow(), false);
+    /// assert_eq!(a_biguint.is_infinity(), false);
+    /// assert_eq!(a_biguint.is_undefined(), false);
+    /// assert_eq!(a_biguint.is_divided_by_zero(), false);
+    /// 
+    /// let exp = U256::zero();
+    /// a_biguint.panic_free_iroot_assign(&exp);
+    /// println!("After a_biguint.panic_free_iroot_assign({}), a_biguint = {}.", exp, a_biguint);
+    /// assert_eq!(a_biguint, U256::max());
+    /// assert_eq!(a_biguint.is_overflow(), false);
+    /// assert_eq!(a_biguint.is_underflow(), false);
+    /// assert_eq!(a_biguint.is_infinity(), true);
+    /// assert_eq!(a_biguint.is_undefined(), true);
+    /// assert_eq!(a_biguint.is_divided_by_zero(), false);
+    /// ```
+    /// 
+    /// # Example 7
+    /// ```
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u64);
+    /// 
+    /// let mut a_biguint = U256::one();
+    /// assert_eq!(a_biguint.is_overflow(), false);
+    /// assert_eq!(a_biguint.is_underflow(), false);
+    /// assert_eq!(a_biguint.is_infinity(), false);
+    /// assert_eq!(a_biguint.is_undefined(), false);
+    /// assert_eq!(a_biguint.is_divided_by_zero(), false);
+    /// 
+    /// let exp = U256::zero();
+    /// a_biguint.panic_free_iroot_assign(&exp);
+    /// println!("After a_biguint.panic_free_iroot_assign({}), a_biguint = {}.", exp, a_biguint);
+    /// assert_eq!(a_biguint.to_string(), "0");
+    /// assert_eq!(a_biguint.is_overflow(), false);
+    /// assert_eq!(a_biguint.is_underflow(), false);
+    /// assert_eq!(a_biguint.is_infinity(), false);
+    /// assert_eq!(a_biguint.is_undefined(), true);
+    /// assert_eq!(a_biguint.is_divided_by_zero(), false);
+    /// ```
+    /// 
+    /// # Example 8
+    /// ```
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u64);
+    /// 
+    /// let mut a_biguint = U256::zero();
+    /// assert_eq!(a_biguint.is_overflow(), false);
+    /// assert_eq!(a_biguint.is_underflow(), false);
+    /// assert_eq!(a_biguint.is_infinity(), false);
+    /// assert_eq!(a_biguint.is_undefined(), false);
+    /// assert_eq!(a_biguint.is_divided_by_zero(), false);
+    /// 
+    /// let exp = U256::zero();
+    /// a_biguint.panic_free_iroot_assign(&exp);
+    /// println!("After a_biguint.panic_free_iroot_assign({}), a_biguint = {}.", exp, a_biguint);
+    /// assert_eq!(a_biguint.to_string(), "0");
+    /// assert_eq!(a_biguint.is_overflow(), false);
+    /// assert_eq!(a_biguint.is_underflow(), false);
+    /// assert_eq!(a_biguint.is_infinity(), false);
+    /// assert_eq!(a_biguint.is_undefined(), true);
+    /// assert_eq!(a_biguint.is_divided_by_zero(), false);
+    /// ```
+    /// 
+    /// # Big-endian issue
+    /// It is just experimental for Big Endian CPUs. So, you are not encouraged
+    /// to use it for Big Endian CPUs for serious purpose. Only use this crate
+    /// for Big-endian CPUs with your own full responsibility.
+    pub fn panic_free_iroot_assign(&mut self, exp: &Self)
+    {
+        general_calc_assign!(self, Self::panic_free_iroot, exp);
+    }
+
+    // pub fn checked_iroot(&self, exp: &Self) -> Option<Self>
+    /// Returns the `exp`-th root of `self`, rounded down,
+    /// wrapped by emum `Some` of `Option`.
+    ///
+    /// # Arguments
+    /// `exp` is the power of the root of `self` and is a non-zero small-sized
+    /// unsigned integer such as `u8`, `u16`, `u32`, `u64`, and `u128`.
+    /// 
+    /// # Output
+    /// - If the `exp`-th root of `self` is exactly a `Self`-typed unsigned
+    ///   integer, it will be wrapped by emum `Some` of `Option` and returned.
+    /// - If the `exp`-th root of `self` is NOT exactly a `Self`-typed unsigned
+    ///   integer, the `Self`-typed biggest unsigned integer that is less than
+    ///   the `exp`-th root of `self` will be wrapped by emum `Some` of `Option`
+    ///   and returned.
+    /// - If `exp` is `0`, `None` is returned.
+    ///
+    /// # Panics
+    /// If `size_of::<T>() * N` <= `128`, this method may panic
+    /// or its behavior may be undefined though it may not panic.
+    /// 
+    /// # Features
+    /// - If `size_of::<T>() * N` <= `128`, this method may panic
+    ///   or its behavior may be undefined though it may not panic.
+    /// - The result of this method is never greater than `self` and so
+    ///   never causes overflow.
+    /// 
+    /// # Counterpart Method
+    /// If `exp` is bigger than `u128`, the method
+    /// [checked_iroot()](struct@BigUInt#method.checked_iroot)
+    /// is proper rather than this method.
+    /// 
+    /// # Example 1
+    /// ```
+    /// use std::str::FromStr;
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u128);
+    /// 
+    /// let a_biguint = U256::from_str("1_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000").unwrap();
+    /// let exp = U256::from_uint(8_u8);
+    /// let res = a_biguint.checked_iroot(&exp);
+    /// match res
+    /// {
+    ///     Some(r) => {
+    ///             println!("The {}-th root of {} is {}.", exp, a_biguint, r);
+    ///             assert_eq!(r.to_string(), "100000000");
+    ///             assert_eq!(r.is_overflow(), false);
+    ///             assert_eq!(r.is_underflow(), false);
+    ///             assert_eq!(r.is_infinity(), false);
+    ///             assert_eq!(r.is_undefined(), false);
+    ///             assert_eq!(r.is_divided_by_zero(), false);
+    ///         },
+    ///     None => { println!("Error"); }
+    /// }
+    /// ```
+    /// 
+    /// # Example 2
+    /// ```
+    /// use std::str::FromStr;
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u128);
+    /// 
+    /// let a_biguint = U256::from_str("1_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000").unwrap();
+    /// let exp = U256::from_uint(65_u8);
+    /// let res = a_biguint.checked_iroot(&exp);
+    /// match res
+    /// {
+    ///     Some(r) => {
+    ///             println!("The {}-th root of {} is {}.", exp, a_biguint, r);
+    ///             assert_eq!(r.to_string(), "9");
+    ///             assert_eq!(r.is_overflow(), false);
+    ///             assert_eq!(r.is_underflow(), false);
+    ///             assert_eq!(r.is_infinity(), false);
+    ///             assert_eq!(r.is_undefined(), false);
+    ///             assert_eq!(r.is_divided_by_zero(), false);
+    ///         },
+    ///     None => { println!("Error"); }
+    /// }
+    /// ```
+    /// 
+    /// # Example 3
+    /// ```
+    /// use std::str::FromStr;
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u128);
+    /// 
+    /// let a_biguint = U256::from_str("1_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000").unwrap();
+    /// let exp = U256::from_uint(212_u8);
+    /// let res = a_biguint.checked_iroot(&exp);
+    /// match res
+    /// {
+    ///     Some(r) => {
+    ///             println!("The {}-th root of {} is {}.", exp, a_biguint, r);
+    ///             assert_eq!(r.to_string(), "2");
+    ///             assert_eq!(r.is_overflow(), false);
+    ///             assert_eq!(r.is_underflow(), false);
+    ///             assert_eq!(r.is_infinity(), false);
+    ///             assert_eq!(r.is_undefined(), false);
+    ///             assert_eq!(r.is_divided_by_zero(), false);
+    ///         },
+    ///     None => { println!("Error"); }
+    /// }
+    /// ```
+    /// 
+    /// # Example 4
+    /// ```
+    /// use std::str::FromStr;
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u128);
+    /// 
+    /// let a_biguint = U256::from_str("1_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000").unwrap();
+    /// let exp = U256::from_uint(213_u8);
+    /// let res = a_biguint.checked_iroot(&exp);
+    /// match res
+    /// {
+    ///     Some(r) => {
+    ///             println!("The {}-th root of {} is {}.", exp, a_biguint, r);
+    ///             assert_eq!(r.to_string(), "1");
+    ///             assert_eq!(r.is_overflow(), false);
+    ///             assert_eq!(r.is_underflow(), false);
+    ///             assert_eq!(r.is_infinity(), false);
+    ///             assert_eq!(r.is_undefined(), false);
+    ///             assert_eq!(r.is_divided_by_zero(), false);
+    ///         },
+    ///     None => { println!("Error"); }
+    /// }
+    /// ```
+    /// 
+    /// # Example 5
+    /// ```
+    /// use std::str::FromStr;
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u128);
+    /// 
+    /// let a_biguint = U256::from_str("1_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000").unwrap();
+    /// let exp = U256::from_uint(u128::MAX).wrapping_add_uint(1_u8);
+    /// let res = a_biguint.checked_iroot(&exp);
+    /// match res
+    /// {
+    ///     Some(r) => {
+    ///             println!("The {}-th root of {} is {}.", exp, a_biguint, r);
+    ///             assert_eq!(r.to_string(), "1");
+    ///             assert_eq!(r.is_overflow(), false);
+    ///             assert_eq!(r.is_underflow(), false);
+    ///             assert_eq!(r.is_infinity(), false);
+    ///             assert_eq!(r.is_undefined(), false);
+    ///             assert_eq!(r.is_divided_by_zero(), false);
+    ///         },
+    ///     None => { println!("Error"); }
+    /// }
+    /// ```
+    /// 
+    /// # Example 6
+    /// ```
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u128);
+    /// 
+    /// let a_biguint = U256::zero();
+    /// let exp = U256::from_uint(6_u8);
+    /// let res = a_biguint.checked_iroot(&exp);
+    /// match res
+    /// {
+    ///     Some(r) => {
+    ///             println!("The {}-th root of {} is {}.", exp, a_biguint, r);
+    ///             assert_eq!(r.to_string(), "0");
+    ///             assert_eq!(r.is_overflow(), false);
+    ///             assert_eq!(r.is_underflow(), false);
+    ///             assert_eq!(r.is_infinity(), false);
+    ///             assert_eq!(r.is_undefined(), false);
+    ///             assert_eq!(r.is_divided_by_zero(), false);
+    ///         },
+    ///     None => { println!("Error"); },
+    /// }
+    /// ```
+    /// 
+    /// # Example 7
+    /// ```
+    /// use std::str::FromStr;
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u128);
+    /// 
+    /// let a_biguint = U256::from_str("1_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000").unwrap();
+    /// let exp = U256::zero();
+    /// let res = a_biguint.checked_iroot(&exp);
+    /// match res
+    /// {
+    ///     Some(r) => { println!("The {}-th root of {} is {}.", exp, a_biguint, r); },
+    ///     None => {
+    ///             println!("Error");
+    ///             assert_eq!(res, None);
+    ///         },
+    /// }
+    /// ```
+    /// 
+    /// # Example 8
+    /// ```
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u128);
+    /// 
+    /// let a_biguint = U256::one();
+    /// let exp = U256::zero();
+    /// let res = a_biguint.checked_iroot(&exp);
+    /// match res
+    /// {
+    ///     Some(r) => { println!("The {}-th root of {} is {}.", exp, a_biguint, r); },
+    ///     None => {
+    ///             println!("Error");
+    ///             assert_eq!(res, None);
+    ///         },
+    /// }
+    /// ```
+    /// 
+    /// # Example 9
+    /// ```
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u128);
+    /// 
+    /// let a_biguint = U256::zero();
+    /// let exp = U256::zero();
+    /// let res = a_biguint.checked_iroot(&exp);
+    /// match res
+    /// {
+    ///     Some(r) => { println!("The {}-th root of {} is {}.", exp, a_biguint, r); },
+    ///     None => {
+    ///             println!("Error");
+    ///             assert_eq!(res, None);
+    ///         },
+    /// }
+    /// ```
+    /// 
+    /// # Big-endian issue
+    /// It is just experimental for Big Endian CPUs. So, you are not encouraged
+    /// to use it for Big Endian CPUs for serious purpose. Only use this crate
+    /// for Big-endian CPUs with your own full responsibility.
+    pub fn checked_iroot(&self, exp: &Self) -> Option<Self>
+    {
+        checked_calc_div_iroot!(self, Self::iroot, exp);
+    }
+
+    // pub fn unchecked_iroot(&self, exp: &Self) -> Self
+    /// Returns the `exp`-th root of `self`, rounded down.
+    ///
+    /// # Arguments
+    /// `exp` is the power of the root of `self` and is a non-zero small-sized
+    /// unsigned integer such as `u8`, `u16`, `u32`, `u64`, and `u128`.
+    /// 
+    /// # Output
+    /// - If the `exp`-th root of `self` is exactly a `Self`-typed unsigned
+    /// integer, it will be returned.
+    /// - If the `exp`-th root of `self` is NOT exactly a `Self`-typed unsigned
+    /// integer, the `Self`-typed biggest unsigned integer that is less than
+    /// the `exp`-th root of `self` will be returned.
+    ///
+    /// # Panics
+    /// - If `size_of::<T>() * N` <= `128`, this method may panic
+    /// or its behavior may be undefined though it may not panic.
+    /// - If `exp` is `0`, it will panic.
+    /// 
+    /// # Features
+    /// - The result of this method is never greater than `self` and so
+    /// never causes overflow.
+    /// 
+    /// # Counterpart Method
+    /// If `exp` is bigger than `u128`, the method
+    /// [unchecked_root_uint()](struct@BigUInt#method.unchecked_root_uint)
+    /// is proper rather than this method.
+    /// 
+    /// # Example 1
+    /// ```
+    /// use std::str::FromStr;
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u8);
+    /// 
+    /// let a_biguint = U256::from_str("1_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000").unwrap();
+    /// let exp = U256::from_uint(8_u8);
+    /// let res = a_biguint.unchecked_iroot(&exp);
+    /// println!("The {}-th root of {} is {}.", exp, a_biguint, res);
+    /// assert_eq!(res.to_string(), "100000000");
+    /// assert_eq!(res.is_overflow(), false);
+    /// assert_eq!(res.is_underflow(), false);
+    /// assert_eq!(res.is_infinity(), false);
+    /// assert_eq!(res.is_undefined(), false);
+    /// assert_eq!(res.is_divided_by_zero(), false);
+    /// ```
+    /// 
+    /// # Example 2
+    /// ```
+    /// use std::str::FromStr;
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u8);
+    /// 
+    /// let a_biguint = U256::from_str("1_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000").unwrap();
+    /// let exp = U256::from_uint(65_u8);
+    /// let res = a_biguint.unchecked_iroot(&exp);
+    /// println!("The {}-th root of {} is {}.", exp, a_biguint, res);
+    /// assert_eq!(res.to_string(), "9");
+    /// assert_eq!(res.is_overflow(), false);
+    /// assert_eq!(res.is_underflow(), false);
+    /// assert_eq!(res.is_infinity(), false);
+    /// assert_eq!(res.is_undefined(), false);
+    /// assert_eq!(res.is_divided_by_zero(), false);
+    /// ```
+    /// 
+    /// # Example 3
+    /// ```
+    /// use std::str::FromStr;
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u8);
+    /// 
+    /// let a_biguint = U256::from_str("1_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000").unwrap();
+    /// let exp = U256::from_uint(212_u8);
+    /// let res = a_biguint.unchecked_iroot(&exp);
+    /// println!("The {}-th root of {} is {}.", exp, a_biguint, res);
+    /// assert_eq!(res.to_string(), "2");
+    /// assert_eq!(res.is_overflow(), false);
+    /// assert_eq!(res.is_underflow(), false);
+    /// assert_eq!(res.is_infinity(), false);
+    /// assert_eq!(res.is_undefined(), false);
+    /// assert_eq!(res.is_divided_by_zero(), false);
+    /// ```
+    /// 
+    /// # Example 4
+    /// ```
+    /// use std::str::FromStr;
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u8);
+    /// 
+    /// let a_biguint = U256::from_str("1_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000").unwrap();
+    /// let exp = U256::from_uint(213_u8);
+    /// let res = a_biguint.unchecked_iroot(&exp);
+    /// println!("The {}-th root of {} is {}.", exp, a_biguint, res);
+    /// assert_eq!(res.to_string(), "1");
+    /// assert_eq!(res.is_overflow(), false);
+    /// assert_eq!(res.is_underflow(), false);
+    /// assert_eq!(res.is_infinity(), false);
+    /// assert_eq!(res.is_undefined(), false);
+    /// assert_eq!(res.is_divided_by_zero(), false);
+    /// ```
+    /// 
+    /// # Example 5
+    /// ```
+    /// use std::str::FromStr;
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u8);
+    /// 
+    /// let a_biguint = U256::from_str("1_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000").unwrap();
+    /// let exp = U256::from_uint(u128::MAX).wrapping_add_uint(1_u8);
+    /// let res = a_biguint.unchecked_iroot(&exp);
+    /// println!("The {}-th root of {} is {}.", exp, a_biguint, res);
+    /// assert_eq!(res.to_string(), "1");
+    /// assert_eq!(res.is_overflow(), false);
+    /// assert_eq!(res.is_underflow(), false);
+    /// assert_eq!(res.is_infinity(), false);
+    /// assert_eq!(res.is_undefined(), false);
+    /// assert_eq!(res.is_divided_by_zero(), false);
+    /// ```
+    /// 
+    /// # Example 6
+    /// ```
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u8);
+    /// 
+    /// let a_biguint = U256::zero();
+    /// let exp = U256::from_uint(6_u8);
+    /// let res = a_biguint.unchecked_iroot(&exp);
+    /// println!("The {}-th root of {} is {}.", exp, a_biguint, res);
+    /// assert_eq!(res.to_string(), "0");
+    /// assert_eq!(res.is_overflow(), false);
+    /// assert_eq!(res.is_underflow(), false);
+    /// assert_eq!(res.is_infinity(), false);
+    /// assert_eq!(res.is_undefined(), false);
+    /// assert_eq!(res.is_divided_by_zero(), false);
+    /// ```
+    /// 
+    /// # Panic Examples
+    /// ```
+    /// use std::str::FromStr;
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u8);
+    /// 
+    /// let _a_biguint = U256::from_str("1_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000").unwrap();
+    /// let _exp = U256::zero();
+    /// // It will panic.
+    /// // let res = _a_biguint.unchecked_iroot(&_exp);
+    /// 
+    /// let _a_biguint = U256::one();
+    /// let _exp = U256::zero();
+    /// // It will panic.
+    /// // let res = _a_biguint.unchecked_iroot(&_exp);
+    /// 
+    /// let _a_biguint = U256::zero();
+    /// let _exp = U256::zero();
+    /// // It will panic.
+    /// // let res = _a_biguint.unchecked_iroot(&_exp);
+    /// ```
+    /// 
+    /// # Big-endian issue
+    /// It is just experimental for Big Endian CPUs. So, you are not encouraged
+    /// to use it for Big Endian CPUs for serious purpose. Only use this crate
+    /// for Big-endian CPUs with your own full responsibility.
+    #[inline]
+    pub fn unchecked_iroot(&self, exp: &Self) -> Self
+    {
+        self.iroot(exp)
+    }
+
+    #[inline]
+    pub fn sqrt(&self) -> Self
+    {
+        self.common_iroot_uint(2_u8)
+    }
+
     // pub fn ilog(&self, base: Self) -> Self
     /// Calculates the logarithm of the number with respect to a `base`.
     ///
@@ -42467,134 +44307,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
         self.unchecked_ilog_uint(10_u8)
     }
 
-    // pub fn wrapping_pow() -> Self
-    // pub fn wrapping_pow_assign()
-    // pub fn overflowing_pow() -> (Self, bool)
-    // pub fn overflowing_pow_assign() -> bool
-    // pub fn checked_pow() -> Option<Self>
-    // pub fn unchecked_pow() -> Self
-    // pub fn saturating_pow() -> Self
-    // pub fn saturating_pow_assign()
 
-    pub fn sqrt(&self) -> Self
-    {
-        let mut adder;
-        let mut highest = (Self::size_in_bits() - self.leading_zeros() as usize) >> 1;
-        let mut high;
-        let mut low;
-        let mut mid;
-        let mut res = Self::zero();
-        let mut sum;
-        let maximum = highest - 1;
-        loop
-        {
-            high = highest;
-            low = 0;
-            if high == 0
-            {
-                return res;
-            }
-            else    // if high > 0
-            {
-                loop
-                {
-                    mid = (high + low) >> 1;
-                    adder = Self::generate_check_bits_(mid);
-                    sum = res.wrapping_add(&adder);
-                    let (sq, b_overflow) = sum.overflowing_mul(&sum);
-                    if !b_overflow && (sq < *self)
-                    {
-                        if mid == maximum
-                        {
-                            res = sum;
-                            break;
-                        }
-                        else if mid == low
-                        { 
-                            res = sum;
-                            if mid == 0
-                                { highest = 0; }
-                            break;
-                        }
-                        low = mid;
-                    }
-                    else if b_overflow || (sq > *self)
-                    {
-                        if mid == low
-                        { 
-                            highest = mid;
-                            break;
-                        }
-                        high = mid;
-                    }
-                    else    // if sq == self
-                    {
-                        return sum;
-                    }
-                }
-            }
-        }
-    }
-
-    pub fn root(self, exp: Self) -> Self
-    {
-        let mut adder;
-        let mut highest = Self::from_uint(Self::size_in_bits() - self.leading_zeros() as usize).wrapping_add(&exp).into_usize();
-        let mut high;
-        let mut low;
-        let mut mid;
-        let mut res = Self::zero();
-        let mut sum;
-        let maximum = highest - 1;
-        loop
-        {
-            high = highest;
-            low = 0;
-            if high == 0
-            {
-                return res;
-            }
-            else    // if high > 0
-            {
-                loop
-                {
-                    mid = (high + low) >> 1;
-                    adder = Self::generate_check_bits_(mid);
-                    sum = res.wrapping_add(&adder);
-                    let (sq, b_overflow) = sum.overflowing_pow(&exp);
-                    if !b_overflow && (sq < self)
-                    {
-                        if mid == maximum
-                        {
-                            res = sum;
-                            break;
-                        }
-                        else if mid == low
-                        { 
-                            res = sum;
-                            if mid == 0
-                                { highest = 0; }
-                            break;
-                        }
-                        low = mid;
-                    }
-                    else if b_overflow || (sq > self)
-                    {
-                        if mid == low
-                        { 
-                            highest = mid;
-                            break;
-                        }
-                        high = mid;
-                    }
-                    else    // if sq == self
-                    {
-                        return sum;
-                    }
-                }
-            }
-        }
-    }
 
 
     // pub fn midpoint(&self, rhs: &Self) -> Self
