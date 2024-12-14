@@ -11,9 +11,9 @@
 //! unsigned integral data types used in a lot of modules of the crate cryptocol.
 
 // #![warn(missing_docs)]
-// #![warn(missing_doc_code_examples)]
+// #![warn(rustdoc::missing_doc_code_examples)]
 #![allow(missing_docs)]
-#![allow(missing_doc_code_examples)]
+#![allow(rustdoc::missing_doc_code_examples)]
 
 use crate::number::{ ShortUnion, IntUnion, LongUnion, LongerUnion, SizeUnion };
 

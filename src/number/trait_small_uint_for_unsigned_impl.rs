@@ -7,7 +7,7 @@
 // except according to those terms.
 
 // #![warn(missing_docs)]
-// #![warn(missing_doc_code_examples)]
+// #![warn(rustdoc::missing_doc_code_examples)]
 #![allow(missing_docs)]
 #![allow(rustdoc::missing_doc_code_examples)]
 

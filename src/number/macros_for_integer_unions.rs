@@ -11,7 +11,7 @@
 //! __These unions are for segmentation.__
 
 // #![warn(missing_docs)]
-// #![warn(missing_doc_code_examples)]
+// #![warn(rustdoc::missing_doc_code_examples)]
 #![allow(missing_docs)]
 #![allow(rustdoc::missing_doc_code_examples)]
 
@@ -13987,10 +13987,30 @@ macro_rules! operators_for_integer_unions_impl {
             /// and is used by operator `==`.
             /// [Read more](https://doc.rust-lang.org/std/cmp/trait.PartialEq.html#tymethod.eq)
             /// 
-            /// # Example
+            /// # Example 1
             /// ```
-            /// // Todo
+            /// use cryptocol::number::IntUnion;
+            /// let a = IntUnion::new_with_signed(454688546_i32);
+            /// let b = IntUnion::new_with_signed(454688546_i32);
+            /// if a == b
+            ///     { println!("Equal"); }
+            /// else
+            ///     { println!("Different"); }
+            /// assert!(a == b);
+            /// ````
+            /// 
+            /// # Example 2
             /// ```
+            /// use cryptocol::number::IntUnion;
+            /// let a = IntUnion::new_with_signed(454688546_i32);
+            /// let b = IntUnion::new_with_signed(-454688546_i32);
+            /// if a == b
+            ///     { println!("Equal"); }
+            /// else
+            ///     { println!("Different"); }
+            /// assert!(a != b);
+            /// ````
+            /// 
             #[inline]
             fn eq(&self, other: &Self) -> bool
             {

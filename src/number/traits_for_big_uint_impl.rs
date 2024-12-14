@@ -9,9 +9,9 @@
 //! The module that contains implementation of external traits.
 
 //#![warn(missing_docs)]
-//#![warn(missing_doc_code_examples)]
+//#![warn(rustdoc::missing_doc_code_examples)]
 #![allow(missing_docs)]
-#![allow(missing_doc_code_examples)]
+#![allow(rustdoc::missing_doc_code_examples)]
 
 use std::fmt::{ self, Display, Formatter, Debug };
 use std::mem::size_of_val;

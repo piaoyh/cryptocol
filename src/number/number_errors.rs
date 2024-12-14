@@ -10,7 +10,7 @@
 //! operation.
 
 #![allow(missing_docs)]
-#![allow(missing_doc_code_examples)]
+#![allow(rustdoc::missing_doc_code_examples)]
 
 /// In operation of BigUInt, BigInt, and LargeInt, errors can occur. In this
 /// case, the enumerator `NumberErr` will indicate what kind of error occurred.

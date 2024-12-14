@@ -9,7 +9,7 @@
 //! The module that contains a random number generator struct
 
 #![warn(missing_docs)]
-#![warn(missing_doc_code_examples)]
+#![warn(rustdoc::missing_doc_code_examples)]
 
 
 use std::fmt::{ Debug, Display };
@@ -1595,7 +1595,7 @@ impl<GenFunc: Random_Engine + 'static, const COUNT: u128> Random_Generic<GenFunc
     /// use cryptocol::random::Random_SHA2_512;
     /// let mut rand_sha2_512 = Random_SHA2_512::new();
     /// for i in 0..10
-    ///     { println!("{} Random number (Random_SHA2_512) = {}", i, rand_sha2_512.random_uint::<u128>());
+    ///     { println!("{} Random number (Random_SHA2_512) = {}", i, rand_sha2_512.random_uint::<u128>()); }
     /// ```
     /// 
     /// # Example 12 for Random_Generic

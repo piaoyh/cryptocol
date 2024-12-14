@@ -7,7 +7,7 @@
 // except according to those terms.
 
 #![allow(missing_docs)]
-#![allow(missing_doc_code_examples)]
+#![allow(rustdoc::missing_doc_code_examples)]
 #![allow(non_camel_case_types)]
 
 

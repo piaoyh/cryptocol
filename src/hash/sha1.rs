@@ -9,7 +9,7 @@
 //! The module that contains SHA1 hash algorithm
 
 #![warn(missing_docs)]
-#![warn(missing_doc_code_examples)]
+#![warn(rustdoc::missing_doc_code_examples)]
 
 use std::ptr::copy_nonoverlapping;
 use std::slice::from_raw_parts;

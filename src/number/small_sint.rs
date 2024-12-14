@@ -10,9 +10,9 @@
 //! integral data types for the counter part of uint.
 
 // #![warn(missing_docs)]
-// #![warn(missing_doc_code_examples)]
+// #![warn(rustdoc::missing_doc_code_examples)]
 #![allow(missing_docs)]
-#![allow(missing_doc_code_examples)]
+#![allow(rustdoc::missing_doc_code_examples)]
 
 use std::fmt::Debug;
 use std::mem::size_of;

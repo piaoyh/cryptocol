@@ -129,7 +129,7 @@
 //! - For `BigUInt`, read [here](struct@BigUInt#quick-start).
 // ! - For `BigSInt`, read [here](struct@BigSInt#quick-start).
 // ! - For `LargeInt`, read [here](struct@LargeInt#quick-start).
-//! 
+
 
 pub mod small_uint;
 pub mod small_sint;
@@ -154,6 +154,7 @@ pub mod trait_small_uint_for_integer_unions_impl;
 /// Implementaion of various traits for BigUInt
 pub mod traits_for_big_uint_impl;
 
+
 pub use small_uint::*;
 pub use small_sint::*;
 pub use short_union::*;
@@ -176,4 +177,3 @@ pub mod traits_for_big_uint_for_big_endian_impl;
 
 #[cfg(target_endian = "big")]
 pub use traits_for_big_uint_for_big_endian_impl::*;
-
