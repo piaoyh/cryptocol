@@ -14361,6 +14361,13 @@ macro_rules! operators_for_integer_unions_impl {
         {
             type Output = Self;
 
+            /// The addition operator +.
+            /// 
+            /// # Example 1 for ShortUinion
+            /// ```
+            /// 
+            /// ```
+            /// 
             #[inline]
             fn add(self, rhs: Self) -> Self
             {

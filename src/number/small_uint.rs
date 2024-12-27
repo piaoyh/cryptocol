@@ -148,6 +148,7 @@ use crate::number::{ ShortUnion, IntUnion, LongUnion, LongerUnion, SizeUnion };
 /// It is just experimental for big-endian CPUs. So, you are not encouraged
 /// to use it for big-endian CPUs for serious purpose.
 /// Only use this crate for big-endian CPUs with your own full responsibility.
+
 pub trait SmallUInt: Copy + Clone + Sized //+ Display + Debug + ToString
 {
     /***** ADDITION *****/
@@ -22107,8 +22108,14 @@ pub trait SmallUInt: Copy + Clone + Sized //+ Display + Debug + ToString
     fn test_miller_rabin(self, a: Self) -> bool;
 
     // fn is_prime_using_miller_rabin(self, repetition: usize) -> bool
-    /// Tests a `SmallUInt`-type object to find whether or not it is a
-    /// primne number.
+    /// Tests a `SmallUInt`-type object such as u8, u16, u32, u64, u128, and
+    /// usize to find whether or not it is a primne number.
+    /// 
+    /// # Arguments
+    /// The argument `repetition` defines how many times it tests whether the
+    /// `SmallUInt`-type object such as u8, u16, u32, u64, u128, and usize is
+    /// a prime number. Usually, `5` is given to repetition` in order to
+    /// achieve 99.9% accuracy.
     /// 
     /// # Output
     /// It returns `true` if it is a primne number.
@@ -22116,30 +22123,26 @@ pub trait SmallUInt: Copy + Clone + Sized //+ Display + Debug + ToString
     /// 
     /// # Features
     /// - It uses the method `test_miller_rabin()` which uses
-    /// [Miller Rabin algorithm](https://en.wikipedia.org/wiki/Miller%E2%80%93Rabin_primality_test).
-    /// - If this test results in composite number, the tested number is surely a
-    /// composite number. If this test results in prime number, the probability
-    /// that the tested number is not a prime number is (1/4) ^ `repeatition`.
-    /// So, if `repeatition` is two and it results in prime number the
-    /// probability that the tested number is not a prime number is
-    /// 1/16 (= 1/4 * 1/4). Therefore, if you test any number with `repeatition`
-    /// (= 5) and they all result in a prime number, it is 99.9% that
-    /// the number is a prime number.
+    ///   [Miller Rabin algorithm](https://en.wikipedia.org/wiki/Miller%E2%80%93Rabin_primality_test).
+    /// - If this test results in composite number, the tested number is surely
+    ///   a composite number. If this test results in prime number,
+    ///   the probability that the tested number is not a prime number is
+    ///   (1/4) ^ `repeatition`.
+    ///   So, if `repeatition` is two and it results in prime number the
+    ///   probability that the tested number is not a prime number is
+    ///   1/16 (= 1/4 * 1/4). Therefore, if you test any number with
+    ///   `repeatition` (= 5) and they all result in a prime number,
+    ///   it is 99.9% that the number is a prime number.
     /// - However, for performance, if the number is less than 10000,
-    /// it does not use Miller-Rabin alogrithm but deterministic algorithm
-    /// so that the argument `repetition` is meaningless.
+    ///   it does not use Miller-Rabin alogrithm but deterministic algorithm
+    ///   so that the argument `repetition` is meaningless.
     /// - If the number is less than u32::MAX (= 4294967295_u32),
-    /// 3 is enough for `repetition` for 100% certainty for determination of
-    /// prime number. This method tests the number with 2, 7, and 61.
+    ///   3 is enough for `repetition` for 100% certainty for determination of
+    ///   prime number. This method tests the number with 2, 7, and 61.
     /// - If the number is less than u64::MAX (= 18446744073709551615_u64),
-    /// 7 is enough for `repetition` for 100% certainty for determination of
-    /// prime number. This method tests the number with 2, 325, 9375, 28178,
-    /// 450775, 9780504, and 1795265022.
-    /// 
-    /// # Arguments
-    /// The argument `repetition` defines how many times it tests whether the
-    /// generated random number is prime. Usually, `repetition` is given to be
-    /// 5 to have 99.9% accuracy.
+    ///   7 is enough for `repetition` for 100% certainty for determination of
+    ///   prime number. This method tests the number with 2, 325, 9375, 28178,
+    ///   450775, 9780504, and 1795265022.
     /// 
     /// # Example 1 for u8
     /// ```
@@ -22801,8 +22804,6 @@ pub trait SmallUInt: Copy + Clone + Sized //+ Display + Debug + ToString
     /// It is just experimental for Big Endian CPUs. So, you are not encouraged
     /// to use it for Big Endian CPUs for serious purpose. Only use this crate
     /// for Big-endian CPUs with your own full responsibility.
-    /// Tests a `SmallUInt`-type object to find whether or not it is a
-    /// prime number.
     fn is_prime_using_miller_rabin(self, repetition: usize) -> bool;
 
     // fn reverse_bits(self) -> Self;
