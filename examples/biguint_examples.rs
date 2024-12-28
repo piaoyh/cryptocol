@@ -27544,23 +27544,21 @@ fn biguint_is_prime_using_miller_rabin()
 fn biguint_bit_operation_main()
 {
     biguint_shift_left();
-    println!("biguint_bit_operation_main()");
-    use cryptocol::define_utypes_with;
-    
-    define_utypes_with!(u128);
-    
-    let mut a = U512::from_str_radix("11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101", 2).unwrap();
-    let b = U512::from_str_radix("11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000", 2).unwrap();
-    a.and_assign(&b);
-    println!("a = {}", a.to_string_with_radix(2).unwrap());
-    assert_eq!(a, U512::from_str_radix("11110000000000001100000000000011100010000001000110101010000000001111000000000000110000000000001110001000000100011010101000000000111100000000000011000000000000111000100000010001101010100000000011110000000000001100000000000011100010000001000110101010000000001111000000000000110000000000001110001000000100011010101000000000", 2).unwrap());
-
-    let mut a = U512::from_str_radix("11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101", 2).unwrap();
-    let b = U512::zero();
-    a.and_assign(&b);
-    println!("a = {}", a.to_string_with_radix(2).unwrap());
-    assert_eq!(a, U512::zero());
-    println!("---------------------------");
+    biguint_shift_left_assign();
+    biguint_checked_shift_left();
+    biguint_unchecked_shift_left();
+    biguint_shift_right();
+    biguint_shift_right_assign();
+    biguint_checked_shift_right();
+    biguint_unchecked_shift_right();
+    biguint_rotate_left();
+    biguint_rotate_left_assign();
+    biguint_checked_rotate_left();
+    biguint_unchecked_rotate_left();
+    biguint_rotate_right();
+    biguint_rotate_right_assign();
+    biguint_checked_rotate_right();
+    biguint_unchecked_rotatet_right();
 }
 
 fn biguint_shift_left()
@@ -27570,13 +27568,421 @@ fn biguint_shift_left()
     define_utypes_with!(u8);
 
     let a_biguint = U256::from_str_radix("11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101", 2).unwrap();
-    let res = a_biguint.shift_left(3_u8);
-    assert_eq!(res.to_string_with_radix_and_stride(2, 8), "11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010010_10101000");
+    let n = 3_u8;
+    let res = a_biguint.shift_left(n);
+    println!("{} << {} = {}", a_biguint.to_string_with_radix_and_stride(2, 8).unwrap(), n, res.to_string_with_radix_and_stride(2, 8).unwrap());
+    assert_eq!(res.to_string_with_radix_and_stride(2, 8).unwrap(), "11111000_00000111_10000000_01111110_01100001_10011101_01010010_10101111_11111000_00000111_10000000_01111110_01100001_10011101_01010010_10101111_11111000_00000111_10000000_01111110_01100001_10011101_01010010_10101111_11111000_00000111_10000000_01111110_01100001_10011101_01010010_10101000");
     assert_eq!(res.is_overflow(), true);
     assert_eq!(res.is_underflow(), false);
     assert_eq!(res.is_infinity(), false);
-    assert_eq!(res.is_undefined(), true);
+    assert_eq!(res.is_undefined(), false);
     assert_eq!(res.is_divided_by_zero(), false);
+
+    let a_biguint = U256::from_str_radix("00001111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101", 2).unwrap();
+    let n = 4_u8;
+    let res = a_biguint.shift_left(n);
+    println!("{} << {} = {}", a_biguint.to_string_with_radix_and_stride(2, 8).unwrap(), n, res.to_string_with_radix_and_stride(2, 8).unwrap());
+    assert_eq!(res.to_string_with_radix_and_stride(2, 8).unwrap(), "11110000_00001111_00000000_11111100_11000011_00111010_10100101_01011111_11110000_00001111_00000000_11111100_11000011_00111010_10100101_01011111_11110000_00001111_00000000_11111100_11000011_00111010_10100101_01011111_11110000_00001111_00000000_11111100_11000011_00111010_10100101_01010000");
+    assert_eq!(res.is_overflow(), false);
+    assert_eq!(res.is_underflow(), false);
+    assert_eq!(res.is_infinity(), false);
+    assert_eq!(res.is_undefined(), false);
+    assert_eq!(res.is_divided_by_zero(), false);
+
+    let a_biguint = U256::from_str_radix("11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101", 2).unwrap();
+    let n = 128_u8;
+    let res = a_biguint.shift_left(n);
+    println!("{} << {} = {}", a_biguint.to_string_with_radix_and_stride(2, 8).unwrap(), n, res.to_string_with_radix_and_stride(2, 8).unwrap());
+    assert_eq!(res.to_string_with_radix_and_stride(2, 8).unwrap(), "11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000");
+    assert_eq!(res.is_overflow(), true);
+    assert_eq!(res.is_underflow(), false);
+    assert_eq!(res.is_infinity(), false);
+    assert_eq!(res.is_undefined(), false);
+    assert_eq!(res.is_divided_by_zero(), false);
+
+    let a_biguint = U256::from_str_radix("00001111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101", 2).unwrap();
+    let n = 256_u16;
+    let res = a_biguint.shift_left(n);
+    println!("{} << {} = {}", a_biguint.to_string_with_radix_and_stride(2, 8).unwrap(), n, res.to_string_with_radix_and_stride(2, 8).unwrap());
+    assert_eq!(res.to_string(), "0");
+    assert_eq!(res.is_overflow(), true);
+    assert_eq!(res.is_underflow(), false);
+    assert_eq!(res.is_infinity(), false);
+    assert_eq!(res.is_undefined(), false);
+    assert_eq!(res.is_divided_by_zero(), false);
+
+    let a_biguint = U256::from_str_radix("11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101", 2).unwrap();
+    let n = 512_u16;
+    let res = a_biguint.shift_left(n);
+    println!("{} << {} = {}", a_biguint.to_string_with_radix_and_stride(2, 8).unwrap(), n, res.to_string_with_radix_and_stride(2, 8).unwrap());
+    assert_eq!(res.to_string(), "0");
+    assert_eq!(res.is_overflow(), true);
+    assert_eq!(res.is_underflow(), false);
+    assert_eq!(res.is_infinity(), false);
+    assert_eq!(res.is_undefined(), false);
+    assert_eq!(res.is_divided_by_zero(), false);
+    println!("---------------------------");
+}
+
+fn biguint_shift_left_assign()
+{
+    println!("biguint_shift_left_assign()");
+    use cryptocol::define_utypes_with;
+    define_utypes_with!(u16);
+
+    let mut a_biguint = U256::from_str_radix("11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101", 2).unwrap();
+    println!("Originally, a_biguint = {}", a_biguint.to_string_with_radix_and_stride(2, 8).unwrap());
+    assert_eq!(a_biguint.is_overflow(), false);
+    assert_eq!(a_biguint.is_underflow(), false);
+    assert_eq!(a_biguint.is_infinity(), false);
+    assert_eq!(a_biguint.is_undefined(), false);
+    assert_eq!(a_biguint.is_divided_by_zero(), false);
+
+    let n = 3_u8;
+    a_biguint.shift_left_assign(n);
+    println!("After a_biguint.shift_left_assign(), a_biguint = {}.", a_biguint.to_string_with_radix_and_stride(2, 8).unwrap());
+    assert_eq!(a_biguint.to_string_with_radix_and_stride(2, 8).unwrap(), "11111000_00000111_10000000_01111110_01100001_10011101_01010010_10101111_11111000_00000111_10000000_01111110_01100001_10011101_01010010_10101111_11111000_00000111_10000000_01111110_01100001_10011101_01010010_10101111_11111000_00000111_10000000_01111110_01100001_10011101_01010010_10101000");
+    assert_eq!(a_biguint.is_overflow(), true);
+    assert_eq!(a_biguint.is_underflow(), false);
+    assert_eq!(a_biguint.is_infinity(), false);
+    assert_eq!(a_biguint.is_undefined(), false);
+    assert_eq!(a_biguint.is_divided_by_zero(), false);
+
+    let mut a_biguint = U256::from_str_radix("00001111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101", 2).unwrap();
+    println!("Originally, a_biguint = {}", a_biguint.to_string_with_radix_and_stride(2, 8).unwrap());
+    assert_eq!(a_biguint.is_overflow(), false);
+    assert_eq!(a_biguint.is_underflow(), false);
+    assert_eq!(a_biguint.is_infinity(), false);
+    assert_eq!(a_biguint.is_undefined(), false);
+    assert_eq!(a_biguint.is_divided_by_zero(), false);
+
+    let n = 4_u8;
+    a_biguint.shift_left_assign(n);
+    println!("After a_biguint.shift_left_assign(), a_biguint = {}.", a_biguint.to_string_with_radix_and_stride(2, 8).unwrap());
+    assert_eq!(a_biguint.to_string_with_radix_and_stride(2, 8).unwrap(), "11110000_00001111_00000000_11111100_11000011_00111010_10100101_01011111_11110000_00001111_00000000_11111100_11000011_00111010_10100101_01011111_11110000_00001111_00000000_11111100_11000011_00111010_10100101_01011111_11110000_00001111_00000000_11111100_11000011_00111010_10100101_01010000");
+    assert_eq!(a_biguint.is_overflow(), false);
+    assert_eq!(a_biguint.is_underflow(), false);
+    assert_eq!(a_biguint.is_infinity(), false);
+    assert_eq!(a_biguint.is_undefined(), false);
+    assert_eq!(a_biguint.is_divided_by_zero(), false);
+
+    let mut a_biguint = U256::from_str_radix("11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101", 2).unwrap();
+    println!("Originally, a_biguint = {}", a_biguint.to_string_with_radix_and_stride(2, 8).unwrap());
+    assert_eq!(a_biguint.is_overflow(), false);
+    assert_eq!(a_biguint.is_underflow(), false);
+    assert_eq!(a_biguint.is_infinity(), false);
+    assert_eq!(a_biguint.is_undefined(), false);
+    assert_eq!(a_biguint.is_divided_by_zero(), false);
+
+    let n = 128_u8;
+    a_biguint.shift_left_assign(n);
+    println!("After a_biguint.shift_left_assign(), a_biguint = {}.", a_biguint.to_string_with_radix_and_stride(2, 8).unwrap());
+    assert_eq!(a_biguint.to_string_with_radix_and_stride(2, 8).unwrap(), "11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000");
+    assert_eq!(a_biguint.is_overflow(), true);
+    assert_eq!(a_biguint.is_underflow(), false);
+    assert_eq!(a_biguint.is_infinity(), false);
+    assert_eq!(a_biguint.is_undefined(), false);
+    assert_eq!(a_biguint.is_divided_by_zero(), false);
+
+    let mut a_biguint = U256::from_str_radix("00001111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101", 2).unwrap();
+    println!("Originally, a_biguint = {}", a_biguint.to_string_with_radix_and_stride(2, 8).unwrap());
+    assert_eq!(a_biguint.is_overflow(), false);
+    assert_eq!(a_biguint.is_underflow(), false);
+    assert_eq!(a_biguint.is_infinity(), false);
+    assert_eq!(a_biguint.is_undefined(), false);
+    assert_eq!(a_biguint.is_divided_by_zero(), false);
+
+    let n = 256_u16;
+    a_biguint.shift_left_assign(n);
+    println!("After a_biguint.shift_left_assign(), a_biguint = {}.", a_biguint.to_string_with_radix_and_stride(2, 8).unwrap());
+    assert_eq!(a_biguint.to_string(), "0");
+    assert_eq!(a_biguint.is_overflow(), true);
+    assert_eq!(a_biguint.is_underflow(), false);
+    assert_eq!(a_biguint.is_infinity(), false);
+    assert_eq!(a_biguint.is_undefined(), false);
+    assert_eq!(a_biguint.is_divided_by_zero(), false);
+
+    let mut a_biguint = U256::from_str_radix("11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101", 2).unwrap();
+    println!("Originally, a_biguint = {}", a_biguint.to_string_with_radix_and_stride(2, 8).unwrap());
+    assert_eq!(a_biguint.is_overflow(), false);
+    assert_eq!(a_biguint.is_underflow(), false);
+    assert_eq!(a_biguint.is_infinity(), false);
+    assert_eq!(a_biguint.is_undefined(), false);
+    assert_eq!(a_biguint.is_divided_by_zero(), false);
+
+    let n = 512_u16;
+    a_biguint.shift_left_assign(n);
+    println!("After a_biguint.shift_left_assign(), a_biguint = {}.", a_biguint.to_string_with_radix_and_stride(2, 8).unwrap());
+    assert_eq!(a_biguint.to_string(), "0");
+    assert_eq!(a_biguint.is_overflow(), true);
+    assert_eq!(a_biguint.is_underflow(), false);
+    assert_eq!(a_biguint.is_infinity(), false);
+    assert_eq!(a_biguint.is_undefined(), false);
+    assert_eq!(a_biguint.is_divided_by_zero(), false);
+    println!("---------------------------");
+}
+
+fn biguint_checked_shift_left()
+{
+    println!("biguint_checked_shift_left()");
+    use cryptocol::define_utypes_with;
+    define_utypes_with!(u32);
+
+    let a_biguint = U256::from_str_radix("11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101", 2).unwrap();
+    let n = 3_u8;
+    let res = a_biguint.checked_shift_left(n);
+    match res
+    {
+        Some(r) => {
+                println!("{} << {} = {}", r.to_string_with_radix_and_stride(2, 8).unwrap(), n, r.to_string_with_radix_and_stride(2, 8).unwrap());
+                assert_eq!(r.to_string_with_radix_and_stride(2, 8).unwrap(), "11111000_00000111_10000000_01111110_01100001_10011101_01010010_10101111_11111000_00000111_10000000_01111110_01100001_10011101_01010010_10101111_11111000_00000111_10000000_01111110_01100001_10011101_01010010_10101111_11111000_00000111_10000000_01111110_01100001_10011101_01010010_10101000");
+                assert_eq!(r.is_overflow(), true);
+                assert_eq!(r.is_underflow(), false);
+                assert_eq!(r.is_infinity(), false);
+                assert_eq!(r.is_undefined(), false);
+                assert_eq!(r.is_divided_by_zero(), false);
+            },
+        None => {
+                println!("All bits are gone!");
+            }
+    }
+
+    let a_biguint = U256::from_str_radix("00001111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101", 2).unwrap();
+    let n = 4_u8;
+    let res = a_biguint.checked_shift_left(n);
+    match res
+    {
+        Some(r) => {
+                println!("{} << {} = {}", r.to_string_with_radix_and_stride(2, 8).unwrap(), n, r.to_string_with_radix_and_stride(2, 8).unwrap());
+                assert_eq!(r.to_string_with_radix_and_stride(2, 8).unwrap(), "11110000_00001111_00000000_11111100_11000011_00111010_10100101_01011111_11110000_00001111_00000000_11111100_11000011_00111010_10100101_01011111_11110000_00001111_00000000_11111100_11000011_00111010_10100101_01011111_11110000_00001111_00000000_11111100_11000011_00111010_10100101_01010000");
+                assert_eq!(r.is_overflow(), false);
+                assert_eq!(r.is_underflow(), false);
+                assert_eq!(r.is_infinity(), false);
+                assert_eq!(r.is_undefined(), false);
+                assert_eq!(r.is_divided_by_zero(), false);
+            },
+        None => {
+                println!("All bits are gone!");
+            }
+    }
+
+    let a_biguint = U256::from_str_radix("11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101", 2).unwrap();
+    let n = 128_u8;
+    let res = a_biguint.shift_left(n);
+    let res = a_biguint.checked_shift_left(n);
+    match res
+    {
+        Some(r) => {
+                println!("{} << {} = {}", r.to_string_with_radix_and_stride(2, 8).unwrap(), n, r.to_string_with_radix_and_stride(2, 8).unwrap());
+            },
+        None => {
+                println!("All bits are gone!");
+                assert_eq!(res, None);
+            }
+    }
+
+    let a_biguint = U256::from_str_radix("00001111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101", 2).unwrap();
+    let n = 256_u16;
+    let res = a_biguint.checked_shift_left(n);
+    match res
+    {
+        Some(r) => {
+                println!("{} << {} = {}", r.to_string_with_radix_and_stride(2, 8).unwrap(), n, r.to_string_with_radix_and_stride(2, 8).unwrap());
+            },
+        None => {
+                println!("All bits are gone!");
+                assert_eq!(res, None);
+            }
+    }
+
+    let a_biguint = U256::from_str_radix("11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101", 2).unwrap();
+    let n = 512_u16;
+    let res = a_biguint.checked_shift_left(n);
+    match res
+    {
+        Some(r) => {
+                println!("{} << {} = {}", r.to_string_with_radix_and_stride(2, 8).unwrap(), n, r.to_string_with_radix_and_stride(2, 8).unwrap());
+            },
+        None => {
+                println!("All bits are gone!");
+                assert_eq!(res, None);
+            }
+    }
+    println!("---------------------------");
+}
+
+fn biguint_unchecked_shift_left()
+{
+    println!("biguint_unchecked_shift_left()");
+    use cryptocol::define_utypes_with;
+    define_utypes_with!(u64);
+
+    let a_biguint = U256::from_str_radix("11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101", 2).unwrap();
+    let n = 3_u8;
+    let res = a_biguint.unchecked_shift_left(n);
+    println!("{} << {} = {}", a_biguint.to_string_with_radix_and_stride(2, 8).unwrap(), n, res.to_string_with_radix_and_stride(2, 8).unwrap());
+    assert_eq!(res.to_string_with_radix_and_stride(2, 8).unwrap(), "11111000_00000111_10000000_01111110_01100001_10011101_01010010_10101111_11111000_00000111_10000000_01111110_01100001_10011101_01010010_10101111_11111000_00000111_10000000_01111110_01100001_10011101_01010010_10101111_11111000_00000111_10000000_01111110_01100001_10011101_01010010_10101000");
+    assert_eq!(res.is_overflow(), true);
+    assert_eq!(res.is_underflow(), false);
+    assert_eq!(res.is_infinity(), false);
+    assert_eq!(res.is_undefined(), false);
+    assert_eq!(res.is_divided_by_zero(), false);
+
+    let a_biguint = U256::from_str_radix("00001111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101", 2).unwrap();
+    let n = 4_u8;
+    let res = a_biguint.unchecked_shift_left(n);
+    println!("{} << {} = {}", a_biguint.to_string_with_radix_and_stride(2, 8).unwrap(), n, res.to_string_with_radix_and_stride(2, 8).unwrap());
+    assert_eq!(res.to_string_with_radix_and_stride(2, 8).unwrap(), "11110000_00001111_00000000_11111100_11000011_00111010_10100101_01011111_11110000_00001111_00000000_11111100_11000011_00111010_10100101_01011111_11110000_00001111_00000000_11111100_11000011_00111010_10100101_01011111_11110000_00001111_00000000_11111100_11000011_00111010_10100101_01010000");
+    assert_eq!(res.is_overflow(), false);
+    assert_eq!(res.is_underflow(), false);
+    assert_eq!(res.is_infinity(), false);
+    assert_eq!(res.is_undefined(), false);
+    assert_eq!(res.is_divided_by_zero(), false);
+
+    let a_biguint = U256::from_str_radix("11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101", 2).unwrap();
+    let n = 128_u8;
+    let res = a_biguint.unchecked_shift_left(n);
+    println!("{} << {} = {}", a_biguint.to_string_with_radix_and_stride(2, 8).unwrap(), n, res.to_string_with_radix_and_stride(2, 8).unwrap());
+    assert_eq!(res.to_string_with_radix_and_stride(2, 8).unwrap(), "11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000");
+    assert_eq!(res.is_overflow(), true);
+    assert_eq!(res.is_underflow(), false);
+    assert_eq!(res.is_infinity(), false);
+    assert_eq!(res.is_undefined(), false);
+    assert_eq!(res.is_divided_by_zero(), false);
+
+    let _a_biguint = U256::from_str_radix("00001111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101", 2).unwrap();
+    let _n = 256_u16;
+    // It will panic!
+    // let res = _a_biguint.unchecked_shift_left(_n);
+
+    let _a_biguint = U256::from_str_radix("11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101", 2).unwrap();
+    let _n = 512_u16;
+    // It will panic!
+    // let res = _a_biguint.unchecked_shift_left(_n);
+    println!("---------------------------");
+}
+
+fn biguint_shift_right()
+{
+    println!("biguint_shift_right()");
+    use cryptocol::define_utypes_with;
+    define_utypes_with!(u128);
+    
+    println!("---------------------------");
+}
+
+fn biguint_shift_right_assign()
+{
+    println!("biguint_shift_right_assign()");
+    use cryptocol::define_utypes_with;
+    define_utypes_with!(u8);
+    println!("---------------------------");
+}
+
+fn biguint_checked_shift_right()
+{
+    println!("biguint_checked_shift_right()");
+    use cryptocol::define_utypes_with;
+    define_utypes_with!(u16);
+    println!("---------------------------");
+}
+
+fn biguint_unchecked_shift_right()
+{
+    println!("biguint_unchecked_shift_right()");
+    use cryptocol::define_utypes_with;
+    define_utypes_with!(u32);
+    println!("---------------------------");
+}
+
+fn biguint_rotate_left()
+{
+    println!("biguint_rotate_left()");
+    use cryptocol::define_utypes_with;
+    define_utypes_with!(u64);
+    println!("---------------------------");
+}
+
+fn biguint_rotate_left_assign()
+{
+    println!("biguint_rotate_left_assign()");
+    use cryptocol::define_utypes_with;
+    define_utypes_with!(u128);
+    println!("---------------------------");
+}
+
+fn biguint_checked_rotate_left()
+{
+    println!("biguint_checked_rotate_left()");
+    use cryptocol::define_utypes_with;
+    define_utypes_with!(u8);
+    println!("---------------------------");
+}
+
+fn biguint_unchecked_rotate_left()
+{
+    println!("biguint_unchecked_rotate_left()");
+    use cryptocol::define_utypes_with;
+    define_utypes_with!(u16);
+    println!("---------------------------");
+}
+
+fn biguint_rotate_right()
+{
+    println!("biguint_rotate_right()");
+    use cryptocol::define_utypes_with;
+    define_utypes_with!(u32);
+    println!("---------------------------");
+}
+
+fn biguint_rotate_right_assign()
+{
+    println!("biguint_rotate_right_assign()");
+    use cryptocol::define_utypes_with;
+    define_utypes_with!(u64);
+    println!("---------------------------");
+}
+
+fn biguint_checked_rotate_right()
+{
+    println!("biguint_checked_rotate_right()");
+    use cryptocol::define_utypes_with;
+    define_utypes_with!(u128);
+    println!("---------------------------");
+}
+
+fn biguint_unchecked_rotatet_right()
+{
+    println!("biguint_unchecked_rotatet_right()");
+    use cryptocol::define_utypes_with;
+    define_utypes_with!(u8);
+    println!("---------------------------");
+}
+
+fn biguint_and()
+{
+    println!("biguint_and()");
+    use cryptocol::define_utypes_with;
+    define_utypes_with!(u8);
+
+    let mut a = U512::from_str_radix("11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101", 2).unwrap();
+    let b = U512::from_str_radix("11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000", 2).unwrap();
+    a.and_assign(&b);
+    println!("a = {}", a.to_string_with_radix(2).unwrap());
+    assert_eq!(a, U512::from_str_radix("11110000000000001100000000000011100010000001000110101010000000001111000000000000110000000000001110001000000100011010101000000000111100000000000011000000000000111000100000010001101010100000000011110000000000001100000000000011100010000001000110101010000000001111000000000000110000000000001110001000000100011010101000000000", 2).unwrap());
+}
+
+fn biguint_and_assign()
+{
+    println!("biguint_and_assign()");
+    use cryptocol::define_utypes_with;
+    define_utypes_with!(u8);
+
+    let mut a = U512::from_str_radix("11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101", 2).unwrap();
+    let b = U512::zero();
+    a.and_assign(&b);
+    println!("a = {}", a.to_string_with_radix(2).unwrap());
+    assert_eq!(a, U512::zero());
     println!("---------------------------");
 }
 

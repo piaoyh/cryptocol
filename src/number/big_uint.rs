@@ -49767,8 +49767,8 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// `other` is of `Self` type.
     ///
     /// # Panics
-    /// - If `size_of::<T>() * N` <= `128`, this method may panic
-    ///   or its behavior may be undefined though it may not panic.
+    /// If `size_of::<T>() * N` <= `128`, this method may panic
+    /// or its behavior may be undefined though it may not panic.
     /// 
     /// # Features
     /// - Both `self` and `other` should natural numbers. So, if either `self`
@@ -50077,6 +50077,10 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     ///   7 is enough for `repetition` for 100% certainty for determination of
     ///   prime number. This method tests the number with 2, 325, 9375, 28178,
     ///   450775, 9780504, and 1795265022.
+    ///
+    /// # Panics
+    /// If `size_of::<T>() * N` <= `128`, this method may panic
+    /// or its behavior may be undefined though it may not panic.
     /// 
     /// # Example 1 for prime numer case
     /// ```
@@ -50158,9 +50162,14 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
 
     /***** METHODS FOR BIT OPERATION *****/
 
-    //===================
     // pub fn shift_left<U>(&self, n: U) -> Self
-    /// Shift left the field `number: [T;N]` to the left by `n`.
+    /// Shift left the field `number: [T;N]` to the left by `n`,
+    /// and returns the result.
+    /// 
+    /// # Arguments
+    /// `n` indicates how many bits this method shift `self` left by,
+    /// and is a primitive unsigned integer such as `u8`, `u16`, `u32`,
+    /// `u64`, and `u128`.
     /// 
     /// # Features
     /// 'Shift left' means 'move left all bits'. So, if `10011010` is shifted
@@ -50171,15 +50180,104 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// left by `n` bits.
     /// 
     /// # Overflow
-    /// For BigUInt, 'overflow' does not have the same meaning as that of
-    /// primitive unsigned integer data type. For BigUInt, overflow means that
+    /// For BigUInt, 'overflow' does not mean what 'overflow' means for a
+    /// primitive unsigned integer data type. For BigUInt, 'overflow' means that
     /// carry occurs, while overflow means that all the bits are pushed outside
     /// for primitive unsigned integer data type.
+    ///
+    /// # Panics
+    /// If `size_of::<T>() * N` <= `128`, this method may panic
+    /// or its behavior may be undefined though it may not panic.
     /// 
-    /// # Example
+    /// # Example 1
     /// ```
-    /// // Todo
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u8);
+    /// 
+    /// let a_biguint = U256::from_str_radix("11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101", 2).unwrap();
+    /// let n = 3_u8;
+    /// let res = a_biguint.shift_left(n);
+    /// println!("{} << {} = {}", a_biguint.to_string_with_radix_and_stride(2, 8).unwrap(), n, res.to_string_with_radix_and_stride(2, 8).unwrap());
+    /// assert_eq!(res.to_string_with_radix_and_stride(2, 8).unwrap(), "11111000_00000111_10000000_01111110_01100001_10011101_01010010_10101111_11111000_00000111_10000000_01111110_01100001_10011101_01010010_10101111_11111000_00000111_10000000_01111110_01100001_10011101_01010010_10101111_11111000_00000111_10000000_01111110_01100001_10011101_01010010_10101000");
+    /// assert_eq!(res.is_overflow(), true);
+    /// assert_eq!(res.is_underflow(), false);
+    /// assert_eq!(res.is_infinity(), false);
+    /// assert_eq!(res.is_undefined(), false);
+    /// assert_eq!(res.is_divided_by_zero(), false);
     /// ```
+    /// 
+    /// # Example 2
+    /// ```
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u8);
+    /// 
+    /// let a_biguint = U256::from_str_radix("00001111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101", 2).unwrap();
+    /// let n = 4_u8;
+    /// let res = a_biguint.shift_left(n);
+    /// println!("{} << {} = {}", a_biguint.to_string_with_radix_and_stride(2, 8).unwrap(), n, res.to_string_with_radix_and_stride(2, 8).unwrap());
+    /// assert_eq!(res.to_string_with_radix_and_stride(2, 8).unwrap(), "11110000_00001111_00000000_11111100_11000011_00111010_10100101_01011111_11110000_00001111_00000000_11111100_11000011_00111010_10100101_01011111_11110000_00001111_00000000_11111100_11000011_00111010_10100101_01011111_11110000_00001111_00000000_11111100_11000011_00111010_10100101_01010000");
+    /// assert_eq!(res.is_overflow(), false);
+    /// assert_eq!(res.is_underflow(), false);
+    /// assert_eq!(res.is_infinity(), false);
+    /// assert_eq!(res.is_undefined(), false);
+    /// assert_eq!(res.is_divided_by_zero(), false);
+    /// ```
+    /// 
+    /// # Example 3
+    /// ```
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u8);
+    /// 
+    /// let a_biguint = U256::from_str_radix("11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101", 2).unwrap();
+    /// let n = 128_u8;
+    /// let res = a_biguint.shift_left(n);
+    /// println!("{} << {} = {}", a_biguint.to_string_with_radix_and_stride(2, 8).unwrap(), n, res.to_string_with_radix_and_stride(2, 8).unwrap());
+    /// assert_eq!(res.to_string_with_radix_and_stride(2, 8).unwrap(), "11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000");
+    /// assert_eq!(res.is_overflow(), true);
+    /// assert_eq!(res.is_underflow(), false);
+    /// assert_eq!(res.is_infinity(), false);
+    /// assert_eq!(res.is_undefined(), false);
+    /// assert_eq!(res.is_divided_by_zero(), false);
+    /// ```
+    /// 
+    /// # Example 4
+    /// ```
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u8);
+    /// 
+    /// let a_biguint = U256::from_str_radix("00001111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101", 2).unwrap();
+    /// let n = 256_u16;
+    /// let res = a_biguint.shift_left(n);
+    /// println!("{} << {} = {}", a_biguint.to_string_with_radix_and_stride(2, 8).unwrap(), n, res.to_string_with_radix_and_stride(2, 8).unwrap());
+    /// assert_eq!(res.to_string(), "0");
+    /// assert_eq!(res.is_overflow(), true);
+    /// assert_eq!(res.is_underflow(), false);
+    /// assert_eq!(res.is_infinity(), false);
+    /// assert_eq!(res.is_undefined(), false);
+    /// assert_eq!(res.is_divided_by_zero(), false);
+    /// ```
+    /// 
+    /// # Example 5
+    /// ```
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u8);
+    /// 
+    /// let a_biguint = U256::from_str_radix("11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101", 2).unwrap();
+    /// let n = 512_u16;
+    /// let res = a_biguint.shift_left(n);
+    /// println!("{} << {} = {}", a_biguint.to_string_with_radix_and_stride(2, 8).unwrap(), n, res.to_string_with_radix_and_stride(2, 8).unwrap());
+    /// assert_eq!(res.to_string(), "0");
+    /// assert_eq!(res.is_overflow(), true);
+    /// assert_eq!(res.is_underflow(), false);
+    /// assert_eq!(res.is_infinity(), false);
+    /// assert_eq!(res.is_undefined(), false);
+    /// assert_eq!(res.is_divided_by_zero(), false);
+    /// ```
+    /// 
+    /// # Big-endian issue
+    /// It is just experimental for Big Endian CPUs. So, you are not encouraged
+    /// to use it for Big Endian CPUs for serious purpose. Only use this crate
+    /// for Big-endian CPUs with your own full responsibility.
     pub fn shift_left<U>(&self, n: U) -> Self
     where U: SmallUInt + Copy + Clone + Display + Debug + ToString
             + Add<Output=U> + AddAssign + Sub<Output=U> + SubAssign
@@ -50194,23 +50292,152 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     }
 
     // pub fn shift_left_assign<U>(&mut self, n: U)
-    /// shifts the field `number: [T;N]` to the left by `n`, and assign it
-    /// to `self` back.
+    /// shifts the field `number: [T;N]` to the left by `n`,
+    /// and assigns the result to `self` back.
+    /// 
+    /// # Arguments
+    /// `n` indicates how many bits this method shift `self` left by,
+    /// and is a primitive unsigned integer such as `u8`, `u16`, `u32`,
+    /// `u64`, and `u128`.
     /// 
     /// # Features
     /// 'Shift left' means 'move left all bits'. So, if `10011010` is shifted
     /// left by 2, it will be `01101000`, for example.
     /// 
     /// # Overflow
-    /// For BigUInt, 'overflow' does not have the same meaning as that of
-    /// primitive unsigned integer data type. For BigUInt, overflow means that
+    /// For BigUInt, 'overflow' does not mean what 'overflow' means for a
+    /// primitive unsigned integer data type. For BigUInt, 'overflow' means that
     /// carry occurs, while overflow means that all the bits are pushed outside
     /// for primitive unsigned integer data type.
+    ///
+    /// # Panics
+    /// If `size_of::<T>() * N` <= `128`, this method may panic
+    /// or its behavior may be undefined though it may not panic.
     /// 
-    /// # Example
+    /// # Example 1
     /// ```
-    /// // Todo
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u16);
+    /// 
+    /// let mut a_biguint = U256::from_str_radix("11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101", 2).unwrap();
+    /// println!("Originally, a_biguint = {}", a_biguint.to_string_with_radix_and_stride(2, 8).unwrap());
+    /// assert_eq!(a_biguint.is_overflow(), false);
+    /// assert_eq!(a_biguint.is_underflow(), false);
+    /// assert_eq!(a_biguint.is_infinity(), false);
+    /// assert_eq!(a_biguint.is_undefined(), false);
+    /// assert_eq!(a_biguint.is_divided_by_zero(), false);
+    /// 
+    /// let n = 3_u8;
+    /// a_biguint.shift_left_assign(n);
+    /// println!("After a_biguint.shift_left_assign(), a_biguint = {}.", a_biguint.to_string_with_radix_and_stride(2, 8).unwrap());
+    /// assert_eq!(a_biguint.to_string_with_radix_and_stride(2, 8).unwrap(), "11111000_00000111_10000000_01111110_01100001_10011101_01010010_10101111_11111000_00000111_10000000_01111110_01100001_10011101_01010010_10101111_11111000_00000111_10000000_01111110_01100001_10011101_01010010_10101111_11111000_00000111_10000000_01111110_01100001_10011101_01010010_10101000");
+    /// assert_eq!(a_biguint.is_overflow(), true);
+    /// assert_eq!(a_biguint.is_underflow(), false);
+    /// assert_eq!(a_biguint.is_infinity(), false);
+    /// assert_eq!(a_biguint.is_undefined(), false);
+    /// assert_eq!(a_biguint.is_divided_by_zero(), false);
     /// ```
+    /// 
+    /// # Example 2
+    /// ```
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u16);
+    /// 
+    /// let mut a_biguint = U256::from_str_radix("00001111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101", 2).unwrap();
+    /// println!("Originally, a_biguint = {}", a_biguint.to_string_with_radix_and_stride(2, 8).unwrap());
+    /// assert_eq!(a_biguint.is_overflow(), false);
+    /// assert_eq!(a_biguint.is_underflow(), false);
+    /// assert_eq!(a_biguint.is_infinity(), false);
+    /// assert_eq!(a_biguint.is_undefined(), false);
+    /// assert_eq!(a_biguint.is_divided_by_zero(), false);
+    /// 
+    /// let n = 4_u8;
+    /// a_biguint.shift_left_assign(n);
+    /// println!("After a_biguint.shift_left_assign(), a_biguint = {}.", a_biguint.to_string_with_radix_and_stride(2, 8).unwrap());
+    /// assert_eq!(a_biguint.to_string_with_radix_and_stride(2, 8).unwrap(), "11110000_00001111_00000000_11111100_11000011_00111010_10100101_01011111_11110000_00001111_00000000_11111100_11000011_00111010_10100101_01011111_11110000_00001111_00000000_11111100_11000011_00111010_10100101_01011111_11110000_00001111_00000000_11111100_11000011_00111010_10100101_01010000");
+    /// assert_eq!(a_biguint.is_overflow(), false);
+    /// assert_eq!(a_biguint.is_underflow(), false);
+    /// assert_eq!(a_biguint.is_infinity(), false);
+    /// assert_eq!(a_biguint.is_undefined(), false);
+    /// assert_eq!(a_biguint.is_divided_by_zero(), false);
+    /// ```
+    /// 
+    /// # Example 3
+    /// ```
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u16);
+    /// 
+    /// let mut a_biguint = U256::from_str_radix("11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101", 2).unwrap();
+    /// println!("Originally, a_biguint = {}", a_biguint.to_string_with_radix_and_stride(2, 8).unwrap());
+    /// assert_eq!(a_biguint.is_overflow(), false);
+    /// assert_eq!(a_biguint.is_underflow(), false);
+    /// assert_eq!(a_biguint.is_infinity(), false);
+    /// assert_eq!(a_biguint.is_undefined(), false);
+    /// assert_eq!(a_biguint.is_divided_by_zero(), false);
+    /// 
+    /// let n = 128_u8;
+    /// a_biguint.shift_left_assign(n);
+    /// println!("After a_biguint.shift_left_assign(), a_biguint = {}.", a_biguint.to_string_with_radix_and_stride(2, 8).unwrap());
+    /// assert_eq!(a_biguint.to_string_with_radix_and_stride(2, 8).unwrap(), "11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000");
+    /// assert_eq!(a_biguint.is_overflow(), true);
+    /// assert_eq!(a_biguint.is_underflow(), false);
+    /// assert_eq!(a_biguint.is_infinity(), false);
+    /// assert_eq!(a_biguint.is_undefined(), false);
+    /// assert_eq!(a_biguint.is_divided_by_zero(), false);
+    /// ```
+    /// 
+    /// # Example 4
+    /// ```
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u16);
+    /// 
+    /// let mut a_biguint = U256::from_str_radix("00001111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101", 2).unwrap();
+    /// println!("Originally, a_biguint = {}", a_biguint.to_string_with_radix_and_stride(2, 8).unwrap());
+    /// assert_eq!(a_biguint.is_overflow(), false);
+    /// assert_eq!(a_biguint.is_underflow(), false);
+    /// assert_eq!(a_biguint.is_infinity(), false);
+    /// assert_eq!(a_biguint.is_undefined(), false);
+    /// assert_eq!(a_biguint.is_divided_by_zero(), false);
+    /// 
+    /// let n = 256_u16;
+    /// a_biguint.shift_left_assign(n);
+    /// println!("After a_biguint.shift_left_assign(), a_biguint = {}.", a_biguint.to_string_with_radix_and_stride(2, 8).unwrap());
+    /// assert_eq!(a_biguint.to_string(), "0");
+    /// assert_eq!(a_biguint.is_overflow(), true);
+    /// assert_eq!(a_biguint.is_underflow(), false);
+    /// assert_eq!(a_biguint.is_infinity(), false);
+    /// assert_eq!(a_biguint.is_undefined(), false);
+    /// assert_eq!(a_biguint.is_divided_by_zero(), false);
+    /// ```
+    /// 
+    /// # Example 5
+    /// ```
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u16);
+    /// 
+    /// let mut a_biguint = U256::from_str_radix("11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101", 2).unwrap();
+    /// println!("Originally, a_biguint = {}", a_biguint.to_string_with_radix_and_stride(2, 8).unwrap());
+    /// assert_eq!(a_biguint.is_overflow(), false);
+    /// assert_eq!(a_biguint.is_underflow(), false);
+    /// assert_eq!(a_biguint.is_infinity(), false);
+    /// assert_eq!(a_biguint.is_undefined(), false);
+    /// assert_eq!(a_biguint.is_divided_by_zero(), false);
+    /// 
+    /// let n = 512_u16;
+    /// a_biguint.shift_left_assign(n);
+    /// println!("After a_biguint.shift_left_assign(), a_biguint = {}.", a_biguint.to_string_with_radix_and_stride(2, 8).unwrap());
+    /// assert_eq!(a_biguint.to_string(), "0");
+    /// assert_eq!(a_biguint.is_overflow(), true);
+    /// assert_eq!(a_biguint.is_underflow(), false);
+    /// assert_eq!(a_biguint.is_infinity(), false);
+    /// assert_eq!(a_biguint.is_undefined(), false);
+    /// assert_eq!(a_biguint.is_divided_by_zero(), false);
+    /// ```
+    /// 
+    /// # Big-endian issue
+    /// It is just experimental for Big Endian CPUs. So, you are not encouraged
+    /// to use it for Big Endian CPUs for serious purpose. Only use this crate
+    /// for Big-endian CPUs with your own full responsibility.
     pub fn shift_left_assign<U>(&mut self, n: U)
     where U: SmallUInt + Copy + Clone + Display + Debug + ToString
             + Add<Output=U> + AddAssign + Sub<Output=U> + SubAssign
@@ -50221,6 +50448,14 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
             + BitXor<Output=U> + BitXorAssign + Not<Output=U>
             + PartialEq + PartialOrd
     {
+        if n.into_u128() >= self.length_in_bits().into_u128()
+        {
+            if !self.is_zero()
+                { self.set_overflow(); }
+            self.set_zero();
+            return;
+        }
+
         let size_t_bits = T::size_in_bits();    // The maximum of size_t_bits is 128. So, it can be cantained in even u8.
         let chunk_num = n.wrapping_div(U::usize_as_smalluint(size_t_bits)).into_usize();
         let piece_num = n.wrapping_rem(U::usize_as_smalluint(size_t_bits)).into_usize();
@@ -50247,7 +50482,10 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
         for idx in chunk_num..N
         {
             num = (self.get_num_(idx) << shl) | carry;
-            carry = self.get_num_(idx) >> shr;
+            carry = if piece_num.is_zero()
+                        { zero }
+                    else
+                        { self.get_num_(idx) >> shr };
             self.set_num_(idx, num);
         }
         if !carry.is_zero()
@@ -50255,28 +50493,149 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     }
 
     // pub fn checked_shift_left<U>(&self, n: U) -> Option<Self>
-    /// Shift left the field `number: [T;N]` to the left by `n`.
+    /// Shift left the field `number: [T;N]` to the left by `n`,
+    /// and returns the result, wrapped by `some` of enum `Option`.
+    /// 
+    /// # Arguments
+    /// `n` indicates how many bits this method shift `self` left by,
+    /// and is a primitive unsigned integer such as `u8`, `u16`, `u32`,
+    /// `u64`, and `u128`.
     /// 
     /// # Features
     /// 'Shift left' means 'move left all bits'. So, if `10011010` is shifted
     /// left by 2, it will be `01101000`, for example.
     /// 
     /// # Output
-    /// It returns the left-shifted version of `self`, which is shifted to the
-    /// left by `n` bits, wrapped by `some` of enum `Option`.
-    /// If n is greater than or equal to the size of the type `T` * N * 8,
-    /// it returns `None`.
+    /// - If n is less than the size of the type `T` * N * 8,
+    ///   it returns the left-shifted version of `self`, which is shifted to the
+    ///   left by `n` bits, wrapped by `some` of enum `Option`.
+    /// - If n is greater than or equal to the size of the type `T` * N * 8,
+    ///   it returns `None`.
     /// 
     /// # Overflow
     /// For BigUInt, 'overflow' does not have the same meaning as that of
     /// primitive unsigned integer data type. For BigUInt, overflow means that
     /// carry occurs, while overflow means that all the bits are pushed outside
     /// for primitive unsigned integer data type.
+    ///
+    /// # Panics
+    /// If `size_of::<T>() * N` <= `128`, this method may panic
+    /// or its behavior may be undefined though it may not panic.
     /// 
-    /// # Example
+    /// # Example 1
     /// ```
-    /// // Todo
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u32);
+    /// 
+    /// let a_biguint = U256::from_str_radix("11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101", 2).unwrap();
+    /// let n = 3_u8;
+    /// let res = a_biguint.checked_shift_left(n);
+    /// match res
+    /// {
+    ///     Some(r) => {
+    ///             println!("{} << {} = {}", r.to_string_with_radix_and_stride(2, 8).unwrap(), n, r.to_string_with_radix_and_stride(2, 8).unwrap());
+    ///             assert_eq!(r.to_string_with_radix_and_stride(2, 8).unwrap(), "11111000_00000111_10000000_01111110_01100001_10011101_01010010_10101111_11111000_00000111_10000000_01111110_01100001_10011101_01010010_10101111_11111000_00000111_10000000_01111110_01100001_10011101_01010010_10101111_11111000_00000111_10000000_01111110_01100001_10011101_01010010_10101000");
+    ///             assert_eq!(r.is_overflow(), true);
+    ///             assert_eq!(r.is_underflow(), false);
+    ///             assert_eq!(r.is_infinity(), false);
+    ///             assert_eq!(r.is_undefined(), false);
+    ///             assert_eq!(r.is_divided_by_zero(), false);
+    ///         },
+    ///     None => {
+    ///             println!("All bits are gone!");
+    ///         }
+    /// }
     /// ```
+    /// 
+    /// # Example 2
+    /// ```
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u32);
+    /// 
+    /// let a_biguint = U256::from_str_radix("00001111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101", 2).unwrap();
+    /// let n = 4_u8;
+    /// let res = a_biguint.checked_shift_left(n);
+    /// match res
+    /// {
+    ///     Some(r) => {
+    ///             println!("{} << {} = {}", r.to_string_with_radix_and_stride(2, 8).unwrap(), n, r.to_string_with_radix_and_stride(2, 8).unwrap());
+    ///             assert_eq!(r.to_string_with_radix_and_stride(2, 8).unwrap(), "11110000_00001111_00000000_11111100_11000011_00111010_10100101_01011111_11110000_00001111_00000000_11111100_11000011_00111010_10100101_01011111_11110000_00001111_00000000_11111100_11000011_00111010_10100101_01011111_11110000_00001111_00000000_11111100_11000011_00111010_10100101_01010000");
+    ///             assert_eq!(r.is_overflow(), false);
+    ///             assert_eq!(r.is_underflow(), false);
+    ///             assert_eq!(r.is_infinity(), false);
+    ///             assert_eq!(r.is_undefined(), false);
+    ///             assert_eq!(r.is_divided_by_zero(), false);
+    ///         },
+    ///     None => {
+    ///             println!("All bits are gone!");
+    ///         }
+    /// }
+    /// ```
+    /// 
+    /// # Example 3
+    /// ```
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u32);
+    /// 
+    /// let a_biguint = U256::from_str_radix("00001111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101", 2).unwrap();
+    /// let n = 128_u8;
+    /// let res = a_biguint.checked_shift_left(n);
+    /// match res
+    /// {
+    ///     Some(r) => {
+    ///             println!("{} << {} = {}", r.to_string_with_radix_and_stride(2, 8).unwrap(), n, r.to_string_with_radix_and_stride(2, 8).unwrap());
+    ///         },
+    ///     None => {
+    ///             println!("All bits are gone!");
+    ///             assert_eq!(res, None);
+    ///         }
+    /// }
+    /// ```
+    /// 
+    /// # Example 4
+    /// ```
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u32);
+    /// 
+    /// let a_biguint = U256::from_str_radix("00001111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101", 2).unwrap();
+    /// let n = 256_u16;
+    /// let res = a_biguint.checked_shift_left(n);
+    /// match res
+    /// {
+    ///     Some(r) => {
+    ///             println!("{} << {} = {}", r.to_string_with_radix_and_stride(2, 8).unwrap(), n, r.to_string_with_radix_and_stride(2, 8).unwrap());
+    ///         },
+    ///     None => {
+    ///             println!("All bits are gone!");
+    ///             assert_eq!(res, None);
+    ///         }
+    /// }
+    /// ```
+    /// 
+    /// # Example 5
+    /// ```
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u32);
+    /// 
+    /// let a_biguint = U256::from_str_radix("00001111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101", 2).unwrap();
+    /// let n = 512_u16;
+    /// let res = a_biguint.checked_shift_left(n);
+    /// match res
+    /// {
+    ///     Some(r) => {
+    ///             println!("{} << {} = {}", r.to_string_with_radix_and_stride(2, 8).unwrap(), n, r.to_string_with_radix_and_stride(2, 8).unwrap());
+    ///         },
+    ///     None => {
+    ///             println!("All bits are gone!");
+    ///             assert_eq!(res, None);
+    ///         }
+    /// }
+    /// ```
+    /// 
+    /// # Big-endian issue
+    /// It is just experimental for Big Endian CPUs. So, you are not encouraged
+    /// to use it for Big Endian CPUs for serious purpose. Only use this crate
+    /// for Big-endian CPUs with your own full responsibility.
     pub fn checked_shift_left<U>(&self, n: U) -> Option<Self>
     where U: SmallUInt + Copy + Clone + Display + Debug + ToString
             + Add<Output=U> + AddAssign + Sub<Output=U> + SubAssign
@@ -50287,7 +50646,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
             + BitXor<Output=U> + BitXorAssign + Not<Output=U>
             + PartialEq + PartialOrd
     {
-        if Self::size_in_bits().into_u128() < n.into_u128()
+        if Self::size_in_bits().into_u128() <= n.into_u128()
         {
             return None;
         }
@@ -50296,8 +50655,14 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
         Some(res)
     }
 
+    //===================
     // pub fn unchecked_shift_left<U>(&self, n: U) -> Self
     /// Shift left the field `number: [T;N]` to the left by `n`.
+    /// 
+    /// # Arguments
+    /// `n` indicates how many bits this method shift `self` left by,
+    /// and is a primitive unsigned integer such as `u8`, `u16`, `u32`,
+    /// `u64`, and `u128`.
     /// 
     /// # Features
     /// 'Shift left' means 'move left all bits'. So, if `10011010` is shifted
@@ -50312,15 +50677,84 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// primitive unsigned integer data type. For BigUInt, overflow means that
     /// carry occurs, while overflow means that all the bits are pushed outside
     /// for primitive unsigned integer data type.
+    ///
+    /// # Panics
+    /// - If `size_of::<T>() * N` <= `128`, this method may panic
+    ///   or its behavior may be undefined though it may not panic.
+    /// - If n is greater than or equal to the size of the type `T` * N * 8,
+    ///   it will panic.
     /// 
-    /// # Panic
-    /// If n is greater than or equal to the size of the type `T` * N * 8,
-    /// it will panic.
+    /// # Example 1
+    /// ```
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u64);
     /// 
-    /// # Example
+    /// let a_biguint = U256::from_str_radix("11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101", 2).unwrap();
+    /// let n = 3_u8;
+    /// let res = a_biguint.unchecked_shift_left(n);
+    /// println!("{} << {} = {}", a_biguint.to_string_with_radix_and_stride(2, 8).unwrap(), n, res.to_string_with_radix_and_stride(2, 8).unwrap());
+    /// assert_eq!(res.to_string_with_radix_and_stride(2, 8).unwrap(), "11111000_00000111_10000000_01111110_01100001_10011101_01010010_10101111_11111000_00000111_10000000_01111110_01100001_10011101_01010010_10101111_11111000_00000111_10000000_01111110_01100001_10011101_01010010_10101111_11111000_00000111_10000000_01111110_01100001_10011101_01010010_10101000");
+    /// assert_eq!(res.is_overflow(), true);
+    /// assert_eq!(res.is_underflow(), false);
+    /// assert_eq!(res.is_infinity(), false);
+    /// assert_eq!(res.is_undefined(), false);
+    /// assert_eq!(res.is_divided_by_zero(), false);
     /// ```
-    /// // Todo
+    /// 
+    /// # Example 2
     /// ```
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u64);
+    /// 
+    /// let a_biguint = U256::from_str_radix("00001111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101", 2).unwrap();
+    /// let n = 4_u8;
+    /// let res = a_biguint.unchecked_shift_left(n);
+    /// println!("{} << {} = {}", a_biguint.to_string_with_radix_and_stride(2, 8).unwrap(), n, res.to_string_with_radix_and_stride(2, 8).unwrap());
+    /// assert_eq!(res.to_string_with_radix_and_stride(2, 8).unwrap(), "11110000_00001111_00000000_11111100_11000011_00111010_10100101_01011111_11110000_00001111_00000000_11111100_11000011_00111010_10100101_01011111_11110000_00001111_00000000_11111100_11000011_00111010_10100101_01011111_11110000_00001111_00000000_11111100_11000011_00111010_10100101_01010000");
+    /// assert_eq!(res.is_overflow(), false);
+    /// assert_eq!(res.is_underflow(), false);
+    /// assert_eq!(res.is_infinity(), false);
+    /// assert_eq!(res.is_undefined(), false);
+    /// assert_eq!(res.is_divided_by_zero(), false);
+    /// ```
+    /// 
+    /// # Example 3
+    /// ```
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u64);
+    /// 
+    /// let a_biguint = U256::from_str_radix("11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101", 2).unwrap();
+    /// let n = 128_u8;
+    /// let res = a_biguint.unchecked_shift_left(n);
+    /// println!("{} << {} = {}", a_biguint.to_string_with_radix_and_stride(2, 8).unwrap(), n, res.to_string_with_radix_and_stride(2, 8).unwrap());
+    /// assert_eq!(res.to_string_with_radix_and_stride(2, 8).unwrap(), "11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000");
+    /// assert_eq!(res.is_overflow(), true);
+    /// assert_eq!(res.is_underflow(), false);
+    /// assert_eq!(res.is_infinity(), false);
+    /// assert_eq!(res.is_undefined(), false);
+    /// assert_eq!(res.is_divided_by_zero(), false);
+    /// ```
+    /// 
+    /// # Panic Examples
+    /// ```
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u64);
+    /// 
+    /// let _a_biguint = U256::from_str_radix("00001111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101", 2).unwrap();
+    /// let _n = 256_u16;
+    /// // It will panic!
+    /// // let res = _a_biguint.unchecked_shift_left(_n);
+    /// 
+    /// let _a_biguint = U256::from_str_radix("11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101", 2).unwrap();
+    /// let _n = 512_u16;
+    /// // It will panic!
+    /// // let res = _a_biguint.unchecked_shift_left(_n);
+    /// ```
+    /// 
+    /// # Big-endian issue
+    /// It is just experimental for Big Endian CPUs. So, you are not encouraged
+    /// to use it for Big Endian CPUs for serious purpose. Only use this crate
+    /// for Big-endian CPUs with your own full responsibility.
     #[inline]
     pub fn unchecked_shift_left<U>(&self, n: U) -> Self
     where U: SmallUInt + Copy + Clone + Display + Debug + ToString
@@ -50336,7 +50770,13 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     }
 
     // pub fn shift_right<U>(&self, n: U) -> Self
-    /// Shift right the field `number: [T;N]` to the right by `n`.
+    /// Shift right the field `number: [T;N]` to the right by `n`,
+    /// and returns the result.
+    /// 
+    /// # Arguments
+    /// `n` indicates how many bits this method shift `self` left by,
+    /// and is a primitive unsigned integer such as `u8`, `u16`, `u32`,
+    /// `u64`, and `u128`.
     /// 
     /// # Features
     /// 'Shift right' means 'move right all bits'. So, if `10011010` is shifted
@@ -50347,10 +50787,14 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// right by `n` bits.
     /// 
     /// # Underflow
-    /// For BigUInt, 'underflow' does not have the same meaning as that of
-    /// primitive unsigned integer data type. For BigUInt, underflow means that
+    /// For BigUInt, 'underflow' does not mean what 'underflow' means for a
+    /// primitive unsigned integer data type. For BigUInt, 'underflow' means that
     /// carry occurs, while underflow means that all the bits are pushed outside
     /// for primitive unsigned integer data type.
+    ///
+    /// # Panics
+    /// If `size_of::<T>() * N` <= `128`, this method may panic
+    /// or its behavior may be undefined though it may not panic.
     /// 
     /// # Example
     /// ```
@@ -50372,8 +50816,13 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     }
 
     // pub fn shift_right_assign<U>(&mut self, n: U)
-    /// shifts the field `number: [T;N]` to the right by `n`, and assign it
-    /// to `self` back.
+    /// shifts the field `number: [T;N]` to the right by `n`,
+    /// and assigns the result to `self` back.
+    /// 
+    /// # Arguments
+    /// `n` indicates how many bits this method shift `self` left by,
+    /// and is a primitive unsigned integer such as `u8`, `u16`, `u32`,
+    /// `u64`, and `u128`.
     /// 
     /// # Features
     /// 'Shift right' means 'move right all bits'. So, if `10011010` is shifted
@@ -50384,6 +50833,10 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// primitive unsigned integer data type. For BigUInt, underflow means that
     /// carry occurs, while underflow means that all the bits are pushed outside
     /// for primitive unsigned integer data type.
+    ///
+    /// # Panics
+    /// If `size_of::<T>() * N` <= `128`, this method may panic
+    /// or its behavior may be undefined though it may not panic.
     /// 
     /// # Example
     /// ```
@@ -50399,6 +50852,13 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
             + BitXor<Output=U> + BitXorAssign + Not<Output=U>
             + PartialEq + PartialOrd
     {
+        if n.into_u128() >= self.length_in_bits().into_u128()
+        {
+            if !self.is_zero()
+                { self.set_underflow(); }
+            self.set_zero();
+            return;
+        }
         let size_t_bits = T::size_in_bits();
         let chunk_num = (n / U::usize_as_smalluint(size_t_bits)).into_usize();
         let piece_num = (n % U::usize_as_smalluint(size_t_bits)).into_usize();
@@ -50422,13 +50882,16 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
         if (self.get_num_(0) << T::usize_as_smalluint(size_t_bits - piece_num)) != zero
             { self.set_underflow(); }
 
+
         let mut num: T;
         let mut carry = T::zero();
         let mut idx = N - 1 - chunk_num;
+        let shr = T::usize_as_smalluint(piece_num);
+        let shl = T::usize_as_smalluint(size_t_bits - piece_num);
         loop
         {
-            num = (self.get_num_(idx) >> T::usize_as_smalluint(piece_num)) | carry;
-            carry = self.get_num_(idx) << T::usize_as_smalluint(size_t_bits - piece_num);
+            num = (self.get_num_(idx) >> shr) | carry;
+            carry = if piece_num.is_zero() { zero } else { self.get_num_(idx) << shl };
             self.set_num_(idx, num);
             if idx == 0
                 { break; }
@@ -50440,6 +50903,11 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
 
     // pub fn checked_shift_right<U>(&self, n: U) -> Option<Self>
     /// Shift right the field `number: [T;N]` to the right by `n`.
+    /// 
+    /// # Arguments
+    /// `n` indicates how many bits this method shift `self` left by,
+    /// and is a primitive unsigned integer such as `u8`, `u16`, `u32`,
+    /// `u64`, and `u128`.
     /// 
     /// # Features
     /// 'Shift right' means 'move right all bits'. So, if `10011010` is shifted
@@ -50456,6 +50924,10 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// primitive unsigned integer data type. For BigUInt, underflow means that
     /// carry occurs, while underflow means that all the bits are pushed outside
     /// for primitive unsigned integer data type.
+    ///
+    /// # Panics
+    /// If `size_of::<T>() * N` <= `128`, this method may panic
+    /// or its behavior may be undefined though it may not panic.
     /// 
     /// # Example
     /// ```
@@ -50481,8 +50953,13 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     }
 
     // pub fn unchecked_shift_right<U>(&mut self, n: U) -> Self
-    /// shifts the field `number: [T;N]` to the right by `n`, and assign it
-    /// to `self` back.
+    /// shifts the field `number: [T;N]` to the right by `n`,
+    /// and returns it to `self` back.
+    /// 
+    /// # Arguments
+    /// `n` indicates how many bits this method shift `self` left by,
+    /// and is a primitive unsigned integer such as `u8`, `u16`, `u32`,
+    /// `u64`, and `u128`.
     /// 
     /// # Features
     /// 'Shift right' means 'move right all bits'. So, if `10011010` is shifted
@@ -50497,10 +50974,12 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// primitive unsigned integer data type. For BigUInt, underflow means that
     /// carry occurs, while underflow means that all the bits are pushed outside
     /// for primitive unsigned integer data type.
-    /// 
-    /// # Panic
-    /// If n is greater than or equal to the size of the type `T` * N * 8,
-    /// it will panic.
+    ///
+    /// # Panics
+    /// - If `size_of::<T>() * N` <= `128`, this method may panic
+    ///   or its behavior may be undefined though it may not panic.
+    /// - If n is greater than or equal to the size of the type `T` * N * 8,
+    ///   it will panic.
     /// 
     /// # Example
     /// ```
