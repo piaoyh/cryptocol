@@ -200,7 +200,7 @@ use crate::number::{ SmallUInt, LongerUnion, SharedValues, SharedArrays, NumberE
 macro_rules! carrying_calc
 {
     ($me:expr, $func:expr, $rhs:expr, $carry:expr) => {
-        let mut res = Self::from_array(Self::get_number($me).clone());
+        let mut res = Self::from_array($me.get_number().clone());
         let c = $func(&mut res, $rhs, $carry);
         return (res, c);
     }
@@ -214,7 +214,7 @@ macro_rules! carrying_calc
 macro_rules! overflowing_calc
 {
     ($me:expr, $func:expr, $rhs:expr) => {
-        let mut res = Self::from_array(Self::get_number($me).clone());
+        let mut res = Self::from_array($me.get_number().clone());
         let current_overflow = $func(&mut res, $rhs);
         return (res, current_overflow);
     }
@@ -440,7 +440,7 @@ macro_rules! checked_calc
                     { None }
                 else
                     { Some(res) };
-    }
+    };
     // checked_calc!(self, Self::overflowing_add_uint, rhs);
     //
     // let (res, overflow) = self.overflowing_add_uint(rhs);
@@ -448,33 +448,14 @@ macro_rules! checked_calc
     //     { None }
     // else
     //     { Some(res) }
-}
 
-macro_rules! checked_calc_div_iroot
-{
-    ($me:expr, $func:expr, $rhs:expr) => {
-        return  if $rhs.is_zero()
+    ($me:expr, $func:expr, $rhs:expr, $cond:expr) => {
+        return  if $cond
                     { None }
                 else
                     { Some($func($me, $rhs)) };
-    }
-    // checked_calc_div_iroot!(self, Self::wrapping_div_uint, rhs);
-    //
-    // if rhs.is_zero()
-    //     { None }
-    // else
-    //     { Some(self.wrapping_div_uint(rhs)) }
-}
-
-macro_rules! checked_calc_ilog
-{
-    ($me:expr, $func:expr, $base:expr) => {
-        return  if $me.is_zero() || ($base.is_zero_or_one())
-                    { None }
-                else
-                    { Some($func($me, $base)) };
-    }
-    // checked_calc_ilog!(self, Self::ilog_uint, base);
+    };
+    // checked_calc!(self, Self::ilog_uint, base, self.is_zero() || (base.is_zero_or_one()));
     //
     // if self.is_zero() || (base.is_zero_or_one())
     //     { None }
@@ -638,7 +619,7 @@ macro_rules! general_modular_calc_pow_assign
     // self.set_flag_bit(res.get_all_flags());
 }
 
-macro_rules! calc_assign_to_calc_iroot
+macro_rules! general_calc_iroot
 {
     ($me:expr, $func:expr, $exp:expr) => {
         if $exp.is_zero()
@@ -667,7 +648,7 @@ macro_rules! calc_assign_to_calc_iroot
             return $func($me, $exp);
         }
     }
-    // calc_assign_to_calc_iroot!(self, Self::common_iroot, exp);
+    // general_calc_iroot!(self, Self::common_iroot, exp);
     //
     // if exp.is_zero()
     // {
@@ -758,7 +739,7 @@ macro_rules! general_panic_free_calc_iroot
     // }
 }
 
-macro_rules! calc_assign_to_calc_common_ilog
+macro_rules! general_calc_common_ilog
 {
     ($me:expr, $func:expr, $base:expr) => {
         if $me.is_one() && !$base.is_zero_or_one()
@@ -773,7 +754,7 @@ macro_rules! calc_assign_to_calc_common_ilog
         }
         return Self::from_uint(count)
     }
-    // calc_assign_to_calc_common_ilog!(self, Self::wrapping_div_assign_uint, base);
+    // general_calc_common_ilog!(self, Self::wrapping_div_assign_uint, base);
     //
     // if self.is_one() && !base.is_zero_or_one()
     //     { return Self::zero(); }
@@ -788,14 +769,14 @@ macro_rules! calc_assign_to_calc_common_ilog
     // Self::from_uint(count)
 }
 
-macro_rules! calc_assign_to_calc_ilog
+macro_rules! general_calc_ilog
 {
     ($me:expr, $func:expr, $base:expr) => {
         if $me.is_zero() ||  $base.is_zero_or_one()
             { panic!(); }
         return $func($me, $base);
     }
-    // calc_assign_to_calc_ilog!(self, Self::common_ilog_uint, base);
+    // general_calc_ilog!(self, Self::common_ilog_uint, base);
     //
     // if self.is_zero() || base.is_zero_or_one()
     //     { panic!(); }
@@ -855,6 +836,49 @@ macro_rules! general_panic_free_calc_ilog
     // self.common_ilog_uint(base)
 }
 
+macro_rules! bitcalc
+{
+    ($me:expr, $op:tt, $rhs:expr) => {
+        let mut n: T;
+        for idx in 0..N
+        {
+            n = $me.get_num_(idx) $op $rhs.get_num_(idx);
+            $me.set_num_(idx, n);
+        }
+    }
+    // bitcalc!(self, &, rhs);
+    //
+    // let mut n: T;
+    // for idx in 0..N
+    // {
+    //     n = self.get_num_(idx) & rhs.get_num_(idx);
+    //     self.set_num_(idx, n);
+    // }
+}
+
+macro_rules! calc_rotate_assign
+{
+    ($me:expr, $func_main:expr, $func_aux:expr, $n:expr) => {
+        let len = $me.length_in_bits().into_u128();
+        let m = $n.into_u128().wrapping_rem(len);
+        let k = len - m;
+        let flags = $me.get_all_flags();
+        let right = $func_aux($me, k);
+        $func_main($me, m);
+        $me.or_assign(&right);
+        $me.set_all_flags(flags);
+    }
+    // calc_rotate_assign!(self, Self::shift_left_assign, Self::shift_right, n);
+    //
+    // let len = self.length_in_bits().into_u128();
+    // let m = n.into_u128().wrapping_rem(len);
+    // let k = len - m;
+    // let flags = self.get_all_flags();
+    // let right = self.shift_right(k);
+    // self.shift_left_assign(m);
+    // self.or_assign(&right);
+    // self.set_all_flags(flags);
+}
 
 
 //////////////////////////////////////////
@@ -13648,7 +13672,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
             + BitXor<Output=U> + BitXorAssign + Not<Output=U>
             + PartialEq + PartialOrd
     {
-        checked_calc_div_iroot!(self, Self::wrapping_div_uint, rhs);
+        checked_calc!(self, Self::wrapping_div_uint, rhs, rhs.is_zero());
     }
 
     // pub fn unchecked_div_uint<U>(&self, rhs: U) -> Self
@@ -16081,7 +16105,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
             + BitXor<Output=U> + BitXorAssign + Not<Output=U>
             + PartialEq + PartialOrd
     {
-        checked_calc_div_iroot!(self, Self::wrapping_rem_uint, rhs);
+        checked_calc!(self, Self::wrapping_rem_uint, rhs, rhs.is_zero());
     }
 
     // pub fn unchecked_rem_uint<U>(&self, rhs: U) -> Self
@@ -22473,7 +22497,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
             + BitXor<Output=U> + BitXorAssign + Not<Output=U>
             + PartialEq + PartialOrd
     {
-        calc_assign_to_calc_iroot!(self, Self::common_iroot_uint, exp);
+        general_calc_iroot!(self, Self::common_iroot_uint, exp);
     }
 
     // pub fn iroot_assign_uint<U>(&mut self, exp: U)
@@ -23507,7 +23531,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
             + BitXor<Output=U> + BitXorAssign + Not<Output=U>
             + PartialEq + PartialOrd
     {
-        checked_calc_div_iroot!(self, Self::iroot_uint, exp);
+        checked_calc!(self, Self::iroot_uint, exp, exp.is_zero());
     }
 
     // pub fn unchecked_iroot_uint<U>(&self, exp: U) -> Self
@@ -23821,7 +23845,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
             + BitXor<Output=U> + BitXorAssign + Not<Output=U>
             + PartialEq + PartialOrd
     {
-        calc_assign_to_calc_ilog!(self, Self::common_ilog_uint, base);
+        general_calc_ilog!(self, Self::common_ilog_uint, base);
     }
 
     // pub fn ilog_assign_uint<U>(&mut self, base: U)
@@ -24223,7 +24247,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
             + BitXor<Output=U> + BitXorAssign + Not<Output=U>
             + PartialEq + PartialOrd
     {
-        calc_assign_to_calc_common_ilog!(self, Self::wrapping_div_assign_uint, base);
+        general_calc_common_ilog!(self, Self::wrapping_div_assign_uint, base);
     }
 
     // pub fn panic_free_ilog_assign_uint<U>(&mut self, base: U)
@@ -24762,7 +24786,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
             + BitXor<Output=U> + BitXorAssign + Not<Output=U>
             + PartialEq + PartialOrd
     {
-        checked_calc_ilog!(self, Self::ilog_uint, base);
+        checked_calc!(self, Self::ilog_uint, base, self.is_zero() || (base.is_zero_or_one()));
     }
 
     // pub fn unchecked_ilog_uint<U>(&self, base: U) -> Self
@@ -35733,7 +35757,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// for Big-endian CPUs with your own full responsibility.
     pub fn checked_div(&self, rhs: &Self) -> Option<Self>
     {
-        checked_calc_div_iroot!(self, Self::wrapping_div, rhs);
+        checked_calc!(self, Self::wrapping_div, rhs, rhs.is_zero());
     }
 
     // pub fn unchecked_div(&self, rhs: &Self) -> Self
@@ -38053,7 +38077,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// for Big-endian CPUs with your own full responsibility.
     pub fn checked_rem(&self, rhs: &Self) -> Option<Self>
     {
-        checked_calc_div_iroot!(self, Self::wrapping_rem, rhs);
+        checked_calc!(self, Self::wrapping_rem, rhs, rhs.is_zero());
     }
 
     // pub fn unchecked_rem(&self, rhs: &Self) -> Self
@@ -44376,7 +44400,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// for Big-endian CPUs with your own full responsibility.
     pub fn iroot(&self, exp: &Self) -> Self
     {
-        calc_assign_to_calc_iroot!(self, Self::common_iroot, exp);
+        general_calc_iroot!(self, Self::common_iroot, exp);
     }
 
     // pub fn iroot_assign(&mut self, exp: &Self)
@@ -45313,7 +45337,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// for Big-endian CPUs with your own full responsibility.
     pub fn checked_iroot(&self, exp: &Self) -> Option<Self>
     {
-        checked_calc_div_iroot!(self, Self::iroot, exp);
+        checked_calc!(self, Self::iroot, exp, exp.is_zero());
     }
 
     // pub fn unchecked_iroot(&self, exp: &Self) -> Self
@@ -45755,7 +45779,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// for Big-endian CPUs with your own full responsibility.
     pub fn ilog(&self, base: &Self) -> Self
     {
-        calc_assign_to_calc_ilog!(self, Self::common_ilog, base);
+        general_calc_ilog!(self, Self::common_ilog, base);
     }
 
     // pub fn ilog_assign(&mut self, base: &Self)
@@ -46103,7 +46127,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
 
     fn common_ilog(&self, base: &Self) -> Self
     {
-        calc_assign_to_calc_common_ilog!(self, Self::wrapping_div_assign, base);
+        general_calc_common_ilog!(self, Self::wrapping_div_assign, base);
     }
 
     // pub fn panic_free_ilog_assign(&mut self, base: &Self)
@@ -46540,7 +46564,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// for Big-endian CPUs with your own full responsibility.
     pub fn checked_ilog(&self, base: &Self) -> Option<Self>
     {
-        checked_calc_ilog!(self, Self::ilog, base);
+        checked_calc!(self, Self::ilog, base, self.is_zero() || (base.is_zero_or_one()));
     }
 
     // pub fn unchecked_ilog(&self, base: &Self) -> Self
@@ -50474,6 +50498,10 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
             for idx in 0..chunk_num
                 { self.set_num_(idx, zero); }
         }
+        if piece_num == 0
+            { return; }
+        if !(self.get_num_(N-1) >> T::usize_as_smalluint(size_t_bits - piece_num)).is_zero()
+            { self.set_overflow(); }
 
         let mut num: T;
         let mut carry = zero;
@@ -50651,18 +50679,12 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
             + BitXor<Output=U> + BitXorAssign + Not<Output=U>
             + PartialEq + PartialOrd
     {
-        if Self::size_in_bits().into_u128() <= n.into_u128()
-        {
-            return None;
-        }
-        let mut res = self.clone();
-        res.shift_left_assign(n);
-        Some(res)
+        checked_calc!(self, Self::shift_left, n, Self::size_in_bits().into_u128() <= n.into_u128());
     }
 
-    //===================
     // pub fn unchecked_shift_left<U>(&self, n: U) -> Self
-    /// Shift left the field `number: [T;N]` to the left by `n`.
+    /// Shift left the field `number: [T;N]` to the left by `n`,
+    /// and returns the result.
     /// 
     /// # Arguments
     /// `n` indicates how many bits this method shift `self` left by,
@@ -50898,9 +50920,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
             + BitXor<Output=U> + BitXorAssign + Not<Output=U>
             + PartialEq + PartialOrd
     {
-        let mut res = Self::from_array(self.get_number().clone());
-        res.shift_right_assign(n);
-        res
+        calc_assign_to_calc!(self, Self::shift_right_assign, n);
     }
 
     // pub fn shift_right_assign<U>(&mut self, n: U)
@@ -51067,15 +51087,16 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
             self.set_zero();
             return;
         }
-        let size_t_bits = T::size_in_bits();
-        let chunk_num = (n / U::usize_as_smalluint(size_t_bits)).into_usize();
-        let piece_num = (n % U::usize_as_smalluint(size_t_bits)).into_usize();
+
+        let size_t_bits = T::size_in_bits();    // The maximum of size_t_bits is 128. So, it can be cantained in even u8.
+        let chunk_num = n.wrapping_div(U::usize_as_smalluint(size_t_bits)).into_usize();
+        let piece_num = n.wrapping_rem(U::usize_as_smalluint(size_t_bits)).into_usize();
         let zero = T::zero();
         if chunk_num > 0
         {
             for i in 0..chunk_num
             {
-                if self.get_num_(i) != zero
+                if !self.get_num_(i).is_zero()
                 {
                     self.set_underflow();
                     break;
@@ -51087,30 +51108,34 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
         }
         if piece_num == 0
             { return; }
-        if (self.get_num_(0) << T::usize_as_smalluint(size_t_bits - piece_num)) != zero
+        if !(self.get_num_(0) << T::usize_as_smalluint(size_t_bits - piece_num)).is_zero()
             { self.set_underflow(); }
 
 
         let mut num: T;
-        let mut carry = T::zero();
+        let mut carry = zero;
         let mut idx = N - 1 - chunk_num;
         let shr = T::usize_as_smalluint(piece_num);
         let shl = T::usize_as_smalluint(size_t_bits - piece_num);
         loop
         {
             num = (self.get_num_(idx) >> shr) | carry;
-            carry = if piece_num.is_zero() { zero } else { self.get_num_(idx) << shl };
+            carry = if piece_num.is_zero()
+                        { zero }
+                    else
+                        { self.get_num_(idx) << shl };
             self.set_num_(idx, num);
             if idx == 0
                 { break; }
             idx -= 1;
         }
-        if carry != zero
+        if !carry.is_zero()
             { self.set_underflow(); }
     }
 
     // pub fn checked_shift_right<U>(&self, n: U) -> Option<Self>
-    /// Shift right the field `number: [T;N]` to the right by `n`.
+    /// Shift right the field `number: [T;N]` to the right by `n`,
+    /// and returns the result, wrapped by `some` of enum `Option`.
     /// 
     /// # Arguments
     /// `n` indicates how many bits this method shift `self` left by,
@@ -51266,18 +51291,12 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
             + BitXor<Output=U> + BitXorAssign + Not<Output=U>
             + PartialEq + PartialOrd
     {
-        if Self::size_in_bits().into_u128() < n.into_u128()
-        {
-            return None;
-        }
-        let mut res = self.clone();
-        res.shift_right_assign(n);
-        Some(res)
+        checked_calc!(self, Self::shift_right, n, Self::size_in_bits().into_u128() <= n.into_u128());
     }
 
     // pub fn unchecked_shift_right<U>(&self, n: U) -> Self
     /// shifts the field `number: [T;N]` to the right by `n`,
-    /// and returns it to `self` back.
+    /// and returns the result.
     /// 
     /// # Arguments
     /// `n` indicates how many bits this method shift `self` left by,
@@ -51660,18 +51679,12 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
             + BitXor<Output=U> + BitXorAssign + Not<Output=U>
             + PartialEq + PartialOrd
     {
-        let m = n.into_u128().wrapping_rem(self.length_in_bits().into_u128());
-        let k = self.length_in_bits().into_u128() - m;
-        let flags = self.get_all_flags();
-        let right = self.shift_right(k);
-        self.shift_left_assign(m);
-        self.or_assign(&right);
-        self.set_all_flags(flags);
+        calc_rotate_assign!(self, Self::shift_left_assign, Self::shift_right, n);
     }
 
     // pub fn rotate_right<U>(&self, n: U) -> Self
     /// Rotates the field `number: [T;N]` to the right by `n`,
-    /// and returns the result to `self` back.
+    /// and returns the result.
     /// 
     /// # Arguments
     /// `n` indicates how many bits this method shift `self` left by,
@@ -51947,104 +51960,171 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
             + BitXor<Output=U> + BitXorAssign + Not<Output=U>
             + PartialEq + PartialOrd
     {
-        let m = n.into_u128().wrapping_rem(self.length_in_bits().into_u128());
-        let k = self.length_in_bits().into_u128() - m;
-        let flags = self.get_all_flags();
-        let left = self.shift_left(k);
-        self.shift_right_assign(m);
-        self.or_assign(&left);
-        self.set_all_flags(flags);
+        calc_rotate_assign!(self, Self::shift_right_assign, Self::shift_left, n);
     }
 
-    // pub fn bitand(&self, rhs: &Self) -> Self
-    /// Performs the bitwise AND (&) operation.
+    // pub fn and(&self, rhs: &Self) -> Self
+    /// Performs the bitwise AND (&) operation, and then returns the result.
+    /// 
+    /// # Arguments
+    /// - `rhs` is the reference of another object that AND (&) operation is
+    ///   performed with.
+    /// - `rhs` is of `&Self` type.
     /// 
     /// # Output
     /// It returns the result after applying the bitwise AND operation.
-    ///  
+    /// 
     /// # Example 1
     /// ```
-    /// use cryptocol::number::*;
     /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u32);
     /// 
-    /// define_utypes_with!(u128);
+    /// let a_biguint = U256::from_str_radix("10101010_11001100_11110000_11111111_00000000_11111111_11111111_00000000_00000000_11111111_11111111_11111111_00000000_00000000_00000000_11111111_11111111_11111111_11111111_00000000_00000000_00000000_00000000_10110011_10001111_00001111_10000011_11110000_00111111_10000000_11111111_00000000", 2).unwrap();
+    /// let b_biguint = U256::from_str_radix("11111111_11111111_11111111_00000000_00000000_00000000_11111111_11111111_11111111_11111111_00000000_00000000_00000000_00000000_10110011_10001111_00001111_10000011_11110000_00111111_10000000_11111111_00000000_10101010_11001100_11110000_11111111_00000000_11111111_11111111_00000000_00000000", 2).unwrap();
+    /// let c_biguint = a_biguint.and(&b_biguint);
     /// 
-    /// let a = U512::from_str_radix("11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101", 2).unwrap();
-    /// let b = U512::from_str_radix("11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000", 2).unwrap();
-    /// let c = a.and(&b);
-    /// 
-    /// println!("a = {}", a.to_string_with_radix(2).unwrap());
-    /// println!("b = {}", b.to_string_with_radix(2).unwrap());
-    /// println!("a & b = {}", c.to_string_with_radix(2).unwrap());
-    /// 
-    /// assert_eq!(c, a & b);
+    /// println!("{} & {} = {}", a_biguint.to_string_with_radix_and_stride(2, 8).unwrap(), b_biguint.to_string_with_radix_and_stride(2, 8).unwrap(), c_biguint.to_string_with_radix_and_stride(2, 8).unwrap());
+    /// assert_eq!(c_biguint.to_string_with_radix_and_stride(2, 8).unwrap(), "10101010_11001100_11110000_00000000_00000000_00000000_11111111_00000000_00000000_11111111_00000000_00000000_00000000_00000000_00000000_10001111_00001111_10000011_11110000_00000000_00000000_00000000_00000000_10100010_10001100_00000000_10000011_00000000_00111111_10000000_00000000_00000000");
+    /// assert_eq!(c_biguint.is_overflow(), false);
+    /// assert_eq!(c_biguint.is_underflow(), false);
+    /// assert_eq!(c_biguint.is_infinity(), false);
+    /// assert_eq!(c_biguint.is_undefined(), false);
+    /// assert_eq!(c_biguint.is_divided_by_zero(), false);
     /// ```
     /// 
     /// # Example 2
     /// ```
-    /// use cryptocol::number::*;
     /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u32);
     /// 
-    /// define_utypes_with!(u128);
+    /// let a_biguint = U256::from_str_radix("10101010_11001100_11110000_11111111_00000000_11111111_11111111_00000000_00000000_11111111_11111111_11111111_00000000_00000000_00000000_11111111_11111111_11111111_11111111_00000000_00000000_00000000_00000000_10110011_10001111_00001111_10000011_11110000_00111111_10000000_11111111_00000000", 2).unwrap();
+    /// let b_biguint = U256::max();
+    /// let c_biguint = a_biguint.and(&b_biguint);
     /// 
-    /// let a = U512::from_str_radix("11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101", 2).unwrap();
-    /// let b = U512::zero();
-    /// let c = a.and(&b);
+    /// println!("{} & {} = {}", a_biguint.to_string_with_radix_and_stride(2, 8).unwrap(), b_biguint.to_string_with_radix_and_stride(2, 8).unwrap(), c_biguint.to_string_with_radix_and_stride(2, 8).unwrap());
+    /// assert_eq!(c_biguint.to_string_with_radix_and_stride(2, 8).unwrap(), "10101010_11001100_11110000_11111111_00000000_11111111_11111111_00000000_00000000_11111111_11111111_11111111_00000000_00000000_00000000_11111111_11111111_11111111_11111111_00000000_00000000_00000000_00000000_10110011_10001111_00001111_10000011_11110000_00111111_10000000_11111111_00000000");
+    /// assert_eq!(c_biguint.is_overflow(), false);
+    /// assert_eq!(c_biguint.is_underflow(), false);
+    /// assert_eq!(c_biguint.is_infinity(), false);
+    /// assert_eq!(c_biguint.is_undefined(), false);
+    /// assert_eq!(c_biguint.is_divided_by_zero(), false);
+    /// ```
     /// 
-    /// println!("a = {}", a.to_string_with_radix(2).unwrap());
-    /// println!("b = {}", b.to_string_with_radix(2).unwrap());
-    /// println!("a & b = {}", c.to_string_with_radix(2).unwrap());
+    /// # Example 3
+    /// ```
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u32);
     /// 
-    /// assert_eq!(c, a & b);
+    /// let a_biguint = U256::from_str_radix("10101010_11001100_11110000_11111111_00000000_11111111_11111111_00000000_00000000_11111111_11111111_11111111_00000000_00000000_00000000_11111111_11111111_11111111_11111111_00000000_00000000_00000000_00000000_10110011_10001111_00001111_10000011_11110000_00111111_10000000_11111111_00000000", 2).unwrap();
+    /// let b_biguint = U256::zero();
+    /// let c_biguint = a_biguint.and(&b_biguint);
+    /// 
+    /// println!("{} & {} = {}", a_biguint.to_string_with_radix_and_stride(2, 8).unwrap(), b_biguint.to_string_with_radix_and_stride(2, 8).unwrap(), c_biguint.to_string_with_radix_and_stride(2, 8).unwrap());
+    /// assert_eq!(c_biguint.to_string(), "0");
+    /// assert_eq!(c_biguint.is_overflow(), false);
+    /// assert_eq!(c_biguint.is_underflow(), false);
+    /// assert_eq!(c_biguint.is_infinity(), false);
+    /// assert_eq!(c_biguint.is_undefined(), false);
+    /// assert_eq!(c_biguint.is_divided_by_zero(), false);
     /// ```
     pub fn and(&self, rhs: &Self) -> Self
     {
-        let mut s = self.clone();
-        s.and_assign(rhs);
-        s
+        calc_assign_to_calc!(self, Self::and_assign, rhs);
     }
 
-    // pub fn bitand_assign(&mut self, rhs: &Self)
-    /// Performs the bitwise AND (&) operation, and then assigns the result
-    /// to `self` back after applying the bitwise AND operation.
+    // pub fn and_assign(&mut self, rhs: &Self)
+    /// Performs the bitwise AND (&) operation,
+    /// and then assigns the result to `self` back.
+    /// 
+    /// # Arguments
+    /// - `rhs` is the reference to another object that the AND (&) operation
+    ///   is performed with.
+    /// - `rhs` is of `&Self` type.
     /// 
     /// # Example 1
     /// ```
-    /// use cryptocol::number::*;
     /// use cryptocol::define_utypes_with;
-    /// define_utypes_with!(u128);
+    /// define_utypes_with!(u64);
     /// 
-    /// let mut a = U512::from_str_radix("11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101", 2).unwrap();
-    /// let b = U512::from_str_radix("11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000", 2).unwrap();
-    /// a.and_assign(&b);
-    /// println!("a = {}", a.to_string_with_radix(2).unwrap());
-    /// assert_eq!(a, U512::from_str_radix("11110000000000001100000000000011100010000001000110101010000000001111000000000000110000000000001110001000000100011010101000000000111100000000000011000000000000111000100000010001101010100000000011110000000000001100000000000011100010000001000110101010000000001111000000000000110000000000001110001000000100011010101000000000", 2).unwrap());
+    /// let mut a_biguint = U256::from_str_radix("10101010_11001100_11110000_11111111_00000000_11111111_11111111_00000000_00000000_11111111_11111111_11111111_00000000_00000000_00000000_11111111_11111111_11111111_11111111_00000000_00000000_00000000_00000000_10110011_10001111_00001111_10000011_11110000_00111111_10000000_11111111_00000000", 2).unwrap();
+    /// println!("Originally, a_biguint = {}", a_biguint.to_string_with_radix_and_stride(2, 8).unwrap());
+    /// assert_eq!(a_biguint.is_overflow(), false);
+    /// assert_eq!(a_biguint.is_underflow(), false);
+    /// assert_eq!(a_biguint.is_infinity(), false);
+    /// assert_eq!(a_biguint.is_undefined(), false);
+    /// assert_eq!(a_biguint.is_divided_by_zero(), false);
+    /// 
+    /// let b_biguint = U256::from_str_radix("11111111_11111111_11111111_00000000_00000000_00000000_11111111_11111111_11111111_11111111_00000000_00000000_00000000_00000000_10110011_10001111_00001111_10000011_11110000_00111111_10000000_11111111_00000000_10101010_11001100_11110000_11111111_00000000_11111111_11111111_00000000_00000000", 2).unwrap();
+    /// a_biguint.and_assign(&b_biguint);
+    /// println!("After a_biguint.and_assign(), a_biguint = {}.", a_biguint.to_string_with_radix_and_stride(2, 8).unwrap());
+    /// assert_eq!(a_biguint.to_string_with_radix_and_stride(2, 8).unwrap(), "10101010_11001100_11110000_00000000_00000000_00000000_11111111_00000000_00000000_11111111_00000000_00000000_00000000_00000000_00000000_10001111_00001111_10000011_11110000_00000000_00000000_00000000_00000000_10100010_10001100_00000000_10000011_00000000_00111111_10000000_00000000_00000000");
+    /// assert_eq!(a_biguint.is_overflow(), false);
+    /// assert_eq!(a_biguint.is_underflow(), false);
+    /// assert_eq!(a_biguint.is_infinity(), false);
+    /// assert_eq!(a_biguint.is_undefined(), false);
+    /// assert_eq!(a_biguint.is_divided_by_zero(), false);
     /// ```
     /// 
     /// # Example 2
     /// ```
-    /// use cryptocol::number::*;
     /// use cryptocol::define_utypes_with;
-    /// define_utypes_with!(u128);
+    /// define_utypes_with!(u64);
     /// 
-    /// let mut a = U512::from_str_radix("11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101", 2).unwrap();
-    /// let b = U512::zero();
-    /// a.and_assign(&b);
-    /// println!("a = {}", a.to_string_with_radix(2).unwrap());
-    /// assert_eq!(a, U512::zero());
+    /// let mut a_biguint = U256::from_str_radix("10101010_11001100_11110000_11111111_00000000_11111111_11111111_00000000_00000000_11111111_11111111_11111111_00000000_00000000_00000000_11111111_11111111_11111111_11111111_00000000_00000000_00000000_00000000_10110011_10001111_00001111_10000011_11110000_00111111_10000000_11111111_00000000", 2).unwrap();
+    /// println!("Originally, a_biguint = {}", a_biguint.to_string_with_radix_and_stride(2, 8).unwrap());
+    /// assert_eq!(a_biguint.is_overflow(), false);
+    /// assert_eq!(a_biguint.is_underflow(), false);
+    /// assert_eq!(a_biguint.is_infinity(), false);
+    /// assert_eq!(a_biguint.is_undefined(), false);
+    /// assert_eq!(a_biguint.is_divided_by_zero(), false);
+    /// 
+    /// let b_biguint = U256::max();
+    /// a_biguint.and_assign(&b_biguint);
+    /// println!("After a_biguint.and_assign(), a_biguint = {}.", a_biguint.to_string_with_radix_and_stride(2, 8).unwrap());
+    /// assert_eq!(a_biguint.to_string_with_radix_and_stride(2, 8).unwrap(), "10101010_11001100_11110000_11111111_00000000_11111111_11111111_00000000_00000000_11111111_11111111_11111111_00000000_00000000_00000000_11111111_11111111_11111111_11111111_00000000_00000000_00000000_00000000_10110011_10001111_00001111_10000011_11110000_00111111_10000000_11111111_00000000");
+    /// assert_eq!(a_biguint.is_overflow(), false);
+    /// assert_eq!(a_biguint.is_underflow(), false);
+    /// assert_eq!(a_biguint.is_infinity(), false);
+    /// assert_eq!(a_biguint.is_undefined(), false);
+    /// assert_eq!(a_biguint.is_divided_by_zero(), false);
+    /// ```
+    /// 
+    /// # Example 3
+    /// ```
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u64);
+    /// 
+    /// let mut a_biguint = U256::from_str_radix("10101010_11001100_11110000_11111111_00000000_11111111_11111111_00000000_00000000_11111111_11111111_11111111_00000000_00000000_00000000_11111111_11111111_11111111_11111111_00000000_00000000_00000000_00000000_10110011_10001111_00001111_10000011_11110000_00111111_10000000_11111111_00000000", 2).unwrap();
+    /// println!("Originally, a_biguint = {}", a_biguint.to_string_with_radix_and_stride(2, 8).unwrap());
+    /// assert_eq!(a_biguint.is_overflow(), false);
+    /// assert_eq!(a_biguint.is_underflow(), false);
+    /// assert_eq!(a_biguint.is_infinity(), false);
+    /// assert_eq!(a_biguint.is_undefined(), false);
+    /// assert_eq!(a_biguint.is_divided_by_zero(), false);
+    /// 
+    /// let b_biguint = U256::zero();
+    /// a_biguint.and_assign(&b_biguint);
+    /// println!("After a_biguint.and_assign(), a_biguint = {}.", a_biguint.to_string_with_radix_and_stride(2, 8).unwrap());
+    /// assert_eq!(a_biguint.to_string(), "0");
+    /// assert_eq!(a_biguint.is_overflow(), false);
+    /// assert_eq!(a_biguint.is_underflow(), false);
+    /// assert_eq!(a_biguint.is_infinity(), false);
+    /// assert_eq!(a_biguint.is_undefined(), false);
+    /// assert_eq!(a_biguint.is_divided_by_zero(), false);
     /// ```
     pub fn and_assign(&mut self, rhs: &Self)
     {
-        let mut n: T;
-        for idx in 0..N
-        {
-            n = self.get_num_(idx) & rhs.get_num_(idx);
-            self.set_num_(idx, n);
-        }
+        bitcalc!(self, &, rhs);
     }
 
+    //===================
     // pub fn or(self, rhs: &Self) -> Self
-    /// Performs the bitwise OR (|) operation.
+    /// Performs the bitwise OR (|) operation, and then returns the result.
+    /// 
+    /// # Arguments
+    /// - `rhs` is the reference of another object that OR (|) operation is
+    ///   performed with.
+    /// - `rhs` is of `&Self` type.
     /// 
     /// # Output
     /// It returns the result after applying the bitwise OR (|) operation.
@@ -52052,92 +52132,154 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// # Example 1
     /// ```
     /// use cryptocol::define_utypes_with;
-    /// 
     /// define_utypes_with!(u128);
     /// 
-    /// let a = U256::from_str_radix("11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101", 2).unwrap();
-    /// let b = U256::from_str_radix("11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000", 2).unwrap();
-    /// let c = a.or(&b);
+    /// let a_biguint = U256::from_str_radix("10101010_11001100_11110000_11111111_00000000_11111111_11111111_00000000_00000000_11111111_11111111_11111111_00000000_00000000_00000000_11111111_11111111_11111111_11111111_00000000_00000000_00000000_00000000_10110011_10001111_00001111_10000011_11110000_00111111_10000000_11111111_00000000", 2).unwrap();
+    /// let b_biguint = U256::from_str_radix("11111111_11111111_11111111_00000000_00000000_00000000_11111111_11111111_11111111_11111111_00000000_00000000_00000000_00000000_10110011_10001111_00001111_10000011_11110000_00111111_10000000_11111111_00000000_10101010_11001100_11110000_11111111_00000000_11111111_11111111_00000000_00000000", 2).unwrap();
+    /// let c_biguint = a_biguint.or(&b_biguint);
     /// 
-    /// println!("a = {}", a.to_string_with_radix(2).unwrap());
-    /// println!("b = {}", b.to_string_with_radix(2).unwrap());
-    /// println!("a | b = {}", c.to_string_with_radix(2).unwrap());
-    /// 
-    /// assert_eq!(c, a.or(&b));
+    /// println!("{} | {} = {}", a_biguint.to_string_with_radix_and_stride(2, 8).unwrap(), b_biguint.to_string_with_radix_and_stride(2, 8).unwrap(), c_biguint.to_string_with_radix_and_stride(2, 8).unwrap());
+    /// assert_eq!(c_biguint.to_string_with_radix_and_stride(2, 8).unwrap(), "11111111_11111111_11111111_11111111_00000000_11111111_11111111_11111111_11111111_11111111_11111111_11111111_00000000_00000000_10110011_11111111_11111111_11111111_11111111_00111111_10000000_11111111_00000000_10111011_11001111_11111111_11111111_11110000_11111111_11111111_11111111_00000000");
+    /// assert_eq!(c_biguint.is_overflow(), false);
+    /// assert_eq!(c_biguint.is_underflow(), false);
+    /// assert_eq!(c_biguint.is_infinity(), false);
+    /// assert_eq!(c_biguint.is_undefined(), false);
+    /// assert_eq!(c_biguint.is_divided_by_zero(), false);
     /// ```
     /// 
     /// # Example 2
     /// ```
-    /// use cryptocol::number::*;
     /// use cryptocol::define_utypes_with;
-    /// 
     /// define_utypes_with!(u128);
     /// 
-    /// let a = U256::from_str_radix("11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101", 2).unwrap();
-    /// let b = U256::max();
-    /// let c = a.or(&b);
+    /// let a_biguint = U256::from_str_radix("10101010_11001100_11110000_11111111_00000000_11111111_11111111_00000000_00000000_11111111_11111111_11111111_00000000_00000000_00000000_11111111_11111111_11111111_11111111_00000000_00000000_00000000_00000000_10110011_10001111_00001111_10000011_11110000_00111111_10000000_11111111_00000000", 2).unwrap();
+    /// let b_biguint = U256::max();
+    /// let c_biguint = a_biguint.or(&b_biguint);
     /// 
-    /// println!("a = {}", a.to_string_with_radix(2).unwrap());
-    /// println!("b = {}", b.to_string_with_radix(2).unwrap());
-    /// println!("a | b = {}", c.to_string_with_radix(2).unwrap());
+    /// println!("{} | {} = {}", a_biguint.to_string_with_radix_and_stride(2, 8).unwrap(), b_biguint.to_string_with_radix_and_stride(2, 8).unwrap(), c_biguint.to_string_with_radix_and_stride(2, 8).unwrap());
+    /// assert_eq!(c_biguint.to_string_with_radix_and_stride(2, 8).unwrap(), "11111111_11111111_11111111_11111111_11111111_11111111_11111111_11111111_11111111_11111111_11111111_11111111_11111111_11111111_11111111_11111111_11111111_11111111_11111111_11111111_11111111_11111111_11111111_11111111_11111111_11111111_11111111_11111111_11111111_11111111_11111111_11111111");
+    /// assert_eq!(c_biguint.is_overflow(), false);
+    /// assert_eq!(c_biguint.is_underflow(), false);
+    /// assert_eq!(c_biguint.is_infinity(), false);
+    /// assert_eq!(c_biguint.is_undefined(), false);
+    /// assert_eq!(c_biguint.is_divided_by_zero(), false);
+    /// ```
     /// 
-    /// assert_eq!(c, U256::max());
+    /// # Example 3
+    /// ```
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u128);
+    /// 
+    /// let a_biguint = U256::from_str_radix("10101010_11001100_11110000_11111111_00000000_11111111_11111111_00000000_00000000_11111111_11111111_11111111_00000000_00000000_00000000_11111111_11111111_11111111_11111111_00000000_00000000_00000000_00000000_10110011_10001111_00001111_10000011_11110000_00111111_10000000_11111111_00000000", 2).unwrap();
+    /// let b_biguint = U256::zero();
+    /// let c_biguint = a_biguint.or(&b_biguint);
+    /// 
+    /// println!("{} | {} = {}", a_biguint.to_string_with_radix_and_stride(2, 8).unwrap(), b_biguint.to_string_with_radix_and_stride(2, 8).unwrap(), c_biguint.to_string_with_radix_and_stride(2, 8).unwrap());
+    /// assert_eq!(c_biguint.to_string_with_radix_and_stride(2, 8).unwrap(), "10101010_11001100_11110000_11111111_00000000_11111111_11111111_00000000_00000000_11111111_11111111_11111111_00000000_00000000_00000000_11111111_11111111_11111111_11111111_00000000_00000000_00000000_00000000_10110011_10001111_00001111_10000011_11110000_00111111_10000000_11111111_00000000");
+    /// assert_eq!(c_biguint.is_overflow(), false);
+    /// assert_eq!(c_biguint.is_underflow(), false);
+    /// assert_eq!(c_biguint.is_infinity(), false);
+    /// assert_eq!(c_biguint.is_undefined(), false);
+    /// assert_eq!(c_biguint.is_divided_by_zero(), false);
     /// ```
     pub fn or(&self, rhs: &Self) -> Self
     {
-        let mut s = self.clone();
-        s.or_assign(&rhs);
-        s
+        calc_assign_to_calc!(self, Self::or_assign, rhs);
     }
 
     // pub fn or_assign(&mut self, rhs: &Self)
-    /// Performs the bitwise OR (|) operation, and then assigns the result
-    /// to `self` after applying the bitwise OR (|) operation.
+    /// Performs the bitwise OR (|) operation,
+    /// and then assigns the result to `self` back.
+    /// 
+    /// # Arguments
+    /// - `rhs` is the reference to another object that the OR (|) operation
+    ///   is performed with.
+    /// - `rhs` is of `&Self` type.
     /// 
     /// # Example 1
     /// ```
-    /// use cryptocol::number::*;
     /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u8);
     /// 
-    /// define_utypes_with!(u128);
+    /// let mut a_biguint = U256::from_str_radix("10101010_11001100_11110000_11111111_00000000_11111111_11111111_00000000_00000000_11111111_11111111_11111111_00000000_00000000_00000000_11111111_11111111_11111111_11111111_00000000_00000000_00000000_00000000_10110011_10001111_00001111_10000011_11110000_00111111_10000000_11111111_00000000", 2).unwrap();
+    /// println!("Originally, a_biguint = {}", a_biguint.to_string_with_radix_and_stride(2, 8).unwrap());
+    /// assert_eq!(a_biguint.is_overflow(), false);
+    /// assert_eq!(a_biguint.is_underflow(), false);
+    /// assert_eq!(a_biguint.is_infinity(), false);
+    /// assert_eq!(a_biguint.is_undefined(), false);
+    /// assert_eq!(a_biguint.is_divided_by_zero(), false);
     /// 
-    /// let mut a = U256::from_str_radix("11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101", 2).unwrap();
-    /// let b = U256::from_str_radix("11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000", 2).unwrap();
-    /// a.or_assign(&b);
-    /// 
-    /// println!("a = {}", a.to_string_with_radix(2).unwrap());
-    /// 
-    /// assert_eq!(a, U256::from_str_radix("1111111100001111111111000011111111101110011101111111111101010101111111110000111111111100001111111110111001110111111111110101010111111111000011111111110000111111111011100111011111111111010101011111111100001111111111000011111111101110011101111111111101010101", 2).unwrap());
+    /// let b_biguint = U256::from_str_radix("11111111_11111111_11111111_00000000_00000000_00000000_11111111_11111111_11111111_11111111_00000000_00000000_00000000_00000000_10110011_10001111_00001111_10000011_11110000_00111111_10000000_11111111_00000000_10101010_11001100_11110000_11111111_00000000_11111111_11111111_00000000_00000000", 2).unwrap();
+    /// a_biguint.or_assign(&b_biguint);
+    /// println!("After a_biguint.or_assign(), a_biguint = {}.", a_biguint.to_string_with_radix_and_stride(2, 8).unwrap());
+    /// assert_eq!(a_biguint.to_string_with_radix_and_stride(2, 8).unwrap(), "11111111_11111111_11111111_11111111_00000000_11111111_11111111_11111111_11111111_11111111_11111111_11111111_00000000_00000000_10110011_11111111_11111111_11111111_11111111_00111111_10000000_11111111_00000000_10111011_11001111_11111111_11111111_11110000_11111111_11111111_11111111_00000000");
+    /// assert_eq!(a_biguint.is_overflow(), false);
+    /// assert_eq!(a_biguint.is_underflow(), false);
+    /// assert_eq!(a_biguint.is_infinity(), false);
+    /// assert_eq!(a_biguint.is_undefined(), false);
+    /// assert_eq!(a_biguint.is_divided_by_zero(), false);
     /// ```
     /// 
     /// # Example 2
     /// ```
-    /// use cryptocol::number::*;
     /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u8);
     /// 
-    /// define_utypes_with!(u128);
+    /// let mut a_biguint = U256::from_str_radix("10101010_11001100_11110000_11111111_00000000_11111111_11111111_00000000_00000000_11111111_11111111_11111111_00000000_00000000_00000000_11111111_11111111_11111111_11111111_00000000_00000000_00000000_00000000_10110011_10001111_00001111_10000011_11110000_00111111_10000000_11111111_00000000", 2).unwrap();
+    /// println!("Originally, a_biguint = {}", a_biguint.to_string_with_radix_and_stride(2, 8).unwrap());
+    /// assert_eq!(a_biguint.is_overflow(), false);
+    /// assert_eq!(a_biguint.is_underflow(), false);
+    /// assert_eq!(a_biguint.is_infinity(), false);
+    /// assert_eq!(a_biguint.is_undefined(), false);
+    /// assert_eq!(a_biguint.is_divided_by_zero(), false);
     /// 
-    /// let mut a = U256::from_str_radix("11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101", 2).unwrap();
-    /// let b = U256::max();
-    /// a.or_assign(&b);
+    /// let b_biguint = U256::max();
+    /// a_biguint.or_assign(&b_biguint);
+    /// println!("After a_biguint.or_assign(), a_biguint = {}.", a_biguint.to_string_with_radix_and_stride(2, 8).unwrap());
+    /// assert_eq!(a_biguint.to_string_with_radix_and_stride(2, 8).unwrap(), "11111111_11111111_11111111_11111111_11111111_11111111_11111111_11111111_11111111_11111111_11111111_11111111_11111111_11111111_11111111_11111111_11111111_11111111_11111111_11111111_11111111_11111111_11111111_11111111_11111111_11111111_11111111_11111111_11111111_11111111_11111111_11111111");
+    /// assert_eq!(a_biguint.is_overflow(), false);
+    /// assert_eq!(a_biguint.is_underflow(), false);
+    /// assert_eq!(a_biguint.is_infinity(), false);
+    /// assert_eq!(a_biguint.is_undefined(), false);
+    /// assert_eq!(a_biguint.is_divided_by_zero(), false);
+    /// ```
     /// 
-    /// println!("a = {}", a.to_string_with_radix(2).unwrap());
+    /// # Example 3
+    /// ```
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u8);
     /// 
-    /// assert_eq!(a, U256::max());
+    /// let mut a_biguint = U256::from_str_radix("10101010_11001100_11110000_11111111_00000000_11111111_11111111_00000000_00000000_11111111_11111111_11111111_00000000_00000000_00000000_11111111_11111111_11111111_11111111_00000000_00000000_00000000_00000000_10110011_10001111_00001111_10000011_11110000_00111111_10000000_11111111_00000000", 2).unwrap();
+    /// println!("Originally, a_biguint = {}", a_biguint.to_string_with_radix_and_stride(2, 8).unwrap());
+    /// assert_eq!(a_biguint.is_overflow(), false);
+    /// assert_eq!(a_biguint.is_underflow(), false);
+    /// assert_eq!(a_biguint.is_infinity(), false);
+    /// assert_eq!(a_biguint.is_undefined(), false);
+    /// assert_eq!(a_biguint.is_divided_by_zero(), false);
+    /// 
+    /// let b_biguint = U256::zero();
+    /// a_biguint.or_assign(&b_biguint);
+    /// println!("After a_biguint.or_assign(), a_biguint = {}.", a_biguint.to_string_with_radix_and_stride(2, 8).unwrap());
+    /// assert_eq!(a_biguint.to_string_with_radix_and_stride(2, 8).unwrap(), "10101010_11001100_11110000_11111111_00000000_11111111_11111111_00000000_00000000_11111111_11111111_11111111_00000000_00000000_00000000_11111111_11111111_11111111_11111111_00000000_00000000_00000000_00000000_10110011_10001111_00001111_10000011_11110000_00111111_10000000_11111111_00000000");
+    /// assert_eq!(a_biguint.is_overflow(), false);
+    /// assert_eq!(a_biguint.is_underflow(), false);
+    /// assert_eq!(a_biguint.is_infinity(), false);
+    /// assert_eq!(a_biguint.is_undefined(), false);
+    /// assert_eq!(a_biguint.is_divided_by_zero(), false);
     /// ```
     pub fn or_assign(&mut self, rhs: &Self)
     {
-        let mut n: T;
-        for idx in 0..N
-        {
-            n = self.get_num_(idx) | rhs.get_num_(idx);
-            self.set_num_(idx, n);
-        }
+        bitcalc!(self, |, rhs);
     }
 
-
     // pub fn xor(self, rhs: &Self) -> Self
-    /// Performs the bitwise XOR (^) operation.
+    /// Performs the bitwise XOR (^) operation,
+    /// and then assigns the result to `self` back.
+    /// 
+    /// # Arguments
+    /// - `rhs` is the reference to another object that the AND (&) operation
+    ///   is performed with.
+    /// - `rhs` is of `&Self` type.
     /// 
     /// # Output
     /// It returns the result after applying the bitwise XOR (^) operation.
@@ -52145,91 +52287,151 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// # Example 1
     /// ```
     /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u16);
     /// 
-    /// define_utypes_with!(u128);
+    /// let a_biguint = U256::from_str_radix("10101010_11001100_11110000_11111111_00000000_11111111_11111111_00000000_00000000_11111111_11111111_11111111_00000000_00000000_00000000_11111111_11111111_11111111_11111111_00000000_00000000_00000000_00000000_10110011_10001111_00001111_10000011_11110000_00111111_10000000_11111111_00000000", 2).unwrap();
+    /// let b_biguint = U256::from_str_radix("11111111_11111111_11111111_00000000_00000000_00000000_11111111_11111111_11111111_11111111_00000000_00000000_00000000_00000000_10110011_10001111_00001111_10000011_11110000_00111111_10000000_11111111_00000000_10101010_11001100_11110000_11111111_00000000_11111111_11111111_00000000_00000000", 2).unwrap();
+    /// let c_biguint = a_biguint.xor(&b_biguint);
     /// 
-    /// let a = U256::from_str_radix("11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101", 2).unwrap();
-    /// let b = U256::from_str_radix("11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000", 2).unwrap();
-    /// let c = a.xor(&b);
-    /// 
-    /// println!("a = {}", a.to_string_with_radix(2).unwrap());
-    /// println!("b = {}", b.to_string_with_radix(2).unwrap());
-    /// println!("a ^ b = {}", c.to_string_with_radix(2).unwrap());
-    /// 
-    /// assert_eq!(c, a.or(&b));
+    /// println!("{} ^ {} = {}", a_biguint.to_string_with_radix_and_stride(2, 8).unwrap(), b_biguint.to_string_with_radix_and_stride(2, 8).unwrap(), c_biguint.to_string_with_radix_and_stride(2, 8).unwrap());
+    /// assert_eq!(c_biguint.to_string_with_radix_and_stride(2, 8).unwrap(), "1010101_00110011_00001111_11111111_00000000_11111111_00000000_11111111_11111111_00000000_11111111_11111111_00000000_00000000_10110011_01110000_11110000_01111100_00001111_00111111_10000000_11111111_00000000_00011001_01000011_11111111_01111100_11110000_11000000_01111111_11111111_00000000");
+    /// assert_eq!(c_biguint.is_overflow(), false);
+    /// assert_eq!(c_biguint.is_underflow(), false);
+    /// assert_eq!(c_biguint.is_infinity(), false);
+    /// assert_eq!(c_biguint.is_undefined(), false);
+    /// assert_eq!(c_biguint.is_divided_by_zero(), false);
     /// ```
     /// 
     /// # Example 2
     /// ```
-    /// use cryptocol::number::*;
     /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u16);
     /// 
-    /// define_utypes_with!(u128);
+    /// let a_biguint = U256::from_str_radix("10101010_11001100_11110000_11111111_00000000_11111111_11111111_00000000_00000000_11111111_11111111_11111111_00000000_00000000_00000000_11111111_11111111_11111111_11111111_00000000_00000000_00000000_00000000_10110011_10001111_00001111_10000011_11110000_00111111_10000000_11111111_00000000", 2).unwrap();
+    /// let b_biguint = U256::max();
+    /// let c_biguint = a_biguint.xor(&b_biguint);
     /// 
-    /// let a = U256::from_str_radix("11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101", 2).unwrap();
-    /// let b = U256::max();
-    /// let c = a.xor(&b);
+    /// println!("{} ^ {} = {}", a_biguint.to_string_with_radix_and_stride(2, 8).unwrap(), b_biguint.to_string_with_radix_and_stride(2, 8).unwrap(), c_biguint.to_string_with_radix_and_stride(2, 8).unwrap());
+    /// assert_eq!(c_biguint.to_string_with_radix_and_stride(2, 8).unwrap(), "1010101_00110011_00001111_00000000_11111111_00000000_00000000_11111111_11111111_00000000_00000000_00000000_11111111_11111111_11111111_00000000_00000000_00000000_00000000_11111111_11111111_11111111_11111111_01001100_01110000_11110000_01111100_00001111_11000000_01111111_00000000_11111111");
+    /// assert_eq!(c_biguint.is_overflow(), false);
+    /// assert_eq!(c_biguint.is_underflow(), false);
+    /// assert_eq!(c_biguint.is_infinity(), false);
+    /// assert_eq!(c_biguint.is_undefined(), false);
+    /// assert_eq!(c_biguint.is_divided_by_zero(), false);
+    /// ```
     /// 
-    /// println!("a = {}", a.to_string_with_radix(2).unwrap());
-    /// println!("b = {}", b.to_string_with_radix(2).unwrap());
-    /// println!("a ^ b = {}", c.to_string_with_radix(2).unwrap());
+    /// # Example 3
+    /// ```
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u16);
     /// 
-    /// assert_eq!(c, U256::max());
+    /// let a_biguint = U256::from_str_radix("10101010_11001100_11110000_11111111_00000000_11111111_11111111_00000000_00000000_11111111_11111111_11111111_00000000_00000000_00000000_11111111_11111111_11111111_11111111_00000000_00000000_00000000_00000000_10110011_10001111_00001111_10000011_11110000_00111111_10000000_11111111_00000000", 2).unwrap();
+    /// let b_biguint = U256::zero();
+    /// let c_biguint = a_biguint.xor(&b_biguint);
+    /// 
+    /// println!("{} ^ {} = {}", a_biguint.to_string_with_radix_and_stride(2, 8).unwrap(), b_biguint.to_string_with_radix_and_stride(2, 8).unwrap(), c_biguint.to_string_with_radix_and_stride(2, 8).unwrap());
+    /// assert_eq!(c_biguint.to_string_with_radix_and_stride(2, 8).unwrap(), "10101010_11001100_11110000_11111111_00000000_11111111_11111111_00000000_00000000_11111111_11111111_11111111_00000000_00000000_00000000_11111111_11111111_11111111_11111111_00000000_00000000_00000000_00000000_10110011_10001111_00001111_10000011_11110000_00111111_10000000_11111111_00000000");
+    /// assert_eq!(c_biguint.is_overflow(), false);
+    /// assert_eq!(c_biguint.is_underflow(), false);
+    /// assert_eq!(c_biguint.is_infinity(), false);
+    /// assert_eq!(c_biguint.is_undefined(), false);
+    /// assert_eq!(c_biguint.is_divided_by_zero(), false);
     /// ```
     pub fn xor(&self, rhs: &Self) -> Self
     {
-        let mut s = self.clone();
-        s.or_assign(&rhs);
-        s
+        calc_assign_to_calc!(self, Self::xor_assign, rhs);
     }
 
     // pub fn xor_assign(&mut self, rhs: &Self)
-    /// Performs the bitwise XOR (^) operation, and then assigns the result
-    /// to `self` after applying the bitwise XOR (^) operation.
+    /// Performs the bitwise XOR (^) operation,
+    /// and then assigns the result to `self` back.
+    /// 
+    /// # Arguments
+    /// - `rhs` is the reference to another object that the AND (&) operation
+    ///   is performed with.
+    /// - `rhs` is of `&Self` type.
     /// 
     /// # Example 1
     /// ```
-    /// use cryptocol::number::*;
     /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u32);
     /// 
-    /// define_utypes_with!(u128);
+    /// let mut a_biguint = U256::from_str_radix("10101010_11001100_11110000_11111111_00000000_11111111_11111111_00000000_00000000_11111111_11111111_11111111_00000000_00000000_00000000_11111111_11111111_11111111_11111111_00000000_00000000_00000000_00000000_10110011_10001111_00001111_10000011_11110000_00111111_10000000_11111111_00000000", 2).unwrap();
+    /// println!("Originally, a_biguint = {}", a_biguint.to_string_with_radix_and_stride(2, 8).unwrap());
+    /// assert_eq!(a_biguint.is_overflow(), false);
+    /// assert_eq!(a_biguint.is_underflow(), false);
+    /// assert_eq!(a_biguint.is_infinity(), false);
+    /// assert_eq!(a_biguint.is_undefined(), false);
+    /// assert_eq!(a_biguint.is_divided_by_zero(), false);
     /// 
-    /// let mut a = U256::from_str_radix("11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101", 2).unwrap();
-    /// let b = U256::from_str_radix("11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000", 2).unwrap();
-    /// a.xor_assign(&b);
-    /// 
-    /// println!("a = {}", a.to_string_with_radix(2).unwrap());
-    /// 
-    /// assert_eq!(a, U256::from_str_radix("1111111100001111111111000011111111101110011101111111111101010101111111110000111111111100001111111110111001110111111111110101010111111111000011111111110000111111111011100111011111111111010101011111111100001111111111000011111111101110011101111111111101010101", 2).unwrap());
+    /// let b_biguint = U256::from_str_radix("11111111_11111111_11111111_00000000_00000000_00000000_11111111_11111111_11111111_11111111_00000000_00000000_00000000_00000000_10110011_10001111_00001111_10000011_11110000_00111111_10000000_11111111_00000000_10101010_11001100_11110000_11111111_00000000_11111111_11111111_00000000_00000000", 2).unwrap();
+    /// a_biguint.xor_assign(&b_biguint);
+    /// println!("After a_biguint.xor_assign(), a_biguint = {}.", a_biguint.to_string_with_radix_and_stride(2, 8).unwrap());
+    /// assert_eq!(a_biguint.to_string_with_radix_and_stride(2, 8).unwrap(), "1010101_00110011_00001111_11111111_00000000_11111111_00000000_11111111_11111111_00000000_11111111_11111111_00000000_00000000_10110011_01110000_11110000_01111100_00001111_00111111_10000000_11111111_00000000_00011001_01000011_11111111_01111100_11110000_11000000_01111111_11111111_00000000");
+    /// assert_eq!(a_biguint.is_overflow(), false);
+    /// assert_eq!(a_biguint.is_underflow(), false);
+    /// assert_eq!(a_biguint.is_infinity(), false);
+    /// assert_eq!(a_biguint.is_undefined(), false);
+    /// assert_eq!(a_biguint.is_divided_by_zero(), false);
     /// ```
     /// 
     /// # Example 2
     /// ```
-    /// use cryptocol::number::*;
     /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u32);
     /// 
-    /// define_utypes_with!(u128);
+    /// let mut a_biguint = U256::from_str_radix("10101010_11001100_11110000_11111111_00000000_11111111_11111111_00000000_00000000_11111111_11111111_11111111_00000000_00000000_00000000_11111111_11111111_11111111_11111111_00000000_00000000_00000000_00000000_10110011_10001111_00001111_10000011_11110000_00111111_10000000_11111111_00000000", 2).unwrap();
+    /// println!("Originally, a_biguint = {}", a_biguint.to_string_with_radix_and_stride(2, 8).unwrap());
+    /// assert_eq!(a_biguint.is_overflow(), false);
+    /// assert_eq!(a_biguint.is_underflow(), false);
+    /// assert_eq!(a_biguint.is_infinity(), false);
+    /// assert_eq!(a_biguint.is_undefined(), false);
+    /// assert_eq!(a_biguint.is_divided_by_zero(), false);
     /// 
-    /// let mut a = U256::from_str_radix("11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101", 2).unwrap();
-    /// let b = U256::max();
-    /// a.xor_assign(&b);
+    /// let b_biguint = U256::max();
+    /// a_biguint.xor_assign(&b_biguint);
+    /// println!("After a_biguint.xor_assign(), a_biguint = {}.", a_biguint.to_string_with_radix_and_stride(2, 8).unwrap());
+    /// assert_eq!(a_biguint.to_string_with_radix_and_stride(2, 8).unwrap(), "1010101_00110011_00001111_00000000_11111111_00000000_00000000_11111111_11111111_00000000_00000000_00000000_11111111_11111111_11111111_00000000_00000000_00000000_00000000_11111111_11111111_11111111_11111111_01001100_01110000_11110000_01111100_00001111_11000000_01111111_00000000_11111111");
+    /// assert_eq!(a_biguint.is_overflow(), false);
+    /// assert_eq!(a_biguint.is_underflow(), false);
+    /// assert_eq!(a_biguint.is_infinity(), false);
+    /// assert_eq!(a_biguint.is_undefined(), false);
+    /// assert_eq!(a_biguint.is_divided_by_zero(), false);
+    /// ```
     /// 
-    /// println!("a = {}", a.to_string_with_radix(2).unwrap());
+    /// # Example 3
+    /// ```
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u32);
     /// 
-    /// assert_eq!(a, U256::max());
+    /// let mut a_biguint = U256::from_str_radix("10101010_11001100_11110000_11111111_00000000_11111111_11111111_00000000_00000000_11111111_11111111_11111111_00000000_00000000_00000000_11111111_11111111_11111111_11111111_00000000_00000000_00000000_00000000_10110011_10001111_00001111_10000011_11110000_00111111_10000000_11111111_00000000", 2).unwrap();
+    /// println!("Originally, a_biguint = {}", a_biguint.to_string_with_radix_and_stride(2, 8).unwrap());
+    /// assert_eq!(a_biguint.is_overflow(), false);
+    /// assert_eq!(a_biguint.is_underflow(), false);
+    /// assert_eq!(a_biguint.is_infinity(), false);
+    /// assert_eq!(a_biguint.is_undefined(), false);
+    /// assert_eq!(a_biguint.is_divided_by_zero(), false);
+    /// 
+    /// let b_biguint = U256::zero();
+    /// a_biguint.xor_assign(&b_biguint);
+    /// println!("After a_biguint.xor_assign(), a_biguint = {}.", a_biguint.to_string_with_radix_and_stride(2, 8).unwrap());
+    /// assert_eq!(a_biguint.to_string_with_radix_and_stride(2, 8).unwrap(), "10101010_11001100_11110000_11111111_00000000_11111111_11111111_00000000_00000000_11111111_11111111_11111111_00000000_00000000_00000000_11111111_11111111_11111111_11111111_00000000_00000000_00000000_00000000_10110011_10001111_00001111_10000011_11110000_00111111_10000000_11111111_00000000");
+    /// assert_eq!(a_biguint.is_overflow(), false);
+    /// assert_eq!(a_biguint.is_underflow(), false);
+    /// assert_eq!(a_biguint.is_infinity(), false);
+    /// assert_eq!(a_biguint.is_undefined(), false);
+    /// assert_eq!(a_biguint.is_divided_by_zero(), false);
     /// ```
     pub fn xor_assign(&mut self, rhs: &Self)
     {
-        let mut n: T;
-        for idx in 0..N
-        {
-            n = self.get_num_(idx) | rhs.get_num_(idx);
-            self.set_num_(idx, n);
-        }
+        bitcalc!(self, ^, rhs);
     }
 
     // pub fn flip(&self) -> Self
-    /// Performs the unary ! operation.
+    /// Performs the bitwise NOT (!) operation, and then returns the result.
+    /// 
+    /// # Output
+    /// It returns the result after applying the bitwise NOT operation.
     /// 
     /// # Example
     /// ```
@@ -52243,7 +52445,8 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     }
 
     // pub fn flip_assign(&mut self)
-    /// Performs the unary ! operation, and assigns the result to `self`.
+    /// Performs the bitwise NOT (!) operation,
+    /// and then assigns the result to `self` back.
     /// 
     /// # Example
     /// ```
@@ -52256,10 +52459,12 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     }
 
     // pub fn reverse_bits(&self) -> Self
-    /// Reverses the order of bits in the integer.
+    /// Reverses the order of bits of the field `number` [T; N] of `self`,
+    /// and then returns the result.
     /// 
     /// # Output
-    /// It returns the reversed order of bits in the integer.
+    /// It returns the reversed order of bits in the field `number` [T; N]
+    /// of `self`.
     /// 
     /// # Features
     /// The least significant bit becomes the most significant bit,
@@ -52277,11 +52482,8 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     }
 
     // pub fn reverse_bits_assign(&mut self)
-    /// Reverses the order of bits in the integer,
-    /// and assigns the result to `self`.
-    /// 
-    /// # Output
-    /// It returns the reversed order of bits in the integer.
+    /// Reverses the order of bits of the field `number` [T; N] of `self`,
+    /// and assigns the result to `self` back.
     /// 
     /// # Features
     /// The least significant bit becomes the most significant bit,
@@ -52307,7 +52509,16 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     }
 
     // pub fn swap_bytes(&self) -> Self
-    /// Reverses the byte order of the integer.
+    /// Reverses the byte order of the field `number` [T; N] of `self`,
+    /// and then returns the result.
+    /// 
+    /// # Output
+    /// It returns the reversed byte order of the field `number` [T; N]
+    /// of `self`.
+    /// 
+    /// # Features
+    /// The least significant byte becomes the most significant byte,
+    /// second least-significant byte becomes second most-significant byte, etc.
     /// 
     /// # Example
     /// ```
@@ -52321,7 +52532,8 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     }
 
     // pub fn swap_bytes_assign(&mut self)
-    /// Reverses the byte order of the integer, and assign the result to `self`.
+    /// Reverses the byte order of the field `number` [T; N] of `self`,
+    /// and assigns the result to `self` back.
     /// 
     /// # Example
     /// ```
