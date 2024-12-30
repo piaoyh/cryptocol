@@ -1,8 +1,16 @@
 # Breaking Changes
 
+## Breaking changes from ver. 0.8.5 to ver. 0.8.6
+
+| Ver. 0.8.5                                            | Ver. 0.8.6                                                       |
+|-------------------------------------------------------|------------------------------------------------------------------|
+| pub fn to_string_with_radix_and_delimiter(&self, ...) | pub fn to_string_with_radix_and_stride_and_delimiter(&self, ...) |
+
+- The method name to_string_with_radix_and_delimiter has been changed into to_string_with_radix_and_stride_and_delimiter for preventing confusion of usage.
+
 ## Breaking changes from ver. 0.8.4 to ver. 0.8.5
 
-## Twelve methods of BigUInt
+### Twelve methods of BigUInt
 
 | Ver. 0.8.4                                        | Ver. 0.8.5 |
 |---------------------------------------------------|------------|
