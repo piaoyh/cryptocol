@@ -1,12 +1,27 @@
 # Breaking Changes
 
 ## Breaking changes from ver. 0.8.5 to ver. 0.8.6
+### Four methods of BigUInt
 
 | Ver. 0.8.5                                            | Ver. 0.8.6                                                       |
 |-------------------------------------------------------|------------------------------------------------------------------|
 | pub fn to_string_with_radix_and_delimiter(&self, ...) | pub fn to_string_with_radix_and_stride_and_delimiter(&self, ...) |
+| pub fn set_flag_bit(&mut self, flag: u8)              | fn set_flag_bit(&mut self, flag: u8)                             |
+| pub fn reset_flag_bit(&mut self, flag: u8)            | fn reset_flag_bit(&mut self, flag: u8)                           |
+| pub fn is_flag_bit_on(&self, flag: u8) -> bool        | fn is_flag_bit_on(&self, flag: u8) -> bool                       |
 
 - The method name to_string_with_radix_and_delimiter has been changed into to_string_with_radix_and_stride_and_delimiter for preventing confusion of usage.
+- The three methods set_flag_bit(), reset_flag_bit(), and is_flag_bit_on() have be changed to be private because they are meaningless unless all the private constants OVERFLOW, UNDERFLOW, INFINITY, DIVIDED_BY_ZERO, and UNDEFINED of struct BigUInt are changed to be public.
+
+### Three methods of BigUInt
+
+| Ver. 0.8.5                           | Ver. 0.8.6 |
+|--------------------------------------|------------|
+| pub fn set_untrustable(&mut self)    | removed    |
+| pub fn reset_untrustable(&mut self)  | removed    |
+| pub fn is_untrustable(&self) -> bool | removed    |
+
+- The methods above have been removed because they are not used.
 
 ## Breaking changes from ver. 0.8.4 to ver. 0.8.5
 

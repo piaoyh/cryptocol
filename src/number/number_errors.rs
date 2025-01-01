@@ -14,7 +14,7 @@
 
 /// In operation of BigUInt, BigInt, and LargeInt, errors can occur. In this
 /// case, the enumerator `NumberErr` will indicate what kind of error occurred.
-#[derive(Debug, Copy, Clone)]
+#[derive(Debug, Copy, Clone, PartialEq)]
 pub enum NumberErr
 {
     /// Indicates that the given radix is out of the valid range.
