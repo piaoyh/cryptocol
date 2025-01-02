@@ -293,7 +293,7 @@ macro_rules! underflowing_calc_assign
 macro_rules! calc_assign_to_calc
 {
     ($me:expr, $func:expr) => {
-        let mut res = Self::from_array(Self::get_number($me).clone());
+        let mut res = Self::from_array($me.get_number().clone());
         $func(&mut res);
         return res;
     };
@@ -304,7 +304,7 @@ macro_rules! calc_assign_to_calc
     // res
 
     ($me:expr, $func:expr, $rhs:expr) => {
-        let mut res = Self::from_array(Self::get_number($me).clone());
+        let mut res = Self::from_array($me.get_number().clone());
         $func(&mut res, $rhs);
         return res;
     };
@@ -315,7 +315,7 @@ macro_rules! calc_assign_to_calc
     // res
 
     ($me:expr, $func:expr, $rhs:expr, $modulo:expr) => {
-        let mut res = Self::from_array(Self::get_number($me).clone());
+        let mut res = Self::from_array($me.get_number().clone());
         $func(&mut res, $rhs, $modulo);
         return res;
     }
@@ -4760,7 +4760,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// along with a carry-out bit.
     /// 
     /// # Arguments
-    /// - `rhs` is to be added to `self`, and is of small-sized unsigned
+    /// - `rhs` is to be added to `self`, and is of primitive unsigned
     ///   integer such as `u8`, `u16`, `u32`, `u64`, and `u128`.
     /// - `carry` is of `bool` type so that `1` may be added to `self`
     ///   if `carry` is `true`.
@@ -4896,7 +4896,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// and returns the resulting carry.
     /// 
     /// # Arguments
-    /// - `rhs` is to be added to `self`, and small-sized unsigned integer
+    /// - `rhs` is to be added to `self`, and primitive unsigned integer
     ///   such as `u8`, `u16`, `u32`, `u64`, and `u128`.
     /// - `carry` is of `bool` type so that `1` may be added to `self`
     ///   if `carry` is `true`.
@@ -5080,7 +5080,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// and returns an addition result `self` + `rhs`.
     /// 
     /// # Arguments
-    /// `rhs` is to be added to `self`, and small-sized unsigned integer
+    /// `rhs` is to be added to `self`, and primitive unsigned integer
     /// such as `u8`, `u16`, `u32`, `u64`, and `u128`.
     /// 
     /// # Panics
@@ -5179,7 +5179,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// and assigns the addition result `self` + `rhs` to `self` back.
     /// 
     /// # Arguments
-    /// `rhs` is to be added to `self`, and small-sized unsigned integer
+    /// `rhs` is to be added to `self`, and primitive unsigned integer
     /// such as `u8`, `u16`, `u32`, `u64`, and `u128`.
     /// 
     /// # Panics
@@ -5281,7 +5281,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// a boolean indicating whether an arithmetic overflow would occur.
     /// 
     /// # Arguments
-    /// `rhs` is to be added to `self`, and small-sized unsigned integer
+    /// `rhs` is to be added to `self`, and primitive unsigned integer
     /// such as `u8`, `u16`, `u32`, `u64`, and `u128`.
     /// 
     /// # Panics
@@ -5381,7 +5381,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// would occur.
     /// 
     /// # Arguments
-    /// `rhs` is to be added to `self`, and small-sized unsigned integer
+    /// `rhs` is to be added to `self`, and primitive unsigned integer
     /// such as `u8`, `u16`, `u32`, `u64`, and `u128`.
     /// 
     /// # Panics
@@ -5490,7 +5490,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// wrapped by `Some` of enum `Option`.
     /// 
     /// # Arguments
-    /// `rhs` is to be added to `self`, and small-sized unsigned integer
+    /// `rhs` is to be added to `self`, and primitive unsigned integer
     /// such as `u8`, `u16`, `u32`, `u64`, and `u128`.
     /// 
     /// # Panics
@@ -5598,7 +5598,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// and returns an addition result `self` + `rhs`.
     /// 
     /// # Arguments
-    /// `rhs` is to be added to `self`, and small-sized unsigned integer
+    /// `rhs` is to be added to `self`, and primitive unsigned integer
     /// such as `u8`, `u16`, `u32`, `u64`, and `u128`.
     /// 
     /// # Panics
@@ -5669,7 +5669,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// saturating at the numeric bounds instead of overflowing.
     /// 
     /// # Arguments
-    /// `rhs` is to be added to `self`, and small-sized unsigned integer
+    /// `rhs` is to be added to `self`, and primitive unsigned integer
     /// such as `u8`, `u16`, `u32`, `u64`, and `u128`.
     /// 
     /// # Panics
@@ -5761,7 +5761,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// and assigns the result to `self` back.
     /// 
     /// # Arguments
-    /// `rhs` is to be added to `self`, and small-sized unsigned integer
+    /// `rhs` is to be added to `self`, and primitive unsigned integer
     /// such as `u8`, `u16`, `u32`, `u64`, and `u128`.
     /// 
     /// # Panics
@@ -5875,7 +5875,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// wrapping around at `modulo` of the `Self` type.
     /// 
     /// # Arguments
-    /// - `rhs` is to be added to `self`, and small-sized unsigned integer
+    /// - `rhs` is to be added to `self`, and primitive unsigned integer
     ///   such as `u8`, `u16`, `u32`, `u64`, and `u128`.
     /// - `modulo` is the divisor to divide the result of (`self` + `rhs`),
     ///   and is of `&Self` type.
@@ -6165,7 +6165,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// and then, assigns the result back to `self`.
     /// 
     /// # Arguments
-    /// - `rhs` is to be added to `self`, and small-sized unsigned integer
+    /// - `rhs` is to be added to `self`, and primitive unsigned integer
     ///   such as `u8`, `u16`, `u32`, `u64`, and `u128`.
     /// - `modulo` is the divisor to divide the result of (`self` + `rhs`),
     ///   and is of `&Self` type.
@@ -6509,7 +6509,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// wrapping around at `modulo` of the `Self` type.
     /// 
     /// # Arguments
-    /// - `rhs` is to be added to `self`, and small-sized unsigned integer
+    /// - `rhs` is to be added to `self`, and primitive unsigned integer
     ///   such as `u8`, `u16`, `u32`, `u64`, and `u128`.
     /// - `modulo` is the divisor to divide the result of (`self` + `rhs`),
     ///   and is of `&Self` type.
@@ -6829,7 +6829,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// and then, assigns the result back to `self`.
     /// 
     /// # Arguments
-    /// - `rhs` is to be added to `self`, and small-sized unsigned integer
+    /// - `rhs` is to be added to `self`, and primitive unsigned integer
     ///   such as `u8`, `u16`, `u32`, `u64`, and `u128`.
     /// - `modulo` is the divisor to divide the result of (`self` + `rhs`),
     ///   and is of `&Self` type.
@@ -7311,7 +7311,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// along with a borrow-out bit.
     /// 
     /// # Arguments
-    /// - `rhs` is to be subtracted from `self`, and is of small-sized unsigned
+    /// - `rhs` is to be subtracted from `self`, and is of primitive unsigned
     ///   integer such as `u8`, `u16`, `u32`, `u64`, and `u128`.
     /// - `borrow` is of `bool` type so that `1` may be subtracted from `self`
     ///   if `borrow` is `true`.
@@ -7449,7 +7449,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// and return the resulting borrow.
     /// 
     /// # Arguments
-    /// - `rhs` is to be subtracted from `self`, and is of small-sized unsigned
+    /// - `rhs` is to be subtracted from `self`, and is of primitive unsigned
     ///   integer such as `u8`, `u16`, `u32`, `u64`, and `u128`.
     /// - `borrow` is of `bool` type so that `1` may be subtracted from `self`
     ///   if `borrow` is `true`.
@@ -7635,7 +7635,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// and returns a subtraction result `self` - `rhs`.
     /// 
     /// # Arguments
-    /// `rhs` is to be subtracted from `self`, and small-sized unsigned integer
+    /// `rhs` is to be subtracted from `self`, and primitive unsigned integer
     /// such as `u8`, `u16`, `u32`, `u64`, and `u128`.
     /// 
     /// # Panics
@@ -7734,7 +7734,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// and assigns the subtraction result `self` - `rhs` to `self` back.
     /// 
     /// # Arguments
-    /// `rhs` is to be subtracted from `self`, and small-sized unsigned integer
+    /// `rhs` is to be subtracted from `self`, and primitive unsigned integer
     /// such as `u8`, `u16`, `u32`, `u64`, and `u128`.
     /// 
     /// # Panics
@@ -7860,7 +7860,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// a boolean indicating whether an arithmetic underflow would occur.
     /// 
     /// # Arguments
-    /// `rhs` is to be subtracted from `self`, and small-sized unsigned integer
+    /// `rhs` is to be subtracted from `self`, and primitive unsigned integer
     /// such as `u8`, `u16`, `u32`, `u64`, and `u128`.
     /// 
     /// # Panics
@@ -7961,7 +7961,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// would occur.
     /// 
     /// # Arguments
-    /// `rhs` is to be subtracted from `self`, and small-sized unsigned integer
+    /// `rhs` is to be subtracted from `self`, and primitive unsigned integer
     /// such as `u8`, `u16`, `u32`, `u64`, and `u128`.
     /// 
     /// # Panics
@@ -8097,7 +8097,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// wrapped by `Some` of enum `Option`.
     /// 
     /// # Arguments
-    /// `rhs` is to be subtracted from `self`, and small-sized unsigned integer
+    /// `rhs` is to be subtracted from `self`, and primitive unsigned integer
     /// such as `u8`, `u16`, `u32`, `u64`, and `u128`.
     /// 
     /// # Panics
@@ -8205,7 +8205,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// and returns an subtraction result `self` - `rhs`.
     /// 
     /// # Arguments
-    /// `rhs` is to be subtracted from `self`, and small-sized unsigned integer
+    /// `rhs` is to be subtracted from `self`, and primitive unsigned integer
     /// such as `u8`, `u16`, `u32`, `u64`, and `u128`.
     /// 
     /// # Panics
@@ -8276,7 +8276,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// saturating at `0` instead of underflowing.
     /// 
     /// # Arguments
-    /// `rhs` is to be subtracted from `self`, and small-sized unsigned integer
+    /// `rhs` is to be subtracted from `self`, and primitive unsigned integer
     /// such as `u8`, `u16`, `u32`, `u64`, and `u128`.
     /// 
     /// # Panics
@@ -8368,7 +8368,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// and assigns the result to `self` back.
     /// 
     /// # Arguments
-    /// `rhs` is to be subtracted from `self`, and small-sized unsigned integer
+    /// `rhs` is to be subtracted from `self`, and primitive unsigned integer
     /// such as `u8`, `u16`, `u32`, `u64`, and `u128`.
     /// 
     /// # Panics
@@ -8482,7 +8482,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// wrapping around at `modulo` of the `Self` type.
     /// 
     /// # Arguments
-    /// - `rhs` is to be subtracted from `self`, and small-sized unsigned
+    /// - `rhs` is to be subtracted from `self`, and primitive unsigned
     ///   integer such as `u8`, `u16`, `u32`, `u64`, and `u128`.
     /// - `modulo` is the divisor to divide the result of (`self` - `rhs`),
     ///   and is of `&Self` type.
@@ -8772,7 +8772,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// and then, assigns the result back to `self`.
     /// 
     /// # Arguments
-    /// - `rhs` is to be subtracted from `self`, and small-sized unsigned
+    /// - `rhs` is to be subtracted from `self`, and primitive unsigned
     ///   integer such as `u8`, `u16`, `u32`, `u64`, and `u128`.
     /// - `modulo` is the divisor to divide the result of (`self` - `rhs`),
     ///   and is of `&Self` type.
@@ -9130,7 +9130,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// wrapping around at `modulo` of the `Self` type.
     /// 
     /// # Arguments
-    /// - `rhs` is to be added to `self`, and small-sized unsigned integer
+    /// - `rhs` is to be added to `self`, and primitive unsigned integer
     ///   such as `u8`, `u16`, `u32`, `u64`, and `u128`.
     /// - `modulo` is the divisor to divide the result of (`self` - `rhs`),
     ///   and is of `&Self` type.
@@ -9450,7 +9450,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// and then, assigns the result back to `self`.
     /// 
     /// # Arguments
-    /// - `rhs` is to be added to `self`, and small-sized unsigned integer
+    /// - `rhs` is to be added to `self`, and primitive unsigned integer
     ///   such as `u8`, `u16`, `u32`, `u64`, and `u128`.
     /// - `modulo` is the divisor to divide the result of (`self` - `rhs`),
     ///   and is of `&Self` type.
@@ -9919,7 +9919,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// Calculates the absolute difference between `self` and `other`.
     /// 
     /// # Arguments
-    /// `other` is to be compared to `self`, and small-sized unsigned integer
+    /// `other` is to be compared to `self`, and primitive unsigned integer
     /// such as `u8`, `u16`, `u32`, `u64`, and `u128`.
     /// 
     /// # Panics
@@ -10031,7 +10031,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// `self` * `rhs` + `carry`.
     /// 
     /// # Arguments
-    /// - `rhs` is to be multiplied to `self`, and is of small-sized unsigned
+    /// - `rhs` is to be multiplied to `self`, and is of primitive unsigned
     ///   integer such as `u8`, `u16`, `u32`, `u64`, and `u128`.
     /// - `carry` is of `Self` type
     ///   so that `carry` may be added to `self` * `rhs`.
@@ -10172,7 +10172,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// and returns the high-order (overflow) bits of the result.
     /// 
     /// # Arguments
-    /// - `rhs` is to be multiplied to `self`, and small-sized unsigned integer
+    /// - `rhs` is to be multiplied to `self`, and primitive unsigned integer
     ///   such as `u8`, `u16`, `u32`, `u64`, and `u128`.
     /// - `carry` is of `Self` type
     ///   so that `carry` may be added to `self` * `rhs`.
@@ -10337,7 +10337,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// (overflow) bits of the result of the calculation  `self` * `rhs`.
     /// 
     /// # Arguments
-    /// - `rhs` is to be multiplied to `self`, and is of small-sized unsigned
+    /// - `rhs` is to be multiplied to `self`, and is of primitive unsigned
     ///   integer such as `u8`, `u16`, `u32`, `u64`, and `u128`.
     /// 
     /// # Panics
@@ -10441,7 +10441,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// and returns the high-order (overflow) bits of the result.
     /// 
     /// # Arguments
-    /// - `rhs` is to be multiplied to `self`, and small-sized unsigned integer
+    /// - `rhs` is to be multiplied to `self`, and primitive unsigned integer
     ///   such as `u8`, `u16`, `u32`, `u64`, and `u128`.
     /// 
     /// # Panics
@@ -10620,7 +10620,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// and returns a multiplication result `self` * `rhs`.
     /// 
     /// # Arguments
-    /// `rhs` is to be multiplied to `self`, and small-sized unsigned integer
+    /// `rhs` is to be multiplied to `self`, and primitive unsigned integer
     /// such as `u8`, `u16`, `u32`, `u64`, and `u128`.
     /// 
     /// # Panics
@@ -10698,7 +10698,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// and assigns a multiplication result `self` * `rhs` to `self` back.
     /// 
     /// # Arguments
-    /// `rhs` is to be multiplied to `self`, and small-sized unsigned integer
+    /// `rhs` is to be multiplied to `self`, and primitive unsigned integer
     /// such as `u8`, `u16`, `u32`, `u64`, and `u128`.
     /// 
     /// # Panics
@@ -10854,7 +10854,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// a boolean indicating whether an arithmetic overflow would occur.
     /// 
     /// # Arguments
-    /// `rhs` is to be multiplied to `self`, and small-sized unsigned integer
+    /// `rhs` is to be multiplied to `self`, and primitive unsigned integer
     /// such as `u8`, `u16`, `u32`, `u64`, and `u128`.
     /// 
     /// # Panics
@@ -10940,7 +10940,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// would occur.
     /// 
     /// # Arguments
-    /// `rhs` is to be added to `self`, and small-sized unsigned integer
+    /// `rhs` is to be added to `self`, and primitive unsigned integer
     /// such as `u8`, `u16`, `u32`, `u64`, and `u128`.
     /// 
     /// # Panics
@@ -11045,7 +11045,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// wrapped by `Some` of enum `Option`.
     /// 
     /// # Arguments
-    /// `rhs` is to be multiplied to `self`, and small-sized unsigned integer
+    /// `rhs` is to be multiplied to `self`, and primitive unsigned integer
     /// such as `u8`, `u16`, `u32`, `u64`, and `u128`.
     /// 
     /// # Panics
@@ -11132,7 +11132,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// and returns an multiplication result `self` * `rhs`.
     /// 
     /// # Arguments
-    /// `rhs` is to be multiplied to `self`, and small-sized unsigned integer
+    /// `rhs` is to be multiplied to `self`, and primitive unsigned integer
     /// such as `u8`, `u16`, `u32`, `u64`, and `u128`.
     /// 
     /// # Panics
@@ -11203,7 +11203,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// saturating at the numeric bounds instead of overflowing.
     /// 
     /// # Arguments
-    /// `rhs` is to be multiplied to `self`, and small-sized unsigned integer
+    /// `rhs` is to be multiplied to `self`, and primitive unsigned integer
     /// such as `u8`, `u16`, `u32`, `u64`, and `u128`.
     /// 
     /// # Panics
@@ -11281,7 +11281,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// and assigns the result to `self` back.
     /// 
     /// # Arguments
-    /// `rhs` is to be multiplied to `self`, and small-sized unsigned integer
+    /// `rhs` is to be multiplied to `self`, and primitive unsigned integer
     /// such as `u8`, `u16`, `u32`, `u64`, and `u128`.
     /// 
     /// # Panics
@@ -11387,7 +11387,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// wrapping around at `modulo` of the `Self` type.
     /// 
     /// # Arguments
-    /// - `rhs` is to be multiplied to `self`, and small-sized unsigned integer
+    /// - `rhs` is to be multiplied to `self`, and primitive unsigned integer
     ///   such as `u8`, `u16`, `u32`, `u64`, and `u128`.
     /// - `modulo` is the divisor to divide the result of (`self` * `rhs`),
     ///   and is of `&Self` type.
@@ -11659,7 +11659,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// and then, assigns the result back to `self`.
     /// 
     /// # Arguments
-    /// - `rhs` is to be added to `self`, and small-sized unsigned integer
+    /// - `rhs` is to be added to `self`, and primitive unsigned integer
     ///   such as `u8`, `u16`, `u32`, `u64`, and `u128`.
     /// - `modulo` is the divisor to divide the result of (`self` * `rhs`),
     ///   and is of `&Self` type.
@@ -12001,7 +12001,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// wrapping around at `modulo` of the `Self` type.
     /// 
     /// # Arguments
-    /// - `rhs` is to be multiplied to `self`, and small-sized unsigned integer
+    /// - `rhs` is to be multiplied to `self`, and primitive unsigned integer
     ///   such as `u8`, `u16`, `u32`, `u64`, and `u128`.
     /// - `modulo` is the divisor to divide the result of (`self` * `rhs`),
     ///   and is of `&Self` type.
@@ -12303,7 +12303,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// and then assigns the result back to `self`.
     /// 
     /// # Arguments
-    /// - `rhs` is to be multiplied to `self`, and small-sized unsigned integer
+    /// - `rhs` is to be multiplied to `self`, and primitive unsigned integer
     ///   such as `u8`, `u16`, `u32`, `u64`, and `u128`.
     /// - `modulo` is the divisor to divide the result of (`self` * `rhs`),
     ///   and is of `&Self` type.
@@ -13546,7 +13546,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// and returns the quotient wrapped by `Some` of enum `Option`.
     /// 
     /// # Arguments
-    /// `rhs` divides `self`, and is of small-sized unsigned integer
+    /// `rhs` divides `self`, and is of primitive unsigned integer
     /// such as `u8`, `u16`, `u32`, `u64`, and `u128`.
     /// 
     /// # Panics
@@ -15684,7 +15684,6 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// define_utypes_with!(u16);
     /// 
     /// let mut a_biguint = U256::from_str("123456789015758942546236989636279846864825945392").unwrap();
-    /// let divisor = 87_u8;
     /// println!("Originally, a_biguint = {}", a_biguint);
     /// assert_eq!(a_biguint.is_overflow(), false);
     /// assert_eq!(a_biguint.is_underflow(), false);
@@ -15692,6 +15691,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// assert_eq!(a_biguint.is_divided_by_zero(), false);
     /// assert_eq!(a_biguint.is_undefined(), false);
     /// 
+    /// let divisor = 87_u8;
     /// a_biguint.wrapping_rem_assign_uint(divisor);
     /// println!("After a_biguint.wrapping_rem_assign_uint({}), a_biguint = {}", divisor, a_biguint);
     /// assert_eq!(a_biguint.to_string(), "8");
@@ -15709,7 +15709,6 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// define_utypes_with!(u16);
     /// 
     /// let mut a_biguint = U256::zero();
-    /// let divisor = 87_u8;
     /// println!("Originally, a_biguint = {}", a_biguint);
     /// assert_eq!(a_biguint.is_overflow(), false);
     /// assert_eq!(a_biguint.is_underflow(), false);
@@ -15717,6 +15716,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// assert_eq!(a_biguint.is_divided_by_zero(), false);
     /// assert_eq!(a_biguint.is_undefined(), false);
     /// 
+    /// let divisor = 87_u8;
     /// a_biguint.wrapping_rem_assign_uint(divisor);
     /// println!("After a_biguint.wrapping_rem_assign_uint({}), a_biguint = {}", divisor, a_biguint);
     /// assert_eq!(a_biguint.to_string(), "0");
@@ -15989,7 +15989,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// and returns the remainder wrapped by `Some` of enum `Option`.
     /// 
     /// # Arguments
-    /// `rhs` divides `self`, and is of small-sized unsigned integer
+    /// `rhs` divides `self`, and is of primitive unsigned integer
     /// such as `u8`, `u16`, `u32`, `u64`, and `u128`.
     /// 
     /// # Panics
@@ -21317,7 +21317,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// The type `U` has the trait `SmallUInt`.
     ///
     /// # Arguments
-    /// - `exp` is the power to raise `self` to and is a small-sized unsigned
+    /// - `exp` is the power to raise `self` to and is a primitive unsigned
     ///   integer such as `u8`, `u16`, `u32`, `u64`, and `u128`.
     /// - `modulo` is the divisor to divide the result of (`self` ** `exp`),
     ///    and is of `&Self` type.
@@ -25238,7 +25238,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// 
     /// # Argument
     /// The greatest common diviser of `self` and `other` is calculated.
-    /// `other` is a small-sized unsigned integer such as `u8`, `u16`, `u32`,
+    /// `other` is a primitive unsigned integer such as `u8`, `u16`, `u32`,
     /// `u64`, and `u128`.
     ///
     /// # Panics
@@ -25429,7 +25429,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// 
     /// # Argument
     /// The greatest common diviser of `self` and `other` is calculated.
-    /// `other` is a small-sized unsigned integer such as `u8`, `u16`, `u32`,
+    /// `other` is a primitive unsigned integer such as `u8`, `u16`, `u32`,
     /// `u64`, and `u128`.
     ///
     /// # Panics
@@ -25659,7 +25659,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// 
     /// # Argument
     /// The greatest common diviser of `self` and `other` is calculated.
-    /// `other` is a small-sized unsigned integer such as `u8`, `u16`, `u32`,
+    /// `other` is a primitive unsigned integer such as `u8`, `u16`, `u32`,
     /// `u64`, and `u128`.
     ///
     /// # Panics
@@ -25897,7 +25897,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// 
     /// # Argument
     /// The greatest common diviser of `self` and `other` is calculated.
-    /// `other` is a small-sized unsigned integer such as `u8`, `u16`, `u32`,
+    /// `other` is a primitive unsigned integer such as `u8`, `u16`, `u32`,
     /// `u64`, and `u128`.
     ///
     /// # Panics
@@ -26209,7 +26209,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// 
     /// # Argument
     /// The least common multiple of `self` and `other` is calculated.
-    /// `other` is a small-sized unsigned integer such as `u8`, `u16`, `u32`,
+    /// `other` is a primitive unsigned integer such as `u8`, `u16`, `u32`,
     /// `u64`, and `u128`.
     ///
     /// # Panics
@@ -26404,7 +26404,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// 
     /// # Argument
     /// The least common multiple of `self` and `other` is calculated.
-    /// `other` is a small-sized unsigned integer such as `u8`, `u16`, `u32`,
+    /// `other` is a primitive unsigned integer such as `u8`, `u16`, `u32`,
     /// `u64`, and `u128`.
     ///
     /// # Panics

@@ -22,8 +22,123 @@ use std::ops::*;
 
 use crate::number::{ SmallUInt, BigUInt, NumberErr };
 
+macro_rules! calc_assign_to_calc
+{
+    ($me:expr, $op:tt, $rhs: expr) => {
+        let mut res = Self::from_array($me.get_number().clone());
+        res $op $rhs;
+        return res;
+    };
+    // calc_assign_to_calc!(self, <<=, rhs);
+    //
+    // let mut s = Self::from_array(self.get_number().clone());
+    // s <<= rhs;
+    // s
+
+    // ($me:expr, $func:expr, $rhs:expr, $modulo:expr) => {
+    //     let mut res = Self::from_array(Self::get_number($me).clone());
+    //     $func(&mut res, $rhs, $modulo);
+    //     return res;
+    // }
+    // calc_assign_to_calc!(self, Self::modular_add_assign_uint, rhs, modulo);
+    //
+    // let mut res = Self::from_array(self.get_number().clone());
+    // res.modular_add_assign_uint(rhs, modulo);
+    // res
+}
 
 
+
+/// I would like to suggest the modification of Rust grammar because the
+/// operator `+` swallows (takes the ownership of) two operands which are
+/// left-hand side operand `self` and right-hand side operand `rhs` so that
+/// the two operands `self` and `rhs` cannot be used again after addition
+/// operation. In order to prevent this, the operands should be cloned or
+/// copied before addition operation. This adds the unnecessary overhead.
+/// The heavier the operand object is, the more the overhead is.
+/// 
+/// So, I would like to suggest one of the following three as follows:
+/// 
+/// # First suggestion
+/// Changing the types of the parameters as follows:
+/// 
+/// ```
+/// pub trait Add<Rhs = Self> {
+///     type Output;
+///     // Required method
+///     fn add(&self, rhs: &Rhs) -> Self::Output;
+/// }
+/// ```
+/// 
+/// # Second suggestion
+/// If the first suggestion is impossible because of backward compatibility,
+/// grammar allows the developer to choose the types of parameters but make
+/// only one function.
+/// 
+/// ```
+/// pub trait Add<Rhs = Self> {
+///     type Output;
+///     // Required method
+///     fn add(self, rhs: Rhs) -> Self::Output;
+///   or
+///     fn add(&self, rhs: Rhs) -> Self::Output;
+///   or
+///     fn add(self, rhs: &Rhs) -> Self::Output;
+///   or
+///     fn add(&self, rhs: &Rhs) -> Self::Output;
+/// }
+/// ```
+/// 
+/// # Third suggestion
+/// If the first and second suggestions are impossible because of backward
+/// compatibility and because the function(s) of the trait should be fixed,
+/// trait Add2, Add3, and Add4 are provided and the developer
+/// implements none or only one of traits Add, Add2, Add3, and Add4.
+/// ```
+/// pub trait Add<Rhs = Self> {
+///     type Output;
+///     // Required method
+///     fn add(self, rhs: Rhs) -> Self::Output;
+/// }
+/// 
+/// pub trait Add2<Rhs = Self> {
+///     type Output;
+///     // Required method
+///     fn add(&self, rhs: Rhs) -> Self::Output;
+/// }
+/// 
+/// pub trait Add2<Rhs = Self> {
+///     type Output;
+///     // Required method
+///     fn add(self, rhs: &Rhs) -> Self::Output;
+/// }
+/// 
+/// pub trait Add2<Rhs = Self> {
+///     type Output;
+///     // Required method
+///     fn add(&self, rhs: &Rhs) -> Self::Output;
+/// }
+/// ```
+/// 
+/// Unlike trait Add, the trait PartialEq makes the operators `==` and `!=` take
+/// not `&Self` but `Self` as its first operand and not `&Rhs` (or `&Self`) but
+/// `Rhs` (or `Self`) as its second operand but makes the functions eq() and
+/// ne() take not `self` but `&self` as its first argument and not `Rhs` but
+/// `&Rhs` as its second argument. So, I think the third suggestion is possible.
+/// The prototype of trait PartialEq is as follows:
+/// 
+/// ```
+/// pub trait PartialEq<Rhs = Self>
+/// where
+/// Rhs: ?Sized,
+/// {
+///     // Required method
+///     fn eq(&self, other: &Rhs) -> bool;
+/// 
+///     // Provided method
+///     fn ne(&self, other: &Rhs) -> bool { ... }
+/// }
+/// ```
 impl<T, const N: usize> Add for BigUInt<T, N>
 where T: SmallUInt + Copy + Clone + Display + Debug + ToString
         + Add<Output=T> + AddAssign + Sub<Output=T> + SubAssign
@@ -36,6 +151,105 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
 {
     type Output = Self;
 
+    // fn add(self, rhs: Self) -> Self
+    /// Calculates `self` + `rhs`,
+    /// wrapping around at the boundary of the `Self` type,
+    /// and returns an addition result `self` + `rhs`.
+    /// 
+    /// # Arguments
+    /// `rhs` is to be added to `self`, and is of `Self` type.
+    /// 
+    /// # Panics
+    /// If `size_of::<T>() * N` <= `128`, this method may panic
+    /// or its behavior may be undefined though it may not panic.
+    /// 
+    /// # Output
+    /// It returns `self` + `rhs` with wrapping (modular) addition.
+    /// 
+    /// # Features
+    /// - Wrapping (modular) addition.
+    /// - If overflow happened, the flag `OVERFLOW` of the return value
+    ///   will be set.
+    /// 
+    /// # Example 1
+    /// ```
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u8);
+    /// 
+    /// let a_biguint = U512::max() - 1_u8;
+    /// let one_biguint = U512::one();
+    /// let res = a_biguint.clone() + one_biguint.clone();
+    /// println!("{} + {} = {}", a_biguint, one_biguint, res);
+    /// assert_eq!(res, U512::max());
+    /// assert_eq!(res.is_overflow(), false);
+    /// assert_eq!(res.is_underflow(), false);
+    /// assert_eq!(res.is_infinity(), false);
+    /// assert_eq!(res.is_divided_by_zero(), false);
+    /// assert_eq!(res.is_undefined(), false);
+    /// ```
+    /// 
+    /// # Example 2
+    /// ```
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u8);
+    /// 
+    /// let a_biguint = U512::max() - 1_u8;
+    /// let two_biguint = U512::from_uint(2_u8);
+    /// let res = a_biguint.clone() + two_biguint.clone();
+    /// println!("{} + {} = {}", a_biguint, two_biguint, res);
+    /// assert_eq!(res.to_string(), "0");
+    /// assert_eq!(res.is_overflow(), true);
+    /// assert_eq!(res.is_underflow(), false);
+    /// assert_eq!(res.is_infinity(), false);
+    /// assert_eq!(res.is_divided_by_zero(), false);
+    /// assert_eq!(res.is_undefined(), false);
+    /// ```
+    /// 
+    /// # Example 3
+    /// ```
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u8);
+    /// 
+    /// let a_biguint = U512::max() - 1_u8;
+    /// let three_biguint = U512::from_uint(3_u8);
+    /// let res = a_biguint.clone() + three_biguint.clone();
+    /// println!("{} + {} = {}", a_biguint, three_biguint, res);
+    /// assert_eq!(res.to_string(), "1");
+    /// assert_eq!(res.is_overflow(), true);
+    /// assert_eq!(res.is_underflow(), false);
+    /// assert_eq!(res.is_infinity(), false);
+    /// assert_eq!(res.is_divided_by_zero(), false);
+    /// assert_eq!(res.is_undefined(), false);
+    /// ```
+    /// 
+    /// # Cannot-compile Examples
+    /// ```
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u8);
+    /// 
+    /// let a_biguint = U512::max() - 1_u8;
+    /// let one_biguint = U512::one();
+    /// let _res = a_biguint + one_biguint;
+    /// // println!("{} + {} = {}", a_biguint, one_biguint, _res);
+    /// // The operator '+' swallowed (took the ownership of) a_biguint and one_biguint.
+    /// 
+    /// let a_biguint = U512::max() - 1_u8;
+    /// let two_biguint = U512::from_uint(2_u8);
+    /// let _res = a_biguint + two_biguint;
+    /// // println!("{} + {} = {}", a_biguint, two_biguint, _res);
+    /// // The operator '+' swallowed (took the ownership of) a_biguint and two_biguint.
+    /// 
+    /// let a_biguint = U512::max() - 1_u8;
+    /// let three_biguint = U512::from_uint(3_u8);
+    /// let _res = a_biguint + three_biguint;
+    /// // println!("{} + {} = {}", a_biguint, three_biguint, _res);
+    /// // The operator '+' swallowed (took the ownership of) a_biguint and three_biguint.
+    /// ```
+    /// 
+    /// # Big-endian issue
+    /// It is just experimental for Big Endian CPUs. So, you are not encouraged
+    /// to use it for Big Endian CPUs for serious purpose. Only use this crate
+    /// for Big-endian CPUs with your own full responsibility.
     #[inline]
     fn add(self, rhs: Self) -> Self
     {
@@ -45,6 +259,96 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
 
 
 
+/// I would like to suggest the modification of Rust grammar because the
+/// operator `+` swallows (takes the ownership of) two operands which are
+/// left-hand side operand `self` and right-hand side operand `rhs` so that
+/// the two operands `self` and `rhs` cannot be used again after addition
+/// operation. In order to prevent this, the operands should be cloned or
+/// copied before addition operation. This adds the unnecessary overhead.
+/// The heavier the operand object is, the more the overhead is.
+/// 
+/// So, I would like to suggest one of the following three as follows:
+/// 
+/// # First suggestion
+/// Changing the types of the parameters as follows:
+/// 
+/// ```
+/// pub trait Add<Rhs = Self> {
+///     type Output;
+///     // Required method
+///     fn add(&self, rhs: &Rhs) -> Self::Output;
+/// }
+/// ```
+/// 
+/// # Second suggestion
+/// If the first suggestion is impossible because of backward compatibility,
+/// grammar allows the developer to choose the types of parameters but make
+/// only one function.
+/// 
+/// ```
+/// pub trait Add<Rhs = Self> {
+///     type Output;
+///     // Required method
+///     fn add(self, rhs: Rhs) -> Self::Output;
+///   or
+///     fn add(&self, rhs: Rhs) -> Self::Output;
+///   or
+///     fn add(self, rhs: &Rhs) -> Self::Output;
+///   or
+///     fn add(&self, rhs: &Rhs) -> Self::Output;
+/// }
+/// ```
+/// 
+/// # Third suggestion
+/// If the first and second suggestions are impossible because of backward
+/// compatibility, trait Add2, Add3, and Add4 are provided and the developer
+/// implements none or only one of traits Add, Add2, Add3, and Add4.
+/// 
+/// ```
+/// pub trait Add<Rhs = Self> {
+///     type Output;
+///     // Required method
+///     fn add(self, rhs: Rhs) -> Self::Output;
+/// }
+/// 
+/// pub trait Add2<Rhs = Self> {
+///     type Output;
+///     // Required method
+///     fn add(&self, rhs: Rhs) -> Self::Output;
+/// }
+/// 
+/// pub trait Add3<Rhs = Self> {
+///     type Output;
+///     // Required method
+///     fn add(self, rhs: &Rhs) -> Self::Output;
+/// }
+/// 
+/// pub trait Add4<Rhs = Self> {
+///     type Output;
+///     // Required method
+///     fn add(&self, rhs: &Rhs) -> Self::Output;
+/// }
+/// ```
+/// 
+/// Unlike trait Add, the trait PartialEq makes the operators `==` and `!=` take
+/// not `&Self` but `Self` as its first operand and not `&Rhs` (or `&Self`) but
+/// `Rhs` (or `Self`) as its second operand but makes the functions eq() and
+/// ne() take not `self` but `&self` as its first argument and not `Rhs` but
+/// `&Rhs` as its second argument. So, I think the third suggestion is possible.
+/// The prototype of trait PartialEq is as follows:
+/// 
+/// ```
+/// pub trait PartialEq<Rhs = Self>
+/// where
+/// Rhs: ?Sized,
+/// {
+///     // Required method
+///     fn eq(&self, other: &Rhs) -> bool;
+/// 
+///     // Provided method
+///     fn ne(&self, other: &Rhs) -> bool { ... }
+/// }
+/// ```
 impl<T, const N: usize> Add<T> for BigUInt<T, N>
 where T: SmallUInt + Copy + Clone + Display + Debug + ToString
         + Add<Output=T> + AddAssign + Sub<Output=T> + SubAssign
@@ -57,6 +361,106 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
 {
     type Output = Self;
 
+    // fn add(self, rhs: T)-> Self
+    /// Calculates `self` + `rhs`,
+    /// wrapping around at the boundary of the `Self` type,
+    /// and returns an addition result `self` + `rhs`.
+    /// 
+    /// # Arguments
+    /// `rhs` is to be added to `self`, and primitive unsigned integer
+    /// such as `u8`, `u16`, `u32`, `u64`, and `u128`.
+    /// 
+    /// # Panics
+    /// If `size_of::<T>() * N` <= `128`, this method may panic
+    /// or its behavior may be undefined though it may not panic.
+    /// 
+    /// # Output
+    /// It returns `self` + `rhs` with wrapping (modular) addition.
+    /// 
+    /// # Features
+    /// - Wrapping (modular) addition.
+    /// - If overflow happened, the flag `OVERFLOW` of the return value
+    ///   will be set.
+    /// 
+    /// # Example 1
+    /// ```
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u16);
+    /// 
+    /// let a_biguint = U512::max() - 1_u16;
+    /// let one_uint = 1_u16;
+    /// let res = a_biguint.clone() + one_uint;
+    /// println!("{} + {} = {}", a_biguint, one_uint, res);
+    /// assert_eq!(res.to_string(), "13407807929942597099574024998205846127479365820592393377723561443721764030073546976801874298166903427690031858186486050853753882811946569946433649006084095");
+    /// assert_eq!(res.is_overflow(), false);
+    /// assert_eq!(res.is_underflow(), false);
+    /// assert_eq!(res.is_divided_by_zero(), false);
+    /// assert_eq!(res.is_infinity(), false);
+    /// assert_eq!(res.is_undefined(), false);
+    /// ```
+    /// 
+    /// # Example 2
+    /// ```
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u16);
+    /// 
+    /// let a_biguint = U512::max() - 1_u16;
+    /// let two_uint = 2_u16;
+    /// let res = a_biguint.clone() + two_uint;
+    /// println!("{} + {} = {}", a_biguint, two_uint, res);
+    /// assert_eq!(res.to_string(), "0");
+    /// assert_eq!(res.is_overflow(), true);
+    /// assert_eq!(res.is_underflow(), false);
+    /// assert_eq!(res.is_divided_by_zero(), false);
+    /// assert_eq!(res.is_infinity(), false);
+    /// assert_eq!(res.is_undefined(), false);
+    /// ```
+    /// 
+    /// # Example 3
+    /// ```
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u16);
+    /// 
+    /// let a_biguint = U512::max() - 1_u16;
+    /// let three_uint = 3_u16;
+    /// let res = a_biguint.clone() + three_uint;
+    /// println!("{} + {} = {}", a_biguint, three_uint, res);
+    /// assert_eq!(res.to_string(), "1");
+    /// assert_eq!(res.is_overflow(), true);
+    /// assert_eq!(res.is_underflow(), false);
+    /// assert_eq!(res.is_divided_by_zero(), false);
+    /// assert_eq!(res.is_infinity(), false);
+    /// assert_eq!(res.is_undefined(), false);
+    /// ```
+    /// 
+    /// # Cannot-compile Examples
+    /// ```
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u16);
+    /// 
+    /// let a_biguint = U512::max() - 1_u16;
+    /// let one_uint = 1_u16;
+    /// let res = a_biguint + one_uint;
+    /// // println!("{} + {} = {}", a_biguint, one_uint, res);
+    /// // The operator '+' swallowed (took the ownership of) a_biguint.
+    /// 
+    /// let a_biguint = U512::max() - 1_u16;
+    /// let two_uint = 2_u16;
+    /// let res = a_biguint + two_uint;
+    /// // println!("{} + {} = {}", a_biguint, two_uint, res);
+    /// // The operator '+' swallowed (took the ownership of) a_biguint.
+    /// 
+    /// let a_biguint = U512::max() - 1_u16;
+    /// let three_uint = 3_u16;
+    /// let res = a_biguint + three_uint;
+    /// // println!("{} + {} = {}", a_biguint, three_uint, res);
+    /// // The operator '+' swallowed (took the ownership of) a_biguint.
+    /// ```
+    /// 
+    /// # Big-endian issue
+    /// It is just experimental for Big Endian CPUs. So, you are not encouraged
+    /// to use it for Big Endian CPUs for serious purpose. Only use this crate
+    /// for Big-endian CPUs with your own full responsibility.
     #[inline]
     fn add(self, rhs: T)-> Self
     {
@@ -66,6 +470,76 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
 
 
 
+/// I would like to suggest the modification of Rust grammar because the
+/// operator `+=` swallows (takes the ownership of) two operands which are
+/// left-hand side operand `self` and right-hand side operand `rhs` so that
+/// the two operands `self` and `rhs` cannot be used again after addition
+/// operation. In order to prevent this, the operands should be cloned or
+/// copied before addition operation. This adds the unnecessary overhead.
+/// The heavier the operand object is, the more the overhead is.
+/// 
+/// So, I would like to suggest one of the following three as follows:
+/// 
+/// # First suggestion
+/// Changing the types of the parameters as follows:
+/// ```
+/// pub trait AddAssign<Rhs = Self> {
+///     // Required method
+///     fn add_assign(&mut self, rhs: &Rhs);
+/// }
+/// ```
+/// 
+/// # Second suggestion
+/// If the first suggestion is impossible because of backward compatibility,
+/// grammar allows the developer to choose the types of parameters but make
+/// only one function.
+/// 
+/// ```
+/// pub trait AddAssign<Rhs = Self> {
+///     // Required method
+///     fn add_assign(&mut self, rhs: Rhs);
+///   or
+///     fn add_assign(&mut self, rhs: &Rhs);
+/// }
+/// ```
+/// 
+/// # Third suggestion
+/// If the first and second suggestions are impossible because of backward
+/// compatibility, trait AddAssign2 is provided and the developer
+/// implements none or only one of traits AddAssign and AddAssign2.
+/// 
+/// ```
+/// pub trait AddAssign<Rhs = Self> {
+///     // Required method
+///     fn add_assign(&mut self, rhs: Rhs);
+/// }
+/// 
+/// pub trait AddAssign2<Rhs = Self> {
+///     // Required method
+///     fn add_assign(&mut self, rhs: &Rhs);
+/// }
+/// ```
+/// 
+/// Unlike trait AddAssign, the trait PartialEq makes the operators
+/// `==` and `!=` take not `&Self` but `Self` as its first operand and not
+/// `&Rhs` (or `&Self`) but `Rhs` (or `Self`) as its second operand but makes
+/// the functions eq() and ne() take not `self` but `&self` as its first
+/// argument and not `Rhs` but `&Rhs` as its second argument.
+/// So, I think the third suggestion is possible.
+/// The prototype of trait PartialEq is as follows:
+/// 
+/// ```
+/// pub trait PartialEq<Rhs = Self>
+/// where
+/// Rhs: ?Sized,
+/// {
+///     // Required method
+///     fn eq(&self, other: &Rhs) -> bool;
+/// 
+///     // Provided method
+///     fn ne(&self, other: &Rhs) -> bool { ... }
+/// }
+/// ```
 impl<T, const N: usize> AddAssign for BigUInt<T, N>
 where T: SmallUInt + Copy + Clone + Display + Debug + ToString
         + Add<Output=T> + AddAssign + Sub<Output=T> + SubAssign
@@ -76,8 +550,130 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
         + BitXor<Output=T> + BitXorAssign + Not<Output=T>
         + PartialEq + PartialOrd
 {
-    /// Adds and assign the result to it.
+    // fn add_assign(&mut self, rhs: Self)
+    /// Calculates `self` + `rhs`,
+    /// wrapping around at the boundary of the `Self` type,
+    /// and assign the addition result `self` + `rhs` to `self` back.
     /// 
+    /// # Arguments
+    /// `rhs` is to be added to `self`, and is of `Self` type.
+    /// 
+    /// # Panics
+    /// If `size_of::<T>() * N` <= `128`, this method may panic
+    /// or its behavior may be undefined though it may not panic.
+    /// 
+    /// # Features
+    /// - Wrapping (modular) addition.
+    /// - If overflow happened, the flag `OVERFLOW` of `self` will be set.
+    /// - All the flags are historical, which means, for example, if an
+    ///   overflow occurred even once before this current operation or
+    ///   `OVERFLOW` flag is already set before this current operation,
+    ///   the `OVERFLOW` flag is not changed even if this current operation
+    ///   does not cause overflow.
+    /// 
+    /// # Example 1
+    /// ```
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u32);
+    /// 
+    /// let mut a_biguint = U512::max() - 1_u32;
+    /// println!("Originally, a_biguint = {}", a_biguint);
+    /// assert_eq!(a_biguint.is_overflow(), false);
+    /// assert_eq!(a_biguint.is_underflow(), false);
+    /// assert_eq!(a_biguint.is_infinity(), false);
+    /// assert_eq!(a_biguint.is_divided_by_zero(), false);
+    /// assert_eq!(a_biguint.is_undefined(), false);
+    /// 
+    /// let one_biguint = U512::one();
+    /// a_biguint += one_biguint.clone();
+    /// println!("After a_biguint += {}, a_biguint = {}", one_biguint, a_biguint);
+    /// assert_eq!(a_biguint, U512::max());
+    /// assert_eq!(a_biguint.is_overflow(), false);
+    /// assert_eq!(a_biguint.is_underflow(), false);
+    /// assert_eq!(a_biguint.is_infinity(), false);
+    /// assert_eq!(a_biguint.is_divided_by_zero(), false);
+    /// assert_eq!(a_biguint.is_undefined(), false);
+    /// ```
+    /// 
+    /// # Example 2 
+    /// ```
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u32);
+    /// 
+    /// let mut a_biguint = U512::max() - 1_u32;
+    /// println!("Originally, a_biguint = {}", a_biguint);
+    /// assert_eq!(a_biguint.is_overflow(), false);
+    /// assert_eq!(a_biguint.is_underflow(), false);
+    /// assert_eq!(a_biguint.is_infinity(), false);
+    /// assert_eq!(a_biguint.is_divided_by_zero(), false);
+    /// assert_eq!(a_biguint.is_undefined(), false);
+    /// 
+    /// let two_biguint = U512::from_uint(2_u8);
+    /// a_biguint += two_biguint.clone();
+    /// println!("After a_biguint += {}, a_biguint = {}", two_biguint, a_biguint);
+    /// assert_eq!(a_biguint.to_string(), "0");
+    /// assert_eq!(a_biguint.is_overflow(), true);
+    /// assert_eq!(a_biguint.is_underflow(), false);
+    /// assert_eq!(a_biguint.is_infinity(), false);
+    /// assert_eq!(a_biguint.is_divided_by_zero(), false);
+    /// assert_eq!(a_biguint.is_undefined(), false);
+    /// ```
+    /// 
+    /// # Example 3
+    /// ```
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u32);
+    /// 
+    /// let mut a_biguint = U512::max() - 1_u32;
+    /// println!("Originally, a_biguint = {}", a_biguint);
+    /// assert_eq!(a_biguint.is_overflow(), false);
+    /// assert_eq!(a_biguint.is_underflow(), false);
+    /// assert_eq!(a_biguint.is_infinity(), false);
+    /// assert_eq!(a_biguint.is_divided_by_zero(), false);
+    /// assert_eq!(a_biguint.is_undefined(), false);
+    /// 
+    /// let three_biguint = U512::from_uint(3_u8);
+    /// a_biguint += three_biguint.clone();
+    /// println!("After a_biguint += {},\ta_biguint = {}", three_biguint, a_biguint);
+    /// assert_eq!(a_biguint.to_string(), "1");
+    /// assert_eq!(a_biguint.is_overflow(), true);
+    /// assert_eq!(a_biguint.is_underflow(), false);
+    /// assert_eq!(a_biguint.is_infinity(), false);
+    /// assert_eq!(a_biguint.is_divided_by_zero(), false);
+    /// assert_eq!(a_biguint.is_undefined(), false);
+    /// ```
+    /// 
+    /// # Cannot-compile Examples
+    /// ```
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u32);
+    /// 
+    /// let mut a_biguint = U512::max() - 1_u32;
+    /// println!("Originally, a_biguint = {}", a_biguint);
+    /// let one_biguint = U512::one();
+    /// a_biguint += one_biguint;
+    /// // println!("After a_biguint += {}, a_biguint = {}", one_biguint, a_biguint);
+    /// // The operator '+=' swallowed (took the ownership of) one_biguint.
+    /// 
+    /// let mut a_biguint = U512::max() - 1_u32;
+    /// println!("Originally, a_biguint = {}", a_biguint);
+    /// let two_biguint = U512::from_uint(2_u8);
+    /// a_biguint += two_biguint.clone();
+    /// // println!("After a_biguint += {}, a_biguint = {}", two_biguint, a_biguint);
+    /// // The operator '+=' swallowed (took the ownership of) two_biguint.
+    /// 
+    /// let mut a_biguint = U512::max() - 1_u32;
+    /// println!("Originally, a_biguint = {}", a_biguint);
+    /// let three_biguint = U512::from_uint(3_u8);
+    /// a_biguint += three_biguint.clone();
+    /// // println!("After a_biguint += {}, a_biguint = {}", three_biguint, a_biguint);
+    /// // The operator '+=' swallowed (took the ownership of) three_biguint.
+    /// ```
+    /// 
+    /// # Big-endian issue
+    /// It is just experimental for Big Endian CPUs. So, you are not encouraged
+    /// to use it for Big Endian CPUs for serious purpose. Only use this crate
+    /// for Big-endian CPUs with your own full responsibility.
     #[inline]
     fn add_assign(&mut self, rhs: Self)
     {
@@ -87,6 +683,77 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
 
 
 
+/// I would like to suggest the modification of Rust grammar because the
+/// operator `+=` swallows (takes the ownership of) two operands which are
+/// left-hand side operand `self` and right-hand side operand `rhs` so that
+/// the two operands `self` and `rhs` cannot be used again after addition
+/// operation. In order to prevent this, the operands should be cloned or
+/// copied before addition operation. This adds the unnecessary overhead.
+/// The heavier the operand object is, the more the overhead is.
+/// 
+/// So, I would like to suggest one of the following three as follows:
+/// 
+/// # First suggestion
+/// Changing the types of the parameters as follows:
+/// 
+/// ```
+/// pub trait AddAssign<Rhs = Self> {
+///     // Required method
+///     fn add_assign(&mut self, rhs: &Rhs);
+/// }
+/// ```
+/// 
+/// # Second suggestion
+/// If the first suggestion is impossible because of backward compatibility,
+/// grammar allows the developer to choose the types of parameters but make
+/// only one function.
+/// 
+/// ```
+/// pub trait AddAssign<Rhs = Self> {
+///     // Required method
+///     fn add_assign(&mut self, rhs: Rhs);
+///   or
+///     fn add_assign(&mut self, rhs: &Rhs);
+/// }
+/// ```
+/// 
+/// # Third suggestion
+/// If the first and second suggestions are impossible because of backward
+/// compatibility, trait AddAssign2 is provided and the developer
+/// implements none or only one of traits AddAssign and AddAssign2.
+/// 
+/// ```
+/// pub trait AddAssign<Rhs = Self> {
+///     // Required method
+///     fn add_assign(&mut self, rhs: Rhs);
+/// }
+/// 
+/// pub trait AddAssign2<Rhs = Self> {
+///     // Required method
+///     fn add_assign(&mut self, rhs: &Rhs);
+/// }
+/// ```
+/// 
+/// Unlike trait AddAssign, the trait PartialEq makes the operators
+/// `==` and `!=` take not `&Self` but `Self` as its first operand and not
+/// `&Rhs` (or `&Self`) but `Rhs` (or `Self`) as its second operand but makes
+/// the functions eq() and ne() take not `self` but `&self` as its first
+/// argument and not `Rhs` but `&Rhs` as its second argument.
+/// So, I think the third suggestion is possible.
+/// The prototype of trait PartialEq is as follows:
+/// 
+/// ```
+/// pub trait PartialEq<Rhs = Self>
+/// where
+/// Rhs: ?Sized,
+/// {
+///     // Required method
+///     fn eq(&self, other: &Rhs) -> bool;
+/// 
+///     // Provided method
+///     fn ne(&self, other: &Rhs) -> bool { ... }
+/// }
+/// ```
 impl<T, const N: usize> AddAssign<T> for BigUInt<T, N>
 where T: SmallUInt + Copy + Clone + Display + Debug + ToString
         + Add<Output=T> + AddAssign + Sub<Output=T> + SubAssign
@@ -97,8 +764,106 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
         + BitXor<Output=T> + BitXorAssign + Not<Output=T>
         + PartialEq + PartialOrd
 {
-    /// Adds and assign the result to it.
+    // fn add_assign(&mut self, rhs: T)
+    /// Calculates `self` + `rhs`,
+    /// wrapping around at the boundary of the `Self` type,
+    /// and assigns the addition result `self` + `rhs` to `self` back.
     /// 
+    /// # Arguments
+    /// `rhs` is to be added to `self`, and primitive unsigned integer
+    /// such as `u8`, `u16`, `u32`, `u64`, and `u128`.
+    /// 
+    /// # Panics
+    /// If `size_of::<T>() * N` <= `128`, this method may panic
+    /// or its behavior may be undefined though it may not panic.
+    /// 
+    /// # Features
+    /// - Wrapping (modular) addition.
+    /// - If overflow happened, the flag `OVERFLOW` of `self` will be set.
+    /// - All the flags are historical, which means, for example, if an
+    ///   overflow occurred even once before this current operation or
+    ///   `OVERFLOW` flag is already set before this current operation,
+    ///   the `OVERFLOW` flag is not changed even if this current operation
+    ///   does not cause overflow.
+    /// 
+    /// # Example 1
+    /// ```
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u64);
+    /// 
+    /// let mut a_biguint = UU64::max() - 1_u64;
+    /// println!("Originally, a_biguint = {}", a_biguint);
+    /// assert_eq!(a_biguint.to_string(), "13407807929942597099574024998205846127479365820592393377723561443721764030073546976801874298166903427690031858186486050853753882811946569946433649006084094");
+    /// assert_eq!(a_biguint.is_overflow(), false);
+    /// assert_eq!(a_biguint.is_underflow(), false);
+    /// assert_eq!(a_biguint.is_divided_by_zero(), false);
+    /// assert_eq!(a_biguint.is_infinity(), false);
+    /// assert_eq!(a_biguint.is_undefined(), false);
+    /// 
+    /// let one_uint = 1_u64;
+    /// a_biguint += one_uint;
+    /// println!("After a_biguint += {}, a_biguint = {}", one_uint, a_biguint);
+    /// assert_eq!(a_biguint, UU64::max());
+    /// assert_eq!(a_biguint.is_overflow(), false);
+    /// assert_eq!(a_biguint.is_underflow(), false);
+    /// assert_eq!(a_biguint.is_divided_by_zero(), false);
+    /// assert_eq!(a_biguint.is_infinity(), false);
+    /// assert_eq!(a_biguint.is_undefined(), false);
+    /// ```
+    /// 
+    /// # Example 2
+    /// ```
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u64);
+    /// 
+    /// let mut a_biguint = UU64::max() - 1_u64;
+    /// println!("Originally, a_biguint = {}", a_biguint);
+    /// assert_eq!(a_biguint.to_string(), "13407807929942597099574024998205846127479365820592393377723561443721764030073546976801874298166903427690031858186486050853753882811946569946433649006084094");
+    /// assert_eq!(a_biguint.is_overflow(), false);
+    /// assert_eq!(a_biguint.is_underflow(), false);
+    /// assert_eq!(a_biguint.is_divided_by_zero(), false);
+    /// assert_eq!(a_biguint.is_infinity(), false);
+    /// assert_eq!(a_biguint.is_undefined(), false);
+    /// 
+    /// let two_uint = 2_u64;
+    /// a_biguint += two_uint;
+    /// println!("After a_biguint += {}, a_biguint = {}", two_uint, a_biguint);
+    /// assert_eq!(a_biguint.to_string(), "0");
+    /// assert_eq!(a_biguint.is_overflow(), true);
+    /// assert_eq!(a_biguint.is_underflow(), false);
+    /// assert_eq!(a_biguint.is_divided_by_zero(), false);
+    /// assert_eq!(a_biguint.is_infinity(), false);
+    /// assert_eq!(a_biguint.is_undefined(), false);
+    /// ```
+    /// 
+    /// # Example 2
+    /// ```
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u64);
+    /// 
+    /// let mut a_biguint = U512::max() - 1_u64;
+    /// println!("Originally, a_biguint = {}", a_biguint);
+    /// assert_eq!(a_biguint.is_overflow(), false);
+    /// assert_eq!(a_biguint.is_underflow(), false);
+    /// assert_eq!(a_biguint.is_infinity(), false);
+    /// assert_eq!(a_biguint.is_divided_by_zero(), false);
+    /// assert_eq!(a_biguint.is_undefined(), false);
+    /// 
+    /// let three_uint = 3_u64;
+    /// a_biguint += three_uint;
+    /// println!("After a_biguint += {}, a_biguint = {}", three_uint, a_biguint);
+    /// assert_eq!(a_biguint.to_string(), "1");
+    /// assert_eq!(a_biguint.is_overflow(), true);
+    /// assert_eq!(a_biguint.is_underflow(), false);
+    /// assert_eq!(a_biguint.is_divided_by_zero(), false);
+    /// assert_eq!(a_biguint.is_infinity(), false);
+    /// assert_eq!(a_biguint.is_undefined(), false);
+    /// ```
+    /// 
+    /// # Big-endian issue
+    /// It is just experimental for Big Endian CPUs. So, you are not encouraged
+    /// to use it for Big Endian CPUs for serious purpose. Only use this crate
+    /// for Big-endian CPUs with your own full responsibility.
     #[inline]
     fn add_assign(&mut self, rhs: T)
     {
@@ -108,6 +873,96 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
 
 
 
+/// I would like to suggest the modification of Rust grammar because the
+/// operator `-` swallows (takes the ownership of) two operands which are
+/// left-hand side operand `self` and right-hand side operand `rhs` so that
+/// the two operands `self` and `rhs` cannot be used again after addition
+/// operation. In order to prevent this, the operands should be cloned or
+/// copied before addition operation. This adds the unnecessary overhead.
+/// The heavier the operand object is, the more the overhead is.
+/// 
+/// So, I would like to suggest one of the following three as follows:
+/// 
+/// # First suggestion
+/// Changing the types of the parameters as follows:
+/// 
+/// ```
+/// pub trait Sub<Rhs = Self> {
+///     type Output;
+///     // Required method
+///     fn sub(&self, rhs: &Rhs) -> Self::Output;
+/// }
+/// ```
+/// 
+/// # Second suggestion
+/// If the first suggestion is impossible because of backward compatibility,
+/// grammar allows the developer to choose the types of parameters but make
+/// only one function.
+/// 
+/// ```
+/// pub trait Sub<Rhs = Self> {
+///     type Output;
+///     // Required method
+///     fn sub(self, rhs: Rhs) -> Self::Output;
+///   or
+///     fn sub(&self, rhs: Rhs) -> Self::Output;
+///   or
+///     fn sub(self, rhs: &Rhs) -> Self::Output;
+///   or
+///     fn sub(&self, rhs: &Rhs) -> Self::Output;
+/// }
+/// ```
+/// 
+/// # Third suggestion
+/// If the first and second suggestions are impossible because of backward
+/// compatibility, trait Sub2, Sub3, and Sub4 are provided and the developer
+/// implements none or only one of traits Sub, Sub2, Sub3, and Sub4.
+/// 
+/// ```
+/// pub trait Sub<Rhs = Self> {
+///     type Output;
+///     // Required method
+///     fn sub(self, rhs: Rhs) -> Self::Output;
+/// }
+/// 
+/// pub trait Sub2<Rhs = Self> {
+///     type Output;
+///     // Required method
+///     fn sub(&self, rhs: Rhs) -> Self::Output;
+/// }
+/// 
+/// pub trait Sub3<Rhs = Self> {
+///     type Output;
+///     // Required method
+///     fn sub(self, rhs: &Rhs) -> Self::Output;
+/// }
+/// 
+/// pub trait Sub4<Rhs = Self> {
+///     type Output;
+///     // Required method
+///     fn sub(&self, rhs: &Rhs) -> Self::Output;
+/// }
+/// ```
+/// 
+/// Unlike trait Sub, the trait PartialEq makes the operators `==` and `!=` take
+/// not `&Self` but `Self` as its first operand and not `&Rhs` (or `&Self`) but
+/// `Rhs` (or `Self`) as its second operand but makes the functions eq() and
+/// ne() take not `self` but `&self` as its first argument and not `Rhs` but
+/// `&Rhs` as its second argument. So, I think the third suggestion is possible.
+/// The prototype of trait PartialEq is as follows:
+/// 
+/// ```
+/// pub trait PartialEq<Rhs = Self>
+/// where
+/// Rhs: ?Sized,
+/// {
+///     // Required method
+///     fn eq(&self, other: &Rhs) -> bool;
+/// 
+///     // Provided method
+///     fn ne(&self, other: &Rhs) -> bool { ... }
+/// }
+/// ```
 impl<T, const N: usize> Sub for BigUInt<T, N>
 where T: SmallUInt + Copy + Clone + Display + Debug + ToString
         + Add<Output=T> + AddAssign + Sub<Output=T> + SubAssign
@@ -120,6 +975,105 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
 {
     type Output = Self;
 
+    // fn sub(self, rhs: Self) -> Self
+    /// Calculates `self` - `rhs`,
+    /// wrapping around at the boundary of the `Self` type,
+    /// and returns a subtraction result `self` - `rhs`.
+    /// 
+    /// # Arguments
+    /// `rhs` is to be subtracted from `self`, and is of `Self` type.
+    /// 
+    /// # Panics
+    /// If `size_of::<T>() * N` <= `128`, this method may panic
+    /// or its behavior may be undefined though it may not panic.
+    /// 
+    /// # Output
+    /// It returns `self` - `rhs` with wrapping (modular) subtraction.
+    /// 
+    /// # Features
+    /// - Wrapping (modular) subtraction.
+    /// - If underflow happened, the flag `UNDERFLOW` of the return value
+    ///   will be set.
+    /// 
+    /// # Example 1
+    /// ```
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u128);
+    /// 
+    /// let a_biguint = U512::one();
+    /// let one_biguint = U512::one();
+    /// let res = a_biguint.clone() - one_biguint.clone();
+    /// println!("{} - {} = {}", a_biguint, one_biguint, res);
+    /// assert_eq!(res, U512::zero());
+    /// assert_eq!(res.is_underflow(), false);
+    /// assert_eq!(res.is_overflow(), false);
+    /// assert_eq!(res.is_divided_by_zero(), false);
+    /// assert_eq!(res.is_infinity(), false);
+    /// assert_eq!(res.is_undefined(), false);
+    /// ```
+    /// 
+    /// # Example 2
+    /// ```
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u128);
+    /// 
+    /// let a_biguint = U512::one();
+    /// let two_biguint = U512::from_uint(2_u8);
+    /// let res = a_biguint.clone() - two_biguint.clone();
+    /// println!("{} - {} = {}", a_biguint, two_biguint, res);
+    /// assert_eq!(res, U512::max());
+    /// assert_eq!(res.is_underflow(), true);
+    /// assert_eq!(res.is_overflow(), false);
+    /// assert_eq!(res.is_divided_by_zero(), false);
+    /// assert_eq!(res.is_infinity(), false);
+    /// assert_eq!(res.is_undefined(), false);
+    /// ```
+    /// 
+    /// # Example 3
+    /// ```
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u128);
+    /// 
+    /// let a_biguint = U512::one();
+    /// let three_biguint = U512::from_uint(3_u8);
+    /// let res = a_biguint.clone() - three_biguint.clone();
+    /// println!("{} - {} = {}", a_biguint, three_biguint, res);
+    /// assert_eq!(res.to_string(), "13407807929942597099574024998205846127479365820592393377723561443721764030073546976801874298166903427690031858186486050853753882811946569946433649006084094");
+    /// assert_eq!(res.is_underflow(), true);
+    /// assert_eq!(res.is_overflow(), false);
+    /// assert_eq!(res.is_divided_by_zero(), false);
+    /// assert_eq!(res.is_infinity(), false);
+    /// assert_eq!(res.is_undefined(), false);
+    /// ```
+    /// 
+    /// # Cannot-compile Examples
+    /// ```
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u128);
+    /// 
+    /// let a_biguint = U512::one();
+    /// let one_biguint = U512::one();
+    /// let _res = a_biguint - one_biguint;
+    /// // println!("{} - {} = {}", a_biguint, one_biguint, _res);
+    /// // The operator '-' swallowed (took the ownership of) a_biguint and one_biguint.
+    /// 
+    /// let a_biguint = U512::one();
+    /// let two_biguint = U512::from_uint(2_u8);
+    /// let _res = a_biguint - two_biguint;
+    /// // println!("{} - {} = {}", a_biguint, one_biguint, _res);
+    /// // The operator '-' swallowed (took the ownership of) a_biguint and two_biguint.
+    /// 
+    /// let a_biguint = U512::one();
+    /// let three_biguint = U512::from_uint(3_u8);
+    /// let _res = a_biguint - three_biguint;
+    /// // println!("{} - {} = {}", a_biguint, one_biguint, _res);
+    /// // The operator '-' swallowed (took the ownership of) a_biguint and three_biguint.
+    /// ```
+    /// 
+    /// # Big-endian issue
+    /// It is just experimental for Big Endian CPUs. So, you are not encouraged
+    /// to use it for Big Endian CPUs for serious purpose. Only use this crate
+    /// for Big-endian CPUs with your own full responsibility.
     #[inline]
     fn sub(self, rhs: Self) -> Self
     {
@@ -129,6 +1083,96 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
 
 
 
+/// I would like to suggest the modification of Rust grammar because the
+/// operator `-` swallows (takes the ownership of) two operands which are
+/// left-hand side operand `self` and right-hand side operand `rhs` so that
+/// the two operands `self` and `rhs` cannot be used again after addition
+/// operation. In order to prevent this, the operands should be cloned or
+/// copied before addition operation. This adds the unnecessary overhead.
+/// The heavier the operand object is, the more the overhead is.
+/// 
+/// So, I would like to suggest one of the following three as follows:
+/// 
+/// # First suggestion
+/// Changing the types of the parameters as follows:
+/// 
+/// ```
+/// pub trait Sub<Rhs = Self> {
+///     type Output;
+///     // Required method
+///     fn sub(&self, rhs: &Rhs) -> Self::Output;
+/// }
+/// ```
+/// 
+/// # Second suggestion
+/// If the first suggestion is impossible because of backward compatibility,
+/// grammar allows the developer to choose the types of parameters but make
+/// only one function.
+/// 
+/// ```
+/// pub trait Sub<Rhs = Self> {
+///     type Output;
+///     // Required method
+///     fn sub(self, rhs: Rhs) -> Self::Output;
+///   or
+///     fn sub(&self, rhs: Rhs) -> Self::Output;
+///   or
+///     fn sub(self, rhs: &Rhs) -> Self::Output;
+///   or
+///     fn sub(&self, rhs: &Rhs) -> Self::Output;
+/// }
+/// ```
+/// 
+/// # Third suggestion
+/// If the first and second suggestions are impossible because of backward
+/// compatibility, trait Sub2, Sub3, and Sub4 are provided and the developer
+/// implements none or only one of traits Sub, Sub2, Sub3, and Sub4.
+/// 
+/// ```
+/// pub trait Sub<Rhs = Self> {
+///     type Output;
+///     // Required method
+///     fn sub(self, rhs: Rhs) -> Self::Output;
+/// }
+/// 
+/// pub trait Sub2<Rhs = Self> {
+///     type Output;
+///     // Required method
+///     fn sub(&self, rhs: Rhs) -> Self::Output;
+/// }
+/// 
+/// pub trait Sub3<Rhs = Self> {
+///     type Output;
+///     // Required method
+///     fn sub(self, rhs: &Rhs) -> Self::Output;
+/// }
+/// 
+/// pub trait Sub4<Rhs = Self> {
+///     type Output;
+///     // Required method
+///     fn sub(&self, rhs: &Rhs) -> Self::Output;
+/// }
+/// ```
+/// 
+/// Unlike trait Sub, the trait PartialEq makes the operators `==` and `!=` take
+/// not `&Self` but `Self` as its first operand and not `&Rhs` (or `&Self`) but
+/// `Rhs` (or `Self`) as its second operand but makes the functions eq() and
+/// ne() take not `self` but `&self` as its first argument and not `Rhs` but
+/// `&Rhs` as its second argument. So, I think the third suggestion is possible.
+/// The prototype of trait PartialEq is as follows:
+/// 
+/// ```
+/// pub trait PartialEq<Rhs = Self>
+/// where
+/// Rhs: ?Sized,
+/// {
+///     // Required method
+///     fn eq(&self, other: &Rhs) -> bool;
+/// 
+///     // Provided method
+///     fn ne(&self, other: &Rhs) -> bool { ... }
+/// }
+/// ```
 impl<T, const N: usize> Sub<T> for BigUInt<T, N>
 where T: SmallUInt + Copy + Clone + Display + Debug + ToString
         + Add<Output=T> + AddAssign + Sub<Output=T> + SubAssign
@@ -141,6 +1185,106 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
 {
     type Output = Self;
 
+    // fn sub(self, rhs: T) -> Self
+    /// Calculates `self` - `rhs`,
+    /// wrapping around at the boundary of the `Self` type,
+    /// and returns a subtraction result `self` - `rhs`.
+    /// 
+    /// # Arguments
+    /// `rhs` is to be subtracted from `self`, and primitive unsigned integer
+    /// such as `u8`, `u16`, `u32`, `u64`, and `u128`.
+    /// 
+    /// # Panics
+    /// If `size_of::<T>() * N` <= `128`, this method may panic
+    /// or its behavior may be undefined though it may not panic.
+    /// 
+    /// # Output
+    /// It returns `self` - `rhs` with wrapping (modular) subtraction.
+    /// 
+    /// # Features
+    /// - Wrapping (modular) subtraction.
+    /// - If underflow happened, the flag `UNDERFLOW` of the return value
+    ///   will be set.
+    /// 
+    /// # Example 1
+    /// ```
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u8);
+    /// 
+    /// let a_biguint = U512::one();
+    /// let one_uint = 1_u8;
+    /// let res = a_biguint.clone() - one_uint.clone();
+    /// println!("{} - {} = {}", a_biguint, one_uint, res);
+    /// assert_eq!(res, U512::zero());
+    /// assert_eq!(res.is_underflow(), false);
+    /// assert_eq!(res.is_overflow(), false);
+    /// assert_eq!(res.is_divided_by_zero(), false);
+    /// assert_eq!(res.is_infinity(), false);
+    /// assert_eq!(res.is_undefined(), false);
+    /// ```
+    /// 
+    /// # Example 2
+    /// ```
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u8);
+    /// 
+    /// let a_biguint = U512::one();
+    /// let two_uint = 2_u8;
+    /// let res = a_biguint.clone() - two_uint.clone();
+    /// println!("{} - {} = {}", a_biguint, two_uint, res);
+    /// assert_eq!(res, U512::max());
+    /// assert_eq!(res.is_underflow(), true);
+    /// assert_eq!(res.is_overflow(), false);
+    /// assert_eq!(res.is_divided_by_zero(), false);
+    /// assert_eq!(res.is_infinity(), false);
+    /// assert_eq!(res.is_undefined(), false);
+    /// ```
+    /// 
+    /// # Example 3
+    /// ```
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u8);
+    /// 
+    /// let a_biguint = U512::one();
+    /// let three_uint = 3_u8;
+    /// let res = a_biguint.clone() - three_uint.clone();
+    /// println!("{} - {} = {}", a_biguint, three_uint, res);
+    /// assert_eq!(res.to_string(), "13407807929942597099574024998205846127479365820592393377723561443721764030073546976801874298166903427690031858186486050853753882811946569946433649006084094");
+    /// assert_eq!(res.is_underflow(), true);
+    /// assert_eq!(res.is_overflow(), false);
+    /// assert_eq!(res.is_divided_by_zero(), false);
+    /// assert_eq!(res.is_infinity(), false);
+    /// assert_eq!(res.is_undefined(), false);
+    /// ```
+    /// 
+    /// # Cannot-compile Examples
+    /// ```
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u8);
+    /// 
+    /// let a_biguint = U512::one();
+    /// let one_uint = 1_8;
+    /// let _res = a_biguint - one_uint;
+    /// // println!("{} - {} = {}", a_biguint, one_uint, _res);
+    /// // The operator '-' swallowed (took the ownership of) a_biguint.
+    /// 
+    /// let a_biguint = U512::one();
+    /// let two_uint = 2_u8;
+    /// let _res = a_biguint - two_uint;
+    /// // println!("{} - {} = {}", a_biguint, one_uint, _res);
+    /// // The operator '-' swallowed (took the ownership of) a_biguint.
+    /// 
+    /// let a_biguint = U512::one();
+    /// let three_uint = 3_u8;
+    /// let _res = a_biguint - three_uint;
+    /// // println!("{} - {} = {}", a_biguint, one_uint, _res);
+    /// // The operator '-' swallowed (took the ownership of) a_biguint.
+    /// ```
+    /// 
+    /// # Big-endian issue
+    /// It is just experimental for Big Endian CPUs. So, you are not encouraged
+    /// to use it for Big Endian CPUs for serious purpose. Only use this crate
+    /// for Big-endian CPUs with your own full responsibility.
     #[inline]
     fn sub(self, rhs: T) -> Self
     {
@@ -150,6 +1294,76 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
 
 
 
+/// I would like to suggest the modification of Rust grammar because the
+/// operator `-=` swallows (takes the ownership of) two operands which are
+/// left-hand side operand `self` and right-hand side operand `rhs` so that
+/// the two operands `self` and `rhs` cannot be used again after subtraction
+/// operation. In order to prevent this, the operands should be cloned or
+/// copied before subtraction operation. This adds the unnecessary overhead.
+/// The heavier the operand object is, the more the overhead is.
+/// 
+/// So, I would like to suggest one of the following three as follows:
+/// 
+/// # First suggestion
+/// Changing the types of the parameters as follows:
+/// 
+/// ```
+/// pub trait SubAssign<Rhs = Self> {
+///     // Required method
+///     fn sub_assign(&mut self, rhs: &Rhs);
+/// }
+/// ```
+/// 
+/// # Second suggestion
+/// If the first suggestion is impossible because of backward compatibility,
+/// grammar allows the developer to choose the types of parameters but make
+/// only one function.
+/// 
+/// ```
+/// pub trait SubAssign<Rhs = Self> {
+///     // Required method
+///     fn sub_assign(&mut self, rhs: Rhs);
+///   or
+///     fn sub_assign(&mut self, rhs: &Rhs);
+/// }
+/// ```
+/// 
+/// # Third suggestion
+/// If the first and second suggestions are impossible because of backward
+/// compatibility, trait SubAssign2 is provided and the developer
+/// implements none or only one of traits SubAssign and SubAssign2.
+/// ```
+/// pub trait SubAssign<Rhs = Self> {
+///     // Required method
+///     fn sub_assign(&mut self, rhs: Rhs);
+/// }
+/// 
+/// pub trait SubAssign2<Rhs = Self> {
+///     // Required method
+///     fn sub_assign(&mut self, rhs: &Rhs);
+/// }
+/// ```
+/// 
+/// Unlike trait SubAssign, the trait PartialEq makes the operators
+/// `==` and `!=` take not `&Self` but `Self` as its first operand and not
+/// `&Rhs` (or `&Self`) but `Rhs` (or `Self`) as its second operand but makes
+/// the functions eq() and ne() take not `self` but `&self` as its first
+/// argument and not `Rhs` but `&Rhs` as its second argument.
+/// So, I think the third suggestion is possible.
+/// The prototype of trait PartialEq is as follows:
+/// 
+/// ```
+/// pub trait PartialEq<Rhs = Self>
+/// where
+/// Rhs: ?Sized,
+/// {
+///     // Required method
+///     fn eq(&self, other: &Rhs) -> bool;
+/// 
+///     // Provided method
+///     fn ne(&self, other: &Rhs) -> bool { ... }
+/// }
+/// ```
 impl<T, const N: usize> SubAssign for BigUInt<T, N>
 where T: SmallUInt + Copy + Clone + Display + Debug + ToString
         + Add<Output=T> + AddAssign + Sub<Output=T> + SubAssign
@@ -160,7 +1374,129 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
         + BitXor<Output=T> + BitXorAssign + Not<Output=T>
         + PartialEq + PartialOrd
 {
-    /// Subtracts and assign the result to it.
+    // fn sub_assign(&mut self, rhs: Self)
+    /// Calculates `self` - `rhs`,
+    /// wrapping around at the boundary of the `Self` type,
+    /// and assign the subtraction result `self` - `rhs` to `self` back.
+    /// 
+    /// # Arguments
+    /// `rhs` is to be subtracted from `self`, and is of `&Self` type.
+    /// 
+    /// # Panics
+    /// If `size_of::<T>() * N` <= `128`, this method may panic
+    /// or its behavior may be undefined though it may not panic.
+    /// 
+    /// # Features
+    /// - Wrapping (modular) subtraction.
+    /// - If underflow happened, the flag `UNDERFLOW` of `self` will be set.
+    /// - All the flags are historical, which means, for example, if an underflow
+    ///   occurred even once before this current operation or `UNDERFLOW`
+    ///   flag is already set before this current operation, the `UNDERFLOW` flag
+    ///   is not changed even if this current operation does not cause underflow.
+    ///
+    /// # Example 1
+    /// ```
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u16);
+    /// 
+    /// let mut a_biguint = U512::one();
+    /// println!("Originally, a_biguint = {}", a_biguint);
+    /// assert_eq!(a_biguint.is_underflow(), false);
+    /// assert_eq!(a_biguint.is_overflow(), false);
+    /// assert_eq!(a_biguint.is_divided_by_zero(), false);
+    /// assert_eq!(a_biguint.is_infinity(), false);
+    /// assert_eq!(a_biguint.is_undefined(), false);
+    /// 
+    /// let one_biguint = U512::one();
+    /// a_biguint -= one_biguint.clone();
+    /// println!("After a_biguint -= {}, a_biguint = {}", one_biguint, a_biguint);
+    /// assert_eq!(a_biguint.to_string(), "0");
+    /// assert_eq!(a_biguint.is_underflow(), false);
+    /// assert_eq!(a_biguint.is_overflow(), false);
+    /// assert_eq!(a_biguint.is_divided_by_zero(), false);
+    /// assert_eq!(a_biguint.is_infinity(), false);
+    /// assert_eq!(a_biguint.is_undefined(), false);
+    /// ```
+    ///
+    /// # Example 2
+    /// ```
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u16);
+    /// 
+    /// let mut a_biguint = U512::one();
+    /// println!("Originally, a_biguint = {}", a_biguint);
+    /// assert_eq!(a_biguint.is_underflow(), false);
+    /// assert_eq!(a_biguint.is_overflow(), false);
+    /// assert_eq!(a_biguint.is_divided_by_zero(), false);
+    /// assert_eq!(a_biguint.is_infinity(), false);
+    /// assert_eq!(a_biguint.is_undefined(), false);
+    /// 
+    /// let two_biguint = U512::from_uint(2_u8);
+    /// a_biguint -= two_biguint.clone();
+    /// println!("After a_biguint -= {}, a_biguint = {}", two_biguint, a_biguint);
+    /// assert_eq!(a_biguint.to_string(), "13407807929942597099574024998205846127479365820592393377723561443721764030073546976801874298166903427690031858186486050853753882811946569946433649006084095");
+    /// assert_eq!(a_biguint.is_underflow(), true);
+    /// assert_eq!(a_biguint.is_overflow(), false);
+    /// assert_eq!(a_biguint.is_divided_by_zero(), false);
+    /// assert_eq!(a_biguint.is_infinity(), false);
+    /// assert_eq!(a_biguint.is_undefined(), false);
+    /// ```
+    ///
+    /// # Example 3
+    /// ```
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u16);
+    /// 
+    /// let mut a_biguint = U512::one();
+    /// println!("Originally, a_biguint = {}", a_biguint);
+    /// assert_eq!(a_biguint.is_underflow(), false);
+    /// assert_eq!(a_biguint.is_overflow(), false);
+    /// assert_eq!(a_biguint.is_divided_by_zero(), false);
+    /// assert_eq!(a_biguint.is_infinity(), false);
+    /// assert_eq!(a_biguint.is_undefined(), false);
+    /// 
+    /// let three_biguint = U512::from_uint(3_u8);
+    /// a_biguint -= three_biguint.clone();
+    /// println!("After a_biguint -= {}, a_biguint = {}", three_biguint, a_biguint);
+    /// assert_eq!(a_biguint.to_string(), "13407807929942597099574024998205846127479365820592393377723561443721764030073546976801874298166903427690031858186486050853753882811946569946433649006084094");
+    /// assert_eq!(a_biguint.is_underflow(), true);
+    /// assert_eq!(a_biguint.is_overflow(), false);
+    /// assert_eq!(a_biguint.is_divided_by_zero(), false);
+    /// assert_eq!(a_biguint.is_infinity(), false);
+    /// assert_eq!(a_biguint.is_undefined(), false);
+    /// ```
+    ///
+    /// # Cannot-compile Examples
+    /// ```
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u16);
+    /// 
+    /// let mut a_biguint = U512::one();
+    /// println!("Originally, a_biguint = {}", a_biguint);
+    /// let one_biguint = U512::one();
+    /// a_biguint -= one_biguint;
+    /// // println!("After a_biguint -= {}, a_biguint = {}", one_biguint, a_biguint);
+    /// // The operator '-=' swallowed (took the ownership of) one_biguint.
+    /// 
+    /// let mut a_biguint = U512::one();
+    /// println!("Originally, a_biguint = {}", a_biguint);
+    /// let two_biguint = U512::from_uint(2_u8);
+    /// a_biguint -= two_biguint.clone();
+    /// // println!("After a_biguint -= {}, a_biguint = {}", two_biguint, a_biguint);
+    /// // The operator '-=' swallowed (took the ownership of) two_biguint.
+    /// 
+    /// let mut a_biguint = U512::one();
+    /// println!("Originally, a_biguint = {}", a_biguint);
+    /// let three_biguint = U512::from_uint(3_u8);
+    /// a_biguint -= three_biguint.clone();
+    /// // println!("After a_biguint -= {}, a_biguint = {}", three_biguint, a_biguint);
+    /// // The operator '-=' swallowed (took the ownership of) three_biguint.
+    /// ```
+    /// 
+    /// # Big-endian issue
+    /// It is just experimental for Big Endian CPUs. So, you are not encouraged
+    /// to use it for Big Endian CPUs for serious purpose. Only use this crate
+    /// for Big-endian CPUs with your own full responsibility.
     #[inline]
     fn sub_assign(&mut self, rhs: Self)
     {
@@ -170,6 +1506,76 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
 
 
 
+/// I would like to suggest the modification of Rust grammar because the
+/// operator `-=` swallows (takes the ownership of) two operands which are
+/// left-hand side operand `self` and right-hand side operand `rhs` so that
+/// the two operands `self` and `rhs` cannot be used again after subtraction
+/// operation. In order to prevent this, the operands should be cloned or
+/// copied before subtraction operation. This adds the unnecessary overhead.
+/// The heavier the operand object is, the more the overhead is.
+/// 
+/// So, I would like to suggest one of the following three as follows:
+/// 
+/// # First suggestion
+/// Changing the types of the parameters as follows:
+/// 
+/// ```
+/// pub trait SubAssign<Rhs = Self> {
+///     // Required method
+///     fn sub_assign(&mut self, rhs: &Rhs);
+/// }
+/// ```
+/// 
+/// # Second suggestion
+/// If the first suggestion is impossible because of backward compatibility,
+/// grammar allows the developer to choose the types of parameters but make
+/// only one function.
+/// 
+/// ```
+/// pub trait SubAssign<Rhs = Self> {
+///     // Required method
+///     fn sub_assign(&mut self, rhs: Rhs);
+///   or
+///     fn sub_assign(&mut self, rhs: &Rhs);
+/// }
+/// ```
+/// 
+/// # Third suggestion
+/// If the first and second suggestions are impossible because of backward
+/// compatibility, trait SubAssign2 is provided and the developer
+/// implements none or only one of traits SubAssign and SubAssign2.
+/// ```
+/// pub trait SubAssign<Rhs = Self> {
+///     // Required method
+///     fn sub_assign(&mut self, rhs: Rhs);
+/// }
+/// 
+/// pub trait SubAssign2<Rhs = Self> {
+///     // Required method
+///     fn sub_assign(&mut self, rhs: &Rhs);
+/// }
+/// ```
+/// 
+/// Unlike trait SubAssign, the trait PartialEq makes the operators
+/// `==` and `!=` take not `&Self` but `Self` as its first operand and not
+/// `&Rhs` (or `&Self`) but `Rhs` (or `Self`) as its second operand but makes
+/// the functions eq() and ne() take not `self` but `&self` as its first
+/// argument and not `Rhs` but `&Rhs` as its second argument.
+/// So, I think the third suggestion is possible.
+/// The prototype of trait PartialEq is as follows:
+/// 
+/// ```
+/// pub trait PartialEq<Rhs = Self>
+/// where
+/// Rhs: ?Sized,
+/// {
+///     // Required method
+///     fn eq(&self, other: &Rhs) -> bool;
+/// 
+///     // Provided method
+///     fn ne(&self, other: &Rhs) -> bool { ... }
+/// }
+/// ```
 impl<T, const N: usize> SubAssign<T> for BigUInt<T, N>
 where T: SmallUInt + Copy + Clone + Display + Debug + ToString
         + Add<Output=T> + AddAssign + Sub<Output=T> + SubAssign
@@ -180,7 +1586,103 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
         + BitXor<Output=T> + BitXorAssign + Not<Output=T>
         + PartialEq + PartialOrd
 {
-    /// Subtracts and assign the result to it.
+    // fn sub_assign(&mut self, rhs: T)
+    /// Calculates `self` - `rhs`,
+    /// wrapping around at the boundary of the `Self` type,
+    /// and assigns the subtraction result `self` - `rhs` to `self` back.
+    /// 
+    /// # Arguments
+    /// `rhs` is to be subtracted from `self`, and primitive unsigned integer
+    /// such as `u8`, `u16`, `u32`, `u64`, and `u128`.
+    /// 
+    /// # Panics
+    /// If `size_of::<T>() * N` <= `128`, this method may panic
+    /// or its behavior may be undefined though it may not panic.
+    /// 
+    /// # Features
+    /// - Wrapping (modular) subtraction.
+    /// - If underflow happened, the flag `UNDERFLOW` of `self` will be set.
+    /// - All the flags are historical, which means, for example, if an underflow
+    ///   occurred even once before this current operation or `UNDERFLOW`
+    ///   flag is already set before this current operation, the `UNDERFLOW` flag
+    ///   is not changed even if this current operation does not cause underflow.
+    /// 
+    /// # Example 1
+    /// ```
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u32);
+    /// 
+    /// let mut a_biguint = U512::one();
+    /// println!("Originally, a_biguint = {}", a_biguint);
+    /// assert_eq!(a_biguint.is_underflow(), false);
+    /// assert_eq!(a_biguint.is_overflow(), false);
+    /// assert_eq!(a_biguint.is_divided_by_zero(), false);
+    /// assert_eq!(a_biguint.is_infinity(), false);
+    /// assert_eq!(a_biguint.is_undefined(), false);
+    /// 
+    /// let one_uint = 1_u32;
+    /// a_biguint -= one_uint;
+    /// println!("After a_biguint -= {}, a_biguint = {}", one_uint, a_biguint);
+    /// assert_eq!(a_biguint.to_string(), "0");
+    /// assert_eq!(a_biguint.is_underflow(), false);
+    /// assert_eq!(a_biguint.is_overflow(), false);
+    /// assert_eq!(a_biguint.is_divided_by_zero(), false);
+    /// assert_eq!(a_biguint.is_infinity(), false);
+    /// assert_eq!(a_biguint.is_undefined(), false);
+    /// ```
+    /// 
+    /// # Example 2
+    /// ```
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u32);
+    /// 
+    /// let mut a_biguint = U512::one();
+    /// println!("Originally, a_biguint = {}", a_biguint);
+    /// assert_eq!(a_biguint.is_underflow(), false);
+    /// assert_eq!(a_biguint.is_overflow(), false);
+    /// assert_eq!(a_biguint.is_divided_by_zero(), false);
+    /// assert_eq!(a_biguint.is_infinity(), false);
+    /// assert_eq!(a_biguint.is_undefined(), false);
+    /// 
+    /// let two_uint = 2_u32;
+    /// a_biguint -= two_uint;
+    /// println!("After a_biguint -= {}, a_biguint = {}", two_uint, a_biguint);
+    /// assert_eq!(a_biguint.to_string(), "13407807929942597099574024998205846127479365820592393377723561443721764030073546976801874298166903427690031858186486050853753882811946569946433649006084095");
+    /// assert_eq!(a_biguint.is_underflow(), true);
+    /// assert_eq!(a_biguint.is_overflow(), false);
+    /// assert_eq!(a_biguint.is_divided_by_zero(), false);
+    /// assert_eq!(a_biguint.is_infinity(), false);
+    /// assert_eq!(a_biguint.is_undefined(), false);
+    /// ```
+    /// 
+    /// # Example 3
+    /// ```
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u32);
+    /// 
+    /// let mut a_biguint = U512::one();
+    /// println!("Originally, a_biguint = {}", a_biguint);
+    /// assert_eq!(a_biguint.is_underflow(), false);
+    /// assert_eq!(a_biguint.is_overflow(), false);
+    /// assert_eq!(a_biguint.is_divided_by_zero(), false);
+    /// assert_eq!(a_biguint.is_infinity(), false);
+    /// assert_eq!(a_biguint.is_undefined(), false);
+    /// 
+    /// let three_uint = 3_u32;
+    /// a_biguint -= three_uint;
+    /// println!("After a_biguint -= {}, a_biguint = {}", three_uint, a_biguint);
+    /// assert_eq!(a_biguint.to_string(), "13407807929942597099574024998205846127479365820592393377723561443721764030073546976801874298166903427690031858186486050853753882811946569946433649006084094");
+    /// assert_eq!(a_biguint.is_underflow(), true);
+    /// assert_eq!(a_biguint.is_overflow(), false);
+    /// assert_eq!(a_biguint.is_divided_by_zero(), false);
+    /// assert_eq!(a_biguint.is_infinity(), false);
+    /// assert_eq!(a_biguint.is_undefined(), false);
+    /// ```
+    /// 
+    /// # Big-endian issue
+    /// It is just experimental for Big Endian CPUs. So, you are not encouraged
+    /// to use it for Big Endian CPUs for serious purpose. Only use this crate
+    /// for Big-endian CPUs with your own full responsibility.
     #[inline]
     fn sub_assign(&mut self, rhs: T)
     {
@@ -190,6 +1692,95 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
 
 
 
+/// I would like to suggest the modification of Rust grammar because the
+/// operator `*` swallows (takes the ownership of) two operands which are
+/// left-hand side operand `self` and right-hand side operand `rhs` so that
+/// the two operands `self` and `rhs` cannot be used again after multiplication
+/// operation. In order to prevent this, the operands should be cloned or
+/// copied before multiplication operation. This adds the unnecessary overhead.
+/// The heavier the operand object is, the more the overhead is.
+/// 
+/// So, I would like to suggest one of the following three as follows:
+/// 
+/// # First suggestion
+/// Changing the types of the parameters as follows:
+/// 
+/// ```
+/// pub trait Mul<Rhs = Self> {
+///     type Output;
+///     // Required method
+///     fn mul(&self, rhs: &Rhs) -> Self::Output;
+/// }
+/// ```
+/// 
+/// # Second suggestion
+/// If the first suggestion is impossible because of backward compatibility,
+/// grammar allows the developer to choose the types of parameters but make
+/// only one function.
+/// 
+/// ```
+/// pub trait Mul<Rhs = Self> {
+///     type Output;
+///     // Required method
+///     fn mul(self, rhs: Rhs) -> Self::Output;
+///   or
+///     fn mul(&self, rhs: Rhs) -> Self::Output;
+///   or
+///     fn mul(self, rhs: &Rhs) -> Self::Output;
+///   or
+///     fn mul(&self, rhs: &Rhs) -> Self::Output;
+/// }
+/// ```
+/// 
+/// # Third suggestion
+/// If the first and second suggestions are impossible because of backward
+/// compatibility, trait Mul2, Mul3, and Mul4 are provided and the developer
+/// implements none or only one of traits Mul, Mul2, Mul3, and Mul4.
+/// ```
+/// pub trait Mul<Rhs = Self> {
+///     type Output;
+///     // Required method
+///     fn mul(self, rhs: Rhs) -> Self::Output;
+/// }
+/// 
+/// pub trait Mul2<Rhs = Self> {
+///     type Output;
+///     // Required method
+///     fn mul(&self, rhs: Rhs) -> Self::Output;
+/// }
+/// 
+/// pub trait Mul3<Rhs = Self> {
+///     type Output;
+///     // Required method
+///     fn mul(self, rhs: &Rhs) -> Self::Output;
+/// }
+/// 
+/// pub trait Mul4<Rhs = Self> {
+///     type Output;
+///     // Required method
+///     fn mul(&self, rhs: &Rhs) -> Self::Output;
+/// }
+/// ```
+/// 
+/// Unlike trait Mul, the trait PartialEq makes the operators `==` and `!=` take
+/// not `&Self` but `Self` as its first operand and not `&Rhs` (or `&Self`) but
+/// `Rhs` (or `Self`) as its second operand but makes the functions eq() and
+/// ne() take not `self` but `&self` as its first argument and not `Rhs` but
+/// `&Rhs` as its second argument. So, I think the third suggestion is possible.
+/// The prototype of trait PartialEq is as follows:
+/// 
+/// ```
+/// pub trait PartialEq<Rhs = Self>
+/// where
+/// Rhs: ?Sized,
+/// {
+///     // Required method
+///     fn eq(&self, other: &Rhs) -> bool;
+/// 
+///     // Provided method
+///     fn ne(&self, other: &Rhs) -> bool { ... }
+/// }
+/// ```
 impl<T, const N: usize> Mul for BigUInt<T, N>
 where T: SmallUInt + Copy + Clone + Display + Debug + ToString
         + Add<Output=T> + AddAssign + Sub<Output=T> + SubAssign
@@ -202,6 +1793,83 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
 {
     type Output = Self;
 
+    // fn mul(self, rhs: Self) -> Self
+    /// Calculates `self` * `rhs`,
+    /// wrapping around at the boundary of the `Self` type,
+    /// and returns a multiplication result `self` * `rhs`.
+    /// 
+    /// # Arguments
+    /// `rhs` is to be added to `self`, and is of `Self` type.
+    /// 
+    /// # Panics
+    /// If `size_of::<T>() * N` <= `128`, this method may panic
+    /// or its behavior may be undefined though it may not panic.
+    /// 
+    /// # Output
+    /// It returns the multiplication result `self` * `rhs` with wrapping
+    /// (modular) multiplication.
+    /// 
+    /// # Features
+    /// - Wrapping (modular) multiplication.
+    /// - If overflow happened, the flag `OVERFLOW` of the return value
+    ///   will be set.
+    /// 
+    /// # Example 1
+    /// ```
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u64);
+    /// 
+    /// let a_biguint = U256::from_string("12380187429816690342769003185818648605085375388281194656994643364900608").unwrap();
+    /// let b_biguint = U256::from_uint(248_u8);
+    /// let res = a_biguint.clone() * b_biguint.clone();
+    /// println!("{} X {} = {}", a_biguint, b_biguint, res);
+    /// assert_eq!(res.to_string(), "3070286482594539205006712790083024854061173096293736274934671554495350784");
+    /// assert_eq!(res.is_overflow(), false);
+    /// assert_eq!(res.is_underflow(), false);
+    /// assert_eq!(res.is_divided_by_zero(), false);
+    /// assert_eq!(res.is_infinity(), false);
+    /// assert_eq!(res.is_undefined(), false);
+    /// ```
+    /// 
+    /// # Example 2
+    /// ```
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u64);
+    /// 
+    /// let a_biguint = U256::from_string("876801874298166903427690031858186486050853753882811946569946433649006084094").unwrap();
+    /// let b_biguint = U256::from_uint(248_u8);
+    /// let res = a_biguint.clone() * b_biguint.clone();
+    /// println!("{} X {} = {}", a_biguint, b_biguint, res);
+    /// assert_eq!(res.to_string(), "101654775588629196626496142892142340687341746297296798709889131537040379215376");
+    /// assert_eq!(res.is_overflow(), true);
+    /// assert_eq!(res.is_underflow(), false);
+    /// assert_eq!(res.is_divided_by_zero(), false);
+    /// assert_eq!(res.is_infinity(), false);
+    /// assert_eq!(res.is_undefined(), false);
+    /// ```
+    /// 
+    /// # Cannot-compile Examples
+    /// ```
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u64);
+    /// 
+    /// let a_biguint = U256::from_string("12380187429816690342769003185818648605085375388281194656994643364900608").unwrap();
+    /// let b_biguint = U256::from_uint(248_u8);
+    /// let _res = a_biguint * b_biguint;
+    /// // println!("{} X {} = {}", a_biguint, b_biguint, res);
+    /// // The operator '*' swallowed (took the ownership of) a_biguint and b_biguint.
+    /// 
+    /// let a_biguint = U256::from_string("876801874298166903427690031858186486050853753882811946569946433649006084094").unwrap();
+    /// let b_biguint = U256::from_uint(248_u8);
+    /// let _res = a_biguint * b_biguint;
+    /// // println!("{} X {} = {}", a_biguint, b_biguint, res);
+    /// // The operator '*' swallowed (took the ownership of) a_biguint and b_biguint.
+    /// ```
+    /// 
+    /// # Big-endian issue
+    /// It is just experimental for Big Endian CPUs. So, you are not encouraged
+    /// to use it for Big Endian CPUs for serious purpose. Only use this crate
+    /// for Big-endian CPUs with your own full responsibility.
     #[inline]
     fn mul(self, rhs: Self) -> Self
     {
@@ -211,6 +1879,95 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
 
 
 
+/// I would like to suggest the modification of Rust grammar because the
+/// operator `*` swallows (takes the ownership of) two operands which are
+/// left-hand side operand `self` and right-hand side operand `rhs` so that
+/// the two operands `self` and `rhs` cannot be used again after multiplication
+/// operation. In order to prevent this, the operands should be cloned or
+/// copied before multiplication operation. This adds the unnecessary overhead.
+/// The heavier the operand object is, the more the overhead is.
+/// 
+/// So, I would like to suggest one of the following three as follows:
+/// 
+/// # First suggestion
+/// Changing the types of the parameters as follows:
+/// 
+/// ```
+/// pub trait Mul<Rhs = Self> {
+///     type Output;
+///     // Required method
+///     fn mul(&self, rhs: &Rhs) -> Self::Output;
+/// }
+/// ```
+/// 
+/// # Second suggestion
+/// If the first suggestion is impossible because of backward compatibility,
+/// grammar allows the developer to choose the types of parameters but make
+/// only one function.
+/// 
+/// ```
+/// pub trait Mul<Rhs = Self> {
+///     type Output;
+///     // Required method
+///     fn mul(self, rhs: Rhs) -> Self::Output;
+///   or
+///     fn mul(&self, rhs: Rhs) -> Self::Output;
+///   or
+///     fn mul(self, rhs: &Rhs) -> Self::Output;
+///   or
+///     fn mul(&self, rhs: &Rhs) -> Self::Output;
+/// }
+/// ```
+/// 
+/// # Third suggestion
+/// If the first and second suggestions are impossible because of backward
+/// compatibility, trait Mul2, Mul3, and Mul4 are provided and the developer
+/// implements none or only one of traits Mul, Mul2, Mul3, and Mul4.
+/// ```
+/// pub trait Mul<Rhs = Self> {
+///     type Output;
+///     // Required method
+///     fn mul(self, rhs: Rhs) -> Self::Output;
+/// }
+/// 
+/// pub trait Mul2<Rhs = Self> {
+///     type Output;
+///     // Required method
+///     fn mul(&self, rhs: Rhs) -> Self::Output;
+/// }
+/// 
+/// pub trait Mul3<Rhs = Self> {
+///     type Output;
+///     // Required method
+///     fn mul(self, rhs: &Rhs) -> Self::Output;
+/// }
+/// 
+/// pub trait Mul4<Rhs = Self> {
+///     type Output;
+///     // Required method
+///     fn mul(&self, rhs: &Rhs) -> Self::Output;
+/// }
+/// ```
+/// 
+/// Unlike trait Mul, the trait PartialEq makes the operators `==` and `!=` take
+/// not `&Self` but `Self` as its first operand and not `&Rhs` (or `&Self`) but
+/// `Rhs` (or `Self`) as its second operand but makes the functions eq() and
+/// ne() take not `self` but `&self` as its first argument and not `Rhs` but
+/// `&Rhs` as its second argument. So, I think the third suggestion is possible.
+/// The prototype of trait PartialEq is as follows:
+/// 
+/// ```
+/// pub trait PartialEq<Rhs = Self>
+/// where
+/// Rhs: ?Sized,
+/// {
+///     // Required method
+///     fn eq(&self, other: &Rhs) -> bool;
+/// 
+///     // Provided method
+///     fn ne(&self, other: &Rhs) -> bool { ... }
+/// }
+/// ```
 impl<T, const N: usize> Mul<T> for BigUInt<T, N>
 where T: SmallUInt + Copy + Clone + Display + Debug + ToString
         + Add<Output=T> + AddAssign + Sub<Output=T> + SubAssign
@@ -223,6 +1980,84 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
 {
     type Output = Self;
 
+    // fn mul(self, rhs: T) -> Self
+    /// Calculates `self` * `rhs`,
+    /// wrapping around at the boundary of the `Self` type,
+    /// and returns a multiplication result `self` * `rhs`.
+    /// 
+    /// # Arguments
+    /// `rhs` is to be multiplied to `self`, and primitive unsigned integer
+    /// such as `u8`, `u16`, `u32`, `u64`, and `u128`.
+    /// 
+    /// # Panics
+    /// If `size_of::<T>() * N` <= `128`, this method may panic
+    /// or its behavior may be undefined though it may not panic.
+    /// 
+    /// # Output
+    /// It returns the multiplication result `self` * `rhs` with wrapping
+    /// (modular) multiplication.
+    /// 
+    /// # Features
+    /// - Wrapping (modular) multiplication.
+    /// - If overflow happened, the flag `OVERFLOW` of the return value
+    ///   will be set.
+    /// 
+    /// # Example 1
+    /// ```
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u128);
+    /// 
+    /// let a_biguint = U256::from_string("12380187429816690342769003185818648605085375388281194656994643364900608").unwrap();
+    /// let b_uint = 248_u128;
+    /// let res = a_biguint.clone() * b_uint;
+    /// println!("{} X {} = {}", a_biguint, b_uint, res);
+    /// assert_eq!(res.to_string(), "3070286482594539205006712790083024854061173096293736274934671554495350784");
+    /// assert_eq!(res.is_overflow(), false);
+    /// assert_eq!(res.is_underflow(), false);
+    /// assert_eq!(res.is_divided_by_zero(), false);
+    /// assert_eq!(res.is_infinity(), false);
+    /// assert_eq!(res.is_undefined(), false);
+    /// ```
+    /// 
+    /// # Example 2
+    /// ```
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u128);
+    /// 
+    /// let a_biguint = U256::from_string("876801874298166903427690031858186486050853753882811946569946433649006084094").unwrap();
+    /// let b_uint = 248_u128;
+    /// let res = a_biguint.clone() * b_uint;
+    /// println!("{} X {} = {}", a_biguint, b_uint, res);
+    /// assert_eq!(res.to_string(), "101654775588629196626496142892142340687341746297296798709889131537040379215376");
+    /// assert_eq!(res.is_overflow(), true);
+    /// assert_eq!(res.is_underflow(), false);
+    /// assert_eq!(res.is_divided_by_zero(), false);
+    /// assert_eq!(res.is_infinity(), false);
+    /// assert_eq!(res.is_undefined(), false);
+    /// ```
+    /// 
+    /// # Cannot-compile Examples
+    /// ```
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u128);
+    /// 
+    /// let a_biguint = U256::from_string("12380187429816690342769003185818648605085375388281194656994643364900608").unwrap();
+    /// let b_uint = 248_u128;
+    /// let _res = a_biguint * b_uint;
+    /// // println!("{} X {} = {}", a_biguint, b_uint, _res);
+    /// // The operator '*' swallowed (took the ownership of) a_biguint.
+    /// 
+    /// let a_biguint = U256::from_string("876801874298166903427690031858186486050853753882811946569946433649006084094").unwrap();
+    /// let b_uint = 248_u128;
+    /// let _res = a_biguint * b_uint;
+    /// // println!("{} X {} = {}", b_biguint, b_uint, _res);
+    /// // The operator '*' swallowed (took the ownership of) a_biguint.
+    /// ```
+    /// 
+    /// # Big-endian issue
+    /// It is just experimental for Big Endian CPUs. So, you are not encouraged
+    /// to use it for Big Endian CPUs for serious purpose. Only use this crate
+    /// for Big-endian CPUs with your own full responsibility.
     #[inline]
     fn mul(self, rhs: T) -> Self
     {
@@ -232,6 +2067,76 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
 
 
 
+/// I would like to suggest the modification of Rust grammar because the
+/// operator `*=` swallows (takes the ownership of) two operands which are
+/// left-hand side operand `self` and right-hand side operand `rhs` so that
+/// the two operands `self` and `rhs` cannot be used again after mutltiplication
+/// operation. In order to prevent this, the operands should be cloned or
+/// copied before mutltiplication operation. This adds the unnecessary overhead.
+/// The heavier the operand object is, the more the overhead is.
+/// 
+/// So, I would like to suggest one of the following three as follows:
+/// 
+/// # First suggestion
+/// Changing the types of the parameters as follows:
+/// 
+/// ```
+/// pub trait MulAssign<Rhs = Self> {
+///     // Required method
+///     fn mul_assign(&mut self, rhs: &Rhs);
+/// }
+/// ```
+/// 
+/// # Second suggestion
+/// If the first suggestion is impossible because of backward compatibility,
+/// grammar allows the developer to choose the types of parameters but make
+/// only one function.
+/// 
+/// ```
+/// pub trait MulAssign<Rhs = Self> {
+///     // Required method
+///     fn mul_assign(&mut self, rhs: Rhs);
+///   or
+///     fn mul_assign(&mut self, rhs: &Rhs);
+/// }
+/// ```
+/// 
+/// # Third suggestion
+/// If the first and second suggestions are impossible because of backward
+/// compatibility, trait MulAssign2 is provided and the developer
+/// implements none or only one of traits MulAssign and MulAssign2.
+/// ```
+/// pub trait MulAssign<Rhs = Self> {
+///     // Required method
+///     fn mul_assign(&mut self, rhs: Rhs);
+/// }
+/// 
+/// pub trait MulAssign2<Rhs = Self> {
+///     // Required method
+///     fn mul_assign(&mut self, rhs: &Rhs);
+/// }
+/// ```
+/// 
+/// Unlike trait MulAssign, the trait PartialEq makes the operators
+/// `==` and `!=` take not `&Self` but `Self` as its first operand and not
+/// `&Rhs` (or `&Self`) but `Rhs` (or `Self`) as its second operand but makes
+/// the functions eq() and ne() take not `self` but `&self` as its first
+/// argument and not `Rhs` but `&Rhs` as its second argument.
+/// So, I think the third suggestion is possible.
+/// The prototype of trait PartialEq is as follows:
+/// 
+/// ```
+/// pub trait PartialEq<Rhs = Self>
+/// where
+/// Rhs: ?Sized,
+/// {
+///     // Required method
+///     fn eq(&self, other: &Rhs) -> bool;
+/// 
+///     // Provided method
+///     fn ne(&self, other: &Rhs) -> bool { ... }
+/// }
+/// ```
 impl<T, const N: usize> MulAssign for BigUInt<T, N>
 where T: SmallUInt + Copy + Clone + Display + Debug + ToString
         + Add<Output=T> + AddAssign + Sub<Output=T> + SubAssign
@@ -242,7 +2147,99 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
         + BitXor<Output=T> + BitXorAssign + Not<Output=T>
         + PartialEq + PartialOrd
 {
-    /// Multiplies and assign the result to it.
+    // fn mul_assign(&mut self, rhs: Self)
+    /// Calculates `self` * `rhs`,
+    /// wrapping around at the boundary of the `Self` type,
+    /// and assigns a multiplication result `self` * `rhs` to `self` back.
+    /// 
+    /// # Arguments
+    /// `rhs` is to be added to `self`, and is of `Self` type.
+    /// 
+    /// # Panics
+    /// If `size_of::<T>() * N` <= `128`, this method may panic
+    /// or its behavior may be undefined though it may not panic.
+    /// 
+    /// # Features
+    /// - Wrapping (modular) multiplication.
+    /// - If overflow happened, the flag `OVERFLOW` of `self` will be set.
+    /// - All the flags are historical, which means, for example, if an
+    ///   overflow occurred even once before this current operation or
+    ///   `OVERFLOW` flag is already set before this current operation,
+    ///   the `OVERFLOW` flag is not changed even if this current operation
+    ///   does not cause overflow.
+    /// 
+    /// # Example 1
+    /// ```
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u8);
+    /// 
+    /// let mut a_biguint = UU32::from_string("12380187429816690342769003185818648605085375388281194656994643364900608").unwrap();
+    /// println!("Originally, a_biguint = {}", a_biguint);
+    /// assert_eq!(a_biguint.is_overflow(), false);
+    /// assert_eq!(a_biguint.is_underflow(), false);
+    /// assert_eq!(a_biguint.is_divided_by_zero(), false);
+    /// assert_eq!(a_biguint.is_infinity(), false);
+    /// assert_eq!(a_biguint.is_undefined(), false);
+    /// 
+    /// let b_biguint = U256::from_uint(248_u8);
+    /// a_biguint *= b_biguint.clone();
+    /// println!("After a_biguint *= {}, a_biguint = {}", b_biguint, a_biguint);
+    /// assert_eq!(a_biguint.to_string(), "3070286482594539205006712790083024854061173096293736274934671554495350784");
+    /// assert_eq!(a_biguint.is_overflow(), false);
+    /// assert_eq!(a_biguint.is_underflow(), false);
+    /// assert_eq!(a_biguint.is_divided_by_zero(), false);
+    /// assert_eq!(a_biguint.is_infinity(), false);
+    /// assert_eq!(a_biguint.is_undefined(), false);
+    /// ```
+    /// 
+    /// # Example 2
+    /// ```
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u8);
+    /// 
+    /// let mut a_biguint = UU32::from_string("876801874298166903427690031858186486050853753882811946569946433649006084094").unwrap();
+    /// println!("Originally, a_biguint = {}", a_biguint);
+    /// assert_eq!(a_biguint.is_overflow(), false);
+    /// assert_eq!(a_biguint.is_underflow(), false);
+    /// assert_eq!(a_biguint.is_divided_by_zero(), false);
+    /// assert_eq!(a_biguint.is_infinity(), false);
+    /// assert_eq!(a_biguint.is_undefined(), false);
+    /// 
+    /// let b_biguint = U256::from_uint(248_u8);
+    /// a_biguint *= b_biguint.clone();
+    /// println!("After a_biguint *= {}, a_biguint = {}", b_biguint, a_biguint);
+    /// assert_eq!(a_biguint.to_string(), "101654775588629196626496142892142340687341746297296798709889131537040379215376");
+    /// assert_eq!(a_biguint.is_overflow(), true);
+    /// assert_eq!(a_biguint.is_underflow(), false);
+    /// assert_eq!(a_biguint.is_divided_by_zero(), false);
+    /// assert_eq!(a_biguint.is_infinity(), false);
+    /// assert_eq!(a_biguint.is_undefined(), false);
+    /// ```
+    /// 
+    /// # Cannot-compile Examples
+    /// ```
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u8);
+    /// 
+    /// let mut a_biguint = U256::from_string("12380187429816690342769003185818648605085375388281194656994643364900608").unwrap();
+    /// println!("Originally, a_biguint = {}", a_biguint);
+    /// let b_biguint = U256::from_uint(248_u8);
+    /// a_biguint *= b_biguint;
+    /// // println!("After a_biguint *= {}, a_biguint = {}", b_biguint, a_biguint);
+    /// // The operator '*' swallowed (took the ownership of) a_biguint and b_biguint.
+    /// 
+    /// let mut a_biguint = U256::from_string("876801874298166903427690031858186486050853753882811946569946433649006084094").unwrap();
+    /// println!("Originally, a_biguint = {}", a_biguint);
+    /// let b_biguint = U256::from_uint(248_u8);
+    /// a_biguint *= b_biguint;
+    /// // println!("After a_biguint *= {}, a_biguint = {}", b_biguint, a_biguint);
+    /// // The operator '*' swallowed (took the ownership of) a_biguint and b_biguint.
+    /// ```
+    /// 
+    /// # Big-endian issue
+    /// It is just experimental for Big Endian CPUs. So, you are not encouraged
+    /// to use it for Big Endian CPUs for serious purpose. Only use this crate
+    /// for Big-endian CPUs with your own full responsibility.
     #[inline] 
     fn mul_assign(&mut self, rhs: Self)
     {
@@ -252,6 +2249,77 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
 
 
 
+/// I would like to suggest the modification of Rust grammar because the
+/// operator `*=` swallows (takes the ownership of) two operands which are
+/// left-hand side operand `self` and right-hand side operand `rhs` so that
+/// the two operands `self` and `rhs` cannot be used again after mutltiplication
+/// operation. In order to prevent this, the operands should be cloned or
+/// copied before mutltiplication operation. This adds the unnecessary overhead.
+/// The heavier the operand object is, the more the overhead is.
+/// 
+/// So, I would like to suggest one of the following three as follows:
+/// 
+/// # First suggestion
+/// Changing the types of the parameters as follows:
+/// 
+/// ```
+/// pub trait MulAssign<Rhs = Self> {
+///     // Required method
+///     fn mul_assign(&mut self, rhs: &Rhs);
+/// }
+/// ```
+/// 
+/// # Second suggestion
+/// If the first suggestion is impossible because of backward compatibility,
+/// grammar allows the developer to choose the types of parameters but make
+/// only one function.
+/// 
+/// ```
+/// pub trait MulAssign<Rhs = Self> {
+///     // Required method
+///     fn mul_assign(&mut self, rhs: Rhs);
+///   or
+///     fn mul_assign(&mut self, rhs: &Rhs);
+/// }
+/// ```
+/// 
+/// # Third suggestion
+/// If the first and second suggestions are impossible because of backward
+/// compatibility, trait MulAssign2 is provided and the developer
+/// implements none or only one of traits MulAssign and MulAssign2.
+/// 
+/// ```
+/// pub trait MulAssign<Rhs = Self> {
+///     // Required method
+///     fn mul_assign(&mut self, rhs: Rhs);
+/// }
+/// 
+/// pub trait MulAssign2<Rhs = Self> {
+///     // Required method
+///     fn mul_assign(&mut self, rhs: &Rhs);
+/// }
+/// ```
+/// 
+/// Unlike trait MulAssign, the trait PartialEq makes the operators
+/// `==` and `!=` take not `&Self` but `Self` as its first operand and not
+/// `&Rhs` (or `&Self`) but `Rhs` (or `Self`) as its second operand but makes
+/// the functions eq() and ne() take not `self` but `&self` as its first
+/// argument and not `Rhs` but `&Rhs` as its second argument.
+/// So, I think the third suggestion is possible.
+/// The prototype of trait PartialEq is as follows:
+/// 
+/// ```
+/// pub trait PartialEq<Rhs = Self>
+/// where
+/// Rhs: ?Sized,
+/// {
+///     // Required method
+///     fn eq(&self, other: &Rhs) -> bool;
+/// 
+///     // Provided method
+///     fn ne(&self, other: &Rhs) -> bool { ... }
+/// }
+/// ```
 impl<T, const N: usize> MulAssign<T> for BigUInt<T, N>
 where T: SmallUInt + Copy + Clone + Display + Debug + ToString
         + Add<Output=T> + AddAssign + Sub<Output=T> + SubAssign
@@ -262,7 +2330,82 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
         + BitXor<Output=T> + BitXorAssign + Not<Output=T>
         + PartialEq + PartialOrd
 {
-    /// Multiplies and assign the result to it.
+    // fn mul_assign(&mut self, rhs: T)
+    /// Calculates `self` * `rhs`,
+    /// wrapping around at the boundary of the `Self` type,
+    /// and assigns a multiplication result `self` * `rhs` to `self` back.
+    /// 
+    /// # Arguments
+    /// `rhs` is to be multiplied to `self`, and primitive unsigned integer
+    /// such as `u8`, `u16`, `u32`, `u64`, and `u128`.
+    /// 
+    /// # Panics
+    /// If `size_of::<T>() * N` <= `128`, this method may panic
+    /// or its behavior may be undefined though it may not panic.
+    /// 
+    /// # Features
+    /// - Wrapping (modular) multiplication.
+    /// - If overflow happened, the flag `OVERFLOW` of `self` will be set.
+    /// - All the flags are historical, which means, for example, if an
+    ///   overflow occurred even once before this current operation or
+    ///   `OVERFLOW` flag is already set before this current operation,
+    ///   the `OVERFLOW` flag is not changed even if this current operation
+    ///   does not cause overflow.
+    /// 
+    /// # Example 1
+    /// ```
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u16);
+    /// 
+    /// let mut a_biguint = UU32::from_string("12380187429816690342769003185818648605085375388281194656994643364900608").unwrap();
+    /// println!("Originally, a_biguint = {}", a_biguint);
+    /// assert_eq!(a_biguint.to_string(), "12380187429816690342769003185818648605085375388281194656994643364900608");
+    /// assert_eq!(a_biguint.is_overflow(), false);
+    /// assert_eq!(a_biguint.is_underflow(), false);
+    /// assert_eq!(a_biguint.is_divided_by_zero(), false);
+    /// assert_eq!(a_biguint.is_infinity(), false);
+    /// assert_eq!(a_biguint.is_undefined(), false);
+    /// 
+    /// let b_uint = 248_u16;
+    /// a_biguint *= b_uint;
+    /// println!("After a_biguint *= {}, a_biguint = {}", b_uint, a_biguint);
+    /// assert_eq!(a_biguint.to_string(), "3070286482594539205006712790083024854061173096293736274934671554495350784");
+    /// assert_eq!(a_biguint.is_overflow(), false);
+    /// assert_eq!(a_biguint.is_underflow(), false);
+    /// assert_eq!(a_biguint.is_divided_by_zero(), false);
+    /// assert_eq!(a_biguint.is_infinity(), false);
+    /// assert_eq!(a_biguint.is_undefined(), false);
+    /// ```
+    /// 
+    /// # Example 2
+    /// ```
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u16);
+    /// 
+    /// let mut a_biguint = UU32::from_string("876801874298166903427690031858186486050853753882811946569946433649006084094").unwrap();
+    /// println!("Originally, a_biguint = {}", a_biguint);
+    /// assert_eq!(a_biguint.to_string(), "876801874298166903427690031858186486050853753882811946569946433649006084094");
+    /// assert_eq!(a_biguint.is_overflow(), false);
+    /// assert_eq!(a_biguint.is_underflow(), false);
+    /// assert_eq!(a_biguint.is_divided_by_zero(), false);
+    /// assert_eq!(a_biguint.is_infinity(), false);
+    /// assert_eq!(a_biguint.is_undefined(), false);
+    /// 
+    /// let b_uint = 248_u16;
+    /// a_biguint *= b_uint;
+    /// println!("After a_biguint *= {}, a_biguint = {}", b_uint, a_biguint);
+    /// assert_eq!(a_biguint.to_string(), "101654775588629196626496142892142340687341746297296798709889131537040379215376");
+    /// assert_eq!(a_biguint.is_overflow(), true);
+    /// assert_eq!(a_biguint.is_underflow(), false);
+    /// assert_eq!(a_biguint.is_divided_by_zero(), false);
+    /// assert_eq!(a_biguint.is_infinity(), false);
+    /// assert_eq!(a_biguint.is_undefined(), false);
+    /// ```
+    /// 
+    /// # Big-endian issue
+    /// It is just experimental for Big Endian CPUs. So, you are not encouraged
+    /// to use it for Big Endian CPUs for serious purpose. Only use this crate
+    /// for Big-endian CPUs with your own full responsibility.
     #[inline]
     fn mul_assign(&mut self, rhs: T)
     {
@@ -272,6 +2415,96 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
 
 
 
+/// I would like to suggest the modification of Rust grammar because the
+/// operator `/` swallows (takes the ownership of) two operands which are
+/// left-hand side operand `self` and right-hand side operand `rhs` so that
+/// the two operands `self` and `rhs` cannot be used again after division
+/// operation. In order to prevent this, the operands should be cloned or
+/// copied before division operation. This adds the unnecessary overhead.
+/// The heavier the operand object is, the more the overhead is.
+/// 
+/// So, I would like to suggest one of the following three as follows:
+/// 
+/// # First suggestion
+/// Changing the types of the parameters as follows:
+/// 
+/// ```
+/// pub trait Div<Rhs = Self> {
+///     type Output;
+///     // Required method
+///     fn div(&self, rhs: &Rhs) -> Self::Output;
+/// }
+/// ```
+/// 
+/// # Second suggestion
+/// If the first suggestion is impossible because of backward compatibility,
+/// grammar allows the developer to choose the types of parameters but make
+/// only one function.
+/// 
+/// ```
+/// pub trait Div<Rhs = Self> {
+///     type Output;
+///     // Required method
+///     fn div(self, rhs: Rhs) -> Self::Output;
+///   or
+///     fn div(&self, rhs: Rhs) -> Self::Output;
+///   or
+///     fn div(self, rhs: &Rhs) -> Self::Output;
+///   or
+///     fn div(&self, rhs: &Rhs) -> Self::Output;
+/// }
+/// ```
+/// 
+/// # Third suggestion
+/// If the first and second suggestions are impossible because of backward
+/// compatibility, trait Div2, Div3, and Div4 are provided and the developer
+/// implements none or only one of traits Div, Div2, Div3, and Div4.
+/// 
+/// ```
+/// pub trait Div<Rhs = Self> {
+///     type Output;
+///     // Required method
+///     fn div(self, rhs: Rhs) -> Self::Output;
+/// }
+/// 
+/// pub trait Div2<Rhs = Self> {
+///     type Output;
+///     // Required method
+///     fn div(&self, rhs: Rhs) -> Self::Output;
+/// }
+/// 
+/// pub trait Div3<Rhs = Self> {
+///     type Output;
+///     // Required method
+///     fn div(self, rhs: &Rhs) -> Self::Output;
+/// }
+/// 
+/// pub trait Div4<Rhs = Self> {
+///     type Output;
+///     // Required method
+///     fn div(&self, rhs: &Rhs) -> Self::Output;
+/// }
+/// ```
+/// 
+/// Unlike trait Div, the trait PartialEq makes the operators `==` and `!=` take
+/// not `&Self` but `Self` as its first operand and not `&Rhs` (or `&Self`) but
+/// `Rhs` (or `Self`) as its second operand but makes the functions eq() and
+/// ne() take not `self` but `&self` as its first argument and not `Rhs` but
+/// `&Rhs` as its second argument. So, I think the third suggestion is possible.
+/// The prototype of trait PartialEq is as follows:
+/// 
+/// ```
+/// pub trait PartialEq<Rhs = Self>
+/// where
+/// Rhs: ?Sized,
+/// {
+///     // Required method
+///     fn eq(&self, other: &Rhs) -> bool;
+/// 
+///     // Provided method
+///     fn ne(&self, other: &Rhs) -> bool { ... }
+/// }
+/// ```
 impl<T, const N: usize> Div for BigUInt<T, N>
 where T: SmallUInt + Copy + Clone + Display + Debug + ToString
         + Add<Output=T> + AddAssign + Sub<Output=T> + SubAssign
@@ -284,6 +2517,106 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
 {
     type Output = Self;
 
+    // fn div(self, rhs: Self) -> Self
+    /// Divides `self` by `rhs`, and returns the quotient.
+    /// 
+    /// # Arguments
+    /// `rhs` divides `self`, and is of `Self` type.
+    /// 
+    /// # Panics
+    /// - If `size_of::<T>() * N` <= `128`, this method may panic
+    ///   or its behavior may be undefined though it may not panic.
+    /// - If `rhs` is zero, this method will panic.
+    ///
+    /// # Output
+    /// It returns a quotient of `BigUInt` type,
+    /// and the quotient would never overflow. 
+    /// 
+    /// # Features
+    /// - Wrapped division on `BigUInt` types is just normal division.
+    /// - There’s no way wrapping could ever happen unless `rhs` is zero.
+    /// - If `rhs` is zero, this method will panic.
+    /// - This function exists, so that all operations are accounted for
+    ///   in the wrapping operations.
+    /// 
+    /// # Example 1
+    /// ```
+    /// use std::str::FromStr;
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u32);
+    /// 
+    /// let dividend = U256::from_str("123456789015758942546236989636279846864825945392").unwrap();
+    /// let divisor = U256::from_uint(87_u8);
+    /// let quotient = dividend.clone() / divisor.clone();
+    /// println!("{} / {} = {}", dividend, divisor, quotient);
+    /// assert_eq!(quotient.to_string(), "1419043551905275201680884938348044216837079832");
+    /// assert_eq!(quotient.is_overflow(), false);
+    /// assert_eq!(quotient.is_underflow(), false);
+    /// assert_eq!(quotient.is_infinity(), false);
+    /// assert_eq!(quotient.is_undefined(), false);
+    /// assert_eq!(quotient.is_divided_by_zero(), false);
+    /// ```
+    /// 
+    /// # Example 2
+    /// ```
+    /// use std::str::FromStr;
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u32);
+    /// 
+    /// let dividend = U256::zero();
+    /// let divisor = U256::from_uint(87_u8);
+    /// let quotient = dividend.clone() / divisor.clone();
+    /// println!("{} / {} = {}", dividend, divisor, quotient);
+    /// assert_eq!(quotient.to_string(), "0");
+    /// assert_eq!(quotient.is_overflow(), false);
+    /// assert_eq!(quotient.is_underflow(), false);
+    /// assert_eq!(quotient.is_infinity(), false);
+    /// assert_eq!(quotient.is_undefined(), false);
+    /// assert_eq!(quotient.is_divided_by_zero(), false);
+    /// ```
+    /// 
+    /// # Panic Examples
+    /// ```
+    /// use std::str::FromStr;
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u32);
+    /// 
+    /// let _dividend = U256::from_str("123456789015758942546236989636279846864825945392").unwrap();
+    /// let _divisor = U256::zero();
+    /// // It will panic!
+    /// // let quotient = _dividend.clone() / _divisor.clone();
+    /// 
+    /// let _dividend = U256::zero();
+    /// let _divisor = U256::zero();
+    /// // It will panic!
+    /// // let quotient = _dividend.clone() / _divisor.clone();
+    /// ```
+    /// 
+    /// # Cannot-compile Examples
+    /// ```
+    /// use std::str::FromStr;
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u32);
+    /// 
+    /// let dividend = U256::from_str("123456789015758942546236989636279846864825945392").unwrap();
+    /// let divisor = U256::from_uint(87_u8);
+    /// let _quotient = dividend / divisor;
+    /// // It cannot be compiled!
+    /// // println!("{} / {} = {}", dividend, divisor, _quotient);
+    /// // The operator '/' swallowed (took the ownership of) dividend and divisor.
+    /// 
+    /// let dividend = U256::zero();
+    /// let divisor = U256::from_uint(87_u8);
+    /// let _quotient = dividend / divisor;
+    /// // It cannot be compiled!
+    /// // println!("{} / {} = {}", dividend, divisor, _quotient);
+    /// // The operator '/' swallowed (took the ownership of) dividend and divisor.
+    /// ```
+    /// 
+    /// # Big-endian issue
+    /// It is just experimental for Big Endian CPUs. So, you are not encouraged
+    /// to use it for Big Endian CPUs for serious purpose. Only use this crate
+    /// for Big-endian CPUs with your own full responsibility.
     #[inline]
     fn div(self, rhs: Self) -> Self
     {
@@ -293,6 +2626,96 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
 
 
 
+/// I would like to suggest the modification of Rust grammar because the
+/// operator `/` swallows (takes the ownership of) two operands which are
+/// left-hand side operand `self` and right-hand side operand `rhs` so that
+/// the two operands `self` and `rhs` cannot be used again after division
+/// operation. In order to prevent this, the operands should be cloned or
+/// copied before division operation. This adds the unnecessary overhead.
+/// The heavier the operand object is, the more the overhead is.
+/// 
+/// So, I would like to suggest one of the following three as follows:
+/// 
+/// # First suggestion
+/// Changing the types of the parameters as follows:
+/// 
+/// ```
+/// pub trait Div<Rhs = Self> {
+///     type Output;
+///     // Required method
+///     fn div(&self, rhs: &Rhs) -> Self::Output;
+/// }
+/// ```
+/// 
+/// # Second suggestion
+/// If the first suggestion is impossible because of backward compatibility,
+/// grammar allows the developer to choose the types of parameters but make
+/// only one function.
+/// 
+/// ```
+/// pub trait Div<Rhs = Self> {
+///     type Output;
+///     // Required method
+///     fn div(self, rhs: Rhs) -> Self::Output;
+///   or
+///     fn div(&self, rhs: Rhs) -> Self::Output;
+///   or
+///     fn div(self, rhs: &Rhs) -> Self::Output;
+///   or
+///     fn div(&self, rhs: &Rhs) -> Self::Output;
+/// }
+/// ```
+/// 
+/// # Third suggestion
+/// If the first and second suggestions are impossible because of backward
+/// compatibility, trait Div2, Div3, and Div4 are provided and the developer
+/// implements none or only one of traits Div, Div2, Div3, and Div4.
+/// 
+/// ```
+/// pub trait Div<Rhs = Self> {
+///     type Output;
+///     // Required method
+///     fn div(self, rhs: Rhs) -> Self::Output;
+/// }
+/// 
+/// pub trait Div2<Rhs = Self> {
+///     type Output;
+///     // Required method
+///     fn div(&self, rhs: Rhs) -> Self::Output;
+/// }
+/// 
+/// pub trait Div3<Rhs = Self> {
+///     type Output;
+///     // Required method
+///     fn div(self, rhs: &Rhs) -> Self::Output;
+/// }
+/// 
+/// pub trait Div4<Rhs = Self> {
+///     type Output;
+///     // Required method
+///     fn div(&self, rhs: &Rhs) -> Self::Output;
+/// }
+/// ```
+/// 
+/// Unlike trait Div, the trait PartialEq makes the operators `==` and `!=` take
+/// not `&Self` but `Self` as its first operand and not `&Rhs` (or `&Self`) but
+/// `Rhs` (or `Self`) as its second operand but makes the functions eq() and
+/// ne() take not `self` but `&self` as its first argument and not `Rhs` but
+/// `&Rhs` as its second argument. So, I think the third suggestion is possible.
+/// The prototype of trait PartialEq is as follows:
+/// 
+/// ```
+/// pub trait PartialEq<Rhs = Self>
+/// where
+/// Rhs: ?Sized,
+/// {
+///     // Required method
+///     fn eq(&self, other: &Rhs) -> bool;
+/// 
+///     // Provided method
+///     fn ne(&self, other: &Rhs) -> bool { ... }
+/// }
+/// ```
 impl<T, const N: usize> Div<T> for BigUInt<T, N>
 where T: SmallUInt + Copy + Clone + Display + Debug + ToString
         + Add<Output=T> + AddAssign + Sub<Output=T> + SubAssign
@@ -305,6 +2728,107 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
 {
     type Output = Self;
 
+    // fn div(self, rhs: T) -> Self
+    /// Divides `self` by `rhs`, and returns the quotient.
+    /// 
+    /// # Arguments
+    /// `rhs` divides `self`, and is of primitive unsigned integral data type
+    /// such as `u8`, `u16`, `u32`, `u64`, and `u128`.
+    /// 
+    /// # Panics
+    /// - If `size_of::<T>() * N` <= `128`, this method may panic
+    ///   or its behavior may be undefined though it may not panic.
+    /// - If `rhs` is zero, this method will panic.
+    ///
+    /// # Output
+    /// It returns a quotient of `BigUInt` type,
+    /// and the quotient would never overflow.
+    /// 
+    /// # Features
+    /// - Wrapped division on `BigUInt` types is just normal division.
+    /// - There’s no way wrapping could ever happen unless `rhs` is zero.
+    /// - If `rhs` is zero, this method will panic.
+    /// - This function exists, so that all operations are accounted for
+    ///   in the wrapping operations.
+    /// 
+    /// # Example 1
+    /// ```
+    /// use std::str::FromStr;
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u64);
+    /// 
+    /// let dividend = U256::from_str("123456789015758942546236989636279846864825945392").unwrap();
+    /// let divisor = 87_u64;
+    /// let quotient = dividend.clone() / divisor;
+    /// println!("{} / {} = {}", dividend, divisor, quotient);
+    /// assert_eq!(quotient.to_string(), "1419043551905275201680884938348044216837079832");
+    /// assert_eq!(quotient.is_overflow(), false);
+    /// assert_eq!(quotient.is_underflow(), false);
+    /// assert_eq!(quotient.is_infinity(), false);
+    /// assert_eq!(quotient.is_undefined(), false);
+    /// assert_eq!(quotient.is_divided_by_zero(), false);
+    /// ```
+    /// 
+    /// # Example 2
+    /// ```
+    /// use std::str::FromStr;
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u64);
+    /// 
+    /// let dividend = U256::zero();
+    /// let divisor = 87_u64;
+    /// let quotient = dividend.clone() / divisor;
+    /// println!("{} / {} = {}", dividend, divisor, quotient);
+    /// assert_eq!(quotient.to_string(), "0");
+    /// assert_eq!(quotient.is_overflow(), false);
+    /// assert_eq!(quotient.is_underflow(), false);
+    /// assert_eq!(quotient.is_infinity(), false);
+    /// assert_eq!(quotient.is_undefined(), false);
+    /// assert_eq!(quotient.is_divided_by_zero(), false);
+    /// ```
+    /// 
+    /// # Panic Examples
+    /// ```
+    /// use std::str::FromStr;
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u64);
+    /// 
+    /// let _dividend = U256::from_str("123456789015758942546236989636279846864825945392").unwrap();
+    /// let _divisor = 0_u64;
+    /// // It will panic!
+    /// // let quotient = _dividend.clone() / _divisor;
+    /// 
+    /// let _dividend = U256::zero();
+    /// let _divisor = 0_u64;
+    /// // It will panic!
+    /// // let quotient = _dividend.clone() / _divisor;
+    /// ```
+    /// 
+    /// # Cannot-compile Examples
+    /// ```
+    /// use std::str::FromStr;
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u64);
+    /// 
+    /// let dividend = U256::from_str("123456789015758942546236989636279846864825945392").unwrap();
+    /// let divisor = 87_u64;
+    /// let _quotient = dividend / divisor;
+    /// // It cannot be compiled!
+    /// // println!("{} / {} = {}", dividend, divisor, _quotient);
+    /// // The operator '/' swallowed (took the ownership of) dividend.
+    /// 
+    /// let dividend = U256::zero();
+    /// let divisor = 87_u64;
+    /// let _quotient = dividend / divisor;
+    /// // It cannot be compiled!
+    /// // println!("{} / {} = {}", dividend, divisor, _quotient);
+    /// // The operator '/' swallowed (took the ownership of) dividend.
+    /// ```
+    /// 
+    /// # Big-endian issue
+    /// It is just experimental for Big Endian CPUs. So, you are not encouraged
+    /// to use it for Big Endian CPUs for serious purpose. Only use this crate
+    /// for Big-endian CPUs with your own full responsibility.
     #[inline]
     fn div(self, rhs: T) -> Self
     {
@@ -314,6 +2838,77 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
 
 
 
+/// I would like to suggest the modification of Rust grammar because the
+/// operator `/=` swallows (takes the ownership of) two operands which are
+/// left-hand side operand `self` and right-hand side operand `rhs` so that
+/// the two operands `self` and `rhs` cannot be used again after division
+/// operation. In order to prevent this, the operands should be cloned or
+/// copied before division operation. This adds the unnecessary overhead.
+/// The heavier the operand object is, the more the overhead is.
+/// 
+/// So, I would like to suggest one of the following three as follows:
+/// 
+/// # First suggestion
+/// Changing the types of the parameters as follows:
+/// 
+/// ```
+/// pub trait DivAssign<Rhs = Self> {
+///     // Required method
+///     fn div_assign(&mut self, rhs: &Rhs);
+/// }
+/// ```
+/// 
+/// # Second suggestion
+/// If the first suggestion is impossible because of backward compatibility,
+/// grammar allows the developer to choose the types of parameters but make
+/// only one function.
+/// 
+/// ```
+/// pub trait DivAssign<Rhs = Self> {
+///     // Required method
+///     fn div_assign(&mut self, rhs: Rhs);
+///   or
+///     fn div_assign(&mut self, rhs: &Rhs);
+/// }
+/// ```
+/// 
+/// # Third suggestion
+/// If the first and second suggestions are impossible because of backward
+/// compatibility, trait DivAssign2 is provided and the developer
+/// implements none or only one of traits DivAssign and DivAssign2.
+/// 
+/// ```
+/// pub trait DivAssign<Rhs = Self> {
+///     // Required method
+///     fn div_assign(&mut self, rhs: Rhs);
+/// }
+/// 
+/// pub trait DivAssign2<Rhs = Self> {
+///     // Required method
+///     fn div_assign(&mut self, rhs: &Rhs);
+/// }
+/// ```
+/// 
+/// Unlike trait DivAssign, the trait PartialEq makes the operators
+/// `==` and `!=` take not `&Self` but `Self` as its first operand and not
+/// `&Rhs` (or `&Self`) but `Rhs` (or `Self`) as its second operand but makes
+/// the functions eq() and ne() take not `self` but `&self` as its first
+/// argument and not `Rhs` but `&Rhs` as its second argument.
+/// So, I think the third suggestion is possible.
+/// The prototype of trait PartialEq is as follows:
+/// 
+/// ```
+/// pub trait PartialEq<Rhs = Self>
+/// where
+/// Rhs: ?Sized,
+/// {
+///     // Required method
+///     fn eq(&self, other: &Rhs) -> bool;
+/// 
+///     // Provided method
+///     fn ne(&self, other: &Rhs) -> bool { ... }
+/// }
+/// ```
 impl<T, const N: usize> DivAssign for BigUInt<T, N>
 where T: SmallUInt + Copy + Copy + Clone + Display + Debug + ToString
         + Add<Output=T> + AddAssign + Sub<Output=T> + SubAssign
@@ -324,6 +2919,125 @@ where T: SmallUInt + Copy + Copy + Clone + Display + Debug + ToString
         + BitXor<Output=T> + BitXorAssign + Not<Output=T>
         + PartialEq + PartialOrd
 {
+    // fn div_assign(&mut self, rhs: Self)
+    /// Divides `self` by `rhs`, and assigns the quotient to `self` back.
+    /// 
+    /// # Arguments
+    /// `rhs` divides `self`, and is of `Self` type.
+    /// 
+    /// # Panics
+    /// - If `size_of::<T>() * N` <= `128`, this method may panic
+    ///   or its behavior may be undefined though it may not panic.
+    /// - If `rhs` is zero, this method will panic.
+    /// 
+    /// # Features
+    /// - Wrapped division on `BigUInt` types is just normal division.
+    /// - There’s no way wrapping could ever happen unless `rhs` is zero.
+    /// - If `rhs` is zero, this method will panic.
+    /// - This function exists, so that all operations are accounted for
+    ///   in the wrapping operations.
+    /// - All the flags are historical, which means, for example, if an
+    ///   divided_by_zero occurred even once before this current operation or
+    ///   `DIVIDED_BY_ZERO` flag is already set before this current operation,
+    ///   the `DIVIDED_BY_ZERO` flag is not changed even if this current operation
+    ///   does not cause divided_by_zero.
+    /// 
+    /// # Example 1
+    /// ```
+    /// use std::str::FromStr;
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u128);
+    /// 
+    /// let mut a_biguint = UU32::from_str("123456789015758942546236989636279846864825945392").unwrap();
+    /// println!("Originally, a_biguint = {}", a_biguint);
+    /// assert_eq!(a_biguint.is_overflow(), false);
+    /// assert_eq!(a_biguint.is_underflow(), false);
+    /// assert_eq!(a_biguint.is_infinity(), false);
+    /// assert_eq!(a_biguint.is_undefined(), false);
+    /// assert_eq!(a_biguint.is_divided_by_zero(), false);
+    /// 
+    /// let divisor = UU32::from_uint(87_u8);
+    /// a_biguint /= divisor.clone();
+    /// println!("After a_biguint /= {}, a_biguint = {}", divisor, a_biguint);
+    /// assert_eq!(a_biguint.to_string(), "1419043551905275201680884938348044216837079832");
+    /// assert_eq!(a_biguint.is_overflow(), false);
+    /// assert_eq!(a_biguint.is_underflow(), false);
+    /// assert_eq!(a_biguint.is_infinity(), false);
+    /// assert_eq!(a_biguint.is_undefined(), false);
+    /// assert_eq!(a_biguint.is_divided_by_zero(), false);
+    /// ```
+    /// 
+    /// # Example 2
+    /// ```
+    /// use std::str::FromStr;
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u128);
+    /// 
+    /// let mut a_biguint = UU32::zero();
+    /// println!("Originally, a_biguint = {}", a_biguint);
+    /// assert_eq!(a_biguint.is_overflow(), false);
+    /// assert_eq!(a_biguint.is_underflow(), false);
+    /// assert_eq!(a_biguint.is_infinity(), false);
+    /// assert_eq!(a_biguint.is_undefined(), false);
+    /// assert_eq!(a_biguint.is_divided_by_zero(), false);
+    /// 
+    /// let divisor = UU32::from_uint(87_u8);
+    /// a_biguint /= divisor.clone();
+    /// println!("After a_biguint /= {}, a_biguint = {}", divisor, a_biguint);
+    /// assert_eq!(a_biguint.to_string(), "0");
+    /// assert_eq!(a_biguint.is_overflow(), false);
+    /// assert_eq!(a_biguint.is_underflow(), false);
+    /// assert_eq!(a_biguint.is_infinity(), false);
+    /// assert_eq!(a_biguint.is_undefined(), false);
+    /// assert_eq!(a_biguint.is_divided_by_zero(), false);
+    /// ```
+    /// 
+    /// # Panic Examples
+    /// ```
+    /// use std::str::FromStr;
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u128);
+    /// 
+    /// let mut _a_biguint = UU32::from_str("123456789015758942546236989636279846864825945392").unwrap();
+    /// println!("Originally,\n_a_biguint = {}", _a_biguint);
+    /// let _divisor = UU32::zero();
+    /// // It will panic!
+    /// // _a_biguint /= _divisor.clone();
+    /// 
+    /// let mut _a_biguint = UU32::zero();
+    /// println!("Originally,\n_a_biguint = {}", _a_biguint);
+    /// let _divisor = UU32::zero();
+    /// // It will panic!
+    /// // _a_biguint /= _divisor.clone();
+    /// ```
+    /// 
+    /// # Cannot-compile Examples
+    /// ```
+    /// use std::str::FromStr;
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u128);
+    /// 
+    /// let mut a_biguint = UU32::from_str("123456789015758942546236989636279846864825945392").unwrap();
+    /// println!("Originally, a_biguint = {}", a_biguint);
+    /// let divisor = UU32::from_uint(87_u8);
+    /// a_biguint /= divisor;
+    /// // It cannot be compiled!
+    /// // println!("After a_biguint /= {}, a_biguint = {}", divisor, a_biguint);
+    /// // The operator '/=' swallowed (took the ownership of) divisor.
+    /// 
+    /// let mut a_biguint = UU32::zero();
+    /// println!("Originally, a_biguint = {}", a_biguint);
+    /// let divisor = UU32::from_uint(87_u8);
+    /// a_biguint /= divisor;
+    /// // It cannot be compiled!
+    /// // println!("After a_biguint /= {}, a_biguint = {}", divisor, a_biguint);
+    /// // The operator '/=' swallowed (took the ownership of) divisor.
+    /// ```
+    /// 
+    /// # Big-endian issue
+    /// It is just experimental for Big Endian CPUs. So, you are not encouraged
+    /// to use it for Big Endian CPUs for serious purpose. Only use this crate
+    /// for Big-endian CPUs with your own full responsibility.
     #[inline]
     fn div_assign(&mut self, rhs: Self)
     {
@@ -333,6 +3047,77 @@ where T: SmallUInt + Copy + Copy + Clone + Display + Debug + ToString
 
 
 
+/// I would like to suggest the modification of Rust grammar because the
+/// operator `/=` swallows (takes the ownership of) two operands which are
+/// left-hand side operand `self` and right-hand side operand `rhs` so that
+/// the two operands `self` and `rhs` cannot be used again after division
+/// operation. In order to prevent this, the operands should be cloned or
+/// copied before division operation. This adds the unnecessary overhead.
+/// The heavier the operand object is, the more the overhead is.
+/// 
+/// So, I would like to suggest one of the following three as follows:
+/// 
+/// # First suggestion
+/// Changing the types of the parameters as follows:
+/// 
+/// ```
+/// pub trait DivAssign<Rhs = Self> {
+///     // Required method
+///     fn div_assign(&mut self, rhs: &Rhs);
+/// }
+/// ```
+/// 
+/// # Second suggestion
+/// If the first suggestion is impossible because of backward compatibility,
+/// grammar allows the developer to choose the types of parameters but make
+/// only one function.
+/// 
+/// ```
+/// pub trait DivAssign<Rhs = Self> {
+///     // Required method
+///     fn div_assign(&mut self, rhs: Rhs);
+///   or
+///     fn div_assign(&mut self, rhs: &Rhs);
+/// }
+/// ```
+/// 
+/// # Third suggestion
+/// If the first and second suggestions are impossible because of backward
+/// compatibility, trait DivAssign2 is provided and the developer
+/// implements none or only one of traits DivAssign and DivAssign2.
+/// 
+/// ```
+/// pub trait DivAssign<Rhs = Self> {
+///     // Required method
+///     fn div_assign(&mut self, rhs: Rhs);
+/// }
+/// 
+/// pub trait DivAssign2<Rhs = Self> {
+///     // Required method
+///     fn div_assign(&mut self, rhs: &Rhs);
+/// }
+/// ```
+/// 
+/// Unlike trait DivAssign, the trait PartialEq makes the operators
+/// `==` and `!=` take not `&Self` but `Self` as its first operand and not
+/// `&Rhs` (or `&Self`) but `Rhs` (or `Self`) as its second operand but makes
+/// the functions eq() and ne() take not `self` but `&self` as its first
+/// argument and not `Rhs` but `&Rhs` as its second argument.
+/// So, I think the third suggestion is possible.
+/// The prototype of trait PartialEq is as follows:
+/// 
+/// ```
+/// pub trait PartialEq<Rhs = Self>
+/// where
+/// Rhs: ?Sized,
+/// {
+///     // Required method
+///     fn eq(&self, other: &Rhs) -> bool;
+/// 
+///     // Provided method
+///     fn ne(&self, other: &Rhs) -> bool { ... }
+/// }
+/// ```
 impl<T, const N: usize> DivAssign<T> for BigUInt<T, N>
 where T: SmallUInt + Copy + Clone + Display + Debug + ToString
         + Add<Output=T> + AddAssign + Sub<Output=T> + SubAssign
@@ -343,6 +3128,101 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
         + BitXor<Output=T> + BitXorAssign + Not<Output=T>
         + PartialEq + PartialOrd
 {
+    // fn div_assign(&mut self, rhs: T)
+    /// Divides `self` by `rhs`, and assigns the quotient to `self` back..
+    /// 
+    /// # Arguments
+    /// `rhs` divides `self`, and is of primitive unsigned integral data type
+    /// such as `u8`, `u16`, `u32`, `u64`, and `u128`.
+    /// 
+    /// # Panics
+    /// - If `size_of::<T>() * N` <= `128`, this method may panic
+    ///   or its behavior may be undefined though it may not panic.
+    /// - If `rhs` is zero, this method will panic.
+    /// 
+    /// # Features
+    /// - Wrapped division on `BigUInt` types is just normal division.
+    /// - There’s no way wrapping could ever happen unless `rhs` is zero.
+    /// - If `rhs` is zero, this method will panic.
+    /// - This function exists, so that all operations are accounted for
+    ///   in the wrapping operations.
+    /// - All the flags are historical, which means, for example, if an
+    ///   divided_by_zero occurred even once before this current operation or
+    ///   `DIVIDED_BY_ZERO` flag is already set before this current operation,
+    ///   the `DIVIDED_BY_ZERO` flag is not changed even if this current operation
+    ///   does not cause divided_by_zero.
+    /// 
+    /// # Example 1
+    /// ```
+    /// use std::str::FromStr;
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u64);
+    /// 
+    /// let mut a_biguint = UU32::from_str("123456789015758942546236989636279846864825945392").unwrap();
+    /// let divisor = 87_u8;
+    /// println!("Originally, a_biguint = {}", a_biguint);
+    /// assert_eq!(a_biguint.is_overflow(), false);
+    /// assert_eq!(a_biguint.is_underflow(), false);
+    /// assert_eq!(a_biguint.is_infinity(), false);
+    /// assert_eq!(a_biguint.is_divided_by_zero(), false);
+    /// assert_eq!(a_biguint.is_undefined(), false);
+    /// 
+    /// a_biguint.wrapping_div_assign_uint(divisor);
+    /// println!("After a_biguint.wrapping_div_assign_uint(&divisor),\na_biguint = {}", a_biguint);
+    /// assert_eq!(a_biguint.is_overflow(), false);
+    /// assert_eq!(a_biguint.is_underflow(), false);
+    /// assert_eq!(a_biguint.is_infinity(), false);
+    /// assert_eq!(a_biguint.is_divided_by_zero(), false);
+    /// assert_eq!(a_biguint.is_undefined(), false);
+    /// ```
+    /// 
+    /// # Example 2
+    /// ```
+    /// use std::str::FromStr;
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u64);
+    /// 
+    /// let mut a_biguint = UU32::zero();
+    /// let divisor = 87_u8;
+    /// println!("Originally, a_biguint = {}", a_biguint);
+    /// assert_eq!(a_biguint.is_overflow(), false);
+    /// assert_eq!(a_biguint.is_underflow(), false);
+    /// assert_eq!(a_biguint.is_infinity(), false);
+    /// assert_eq!(a_biguint.is_divided_by_zero(), false);
+    /// assert_eq!(a_biguint.is_undefined(), false);
+    /// 
+    /// a_biguint.wrapping_div_assign_uint(divisor);
+    /// println!("After a_biguint.wrapping_div_assign_uint(&divisor),\na_biguint = {}", a_biguint);
+    /// assert_eq!(a_biguint.to_string(), "0");
+    /// assert_eq!(a_biguint.is_underflow(), false);
+    /// assert_eq!(a_biguint.is_infinity(), false);
+    /// assert_eq!(a_biguint.is_divided_by_zero(), false);
+    /// assert_eq!(a_biguint.is_undefined(), false);
+    /// ```
+    /// 
+    /// # Panic Exmaples
+    /// ```
+    /// use std::str::FromStr;
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u64);
+    /// 
+    /// let mut _a_biguint = UU32::from_str("123456789015758942546236989636279846864825945392").unwrap();
+    /// let _divisor = 0_u8;
+    /// println!("Originally,\n_a_biguint = {}", _a_biguint);
+    /// // It will panic!
+    /// // a_biguint.wrapping_div_assign_uint(_divisor);
+    /// 
+    /// let mut _a_biguint = UU32::zero();
+    /// let _divisor = 0_u8;
+    /// println!("Originally,\n_a_biguint = {}", _a_biguint);
+    /// // It will panic!
+    /// // a_biguint.wrapping_div_assign_uint(_divisor);
+    /// ```
+    /// 
+    /// # Big-endian issue
+    /// It is just experimental for Big Endian CPUs. So, you are not encouraged
+    /// to use it for Big Endian CPUs for serious purpose. Only use this crate
+    /// for Big-endian CPUs with your own full responsibility.
     #[inline]
     fn div_assign(&mut self, rhs: T)
     {
@@ -352,6 +3232,96 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
 
 
 
+/// I would like to suggest the modification of Rust grammar because the
+/// operator `%` swallows (takes the ownership of) two operands which are
+/// left-hand side operand `self` and right-hand side operand `rhs` so that
+/// the two operands `self` and `rhs` cannot be used again after division
+/// operation. In order to prevent this, the operands should be cloned or
+/// copied before division operation. This adds the unnecessary overhead.
+/// The heavier the operand object is, the more the overhead is.
+/// 
+/// So, I would like to suggest one of the following three as follows:
+/// 
+/// # First suggestion
+/// Changing the types of the parameters as follows:
+/// 
+/// ```
+/// pub trait Rem<Rhs = Self> {
+///     type Output;
+///     // Required method
+///     fn rem(&self, rhs: &Rhs) -> Self::Output;
+/// }
+/// ```
+/// 
+/// # Second suggestion
+/// If the first suggestion is impossible because of backward compatibility,
+/// grammar allows the developer to choose the types of parameters but make
+/// only one function.
+/// 
+/// ```
+/// pub trait Rem<Rhs = Self> {
+///     type Output;
+///     // Required method
+///     fn rem(self, rhs: Rhs) -> Self::Output;
+///   or
+///     fn rem(&self, rhs: Rhs) -> Self::Output;
+///   or
+///     fn rem(self, rhs: &Rhs) -> Self::Output;
+///   or
+///     fn rem(&self, rhs: &Rhs) -> Self::Output;
+/// }
+/// ```
+/// 
+/// # Third suggestion
+/// If the first and second suggestions are impossible because of backward
+/// compatibility, trait Rem2, Rem3, and Rem4 are provided and the developer
+/// implements none or only one of traits Rem, Rem2, Rem3, and Rem4.
+/// 
+/// ```
+/// pub trait Rem<Rhs = Self> {
+///     type Output;
+///     // Required method
+///     fn rem(self, rhs: Rhs) -> Self::Output;
+/// }
+/// 
+/// pub trait Rem2<Rhs = Self> {
+///     type Output;
+///     // Required method
+///     fn rem(&self, rhs: Rhs) -> Self::Output;
+/// }
+/// 
+/// pub trait Rem3<Rhs = Self> {
+///     type Output;
+///     // Required method
+///     fn rem(self, rhs: &Rhs) -> Self::Output;
+/// }
+/// 
+/// pub trait Rem4<Rhs = Self> {
+///     type Output;
+///     // Required method
+///     fn rem(&self, rhs: &Rhs) -> Self::Output;
+/// }
+/// ```
+/// 
+/// Unlike trait Rem, the trait PartialEq makes the operators `==` and `!=` take
+/// not `&Self` but `Self` as its first operand and not `&Rhs` (or `&Self`) but
+/// `Rhs` (or `Self`) as its second operand but makes the functions eq() and
+/// ne() take not `self` but `&self` as its first argument and not `Rhs` but
+/// `&Rhs` as its second argument. So, I think the third suggestion is possible.
+/// The prototype of trait PartialEq is as follows:
+/// 
+/// ```
+/// pub trait PartialEq<Rhs = Self>
+/// where
+/// Rhs: ?Sized,
+/// {
+///     // Required method
+///     fn eq(&self, other: &Rhs) -> bool;
+/// 
+///     // Provided method
+///     fn ne(&self, other: &Rhs) -> bool { ... }
+/// }
+/// ```
 impl<T, const N: usize> Rem for BigUInt<T, N>
 where T: SmallUInt + Copy + Clone + Display + Debug + ToString
         + Add<Output=T> + AddAssign + Sub<Output=T> + SubAssign
@@ -364,6 +3334,114 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
 {
     type Output = Self;
 
+    // fn rem(self, rhs: Self) -> Self
+    /// Divides `self` by `rhs`, and returns the remainder.
+    /// 
+    /// # Arguments
+    /// `rhs` divides `self`, and is of `Self` type.
+    /// 
+    /// # Panics
+    /// - If `size_of::<T>() * N` <= `128`, this method may panic
+    ///   or its behavior may be undefined though it may not panic.
+    /// - If `rhs` is zero, this method will panic.
+    ///
+    /// # Output
+    /// It returns a remainder of `BigUInt` type,
+    /// and the remainder would never overflow. 
+    /// 
+    /// # Features
+    /// - Wrapped division on `BigUInt` types is just normal division.
+    /// - There’s no way wrapping could ever happen unless `rhs` is zero.
+    /// - If `rhs` is zero, this method will panic.
+    /// - This function exists, so that all operations are accounted for
+    ///   in the wrapping operations.
+    /// 
+    /// # Counterpart Method
+    /// The method
+    /// [wrapping_rem_uint()](struct@BigUInt#method.wrapping_rem_uint)
+    /// is a bit faster than this method `wrapping_rem()`.
+    /// If `rhs` is primitive unsigned integral data type such as u8, u16,
+    /// u32, u64, and u128, use the method
+    /// [wrapping_rem_uint()](struct@BigUInt#method.wrapping_rem_uint).
+    /// 
+    /// # Example 1
+    /// ```
+    /// use std::str::FromStr;
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u16);
+    /// 
+    /// let dividend = UU32::from_str("123456789015758942546236989636279846864825945392").unwrap();
+    /// let divisor = UU32::from_uint(87_u8);
+    /// let remainder = dividend.clone() % divisor.clone();
+    /// println!("{} % {} = {}", dividend, divisor, remainder);
+    /// assert_eq!(remainder.to_string(), "8");
+    /// assert_eq!(remainder.is_overflow(), false);
+    /// assert_eq!(remainder.is_underflow(), false);
+    /// assert_eq!(remainder.is_infinity(), false);
+    /// assert_eq!(remainder.is_undefined(), false);
+    /// assert_eq!(remainder.is_divided_by_zero(), false);
+    /// ```
+    /// 
+    /// # Example 2
+    /// ```
+    /// use std::str::FromStr;
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u16);
+    /// 
+    /// let dividend = UU32::zero();
+    /// let divisor = UU32::from_uint(87_u8);
+    /// let remainder = dividend.clone() % divisor.clone();
+    /// println!("{} % {} = {}", dividend, divisor, remainder);
+    /// assert_eq!(remainder.to_string(), "0");
+    /// assert_eq!(remainder.is_overflow(), false);
+    /// assert_eq!(remainder.is_underflow(), false);
+    /// assert_eq!(remainder.is_infinity(), false);
+    /// assert_eq!(remainder.is_undefined(), false);
+    /// assert_eq!(remainder.is_divided_by_zero(), false);
+    /// ```
+    /// 
+    /// # Panic Examples
+    /// ```
+    /// use std::str::FromStr;
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u16);
+    /// 
+    /// let _dividend = UU32::from_str("123456789015758942546236989636279846864825945392").unwrap();
+    /// let _divisor = UU32::zero();
+    /// // It will panic!
+    /// // let remainder = _dividend.wrapping_rem(&_divisor);
+    /// 
+    /// let _dividend = UU32::zero();
+    /// let _divisor = UU32::zero();
+    /// // It will panic!
+    /// // let remainder = _dividend.wrapping_rem(&_divisor);
+    /// ```
+    /// 
+    /// # Cannot-compile Examples
+    /// ```
+    /// use std::str::FromStr;
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u16);
+    /// 
+    /// let dividend = UU32::from_str("123456789015758942546236989636279846864825945392").unwrap();
+    /// let divisor = UU32::from_uint(87_u8);
+    /// let _remainder = dividend % divisor;
+    /// // It cannot be compiled!
+    /// // println!("{} % {} = {}", dividend, divisor, _remainder);
+    /// // The operator '%' swallowed (took the ownership of) dividend and divisor.
+    /// 
+    /// let dividend = UU32::zero();
+    /// let divisor = UU32::from_uint(87_u8);
+    /// let _remainder = dividend % divisor;
+    /// // It cannot be compiled!
+    /// // println!("{} % {} = {}", dividend, divisor, _remainder);
+    /// // The operator '%' swallowed (took the ownership of) dividend and divisor.
+    /// ```
+    /// 
+    /// # Big-endian issue
+    /// It is just experimental for Big Endian CPUs. So, you are not encouraged
+    /// to use it for Big Endian CPUs for serious purpose. Only use this crate
+    /// for Big-endian CPUs with your own full responsibility.
     #[inline]
     fn rem(self, rhs: Self) -> Self
     {
@@ -373,6 +3451,96 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
 
 
 
+/// I would like to suggest the modification of Rust grammar because the
+/// operator `%` swallows (takes the ownership of) two operands which are
+/// left-hand side operand `self` and right-hand side operand `rhs` so that
+/// the two operands `self` and `rhs` cannot be used again after division
+/// operation. In order to prevent this, the operands should be cloned or
+/// copied before division operation. This adds the unnecessary overhead.
+/// The heavier the operand object is, the more the overhead is.
+/// 
+/// So, I would like to suggest one of the following three as follows:
+/// 
+/// # First suggestion
+/// Changing the types of the parameters as follows:
+/// 
+/// ```
+/// pub trait Rem<Rhs = Self> {
+///     type Output;
+///     // Required method
+///     fn rem(&self, rhs: &Rhs) -> Self::Output;
+/// }
+/// ```
+/// 
+/// # Second suggestion
+/// If the first suggestion is impossible because of backward compatibility,
+/// grammar allows the developer to choose the types of parameters but make
+/// only one function.
+/// 
+/// ```
+/// pub trait Rem<Rhs = Self> {
+///     type Output;
+///     // Required method
+///     fn rem(self, rhs: Rhs) -> Self::Output;
+///   or
+///     fn rem(&self, rhs: Rhs) -> Self::Output;
+///   or
+///     fn rem(self, rhs: &Rhs) -> Self::Output;
+///   or
+///     fn rem(&self, rhs: &Rhs) -> Self::Output;
+/// }
+/// ```
+/// 
+/// # Third suggestion
+/// If the first and second suggestions are impossible because of backward
+/// compatibility, trait Rem2, Rem3, and Rem4 are provided and the developer
+/// implements none or only one of traits Rem, Rem2, Rem3, and Rem4.
+/// 
+/// ```
+/// pub trait Rem<Rhs = Self> {
+///     type Output;
+///     // Required method
+///     fn rem(self, rhs: Rhs) -> Self::Output;
+/// }
+/// 
+/// pub trait Rem2<Rhs = Self> {
+///     type Output;
+///     // Required method
+///     fn rem(&self, rhs: Rhs) -> Self::Output;
+/// }
+/// 
+/// pub trait Rem3<Rhs = Self> {
+///     type Output;
+///     // Required method
+///     fn rem(self, rhs: &Rhs) -> Self::Output;
+/// }
+/// 
+/// pub trait Rem4<Rhs = Self> {
+///     type Output;
+///     // Required method
+///     fn rem(&self, rhs: &Rhs) -> Self::Output;
+/// }
+/// ```
+/// 
+/// Unlike trait Rem, the trait PartialEq makes the operators `==` and `!=` take
+/// not `&Self` but `Self` as its first operand and not `&Rhs` (or `&Self`) but
+/// `Rhs` (or `Self`) as its second operand but makes the functions eq() and
+/// ne() take not `self` but `&self` as its first argument and not `Rhs` but
+/// `&Rhs` as its second argument. So, I think the third suggestion is possible.
+/// The prototype of trait PartialEq is as follows:
+/// 
+/// ```
+/// pub trait PartialEq<Rhs = Self>
+/// where
+/// Rhs: ?Sized,
+/// {
+///     // Required method
+///     fn eq(&self, other: &Rhs) -> bool;
+/// 
+///     // Provided method
+///     fn ne(&self, other: &Rhs) -> bool { ... }
+/// }
+/// ```
 impl<T, const N: usize> Rem<T> for BigUInt<T, N>
 where T: SmallUInt + Copy + Clone + Display + Debug + ToString
         + Add<Output=T> + AddAssign + Sub<Output=T> + SubAssign
@@ -385,6 +3553,97 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
 {
     type Output = T;
 
+    // fn rem(self, rhs: T) -> T
+    /// Divides `self` by `rhs`, and returns the remainder.
+    /// 
+    /// # Arguments
+    /// `rhs` divides `self`, and is of primitive unsigned integral data type
+    /// such as `u8`, `u16`, `u32`, `u64`, and `u128`.
+    /// 
+    /// # Panics
+    /// - If `size_of::<T>() * N` <= `128`, this method may panic
+    ///   or its behavior may be undefined though it may not panic.
+    /// - If `rhs` is zero, this method will panic.
+    ///
+    /// # Output
+    /// It returns a remainder of `BigUInt` type,
+    /// and the remainder would never overflow.
+    /// 
+    /// # Features
+    /// - Wrapped division on `BigUInt` types is just normal division.
+    /// - There’s no way wrapping could ever happen unless `rhs` is zero.
+    /// - If `rhs` is zero, this method will panic.
+    /// - This function exists, so that all operations are accounted for
+    ///   in the wrapping operations.
+    /// 
+    /// # Example 1
+    /// ```
+    /// use std::str::FromStr;
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u32);
+    /// 
+    /// let dividend = UU32::from_str("123456789015758942546236989636279846864825945392").unwrap();
+    /// let divisor = 87_u32;
+    /// let remainder = dividend.clone() % divisor;
+    /// println!("{} % {} = {}", dividend, divisor, remainder);
+    /// assert_eq!(remainder.to_string(), "8");
+    /// ```
+    /// 
+    /// # Example 2
+    /// ```
+    /// use std::str::FromStr;
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u32);
+    /// 
+    /// let dividend = UU32::zero();
+    /// let divisor = 87_u32;
+    /// let remainder = dividend.clone() % divisor;
+    /// println!("{} % {} = {}", dividend, divisor, remainder);
+    /// assert_eq!(remainder.to_string(), "0");
+    /// ```
+    /// 
+    /// # Panic Examples
+    /// ```
+    /// use std::str::FromStr;
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u32);
+    /// 
+    /// let _dividend = UU32::from_str("123456789015758942546236989636279846864825945392").unwrap();
+    /// let _divisor = 0_u32;
+    /// // It will panic!
+    /// // let remainder = _dividend.clone() % _divisor;
+    /// 
+    /// let _dividend = UU32::zero();
+    /// let _divisor = 0_u32;
+    /// // It will panic!
+    /// // let remainder = _dividend.clone() % _divisor;
+    /// ```
+    /// 
+    /// # Cannot-compile Examples
+    /// ```
+    /// use std::str::FromStr;
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u32);
+    /// 
+    /// let dividend = UU32::from_str("123456789015758942546236989636279846864825945392").unwrap();
+    /// let divisor = 87_u32;
+    /// let _remainder = dividend % divisor;
+    /// // It cannot be compiled!
+    /// // println!("{} % {} = {}", dividend, divisor, _remainder);
+    /// // The operator '%' swallowed (took the ownership of) dividend.
+    /// 
+    /// let dividend = UU32::zero();
+    /// let divisor = 87_u32;
+    /// let _remainder = dividend % divisor;
+    /// // It cannot be compiled!
+    /// // println!("{} % {} = {}", dividend, divisor, _remainder);
+    /// // The operator '%' swallowed (took the ownership of) dividend.
+    /// ```
+    /// 
+    /// # Big-endian issue
+    /// It is just experimental for Big Endian CPUs. So, you are not encouraged
+    /// to use it for Big Endian CPUs for serious purpose. Only use this crate
+    /// for Big-endian CPUs with your own full responsibility.
     #[inline]
     fn rem(self, rhs: T) -> T
     {
@@ -394,6 +3653,77 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
 
 
 
+/// I would like to suggest the modification of Rust grammar because the
+/// operator `%=` swallows (takes the ownership of) two operands which are
+/// left-hand side operand `self` and right-hand side operand `rhs` so that
+/// the two operands `self` and `rhs` cannot be used again after division
+/// operation. In order to prevent this, the operands should be cloned or
+/// copied before division operation. This adds the unnecessary overhead.
+/// The heavier the operand object is, the more the overhead is.
+/// 
+/// So, I would like to suggest one of the following three as follows:
+/// 
+/// # First suggestion
+/// Changing the types of the parameters as follows:
+/// 
+/// ```
+/// pub trait RemAssign<Rhs = Self> {
+///     // Required method
+///     fn rem_assign(&mut self, rhs: &Rhs);
+/// }
+/// ```
+/// 
+/// # Second suggestion
+/// If the first suggestion is impossible because of backward compatibility,
+/// grammar allows the developer to choose the types of parameters but make
+/// only one function.
+/// 
+/// ```
+/// pub trait RemAssign<Rhs = Self> {
+///     // Required method
+///     fn rem_assign(&mut self, rhs: Rhs);
+///   or
+///     fn rem_assign(&mut self, rhs: &Rhs);
+/// }
+/// ```
+/// 
+/// # Third suggestion
+/// If the first and second suggestions are impossible because of backward
+/// compatibility, trait RemAssign2 is provided and the developer
+/// implements none or only one of traits RemAssign and RemAssign2.
+/// 
+/// ```
+/// pub trait RemAssign<Rhs = Self> {
+///     // Required method
+///     fn rem_assign(&mut self, rhs: Rhs);
+/// }
+/// 
+/// pub trait RemAssign2<Rhs = Self> {
+///     // Required method
+///     fn rem_assign(&mut self, rhs: &Rhs);
+/// }
+/// ```
+/// 
+/// Unlike trait RemAssign, the trait PartialEq makes the operators
+/// `==` and `!=` take not `&Self` but `Self` as its first operand and not
+/// `&Rhs` (or `&Self`) but `Rhs` (or `Self`) as its second operand but makes
+/// the functions eq() and ne() take not `self` but `&self` as its first
+/// argument and not `Rhs` but `&Rhs` as its second argument.
+/// So, I think the third suggestion is possible.
+/// The prototype of trait PartialEq is as follows:
+/// 
+/// ```
+/// pub trait PartialEq<Rhs = Self>
+/// where
+/// Rhs: ?Sized,
+/// {
+///     // Required method
+///     fn eq(&self, other: &Rhs) -> bool;
+/// 
+///     // Provided method
+///     fn ne(&self, other: &Rhs) -> bool { ... }
+/// }
+/// ```
 impl<T, const N: usize> RemAssign for BigUInt<T, N>
 where T: SmallUInt + Copy + Clone + Display + Debug + ToString
         + Add<Output=T> + AddAssign + Sub<Output=T> + SubAssign
@@ -404,6 +3734,125 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
         + BitXor<Output=T> + BitXorAssign + Not<Output=T>
         + PartialEq + PartialOrd
 {
+    // fn rem_assign(&mut self, rhs: Self)
+    /// Divides `self` by `rhs`, and assigns the remainder to `self` back.
+    /// 
+    /// # Arguments
+    /// `rhs` divides `self`, and is of `Self` type.
+    /// 
+    /// # Panics
+    /// - If `size_of::<T>() * N` <= `128`, this method may panic
+    ///   or its behavior may be undefined though it may not panic.
+    /// - If `rhs` is zero, this method will panic.
+    /// 
+    /// # Features
+    /// - Wrapped division on `BigUInt` types is just normal division.
+    /// - There’s no way wrapping could ever happen unless `rhs` is zero.
+    /// - If `rhs` is zero, this method will panic.
+    /// - This function exists, so that all operations are accounted for
+    ///   in the wrapping operations.
+    /// - All the flags are historical, which means, for example, if an
+    ///   divided_by_zero occurred even once before this current operation or
+    ///   `DIVIDED_BY_ZERO` flag is already set before this current operation,
+    ///   the `DIVIDED_BY_ZERO` flag is not changed even if this current operation
+    ///   does not cause divided_by_zero.
+    /// 
+    /// # Example 1
+    /// ```
+    /// use std::str::FromStr;
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u64);
+    /// 
+    /// let mut a_biguint = U256::from_str("123456789015758942546236989636279846864825945392").unwrap();
+    /// println!("Originally, a_biguint = {}", a_biguint);
+    /// assert_eq!(a_biguint.is_overflow(), false);
+    /// assert_eq!(a_biguint.is_underflow(), false);
+    /// assert_eq!(a_biguint.is_infinity(), false);
+    /// assert_eq!(a_biguint.is_undefined(), false);
+    /// assert_eq!(a_biguint.is_divided_by_zero(), false);
+    /// 
+    /// let divisor = U256::from_uint(87_u8);
+    /// a_biguint %= divisor.clone();
+    /// println!("After a_biguint %= {}, a_biguint = {}", divisor, a_biguint);
+    /// assert_eq!(a_biguint.to_string(), "8");
+    /// assert_eq!(a_biguint.is_overflow(), false);
+    /// assert_eq!(a_biguint.is_underflow(), false);
+    /// assert_eq!(a_biguint.is_infinity(), false);
+    /// assert_eq!(a_biguint.is_undefined(), false);
+    /// assert_eq!(a_biguint.is_divided_by_zero(), false);
+    /// ```
+    /// 
+    /// # Example 2
+    /// ```
+    /// use std::str::FromStr;
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u64);
+    /// 
+    /// let mut a_biguint = U256::zero();
+    /// println!("Originally, a_biguint = {}", a_biguint);
+    /// assert_eq!(a_biguint.is_overflow(), false);
+    /// assert_eq!(a_biguint.is_underflow(), false);
+    /// assert_eq!(a_biguint.is_infinity(), false);
+    /// assert_eq!(a_biguint.is_undefined(), false);
+    /// assert_eq!(a_biguint.is_divided_by_zero(), false);
+    /// 
+    /// let divisor = U256::from_uint(87_u8);
+    /// a_biguint %= divisor.clone();
+    /// println!("After a_biguint %= {}, a_biguint = {}", divisor, a_biguint);
+    /// assert_eq!(a_biguint.to_string(), "0");
+    /// assert_eq!(a_biguint.is_overflow(), false);
+    /// assert_eq!(a_biguint.is_underflow(), false);
+    /// assert_eq!(a_biguint.is_infinity(), false);
+    /// assert_eq!(a_biguint.is_undefined(), false);
+    /// assert_eq!(a_biguint.is_divided_by_zero(), false);
+    /// ```
+    /// 
+    /// # Panic Examples
+    /// ```
+    /// use std::str::FromStr;
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u64);
+    /// 
+    /// let mut _a_biguint = U256::from_str("123456789015758942546236989636279846864825945392").unwrap();
+    /// println!("Originally, a_biguint = {}", _a_biguint);
+    /// let _divisor = U256::zero();
+    /// // It will panic!
+    /// // _a_biguint %= _divisor.clone();
+    /// 
+    /// let mut _a_biguint = U256::zero();
+    /// println!("Originally, a_biguint = {}", _a_biguint);
+    /// let _divisor = U256::zero();
+    /// // It will panic!
+    /// // _a_biguint %= _divisor.clone();
+    /// ```
+    /// 
+    /// # Cannot-compile Examples
+    /// ```
+    /// use std::str::FromStr;
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u64);
+    /// 
+    /// let mut a_biguint = U256::from_str("123456789015758942546236989636279846864825945392").unwrap();
+    /// println!("Originally, a_biguint = {}", a_biguint);
+    /// let divisor = U256::from_uint(87_u8);
+    /// a_biguint %= divisor;
+    /// // It cannot be compiled!
+    /// // println!("After a_biguint =/ {}, a_biguint = {}", divisor, a_biguint);
+    /// // The operator %= swallowed (took the ownership of) divisor.
+    /// 
+    /// let mut a_biguint = U256::zero();
+    /// println!("Originally, a_biguint = {}", a_biguint);
+    /// let divisor = U256::from_uint(87_u8);
+    /// a_biguint %= divisor;
+    /// // It cannot be compiled!
+    /// // println!("After a_biguint =/ {}, a_biguint = {}", divisor, a_biguint);
+    /// // The operator %= swallowed (took the ownership of) divisor.
+    /// ```
+    /// 
+    /// # Big-endian issue
+    /// It is just experimental for Big Endian CPUs. So, you are not encouraged
+    /// to use it for Big Endian CPUs for serious purpose. Only use this crate
+    /// for Big-endian CPUs with your own full responsibility.
     #[inline]
     fn rem_assign(&mut self, rhs: Self)
     {
@@ -413,6 +3862,77 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
 
 
 
+/// I would like to suggest the modification of Rust grammar because the
+/// operator `%=` swallows (takes the ownership of) two operands which are
+/// left-hand side operand `self` and right-hand side operand `rhs` so that
+/// the two operands `self` and `rhs` cannot be used again after division
+/// operation. In order to prevent this, the operands should be cloned or
+/// copied before division operation. This adds the unnecessary overhead.
+/// The heavier the operand object is, the more the overhead is.
+/// 
+/// So, I would like to suggest one of the following three as follows:
+/// 
+/// # First suggestion
+/// Changing the types of the parameters as follows:
+/// 
+/// ```
+/// pub trait RemAssign<Rhs = Self> {
+///     // Required method
+///     fn rem_assign(&mut self, rhs: &Rhs);
+/// }
+/// ```
+/// 
+/// # Second suggestion
+/// If the first suggestion is impossible because of backward compatibility,
+/// grammar allows the developer to choose the types of parameters but make
+/// only one function.
+/// 
+/// ```
+/// pub trait RemAssign<Rhs = Self> {
+///     // Required method
+///     fn rem_assign(&mut self, rhs: Rhs);
+///   or
+///     fn rem_assign(&mut self, rhs: &Rhs);
+/// }
+/// ```
+/// 
+/// # Third suggestion
+/// If the first and second suggestions are impossible because of backward
+/// compatibility, trait RemAssign2 is provided and the developer
+/// implements none or only one of traits RemAssign and RemAssign2.
+/// 
+/// ```
+/// pub trait RemAssign<Rhs = Self> {
+///     // Required method
+///     fn rem_assign(&mut self, rhs: Rhs);
+/// }
+/// 
+/// pub trait RemAssign2<Rhs = Self> {
+///     // Required method
+///     fn rem_assign(&mut self, rhs: &Rhs);
+/// }
+/// ```
+/// 
+/// Unlike trait RemAssign, the trait PartialEq makes the operators
+/// `==` and `!=` take not `&Self` but `Self` as its first operand and not
+/// `&Rhs` (or `&Self`) but `Rhs` (or `Self`) as its second operand but makes
+/// the functions eq() and ne() take not `self` but `&self` as its first
+/// argument and not `Rhs` but `&Rhs` as its second argument.
+/// So, I think the third suggestion is possible.
+/// The prototype of trait PartialEq is as follows:
+/// 
+/// ```
+/// pub trait PartialEq<Rhs = Self>
+/// where
+/// Rhs: ?Sized,
+/// {
+///     // Required method
+///     fn eq(&self, other: &Rhs) -> bool;
+/// 
+///     // Provided method
+///     fn ne(&self, other: &Rhs) -> bool { ... }
+/// }
+/// ```
 impl<T, const N: usize> RemAssign<T> for BigUInt<T, N>
 where T: SmallUInt + Copy + Clone + Display + Debug + ToString
         + Add<Output=T> + AddAssign + Sub<Output=T> + SubAssign
@@ -423,6 +3943,103 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
         + BitXor<Output=T> + BitXorAssign + Not<Output=T>
         + PartialEq + PartialOrd
 {
+    // fn rem_assign(&mut self, rhs: T)
+    /// Divides `self` by `rhs`, and assigns the remainder to `self` back..
+    /// 
+    /// # Arguments
+    /// `rhs` divides `self`, and is of primitive unsigned integral data type
+    /// such as `u8`, `u16`, `u32`, `u64`, and `u128`.
+    /// 
+    /// # Panics
+    /// - If `size_of::<T>() * N` <= `128`, this method may panic
+    ///   or its behavior may be undefined though it may not panic.
+    /// - If `rhs` is zero, this method will panic.
+    /// 
+    /// # Features
+    /// - Wrapped division on `BigUInt` types is just normal division.
+    /// - There’s no way wrapping could ever happen unless `rhs` is zero.
+    /// - If `rhs` is zero, this method will panic.
+    /// - This function exists, so that all operations are accounted for
+    ///   in the wrapping operations.
+    /// - All the flags are historical, which means, for example, if an
+    ///   divided_by_zero occurred even once before this current operation or
+    ///   `DIVIDED_BY_ZERO` flag is already set before this current operation,
+    ///   the `DIVIDED_BY_ZERO` flag is not changed even if this current operation
+    ///   does not cause divided_by_zero.
+    /// 
+    /// # Example 1
+    /// ```
+    /// use std::str::FromStr;
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u128);
+    /// 
+    /// let mut a_biguint = U256::from_str("123456789015758942546236989636279846864825945392").unwrap();
+    /// println!("Originally, a_biguint = {}", a_biguint);
+    /// assert_eq!(a_biguint.is_overflow(), false);
+    /// assert_eq!(a_biguint.is_underflow(), false);
+    /// assert_eq!(a_biguint.is_infinity(), false);
+    /// assert_eq!(a_biguint.is_undefined(), false);
+    /// assert_eq!(a_biguint.is_divided_by_zero(), false);
+    /// 
+    /// let divisor = 87_u128;
+    /// a_biguint %= divisor;
+    /// println!("After a_biguint %= {}, a_biguint = {}", divisor, a_biguint);
+    /// assert_eq!(a_biguint.to_string(), "8");
+    /// assert_eq!(a_biguint.is_overflow(), false);
+    /// assert_eq!(a_biguint.is_underflow(), false);
+    /// assert_eq!(a_biguint.is_infinity(), false);
+    /// assert_eq!(a_biguint.is_undefined(), false);
+    /// assert_eq!(a_biguint.is_divided_by_zero(), false);
+    /// ```
+    /// 
+    /// # Example 2
+    /// ```
+    /// use std::str::FromStr;
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u128);
+    /// 
+    /// let mut a_biguint = U256::zero();
+    /// println!("Originally, a_biguint = {}", a_biguint);
+    /// assert_eq!(a_biguint.is_overflow(), false);
+    /// assert_eq!(a_biguint.is_underflow(), false);
+    /// assert_eq!(a_biguint.is_infinity(), false);
+    /// assert_eq!(a_biguint.is_undefined(), false);
+    /// assert_eq!(a_biguint.is_divided_by_zero(), false);
+    /// 
+    /// let divisor = 87_u128;
+    /// a_biguint %= divisor;
+    /// println!("After a_biguint %= {}, a_biguint = {}", divisor, a_biguint);
+    /// assert_eq!(a_biguint.to_string(), "0");
+    /// assert_eq!(a_biguint.is_overflow(), false);
+    /// assert_eq!(a_biguint.is_underflow(), false);
+    /// assert_eq!(a_biguint.is_infinity(), false);
+    /// assert_eq!(a_biguint.is_undefined(), false);
+    /// assert_eq!(a_biguint.is_divided_by_zero(), false);
+    /// ```
+    /// 
+    /// # Panic Examples
+    /// ```
+    /// use std::str::FromStr;
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u16);
+    /// 
+    /// let mut _a_biguint = U256::from_str("123456789015758942546236989636279846864825945392").unwrap();
+    /// println!("Originally, a_biguint = {}", _a_biguint);
+    /// let _divisor = 0_u128;
+    /// // It will panic!
+    /// // _a_biguint %= _divisor;
+    /// 
+    /// let mut _a_biguint = U256::zero();
+    /// println!("Originally, _a_biguint = {}", _a_biguint);
+    /// let _divisor = 0_u128;
+    /// // It will panic!
+    /// // _a_biguint %= _divisor;
+    /// ```
+    /// 
+    /// # Big-endian issue
+    /// It is just experimental for Big Endian CPUs. So, you are not encouraged
+    /// to use it for Big Endian CPUs for serious purpose. Only use this crate
+    /// for Big-endian CPUs with your own full responsibility.
     #[inline]
     fn rem_assign(&mut self, rhs: T)
     {
@@ -434,32 +4051,95 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
 
 macro_rules! shl_for_BigUInt_impl {
     ($f:ty) => {
-        /// Performs the << operation. If overflow happens during the << operation,
-        /// `OVERFLOW` flag is set and the method is_overflow() will return true. 
-        /// [Read more](https://doc.rust-lang.org/core/ops/bit/trait.Shl.html#tymethod.shl)
+        /// I would like to suggest the modification of Rust grammar because the
+        /// operator `<<` swallows (takes the ownership of) two operands which are
+        /// left-hand side operand `self` and right-hand side operand `rhs` so that
+        /// the two operands `self` and `rhs` cannot be used again after shift-left
+        /// operation. In order to prevent this, the operands should be cloned or
+        /// copied before shift-left operation. This adds the unnecessary overhead.
+        /// The heavier the operand object is, the more the overhead is.
         /// 
-        /// # Example 1
+        /// So, I would like to suggest one of the following three as follows:
+        /// 
+        /// # First suggestion
+        /// Changing the types of the parameters as follows:
+        /// 
         /// ```
-        /// use std::str::FromStr;
-        /// use cryptocol::number::*;
-        /// use cryptocol::define_utypes_with;
-        /// define_utypes_with!(u128);
-        /// let a = u256::from_str("1234567_1234567890_1234567890_1234567890_1234567890_1234567890_1234567890_1234567890").unwrap();
-        /// let b = a << 4_i128;
-        /// println!("b = {}\noverflow: {}", b, b.is_overflow());
-        /// assert_eq!(b.is_overflow(), true);
+        /// pub trait Shl<Rhs = Self> {
+        ///     type Output;
+        ///     // Required method
+        ///     fn shl(&self, rhs: &Rhs) -> Self::Output;
+        /// }
         /// ```
         /// 
-        /// # Example 2
+        /// # Second suggestion
+        /// If the first suggestion is impossible because of backward compatibility,
+        /// grammar allows the developer to choose the types of parameters but make
+        /// only one function.
+        /// 
         /// ```
-        /// use std::str::FromStr;
-        /// use cryptocol::number::*;
-        /// use cryptocol::define_utypes_with;
-        /// define_utypes_with!(u128);
-        /// let a = u256::from_str("1234567_1234567890_1234567890_1234567890_1234567890_1234567890_1234567890_1234567890").unwrap();
-        /// let b = a << 1_i8;
-        /// println!("b = {}\noverflow: {}", b, b.is_overflow());
-        /// assert_eq!(b.is_overflow(), false);
+        /// pub trait Shl<Rhs = Self> {
+        ///     type Output;
+        ///     // Required method
+        ///     fn shl(self, rhs: Rhs) -> Self::Output;
+        ///   or
+        ///     fn shl(&self, rhs: Rhs) -> Self::Output;
+        ///   or
+        ///     fn shl(self, rhs: &Rhs) -> Self::Output;
+        ///   or
+        ///     fn shl(&self, rhs: &Rhs) -> Self::Output;
+        /// }
+        /// ```
+        /// 
+        /// # Third suggestion
+        /// If the first and second suggestions are impossible because of backward
+        /// compatibility, trait Shl2, Shl3, and Shl4 are provided and the developer
+        /// implements none or only one of traits Shl, Shl2, Shl3, and Shl4.
+        /// 
+        /// ```
+        /// pub trait Shl<Rhs = Self> {
+        ///     type Output;
+        ///     // Required method
+        ///     fn shl(self, rhs: Rhs) -> Self::Output;
+        /// }
+        /// 
+        /// pub trait Shl2<Rhs = Self> {
+        ///     type Output;
+        ///     // Required method
+        ///     fn shl(&self, rhs: Rhs) -> Self::Output;
+        /// }
+        /// 
+        /// pub trait Shl3<Rhs = Self> {
+        ///     type Output;
+        ///     // Required method
+        ///     fn shl(self, rhs: &Rhs) -> Self::Output;
+        /// }
+        /// 
+        /// pub trait Shl4<Rhs = Self> {
+        ///     type Output;
+        ///     // Required method
+        ///     fn shl(&self, rhs: &Rhs) -> Self::Output;
+        /// }
+        /// ```
+        /// 
+        /// Unlike trait Shl, the trait PartialEq makes the operators `==` and `!=` take
+        /// not `&Self` but `Self` as its first operand and not `&Rhs` (or `&Self`) but
+        /// `Rhs` (or `Self`) as its second operand but makes the functions eq() and
+        /// ne() take not `self` but `&self` as its first argument and not `Rhs` but
+        /// `&Rhs` as its second argument. So, I think the third suggestion is possible.
+        /// The prototype of trait PartialEq is as follows:
+        /// 
+        /// ```
+        /// pub trait PartialEq<Rhs = Self>
+        /// where
+        /// Rhs: ?Sized,
+        /// {
+        ///     // Required method
+        ///     fn eq(&self, other: &Rhs) -> bool;
+        /// 
+        ///     // Provided method
+        ///     fn ne(&self, other: &Rhs) -> bool { ... }
+        /// }
         /// ```
         impl<T, const N: usize> Shl<$f> for BigUInt<T, N>
         where T: SmallUInt + Copy + Clone + Display + Debug + ToString
@@ -473,11 +4153,487 @@ macro_rules! shl_for_BigUInt_impl {
         {
             type Output = Self;
 
+            // fn shl(self, rhs: $f) -> Self
+            /// Shift left the field `number: [T;N]` to the left by `n`,
+            /// and returns the result.
+            /// 
+            /// # Arguments
+            /// `rhs` indicates how many bits this method shift `self` left by,
+            /// and can be any primitive integer such as `i8`, `i16`, `i32`,
+            /// `i64`, `i128`, `isize`, `u8`, `u16`, `u32`, `u64`, `u128`, and
+            /// `usize`.
+            /// 
+            /// # Output
+            /// It returns the left-shifted version of `self`, which is shifted to the
+            /// left by `rhs` bits.
+            /// 
+            /// # Overflow
+            /// For BigUInt, 'overflow' does not mean what 'overflow' means for a
+            /// primitive unsigned integer data type. For BigUInt, 'overflow' means that
+            /// carry occurs, while overflow means that all the bits are pushed outside
+            /// for primitive unsigned integer data type.
+            ///
+            /// # Panics
+            /// If `size_of::<T>() * N` <= `128`, this method may panic
+            /// or its behavior may be undefined though it may not panic.
+            /// 
+            /// # Features
+            /// - 'Shift left' means 'move left all bits'. So, if `10011010` is shifted
+            ///   left by 2, it will be `01101000`, for example.
+            /// - If `rhs` is a positive integer,
+            ///   this operation may cause overflow.
+            /// - If `rhs` is a negative integer,
+            ///   this operation may cause underflow.
+            /// - If overflow happens during the << operation, `OVERFLOW` flag
+            ///   will be set and the method is_overflow() will return true.
+            /// - If underflow happens during the << operation, `UNDERFLOW` flag
+            ///   will be set and the method is_underflow() will return true.
+            /// 
+            /// # Example 1 for u8
+            /// ```
+            /// use cryptocol::define_utypes_with;
+            /// define_utypes_with!(u8);
+            /// 
+            /// let a_biguint = U256::from_str_radix("11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101", 2).unwrap();
+            /// let n = 3_u8;
+            /// let res = a_biguint.clone() << n;
+            /// println!("{} << {} = {}", a_biguint.to_string_with_radix_and_stride(2, 8).unwrap(), n, res.to_string_with_radix_and_stride(2, 8).unwrap());
+            /// assert_eq!(res.to_string_with_radix_and_stride(2, 8).unwrap(), "11111000_00000111_10000000_01111110_01100001_10011101_01010010_10101111_11111000_00000111_10000000_01111110_01100001_10011101_01010010_10101111_11111000_00000111_10000000_01111110_01100001_10011101_01010010_10101111_11111000_00000111_10000000_01111110_01100001_10011101_01010010_10101000");
+            /// assert_eq!(res.is_overflow(), true);
+            /// assert_eq!(res.is_underflow(), false);
+            /// assert_eq!(res.is_infinity(), false);
+            /// assert_eq!(res.is_undefined(), false);
+            /// assert_eq!(res.is_divided_by_zero(), false);
+            /// ```
+            /// 
+            /// # Example 2 for u16
+            /// ```
+            /// use cryptocol::define_utypes_with;
+            /// define_utypes_with!(u8);
+            /// 
+            /// let a_biguint = U256::from_str_radix("00001111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101", 2).unwrap();
+            /// let n = 4_u16;
+            /// let res = a_biguint.clone() << n;
+            /// println!("{} << {} = {}", a_biguint.to_string_with_radix_and_stride(2, 8).unwrap(), n, res.to_string_with_radix_and_stride(2, 8).unwrap());
+            /// assert_eq!(res.to_string_with_radix_and_stride(2, 8).unwrap(), "11110000_00001111_00000000_11111100_11000011_00111010_10100101_01011111_11110000_00001111_00000000_11111100_11000011_00111010_10100101_01011111_11110000_00001111_00000000_11111100_11000011_00111010_10100101_01011111_11110000_00001111_00000000_11111100_11000011_00111010_10100101_01010000");
+            /// assert_eq!(res.is_overflow(), false);
+            /// assert_eq!(res.is_underflow(), false);
+            /// assert_eq!(res.is_infinity(), false);
+            /// assert_eq!(res.is_undefined(), false);
+            /// assert_eq!(res.is_divided_by_zero(), false);
+            /// ```
+            /// 
+            /// # Example 3 for u32
+            /// ```
+            /// use cryptocol::define_utypes_with;
+            /// define_utypes_with!(u8);
+            /// 
+            /// let a_biguint = U256::from_str_radix("11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101", 2).unwrap();
+            /// let n = 128_u32;
+            /// let res = a_biguint.clone() << n;
+            /// println!("{} << {} = {}", a_biguint.to_string_with_radix_and_stride(2, 8).unwrap(), n, res.to_string_with_radix_and_stride(2, 8).unwrap());
+            /// assert_eq!(res.to_string_with_radix_and_stride(2, 8).unwrap(), "11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000");
+            /// assert_eq!(res.is_overflow(), true);
+            /// assert_eq!(res.is_underflow(), false);
+            /// assert_eq!(res.is_infinity(), false);
+            /// assert_eq!(res.is_undefined(), false);
+            /// assert_eq!(res.is_divided_by_zero(), false);
+            /// ```
+            /// 
+            /// # Example 4 for u64
+            /// ```
+            /// use cryptocol::define_utypes_with;
+            /// define_utypes_with!(u8);
+            /// 
+            /// let a_biguint = U256::from_str_radix("00001111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101", 2).unwrap();
+            /// let n = 256_u64;
+            /// let res = a_biguint.clone() << n;
+            /// println!("{} << {} = {}", a_biguint.to_string_with_radix_and_stride(2, 8).unwrap(), n, res.to_string_with_radix_and_stride(2, 8).unwrap());
+            /// assert_eq!(res.to_string(), "0");
+            /// assert_eq!(res.is_overflow(), true);
+            /// assert_eq!(res.is_underflow(), false);
+            /// assert_eq!(res.is_infinity(), false);
+            /// assert_eq!(res.is_undefined(), false);
+            /// assert_eq!(res.is_divided_by_zero(), false);
+            /// ```
+            /// 
+            /// # Example 5 for u128
+            /// ```
+            /// use cryptocol::define_utypes_with;
+            /// define_utypes_with!(u8);
+            /// 
+            /// let a_biguint = U256::from_str_radix("11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101", 2).unwrap();
+            /// let n = 512_u128;
+            /// let res = a_biguint.clone() << n;
+            /// println!("{} << {} = {}", a_biguint.to_string_with_radix_and_stride(2, 8).unwrap(), n, res.to_string_with_radix_and_stride(2, 8).unwrap());
+            /// assert_eq!(res.to_string(), "0");
+            /// assert_eq!(res.is_overflow(), true);
+            /// assert_eq!(res.is_underflow(), false);
+            /// assert_eq!(res.is_infinity(), false);
+            /// assert_eq!(res.is_undefined(), false);
+            /// assert_eq!(res.is_divided_by_zero(), false);
+            /// ```
+            /// 
+            /// # Example 6 for usize
+            /// ```
+            /// use cryptocol::define_utypes_with;
+            /// define_utypes_with!(u8);
+            /// 
+            /// let a_biguint = U256::from_str_radix("11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101", 2).unwrap();
+            /// let n = 1024_usize;
+            /// let res = a_biguint.clone() << n;
+            /// println!("{} << {} = {}", a_biguint.to_string_with_radix_and_stride(2, 8).unwrap(), n, res.to_string_with_radix_and_stride(2, 8).unwrap());
+            /// assert_eq!(res.to_string(), "0");
+            /// assert_eq!(res.is_overflow(), true);
+            /// assert_eq!(res.is_underflow(), false);
+            /// assert_eq!(res.is_infinity(), false);
+            /// assert_eq!(res.is_undefined(), false);
+            /// assert_eq!(res.is_divided_by_zero(), false);
+            /// ```
+            /// 
+            /// # Example 7 for positive i8
+            /// ```
+            /// use cryptocol::define_utypes_with;
+            /// define_utypes_with!(u8);
+            /// 
+            /// let a_biguint = U256::from_str_radix("11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101", 2).unwrap();
+            /// let n = 3_i8;
+            /// let res = a_biguint.clone() << n;
+            /// println!("{} << {} = {}", a_biguint.to_string_with_radix_and_stride(2, 8).unwrap(), n, res.to_string_with_radix_and_stride(2, 8).unwrap());
+            /// assert_eq!(res.to_string_with_radix_and_stride(2, 8).unwrap(), "11111000_00000111_10000000_01111110_01100001_10011101_01010010_10101111_11111000_00000111_10000000_01111110_01100001_10011101_01010010_10101111_11111000_00000111_10000000_01111110_01100001_10011101_01010010_10101111_11111000_00000111_10000000_01111110_01100001_10011101_01010010_10101000");
+            /// assert_eq!(res.is_overflow(), true);
+            /// assert_eq!(res.is_underflow(), false);
+            /// assert_eq!(res.is_infinity(), false);
+            /// assert_eq!(res.is_undefined(), false);
+            /// assert_eq!(res.is_divided_by_zero(), false);
+            /// ```
+            /// 
+            /// # Example 8 for positive i16
+            /// ```
+            /// use cryptocol::define_utypes_with;
+            /// define_utypes_with!(u8);
+            /// 
+            /// let a_biguint = U256::from_str_radix("00001111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101", 2).unwrap();
+            /// let n = 4_i16;
+            /// let res = a_biguint.clone() << n;
+            /// println!("{} << {} = {}", a_biguint.to_string_with_radix_and_stride(2, 8).unwrap(), n, res.to_string_with_radix_and_stride(2, 8).unwrap());
+            /// assert_eq!(res.to_string_with_radix_and_stride(2, 8).unwrap(), "11110000_00001111_00000000_11111100_11000011_00111010_10100101_01011111_11110000_00001111_00000000_11111100_11000011_00111010_10100101_01011111_11110000_00001111_00000000_11111100_11000011_00111010_10100101_01011111_11110000_00001111_00000000_11111100_11000011_00111010_10100101_01010000");
+            /// assert_eq!(res.is_overflow(), false);
+            /// assert_eq!(res.is_underflow(), false);
+            /// assert_eq!(res.is_infinity(), false);
+            /// assert_eq!(res.is_undefined(), false);
+            /// assert_eq!(res.is_divided_by_zero(), false);
+            /// ```
+            /// 
+            /// # Example 9 for positive i32
+            /// ```
+            /// use cryptocol::define_utypes_with;
+            /// define_utypes_with!(u8);
+            /// 
+            /// let a_biguint = U256::from_str_radix("11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101", 2).unwrap();
+            /// let n = 128_i32;
+            /// let res = a_biguint.clone() << n;
+            /// println!("{} << {} = {}", a_biguint.to_string_with_radix_and_stride(2, 8).unwrap(), n, res.to_string_with_radix_and_stride(2, 8).unwrap());
+            /// assert_eq!(res.to_string_with_radix_and_stride(2, 8).unwrap(), "11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000");
+            /// assert_eq!(res.is_overflow(), true);
+            /// assert_eq!(res.is_underflow(), false);
+            /// assert_eq!(res.is_infinity(), false);
+            /// assert_eq!(res.is_undefined(), false);
+            /// assert_eq!(res.is_divided_by_zero(), false);
+            /// ```
+            /// 
+            /// # Example 10 for positive i64
+            /// ```
+            /// use cryptocol::define_utypes_with;
+            /// define_utypes_with!(u8);
+            /// 
+            /// let a_biguint = U256::from_str_radix("00001111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101", 2).unwrap();
+            /// let n = 256_i64;
+            /// let res = a_biguint.clone() << n;
+            /// println!("{} << {} = {}", a_biguint.to_string_with_radix_and_stride(2, 8).unwrap(), n, res.to_string_with_radix_and_stride(2, 8).unwrap());
+            /// assert_eq!(res.to_string(), "0");
+            /// assert_eq!(res.is_overflow(), true);
+            /// assert_eq!(res.is_underflow(), false);
+            /// assert_eq!(res.is_infinity(), false);
+            /// assert_eq!(res.is_undefined(), false);
+            /// assert_eq!(res.is_divided_by_zero(), false);
+            /// ```
+            /// 
+            /// # Example 11 for positive i128
+            /// ```
+            /// use cryptocol::define_utypes_with;
+            /// define_utypes_with!(u8);
+            /// 
+            /// let a_biguint = U256::from_str_radix("11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101", 2).unwrap();
+            /// let n = 512_i128;
+            /// let res = a_biguint.clone() << n;
+            /// println!("{} << {} = {}", a_biguint.to_string_with_radix_and_stride(2, 8).unwrap(), n, res.to_string_with_radix_and_stride(2, 8).unwrap());
+            /// assert_eq!(res.to_string(), "0");
+            /// assert_eq!(res.is_overflow(), true);
+            /// assert_eq!(res.is_underflow(), false);
+            /// assert_eq!(res.is_infinity(), false);
+            /// assert_eq!(res.is_undefined(), false);
+            /// assert_eq!(res.is_divided_by_zero(), false);
+            /// ```
+            /// 
+            /// # Example 12 for positive isize
+            /// ```
+            /// use cryptocol::define_utypes_with;
+            /// define_utypes_with!(u8);
+            /// 
+            /// let a_biguint = U256::from_str_radix("11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101", 2).unwrap();
+            /// let n = 1024_isize;
+            /// let res = a_biguint.clone() << n;
+            /// println!("{} << {} = {}", a_biguint.to_string_with_radix_and_stride(2, 8).unwrap(), n, res.to_string_with_radix_and_stride(2, 8).unwrap());
+            /// assert_eq!(res.to_string(), "0");
+            /// assert_eq!(res.is_overflow(), true);
+            /// assert_eq!(res.is_underflow(), false);
+            /// assert_eq!(res.is_infinity(), false);
+            /// assert_eq!(res.is_undefined(), false);
+            /// assert_eq!(res.is_divided_by_zero(), false);
+            /// ```
+            /// 
+            /// # Example 13 for negative i8
+            /// ```
+            /// use cryptocol::define_utypes_with;
+            /// define_utypes_with!(u8);
+            /// 
+            /// let a_biguint = U256::from_str_radix("11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_00000000_11111111", 2).unwrap();
+            /// let n = -3_i8;
+            /// let res = a_biguint.clone() << n;
+            /// println!("{} << {} = {}", a_biguint.to_string_with_radix_and_stride(2, 8).unwrap(), n, res.to_string_with_radix_and_stride(2, 8).unwrap());
+            /// assert_eq!(res.to_string_with_radix_and_stride(2, 8).unwrap(), "11111_11100000_00011110_00000001_11111001_10000110_01110101_01001010_10111111_11100000_00011110_00000001_11111001_10000110_01110101_01001010_10111111_11100000_00011110_00000001_11111001_10000110_01110101_01001010_10111111_11100000_00011110_00000001_11111001_10000110_01100000_00011111");
+            /// assert_eq!(res.is_overflow(), false);
+            /// assert_eq!(res.is_underflow(), true);
+            /// assert_eq!(res.is_infinity(), false);
+            /// assert_eq!(res.is_undefined(), false);
+            /// assert_eq!(res.is_divided_by_zero(), false);
+            /// ```
+            /// 
+            /// # Example 14 for negative i16
+            /// ```
+            /// use cryptocol::define_utypes_with;
+            /// define_utypes_with!(u8);
+            /// 
+            /// let a_biguint = U256::from_str_radix("11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_11110000", 2).unwrap();
+            /// let n = -4_i16;
+            /// let res = a_biguint.clone() << n;
+            /// println!("{} << {} = {}", a_biguint.to_string_with_radix_and_stride(2, 8).unwrap(), n, res.to_string_with_radix_and_stride(2, 8).unwrap());
+            /// assert_eq!(res.to_string_with_radix_and_stride(2, 8).unwrap(), "1111_11110000_00001111_00000000_11111100_11000011_00111010_10100101_01011111_11110000_00001111_00000000_11111100_11000011_00111010_10100101_01011111_11110000_00001111_00000000_11111100_11000011_00111010_10100101_01011111_11110000_00001111_00000000_11111100_11000011_00111010_10101111");
+            /// assert_eq!(res.is_overflow(), false);
+            /// assert_eq!(res.is_underflow(), false);
+            /// assert_eq!(res.is_infinity(), false);
+            /// assert_eq!(res.is_undefined(), false);
+            /// assert_eq!(res.is_divided_by_zero(), false);
+            /// ```
+            /// 
+            /// # Example 15 for negative i32
+            /// ```
+            /// use cryptocol::define_utypes_with;
+            /// define_utypes_with!(u8);
+            /// 
+            /// let a_biguint = U256::from_str_radix("11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_00000000_11111111", 2).unwrap();
+            /// let n = -128_i32;
+            /// let res = a_biguint.clone() << n;
+            /// println!("{} << {} = {}", a_biguint.to_string_with_radix_and_stride(2, 8).unwrap(), n, res.to_string_with_radix_and_stride(2, 8).unwrap());
+            /// assert_eq!(res.to_string_with_radix_and_stride(2, 8).unwrap(), "11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101");
+            /// assert_eq!(res.is_overflow(), false);
+            /// assert_eq!(res.is_underflow(), true);
+            /// assert_eq!(res.is_infinity(), false);
+            /// assert_eq!(res.is_undefined(), false);
+            /// assert_eq!(res.is_divided_by_zero(), false);
+            /// ```
+            /// 
+            /// # Example 16 for negative i64
+            /// ```
+            /// use cryptocol::define_utypes_with;
+            /// define_utypes_with!(u8);
+            /// 
+            /// let a_biguint = U256::from_str_radix("11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101", 2).unwrap();
+            /// let n = -256_i64;
+            /// let res = a_biguint.clone() << n;
+            /// println!("{} << {} = {}", a_biguint.to_string_with_radix_and_stride(2, 8).unwrap(), n, res.to_string_with_radix_and_stride(2, 8).unwrap());
+            /// assert_eq!(res.to_string(), "0");
+            /// assert_eq!(res.is_overflow(), false);
+            /// assert_eq!(res.is_underflow(), true);
+            /// assert_eq!(res.is_infinity(), false);
+            /// assert_eq!(res.is_undefined(), false);
+            /// assert_eq!(res.is_divided_by_zero(), false);
+            /// ```
+            /// 
+            /// # Example 17 for negative i128
+            /// ```
+            /// use cryptocol::define_utypes_with;
+            /// define_utypes_with!(u8);
+            /// 
+            /// let a_biguint = U256::from_str_radix("11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101", 2).unwrap();
+            /// let n = -512_i128;
+            /// let res = a_biguint.clone() << n;
+            /// println!("{} << {} = {}", a_biguint.to_string_with_radix_and_stride(2, 8).unwrap(), n, res.to_string_with_radix_and_stride(2, 8).unwrap());
+            /// assert_eq!(res.to_string(), "0");
+            /// assert_eq!(res.is_overflow(), false);
+            /// assert_eq!(res.is_underflow(), true);
+            /// assert_eq!(res.is_infinity(), false);
+            /// assert_eq!(res.is_undefined(), false);
+            /// assert_eq!(res.is_divided_by_zero(), false);
+            /// ```
+            /// 
+            /// # Example 18 for negative isize
+            /// ```
+            /// use cryptocol::define_utypes_with;
+            /// define_utypes_with!(u8);
+            /// 
+            /// let a_biguint = U256::from_str_radix("11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101", 2).unwrap();
+            /// let n = -1024_isize;
+            /// let res = a_biguint.clone() << n;
+            /// println!("{} << {} = {}", a_biguint.to_string_with_radix_and_stride(2, 8).unwrap(), n, res.to_string_with_radix_and_stride(2, 8).unwrap());
+            /// assert_eq!(res.to_string(), "0");
+            /// assert_eq!(res.is_overflow(), false);
+            /// assert_eq!(res.is_underflow(), true);
+            /// assert_eq!(res.is_infinity(), false);
+            /// assert_eq!(res.is_undefined(), false);
+            /// assert_eq!(res.is_divided_by_zero(), false);
+            /// ```
+            /// 
+            /// # Cannot-compile Examples
+            /// ```
+            /// use cryptocol::define_utypes_with;
+            /// define_utypes_with!(u8);
+            /// 
+            /// let a_biguint = U256::from_str_radix("11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101", 2).unwrap();
+            /// let n = 3_u8;
+            /// let _res = a_biguint << n;
+            /// // It cannot be compiled!
+            /// // println!("{} << {} = {}", a_biguint.to_string_with_radix_and_stride(2, 8).unwrap(), n, res.to_string_with_radix_and_stride(2, 8).unwrap());
+            /// // The operator << swallowed (took the ownership of) a_biguint.
+            /// 
+            /// let a_biguint = U256::from_str_radix("00001111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101", 2).unwrap();
+            /// let n = 4_u16;
+            /// let _res = a_biguint << n;
+            /// // It cannot be compiled!
+            /// // println!("{} << {} = {}", a_biguint.to_string_with_radix_and_stride(2, 8).unwrap(), n, res.to_string_with_radix_and_stride(2, 8).unwrap());
+            /// // The operator << swallowed (took the ownership of) a_biguint.
+            /// 
+            /// let a_biguint = U256::from_str_radix("11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101", 2).unwrap();
+            /// let n = 128_u32;
+            /// let _res = a_biguint << n;
+            /// // It cannot be compiled!
+            /// // println!("{} << {} = {}", a_biguint.to_string_with_radix_and_stride(2, 8).unwrap(), n, res.to_string_with_radix_and_stride(2, 8).unwrap());
+            /// // The operator << swallowed (took the ownership of) a_biguint.
+            /// 
+            /// let a_biguint = U256::from_str_radix("00001111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101", 2).unwrap();
+            /// let n = 256_u64;
+            /// let _res = a_biguint << n;
+            /// // It cannot be compiled!
+            /// // println!("{} << {} = {}", a_biguint.to_string_with_radix_and_stride(2, 8).unwrap(), n, res.to_string_with_radix_and_stride(2, 8).unwrap());
+            /// // The operator << swallowed (took the ownership of) a_biguint.
+            /// 
+            /// let a_biguint = U256::from_str_radix("11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101", 2).unwrap();
+            /// let n = 512_u128;
+            /// let _res = a_biguint << n;
+            /// // It cannot be compiled!
+            /// // println!("{} << {} = {}", a_biguint.to_string_with_radix_and_stride(2, 8).unwrap(), n, res.to_string_with_radix_and_stride(2, 8).unwrap());
+            /// // The operator << swallowed (took the ownership of) a_biguint.
+            /// 
+            /// let a_biguint = U256::from_str_radix("11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101", 2).unwrap();
+            /// let n = 1024_usize;
+            /// let _res = a_biguint << n;
+            /// // It cannot be compiled!
+            /// // println!("{} << {} = {}", a_biguint.to_string_with_radix_and_stride(2, 8).unwrap(), n, res.to_string_with_radix_and_stride(2, 8).unwrap());
+            /// // The operator << swallowed (took the ownership of) a_biguint.
+            /// 
+            /// let a_biguint = U256::from_str_radix("11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101", 2).unwrap();
+            /// let n = 3_i8;
+            /// let _res = a_biguint << n;
+            /// // It cannot be compiled!
+            /// // println!("{} << {} = {}", a_biguint.to_string_with_radix_and_stride(2, 8).unwrap(), n, res.to_string_with_radix_and_stride(2, 8).unwrap());
+            /// // The operator << swallowed (took the ownership of) a_biguint.
+            /// 
+            /// let a_biguint = U256::from_str_radix("00001111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101", 2).unwrap();
+            /// let n = 4_i16;
+            /// let _res = a_biguint << n;
+            /// // It cannot be compiled!
+            /// // println!("{} << {} = {}", a_biguint.to_string_with_radix_and_stride(2, 8).unwrap(), n, res.to_string_with_radix_and_stride(2, 8).unwrap());
+            /// // The operator << swallowed (took the ownership of) a_biguint.
+            /// 
+            /// let a_biguint = U256::from_str_radix("11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101", 2).unwrap();
+            /// let n = 128_i32;
+            /// let _res = a_biguint << n;
+            /// // It cannot be compiled!
+            /// // println!("{} << {} = {}", a_biguint.to_string_with_radix_and_stride(2, 8).unwrap(), n, res.to_string_with_radix_and_stride(2, 8).unwrap());
+            /// // The operator << swallowed (took the ownership of) a_biguint.
+            /// 
+            /// let a_biguint = U256::from_str_radix("00001111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101", 2).unwrap();
+            /// let n = 256_i64;
+            /// let _res = a_biguint << n;
+            /// // It cannot be compiled!
+            /// // println!("{} << {} = {}", a_biguint.to_string_with_radix_and_stride(2, 8).unwrap(), n, res.to_string_with_radix_and_stride(2, 8).unwrap());
+            /// // The operator << swallowed (took the ownership of) a_biguint.
+            /// 
+            /// let a_biguint = U256::from_str_radix("11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101", 2).unwrap();
+            /// let n = 512_i128;
+            /// let _res = a_biguint << n;
+            /// // It cannot be compiled!
+            /// // println!("{} << {} = {}", a_biguint.to_string_with_radix_and_stride(2, 8).unwrap(), n, res.to_string_with_radix_and_stride(2, 8).unwrap());
+            /// // The operator << swallowed (took the ownership of) a_biguint.
+            /// 
+            /// let a_biguint = U256::from_str_radix("11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101", 2).unwrap();
+            /// let n = 1024_isize;
+            /// let _res = a_biguint << n;
+            /// // It cannot be compiled!
+            /// // println!("{} << {} = {}", a_biguint.to_string_with_radix_and_stride(2, 8).unwrap(), n, res.to_string_with_radix_and_stride(2, 8).unwrap());
+            /// // The operator << swallowed (took the ownership of) a_biguint.
+            /// 
+            /// let a_biguint = U256::from_str_radix("11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_00000000_11111111", 2).unwrap();
+            /// let n = -3_i8;
+            /// let _res = a_biguint << n;
+            /// // It cannot be compiled!
+            /// // println!("{} << {} = {}", a_biguint.to_string_with_radix_and_stride(2, 8).unwrap(), n, res.to_string_with_radix_and_stride(2, 8).unwrap());
+            /// // The operator << swallowed (took the ownership of) a_biguint.
+            /// 
+            /// let a_biguint = U256::from_str_radix("11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_11110000", 2).unwrap();
+            /// let n = -4_i16;
+            /// let _res = a_biguint << n;
+            /// // It cannot be compiled!
+            /// // println!("{} << {} = {}", a_biguint.to_string_with_radix_and_stride(2, 8).unwrap(), n, res.to_string_with_radix_and_stride(2, 8).unwrap());
+            /// // The operator << swallowed (took the ownership of) a_biguint.
+            /// 
+            /// let a_biguint = U256::from_str_radix("11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_00000000_11111111", 2).unwrap();
+            /// let n = -128_i32;
+            /// let _res = a_biguint << n;
+            /// // It cannot be compiled!
+            /// // println!("{} << {} = {}", a_biguint.to_string_with_radix_and_stride(2, 8).unwrap(), n, res.to_string_with_radix_and_stride(2, 8).unwrap());
+            /// // The operator << swallowed (took the ownership of) a_biguint.
+            /// 
+            /// let a_biguint = U256::from_str_radix("11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101", 2).unwrap();
+            /// let n = -256_i64;
+            /// let _res = a_biguint << n;
+            /// // It cannot be compiled!
+            /// // println!("{} << {} = {}", a_biguint.to_string_with_radix_and_stride(2, 8).unwrap(), n, res.to_string_with_radix_and_stride(2, 8).unwrap());
+            /// // The operator << swallowed (took the ownership of) a_biguint.
+            /// 
+            /// let a_biguint = U256::from_str_radix("11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101", 2).unwrap();
+            /// let n = -512_i128;
+            /// let _res = a_biguint << n;
+            /// // It cannot be compiled!
+            /// // println!("{} << {} = {}", a_biguint.to_string_with_radix_and_stride(2, 8).unwrap(), n, res.to_string_with_radix_and_stride(2, 8).unwrap());
+            /// // The operator << swallowed (took the ownership of) a_biguint.
+            /// 
+            /// let a_biguint = U256::from_str_radix("11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101", 2).unwrap();
+            /// let n = -1024_isize;
+            /// let _res = a_biguint << n;
+            /// // It cannot be compiled!
+            /// // println!("{} << {} = {}", a_biguint.to_string_with_radix_and_stride(2, 8).unwrap(), n, res.to_string_with_radix_and_stride(2, 8).unwrap());
+            /// // The operator << swallowed (took the ownership of) a_biguint.
+            /// ```
+            /// 
+            /// # Big-endian issue
+            /// It is just experimental for Big Endian CPUs. So, you are not encouraged
+            /// to use it for Big Endian CPUs for serious purpose. Only use this crate
+            /// for Big-endian CPUs with your own full responsibility.
             fn shl(self, rhs: $f) -> Self
             {
-                let mut s = self.clone();
-                s <<= rhs;
-                s
+                calc_assign_to_calc!(self, <<=, rhs);
             }
         }
     }
@@ -487,6 +4643,77 @@ macro_rules! shl_for_BigUInt_impl {
 
 macro_rules! shlassign_i_for_BigUInt_impl {
     ($f:ty) => {
+        /// I would like to suggest the modification of Rust grammar because the
+        /// operator `<<=` swallows (takes the ownership of) two operands which are
+        /// left-hand side operand `self` and right-hand side operand `rhs` so that
+        /// the two operands `self` and `rhs` cannot be used again after shift-left
+        /// operation. In order to prevent this, the operands should be cloned or
+        /// copied before shift-left operation. This adds the unnecessary overhead.
+        /// The heavier the operand object is, the more the overhead is.
+        /// 
+        /// So, I would like to suggest one of the following three as follows:
+        /// 
+        /// # First suggestion
+        /// Changing the types of the parameters as follows:
+        /// 
+        /// ```
+        /// pub trait ShlAssign<Rhs = Self> {
+        ///     // Required method
+        ///     fn shl_assign(&mut self, rhs: Rhs);
+        /// }
+        /// ```
+        /// 
+        /// # Second suggestion
+        /// If the first suggestion is impossible because of backward compatibility,
+        /// grammar allows the developer to choose the types of parameters but make
+        /// only one function.
+        /// 
+        /// ```
+        /// pub trait ShlAssign<Rhs = Self> {
+        ///     // Required method
+        ///     fn shl_assign(&mut self, rhs: Rhs);
+        ///   or
+        ///     fn shl_assign(&mut self, rhs: &Rhs);
+        /// }
+        /// ```
+        /// 
+        /// # Third suggestion
+        /// If the first and second suggestions are impossible because of backward
+        /// compatibility, trait ShlAssign2 is provided and the developer
+        /// implements none or only one of traits ShlAssign and ShlAssign2.
+        /// 
+        /// ```
+        /// pub trait ShlAssign<Rhs = Self> {
+        ///     // Required method
+        ///     fn shl_assign(&mut self, rhs: Rhs);
+        /// }
+        /// 
+        /// pub trait ShlAssign2<Rhs = Self> {
+        ///     // Required method
+        ///     fn shl_assign(&mut self, rhs: &Rhs);
+        /// }
+        /// ```
+        /// 
+        /// Unlike trait ShlAssign, the trait PartialEq makes the operators
+        /// `==` and `!=` take not `&Self` but `Self` as its first operand and not
+        /// `&Rhs` (or `&Self`) but `Rhs` (or `Self`) as its second operand but makes
+        /// the functions eq() and ne() take not `self` but `&self` as its first
+        /// argument and not `Rhs` but `&Rhs` as its second argument.
+        /// So, I think the third suggestion is possible.
+        /// The prototype of trait PartialEq is as follows:
+        /// 
+        /// ```
+        /// pub trait PartialEq<Rhs = Self>
+        /// where
+        /// Rhs: ?Sized,
+        /// {
+        ///     // Required method
+        ///     fn eq(&self, other: &Rhs) -> bool;
+        /// 
+        ///     // Provided method
+        ///     fn ne(&self, other: &Rhs) -> bool { ... }
+        /// }
+        /// ```
         impl<T, const N: usize> ShlAssign<$f> for BigUInt<T, N>
         where T: SmallUInt + Copy + Clone + Display + Debug + ToString
                 + Add<Output=T> + AddAssign + Sub<Output=T> + SubAssign
@@ -497,38 +4724,330 @@ macro_rules! shlassign_i_for_BigUInt_impl {
                 + BitXor<Output=T> + BitXorAssign + Not<Output=T>
                 + PartialEq + PartialOrd
         {
-            /// Performs the <<= operation. If overflow happens during the <<= operation,
-            /// `OVERFLOW` flag is set and the method is_overflow() will return true. 
-            /// [Read more](https://doc.rust-lang.org/core/ops/bit/trait.ShlAssign.html#tymethod.shl_assign)
+            // fn shl_assign(&mut self, rhs: $f)
+            /// shifts the field `number: [T;N]` to the left by `n`,
+            /// and assigns the result to `self` back.
+            /// 
+            /// # Arguments
+            /// `rhs` indicates how many bits this method shift `self` left by,
+            /// and can be any primitive integer such as `i8`, `i16`, `i32`,
+            /// `i64`, `i128`, `isize`, `u8`, `u16`, `u32`, `u64`, `u128`, and
+            /// `usize`.
+            /// 
+            /// # Overflow
+            /// For BigUInt, 'overflow' does not mean what 'overflow' means for a
+            /// primitive unsigned integer data type. For BigUInt, 'overflow' means that
+            /// carry occurs, while overflow means that all the bits are pushed outside
+            /// for primitive unsigned integer data type.
             ///
-            /// # Example 1
+            /// # Panics
+            /// If `size_of::<T>() * N` <= `128`, this method may panic
+            /// or its behavior may be undefined though it may not panic.
+            /// 
+            /// # Features
+            /// - 'Shift left' means 'move left all bits'. So, if `10011010` is shifted
+            ///   left by 2, it will be `01101000`, for example.
+            /// - If `rhs` is a positive integer,
+            ///   this operation may cause overflow.
+            /// - If `rhs` is a negative integer,
+            ///   this operation may cause underflow.
+            /// - If overflow happens during the << operation, `OVERFLOW` flag
+            ///   will be set and the method is_overflow() will return true.
+            /// - If underflow happens during the << operation, `UNDERFLOW` flag
+            ///   will be set and the method is_underflow() will return true.
+            /// 
+            /// # Example 1 for positive i8
             /// ```
-            /// use std::str::FromStr;
-            /// use cryptocol::number::*;
             /// use cryptocol::define_utypes_with;
-            /// define_utypes_with!(u128);
-            /// let mut a = u256::from_str("1234567_1234567890_1234567890_1234567890_1234567890_1234567890_1234567890_1234567890").unwrap();
-            /// a <<= 4_i128;
-            /// println!("a = {}\noverflow: {}", a, a.is_overflow());
-            /// assert_eq!(a.is_overflow(), true);
+            /// define_utypes_with!(u16);
+            /// 
+            /// let mut a_biguint = U256::from_str_radix("11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101", 2).unwrap();
+            /// println!("Originally, a_biguint = {}", a_biguint.to_string_with_radix_and_stride(2, 8).unwrap());
+            /// assert_eq!(a_biguint.is_overflow(), false);
+            /// assert_eq!(a_biguint.is_underflow(), false);
+            /// assert_eq!(a_biguint.is_infinity(), false);
+            /// assert_eq!(a_biguint.is_undefined(), false);
+            /// assert_eq!(a_biguint.is_divided_by_zero(), false);
+            /// 
+            /// let n = 3_i8;
+            /// a_biguint <<= n;
+            /// println!("After a_biguint <<= {}, a_biguint = {}.", n, a_biguint.to_string_with_radix_and_stride(2, 8).unwrap());
+            /// assert_eq!(a_biguint.to_string_with_radix_and_stride(2, 8).unwrap(), "11111000_00000111_10000000_01111110_01100001_10011101_01010010_10101111_11111000_00000111_10000000_01111110_01100001_10011101_01010010_10101111_11111000_00000111_10000000_01111110_01100001_10011101_01010010_10101111_11111000_00000111_10000000_01111110_01100001_10011000_00000111_11111000");
+            /// assert_eq!(a_biguint.is_overflow(), true);
+            /// assert_eq!(a_biguint.is_underflow(), false);
+            /// assert_eq!(a_biguint.is_infinity(), false);
+            /// assert_eq!(a_biguint.is_undefined(), false);
+            /// assert_eq!(a_biguint.is_divided_by_zero(), false);
             /// ```
             /// 
-            /// # Example 2
+            /// # Example 2 for positive i16
             /// ```
-            /// use std::str::FromStr;
-            /// use cryptocol::number::*;
             /// use cryptocol::define_utypes_with;
-            /// define_utypes_with!(u128);
-            /// let mut a = u256::from_str("1234567_1234567890_1234567890_1234567890_1234567890_1234567890_1234567890_1234567890").unwrap();
-            /// a <<= 1_i8;
-            /// println!("a = {}\noverflow: {}", a, a.is_overflow());
-            /// assert_eq!(a.is_overflow(), false);
+            /// define_utypes_with!(u16);
+            /// 
+            /// let mut a_biguint = U256::from_str_radix("00001111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101", 2).unwrap();
+            /// println!("Originally, a_biguint = {}", a_biguint.to_string_with_radix_and_stride(2, 8).unwrap());
+            /// assert_eq!(a_biguint.is_overflow(), false);
+            /// assert_eq!(a_biguint.is_underflow(), false);
+            /// assert_eq!(a_biguint.is_infinity(), false);
+            /// assert_eq!(a_biguint.is_undefined(), false);
+            /// assert_eq!(a_biguint.is_divided_by_zero(), false);
+            /// 
+            /// let n = 4_i16;
+            /// a_biguint <<= n;
+            /// println!("After a_biguint <<= {}, a_biguint = {}.", n, a_biguint.to_string_with_radix_and_stride(2, 8).unwrap());
+            /// assert_eq!(a_biguint.to_string_with_radix_and_stride(2, 8).unwrap(), "11110000_00001111_00000000_11111100_11000011_00111010_10100101_01011111_11110000_00001111_00000000_11111100_11000011_00111010_10100101_01011111_11110000_00001111_00000000_11111100_11000011_00111010_10100101_01011111_11110000_00001111_00000000_11111100_11000011_00111010_10100101_01010000");
+            /// assert_eq!(a_biguint.is_overflow(), false);
+            /// assert_eq!(a_biguint.is_underflow(), false);
+            /// assert_eq!(a_biguint.is_infinity(), false);
+            /// assert_eq!(a_biguint.is_undefined(), false);
+            /// assert_eq!(a_biguint.is_divided_by_zero(), false);
+            /// ```
+            /// 
+            /// # Example 3 for positive i32
+            /// ```
+            /// use cryptocol::define_utypes_with;
+            /// define_utypes_with!(u16);
+            /// 
+            /// let mut a_biguint = U256::from_str_radix("11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101", 2).unwrap();
+            /// println!("Originally, a_biguint = {}", a_biguint.to_string_with_radix_and_stride(2, 8).unwrap());
+            /// assert_eq!(a_biguint.is_overflow(), false);
+            /// assert_eq!(a_biguint.is_underflow(), false);
+            /// assert_eq!(a_biguint.is_infinity(), false);
+            /// assert_eq!(a_biguint.is_undefined(), false);
+            /// assert_eq!(a_biguint.is_divided_by_zero(), false);
+            /// 
+            /// let n = 128_i32;
+            /// a_biguint <<= n;
+            /// println!("After a_biguint <<= {}, a_biguint = {}.", n, a_biguint.to_string_with_radix_and_stride(2, 8).unwrap());
+            /// assert_eq!(a_biguint.to_string_with_radix_and_stride(2, 8).unwrap(), "11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000");
+            /// assert_eq!(a_biguint.is_overflow(), true);
+            /// assert_eq!(a_biguint.is_underflow(), false);
+            /// assert_eq!(a_biguint.is_infinity(), false);
+            /// assert_eq!(a_biguint.is_undefined(), false);
+            /// assert_eq!(a_biguint.is_divided_by_zero(), false);
+            /// ```
+            /// 
+            /// # Example 4 for positive i64
+            /// ```
+            /// use cryptocol::define_utypes_with;
+            /// define_utypes_with!(u16);
+            /// 
+            /// let mut a_biguint = U256::from_str_radix("00001111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101", 2).unwrap();
+            /// println!("Originally, a_biguint = {}", a_biguint.to_string_with_radix_and_stride(2, 8).unwrap());
+            /// assert_eq!(a_biguint.is_overflow(), false);
+            /// assert_eq!(a_biguint.is_underflow(), false);
+            /// assert_eq!(a_biguint.is_infinity(), false);
+            /// assert_eq!(a_biguint.is_undefined(), false);
+            /// assert_eq!(a_biguint.is_divided_by_zero(), false);
+            /// 
+            /// let n = 256_i64;
+            /// a_biguint <<= n;
+            /// println!("After a_biguint <<= {}, a_biguint = {}.", n, a_biguint.to_string_with_radix_and_stride(2, 8).unwrap());
+            /// assert_eq!(a_biguint.to_string(), "0");
+            /// assert_eq!(a_biguint.is_overflow(), true);
+            /// assert_eq!(a_biguint.is_underflow(), false);
+            /// assert_eq!(a_biguint.is_infinity(), false);
+            /// assert_eq!(a_biguint.is_undefined(), false);
+            /// assert_eq!(a_biguint.is_divided_by_zero(), false);
+            /// ```
+            /// 
+            /// # Example 5 for positive i128
+            /// ```
+            /// use cryptocol::define_utypes_with;
+            /// define_utypes_with!(u16);
+            /// 
+            /// let mut a_biguint = U256::from_str_radix("11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101", 2).unwrap();
+            /// println!("Originally, a_biguint = {}", a_biguint.to_string_with_radix_and_stride(2, 8).unwrap());
+            /// assert_eq!(a_biguint.is_overflow(), false);
+            /// assert_eq!(a_biguint.is_underflow(), false);
+            /// assert_eq!(a_biguint.is_infinity(), false);
+            /// assert_eq!(a_biguint.is_undefined(), false);
+            /// assert_eq!(a_biguint.is_divided_by_zero(), false);
+            /// 
+            /// let n = 512_i128;
+            /// a_biguint <<= n;
+            /// println!("After a_biguint <<= {}, a_biguint = {}.", n, a_biguint.to_string_with_radix_and_stride(2, 8).unwrap());
+            /// assert_eq!(a_biguint.to_string(), "0");
+            /// assert_eq!(a_biguint.is_overflow(), true);
+            /// assert_eq!(a_biguint.is_underflow(), false);
+            /// assert_eq!(a_biguint.is_infinity(), false);
+            /// assert_eq!(a_biguint.is_undefined(), false);
+            /// assert_eq!(a_biguint.is_divided_by_zero(), false);
+            /// ```
+            /// 
+            /// # Example 6 for positive isize
+            /// ```
+            /// use cryptocol::define_utypes_with;
+            /// define_utypes_with!(u16);
+            /// 
+            /// let mut a_biguint = U256::from_str_radix("11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101", 2).unwrap();
+            /// println!("Originally, a_biguint = {}", a_biguint.to_string_with_radix_and_stride(2, 8).unwrap());
+            /// assert_eq!(a_biguint.is_overflow(), false);
+            /// assert_eq!(a_biguint.is_underflow(), false);
+            /// assert_eq!(a_biguint.is_infinity(), false);
+            /// assert_eq!(a_biguint.is_undefined(), false);
+            /// assert_eq!(a_biguint.is_divided_by_zero(), false);
+            /// 
+            /// let n = 1024_isize;
+            /// a_biguint <<= n;
+            /// println!("After a_biguint <<= {}, a_biguint = {}.", n, a_biguint.to_string_with_radix_and_stride(2, 8).unwrap());
+            /// assert_eq!(a_biguint.to_string(), "0");
+            /// assert_eq!(a_biguint.is_overflow(), true);
+            /// assert_eq!(a_biguint.is_underflow(), false);
+            /// assert_eq!(a_biguint.is_infinity(), false);
+            /// assert_eq!(a_biguint.is_undefined(), false);
+            /// assert_eq!(a_biguint.is_divided_by_zero(), false);
+            /// ```
+            /// 
+            /// # Example 7 for negative i8
+            /// ```
+            /// use cryptocol::define_utypes_with;
+            /// define_utypes_with!(u16);
+            /// 
+            /// let mut a_biguint = U256::from_str_radix("11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_00000000_11111111", 2).unwrap();
+            /// println!("Originally, a_biguint = {}", a_biguint.to_string_with_radix_and_stride(2, 8).unwrap());
+            /// assert_eq!(a_biguint.is_overflow(), false);
+            /// assert_eq!(a_biguint.is_underflow(), false);
+            /// assert_eq!(a_biguint.is_infinity(), false);
+            /// assert_eq!(a_biguint.is_undefined(), false);
+            /// assert_eq!(a_biguint.is_divided_by_zero(), false);
+            /// 
+            /// let n = -3_i8;
+            /// a_biguint <<= n;
+            /// println!("After a_biguint <<= {}, a_biguint = {}.", n, a_biguint.to_string_with_radix_and_stride(2, 8).unwrap());
+            /// assert_eq!(a_biguint.to_string_with_radix_and_stride(2, 8).unwrap(), "11111_11100000_00011110_00000001_11111001_10000110_01110101_01001010_10111111_11100000_00011110_00000001_11111001_10000110_01110101_01001010_10111111_11100000_00011110_00000001_11111001_10000110_01110101_01001010_10111111_11100000_00011110_00000001_11111001_10000110_01100000_00011111");
+            /// assert_eq!(a_biguint.is_overflow(), false);
+            /// assert_eq!(a_biguint.is_underflow(), true);
+            /// assert_eq!(a_biguint.is_infinity(), false);
+            /// assert_eq!(a_biguint.is_undefined(), false);
+            /// assert_eq!(a_biguint.is_divided_by_zero(), false);
+            /// ```
+            /// 
+            /// # Example 8 for negative i16
+            /// ```
+            /// use cryptocol::define_utypes_with;
+            /// define_utypes_with!(u16);
+            /// 
+            /// let mut a_biguint = U256::from_str_radix("11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_00000000_11110000", 2).unwrap();
+            /// println!("Originally, a_biguint = {}", a_biguint.to_string_with_radix_and_stride(2, 8).unwrap());
+            /// assert_eq!(a_biguint.is_overflow(), false);
+            /// assert_eq!(a_biguint.is_underflow(), false);
+            /// assert_eq!(a_biguint.is_infinity(), false);
+            /// assert_eq!(a_biguint.is_undefined(), false);
+            /// assert_eq!(a_biguint.is_divided_by_zero(), false);
+            /// 
+            /// let n = -4_i16;
+            /// a_biguint <<= n;
+            /// println!("After a_biguint <<= {}, a_biguint = {}.", n, a_biguint.to_string_with_radix_and_stride(2, 8).unwrap());
+            /// assert_eq!(a_biguint.to_string_with_radix_and_stride(2, 8).unwrap(), "1111_11110000_00001111_00000000_11111100_11000011_00111010_10100101_01011111_11110000_00001111_00000000_11111100_11000011_00111010_10100101_01011111_11110000_00001111_00000000_11111100_11000011_00111010_10100101_01011111_11110000_00001111_00000000_11111100_11000011_00110000_00001111");
+            /// assert_eq!(a_biguint.is_overflow(), false);
+            /// assert_eq!(a_biguint.is_underflow(), false);
+            /// assert_eq!(a_biguint.is_infinity(), false);
+            /// assert_eq!(a_biguint.is_undefined(), false);
+            /// assert_eq!(a_biguint.is_divided_by_zero(), false);
+            /// ```
+            /// 
+            /// # Example 9 for negative i32
+            /// ```
+            /// use cryptocol::define_utypes_with;
+            /// define_utypes_with!(u16);
+            /// 
+            /// let mut a_biguint = U256::from_str_radix("11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101", 2).unwrap();
+            /// println!("Originally, a_biguint = {}", a_biguint.to_string_with_radix_and_stride(2, 8).unwrap());
+            /// assert_eq!(a_biguint.is_overflow(), false);
+            /// assert_eq!(a_biguint.is_underflow(), false);
+            /// assert_eq!(a_biguint.is_infinity(), false);
+            /// assert_eq!(a_biguint.is_undefined(), false);
+            /// assert_eq!(a_biguint.is_divided_by_zero(), false);
+            /// 
+            /// let n = -128_i32;
+            /// a_biguint <<= n;
+            /// println!("After a_biguint <<= {}, a_biguint = {}.", n, a_biguint.to_string_with_radix_and_stride(2, 8).unwrap());
+            /// assert_eq!(a_biguint.to_string_with_radix_and_stride(2, 8).unwrap(), "11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101");
+            /// assert_eq!(a_biguint.is_overflow(), false);
+            /// assert_eq!(a_biguint.is_underflow(), true);
+            /// assert_eq!(a_biguint.is_infinity(), false);
+            /// assert_eq!(a_biguint.is_undefined(), false);
+            /// assert_eq!(a_biguint.is_divided_by_zero(), false);
+            /// ```
+            /// 
+            /// # Example 10 for negative i64
+            /// ```
+            /// use cryptocol::define_utypes_with;
+            /// define_utypes_with!(u16);
+            /// 
+            /// let mut a_biguint = U256::from_str_radix("11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101", 2).unwrap();
+            /// println!("Originally, a_biguint = {}", a_biguint.to_string_with_radix_and_stride(2, 8).unwrap());
+            /// assert_eq!(a_biguint.is_overflow(), false);
+            /// assert_eq!(a_biguint.is_underflow(), false);
+            /// assert_eq!(a_biguint.is_infinity(), false);
+            /// assert_eq!(a_biguint.is_undefined(), false);
+            /// assert_eq!(a_biguint.is_divided_by_zero(), false);
+            /// 
+            /// let n = -256_i64;
+            /// a_biguint <<= n;
+            /// println!("After a_biguint <<= {}, a_biguint = {}.", n, a_biguint.to_string_with_radix_and_stride(2, 8).unwrap());
+            /// assert_eq!(a_biguint.to_string(), "0");
+            /// assert_eq!(a_biguint.is_overflow(), false);
+            /// assert_eq!(a_biguint.is_underflow(), true);
+            /// assert_eq!(a_biguint.is_infinity(), false);
+            /// assert_eq!(a_biguint.is_undefined(), false);
+            /// assert_eq!(a_biguint.is_divided_by_zero(), false);
+            /// ```
+            /// 
+            /// # Example 11 for negative i128
+            /// ```
+            /// use cryptocol::define_utypes_with;
+            /// define_utypes_with!(u16);
+            /// 
+            /// let mut a_biguint = U256::from_str_radix("11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101", 2).unwrap();
+            /// println!("Originally, a_biguint = {}", a_biguint.to_string_with_radix_and_stride(2, 8).unwrap());
+            /// assert_eq!(a_biguint.is_overflow(), false);
+            /// assert_eq!(a_biguint.is_underflow(), false);
+            /// assert_eq!(a_biguint.is_infinity(), false);
+            /// assert_eq!(a_biguint.is_undefined(), false);
+            /// assert_eq!(a_biguint.is_divided_by_zero(), false);
+            /// 
+            /// let n = -512_i128;
+            /// a_biguint <<= n;
+            /// println!("After a_biguint <<= {}, a_biguint = {}.", n, a_biguint.to_string_with_radix_and_stride(2, 8).unwrap());
+            /// assert_eq!(a_biguint.to_string(), "0");
+            /// assert_eq!(a_biguint.is_overflow(), false);
+            /// assert_eq!(a_biguint.is_underflow(), true);
+            /// assert_eq!(a_biguint.is_infinity(), false);
+            /// assert_eq!(a_biguint.is_undefined(), false);
+            /// assert_eq!(a_biguint.is_divided_by_zero(), false);
+            /// ```
+            /// 
+            /// # Example 12 for negative isize
+            /// ```
+            /// use cryptocol::define_utypes_with;
+            /// define_utypes_with!(u16);
+            /// 
+            /// let mut a_biguint = U256::from_str_radix("11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101", 2).unwrap();
+            /// println!("Originally, a_biguint = {}", a_biguint.to_string_with_radix_and_stride(2, 8).unwrap());
+            /// assert_eq!(a_biguint.is_overflow(), false);
+            /// assert_eq!(a_biguint.is_underflow(), false);
+            /// assert_eq!(a_biguint.is_infinity(), false);
+            /// assert_eq!(a_biguint.is_undefined(), false);
+            /// assert_eq!(a_biguint.is_divided_by_zero(), false);
+            /// 
+            /// let n = -1024_isize;
+            /// a_biguint <<= n;
+            /// println!("After a_biguint <<= {}, a_biguint = {}.", n, a_biguint.to_string_with_radix_and_stride(2, 8).unwrap());
+            /// assert_eq!(a_biguint.to_string(), "0");
+            /// assert_eq!(a_biguint.is_overflow(), false);
+            /// assert_eq!(a_biguint.is_underflow(), true);
+            /// assert_eq!(a_biguint.is_infinity(), false);
+            /// assert_eq!(a_biguint.is_undefined(), false);
+            /// assert_eq!(a_biguint.is_divided_by_zero(), false);
             /// ```
             /// 
             /// # Big-endian issue
             /// It is just experimental for Big Endian CPUs. So, you are not encouraged
-            /// to use it for serious purpose. Only use this crate for Big-endian CPUs
-            /// with your own full responsibility.
+            /// to use it for Big Endian CPUs for serious purpose. Only use this crate
+            /// for Big-endian CPUs with your own full responsibility.
             fn shl_assign(&mut self, rhs: $f)
             {
                 if rhs < 0
@@ -564,6 +5083,77 @@ macro_rules! shlassign_i_for_BigUInt_impl {
 
 macro_rules! shlassign_u_for_BigUInt_impl {
     ($f:ty) => {
+        /// I would like to suggest the modification of Rust grammar because the
+        /// operator `<<=` swallows (takes the ownership of) two operands which are
+        /// left-hand side operand `self` and right-hand side operand `rhs` so that
+        /// the two operands `self` and `rhs` cannot be used again after shift-left
+        /// operation. In order to prevent this, the operands should be cloned or
+        /// copied before shift-left operation. This adds the unnecessary overhead.
+        /// The heavier the operand object is, the more the overhead is.
+        /// 
+        /// So, I would like to suggest one of the following three as follows:
+        /// 
+        /// # First suggestion
+        /// Changing the types of the parameters as follows:
+        /// 
+        /// ```
+        /// pub trait ShlAssign<Rhs = Self> {
+        ///     // Required method
+        ///     fn shl_assign(&mut self, rhs: Rhs);
+        /// }
+        /// ```
+        /// 
+        /// # Second suggestion
+        /// If the first suggestion is impossible because of backward compatibility,
+        /// grammar allows the developer to choose the types of parameters but make
+        /// only one function.
+        /// 
+        /// ```
+        /// pub trait ShlAssign<Rhs = Self> {
+        ///     // Required method
+        ///     fn shl_assign(&mut self, rhs: Rhs);
+        ///   or
+        ///     fn shl_assign(&mut self, rhs: &Rhs);
+        /// }
+        /// ```
+        /// 
+        /// # Third suggestion
+        /// If the first and second suggestions are impossible because of backward
+        /// compatibility, trait ShlAssign2 is provided and the developer
+        /// implements none or only one of traits ShlAssign and ShlAssign2.
+        /// 
+        /// ```
+        /// pub trait ShlAssign<Rhs = Self> {
+        ///     // Required method
+        ///     fn shl_assign(&mut self, rhs: Rhs);
+        /// }
+        /// 
+        /// pub trait ShlAssign2<Rhs = Self> {
+        ///     // Required method
+        ///     fn shl_assign(&mut self, rhs: &Rhs);
+        /// }
+        /// ```
+        /// 
+        /// Unlike trait ShlAssign, the trait PartialEq makes the operators
+        /// `==` and `!=` take not `&Self` but `Self` as its first operand and not
+        /// `&Rhs` (or `&Self`) but `Rhs` (or `Self`) as its second operand but makes
+        /// the functions eq() and ne() take not `self` but `&self` as its first
+        /// argument and not `Rhs` but `&Rhs` as its second argument.
+        /// So, I think the third suggestion is possible.
+        /// The prototype of trait PartialEq is as follows:
+        /// 
+        /// ```
+        /// pub trait PartialEq<Rhs = Self>
+        /// where
+        /// Rhs: ?Sized,
+        /// {
+        ///     // Required method
+        ///     fn eq(&self, other: &Rhs) -> bool;
+        /// 
+        ///     // Provided method
+        ///     fn ne(&self, other: &Rhs) -> bool { ... }
+        /// }
+        /// ```
         impl<T, const N: usize> ShlAssign<$f> for BigUInt<T, N>
         where T: SmallUInt + Copy + Clone + Display + Debug + ToString
                 + Add<Output=T> + AddAssign + Sub<Output=T> + SubAssign
@@ -574,77 +5164,190 @@ macro_rules! shlassign_u_for_BigUInt_impl {
                 + BitXor<Output=T> + BitXorAssign + Not<Output=T>
                 + PartialEq + PartialOrd
         {
-            /// Performs the <<= operation. If overflow happens during the <<= operation,
-            /// `OVERFLOW` flag is set and the method is_overflow() will return true. 
-            /// [Read more](https://doc.rust-lang.org/core/ops/bit/trait.ShlAssign.html#tymethod.shl_assign)
+            // fn shl_assign(&mut self, rhs: $f)
+            /// shifts the field `number: [T;N]` to the left by `n`,
+            /// and assigns the result to `self` back.
+            /// 
+            /// # Arguments
+            /// `rhs` indicates how many bits this method shift `self` left by,
+            /// and can be any primitive integer such as `i8`, `i16`, `i32`,
+            /// `i64`, `i128`, `isize`, `u8`, `u16`, `u32`, `u64`, `u128`, and
+            /// `usize`.
+            /// 
+            /// # Overflow
+            /// For BigUInt, 'overflow' does not mean what 'overflow' means for a
+            /// primitive unsigned integer data type. For BigUInt, 'overflow' means that
+            /// carry occurs, while overflow means that all the bits are pushed outside
+            /// for primitive unsigned integer data type.
             ///
-            /// # Example 1
+            /// # Panics
+            /// If `size_of::<T>() * N` <= `128`, this method may panic
+            /// or its behavior may be undefined though it may not panic.
+            /// 
+            /// # Features
+            /// - 'Shift left' means 'move left all bits'. So, if `10011010` is shifted
+            ///   left by 2, it will be `01101000`, for example.
+            /// - If `rhs` is a positive integer,
+            ///   this operation may cause overflow.
+            /// - If `rhs` is a negative integer,
+            ///   this operation may cause underflow.
+            /// - If overflow happens during the << operation, `OVERFLOW` flag
+            ///   will be set and the method is_overflow() will return true.
+            /// - If underflow happens during the << operation, `UNDERFLOW` flag
+            ///   will be set and the method is_underflow() will return true.
+            /// 
+            /// # Example 1 for u8
             /// ```
-            /// use std::str::FromStr;
-            /// use cryptocol::number::*;
             /// use cryptocol::define_utypes_with;
-            /// define_utypes_with!(u128);
-            /// let mut a = u256::from_str("1234567_1234567890_1234567890_1234567890_1234567890_1234567890_1234567890_1234567890").unwrap();
-            /// a <<= 4_i128;
-            /// println!("a = {}\noverflow: {}", a, a.is_overflow());
-            /// assert_eq!(a.is_overflow(), true);
+            /// define_utypes_with!(u16);
+            /// 
+            /// let mut a_biguint = U256::from_str_radix("11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101", 2).unwrap();
+            /// println!("Originally, a_biguint = {}", a_biguint.to_string_with_radix_and_stride(2, 8).unwrap());
+            /// assert_eq!(a_biguint.is_overflow(), false);
+            /// assert_eq!(a_biguint.is_underflow(), false);
+            /// assert_eq!(a_biguint.is_infinity(), false);
+            /// assert_eq!(a_biguint.is_undefined(), false);
+            /// assert_eq!(a_biguint.is_divided_by_zero(), false);
+            /// 
+            /// let n = 3_u8;
+            /// a_biguint <<= n;
+            /// println!("After a_biguint <<= {}, a_biguint = {}.", n, a_biguint.to_string_with_radix_and_stride(2, 8).unwrap());
+            /// assert_eq!(a_biguint.to_string_with_radix_and_stride(2, 8).unwrap(), "11111000_00000111_10000000_01111110_01100001_10011101_01010010_10101111_11111000_00000111_10000000_01111110_01100001_10011101_01010010_10101111_11111000_00000111_10000000_01111110_01100001_10011101_01010010_10101111_11111000_00000111_10000000_01111110_01100001_10011101_01010010_10101000");
+            /// assert_eq!(a_biguint.is_overflow(), true);
+            /// assert_eq!(a_biguint.is_underflow(), false);
+            /// assert_eq!(a_biguint.is_infinity(), false);
+            /// assert_eq!(a_biguint.is_undefined(), false);
+            /// assert_eq!(a_biguint.is_divided_by_zero(), false);
             /// ```
             /// 
-            /// # Example 2
+            /// # Example 2 for u16
             /// ```
-            /// use std::str::FromStr;
-            /// use cryptocol::number::*;
             /// use cryptocol::define_utypes_with;
-            /// define_utypes_with!(u128);
-            /// let mut a = u256::from_str("1234567_1234567890_1234567890_1234567890_1234567890_1234567890_1234567890_1234567890").unwrap();
-            /// a <<= 1_i8;
-            /// println!("a = {}\noverflow: {}", a, a.is_overflow());
-            /// assert_eq!(a.is_overflow(), false);
+            /// define_utypes_with!(u16);
+            /// 
+            /// let mut a_biguint = U256::from_str_radix("00001111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101", 2).unwrap();
+            /// println!("Originally, a_biguint = {}", a_biguint.to_string_with_radix_and_stride(2, 8).unwrap());
+            /// assert_eq!(a_biguint.is_overflow(), false);
+            /// assert_eq!(a_biguint.is_underflow(), false);
+            /// assert_eq!(a_biguint.is_infinity(), false);
+            /// assert_eq!(a_biguint.is_undefined(), false);
+            /// assert_eq!(a_biguint.is_divided_by_zero(), false);
+            /// 
+            /// let n = 4_u16;
+            /// a_biguint <<= n;
+            /// println!("After a_biguint <<= {}, a_biguint = {}.", n, a_biguint.to_string_with_radix_and_stride(2, 8).unwrap());
+            /// assert_eq!(a_biguint.to_string_with_radix_and_stride(2, 8).unwrap(), "11110000_00001111_00000000_11111100_11000011_00111010_10100101_01011111_11110000_00001111_00000000_11111100_11000011_00111010_10100101_01011111_11110000_00001111_00000000_11111100_11000011_00111010_10100101_01011111_11110000_00001111_00000000_11111100_11000011_00111010_10100101_01010000");
+            /// assert_eq!(a_biguint.is_overflow(), false);
+            /// assert_eq!(a_biguint.is_underflow(), false);
+            /// assert_eq!(a_biguint.is_infinity(), false);
+            /// assert_eq!(a_biguint.is_undefined(), false);
+            /// assert_eq!(a_biguint.is_divided_by_zero(), false);
+            /// ```
+            /// 
+            /// # Example 3 for u32
+            /// ```
+            /// use cryptocol::define_utypes_with;
+            /// define_utypes_with!(u16);
+            /// 
+            /// let mut a_biguint = U256::from_str_radix("11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101", 2).unwrap();
+            /// println!("Originally, a_biguint = {}", a_biguint.to_string_with_radix_and_stride(2, 8).unwrap());
+            /// assert_eq!(a_biguint.is_overflow(), false);
+            /// assert_eq!(a_biguint.is_underflow(), false);
+            /// assert_eq!(a_biguint.is_infinity(), false);
+            /// assert_eq!(a_biguint.is_undefined(), false);
+            /// assert_eq!(a_biguint.is_divided_by_zero(), false);
+            /// 
+            /// let n = 128_u32;
+            /// a_biguint <<= n;
+            /// println!("After a_biguint <<= {}, a_biguint = {}.", n, a_biguint.to_string_with_radix_and_stride(2, 8).unwrap());
+            /// assert_eq!(a_biguint.to_string_with_radix_and_stride(2, 8).unwrap(), "11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000");
+            /// assert_eq!(a_biguint.is_overflow(), true);
+            /// assert_eq!(a_biguint.is_underflow(), false);
+            /// assert_eq!(a_biguint.is_infinity(), false);
+            /// assert_eq!(a_biguint.is_undefined(), false);
+            /// assert_eq!(a_biguint.is_divided_by_zero(), false);
+            /// ```
+            /// 
+            /// # Example 4 for u64
+            /// ```
+            /// use cryptocol::define_utypes_with;
+            /// define_utypes_with!(u16);
+            /// 
+            /// let mut a_biguint = U256::from_str_radix("00001111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101", 2).unwrap();
+            /// println!("Originally, a_biguint = {}", a_biguint.to_string_with_radix_and_stride(2, 8).unwrap());
+            /// assert_eq!(a_biguint.is_overflow(), false);
+            /// assert_eq!(a_biguint.is_underflow(), false);
+            /// assert_eq!(a_biguint.is_infinity(), false);
+            /// assert_eq!(a_biguint.is_undefined(), false);
+            /// assert_eq!(a_biguint.is_divided_by_zero(), false);
+            /// 
+            /// let n = 256_u64;
+            /// a_biguint <<= n;
+            /// println!("After a_biguint <<= {}, a_biguint = {}.", n, a_biguint.to_string_with_radix_and_stride(2, 8).unwrap());
+            /// assert_eq!(a_biguint.to_string(), "0");
+            /// assert_eq!(a_biguint.is_overflow(), true);
+            /// assert_eq!(a_biguint.is_underflow(), false);
+            /// assert_eq!(a_biguint.is_infinity(), false);
+            /// assert_eq!(a_biguint.is_undefined(), false);
+            /// assert_eq!(a_biguint.is_divided_by_zero(), false);
+            /// ```
+            /// 
+            /// # Example 5 for u128
+            /// ```
+            /// use cryptocol::define_utypes_with;
+            /// define_utypes_with!(u16);
+            /// 
+            /// let mut a_biguint = U256::from_str_radix("11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101", 2).unwrap();
+            /// println!("Originally, a_biguint = {}", a_biguint.to_string_with_radix_and_stride(2, 8).unwrap());
+            /// assert_eq!(a_biguint.is_overflow(), false);
+            /// assert_eq!(a_biguint.is_underflow(), false);
+            /// assert_eq!(a_biguint.is_infinity(), false);
+            /// assert_eq!(a_biguint.is_undefined(), false);
+            /// assert_eq!(a_biguint.is_divided_by_zero(), false);
+            /// 
+            /// let n = 512_u128;
+            /// a_biguint <<= n;
+            /// println!("After a_biguint <<= {}, a_biguint = {}.", n, a_biguint.to_string_with_radix_and_stride(2, 8).unwrap());
+            /// assert_eq!(a_biguint.to_string(), "0");
+            /// assert_eq!(a_biguint.is_overflow(), true);
+            /// assert_eq!(a_biguint.is_underflow(), false);
+            /// assert_eq!(a_biguint.is_infinity(), false);
+            /// assert_eq!(a_biguint.is_undefined(), false);
+            /// assert_eq!(a_biguint.is_divided_by_zero(), false);
+            /// ```
+            /// 
+            /// # Example 6 for usize
+            /// ```
+            /// use cryptocol::define_utypes_with;
+            /// define_utypes_with!(u16);
+            /// 
+            /// let mut a_biguint = U256::from_str_radix("11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101", 2).unwrap();
+            /// println!("Originally, a_biguint = {}", a_biguint.to_string_with_radix_and_stride(2, 8).unwrap());
+            /// assert_eq!(a_biguint.is_overflow(), false);
+            /// assert_eq!(a_biguint.is_underflow(), false);
+            /// assert_eq!(a_biguint.is_infinity(), false);
+            /// assert_eq!(a_biguint.is_undefined(), false);
+            /// assert_eq!(a_biguint.is_divided_by_zero(), false);
+            /// 
+            /// let n = 1024_usize;
+            /// a_biguint <<= n;
+            /// println!("After a_biguint <<= {}, a_biguint = {}.", n, a_biguint.to_string_with_radix_and_stride(2, 8).unwrap());
+            /// assert_eq!(a_biguint.to_string(), "0");
+            /// assert_eq!(a_biguint.is_overflow(), true);
+            /// assert_eq!(a_biguint.is_underflow(), false);
+            /// assert_eq!(a_biguint.is_infinity(), false);
+            /// assert_eq!(a_biguint.is_undefined(), false);
+            /// assert_eq!(a_biguint.is_divided_by_zero(), false);
             /// ```
             /// 
             /// # Big-endian issue
             /// It is just experimental for Big Endian CPUs. So, you are not encouraged
-            /// to use it for serious purpose. Only use this crate for Big-endian CPUs
-            /// with your own full responsibility.
+            /// to use it for Big Endian CPUs for serious purpose. Only use this crate
+            /// for Big-endian CPUs with your own full responsibility.
             #[inline]
             fn shl_assign(&mut self, rhs: $f)
             {
                 self.shift_left_assign(rhs);
-                /*
-                let TSIZE_IN_BITS = T::size_in_bits();
-                let chunk_num = (rhs / TSIZE_IN_BITS as $f) as usize;
-                let piece_num = (rhs % TSIZE_IN_BITS as $f) as usize;
-                let zero = T::zero();
-                self.reset_all_flags();
-                if chunk_num > 0
-                {
-                    for i in N-chunk_num..N
-                    {
-                        if self.get_num_(i) > zero
-                        {
-                            self.set_overflow();
-                            break;
-                        }
-                    }
-                    self.copy_within(0..N-chunk_num, chunk_num);
-                    for idx in 0..chunk_num
-                        { self.set_num_(idx, zero); }
-                }
-                if piece_num == 0
-                    { return; }
-                if (self.get_num_(N-1) >> T::usize_as_smalluint(TSIZE_IN_BITS - piece_num)) != zero
-                    { self.set_overflow(); }
-
-                let mut num: T;
-                let mut carry = zero;
-                for idx in chunk_num..N
-                {
-                    num = (self.get_num_(idx) << T::usize_as_smalluint(piece_num) | carry;
-                    carry = self.get_num_(idx) >> T::usize_as_smalluint(TSIZE_IN_BITS - piece_num);
-                    self.set_num_(idx, num);
-                }
-                if carry != zero
-                    { self.set_overflow(); }*/
             }
         }
     }
@@ -681,6 +5384,96 @@ shlassign_u_for_BigUInt_impl! { usize }
 
 macro_rules! shr_for_BigUInt_impl {
     ($f:ty) => {
+        /// I would like to suggest the modification of Rust grammar because the
+        /// operator `>>` swallows (takes the ownership of) two operands which are
+        /// left-hand side operand `self` and right-hand side operand `rhs` so that
+        /// the two operands `self` and `rhs` cannot be used again after shift-right
+        /// operation. In order to prevent this, the operands should be cloned or
+        /// copied before shift-right operation. This adds the unnecessary overhead.
+        /// The heavier the operand object is, the more the overhead is.
+        /// 
+        /// So, I would like to suggest one of the following three as follows:
+        /// 
+        /// # First suggestion
+        /// Changing the types of the parameters as follows:
+        /// 
+        /// ```
+        /// pub trait Shr<Rhs = Self> {
+        ///     type Output;
+        ///     // Required method
+        ///     fn shr(&self, rhs: &Rhs) -> Self::Output;
+        /// }
+        /// ```
+        /// 
+        /// # Second suggestion
+        /// If the first suggestion is impossible because of backward compatibility,
+        /// grammar allows the developer to choose the types of parameters but make
+        /// only one function.
+        /// 
+        /// ```
+        /// pub trait Shr<Rhs = Self> {
+        ///     type Output;
+        ///     // Required method
+        ///     fn shr(self, rhs: Rhs) -> Self::Output;
+        ///   or
+        ///     fn shr(&self, rhs: Rhs) -> Self::Output;
+        ///   or
+        ///     fn shr(self, rhs: &Rhs) -> Self::Output;
+        ///   or
+        ///     fn shr(&self, rhs: &Rhs) -> Self::Output;
+        /// }
+        /// ```
+        /// 
+        /// # Third suggestion
+        /// If the first and second suggestions are impossible because of backward
+        /// compatibility, trait Shr2, Shr3, and Shr4 are provided and the developer
+        /// implements none or only one of traits Shr, Shr2, Shr3, and Shr4.
+        /// 
+        /// ```
+        /// pub trait Shr<Rhs = Self> {
+        ///     type Output;
+        ///     // Required method
+        ///     fn shr(self, rhs: Rhs) -> Self::Output;
+        /// }
+        /// 
+        /// pub trait Shr2<Rhs = Self> {
+        ///     type Output;
+        ///     // Required method
+        ///     fn shr(&self, rhs: Rhs) -> Self::Output;
+        /// }
+        /// 
+        /// pub trait Shr3<Rhs = Self> {
+        ///     type Output;
+        ///     // Required method
+        ///     fn shr(self, rhs: &Rhs) -> Self::Output;
+        /// }
+        /// 
+        /// pub trait Shr4<Rhs = Self> {
+        ///     type Output;
+        ///     // Required method
+        ///     fn shr(&self, rhs: &Rhs) -> Self::Output;
+        /// }
+        /// ```
+        /// 
+        /// Unlike trait Shr, the trait PartialEq makes the operators `==` and `!=` take
+        /// not `&Self` but `Self` as its first operand and not `&Rhs` (or `&Self`) but
+        /// `Rhs` (or `Self`) as its second operand but makes the functions eq() and
+        /// ne() take not `self` but `&self` as its first argument and not `Rhs` but
+        /// `&Rhs` as its second argument. So, I think the third suggestion is possible.
+        /// The prototype of trait PartialEq is as follows:
+        /// 
+        /// ```
+        /// pub trait PartialEq<Rhs = Self>
+        /// where
+        /// Rhs: ?Sized,
+        /// {
+        ///     // Required method
+        ///     fn eq(&self, other: &Rhs) -> bool;
+        /// 
+        ///     // Provided method
+        ///     fn ne(&self, other: &Rhs) -> bool { ... }
+        /// }
+        /// ```
         impl<T, const N: usize> Shr<$f> for BigUInt<T, N>
         where T: SmallUInt + Copy + Clone + Display + Debug + ToString
                 + Add<Output=T> + AddAssign + Sub<Output=T> + SubAssign
@@ -693,39 +5486,487 @@ macro_rules! shr_for_BigUInt_impl {
         {
             type Output = Self;
 
-            /// Performs the >> operation. If underflow happens during the >> operation,
-            /// `UNDERFLOW` flag is set and the method is_underflow() will return true.
-            /// Here, 'underflow' means that none-zero part is shifted out to the right.
-            /// [Read more](https://doc.rust-lang.org/core/ops/bit/trait.Shr.html#tymethod.shr)
+            // fn shr(self, rhs: $f) -> Self
+            /// Shift right the field `number: [T;N]` to the right by `n`,
+            /// and returns the result.
             /// 
-            /// # Example 1
+            /// # Arguments
+            /// `rhs` indicates how many bits this method shift `self` right by,
+            /// and can be any primitive integer such as `i8`, `i16`, `i32`,
+            /// `i64`, `i128`, `isize`, `u8`, `u16`, `u32`, `u64`, `u128`, and
+            /// `usize`.
+            /// 
+            /// # Output
+            /// It returns the right-shifted version of `self`, which is shifted to the
+            /// right by `rhs` bits.
+            /// 
+            /// # Underflow
+            /// For BigUInt, 'underflow' does not mean what 'underflow' means for a
+            /// primitive unsigned integer data type. For BigUInt, 'underflow' means that
+            /// carry occurs, while underflow means that all the bits are pushed outside
+            /// for primitive unsigned integer data type.
+            ///
+            /// # Panics
+            /// If `size_of::<T>() * N` <= `128`, this method may panic
+            /// or its behavior may be undefined though it may not panic.
+            /// 
+            /// # Features
+            /// - 'Shift right' means 'move right all bits'. So, if `10011010` is shifted
+            ///   right by 2, it will be 00100110`, for example.
+            /// - If `rhs` is a positive integer,
+            ///   this operation may cause underflow.
+            /// - If `rhs` is a negative integer,
+            ///   this operation may cause overflow.
+            /// - If underflow happens during the >> operation, `UNDERFLOW` flag
+            ///   will be set and the method is_underflow() will return true.
+            /// - If overflow happens during the >> operation, `OVERFLOW` flag
+            ///   will be set and the method is_overflow() will return true.
+            /// 
+            /// # Example 1 for u8
             /// ```
-            /// use std::str::FromStr;
-            /// use cryptocol::number::*;
             /// use cryptocol::define_utypes_with;
-            /// define_utypes_with!(u128);
-            /// let a = u256::from_str("1234567_1234567890_1234567890_1234567890_1234567890_1234567890_1234567890_1234567890").unwrap();
-            /// let b = a >> 2;
-            /// println!("b = {}\nunderflow: {}", b, b.is_underflow());
-            /// assert_eq!(b.is_underflow(), true);
+            /// define_utypes_with!(u32);
+            /// 
+            /// let a_biguint = U256::from_str_radix("11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_00000000_11111111", 2).unwrap();
+            /// let n = 3_u8;
+            /// let res = a_biguint.clone() >> n;
+            /// println!("{} >> {} = {}", a_biguint.to_string_with_radix_and_stride(2, 8).unwrap(), n, res.to_string_with_radix_and_stride(2, 8).unwrap());
+            /// assert_eq!(res.to_string_with_radix_and_stride(2, 8).unwrap(), "11111_11100000_00011110_00000001_11111001_10000110_01110101_01001010_10111111_11100000_00011110_00000001_11111001_10000110_01110101_01001010_10111111_11100000_00011110_00000001_11111001_10000110_01110101_01001010_10111111_11100000_00011110_00000001_11111001_10000110_01100000_00011111");
+            /// assert_eq!(res.is_overflow(), false);
+            /// assert_eq!(res.is_underflow(), true);
+            /// assert_eq!(res.is_infinity(), false);
+            /// assert_eq!(res.is_undefined(), false);
+            /// assert_eq!(res.is_divided_by_zero(), false);
             /// ```
             /// 
-            /// # Example 2
+            /// # Example 2 for u16
             /// ```
-            /// use std::str::FromStr;
-            /// use cryptocol::number::*;
             /// use cryptocol::define_utypes_with;
-            /// define_utypes_with!(u128);
-            /// let a = u256::from_str("1234567_1234567890_1234567890_1234567890_1234567890_1234567890_1234567890_1234567890").unwrap();
-            /// let b = a >> 1;
-            /// println!("b = {}\nunderflow: {}", b, b.is_underflow());
-            /// assert_eq!(b.is_underflow(), false);
+            /// define_utypes_with!(u32);
+            /// 
+            /// let a_biguint = U256::from_str_radix("11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_11110000", 2).unwrap();
+            /// let n = 4_u16;
+            /// let res = a_biguint.clone() >> n;
+            /// println!("{} >> {} = {}", a_biguint.to_string_with_radix_and_stride(2, 8).unwrap(), n, res.to_string_with_radix_and_stride(2, 8).unwrap());
+            /// assert_eq!(res.to_string_with_radix_and_stride(2, 8).unwrap(), "1111_11110000_00001111_00000000_11111100_11000011_00111010_10100101_01011111_11110000_00001111_00000000_11111100_11000011_00111010_10100101_01011111_11110000_00001111_00000000_11111100_11000011_00111010_10100101_01011111_11110000_00001111_00000000_11111100_11000011_00111010_10101111");
+            /// assert_eq!(res.is_overflow(), false);
+            /// assert_eq!(res.is_underflow(), false);
+            /// assert_eq!(res.is_infinity(), false);
+            /// assert_eq!(res.is_undefined(), false);
+            /// assert_eq!(res.is_divided_by_zero(), false);
             /// ```
+            /// 
+            /// # Example 3 for u32
+            /// ```
+            /// use cryptocol::define_utypes_with;
+            /// define_utypes_with!(u32);
+            /// 
+            /// let a_biguint = U256::from_str_radix("11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_00000000_11111111", 2).unwrap();
+            /// let n = 128_u32;
+            /// let res = a_biguint.clone() >> n;
+            /// println!("{} >> {} = {}", a_biguint.to_string_with_radix_and_stride(2, 8).unwrap(), n, res.to_string_with_radix_and_stride(2, 8).unwrap());
+            /// assert_eq!(res.to_string_with_radix_and_stride(2, 8).unwrap(), "11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101");
+            /// assert_eq!(res.is_overflow(), false);
+            /// assert_eq!(res.is_underflow(), true);
+            /// assert_eq!(res.is_infinity(), false);
+            /// assert_eq!(res.is_undefined(), false);
+            /// assert_eq!(res.is_divided_by_zero(), false);
+            /// ```
+            /// 
+            /// # Example 4 for u64
+            /// ```
+            /// use cryptocol::define_utypes_with;
+            /// define_utypes_with!(u32);
+            /// 
+            /// let a_biguint = U256::from_str_radix("11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101", 2).unwrap();
+            /// let n = 256_u64;
+            /// let res = a_biguint.clone() >> n;
+            /// println!("{} >> {} = {}", a_biguint.to_string_with_radix_and_stride(2, 8).unwrap(), n, res.to_string_with_radix_and_stride(2, 8).unwrap());
+            /// assert_eq!(res.to_string(), "0");
+            /// assert_eq!(res.is_overflow(), false);
+            /// assert_eq!(res.is_underflow(), true);
+            /// assert_eq!(res.is_infinity(), false);
+            /// assert_eq!(res.is_undefined(), false);
+            /// assert_eq!(res.is_divided_by_zero(), false);
+            /// ```
+            /// 
+            /// # Example 5 for u128
+            /// ```
+            /// use cryptocol::define_utypes_with;
+            /// define_utypes_with!(u32);
+            /// 
+            /// let a_biguint = U256::from_str_radix("11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101", 2).unwrap();
+            /// let n = 512_u128;
+            /// let res = a_biguint.clone() >> n;
+            /// println!("{} >> {} = {}", a_biguint.to_string_with_radix_and_stride(2, 8).unwrap(), n, res.to_string_with_radix_and_stride(2, 8).unwrap());
+            /// assert_eq!(res.to_string(), "0");
+            /// assert_eq!(res.is_overflow(), false);
+            /// assert_eq!(res.is_underflow(), true);
+            /// assert_eq!(res.is_infinity(), false);
+            /// assert_eq!(res.is_undefined(), false);
+            /// assert_eq!(res.is_divided_by_zero(), false);
+            /// ```
+            /// 
+            /// # Example 6 for usize
+            /// ```
+            /// use cryptocol::define_utypes_with;
+            /// define_utypes_with!(u32);
+            /// 
+            /// let a_biguint = U256::from_str_radix("11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101", 2).unwrap();
+            /// let n = 1024_usize;
+            /// let res = a_biguint.clone() >> n;
+            /// println!("{} >> {} = {}", a_biguint.to_string_with_radix_and_stride(2, 8).unwrap(), n, res.to_string_with_radix_and_stride(2, 8).unwrap());
+            /// assert_eq!(res.to_string(), "0");
+            /// assert_eq!(res.is_overflow(), false);
+            /// assert_eq!(res.is_underflow(), true);
+            /// assert_eq!(res.is_infinity(), false);
+            /// assert_eq!(res.is_undefined(), false);
+            /// assert_eq!(res.is_divided_by_zero(), false);
+            /// ```
+            /// 
+            /// # Example 7 for positive i8
+            /// ```
+            /// use cryptocol::define_utypes_with;
+            /// define_utypes_with!(u32);
+            /// 
+            /// let a_biguint = U256::from_str_radix("11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_00000000_11111111", 2).unwrap();
+            /// let n = 3_i8;
+            /// let res = a_biguint.clone() >> n;
+            /// println!("{} >> {} = {}", a_biguint.to_string_with_radix_and_stride(2, 8).unwrap(), n, res.to_string_with_radix_and_stride(2, 8).unwrap());
+            /// assert_eq!(res.to_string_with_radix_and_stride(2, 8).unwrap(), "11111_11100000_00011110_00000001_11111001_10000110_01110101_01001010_10111111_11100000_00011110_00000001_11111001_10000110_01110101_01001010_10111111_11100000_00011110_00000001_11111001_10000110_01110101_01001010_10111111_11100000_00011110_00000001_11111001_10000110_01100000_00011111");
+            /// assert_eq!(res.is_overflow(), false);
+            /// assert_eq!(res.is_underflow(), true);
+            /// assert_eq!(res.is_infinity(), false);
+            /// assert_eq!(res.is_undefined(), false);
+            /// assert_eq!(res.is_divided_by_zero(), false);
+            /// ```
+            /// 
+            /// # Example 8 for positive i16
+            /// ```
+            /// use cryptocol::define_utypes_with;
+            /// define_utypes_with!(u32);
+            /// 
+            /// let a_biguint = U256::from_str_radix("11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_11110000", 2).unwrap();
+            /// let n = 4_i16;
+            /// let res = a_biguint.clone() >> n;
+            /// println!("{} >> {} = {}", a_biguint.to_string_with_radix_and_stride(2, 8).unwrap(), n, res.to_string_with_radix_and_stride(2, 8).unwrap());
+            /// assert_eq!(res.to_string_with_radix_and_stride(2, 8).unwrap(), "1111_11110000_00001111_00000000_11111100_11000011_00111010_10100101_01011111_11110000_00001111_00000000_11111100_11000011_00111010_10100101_01011111_11110000_00001111_00000000_11111100_11000011_00111010_10100101_01011111_11110000_00001111_00000000_11111100_11000011_00111010_10101111");
+            /// assert_eq!(res.is_overflow(), false);
+            /// assert_eq!(res.is_underflow(), false);
+            /// assert_eq!(res.is_infinity(), false);
+            /// assert_eq!(res.is_undefined(), false);
+            /// assert_eq!(res.is_divided_by_zero(), false);
+            /// ```
+            /// 
+            /// # Example 9 for positive i32
+            /// ```
+            /// use cryptocol::define_utypes_with;
+            /// define_utypes_with!(u32);
+            /// 
+            /// let a_biguint = U256::from_str_radix("11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_00000000_11111111", 2).unwrap();
+            /// let n = 128_i32;
+            /// let res = a_biguint.clone() >> n;
+            /// println!("{} >> {} = {}", a_biguint.to_string_with_radix_and_stride(2, 8).unwrap(), n, res.to_string_with_radix_and_stride(2, 8).unwrap());
+            /// assert_eq!(res.to_string_with_radix_and_stride(2, 8).unwrap(), "11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101");
+            /// assert_eq!(res.is_overflow(), false);
+            /// assert_eq!(res.is_underflow(), true);
+            /// assert_eq!(res.is_infinity(), false);
+            /// assert_eq!(res.is_undefined(), false);
+            /// assert_eq!(res.is_divided_by_zero(), false);
+            /// ```
+            /// 
+            /// # Example 10 for positive i64
+            /// ```
+            /// use cryptocol::define_utypes_with;
+            /// define_utypes_with!(u32);
+            /// 
+            /// let a_biguint = U256::from_str_radix("11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101", 2).unwrap();
+            /// let n = 256_i64;
+            /// let res = a_biguint.clone() >> n;
+            /// println!("{} >> {} = {}", a_biguint.to_string_with_radix_and_stride(2, 8).unwrap(), n, res.to_string_with_radix_and_stride(2, 8).unwrap());
+            /// assert_eq!(res.to_string(), "0");
+            /// assert_eq!(res.is_overflow(), false);
+            /// assert_eq!(res.is_underflow(), true);
+            /// assert_eq!(res.is_infinity(), false);
+            /// assert_eq!(res.is_undefined(), false);
+            /// assert_eq!(res.is_divided_by_zero(), false);
+            /// ```
+            /// 
+            /// # Example 11 for positive i128
+            /// ```
+            /// use cryptocol::define_utypes_with;
+            /// define_utypes_with!(u32);
+            /// 
+            /// let a_biguint = U256::from_str_radix("11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101", 2).unwrap();
+            /// let n = 512_i128;
+            /// let res = a_biguint.clone() >> n;
+            /// println!("{} >> {} = {}", a_biguint.to_string_with_radix_and_stride(2, 8).unwrap(), n, res.to_string_with_radix_and_stride(2, 8).unwrap());
+            /// assert_eq!(res.to_string(), "0");
+            /// assert_eq!(res.is_overflow(), false);
+            /// assert_eq!(res.is_underflow(), true);
+            /// assert_eq!(res.is_infinity(), false);
+            /// assert_eq!(res.is_undefined(), false);
+            /// assert_eq!(res.is_divided_by_zero(), false);
+            /// ```
+            /// 
+            /// # Example 12 for positive isize
+            /// ```
+            /// use cryptocol::define_utypes_with;
+            /// define_utypes_with!(u32);
+            /// 
+            /// let a_biguint = U256::from_str_radix("11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101", 2).unwrap();
+            /// let n = 1024_isize;
+            /// let res = a_biguint.clone() >> n;
+            /// println!("{} >> {} = {}", a_biguint.to_string_with_radix_and_stride(2, 8).unwrap(), n, res.to_string_with_radix_and_stride(2, 8).unwrap());
+            /// assert_eq!(res.to_string(), "0");
+            /// assert_eq!(res.is_overflow(), false);
+            /// assert_eq!(res.is_underflow(), true);
+            /// assert_eq!(res.is_infinity(), false);
+            /// assert_eq!(res.is_undefined(), false);
+            /// assert_eq!(res.is_divided_by_zero(), false);
+            /// ```
+            /// 
+            /// # Example 13 for negative i8
+            /// ```
+            /// use cryptocol::define_utypes_with;
+            /// define_utypes_with!(u32);
+            /// 
+            /// let a_biguint = U256::from_str_radix("11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101", 2).unwrap();
+            /// let n = -3_i8;
+            /// let res = a_biguint.clone() >> n;
+            /// println!("{} >> {} = {}", a_biguint.to_string_with_radix_and_stride(2, 8).unwrap(), n, res.to_string_with_radix_and_stride(2, 8).unwrap());
+            /// assert_eq!(res.to_string_with_radix_and_stride(2, 8).unwrap(), "11111000_00000111_10000000_01111110_01100001_10011101_01010010_10101111_11111000_00000111_10000000_01111110_01100001_10011101_01010010_10101111_11111000_00000111_10000000_01111110_01100001_10011101_01010010_10101111_11111000_00000111_10000000_01111110_01100001_10011101_01010010_10101000");
+            /// assert_eq!(res.is_overflow(), true);
+            /// assert_eq!(res.is_underflow(), false);
+            /// assert_eq!(res.is_infinity(), false);
+            /// assert_eq!(res.is_undefined(), false);
+            /// assert_eq!(res.is_divided_by_zero(), false);
+            /// ```
+            /// 
+            /// # Example 14 for negative i16
+            /// ```
+            /// use cryptocol::define_utypes_with;
+            /// define_utypes_with!(u32);
+            /// 
+            /// let a_biguint = U256::from_str_radix("00001111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101", 2).unwrap();
+            /// let n = -4_i16;
+            /// let res = a_biguint.clone() >> n;
+            /// println!("{} >> {} = {}", a_biguint.to_string_with_radix_and_stride(2, 8).unwrap(), n, res.to_string_with_radix_and_stride(2, 8).unwrap());
+            /// assert_eq!(res.to_string_with_radix_and_stride(2, 8).unwrap(), "11110000_00001111_00000000_11111100_11000011_00111010_10100101_01011111_11110000_00001111_00000000_11111100_11000011_00111010_10100101_01011111_11110000_00001111_00000000_11111100_11000011_00111010_10100101_01011111_11110000_00001111_00000000_11111100_11000011_00111010_10100101_01010000");
+            /// assert_eq!(res.is_overflow(), false);
+            /// assert_eq!(res.is_underflow(), false);
+            /// assert_eq!(res.is_infinity(), false);
+            /// assert_eq!(res.is_undefined(), false);
+            /// assert_eq!(res.is_divided_by_zero(), false);
+            /// ```
+            /// 
+            /// # Example 15 for negative i32
+            /// ```
+            /// use cryptocol::define_utypes_with;
+            /// define_utypes_with!(u32);
+            /// 
+            /// let a_biguint = U256::from_str_radix("11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101", 2).unwrap();
+            /// let n = -128_i32;
+            /// let res = a_biguint.clone() >> n;
+            /// println!("{} >> {} = {}", a_biguint.to_string_with_radix_and_stride(2, 8).unwrap(), n, res.to_string_with_radix_and_stride(2, 8).unwrap());
+            /// assert_eq!(res.to_string_with_radix_and_stride(2, 8).unwrap(), "11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000");
+            /// assert_eq!(res.is_overflow(), true);
+            /// assert_eq!(res.is_underflow(), false);
+            /// assert_eq!(res.is_infinity(), false);
+            /// assert_eq!(res.is_undefined(), false);
+            /// assert_eq!(res.is_divided_by_zero(), false);
+            /// ```
+            /// 
+            /// # Example 16 for negative i64
+            /// ```
+            /// use cryptocol::define_utypes_with;
+            /// define_utypes_with!(u32);
+            /// 
+            /// let a_biguint = U256::from_str_radix("00001111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101", 2).unwrap();
+            /// let n = -256_i64;
+            /// let res = a_biguint.clone() >> n;
+            /// println!("{} >> {} = {}", a_biguint.to_string_with_radix_and_stride(2, 8).unwrap(), n, res.to_string_with_radix_and_stride(2, 8).unwrap());
+            /// assert_eq!(res.to_string(), "0");
+            /// assert_eq!(res.is_overflow(), true);
+            /// assert_eq!(res.is_underflow(), false);
+            /// assert_eq!(res.is_infinity(), false);
+            /// assert_eq!(res.is_undefined(), false);
+            /// assert_eq!(res.is_divided_by_zero(), false);
+            /// ```
+            /// 
+            /// # Example 17 for negative i128
+            /// ```
+            /// use cryptocol::define_utypes_with;
+            /// define_utypes_with!(u32);
+            /// 
+            /// let a_biguint = U256::from_str_radix("11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101", 2).unwrap();
+            /// let n = -512_i128;
+            /// let res = a_biguint.clone() >> n;
+            /// println!("{} >> {} = {}", a_biguint.to_string_with_radix_and_stride(2, 8).unwrap(), n, res.to_string_with_radix_and_stride(2, 8).unwrap());
+            /// assert_eq!(res.to_string(), "0");
+            /// assert_eq!(res.is_overflow(), true);
+            /// assert_eq!(res.is_underflow(), false);
+            /// assert_eq!(res.is_infinity(), false);
+            /// assert_eq!(res.is_undefined(), false);
+            /// assert_eq!(res.is_divided_by_zero(), false);
+            /// ```
+            /// 
+            /// # Example 18 for negative isize
+            /// ```
+            /// use cryptocol::define_utypes_with;
+            /// define_utypes_with!(u32);
+            /// 
+            /// let a_biguint = U256::from_str_radix("11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101", 2).unwrap();
+            /// let n = -1024_isize;
+            /// let res = a_biguint.clone() >> n;
+            /// println!("{} >> {} = {}", a_biguint.to_string_with_radix_and_stride(2, 8).unwrap(), n, res.to_string_with_radix_and_stride(2, 8).unwrap());
+            /// assert_eq!(res.to_string(), "0");
+            /// assert_eq!(res.is_overflow(), true);
+            /// assert_eq!(res.is_underflow(), false);
+            /// assert_eq!(res.is_infinity(), false);
+            /// assert_eq!(res.is_undefined(), false);
+            /// assert_eq!(res.is_divided_by_zero(), false);
+            /// ```
+            /// 
+            /// # Cannot-compile Examples
+            /// ```
+            /// use cryptocol::define_utypes_with;
+            /// define_utypes_with!(u32);
+            /// 
+            /// let a_biguint = U256::from_str_radix("11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101", 2).unwrap();
+            /// let n = 3_u8;
+            /// let _res = a_biguint >> n;
+            /// // It cannot be compiled!
+            /// // println!("{} >> {} = {}", a_biguint.to_string_with_radix_and_stride(2, 8).unwrap(), n, res.to_string_with_radix_and_stride(2, 8).unwrap());
+            /// // The operator >> swallowed (took the ownership of) a_biguint.
+            /// 
+            /// let a_biguint = U256::from_str_radix("00001111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101", 2).unwrap();
+            /// let n = 4_u16;
+            /// let _res = a_biguint >> n;
+            /// // It cannot be compiled!
+            /// // println!("{} >> {} = {}", a_biguint.to_string_with_radix_and_stride(2, 8).unwrap(), n, res.to_string_with_radix_and_stride(2, 8).unwrap());
+            /// // The operator >> swallowed (took the ownership of) a_biguint.
+            /// 
+            /// let a_biguint = U256::from_str_radix("11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101", 2).unwrap();
+            /// let n = 128_u32;
+            /// let _res = a_biguint >> n;
+            /// // It cannot be compiled!
+            /// // println!("{} >> {} = {}", a_biguint.to_string_with_radix_and_stride(2, 8).unwrap(), n, res.to_string_with_radix_and_stride(2, 8).unwrap());
+            /// // The operator >> swallowed (took the ownership of) a_biguint.
+            /// 
+            /// let a_biguint = U256::from_str_radix("00001111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101", 2).unwrap();
+            /// let n = 256_u64;
+            /// let _res = a_biguint >> n;
+            /// // It cannot be compiled!
+            /// // println!("{} >> {} = {}", a_biguint.to_string_with_radix_and_stride(2, 8).unwrap(), n, res.to_string_with_radix_and_stride(2, 8).unwrap());
+            /// // The operator >> swallowed (took the ownership of) a_biguint.
+            /// 
+            /// let a_biguint = U256::from_str_radix("11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101", 2).unwrap();
+            /// let n = 512_u128;
+            /// let _res = a_biguint >> n;
+            /// // It cannot be compiled!
+            /// // println!("{} >> {} = {}", a_biguint.to_string_with_radix_and_stride(2, 8).unwrap(), n, res.to_string_with_radix_and_stride(2, 8).unwrap());
+            /// // The operator >> swallowed (took the ownership of) a_biguint.
+            /// 
+            /// let a_biguint = U256::from_str_radix("11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101", 2).unwrap();
+            /// let n = 1024_usize;
+            /// let _res = a_biguint >> n;
+            /// // It cannot be compiled!
+            /// // println!("{} >> {} = {}", a_biguint.to_string_with_radix_and_stride(2, 8).unwrap(), n, res.to_string_with_radix_and_stride(2, 8).unwrap());
+            /// // The operator >> swallowed (took the ownership of) a_biguint.
+            /// 
+            /// let a_biguint = U256::from_str_radix("11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101", 2).unwrap();
+            /// let n = 3_i8;
+            /// let _res = a_biguint >> n;
+            /// // It cannot be compiled!
+            /// // println!("{} >> {} = {}", a_biguint.to_string_with_radix_and_stride(2, 8).unwrap(), n, res.to_string_with_radix_and_stride(2, 8).unwrap());
+            /// // The operator >> swallowed (took the ownership of) a_biguint.
+            /// 
+            /// let a_biguint = U256::from_str_radix("00001111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101", 2).unwrap();
+            /// let n = 4_i16;
+            /// let _res = a_biguint >> n;
+            /// // It cannot be compiled!
+            /// // println!("{} >> {} = {}", a_biguint.to_string_with_radix_and_stride(2, 8).unwrap(), n, res.to_string_with_radix_and_stride(2, 8).unwrap());
+            /// // The operator >> swallowed (took the ownership of) a_biguint.
+            /// 
+            /// let a_biguint = U256::from_str_radix("11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101", 2).unwrap();
+            /// let n = 128_i32;
+            /// let _res = a_biguint >> n;
+            /// // It cannot be compiled!
+            /// // println!("{} >> {} = {}", a_biguint.to_string_with_radix_and_stride(2, 8).unwrap(), n, res.to_string_with_radix_and_stride(2, 8).unwrap());
+            /// // The operator >> swallowed (took the ownership of) a_biguint.
+            /// 
+            /// let a_biguint = U256::from_str_radix("00001111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101", 2).unwrap();
+            /// let n = 256_i64;
+            /// let _res = a_biguint >> n;
+            /// // It cannot be compiled!
+            /// // println!("{} >> {} = {}", a_biguint.to_string_with_radix_and_stride(2, 8).unwrap(), n, res.to_string_with_radix_and_stride(2, 8).unwrap());
+            /// // The operator >> swallowed (took the ownership of) a_biguint.
+            /// 
+            /// let a_biguint = U256::from_str_radix("11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101", 2).unwrap();
+            /// let n = 512_i128;
+            /// let _res = a_biguint >> n;
+            /// // It cannot be compiled!
+            /// // println!("{} >> {} = {}", a_biguint.to_string_with_radix_and_stride(2, 8).unwrap(), n, res.to_string_with_radix_and_stride(2, 8).unwrap());
+            /// // The operator >> swallowed (took the ownership of) a_biguint.
+            /// 
+            /// let a_biguint = U256::from_str_radix("11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101", 2).unwrap();
+            /// let n = 1024_isize;
+            /// let _res = a_biguint >> n;
+            /// // It cannot be compiled!
+            /// // println!("{} >> {} = {}", a_biguint.to_string_with_radix_and_stride(2, 8).unwrap(), n, res.to_string_with_radix_and_stride(2, 8).unwrap());
+            /// // The operator >> swallowed (took the ownership of) a_biguint.
+            /// 
+            /// let a_biguint = U256::from_str_radix("11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_00000000_11111111", 2).unwrap();
+            /// let n = -3_i8;
+            /// let _res = a_biguint >> n;
+            /// // It cannot be compiled!
+            /// // println!("{} >> {} = {}", a_biguint.to_string_with_radix_and_stride(2, 8).unwrap(), n, res.to_string_with_radix_and_stride(2, 8).unwrap());
+            /// // The operator >> swallowed (took the ownership of) a_biguint.
+            /// 
+            /// let a_biguint = U256::from_str_radix("11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_11110000", 2).unwrap();
+            /// let n = -4_i16;
+            /// let _res = a_biguint >> n;
+            /// // It cannot be compiled!
+            /// // println!("{} >> {} = {}", a_biguint.to_string_with_radix_and_stride(2, 8).unwrap(), n, res.to_string_with_radix_and_stride(2, 8).unwrap());
+            /// // The operator >> swallowed (took the ownership of) a_biguint.
+            /// 
+            /// let a_biguint = U256::from_str_radix("11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_00000000_11111111", 2).unwrap();
+            /// let n = -128_i32;
+            /// let _res = a_biguint >> n;
+            /// // It cannot be compiled!
+            /// // println!("{} >> {} = {}", a_biguint.to_string_with_radix_and_stride(2, 8).unwrap(), n, res.to_string_with_radix_and_stride(2, 8).unwrap());
+            /// // The operator >> swallowed (took the ownership of) a_biguint.
+            /// 
+            /// let a_biguint = U256::from_str_radix("11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101", 2).unwrap();
+            /// let n = -256_i64;
+            /// let _res = a_biguint >> n;
+            /// // It cannot be compiled!
+            /// // println!("{} >> {} = {}", a_biguint.to_string_with_radix_and_stride(2, 8).unwrap(), n, res.to_string_with_radix_and_stride(2, 8).unwrap());
+            /// // The operator >> swallowed (took the ownership of) a_biguint.
+            /// 
+            /// let a_biguint = U256::from_str_radix("11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101", 2).unwrap();
+            /// let n = -512_i128;
+            /// let _res = a_biguint >> n;
+            /// // It cannot be compiled!
+            /// // println!("{} >> {} = {}", a_biguint.to_string_with_radix_and_stride(2, 8).unwrap(), n, res.to_string_with_radix_and_stride(2, 8).unwrap());
+            /// // The operator >> swallowed (took the ownership of) a_biguint.
+            /// 
+            /// let a_biguint = U256::from_str_radix("11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101", 2).unwrap();
+            /// let n = -1024_isize;
+            /// let _res = a_biguint >> n;
+            /// // It cannot be compiled!
+            /// // println!("{} >> {} = {}", a_biguint.to_string_with_radix_and_stride(2, 8).unwrap(), n, res.to_string_with_radix_and_stride(2, 8).unwrap());
+            /// // The operator >> swallowed (took the ownership of) a_biguint.
+            /// ```
+            /// 
+            /// # Big-endian issue
+            /// It is just experimental for Big Endian CPUs. So, you are not encouraged
+            /// to use it for Big Endian CPUs for serious purpose. Only use this crate
+            /// for Big-endian CPUs with your own full responsibility.
             fn shr(self, rhs: $f) -> Self
             {
-                let mut s = self.clone();
-                s >>= rhs;
-                s
+                calc_assign_to_calc!(self, >>=, rhs);
             }
         }
     }
@@ -735,6 +5976,77 @@ macro_rules! shr_for_BigUInt_impl {
 
 macro_rules! shrassign_i_for_BigUInt_impl {
     ($f:ty) => {
+        /// I would like to suggest the modification of Rust grammar because the
+        /// operator `>>=` swallows (takes the ownership of) two operands which are
+        /// left-hand side operand `self` and right-hand side operand `rhs` so that
+        /// the two operands `self` and `rhs` cannot be used again after shift-right
+        /// operation. In order to prevent this, the operands should be cloned or
+        /// copied before shift-right operation. This adds the unnecessary overhead.
+        /// The heavier the operand object is, the more the overhead is.
+        /// 
+        /// So, I would like to suggest one of the following three as follows:
+        /// 
+        /// # First suggestion
+        /// Changing the types of the parameters as follows:
+        /// 
+        /// ```
+        /// pub trait ShrAssign<Rhs = Self> {
+        ///     // Required method
+        ///     fn shr_assign(&mut self, rhs: Rhs);
+        /// }
+        /// ```
+        /// 
+        /// # Second suggestion
+        /// If the first suggestion is impossible because of backward compatibility,
+        /// grammar allows the developer to choose the types of parameters but make
+        /// only one function.
+        /// 
+        /// ```
+        /// pub trait ShrAssign<Rhs = Self> {
+        ///     // Required method
+        ///     fn shr_assign(&mut self, rhs: Rhs);
+        ///   or
+        ///     fn shr_assign(&mut self, rhs: &Rhs);
+        /// }
+        /// ```
+        /// 
+        /// # Third suggestion
+        /// If the first and second suggestions are impossible because of backward
+        /// compatibility, trait ShrAssign2 is provided and the developer
+        /// implements none or only one of traits ShrAssign and ShrAssign2.
+        /// 
+        /// ```
+        /// pub trait ShrAssign<Rhs = Self> {
+        ///     // Required method
+        ///     fn shr_assign(&mut self, rhs: Rhs);
+        /// }
+        /// 
+        /// pub trait ShrAssign2<Rhs = Self> {
+        ///     // Required method
+        ///     fn shr_assign(&mut self, rhs: &Rhs);
+        /// }
+        /// ```
+        /// 
+        /// Unlike trait ShrAssign, the trait PartialEq makes the operators
+        /// `==` and `!=` take not `&Self` but `Self` as its first operand and not
+        /// `&Rhs` (or `&Self`) but `Rhs` (or `Self`) as its second operand but makes
+        /// the functions eq() and ne() take not `self` but `&self` as its first
+        /// argument and not `Rhs` but `&Rhs` as its second argument.
+        /// So, I think the third suggestion is possible.
+        /// The prototype of trait PartialEq is as follows:
+        /// 
+        /// ```
+        /// pub trait PartialEq<Rhs = Self>
+        /// where
+        /// Rhs: ?Sized,
+        /// {
+        ///     // Required method
+        ///     fn eq(&self, other: &Rhs) -> bool;
+        /// 
+        ///     // Provided method
+        ///     fn ne(&self, other: &Rhs) -> bool { ... }
+        /// }
+        /// ```
         impl<T, const N: usize> ShrAssign<$f> for BigUInt<T, N>
         where T: SmallUInt + Copy + Clone + Display + Debug + ToString
                 + Add<Output=T> + AddAssign + Sub<Output=T> + SubAssign
@@ -745,39 +6057,327 @@ macro_rules! shrassign_i_for_BigUInt_impl {
                 + BitXor<Output=T> + BitXorAssign + Not<Output=T>
                 + PartialEq + PartialOrd
         {
-            /// Performs the >>= operation. If underflow happens during the >>= operation,
-            /// `UNDERFLOW` flag is set and the method is_underflow() will return true.
-            /// Here, 'underflow' means that none-zero part is shifted out to the right.
-            /// [Read more](https://doc.rust-lang.org/core/ops/bit/trait.ShrAssign.html#tymethod.shr_assign)
+            // fn shr_assign(&mut self, rhs: $f)
+            /// shifts the field `number: [T;N]` to the right by `n`,
+            /// and assigns the result to `self` back.
+            /// 
+            /// # Arguments
+            /// `rhs` indicates how many bits this method shift `self` right by,
+            /// and can be any primitive integer such as `i8`, `i16`, `i32`,
+            /// `i64`, `i128`, `isize`, `u8`, `u16`, `u32`, `u64`, `u128`, and
+            /// `usize`.
+            /// 
+            /// # Overflow
+            /// For BigUInt, 'underflow' does not mean what 'underflow' means for a
+            /// primitive unsigned integer data type. For BigUInt, 'underflow' means that
+            /// carry occurs, while underflow means that all the bits are pushed outside
+            /// for primitive unsigned integer data type.
+            ///
+            /// # Panics
+            /// If `size_of::<T>() * N` <= `128`, this method may panic
+            /// or its behavior may be undefined though it may not panic.
+            /// 
+            /// # Features
+            /// - 'Shift right' means 'move right all bits'. So, if `10011010` is shifted
+            ///   right by 2, it will be `100110`, for example.
+            /// - If `rhs` is a positive integer,
+            ///   this operation may cause underflow.
+            /// - If `rhs` is a negative integer,
+            ///   this operation may cause overflow.
+            /// - If underflow happens during the >> operation, `UNDERFLOW` flag
+            ///   will be set and the method is_underflow() will return true.
+            /// - If overflow happens during the >> operation, `OVERFLOW` flag
+            ///   will be set and the method is_overflow() will return true.
+            /// 
+            /// # Example 1 for positive i8
+            /// ```
+            /// use cryptocol::define_utypes_with;
+            /// define_utypes_with!(u64);
+            /// 
+            /// let mut a_biguint = U256::from_str_radix("11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_00000000_11111111", 2).unwrap();
+            /// println!("Originally, a_biguint = {}", a_biguint.to_string_with_radix_and_stride(2, 8).unwrap());
+            /// assert_eq!(a_biguint.is_overflow(), false);
+            /// assert_eq!(a_biguint.is_underflow(), false);
+            /// assert_eq!(a_biguint.is_infinity(), false);
+            /// assert_eq!(a_biguint.is_undefined(), false);
+            /// assert_eq!(a_biguint.is_divided_by_zero(), false);
+            /// 
+            /// let n = 3_i8;
+            /// a_biguint >>= n;
+            /// println!("After a_biguint >>= {}, a_biguint = {}.", n, a_biguint.to_string_with_radix_and_stride(2, 8).unwrap());
+            /// assert_eq!(a_biguint.to_string_with_radix_and_stride(2, 8).unwrap(), "11111_11100000_00011110_00000001_11111001_10000110_01110101_01001010_10111111_11100000_00011110_00000001_11111001_10000110_01110101_01001010_10111111_11100000_00011110_00000001_11111001_10000110_01110101_01001010_10111111_11100000_00011110_00000001_11111001_10000110_01100000_00011111");
+            /// assert_eq!(a_biguint.is_overflow(), false);
+            /// assert_eq!(a_biguint.is_underflow(), true);
+            /// assert_eq!(a_biguint.is_infinity(), false);
+            /// assert_eq!(a_biguint.is_undefined(), false);
+            /// assert_eq!(a_biguint.is_divided_by_zero(), false);
+            /// ```
+            /// 
+            /// # Example 2 for positive i16
+            /// ```
+            /// use cryptocol::define_utypes_with;
+            /// define_utypes_with!(u64);
+            /// 
+            /// let mut a_biguint = U256::from_str_radix("11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_00000000_11110000", 2).unwrap();
+            /// println!("Originally, a_biguint = {}", a_biguint.to_string_with_radix_and_stride(2, 8).unwrap());
+            /// assert_eq!(a_biguint.is_overflow(), false);
+            /// assert_eq!(a_biguint.is_underflow(), false);
+            /// assert_eq!(a_biguint.is_infinity(), false);
+            /// assert_eq!(a_biguint.is_undefined(), false);
+            /// assert_eq!(a_biguint.is_divided_by_zero(), false);
+            /// 
+            /// let n = 4_i16;
+            /// a_biguint >>= n;
+            /// println!("After a_biguint >>= {}, a_biguint = {}.", n, a_biguint.to_string_with_radix_and_stride(2, 8).unwrap());
+            /// assert_eq!(a_biguint.to_string_with_radix_and_stride(2, 8).unwrap(), "1111_11110000_00001111_00000000_11111100_11000011_00111010_10100101_01011111_11110000_00001111_00000000_11111100_11000011_00111010_10100101_01011111_11110000_00001111_00000000_11111100_11000011_00111010_10100101_01011111_11110000_00001111_00000000_11111100_11000011_00110000_00001111");
+            /// assert_eq!(a_biguint.is_overflow(), false);
+            /// assert_eq!(a_biguint.is_underflow(), false);
+            /// assert_eq!(a_biguint.is_infinity(), false);
+            /// assert_eq!(a_biguint.is_undefined(), false);
+            /// assert_eq!(a_biguint.is_divided_by_zero(), false);
+            /// ```
+            /// 
+            /// # Example 3 for positive i32
+            /// ```
+            /// use cryptocol::define_utypes_with;
+            /// define_utypes_with!(u64);
+            /// 
+            /// let mut a_biguint = U256::from_str_radix("11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101", 2).unwrap();
+            /// println!("Originally, a_biguint = {}", a_biguint.to_string_with_radix_and_stride(2, 8).unwrap());
+            /// assert_eq!(a_biguint.is_overflow(), false);
+            /// assert_eq!(a_biguint.is_underflow(), false);
+            /// assert_eq!(a_biguint.is_infinity(), false);
+            /// assert_eq!(a_biguint.is_undefined(), false);
+            /// assert_eq!(a_biguint.is_divided_by_zero(), false);
+            /// 
+            /// let n = 128_i32;
+            /// a_biguint >>= n;
+            /// println!("After a_biguint >>= {}, a_biguint = {}.", n, a_biguint.to_string_with_radix_and_stride(2, 8).unwrap());
+            /// assert_eq!(a_biguint.to_string_with_radix_and_stride(2, 8).unwrap(), "11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101");
+            /// assert_eq!(a_biguint.is_overflow(), false);
+            /// assert_eq!(a_biguint.is_underflow(), true);
+            /// assert_eq!(a_biguint.is_infinity(), false);
+            /// assert_eq!(a_biguint.is_undefined(), false);
+            /// assert_eq!(a_biguint.is_divided_by_zero(), false);
+            /// ```
+            /// 
+            /// # Example 4 for positive i64
+            /// ```
+            /// use cryptocol::define_utypes_with;
+            /// define_utypes_with!(u64);
+            /// 
+            /// let mut a_biguint = U256::from_str_radix("11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101", 2).unwrap();
+            /// println!("Originally, a_biguint = {}", a_biguint.to_string_with_radix_and_stride(2, 8).unwrap());
+            /// assert_eq!(a_biguint.is_overflow(), false);
+            /// assert_eq!(a_biguint.is_underflow(), false);
+            /// assert_eq!(a_biguint.is_infinity(), false);
+            /// assert_eq!(a_biguint.is_undefined(), false);
+            /// assert_eq!(a_biguint.is_divided_by_zero(), false);
+            /// 
+            /// let n = 256_i64;
+            /// a_biguint >>= n;
+            /// println!("After a_biguint >>= {}, a_biguint = {}.", n, a_biguint.to_string_with_radix_and_stride(2, 8).unwrap());
+            /// assert_eq!(a_biguint.to_string(), "0");
+            /// assert_eq!(a_biguint.is_overflow(), false);
+            /// assert_eq!(a_biguint.is_underflow(), true);
+            /// assert_eq!(a_biguint.is_infinity(), false);
+            /// assert_eq!(a_biguint.is_undefined(), false);
+            /// assert_eq!(a_biguint.is_divided_by_zero(), false);
+            /// ```
+            /// 
+            /// # Example 5 for positive i128
+            /// ```
+            /// use cryptocol::define_utypes_with;
+            /// define_utypes_with!(u64);
+            /// 
+            /// let mut a_biguint = U256::from_str_radix("11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101", 2).unwrap();
+            /// println!("Originally, a_biguint = {}", a_biguint.to_string_with_radix_and_stride(2, 8).unwrap());
+            /// assert_eq!(a_biguint.is_overflow(), false);
+            /// assert_eq!(a_biguint.is_underflow(), false);
+            /// assert_eq!(a_biguint.is_infinity(), false);
+            /// assert_eq!(a_biguint.is_undefined(), false);
+            /// assert_eq!(a_biguint.is_divided_by_zero(), false);
+            /// 
+            /// let n = 512_i128;
+            /// a_biguint >>= n;
+            /// println!("After a_biguint >>= {}, a_biguint = {}.", n, a_biguint.to_string_with_radix_and_stride(2, 8).unwrap());
+            /// assert_eq!(a_biguint.to_string(), "0");
+            /// assert_eq!(a_biguint.is_overflow(), false);
+            /// assert_eq!(a_biguint.is_underflow(), true);
+            /// assert_eq!(a_biguint.is_infinity(), false);
+            /// assert_eq!(a_biguint.is_undefined(), false);
+            /// assert_eq!(a_biguint.is_divided_by_zero(), false);
+            /// ```
+            /// 
+            /// # Example 6 for positive isize
+            /// ```
+            /// use cryptocol::define_utypes_with;
+            /// define_utypes_with!(u64);
+            /// 
+            /// let mut a_biguint = U256::from_str_radix("11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101", 2).unwrap();
+            /// println!("Originally, a_biguint = {}", a_biguint.to_string_with_radix_and_stride(2, 8).unwrap());
+            /// assert_eq!(a_biguint.is_overflow(), false);
+            /// assert_eq!(a_biguint.is_underflow(), false);
+            /// assert_eq!(a_biguint.is_infinity(), false);
+            /// assert_eq!(a_biguint.is_undefined(), false);
+            /// assert_eq!(a_biguint.is_divided_by_zero(), false);
+            /// 
+            /// let n = 1024_isize;
+            /// a_biguint >>= n;
+            /// println!("After a_biguint >>= {}, a_biguint = {}.", n, a_biguint.to_string_with_radix_and_stride(2, 8).unwrap());
+            /// assert_eq!(a_biguint.to_string(), "0");
+            /// assert_eq!(a_biguint.is_overflow(), false);
+            /// assert_eq!(a_biguint.is_underflow(), true);
+            /// assert_eq!(a_biguint.is_infinity(), false);
+            /// assert_eq!(a_biguint.is_undefined(), false);
+            /// assert_eq!(a_biguint.is_divided_by_zero(), false);
+            /// ```
+            /// 
+            /// # Example 7 for negative i8
+            /// ```
+            /// use cryptocol::define_utypes_with;
+            /// define_utypes_with!(u64);
+            /// 
+            /// let mut a_biguint = U256::from_str_radix("11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101", 2).unwrap();
+            /// println!("Originally, a_biguint = {}", a_biguint.to_string_with_radix_and_stride(2, 8).unwrap());
+            /// assert_eq!(a_biguint.is_overflow(), false);
+            /// assert_eq!(a_biguint.is_underflow(), false);
+            /// assert_eq!(a_biguint.is_infinity(), false);
+            /// assert_eq!(a_biguint.is_undefined(), false);
+            /// assert_eq!(a_biguint.is_divided_by_zero(), false);
+            /// 
+            /// let n = -3_i8;
+            /// a_biguint >>= n;
+            /// println!("After a_biguint >>= {}, a_biguint = {}.", n, a_biguint.to_string_with_radix_and_stride(2, 8).unwrap());
+            /// assert_eq!(a_biguint.to_string_with_radix_and_stride(2, 8).unwrap(), "11111000_00000111_10000000_01111110_01100001_10011101_01010010_10101111_11111000_00000111_10000000_01111110_01100001_10011101_01010010_10101111_11111000_00000111_10000000_01111110_01100001_10011101_01010010_10101111_11111000_00000111_10000000_01111110_01100001_10011101_01010010_10101000");
+            /// assert_eq!(a_biguint.is_overflow(), true);
+            /// assert_eq!(a_biguint.is_underflow(), false);
+            /// assert_eq!(a_biguint.is_infinity(), false);
+            /// assert_eq!(a_biguint.is_undefined(), false);
+            /// assert_eq!(a_biguint.is_divided_by_zero(), false);
+            /// ```
+            /// 
+            /// # Example 8 for negative i16
+            /// ```
+            /// use cryptocol::define_utypes_with;
+            /// define_utypes_with!(u64);
+            /// 
+            /// let mut a_biguint = U256::from_str_radix("00001111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101", 2).unwrap();
+            /// println!("Originally, a_biguint = {}", a_biguint.to_string_with_radix_and_stride(2, 8).unwrap());
+            /// assert_eq!(a_biguint.is_overflow(), false);
+            /// assert_eq!(a_biguint.is_underflow(), false);
+            /// assert_eq!(a_biguint.is_infinity(), false);
+            /// assert_eq!(a_biguint.is_undefined(), false);
+            /// assert_eq!(a_biguint.is_divided_by_zero(), false);
+            /// 
+            /// let n = -4_i16;
+            /// a_biguint >>= n;
+            /// println!("After a_biguint >>= {}, a_biguint = {}.", n, a_biguint.to_string_with_radix_and_stride(2, 8).unwrap());
+            /// assert_eq!(a_biguint.to_string_with_radix_and_stride(2, 8).unwrap(), "11110000_00001111_00000000_11111100_11000011_00111010_10100101_01011111_11110000_00001111_00000000_11111100_11000011_00111010_10100101_01011111_11110000_00001111_00000000_11111100_11000011_00111010_10100101_01011111_11110000_00001111_00000000_11111100_11000011_00111010_10100101_01010000");
+            /// assert_eq!(a_biguint.is_overflow(), false);
+            /// assert_eq!(a_biguint.is_underflow(), false);
+            /// assert_eq!(a_biguint.is_infinity(), false);
+            /// assert_eq!(a_biguint.is_undefined(), false);
+            /// assert_eq!(a_biguint.is_divided_by_zero(), false);
+            /// ```
+            /// 
+            /// # Example 9 for negative i32
+            /// ```
+            /// use cryptocol::define_utypes_with;
+            /// define_utypes_with!(u64);
+            /// 
+            /// let mut a_biguint = U256::from_str_radix("11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101", 2).unwrap();
+            /// println!("Originally, a_biguint = {}", a_biguint.to_string_with_radix_and_stride(2, 8).unwrap());
+            /// assert_eq!(a_biguint.is_overflow(), false);
+            /// assert_eq!(a_biguint.is_underflow(), false);
+            /// assert_eq!(a_biguint.is_infinity(), false);
+            /// assert_eq!(a_biguint.is_undefined(), false);
+            /// assert_eq!(a_biguint.is_divided_by_zero(), false);
+            /// 
+            /// let n = -128_i32;
+            /// a_biguint >>= n;
+            /// println!("After a_biguint >>= {}, a_biguint = {}.", n, a_biguint.to_string_with_radix_and_stride(2, 8).unwrap());
+            /// assert_eq!(a_biguint.to_string_with_radix_and_stride(2, 8).unwrap(), "11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000");
+            /// assert_eq!(a_biguint.is_overflow(), true);
+            /// assert_eq!(a_biguint.is_underflow(), false);
+            /// assert_eq!(a_biguint.is_infinity(), false);
+            /// assert_eq!(a_biguint.is_undefined(), false);
+            /// assert_eq!(a_biguint.is_divided_by_zero(), false);
+            /// ```
+            /// 
+            /// # Example 10 for negative i64
+            /// ```
+            /// use cryptocol::define_utypes_with;
+            /// define_utypes_with!(u64);
+            /// let mut a_biguint = U256::from_str_radix("00001111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101", 2).unwrap();
+            /// println!("Originally, a_biguint = {}", a_biguint.to_string_with_radix_and_stride(2, 8).unwrap());
+            /// assert_eq!(a_biguint.is_overflow(), false);
+            /// assert_eq!(a_biguint.is_underflow(), false);
+            /// assert_eq!(a_biguint.is_infinity(), false);
+            /// assert_eq!(a_biguint.is_undefined(), false);
+            /// assert_eq!(a_biguint.is_divided_by_zero(), false);
+            /// 
+            /// let n = -256_i64;
+            /// a_biguint >>= n;
+            /// println!("After a_biguint >>= {}, a_biguint = {}.", n, a_biguint.to_string_with_radix_and_stride(2, 8).unwrap());
+            /// assert_eq!(a_biguint.to_string(), "0");
+            /// assert_eq!(a_biguint.is_overflow(), true);
+            /// assert_eq!(a_biguint.is_underflow(), false);
+            /// assert_eq!(a_biguint.is_infinity(), false);
+            /// assert_eq!(a_biguint.is_undefined(), false);
+            /// assert_eq!(a_biguint.is_divided_by_zero(), false);
+            /// ```
+            /// 
+            /// # Example 11 for negative i128
+            /// ```
+            /// use cryptocol::define_utypes_with;
+            /// define_utypes_with!(u64);
+            /// let mut a_biguint = U256::from_str_radix("11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101", 2).unwrap();
+            /// println!("Originally, a_biguint = {}", a_biguint.to_string_with_radix_and_stride(2, 8).unwrap());
+            /// assert_eq!(a_biguint.is_overflow(), false);
+            /// assert_eq!(a_biguint.is_underflow(), false);
+            /// assert_eq!(a_biguint.is_infinity(), false);
+            /// assert_eq!(a_biguint.is_undefined(), false);
+            /// assert_eq!(a_biguint.is_divided_by_zero(), false);
+            /// 
+            /// let n = -512_i128;
+            /// a_biguint >>= n;
+            /// println!("After a_biguint >>= {}, a_biguint = {}.", n, a_biguint.to_string_with_radix_and_stride(2, 8).unwrap());
+            /// assert_eq!(a_biguint.to_string(), "0");
+            /// assert_eq!(a_biguint.is_overflow(), true);
+            /// assert_eq!(a_biguint.is_underflow(), false);
+            /// assert_eq!(a_biguint.is_infinity(), false);
+            /// assert_eq!(a_biguint.is_undefined(), false);
+            /// assert_eq!(a_biguint.is_divided_by_zero(), false);
+            /// ```
+            /// 
+            /// # Example 12 for negative isize
+            /// ```
+            /// use cryptocol::define_utypes_with;
+            /// define_utypes_with!(u64);
+            /// let mut a_biguint = U256::from_str_radix("11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101", 2).unwrap();
+            /// println!("Originally, a_biguint = {}", a_biguint.to_string_with_radix_and_stride(2, 8).unwrap());
+            /// assert_eq!(a_biguint.is_overflow(), false);
+            /// assert_eq!(a_biguint.is_underflow(), false);
+            /// assert_eq!(a_biguint.is_infinity(), false);
+            /// assert_eq!(a_biguint.is_undefined(), false);
+            /// assert_eq!(a_biguint.is_divided_by_zero(), false);
+            /// 
+            /// let n = -1024_isize;
+            /// a_biguint >>= n;
+            /// println!("After a_biguint >>= {}, a_biguint = {}.", n, a_biguint.to_string_with_radix_and_stride(2, 8).unwrap());
+            /// assert_eq!(a_biguint.to_string(), "0");
+            /// assert_eq!(a_biguint.is_overflow(), true);
+            /// assert_eq!(a_biguint.is_underflow(), false);
+            /// assert_eq!(a_biguint.is_infinity(), false);
+            /// assert_eq!(a_biguint.is_undefined(), false);
+            /// assert_eq!(a_biguint.is_divided_by_zero(), false);
+            /// ```
             /// 
             /// # Big-endian issue
             /// It is just experimental for Big Endian CPUs. So, you are not encouraged
-            /// to use it for serious purpose. Only use this crate for Big-endian CPUs
-            /// with your own full responsibility.
-            /// 
-            /// # Example 1
-            /// ```
-            /// use std::str::FromStr;
-            /// use cryptocol::number::*;
-            /// use cryptocol::define_utypes_with;
-            /// define_utypes_with!(u128);
-            /// let mut a = u256::from_str("1234567_1234567890_1234567890_1234567890_1234567890_1234567890_1234567890_1234567890").unwrap();
-            /// a >>= 2_i128;
-            /// println!("a = {}\nunderflow: {}", a, a.is_underflow());
-            /// assert_eq!(a.is_underflow(), true);
-            /// ```
-            /// 
-            /// # Example 2
-            /// ```
-            /// use std::str::FromStr;
-            /// use cryptocol::number::*;
-            /// use cryptocol::define_utypes_with;
-            /// define_utypes_with!(u128);
-            /// let mut a = u256::from_str("1234567_1234567890_1234567890_1234567890_1234567890_1234567890_1234567890_1234567890").unwrap();
-            /// a >>= 1_i8;
-            /// println!("a = {}\nunderflow: {}", a, a.is_underflow());
-            /// assert_eq!(a.is_underflow(), false);
-            /// ```
+            /// to use it for Big Endian CPUs for serious purpose. Only use this crate
+            /// for Big-endian CPUs with your own full responsibility.
             fn shr_assign(&mut self, rhs: $f)
             {
                 if rhs < 0
@@ -812,6 +6412,77 @@ macro_rules! shrassign_i_for_BigUInt_impl {
 
 macro_rules! shrassign_u_for_BigUInt_impl {
     ($f:ty) => {
+        /// I would like to suggest the modification of Rust grammar because the
+        /// operator `>>=` swallows (takes the ownership of) two operands which are
+        /// left-hand side operand `self` and right-hand side operand `rhs` so that
+        /// the two operands `self` and `rhs` cannot be used again after shift-right
+        /// operation. In order to prevent this, the operands should be cloned or
+        /// copied before shift-right operation. This adds the unnecessary overhead.
+        /// The heavier the operand object is, the more the overhead is.
+        /// 
+        /// So, I would like to suggest one of the following three as follows:
+        /// 
+        /// # First suggestion
+        /// Changing the types of the parameters as follows:
+        /// 
+        /// ```
+        /// pub trait ShrAssign<Rhs = Self> {
+        ///     // Required method
+        ///     fn shr_assign(&mut self, rhs: Rhs);
+        /// }
+        /// ```
+        /// 
+        /// # Second suggestion
+        /// If the first suggestion is impossible because of backward compatibility,
+        /// grammar allows the developer to choose the types of parameters but make
+        /// only one function.
+        /// 
+        /// ```
+        /// pub trait ShrAssign<Rhs = Self> {
+        ///     // Required method
+        ///     fn shr_assign(&mut self, rhs: Rhs);
+        ///   or
+        ///     fn shr_assign(&mut self, rhs: &Rhs);
+        /// }
+        /// ```
+        /// 
+        /// # Third suggestion
+        /// If the first and second suggestions are impossible because of backward
+        /// compatibility, trait ShrAssign2 is provided and the developer
+        /// implements none or only one of traits ShrAssign and ShrAssign2.
+        /// 
+        /// ```
+        /// pub trait ShrAssign<Rhs = Self> {
+        ///     // Required method
+        ///     fn shr_assign(&mut self, rhs: Rhs);
+        /// }
+        /// 
+        /// pub trait ShrAssign2<Rhs = Self> {
+        ///     // Required method
+        ///     fn shr_assign(&mut self, rhs: &Rhs);
+        /// }
+        /// ```
+        /// 
+        /// Unlike trait ShrAssign, the trait PartialEq makes the operators
+        /// `==` and `!=` take not `&Self` but `Self` as its first operand and not
+        /// `&Rhs` (or `&Self`) but `Rhs` (or `Self`) as its second operand but makes
+        /// the functions eq() and ne() take not `self` but `&self` as its first
+        /// argument and not `Rhs` but `&Rhs` as its second argument.
+        /// So, I think the third suggestion is possible.
+        /// The prototype of trait PartialEq is as follows:
+        /// 
+        /// ```
+        /// pub trait PartialEq<Rhs = Self>
+        /// where
+        /// Rhs: ?Sized,
+        /// {
+        ///     // Required method
+        ///     fn eq(&self, other: &Rhs) -> bool;
+        /// 
+        ///     // Provided method
+        ///     fn ne(&self, other: &Rhs) -> bool { ... }
+        /// }
+        /// ```
         impl<T, const N: usize> ShrAssign<$f> for BigUInt<T, N>
         where T: SmallUInt + Copy + Clone + Display + Debug + ToString
                 + Add<Output=T> + AddAssign + Sub<Output=T> + SubAssign
@@ -822,82 +6493,190 @@ macro_rules! shrassign_u_for_BigUInt_impl {
                 + BitXor<Output=T> + BitXorAssign + Not<Output=T>
                 + PartialEq + PartialOrd
         {
-            /// Performs the >>= operation. If underflow happens during the >>= operation,
-            /// `UNDERFLOW` flag is set and the method is_underflow() will return true.
-            /// Here, 'underflow' means that none-zero part is shifted out to the right.
-            /// [Read more](https://doc.rust-lang.org/core/ops/bit/trait.ShrAssign.html#tymethod.shr_assign)
+            // fn shr_assign(&mut self, rhs: $f)
+            /// shifts the field `number: [T;N]` to the right by `n`,
+            /// and assigns the result to `self` back.
+            /// 
+            /// # Arguments
+            /// `rhs` indicates how many bits this method shift `self` right by,
+            /// and can be any primitive integer such as `i8`, `i16`, `i32`,
+            /// `i64`, `i128`, `isize`, `u8`, `u16`, `u32`, `u64`, `u128`, and
+            /// `usize`.
+            /// 
+            /// # Overflow
+            /// For BigUInt, 'underflow' does not mean what 'underflow' means for a
+            /// primitive unsigned integer data type. For BigUInt, 'underflow' means that
+            /// carry occurs, while underflow means that all the bits are pushed outside
+            /// for primitive unsigned integer data type.
+            ///
+            /// # Panics
+            /// If `size_of::<T>() * N` <= `128`, this method may panic
+            /// or its behavior may be undefined though it may not panic.
+            /// 
+            /// # Features
+            /// - 'Shift right' means 'move right all bits'. So, if `10011010` is shifted
+            ///   right by 2, it will be `100110`, for example.
+            /// - If `rhs` is a positive integer,
+            ///   this operation may cause underflow.
+            /// - If `rhs` is a negative integer,
+            ///   this operation may cause overflow.
+            /// - If underflow happens during the >> operation, `UNDERFLOW` flag
+            ///   will be set and the method is_underflow() will return true.
+            /// - If overflow happens during the >> operation, `OVERFLOW` flag
+            ///   will be set and the method is_overflow() will return true.
+            /// 
+            /// # Example 1 for u8
+            /// ```
+            /// use cryptocol::define_utypes_with;
+            /// define_utypes_with!(u64);
+            /// 
+            /// let mut a_biguint = U256::from_str_radix("11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_00000000_11111111", 2).unwrap();
+            /// println!("Originally, a_biguint = {}", a_biguint.to_string_with_radix_and_stride(2, 8).unwrap());
+            /// assert_eq!(a_biguint.is_overflow(), false);
+            /// assert_eq!(a_biguint.is_underflow(), false);
+            /// assert_eq!(a_biguint.is_infinity(), false);
+            /// assert_eq!(a_biguint.is_undefined(), false);
+            /// assert_eq!(a_biguint.is_divided_by_zero(), false);
+            /// 
+            /// let n = 3_u8;
+            /// a_biguint >>= n;
+            /// println!("After a_biguint >>= {}, a_biguint = {}.", n, a_biguint.to_string_with_radix_and_stride(2, 8).unwrap());
+            /// assert_eq!(a_biguint.to_string_with_radix_and_stride(2, 8).unwrap(), "11111_11100000_00011110_00000001_11111001_10000110_01110101_01001010_10111111_11100000_00011110_00000001_11111001_10000110_01110101_01001010_10111111_11100000_00011110_00000001_11111001_10000110_01110101_01001010_10111111_11100000_00011110_00000001_11111001_10000110_01100000_00011111");
+            /// assert_eq!(a_biguint.is_overflow(), false);
+            /// assert_eq!(a_biguint.is_underflow(), true);
+            /// assert_eq!(a_biguint.is_infinity(), false);
+            /// assert_eq!(a_biguint.is_undefined(), false);
+            /// assert_eq!(a_biguint.is_divided_by_zero(), false);
+            /// ```
+            /// 
+            /// # Example 2 for u16
+            /// ```
+            /// use cryptocol::define_utypes_with;
+            /// define_utypes_with!(u64);
+            /// 
+            /// let mut a_biguint = U256::from_str_radix("11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_00000000_11110000", 2).unwrap();
+            /// println!("Originally, a_biguint = {}", a_biguint.to_string_with_radix_and_stride(2, 8).unwrap());
+            /// assert_eq!(a_biguint.is_overflow(), false);
+            /// assert_eq!(a_biguint.is_underflow(), false);
+            /// assert_eq!(a_biguint.is_infinity(), false);
+            /// assert_eq!(a_biguint.is_undefined(), false);
+            /// assert_eq!(a_biguint.is_divided_by_zero(), false);
+            /// 
+            /// let n = 4_u16;
+            /// a_biguint >>= n;
+            /// println!("After a_biguint >>= {}, a_biguint = {}.", n, a_biguint.to_string_with_radix_and_stride(2, 8).unwrap());
+            /// assert_eq!(a_biguint.to_string_with_radix_and_stride(2, 8).unwrap(), "1111_11110000_00001111_00000000_11111100_11000011_00111010_10100101_01011111_11110000_00001111_00000000_11111100_11000011_00111010_10100101_01011111_11110000_00001111_00000000_11111100_11000011_00111010_10100101_01011111_11110000_00001111_00000000_11111100_11000011_00110000_00001111");
+            /// assert_eq!(a_biguint.is_overflow(), false);
+            /// assert_eq!(a_biguint.is_underflow(), false);
+            /// assert_eq!(a_biguint.is_infinity(), false);
+            /// assert_eq!(a_biguint.is_undefined(), false);
+            /// assert_eq!(a_biguint.is_divided_by_zero(), false);
+            /// ```
+            /// 
+            /// # Example 3 for u32
+            /// ```
+            /// use cryptocol::define_utypes_with;
+            /// define_utypes_with!(u64);
+            /// 
+            /// let mut a_biguint = U256::from_str_radix("11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101", 2).unwrap();
+            /// println!("Originally, a_biguint = {}", a_biguint.to_string_with_radix_and_stride(2, 8).unwrap());
+            /// assert_eq!(a_biguint.is_overflow(), false);
+            /// assert_eq!(a_biguint.is_underflow(), false);
+            /// assert_eq!(a_biguint.is_infinity(), false);
+            /// assert_eq!(a_biguint.is_undefined(), false);
+            /// assert_eq!(a_biguint.is_divided_by_zero(), false);
+            /// 
+            /// let n = 128_u32;
+            /// a_biguint >>= n;
+            /// println!("After a_biguint >>= {}, a_biguint = {}.", n, a_biguint.to_string_with_radix_and_stride(2, 8).unwrap());
+            /// assert_eq!(a_biguint.to_string_with_radix_and_stride(2, 8).unwrap(), "11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101");
+            /// assert_eq!(a_biguint.is_overflow(), false);
+            /// assert_eq!(a_biguint.is_underflow(), true);
+            /// assert_eq!(a_biguint.is_infinity(), false);
+            /// assert_eq!(a_biguint.is_undefined(), false);
+            /// assert_eq!(a_biguint.is_divided_by_zero(), false);
+            /// ```
+            /// 
+            /// # Example 4 for u64
+            /// ```
+            /// use cryptocol::define_utypes_with;
+            /// define_utypes_with!(u64);
+            /// 
+            /// let mut a_biguint = U256::from_str_radix("11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101", 2).unwrap();
+            /// println!("Originally, a_biguint = {}", a_biguint.to_string_with_radix_and_stride(2, 8).unwrap());
+            /// assert_eq!(a_biguint.is_overflow(), false);
+            /// assert_eq!(a_biguint.is_underflow(), false);
+            /// assert_eq!(a_biguint.is_infinity(), false);
+            /// assert_eq!(a_biguint.is_undefined(), false);
+            /// assert_eq!(a_biguint.is_divided_by_zero(), false);
+            /// 
+            /// let n = 256_u64;
+            /// a_biguint >>= n;
+            /// println!("After a_biguint >>= {}, a_biguint = {}.", n, a_biguint.to_string_with_radix_and_stride(2, 8).unwrap());
+            /// assert_eq!(a_biguint.to_string(), "0");
+            /// assert_eq!(a_biguint.is_overflow(), false);
+            /// assert_eq!(a_biguint.is_underflow(), true);
+            /// assert_eq!(a_biguint.is_infinity(), false);
+            /// assert_eq!(a_biguint.is_undefined(), false);
+            /// assert_eq!(a_biguint.is_divided_by_zero(), false);
+            /// ```
+            /// 
+            /// # Example 5 for u128
+            /// ```
+            /// use cryptocol::define_utypes_with;
+            /// define_utypes_with!(u64);
+            /// 
+            /// let mut a_biguint = U256::from_str_radix("11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101", 2).unwrap();
+            /// println!("Originally, a_biguint = {}", a_biguint.to_string_with_radix_and_stride(2, 8).unwrap());
+            /// assert_eq!(a_biguint.is_overflow(), false);
+            /// assert_eq!(a_biguint.is_underflow(), false);
+            /// assert_eq!(a_biguint.is_infinity(), false);
+            /// assert_eq!(a_biguint.is_undefined(), false);
+            /// assert_eq!(a_biguint.is_divided_by_zero(), false);
+            /// 
+            /// let n = 512_u128;
+            /// a_biguint >>= n;
+            /// println!("After a_biguint >>= {}, a_biguint = {}.", n, a_biguint.to_string_with_radix_and_stride(2, 8).unwrap());
+            /// assert_eq!(a_biguint.to_string(), "0");
+            /// assert_eq!(a_biguint.is_overflow(), false);
+            /// assert_eq!(a_biguint.is_underflow(), true);
+            /// assert_eq!(a_biguint.is_infinity(), false);
+            /// assert_eq!(a_biguint.is_undefined(), false);
+            /// assert_eq!(a_biguint.is_divided_by_zero(), false);
+            /// ```
+            /// 
+            /// # Example 6 for usize
+            /// ```
+            /// use cryptocol::define_utypes_with;
+            /// define_utypes_with!(u64);
+            /// 
+            /// let mut a_biguint = U256::from_str_radix("11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101", 2).unwrap();
+            /// println!("Originally, a_biguint = {}", a_biguint.to_string_with_radix_and_stride(2, 8).unwrap());
+            /// assert_eq!(a_biguint.is_overflow(), false);
+            /// assert_eq!(a_biguint.is_underflow(), false);
+            /// assert_eq!(a_biguint.is_infinity(), false);
+            /// assert_eq!(a_biguint.is_undefined(), false);
+            /// assert_eq!(a_biguint.is_divided_by_zero(), false);
+            /// 
+            /// let n = 1024_usize;
+            /// a_biguint >>= n;
+            /// println!("After a_biguint >>= {}, a_biguint = {}.", n, a_biguint.to_string_with_radix_and_stride(2, 8).unwrap());
+            /// assert_eq!(a_biguint.to_string(), "0");
+            /// assert_eq!(a_biguint.is_overflow(), false);
+            /// assert_eq!(a_biguint.is_underflow(), true);
+            /// assert_eq!(a_biguint.is_infinity(), false);
+            /// assert_eq!(a_biguint.is_undefined(), false);
+            /// assert_eq!(a_biguint.is_divided_by_zero(), false);
+            /// ```
             /// 
             /// # Big-endian issue
             /// It is just experimental for Big Endian CPUs. So, you are not encouraged
-            /// to use it for serious purpose. Only use this crate for Big-endian CPUs
-            /// with your own full responsibility.
-            /// 
-            /// # Example 1
-            /// ```
-            /// use std::str::FromStr;
-            /// use cryptocol::number::*;
-            /// use cryptocol::define_utypes_with;
-            /// define_utypes_with!(u128);
-            /// let mut a = u256::from_str("1234567_1234567890_1234567890_1234567890_1234567890_1234567890_1234567890_1234567890").unwrap();
-            /// a >>= 2_i128;
-            /// println!("a = {}\nunderflow: {}", a, a.is_underflow());
-            /// assert_eq!(a.is_underflow(), true);
-            /// ```
-            /// 
-            /// # Example 2
-            /// ```
-            /// use std::str::FromStr;
-            /// use cryptocol::number::*;
-            /// use cryptocol::define_utypes_with;
-            /// define_utypes_with!(u128);
-            /// let mut a = u256::from_str("1234567_1234567890_1234567890_1234567890_1234567890_1234567890_1234567890_1234567890").unwrap();
-            /// a >>= 1_i8;
-            /// println!("a = {}\nunderflow: {}", a, a.is_underflow());
-            /// assert_eq!(a.is_underflow(), false);
-            /// ```
+            /// to use it for Big Endian CPUs for serious purpose. Only use this crate
+            /// for Big-endian CPUs with your own full responsibility.
             #[inline]
             fn shr_assign(&mut self, rhs: $f)
             {
                 self.shift_right_assign(rhs);
-                /*
-                let TSIZE_IN_BITS = T::size_in_bits();
-                let chunk_num = (rhs / TSIZE_IN_BITS as $f) as usize;
-                let piece_num = (rhs % TSIZE_IN_BITS as $f) as usize;
-                let zero = T::zero();
-                self.reset_all_flags();
-                if chunk_num > 0
-                {
-                    for i in 0..chunk_num
-                    {
-                        if self.get_num_(i) > zero
-                        {
-                            self.set_underflow();
-                            break;
-                        }
-                    }
-                    self.copy_within(chunk_num..N, 0);
-                    for idx in N-chunk_num..N
-                        { self.set_num_(idx, zero); }
-                }
-                if piece_num == 0
-                    { return; }
-                if (self.get_num_(0) << T::usize_as_smalluint(TSIZE_IN_BITS - piece_num)) != zero
-                    { self.set_underflow(); }
-
-                let mut num: T;
-                let mut carry = T::zero();
-                let mut idx = N - 1 - chunk_num;
-                loop
-                {
-                    num = (self.get_num_(idx) >> T::usize_as_smalluint(piece_num)) | carry;
-                    carry = self.get_num_(idx) << T::usize_as_smalluint(TSIZE_IN_BITS - piece_num);
-                    self.set_num_(idx, num);
-                    if idx == 0
-                        { break; }
-                    idx -= 1;
-                }
-                if carry != zero
-                    { self.set_underflow(); }*/
             }
         }
     }
