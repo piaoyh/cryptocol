@@ -30,6 +30,7 @@ pub fn main()
     biguint_flag_manipulation_main();
     biguint_operators_arithmatic_main();
     biguint_operators_bit_operation_main();
+    biguint_operators_miscellaneous_main();
 }
 
 fn biguint_quick_start_main()
@@ -1602,18 +1603,31 @@ fn biguint_lt_uint()
     use cryptocol::define_utypes_with;
     define_utypes_with!(u16);
 
-    let res = UU32::from_uint(100_u16).lt_uint(110_u64);
+    let a_biguint = UU32::from_uint(200_u8);
+    let b_uint = 100_u8;
+    let res = a_biguint.lt_uint(b_uint);
     if res
-        { println!("100 < 110"); }
+        { println!("{} < {}", a_biguint, b_uint); }
     else
-        { println!("100 >= 110"); }
+        { println!("{} >= {}", a_biguint, b_uint); }
+    assert_eq!(res, false);
+
+    let a_biguint = UU32::from_uint(100_u8);
+    let b_uint = 200_u8;
+    let res = a_biguint.lt_uint(b_uint);
+    if res
+        { println!("{} < {}", a_biguint, b_uint); }
+    else
+        { println!("{} >= {}", a_biguint, b_uint); }
     assert_eq!(res, true);
 
-    let res = UU32::from_uint(100_u16).lt_uint(90_u64);
+    let a_biguint = UU32::from_uint(100_u8);
+    let b_uint = 100_u8;
+    let res = a_biguint.lt_uint(b_uint);
     if res
-        { println!("100 < 90"); }
+        { println!("{} < {}", a_biguint, b_uint); }
     else
-        { println!("100 >= 90"); }
+        { println!("{} >= {}", a_biguint, b_uint); }
     assert_eq!(res, false);
     println!("---------------------------");
 }
@@ -1624,18 +1638,31 @@ fn biguint_gt_uint()
     use cryptocol::define_utypes_with;
     define_utypes_with!(u32);
 
-    let res = UU32::from_uint(100_u32).gt_uint(90_u32);
+    let a_biguint = UU32::from_uint(200_u8);
+    let b_uint = 100_u8;
+    let res = a_biguint.gt_uint(b_uint);
     if res
-        { println!("100 > 90"); }
+        { println!("{} > {}", a_biguint, b_uint); }
     else
-        { println!("100 <= 90"); }
+        { println!("{} <= {}", a_biguint, b_uint); }
     assert_eq!(res, true);
 
-    let res = UU32::from_uint(100_u32).gt_uint(110_u32);
+    let a_biguint = UU32::from_uint(100_u8);
+    let b_uint = 200_u8;
+    let res = a_biguint.gt_uint(b_uint);
     if res
-        { println!("100 > 110"); }
+        { println!("{} > {}", a_biguint, b_uint); }
     else
-        { println!("100 <= 110"); }
+        { println!("{} <= {}", a_biguint, b_uint); }
+    assert_eq!(res, false);
+
+    let a_biguint = UU32::from_uint(100_u8);
+    let b_uint = 100_u8;
+    let res = a_biguint.gt_uint(b_uint);
+    if res
+        { println!("{} > {}", a_biguint, b_uint); }
+    else
+        { println!("{} <= {}", a_biguint, b_uint); }
     assert_eq!(res, false);
     println!("---------------------------");
 }
@@ -1646,19 +1673,32 @@ fn biguint_le_uint()
     use cryptocol::define_utypes_with;
     define_utypes_with!(u64);
 
-    let res = UU32::from_uint(100_u64).le_uint(110_u16);
+    let a_biguint = UU32::from_uint(200_u8);
+    let b_uint = 100_u8;
+    let res = a_biguint.le_uint(b_uint);
     if res
-        { println!("100 <= 110"); }
+        { println!("{} <= {}", a_biguint, b_uint); }
     else
-        { println!("100 > 110"); }
+        { println!("{} > {}", a_biguint, b_uint); }
+    assert_eq!(res, false);
+
+    let a_biguint = UU32::from_uint(100_u8);
+    let b_uint = 200_u8;
+    let res = a_biguint.le_uint(b_uint);
+    if res
+        { println!("{} <= {}", a_biguint, b_uint); }
+    else
+        { println!("{} > {}", a_biguint, b_uint); }
     assert_eq!(res, true);
 
-    let res = UU32::from_uint(100_u64).lt_uint(90_u16);
+    let a_biguint = UU32::from_uint(100_u8);
+    let b_uint = 100_u8;
+    let res = a_biguint.le_uint(b_uint);
     if res
-        { println!("100 < 90"); }
+        { println!("{} <= {}", a_biguint, b_uint); }
     else
-        { println!("100 >= 90"); }
-    assert_eq!(res, false);
+        { println!("{} > {}", a_biguint, b_uint); }
+    assert_eq!(res, true);
     println!("---------------------------");
 }
 
@@ -1666,21 +1706,34 @@ fn biguint_ge_uint()
 {
     println!("biguint_ge_uint");
     use cryptocol::define_utypes_with;
-    define_utypes_with!(u32);
+    define_utypes_with!(u128);
 
-    let res = UU32::from_uint(100_u128).gt_uint(90_u8);
+    let a_biguint = UU32::from_uint(200_u8);
+    let b_uint = 100_u8;
+    let res = a_biguint.ge_uint(b_uint);
     if res
-        { println!("100 >= 90"); }
+        { println!("{} >= {}", a_biguint, b_uint); }
     else
-        { println!("100 <= 90"); }
+        { println!("{} < {}", a_biguint, b_uint); }
     assert_eq!(res, true);
 
-    let res = UU32::from_uint(100_u128).gt_uint(110_u8);
+    let a_biguint = UU32::from_uint(100_u8);
+    let b_uint = 200_u8;
+    let res = a_biguint.ge_uint(b_uint);
     if res
-        { println!("100 > 110"); }
+        { println!("{} >= {}", a_biguint, b_uint); }
     else
-        { println!("100 <= 110"); }
+        { println!("{} < {}", a_biguint, b_uint); }
     assert_eq!(res, false);
+
+    let a_biguint = UU32::from_uint(100_u8);
+    let b_uint = 100_u8;
+    let res = a_biguint.ge_uint(b_uint);
+    if res
+        { println!("{} >= {}", a_biguint, b_uint); }
+    else
+        { println!("{} < {}", a_biguint, b_uint); }
+    assert_eq!(res, true);
     println!("---------------------------");
 }
 
@@ -1690,54 +1743,40 @@ fn biguint_eq_uint()
     use cryptocol::define_utypes_with;
     define_utypes_with!(u8);
 
-    let res = UU32::from_uint(100_u32).eq_uint(100_u8);
+    let a_biguint = UU32::from_uint(100_u8);
+    let b_uint = 100_u8;
+    let res = a_biguint.eq_uint(b_uint);
     if res
-        { println!("100 = 100"); }
+        { println!("{} == {}", a_biguint, b_uint); }
     else
-        { println!("100 != 100"); }
+        { println!("{} != {}", a_biguint, b_uint); }
     assert_eq!(res, true);
 
-    let res = UU32::from_uint(100_u64).eq_uint(200_u16);
+    let a_biguint = UU32::from_uint(100_u8);
+    let b_uint = 200_u8;
+    let res = a_biguint.eq_uint(b_uint);
     if res
-        { println!("100 = 200"); }
+        { println!("{} == {}", a_biguint, b_uint); }
     else
-        { println!("100 != 200"); }
+        { println!("{} != {}", a_biguint, b_uint); }
     assert_eq!(res, false);
     println!("---------------------------");
 }
 
 fn biguint_comparison_biguint_main()
 {
-    biguint_eq_biguint();
-    biguint_partial_cmp_biguint();
+    biguint_eq();
+    biguint_partial_cmp();
+    biguint_lt();
+    biguint_gt();
+    biguint_le();
+    biguint_ge();
+    biguint_eq();
 }
 
-fn biguint_eq_biguint()
+fn biguint_partial_cmp()
 {
-    println!("biguint_eq_biguint");
-    use cryptocol::define_utypes_with;
-    define_utypes_with!(u128);
-
-    let num_str = "69743176821145534028236692093846345739169743176821145534028236692093846345739";
-    let res = UU32::from_string(num_str).unwrap().eq(&UU32::from_string(num_str).unwrap());
-    if res
-        { println!("{0} = {0}", num_str); }
-    else
-        { println!("{0} != {0}", num_str); }
-    assert_eq!(res, true);
-
-    let res = UU32::from_string(num_str).unwrap().eq(&UU32::from_uint(100_u8));
-    if res
-        { println!("{} = 100", num_str); }
-    else
-        { println!("{} != 100", num_str); }
-    assert_eq!(res, false);
-    println!("---------------------------");
-}
-
-fn biguint_partial_cmp_biguint()
-{
-    println!("biguint_partial_cmp_biguint");
+    println!("biguint_partial_cmp");
     use std::cmp::Ordering;
     use cryptocol::define_utypes_with;
     define_utypes_with!(u16);
@@ -1777,6 +1816,187 @@ fn biguint_partial_cmp_biguint()
     assert_eq!(res, Ordering::Equal);
     println!("---------------------------");
 }
+
+fn biguint_lt()
+{
+    println!("biguint_lt");
+    use cryptocol::define_utypes_with;
+    define_utypes_with!(u32);
+
+    let num_str = "69743176821145534028236692093846345739169743176821145534028236692093846345739";
+    let a_biguint = UU32::from_string(num_str).unwrap();
+    let b_biguint = UU32::from_uint(100_u8);
+    let res = a_biguint.lt(&b_biguint);
+    if res
+        { println!("{} < {}", a_biguint, b_biguint); }
+    else
+        { println!("{} >= {}", a_biguint, b_biguint); }
+    assert_eq!(res, false);
+
+    let num_str = "69743176821145534028236692093846345739169743176821145534028236692093846345739";
+    let a_biguint = UU32::from_uint(100_u8);
+    let b_biguint = UU32::from_string(num_str).unwrap();
+    let res = a_biguint.lt(&b_biguint);
+    if res
+        { println!("{} < {}", a_biguint, b_biguint); }
+    else
+        { println!("{} >= {}", a_biguint, b_biguint); }
+    assert_eq!(res, true);
+
+    let num_str = "69743176821145534028236692093846345739169743176821145534028236692093846345739";
+    let a_biguint = UU32::from_string(num_str).unwrap();
+    let b_biguint = UU32::from_string(num_str).unwrap();
+    let res = a_biguint.lt(&b_biguint);
+    if res
+        { println!("{} < {}", a_biguint, b_biguint); }
+    else
+        { println!("{} >= {}", a_biguint, b_biguint); }
+    assert_eq!(res, false);
+    println!("---------------------------");
+}
+
+fn biguint_gt()
+{
+    println!("biguint_gt");
+    use cryptocol::define_utypes_with;
+    define_utypes_with!(u64);
+
+    let num_str = "69743176821145534028236692093846345739169743176821145534028236692093846345739";
+    let a_biguint = UU32::from_string(num_str).unwrap();
+    let b_biguint = UU32::from_uint(100_u8);
+    let res = a_biguint.gt(&b_biguint);
+    if res
+        { println!("{} > {}", a_biguint, b_biguint); }
+    else
+        { println!("{} <= {}", a_biguint, b_biguint); }
+    assert_eq!(res, true);
+
+    let num_str = "69743176821145534028236692093846345739169743176821145534028236692093846345739";
+    let a_biguint = UU32::from_uint(100_u8);
+    let b_biguint = UU32::from_string(num_str).unwrap();
+    let res = a_biguint.gt(&b_biguint);
+    if res
+        { println!("{} > {}", a_biguint, b_biguint); }
+    else
+        { println!("{} <= {}", a_biguint, b_biguint); }
+    assert_eq!(res, false);
+
+    let num_str = "69743176821145534028236692093846345739169743176821145534028236692093846345739";
+    let a_biguint = UU32::from_string(num_str).unwrap();
+    let b_biguint = UU32::from_string(num_str).unwrap();
+    let res = a_biguint.gt(&b_biguint);
+    if res
+        { println!("{} > {}", a_biguint, b_biguint); }
+    else
+        { println!("{} <= {}", a_biguint, b_biguint); }
+    assert_eq!(res, false);
+    println!("---------------------------");
+}
+
+fn biguint_le()
+{
+    println!("biguint_le_uint");
+    use cryptocol::define_utypes_with;
+    define_utypes_with!(u128);
+
+    let num_str = "69743176821145534028236692093846345739169743176821145534028236692093846345739";
+    let a_biguint = UU32::from_string(num_str).unwrap();
+    let b_biguint = UU32::from_uint(100_u8);
+    let res = a_biguint.le(&b_biguint);
+    if res
+        { println!("{} <= {}", a_biguint, b_biguint); }
+    else
+        { println!("{} > {}", a_biguint, b_biguint); }
+    assert_eq!(res, false);
+
+    let num_str = "69743176821145534028236692093846345739169743176821145534028236692093846345739";
+    let a_biguint = UU32::from_uint(100_u8);
+    let b_biguint = UU32::from_string(num_str).unwrap();
+    let res = a_biguint.le(&b_biguint);
+    if res
+        { println!("{} <= {}", a_biguint, b_biguint); }
+    else
+        { println!("{} > {}", a_biguint, b_biguint); }
+    assert_eq!(res, true);
+
+    let num_str = "69743176821145534028236692093846345739169743176821145534028236692093846345739";
+    let a_biguint = UU32::from_string(num_str).unwrap();
+    let b_biguint = UU32::from_string(num_str).unwrap();
+    let res = a_biguint.le(&b_biguint);
+    if res
+        { println!("{} <= {}", a_biguint, b_biguint); }
+    else
+        { println!("{} > {}", a_biguint, b_biguint); }
+    assert_eq!(res, true);
+    println!("---------------------------");
+}
+
+fn biguint_ge()
+{
+    println!("biguint_ge");
+    use cryptocol::define_utypes_with;
+    define_utypes_with!(u8);
+
+    let num_str = "69743176821145534028236692093846345739169743176821145534028236692093846345739";
+    let a_biguint = UU32::from_string(num_str).unwrap();
+    let b_biguint = UU32::from_uint(100_u8);
+    let res = a_biguint.ge(&b_biguint);
+    if res
+        { println!("{} >= {}", a_biguint, b_biguint); }
+    else
+        { println!("{} < {}", a_biguint, b_biguint); }
+    assert_eq!(res, true);
+
+    let num_str = "69743176821145534028236692093846345739169743176821145534028236692093846345739";
+    let a_biguint = UU32::from_uint(100_u8);
+    let b_biguint = UU32::from_string(num_str).unwrap();
+    let res = a_biguint.ge(&b_biguint);
+    if res
+        { println!("{} >= {}", a_biguint, b_biguint); }
+    else
+        { println!("{} < {}", a_biguint, b_biguint); }
+    assert_eq!(res, false);
+
+    let num_str = "69743176821145534028236692093846345739169743176821145534028236692093846345739";
+    let a_biguint = UU32::from_string(num_str).unwrap();
+    let b_biguint = UU32::from_string(num_str).unwrap();
+    let res = a_biguint.ge(&b_biguint);
+    if res
+        { println!("{} >= {}", a_biguint, b_biguint); }
+    else
+        { println!("{} < {}", a_biguint, b_biguint); }
+    assert_eq!(res, true);
+    println!("---------------------------");
+}
+
+fn biguint_eq()
+{
+    println!("biguint_eq");
+    use cryptocol::define_utypes_with;
+    define_utypes_with!(u16);
+
+    let num_str = "69743176821145534028236692093846345739169743176821145534028236692093846345739";
+    let a_biguint = UU32::from_string(num_str).unwrap();
+    let b_biguint = UU32::from_string(num_str).unwrap();
+    let res = a_biguint.eq(&b_biguint);
+    if res
+        { println!("{} = {}", a_biguint, b_biguint); }
+    else
+        { println!("{} != {}", a_biguint, b_biguint); }
+    assert_eq!(res, true);
+
+    let num_str = "69743176821145534028236692093846345739169743176821145534028236692093846345739";
+    let a_biguint = UU32::from_string(num_str).unwrap();
+    let b_biguint = UU32::from_uint(100_u8);
+    let res = a_biguint.eq(&b_biguint);
+    if res
+        { println!("{} = {}", a_biguint, b_biguint); }
+    else
+        { println!("{} != {}", a_biguint, b_biguint); }
+    assert_eq!(res, false);
+    println!("---------------------------");
+}
+
 
 fn biguint_arithmatic_operation_uint_main()
 {
@@ -31537,7 +31757,6 @@ fn biguint_operators_bit_operation_main()
     biguint_operator_xor();
     biguint_operator_xor_assign();
     biguint_operator_flip();
-    biguint_operator_flip_assign();
 }
 
 fn biguint_operator_shift_left()
@@ -32829,89 +33048,644 @@ fn biguint_operator_shift_right_assign()
 fn biguint_operator_and()
 {
     println!("biguint_operator_and");
-    use std::str::FromStr;
     use cryptocol::define_utypes_with;
     define_utypes_with!(u128);
+    
+    let a_biguint = U256::from_str_radix("10101010_11001100_11110000_11111111_00000000_11111111_11111111_00000000_00000000_11111111_11111111_11111111_00000000_00000000_00000000_11111111_11111111_11111111_11111111_00000000_00000000_00000000_00000000_10110011_10001111_00001111_10000011_11110000_00111111_10000000_11111111_00000000", 2).unwrap();
+    let b_biguint = U256::from_str_radix("11111111_11111111_11111111_00000000_00000000_00000000_11111111_11111111_11111111_11111111_00000000_00000000_00000000_00000000_10110011_10001111_00001111_10000011_11110000_00111111_10000000_11111111_00000000_10101010_11001100_11110000_11111111_00000000_11111111_11111111_00000000_00000000", 2).unwrap();
+    let c_biguint = a_biguint.clone() & b_biguint.clone();
+    
+    println!("{} & {} = {}", a_biguint.to_string_with_radix_and_stride(2, 8).unwrap(), b_biguint.to_string_with_radix_and_stride(2, 8).unwrap(), c_biguint.to_string_with_radix_and_stride(2, 8).unwrap());
+    assert_eq!(c_biguint.to_string_with_radix_and_stride(2, 8).unwrap(), "10101010_11001100_11110000_00000000_00000000_00000000_11111111_00000000_00000000_11111111_00000000_00000000_00000000_00000000_00000000_10001111_00001111_10000011_11110000_00000000_00000000_00000000_00000000_10100010_10001100_00000000_10000011_00000000_00111111_10000000_00000000_00000000");
+    assert_eq!(c_biguint.is_overflow(), false);
+    assert_eq!(c_biguint.is_underflow(), false);
+    assert_eq!(c_biguint.is_infinity(), false);
+    assert_eq!(c_biguint.is_undefined(), false);
+    assert_eq!(c_biguint.is_divided_by_zero(), false);
 
+    let a_biguint = U256::from_str_radix("10101010_11001100_11110000_11111111_00000000_11111111_11111111_00000000_00000000_11111111_11111111_11111111_00000000_00000000_00000000_11111111_11111111_11111111_11111111_00000000_00000000_00000000_00000000_10110011_10001111_00001111_10000011_11110000_00111111_10000000_11111111_00000000", 2).unwrap();
+    let b_biguint = U256::max();
+    let c_biguint = a_biguint.clone() & b_biguint.clone();
+    
+    println!("{} & {} = {}", a_biguint.to_string_with_radix_and_stride(2, 8).unwrap(), b_biguint.to_string_with_radix_and_stride(2, 8).unwrap(), c_biguint.to_string_with_radix_and_stride(2, 8).unwrap());
+    assert_eq!(c_biguint, a_biguint);
+    assert_eq!(c_biguint.is_overflow(), false);
+    assert_eq!(c_biguint.is_underflow(), false);
+    assert_eq!(c_biguint.is_infinity(), false);
+    assert_eq!(c_biguint.is_undefined(), false);
+    assert_eq!(c_biguint.is_divided_by_zero(), false);
 
+    let a_biguint = U256::from_str_radix("10101010_11001100_11110000_11111111_00000000_11111111_11111111_00000000_00000000_11111111_11111111_11111111_00000000_00000000_00000000_11111111_11111111_11111111_11111111_00000000_00000000_00000000_00000000_10110011_10001111_00001111_10000011_11110000_00111111_10000000_11111111_00000000", 2).unwrap();
+    let b_biguint = U256::zero();
+    let c_biguint = a_biguint.clone() & b_biguint.clone();
+    
+    println!("{} & {} = {}", a_biguint.to_string_with_radix_and_stride(2, 8).unwrap(), b_biguint.to_string_with_radix_and_stride(2, 8).unwrap(), c_biguint.to_string_with_radix_and_stride(2, 8).unwrap());
+    assert_eq!(c_biguint.to_string(), "0");
+    assert_eq!(c_biguint.is_overflow(), false);
+    assert_eq!(c_biguint.is_underflow(), false);
+    assert_eq!(c_biguint.is_infinity(), false);
+    assert_eq!(c_biguint.is_undefined(), false);
+    assert_eq!(c_biguint.is_divided_by_zero(), false);
+
+    let a_biguint = U256::from_str_radix("10101010_11001100_11110000_11111111_00000000_11111111_11111111_00000000_00000000_11111111_11111111_11111111_00000000_00000000_00000000_11111111_11111111_11111111_11111111_00000000_00000000_00000000_00000000_10110011_10001111_00001111_10000011_11110000_00111111_10000000_11111111_00000000", 2).unwrap();
+    let b_biguint = U256::from_str_radix("11111111_11111111_11111111_00000000_00000000_00000000_11111111_11111111_11111111_11111111_00000000_00000000_00000000_00000000_10110011_10001111_00001111_10000011_11110000_00111111_10000000_11111111_00000000_10101010_11001100_11110000_11111111_00000000_11111111_11111111_00000000_00000000", 2).unwrap();
+    let _c_biguint = a_biguint & b_biguint;
+    // It cannot be compiled!
+    // println!("{} & {} = {}", a_biguint.to_string_with_radix_and_stride(2, 8).unwrap(), b_biguint.to_string_with_radix_and_stride(2, 8).unwrap(), _c_biguint.to_string_with_radix_and_stride(2, 8).unwrap());
+    // The operator & swallowed (took the ownership of) a_biguint and b_biguint.
+
+    let a_biguint = U256::from_str_radix("10101010_11001100_11110000_11111111_00000000_11111111_11111111_00000000_00000000_11111111_11111111_11111111_00000000_00000000_00000000_11111111_11111111_11111111_11111111_00000000_00000000_00000000_00000000_10110011_10001111_00001111_10000011_11110000_00111111_10000000_11111111_00000000", 2).unwrap();
+    let b_biguint = U256::max();
+    let _c_biguint = a_biguint & b_biguint;
+    // It cannot be compiled!
+    // println!("{} & {} = {}", a_biguint.to_string_with_radix_and_stride(2, 8).unwrap(), b_biguint.to_string_with_radix_and_stride(2, 8).unwrap(), _c_biguint.to_string_with_radix_and_stride(2, 8).unwrap());
+    // The operator & swallowed (took the ownership of) a_biguint and b_biguint.
+
+    let a_biguint = U256::from_str_radix("10101010_11001100_11110000_11111111_00000000_11111111_11111111_00000000_00000000_11111111_11111111_11111111_00000000_00000000_00000000_11111111_11111111_11111111_11111111_00000000_00000000_00000000_00000000_10110011_10001111_00001111_10000011_11110000_00111111_10000000_11111111_00000000", 2).unwrap();
+    let b_biguint = U256::zero();
+    let _c_biguint = a_biguint & b_biguint;
+    // It cannot be compiled!
+    // println!("{} & {} = {}", a_biguint.to_string_with_radix_and_stride(2, 8).unwrap(), b_biguint.to_string_with_radix_and_stride(2, 8).unwrap(), _c_biguint.to_string_with_radix_and_stride(2, 8).unwrap());
+    // The operator & swallowed (took the ownership of) a_biguint and b_biguint.
     println!("---------------------------");
 }
 
 fn biguint_operator_and_assign()
 {
     println!("biguint_operator_and_assign");
-    use std::str::FromStr;
     use cryptocol::define_utypes_with;
     define_utypes_with!(u8);
 
+    let mut a_biguint = U256::from_str_radix("10101010_11001100_11110000_11111111_00000000_11111111_11111111_00000000_00000000_11111111_11111111_11111111_00000000_00000000_00000000_11111111_11111111_11111111_11111111_00000000_00000000_00000000_00000000_10110011_10001111_00001111_10000011_11110000_00111111_10000000_11111111_00000000", 2).unwrap();
+    println!("Originally, a_biguint = {}", a_biguint.to_string_with_radix_and_stride(2, 8).unwrap());
+    assert_eq!(a_biguint.is_overflow(), false);
+    assert_eq!(a_biguint.is_underflow(), false);
+    assert_eq!(a_biguint.is_infinity(), false);
+    assert_eq!(a_biguint.is_undefined(), false);
+    assert_eq!(a_biguint.is_divided_by_zero(), false);
 
+    let b_biguint = U256::from_str_radix("11111111_11111111_11111111_00000000_00000000_00000000_11111111_11111111_11111111_11111111_00000000_00000000_00000000_00000000_10110011_10001111_00001111_10000011_11110000_00111111_10000000_11111111_00000000_10101010_11001100_11110000_11111111_00000000_11111111_11111111_00000000_00000000", 2).unwrap();
+    a_biguint &= b_biguint.clone();
+    println!("After a_biguint &= {}, a_biguint = {}.", b_biguint, a_biguint.to_string_with_radix_and_stride(2, 8).unwrap());
+    assert_eq!(a_biguint.to_string_with_radix_and_stride(2, 8).unwrap(), "10101010_11001100_11110000_00000000_00000000_00000000_11111111_00000000_00000000_11111111_00000000_00000000_00000000_00000000_00000000_10001111_00001111_10000011_11110000_00000000_00000000_00000000_00000000_10100010_10001100_00000000_10000011_00000000_00111111_10000000_00000000_00000000");
+    assert_eq!(a_biguint.is_overflow(), false);
+    assert_eq!(a_biguint.is_underflow(), false);
+    assert_eq!(a_biguint.is_infinity(), false);
+    assert_eq!(a_biguint.is_undefined(), false);
+    assert_eq!(a_biguint.is_divided_by_zero(), false);
+
+    let mut a_biguint = U256::from_str_radix("10101010_11001100_11110000_11111111_00000000_11111111_11111111_00000000_00000000_11111111_11111111_11111111_00000000_00000000_00000000_11111111_11111111_11111111_11111111_00000000_00000000_00000000_00000000_10110011_10001111_00001111_10000011_11110000_00111111_10000000_11111111_00000000", 2).unwrap();
+    println!("Originally, a_biguint = {}", a_biguint.to_string_with_radix_and_stride(2, 8).unwrap());
+    assert_eq!(a_biguint.is_overflow(), false);
+    assert_eq!(a_biguint.is_underflow(), false);
+    assert_eq!(a_biguint.is_infinity(), false);
+    assert_eq!(a_biguint.is_undefined(), false);
+    assert_eq!(a_biguint.is_divided_by_zero(), false);
+
+    let b_biguint = U256::max();
+    a_biguint &= b_biguint.clone();
+    println!("After a_biguint &= {}, a_biguint = {}.", b_biguint, a_biguint.to_string_with_radix_and_stride(2, 8).unwrap());
+    assert_eq!(a_biguint.to_string_with_radix_and_stride(2, 8).unwrap(), "10101010_11001100_11110000_11111111_00000000_11111111_11111111_00000000_00000000_11111111_11111111_11111111_00000000_00000000_00000000_11111111_11111111_11111111_11111111_00000000_00000000_00000000_00000000_10110011_10001111_00001111_10000011_11110000_00111111_10000000_11111111_00000000");
+    assert_eq!(a_biguint.is_overflow(), false);
+    assert_eq!(a_biguint.is_underflow(), false);
+    assert_eq!(a_biguint.is_infinity(), false);
+    assert_eq!(a_biguint.is_undefined(), false);
+    assert_eq!(a_biguint.is_divided_by_zero(), false);
+
+    let mut a_biguint = U256::from_str_radix("10101010_11001100_11110000_11111111_00000000_11111111_11111111_00000000_00000000_11111111_11111111_11111111_00000000_00000000_00000000_11111111_11111111_11111111_11111111_00000000_00000000_00000000_00000000_10110011_10001111_00001111_10000011_11110000_00111111_10000000_11111111_00000000", 2).unwrap();
+    println!("Originally, a_biguint = {}", a_biguint.to_string_with_radix_and_stride(2, 8).unwrap());
+    assert_eq!(a_biguint.is_overflow(), false);
+    assert_eq!(a_biguint.is_underflow(), false);
+    assert_eq!(a_biguint.is_infinity(), false);
+    assert_eq!(a_biguint.is_undefined(), false);
+    assert_eq!(a_biguint.is_divided_by_zero(), false);
+
+    let b_biguint = U256::zero();
+    a_biguint &= b_biguint.clone();
+    println!("After a_biguint &= {}, a_biguint = {}.", b_biguint, a_biguint.to_string_with_radix_and_stride(2, 8).unwrap());
+    assert_eq!(a_biguint.to_string(), "0");
+    assert_eq!(a_biguint.is_overflow(), false);
+    assert_eq!(a_biguint.is_underflow(), false);
+    assert_eq!(a_biguint.is_infinity(), false);
+    assert_eq!(a_biguint.is_undefined(), false);
+    assert_eq!(a_biguint.is_divided_by_zero(), false);
+
+    let mut a_biguint = U256::from_str_radix("10101010_11001100_11110000_11111111_00000000_11111111_11111111_00000000_00000000_11111111_11111111_11111111_00000000_00000000_00000000_11111111_11111111_11111111_11111111_00000000_00000000_00000000_00000000_10110011_10001111_00001111_10000011_11110000_00111111_10000000_11111111_00000000", 2).unwrap();
+    println!("Originally, a_biguint = {}", a_biguint.to_string_with_radix_and_stride(2, 8).unwrap());
+    let b_biguint = U256::from_str_radix("11111111_11111111_11111111_00000000_00000000_00000000_11111111_11111111_11111111_11111111_00000000_00000000_00000000_00000000_10110011_10001111_00001111_10000011_11110000_00111111_10000000_11111111_00000000_10101010_11001100_11110000_11111111_00000000_11111111_11111111_00000000_00000000", 2).unwrap();
+    a_biguint &= b_biguint;
+    // It cannot be compiled!
+    // println!("After a_biguint &= {}, a_biguint = {}.", b_biguint, a_biguint.to_string_with_radix_and_stride(2, 8).unwrap());
+    // The operator &= swallowed (took the ownership of) b_biguint.
+
+    let mut a_biguint = U256::from_str_radix("10101010_11001100_11110000_11111111_00000000_11111111_11111111_00000000_00000000_11111111_11111111_11111111_00000000_00000000_00000000_11111111_11111111_11111111_11111111_00000000_00000000_00000000_00000000_10110011_10001111_00001111_10000011_11110000_00111111_10000000_11111111_00000000", 2).unwrap();
+    println!("Originally, a_biguint = {}", a_biguint.to_string_with_radix_and_stride(2, 8).unwrap());
+    let b_biguint = U256::max();
+    a_biguint &= b_biguint;
+    // It cannot be compiled!
+    // println!("After a_biguint &= {}, a_biguint = {}.", b_biguint, a_biguint.to_string_with_radix_and_stride(2, 8).unwrap());
+    // The operator &= swallowed (took the ownership of) b_biguint.
+
+    let mut a_biguint = U256::from_str_radix("10101010_11001100_11110000_11111111_00000000_11111111_11111111_00000000_00000000_11111111_11111111_11111111_00000000_00000000_00000000_11111111_11111111_11111111_11111111_00000000_00000000_00000000_00000000_10110011_10001111_00001111_10000011_11110000_00111111_10000000_11111111_00000000", 2).unwrap();
+    println!("Originally, a_biguint = {}", a_biguint.to_string_with_radix_and_stride(2, 8).unwrap());
+    let b_biguint = U256::zero();
+    a_biguint &= b_biguint;
+    // It cannot be compiled!
+    // println!("After a_biguint &= {}, a_biguint = {}.", b_biguint, a_biguint.to_string_with_radix_and_stride(2, 8).unwrap());
+    // The operator &= swallowed (took the ownership of) b_biguint.
     println!("---------------------------");
 }
 
 fn biguint_operator_or()
 {
     println!("biguint_operator_or");
-    use std::str::FromStr;
     use cryptocol::define_utypes_with;
     define_utypes_with!(u16);
 
+    let a_biguint = U256::from_str_radix("10101010_11001100_11110000_11111111_00000000_11111111_11111111_00000000_00000000_11111111_11111111_11111111_00000000_00000000_00000000_11111111_11111111_11111111_11111111_00000000_00000000_00000000_00000000_10110011_10001111_00001111_10000011_11110000_00111111_10000000_11111111_00000000", 2).unwrap();
+    let b_biguint = U256::from_str_radix("11111111_11111111_11111111_00000000_00000000_00000000_11111111_11111111_11111111_11111111_00000000_00000000_00000000_00000000_10110011_10001111_00001111_10000011_11110000_00111111_10000000_11111111_00000000_10101010_11001100_11110000_11111111_00000000_11111111_11111111_00000000_00000000", 2).unwrap();
+    let c_biguint = a_biguint.clone() | b_biguint.clone();
+    
+    println!("{} | {} = {}", a_biguint.to_string_with_radix_and_stride(2, 8).unwrap(), b_biguint.to_string_with_radix_and_stride(2, 8).unwrap(), c_biguint.to_string_with_radix_and_stride(2, 8).unwrap());
+    assert_eq!(c_biguint.to_string_with_radix_and_stride(2, 8).unwrap(), "11111111_11111111_11111111_11111111_00000000_11111111_11111111_11111111_11111111_11111111_11111111_11111111_00000000_00000000_10110011_11111111_11111111_11111111_11111111_00111111_10000000_11111111_00000000_10111011_11001111_11111111_11111111_11110000_11111111_11111111_11111111_00000000");
+    assert_eq!(c_biguint.is_overflow(), false);
+    assert_eq!(c_biguint.is_underflow(), false);
+    assert_eq!(c_biguint.is_infinity(), false);
+    assert_eq!(c_biguint.is_undefined(), false);
+    assert_eq!(c_biguint.is_divided_by_zero(), false);
 
+    let a_biguint = U256::from_str_radix("10101010_11001100_11110000_11111111_00000000_11111111_11111111_00000000_00000000_11111111_11111111_11111111_00000000_00000000_00000000_11111111_11111111_11111111_11111111_00000000_00000000_00000000_00000000_10110011_10001111_00001111_10000011_11110000_00111111_10000000_11111111_00000000", 2).unwrap();
+    let b_biguint = U256::max();
+    let c_biguint = a_biguint.clone() | b_biguint.clone();
+    
+    println!("{} | {} = {}", a_biguint.to_string_with_radix_and_stride(2, 8).unwrap(), b_biguint.to_string_with_radix_and_stride(2, 8).unwrap(), c_biguint.to_string_with_radix_and_stride(2, 8).unwrap());
+    assert_eq!(c_biguint.to_string_with_radix_and_stride(2, 8).unwrap(), "11111111_11111111_11111111_11111111_11111111_11111111_11111111_11111111_11111111_11111111_11111111_11111111_11111111_11111111_11111111_11111111_11111111_11111111_11111111_11111111_11111111_11111111_11111111_11111111_11111111_11111111_11111111_11111111_11111111_11111111_11111111_11111111");
+    assert_eq!(c_biguint.is_overflow(), false);
+    assert_eq!(c_biguint.is_underflow(), false);
+    assert_eq!(c_biguint.is_infinity(), false);
+    assert_eq!(c_biguint.is_undefined(), false);
+    assert_eq!(c_biguint.is_divided_by_zero(), false);
+
+    let a_biguint = U256::from_str_radix("10101010_11001100_11110000_11111111_00000000_11111111_11111111_00000000_00000000_11111111_11111111_11111111_00000000_00000000_00000000_11111111_11111111_11111111_11111111_00000000_00000000_00000000_00000000_10110011_10001111_00001111_10000011_11110000_00111111_10000000_11111111_00000000", 2).unwrap();
+    let b_biguint = U256::zero();
+    let c_biguint = a_biguint.clone() | b_biguint.clone();
+    
+    println!("{} | {} = {}", a_biguint.to_string_with_radix_and_stride(2, 8).unwrap(), b_biguint.to_string_with_radix_and_stride(2, 8).unwrap(), c_biguint.to_string_with_radix_and_stride(2, 8).unwrap());
+    assert_eq!(c_biguint.to_string_with_radix_and_stride(2, 8).unwrap(), "10101010_11001100_11110000_11111111_00000000_11111111_11111111_00000000_00000000_11111111_11111111_11111111_00000000_00000000_00000000_11111111_11111111_11111111_11111111_00000000_00000000_00000000_00000000_10110011_10001111_00001111_10000011_11110000_00111111_10000000_11111111_00000000");
+    assert_eq!(c_biguint.is_overflow(), false);
+    assert_eq!(c_biguint.is_underflow(), false);
+    assert_eq!(c_biguint.is_infinity(), false);
+    assert_eq!(c_biguint.is_undefined(), false);
+    assert_eq!(c_biguint.is_divided_by_zero(), false);
+
+    let a_biguint = U256::from_str_radix("10101010_11001100_11110000_11111111_00000000_11111111_11111111_00000000_00000000_11111111_11111111_11111111_00000000_00000000_00000000_11111111_11111111_11111111_11111111_00000000_00000000_00000000_00000000_10110011_10001111_00001111_10000011_11110000_00111111_10000000_11111111_00000000", 2).unwrap();
+    let b_biguint = U256::from_str_radix("11111111_11111111_11111111_00000000_00000000_00000000_11111111_11111111_11111111_11111111_00000000_00000000_00000000_00000000_10110011_10001111_00001111_10000011_11110000_00111111_10000000_11111111_00000000_10101010_11001100_11110000_11111111_00000000_11111111_11111111_00000000_00000000", 2).unwrap();
+    let _c_biguint = a_biguint | b_biguint;
+    // It cannot be compiled!
+    // println!("{} | {} = {}", a_biguint.to_string_with_radix_and_stride(2, 8).unwrap(), b_biguint.to_string_with_radix_and_stride(2, 8).unwrap(), _c_biguint.to_string_with_radix_and_stride(2, 8).unwrap());
+    // The operator | swallowed (took the ownership of) a_biguint and b_biguint.
+
+    let a_biguint = U256::from_str_radix("10101010_11001100_11110000_11111111_00000000_11111111_11111111_00000000_00000000_11111111_11111111_11111111_00000000_00000000_00000000_11111111_11111111_11111111_11111111_00000000_00000000_00000000_00000000_10110011_10001111_00001111_10000011_11110000_00111111_10000000_11111111_00000000", 2).unwrap();
+    let b_biguint = U256::max();
+    let _c_biguint = a_biguint | b_biguint;
+    // It cannot be compiled!
+    // println!("{} | {} = {}", a_biguint.to_string_with_radix_and_stride(2, 8).unwrap(), b_biguint.to_string_with_radix_and_stride(2, 8).unwrap(), _c_biguint.to_string_with_radix_and_stride(2, 8).unwrap());
+    // The operator | swallowed (took the ownership of) a_biguint and b_biguint.
+
+    let a_biguint = U256::from_str_radix("10101010_11001100_11110000_11111111_00000000_11111111_11111111_00000000_00000000_11111111_11111111_11111111_00000000_00000000_00000000_11111111_11111111_11111111_11111111_00000000_00000000_00000000_00000000_10110011_10001111_00001111_10000011_11110000_00111111_10000000_11111111_00000000", 2).unwrap();
+    let b_biguint = U256::zero();
+    let _c_biguint = a_biguint | b_biguint;
+    // It cannot be compiled!
+    // println!("{} | {} = {}", a_biguint.to_string_with_radix_and_stride(2, 8).unwrap(), b_biguint.to_string_with_radix_and_stride(2, 8).unwrap(), _c_biguint.to_string_with_radix_and_stride(2, 8).unwrap());
+    // The operator | swallowed (took the ownership of) a_biguint and b_biguint.
     println!("---------------------------");
 }
 
 fn biguint_operator_or_assign()
 {
     println!("biguint_operator_or_assign");
-    use std::str::FromStr;
     use cryptocol::define_utypes_with;
     define_utypes_with!(u32);
 
+    let mut a_biguint = U256::from_str_radix("10101010_11001100_11110000_11111111_00000000_11111111_11111111_00000000_00000000_11111111_11111111_11111111_00000000_00000000_00000000_11111111_11111111_11111111_11111111_00000000_00000000_00000000_00000000_10110011_10001111_00001111_10000011_11110000_00111111_10000000_11111111_00000000", 2).unwrap();
+    println!("Originally, a_biguint = {}", a_biguint.to_string_with_radix_and_stride(2, 8).unwrap());
+    assert_eq!(a_biguint.is_overflow(), false);
+    assert_eq!(a_biguint.is_underflow(), false);
+    assert_eq!(a_biguint.is_infinity(), false);
+    assert_eq!(a_biguint.is_undefined(), false);
+    assert_eq!(a_biguint.is_divided_by_zero(), false);
 
+    let b_biguint = U256::from_str_radix("11111111_11111111_11111111_00000000_00000000_00000000_11111111_11111111_11111111_11111111_00000000_00000000_00000000_00000000_10110011_10001111_00001111_10000011_11110000_00111111_10000000_11111111_00000000_10101010_11001100_11110000_11111111_00000000_11111111_11111111_00000000_00000000", 2).unwrap();
+    a_biguint |= b_biguint.clone();
+    println!("After a_biguint |= {}, a_biguint = {}.", b_biguint, a_biguint.to_string_with_radix_and_stride(2, 8).unwrap());
+    assert_eq!(a_biguint.to_string_with_radix_and_stride(2, 8).unwrap(), "11111111_11111111_11111111_11111111_00000000_11111111_11111111_11111111_11111111_11111111_11111111_11111111_00000000_00000000_10110011_11111111_11111111_11111111_11111111_00111111_10000000_11111111_00000000_10111011_11001111_11111111_11111111_11110000_11111111_11111111_11111111_00000000");
+    assert_eq!(a_biguint.is_overflow(), false);
+    assert_eq!(a_biguint.is_underflow(), false);
+    assert_eq!(a_biguint.is_infinity(), false);
+    assert_eq!(a_biguint.is_undefined(), false);
+    assert_eq!(a_biguint.is_divided_by_zero(), false);
+
+    let mut a_biguint = U256::from_str_radix("10101010_11001100_11110000_11111111_00000000_11111111_11111111_00000000_00000000_11111111_11111111_11111111_00000000_00000000_00000000_11111111_11111111_11111111_11111111_00000000_00000000_00000000_00000000_10110011_10001111_00001111_10000011_11110000_00111111_10000000_11111111_00000000", 2).unwrap();
+    println!("Originally, a_biguint = {}", a_biguint.to_string_with_radix_and_stride(2, 8).unwrap());
+    assert_eq!(a_biguint.is_overflow(), false);
+    assert_eq!(a_biguint.is_underflow(), false);
+    assert_eq!(a_biguint.is_infinity(), false);
+    assert_eq!(a_biguint.is_undefined(), false);
+    assert_eq!(a_biguint.is_divided_by_zero(), false);
+
+    let b_biguint = U256::max();
+    a_biguint |= b_biguint.clone();
+    println!("After a_biguint |= {}, a_biguint = {}.", b_biguint, a_biguint.to_string_with_radix_and_stride(2, 8).unwrap());
+    assert_eq!(a_biguint.to_string_with_radix_and_stride(2, 8).unwrap(), "11111111_11111111_11111111_11111111_11111111_11111111_11111111_11111111_11111111_11111111_11111111_11111111_11111111_11111111_11111111_11111111_11111111_11111111_11111111_11111111_11111111_11111111_11111111_11111111_11111111_11111111_11111111_11111111_11111111_11111111_11111111_11111111");
+    assert_eq!(a_biguint.is_overflow(), false);
+    assert_eq!(a_biguint.is_underflow(), false);
+    assert_eq!(a_biguint.is_infinity(), false);
+    assert_eq!(a_biguint.is_undefined(), false);
+    assert_eq!(a_biguint.is_divided_by_zero(), false);
+
+    let mut a_biguint = U256::from_str_radix("10101010_11001100_11110000_11111111_00000000_11111111_11111111_00000000_00000000_11111111_11111111_11111111_00000000_00000000_00000000_11111111_11111111_11111111_11111111_00000000_00000000_00000000_00000000_10110011_10001111_00001111_10000011_11110000_00111111_10000000_11111111_00000000", 2).unwrap();
+    println!("Originally, a_biguint = {}", a_biguint.to_string_with_radix_and_stride(2, 8).unwrap());
+    assert_eq!(a_biguint.is_overflow(), false);
+    assert_eq!(a_biguint.is_underflow(), false);
+    assert_eq!(a_biguint.is_infinity(), false);
+    assert_eq!(a_biguint.is_undefined(), false);
+    assert_eq!(a_biguint.is_divided_by_zero(), false);
+
+    let b_biguint = U256::zero();
+    a_biguint |= b_biguint.clone();
+    println!("After a_biguint |= {}, a_biguint = {}.", b_biguint, a_biguint.to_string_with_radix_and_stride(2, 8).unwrap());
+    assert_eq!(a_biguint.to_string_with_radix_and_stride(2, 8).unwrap(), "10101010_11001100_11110000_11111111_00000000_11111111_11111111_00000000_00000000_11111111_11111111_11111111_00000000_00000000_00000000_11111111_11111111_11111111_11111111_00000000_00000000_00000000_00000000_10110011_10001111_00001111_10000011_11110000_00111111_10000000_11111111_00000000");
+    assert_eq!(a_biguint.is_overflow(), false);
+    assert_eq!(a_biguint.is_underflow(), false);
+    assert_eq!(a_biguint.is_infinity(), false);
+    assert_eq!(a_biguint.is_undefined(), false);
+    assert_eq!(a_biguint.is_divided_by_zero(), false);
+
+    let mut a_biguint = U256::from_str_radix("10101010_11001100_11110000_11111111_00000000_11111111_11111111_00000000_00000000_11111111_11111111_11111111_00000000_00000000_00000000_11111111_11111111_11111111_11111111_00000000_00000000_00000000_00000000_10110011_10001111_00001111_10000011_11110000_00111111_10000000_11111111_00000000", 2).unwrap();
+    println!("Originally, a_biguint = {}", a_biguint.to_string_with_radix_and_stride(2, 8).unwrap());
+    let b_biguint = U256::from_str_radix("11111111_11111111_11111111_00000000_00000000_00000000_11111111_11111111_11111111_11111111_00000000_00000000_00000000_00000000_10110011_10001111_00001111_10000011_11110000_00111111_10000000_11111111_00000000_10101010_11001100_11110000_11111111_00000000_11111111_11111111_00000000_00000000", 2).unwrap();
+    a_biguint |= b_biguint;
+    // It cannot be compiled!
+    // println!("After a_biguint |= {}, a_biguint = {}.", b_biguint, a_biguint.to_string_with_radix_and_stride(2, 8).unwrap());
+    // The operator |= swallowed (took the ownership of) b_biguint.
+
+    let mut a_biguint = U256::from_str_radix("10101010_11001100_11110000_11111111_00000000_11111111_11111111_00000000_00000000_11111111_11111111_11111111_00000000_00000000_00000000_11111111_11111111_11111111_11111111_00000000_00000000_00000000_00000000_10110011_10001111_00001111_10000011_11110000_00111111_10000000_11111111_00000000", 2).unwrap();
+    println!("Originally, a_biguint = {}", a_biguint.to_string_with_radix_and_stride(2, 8).unwrap());
+    let b_biguint = U256::max();
+    a_biguint |= b_biguint;
+    // It cannot be compiled!
+    // println!("After a_biguint |= {}, a_biguint = {}.", b_biguint, a_biguint.to_string_with_radix_and_stride(2, 8).unwrap());
+    // The operator |= swallowed (took the ownership of) b_biguint.
+
+    let mut a_biguint = U256::from_str_radix("10101010_11001100_11110000_11111111_00000000_11111111_11111111_00000000_00000000_11111111_11111111_11111111_00000000_00000000_00000000_11111111_11111111_11111111_11111111_00000000_00000000_00000000_00000000_10110011_10001111_00001111_10000011_11110000_00111111_10000000_11111111_00000000", 2).unwrap();
+    println!("Originally, a_biguint = {}", a_biguint.to_string_with_radix_and_stride(2, 8).unwrap());
+    let b_biguint = U256::zero();
+    a_biguint |= b_biguint;
+    // It cannot be compiled!
+    // println!("After a_biguint |= {}, a_biguint = {}.", b_biguint, a_biguint.to_string_with_radix_and_stride(2, 8).unwrap());
+    // The operator |= swallowed (took the ownership of) b_biguint.
     println!("---------------------------");
 }
 
 fn biguint_operator_xor()
 {
     println!("biguint_operator_xor");
-    use std::str::FromStr;
     use cryptocol::define_utypes_with;
     define_utypes_with!(u64);
 
+    let a_biguint = U256::from_str_radix("10101010_11001100_11110000_11111111_00000000_11111111_11111111_00000000_00000000_11111111_11111111_11111111_00000000_00000000_00000000_11111111_11111111_11111111_11111111_00000000_00000000_00000000_00000000_10110011_10001111_00001111_10000011_11110000_00111111_10000000_11111111_00000000", 2).unwrap();
+    let b_biguint = U256::from_str_radix("11111111_11111111_11111111_00000000_00000000_00000000_11111111_11111111_11111111_11111111_00000000_00000000_00000000_00000000_10110011_10001111_00001111_10000011_11110000_00111111_10000000_11111111_00000000_10101010_11001100_11110000_11111111_00000000_11111111_11111111_00000000_00000000", 2).unwrap();
+    let c_biguint = a_biguint.clone() ^ b_biguint.clone();
+    
+    println!("{} ^ {} = {}", a_biguint.to_string_with_radix_and_stride(2, 8).unwrap(), b_biguint.to_string_with_radix_and_stride(2, 8).unwrap(), c_biguint.to_string_with_radix_and_stride(2, 8).unwrap());
+    assert_eq!(c_biguint.to_string_with_radix_and_stride(2, 8).unwrap(), "1010101_00110011_00001111_11111111_00000000_11111111_00000000_11111111_11111111_00000000_11111111_11111111_00000000_00000000_10110011_01110000_11110000_01111100_00001111_00111111_10000000_11111111_00000000_00011001_01000011_11111111_01111100_11110000_11000000_01111111_11111111_00000000");
+    assert_eq!(c_biguint.is_overflow(), false);
+    assert_eq!(c_biguint.is_underflow(), false);
+    assert_eq!(c_biguint.is_infinity(), false);
+    assert_eq!(c_biguint.is_undefined(), false);
+    assert_eq!(c_biguint.is_divided_by_zero(), false);
 
+    let a_biguint = U256::from_str_radix("10101010_11001100_11110000_11111111_00000000_11111111_11111111_00000000_00000000_11111111_11111111_11111111_00000000_00000000_00000000_11111111_11111111_11111111_11111111_00000000_00000000_00000000_00000000_10110011_10001111_00001111_10000011_11110000_00111111_10000000_11111111_00000000", 2).unwrap();
+    let b_biguint = U256::max();
+    let c_biguint = a_biguint.clone() ^ b_biguint.clone();
+    
+    println!("{} ^ {} = {}", a_biguint.to_string_with_radix_and_stride(2, 8).unwrap(), b_biguint.to_string_with_radix_and_stride(2, 8).unwrap(), c_biguint.to_string_with_radix_and_stride(2, 8).unwrap());
+    assert_eq!(c_biguint.to_string_with_radix_and_stride(2, 8).unwrap(), "1010101_00110011_00001111_00000000_11111111_00000000_00000000_11111111_11111111_00000000_00000000_00000000_11111111_11111111_11111111_00000000_00000000_00000000_00000000_11111111_11111111_11111111_11111111_01001100_01110000_11110000_01111100_00001111_11000000_01111111_00000000_11111111");
+    assert_eq!(c_biguint.is_overflow(), false);
+    assert_eq!(c_biguint.is_underflow(), false);
+    assert_eq!(c_biguint.is_infinity(), false);
+    assert_eq!(c_biguint.is_undefined(), false);
+    assert_eq!(c_biguint.is_divided_by_zero(), false);
+
+    let a_biguint = U256::from_str_radix("10101010_11001100_11110000_11111111_00000000_11111111_11111111_00000000_00000000_11111111_11111111_11111111_00000000_00000000_00000000_11111111_11111111_11111111_11111111_00000000_00000000_00000000_00000000_10110011_10001111_00001111_10000011_11110000_00111111_10000000_11111111_00000000", 2).unwrap();
+    let b_biguint = U256::zero();
+    let c_biguint = a_biguint.clone() ^ b_biguint.clone();
+    
+    println!("{} ^ {} = {}", a_biguint.to_string_with_radix_and_stride(2, 8).unwrap(), b_biguint.to_string_with_radix_and_stride(2, 8).unwrap(), c_biguint.to_string_with_radix_and_stride(2, 8).unwrap());
+    assert_eq!(c_biguint.to_string_with_radix_and_stride(2, 8).unwrap(), "10101010_11001100_11110000_11111111_00000000_11111111_11111111_00000000_00000000_11111111_11111111_11111111_00000000_00000000_00000000_11111111_11111111_11111111_11111111_00000000_00000000_00000000_00000000_10110011_10001111_00001111_10000011_11110000_00111111_10000000_11111111_00000000");
+    assert_eq!(c_biguint.is_overflow(), false);
+    assert_eq!(c_biguint.is_underflow(), false);
+    assert_eq!(c_biguint.is_infinity(), false);
+    assert_eq!(c_biguint.is_undefined(), false);
+    assert_eq!(c_biguint.is_divided_by_zero(), false);
+
+    let a_biguint = U256::from_str_radix("10101010_11001100_11110000_11111111_00000000_11111111_11111111_00000000_00000000_11111111_11111111_11111111_00000000_00000000_00000000_11111111_11111111_11111111_11111111_00000000_00000000_00000000_00000000_10110011_10001111_00001111_10000011_11110000_00111111_10000000_11111111_00000000", 2).unwrap();
+    let b_biguint = U256::from_str_radix("11111111_11111111_11111111_00000000_00000000_00000000_11111111_11111111_11111111_11111111_00000000_00000000_00000000_00000000_10110011_10001111_00001111_10000011_11110000_00111111_10000000_11111111_00000000_10101010_11001100_11110000_11111111_00000000_11111111_11111111_00000000_00000000", 2).unwrap();
+    let _c_biguint = a_biguint ^ b_biguint;
+    // It cannot be compiled!
+    // println!("{} ^ {} = {}", a_biguint.to_string_with_radix_and_stride(2, 8).unwrap(), b_biguint.to_string_with_radix_and_stride(2, 8).unwrap(), _c_biguint.to_string_with_radix_and_stride(2, 8).unwrap());
+    // The operator ^ swallowed (took the ownership of) a_biguint and b_biguint.
+
+    let a_biguint = U256::from_str_radix("10101010_11001100_11110000_11111111_00000000_11111111_11111111_00000000_00000000_11111111_11111111_11111111_00000000_00000000_00000000_11111111_11111111_11111111_11111111_00000000_00000000_00000000_00000000_10110011_10001111_00001111_10000011_11110000_00111111_10000000_11111111_00000000", 2).unwrap();
+    let b_biguint = U256::max();
+    let _c_biguint = a_biguint ^ b_biguint;
+    // It cannot be compiled!
+    // println!("{} ^ {} = {}", a_biguint.to_string_with_radix_and_stride(2, 8).unwrap(), b_biguint.to_string_with_radix_and_stride(2, 8).unwrap(), _c_biguint.to_string_with_radix_and_stride(2, 8).unwrap());
+    // The operator ^ swallowed (took the ownership of) a_biguint and b_biguint.
+
+    let a_biguint = U256::from_str_radix("10101010_11001100_11110000_11111111_00000000_11111111_11111111_00000000_00000000_11111111_11111111_11111111_00000000_00000000_00000000_11111111_11111111_11111111_11111111_00000000_00000000_00000000_00000000_10110011_10001111_00001111_10000011_11110000_00111111_10000000_11111111_00000000", 2).unwrap();
+    let b_biguint = U256::zero();
+    let _c_biguint = a_biguint ^ b_biguint;
+    // It cannot be compiled!
+    // println!("{} ^ {} = {}", a_biguint.to_string_with_radix_and_stride(2, 8).unwrap(), b_biguint.to_string_with_radix_and_stride(2, 8).unwrap(), _c_biguint.to_string_with_radix_and_stride(2, 8).unwrap());
+    // The operator ^ swallowed (took the ownership of) a_biguint and b_biguint.
     println!("---------------------------");
 }
 
 fn biguint_operator_xor_assign()
 {
     println!("biguint_operator_xor_assign");
-    use std::str::FromStr;
     use cryptocol::define_utypes_with;
     define_utypes_with!(u128);
 
+    let mut a_biguint = U256::from_str_radix("10101010_11001100_11110000_11111111_00000000_11111111_11111111_00000000_00000000_11111111_11111111_11111111_00000000_00000000_00000000_11111111_11111111_11111111_11111111_00000000_00000000_00000000_00000000_10110011_10001111_00001111_10000011_11110000_00111111_10000000_11111111_00000000", 2).unwrap();
+    println!("Originally, a_biguint = {}", a_biguint.to_string_with_radix_and_stride(2, 8).unwrap());
+    assert_eq!(a_biguint.is_overflow(), false);
+    assert_eq!(a_biguint.is_underflow(), false);
+    assert_eq!(a_biguint.is_infinity(), false);
+    assert_eq!(a_biguint.is_undefined(), false);
+    assert_eq!(a_biguint.is_divided_by_zero(), false);
 
+    let b_biguint = U256::from_str_radix("11111111_11111111_11111111_00000000_00000000_00000000_11111111_11111111_11111111_11111111_00000000_00000000_00000000_00000000_10110011_10001111_00001111_10000011_11110000_00111111_10000000_11111111_00000000_10101010_11001100_11110000_11111111_00000000_11111111_11111111_00000000_00000000", 2).unwrap();
+    a_biguint ^= b_biguint.clone();
+    println!("After a_biguint ^= {}, a_biguint = {}.", b_biguint, a_biguint.to_string_with_radix_and_stride(2, 8).unwrap());
+    assert_eq!(a_biguint.to_string_with_radix_and_stride(2, 8).unwrap(), "1010101_00110011_00001111_11111111_00000000_11111111_00000000_11111111_11111111_00000000_11111111_11111111_00000000_00000000_10110011_01110000_11110000_01111100_00001111_00111111_10000000_11111111_00000000_00011001_01000011_11111111_01111100_11110000_11000000_01111111_11111111_00000000");
+    assert_eq!(a_biguint.is_overflow(), false);
+    assert_eq!(a_biguint.is_underflow(), false);
+    assert_eq!(a_biguint.is_infinity(), false);
+    assert_eq!(a_biguint.is_undefined(), false);
+    assert_eq!(a_biguint.is_divided_by_zero(), false);
+
+    let mut a_biguint = U256::from_str_radix("10101010_11001100_11110000_11111111_00000000_11111111_11111111_00000000_00000000_11111111_11111111_11111111_00000000_00000000_00000000_11111111_11111111_11111111_11111111_00000000_00000000_00000000_00000000_10110011_10001111_00001111_10000011_11110000_00111111_10000000_11111111_00000000", 2).unwrap();
+    println!("Originally, a_biguint = {}", a_biguint.to_string_with_radix_and_stride(2, 8).unwrap());
+    assert_eq!(a_biguint.is_overflow(), false);
+    assert_eq!(a_biguint.is_underflow(), false);
+    assert_eq!(a_biguint.is_infinity(), false);
+    assert_eq!(a_biguint.is_undefined(), false);
+    assert_eq!(a_biguint.is_divided_by_zero(), false);
+
+    let b_biguint = U256::max();
+    a_biguint ^= b_biguint.clone();
+    println!("After a_biguint ^= {}, a_biguint = {}.", b_biguint, a_biguint.to_string_with_radix_and_stride(2, 8).unwrap());
+    assert_eq!(a_biguint.to_string_with_radix_and_stride(2, 8).unwrap(), "1010101_00110011_00001111_00000000_11111111_00000000_00000000_11111111_11111111_00000000_00000000_00000000_11111111_11111111_11111111_00000000_00000000_00000000_00000000_11111111_11111111_11111111_11111111_01001100_01110000_11110000_01111100_00001111_11000000_01111111_00000000_11111111");
+    assert_eq!(a_biguint.is_overflow(), false);
+    assert_eq!(a_biguint.is_underflow(), false);
+    assert_eq!(a_biguint.is_infinity(), false);
+    assert_eq!(a_biguint.is_undefined(), false);
+    assert_eq!(a_biguint.is_divided_by_zero(), false);
+
+    let mut a_biguint = U256::from_str_radix("10101010_11001100_11110000_11111111_00000000_11111111_11111111_00000000_00000000_11111111_11111111_11111111_00000000_00000000_00000000_11111111_11111111_11111111_11111111_00000000_00000000_00000000_00000000_10110011_10001111_00001111_10000011_11110000_00111111_10000000_11111111_00000000", 2).unwrap();
+    println!("Originally, a_biguint = {}", a_biguint.to_string_with_radix_and_stride(2, 8).unwrap());
+    assert_eq!(a_biguint.is_overflow(), false);
+    assert_eq!(a_biguint.is_underflow(), false);
+    assert_eq!(a_biguint.is_infinity(), false);
+    assert_eq!(a_biguint.is_undefined(), false);
+    assert_eq!(a_biguint.is_divided_by_zero(), false);
+
+    let b_biguint = U256::zero();
+    a_biguint ^= b_biguint.clone();
+    println!("After a_biguint ^= {}, a_biguint = {}.", b_biguint, a_biguint.to_string_with_radix_and_stride(2, 8).unwrap());
+    assert_eq!(a_biguint.to_string_with_radix_and_stride(2, 8).unwrap(), "10101010_11001100_11110000_11111111_00000000_11111111_11111111_00000000_00000000_11111111_11111111_11111111_00000000_00000000_00000000_11111111_11111111_11111111_11111111_00000000_00000000_00000000_00000000_10110011_10001111_00001111_10000011_11110000_00111111_10000000_11111111_00000000");
+    assert_eq!(a_biguint.is_overflow(), false);
+    assert_eq!(a_biguint.is_underflow(), false);
+    assert_eq!(a_biguint.is_infinity(), false);
+    assert_eq!(a_biguint.is_undefined(), false);
+    assert_eq!(a_biguint.is_divided_by_zero(), false);
+
+    let mut a_biguint = U256::from_str_radix("10101010_11001100_11110000_11111111_00000000_11111111_11111111_00000000_00000000_11111111_11111111_11111111_00000000_00000000_00000000_11111111_11111111_11111111_11111111_00000000_00000000_00000000_00000000_10110011_10001111_00001111_10000011_11110000_00111111_10000000_11111111_00000000", 2).unwrap();
+    println!("Originally, a_biguint = {}", a_biguint.to_string_with_radix_and_stride(2, 8).unwrap());
+    let b_biguint = U256::from_str_radix("11111111_11111111_11111111_00000000_00000000_00000000_11111111_11111111_11111111_11111111_00000000_00000000_00000000_00000000_10110011_10001111_00001111_10000011_11110000_00111111_10000000_11111111_00000000_10101010_11001100_11110000_11111111_00000000_11111111_11111111_00000000_00000000", 2).unwrap();
+    a_biguint ^= b_biguint;
+    // It cannot be compiled!
+    // println!("After a_biguint ^= {}, a_biguint = {}.", b_biguint, a_biguint.to_string_with_radix_and_stride(2, 8).unwrap());
+    // The operator ^= swallowed (took the ownership of) b_biguint.
+
+    let mut a_biguint = U256::from_str_radix("10101010_11001100_11110000_11111111_00000000_11111111_11111111_00000000_00000000_11111111_11111111_11111111_00000000_00000000_00000000_11111111_11111111_11111111_11111111_00000000_00000000_00000000_00000000_10110011_10001111_00001111_10000011_11110000_00111111_10000000_11111111_00000000", 2).unwrap();
+    println!("Originally, a_biguint = {}", a_biguint.to_string_with_radix_and_stride(2, 8).unwrap());
+    let b_biguint = U256::max();
+    a_biguint ^= b_biguint;
+    // It cannot be compiled!
+    // println!("After a_biguint ^= {}, a_biguint = {}.", b_biguint, a_biguint.to_string_with_radix_and_stride(2, 8).unwrap());
+    // The operator ^= swallowed (took the ownership of) b_biguint.
+
+    let mut a_biguint = U256::from_str_radix("10101010_11001100_11110000_11111111_00000000_11111111_11111111_00000000_00000000_11111111_11111111_11111111_00000000_00000000_00000000_11111111_11111111_11111111_11111111_00000000_00000000_00000000_00000000_10110011_10001111_00001111_10000011_11110000_00111111_10000000_11111111_00000000", 2).unwrap();
+    println!("Originally, a_biguint = {}", a_biguint.to_string_with_radix_and_stride(2, 8).unwrap());
+    let b_biguint = U256::zero();
+    a_biguint ^= b_biguint;
+    // It cannot be compiled!
+    // println!("After a_biguint ^= {}, a_biguint = {}.", b_biguint, a_biguint.to_string_with_radix_and_stride(2, 8).unwrap());
+    // The operator ^= swallowed (took the ownership of) b_biguint.
     println!("---------------------------");
 }
 
 fn biguint_operator_flip()
 {
     println!("biguint_operator_flip");
-    use std::str::FromStr;
     use cryptocol::define_utypes_with;
     define_utypes_with!(u8);
 
+    let a_biguint = U256::from_str_radix("10101010_11001100_11110000_11111111_00000000_11111111_11111111_00000000_00000000_11111111_11111111_11111111_00000000_00000000_00000000_11111111_11111111_11111111_11111111_00000000_00000000_00000000_00000000_10110011_10001111_00001111_10000011_11110000_00111111_10000000_11111111_00000000", 2).unwrap();
+    let res = !a_biguint.clone();
+    println!("! {} = {}", a_biguint.to_string_with_radix_and_stride(2, 8).unwrap(), res.to_string_with_radix_and_stride(2, 8).unwrap());
+    assert_eq!(res.to_string_with_radix_and_stride(2, 8).unwrap(), "1010101_00110011_00001111_00000000_11111111_00000000_00000000_11111111_11111111_00000000_00000000_00000000_11111111_11111111_11111111_00000000_00000000_00000000_00000000_11111111_11111111_11111111_11111111_01001100_01110000_11110000_01111100_00001111_11000000_01111111_00000000_11111111");
+    assert_eq!(res.is_overflow(), false);
+    assert_eq!(res.is_underflow(), false);
+    assert_eq!(res.is_infinity(), false);
+    assert_eq!(res.is_undefined(), false);
+    assert_eq!(res.is_divided_by_zero(), false);
 
+    let a_biguint = U256::max();
+    let res = !a_biguint.clone();
+    println!("! {} = {}", a_biguint.to_string_with_radix_and_stride(2, 8).unwrap(), res.to_string_with_radix_and_stride(2, 8).unwrap());
+    assert_eq!(res.to_string(), "0");
+    assert_eq!(res.is_overflow(), false);
+    assert_eq!(res.is_underflow(), false);
+    assert_eq!(res.is_infinity(), false);
+    assert_eq!(res.is_undefined(), false);
+    assert_eq!(res.is_divided_by_zero(), false);
+
+    let a_biguint = U256::zero();
+    let res = !a_biguint.clone();
+    println!("! {} = {}", a_biguint.to_string_with_radix_and_stride(2, 8).unwrap(), res.to_string_with_radix_and_stride(2, 8).unwrap());
+    assert_eq!(res.to_string_with_radix_and_stride(2, 8).unwrap(), "11111111_11111111_11111111_11111111_11111111_11111111_11111111_11111111_11111111_11111111_11111111_11111111_11111111_11111111_11111111_11111111_11111111_11111111_11111111_11111111_11111111_11111111_11111111_11111111_11111111_11111111_11111111_11111111_11111111_11111111_11111111_11111111");
+    assert_eq!(res.is_overflow(), false);
+    assert_eq!(res.is_underflow(), false);
+    assert_eq!(res.is_infinity(), false);
+    assert_eq!(res.is_undefined(), false);
+    assert_eq!(res.is_divided_by_zero(), false);
+
+    let a_biguint = U256::from_str_radix("10101010_11001100_11110000_11111111_00000000_11111111_11111111_00000000_00000000_11111111_11111111_11111111_00000000_00000000_00000000_11111111_11111111_11111111_11111111_00000000_00000000_00000000_00000000_10110011_10001111_00001111_10000011_11110000_00111111_10000000_11111111_00000000", 2).unwrap();
+    let _res = !a_biguint;
+    // It cannot be compiled!
+    // println!("! {} = {}", a_biguint.to_string_with_radix_and_stride(2, 8).unwrap(), _res.to_string_with_radix_and_stride(2, 8).unwrap());
+    // The operator ! swallowed (took the ownership of) a_biguint.
+
+    let a_biguint = U256::from_str_radix("10101010_11001100_11110000_11111111_00000000_11111111_11111111_00000000_00000000_11111111_11111111_11111111_00000000_00000000_00000000_11111111_11111111_11111111_11111111_00000000_00000000_00000000_00000000_10110011_10001111_00001111_10000011_11110000_00111111_10000000_11111111_00000000", 2).unwrap();
+    let _res = !a_biguint;
+    // It cannot be compiled!
+    // println!("! {} = {}", a_biguint.to_string_with_radix_and_stride(2, 8).unwrap(), _res.to_string_with_radix_and_stride(2, 8).unwrap());
+    // The operator ! swallowed (took the ownership of) a_biguint.
+
+    let a_biguint = U256::from_str_radix("10101010_11001100_11110000_11111111_00000000_11111111_11111111_00000000_00000000_11111111_11111111_11111111_00000000_00000000_00000000_11111111_11111111_11111111_11111111_00000000_00000000_00000000_00000000_10110011_10001111_00001111_10000011_11110000_00111111_10000000_11111111_00000000", 2).unwrap();
+    let _res = !a_biguint;
+    // It cannot be compiled!
+    // println!("! {} = {}", a_biguint.to_string_with_radix_and_stride(2, 8).unwrap(), _res.to_string_with_radix_and_stride(2, 8).unwrap());
+    // The operator ! swallowed (took the ownership of) a_biguint.
     println!("---------------------------");
 }
 
-fn biguint_operator_flip_assign()
+
+
+fn biguint_operators_miscellaneous_main()
 {
-    println!("biguint_operator_flip_assign");
-    use std::str::FromStr;
-    use cryptocol::define_utypes_with;
-    define_utypes_with!(u16);
+    biguint_operator_eq();
+    biguint_operator_lt();
+    biguint_operator_gt();
+    biguint_operator_le();
+    biguint_operator_ge();
+}
 
+fn biguint_operator_eq()
+{
+    println!("biguint_operator_eq");
+    use cryptocol::define_utypes_with;
+    define_utypes_with!(u8);
+
+    let a_biguint = UU32::from_uint(100_u8);
+    let b_uint = 100_u8;
+    let res = a_biguint == b_uint;
+    if res
+        { println!("{} == {}", a_biguint, b_uint); }
+    else
+        { println!("{} != {}", a_biguint, b_uint); }
+    assert_eq!(res, true);
+
+    let a_biguint = UU32::from_uint(100_u8);
+    let b_uint = 200_u8;
+    let res = a_biguint == b_uint;
+    if res
+        { println!("{} == {}", a_biguint, b_uint); }
+    else
+        { println!("{} != {}", a_biguint, b_uint); }
+    assert_eq!(res, false);
+
+    let a_biguint = UU32::from_uint(100_u8);
+    let b_uint = 100_u8;
+    let res = a_biguint != b_uint;
+    if res
+        { println!("{} != {}", a_biguint, b_uint); }
+    else
+        { println!("{} == {}", a_biguint, b_uint); }
+    assert_eq!(res, false);
+
+    let a_biguint = UU32::from_uint(100_u8);
+    let b_uint = 200_u8;
+    let res = a_biguint != b_uint;
+    if res
+        { println!("{} != {}", a_biguint, b_uint); }
+    else
+        { println!("{} == {}", a_biguint, b_uint); }
+    assert_eq!(res, true);
+
+    let num_str = "69743176821145534028236692093846345739169743176821145534028236692093846345739";
+    let a_biguint = UU32::from_string(num_str).unwrap();
+    let b_biguint = UU32::from_string(num_str).unwrap();
+    let res = a_biguint == b_biguint;
+    if res
+        { println!("{} = {}", a_biguint, b_biguint); }
+    else
+        { println!("{} != {}", a_biguint, b_biguint); }
+    assert_eq!(res, true);
+
+    let num_str = "69743176821145534028236692093846345739169743176821145534028236692093846345739";
+    let a_biguint = UU32::from_string(num_str).unwrap();
+    let b_biguint = UU32::from_uint(100_u8);
+    let res = a_biguint == b_biguint;
+    if res
+        { println!("{} = {}", a_biguint, b_biguint); }
+    else
+        { println!("{} != {}", a_biguint, b_biguint); }
+    assert_eq!(res, false);
+
+    let num_str = "69743176821145534028236692093846345739169743176821145534028236692093846345739";
+    let a_biguint = UU32::from_string(num_str).unwrap();
+    let b_biguint = UU32::from_string(num_str).unwrap();
+    let res = a_biguint != b_biguint;
+    if res
+        { println!("{} != {}", a_biguint, b_biguint); }
+    else
+        { println!("{} == {}", a_biguint, b_biguint); }
+    assert_eq!(res, false);
+
+    let num_str = "69743176821145534028236692093846345739169743176821145534028236692093846345739";
+    let a_biguint = UU32::from_string(num_str).unwrap();
+    let b_biguint = UU32::from_uint(100_u8);
+    let res = a_biguint != b_biguint;
+    if res
+        { println!("{} != {}", a_biguint, b_biguint); }
+    else
+        { println!("{} == {}", a_biguint, b_biguint); }
+    assert_eq!(res, true);
     println!("---------------------------");
 }
+
+fn biguint_operator_lt()
+{
+    println!("biguint_operator_eq");
+    use cryptocol::define_utypes_with;
+    define_utypes_with!(u8);
+    
+    
+    println!("---------------------------");
+}
+
+fn biguint_operator_gt()
+{
+    println!("biguint_operator_eq");
+    use cryptocol::define_utypes_with;
+    define_utypes_with!(u8);
+    
+    println!("---------------------------");
+}
+
+fn biguint_operator_le()
+{
+    println!("biguint_operator_eq");
+    use cryptocol::define_utypes_with;
+    define_utypes_with!(u8);
+    
+    println!("---------------------------");
+}
+
+fn biguint_operator_ge()
+{
+    println!("biguint_operator_eq");
+    use cryptocol::define_utypes_with;
+    define_utypes_with!(u8);
+    
+    println!("---------------------------");
+}
+
 
 
 /*

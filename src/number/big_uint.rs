@@ -2410,7 +2410,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// (Least Significant Bit) reguardless endian. So, if the bit_pos is `0`,
     /// only LSB is set to be `1` and all the other bits will be set to `0`.
     /// 
-    /// # Example
+    /// # Example 1
     /// ```
     /// use cryptocol::define_utypes_with_u32;
     /// define_utypes_with_u32!();
@@ -2418,17 +2418,35 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// let a_0 = U256::generate_check_bits_(0);
     /// println!("a_0 = {}", a_0.to_string_with_radix_and_stride(2, 10).unwrap());
     /// assert_eq!(a_0.to_string_with_radix_and_stride(2, 10).unwrap(), "1");
+    /// ```
+    /// 
+    /// # Example 2
+    /// ```
+    /// use cryptocol::define_utypes_with_u32;
+    /// define_utypes_with_u32!();
     /// 
     /// let a_12 = U256::generate_check_bits_(12);
     /// println!("a_12 = {}", a_12.to_string_with_radix_and_stride(2, 10).unwrap());
     /// assert_eq!(a_12.to_string_with_radix_and_stride(2, 10).unwrap(), "100_0000000000");
+    /// ```
+    /// 
+    /// # Example 3
+    /// ```
+    /// use cryptocol::define_utypes_with_u32;
+    /// define_utypes_with_u32!();
     /// 
     /// let a_255 = U256::generate_check_bits_(255);
     /// println!("a_255 = {}", a_255.to_string_with_radix_and_stride(2, 10).unwrap());
     /// assert_eq!(a_255.to_string_with_radix_and_stride(2, 10).unwrap(), "100000_0000000000_0000000000_0000000000_0000000000_0000000000_0000000000_0000000000_0000000000_0000000000_0000000000_0000000000_0000000000_0000000000_0000000000_0000000000_0000000000_0000000000_0000000000_0000000000_0000000000_0000000000_0000000000_0000000000_0000000000_0000000000");
+    /// ```
+    /// 
+    /// # Panic Examples
+    /// ```should_panic
+    /// use cryptocol::define_utypes_with_u32;
+    /// define_utypes_with_u32!();
     /// 
     /// // It will panic!
-    /// // let a_256 = U256::generate_check_bits_(256);
+    /// let a_256 = U256::generate_check_bits_(256);
     /// ```
     /// 
     /// # Big-endian issue
@@ -2561,7 +2579,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// - If the bit positon `bit_pos` is greater than or equal to
     /// `size_of::<T>() * N * 8`, this method will panic.
     /// 
-    /// # Example
+    /// # Example 1
     /// ```
     /// use cryptocol::define_utypes_with;
     /// define_utypes_with!(u128);
@@ -2571,9 +2589,17 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// a.turn_check_bits(102);
     /// println!("a = {}", a.to_string_with_radix_and_stride(2, 8).unwrap());
     /// assert_eq!(a, U256::from_str_radix("1000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000", 2).unwrap());
+    /// ```
     /// 
+    /// # Panic Example
+    /// ```should_panic
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u128);
+    /// 
+    /// let mut a = U256::from_string("256487951236974125896345564889974258").unwrap();
+    /// println!("a = {}", a.to_string_with_radix_and_stride(2, 8).unwrap());
     /// // It will panic.
-    /// // a.turn_check_bits(256);
+    /// a.turn_check_bits(256);
     /// ```
     /// 
     /// # Big-endian issue
@@ -2696,7 +2722,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// If you are not sure that `bit_pos` is less than `size_of::<T>() * N * 8`,
     /// you are highly encouraged to use the method `is_bit_set()`.
     /// 
-    /// # Example
+    /// # Example 1
     /// ```
     /// use cryptocol::define_utypes_with;
     /// define_utypes_with!(u64);
@@ -2705,10 +2731,26 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// println!("a = {}_U256", a.to_string_with_radix_and_stride(2, 10).unwrap());
     /// println!("The {}th bit is set: {}", 151, a.is_bit_set_(151));
     /// assert_eq!(a.is_bit_set_(151), true);
+    /// ```
+    /// 
+    /// # Example 2
+    /// ```
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u64);
+    /// 
+    /// let a = U256::from_string("12345678912345678912345678912345678912345678912345678912345678912345678912345").unwrap();
     /// println!("The {}th bit is set: {}", 200, a.is_bit_set_(200));
     /// assert_eq!(a.is_bit_set_(200), false);
+    /// ```
+    /// 
+    /// # Panic Examples
+    /// ```should_panic
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u64);
+    /// 
+    /// let a = U256::from_string("12345678912345678912345678912345678912345678912345678912345678912345678912345").unwrap();
     /// // It will panic!!!
-    /// // println!("The {}th bit is set: {}", 300, a.is_bit_set_(300));
+    /// println!("The {}th bit is set: {}", 300, a.is_bit_set_(300));
     /// ```
     /// 
     /// # Big-endian issue
@@ -2910,7 +2952,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// Otherwise, use its Counterpart method
     /// [get_num()](struct@BigUInt#method.get_num) for safety.
     /// 
-    /// # Examples
+    /// # Example 1
     /// ```
     /// use cryptocol::define_utypes_with;
     /// define_utypes_with!(u32);
@@ -2919,8 +2961,16 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// let b = a.get_num_(3);
     /// println!("a.get_num_(3) = {}", b);
     /// assert_eq!(b, 30);
+    /// ```
+    /// 
+    /// # Panic Example
+    /// ```should_panic
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u32);
+    /// 
+    /// let a = U256::from([0_u32, 10, 20, 30, 40, 50, 60, 70]);
     /// // It will panic.
-    /// // let c = a.get_num_(8);
+    /// let c = a.get_num_(8);
     /// ```
     /// # Big-endian issue
     /// It is just experimental for Big Endian CPUs. So, you are not encouraged
@@ -3017,7 +3067,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// Otherwise, use its Counterpart method
     /// [set_num()](struct@BigUInt#method.set_num).
     /// 
-    /// # Examples
+    /// # Example 1
     /// ```
     /// use cryptocol::define_utypes_with;
     /// define_utypes_with!(u128);
@@ -3025,13 +3075,22 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// let mut a = U256::from([10_u128, 20]);
     /// let mut num = a.get_num_(1);
     /// println!("a.get_num_(1) = {}", num);
-    /// a.set_num_(1, 0);
+    /// assert_eq!(num, 20);
+    /// 
+    /// a.set_num_(1, 300);
     /// num = a.get_num_(1);
     /// println!("a.get_num_(1) = {}", num);
-    /// assert_eq!(num, 0);
+    /// assert_eq!(num, 300);
+    /// ```
     /// 
+    /// # Panic Examples
+    /// ```should_panic
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u128);
+    /// 
+    /// let mut a = U256::from([10_u128, 20]);
     /// // It will panic.
-    /// // let c = a.set_num_(4, 0);
+    /// let c = a.set_num_(4, 0);
     /// ```
     #[inline]
     pub fn set_num_(&mut self, i: usize, val: T)
@@ -4236,10 +4295,12 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// `ge_uint()`, and `eq_uint()` for your convenience. Then, you don't
     /// have to use `partial_cmp_uint()` directly too.
     /// 
+    /// # Arguments
+    /// `rhs` is to be added to `self`, and primitive unsigned integer
+    /// such as `u8`, `u16`, `u32`, `u64`, and `u128`.
+    /// 
     /// # Panics
-    /// - If `size_of::<T>() * N` <= `128`, some methods may panic
-    /// or its behavior may be undefined though it may not panic.
-    /// - If `size_of::<T>() * N` < `size_of::<U>()`, This method may panic
+    /// If `size_of::<T>() * N` <= `128`, some methods may panic
     /// or its behavior may be undefined though it may not panic.
     /// 
     /// # Output
@@ -4307,12 +4368,12 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
             + BitXor<Output=U> + BitXorAssign + Not<Output=U>
             + PartialEq + PartialOrd
     {
-        if other.length_in_bytes() > T::size_in_bytes()
+        if U::size_in_bytes() > T::size_in_bytes()
         {
             return self.partial_cmp(&Self::from_uint(other));
         }
 
-        // if rhs.length_in_bytes() <= T::size_in_bytes()
+        // if U::size_in_bytes() <= T::size_in_bytes()
         let t_other = T::num::<U>(other);
         if self.get_num_(0) > t_other
         {
@@ -4340,13 +4401,13 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
 
     // pub fn lt_uint<U>(&self, other: U) -> bool
     /// Compares `self` and `other` to find whether `self` is less than `other`.
-    /// However, if the datatype `U` is the same datatype `T`, it will be
-    /// more convenient for you to use the operator `<`.
+    /// 
+    /// # Arguments
+    /// `rhs` is to be added to `self`, and primitive unsigned integer
+    /// such as `u8`, `u16`, `u32`, `u64`, and `u128`.
     /// 
     /// # Panics
-    /// - If `size_of::<T>() * N` <= `128`, some methods may panic
-    /// or its behavior may be undefined though it may not panic.
-    /// - If `size_of::<T>() * N` < `size_of::<U>()`, This method may panic
+    /// If `size_of::<T>() * N` <= `128`, some methods may panic
     /// or its behavior may be undefined though it may not panic.
     /// 
     /// # Output
@@ -4356,26 +4417,45 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// # Example 1
     /// ```
     /// use cryptocol::define_utypes_with;
-    /// define_utypes_with!(u32);
+    /// define_utypes_with!(u16);
     /// 
-    /// let res = UU32::from_uint(100_u16).gt_uint(90_u64);
+    /// let a_biguint = UU32::from_uint(200_u8);
+    /// let b_uint = 100_u8;
+    /// let res = a_biguint.lt_uint(b_uint);
     /// if res
-    ///     { println!("100 > 90"); }
+    ///     { println!("{} < {}", a_biguint, b_uint); }
     /// else
-    ///     { println!("100 <= 90"); }
-    /// assert_eq!(res, true);
+    ///     { println!("{} >= {}", a_biguint, b_uint); }
+    /// assert_eq!(res, false);
     /// ```
     /// 
     /// # Example 2
     /// ```
     /// use cryptocol::define_utypes_with;
-    /// define_utypes_with!(u32);
+    /// define_utypes_with!(u16);
     /// 
-    /// let res = UU32::from_uint(100_u16).gt_uint(110_u64);
+    /// let a_biguint = UU32::from_uint(100_u8);
+    /// let b_uint = 200_u8;
+    /// let res = a_biguint.lt_uint(b_uint);
     /// if res
-    ///     { println!("100 > 110"); }
+    ///     { println!("{} < {}", a_biguint, b_uint); }
     /// else
-    ///     { println!("100 <= 110"); }
+    ///     { println!("{} >= {}", a_biguint, b_uint); }
+    /// assert_eq!(res, true);
+    /// ```
+    /// 
+    /// # Example 3
+    /// ```
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u16);
+    /// 
+    /// let a_biguint = UU32::from_uint(100_u8);
+    /// let b_uint = 100_u8;
+    /// let res = a_biguint.lt_uint(b_uint);
+    /// if res
+    ///     { println!("{} < {}", a_biguint, b_uint); }
+    /// else
+    ///     { println!("{} >= {}", a_biguint, b_uint); }
     /// assert_eq!(res, false);
     /// ```
     #[inline]
@@ -4394,13 +4474,14 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
 
     // pub fn gt_uint<U>(&self, other: U) -> bool
     /// Compares `self` and `other` to find whether `self` is greater
-    /// than `other`. However, if the datatype `U` is the same datatype `T`,
-    /// it will be more convenient for you to use the operator `>`.
+    /// than `other`.
+    /// 
+    /// # Arguments
+    /// `rhs` is to be added to `self`, and primitive unsigned integer
+    /// such as `u8`, `u16`, `u32`, `u64`, and `u128`.
     /// 
     /// # Panics
-    /// - If `size_of::<T>() * N` <= `128`, some methods may panic
-    /// or its behavior may be undefined though it may not panic.
-    /// - If `size_of::<T>() * N` < `size_of::<U>()`, This method may panic
+    /// If `size_of::<T>() * N` <= `128`, some methods may panic
     /// or its behavior may be undefined though it may not panic.
     /// 
     /// # Output
@@ -4412,11 +4493,13 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// use cryptocol::define_utypes_with;
     /// define_utypes_with!(u32);
     /// 
-    /// let res = UU32::from_uint(100_u32).gt_uint(90_u32);
+    /// let a_biguint = UU32::from_uint(200_u8);
+    /// let b_uint = 100_u8;
+    /// let res = a_biguint.gt_uint(b_uint);
     /// if res
-    ///     { println!("100 > 90"); }
+    ///     { println!("{} > {}", a_biguint, b_uint); }
     /// else
-    ///     { println!("100 <= 90"); }
+    ///     { println!("{} <= {}", a_biguint, b_uint); }
     /// assert_eq!(res, true);
     /// ```
     /// 
@@ -4425,11 +4508,28 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// use cryptocol::define_utypes_with;
     /// define_utypes_with!(u32);
     /// 
-    /// let res = UU32::from_uint(100_u32).gt_uint(110_u32);
+    /// let a_biguint = UU32::from_uint(100_u8);
+    /// let b_uint = 200_u8;
+    /// let res = a_biguint.gt_uint(b_uint);
     /// if res
-    ///     { println!("100 > 110"); }
+    ///     { println!("{} > {}", a_biguint, b_uint); }
     /// else
-    ///     { println!("100 <= 110"); }
+    ///     { println!("{} <= {}", a_biguint, b_uint); }
+    /// assert_eq!(res, false);
+    /// ```
+    /// 
+    /// # Example 3
+    /// ```
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u32);
+    /// 
+    /// let a_biguint = UU32::from_uint(100_u8);
+    /// let b_uint = 100_u8;
+    /// let res = a_biguint.gt_uint(b_uint);
+    /// if res
+    ///     { println!("{} > {}", a_biguint, b_uint); }
+    /// else
+    ///     { println!("{} <= {}", a_biguint, b_uint); }
     /// assert_eq!(res, false);
     /// ```
     #[inline]
@@ -4448,13 +4548,14 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
 
     // pub fn le_uint<U>(&self, other: U) -> bool
     /// Compares `self` and `other` to find whether `self` is less than or
-    /// equal to `other`. However, if the datatype `U` is the same datatype
-    /// `T`, it will be more convenient for you to use the operator `<=`.
+    /// equal to `other`.
+    /// 
+    /// # Arguments
+    /// `rhs` is to be added to `self`, and primitive unsigned integer
+    /// such as `u8`, `u16`, `u32`, `u64`, and `u128`.
     /// 
     /// # Panics
-    /// - If `size_of::<T>() * N` <= `128`, some methods may panic
-    /// or its behavior may be undefined though it may not panic.
-    /// - If `size_of::<T>() * N` < `size_of::<U>()`, This method may panic
+    /// If `size_of::<T>() * N` <= `128`, some methods may panic
     /// or its behavior may be undefined though it may not panic.
     /// 
     /// # Output
@@ -4466,12 +4567,14 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// use cryptocol::define_utypes_with;
     /// define_utypes_with!(u64);
     /// 
-    /// let res = UU32::from_uint(100_u64).le_uint(110_u16);
+    /// let a_biguint = UU32::from_uint(200_u8);
+    /// let b_uint = 100_u8;
+    /// let res = a_biguint.le_uint(b_uint);
     /// if res
-    ///     { println!("100 <= 110"); }
+    ///     { println!("{} <= {}", a_biguint, b_uint); }
     /// else
-    ///     { println!("100 > 110"); }
-    /// assert_eq!(res, true);
+    ///     { println!("{} > {}", a_biguint, b_uint); }
+    /// assert_eq!(res, false);
     /// ```
     /// 
     /// # Example 2
@@ -4479,12 +4582,29 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// use cryptocol::define_utypes_with;
     /// define_utypes_with!(u64);
     /// 
-    /// let res = UU32::from_uint(100_u64).lt_uint(90_u16);
+    /// let a_biguint = UU32::from_uint(100_u8);
+    /// let b_uint = 200_u8;
+    /// let res = a_biguint.le_uint(b_uint);
     /// if res
-    ///     { println!("100 < 90"); }
+    ///     { println!("{} <= {}", a_biguint, b_uint); }
     /// else
-    ///     { println!("100 >= 90"); }
-    /// assert_eq!(res, false);
+    ///     { println!("{} > {}", a_biguint, b_uint); }
+    /// assert_eq!(res, true);
+    /// ```
+    /// 
+    /// # Example 3
+    /// ```
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u64);
+    /// 
+    /// let a_biguint = UU32::from_uint(100_u8);
+    /// let b_uint = 100_u8;
+    /// let res = a_biguint.le_uint(b_uint);
+    /// if res
+    ///     { println!("{} <= {}", a_biguint, b_uint); }
+    /// else
+    ///     { println!("{} > {}", a_biguint, b_uint); }
+    /// assert_eq!(res, true);
     /// ```
     #[inline]
     pub fn le_uint<U>(&self, other: U) -> bool
@@ -4502,13 +4622,14 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
 
     // pub fn ge_uint<U>(&self, other: U) -> bool 
     /// Compares `self` and `other` to find whether `self` is greater than
-    /// or equal to `other`. However, if the datatype `U` is the same datatype
-    /// `T`, it will be more convenient for you to use the operator `>=`.
+    /// or equal to `other`.
+    /// 
+    /// # Arguments
+    /// `rhs` is to be added to `self`, and primitive unsigned integer
+    /// such as `u8`, `u16`, `u32`, `u64`, and `u128`.
     /// 
     /// # Panics
-    /// - If `size_of::<T>() * N` <= `128`, some methods may panic
-    /// or its behavior may be undefined though it may not panic.
-    /// - If `size_of::<T>() * N` < `size_of::<U>()`, This method may panic
+    /// If `size_of::<T>() * N` <= `128`, some methods may panic
     /// or its behavior may be undefined though it may not panic.
     /// 
     /// # Output
@@ -4518,27 +4639,46 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// # Example 1
     /// ```
     /// use cryptocol::define_utypes_with;
-    /// define_utypes_with!(u32);
+    /// define_utypes_with!(u128);
     /// 
-    /// let res = UU32::from_uint(100_u128).gt_uint(90_u8);
+    /// let a_biguint = UU32::from_uint(200_u8);
+    /// let b_uint = 100_u8;
+    /// let res = a_biguint.ge_uint(b_uint);
     /// if res
-    ///     { println!("100 >= 90"); }
+    ///     { println!("{} >= {}", a_biguint, b_uint); }
     /// else
-    ///     { println!("100 <= 90"); }
+    ///     { println!("{} < {}", a_biguint, b_uint); }
     /// assert_eq!(res, true);
     /// ```
     /// 
     /// # Example 2
     /// ```
     /// use cryptocol::define_utypes_with;
-    /// define_utypes_with!(u32);
+    /// define_utypes_with!(u128);
     /// 
-    /// let res = UU32::from_uint(100_u128).gt_uint(110_u8);
+    /// let a_biguint = UU32::from_uint(100_u8);
+    /// let b_uint = 200_u8;
+    /// let res = a_biguint.ge_uint(b_uint);
     /// if res
-    ///     { println!("100 > 110"); }
+    ///     { println!("{} >= {}", a_biguint, b_uint); }
     /// else
-    ///     { println!("100 <= 110"); }
+    ///     { println!("{} < {}", a_biguint, b_uint); }
     /// assert_eq!(res, false);
+    /// ```
+    /// 
+    /// # Example 3
+    /// ```
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u128);
+    /// 
+    /// let a_biguint = UU32::from_uint(100_u8);
+    /// let b_uint = 100_u8;
+    /// let res = a_biguint.ge_uint(b_uint);
+    /// if res
+    ///     { println!("{} >= {}", a_biguint, b_uint); }
+    /// else
+    ///     { println!("{} < {}", a_biguint, b_uint); }
+    /// assert_eq!(res, true);
     /// ```
     #[inline]
     pub fn ge_uint<U>(&self, other: U) -> bool
@@ -4556,13 +4696,13 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
 
     // pub fn eq_uint<U>(&self, other: U) -> bool
     /// Compares `self` and `other` to find whether `self` is equal to `other`.
-    /// However, if the datatype `U` is the same datatype `T`, it will be
-    /// more convenient for you to use the operator `==`.
+    /// 
+    /// # Arguments
+    /// `rhs` is to be added to `self`, and primitive unsigned integer
+    /// such as `u8`, `u16`, `u32`, `u64`, and `u128`.
     /// 
     /// # Panics
-    /// - If `size_of::<T>() * N` <= `128`, this method may panic
-    /// or its behavior may be undefined though it may not panic.
-    /// - If `size_of::<T>() * N` < `size_of::<U>()`, this method may panic
+    /// If `size_of::<T>() * N` <= `128`, this method may panic
     /// or its behavior may be undefined though it may not panic.
     /// 
     /// # Output
@@ -4574,11 +4714,13 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// use cryptocol::define_utypes_with;
     /// define_utypes_with!(u8);
     /// 
-    /// let res = UU32::from_uint(100_u32).eq_uint(100_u8);
+    /// let a_biguint = UU32::from_uint(100_u8);
+    /// let b_uint = 100_u8;
+    /// let res = a_biguint.eq_uint(b_uint);
     /// if res
-    ///     { println!("100 = 100"); }
+    ///     { println!("{} == {}", a_biguint, b_uint); }
     /// else
-    ///     { println!("100 != 100"); }
+    ///     { println!("{} != {}", a_biguint, b_uint); }
     /// assert_eq!(res, true);
     /// ```
     /// 
@@ -4587,11 +4729,13 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// use cryptocol::define_utypes_with;
     /// define_utypes_with!(u8);
     /// 
-    /// let res = UU32::from_uint(100_u64).eq_uint(200_u16);
+    /// let a_biguint = UU32::from_uint(100_u8);
+    /// let b_uint = 200_u8;
+    /// let res = a_biguint.eq_uint(b_uint);
     /// if res
-    ///     { println!("100 = 200"); }
+    ///     { println!("{} == {}", a_biguint, b_uint); }
     /// else
-    ///     { println!("100 != 200"); }
+    ///     { println!("{} != {}", a_biguint, b_uint); }
     /// assert_eq!(res, false);
     /// ```
     #[inline]
@@ -4605,65 +4749,22 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
             + BitXor<Output=U> + BitXorAssign + Not<Output=U>
             + PartialEq + PartialOrd
     {
-        self.partial_cmp_uint(other).unwrap().is_eq()
+        if U::size_in_bytes() > T::size_in_bytes()
+            { self.eq(&Self::from_uint(other)) }
+        else // if U::size_in_bytes() <= T::size_in_bytes()
+            { self.partial_cmp_uint(other).unwrap().is_eq() }
     }
 
 
 
     /***** METHODS FOR COMPARISON WITH BIGUINT *****/
 
-    // pub fn eq(&self, other: &Self) -> bool
-    /// Compare `self` with `other` to find whether `self` is equal to `other`.
-    /// However, it will be more convenient to you if you use use the operator
-    /// `==`. Then, you don't have to use `partial_cmp()` directly.
-    /// 
-    /// # Output
-    /// It returns `true` if `self` is equal to `other`.
-    /// Otherwise, it returns `false`.
-    /// 
-    /// # Example 1
-    /// ```
-    /// use cryptocol::define_utypes_with;
-    /// define_utypes_with!(u128);
-    /// 
-    /// let num_str = "69743176821145534028236692093846345739169743176821145534028236692093846345739";
-    /// let res = UU32::from_string(num_str).unwrap().eq(&UU32::from_string(num_str).unwrap());
-    /// if res
-    ///     { println!("{0} = {0}", num_str); }
-    /// else
-    ///     { println!("{0} != {0}", num_str); }
-    /// assert_eq!(res, true);
-    /// ```
-    /// 
-    /// # Example 2
-    /// ```
-    /// use cryptocol::define_utypes_with;
-    /// define_utypes_with!(u128);
-    /// 
-    /// let num_str = "69743176821145534028236692093846345739169743176821145534028236692093846345739";
-    /// let res = UU32::from_string(num_str).unwrap().eq(&UU32::from_uint(100_u8));
-    /// if res
-    ///     { println!("{} = 100", num_str); }
-    /// else
-    ///     { println!("{} != 100", num_str); }
-    /// assert_eq!(res, false);
-    /// ```
-    pub fn eq(&self, other: &Self) -> bool
-    {
-        for idx in 0..N
-        {
-            if self.get_num_(idx) != other.get_num_(idx)
-                { return false; }
-        }
-        true
-    }
-
     // pub fn partial_cmp(&self, other: &Self) -> Option<Ordering>
     /// Compares `self` and a value of `other` and returns the result of the
     /// comparison in the type `Option<Ordering>`.
-    /// However, it will be more convenient to you if you use use the operators
-    /// `<`, `>`, `<=`, `>=`,  `==`, and `!=`. Then, you don't have to use
-    /// `partial_cmp()` directly.
+    /// 
+    /// # Arguments
+    /// `rhs` is to be added to `self`, and is of `&Self` type.
     /// 
     /// # Output
     /// It returns `Ordering::Greater` wrapped by `Some` of enum `Option`
@@ -4747,6 +4848,333 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
         }
         Some(Ordering::Equal)
     }
+
+    // pub fn lt(&self, other: &Self) -> bool
+    /// Compares `self` and `other` to find whether `self` is less than `other`.
+    /// 
+    /// # Arguments
+    /// `rhs` is to be added to `self`, and is of `&Self` type.
+    /// 
+    /// # Panics
+    /// If `size_of::<T>() * N` <= `128`, some methods may panic
+    /// or its behavior may be undefined though it may not panic.
+    /// 
+    /// # Output
+    /// It returns `true` if `self` is less than `other`.
+    /// Otherwise, it returns `false`.
+    /// 
+    /// # Example 1
+    /// ```
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u32);
+    /// 
+    /// let num_str = "69743176821145534028236692093846345739169743176821145534028236692093846345739";
+    /// let a_biguint = UU32::from_string(num_str).unwrap();
+    /// let b_biguint = UU32::from_uint(100_u8);
+    /// let res = a_biguint.lt(&b_biguint);
+    /// if res
+    ///     { println!("{} < {}", a_biguint, b_biguint); }
+    /// else
+    ///     { println!("{} >= {}", a_biguint, b_biguint); }
+    /// assert_eq!(res, false);
+    /// ```
+    /// 
+    /// # Example 2
+    /// ```
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u32);
+    /// 
+    /// let num_str = "69743176821145534028236692093846345739169743176821145534028236692093846345739";
+    /// let a_biguint = UU32::from_uint(100_u8);
+    /// let b_biguint = UU32::from_string(num_str).unwrap();
+    /// let res = a_biguint.lt(&b_biguint);
+    /// if res
+    ///     { println!("{} < {}", a_biguint, b_biguint); }
+    /// else
+    ///     { println!("{} >= {}", a_biguint, b_biguint); }
+    /// assert_eq!(res, true);
+    /// ```
+    /// 
+    /// # Example 3
+    /// ```
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u32);
+    /// 
+    /// let num_str = "69743176821145534028236692093846345739169743176821145534028236692093846345739";
+    /// let a_biguint = UU32::from_string(num_str).unwrap();
+    /// let b_biguint = UU32::from_string(num_str).unwrap();
+    /// let res = a_biguint.lt(&b_biguint);
+    /// if res
+    ///     { println!("{} < {}", a_biguint, b_biguint); }
+    /// else
+    ///     { println!("{} >= {}", a_biguint, b_biguint); }
+    /// assert_eq!(res, false);
+    /// ```
+    #[inline]
+    pub fn lt(&self, other: &Self) -> bool
+    {
+        self.partial_cmp(other).unwrap().is_lt()
+    }
+
+    // pub fn gt(&self, other: &Self) -> bool
+    /// Compares `self` and `other` to find whether `self` is greater
+    /// than `other`.
+    /// 
+    /// # Arguments
+    /// `rhs` is to be added to `self`, and is of `&Self` type.
+    /// 
+    /// # Panics
+    /// If `size_of::<T>() * N` <= `128`, some methods may panic
+    /// or its behavior may be undefined though it may not panic.
+    /// 
+    /// # Output
+    /// It returns `true` if `self` is greater than `other`.
+    /// Otherwise, it returns `false`.
+    /// 
+    /// # Example 1
+    /// ```
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u64);
+    /// 
+    /// let num_str = "69743176821145534028236692093846345739169743176821145534028236692093846345739";
+    /// let a_biguint = UU32::from_string(num_str).unwrap();
+    /// let b_biguint = UU32::from_uint(100_u8);
+    /// let res = a_biguint.gt(&b_biguint);
+    /// if res
+    ///     { println!("{} > {}", a_biguint, b_biguint); }
+    /// else
+    ///     { println!("{} <= {}", a_biguint, b_biguint); }
+    /// assert_eq!(res, true);
+    /// ```
+    /// 
+    /// # Example 2
+    /// ```
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u64);
+    /// 
+    /// let num_str = "69743176821145534028236692093846345739169743176821145534028236692093846345739";
+    /// let a_biguint = UU32::from_uint(100_u8);
+    /// let b_biguint = UU32::from_string(num_str).unwrap();
+    /// let res = a_biguint.gt(&b_biguint);
+    /// if res
+    ///     { println!("{} > {}", a_biguint, b_biguint); }
+    /// else
+    ///     { println!("{} <= {}", a_biguint, b_biguint); }
+    /// assert_eq!(res, false);
+    /// ```
+    /// 
+    /// # Example 3
+    /// ```
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u64);
+    /// 
+    /// let num_str = "69743176821145534028236692093846345739169743176821145534028236692093846345739";
+    /// let a_biguint = UU32::from_string(num_str).unwrap();
+    /// let b_biguint = UU32::from_string(num_str).unwrap();
+    /// let res = a_biguint.gt(&b_biguint);
+    /// if res
+    ///     { println!("{} > {}", a_biguint, b_biguint); }
+    /// else
+    ///     { println!("{} <= {}", a_biguint, b_biguint); }
+    /// assert_eq!(res, false);
+    /// ```
+    #[inline]
+    pub fn gt(&self, other: &Self) -> bool
+    {
+        self.partial_cmp(other).unwrap().is_gt()
+    }
+
+    // pub fn le(&self, other: &Self) -> bool
+    /// Compares `self` and `other` to find whether `self` is less than or
+    /// equal to `other`.
+    /// 
+    /// # Arguments
+    /// `rhs` is to be added to `self`, and is of `&Self` type.
+    /// 
+    /// # Panics
+    /// If `size_of::<T>() * N` <= `128`, some methods may panic
+    /// or its behavior may be undefined though it may not panic.
+    /// 
+    /// # Output
+    /// It returns `true` if `self` is less than or equal to `other`.
+    /// Otherwise, it returns `false`.
+    /// 
+    /// # Example 1
+    /// ```
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u128);
+    /// 
+    /// let num_str = "69743176821145534028236692093846345739169743176821145534028236692093846345739";
+    /// let a_biguint = UU32::from_string(num_str).unwrap();
+    /// let b_biguint = UU32::from_uint(100_u8);
+    /// let res = a_biguint.le(&b_biguint);
+    /// if res
+    ///     { println!("{} <= {}", a_biguint, b_biguint); }
+    /// else
+    ///     { println!("{} > {}", a_biguint, b_biguint); }
+    /// assert_eq!(res, false);
+    /// ```
+    /// 
+    /// # Example 2
+    /// ```
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u128);
+    /// 
+    /// let num_str = "69743176821145534028236692093846345739169743176821145534028236692093846345739";
+    /// let a_biguint = UU32::from_uint(100_u8);
+    /// let b_biguint = UU32::from_string(num_str).unwrap();
+    /// let res = a_biguint.le(&b_biguint);
+    /// if res
+    ///     { println!("{} <= {}", a_biguint, b_biguint); }
+    /// else
+    ///     { println!("{} > {}", a_biguint, b_biguint); }
+    /// assert_eq!(res, true);
+    /// ```
+    /// 
+    /// # Example 3
+    /// ```
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u128);
+    /// 
+    /// let num_str = "69743176821145534028236692093846345739169743176821145534028236692093846345739";
+    /// let a_biguint = UU32::from_string(num_str).unwrap();
+    /// let b_biguint = UU32::from_string(num_str).unwrap();
+    /// let res = a_biguint.le(&b_biguint);
+    /// if res
+    ///     { println!("{} <= {}", a_biguint, b_biguint); }
+    /// else
+    ///     { println!("{} > {}", a_biguint, b_biguint); }
+    /// assert_eq!(res, true);
+    /// ```
+    #[inline]
+    pub fn le(&self, other: &Self) -> bool
+    {
+        self.partial_cmp(other).unwrap().is_le()
+    }
+
+    // pub fn ge(&self, other: &Self) -> bool
+    /// Compares `self` and `other` to find whether `self` is greater than
+    /// or equal to `other`.
+    /// 
+    /// # Arguments
+    /// `rhs` is to be added to `self`, and is of `&Self` type.
+    /// 
+    /// # Panics
+    /// If `size_of::<T>() * N` <= `128`, some methods may panic
+    /// or its behavior may be undefined though it may not panic.
+    /// 
+    /// # Output
+    /// It returns `true` if `self` is greater than or equal to `other`.
+    /// Otherwise, it returns `false`.
+    /// 
+    /// # Example 1
+    /// ```
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u8);
+    /// 
+    /// let num_str = "69743176821145534028236692093846345739169743176821145534028236692093846345739";
+    /// let a_biguint = UU32::from_string(num_str).unwrap();
+    /// let b_biguint = UU32::from_uint(100_u8);
+    /// let res = a_biguint.ge(&b_biguint);
+    /// if res
+    ///     { println!("{} >= {}", a_biguint, b_biguint); }
+    /// else
+    ///     { println!("{} < {}", a_biguint, b_biguint); }
+    /// assert_eq!(res, true);
+    /// ```
+    /// 
+    /// # Example 2
+    /// ```
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u8);
+    /// 
+    /// let num_str = "69743176821145534028236692093846345739169743176821145534028236692093846345739";
+    /// let a_biguint = UU32::from_uint(100_u8);
+    /// let b_biguint = UU32::from_string(num_str).unwrap();
+    /// let res = a_biguint.ge(&b_biguint);
+    /// if res
+    ///     { println!("{} >= {}", a_biguint, b_biguint); }
+    /// else
+    ///     { println!("{} < {}", a_biguint, b_biguint); }
+    /// assert_eq!(res, false);
+    /// ```
+    /// 
+    /// # Example 3
+    /// ```
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u8);
+    /// 
+    /// let num_str = "69743176821145534028236692093846345739169743176821145534028236692093846345739";
+    /// let a_biguint = UU32::from_string(num_str).unwrap();
+    /// let b_biguint = UU32::from_string(num_str).unwrap();
+    /// let res = a_biguint.ge(&b_biguint);
+    /// if res
+    ///     { println!("{} >= {}", a_biguint, b_biguint); }
+    /// else
+    ///     { println!("{} < {}", a_biguint, b_biguint); }
+    /// assert_eq!(res, true);
+    /// ```
+    #[inline]
+    pub fn ge(&self, other: &Self) -> bool
+    {
+        self.partial_cmp(other).unwrap().is_ge()
+    }
+
+    // pub fn eq(&self, other: &Self) -> bool
+    /// Compare `self` with `other` to find whether `self` is equal to `other`.
+    /// 
+    /// # Arguments
+    /// `rhs` is to be added to `self`, and is of `&Self` type.
+    /// 
+    /// # Output
+    /// It returns `true` if `self` is equal to `other`.
+    /// Otherwise, it returns `false`.
+    /// 
+    /// # Panics
+    /// - If `size_of::<T>() * N` <= `128`, this method may panic
+    /// or its behavior may be undefined though it may not panic.
+    /// 
+    /// # Example 1
+    /// ```
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u16);
+    /// 
+    /// let num_str = "69743176821145534028236692093846345739169743176821145534028236692093846345739";
+    /// let a_biguint = UU32::from_string(num_str).unwrap();
+    /// let b_biguint = UU32::from_string(num_str).unwrap();
+    /// let res = a_biguint.eq(&b_biguint);
+    /// if res
+    ///     { println!("{} = {}", a_biguint, b_biguint); }
+    /// else
+    ///     { println!("{} != {}", a_biguint, b_biguint); }
+    /// assert_eq!(res, true);
+    /// ```
+    /// 
+    /// # Example 2
+    /// ```
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u16);
+    /// 
+    /// let num_str = "69743176821145534028236692093846345739169743176821145534028236692093846345739";
+    /// let a_biguint = UU32::from_string(num_str).unwrap();
+    /// let b_biguint = UU32::from_uint(100_u8);
+    /// let res = a_biguint.eq(&b_biguint);
+    /// if res
+    ///     { println!("{} = {}", a_biguint, b_biguint); }
+    /// else
+    ///     { println!("{} != {}", a_biguint, b_biguint); }
+    /// assert_eq!(res, false);
+    /// ```
+    pub fn eq(&self, other: &Self) -> bool
+    {
+        for idx in 0..N
+        {
+            if self.get_num_(idx) != other.get_num_(idx)
+                { return false; }
+        }
+        true
+    }
+
 
 
     /***** ARITHMATIC OPERATIONS WITH UINT *****/
@@ -5636,14 +6064,14 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// assert_eq!(res.is_undefined(), false);
     /// ```
     /// 
-    /// # Panic Example
-    /// ```
+    /// # Panic Examples
+    /// ```should_panic
     /// use cryptocol::define_utypes_with;
     /// define_utypes_with!(u32);
     /// 
     /// let _a_biguint = UU64::max().wrapping_sub_uint(1_u8);
     /// // It will panic.
-    /// // let res = _a_biguint.unchecked_add_uint(2_u8);
+    /// let res = _a_biguint.unchecked_add_uint(2_u8);
     /// ```
     /// 
     /// # Big-endian issue
@@ -6124,7 +6552,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// ```
     /// 
     /// # Panic Examples
-    /// ```
+    /// ```should_panic
     /// use cryptocol::define_utypes_with;
     /// define_utypes_with!(u8);
     /// 
@@ -6132,13 +6560,13 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// let _m = U256::zero();
     /// let _rhs = 3_u8;
     /// // It will panic.
-    /// // let res = _a_biguint.modular_add_uint(_rhs, &_m);
+    /// let res = _a_biguint.modular_add_uint(_rhs, &_m);
     /// 
     /// let _a_biguint = U256::from_string("76801874298166903427690031858186486050853753882811946569946433649006").unwrap();
     /// let _m = U256::one();
     /// let _rhs = 3_u8;
     /// // It will panic.
-    /// // let res = _a_biguint.modular_add_uint(_rhs, &_m);
+    /// let res = _a_biguint.modular_add_uint(_rhs, &_m);
     /// ```
     /// 
     /// # Big-endian issue
@@ -6467,24 +6895,21 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// ```
     /// 
     /// # Panic Examples
-    /// ```
+    /// ```should_panic
     /// use cryptocol::define_utypes_with;
     /// define_utypes_with!(u16);
     /// 
-    /// let mut a_biguint = U256::from_uint(150_u8);
-    /// let m = U256::from_uint(50_u8);
-    /// 
-    /// let _a_biguint = U256::from_string("76801874298166903427690031858186486050853753882811946569946433649006").unwrap();
+    /// let mut _a_biguint = U256::from_string("76801874298166903427690031858186486050853753882811946569946433649006").unwrap();
     /// let _m = U256::zero();
     /// let _rhs = 1_u8;
     /// // It will panic.
-    /// // _a_biguint.modular_add_assign_uint(_rhs, &_m);
+    /// _a_biguint.modular_add_assign_uint(_rhs, &_m);
     /// 
-    /// let _a_biguint = U256::from_string("76801874298166903427690031858186486050853753882811946569946433649006").unwrap();
+    /// let mut _a_biguint = U256::from_string("76801874298166903427690031858186486050853753882811946569946433649006").unwrap();
     /// let _m = U256::one();
     /// let _rhs = 1_u8;
     /// // It will panic.
-    /// // _a_biguint.modular_add_assign_uint(_rhs, &_m);
+    /// _a_biguint.modular_add_assign_uint(_rhs, &_m);
     /// ```
     /// 
     /// # Big-endian issue
@@ -8243,14 +8668,14 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// assert_eq!(res.is_undefined(), false);
     /// ```
     /// 
-    /// # Panic Example
-    /// ```
+    /// # Panic Examples
+    /// ```should_panic
     /// use cryptocol::define_utypes_with;
     /// define_utypes_with!(u32);
     /// 
     /// let _a_biguint = UU64::one();
     /// // It will panic.
-    /// // let res = _a_biguint.unchecked_add_uint(2_u8);
+    /// let res = _a_biguint.unchecked_sub_uint(2_u8);
     /// ```
     /// 
     /// # Big-endian issue
@@ -8732,7 +9157,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// ```
     /// 
     /// # Pacnic Example
-    /// ```
+    /// ```should_panic
     /// use cryptocol::define_utypes_with;
     /// define_utypes_with!(u8);
     /// 
@@ -8740,13 +9165,13 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// let _m = U256::zero();
     /// let _rhs = 3_u8;
     /// // It will panic.
-    /// // let res = _a_biguint.modular_sub_uint(_rhs, &_m);
+    /// let res = _a_biguint.modular_sub_uint(_rhs, &_m);
     /// 
     /// let _a_biguint = U256::from_uint(2_u8);
     /// let _m = U256::one();
     /// let _rhs = 3_u8;
     /// // It will panic.
-    /// // let res = _a_biguint.modular_sub_uint(_rhs, &_m);
+    /// let res = _a_biguint.modular_sub_uint(_rhs, &_m);
     /// ```
     /// 
     /// # Big-endian issue
@@ -9091,21 +9516,21 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// ```
     /// 
     /// # Panic Examples
-    /// ```
+    /// ```should_panic
     /// use cryptocol::define_utypes_with;
     /// define_utypes_with!(u16);
     /// 
-    /// let _a_biguint = U256::from_uint(2_u8);
+    /// let mut _a_biguint = U256::from_uint(2_u8);
     /// let _m = U256::zero();
     /// let _rhs = 1_u8;
     /// // It will panic.
-    /// // _a_biguint.modular_sub_assign_uint(_rhs, &m);
+    /// _a_biguint.modular_sub_assign_uint(_rhs, &_m);
     /// 
-    /// let _a_biguint = U256::from_uint(2_u8);
+    /// let mut _a_biguint = U256::from_uint(2_u8);
     /// let _m = U256::one();
     /// let _rhs = 1_u8;
     /// // It will panic.
-    /// // _a_biguint.modular_sub_assign_uint(_rhs, &m);
+    /// _a_biguint.modular_sub_assign_uint(_rhs, &_m);
     /// ```
     /// 
     /// # Big-endian issue
@@ -11170,14 +11595,14 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// assert_eq!(res.is_undefined(), false);
     /// ```
     /// 
-    /// # Panic Example
-    /// ```
+    /// # Panic Examples
+    /// ```should_panic
     /// use cryptocol::define_utypes_with;
     /// define_utypes_with!(u32);
     /// 
     /// let _a_biguint = UU32::from_string("876801874298166903427690031858186486050853753882811946569946433649006084094").unwrap();
     /// // It will panic.
-    /// // let res = _a_biguint.unchecked_mul_uint(248_u8);
+    /// let res = _a_biguint.unchecked_mul_uint(248_u8);
     /// ```
     /// 
     /// # Big-endian issue
@@ -11618,8 +12043,8 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// assert_eq!(res.is_undefined(), false);
     /// ```
     /// 
-    /// # Panic Example
-    /// ```
+    /// # Panic Examples
+    /// ```should_panic
     /// use cryptocol::define_utypes_with;
     /// define_utypes_with!(u32);
     /// 
@@ -11627,13 +12052,13 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// let _a_biguint = U256::from_string("318581864860508537538828119467680187429816690342769005864872913754682855846").unwrap();
     /// let _mul_uint = 248_u8;
     /// // It will panic!
-    /// // let res = _a_biguint.modular_mul_uint(_mul_uint, &_m);
+    /// let res = _a_biguint.modular_mul_uint(_mul_uint, &_m);
     /// 
     /// let _m = UU32::one();
     /// let _a_biguint = U256::from_string("318581864860508537538828119467680187429816690342769005864872913754682855846").unwrap();
     /// let _mul_uint = 248_u8;
     /// // It will panic!
-    /// // let res = _a_biguint.modular_mul_uint(_mul_uint, &_m);
+    /// let res = _a_biguint.modular_mul_uint(_mul_uint, &_m);
     /// ```
     /// 
     /// # Big-endian issue
@@ -11961,22 +12386,22 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// assert_eq!(a_biguint.is_undefined(), false);
     /// ```
     /// 
-    /// # Panic Example
-    /// ```
+    /// # Panic Examples
+    /// ```should_panic
     /// use cryptocol::define_utypes_with;
     /// define_utypes_with!(u64);
     /// 
+    /// let mut _a_biguint = U256::from_string("318581864860508537538828119467680187429816690342769005864872913754682855846").unwrap();
     /// let _m = UU32::zero();
-    /// let _a_biguint = U256::from_string("318581864860508537538828119467680187429816690342769005864872913754682855846").unwrap();
     /// let _mul_uint = 248_u8;
     /// // It will panic!
-    /// // _a_biguint.modular_mul_assign_uint(_mul_uint, &_m);
+    /// _a_biguint.modular_mul_assign_uint(_mul_uint, &_m);
     /// 
+    /// let mut _a_biguint = U256::from_string("318581864860508537538828119467680187429816690342769005864872913754682855846").unwrap();
     /// let _m = UU32::one();
-    /// let _a_biguint = U256::from_string("318581864860508537538828119467680187429816690342769005864872913754682855846").unwrap();
     /// let _mul_uint = 248_u8;
     /// // It will panic!
-    /// // _a_biguint.modular_mul_assign_uint(_mul_uint, &_m);
+    /// _a_biguint.modular_mul_assign_uint(_mul_uint, &_m);
     /// ```
     /// 
     /// # Big-endian issue
@@ -12902,7 +13327,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// ```
     /// 
     /// # Panic Examples
-    /// ```
+    /// ```should_panic
     /// use std::str::FromStr;
     /// use cryptocol::define_utypes_with;
     /// define_utypes_with!(u8);
@@ -12910,12 +13335,12 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// let _dividend = UU32::from_str("123456789015758942546236989636279846864825945392").unwrap();
     /// let _divisor = 0_u8;
     /// // It will panic!
-    /// // let (quotient, remainder) = _dividend.divide_fully_uint(_divisor);
+    /// let (quotient, remainder) = _dividend.divide_fully_uint(_divisor);
     /// 
     /// let _dividend = UU32::zero();
     /// let _divisor = 0_u8;
     /// // It will panic!
-    /// // let (quotient, remainder) = _dividend.divide_fully_uint(_divisor);
+    /// let (quotient, remainder) = _dividend.divide_fully_uint(_divisor);
     /// ```
     /// 
     /// # Big-endian issue
@@ -13172,7 +13597,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// ```
     /// 
     /// # Panic Examples
-    /// ```
+    /// ```should_panic
     /// use std::str::FromStr;
     /// use cryptocol::define_utypes_with;
     /// define_utypes_with!(u32);
@@ -13180,12 +13605,12 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// let _dividend = U256::from_str("123456789015758942546236989636279846864825945392").unwrap();
     /// let _divisor = 0_u8;
     /// // It will painc!
-    /// // let quotient = _dividend.wrapping_div_uint(_divisor);
+    /// let quotient = _dividend.wrapping_div_uint(_divisor);
     /// 
     /// let _dividend = U256::zero();
     /// let _divisor = 0_u8;
     /// // It will painc!
-    /// // let quotient = _dividend.wrapping_div_uint(_divisor);
+    /// let quotient = _dividend.wrapping_div_uint(_divisor);
     /// ```
     /// 
     /// # Big-endian issue
@@ -13283,7 +13708,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// ```
     /// 
     /// # Panic Exmaples
-    /// ```
+    /// ```should_panic
     /// use std::str::FromStr;
     /// use cryptocol::define_utypes_with;
     /// define_utypes_with!(u64);
@@ -13292,13 +13717,13 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// let _divisor = 0_u8;
     /// println!("Originally,\n_a_biguint = {}", _a_biguint);
     /// // It will panic!
-    /// // a_biguint.wrapping_div_assign_uint(_divisor);
+    /// _a_biguint.wrapping_div_assign_uint(_divisor);
     /// 
     /// let mut _a_biguint = UU32::zero();
     /// let _divisor = 0_u8;
     /// println!("Originally,\n_a_biguint = {}", _a_biguint);
     /// // It will panic!
-    /// // a_biguint.wrapping_div_assign_uint(_divisor);
+    /// _a_biguint.wrapping_div_assign_uint(_divisor);
     /// ```
     /// 
     /// # Big-endian issue
@@ -13387,7 +13812,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// ```
     /// 
     /// # Panic Exmaples
-    /// ```
+    /// ```should_panic
     /// use std::str::FromStr;
     /// use cryptocol::define_utypes_with;
     /// define_utypes_with!(u128);
@@ -13395,12 +13820,12 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// let _dividend = U256::from_str("123456789015758942546236989636279846864825945392").unwrap();
     /// let _divisor = 0_u8;
     /// // It will panic!
-    /// // let (quotient, overflow) = _dividend.overflowing_div_uint(_divisor);
+    /// let (quotient, overflow) = _dividend.overflowing_div_uint(_divisor);
     /// 
     /// let _dividend = U256::zero();
     /// let _divisor = 0_u8;
     /// // It will panic!
-    /// // let (quotient, overflow) = _dividend.overflowing_div_uint(_divisor);
+    /// let (quotient, overflow) = _dividend.overflowing_div_uint(_divisor);
     /// ```
     ///
     /// # Big-endian issue
@@ -13508,7 +13933,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// ```
     ///
     /// # Panic Examples
-    /// ```
+    /// ```should_panic
     /// use std::str::FromStr;
     /// use cryptocol::define_utypes_with;
     /// define_utypes_with!(u8);
@@ -13516,12 +13941,12 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// let mut _a_biguint = UU32::from_str("123456789015758942546236989636279846864825945392").unwrap();
     /// let _divisor = 0_u8;
     /// // It will panic!
-    /// // let overflow = _a_biguint.overflowing_div_assign_uint(_divisor);
+    /// let overflow = _a_biguint.overflowing_div_assign_uint(_divisor);
     /// 
     /// let mut _a_biguint = UU32::zero();
     /// let _divisor = 0_u16;
     /// // It will panic!
-    /// // let overflow = _a_biguint.overflowing_div_assign_uint(_divisor);
+    /// let overflow = _a_biguint.overflowing_div_assign_uint(_divisor);
     /// ```
     ///
     /// # Big-endian issue
@@ -13736,7 +14161,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// ```
     /// 
     /// # Panic Examples
-    /// ```
+    /// ```should_panic
     /// use std::str::FromStr;
     /// use cryptocol::define_utypes_with;
     /// define_utypes_with!(u32);
@@ -13744,12 +14169,12 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// let _dividend = UU32::from_str("123456789015758942546236989636279846864825945392").unwrap();
     /// let _divisor = 0_u8;
     /// // It will panic.
-    /// // let quotient = _dividend.uchecked_div_uint(_divisor);
+    /// let quotient = _dividend.unchecked_div_uint(_divisor);
     /// 
     /// let _dividend = UU32::zero();
     /// let _divisor = 0_u8;
     /// // It will panic.
-    /// // let quotient = _dividend.uchecked_div_uint(_divisor);
+    /// let quotient = _dividend.unchecked_div_uint(_divisor);
     /// ```
     /// 
     /// # Big-endian issue
@@ -13834,7 +14259,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// ```
     /// 
     /// # Panic Examples
-    /// ```
+    /// ```should_panic
     /// use std::str::FromStr;
     /// use cryptocol::define_utypes_with;
     /// define_utypes_with!(u64);
@@ -13842,12 +14267,12 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// let _dividend = U256::from_str("123456789015758942546236989636279846864825945392").unwrap();
     /// let _divisor = 0_u8;
     /// // It will panic!
-    /// // let quotient = _dividend.saturating_div_uint(_divisor);
+    /// let quotient = _dividend.saturating_div_uint(_divisor);
     /// 
     /// let _dividend = UU32::zero();
     /// let _divisor = 0_u8;
     /// // It will panic!
-    /// // let quotient = _dividend.saturating_div_uint(_divisor);
+    /// let quotient = _dividend.saturating_div_uint(_divisor);
     /// ```
     /// 
     /// # Big-endian issue
@@ -13945,7 +14370,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// ```
     /// 
     /// # Panic Examples
-    /// ```
+    /// ```should_panic
     /// use std::str::FromStr;
     /// use cryptocol::define_utypes_with;
     /// define_utypes_with!(u128);
@@ -13954,13 +14379,13 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// let _divisor = 0_u8;
     /// println!("Originally, _a_biguint = {}", _a_biguint);
     /// // It will panic!
-    /// // _a_biguint.saturating_div_assign_uint(_divisor);
+    /// _a_biguint.saturating_div_assign_uint(_divisor);
     /// 
     /// let mut _a_biguint = UU32::zero();
     /// let _divisor = 0_u8;
     /// println!("Originally, _a_biguint = {}", _a_biguint);
     /// // It will panic!
-    /// // _a_biguint.saturating_div_assign_uint(_divisor);
+    /// _a_biguint.saturating_div_assign_uint(_divisor);
     /// ```
     /// 
     /// # Big-endian issue
@@ -14354,7 +14779,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// ```
     /// 
     /// # Panic Examples
-    /// ```
+    /// ```should_panic
     /// use std::str::FromStr;
     /// use cryptocol::define_utypes_with;
     /// define_utypes_with!(u32);
@@ -14364,56 +14789,56 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// let _m = U256::from_uint(250_u8);
     /// let _rhs = 0_u8;
     /// // It will panic.
-    /// // let res = a_biguint.modular_div_uint(rhs, &_m);
+    /// let res = _a_biguint.modular_div_uint(_rhs, &_m);
     /// 
     /// // op2 == multiple of modulo
     /// let _a_biguint = U256::from_string("76801874298166903427690031858186486050853753882811946569946433649006").unwrap();
     /// let _m = U256::from_uint(50_u8);
     /// let _rhs = 250_u8;
     /// // It will panic.
-    /// // let res = a_biguint.modular_div_uint(rhs, &_m);
+    /// let res = _a_biguint.modular_div_uint(_rhs, &_m);
     /// 
     /// // op1 == 0 and op2 == 0
     /// let _a_biguint = U256::zero();
     /// let _m = U256::from_uint(250_u8);
     /// let _rhs = 0_u8;
     /// // It will panic.
-    /// // let res = a_biguint.modular_div_uint(rhs, &_m);
+    /// let res = _a_biguint.modular_div_uint(_rhs, &_m);
     /// 
     /// // op1 == multiple of modulo and op2 == 0
     /// let _a_biguint = U256::from_uint(750_u16);
     /// let _m = U256::from_uint(250_u8);
     /// let _rhs = 0_u8;
     /// // It will panic.
-    /// // let res = a_biguint.modular_div_uint(rhs, &_m);
+    /// let res = _a_biguint.modular_div_uint(_rhs, &_m);
     /// 
     /// // op1 == 0 and op2 == multiple of modulo
     /// let _a_biguint = U256::zero();
     /// let _m = U256::from_uint(50_u8);
     /// let _rhs = 250_u8;
     /// // It will panic.
-    /// // let res = a_biguint.modular_div_uint(rhs, &_m);
+    /// let res = _a_biguint.modular_div_uint(_rhs, &_m);
     /// 
     /// // op1 == multiple of modulo and op2 == multiple of modulo
     /// let _a_biguint = U256::from_uint(150_u8);
     /// let _m = U256::from_uint(50_u8);
     /// let _rhs = 250_u8;
     /// // It will panic.
-    /// // let res = a_biguint.modular_div_uint(rhs, &_m);
+    /// let res = _a_biguint.modular_div_uint(_rhs, &_m);
     /// 
     /// // modulo == 0
-    /// let _dividend = U256::from_str("123456789015758942546236989636279846864825945392").unwrap();
-    /// let _divisor = 128_u8;
-    /// let _modulo = U256::zero();
+    /// let _a_biguint = U256::from_str("123456789015758942546236989636279846864825945392").unwrap();
+    /// let _rhs = 128_u8;
+    /// let _m = U256::zero();
     /// // It will panic!
-    /// // let quotient = _dividend.modular_div_uint(_divisor, &_modulo);
+    /// let quotient = _a_biguint.modular_div_uint(_rhs, &_m);
     /// 
     /// // modulo == 1
-    /// let _dividend = U256::from_str("123456789015758942546236989636279846864825945392").unwrap();
-    /// let _divisor = 128_u8;
-    /// let _modulo = U256::one();
+    /// let _a_biguint = U256::from_str("123456789015758942546236989636279846864825945392").unwrap();
+    /// let _rhs = 128_u8;
+    /// let _m = U256::one();
     /// // It will panic!
-    /// // let quotient = _dividend.modular_div_uint(_divisor, &_modulo);
+    /// let quotient = _a_biguint.modular_div_uint(_rhs, &_m);
     /// ```
     /// 
     /// # Big-endian issue
@@ -14538,7 +14963,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// ```
     /// 
     /// # Panic Examples
-    /// ```
+    /// ```should_panic
     /// use std::str::FromStr;
     /// use cryptocol::define_utypes_with;
     /// define_utypes_with!(u64);
@@ -14549,7 +14974,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// let _m = U256::from_uint(250_u8);
     /// let _rhs = 0_u8;
     /// // It will panic.
-    /// // _a_biguint.modular_div_assign_uint(_rhs, &_m);
+    /// _a_biguint.modular_div_assign_uint(_rhs, &_m);
     /// 
     /// // op2 == multiple of modulo
     /// let mut _a_biguint = U256::from_string("76801874298166903427690031858186486050853753882811946569946433649006").unwrap();
@@ -14557,7 +14982,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// let _m = U256::from_uint(50_u8);
     /// let _rhs = 250_u8;
     /// // It will panic.
-    /// // _a_biguint.modular_div_assign_uint(_rhs, &_m);
+    /// _a_biguint.modular_div_assign_uint(_rhs, &_m);
     /// 
     /// // op1 == 0 and op2 == 0
     /// let mut _a_biguint = U256::zero();
@@ -14565,7 +14990,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// let _m = U256::from_uint(250_u8);
     /// let _rhs = 0_u8;
     /// // It will panic.
-    /// // _a_biguint.modular_div_assign_uint(_rhs, &_m);
+    /// _a_biguint.modular_div_assign_uint(_rhs, &_m);
     /// 
     /// // op1 == multiple of modulo and op2 == 0
     /// let mut _a_biguint = U256::from_uint(750_u16);
@@ -14573,7 +14998,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// let _m = U256::from_uint(250_u8);
     /// let _rhs = 0_u8;
     /// // It will panic.
-    /// // _a_biguint.modular_div_assign_uint(_rhs, &_m);
+    /// _a_biguint.modular_div_assign_uint(_rhs, &_m);
     /// 
     /// // op1 == 0 and op2 == multiple of modulo
     /// let mut _a_biguint = U256::zero();
@@ -14581,7 +15006,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// let _m = U256::from_uint(50_u8);
     /// let _rhs = 250_u8;
     /// // It will panic.
-    /// // _a_biguint.modular_div_assign_uint(_rhs, &_m);
+    /// _a_biguint.modular_div_assign_uint(_rhs, &_m);
     /// 
     /// // op1 == multiple of modulo and op2 == multiple of modulo
     /// let mut _a_biguint = U256::from_uint(150_u8);
@@ -14589,7 +15014,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// let _m = U256::from_uint(50_u8);
     /// let _rhs = 250_u8;
     /// // It will panic.
-    /// // _a_biguint.modular_div_assign_uint(_rhs, &_m);
+    /// _a_biguint.modular_div_assign_uint(_rhs, &_m);
     /// 
     /// // modulo == 0
     /// let mut _a_biguint = U256::from_str("123456789015758942546236989636279846864825945392").unwrap();
@@ -14597,7 +15022,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// let _divisor = 128_u8;
     /// let _modulo = U256::zero();
     /// // It will panic!
-    /// // _a_biguint.modular_div_assign_uint(_divisor, &_modulo);
+    /// _a_biguint.modular_div_assign_uint(_divisor, &_modulo);
     /// 
     /// // modulo == 1
     /// let mut _a_biguint = U256::from_str("123456789015758942546236989636279846864825945392").unwrap();
@@ -14605,7 +15030,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// let _divisor = 128_u8;
     /// let _modulo = U256::one();
     /// // It will panic!
-    /// // _a_biguint.modular_div_assign_uint(_divisor, &_modulo);
+    /// _a_biguint.modular_div_assign_uint(_divisor, &_modulo);
     /// ```
     /// 
     /// # Big-endian issue
@@ -15615,7 +16040,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// ```
     /// 
     /// # Panic Examples
-    /// ```
+    /// ```should_panic
     /// use std::str::FromStr;
     /// use cryptocol::define_utypes_with;
     /// define_utypes_with!(u8);
@@ -15623,12 +16048,12 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// let _dividend = UU32::from_str("123456789015758942546236989636279846864825945392").unwrap();
     /// let _divisor = 0_u8;
     /// // It will panic!
-    /// // let remainder = _dividend.wrapping_rem_uint(_divisor);
+    /// let remainder = _dividend.wrapping_rem_uint(_divisor);
     /// 
     /// let _dividend = UU32::zero();
     /// let _divisor = 0_u8;
     /// // It will panic!
-    /// // let remainder = _dividend.wrapping_rem_uint(_divisor);
+    /// let remainder = _dividend.wrapping_rem_uint(_divisor);
     /// ```
     /// 
     /// # Big-endian issue
@@ -15728,7 +16153,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// ```
     /// 
     /// # Panic Examples
-    /// ```
+    /// ```should_panic
     /// use std::str::FromStr;
     /// use cryptocol::define_utypes_with;
     /// define_utypes_with!(u16);
@@ -15737,13 +16162,13 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// let _divisor = 0_u8;
     /// println!("Originally, a_biguint = {}", _a_biguint);
     /// // It will panic!
-    /// // _a_biguint.wrapping_rem_assign_uint(_divisor);
+    /// _a_biguint.wrapping_rem_assign_uint(_divisor);
     /// 
     /// let mut _a_biguint = U256::zero();
     /// let _divisor = 0_u8;
     /// println!("Originally, a_biguint = {}", _a_biguint);
     /// // It will panic!
-    /// // _a_biguint.wrapping_rem_assign_uint(_divisor);
+    /// _a_biguint.wrapping_rem_assign_uint(_divisor);
     /// ```
     /// 
     /// # Big-endian issue
@@ -15826,7 +16251,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// ```
     /// 
     /// # Panic Examples
-    /// ```
+    /// ```should_panic
     /// use std::str::FromStr;
     /// use cryptocol::define_utypes_with;
     /// define_utypes_with!(u32);
@@ -15834,12 +16259,12 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// let _dividend = UU32::from_str("123456789015758942546236989636279846864825945392").unwrap();
     /// let _divisor = 0_u8;
     /// // It will panic!
-    /// // let (remainder, overflow) = _dividend.overflowing_rem_uint(_divisor);
+    /// let (remainder, overflow) = _dividend.overflowing_rem_uint(_divisor);
     /// 
     /// let _dividend = UU32::zero();
     /// let _divisor = 0_u8;
     /// // It will panic!
-    /// // let (remainder, overflow) = _dividend.overflowing_rem_uint(_divisor);
+    /// let (remainder, overflow) = _dividend.overflowing_rem_uint(_divisor);
     /// ```
     /// 
     /// # Big-endian issue
@@ -15948,7 +16373,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// ```
     /// 
     /// # Panic Examples
-    /// ```
+    /// ```should_panic
     /// use std::str::FromStr;
     /// use cryptocol::define_utypes_with;
     /// define_utypes_with!(u64);
@@ -15957,13 +16382,13 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// let _divisor = 0_u16;
     /// println!("Originally,\n_a_biguint = {}", _a_biguint);
     /// // It will panic!
-    /// // let overflow = a_biguint.overflowing_rem_assign_uint(_divisor);
+    /// let overflow = _a_biguint.overflowing_rem_assign_uint(_divisor);
     /// 
     /// let mut _a_biguint = U256::zero();
     /// let _divisor = 0_u16;
     /// println!("Originally, a_biguint = {}", _a_biguint);
     /// // It will panic!
-    /// // let overflow = _a_biguint.overflowing_rem_assign_uint(_divisor);
+    /// let overflow = _a_biguint.overflowing_rem_assign_uint(_divisor);
     /// ```
     /// 
     /// # Big-endian issue
@@ -16159,7 +16584,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// ```
     /// 
     /// # Panic Examples
-    /// ```
+    /// ```should_panic
     /// use std::str::FromStr;
     /// use cryptocol::define_utypes_with;
     /// define_utypes_with!(u8);
@@ -16167,12 +16592,12 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// let _dividend = U256::from_str("123456789015758942546236989636279846864825945392").unwrap();
     /// let _divisor = 0_u8;
     /// // It will panic.
-    /// // let remainder = _dividend.unchecked_rem_uint(_divisor);
+    /// let remainder = _dividend.unchecked_rem_uint(_divisor);
     /// 
     /// let _dividend = U256::zero();
     /// let _divisor = 0_u8;
     /// // It will panic.
-    /// // let remainder = _dividend.unchecked_rem_uint(_divisor);
+    /// let remainder = _dividend.unchecked_rem_uint(_divisor);
     /// ```
     /// 
     /// # Big-endian issue
@@ -16246,8 +16671,8 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// assert_eq!(remainder.to_string(), "0");
     /// ```
     /// 
-    /// # Panic Example
-    /// ```
+    /// # Panic Examples
+    /// ```should_panic
     /// use std::str::FromStr;
     /// use cryptocol::define_utypes_with;
     /// define_utypes_with!(u16);
@@ -16255,12 +16680,12 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// let _dividend = UU32::from_str("123456789015758942546236989636279846864825945392").unwrap();
     /// let _divisor = 0_u8;
     /// // It will panic!
-    /// // let remainder = _dividend.saturating_rem_uint(_divisor);
+    /// let remainder = _dividend.saturating_rem_uint(_divisor);
     /// 
     /// let _dividend = UU32::zero();
     /// let _divisor = 0_u8;
     /// // It will panic!
-    /// // let remainder = _dividend.saturating_rem_uint(_divisor);
+    /// let remainder = _dividend.saturating_rem_uint(_divisor);
     /// ```
     /// 
     /// # Big-endian issue
@@ -16357,8 +16782,8 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// assert_eq!(a_biguint.is_undefined(), false);
     /// ```
     /// 
-    /// # Panic Example
-    /// ```
+    /// # Panic Examples
+    /// ```should_panic
     /// use std::str::FromStr;
     /// use cryptocol::define_utypes_with;
     /// define_utypes_with!(u32);
@@ -16367,13 +16792,13 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// let _divisor = 0_u16;
     /// println!("Originally,\n_a_biguint = {}", _a_biguint);
     /// // It will panic!
-    /// // _a_biguint.saturating_rem_assign_uint(_divisor);
+    /// _a_biguint.saturating_rem_assign_uint(_divisor);
     /// 
     /// let mut _a_biguint = U256::zero();
     /// let _divisor = 0_u16;
     /// println!("Originally,\n_a_biguint = {}", _a_biguint);
     /// // It will panic!
-    /// // _a_biguint.saturating_rem_assign_uint(_divisor);
+    /// _a_biguint.saturating_rem_assign_uint(_divisor);
     /// ```
     /// 
     /// # Big-endian issue
@@ -16744,7 +17169,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// ```
     /// 
     /// # Panic Examples
-    /// ```
+    /// ```should_panic
     /// use std::str::FromStr;
     /// use cryptocol::define_utypes_with;
     /// define_utypes_with!(u8);
@@ -16754,56 +17179,56 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// let _divisor = 0_u8;
     /// let _modulo = U256::from_uint(100_u8);
     /// // It will panic!
-    /// // let quotient = _dividend.modular_rem_uint(_divisor, &_modulo);
+    /// let quotient = _dividend.modular_rem_uint(_divisor, &_modulo);
     /// 
     /// // modulo >= 2 and dividend != 0 and divisor == multiple of modulo
     /// let _dividend = U256::from_str("123456789015758942546236989636279846864825945392").unwrap();
     /// let _divisor = 200_u8;
     /// let _modulo = U256::from_uint(100_u8);
     /// // It will panic!
-    /// // let quotient = _dividend.modular_rem_uint(_divisor, &_modulo);
+    /// let quotient = _dividend.modular_rem_uint(_divisor, &_modulo);
     /// 
     /// // modulo >= 2 and dividend == 0 and divisor == 0
     /// let _dividend = U256::zero();
     /// let _divisor = 0_u8;
     /// let _modulo = U256::from_uint(100_u8);
     /// // It will panic!
-    /// // let quotient = _dividend.modular_rem_uint(_divisor, &_modulo);
+    /// let quotient = _dividend.modular_rem_uint(_divisor, &_modulo);
     /// 
     /// // modulo >= 2 and dividend == 0 and divisor == multiple of modulo
     /// let _dividend = U256::zero();
     /// let _divisor = 200_u8;
     /// let _modulo = U256::from_uint(100_u8);
     /// // It will panic!
-    /// // let quotient = _dividend.modular_rem_uint(_divisor, &_modulo);
+    /// let quotient = _dividend.modular_rem_uint(_divisor, &_modulo);
     /// 
     /// // modulo >= 2 and dividend == multiple of modulo and divisor == 0
     /// let _dividend = U256::from_uint(200_u8);
     /// let _divisor = 0_u8;
     /// let _modulo = U256::from_uint(100_u8);
     /// // It will panic!
-    /// // let quotient = _dividend.modular_rem_uint(_divisor, &_modulo);
+    /// let quotient = _dividend.modular_rem_uint(_divisor, &_modulo);
     /// 
     /// // modulo >= 2 and dividend == multiple of modulo and divisor == multiple of modulo
     /// let _dividend = U256::from_uint(200_u8);
     /// let _divisor = 200_u8;
     /// let _modulo = U256::from_uint(100_u8);
     /// // It will panic!
-    /// // let quotient = _dividend.modular_rem_uint(_divisor, &_modulo);
+    /// let quotient = _dividend.modular_rem_uint(_divisor, &_modulo);
     /// 
     /// // modulo == 0
     /// let _dividend = U256::from_str("123456789015758942546236989636279846864825945392").unwrap();
     /// let _divisor = 128_u8;
     /// let _modulo = U256::zero();
     /// // It will panic!
-    /// // let quotient = _dividend.modular_rem_uint(_divisor, &_modulo);
+    /// let quotient = _dividend.modular_rem_uint(_divisor, &_modulo);
     /// 
     /// // modulo == 1
     /// let _dividend = U256::from_str("123456789015758942546236989636279846864825945392").unwrap();
     /// let _divisor = 128_u8;
     /// let _modulo = U256::one();
     /// // It will panic!
-    /// // let quotient = _dividend.modular_rem_uint(_divisor, &_modulo);
+    /// let quotient = _dividend.modular_rem_uint(_divisor, &_modulo);
     /// ```
     /// 
     /// # Big-endian issue
@@ -16935,74 +17360,74 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// ```
     /// 
     /// # Panic Examples
-    /// ```
+    /// ```should_panic
     /// use std::str::FromStr;
     /// use cryptocol::define_utypes_with;
     /// define_utypes_with!(u16);
     /// 
     /// // modulo >= 2 and dividend != 0 and divisor == 0
-    /// let _a_biguint = U256::from_str("123456789015758942546236989636279846864825945392").unwrap();
+    /// let mut _a_biguint = U256::from_str("123456789015758942546236989636279846864825945392").unwrap();
     /// let _divisor = 0_u8;
     /// let _modulo = U256::from_uint(100_u8);
     /// println!("Originally,\n_a_biguint = {}", _a_biguint);
     /// // It will panic!
-    /// // _a_biguint.modular_rem_assign_uint(_divisor, &_modulo);
+    /// _a_biguint.modular_rem_assign_uint(_divisor, &_modulo);
     /// 
     /// // modulo >= 2 and dividend != 0 and divisor == multiple of modulo
-    /// let _a_biguint = U256::from_str("123456789015758942546236989636279846864825945392").unwrap();
+    /// let mut _a_biguint = U256::from_str("123456789015758942546236989636279846864825945392").unwrap();
     /// let _divisor = 200_u8;
     /// let _modulo = U256::from_uint(100_u8);
     /// println!("Originally,\n_a_biguint = {}", _a_biguint);
     /// // It will panic!
-    /// // _a_biguint.modular_rem_assign_uint(_divisor, &_modulo);
+    /// _a_biguint.modular_rem_assign_uint(_divisor, &_modulo);
     /// 
     /// // modulo >= 2 and dividend == 0 and divisor == 0
-    /// let _a_biguint = U256::zero();
+    /// let mut _a_biguint = U256::zero();
     /// let _divisor = 0_u8;
     /// let _modulo = U256::from_uint(100_u8);
     /// println!("Originally,\n_a_biguint = {}", _a_biguint);
     /// // It will panic!
-    /// // _a_biguint.modular_rem_assign_uint(_divisor, &_modulo);
+    /// _a_biguint.modular_rem_assign_uint(_divisor, &_modulo);
     /// 
     /// // modulo >= 2 and dividend == 0 and divisor == multiple of modulo
-    /// let _a_biguint = U256::zero();
+    /// let mut _a_biguint = U256::zero();
     /// let _divisor = 200_u8;
     /// let _modulo = U256::from_uint(100_u8);
     /// println!("Originally,\n_a_biguint = {}", _a_biguint);
     /// // It will panic!
-    /// // _a_biguint.modular_rem_assign_uint(_divisor, &_modulo);
+    /// _a_biguint.modular_rem_assign_uint(_divisor, &_modulo);
     /// 
     /// // modulo >= 2 and dividend == multiple of modulo and divisor == 0
-    /// let _a_biguint = U256::from_uint(200_u8);
+    /// let mut _a_biguint = U256::from_uint(200_u8);
     /// let _divisor = 0_u8;
     /// let _modulo = U256::from_uint(100_u8);
     /// println!("Originally,\n_a_biguint = {}", _a_biguint);
     /// // It will panic!
-    /// // _a_biguint.modular_rem_assign_uint(_divisor, &_modulo);
+    /// _a_biguint.modular_rem_assign_uint(_divisor, &_modulo);
     /// 
     /// // modulo >= 2 and dividend == multiple of modulo and divisor == multiple of modulo
-    /// let _a_biguint = U256::from_uint(200_u8);
+    /// let mut _a_biguint = U256::from_uint(200_u8);
     /// let _divisor = 200_u8;
     /// let _modulo = U256::from_uint(100_u8);
     /// println!("Originally,\n_a_biguint = {}", _a_biguint);
     /// // It will panic!
-    /// // _a_biguint.modular_rem_assign_uint(_divisor, &_modulo);
+    /// _a_biguint.modular_rem_assign_uint(_divisor, &_modulo);
     /// 
     /// // modulo == 0
-    /// let _a_biguint = U256::from_str("123456789015758942546236989636279846864825945392").unwrap();
+    /// let mut _a_biguint = U256::from_str("123456789015758942546236989636279846864825945392").unwrap();
     /// let _divisor = 128_u8;
     /// let _modulo = U256::zero();
     /// println!("Originally,\n_a_biguint = {}", _a_biguint);
     /// // It will panic!
-    /// // _a_biguint.modular_rem_assign_uint(_divisor, &_modulo);
+    /// _a_biguint.modular_rem_assign_uint(_divisor, &_modulo);
     /// 
     /// // modulo == 1
-    /// let _a_biguint = U256::from_str("123456789015758942546236989636279846864825945392").unwrap();
+    /// let mut _a_biguint = U256::from_str("123456789015758942546236989636279846864825945392").unwrap();
     /// let _divisor = 128_u8;
     /// let _modulo = U256::one();
     /// println!("Originally,\n_a_biguint = {}", _a_biguint);
     /// // It will panic!
-    /// // _a_biguint.modular_rem_assign_uint(_divisor, &_modulo);
+    /// _a_biguint.modular_rem_assign_uint(_divisor, &_modulo);
     /// ```
     /// 
     /// # Big-endian issue
@@ -18001,8 +18426,8 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// assert_eq!(multiple.is_undefined(), false);
     /// ```
     /// 
-    /// # Panic Example
-    /// ```
+    /// # Panic Examples
+    /// ```should_panic
     /// use std::str::FromStr;
     /// use cryptocol::define_utypes_with;
     /// define_utypes_with!(u32);
@@ -18010,7 +18435,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// let _a_biguint = U256::from_str("123456789012345678901234567890123456789").unwrap();
     /// let _num = 0_u8;
     /// // It will panic.
-    /// // multiple = _a_biguint.next_multiple_of_uint(_num);
+    /// let multiple = _a_biguint.next_multiple_of_uint(_num);
     /// ```
     /// 
     /// # Big-endian issue
@@ -18108,16 +18533,16 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// assert_eq!(a_biguint.is_undefined(), false);
     /// ```
     /// 
-    /// # Panic Example
-    /// ```
+    /// # Panic Examples
+    /// ```should_panic
     /// use std::str::FromStr;
     /// use cryptocol::define_utypes_with;
     /// define_utypes_with!(u64);
     /// 
-    /// let _a_biguint = U256::from_str_radix("123456789012345678901234567890123697594", 16).unwrap();
+    /// let mut _a_biguint = U256::from_str_radix("123456789012345678901234567890123697594", 16).unwrap();
     /// let _num = 0_u8;
     /// // It will panic.
-    /// // _a_biguint.next_multiple_of_assign_uint(_num);
+    /// _a_biguint.next_multiple_of_assign_uint(_num);
     /// ```
     /// 
     /// # Big-endian issue
@@ -18471,7 +18896,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// ```
     /// 
     /// # Panic Examples
-    /// ```
+    /// ```should_panic
     /// use std::str::FromStr;
     /// use cryptocol::define_utypes_with;
     /// define_utypes_with!(u8);
@@ -18480,25 +18905,25 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// let _num = 0_u8;
     /// let _modulo = _a_biguint.wrapping_add_uint(200_u8);
     /// // It will panic.
-    /// // let multiple = _a_biguint.modular_next_multiple_of_uint(_num, &_modulo);
+    /// let multiple = _a_biguint.modular_next_multiple_of_uint(_num, &_modulo);
     /// 
     /// let _a_biguint = U256::from_str("123456789012345678901234567890123456789").unwrap();
     /// let _num = 200_u8;
     /// let _modulo = U256::from_uint(100_u8);
     /// // It will panic.
-    /// // let multiple = _a_biguint.modular_next_multiple_of_uint(_num, &_modulo);
+    /// let multiple = _a_biguint.modular_next_multiple_of_uint(_num, &_modulo);
     /// 
     /// let _a_biguint = U256::from_str("123456789012345678901234567890123456789").unwrap();
     /// let _num = 100_u8;
     /// let _modulo = U256::zero();
     /// // It will panic.
-    /// // let multiple = _a_biguint.modular_next_multiple_of_uint(_num, &_modulo);
+    /// let multiple = _a_biguint.modular_next_multiple_of_uint(_num, &_modulo);
     /// 
     /// let _a_biguint = U256::from_str("123456789012345678901234567890123456789").unwrap();
     /// let _num = 100_u8;
     /// let _modulo = U256::one();
     /// // It will panic.
-    /// // let multiple = _a_biguint.modular_next_multiple_of_uint(_num, &_modulo);
+    /// let multiple = _a_biguint.modular_next_multiple_of_uint(_num, &_modulo);
     /// ```
     /// 
     /// # Big-endian issue
@@ -18614,7 +19039,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// ```
     /// 
     /// # Panic Examples
-    /// ```
+    /// ```should_panic
     /// use std::str::FromStr;
     /// use cryptocol::define_utypes_with;
     /// define_utypes_with!(u16);
@@ -18623,25 +19048,25 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// println!("Originally, _a_biguint = {}", _a_biguint);
     /// let _num = 0_u8;
     /// let _modulo = _a_biguint.wrapping_add_uint(200_u8);
-    /// // _a_biguint.modular_next_multiple_of_assign_uint(_num, &_modulo);
+    /// _a_biguint.modular_next_multiple_of_assign_uint(_num, &_modulo);
     /// 
     /// let mut _a_biguint = U256::from_str("123456789012345678901234567890123456789").unwrap();
     /// println!("Originally, _a_biguint = {}", _a_biguint);
     /// let _num = 200_u8;
     /// let _modulo = U256::from_uint(100_u8);
-    /// // _a_biguint.modular_next_multiple_of_assign_uint(_num, &_modulo);
+    /// _a_biguint.modular_next_multiple_of_assign_uint(_num, &_modulo);
     /// 
     /// let mut _a_biguint = U256::from_str("123456789012345678901234567890123456789").unwrap();
     /// println!("Originally, _a_biguint = {}", _a_biguint);
     /// let _num = 100_u8;
     /// let _modulo = U256::zero();
-    /// // _a_biguint.modular_next_multiple_of_assign_uint(_num, &_modulo);
+    /// _a_biguint.modular_next_multiple_of_assign_uint(_num, &_modulo);
     /// 
     /// let mut _a_biguint = U256::from_str("123456789012345678901234567890123456789").unwrap();
     /// println!("Originally, _a_biguint = {}", _a_biguint);
     /// let _num = 100_u8;
     /// let _modulo = U256::one();
-    /// // _a_biguint.modular_next_multiple_of_assign_uint(_num, &_modulo);
+    /// _a_biguint.modular_next_multiple_of_assign_uint(_num, &_modulo);
     /// ```
     /// 
     /// # Big-endian issue
@@ -19405,15 +19830,15 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// assert_eq!(res.is_divided_by_zero(), false);
     /// ```
     /// 
-    /// # Panic Example
-    /// ```
+    /// # Panic Examples
+    /// ```should_panic
     /// use cryptocol::define_utypes_with;
     /// define_utypes_with!(u8);
     /// 
     /// let _a_biguint = UU32::zero();
     /// let _exp = 0_u8;
     /// // It will panic.
-    /// // let res = _a_biguint.pow_uint(_exp);
+    /// let res = _a_biguint.pow_uint(_exp);
     /// ```
     /// 
     /// # Big-endian issue
@@ -19564,8 +19989,8 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// assert_eq!(a_biguint.is_undefined(), false);
     /// ```
     /// 
-    /// # Panic Example
-    /// ```
+    /// # Panic Examples
+    /// ```should_panic
     /// use cryptocol::define_utypes_with;
     /// define_utypes_with!(u16);
     /// 
@@ -19573,7 +19998,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// let _exp = 0_u8;
     /// println!("Originally, a_biguint = {}", _a_biguint);
     /// // It will panic.
-    /// // _a_biguint.pow_assign_uint(_exp);
+    /// _a_biguint.pow_assign_uint(_exp);
     /// ```
     /// 
     /// # Big-endian issue
@@ -20014,15 +20439,15 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// assert_eq!(res.is_undefined(), false);
     /// ```
     /// 
-    /// # Panic Example
-    /// ```
+    /// # Panic Examples
+    /// ```should_panic
     /// use cryptocol::define_utypes_with;
     /// define_utypes_with!(u128);
     /// 
     /// let _a_biguint = UU32::zero();
     /// let _exp = 0_u8;
     /// // It will panic.
-    /// // let res = _a_biguint.wrapping_pow_uint(_exp);
+    /// let res = _a_biguint.wrapping_pow_uint(_exp);
     /// ```
     /// 
     /// # Big-endian issue
@@ -20171,8 +20596,8 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// assert_eq!(a_biguint.is_undefined(), false);
     /// ```
     /// 
-    /// # Panic Example
-    /// ```
+    /// # Panic Examples
+    /// ```should_panic
     /// use cryptocol::define_utypes_with;
     /// define_utypes_with!(u8);
     /// 
@@ -20180,7 +20605,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// let _exp = 0_u8;
     /// println!("Originally, _a_biguint = {}", _a_biguint);
     /// // It will panic.
-    /// // _a_biguint.wrapping_pow_assign_uint(_exp);
+    /// _a_biguint.wrapping_pow_assign_uint(_exp);
     /// ```
     /// 
     /// # Big-endian issue
@@ -20345,15 +20770,15 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// assert_eq!(res.is_undefined(), false);
     /// ```
     /// 
-    /// # Panic Example
-    /// ```
+    /// # Panic Examples
+    /// ```should_panic
     /// use cryptocol::define_utypes_with;
     /// define_utypes_with!(u16);
     /// 
     /// let _a_biguint = UU32::zero();
     /// let _exp = 0_u8;
     /// // It will panic.
-    /// // let (res, overflow) = _a_biguint.overflowing_pow_uint(_exp);
+    /// let (res, overflow) = _a_biguint.overflowing_pow_uint(_exp);
     /// ```
     /// 
     /// # Big-endian issue
@@ -20514,8 +20939,8 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// assert_eq!(a_biguint.is_undefined(), false);
     /// ```
     /// 
-    /// # Panic Example
-    /// ```
+    /// # Panic Examples
+    /// ```should_panic
     /// use cryptocol::define_utypes_with;
     /// define_utypes_with!(u32);
     /// 
@@ -20523,7 +20948,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// let _exp = 0_u8;
     /// println!("Originally, a_biguint = {}", _a_biguint);
     /// // It will panic.
-    /// // let overflow = _a_biguint.overflowing_pow_assign_uint(_exp);
+    /// let overflow = _a_biguint.overflowing_pow_assign_uint(_exp);
     /// ```
     /// 
     /// # Big-endian issue
@@ -20782,19 +21207,19 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// ```
     /// 
     /// # Panic Examples
-    /// ```
+    /// ```should_panic
     /// use cryptocol::define_utypes_with;
     /// define_utypes_with!(u32);
     /// 
     /// let _a_biguint = UU32::from_uint(10_u8);
     /// let _exp = 100_u8;
     /// // It will panic.
-    /// // let res = _a_biguint.unchecked_pow_uint(_exp);
+    /// let res = _a_biguint.unchecked_pow_uint(_exp);
     /// 
     /// let _a_biguint = UU32::zero();
     /// let _exp = 0_u8;
     /// // It will panic.
-    /// // let res = _a_biguint.unchecked_pow_uint(_exp);
+    /// let res = _a_biguint.unchecked_pow_uint(_exp);
     /// ```
     /// 
     /// # Big-endian issue
@@ -20913,15 +21338,15 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// assert_eq!(res.is_undefined(), false);
     /// ```
     /// 
-    /// # Panic Example
-    /// ```
+    /// # Panic Examples
+    /// ```should_panic
     /// use cryptocol::define_utypes_with;
     /// define_utypes_with!(u8);
     /// 
     /// let _a_biguint = UU32::zero();
     /// let _exp = 0_u8;
     /// // It will panic.
-    /// // let res = _a_biguint.saturating_pow_uint(_exp);
+    /// let res = _a_biguint.saturating_pow_uint(_exp);
     /// ```
     /// 
     /// # Big-endian issue
@@ -21066,8 +21491,8 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// assert_eq!(a_biguint.is_undefined(), false);
     /// ```
     /// 
-    /// # Panic Example
-    /// ```
+    /// # Panic Examples
+    /// ```should_panic
     /// use cryptocol::define_utypes_with;
     /// define_utypes_with!(u16);
     /// 
@@ -21075,7 +21500,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// let _exp = 0_u8;
     /// println!("Originally, a_biguint = {}", _a_biguint);
     /// // It will panic.
-    /// // _a_biguint.saturating_pow_assign_uint(_exp);
+    /// _a_biguint.saturating_pow_assign_uint(_exp);
     /// ```
     /// 
     /// # Big-endian issue
@@ -21238,7 +21663,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// ```
     /// 
     /// # Panic Examples
-    /// ```
+    /// ```should_panic
     /// use cryptocol::define_utypes_with;
     /// define_utypes_with!(u32);
     /// 
@@ -21247,49 +21672,49 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// let _exp = 0_u8;
     /// let _modulo = U256::halfmax();
     /// // It will panic.
-    /// // let res = _a_biguint.modular_pow_uint(_exp, &_modulo);
+    /// let res = _a_biguint.modular_pow_uint(_exp, &_modulo);
     /// 
     /// // self == 0 and exp == multiple of modulo and modulo != 0
     /// let _a_biguint = UU32::zero();
     /// let _exp = 200_u8;
     /// let _modulo = U256::from_uint(100_u8);
     /// // It will panic.
-    /// // let res = _a_biguint.modular_pow_uint(_exp, &_modulo);
+    /// let res = _a_biguint.modular_pow_uint(_exp, &_modulo);
     /// 
     /// // self == multiple of modulo and exp == 0 and modulo != 0
     /// let _a_biguint = UU32::from_uint(300_u16);
     /// let _exp = 0_u8;
     /// let _modulo = U256::from_uint(100_u8);
     /// // It will panic.
-    /// // let res = _a_biguint.modular_pow_uint(_exp, &_modulo);
+    /// let res = _a_biguint.modular_pow_uint(_exp, &_modulo);
     /// 
     /// // self == multiple of modulo and exp == multiple of modulo and modulo != 0
     /// let _a_biguint = UU32::from_uint(300_u16);
     /// let _exp = 200_u8;
     /// let _modulo = U256::from_uint(100_u8);
     /// // It will panic.
-    /// // let res = _a_biguint.modular_pow_uint(_exp, &_modulo);
+    /// let res = _a_biguint.modular_pow_uint(_exp, &_modulo);
     /// 
     /// // self != 0 and exp != 0 and modulo == 0
     /// let _a_biguint = U256::from_uint(10_u8);
     /// let _exp = 100_u8;
     /// let _modulo = U256::zero();
     /// // It will panic!
-    /// // let _res = a_biguint.modular_pow_uint(_exp, &_modulo);
+    /// let _res = _a_biguint.modular_pow_uint(_exp, &_modulo);
     /// 
     /// // self != 0 and exp != 0 and modulo == 1
     /// let _a_biguint = U256::from_uint(10_u8);
     /// let _exp = 100_u8;
     /// let _modulo = U256::one();
     /// // It will panic!
-    /// // let _res = a_biguint.modular_pow_uint(_exp, &_modulo);
+    /// let _res = _a_biguint.modular_pow_uint(_exp, &_modulo);
     /// 
     /// // self == 0 and exp == 0 and modulo == 0
     /// let _a_biguint = U256::zero();
     /// let _exp = 0_u8;
     /// let _modulo = U256::zero();
     /// // It will panic!
-    /// // let _res = a_biguint.modular_pow_uint(_exp, &_modulo);
+    /// let _res = _a_biguint.modular_pow_uint(_exp, &_modulo);
     /// ```
     /// 
     /// # Big-endian issue
@@ -21520,65 +21945,65 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// ```
     /// 
     /// # Panic Examples
-    /// ```
+    /// ```should_panic
     /// use cryptocol::define_utypes_with;
     /// define_utypes_with!(u64);
     /// 
     /// // self == 0 and exp == 0 and modulo != 0
     /// let mut _a_biguint = U256::zero();
+    /// println!("Originally, _a_biguint = {}", _a_biguint);
     /// let _exp = 0_u8;
     /// let _modulo = U256::halfmax();
-    /// println!("Originally,\n_a_biguint = {}", _a_biguint);
     /// // It will panic!
-    /// // _a_biguint.modular_pow_assign_uint(_exp, &_modulo);
+    /// _a_biguint.modular_pow_assign_uint(_exp, &_modulo);
     /// 
     /// // self == 0 and exp == multiple of modulo and modulo != 0
     /// let mut _a_biguint = U256::zero();
+    /// println!("Originally, _a_biguint = {}", _a_biguint);
     /// let _exp = 200_u8;
     /// let _modulo = U256::from_uint(100_u8);
-    /// println!("Originally,\n_a_biguint = {}", _a_biguint);
     /// // It will panic!
-    /// // _a_biguint.modular_pow_assign_uint(_exp, &_modulo);
+    /// _a_biguint.modular_pow_assign_uint(_exp, &_modulo);
     /// 
     /// // self == multiple of modulo and exp == 0 and modulo != 0
     /// let mut _a_biguint = U256::from_uint(300_u16);
+    /// println!("Originally, _a_biguint = {}", _a_biguint);
     /// let _exp = 0_u8;
     /// let _modulo = U256::from_uint(100_u8);
-    /// println!("Originally,\n_a_biguint = {}", _a_biguint);
     /// // It will panic!
-    /// // _a_biguint.modular_pow_assign_uint(_exp, &_modulo);
+    /// _a_biguint.modular_pow_assign_uint(_exp, &_modulo);
     /// 
     /// // self == multiple of modulo and exp == multiple of modulo and modulo != 0
     /// let mut _a_biguint = U256::from_uint(300_u16);
+    /// println!("Originally, _a_biguint = {}", _a_biguint);
     /// let _exp = 200_u8;
     /// let _modulo = U256::from_uint(100_u8);
-    /// println!("Originally,\n_a_biguint = {}", _a_biguint);
     /// // It will panic!
-    /// // _a_biguint.modular_pow_assign_uint(_exp, &_modulo);
+    /// _a_biguint.modular_pow_assign_uint(_exp, &_modulo);
     /// 
     /// // self != 0 and exp != 0 and modulo == 0
     /// let mut _a_biguint = U256::from_uint(10_u8);
+    /// println!("Originally, _a_biguint = {}", _a_biguint);
     /// let _exp = 100_u8;
     /// let _modulo = U256::zero();
-    /// println!("Originally,\n_a_biguint = {}", _a_biguint);
     /// // It will panic!
-    /// // _a_biguint.modular_pow_assign_uint(_exp, &_modulo);
+    /// _a_biguint.modular_pow_assign_uint(_exp, &_modulo);
     /// 
     /// // self != 0 and exp != 0 and modulo == 1
-    /// let _a_biguint = U256::from_uint(10_u8);
+    /// let mut _a_biguint = U256::from_uint(10_u8);
+    /// println!("Originally, _a_biguint = {}", _a_biguint);
     /// let _exp = 100_u8;
     /// let _modulo = U256::one();
-    /// println!("Originally,\n_a_biguint = {}", _a_biguint);
     /// // It will panic!
-    /// // _a_biguint.modular_pow_assign_uint(_exp, &_modulo);
+    /// _a_biguint.modular_pow_assign_uint(_exp, &_modulo);
     /// 
     /// // self == 0 and exp == 0 and modulo == 0
     /// let mut _a_biguint = U256::zero();
+    /// println!("Originally, _a_biguint = {}", _a_biguint);
     /// let _exp = 0_u8;
     /// let _modulo = U256::zero();
-    /// println!("Originally,\n_a_biguint = {}", _a_biguint);
     /// // It will panic!
-    /// // _a_biguint.modular_pow_assign_uint(_exp, &_modulo);
+    /// _a_biguint.modular_pow_assign_uint(_exp, &_modulo);
     /// ```
     /// 
     /// # Big-endian issue
@@ -22461,8 +22886,8 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// assert_eq!(res.is_undefined(), false);
     /// ```
     /// 
-    /// # Panic Example
-    /// ```
+    /// # Panic Examples
+    /// ```should_panic
     /// use std::str::FromStr;
     /// use cryptocol::define_utypes_with;
     /// define_utypes_with!(u8);
@@ -22470,17 +22895,17 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// let _a_biguint = U256::from_str("1_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000").unwrap();
     /// let _exp = 0_u8;
     /// // It will panic.
-    /// // let res = _a_biguint.iroot_uint(_exp);
+    /// let res = _a_biguint.iroot_uint(_exp);
     /// 
     /// let _a_biguint = U256::one();
     /// let _exp = 0_u8;
     /// // It will panic.
-    /// // let res = _a_biguint.iroot_uint(_exp);
+    /// let res = _a_biguint.iroot_uint(_exp);
     /// 
     /// let _a_biguint = U256::zero();
     /// let _exp = 0_u8;
     /// // It will panic.
-    /// // let res = _a_biguint.iroot_uint(_exp);
+    /// let res = _a_biguint.iroot_uint(_exp);
     /// ```
     /// 
     /// # Big-endian issue
@@ -22681,7 +23106,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// ```
     /// 
     /// # Panic Examples
-    /// ```
+    /// ```should_panic
     /// use std::str::FromStr;
     /// use cryptocol::define_utypes_with;
     /// define_utypes_with!(u16);
@@ -22689,17 +23114,17 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// let mut _a_biguint = U256::from_str("1_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000").unwrap();
     /// let _exp = 0_u8;
     /// // It will panic.
-    /// // a_biguint.iroot_assign_uint(exp);
+    /// _a_biguint.iroot_assign_uint(_exp);
     /// 
     /// let mut _a_biguint = U256::one();
     /// let _exp = 0_u8;
     /// // It will panic.
-    /// // a_biguint.iroot_assign_uint(exp);
+    /// _a_biguint.iroot_assign_uint(_exp);
     /// 
     /// let mut _a_biguint = U256::zero();
     /// let _exp = 0_u8;
     /// // It will panic.
-    /// // a_biguint.iroot_assign_uint(exp);
+    /// _a_biguint.iroot_assign_uint(_exp);
     /// ```
     /// 
     /// # Big-endian issue
@@ -23671,7 +24096,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// ```
     /// 
     /// # Panic Examples
-    /// ```
+    /// ```should_panic
     /// use std::str::FromStr;
     /// use cryptocol::define_utypes_with;
     /// define_utypes_with!(u8);
@@ -23679,17 +24104,17 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// let _a_biguint = U256::from_str("1_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000").unwrap();
     /// let _exp = 0_u8;
     /// // It will panic.
-    /// // let res = _a_biguint.unchecked_iroot_uint(_exp);
+    /// let res = _a_biguint.unchecked_iroot_uint(_exp);
     /// 
     /// let _a_biguint = U256::one();
     /// let _exp = 0_u8;
     /// // It will panic.
-    /// // let res = _a_biguint.unchecked_iroot_uint(_exp);
+    /// let res = _a_biguint.unchecked_iroot_uint(_exp);
     /// 
     /// let _a_biguint = U256::zero();
     /// let _exp = 0_u8;
     /// // It will panic.
-    /// // let res = _a_biguint.unchecked_iroot_uint(_exp);
+    /// let res = _a_biguint.unchecked_iroot_uint(_exp);
     /// ```
     /// 
     /// # Big-endian issue
@@ -23790,7 +24215,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// ```
     /// 
     /// # Panic Examples
-    /// ```
+    /// ```should_panic
     /// use std::str::FromStr;
     /// use cryptocol::define_utypes_with;
     /// define_utypes_with!(u16);
@@ -23798,37 +24223,37 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// let _a_biguint = U256::from_str("1_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000").unwrap();
     /// let _base = 0_u8;
     /// // It will panic.
-    /// // let res = _a_biguint.ilog_uint(_base);
+    /// let res = _a_biguint.ilog_uint(_base);
     /// 
     /// let _a_biguint = U256::from_str("1_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000").unwrap();
     /// let _base = 1_u8;
     /// // It will panic.
-    /// // let res = _a_biguint.ilog_uint(_base);
+    /// let res = _a_biguint.ilog_uint(_base);
     /// 
     /// let _a_biguint = U256::zero();
     /// let _base = 6_u8;
     /// // It will panic.
-    /// // let res = _a_biguint.ilog_uint(_base);
+    /// let res = _a_biguint.ilog_uint(_base);
     /// 
     /// let _a_biguint = U256::zero();
     /// let _base = 0_u8;
     /// // It will panic.
-    /// // let res = _a_biguint.ilog_uint(_base);
+    /// let res = _a_biguint.ilog_uint(_base);
     /// 
     /// let _a_biguint = U256::zero();
     /// let _base = 1_u8;
     /// // It will panic.
-    /// // let res = _a_biguint.ilog_uint(_base);
+    /// let res = _a_biguint.ilog_uint(_base);
     /// 
     /// let _a_biguint = U256::one();
     /// let _base = 0_u8;
     /// // It will panic.
-    /// // let res = _a_biguint.ilog(&_base);
+    /// let res = _a_biguint.ilog_uint(_base);
     /// 
     /// let _a_biguint = U256::one();
     /// let _base = 1_u8;
     /// // It will panic.
-    /// // let res = _a_biguint.ilog(&_base);
+    /// let res = _a_biguint.ilog_uint(_base);
     /// ```
     /// 
     /// # Big-endian issue
@@ -23945,47 +24370,52 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// ```
     /// 
     /// # Panic Examples
-    /// ```
+    /// ```should_panic
     /// use std::str::FromStr;
     /// use cryptocol::define_utypes_with;
     /// define_utypes_with!(u32);
     /// 
-    /// let _a_biguint = U256::from_str("1_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000").unwrap();
+    /// let mut _a_biguint = U256::from_str("1_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000").unwrap();
+    /// println!("Originally, _a_biguint = {}", _a_biguint);
     /// let _base = 0_u8;
     /// // It will panic.
-    /// // _a_biguint.ilog_assign_uint(_base);
+    /// _a_biguint.ilog_assign_uint(_base);
     /// 
-    /// let _a_biguint = U256::from_str("1_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000").unwrap();
+    /// let mut _a_biguint = U256::from_str("1_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000").unwrap();
+    /// println!("Originally, _a_biguint = {}", _a_biguint);
     /// let _base = 1_u8;
     /// // It will panic.
-    /// // _a_biguint.ilog_assign_uint(_base);
+    /// _a_biguint.ilog_assign_uint(_base);
     /// 
-    /// let _a_biguint = U256::zero();
+    /// let mut _a_biguint = U256::zero();
+    /// println!("Originally, _a_biguint = {}", _a_biguint);
     /// let _base = 6_u8;
     /// // It will panic.
-    /// // _a_biguint.ilog_assign_uint(_base);
+    /// _a_biguint.ilog_assign_uint(_base);
     /// 
-    /// let _a_biguint = U256::zero();
-    /// let _base = 0_u8;
-    /// // It will panic.
-    /// // _a_biguint.ilog_assign_uint(_base);
-    /// 
-    /// let _a_biguint = U256::zero();
-    /// let _base = 1_u8;
-    /// // It will panic.
-    /// // _a_biguint.ilog_assign_uint(_base);
-    /// 
-    /// let _a_biguint = U256::one();
+    /// let mut _a_biguint = U256::zero();
     /// println!("Originally, _a_biguint = {}", _a_biguint);
     /// let _base = 0_u8;
     /// // It will panic.
-    /// // let res = _a_biguint.ilog_assign_uint(_base);
+    /// _a_biguint.ilog_assign_uint(_base);
     /// 
-    /// let _a_biguint = U256::one();
+    /// let mut _a_biguint = U256::zero();
     /// println!("Originally, _a_biguint = {}", _a_biguint);
     /// let _base = 1_u8;
     /// // It will panic.
-    /// // let res = _a_biguint.ilog_assign_uint(_base);
+    /// _a_biguint.ilog_assign_uint(_base);
+    /// 
+    /// let mut _a_biguint = U256::one();
+    /// println!("Originally, _a_biguint = {}", _a_biguint);
+    /// let _base = 0_u8;
+    /// // It will panic.
+    /// let res = _a_biguint.ilog_assign_uint(_base);
+    /// 
+    /// let mut _a_biguint = U256::one();
+    /// println!("Originally, _a_biguint = {}", _a_biguint);
+    /// let _base = 1_u8;
+    /// // It will panic.
+    /// let res = _a_biguint.ilog_assign_uint(_base);
     /// ```
     /// 
     /// # Big-endian issue
@@ -24869,7 +25299,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// ```
     /// 
     /// # Panic Examples
-    /// ```
+    /// ```should_panic
     /// use std::str::FromStr;
     /// use cryptocol::define_utypes_with;
     /// define_utypes_with!(u16);
@@ -24877,37 +25307,37 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// let _a_biguint = U256::one();
     /// let _base = 0_u8;
     /// // It will panic.
-    /// // let res = _a_biguint.unchecked_ilog_uint(_base);
+    /// let res = _a_biguint.unchecked_ilog_uint(_base);
     /// 
     /// let _a_biguint = U256::from_str("1_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000").unwrap();
     /// let _base = 1_u8;
     /// // It will panic.
-    /// // let res = _a_biguint.unchecked_ilog_uint(_base);
+    /// let res = _a_biguint.unchecked_ilog_uint(_base);
     /// 
     /// let _a_biguint = U256::zero();
     /// let _base = 6_u8;
     /// // It will panic.
-    /// // let res = _a_biguint.unchecked_ilog_uint(_base);
+    /// let res = _a_biguint.unchecked_ilog_uint(_base);
     /// 
     /// let _a_biguint = U256::zero();
     /// let _base = 0_u8;
     /// // It will panic.
-    /// // let res = _a_biguint.unchecked_ilog_uint(_base);
+    /// let res = _a_biguint.unchecked_ilog_uint(_base);
     /// 
     /// let _a_biguint = U256::zero();
     /// let _base = 1_u8;
     /// // It will panic.
-    /// // let res = _a_biguint.unchecked_ilog_uint(_base);
+    /// let res = _a_biguint.unchecked_ilog_uint(_base);
     /// 
     /// let _a_biguint = U256::one();
     /// let _base = 0_u8;
     /// // It will panic.
-    /// // let res = _a_biguint.unchecked_ilog_uint(_base);
+    /// let res = _a_biguint.unchecked_ilog_uint(_base);
     /// 
     /// let _a_biguint = U256::one();
     /// let _base = 1_u8;
     /// // It will panic.
-    /// // let res = _a_biguint.unchecked_ilog_uint(_base);
+    /// let res = _a_biguint.unchecked_ilog_uint(_base);
     /// ```
     /// 
     /// # Big-endian issue
@@ -25382,24 +25812,24 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// ```
     /// 
     /// # Panic Examples
-    /// ```
+    /// ```should_panic
     /// use cryptocol::define_utypes_with;
     /// define_utypes_with!(u32);
     /// 
     /// let _a_biguint = U256::zero();
     /// let _b_biguint = 103778310992036469625452733331446377109_u128;
     /// // It will panic!
-    /// // let c_biguint = _a_biguint.gcd(&_b_biguint);
+    /// let c_biguint = _a_biguint.gcd_uint(_b_biguint);
     /// 
     /// let _a_biguint = U256::from_string("822879434848600686045915352446172654881155048801396400670057427986680905728").unwrap();
     /// let _b_biguint = 0_u128;
     /// // It will panic!
-    /// // let c_biguint = _a_biguint.gcd(&_b_biguint);
+    /// let c_biguint = _a_biguint.gcd_uint(_b_biguint);
     /// 
     /// let _a_biguint = U256::zero();
     /// let _b_biguint = 0_u128;
     /// // It will panic!
-    /// // let c_biguint = _a_biguint.gcd(&_b_biguint);
+    /// let c_biguint = _a_biguint.gcd_uint(_b_biguint);
     /// ```
     /// 
     /// # Big-endian issue
@@ -25614,24 +26044,24 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// ```
     /// 
     /// # Panic Examples
-    /// ```
+    /// ```should_panic
     /// use cryptocol::define_utypes_with;
     /// define_utypes_with!(u64);
     /// 
     /// let mut _a_biguint = U256::zero();
     /// let _b_biguint = 103778310992036469625452733331446377109_u128;
     /// // It will panic!
-    /// // _a_biguint.gcd_assign_uint(_b_biguint);
+    /// _a_biguint.gcd_assign_uint(_b_biguint);
     /// 
     /// let mut _a_biguint = U256::from_string("822879434848600686045915352446172654881155048801396400670057427986680905728").unwrap();
     /// let _b_biguint = 0_u128;
     /// // It will panic!
-    /// // _a_biguint.gcd_assign_uint(_b_biguint);
+    /// _a_biguint.gcd_assign_uint(_b_biguint);
     /// 
     /// let mut _a_biguint = U256::zero();
     /// let _b_biguint = 0_u128;
     /// // It will panic!
-    /// // _a_biguint.gcd_assign_uint(_b_biguint);
+    /// _a_biguint.gcd_assign_uint(_b_biguint);
     /// ```
     /// 
     /// # Big-endian issue
@@ -26357,24 +26787,24 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// ```
     /// 
     /// # Panic Examples
-    /// ```
+    /// ```should_panic
     /// use cryptocol::define_utypes_with;
     /// define_utypes_with!(u16);
     /// 
     /// let _a_biguint = U256::zero();
     /// let _b_biguint = 103778310992036469625452733331446377109_u128;
     /// // It will panic!
-    /// // let c_biguint = _a_biguint.lcm(&_b_biguint);
+    /// let c_biguint = _a_biguint.lcm_uint(_b_biguint);
     /// 
     /// let _a_biguint = U256::from_string("822879434848600686045915352446172654881155048801396400670057427986680905728").unwrap();
     /// let _b_biguint = 0_u128;
     /// // It will panic!
-    /// // let c_biguint = _a_biguint.lcm(&_b_biguint);
+    /// let c_biguint = _a_biguint.lcm_uint(_b_biguint);
     /// 
     /// let _a_biguint = U256::zero();
     /// let _b_biguint = 0_u128;
     /// // It will panic!
-    /// // let c_biguint = _a_biguint.lcm(&_b_biguint);
+    /// let c_biguint = _a_biguint.lcm_uint(_b_biguint);
     /// ```
     /// 
     /// # Big-endian issue
@@ -26588,24 +27018,24 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// ```
     /// 
     /// # Panic Examples
-    /// ```
+    /// ```should_panic
     /// use cryptocol::define_utypes_with;
     /// define_utypes_with!(u32);
     /// 
     /// let mut _a_biguint = U256::zero();
     /// let _b_biguint = 103778310992036469625452733331446377109_u128;
     /// // It will panic!
-    /// // _a_biguint.lcm_assign_uint(_b_biguint);
+    /// _a_biguint.lcm_assign_uint(_b_biguint);
     /// 
     /// let mut _a_biguint = U256::from_string("822879434848600686045915352446172654881155048801396400670057427986680905728").unwrap();
     /// let _b_biguint = 0_u128;
     /// // It will panic!
-    /// // _a_biguint.lcm_assign_uint(_b_biguint);
+    /// _a_biguint.lcm_assign_uint(_b_biguint);
     /// 
     /// let mut _a_biguint = U256::zero();
     /// let _b_biguint = 0_u128;
     /// // It will panic!
-    /// // _a_biguint.lcm_assign_uint(_b_biguint);
+    /// _a_biguint.lcm_assign_uint(_b_biguint);
     /// ```
     /// 
     /// # Big-endian issue
@@ -28016,15 +28446,15 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// assert_eq!(res.is_undefined(), false);
     /// ```
     /// 
-    /// # Panic Example
-    /// ```
+    /// # Panic Examples
+    /// ```should_panic
     /// use cryptocol::define_utypes_with;
     /// define_utypes_with!(u32);
     /// 
     /// let _b_biguint = U512::max();
     /// let _one_biguint = U512::one();
     /// // It will panic.
-    /// // let res = _b_biguint.unchecked_add(&_one_biguint);
+    /// let res = _b_biguint.unchecked_add(&_one_biguint);
     /// ```
     /// 
     /// # Big-endian issue
@@ -28471,7 +28901,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// ```
     /// 
     /// # Panic Examples
-    /// ```
+    /// ```should_panic
     /// use cryptocol::define_utypes_with;
     /// define_utypes_with!(u8);
     /// 
@@ -28479,13 +28909,13 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// let _m = U256::zero();
     /// let _rhs = U256::from_uint(3_u8);
     /// // It will panic.
-    /// // let res = _a_biguint.modular_add(&_rhs, &_m);
+    /// let res = _a_biguint.modular_add(&_rhs, &_m);
     /// 
     /// let _a_biguint = U256::from_string("76801874298166903427690031858186486050853753882811946569946433649006").unwrap();
     /// let _m = U256::one();
     /// let _rhs = U256::from_uint(3_u8);
     /// // It will panic.
-    /// // let res = _a_biguint.modular_add(&_rhs, &_m);
+    /// let res = _a_biguint.modular_add(&_rhs, &_m);
     /// ```
     /// 
     /// # Big-endian issue
@@ -28849,21 +29279,21 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// ```
     /// 
     /// # Panic Examples
-    /// ```
+    /// ```should_panic
     /// use cryptocol::define_utypes_with;
     /// define_utypes_with!(u16);
     /// 
-    /// let _a_biguint = U256::from_string("76801874298166903427690031858186486050853753882811946569946433649006").unwrap();
+    /// let mut _a_biguint = U256::from_string("76801874298166903427690031858186486050853753882811946569946433649006").unwrap();
     /// let _m = U256::zero();
     /// let _rhs = U256::one();
     /// // It will panic.
-    /// // _a_biguint.modular_add_assign(&_rhs, &_m);
+    /// _a_biguint.modular_add_assign(&_rhs, &_m);
     /// 
-    /// let _a_biguint = U256::from_string("76801874298166903427690031858186486050853753882811946569946433649006").unwrap();
+    /// let mut _a_biguint = U256::from_string("76801874298166903427690031858186486050853753882811946569946433649006").unwrap();
     /// let _m = U256::one();
     /// let _rhs = U256::one();
     /// // It will panic.
-    /// // _a_biguint.modular_add_assign_uint(&_rhs, &_m);
+    /// _a_biguint.modular_add_assign(&_rhs, &_m);
     /// ```
     /// 
     /// 
@@ -30433,14 +30863,14 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// assert_eq!(res.is_infinity(), false);
     /// assert_eq!(res.is_undefined(), false);
     /// ```
-    /// # Panic Example
-    /// ```
+    /// # Panic Examples
+    /// ```should_panic
     /// use cryptocol::define_utypes_with;
     /// define_utypes_with!(u32);
     /// 
     /// let _b_biguint = U512::zero();
     /// // It will panic.
-    /// // let res = _b_biguint.unchecked_sub(&U512::one());
+    /// let res = _b_biguint.unchecked_sub(&U512::one());
     /// ```
     /// 
     /// # Big-endian issue
@@ -30872,7 +31302,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// ```
     /// 
     /// # Pacnic Examples
-    /// ```
+    /// ```should_panic
     /// use cryptocol::define_utypes_with;
     /// define_utypes_with!(u8);
     /// 
@@ -30880,13 +31310,13 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// let _m = U256::zero();
     /// let _rhs = U256::from_uint(3_u8);
     /// // It will panic.
-    /// // let res = _a_biguint.modular_sub(&_rhs, &_m);
+    /// let res = _a_biguint.modular_sub(&_rhs, &_m);
     /// 
     /// let _a_biguint = U256::from_uint(2_u8);
     /// let _m = U256::one();
     /// let _rhs = U256::from_uint(3_u8);
     /// // It will panic.
-    /// // let res = _a_biguint.modular_sub(&_rhs, &_m);
+    /// let res = _a_biguint.modular_sub(&_rhs, &_m);
     /// ```
     /// 
     /// # Big-endian issue
@@ -31225,21 +31655,21 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// ```
     /// 
     /// # Panic Examples
-    /// ```
+    /// ```should_panic
     /// use cryptocol::define_utypes_with;
     /// define_utypes_with!(u16);
     /// 
-    /// let _a_biguint = U256::from_uint(2_u8);
+    /// let mut _a_biguint = U256::from_uint(2_u8);
     /// let _m = U256::zero();
     /// let _rhs = U256::one();
     /// // It will panic.
-    /// // _a_biguint.modular_sub_assign(&_rhs, &m);
+    /// _a_biguint.modular_sub_assign(&_rhs, &_m);
     /// 
-    /// let _a_biguint = U256::from_uint(2_u8);
+    /// let mut _a_biguint = U256::from_uint(2_u8);
     /// let _m = U256::one();
     /// let _rhs = U256::one();
     /// // It will panic.
-    /// // _a_biguint.modular_sub_assign(&_rhs, &m);
+    /// _a_biguint.modular_sub_assign(&_rhs, &_m);
     /// ```
     /// 
     /// # Big-endian issue
@@ -33364,15 +33794,15 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// assert_eq!(res.is_undefined(), false);
     /// ```
     /// 
-    /// # Panic Example
-    /// ```
+    /// # Panic Examples
+    /// ```should_panic
     /// use cryptocol::define_utypes_with;
     /// define_utypes_with!(u128);
     /// 
     /// let _a_biguint = UU32::from_string("876801874298166903427690031858186486050853753882811946569946433649006084094").unwrap();
     /// let _b_biguint = UU32::from_uint(248_u8);
     /// // It will panic.
-    /// // let res = _a_biguint.unchecked_mul(&_b_biguint);
+    /// let res = _a_biguint.unchecked_mul(&_b_biguint);
     /// ```
     /// 
     /// # Big-endian issue
@@ -33781,7 +34211,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// ```
     /// 
     /// # Panic Examples
-    /// ```
+    /// ```should_panic
     /// use cryptocol::define_utypes_with;
     /// define_utypes_with!(u32);
     /// 
@@ -33789,13 +34219,13 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// let _a_biguint = U256::from_string("318581864860508537538828119467680187429816690342769005864872913754682855846").unwrap();
     /// let _mul_biguint = UU32::from_uint(248_u8);
     /// // It will panic!
-    /// // let res = _a_biguint.modular_mul(&_mul_biguint, &_m);
+    /// let res = _a_biguint.modular_mul(&_mul_biguint, &_m);
     /// 
     /// let _m = UU32::one();
     /// let _a_biguint = U256::from_string("318581864860508537538828119467680187429816690342769005864872913754682855846").unwrap();
     /// let _mul_biguint = UU32::from_uint(248_u8);
     /// // It will panic!
-    /// // let res = _a_biguint.modular_mul(&_mul_biguint, &_m);
+    /// let res = _a_biguint.modular_mul(&_mul_biguint, &_m);
     /// ```
     /// 
     /// # Big-endian issue
@@ -34125,7 +34555,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// ```
     /// 
     /// # Panic Examples
-    /// ```
+    /// ```should_panic
     /// use cryptocol::define_utypes_with;
     /// define_utypes_with!(u64);
     /// 
@@ -34140,7 +34570,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// let _m = UU32::zero();
     /// let _mul_biguint = UU32::from_uint(248_u8);
     /// // It will panic!
-    /// // _a_biguint.modular_mul_assign(&_mul_biguint, &_m);
+    /// _a_biguint.modular_mul_assign(&_mul_biguint, &_m);
     /// 
     /// let mut _a_biguint = U256::from_string("318581864860508537538828119467680187429816690342769005864872913754682855846").unwrap();
     /// println!("Originally, _a_biguint = {}", _a_biguint);
@@ -34153,7 +34583,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// let _m = UU32::one();
     /// let _mul_biguint = UU32::from_uint(248_u8);
     /// // It will panic!
-    /// // _a_biguint.modular_mul_assign(&_mul_biguint, &_m);
+    /// _a_biguint.modular_mul_assign(&_mul_biguint, &_m);
     /// ```
     /// 
     /// # Big-endian issue
@@ -35035,20 +35465,20 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// ```
     /// 
     /// # Panic Examples
-    /// ```
+    /// ```should_panic
     /// use std::str::FromStr;
     /// use cryptocol::define_utypes_with;
     /// define_utypes_with!(u8);
     /// 
     /// let _dividend = UU32::from_str("123456789015758942546236989636279846864825945392").unwrap();
-    /// let _divisor = 0_u8;
+    /// let _divisor = UU32::zero();
     /// // It will panic!
-    /// // let (quotient, remainder) = dividend.divide_fully(&_divisor);
+    /// let (quotient, remainder) = _dividend.divide_fully(&_divisor);
     /// 
     /// let _dividend = UU32::zero();
-    /// let _divisor = 0_u8;
+    /// let _divisor = UU32::zero();
     /// // It will panic!
-    /// // let (quotient, remainder) = dividend.divide_fully(&_divisor);
+    /// let (quotient, remainder) = _dividend.divide_fully(&_divisor);
     /// ```
     /// 
     /// # Big-endian issue
@@ -35285,7 +35715,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// ```
     /// 
     /// # Panic Examples
-    /// ```
+    /// ```should_panic
     /// use std::str::FromStr;
     /// use cryptocol::define_utypes_with;
     /// define_utypes_with!(u32);
@@ -35293,12 +35723,12 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// let _dividend = U256::from_str("123456789015758942546236989636279846864825945392").unwrap();
     /// let _divisor = U256::zero();
     /// // It will panic!
-    /// // let quotient = _dividend.wrapping_div(&_divisor);
+    /// let quotient = _dividend.wrapping_div(&_divisor);
     /// 
     /// let _dividend = U256::zero();
     /// let _divisor = U256::zero();
     /// // It will panic!
-    /// // let quotient = _dividend.wrapping_div(&_divisor);
+    /// let quotient = _dividend.wrapping_div(&_divisor);
     /// ```
     /// 
     /// # Big-endian issue
@@ -35392,7 +35822,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// ```
     /// 
     /// # Panic Examples
-    /// ```
+    /// ```should_panic
     /// use std::str::FromStr;
     /// use cryptocol::define_utypes_with;
     /// define_utypes_with!(u64);
@@ -35401,13 +35831,13 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// let _divisor = UU32::zero();
     /// println!("Originally,\n_a_biguint = {}", _a_biguint);
     /// // It will panic!
-    /// // _a_biguint.wrapping_div_assign(&_divisor);
+    /// _a_biguint.wrapping_div_assign(&_divisor);
     /// 
     /// let mut _a_biguint = UU32::zero();
     /// let _divisor = UU32::zero();
     /// println!("Originally,\n_a_biguint = {}", _a_biguint);
     /// // It will panic!
-    /// // _a_biguint.wrapping_div_assign(&_divisor);
+    /// _a_biguint.wrapping_div_assign(&_divisor);
     /// ```
     /// 
     /// # Big-endian issue
@@ -35491,7 +35921,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// ```
     /// 
     /// # Panic Examples
-    /// ```
+    /// ```should_panic
     /// use std::str::FromStr;
     /// use cryptocol::define_utypes_with;
     /// define_utypes_with!(u128);
@@ -35499,12 +35929,12 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// let _dividend = U256::from_str("123456789015758942546236989636279846864825945392").unwrap();
     /// let _divisor = U256::zero();
     /// // It will panic!
-    /// // let (quotient, overflow) = _dividend.overflowing_div(&_divisor);
+    /// let (quotient, overflow) = _dividend.overflowing_div(&_divisor);
     /// 
     /// let _dividend = U256::zero();
     /// let _divisor = U256::zero();
     /// // It will panic!
-    /// // let (quotient, overflow) = _dividend.overflowing_div(&_divisor);
+    /// let (quotient, overflow) = _dividend.overflowing_div(&_divisor);
     /// ```
     /// 
     /// # Big-endian issue
@@ -35607,7 +36037,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// ```
     /// 
     /// # Panic Examples
-    /// ```
+    /// ```should_panic
     /// use std::str::FromStr;
     /// use cryptocol::define_utypes_with;
     /// define_utypes_with!(u8);
@@ -35615,12 +36045,12 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// let mut _a_biguint = UU32::from_str("123456789015758942546236989636279846864825945392").unwrap();
     /// let _divisor = UU32::zero();
     /// // It will panic!
-    /// // let overflow = _a_biguint.overflowing_div_assign(&_divisor);
+    /// let overflow = _a_biguint.overflowing_div_assign(&_divisor);
     /// 
     /// let mut _a_biguint = UU32::zero();
     /// let _divisor = UU32::zero();
     /// // It will panic!
-    /// // let overflow = _a_biguint.overflowing_div_assign(&_divisor);
+    /// let overflow = _a_biguint.overflowing_div_assign(&_divisor);
     /// ```
     /// 
     /// # Big-endian issue
@@ -35823,7 +36253,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// ```
     /// 
     /// # Panic Examples
-    /// ```
+    /// ```should_panic
     /// use std::str::FromStr;
     /// use cryptocol::define_utypes_with;
     /// define_utypes_with!(u32);
@@ -35831,12 +36261,12 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// let _dividend = UU32::from_str("123456789015758942546236989636279846864825945392").unwrap();
     /// let _divisor = UU32::zero();
     /// // It will panic.
-    /// // let quotient = _dividend.uchecked_div_uint(_divisor);
+    /// let quotient = _dividend.unchecked_div(&_divisor);
     /// 
     /// let _dividend = UU32::zero();
     /// let _divisor = UU32::zero();
     /// // It will panic.
-    /// // let quotient = _dividend.uchecked_div_uint(_divisor);
+    /// let quotient = _dividend.unchecked_div(&_divisor);
     /// ```
     /// 
     /// # Big-endian issue
@@ -35915,7 +36345,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// ```
     /// 
     /// # Panic Examples
-    /// ```
+    /// ```should_panic
     /// use std::str::FromStr;
     /// use cryptocol::define_utypes_with;
     /// define_utypes_with!(u64);
@@ -35923,12 +36353,12 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// let _dividend = U256::from_str("123456789015758942546236989636279846864825945392").unwrap();
     /// let _divisor = U256::zero();
     /// // It will panic!
-    /// // let quotient = _dividend.saturating_div(&divisor);
+    /// let quotient = _dividend.saturating_div(&_divisor);
     /// 
     /// let _dividend = UU32::zero();
     /// let _divisor = UU32::zero();
     /// // It will panic!
-    /// // let quotient = _dividend.saturating_div(&divisor);
+    /// let quotient = _dividend.saturating_div(&_divisor);
     /// ```
     /// 
     /// # Big-endian issue
@@ -36020,7 +36450,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// ```
     /// 
     /// # Panic Examples
-    /// ```
+    /// ```should_panic
     /// use std::str::FromStr;
     /// use cryptocol::define_utypes_with;
     /// define_utypes_with!(u128);
@@ -36029,13 +36459,13 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// let _divisor = UU32::zero();
     /// println!("Originally, _a_biguint = {}", _a_biguint);
     /// // It will panic!
-    /// // _a_biguint.saturating_div_assign(&_divisor);
+    /// _a_biguint.saturating_div_assign(&_divisor);
     /// 
     /// let mut _a_biguint = UU32::zero();
     /// let _divisor = UU32::zero();
     /// println!("Originally, _a_biguint = {}", _a_biguint);
     /// // It will panic!
-    /// // _a_biguint.saturating_div_assign(&_divisor);
+    /// _a_biguint.saturating_div_assign(&_divisor);
     /// ```
     /// 
     /// # Big-endian issue
@@ -36409,7 +36839,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// ```
     /// 
     /// # Panic Examples
-    /// ```
+    /// ```should_panic
     /// use std::str::FromStr;
     /// use cryptocol::define_utypes_with;
     /// define_utypes_with!(u32);
@@ -36418,55 +36848,55 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// let _m = U256::from_uint(250_u8);
     /// let _rhs = U256::zero();
     /// // It will panic.
-    /// // let res = _a_biguint.modular_div(&_rhs, &_m);
+    /// let res = _a_biguint.modular_div(&_rhs, &_m);
     /// 
     /// let _a_biguint = U256::from_string("76801874298166903427690031858186486050853753882811946569946433649006").unwrap();
     /// let _m = U256::from_uint(50_u8);
     /// let _rhs = U256::from_uint(250_u8);
     /// // It will panic.
-    /// // let res = _a_biguint.modular_div(&_rhs, &_m);
+    /// let res = _a_biguint.modular_div(&_rhs, &_m);
     /// 
     /// // op1 == 0 and op2 == 0
     /// let _a_biguint = U256::zero();
     /// let _m = U256::from_uint(250_u8);
     /// let _rhs = U256::zero();
     /// // It will panic.
-    /// // let res = _a_biguint.modular_div(&_rhs, &_m);
+    /// let res = _a_biguint.modular_div(&_rhs, &_m);
     /// 
     /// // op1 == multiple of modulo and op2 == 0
     /// let _a_biguint = U256::from_uint(750_u16);
     /// let _m = U256::from_uint(250_u8);
     /// let _rhs = U256::zero();
     /// // It will panic.
-    /// // let res = _a_biguint.modular_div(&_rhs, &_m);
+    /// let res = _a_biguint.modular_div(&_rhs, &_m);
     /// 
     /// // op1 == 0 and op2 == multiple of modulo
     /// let _a_biguint = U256::zero();
     /// let _m = U256::from_uint(50_u8);
     /// let _rhs = U256::from_uint(250_u8);
     /// // It will panic.
-    /// // let res = _a_biguint.modular_div(&_rhs, &_m);
+    /// let res = _a_biguint.modular_div(&_rhs, &_m);
     /// 
     /// // op1 == multiple of modulo and op2 == multiple of modulo
     /// let _a_biguint = U256::from_uint(150_u8);
     /// let _m = U256::from_uint(50_u8);
     /// let _rhs = U256::from_uint(250_u8);
     /// // It will panic.
-    /// // let res = _a_biguint.modular_div(&_rhs, &_m);
+    /// let res = _a_biguint.modular_div(&_rhs, &_m);
     /// 
     /// // modulo == 0
     /// let _dividend = U256::from_str("123456789015758942546236989636279846864825945392").unwrap();
     /// let _divisor = U256::from_uint(128_u8);
     /// let _modulo = U256::zero();
     /// // It will panic!
-    /// // let quotient = _dividend.modular_div(&_divisor, &_modulo);
+    /// let quotient = _dividend.modular_div(&_divisor, &_modulo);
     /// 
     /// // modulo == 1
     /// let _dividend = U256::from_str("123456789015758942546236989636279846864825945392").unwrap();
     /// let _divisor = U256::from_uint(128_u8);
     /// let _modulo = U256::one();
     /// // It will panic!
-    /// // let quotient = _dividend.modular_div(&_divisor, &_modulo);
+    /// let quotient = _dividend.modular_div(&_divisor, &_modulo);
     /// ```
     /// 
     /// # Big-endian issue
@@ -36589,7 +37019,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// ```
     /// 
     /// # Panic Examples
-    /// ```
+    /// ```should_panic
     /// use std::str::FromStr;
     /// use cryptocol::define_utypes_with;
     /// define_utypes_with!(u128);
@@ -36600,7 +37030,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// let _m = U256::from_uint(250_u8);
     /// let _rhs = U256::zero();
     /// // It will panic.
-    /// // _a_biguint.modular_div_assign(&_rhs, &_m);
+    /// _a_biguint.modular_div_assign(&_rhs, &_m);
     /// 
     /// // op2 == multiple of modulo
     /// let mut _a_biguint = U256::from_string("76801874298166903427690031858186486050853753882811946569946433649006").unwrap();
@@ -36608,7 +37038,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// let _m = U256::from_uint(50_u8);
     /// let _rhs = U256::from_uint(250_u8);
     /// // It will panic.
-    /// // _a_biguint.modular_div_assign(&_rhs, &_m);
+    /// _a_biguint.modular_div_assign(&_rhs, &_m);
     /// 
     /// // op1 == 0 and op2 == 0
     /// let mut _a_biguint = U256::zero();
@@ -36616,7 +37046,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// let _m = U256::from_uint(250_u8);
     /// let _rhs = U256::zero();
     /// // It will panic.
-    /// // _a_biguint.modular_div_assign(&_rhs, &_m);
+    /// _a_biguint.modular_div_assign(&_rhs, &_m);
     /// 
     /// // op1 == multiple of modulo and op2 == 0
     /// let mut _a_biguint = U256::from_uint(750_u16);
@@ -36624,7 +37054,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// let _m = U256::from_uint(250_u8);
     /// let _rhs = U256::zero();
     /// // It will panic.
-    /// // _a_biguint.modular_div_assign(&_rhs, &_m);
+    /// _a_biguint.modular_div_assign(&_rhs, &_m);
     /// 
     /// // op1 == 0 and op2 == multiple of modulo
     /// let mut _a_biguint = U256::zero();
@@ -36632,7 +37062,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// let _m = U256::from_uint(50_u8);
     /// let _rhs = U256::from_uint(250_u8);
     /// // It will panic.
-    /// // _a_biguint.modular_div_assign(&_rhs, &_m);
+    /// _a_biguint.modular_div_assign(&_rhs, &_m);
     /// 
     /// // op1 == multiple of modulo and op2 == multiple of modulo
     /// let mut _a_biguint = U256::from_uint(150_u8);
@@ -36640,7 +37070,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// let _m = U256::from_uint(50_u8);
     /// let _rhs = U256::from_uint(250_u8);
     /// // It will panic.
-    /// // _a_biguint.modular_div_assign(&_rhs, &_m);
+    /// _a_biguint.modular_div_assign(&_rhs, &_m);
     /// 
     /// // modulo == 0
     /// let mut _a_biguint = U256::from_str("123456789015758942546236989636279846864825945392").unwrap();
@@ -36648,7 +37078,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// let _divisor = U256::from_uint(128_u8);
     /// let _modulo = U256::zero();
     /// // It will panic!
-    /// // _a_biguint.modular_div_assign(&_divisor, &_modulo);
+    /// _a_biguint.modular_div_assign(&_divisor, &_modulo);
     /// 
     /// // modulo == 1
     /// let mut _a_biguint = U256::from_str("123456789015758942546236989636279846864825945392").unwrap();
@@ -36656,7 +37086,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// let _divisor = U256::from_uint(128_u8);
     /// let _modulo = U256::one();
     /// // It will panic!
-    /// // _a_biguint.modular_div_assign(&_divisor, &_modulo);
+    /// _a_biguint.modular_div_assign(&_divisor, &_modulo);
     /// ```
     /// 
     /// # Big-endian issue
@@ -37603,7 +38033,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// ```
     /// 
     /// # Panic Examples
-    /// ```
+    /// ```should_panic
     /// use std::str::FromStr;
     /// use cryptocol::define_utypes_with;
     /// define_utypes_with!(u16);
@@ -37611,12 +38041,12 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// let _dividend = UU32::from_str("123456789015758942546236989636279846864825945392").unwrap();
     /// let _divisor = UU32::zero();
     /// // It will panic!
-    /// // let remainder = _dividend.wrapping_rem(&_divisor);
+    /// let remainder = _dividend.wrapping_rem(&_divisor);
     /// 
     /// let _dividend = UU32::zero();
     /// let _divisor = UU32::zero();
     /// // It will panic!
-    /// // let remainder = _dividend.wrapping_rem(&_divisor);
+    /// let remainder = _dividend.wrapping_rem(&_divisor);
     /// ```
     /// 
     /// # Big-endian issue
@@ -37710,7 +38140,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// ```
     /// 
     /// # Panic Examples
-    /// ```
+    /// ```should_panic
     /// use std::str::FromStr;
     /// use cryptocol::define_utypes_with;
     /// define_utypes_with!(u32);
@@ -37719,13 +38149,13 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// let _divisor = U256::zero();
     /// println!("Originally, a_biguint = {}", _a_biguint);
     /// // It will panic!
-    /// // _a_biguint.wrapping_rem_assign(&_divisor);
+    /// _a_biguint.wrapping_rem_assign(&_divisor);
     /// 
     /// let mut _a_biguint = U256::zero();
     /// let _divisor = U256::zero();
     /// println!("Originally, a_biguint = {}", _a_biguint);
     /// // It will panic!
-    /// // _a_biguint.wrapping_rem_assign(&_divisor);
+    /// _a_biguint.wrapping_rem_assign(&_divisor);
     /// ```
     /// 
     /// # Big-endian issue
@@ -37809,7 +38239,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// ```
     /// 
     /// # Panic Examples
-    /// ```
+    /// ```should_panic
     /// use std::str::FromStr;
     /// use cryptocol::define_utypes_with;
     /// define_utypes_with!(u64);
@@ -37817,12 +38247,12 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// let _dividend = UU32::from_str("123456789015758942546236989636279846864825945392").unwrap();
     /// let _divisor = UU32::zero();
     /// // It will panic!
-    /// // let (remainder, overflow) = _dividend.overflowing_rem(&_divisor);
+    /// let (remainder, overflow) = _dividend.overflowing_rem(&_divisor);
     /// 
     /// let _dividend = UU32::zero();
     /// let _divisor = UU32::zero();
     /// // It will panic!
-    /// // let (remainder, overflow) = _dividend.overflowing_rem(&_divisor);
+    /// let (remainder, overflow) = _dividend.overflowing_rem(&_divisor);
     /// ```
     /// 
     /// # Big-endian issue
@@ -37925,7 +38355,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// ```
     /// 
     /// # Panic Examples
-    /// ```
+    /// ```should_panic
     /// use std::str::FromStr;
     /// use cryptocol::define_utypes_with;
     /// define_utypes_with!(u128);
@@ -37934,13 +38364,13 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// let _divisor = U256::zero();
     /// println!("Originally, a_biguint = {}", _a_biguint);
     /// // It will panic!
-    /// // let overflow = _a_biguint.overflowing_rem_assign(&_divisor);
+    /// let overflow = _a_biguint.overflowing_rem_assign(&_divisor);
     /// 
     /// let mut _a_biguint = U256::zero();
     /// let _divisor = U256::zero();
     /// println!("Originally, a_biguint = {}", _a_biguint);
     /// // It will panic!
-    /// // let overflow = _a_biguint.overflowing_rem_assign(&_divisor);
+    /// let overflow = _a_biguint.overflowing_rem_assign(&_divisor);
     /// ```
     /// 
     /// # Big-endian issue
@@ -38143,7 +38573,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// ```
     /// 
     /// # Panic Examples
-    /// ```
+    /// ```should_panic
     /// use std::str::FromStr;
     /// use cryptocol::define_utypes_with;
     /// define_utypes_with!(u16);
@@ -38151,12 +38581,12 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// let _dividend = U256::from_str("123456789015758942546236989636279846864825945392").unwrap();
     /// let _divisor = U256::zero();
     /// // It will panic.
-    /// // let remainder = _dividend.unchecked_rem(&_divisor);
+    /// let remainder = _dividend.unchecked_rem(&_divisor);
     /// 
     /// let _dividend = U256::zero();
     /// let _divisor = U256::zero();
     /// // It will panic.
-    /// // let remainder = _dividend.unchecked_rem(&_divisor);
+    /// let remainder = _dividend.unchecked_rem(&_divisor);
     /// ```
     /// 
     /// # Big-endian issue
@@ -38235,7 +38665,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// ```
     /// 
     /// # Panic Examples
-    /// ```
+    /// ```should_panic
     /// use std::str::FromStr;
     /// use cryptocol::define_utypes_with;
     /// define_utypes_with!(u32);
@@ -38243,12 +38673,12 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// let _dividend = UU32::from_str("123456789015758942546236989636279846864825945392").unwrap();
     /// let _divisor = UU32::zero();
     /// // It will panic!
-    /// // let remainder = _dividend.saturating_rem(&_divisor);
+    /// let remainder = _dividend.saturating_rem(&_divisor);
     /// 
     /// let _dividend = UU32::zero();
     /// let _divisor = UU32::zero();
     /// // It will panic!
-    /// // let remainder = _dividend.saturating_rem(&_divisor);
+    /// let remainder = _dividend.saturating_rem(&_divisor);
     /// ```
     /// 
     /// # Big-endian issue
@@ -38340,7 +38770,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// ```
     /// 
     /// # Panic Examples
-    /// ```
+    /// ```should_panic
     /// use std::str::FromStr;
     /// use cryptocol::define_utypes_with;
     /// define_utypes_with!(u64);
@@ -38349,13 +38779,13 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// let _divisor = U256::zero();
     /// println!("Originally,\n_a_biguint = {}", _a_biguint);
     /// // It will panic!
-    /// // _a_biguint.saturating_rem_assign(&_divisor);
+    /// _a_biguint.saturating_rem_assign(&_divisor);
     /// 
     /// let mut _a_biguint = U256::zero();
     /// let _divisor = U256::zero();
     /// println!("Originally,\n_a_biguint = {}", _a_biguint);
     /// // It will panic!
-    /// // _a_biguint.saturating_rem_assign(&_divisor);
+    /// _a_biguint.saturating_rem_assign(&_divisor);
     /// ```
     /// 
     /// # Big-endian issue
@@ -38719,7 +39149,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// ```
     /// 
     /// # Panic Examples
-    /// ```
+    /// ```should_panic
     /// use std::str::FromStr;
     /// use cryptocol::define_utypes_with;
     /// define_utypes_with!(u16);
@@ -38729,56 +39159,56 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// let _divisor = U256::zero();
     /// let _modulo = U256::from_uint(100_u8);
     /// // It will panic!
-    /// // let quotient = _dividend.modular_rem(&_divisor, &_modulo);
+    /// let quotient = _dividend.modular_rem(&_divisor, &_modulo);
     /// 
     /// // modulo >= 2 and dividend != 0 and divisor == multiple of modulo
     /// let _dividend = U256::from_str("123456789015758942546236989636279846864825945392").unwrap();
     /// let _divisor = U256::from_uint(200_u8);
     /// let _modulo = U256::from_uint(100_u8);
     /// // It will panic!
-    /// // let quotient = _dividend.modular_rem(&_divisor, &_modulo);
+    /// let quotient = _dividend.modular_rem(&_divisor, &_modulo);
     /// 
     /// // modulo >= 2 and dividend == 0 and divisor == 0
     /// let _dividend = U256::zero();
     /// let _divisor = U256::zero();
     /// let _modulo = U256::from_uint(100_u8);
     /// // It will panic!
-    /// // let quotient = _dividend.modular_rem(&_divisor, &_modulo);
+    /// let quotient = _dividend.modular_rem(&_divisor, &_modulo);
     /// 
     /// // modulo >= 2 and dividend == 0 and divisor == multiple of modulo
     /// let _dividend = U256::zero();
     /// let _divisor = U256::from_uint(200_u8);
     /// let _modulo = U256::from_uint(100_u8);
     /// // It will panic!
-    /// // let quotient = _dividend.modular_rem(&_divisor, &_modulo);
+    /// let quotient = _dividend.modular_rem(&_divisor, &_modulo);
     /// 
     /// // modulo >= 2 and dividend == multiple of modulo and divisor == 0
     /// let _dividend = U256::from_uint(200_u8);
     /// let _divisor = U256::zero();
     /// let _modulo = U256::from_uint(100_u8);
     /// // It will panic!
-    /// // let quotient = _dividend.modular_rem(&_divisor, &_modulo);
+    /// let quotient = _dividend.modular_rem(&_divisor, &_modulo);
     /// 
     /// // modulo >= 2 and dividend == multiple of modulo and divisor == multiple of modulo
     /// let _dividend = U256::from_uint(200_u8);
     /// let _divisor = U256::from_uint(200_u8);
     /// let _modulo = U256::from_uint(100_u8);
     /// // It will panic!
-    /// // let quotient = _dividend.modular_rem(&_divisor, &_modulo);
+    /// let quotient = _dividend.modular_rem(&_divisor, &_modulo);
     /// 
     /// // modulo == 0
     /// let _dividend = U256::from_str("123456789015758942546236989636279846864825945392").unwrap();
     /// let _divisor = U256::from_uint(128_u8);
     /// let _modulo = U256::zero();
     /// // It will panic!
-    /// // let quotient = _dividend.modular_rem(&_divisor, &_modulo);
+    /// let quotient = _dividend.modular_rem(&_divisor, &_modulo);
     /// 
     /// // modulo == 1
     /// let _dividend = U256::from_str("123456789015758942546236989636279846864825945392").unwrap();
     /// let _divisor = U256::from_uint(128_u8);
     /// let _modulo = U256::one();
     /// // It will panic!
-    /// // let quotient = _dividend.modular_rem(&_divisor, &_modulo);
+    /// let quotient = _dividend.modular_rem(&_divisor, &_modulo);
     /// ```
     /// 
     /// # Big-endian issue
@@ -38902,74 +39332,74 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// ```
     /// 
     /// # Panic Examples
-    /// ```
+    /// ```should_panic
     /// use std::str::FromStr;
     /// use cryptocol::define_utypes_with;
     /// define_utypes_with!(u32);
     /// 
     /// // modulo >= 2 and dividend != 0 and divisor == 0
-    /// let _a_biguint = U256::from_str("123456789015758942546236989636279846864825945392").unwrap();
+    /// let mut _a_biguint = U256::from_str("123456789015758942546236989636279846864825945392").unwrap();
     /// println!("Originally,\n_a_biguint = {}", _a_biguint);
     /// let _divisor = U256::zero();
     /// let _modulo = U256::from_uint(100_u8);
     /// // It will panic!
-    /// // _a_biguint.modular_rem_assign(&_divisor, &_modulo);
+    /// _a_biguint.modular_rem_assign(&_divisor, &_modulo);
     /// 
     /// // modulo >= 2 and dividend != 0 and divisor == multiple of modulo
-    /// let _a_biguint = U256::from_str("123456789015758942546236989636279846864825945392").unwrap();
+    /// let mut _a_biguint = U256::from_str("123456789015758942546236989636279846864825945392").unwrap();
     /// println!("Originally,\n_a_biguint = {}", _a_biguint);
     /// let _divisor = U256::from_uint(200_u8);
     /// let _modulo = U256::from_uint(100_u8);
     /// // It will panic!
-    /// // _a_biguint.modular_rem_assign(&_divisor, &_modulo);
+    /// _a_biguint.modular_rem_assign(&_divisor, &_modulo);
     /// 
     /// // modulo >= 2 and dividend == 0 and divisor == 0
-    /// let _a_biguint = U256::zero();
+    /// let mut _a_biguint = U256::zero();
     /// println!("Originally,\n_a_biguint = {}", _a_biguint);
     /// let _divisor = U256::zero();
     /// let _modulo = U256::from_uint(100_u8);
     /// // It will panic!
-    /// // _a_biguint.modular_rem_assign(&_divisor, &_modulo);
+    /// _a_biguint.modular_rem_assign(&_divisor, &_modulo);
     /// 
     /// // modulo >= 2 and dividend == 0 and divisor == multiple of modulo
-    /// let _a_biguint = U256::zero();
+    /// let mut _a_biguint = U256::zero();
     /// println!("Originally,\n_a_biguint = {}", _a_biguint);
     /// let _divisor = U256::from_uint(200_u8);
     /// let _modulo = U256::from_uint(100_u8);
     /// // It will panic!
-    /// // _a_biguint.modular_rem_assign(&_divisor, &_modulo);
+    /// _a_biguint.modular_rem_assign(&_divisor, &_modulo);
     /// 
     /// // modulo >= 2 and dividend == multiple of modulo and divisor == 0
-    /// let _a_biguint = U256::from_uint(200_u8);
+    /// let mut _a_biguint = U256::from_uint(200_u8);
     /// println!("Originally,\n_a_biguint = {}", _a_biguint);
     /// let _divisor = U256::zero();
     /// let _modulo = U256::from_uint(100_u8);
     /// // It will panic!
-    /// // _a_biguint.modular_rem_assign(&_divisor, &_modulo);
+    /// _a_biguint.modular_rem_assign(&_divisor, &_modulo);
     /// 
     /// // modulo >= 2 and dividend == multiple of modulo and divisor == multiple of modulo
-    /// let _a_biguint = U256::from_uint(200_u8);
+    /// let mut _a_biguint = U256::from_uint(200_u8);
     /// println!("Originally,\n_a_biguint = {}", _a_biguint);
     /// let _divisor = U256::from_uint(200_u8);
     /// let _modulo = U256::from_uint(100_u8);
     /// // It will panic!
-    /// // _a_biguint.modular_rem_assign(&_divisor, &_modulo);
+    /// _a_biguint.modular_rem_assign(&_divisor, &_modulo);
     /// 
     /// // modulo == 0
-    /// let _a_biguint = U256::from_str("123456789015758942546236989636279846864825945392").unwrap();
+    /// let mut _a_biguint = U256::from_str("123456789015758942546236989636279846864825945392").unwrap();
     /// println!("Originally,\n_a_biguint = {}", _a_biguint);
     /// let _divisor = U256::from_uint(128_u8);
     /// let _modulo = U256::zero();
     /// // It will panic!
-    /// // _a_biguint.modular_rem_assign(&_divisor, &_modulo);
+    /// _a_biguint.modular_rem_assign(&_divisor, &_modulo);
     /// 
     /// // modulo == 1
-    /// let _a_biguint = U256::from_str("123456789015758942546236989636279846864825945392").unwrap();
+    /// let mut _a_biguint = U256::from_str("123456789015758942546236989636279846864825945392").unwrap();
     /// println!("Originally,\n_a_biguint = {}", _a_biguint);
     /// let _divisor = U256::from_uint(128_u8);
     /// let _modulo = U256::one();
     /// // It will panic!
-    /// // _a_biguint.modular_rem_assign(&_divisor, &_modulo);
+    /// _a_biguint.modular_rem_assign(&_divisor, &_modulo);
     /// ```
     /// 
     /// # Big-endian issue
@@ -39901,8 +40331,8 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// assert_eq!(multiple.is_undefined(), false);
     /// ```
     /// 
-    /// # Panic Example
-    /// ```
+    /// # Panic Examples
+    /// ```should_panic
     /// use std::str::FromStr;
     /// use cryptocol::define_utypes_with;
     /// define_utypes_with!(u8);
@@ -39910,7 +40340,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// let _a_biguint = U256::from_str("123456789012345678901234567890123456789").unwrap();
     /// let _num = U256::zero();
     /// // It will panic.
-    /// // let _multiple = _a_biguint.next_multiple_of(&_num);
+    /// let _multiple = _a_biguint.next_multiple_of(&_num);
     /// ```
     /// 
     /// # Big-endian issue
@@ -40002,16 +40432,16 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// assert_eq!(a_biguint.is_divided_by_zero(), false);
     /// ```
     /// 
-    /// # Panic Example
-    /// ```
+    /// # Panic Examples
+    /// ```should_panic
     /// use std::str::FromStr;
     /// use cryptocol::define_utypes_with;
     /// define_utypes_with!(u16);
     /// 
-    /// let _a_biguint = UU32::from_str("123456789012345678901234567890123456789").unwrap();
+    /// let mut _a_biguint = UU32::from_str("123456789012345678901234567890123456789").unwrap();
     /// let _num = UU32::zero();
     /// // It will panic.
-    /// // _a_biguint.next_multiple_of_assign(&_num);
+    /// _a_biguint.next_multiple_of_assign(&_num);
     /// ```
     /// 
     /// # Big-endian issue
@@ -40328,7 +40758,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// ```
     /// 
     /// # Panic Examples
-    /// ```
+    /// ```should_panic
     /// use std::str::FromStr;
     /// use cryptocol::define_utypes_with;
     /// define_utypes_with!(u128);
@@ -40338,28 +40768,28 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// let _num = U256::zero();
     /// let _modulo = _a_biguint.wrapping_add_uint(200_u8);
     /// // It will panic.
-    /// // let multiple = _a_biguint.modular_next_multiple_of(&_num, &_modulo);
+    /// let multiple = _a_biguint.modular_next_multiple_of(&_num, &_modulo);
     /// 
     /// // rhs == multiple of modulo
     /// let _a_biguint = U256::from_str("123456789012345678901234567890123456789").unwrap();
     /// let _num = U256::from(200_u8);
     /// let _modulo = U256::from(100_u8);
     /// // It will panic.
-    /// // let multiple = _a_biguint.modular_next_multiple_of(&_num, &_modulo);
+    /// let multiple = _a_biguint.modular_next_multiple_of(&_num, &_modulo);
     /// 
     /// // modulo == 0
     /// let _a_biguint = U256::from_str("123456789012345678901234567890123456789").unwrap();
     /// let _num = U256::from(100_u8);
     /// let _modulo = U256::zero();
     /// // It will panic.
-    /// // let multiple = _a_biguint.modular_next_multiple_of(&_num, &_modulo);
+    /// let multiple = _a_biguint.modular_next_multiple_of(&_num, &_modulo);
     /// 
     /// // modulo == 1
     /// let _a_biguint = U256::from_str("123456789012345678901234567890123456789").unwrap();
     /// let _num = U256::from(100_u8);
     /// let _modulo = U256::one();
     /// // It will panic.
-    /// // let multiple = _a_biguint.modular_next_multiple_of(&_num, &_modulo);
+    /// let multiple = _a_biguint.modular_next_multiple_of(&_num, &_modulo);
     /// ```
     /// 
     /// # Big-endian issue
@@ -40469,7 +40899,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// ```
     /// 
     /// # Panic Examples
-    /// ```
+    /// ```should_panic
     /// use std::str::FromStr;
     /// use cryptocol::define_utypes_with;
     /// define_utypes_with!(u8);
@@ -40479,28 +40909,28 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// println!("Originally, a_biguint = {}", _a_biguint);
     /// let _num = UU32::zero();
     /// let _modulo = _a_biguint.wrapping_add_uint(200_u8);
-    /// // _a_biguint.modular_next_multiple_of_assign(&_num, &_modulo);
+    /// _a_biguint.modular_next_multiple_of_assign(&_num, &_modulo);
     /// 
     /// // rhs == multiple of modulo
     /// let mut _a_biguint = UU32::from_str("123456789012345678901234567890123456789").unwrap();
     /// println!("Originally, a_biguint = {}", _a_biguint);
     /// let _num = UU32::from(200_u8);
     /// let _modulo = UU32::from(100_u8);
-    /// // _a_biguint.modular_next_multiple_of_assign(&_num, &_modulo);
+    /// _a_biguint.modular_next_multiple_of_assign(&_num, &_modulo);
     /// 
     /// // modulo == 0
     /// let mut _a_biguint = UU32::from_str("123456789012345678901234567890123456789").unwrap();
     /// println!("Originally, a_biguint = {}", _a_biguint);
     /// let _num = UU32::from(100_u8);
     /// let _modulo = UU32::zero();
-    /// // _a_biguint.modular_next_multiple_of_assign(&_num, &_modulo);
+    /// _a_biguint.modular_next_multiple_of_assign(&_num, &_modulo);
     /// 
     /// // modulo == 1
     /// let mut _a_biguint = UU32::from_str("123456789012345678901234567890123456789").unwrap();
     /// println!("Originally, a_biguint = {}", _a_biguint);
     /// let _num = UU32::from(100_u8);
     /// let _modulo = UU32::one();
-    /// // _a_biguint.modular_next_multiple_of_assign(&_num, &_modulo);
+    /// _a_biguint.modular_next_multiple_of_assign(&_num, &_modulo);
     /// ```
     /// 
     /// # Big-endian issue
@@ -41450,14 +41880,14 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// ```
     /// 
     /// # Panic Examples
-    /// ```
+    /// ```should_panic
     /// use cryptocol::define_utypes_with;
     /// define_utypes_with!(u64);
     /// 
     /// let _a_biguint = U256::zero();
     /// let _exp = U256::zero();
     /// // It will panic.
-    /// // let res = _a_biguint.pow(&_exp);
+    /// let res = _a_biguint.pow(&_exp);
     /// ```
     /// 
     /// # Big-endian issue
@@ -41601,8 +42031,8 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// assert_eq!(a_biguint.is_divided_by_zero(), false);
     /// ```
     /// 
-    /// # Panic Example
-    /// ```
+    /// # Panic Examples
+    /// ```should_panic
     /// use std::str::FromStr;
     /// use cryptocol::define_utypes_with;
     /// define_utypes_with!(u128);
@@ -41611,7 +42041,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// let _exp = U256::zero();
     /// println!("Originally, a_biguint = {}", _a_biguint);
     /// // It will panic.
-    /// // _a_biguint.pow_assign(&_exp);
+    /// _a_biguint.pow_assign(&_exp);
     /// ```
     /// 
     /// # Big-endian issue
@@ -42029,15 +42459,15 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// assert_eq!(res.is_divided_by_zero(), false);
     /// ```
     /// 
-    /// # Panic Example
-    /// ```
+    /// # Panic Examples
+    /// ```should_panic
     /// use cryptocol::define_utypes_with;
     /// define_utypes_with!(u32);
     /// 
     /// let _a_biguint = U256::zero();
     /// let _exp = U256::zero();
     /// // It will panic.
-    /// // let res = _a_biguint.wrapping_pow(&_exp);
+    /// let res = _a_biguint.wrapping_pow(&_exp);
     /// ```
     /// 
     /// # Big-endian issue
@@ -42180,8 +42610,8 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// assert_eq!(a_biguint.is_divided_by_zero(), false);
     /// ```
     /// 
-    /// # Panic Example
-    /// ```
+    /// # Panic Examples
+    /// ```should_panic
     /// use cryptocol::define_utypes_with;
     /// define_utypes_with!(u64);
     /// 
@@ -42189,7 +42619,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// let _exp = U256::zero();
     /// println!("Originally, a_biguint = {}", _a_biguint);
     /// // It will panic.
-    /// // _a_biguint.wrapping_pow_assign(&_exp);
+    /// _a_biguint.wrapping_pow_assign(&_exp);
     /// ```
     /// 
     /// # Big-endian issue
@@ -42341,15 +42771,15 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// assert_eq!(res.is_divided_by_zero(), false);
     /// ```
     /// 
-    /// # Panic Example
-    /// ```
+    /// # Panic Examples
+    /// ```should_panic
     /// use cryptocol::define_utypes_with;
     /// define_utypes_with!(u128);
     /// 
     /// let _a_biguint = U256::zero();
     /// let _exp = U256::zero();
     /// // It will panic.
-    /// // let (res, overflow) = _a_biguint.overflowing_pow(&_exp);
+    /// let (res, overflow) = _a_biguint.overflowing_pow(&_exp);
     /// ```
     /// 
     /// # Big-endian issue
@@ -42508,8 +42938,8 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// assert_eq!(a_biguint.is_divided_by_zero(), false);
     /// ```
     /// 
-    /// # Panic Example
-    /// ```
+    /// # Panic Examples
+    /// ```should_panic
     /// use cryptocol::define_utypes_with;
     /// define_utypes_with!(u8);
     /// 
@@ -42517,7 +42947,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// let _exp = U256::zero();
     /// println!("Originally, a_biguint = {}", _a_biguint);
     /// // It will panic.
-    /// // let overflow = _a_biguint.overflowing_pow_assign(&_exp);
+    /// let overflow = _a_biguint.overflowing_pow_assign(&_exp);
     /// ```
     /// 
     /// # Big-endian issue
@@ -42765,7 +43195,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// ```
     /// 
     /// # Panic Examples
-    /// ```
+    /// ```should_panic
     /// use std::str::FromStr;
     /// use cryptocol::define_utypes_with;
     /// define_utypes_with!(u32);
@@ -42773,12 +43203,12 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// let _a_biguint = U256::from_uint(10_u8);
     /// let _exp = U256::from_uint(100_u8);
     /// // It will panic.
-    /// // let res = _a_biguint.unchecked_pow(&_exp);
+    /// let res = _a_biguint.unchecked_pow(&_exp);
     /// 
     /// let _a_biguint = U256::zero();
     /// let _exp = U256::zero();
     /// // It will panic.
-    /// // let res = _a_biguint.unchecked_pow(&_exp);
+    /// let res = _a_biguint.unchecked_pow(&_exp);
     /// ```
     /// 
     /// # Big-endian issue
@@ -42893,15 +43323,15 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// assert_eq!(res.is_divided_by_zero(), false);
     /// ```
     /// 
-    /// # Panic Example
-    /// ```
+    /// # Panic Examples
+    /// ```should_panic
     /// use cryptocol::define_utypes_with;
     /// define_utypes_with!(u64);
     /// 
     /// let _a_biguint = U256::zero();
     /// let _exp = U256::zero();
     /// // It will panic.
-    /// // let res = _a_biguint.saturating_pow(&_exp);
+    /// let res = _a_biguint.saturating_pow(&_exp);
     /// ```
     /// 
     /// # Big-endian issue
@@ -43042,8 +43472,8 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// assert_eq!(a_biguint.is_divided_by_zero(), false);
     /// ```
     /// 
-    /// # Panic Example
-    /// ```
+    /// # Panic Examples
+    /// ```should_panic
     /// use std::str::FromStr;
     /// use cryptocol::define_utypes_with;
     /// define_utypes_with!(u128);
@@ -43052,7 +43482,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// let _exp = U256::zero();
     /// println!("Originally, a_biguint = {}", _a_biguint);
     /// // It will panic.
-    /// // _a_biguint.saturating_pow_assign(&_exp);
+    /// _a_biguint.saturating_pow_assign(&_exp);
     /// ```
     /// 
     /// # Big-endian issue
@@ -43210,7 +43640,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// ```
     /// 
     /// # Panic Examples
-    /// ```
+    /// ```should_panic
     /// use cryptocol::define_utypes_with;
     /// define_utypes_with!(u128);
     /// 
@@ -43219,49 +43649,49 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// let _exp = UU32::zero();
     /// let _modulo = UU32::halfmax();
     /// // It will panic.
-    /// // let res = _a_biguint.modular_pow(_exp, &_modulo);
+    /// let res = _a_biguint.modular_pow(&_exp, &_modulo);
     /// 
     /// // self == 0 and exp == multiple of modulo and modulo != 0
     /// let _a_biguint = UU32::zero();
     /// let _exp = UU32::from_uint(200_u8);
     /// let _modulo = UU32::from_uint(100_u8);
     /// // It will panic.
-    /// // let res = _a_biguint.modular_pow(&_exp, &_modulo);
+    /// let res = _a_biguint.modular_pow(&_exp, &_modulo);
     /// 
     /// // self == multiple of modulo and exp == 0 and modulo != 0
     /// let _a_biguint = UU32::from_uint(300_u16);
     /// let _exp = UU32::zero();
     /// let _modulo = UU32::from_uint(100_u8);
     /// // It will panic.
-    /// // let res = _a_biguint.modular_pow(&_exp, &_modulo);
+    /// let res = _a_biguint.modular_pow(&_exp, &_modulo);
     /// 
     /// // self == multiple of modulo and exp == multiple of modulo and modulo != 0
     /// let _a_biguint = UU32::from_uint(300_u16);
     /// let _exp = UU32::from_uint(200_u8);
     /// let _modulo = UU32::from_uint(100_u8);
     /// // It will panic.
-    /// // let res = _a_biguint.modular_pow(&_exp, &_modulo);
+    /// let res = _a_biguint.modular_pow(&_exp, &_modulo);
     /// 
     /// // self != 0 and exp != 0 and modulo == 0
     /// let _a_biguint = UU32::from_uint(10_u8);
     /// let _exp = UU32::from_uint(100_u8);
     /// let _modulo = UU32::zero();
     /// // It will panic!
-    /// // let _res = a_biguint.modular_pow(&_exp, &_modulo);
+    /// let _res = _a_biguint.modular_pow(&_exp, &_modulo);
     /// 
     /// // self != 0 and exp != 0 and modulo == 1
     /// let _a_biguint = UU32::from_uint(10_u8);
     /// let _exp = UU32::from_uint(100_u8);
     /// let _modulo = UU32::one();
     /// // It will panic!
-    /// // let _res = a_biguint.modular_pow(&_exp, &_modulo);
+    /// let _res = _a_biguint.modular_pow(&_exp, &_modulo);
     /// 
     /// // self == 0 and exp == 0 and modulo == 0
     /// let _a_biguint = UU32::zero();
     /// let _exp = UU32::zero();
     /// let _modulo = UU32::zero();
     /// // It will panic!
-    /// // let _res = a_biguint.modular_pow(&_exp, &_modulo);
+    /// let _res = _a_biguint.modular_pow(&_exp, &_modulo);
     /// ```
     /// 
     /// # Big-endian issue
@@ -43461,7 +43891,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// ```
     /// 
     /// # Panic Examples
-    /// ```
+    /// ```should_panic
     /// use cryptocol::define_utypes_with;
     /// define_utypes_with!(u128);
     /// 
@@ -43471,7 +43901,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// let _exp = U256::zero();
     /// let _modulo = U256::halfmax();
     /// // It will panic!
-    /// // _a_biguint.modular_pow_assign(&_exp, &_modulo);
+    /// _a_biguint.modular_pow_assign(&_exp, &_modulo);
     /// 
     /// // self == 0 and exp == multiple of modulo and modulo != 0
     /// let mut _a_biguint = U256::zero();
@@ -43479,7 +43909,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// let _exp = U256::from_uint(200_u8);
     /// let _modulo = U256::from_uint(100_u8);
     /// // It will panic!
-    /// // _a_biguint.modular_pow_assign(&_exp, &_modulo);
+    /// _a_biguint.modular_pow_assign(&_exp, &_modulo);
     /// 
     /// // self == multiple of modulo and exp == 0 and modulo != 0
     /// let mut _a_biguint = U256::from_uint(300_u16);
@@ -43487,7 +43917,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// let _exp = U256::zero();
     /// let _modulo = U256::from_uint(100_u8);
     /// // It will panic!
-    /// // _a_biguint.modular_pow_assign(&_exp, &_modulo);
+    /// _a_biguint.modular_pow_assign(&_exp, &_modulo);
     /// 
     /// // self == multiple of modulo and exp == multiple of modulo and modulo != 0
     /// let mut _a_biguint = U256::from_uint(300_u16);
@@ -43495,7 +43925,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// let _exp = U256::from_uint(200_u8);
     /// let _modulo = U256::from_uint(100_u8);
     /// // It will panic!
-    /// // _a_biguint.modular_pow_assign(&_exp, &_modulo);
+    /// _a_biguint.modular_pow_assign(&_exp, &_modulo);
     /// 
     /// // self != 0 and exp != 0 and modulo == 0
     /// let mut _a_biguint = U256::from_uint(10_u8);
@@ -43503,15 +43933,15 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// let _exp = U256::from_uint(100_u8);
     /// let _modulo = U256::zero();
     /// // It will panic!
-    /// // _a_biguint.modular_pow_assign(&_exp, &_modulo);
+    /// _a_biguint.modular_pow_assign(&_exp, &_modulo);
     /// 
     /// // self != 0 and exp != 0 and modulo == 1
-    /// let _a_biguint = U256::from_uint(10_u8);
+    /// let mut _a_biguint = U256::from_uint(10_u8);
     /// println!("Originally,\n_a_biguint = {}", _a_biguint);
     /// let _exp = U256::from_uint(100_u8);
     /// let _modulo = U256::one();
     /// // It will panic!
-    /// // _a_biguint.modular_pow_assign(&_exp, &_modulo);
+    /// _a_biguint.modular_pow_assign(&_exp, &_modulo);
     /// 
     /// // self == 0 and exp == 0 and modulo == 0
     /// let mut _a_biguint = U256::zero();
@@ -43519,7 +43949,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// let _exp = U256::zero();
     /// let _modulo = U256::zero();
     /// // It will panic!
-    /// // _a_biguint.modular_pow_assign(&_exp, &_modulo);
+    /// _a_biguint.modular_pow_assign(&_exp, &_modulo);
     /// ```
     /// 
     /// # Big-endian issue
@@ -44373,7 +44803,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// ```
     /// 
     /// # Panic Examples
-    /// ```
+    /// ```should_panic
     /// use std::str::FromStr;
     /// use cryptocol::define_utypes_with;
     /// define_utypes_with!(u8);
@@ -44381,17 +44811,17 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// let _a_biguint = U256::from_str("1_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000").unwrap();
     /// let _exp = U256::zero();
     /// // It will panic.
-    /// // let res = _a_biguint.iroot(&_exp);
+    /// let res = _a_biguint.iroot(&_exp);
     /// 
     /// let _a_biguint = U256::one();
     /// let _exp = U256::zero();
     /// // It will panic.
-    /// // let res = _a_biguint.iroot(&_exp);
+    /// let res = _a_biguint.iroot(&_exp);
     /// 
     /// let _a_biguint = U256::zero();
     /// let _exp = U256::zero();
     /// // It will panic.
-    /// // let res = _a_biguint.iroot(&_exp);
+    /// let res = _a_biguint.iroot(&_exp);
     /// ```
     /// 
     /// # Big-endian issue
@@ -44584,7 +45014,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// ```
     /// 
     /// # Panic Examples
-    /// ```
+    /// ```should_panic
     /// use std::str::FromStr;
     /// use cryptocol::define_utypes_with;
     /// define_utypes_with!(u16);
@@ -44592,17 +45022,17 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// let mut _a_biguint = U256::from_str("1_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000").unwrap();
     /// let _exp = U256::zero();
     /// // It will panic.
-    /// // _a_biguint.iroot_assign(&_exp);
+    /// _a_biguint.iroot_assign(&_exp);
     /// 
     /// let mut _a_biguint = U256::one();
     /// let _exp = U256::zero();
     /// // It will panic.
-    /// // _a_biguint.iroot_assign(&_exp);
+    /// _a_biguint.iroot_assign(&_exp);
     /// 
     /// let mut _a_biguint = U256::zero();
     /// let _exp = U256::zero();
     /// // It will panic.
-    /// // _a_biguint.iroot_assign(&_exp);
+    /// _a_biguint.iroot_assign(&_exp);
     /// ```
     /// 
     /// # Big-endian issue
@@ -45479,7 +45909,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// ```
     /// 
     /// # Panic Examples
-    /// ```
+    /// ```should_panic
     /// use std::str::FromStr;
     /// use cryptocol::define_utypes_with;
     /// define_utypes_with!(u8);
@@ -45487,17 +45917,17 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// let _a_biguint = U256::from_str("1_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000").unwrap();
     /// let _exp = U256::zero();
     /// // It will panic.
-    /// // let res = _a_biguint.unchecked_iroot(&_exp);
+    /// let res = _a_biguint.unchecked_iroot(&_exp);
     /// 
     /// let _a_biguint = U256::one();
     /// let _exp = U256::zero();
     /// // It will panic.
-    /// // let res = _a_biguint.unchecked_iroot(&_exp);
+    /// let res = _a_biguint.unchecked_iroot(&_exp);
     /// 
     /// let _a_biguint = U256::zero();
     /// let _exp = U256::zero();
     /// // It will panic.
-    /// // let res = _a_biguint.unchecked_iroot(&_exp);
+    /// let res = _a_biguint.unchecked_iroot(&_exp);
     /// ```
     /// 
     /// # Big-endian issue
@@ -45732,7 +46162,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// ```
     /// 
     /// # Panic Examples
-    /// ```
+    /// ```should_panic
     /// use std::str::FromStr;
     /// use cryptocol::define_utypes_with;
     /// define_utypes_with!(u8);
@@ -45740,37 +46170,37 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// let _a_biguint = U256::from_str("1_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000").unwrap();
     /// let _base = U256::zero();
     /// // It will panic.
-    /// // let res = _a_biguint.ilog_uint(_base);
+    /// let res = _a_biguint.ilog(&_base);
     /// 
     /// let a_biguint = U256::from_str("1_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000").unwrap();
     /// let _base = U256::one();
     /// // It will panic.
-    /// // let res = _a_biguint.ilog(&_base);
+    /// let res = _a_biguint.ilog(&_base);
     /// 
     /// let _a_biguint = U256::zero();
     /// let _base = U256::from_uint(6_u8);
     /// // It will panic.
-    /// // let res = _a_biguint.ilog(&_base);
+    /// let res = _a_biguint.ilog(&_base);
     /// 
     /// let _a_biguint = U256::zero();
     /// let _base = U256::zero();
     /// // It will panic.
-    /// // let res = _a_biguint.ilog(&_base);
+    /// let res = _a_biguint.ilog(&_base);
     /// 
     /// let _a_biguint = U256::zero();
     /// let _base = U256::one();
     /// // It will panic.
-    /// // let res = _a_biguint.ilog(&_base);
+    /// let res = _a_biguint.ilog(&_base);
     /// 
     /// let _a_biguint = U256::one();
     /// let _base = U256::zero();
     /// // It will panic.
-    /// // let res = _a_biguint.ilog(&_base);
+    /// let res = _a_biguint.ilog(&_base);
     /// 
     /// let _a_biguint = U256::one();
     /// let _base = U256::one();
     /// // It will panic.
-    /// // let res = _a_biguint.ilog(&_base);
+    /// let res = _a_biguint.ilog(&_base);
     /// ```
     /// 
     /// # Big-endian issue
@@ -45878,53 +46308,52 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// ```
     /// 
     /// # Panic Examples
-    /// ```
+    /// ```should_panic
     /// use std::str::FromStr;
     /// use cryptocol::define_utypes_with;
     /// define_utypes_with!(u16);
     /// 
-    /// let _a_biguint = U256::from_str("1_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000").unwrap();
-    /// 
+    /// let mut _a_biguint = U256::from_str("1_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000").unwrap();
     /// println!("Originally, _a_biguint = {}", _a_biguint);
     /// let _base = U256::zero();
     /// // It will panic.
-    /// // let res = _a_biguint.ilog_assign(&_base);
+    /// let res = _a_biguint.ilog_assign(&_base);
     /// 
-    /// let _a_biguint = U256::from_str("1_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000").unwrap();
+    /// let mut _a_biguint = U256::from_str("1_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000").unwrap();
     /// println!("Originally, _a_biguint = {}", _a_biguint);
     /// let _base = U256::one();
     /// // It will panic.
-    /// // let res = _a_biguint.ilog_assign(&_base);
+    /// let res = _a_biguint.ilog_assign(&_base);
     /// 
-    /// let _a_biguint = U256::zero();
+    /// let mut _a_biguint = U256::zero();
     /// println!("Originally, _a_biguint = {}", _a_biguint);
     /// let _base = U256::from_uint(6_u8);
     /// // It will panic.
-    /// // let res = _a_biguint.ilog_assign(&_base);
+    /// let res = _a_biguint.ilog_assign(&_base);
     /// 
-    /// let _a_biguint = U256::zero();
+    /// let mut _a_biguint = U256::zero();
     /// println!("Originally, _a_biguint = {}", _a_biguint);
     /// let _base = U256::zero();
     /// // It will panic.
-    /// // let res = _a_biguint.ilog_assign(&_base);
+    /// let res = _a_biguint.ilog_assign(&_base);
     /// 
-    /// let _a_biguint = U256::zero();
+    /// let mut _a_biguint = U256::zero();
     /// println!("Originally, _a_biguint = {}", _a_biguint);
     /// let _base = U256::one();
     /// // It will panic.
-    /// // let res = _a_biguint.ilog_assign(&_base);
+    /// let res = _a_biguint.ilog_assign(&_base);
     /// 
-    /// let _a_biguint = U256::one();
+    /// let mut _a_biguint = U256::one();
     /// println!("Originally, _a_biguint = {}", _a_biguint);
     /// let _base = U256::zero();
     /// // It will panic.
-    /// // let res = _a_biguint.ilog_assign(&_base);
+    /// let res = _a_biguint.ilog_assign(&_base);
     /// 
-    /// let _a_biguint = U256::one();
+    /// let mut _a_biguint = U256::one();
     /// println!("Originally, _a_biguint = {}", _a_biguint);
     /// let _base = U256::one();
     /// // It will panic.
-    /// // let res = _a_biguint.ilog_assign(&_base);
+    /// let res = _a_biguint.ilog_assign(&_base);
     /// ```
     /// 
     /// # Big-endian issue
@@ -46646,7 +47075,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// ```
     /// 
     /// # Panic Examples
-    /// ```
+    /// ```should_panic
     /// use std::str::FromStr;
     /// use cryptocol::define_utypes_with;
     /// define_utypes_with!(u16);
@@ -46654,27 +47083,27 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// let _a_biguint = U256::from_str("1_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000").unwrap();
     /// let _base = U256::zero();
     /// // It will panic.
-    /// // let res = _a_biguint.unchecked_ilog(&_base);
+    /// let res = _a_biguint.unchecked_ilog(&_base);
     /// 
     /// let _a_biguint = U256::from_str("1_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000").unwrap();
     /// let _base = U256::one();
     /// // It will panic.
-    /// // let res = _a_biguint.unchecked_ilog(&_base);
+    /// let res = _a_biguint.unchecked_ilog(&_base);
     /// 
     /// let _a_biguint = U256::zero();
     /// let _base = U256::from_uint(6_u8);
     /// // It will panic.
-    /// // let res = _a_biguint.unchecked_ilog(&_base);
+    /// let res = _a_biguint.unchecked_ilog(&_base);
     /// 
     /// let _a_biguint = U256::zero();
     /// let _base = U256::zero();
     /// // It will panic.
-    /// // let res = _a_biguint.unchecked_ilog(&_base);
+    /// let res = _a_biguint.unchecked_ilog(&_base);
     /// 
     /// let _a_biguint = U256::zero();
     /// let _base = U256::one();
     /// // It will panic.
-    /// // let res = _a_biguint.unchecked_ilog(&_base);
+    /// let res = _a_biguint.unchecked_ilog(&_base);
     /// ```
     /// 
     /// # Big-endian issue
@@ -46753,14 +47182,14 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// assert_eq!(res.is_undefined(), false);
     /// ```
     /// 
-    /// # Panic Example
-    /// ```
+    /// # Panic Examples
+    /// ```should_panic
     /// use cryptocol::define_utypes_with;
     /// define_utypes_with!(u16);
     /// 
     /// let _a_biguint = U256::zero();
     /// // It will panic.
-    /// // let res = _a_biguint.ilog2();
+    /// let res = _a_biguint.ilog2();
     /// ```
     /// 
     /// # Big-endian issue
@@ -46859,14 +47288,14 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// assert_eq!(a_biguint.is_undefined(), false);
     /// ```
     /// 
-    /// # Panic Example
-    /// ```
+    /// # Panic Examples
+    /// ```should_panic
     /// use cryptocol::define_utypes_with;
     /// define_utypes_with!(u64);
     /// 
     /// let mut _a_biguint = U256::zero();
     /// // It will panic.
-    /// // _a_biguint.ilog2_assign();
+    /// _a_biguint.ilog2_assign();
     /// ```
     /// 
     /// # Big-endian issue
@@ -47276,14 +47705,14 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// assert_eq!(res.is_undefined(), false);
     /// ```
     /// 
-    /// # Panic Example
-    /// ```
+    /// # Panic Examples
+    /// ```should_panic
     /// use cryptocol::define_utypes_with;
     /// define_utypes_with!(u32);
     /// 
     /// let _a_biguint = U256::zero();
     /// // It will panic.
-    /// // let res = _a_biguint.unchecked_ilog2();
+    /// let res = _a_biguint.unchecked_ilog2();
     /// ```
     /// 
     /// # Big-endian issue
@@ -47362,14 +47791,14 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// assert_eq!(res.is_undefined(), false);
     /// ```
     /// 
-    /// # Panic Example
-    /// ```
+    /// # Panic Examples
+    /// ```should_panic
     /// use cryptocol::define_utypes_with;
     /// define_utypes_with!(u64);
     /// 
     /// let _a_biguint = U256::zero();
     /// // It will panic.
-    /// // let res = _a_biguint.ilog10();
+    /// let res = _a_biguint.ilog10();
     /// ```
     /// 
     /// # Big-endian issue
@@ -47468,14 +47897,14 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// assert_eq!(a_biguint.is_undefined(), false);
     /// ```
     /// 
-    /// # Panic Example
-    /// ```
+    /// # Panic Examples
+    /// ```should_panic
     /// use cryptocol::define_utypes_with;
     /// define_utypes_with!(u128);
     /// 
     /// let mut _a_biguint = U256::zero();
     /// // It will panic.
-    /// // _a_biguint.ilog10_assign();
+    /// _a_biguint.ilog10_assign();
     /// ```
     /// 
     /// # Big-endian issue
@@ -47894,10 +48323,16 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// assert_eq!(a_biguint.is_infinity(), false);
     /// assert_eq!(a_biguint.is_divided_by_zero(), false);
     /// assert_eq!(a_biguint.is_undefined(), false);
+    /// ```
+    /// 
+    /// # Panic Example
+    /// ```should_panic
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u64);
     /// 
     /// let _a_biguint = U256::zero();
     /// // It will panic.
-    /// // let res = _a_biguint.unchecked_ilog10();
+    /// let res = _a_biguint.unchecked_ilog10();
     /// ```
     /// 
     /// # Big-endian issue
@@ -48353,24 +48788,24 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// ```
     /// 
     /// # Panic Examples
-    /// ```
+    /// ```should_panic
     /// use cryptocol::define_utypes_with;
     /// define_utypes_with!(u32);
     /// 
     /// let _a_biguint = U256::zero();
     /// let _b_biguint = U256::from_string("1461470517451445635247458978672662721125232940494242939166724681854248046875").unwrap();
     /// // It will panic!
-    /// // let c_biguint = _a_biguint.gcd(&_b_biguint);
+    /// let c_biguint = _a_biguint.gcd(&_b_biguint);
     /// 
     /// let _a_biguint = U256::from_string("822879434848600686045915352446172654881155048801396400670057427986680905728").unwrap();
     /// let _b_biguint = U256::zero();
     /// // It will panic!
-    /// // let c_biguint = _a_biguint.gcd(&_b_biguint);
+    /// let c_biguint = _a_biguint.gcd(&_b_biguint);
     /// 
     /// let _a_biguint = U256::zero();
     /// let _b_biguint = U256::zero();
     /// // It will panic!
-    /// // let c_biguint = _a_biguint.gcd(&_b_biguint);
+    /// let c_biguint = _a_biguint.gcd(&_b_biguint);
     /// ```
     /// 
     /// # Big-endian issue
@@ -48578,24 +49013,24 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// ```
     /// 
     /// # Panic Examples
-    /// ```
+    /// ```should_panic
     /// use cryptocol::define_utypes_with;
     /// define_utypes_with!(u64);
     /// 
     /// let mut _a_biguint = U256::zero();
     /// let _b_biguint = U256::from_string("1461470517451445635247458978672662721125232940494242939166724681854248046875").unwrap();
     /// // It will panic!
-    /// // _a_biguint.gcd_assign(&_b_biguint);
+    /// _a_biguint.gcd_assign(&_b_biguint);
     /// 
     /// let mut _a_biguint = U256::from_string("822879434848600686045915352446172654881155048801396400670057427986680905728").unwrap();
     /// let _b_biguint = U256::zero();
     /// // It will panic!
-    /// // _a_biguint.gcd_assign(&_b_biguint);
+    /// _a_biguint.gcd_assign(&_b_biguint);
     /// 
     /// let mut _a_biguint = U256::zero();
     /// let _b_biguint = U256::zero();
     /// // It will panic!
-    /// // _a_biguint.gcd_assign(&_b_biguint);
+    /// _a_biguint.gcd_assign(&_b_biguint);
     /// ```
     /// 
     /// # Big-endian issue
@@ -49292,24 +49727,24 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// ```
     /// 
     /// # Panic Examples
-    /// ```
+    /// ```should_panic
     /// use cryptocol::define_utypes_with;
     /// define_utypes_with!(u16);
     /// 
     /// let _a_biguint = U256::zero();
     /// let _b_biguint = U256::from_string("1461470517451445635247458978672662721125232940494242939166724681854248046875").unwrap();
     /// // It will panic!
-    /// // let c_biguint = _a_biguint.lcm(&_b_biguint);
+    /// let c_biguint = _a_biguint.lcm(&_b_biguint);
     /// 
     /// let _a_biguint = U256::from_string("822879434848600686045915352446172654881155048801396400670057427986680905728").unwrap();
     /// let _b_biguint = U256::zero();
     /// // It will panic!
-    /// // let c_biguint = _a_biguint.lcm(&_b_biguint);
+    /// let c_biguint = _a_biguint.lcm(&_b_biguint);
     /// 
     /// let _a_biguint = U256::zero();
     /// let _b_biguint = U256::zero();
     /// // It will panic!
-    /// // let c_biguint = _a_biguint.lcm(&_b_biguint);
+    /// let c_biguint = _a_biguint.lcm(&_b_biguint);
     /// ```
     /// 
     /// # Big-endian issue
@@ -49518,24 +49953,24 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// ```
     /// 
     /// # Panic Examples
-    /// ```
+    /// ```should_panic
     /// use cryptocol::define_utypes_with;
     /// define_utypes_with!(u32);
     /// 
     /// let mut _a_biguint = U256::zero();
     /// let _b_biguint = U256::from_string("1461470517451445635247458978672662721125232940494242939166724681854248046875").unwrap();
     /// // It will panic!
-    /// // _a_biguint.lcm_assign(&_b_biguint);
+    /// _a_biguint.lcm_assign(&_b_biguint);
     /// 
     /// let mut _a_biguint = U256::from_string("822879434848600686045915352446172654881155048801396400670057427986680905728").unwrap();
     /// let _b_biguint = U256::zero();
     /// // It will panic!
-    /// // _a_biguint.lcm_assign(&_b_biguint);
+    /// _a_biguint.lcm_assign(&_b_biguint);
     /// 
     /// let mut _a_biguint = U256::zero();
     /// let _b_biguint = U256::zero();
     /// // It will panic!
-    /// // _a_biguint.lcm_assign(&_b_biguint);
+    /// _a_biguint.lcm_assign(&_b_biguint);
     /// ```
     /// 
     /// # Big-endian issue
@@ -50761,19 +51196,19 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// ```
     /// 
     /// # Panic Examples
-    /// ```
+    /// ```should_panic
     /// use cryptocol::define_utypes_with;
     /// define_utypes_with!(u64);
     /// 
     /// let _a_biguint = U256::from_str_radix("00001111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101", 2).unwrap();
     /// let _n = 256_u16;
     /// // It will panic!
-    /// // let res = _a_biguint.unchecked_shift_left(_n);
+    /// let res = _a_biguint.unchecked_shift_left(_n);
     /// 
     /// let _a_biguint = U256::from_str_radix("11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101", 2).unwrap();
     /// let _n = 512_u16;
     /// // It will panic!
-    /// // let res = _a_biguint.unchecked_shift_left(_n);
+    /// let res = _a_biguint.unchecked_shift_left(_n);
     /// ```
     /// 
     /// # Big-endian issue
@@ -51373,19 +51808,19 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// ```
     /// 
     /// # Panic Examples
-    /// ```
+    /// ```should_panic
     /// use cryptocol::define_utypes_with;
     /// define_utypes_with!(u32);
     /// 
     /// let _a_biguint = U256::from_str_radix("11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101", 2).unwrap();
     /// let _n = 256_u16;
     /// // It will panic!
-    /// // let res = _a_biguint.unchecked_shift_right(_n);
+    /// let res = _a_biguint.unchecked_shift_right(_n);
     /// 
     /// let _a_biguint = U256::from_str_radix("11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101", 2).unwrap();
     /// let _n = 512_u16;
     /// // It will panic!
-    /// // let res = _a_biguint.unchecked_shift_right(_n);
+    /// let res = _a_biguint.unchecked_shift_right(_n);
     /// ```
     /// 
     /// # Big-endian issue
