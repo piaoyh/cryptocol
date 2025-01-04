@@ -34012,14 +34012,17 @@ fn biguint_operator_ge()
 
 fn biguint_implementation_miscellaneous_main()
 {
-    biguint_display_fmt();
+    biguint_display_fmt_for_biguint();
     biguint_from_from_uint();
     biguint_from_from();
     biguint_from_from_str();
+    biguint_number_err();
+    biguint_display_fmt_for_numbererr();
 }
 
-fn biguint_display_fmt()
+fn biguint_display_fmt_for_biguint()
 {
+    println!("biguint_display_fmt_for_biguint()");
     use std::str::FromStr;
     use cryptocol::define_utypes_with;
     define_utypes_with!(u8);
@@ -34037,6 +34040,7 @@ fn biguint_display_fmt()
 
 fn biguint_from_from_uint()
 {
+    println!("biguint_from_from_uint()");
     use cryptocol::define_utypes_with;
     define_utypes_with!(u16);
 
@@ -34048,6 +34052,7 @@ fn biguint_from_from_uint()
 
 fn biguint_from_from()
 {
+    println!("biguint_from_from()");
     use cryptocol::define_utypes_with;
     define_utypes_with!(u32);
 
@@ -34059,6 +34064,7 @@ fn biguint_from_from()
 
 fn biguint_from_from_str()
 {
+    println!("biguint_from_from_str()");
     use std::str::FromStr;
     use cryptocol::number::NumberErr;
     use cryptocol::define_utypes_with;
@@ -34106,6 +34112,90 @@ fn biguint_from_from_str()
     println!("---------------------------");
 }
 
+fn biguint_number_err()
+{
+    println!("biguint_number_err()");
+    use std::str::FromStr;
+    use cryptocol::number::NumberErr;
+    use cryptocol::define_utypes_with;
+    define_utypes_with!(u128);
+
+    let a_biguint_wrapped = U256::from_str_radix("1234567890_ABCDEF_GHIJKLMN", 100);
+    match a_biguint_wrapped
+    {
+        Ok(a_biguint) => { println!("a_biguint = {}", a_biguint); },
+        Err(e) => {
+                println!("Error: {}", e);
+                assert_eq!(e.to_string(), "The given radix is out of the valid range. It should be in the range from binary up to 62-ary, inclusively.");
+                assert_eq!(e, NumberErr::OutOfValidRadixRange);
+            }
+    }
+
+    let a_biguint_wrapped = U256::from_str("@!#$%^&*()_+=-|-/?><`~");
+    match a_biguint_wrapped
+    {
+        Ok(a_biguint) => { println!("a_biguint = {}", a_biguint); },
+        Err(e) => {
+                println!("Error: {}", e);
+                assert_eq!(e.to_string(), "The string or the character is not alphanumeric.");
+                assert_eq!(e, NumberErr::NotAlphaNumeric);
+            }
+    }
+    
+    let a_biguint_wrapped = U256::from_str_radix("1234567890_ABCDEF_GHIJKLMN", 16);
+    match a_biguint_wrapped
+    {
+        Ok(a_biguint) => { println!("a_biguint = {}", a_biguint); },
+        Err(e) => {
+                println!("Error: {}", e);
+                assert_eq!(e.to_string(), "The string or the character is not fit to the given radix.");
+                assert_eq!(e, NumberErr::NotFitToRadix);
+            }
+    }
+
+    let a_biguint_wrapped = U256::from_str("1234567891234567879123456789111111111222222222333333333444444444555555555666666666777777777888888888999999999000000000");
+    match a_biguint_wrapped
+    {
+        Ok(a_biguint) => { println!("a_biguint = {}", a_biguint); },
+        Err(e) => {
+                println!("Error: {}", e);
+                assert_eq!(e.to_string(), "The number that the string represents is too big for the created object to contain.");
+                assert_eq!(e, NumberErr::TooBigNumber);
+            }
+    }
+    println!("---------------------------");
+}
+
+fn biguint_display_fmt_for_numbererr()
+{
+    println!("biguint_display_fmt_for_numbererr()");
+    use cryptocol::number::NumberErr;
+    use cryptocol::define_utypes_with;
+    define_utypes_with!(u128);
+
+    let a_biguint_wrapped = U256::from_str_radix("1234567890_ABCDEF_GHIJKLMN", 100);
+    match a_biguint_wrapped
+    {
+        Ok(a_biguint) => { println!("a_biguint = {}", a_biguint); },
+        Err(e) => {
+                println!("Error: {}", e);
+                assert_eq!(e.to_string(), "The given radix is out of the valid range. It should be in the range from binary up to 62-ary, inclusively.");
+                assert_eq!(e, NumberErr::OutOfValidRadixRange);
+            }
+    }
+
+    println!("NumberErr::NotAlphaNumeric: {}", NumberErr::NotAlphaNumeric);
+    assert_eq!(NumberErr::NotAlphaNumeric.to_string(), "The string or the character is not alphanumeric.");
+
+    let txt = NumberErr::TooBigNumber.to_string();
+    println!("Error: {}", txt);
+    assert_eq!(txt, "The number that the string represents is too big for the created object to contain.");
+
+    let error = NumberErr::NotFitToRadix;
+    println!("NumberErr::NotFitToRadix: {}", error);
+    assert_eq!(NumberErr::NotFitToRadix.to_string(), "The string or the character is not fit to the given radix.");
+    println!("---------------------------");
+}
 
 /*
 pub fn find_maximum()

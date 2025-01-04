@@ -14,12 +14,14 @@
 #![allow(missing_docs)]
 #![allow(rustdoc::missing_doc_code_examples)]
 
-use std::fmt::{ Display, Debug };
 use std::mem::size_of;
-use std::cmp::{ PartialEq, PartialOrd, Ordering };
 use std::convert::From;
 use std::str::FromStr;
-use std::ops::*;
+use std::fmt::{ Display, Debug };
+use std::cmp::{ PartialEq, PartialOrd, Ordering };
+use std::ops::{ Add, AddAssign, Sub, SubAssign, Mul, MulAssign, Div, DivAssign, Rem, RemAssign,
+                BitAnd, BitAndAssign, BitOr, BitOrAssign, BitXor, BitXorAssign, Not,
+                Shl, ShlAssign, Shr, ShrAssign, RangeBounds };
 
 use crate::number::{ SmallUInt, LongerUnion, SharedValues, SharedArrays, NumberErr };
 
