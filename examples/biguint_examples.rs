@@ -31,6 +31,7 @@ pub fn main()
     biguint_operators_arithmatic_main();
     biguint_operators_bit_operation_main();
     biguint_operators_miscellaneous_main();
+    biguint_implementation_miscellaneous_main();
 }
 
 fn biguint_quick_start_main()
@@ -750,9 +751,19 @@ fn biguint_generate_check_bits_()
     println!("a_255 = {}", a_255.to_string_with_radix_and_stride(2, 10).unwrap());
     assert_eq!(a_255.to_string_with_radix_and_stride(2, 10).unwrap(), "100000_0000000000_0000000000_0000000000_0000000000_0000000000_0000000000_0000000000_0000000000_0000000000_0000000000_0000000000_0000000000_0000000000_0000000000_0000000000_0000000000_0000000000_0000000000_0000000000_0000000000_0000000000_0000000000_0000000000_0000000000_0000000000");
 
-    // It will panic!
-    // let a_256 = U256::generate_check_bits(256);
+    #[cfg(test)] // It will panic.
+    biguint_should_panic_generate_check_bits_();
     println!("---------------------------");
+}
+
+#[test]
+#[should_panic]
+fn biguint_should_panic_generate_check_bits_()
+{
+    use cryptocol::define_utypes_with_u32;
+    define_utypes_with_u32!();
+
+    let _a_256 = U256::generate_check_bits_(256);
 }
 
 fn biguint_get_size_main()
@@ -854,9 +865,21 @@ fn biguint_turn_check_bits()
     println!("a = {}", a.to_string_with_radix_and_stride(2, 8).unwrap());
     assert_eq!(a, U256::from_str_radix("1000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000", 2).unwrap());
 
-    // It will panic.
-    // a.turn_check_bits(256);
+    #[cfg(test)] // It will panic.
+    biguint_should_panic_turn_check_bits();
     println!("---------------------------");
+}
+
+#[test]
+#[should_panic]
+fn biguint_should_panic_turn_check_bits()
+{
+    use cryptocol::define_utypes_with;
+    define_utypes_with!(u128);
+
+    let mut _a = U256::from_string("256487951236974125896345564889974258").unwrap();
+    println!("a = {}", _a.to_string_with_radix_and_stride(2, 8).unwrap());
+    _a.turn_check_bits(256);
 }
 
 fn biguint_is_bit_set()
@@ -911,9 +934,21 @@ fn biguint_is_bit_set_()
     assert_eq!(a.is_bit_set_(151), true);
     println!("The {}th bit is set: {}", 200, a.is_bit_set_(200));
     assert_eq!(a.is_bit_set_(200), false);
-    // It will panic!!!
-    // println!("The {}th bit is set: {}", 300, a.is_bit_set_(300));
+
+    #[cfg(test)] // It will panic.
+    biguint_should_panic_is_bit_set_();
     println!("---------------------------");
+}
+
+#[test]
+#[should_panic]
+fn biguint_should_panic_is_bit_set_()
+{
+    use cryptocol::define_utypes_with;
+    define_utypes_with!(u64);
+
+    let _a = U256::from_string("12345678912345678912345678912345678912345678912345678912345678912345678912345").unwrap();
+    println!("The {}th bit is set: {}", 300, _a.is_bit_set_(300));
 }
 
 fn biguint_get_upper_portion()
@@ -984,9 +1019,21 @@ fn biguint_get_num_()
     let b = a.get_num_(3);
     println!("a.get_num_(3) = {}", b);
     assert_eq!(b, 30);
-    // It will panic.
-    // let c = a.get_num_(8);
+
+    #[cfg(test)] // It will panic.
+    biguint_should_panic_get_num_();
     println!("---------------------------");
+}
+
+#[test]
+#[should_panic]
+fn biguint_should_panic_get_num_()
+{
+    use cryptocol::define_utypes_with;
+    define_utypes_with!(u32);
+
+    let _a = U256::from([0_u32, 10, 20, 30, 40, 50, 60, 70]);
+    let _c = _a.get_num_(8);
 }
 
 fn biguint_set_num()
@@ -1025,9 +1072,20 @@ fn biguint_set_num_()
     println!("a.get_num_(1) = {}", num);
     assert_eq!(num, 0);
 
-    // It will panic.
-    // let b = a.set_num_(4, 0);
+    #[cfg(test)] // It will panic.
+    biguint_should_panic_set_num_();
     println!("---------------------------");
+}
+
+#[test]
+#[should_panic]
+fn biguint_should_panic_set_num_()
+{
+    use cryptocol::define_utypes_with;
+    define_utypes_with!(u128);
+
+    let mut _a = U256::from([10_u128, 20]);
+    let _b = _a.set_num_(4, 0);
 }
 
 fn biguint_get_number()
@@ -2438,10 +2496,20 @@ fn biguint_unchecked_add_uint()
     assert_eq!(res.is_infinity(), false);
     assert_eq!(res.is_undefined(), false);
 
-    let _a_biguint = UU64::max().wrapping_sub_uint(1_u8);
-    // It will panic.
-    // let res = _a_biguint.unchecked_add_uint(2_u8);
+    #[cfg(test)] // It will panic.
+    biguint_should_panic_unchecked_add_uint();
     println!("---------------------------");
+}
+
+#[test]
+#[should_panic]
+fn biguint_should_panic_unchecked_add_uint()
+{
+    use cryptocol::define_utypes_with;
+    define_utypes_with!(u32);
+
+    let _a_biguint = UU64::max().wrapping_sub_uint(1_u8);
+    let _res = _a_biguint.unchecked_add_uint(2_u8);
 }
 
 fn biguint_saturating_add_uint()
@@ -2706,18 +2774,27 @@ fn biguint_modular_add_uint()
     assert_eq!(res.is_infinity(), false);
     assert_eq!(res.is_undefined(), false);
 
+    #[cfg(test)] // It will panic.
+    biguint_should_panic_modular_add_uint();
+    println!("---------------------------");
+}
+
+#[test]
+#[should_panic]
+fn biguint_should_panic_modular_add_uint()
+{
+    use cryptocol::define_utypes_with;
+    define_utypes_with!(u8);
+
     let _a_biguint = U256::from_string("76801874298166903427690031858186486050853753882811946569946433649006").unwrap();
     let _m = U256::zero();
     let _rhs = 3_u8;
-    // It will panic.
-    // let res = a_biguint.modular_add_uint(_rhs, &m);
+    let _res = _a_biguint.modular_add_uint(_rhs, &_m);
 
     let _a_biguint = U256::from_string("76801874298166903427690031858186486050853753882811946569946433649006").unwrap();
     let _m = U256::one();
     let _rhs = 3_u8;
-    // It will panic.
-    // let res = a_biguint.modular_add_uint(_rhs, &m);
-    println!("---------------------------");
+    let _res = _a_biguint.modular_add_uint(_rhs, &_m);
 }
 
 fn biguint_modular_add_assign_uint()
@@ -2965,18 +3042,28 @@ fn biguint_modular_add_assign_uint()
     assert_eq!(a_biguint.is_infinity(), false);
     assert_eq!(a_biguint.is_undefined(), false);
 
+    #[cfg(test)] // It will panic.
+    biguint_should_panic_modular_add_assign_uint();
+    println!("---------------------------");
+}
+
+#[test]
+#[should_panic]
+fn biguint_should_panic_modular_add_assign_uint()
+{
+    use cryptocol::define_utypes_with;
+    define_utypes_with!(u16);
+
     let _a_biguint = U256::from_string("76801874298166903427690031858186486050853753882811946569946433649006").unwrap();
     let _m = U256::zero();
     let _rhs = 1_u8;
-    // It will panic.
-    // _a_biguint.modular_add_assign_uint(_rhs, &m);
+   
+    _a_biguint.modular_add_assign_uint(_rhs, &m);
 
     let _a_biguint = U256::from_string("76801874298166903427690031858186486050853753882811946569946433649006").unwrap();
     let _m = U256::one();
     let _rhs = 1_u8;
-    // It will panic.
-    // _a_biguint.modular_add_assign_uint(_rhs, &m);
-    println!("---------------------------");
+    _a_biguint.modular_add_assign_uint(_rhs, &m);
 }
 
 fn biguint_panic_free_modular_add_uint()
@@ -33534,24 +33621,37 @@ fn biguint_operator_flip()
     assert_eq!(res.is_undefined(), false);
     assert_eq!(res.is_divided_by_zero(), false);
 
-    let a_biguint = U256::from_str_radix("10101010_11001100_11110000_11111111_00000000_11111111_11111111_00000000_00000000_11111111_11111111_11111111_00000000_00000000_00000000_11111111_11111111_11111111_11111111_00000000_00000000_00000000_00000000_10110011_10001111_00001111_10000011_11110000_00111111_10000000_11111111_00000000", 2).unwrap();
-    let _res = !a_biguint;
-    // It cannot be compiled!
-    // println!("! {} = {}", a_biguint.to_string_with_radix_and_stride(2, 8).unwrap(), _res.to_string_with_radix_and_stride(2, 8).unwrap());
-    // The operator ! swallowed (took the ownership of) a_biguint.
-
-    let a_biguint = U256::from_str_radix("10101010_11001100_11110000_11111111_00000000_11111111_11111111_00000000_00000000_11111111_11111111_11111111_00000000_00000000_00000000_11111111_11111111_11111111_11111111_00000000_00000000_00000000_00000000_10110011_10001111_00001111_10000011_11110000_00111111_10000000_11111111_00000000", 2).unwrap();
-    let _res = !a_biguint;
-    // It cannot be compiled!
-    // println!("! {} = {}", a_biguint.to_string_with_radix_and_stride(2, 8).unwrap(), _res.to_string_with_radix_and_stride(2, 8).unwrap());
-    // The operator ! swallowed (took the ownership of) a_biguint.
-
-    let a_biguint = U256::from_str_radix("10101010_11001100_11110000_11111111_00000000_11111111_11111111_00000000_00000000_11111111_11111111_11111111_00000000_00000000_00000000_11111111_11111111_11111111_11111111_00000000_00000000_00000000_00000000_10110011_10001111_00001111_10000011_11110000_00111111_10000000_11111111_00000000", 2).unwrap();
-    let _res = !a_biguint;
-    // It cannot be compiled!
-    // println!("! {} = {}", a_biguint.to_string_with_radix_and_stride(2, 8).unwrap(), _res.to_string_with_radix_and_stride(2, 8).unwrap());
-    // The operator ! swallowed (took the ownership of) a_biguint.
+    #[cfg(test)] // It cannot be compiled!
+    biguint_compile_fail_operator_flip();
     println!("---------------------------");
+}
+
+#[test]
+fn biguint_compile_fail_operator_flip()
+{
+    use cryptocol::define_utypes_with;
+    define_utypes_with!(u8);
+
+    let a_biguint = U256::from_str_radix("10101010_11001100_11110000_11111111_00000000_11111111_11111111_00000000_00000000_11111111_11111111_11111111_00000000_00000000_00000000_11111111_11111111_11111111_11111111_00000000_00000000_00000000_00000000_10110011_10001111_00001111_10000011_11110000_00111111_10000000_11111111_00000000", 2).unwrap();
+    let _res = !a_biguint;
+
+    #[cfg(compile_fail)]
+    println!("! {} = {}", a_biguint.to_string_with_radix_and_stride(2, 8).unwrap(), _res.to_string_with_radix_and_stride(2, 8).unwrap());
+    // The operator ! swallowed (took the ownership of) a_biguint.
+
+    let a_biguint = U256::from_str_radix("10101010_11001100_11110000_11111111_00000000_11111111_11111111_00000000_00000000_11111111_11111111_11111111_00000000_00000000_00000000_11111111_11111111_11111111_11111111_00000000_00000000_00000000_00000000_10110011_10001111_00001111_10000011_11110000_00111111_10000000_11111111_00000000", 2).unwrap();
+    let _res = !a_biguint;
+    
+    #[cfg(compile_fail)]
+    println!("! {} = {}", a_biguint.to_string_with_radix_and_stride(2, 8).unwrap(), _res.to_string_with_radix_and_stride(2, 8).unwrap());
+    // The operator ! swallowed (took the ownership of) a_biguint.
+
+    let a_biguint = U256::from_str_radix("10101010_11001100_11110000_11111111_00000000_11111111_11111111_00000000_00000000_11111111_11111111_11111111_00000000_00000000_00000000_11111111_11111111_11111111_11111111_00000000_00000000_00000000_00000000_10110011_10001111_00001111_10000011_11110000_00111111_10000000_11111111_00000000", 2).unwrap();
+    let _res = !a_biguint;
+    
+    #[cfg(compile_fail)]
+    println!("! {} = {}", a_biguint.to_string_with_radix_and_stride(2, 8).unwrap(), _res.to_string_with_radix_and_stride(2, 8).unwrap());
+    // The operator ! swallowed (took the ownership of) a_biguint.
 }
 
 
@@ -33651,41 +33751,360 @@ fn biguint_operator_eq()
 
 fn biguint_operator_lt()
 {
-    println!("biguint_operator_eq");
+    println!("biguint_operator_lt");
     use cryptocol::define_utypes_with;
-    define_utypes_with!(u8);
+    define_utypes_with!(u16);
+
+    let a_biguint = UU32::from_uint(200_u8);
+    let b_uint = 100_u8;
+    let res = a_biguint < b_uint;
+    if res
+        { println!("{} < {}", a_biguint, b_uint); }
+    else
+        { println!("{} >= {}", a_biguint, b_uint); }
+    assert_eq!(res, false);
+
+    let a_biguint = UU32::from_uint(100_u8);
+    let b_uint = 200_u8;
+    let res = a_biguint < b_uint;
+    if res
+        { println!("{} < {}", a_biguint, b_uint); }
+    else
+        { println!("{} >= {}", a_biguint, b_uint); }
+    assert_eq!(res, true);
+
+    let a_biguint = UU32::from_uint(100_u8);
+    let b_uint = 100_u8;
+    let res = a_biguint < b_uint;
+    if res
+        { println!("{} < {}", a_biguint, b_uint); }
+    else
+        { println!("{} >= {}", a_biguint, b_uint); }
+    assert_eq!(res, false);
     
-    
+    let num_str = "69743176821145534028236692093846345739169743176821145534028236692093846345739";
+    let a_biguint = UU32::from_string(num_str).unwrap();
+    let b_biguint = UU32::from_uint(100_u8);
+    let res = a_biguint < b_biguint;
+    if res
+        { println!("{} < {}", a_biguint, b_biguint); }
+    else
+        { println!("{} >= {}", a_biguint, b_biguint); }
+    assert_eq!(res, false);
+
+    let num_str = "69743176821145534028236692093846345739169743176821145534028236692093846345739";
+    let a_biguint = UU32::from_uint(100_u8);
+    let b_biguint = UU32::from_string(num_str).unwrap();
+    let res = a_biguint < b_biguint;
+    if res
+        { println!("{} < {}", a_biguint, b_biguint); }
+    else
+        { println!("{} >= {}", a_biguint, b_biguint); }
+    assert_eq!(res, true);
+
+    let num_str = "69743176821145534028236692093846345739169743176821145534028236692093846345739";
+    let a_biguint = UU32::from_string(num_str).unwrap();
+    let b_biguint = UU32::from_string(num_str).unwrap();
+    let res = a_biguint < b_biguint;
+    if res
+        { println!("{} < {}", a_biguint, b_biguint); }
+    else
+        { println!("{} >= {}", a_biguint, b_biguint); }
+    assert_eq!(res, false);
     println!("---------------------------");
 }
 
 fn biguint_operator_gt()
 {
-    println!("biguint_operator_eq");
+    println!("biguint_operator_gt");
     use cryptocol::define_utypes_with;
-    define_utypes_with!(u8);
+    define_utypes_with!(u32);
+
+    let a_biguint = UU32::from_uint(200_u8);
+    let b_uint = 100_u8;
+    let res = a_biguint > b_uint;
+    if res
+        { println!("{} > {}", a_biguint, b_uint); }
+    else
+        { println!("{} <= {}", a_biguint, b_uint); }
+    assert_eq!(res, true);
+
+    let a_biguint = UU32::from_uint(100_u8);
+    let b_uint = 200_u8;
+    let res = a_biguint > b_uint;
+    if res
+        { println!("{} > {}", a_biguint, b_uint); }
+    else
+        { println!("{} <= {}", a_biguint, b_uint); }
+    assert_eq!(res, false);
+
+    let a_biguint = UU32::from_uint(100_u8);
+    let b_uint = 100_u8;
+    let res = a_biguint > b_uint;
+    if res
+        { println!("{} > {}", a_biguint, b_uint); }
+    else
+        { println!("{} <= {}", a_biguint, b_uint); }
+    assert_eq!(res, false);
     
+    let num_str = "69743176821145534028236692093846345739169743176821145534028236692093846345739";
+    let a_biguint = UU32::from_string(num_str).unwrap();
+    let b_biguint = UU32::from_uint(100_u8);
+    let res = a_biguint > b_biguint;
+    if res
+        { println!("{} > {}", a_biguint, b_biguint); }
+    else
+        { println!("{} <= {}", a_biguint, b_biguint); }
+    assert_eq!(res, true);
+
+    let num_str = "69743176821145534028236692093846345739169743176821145534028236692093846345739";
+    let a_biguint = UU32::from_uint(100_u8);
+    let b_biguint = UU32::from_string(num_str).unwrap();
+    let res = a_biguint > b_biguint;
+    if res
+        { println!("{} > {}", a_biguint, b_biguint); }
+    else
+        { println!("{} <= {}", a_biguint, b_biguint); }
+    assert_eq!(res, false);
+
+    let num_str = "69743176821145534028236692093846345739169743176821145534028236692093846345739";
+    let a_biguint = UU32::from_string(num_str).unwrap();
+    let b_biguint = UU32::from_string(num_str).unwrap();
+    let res = a_biguint > b_biguint;
+    if res
+        { println!("{} > {}", a_biguint, b_biguint); }
+    else
+        { println!("{} <= {}", a_biguint, b_biguint); }
+    assert_eq!(res, false);
     println!("---------------------------");
 }
 
 fn biguint_operator_le()
 {
-    println!("biguint_operator_eq");
+    println!("biguint_operator_le");
     use cryptocol::define_utypes_with;
-    define_utypes_with!(u8);
+    define_utypes_with!(u64);
     
+    let a_biguint = UU32::from_uint(200_u8);
+    let b_uint = 100_u8;
+    let res = a_biguint <= b_uint;
+    if res
+        { println!("{} <= {}", a_biguint, b_uint); }
+    else
+        { println!("{} > {}", a_biguint, b_uint); }
+    assert_eq!(res, false);
+
+    let a_biguint = UU32::from_uint(100_u8);
+    let b_uint = 200_u8;
+    let res = a_biguint <= b_uint;
+    if res
+        { println!("{} <= {}", a_biguint, b_uint); }
+    else
+        { println!("{} > {}", a_biguint, b_uint); }
+    assert_eq!(res, true);
+
+    let a_biguint = UU32::from_uint(100_u8);
+    let b_uint = 100_u8;
+    let res = a_biguint <= b_uint;
+    if res
+        { println!("{} <= {}", a_biguint, b_uint); }
+    else
+        { println!("{} > {}", a_biguint, b_uint); }
+    assert_eq!(res, true);
+
+    let num_str = "69743176821145534028236692093846345739169743176821145534028236692093846345739";
+    let a_biguint = UU32::from_string(num_str).unwrap();
+    let b_biguint = UU32::from_uint(100_u8);
+    let res = a_biguint <= b_biguint;
+    if res
+        { println!("{} <= {}", a_biguint, b_biguint); }
+    else
+        { println!("{} > {}", a_biguint, b_biguint); }
+    assert_eq!(res, false);
+
+    let num_str = "69743176821145534028236692093846345739169743176821145534028236692093846345739";
+    let a_biguint = UU32::from_uint(100_u8);
+    let b_biguint = UU32::from_string(num_str).unwrap();
+    let res = a_biguint <= b_biguint;
+    if res
+        { println!("{} <= {}", a_biguint, b_biguint); }
+    else
+        { println!("{} > {}", a_biguint, b_biguint); }
+    assert_eq!(res, true);
+
+    let num_str = "69743176821145534028236692093846345739169743176821145534028236692093846345739";
+    let a_biguint = UU32::from_string(num_str).unwrap();
+    let b_biguint = UU32::from_string(num_str).unwrap();
+    let res = a_biguint <= b_biguint;
+    if res
+        { println!("{} <= {}", a_biguint, b_biguint); }
+    else
+        { println!("{} > {}", a_biguint, b_biguint); }
+    assert_eq!(res, true);
     println!("---------------------------");
 }
 
 fn biguint_operator_ge()
 {
-    println!("biguint_operator_eq");
+    println!("biguint_operator_ge");
     use cryptocol::define_utypes_with;
-    define_utypes_with!(u8);
+    define_utypes_with!(u128);
+
+    let a_biguint = UU32::from_uint(200_u8);
+    let b_uint = 100_u8;
+    let res = a_biguint >= b_uint;
+    if res
+        { println!("{} >= {}", a_biguint, b_uint); }
+    else
+        { println!("{} < {}", a_biguint, b_uint); }
+    assert_eq!(res, true);
+
+    let a_biguint = UU32::from_uint(100_u8);
+    let b_uint = 200_u8;
+    let res = a_biguint >= b_uint;
+    if res
+        { println!("{} >= {}", a_biguint, b_uint); }
+    else
+        { println!("{} < {}", a_biguint, b_uint); }
+    assert_eq!(res, false);
+
+    let a_biguint = UU32::from_uint(100_u8);
+    let b_uint = 100_u8;
+    let res = a_biguint >= b_uint;
+    if res
+        { println!("{} >= {}", a_biguint, b_uint); }
+    else
+        { println!("{} < {}", a_biguint, b_uint); }
+    assert_eq!(res, true);
     
+    let num_str = "69743176821145534028236692093846345739169743176821145534028236692093846345739";
+    let a_biguint = UU32::from_string(num_str).unwrap();
+    let b_biguint = UU32::from_uint(100_u8);
+    let res = a_biguint >= b_biguint;
+    if res
+        { println!("{} >= {}", a_biguint, b_biguint); }
+    else
+        { println!("{} < {}", a_biguint, b_biguint); }
+    assert_eq!(res, true);
+
+    let num_str = "69743176821145534028236692093846345739169743176821145534028236692093846345739";
+    let a_biguint = UU32::from_uint(100_u8);
+    let b_biguint = UU32::from_string(num_str).unwrap();
+    let res = a_biguint >= b_biguint;
+    if res
+        { println!("{} >= {}", a_biguint, b_biguint); }
+    else
+        { println!("{} < {}", a_biguint, b_biguint); }
+    assert_eq!(res, false);
+
+    let num_str = "69743176821145534028236692093846345739169743176821145534028236692093846345739";
+    let a_biguint = UU32::from_string(num_str).unwrap();
+    let b_biguint = UU32::from_string(num_str).unwrap();
+    let res = a_biguint >= b_biguint;
+    if res
+        { println!("{} >= {}", a_biguint, b_biguint); }
+    else
+        { println!("{} < {}", a_biguint, b_biguint); }
+    assert_eq!(res, true);
     println!("---------------------------");
 }
 
+
+fn biguint_implementation_miscellaneous_main()
+{
+    biguint_display_fmt();
+    biguint_from_from_uint();
+    biguint_from_from();
+    biguint_from_from_str();
+}
+
+fn biguint_display_fmt()
+{
+    use std::str::FromStr;
+    use cryptocol::define_utypes_with;
+    define_utypes_with!(u8);
+
+    let a_biguint = U256::from_str("69743176821145534028236692093846345739169743176821145534028236692093846345739").unwrap();
+    println!("{}", a_biguint);
+    assert_eq!(a_biguint.to_string(), "69743176821145534028236692093846345739169743176821145534028236692093846345739");
+
+    let a_biguint = U256::from_str("1234567_1234567890_1234567890_1234567890_1234567890_1234567890_1234567890_1234567890").unwrap();
+    let txt = a_biguint.to_string();
+    println!("{}", txt);
+    assert_eq!(txt, "12345671234567890123456789012345678901234567890123456789012345678901234567890");
+    println!("---------------------------");
+}
+
+fn biguint_from_from_uint()
+{
+    use cryptocol::define_utypes_with;
+    define_utypes_with!(u16);
+
+    let a_biguint = U256::from(123456789123456789123456789123456789_u128);
+    println!("a_biguint = {}", a_biguint);
+    assert_eq!(a_biguint.to_string(), "123456789123456789123456789123456789");
+    println!("---------------------------");
+}
+
+fn biguint_from_from()
+{
+    use cryptocol::define_utypes_with;
+    define_utypes_with!(u32);
+
+    let a_biguint = U256::from([1, 2, 3, 4, 5, 6, 7, 8]);
+    println!("a_biguint = {}", a_biguint);
+    assert_eq!(a_biguint.to_string(), "215679573381144830513811895868694400695694534256768036697775454289921");
+    println!("---------------------------");
+}
+
+fn biguint_from_from_str()
+{
+    use std::str::FromStr;
+    use cryptocol::number::NumberErr;
+    use cryptocol::define_utypes_with;
+    define_utypes_with!(u64);
+
+    let a_biguint_wrapped = U256::from_str("215679573381144830513811895868694400695694534256768036697775454289921");
+    match a_biguint_wrapped
+    {
+        Ok(a_biguint) => {
+                println!("a_biguint = {}", a_biguint);
+                assert_eq!(a_biguint.to_string(), "215679573381144830513811895868694400695694534256768036697775454289921");
+            },
+        Err(e) => { println!("Error: {}", e); }
+    }
+    
+    let a_biguint_wrapped = U256::from_str("@!#$%^&*()_+=-|-/?><`~");
+    match a_biguint_wrapped
+    {
+        Ok(a_biguint) => { println!("a_biguint = {}", a_biguint); },
+        Err(e) => {
+                println!("Error: {}", e);
+                assert_eq!(e, NumberErr::NotAlphaNumeric);
+            }
+    }
+
+    let a_biguint_wrapped = "215679573381144830513811895868694400695694534256768036697775454289921".parse::<U256>();
+    match a_biguint_wrapped
+    {
+        Ok(a_biguint) => {
+                println!("a_biguint = {}", a_biguint);
+                assert_eq!(a_biguint.to_string(), "215679573381144830513811895868694400695694534256768036697775454289921");
+            },
+        Err(e) => { println!("Error: {}", e); }
+    }
+
+    let a_biguint_wrapped = "@!#$%^&*()_+=-|-/?><`~".parse::<U256>();
+    match a_biguint_wrapped
+    {
+        Ok(a_biguint) => { println!("a_biguint = {}", a_biguint); },
+        Err(e) => {
+                println!("Error: {}", e);
+                assert_eq!(e, NumberErr::NotAlphaNumeric);
+            }
+    }
+    println!("---------------------------");
+}
 
 
 /*

@@ -1252,11 +1252,11 @@ macro_rules! calc_rotate_assign
 ///         }
 ///         println!("The fastest one is {}.\n", dt[fastest]);
 ///         
-///         if cfg!(debug_assertions)
+///         #[cfg(debug_assertions)]
 ///         {
 ///             assert_eq!(fastest, 0); // It means u128 shows the best performance most of the time.
 ///         }
-///         else
+///         #[cfg(not(debug_assertions))]
 ///         {
 ///             if operator < 2
 ///                 { assert_eq!(fastest, 0); } // It means u128 shows the best performance.
@@ -4296,7 +4296,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// have to use `partial_cmp_uint()` directly too.
     /// 
     /// # Arguments
-    /// `rhs` is to be added to `self`, and primitive unsigned integer
+    /// `rhs` is to be compared with `self`, and primitive unsigned integer
     /// such as `u8`, `u16`, `u32`, `u64`, and `u128`.
     /// 
     /// # Panics
@@ -4358,6 +4358,11 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// }
     /// assert_eq!(res, Ordering::Equal);
     /// ```
+    /// 
+    /// # Big-endian issue
+    /// It is just experimental for Big Endian CPUs. So, you are not encouraged
+    /// to use it for Big Endian CPUs for serious purpose. Only use this crate
+    /// for Big-endian CPUs with your own full responsibility.
     pub fn partial_cmp_uint<U>(&self, other: U) -> Option<Ordering>
     where U: SmallUInt + Copy + Clone + Display + Debug + ToString
             + Add<Output=U> + AddAssign + Sub<Output=U> + SubAssign
@@ -4403,7 +4408,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// Compares `self` and `other` to find whether `self` is less than `other`.
     /// 
     /// # Arguments
-    /// `rhs` is to be added to `self`, and primitive unsigned integer
+    /// `rhs` is to be compared with `self`, and primitive unsigned integer
     /// such as `u8`, `u16`, `u32`, `u64`, and `u128`.
     /// 
     /// # Panics
@@ -4458,6 +4463,11 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     ///     { println!("{} >= {}", a_biguint, b_uint); }
     /// assert_eq!(res, false);
     /// ```
+    /// 
+    /// # Big-endian issue
+    /// It is just experimental for Big Endian CPUs. So, you are not encouraged
+    /// to use it for Big Endian CPUs for serious purpose. Only use this crate
+    /// for Big-endian CPUs with your own full responsibility.
     #[inline]
     pub fn lt_uint<U>(&self, other: U) -> bool
     where U: SmallUInt + Copy + Clone + Display + Debug + ToString
@@ -4477,7 +4487,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// than `other`.
     /// 
     /// # Arguments
-    /// `rhs` is to be added to `self`, and primitive unsigned integer
+    /// `rhs` is to be compared with `self`, and primitive unsigned integer
     /// such as `u8`, `u16`, `u32`, `u64`, and `u128`.
     /// 
     /// # Panics
@@ -4532,6 +4542,11 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     ///     { println!("{} <= {}", a_biguint, b_uint); }
     /// assert_eq!(res, false);
     /// ```
+    /// 
+    /// # Big-endian issue
+    /// It is just experimental for Big Endian CPUs. So, you are not encouraged
+    /// to use it for Big Endian CPUs for serious purpose. Only use this crate
+    /// for Big-endian CPUs with your own full responsibility.
     #[inline]
     pub fn gt_uint<U>(&self, other: U) -> bool
     where U: SmallUInt + Copy + Clone + Display + Debug + ToString
@@ -4551,7 +4566,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// equal to `other`.
     /// 
     /// # Arguments
-    /// `rhs` is to be added to `self`, and primitive unsigned integer
+    /// `rhs` is to be compared with `self`, and primitive unsigned integer
     /// such as `u8`, `u16`, `u32`, `u64`, and `u128`.
     /// 
     /// # Panics
@@ -4606,6 +4621,11 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     ///     { println!("{} > {}", a_biguint, b_uint); }
     /// assert_eq!(res, true);
     /// ```
+    /// 
+    /// # Big-endian issue
+    /// It is just experimental for Big Endian CPUs. So, you are not encouraged
+    /// to use it for Big Endian CPUs for serious purpose. Only use this crate
+    /// for Big-endian CPUs with your own full responsibility.
     #[inline]
     pub fn le_uint<U>(&self, other: U) -> bool
     where U: SmallUInt + Copy + Clone + Display + Debug + ToString
@@ -4625,7 +4645,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// or equal to `other`.
     /// 
     /// # Arguments
-    /// `rhs` is to be added to `self`, and primitive unsigned integer
+    /// `rhs` is to be compared with `self`, and primitive unsigned integer
     /// such as `u8`, `u16`, `u32`, `u64`, and `u128`.
     /// 
     /// # Panics
@@ -4680,6 +4700,11 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     ///     { println!("{} < {}", a_biguint, b_uint); }
     /// assert_eq!(res, true);
     /// ```
+    /// 
+    /// # Big-endian issue
+    /// It is just experimental for Big Endian CPUs. So, you are not encouraged
+    /// to use it for Big Endian CPUs for serious purpose. Only use this crate
+    /// for Big-endian CPUs with your own full responsibility.
     #[inline]
     pub fn ge_uint<U>(&self, other: U) -> bool
     where U: SmallUInt + Copy + Clone + Display + Debug + ToString
@@ -4698,7 +4723,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// Compares `self` and `other` to find whether `self` is equal to `other`.
     /// 
     /// # Arguments
-    /// `rhs` is to be added to `self`, and primitive unsigned integer
+    /// `rhs` is to be compared with `self`, and primitive unsigned integer
     /// such as `u8`, `u16`, `u32`, `u64`, and `u128`.
     /// 
     /// # Panics
@@ -4738,6 +4763,11 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     ///     { println!("{} != {}", a_biguint, b_uint); }
     /// assert_eq!(res, false);
     /// ```
+    /// 
+    /// # Big-endian issue
+    /// It is just experimental for Big Endian CPUs. So, you are not encouraged
+    /// to use it for Big Endian CPUs for serious purpose. Only use this crate
+    /// for Big-endian CPUs with your own full responsibility.
     #[inline]
     pub fn eq_uint<U>(&self, other: U) -> bool
     where U: SmallUInt + Copy + Clone + Display + Debug + ToString
@@ -4764,7 +4794,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// comparison in the type `Option<Ordering>`.
     /// 
     /// # Arguments
-    /// `rhs` is to be added to `self`, and is of `&Self` type.
+    /// `rhs` is to be compared with `self`, and is of `&Self` type.
     /// 
     /// # Output
     /// It returns `Ordering::Greater` wrapped by `Some` of enum `Option`
@@ -4832,6 +4862,11 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// }
     /// assert_eq!(res, Ordering::Equal);
     /// ```
+    /// 
+    /// # Big-endian issue
+    /// It is just experimental for Big Endian CPUs. So, you are not encouraged
+    /// to use it for Big Endian CPUs for serious purpose. Only use this crate
+    /// for Big-endian CPUs with your own full responsibility.
     #[cfg(target_endian = "little")]
     pub fn partial_cmp(&self, other: &Self) -> Option<Ordering>
     {
@@ -4853,7 +4888,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// Compares `self` and `other` to find whether `self` is less than `other`.
     /// 
     /// # Arguments
-    /// `rhs` is to be added to `self`, and is of `&Self` type.
+    /// `rhs` is to be compared with `self`, and is of `&Self` type.
     /// 
     /// # Panics
     /// If `size_of::<T>() * N` <= `128`, some methods may panic
@@ -4910,6 +4945,11 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     ///     { println!("{} >= {}", a_biguint, b_biguint); }
     /// assert_eq!(res, false);
     /// ```
+    /// 
+    /// # Big-endian issue
+    /// It is just experimental for Big Endian CPUs. So, you are not encouraged
+    /// to use it for Big Endian CPUs for serious purpose. Only use this crate
+    /// for Big-endian CPUs with your own full responsibility.
     #[inline]
     pub fn lt(&self, other: &Self) -> bool
     {
@@ -4921,7 +4961,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// than `other`.
     /// 
     /// # Arguments
-    /// `rhs` is to be added to `self`, and is of `&Self` type.
+    /// `rhs` is to be compared with `self`, and is of `&Self` type.
     /// 
     /// # Panics
     /// If `size_of::<T>() * N` <= `128`, some methods may panic
@@ -4978,6 +5018,11 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     ///     { println!("{} <= {}", a_biguint, b_biguint); }
     /// assert_eq!(res, false);
     /// ```
+    /// 
+    /// # Big-endian issue
+    /// It is just experimental for Big Endian CPUs. So, you are not encouraged
+    /// to use it for Big Endian CPUs for serious purpose. Only use this crate
+    /// for Big-endian CPUs with your own full responsibility.
     #[inline]
     pub fn gt(&self, other: &Self) -> bool
     {
@@ -4989,7 +5034,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// equal to `other`.
     /// 
     /// # Arguments
-    /// `rhs` is to be added to `self`, and is of `&Self` type.
+    /// `rhs` is to be compared with `self`, and is of `&Self` type.
     /// 
     /// # Panics
     /// If `size_of::<T>() * N` <= `128`, some methods may panic
@@ -5046,6 +5091,11 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     ///     { println!("{} > {}", a_biguint, b_biguint); }
     /// assert_eq!(res, true);
     /// ```
+    /// 
+    /// # Big-endian issue
+    /// It is just experimental for Big Endian CPUs. So, you are not encouraged
+    /// to use it for Big Endian CPUs for serious purpose. Only use this crate
+    /// for Big-endian CPUs with your own full responsibility.
     #[inline]
     pub fn le(&self, other: &Self) -> bool
     {
@@ -5057,7 +5107,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// or equal to `other`.
     /// 
     /// # Arguments
-    /// `rhs` is to be added to `self`, and is of `&Self` type.
+    /// `rhs` is to be compared with `self`, and is of `&Self` type.
     /// 
     /// # Panics
     /// If `size_of::<T>() * N` <= `128`, some methods may panic
@@ -5114,6 +5164,11 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     ///     { println!("{} < {}", a_biguint, b_biguint); }
     /// assert_eq!(res, true);
     /// ```
+    /// 
+    /// # Big-endian issue
+    /// It is just experimental for Big Endian CPUs. So, you are not encouraged
+    /// to use it for Big Endian CPUs for serious purpose. Only use this crate
+    /// for Big-endian CPUs with your own full responsibility.
     #[inline]
     pub fn ge(&self, other: &Self) -> bool
     {
@@ -5124,7 +5179,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// Compare `self` with `other` to find whether `self` is equal to `other`.
     /// 
     /// # Arguments
-    /// `rhs` is to be added to `self`, and is of `&Self` type.
+    /// `rhs` is to be compared with `self`, and is of `&Self` type.
     /// 
     /// # Output
     /// It returns `true` if `self` is equal to `other`.
@@ -5165,6 +5220,11 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     ///     { println!("{} != {}", a_biguint, b_biguint); }
     /// assert_eq!(res, false);
     /// ```
+    /// 
+    /// # Big-endian issue
+    /// It is just experimental for Big Endian CPUs. So, you are not encouraged
+    /// to use it for Big Endian CPUs for serious purpose. Only use this crate
+    /// for Big-endian CPUs with your own full responsibility.
     pub fn eq(&self, other: &Self) -> bool
     {
         for idx in 0..N

@@ -8149,11 +8149,9 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
 {
     // fn eq(&self, other: &U) -> bool
     /// Compares `self` and `other` to find whether `self` is equal to `other`.
-    /// However, if the datatype `U` is the same datatype `T`, it will be
-    /// more convenient for you to use the operator `==`.
     /// 
     /// # Arguments
-    /// `rhs` is to be added to `self`, and primitive unsigned integer
+    /// `rhs` is to be compared with `self`, and primitive unsigned integer
     /// such as `u8`, `u16`, `u32`, `u64`, and `u128`.
     /// 
     /// # Panics
@@ -8244,11 +8242,9 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
 {
     // fn eq(&self, other: &Self) -> bool
     /// Compare `self` with `other` to find whether `self` is equal to `other`.
-    /// However, it will be more convenient to you if you use use the operator
-    /// `==`. Then, you don't have to use `partial_cmp()` directly.
     /// 
     /// # Arguments
-    /// `rhs` is to be added to `self`, and is of `&Self` type.
+    /// `rhs` is to be compared with `self`, and is of `&Self` type.
     /// 
     /// # Output
     /// It returns `true` if `self` is equal to `other`.
@@ -8345,11 +8341,12 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
         + PartialEq + PartialOrd
 {
     // fn partial_cmp(&self, other: &U) -> Option<Ordering>
-    /// '<' -> bool
+    /// __self < other -> bool__
+    /// 
     /// Compares `self` and `other` to find whether `self` is less than `other`.
     /// 
     /// # Arguments
-    /// `rhs` is to be added to `self`, and primitive unsigned integer
+    /// `rhs` is to be compared with `self`, and primitive unsigned integer
     /// such as `u8`, `u16`, `u32`, `u64`, and `u128`.
     /// 
     /// # Panics
@@ -8360,15 +8357,59 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// It returns `true` if `self` is less than `other`.
     /// Otherwise, it returns `false`.
     /// 
+    /// # Example 1
+    /// ```
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u16);
+    /// 
+    /// let a_biguint = UU32::from_uint(200_u8);
+    /// let b_uint = 100_u8;
+    /// let res = a_biguint < b_uint;
+    /// if res
+    ///     { println!("{} < {}", a_biguint, b_uint); }
+    /// else
+    ///     { println!("{} >= {}", a_biguint, b_uint); }
+    /// assert_eq!(res, false);
+    /// ```
+    /// 
+    /// # Example 2
+    /// ```
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u16);
+    /// 
+    /// let a_biguint = UU32::from_uint(100_u8);
+    /// let b_uint = 200_u8;
+    /// let res = a_biguint < b_uint;
+    /// if res
+    ///     { println!("{} < {}", a_biguint, b_uint); }
+    /// else
+    ///     { println!("{} >= {}", a_biguint, b_uint); }
+    /// assert_eq!(res, true);
+    /// ```
+    /// 
+    /// # Example 3
+    /// ```
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u16);
+    /// 
+    /// let a_biguint = UU32::from_uint(100_u8);
+    /// let b_uint = 100_u8;
+    /// let res = a_biguint < b_uint;
+    /// if res
+    ///     { println!("{} < {}", a_biguint, b_uint); }
+    /// else
+    ///     { println!("{} >= {}", a_biguint, b_uint); }
+    /// assert_eq!(res, false);
+    /// ```
     /// 
     /// 
+    /// __self > other -> bool__
     /// 
-    /// '>' -> bool
     /// Compares `self` and `other` to find whether `self` is greater
     /// than `other`.
     /// 
     /// # Arguments
-    /// `rhs` is to be added to `self`, and primitive unsigned integer
+    /// `rhs` is to be compared with `self`, and primitive unsigned integer
     /// such as `u8`, `u16`, `u32`, `u64`, and `u128`.
     /// 
     /// # Panics
@@ -8379,14 +8420,59 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// It returns `true` if `self` is greater than `other`.
     /// Otherwise, it returns `false`.
     /// 
+    /// # Example 1
+    /// ```
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u32);
+    /// 
+    /// let a_biguint = UU32::from_uint(200_u8);
+    /// let b_uint = 100_u8;
+    /// let res = a_biguint > b_uint;
+    /// if res
+    ///     { println!("{} > {}", a_biguint, b_uint); }
+    /// else
+    ///     { println!("{} <= {}", a_biguint, b_uint); }
+    /// assert_eq!(res, true);
+    /// ```
+    /// 
+    /// # Example 2
+    /// ```
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u32);
+    /// 
+    /// let a_biguint = UU32::from_uint(100_u8);
+    /// let b_uint = 200_u8;
+    /// let res = a_biguint > b_uint;
+    /// if res
+    ///     { println!("{} > {}", a_biguint, b_uint); }
+    /// else
+    ///     { println!("{} <= {}", a_biguint, b_uint); }
+    /// assert_eq!(res, false);
+    /// ```
+    /// 
+    /// # Example 3
+    /// ```
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u32);
+    /// 
+    /// let a_biguint = UU32::from_uint(100_u8);
+    /// let b_uint = 100_u8;
+    /// let res = a_biguint > b_uint;
+    /// if res
+    ///     { println!("{} > {}", a_biguint, b_uint); }
+    /// else
+    ///     { println!("{} <= {}", a_biguint, b_uint); }
+    /// assert_eq!(res, false);
+    /// ```
     /// 
     /// 
-    /// '<=' -> bool
+    /// __self <= other -> bool__
+    /// 
     /// Compares `self` and `other` to find whether `self` is less than or
     /// equal to `other`.
     /// 
     /// # Arguments
-    /// `rhs` is to be added to `self`, and primitive unsigned integer
+    /// `rhs` is to be compared with `self`, and primitive unsigned integer
     /// such as `u8`, `u16`, `u32`, `u64`, and `u128`.
     /// 
     /// # Panics
@@ -8397,14 +8483,59 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// It returns `true` if `self` is less than or equal to `other`.
     /// Otherwise, it returns `false`.
     /// 
+    /// # Example 1
+    /// ```
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u64);
+    /// 
+    /// let a_biguint = UU32::from_uint(200_u8);
+    /// let b_uint = 100_u8;
+    /// let res = a_biguint <= b_uint;
+    /// if res
+    ///     { println!("{} <= {}", a_biguint, b_uint); }
+    /// else
+    ///     { println!("{} > {}", a_biguint, b_uint); }
+    /// assert_eq!(res, false);
+    /// ```
+    /// 
+    /// # Example 2
+    /// ```
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u64);
+    /// 
+    /// let a_biguint = UU32::from_uint(100_u8);
+    /// let b_uint = 200_u8;
+    /// let res = a_biguint <= b_uint;
+    /// if res
+    ///     { println!("{} <= {}", a_biguint, b_uint); }
+    /// else
+    ///     { println!("{} > {}", a_biguint, b_uint); }
+    /// assert_eq!(res, true);
+    /// ```
+    /// 
+    /// # Example 3
+    /// ```
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u64);
+    /// 
+    /// let a_biguint = UU32::from_uint(100_u8);
+    /// let b_uint = 100_u8;
+    /// let res = a_biguint <= b_uint;
+    /// if res
+    ///     { println!("{} <= {}", a_biguint, b_uint); }
+    /// else
+    ///     { println!("{} > {}", a_biguint, b_uint); }
+    /// assert_eq!(res, true);
+    /// ```
     /// 
     /// 
-    /// '>=' -> bool
+    /// __self >= other -> bool__
+    /// 
     /// Compares `self` and `other` to find whether `self` is greater than
     /// or equal to `other`.
     /// 
     /// # Arguments
-    /// `rhs` is to be added to `self`, and primitive unsigned integer
+    /// `rhs` is to be compared with `self`, and primitive unsigned integer
     /// such as `u8`, `u16`, `u32`, `u64`, and `u128`.
     /// 
     /// # Panics
@@ -8415,14 +8546,58 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// It returns `true` if `self` is greater than or equal to `other`.
     /// Otherwise, it returns `false`.
     /// 
+    /// # Example 1
+    /// ```
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u128);
+    /// 
+    /// let a_biguint = UU32::from_uint(200_u8);
+    /// let b_uint = 100_u8;
+    /// let res = a_biguint >= b_uint;
+    /// if res
+    ///     { println!("{} >= {}", a_biguint, b_uint); }
+    /// else
+    ///     { println!("{} < {}", a_biguint, b_uint); }
+    /// assert_eq!(res, true);
+    /// ```
+    /// 
+    /// # Example 2
+    /// ```
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u128);
+    /// 
+    /// let a_biguint = UU32::from_uint(100_u8);
+    /// let b_uint = 200_u8;
+    /// let res = a_biguint >= b_uint;
+    /// if res
+    ///     { println!("{} >= {}", a_biguint, b_uint); }
+    /// else
+    ///     { println!("{} < {}", a_biguint, b_uint); }
+    /// assert_eq!(res, false);
+    /// ```
+    /// 
+    /// # Example 3
+    /// ```
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u128);
+    /// 
+    /// let a_biguint = UU32::from_uint(100_u8);
+    /// let b_uint = 100_u8;
+    /// let res = a_biguint >= b_uint;
+    /// if res
+    ///     { println!("{} >= {}", a_biguint, b_uint); }
+    /// else
+    ///     { println!("{} < {}", a_biguint, b_uint); }
+    /// assert_eq!(res, true);
+    /// ```
     /// 
     /// 
-    /// '==' -> bool
-    /// '!=' -> bool
+    /// __self == other -> bool__
+    /// 
     /// Compares `self` and `other` to find whether `self` is equal to `other`.
     /// 
     /// # Arguments
-    /// `rhs` is to be added to `self`, and primitive unsigned integer
+    /// `rhs` is to be compared with `self`, and primitive unsigned integer
     /// such as `u8`, `u16`, `u32`, `u64`, and `u128`.
     /// 
     /// # Panics
@@ -8433,6 +8608,87 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// It returns `true` if `self` is equal to `other`.
     /// Otherwise, it returns `false`.
     /// 
+    /// # Example 1
+    /// ```
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u8);
+    /// 
+    /// let a_biguint = UU32::from_uint(100_u8);
+    /// let b_uint = 100_u8;
+    /// let res = a_biguint == b_uint;
+    /// if res
+    ///     { println!("{} == {}", a_biguint, b_uint); }
+    /// else
+    ///     { println!("{} != {}", a_biguint, b_uint); }
+    /// assert_eq!(res, true);
+    /// ```
+    /// 
+    /// # Example 2
+    /// ```
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u8);
+    /// 
+    /// let a_biguint = UU32::from_uint(100_u8);
+    /// let b_uint = 200_u8;
+    /// let res = a_biguint == b_uint;
+    /// if res
+    ///     { println!("{} == {}", a_biguint, b_uint); }
+    /// else
+    ///     { println!("{} != {}", a_biguint, b_uint); }
+    /// assert_eq!(res, false);
+    /// ```
+    /// 
+    /// 
+    /// __self != other -> bool__
+    /// 
+    /// Compares `self` and `other` to find whether `self` is equal to `other`.
+    /// 
+    /// # Arguments
+    /// `rhs` is to be compared with `self`, and primitive unsigned integer
+    /// such as `u8`, `u16`, `u32`, `u64`, and `u128`.
+    /// 
+    /// # Panics
+    /// If `size_of::<T>() * N` <= `128`, this method may panic
+    /// or its behavior may be undefined though it may not panic.
+    /// 
+    /// # Output
+    /// It returns `true` if `self` is not equal to `other`.
+    /// Otherwise, it returns `false`.
+    /// 
+    /// # Example 1
+    /// ```
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u8);
+    /// 
+    /// let a_biguint = UU32::from_uint(100_u8);
+    /// let b_uint = 100_u8;
+    /// let res = a_biguint != b_uint;
+    /// if res
+    ///     { println!("{} != {}", a_biguint, b_uint); }
+    /// else
+    ///     { println!("{} == {}", a_biguint, b_uint); }
+    /// assert_eq!(res, false);
+    /// ```
+    /// 
+    /// # Example 2
+    /// ```
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u8);
+    /// 
+    /// let a_biguint = UU32::from_uint(100_u8);
+    /// let b_uint = 200_u8;
+    /// let res = a_biguint != b_uint;
+    /// if res
+    ///     { println!("{} != {}", a_biguint, b_uint); }
+    /// else
+    ///     { println!("{} == {}", a_biguint, b_uint); }
+    /// assert_eq!(res, true);
+    /// ```
+    /// 
+    /// # Big-endian issue
+    /// It is just experimental for Big Endian CPUs. So, you are not encouraged
+    /// to use it for Big Endian CPUs for serious purpose. Only use this crate
+    /// for Big-endian CPUs with your own full responsibility.
     #[inline]
     fn partial_cmp(&self, other: &U) -> Option<Ordering>
     {
@@ -8453,13 +8709,12 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
         + PartialEq + PartialOrd
 {
     // fn partial_cmp(&self, other: &Self) -> Option<Ordering>
-    
-    // fn partial_cmp(&self, other: &U) -> Option<Ordering>
-    /// '<' -> bool
+    /// __self < other -> bool__
+    /// 
     /// Compares `self` and `other` to find whether `self` is less than `other`.
     /// 
     /// # Arguments
-    /// `rhs` is to be added to `self`, and is of `Self` type.
+    /// `rhs` is to be compared with `self`, and is of `Self` type.
     /// 
     /// # Panics
     /// If `size_of::<T>() * N` <= `128`, some methods may panic
@@ -8469,15 +8724,62 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// It returns `true` if `self` is less than `other`.
     /// Otherwise, it returns `false`.
     /// 
+    /// # Example 1
+    /// ```
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u16);
+    /// 
+    /// let num_str = "69743176821145534028236692093846345739169743176821145534028236692093846345739";
+    /// let a_biguint = UU32::from_string(num_str).unwrap();
+    /// let b_biguint = UU32::from_uint(100_u8);
+    /// let res = a_biguint < b_biguint;
+    /// if res
+    ///     { println!("{} < {}", a_biguint, b_biguint); }
+    /// else
+    ///     { println!("{} >= {}", a_biguint, b_biguint); }
+    /// assert_eq!(res, false);
+    /// ```
+    /// 
+    /// # Example 2
+    /// ```
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u16);
+    /// 
+    /// let num_str = "69743176821145534028236692093846345739169743176821145534028236692093846345739";
+    /// let a_biguint = UU32::from_uint(100_u8);
+    /// let b_biguint = UU32::from_string(num_str).unwrap();
+    /// let res = a_biguint < b_biguint;
+    /// if res
+    ///     { println!("{} < {}", a_biguint, b_biguint); }
+    /// else
+    ///     { println!("{} >= {}", a_biguint, b_biguint); }
+    /// assert_eq!(res, true);
+    /// ```
+    /// 
+    /// # Example 3
+    /// ```
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u16);
+    /// 
+    /// let num_str = "69743176821145534028236692093846345739169743176821145534028236692093846345739";
+    /// let a_biguint = UU32::from_string(num_str).unwrap();
+    /// let b_biguint = UU32::from_string(num_str).unwrap();
+    /// let res = a_biguint < b_biguint;
+    /// if res
+    ///     { println!("{} < {}", a_biguint, b_biguint); }
+    /// else
+    ///     { println!("{} >= {}", a_biguint, b_biguint); }
+    /// assert_eq!(res, false);
+    /// ```
     /// 
     /// 
+    /// __self > other -> bool__
     /// 
-    /// '>' -> bool
     /// Compares `self` and `other` to find whether `self` is greater
     /// than `other`.
     /// 
     /// # Arguments
-    /// `rhs` is to be added to `self`, and is of `Self` type.
+    /// `rhs` is to be compared with `self`, and is of `Self` type.
     /// 
     /// # Panics
     /// If `size_of::<T>() * N` <= `128`, some methods may panic
@@ -8487,14 +8789,62 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// It returns `true` if `self` is greater than `other`.
     /// Otherwise, it returns `false`.
     /// 
+    /// # Example 1
+    /// ```
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u32);
+    /// 
+    /// let num_str = "69743176821145534028236692093846345739169743176821145534028236692093846345739";
+    /// let a_biguint = UU32::from_string(num_str).unwrap();
+    /// let b_biguint = UU32::from_uint(100_u8);
+    /// let res = a_biguint > b_biguint;
+    /// if res
+    ///     { println!("{} > {}", a_biguint, b_biguint); }
+    /// else
+    ///     { println!("{} <= {}", a_biguint, b_biguint); }
+    /// assert_eq!(res, true);
+    /// ```
+    /// 
+    /// # Example 2
+    /// ```
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u32);
+    /// 
+    /// let num_str = "69743176821145534028236692093846345739169743176821145534028236692093846345739";
+    /// let a_biguint = UU32::from_uint(100_u8);
+    /// let b_biguint = UU32::from_string(num_str).unwrap();
+    /// let res = a_biguint > b_biguint;
+    /// if res
+    ///     { println!("{} > {}", a_biguint, b_biguint); }
+    /// else
+    ///     { println!("{} <= {}", a_biguint, b_biguint); }
+    /// assert_eq!(res, false);
+    /// ```
+    /// 
+    /// # Example 3
+    /// ```
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u32);
+    /// 
+    /// let num_str = "69743176821145534028236692093846345739169743176821145534028236692093846345739";
+    /// let a_biguint = UU32::from_string(num_str).unwrap();
+    /// let b_biguint = UU32::from_string(num_str).unwrap();
+    /// let res = a_biguint > b_biguint;
+    /// if res
+    ///     { println!("{} > {}", a_biguint, b_biguint); }
+    /// else
+    ///     { println!("{} <= {}", a_biguint, b_biguint); }
+    /// assert_eq!(res, false);
+    /// ```
     /// 
     /// 
-    /// '<=' -> bool
+    /// __self <= other -> bool__
+    /// 
     /// Compares `self` and `other` to find whether `self` is less than or
     /// equal to `other`.
     /// 
     /// # Arguments
-    /// `rhs` is to be added to `self`, and is of `Self` type.
+    /// `rhs` is to be compared with `self`, and is of `Self` type.
     /// 
     /// # Panics
     /// If `size_of::<T>() * N` <= `128`, some methods may panic
@@ -8504,14 +8854,61 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// It returns `true` if `self` is less than or equal to `other`.
     /// Otherwise, it returns `false`.
     /// 
+    /// # Example 1
+    /// ```
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u64);
+    /// 
+    /// let num_str = "69743176821145534028236692093846345739169743176821145534028236692093846345739";
+    /// let a_biguint = UU32::from_string(num_str).unwrap();
+    /// let b_biguint = UU32::from_uint(100_u8);
+    /// let res = a_biguint <= b_biguint;
+    /// if res
+    ///     { println!("{} <= {}", a_biguint, b_biguint); }
+    /// else
+    ///     { println!("{} > {}", a_biguint, b_biguint); }
+    /// assert_eq!(res, false);
+    /// ```
+    /// 
+    /// # Example 2
+    /// ```
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u64);
+    /// 
+    /// let num_str = "69743176821145534028236692093846345739169743176821145534028236692093846345739";
+    /// let a_biguint = UU32::from_uint(100_u8);
+    /// let b_biguint = UU32::from_string(num_str).unwrap();
+    /// let res = a_biguint <= b_biguint;
+    /// if res
+    ///     { println!("{} <= {}", a_biguint, b_biguint); }
+    /// else
+    ///     { println!("{} > {}", a_biguint, b_biguint); }
+    /// assert_eq!(res, true);
+    /// ```
+    /// 
+    /// # Example 3
+    /// ```
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u64);
+    /// 
+    /// let num_str = "69743176821145534028236692093846345739169743176821145534028236692093846345739";
+    /// let a_biguint = UU32::from_string(num_str).unwrap();
+    /// let b_biguint = UU32::from_string(num_str).unwrap();
+    /// let res = a_biguint <= b_biguint;
+    /// if res
+    ///     { println!("{} <= {}", a_biguint, b_biguint); }
+    /// else
+    ///     { println!("{} > {}", a_biguint, b_biguint); }
+    /// assert_eq!(res, true);
+    /// ```
     /// 
     /// 
-    /// '>=' -> bool
+    /// __self >= other -> bool__
     /// Compares `self` and `other` to find whether `self` is greater than
     /// or equal to `other`.
     /// 
     /// # Arguments
-    /// `rhs` is to be added to `self`, and is of `Self` type.
+    /// `rhs` is to be compared with `self`, and is of `Self` type.
     /// 
     /// # Panics
     /// If `size_of::<T>() * N` <= `128`, some methods may panic
@@ -8521,14 +8918,60 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// It returns `true` if `self` is greater than or equal to `other`.
     /// Otherwise, it returns `false`.
     /// 
+    /// # Example 1
+    /// ```
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u128);
+    /// 
+    /// let num_str = "69743176821145534028236692093846345739169743176821145534028236692093846345739";
+    /// let a_biguint = UU32::from_string(num_str).unwrap();
+    /// let b_biguint = UU32::from_uint(100_u8);
+    /// let res = a_biguint >= b_biguint;
+    /// if res
+    ///     { println!("{} >= {}", a_biguint, b_biguint); }
+    /// else
+    ///     { println!("{} < {}", a_biguint, b_biguint); }
+    /// assert_eq!(res, true);
+    /// ```
+    /// 
+    /// # Example 2
+    /// ```
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u128);
+    /// 
+    /// let num_str = "69743176821145534028236692093846345739169743176821145534028236692093846345739";
+    /// let a_biguint = UU32::from_uint(100_u8);
+    /// let b_biguint = UU32::from_string(num_str).unwrap();
+    /// let res = a_biguint >= b_biguint;
+    /// if res
+    ///     { println!("{} >= {}", a_biguint, b_biguint); }
+    /// else
+    ///     { println!("{} < {}", a_biguint, b_biguint); }
+    /// assert_eq!(res, false);
+    /// ```
+    /// 
+    /// # Example 3
+    /// ```
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u128);
+    /// 
+    /// let num_str = "69743176821145534028236692093846345739169743176821145534028236692093846345739";
+    /// let a_biguint = UU32::from_string(num_str).unwrap();
+    /// let b_biguint = UU32::from_string(num_str).unwrap();
+    /// let res = a_biguint >= b_biguint;
+    /// if res
+    ///     { println!("{} >= {}", a_biguint, b_biguint); }
+    /// else
+    ///     { println!("{} < {}", a_biguint, b_biguint); }
+    /// assert_eq!(res, true);
+    /// ```
     /// 
     /// 
-    /// '==' -> bool
-    /// '!=' -> bool
+    /// __self == other -> bool__
     /// Compares `self` and `other` to find whether `self` is equal to `other`.
     /// 
     /// # Arguments
-    /// `rhs` is to be added to `self`, and is of `Self` type.
+    /// `rhs` is to be compared with `self`, and is of `Self` type.
     /// 
     /// # Panics
     /// If `size_of::<T>() * N` <= `128`, this method may panic
@@ -8538,6 +8981,89 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// It returns `true` if `self` is equal to `other`.
     /// Otherwise, it returns `false`.
     /// 
+    /// # Example 1
+    /// ```
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u8);
+    /// 
+    /// let num_str = "69743176821145534028236692093846345739169743176821145534028236692093846345739";
+    /// let a_biguint = UU32::from_string(num_str).unwrap();
+    /// let b_biguint = UU32::from_string(num_str).unwrap();
+    /// let res = a_biguint == b_biguint;
+    /// if res
+    ///     { println!("{} = {}", a_biguint, b_biguint); }
+    /// else
+    ///     { println!("{} != {}", a_biguint, b_biguint); }
+    /// assert_eq!(res, true);
+    /// ```
+    /// 
+    /// # Example 2
+    /// ```
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u8);
+    /// 
+    /// let num_str = "69743176821145534028236692093846345739169743176821145534028236692093846345739";
+    /// let a_biguint = UU32::from_string(num_str).unwrap();
+    /// let b_biguint = UU32::from_uint(100_u8);
+    /// let res = a_biguint == b_biguint;
+    /// if res
+    ///     { println!("{} = {}", a_biguint, b_biguint); }
+    /// else
+    ///     { println!("{} != {}", a_biguint, b_biguint); }
+    /// assert_eq!(res, false);
+    /// ```
+    /// 
+    /// 
+    /// __self != other -> bool__
+    /// Compares `self` and `other` to find whether `self` is equal to `other`.
+    /// 
+    /// # Arguments
+    /// `rhs` is to be compared with `self`, and is of `Self` type.
+    /// 
+    /// # Panics
+    /// If `size_of::<T>() * N` <= `128`, this method may panic
+    /// or its behavior may be undefined though it may not panic.
+    /// 
+    /// # Output
+    /// It returns `true` if `self` is not equal to `other`.
+    /// Otherwise, it returns `false`.
+    /// 
+    /// # Example 1
+    /// ```
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u8);
+    /// 
+    /// let num_str = "69743176821145534028236692093846345739169743176821145534028236692093846345739";
+    /// let a_biguint = UU32::from_string(num_str).unwrap();
+    /// let b_biguint = UU32::from_string(num_str).unwrap();
+    /// let res = a_biguint != b_biguint;
+    /// if res
+    ///     { println!("{} != {}", a_biguint, b_biguint); }
+    /// else
+    ///     { println!("{} == {}", a_biguint, b_biguint); }
+    /// assert_eq!(res, false);
+    /// ```
+    /// 
+    /// # Example 2
+    /// ```
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u8);
+    /// 
+    /// let num_str = "69743176821145534028236692093846345739169743176821145534028236692093846345739";
+    /// let a_biguint = UU32::from_string(num_str).unwrap();
+    /// let b_biguint = UU32::from_uint(100_u8);
+    /// let res = a_biguint != b_biguint;
+    /// if res
+    ///     { println!("{} != {}", a_biguint, b_biguint); }
+    /// else
+    ///     { println!("{} == {}", a_biguint, b_biguint); }
+    /// assert_eq!(res, true);
+    /// ```
+    /// 
+    /// # Big-endian issue
+    /// It is just experimental for Big Endian CPUs. So, you are not encouraged
+    /// to use it for Big Endian CPUs for serious purpose. Only use this crate
+    /// for Big-endian CPUs with your own full responsibility.
     #[inline]
     fn partial_cmp(&self, other: &Self) -> Option<Ordering>
     {
@@ -8557,19 +9083,39 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
         + BitXor<Output=T> + BitXorAssign + Not<Output=T>
         + PartialEq + PartialOrd
 {
+    // fn fmt(&self, f: &mut Formatter) -> fmt::Result
     /// Formats the value using the given formatter.
+    /// 
+    /// # Arguments
+    /// `f` is a buffer, this method must write the formatted string into it,
+    /// and is of the type `&mut Formatter`.
+    /// 
+    /// # Features
     /// Automagically the function `to_string()` will be implemented. So, you
     /// can use the function `to_string()` and the macro `println!()`.
-    /// `f` is a buffer, this method must write the formatted string into it.
     /// [Read more](https://doc.rust-lang.org/core/fmt/trait.Display.html#tymethod.fmt)
     /// 
-    /// # Example
+    /// # Example 1
     /// ```
     /// use std::str::FromStr;
     /// use cryptocol::define_utypes_with;
-    /// define_utypes_with!(u128);
-    /// let a = U256::from_str("1234567_1234567890_1234567890_1234567890_1234567890_1234567890_1234567890_1234567890").unwrap();
-    /// println!("{}", a);
+    /// define_utypes_with!(u8);
+    /// 
+    /// let a_biguint = U256::from_str("69743176821145534028236692093846345739169743176821145534028236692093846345739").unwrap();
+    /// println!("{}", a_biguint);
+    /// assert_eq!(a_biguint.to_string(), "69743176821145534028236692093846345739169743176821145534028236692093846345739");
+    /// ```
+    /// 
+    /// # Example 2
+    /// ```
+    /// use std::str::FromStr;
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u8);
+    /// 
+    /// let a_biguint = U256::from_str("1234567_1234567890_1234567890_1234567890_1234567890_1234567890_1234567890_1234567890").unwrap();
+    /// let txt = a_biguint.to_string();
+    /// println!("{}", txt);
+    /// assert_eq!(txt, "12345671234567890123456789012345678901234567890123456789012345678901234567890");
     /// ```
     fn fmt(&self, f: &mut Formatter) -> fmt::Result
     {
@@ -8581,7 +9127,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
 
 
 
-impl<T, const N: usize, S> From<S> for BigUInt<T, N>
+impl<T, U, const N: usize> From<U> for BigUInt<T, N>
 where T: SmallUInt + Copy + Clone + Display + Debug + ToString
         + Add<Output=T> + AddAssign + Sub<Output=T> + SubAssign
         + Mul<Output=T> + MulAssign + Div<Output=T> + DivAssign
@@ -8590,28 +9136,40 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
         + BitAnd<Output=T> + BitAndAssign + BitOr<Output=T> + BitOrAssign
         + BitXor<Output=T> + BitXorAssign + Not<Output=T>
         + PartialEq + PartialOrd,
-    S: SmallUInt + Copy + Clone + Display + Debug + ToString
-        + Add<Output=S> + AddAssign + Sub<Output=S> + SubAssign
-        + Mul<Output=S> + MulAssign + Div<Output=S> + DivAssign
-        + Rem<Output=S> + RemAssign
-        + Shl<Output=S> + ShlAssign + Shr<Output=S> + ShrAssign
-        + BitAnd<Output=S> + BitAndAssign + BitOr<Output=S> + BitOrAssign
-        + BitXor<Output=S> + BitXorAssign + Not<Output=S>
+    U: SmallUInt + Copy + Clone + Display + Debug + ToString
+        + Add<Output=U> + AddAssign + Sub<Output=U> + SubAssign
+        + Mul<Output=U> + MulAssign + Div<Output=U> + DivAssign
+        + Rem<Output=U> + RemAssign
+        + Shl<Output=U> + ShlAssign + Shr<Output=U> + ShrAssign
+        + BitAnd<Output=U> + BitAndAssign + BitOr<Output=U> + BitOrAssign
+        + BitXor<Output=U> + BitXorAssign + Not<Output=U>
         + PartialEq + PartialOrd
 {
-    /// Constructs a new `BigUInt<T, N>`-type object from an unsigned integer
-    /// such as `u8`, `u16`, `u32`, `u64`, `u128` and `usize`.
+    // fn from(val: U) -> Self
+    /// Constructs a new `BigUInt<T, N>`-type object from a primitive unsigned
+    /// integer such as `u8`, `u16`, `u32`, `u64`, `u128` and `usize`.
     /// 
-    /// # Examples
+    /// # Argument
+    /// `val` is a primitive unsigned integer
+    /// which will be converted into `BigUInt`.
     /// 
+    /// # Features
+    /// The method Self::from() is the same of the method Self::from_uint().
+    /// 
+    /// # Output
+    /// A new `BigUInt<T, N>`-type object
+    /// 
+    /// # Example
     /// ```
-    /// use cryptocol::number::BigUInt;
-    /// let cc = BigUInt::<u16,32>::from(1004_u32);
-    /// println!("cc = {}", cc);
-    /// assert_eq!(cc.into_u32(), 1004);
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u16);
+    /// 
+    /// let a_biguint = U256::from(123456789123456789123456789123456789_u128);
+    /// println!("a_biguint = {}", a_biguint);
+    /// assert_eq!(a_biguint.to_string(), "123456789123456789123456789123456789");
     /// ```
     #[inline]
-    fn from(val: S) -> Self
+    fn from(val: U) -> Self
     {
         Self::from_uint(val)
     }
@@ -8629,15 +9187,28 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
         + BitXor<Output=T> + BitXorAssign + Not<Output=T>
         + PartialEq + PartialOrd
 {
+    // fn from(val: [T; N]) -> Self
     /// Constructs a new `BigUInt<T, N>`-type object from an array of type `T`
     /// with `N` elements.
     /// 
-    /// # Examples
+    /// # Argument
+    /// `val` is a primitive unsigned integer
+    /// which will be converted into `BigUInt`.
+    /// 
+    /// # Features
+    /// The method Self::from() is the same of the method Self::from_uint().
+    /// 
+    /// # Output
+    /// A new `BigUInt<T, N>`-type object
+    /// 
+    /// # Example
     /// ```
-    /// use cryptocol::number::*;
-    /// let big_num = BigUInt::<u8,32>::from([1_u8;32]);
-    /// println!("big_num = {}", big_num.to_string_with_radix(2).unwrap());
-    /// assert_eq!(big_num, BigUInt::<u8,32>::from_str_radix("00000001_00000001_00000001_00000001_00000001_00000001_00000001_00000001_00000001_00000001_00000001_00000001_00000001_00000001_00000001_00000001_00000001_00000001_00000001_00000001_00000001_00000001_00000001_00000001_00000001_00000001_00000001_00000001_00000001_00000001_00000001_00000001", 2).unwrap());
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u32);
+    /// 
+    /// let a_biguint = U256::from([1, 2, 3, 4, 5, 6, 7, 8]);
+    /// println!("a_biguint = {}", a_biguint);
+    /// assert_eq!(a_biguint.to_string(), "215679573381144830513811895868694400695694534256768036697775454289921");
     /// ```
     fn from(val: [T; N]) -> Self
     {
@@ -8658,22 +9229,93 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
         + PartialEq + PartialOrd
 {
     type Err = NumberErr;
+
+    // fn from_str(s: &str) -> Result<Self, Self::Err>
     /// Constructs a new `BigUInt<T, N>`-type object from a string with radix 10.
-    /// The constructed object will be wrapped in `Ok(BigUInt<T, N>)` if it is
-    /// successfully created. Otherwise, this method returns
-    /// `Err(NumberErr::ParsingError)`. And, if you import (use)
-    /// std::str::FromStr, you can automagically use `str::parse::<BigUInt>()`
-    /// too.
     /// 
-    /// # Examples
+    /// # Argument
+    /// `s` is a text (string) slice, which `BigUInt<T, N>`-type object is
+    /// constructed from the string slice `s`.
+    /// 
+    /// # Features
+    /// The constructed object will be wrapped in `Ok(BigUInt<T, N>)` if it is
+    /// successfully created.
+    /// Otherwise, this method returns `Err(NumberErr::ParsingError)`.
+    /// And, if you import (use) std::str::FromStr,
+    /// you can automagically use `str::parse::<BigUInt>()` too.
+    /// 
+    /// # Output
+    /// A new `BigUInt<T, N>`-type object constructed
+    /// from a string with radix 10.
+    /// 
+    /// # Example 1
     /// ```
     /// use std::str::FromStr;
-    /// use cryptocol::number::BigUInt;
-    /// use cryptocol::define_utypes_with_u8;
-    /// define_utypes_with_u8!();
-    /// let a = U256::from_str("1234").unwrap();
-    /// let b = "123_4566".parse::<U256>().unwrap();
-    /// println!("a = {}, b = {}", a, b);
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u64);
+    /// 
+    /// let a_biguint_wrapped = U256::from_str("215679573381144830513811895868694400695694534256768036697775454289921");
+    /// match a_biguint_wrapped
+    /// {
+    ///     Ok(a_biguint) => {
+    ///             println!("a_biguint = {}", a_biguint);
+    ///             assert_eq!(a_biguint.to_string(), "215679573381144830513811895868694400695694534256768036697775454289921");
+    ///         },
+    ///     Err(e) => { println!("Error: {}", e); }
+    /// }
+    /// ```
+    /// 
+    /// # Example 2
+    /// ```
+    /// use std::str::FromStr;
+    /// use cryptocol::number::NumberErr;
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u64);
+    /// 
+    /// let a_biguint_wrapped = U256::from_str("@!#$%^&*()_+=-|-/?><`~");
+    /// match a_biguint_wrapped
+    /// {
+    ///     Ok(a_biguint) => { println!("a_biguint = {}", a_biguint); },
+    ///     Err(e) => {
+    ///             println!("Error: {}", e);
+    ///             assert_eq!(e, NumberErr::NotAlphaNumeric);
+    ///         }
+    /// }
+    /// ```
+    /// 
+    /// # Example 3
+    /// ```
+    /// use std::str::FromStr;
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u64);
+    /// 
+    /// let a_biguint_wrapped = "215679573381144830513811895868694400695694534256768036697775454289921".parse::<U256>();
+    /// match a_biguint_wrapped
+    /// {
+    ///     Ok(a_biguint) => {
+    ///             println!("a_biguint = {}", a_biguint);
+    ///             assert_eq!(a_biguint.to_string(), "215679573381144830513811895868694400695694534256768036697775454289921");
+    ///         },
+    ///     Err(e) => { println!("Error: {}", e); }
+    /// }
+    /// ```
+    /// 
+    /// # Example 4
+    /// ```
+    /// use std::str::FromStr;
+    /// use cryptocol::number::NumberErr;
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u64);
+    /// 
+    /// let a_biguint_wrapped = "@!#$%^&*()_+=-|-/?><`~".parse::<U256>();
+    /// match a_biguint_wrapped
+    /// {
+    ///     Ok(a_biguint) => { println!("a_biguint = {}", a_biguint); },
+    ///     Err(e) => {
+    ///             println!("Error: {}", e);
+    ///             assert_eq!(e, NumberErr::NotAlphaNumeric);
+    ///         }
+    /// }
     /// ```
     #[inline]
     fn from_str(s: &str) -> Result<Self, Self::Err>

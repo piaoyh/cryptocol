@@ -18,9 +18,9 @@ use std::cmp::{ PartialEq, PartialOrd};
 use std::time::{ SystemTime, UNIX_EPOCH };
 use std::collections::hash_map::RandomState;
 use std::hash::{ BuildHasher, Hasher };
-#[cfg(not(target_os = "windows"))] use std::fs::File;
-#[cfg(not(target_os = "windows"))] use std::ptr::copy_nonoverlapping;
-#[cfg(not(target_os = "windows"))] use std::io::Read;
+#[cfg(not(target_family = "windows"))] use std::fs::File;
+#[cfg(not(target_family = "windows"))] use std::ptr::copy_nonoverlapping;
+#[cfg(not(target_family = "windows"))] use std::io::Read;
 
 use crate::number::{ SmallUInt, LongUnion, LongerUnion, BigUInt };
 use crate::hash::{ MD4, MD5, SHA0, SHA1, SHA2_256, SHA2_512 };
@@ -652,7 +652,7 @@ impl<GenFunc: Random_Engine + 'static, const COUNT: u128> Random_Generic<GenFunc
     {
         let mut seed_buffer = [0_u64; 8];
         let mut read_long = 0_usize;
-        #[cfg(not(target_os = "windows"))]
+        #[cfg(not(target_family = "windows"))]
         {
             if let Ok(mut file) = File::open("/dev/random")
             {
@@ -693,7 +693,7 @@ impl<GenFunc: Random_Engine + 'static, const COUNT: u128> Random_Generic<GenFunc
     /// It returns a random number array `[u64; 8]` made by seeds.
     fn collect_seed_u8() -> u8
     {
-        #[cfg(not(target_os = "windows"))]
+        #[cfg(not(target_family = "windows"))]
         {
             if let Ok(mut file) = File::open("/dev/random")
             {
