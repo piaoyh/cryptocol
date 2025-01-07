@@ -15,9 +15,13 @@
 #![allow(missing_docs)]
 #![allow(rustdoc::missing_doc_code_examples)]
 
-use std::fmt::{ self, Debug, Display, Formatter };
 use std::cmp::{ PartialEq, PartialOrd, Ordering };
-use std::ops::*;
+use std::ops::{ BitAnd, BitAndAssign, BitOr, BitOrAssign, BitXor, BitXorAssign, Not,
+                Shl, ShlAssign, Shr, ShrAssign, 
+                Add, AddAssign, Sub, SubAssign, Mul, MulAssign,
+                Div, DivAssign, Rem, RemAssign };
+use std::fmt::{ self, Error, Formatter, Display, Debug, Pointer,
+                Binary, Octal, LowerHex, UpperHex, LowerExp, UpperExp };
 
 use crate::number::SmallUInt;
 use crate::number::calc_assign_to_calc;
@@ -1158,7 +1162,7 @@ crate::number::shift_ops_for_integer_unions_impl! { SizeUnion, u64 }
 crate::number::shift_ops_for_integer_unions_impl! { SizeUnion, u128 }
 crate::number::shift_ops_for_integer_unions_impl! { SizeUnion, usize }
 
-crate::number::display_for_integer_unions_impl! { SizeUnion }
+crate::number::format_for_integer_unions_impl! { SizeUnion }
 
 
 crate::number::shift_ops_for_integer_unions_by_self_impl! { SizeUnion }

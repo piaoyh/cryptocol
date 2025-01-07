@@ -15585,19 +15585,19 @@ macro_rules! operators_for_integer_unions_impl {
             /// let a_shortunion = ShortUnion::new_with(0b_10110011_10001111);
             /// let b_shortunion = ShortUnion::new_with(0b_10001111_10110011);
             /// let c_shortunion = a_shortunion & b_shortunion;
-            /// println!("{:b} & {:b} = {:b}", a_shortunion.get(), b_shortunion.get(), c_shortunion.get());
+            /// println!("{:b} & {:b} = {:b}", a_shortunion, b_shortunion, c_shortunion);
             /// assert_eq!(c_shortunion.get(), 0b_1000001110000011_u16);
             /// 
             /// let a_shortunion = ShortUnion::new_with(0b_10110011_10001111);
             /// let b_shortunion = ShortUnion::max();
             /// let c_shortunion = a_shortunion & b_shortunion;
-            /// println!("{:b} & {:b} = {:b}", a_shortunion.get(), b_shortunion.get(), c_shortunion.get());
+            /// println!("{:b} & {:b} = {:b}", a_shortunion, b_shortunion, c_shortunion);
             /// assert_eq!(c_shortunion.get(), 0b_1011001110001111_u16);
             /// 
             /// let a_shortunion = ShortUnion::new_with(0b_10110011_10001111);
             /// let b_shortunion = ShortUnion::zero();
             /// let c_shortunion = a_shortunion & b_shortunion;
-            /// println!("{:b} & {:b} = {:b}", a_shortunion.get(), b_shortunion.get(), c_shortunion.get());
+            /// println!("{:b} & {:b} = {:b}", a_shortunion, b_shortunion, c_shortunion);
             /// assert_eq!(c_shortunion.get(), 0_u16);
             /// ```
             /// 
@@ -15608,19 +15608,19 @@ macro_rules! operators_for_integer_unions_impl {
             /// let a_intunion = IntUnion::new_with(0b_10110011_10001111_00001111_10000011);
             /// let b_intunion = IntUnion::new_with(0b_00001111_10000011_10110011_10001111);
             /// let c_intunion = a_intunion & b_intunion;
-            /// println!("{:b} & {:b} = {:b}", a_intunion.get(), b_intunion.get(), c_intunion.get());
+            /// println!("{:b} & {:b} = {:b}", a_intunion, b_intunion, c_intunion);
             /// assert_eq!(c_intunion.get(), 0b_11100000110000001110000011_u32);
             /// 
             /// let a_intunion = IntUnion::new_with(0b_10110011_10001111_00001111_10000011);
             /// let b_intunion = IntUnion::max();
             /// let c_intunion = a_intunion & b_intunion;
-            /// println!("{:b} & {:b} = {:b}", a_intunion.get(), b_intunion.get(), c_intunion.get());
+            /// println!("{:b} & {:b} = {:b}", a_intunion, b_intunion, c_intunion);
             /// assert_eq!(c_intunion.get(), 0b_10110011100011110000111110000011_u32);
             /// 
             /// let a_intunion = IntUnion::new_with(0b_10110011_10001111_00001111_10000011);
             /// let b_intunion = IntUnion::zero();
             /// let c_intunion = a_intunion & b_intunion;
-            /// println!("{:b} & {:b} = {:b}", a_intunion.get(), b_intunion.get(), c_intunion.get());
+            /// println!("{:b} & {:b} = {:b}", a_intunion, b_intunion, c_intunion);
             /// assert_eq!(c_intunion.get(), 0_u32);
             /// ```
             /// 
@@ -15631,19 +15631,19 @@ macro_rules! operators_for_integer_unions_impl {
             /// let a_longunion = LongUnion::new_with(0b_10110011_10001111_00001111_10000011_11110000_00111111_10000000_11111111);
             /// let b_longunion = LongUnion::new_with(0b_11110000_00111111_10000000_11111111_10110011_10001111_00001111_10000011);
             /// let c_longunion = a_longunion & b_longunion;
-            /// println!("{:b} & {:b} = {:b}", a_longunion.get(), b_longunion.get(), c_longunion.get());
+            /// println!("{:b} & {:b} = {:b}", a_longunion, b_longunion, c_longunion);
             /// assert_eq!(c_longunion.get(), 0b_1011000000001111000000001000001110110000000011110000000010000011_u64);
             /// 
             /// let a_longunion = LongUnion::new_with(0b_10110011_10001111_00001111_10000011_11110000_00111111_10000000_11111111);
             /// let b_longunion = LongUnion::max();
             /// let c_longunion = a_longunion & b_longunion;
-            /// println!("{:b} & {:b} = {:b}", a_longunion.get(), b_longunion.get(), c_longunion.get());
+            /// println!("{:b} & {:b} = {:b}", a_longunion, b_longunion, c_longunion);
             /// assert_eq!(c_longunion.get(), 0b_1011001110001111000011111000001111110000001111111000000011111111_u64);
             /// 
             /// let a_longunion = LongUnion::new_with(0b_10110011_10001111_00001111_10000011_11110000_00111111_10000000_11111111);
             /// let b_longunion = LongUnion::zero();
             /// let c_longunion = a_longunion & b_longunion;
-            /// println!("{:b} & {:b} = {:b}", a_longunion.get(), b_longunion.get(), c_longunion.get());
+            /// println!("{:b} & {:b} = {:b}", a_longunion, b_longunion, c_longunion);
             /// assert_eq!(c_longunion.get(), 0_u64);
             /// ```
             /// 
@@ -15654,19 +15654,19 @@ macro_rules! operators_for_integer_unions_impl {
             /// let a_longerunion = LongerUnion::new_with(0b_10110011_10001111_00001111_10000011_11110000_00111111_10000000_11111111_00000000_11111111_10000000_00111111_11110000_00000011_11111111_10000000);
             /// let b_longerunion = LongerUnion::new_with(0b_00000000_11111111_10000000_00111111_11110000_00000011_11111111_10000000_10110011_10001111_00001111_10000011_11110000_00111111_10000000_11111111);
             /// let c_longerunion = a_longerunion & b_longerunion;
-            /// println!("{:b} & {:b} = {:b}", a_longerunion.get(), b_longerunion.get(), c_longerunion.get());
+            /// println!("{:b} & {:b} = {:b}", a_longerunion, b_longerunion, c_longerunion);
             /// assert_eq!(c_longerunion.get(), 0b_100011110000000000000011111100000000001110000000100000000000000010001111000000000000001111110000000000111000000010000000_u128);
             /// 
             /// let a_longerunion = LongerUnion::new_with(0b_10110011_10001111_00001111_10000011_11110000_00111111_10000000_11111111_00000000_11111111_10000000_00111111_11110000_00000011_11111111_10000000);
             /// let b_longerunion = LongerUnion::max();
             /// let c_longerunion = a_longerunion & b_longerunion;
-            /// println!("{:b} & {:b} = {:b}", a_longerunion.get(), b_longerunion.get(), c_longerunion.get());
+            /// println!("{:b} & {:b} = {:b}", a_longerunion, b_longerunion, c_longerunion);
             /// assert_eq!(c_longerunion.get(), 0b_10110011100011110000111110000011111100000011111110000000111111110000000011111111100000000011111111110000000000111111111110000000_u128);
             /// 
             /// let a_longerunion = LongerUnion::new_with(0b_10110011_10001111_00001111_10000011_11110000_00111111_10000000_11111111_00000000_11111111_10000000_00111111_11110000_00000011_11111111_10000000);
             /// let b_longerunion = LongerUnion::zero();
             /// let c_longerunion = a_longerunion & b_longerunion;
-            /// println!("{:b} & {:b} = {:b}", a_longerunion.get(), b_longerunion.get(), c_longerunion.get());
+            /// println!("{:b} & {:b} = {:b}", a_longerunion, b_longerunion, c_longerunion);
             /// assert_eq!(c_longerunion.get(), 0_u128);
             /// ```
             /// 
@@ -15681,7 +15681,7 @@ macro_rules! operators_for_integer_unions_impl {
             /// #[cfg(target_pointer_width = "32")] let b_sizeunion = SizeUnion::new_with(0b_00001111_10000011_10110011_10001111);
             /// #[cfg(target_pointer_width = "64")] let b_sizeunion = SizeUnion::new_with(0b_11110000_00111111_10000000_11111111_10110011_10001111_00001111_10000011);
             /// let c_sizeunion = a_sizeunion % b_sizeunion;
-            /// println!("{:b} & {:b} = {:b}", a_sizeunion.get(), b_sizeunion.get(), c_sizeunion.get());
+            /// println!("{:b} & {:b} = {:b}", a_sizeunion, b_sizeunion, c_sizeunion);
             /// #[cfg(target_pointer_width = "16")]  assert_eq!(c_sizeunion.get(), 0b_1000001110000011_usize);
             /// #[cfg(target_pointer_width = "32")]  assert_eq!(c_sizeunion.get(), 0b_11100000110000001110000011_usize);
             /// #[cfg(target_pointer_width = "64")]  assert_eq!(c_sizeunion.get(), 0b_1011001110001111000011111000001111110000001111111000000011111111_usize);
@@ -15691,7 +15691,7 @@ macro_rules! operators_for_integer_unions_impl {
             /// #[cfg(target_pointer_width = "64")] let a_sizeunion = SizeUnion::new_with(0b_10110011_10001111_00001111_10000011_11110000_00111111_10000000_11111111);
             /// let b_sizeunion = SizeUnion::max();
             /// let c_sizeunion = a_sizeunion & b_sizeunion;
-            /// println!("{:b} & {:b} = {:b}", a_sizeunion.get(), b_sizeunion.get(), c_sizeunion.get());
+            /// println!("{:b} & {:b} = {:b}", a_sizeunion, b_sizeunion, c_sizeunion);
             /// #[cfg(target_pointer_width = "16")]  assert_eq!(c_sizeunion.get(), 0b_1011001110001111_usize);
             /// #[cfg(target_pointer_width = "32")]  assert_eq!(c_sizeunion.get(), 0b_0b_10110011100011110000111110000011_usize);
             /// #[cfg(target_pointer_width = "64")]  assert_eq!(c_sizeunion.get(), 0b_1011001110001111000011111000001111110000001111111000000011111111_usize);
@@ -15701,7 +15701,7 @@ macro_rules! operators_for_integer_unions_impl {
             /// #[cfg(target_pointer_width = "64")] let a_sizeunion = SizeUnion::new_with(0b_10110011_10001111_00001111_10000011_11110000_00111111_10000000_11111111);
             /// let b_sizeunion = SizeUnion::zero();
             /// let c_sizeunion = a_sizeunion & b_sizeunion;
-            /// println!("{:b} & {:b} = {:b}", a_sizeunion.get(), b_sizeunion.get(), c_sizeunion.get());
+            /// println!("{:b} & {:b} = {:b}", a_sizeunion, b_sizeunion, c_sizeunion);
             /// assert_eq!(c_sizeunion.get(), 0_usize);
             /// ```
             #[inline]
@@ -16016,7 +16016,7 @@ macro_rules! shift_ops_for_integer_unions_by_self_impl {
 }
 pub(super) use shift_ops_for_integer_unions_by_self_impl;
 
-macro_rules! display_for_integer_unions_impl {
+macro_rules! format_for_integer_unions_impl {
     ($f:ty) => {
         impl Display for $f
         {
@@ -16032,19 +16032,86 @@ macro_rules! display_for_integer_unions_impl {
             /// let a_shortunion = ShortUnion::new_with(60521_u16);
             /// println!("{}", a_shortunion);
             /// ```
-            fn fmt(&self, f: &mut Formatter) -> fmt::Result
+            fn fmt(&self, f: &mut Formatter) -> Result<(), Error>
             {
                 // `write!` is like `format!`, but it will write the formatted string
                 // into a buffer (the first argument)
                 write!(f, "{}", self.get())
             }
         }
+        
+        impl UpperHex for $f
+        {
+            fn fmt(&self, f: &mut Formatter<'_>) -> Result<(), Error>
+            {
+                // `write!` is like `format!`, but it will write the formatted string
+                // into a buffer (the first argument)
+                write!(f, "{:X}", self.get())
+            }
+        }
+        
+        impl LowerHex for $f
+        {
+            fn fmt(&self, f: &mut Formatter<'_>) -> Result<(), Error>
+            {
+                // `write!` is like `format!`, but it will write the formatted string
+                // into a buffer (the first argument)
+                write!(f, "{:x}", self.get())
+            }
+        }
+        
+        impl Binary for $f
+        {
+            fn fmt(&self, f: &mut Formatter<'_>) -> Result<(), Error>
+            {
+                // `write!` is like `format!`, but it will write the formatted string
+                // into a buffer (the first argument)
+                write!(f, "{:b}", self.get())
+            }
+        }
+        
+        impl Octal for $f
+        {
+            fn fmt(&self, f: &mut Formatter<'_>) -> Result<(), Error>
+            {
+                // `write!` is like `format!`, but it will write the formatted string
+                // into a buffer (the first argument)
+                write!(f, "{:o}", self.get())
+            }
+        }
+
+        impl UpperExp for $f
+        {
+            fn fmt(&self, f: &mut Formatter<'_>) -> Result<(), Error>
+            {
+                // `write!` is like `format!`, but it will write the formatted string
+                // into a buffer (the first argument)
+                write!(f, "{:E}", self.get())
+            }
+        }
+        
+        impl LowerExp for $f
+        {
+            fn fmt(&self, f: &mut Formatter<'_>) -> Result<(), Error>
+            {
+                // `write!` is like `format!`, but it will write the formatted string
+                // into a buffer (the first argument)
+                write!(f, "{:e}", self.get())
+            }
+        }
+        
+        impl Pointer for $f
+        {
+            fn fmt(&self, f: &mut Formatter<'_>) -> Result<(), Error>
+            {
+                // `write!` is like `format!`, but it will write the formatted string
+                // into a buffer (the first argument)
+                write!(f, "0x{:x}", self as *const Self as usize)
+            }
+        }
     }
 }
-pub(super) use display_for_integer_unions_impl;
-
-
-    
+pub(super) use format_for_integer_unions_impl;
 
 
 
