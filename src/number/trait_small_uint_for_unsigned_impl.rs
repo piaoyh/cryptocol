@@ -44,7 +44,7 @@ macro_rules! SmallUInt_methods_for_uint_impl {
             /// [Read more](trait@SmallUInt#tymethod.checked_add) in detail.
             #[inline] fn checked_add(self, rhs: Self) -> Option<Self>   { self.checked_add(rhs) }
 
-            /// Computes `self` + `rhs` and returns None if overflow occurred.
+            /// Computes `self` + `rhs`, assuming overflow cannot occur.
             /// [Read more](trait@SmallUInt#tymethod.checked_add) in detail.
             #[inline] fn unchecked_add(self, rhs: Self) -> Self     { self.checked_add(rhs).unwrap() }
 
@@ -52,6 +52,16 @@ macro_rules! SmallUInt_methods_for_uint_impl {
             /// instead of overflowing.
             /// [Read more](trait@SmallUInt#tymethod.saturating_add) in detail.
             #[inline] fn saturating_add(self, rhs: Self) -> Self    { self.saturating_add(rhs) }
+
+            /// Computes `self` + `rhs`, wrapping at the numeric bounds instead
+            /// of overflowing in release mode,
+            /// but panics when overflow occurs in debug mode.
+            /// [Read more](trait@SmallUInt#tymethod.saturating_add) in detail.
+            #[inline] fn safe_add(self, rhs: Self) -> Self
+            {
+                #[cfg(debug_assertions)]         return self + rhs;
+                #[cfg(not(debug_assertions))]    return self.wrapping_add(rhs);
+            }
 
             /// Computes `self` + `rhs`, wrapping at `modulo`
             /// instead of overflowing.
@@ -100,6 +110,15 @@ macro_rules! SmallUInt_methods_for_uint_impl {
             /// instead of overflowing.
             /// [Read more](trait@SmallUInt#tymethod.saturating_sub) in detail.
             #[inline] fn saturating_sub(self, rhs: Self) -> Self    { self.saturating_sub(rhs) }
+
+            /// Computes `self` - `rhs`, wrapping at the numeric bounds instead
+            /// of underflowing in release mode,
+            /// but panics when underflow occurs in debug mode.
+            #[inline] fn safe_sub(self, rhs: Self) -> Self
+            {
+                #[cfg(debug_assertions)]         return self - rhs;
+                #[cfg(not(debug_assertions))]    return self.wrapping_sub(rhs);
+            }
 
             /// Computes the absolute difference between self and other.
             /// [Read more](trait@SmallUInt#tymethod.abs_diff) in detail.
@@ -236,6 +255,15 @@ macro_rules! SmallUInt_methods_for_uint_impl {
             /// [Read more](trait@SmallUInt#tymethod.saturating_mul) in detail.
             #[inline] fn saturating_mul(self, rhs: Self) -> Self    { self.saturating_mul(rhs) }
 
+            /// Computes `self` * `rhs`, wrapping at the numeric bounds instead
+            /// of overflowing in release mode,
+            /// but panics when overflowing occurs in debug mode.
+            #[inline] fn safe_mul(self, rhs: Self) -> Self
+            {
+                #[cfg(debug_assertions)]         return self * rhs;
+                #[cfg(not(debug_assertions))]    return self.wrapping_mul(rhs);
+            }
+
             /// Computes `self` * `rhs`, wrapping at `modulo`
             /// instead of overflowing.
             /// [Read more](trait@SmallUInt#tymethod.modular_mul) in detail.
@@ -269,7 +297,7 @@ macro_rules! SmallUInt_methods_for_uint_impl {
             /// [Read more](trait@SmallUInt#tymethod.checked_div) in detail.
             #[inline] fn checked_div(self, rhs: Self) -> Option<Self>   { self.checked_div(rhs) }
 
-            /// Computes `self` / `rhs`, if `rhs` != 0.
+            /// Computes `self` / `rhs`, assuming `rhs` cannot be `0`.
             /// [Read more](trait@SmallUInt#tymethod.checked_div) in detail.
             #[inline] fn unchecked_div(self, rhs: Self) -> Self     { self.checked_div(rhs).unwrap() }
 
@@ -277,6 +305,13 @@ macro_rules! SmallUInt_methods_for_uint_impl {
             /// instead of overflowing.
             /// [Read more](trait@SmallUInt#tymethod.saturating_div) in detail.
             #[inline] fn saturating_div(self, rhs: Self) -> Self    { self.saturating_div(rhs) }
+
+            /// Computes `self` / `rhs`.
+            #[inline] fn safe_div(self, rhs: Self) -> Self
+            {
+                #[cfg(debug_assertions)]         return self / rhs;
+                #[cfg(not(debug_assertions))]    return self.wrapping_div(rhs);
+            }
 
             /// Computes `self` % `rhs`. Wrapped remainder calculation on unsigned
             /// types is just the regular remainder calculation.
@@ -293,10 +328,17 @@ macro_rules! SmallUInt_methods_for_uint_impl {
             /// [Read more](trait@SmallUInt#tymethod.checked_rem) in detail.
             #[inline] fn checked_rem(self, rhs: Self) -> Option<Self>   { self.checked_rem(rhs) }
 
-            /// Computes `self` % `rhs`, if `rhs` != 0.
+            /// Computes `self` % `rhs`, assuming `rhs` cannot be `0`.
             /// [Read more](trait@SmallUInt#tymethod.checked_rem) in detail.
             #[inline] fn unchecked_rem(self, rhs: Self) -> Self     { self.checked_rem(rhs).unwrap() }
 
+            /// Computes `self` % `rhs`.
+            #[inline] fn safe_rem(self, rhs: Self) -> Self
+            {
+                #[cfg(debug_assertions)]         return self % rhs;
+                #[cfg(not(debug_assertions))]    return self.wrapping_rem(rhs);
+            }
+            
             /// Computes `-self`, wrapping around at the boundary of the type.
             /// [Read more](trait@SmallUInt#tymethod.wrapping_neg) in detail.
             #[inline] fn wrapping_neg(self) -> Self     { self.wrapping_neg() }

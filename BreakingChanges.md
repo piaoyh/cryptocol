@@ -1,5 +1,63 @@
 # Breaking Changes
 
+## Breaking changes from ver. 0.8.6 to ver. 0.8.7
+### Arithmetic operators for SmallUInt, ShortUnion, IntUnion, LongUnion, and LongerUnion
+
+| Methods                                                        |
+|----------------------------------------------------------------|
+| Add::add(self, rhs: Self) -> Self for SmallUint                |
+| Add::add(self, rhs: Self) -> Self for ShortUnion               |
+| Add::add(self, rhs: Self) -> Self for IntUnion                 |
+| Add::add(self, rhs: Self) -> Self for LongUnion                |
+| Add::add(self, rhs: Self) -> Self for LongerUnion              |
+| AddAssign::add_assign(self, rhs: Self) -> Self for SmallUint   |
+| AddAssign::add_assign(self, rhs: Self) -> Self for ShortUnion  |
+| AddAssign::add_assign(self, rhs: Self) -> Self for IntUnion    |
+| AddAssign::add_assign(self, rhs: Self) -> Self for LongUnion   |
+| AddAssign::add_assign(self, rhs: Self) -> Self for LongerUnion |
+| Sub::sub(self, rhs: Self) -> Self for SmallUint                |
+| Sub::sub(self, rhs: Self) -> Self for ShortUnion               |
+| Sub::sub(self, rhs: Self) -> Self for IntUnion                 |
+| Sub::sub(self, rhs: Self) -> Self for LongUnion                |
+| Sub::sub(self, rhs: Self) -> Self for LongerUnion              |
+| SubAssign::sub_assign(self, rhs: Self) -> Self for SmallUint   |
+| SubAssign::sub_assign(self, rhs: Self) -> Self for ShortUnion  |
+| SubAssign::sub_assign(self, rhs: Self) -> Self for IntUnion    |
+| SubAssign::sub_assign(self, rhs: Self) -> Self for LongUnion   |
+| SubAssign::sub_assign(self, rhs: Self) -> Self for LongerUnion |
+| Mul::mul(self, rhs: Self) -> Self for SmallUint                |
+| Mul::mul(self, rhs: Self) -> Self for ShortUnion               |
+| Mul::mul(self, rhs: Self) -> Self for IntUnion                 |
+| Mul::mul(self, rhs: Self) -> Self for LongUnion                |
+| Mul::mul(self, rhs: Self) -> Self for LongerUnion              |
+| MulAssign::mul_assign(self, rhs: Self) -> Self for SmallUint   |
+| MulAssign::mul_assign(self, rhs: Self) -> Self for ShortUnion  |
+| MulAssign::mul_assign(self, rhs: Self) -> Self for IntUnion    |
+| MulAssign::mul_assign(self, rhs: Self) -> Self for LongUnion   |
+| MulAssign::mul_assign(self, rhs: Self) -> Self for LongerUnion |
+| Div::div(self, rhs: Self) -> Self for SmallUint                |
+| Div::div(self, rhs: Self) -> Self for ShortUnion               |
+| Div::div(self, rhs: Self) -> Self for IntUnion                 |
+| Div::div(self, rhs: Self) -> Self for LongUnion                |
+| Div::div(self, rhs: Self) -> Self for LongerUnion              |
+| DivAssign::div_assign(self, rhs: Self) -> Self for SmallUint   |
+| DivAssign::div_assign(self, rhs: Self) -> Self for ShortUnion  |
+| DivAssign::div_assign(self, rhs: Self) -> Self for IntUnion    |
+| DivAssign::div_assign(self, rhs: Self) -> Self for LongUnion   |
+| DivAssign::div_assign(self, rhs: Self) -> Self for LongerUnion |
+| Rem::rem(self, rhs: Self) -> Self for SmallUint                |
+| Rem::rem(self, rhs: Self) -> Self for ShortUnion               |
+| Rem::rem(self, rhs: Self) -> Self for IntUnion                 |
+| Rem::rem(self, rhs: Self) -> Self for LongUnion                |
+| Rem::rem(self, rhs: Self) -> Self for LongerUnion              |
+| RemAssign::rem_assign(self, rhs: Self) -> Self for SmallUint   |
+| RemAssign::rem_assign(self, rhs: Self) -> Self for ShortUnion  |
+| RemAssign::rem_assign(self, rhs: Self) -> Self for IntUnion    |
+| RemAssign::rem_assign(self, rhs: Self) -> Self for LongUnion   |
+| RemAssign::rem_assign(self, rhs: Self) -> Self for LongerUnion |
+
+- In order to prevent confusion, how the arithmetic operators for SmallUint, ShortUnion, IntUnion, LongUnion, and LongerUnion work have been changed for those to work the same way as the operators for `u8`, `u16`, `u32`, `u64`, `u128`, and `usize` work. 
+
 ## Breaking changes from ver. 0.8.5 to ver. 0.8.6
 ### Four methods of BigUInt
 

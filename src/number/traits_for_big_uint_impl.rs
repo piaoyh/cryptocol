@@ -13,18 +13,18 @@
 #![allow(missing_docs)]
 #![allow(rustdoc::missing_doc_code_examples)]
 
-use std::fmt::{ self, Display, Formatter, Debug };
+use std::fmt::{ Error, Formatter, Display, Debug, Pointer,
+                Binary, Octal, LowerHex, UpperHex, LowerExp, UpperExp };
 use std::mem::size_of_val;
 use std::cmp::{ PartialEq, PartialOrd, Ordering };
 use std::convert::From;
 use std::str::FromStr;
 use std::ops::*;
-
 use crate::number::{ SmallUInt, BigUInt, NumberErr };
 
 macro_rules! calc_assign_to_calc
 {
-    ($me:expr, $op:tt, $rhs: expr) => {
+    ($me:expr, $op:tt, $rhs:expr) => {
         let mut res = Self::from_array($me.get_number().clone());
         res $op $rhs;
         return res;
@@ -47,7 +47,57 @@ macro_rules! calc_assign_to_calc
     // res
 }
 
+macro_rules! fmt_with_radix
+{
+    ($me:expr, $f:expr, $radix:expr) => {
+        return match $me.to_string_with_radix($radix)
+        {
+            Ok(txt) =>  { write!($f, "{}", txt) },
+            Err(_) =>   { Err(Error) },
+        };
+    };
+    // fmt_with_radix!(10);
+    //
+    // match self.to_string_with_radix(10)
+    // {
+    //     Ok(txt) => { write!(f, "{}", txt) },
+    //     Err(_) => { Err(Error) },
+    // }
+}
 
+macro_rules! fmt_with_exponent
+{
+    ($me:expr, $f:expr, $exponent:expr) => {
+        return match $me.to_string_with_radix(10)
+        {
+            Ok(mut txt) => {
+                    let exp = (txt.len() - 1);
+                    let exp_txt = exp.to_string();
+                    if exp != 0
+                        { txt.insert(1, '.'); }
+                    txt.push_str($exponent);
+                    txt.push_str(exp_txt.as_str());
+                    write!($f, "{}", txt)
+                },
+            Err(_) => { Err(Error) },
+        }
+    };
+    // fmt_with_exponent!(self, f, "e");
+    //
+    // match self.to_string_with_radix(10)
+    // {
+    //     Ok(mut txt) => {
+    //             let exp = (txt.len() - 1);
+    //             let exp_txt = exp.to_string();
+    //             if exp != 0
+    //                 { txt.insert(1, '.'); }
+    //             txt.push_str("E");
+    //             txt.push_str(exp_txt.as_str());
+    //             write!(f, "{}", txt)
+    //         },
+    //     Err(_) => { Err(Error) },
+    // }
+}
 
 /// I would like to suggest the modification of Rust grammar because the
 /// operator `+` swallows (takes the ownership of) two operands which are
@@ -9073,60 +9123,6 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
 
 
 
-impl<T, const N: usize> Display for BigUInt<T, N>
-where T: SmallUInt + Copy + Clone + Display + Debug + ToString
-        + Add<Output=T> + AddAssign + Sub<Output=T> + SubAssign
-        + Mul<Output=T> + MulAssign + Div<Output=T> + DivAssign
-        + Rem<Output=T> + RemAssign
-        + Shl<Output=T> + ShlAssign + Shr<Output=T> + ShrAssign
-        + BitAnd<Output=T> + BitAndAssign + BitOr<Output=T> + BitOrAssign
-        + BitXor<Output=T> + BitXorAssign + Not<Output=T>
-        + PartialEq + PartialOrd
-{
-    // fn fmt(&self, f: &mut Formatter) -> fmt::Result
-    /// Formats the value using the given formatter.
-    /// 
-    /// # Arguments
-    /// `f` is a buffer, this method must write the formatted string into it,
-    /// and is of the type `&mut Formatter`.
-    /// 
-    /// # Features
-    /// Automagically the function `to_string()` will be implemented. So, you
-    /// can use the function `to_string()` and the macro `println!()`.
-    /// [Read more](https://doc.rust-lang.org/core/fmt/trait.Display.html#tymethod.fmt)
-    /// 
-    /// # Example 1
-    /// ```
-    /// use std::str::FromStr;
-    /// use cryptocol::define_utypes_with;
-    /// define_utypes_with!(u8);
-    /// 
-    /// let a_biguint = U256::from_str("69743176821145534028236692093846345739169743176821145534028236692093846345739").unwrap();
-    /// println!("{}", a_biguint);
-    /// assert_eq!(a_biguint.to_string(), "69743176821145534028236692093846345739169743176821145534028236692093846345739");
-    /// ```
-    /// 
-    /// # Example 2
-    /// ```
-    /// use std::str::FromStr;
-    /// use cryptocol::define_utypes_with;
-    /// define_utypes_with!(u8);
-    /// 
-    /// let a_biguint = U256::from_str("1234567_1234567890_1234567890_1234567890_1234567890_1234567890_1234567890_1234567890").unwrap();
-    /// let txt = a_biguint.to_string();
-    /// println!("{}", txt);
-    /// assert_eq!(txt, "12345671234567890123456789012345678901234567890123456789012345678901234567890");
-    /// ```
-    fn fmt(&self, f: &mut Formatter) -> fmt::Result
-    {
-        // `write!` is like `format!`, but it will write the formatted string
-        // into a buffer (the first argument)
-        write!(f, "{}", self.to_string_with_radix(10).unwrap())
-    }
-}
-
-
-
 impl<T, U, const N: usize> From<U> for BigUInt<T, N>
 where T: SmallUInt + Copy + Clone + Display + Debug + ToString
         + Add<Output=T> + AddAssign + Sub<Output=T> + SubAssign
@@ -9324,6 +9320,203 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     }
 }
 
+
+
+impl<T, const N: usize> Display for BigUInt<T, N>
+where T: SmallUInt + Copy + Clone + Display + Debug + ToString
+        + Add<Output=T> + AddAssign + Sub<Output=T> + SubAssign
+        + Mul<Output=T> + MulAssign + Div<Output=T> + DivAssign
+        + Rem<Output=T> + RemAssign
+        + Shl<Output=T> + ShlAssign + Shr<Output=T> + ShrAssign
+        + BitAnd<Output=T> + BitAndAssign + BitOr<Output=T> + BitOrAssign
+        + BitXor<Output=T> + BitXorAssign + Not<Output=T>
+        + PartialEq + PartialOrd
+{
+    // fn fmt(&self, f: &mut Formatter) -> fmt::Result
+    /// Formats the value using the given formatter.
+    /// 
+    /// # Arguments
+    /// `f` is a buffer, this method must write the formatted string into it,
+    /// and is of the type `&mut Formatter`.
+    /// 
+    /// # Features
+    /// Automagically the function `to_string()` will be implemented. So, you
+    /// can use the function `to_string()` and the macro `println!()`.
+    /// [Read more](https://doc.rust-lang.org/core/fmt/trait.Display.html#tymethod.fmt)
+    /// 
+    /// # Example 1
+    /// ```
+    /// use std::str::FromStr;
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u8);
+    /// 
+    /// let a_biguint = U256::from_str("69743176821145534028236692093846345739169743176821145534028236692093846345739").unwrap();
+    /// println!("{}", a_biguint);
+    /// assert_eq!(a_biguint.to_string(), "69743176821145534028236692093846345739169743176821145534028236692093846345739");
+    /// ```
+    /// 
+    /// # Example 2
+    /// ```
+    /// use std::str::FromStr;
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u8);
+    /// 
+    /// let a_biguint = U256::from_str("1234567_1234567890_1234567890_1234567890_1234567890_1234567890_1234567890_1234567890").unwrap();
+    /// let txt = a_biguint.to_string();
+    /// println!("{}", txt);
+    /// assert_eq!(txt, "12345671234567890123456789012345678901234567890123456789012345678901234567890");
+    /// ```
+    fn fmt(&self, f: &mut Formatter) -> Result<(), Error>
+    {
+        // `write!` is like `format!`, but it will write the formatted string
+        // into a buffer (the first argument).
+        fmt_with_radix!(self, f, 10);
+    }
+}
+
+
+
+impl<T, const N: usize> UpperHex for BigUInt<T, N>
+where T: SmallUInt + Copy + Clone + Display + Debug + ToString
+        + Add<Output=T> + AddAssign + Sub<Output=T> + SubAssign
+        + Mul<Output=T> + MulAssign + Div<Output=T> + DivAssign
+        + Rem<Output=T> + RemAssign
+        + Shl<Output=T> + ShlAssign + Shr<Output=T> + ShrAssign
+        + BitAnd<Output=T> + BitAndAssign + BitOr<Output=T> + BitOrAssign
+        + BitXor<Output=T> + BitXorAssign + Not<Output=T>
+        + PartialEq + PartialOrd
+{
+    fn fmt(&self, f: &mut Formatter<'_>) -> Result<(), Error>
+    {
+        // `write!` is like `format!`, but it will write the formatted string
+        // into a buffer (the first argument)
+        fmt_with_radix!(self, f, 16);
+    }
+}
+
+
+
+impl<T, const N: usize> LowerHex for BigUInt<T, N>
+where T: SmallUInt + Copy + Clone + Display + Debug + ToString
+        + Add<Output=T> + AddAssign + Sub<Output=T> + SubAssign
+        + Mul<Output=T> + MulAssign + Div<Output=T> + DivAssign
+        + Rem<Output=T> + RemAssign
+        + Shl<Output=T> + ShlAssign + Shr<Output=T> + ShrAssign
+        + BitAnd<Output=T> + BitAndAssign + BitOr<Output=T> + BitOrAssign
+        + BitXor<Output=T> + BitXorAssign + Not<Output=T>
+        + PartialEq + PartialOrd
+{
+    fn fmt(&self, f: &mut Formatter<'_>) -> Result<(), Error>
+    {
+        // `write!` is like `format!`, but it will write the formatted string
+        // into a buffer (the first argument)
+        match self.to_string_with_radix(16)
+        {
+            Ok(txt) => { write!(f, "{}", txt.to_lowercase()) },
+            Err(_) => { Err(Error) },
+        }
+    }
+}
+
+
+
+impl<T, const N: usize> Binary for BigUInt<T, N>
+where T: SmallUInt + Copy + Clone + Display + Debug + ToString
+        + Add<Output=T> + AddAssign + Sub<Output=T> + SubAssign
+        + Mul<Output=T> + MulAssign + Div<Output=T> + DivAssign
+        + Rem<Output=T> + RemAssign
+        + Shl<Output=T> + ShlAssign + Shr<Output=T> + ShrAssign
+        + BitAnd<Output=T> + BitAndAssign + BitOr<Output=T> + BitOrAssign
+        + BitXor<Output=T> + BitXorAssign + Not<Output=T>
+        + PartialEq + PartialOrd
+{
+    fn fmt(&self, f: &mut Formatter<'_>) -> Result<(), Error>
+    {
+        // `write!` is like `format!`, but it will write the formatted string
+        // into a buffer (the first argument)
+        fmt_with_radix!(self, f, 2);
+    }
+}
+
+
+
+impl<T, const N: usize> Octal for BigUInt<T, N>
+where T: SmallUInt + Copy + Clone + Display + Debug + ToString
+        + Add<Output=T> + AddAssign + Sub<Output=T> + SubAssign
+        + Mul<Output=T> + MulAssign + Div<Output=T> + DivAssign
+        + Rem<Output=T> + RemAssign
+        + Shl<Output=T> + ShlAssign + Shr<Output=T> + ShrAssign
+        + BitAnd<Output=T> + BitAndAssign + BitOr<Output=T> + BitOrAssign
+        + BitXor<Output=T> + BitXorAssign + Not<Output=T>
+        + PartialEq + PartialOrd
+{
+    fn fmt(&self, f: &mut Formatter<'_>) -> Result<(), Error>
+    {
+        // `write!` is like `format!`, but it will write the formatted string
+        // into a buffer (the first argument)
+        fmt_with_radix!(self, f, 8);
+    }
+}
+
+
+
+impl<T, const N: usize> UpperExp for BigUInt<T, N>
+where T: SmallUInt + Copy + Clone + Display + Debug + ToString
+        + Add<Output=T> + AddAssign + Sub<Output=T> + SubAssign
+        + Mul<Output=T> + MulAssign + Div<Output=T> + DivAssign
+        + Rem<Output=T> + RemAssign
+        + Shl<Output=T> + ShlAssign + Shr<Output=T> + ShrAssign
+        + BitAnd<Output=T> + BitAndAssign + BitOr<Output=T> + BitOrAssign
+        + BitXor<Output=T> + BitXorAssign + Not<Output=T>
+        + PartialEq + PartialOrd
+{
+    fn fmt(&self, f: &mut Formatter<'_>) -> Result<(), Error>
+    {
+        // `write!` is like `format!`, but it will write the formatted string
+        // into a buffer (the first argument)
+        fmt_with_exponent!(self, f, "E");
+    }
+}
+
+
+
+impl<T, const N: usize> LowerExp for BigUInt<T, N>
+where T: SmallUInt + Copy + Clone + Display + Debug + ToString
+        + Add<Output=T> + AddAssign + Sub<Output=T> + SubAssign
+        + Mul<Output=T> + MulAssign + Div<Output=T> + DivAssign
+        + Rem<Output=T> + RemAssign
+        + Shl<Output=T> + ShlAssign + Shr<Output=T> + ShrAssign
+        + BitAnd<Output=T> + BitAndAssign + BitOr<Output=T> + BitOrAssign
+        + BitXor<Output=T> + BitXorAssign + Not<Output=T>
+        + PartialEq + PartialOrd
+{
+    fn fmt(&self, f: &mut Formatter<'_>) -> Result<(), Error>
+    {
+        // `write!` is like `format!`, but it will write the formatted string
+        // into a buffer (the first argument)
+        fmt_with_exponent!(self, f, "e");
+    }
+}
+
+
+
+impl<T, const N: usize> Pointer for BigUInt<T, N>
+where T: SmallUInt + Copy + Clone + Display + Debug + ToString
+        + Add<Output=T> + AddAssign + Sub<Output=T> + SubAssign
+        + Mul<Output=T> + MulAssign + Div<Output=T> + DivAssign
+        + Rem<Output=T> + RemAssign
+        + Shl<Output=T> + ShlAssign + Shr<Output=T> + ShrAssign
+        + BitAnd<Output=T> + BitAndAssign + BitOr<Output=T> + BitOrAssign
+        + BitXor<Output=T> + BitXorAssign + Not<Output=T>
+        + PartialEq + PartialOrd
+{
+    fn fmt(&self, f: &mut Formatter<'_>) -> Result<(), Error>
+    {
+        // `write!` is like `format!`, but it will write the formatted string
+        // into a buffer (the first argument)
+        write!(f, "0x{:x}", self as *const Self as usize)
+    }
+}
 
 
 /*

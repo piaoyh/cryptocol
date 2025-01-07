@@ -20,6 +20,7 @@ use std::cmp::{ PartialEq, PartialOrd, Ordering };
 use std::ops::*;
 
 use crate::number::SmallUInt;
+use crate::number::calc_assign_to_calc;
 
 /// # Introduction
 /// This union `LongUnion` is for slicing `u64` into two `u32`s, two `i32`s,

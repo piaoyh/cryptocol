@@ -20,6 +20,7 @@ use std::cmp::{ PartialEq, PartialOrd, Ordering };
 use std::ops::*;
 
 use super::small_uint::SmallUInt;
+use crate::number::calc_assign_to_calc;
 
 /// # Introduction
 /// This union `LongerUnion` is for slicing `u128` into two `u64`s, two `i64`s,

@@ -20,6 +20,7 @@ use std::cmp::{ PartialEq, PartialOrd, Ordering };
 use std::ops::*;
 
 use crate::number::SmallUInt;
+use crate::number::calc_assign_to_calc;
 
 /// # Introduction
 /// This union `SizeUnion` is for slicing `usize` into two `u64`s, two `i64`s,

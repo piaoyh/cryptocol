@@ -3260,6 +3260,364 @@ pub trait SmallUInt: Copy + Clone + Sized //+ Display + Debug + ToString
     /// for the primitive type `usize`, read [here](https://doc.rust-lang.org/core/primitive.usize.html#method.saturating_add).
     fn saturating_add(self, rhs: Self) -> Self;
 
+    // fn safe_add(self, rhs: Self) -> Self;
+    /// Computes `self` + `rhs`, wrapping around at the boundary of the type
+    /// in release mode but panics when overflow occurs in debug mode.
+    /// 
+    /// # Arguments
+    /// `rhs` is of `Self` type.
+    /// 
+    /// # Features
+    /// It adds two numbers with wrapping (modular) addition in release mode.
+    /// It panics when overflow occurs in debug mode.
+    /// 
+    /// # Output
+    /// It returns the `self` + `rhs` in the type of `Self`.
+    /// 
+    /// # Example 1 for u8
+    /// ```
+    /// use cryptocol::number::SmallUInt;
+    /// fn main()
+    /// {
+    ///     let a_u8 = func(u8::MAX - 55_u8, 55_u8);
+    ///     println!("{} + 55 = {}", u8::MAX - 55_u8, a_u8);
+    ///     assert_eq!(a_u8, u8::MAX);
+    /// 
+    ///     let b_u8 = func(a_u8, 1_u8);
+    ///     println!("{} + 1 = {}", a_u8, b_u8);
+    ///     assert_eq!(b_u8, 0_u8);
+    /// }
+    /// 
+    /// fn func<T: SmallUInt>(lhs: T, rhs: T) -> T
+    /// {
+    ///     lhs.safe_add(rhs)
+    /// }
+    /// ```
+    /// 
+    /// # Example 2 for u16
+    /// ```
+    /// use cryptocol::number::SmallUInt;
+    /// fn main()
+    /// {
+    ///     let a_u16 = func(u16::MAX - 55_u16, 55_u16);
+    ///     println!("{} + 55 = {}", u16::MAX - 55_u16, a_u16);
+    ///     assert_eq!(a_u16, u16::MAX);
+    /// 
+    ///     let b_u16 = func(a_u16, 1_u16);
+    ///     println!("{} + 1 = {}", a_u16, b_u16);
+    ///     assert_eq!(b_u16, 0_u16);
+    /// }
+    /// 
+    /// fn func<T: SmallUInt>(lhs: T, rhs: T) -> T
+    /// {
+    ///     lhs.safe_add(rhs)
+    /// }
+    /// ```
+    /// 
+    /// # Example 3 for u32
+    /// ```
+    /// use cryptocol::number::SmallUInt;
+    /// fn main()
+    /// {
+    ///     let a_u32 = func(u32::MAX - 55_u32, 55_u32);
+    ///     println!("{} + 55 = {}", u32::MAX - 55_u32, a_u32);
+    ///     assert_eq!(a_u32, u32::MAX);
+    /// 
+    ///     let b_u32 = func(a_u32, 1_u32);
+    ///     println!("{} + 1 = {}", a_u32, b_u32);
+    ///     assert_eq!(b_u32, 0_u32);
+    /// }
+    /// 
+    /// fn func<T: SmallUInt>(lhs: T, rhs: T) -> T
+    /// {
+    ///     lhs.safe_add(rhs)
+    /// }
+    /// ```
+    /// 
+    /// # Example 4 for u64
+    /// ```
+    /// use cryptocol::number::SmallUInt;
+    /// fn main()
+    /// {
+    ///     let a_u64 = func(u64::MAX - 55_u64, 55_u64);
+    ///     println!("{} + 55 = {}", u64::MAX - 55_u64, a_u64);
+    ///     assert_eq!(a_u64, u64::MAX);
+    /// 
+    ///     let b_u64 = func(a_u64, 1_u64);
+    ///     println!("{} + 1 = {}", a_u64, b_u64);
+    ///     assert_eq!(b_u64, 0_u64);
+    /// }
+    /// 
+    /// fn func<T: SmallUInt>(lhs: T, rhs: T) -> T
+    /// {
+    ///     lhs.safe_add(rhs)
+    /// }
+    /// ```
+    /// 
+    /// # Example 5 for u128
+    /// ```
+    /// use cryptocol::number::SmallUInt;
+    /// fn main()
+    /// {
+    ///     let a_u128 = func(u128::MAX - 55_u128, 55_u128);
+    ///     println!("{} + 55 = {}", u128::MAX - 55_u128, a_u128);
+    ///     assert_eq!(a_u128, u128::MAX);
+    /// 
+    ///     let b_u128 = func(a_u128, 1_u128);
+    ///     println!("{} + 1 = {}",a_u128, b_u128);
+    ///     assert_eq!(b_u128, 0_u128);
+    /// }
+    /// 
+    /// fn func<T: SmallUInt>(lhs: T, rhs: T) -> T
+    /// {
+    ///     lhs.safe_add(rhs)
+    /// }
+    /// ```
+    /// 
+    /// # Example 6 for usize
+    /// ```
+    /// use cryptocol::number::SmallUInt;
+    /// fn main()
+    /// {
+    ///     let a_usize = func(usize::MAX - 55_usize, 55_usize);
+    ///     println!("{} + 55 = {}", usize::MAX - 55_usize, a_usize);
+    ///     assert_eq!(a_usize, usize::MAX);
+    /// 
+    ///     let b_usize = func(a_usize, 1_usize);
+    ///     println!("{} + 1 = {}", a_usize, b_usize);
+    ///     assert_eq!(b_usize, 0_usize);
+    /// }
+    /// 
+    /// fn func<T: SmallUInt>(lhs: T, rhs: T) -> T
+    /// {
+    ///     lhs.safe_add(rhs)
+    /// }
+    /// ```
+    /// 
+    /// # Example 7 for ShortUnion
+    /// ```
+    /// use cryptocol::number::{ SmallUInt, ShortUnion };
+    /// fn main()
+    /// {
+    ///     let a_shortunion = ShortUnion::new_with(u16::MAX - 55_u16);
+    ///     let b_shortunion = ShortUnion::new_with(55);
+    ///     let c_shortunion = func(a_shortunion, b_shortunion);
+    ///     println!("{} + {} = {}", a_shortunion, b_shortunion, c_shortunion);
+    ///     assert_eq!(c_shortunion.get(), u16::MAX);
+    /// 
+    ///     let d_shortunion = func(c_shortunion, 1_u16.into_shortunion());
+    ///     println!("{} + 1 = {}", a_shortunion, d_shortunion);
+    ///     assert_eq!(d_shortunion.get(), 0_u16);
+    /// }
+    /// 
+    /// fn func<T: SmallUInt>(lhs: T, rhs: T) -> T
+    /// {
+    ///     lhs.safe_add(rhs)
+    /// }
+    /// ```
+    /// 
+    /// # Example 8 for IntUnion
+    /// ```
+    /// use cryptocol::number::{ SmallUInt, IntUnion };
+    /// fn main()
+    /// {
+    ///     let a_intunion = IntUnion::new_with(u32::MAX - 55_u32);
+    ///     let b_intunion = IntUnion::new_with(55);
+    ///     let c_intunion = func(a_intunion, b_intunion);
+    ///     println!("{} + {} = {}", a_intunion, b_intunion, c_intunion);
+    ///     assert_eq!(c_intunion.get(), u32::MAX);
+    /// 
+    ///     let d_intunion = func(c_intunion, 1_u32.into_intunion());
+    ///     println!("{} + 1 = {}", a_intunion, d_intunion);
+    ///     assert_eq!(d_intunion.get(), 0_u32);
+    /// }
+    /// 
+    /// fn func<T: SmallUInt>(lhs: T, rhs: T) -> T
+    /// {
+    ///     lhs.safe_add(rhs)
+    /// }
+    /// ```
+    /// 
+    /// # Example 9 for LongUnion
+    /// ```
+    /// use cryptocol::number::{ SmallUInt, LongUnion };
+    /// fn main()
+    /// {
+    ///     let a_longunion = LongUnion::new_with(u64::MAX - 55_u64);
+    ///     let b_longunion = LongUnion::new_with(55);
+    ///     let c_longunion = func(a_longunion, b_longunion);
+    ///     println!("{} + {} = {}", a_longunion, b_longunion, c_longunion);
+    ///     assert_eq!(c_longunion.get(), u64::MAX);
+    /// 
+    ///     let d_longunion = func(c_longunion, 1_u32.into_longunion());
+    ///     println!("{} + 1 = {}", a_longunion, d_longunion);
+    ///     assert_eq!(d_longunion.get(), 0_u64);
+    /// }
+    /// 
+    /// fn func<T: SmallUInt>(lhs: T, rhs: T) -> T
+    /// {
+    ///     lhs.safe_add(rhs)
+    /// }
+    /// ```
+    /// 
+    /// # Example 10 for LongerUnion
+    /// ```
+    /// use cryptocol::number::{ SmallUInt, LongerUnion};
+    /// fn main()
+    /// {
+    ///     let a_longerunion = LongerUnion::new_with(u128::MAX - 55_u128);
+    ///     let b_longerunion = LongerUnion::new_with(55);
+    ///     let c_longerunion = func(a_longerunion, b_longerunion);
+    ///     println!("{} + {} = {}", a_longerunion, b_longerunion, c_longerunion);
+    ///     assert_eq!(c_longerunion.get(), u128::MAX);
+    /// 
+    ///     let d_longerunion = func(c_longerunion, 1_u128.into_longerunion());
+    ///     println!("{} + 1 = {}", a_longerunion, d_longerunion);
+    ///     assert_eq!(d_longerunion.get(), 0_u128);
+    /// }
+    /// 
+    /// fn func<T: SmallUInt>(lhs: T, rhs: T) -> T
+    /// {
+    ///     lhs.safe_add(rhs)
+    /// }
+    /// ```
+    /// 
+    /// # Example 11 for SizeUnion
+    /// ```
+    /// use cryptocol::number::{ SmallUInt, SizeUnion };
+    /// fn main()
+    /// {
+    ///     let a_sizeunion = SizeUnion::new_with(usize::MAX - 55_usize);
+    ///     let b_sizeunion = SizeUnion::new_with(55);
+    ///     let c_sizeunion = func(a_sizeunion, b_sizeunion);
+    ///     println!("{} + {} = {}", a_sizeunion, b_sizeunion, c_sizeunion);
+    ///     assert_eq!(c_sizeunion.get(), usize::MAX);
+    /// 
+    ///     let d_sizeunion = func(c_sizeunion, 1_usize.into_sizeunion());
+    ///     println!("{} + 1 = {}", a_sizeunion, d_sizeunion);
+    ///     assert_eq!(d_sizeunion.get(), 0_usize);
+    /// }
+    /// 
+    /// fn func<T: SmallUInt>(lhs: T, rhs: T) -> T
+    /// {
+    ///     lhs.safe_add(rhs)
+    /// }
+    /// ```
+    /// You can use the above generic function `func<>()` for all
+    /// SmallUInt-supported data types in a same scope.
+    /// Look into the following example.
+    /// 
+    /// # Collective Example
+    /// ```
+    /// use cryptocol::number::{ SmallUInt, ShortUnion, IntUnion, LongUnion, LongerUnion, SizeUnion };
+    /// fn main()
+    /// {
+    ///     let a_u8 = func(u8::MAX - 55_u8, 55_u8);
+    ///     println!("{} + 55 = {}", u8::MAX - 55_u8, a_u8);
+    ///     assert_eq!(a_u8, u8::MAX);
+    /// 
+    ///     let b_u8 = func(a_u8, 1_u8);
+    ///     println!("{} + 1 = {}", a_u8, b_u8);
+    ///     assert_eq!(b_u8, 0_u8);
+    /// 
+    ///     let a_u16 = func(u16::MAX - 55_u16, 55_u16);
+    ///     println!("{} + 55 = {}", u16::MAX - 55_u16, a_u16);
+    ///     assert_eq!(a_u16, u16::MAX);
+    /// 
+    ///     let b_u16 = func(a_u16, 1_u16);
+    ///     println!("{} + 1 = {}", a_u16, b_u16);
+    ///     assert_eq!(b_u16, 0_u16);
+    /// 
+    ///     let a_u32 = func(u32::MAX - 55_u32, 55_u32);
+    ///     println!("{} + 55 = {}", u32::MAX - 55_u32, a_u32);
+    ///     assert_eq!(a_u32, u32::MAX);
+    /// 
+    ///     let b_u32 = func(a_u32, 1_u32);
+    ///     println!("{} + 1 = {}", a_u32, b_u32);
+    ///     assert_eq!(b_u32, 0_u32);
+    /// 
+    ///     let a_u64 = func(u64::MAX - 55_u64, 55_u64);
+    ///     println!("{} + 55 = {}", u64::MAX - 55_u64, a_u64);
+    ///     assert_eq!(a_u64, u64::MAX);
+    /// 
+    ///     let b_u64 = func(a_u64, 1_u64);
+    ///     println!("{} + 1 = {}", a_u64, b_u64);
+    ///     assert_eq!(b_u64, 0_u64);
+    /// 
+    ///     let a_u128 = func(u128::MAX - 55_u128, 55_u128);
+    ///     println!("{} + 55 = {}", u128::MAX - 55_u128, a_u128);
+    ///     assert_eq!(a_u128, u128::MAX);
+    /// 
+    ///     let b_u128 = func(a_u128, 1_u128);
+    ///     println!("{} + 1 = {}",a_u128, b_u128);
+    ///     assert_eq!(b_u128, 0_u128);
+    /// 
+    ///     let a_usize = func(usize::MAX - 55_usize, 55_usize);
+    ///     println!("{} + 55 = {}", usize::MAX - 55_usize, a_usize);
+    ///     assert_eq!(a_usize, usize::MAX);
+    /// 
+    ///     let b_usize = func(a_usize, 1_usize);
+    ///     println!("{} + 1 = {}", a_usize, b_usize);
+    ///     assert_eq!(b_usize, 0_usize);
+    /// 
+    ///     let a_shortunion = ShortUnion::new_with(u16::MAX - 55_u16);
+    ///     let b_shortunion = ShortUnion::new_with(55);
+    ///     let c_shortunion = func(a_shortunion, b_shortunion);
+    ///     println!("{} + {} = {}", a_shortunion, b_shortunion, c_shortunion);
+    ///     assert_eq!(c_shortunion.get(), u16::MAX);
+    /// 
+    ///     let d_shortunion = func(c_shortunion, 1_u16.into_shortunion());
+    ///     println!("{} + 1 = {}", a_shortunion, d_shortunion);
+    ///     assert_eq!(d_shortunion.get(), 0_u16);
+    /// 
+    ///     let a_intunion = IntUnion::new_with(u32::MAX - 55_u32);
+    ///     let b_intunion = IntUnion::new_with(55);
+    ///     let c_intunion = func(a_intunion, b_intunion);
+    ///     println!("{} + {} = {}", a_intunion, b_intunion, c_intunion);
+    ///     assert_eq!(c_intunion.get(), u32::MAX);
+    /// 
+    ///     let d_intunion = func(c_intunion, 1_u32.into_intunion());
+    ///     println!("{} + 1 = {}", a_intunion, d_intunion);
+    ///     assert_eq!(d_intunion.get(), 0_u32);
+    /// 
+    ///     let a_longunion = LongUnion::new_with(u64::MAX - 55_u64);
+    ///     let b_longunion = LongUnion::new_with(55);
+    ///     let c_longunion = func(a_longunion, b_longunion);
+    ///     println!("{} + {} = {}", a_longunion, b_longunion, c_longunion);
+    ///     assert_eq!(c_longunion.get(), u64::MAX);
+    /// 
+    ///     let d_longunion = func(c_longunion, 1_u32.into_longunion());
+    ///     println!("{} + 1 = {}", a_longunion, d_longunion);
+    ///     assert_eq!(d_longunion.get(), 0_u64);
+    /// 
+    ///     let a_longerunion = LongerUnion::new_with(u128::MAX - 55_u128);
+    ///     let b_longerunion = LongerUnion::new_with(55);
+    ///     let c_longerunion = func(a_longerunion, b_longerunion);
+    ///     println!("{} + {} = {}", a_longerunion, b_longerunion, c_longerunion);
+    ///     assert_eq!(c_longerunion.get(), u128::MAX);
+    /// 
+    ///     let d_longerunion = func(c_longerunion, 1_u128.into_longerunion());
+    ///     println!("{} + 1 = {}", a_longerunion, d_longunion);
+    ///     assert_eq!(d_longerunion.get(), 0_u128);
+    /// 
+    ///     let a_sizeunion = SizeUnion::new_with(usize::MAX - 55_usize);
+    ///     let b_sizeunion = SizeUnion::new_with(55);
+    ///     let c_sizeunion = func(a_sizeunion, b_sizeunion);
+    ///     println!("{} + {} = {}", a_sizeunion, b_sizeunion, c_sizeunion);
+    ///     assert_eq!(c_sizeunion.get(), usize::MAX);
+    /// 
+    ///     let d_sizeunion = func(c_sizeunion, 1_usize.into_sizeunion());
+    ///     println!("{} + 1 = {}", a_sizeunion, d_sizeunion);
+    ///     assert_eq!(d_sizeunion.get(), 0_usize);
+    /// }
+    /// 
+    /// fn func<T: SmallUInt>(lhs: T, rhs: T) -> T
+    /// {
+    ///     lhs.safe_add(rhs)
+    /// }
+    /// ```
+    fn safe_add(self, rhs: Self) -> Self;
+
     // fn modular_add(self, rhs: Self, modulo: Self) -> Self
     /// Computes (`self` + `rhs`) % `modulo`, wrapping around at `modulo` of the
     /// type `Self` instead of overflowing.
@@ -6857,6 +7215,345 @@ pub trait SmallUInt: Copy + Clone + Sized //+ Display + Debug + ToString
     /// - If you want to know about the definition of the method `saturating_sub()`
     /// for the primitive type `usize`, read [here](https://doc.rust-lang.org/core/primitive.usize.html#method.saturating_sub).
     fn saturating_sub(self, rhs: Self) -> Self;
+
+    // fn safe_sub(self, rhs: Self) -> Self;
+    /// Computes `self` - `rhs`, wrapping around at the boundary of the type
+    /// in release mode but panics when underflow occurs in debug mode.
+    /// 
+    /// # Arguments
+    /// `rhs` is of `Self` type.
+    /// 
+    /// # Features
+    /// It subtracts `rhs` from `self`, wrapping (modular) subtraction in release mode.
+    /// It panics when underflow occurs in debug mode.
+    /// 
+    /// # Output
+    /// It returns the `self` - `rhs` in the type of `Self`.
+    /// 
+    /// # Example 1 for u8
+    /// ```
+    /// use cryptocol::number::SmallUInt;
+    /// fn main()
+    /// {
+    ///     let a_u8 = func(55_u8, 55_u8);
+    ///     println!("55 - 55 = {}", a_u8);
+    ///     assert_eq!(a_u8, 0_u8);
+    /// 
+    ///     let b_u8 = func(a_u8, 1_u8);
+    ///     println!("{} - 1 = {}", a_u8, b_u8);
+    ///     assert_eq!(b_u8, u8::MAX);
+    /// }
+    /// 
+    /// fn func<T: SmallUInt>(lhs: T, rhs: T) -> T
+    /// {
+    ///     lhs.safe_sub(rhs)
+    /// }
+    /// ```
+    /// 
+    /// # Example 2 for u16
+    /// ```
+    /// use cryptocol::number::SmallUInt;
+    /// fn main()
+    /// {
+    ///     let a_u16 = func(55_u16, 55_u16);
+    ///     println!("55 - 55 = {}", a_u16);
+    ///     assert_eq!(a_u16, 0_u16);
+    /// 
+    ///     let b_u16 = func(a_u16, 1_u16);
+    ///     println!("{} - 1 = {}", a_u16, b_u16);
+    ///     assert_eq!(b_u16, u16::MAX);
+    /// }
+    /// 
+    /// fn func<T: SmallUInt>(lhs: T, rhs: T) -> T
+    /// {
+    ///     lhs.safe_sub(rhs)
+    /// }
+    /// ```
+    /// 
+    /// # Example 3 for u32
+    /// ```
+    /// use cryptocol::number::SmallUInt;
+    /// fn main()
+    /// {
+    /// 
+    ///     let a_u32 = func(55_u32, 55_u32);
+    ///     println!("55 - 55 = {}", a_u32);
+    ///     assert_eq!(a_u32, 0_u32);
+    /// 
+    ///     let b_u32 = func(a_u32, 1_u32);
+    ///     println!("{} - 1 = {}", a_u32, b_u32);
+    ///     assert_eq!(b_u32, u32::MAX);
+    /// }
+    /// 
+    /// fn func<T: SmallUInt>(lhs: T, rhs: T) -> T
+    /// {
+    ///     lhs.safe_sub(rhs)
+    /// }
+    /// ```
+    /// 
+    /// # Example 4 for u64
+    /// ```
+    /// use cryptocol::number::SmallUInt;
+    /// fn main()
+    /// {
+    ///     let a_u64 = func(55_u64, 55_u64);
+    ///     println!("55 - 55 = {}", a_u64);
+    ///     assert_eq!(a_u64, 0_u64);
+    /// 
+    ///     let b_u64 = func(a_u64, 1_u64);
+    ///     println!("{} - 1 = {}", a_u64, b_u64);
+    ///     assert_eq!(b_u64, u64::MAX);
+    /// }
+    /// 
+    /// fn func<T: SmallUInt>(lhs: T, rhs: T) -> T
+    /// {
+    ///     lhs.safe_sub(rhs)
+    /// }
+    /// ```
+    /// 
+    /// # Example 5 for u128
+    /// ```
+    /// use cryptocol::number::SmallUInt;
+    /// fn main()
+    /// {
+    ///     let a_u128 = func(55_u128, 55_u128);
+    ///     println!("55 - 55 = {}", a_u128);
+    ///     assert_eq!(a_u128, 0_u128);
+    /// 
+    ///     let b_u128 = func(a_u128, 1_u128);
+    ///     println!("{} - 1 = {}",a_u128, b_u128);
+    ///     assert_eq!(b_u128, u128::MAX);
+    /// }
+    /// 
+    /// fn func<T: SmallUInt>(lhs: T, rhs: T) -> T
+    /// {
+    ///     lhs.safe_sub(rhs)
+    /// }
+    /// ```
+    /// 
+    /// # Example 6 for usize
+    /// ```
+    /// use cryptocol::number::SmallUInt;
+    /// fn main()
+    /// {
+    ///     let a_usize = func(55_usize, 55_usize);
+    ///     println!("55 - 55 = {}", a_usize);
+    ///     assert_eq!(a_usize, 0_usize);
+    /// 
+    ///     let b_usize = func(a_usize, 1_usize);
+    ///     println!("{} - 1 = {}", a_usize, b_usize);
+    ///     assert_eq!(b_usize, usize::MAX);
+    /// }
+    /// 
+    /// fn func<T: SmallUInt>(lhs: T, rhs: T) -> T
+    /// {
+    ///     lhs.safe_sub(rhs)
+    /// }
+    /// ```
+    /// 
+    /// # Example 7 for ShortUnion
+    /// ```
+    /// use cryptocol::number::SmallUInt;
+    /// fn main()
+    /// {
+    ///     let a_shortunion = func(55_u16.into_shortunion(), 55_u16.into_shortunion());
+    ///     println!("55 - 55 = {}", a_shortunion);
+    ///     assert_eq!(a_shortunion.get(), 0_u16);
+    /// 
+    ///     let b_shortunion = func(a_shortunion, 1_u16.into_shortunion());
+    ///     println!("{} - 1 = {}", a_shortunion, b_shortunion);
+    ///     assert_eq!(b_shortunion.get(), u16::MAX);
+    /// }
+    /// 
+    /// fn func<T: SmallUInt>(lhs: T, rhs: T) -> T
+    /// {
+    ///     lhs.safe_sub(rhs)
+    /// }
+    /// ```
+    /// 
+    /// # Example 8 for IntUnion
+    /// ```
+    /// use cryptocol::number::SmallUInt;
+    /// fn main()
+    /// {
+    ///     let a_intunion = func(55_u32.into_intunion(), 55_u32.into_intunion());
+    ///     println!("55 - 55 = {}", a_intunion);
+    ///     assert_eq!(a_intunion.get(), 0_u32);
+    /// 
+    ///     let b_intunion = func(a_intunion, 1_u32.into_intunion());
+    ///     println!("{} - 1 = {}", a_intunion, b_intunion);
+    ///     assert_eq!(b_intunion.get(), u32::MAX);
+    /// }
+    /// 
+    /// fn func<T: SmallUInt>(lhs: T, rhs: T) -> T
+    /// {
+    ///     lhs.safe_sub(rhs)
+    /// }
+    /// ```
+    /// 
+    /// # Example 9 for LongUnion
+    /// ```
+    /// use cryptocol::number::SmallUInt;
+    /// fn main()
+    /// {
+    ///     let a_longunion = func(55_u64.into_longunion(), 55_u64.into_longunion());
+    ///     println!("55 - 55 = {}", a_longunion);
+    ///     assert_eq!(a_longunion.get(), 0_u64);
+    /// 
+    ///     let b_longunion = func(a_longunion, 1_u64.into_longunion());
+    ///     println!("{} - 1 = {}", a_longunion, b_longunion);
+    ///     assert_eq!(b_longunion.get(), u64::MAX);
+    /// }
+    /// 
+    /// fn func<T: SmallUInt>(lhs: T, rhs: T) -> T
+    /// {
+    ///     lhs.safe_sub(rhs)
+    /// }
+    /// ```
+    /// 
+    /// # Example 10 for LongerUnion
+    /// ```
+    /// use cryptocol::number::SmallUInt;
+    /// fn main()
+    /// {
+    ///     let a_longerunion = func(55_u128.into_longerunion(), 55_u128.into_longerunion());
+    ///     println!("55 - 55 = {}", a_longerunion);
+    ///     assert_eq!(a_longerunion.get(), 0_u128);
+    /// 
+    ///     let b_longerunion = func(a_longerunion, 1_u128.into_longerunion());
+    ///     println!("{} - 1 = {}", a_longerunion, b_longerunion);
+    ///     assert_eq!(b_longerunion.get(), u128::MAX);
+    /// }
+    /// 
+    /// fn func<T: SmallUInt>(lhs: T, rhs: T) -> T
+    /// {
+    ///     lhs.safe_sub(rhs)
+    /// }
+    /// ```
+    /// 
+    /// # Example 11 for SizeUnion
+    /// ```
+    /// use cryptocol::number::SmallUInt;
+    /// fn main()
+    /// {
+    ///     let a_sizeunion = func(55_usize.into_sizeunion(), 55_usize.into_sizeunion());
+    ///     println!("55 - 55 = {}", a_sizeunion);
+    ///     assert_eq!(a_sizeunion.get(), 0_usize);
+    /// 
+    ///     let b_sizeunion = func(a_sizeunion, 1_usize.into_sizeunion());
+    ///     println!("{} - 1 = {}", a_sizeunion, b_sizeunion);
+    ///     assert_eq!(b_sizeunion.get(), usize::MAX);
+    /// }
+    /// 
+    /// fn func<T: SmallUInt>(lhs: T, rhs: T) -> T
+    /// {
+    ///     lhs.safe_sub(rhs)
+    /// }
+    /// ```
+    /// You can use the above generic function `func<>()` for all
+    /// SmallUInt-supported data types in a same scope.
+    /// Look into the following example.
+    /// 
+    /// # Collective Example
+    /// ```
+    /// use cryptocol::number::SmallUInt;
+    /// fn main()
+    /// {
+    ///     let a_u8 = func(55_u8, 55_u8);
+    ///     println!("55 - 55 = {}", a_u8);
+    ///     assert_eq!(a_u8, 0_u8);
+    /// 
+    ///     let b_u8 = func(a_u8, 1_u8);
+    ///     println!("{} - 1 = {}", a_u8, b_u8);
+    ///     assert_eq!(b_u8, u8::MAX);
+    /// 
+    ///     let a_u16 = func(55_u16, 55_u16);
+    ///     println!("55 - 55 = {}", a_u16);
+    ///     assert_eq!(a_u16, 0_u16);
+    /// 
+    ///     let b_u16 = func(a_u16, 1_u16);
+    ///     println!("{} - 1 = {}", a_u16, b_u16);
+    ///     assert_eq!(b_u16, u16::MAX);
+    /// 
+    ///     let a_u32 = func(55_u32, 55_u32);
+    ///     println!("55 - 55 = {}", a_u32);
+    ///     assert_eq!(a_u32, 0_u32);
+    /// 
+    ///     let b_u32 = func(a_u32, 1_u32);
+    ///     println!("{} - 1 = {}", a_u32, b_u32);
+    ///     assert_eq!(b_u32, u32::MAX);
+    /// 
+    ///     let a_u64 = func(55_u64, 55_u64);
+    ///     println!("55 - 55 = {}", a_u64);
+    ///     assert_eq!(a_u64, 0_u64);
+    /// 
+    ///     let b_u64 = func(a_u64, 1_u64);
+    ///     println!("{} - 1 = {}", a_u64, b_u64);
+    ///     assert_eq!(b_u64, u64::MAX);
+    /// 
+    ///     let a_u128 = func(55_u128, 55_u128);
+    ///     println!("55 - 55 = {}", a_u128);
+    ///     assert_eq!(a_u128, 0_u128);
+    /// 
+    ///     let b_u128 = func(a_u128, 1_u128);
+    ///     println!("{} - 1 = {}",a_u128, b_u128);
+    ///     assert_eq!(b_u128, u128::MAX);
+    /// 
+    ///     let a_usize = func(55_usize, 55_usize);
+    ///     println!("55 - 55 = {}", a_usize);
+    ///     assert_eq!(a_usize, 0_usize);
+    /// 
+    ///     let b_usize = func(a_usize, 1_usize);
+    ///     println!("{} - 1 = {}", a_usize, b_usize);
+    ///     assert_eq!(b_usize, usize::MAX);
+    /// 
+    ///     let a_shortunion = func(55_u16.into_shortunion(), 55_u16.into_shortunion());
+    ///     println!("55 - 55 = {}", a_shortunion);
+    ///     assert_eq!(a_shortunion.get(), 0_u16);
+    /// 
+    ///     let b_shortunion = func(a_shortunion, 1_u16.into_shortunion());
+    ///     println!("{} - 1 = {}", a_shortunion, b_shortunion);
+    ///     assert_eq!(b_shortunion.get(), u16::MAX);
+    /// 
+    ///     let a_intunion = func(55_u32.into_intunion(), 55_u32.into_intunion());
+    ///     println!("55 - 55 = {}", a_intunion);
+    ///     assert_eq!(a_intunion.get(), 0_u32);
+    /// 
+    ///     let b_intunion = func(a_intunion, 1_u32.into_intunion());
+    ///     println!("{} - 1 = {}", a_intunion, b_intunion);
+    ///     assert_eq!(b_intunion.get(), u32::MAX);
+    /// 
+    ///     let a_longunion = func(55_u64.into_longunion(), 55_u64.into_longunion());
+    ///     println!("55 - 55 = {}", a_longunion);
+    ///     assert_eq!(a_longunion.get(), 0_u64);
+    /// 
+    ///     let b_longunion = func(a_longunion, 1_u64.into_longunion());
+    ///     println!("{} - 1 = {}", a_longunion, b_longunion);
+    ///     assert_eq!(b_longunion.get(), u64::MAX);
+    /// 
+    ///     let a_longerunion = func(55_u128.into_longerunion(), 55_u128.into_longerunion());
+    ///     println!("55 - 55 = {}", a_longerunion);
+    ///     assert_eq!(a_longerunion.get(), 0_u128);
+    /// 
+    ///     let b_longerunion = func(a_longerunion, 1_u128.into_longerunion());
+    ///     println!("{} - 1 = {}", a_longerunion, b_longerunion);
+    ///     assert_eq!(b_longerunion.get(), u128::MAX);
+    /// 
+    ///     let a_sizeunion = func(55_usize.into_sizeunion(), 55_usize.into_sizeunion());
+    ///     println!("55 - 55 = {}", a_sizeunion);
+    ///     assert_eq!(a_sizeunion.get(), 0_usize);
+    /// 
+    ///     let b_sizeunion = func(a_sizeunion, 1_usize.into_sizeunion());
+    ///     println!("{} - 1 = {}", a_sizeunion, b_sizeunion);
+    ///     assert_eq!(b_sizeunion.get(), usize::MAX);
+    /// }
+    /// 
+    /// fn func<T: SmallUInt>(lhs: T, rhs: T) -> T
+    /// {
+    ///     lhs.safe_sub(rhs)
+    /// }
+    /// ```
+    fn safe_sub(self, rhs: Self) -> Self;
 
     // fn abs_diff(self, other: Self) -> Self
     /// Computes the absolute difference between `self` and `other`.
@@ -11841,6 +12538,347 @@ pub trait SmallUInt: Copy + Clone + Sized //+ Display + Debug + ToString
     /// for the primitive type `usize`, read [here](https://doc.rust-lang.org/core/primitive.usize.html#method.saturating_mul).
     fn saturating_mul(self, rhs: Self) -> Self;
 
+    // fn safe_mul(self, rhs: Self) -> Self;
+    /// Computes `self` * `rhs`, wrapping around at the boundary of the type
+    /// in release mode but panics when overflow occurs in debug mode.
+    /// 
+    /// # Arguments
+    /// `rhs` is of `Self` type.
+    /// 
+    /// # Features
+    /// It multiplies `rhs` and `self`, wrapping (modular) multiplication in release mode.
+    /// It panics when overflow occurs in debug mode.
+    /// 
+    /// # Output
+    /// It returns the `self` * `rhs` in the type of `Self`.
+    /// 
+    /// # Example 1 for u8
+    /// ```
+    /// use cryptocol::number::SmallUInt;
+    /// fn main()
+    /// {
+    ///     let a_u8 = func(u8::MAX / 3, 2_u8);
+    ///     println!("{} * 2 = {}", u8::MAX / 3, a_u8);
+    ///     assert_eq!(a_u8, 170_u8);
+    /// 
+    ///     let b_u8 = func(a_u8, 2_u8);
+    ///     println!("{} * 2 = {}", a_u8, b_u8);
+    ///     assert_eq!(b_u8, 84_u8);
+    /// }
+    /// 
+    /// fn func<T: SmallUInt>(lhs: T, rhs: T) -> T
+    /// {
+    ///     lhs.safe_mul(rhs)
+    /// }
+    /// ```
+    /// 
+    /// # Example 2 for u16
+    /// ```
+    /// use cryptocol::number::SmallUInt;
+    /// fn main()
+    /// {
+    ///     let a_u16 = func(u16::MAX / 3, 2_u16);
+    ///     println!("{} * 2 = {}", u16::MAX / 3, a_u16);
+    ///     assert_eq!(a_u16, 43690_u16);
+    /// 
+    ///     let b_u16 = func(a_u16, 2_u16);
+    ///     println!("{} * 2 = {}", a_u16, b_u16);
+    ///     assert_eq!(b_u16, 21844_u16);
+    /// }
+    /// 
+    /// fn func<T: SmallUInt>(lhs: T, rhs: T) -> T
+    /// {
+    ///     lhs.safe_mul(rhs)
+    /// }
+    /// ```
+    /// 
+    /// # Example 3 for u32
+    /// ```
+    /// use cryptocol::number::SmallUInt;
+    /// fn main()
+    /// {
+    ///     let a_u32 = func(u32::MAX / 3, 2_u32);
+    ///     println!("{} * 2 = {}", u32::MAX / 3, a_u32);
+    ///     assert_eq!(a_u32, 2863311530_u32);
+    /// 
+    ///     let b_u32 = func(a_u32, 2_u32);
+    ///     println!("{} * 2 = {}", a_u32, b_u32);
+    ///     assert_eq!(b_u32, 1431655764_u32);
+    /// }
+    /// 
+    /// fn func<T: SmallUInt>(lhs: T, rhs: T) -> T
+    /// {
+    ///     lhs.safe_mul(rhs)
+    /// }
+    /// ```
+    /// 
+    /// # Example 4 for u64
+    /// ```
+    /// use cryptocol::number::SmallUInt;
+    /// fn main()
+    /// {
+    ///     let a_u64 = func(u64::MAX / 3, 2_u64);
+    ///     println!("{} * 2 = {}", u64::MAX / 3, a_u64);
+    ///     assert_eq!(a_u64, 12297829382473034410_u64);
+    /// 
+    ///     let b_u64 = func(a_u64, 2_u64);
+    ///     println!("{} * 2 = {}", a_u64, b_u64);
+    ///     assert_eq!(b_u64, 6148914691236517204_u64);
+    /// }
+    /// 
+    /// fn func<T: SmallUInt>(lhs: T, rhs: T) -> T
+    /// {
+    ///     lhs.safe_mul(rhs)
+    /// }
+    /// ```
+    /// 
+    /// # Example 5 for u128
+    /// ```
+    /// use cryptocol::number::SmallUInt;
+    /// fn main()
+    /// {
+    ///     let a_u128 = func(u128::MAX / 3, 2_u128);
+    ///     println!("{} * 2 = {}", u128::MAX / 3, a_u128);
+    ///     assert_eq!(a_u128,226854911280625642308916404954512140970_u128);
+    /// 
+    ///     let b_u128 = func(a_u128, 2_u128);
+    ///     println!("{} * 2 = {}", a_u128, b_u128);
+    ///     assert_eq!(b_u128, 113427455640312821154458202477256070484_u128);
+    /// }
+    /// 
+    /// fn func<T: SmallUInt>(lhs: T, rhs: T) -> T
+    /// {
+    ///     lhs.safe_mul(rhs)
+    /// }
+    /// ```
+    /// 
+    /// # Example 6 for usize
+    /// ```
+    /// use cryptocol::number::SmallUInt;
+    /// fn main()
+    /// {
+    ///     let a_usize = func(usize::MAX / 3, 2_usize);
+    ///     println!("{} * 2 = {}", usize::MAX / 3, a_usize);
+    ///     assert_eq!(a_usize, 12297829382473034410_usize);
+    /// 
+    ///     let b_usize = func(a_usize, 2_usize);
+    ///     println!("{} * 2 = {}", a_usize, b_usize);
+    ///     assert_eq!(b_usize, 6148914691236517204_usize);
+    /// }
+    /// 
+    /// fn func<T: SmallUInt>(lhs: T, rhs: T) -> T
+    /// {
+    ///     lhs.safe_mul(rhs)
+    /// }
+    /// ```
+    /// 
+    /// # Example 7 for ShortUnion
+    /// ```
+    /// use cryptocol::number::SmallUInt;
+    /// fn main()
+    /// {
+    ///     let a_shortunion = func((u16::MAX / 3).into_shortunion(), 2_u16.into_shortunion());
+    ///     println!("{} * 2 = {}", (u16::MAX / 3).into_shortunion(), a_shortunion);
+    ///     assert_eq!(a_shortunion.get(), 43690_u16);
+    /// 
+    ///     let b_shortunion = func(a_shortunion, 2_u16.into_shortunion());
+    ///     println!("{} * 2 = {}", a_shortunion, b_shortunion);
+    ///     assert_eq!(b_shortunion.get(), 21844_u16);
+    /// 
+    /// }
+    /// 
+    /// fn func<T: SmallUInt>(lhs: T, rhs: T) -> T
+    /// {
+    ///     lhs.safe_mul(rhs)
+    /// }
+    /// ```
+    /// 
+    /// # Example 8 for IntUnion
+    /// ```
+    /// use cryptocol::number::SmallUInt;
+    /// fn main()
+    /// {
+    ///     let a_intunion = func((u32::MAX / 3).into_intunion(), 2_u32.into_intunion());
+    ///     println!("{} * 2 = {}", (u32::MAX / 3).into_intunion(), a_intunion);
+    ///     assert_eq!(a_intunion.get(), 2863311530_u32);
+    /// 
+    ///     let b_intunion = func(a_intunion, 2_u32.into_intunion());
+    ///     println!("{} * 2 = {}", a_intunion, b_intunion);
+    ///     assert_eq!(b_intunion.get(), 1431655764_u32);
+    /// 
+    /// }
+    /// 
+    /// fn func<T: SmallUInt>(lhs: T, rhs: T) -> T
+    /// {
+    ///     lhs.safe_mul(rhs)
+    /// }
+    /// ```
+    /// 
+    /// # Example 9 for LongUnion
+    /// ```
+    /// use cryptocol::number::SmallUInt;
+    /// fn main()
+    /// {
+    ///     let a_longunion: cryptocol::number::LongUnion = func((u64::MAX / 3).into_longunion(), 2_u64.into_longunion());
+    ///     println!("{} * 2 = {}", (u64::MAX / 3).into_longunion(), a_longunion);
+    ///     assert_eq!(a_longunion.get(), 12297829382473034410_u64);
+    /// 
+    ///     let b_longunion = func(a_longunion, 2_u64.into_longunion());
+    ///     println!("{} * 2 = {}", a_longunion, b_longunion);
+    ///     assert_eq!(b_longunion.get(), 6148914691236517204_u64);
+    /// 
+    /// }
+    /// 
+    /// fn func<T: SmallUInt>(lhs: T, rhs: T) -> T
+    /// {
+    ///     lhs.safe_mul(rhs)
+    /// }
+    /// ```
+    /// 
+    /// # Example 10 for LongerUnion
+    /// ```
+    /// use cryptocol::number::SmallUInt;
+    /// fn main()
+    /// {
+    ///     let a_longerunion = func((u128::MAX / 3).into_longerunion(), 2_u128.into_longerunion());
+    ///     println!("{} * 2 = {}", (u128::MAX / 3).into_longerunion(), a_longerunion);
+    ///     assert_eq!(a_longerunion.get(), 226854911280625642308916404954512140970_u128);
+    /// 
+    ///     let b_longerunion = func(a_longerunion, 2_u128.into_longerunion());
+    ///     println!("{} * 2 = {}", a_longerunion, b_longerunion);
+    ///     assert_eq!(b_longerunion.get(), 113427455640312821154458202477256070484_u128);
+    /// 
+    /// }
+    /// 
+    /// fn func<T: SmallUInt>(lhs: T, rhs: T) -> T
+    /// {
+    ///     lhs.safe_mul(rhs)
+    /// }
+    /// ```
+    /// 
+    /// # Example 11 for SizeUnion
+    /// ```
+    /// use cryptocol::number::SmallUInt;
+    /// fn main()
+    /// {
+    ///     let a_sizeunion = func((usize::MAX / 3).into_sizeunion(), 2_usize.into_sizeunion());
+    ///     println!("{} * 2 = {}", (usize::MAX / 3).into_sizeunion(), a_sizeunion);
+    ///     assert_eq!(a_sizeunion.get(), 12297829382473034410_usize);
+    /// 
+    ///     let b_sizeunion = func(a_sizeunion, 2_usize.into_sizeunion());
+    ///     println!("{} * 2 = {}", a_sizeunion, b_sizeunion);
+    ///     assert_eq!(b_sizeunion.get(), 6148914691236517204_usize);
+    /// }
+    /// 
+    /// fn func<T: SmallUInt>(lhs: T, rhs: T) -> T
+    /// {
+    ///     lhs.safe_mul(rhs)
+    /// }
+    /// ```
+    /// You can use the above generic function `func<>()` for all
+    /// SmallUInt-supported data types in a same scope.
+    /// Look into the following example.
+    /// 
+    /// # Collective Example
+    /// ```
+    /// use cryptocol::number::SmallUInt;
+    /// fn main()
+    /// {
+    ///     let a_u8 = func(u8::MAX / 3, 2_u8);
+    ///     println!("{} * 2 = {}", u8::MAX / 3, a_u8);
+    ///     assert_eq!(a_u8, 170_u8);
+    /// 
+    ///     let b_u8 = func(a_u8, 2_u8);
+    ///     println!("{} * 2 = {}", a_u8, b_u8);
+    ///     assert_eq!(b_u8, 84_u8);
+    /// 
+    ///     let a_u16 = func(u16::MAX / 3, 2_u16);
+    ///     println!("{} * 2 = {}", u16::MAX / 3, a_u16);
+    ///     assert_eq!(a_u16, 43690_u16);
+    /// 
+    ///     let b_u16 = func(a_u16, 2_u16);
+    ///     println!("{} * 2 = {}", a_u16, b_u16);
+    ///     assert_eq!(b_u16, 21844_u16);
+    /// 
+    ///     let a_u32 = func(u32::MAX / 3, 2_u32);
+    ///     println!("{} * 2 = {}", u32::MAX / 3, a_u32);
+    ///     assert_eq!(a_u32, 2863311530_u32);
+    /// 
+    ///     let b_u32 = func(a_u32, 2_u32);
+    ///     println!("{} * 2 = {}", a_u32, b_u32);
+    ///     assert_eq!(b_u32, 1431655764_u32);
+    /// 
+    ///     let a_u64 = func(u64::MAX / 3, 2_u64);
+    ///     println!("{} * 2 = {}", u64::MAX / 3, a_u64);
+    ///     assert_eq!(a_u64, 12297829382473034410_u64);
+    /// 
+    ///     let b_u64 = func(a_u64, 2_u64);
+    ///     println!("{} * 2 = {}", a_u64, b_u64);
+    ///     assert_eq!(b_u64, 6148914691236517204_u64);
+    /// 
+    ///     let a_u128 = func(u128::MAX / 3, 2_u128);
+    ///     println!("{} * 2 = {}", u128::MAX / 3, a_u128);
+    ///     assert_eq!(a_u128,226854911280625642308916404954512140970_u128);
+    /// 
+    ///     let b_u128 = func(a_u128, 2_u128);
+    ///     println!("{} * 2 = {}", a_u128, b_u128);
+    ///     assert_eq!(b_u128, 113427455640312821154458202477256070484_u128);
+    /// 
+    ///     let a_usize = func(usize::MAX / 3, 2_usize);
+    ///     println!("{} * 2 = {}", usize::MAX / 3, a_usize);
+    ///     assert_eq!(a_usize, 12297829382473034410_usize);
+    /// 
+    ///     let b_usize = func(a_usize, 2_usize);
+    ///     println!("{} * 2 = {}", a_usize, b_usize);
+    ///     assert_eq!(b_usize, 6148914691236517204_usize);
+    /// 
+    ///     let a_shortunion = func((u16::MAX / 3).into_shortunion(), 2_u16.into_shortunion());
+    ///     println!("{} * 2 = {}", (u16::MAX / 3).into_shortunion(), a_shortunion);
+    ///     assert_eq!(a_shortunion.get(), 43690_u16);
+    /// 
+    ///     let b_shortunion = func(a_shortunion, 2_u16.into_shortunion());
+    ///     println!("{} * 2 = {}", a_shortunion, b_shortunion);
+    ///     assert_eq!(b_shortunion.get(), 21844_u16);
+    /// 
+    ///     let a_intunion = func((u32::MAX / 3).into_intunion(), 2_u32.into_intunion());
+    ///     println!("{} * 2 = {}", (u32::MAX / 3).into_intunion(), a_intunion);
+    ///     assert_eq!(a_intunion.get(), 2863311530_u32);
+    /// 
+    ///     let b_intunion = func(a_intunion, 2_u32.into_intunion());
+    ///     println!("{} * 2 = {}", a_intunion, b_intunion);
+    ///     assert_eq!(b_intunion.get(), 1431655764_u32);
+    /// 
+    ///     let a_longunion = func((u64::MAX / 3).into_longunion(), 2_u64.into_longunion());
+    ///     println!("{} * 2 = {}", (u64::MAX / 3).into_longunion(), a_longunion);
+    ///     assert_eq!(a_longunion.get(), 12297829382473034410_u64);
+    /// 
+    ///     let b_longunion = func(a_longunion, 2_u64.into_longunion());
+    ///     println!("{} * 2 = {}", a_longunion, b_longunion);
+    ///     assert_eq!(b_longunion.get(), 6148914691236517204_u64);
+    /// 
+    ///     let a_longerunion = func((u128::MAX / 3).into_longerunion(), 2_u128.into_longerunion());
+    ///     println!("{} * 2 = {}", (u128::MAX / 3).into_longerunion(), a_longerunion);
+    ///     assert_eq!(a_longerunion.get(), 226854911280625642308916404954512140970_u128);
+    /// 
+    ///     let b_longerunion = func(a_longerunion, 2_u128.into_longerunion());
+    ///     println!("{} * 2 = {}", a_longerunion, b_longerunion);
+    ///     assert_eq!(b_longerunion.get(), 113427455640312821154458202477256070484_u128);
+    /// 
+    ///     let a_sizeunion = func((usize::MAX / 3).into_sizeunion(), 2_usize.into_sizeunion());
+    ///     println!("{} * 2 = {}", (usize::MAX / 3).into_sizeunion(), a_sizeunion);
+    ///     assert_eq!(a_sizeunion.get(), 12297829382473034410_usize);
+    /// 
+    ///     let b_sizeunion = func(a_sizeunion, 2_usize.into_sizeunion());
+    ///     println!("{} * 2 = {}", a_sizeunion, b_sizeunion);
+    ///     assert_eq!(b_sizeunion.get(), 6148914691236517204_usize);
+    /// }
+    /// 
+    /// fn func<T: SmallUInt>(lhs: T, rhs: T) -> T
+    /// {
+    ///     lhs.safe_mul(rhs)
+    /// }
+    /// ```
+    fn safe_mul(self, rhs: Self) -> Self;
 
     // fn modular_mul(self, rhs: Self, modulo: Self) -> Self
     /// Computes (`self` * `rhs`) % `modulo`, wrapping around at `modulo`
@@ -14403,7 +15441,334 @@ pub trait SmallUInt: Copy + Clone + Sized //+ Display + Debug + ToString
     /// for the primitive type `usize`, read [here](https://doc.rust-lang.org/core/primitive.usize.html#method.saturating_div).
     fn saturating_div(self, rhs: Self) -> Self;
 
-
+    // fn safe_div(self, rhs: Self) -> Self;
+    /// Computes `self`/ `rhs`.
+    /// 
+    /// # Arguments
+    /// `rhs` is a divisor of the type `Self`.
+    /// 
+    /// # Output
+    /// It returns the `self` / `rhs` in the type of `Self`.
+    /// 
+    /// # Panics
+    /// It will panic if rhs is zero.
+    /// 
+    /// # Example 1 for u8
+    /// ```
+    /// use cryptocol::number::SmallUInt;
+    /// fn main()
+    /// {
+    ///     let a_u8 = func(u8::MAX / 3, 2_u8);
+    ///     println!("{} / 2 = {}", u8::MAX / 3, a_u8);
+    ///     assert_eq!(a_u8, 42_u8);
+    /// 
+    ///     // It will panic.
+    ///     // let a_panic = func(u8::MAX / 3, 0_u8);
+    /// }
+    /// 
+    /// fn func<T: SmallUInt>(lhs: T, rhs: T) -> T
+    /// {
+    ///     lhs.safe_div(rhs)
+    /// }
+    /// ```
+    /// 
+    /// # Example 2 for u16
+    /// ```
+    /// use cryptocol::number::SmallUInt;
+    /// fn main()
+    /// {
+    ///     let a_u16 = func(u16::MAX / 3, 2_u16);
+    ///     println!("{} / 2 = {}", u16::MAX / 3, a_u16);
+    ///     assert_eq!(a_u16, 10922_u16);
+    /// 
+    ///     // It will panic.
+    ///     // let a_panic = func(u16::MAX / 3, 0_u16);
+    /// }
+    /// 
+    /// fn func<T: SmallUInt>(lhs: T, rhs: T) -> T
+    /// {
+    ///     lhs.safe_div(rhs)
+    /// }
+    /// ```
+    /// 
+    /// # Example 3 for u32
+    /// ```
+    /// use cryptocol::number::SmallUInt;
+    /// fn main()
+    /// {
+    ///     let a_u32 = func(u32::MAX / 3, 2_u32);
+    ///     println!("{} / 2 = {}", u32::MAX / 3, a_u32);
+    ///     assert_eq!(a_u32, 715827882_u32);
+    /// 
+    ///     // It will panic.
+    ///     // let a_panic = func(u32::MAX / 3, 0_u32);
+    /// }
+    /// 
+    /// fn func<T: SmallUInt>(lhs: T, rhs: T) -> T
+    /// {
+    ///     lhs.safe_div(rhs)
+    /// }
+    /// ```
+    /// 
+    /// # Example 4 for u64
+    /// ```
+    /// use cryptocol::number::SmallUInt;
+    /// fn main()
+    /// {
+    ///     let a_u64 = func(u64::MAX / 3, 2_u64);
+    ///     println!("{} / 2 = {}", u64::MAX / 3, a_u64);
+    ///     assert_eq!(a_u64, 3074457345618258602_u64);
+    /// 
+    ///     // It will panic.
+    ///     // let a_panic = func(u64::MAX / 3, 0_u64);
+    /// }
+    /// 
+    /// fn func<T: SmallUInt>(lhs: T, rhs: T) -> T
+    /// {
+    ///     lhs.safe_div(rhs)
+    /// }
+    /// ```
+    /// 
+    /// # Example 5 for u128
+    /// ```
+    /// use cryptocol::number::SmallUInt;
+    /// fn main()
+    /// {
+    ///     let a_u128 = func(u128::MAX / 3, 2_u128);
+    ///     println!("{} / 2 = {}", u128::MAX / 3, a_u128);
+    ///     assert_eq!(a_u128, 56713727820156410577229101238628035242_u128);
+    /// 
+    ///     // It will panic.
+    ///     // let a_panic = func(u128::MAX / 3, 0_u128);
+    /// }
+    /// 
+    /// fn func<T: SmallUInt>(lhs: T, rhs: T) -> T
+    /// {
+    ///     lhs.safe_div(rhs)
+    /// }
+    /// ```
+    /// 
+    /// # Example 6 for usize
+    /// ```
+    /// use cryptocol::number::SmallUInt;
+    /// fn main()
+    /// {
+    ///     let a_usize = func(usize::MAX / 3, 2_usize);
+    ///     println!("{} / 2 = {}", usize::MAX / 3, a_usize);
+    ///     assert_eq!(a_usize, 3074457345618258602_usize);
+    /// 
+    ///     // It will panic.
+    ///     // let a_panic = func(usize::MAX / 3, 0_usize);
+    /// }
+    /// 
+    /// fn func<T: SmallUInt>(lhs: T, rhs: T) -> T
+    /// {
+    ///     lhs.safe_div(rhs)
+    /// }
+    /// ```
+    /// 
+    /// # Example 7 for ShortUnion
+    /// ```
+    /// use cryptocol::number::SmallUInt;
+    /// fn main()
+    /// {
+    ///    let a_shortunion = func((u16::MAX / 3).into_shortunion(), 2_u16.into_shortunion());
+    ///    println!("{} / 2 = {}", (u16::MAX / 3).into_shortunion(), a_shortunion);
+    ///    assert_eq!(a_shortunion.get(), 10922_u16);
+    ///
+    ///    // It will panic.
+    ///    // let a_panic = func((u16::MAX / 3).into_shortunion(), 0_u16.into_shortunion());
+    /// }
+    /// 
+    /// fn func<T: SmallUInt>(lhs: T, rhs: T) -> T
+    /// {
+    ///     lhs.safe_div(rhs)
+    /// }
+    /// ```
+    /// 
+    /// # Example 8 for IntUnion
+    /// ```
+    /// use cryptocol::number::SmallUInt;
+    /// fn main()
+    /// {
+    ///    let a_intunion = func((u32::MAX / 3).into_intunion(), 2_u32.into_intunion());
+    ///    println!("{} / 2 = {}", (u32::MAX / 3).into_intunion(), a_intunion);
+    ///    assert_eq!(a_intunion.get(), 715827882_u32);
+    ///
+    ///    // It will panic.
+    ///    // let a_panic = func((u32::MAX / 3).into_intunion(), 0_u32.into_intunion());
+    /// }
+    /// 
+    /// fn func<T: SmallUInt>(lhs: T, rhs: T) -> T
+    /// {
+    ///     lhs.safe_div(rhs)
+    /// }
+    /// ```
+    /// 
+    /// # Example 9 for LongUnion
+    /// ```
+    /// use cryptocol::number::SmallUInt;
+    /// fn main()
+    /// {
+    ///    let a_longunion = func((u64::MAX / 3).into_longunion(), 2_u64.into_longunion());
+    ///    println!("{} / 2 = {}", (u64::MAX / 3).into_longunion(), a_longunion);
+    ///    assert_eq!(a_longunion.get(), 3074457345618258602_u64);
+    ///
+    ///    // It will panic.
+    ///    // let a_panic = func(u64::MAX / 3).into_longunion(), 0_u64.into_longunion());
+    /// }
+    /// 
+    /// fn func<T: SmallUInt>(lhs: T, rhs: T) -> T
+    /// {
+    ///     lhs.safe_div(rhs)
+    /// }
+    /// ```
+    /// 
+    /// # Example 10 for LongerUnion
+    /// ```
+    /// use cryptocol::number::SmallUInt;
+    /// fn main()
+    /// {
+    ///    let a_longerunion = func((u128::MAX / 3).into_longerunion(), 2_u128.into_longerunion());
+    ///    println!("{} / 2 = {}", (u128::MAX / 3).into_longerunion(), a_longerunion);
+    ///    assert_eq!(a_longerunion.get(), 56713727820156410577229101238628035242_u128);
+    ///
+    ///    // It will panic.
+    ///    // let a_panic = func((u128::MAX / 3).into_longerunion(), 0_u128.into_longerunion());
+    /// }
+    /// 
+    /// fn func<T: SmallUInt>(lhs: T, rhs: T) -> T
+    /// {
+    ///     lhs.safe_div(rhs)
+    /// }
+    /// ```
+    /// 
+    /// # Example 11 for SizeUnion for 64-bit CPUs
+    /// ```
+    /// use cryptocol::number::SmallUInt;
+    /// fn main()
+    /// {
+    ///    let a_sizeunion = func((usize::MAX / 3).into_sizeunion(), 2_usize.into_sizeunion());
+    ///    println!("{} / 2 = {}", (usize::MAX / 3).into_sizeunion(), a_sizeunion);
+    ///    assert_eq!(a_sizeunion.get(), 3074457345618258602_usize);
+    ///
+    ///    // It will panic.
+    ///    // let a_panic = func((usize::MAX / 3).into_sizeunion(), 0_usize.into_sizeunion());
+    /// }
+    /// 
+    /// fn func<T: SmallUInt>(lhs: T, rhs: T) -> T
+    /// {
+    ///     lhs.safe_div(rhs)
+    /// }
+    /// ```
+    /// 
+    /// You can use the above generic function `func<>()` for all
+    /// SmallUInt-supported data types in a same scope.
+    /// Look into the following example.
+    /// 
+    /// # Collective Example
+    /// ```
+    /// use cryptocol::number::SmallUInt;
+    /// fn main()
+    /// {
+    ///    // Example for u8
+    ///    let a_u8 = func(u8::MAX / 3, 2_u8);
+    ///    println!("{} / 2 = {}", u8::MAX / 3, a_u8);
+    ///    assert_eq!(a_u8, 42_u8);
+    ///
+    ///    // It will panic.
+    ///    // let a_panic = func(u8::MAX / 3, 0_u8);
+    ///
+    ///    // Example for u16
+    ///    let a_u16 = func(u16::MAX / 3, 2_u16);
+    ///    println!("{} / 2 = {}", u16::MAX / 3, a_u16);
+    ///    assert_eq!(a_u16, 10922_u16);
+    ///
+    ///    // It will panic.
+    ///    // let a_panic = func(u16::MAX / 3, 0_u16);
+    ///
+    ///    // Example for u32
+    ///    let a_u32 = func(u32::MAX / 3, 2_u32);
+    ///    println!("{} / 2 = {}", u32::MAX / 3, a_u32);
+    ///    assert_eq!(a_u32, 715827882_u32);
+    ///
+    ///    // It will panic.
+    ///    // let a_panic = func(u32::MAX / 3, 0_u32);
+    ///
+    ///    // Example for u64
+    ///    let a_u64 = func(u64::MAX / 3, 2_u64);
+    ///    println!("{} / 2 = {}", u64::MAX / 3, a_u64);
+    ///    assert_eq!(a_u64, 3074457345618258602_u64);
+    ///
+    ///    // It will panic.
+    ///    // let a_panic = func(u64::MAX / 3, 0_u64);
+    ///
+    ///    // Example for u128
+    ///    let a_u128 = func(u128::MAX / 3, 2_u128);
+    ///    println!("{} / 2 = {}", u128::MAX / 3, a_u128);
+    ///    assert_eq!(a_u128, 56713727820156410577229101238628035242_u128);
+    ///
+    ///    // It will panic.
+    ///    // let a_panic = func(u128::MAX / 3, 0_u128);
+    ///
+    ///    // Example for usize
+    ///    let a_usize = func(usize::MAX / 3, 2_usize);
+    ///    println!("{} / 2 = {}", usize::MAX / 3, a_usize);
+    ///    assert_eq!(a_usize, 3074457345618258602_usize);
+    ///
+    ///    // It will panic.
+    ///    // let a_panic = func(usize::MAX / 3, 0_usize);
+    ///
+    ///    // Example for ShortUnion
+    ///    let a_shortunion = func((u16::MAX / 3).into_shortunion(), 2_u16.into_shortunion());
+    ///    println!("{} / 2 = {}", (u16::MAX / 3).into_shortunion(), a_shortunion);
+    ///    assert_eq!(a_shortunion.get(), 10922_u16);
+    ///
+    ///    // It will panic.
+    ///    // let a_panic = func((u16::MAX / 3).into_shortunion(), 0_u16.into_shortunion());
+    ///
+    ///    // Example for IntUnion
+    ///    let a_intunion = func((u32::MAX / 3).into_intunion(), 2_u32.into_intunion());
+    ///    println!("{} / 2 = {}", (u32::MAX / 3).into_intunion(), a_intunion);
+    ///    assert_eq!(a_intunion.get(), 715827882_u32);
+    ///
+    ///    // It will panic.
+    ///    // let a_panic = func((u32::MAX / 3).into_intunion(), 0_u32.into_intunion());
+    ///
+    ///    // Example for LongUnion
+    ///    let a_longunion = func((u64::MAX / 3).into_longunion(), 2_u64.into_longunion());
+    ///    println!("{} / 2 = {}", (u64::MAX / 3).into_longunion(), a_longunion);
+    ///    assert_eq!(a_longunion.get(), 3074457345618258602_u64);
+    ///
+    ///    // It will panic.
+    ///    // let a_panic = func(u64::MAX / 3).into_longunion(), 0_u64.into_longunion());
+    ///
+    ///    // Example for LongerUnion
+    ///    let a_longerunion = func((u128::MAX / 3).into_longerunion(), 2_u128.into_longerunion());
+    ///    println!("{} / 2 = {}", (u128::MAX / 3).into_longerunion(), a_longerunion);
+    ///    assert_eq!(a_longerunion.get(), 56713727820156410577229101238628035242_u128);
+    ///
+    ///    // It will panic.
+    ///    // let a_panic = func((u128::MAX / 3).into_longerunion(), 0_u128.into_longerunion());
+    ///
+    ///    // Example for SizeUnion
+    ///    let a_sizeunion = func((usize::MAX / 3).into_sizeunion(), 2_usize.into_sizeunion());
+    ///    println!("{} / 2 = {}", (usize::MAX / 3).into_sizeunion(), a_sizeunion);
+    ///    assert_eq!(a_sizeunion.get(), 3074457345618258602_usize);
+    ///
+    ///    // It will panic.
+    ///    // let a_panic = func((usize::MAX / 3).into_sizeunion(), 0_usize.into_sizeunion());
+    /// }
+    /// 
+    /// fn func<T: SmallUInt>(lhs: T, rhs: T) -> T
+    /// {
+    ///     lhs.safe_div(rhs)
+    /// }
+    /// ```
+    fn safe_div(self, rhs: Self) -> Self;
+    
+    
+    
     /***** MODULO *****/
 
     // fn wrapping_rem(self, rhs: Self) -> Self
@@ -16019,6 +17384,297 @@ pub trait SmallUInt: Copy + Clone + Sized //+ Display + Debug + ToString
     /// for the primitive type `usize`, read [here](https://doc.rust-lang.org/core/primitive.usize.html#method.checked_rem).
     fn unchecked_rem(self, rhs: Self) -> Self;
 
+    // fn safe_rem(self, rhs: Self) -> Self
+    /// Computes `self` % `rhs`.
+    /// 
+    /// # Arguments
+    /// `rhs` is divisor of the type `Self`.
+    /// 
+    /// # Output
+    /// It returns the `self` % `rhs` in the type of `Self`.
+    /// 
+    /// # Panics
+    /// It will panic if rhs is zero.
+    /// 
+    /// # Example 1 for u8
+    /// ```
+    /// use cryptocol::number::SmallUInt;
+    /// fn main()
+    /// {
+    ///     let a_u8 = func(u8::MAX / 3, 3_u8);
+    ///     println!("{} % 3 = {}", u8::MAX / 3, a_u8);
+    ///     assert_eq!(a_u8, 1_u8);
+    ///     // It will panic.
+    ///     // let a_panic = func(u8::MAX / 3, 0_u8);
+    /// }
+    /// 
+    /// fn func<T: SmallUInt>(lhs: T, rhs: T) -> T
+    /// {
+    ///     lhs.safe_rem(rhs)
+    /// }
+    /// ```
+    /// 
+    /// # Example 2 for u16
+    /// ```
+    /// use cryptocol::number::SmallUInt;
+    /// fn main()
+    /// {
+    ///     let a_u16 = func(u16::MAX / 3, 3_u16);
+    ///     println!("{} % 3 = {}", u16::MAX / 3, a_u16);
+    ///     assert_eq!(a_u16, 2_u16);
+    ///     // It will panic.
+    ///     // let a_panic = func(u16::MAX / 3, 0_u16);
+    /// }
+    /// 
+    /// fn func<T: SmallUInt>(lhs: T, rhs: T) -> T
+    /// {
+    ///     lhs.safe_rem(rhs)
+    /// }
+    /// ```
+    /// 
+    /// # Example 3 for u32
+    /// ```
+    /// use cryptocol::number::SmallUInt;
+    /// fn main()
+    /// {
+    ///     let a_u32 = func(u32::MAX / 3, 3_u32);
+    ///     println!("{} % 3 = {}", u32::MAX / 3, a_u32);
+    ///     assert_eq!(a_u32, 1_u32);
+    ///     // It will panic.
+    ///     // let a_panic = func(u32::MAX / 3, 0_u32);
+    /// }
+    /// 
+    /// fn func<T: SmallUInt>(lhs: T, rhs: T) -> T
+    /// {
+    ///     lhs.safe_rem(rhs)
+    /// }
+    /// ```
+    /// 
+    /// # Example 4 for u64
+    /// ```
+    /// use cryptocol::number::SmallUInt;
+    /// fn main()
+    /// {
+    ///     let a_u64 = func(u64::MAX / 3, 3_u64);
+    ///     println!("{} % 3 = {}", u64::MAX / 3, a_u64);
+    ///     assert_eq!(a_u64, 2_u64);
+    ///     // It will panic.
+    ///     // let a_panic = func(u64::MAX / 3, 0_u64);
+    /// }
+    /// 
+    /// fn func<T: SmallUInt>(lhs: T, rhs: T) -> T
+    /// {
+    ///     lhs.safe_rem(rhs)
+    /// }
+    /// ```
+    /// 
+    /// # Example 5 for u128
+    /// ```
+    /// use cryptocol::number::SmallUInt;
+    /// fn main()
+    /// {
+    ///     let a_u128 = func(u128::MAX / 3, 3_u128);
+    ///     println!("{} % 3 = {}", u128::MAX / 3, a_u128);
+    ///     assert_eq!(a_u128, 1_u128);
+    ///     // It will panic.
+    ///     // let a_panic = func(u128::MAX / 3, 0_u128);
+    /// }
+    /// 
+    /// fn func<T: SmallUInt>(lhs: T, rhs: T) -> T
+    /// {
+    ///     lhs.safe_rem(rhs)
+    /// }
+    /// ```
+    /// 
+    /// # Example 6 for usize
+    /// ```
+    /// use cryptocol::number::SmallUInt;
+    /// fn main()
+    /// {
+    ///     let a_usize = func(usize::MAX / 3, 3_usize);
+    ///     println!("{} % 3 = {}", usize::MAX / 3, a_usize);
+    ///     assert_eq!(a_usize, 2_usize);
+    ///     // It will panic.
+    ///     // let a_panic = func(usize::MAX / 3, 0_usize);
+    /// }
+    /// 
+    /// fn func<T: SmallUInt>(lhs: T, rhs: T) -> T
+    /// {
+    ///     lhs.safe_rem(rhs)
+    /// }
+    /// ```
+    /// 
+    /// # Example 7 for ShortUnion
+    /// ```
+    /// use cryptocol::number::SmallUInt;
+    /// fn main()
+    /// {
+    ///     let a_shortunion = func((u16::MAX / 3).into_shortunion(), 3_u16.into_shortunion());
+    ///     println!("{} % 3 = {}", (u16::MAX / 3).into_shortunion(), a_shortunion);
+    ///     assert_eq!(a_shortunion.get(), 2_u16);
+    ///     // It will panic.
+    ///     // let a_panic = func((u16::MAX / 3).into_shortunion(), 0_u16.into_shortunion());
+    /// }
+    /// 
+    /// fn func<T: SmallUInt>(lhs: T, rhs: T) -> T
+    /// {
+    ///     lhs.safe_rem(rhs)
+    /// }
+    /// ```
+    /// 
+    /// # Example 8 for IntUnion
+    /// ```
+    /// use cryptocol::number::SmallUInt;
+    /// fn main()
+    /// {
+    ///     let a_intunion = func((u32::MAX / 3).into_intunion(), 3_u32.into_intunion());
+    ///     println!("{} % 3 = {}", (u32::MAX / 3).into_intunion(), a_intunion);
+    ///     assert_eq!(a_intunion.get(), 1_u32);
+    ///     // It will panic.
+    ///     // let a_panic = func((u32::MAX / 3).into_intunion(), 0_u32.into_intunion());
+    /// }
+    /// 
+    /// fn func<T: SmallUInt>(lhs: T, rhs: T) -> T
+    /// {
+    ///     lhs.safe_rem(rhs)
+    /// }
+    /// ```
+    /// 
+    /// # Example 9 for LongUnion
+    /// ```
+    /// use cryptocol::number::SmallUInt;
+    /// fn main()
+    /// {
+    ///     let a_longunion = func((u64::MAX / 3).into_longunion(), 3_u64.into_longunion());
+    ///     println!("{} % 3 = {}", (u64::MAX / 3).into_longunion(), a_longunion);
+    ///     assert_eq!(a_longunion.get(), 2_u64);
+    ///     // It will panic.
+    ///     // let a_panic = func((u64::MAX / 3).into_longunion(), 0_u64.into_longunion());
+    /// }
+    /// 
+    /// fn func<T: SmallUInt>(lhs: T, rhs: T) -> T
+    /// {
+    ///     lhs.safe_rem(rhs)
+    /// }
+    /// ```
+    /// 
+    /// # Example 10 for LongerUnion
+    /// ```
+    /// use cryptocol::number::SmallUInt;
+    /// fn main()
+    /// {
+    ///     let a_longerunion = func((u128::MAX / 3).into_longerunion(), 3_u128.into_longerunion());
+    ///     println!("{} % 3 = {}", (u128::MAX / 3).into_longerunion(), a_longerunion);
+    ///     assert_eq!(a_longerunion.get(), 1_u128);
+    ///     // It will panic.
+    ///     // let a_panic = func((u128::MAX / 3).into_longerunion(), 0_u128.into_longerunion());
+    /// }
+    /// 
+    /// fn func<T: SmallUInt>(lhs: T, rhs: T) -> T
+    /// {
+    ///     lhs.safe_rem(rhs)
+    /// }
+    /// ```
+    /// 
+    /// # Example 11 for SizeUnion
+    /// ```
+    /// use cryptocol::number::SmallUInt;
+    /// fn main()
+    /// {
+    ///     let a_sizeunion = func((usize::MAX / 3).into_sizeunion(), 3_usize.into_sizeunion());
+    ///     println!("{} % 3 = {}", (usize::MAX / 3).into_sizeunion(), a_sizeunion);
+    ///     assert_eq!(a_sizeunion.get(), 2_usize);
+    ///     // It will panic.
+    ///     // let a_panic = func(usize::MAX / 3, 0_usize);
+    /// }
+    /// 
+    /// fn func<T: SmallUInt>(lhs: T, rhs: T) -> T
+    /// {
+    ///     lhs.safe_rem(rhs)
+    /// }
+    /// ```
+    /// You can use the above generic function `func<>()` for all
+    /// SmallUInt-supported data types in a same scope.
+    /// Look into the following example.
+    /// 
+    /// # Collective Example
+    /// ```
+    /// use cryptocol::number::SmallUInt;
+    /// fn main()
+    /// {
+    ///     let a_u8 = func(u8::MAX / 3, 3_u8);
+    ///     println!("{} % 3 = {}", u8::MAX / 3, a_u8);
+    ///     assert_eq!(a_u8, 1_u8);
+    ///     // It will panic.
+    ///     // let a_panic = func(u8::MAX / 3, 0_u8);
+    /// 
+    ///     let a_u16 = func(u16::MAX / 3, 3_u16);
+    ///     println!("{} % 3 = {}", u16::MAX / 3, a_u16);
+    ///     assert_eq!(a_u16, 2_u16);
+    ///     // It will panic.
+    ///     // let a_panic = func(u16::MAX / 3, 0_u16);
+    /// 
+    ///     let a_u32 = func(u32::MAX / 3, 3_u32);
+    ///     println!("{} % 3 = {}", u32::MAX / 3, a_u32);
+    ///     assert_eq!(a_u32, 1_u32);
+    ///     // It will panic.
+    ///     // let a_panic = func(u32::MAX / 3, 0_u32);
+    /// 
+    ///     let a_u64 = func(u64::MAX / 3, 3_u64);
+    ///     println!("{} % 3 = {}", u64::MAX / 3, a_u64);
+    ///     assert_eq!(a_u64, 2_u64);
+    ///     // It will panic.
+    ///     // let a_panic = func(u64::MAX / 3, 0_u64);
+    /// 
+    ///     let a_u128 = func(u128::MAX / 3, 3_u128);
+    ///     println!("{} % 3 = {}", u128::MAX / 3, a_u128);
+    ///     assert_eq!(a_u128, 1_u128);
+    ///     // It will panic.
+    ///     // let a_panic = func(u128::MAX / 3, 0_u128);
+    /// 
+    ///     let a_usize = func(usize::MAX / 3, 3_usize);
+    ///     println!("{} % 3 = {}", usize::MAX / 3, a_usize);
+    ///     assert_eq!(a_usize, 2_usize);
+    ///     // It will panic.
+    ///     // let a_panic = func(usize::MAX / 3, 0_usize);
+    /// 
+    ///     let a_shortunion = func((u16::MAX / 3).into_shortunion(), 3_u16.into_shortunion());
+    ///     println!("{} % 3 = {}", (u16::MAX / 3).into_shortunion(), a_shortunion);
+    ///     assert_eq!(a_shortunion.get(), 2_u16);
+    ///     // It will panic.
+    ///     // let a_panic = func((u16::MAX / 3).into_shortunion(), 0_u16.into_shortunion());
+    /// 
+    ///     let a_intunion = func((u32::MAX / 3).into_intunion(), 3_u32.into_intunion());
+    ///     println!("{} % 3 = {}", (u32::MAX / 3).into_intunion(), a_intunion);
+    ///     assert_eq!(a_intunion.get(), 1_u32);
+    ///     // It will panic.
+    ///     // let a_panic = func((u32::MAX / 3).into_intunion(), 0_u32.into_intunion());
+    /// 
+    ///     let a_longunion = func((u64::MAX / 3).into_longunion(), 3_u64.into_longunion());
+    ///     println!("{} % 3 = {}", (u64::MAX / 3).into_longunion(), a_longunion);
+    ///     assert_eq!(a_longunion.get(), 2_u64);
+    ///     // It will panic.
+    ///     // let a_panic = func((u64::MAX / 3).into_longunion(), 0_u64.into_longunion());
+    /// 
+    ///     let a_longerunion = func((u128::MAX / 3).into_longerunion(), 3_u128.into_longerunion());
+    ///     println!("{} % 3 = {}", (u128::MAX / 3).into_longerunion(), a_longerunion);
+    ///     assert_eq!(a_longerunion.get(), 1_u128);
+    ///     // It will panic.
+    ///     // let a_panic = func((u128::MAX / 3).into_longerunion(), 0_u128.into_longerunion());
+    /// 
+    ///     let a_sizeunion = func((usize::MAX / 3).into_sizeunion(), 3_usize.into_sizeunion());
+    ///     println!("{} % 3 = {}", (usize::MAX / 3).into_sizeunion(), a_sizeunion);
+    ///     assert_eq!(a_sizeunion.get(), 2_usize);
+    ///     // It will panic.
+    ///     // let a_panic = func(usize::MAX / 3, 0_usize);
+    /// }
+    /// 
+    /// fn func<T: SmallUInt>(lhs: T, rhs: T) -> T
+    /// {
+    ///     lhs.safe_rem(rhs)
+    /// }
+    /// ```
+    fn safe_rem(self, rhs: Self) -> Self;
 
     /*** Negation ***/
 
