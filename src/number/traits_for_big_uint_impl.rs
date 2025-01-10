@@ -13,14 +13,19 @@
 #![allow(missing_docs)]
 #![allow(rustdoc::missing_doc_code_examples)]
 
-use std::fmt::{ Error, Formatter, Display, Debug, Pointer,
-                Binary, Octal, LowerHex, UpperHex, LowerExp, UpperExp };
-use std::mem::size_of_val;
-use std::cmp::{ PartialEq, PartialOrd, Ordering };
-use std::convert::From;
 use std::str::FromStr;
-use std::ops::*;
+use std::convert::From;
+use std::mem::size_of_val;
+use std::fmt::{ Alignment, Error, Formatter, Display, Debug, Pointer,
+                Binary, Octal, LowerHex, UpperHex, LowerExp, UpperExp };
+use std::cmp::{ PartialEq, PartialOrd, Ordering };
+use std::ops::{ BitAnd, BitAndAssign, BitOr, BitOrAssign, BitXor, BitXorAssign, Not,
+                Shl, ShlAssign, Shr, ShrAssign, 
+                Add, AddAssign, Sub, SubAssign, Mul, MulAssign,
+                Div, DivAssign, Rem, RemAssign };
+
 use crate::number::{ SmallUInt, BigUInt, NumberErr };
+
 
 macro_rules! calc_assign_to_calc
 {
@@ -49,20 +54,165 @@ macro_rules! calc_assign_to_calc
 
 macro_rules! fmt_with_radix
 {
-    ($me:expr, $f:expr, $radix:expr) => {
+    ($me:expr, $f:expr, $radix:expr, $prefix:expr, $lowerhex:expr, $pointer:expr) => {
         return match $me.to_string_with_radix($radix)
         {
-            Ok(txt) =>  { write!($f, "{}", txt) },
-            Err(_) =>   { Err(Error) },
+            Ok(txt) => {
+                let txt = if $lowerhex {txt.to_lowercase()} else {txt};
+                let len = txt.len();
+                let mut space = match $f.width()
+                {
+                    Some(n) => if len >= n {0} else {n - len},
+                    None => 0_usize,
+                };
+                let mut prefix = String::new();
+                if $f.sign_plus()
+                {
+                    prefix.push('+');
+                    space = if space > 1 {space-1} else {0};
+                }
+                if $f.sign_minus()
+                {
+                    prefix.push('-');
+                    space = if space > 1 {space-1} else {0};
+                }
+                if $f.alternate() || $pointer
+                {
+                    prefix.push_str($prefix);
+                    space = if space > 2 {space-2} else {0};
+                }
+                if $f.sign_aware_zero_pad()
+                {
+                    for _ in 0..space
+                        { prefix.push('0'); }
+                    write!($f, "{}{}", prefix, txt)
+                }
+                else
+                {
+                    let ch = $f.fill();
+                    if let Some(s) = $f.align()
+                    {
+                        match s
+                        {
+                        Alignment::Left => {
+                                let mut trailing = String::new();
+                                for _ in 0..space
+                                    { trailing.push(ch); }
+                                write!($f, "{}{}{}", prefix, txt, trailing)
+                            },
+                        Alignment::Right => {
+                                let mut leading = String::new();
+                                for _ in 0..space
+                                    { leading.push(ch); }
+                                write!($f, "{}{}{}", leading, prefix, txt)
+                            },
+                        Alignment::Center => {
+                                let mut leading = String::new();
+                                for _ in 0..space>>1
+                                    { leading.push(ch); }
+                                let mut trailing = String::new();
+                                for _ in 0..(space+1)>>1
+                                    { trailing.push(ch); }
+                                write!($f, "{}{}{}{}", leading, prefix, txt, trailing)
+                            },
+                        }
+                    }
+                    else
+                    {
+                        let mut trailing = String::new();
+                        for _ in 0..space
+                            { trailing.push(ch); }
+                        write!($f, "{}{}{}", prefix, txt, trailing)
+                    }
+                }
+            },
+            Err(_) => { Err(Error) },
         };
     };
-    // fmt_with_radix!(10);
+    // fmt_with_radix!(self, f, 16, "0X", false, false);
     //
-    // match self.to_string_with_radix(10)
+    // return match self.to_string_with_radix(16)
     // {
-    //     Ok(txt) => { write!(f, "{}", txt) },
+    //     Ok(txt) => {
+    //         let len = txt.len();
+    //         let mut space = match f.width()
+    //         {
+    //             Some(n) => if len >= n {0} else {n - len},
+    //             None => 0_usize,
+    //         };
+    //         let mut prefix = String::new();
+    //         if f.sign_plus()
+    //         {
+    //             prefix.push('+');
+    //             space = if space > 1 {space-1} else {0};
+    //         }
+    //         if f.sign_minus()
+    //         {
+    //             prefix.push('-');
+    //             space = if space > 1 {space-1} else {0};
+    //         }
+    //         if f.alternate()
+    //         {
+    //             prefix.push_str("0x");
+    //             space = if space > 2 {space-2} else {0};
+    //         }
+    //         if f.sign_aware_zero_pad()
+    //         {
+    //             for _ in 0..space
+    //                 { prefix.push('0'); }
+    //             write!(f, "{}{}", prefix, txt)
+    //         }
+    //         else
+    //         {
+    //             let ch = f.fill();
+    //             if let Some(s) = f.align()
+    //             {
+    //                 match s
+    //                 {
+    //                 Alignment::Left => {
+    //                         let mut trailing = String::new();
+    //                         for _ in 0..space
+    //                             { trailing.push(ch); }
+    //                         write!(f, "{}{}{}", prefix, txt, trailing)
+    //                     },
+    //                 Alignment::Right => {
+    //                         let mut leading = String::new();
+    //                         for _ in 0..space
+    //                             { leading.push(ch); }
+    //                         write!(f, "{}{}{}", leading, prefix, txt)
+    //                     },
+    //                 Alignment::Center => {
+    //                         let mut leading = String::new();
+    //                         for _ in 0..space>>1
+    //                             { leading.push(ch); }
+    //                         let mut trailing = String::new();
+    //                         for _ in 0..(space+1)>>1
+    //                             { trailing.push(ch); }
+    //                         write!(f, "{}{}{}{}", leading, prefix, txt, trailing)
+    //                     },
+    //                 }
+    //             }
+    //             else
+    //             {
+    //                 let mut trailing = String::new();
+    //                 for _ in 0..space
+    //                     { trailing.push(ch); }
+    //                 write!(f, "{}{}{}", prefix, txt, trailing)
+    //             }
+    //         }
+    //     },
     //     Err(_) => { Err(Error) },
     // }
+
+    ($me:expr, $f:expr, $radix:expr, $prefix:expr, $lowerhex:expr) => {
+        fmt_with_radix!($me, $f, $radix, $prefix, $lowerhex, false);
+    };
+    ($me:expr, $f:expr, $radix:expr, $prefix:expr) => {
+        fmt_with_radix!($me, $f, $radix, $prefix, false, false);
+    };
+    ($me:expr, $f:expr) => {
+        fmt_with_radix!($me, $f, 16, "0x", true, true);
+    };
 }
 
 macro_rules! fmt_with_exponent
@@ -71,16 +221,164 @@ macro_rules! fmt_with_exponent
         return match $me.to_string_with_radix(10)
         {
             Ok(mut txt) => {
-                    let exp = (txt.len() - 1);
-                    let exp_txt = exp.to_string();
-                    if exp != 0
-                        { txt.insert(1, '.'); }
-                    txt.push_str($exponent);
-                    txt.push_str(exp_txt.as_str());
-                    write!($f, "{}", txt)
-                },
+                let exp = txt.len() - 1;
+                let exp_txt = exp.to_string();
+                if let Some(precision) = $f.precision()
+                {
+                    if exp > precision
+                    {
+                        let roundup = txt.as_bytes()[precision + 1] as u32 >= '5' as u32;
+                        txt.truncate(precision + 1);
+                        if roundup
+                        {
+                            let num = Self::from_str(txt.as_str()).unwrap();
+                            txt = num.wrapping_add_uint(1_u8).to_string();
+                        }
+                    }
+                }
+                if exp != 0
+                    { txt.insert(1, '.'); }
+                txt.push_str($exponent);
+                txt.push_str(exp_txt.as_str());
+                let len = txt.len();
+                let mut space = match $f.width()
+                {
+                    Some(n) => if len >= n {0} else {n - len},
+                    None => 0_usize,
+                };
+                let mut prefix = String::new();
+                if $f.sign_plus()
+                {
+                    prefix.push('+');
+                    space = if space > 1 {space-1} else {0};
+                }
+                if $f.sign_minus()
+                {
+                    prefix.push('-');
+                    space = if space > 1 {space-1} else {0};
+                }
+                if $f.sign_aware_zero_pad()
+                {
+                    for _ in 0..space
+                        { prefix.push('0'); }
+                    write!($f, "{}{}", prefix, txt)
+                }
+                else
+                {
+                    let ch = $f.fill();
+                    if let Some(s) = $f.align()
+                    {
+                        match s
+                        {
+                        Alignment::Left => {
+                                let mut trailing = String::new();
+                                for _ in 0..space
+                                    { trailing.push(ch); }
+                                write!($f, "{}{}{}", prefix, txt, trailing)
+                            },
+                        Alignment::Right => {
+                                let mut leading = String::new();
+                                for _ in 0..space
+                                    { leading.push(ch); }
+                                write!($f, "{}{}{}", leading, prefix, txt)
+                            },
+                        Alignment::Center => {
+                                let mut leading = String::new();
+                                for _ in 0..space>>1
+                                    { leading.push(ch); }
+                                let mut trailing = String::new();
+                                for _ in 0..(space+1)>>1
+                                    { trailing.push(ch); }
+                                write!($f, "{}{}{}{}", leading, prefix, txt, trailing)
+                            },
+                        }
+                    }
+                    else
+                    {
+                        let mut trailing = String::new();
+                        for _ in 0..space
+                            { trailing.push(ch); }
+                        write!($f, "{}{}{}", prefix, txt, trailing)
+                    }
+                }
+            },
             Err(_) => { Err(Error) },
-        }
+        };
+    };
+    ($me:expr, $f:expr, $radix:expr, $prefix:expr, $lowerhex:expr) => {
+        return match $me.to_string_with_radix($radix)
+        {
+            Ok(txt) => {
+                let txt = if $lowerhex {txt.to_lowercase()} else {txt};
+                let len = txt.len();
+                let mut space = match $f.width()
+                {
+                    Some(n) => if len >= n {0} else {n - len},
+                    None => 0_usize,
+                };
+                let mut prefix = String::new();
+                if $f.sign_plus()
+                {
+                    prefix.push('+');
+                    space = if space > 1 {space-1} else {0};
+                }
+                if $f.sign_minus()
+                {
+                    prefix.push('-');
+                    space = if space > 1 {space-1} else {0};
+                }
+                if $f.alternate()
+                {
+                    prefix.push_str($prefix);
+                    space = if space > 2 {space-2} else {0};
+                }
+                if $f.sign_aware_zero_pad()
+                {
+                    for _ in 0..space
+                        { prefix.push('0'); }
+                    write!($f, "{}{}", prefix, txt)
+                }
+                else
+                {
+                    let ch = $f.fill();
+                    if let Some(s) = $f.align()
+                    {
+                        match s
+                        {
+                        Alignment::Left => {
+                                let mut trailing = String::new();
+                                for _ in 0..space
+                                    { trailing.push(ch); }
+                                write!($f, "{}{}{}", prefix, txt, trailing)
+                            },
+                        Alignment::Right => {
+                                let mut leading = String::new();
+                                for _ in 0..space
+                                    { leading.push(ch); }
+                                write!($f, "{}{}{}", leading, prefix, txt)
+                            },
+                        Alignment::Center => {
+                                let mut leading = String::new();
+                                for _ in 0..space>>1
+                                    { leading.push(ch); }
+                                let mut trailing = String::new();
+                                for _ in 0..(space+1)>>1
+                                    { trailing.push(ch); }
+                                write!($f, "{}{}{}{}", leading, prefix, txt, trailing)
+                            },
+                        }
+                    }
+                    else
+                    {
+                        let mut trailing = String::new();
+                        for _ in 0..space
+                            { trailing.push(ch); }
+                        write!($f, "{}{}{}", prefix, txt, trailing)
+                    }
+                }
+            },
+            Err(_) => { Err(Error) },
+        };
     };
     // fmt_with_exponent!(self, f, "e");
     //
@@ -9368,9 +9666,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// ```
     fn fmt(&self, f: &mut Formatter) -> Result<(), Error>
     {
-        // `write!` is like `format!`, but it will write the formatted string
-        // into a buffer (the first argument).
-        fmt_with_radix!(self, f, 10);
+        fmt_with_radix!(self, f, 10, "");
     }
 }
 
@@ -9388,9 +9684,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
 {
     fn fmt(&self, f: &mut Formatter<'_>) -> Result<(), Error>
     {
-        // `write!` is like `format!`, but it will write the formatted string
-        // into a buffer (the first argument)
-        fmt_with_radix!(self, f, 16);
+        fmt_with_radix!(self, f, 16, "0X");
     }
 }
 
@@ -9408,13 +9702,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
 {
     fn fmt(&self, f: &mut Formatter<'_>) -> Result<(), Error>
     {
-        // `write!` is like `format!`, but it will write the formatted string
-        // into a buffer (the first argument)
-        match self.to_string_with_radix(16)
-        {
-            Ok(txt) => { write!(f, "{}", txt.to_lowercase()) },
-            Err(_) => { Err(Error) },
-        }
+        fmt_with_radix!(self, f, 16, "0x", true);
     }
 }
 
@@ -9432,9 +9720,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
 {
     fn fmt(&self, f: &mut Formatter<'_>) -> Result<(), Error>
     {
-        // `write!` is like `format!`, but it will write the formatted string
-        // into a buffer (the first argument)
-        fmt_with_radix!(self, f, 2);
+        fmt_with_radix!(self, f, 2, "0b");
     }
 }
 
@@ -9452,9 +9738,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
 {
     fn fmt(&self, f: &mut Formatter<'_>) -> Result<(), Error>
     {
-        // `write!` is like `format!`, but it will write the formatted string
-        // into a buffer (the first argument)
-        fmt_with_radix!(self, f, 8);
+        fmt_with_radix!(self, f, 8, "0o");
     }
 }
 
@@ -9472,8 +9756,6 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
 {
     fn fmt(&self, f: &mut Formatter<'_>) -> Result<(), Error>
     {
-        // `write!` is like `format!`, but it will write the formatted string
-        // into a buffer (the first argument)
         fmt_with_exponent!(self, f, "E");
     }
 }
@@ -9492,8 +9774,6 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
 {
     fn fmt(&self, f: &mut Formatter<'_>) -> Result<(), Error>
     {
-        // `write!` is like `format!`, but it will write the formatted string
-        // into a buffer (the first argument)
         fmt_with_exponent!(self, f, "e");
     }
 }
@@ -9514,7 +9794,11 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     {
         // `write!` is like `format!`, but it will write the formatted string
         // into a buffer (the first argument)
-        write!(f, "0x{:x}", self as *const Self as usize)
+        let ptr = Self::from_uint(self as *const Self as usize);
+        // f.write_fmt(format_args!("0x{}", self as *const Self as usize))
+        // LowerHex::fmt(&ptr, f)
+        fmt_with_radix!(ptr, f);
+        // write!(f, "{:#x}", self as *const Self as usize)
     }
 }
 

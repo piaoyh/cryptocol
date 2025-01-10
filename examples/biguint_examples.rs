@@ -52,21 +52,23 @@ fn biguint_quick_start1()
     let b = U1024::from_str_radix("00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000001__00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000001__00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000001__00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000001__00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000001__00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000001__00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000001__00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000001", 2).unwrap();
     let c = U1024::from_str("1234567891234567879123456789111111111222222222333333333444444444555555555666666666777777777888888888999999999000000000").unwrap();
 
-    println!("a = {:?}\nOverflow: {}\nUnderflow: {}\nInfiniity: {}\nDivided_by_Zero: {}", a.get_number(), a.is_overflow(), a.is_underflow(), a.is_infinity(), a.is_divided_by_zero());
+    println!("a = {:?}\nOverflow: {}\nUnderflow: {}\nInfiniity: {}\nUndefined: {}\nDivided_by_Zero: {}", a.get_number(), a.is_overflow(), a.is_underflow(), a.is_infinity(), a.is_undefined(), a.is_divided_by_zero());
     assert_eq!(*a.get_number(), [1, 1, 1, 1, 1, 1, 1, 1]);
     assert_eq!(a.is_overflow(), false);
     assert_eq!(a.is_underflow(), false);
     assert_eq!(a.is_infinity(), false);
+    assert_eq!(a.is_undefined(), false);
     assert_eq!(a.is_divided_by_zero(), false);
 
     println!("a = {}", a.to_string_with_radix(16).unwrap());
     assert_eq!(a.to_string_with_radix(16).unwrap(), "100000000000000000000000000000001000000000000000000000000000000010000000000000000000000000000000100000000000000000000000000000001000000000000000000000000000000010000000000000000000000000000000100000000000000000000000000000001");
 
-    println!("b = {:?}\nOverflow: {}\nUnderflow: {}\nInfiniity: {}\nDivided_by_Zero: {}", b.get_number(), b.is_overflow(), b.is_underflow(), b.is_infinity(), b.is_divided_by_zero());
+    println!("b = {:?}\nOverflow: {}\nUnderflow: {}\nInfiniity: {}\nUndefined: {}\nDivided_by_Zero: {}", b.get_number(), b.is_overflow(), b.is_underflow(), b.is_infinity(), b.is_undefined(), b.is_divided_by_zero());
     assert_eq!(*b.get_number(), [1, 1, 1, 1, 1, 1, 1, 1]);
     assert_eq!(b.is_overflow(), false);
     assert_eq!(b.is_underflow(), false);
     assert_eq!(b.is_infinity(), false);
+    assert_eq!(b.is_undefined(), false);
     assert_eq!(b.is_divided_by_zero(), false);
     println!("b = {}", b.to_string());
     println!("b = {}", b.to_string_with_radix(16).unwrap());
@@ -8758,62 +8760,66 @@ fn biguint_modular_rem_uint()
     println!("{} % {} = {} (mod {})", dividend, divisor, remainder, modulo);
     assert_eq!(remainder.to_string(), "0");
 
+    #[cfg(test)] // It will panic.
+    biguint_should_panic_modular_rem_uint();
+    println!("---------------------------");
+}
+
+#[test]
+#[should_panic]
+fn biguint_should_panic_modular_rem_uint()
+{
+    use std::str::FromStr;
+    use cryptocol::define_utypes_with;
+    define_utypes_with!(u8);
+
     // modulo >= 2 and dividend != 0 and divisor == 0    
     let _dividend = U256::from_str("123456789015758942546236989636279846864825945392").unwrap();
     let _divisor = 0_u8;
     let _modulo = U256::from_uint(100_u8);
-    // It will panic!
-    // let quotient = _dividend.modular_rem_uint(_divisor, &_modulo);
+    let _quotient = _dividend.modular_rem_uint(_divisor, &_modulo);
 
     // modulo >= 2 and dividend != 0 and divisor == multiple of modulo
     let _dividend = U256::from_str("123456789015758942546236989636279846864825945392").unwrap();
     let _divisor = 200_u8;
     let _modulo = U256::from_uint(100_u8);
-    // It will panic!
-    // let quotient = _dividend.modular_rem_uint(_divisor, &_modulo);
+    let _quotient = _dividend.modular_rem_uint(_divisor, &_modulo);
 
     // modulo >= 2 and dividend == 0 and divisor == 0
     let _dividend = U256::zero();
     let _divisor = 0_u8;
     let _modulo = U256::from_uint(100_u8);
-    // It will panic!
-    // let quotient = _dividend.modular_rem_uint(_divisor, &_modulo);
+    let _quotient = _dividend.modular_rem_uint(_divisor, &_modulo);
 
     // modulo >= 2 and dividend == 0 and divisor == multiple of modulo
     let _dividend = U256::zero();
     let _divisor = 200_u8;
     let _modulo = U256::from_uint(100_u8);
-    // It will panic!
-    // let quotient = _dividend.modular_rem_uint(_divisor, &_modulo);
+    let _quotient = _dividend.modular_rem_uint(_divisor, &_modulo);
 
     // modulo >= 2 and dividend == multiple of modulo and divisor == 0
     let _dividend = U256::from_uint(200_u8);
     let _divisor = 0_u8;
     let _modulo = U256::from_uint(100_u8);
-    // It will panic!
-    // let quotient = _dividend.modular_rem_uint(_divisor, &_modulo);
+    let _quotient = _dividend.modular_rem_uint(_divisor, &_modulo);
 
     // modulo >= 2 and dividend == multiple of modulo and divisor == multiple of modulo
     let _dividend = U256::from_uint(200_u8);
     let _divisor = 200_u8;
     let _modulo = U256::from_uint(100_u8);
-    // It will panic!
-    // let quotient = _dividend.modular_rem_uint(_divisor, &_modulo);
+    let _quotient = _dividend.modular_rem_uint(_divisor, &_modulo);
 
     // modulo == 0
     let _dividend = U256::from_str("123456789015758942546236989636279846864825945392").unwrap();
     let _divisor = 128_u8;
     let _modulo = U256::zero();
-    // It will panic!
-    // let quotient = _dividend.modular_rem_uint(_divisor, &_modulo);
+    let _quotient = _dividend.modular_rem_uint(_divisor, &_modulo);
 
     // modulo == 1
     let _dividend = U256::from_str("123456789015758942546236989636279846864825945392").unwrap();
     let _divisor = 128_u8;
     let _modulo = U256::one();
-    // It will panic!
-    // let quotient = _dividend.modular_rem_uint(_divisor, &_modulo);
-    println!("---------------------------");
+    let _quotient = _dividend.modular_rem_uint(_divisor, &_modulo);
 }
 
 fn biguint_modular_rem_assign_uint()
@@ -8882,6 +8888,19 @@ fn biguint_modular_rem_assign_uint()
     assert_eq!(a_biguint.is_infinity(), false);
     assert_eq!(a_biguint.is_undefined(), false);
     assert_eq!(a_biguint.is_divided_by_zero(), false);
+
+    #[cfg(test)] // It will panic.
+    biguint_hould_panic_modular_rem_assign_uint();
+    println!("---------------------------");
+}
+
+#[test]
+#[should_panic]
+fn biguint_hould_panic_modular_rem_assign_uint()
+{
+    use std::str::FromStr;
+    use cryptocol::define_utypes_with;
+    define_utypes_with!(u16);
 
     // modulo >= 2 and dividend != 0 and divisor == 0
     let _a_biguint = U256::from_str("123456789015758942546236989636279846864825945392").unwrap();
@@ -9541,11 +9560,22 @@ fn biguint_next_multiple_of_uint()
     assert_eq!(multiple.is_divided_by_zero(), false);
     assert_eq!(multiple.is_undefined(), false);
 
+    #[cfg(test)] // It will panic.
+    biguint_should_panic_next_multiple_of_uint();
+    println!("---------------------------");
+}
+
+#[test]
+#[should_panic]
+fn biguint_should_panic_next_multiple_of_uint()
+{
+    use std::str::FromStr;
+    use cryptocol::define_utypes_with;
+    define_utypes_with!(u32);
+
     let _a_biguint = U256::from_str("123456789012345678901234567890123456789").unwrap();
     let _num = 0_u32;
-    // It will panic.
-    // let _multiple = _a_biguint.next_multiple_of_uint(_num);
-    println!("---------------------------");
+    let _multiple = _a_biguint.next_multiple_of_uint(_num);
 }
 
 fn biguint_next_multiple_of_assign_uint()
@@ -34417,23 +34447,28 @@ fn biguint_display_fmt_for_numbererr()
     use std::str::FromStr;
 
     let a = 7_usize;
-    println!("{:b}", a);
-    println!("{:x}", a);
-    println!("{:X}", a);
-    println!("{:o}", a);
-    println!("{:e}", a);
-    println!("{:E}", a);
-    println!("{:p}", &a);
+    println!("{:#010b}", a);
+    println!("{:G>#10x}", a);
+    println!("{:K>#010X}", a);
+    println!("{:@<#10o}", a);
+    println!("{:@^10e}", a);
+    println!("{:>010E}", a);
+    println!("{:!<20p}", &a);
     println!("===========");
-    let a_biguint = U256::from_str("6123").unwrap();
+    let a_biguint = U256::from_str("612356987").unwrap();
+    println!("{:#030}", a_biguint);
+    println!("{:#030b}", a_biguint);
     println!("{:b}", a_biguint);
-    println!("{:x}", a_biguint);
-    println!("{:X}", a_biguint);
-    println!("{:o}", a_biguint);
-    println!("{:e}", a_biguint);
-    println!("{:E}", a_biguint);
-    println!("{:p}", a_biguint);
- 
+    println!("{:@^#10x}", a_biguint);
+    println!("{:>#20X}", a_biguint);
+    println!("{:#o}", a_biguint);
+    println!("{:>10e}", a_biguint);
+    println!("{:>010E}", a_biguint);
+    println!("{:^10e}", a_biguint);
+    println!("{:^10.3E}", a_biguint);
+    println!("{:>20p}", a_biguint);
+    println!("{:>020p}", a_biguint);
+    println!("{:>#020p}", a_biguint);
 }
 
 /*

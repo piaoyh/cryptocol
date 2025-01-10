@@ -15254,7 +15254,7 @@ macro_rules! operators_for_integer_unions_impl {
             /// use cryptocol::number::IntUnion;
             /// 
             /// let mut a_intunion = IntUnion::new_with(u32::MAX / 3);
-            /// println!("Originally, a_shortunion = {}", a_intunion);
+            /// println!("Originally, a_intunion = {}", a_intunion);
             /// let b_intunion = IntUnion::new_with(2_u32);
             /// a_intunion /= b_intunion;
             /// println!("After a_intunion /= {}, a_intunion = {}", b_intunion, a_intunion);
@@ -15266,7 +15266,7 @@ macro_rules! operators_for_integer_unions_impl {
             /// use cryptocol::number::LongUnion;
             /// 
             /// let mut a_longunion = LongUnion::new_with(u64::MAX / 3);
-            /// println!("Originally, a_shortunion = {}", a_longunion);
+            /// println!("Originally, a_longunion = {}", a_longunion);
             /// let b_longunion = LongUnion::new_with(2_u64);
             /// a_longunion /= b_longunion;
             /// println!("After a_longunion /= {}, a_longunion = {}", b_longunion, a_longunion);
@@ -15278,7 +15278,7 @@ macro_rules! operators_for_integer_unions_impl {
             /// use cryptocol::number::LongerUnion;
             /// 
             /// let mut a_longerunion = LongerUnion::new_with(u128::MAX / 3);
-            /// println!("Originally, a_shortunion = {}", a_longerunion);
+            /// println!("Originally, a_longerunion = {}", a_longerunion);
             /// let b_longerunion = LongerUnion::new_with(2_u128);
             /// a_longerunion /= b_longerunion;
             /// println!("After a_longerunion /= {}, a_longerunion = {}", b_longerunion, a_longerunion);
@@ -15290,7 +15290,7 @@ macro_rules! operators_for_integer_unions_impl {
             /// use cryptocol::number::SizeUnion;
             /// 
             /// let mut a_sizeunion = SizeUnion::new_with(usize::MAX / 3);
-            /// println!("Originally, a_shortunion = {}", a_shortunion);
+            /// println!("Originally, a_sizeunion = {}", a_sizeunion);
             /// let b_sizeunion = SizeUnion::new_with(2_usize);
             /// a_sizeunion /= b_sizeunion;
             /// println!("After a_sizeunion /= {}, a_sizeunion = {}", b_sizeunion, a_sizeunion);
@@ -15305,30 +15305,35 @@ macro_rules! operators_for_integer_unions_impl {
             /// 
             /// // Example for ShortUnion
             /// let mut a_shortunion = ShortUnion::new_with(u16::MAX / 3);
+            /// println!("Originally, a_shortunion = {}", a_shortunion);
             /// let b_shortunion = ShortUnion::zero();
             /// a_shortunion /= b_shortunion;
             /// println!("After a_shortunion /= {}, a_shortunion = {}", b_shortunion, a_shortunion);
             /// 
             /// // Example for IntUnion
             /// let mut a_intunion = IntUnion::new_with(u32::MAX / 3);
+            /// println!("Originally, a_intunion = {}", a_intunion);
             /// let b_intunion = IntUnion::zero();
             /// a_intunion /= b_intunion;
             /// println!("After a_intunion /= {}, a_intunion = {}", b_intunion, a_intunion);
             /// 
             /// // Example for LongUnion
             /// let mut a_longunion = LongUnion::new_with(u64::MAX / 3);
+            /// println!("Originally, a_longunion = {}", a_longunion);
             /// let b_longunion = LongUnion::zero();
             /// a_longunion /= b_longunion;
             /// println!("After a_longunion /= {}, a_longunion = {}", b_longunion, a_longunion);
             /// 
             /// // Example for LongerUnion
             /// let mut a_longerunion = LongerUnion::new_with(u128::MAX / 3);
+            /// println!("Originally, a_longerunion = {}", a_longerunion);
             /// let b_longerunion = LongerUnion::zero();
             /// a_longerunion /= b_longerunion;
             /// println!("After a_longerunion /= {}, a_longerunion = {}", b_longerunion, a_longerunion);
             /// 
             /// // Example for SizeUnion
             /// let mut a_sizeunion = SizeUnion::new_with(usize::MAX / 3);
+            /// println!("Originally, a_sizeunion = {}", a_sizeunion);
             /// let b_sizeunion = SizeUnion::zero();
             /// a_sizeunion /= b_sizeunion;
             /// println!("After a_sizeunion /= {}, a_sizeunion = {}", b_sizeunion, a_sizeunion);
@@ -15472,6 +15477,7 @@ macro_rules! operators_for_integer_unions_impl {
             /// use cryptocol::number::ShortUnion;
             /// 
             /// let mut a_shortunion = ShortUnion::new_with(u16::MAX / 3);
+            /// println!("Originally, a_shortunion = {}", a_shortunion);
             /// let b_shortunion = ShortUnion::new_with(3_u16);
             /// a_shortunion %= b_shortunion;
             /// println!("After a_shortunion /= {}, a_shortunion = {}", b_shortunion, a_shortunion);
@@ -15483,6 +15489,7 @@ macro_rules! operators_for_integer_unions_impl {
             /// use cryptocol::number::IntUnion;
             /// 
             /// let mut a_intunion = IntUnion::new_with(u32::MAX / 3);
+            /// println!("Originally, a_intunion = {}", a_intunion);
             /// let b_intunion = IntUnion::new_with(3_u32);
             /// a_intunion %= b_intunion;
             /// println!("After a_intunion /= {}, a_intunion = {}", b_intunion, a_shortunion);
@@ -15494,6 +15501,7 @@ macro_rules! operators_for_integer_unions_impl {
             /// use cryptocol::number::LongUnion;
             /// 
             /// let mut a_longunion = LongUnion::new_with(u64::MAX / 3);
+            /// println!("Originally, a_longunion = {}", a_longunion);
             /// let b_longunion = LongUnion::new_with(3_u64);
             /// a_longunion %= b_longunion;
             /// println!("After a_longunion /= {}, b_longunion = {}", b_intunion, a_longunion);
@@ -15505,6 +15513,7 @@ macro_rules! operators_for_integer_unions_impl {
             /// use cryptocol::number::LongerUnion;
             /// 
             /// let mut a_longerunion = LongerUnion::new_with(u128::MAX / 3);
+            /// println!("Originally, a_longerunion = {}", a_longerunion);
             /// let b_longerunion = LongerUnion::new_with(3_u128);
             /// a_longerunion %= b_longerunion;
             /// println!("After a_longerunion /= {}, a_longerunion = {}", b_longerunion, a_longerunion);
@@ -15516,6 +15525,7 @@ macro_rules! operators_for_integer_unions_impl {
             /// use cryptocol::number::SizeUnion;
             /// 
             /// let mut a_sizeunion = SizeUnion::new_with(usize::MAX / 3);
+            /// println!("Originally, a_sizeunion = {}", a_sizeunion);
             /// let b_sizeunion = SizeUnion::new_with(3_usize);
             /// a_sizeunion %= b_sizeunion;
             /// println!("After a_sizeunion /= {}, a_sizeunion = {}", b_sizeunion, a_sizeunion);
@@ -15528,30 +15538,35 @@ macro_rules! operators_for_integer_unions_impl {
             /// 
             /// // Example for ShortUnion
             /// let mut a_shortunion = ShortUnion::new_with(u16::MAX / 3);
+            /// println!("Originally, a_shortunion = {}", a_shortunion);
             /// let b_shortunion = ShortUnion::zero();
             /// a_shortunion %= b_shortunion;
             /// println!("After a_shortunion /= {}, a_shortunion = {}", b_shortunion, a_shortunion);
             /// 
             /// // Example for IntUnion
             /// let mut a_intunion = IntUnion::new_with(u32::MAX / 3);
+            /// println!("Originally, a_intunion = {}", a_intunion);
             /// let b_intunion = IntUnion::zero();
             /// a_intunion %= b_intunion;
             /// println!("After a_intunion /= {}, a_intunion = {}", b_intunion, a_shortunion);
             /// 
             /// // Example for LongUnion
             /// let mut a_longunion = LongUnion::new_with(u64::MAX / 3);
+            /// println!("Originally, a_longunion = {}", a_longunion);
             /// let b_longunion = LongUnion::zero();
             /// a_longunion %= b_longunion;
             /// println!("After a_longunion /= {}, b_longunion = {}", b_intunion, a_longunion);
             /// 
             /// // Example for LongerUnion
             /// let mut a_longerunion = LongerUnion::new_with(u128::MAX / 3);
+            /// println!("Originally, a_longerunion = {}", a_longerunion);
             /// let b_longerunion = LongerUnion::zero();
             /// a_longerunion %= b_longerunion;
             /// println!("After a_longerunion /= {}, a_longerunion = {}", b_longerunion, a_longerunion);
             /// 
             /// // Example for SizeUnion
             /// let mut a_sizeunion = SizeUnion::new_with(usize::MAX / 3);
+            /// println!("Originally, a_sizeunion = {}", a_sizeunion);
             /// let b_sizeunion = SizeUnion::zero();
             /// a_sizeunion %= b_sizeunion;
             /// println!("After a_sizeunion /= {}, a_sizeunion = {}", b_sizeunion, a_sizeunion);
@@ -15587,12 +15602,21 @@ macro_rules! operators_for_integer_unions_impl {
             /// let c_shortunion = a_shortunion & b_shortunion;
             /// println!("{:b} & {:b} = {:b}", a_shortunion, b_shortunion, c_shortunion);
             /// assert_eq!(c_shortunion.get(), 0b_1000001110000011_u16);
+            /// ```
+            /// 
+            /// # Example 2 for ShortUinon
+            /// ```
+            /// use cryptocol::number::{ SmallUInt, ShortUnion };
             /// 
             /// let a_shortunion = ShortUnion::new_with(0b_10110011_10001111);
             /// let b_shortunion = ShortUnion::max();
             /// let c_shortunion = a_shortunion & b_shortunion;
             /// println!("{:b} & {:b} = {:b}", a_shortunion, b_shortunion, c_shortunion);
             /// assert_eq!(c_shortunion.get(), 0b_1011001110001111_u16);
+            /// 
+            /// # Example 3 for ShortUinon
+            /// ```
+            /// use cryptocol::number::{ SmallUInt, ShortUnion };
             /// 
             /// let a_shortunion = ShortUnion::new_with(0b_10110011_10001111);
             /// let b_shortunion = ShortUnion::zero();
@@ -15601,7 +15625,7 @@ macro_rules! operators_for_integer_unions_impl {
             /// assert_eq!(c_shortunion.get(), 0_u16);
             /// ```
             /// 
-            /// # Example 2 for IntUnion
+            /// # Example 4 for IntUnion
             /// ```
             /// use cryptocol::number::{ SmallUInt, IntUnion };
             /// 
@@ -15610,12 +15634,22 @@ macro_rules! operators_for_integer_unions_impl {
             /// let c_intunion = a_intunion & b_intunion;
             /// println!("{:b} & {:b} = {:b}", a_intunion, b_intunion, c_intunion);
             /// assert_eq!(c_intunion.get(), 0b_11100000110000001110000011_u32);
+            /// ```
+            /// 
+            /// # Example 5 for IntUnion
+            /// ```
+            /// use cryptocol::number::{ SmallUInt, IntUnion };
             /// 
             /// let a_intunion = IntUnion::new_with(0b_10110011_10001111_00001111_10000011);
             /// let b_intunion = IntUnion::max();
             /// let c_intunion = a_intunion & b_intunion;
             /// println!("{:b} & {:b} = {:b}", a_intunion, b_intunion, c_intunion);
             /// assert_eq!(c_intunion.get(), 0b_10110011100011110000111110000011_u32);
+            /// ```
+            /// 
+            /// # Example 6 for IntUnion
+            /// ```
+            /// use cryptocol::number::{ SmallUInt, IntUnion };
             /// 
             /// let a_intunion = IntUnion::new_with(0b_10110011_10001111_00001111_10000011);
             /// let b_intunion = IntUnion::zero();
@@ -15624,7 +15658,7 @@ macro_rules! operators_for_integer_unions_impl {
             /// assert_eq!(c_intunion.get(), 0_u32);
             /// ```
             /// 
-            /// # Example 3 for LongUnion
+            /// # Example 7 for LongUnion
             /// ```
             /// use cryptocol::number::{ SmallUInt, LongUnion };
             /// 
@@ -15633,12 +15667,22 @@ macro_rules! operators_for_integer_unions_impl {
             /// let c_longunion = a_longunion & b_longunion;
             /// println!("{:b} & {:b} = {:b}", a_longunion, b_longunion, c_longunion);
             /// assert_eq!(c_longunion.get(), 0b_1011000000001111000000001000001110110000000011110000000010000011_u64);
+            /// ```
+            /// 
+            /// # Example 8 for LongUnion
+            /// ```
+            /// use cryptocol::number::{ SmallUInt, LongUnion };
             /// 
             /// let a_longunion = LongUnion::new_with(0b_10110011_10001111_00001111_10000011_11110000_00111111_10000000_11111111);
             /// let b_longunion = LongUnion::max();
             /// let c_longunion = a_longunion & b_longunion;
             /// println!("{:b} & {:b} = {:b}", a_longunion, b_longunion, c_longunion);
             /// assert_eq!(c_longunion.get(), 0b_1011001110001111000011111000001111110000001111111000000011111111_u64);
+            /// ``
+            /// 
+            /// # Example 9 for LongUnion
+            /// ```
+            /// use cryptocol::number::{ SmallUInt, LongUnion };
             /// 
             /// let a_longunion = LongUnion::new_with(0b_10110011_10001111_00001111_10000011_11110000_00111111_10000000_11111111);
             /// let b_longunion = LongUnion::zero();
@@ -15647,7 +15691,7 @@ macro_rules! operators_for_integer_unions_impl {
             /// assert_eq!(c_longunion.get(), 0_u64);
             /// ```
             /// 
-            /// # Example 4 for LongerUnion
+            /// # Example 10 for LongerUnion
             /// ```
             /// use cryptocol::number::{ SmallUInt, LongerUnion };
             /// 
@@ -15656,12 +15700,22 @@ macro_rules! operators_for_integer_unions_impl {
             /// let c_longerunion = a_longerunion & b_longerunion;
             /// println!("{:b} & {:b} = {:b}", a_longerunion, b_longerunion, c_longerunion);
             /// assert_eq!(c_longerunion.get(), 0b_100011110000000000000011111100000000001110000000100000000000000010001111000000000000001111110000000000111000000010000000_u128);
+            /// ```
+            /// 
+            /// # Example 11 for LongerUnion
+            /// ```
+            /// use cryptocol::number::{ SmallUInt, LongerUnion };
             /// 
             /// let a_longerunion = LongerUnion::new_with(0b_10110011_10001111_00001111_10000011_11110000_00111111_10000000_11111111_00000000_11111111_10000000_00111111_11110000_00000011_11111111_10000000);
             /// let b_longerunion = LongerUnion::max();
             /// let c_longerunion = a_longerunion & b_longerunion;
             /// println!("{:b} & {:b} = {:b}", a_longerunion, b_longerunion, c_longerunion);
             /// assert_eq!(c_longerunion.get(), 0b_10110011100011110000111110000011111100000011111110000000111111110000000011111111100000000011111111110000000000111111111110000000_u128);
+            /// ```
+            /// 
+            /// # Example 12 for LongerUnion
+            /// ```
+            /// use cryptocol::number::{ SmallUInt, LongerUnion };
             /// 
             /// let a_longerunion = LongerUnion::new_with(0b_10110011_10001111_00001111_10000011_11110000_00111111_10000000_11111111_00000000_11111111_10000000_00111111_11110000_00000011_11111111_10000000);
             /// let b_longerunion = LongerUnion::zero();
@@ -15670,7 +15724,7 @@ macro_rules! operators_for_integer_unions_impl {
             /// assert_eq!(c_longerunion.get(), 0_u128);
             /// ```
             /// 
-            /// # Example 5 for SizeUnion
+            /// # Example 13 for SizeUnion
             /// ```
             /// use cryptocol::number::{ SmallUInt, SizeUnion };
             /// 
@@ -15685,6 +15739,11 @@ macro_rules! operators_for_integer_unions_impl {
             /// #[cfg(target_pointer_width = "16")]  assert_eq!(c_sizeunion.get(), 0b_1000001110000011_usize);
             /// #[cfg(target_pointer_width = "32")]  assert_eq!(c_sizeunion.get(), 0b_11100000110000001110000011_usize);
             /// #[cfg(target_pointer_width = "64")]  assert_eq!(c_sizeunion.get(), 0b_1011001110001111000011111000001111110000001111111000000011111111_usize);
+            /// ```
+            /// 
+            /// # Example 14 for SizeUnion
+            /// ```
+            /// use cryptocol::number::{ SmallUInt, SizeUnion };
             /// 
             /// #[cfg(target_pointer_width = "16")] let a_sizeunion = SizeUnion::new_with(0b_10110011_10001111);
             /// #[cfg(target_pointer_width = "32")] let a_sizeunion = SizeUnion::new_with(0b_10110011_10001111_00001111_10000011);
@@ -15695,6 +15754,11 @@ macro_rules! operators_for_integer_unions_impl {
             /// #[cfg(target_pointer_width = "16")]  assert_eq!(c_sizeunion.get(), 0b_1011001110001111_usize);
             /// #[cfg(target_pointer_width = "32")]  assert_eq!(c_sizeunion.get(), 0b_0b_10110011100011110000111110000011_usize);
             /// #[cfg(target_pointer_width = "64")]  assert_eq!(c_sizeunion.get(), 0b_1011001110001111000011111000001111110000001111111000000011111111_usize);
+            /// ```
+            /// 
+            /// # Example 15 for SizeUnion
+            /// ```
+            /// use cryptocol::number::{ SmallUInt, SizeUnion };
             /// 
             /// #[cfg(target_pointer_width = "16")] let a_sizeunion = SizeUnion::new_with(0b_10110011_10001111);
             /// #[cfg(target_pointer_width = "32")] let a_sizeunion = SizeUnion::new_with(0b_10110011_10001111_00001111_10000011);
@@ -15723,9 +15787,196 @@ macro_rules! operators_for_integer_unions_impl {
             /// `u64`, `u128`, and `usize`.
             /// [Read more](https://doc.rust-lang.org/std/ops/trait.AddAssign.html#tymethod.add_assign)
             /// 
-            /// # Example
+            /// # Example 1 for ShortUnion
+            /// ```
+            /// use cryptocol::number::{ SmallUInt, ShortUnion };
+            /// 
+            /// let mut a_shortunion = ShortUnion::new_with(0b_10110011_10001111);
+            /// println!("Originally, a_shortunion = {}", a_shortunion);
+            /// let b_shortunion = ShortUnion::new_with(0b_10001111_10110011);
+            /// a_shortunion &= b_shortunion;
+            /// println!("After a_shortunion /= {:b}, a_shortunion = {:b}", b_shortunion, a_shortunion);
+            /// assert_eq!(a_shortunion.get(), 0b_1000001110000011_u16);
             /// ```
             /// 
+            /// # Example 2 for ShortUnion
+            /// ```
+            /// use cryptocol::number::{ SmallUInt, ShortUnion };
+            /// 
+            /// let mut a_shortunion = ShortUnion::new_with(0b_10110011_10001111);
+            /// println!("Originally, a_shortunion = {}", a_shortunion);
+            /// let b_shortunion = ShortUnion::max();
+            /// a_shortunion &= b_shortunion;
+            /// println!("After a_shortunion /= {:b}, a_shortunion = {:b}", b_shortunion, a_shortunion);
+            /// assert_eq!(a_shortunion.get(), 0b_1011001110001111_u16);
+            /// ```
+            /// 
+            /// # Example 3 for ShortUnion
+            /// ```
+            /// use cryptocol::number::{ SmallUInt, ShortUnion };
+            /// 
+            /// let mut a_shortunion = ShortUnion::new_with(0b_10110011_10001111);
+            /// println!("Originally, a_shortunion = {}", a_shortunion);
+            /// let b_shortunion = ShortUnion::zero();
+            /// a_shortunion &= b_shortunion;
+            /// println!("After a_shortunion /= {:b}, a_shortunion = {:b}", b_shortunion, a_shortunion);
+            /// assert_eq!(a_shortunion.get(), 0_u16);
+            /// ```
+            /// 
+            /// # Example 4 for IntUnion
+            /// ```
+            /// use cryptocol::number::{ SmallUInt, IntUnion };
+            /// 
+            /// let mut a_intunion = IntUnion::new_with(0b_10110011_10001111_00001111_10000011);
+            /// println!("Originally, a_intunion = {}", a_intunion);
+            /// let b_intunion = IntUnion::new_with(0b_00001111_10000011_10110011_10001111);
+            /// a_intunion &= b_intunion;
+            /// println!("After a_intunion /= {:b}, a_intunion = {:b}", b_intunion, a_intunion);
+            /// assert_eq!(a_intunion.get(), 0b_11100000110000001110000011_u32);
+            /// ```
+            /// 
+            /// # Example 5 for IntUnion
+            /// ```
+            /// use cryptocol::number::{ SmallUInt, IntUnion };
+            /// 
+            /// let mut a_intunion = IntUnion::new_with(0b_10110011_10001111_00001111_10000011);
+            /// println!("Originally, a_intunion = {}", a_intunion);
+            /// let b_intunion = IntUnion::max();
+            /// a_intunion &= b_intunion;
+            /// println!("After a_intunion /= {:b}, a_intunion = {:b}", b_intunion, a_intunion);
+            /// assert_eq!(a_intunion.get(), 0b_10110011100011110000111110000011_u32);
+            /// ```
+            /// 
+            /// # Example 6 for IntUnion
+            /// ```
+            /// use cryptocol::number::{ SmallUInt, IntUnion };
+            /// 
+            /// let mut a_intunion = IntUnion::new_with(0b_10110011_10001111_00001111_10000011);
+            /// println!("Originally, a_intunion = {}", a_intunion);
+            /// let b_intunion = IntUnion::zero();
+            /// a_intunion &= b_intunion;
+            /// println!("After a_intunion /= {:b}, a_intunion = {:b}", b_intunion, a_intunion);
+            /// assert_eq!(a_intunion.get(), 0_u32);
+            /// ```
+            /// 
+            /// # Example 7 for LongUnion
+            /// ```
+            /// use cryptocol::number::{ SmallUInt, LongUnion };
+            /// 
+            /// let mut a_longunion = LongUnion::new_with(0b_10110011_10001111_00001111_10000011_11110000_00111111_10000000_11111111);
+            /// println!("Originally, a_longunion = {}", a_longunion);
+            /// let b_longunion = LongUnion::new_with(0b_11110000_00111111_10000000_11111111_10110011_10001111_00001111_10000011);
+            /// a_longunion &= b_longunion;
+            /// println!("After a_longunion /= {:b}, a_longunion = {:b}", b_longunion, a_longunion);
+            /// assert_eq!(a_longunion.get(), 0b_1011000000001111000000001000001110110000000011110000000010000011_u64);
+            /// ```
+            /// 
+            /// # Example 8 for LongUnion
+            /// ```
+            /// use cryptocol::number::{ SmallUInt, LongUnion };
+            /// 
+            /// let mut a_longunion = LongUnion::new_with(0b_10110011_10001111_00001111_10000011_11110000_00111111_10000000_11111111);
+            /// println!("Originally, a_longunion = {}", a_longunion);
+            /// let b_longunion = LongUnion::max();
+            /// a_longunion &= b_longunion;
+            /// println!("After a_longunion /= {:b}, a_longunion = {:b}", b_longunion, a_longunion);
+            /// assert_eq!(a_longunion.get(), 0b_1011001110001111000011111000001111110000001111111000000011111111_u64);
+            /// ```
+            /// 
+            /// # Example 9 for LongUnion
+            /// ```
+            /// use cryptocol::number::{ SmallUInt, LongUnion };
+            /// 
+            /// let mut a_longunion = LongUnion::new_with(0b_10110011_10001111_00001111_10000011_11110000_00111111_10000000_11111111);
+            /// println!("Originally, a_longea_longunionrunion = {}", a_longunion);
+            /// let b_longunion = LongUnion::zero();
+            /// a_longunion &= b_longunion;
+            /// println!("After a_longunion /= {:b}, a_longunion = {:b}", b_longunion, a_longunion);
+            /// assert_eq!(a_longunion.get(), 0_u64);
+            /// ```
+            /// 
+            /// # Example 10 for LongerUnion
+            /// ```
+            /// use cryptocol::number::{ SmallUInt, LongerUnion };
+            /// 
+            /// let mut a_longerunion = LongerUnion::new_with(0b_10110011_10001111_00001111_10000011_11110000_00111111_10000000_11111111_00000000_11111111_10000000_00111111_11110000_00000011_11111111_10000000);
+            /// println!("Originally, a_longerunion = {}", a_longerunion);
+            /// let b_longerunion = LongerUnion::new_with(0b_00000000_11111111_10000000_00111111_11110000_00000011_11111111_10000000_10110011_10001111_00001111_10000011_11110000_00111111_10000000_11111111);
+            /// a_longerunion &= b_longerunion;
+            /// println!("After a_longerunion /= {:b}, a_longerunion = {:b}", b_longerunion, a_longerunion);
+            /// assert_eq!(a_longerunion.get(), 0b_100011110000000000000011111100000000001110000000100000000000000010001111000000000000001111110000000000111000000010000000_u128);
+            /// ```
+            /// 
+            /// # Example 11 for LongerUnion
+            /// ```
+            /// use cryptocol::number::{ SmallUInt, LongerUnion };
+            /// 
+            /// let mut a_longerunion = LongerUnion::new_with(0b_10110011_10001111_00001111_10000011_11110000_00111111_10000000_11111111_00000000_11111111_10000000_00111111_11110000_00000011_11111111_10000000);
+            /// println!("Originally, a_longerunion = {}", a_longerunion);
+            /// let b_longerunion = LongerUnion::max();
+            /// a_longerunion &= b_longerunion;
+            /// println!("After a_longerunion /= {:b}, a_longerunion = {:b}", b_longerunion, a_longerunion);
+            /// assert_eq!(a_longerunion.get(), 0b_10110011100011110000111110000011111100000011111110000000111111110000000011111111100000000011111111110000000000111111111110000000_u128);
+            /// ```
+            /// 
+            /// # Example 12 for LongerUnion
+            /// ```
+            /// use cryptocol::number::{ SmallUInt, LongerUnion };
+            /// 
+            /// let mut a_sizeuniona_longerunion = LongerUnion::new_with(0b_10110011_10001111_00001111_10000011_11110000_00111111_10000000_11111111_00000000_11111111_10000000_00111111_11110000_00000011_11111111_10000000);
+            /// println!("Originally, a_longerunion = {}", a_longerunion);
+            /// let b_longerunion = LongerUnion::zero();
+            /// a_longerunion &= b_longerunion;
+            /// println!("After a_longerunion /= {:b}, a_longerunion = {:b}", b_longerunion, a_longerunion);
+            /// assert_eq!(a_longerunion.get(), 0_u128);
+            /// ```
+            /// 
+            /// # Example 13 for SizeUnion
+            /// ```
+            /// use cryptocol::number::{ SmallUInt, SizeUnion };
+            /// 
+            /// #[cfg(target_pointer_width = "16")] let mut a_sizeunion = SizeUnion::new_with(0b_10110011_10001111);
+            /// #[cfg(target_pointer_width = "32")] let mut a_sizeunion = SizeUnion::new_with(0b_10110011_10001111_00001111_10000011);
+            /// #[cfg(target_pointer_width = "64")] let mut a_sizeunion = SizeUnion::new_with(0b_10110011_10001111_00001111_10000011_11110000_00111111_10000000_11111111);
+            /// println!("Originally, a_sizeunion = {}", a_sizeunion);
+            /// #[cfg(target_pointer_width = "16")] let b_sizeunion = SizeUnion::new_with(0b_10001111_10110011);
+            /// #[cfg(target_pointer_width = "32")] let b_sizeunion = SizeUnion::new_with(0b_00001111_10000011_10110011_10001111);
+            /// #[cfg(target_pointer_width = "64")] let b_sizeunion = SizeUnion::new_with(0b_11110000_00111111_10000000_11111111_10110011_10001111_00001111_10000011);
+            /// a_sizeunion &= b_sizeunion;
+            /// println!("After a_sizeunion /= {:b}, a_sizeunion = {:b}", b_sizeunion, a_sizeunion);
+            /// #[cfg(target_pointer_width = "16")]  assert_eq!(a_sizeunion.get(), 0b_1000001110000011_usize);
+            /// #[cfg(target_pointer_width = "32")]  assert_eq!(a_sizeunion.get(), 0b_11100000110000001110000011_usize);
+            /// #[cfg(target_pointer_width = "64")]  assert_eq!(a_sizeunion.get(), 0b_1011000000001111000000001000001110110000000011110000000010000011_usize);
+            /// ```
+            /// 
+            /// # Example 14 for SizeUnion
+            /// ```
+            /// use cryptocol::number::{ SmallUInt, SizeUnion };
+            /// 
+            /// #[cfg(target_pointer_width = "16")] let mut a_sizeunion = SizeUnion::new_with(0b_10110011_10001111);
+            /// #[cfg(target_pointer_width = "32")] let mut a_sizeunion = SizeUnion::new_with(0b_10110011_10001111_00001111_10000011);
+            /// #[cfg(target_pointer_width = "64")] let mut a_sizeunion = SizeUnion::new_with(0b_10110011_10001111_00001111_10000011_11110000_00111111_10000000_11111111);
+            /// println!("Originally, a_sizeunion = {}", a_sizeunion);
+            /// let b_sizeunion = SizeUnion::max();
+            /// a_sizeunion &= b_sizeunion;
+            /// println!("After a_sizeunion /= {:b}, a_sizeunion = {:b}", b_sizeunion, a_sizeunion);
+            /// #[cfg(target_pointer_width = "16")]  assert_eq!(a_sizeunion.get(), 0b_1011001110001111_usize);
+            /// #[cfg(target_pointer_width = "32")]  assert_eq!(a_sizeunion.get(), 0b_0b_10110011100011110000111110000011_usize);
+            /// #[cfg(target_pointer_width = "64")]  assert_eq!(a_sizeunion.get(), 0b_1011001110001111000011111000001111110000001111111000000011111111_usize);
+            /// ```
+            /// 
+            /// # Example 15 for SizeUnion
+            /// ```
+            /// use cryptocol::number::{ SmallUInt, SizeUnion };
+            /// 
+            /// #[cfg(target_pointer_width = "16")] let mut a_sizeunion = SizeUnion::new_with(0b_10110011_10001111);
+            /// #[cfg(target_pointer_width = "32")] let mut a_sizeunion = SizeUnion::new_with(0b_10110011_10001111_00001111_10000011);
+            /// #[cfg(target_pointer_width = "64")] let mut a_sizeunion = SizeUnion::new_with(0b_10110011_10001111_00001111_10000011_11110000_00111111_10000000_11111111);
+            /// println!("Originally, a_sizeunion = {}", a_sizeunion);
+            /// let b_sizeunion = SizeUnion::zero();
+            /// a_sizeunion &= b_sizeunion;
+            /// println!("After a_sizeunion /= {:b}, a_sizeunion = {:b}", b_sizeunion, a_sizeunion);
+            /// assert_eq!(a_sizeunion.get(), 0_usize);
             /// ```
             #[inline]
             fn bitand_assign(&mut self, rhs: Self)
