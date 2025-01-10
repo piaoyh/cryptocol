@@ -238,7 +238,7 @@ macro_rules! fmt_with_exponent
                 }
                 if exp != 0
                     { txt.insert(1, '.'); }
-                txt.push_str($exponent);
+                txt.push($exponent);
                 txt.push_str(exp_txt.as_str());
                 let len = txt.len();
                 let mut space = match $f.width()
@@ -305,97 +305,97 @@ macro_rules! fmt_with_exponent
             Err(_) => { Err(Error) },
         };
     };
-    ($me:expr, $f:expr, $radix:expr, $prefix:expr, $lowerhex:expr) => {
-        return match $me.to_string_with_radix($radix)
-        {
-            Ok(txt) => {
-                let txt = if $lowerhex {txt.to_lowercase()} else {txt};
-                let len = txt.len();
-                let mut space = match $f.width()
-                {
-                    Some(n) => if len >= n {0} else {n - len},
-                    None => 0_usize,
-                };
-                let mut prefix = String::new();
-                if $f.sign_plus()
-                {
-                    prefix.push('+');
-                    space = if space > 1 {space-1} else {0};
-                }
-                if $f.sign_minus()
-                {
-                    prefix.push('-');
-                    space = if space > 1 {space-1} else {0};
-                }
-                if $f.alternate()
-                {
-                    prefix.push_str($prefix);
-                    space = if space > 2 {space-2} else {0};
-                }
-                if $f.sign_aware_zero_pad()
-                {
-                    for _ in 0..space
-                        { prefix.push('0'); }
-                    write!($f, "{}{}", prefix, txt)
-                }
-                else
-                {
-                    let ch = $f.fill();
-                    if let Some(s) = $f.align()
-                    {
-                        match s
-                        {
-                        Alignment::Left => {
-                                let mut trailing = String::new();
-                                for _ in 0..space
-                                    { trailing.push(ch); }
-                                write!($f, "{}{}{}", prefix, txt, trailing)
-                            },
-                        Alignment::Right => {
-                                let mut leading = String::new();
-                                for _ in 0..space
-                                    { leading.push(ch); }
-                                write!($f, "{}{}{}", leading, prefix, txt)
-                            },
-                        Alignment::Center => {
-                                let mut leading = String::new();
-                                for _ in 0..space>>1
-                                    { leading.push(ch); }
-                                let mut trailing = String::new();
-                                for _ in 0..(space+1)>>1
-                                    { trailing.push(ch); }
-                                write!($f, "{}{}{}{}", leading, prefix, txt, trailing)
-                            },
-                        }
-                    }
-                    else
-                    {
-                        let mut trailing = String::new();
-                        for _ in 0..space
-                            { trailing.push(ch); }
-                        write!($f, "{}{}{}", prefix, txt, trailing)
-                    }
-                }
-            },
-            Err(_) => { Err(Error) },
-        };
-    };
-    // fmt_with_exponent!(self, f, "e");
-    //
-    // match self.to_string_with_radix(10)
+    // fmt_with_exponent!(self, f, 'e');
+    // 
+    // return match self.to_string_with_radix(10)
     // {
     //     Ok(mut txt) => {
-    //             let exp = (txt.len() - 1);
-    //             let exp_txt = exp.to_string();
-    //             if exp != 0
-    //                 { txt.insert(1, '.'); }
-    //             txt.push_str("E");
-    //             txt.push_str(exp_txt.as_str());
-    //             write!(f, "{}", txt)
-    //         },
+    //         let exp = txt.len() - 1;
+    //         let exp_txt = exp.to_string();
+    //         if let Some(precision) = f.precision()
+    //         {
+    //             if exp > precision
+    //             {
+    //                 let roundup = txt.as_bytes()[precision + 1] as u32 >= '5' as u32;
+    //                 txt.truncate(precision + 1);
+    //                 if roundup
+    //                 {
+    //                     let num = Self::from_str(txt.as_str()).unwrap();
+    //                     txt = num.wrapping_add_uint(1_u8).to_string();
+    //                 }
+    //             }
+    //         }
+    //         if exp != 0
+    //             { txt.insert(1, '.'); }
+    //         txt.push('e');
+    //         txt.push_str(exp_txt.as_str());
+    //         let len = txt.len();
+    //         let mut space = match $f.width()
+    //         {
+    //             Some(n) => if len >= n {0} else {n - len},
+    //             None => 0_usize,
+    //         };
+    //         let mut prefix = String::new();
+    //         if f.sign_plus()
+    //         {
+    //             prefix.push('+');
+    //             space = if space > 1 {space-1} else {0};
+    //         }
+    //         if f.sign_minus()
+    //         {
+    //             prefix.push('-');
+    //             space = if space > 1 {space-1} else {0};
+    //         }
+    //         if f.sign_aware_zero_pad()
+    //         {
+    //             for _ in 0..space
+    //                 { prefix.push('0'); }
+    //             write!(f, "{}{}", prefix, txt)
+    //         }
+    //         else
+    //         {
+    //             let ch = f.fill();
+    //             if let Some(s) = f.align()
+    //             {
+    //                 match s
+    //                 {
+    //                 Alignment::Left => {
+    //                         let mut trailing = String::new();
+    //                         for _ in 0..space
+    //                             { trailing.push(ch); }
+    //                         write!(f, "{}{}{}", prefix, txt, trailing)
+    //                     },
+    //                 Alignment::Right => {
+    //                         let mut leading = String::new();
+    //                         for _ in 0..space
+    //                             { leading.push(ch); }
+    //                         write!(f, "{}{}{}", leading, prefix, txt)
+    //                     },
+    //                 Alignment::Center => {
+    //                         let mut leading = String::new();
+    //                         for _ in 0..space>>1
+    //                             { leading.push(ch); }
+    //                         let mut trailing = String::new();
+    //                         for _ in 0..(space+1)>>1
+    //                             { trailing.push(ch); }
+    //                         write!(f, "{}{}{}{}", leading, prefix, txt, trailing)
+    //                     },
+    //                 }
+    //             }
+    //             else
+    //             {
+    //                 let mut trailing = String::new();
+    //                 for _ in 0..space
+    //                     { trailing.push(ch); }
+    //                 write!(f, "{}{}{}", prefix, txt, trailing)
+    //             }
+    //         }
+    //     },
     //     Err(_) => { Err(Error) },
-    // }
+    // };
 }
+
+
 
 /// I would like to suggest the modification of Rust grammar because the
 /// operator `+` swallows (takes the ownership of) two operands which are
@@ -9620,6 +9620,17 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
 
 
 
+/// Format trait for an empty format, {}.
+/// - Implementing this trait for a type will automatically implement the
+///   ToString trait for the type, allowing the usage of the .to_string()
+///   method.
+/// - Prefer implementing the Display trait for a type, rather than ToString.
+/// - Display is similar to Debug, but Display is for user-facing output,
+///   and so cannot be derived.
+/// - For more information on the trait Display,
+///   [read more](https://doc.rust-lang.org/std/fmt/trait.Display.html).
+/// - For more information on formatters,
+///   see [the module-level documentation](https://doc.rust-lang.org/std/fmt/index.html).
 impl<T, const N: usize> Display for BigUInt<T, N>
 where T: SmallUInt + Copy + Clone + Display + Debug + ToString
         + Add<Output=T> + AddAssign + Sub<Output=T> + SubAssign
@@ -9641,6 +9652,13 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// Automagically the function `to_string()` will be implemented. So, you
     /// can use the function `to_string()` and the macro `println!()`.
     /// [Read more](https://doc.rust-lang.org/core/fmt/trait.Display.html#tymethod.fmt)
+    /// 
+    /// # Errors
+    /// This function should return Err if, and only if, the provided Formatter
+    /// returns Err. String formatting is considered an infallible operation;
+    /// this function only returns a Result because writing to the underlying
+    /// stream might fail and it must provide a way to propagate the fact that
+    /// an error has occurred back up the stack.
     /// 
     /// # Example 1
     /// ```
@@ -9671,7 +9689,14 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
 }
 
 
-
+/// X formatting.
+/// - The UpperHex trait should format its output as a number in hexadecimal,
+///   with A through F in upper case.
+/// - The alternate flag, #, adds a 0X in front of the output.
+/// - For more information on the trait UpperHex,
+///   [read more](https://doc.rust-lang.org/std/fmt/trait.UpperHex.html).
+/// - For more information on formatters,
+///   see [the module-level documentation](https://doc.rust-lang.org/std/fmt/index.html).
 impl<T, const N: usize> UpperHex for BigUInt<T, N>
 where T: SmallUInt + Copy + Clone + Display + Debug + ToString
         + Add<Output=T> + AddAssign + Sub<Output=T> + SubAssign
@@ -9682,6 +9707,42 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
         + BitXor<Output=T> + BitXorAssign + Not<Output=T>
         + PartialEq + PartialOrd
 {
+    // fn fmt(&self, f: &mut Formatter) -> fmt::Result
+    /// Formats the value using the given formatter.
+    /// 
+    /// # Arguments
+    /// `f` is a buffer, this method must write the formatted string into it,
+    /// and is of the type `&mut Formatter`.
+    /// 
+    /// # Errors
+    /// This function should return Err if, and only if, the provided Formatter
+    /// returns Err. String formatting is considered an infallible operation;
+    /// this function only returns a Result because writing to the underlying
+    /// stream might fail and it must provide a way to propagate the fact that
+    /// an error has occurred back up the stack.
+    /// 
+    /// # Example 1
+    /// ```
+    /// use std::str::FromStr;
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u8);
+    /// 
+    /// let a_biguint = U256::from_str("69743176821145534028236692093846345739169743176821145534028236692093846345739").unwrap();
+    /// println!("{}", a_biguint);
+    /// assert_eq!(a_biguint.to_string(), "69743176821145534028236692093846345739169743176821145534028236692093846345739");
+    /// ```
+    /// 
+    /// # Example 2
+    /// ```
+    /// use std::str::FromStr;
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u8);
+    /// 
+    /// let a_biguint = U256::from_str("1234567_1234567890_1234567890_1234567890_1234567890_1234567890_1234567890_1234567890").unwrap();
+    /// let txt = a_biguint.to_string();
+    /// println!("{}", txt);
+    /// assert_eq!(txt, "12345671234567890123456789012345678901234567890123456789012345678901234567890");
+    /// ```
     fn fmt(&self, f: &mut Formatter<'_>) -> Result<(), Error>
     {
         fmt_with_radix!(self, f, 16, "0X");
@@ -9690,6 +9751,14 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
 
 
 
+/// x formatting.
+/// - The LowerHex trait should format its output as a number in hexadecimal,
+///   with a through f in lower case.
+/// - The alternate flag, #, adds a 0x in front of the output.
+/// - For more information on the trait LowerHex,
+///   [read more](https://doc.rust-lang.org/std/fmt/trait.LowerHex.html).
+/// - For more information on formatters,
+///   see [the module-level documentation](https://doc.rust-lang.org/std/fmt/index.html).
 impl<T, const N: usize> LowerHex for BigUInt<T, N>
 where T: SmallUInt + Copy + Clone + Display + Debug + ToString
         + Add<Output=T> + AddAssign + Sub<Output=T> + SubAssign
@@ -9700,6 +9769,42 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
         + BitXor<Output=T> + BitXorAssign + Not<Output=T>
         + PartialEq + PartialOrd
 {
+    // fn fmt(&self, f: &mut Formatter) -> fmt::Result
+    /// Formats the value using the given formatter.
+    /// 
+    /// # Arguments
+    /// `f` is a buffer, this method must write the formatted string into it,
+    /// and is of the type `&mut Formatter`.
+    /// 
+    /// # Errors
+    /// This function should return Err if, and only if, the provided Formatter
+    /// returns Err. String formatting is considered an infallible operation;
+    /// this function only returns a Result because writing to the underlying
+    /// stream might fail and it must provide a way to propagate the fact that
+    /// an error has occurred back up the stack.
+    /// 
+    /// # Example 1
+    /// ```
+    /// use std::str::FromStr;
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u8);
+    /// 
+    /// let a_biguint = U256::from_str("69743176821145534028236692093846345739169743176821145534028236692093846345739").unwrap();
+    /// println!("{}", a_biguint);
+    /// assert_eq!(a_biguint.to_string(), "69743176821145534028236692093846345739169743176821145534028236692093846345739");
+    /// ```
+    /// 
+    /// # Example 2
+    /// ```
+    /// use std::str::FromStr;
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u8);
+    /// 
+    /// let a_biguint = U256::from_str("1234567_1234567890_1234567890_1234567890_1234567890_1234567890_1234567890_1234567890").unwrap();
+    /// let txt = a_biguint.to_string();
+    /// println!("{}", txt);
+    /// assert_eq!(txt, "12345671234567890123456789012345678901234567890123456789012345678901234567890");
+    /// ```
     fn fmt(&self, f: &mut Formatter<'_>) -> Result<(), Error>
     {
         fmt_with_radix!(self, f, 16, "0x", true);
@@ -9708,6 +9813,13 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
 
 
 
+/// b formatting.
+/// - The Binary trait should format its output as a number in binary with 0 and 1.
+/// - The alternate flag, #, adds a 0b in front of the output.
+/// - For more information on the trait LowerHex,
+///   [read more](https://doc.rust-lang.org/std/fmt/trait.Binary.html).
+/// - For more information on formatters,
+///   see [the module-level documentation](https://doc.rust-lang.org/std/fmt/index.html).
 impl<T, const N: usize> Binary for BigUInt<T, N>
 where T: SmallUInt + Copy + Clone + Display + Debug + ToString
         + Add<Output=T> + AddAssign + Sub<Output=T> + SubAssign
@@ -9718,6 +9830,42 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
         + BitXor<Output=T> + BitXorAssign + Not<Output=T>
         + PartialEq + PartialOrd
 {
+    // fn fmt(&self, f: &mut Formatter) -> fmt::Result
+    /// Formats the value using the given formatter.
+    /// 
+    /// # Arguments
+    /// `f` is a buffer, this method must write the formatted string into it,
+    /// and is of the type `&mut Formatter`.
+    /// 
+    /// # Errors
+    /// This function should return Err if, and only if, the provided Formatter
+    /// returns Err. String formatting is considered an infallible operation;
+    /// this function only returns a Result because writing to the underlying
+    /// stream might fail and it must provide a way to propagate the fact that
+    /// an error has occurred back up the stack.
+    /// 
+    /// # Example 1
+    /// ```
+    /// use std::str::FromStr;
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u8);
+    /// 
+    /// let a_biguint = U256::from_str("69743176821145534028236692093846345739169743176821145534028236692093846345739").unwrap();
+    /// println!("{}", a_biguint);
+    /// assert_eq!(a_biguint.to_string(), "69743176821145534028236692093846345739169743176821145534028236692093846345739");
+    /// ```
+    /// 
+    /// # Example 2
+    /// ```
+    /// use std::str::FromStr;
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u8);
+    /// 
+    /// let a_biguint = U256::from_str("1234567_1234567890_1234567890_1234567890_1234567890_1234567890_1234567890_1234567890").unwrap();
+    /// let txt = a_biguint.to_string();
+    /// println!("{}", txt);
+    /// assert_eq!(txt, "12345671234567890123456789012345678901234567890123456789012345678901234567890");
+    /// ```
     fn fmt(&self, f: &mut Formatter<'_>) -> Result<(), Error>
     {
         fmt_with_radix!(self, f, 2, "0b");
@@ -9726,6 +9874,13 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
 
 
 
+/// o formatting.
+/// - The Octal trait should format its output as a number in base-8.
+/// - The alternate flag, #, adds a 0o in front of the output.
+/// - For more information on the trait LowerHex,
+///   [read more](https://doc.rust-lang.org/std/fmt/trait.Octal.html).
+/// - For more information on formatters,
+///   see [the module-level documentation](https://doc.rust-lang.org/std/fmt/index.html).
 impl<T, const N: usize> Octal for BigUInt<T, N>
 where T: SmallUInt + Copy + Clone + Display + Debug + ToString
         + Add<Output=T> + AddAssign + Sub<Output=T> + SubAssign
@@ -9736,6 +9891,42 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
         + BitXor<Output=T> + BitXorAssign + Not<Output=T>
         + PartialEq + PartialOrd
 {
+    // fn fmt(&self, f: &mut Formatter) -> fmt::Result
+    /// Formats the value using the given formatter.
+    /// 
+    /// # Arguments
+    /// `f` is a buffer, this method must write the formatted string into it,
+    /// and is of the type `&mut Formatter`.
+    /// 
+    /// # Errors
+    /// This function should return Err if, and only if, the provided Formatter
+    /// returns Err. String formatting is considered an infallible operation;
+    /// this function only returns a Result because writing to the underlying
+    /// stream might fail and it must provide a way to propagate the fact that
+    /// an error has occurred back up the stack.
+    /// 
+    /// # Example 1
+    /// ```
+    /// use std::str::FromStr;
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u8);
+    /// 
+    /// let a_biguint = U256::from_str("69743176821145534028236692093846345739169743176821145534028236692093846345739").unwrap();
+    /// println!("{}", a_biguint);
+    /// assert_eq!(a_biguint.to_string(), "69743176821145534028236692093846345739169743176821145534028236692093846345739");
+    /// ```
+    /// 
+    /// # Example 2
+    /// ```
+    /// use std::str::FromStr;
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u8);
+    /// 
+    /// let a_biguint = U256::from_str("1234567_1234567890_1234567890_1234567890_1234567890_1234567890_1234567890_1234567890").unwrap();
+    /// let txt = a_biguint.to_string();
+    /// println!("{}", txt);
+    /// assert_eq!(txt, "12345671234567890123456789012345678901234567890123456789012345678901234567890");
+    /// ```
     fn fmt(&self, f: &mut Formatter<'_>) -> Result<(), Error>
     {
         fmt_with_radix!(self, f, 8, "0o");
@@ -9744,6 +9935,13 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
 
 
 
+/// E formatting.
+/// - The UpperExp trait should format its output in scientific notation
+///   with a upper-case E.
+/// - For more information on the trait UpperExp,
+///   [read more](https://doc.rust-lang.org/std/fmt/trait.UpperExp.html).
+/// - For more information on formatters,
+///   see [the module-level documentation](https://doc.rust-lang.org/std/fmt/index.html).
 impl<T, const N: usize> UpperExp for BigUInt<T, N>
 where T: SmallUInt + Copy + Clone + Display + Debug + ToString
         + Add<Output=T> + AddAssign + Sub<Output=T> + SubAssign
@@ -9754,14 +9952,57 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
         + BitXor<Output=T> + BitXorAssign + Not<Output=T>
         + PartialEq + PartialOrd
 {
+    // fn fmt(&self, f: &mut Formatter) -> fmt::Result
+    /// Formats the value using the given formatter.
+    /// 
+    /// # Arguments
+    /// `f` is a buffer, this method must write the formatted string into it,
+    /// and is of the type `&mut Formatter`.
+    /// 
+    /// # Errors
+    /// This function should return Err if, and only if, the provided Formatter
+    /// returns Err. String formatting is considered an infallible operation;
+    /// this function only returns a Result because writing to the underlying
+    /// stream might fail and it must provide a way to propagate the fact that
+    /// an error has occurred back up the stack.
+    /// 
+    /// # Example 1
+    /// ```
+    /// use std::str::FromStr;
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u8);
+    /// 
+    /// let a_biguint = U256::from_str("69743176821145534028236692093846345739169743176821145534028236692093846345739").unwrap();
+    /// println!("{}", a_biguint);
+    /// assert_eq!(a_biguint.to_string(), "69743176821145534028236692093846345739169743176821145534028236692093846345739");
+    /// ```
+    /// 
+    /// # Example 2
+    /// ```
+    /// use std::str::FromStr;
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u8);
+    /// 
+    /// let a_biguint = U256::from_str("1234567_1234567890_1234567890_1234567890_1234567890_1234567890_1234567890_1234567890").unwrap();
+    /// let txt = a_biguint.to_string();
+    /// println!("{}", txt);
+    /// assert_eq!(txt, "12345671234567890123456789012345678901234567890123456789012345678901234567890");
+    /// ```
     fn fmt(&self, f: &mut Formatter<'_>) -> Result<(), Error>
     {
-        fmt_with_exponent!(self, f, "E");
+        fmt_with_exponent!(self, f, 'E');
     }
 }
 
 
 
+/// e formatting.
+/// - The LowerExp trait should format its output in scientific notation
+///   with a lower-case e.
+/// - For more information on the trait LowerHex,
+///   [read more](https://doc.rust-lang.org/std/fmt/trait.LowerHex.html).
+/// - For more information on formatters,
+///   see [the module-level documentation](https://doc.rust-lang.org/std/fmt/index.html).
 impl<T, const N: usize> LowerExp for BigUInt<T, N>
 where T: SmallUInt + Copy + Clone + Display + Debug + ToString
         + Add<Output=T> + AddAssign + Sub<Output=T> + SubAssign
@@ -9772,14 +10013,67 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
         + BitXor<Output=T> + BitXorAssign + Not<Output=T>
         + PartialEq + PartialOrd
 {
+    // fn fmt(&self, f: &mut Formatter) -> fmt::Result
+    /// Formats the value using the given formatter.
+    /// 
+    /// # Arguments
+    /// `f` is a buffer, this method must write the formatted string into it,
+    /// and is of the type `&mut Formatter`.
+    /// 
+    /// # Errors
+    /// This function should return Err if, and only if, the provided Formatter
+    /// returns Err. String formatting is considered an infallible operation;
+    /// this function only returns a Result because writing to the underlying
+    /// stream might fail and it must provide a way to propagate the fact that
+    /// an error has occurred back up the stack.
+    /// 
+    /// # Example 1
+    /// ```
+    /// use std::str::FromStr;
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u8);
+    /// 
+    /// let a_biguint = U256::from_str("69743176821145534028236692093846345739169743176821145534028236692093846345739").unwrap();
+    /// println!("{}", a_biguint);
+    /// assert_eq!(a_biguint.to_string(), "69743176821145534028236692093846345739169743176821145534028236692093846345739");
+    /// ```
+    /// 
+    /// # Example 2
+    /// ```
+    /// use std::str::FromStr;
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u8);
+    /// 
+    /// let a_biguint = U256::from_str("1234567_1234567890_1234567890_1234567890_1234567890_1234567890_1234567890_1234567890").unwrap();
+    /// let txt = a_biguint.to_string();
+    /// println!("{}", txt);
+    /// assert_eq!(txt, "12345671234567890123456789012345678901234567890123456789012345678901234567890");
+    /// ```
     fn fmt(&self, f: &mut Formatter<'_>) -> Result<(), Error>
     {
-        fmt_with_exponent!(self, f, "e");
+        fmt_with_exponent!(self, f, 'e');
     }
 }
 
 
 
+/// p formatting.
+/// - The Pointer trait should format its output as a memory location.
+/// - This is commonly presented as hexadecimal.
+/// - Printing of pointers is not a reliable way to discover how Rust programs
+///   are implemented.
+/// - The act of reading an address changes the program itself, and may change
+///   how the data is represented in memory, and may affect which optimizations
+///   are applied to the code.
+/// - The printed pointer values are not guaranteed to be stable nor unique
+///   identifiers of objects.
+/// - Rust allows moving values to different memory locations, and may reuse
+///   the same memory locations for different purposes.
+/// - There is no guarantee that the printed value can be converted back to a pointer.
+/// - For more information on the trait LowerHex,
+///   [read more](https://doc.rust-lang.org/std/fmt/trait.Pointer.html).
+/// - For more information on formatters,
+///   see [the module-level documentation](https://doc.rust-lang.org/std/fmt/index.html).
 impl<T, const N: usize> Pointer for BigUInt<T, N>
 where T: SmallUInt + Copy + Clone + Display + Debug + ToString
         + Add<Output=T> + AddAssign + Sub<Output=T> + SubAssign
@@ -9790,15 +10084,46 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
         + BitXor<Output=T> + BitXorAssign + Not<Output=T>
         + PartialEq + PartialOrd
 {
+    // fn fmt(&self, f: &mut Formatter) -> fmt::Result
+    /// Formats the value using the given formatter.
+    /// 
+    /// # Arguments
+    /// `f` is a buffer, this method must write the formatted string into it,
+    /// and is of the type `&mut Formatter`.
+    /// 
+    /// # Errors
+    /// This function should return Err if, and only if, the provided Formatter
+    /// returns Err. String formatting is considered an infallible operation;
+    /// this function only returns a Result because writing to the underlying
+    /// stream might fail and it must provide a way to propagate the fact that
+    /// an error has occurred back up the stack.
+    /// 
+    /// # Example 1
+    /// ```
+    /// use std::str::FromStr;
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u8);
+    /// 
+    /// let a_biguint = U256::from_str("69743176821145534028236692093846345739169743176821145534028236692093846345739").unwrap();
+    /// println!("{}", a_biguint);
+    /// assert_eq!(a_biguint.to_string(), "69743176821145534028236692093846345739169743176821145534028236692093846345739");
+    /// ```
+    /// 
+    /// # Example 2
+    /// ```
+    /// use std::str::FromStr;
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u8);
+    /// 
+    /// let a_biguint = U256::from_str("1234567_1234567890_1234567890_1234567890_1234567890_1234567890_1234567890_1234567890").unwrap();
+    /// let txt = a_biguint.to_string();
+    /// println!("{}", txt);
+    /// assert_eq!(txt, "12345671234567890123456789012345678901234567890123456789012345678901234567890");
+    /// ```
     fn fmt(&self, f: &mut Formatter<'_>) -> Result<(), Error>
     {
-        // `write!` is like `format!`, but it will write the formatted string
-        // into a buffer (the first argument)
         let ptr = Self::from_uint(self as *const Self as usize);
-        // f.write_fmt(format_args!("0x{}", self as *const Self as usize))
-        // LowerHex::fmt(&ptr, f)
         fmt_with_radix!(ptr, f);
-        // write!(f, "{:#x}", self as *const Self as usize)
     }
 }
 

@@ -15,7 +15,6 @@
 #![allow(missing_docs)]
 #![allow(rustdoc::missing_doc_code_examples)]
 
-#[allow(unused_macros)]
 macro_rules! calc_assign_to_calc
 {
     ($me:expr, $op:tt, $rhs: expr) => {
@@ -41,6 +40,346 @@ macro_rules! calc_assign_to_calc
     // res
 }
 pub(super) use calc_assign_to_calc;
+
+macro_rules! fmt_with_radix
+{
+    ($me:expr, $f:expr, $radix:expr, $prefix:expr, $lowerhex:expr, $pointer:expr) => {
+        let txt = match $radix
+        {
+            16 => format!("{:X}", $me.get()),
+            2 => format!("{:b}", $me.get()),
+            8 => format!("{:o}", $me.get()),
+            _ => format!("{}", $me.get()),
+        };
+        let txt = if $lowerhex {txt.to_lowercase()} else {txt};
+        let len = txt.len();
+        let mut space = match $f.width()
+        {
+            Some(n) => if len >= n {0} else {n - len},
+            None => 0_usize,
+        };
+        let mut prefix = String::new();
+        if $f.sign_plus()
+        {
+            prefix.push('+');
+            space = if space > 1 {space-1} else {0};
+        }
+        if $f.sign_minus()
+        {
+            prefix.push('-');
+            space = if space > 1 {space-1} else {0};
+        }
+        if $f.alternate() || $pointer
+        {
+            prefix.push_str($prefix);
+            space = if space > 2 {space-2} else {0};
+        }
+        return if $f.sign_aware_zero_pad()
+        {
+            for _ in 0..space
+                { prefix.push('0'); }
+            write!($f, "{}{}", prefix, txt)
+        }
+        else
+        {
+            let ch = $f.fill();
+            if let Some(s) = $f.align()
+            {
+                match s
+                {
+                Alignment::Left => {
+                        let mut trailing = String::new();
+                        for _ in 0..space
+                            { trailing.push(ch); }
+                        write!($f, "{}{}{}", prefix, txt, trailing)
+                    },
+                Alignment::Right => {
+                        let mut leading = String::new();
+                        for _ in 0..space
+                            { leading.push(ch); }
+                        write!($f, "{}{}{}", leading, prefix, txt)
+                    },
+                Alignment::Center => {
+                        let mut leading = String::new();
+                        for _ in 0..space>>1
+                            { leading.push(ch); }
+                        let mut trailing = String::new();
+                        for _ in 0..(space+1)>>1
+                            { trailing.push(ch); }
+                        write!($f, "{}{}{}{}", leading, prefix, txt, trailing)
+                    },
+                }
+            }
+            else
+            {
+                let mut trailing = String::new();
+                for _ in 0..space
+                    { trailing.push(ch); }
+                write!($f, "{}{}{}", prefix, txt, trailing)
+            }
+        };
+    };
+    // fmt_with_radix!(self, f, 16, "0X", false, false);
+    // 
+    // let txt = match $radix
+    // {
+    //     16 => format!("{:X}", $me.get()),
+    //     2 => format!("{:b}", $me.get()),
+    //     8 => format!("{:o}", $me.get()),
+    //     _ => format!("{}", $me.get()),
+    // }
+    // let len = txt.len();
+    // let mut space = match f.width()
+    // {
+    //     Some(n) => if len >= n {0} else {n - len},
+    //     None => 0_usize,
+    // };
+    // let mut prefix = String::new();
+    // if f.sign_plus()
+    // {
+    //     prefix.push('+');
+    //     space = if space > 1 {space-1} else {0};
+    // }
+    // if f.sign_minus()
+    // {
+    //     prefix.push('-');
+    //     space = if space > 1 {space-1} else {0};
+    // }
+    // if f.alternate()
+    // {
+    //     prefix.push_str("0x");
+    //     space = if space > 2 {space-2} else {0};
+    // }
+    // return if f.sign_aware_zero_pad()
+    // {
+    //     for _ in 0..space
+    //         { prefix.push('0'); }
+    //     write!(f, "{}{}", prefix, txt)
+    // }
+    // else
+    // {
+    //     let ch = f.fill();
+    //     if let Some(s) = f.align()
+    //     {
+    //         match s
+    //         {
+    //         Alignment::Left => {
+    //                 let mut trailing = String::new();
+    //                 for _ in 0..space
+    //                     { trailing.push(ch); }
+    //                 write!(f, "{}{}{}", prefix, txt, trailing)
+    //             },
+    //         Alignment::Right => {
+    //                 let mut leading = String::new();
+    //                 for _ in 0..space
+    //                     { leading.push(ch); }
+    //                 write!(f, "{}{}{}", leading, prefix, txt)
+    //             },
+    //         Alignment::Center => {
+    //                 let mut leading = String::new();
+    //                 for _ in 0..space>>1
+    //                     { leading.push(ch); }
+    //                 let mut trailing = String::new();
+    //                 for _ in 0..(space+1)>>1
+    //                     { trailing.push(ch); }
+    //                 write!(f, "{}{}{}{}", leading, prefix, txt, trailing)
+    //             },
+    //         }
+    //     }
+    //     else
+    //     {
+    //         let mut trailing = String::new();
+    //         for _ in 0..space
+    //             { trailing.push(ch); }
+    //         write!(f, "{}{}{}", prefix, txt, trailing)
+    //     }
+    // };
+
+    ($me:expr, $f:expr, $radix:expr, $prefix:expr, $lowerhex:expr) => {
+        fmt_with_radix!($me, $f, $radix, $prefix, $lowerhex, false);
+    };
+    ($me:expr, $f:expr, $radix:expr, $prefix:expr) => {
+        fmt_with_radix!($me, $f, $radix, $prefix, false, false);
+    };
+    ($me:expr, $f:expr) => {
+        fmt_with_radix!($me, $f, 16, "0x", true, true);
+    };
+}
+pub(super) use fmt_with_radix;
+
+
+macro_rules! fmt_with_exponent
+{
+    ($me:expr, $f:expr, $exponent:expr) => {
+        let mut txt = format!("{}", $me.get());
+        let exp = txt.len() - 1;
+        let exp_txt = exp.to_string();
+        if let Some(precision) = $f.precision()
+        {
+            if exp > precision
+            {
+                let roundup = txt.as_bytes()[precision + 1] as u32 >= '5' as u32;
+                txt.truncate(precision + 1);
+                if roundup
+                {
+                    let num: u128 = txt.parse().unwrap();
+                    txt = num.wrapping_add(1_u128).to_string();
+                }
+            }
+        }
+        if exp != 0
+            { txt.insert(1, '.'); }
+        txt.push($exponent);
+        txt.push_str(exp_txt.as_str());
+        let len = txt.len();
+        let mut space = match $f.width()
+        {
+            Some(n) => if len >= n {0} else {n - len},
+            None => 0_usize,
+        };
+        let mut prefix = String::new();
+        if $f.sign_plus()
+        {
+            prefix.push('+');
+            space = if space > 1 {space-1} else {0};
+        }
+        if $f.sign_minus()
+        {
+            prefix.push('-');
+            space = if space > 1 {space-1} else {0};
+        }
+        return if $f.sign_aware_zero_pad()
+        {
+            for _ in 0..space
+                { prefix.push('0'); }
+            write!($f, "{}{}", prefix, txt)
+        }
+        else
+        {
+            let ch = $f.fill();
+            if let Some(s) = $f.align()
+            {
+                match s
+                {
+                Alignment::Left => {
+                        let mut trailing = String::new();
+                        for _ in 0..space
+                            { trailing.push(ch); }
+                        write!($f, "{}{}{}", prefix, txt, trailing)
+                    },
+                Alignment::Right => {
+                        let mut leading = String::new();
+                        for _ in 0..space
+                            { leading.push(ch); }
+                        write!($f, "{}{}{}", leading, prefix, txt)
+                    },
+                Alignment::Center => {
+                        let mut leading = String::new();
+                        for _ in 0..space>>1
+                            { leading.push(ch); }
+                        let mut trailing = String::new();
+                        for _ in 0..(space+1)>>1
+                            { trailing.push(ch); }
+                        write!($f, "{}{}{}{}", leading, prefix, txt, trailing)
+                    },
+                }
+            }
+            else
+            {
+                let mut trailing = String::new();
+                for _ in 0..space
+                    { trailing.push(ch); }
+                write!($f, "{}{}{}", prefix, txt, trailing)
+            }
+        };
+    };
+    // fmt_with_exponent!(self, f, 'e');
+    // 
+    // let mut txt = format!("{}", $me.get());
+    // let exp = txt.len() - 1;
+    // let exp_txt = exp.to_string();
+    // if let Some(precision) = f.precision()
+    // {
+    //     if exp > precision
+    //     {
+    //         let roundup = txt.as_bytes()[precision + 1] as u32 >= '5' as u32;
+    //         txt.truncate(precision + 1);
+    //         if roundup
+    //         {
+    //             let num: u128 = txt.parse().unwrap();
+    //             txt = num.wrapping_add(1_u128).to_string();
+    //         }
+    //     }
+    // }
+    // if exp != 0
+    //     { txt.insert(1, '.'); }
+    // txt.push('e');
+    // txt.push_str(exp_txt.as_str());
+    // let len = txt.len();
+    // let mut space = match $f.width()
+    // {
+    //     Some(n) => if len >= n {0} else {n - len},
+    //     None => 0_usize,
+    // };
+    // let mut prefix = String::new();
+    // if f.sign_plus()
+    // {
+    //     prefix.push('+');
+    //     space = if space > 1 {space-1} else {0};
+    // }
+    // if f.sign_minus()
+    // {
+    //     prefix.push('-');
+    //     space = if space > 1 {space-1} else {0};
+    // }
+    // return if f.sign_aware_zero_pad()
+    // {
+    //     for _ in 0..space
+    //         { prefix.push('0'); }
+    //     write!(f, "{}{}", prefix, txt)
+    // }
+    // else
+    // {
+    //     let ch = f.fill();
+    //     if let Some(s) = f.align()
+    //     {
+    //         match s
+    //         {
+    //         Alignment::Left => {
+    //                 let mut trailing = String::new();
+    //                 for _ in 0..space
+    //                     { trailing.push(ch); }
+    //                 write!(f, "{}{}{}", prefix, txt, trailing)
+    //             },
+    //         Alignment::Right => {
+    //                 let mut leading = String::new();
+    //                 for _ in 0..space
+    //                     { leading.push(ch); }
+    //                 write!(f, "{}{}{}", leading, prefix, txt)
+    //             },
+    //         Alignment::Center => {
+    //                 let mut leading = String::new();
+    //                 for _ in 0..space>>1
+    //                     { leading.push(ch); }
+    //                 let mut trailing = String::new();
+    //                 for _ in 0..(space+1)>>1
+    //                     { trailing.push(ch); }
+    //                 write!(f, "{}{}{}{}", leading, prefix, txt, trailing)
+    //             },
+    //         }
+    //     }
+    //     else
+    //     {
+    //         let mut trailing = String::new();
+    //         for _ in 0..space
+    //             { trailing.push(ch); }
+    //         write!(f, "{}{}{}", prefix, txt, trailing)
+    //     };
+    // };
+}
+pub(super) use fmt_with_exponent;
+
+
 
 #[allow(unused_macros)]
 macro_rules! new_with_small_uint {
@@ -16269,13 +16608,37 @@ pub(super) use shift_ops_for_integer_unions_by_self_impl;
 
 macro_rules! format_for_integer_unions_impl {
     ($f:ty) => {
+        /// Format trait for an empty format, {}.
+        /// - Implementing this trait for a type will automatically implement the
+        ///   ToString trait for the type, allowing the usage of the .to_string()
+        ///   method.
+        /// - Prefer implementing the Display trait for a type, rather than ToString.
+        /// - Display is similar to Debug, but Display is for user-facing output,
+        ///   and so cannot be derived.
+        /// - For more information on the trait Display,
+        ///   [read more](https://doc.rust-lang.org/std/fmt/trait.Display.html).
+        /// - For more information on formatters,
+        ///   see [the module-level documentation](https://doc.rust-lang.org/std/fmt/index.html).
         impl Display for $f
         {
+            // fn fmt(&self, f: &mut Formatter) -> fmt::Result
             /// Formats the value using the given formatter.
+            /// 
+            /// # Arguments
+            /// `f` is a buffer, this method must write the formatted string into it,
+            /// and is of the type `&mut Formatter`.
+            /// 
+            /// # Features
             /// Automagically the function `to_string()` will be implemented. So, you
             /// can use the function `to_string()` and the macro `println!()`.
-            /// `f` is a buffer, this method must write the formatted string into it.
             /// [Read more](https://doc.rust-lang.org/core/fmt/trait.Display.html#tymethod.fmt)
+            /// 
+            /// # Errors
+            /// This function should return Err if, and only if, the provided Formatter
+            /// returns Err. String formatting is considered an infallible operation;
+            /// this function only returns a Result because writing to the underlying
+            /// stream might fail and it must provide a way to propagate the fact that
+            /// an error has occurred back up the stack.
             /// 
             /// # Example
             /// ```
@@ -16285,79 +16648,217 @@ macro_rules! format_for_integer_unions_impl {
             /// ```
             fn fmt(&self, f: &mut Formatter) -> Result<(), Error>
             {
-                // `write!` is like `format!`, but it will write the formatted string
-                // into a buffer (the first argument)
-                write!(f, "{}", self.get())
-            }
-        }
-        
-        impl UpperHex for $f
-        {
-            fn fmt(&self, f: &mut Formatter<'_>) -> Result<(), Error>
-            {
-                // `write!` is like `format!`, but it will write the formatted string
-                // into a buffer (the first argument)
-                write!(f, "{:X}", self.get())
-            }
-        }
-        
-        impl LowerHex for $f
-        {
-            fn fmt(&self, f: &mut Formatter<'_>) -> Result<(), Error>
-            {
-                // `write!` is like `format!`, but it will write the formatted string
-                // into a buffer (the first argument)
-                write!(f, "{:x}", self.get())
-            }
-        }
-        
-        impl Binary for $f
-        {
-            fn fmt(&self, f: &mut Formatter<'_>) -> Result<(), Error>
-            {
-                // `write!` is like `format!`, but it will write the formatted string
-                // into a buffer (the first argument)
-                write!(f, "{:b}", self.get())
-            }
-        }
-        
-        impl Octal for $f
-        {
-            fn fmt(&self, f: &mut Formatter<'_>) -> Result<(), Error>
-            {
-                // `write!` is like `format!`, but it will write the formatted string
-                // into a buffer (the first argument)
-                write!(f, "{:o}", self.get())
+                fmt_with_radix!(self, f, 10, "");
             }
         }
 
+        /// X formatting.
+        /// - The UpperHex trait should format its output as a number in hexadecimal,
+        ///   with A through F in upper case.
+        /// - The alternate flag, #, adds a 0X in front of the output.
+        /// - For more information on the trait UpperHex,
+        ///   [read more](https://doc.rust-lang.org/std/fmt/trait.UpperHex.html).
+        /// - For more information on formatters,
+        ///   see [the module-level documentation](https://doc.rust-lang.org/std/fmt/index.html).
+        impl UpperHex for $f
+        {
+            // fn fmt(&self, f: &mut Formatter) -> fmt::Result
+            /// Formats the value using the given formatter.
+            /// 
+            /// # Arguments
+            /// `f` is a buffer, this method must write the formatted string into it,
+            /// and is of the type `&mut Formatter`.
+            /// 
+            /// # Errors
+            /// This function should return Err if, and only if, the provided Formatter
+            /// returns Err. String formatting is considered an infallible operation;
+            /// this function only returns a Result because writing to the underlying
+            /// stream might fail and it must provide a way to propagate the fact that
+            /// an error has occurred back up the stack.
+            fn fmt(&self, f: &mut Formatter<'_>) -> Result<(), Error>
+            {
+                fmt_with_radix!(self, f, 16, "0X");
+            }
+        }
+        
+        /// x formatting.
+        /// - The LowerHex trait should format its output as a number in hexadecimal,
+        ///   with a through f in lower case.
+        /// - The alternate flag, #, adds a 0x in front of the output.
+        /// - For more information on the trait LowerHex,
+        ///   [read more](https://doc.rust-lang.org/std/fmt/trait.LowerHex.html).
+        /// - For more information on formatters,
+        ///   see [the module-level documentation](https://doc.rust-lang.org/std/fmt/index.html).
+        impl LowerHex for $f
+        {
+            // fn fmt(&self, f: &mut Formatter) -> fmt::Result
+            /// Formats the value using the given formatter.
+            /// 
+            /// # Arguments
+            /// `f` is a buffer, this method must write the formatted string into it,
+            /// and is of the type `&mut Formatter`.
+            /// 
+            /// # Errors
+            /// This function should return Err if, and only if, the provided Formatter
+            /// returns Err. String formatting is considered an infallible operation;
+            /// this function only returns a Result because writing to the underlying
+            /// stream might fail and it must provide a way to propagate the fact that
+            /// an error has occurred back up the stack.
+            fn fmt(&self, f: &mut Formatter<'_>) -> Result<(), Error>
+            {
+                fmt_with_radix!(self, f, 16, "0x", true);
+            }
+        }
+
+        /// b formatting.
+        /// - The Binary trait should format its output as a number in binary with 0 and 1.
+        /// - The alternate flag, #, adds a 0b in front of the output.
+        /// - For more information on the trait LowerHex,
+        ///   [read more](https://doc.rust-lang.org/std/fmt/trait.Binary.html).
+        /// - For more information on formatters,
+        ///   see [the module-level documentation](https://doc.rust-lang.org/std/fmt/index.html).
+        impl Binary for $f
+        {
+            // fn fmt(&self, f: &mut Formatter) -> fmt::Result
+            /// Formats the value using the given formatter.
+            /// 
+            /// # Arguments
+            /// `f` is a buffer, this method must write the formatted string into it,
+            /// and is of the type `&mut Formatter`.
+            /// 
+            /// # Errors
+            /// This function should return Err if, and only if, the provided Formatter
+            /// returns Err. String formatting is considered an infallible operation;
+            /// this function only returns a Result because writing to the underlying
+            /// stream might fail and it must provide a way to propagate the fact that
+            /// an error has occurred back up the stack.
+            fn fmt(&self, f: &mut Formatter<'_>) -> Result<(), Error>
+            {
+                fmt_with_radix!(self, f, 2, "0b");
+            }
+        }
+
+        /// o formatting.
+        /// - The Octal trait should format its output as a number in base-8.
+        /// - The alternate flag, #, adds a 0o in front of the output.
+        /// - For more information on the trait LowerHex,
+        ///   [read more](https://doc.rust-lang.org/std/fmt/trait.Octal.html).
+        /// - For more information on formatters,
+        ///   see [the module-level documentation](https://doc.rust-lang.org/std/fmt/index.html).
+        impl Octal for $f
+        {
+            // fn fmt(&self, f: &mut Formatter) -> fmt::Result
+            /// Formats the value using the given formatter.
+            /// 
+            /// # Arguments
+            /// `f` is a buffer, this method must write the formatted string into it,
+            /// and is of the type `&mut Formatter`.
+            /// 
+            /// # Errors
+            /// This function should return Err if, and only if, the provided Formatter
+            /// returns Err. String formatting is considered an infallible operation;
+            /// this function only returns a Result because writing to the underlying
+            /// stream might fail and it must provide a way to propagate the fact that
+            /// an error has occurred back up the stack.
+            fn fmt(&self, f: &mut Formatter<'_>) -> Result<(), Error>
+            {
+                fmt_with_radix!(self, f, 8, "0o");
+            }
+        }
+
+        /// E formatting.
+        /// - The UpperExp trait should format its output in scientific notation
+        ///   with a upper-case E.
+        /// - For more information on the trait UpperExp,
+        ///   [read more](https://doc.rust-lang.org/std/fmt/trait.UpperExp.html).
+        /// - For more information on formatters,
+        ///   see [the module-level documentation](https://doc.rust-lang.org/std/fmt/index.html).
         impl UpperExp for $f
         {
+            // fn fmt(&self, f: &mut Formatter) -> fmt::Result
+            /// Formats the value using the given formatter.
+            /// 
+            /// # Arguments
+            /// `f` is a buffer, this method must write the formatted string into it,
+            /// and is of the type `&mut Formatter`.
+            /// 
+            /// # Errors
+            /// This function should return Err if, and only if, the provided Formatter
+            /// returns Err. String formatting is considered an infallible operation;
+            /// this function only returns a Result because writing to the underlying
+            /// stream might fail and it must provide a way to propagate the fact that
+            /// an error has occurred back up the stack.
             fn fmt(&self, f: &mut Formatter<'_>) -> Result<(), Error>
             {
-                // `write!` is like `format!`, but it will write the formatted string
-                // into a buffer (the first argument)
-                write!(f, "{:E}", self.get())
+                fmt_with_exponent!(self, f, 'E');
             }
         }
         
+        /// e formatting.
+        /// - The LowerExp trait should format its output in scientific notation
+        ///   with a lower-case e.
+        /// - For more information on the trait LowerHex,
+        ///   [read more](https://doc.rust-lang.org/std/fmt/trait.LowerHex.html).
+        /// - For more information on formatters,
+        ///   see [the module-level documentation](https://doc.rust-lang.org/std/fmt/index.html).
         impl LowerExp for $f
         {
+            // fn fmt(&self, f: &mut Formatter) -> fmt::Result
+            /// Formats the value using the given formatter.
+            /// 
+            /// # Arguments
+            /// `f` is a buffer, this method must write the formatted string into it,
+            /// and is of the type `&mut Formatter`.
+            /// 
+            /// # Errors
+            /// This function should return Err if, and only if, the provided Formatter
+            /// returns Err. String formatting is considered an infallible operation;
+            /// this function only returns a Result because writing to the underlying
+            /// stream might fail and it must provide a way to propagate the fact that
+            /// an error has occurred back up the stack.
             fn fmt(&self, f: &mut Formatter<'_>) -> Result<(), Error>
             {
-                // `write!` is like `format!`, but it will write the formatted string
-                // into a buffer (the first argument)
-                write!(f, "{:e}", self.get())
+                fmt_with_exponent!(self, f, 'e');
             }
         }
         
+        /// p formatting.
+        /// - The Pointer trait should format its output as a memory location.
+        /// - This is commonly presented as hexadecimal.
+        /// - Printing of pointers is not a reliable way to discover how Rust programs
+        ///   are implemented.
+        /// - The act of reading an address changes the program itself, and may change
+        ///   how the data is represented in memory, and may affect which optimizations
+        ///   are applied to the code.
+        /// - The printed pointer values are not guaranteed to be stable nor unique
+        ///   identifiers of objects.
+        /// - Rust allows moving values to different memory locations, and may reuse
+        ///   the same memory locations for different purposes.
+        /// - There is no guarantee that the printed value can be converted back to a pointer.
+        /// - For more information on the trait LowerHex,
+        ///   [read more](https://doc.rust-lang.org/std/fmt/trait.Pointer.html).
+        /// - For more information on formatters,
+        ///   see [the module-level documentation](https://doc.rust-lang.org/std/fmt/index.html).
         impl Pointer for $f
         {
+            // fn fmt(&self, f: &mut Formatter) -> fmt::Result
+            /// Formats the value using the given formatter.
+            /// 
+            /// # Arguments
+            /// `f` is a buffer, this method must write the formatted string into it,
+            /// and is of the type `&mut Formatter`.
+            /// 
+            /// # Errors
+            /// This function should return Err if, and only if, the provided Formatter
+            /// returns Err. String formatting is considered an infallible operation;
+            /// this function only returns a Result because writing to the underlying
+            /// stream might fail and it must provide a way to propagate the fact that
+            /// an error has occurred back up the stack.
             fn fmt(&self, f: &mut Formatter<'_>) -> Result<(), Error>
             {
-                // `write!` is like `format!`, but it will write the formatted string
-                // into a buffer (the first argument)
-                write!(f, "0x{:x}", self as *const Self as usize)
+                use crate::number::SizeUnion;
+                let ptr = SizeUnion::new_with(self as *const Self as usize);
+                fmt_with_radix!(ptr, f);
             }
         }
     }

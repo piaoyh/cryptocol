@@ -20,11 +20,11 @@ use std::ops::{ BitAnd, BitAndAssign, BitOr, BitOrAssign, BitXor, BitXorAssign, 
                 Shl, ShlAssign, Shr, ShrAssign, 
                 Add, AddAssign, Sub, SubAssign, Mul, MulAssign,
                 Div, DivAssign, Rem, RemAssign };
-use std::fmt::{ self, Error, Formatter, Display, Debug, Pointer,
+use std::fmt::{ self, Alignment, Error, Formatter, Display, Debug, Pointer,
                 Binary, Octal, LowerHex, UpperHex, LowerExp, UpperExp };
 
 use super::small_uint::SmallUInt;
-use crate::number::calc_assign_to_calc;
+use crate::number::{ calc_assign_to_calc, fmt_with_radix, fmt_with_exponent };
 
 /// # Introduction
 /// This union `LongerUnion` is for slicing `u128` into two `u64`s, two `i64`s,
