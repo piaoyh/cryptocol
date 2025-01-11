@@ -9677,6 +9677,150 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// use cryptocol::define_utypes_with;
     /// define_utypes_with!(u8);
     /// 
+    /// let a_biguint = U256::from_str("69743176821145534028236692093846345739169743176821145534028236692093846345739").unwrap();
+    /// println!("{:>80}", a_biguint);
+    /// let txt = format!("{:>80}", a_biguint);
+    /// assert_eq!(txt, "   69743176821145534028236692093846345739169743176821145534028236692093846345739");
+    /// ```
+    /// 
+    /// # Example 3
+    /// ```
+    /// use std::str::FromStr;
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u8);
+    /// 
+    /// let a_biguint = U256::from_str("69743176821145534028236692093846345739169743176821145534028236692093846345739").unwrap();
+    /// println!("{:>080}", a_biguint);
+    /// let txt = format!("{:>080}", a_biguint);
+    /// assert_eq!(txt, "00069743176821145534028236692093846345739169743176821145534028236692093846345739");
+    /// ```
+    /// 
+    /// # Example 4
+    /// ```
+    /// use std::str::FromStr;
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u8);
+    /// 
+    /// let a_biguint = U256::from_str("69743176821145534028236692093846345739169743176821145534028236692093846345739").unwrap();
+    /// println!("{:^80}", a_biguint);
+    /// let txt = format!("{:^80}", a_biguint);
+    /// assert_eq!(txt, " 69743176821145534028236692093846345739169743176821145534028236692093846345739  ");
+    /// ```
+    /// 
+    /// # Example 5
+    /// ```
+    /// use std::str::FromStr;
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u8);
+    /// 
+    /// let a_biguint = U256::from_str("69743176821145534028236692093846345739169743176821145534028236692093846345739").unwrap();
+    /// println!("{:^080}", a_biguint);
+    /// let txt = format!("{:^080}", a_biguint);
+    /// assert_eq!(txt, "00069743176821145534028236692093846345739169743176821145534028236692093846345739");
+    /// ```
+    /// 
+    /// # Example 6
+    /// ```
+    /// use std::str::FromStr;
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u8);
+    /// 
+    /// let a_biguint = U256::from_str("69743176821145534028236692093846345739169743176821145534028236692093846345739").unwrap();
+    /// println!("{:<80}", a_biguint);
+    /// let txt = format!("{:<80}", a_biguint);
+    /// assert_eq!(txt, "69743176821145534028236692093846345739169743176821145534028236692093846345739   ");
+    /// ```
+    /// 
+    /// # Example 7
+    /// ```
+    /// use std::str::FromStr;
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u8);
+    /// 
+    /// let a_biguint = U256::from_str("69743176821145534028236692093846345739169743176821145534028236692093846345739").unwrap();
+    /// println!("{:<080}", a_biguint);
+    /// let txt = format!("{:<080}", a_biguint);
+    /// assert_eq!(txt, "00069743176821145534028236692093846345739169743176821145534028236692093846345739");
+    /// ```
+    /// 
+    /// # Example 8
+    /// ```
+    /// use std::str::FromStr;
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u8);
+    /// 
+    /// let a_biguint = U256::from_str("69743176821145534028236692093846345739169743176821145534028236692093846345739").unwrap();
+    /// println!("{:!>80}", a_biguint);
+    /// let txt = format!("{:!>80}", a_biguint);
+    /// assert_eq!(txt, "!!!69743176821145534028236692093846345739169743176821145534028236692093846345739");
+    /// ```
+    /// 
+    /// # Example 9
+    /// ```
+    /// use std::str::FromStr;
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u8);
+    /// 
+    /// let a_biguint = U256::from_str("69743176821145534028236692093846345739169743176821145534028236692093846345739").unwrap();
+    /// println!("{:@>080}", a_biguint);
+    /// let txt = format!("{:@>080}", a_biguint);
+    /// assert_eq!(txt, "00069743176821145534028236692093846345739169743176821145534028236692093846345739");
+    /// ```
+    /// 
+    /// # Example 10
+    /// ```
+    /// use std::str::FromStr;
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u8);
+    /// 
+    /// let a_biguint = U256::from_str("69743176821145534028236692093846345739169743176821145534028236692093846345739").unwrap();
+    /// println!("{:#^80}", a_biguint);
+    /// let txt = format!("{:#^80}", a_biguint);
+    /// assert_eq!(txt, "#69743176821145534028236692093846345739169743176821145534028236692093846345739##");
+    /// ```
+    /// 
+    /// # Example 11
+    /// ```
+    /// use std::str::FromStr;
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u8);
+    /// 
+    /// let a_biguint = U256::from_str("69743176821145534028236692093846345739169743176821145534028236692093846345739").unwrap();
+    /// println!("{:$^080}", a_biguint);
+    /// let txt = format!("{:$^080}", a_biguint);
+    /// assert_eq!(txt, "00069743176821145534028236692093846345739169743176821145534028236692093846345739");
+    /// ```
+    /// 
+    /// # Example 12
+    /// ```
+    /// use std::str::FromStr;
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u8);
+    /// 
+    /// let a_biguint = U256::from_str("69743176821145534028236692093846345739169743176821145534028236692093846345739").unwrap();
+    /// println!("{:%<80}", a_biguint);
+    /// let txt = format!("{:%<80}", a_biguint);
+    /// assert_eq!(txt, "69743176821145534028236692093846345739169743176821145534028236692093846345739%%%");
+    /// ```
+    /// 
+    /// # Example 13
+    /// ```
+    /// use std::str::FromStr;
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u8);
+    /// 
+    /// let a_biguint = U256::from_str("69743176821145534028236692093846345739169743176821145534028236692093846345739").unwrap();
+    /// println!("{:^<080}", a_biguint);
+    /// let txt = format!("{:^<080}", a_biguint);
+    /// assert_eq!(txt, "00069743176821145534028236692093846345739169743176821145534028236692093846345739");
+    /// ```
+    /// 
+    /// # Example 14
+    /// ```
+    /// use std::str::FromStr;
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u8);
+    /// 
     /// let a_biguint = U256::from_str("1234567_1234567890_1234567890_1234567890_1234567890_1234567890_1234567890_1234567890").unwrap();
     /// let txt = a_biguint.to_string();
     /// println!("{}", txt);
@@ -9725,23 +9869,360 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// ```
     /// use std::str::FromStr;
     /// use cryptocol::define_utypes_with;
-    /// define_utypes_with!(u8);
+    /// define_utypes_with!(u16);
     /// 
     /// let a_biguint = U256::from_str("69743176821145534028236692093846345739169743176821145534028236692093846345739").unwrap();
-    /// println!("{}", a_biguint);
-    /// assert_eq!(a_biguint.to_string(), "69743176821145534028236692093846345739169743176821145534028236692093846345739");
+    /// println!("{:X}", a_biguint);
+    /// let txt = format!("{:X}", a_biguint);
+    /// assert_eq!(txt, "9A313D3C55B12353228024CDBE156C443888E78AD3E424DBC43036A7788AD80B");
     /// ```
     /// 
     /// # Example 2
     /// ```
     /// use std::str::FromStr;
     /// use cryptocol::define_utypes_with;
-    /// define_utypes_with!(u8);
+    /// define_utypes_with!(u16);
     /// 
-    /// let a_biguint = U256::from_str("1234567_1234567890_1234567890_1234567890_1234567890_1234567890_1234567890_1234567890").unwrap();
-    /// let txt = a_biguint.to_string();
-    /// println!("{}", txt);
-    /// assert_eq!(txt, "12345671234567890123456789012345678901234567890123456789012345678901234567890");
+    /// let a_biguint = U256::from_str("69743176821145534028236692093846345739169743176821145534028236692093846345739").unwrap();
+    /// println!("{:80X}", a_biguint);
+    /// let txt = format!("{:80X}", a_biguint);
+    /// assert_eq!(txt, "9A313D3C55B12353228024CDBE156C443888E78AD3E424DBC43036A7788AD80B                ");
+    /// ```
+    /// 
+    /// # Example 3
+    /// ```
+    /// use std::str::FromStr;
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u16);
+    /// 
+    /// let a_biguint = U256::from_str("69743176821145534028236692093846345739169743176821145534028236692093846345739").unwrap();
+    /// println!("{:080X}", a_biguint);
+    /// let txt = format!("{:080X}", a_biguint);
+    /// assert_eq!(txt, "00000000000000009A313D3C55B12353228024CDBE156C443888E78AD3E424DBC43036A7788AD80B");
+    /// ```
+    /// 
+    /// # Example 4
+    /// ```
+    /// use std::str::FromStr;
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u16);
+    /// 
+    /// let a_biguint = U256::from_str("69743176821145534028236692093846345739169743176821145534028236692093846345739").unwrap();
+    /// println!("{:#X}", a_biguint);
+    /// let txt = format!("{:#X}", a_biguint);
+    /// assert_eq!(txt, "0X9A313D3C55B12353228024CDBE156C443888E78AD3E424DBC43036A7788AD80B");
+    /// ```
+    /// 
+    /// # Example 5
+    /// ```
+    /// use std::str::FromStr;
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u16);
+    /// 
+    /// let a_biguint = U256::from_str("69743176821145534028236692093846345739169743176821145534028236692093846345739").unwrap();
+    /// println!("{:#80X}", a_biguint);
+    /// let txt = format!("{:#80X}", a_biguint);
+    /// assert_eq!(txt, "0X9A313D3C55B12353228024CDBE156C443888E78AD3E424DBC43036A7788AD80B              ");
+    /// ```
+    /// 
+    /// # Example 6
+    /// ```
+    /// use std::str::FromStr;
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u16);
+    /// 
+    /// let a_biguint = U256::from_str("69743176821145534028236692093846345739169743176821145534028236692093846345739").unwrap();
+    /// println!("{:#080X}", a_biguint);
+    /// let txt = format!("{:#080X}", a_biguint);
+    /// assert_eq!(txt, "0X000000000000009A313D3C55B12353228024CDBE156C443888E78AD3E424DBC43036A7788AD80B");
+    /// ```
+    /// 
+    /// # Example 7
+    /// ```
+    /// use std::str::FromStr;
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u16);
+    /// 
+    /// let a_biguint = U256::from_str("69743176821145534028236692093846345739169743176821145534028236692093846345739").unwrap();
+    /// println!("{:>80X}", a_biguint);
+    /// let txt = format!("{:>80X}", a_biguint);
+    /// assert_eq!(txt, "                9A313D3C55B12353228024CDBE156C443888E78AD3E424DBC43036A7788AD80B");
+    /// ```
+    /// 
+    /// # Example 8
+    /// ```
+    /// use std::str::FromStr;
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u16);
+    /// 
+    /// let a_biguint = U256::from_str("69743176821145534028236692093846345739169743176821145534028236692093846345739").unwrap();
+    /// println!("{:>080X}", a_biguint);
+    /// let txt = format!("{:>080X}", a_biguint);
+    /// assert_eq!(txt, "00000000000000009A313D3C55B12353228024CDBE156C443888E78AD3E424DBC43036A7788AD80B");
+    /// ```
+    /// 
+    /// # Example 9
+    /// ```
+    /// use std::str::FromStr;
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u16);
+    /// 
+    /// let a_biguint = U256::from_str("69743176821145534028236692093846345739169743176821145534028236692093846345739").unwrap();
+    /// println!("{:^80X}", a_biguint);
+    /// let txt = format!("{:^80X}", a_biguint);
+    /// assert_eq!(txt, "        9A313D3C55B12353228024CDBE156C443888E78AD3E424DBC43036A7788AD80B        ");
+    /// ```
+    /// 
+    /// # Example 10
+    /// ```
+    /// use std::str::FromStr;
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u16);
+    /// 
+    /// let a_biguint = U256::from_str("69743176821145534028236692093846345739169743176821145534028236692093846345739").unwrap();
+    /// println!("{:^080X}", a_biguint);
+    /// let txt = format!("{:^080X}", a_biguint);
+    /// assert_eq!(txt, "00000000000000009A313D3C55B12353228024CDBE156C443888E78AD3E424DBC43036A7788AD80B");
+    /// ```
+    /// 
+    /// # Example 11
+    /// ```
+    /// use std::str::FromStr;
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u16);
+    /// 
+    /// let a_biguint = U256::from_str("69743176821145534028236692093846345739169743176821145534028236692093846345739").unwrap();
+    /// println!("{:<80X}", a_biguint);
+    /// let txt = format!("{:<80X}", a_biguint);
+    /// assert_eq!(txt, "9A313D3C55B12353228024CDBE156C443888E78AD3E424DBC43036A7788AD80B                ");
+    /// ```
+    /// 
+    /// # Example 12
+    /// ```
+    /// use std::str::FromStr;
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u16);
+    /// 
+    /// let a_biguint = U256::from_str("69743176821145534028236692093846345739169743176821145534028236692093846345739").unwrap();
+    /// println!("{:<080X}", a_biguint);
+    /// let txt = format!("{:<080X}", a_biguint);
+    /// assert_eq!(txt, "00000000000000009A313D3C55B12353228024CDBE156C443888E78AD3E424DBC43036A7788AD80B");
+    /// ```
+    /// 
+    /// # Example 13
+    /// ```
+    /// use std::str::FromStr;
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u16);
+    /// 
+    /// let a_biguint = U256::from_str("69743176821145534028236692093846345739169743176821145534028236692093846345739").unwrap();
+    /// println!("{:!>80X}", a_biguint);
+    /// let txt = format!("{:!>80X}", a_biguint);
+    /// assert_eq!(txt, "!!!!!!!!!!!!!!!!9A313D3C55B12353228024CDBE156C443888E78AD3E424DBC43036A7788AD80B");
+    /// ```
+    /// 
+    /// # Example 14
+    /// ```
+    /// use std::str::FromStr;
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u16);
+    /// 
+    /// let a_biguint = U256::from_str("69743176821145534028236692093846345739169743176821145534028236692093846345739").unwrap();
+    /// println!("{:@>080X}", a_biguint);
+    /// let txt = format!("{:@>080X}", a_biguint);
+    /// assert_eq!(txt, "00000000000000009A313D3C55B12353228024CDBE156C443888E78AD3E424DBC43036A7788AD80B");
+    /// ```
+    /// 
+    /// # Example 15
+    /// ```
+    /// use std::str::FromStr;
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u16);
+    /// 
+    /// let a_biguint = U256::from_str("69743176821145534028236692093846345739169743176821145534028236692093846345739").unwrap();
+    /// println!("{:#^80X}", a_biguint);
+    /// let txt = format!("{:#^80X}", a_biguint);
+    /// assert_eq!(txt, "########9A313D3C55B12353228024CDBE156C443888E78AD3E424DBC43036A7788AD80B########");
+    /// ```
+    /// 
+    /// # Example 16
+    /// ```
+    /// use std::str::FromStr;
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u16);
+    /// 
+    /// let a_biguint = U256::from_str("69743176821145534028236692093846345739169743176821145534028236692093846345739").unwrap();
+    /// println!("{:$^080X}", a_biguint);
+    /// let txt = format!("{:$^080X}", a_biguint);
+    /// assert_eq!(txt, "00000000000000009A313D3C55B12353228024CDBE156C443888E78AD3E424DBC43036A7788AD80B");
+    /// ```
+    /// 
+    /// # Example 17
+    /// ```
+    /// use std::str::FromStr;
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u16);
+    /// 
+    /// let a_biguint = U256::from_str("69743176821145534028236692093846345739169743176821145534028236692093846345739").unwrap();
+    /// println!("{:%<80X}", a_biguint);
+    /// let txt = format!("{:%<80X}", a_biguint);
+    /// assert_eq!(txt, "9A313D3C55B12353228024CDBE156C443888E78AD3E424DBC43036A7788AD80B%%%%%%%%%%%%%%%%");
+    /// ```
+    /// 
+    /// # Example 18
+    /// ```
+    /// use std::str::FromStr;
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u16);
+    /// 
+    /// let a_biguint = U256::from_str("69743176821145534028236692093846345739169743176821145534028236692093846345739").unwrap();
+    /// println!("{:*<080X}", a_biguint);
+    /// let txt = format!("{:*<080X}", a_biguint);
+    /// assert_eq!(txt, "00000000000000009A313D3C55B12353228024CDBE156C443888E78AD3E424DBC43036A7788AD80B");
+    /// ```
+    /// 
+    /// # Example 19
+    /// ```
+    /// use std::str::FromStr;
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u16);
+    /// 
+    /// let a_biguint = U256::from_str("69743176821145534028236692093846345739169743176821145534028236692093846345739").unwrap();
+    /// println!("{:>#80X}", a_biguint);
+    /// let txt = format!("{:>#80X}", a_biguint);
+    /// assert_eq!(txt, "              0X9A313D3C55B12353228024CDBE156C443888E78AD3E424DBC43036A7788AD80B");
+    /// ```
+    /// 
+    /// # Example 20
+    /// ```
+    /// use std::str::FromStr;
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u16);
+    /// 
+    /// let a_biguint = U256::from_str("69743176821145534028236692093846345739169743176821145534028236692093846345739").unwrap();
+    /// println!("{:>#080X}", a_biguint);
+    /// let txt = format!("{:>#080X}", a_biguint);
+    /// assert_eq!(txt, "0X000000000000009A313D3C55B12353228024CDBE156C443888E78AD3E424DBC43036A7788AD80B");
+    /// ```
+    /// 
+    /// # Example 21
+    /// ```
+    /// use std::str::FromStr;
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u16);
+    /// 
+    /// let a_biguint = U256::from_str("69743176821145534028236692093846345739169743176821145534028236692093846345739").unwrap();
+    /// println!("{:^#80X}", a_biguint);
+    /// let txt = format!("{:^#80X}", a_biguint);
+    /// assert_eq!(txt, "       0X9A313D3C55B12353228024CDBE156C443888E78AD3E424DBC43036A7788AD80B       ");
+    /// ```
+    /// 
+    /// # Example 22
+    /// ```
+    /// use std::str::FromStr;
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u16);
+    /// 
+    /// let a_biguint = U256::from_str("69743176821145534028236692093846345739169743176821145534028236692093846345739").unwrap();
+    /// println!("{:^#080X}", a_biguint);
+    /// let txt = format!("{:^#080X}", a_biguint);
+    /// assert_eq!(txt, "0X000000000000009A313D3C55B12353228024CDBE156C443888E78AD3E424DBC43036A7788AD80B");
+    /// ```
+    /// 
+    /// # Example 23
+    /// ```
+    /// use std::str::FromStr;
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u16);
+    /// 
+    /// let a_biguint = U256::from_str("69743176821145534028236692093846345739169743176821145534028236692093846345739").unwrap();
+    /// println!("{:<#80X}", a_biguint);
+    /// let txt = format!("{:<#80X}", a_biguint);
+    /// assert_eq!(txt, "0X9A313D3C55B12353228024CDBE156C443888E78AD3E424DBC43036A7788AD80B              ");
+    /// ```
+    /// 
+    /// # Example 24
+    /// ```
+    /// use std::str::FromStr;
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u16);
+    /// 
+    /// let a_biguint = U256::from_str("69743176821145534028236692093846345739169743176821145534028236692093846345739").unwrap();
+    /// println!("{:<#080X}", a_biguint);
+    /// let txt = format!("{:<#080X}", a_biguint);
+    /// assert_eq!(txt, "0X000000000000009A313D3C55B12353228024CDBE156C443888E78AD3E424DBC43036A7788AD80B");
+    /// ```
+    /// 
+    /// # Example 25
+    /// ```
+    /// use std::str::FromStr;
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u16);
+    /// 
+    /// let a_biguint = U256::from_str("69743176821145534028236692093846345739169743176821145534028236692093846345739").unwrap();
+    /// println!("{:!>#80X}", a_biguint);
+    /// let txt = format!("{:!>#80X}", a_biguint);
+    /// assert_eq!(txt, "!!!!!!!!!!!!!!0X9A313D3C55B12353228024CDBE156C443888E78AD3E424DBC43036A7788AD80B");
+    /// ```
+    /// 
+    /// # Example 26
+    /// ```
+    /// use std::str::FromStr;
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u16);
+    /// 
+    /// let a_biguint = U256::from_str("69743176821145534028236692093846345739169743176821145534028236692093846345739").unwrap();
+    /// println!("{:@>#080X}", a_biguint);
+    /// let txt = format!("{:@>#080X}", a_biguint);
+    /// assert_eq!(txt, "0X000000000000009A313D3C55B12353228024CDBE156C443888E78AD3E424DBC43036A7788AD80B");
+    /// ```
+    /// 
+    /// # Example 27
+    /// ```
+    /// use std::str::FromStr;
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u16);
+    /// 
+    /// let a_biguint = U256::from_str("69743176821145534028236692093846345739169743176821145534028236692093846345739").unwrap();
+    /// println!("{:#^#80X}", a_biguint);
+    /// let txt = format!("{:#^#80X}", a_biguint);
+    /// assert_eq!(txt, "#######0X9A313D3C55B12353228024CDBE156C443888E78AD3E424DBC43036A7788AD80B#######");
+    /// ```
+    /// 
+    /// # Example 28
+    /// ```
+    /// use std::str::FromStr;
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u16);
+    /// 
+    /// let a_biguint = U256::from_str("69743176821145534028236692093846345739169743176821145534028236692093846345739").unwrap();
+    /// println!("{:$^#080X}", a_biguint);
+    /// let txt = format!("{:$^#080X}", a_biguint);
+    /// assert_eq!(txt, "0X000000000000009A313D3C55B12353228024CDBE156C443888E78AD3E424DBC43036A7788AD80B");
+    /// ```
+    /// 
+    /// # Example 29
+    /// ```
+    /// use std::str::FromStr;
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u16);
+    /// 
+    /// let a_biguint = U256::from_str("69743176821145534028236692093846345739169743176821145534028236692093846345739").unwrap();
+    /// println!("{:%<#80X}", a_biguint);
+    /// let txt = format!("{:%<#80X}", a_biguint);
+    /// assert_eq!(txt, "0X9A313D3C55B12353228024CDBE156C443888E78AD3E424DBC43036A7788AD80B%%%%%%%%%%%%%%");
+    /// ```
+    /// 
+    /// # Example 30
+    /// ```
+    /// use std::str::FromStr;
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u16);
+    /// 
+    /// let a_biguint = U256::from_str("69743176821145534028236692093846345739169743176821145534028236692093846345739").unwrap();
+    /// println!("{:^<#080X}", a_biguint);
+    /// let txt = format!("{:^<#080X}", a_biguint);
+    /// assert_eq!(txt, "0X000000000000009A313D3C55B12353228024CDBE156C443888E78AD3E424DBC43036A7788AD80B");
     /// ```
     fn fmt(&self, f: &mut Formatter<'_>) -> Result<(), Error>
     {
@@ -9787,23 +10268,360 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// ```
     /// use std::str::FromStr;
     /// use cryptocol::define_utypes_with;
-    /// define_utypes_with!(u8);
+    /// define_utypes_with!(u32);
     /// 
     /// let a_biguint = U256::from_str("69743176821145534028236692093846345739169743176821145534028236692093846345739").unwrap();
-    /// println!("{}", a_biguint);
-    /// assert_eq!(a_biguint.to_string(), "69743176821145534028236692093846345739169743176821145534028236692093846345739");
+    /// println!("{:x}", a_biguint);
+    /// let txt = format!("{:x}", a_biguint);
+    /// assert_eq!(txt, "9a313d3c55b12353228024cdbe156c443888e78ad3e424dbc43036a7788ad80b");
     /// ```
     /// 
     /// # Example 2
     /// ```
     /// use std::str::FromStr;
     /// use cryptocol::define_utypes_with;
-    /// define_utypes_with!(u8);
+    /// define_utypes_with!(u32);
     /// 
-    /// let a_biguint = U256::from_str("1234567_1234567890_1234567890_1234567890_1234567890_1234567890_1234567890_1234567890").unwrap();
-    /// let txt = a_biguint.to_string();
-    /// println!("{}", txt);
-    /// assert_eq!(txt, "12345671234567890123456789012345678901234567890123456789012345678901234567890");
+    /// let a_biguint = U256::from_str("69743176821145534028236692093846345739169743176821145534028236692093846345739").unwrap();
+    /// println!("{:80x}", a_biguint);
+    /// let txt = format!("{:80x}", a_biguint);
+    /// assert_eq!(txt, "9a313d3c55b12353228024cdbe156c443888e78ad3e424dbc43036a7788ad80b                ");
+    /// ```
+    /// 
+    /// # Example 3
+    /// ```
+    /// use std::str::FromStr;
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u32);
+    /// 
+    /// let a_biguint = U256::from_str("69743176821145534028236692093846345739169743176821145534028236692093846345739").unwrap();
+    /// println!("{:080x}", a_biguint);
+    /// let txt = format!("{:080x}", a_biguint);
+    /// assert_eq!(txt, "00000000000000009a313d3c55b12353228024cdbe156c443888e78ad3e424dbc43036a7788ad80b");
+    /// ```
+    /// 
+    /// # Example 4
+    /// ```
+    /// use std::str::FromStr;
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u32);
+    /// 
+    /// let a_biguint = U256::from_str("69743176821145534028236692093846345739169743176821145534028236692093846345739").unwrap();
+    /// println!("{:#x}", a_biguint);
+    /// let txt = format!("{:#x}", a_biguint);
+    /// assert_eq!(txt, "0x9a313d3c55b12353228024cdbe156c443888e78ad3e424dbc43036a7788ad80b");
+    /// ```
+    /// 
+    /// # Example 5
+    /// ```
+    /// use std::str::FromStr;
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u32);
+    /// 
+    /// let a_biguint = U256::from_str("69743176821145534028236692093846345739169743176821145534028236692093846345739").unwrap();
+    /// println!("{:#80x}", a_biguint);
+    /// let txt = format!("{:#80x}", a_biguint);
+    /// assert_eq!(txt, "0x9a313d3c55b12353228024cdbe156c443888e78ad3e424dbc43036a7788ad80b              ");
+    /// ```
+    /// 
+    /// # Example 6
+    /// ```
+    /// use std::str::FromStr;
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u32);
+    /// 
+    /// let a_biguint = U256::from_str("69743176821145534028236692093846345739169743176821145534028236692093846345739").unwrap();
+    /// println!("{:#080x}", a_biguint);
+    /// let txt = format!("{:#080x}", a_biguint);
+    /// assert_eq!(txt, "0x000000000000009a313d3c55b12353228024cdbe156c443888e78ad3e424dbc43036a7788ad80b");
+    /// ```
+    /// 
+    /// # Example 7
+    /// ```
+    /// use std::str::FromStr;
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u32);
+    /// 
+    /// let a_biguint = U256::from_str("69743176821145534028236692093846345739169743176821145534028236692093846345739").unwrap();
+    /// println!("{:>80x}", a_biguint);
+    /// let txt = format!("{:>80x}", a_biguint);
+    /// assert_eq!(txt, "                9a313d3c55b12353228024cdbe156c443888e78ad3e424dbc43036a7788ad80b");
+    /// ```
+    /// 
+    /// # Example 8
+    /// ```
+    /// use std::str::FromStr;
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u32);
+    /// 
+    /// let a_biguint = U256::from_str("69743176821145534028236692093846345739169743176821145534028236692093846345739").unwrap();
+    /// println!("{:>080x}", a_biguint);
+    /// let txt = format!("{:>080x}", a_biguint);
+    /// assert_eq!(txt, "00000000000000009a313d3c55b12353228024cdbe156c443888e78ad3e424dbc43036a7788ad80b");
+    /// ```
+    /// 
+    /// # Example 9
+    /// ```
+    /// use std::str::FromStr;
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u32);
+    /// 
+    /// let a_biguint = U256::from_str("69743176821145534028236692093846345739169743176821145534028236692093846345739").unwrap();
+    /// println!("{:^80x}", a_biguint);
+    /// let txt = format!("{:^80x}", a_biguint);
+    /// assert_eq!(txt, "        9a313d3c55b12353228024cdbe156c443888e78ad3e424dbc43036a7788ad80b        ");
+    /// ```
+    /// 
+    /// # Example 10
+    /// ```
+    /// use std::str::FromStr;
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u32);
+    /// 
+    /// let a_biguint = U256::from_str("69743176821145534028236692093846345739169743176821145534028236692093846345739").unwrap();
+    /// println!("{:^080x}", a_biguint);
+    /// let txt = format!("{:^080x}", a_biguint);
+    /// assert_eq!(txt, "00000000000000009a313d3c55b12353228024cdbe156c443888e78ad3e424dbc43036a7788ad80b");
+    /// ```
+    /// 
+    /// # Example 11
+    /// ```
+    /// use std::str::FromStr;
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u32);
+    /// 
+    /// let a_biguint = U256::from_str("69743176821145534028236692093846345739169743176821145534028236692093846345739").unwrap();
+    /// println!("{:<80x}", a_biguint);
+    /// let txt = format!("{:<80x}", a_biguint);
+    /// assert_eq!(txt, "9a313d3c55b12353228024cdbe156c443888e78ad3e424dbc43036a7788ad80b                ");
+    /// ```
+    /// 
+    /// # Example 12
+    /// ```
+    /// use std::str::FromStr;
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u32);
+    /// 
+    /// let a_biguint = U256::from_str("69743176821145534028236692093846345739169743176821145534028236692093846345739").unwrap();
+    /// println!("{:<080x}", a_biguint);
+    /// let txt = format!("{:<080x}", a_biguint);
+    /// assert_eq!(txt, "00000000000000009a313d3c55b12353228024cdbe156c443888e78ad3e424dbc43036a7788ad80b");
+    /// ```
+    /// 
+    /// # Example 13
+    /// ```
+    /// use std::str::FromStr;
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u32);
+    /// 
+    /// let a_biguint = U256::from_str("69743176821145534028236692093846345739169743176821145534028236692093846345739").unwrap();
+    /// println!("{:!>80x}", a_biguint);
+    /// let txt = format!("{:!>80x}", a_biguint);
+    /// assert_eq!(txt, "!!!!!!!!!!!!!!!!9a313d3c55b12353228024cdbe156c443888e78ad3e424dbc43036a7788ad80b");
+    /// ```
+    /// 
+    /// # Example 14
+    /// ```
+    /// use std::str::FromStr;
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u32);
+    /// 
+    /// let a_biguint = U256::from_str("69743176821145534028236692093846345739169743176821145534028236692093846345739").unwrap();
+    /// println!("{:@>080x}", a_biguint);
+    /// let txt = format!("{:@>080x}", a_biguint);
+    /// assert_eq!(txt, "00000000000000009a313d3c55b12353228024cdbe156c443888e78ad3e424dbc43036a7788ad80b");
+    /// ```
+    /// 
+    /// # Example 15
+    /// ```
+    /// use std::str::FromStr;
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u32);
+    /// 
+    /// let a_biguint = U256::from_str("69743176821145534028236692093846345739169743176821145534028236692093846345739").unwrap();
+    /// println!("{:#^80x}", a_biguint);
+    /// let txt = format!("{:#^80x}", a_biguint);
+    /// assert_eq!(txt, "########9a313d3c55b12353228024cdbe156c443888e78ad3e424dbc43036a7788ad80b########");
+    /// ```
+    /// 
+    /// # Example 16
+    /// ```
+    /// use std::str::FromStr;
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u32);
+    /// 
+    /// let a_biguint = U256::from_str("69743176821145534028236692093846345739169743176821145534028236692093846345739").unwrap();
+    /// println!("{:$^080x}", a_biguint);
+    /// let txt = format!("{:$^080x}", a_biguint);
+    /// assert_eq!(txt, "00000000000000009a313d3c55b12353228024cdbe156c443888e78ad3e424dbc43036a7788ad80b");
+    /// ```
+    /// 
+    /// # Example 17
+    /// ```
+    /// use std::str::FromStr;
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u32);
+    /// 
+    /// let a_biguint = U256::from_str("69743176821145534028236692093846345739169743176821145534028236692093846345739").unwrap();
+    /// println!("{:%<80x}", a_biguint);
+    /// let txt = format!("{:%<80x}", a_biguint);
+    /// assert_eq!(txt, "9a313d3c55b12353228024cdbe156c443888e78ad3e424dbc43036a7788ad80b%%%%%%%%%%%%%%%%");
+    /// ```
+    /// 
+    /// # Example 18
+    /// ```
+    /// use std::str::FromStr;
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u32);
+    /// 
+    /// let a_biguint = U256::from_str("69743176821145534028236692093846345739169743176821145534028236692093846345739").unwrap();
+    /// println!("{:*<080x}", a_biguint);
+    /// let txt = format!("{:*<080x}", a_biguint);
+    /// assert_eq!(txt, "00000000000000009a313d3c55b12353228024cdbe156c443888e78ad3e424dbc43036a7788ad80b");
+    /// ```
+    /// 
+    /// # Example 19
+    /// ```
+    /// use std::str::FromStr;
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u32);
+    /// 
+    /// let a_biguint = U256::from_str("69743176821145534028236692093846345739169743176821145534028236692093846345739").unwrap();
+    /// println!("{:>#80x}", a_biguint);
+    /// let txt = format!("{:>#80x}", a_biguint);
+    /// assert_eq!(txt, "              0x9a313d3c55b12353228024cdbe156c443888e78ad3e424dbc43036a7788ad80b");
+    /// ```
+    /// 
+    /// # Example 20
+    /// ```
+    /// use std::str::FromStr;
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u32);
+    /// 
+    /// let a_biguint = U256::from_str("69743176821145534028236692093846345739169743176821145534028236692093846345739").unwrap();
+    /// println!("{:>#080x}", a_biguint);
+    /// let txt = format!("{:>#080x}", a_biguint);
+    /// assert_eq!(txt, "0x000000000000009a313d3c55b12353228024cdbe156c443888e78ad3e424dbc43036a7788ad80b");
+    /// ```
+    /// 
+    /// # Example 21
+    /// ```
+    /// use std::str::FromStr;
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u32);
+    /// 
+    /// let a_biguint = U256::from_str("69743176821145534028236692093846345739169743176821145534028236692093846345739").unwrap();
+    /// println!("{:^#80x}", a_biguint);
+    /// let txt = format!("{:^#80x}", a_biguint);
+    /// assert_eq!(txt, "       0x9a313d3c55b12353228024cdbe156c443888e78ad3e424dbc43036a7788ad80b       ");
+    /// ```
+    /// 
+    /// # Example 22
+    /// ```
+    /// use std::str::FromStr;
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u32);
+    /// 
+    /// let a_biguint = U256::from_str("69743176821145534028236692093846345739169743176821145534028236692093846345739").unwrap();
+    /// println!("{:^#080x}", a_biguint);
+    /// let txt = format!("{:^#080x}", a_biguint);
+    /// assert_eq!(txt, "0x000000000000009a313d3c55b12353228024cdbe156c443888e78ad3e424dbc43036a7788ad80b");
+    /// ```
+    /// 
+    /// # Example 23
+    /// ```
+    /// use std::str::FromStr;
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u32);
+    /// 
+    /// let a_biguint = U256::from_str("69743176821145534028236692093846345739169743176821145534028236692093846345739").unwrap();
+    /// println!("{:<#80x}", a_biguint);
+    /// let txt = format!("{:<#80x}", a_biguint);
+    /// assert_eq!(txt, "0x9a313d3c55b12353228024cdbe156c443888e78ad3e424dbc43036a7788ad80b              ");
+    /// ```
+    /// 
+    /// # Example 24
+    /// ```
+    /// use std::str::FromStr;
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u32);
+    /// 
+    /// let a_biguint = U256::from_str("69743176821145534028236692093846345739169743176821145534028236692093846345739").unwrap();
+    /// println!("{:<#080x}", a_biguint);
+    /// let txt = format!("{:<#080x}", a_biguint);
+    /// assert_eq!(txt, "0x000000000000009a313d3c55b12353228024cdbe156c443888e78ad3e424dbc43036a7788ad80b");
+    /// ```
+    /// 
+    /// # Example 25
+    /// ```
+    /// use std::str::FromStr;
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u32);
+    /// 
+    /// let a_biguint = U256::from_str("69743176821145534028236692093846345739169743176821145534028236692093846345739").unwrap();
+    /// println!("{:!>#80x}", a_biguint);
+    /// let txt = format!("{:!>#80x}", a_biguint);
+    /// assert_eq!(txt, "!!!!!!!!!!!!!!0x9a313d3c55b12353228024cdbe156c443888e78ad3e424dbc43036a7788ad80b");
+    /// ```
+    /// 
+    /// # Example 26
+    /// ```
+    /// use std::str::FromStr;
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u32);
+    /// 
+    /// let a_biguint = U256::from_str("69743176821145534028236692093846345739169743176821145534028236692093846345739").unwrap();
+    /// println!("{:@>#080x}", a_biguint);
+    /// let txt = format!("{:@>#080x}", a_biguint);
+    /// assert_eq!(txt, "0x000000000000009a313d3c55b12353228024cdbe156c443888e78ad3e424dbc43036a7788ad80b");
+    /// ```
+    /// 
+    /// # Example 27
+    /// ```
+    /// use std::str::FromStr;
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u32);
+    /// 
+    /// let a_biguint = U256::from_str("69743176821145534028236692093846345739169743176821145534028236692093846345739").unwrap();
+    /// println!("{:#^#80x}", a_biguint);
+    /// let txt = format!("{:#^#80x}", a_biguint);
+    /// assert_eq!(txt, "#######0x9a313d3c55b12353228024cdbe156c443888e78ad3e424dbc43036a7788ad80b#######");
+    /// ```
+    /// 
+    /// # Example 28
+    /// ```
+    /// use std::str::FromStr;
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u32);
+    /// 
+    /// let a_biguint = U256::from_str("69743176821145534028236692093846345739169743176821145534028236692093846345739").unwrap();
+    /// println!("{:$^#080x}", a_biguint);
+    /// let txt = format!("{:$^#080x}", a_biguint);
+    /// assert_eq!(txt, "0x000000000000009a313d3c55b12353228024cdbe156c443888e78ad3e424dbc43036a7788ad80b");
+    /// ```
+    /// 
+    /// # Example 29
+    /// ```
+    /// use std::str::FromStr;
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u32);
+    /// 
+    /// let a_biguint = U256::from_str("69743176821145534028236692093846345739169743176821145534028236692093846345739").unwrap();
+    /// println!("{:%<#80x}", a_biguint);
+    /// let txt = format!("{:%<#80x}", a_biguint);
+    /// assert_eq!(txt, "0x9a313d3c55b12353228024cdbe156c443888e78ad3e424dbc43036a7788ad80b%%%%%%%%%%%%%%");
+    /// ```
+    /// 
+    /// # Example 30
+    /// ```
+    /// use std::str::FromStr;
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u32);
+    /// 
+    /// let a_biguint = U256::from_str("69743176821145534028236692093846345739169743176821145534028236692093846345739").unwrap();
+    /// println!("{:^<#080x}", a_biguint);
+    /// let txt = format!("{:^<#080x}", a_biguint);
+    /// assert_eq!(txt, "0x000000000000009a313d3c55b12353228024cdbe156c443888e78ad3e424dbc43036a7788ad80b");
     /// ```
     fn fmt(&self, f: &mut Formatter<'_>) -> Result<(), Error>
     {
@@ -9848,23 +10666,360 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// ```
     /// use std::str::FromStr;
     /// use cryptocol::define_utypes_with;
-    /// define_utypes_with!(u8);
+    /// define_utypes_with!(u64);
     /// 
     /// let a_biguint = U256::from_str("69743176821145534028236692093846345739169743176821145534028236692093846345739").unwrap();
-    /// println!("{}", a_biguint);
-    /// assert_eq!(a_biguint.to_string(), "69743176821145534028236692093846345739169743176821145534028236692093846345739");
+    /// println!("{:b}", a_biguint);
+    /// let txt = format!("{:b}", a_biguint);
+    /// assert_eq!(txt, "1001101000110001001111010011110001010101101100010010001101010011001000101000000000100100110011011011111000010101011011000100010000111000100010001110011110001010110100111110010000100100110110111100010000110000001101101010011101111000100010101101100000001011");
     /// ```
     /// 
     /// # Example 2
     /// ```
     /// use std::str::FromStr;
     /// use cryptocol::define_utypes_with;
-    /// define_utypes_with!(u8);
+    /// define_utypes_with!(u64);
     /// 
-    /// let a_biguint = U256::from_str("1234567_1234567890_1234567890_1234567890_1234567890_1234567890_1234567890_1234567890").unwrap();
-    /// let txt = a_biguint.to_string();
-    /// println!("{}", txt);
-    /// assert_eq!(txt, "12345671234567890123456789012345678901234567890123456789012345678901234567890");
+    /// let a_biguint = U256::from_str("69743176821145534028236692093846345739169743176821145534028236692093846345739").unwrap();
+    /// println!("{:272b}", a_biguint);
+    /// let txt = format!("{:272b}", a_biguint);
+    /// assert_eq!(txt, "1001101000110001001111010011110001010101101100010010001101010011001000101000000000100100110011011011111000010101011011000100010000111000100010001110011110001010110100111110010000100100110110111100010000110000001101101010011101111000100010101101100000001011                ");
+    /// ```
+    /// 
+    /// # Example 3
+    /// ```
+    /// use std::str::FromStr;
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u64);
+    /// 
+    /// let a_biguint = U256::from_str("69743176821145534028236692093846345739169743176821145534028236692093846345739").unwrap();
+    /// println!("{:0272b}", a_biguint);
+    /// let txt = format!("{:0272b}", a_biguint);
+    /// assert_eq!(txt, "00000000000000001001101000110001001111010011110001010101101100010010001101010011001000101000000000100100110011011011111000010101011011000100010000111000100010001110011110001010110100111110010000100100110110111100010000110000001101101010011101111000100010101101100000001011");
+    /// ```
+    /// 
+    /// # Example 4
+    /// ```
+    /// use std::str::FromStr;
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u64);
+    /// 
+    /// let a_biguint = U256::from_str("69743176821145534028236692093846345739169743176821145534028236692093846345739").unwrap();
+    /// println!("{:#b}", a_biguint);
+    /// let txt = format!("{:#b}", a_biguint);
+    /// assert_eq!(txt, "0b1001101000110001001111010011110001010101101100010010001101010011001000101000000000100100110011011011111000010101011011000100010000111000100010001110011110001010110100111110010000100100110110111100010000110000001101101010011101111000100010101101100000001011");
+    /// ```
+    /// 
+    /// # Example 5
+    /// ```
+    /// use std::str::FromStr;
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u64);
+    /// 
+    /// let a_biguint = U256::from_str("69743176821145534028236692093846345739169743176821145534028236692093846345739").unwrap();
+    /// println!("{:#272b}", a_biguint);
+    /// let txt = format!("{:#272b}", a_biguint);
+    /// assert_eq!(txt, "0b1001101000110001001111010011110001010101101100010010001101010011001000101000000000100100110011011011111000010101011011000100010000111000100010001110011110001010110100111110010000100100110110111100010000110000001101101010011101111000100010101101100000001011              ");
+    /// ```
+    /// 
+    /// # Example 6
+    /// ```
+    /// use std::str::FromStr;
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u64);
+    /// 
+    /// let a_biguint = U256::from_str("69743176821145534028236692093846345739169743176821145534028236692093846345739").unwrap();
+    /// println!("{:#0272b}", a_biguint);
+    /// let txt = format!("{:#0272b}", a_biguint);
+    /// assert_eq!(txt, "0b000000000000001001101000110001001111010011110001010101101100010010001101010011001000101000000000100100110011011011111000010101011011000100010000111000100010001110011110001010110100111110010000100100110110111100010000110000001101101010011101111000100010101101100000001011");
+    /// ```
+    /// 
+    /// # Example 7
+    /// ```
+    /// use std::str::FromStr;
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u64);
+    /// 
+    /// let a_biguint = U256::from_str("69743176821145534028236692093846345739169743176821145534028236692093846345739").unwrap();
+    /// println!("{:>272b}", a_biguint);
+    /// let txt = format!("{:>272b}", a_biguint);
+    /// assert_eq!(txt, "                1001101000110001001111010011110001010101101100010010001101010011001000101000000000100100110011011011111000010101011011000100010000111000100010001110011110001010110100111110010000100100110110111100010000110000001101101010011101111000100010101101100000001011");
+    /// ```
+    /// 
+    /// # Example 8
+    /// ```
+    /// use std::str::FromStr;
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u64);
+    /// 
+    /// let a_biguint = U256::from_str("69743176821145534028236692093846345739169743176821145534028236692093846345739").unwrap();
+    /// println!("{:>0272b}", a_biguint);
+    /// let txt = format!("{:>0272b}", a_biguint);
+    /// assert_eq!(txt, "00000000000000001001101000110001001111010011110001010101101100010010001101010011001000101000000000100100110011011011111000010101011011000100010000111000100010001110011110001010110100111110010000100100110110111100010000110000001101101010011101111000100010101101100000001011");
+    /// ```
+    /// 
+    /// # Example 9
+    /// ```
+    /// use std::str::FromStr;
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u64);
+    /// 
+    /// let a_biguint = U256::from_str("69743176821145534028236692093846345739169743176821145534028236692093846345739").unwrap();
+    /// println!("{:^272b}", a_biguint);
+    /// let txt = format!("{:^272b}", a_biguint);
+    /// assert_eq!(txt, "        1001101000110001001111010011110001010101101100010010001101010011001000101000000000100100110011011011111000010101011011000100010000111000100010001110011110001010110100111110010000100100110110111100010000110000001101101010011101111000100010101101100000001011        ");
+    /// ```
+    /// 
+    /// # Example 10
+    /// ```
+    /// use std::str::FromStr;
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u64);
+    /// 
+    /// let a_biguint = U256::from_str("69743176821145534028236692093846345739169743176821145534028236692093846345739").unwrap();
+    /// println!("{:^0272b}", a_biguint);
+    /// let txt = format!("{:^0272b}", a_biguint);
+    /// assert_eq!(txt, "00000000000000001001101000110001001111010011110001010101101100010010001101010011001000101000000000100100110011011011111000010101011011000100010000111000100010001110011110001010110100111110010000100100110110111100010000110000001101101010011101111000100010101101100000001011");
+    /// ```
+    /// 
+    /// # Example 11
+    /// ```
+    /// use std::str::FromStr;
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u64);
+    /// 
+    /// let a_biguint = U256::from_str("69743176821145534028236692093846345739169743176821145534028236692093846345739").unwrap();
+    /// println!("{:<272b}", a_biguint);
+    /// let txt = format!("{:<272b}", a_biguint);
+    /// assert_eq!(txt, "1001101000110001001111010011110001010101101100010010001101010011001000101000000000100100110011011011111000010101011011000100010000111000100010001110011110001010110100111110010000100100110110111100010000110000001101101010011101111000100010101101100000001011                ");
+    /// ```
+    /// 
+    /// # Example 12
+    /// ```
+    /// use std::str::FromStr;
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u64);
+    /// 
+    /// let a_biguint = U256::from_str("69743176821145534028236692093846345739169743176821145534028236692093846345739").unwrap();
+    /// println!("{:<0272b}", a_biguint);
+    /// let txt = format!("{:<0272b}", a_biguint);
+    /// assert_eq!(txt, "00000000000000001001101000110001001111010011110001010101101100010010001101010011001000101000000000100100110011011011111000010101011011000100010000111000100010001110011110001010110100111110010000100100110110111100010000110000001101101010011101111000100010101101100000001011");
+    /// ```
+    /// 
+    /// # Example 13
+    /// ```
+    /// use std::str::FromStr;
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u64);
+    /// 
+    /// let a_biguint = U256::from_str("69743176821145534028236692093846345739169743176821145534028236692093846345739").unwrap();
+    /// println!("{:!>272b}", a_biguint);
+    /// let txt = format!("{:!>272b}", a_biguint);
+    /// assert_eq!(txt, "!!!!!!!!!!!!!!!!1001101000110001001111010011110001010101101100010010001101010011001000101000000000100100110011011011111000010101011011000100010000111000100010001110011110001010110100111110010000100100110110111100010000110000001101101010011101111000100010101101100000001011");
+    /// ```
+    /// 
+    /// # Example 14
+    /// ```
+    /// use std::str::FromStr;
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u64);
+    /// 
+    /// let a_biguint = U256::from_str("69743176821145534028236692093846345739169743176821145534028236692093846345739").unwrap();
+    /// println!("{:@>0272b}", a_biguint);
+    /// let txt = format!("{:@>0272b}", a_biguint);
+    /// assert_eq!(txt, "00000000000000001001101000110001001111010011110001010101101100010010001101010011001000101000000000100100110011011011111000010101011011000100010000111000100010001110011110001010110100111110010000100100110110111100010000110000001101101010011101111000100010101101100000001011");
+    /// ```
+    /// 
+    /// # Example 15
+    /// ```
+    /// use std::str::FromStr;
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u64);
+    /// 
+    /// let a_biguint = U256::from_str("69743176821145534028236692093846345739169743176821145534028236692093846345739").unwrap();
+    /// println!("{:#^272b}", a_biguint);
+    /// let txt = format!("{:#^272b}", a_biguint);
+    /// assert_eq!(txt, "########1001101000110001001111010011110001010101101100010010001101010011001000101000000000100100110011011011111000010101011011000100010000111000100010001110011110001010110100111110010000100100110110111100010000110000001101101010011101111000100010101101100000001011########");
+    /// ```
+    /// 
+    /// # Example 16
+    /// ```
+    /// use std::str::FromStr;
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u64);
+    /// 
+    /// let a_biguint = U256::from_str("69743176821145534028236692093846345739169743176821145534028236692093846345739").unwrap();
+    /// println!("{:$^0272b}", a_biguint);
+    /// let txt = format!("{:$^0272b}", a_biguint);
+    /// assert_eq!(txt, "00000000000000001001101000110001001111010011110001010101101100010010001101010011001000101000000000100100110011011011111000010101011011000100010000111000100010001110011110001010110100111110010000100100110110111100010000110000001101101010011101111000100010101101100000001011");
+    /// ```
+    /// 
+    /// # Example 17
+    /// ```
+    /// use std::str::FromStr;
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u64);
+    /// 
+    /// let a_biguint = U256::from_str("69743176821145534028236692093846345739169743176821145534028236692093846345739").unwrap();
+    /// println!("{:%<272b}", a_biguint);
+    /// let txt = format!("{:%<272b}", a_biguint);
+    /// assert_eq!(txt, "1001101000110001001111010011110001010101101100010010001101010011001000101000000000100100110011011011111000010101011011000100010000111000100010001110011110001010110100111110010000100100110110111100010000110000001101101010011101111000100010101101100000001011%%%%%%%%%%%%%%%%");
+    /// ```
+    /// 
+    /// # Example 18
+    /// ```
+    /// use std::str::FromStr;
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u64);
+    /// 
+    /// let a_biguint = U256::from_str("69743176821145534028236692093846345739169743176821145534028236692093846345739").unwrap();
+    /// println!("{:*<0272b}", a_biguint);
+    /// let txt = format!("{:*<0272b}", a_biguint);
+    /// assert_eq!(txt, "00000000000000001001101000110001001111010011110001010101101100010010001101010011001000101000000000100100110011011011111000010101011011000100010000111000100010001110011110001010110100111110010000100100110110111100010000110000001101101010011101111000100010101101100000001011");
+    /// ```
+    /// 
+    /// # Example 19
+    /// ```
+    /// use std::str::FromStr;
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u64);
+    /// 
+    /// let a_biguint = U256::from_str("69743176821145534028236692093846345739169743176821145534028236692093846345739").unwrap();
+    /// println!("{:>#272b}", a_biguint);
+    /// let txt = format!("{:>#272b}", a_biguint);
+    /// assert_eq!(txt, "              0b1001101000110001001111010011110001010101101100010010001101010011001000101000000000100100110011011011111000010101011011000100010000111000100010001110011110001010110100111110010000100100110110111100010000110000001101101010011101111000100010101101100000001011");
+    /// ```
+    /// 
+    /// # Example 20
+    /// ```
+    /// use std::str::FromStr;
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u64);
+    /// 
+    /// let a_biguint = U256::from_str("69743176821145534028236692093846345739169743176821145534028236692093846345739").unwrap();
+    /// println!("{:>#0272b}", a_biguint);
+    /// let txt = format!("{:>#0272b}", a_biguint);
+    /// assert_eq!(txt, "0b000000000000001001101000110001001111010011110001010101101100010010001101010011001000101000000000100100110011011011111000010101011011000100010000111000100010001110011110001010110100111110010000100100110110111100010000110000001101101010011101111000100010101101100000001011");
+    /// ```
+    /// 
+    /// # Example 21
+    /// ```
+    /// use std::str::FromStr;
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u64);
+    /// 
+    /// let a_biguint = U256::from_str("69743176821145534028236692093846345739169743176821145534028236692093846345739").unwrap();
+    /// println!("{:^#272b}", a_biguint);
+    /// let txt = format!("{:^#272b}", a_biguint);
+    /// assert_eq!(txt, "       0b1001101000110001001111010011110001010101101100010010001101010011001000101000000000100100110011011011111000010101011011000100010000111000100010001110011110001010110100111110010000100100110110111100010000110000001101101010011101111000100010101101100000001011       ");
+    /// ```
+    /// 
+    /// # Example 22
+    /// ```
+    /// use std::str::FromStr;
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u64);
+    /// 
+    /// let a_biguint = U256::from_str("69743176821145534028236692093846345739169743176821145534028236692093846345739").unwrap();
+    /// println!("{:^#0272b}", a_biguint);
+    /// let txt = format!("{:^#0272b}", a_biguint);
+    /// assert_eq!(txt, "0b000000000000001001101000110001001111010011110001010101101100010010001101010011001000101000000000100100110011011011111000010101011011000100010000111000100010001110011110001010110100111110010000100100110110111100010000110000001101101010011101111000100010101101100000001011");
+    /// ```
+    /// 
+    /// # Example 23
+    /// ```
+    /// use std::str::FromStr;
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u64);
+    /// 
+    /// let a_biguint = U256::from_str("69743176821145534028236692093846345739169743176821145534028236692093846345739").unwrap();
+    /// println!("{:<#272b}", a_biguint);
+    /// let txt = format!("{:<#272b}", a_biguint);
+    /// assert_eq!(txt, "0b1001101000110001001111010011110001010101101100010010001101010011001000101000000000100100110011011011111000010101011011000100010000111000100010001110011110001010110100111110010000100100110110111100010000110000001101101010011101111000100010101101100000001011              ");
+    /// ```
+    /// 
+    /// # Example 24
+    /// ```
+    /// use std::str::FromStr;
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u64);
+    /// 
+    /// let a_biguint = U256::from_str("69743176821145534028236692093846345739169743176821145534028236692093846345739").unwrap();
+    /// println!("{:<#0272b}", a_biguint);
+    /// let txt = format!("{:<#0272b}", a_biguint);
+    /// assert_eq!(txt, "0b000000000000001001101000110001001111010011110001010101101100010010001101010011001000101000000000100100110011011011111000010101011011000100010000111000100010001110011110001010110100111110010000100100110110111100010000110000001101101010011101111000100010101101100000001011");
+    /// ```
+    /// 
+    /// # Example 25
+    /// ```
+    /// use std::str::FromStr;
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u64);
+    /// 
+    /// let a_biguint = U256::from_str("69743176821145534028236692093846345739169743176821145534028236692093846345739").unwrap();
+    /// println!("{:!>#272b}", a_biguint);
+    /// let txt = format!("{:!>#272b}", a_biguint);
+    /// assert_eq!(txt, "!!!!!!!!!!!!!!0b1001101000110001001111010011110001010101101100010010001101010011001000101000000000100100110011011011111000010101011011000100010000111000100010001110011110001010110100111110010000100100110110111100010000110000001101101010011101111000100010101101100000001011");
+    /// ```
+    /// 
+    /// # Example 26
+    /// ```
+    /// use std::str::FromStr;
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u64);
+    /// 
+    /// let a_biguint = U256::from_str("69743176821145534028236692093846345739169743176821145534028236692093846345739").unwrap();
+    /// println!("{:@>#0272b}", a_biguint);
+    /// let txt = format!("{:@>#0272b}", a_biguint);
+    /// assert_eq!(txt, "0b000000000000001001101000110001001111010011110001010101101100010010001101010011001000101000000000100100110011011011111000010101011011000100010000111000100010001110011110001010110100111110010000100100110110111100010000110000001101101010011101111000100010101101100000001011");
+    /// ```
+    /// 
+    /// # Example 27
+    /// ```
+    /// use std::str::FromStr;
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u64);
+    /// 
+    /// let a_biguint = U256::from_str("69743176821145534028236692093846345739169743176821145534028236692093846345739").unwrap();
+    /// println!("{:#^#272b}", a_biguint);
+    /// let txt = format!("{:#^#272b}", a_biguint);
+    /// assert_eq!(txt, "#######0b1001101000110001001111010011110001010101101100010010001101010011001000101000000000100100110011011011111000010101011011000100010000111000100010001110011110001010110100111110010000100100110110111100010000110000001101101010011101111000100010101101100000001011#######");
+    /// ```
+    /// 
+    /// # Example 28
+    /// ```
+    /// use std::str::FromStr;
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u64);
+    /// 
+    /// let a_biguint = U256::from_str("69743176821145534028236692093846345739169743176821145534028236692093846345739").unwrap();
+    /// println!("{:$^#0272b}", a_biguint);
+    /// let txt = format!("{:$^#0272b}", a_biguint);
+    /// assert_eq!(txt, "0b000000000000001001101000110001001111010011110001010101101100010010001101010011001000101000000000100100110011011011111000010101011011000100010000111000100010001110011110001010110100111110010000100100110110111100010000110000001101101010011101111000100010101101100000001011");
+    /// ```
+    /// 
+    /// # Example 29
+    /// ```
+    /// use std::str::FromStr;
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u64);
+    /// 
+    /// let a_biguint = U256::from_str("69743176821145534028236692093846345739169743176821145534028236692093846345739").unwrap();
+    /// println!("{:%<#272b}", a_biguint);
+    /// let txt = format!("{:%<#272b}", a_biguint);
+    /// assert_eq!(txt, "0b1001101000110001001111010011110001010101101100010010001101010011001000101000000000100100110011011011111000010101011011000100010000111000100010001110011110001010110100111110010000100100110110111100010000110000001101101010011101111000100010101101100000001011%%%%%%%%%%%%%%");
+    /// ```
+    /// 
+    /// # Example 30
+    /// ```
+    /// use std::str::FromStr;
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u64);
+    /// 
+    /// let a_biguint = U256::from_str("69743176821145534028236692093846345739169743176821145534028236692093846345739").unwrap();
+    /// println!("{:^<#0272b}", a_biguint);
+    /// let txt = format!("{:^<#0272b}", a_biguint);
+    /// assert_eq!(txt, "0b000000000000001001101000110001001111010011110001010101101100010010001101010011001000101000000000100100110011011011111000010101011011000100010000111000100010001110011110001010110100111110010000100100110110111100010000110000001101101010011101111000100010101101100000001011");
     /// ```
     fn fmt(&self, f: &mut Formatter<'_>) -> Result<(), Error>
     {
@@ -9909,23 +11064,360 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// ```
     /// use std::str::FromStr;
     /// use cryptocol::define_utypes_with;
-    /// define_utypes_with!(u8);
+    /// define_utypes_with!(u128);
     /// 
     /// let a_biguint = U256::from_str("69743176821145534028236692093846345739169743176821145534028236692093846345739").unwrap();
-    /// println!("{}", a_biguint);
-    /// assert_eq!(a_biguint.to_string(), "69743176821145534028236692093846345739169743176821145534028236692093846345739");
+    /// println!("{:o}", a_biguint);
+    /// let txt = format!("{:o}", a_biguint);
+    /// assert_eq!(txt, "11506117236125542215231050004463337025330420704216361264762044667420601552357042554013");
     /// ```
     /// 
     /// # Example 2
     /// ```
     /// use std::str::FromStr;
     /// use cryptocol::define_utypes_with;
-    /// define_utypes_with!(u8);
+    /// define_utypes_with!(u128);
     /// 
-    /// let a_biguint = U256::from_str("1234567_1234567890_1234567890_1234567890_1234567890_1234567890_1234567890_1234567890").unwrap();
-    /// let txt = a_biguint.to_string();
-    /// println!("{}", txt);
-    /// assert_eq!(txt, "12345671234567890123456789012345678901234567890123456789012345678901234567890");
+    /// let a_biguint = U256::from_str("69743176821145534028236692093846345739169743176821145534028236692093846345739").unwrap();
+    /// println!("{:102o}", a_biguint);
+    /// let txt = format!("{:102o}", a_biguint);
+    /// assert_eq!(txt, "11506117236125542215231050004463337025330420704216361264762044667420601552357042554013                ");
+    /// ```
+    /// 
+    /// # Example 3
+    /// ```
+    /// use std::str::FromStr;
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u128);
+    /// 
+    /// let a_biguint = U256::from_str("69743176821145534028236692093846345739169743176821145534028236692093846345739").unwrap();
+    /// println!("{:0102o}", a_biguint);
+    /// let txt = format!("{:0102o}", a_biguint);
+    /// assert_eq!(txt, "000000000000000011506117236125542215231050004463337025330420704216361264762044667420601552357042554013");
+    /// ```
+    /// 
+    /// # Example 4
+    /// ```
+    /// use std::str::FromStr;
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u128);
+    /// 
+    /// let a_biguint = U256::from_str("69743176821145534028236692093846345739169743176821145534028236692093846345739").unwrap();
+    /// println!("{:#o}", a_biguint);
+    /// let txt = format!("{:#o}", a_biguint);
+    /// assert_eq!(txt, "0o11506117236125542215231050004463337025330420704216361264762044667420601552357042554013");
+    /// ```
+    /// 
+    /// # Example 5
+    /// ```
+    /// use std::str::FromStr;
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u128);
+    /// 
+    /// let a_biguint = U256::from_str("69743176821145534028236692093846345739169743176821145534028236692093846345739").unwrap();
+    /// println!("{:#102o}", a_biguint);
+    /// let txt = format!("{:#102o}", a_biguint);
+    /// assert_eq!(txt, "0o11506117236125542215231050004463337025330420704216361264762044667420601552357042554013              ");
+    /// ```
+    /// 
+    /// # Example 6
+    /// ```
+    /// use std::str::FromStr;
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u128);
+    /// 
+    /// let a_biguint = U256::from_str("69743176821145534028236692093846345739169743176821145534028236692093846345739").unwrap();
+    /// println!("{:#0102o}", a_biguint);
+    /// let txt = format!("{:#0102o}", a_biguint);
+    /// assert_eq!(txt, "0o0000000000000011506117236125542215231050004463337025330420704216361264762044667420601552357042554013");
+    /// ```
+    /// 
+    /// # Example 7
+    /// ```
+    /// use std::str::FromStr;
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u128);
+    /// 
+    /// let a_biguint = U256::from_str("69743176821145534028236692093846345739169743176821145534028236692093846345739").unwrap();
+    /// println!("{:>102o}", a_biguint);
+    /// let txt = format!("{:>102o}", a_biguint);
+    /// assert_eq!(txt, "                11506117236125542215231050004463337025330420704216361264762044667420601552357042554013");
+    /// ```
+    /// 
+    /// # Example 8
+    /// ```
+    /// use std::str::FromStr;
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u128);
+    /// 
+    /// let a_biguint = U256::from_str("69743176821145534028236692093846345739169743176821145534028236692093846345739").unwrap();
+    /// println!("{:>0102o}", a_biguint);
+    /// let txt = format!("{:>0102o}", a_biguint);
+    /// assert_eq!(txt, "000000000000000011506117236125542215231050004463337025330420704216361264762044667420601552357042554013");
+    /// ```
+    /// 
+    /// # Example 9
+    /// ```
+    /// use std::str::FromStr;
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u128);
+    /// 
+    /// let a_biguint = U256::from_str("69743176821145534028236692093846345739169743176821145534028236692093846345739").unwrap();
+    /// println!("{:^102o}", a_biguint);
+    /// let txt = format!("{:^102o}", a_biguint);
+    /// assert_eq!(txt, "        11506117236125542215231050004463337025330420704216361264762044667420601552357042554013        ");
+    /// ```
+    /// 
+    /// # Example 10
+    /// ```
+    /// use std::str::FromStr;
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u128);
+    /// 
+    /// let a_biguint = U256::from_str("69743176821145534028236692093846345739169743176821145534028236692093846345739").unwrap();
+    /// println!("{:^0102o}", a_biguint);
+    /// let txt = format!("{:^0102o}", a_biguint);
+    /// assert_eq!(txt, "000000000000000011506117236125542215231050004463337025330420704216361264762044667420601552357042554013");
+    /// ```
+    /// 
+    /// # Example 11
+    /// ```
+    /// use std::str::FromStr;
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u128);
+    /// 
+    /// let a_biguint = U256::from_str("69743176821145534028236692093846345739169743176821145534028236692093846345739").unwrap();
+    /// println!("{:<102o}", a_biguint);
+    /// let txt = format!("{:<102o}", a_biguint);
+    /// assert_eq!(txt, "11506117236125542215231050004463337025330420704216361264762044667420601552357042554013                ");
+    /// ```
+    /// 
+    /// # Example 12
+    /// ```
+    /// use std::str::FromStr;
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u128);
+    /// 
+    /// let a_biguint = U256::from_str("69743176821145534028236692093846345739169743176821145534028236692093846345739").unwrap();
+    /// println!("{:<0102o}", a_biguint);
+    /// let txt = format!("{:<0102o}", a_biguint);
+    /// assert_eq!(txt, "000000000000000011506117236125542215231050004463337025330420704216361264762044667420601552357042554013");
+    /// ```
+    /// 
+    /// # Example 13
+    /// ```
+    /// use std::str::FromStr;
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u128);
+    /// 
+    /// let a_biguint = U256::from_str("69743176821145534028236692093846345739169743176821145534028236692093846345739").unwrap();
+    /// println!("{:!>102o}", a_biguint);
+    /// let txt = format!("{:!>102o}", a_biguint);
+    /// assert_eq!(txt, "!!!!!!!!!!!!!!!!11506117236125542215231050004463337025330420704216361264762044667420601552357042554013");
+    /// ```
+    /// 
+    /// # Example 14
+    /// ```
+    /// use std::str::FromStr;
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u128);
+    /// 
+    /// let a_biguint = U256::from_str("69743176821145534028236692093846345739169743176821145534028236692093846345739").unwrap();
+    /// println!("{:@>0102o}", a_biguint);
+    /// let txt = format!("{:@>0102o}", a_biguint);
+    /// assert_eq!(txt, "000000000000000011506117236125542215231050004463337025330420704216361264762044667420601552357042554013");
+    /// ```
+    /// 
+    /// # Example 15
+    /// ```
+    /// use std::str::FromStr;
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u128);
+    /// 
+    /// let a_biguint = U256::from_str("69743176821145534028236692093846345739169743176821145534028236692093846345739").unwrap();
+    /// println!("{:#^102o}", a_biguint);
+    /// let txt = format!("{:#^102o}", a_biguint);
+    /// assert_eq!(txt, "########11506117236125542215231050004463337025330420704216361264762044667420601552357042554013########");
+    /// ```
+    /// 
+    /// # Example 16
+    /// ```
+    /// use std::str::FromStr;
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u128);
+    /// 
+    /// let a_biguint = U256::from_str("69743176821145534028236692093846345739169743176821145534028236692093846345739").unwrap();
+    /// println!("{:$^0102o}", a_biguint);
+    /// let txt = format!("{:$^0102o}", a_biguint);
+    /// assert_eq!(txt, "000000000000000011506117236125542215231050004463337025330420704216361264762044667420601552357042554013");
+    /// ```
+    /// 
+    /// # Example 17
+    /// ```
+    /// use std::str::FromStr;
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u128);
+    /// 
+    /// let a_biguint = U256::from_str("69743176821145534028236692093846345739169743176821145534028236692093846345739").unwrap();
+    /// println!("{:%<102o}", a_biguint);
+    /// let txt = format!("{:%<102o}", a_biguint);
+    /// assert_eq!(txt, "11506117236125542215231050004463337025330420704216361264762044667420601552357042554013%%%%%%%%%%%%%%%%");
+    /// ```
+    /// 
+    /// # Example 18
+    /// ```
+    /// use std::str::FromStr;
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u128);
+    /// 
+    /// let a_biguint = U256::from_str("69743176821145534028236692093846345739169743176821145534028236692093846345739").unwrap();
+    /// println!("{:*<0102o}", a_biguint);
+    /// let txt = format!("{:*<0102o}", a_biguint);
+    /// assert_eq!(txt, "000000000000000011506117236125542215231050004463337025330420704216361264762044667420601552357042554013");
+    /// ```
+    /// 
+    /// # Example 19
+    /// ```
+    /// use std::str::FromStr;
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u128);
+    /// 
+    /// let a_biguint = U256::from_str("69743176821145534028236692093846345739169743176821145534028236692093846345739").unwrap();
+    /// println!("{:>#102o}", a_biguint);
+    /// let txt = format!("{:>#102o}", a_biguint);
+    /// assert_eq!(txt, "              0o11506117236125542215231050004463337025330420704216361264762044667420601552357042554013");
+    /// ```
+    /// 
+    /// # Example 20
+    /// ```
+    /// use std::str::FromStr;
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u128);
+    /// 
+    /// let a_biguint = U256::from_str("69743176821145534028236692093846345739169743176821145534028236692093846345739").unwrap();
+    /// println!("{:>#0102o}", a_biguint);
+    /// let txt = format!("{:>#0102o}", a_biguint);
+    /// assert_eq!(txt, "0o0000000000000011506117236125542215231050004463337025330420704216361264762044667420601552357042554013");
+    /// ```
+    /// 
+    /// # Example 21
+    /// ```
+    /// use std::str::FromStr;
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u128);
+    /// 
+    /// let a_biguint = U256::from_str("69743176821145534028236692093846345739169743176821145534028236692093846345739").unwrap();
+    /// println!("{:^#102o}", a_biguint);
+    /// let txt = format!("{:^#102o}", a_biguint);
+    /// assert_eq!(txt, "       0o11506117236125542215231050004463337025330420704216361264762044667420601552357042554013       ");
+    /// ```
+    /// 
+    /// # Example 22
+    /// ```
+    /// use std::str::FromStr;
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u128);
+    /// 
+    /// let a_biguint = U256::from_str("69743176821145534028236692093846345739169743176821145534028236692093846345739").unwrap();
+    /// println!("{:^#0102o}", a_biguint);
+    /// let txt = format!("{:^#0102o}", a_biguint);
+    /// assert_eq!(txt, "0o0000000000000011506117236125542215231050004463337025330420704216361264762044667420601552357042554013");
+    /// ```
+    /// 
+    /// # Example 23
+    /// ```
+    /// use std::str::FromStr;
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u128);
+    /// 
+    /// let a_biguint = U256::from_str("69743176821145534028236692093846345739169743176821145534028236692093846345739").unwrap();
+    /// println!("{:<#102o}", a_biguint);
+    /// let txt = format!("{:<#102o}", a_biguint);
+    /// assert_eq!(txt, "0o11506117236125542215231050004463337025330420704216361264762044667420601552357042554013              ");
+    /// ```
+    /// 
+    /// # Example 24
+    /// ```
+    /// use std::str::FromStr;
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u128);
+    /// 
+    /// let a_biguint = U256::from_str("69743176821145534028236692093846345739169743176821145534028236692093846345739").unwrap();
+    /// println!("{:<#0102o}", a_biguint);
+    /// let txt = format!("{:<#0102o}", a_biguint);
+    /// assert_eq!(txt, "0o0000000000000011506117236125542215231050004463337025330420704216361264762044667420601552357042554013");
+    /// ```
+    /// 
+    /// # Example 25
+    /// ```
+    /// use std::str::FromStr;
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u128);
+    /// 
+    /// let a_biguint = U256::from_str("69743176821145534028236692093846345739169743176821145534028236692093846345739").unwrap();
+    /// println!("{:!>#102o}", a_biguint);
+    /// let txt = format!("{:!>#102o}", a_biguint);
+    /// assert_eq!(txt, "!!!!!!!!!!!!!!0o11506117236125542215231050004463337025330420704216361264762044667420601552357042554013");
+    /// ```
+    /// 
+    /// # Example 26
+    /// ```
+    /// use std::str::FromStr;
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u128);
+    /// 
+    /// let a_biguint = U256::from_str("69743176821145534028236692093846345739169743176821145534028236692093846345739").unwrap();
+    /// println!("{:@>#0102o}", a_biguint);
+    /// let txt = format!("{:@>#0102o}", a_biguint);
+    /// assert_eq!(txt, "0o0000000000000011506117236125542215231050004463337025330420704216361264762044667420601552357042554013");
+    /// ```
+    /// 
+    /// # Example 27
+    /// ```
+    /// use std::str::FromStr;
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u128);
+    /// 
+    /// let a_biguint = U256::from_str("69743176821145534028236692093846345739169743176821145534028236692093846345739").unwrap();
+    /// println!("{:#^#102o}", a_biguint);
+    /// let txt = format!("{:#^#102o}", a_biguint);
+    /// assert_eq!(txt, "#######0o11506117236125542215231050004463337025330420704216361264762044667420601552357042554013#######");
+    /// ```
+    /// 
+    /// # Example 28
+    /// ```
+    /// use std::str::FromStr;
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u128);
+    /// 
+    /// let a_biguint = U256::from_str("69743176821145534028236692093846345739169743176821145534028236692093846345739").unwrap();
+    /// println!("{:$^#0102o}", a_biguint);
+    /// let txt = format!("{:$^#0102o}", a_biguint);
+    /// assert_eq!(txt, "0o0000000000000011506117236125542215231050004463337025330420704216361264762044667420601552357042554013");
+    /// ```
+    /// 
+    /// # Example 29
+    /// ```
+    /// use std::str::FromStr;
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u128);
+    /// 
+    /// let a_biguint = U256::from_str("69743176821145534028236692093846345739169743176821145534028236692093846345739").unwrap();
+    /// println!("{:%<#102o}", a_biguint);
+    /// let txt = format!("{:%<#102o}", a_biguint);
+    /// assert_eq!(txt, "0o11506117236125542215231050004463337025330420704216361264762044667420601552357042554013%%%%%%%%%%%%%%");
+    /// ```
+    /// 
+    /// # Example 30
+    /// ```
+    /// use std::str::FromStr;
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u128);
+    /// 
+    /// let a_biguint = U256::from_str("69743176821145534028236692093846345739169743176821145534028236692093846345739").unwrap();
+    /// println!("{:^<#0102o}", a_biguint);
+    /// let txt = format!("{:^<#0102o}", a_biguint);
+    /// assert_eq!(txt, "0o0000000000000011506117236125542215231050004463337025330420704216361264762044667420601552357042554013");
     /// ```
     fn fmt(&self, f: &mut Formatter<'_>) -> Result<(), Error>
     {
@@ -9972,9 +11464,10 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// use cryptocol::define_utypes_with;
     /// define_utypes_with!(u8);
     /// 
-    /// let a_biguint = U256::from_str("69743176821145534028236692093846345739169743176821145534028236692093846345739").unwrap();
-    /// println!("{}", a_biguint);
-    /// assert_eq!(a_biguint.to_string(), "69743176821145534028236692093846345739169743176821145534028236692093846345739");
+    /// let a_biguint = U256::from_str("12345678901234567890123456789012345678901234567890123456789012345678901234567").unwrap();
+    /// println!("{:E}", a_biguint);
+    /// let txt = format!("{:E}", a_biguint);
+    /// assert_eq!(txt, "1.2345678901234567890123456789012345678901234567890123456789012345678901234567E76");
     /// ```
     /// 
     /// # Example 2
@@ -9983,10 +11476,574 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// use cryptocol::define_utypes_with;
     /// define_utypes_with!(u8);
     /// 
-    /// let a_biguint = U256::from_str("1234567_1234567890_1234567890_1234567890_1234567890_1234567890_1234567890_1234567890").unwrap();
-    /// let txt = a_biguint.to_string();
-    /// println!("{}", txt);
-    /// assert_eq!(txt, "12345671234567890123456789012345678901234567890123456789012345678901234567890");
+    /// let a_biguint = U256::from_str("12345678901234567890123456789012345678901234567890123456789012345678901234567").unwrap();
+    /// println!("{:100E}", a_biguint);
+    /// let txt = format!("{:100E}", a_biguint);
+    /// assert_eq!(txt, "1.2345678901234567890123456789012345678901234567890123456789012345678901234567E76                   ");
+    /// ```
+    /// 
+    /// # Example 3
+    /// ```
+    /// use std::str::FromStr;
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u8);
+    /// 
+    /// let a_biguint = U256::from_str("12345678901234567890123456789012345678901234567890123456789012345678901234567").unwrap();
+    /// println!("{:0100E}", a_biguint);
+    /// let txt = format!("{:0100E}", a_biguint);
+    /// assert_eq!(txt, "00000000000000000001.2345678901234567890123456789012345678901234567890123456789012345678901234567E76");
+    /// ```
+    /// 
+    /// # Example 4
+    /// ```
+    /// use std::str::FromStr;
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u8);
+    /// 
+    /// let a_biguint = U256::from_str("12345678901234567890123456789012345678901234567890123456789012345678901234567").unwrap();
+    /// println!("{:20.9E}", a_biguint);
+    /// let txt = format!("{:20.9E}", a_biguint);
+    /// assert_eq!(txt, "1.234567890E76      ");
+    /// ```
+    /// 
+    /// # Example 5
+    /// ```
+    /// use std::str::FromStr;
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u8);
+    /// 
+    /// let a_biguint = U256::from_str("12345678901234567890123456789012345678901234567890123456789012345678901234567").unwrap();
+    /// println!("{:020.9E}", a_biguint);
+    /// let txt = format!("{:020.9E}", a_biguint);
+    /// assert_eq!(txt, "0000001.234567890E76");
+    /// ```
+    /// 
+    /// # Example 6
+    /// ```
+    /// use std::str::FromStr;
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u8);
+    /// 
+    /// let a_biguint = U256::from_str("12345678901234567890123456789012345678901234567890123456789012345678901234567").unwrap();
+    /// println!("{:21.13E}", a_biguint);
+    /// let txt = format!("{:21.13E}", a_biguint);
+    /// assert_eq!(txt, "1.2345678901235E76   ");
+    /// ```
+    /// 
+    /// # Example 7
+    /// ```
+    /// use std::str::FromStr;
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u8);
+    /// 
+    /// let a_biguint = U256::from_str("12345678901234567890123456789012345678901234567890123456789012345678901234567").unwrap();
+    /// println!("{:021.13E}", a_biguint);
+    /// let txt = format!("{:021.13E}", a_biguint);
+    /// assert_eq!(txt, "0001.2345678901235E76");
+    /// ```
+    /// 
+    /// # Example 8
+    /// ```
+    /// use std::str::FromStr;
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u8);
+    /// 
+    /// let a_biguint = U256::from_str("12345678901234567890123456789012345678901234567890123456789012345678901234567").unwrap();
+    /// println!("{:<E}", a_biguint);
+    /// let txt = format!("{:<E}", a_biguint);
+    /// assert_eq!(txt, "1.2345678901234567890123456789012345678901234567890123456789012345678901234567E76");
+    /// ```
+    /// 
+    /// # Example 9
+    /// ```
+    /// use std::str::FromStr;
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u8);
+    /// 
+    /// let a_biguint = U256::from_str("12345678901234567890123456789012345678901234567890123456789012345678901234567").unwrap();
+    /// println!("{:<100E}", a_biguint);
+    /// let txt = format!("{:<100E}", a_biguint);
+    /// assert_eq!(txt, "1.2345678901234567890123456789012345678901234567890123456789012345678901234567E76                   ");
+    /// ```
+    /// 
+    /// # Example 10
+    /// ```
+    /// use std::str::FromStr;
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u8);
+    /// 
+    /// let a_biguint = U256::from_str("12345678901234567890123456789012345678901234567890123456789012345678901234567").unwrap();
+    /// println!("{:<0100E}", a_biguint);
+    /// let txt = format!("{:<0100E}", a_biguint);
+    /// assert_eq!(txt, "00000000000000000001.2345678901234567890123456789012345678901234567890123456789012345678901234567E76");
+    /// ```
+    /// 
+    /// # Example 11
+    /// ```
+    /// use std::str::FromStr;
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u8);
+    /// 
+    /// let a_biguint = U256::from_str("12345678901234567890123456789012345678901234567890123456789012345678901234567").unwrap();
+    /// println!("{:<20.9E}", a_biguint);
+    /// let txt = format!("{:<20.9E}", a_biguint);
+    /// assert_eq!(txt, "1.234567890E76      ");
+    /// ```
+    /// 
+    /// # Example 12
+    /// ```
+    /// use std::str::FromStr;
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u8);
+    /// 
+    /// let a_biguint = U256::from_str("12345678901234567890123456789012345678901234567890123456789012345678901234567").unwrap();
+    /// println!("{:<020.9E}", a_biguint);
+    /// let txt = format!("{:<020.9E}", a_biguint);
+    /// assert_eq!(txt, "0000001.234567890E76");
+    /// ```
+    /// 
+    /// # Example 13
+    /// ```
+    /// use std::str::FromStr;
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u8);
+    /// 
+    /// let a_biguint = U256::from_str("12345678901234567890123456789012345678901234567890123456789012345678901234567").unwrap();
+    /// println!("{:<21.13E}", a_biguint);
+    /// let txt = format!("{:<21.13E}", a_biguint);
+    /// assert_eq!(txt, "1.2345678901235E76   ");
+    /// ```
+    /// 
+    /// # Example 14
+    /// ```
+    /// use std::str::FromStr;
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u8);
+    /// 
+    /// let a_biguint = U256::from_str("12345678901234567890123456789012345678901234567890123456789012345678901234567").unwrap();
+    /// println!("{:<021.13E}", a_biguint);
+    /// let txt = format!("{:<021.13E}", a_biguint);
+    /// assert_eq!(txt, "0001.2345678901235E76");
+    /// ```
+    /// 
+    /// # Example 15
+    /// ```
+    /// use std::str::FromStr;
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u8);
+    /// 
+    /// let a_biguint = U256::from_str("12345678901234567890123456789012345678901234567890123456789012345678901234567").unwrap();
+    /// println!("{:!<E}", a_biguint);
+    /// let txt = format!("{:<E}", a_biguint);
+    /// assert_eq!(txt, "1.2345678901234567890123456789012345678901234567890123456789012345678901234567E76");
+    /// ```
+    /// 
+    /// # Example 16
+    /// ```
+    /// use std::str::FromStr;
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u8);
+    /// 
+    /// let a_biguint = U256::from_str("12345678901234567890123456789012345678901234567890123456789012345678901234567").unwrap();
+    /// println!("{:@<100E}", a_biguint);
+    /// let txt = format!("{:@<100E}", a_biguint);
+    /// assert_eq!(txt, "1.2345678901234567890123456789012345678901234567890123456789012345678901234567E76@@@@@@@@@@@@@@@@@@@");
+    /// ```
+    /// 
+    /// # Example 17
+    /// ```
+    /// use std::str::FromStr;
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u8);
+    /// 
+    /// let a_biguint = U256::from_str("12345678901234567890123456789012345678901234567890123456789012345678901234567").unwrap();
+    /// println!("{:#<0100E}", a_biguint);
+    /// let txt = format!("{:#<0100E}", a_biguint);
+    /// assert_eq!(txt, "00000000000000000001.2345678901234567890123456789012345678901234567890123456789012345678901234567E76");
+    /// ```
+    /// 
+    /// # Example 18
+    /// ```
+    /// use std::str::FromStr;
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u8);
+    /// 
+    /// let a_biguint = U256::from_str("12345678901234567890123456789012345678901234567890123456789012345678901234567").unwrap();
+    /// println!("{:$<20.9E}", a_biguint);
+    /// let txt = format!("{:$<20.9E}", a_biguint);
+    /// assert_eq!(txt, "1.234567890E76$$$$$$");
+    /// ```
+    /// 
+    /// # Example 19
+    /// ```
+    /// use std::str::FromStr;
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u8);
+    /// 
+    /// let a_biguint = U256::from_str("12345678901234567890123456789012345678901234567890123456789012345678901234567").unwrap();
+    /// println!("{:%<020.9E}", a_biguint);
+    /// let txt = format!("{:%<020.9E}", a_biguint);
+    /// assert_eq!(txt, "0000001.234567890E76");
+    /// ```
+    /// 
+    /// # Example 20
+    /// ```
+    /// use std::str::FromStr;
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u8);
+    /// 
+    /// let a_biguint = U256::from_str("12345678901234567890123456789012345678901234567890123456789012345678901234567").unwrap();
+    /// println!("{:^<21.13E}", a_biguint);
+    /// let txt = format!("{:^<21.13E}", a_biguint);
+    /// assert_eq!(txt, "1.2345678901235E76^^^");
+    /// ```
+    /// 
+    /// # Example 21
+    /// ```
+    /// use std::str::FromStr;
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u8);
+    /// 
+    /// let a_biguint = U256::from_str("12345678901234567890123456789012345678901234567890123456789012345678901234567").unwrap();
+    /// println!("{:&<021.13E}", a_biguint);
+    /// let txt = format!("{:&<021.13E}", a_biguint);
+    /// assert_eq!(txt, "0001.2345678901235E76");
+    /// ```
+    /// 
+    /// # Example 22
+    /// ```
+    /// use std::str::FromStr;
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u8);
+    /// 
+    /// let a_biguint = U256::from_str("12345678901234567890123456789012345678901234567890123456789012345678901234567").unwrap();
+    /// println!("{:>E}", a_biguint);
+    /// let txt = format!("{:>E}", a_biguint);
+    /// assert_eq!(txt, "1.2345678901234567890123456789012345678901234567890123456789012345678901234567E76");
+    /// ```
+    /// 
+    /// # Example 23
+    /// ```
+    /// use std::str::FromStr;
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u8);
+    /// 
+    /// let a_biguint = U256::from_str("12345678901234567890123456789012345678901234567890123456789012345678901234567").unwrap();
+    /// println!("{:>100E}", a_biguint);
+    /// let txt = format!("{:>100E}", a_biguint);
+    /// assert_eq!(txt, "                   1.2345678901234567890123456789012345678901234567890123456789012345678901234567E76");
+    /// ```
+    /// 
+    /// # Example 24
+    /// ```
+    /// use std::str::FromStr;
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u8);
+    /// 
+    /// let a_biguint = U256::from_str("12345678901234567890123456789012345678901234567890123456789012345678901234567").unwrap();
+    /// println!("{:>0100E}", a_biguint);
+    /// let txt = format!("{:>0100E}", a_biguint);
+    /// assert_eq!(txt, "00000000000000000001.2345678901234567890123456789012345678901234567890123456789012345678901234567E76");
+    /// ```
+    /// 
+    /// # Example 25
+    /// ```
+    /// use std::str::FromStr;
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u8);
+    /// 
+    /// let a_biguint = U256::from_str("12345678901234567890123456789012345678901234567890123456789012345678901234567").unwrap();
+    /// println!("{:>20.9E}", a_biguint);
+    /// let txt = format!("{:>20.9E}", a_biguint);
+    /// assert_eq!(txt, "      1.234567890E76");
+    /// ```
+    /// 
+    /// # Example 26
+    /// ```
+    /// use std::str::FromStr;
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u8);
+    /// 
+    /// let a_biguint = U256::from_str("12345678901234567890123456789012345678901234567890123456789012345678901234567").unwrap();
+    /// println!("{:>020.9E}", a_biguint);
+    /// let txt = format!("{:>020.9E}", a_biguint);
+    /// assert_eq!(txt, "0000001.234567890E76");
+    /// ```
+    /// 
+    /// # Example 27
+    /// ```
+    /// use std::str::FromStr;
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u8);
+    /// 
+    /// let a_biguint = U256::from_str("12345678901234567890123456789012345678901234567890123456789012345678901234567").unwrap();
+    /// println!("{:>21.13E}", a_biguint);
+    /// let txt = format!("{:>21.13E}", a_biguint);
+    /// assert_eq!(txt, "   1.2345678901235E76");
+    /// ```
+    /// 
+    /// # Example 28
+    /// ```
+    /// use std::str::FromStr;
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u8);
+    /// 
+    /// let a_biguint = U256::from_str("12345678901234567890123456789012345678901234567890123456789012345678901234567").unwrap();
+    /// println!("{:>021.13E}", a_biguint);
+    /// let txt = format!("{:>021.13E}", a_biguint);
+    /// assert_eq!(txt, "0001.2345678901235E76");
+    /// ```
+    /// 
+    /// # Example 29
+    /// ```
+    /// use std::str::FromStr;
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u8);
+    /// 
+    /// let a_biguint = U256::from_str("12345678901234567890123456789012345678901234567890123456789012345678901234567").unwrap();
+    /// println!("{:!>E}", a_biguint);
+    /// let txt = format!("{:>E}", a_biguint);
+    /// assert_eq!(txt, "1.2345678901234567890123456789012345678901234567890123456789012345678901234567E76");
+    /// ```
+    /// 
+    /// # Example 30
+    /// ```
+    /// use std::str::FromStr;
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u8);
+    /// 
+    /// let a_biguint = U256::from_str("12345678901234567890123456789012345678901234567890123456789012345678901234567").unwrap();
+    /// println!("{:@>100E}", a_biguint);
+    /// let txt = format!("{:@>100E}", a_biguint);
+    /// assert_eq!(txt, "@@@@@@@@@@@@@@@@@@@1.2345678901234567890123456789012345678901234567890123456789012345678901234567E76");
+    /// ```
+    /// 
+    /// # Example 31
+    /// ```
+    /// use std::str::FromStr;
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u8);
+    /// 
+    /// let a_biguint = U256::from_str("12345678901234567890123456789012345678901234567890123456789012345678901234567").unwrap();
+    /// println!("{:#>0100E}", a_biguint);
+    /// let txt = format!("{:#>0100E}", a_biguint);
+    /// assert_eq!(txt, "00000000000000000001.2345678901234567890123456789012345678901234567890123456789012345678901234567E76");
+    /// ```
+    /// 
+    /// # Example 32
+    /// ```
+    /// use std::str::FromStr;
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u8);
+    /// 
+    /// let a_biguint = U256::from_str("12345678901234567890123456789012345678901234567890123456789012345678901234567").unwrap();
+    /// println!("{:$>20.9E}", a_biguint);
+    /// let txt = format!("{:$>20.9E}", a_biguint);
+    /// assert_eq!(txt, "$$$$$$1.234567890E76");
+    /// ```
+    /// 
+    /// # Example 33
+    /// ```
+    /// use std::str::FromStr;
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u8);
+    /// 
+    /// let a_biguint = U256::from_str("12345678901234567890123456789012345678901234567890123456789012345678901234567").unwrap();
+    /// println!("{:%>020.9E}", a_biguint);
+    /// let txt = format!("{:%>020.9E}", a_biguint);
+    /// assert_eq!(txt, "0000001.234567890E76");
+    /// ```
+    /// 
+    /// # Example 34
+    /// ```
+    /// use std::str::FromStr;
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u8);
+    /// 
+    /// let a_biguint = U256::from_str("12345678901234567890123456789012345678901234567890123456789012345678901234567").unwrap();
+    /// println!("{:^>21.13E}", a_biguint);
+    /// let txt = format!("{:^>21.13E}", a_biguint);
+    /// assert_eq!(txt, "^^^1.2345678901235E76");
+    /// ```
+    /// 
+    /// # Example 35
+    /// ```
+    /// use std::str::FromStr;
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u8);
+    /// 
+    /// let a_biguint = U256::from_str("12345678901234567890123456789012345678901234567890123456789012345678901234567").unwrap();
+    /// println!("{:&>021.13E}", a_biguint);
+    /// let txt = format!("{:&>021.13E}", a_biguint);
+    /// assert_eq!(txt, "0001.2345678901235E76");
+    /// ```
+    /// 
+    /// # Example 36
+    /// ```
+    /// use std::str::FromStr;
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u8);
+    /// 
+    /// let a_biguint = U256::from_str("12345678901234567890123456789012345678901234567890123456789012345678901234567").unwrap();
+    /// println!("{:^E}", a_biguint);
+    /// let txt = format!("{:^E}", a_biguint);
+    /// assert_eq!(txt, "1.2345678901234567890123456789012345678901234567890123456789012345678901234567E76");
+    /// ```
+    /// 
+    /// # Example 37
+    /// ```
+    /// use std::str::FromStr;
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u8);
+    /// 
+    /// let a_biguint = U256::from_str("12345678901234567890123456789012345678901234567890123456789012345678901234567").unwrap();
+    /// println!("{:^100E}", a_biguint);
+    /// let txt = format!("{:^100E}", a_biguint);
+    /// assert_eq!(txt, "         1.2345678901234567890123456789012345678901234567890123456789012345678901234567E76          ");
+    /// ```
+    /// 
+    /// # Example 38
+    /// ```
+    /// use std::str::FromStr;
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u8);
+    /// 
+    /// let a_biguint = U256::from_str("12345678901234567890123456789012345678901234567890123456789012345678901234567").unwrap();
+    /// println!("{:^0100E}", a_biguint);
+    /// let txt = format!("{:^0100E}", a_biguint);
+    /// assert_eq!(txt, "00000000000000000001.2345678901234567890123456789012345678901234567890123456789012345678901234567E76");
+    /// ```
+    /// 
+    /// # Example 39
+    /// ```
+    /// use std::str::FromStr;
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u8);
+    /// 
+    /// let a_biguint = U256::from_str("12345678901234567890123456789012345678901234567890123456789012345678901234567").unwrap();
+    /// println!("{:^20.9E}", a_biguint);
+    /// let txt = format!("{:^20.9E}", a_biguint);
+    /// assert_eq!(txt, "   1.234567890E76   ");
+    /// ```
+    /// 
+    /// # Example 40
+    /// ```
+    /// use std::str::FromStr;
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u8);
+    /// 
+    /// let a_biguint = U256::from_str("12345678901234567890123456789012345678901234567890123456789012345678901234567").unwrap();
+    /// println!("{:^020.9E}", a_biguint);
+    /// let txt = format!("{:^020.9E}", a_biguint);
+    /// assert_eq!(txt, "0000001.234567890E76");
+    /// ```
+    /// 
+    /// # Example 41
+    /// ```
+    /// use std::str::FromStr;
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u8);
+    /// 
+    /// let a_biguint = U256::from_str("12345678901234567890123456789012345678901234567890123456789012345678901234567").unwrap();
+    /// println!("{:^21.13E}", a_biguint);
+    /// let txt = format!("{:^21.13E}", a_biguint);
+    /// assert_eq!(txt, " 1.2345678901235E76  ");
+    /// ```
+    /// 
+    /// # Example 42
+    /// ```
+    /// use std::str::FromStr;
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u8);
+    /// 
+    /// let a_biguint = U256::from_str("12345678901234567890123456789012345678901234567890123456789012345678901234567").unwrap();
+    /// println!("{:^021.13E}", a_biguint);
+    /// let txt = format!("{:^021.13E}", a_biguint);
+    /// assert_eq!(txt, "0001.2345678901235E76");
+    /// ```
+    /// 
+    /// # Example 43
+    /// ```
+    /// use std::str::FromStr;
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u8);
+    /// 
+    /// let a_biguint = U256::from_str("12345678901234567890123456789012345678901234567890123456789012345678901234567").unwrap();
+    /// println!("{:!^E}", a_biguint);
+    /// let txt = format!("{:^E}", a_biguint);
+    /// assert_eq!(txt, "1.2345678901234567890123456789012345678901234567890123456789012345678901234567E76");
+    /// ```
+    /// 
+    /// # Example 44
+    /// ```
+    /// use std::str::FromStr;
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u8);
+    /// 
+    /// let a_biguint = U256::from_str("12345678901234567890123456789012345678901234567890123456789012345678901234567").unwrap();
+    /// println!("{:@^100E}", a_biguint);
+    /// let txt = format!("{:@^100E}", a_biguint);
+    /// assert_eq!(txt, "@@@@@@@@@1.2345678901234567890123456789012345678901234567890123456789012345678901234567E76@@@@@@@@@@");
+    /// ```
+    /// 
+    /// # Example 45
+    /// ```
+    /// use std::str::FromStr;
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u8);
+    /// 
+    /// let a_biguint = U256::from_str("12345678901234567890123456789012345678901234567890123456789012345678901234567").unwrap();
+    /// println!("{:#^0100E}", a_biguint);
+    /// let txt = format!("{:#^0100E}", a_biguint);
+    /// assert_eq!(txt, "00000000000000000001.2345678901234567890123456789012345678901234567890123456789012345678901234567E76");
+    /// ```
+    /// 
+    /// # Example 46
+    /// ```
+    /// use std::str::FromStr;
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u8);
+    /// 
+    /// let a_biguint = U256::from_str("12345678901234567890123456789012345678901234567890123456789012345678901234567").unwrap();
+    /// println!("{:$^20.9E}", a_biguint);
+    /// let txt = format!("{:$^20.9E}", a_biguint);
+    /// assert_eq!(txt, "$$$1.234567890E76$$$");
+    /// ```
+    /// 
+    /// # Example 47
+    /// ```
+    /// use std::str::FromStr;
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u8);
+    /// 
+    /// let a_biguint = U256::from_str("12345678901234567890123456789012345678901234567890123456789012345678901234567").unwrap();
+    /// println!("{:%^020.9E}", a_biguint);
+    /// let txt = format!("{:%^020.9E}", a_biguint);
+    /// assert_eq!(txt, "0000001.234567890E76");
+    /// ```
+    /// 
+    /// # Example 48
+    /// ```
+    /// use std::str::FromStr;
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u8);
+    /// 
+    /// let a_biguint = U256::from_str("12345678901234567890123456789012345678901234567890123456789012345678901234567").unwrap();
+    /// println!("{:^^21.13E}", a_biguint);
+    /// let txt = format!("{:^^21.13E}", a_biguint);
+    /// assert_eq!(txt, "^1.2345678901235E76^^");
+    /// ```
+    /// 
+    /// # Example 49
+    /// ```
+    /// use std::str::FromStr;
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u8);
+    /// 
+    /// let a_biguint = U256::from_str("12345678901234567890123456789012345678901234567890123456789012345678901234567").unwrap();
+    /// println!("{:&^021.13E}", a_biguint);
+    /// let txt = format!("{:&^021.13E}", a_biguint);
+    /// assert_eq!(txt, "0001.2345678901235E76");
     /// ```
     fn fmt(&self, f: &mut Formatter<'_>) -> Result<(), Error>
     {
@@ -10031,23 +12088,588 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// ```
     /// use std::str::FromStr;
     /// use cryptocol::define_utypes_with;
-    /// define_utypes_with!(u8);
+    /// define_utypes_with!(u16);
     /// 
-    /// let a_biguint = U256::from_str("69743176821145534028236692093846345739169743176821145534028236692093846345739").unwrap();
-    /// println!("{}", a_biguint);
-    /// assert_eq!(a_biguint.to_string(), "69743176821145534028236692093846345739169743176821145534028236692093846345739");
+    /// let a_biguint = U256::from_str("12345678901234567890123456789012345678901234567890123456789012345678901234567").unwrap();
+    /// println!("{:e}", a_biguint);
+    /// let txt = format!("{:e}", a_biguint);
+    /// assert_eq!(txt, "1.2345678901234567890123456789012345678901234567890123456789012345678901234567e76");
     /// ```
     /// 
     /// # Example 2
     /// ```
     /// use std::str::FromStr;
     /// use cryptocol::define_utypes_with;
-    /// define_utypes_with!(u8);
+    /// define_utypes_with!(u16);
     /// 
-    /// let a_biguint = U256::from_str("1234567_1234567890_1234567890_1234567890_1234567890_1234567890_1234567890_1234567890").unwrap();
-    /// let txt = a_biguint.to_string();
-    /// println!("{}", txt);
-    /// assert_eq!(txt, "12345671234567890123456789012345678901234567890123456789012345678901234567890");
+    /// let a_biguint = U256::from_str("12345678901234567890123456789012345678901234567890123456789012345678901234567").unwrap();
+    /// println!("{:100e}", a_biguint);
+    /// let txt = format!("{:100e}", a_biguint);
+    /// assert_eq!(txt, "1.2345678901234567890123456789012345678901234567890123456789012345678901234567e76                   ");
+    /// ```
+    /// 
+    /// # Example 3
+    /// ```
+    /// use std::str::FromStr;
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u16);
+    /// 
+    /// let a_biguint = U256::from_str("12345678901234567890123456789012345678901234567890123456789012345678901234567").unwrap();
+    /// println!("{:0100e}", a_biguint);
+    /// let txt = format!("{:0100e}", a_biguint);
+    /// assert_eq!(txt, "00000000000000000001.2345678901234567890123456789012345678901234567890123456789012345678901234567e76");
+    /// ```
+    /// 
+    /// # Example 4
+    /// ```
+    /// use std::str::FromStr;
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u16);
+    /// 
+    /// let a_biguint = U256::from_str("12345678901234567890123456789012345678901234567890123456789012345678901234567").unwrap();
+    /// println!("{:20.9e}", a_biguint);
+    /// let txt = format!("{:20.9e}", a_biguint);
+    /// assert_eq!(txt, "1.234567890e76      ");
+    /// ```
+    /// 
+    /// # Example 5
+    /// ```
+    /// use std::str::FromStr;
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u16);
+    /// 
+    /// let a_biguint = U256::from_str("12345678901234567890123456789012345678901234567890123456789012345678901234567").unwrap();
+    /// println!("{:020.9e}", a_biguint);
+    /// let txt = format!("{:020.9e}", a_biguint);
+    /// assert_eq!(txt, "0000001.234567890e76");
+    /// ```
+    /// 
+    /// # Example 6
+    /// ```
+    /// use std::str::FromStr;
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u16);
+    /// 
+    /// let a_biguint = U256::from_str("12345678901234567890123456789012345678901234567890123456789012345678901234567").unwrap();
+    /// println!("{:21.13e}", a_biguint);
+    /// let txt = format!("{:21.13e}", a_biguint);
+    /// assert_eq!(txt, "1.2345678901235e76   ");
+    /// ```
+    /// 
+    /// # Example 7
+    /// ```
+    /// use std::str::FromStr;
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u16);
+    /// 
+    /// let a_biguint = U256::from_str("12345678901234567890123456789012345678901234567890123456789012345678901234567").unwrap();
+    /// println!("{:021.13e}", a_biguint);
+    /// let txt = format!("{:021.13e}", a_biguint);
+    /// assert_eq!(txt, "0001.2345678901235e76");
+    /// ```
+    /// 
+    /// # Example 8
+    /// ```
+    /// use std::str::FromStr;
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u16);
+    /// 
+    /// let a_biguint = U256::from_str("12345678901234567890123456789012345678901234567890123456789012345678901234567").unwrap();
+    /// println!("{:<e}", a_biguint);
+    /// let txt = format!("{:<e}", a_biguint);
+    /// assert_eq!(txt, "1.2345678901234567890123456789012345678901234567890123456789012345678901234567e76");
+    /// ```
+    /// 
+    /// # Example 9
+    /// ```
+    /// use std::str::FromStr;
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u16);
+    /// 
+    /// let a_biguint = U256::from_str("12345678901234567890123456789012345678901234567890123456789012345678901234567").unwrap();
+    /// println!("{:<100e}", a_biguint);
+    /// let txt = format!("{:<100e}", a_biguint);
+    /// assert_eq!(txt, "1.2345678901234567890123456789012345678901234567890123456789012345678901234567e76                   ");
+    /// ```
+    /// 
+    /// # Example 10
+    /// ```
+    /// use std::str::FromStr;
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u16);
+    /// 
+    /// let a_biguint = U256::from_str("12345678901234567890123456789012345678901234567890123456789012345678901234567").unwrap();
+    /// println!("{:<0100e}", a_biguint);
+    /// let txt = format!("{:<0100e}", a_biguint);
+    /// assert_eq!(txt, "00000000000000000001.2345678901234567890123456789012345678901234567890123456789012345678901234567e76");
+    /// ```
+    /// 
+    /// # Example 11
+    /// ```
+    /// use std::str::FromStr;
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u16);
+    /// 
+    /// let a_biguint = U256::from_str("12345678901234567890123456789012345678901234567890123456789012345678901234567").unwrap();
+    /// println!("{:<20.9e}", a_biguint);
+    /// let txt = format!("{:<20.9e}", a_biguint);
+    /// assert_eq!(txt, "1.234567890e76      ");
+    /// ```
+    /// 
+    /// # Example 12
+    /// ```
+    /// use std::str::FromStr;
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u16);
+    /// 
+    /// let a_biguint = U256::from_str("12345678901234567890123456789012345678901234567890123456789012345678901234567").unwrap();
+    /// println!("{:<020.9e}", a_biguint);
+    /// let txt = format!("{:<020.9e}", a_biguint);
+    /// assert_eq!(txt, "0000001.234567890e76");
+    /// ```
+    /// 
+    /// # Example 13
+    /// ```
+    /// use std::str::FromStr;
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u16);
+    /// 
+    /// let a_biguint = U256::from_str("12345678901234567890123456789012345678901234567890123456789012345678901234567").unwrap();
+    /// println!("{:<21.13e}", a_biguint);
+    /// let txt = format!("{:<21.13e}", a_biguint);
+    /// assert_eq!(txt, "1.2345678901235e76   ");
+    /// ```
+    /// 
+    /// # Example 14
+    /// ```
+    /// use std::str::FromStr;
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u16);
+    /// 
+    /// let a_biguint = U256::from_str("12345678901234567890123456789012345678901234567890123456789012345678901234567").unwrap();
+    /// println!("{:<021.13e}", a_biguint);
+    /// let txt = format!("{:<021.13e}", a_biguint);
+    /// assert_eq!(txt, "0001.2345678901235e76");
+    /// ```
+    /// 
+    /// # Example 15
+    /// ```
+    /// use std::str::FromStr;
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u16);
+    /// 
+    /// let a_biguint = U256::from_str("12345678901234567890123456789012345678901234567890123456789012345678901234567").unwrap();
+    /// println!("{:!<e}", a_biguint);
+    /// let txt = format!("{:<e}", a_biguint);
+    /// assert_eq!(txt, "1.2345678901234567890123456789012345678901234567890123456789012345678901234567e76");
+    /// ```
+    /// 
+    /// # Example 16
+    /// ```
+    /// use std::str::FromStr;
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u16);
+    /// 
+    /// let a_biguint = U256::from_str("12345678901234567890123456789012345678901234567890123456789012345678901234567").unwrap();
+    /// println!("{:@<100e}", a_biguint);
+    /// let txt = format!("{:@<100e}", a_biguint);
+    /// assert_eq!(txt, "1.2345678901234567890123456789012345678901234567890123456789012345678901234567e76@@@@@@@@@@@@@@@@@@@");
+    /// ```
+    /// 
+    /// # Example 17
+    /// ```
+    /// use std::str::FromStr;
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u16);
+    /// 
+    /// let a_biguint = U256::from_str("12345678901234567890123456789012345678901234567890123456789012345678901234567").unwrap();
+    /// println!("{:#<0100e}", a_biguint);
+    /// let txt = format!("{:#<0100e}", a_biguint);
+    /// assert_eq!(txt, "00000000000000000001.2345678901234567890123456789012345678901234567890123456789012345678901234567e76");
+    /// ```
+    /// 
+    /// # Example 18
+    /// ```
+    /// use std::str::FromStr;
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u16);
+    /// 
+    /// let a_biguint = U256::from_str("12345678901234567890123456789012345678901234567890123456789012345678901234567").unwrap();
+    /// println!("{:$<20.9e}", a_biguint);
+    /// let txt = format!("{:$<20.9e}", a_biguint);
+    /// assert_eq!(txt, "1.234567890e76$$$$$$");
+    /// ```
+    /// 
+    /// # Example 19
+    /// ```
+    /// use std::str::FromStr;
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u16);
+    /// 
+    /// let a_biguint = U256::from_str("12345678901234567890123456789012345678901234567890123456789012345678901234567").unwrap();
+    /// println!("{:%<020.9e}", a_biguint);
+    /// let txt = format!("{:%<020.9e}", a_biguint);
+    /// assert_eq!(txt, "0000001.234567890e76");
+    /// ```
+    /// 
+    /// # Example 20
+    /// ```
+    /// use std::str::FromStr;
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u16);
+    /// 
+    /// let a_biguint = U256::from_str("12345678901234567890123456789012345678901234567890123456789012345678901234567").unwrap();
+    /// println!("{:^<21.13e}", a_biguint);
+    /// let txt = format!("{:^<21.13e}", a_biguint);
+    /// assert_eq!(txt, "1.2345678901235e76^^^");
+    /// ```
+    /// 
+    /// # Example 21
+    /// ```
+    /// use std::str::FromStr;
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u16);
+    /// 
+    /// let a_biguint = U256::from_str("12345678901234567890123456789012345678901234567890123456789012345678901234567").unwrap();
+    /// println!("{:&<021.13e}", a_biguint);
+    /// let txt = format!("{:&<021.13e}", a_biguint);
+    /// assert_eq!(txt, "0001.2345678901235e76");
+    /// ```
+    /// 
+    /// # Example 22
+    /// ```
+    /// use std::str::FromStr;
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u16);
+    /// 
+    /// let a_biguint = U256::from_str("12345678901234567890123456789012345678901234567890123456789012345678901234567").unwrap();
+    /// println!("{:>e}", a_biguint);
+    /// let txt = format!("{:>e}", a_biguint);
+    /// assert_eq!(txt, "1.2345678901234567890123456789012345678901234567890123456789012345678901234567e76");
+    /// ```
+    /// 
+    /// # Example 23
+    /// ```
+    /// use std::str::FromStr;
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u16);
+    /// 
+    /// let a_biguint = U256::from_str("12345678901234567890123456789012345678901234567890123456789012345678901234567").unwrap();
+    /// println!("{:>100e}", a_biguint);
+    /// let txt = format!("{:>100e}", a_biguint);
+    /// assert_eq!(txt, "                   1.2345678901234567890123456789012345678901234567890123456789012345678901234567e76");
+    /// ```
+    /// 
+    /// # Example 24
+    /// ```
+    /// use std::str::FromStr;
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u16);
+    /// 
+    /// let a_biguint = U256::from_str("12345678901234567890123456789012345678901234567890123456789012345678901234567").unwrap();
+    /// println!("{:>0100e}", a_biguint);
+    /// let txt = format!("{:>0100e}", a_biguint);
+    /// assert_eq!(txt, "00000000000000000001.2345678901234567890123456789012345678901234567890123456789012345678901234567e76");
+    /// ```
+    /// 
+    /// # Example 25
+    /// ```
+    /// use std::str::FromStr;
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u16);
+    /// 
+    /// let a_biguint = U256::from_str("12345678901234567890123456789012345678901234567890123456789012345678901234567").unwrap();
+    /// println!("{:>20.9e}", a_biguint);
+    /// let txt = format!("{:>20.9e}", a_biguint);
+    /// assert_eq!(txt, "      1.234567890e76");
+    /// ```
+    /// 
+    /// # Example 26
+    /// ```
+    /// use std::str::FromStr;
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u16);
+    /// 
+    /// let a_biguint = U256::from_str("12345678901234567890123456789012345678901234567890123456789012345678901234567").unwrap();
+    /// println!("{:>020.9e}", a_biguint);
+    /// let txt = format!("{:>020.9e}", a_biguint);
+    /// assert_eq!(txt, "0000001.234567890e76");
+    /// ```
+    /// 
+    /// # Example 27
+    /// ```
+    /// use std::str::FromStr;
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u16);
+    /// 
+    /// let a_biguint = U256::from_str("12345678901234567890123456789012345678901234567890123456789012345678901234567").unwrap();
+    /// println!("{:>21.13e}", a_biguint);
+    /// let txt = format!("{:>21.13e}", a_biguint);
+    /// assert_eq!(txt, "   1.2345678901235e76");
+    /// ```
+    /// 
+    /// # Example 28
+    /// ```
+    /// use std::str::FromStr;
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u16);
+    /// 
+    /// let a_biguint = U256::from_str("12345678901234567890123456789012345678901234567890123456789012345678901234567").unwrap();
+    /// println!("{:>021.13e}", a_biguint);
+    /// let txt = format!("{:>021.13e}", a_biguint);
+    /// assert_eq!(txt, "0001.2345678901235e76");
+    /// ```
+    /// 
+    /// # Example 29
+    /// ```
+    /// use std::str::FromStr;
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u16);
+    /// 
+    /// let a_biguint = U256::from_str("12345678901234567890123456789012345678901234567890123456789012345678901234567").unwrap();
+    /// println!("{:!>e}", a_biguint);
+    /// let txt = format!("{:>e}", a_biguint);
+    /// assert_eq!(txt, "1.2345678901234567890123456789012345678901234567890123456789012345678901234567e76");
+    /// ```
+    /// 
+    /// # Example 30
+    /// ```
+    /// use std::str::FromStr;
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u16);
+    /// 
+    /// let a_biguint = U256::from_str("12345678901234567890123456789012345678901234567890123456789012345678901234567").unwrap();
+    /// println!("{:@>100e}", a_biguint);
+    /// let txt = format!("{:@>100e}", a_biguint);
+    /// assert_eq!(txt, "@@@@@@@@@@@@@@@@@@@1.2345678901234567890123456789012345678901234567890123456789012345678901234567e76");
+    /// ```
+    /// 
+    /// # Example 31
+    /// ```
+    /// use std::str::FromStr;
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u16);
+    /// 
+    /// let a_biguint = U256::from_str("12345678901234567890123456789012345678901234567890123456789012345678901234567").unwrap();
+    /// println!("{:#>0100e}", a_biguint);
+    /// let txt = format!("{:#>0100e}", a_biguint);
+    /// assert_eq!(txt, "00000000000000000001.2345678901234567890123456789012345678901234567890123456789012345678901234567e76");
+    /// ```
+    /// 
+    /// # Example 32
+    /// ```
+    /// use std::str::FromStr;
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u16);
+    /// 
+    /// let a_biguint = U256::from_str("12345678901234567890123456789012345678901234567890123456789012345678901234567").unwrap();
+    /// println!("{:$>20.9e}", a_biguint);
+    /// let txt = format!("{:$>20.9e}", a_biguint);
+    /// assert_eq!(txt, "$$$$$$1.234567890e76");
+    /// ```
+    /// 
+    /// # Example 33
+    /// ```
+    /// use std::str::FromStr;
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u16);
+    /// 
+    /// let a_biguint = U256::from_str("12345678901234567890123456789012345678901234567890123456789012345678901234567").unwrap();
+    /// println!("{:%>020.9e}", a_biguint);
+    /// let txt = format!("{:%>020.9e}", a_biguint);
+    /// assert_eq!(txt, "0000001.234567890e76");
+    /// ```
+    /// 
+    /// # Example 34
+    /// ```
+    /// use std::str::FromStr;
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u16);
+    /// 
+    /// let a_biguint = U256::from_str("12345678901234567890123456789012345678901234567890123456789012345678901234567").unwrap();
+    /// println!("{:^>21.13e}", a_biguint);
+    /// let txt = format!("{:^>21.13e}", a_biguint);
+    /// assert_eq!(txt, "^^^1.2345678901235e76");
+    /// ```
+    /// 
+    /// # Example 35
+    /// ```
+    /// use std::str::FromStr;
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u16);
+    /// 
+    /// let a_biguint = U256::from_str("12345678901234567890123456789012345678901234567890123456789012345678901234567").unwrap();
+    /// println!("{:&>021.13e}", a_biguint);
+    /// let txt = format!("{:&>021.13e}", a_biguint);
+    /// assert_eq!(txt, "0001.2345678901235e76");
+    /// ```
+    /// 
+    /// # Example 36
+    /// ```
+    /// use std::str::FromStr;
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u16);
+    /// 
+    /// let a_biguint = U256::from_str("12345678901234567890123456789012345678901234567890123456789012345678901234567").unwrap();
+    /// println!("{:^e}", a_biguint);
+    /// let txt = format!("{:^e}", a_biguint);
+    /// assert_eq!(txt, "1.2345678901234567890123456789012345678901234567890123456789012345678901234567e76");
+    /// ```
+    /// 
+    /// # Example 37
+    /// ```
+    /// use std::str::FromStr;
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u16);
+    /// 
+    /// let a_biguint = U256::from_str("12345678901234567890123456789012345678901234567890123456789012345678901234567").unwrap();
+    /// println!("{:^100e}", a_biguint);
+    /// let txt = format!("{:^100e}", a_biguint);
+    /// assert_eq!(txt, "         1.2345678901234567890123456789012345678901234567890123456789012345678901234567e76          ");
+    /// ```
+    /// 
+    /// # Example 38
+    /// ```
+    /// use std::str::FromStr;
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u16);
+    /// 
+    /// let a_biguint = U256::from_str("12345678901234567890123456789012345678901234567890123456789012345678901234567").unwrap();
+    /// println!("{:^0100e}", a_biguint);
+    /// let txt = format!("{:^0100e}", a_biguint);
+    /// assert_eq!(txt, "00000000000000000001.2345678901234567890123456789012345678901234567890123456789012345678901234567e76");
+    /// ```
+    /// 
+    /// # Example 39
+    /// ```
+    /// use std::str::FromStr;
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u16);
+    /// 
+    /// let a_biguint = U256::from_str("12345678901234567890123456789012345678901234567890123456789012345678901234567").unwrap();
+    /// println!("{:^20.9e}", a_biguint);
+    /// let txt = format!("{:^20.9e}", a_biguint);
+    /// assert_eq!(txt, "   1.234567890e76   ");
+    /// ```
+    /// 
+    /// # Example 40
+    /// ```
+    /// use std::str::FromStr;
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u16);
+    /// 
+    /// let a_biguint = U256::from_str("12345678901234567890123456789012345678901234567890123456789012345678901234567").unwrap();
+    /// println!("{:^020.9e}", a_biguint);
+    /// let txt = format!("{:^020.9e}", a_biguint);
+    /// assert_eq!(txt, "0000001.234567890e76");
+    /// ```
+    /// 
+    /// # Example 41
+    /// ```
+    /// use std::str::FromStr;
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u16);
+    /// 
+    /// let a_biguint = U256::from_str("12345678901234567890123456789012345678901234567890123456789012345678901234567").unwrap();
+    /// println!("{:^21.13e}", a_biguint);
+    /// let txt = format!("{:^21.13e}", a_biguint);
+    /// assert_eq!(txt, " 1.2345678901235e76  ");
+    /// ```
+    /// 
+    /// # Example 42
+    /// ```
+    /// use std::str::FromStr;
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u16);
+    /// 
+    /// let a_biguint = U256::from_str("12345678901234567890123456789012345678901234567890123456789012345678901234567").unwrap();
+    /// println!("{:^021.13e}", a_biguint);
+    /// let txt = format!("{:^021.13e}", a_biguint);
+    /// assert_eq!(txt, "0001.2345678901235e76");
+    /// ```
+    /// 
+    /// # Example 43
+    /// ```
+    /// use std::str::FromStr;
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u16);
+    /// 
+    /// let a_biguint = U256::from_str("12345678901234567890123456789012345678901234567890123456789012345678901234567").unwrap();
+    /// println!("{:!^e}", a_biguint);
+    /// let txt = format!("{:^e}", a_biguint);
+    /// assert_eq!(txt, "1.2345678901234567890123456789012345678901234567890123456789012345678901234567e76");
+    /// ```
+    /// 
+    /// # Example 44
+    /// ```
+    /// use std::str::FromStr;
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u16);
+    /// 
+    /// let a_biguint = U256::from_str("12345678901234567890123456789012345678901234567890123456789012345678901234567").unwrap();
+    /// println!("{:@^100e}", a_biguint);
+    /// let txt = format!("{:@^100e}", a_biguint);
+    /// assert_eq!(txt, "@@@@@@@@@1.2345678901234567890123456789012345678901234567890123456789012345678901234567e76@@@@@@@@@@");
+    /// ```
+    /// 
+    /// # Example 45
+    /// ```
+    /// use std::str::FromStr;
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u16);
+    /// 
+    /// let a_biguint = U256::from_str("12345678901234567890123456789012345678901234567890123456789012345678901234567").unwrap();
+    /// println!("{:#^0100e}", a_biguint);
+    /// let txt = format!("{:#^0100e}", a_biguint);
+    /// assert_eq!(txt, "00000000000000000001.2345678901234567890123456789012345678901234567890123456789012345678901234567e76");
+    /// ```
+    /// 
+    /// # Example 46
+    /// ```
+    /// use std::str::FromStr;
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u16);
+    /// 
+    /// let a_biguint = U256::from_str("12345678901234567890123456789012345678901234567890123456789012345678901234567").unwrap();
+    /// println!("{:$^20.9e}", a_biguint);
+    /// let txt = format!("{:$^20.9e}", a_biguint);
+    /// assert_eq!(txt, "$$$1.234567890e76$$$");
+    /// ```
+    /// 
+    /// # Example 47
+    /// ```
+    /// use std::str::FromStr;
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u16);
+    /// 
+    /// let a_biguint = U256::from_str("12345678901234567890123456789012345678901234567890123456789012345678901234567").unwrap();
+    /// println!("{:%^020.9e}", a_biguint);
+    /// let txt = format!("{:%^020.9e}", a_biguint);
+    /// assert_eq!(txt, "0000001.234567890e76");
+    /// ```
+    /// 
+    /// # Example 48
+    /// ```
+    /// use std::str::FromStr;
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u16);
+    /// 
+    /// let a_biguint = U256::from_str("12345678901234567890123456789012345678901234567890123456789012345678901234567").unwrap();
+    /// println!("{:^^21.13e}", a_biguint);
+    /// let txt = format!("{:^^21.13e}", a_biguint);
+    /// assert_eq!(txt, "^1.2345678901235e76^^");
+    /// ```
+    /// 
+    /// # Example 49
+    /// ```
+    /// use std::str::FromStr;
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u16);
+    /// 
+    /// let a_biguint = U256::from_str("12345678901234567890123456789012345678901234567890123456789012345678901234567").unwrap();
+    /// println!("{:&^021.13e}", a_biguint);
+    /// let txt = format!("{:&^021.13e}", a_biguint);
+    /// assert_eq!(txt, "0001.2345678901235e76");
     /// ```
     fn fmt(&self, f: &mut Formatter<'_>) -> Result<(), Error>
     {
@@ -10102,23 +12724,252 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// ```
     /// use std::str::FromStr;
     /// use cryptocol::define_utypes_with;
-    /// define_utypes_with!(u8);
+    /// define_utypes_with!(u32);
     /// 
-    /// let a_biguint = U256::from_str("69743176821145534028236692093846345739169743176821145534028236692093846345739").unwrap();
-    /// println!("{}", a_biguint);
-    /// assert_eq!(a_biguint.to_string(), "69743176821145534028236692093846345739169743176821145534028236692093846345739");
+    /// let a_biguint = U256::from_str("12345678901234567890123456789012345678901234567890123456789012345678901234567").unwrap();
+    /// println!("{:p}", a_biguint);
+    /// let txt = format!("{:p}", a_biguint);
+    /// println!("{}", txt);
     /// ```
     /// 
     /// # Example 2
     /// ```
     /// use std::str::FromStr;
     /// use cryptocol::define_utypes_with;
-    /// define_utypes_with!(u8);
+    /// define_utypes_with!(u32);
     /// 
-    /// let a_biguint = U256::from_str("1234567_1234567890_1234567890_1234567890_1234567890_1234567890_1234567890_1234567890").unwrap();
-    /// let txt = a_biguint.to_string();
+    /// let a_biguint = U256::from_str("12345678901234567890123456789012345678901234567890123456789012345678901234567").unwrap();
+    /// println!("{:20p}", a_biguint);
+    /// let txt = format!("{:20p}", a_biguint);
     /// println!("{}", txt);
-    /// assert_eq!(txt, "12345671234567890123456789012345678901234567890123456789012345678901234567890");
+    /// ```
+    /// 
+    /// # Example 3
+    /// ```
+    /// use std::str::FromStr;
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u32);
+    /// 
+    /// let a_biguint = U256::from_str("12345678901234567890123456789012345678901234567890123456789012345678901234567").unwrap();
+    /// println!("{:020p}", a_biguint);
+    /// let txt = format!("{:020p}", a_biguint);
+    /// println!("{}", txt);
+    /// ```
+    /// 
+    /// # Example 4
+    /// ```
+    /// use std::str::FromStr;
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u32);
+    /// 
+    /// let a_biguint = U256::from_str("12345678901234567890123456789012345678901234567890123456789012345678901234567").unwrap();
+    /// println!("{:<p}", a_biguint);
+    /// let txt = format!("{:<p}", a_biguint);
+    /// println!("{}", txt);
+    /// ```
+    /// 
+    /// # Example 5
+    /// ```
+    /// use std::str::FromStr;
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u32);
+    /// 
+    /// let a_biguint = U256::from_str("12345678901234567890123456789012345678901234567890123456789012345678901234567").unwrap();
+    /// println!("{:<20p}", a_biguint);
+    /// let txt = format!("{:<20p}", a_biguint);
+    /// println!("{}", txt);
+    /// ```
+    /// 
+    /// # Example 6
+    /// ```
+    /// use std::str::FromStr;
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u32);
+    /// 
+    /// let a_biguint = U256::from_str("12345678901234567890123456789012345678901234567890123456789012345678901234567").unwrap();
+    /// println!("{:<020p}", a_biguint);
+    /// let txt = format!("{:<020p}", a_biguint);
+    /// println!("{}", txt);
+    /// ```
+    /// 
+    /// # Example 7
+    /// ```
+    /// use std::str::FromStr;
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u32);
+    /// 
+    /// let a_biguint = U256::from_str("12345678901234567890123456789012345678901234567890123456789012345678901234567").unwrap();
+    /// println!("{:!<p}", a_biguint);
+    /// let txt = format!("{:!<p}", a_biguint);
+    /// println!("{}", txt);
+    /// ```
+    /// 
+    /// # Example 8
+    /// ```
+    /// use std::str::FromStr;
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u32);
+    /// 
+    /// let a_biguint = U256::from_str("12345678901234567890123456789012345678901234567890123456789012345678901234567").unwrap();
+    /// println!("{:@<20p}", a_biguint);
+    /// let txt = format!("{:@<20p}", a_biguint);
+    /// println!("{}", txt);
+    /// ```
+    /// 
+    /// # Example 9
+    /// ```
+    /// use std::str::FromStr;
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u32);
+    /// 
+    /// let a_biguint = U256::from_str("12345678901234567890123456789012345678901234567890123456789012345678901234567").unwrap();
+    /// println!("{:#<020p}", a_biguint);
+    /// let txt = format!("{:#<020p}", a_biguint);
+    /// println!("{}", txt);
+    /// ```
+    /// 
+    /// # Example 10
+    /// ```
+    /// use std::str::FromStr;
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u32);
+    /// 
+    /// let a_biguint = U256::from_str("12345678901234567890123456789012345678901234567890123456789012345678901234567").unwrap();
+    /// println!("{:>p}", a_biguint);
+    /// let txt = format!("{:>p}", a_biguint);
+    /// println!("{}", txt);
+    /// ```
+    /// 
+    /// # Example 11
+    /// ```
+    /// use std::str::FromStr;
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u32);
+    /// 
+    /// let a_biguint = U256::from_str("12345678901234567890123456789012345678901234567890123456789012345678901234567").unwrap();
+    /// println!("{:>20p}", a_biguint);
+    /// let txt = format!("{:>20p}", a_biguint);
+    /// println!("{}", txt);
+    /// ```
+    /// 
+    /// # Example 12
+    /// ```
+    /// use std::str::FromStr;
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u32);
+    /// 
+    /// let a_biguint = U256::from_str("12345678901234567890123456789012345678901234567890123456789012345678901234567").unwrap();
+    /// println!("{:>020p}", a_biguint);
+    /// let txt = format!("{:>020p}", a_biguint);
+    /// println!("{}", txt);
+    /// ```
+    /// 
+    /// # Example 13
+    /// ```
+    /// use std::str::FromStr;
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u32);
+    /// 
+    /// let a_biguint = U256::from_str("12345678901234567890123456789012345678901234567890123456789012345678901234567").unwrap();
+    /// println!("{:$>p}", a_biguint);
+    /// let txt = format!("{:$>p}", a_biguint);
+    /// println!("{}", txt);
+    /// ```
+    /// 
+    /// # Example 14
+    /// ```
+    /// use std::str::FromStr;
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u32);
+    /// 
+    /// let a_biguint = U256::from_str("12345678901234567890123456789012345678901234567890123456789012345678901234567").unwrap();
+    /// println!("{:%>20p}", a_biguint);
+    /// let txt = format!("{:%>20p}", a_biguint);
+    /// println!("{}", txt);
+    /// ```
+    /// 
+    /// # Example 15
+    /// ```
+    /// use std::str::FromStr;
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u32);
+    /// 
+    /// let a_biguint = U256::from_str("12345678901234567890123456789012345678901234567890123456789012345678901234567").unwrap();
+    /// println!("{:^>020p}", a_biguint);
+    /// let txt = format!("{:^>020p}", a_biguint);
+    /// println!("{}", txt);
+    /// ```
+    /// 
+    /// # Example 16
+    /// ```
+    /// use std::str::FromStr;
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u32);
+    /// 
+    /// let a_biguint = U256::from_str("12345678901234567890123456789012345678901234567890123456789012345678901234567").unwrap();
+    /// println!("{:^p}", a_biguint);
+    /// let txt = format!("{:^p}", a_biguint);
+    /// println!("{}", txt);
+    /// ```
+    /// 
+    /// # Example 17
+    /// ```
+    /// use std::str::FromStr;
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u32);
+    /// 
+    /// let a_biguint = U256::from_str("12345678901234567890123456789012345678901234567890123456789012345678901234567").unwrap();
+    /// println!("{:^20p}", a_biguint);
+    /// let txt = format!("{:^20p}", a_biguint);
+    /// println!("{}", txt);
+    /// ```
+    /// 
+    /// # Example 18
+    /// ```
+    /// use std::str::FromStr;
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u32);
+    /// 
+    /// let a_biguint = U256::from_str("12345678901234567890123456789012345678901234567890123456789012345678901234567").unwrap();
+    /// println!("{:^020p}", a_biguint);
+    /// let txt = format!("{:^020p}", a_biguint);
+    /// println!("{}", txt);
+    /// ```
+    /// 
+    /// # Example 19
+    /// ```
+    /// use std::str::FromStr;
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u32);
+    /// 
+    /// let a_biguint = U256::from_str("12345678901234567890123456789012345678901234567890123456789012345678901234567").unwrap();
+    /// println!("{:&^p}", a_biguint);
+    /// let txt = format!("{:&^p}", a_biguint);
+    /// println!("{}", txt);
+    /// ```
+    /// 
+    /// # Example 20
+    /// ```
+    /// use std::str::FromStr;
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u32);
+    /// 
+    /// let a_biguint = U256::from_str("12345678901234567890123456789012345678901234567890123456789012345678901234567").unwrap();
+    /// println!("{:*^20p}", a_biguint);
+    /// let txt = format!("{:*^20p}", a_biguint);
+    /// println!("{}", txt);
+    /// ```
+    /// 
+    /// # Example 21
+    /// ```
+    /// use std::str::FromStr;
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u32);
+    /// 
+    /// let a_biguint = U256::from_str("12345678901234567890123456789012345678901234567890123456789012345678901234567").unwrap();
+    /// println!("{:_^020p}", a_biguint);
+    /// let txt = format!("{:_^020p}", a_biguint);
+    /// println!("{}", txt);
     /// ```
     fn fmt(&self, f: &mut Formatter<'_>) -> Result<(), Error>
     {
