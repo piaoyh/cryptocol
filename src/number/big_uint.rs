@@ -1354,9 +1354,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /***** CONSTANTS FOR FLAGS *****/
 
     /// A flag to represent whether or not overflow happened
-    /// during previous operations. When divided-by-zero happens,
-    /// this flag `OVERFLOW` will be set too as well as the flags
-    /// `DIVIDED_BY_ZERO` and `INFINITY`.
+    /// during previous operations..
     const OVERFLOW: u8          = 0b0000_0001;
 
     /// A flag to represent whether or not underflow happened
@@ -1365,20 +1363,25 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     
     /// A flag to represent whether or not the value became extremely big
     /// for some reasons such as `divided-by-zero` during previous operations.
-    /// When divided-by-zero happens, this flag `INFINITY` will be set too
-    /// as well as the flags `DIVIDED_BY_ZERO` and `OVERFLOW`.
     const INFINITY: u8          = 0b0000_0100;
 
     /// A flag to represent whether or not divided-by-zero happened during
-    /// previous operations. When divided-by-zero happens, the flags
-    /// `DIVIDED_BY_ZERO`, `INFINITY` and `OVERFLOW` will be set too.
+    /// previous operations.
     const DIVIDED_BY_ZERO: u8   = 0b0000_1000;
 
     /// A flag to represent whether or not the value cannot be defined.
     /// For example, the result of `0 / 0` will be undefined so that the flag
-    /// `UNDEFINED` will be set. If the arithmatic operation `0 / 0` is done,
-    /// the flags `UNDEFINED` and `DIVIDED_BY_ZERO` will be set.
+    /// `UNDEFINED` will be set.
     const UNDEFINED: u8         = 0b0001_0000;
+
+    /// A flag to represent whether or not a bit `1` is pushed out during
+    /// previous shift-left operations.
+    const LEFT_CARRY: u8            = 0b0010_0000;
+
+    /// A flag to represent whether or not a bit `1` is pushed out during
+    /// previous shift-right operations.
+    const RIGHT_CARRY: u8            = 0b0100_0000;
+
 
     #[allow(non_upper_case_globals)]
     const method_widening_mul_assign_uint: fn(&mut Self, T) -> Self
@@ -19967,6 +19970,8 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// assert_eq!(a_biguint.is_infinity(), false);
     /// assert_eq!(a_biguint.is_divided_by_zero(), false);
     /// assert_eq!(a_biguint.is_undefined(), false);
+    /// assert_eq!(a_biguint.is_left_carry(), false);
+    /// assert_eq!(a_biguint.is_right_carry(), false);
     /// 
     /// let exp = 30_u8;
     /// a_biguint.pow_assign_uint(exp);
@@ -33240,12 +33245,14 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
         if self.is_zero()
             { return Self::zero(); }
 
+        let flags = self.get_all_flags();
         let adder = self.clone();
         let size_t_bits_minus_one = T::size_in_bits() - 1;
         let mut high = Self::zero();
         let mut chunk = N - 1 - rhs.leading_zero_elements() as usize;
         let mut piece = T::size_in_bits() - 1 - rhs.get_num_(chunk).leading_zeros() as usize;
         self.set_zero();
+        self.reset_all_flags();
         loop
         {
             let num = rhs.get_num_(chunk);
@@ -33279,6 +33286,17 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
                 { high.set_lsb(); }
             self.shift_left_assign(1_u8);
             piece = T::size_in_bits() - 1;
+        }
+        if self.is_left_carry()
+        {
+            self.reset_left_carry();
+            self.set_overflow();
+        }
+        self.set_flag_bit(flags);
+        if high.is_left_carry()
+        {
+            high.reset_left_carry();
+            high.set_overflow();
         }
         high
     }
@@ -33519,6 +33537,9 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
         if self.is_zero()
             { return; }
 
+        let flags = self.get_all_flags();
+        self.reset_all_flags();
+
         let adder = Self::from_array(self.get_number().clone());
         let size_t_bits_minus_one = T::size_in_bits()-1;
         let mut chunk = N - 1 - rhs.leading_zero_elements() as usize;
@@ -33549,6 +33570,12 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
             self.shift_left_assign(1_u8);
             piece = T::size_in_bits() - 1;
         }
+        if self.is_left_carry()
+        {
+            self.reset_left_carry();
+            self.set_overflow();
+        }
+        self.set_flag_bit(flags);
     }
 
     // pub fn overflowing_mul(&self, rhs: &Self) -> (Self, bool)
@@ -41767,9 +41794,17 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     {
         if !self.is_power_of_two()
         {
+            let flags = self.get_all_flags();
+            self.reset_all_flags();
             let bit_pos = Self::size_in_bits() - 1 - self.leading_zeros() as usize;
             self.turn_check_bits(bit_pos);
             self.shift_left_assign(1_u8);
+            if self.is_left_carry()
+            {
+                self.reset_left_carry();
+                self.set_overflow();
+            }
+            self.set_flag_bit(flags);
         }
     }
     
@@ -50700,11 +50735,9 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// It returns the left-shifted version of `self`, which is shifted to the
     /// left by `n` bits.
     /// 
-    /// # Overflow
-    /// For BigUInt, 'overflow' does not mean what 'overflow' means for a
-    /// primitive unsigned integer data type. For BigUInt, 'overflow' means that
-    /// carry occurs, while overflow means that all the bits are pushed outside
-    /// for primitive unsigned integer data type.
+    /// # Left Carry
+    /// 'A left-carry occurs' means that a bit `1` is pushed out
+    /// during shift-left operation.
     ///
     /// # Panics
     /// If `size_of::<T>() * N` <= `128`, this method may panic
@@ -50720,11 +50753,13 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// let res = a_biguint.shift_left(n);
     /// println!("{} << {} = {}", a_biguint.to_string_with_radix_and_stride(2, 8).unwrap(), n, res.to_string_with_radix_and_stride(2, 8).unwrap());
     /// assert_eq!(res.to_string_with_radix_and_stride(2, 8).unwrap(), "11111000_00000111_10000000_01111110_01100001_10011101_01010010_10101111_11111000_00000111_10000000_01111110_01100001_10011101_01010010_10101111_11111000_00000111_10000000_01111110_01100001_10011101_01010010_10101111_11111000_00000111_10000000_01111110_01100001_10011101_01010010_10101000");
-    /// assert_eq!(res.is_overflow(), true);
+    /// assert_eq!(res.is_overflow(), false);
     /// assert_eq!(res.is_underflow(), false);
     /// assert_eq!(res.is_infinity(), false);
     /// assert_eq!(res.is_undefined(), false);
     /// assert_eq!(res.is_divided_by_zero(), false);
+    /// assert_eq!(res.is_left_carry(), true);
+    /// assert_eq!(res.is_right_carry(), false);
     /// ```
     /// 
     /// # Example 2
@@ -50742,6 +50777,8 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// assert_eq!(res.is_infinity(), false);
     /// assert_eq!(res.is_undefined(), false);
     /// assert_eq!(res.is_divided_by_zero(), false);
+    /// assert_eq!(res.is_left_carry(), false);
+    /// assert_eq!(res.is_right_carry(), false);
     /// ```
     /// 
     /// # Example 3
@@ -50754,11 +50791,13 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// let res = a_biguint.shift_left(n);
     /// println!("{} << {} = {}", a_biguint.to_string_with_radix_and_stride(2, 8).unwrap(), n, res.to_string_with_radix_and_stride(2, 8).unwrap());
     /// assert_eq!(res.to_string_with_radix_and_stride(2, 8).unwrap(), "11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000");
-    /// assert_eq!(res.is_overflow(), true);
+    /// assert_eq!(res.is_overflow(), false);
     /// assert_eq!(res.is_underflow(), false);
     /// assert_eq!(res.is_infinity(), false);
     /// assert_eq!(res.is_undefined(), false);
     /// assert_eq!(res.is_divided_by_zero(), false);
+    /// assert_eq!(res.is_left_carry(), true);
+    /// assert_eq!(res.is_right_carry(), false);
     /// ```
     /// 
     /// # Example 4
@@ -50771,11 +50810,13 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// let res = a_biguint.shift_left(n);
     /// println!("{} << {} = {}", a_biguint.to_string_with_radix_and_stride(2, 8).unwrap(), n, res.to_string_with_radix_and_stride(2, 8).unwrap());
     /// assert_eq!(res.to_string(), "0");
-    /// assert_eq!(res.is_overflow(), true);
+    /// assert_eq!(res.is_overflow(), false);
     /// assert_eq!(res.is_underflow(), false);
     /// assert_eq!(res.is_infinity(), false);
     /// assert_eq!(res.is_undefined(), false);
     /// assert_eq!(res.is_divided_by_zero(), false);
+    /// assert_eq!(res.is_left_carry(), true);
+    /// assert_eq!(res.is_right_carry(), false);
     /// ```
     /// 
     /// # Example 5
@@ -50788,11 +50829,13 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// let res = a_biguint.shift_left(n);
     /// println!("{} << {} = {}", a_biguint.to_string_with_radix_and_stride(2, 8).unwrap(), n, res.to_string_with_radix_and_stride(2, 8).unwrap());
     /// assert_eq!(res.to_string(), "0");
-    /// assert_eq!(res.is_overflow(), true);
+    /// assert_eq!(res.is_overflow(), false);
     /// assert_eq!(res.is_underflow(), false);
     /// assert_eq!(res.is_infinity(), false);
     /// assert_eq!(res.is_undefined(), false);
     /// assert_eq!(res.is_divided_by_zero(), false);
+    /// assert_eq!(res.is_left_carry(), true);
+    /// assert_eq!(res.is_right_carry(), false);
     /// ```
     /// 
     /// # Big-endian issue
@@ -50825,11 +50868,9 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// 'Shift left' means 'move left all bits'. So, if `10011010` is shifted
     /// left by 2, it will be `01101000`, for example.
     /// 
-    /// # Overflow
-    /// For BigUInt, 'overflow' does not mean what 'overflow' means for a
-    /// primitive unsigned integer data type. For BigUInt, 'overflow' means that
-    /// carry occurs, while overflow means that all the bits are pushed outside
-    /// for primitive unsigned integer data type.
+    /// # Left Carry
+    /// 'A left-carry occurs' means that a bit `1` is pushed out
+    /// during shift-left operation.
     ///
     /// # Panics
     /// If `size_of::<T>() * N` <= `128`, this method may panic
@@ -50847,16 +50888,20 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// assert_eq!(a_biguint.is_infinity(), false);
     /// assert_eq!(a_biguint.is_undefined(), false);
     /// assert_eq!(a_biguint.is_divided_by_zero(), false);
+    /// assert_eq!(a_biguint.is_left_carry(), false);
+    /// assert_eq!(a_biguint.is_right_carry(), false);
     /// 
     /// let n = 3_u8;
     /// a_biguint.shift_left_assign(n);
     /// println!("After a_biguint.shift_left_assign(), a_biguint = {}.", a_biguint.to_string_with_radix_and_stride(2, 8).unwrap());
     /// assert_eq!(a_biguint.to_string_with_radix_and_stride(2, 8).unwrap(), "11111000_00000111_10000000_01111110_01100001_10011101_01010010_10101111_11111000_00000111_10000000_01111110_01100001_10011101_01010010_10101111_11111000_00000111_10000000_01111110_01100001_10011101_01010010_10101111_11111000_00000111_10000000_01111110_01100001_10011101_01010010_10101000");
-    /// assert_eq!(a_biguint.is_overflow(), true);
+    /// assert_eq!(a_biguint.is_overflow(), false);
     /// assert_eq!(a_biguint.is_underflow(), false);
     /// assert_eq!(a_biguint.is_infinity(), false);
     /// assert_eq!(a_biguint.is_undefined(), false);
     /// assert_eq!(a_biguint.is_divided_by_zero(), false);
+    /// assert_eq!(a_biguint.is_left_carry(), true);
+    /// assert_eq!(a_biguint.is_right_carry(), false);
     /// ```
     /// 
     /// # Example 2
@@ -50871,6 +50916,8 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// assert_eq!(a_biguint.is_infinity(), false);
     /// assert_eq!(a_biguint.is_undefined(), false);
     /// assert_eq!(a_biguint.is_divided_by_zero(), false);
+    /// assert_eq!(a_biguint.is_left_carry(), false);
+    /// assert_eq!(a_biguint.is_right_carry(), false);
     /// 
     /// let n = 4_u8;
     /// a_biguint.shift_left_assign(n);
@@ -50881,6 +50928,8 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// assert_eq!(a_biguint.is_infinity(), false);
     /// assert_eq!(a_biguint.is_undefined(), false);
     /// assert_eq!(a_biguint.is_divided_by_zero(), false);
+    /// assert_eq!(a_biguint.is_left_carry(), false);
+    /// assert_eq!(a_biguint.is_right_carry(), false);
     /// ```
     /// 
     /// # Example 3
@@ -50895,16 +50944,20 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// assert_eq!(a_biguint.is_infinity(), false);
     /// assert_eq!(a_biguint.is_undefined(), false);
     /// assert_eq!(a_biguint.is_divided_by_zero(), false);
+    /// assert_eq!(a_biguint.is_left_carry(), false);
+    /// assert_eq!(a_biguint.is_right_carry(), false);
     /// 
     /// let n = 128_u8;
     /// a_biguint.shift_left_assign(n);
     /// println!("After a_biguint.shift_left_assign(), a_biguint = {}.", a_biguint.to_string_with_radix_and_stride(2, 8).unwrap());
     /// assert_eq!(a_biguint.to_string_with_radix_and_stride(2, 8).unwrap(), "11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000");
-    /// assert_eq!(a_biguint.is_overflow(), true);
+    /// assert_eq!(a_biguint.is_overflow(), false);
     /// assert_eq!(a_biguint.is_underflow(), false);
     /// assert_eq!(a_biguint.is_infinity(), false);
     /// assert_eq!(a_biguint.is_undefined(), false);
     /// assert_eq!(a_biguint.is_divided_by_zero(), false);
+    /// assert_eq!(a_biguint.is_left_carry(), true);
+    /// assert_eq!(a_biguint.is_right_carry(), false);
     /// ```
     /// 
     /// # Example 4
@@ -50919,16 +50972,20 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// assert_eq!(a_biguint.is_infinity(), false);
     /// assert_eq!(a_biguint.is_undefined(), false);
     /// assert_eq!(a_biguint.is_divided_by_zero(), false);
+    /// assert_eq!(a_biguint.is_left_carry(), false);
+    /// assert_eq!(a_biguint.is_right_carry(), false);
     /// 
     /// let n = 256_u16;
     /// a_biguint.shift_left_assign(n);
     /// println!("After a_biguint.shift_left_assign(), a_biguint = {}.", a_biguint.to_string_with_radix_and_stride(2, 8).unwrap());
     /// assert_eq!(a_biguint.to_string(), "0");
-    /// assert_eq!(a_biguint.is_overflow(), true);
+    /// assert_eq!(a_biguint.is_overflow(), false);
     /// assert_eq!(a_biguint.is_underflow(), false);
     /// assert_eq!(a_biguint.is_infinity(), false);
     /// assert_eq!(a_biguint.is_undefined(), false);
     /// assert_eq!(a_biguint.is_divided_by_zero(), false);
+    /// assert_eq!(a_biguint.is_left_carry(), true);
+    /// assert_eq!(a_biguint.is_right_carry(), false);
     /// ```
     /// 
     /// # Example 5
@@ -50943,16 +51000,20 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// assert_eq!(a_biguint.is_infinity(), false);
     /// assert_eq!(a_biguint.is_undefined(), false);
     /// assert_eq!(a_biguint.is_divided_by_zero(), false);
+    /// assert_eq!(a_biguint.is_left_carry(), false);
+    /// assert_eq!(a_biguint.is_right_carry(), false);
     /// 
     /// let n = 512_u16;
     /// a_biguint.shift_left_assign(n);
     /// println!("After a_biguint.shift_left_assign(), a_biguint = {}.", a_biguint.to_string_with_radix_and_stride(2, 8).unwrap());
     /// assert_eq!(a_biguint.to_string(), "0");
-    /// assert_eq!(a_biguint.is_overflow(), true);
+    /// assert_eq!(a_biguint.is_overflow(), false);
     /// assert_eq!(a_biguint.is_underflow(), false);
     /// assert_eq!(a_biguint.is_infinity(), false);
     /// assert_eq!(a_biguint.is_undefined(), false);
     /// assert_eq!(a_biguint.is_divided_by_zero(), false);
+    /// assert_eq!(a_biguint.is_left_carry(), true);
+    /// assert_eq!(a_biguint.is_right_carry(), false);
     /// ```
     /// 
     /// # Big-endian issue
@@ -50972,7 +51033,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
         if n.into_u128() >= self.length_in_bits().into_u128()
         {
             if !self.is_zero()
-                { self.set_overflow(); }
+                { self.set_left_carry(); }
             self.set_zero();
             return;
         }
@@ -50987,7 +51048,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
             {
                 if !self.get_num_(i).is_zero()
                 {
-                    self.set_overflow();
+                    self.set_left_carry();
                     break;
                 }
             }
@@ -50998,7 +51059,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
         if piece_num == 0
             { return; }
         if !(self.get_num_(N-1) >> T::usize_as_smalluint(size_t_bits - piece_num)).is_zero()
-            { self.set_overflow(); }
+            { self.set_left_carry(); }
 
         let mut num: T;
         let mut carry = zero;
@@ -51014,7 +51075,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
             self.set_num_(idx, num);
         }
         if !carry.is_zero()
-            { self.set_overflow(); }
+            { self.set_left_carry(); }
     }
 
     // pub fn checked_shift_left<U>(&self, n: U) -> Option<Self>
@@ -51034,14 +51095,12 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// - If n is less than the size of the type `T` * N * 8,
     ///   it returns the left-shifted version of `self`, which is shifted to the
     ///   left by `n` bits, wrapped by `some` of enum `Option`.
-    /// - If n is greater than or equal to the size of the type `T` * N * 8,
-    ///   it returns `None`.
+    /// - If `n` is greater than or equal to the size of the type `T` * N * 8,
+    ///   all bits will be gone. So, it returns `None`.
     /// 
-    /// # Overflow
-    /// For BigUInt, 'overflow' does not have the same meaning as that of
-    /// primitive unsigned integer data type. For BigUInt, overflow means that
-    /// carry occurs, while overflow means that all the bits are pushed outside
-    /// for primitive unsigned integer data type.
+    /// # Left Carry
+    /// 'A left-carry occurs' means that a bit `1` is pushed out
+    /// during shift-left operation.
     ///
     /// # Panics
     /// If `size_of::<T>() * N` <= `128`, this method may panic
@@ -51060,11 +51119,13 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     ///     Some(r) => {
     ///             println!("{} << {} = {}", r.to_string_with_radix_and_stride(2, 8).unwrap(), n, r.to_string_with_radix_and_stride(2, 8).unwrap());
     ///             assert_eq!(r.to_string_with_radix_and_stride(2, 8).unwrap(), "11111000_00000111_10000000_01111110_01100001_10011101_01010010_10101111_11111000_00000111_10000000_01111110_01100001_10011101_01010010_10101111_11111000_00000111_10000000_01111110_01100001_10011101_01010010_10101111_11111000_00000111_10000000_01111110_01100001_10011101_01010010_10101000");
-    ///             assert_eq!(r.is_overflow(), true);
+    ///             assert_eq!(r.is_overflow(), false);
     ///             assert_eq!(r.is_underflow(), false);
     ///             assert_eq!(r.is_infinity(), false);
     ///             assert_eq!(r.is_undefined(), false);
     ///             assert_eq!(r.is_divided_by_zero(), false);
+    ///             assert_eq!(r.is_left_carry(), true);
+    ///             assert_eq!(r.is_right_carry(), false);
     ///         },
     ///     None => {
     ///             println!("All bits are gone!");
@@ -51090,6 +51151,8 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     ///             assert_eq!(r.is_infinity(), false);
     ///             assert_eq!(r.is_undefined(), false);
     ///             assert_eq!(r.is_divided_by_zero(), false);
+    ///             assert_eq!(r.is_left_carry(), false);
+    ///             assert_eq!(r.is_right_carry(), false);
     ///         },
     ///     None => {
     ///             println!("All bits are gone!");
@@ -51110,11 +51173,13 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     ///     Some(r) => {
     ///             println!("{} << {} = {}", r.to_string_with_radix_and_stride(2, 8).unwrap(), n, r.to_string_with_radix_and_stride(2, 8).unwrap());
     ///             assert_eq!(r.to_string_with_radix_and_stride(2, 8).unwrap(), "11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000");
-    ///             assert_eq!(r.is_overflow(), true);
+    ///             assert_eq!(r.is_overflow(), false);
     ///             assert_eq!(r.is_underflow(), false);
     ///             assert_eq!(r.is_infinity(), false);
     ///             assert_eq!(r.is_undefined(), false);
     ///             assert_eq!(r.is_divided_by_zero(), false);
+    ///             assert_eq!(r.is_left_carry(), true);
+    ///             assert_eq!(r.is_right_carry(), false);
     ///        },
     ///     None => {
     ///             println!("All bits are gone!");
@@ -51196,15 +51261,15 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// It returns the left-shifted version of `self`, which is shifted to the
     /// left by `n` bits.
     /// 
-    /// # Overflow
-    /// For BigUInt, 'overflow' does not have the same meaning as that of
-    /// primitive unsigned integer data type. For BigUInt, overflow means that
-    /// carry occurs, while overflow means that all the bits are pushed outside
-    /// for primitive unsigned integer data type.
+    /// # Left Carry
+    /// 'A left-carry occurs' means that a bit `1` is pushed out
+    /// during shift-left operation.
     ///
     /// # Panics
-    /// If `size_of::<T>() * N` <= `128`, this method may panic
-    /// or its behavior may be undefined though it may not panic.
+    /// - If `size_of::<T>() * N` <= `128`, this method may panic
+    ///   or its behavior may be undefined though it may not panic.
+    /// - If `n` is greater than or equal to the size of the type `T` * N * 8,
+    ///   all bits will be gone. So, it will panic.
     /// 
     /// # Example 1
     /// ```
@@ -51216,11 +51281,13 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// let res = a_biguint.unchecked_shift_left(n);
     /// println!("{} << {} = {}", a_biguint.to_string_with_radix_and_stride(2, 8).unwrap(), n, res.to_string_with_radix_and_stride(2, 8).unwrap());
     /// assert_eq!(res.to_string_with_radix_and_stride(2, 8).unwrap(), "11111000_00000111_10000000_01111110_01100001_10011101_01010010_10101111_11111000_00000111_10000000_01111110_01100001_10011101_01010010_10101111_11111000_00000111_10000000_01111110_01100001_10011101_01010010_10101111_11111000_00000111_10000000_01111110_01100001_10011101_01010010_10101000");
-    /// assert_eq!(res.is_overflow(), true);
+    /// assert_eq!(res.is_overflow(), false);
     /// assert_eq!(res.is_underflow(), false);
     /// assert_eq!(res.is_infinity(), false);
     /// assert_eq!(res.is_undefined(), false);
     /// assert_eq!(res.is_divided_by_zero(), false);
+    /// assert_eq!(res.is_left_carry(), true);
+    /// assert_eq!(res.is_right_carry(), false);
     /// ```
     /// 
     /// # Example 2
@@ -51238,6 +51305,8 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// assert_eq!(res.is_infinity(), false);
     /// assert_eq!(res.is_undefined(), false);
     /// assert_eq!(res.is_divided_by_zero(), false);
+    /// assert_eq!(res.is_left_carry(), false);
+    /// assert_eq!(res.is_right_carry(), false);
     /// ```
     /// 
     /// # Example 3
@@ -51250,11 +51319,13 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// let res = a_biguint.unchecked_shift_left(n);
     /// println!("{} << {} = {}", a_biguint.to_string_with_radix_and_stride(2, 8).unwrap(), n, res.to_string_with_radix_and_stride(2, 8).unwrap());
     /// assert_eq!(res.to_string_with_radix_and_stride(2, 8).unwrap(), "11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000");
-    /// assert_eq!(res.is_overflow(), true);
+    /// assert_eq!(res.is_overflow(), false);
     /// assert_eq!(res.is_underflow(), false);
     /// assert_eq!(res.is_infinity(), false);
     /// assert_eq!(res.is_undefined(), false);
     /// assert_eq!(res.is_divided_by_zero(), false);
+    /// assert_eq!(res.is_left_carry(), true);
+    /// assert_eq!(res.is_right_carry(), false);
     /// ```
     /// 
     /// # Panic Examples
@@ -51265,12 +51336,12 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// let _a_biguint = U256::from_str_radix("00001111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101", 2).unwrap();
     /// let _n = 256_u16;
     /// // It will panic!
-    /// let res = _a_biguint.unchecked_shift_left(_n);
+    /// let _res = _a_biguint.unchecked_shift_left(_n);
     /// 
     /// let _a_biguint = U256::from_str_radix("11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101", 2).unwrap();
     /// let _n = 512_u16;
     /// // It will panic!
-    /// let res = _a_biguint.unchecked_shift_left(_n);
+    /// let _res = _a_biguint.unchecked_shift_left(_n);
     /// ```
     /// 
     /// # Big-endian issue
@@ -51308,11 +51379,9 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// It returns the right-shifted version of `self`. which is shifted to the
     /// right by `n` bits.
     /// 
-    /// # Underflow
-    /// For BigUInt, 'underflow' does not mean what 'underflow' means for a
-    /// primitive unsigned integer data type. For BigUInt, 'underflow' means that
-    /// carry occurs, while underflow means that all the bits are pushed outside
-    /// for primitive unsigned integer data type.
+    /// # Right Carry
+    /// 'A right-carry occurs' means that a bit `1` is pushed out
+    /// during shift-right operation.
     ///
     /// # Panics
     /// If `size_of::<T>() * N` <= `128`, this method may panic
@@ -51329,10 +51398,12 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// println!("{} >> {} = {}", a_biguint.to_string_with_radix_and_stride(2, 8).unwrap(), n, res.to_string_with_radix_and_stride(2, 8).unwrap());
     /// assert_eq!(res.to_string_with_radix_and_stride(2, 8).unwrap(), "11111_11100000_00011110_00000001_11111001_10000110_01110101_01001010_10111111_11100000_00011110_00000001_11111001_10000110_01110101_01001010_10111111_11100000_00011110_00000001_11111001_10000110_01110101_01001010_10111111_11100000_00011110_00000001_11111001_10000110_01100000_00011111");
     /// assert_eq!(res.is_overflow(), false);
-    /// assert_eq!(res.is_underflow(), true);
+    /// assert_eq!(res.is_underflow(), false);
     /// assert_eq!(res.is_infinity(), false);
     /// assert_eq!(res.is_undefined(), false);
     /// assert_eq!(res.is_divided_by_zero(), false);
+    /// assert_eq!(res.is_left_carry(), false);
+    /// assert_eq!(res.is_right_carry(), true);
     /// ```
     /// 
     /// # Example 2
@@ -51350,6 +51421,8 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// assert_eq!(res.is_infinity(), false);
     /// assert_eq!(res.is_undefined(), false);
     /// assert_eq!(res.is_divided_by_zero(), false);
+    /// assert_eq!(res.is_left_carry(), false);
+    /// assert_eq!(res.is_right_carry(), false);
     /// ```
     /// 
     /// # Example 3
@@ -51363,10 +51436,12 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// println!("{} >> {} = {}", a_biguint.to_string_with_radix_and_stride(2, 8).unwrap(), n, res.to_string_with_radix_and_stride(2, 8).unwrap());
     /// assert_eq!(res.to_string_with_radix_and_stride(2, 8).unwrap(), "11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101");
     /// assert_eq!(res.is_overflow(), false);
-    /// assert_eq!(res.is_underflow(), true);
+    /// assert_eq!(res.is_underflow(), false);
     /// assert_eq!(res.is_infinity(), false);
     /// assert_eq!(res.is_undefined(), false);
     /// assert_eq!(res.is_divided_by_zero(), false);
+    /// assert_eq!(res.is_left_carry(), false);
+    /// assert_eq!(res.is_right_carry(), true);
     /// ```
     /// 
     /// # Example 4
@@ -51380,10 +51455,12 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// println!("{} >> {} = {}", a_biguint.to_string_with_radix_and_stride(2, 8).unwrap(), n, res.to_string_with_radix_and_stride(2, 8).unwrap());
     /// assert_eq!(res.to_string(), "0");
     /// assert_eq!(res.is_overflow(), false);
-    /// assert_eq!(res.is_underflow(), true);
+    /// assert_eq!(res.is_underflow(), false);
     /// assert_eq!(res.is_infinity(), false);
     /// assert_eq!(res.is_undefined(), false);
     /// assert_eq!(res.is_divided_by_zero(), false);
+    /// assert_eq!(res.is_left_carry(), false);
+    /// assert_eq!(res.is_right_carry(), true);
     /// ```
     /// 
     /// # Example 5
@@ -51397,10 +51474,12 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// println!("{} >> {} = {}", a_biguint.to_string_with_radix_and_stride(2, 8).unwrap(), n, res.to_string_with_radix_and_stride(2, 8).unwrap());
     /// assert_eq!(res.to_string(), "0");
     /// assert_eq!(res.is_overflow(), false);
-    /// assert_eq!(res.is_underflow(), true);
+    /// assert_eq!(res.is_underflow(), false);
     /// assert_eq!(res.is_infinity(), false);
     /// assert_eq!(res.is_undefined(), false);
     /// assert_eq!(res.is_divided_by_zero(), false);
+    /// assert_eq!(res.is_left_carry(), false);
+    /// assert_eq!(res.is_right_carry(), true);
     /// ```
     /// 
     /// # Big-endian issue
@@ -51433,11 +51512,9 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// 'Shift right' means 'move right all bits'. So, if `10011010` is shifted
     /// right by 2, it will be `00100110`, for example.
     /// 
-    /// # Underflow
-    /// For BigUInt, 'underflow' does not have the same meaning as that of
-    /// primitive unsigned integer data type. For BigUInt, underflow means that
-    /// carry occurs, while underflow means that all the bits are pushed outside
-    /// for primitive unsigned integer data type.
+    /// # Right Carry
+    /// 'A right-carry occurs' means that a bit `1` is pushed out
+    /// during shift-right operation.
     ///
     /// # Panics
     /// If `size_of::<T>() * N` <= `128`, this method may panic
@@ -51455,16 +51532,20 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// assert_eq!(a_biguint.is_infinity(), false);
     /// assert_eq!(a_biguint.is_undefined(), false);
     /// assert_eq!(a_biguint.is_divided_by_zero(), false);
+    /// assert_eq!(a_biguint.is_left_carry(), false);
+    /// assert_eq!(a_biguint.is_right_carry(), false);
     /// 
     /// let n = 3_u8;
     /// a_biguint.shift_right_assign(n);
     /// println!("After a_biguint.shift_right_assign(), a_biguint = {}.", a_biguint.to_string_with_radix_and_stride(2, 8).unwrap());
     /// assert_eq!(a_biguint.to_string_with_radix_and_stride(2, 8).unwrap(), "11111_11100000_00011110_00000001_11111001_10000110_01110101_01001010_10111111_11100000_00011110_00000001_11111001_10000110_01110101_01001010_10111111_11100000_00011110_00000001_11111001_10000110_01110101_01001010_10111111_11100000_00011110_00000001_11111001_10000110_01100000_00011111");
     /// assert_eq!(a_biguint.is_overflow(), false);
-    /// assert_eq!(a_biguint.is_underflow(), true);
+    /// assert_eq!(a_biguint.is_underflow(), false);
     /// assert_eq!(a_biguint.is_infinity(), false);
     /// assert_eq!(a_biguint.is_undefined(), false);
     /// assert_eq!(a_biguint.is_divided_by_zero(), false);
+    /// assert_eq!(a_biguint.is_left_carry(), false);
+    /// assert_eq!(a_biguint.is_right_carry(), true);
     /// ```
     /// 
     /// # Example 2
@@ -51479,6 +51560,8 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// assert_eq!(a_biguint.is_infinity(), false);
     /// assert_eq!(a_biguint.is_undefined(), false);
     /// assert_eq!(a_biguint.is_divided_by_zero(), false);
+    /// assert_eq!(a_biguint.is_left_carry(), false);
+    /// assert_eq!(a_biguint.is_right_carry(), false);
     /// 
     /// let n = 4_u8;
     /// a_biguint.shift_right_assign(n);
@@ -51489,6 +51572,8 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// assert_eq!(a_biguint.is_infinity(), false);
     /// assert_eq!(a_biguint.is_undefined(), false);
     /// assert_eq!(a_biguint.is_divided_by_zero(), false);
+    /// assert_eq!(a_biguint.is_left_carry(), false);
+    /// assert_eq!(a_biguint.is_right_carry(), false);
     /// ```
     /// 
     /// # Example 3
@@ -51503,16 +51588,20 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// assert_eq!(a_biguint.is_infinity(), false);
     /// assert_eq!(a_biguint.is_undefined(), false);
     /// assert_eq!(a_biguint.is_divided_by_zero(), false);
+    /// assert_eq!(a_biguint.is_left_carry(), false);
+    /// assert_eq!(a_biguint.is_right_carry(), false);
     /// 
     /// let n = 128_u8;
     /// a_biguint.shift_right_assign(n);
     /// println!("After a_biguint.shift_right_assign(), a_biguint = {}.", a_biguint.to_string_with_radix_and_stride(2, 8).unwrap());
     /// assert_eq!(a_biguint.to_string_with_radix_and_stride(2, 8).unwrap(), "11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101");
     /// assert_eq!(a_biguint.is_overflow(), false);
-    /// assert_eq!(a_biguint.is_underflow(), true);
+    /// assert_eq!(a_biguint.is_underflow(), false);
     /// assert_eq!(a_biguint.is_infinity(), false);
     /// assert_eq!(a_biguint.is_undefined(), false);
     /// assert_eq!(a_biguint.is_divided_by_zero(), false);
+    /// assert_eq!(a_biguint.is_left_carry(), false);
+    /// assert_eq!(a_biguint.is_right_carry(), true);
     /// ```
     /// 
     /// # Example 4
@@ -51527,16 +51616,20 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// assert_eq!(a_biguint.is_infinity(), false);
     /// assert_eq!(a_biguint.is_undefined(), false);
     /// assert_eq!(a_biguint.is_divided_by_zero(), false);
+    /// assert_eq!(a_biguint.is_left_carry(), false);
+    /// assert_eq!(a_biguint.is_right_carry(), false);
     /// 
     /// let n = 256_u16;
     /// a_biguint.shift_right_assign(n);
     /// println!("After a_biguint.shift_right_assign(), a_biguint = {}.", a_biguint.to_string_with_radix_and_stride(2, 8).unwrap());
     /// assert_eq!(a_biguint.to_string(), "0");
     /// assert_eq!(a_biguint.is_overflow(), false);
-    /// assert_eq!(a_biguint.is_underflow(), true);
+    /// assert_eq!(a_biguint.is_underflow(), false);
     /// assert_eq!(a_biguint.is_infinity(), false);
     /// assert_eq!(a_biguint.is_undefined(), false);
     /// assert_eq!(a_biguint.is_divided_by_zero(), false);
+    /// assert_eq!(a_biguint.is_left_carry(), false);
+    /// assert_eq!(a_biguint.is_right_carry(), true);
     /// ```
     /// 
     /// # Example 5
@@ -51551,16 +51644,20 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// assert_eq!(a_biguint.is_infinity(), false);
     /// assert_eq!(a_biguint.is_undefined(), false);
     /// assert_eq!(a_biguint.is_divided_by_zero(), false);
+    /// assert_eq!(a_biguint.is_left_carry(), false);
+    /// assert_eq!(a_biguint.is_right_carry(), false);
     /// 
     /// let n = 512_u16;
     /// a_biguint.shift_right_assign(n);
     /// println!("After a_biguint.shift_right_assign(), a_biguint = {}.", a_biguint.to_string_with_radix_and_stride(2, 8).unwrap());
     /// assert_eq!(a_biguint.to_string(), "0");
     /// assert_eq!(a_biguint.is_overflow(), false);
-    /// assert_eq!(a_biguint.is_underflow(), true);
+    /// assert_eq!(a_biguint.is_underflow(), false);
     /// assert_eq!(a_biguint.is_infinity(), false);
     /// assert_eq!(a_biguint.is_undefined(), false);
     /// assert_eq!(a_biguint.is_divided_by_zero(), false);
+    /// assert_eq!(a_biguint.is_left_carry(), false);
+    /// assert_eq!(a_biguint.is_right_carry(), true);
     /// ```
     /// 
     /// # Big-endian issue
@@ -51580,7 +51677,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
         if n.into_u128() >= self.length_in_bits().into_u128()
         {
             if !self.is_zero()
-                { self.set_underflow(); }
+                { self.set_right_carry(); }
             self.set_zero();
             return;
         }
@@ -51595,7 +51692,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
             {
                 if !self.get_num_(i).is_zero()
                 {
-                    self.set_underflow();
+                    self.set_right_carry();
                     break;
                 }
             }
@@ -51606,7 +51703,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
         if piece_num == 0
             { return; }
         if !(self.get_num_(0) << T::usize_as_smalluint(size_t_bits - piece_num)).is_zero()
-            { self.set_underflow(); }
+            { self.set_right_carry(); }
 
 
         let mut num: T;
@@ -51627,7 +51724,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
             idx -= 1;
         }
         if !carry.is_zero()
-            { self.set_underflow(); }
+            { self.set_right_carry(); }
     }
 
     // pub fn checked_shift_right<U>(&self, n: U) -> Option<Self>
@@ -51647,13 +51744,11 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// It returns the right-shifted version of `self`. which is shifted to the
     /// right by `n` bits, wrapped by `some` of enum `Option`.
     /// If n is greater than or equal to the size of the type `T` * N * 8,
-    /// it returns `None`.
+    /// all bits will be gone. So, it returns `None`.
     /// 
-    /// # Underflow
-    /// For BigUInt, 'underflow' does not have the same meaning as that of
-    /// primitive unsigned integer data type. For BigUInt, underflow means that
-    /// carry occurs, while underflow means that all the bits are pushed outside
-    /// for primitive unsigned integer data type.
+    /// # Right Carry
+    /// 'A right-carry occurs' means that a bit `1` is pushed out
+    /// during shift-right operation.
     ///
     /// # Panics
     /// If `size_of::<T>() * N` <= `128`, this method may panic
@@ -51673,10 +51768,12 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     ///             println!("{} >> {} = {}", r.to_string_with_radix_and_stride(2, 8).unwrap(), n, r.to_string_with_radix_and_stride(2, 8).unwrap());
     ///             assert_eq!(r.to_string_with_radix_and_stride(2, 8).unwrap(), "11111_11100000_00011110_00000001_11111001_10000110_01110101_01001010_10111111_11100000_00011110_00000001_11111001_10000110_01110101_01001010_10111111_11100000_00011110_00000001_11111001_10000110_01110101_01001010_10111111_11100000_00011110_00000001_11111001_10000110_01100000_00011111");
     ///             assert_eq!(r.is_overflow(), false);
-    ///             assert_eq!(r.is_underflow(), true);
+    ///             assert_eq!(r.is_underflow(), false);
     ///             assert_eq!(r.is_infinity(), false);
     ///             assert_eq!(r.is_undefined(), false);
     ///             assert_eq!(r.is_divided_by_zero(), false);
+    ///             assert_eq!(r.is_left_carry(), false);
+    ///             assert_eq!(r.is_right_carry(), true);
     ///         },
     ///     None => {
     ///             println!("All bits are gone!");
@@ -51702,6 +51799,8 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     ///             assert_eq!(r.is_infinity(), false);
     ///             assert_eq!(r.is_undefined(), false);
     ///             assert_eq!(r.is_divided_by_zero(), false);
+    ///             assert_eq!(r.is_left_carry(), false);
+    ///             assert_eq!(r.is_right_carry(), false);
     ///         },
     ///     None => {
     ///             println!("All bits are gone!");
@@ -51723,10 +51822,12 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     ///             println!("{} >> {} = {}", r.to_string_with_radix_and_stride(2, 8).unwrap(), n, r.to_string_with_radix_and_stride(2, 8).unwrap());
     ///             assert_eq!(r.to_string_with_radix_and_stride(2, 8).unwrap(), "11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101");
     ///             assert_eq!(r.is_overflow(), false);
-    ///             assert_eq!(r.is_underflow(), true);
+    ///             assert_eq!(r.is_underflow(), false);
     ///             assert_eq!(r.is_infinity(), false);
     ///             assert_eq!(r.is_undefined(), false);
     ///             assert_eq!(r.is_divided_by_zero(), false);
+    ///             assert_eq!(r.is_left_carry(), false);
+    ///             assert_eq!(r.is_right_carry(), true);
     ///         },
     ///     None => {
     ///             println!("All bits are gone!");
@@ -51808,15 +51909,15 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// It returns the right-shifted version of `self`. which is shifted to the
     /// right by `n` bits.
     /// 
-    /// # Underflow
-    /// For BigUInt, 'underflow' does not have the same meaning as that of
-    /// primitive unsigned integer data type. For BigUInt, underflow means that
-    /// carry occurs, while underflow means that all the bits are pushed outside
-    /// for primitive unsigned integer data type.
+    /// # Right Carry
+    /// 'A right-carry occurs' means that a bit `1` is pushed out
+    /// during shift-right operation.
     ///
     /// # Panics
-    /// If `size_of::<T>() * N` <= `128`, this method may panic
-    /// or its behavior may be undefined though it may not panic.
+    /// - If `size_of::<T>() * N` <= `128`, this method may panic
+    ///   or its behavior may be undefined though it may not panic.
+    /// - If n is greater than or equal to the size of the type `T` * N * 8,
+    ///   all bits will be gone. So, it will panic.
     /// 
     /// # Example 1
     /// ```
@@ -51829,10 +51930,12 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// println!("{} >> {} = {}", a_biguint.to_string_with_radix_and_stride(2, 8).unwrap(), n, res.to_string_with_radix_and_stride(2, 8).unwrap());
     /// assert_eq!(res.to_string_with_radix_and_stride(2, 8).unwrap(), "11111_11100000_00011110_00000001_11111001_10000110_01110101_01001010_10111111_11100000_00011110_00000001_11111001_10000110_01110101_01001010_10111111_11100000_00011110_00000001_11111001_10000110_01110101_01001010_10111111_11100000_00011110_00000001_11111001_10000110_01100000_00011111");
     /// assert_eq!(res.is_overflow(), false);
-    /// assert_eq!(res.is_underflow(), true);
+    /// assert_eq!(res.is_underflow(), false);
     /// assert_eq!(res.is_infinity(), false);
     /// assert_eq!(res.is_undefined(), false);
     /// assert_eq!(res.is_divided_by_zero(), false);
+    /// assert_eq!(res.is_left_carry(), false);
+    /// assert_eq!(res.is_right_carry(), true);
     /// ```
     /// 
     /// # Example 2
@@ -51850,6 +51953,8 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// assert_eq!(res.is_infinity(), false);
     /// assert_eq!(res.is_undefined(), false);
     /// assert_eq!(res.is_divided_by_zero(), false);
+    /// assert_eq!(res.is_left_carry(), false);
+    /// assert_eq!(res.is_right_carry(), false);
     /// ```
     /// 
     /// # Example 3
@@ -51863,10 +51968,12 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// println!("{} >> {} = {}", a_biguint.to_string_with_radix_and_stride(2, 8).unwrap(), n, res.to_string_with_radix_and_stride(2, 8).unwrap());
     /// assert_eq!(res.to_string_with_radix_and_stride(2, 8).unwrap(), "11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101_11111111_00000000_11110000_00001111_11001100_00110011_10101010_01010101");
     /// assert_eq!(res.is_overflow(), false);
-    /// assert_eq!(res.is_underflow(), true);
+    /// assert_eq!(res.is_underflow(), false);
     /// assert_eq!(res.is_infinity(), false);
     /// assert_eq!(res.is_undefined(), false);
     /// assert_eq!(res.is_divided_by_zero(), false);
+    /// assert_eq!(res.is_left_carry(), false);
+    /// assert_eq!(res.is_right_carry(), true);
     /// ```
     /// 
     /// # Panic Examples
@@ -51908,9 +52015,10 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// and returns the result.
     /// 
     /// # Features
-    /// 'Rotate left' means 'shift left' with filling the left-pushed-out bits
-    /// to the empty rightmost bits. So, if `10011010` is rotated left by 2,
-    /// it will be `01101010`, for example.
+    /// - 'Rotate left' means 'shift left' with filling the left-pushed-out bits
+    ///   to the empty rightmost bits. So, if `10011010` is rotated left by 2,
+    ///   it will be `01101010`, for example.
+    /// - This method does not set `LEFT_CARRY`.
     /// 
     /// # Output
     /// It returns the left-rotated version of `self`. which is rotated to the
@@ -51935,6 +52043,8 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// assert_eq!(res.is_infinity(), false);
     /// assert_eq!(res.is_undefined(), false);
     /// assert_eq!(res.is_divided_by_zero(), false);
+    /// assert_eq!(res.is_left_carry(), false);
+    /// assert_eq!(res.is_right_carry(), false);
     /// ```
     /// 
     /// # Example 2
@@ -51952,6 +52062,8 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// assert_eq!(res.is_infinity(), false);
     /// assert_eq!(res.is_undefined(), false);
     /// assert_eq!(res.is_divided_by_zero(), false);
+    /// assert_eq!(res.is_left_carry(), false);
+    /// assert_eq!(res.is_right_carry(), false);
     /// ```
     /// 
     /// # Example 3
@@ -51969,6 +52081,8 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// assert_eq!(res.is_infinity(), false);
     /// assert_eq!(res.is_undefined(), false);
     /// assert_eq!(res.is_divided_by_zero(), false);
+    /// assert_eq!(res.is_left_carry(), false);
+    /// assert_eq!(res.is_right_carry(), false);
     /// ```
     /// 
     /// # Example 4
@@ -51986,6 +52100,8 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// assert_eq!(res.is_infinity(), false);
     /// assert_eq!(res.is_undefined(), false);
     /// assert_eq!(res.is_divided_by_zero(), false);
+    /// assert_eq!(res.is_left_carry(), false);
+    /// assert_eq!(res.is_right_carry(), false);
     /// ```
     /// 
     /// # Example 5
@@ -52003,6 +52119,8 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// assert_eq!(res.is_infinity(), false);
     /// assert_eq!(res.is_undefined(), false);
     /// assert_eq!(res.is_divided_by_zero(), false);
+    /// assert_eq!(res.is_left_carry(), false);
+    /// assert_eq!(res.is_right_carry(), false);
     /// ```
     /// 
     /// # Big-endian issue
@@ -52033,9 +52151,10 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// `u64`, and `u128`.
     /// 
     /// # Features
-    /// 'Rotate left' means 'shift left' with filling the left-pushed-out bits
-    /// to the empty rightmost bits. So, if `10011010` is rotated left by 2,
-    /// it will be `01101010`, for example.
+    /// - 'Rotate left' means 'shift left' with filling the left-pushed-out bits
+    ///   to the empty rightmost bits. So, if `10011010` is rotated left by 2,
+    ///   it will be `01101010`, for example.
+    /// - This method does not set `LEFT_CARRY`.
     ///
     /// # Panics
     /// If `size_of::<T>() * N` <= `128`, this method may panic
@@ -52053,6 +52172,8 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// assert_eq!(a_biguint.is_infinity(), false);
     /// assert_eq!(a_biguint.is_undefined(), false);
     /// assert_eq!(a_biguint.is_divided_by_zero(), false);
+    /// assert_eq!(a_biguint.is_left_carry(), false);
+    /// assert_eq!(a_biguint.is_right_carry(), false);
     /// 
     /// let n = 3_u8;
     /// a_biguint.rotate_left_assign(n);
@@ -52063,6 +52184,8 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// assert_eq!(a_biguint.is_infinity(), false);
     /// assert_eq!(a_biguint.is_undefined(), false);
     /// assert_eq!(a_biguint.is_divided_by_zero(), false);
+    /// assert_eq!(a_biguint.is_left_carry(), false);
+    /// assert_eq!(a_biguint.is_right_carry(), false);
     /// ```
     /// 
     /// # Example 2
@@ -52077,6 +52200,8 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// assert_eq!(a_biguint.is_infinity(), false);
     /// assert_eq!(a_biguint.is_undefined(), false);
     /// assert_eq!(a_biguint.is_divided_by_zero(), false);
+    /// assert_eq!(a_biguint.is_left_carry(), false);
+    /// assert_eq!(a_biguint.is_right_carry(), false);
     /// 
     /// let n = 4_u8;
     /// a_biguint.rotate_left_assign(n);
@@ -52087,6 +52212,8 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// assert_eq!(a_biguint.is_infinity(), false);
     /// assert_eq!(a_biguint.is_undefined(), false);
     /// assert_eq!(a_biguint.is_divided_by_zero(), false);
+    /// assert_eq!(a_biguint.is_left_carry(), false);
+    /// assert_eq!(a_biguint.is_right_carry(), false);
     /// ```
     /// 
     /// # Example 3
@@ -52101,6 +52228,8 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// assert_eq!(a_biguint.is_infinity(), false);
     /// assert_eq!(a_biguint.is_undefined(), false);
     /// assert_eq!(a_biguint.is_divided_by_zero(), false);
+    /// assert_eq!(a_biguint.is_left_carry(), false);
+    /// assert_eq!(a_biguint.is_right_carry(), false);
     /// 
     /// let n = 128_u8;
     /// a_biguint.rotate_left_assign(n);
@@ -52111,6 +52240,8 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// assert_eq!(a_biguint.is_infinity(), false);
     /// assert_eq!(a_biguint.is_undefined(), false);
     /// assert_eq!(a_biguint.is_divided_by_zero(), false);
+    /// assert_eq!(a_biguint.is_left_carry(), false);
+    /// assert_eq!(a_biguint.is_right_carry(), false);
     /// ```
     /// 
     /// # Example 4
@@ -52125,6 +52256,8 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// assert_eq!(a_biguint.is_infinity(), false);
     /// assert_eq!(a_biguint.is_undefined(), false);
     /// assert_eq!(a_biguint.is_divided_by_zero(), false);
+    /// assert_eq!(a_biguint.is_left_carry(), false);
+    /// assert_eq!(a_biguint.is_right_carry(), false);
     /// 
     /// let n = 256_u16;
     /// a_biguint.rotate_left_assign(n);
@@ -52135,6 +52268,8 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// assert_eq!(a_biguint.is_infinity(), false);
     /// assert_eq!(a_biguint.is_undefined(), false);
     /// assert_eq!(a_biguint.is_divided_by_zero(), false);
+    /// assert_eq!(a_biguint.is_left_carry(), false);
+    /// assert_eq!(a_biguint.is_right_carry(), false);
     /// ```
     /// 
     /// # Example 5
@@ -52149,6 +52284,8 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// assert_eq!(a_biguint.is_infinity(), false);
     /// assert_eq!(a_biguint.is_undefined(), false);
     /// assert_eq!(a_biguint.is_divided_by_zero(), false);
+    /// assert_eq!(a_biguint.is_left_carry(), false);
+    /// assert_eq!(a_biguint.is_right_carry(), false);
     /// 
     /// let n = 512_u16;
     /// a_biguint.rotate_left_assign(n);
@@ -52159,6 +52296,8 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// assert_eq!(a_biguint.is_infinity(), false);
     /// assert_eq!(a_biguint.is_undefined(), false);
     /// assert_eq!(a_biguint.is_divided_by_zero(), false);
+    /// assert_eq!(a_biguint.is_left_carry(), false);
+    /// assert_eq!(a_biguint.is_right_carry(), false);
     /// ```
     /// 
     /// # Big-endian issue
@@ -52189,9 +52328,10 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// `u64`, and `u128`.
     /// 
     /// # Features
-    /// 'Rotate right' means 'shift right' with filling the right-pushed-out bits
-    /// to the empty leftmost bits. So, if `10011010` is rotated right by 2,
-    /// it will be `10100110`, for example.
+    /// - 'Rotate right' means 'shift right' with filling the right-pushed-out
+    ///   bits to the empty leftmost bits. So, if `10011010` is rotated right
+    ///   by 2, it will be `10100110`, for example.
+    /// - This method does not set `RIGHT_CARRY`.
     /// 
     /// # Output
     /// It returns the right-rotated version of `self`. which is rotated to the
@@ -52216,6 +52356,8 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// assert_eq!(res.is_infinity(), false);
     /// assert_eq!(res.is_undefined(), false);
     /// assert_eq!(res.is_divided_by_zero(), false);
+    /// assert_eq!(res.is_left_carry(), false);
+    /// assert_eq!(res.is_right_carry(), false);
     /// ```
     /// 
     /// # Example 2
@@ -52233,6 +52375,8 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// assert_eq!(res.is_infinity(), false);
     /// assert_eq!(res.is_undefined(), false);
     /// assert_eq!(res.is_divided_by_zero(), false);
+    /// assert_eq!(res.is_left_carry(), false);
+    /// assert_eq!(res.is_right_carry(), false);
     /// ```
     /// 
     /// # Example 3
@@ -52250,6 +52394,8 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// assert_eq!(res.is_infinity(), false);
     /// assert_eq!(res.is_undefined(), false);
     /// assert_eq!(res.is_divided_by_zero(), false);
+    /// assert_eq!(res.is_left_carry(), false);
+    /// assert_eq!(res.is_right_carry(), false);
     /// ```
     /// 
     /// # Example 4
@@ -52267,6 +52413,8 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// assert_eq!(res.is_infinity(), false);
     /// assert_eq!(res.is_undefined(), false);
     /// assert_eq!(res.is_divided_by_zero(), false);
+    /// assert_eq!(res.is_left_carry(), false);
+    /// assert_eq!(res.is_right_carry(), false);
     /// ```
     /// 
     /// # Example 5
@@ -52284,6 +52432,8 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// assert_eq!(res.is_infinity(), false);
     /// assert_eq!(res.is_undefined(), false);
     /// assert_eq!(res.is_divided_by_zero(), false);
+    /// assert_eq!(res.is_left_carry(), false);
+    /// assert_eq!(res.is_right_carry(), false);
     /// ```
     /// 
     /// # Big-endian issue
@@ -52314,9 +52464,10 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// `u64`, and `u128`.
     /// 
     /// # Features
-    /// 'Rotate right' means 'shift right' with filling the right-pushed-out bits
-    /// to the empty leftmost bits. So, if `10011010` is rotated right by 2,
-    /// it will be `10100110`, for example.
+    /// - 'Rotate right' means 'shift right' with filling the right-pushed-out
+    ///   bits to the empty leftmost bits. So, if `10011010` is rotated right
+    ///   by 2, it will be `10100110`, for example.
+    /// - This method does not set `RIGHT_CARRY`.
     ///
     /// # Panics
     /// If `size_of::<T>() * N` <= `128`, this method may panic
@@ -52334,6 +52485,8 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// assert_eq!(a_biguint.is_infinity(), false);
     /// assert_eq!(a_biguint.is_undefined(), false);
     /// assert_eq!(a_biguint.is_divided_by_zero(), false);
+    /// assert_eq!(a_biguint.is_left_carry(), false);
+    /// assert_eq!(a_biguint.is_right_carry(), false);
     /// 
     /// let n = 3_u8;
     /// a_biguint.rotate_right_assign(n);
@@ -52344,6 +52497,8 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// assert_eq!(a_biguint.is_infinity(), false);
     /// assert_eq!(a_biguint.is_undefined(), false);
     /// assert_eq!(a_biguint.is_divided_by_zero(), false);
+    /// assert_eq!(a_biguint.is_left_carry(), false);
+    /// assert_eq!(a_biguint.is_right_carry(), false);
     /// ```
     /// 
     /// # Example 2
@@ -52358,6 +52513,8 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// assert_eq!(a_biguint.is_infinity(), false);
     /// assert_eq!(a_biguint.is_undefined(), false);
     /// assert_eq!(a_biguint.is_divided_by_zero(), false);
+    /// assert_eq!(a_biguint.is_left_carry(), false);
+    /// assert_eq!(a_biguint.is_right_carry(), false);
     /// 
     /// let n = 4_u8;
     /// a_biguint.rotate_right_assign(n);
@@ -52368,6 +52525,8 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// assert_eq!(a_biguint.is_infinity(), false);
     /// assert_eq!(a_biguint.is_undefined(), false);
     /// assert_eq!(a_biguint.is_divided_by_zero(), false);
+    /// assert_eq!(a_biguint.is_left_carry(), false);
+    /// assert_eq!(a_biguint.is_right_carry(), false);
     /// ```
     /// 
     /// # Example 3
@@ -52382,6 +52541,8 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// assert_eq!(a_biguint.is_infinity(), false);
     /// assert_eq!(a_biguint.is_undefined(), false);
     /// assert_eq!(a_biguint.is_divided_by_zero(), false);
+    /// assert_eq!(a_biguint.is_left_carry(), false);
+    /// assert_eq!(a_biguint.is_right_carry(), false);
     /// 
     /// let n = 128_u8;
     /// a_biguint.rotate_right_assign(n);
@@ -52392,6 +52553,8 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// assert_eq!(a_biguint.is_infinity(), false);
     /// assert_eq!(a_biguint.is_undefined(), false);
     /// assert_eq!(a_biguint.is_divided_by_zero(), false);
+    /// assert_eq!(a_biguint.is_left_carry(), false);
+    /// assert_eq!(a_biguint.is_right_carry(), false);
     /// ```
     /// 
     /// # Example 4
@@ -52406,6 +52569,8 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// assert_eq!(a_biguint.is_infinity(), false);
     /// assert_eq!(a_biguint.is_undefined(), false);
     /// assert_eq!(a_biguint.is_divided_by_zero(), false);
+    /// assert_eq!(a_biguint.is_left_carry(), false);
+    /// assert_eq!(a_biguint.is_right_carry(), false);
     /// 
     /// let n = 256_u16;
     /// a_biguint.rotate_right_assign(n);
@@ -52416,6 +52581,8 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// assert_eq!(a_biguint.is_infinity(), false);
     /// assert_eq!(a_biguint.is_undefined(), false);
     /// assert_eq!(a_biguint.is_divided_by_zero(), false);
+    /// assert_eq!(a_biguint.is_left_carry(), false);
+    /// assert_eq!(a_biguint.is_right_carry(), false);
     /// ```
     /// 
     /// # Example 5
@@ -52430,6 +52597,8 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// assert_eq!(a_biguint.is_infinity(), false);
     /// assert_eq!(a_biguint.is_undefined(), false);
     /// assert_eq!(a_biguint.is_divided_by_zero(), false);
+    /// assert_eq!(a_biguint.is_left_carry(), false);
+    /// assert_eq!(a_biguint.is_right_carry(), false);
     /// 
     /// let n = 512_u16;
     /// a_biguint.rotate_right_assign(n);
@@ -52440,6 +52609,8 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// assert_eq!(a_biguint.is_infinity(), false);
     /// assert_eq!(a_biguint.is_undefined(), false);
     /// assert_eq!(a_biguint.is_divided_by_zero(), false);
+    /// assert_eq!(a_biguint.is_left_carry(), false);
+    /// assert_eq!(a_biguint.is_right_carry(), false);
     /// ```
     /// 
     /// # Big-endian issue
@@ -55845,5 +56016,253 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     pub fn is_undefined(&self) -> bool
     {
         self.is_flag_bit_on(Self::UNDEFINED)
+    }
+
+    // pub fn set_left_carry(&mut self)
+    /// Sets `LEFT_CARRY` flag.
+    /// 
+    /// # Panics
+    /// If `size_of::<T>() * N` <= `128`, this method may panic
+    /// or its behavior may be undefined though it may not panic.
+    /// 
+    /// # Example
+    /// ```
+    /// use std::str::FromStr;
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u32);
+    /// 
+    /// let mut a_biguint = U256::from_str("77255284354385016970177264758879158019392010587479561699232008238232688983808").unwrap();
+    /// println!("a_biguint = {}", a_biguint);
+    /// assert_eq!(a_biguint.to_string(), "77255284354385016970177264758879158019392010587479561699232008238232688983808");
+    /// assert_eq!(a_biguint.is_overflow(), false);
+    /// assert_eq!(a_biguint.is_underflow(), false);
+    /// assert_eq!(a_biguint.is_infinity(), false);
+    /// assert_eq!(a_biguint.is_undefined(), false);
+    /// assert_eq!(a_biguint.is_divided_by_zero(), false);
+    /// 
+    /// a_biguint.set_undefined();
+    /// println!("a_biguint = {}", a_biguint);
+    /// assert_eq!(a_biguint.to_string(), "77255284354385016970177264758879158019392010587479561699232008238232688983808");
+    /// assert_eq!(a_biguint.is_overflow(), false);
+    /// assert_eq!(a_biguint.is_underflow(), false);
+    /// assert_eq!(a_biguint.is_infinity(), false);
+    /// assert_eq!(a_biguint.is_undefined(), true);
+    /// assert_eq!(a_biguint.is_divided_by_zero(), false);
+    /// ```
+    #[inline]
+    pub fn set_left_carry(&mut self)
+    {
+        self.set_flag_bit(Self::LEFT_CARRY);
+    }
+
+    // pub fn reset_left_carry(&mut self)
+    /// Resets `LEFT_CARRY` flag.
+    /// 
+    /// # Panics
+    /// If `size_of::<T>() * N` <= `128`, this method may panic
+    /// or its behavior may be undefined though it may not panic.
+    /// 
+    /// # Example
+    /// ```
+    /// use std::str::FromStr;
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u64);
+    /// 
+    /// let mut a_biguint = U256::from_str("77255284354385016970177264758879158019392010587479561699232008238232688983808").unwrap();
+    /// println!("a_biguint = {}", a_biguint);
+    /// assert_eq!(a_biguint.to_string(), "77255284354385016970177264758879158019392010587479561699232008238232688983808");
+    /// assert_eq!(a_biguint.is_overflow(), false);
+    /// assert_eq!(a_biguint.is_underflow(), false);
+    /// assert_eq!(a_biguint.is_infinity(), false);
+    /// assert_eq!(a_biguint.is_undefined(), false);
+    /// assert_eq!(a_biguint.is_divided_by_zero(), false);
+    /// 
+    /// a_biguint.set_undefined();
+    /// println!("a_biguint = {}", a_biguint);
+    /// assert_eq!(a_biguint.to_string(), "77255284354385016970177264758879158019392010587479561699232008238232688983808");
+    /// assert_eq!(a_biguint.is_overflow(), false);
+    /// assert_eq!(a_biguint.is_underflow(), false);
+    /// assert_eq!(a_biguint.is_infinity(), false);
+    /// assert_eq!(a_biguint.is_undefined(), true);
+    /// assert_eq!(a_biguint.is_divided_by_zero(), false);
+    /// 
+    /// a_biguint.reset_undefined();
+    /// println!("a_biguint = {}", a_biguint);
+    /// assert_eq!(a_biguint.to_string(), "77255284354385016970177264758879158019392010587479561699232008238232688983808");
+    /// assert_eq!(a_biguint.is_overflow(), false);
+    /// assert_eq!(a_biguint.is_underflow(), false);
+    /// assert_eq!(a_biguint.is_infinity(), false);
+    /// assert_eq!(a_biguint.is_undefined(), false);
+    /// assert_eq!(a_biguint.is_divided_by_zero(), false);
+    /// ```
+    #[inline]
+    pub fn reset_left_carry(&mut self)
+    {
+        self.reset_flag_bit(Self::LEFT_CARRY);
+    }
+
+    // pub fn is_left_carry(&self) -> bool
+    /// Checks whether or not `LEFT_CARRY` flag is set.
+    /// 
+    /// # Output
+    /// It returns `true` if the `LEFT_CARRY` flag is set.
+    /// Otherwise, it returns `false`.
+    /// 
+    /// # Panics
+    /// If `size_of::<T>() * N` <= `128`, this method may panic
+    /// or its behavior may be undefined though it may not panic.
+    /// 
+    /// # Example
+    /// ```
+    /// use std::str::FromStr;
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u128);
+    /// 
+    /// let mut a_biguint = U256::from_str("77255284354385016970177264758879158019392010587479561699232008238232688983808").unwrap();
+    /// println!("a_biguint = {}", a_biguint);
+    /// assert_eq!(a_biguint.to_string(), "77255284354385016970177264758879158019392010587479561699232008238232688983808");
+    /// assert_eq!(a_biguint.is_overflow(), false);
+    /// assert_eq!(a_biguint.is_underflow(), false);
+    /// assert_eq!(a_biguint.is_infinity(), false);
+    /// assert_eq!(a_biguint.is_undefined(), false);
+    /// assert_eq!(a_biguint.is_divided_by_zero(), false);
+    /// 
+    /// a_biguint.set_undefined();
+    /// println!("a_biguint = {}", a_biguint);
+    /// assert_eq!(a_biguint.to_string(), "77255284354385016970177264758879158019392010587479561699232008238232688983808");
+    /// assert_eq!(a_biguint.is_overflow(), false);
+    /// assert_eq!(a_biguint.is_underflow(), false);
+    /// assert_eq!(a_biguint.is_infinity(), false);
+    /// assert_eq!(a_biguint.is_undefined(), true);
+    /// assert_eq!(a_biguint.is_divided_by_zero(), false);
+    /// ```
+    #[inline]
+    pub fn is_left_carry(&self) -> bool
+    {
+        self.is_flag_bit_on(Self::LEFT_CARRY)
+    }
+
+    // pub fn set_right_carry(&mut self)
+    /// Sets `RIGHT_CARRY` flag.
+    /// 
+    /// # Panics
+    /// If `size_of::<T>() * N` <= `128`, this method may panic
+    /// or its behavior may be undefined though it may not panic.
+    /// 
+    /// # Example
+    /// ```
+    /// use std::str::FromStr;
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u32);
+    /// 
+    /// let mut a_biguint = U256::from_str("77255284354385016970177264758879158019392010587479561699232008238232688983808").unwrap();
+    /// println!("a_biguint = {}", a_biguint);
+    /// assert_eq!(a_biguint.to_string(), "77255284354385016970177264758879158019392010587479561699232008238232688983808");
+    /// assert_eq!(a_biguint.is_overflow(), false);
+    /// assert_eq!(a_biguint.is_underflow(), false);
+    /// assert_eq!(a_biguint.is_infinity(), false);
+    /// assert_eq!(a_biguint.is_undefined(), false);
+    /// assert_eq!(a_biguint.is_divided_by_zero(), false);
+    /// 
+    /// a_biguint.set_undefined();
+    /// println!("a_biguint = {}", a_biguint);
+    /// assert_eq!(a_biguint.to_string(), "77255284354385016970177264758879158019392010587479561699232008238232688983808");
+    /// assert_eq!(a_biguint.is_overflow(), false);
+    /// assert_eq!(a_biguint.is_underflow(), false);
+    /// assert_eq!(a_biguint.is_infinity(), false);
+    /// assert_eq!(a_biguint.is_undefined(), true);
+    /// assert_eq!(a_biguint.is_divided_by_zero(), false);
+    /// ```
+    #[inline]
+    pub fn set_right_carry(&mut self)
+    {
+        self.set_flag_bit(Self::RIGHT_CARRY);
+    }
+
+    // pub fn reset_right_carry(&mut self)
+    /// Resets `RIGHT_CARRY` flag.
+    /// 
+    /// # Panics
+    /// If `size_of::<T>() * N` <= `128`, this method may panic
+    /// or its behavior may be undefined though it may not panic.
+    /// 
+    /// # Example
+    /// ```
+    /// use std::str::FromStr;
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u64);
+    /// 
+    /// let mut a_biguint = U256::from_str("77255284354385016970177264758879158019392010587479561699232008238232688983808").unwrap();
+    /// println!("a_biguint = {}", a_biguint);
+    /// assert_eq!(a_biguint.to_string(), "77255284354385016970177264758879158019392010587479561699232008238232688983808");
+    /// assert_eq!(a_biguint.is_overflow(), false);
+    /// assert_eq!(a_biguint.is_underflow(), false);
+    /// assert_eq!(a_biguint.is_infinity(), false);
+    /// assert_eq!(a_biguint.is_undefined(), false);
+    /// assert_eq!(a_biguint.is_divided_by_zero(), false);
+    /// 
+    /// a_biguint.set_undefined();
+    /// println!("a_biguint = {}", a_biguint);
+    /// assert_eq!(a_biguint.to_string(), "77255284354385016970177264758879158019392010587479561699232008238232688983808");
+    /// assert_eq!(a_biguint.is_overflow(), false);
+    /// assert_eq!(a_biguint.is_underflow(), false);
+    /// assert_eq!(a_biguint.is_infinity(), false);
+    /// assert_eq!(a_biguint.is_undefined(), true);
+    /// assert_eq!(a_biguint.is_divided_by_zero(), false);
+    /// 
+    /// a_biguint.reset_undefined();
+    /// println!("a_biguint = {}", a_biguint);
+    /// assert_eq!(a_biguint.to_string(), "77255284354385016970177264758879158019392010587479561699232008238232688983808");
+    /// assert_eq!(a_biguint.is_overflow(), false);
+    /// assert_eq!(a_biguint.is_underflow(), false);
+    /// assert_eq!(a_biguint.is_infinity(), false);
+    /// assert_eq!(a_biguint.is_undefined(), false);
+    /// assert_eq!(a_biguint.is_divided_by_zero(), false);
+    /// ```
+    #[inline]
+    pub fn reset_right_carry(&mut self)
+    {
+        self.reset_flag_bit(Self::RIGHT_CARRY);
+    }
+
+    // pub fn is_right_carry(&self) -> bool
+    /// Checks whether or not `RIGHT_CARRY` flag is set.
+    /// 
+    /// # Output
+    /// It returns `true` if the `RIGHT_CARRY` flag is set.
+    /// Otherwise, it returns `false`.
+    /// 
+    /// # Panics
+    /// If `size_of::<T>() * N` <= `128`, this method may panic
+    /// or its behavior may be undefined though it may not panic.
+    /// 
+    /// # Example
+    /// ```
+    /// use std::str::FromStr;
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u128);
+    /// 
+    /// let mut a_biguint = U256::from_str("77255284354385016970177264758879158019392010587479561699232008238232688983808").unwrap();
+    /// println!("a_biguint = {}", a_biguint);
+    /// assert_eq!(a_biguint.to_string(), "77255284354385016970177264758879158019392010587479561699232008238232688983808");
+    /// assert_eq!(a_biguint.is_overflow(), false);
+    /// assert_eq!(a_biguint.is_underflow(), false);
+    /// assert_eq!(a_biguint.is_infinity(), false);
+    /// assert_eq!(a_biguint.is_undefined(), false);
+    /// assert_eq!(a_biguint.is_divided_by_zero(), false);
+    /// 
+    /// a_biguint.set_undefined();
+    /// println!("a_biguint = {}", a_biguint);
+    /// assert_eq!(a_biguint.to_string(), "77255284354385016970177264758879158019392010587479561699232008238232688983808");
+    /// assert_eq!(a_biguint.is_overflow(), false);
+    /// assert_eq!(a_biguint.is_underflow(), false);
+    /// assert_eq!(a_biguint.is_infinity(), false);
+    /// assert_eq!(a_biguint.is_undefined(), true);
+    /// assert_eq!(a_biguint.is_divided_by_zero(), false);
+    /// ```
+    #[inline]
+    pub fn is_right_carry(&self) -> bool
+    {
+        self.is_flag_bit_on(Self::RIGHT_CARRY)
     }
 }

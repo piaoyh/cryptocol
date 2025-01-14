@@ -58,6 +58,22 @@
 
 - In order to prevent confusion, how the arithmetic operators for SmallUint, ShortUnion, IntUnion, LongUnion, and LongerUnion work have been changed for those to work the same way as the operators for `u8`, `u16`, `u32`, `u64`, `u128`, and `usize` work. 
 
+### Bit manipulation methods of BigUInt
+
+| Methods                                                    |
+|------------------------------------------------------------|
+| pub fn shift_left<U>(&self, n: U) -> Self                  |
+| pub fn shift_left_assign<U>(&mut self, n: U)               |
+| pub fn checked_shift_left<U>(&self, n: U) -> Option<Self>  |
+| pub fn unchecked_shift_left<U>(&self, n: U) -> Self        |
+| pub fn shift_right<U>(&self, n: U) -> Self                 |
+| pub fn shift_right_assign<U>(&mut self, n: U)              |
+| pub fn checked_shift_right<U>(&self, n: U) -> Option<Self> |
+| pub fn unchecked_shift_right<U>(&self, n: U) -> Self       |       
+
+- These methods have been changed to set tbe flag `LEFT_CARRY` instead of the flag `OVERFLOW` when a bit `1` is pushed out to the left, and to set tbe flag `RIGHT_CARRY` instead of the flag `UNDERFLOW` when a bit `1` is pushed out to the right.
+
+
 ## Breaking changes from ver. 0.8.5 to ver. 0.8.6
 ### Four methods of BigUInt
 

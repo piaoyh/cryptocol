@@ -23,7 +23,7 @@ use std::ops::{ BitAnd, BitAndAssign, BitOr, BitOrAssign, BitXor, BitXorAssign, 
 use std::fmt::{ self, Alignment, Error, Formatter, Display, Debug, Pointer,
                 Binary, Octal, LowerHex, UpperHex, LowerExp, UpperExp };
 
-use crate::number::SmallUInt;
+use crate::number::{ SmallUInt, ShortUnion, LongUnion, LongerUnion, SizeUnion };
 use crate::number::{ calc_assign_to_calc, fmt_with_radix, fmt_with_exponent };
 
 /// # Introduction
@@ -99,22 +99,22 @@ use crate::number::{ calc_assign_to_calc, fmt_with_radix, fmt_with_exponent };
 ///     assert_eq!(a.get_ssize_(0), 222_i16);
 ///     assert_eq!(a.get_ssize_(1), -6938_i16);
 /// }
-/// #[cfg(target_pointer_width = "8")]
-/// {
-///     const N: usize = 4;
-///     for i in 0..N
-///         { println!("a.get_usize_({}) = {}", i, a.get_usize_(i)); }
-///     for i in 0..N
-///         { println!("a.get_ssize_({}) = {}", i, a.get_ssize_(i)); }
-///     assert_eq!(a.get_usize_(0), 222_u8);
-///     assert_eq!(a.get_usize_(1), 0_u8);
-///     assert_eq!(a.get_usize_(2), 230_u8);
-///     assert_eq!(a.get_usize_(3), 228_u8);
-///     assert_eq!(a.get_ssize_(0), -34_i8);
-///     assert_eq!(a.get_ssize_(1), 0_i8);
-///     assert_eq!(a.get_ssize_(2), -26_i8);
-///     assert_eq!(a.get_ssize_(3), -28_i8);
-/// }
+/// // #[cfg(target_pointer_width = "8")]
+/// // {
+/// //     const N: usize = 4;
+/// //     for i in 0..N
+/// //         { println!("a.get_usize_({}) = {}", i, a.get_usize_(i)); }
+/// //     for i in 0..N
+/// //         { println!("a.get_ssize_({}) = {}", i, a.get_ssize_(i)); }
+/// //     assert_eq!(a.get_usize_(0), 222_u8);
+/// //     assert_eq!(a.get_usize_(1), 0_u8);
+/// //     assert_eq!(a.get_usize_(2), 230_u8);
+/// //     assert_eq!(a.get_usize_(3), 228_u8);
+/// //     assert_eq!(a.get_ssize_(0), -34_i8);
+/// //     assert_eq!(a.get_ssize_(1), 0_i8);
+/// //     assert_eq!(a.get_ssize_(2), -26_i8);
+/// //     assert_eq!(a.get_ssize_(3), -28_i8);
+/// // }
 /// #[cfg(target_pointer_width = "32")]
 /// {
 ///     println!("a.get_usize() = {}", a.get_usize());
@@ -462,7 +462,11 @@ crate::number::shift_ops_for_integer_unions_impl! { IntUnion, u64 }
 crate::number::shift_ops_for_integer_unions_impl! { IntUnion, u128 }
 crate::number::shift_ops_for_integer_unions_impl! { IntUnion, usize }
 
-crate::number::shift_ops_for_integer_unions_by_self_impl! { IntUnion }
+crate::number::shift_ops_for_integer_unions_by_union_impl! { IntUnion, ShortUnion }
+crate::number::shift_ops_for_integer_unions_by_union_impl! { IntUnion, IntUnion }
+crate::number::shift_ops_for_integer_unions_by_union_impl! { IntUnion, LongUnion }
+crate::number::shift_ops_for_integer_unions_by_union_impl! { IntUnion, LongerUnion }
+crate::number::shift_ops_for_integer_unions_by_union_impl! { IntUnion, SizeUnion }
 
 crate::number::format_for_integer_unions_impl! { IntUnion }
 

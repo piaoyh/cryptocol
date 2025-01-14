@@ -39,6 +39,7 @@ pub fn main()
     unions_find_power_main();
     end();
     unions_operators_for_integer_main();
+    unions_implementation_miscellaneous_main();
 }
 
 fn short_union_main()
@@ -11907,6 +11908,15 @@ fn unions_operators_for_integer_main()
     unions_operator_xor();
     unions_operator_xor_assign();
     unions_operator_not();
+    unions_operator_equal();
+    unions_operator_greater();
+    unions_operator_greater_equal();
+    unions_operator_less();
+    unions_operator_less_equal();
+    unions_operator_shl();
+    unions_operator_shl_assign();
+    unions_operator_shr();
+    unions_operator_shr_assign();
 }
 
 fn unions_operator_add()
@@ -12795,76 +12805,76 @@ fn unions_operator_and()
     use cryptocol::number::{ SmallUInt, ShortUnion, IntUnion, LongUnion, LongerUnion, SizeUnion };
 
     // Example for ShortUnion
-    let mut a_shortunion = ShortUnion::new_with(0b_10110011_10001111);
+    let a_shortunion = ShortUnion::new_with(0b_10110011_10001111);
     let b_shortunion = ShortUnion::new_with(0b_10001111_10110011);
     let c_shortunion = a_shortunion & b_shortunion;
     println!("{:b} & {:b} = {:b}", a_shortunion, b_shortunion, c_shortunion);
     assert_eq!(c_shortunion.get(), 0b_1000001110000011_u16);
 
-    let mut a_shortunion = ShortUnion::new_with(0b_10110011_10001111);
+    let a_shortunion = ShortUnion::new_with(0b_10110011_10001111);
     let b_shortunion = ShortUnion::max();
     let c_shortunion = a_shortunion & b_shortunion;
     println!("{:b} & {:b} = {:b}", a_shortunion, b_shortunion, c_shortunion);
     assert_eq!(c_shortunion.get(), 0b_1011001110001111_u16);
 
-    let mut a_shortunion = ShortUnion::new_with(0b_10110011_10001111);
+    let a_shortunion = ShortUnion::new_with(0b_10110011_10001111);
     let b_shortunion = ShortUnion::zero();
     let c_shortunion = a_shortunion & b_shortunion;
     println!("{:b} & {:b} = {:b}", a_shortunion, b_shortunion, c_shortunion);
     assert_eq!(c_shortunion.get(), 0_u16);
 
     // Example for IntUnion
-    let mut a_intunion = IntUnion::new_with(0b_10110011_10001111_00001111_10000011);
+    let a_intunion = IntUnion::new_with(0b_10110011_10001111_00001111_10000011);
     let b_intunion = IntUnion::new_with(0b_00001111_10000011_10110011_10001111);
     let c_intunion = a_intunion & b_intunion;
     println!("{:b} & {:b} = {:b}", a_intunion, b_intunion, c_intunion);
     assert_eq!(c_intunion.get(), 0b_11100000110000001110000011_u32);
   
-    let mut a_intunion = IntUnion::new_with(0b_10110011_10001111_00001111_10000011);
+    let a_intunion = IntUnion::new_with(0b_10110011_10001111_00001111_10000011);
     let b_intunion = IntUnion::max();
     let c_intunion = a_intunion & b_intunion;
     println!("{:b} & {:b} = {:b}", a_intunion, b_intunion, c_intunion);
     assert_eq!(c_intunion.get(), 0b_10110011100011110000111110000011_u32);
 
-    let mut a_intunion = IntUnion::new_with(0b_10110011_10001111_00001111_10000011);
+    let a_intunion = IntUnion::new_with(0b_10110011_10001111_00001111_10000011);
     let b_intunion = IntUnion::zero();
     let c_intunion = a_intunion & b_intunion;
     println!("{:b} & {:b} = {:b}", a_intunion, b_intunion, c_intunion);
     assert_eq!(c_intunion.get(), 0_u32);
 
     // Example for LongUnion
-    let mut a_longunion = LongUnion::new_with(0b_10110011_10001111_00001111_10000011_11110000_00111111_10000000_11111111);
+    let a_longunion = LongUnion::new_with(0b_10110011_10001111_00001111_10000011_11110000_00111111_10000000_11111111);
     let b_longunion = LongUnion::new_with(0b_11110000_00111111_10000000_11111111_10110011_10001111_00001111_10000011);
     let c_longunion = a_longunion & b_longunion;
     println!("{:b} & {:b} = {:b}", a_longunion, b_longunion, c_longunion);
     assert_eq!(c_longunion.get(), 0b_1011000000001111000000001000001110110000000011110000000010000011_u64);
   
-    let mut a_longunion = LongUnion::new_with(0b_10110011_10001111_00001111_10000011_11110000_00111111_10000000_11111111);
+    let a_longunion = LongUnion::new_with(0b_10110011_10001111_00001111_10000011_11110000_00111111_10000000_11111111);
     let b_longunion = LongUnion::max();
     let c_longunion = a_longunion & b_longunion;
     println!("{:b} & {:b} = {:b}", a_longunion, b_longunion, c_longunion);
     assert_eq!(c_longunion.get(), 0b_1011001110001111000011111000001111110000001111111000000011111111_u64);
   
-    let mut a_longunion = LongUnion::new_with(0b_10110011_10001111_00001111_10000011_11110000_00111111_10000000_11111111);
+    let a_longunion = LongUnion::new_with(0b_10110011_10001111_00001111_10000011_11110000_00111111_10000000_11111111);
     let b_longunion = LongUnion::zero();
     let c_longunion = a_longunion & b_longunion;
     println!("{:b} & {:b} = {:b}", a_longunion, b_longunion, c_longunion);
     assert_eq!(c_longunion.get(), 0_u64);
   
     // Example for LongerUnion
-    let mut a_longerunion = LongerUnion::new_with(0b_10110011_10001111_00001111_10000011_11110000_00111111_10000000_11111111_00000000_11111111_10000000_00111111_11110000_00000011_11111111_10000000);
+    let a_longerunion = LongerUnion::new_with(0b_10110011_10001111_00001111_10000011_11110000_00111111_10000000_11111111_00000000_11111111_10000000_00111111_11110000_00000011_11111111_10000000);
     let b_longerunion = LongerUnion::new_with(0b_00000000_11111111_10000000_00111111_11110000_00000011_11111111_10000000_10110011_10001111_00001111_10000011_11110000_00111111_10000000_11111111);
     let c_longerunion = a_longerunion & b_longerunion;
     println!("{:b} & {:b} = {:b}", a_longerunion, b_longerunion, c_longerunion);
     assert_eq!(c_longerunion.get(), 0b_100011110000000000000011111100000000001110000000100000000000000010001111000000000000001111110000000000111000000010000000_u128);
   
-    let mut a_longerunion = LongerUnion::new_with(0b_10110011_10001111_00001111_10000011_11110000_00111111_10000000_11111111_00000000_11111111_10000000_00111111_11110000_00000011_11111111_10000000);
+    let a_longerunion = LongerUnion::new_with(0b_10110011_10001111_00001111_10000011_11110000_00111111_10000000_11111111_00000000_11111111_10000000_00111111_11110000_00000011_11111111_10000000);
     let b_longerunion = LongerUnion::max();
     let c_longerunion = a_longerunion & b_longerunion;
     println!("{:b} & {:b} = {:b}", a_longerunion, b_longerunion, c_longerunion);
     assert_eq!(c_longerunion.get(), 0b_10110011100011110000111110000011111100000011111110000000111111110000000011111111100000000011111111110000000000111111111110000000_u128);
   
-    let mut a_longerunion = LongerUnion::new_with(0b_10110011_10001111_00001111_10000011_11110000_00111111_10000000_11111111_00000000_11111111_10000000_00111111_11110000_00000011_11111111_10000000);
+    let a_longerunion = LongerUnion::new_with(0b_10110011_10001111_00001111_10000011_11110000_00111111_10000000_11111111_00000000_11111111_10000000_00111111_11110000_00000011_11111111_10000000);
     let b_longerunion = LongerUnion::zero();
     let c_longerunion = a_longerunion & b_longerunion;
     println!("{:b} & {:b} = {:b}", a_longerunion, b_longerunion, c_longerunion);
@@ -12877,11 +12887,11 @@ fn unions_operator_and()
     #[cfg(target_pointer_width = "16")] let b_sizeunion = SizeUnion::new_with(0b_10001111_10110011);
     #[cfg(target_pointer_width = "32")] let b_sizeunion = SizeUnion::new_with(0b_00001111_10000011_10110011_10001111);
     #[cfg(target_pointer_width = "64")] let b_sizeunion = SizeUnion::new_with(0b_11110000_00111111_10000000_11111111_10110011_10001111_00001111_10000011);
-    let c_sizeunion = a_sizeunion % b_sizeunion;
+    let c_sizeunion = a_sizeunion & b_sizeunion;
     println!("{:b} & {:b} = {:b}", a_sizeunion, b_sizeunion, c_sizeunion);
     #[cfg(target_pointer_width = "16")]  assert_eq!(c_sizeunion.get(), 0b_1000001110000011_usize);
     #[cfg(target_pointer_width = "32")]  assert_eq!(c_sizeunion.get(), 0b_11100000110000001110000011_usize);
-    #[cfg(target_pointer_width = "64")]  assert_eq!(c_sizeunion.get(), 0b_1011001110001111000011111000001111110000001111111000000011111111_usize);
+    #[cfg(target_pointer_width = "64")]  assert_eq!(c_sizeunion.get(), 0b_1011000000001111000000001000001110110000000011110000000010000011_usize);
 
     #[cfg(target_pointer_width = "16")] let a_sizeunion = SizeUnion::new_with(0b_10110011_10001111);
     #[cfg(target_pointer_width = "32")] let a_sizeunion = SizeUnion::new_with(0b_10110011_10001111_00001111_10000011);
@@ -12913,21 +12923,21 @@ fn unions_operator_and_assign()
     println!("Originally, a_shortunion = {}", a_shortunion);
     let b_shortunion = ShortUnion::new_with(0b_10001111_10110011);
     a_shortunion &= b_shortunion;
-    println!("After a_shortunion /= {:b}, a_shortunion = {:b}", b_shortunion, a_shortunion);
+    println!("After a_shortunion &= {:b}, a_shortunion = {:b}", b_shortunion, a_shortunion);
     assert_eq!(a_shortunion.get(), 0b_1000001110000011_u16);
 
     let mut a_shortunion = ShortUnion::new_with(0b_10110011_10001111);
     println!("Originally, a_shortunion = {}", a_shortunion);
     let b_shortunion = ShortUnion::max();
     a_shortunion &= b_shortunion;
-    println!("After a_shortunion /= {:b}, a_shortunion = {:b}", b_shortunion, a_shortunion);
+    println!("After a_shortunion &= {:b}, a_shortunion = {:b}", b_shortunion, a_shortunion);
     assert_eq!(a_shortunion.get(), 0b_1011001110001111_u16);
 
     let mut a_shortunion = ShortUnion::new_with(0b_10110011_10001111);
     println!("Originally, a_shortunion = {}", a_shortunion);
     let b_shortunion = ShortUnion::zero();
     a_shortunion &= b_shortunion;
-    println!("After a_shortunion /= {:b}, a_shortunion = {:b}", b_shortunion, a_shortunion);
+    println!("After a_shortunion &= {:b}, a_shortunion = {:b}", b_shortunion, a_shortunion);
     assert_eq!(a_shortunion.get(), 0_u16);
 
     // Example for IntUnion
@@ -12935,21 +12945,21 @@ fn unions_operator_and_assign()
     println!("Originally, a_intunion = {}", a_intunion);
     let b_intunion = IntUnion::new_with(0b_00001111_10000011_10110011_10001111);
     a_intunion &= b_intunion;
-    println!("After a_intunion /= {:b}, a_intunion = {:b}", b_intunion, a_intunion);
+    println!("After a_intunion &= {:b}, a_intunion = {:b}", b_intunion, a_intunion);
     assert_eq!(a_intunion.get(), 0b_11100000110000001110000011_u32);
   
     let mut a_intunion = IntUnion::new_with(0b_10110011_10001111_00001111_10000011);
     println!("Originally, a_intunion = {}", a_intunion);
     let b_intunion = IntUnion::max();
     a_intunion &= b_intunion;
-    println!("After a_intunion /= {:b}, a_intunion = {:b}", b_intunion, a_intunion);
+    println!("After a_intunion &= {:b}, a_intunion = {:b}", b_intunion, a_intunion);
     assert_eq!(a_intunion.get(), 0b_10110011100011110000111110000011_u32);
 
     let mut a_intunion = IntUnion::new_with(0b_10110011_10001111_00001111_10000011);
     println!("Originally, a_intunion = {}", a_intunion);
     let b_intunion = IntUnion::zero();
     a_intunion &= b_intunion;
-    println!("After a_intunion /= {:b}, a_intunion = {:b}", b_intunion, a_intunion);
+    println!("After a_intunion &= {:b}, a_intunion = {:b}", b_intunion, a_intunion);
     assert_eq!(a_intunion.get(), 0_u32);
 
     // Example for LongUnion
@@ -12957,21 +12967,21 @@ fn unions_operator_and_assign()
     println!("Originally, a_longunion = {}", a_longunion);
     let b_longunion = LongUnion::new_with(0b_11110000_00111111_10000000_11111111_10110011_10001111_00001111_10000011);
     a_longunion &= b_longunion;
-    println!("After a_longunion /= {:b}, a_longunion = {:b}", b_longunion, a_longunion);
+    println!("After a_longunion &= {:b}, a_longunion = {:b}", b_longunion, a_longunion);
     assert_eq!(a_longunion.get(), 0b_1011000000001111000000001000001110110000000011110000000010000011_u64);
   
     let mut a_longunion = LongUnion::new_with(0b_10110011_10001111_00001111_10000011_11110000_00111111_10000000_11111111);
     println!("Originally, a_longunion = {}", a_longunion);
     let b_longunion = LongUnion::max();
     a_longunion &= b_longunion;
-    println!("After a_longunion /= {:b}, a_longunion = {:b}", b_longunion, a_longunion);
+    println!("After a_longunion &= {:b}, a_longunion = {:b}", b_longunion, a_longunion);
     assert_eq!(a_longunion.get(), 0b_1011001110001111000011111000001111110000001111111000000011111111_u64);
   
     let mut a_longunion = LongUnion::new_with(0b_10110011_10001111_00001111_10000011_11110000_00111111_10000000_11111111);
     println!("Originally, a_longea_longunionrunion = {}", a_longunion);
     let b_longunion = LongUnion::zero();
     a_longunion &= b_longunion;
-    println!("After a_longunion /= {:b}, a_longunion = {:b}", b_longunion, a_longunion);
+    println!("After a_longunion &= {:b}, a_longunion = {:b}", b_longunion, a_longunion);
     assert_eq!(a_longunion.get(), 0_u64);
   
     // Example for LongerUnion
@@ -12979,21 +12989,21 @@ fn unions_operator_and_assign()
     println!("Originally, a_longerunion = {}", a_longerunion);
     let b_longerunion = LongerUnion::new_with(0b_00000000_11111111_10000000_00111111_11110000_00000011_11111111_10000000_10110011_10001111_00001111_10000011_11110000_00111111_10000000_11111111);
     a_longerunion &= b_longerunion;
-    println!("After a_longerunion /= {:b}, a_longerunion = {:b}", b_longerunion, a_longerunion);
+    println!("After a_longerunion &= {:b}, a_longerunion = {:b}", b_longerunion, a_longerunion);
     assert_eq!(a_longerunion.get(), 0b_100011110000000000000011111100000000001110000000100000000000000010001111000000000000001111110000000000111000000010000000_u128);
   
     let mut a_longerunion = LongerUnion::new_with(0b_10110011_10001111_00001111_10000011_11110000_00111111_10000000_11111111_00000000_11111111_10000000_00111111_11110000_00000011_11111111_10000000);
     println!("Originally, a_longerunion = {}", a_longerunion);
     let b_longerunion = LongerUnion::max();
     a_longerunion &= b_longerunion;
-    println!("After a_longerunion /= {:b}, a_longerunion = {:b}", b_longerunion, a_longerunion);
+    println!("After a_longerunion &= {:b}, a_longerunion = {:b}", b_longerunion, a_longerunion);
     assert_eq!(a_longerunion.get(), 0b_10110011100011110000111110000011111100000011111110000000111111110000000011111111100000000011111111110000000000111111111110000000_u128);
   
-    let mut a_sizeuniona_longerunion = LongerUnion::new_with(0b_10110011_10001111_00001111_10000011_11110000_00111111_10000000_11111111_00000000_11111111_10000000_00111111_11110000_00000011_11111111_10000000);
+    let mut a_longerunion = LongerUnion::new_with(0b_10110011_10001111_00001111_10000011_11110000_00111111_10000000_11111111_00000000_11111111_10000000_00111111_11110000_00000011_11111111_10000000);
     println!("Originally, a_longerunion = {}", a_longerunion);
     let b_longerunion = LongerUnion::zero();
     a_longerunion &= b_longerunion;
-    println!("After a_longerunion /= {:b}, a_longerunion = {:b}", b_longerunion, a_longerunion);
+    println!("After a_longerunion &= {:b}, a_longerunion = {:b}", b_longerunion, a_longerunion);
     assert_eq!(a_longerunion.get(), 0_u128);
   
     // Example for SizeUnion
@@ -13005,7 +13015,7 @@ fn unions_operator_and_assign()
     #[cfg(target_pointer_width = "32")] let b_sizeunion = SizeUnion::new_with(0b_00001111_10000011_10110011_10001111);
     #[cfg(target_pointer_width = "64")] let b_sizeunion = SizeUnion::new_with(0b_11110000_00111111_10000000_11111111_10110011_10001111_00001111_10000011);
     a_sizeunion &= b_sizeunion;
-    println!("After a_sizeunion /= {:b}, a_sizeunion = {:b}", b_sizeunion, a_sizeunion);
+    println!("After a_sizeunion &= {:b}, a_sizeunion = {:b}", b_sizeunion, a_sizeunion);
     #[cfg(target_pointer_width = "16")]  assert_eq!(a_sizeunion.get(), 0b_1000001110000011_usize);
     #[cfg(target_pointer_width = "32")]  assert_eq!(a_sizeunion.get(), 0b_11100000110000001110000011_usize);
     #[cfg(target_pointer_width = "64")]  assert_eq!(a_sizeunion.get(), 0b_1011000000001111000000001000001110110000000011110000000010000011_usize);
@@ -13016,7 +13026,7 @@ fn unions_operator_and_assign()
     println!("Originally, a_sizeunion = {}", a_sizeunion);
     let b_sizeunion = SizeUnion::max();
     a_sizeunion &= b_sizeunion;
-    println!("After a_sizeunion /= {:b}, a_sizeunion = {:b}", b_sizeunion, a_sizeunion);
+    println!("After a_sizeunion &= {:b}, a_sizeunion = {:b}", b_sizeunion, a_sizeunion);
     #[cfg(target_pointer_width = "16")]  assert_eq!(a_sizeunion.get(), 0b_1011001110001111_usize);
     #[cfg(target_pointer_width = "32")]  assert_eq!(a_sizeunion.get(), 0b_0b_10110011100011110000111110000011_usize);
     #[cfg(target_pointer_width = "64")]  assert_eq!(a_sizeunion.get(), 0b_1011001110001111000011111000001111110000001111111000000011111111_usize);
@@ -13027,7 +13037,7 @@ fn unions_operator_and_assign()
     println!("Originally, a_sizeunion = {}", a_sizeunion);
     let b_sizeunion = SizeUnion::zero();
     a_sizeunion &= b_sizeunion;
-    println!("After a_sizeunion /= {:b}, a_sizeunion = {:b}", b_sizeunion, a_sizeunion);
+    println!("After a_sizeunion &= {:b}, a_sizeunion = {:b}", b_sizeunion, a_sizeunion);
     assert_eq!(a_sizeunion.get(), 0_usize);
     println!("--------------------------------------");
 }
@@ -13035,32 +13045,494 @@ fn unions_operator_and_assign()
 fn unions_operator_or()
 {
     println!("unions_operator_or()");
-    use cryptocol::number::{ ShortUnion, IntUnion, LongUnion, LongerUnion, SizeUnion };
+    use cryptocol::number::{ SmallUInt, ShortUnion, IntUnion, LongUnion, LongerUnion, SizeUnion };
 
+    // Example for ShortUnion
+    let a_shortunion = ShortUnion::new_with(0b_10110011_10001111);
+    let b_shortunion = ShortUnion::new_with(0b_10001111_10110011);
+    let c_shortunion = a_shortunion | b_shortunion;
+    println!("{:b} | {:b} = {:b}", a_shortunion, b_shortunion, c_shortunion);
+    assert_eq!(c_shortunion.get(), 0b_1011111110111111_u16);
+
+    let a_shortunion = ShortUnion::new_with(0b_10110011_10001111);
+    let b_shortunion = ShortUnion::max();
+    let c_shortunion = a_shortunion | b_shortunion;
+    println!("{:b} | {:b} = {:b}", a_shortunion, b_shortunion, c_shortunion);
+    assert_eq!(c_shortunion.get(), 0b_1111111111111111_u16);
+
+    let a_shortunion = ShortUnion::new_with(0b_10110011_10001111);
+    let b_shortunion = ShortUnion::zero();
+    let c_shortunion = a_shortunion | b_shortunion;
+    println!("{:b} | {:b} = {:b}", a_shortunion, b_shortunion, c_shortunion);
+    assert_eq!(c_shortunion.get(), 0b_10110011_10001111_u16);
+
+    // Example for IntUnion
+    let a_intunion = IntUnion::new_with(0b_10110011_10001111_00001111_10000011);
+    let b_intunion = IntUnion::new_with(0b_00001111_10000011_10110011_10001111);
+    let c_intunion = a_intunion | b_intunion;
+    println!("{:b} | {:b} = {:b}", a_intunion, b_intunion, c_intunion);
+    assert_eq!(c_intunion.get(), 0b_10111111100011111011111110001111_u32);
+  
+    let a_intunion = IntUnion::new_with(0b_10110011_10001111_00001111_10000011);
+    let b_intunion = IntUnion::max();
+    let c_intunion = a_intunion | b_intunion;
+    println!("{:b} | {:b} = {:b}", a_intunion, b_intunion, c_intunion);
+    assert_eq!(c_intunion.get(), 0b_11111111111111111111111111111111_u32);
+
+    let a_intunion = IntUnion::new_with(0b_10110011_10001111_00001111_10000011);
+    let b_intunion = IntUnion::zero();
+    let c_intunion = a_intunion | b_intunion;
+    println!("{:b} | {:b} = {:b}", a_intunion, b_intunion, c_intunion);
+    assert_eq!(c_intunion.get(), 0b_10110011_10001111_00001111_10000011_u32);
+
+    // Example for LongUnion
+    let a_longunion = LongUnion::new_with(0b_10110011_10001111_00001111_10000011_11110000_00111111_10000000_11111111);
+    let b_longunion = LongUnion::new_with(0b_11110000_00111111_10000000_11111111_10110011_10001111_00001111_10000011);
+    let c_longunion = a_longunion | b_longunion;
+    println!("{:b} | {:b} = {:b}", a_longunion, b_longunion, c_longunion);
+    assert_eq!(c_longunion.get(), 0b_1111001110111111100011111111111111110011101111111000111111111111_u64);
+  
+    let a_longunion = LongUnion::new_with(0b_10110011_10001111_00001111_10000011_11110000_00111111_10000000_11111111);
+    let b_longunion = LongUnion::max();
+    let c_longunion = a_longunion | b_longunion;
+    println!("{:b} | {:b} = {:b}", a_longunion, b_longunion, c_longunion);
+    assert_eq!(c_longunion.get(), 0b_1111111111111111111111111111111111111111111111111111111111111111_u64);
+  
+    let a_longunion = LongUnion::new_with(0b_10110011_10001111_00001111_10000011_11110000_00111111_10000000_11111111);
+    let b_longunion = LongUnion::zero();
+    let c_longunion = a_longunion | b_longunion;
+    println!("{:b} | {:b} = {:b}", a_longunion, b_longunion, c_longunion);
+    assert_eq!(c_longunion.get(), 0b_10110011_10001111_00001111_10000011_11110000_00111111_10000000_11111111_u64);
+  
+    // Example for LongerUnion
+    let a_longerunion = LongerUnion::new_with(0b_10110011_10001111_00001111_10000011_11110000_00111111_10000000_11111111_00000000_11111111_10000000_00111111_11110000_00000011_11111111_10000000);
+    let b_longerunion = LongerUnion::new_with(0b_00000000_11111111_10000000_00111111_11110000_00000011_11111111_10000000_10110011_10001111_00001111_10000011_11110000_00111111_10000000_11111111);
+    let c_longerunion = a_longerunion | b_longerunion;
+    println!("{:b} | {:b} = {:b}", a_longerunion, b_longerunion, c_longerunion);
+    assert_eq!(c_longerunion.get(), 0b_10110011111111111000111110111111111100000011111111111111111111111011001111111111100011111011111111110000001111111111111111111111_u128);
+  
+    let a_longerunion = LongerUnion::new_with(0b_10110011_10001111_00001111_10000011_11110000_00111111_10000000_11111111_00000000_11111111_10000000_00111111_11110000_00000011_11111111_10000000);
+    let b_longerunion = LongerUnion::max();
+    let c_longerunion = a_longerunion | b_longerunion;
+    println!("{:b} | {:b} = {:b}", a_longerunion, b_longerunion, c_longerunion);
+    assert_eq!(c_longerunion.get(), 0b_11111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111_u128);
+  
+    let a_longerunion = LongerUnion::new_with(0b_10110011_10001111_00001111_10000011_11110000_00111111_10000000_11111111_00000000_11111111_10000000_00111111_11110000_00000011_11111111_10000000);
+    let b_longerunion = LongerUnion::zero();
+    let c_longerunion = a_longerunion | b_longerunion;
+    println!("{:b} | {:b} = {:b}", a_longerunion, b_longerunion, c_longerunion);
+    assert_eq!(c_longerunion.get(), 0b_10110011_10001111_00001111_10000011_11110000_00111111_10000000_11111111_00000000_11111111_10000000_00111111_11110000_00000011_11111111_10000000_u128);
+  
+    // Example for SizeUnion
+    #[cfg(target_pointer_width = "16")] let a_sizeunion = SizeUnion::new_with(0b_10110011_10001111);
+    #[cfg(target_pointer_width = "32")] let a_sizeunion = SizeUnion::new_with(0b_10110011_10001111_00001111_10000011);
+    #[cfg(target_pointer_width = "64")] let a_sizeunion = SizeUnion::new_with(0b_10110011_10001111_00001111_10000011_11110000_00111111_10000000_11111111);
+    #[cfg(target_pointer_width = "16")] let b_sizeunion = SizeUnion::new_with(0b_10001111_10110011);
+    #[cfg(target_pointer_width = "32")] let b_sizeunion = SizeUnion::new_with(0b_00001111_10000011_10110011_10001111);
+    #[cfg(target_pointer_width = "64")] let b_sizeunion = SizeUnion::new_with(0b_11110000_00111111_10000000_11111111_10110011_10001111_00001111_10000011);
+    let c_sizeunion = a_sizeunion | b_sizeunion;
+    println!("{:b} | {:b} = {:b}", a_sizeunion, b_sizeunion, c_sizeunion);
+    #[cfg(target_pointer_width = "16")]  assert_eq!(c_sizeunion.get(), 0b_1011111110111111_usize);
+    #[cfg(target_pointer_width = "32")]  assert_eq!(c_sizeunion.get(), 0b_10111111100011111011111110001111_usize);
+    #[cfg(target_pointer_width = "64")]  assert_eq!(c_sizeunion.get(), 0b_1111001110111111100011111111111111110011101111111000111111111111_usize);
+
+    #[cfg(target_pointer_width = "16")] let a_sizeunion = SizeUnion::new_with(0b_10110011_10001111);
+    #[cfg(target_pointer_width = "32")] let a_sizeunion = SizeUnion::new_with(0b_10110011_10001111_00001111_10000011);
+    #[cfg(target_pointer_width = "64")] let a_sizeunion = SizeUnion::new_with(0b_10110011_10001111_00001111_10000011_11110000_00111111_10000000_11111111);
+    let b_sizeunion = SizeUnion::max();
+    let c_sizeunion = a_sizeunion | b_sizeunion;
+    println!("{:b} | {:b} = {:b}", a_sizeunion, b_sizeunion, c_sizeunion);
+    #[cfg(target_pointer_width = "16")]  assert_eq!(c_sizeunion.get(), 0b_1111111111111111_usize);
+    #[cfg(target_pointer_width = "32")]  assert_eq!(c_sizeunion.get(), 0b_11111111111111111111111111111111_usize);
+    #[cfg(target_pointer_width = "64")]  assert_eq!(c_sizeunion.get(), 0b_1111111111111111111111111111111111111111111111111111111111111111_usize);
+
+    #[cfg(target_pointer_width = "16")] let a_sizeunion = SizeUnion::new_with(0b_10110011_10001111);
+    #[cfg(target_pointer_width = "32")] let a_sizeunion = SizeUnion::new_with(0b_10110011_10001111_00001111_10000011);
+    #[cfg(target_pointer_width = "64")] let a_sizeunion = SizeUnion::new_with(0b_10110011_10001111_00001111_10000011_11110000_00111111_10000000_11111111);
+    let b_sizeunion = SizeUnion::zero();
+    let c_sizeunion = a_sizeunion | b_sizeunion;
+    println!("{:b} | {:b} = {:b}", a_sizeunion, b_sizeunion, c_sizeunion);
+    #[cfg(target_pointer_width = "16")]  assert_eq!(c_sizeunion.get(), 0b_10110011_10001111_usize);
+    #[cfg(target_pointer_width = "32")]  assert_eq!(c_sizeunion.get(), 0b_10110011_10001111_00001111_10000011_usize);
+    #[cfg(target_pointer_width = "64")]  assert_eq!(c_sizeunion.get(), 0b_10110011_10001111_00001111_10000011_11110000_00111111_10000000_11111111_usize);
     println!("--------------------------------------");
 }
 
 fn unions_operator_or_assign()
 {
     println!("unions_operator_or_assign()");
-    use cryptocol::number::{ ShortUnion, IntUnion, LongUnion, LongerUnion, SizeUnion };
+    use cryptocol::number::{ SmallUInt, ShortUnion, IntUnion, LongUnion, LongerUnion, SizeUnion };
 
+    // Example for ShortUnion
+    let mut a_shortunion = ShortUnion::new_with(0b_10110011_10001111);
+    println!("Originally, a_shortunion = {}", a_shortunion);
+    let b_shortunion = ShortUnion::new_with(0b_10001111_10110011);
+    a_shortunion |= b_shortunion;
+    println!("After a_shortunion |= {:b}, a_shortunion = {:b}", b_shortunion, a_shortunion);
+    assert_eq!(a_shortunion.get(), 0b_1011111110111111_u16);
+
+    let mut a_shortunion = ShortUnion::new_with(0b_10110011_10001111);
+    println!("Originally, a_shortunion = {}", a_shortunion);
+    let b_shortunion = ShortUnion::max();
+    a_shortunion |= b_shortunion;
+    println!("After a_shortunion |= {:b}, a_shortunion = {:b}", b_shortunion, a_shortunion);
+    assert_eq!(a_shortunion.get(), 0b_1111111111111111_u16);
+
+    let mut a_shortunion = ShortUnion::new_with(0b_10110011_10001111);
+    println!("Originally, a_shortunion = {}", a_shortunion);
+    let b_shortunion = ShortUnion::zero();
+    a_shortunion |= b_shortunion;
+    println!("After a_shortunion |= {:b}, a_shortunion = {:b}", b_shortunion, a_shortunion);
+    assert_eq!(a_shortunion.get(), 0b_10110011_10001111_u16);
+
+    // Example for IntUnion
+    let mut a_intunion = IntUnion::new_with(0b_10110011_10001111_00001111_10000011);
+    println!("Originally, a_intunion = {}", a_intunion);
+    let b_intunion = IntUnion::new_with(0b_00001111_10000011_10110011_10001111);
+    a_intunion |= b_intunion;
+    println!("After a_intunion |= {:b}, a_intunion = {:b}", b_intunion, a_intunion);
+    assert_eq!(a_intunion.get(), 0b_10111111100011111011111110001111_u32);
+  
+    let mut a_intunion = IntUnion::new_with(0b_10110011_10001111_00001111_10000011);
+    println!("Originally, a_intunion = {}", a_intunion);
+    let b_intunion = IntUnion::max();
+    a_intunion |= b_intunion;
+    println!("After a_intunion |= {:b}, a_intunion = {:b}", b_intunion, a_intunion);
+    assert_eq!(a_intunion.get(), 0b_11111111111111111111111111111111_u32);
+
+    let mut a_intunion = IntUnion::new_with(0b_10110011_10001111_00001111_10000011);
+    println!("Originally, a_intunion = {}", a_intunion);
+    let b_intunion = IntUnion::zero();
+    a_intunion |= b_intunion;
+    println!("After a_intunion |= {:b}, a_intunion = {:b}", b_intunion, a_intunion);
+    assert_eq!(a_intunion.get(), 0b_10110011_10001111_00001111_10000011);
+
+    // Example for LongUnion
+    let mut a_longunion = LongUnion::new_with(0b_10110011_10001111_00001111_10000011_11110000_00111111_10000000_11111111);
+    println!("Originally, a_longunion = {}", a_longunion);
+    let b_longunion = LongUnion::new_with(0b_11110000_00111111_10000000_11111111_10110011_10001111_00001111_10000011);
+    a_longunion |= b_longunion;
+    println!("After a_longunion |= {:b}, a_longunion = {:b}", b_longunion, a_longunion);
+    assert_eq!(a_longunion.get(), 0b_1111001110111111100011111111111111110011101111111000111111111111_u64);
+  
+    let mut a_longunion = LongUnion::new_with(0b_10110011_10001111_00001111_10000011_11110000_00111111_10000000_11111111);
+    println!("Originally, a_longunion = {}", a_longunion);
+    let b_longunion = LongUnion::max();
+    a_longunion |= b_longunion;
+    println!("After a_longunion |= {:b}, a_longunion = {:b}", b_longunion, a_longunion);
+    assert_eq!(a_longunion.get(), 0b_1111111111111111111111111111111111111111111111111111111111111111_u64);
+  
+    let mut a_longunion = LongUnion::new_with(0b_10110011_10001111_00001111_10000011_11110000_00111111_10000000_11111111);
+    println!("Originally, a_longea_longunionrunion = {}", a_longunion);
+    let b_longunion = LongUnion::zero();
+    a_longunion |= b_longunion;
+    println!("After a_longunion |= {:b}, a_longunion = {:b}", b_longunion, a_longunion);
+    assert_eq!(a_longunion.get(), 0b_10110011_10001111_00001111_10000011_11110000_00111111_10000000_11111111_u64);
+  
+    // Example for LongerUnion
+    let mut a_longerunion = LongerUnion::new_with(0b_10110011_10001111_00001111_10000011_11110000_00111111_10000000_11111111_00000000_11111111_10000000_00111111_11110000_00000011_11111111_10000000);
+    println!("Originally, a_longerunion = {}", a_longerunion);
+    let b_longerunion = LongerUnion::new_with(0b_00000000_11111111_10000000_00111111_11110000_00000011_11111111_10000000_10110011_10001111_00001111_10000011_11110000_00111111_10000000_11111111);
+    a_longerunion |= b_longerunion;
+    println!("After a_longerunion |= {:b}, a_longerunion = {:b}", b_longerunion, a_longerunion);
+    assert_eq!(a_longerunion.get(), 0b_10110011111111111000111110111111111100000011111111111111111111111011001111111111100011111011111111110000001111111111111111111111_u128);
+  
+    let mut a_longerunion = LongerUnion::new_with(0b_10110011_10001111_00001111_10000011_11110000_00111111_10000000_11111111_00000000_11111111_10000000_00111111_11110000_00000011_11111111_10000000);
+    println!("Originally, a_longerunion = {}", a_longerunion);
+    let b_longerunion = LongerUnion::max();
+    a_longerunion |= b_longerunion;
+    println!("After a_longerunion |= {:b}, a_longerunion = {:b}", b_longerunion, a_longerunion);
+    assert_eq!(a_longerunion.get(), 0b_11111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111_u128);
+  
+    let mut a_longerunion = LongerUnion::new_with(0b_10110011_10001111_00001111_10000011_11110000_00111111_10000000_11111111_00000000_11111111_10000000_00111111_11110000_00000011_11111111_10000000);
+    println!("Originally, a_longerunion = {}", a_longerunion);
+    let b_longerunion = LongerUnion::zero();
+    a_longerunion |= b_longerunion;
+    println!("After a_longerunion |= {:b}, a_longerunion = {:b}", b_longerunion, a_longerunion);
+    assert_eq!(a_longerunion.get(), 0b_10110011_10001111_00001111_10000011_11110000_00111111_10000000_11111111_00000000_11111111_10000000_00111111_11110000_00000011_11111111_10000000_u128);
+  
+    // Example for SizeUnion
+    #[cfg(target_pointer_width = "16")] let mut a_sizeunion = SizeUnion::new_with(0b_10110011_10001111);
+    #[cfg(target_pointer_width = "32")] let mut a_sizeunion = SizeUnion::new_with(0b_10110011_10001111_00001111_10000011);
+    #[cfg(target_pointer_width = "64")] let mut a_sizeunion = SizeUnion::new_with(0b_10110011_10001111_00001111_10000011_11110000_00111111_10000000_11111111);
+    println!("Originally, a_sizeunion = {}", a_sizeunion);
+    #[cfg(target_pointer_width = "16")] let b_sizeunion = SizeUnion::new_with(0b_10001111_10110011);
+    #[cfg(target_pointer_width = "32")] let b_sizeunion = SizeUnion::new_with(0b_00001111_10000011_10110011_10001111);
+    #[cfg(target_pointer_width = "64")] let b_sizeunion = SizeUnion::new_with(0b_11110000_00111111_10000000_11111111_10110011_10001111_00001111_10000011);
+    a_sizeunion |= b_sizeunion;
+    println!("After a_sizeunion |= {:b}, a_sizeunion = {:b}", b_sizeunion, a_sizeunion);
+    #[cfg(target_pointer_width = "16")]  assert_eq!(a_sizeunion.get(), 0b_1011111110111111_usize);
+    #[cfg(target_pointer_width = "32")]  assert_eq!(a_sizeunion.get(), 0b_10111111100011111011111110001111_usize);
+    #[cfg(target_pointer_width = "64")]  assert_eq!(a_sizeunion.get(), 0b_1111001110111111100011111111111111110011101111111000111111111111_usize);
+
+    #[cfg(target_pointer_width = "16")] let mut a_sizeunion = SizeUnion::new_with(0b_10110011_10001111);
+    #[cfg(target_pointer_width = "32")] let mut a_sizeunion = SizeUnion::new_with(0b_10110011_10001111_00001111_10000011);
+    #[cfg(target_pointer_width = "64")] let mut a_sizeunion = SizeUnion::new_with(0b_10110011_10001111_00001111_10000011_11110000_00111111_10000000_11111111);
+    println!("Originally, a_sizeunion = {}", a_sizeunion);
+    let b_sizeunion = SizeUnion::max();
+    a_sizeunion |= b_sizeunion;
+    println!("After a_sizeunion |= {:b}, a_sizeunion = {:b}", b_sizeunion, a_sizeunion);
+    #[cfg(target_pointer_width = "16")]  assert_eq!(a_sizeunion.get(), 0b_1111111111111111_usize);
+    #[cfg(target_pointer_width = "32")]  assert_eq!(a_sizeunion.get(), 0b_11111111111111111111111111111111_usize);
+    #[cfg(target_pointer_width = "64")]  assert_eq!(a_sizeunion.get(), 0b_1111111111111111111111111111111111111111111111111111111111111111_usize);
+
+    #[cfg(target_pointer_width = "16")] let mut a_sizeunion = SizeUnion::new_with(0b_10110011_10001111);
+    #[cfg(target_pointer_width = "32")] let mut a_sizeunion = SizeUnion::new_with(0b_10110011_10001111_00001111_10000011);
+    #[cfg(target_pointer_width = "64")] let mut a_sizeunion = SizeUnion::new_with(0b_10110011_10001111_00001111_10000011_11110000_00111111_10000000_11111111);
+    println!("Originally, a_sizeunion = {}", a_sizeunion);
+    let b_sizeunion = SizeUnion::zero();
+    a_sizeunion |= b_sizeunion;
+    println!("After a_sizeunion |= {:b}, a_sizeunion = {:b}", b_sizeunion, a_sizeunion);
+    #[cfg(target_pointer_width = "16")]  assert_eq!(a_sizeunion.get(), 0b_10110011_10001111_usize);
+    #[cfg(target_pointer_width = "32")]  assert_eq!(a_sizeunion.get(), 0b_10110011_10001111_00001111_10000011_usize);
+    #[cfg(target_pointer_width = "64")]  assert_eq!(a_sizeunion.get(), 0b_10110011_10001111_00001111_10000011_11110000_00111111_10000000_11111111_usize);
     println!("--------------------------------------");
 }
 
 fn unions_operator_xor()
 {
     println!("unions_operator_xor()");
-    use cryptocol::number::{ ShortUnion, IntUnion, LongUnion, LongerUnion, SizeUnion };
+    use cryptocol::number::{ SmallUInt, ShortUnion, IntUnion, LongUnion, LongerUnion, SizeUnion };
 
+    // Example for ShortUnion
+    let a_shortunion = ShortUnion::new_with(0b_10110011_10001111);
+    let b_shortunion = ShortUnion::new_with(0b_10001111_10110011);
+    let c_shortunion = a_shortunion ^ b_shortunion;
+    println!("{:b} ^ {:b} = {:b}", a_shortunion, b_shortunion, c_shortunion);
+    assert_eq!(c_shortunion.get(), 0b_11110000111100_u16);
+
+    let a_shortunion = ShortUnion::new_with(0b_10110011_10001111);
+    let b_shortunion = ShortUnion::max();
+    let c_shortunion = a_shortunion ^ b_shortunion;
+    println!("{:b} ^ {:b} = {:b}", a_shortunion, b_shortunion, c_shortunion);
+    assert_eq!(c_shortunion.get(), 0b_100110001110000_u16);
+
+    let a_shortunion = ShortUnion::new_with(0b_10110011_10001111);
+    let b_shortunion = ShortUnion::zero();
+    let c_shortunion = a_shortunion ^ b_shortunion;
+    println!("{:b} ^ {:b} = {:b}", a_shortunion, b_shortunion, c_shortunion);
+    assert_eq!(c_shortunion.get(), 0b_10110011_10001111_u16);
+
+    // Example for IntUnion
+    let a_intunion = IntUnion::new_with(0b_10110011_10001111_00001111_10000011);
+    let b_intunion = IntUnion::new_with(0b_00001111_10000011_10110011_10001111);
+    let c_intunion = a_intunion ^ b_intunion;
+    println!("{:b} ^ {:b} = {:b}", a_intunion, b_intunion, c_intunion);
+    assert_eq!(c_intunion.get(), 0b_10111100000011001011110000001100_u32);
+  
+    let a_intunion = IntUnion::new_with(0b_10110011_10001111_00001111_10000011);
+    let b_intunion = IntUnion::max();
+    let c_intunion = a_intunion ^ b_intunion;
+    println!("{:b} ^ {:b} = {:b}", a_intunion, b_intunion, c_intunion);
+    assert_eq!(c_intunion.get(), 0b_1001100011100001111000001111100_u32);
+
+    let a_intunion = IntUnion::new_with(0b_10110011_10001111_00001111_10000011);
+    let b_intunion = IntUnion::zero();
+    let c_intunion = a_intunion ^ b_intunion;
+    println!("{:b} ^ {:b} = {:b}", a_intunion, b_intunion, c_intunion);
+    assert_eq!(c_intunion.get(), 0b_10110011_10001111_00001111_10000011_u32);
+
+    // Example for LongUnion
+    let a_longunion = LongUnion::new_with(0b_10110011_10001111_00001111_10000011_11110000_00111111_10000000_11111111);
+    let b_longunion = LongUnion::new_with(0b_11110000_00111111_10000000_11111111_10110011_10001111_00001111_10000011);
+    let c_longunion = a_longunion ^ b_longunion;
+    println!("{:b} ^ {:b} = {:b}", a_longunion, b_longunion, c_longunion);
+    assert_eq!(c_longunion.get(), 0b_100001110110000100011110111110001000011101100001000111101111100_u64);
+  
+    let a_longunion = LongUnion::new_with(0b_10110011_10001111_00001111_10000011_11110000_00111111_10000000_11111111);
+    let b_longunion = LongUnion::max();
+    let c_longunion = a_longunion ^ b_longunion;
+    println!("{:b} ^ {:b} = {:b}", a_longunion, b_longunion, c_longunion);
+    assert_eq!(c_longunion.get(), 0b_100110001110000111100000111110000001111110000000111111100000000_u64);
+  
+    let a_longunion = LongUnion::new_with(0b_10110011_10001111_00001111_10000011_11110000_00111111_10000000_11111111);
+    let b_longunion = LongUnion::zero();
+    let c_longunion = a_longunion ^ b_longunion;
+    println!("{:b} ^ {:b} = {:b}", a_longunion, b_longunion, c_longunion);
+    assert_eq!(c_longunion.get(), 0b_10110011_10001111_00001111_10000011_11110000_00111111_10000000_11111111_u64);
+  
+    // Example for LongerUnion
+    let a_longerunion = LongerUnion::new_with(0b_10110011_10001111_00001111_10000011_11110000_00111111_10000000_11111111_00000000_11111111_10000000_00111111_11110000_00000011_11111111_10000000);
+    let b_longerunion = LongerUnion::new_with(0b_00000000_11111111_10000000_00111111_11110000_00000011_11111111_10000000_10110011_10001111_00001111_10000011_11110000_00111111_10000000_11111111);
+    let c_longerunion = a_longerunion ^ b_longerunion;
+    println!("{:b} ^ {:b} = {:b}", a_longerunion, b_longerunion, c_longerunion);
+    assert_eq!(c_longerunion.get(), 0b_10110011011100001000111110111100000000000011110001111111011111111011001101110000100011111011110000000000001111000111111101111111_u128);
+  
+    let a_longerunion = LongerUnion::new_with(0b_10110011_10001111_00001111_10000011_11110000_00111111_10000000_11111111_00000000_11111111_10000000_00111111_11110000_00000011_11111111_10000000);
+    let b_longerunion = LongerUnion::max();
+    let c_longerunion = a_longerunion ^ b_longerunion;
+    println!("{:b} ^ {:b} = {:b}", a_longerunion, b_longerunion, c_longerunion);
+    assert_eq!(c_longerunion.get(), 0b_1001100011100001111000001111100000011111100000001111111000000001111111100000000011111111100000000001111111111000000000001111111_u128);
+  
+    let a_longerunion = LongerUnion::new_with(0b_10110011_10001111_00001111_10000011_11110000_00111111_10000000_11111111_00000000_11111111_10000000_00111111_11110000_00000011_11111111_10000000);
+    let b_longerunion = LongerUnion::zero();
+    let c_longerunion = a_longerunion ^ b_longerunion;
+    println!("{:b} ^ {:b} = {:b}", a_longerunion, b_longerunion, c_longerunion);
+    assert_eq!(c_longerunion.get(), 0b_10110011_10001111_00001111_10000011_11110000_00111111_10000000_11111111_00000000_11111111_10000000_00111111_11110000_00000011_11111111_10000000_u128);
+  
+    // Example for SizeUnion
+    #[cfg(target_pointer_width = "16")] let a_sizeunion = SizeUnion::new_with(0b_10110011_10001111);
+    #[cfg(target_pointer_width = "32")] let a_sizeunion = SizeUnion::new_with(0b_10110011_10001111_00001111_10000011);
+    #[cfg(target_pointer_width = "64")] let a_sizeunion = SizeUnion::new_with(0b_10110011_10001111_00001111_10000011_11110000_00111111_10000000_11111111);
+    #[cfg(target_pointer_width = "16")] let b_sizeunion = SizeUnion::new_with(0b_10001111_10110011);
+    #[cfg(target_pointer_width = "32")] let b_sizeunion = SizeUnion::new_with(0b_00001111_10000011_10110011_10001111);
+    #[cfg(target_pointer_width = "64")] let b_sizeunion = SizeUnion::new_with(0b_11110000_00111111_10000000_11111111_10110011_10001111_00001111_10000011);
+    let c_sizeunion = a_sizeunion ^ b_sizeunion;
+    println!("{:b} ^ {:b} = {:b}", a_sizeunion, b_sizeunion, c_sizeunion);
+    #[cfg(target_pointer_width = "16")]  assert_eq!(c_sizeunion.get(), 0b_11110000111100_usize);
+    #[cfg(target_pointer_width = "32")]  assert_eq!(c_sizeunion.get(), 0b_10111100000011001011110000001100_usize);
+    #[cfg(target_pointer_width = "64")]  assert_eq!(c_sizeunion.get(), 0b_100001110110000100011110111110001000011101100001000111101111100_usize);
+
+    #[cfg(target_pointer_width = "16")] let a_sizeunion = SizeUnion::new_with(0b_10110011_10001111);
+    #[cfg(target_pointer_width = "32")] let a_sizeunion = SizeUnion::new_with(0b_10110011_10001111_00001111_10000011);
+    #[cfg(target_pointer_width = "64")] let a_sizeunion = SizeUnion::new_with(0b_10110011_10001111_00001111_10000011_11110000_00111111_10000000_11111111);
+    let b_sizeunion = SizeUnion::max();
+    let c_sizeunion = a_sizeunion ^ b_sizeunion;
+    println!("{:b} ^ {:b} = {:b}", a_sizeunion, b_sizeunion, c_sizeunion);
+    #[cfg(target_pointer_width = "16")]  assert_eq!(c_sizeunion.get(), 0b_100110001110000_usize);
+    #[cfg(target_pointer_width = "32")]  assert_eq!(c_sizeunion.get(), 0b_1001100011100001111000001111100_usize);
+    #[cfg(target_pointer_width = "64")]  assert_eq!(c_sizeunion.get(), 0b_100110001110000111100000111110000001111110000000111111100000000_usize);
+
+    #[cfg(target_pointer_width = "16")] let a_sizeunion = SizeUnion::new_with(0b_10110011_10001111);
+    #[cfg(target_pointer_width = "32")] let a_sizeunion = SizeUnion::new_with(0b_10110011_10001111_00001111_10000011);
+    #[cfg(target_pointer_width = "64")] let a_sizeunion = SizeUnion::new_with(0b_10110011_10001111_00001111_10000011_11110000_00111111_10000000_11111111);
+    let b_sizeunion = SizeUnion::zero();
+    let c_sizeunion = a_sizeunion ^ b_sizeunion;
+    println!("{:b} ^ {:b} = {:b}", a_sizeunion, b_sizeunion, c_sizeunion);
+    #[cfg(target_pointer_width = "16")]  assert_eq!(c_sizeunion.get(), 0b_10110011_10001111_usize);
+    #[cfg(target_pointer_width = "32")]  assert_eq!(c_sizeunion.get(), 0b_10110011_10001111_00001111_10000011_usize);
+    #[cfg(target_pointer_width = "64")]  assert_eq!(c_sizeunion.get(), 0b_10110011_10001111_00001111_10000011_11110000_00111111_10000000_11111111_usize);
     println!("--------------------------------------");
 }
 
 fn unions_operator_xor_assign()
 {
     println!("unions_operator_xor_assign()");
-    use cryptocol::number::{ ShortUnion, IntUnion, LongUnion, LongerUnion, SizeUnion };
+    use cryptocol::number::{ SmallUInt, ShortUnion, IntUnion, LongUnion, LongerUnion, SizeUnion };
 
+    // Example for ShortUnion
+    let mut a_shortunion = ShortUnion::new_with(0b_10110011_10001111);
+    println!("Originally, a_shortunion = {}", a_shortunion);
+    let b_shortunion = ShortUnion::new_with(0b_10001111_10110011);
+    a_shortunion ^= b_shortunion;
+    println!("After a_shortunion ^= {:b}, a_shortunion = {:b}", b_shortunion, a_shortunion);
+    assert_eq!(a_shortunion.get(), 0b_11110000111100_u16);
+
+    let mut a_shortunion = ShortUnion::new_with(0b_10110011_10001111);
+    println!("Originally, a_shortunion = {}", a_shortunion);
+    let b_shortunion = ShortUnion::max();
+    a_shortunion ^= b_shortunion;
+    println!("After a_shortunion ^= {:b}, a_shortunion = {:b}", b_shortunion, a_shortunion);
+    assert_eq!(a_shortunion.get(), 0b_100110001110000_u16);
+
+    let mut a_shortunion = ShortUnion::new_with(0b_10110011_10001111);
+    println!("Originally, a_shortunion = {}", a_shortunion);
+    let b_shortunion = ShortUnion::zero();
+    a_shortunion ^= b_shortunion;
+    println!("After a_shortunion ^= {:b}, a_shortunion = {:b}", b_shortunion, a_shortunion);
+    assert_eq!(a_shortunion.get(), 0b_10110011_10001111_u16);
+
+    // Example for IntUnion
+    let mut a_intunion = IntUnion::new_with(0b_10110011_10001111_00001111_10000011);
+    println!("Originally, a_intunion = {}", a_intunion);
+    let b_intunion = IntUnion::new_with(0b_00001111_10000011_10110011_10001111);
+    a_intunion ^= b_intunion;
+    println!("After a_intunion ^= {:b}, a_intunion = {:b}", b_intunion, a_intunion);
+    assert_eq!(a_intunion.get(), 0b_10111100000011001011110000001100_u32);
+  
+    let mut a_intunion = IntUnion::new_with(0b_10110011_10001111_00001111_10000011);
+    println!("Originally, a_intunion = {}", a_intunion);
+    let b_intunion = IntUnion::max();
+    a_intunion ^= b_intunion;
+    println!("After a_intunion ^= {:b}, a_intunion = {:b}", b_intunion, a_intunion);
+    assert_eq!(a_intunion.get(), 0b_1001100011100001111000001111100_u32);
+
+    let mut a_intunion = IntUnion::new_with(0b_10110011_10001111_00001111_10000011);
+    println!("Originally, a_intunion = {}", a_intunion);
+    let b_intunion = IntUnion::zero();
+    a_intunion ^= b_intunion;
+    println!("After a_intunion ^= {:b}, a_intunion = {:b}", b_intunion, a_intunion);
+    assert_eq!(a_intunion.get(), 0b_10110011_10001111_00001111_10000011);
+
+    // Example for LongUnion
+    let mut a_longunion = LongUnion::new_with(0b_10110011_10001111_00001111_10000011_11110000_00111111_10000000_11111111);
+    println!("Originally, a_longunion = {}", a_longunion);
+    let b_longunion = LongUnion::new_with(0b_11110000_00111111_10000000_11111111_10110011_10001111_00001111_10000011);
+    a_longunion ^= b_longunion;
+    println!("After a_longunion ^= {:b}, a_longunion = {:b}", b_longunion, a_longunion);
+    assert_eq!(a_longunion.get(), 0b_100001110110000100011110111110001000011101100001000111101111100_u64);
+  
+    let mut a_longunion = LongUnion::new_with(0b_10110011_10001111_00001111_10000011_11110000_00111111_10000000_11111111);
+    println!("Originally, a_longunion = {}", a_longunion);
+    let b_longunion = LongUnion::max();
+    a_longunion ^= b_longunion;
+    println!("After a_longunion ^= {:b}, a_longunion = {:b}", b_longunion, a_longunion);
+    assert_eq!(a_longunion.get(), 0b_100110001110000111100000111110000001111110000000111111100000000_u64);
+  
+    let mut a_longunion = LongUnion::new_with(0b_10110011_10001111_00001111_10000011_11110000_00111111_10000000_11111111);
+    println!("Originally, a_longea_longunionrunion = {}", a_longunion);
+    let b_longunion = LongUnion::zero();
+    a_longunion ^= b_longunion;
+    println!("After a_longunion ^= {:b}, a_longunion = {:b}", b_longunion, a_longunion);
+    assert_eq!(a_longunion.get(), 0b_10110011_10001111_00001111_10000011_11110000_00111111_10000000_11111111_u64);
+  
+    // Example for LongerUnion
+    let mut a_longerunion = LongerUnion::new_with(0b_10110011_10001111_00001111_10000011_11110000_00111111_10000000_11111111_00000000_11111111_10000000_00111111_11110000_00000011_11111111_10000000);
+    println!("Originally, a_longerunion = {}", a_longerunion);
+    let b_longerunion = LongerUnion::new_with(0b_00000000_11111111_10000000_00111111_11110000_00000011_11111111_10000000_10110011_10001111_00001111_10000011_11110000_00111111_10000000_11111111);
+    a_longerunion ^= b_longerunion;
+    println!("After a_longerunion ^= {:b}, a_longerunion = {:b}", b_longerunion, a_longerunion);
+    assert_eq!(a_longerunion.get(), 0b_10110011011100001000111110111100000000000011110001111111011111111011001101110000100011111011110000000000001111000111111101111111_u128);
+  
+    let mut a_longerunion = LongerUnion::new_with(0b_10110011_10001111_00001111_10000011_11110000_00111111_10000000_11111111_00000000_11111111_10000000_00111111_11110000_00000011_11111111_10000000);
+    println!("Originally, a_longerunion = {}", a_longerunion);
+    let b_longerunion = LongerUnion::max();
+    a_longerunion ^= b_longerunion;
+    println!("After a_longerunion ^= {:b}, a_longerunion = {:b}", b_longerunion, a_longerunion);
+    assert_eq!(a_longerunion.get(), 0b_1001100011100001111000001111100000011111100000001111111000000001111111100000000011111111100000000001111111111000000000001111111_u128);
+  
+    let mut a_longerunion = LongerUnion::new_with(0b_10110011_10001111_00001111_10000011_11110000_00111111_10000000_11111111_00000000_11111111_10000000_00111111_11110000_00000011_11111111_10000000);
+    println!("Originally, a_longerunion = {}", a_longerunion);
+    let b_longerunion = LongerUnion::zero();
+    a_longerunion ^= b_longerunion;
+    println!("After a_longerunion ^= {:b}, a_longerunion = {:b}", b_longerunion, a_longerunion);
+    assert_eq!(a_longerunion.get(), 0b_10110011_10001111_00001111_10000011_11110000_00111111_10000000_11111111_00000000_11111111_10000000_00111111_11110000_00000011_11111111_10000000_u128);
+  
+    // Example for SizeUnion
+    #[cfg(target_pointer_width = "16")] let mut a_sizeunion = SizeUnion::new_with(0b_10110011_10001111);
+    #[cfg(target_pointer_width = "32")] let mut a_sizeunion = SizeUnion::new_with(0b_10110011_10001111_00001111_10000011);
+    #[cfg(target_pointer_width = "64")] let mut a_sizeunion = SizeUnion::new_with(0b_10110011_10001111_00001111_10000011_11110000_00111111_10000000_11111111);
+    println!("Originally, a_sizeunion = {}", a_sizeunion);
+    #[cfg(target_pointer_width = "16")] let b_sizeunion = SizeUnion::new_with(0b_10001111_10110011);
+    #[cfg(target_pointer_width = "32")] let b_sizeunion = SizeUnion::new_with(0b_00001111_10000011_10110011_10001111);
+    #[cfg(target_pointer_width = "64")] let b_sizeunion = SizeUnion::new_with(0b_11110000_00111111_10000000_11111111_10110011_10001111_00001111_10000011);
+    a_sizeunion ^= b_sizeunion;
+    println!("After a_sizeunion ^= {:b}, a_sizeunion = {:b}", b_sizeunion, a_sizeunion);
+    #[cfg(target_pointer_width = "16")]  assert_eq!(a_sizeunion.get(), 0b_11110000111100_usize);
+    #[cfg(target_pointer_width = "32")]  assert_eq!(a_sizeunion.get(), 0b_10111100000011001011110000001100_usize);
+    #[cfg(target_pointer_width = "64")]  assert_eq!(a_sizeunion.get(), 0b_100001110110000100011110111110001000011101100001000111101111100_usize);
+
+    #[cfg(target_pointer_width = "16")] let mut a_sizeunion = SizeUnion::new_with(0b_10110011_10001111);
+    #[cfg(target_pointer_width = "32")] let mut a_sizeunion = SizeUnion::new_with(0b_10110011_10001111_00001111_10000011);
+    #[cfg(target_pointer_width = "64")] let mut a_sizeunion = SizeUnion::new_with(0b_10110011_10001111_00001111_10000011_11110000_00111111_10000000_11111111);
+    println!("Originally, a_sizeunion = {}", a_sizeunion);
+    let b_sizeunion = SizeUnion::max();
+    a_sizeunion ^= b_sizeunion;
+    println!("After a_sizeunion ^= {:b}, a_sizeunion = {:b}", b_sizeunion, a_sizeunion);
+    #[cfg(target_pointer_width = "16")]  assert_eq!(a_sizeunion.get(), 0b_100110001110000_usize);
+    #[cfg(target_pointer_width = "32")]  assert_eq!(a_sizeunion.get(), 0b_1001100011100001111000001111100_usize);
+    #[cfg(target_pointer_width = "64")]  assert_eq!(a_sizeunion.get(), 0b_100110001110000111100000111110000001111110000000111111100000000_usize);
+
+    #[cfg(target_pointer_width = "16")] let mut a_sizeunion = SizeUnion::new_with(0b_10110011_10001111);
+    #[cfg(target_pointer_width = "32")] let mut a_sizeunion = SizeUnion::new_with(0b_10110011_10001111_00001111_10000011);
+    #[cfg(target_pointer_width = "64")] let mut a_sizeunion = SizeUnion::new_with(0b_10110011_10001111_00001111_10000011_11110000_00111111_10000000_11111111);
+    println!("Originally, a_sizeunion = {}", a_sizeunion);
+    let b_sizeunion = SizeUnion::zero();
+    a_sizeunion ^= b_sizeunion;
+    println!("After a_sizeunion ^= {:b}, a_sizeunion = {:b}", b_sizeunion, a_sizeunion);
+    #[cfg(target_pointer_width = "16")]  assert_eq!(a_sizeunion.get(), 0b_10110011_10001111_usize);
+    #[cfg(target_pointer_width = "32")]  assert_eq!(a_sizeunion.get(), 0b_10110011_10001111_00001111_10000011_usize);
+    #[cfg(target_pointer_width = "64")]  assert_eq!(a_sizeunion.get(), 0b_10110011_10001111_00001111_10000011_11110000_00111111_10000000_11111111_usize);
     println!("--------------------------------------");
 }
 
@@ -13069,5 +13541,1420 @@ fn unions_operator_not()
     println!("unions_operator_not()");
     use cryptocol::number::{ ShortUnion, IntUnion, LongUnion, LongerUnion, SizeUnion };
 
+    // Example for ShortUnion
+    let a_shortunion = ShortUnion::new_with(0b_10110011_10001111);
+    let b_shortunion = !a_shortunion;
+    println!("!{:b} = {:b}", a_shortunion, b_shortunion);
+    assert_eq!(b_shortunion.get(), 0b_100110001110000_u16);
+
+    // Example for IntUnion
+    let a_intunion = IntUnion::new_with(0b_10110011_10001111_00001111_10000011);
+    let b_intunion = !a_intunion;
+    println!("!{:b} = {:b}", a_intunion, b_intunion);
+    assert_eq!(b_intunion.get(), 0b_1001100011100001111000001111100_u32);
+
+    // Example for LongUnion
+    let a_longunion = LongUnion::new_with(0b_10110011_10001111_00001111_10000011_11110000_00111111_10000000_11111111);
+    let b_longunion = !a_longunion;
+    println!("!{:b} = {:b}", a_longunion, b_longunion);
+    assert_eq!(b_longunion.get(), 0b_100110001110000111100000111110000001111110000000111111100000000_u64);
+
+    // Example for LongerUnion
+    let a_longerunion = LongerUnion::new_with(0b_10110011_10001111_00001111_10000011_11110000_00111111_10000000_11111111_00000000_11111111_10000000_00111111_11110000_00000011_11111111_10000000);
+    let b_longerunion = !a_longerunion;
+    println!("!{:b} = {:b}", a_longerunion, b_longerunion);
+    assert_eq!(b_longerunion.get(), 0b_1001100011100001111000001111100000011111100000001111111000000001111111100000000011111111100000000001111111111000000000001111111_u128);
+
+    // Example for SizeUnion
+    #[cfg(target_pointer_width = "16")] let a_sizeunion = SizeUnion::new_with(0b_10110011_10001111);
+    #[cfg(target_pointer_width = "32")] let a_sizeunion = SizeUnion::new_with(0b_10110011_10001111_00001111_10000011);
+    #[cfg(target_pointer_width = "64")] let a_sizeunion = SizeUnion::new_with(0b_10110011_10001111_00001111_10000011_11110000_00111111_10000000_11111111);
+    let b_sizeunion = !a_sizeunion;
+    println!("!{:b} = {:b}", a_sizeunion, b_sizeunion);
+    #[cfg(target_pointer_width = "16")]  assert_eq!(b_sizeunion.get(), 0b_100110001110000_usize);
+    #[cfg(target_pointer_width = "32")]  assert_eq!(b_sizeunion.get(), 0b_1001100011100001111000001111100_usize);
+    #[cfg(target_pointer_width = "64")]  assert_eq!(b_sizeunion.get(), 0b_100110001110000111100000111110000001111110000000111111100000000_usize);
     println!("--------------------------------------");
 }
+
+fn unions_operator_equal()
+{
+    println!("unions_operator_equal()");
+    use cryptocol::number::{ ShortUnion, IntUnion, LongUnion, LongerUnion, SizeUnion };
+
+    // Example for ShortUnion
+    let a_shortunion = ShortUnion::new_with(12345_u16);
+    let b_shortunion = ShortUnion::new_with(12345_u16);
+    let equal = a_shortunion == b_shortunion;
+    let different = a_shortunion != b_shortunion;
+    println!("{} == {} : {}", a_shortunion, b_shortunion, equal);
+    assert_eq!(equal, true);
+    println!("{} != {} : {}", a_shortunion, b_shortunion, different);
+    assert_eq!(different, false);
+    
+    let a_shortunion = ShortUnion::new_with(12345_u16);
+    let b_shortunion = ShortUnion::new_with(54321_u16);
+    let equal = a_shortunion == b_shortunion;
+    let different = a_shortunion != b_shortunion;
+    println!("{} == {} : {}", a_shortunion, b_shortunion, equal);
+    assert_eq!(equal, false);
+    println!("{} != {} : {}", a_shortunion, b_shortunion, different);
+    assert_eq!(different, true);
+   
+    // Example for IntUnion
+    let a_intunion = IntUnion::new_with(1234567890_u32);
+    let b_intunion = IntUnion::new_with(1234567890_u32);
+    let equal = a_intunion == b_intunion;
+    let different = a_intunion != b_intunion;
+    println!("{} == {} : {}", a_intunion, b_intunion, equal);
+    assert_eq!(equal, true);
+    println!("{} != {} : {}", a_intunion, b_intunion, different);
+    assert_eq!(different, false);
+    
+    let a_intunion = IntUnion::new_with(1234567890_u32);
+    let b_intunion = IntUnion::new_with(987654321_u32);
+    let equal = a_intunion == b_intunion;
+    let different = a_intunion != b_intunion;
+    println!("{} == {} : {}", a_intunion, b_intunion, equal);
+    assert_eq!(equal, false);
+    println!("{} != {} : {}", a_intunion, b_intunion, different);
+    assert_eq!(different, true);
+    
+    // Example for LongUnion
+    let a_longunion = LongUnion::new_with(12345678901234567890_u64);
+    let b_longunion = LongUnion::new_with(12345678901234567890_u64);
+    let equal = a_longunion == b_longunion;
+    let different = a_longunion != b_longunion;
+    println!("{} == {} : {}", a_longunion, b_longunion, equal);
+    assert_eq!(equal, true);
+    println!("{} != {} : {}", a_longunion, b_longunion, different);
+    assert_eq!(different, false);
+    
+    let a_longunion = LongUnion::new_with(12345678901234567890_u64);
+    let b_longunion = LongUnion::new_with(9876543210987654321_u64);
+    let equal = a_longunion == b_longunion;
+    let different = a_longunion != b_longunion;
+    println!("{} == {} : {}", a_longunion, b_longunion, equal);
+    assert_eq!(equal, false);
+    println!("{} != {} : {}", a_longunion, b_longunion, different);
+    assert_eq!(different, true);
+   
+    // Example for LongerUnion
+    let a_longerunion = LongerUnion::new_with(123456789012345678901234567890123456789_u128);
+    let b_longerunion = LongerUnion::new_with(123456789012345678901234567890123456789_u128);
+    let equal = a_longerunion == b_longerunion;
+    let different = a_longerunion != b_longerunion;
+    println!("{} == {} : {}", a_longerunion, b_longerunion, equal);
+    assert_eq!(equal, true);
+    println!("{} != {} : {}", a_longerunion, b_longerunion, different);
+    assert_eq!(different, false);
+    
+    let a_longerunion = LongerUnion::new_with(123456789012345678901234567890123456789_u128);
+    let b_longerunion = LongerUnion::new_with(98765432109876543210987654321098765432_u128);
+    let equal = a_longerunion == b_longerunion;
+    let different = a_longerunion != b_longerunion;
+    println!("{} == {} : {}", a_longerunion, b_longerunion, equal);
+    assert_eq!(equal, false);
+    println!("{} != {} : {}", a_longerunion, b_longerunion, different);
+    assert_eq!(different, true);
+
+    // Example for SizeUnion
+    #[cfg(target_pointer_width = "16")] let a_sizeunion = SizeUnion::new_with(12345_usize);
+    #[cfg(target_pointer_width = "32")] let a_sizeunion = SizeUnion::new_with(1234567890_usize);
+    #[cfg(target_pointer_width = "64")] let a_sizeunion = SizeUnion::new_with(12345678901234567890_usize);
+    #[cfg(target_pointer_width = "16")] let b_sizeunion = SizeUnion::new_with(12345_usize);
+    #[cfg(target_pointer_width = "32")] let b_sizeunion = SizeUnion::new_with(1234567890_usize);
+    #[cfg(target_pointer_width = "64")] let b_sizeunion = SizeUnion::new_with(12345678901234567890_usize);
+    let equal = a_sizeunion == b_sizeunion;
+    let different = a_sizeunion != b_sizeunion;
+    println!("{} == {} : {}", a_sizeunion, b_sizeunion, equal);
+    assert_eq!(equal, true);
+    println!("{} != {} : {}", a_sizeunion, b_sizeunion, different);
+    assert_eq!(different, false);
+    
+    #[cfg(target_pointer_width = "16")] let a_sizeunion = SizeUnion::new_with(12345_usize);
+    #[cfg(target_pointer_width = "32")] let a_sizeunion = SizeUnion::new_with(1234567890_usize);
+    #[cfg(target_pointer_width = "64")] let a_sizeunion = SizeUnion::new_with(12345678901234567890_usize);
+    #[cfg(target_pointer_width = "16")] let b_sizeunion = SizeUnion::new_with(54321_usize);
+    #[cfg(target_pointer_width = "32")] let b_sizeunion = SizeUnion::new_with(987654321_usize);
+    #[cfg(target_pointer_width = "64")] let b_sizeunion = SizeUnion::new_with(9876543210987654321_usize);
+    let equal = a_sizeunion == b_sizeunion;
+    let different = a_sizeunion != b_sizeunion;
+    println!("{} == {} : {}", a_sizeunion, b_sizeunion, equal);
+    assert_eq!(equal, false);
+    println!("{} != {} : {}", a_sizeunion, b_sizeunion, different);
+    assert_eq!(different, true);
+    println!("--------------------------------------");
+}
+
+fn unions_operator_greater()
+{
+    println!("unions_operator_greater()");
+    use cryptocol::number::{ ShortUnion, IntUnion, LongUnion, LongerUnion, SizeUnion };
+
+    // Example
+    let a_shortunion = ShortUnion::new_with(54321_u16);
+    let b_shortunion = ShortUnion::new_with(12345_u16);
+    if a_shortunion > b_shortunion
+        { println!("{} > {}", a_shortunion, b_shortunion); }
+    else
+        { println!("{} <= {}", a_shortunion, b_shortunion); }
+    assert_eq!(a_shortunion > b_shortunion, true);
+    
+    let a_shortunion = ShortUnion::new_with(12345_u16);
+    let b_shortunion = ShortUnion::new_with(54321_u16);
+    if a_shortunion > b_shortunion
+        { println!("{} > {}", a_shortunion, b_shortunion); }
+    else
+        { println!("{} <= {}", a_shortunion, b_shortunion); }
+    assert_eq!(a_shortunion > b_shortunion, false);
+   
+    let a_shortunion = ShortUnion::new_with(12345_u16);
+    let b_shortunion = ShortUnion::new_with(12345_u16);
+    if a_shortunion > b_shortunion
+        { println!("{} > {}", a_shortunion, b_shortunion); }
+    else
+        { println!("{} <= {}", a_shortunion, b_shortunion); }
+    assert_eq!(a_shortunion > b_shortunion, false);
+   
+    // Example for IntUnion
+    let a_intunion = IntUnion::new_with(987654321_u32);
+    let b_intunion = IntUnion::new_with(123456789_u32);
+    if a_intunion > b_intunion
+        { println!("{} > {}", a_intunion, b_intunion); }
+    else
+        { println!("{} <= {}", a_intunion, b_intunion); }
+    assert_eq!(a_intunion > b_intunion, true);
+    
+    let a_intunion = IntUnion::new_with(123456789_u32);
+    let b_intunion = IntUnion::new_with(987654321_u32);
+    if a_intunion > b_intunion
+        { println!("{} > {}", a_intunion, b_intunion); }
+    else
+        { println!("{} <= {}", a_intunion, b_intunion); }
+    assert_eq!(a_intunion > b_intunion, false);
+    
+    let a_intunion = IntUnion::new_with(123456789_u32);
+    let b_intunion = IntUnion::new_with(123456789_u32);
+    if a_intunion > b_intunion
+        { println!("{} > {}", a_intunion, b_intunion); }
+    else
+        { println!("{} <= {}", a_intunion, b_intunion); }
+    assert_eq!(a_intunion > b_intunion, false);
+    
+    // Example for LongUnion
+    let a_longunion = LongUnion::new_with(9876543210987654321_u64);
+    let b_longunion = LongUnion::new_with(1234567890123456789_u64);
+    if a_longunion > b_longunion
+        { println!("{} > {}", a_longunion, b_longunion); }
+    else
+        { println!("{} <= {}", a_longunion, b_longunion); }
+    assert_eq!(a_longunion > b_longunion, true);
+    
+    let a_longunion = LongUnion::new_with(1234567890123456789_u64);
+    let b_longunion = LongUnion::new_with(9876543210987654321_u64);
+    if a_longunion > b_longunion
+        { println!("{} > {}", a_longunion, b_longunion); }
+    else
+        { println!("{} <= {}", a_longunion, b_longunion); }
+    assert_eq!(a_longunion > b_longunion, false);
+    
+    let a_longunion = LongUnion::new_with(1234567890123456789_u64);
+    let b_longunion = LongUnion::new_with(1234567890123456789_u64);
+    if a_longunion > b_longunion
+        { println!("{} > {}", a_longunion, b_longunion); }
+    else
+        { println!("{} <= {}", a_longunion, b_longunion); }
+    assert_eq!(a_longunion > b_longunion, false);
+   
+    // Example for LongerUnion
+    let a_longerunion = LongerUnion::new_with(87654321098765432109876543210987654321_u128);
+    let b_longerunion = LongerUnion::new_with(12345678901234567890123456789012345678_u128);
+    if a_longerunion > b_longerunion
+        { println!("{} > {}", a_longerunion, b_longerunion); }
+    else
+        { println!("{} <= {}", a_longerunion, b_longerunion); }
+    assert_eq!(a_longerunion > b_longerunion, true);
+    
+    let a_longerunion = LongerUnion::new_with(12345678901234567890123456789012345678_u128);
+    let b_longerunion = LongerUnion::new_with(87654321098765432109876543210987654321_u128);
+    if a_longerunion > b_longerunion
+        { println!("{} > {}", a_longerunion, b_longerunion); }
+    else
+        { println!("{} <= {}", a_longerunion, b_longerunion); }
+    assert_eq!(a_longerunion > b_longerunion, false);
+    
+    let a_longerunion = LongerUnion::new_with(12345678901234567890123456789012345678_u128);
+    let b_longerunion = LongerUnion::new_with(12345678901234567890123456789012345678_u128);
+    if a_longerunion > b_longerunion
+        { println!("{} > {}", a_longerunion, b_longerunion); }
+    else
+        { println!("{} <= {}", a_longerunion, b_longerunion); }
+    assert_eq!(a_longerunion > b_longerunion, false);
+
+    // Example for SizeUnion
+    #[cfg(target_pointer_width = "16")] let a_sizeunion = SizeUnion::new_with(54321_usize);
+    #[cfg(target_pointer_width = "32")] let a_sizeunion = SizeUnion::new_with(987654321_usize);
+    #[cfg(target_pointer_width = "64")] let a_sizeunion = SizeUnion::new_with(9876543210987654321_usize);
+    #[cfg(target_pointer_width = "16")] let b_sizeunion = SizeUnion::new_with(12345_usize);
+    #[cfg(target_pointer_width = "32")] let b_sizeunion = SizeUnion::new_with(123456789_usize);
+    #[cfg(target_pointer_width = "64")] let b_sizeunion = SizeUnion::new_with(1234567890123456789_usize);
+    if a_sizeunion > b_sizeunion
+        { println!("{} > {}", a_sizeunion, b_sizeunion); }
+    else
+        { println!("{} <= {}", a_sizeunion, b_sizeunion); }
+    assert_eq!(a_sizeunion > b_sizeunion, true);
+    
+    #[cfg(target_pointer_width = "16")] let a_sizeunion = SizeUnion::new_with(12345_usize);
+    #[cfg(target_pointer_width = "32")] let a_sizeunion = SizeUnion::new_with(123456789_usize);
+    #[cfg(target_pointer_width = "64")] let a_sizeunion = SizeUnion::new_with(1234567890123456789_usize);
+    #[cfg(target_pointer_width = "16")] let b_sizeunion = SizeUnion::new_with(54321_usize);
+    #[cfg(target_pointer_width = "32")] let b_sizeunion = SizeUnion::new_with(987654321_usize);
+    #[cfg(target_pointer_width = "64")] let b_sizeunion = SizeUnion::new_with(9876543210987654321_usize);
+    if a_sizeunion > b_sizeunion
+        { println!("{} > {}", a_sizeunion, b_sizeunion); }
+    else
+        { println!("{} <= {}", a_sizeunion, b_sizeunion); }
+    assert_eq!(a_sizeunion > b_sizeunion, false);
+    
+    #[cfg(target_pointer_width = "16")] let a_sizeunion = SizeUnion::new_with(12345_usize);
+    #[cfg(target_pointer_width = "32")] let a_sizeunion = SizeUnion::new_with(123456789_usize);
+    #[cfg(target_pointer_width = "64")] let a_sizeunion = SizeUnion::new_with(1234567890123456789_usize);
+    #[cfg(target_pointer_width = "16")] let b_sizeunion = SizeUnion::new_with(12345_usize);
+    #[cfg(target_pointer_width = "32")] let b_sizeunion = SizeUnion::new_with(123456789_usize);
+    #[cfg(target_pointer_width = "64")] let b_sizeunion = SizeUnion::new_with(1234567890123456789_usize);
+    if a_sizeunion > b_sizeunion
+        { println!("{} > {}", a_sizeunion, b_sizeunion); }
+    else
+        { println!("{} <= {}", a_sizeunion, b_sizeunion); }
+    assert_eq!(a_sizeunion > b_sizeunion, false);
+    println!("--------------------------------------");
+}
+
+fn unions_operator_greater_equal()
+{
+    println!("unions_operator_greater_equal()");
+    use cryptocol::number::{ ShortUnion, IntUnion, LongUnion, LongerUnion, SizeUnion };
+
+    // Example for ShortUnion
+    let a_shortunion = ShortUnion::new_with(54321_u16);
+    let b_shortunion = ShortUnion::new_with(12345_u16);
+    if a_shortunion >= b_shortunion
+        { println!("{} >= {}", a_shortunion, b_shortunion); }
+    else
+        { println!("{} < {}", a_shortunion, b_shortunion); }
+    assert_eq!(a_shortunion >= b_shortunion, true);
+    
+    let a_shortunion = ShortUnion::new_with(12345_u16);
+    let b_shortunion = ShortUnion::new_with(54321_u16);
+    if a_shortunion > b_shortunion
+        { println!("{} >= {}", a_shortunion, b_shortunion); }
+    else
+        { println!("{} < {}", a_shortunion, b_shortunion); }
+    assert_eq!(a_shortunion >= b_shortunion, false);
+   
+    let a_shortunion = ShortUnion::new_with(12345_u16);
+    let b_shortunion = ShortUnion::new_with(12345_u16);
+    if a_shortunion > b_shortunion
+        { println!("{} >= {}", a_shortunion, b_shortunion); }
+    else
+        { println!("{} < {}", a_shortunion, b_shortunion); }
+    assert_eq!(a_shortunion >= b_shortunion, true);
+   
+    // Example for IntUnion
+    let a_intunion = IntUnion::new_with(987654321_u32);
+    let b_intunion = IntUnion::new_with(123456789_u32);
+    if a_intunion >= b_intunion
+        { println!("{} >= {}", a_intunion, b_intunion); }
+    else
+        { println!("{} < {}", a_intunion, b_intunion); }
+    assert_eq!(a_intunion >= b_intunion, true);
+    
+    let a_intunion = IntUnion::new_with(123456789_u32);
+    let b_intunion = IntUnion::new_with(987654321_u32);
+    if a_intunion >= b_intunion
+        { println!("{} >= {}", a_intunion, b_intunion); }
+    else
+        { println!("{} < {}", a_intunion, b_intunion); }
+    assert_eq!(a_intunion >= b_intunion, false);
+    
+    let a_intunion = IntUnion::new_with(123456789_u32);
+    let b_intunion = IntUnion::new_with(123456789_u32);
+    if a_intunion >= b_intunion
+        { println!("{} >= {}", a_intunion, b_intunion); }
+    else
+        { println!("{} < {}", a_intunion, b_intunion); }
+    assert_eq!(a_intunion >= b_intunion, true);
+    
+    // Example for LongUnion
+    let a_longunion = LongUnion::new_with(9876543210987654321_u64);
+    let b_longunion = LongUnion::new_with(1234567890123456789_u64);
+    if a_longunion >= b_longunion
+        { println!("{} >= {}", a_longunion, b_longunion); }
+    else
+        { println!("{} < {}", a_longunion, b_longunion); }
+    assert_eq!(a_longunion >= b_longunion, true);
+    
+    let a_longunion = LongUnion::new_with(1234567890123456789_u64);
+    let b_longunion = LongUnion::new_with(9876543210987654321_u64);
+    if a_longunion >= b_longunion
+        { println!("{} >= {}", a_longunion, b_longunion); }
+    else
+        { println!("{} < {}", a_longunion, b_longunion); }
+    assert_eq!(a_longunion >= b_longunion, false);
+    
+    let a_longunion = LongUnion::new_with(1234567890123456789_u64);
+    let b_longunion = LongUnion::new_with(1234567890123456789_u64);
+    if a_longunion >= b_longunion
+        { println!("{} >= {}", a_longunion, b_longunion); }
+    else
+        { println!("{} < {}", a_longunion, b_longunion); }
+    assert_eq!(a_longunion >= b_longunion, true);
+   
+    // Example for LongerUnion
+    let a_longerunion = LongerUnion::new_with(87654321098765432109876543210987654321_u128);
+    let b_longerunion = LongerUnion::new_with(12345678901234567890123456789012345678_u128);
+    if a_longerunion >= b_longerunion
+        { println!("{} >= {}", a_longerunion, b_longerunion); }
+    else
+        { println!("{} < {}", a_longerunion, b_longerunion); }
+    assert_eq!(a_longerunion >= b_longerunion, true);
+    
+    let a_longerunion = LongerUnion::new_with(12345678901234567890123456789012345678_u128);
+    let b_longerunion = LongerUnion::new_with(87654321098765432109876543210987654321_u128);
+    if a_longerunion >= b_longerunion
+        { println!("{} >= {}", a_longerunion, b_longerunion); }
+    else
+        { println!("{} < {}", a_longerunion, b_longerunion); }
+    assert_eq!(a_longerunion >= b_longerunion, false);
+    
+    let a_longerunion = LongerUnion::new_with(12345678901234567890123456789012345678_u128);
+    let b_longerunion = LongerUnion::new_with(12345678901234567890123456789012345678_u128);
+    if a_longerunion >= b_longerunion
+        { println!("{} >= {}", a_longerunion, b_longerunion); }
+    else
+        { println!("{} < {}", a_longerunion, b_longerunion); }
+    assert_eq!(a_longerunion >= b_longerunion, true);
+
+    // Example for SizeUnion
+    #[cfg(target_pointer_width = "16")] let a_sizeunion = SizeUnion::new_with(54321_usize);
+    #[cfg(target_pointer_width = "32")] let a_sizeunion = SizeUnion::new_with(987654321_usize);
+    #[cfg(target_pointer_width = "64")] let a_sizeunion = SizeUnion::new_with(9876543210987654321_usize);
+    #[cfg(target_pointer_width = "16")] let b_sizeunion = SizeUnion::new_with(12345_usize);
+    #[cfg(target_pointer_width = "32")] let b_sizeunion = SizeUnion::new_with(123456789_usize);
+    #[cfg(target_pointer_width = "64")] let b_sizeunion = SizeUnion::new_with(1234567890123456789_usize);
+    if a_sizeunion >= b_sizeunion
+        { println!("{} >= {}", a_sizeunion, b_sizeunion); }
+    else
+        { println!("{} < {}", a_sizeunion, b_sizeunion); }
+    assert_eq!(a_sizeunion >= b_sizeunion, true);
+    
+    #[cfg(target_pointer_width = "16")] let a_sizeunion = SizeUnion::new_with(12345_usize);
+    #[cfg(target_pointer_width = "32")] let a_sizeunion = SizeUnion::new_with(123456789_usize);
+    #[cfg(target_pointer_width = "64")] let a_sizeunion = SizeUnion::new_with(1234567890123456789_usize);
+    #[cfg(target_pointer_width = "16")] let b_sizeunion = SizeUnion::new_with(54321_usize);
+    #[cfg(target_pointer_width = "32")] let b_sizeunion = SizeUnion::new_with(987654321_usize);
+    #[cfg(target_pointer_width = "64")] let b_sizeunion = SizeUnion::new_with(9876543210987654321_usize);
+    if a_sizeunion >= b_sizeunion
+        { println!("{} >= {}", a_sizeunion, b_sizeunion); }
+    else
+        { println!("{} < {}", a_sizeunion, b_sizeunion); }
+    assert_eq!(a_sizeunion >= b_sizeunion, false);
+    
+    #[cfg(target_pointer_width = "16")] let a_sizeunion = SizeUnion::new_with(12345_usize);
+    #[cfg(target_pointer_width = "32")] let a_sizeunion = SizeUnion::new_with(123456789_usize);
+    #[cfg(target_pointer_width = "64")] let a_sizeunion = SizeUnion::new_with(1234567890123456789_usize);
+    #[cfg(target_pointer_width = "16")] let b_sizeunion = SizeUnion::new_with(12345_usize);
+    #[cfg(target_pointer_width = "32")] let b_sizeunion = SizeUnion::new_with(123456789_usize);
+    #[cfg(target_pointer_width = "64")] let b_sizeunion = SizeUnion::new_with(1234567890123456789_usize);
+    if a_sizeunion >= b_sizeunion
+        { println!("{} >= {}", a_sizeunion, b_sizeunion); }
+    else
+        { println!("{} < {}", a_sizeunion, b_sizeunion); }
+    assert_eq!(a_sizeunion >= b_sizeunion, true);
+    println!("--------------------------------------");
+}
+
+fn unions_operator_less()
+{
+    println!("unions_operator_less()");
+    use cryptocol::number::{ ShortUnion, IntUnion, LongUnion, LongerUnion, SizeUnion };
+
+    // Example for ShortUnion
+    let a_shortunion = ShortUnion::new_with(12345_u16);
+    let b_shortunion = ShortUnion::new_with(54321_u16);
+    if a_shortunion < b_shortunion
+        { println!("{} < {}", a_shortunion, b_shortunion); }
+    else
+        { println!("{} >= {}", a_shortunion, b_shortunion); }
+    assert_eq!(a_shortunion < b_shortunion, true);
+    
+    let a_shortunion = ShortUnion::new_with(54321_u16);
+    let b_shortunion = ShortUnion::new_with(12345_u16);
+    if a_shortunion < b_shortunion
+        { println!("{} < {}", a_shortunion, b_shortunion); }
+    else
+        { println!("{} >= {}", a_shortunion, b_shortunion); }
+    assert_eq!(a_shortunion < b_shortunion, false);
+   
+    let a_shortunion = ShortUnion::new_with(12345_u16);
+    let b_shortunion = ShortUnion::new_with(12345_u16);
+    if a_shortunion < b_shortunion
+        { println!("{} < {}", a_shortunion, b_shortunion); }
+    else
+        { println!("{} >= {}", a_shortunion, b_shortunion); }
+    assert_eq!(a_shortunion < b_shortunion, false);
+   
+    // Example for IntUnion
+    let a_intunion = IntUnion::new_with(123456789_u32);
+    let b_intunion = IntUnion::new_with(987654321_u32);
+    if a_intunion < b_intunion
+        { println!("{} < {}", a_intunion, b_intunion); }
+    else
+        { println!("{} >= {}", a_intunion, b_intunion); }
+    assert_eq!(a_intunion < b_intunion, true);
+    
+    let a_intunion = IntUnion::new_with(987654321_u32);
+    let b_intunion = IntUnion::new_with(123456789_u32);
+    if a_intunion < b_intunion
+        { println!("{} < {}", a_intunion, b_intunion); }
+    else
+        { println!("{} >= {}", a_intunion, b_intunion); }
+    assert_eq!(a_intunion < b_intunion, false);
+    
+    let a_intunion = IntUnion::new_with(123456789_u32);
+    let b_intunion = IntUnion::new_with(123456789_u32);
+    if a_intunion < b_intunion
+        { println!("{} < {}", a_intunion, b_intunion); }
+    else
+        { println!("{} >= {}", a_intunion, b_intunion); }
+    assert_eq!(a_intunion < b_intunion, false);
+    
+    // Example for LongUnion
+    let a_longunion = LongUnion::new_with(1234567890123456789_u64);
+    let b_longunion = LongUnion::new_with(9876543210987654321_u64);
+    if a_longunion < b_longunion
+        { println!("{} < {}", a_longunion, b_longunion); }
+    else
+        { println!("{} >= {}", a_longunion, b_longunion); }
+    assert_eq!(a_longunion < b_longunion, true);
+    
+    let a_longunion = LongUnion::new_with(9876543210987654321_u64);
+    let b_longunion = LongUnion::new_with(1234567890123456789_u64);
+    if a_longunion < b_longunion
+        { println!("{} < {}", a_longunion, b_longunion); }
+    else
+        { println!("{} >= {}", a_longunion, b_longunion); }
+    assert_eq!(a_longunion < b_longunion, false);
+    
+    let a_longunion = LongUnion::new_with(1234567890123456789_u64);
+    let b_longunion = LongUnion::new_with(1234567890123456789_u64);
+    if a_longunion < b_longunion
+        { println!("{} < {}", a_longunion, b_longunion); }
+    else
+        { println!("{} >= {}", a_longunion, b_longunion); }
+    assert_eq!(a_longunion < b_longunion, false);
+   
+    // Example for LongerUnion
+    let a_longerunion = LongerUnion::new_with(12345678901234567890123456789012345678_u128);
+    let b_longerunion = LongerUnion::new_with(87654321098765432109876543210987654321_u128);
+    if a_longerunion < b_longerunion
+        { println!("{} < {}", a_longerunion, b_longerunion); }
+    else
+        { println!("{} >= {}", a_longerunion, b_longerunion); }
+    assert_eq!(a_longerunion < b_longerunion, true);
+    
+    let a_longerunion = LongerUnion::new_with(87654321098765432109876543210987654321_u128);
+    let b_longerunion = LongerUnion::new_with(12345678901234567890123456789012345678_u128);
+    if a_longerunion < b_longerunion
+        { println!("{} < {}", a_longerunion, b_longerunion); }
+    else
+        { println!("{} >= {}", a_longerunion, b_longerunion); }
+    assert_eq!(a_longerunion < b_longerunion, false);
+    
+    let a_longerunion = LongerUnion::new_with(12345678901234567890123456789012345678_u128);
+    let b_longerunion = LongerUnion::new_with(12345678901234567890123456789012345678_u128);
+    if a_longerunion < b_longerunion
+        { println!("{} < {}", a_longerunion, b_longerunion); }
+    else
+        { println!("{} >= {}", a_longerunion, b_longerunion); }
+    assert_eq!(a_longerunion < b_longerunion, false);
+
+    // Example for SizeUnion
+    #[cfg(target_pointer_width = "16")] let a_sizeunion = SizeUnion::new_with(12345_usize);
+    #[cfg(target_pointer_width = "32")] let a_sizeunion = SizeUnion::new_with(123456789_usize);
+    #[cfg(target_pointer_width = "64")] let a_sizeunion = SizeUnion::new_with(1234567890123456789_usize);
+    #[cfg(target_pointer_width = "16")] let b_sizeunion = SizeUnion::new_with(54321_usize);
+    #[cfg(target_pointer_width = "32")] let b_sizeunion = SizeUnion::new_with(987654321_usize);
+    #[cfg(target_pointer_width = "64")] let b_sizeunion = SizeUnion::new_with(9876543210987654321_usize);
+    if a_sizeunion < b_sizeunion
+        { println!("{} < {}", a_sizeunion, b_sizeunion); }
+    else
+        { println!("{} >= {}", a_sizeunion, b_sizeunion); }
+    assert_eq!(a_sizeunion < b_sizeunion, true);
+    
+    #[cfg(target_pointer_width = "16")] let a_sizeunion = SizeUnion::new_with(54321_usize);
+    #[cfg(target_pointer_width = "32")] let a_sizeunion = SizeUnion::new_with(987654321_usize);
+    #[cfg(target_pointer_width = "64")] let a_sizeunion = SizeUnion::new_with(9876543210987654321_usize);
+    #[cfg(target_pointer_width = "16")] let b_sizeunion = SizeUnion::new_with(12345_usize);
+    #[cfg(target_pointer_width = "32")] let b_sizeunion = SizeUnion::new_with(123456789_usize);
+    #[cfg(target_pointer_width = "64")] let b_sizeunion = SizeUnion::new_with(1234567890123456789_usize);
+    if a_sizeunion < b_sizeunion
+        { println!("{} < {}", a_sizeunion, b_sizeunion); }
+    else
+        { println!("{} >= {}", a_sizeunion, b_sizeunion); }
+    assert_eq!(a_sizeunion < b_sizeunion, false);
+    
+    #[cfg(target_pointer_width = "16")] let a_sizeunion = SizeUnion::new_with(12345_usize);
+    #[cfg(target_pointer_width = "32")] let a_sizeunion = SizeUnion::new_with(123456789_usize);
+    #[cfg(target_pointer_width = "64")] let a_sizeunion = SizeUnion::new_with(1234567890123456789_usize);
+    #[cfg(target_pointer_width = "16")] let b_sizeunion = SizeUnion::new_with(12345_usize);
+    #[cfg(target_pointer_width = "32")] let b_sizeunion = SizeUnion::new_with(123456789_usize);
+    #[cfg(target_pointer_width = "64")] let b_sizeunion = SizeUnion::new_with(1234567890123456789_usize);
+    if a_sizeunion < b_sizeunion
+        { println!("{} < {}", a_sizeunion, b_sizeunion); }
+    else
+        { println!("{} >= {}", a_sizeunion, b_sizeunion); }
+    assert_eq!(a_sizeunion < b_sizeunion, false);
+    println!("--------------------------------------");
+}
+
+fn unions_operator_less_equal()
+{
+    println!("unions_operator_less_equal()");
+    use cryptocol::number::{ ShortUnion, IntUnion, LongUnion, LongerUnion, SizeUnion };
+
+    // Example for ShortUnion
+    let a_shortunion = ShortUnion::new_with(12345_u16);
+    let b_shortunion = ShortUnion::new_with(54321_u16);
+    if a_shortunion <= b_shortunion
+        { println!("{} <= {}", a_shortunion, b_shortunion); }
+    else
+        { println!("{} > {}", a_shortunion, b_shortunion); }
+    assert_eq!(a_shortunion <= b_shortunion, true);
+    
+    let a_shortunion = ShortUnion::new_with(54321_u16);
+    let b_shortunion = ShortUnion::new_with(12345_u16);
+    if a_shortunion <= b_shortunion
+        { println!("{} <= {}", a_shortunion, b_shortunion); }
+    else
+        { println!("{} > {}", a_shortunion, b_shortunion); }
+    assert_eq!(a_shortunion <= b_shortunion, false);
+   
+    let a_shortunion = ShortUnion::new_with(12345_u16);
+    let b_shortunion = ShortUnion::new_with(12345_u16);
+    if a_shortunion <= b_shortunion
+        { println!("{} <= {}", a_shortunion, b_shortunion); }
+    else
+        { println!("{} > {}", a_shortunion, b_shortunion); }
+    assert_eq!(a_shortunion <= b_shortunion, true);
+   
+    // Example for IntUnion
+    let a_intunion = IntUnion::new_with(123456789_u32);
+    let b_intunion = IntUnion::new_with(987654321_u32);
+    if a_intunion <= b_intunion
+        { println!("{} <= {}", a_intunion, b_intunion); }
+    else
+        { println!("{} > {}", a_intunion, b_intunion); }
+    assert_eq!(a_intunion <= b_intunion, true);
+    
+    let a_intunion = IntUnion::new_with(987654321_u32);
+    let b_intunion = IntUnion::new_with(123456789_u32);
+    if a_intunion <= b_intunion
+        { println!("{} <= {}", a_intunion, b_intunion); }
+    else
+        { println!("{} > {}", a_intunion, b_intunion); }
+    assert_eq!(a_intunion <= b_intunion, false);
+    
+    let a_intunion = IntUnion::new_with(123456789_u32);
+    let b_intunion = IntUnion::new_with(123456789_u32);
+    if a_intunion <= b_intunion
+        { println!("{} <= {}", a_intunion, b_intunion); }
+    else
+        { println!("{} > {}", a_intunion, b_intunion); }
+    assert_eq!(a_intunion <= b_intunion, true);
+    
+    // Example for LongUnion
+    let a_longunion = LongUnion::new_with(1234567890123456789_u64);
+    let b_longunion = LongUnion::new_with(9876543210987654321_u64);
+    if a_longunion <= b_longunion
+        { println!("{} <= {}", a_longunion, b_longunion); }
+    else
+        { println!("{} > {}", a_longunion, b_longunion); }
+    assert_eq!(a_longunion <= b_longunion, true);
+    
+    let a_longunion = LongUnion::new_with(9876543210987654321_u64);
+    let b_longunion = LongUnion::new_with(1234567890123456789_u64);
+    if a_longunion <= b_longunion
+        { println!("{} <= {}", a_longunion, b_longunion); }
+    else
+        { println!("{} > {}", a_longunion, b_longunion); }
+    assert_eq!(a_longunion <= b_longunion, false);
+    
+    let a_longunion = LongUnion::new_with(1234567890123456789_u64);
+    let b_longunion = LongUnion::new_with(1234567890123456789_u64);
+    if a_longunion <= b_longunion
+        { println!("{} <= {}", a_longunion, b_longunion); }
+    else
+        { println!("{} > {}", a_longunion, b_longunion); }
+    assert_eq!(a_longunion <= b_longunion, true);
+   
+    // Example for LongerUnion
+    let a_longerunion = LongerUnion::new_with(12345678901234567890123456789012345678_u128);
+    let b_longerunion = LongerUnion::new_with(87654321098765432109876543210987654321_u128);
+    if a_longerunion <= b_longerunion
+        { println!("{} <= {}", a_longerunion, b_longerunion); }
+    else
+        { println!("{} > {}", a_longerunion, b_longerunion); }
+    assert_eq!(a_longerunion <= b_longerunion, true);
+    
+    let a_longerunion = LongerUnion::new_with(87654321098765432109876543210987654321_u128);
+    let b_longerunion = LongerUnion::new_with(12345678901234567890123456789012345678_u128);
+    if a_longerunion <= b_longerunion
+        { println!("{} <= {}", a_longerunion, b_longerunion); }
+    else
+        { println!("{} > {}", a_longerunion, b_longerunion); }
+    assert_eq!(a_longerunion <= b_longerunion, false);
+    
+    let a_longerunion = LongerUnion::new_with(12345678901234567890123456789012345678_u128);
+    let b_longerunion = LongerUnion::new_with(12345678901234567890123456789012345678_u128);
+    if a_longerunion <= b_longerunion
+        { println!("{} <= {}", a_longerunion, b_longerunion); }
+    else
+        { println!("{} > {}", a_longerunion, b_longerunion); }
+    assert_eq!(a_longerunion <= b_longerunion, true);
+
+    // Example for SizeUnion
+    #[cfg(target_pointer_width = "16")] let a_sizeunion = SizeUnion::new_with(12345_usize);
+    #[cfg(target_pointer_width = "32")] let a_sizeunion = SizeUnion::new_with(123456789_usize);
+    #[cfg(target_pointer_width = "64")] let a_sizeunion = SizeUnion::new_with(1234567890123456789_usize);
+    #[cfg(target_pointer_width = "16")] let b_sizeunion = SizeUnion::new_with(54321_usize);
+    #[cfg(target_pointer_width = "32")] let b_sizeunion = SizeUnion::new_with(987654321_usize);
+    #[cfg(target_pointer_width = "64")] let b_sizeunion = SizeUnion::new_with(9876543210987654321_usize);
+    if a_sizeunion <= b_sizeunion
+        { println!("{} <= {}", a_sizeunion, b_sizeunion); }
+    else
+        { println!("{} > {}", a_sizeunion, b_sizeunion); }
+    assert_eq!(a_sizeunion <= b_sizeunion, true);
+    
+    #[cfg(target_pointer_width = "16")] let a_sizeunion = SizeUnion::new_with(54321_usize);
+    #[cfg(target_pointer_width = "32")] let a_sizeunion = SizeUnion::new_with(987654321_usize);
+    #[cfg(target_pointer_width = "64")] let a_sizeunion = SizeUnion::new_with(9876543210987654321_usize);
+    #[cfg(target_pointer_width = "16")] let b_sizeunion = SizeUnion::new_with(12345_usize);
+    #[cfg(target_pointer_width = "32")] let b_sizeunion = SizeUnion::new_with(123456789_usize);
+    #[cfg(target_pointer_width = "64")] let b_sizeunion = SizeUnion::new_with(1234567890123456789_usize);
+    if a_sizeunion <= b_sizeunion
+        { println!("{} <= {}", a_sizeunion, b_sizeunion); }
+    else
+        { println!("{} > {}", a_sizeunion, b_sizeunion); }
+    assert_eq!(a_sizeunion <= b_sizeunion, false);
+    
+    #[cfg(target_pointer_width = "16")] let a_sizeunion = SizeUnion::new_with(12345_usize);
+    #[cfg(target_pointer_width = "32")] let a_sizeunion = SizeUnion::new_with(123456789_usize);
+    #[cfg(target_pointer_width = "64")] let a_sizeunion = SizeUnion::new_with(1234567890123456789_usize);
+    #[cfg(target_pointer_width = "16")] let b_sizeunion = SizeUnion::new_with(12345_usize);
+    #[cfg(target_pointer_width = "32")] let b_sizeunion = SizeUnion::new_with(123456789_usize);
+    #[cfg(target_pointer_width = "64")] let b_sizeunion = SizeUnion::new_with(1234567890123456789_usize);
+    if a_sizeunion <= b_sizeunion
+        { println!("{} <= {}", a_sizeunion, b_sizeunion); }
+    else
+        { println!("{} > {}", a_sizeunion, b_sizeunion); }
+    assert_eq!(a_sizeunion <= b_sizeunion, true);
+    println!("--------------------------------------");
+}
+
+fn unions_operator_shl()
+{
+    println!("unions_operator_shl()");
+    use cryptocol::number::{ ShortUnion, IntUnion, LongUnion, LongerUnion, SizeUnion };
+
+    // Example for ShortUnion
+    let a_shortunion = ShortUnion::new_with(0b_10110011_10001111);
+    let b_uint = 2_u8;
+    let c_shortunion = a_shortunion << b_uint;
+    println!("{:b} << {} = {:b}", a_shortunion, b_uint, c_shortunion);
+    assert_eq!(c_shortunion.get(), 0b_11001110_00111100_u16);
+
+    #[cfg(not(debug_assertions))]
+    {
+        let a_shortunion = ShortUnion::new_with(0b_10110011_10001111);
+        let b_uint = 18_u8;
+        let c_shortunion = a_shortunion << b_uint;
+        println!("{:b} << {} = {:b}", a_shortunion, b_uint, c_shortunion);
+        assert_eq!(c_shortunion.get(), 0b_11001110_00111100_u16);
+
+        let a_shortunion = ShortUnion::new_with(0b_10110011_10001111);
+        let b_sint = -2_i8;
+        let b_uint = b_sint as u8;
+        let c_shortunion = a_shortunion << b_sint;
+        let d_shortunion = a_shortunion << b_uint;
+        println!("{:b} << {} = {:b}", a_shortunion, b_sint, c_shortunion);
+        println!("{:b} << {} = {:b}", a_shortunion, b_uint, d_shortunion);
+        assert_eq!(b_uint, 254_u8);
+        assert_eq!(c_shortunion.get(), 0b_11000000_00000000_u16);
+        assert_eq!(d_shortunion.get(), 0b_11000000_00000000_u16);
+    }
+
+    let a_shortunion = ShortUnion::new_with(0b_10110011_10001111);
+    let b_shortunion = ShortUnion::new_with(2);
+    let c_shortunion = a_shortunion << b_shortunion;
+    println!("{:b} << {} = {:b}", a_shortunion, b_shortunion, c_shortunion);
+    assert_eq!(c_shortunion.get(), 0b_11001110_00111100_u16);
+
+    #[cfg(not(debug_assertions))]
+    {
+        let a_shortunion = ShortUnion::new_with(0b_10110011_10001111);
+        let b_intunion = InttUnion::new_with(18);
+        let c_shortunion = a_shortunion << b_intunion;
+        println!("{:b} << {} = {:b}", a_shortunion, b_intunion, c_shortunion);
+        assert_eq!(c_shortunion.get(), 0b_11001110_00111100_u16);
+
+        let a_shortunion = ShortUnion::new_with(0b_10110011_10001111);
+        let b_shortunion = ShortUnion::new_with_signed(-2);
+        let b_shortunion2 = ShortUnion::new_with(-2_i16 as u16);
+        let c_shortunion = a_shortunion << b_shortunion;
+        let d_shortunion = a_shortunion << b_shortunion2;
+        println!("{:b} << {} = {:b}", a_shortunion, b_shortunion, c_shortunion);
+        println!("{:b} << {} = {:b}", a_shortunion, b_shortunion2, d_shortunion);
+        assert_eq!(b_shortunion2.get(), 65534_u16);
+        assert_eq!(c_shortunion.get(), 0b_11000000_00000000_u16);
+        assert_eq!(d_shortunion.get(), 0b_11000000_00000000_u16);
+    }
+
+    // Example for IntUnion
+    let a_intunion = IntUnion::new_with(0b_10110011_10001111_00001111_10000011);
+    let b_uint = 8_u16;
+    let c_intunion = a_intunion << b_uint;
+    println!("{:b} << {} = {:b}", a_intunion, b_uint, c_intunion);
+    assert_eq!(c_intunion.get(), 0b_10001111_00001111_10000011_00000000_u32);
+
+    #[cfg(not(debug_assertions))]
+    {
+        let a_intunion = IntUnion::new_with(0b_10110011_10001111_00001111_10000011);
+        let b_uint = 40_u16;
+        let c_intunion = a_intunion << b_uint;
+        println!("{:b} << {} = {:b}", a_intunion, b_uint, c_intunion);
+        assert_eq!(c_intunion.get(), 0b_10001111_00001111_10000011_00000000_u32);
+
+        let a_intunion = IntUnion::new_with(0b_10110011_10001111_00001111_10000011);
+        let b_sint = -2_i16;
+        let b_uint = b_sint as u16;
+        let c_intunion = a_intunion << b_sint;
+        let d_intunion = a_intunion << b_uint;
+        println!("{:b} << {} = {:b}", a_intunion, b_sint, c_intunion);
+        println!("{:b} << {} = {:b}", a_intunion, b_uint, d_intunion);
+        assert_eq!(b_uint, 65534_u16);
+        assert_eq!(c_intunion.get(), 0b_11000000_00000000_00000000_00000000_u32);
+        assert_eq!(d_intunion.get(), 0b_11000000_00000000_00000000_00000000_u32);
+    }
+
+    let a_intunion = IntUnion::new_with(0b_10110011_10001111_00001111_10000011);
+    let b_intunion = IntUnion::new_with(8);
+    let c_intunion = a_intunion << b_intunion;
+    println!("{:b} << {} = {:b}", a_intunion, b_intunion, c_intunion);
+    assert_eq!(c_intunion.get(), 0b_10001111_00001111_10000011_00000000_u32);
+
+    #[cfg(not(debug_assertions))]
+    {
+        let a_intunion = IntUnion::new_with(0b_10110011_10001111_00001111_10000011);
+        let b_longunion = LongUnion::new_with(40);
+        let c_intunion = a_intunion << b_longunion;
+        println!("{:b} << {} = {:b}", a_intunion, b_longunion, c_intunion);
+        assert_eq!(c_intunion.get(), 0b_10001111_00001111_10000011_00000000_u32);
+
+        let a_intunion = IntUnion::new_with(0b_10110011_10001111_00001111_10000011);
+        let b_intunion = IntUnion::new_with_signed(-2_i32);
+        let b_intunion2 = IntUnion::new_with(-2_i32 as u32);
+        let c_intunion = a_intunion << b_intunion;
+        let d_intunion = a_intunion << b_intunion2;
+        println!("{:b} << {} = {:b}", a_intunion, b_intunion, c_intunion);
+        println!("{:b} << {} = {:b}", a_intunion, b_intunion2, d_intunion);
+        assert_eq!(b_intunion2.get(), 4294967294_u32);
+        assert_eq!(c_intunion.get(), 0b_11000000_00000000_00000000_00000000_u32);
+        assert_eq!(d_intunion.get(), 0b_11000000_00000000_00000000_00000000_u32);
+    }
+    
+    // Example for LongUnion
+    let a_longunion = LongUnion::new_with(0b_10110011_10001111_00001111_10000011_11110000_00111111_10000000_11111111);
+    let b_uint = 16_u32;
+    let c_longunion = a_longunion << b_uint;
+    println!("{:b} << {} = {:b}", a_longunion, b_uint, c_longunion);
+    assert_eq!(c_longunion.get(), 0b_00001111_10000011_11110000_00111111_10000000_11111111_00000000_00000000_u64);
+    
+    #[cfg(not(debug_assertions))]
+    {
+        let a_longunion = LongUnion::new_with(0b_10110011_10001111_00001111_10000011_11110000_00111111_10000000_11111111);
+        let b_uint = 72_u32;
+        let c_longunion = a_longunion << b_uint;
+        println!("{:b} << {} = {:b}", a_longunion, b_uint, c_longunion);
+        assert_eq!(c_longunion.get(), 0b_10001111_00001111_10000011_11110000_00111111_10000000_11111111_00000000_u64);
+
+        let a_longunion = LongUnion::new_with(0b_10110011_10001111_00001111_10000011_11110000_00111111_10000000_11111111);
+        let b_sint = -2_i32;
+        let b_uint = b_sint as u32;
+        let c_longunion = a_longunion << b_sint;
+        let d_longunion = a_longunion << b_uint;
+        println!("{:b} << {} = {:b}", a_longunion, b_sint, c_longunion);
+        println!("{:b} << {} = {:b}", a_longunion, b_uint, d_longunion);
+        assert_eq!(b_uint, 4294967294_u32);
+        assert_eq!(c_longunion.get(), 0b_11000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_u64);
+        assert_eq!(d_longunion.get(), 0b_11000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_u64);
+    }
+
+    let a_longunion = LongUnion::new_with(0b_10110011_10001111_00001111_10000011_11110000_00111111_10000000_11111111);
+    let b_longunion = LongUnion::new_with(16);
+    let c_longunion = a_longunion << b_longunion;
+    println!("{:b} << {} = {:b}", a_longunion, b_longunion, c_longunion);
+    assert_eq!(c_longunion.get(), 0b_00001111_10000011_11110000_00111111_10000000_11111111_00000000_00000000_u64);
+
+    #[cfg(not(debug_assertions))]
+    {
+        let a_longunion = LongUnion::new_with(0b_10110011_10001111_00001111_10000011_11110000_00111111_10000000_11111111);
+        let b_longerunion = LongerUnion::new_with(72);
+        let c_longunion = a_longunion << b_longunion;
+        println!("{:b} << {} = {:b}", a_longunion, b_longunion, c_longunion);
+        assert_eq!(c_longunion.get(), 0b_10001111_00001111_10000011_11110000_00111111_10000000_11111111_00000000_u64);
+
+        let a_longunion = LongUnion::new_with(0b_10110011_10001111_00001111_10000011_11110000_00111111_10000000_11111111);
+        let b_longunion = LongUnion::new_with_signed(-2_i64);
+        let b_longunion2 = LongUnion::new_with(-2_i64 as u64);
+        let c_longunion = a_longunion << b_longunion;
+        let d_longunion = a_longunion << b_longunion2;
+        println!("{:b} << {} = {:b}", a_longunion, b_longunion, c_longunion);
+        println!("{:b} << {} = {:b}", a_longunion, b_longunion2, d_longunion);
+        assert_eq!(b_longunion2.get(), 18446744073709551614_u64);
+        assert_eq!(c_longunion.get(), 0b_11000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_u64);
+        assert_eq!(d_longunion.get(), 0b_11000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_u64);
+    }
+
+    // Example for LongerUnion
+    let a_longerunion = LongerUnion::new_with(0b_10110011_10001111_00001111_10000011_11110000_00111111_10000000_11111111_00000000_11111111_10000000_00111111_11110000_00000011_11111111_10000011);
+    let b_uint = 24_u64;
+    let c_longerunion = a_longerunion << b_uint;
+    println!("{:b} << {} = {:b}", a_longerunion, b_uint, c_longerunion);
+    assert_eq!(c_longerunion.get(), 0b_10000011_11110000_00111111_10000000_11111111_00000000_11111111_10000000_00111111_11110000_00000011_11111111_10000011__00000000__00000000__00000000_u128);
+
+    #[cfg(not(debug_assertions))]
+    {
+        let a_longerunion = LongerUnion::new_with(0b_10110011_10001111_00001111_10000011_11110000_00111111_10000000_11111111_00000000_11111111_10000000_00111111_11110000_00000011_11111111_10000011);
+        let b_uint = 136_u64;
+        let c_longerunion = a_longerunion << b_uint;
+        println!("{:b} << {} = {:b}", a_longerunion, b_uint, c_longerunion);
+        assert_eq!(c_longerunion.get(), 0b_10001111_00001111_10000011_11110000_00111111_10000000_11111111_00000000_11111111_10000000_00111111_11110000_00000011_11111111_10000011_00000000_u128);
+
+        let a_longerunion = LongerUnion::new_with(0b_10110011_10001111_00001111_10000011_11110000_00111111_10000000_11111111_00000000_11111111_10000000_00111111_11110000_00000011_11111111_10000011);
+        let b_sint = -2_i64;
+        let b_uint = b_sint as u64;
+        let c_longerunion = a_longerunion << b_sint;
+        let d_longerunion = a_longerunion << b_uint;
+        println!("{:b} << {} = {:b}", a_longerunion, b_sint, c_longerunion);
+        println!("{:b} << {} = {:b}", a_longerunion, b_uint, d_longerunion);
+        assert_eq!(b_uint, 18446744073709551614_u64);
+        assert_eq!(c_longerunion.get(), 0b_11000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_u128);
+        assert_eq!(d_longerunion.get(), 0b_11000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_u128);
+    }
+
+    let a_longerunion = LongerUnion::new_with(0b_10110011_10001111_00001111_10000011_11110000_00111111_10000000_11111111_00000000_11111111_10000000_00111111_11110000_00000011_11111111_10000011);
+    let b_longerunion = LongerUnion::new_with(24);
+    let c_longerunion = a_longerunion << b_longerunion;
+    println!("{:b} << {} = {:b}", a_longerunion, b_longerunion, c_longerunion);
+    assert_eq!(c_longerunion.get(), 0b_10000011_11110000_00111111_10000000_11111111_00000000_11111111_10000000_00111111_11110000_00000011_11111111_10000011__00000000__00000000__00000000_u128);
+
+    #[cfg(not(debug_assertions))]
+    {
+        let a_longerunion = LongerUnion::new_with(0b_10110011_10001111_00001111_10000011_11110000_00111111_10000000_11111111_00000000_11111111_10000000_00111111_11110000_00000011_11111111_10000011);
+        let b_shortunion = ShortUnion::new_with(136);
+        let c_longerunion = a_longerunion << b_shortunion;
+        println!("{:b} << {} = {:b}", a_longerunion, b_longerunion, c_longerunion);
+        assert_eq!(c_longerunion.get(), 0b_10001111_00001111_10000011_11110000_00111111_10000000_11111111_00000000_11111111_10000000_00111111_11110000_00000011_11111111_10000011_00000000_u128);
+
+        let a_longerunion = LongerUnion::new_with(0b_10110011_10001111_00001111_10000011_11110000_00111111_10000000_11111111_00000000_11111111_10000000_00111111_11110000_00000011_11111111_10000011);
+        let b_longerunion = LongerUnion::new_with_signed(-2_i128);
+        let b_longerunion2 = LongerUnion::new_with(-2_i64 as u128);
+        let c_longerunion = a_longerunion << b_longerunion;
+        let d_longerunion = a_longerunion << b_longerunion2;
+        println!("{:b} << {} = {:b}", a_longerunion, b_longerunion, c_longerunion);
+        println!("{:b} << {} = {:b}", a_longerunion, b_longerunion2, d_longerunion);
+        assert_eq!(b_longerunion2.get(), 340282366920938463463374607431768211454_u128);
+        assert_eq!(c_longerunion.get(), 0b_11000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_u128);
+        assert_eq!(d_longerunion.get(), 0b_11000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_u128);
+    }
+
+    // Example for SizeUnion
+    #[cfg(target_pointer_width = "16")] let a_sizeunion = SizeUnion::new_with(0b_10110011_10001111);
+    #[cfg(target_pointer_width = "32")] let a_sizeunion = SizeUnion::new_with(0b_10110011_10001111_00001111_10000011);
+    #[cfg(target_pointer_width = "64")] let a_sizeunion = SizeUnion::new_with(0b_10110011_10001111_00001111_10000011_11110000_00111111_10000000_11111111);
+    let b_uint = 4_u128;
+    let c_sizeunion = a_sizeunion << b_uint;
+    println!("{:b} << {} = {:b}", a_sizeunion, b_uint, c_sizeunion);
+    #[cfg(target_pointer_width = "16")]  assert_eq!(c_sizeunion.get(), 0b_00111000_11110000_usize);
+    #[cfg(target_pointer_width = "32")]  assert_eq!(c_sizeunion.get(), 0b_00111000_11110000_11111000_00110000_usize);
+    #[cfg(target_pointer_width = "64")]  assert_eq!(c_sizeunion.get(), 0b_00111000_11110000_11111000_00111111_00000011_11111000_00001111_11110000_usize);
+    
+    #[cfg(not(debug_assertions))]
+    {
+        #[cfg(target_pointer_width = "16")] let a_sizeunion = SizeUnion::new_with(0b_10110011_10001111);
+        #[cfg(target_pointer_width = "32")] let a_sizeunion = SizeUnion::new_with(0b_10110011_10001111_00001111_10000011);
+        #[cfg(target_pointer_width = "64")] let a_sizeunion = SizeUnion::new_with(0b_10110011_10001111_00001111_10000011_11110000_00111111_10000000_11111111);
+        let b_uint = 68_u128;
+        let c_sizeunion = a_sizeunion << b_uint;
+        println!("{:b} << {} = {:b}", a_sizeunion, b_uint, c_sizeunion);
+        #[cfg(target_pointer_width = "16")]  assert_eq!(c_sizeunion.get(), 0b_00111000_11110000_usize);
+        #[cfg(target_pointer_width = "32")]  assert_eq!(c_sizeunion.get(), 0b_00111000_11110000_11111000_00110000_usize);
+        #[cfg(target_pointer_width = "64")]  assert_eq!(c_sizeunion.get(), 0b_00111000_11110000_11111000_00111111_00000011_11111000_00001111_11110000_usize);
+        
+        #[cfg(target_pointer_width = "16")] let a_sizeunion = SizeUnion::new_with(0b_10110011_10001111);
+        #[cfg(target_pointer_width = "32")] let a_sizeunion = SizeUnion::new_with(0b_10110011_10001111_00001111_10000011);
+        #[cfg(target_pointer_width = "64")] let a_sizeunion = SizeUnion::new_with(0b_10110011_10001111_00001111_10000011_11110000_00111111_10000000_11111111);
+        let b_sint = -2_isize;
+        let b_uint = b_sint as usize;
+        let c_sizeunion = a_sizeunion << b_sint;
+        let d_sizeunion = a_sizeunion << b_uint;
+        println!("{:b} << {} = {:b}", a_sizeunion, b_sint, c_sizeunion);
+        println!("{:b} << {} = {:b}", a_sizeunion, b_uint, d_sizeunion);
+        #[cfg(target_pointer_width = "16")] assert_eq!(b_uint, 65534_usize);
+        #[cfg(target_pointer_width = "32")] assert_eq!(b_uint, 4294967294_usize);
+        #[cfg(target_pointer_width = "64")] assert_eq!(b_uint, 18446744073709551614_usize);
+        #[cfg(target_pointer_width = "16")] assert_eq!(c_sizeunion.get(), 0b_11000000_00000000_usize);
+        #[cfg(target_pointer_width = "16")] assert_eq!(d_sizeunion.get(), 0b_11000000_00000000_usize);
+        #[cfg(target_pointer_width = "32")] assert_eq!(c_sizeunion.get(), 0b_11000000_00000000_00000000_00000000_usize);
+        #[cfg(target_pointer_width = "32")] assert_eq!(d_sizeunion.get(), 0b_11000000_00000000_00000000_00000000_usize);
+        #[cfg(target_pointer_width = "64")] assert_eq!(c_sizeunion.get(), 0b_11000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_usize);
+        #[cfg(target_pointer_width = "64")] assert_eq!(d_sizeunion.get(), 0b_11000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_usize);
+    }
+
+    #[cfg(target_pointer_width = "16")] let a_sizeunion = SizeUnion::new_with(0b_10110011_10001111);
+    #[cfg(target_pointer_width = "32")] let a_sizeunion = SizeUnion::new_with(0b_10110011_10001111_00001111_10000011);
+    #[cfg(target_pointer_width = "64")] let a_sizeunion = SizeUnion::new_with(0b_10110011_10001111_00001111_10000011_11110000_00111111_10000000_11111111);
+    #[cfg(target_pointer_width = "16")] let b_sizeunion = SizeUnion::new_with(16_usize);
+    #[cfg(target_pointer_width = "32")] let b_sizeunion = SizeUnion::new_with(32_usize);
+    #[cfg(target_pointer_width = "64")] let b_sizeunion = SizeUnion::new_with(64_usize);
+    let c_sizeunion = a_sizeunion << b_sizeunion;
+    println!("{:b} << {} = {:b}", a_sizeunion, b_sizeunion, c_sizeunion);
+    #[cfg(target_pointer_width = "16")]  assert_eq!(c_sizeunion.get(), 0b_10110011_10001111_usize);
+    #[cfg(target_pointer_width = "32")]  assert_eq!(c_sizeunion.get(), 0b_10110011_10001111_00001111_10000011_usize);
+    #[cfg(target_pointer_width = "64")]  assert_eq!(c_sizeunion.get(), 0b_10110011_10001111_00001111_10000011_11110000_00111111_10000000_11111111_usize);
+    
+    #[cfg(not(debug_assertions))]
+    {
+        #[cfg(target_pointer_width = "16")]  let a_sizeunion = SizeUnion::new_with(0b_10110011_10001111);
+        #[cfg(target_pointer_width = "32")]  let a_sizeunion = SizeUnion::new_with(0b_10110011_10001111_00001111_10000011);
+        #[cfg(target_pointer_width = "64")]  let a_sizeunion = SizeUnion::new_with(0b_10110011_10001111_00001111_10000011_11110000_00111111_10000000_11111111);
+        #[cfg(target_pointer_width = "16")]  let b_union = LongUnion::new_with(18);
+        #[cfg(target_pointer_width = "32")]  let b_union = ShortUnion::new_with(40);
+        #[cfg(target_pointer_width = "64")]  let b_union = IntUnion::new_with(72);
+        let c_sizeunion = a_sizeunion << b_union;
+        println!("{:b} << {} = {:b}", a_sizeunion, b_union, c_sizeunion);
+        #[cfg(target_pointer_width = "16")]  assert_eq!(c_sizeunion.get(), 0b_11001110_00111100_usize);
+        #[cfg(target_pointer_width = "32")]  assert_eq!(c_sizeunion.get(), 0b_10001111_00001111_10000011_00000000_usize);
+        #[cfg(target_pointer_width = "64")]  assert_eq!(c_sizeunion.get(), 0b_10001111_00001111_10000011_11110000_00111111_10000000_11111111_00000000_usize);
+
+        #[cfg(target_pointer_width = "16")]  let a_sizeunion = SizeUnion::new_with(0b_10110011_10001111);
+        #[cfg(target_pointer_width = "32")]  let a_sizeunion = SizeUnion::new_with(0b_10110011_10001111_00001111_10000011);
+        #[cfg(target_pointer_width = "64")]  let a_sizeunion = SizeUnion::new_with(0b_10110011_10001111_00001111_10000011_11110000_00111111_10000000_11111111);
+        let b_sizeunion = SizeUnion::new_with_signed(-2);
+        let b_sizeunion2 = SizeUnion::new_with(-2_isize as usize);
+        let c_sizeunion = a_sizeunion << b_sizeunion;
+        let d_sizeunion = a_sizeunion << b_sizeunion2;
+        println!("{:b} << {} = {:b}", a_sizeunion, b_sizeunion, c_sizeunion);
+        println!("{:b} << {} = {:b}", a_sizeunion, b_sizeunion2, d_sizeunion);
+        #[cfg(target_pointer_width = "16")]  assert_eq!(b_sizeunion2.get(), 65534_usize);
+        #[cfg(target_pointer_width = "32")]  assert_eq!(b_sizeunion2.get(), 4294967294_usize);
+        #[cfg(target_pointer_width = "64")]  assert_eq!(b_sizeunion2.get(), 18446744073709551614_usize);
+        #[cfg(target_pointer_width = "16")]  assert_eq!(c_sizeunion.get(), 0b_11000000_00000000_usize);
+        #[cfg(target_pointer_width = "32")]  assert_eq!(c_sizeunion.get(), 0b_11000000_00000000_00000000_00000000_usize);
+        #[cfg(target_pointer_width = "64")]  assert_eq!(c_sizeunion.get(), 0b_11000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_usize);
+        #[cfg(target_pointer_width = "16")]  assert_eq!(d_sizeunion.get(), 0b_11000000_00000000_usize);
+        #[cfg(target_pointer_width = "32")]  assert_eq!(d_sizeunion.get(), 0b_11000000_00000000_00000000_00000000_usize);
+        #[cfg(target_pointer_width = "64")]  assert_eq!(d_sizeunion.get(), 0b_11000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_usize);
+    }
+
+    #[cfg(test)] // It will panic.
+    unions_should_panic_operator_shl();
+    println!("--------------------------------------");
+}
+
+#[test]
+#[should_panic]
+fn unions_should_panic_operator_shl()
+{
+    #[cfg(debug_assertions)]
+    {
+        use cryptocol::number::{ ShortUnion, IntUnion, LongUnion, LongerUnion, SizeUnion };
+
+        let a_shortunion = ShortUnion::new_with(0b_10110011_10001111);
+        let b_uint = 18_u8;
+        let c_shortunion = a_shortunion << b_uint;
+        println!("{:b} << {} = {:b}", a_shortunion, b_uint, c_shortunion);
+        assert_eq!(c_shortunion.get(), 0b_11001110_00111100_u16);
+
+        let a_shortunion = ShortUnion::new_with(0b_10110011_10001111);
+        let b_sint = -2_i8;
+        let b_uint = b_sint as u8;
+        let c_shortunion = a_shortunion << b_sint;
+        let d_shortunion = a_shortunion << b_uint;
+        println!("{:b} << {} = {:b}", a_shortunion, b_sint, c_shortunion);
+        println!("{:b} << {} = {:b}", a_shortunion, b_uint, d_shortunion);
+        assert_eq!(b_uint, 254_u8);
+        assert_eq!(c_shortunion.get(), 0b_11000000_00000000_u16);
+        assert_eq!(d_shortunion.get(), 0b_11000000_00000000_u16);
+
+        let a_shortunion = ShortUnion::new_with(0b_10110011_10001111);
+        let b_shortunion = ShortUnion::new_with(18);
+        let c_shortunion = a_shortunion << b_shortunion;
+        println!("{:b} << {} = {:b}", a_shortunion, b_shortunion, c_shortunion);
+        assert_eq!(c_shortunion.get(),0b_11001110_00111100_u16);
+
+        let a_shortunion = ShortUnion::new_with(0b_10110011_10001111);
+        let b_shortunion = ShortUnion::new_with_signed(-2);
+        let b_shortunion2 = ShortUnion::new_with(-2_i16 as u16);
+        let c_shortunion = a_shortunion << b_shortunion;
+        let d_shortunion = a_shortunion << b_shortunion2;
+        println!("{:b} << {} = {:b}", a_shortunion, b_shortunion, c_shortunion);
+        println!("{:b} << {} = {:b}", a_shortunion, b_shortunion2, d_shortunion);
+        assert_eq!(b_shortunion2.get(), 65534_u16);
+        assert_eq!(c_shortunion.get(), 0b_11000000_00000000_u16);
+        assert_eq!(d_shortunion.get(), 0b_11000000_00000000_u16);
+
+        let a_intunion = IntUnion::new_with(0b_10110011_10001111_00001111_10000011);
+        let b_uint = 40_u16;
+        let c_intunion = a_intunion << b_uint;
+        println!("{:b} << {} = {:b}", a_intunion, b_uint, c_intunion);
+        assert_eq!(c_intunion.get(), 0b_10001111_00001111_10000011_00000000_u32);
+
+        let a_intunion = IntUnion::new_with(0b_10110011_10001111_00001111_10000011);
+        let b_sint = -2_i16;
+        let b_uint = b_sint as u16;
+        let c_intunion = a_intunion << b_sint;
+        let d_intunion = a_intunion << b_uint;
+        println!("{:b} << {} = {:b}", a_intunion, b_sint, c_intunion);
+        println!("{:b} << {} = {:b}", a_intunion, b_uint, d_intunion);
+        assert_eq!(b_uint, 65534_u16);
+        assert_eq!(c_intunion.get(), 0b_11000000_00000000_00000000_00000000_u32);
+        assert_eq!(d_intunion.get(), 0b_11000000_00000000_00000000_00000000_u32);
+
+        let a_intunion = IntUnion::new_with(0b_10110011_10001111_00001111_10000011);
+        let b_intunion = IntUnion::new_with(40_u32);
+        let c_intunion = a_intunion << b_intunion;
+        println!("{:b} << {} = {:b}", a_intunion, b_intunion, c_intunion);
+        assert_eq!(c_intunion.get(), 0b_10001111_00001111_10000011_00000000_u32);
+
+        let a_intunion = IntUnion::new_with(0b_10110011_10001111_00001111_10000011);
+        let b_intunion = IntUnion::new_with_signed(-2_i32);
+        let b_intunion2 = IntUnion::new_with(-2_i32 as u32);
+        let c_intunion = a_intunion << b_intunion;
+        let d_intunion = a_intunion << b_intunion2;
+        println!("{:b} << {} = {:b}", a_intunion, b_intunion, c_intunion);
+        println!("{:b} << {} = {:b}", a_intunion, b_intunion2, d_intunion);
+        assert_eq!(b_intunion2.get(), 4294967294_u32);
+        assert_eq!(c_intunion.get(), 0b_11000000_00000000_00000000_00000000_u32);
+        assert_eq!(d_intunion.get(), 0b_11000000_00000000_00000000_00000000_u32);
+
+        let a_longunion = LongUnion::new_with(0b_10110011_10001111_00001111_10000011_11110000_00111111_10000000_11111111);
+        let b_uint = 72_u32;
+        let c_longunion = a_longunion << b_uint;
+        println!("{:b} << {} = {:b}", a_longunion, b_uint, c_longunion);
+        assert_eq!(c_longunion.get(), 0b_10001111_00001111_10000011_11110000_00111111_10000000_11111111_00000000_u64);
+
+        let a_longunion = LongUnion::new_with(0b_10110011_10001111_00001111_10000011_11110000_00111111_10000000_11111111);
+        let b_sint = -2_i32;
+        let b_uint = b_sint as u32;
+        let c_longunion = a_longunion << b_sint;
+        let d_longunion = a_longunion << b_uint;
+        println!("{:b} << {} = {:b}", a_longunion, b_sint, c_longunion);
+        println!("{:b} << {} = {:b}", a_longunion, b_uint, d_longunion);
+        assert_eq!(b_uint, 4294967294_u32);
+        assert_eq!(c_longunion.get(), 0b_11000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_u64);
+        assert_eq!(d_longunion.get(), 0b_11000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_u64);
+    
+        let a_longunion = LongUnion::new_with(0b_10110011_10001111_00001111_10000011_11110000_00111111_10000000_11111111);
+        let b_longunion = LongUnion::new_with(72);
+        let c_longunion = a_longunion << b_longunion;
+        println!("{:b} << {} = {:b}", a_longunion, b_longunion, c_longunion);
+        assert_eq!(c_longunion.get(), 0b_10001111_00001111_10000011_11110000_00111111_10000000_11111111_00000000_u64);
+
+        let a_longunion = LongUnion::new_with(0b_10110011_10001111_00001111_10000011_11110000_00111111_10000000_11111111);
+        let b_longunion = LongUnion::new_with_signed(-2_i64);
+        let b_longunion2 = LongUnion::new_with(-2_i64 as u64);
+        let c_longunion = a_longunion << b_longunion;
+        let d_longunion = a_longunion << b_longunion2;
+        println!("{:b} << {} = {:b}", a_longunion, b_longunion, c_longunion);
+        println!("{:b} << {} = {:b}", a_longunion, b_longunion2, d_longunion);
+        assert_eq!(b_longunion2.get(), 18446744073709551614_u64);
+        assert_eq!(c_longunion.get(), 0b_11000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_u64);
+        assert_eq!(d_longunion.get(), 0b_11000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_u64);
+    
+        let a_longerunion = LongerUnion::new_with(0b_10110011_10001111_00001111_10000011_11110000_00111111_10000000_11111111_00000000_11111111_10000000_00111111_11110000_00000011_11111111_10000011);
+        let b_uint = 136_u64;
+        let c_longerunion = a_longerunion << b_uint;
+        println!("{:b} << {} = {:b}", a_longerunion, b_uint, c_longerunion);
+        assert_eq!(c_longerunion.get(), 0b_10001111_00001111_10000011_11110000_00111111_10000000_11111111_00000000_11111111_10000000_00111111_11110000_00000011_11111111_10000011_00000000_u128);
+
+        let a_longerunion = LongerUnion::new_with(0b_10110011_10001111_00001111_10000011_11110000_00111111_10000000_11111111_00000000_11111111_10000000_00111111_11110000_00000011_11111111_10000011);
+        let b_sint = -2_i64;
+        let b_uint = b_sint as u64;
+        let c_longerunion = a_longerunion << b_sint;
+        let d_longerunion = a_longerunion << b_uint;
+        println!("{:b} << {} = {:b}", a_longerunion, b_sint, c_longerunion);
+        println!("{:b} << {} = {:b}", a_longerunion, b_uint, d_longerunion);
+        assert_eq!(b_uint, 18446744073709551614_u64);
+        assert_eq!(c_longerunion.get(), 0b_11000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_u128);
+        assert_eq!(d_longerunion.get(), 0b_11000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_u128);
+    
+        let a_longerunion = LongerUnion::new_with(0b_10110011_10001111_00001111_10000011_11110000_00111111_10000000_11111111_00000000_11111111_10000000_00111111_11110000_00000011_11111111_10000011);
+        let b_longerunion = LongerUnion::new_with(136);
+        let c_longerunion = a_longerunion << b_longerunion;
+        println!("{:b} << {} = {:b}", a_longerunion, b_longerunion, c_longerunion);
+        assert_eq!(c_longerunion.get(), 0b_10001111_00001111_10000011_11110000_00111111_10000000_11111111_00000000_11111111_10000000_00111111_11110000_00000011_11111111_10000011_00000000_u128);
+
+        let a_longerunion = LongerUnion::new_with(0b_10110011_10001111_00001111_10000011_11110000_00111111_10000000_11111111_00000000_11111111_10000000_00111111_11110000_00000011_11111111_10000011);
+        let b_longerunion = LongerUnion::new_with_signed(-2_i128);
+        let b_longerunion2 = LongerUnion::new_with(-2_i64 as u128);
+        let c_longerunion = a_longerunion << b_longerunion;
+        let d_longerunion = a_longerunion << b_longerunion2;
+        println!("{:b} << {} = {:b}", a_longerunion, b_longerunion, c_longerunion);
+        println!("{:b} << {} = {:b}", a_longerunion, b_longerunion2, d_longerunion);
+        assert_eq!(b_longerunion2.get(), 340282366920938463463374607431768211454_u128);
+        assert_eq!(c_longerunion.get(), 0b_11000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_u128);
+        assert_eq!(d_longerunion.get(), 0b_11000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_u128);
+        
+        #[cfg(target_pointer_width = "16")] let a_sizeunion = SizeUnion::new_with(0b_10110011_10001111);
+        #[cfg(target_pointer_width = "32")] let a_sizeunion = SizeUnion::new_with(0b_10110011_10001111_00001111_10000011);
+        #[cfg(target_pointer_width = "64")] let a_sizeunion = SizeUnion::new_with(0b_10110011_10001111_00001111_10000011_11110000_00111111_10000000_11111111);
+        let b_uint = 68_u128;
+        let c_sizeunion = a_sizeunion << b_uint;
+        println!("{:b} << {} = {:b}", a_sizeunion, b_uint, c_sizeunion);
+        #[cfg(target_pointer_width = "16")]  assert_eq!(c_sizeunion.get(), 0b_00111000_11110000_usize);
+        #[cfg(target_pointer_width = "32")]  assert_eq!(c_sizeunion.get(), 0b_00111000_11110000_11111000_00110000_usize);
+        #[cfg(target_pointer_width = "64")]  assert_eq!(c_sizeunion.get(), 0b_00111000_11110000_11111000_00111111_00000011_11111000_00001111_11110000_usize);
+        
+        #[cfg(target_pointer_width = "16")] let a_sizeunion = SizeUnion::new_with(0b_10110011_10001111);
+        #[cfg(target_pointer_width = "32")] let a_sizeunion = SizeUnion::new_with(0b_10110011_10001111_00001111_10000011);
+        #[cfg(target_pointer_width = "64")] let a_sizeunion = SizeUnion::new_with(0b_10110011_10001111_00001111_10000011_11110000_00111111_10000000_11111111);
+        let b_sint = -2_isize;
+        let b_uint = b_sint as usize;
+        let c_sizeunion = a_sizeunion << b_sint;
+        let d_sizeunion = a_sizeunion << b_uint;
+        println!("{:b} << {} = {:b}", a_sizeunion, b_sint, c_sizeunion);
+        println!("{:b} << {} = {:b}", a_sizeunion, b_uint, d_sizeunion);
+        #[cfg(target_pointer_width = "16")] assert_eq!(b_uint, 65534_usize);
+        #[cfg(target_pointer_width = "32")] assert_eq!(b_uint, 4294967294_usize);
+        #[cfg(target_pointer_width = "64")] assert_eq!(b_uint, 18446744073709551614_usize);
+        #[cfg(target_pointer_width = "16")] assert_eq!(c_sizeunion.get(), 0b_11000000_00000000_usize);
+        #[cfg(target_pointer_width = "16")] assert_eq!(d_sizeunion.get(), 0b_11000000_00000000_usize);
+        #[cfg(target_pointer_width = "32")] assert_eq!(c_sizeunion.get(), 0b_11000000_00000000_00000000_00000000_usize);
+        #[cfg(target_pointer_width = "32")] assert_eq!(d_sizeunion.get(), 0b_11000000_00000000_00000000_00000000_usize);
+        #[cfg(target_pointer_width = "64")] assert_eq!(c_sizeunion.get(), 0b_11000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_usize);
+        #[cfg(target_pointer_width = "64")] assert_eq!(d_sizeunion.get(), 0b_11000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_usize);
+ 
+
+        #[cfg(target_pointer_width = "16")]  let a_sizeunion = SizeUnion::new_with(0b_10110011_10001111);
+        #[cfg(target_pointer_width = "32")]  let a_sizeunion = SizeUnion::new_with(0b_10110011_10001111_00001111_10000011);
+        #[cfg(target_pointer_width = "64")]  let a_sizeunion = SizeUnion::new_with(0b_10110011_10001111_00001111_10000011_11110000_00111111_10000000_11111111);
+        #[cfg(target_pointer_width = "16")]  let b_sizeunion = SizeUnion::new_with(18);
+        #[cfg(target_pointer_width = "32")]  let b_sizeunion = SizeUnion::new_with(40);
+        #[cfg(target_pointer_width = "64")]  let b_sizeunion = SizeUnion::new_with(72);
+        let c_sizeunion = a_sizeunion << b_sizeunion;
+        println!("{:b} << {} = {:b}", a_sizeunion, b_sizeunion, c_sizeunion);
+        #[cfg(target_pointer_width = "16")]  assert_eq!(c_sizeunion.get(), 0b_11001110_00111100_usize);
+        #[cfg(target_pointer_width = "32")]  assert_eq!(c_sizeunion.get(), 0b_10001111_00001111_10000011_00000000_usize);
+        #[cfg(target_pointer_width = "64")]  assert_eq!(c_sizeunion.get(), 0b_10001111_00001111_10000011_11110000_00111111_10000000_11111111_00000000_usize);
+
+        #[cfg(target_pointer_width = "16")]  let a_sizeunion = SizeUnion::new_with(0b_10110011_10001111);
+        #[cfg(target_pointer_width = "32")]  let a_sizeunion = SizeUnion::new_with(0b_10110011_10001111_00001111_10000011);
+        #[cfg(target_pointer_width = "64")]  let a_sizeunion = SizeUnion::new_with(0b_10110011_10001111_00001111_10000011_11110000_00111111_10000000_11111111);
+        let b_sizeunion = SizeUnion::new_with_signed(-2);
+        let b_sizeunion2 = SizeUnion::new_with(-2_isize as usize);
+        let c_sizeunion = a_sizeunion << b_sizeunion;
+        let d_sizeunion = a_sizeunion << b_sizeunion2;
+        println!("{:b} << {} = {:b}", a_sizeunion, b_sizeunion, c_sizeunion);
+        println!("{:b} << {} = {:b}", a_sizeunion, b_sizeunion2, d_sizeunion);
+        #[cfg(target_pointer_width = "16")]  assert_eq!(b_sizeunion2.get(), 65534_usize);
+        #[cfg(target_pointer_width = "32")]  assert_eq!(b_sizeunion2.get(), 4294967294_usize);
+        #[cfg(target_pointer_width = "64")]  assert_eq!(b_sizeunion2.get(), 18446744073709551614_usize);
+        #[cfg(target_pointer_width = "16")]  assert_eq!(c_sizeunion.get(), 0b_11000000_00000000_usize);
+        #[cfg(target_pointer_width = "32")]  assert_eq!(c_sizeunion.get(), 0b_11000000_00000000_00000000_00000000_usize);
+        #[cfg(target_pointer_width = "64")]  assert_eq!(c_sizeunion.get(), 0b_11000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_usize);
+        #[cfg(target_pointer_width = "16")]  assert_eq!(d_sizeunion.get(), 0b_11000000_00000000_usize);
+        #[cfg(target_pointer_width = "32")]  assert_eq!(d_sizeunion.get(), 0b_11000000_00000000_00000000_00000000_usize);
+        #[cfg(target_pointer_width = "64")]  assert_eq!(d_sizeunion.get(), 0b_11000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_usize);
+    }
+}
+
+fn unions_operator_shl_assign()
+{
+    println!("unions_operator_shl_assign()");
+    use cryptocol::number::{ ShortUnion, IntUnion, LongUnion, LongerUnion, SizeUnion };
+
+    println!("--------------------------------------");
+}
+
+fn unions_operator_shr()
+{
+    println!("unions_operator_shr()");
+    use cryptocol::number::{ ShortUnion, IntUnion, LongUnion, LongerUnion, SizeUnion };
+
+    println!("--------------------------------------");
+}
+
+fn unions_operator_shr_assign()
+{
+    println!("unions_operator_shr_assign()");
+    use cryptocol::number::{ ShortUnion, IntUnion, LongUnion, LongerUnion, SizeUnion };
+
+    println!("--------------------------------------");
+}
+
+fn unions_implementation_miscellaneous_main()
+{
+    unions_display_fmt();
+    unions_upperhex_fmt();
+    unions_lowerhex_fmt();
+    unions_binary_fmt();
+    unions_octal_fmt();
+    unions_upperexp_fmt();
+    unions_lowerexp_fmt();
+    unions_pointer_fmt();
+}
+
+fn unions_display_fmt()
+{
+    println!("unions_display_fmt()");
+    use cryptocol::number::{ ShortUnion, IntUnion, LongUnion, LongerUnion, SizeUnion };
+
+    let a_uint = ShortUnion::new_with(12345_u16);
+    println!("{}", a_uint);
+    assert_eq!(a_uint.to_string(), "12345");
+
+    let a_uint = IntUnion::new_with(1234567890_u32);
+    println!("{:>13}", a_uint);
+    let txt = format!("{:>13}", a_uint);
+    assert_eq!(txt, "   1234567890");
+
+    let a_uint = LongUnion::new_with(12345678901234567890_u64);
+    println!("{:>030}", a_uint);
+    let txt = format!("{:>030}", a_uint);
+    assert_eq!(txt, "000000000012345678901234567890");
+
+    let a_uint = LongerUnion::new_with(123456789012345678901234567890123456789_u128);
+    println!("{:^50}", a_uint);
+    let txt = format!("{:^50}", a_uint);
+    assert_eq!(txt, "     123456789012345678901234567890123456789      ");
+
+    let a_uint = LongerUnion::new_with(123456789012345678901234567890123456789_u128);
+    println!("{:^045}", a_uint);
+    let txt = format!("{:^045}", a_uint);
+    assert_eq!(txt, "000000123456789012345678901234567890123456789");
+
+    #[cfg(target_pointer_width = "16")]  let a_uint = SizeUnion::new_with(12345_usize);
+    #[cfg(target_pointer_width = "32")]  let a_uint = SizeUnion::new_with(1234567890_usize);
+    #[cfg(target_pointer_width = "64")]  let a_uint = SizeUnion::new_with(12345678901234567890_usize);
+    println!("{:<25}", a_uint);
+    let txt = format!("{:<25}", a_uint);
+    #[cfg(target_pointer_width = "16")]  assert_eq!(txt, "12345                    ");
+    #[cfg(target_pointer_width = "32")]  assert_eq!(txt, "1234567890               ");
+    #[cfg(target_pointer_width = "64")]  assert_eq!(txt, "12345678901234567890     ");
+
+    let a_uint = LongUnion::new_with(12345678901234567890_u64);
+    println!("{:<025}", a_uint);
+    let txt = format!("{:<025}", a_uint);
+    assert_eq!(txt, "0000012345678901234567890");
+    
+    let a_uint = IntUnion::new_with(1234567890_u32);
+    println!("{:!>15}", a_uint);
+    let txt = format!("{:!>15}", a_uint);
+    assert_eq!(txt, "!!!!!1234567890");
+
+    let a_uint = ShortUnion::new_with(12345_u16);
+    println!("{:@>010}", a_uint);
+    let txt = format!("{:@>010}", a_uint);
+    assert_eq!(txt, "0000012345");
+
+    let a_uint = ShortUnion::new_with(12345_u16);
+    println!("{:#^10}", a_uint);
+    let txt = format!("{:#^10}", a_uint);
+    assert_eq!(txt, "##12345###");
+
+    #[cfg(target_pointer_width = "16")]  let a_uint = SizeUnion::new_with(12345_usize);
+    #[cfg(target_pointer_width = "32")]  let a_uint = SizeUnion::new_with(1234567890_usize);
+    #[cfg(target_pointer_width = "64")]  let a_uint = SizeUnion::new_with(12345678901234567890_usize);
+    println!("{:$^025}", a_uint);
+    let txt = format!("{:$^025}", a_uint);
+    #[cfg(target_pointer_width = "16")]  assert_eq!(txt, "0000000000000000000012345");
+    #[cfg(target_pointer_width = "32")]  assert_eq!(txt, "0000000000000001234567890");
+    #[cfg(target_pointer_width = "64")]  assert_eq!(txt, "0000012345678901234567890");
+
+    let a_uint = IntUnion::new_with(1234567890_u32);
+    println!("{:%<15}", a_uint);
+    let txt = format!("{:%<15}", a_uint);
+    assert_eq!(txt, "1234567890%%%%%");
+
+    let a_uint = LongUnion::new_with(12345678901234567890_u64);
+    println!("{:^<025}", a_uint);
+    let txt = format!("{:^<025}", a_uint);
+    assert_eq!(txt, "0000012345678901234567890");
+
+    let a_uint = LongerUnion::new_with(123456789012345678901234567890123456789_u128);
+    let txt = a_uint.to_string();
+    println!("{}", txt);
+    assert_eq!(txt, "123456789012345678901234567890123456789");
+    println!("--------------------------------------");
+}
+
+fn unions_upperhex_fmt()
+{
+    println!("unions_upperhex_fmt()");
+    use cryptocol::number::{ ShortUnion, IntUnion, LongUnion, LongerUnion, SizeUnion };
+
+    println!("--------------------------------------");
+}
+
+fn unions_lowerhex_fmt()
+{
+    println!("unions_lowerhex_fmt()");
+    use cryptocol::number::{ ShortUnion, IntUnion, LongUnion, LongerUnion, SizeUnion };
+
+    println!("--------------------------------------");
+}
+
+fn unions_binary_fmt()
+{
+    println!("unions_binary_fmt()");
+    use cryptocol::number::{ ShortUnion, IntUnion, LongUnion, LongerUnion, SizeUnion };
+
+    println!("--------------------------------------");
+}
+
+fn unions_octal_fmt()
+{
+    println!("unions_octal_fmt()");
+    use cryptocol::number::{ ShortUnion, IntUnion, LongUnion, LongerUnion, SizeUnion };
+
+    println!("--------------------------------------");
+}
+
+fn unions_upperexp_fmt()
+{
+    println!("unions_upperexp_fmt()");
+    use cryptocol::number::{ ShortUnion, IntUnion, LongUnion, LongerUnion, SizeUnion };
+
+    println!("--------------------------------------");
+}
+
+fn unions_lowerexp_fmt()
+{
+    println!("unions_lowerexp_fmt()");
+    use cryptocol::number::{ ShortUnion, IntUnion, LongUnion, LongerUnion, SizeUnion };
+
+    println!("--------------------------------------");
+}
+
+fn unions_pointer_fmt()
+{
+    println!("unions_pointer_fmt()");
+    use cryptocol::number::{ ShortUnion, IntUnion, LongUnion, LongerUnion, SizeUnion };
+
+    println!("--------------------------------------");
+}
+
+

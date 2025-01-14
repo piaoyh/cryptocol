@@ -23,7 +23,7 @@ use std::ops::{ BitAnd, BitAndAssign, BitOr, BitOrAssign, BitXor, BitXorAssign, 
 use std::fmt::{ self, Alignment, Error, Formatter, Display, Debug, Pointer,
                 Binary, Octal, LowerHex, UpperHex, LowerExp, UpperExp };
 
-use crate::number::SmallUInt;
+use crate::number::{ SmallUInt, ShortUnion, IntUnion, LongUnion, LongerUnion };
 use crate::number::{ calc_assign_to_calc, fmt_with_radix, fmt_with_exponent };
 
 /// # Introduction
@@ -1165,7 +1165,11 @@ crate::number::shift_ops_for_integer_unions_impl! { SizeUnion, usize }
 crate::number::format_for_integer_unions_impl! { SizeUnion }
 
 
-crate::number::shift_ops_for_integer_unions_by_self_impl! { SizeUnion }
+crate::number::shift_ops_for_integer_unions_by_union_impl! { SizeUnion, ShortUnion }
+crate::number::shift_ops_for_integer_unions_by_union_impl! { SizeUnion, IntUnion }
+crate::number::shift_ops_for_integer_unions_by_union_impl! { SizeUnion, LongUnion }
+crate::number::shift_ops_for_integer_unions_by_union_impl! { SizeUnion, LongerUnion }
+crate::number::shift_ops_for_integer_unions_by_union_impl! { SizeUnion, SizeUnion }
 
 impl Debug for SizeUnion
 {
